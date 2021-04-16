@@ -34,7 +34,7 @@
     "@injectivelabs/exchange-api": "^2.0.1",
     "@injectivelabs/exchange-consumer": "^0.0.29",
     "@injectivelabs/networks": "^0.0.9",
-    "@injectivelabs/spot-consumer": "^0.0.9",
+    "@injectivelabs/spot-consumer": "^0.0.10",
     "@injectivelabs/utils": "^0.0.23",
     "@injectivelabs/web3-contract-typings": "^0.1.13",
     "@injectivelabs/web3-strategy": "^0.0.32",
