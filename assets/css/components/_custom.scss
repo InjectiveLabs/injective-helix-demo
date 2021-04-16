@@ -1,0 +1,133 @@
+.toasted.bubble {
+  @apply shadow-md border;
+}
+
+.toasted.bubble.error {
+  @apply text-accent-900 font-bold;
+  background: theme('colors.accent.500') !important;
+}
+
+.toasted.bubble.info {
+  @apply text-gray-500 shadow-md;
+  background: theme('colors.dark.700') !important;
+
+  .action {
+    @apply font-bold;
+  }
+
+  .text-primary-500 {
+    color: theme('colors.primary.500') !important;
+  }
+}
+
+.toasted.bubble.success {
+  @apply text-primary-900 font-bold;
+  background: theme('colors.primary.500') !important;
+}
+
+.bg-gradient-300 {
+  background-color: rgba(181, 187, 202, 0.03);
+}
+
+.bg-gradient-200 {
+  background-color: rgba(176, 187, 202, 0.08) !important;
+}
+
+.wallet-not-connected {
+  height: 125px;
+}
+
+.wallet-not-connected-market-balances {
+  margin-top: -385px;
+}
+
+[class*='bg-accent-'] .spinner {
+  border-top-color: theme('colors.accent.300');
+}
+
+[class*='bg-primary-'] .spinner {
+  border-top-color: theme('colors.primary.300');
+}
+
+.spinner {
+  @apply block mx-auto w-6 h-6 bg-transparent border-4 rounded-full top-0 left-0 border-transparent;
+  border-top-color: theme('colors.white');
+  animation: spin 0.6s ease-out infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(359deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.hover-scale {
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+.depth-col {
+  @apply absolute right-0 top-0 h-full;
+
+  &.longs,
+  &.buys {
+    background: theme('colors.primary.500');
+    opacity: 0.2;
+  }
+
+  &.shorts,
+  &.sells {
+    background: theme('colors.accent.500');
+    opacity: 0.2;
+  }
+}
+
+.size-col {
+  @apply absolute right-0 text-xs font-mono top-0 invisible;
+  height: 100%;
+  width: calc(100%);
+
+  &.up {
+    @apply visible;
+    fill: theme('colors.primary.500');
+    opacity: 0.35;
+    animation: sizeColUp 0.5s ease-in-out;
+    color: rgb(255, 255, 255) !important;
+  }
+
+  &.down {
+    @apply visible;
+    fill: theme('colors.accent.500');
+    opacity: 0.35;
+    animation: sizeColDown 0.5s ease-in-out;
+    color: rgb(255, 255, 255) !important;
+  }
+}
+
+@keyframes sizeColUp {
+  0% {
+    background-color: theme('colors.primary.500');
+  }
+  100% {
+    background-color: unset;
+  }
+}
+
+@keyframes sizeColDown {
+  0% {
+    background-color: theme('colors.accent.500');
+  }
+  100% {
+    background-color: unset;
+  }
+}

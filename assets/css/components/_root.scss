@@ -1,0 +1,49 @@
+body {
+  @apply bg-dark-700 font-sans text-base leading-normal text-gray-100 antialiased;
+  scroll-behavior: smooth;
+  text-rendering: optimizeSpeed;
+
+  & * {
+    @apply border-dark-border;
+  }
+
+  #pro {
+    header {
+      @apply h-12 fixed;
+
+      .header-nav {
+        @apply h-full font-semibold cursor-pointer;
+
+        & > div,
+        & > span {
+          @apply cursor-pointer;
+
+          &:hover,
+          &.is-active {
+            @apply bg-dark-700;
+          }
+
+          &.is-active {
+            @apply font-semibold;
+          }
+
+          .light & {
+            &:hover,
+            &.is-active {
+              @apply bg-primary-500;
+            }
+
+            &.is-active {
+              @apply font-semibold;
+            }
+          }
+        }
+      }
+    }
+
+    main {
+      padding-top: 3rem;
+      min-height: calc(100vh - 3.3rem);
+    }
+  }
+}

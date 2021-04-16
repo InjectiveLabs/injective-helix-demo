@@ -1,0 +1,25 @@
+@tailwind base;
+
+@import './components/mixins';
+@import './components/root';
+@import './components/columns';
+@import './components/charts';
+@import './components/fonts';
+
+@tailwind components;
+@import './components/inputs';
+@import './components/buttons';
+@import './components/table';
+@import './components/tooltips';
+@import './components/tabs';
+@import './components/slider';
+
+@tailwind utilities;
+@import './components/lists';
+@import './components/transitions';
+@import './components/custom';
+@import './components/hamburger';
+
+#appzi-launch-button-9499927e-7409-4488-8868-bc796c62194e {
+  right: -2px !important;
+}

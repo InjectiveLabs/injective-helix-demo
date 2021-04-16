@@ -1,0 +1,147 @@
+$speed-slow: 250ms !default;
+$speed-slower: 350ms !default;
+$easing: 'ease-in-out';
+
+.page-enter-active,
+.page-leave-active {
+  @include transition(opacity);
+}
+.page-enter,
+.page-leave-to {
+  opacity: 0;
+}
+
+.fadeHeight-enter-active,
+.fadeHeight-leave-active {
+  transition: max-height 0.2s ease-in-out, opacity 0.2s ease-in-out;
+  max-height: 9999px;
+}
+.fadeHeight-enter,
+.fadeHeight-leave-to {
+  opacity: 0;
+  max-height: 0px;
+}
+
+.slide-enter-active {
+  transition-property: max-height;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-in;
+}
+
+.slide-leave-active {
+  transition-property: max-height;
+  transition-duration: 0.3s;
+  transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+}
+
+.slide-enter-to,
+.slide-leave {
+  max-height: 999px;
+  overflow: hidden;
+}
+
+.slide-enter,
+.slide-leave-to {
+  overflow: hidden;
+  max-height: 0;
+}
+
+// Fade
+.fade-enter-active,
+.fade-leave-active {
+  @include transition(opacity);
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+// Zoom In
+.zoom-in-enter-active,
+.zoom-in-leave-active {
+  @include transition(opacity);
+
+  .animation-content {
+    transition: transform $speed-slow $easing;
+  }
+}
+.zoom-in-enter,
+.zoom-in-leave-active {
+  opacity: 0;
+  .animation-content {
+    transform: scale(0.95);
+  }
+}
+
+// Zoom Out
+.zoom-out-enter-active,
+.zoom-out-leave-active {
+  transition: opacity $speed-slow $easing;
+  .animation-content {
+    transition: transform $speed-slow $easing;
+  }
+}
+.zoom-out-enter,
+.zoom-out-leave-active {
+  opacity: 0;
+  .animation-content {
+    transform: scale(1.05);
+  }
+}
+
+// Slide
+.slide-next-enter-active,
+.slide-next-leave-active,
+.slide-prev-enter-active,
+.slide-prev-leave-active {
+  transition: transform $speed-slow cubic-bezier(0.785, 0.135, 0.15, 0.86);
+}
+.slide-prev-leave-to,
+.slide-next-enter {
+  transform: translate3d(-100%, 0, 0);
+  position: absolute;
+  width: 100%;
+}
+.slide-prev-enter,
+.slide-next-leave-to {
+  transform: translate3d(100%, 0, 0);
+  position: absolute;
+  width: 100%;
+}
+
+.slide-content-enter-active {
+  @include transition(transform, opacity);
+}
+.slide-content-leave-active {
+  transition: transform 0.4s cubic-bezier(1, 0.5, 0.8, 1),
+    opacity 0.4s cubic-bezier(1, 0.5, 0.8, 1);
+}
+.slide-content-enter,
+.slide-content-leave-to {
+  transform: translateX(10px);
+  opacity: 0;
+}
+
+.transition-color {
+  @include transition(color);
+}
+
+.transition-transform {
+  @include transition(transform);
+}
+
+.transition-all {
+  @include transition(all);
+}
+
+.transition-bg-color {
+  @include transition(background-color);
+}
+
+.transition-header {
+  @include transition(background-color, border-color);
+}
+
+.transition-border-color {
+  @include transition(border-color);
+}

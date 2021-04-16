@@ -1,0 +1,61 @@
+.range-wrap {
+  .range {
+    @apply align-middle outline-none p-0 bg-dark-500 appearance-none flex-1 cursor-pointer;
+  }
+
+  .range::-webkit-slider-runnable-track {
+    @apply bg-dark-500 h-1 rounded-sm border-transparent;
+  }
+
+  .range::-moz-range-track {
+    @apply bg-dark-500 h-1 rounded-sm;
+  }
+
+  .range::-ms-track {
+    @apply text-transparent bg-none h-1;
+  }
+
+  .range::-ms-fill-lower {
+    @apply bg-dark-500 rounded-sm;
+  }
+
+  .range::-ms-fill-upper {
+    @apply bg-dark-500 rounded-sm;
+  }
+
+  .range::-ms-tooltip {
+    @apply hidden;
+  }
+
+  .range::-moz-range-thumb {
+    @apply bg-none rounded-2xl h-5 w-5 bg-dark-900 relative z-10;
+  }
+
+  .range:active::-moz-range-thumb {
+    @apply outline-none;
+  }
+
+  .range::-webkit-slider-thumb {
+    @apply appearance-none rounded-full bg-dark-500 h-5 w-5 -mt-2 relative z-10;
+  }
+
+  .range[disabled]::-webkit-slider-thumb {
+    @apply bg-transparent border-dark-hover200;
+  }
+
+  .range:active::-webkit-slider-thumb {
+    @apply outline-none;
+  }
+
+  .range::-ms-thumb {
+    @apply bg-none rounded-2xl h-5 w-5 bg-dark-900;
+  }
+
+  .range:active::-ms-thumb {
+    //
+  }
+
+  output {
+    @apply bg-dark-800 border-dark-hover300 text-gray-300 font-semibold text-sm px-2 py-1 rounded-lg;
+  }
+}

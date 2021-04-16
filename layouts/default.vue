@@ -1,0 +1,58 @@
+<template>
+  <div id="pro" class="w-full h-full min-h-screen bg-dark-900 relative">
+    <transition name="page" appear>
+      <HOCLoading>
+        <div>
+          <client-only>
+            <app-header />
+            <main class="overflow-y-auto">
+              <nuxt />
+            </main>
+            <app-footer />
+            <egg />
+          </client-only>
+        </div>
+      </HOCLoading>
+    </transition>
+  </div>
+</template>
+
+<script lang="ts">
+import Vue from 'vue'
+import Header from '~/components/layouts/desktop/header.vue'
+import Footer from '~/components/layouts/desktop/footer/index.vue'
+import Egg from '~/components/elements/egg.vue'
+import HOCLoading from '~/components/elements/with-loading.vue'
+import { Status, StatusType } from '@injectivelabs/utils'
+
+export default Vue.extend({
+  components: {
+    HOCLoading,
+    'app-header': Header,
+    'app-footer': Footer,
+    Egg
+  },
+
+  data() {
+    return {
+      status: new Status(StatusType.Loading),
+      interval: 0 as any
+    }
+  },
+
+  mounted() {
+    Promise.all([this.$accessor.spot.init()])
+      .then(() => {
+        //
+      })
+      .catch(this.$onRejected)
+      .finally(() => {
+        this.status.setIdle()
+      })
+  },
+
+  destroyed() {
+    clearInterval(this.interval)
+  }
+})
+</script>
