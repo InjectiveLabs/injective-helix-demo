@@ -22,7 +22,7 @@ module.exports = {
             chunks: 'all',
             maxInitialRequests: Infinity,
             minSize: 0,
-            cacheGroups: cacheGroups
+            cacheGroups
           }
         }
       : {}

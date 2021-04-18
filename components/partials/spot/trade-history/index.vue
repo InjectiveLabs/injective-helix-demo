@@ -51,6 +51,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { BigNumber } from '@injectivelabs/utils'
 import Trade from './trade.vue'
 import TradeEmpty from './trade-empty.vue'
 import { UiSpotMarket, UiSpotMarketTrade } from '~/types'
@@ -64,7 +65,7 @@ export default Vue.extend({
 
   data() {
     return {
-      limit: 10
+      limit: 9
     }
   },
 
@@ -95,17 +96,33 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.onResize()
-    window.addEventListener('resize', this.onResize)
-  },
+    this.$root.$on('resized-trades-panel', this.onResize)
 
-  beforeDestroy() {
-    window.removeEventListener('resize', this.onResize)
+    this.$nextTick(() => {
+      this.onResize()
+    })
   },
 
   methods: {
     onResize() {
-      //
+      const panelContent = this.$el.closest('.v-panel-content') as HTMLElement
+
+      if (!panelContent) {
+        return
+      }
+
+      const height = panelContent.offsetHeight
+      const rowSize = 32
+      const titleHeight = 48
+      const contextHeight = 34
+      const totalContentHeight = new BigNumber(
+        height - titleHeight - contextHeight
+      )
+
+      this.limit = totalContentHeight
+        .div(rowSize)
+        .decimalPlaces(0, BigNumber.ROUND_HALF_CEIL)
+        .toNumber()
     }
   }
 })

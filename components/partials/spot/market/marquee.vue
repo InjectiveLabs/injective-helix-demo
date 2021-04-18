@@ -1,5 +1,5 @@
 <template>
-  <v-panel>
+  <v-ui-card class="h-full">
     <infinite-slide-bar duration="30s" class="mt-3">
       <div class="flex justify-around items-center">
         <div
@@ -31,7 +31,7 @@
         </div>
       </div>
     </infinite-slide-bar>
-  </v-panel>
+  </v-ui-card>
 </template>
 
 <script lang="ts">

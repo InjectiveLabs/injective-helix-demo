@@ -10,7 +10,10 @@
         <p class="text-center">{{ $t('not_connected_balances') }}</p>
       </v-ui-overlay>
     </div>
-    <div v-if="isUserWalletConnected" class="table-compact">
+    <div
+      v-if="isUserWalletConnected && balances.length > 0"
+      class="table-compact"
+    >
       <div class="table-responsive">
         <table class="table">
           <thead>
@@ -82,14 +85,23 @@
         </table>
       </div>
     </div>
+    <div class="flex h-full items-center justify-center">
+      <v-ui-button sm primary @click.stop="openTransferModal">{{
+        $t('transfer')
+      }}</v-ui-button>
+    </div>
   </v-panel>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { Modal, UiSpotMarket } from '~/types'
-import { UiSubaccount, UiSubaccountBalanceToBN } from '~/types'
 import { BigNumberInWei } from '@injectivelabs/utils'
+import {
+  Modal,
+  UiSpotMarket,
+  UiSubaccount,
+  UiSubaccountBalanceToBN
+} from '~/types'
 
 export default Vue.extend({
   computed: {
@@ -123,15 +135,17 @@ export default Vue.extend({
 
       const balances = [baseBalance, quoteBalance]
 
-      return balances.map((balance) => ({
-        ...balance,
-        displayDecimals:
-          market.baseDenom.toLowerCase() === balance.denom.toLowerCase()
-            ? market.maxQuantityScaleDecimals
-            : market.maxPriceScaleDecimals,
-        totalBalance: new BigNumberInWei(balance.totalBalance),
-        availableBalance: new BigNumberInWei(balance.availableBalance)
-      }))
+      return balances
+        .filter((b) => b)
+        .map((balance) => ({
+          ...balance,
+          displayDecimals:
+            market.baseDenom.toLowerCase() === balance.denom.toLowerCase()
+              ? market.maxQuantityScaleDecimals
+              : market.maxPriceScaleDecimals,
+          totalBalance: new BigNumberInWei(balance.totalBalance),
+          availableBalance: new BigNumberInWei(balance.availableBalance)
+        }))
     }
   },
 

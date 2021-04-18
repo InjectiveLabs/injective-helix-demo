@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import toPx from 'to-px'
+import { BigNumber } from '@injectivelabs/utils'
 import Trade from './trade.vue'
 import TradeEmpty from './trade-empty.vue'
 import { UiSpotMarketTrade } from '~/types'
@@ -46,17 +46,29 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.onResize()
-    window.addEventListener('resize', this.onResize)
-  },
+    this.$root.$on('resized-trades-panel', this.onResize)
 
-  beforeDestroy() {
-    window.removeEventListener('resize', this.onResize)
+    this.$nextTick(() => {
+      this.onResize()
+    })
   },
 
   methods: {
     onResize() {
-      //
+      const panelContent = this.$el.closest('.v-panel-content') as HTMLElement
+
+      if (!panelContent) {
+        return
+      }
+
+      const height = panelContent.offsetHeight
+      const rowSize = 24
+      const totalContentHeight = new BigNumber(height)
+
+      this.limit = totalContentHeight
+        .div(rowSize)
+        .decimalPlaces(0, BigNumber.ROUND_HALF_CEIL)
+        .toNumber()
     }
   }
 })

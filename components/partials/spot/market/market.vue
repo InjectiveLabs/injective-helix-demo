@@ -1,5 +1,5 @@
 <template>
-  <v-panel v-if="market">
+  <v-panel v-if="market" class="h-full">
     <div class="flex flex-wrap items-center py-2 px-4 lg:py-1">
       <div class="flex items-center mr-4 mb-2 w-full lg:w-auto lg:mb-0">
         <img
@@ -16,15 +16,15 @@
           </p>
         </div>
       </div>
-      <v-market-stats class="flex-grow" />
+      <v-market-stats class="flex-1" />
     </div>
   </v-panel>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { UiSpotMarket } from '~/types'
 import MarketStats from './stats.vue'
+import { UiSpotMarket } from '~/types'
 
 export default Vue.extend({
   components: {

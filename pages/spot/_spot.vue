@@ -1,57 +1,33 @@
 <template>
   <HOCLoading v-if="market" :key="$route.fullPath" :status="status">
-    <div class="h-full w-full flex flex-wrap py-4">
-      <div class="w-full px-4 mb-4">
-        <div class="flex flex-wrap -mx-2">
-          <div class="w-full lg:w-3/4 3xl:w-4/5 px-2">
-            <market-panel />
-          </div>
-          <div class="hidden lg:block lg:w-1/4 3xl:w-1/5 px-2">
-            <marquee-panel />
-          </div>
-        </div>
-      </div>
-
-      <div class="w-full px-4">
-        <div class="flex flex-wrap -mx-2">
-          <aside class="w-full mb-4 lg:mb-0 lg:w-1/4 3xl:w-1/5 px-2">
-            <div class="flex flex-col h-full">
-              <div class="w-full flex flex-wrap">
-                <div class="mb-4 w-full">
-                  <balance-panel />
-                </div>
-              </div>
-              <div class="flex-grow flex-1">
-                <trading-panel />
-              </div>
-            </div>
-          </aside>
-
-          <section
-            class="w-full flex flex-col flex-wrap lg:w-1/2 3xl:w-3/5 px-2"
-          >
-            <div class="w-full flex flex-col flex-wrap min-h-screen">
-              <div class="mb-4 w-full">
-                <market-price-chart-panel />
-              </div>
-              <div class="mb-4 lg:mb-0 w-full overflow-hidden">
-                <orders-panel />
-              </div>
-            </div>
-          </section>
-
-          <aside class="w-full lg:w-1/4 3xl:w-1/5 px-2">
-            <div class="flex flex-col min-h-screen">
-              <div class="mb-4 w-full">
-                <order-book-panel />
-              </div>
-              <div class="w-full mb-4 lg:mb-0">
-                <trades-panel />
-              </div>
-            </div>
-          </aside>
-        </div>
-      </div>
+    <div class="h-full w-full">
+      <grid-layout
+        :layout.sync="grid.layout"
+        :col-num="grid.colNum"
+        :row-height="grid.rowHeight"
+        :is-draggable="grid.isDraggable"
+        :is-resizable="grid.isResizable"
+        :responsive="grid.responsive"
+        :vertical-compact="true"
+        :use-css-transforms="true"
+      >
+        <grid-item
+          v-for="item in grid.layout"
+          :key="`grid-item-${item.i}`"
+          :x="item.x"
+          :y="item.y"
+          :w="item.w"
+          :min-w="item.minW"
+          :min-h="item.minH"
+          :max-h="item.maxH"
+          :h="item.h"
+          :i="item.i"
+          drag-allow-from=".v-panel-title"
+          @resized="$root.$emit(`resized-${item.i}`)"
+        >
+          <component :is="item.i" />
+        </grid-item>
+      </grid-layout>
     </div>
   </HOCLoading>
 </template>
@@ -59,6 +35,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
+import { GridLayout, GridItem } from 'vue-grid-layout'
 import { headTitle } from '~/app/utils/generators'
 import MarketPriceChartPanel from '~/components/partials/spot/market/chart.vue'
 import MarketPanel from '~/components/partials/spot/market/market.vue'
@@ -73,6 +50,69 @@ import TradesPanel from '~/components/partials/spot/trades/index.vue'
 import OrdersPanel from '~/components/partials/spot/orders.vue'
 import HOCLoading from '~/components/elements/with-loading.vue'
 import { UiSpotMarket, UiSpotMarketTrade } from '~/types'
+import { localStorage } from '~/app/singletons/Storage'
+
+const LOCAL_STORAGE_GRID_KEY = 'spot-market-grid-layout'
+const GRID_ROW_HEIGHT = 54
+
+const gridLayout = () => [
+  { i: 'market-panel', x: 0, y: 0, w: 8, h: 1, minW: 8, maxH: 1 },
+  { i: 'marquee-panel', x: 8, y: 0, w: 4, h: 1, minW: 2, maxH: 1 },
+  {
+    i: 'balance-panel',
+    x: 0,
+    y: 1,
+    w: 3,
+    h: 2,
+    minW: 3,
+    minH: 2
+  },
+  {
+    i: 'market-price-chart-panel',
+    x: 3,
+    y: 1,
+    w: 6,
+    h: 9,
+    minW: 4,
+    minH: 9
+  },
+  {
+    i: 'order-book-panel',
+    x: 9,
+    y: 1,
+    w: 3,
+    h: 9,
+    minW: 3,
+    minH: 9
+  },
+  {
+    i: 'trading-panel',
+    x: 0,
+    y: 3,
+    w: 3,
+    h: 13,
+    minW: 3,
+    minH: 8
+  },
+  {
+    i: 'orders-panel',
+    x: 3,
+    y: 10,
+    w: 6,
+    h: 6,
+    minW: 6,
+    minH: 6
+  },
+  {
+    i: 'trades-panel',
+    x: 9,
+    y: 10,
+    w: 3,
+    h: 6,
+    minW: 3,
+    minH: 6
+  }
+]
 
 export default Vue.extend({
   components: {
@@ -84,7 +124,9 @@ export default Vue.extend({
     TradingPanel,
     MarketPanel,
     MarqueePanel,
-    MarketPriceChartPanel
+    MarketPriceChartPanel,
+    GridLayout,
+    GridItem
     /*
     ModalDeposit,
     */
@@ -93,11 +135,26 @@ export default Vue.extend({
   data() {
     return {
       status: new Status(StatusType.Loading),
-      interval: 0 as any
+      interval: 0 as any,
+
+      grid: {
+        layout: gridLayout(),
+        colNum: 12,
+        rowHeight: GRID_ROW_HEIGHT,
+        margin: [16, 16],
+        isDraggable: true,
+        isResizable: true,
+        autoSize: true,
+        responsive: true
+      }
     }
   },
 
   computed: {
+    layout(): any {
+      return this.grid.layout
+    },
+
     tickerFromRoute(): string {
       const { params } = this.$route
 
@@ -142,24 +199,6 @@ export default Vue.extend({
     }
   },
 
-  mounted() {
-    const { marketFromRoute } = this
-
-    if (!marketFromRoute) {
-      throw new Error('Market not found')
-    }
-
-    this.$accessor.spot
-      .changeMarket(marketFromRoute)
-      .then(() => {
-        //
-      })
-      .catch(this.$onRejected)
-      .finally(() => {
-        this.status.setIdle()
-      })
-  },
-
   watch: {
     lastTradedPriceToString(newPrice: string) {
       const { market } = this
@@ -170,7 +209,28 @@ export default Vue.extend({
     }
   },
 
+  mounted() {
+    const { marketFromRoute } = this
+
+    if (!marketFromRoute) {
+      throw new Error('Market not found')
+    }
+
+    this.$accessor.spot
+      .changeMarket(marketFromRoute)
+      .then(() => {
+        if (localStorage.has(LOCAL_STORAGE_GRID_KEY)) {
+          this.grid.layout = localStorage.get(LOCAL_STORAGE_GRID_KEY) as any
+        }
+      })
+      .catch(this.$onRejected)
+      .finally(() => {
+        this.status.setIdle()
+      })
+  },
+
   beforeDestroy() {
+    // localStorage.set(LOCAL_STORAGE_GRID_KEY, this.grid.layout)
     this.$accessor.spot.resetMarket()
     document.title = headTitle
     clearInterval(this.interval)

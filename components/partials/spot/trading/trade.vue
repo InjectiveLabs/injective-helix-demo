@@ -46,7 +46,7 @@
           "
           :custom-handler="true"
           :max-selector="true"
-          :placeholder="$t('global.amount')"
+          :placeholder="$t('amount')"
           type="number"
           :step="amountStep"
           min="0"
@@ -90,7 +90,7 @@
         <v-input
           ref="input-price"
           :value="priceInputValue"
-          :placeholder="$t('global.price')"
+          :placeholder="$t('price')"
           :label="
             $t('trading.price_decimals', {
               decimals: market.maxPriceScaleDecimals
@@ -141,16 +141,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
 import { TradeError } from 'types/errors'
-import {
-  BigNumberInWei,
-  Status,
-  BigNumberInBase,
-  BigNumber
-} from '@injectivelabs/utils'
+import { BigNumberInWei, Status, BigNumberInBase } from '@injectivelabs/utils'
 import OrderDetails from './order-details.vue'
 import OrderDetailsMarket from './order-details-market.vue'
+import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import {
   SpotOrderType,
@@ -588,6 +583,8 @@ export default Vue.extend({
     },
 
     getMaxAmountValue(percentage: number): string {
+      return percentage.toString()
+      /*
       const {
         market,
         fees,
@@ -600,7 +597,7 @@ export default Vue.extend({
 
       return ''
 
-      /*
+      
       if (!market) {
         return ''
       }

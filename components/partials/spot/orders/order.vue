@@ -1,6 +1,6 @@
 <template>
   <tr v-if="market">
-    <td is="v-ui-table-td" xs>
+    <td is="v-ui-table-td" xs class="h-8">
       <v-ui-format-order-price
         v-bind="{
           value: price
@@ -12,7 +12,7 @@
         class="flex justify-end"
       />
     </td>
-    <td is="v-ui-table-td" xs right>
+    <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
           value: filledQuantity.dp(market.maxQuantityScaleDecimals),
@@ -21,7 +21,7 @@
         class="block"
       />
     </td>
-    <td is="v-ui-table-td" xs>
+    <td is="v-ui-table-td" xs class="h-8">
       <v-ui-format-amount
         v-bind="{
           value: total
@@ -32,7 +32,7 @@
         class="text-right block text-white"
       />
     </td>
-    <td is="v-ui-table-td" xs center>
+    <td is="v-ui-table-td" xs center class="h-8">
       <v-ui-badge
         :primary="order.orderType === SpotOrderType.Buy"
         :accent="order.orderType === SpotOrderType.Sell"
@@ -43,7 +43,7 @@
         </div>
       </v-ui-badge>
     </td>
-    <td is="v-ui-table-td" xs center>
+    <td is="v-ui-table-td" xs center class="h-8">
       <v-ui-badge v-if="orderFullyFilled" primary xs>
         {{ $t('orders.filled') }}
       </v-ui-badge>
@@ -53,7 +53,7 @@
         </div>
       </v-ui-badge>
     </td>
-    <td is="v-ui-table-td" xs class="w-1/8 relative" center>
+    <td is="v-ui-table-td" xs class="h-8 relative" center>
       <v-ui-button
         v-if="orderFillable"
         :status="status"
@@ -80,8 +80,8 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
 import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
+import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
 import { UiSpotMarket, SpotOrderType, UiSpotMarketOrder } from '~/types'
 
 export default Vue.extend({

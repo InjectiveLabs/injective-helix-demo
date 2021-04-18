@@ -1,6 +1,6 @@
 <template>
   <tr v-if="market">
-    <td is="v-ui-table-td" xs>
+    <td is="v-ui-table-td" xs class="h-8">
       <v-ui-format-order-price
         v-bind="{
           value: price.toBase(market.quoteToken.decimals),
@@ -10,7 +10,7 @@
         class="block text-right"
       />
     </td>
-    <td is="v-ui-table-td" xs right>
+    <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
           value: quantity,
@@ -19,7 +19,7 @@
         class="block text-right"
       />
     </td>
-    <td is="v-ui-table-td" xs right>
+    <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
           value: total.toBase(market.quoteToken.decimals),
@@ -28,7 +28,7 @@
         class="block text-right"
       />
     </td>
-    <td is="v-ui-table-td" xs right>
+    <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
           value: fee.toBase(market.quoteToken.decimals),
@@ -37,7 +37,7 @@
         class="text-right block text-white"
       />
     </td>
-    <td is="v-ui-table-td" xs center>
+    <td is="v-ui-table-td" xs center class="h-8">
       <v-ui-badge
         :primary="trade.tradeDirection === TradeDirection.Buy"
         :accent="trade.tradeDirection === TradeDirection.Sell"
@@ -46,12 +46,12 @@
         {{ tradeDirection }}
       </v-ui-badge>
     </td>
-    <td is="v-ui-table-td" xs center>
+    <td is="v-ui-table-td" xs center class="h-8">
       <v-ui-badge dark sm>
         {{ tradeExecutionType }}
       </v-ui-badge>
     </td>
-    <td is="v-ui-table-td" xs right>
+    <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-text muted class="font-mono block text-right">
         {{ time }}
       </v-ui-text>
@@ -62,6 +62,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { format, toDate } from 'date-fns'
 import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
 import {
   UiSpotMarket,
@@ -69,7 +70,6 @@ import {
   TradeExecutionType,
   UiSpotMarketTrade
 } from '~/types'
-import { format, toDate } from 'date-fns'
 
 export default Vue.extend({
   props: {

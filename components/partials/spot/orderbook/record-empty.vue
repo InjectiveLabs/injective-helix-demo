@@ -1,5 +1,5 @@
 <template>
-  <li class="flex py-1 last:mb-0 first:mt-0">
+  <li class="flex h-6 items-center last:mb-0 first:mt-0">
     <span class="text-xs w-1/3 px-2 text-right text-gray-600"> &mdash; </span>
     <span class="text-xs w-1/3 px-2 text-right text-gray-600"> &mdash; </span>
     <span class="text-xs w-1/3 px-2 text-right text-gray-600"> &mdash; </span>

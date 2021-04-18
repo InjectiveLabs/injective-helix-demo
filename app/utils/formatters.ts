@@ -1,5 +1,5 @@
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
-import { AccountAddress, Token } from '~/types'
+import { AccountAddress } from '~/types'
 
 BigNumber.config({
   FORMAT: {
@@ -27,28 +27,28 @@ export function formatAmount(
   amount: BigNumberInBase,
   displayDecimals: number
 ): string {
-  return amount.toFormat(displayDecimals, BigNumber.ROUND_DOWN)
+  return amount.toFormat(displayDecimals || 1, BigNumber.ROUND_DOWN)
 }
 
 export function formatPrice(
   amount: BigNumberInBase,
   displayDecimals: number
 ): string {
-  return amount.toFormat(displayDecimals, BigNumber.ROUND_HALF_UP)
+  return amount.toFormat(displayDecimals || 1, BigNumber.ROUND_HALF_UP)
 }
 
 export function formatPriceUp(
   amount: BigNumberInBase,
   displayDecimals: number
 ): string {
-  return amount.toFormat(displayDecimals, BigNumber.ROUND_UP)
+  return amount.toFormat(displayDecimals || 1, BigNumber.ROUND_UP)
 }
 
 export function formatPriceDown(
   amount: BigNumberInBase,
   displayDecimals: number
 ): string {
-  return amount.toFormat(displayDecimals, BigNumber.ROUND_DOWN)
+  return amount.toFormat(displayDecimals || 1, BigNumber.ROUND_DOWN)
 }
 
 export function formatPrecision(amount: BigNumber, precision: number): string {

@@ -1,6 +1,6 @@
 <template>
-  <v-panel class="relative" content-class="w-full" :title="$t('trades')">
-    <v-trades-context keep-alive></v-trades-context>
+  <v-panel class="relative" :title="$t('trades')">
+    <v-trades-context slot="context" keep-alive></v-trades-context>
     <v-trades class="flex-1" />
   </v-panel>
 </template>

@@ -1,7 +1,7 @@
 <template>
   <li
     v-if="market"
-    class="flex py-1 last:mb-0 first:mt-0 relative cursor-pointer"
+    class="flex h-6 items-center last:mb-0 first:mt-0 relative cursor-pointer"
   >
     <span class="size-col" :class="newRecordClass"></span>
     <span
@@ -21,7 +21,7 @@
       />
       <v-ui-format-order-price
         v-bind="{
-          value: price.toBase(market.quoteToken.decimals),
+          value: price,
           type: type,
           decimals: market.maxPriceScaleDecimals
         }"
@@ -31,7 +31,7 @@
     <span class="w-1/3 text-xs px-2 z-10" @click.stop="onQuantityClick">
       <v-ui-format-amount
         v-bind="{
-          value: quantity,
+          value: quantity.toBase(market.quoteToken.decimals),
           decimals: market.maxQuantityScaleDecimals
         }"
         class="text-right block"
@@ -44,7 +44,7 @@
     <span class="w-1/3 text-xs px-2 z-10" @click.stop="onSumQuantityClick">
       <v-ui-format-amount
         v-bind="{
-          value: sumOfQuantities,
+          value: sumOfQuantities.toBase(market.quoteToken.decimals),
           decimals: market.maxQuantityScaleDecimals
         }"
         class="text-right block text-white"
@@ -56,9 +56,9 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import {
-  BigNumberInWei,
   BigNumberInBase,
-  BigNumber
+  BigNumber,
+  BigNumberInWei
 } from '@injectivelabs/utils'
 import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
 import {
@@ -102,27 +102,7 @@ export default Vue.extend({
       return this.$accessor.spot.market
     },
 
-    price(): BigNumberInWei {
-      const { market, record } = this
-
-      if (!market) {
-        return ZERO_IN_WEI
-      }
-
-      return new BigNumberInWei(record.price)
-    },
-
-    sumOfQuantities(): BigNumberInBase {
-      const { market, record } = this
-
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      return new BigNumberInBase(record.sumOfQuantities || 0)
-    },
-
-    quantity(): BigNumberInBase {
+    price(): BigNumberInBase {
       const { market, record } = this
 
       if (!market) {
@@ -130,6 +110,26 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(record.price)
+    },
+
+    sumOfQuantities(): BigNumberInWei {
+      const { market, record } = this
+
+      if (!market) {
+        return ZERO_IN_WEI
+      }
+
+      return new BigNumberInWei(record.sumOfQuantities || 0)
+    },
+
+    quantity(): BigNumberInWei {
+      const { market, record } = this
+
+      if (!market) {
+        return ZERO_IN_WEI
+      }
+
+      return new BigNumberInWei(record.quantity)
     },
 
     depthWidth(): { width: string } {
@@ -189,9 +189,7 @@ export default Vue.extend({
         return
       }
 
-      const priceToString = price
-        .toBase(market.quoteToken.decimals)
-        .toFixed(market.maxPriceScaleDecimals)
+      const priceToString = price.toFixed(market.maxPriceScaleDecimals)
 
       this.$root.$emit('orderbook-price-click', priceToString)
     },

@@ -87,7 +87,8 @@ export default Vue.extend({
     const tabListWrapper = createElement(
       'div',
       {
-        staticClass: 'flex items-center justify-between border-b h-12'
+        staticClass:
+          'flex items-center justify-between border-b h-12 v-panel-title'
       },
       [tabListComponent, tablistSlot]
     )

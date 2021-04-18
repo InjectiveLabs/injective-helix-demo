@@ -78,5 +78,6 @@ export default {
   high: '24h High',
   low: '24h Low',
   volume: 'Volume',
-  price_chart: 'Price Chart'
+  price_chart: 'Price Chart',
+  filled: 'Filled'
 }

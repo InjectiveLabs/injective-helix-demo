@@ -14,7 +14,6 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { Token } from '~/types'
 import { formatAmount } from '~/app/utils/formatters'
 
 export default Vue.extend({

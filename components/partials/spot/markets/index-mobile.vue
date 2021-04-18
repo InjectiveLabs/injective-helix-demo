@@ -17,9 +17,9 @@
 </template>
 
 <script lang="ts">
-import { UiSpotMarket } from '~/types'
 import Vue from 'vue'
 import Spot from './spot-mobile.vue'
+import { UiSpotMarket } from '~/types'
 
 export default Vue.extend({
   components: {

@@ -1,7 +1,7 @@
 <script lang="ts">
 import Vue, { VNode, PropType } from 'vue'
-import { formatPrice } from '~/app/utils/formatters'
 import { BigNumberInWei } from '@injectivelabs/utils'
+import { formatPrice } from '~/app/utils/formatters'
 
 export default Vue.extend({
   props: {

@@ -29,7 +29,7 @@
 import Vue, { PropType } from 'vue'
 import deposit from './deposit/deposit.vue'
 import withdraw from './deposit/withdraw.vue'
-import TokenLock from '~/components/elements/token-lock.vue'
+// import TokenLock from '~/components/elements/token-lock.vue'
 import ModalElement from '~/components/elements/modal.vue'
 import { UiSpotMarket, Modal } from '~/types'
 
@@ -39,8 +39,8 @@ export default Vue.extend({
   components: {
     modal: ModalElement,
     deposit,
-    withdraw,
-    'v-token-lock': TokenLock
+    withdraw
+    // 'v-token-lock': TokenLock
   },
 
   props: {

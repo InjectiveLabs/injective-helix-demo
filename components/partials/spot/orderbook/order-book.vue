@@ -77,6 +77,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  BigNumber
+} from '@injectivelabs/utils'
 import Record from './record.vue'
 import RecordEmpty from './record-empty.vue'
 import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
@@ -90,7 +95,6 @@ import {
   SpotOrderType,
   UiOrderbookPriceLevel
 } from '~/types'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 
 export default Vue.extend({
   components: {
@@ -294,21 +298,33 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.onResize()
+    this.$root.$on('resized-order-book-panel', this.onResize)
 
     this.$nextTick(() => {
       this.onScrollShorts()
       this.onScrollLongs()
+      this.onResize()
     })
-  },
-
-  beforeDestroy() {
-    window.removeEventListener('resize', this.onResize)
   },
 
   methods: {
     onResize() {
-      //
+      const panelContent = this.$el.closest('.v-panel-content') as HTMLElement
+
+      if (!panelContent) {
+        return
+      }
+
+      const height = panelContent.offsetHeight
+      const rowSize = 24
+      const middleContextHeight = 56
+      const totalContentHeight = new BigNumber(height - middleContextHeight)
+
+      this.limit = totalContentHeight
+        .div(rowSize)
+        .div(2)
+        .decimalPlaces(0, BigNumber.ROUND_HALF_CEIL)
+        .toNumber()
     },
 
     onScrollShorts() {

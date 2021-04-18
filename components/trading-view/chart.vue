@@ -18,11 +18,6 @@ export default Vue.extend({
       type: String
     },
 
-    marketId: {
-      required: true,
-      type: String
-    },
-
     interval: {
       required: true,
       type: String

@@ -1,10 +1,10 @@
+import { peggyDenomToTokenFromContractAddress } from './peggy'
 import {
   AllChronosSpotMarketSummary,
   ChronosSpotMarketSummary,
   BaseUiSpotMarket,
   UiSpotMarket
 } from '~/types'
-import { peggyDenomToTokenFromContractAddress } from './peggy'
 
 export const spotMarketToUiSpotMarket = (
   market: BaseUiSpotMarket,

@@ -16,7 +16,7 @@
             <span>{{ $t('type') }}</span>
           </th>
           <th is="v-ui-table-th" center>
-            <span>{{ $t('orders.filled') }}</span>
+            <span>{{ $t('filled') }}</span>
           </th>
           <th is="v-ui-table-th" center>
             <span>{{ $t('actions') }}</span>
@@ -42,22 +42,20 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { BigNumber } from '@injectivelabs/utils'
 import Order from './order.vue'
 import OrderEmpty from './order-empty.vue'
-import WithLoading from '~/components/elements/with-loading.vue'
 import { UiSpotMarket, UiSpotMarketOrder } from '~/types'
 
 export default Vue.extend({
   components: {
     'v-order': Order,
-    'v-order-empty': OrderEmpty,
-    WithLoading
+    'v-order-empty': OrderEmpty
   },
 
   data() {
     return {
-      limit: 14,
-      interval: null as any
+      limit: 9
     }
   },
 
@@ -84,17 +82,33 @@ export default Vue.extend({
   },
 
   mounted() {
-    //
-  },
+    this.$root.$on('resized-orders-panel', this.onResize)
 
-  beforeDestroy() {
-    window.removeEventListener('resize', this.onResize)
-    clearInterval(this.interval)
+    this.$nextTick(() => {
+      this.onResize()
+    })
   },
 
   methods: {
     onResize() {
-      //
+      const panelContent = this.$el.closest('.v-panel-content') as HTMLElement
+
+      if (!panelContent) {
+        return
+      }
+
+      const height = panelContent.offsetHeight
+      const rowSize = 32
+      const titleHeight = 48
+      const contextHeight = 34
+      const totalContentHeight = new BigNumber(
+        height - titleHeight - contextHeight
+      )
+
+      this.limit = totalContentHeight
+        .div(rowSize)
+        .decimalPlaces(0, BigNumber.ROUND_HALF_CEIL)
+        .toNumber()
     }
   }
 })

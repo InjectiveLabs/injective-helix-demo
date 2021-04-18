@@ -41,6 +41,15 @@ body {
       }
     }
 
+    .vue-grid-item.vue-grid-placeholder {
+      @apply rounded bg-primary-500;
+      opacity: 0.35;
+    }
+
+    .vue-grid-item {
+      touch-action: none;
+    }
+
     main {
       padding-top: 3rem;
       min-height: calc(100vh - 3.3rem);

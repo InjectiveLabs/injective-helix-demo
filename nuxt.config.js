@@ -78,7 +78,7 @@ export default {
 
   tailwindcss: {
     jit: true,
-    cssPath: '~/assets/css/app.scss',
+    cssPath: './assets/css/app.scss',
     configPath: './tailwind.config.js'
   },
 

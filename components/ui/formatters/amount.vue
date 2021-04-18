@@ -1,8 +1,7 @@
 <script lang="ts">
 import Vue, { PropType, VNode } from 'vue'
-import { formatAmount } from '~/app/utils/formatters'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { Token } from '~/types'
+import { formatAmount } from '~/app/utils/formatters'
 
 export default Vue.extend({
   props: {

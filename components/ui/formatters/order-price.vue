@@ -1,7 +1,7 @@
 <script lang="ts">
 import Vue, { PropType, VNode } from 'vue'
-import { formatPrice } from '~/app/utils/formatters'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { formatPrice } from '~/app/utils/formatters'
 import { SpotOrderType } from '~/types'
 
 export default Vue.extend({

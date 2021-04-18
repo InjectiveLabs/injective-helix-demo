@@ -1,11 +1,7 @@
 <template>
-  <v-panel
-    class="relative w-full"
-    :title="$t('order_book')"
-    content-class="w-full"
-  >
-    <v-orderbook-context keep-alive></v-orderbook-context>
-    <v-orderbook class="flex-1" />
+  <v-panel class="relative w-full" :title="$t('order_book')">
+    <v-orderbook-context slot="context" keep-alive></v-orderbook-context>
+    <v-orderbook />
   </v-panel>
 </template>
 

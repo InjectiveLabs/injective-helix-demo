@@ -1,6 +1,7 @@
 <template>
   <v-panel
     :class="{ 'wallet-not-connected': !isUserWalletConnected }"
+    class="h-full"
     :title="$t('trading')"
   >
     <v-ui-overlay v-if="!isUserWalletConnected">
