@@ -2,23 +2,25 @@
   <modal :is-open="isModalOpen" @closed="closeModal">
     <div class="w-full md:w-3xl flex flex-col shadow">
       <div class="my-6 flex flex-wrap">
-        <div class="w-full lg:w-1/2 px-4">
+        <div class="w-full mb-6 px-4">
           <h3 class="text-center text-2xl uppercase">
-            {{ $t('wallet.deposit') }}
+            {{ $t('deposit_modal_title') }}
           </h3>
           <p class="text-sm text-center opacity-90 mt-4">
-            {{ $t('wallet.deposit_note') }}
+            {{ $t('deposit_modal_note') }}
           </p>
-          <deposit />
+        </div>
+        <div class="w-full mb-2 lg:w-1/2 px-4">
+          <h3 class="text-center text-base uppercase">
+            {{ $t('deposit_asset', { asset: market.baseToken.symbol }) }}
+          </h3>
+          <v-base :balance="baseTokenBalance" />
         </div>
         <div class="w-full lg:w-1/2 lg:border-l px-4">
-          <h3 class="text-center text-2xl uppercase">
-            {{ $t('wallet.withdraw') }}
+          <h3 class="text-center text-base uppercase">
+            {{ $t('deposit_asset', { asset: market.quoteToken.symbol }) }}
           </h3>
-          <p class="text-sm text-center opacity-90 mt-4">
-            {{ $t('wallet.withdraw_note') }}
-          </p>
-          <withdraw />
+          <v-quote :balance="quoteTokenBalance" />
         </div>
       </div>
     </div>
@@ -26,31 +28,59 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
-import deposit from './deposit/deposit.vue'
-import withdraw from './deposit/withdraw.vue'
-// import TokenLock from '~/components/elements/token-lock.vue'
+import Vue from 'vue'
+import { BigNumberInWei } from '@injectivelabs/utils'
+import VBase from './deposit/base.vue'
+import VQuote from './deposit/quote.vue'
 import ModalElement from '~/components/elements/modal.vue'
-import { UiSpotMarket, Modal } from '~/types'
-
-// TODO: Unlock from Testnet/Mainnet, transfer through peggy and get balance
+import { Modal } from '~/types/enums'
+import { BankBalances, UiSpotMarket } from '~/types'
+import { ZERO_IN_WEI } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
     modal: ModalElement,
-    deposit,
-    withdraw
-    // 'v-token-lock': TokenLock
-  },
-
-  props: {
-    market: {
-      required: true,
-      type: Object as PropType<UiSpotMarket>
-    }
+    VBase,
+    VQuote
   },
 
   computed: {
+    market(): UiSpotMarket | undefined {
+      return this.$accessor.spot.market
+    },
+
+    balances(): BankBalances {
+      return this.$accessor.bank.balances
+    },
+
+    baseTokenBalance(): BigNumberInWei {
+      const { balances, market } = this
+
+      if (!market) {
+        return ZERO_IN_WEI
+      }
+
+      if (!balances.has(market.baseDenom)) {
+        return ZERO_IN_WEI
+      }
+
+      return new BigNumberInWei(balances.get(market.baseDenom) || 0)
+    },
+
+    quoteTokenBalance(): BigNumberInWei {
+      const { balances, market } = this
+
+      if (!market) {
+        return ZERO_IN_WEI
+      }
+
+      if (!balances.has(market.quoteDenom)) {
+        return ZERO_IN_WEI
+      }
+
+      return new BigNumberInWei(balances.get(market.quoteDenom) || 0)
+    },
+
     isModalOpen(): boolean {
       return this.$accessor.modal.modals[Modal.Deposit]
     }

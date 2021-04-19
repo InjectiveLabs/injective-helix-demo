@@ -37,6 +37,12 @@ export default Vue.extend({
       type: Boolean
     },
 
+    text: {
+      required: false,
+      default: false,
+      type: Boolean
+    },
+
     dim: {
       required: false,
       default: false,
@@ -164,11 +170,15 @@ export default Vue.extend({
       }
 
       if (this.primary) {
-        classes.push(
-          'bg-primary-500',
-          'text-primary-900',
-          'hover:bg-primary-600'
-        )
+        if (this.text) {
+          classes.push('text-primary-500', 'hover:text-primary-600')
+        } else {
+          classes.push(
+            'bg-primary-500',
+            'text-primary-900',
+            'hover:bg-primary-600'
+          )
+        }
       } else if (this.secondary) {
         classes.push(
           'bg-secondary-500',

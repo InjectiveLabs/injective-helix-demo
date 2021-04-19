@@ -1,7 +1,7 @@
 <template>
   <div id="pro" class="w-full h-full min-h-screen bg-dark-900 relative">
     <transition name="page" appear>
-      <HOCLoading>
+      <HOCLoading :status="status">
         <div>
           <client-only>
             <app-header />
@@ -19,11 +19,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Status, StatusType } from '@injectivelabs/utils'
 import Header from '~/components/layouts/desktop/header.vue'
 import Footer from '~/components/layouts/desktop/footer/index.vue'
 import Egg from '~/components/elements/egg.vue'
 import HOCLoading from '~/components/elements/with-loading.vue'
-import { Status, StatusType } from '@injectivelabs/utils'
 
 export default Vue.extend({
   components: {
@@ -41,7 +41,7 @@ export default Vue.extend({
   },
 
   mounted() {
-    Promise.all([this.$accessor.spot.init()])
+    Promise.all([this.$accessor.spot.init(), this.$accessor.bank.init()])
       .then(() => {
         //
       })

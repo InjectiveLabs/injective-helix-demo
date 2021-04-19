@@ -87,6 +87,7 @@ export default {
     APP_ENV: process.env.APP_ENV,
     APP_VER: process.env.npm_package_version,
     APP_BASE_URL: process.env.APP_BASE_URL,
+    APP_FEE_RECIPIENT: process.env.APP_FEE_RECIPIENT,
     APP_NETWORK: process.env.APP_NETWORK,
     APP_MAINTENANCE_ENABLED: process.env.APP_MAINTENANCE_ENABLED,
     APP_BUGSNAG_KEY: process.env.APP_BUGSNAG_KEY

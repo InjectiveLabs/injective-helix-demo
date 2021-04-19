@@ -1,3 +1,5 @@
+import { actionTree, getterTree } from 'nuxt-typed-vuex'
+import { BigNumberInWei } from '@injectivelabs/utils'
 import {
   UiOrderbook,
   UiSpotMarketOrder,
@@ -5,14 +7,15 @@ import {
   UiSpotMarket,
   SpotOrderType
 } from '~/types'
-import { actionTree, getterTree } from 'nuxt-typed-vuex'
 import {
   fetchSpotMarketOrderbook,
   fetchSpotMarketOrders,
   fetchSpotMarkets,
-  fetchSpotMarketTrades
+  fetchSpotMarketTrades,
+  submitLimitOrder,
+  submitMarketOrder,
+  cancelOrder
 } from '~/app/services/spot'
-import { BigNumberInWei } from '@injectivelabs/utils'
 
 const initialStateFactory = () => ({
   markets: [] as UiSpotMarket[],
@@ -91,9 +94,13 @@ export const actions = actionTree(
       commit('setMarkets', await fetchSpotMarkets())
     },
 
-    async changeMarket({ commit }, market: UiSpotMarket) {
+    async changeMarket({ commit }, market: UiSpotMarket | undefined) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
+
+      if (!market) {
+        throw new Error('Market not found')
+      }
 
       commit('setMarket', market)
       commit('setOrderbook', await fetchSpotMarketOrderbook(market.marketId))
@@ -122,11 +129,16 @@ export const actions = actionTree(
       }
     },
 
-    async cancelOrder({ state, commit }, order: UiSpotMarketOrder) {
+    async cancelOrder(_, order: UiSpotMarketOrder) {
       const { subaccount } = this.app.$accessor.account
-      const { isUserWalletConnected } = this.app.$accessor.wallet
+      const { market } = this.app.$accessor.spot
+      const {
+        address,
+        injectiveAddress,
+        isUserWalletConnected
+      } = this.app.$accessor.wallet
 
-      if (!isUserWalletConnected) {
+      if (!isUserWalletConnected || !injectiveAddress) {
         throw new Error('Please connect your wallet')
       }
 
@@ -134,11 +146,22 @@ export const actions = actionTree(
         throw new Error('Subaccount not found')
       }
 
-      // TODO
+      if (!market) {
+        throw new Error('Market not found')
+      }
+
+      await cancelOrder({
+        injectiveAddress,
+        address,
+        orderHash: order.orderHash,
+        orderType: order.orderType,
+        marketId: market.marketId,
+        subaccountId: subaccount.subaccountId
+      })
     },
 
     async submitLimitOrder(
-      { state, commit },
+      _,
       {
         price,
         quantity,
@@ -150,9 +173,14 @@ export const actions = actionTree(
       }
     ) {
       const { subaccount } = this.app.$accessor.account
-      const { isUserWalletConnected } = this.app.$accessor.wallet
+      const { market } = this.app.$accessor.spot
+      const {
+        address,
+        injectiveAddress,
+        isUserWalletConnected
+      } = this.app.$accessor.wallet
 
-      if (!isUserWalletConnected) {
+      if (!isUserWalletConnected || !injectiveAddress) {
         throw new Error('Please connect your wallet')
       }
 
@@ -160,23 +188,42 @@ export const actions = actionTree(
         throw new Error('Subaccount not found')
       }
 
-      // TODO
+      if (!market) {
+        throw new Error('Market not found')
+      }
+
+      await submitLimitOrder({
+        price,
+        quantity,
+        orderType,
+        injectiveAddress,
+        address,
+        subaccountId: subaccount.subaccountId,
+        marketId: market.marketId
+      })
     },
 
     async submitMarketOrder(
-      { state, commit },
+      _,
       {
         quantity,
+        price,
         orderType
       }: {
+        price: BigNumberInWei
         quantity: BigNumberInWei
         orderType: SpotOrderType
       }
     ) {
       const { subaccount } = this.app.$accessor.account
-      const { isUserWalletConnected } = this.app.$accessor.wallet
+      const { market } = this.app.$accessor.spot
+      const {
+        address,
+        injectiveAddress,
+        isUserWalletConnected
+      } = this.app.$accessor.wallet
 
-      if (!isUserWalletConnected) {
+      if (!isUserWalletConnected || !injectiveAddress) {
         throw new Error('Please connect your wallet')
       }
 
@@ -184,7 +231,19 @@ export const actions = actionTree(
         throw new Error('Subaccount not found')
       }
 
-      // TODO
+      if (!market) {
+        throw new Error('Market not found')
+      }
+
+      await submitMarketOrder({
+        quantity,
+        orderType,
+        price,
+        injectiveAddress,
+        address,
+        subaccountId: subaccount.subaccountId,
+        marketId: market.marketId
+      })
     },
 
     async fetchSubaccountMarketTrades({ state, commit }) {

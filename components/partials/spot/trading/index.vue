@@ -1,15 +1,6 @@
 <template>
-  <v-panel
-    :class="{ 'wallet-not-connected': !isUserWalletConnected }"
-    class="h-full"
-    :title="$t('trading')"
-  >
-    <v-ui-overlay v-if="!isUserWalletConnected">
-      <p class="text-center">{{ $t('not_connected_trading') }}</p>
-    </v-ui-overlay>
-    <template v-else>
-      <v-trade />
-    </template>
+  <v-panel class="h-full" :title="$t('trading')">
+    <v-trade />
   </v-panel>
 </template>
 
@@ -20,12 +11,6 @@ import Trade from './trade.vue'
 export default Vue.extend({
   components: {
     'v-trade': Trade
-  },
-
-  computed: {
-    isUserWalletConnected(): boolean {
-      return this.$accessor.wallet.isUserWalletConnected
-    }
   }
 })
 </script>

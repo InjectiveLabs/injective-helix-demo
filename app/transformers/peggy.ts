@@ -1,6 +1,6 @@
 import { contractAddresses } from '@injectivelabs/contracts'
 import { Token } from '~/types'
-import { MAINNET_CHAIN_ID } from '~/app/utils/constants'
+import { TESTNET_CHAIN_ID } from '~/app/utils/constants'
 import { denomsMap } from '~/app/tokens/denoms'
 
 export const peggyDenomToTokenFromContractAddress = (denom: string): Token => {
@@ -9,8 +9,6 @@ export const peggyDenomToTokenFromContractAddress = (denom: string): Token => {
   }
 
   const token = denomsMap.get(denom.toLowerCase())
-  const contractAddress = denom.replace('peggy', '')
-  const injectiveContractAddress = contractAddresses[MAINNET_CHAIN_ID].injective
 
   if (!token) {
     throw new Error(`Token for denom ${denom} not found!`)
@@ -18,7 +16,15 @@ export const peggyDenomToTokenFromContractAddress = (denom: string): Token => {
 
   return {
     ...token,
-    address:
-      denom.toLowerCase() === 'inj' ? injectiveContractAddress : contractAddress
+    denom,
+    address: peggyDenomToContractAddress(denom)
   }
+}
+
+export const peggyDenomToContractAddress = (denom: string): string => {
+  const denomLowerCased = denom.toLowerCase()
+  const contractAddress = denomLowerCased.replace('peggy', '')
+  const injectiveContractAddress = contractAddresses[TESTNET_CHAIN_ID].injective
+
+  return denomLowerCased === 'inj' ? injectiveContractAddress : contractAddress
 }

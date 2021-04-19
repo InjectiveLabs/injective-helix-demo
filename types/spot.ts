@@ -1,11 +1,11 @@
 import {
+  SpotMarket as BaseUiSpotMarket,
+  SpotMarketTrade as UiSpotMarketTrade,
+  SpotMarketOrder as UiSpotMarketOrder,
+  Orderbook as UiOrderbook,
+  PriceLevel as UiPriceLevel,
   ChronosSpotMarketSummary,
-  UiSpotMarket as BaseUiSpotMarket,
-  UiSpotMarketTrade,
   SpotOrderType,
-  UiSpotMarketOrder,
-  UiOrderbook,
-  UiPriceLevel,
   TradeDirection,
   TradeExecutionType,
   AllChronosSpotMarketSummary
@@ -27,6 +27,15 @@ export interface UiOrderbookPriceLevel {
   oldQuantity?: string
   sumOfQuantities: string
   depth: number
+}
+
+export enum SpotMarketMap {
+  BUY = 0,
+  SELL = 1,
+  STOP_BUY = 2,
+  STOP_SELL = 3,
+  TAKE_BUY = 4,
+  TAKE_SELL = 5
 }
 
 export {

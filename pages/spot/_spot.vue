@@ -28,6 +28,8 @@
           <component :is="item.i" />
         </grid-item>
       </grid-layout>
+      <modal-transfer />
+      <modal-deposit />
     </div>
   </HOCLoading>
 </template>
@@ -40,11 +42,11 @@ import { headTitle } from '~/app/utils/generators'
 import MarketPriceChartPanel from '~/components/partials/spot/market/chart.vue'
 import MarketPanel from '~/components/partials/spot/market/market.vue'
 import MarqueePanel from '~/components/partials/spot/market/marquee.vue'
-/*
+import ModalTransfer from '~/components/partials/spot/transfer.vue'
 import ModalDeposit from '~/components/partials/spot/deposit.vue'
-*/
 import TradingPanel from '~/components/partials/spot/trading/index.vue'
 import BalancePanel from '~/components/partials/spot/balance.vue'
+import SubaccountBalancePanel from '~/components/partials/spot/subaccount-balance.vue'
 import OrderBookPanel from '~/components/partials/spot/orderbook/index.vue'
 import TradesPanel from '~/components/partials/spot/trades/index.vue'
 import OrdersPanel from '~/components/partials/spot/orders.vue'
@@ -86,11 +88,20 @@ const gridLayout = () => [
     minH: 9
   },
   {
-    i: 'trading-panel',
+    i: 'subaccount-balance-panel',
     x: 0,
     y: 3,
     w: 3,
-    h: 13,
+    h: 3,
+    minW: 3,
+    minH: 3
+  },
+  {
+    i: 'trading-panel',
+    x: 0,
+    y: 6,
+    w: 3,
+    h: 10,
     minW: 3,
     minH: 8
   },
@@ -126,10 +137,10 @@ export default Vue.extend({
     MarqueePanel,
     MarketPriceChartPanel,
     GridLayout,
-    GridItem
-    /*
+    GridItem,
+    ModalTransfer,
     ModalDeposit,
-    */
+    SubaccountBalancePanel
   },
 
   data() {
@@ -210,14 +221,8 @@ export default Vue.extend({
   },
 
   mounted() {
-    const { marketFromRoute } = this
-
-    if (!marketFromRoute) {
-      throw new Error('Market not found')
-    }
-
     this.$accessor.spot
-      .changeMarket(marketFromRoute)
+      .changeMarket(this.marketFromRoute)
       .then(() => {
         if (localStorage.has(LOCAL_STORAGE_GRID_KEY)) {
           this.grid.layout = localStorage.get(LOCAL_STORAGE_GRID_KEY) as any

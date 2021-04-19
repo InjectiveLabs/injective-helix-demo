@@ -27,7 +27,7 @@ export default {
   market_volume_24h: 'Volume (24h)',
   filter_markets: 'Filter Markets',
   spot: 'Spot',
-  funds_available: 'Funds Available',
+  subaccount_funds_available: 'Subaccount Funds',
   asset: 'Asset',
   balance: 'Balance',
   available: 'Available',
@@ -79,5 +79,22 @@ export default {
   low: '24h Low',
   volume: 'Volume',
   price_chart: 'Price Chart',
-  filled: 'Filled'
+  filled: 'Filled',
+  please_connect_your_wallet: 'Please connect with your wallet',
+  amount_to_transfer: 'Amount to transfer',
+  available_balance: 'Available Balance',
+  transfer_modal_title: 'Transfer to Injective Chain',
+  transfer_modal_note:
+    "Trading on our Layer-2 Injective Chain requires you to transfer your balance to our Injective Chain. First, set allowance to the asset you want to transfer (if you haven't already), enter desired amount and complete your transfer",
+  deposit_modal_title: 'Deposit to Subaccount',
+  deposit_modal_note:
+    'Your trading experience starts once you deposit your funds from the Injective Chain to your subaccount.',
+  transfer_asset: 'Transfer {asset}',
+  deposit_asset: 'Deposit {asset}',
+  allowance_set: 'Allowance Set',
+  set_allowance: 'Set Allowance',
+  success_transfer: 'Successfully Transferred',
+  success_deposit: 'Successfully Deposited',
+  injective_chain_balance: 'Injective Chain Balances',
+  balance_asset: 'Balance {asset}'
 }

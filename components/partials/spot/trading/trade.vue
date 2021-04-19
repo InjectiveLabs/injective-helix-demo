@@ -92,7 +92,7 @@
           :value="priceInputValue"
           :placeholder="$t('price')"
           :label="
-            $t('trading.price_decimals', {
+            $t('price_decimals', {
               decimals: market.maxPriceScaleDecimals
             })
           "
@@ -115,6 +115,7 @@
       v-bind="{
         price: executionPrice,
         notionalValue,
+        orderType,
         fees,
         total,
         amount,
@@ -125,7 +126,7 @@
     <div class="pt-2">
       <v-ui-button
         :status="status"
-        :disabled="hasErrors"
+        :disabled="hasErrors || !isUserWalletConnected"
         :ghost="hasErrors"
         :primary="!hasErrors && orderType === SpotOrderType.Buy"
         :accent="!hasErrors && orderType === SpotOrderType.Sell"
@@ -145,7 +146,7 @@ import { TradeError } from 'types/errors'
 import { BigNumberInWei, Status, BigNumberInBase } from '@injectivelabs/utils'
 import OrderDetails from './order-details.vue'
 import OrderDetailsMarket from './order-details-market.vue'
-import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
+import { ZERO_IN_BASE } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import {
   SpotOrderType,
@@ -188,6 +189,10 @@ export default Vue.extend({
   },
 
   computed: {
+    isUserWalletConnected(): boolean {
+      return this.$accessor.wallet.isUserWalletConnected
+    },
+
     market(): UiSpotMarket | undefined {
       return this.$accessor.spot.market
     },
@@ -230,7 +235,7 @@ export default Vue.extend({
       return new BigNumberInBase(this.form.price)
     },
 
-    executionPrice(): BigNumberInWei {
+    executionPrice(): BigNumberInBase {
       const {
         tradingTypeMarket,
         orderTypeBuy,
@@ -243,12 +248,12 @@ export default Vue.extend({
       } = this
 
       if (!market) {
-        return new BigNumberInWei('')
+        return new BigNumberInBase('')
       }
 
       if (tradingTypeMarket) {
         if (!hasAmount) {
-          return ZERO_IN_WEI
+          return ZERO_IN_BASE
         }
 
         const records = orderTypeBuy ? sells : buys
@@ -257,10 +262,10 @@ export default Vue.extend({
       }
 
       if (price.isNaN()) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(price).toWei(market.quoteToken.decimals)
+      return new BigNumberInBase(price)
     },
 
     hasPrice(): boolean {
@@ -396,7 +401,7 @@ export default Vue.extend({
 
       const orders = orderTypeBuy ? sells : buys
       const totalAmount = orders.reduce((totalAmount, { quantity }) => {
-        return totalAmount.plus(quantity)
+        return totalAmount.plus(new BigNumberInWei(quantity).toBase())
       }, ZERO_IN_BASE)
 
       if (totalAmount.lt(amount)) {
@@ -496,27 +501,27 @@ export default Vue.extend({
       return form.amount
     },
 
-    notionalValue(): BigNumberInWei {
+    notionalValue(): BigNumberInBase {
       const { executionPrice, amount, market } = this
 
       if (executionPrice.isNaN() || amount.isNaN() || !market) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
       const notional = executionPrice.times(amount)
 
       if (notional.lt(0)) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
       return notional
     },
 
-    fees(): BigNumberInWei {
+    fees(): BigNumberInBase {
       const { notionalValue, market, tradingTypeMarket } = this
 
       if (notionalValue.isNaN() || !market) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
       return notionalValue.times(
@@ -524,21 +529,21 @@ export default Vue.extend({
       )
     },
 
-    total(): BigNumberInWei {
-      const { amount, hasPrice, hasAmount, price, market } = this
+    total(): BigNumberInBase {
+      const { amount, hasPrice, hasAmount, executionPrice, market } = this
 
       if (!hasPrice || !hasAmount || !market) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
-      return price.toWei().times(amount)
+      return executionPrice.times(amount)
     },
 
-    totalWithFees(): BigNumberInWei {
+    totalWithFees(): BigNumberInBase {
       const { fees, total, market } = this
 
       if (total.isNaN() || total.lte(0) || !market) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
       return fees.plus(total)
@@ -731,7 +736,11 @@ export default Vue.extend({
     },
 
     onSubmit() {
-      const { hasErrors, tradingTypeMarket } = this
+      const { hasErrors, tradingTypeMarket, isUserWalletConnected } = this
+
+      if (!isUserWalletConnected) {
+        return this.$toast.error(this.$t('please_connect_your_wallet'))
+      }
 
       if (hasErrors) {
         return this.$toast.error(this.$t('error_in_form'))

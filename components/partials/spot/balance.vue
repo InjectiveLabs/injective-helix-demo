@@ -1,6 +1,6 @@
 <template>
   <v-panel
-    :title="$t('funds_available')"
+    :title="$t('injective_chain_balance')"
     :class="{ 'wallet-not-connected': !isUserWalletConnected }"
     overflow="overflow-hidden"
     class="h-full relative"
@@ -10,83 +10,37 @@
         <p class="text-center">{{ $t('not_connected_balances') }}</p>
       </v-ui-overlay>
     </div>
-    <div
-      v-if="isUserWalletConnected && balances.length > 0"
-      class="table-compact"
-    >
-      <div class="table-responsive">
-        <table class="table">
-          <thead>
-            <tr>
-              <th is="v-ui-table-th" class="w-1/3" left>
-                <span>{{ $t('asset') }}</span>
-              </th>
-              <th is="v-ui-table-th" class="w-1/3" right>
-                <span>{{ $t('balance') }}</span>
-              </th>
-              <th is="v-ui-table-th" class="w-1/3" right>
-                <span>{{ $t('available') }}</span>
-              </th>
-              <th is="v-ui-table-th" class="w-1/3" center>
-                <span>{{ $t('transfer') }}</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="balance in balances" :key="`balance-${balance.denom}`">
-              <td is="v-ui-table-td">
-                <div class="flex items-center">
-                  <img
-                    :src="balance.token.name"
-                    :alt="balance.token.icon"
-                    class="w-6 h-6 mr-4"
-                  />
-                  <div class="leading-none">
-                    <p class="text-gray-100 font-semibold text-sm">
-                      {{ balance.token.symbol }}
-                    </p>
-                    <p class="text-gray-500 text-xs">
-                      {{ balance.token.name }}
-                    </p>
-                  </div>
-                </div>
-              </td>
-              <td is="v-ui-table-td" xs right>
-                <div class="flex items-center">
-                  <v-ui-format-number
-                    v-bind="{
-                      value: balance.totalBalance.toBase(
-                        balance.token.decimals
-                      ),
-                      decimals: balance.displayDecimals
-                    }"
-                  />
-                </div>
-              </td>
-              <td is="v-ui-table-td" xs right>
-                <div class="flex items-center">
-                  <v-ui-format-number
-                    v-bind="{
-                      value: balance.availableBalance.toBase(
-                        balance.token.decimals
-                      ),
-                      decimals: balance.displayDecimals
-                    }"
-                  />
-                </div>
-              </td>
-              <td is="v-ui-table-td" xs center>
-                <v-ui-button xs primary @click.stop="openTransferModal">{{
-                  $t('transfer')
-                }}</v-ui-button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <div v-if="isUserWalletConnected && market" class="px-4 mt-2">
+      <v-ui-text-info
+        :title="$t('balance_asset', { asset: market.baseToken.symbol })"
+      >
+        <v-ui-format-number
+          v-if="baseTokenBalance.gt(0)"
+          class="font-normal text-sm"
+          v-bind="{
+            value: baseTokenBalance.toBase(market.baseToken.decimals),
+            decimals: market.maxQuantityScaleDecimals
+          }"
+        />
+        <span v-else class="text-gray-400 font-normal text-xs">&mdash;</span>
+      </v-ui-text-info>
+      <v-ui-text-info
+        class="mt-3"
+        :title="$t('balance_asset', { asset: market.quoteToken.symbol })"
+      >
+        <v-ui-format-number
+          v-if="quoteTokenBalance.gt(0)"
+          class="font-normal text-sm"
+          v-bind="{
+            value: quoteTokenBalance.toBase(market.quoteToken.decimals),
+            decimals: market.maxPriceScaleDecimals
+          }"
+        />
+        <span v-else class="text-gray-400 font-normal text-xs">&mdash;</span>
+      </v-ui-text-info>
     </div>
-    <div class="flex h-full items-center justify-center">
-      <v-ui-button sm primary @click.stop="openTransferModal">{{
+    <div slot="title-context">
+      <v-ui-button xs primary @click.stop="openTransferModal">{{
         $t('transfer')
       }}</v-ui-button>
     </div>
@@ -96,12 +50,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { BigNumberInWei } from '@injectivelabs/utils'
-import {
-  Modal,
-  UiSpotMarket,
-  UiSubaccount,
-  UiSubaccountBalanceToBN
-} from '~/types'
+import { BankBalances, Modal, UiSpotMarket } from '~/types'
+import { ZERO_IN_WEI } from '~/app/utils/constants'
 
 export default Vue.extend({
   computed: {
@@ -113,39 +63,36 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    subaccount(): UiSubaccount | undefined {
-      return this.$accessor.account.subaccount
+    balances(): BankBalances {
+      return this.$accessor.bank.balances
     },
 
-    balances(): UiSubaccountBalanceToBN[] {
-      const { subaccount, market } = this
+    baseTokenBalance(): BigNumberInWei {
+      const { balances, market } = this
 
-      if (!subaccount || !market) {
-        return []
+      if (!market) {
+        return ZERO_IN_WEI
       }
 
-      const quoteBalance = subaccount.balances.find(
-        (balance) =>
-          balance.denom.toLowerCase() === market.baseDenom.toLowerCase()
-      )!
-      const baseBalance = subaccount.balances.find(
-        (balance) =>
-          balance.denom.toLowerCase() === market.quoteDenom.toLowerCase()
-      )!
+      if (!balances.has(market.baseDenom)) {
+        return ZERO_IN_WEI
+      }
 
-      const balances = [baseBalance, quoteBalance]
+      return new BigNumberInWei(balances.get(market.baseDenom) || 0)
+    },
 
-      return balances
-        .filter((b) => b)
-        .map((balance) => ({
-          ...balance,
-          displayDecimals:
-            market.baseDenom.toLowerCase() === balance.denom.toLowerCase()
-              ? market.maxQuantityScaleDecimals
-              : market.maxPriceScaleDecimals,
-          totalBalance: new BigNumberInWei(balance.totalBalance),
-          availableBalance: new BigNumberInWei(balance.availableBalance)
-        }))
+    quoteTokenBalance(): BigNumberInWei {
+      const { balances, market } = this
+
+      if (!market) {
+        return ZERO_IN_WEI
+      }
+
+      if (!balances.has(market.quoteDenom)) {
+        return ZERO_IN_WEI
+      }
+
+      return new BigNumberInWei(balances.get(market.quoteDenom) || 0)
     }
   },
 

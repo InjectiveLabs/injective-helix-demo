@@ -114,7 +114,7 @@ export default Vue.extend({
         return Sync
       }
 
-      return this.token.isAllowanceOnEthereumSet ? Unlocked : Locked
+      return this.token.allowance.gt(0) ? Unlocked : Locked
     },
 
     indicatorStyles(): { transform: string; marginTop: string | null } {
@@ -122,7 +122,7 @@ export default Vue.extend({
 
       return {
         marginTop: this.sm ? '2px' : null,
-        transform: this.token.isAllowanceOnEthereumSet
+        transform: this.token.allowance.gt(0)
           ? `translateX(${distance})`
           : 'translateX(0)'
       }

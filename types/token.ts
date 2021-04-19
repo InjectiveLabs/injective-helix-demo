@@ -14,6 +14,7 @@ interface Base {
 
 export interface Token extends Base {
   address: string
+  denom: string
 }
 
 export interface TokenWithAddresses extends Base {
@@ -24,6 +25,5 @@ export interface TokenWithBalance extends Base {
   address: string
   denom: string
   balance: BigNumberInWei
-  ethereumBalance: BigNumberInWei
-  isAllowanceOnEthereumSet: boolean
+  allowance: BigNumberInWei
 }

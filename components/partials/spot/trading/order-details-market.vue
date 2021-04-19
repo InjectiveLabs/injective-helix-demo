@@ -9,15 +9,19 @@
         <v-ui-text muted-md>
           {{ $t('total') }}
         </v-ui-text>
-        <v-ui-text em class="flex items-center text-gray-500">
+        <v-ui-text em class="flex text-gray-500 align-bottom">
           <span class="mr-1">≈</span>
           <v-ui-format-number
             v-bind="{
-              value: total.toBase(market.quoteToken.decimals),
-              decimals: market.maxPriceScaleDecimals
+              value: total,
+              decimals: orderTypeBuy
+                ? market.maxPriceScaleDecimals
+                : market.maxQuantityScaleDecimals
             }"
           />
-          <small class="opacity-75 ml-1">{{ market.quoteToken.symbol }}</small>
+          <small class="opacity-75 pt-px ml-1">{{
+            orderTypeBuy ? market.quoteToken.symbol : market.baseToken.symbol
+          }}</small>
         </v-ui-text>
       </p>
       <div class="text-xs mt-2">
@@ -29,11 +33,15 @@
             <v-ui-format-number
               v-bind="{
                 value: amount,
-                decimals: market.maxQuantityScaleDecimals
+                decimals: orderTypeBuy
+                  ? market.maxQuantityScaleDecimals
+                  : market.maxPriceScaleDecimals
               }"
               class="text-gray-300"
             />
-            <small class="opacity-75 ml-1">{{ market.baseToken.symbol }}</small>
+            <small class="opacity-75 ml-1">{{
+              orderTypeBuy ? market.baseToken.symbol : market.quoteToken.symbol
+            }}</small>
           </v-ui-text>
           <v-ui-text v-else muted-sm class="group-hover:text-white">
             &mdash;
@@ -48,13 +56,15 @@
             <span class="mr-1">≈</span>
             <v-ui-format-number
               v-bind="{
-                value: price.toBase(market.quoteToken.decimals),
-                decimals: market.maxPriceScaleDecimals
+                value: price,
+                decimals: orderTypeBuy
+                  ? market.maxPriceScaleDecimals
+                  : market.maxQuantityScaleDecimals
               }"
               class="text-gray-300"
             />
             <small class="opacity-75 ml-1">{{
-              market.quoteToken.symbol
+              orderTypeBuy ? market.quoteToken.symbol : market.baseToken.symbol
             }}</small>
           </v-ui-text>
           <v-ui-text v-else muted-sm class="group-hover:text-white">
@@ -69,13 +79,15 @@
             <span class="mr-1">≈</span>
             <v-ui-format-number
               v-bind="{
-                value: notionalValue.toBase(market.quoteToken.decimals),
-                decimals: market.maxPriceScaleDecimals
+                value: notionalValue,
+                decimals: orderTypeBuy
+                  ? market.maxPriceScaleDecimals
+                  : market.maxQuantityScaleDecimals
               }"
               class="text-gray-300"
             />
             <small class="opacity-75 ml-1">{{
-              market.quoteToken.symbol
+              orderTypeBuy ? market.quoteToken.symbol : market.baseToken.symbol
             }}</small>
           </v-ui-text>
           <v-ui-text v-else muted-sm class="group-hover:text-white">
@@ -90,13 +102,15 @@
             <span class="mr-1">≈</span>
             <v-ui-format-number
               v-bind="{
-                value: fees.toBase(market.quoteToken.decimals),
-                token: market.quoteToken
+                value: fees,
+                decimals: orderTypeBuy
+                  ? market.maxPriceScaleDecimals
+                  : market.maxQuantityScaleDecimals
               }"
               class="text-gray-300"
             />
             <small class="opacity-75 ml-1">{{
-              market.quoteToken.symbol
+              orderTypeBuy ? market.quoteToken.symbol : market.baseToken.symbol
             }}</small>
           </v-ui-text>
           <v-ui-text v-else muted-sm class="group-hover:text-white">
@@ -110,9 +124,9 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import Drawer from '~/components/elements/drawer.vue'
-import { UiSpotMarket } from '~/types'
+import { SpotOrderType, UiSpotMarket } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -120,24 +134,29 @@ export default Vue.extend({
   },
 
   props: {
+    orderType: {
+      required: true,
+      type: String as PropType<SpotOrderType>
+    },
+
     total: {
       required: true,
-      type: Object as PropType<BigNumberInWei>
+      type: Object as PropType<BigNumberInBase>
     },
 
     fees: {
       required: true,
-      type: Object as PropType<BigNumberInWei>
+      type: Object as PropType<BigNumberInBase>
     },
 
     notionalValue: {
       required: true,
-      type: Object as PropType<BigNumberInWei>
+      type: Object as PropType<BigNumberInBase>
     },
 
     price: {
       required: true,
-      type: Object as PropType<BigNumberInWei>
+      type: Object as PropType<BigNumberInBase>
     },
 
     amount: {
@@ -154,6 +173,12 @@ export default Vue.extend({
   computed: {
     market(): UiSpotMarket | undefined {
       return this.$accessor.spot.market
+    },
+
+    orderTypeBuy(): boolean {
+      const { orderType } = this
+
+      return orderType === SpotOrderType.Buy
     }
   },
 

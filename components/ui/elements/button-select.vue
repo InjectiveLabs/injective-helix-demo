@@ -83,9 +83,8 @@ export default Vue.extend({
       const classes = [
         'border',
         'border-dark-600',
-        'odd:border-r-0',
-        'odd:border-l-0',
         'first:border-l',
+        'odd:border-r-0',
         'last:border-r',
         'uppercase',
         'outline-none',

@@ -31,6 +31,6 @@ export enum Icon {
 
 export enum Modal {
   Connect = 'connect',
-  Deposit = 'deposit',
-  Transfer = 'deposit'
+  Transfer = 'transfer',
+  Deposit = 'deposit'
 }

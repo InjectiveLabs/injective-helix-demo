@@ -12,7 +12,7 @@
 
     <transition name="fade-shrink-in" appear>
       <div
-        class="relative w-5/6 md:w-auto max-h-modal shadow-inner bg-dark-800 border max-w-5xl mx-auto rounded"
+        class="relative w-5/6 md:w-auto max-h-modal shadow-inner bg-dark-800 border max-w-5xl mx-auto rounded z-20"
       >
         <div class="absolute right-0 top-0 -mt-4 -mr-4">
           <button

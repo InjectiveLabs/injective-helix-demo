@@ -1,4 +1,4 @@
-import { actionTree, getterTree } from 'nuxt-typed-vuex'
+import { getterTree } from 'nuxt-typed-vuex'
 import { Modal, ModalState } from '~/types'
 
 const modalValues = Object.values(Modal)
@@ -8,9 +8,11 @@ const modals = modalValues.reduce((previous: ModalState, current: Modal) => {
   return { ...previous, [current]: false }
 }, {} as ModalState)
 
-const initialState = {
+const initialStateFactory = () => ({
   modals
-}
+})
+
+const initialState = initialStateFactory()
 
 export const state = () => ({
   modals: initialState.modals as ModalState
@@ -40,15 +42,9 @@ export const mutations = {
 
   openModal(state: ModalStoreState, modal: Modal) {
     if (modalExists(modal)) {
-      const modals: any = {}
+      const initialState = initialStateFactory()
 
-      modalValues.forEach((modal) => {
-        if (modal !== modal) {
-          modals[modal] = false
-        }
-      })
-
-      state.modals = { ...modals, [modal]: true }
+      state.modals = { ...initialState.modals, [modal]: true }
     }
   }
 }

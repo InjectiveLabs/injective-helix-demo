@@ -9,6 +9,7 @@ export interface Constructable<T> {
 export * from './aliases'
 export * from './enums'
 export * from './env'
+export * from './bank'
 export * from './errors'
 export * from './gas'
 export * from './spot'

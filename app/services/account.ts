@@ -1,9 +1,17 @@
-import { SubaccountTransformer } from '@injectivelabs/spot-consumer'
+import {
+  SubaccountTransformer,
+  SubaccountComposer
+} from '@injectivelabs/spot-consumer'
 import { AccountAddress } from '@injectivelabs/ts-types'
+import { BigNumberInWei } from '@injectivelabs/utils'
+import { Web3Exception } from '@injectivelabs/exceptions'
+import { subaccountConsumer } from '~/app/singletons/SubaccountConsumer'
+import { peggyDenomToTokenFromContractAddress } from '~/app/transformers/peggy'
+import { transactionConsumer } from '~/app/singletons/TransactionConsumer'
+import { TESTNET_CHAIN_ID } from '~/app/utils/constants'
+import { getWeb3Strategy } from '~/app/web3'
 import { authConsumer } from '~/app/singletons/AuthConsumer'
 import { UiSubaccount } from '~/types/subaccount'
-import { subaccountConsumer } from '../singletons/SubaccountConsumer'
-import { peggyDenomToTokenFromContractAddress } from '../transformers/peggy'
 
 export const getInjectiveAddress = (address: AccountAddress): string => {
   return authConsumer.getInjectiveAddress(address)
@@ -12,13 +20,13 @@ export const getInjectiveAddress = (address: AccountAddress): string => {
 export const fetchSubaccounts = async (
   address: AccountAddress
 ): Promise<string[]> => {
-  return subaccountConsumer.fetchSubaccounts(address)
+  return await subaccountConsumer.fetchSubaccounts(address)
 }
 
 export const fetchSubaccount = async (
   subaccountId: string
 ): Promise<UiSubaccount> => {
-  const balances = SubaccountTransformer.balancesToUiBalances(
+  const balances = SubaccountTransformer.grpcBalancesToBalances(
     await subaccountConsumer.fetchSubaccountBalances(subaccountId)
   ).map((balance) => {
     return {
@@ -36,15 +44,52 @@ export const fetchSubaccount = async (
 }
 
 export const fetchSubaccountHistory = async (subaccountId: string) => {
+  return SubaccountTransformer.grpcTransferHistoryToTransferHistory(
+    await subaccountConsumer.fetchSubaccountHistory(subaccountId)
+  )
+}
+
+export const deposit = async ({
+  amount,
+  address,
+  injectiveAddress,
+  denom,
+  subaccountId
+}: {
+  amount: BigNumberInWei
+  denom: string
+  subaccountId: string
+  address: AccountAddress
+  injectiveAddress: AccountAddress
+}) => {
+  const web3Strategy = getWeb3Strategy()
+  const message = SubaccountComposer.deposit({
+    subaccountId,
+    denom,
+    injectiveAddress,
+    amount: amount.toString()
+  })
+
+  const txResponse = await transactionConsumer.prepareTxRequest({
+    address,
+    message,
+    chainId: TESTNET_CHAIN_ID
+  })
+
   try {
-    const history = await subaccountConsumer.fetchSubaccountHistory(
-      subaccountId
+    const signature = await web3Strategy.signTypedDataV4(
+      txResponse.getData(),
+      address
     )
 
-    return SubaccountTransformer.transferHistoryToUiTransferHistory(history)
-  } catch (e) {
-    console.log('x')
-
-    return []
+    return await transactionConsumer.broadcastTxRequest({
+      signature,
+      message,
+      pubKeyType: txResponse.getPubKeyType(),
+      typedData: txResponse.getData(),
+      chainId: TESTNET_CHAIN_ID
+    })
+  } catch (error) {
+    throw new Web3Exception(error.message)
   }
 }
