@@ -1,7 +1,7 @@
 <template>
   <div :class="classes" role="checkbox" tabindex="0" @click.stop="toggle">
     <span
-      :class="token.isAllowanceOnEthereumSet ? 'bg-primary-500' : 'bg-dark-500'"
+      :class="token.allowance.gt(0) ? 'bg-primary-500' : 'bg-dark-500'"
       class="inline-block w-full h-full rounded-full shadow-md transition-bg-color"
     ></span>
     <span :class="indicatorClasses" :style="indicatorStyles">
@@ -9,8 +9,8 @@
         :icon="indicatorIcon"
         :rotating="status.isLoading()"
         :muted="status.isLoading()"
-        :primary="!status.isLoading() && token.isAllowanceOnEthereumSet"
-        :accent="!status.isLoading() && !token.isAllowanceOnEthereumSet"
+        :primary="!status.isLoading() && token.allowance.gt(0)"
+        :accent="!status.isLoading() && !token.allowance.gt(0)"
         :style="{ marginTop: lg ? '6px' : '-9px', marginRight: '2px' }"
         v-bind="{ '2xs': sm, sm: lg }"
       ></v-ui-icon>
