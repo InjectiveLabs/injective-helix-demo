@@ -75,7 +75,7 @@ export default Vue.extend({
         return ''
       }
 
-      return format(toDate(new Date().getTime() / 1000), 'kk:mm') // TODO
+      return format(toDate(new Date().getTime() / 1000), 'kk:mm')
     },
 
     newTradeClass(): string {

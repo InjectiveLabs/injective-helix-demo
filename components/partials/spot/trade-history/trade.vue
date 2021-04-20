@@ -62,7 +62,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { format, toDate } from 'date-fns'
+import { format } from 'date-fns'
 import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
 import {
   UiSpotMarket,
@@ -120,11 +120,11 @@ export default Vue.extend({
     time(): string {
       const { market, trade } = this
 
-      if (!market || !trade.price) {
+      if (!market || !trade.executedAt) {
         return ''
       }
 
-      return format(toDate(new Date().getTime() / 1000), 'kk:mm') // TODO
+      return format(parseInt(trade.executedAt), 'kk:mm')
     },
 
     fee(): BigNumberInWei {

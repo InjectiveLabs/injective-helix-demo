@@ -5,7 +5,6 @@
     </td>
     <td is="v-ui-table-td" right xs>
       <div v-if="lastTradedPrice.gt(0)" class="flex justify-end items-center">
-        <!-- TODO hardcoded decimals -->
         <v-ui-format-order-price
           v-bind="{
             value: lastTradedPrice,

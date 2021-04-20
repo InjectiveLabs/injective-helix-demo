@@ -17,7 +17,6 @@
     </td>
     <td is="v-ui-table-td" right class="font-normal">
       <div v-if="lastTradedPrice.gt(0)" class="flex justify-end items-center">
-        <!-- TODO hardcoded decimals -->
         <v-ui-format-price
           v-bind="{
             value: lastTradedPrice,
