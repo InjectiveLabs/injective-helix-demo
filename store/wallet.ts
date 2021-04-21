@@ -79,6 +79,7 @@ export const actions = actionTree(
       const injectiveAddress = getInjectiveAddress(address)
 
       await this.app.$accessor.account.fetchSubaccounts(injectiveAddress)
+      await this.app.$accessor.bank.fetchBalances(injectiveAddress)
 
       commit('setAddress', address)
       commit('setInjectiveAddress', injectiveAddress)
@@ -93,6 +94,7 @@ export const actions = actionTree(
       const injectiveAddress = getInjectiveAddress(address)
 
       await this.app.$accessor.account.fetchSubaccounts(injectiveAddress)
+      await this.app.$accessor.bank.fetchBalances(injectiveAddress)
 
       commit('setAddress', address)
       commit('setInjectiveAddress', injectiveAddress)

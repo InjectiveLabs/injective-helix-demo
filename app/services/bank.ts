@@ -9,14 +9,8 @@ export const fetchBalances = async (injectiveAddress: string) => {
   })
 
   return balances.reduce((balances: BankBalances, balance: GrpcCoin) => {
-    if (balances.has(balance.getDenom())) {
-      return balances
-    }
-
-    balances.set(balance.getDenom(), balance.getAmount())
-
-    return balances
-  }, new Map())
+    return { ...balances, [balance.getDenom()]: balance.getAmount() }
+  }, {})
 }
 
 export const fetchBalance = async ({

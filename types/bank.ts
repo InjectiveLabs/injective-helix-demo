@@ -1,1 +1,1 @@
-export type BankBalances = Map<string, string>
+export type BankBalances = Record<string, string>

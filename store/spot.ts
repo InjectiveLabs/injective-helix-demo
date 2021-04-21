@@ -1,5 +1,5 @@
 import { actionTree, getterTree } from 'nuxt-typed-vuex'
-import { BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   UiOrderbook,
   UiSpotMarketOrder,
@@ -16,6 +16,7 @@ import {
   submitMarketOrder,
   cancelOrder
 } from '~/app/services/spot'
+import { backupPromiseCall } from '~/app/utils/async'
 
 const initialStateFactory = () => ({
   markets: [] as UiSpotMarket[],
@@ -94,10 +95,7 @@ export const actions = actionTree(
       commit('setMarkets', await fetchSpotMarkets())
     },
 
-    async changeMarket({ commit }, market: UiSpotMarket | undefined) {
-      const { subaccount } = this.app.$accessor.account
-      const { isUserWalletConnected } = this.app.$accessor.wallet
-
+    async changeMarket({ commit, dispatch }, market: UiSpotMarket | undefined) {
       if (!market) {
         throw new Error('Market not found')
       }
@@ -111,14 +109,20 @@ export const actions = actionTree(
         })
       )
 
+      await dispatch('fetchSubaccountOrders')
+      await dispatch('fetchSubaccountTrades')
+    },
+
+    async fetchSubaccountOrders({ state, commit }) {
+      const { market } = state
+      const { subaccount } = this.app.$accessor.account
+      const { isUserWalletConnected } = this.app.$accessor.wallet
+
+      if (!market) {
+        return
+      }
+
       if (isUserWalletConnected && subaccount) {
-        commit(
-          'setSubaccountTrades',
-          await fetchSpotMarketTrades({
-            marketId: market.marketId,
-            subaccountId: subaccount.subaccountId
-          })
-        )
         commit(
           'setSubaccountOrders',
           await fetchSpotMarketOrders({
@@ -129,7 +133,27 @@ export const actions = actionTree(
       }
     },
 
-    async cancelOrder(_, order: UiSpotMarketOrder) {
+    async fetchSubaccountTrades({ state, commit }) {
+      const { market } = state
+      const { subaccount } = this.app.$accessor.account
+      const { isUserWalletConnected } = this.app.$accessor.wallet
+
+      if (!market) {
+        return
+      }
+
+      if (isUserWalletConnected && subaccount) {
+        commit(
+          'setSubaccountTrades',
+          await fetchSpotMarketTrades({
+            marketId: market.marketId,
+            subaccountId: subaccount.subaccountId
+          })
+        )
+      }
+    },
+
+    async cancelOrder({ dispatch }, order: UiSpotMarketOrder) {
       const { subaccount } = this.app.$accessor.account
       const { market } = this.app.$accessor.spot
       const {
@@ -158,6 +182,9 @@ export const actions = actionTree(
         marketId: market.marketId,
         subaccountId: subaccount.subaccountId
       })
+
+      await backupPromiseCall(() => dispatch('fetchSubaccountOrders'))
+      await backupPromiseCall(() => dispatch('fetchSubaccountTrades'))
     },
 
     async submitLimitOrder(
@@ -167,8 +194,8 @@ export const actions = actionTree(
         quantity,
         orderType
       }: {
-        price: BigNumberInWei
-        quantity: BigNumberInWei
+        price: BigNumberInBase
+        quantity: BigNumberInBase
         orderType: SpotOrderType
       }
     ) {
@@ -210,8 +237,8 @@ export const actions = actionTree(
         price,
         orderType
       }: {
-        price: BigNumberInWei
-        quantity: BigNumberInWei
+        price: BigNumberInBase
+        quantity: BigNumberInBase
         orderType: SpotOrderType
       }
     ) {

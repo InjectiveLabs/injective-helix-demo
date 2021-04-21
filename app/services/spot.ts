@@ -4,7 +4,7 @@ import {
   SpotOrderType
 } from '@injectivelabs/spot-consumer'
 import { AccountAddress } from '@injectivelabs/ts-types'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { transactionConsumer } from '~/app/singletons/TransactionConsumer'
 import {
@@ -92,8 +92,8 @@ export const submitLimitOrder = async ({
   injectiveAddress,
   subaccountId
 }: {
-  price: BigNumberInWei
-  quantity: BigNumberInWei
+  price: BigNumberInBase
+  quantity: BigNumberInBase
   orderType: SpotOrderType
   subaccountId: string
   marketId: string
@@ -109,6 +109,7 @@ export const submitLimitOrder = async ({
       orderType: orderTypeToGrpcOrderType(orderType),
       feeRecipient: FEE_RECIPIENT,
       price: price.toString(),
+      triggerPrice: '0', // TODO
       quantity: quantity.toString()
     }
   })
@@ -118,6 +119,8 @@ export const submitLimitOrder = async ({
     message,
     chainId: TESTNET_CHAIN_ID
   })
+
+  console.log(txResponse.getData())
 
   try {
     const signature = await web3Strategy.signTypedDataV4(
@@ -146,8 +149,8 @@ export const submitMarketOrder = async ({
   injectiveAddress,
   subaccountId
 }: {
-  quantity: BigNumberInWei
-  price: BigNumberInWei
+  quantity: BigNumberInBase
+  price: BigNumberInBase
   orderType: SpotOrderType
   subaccountId: string
   marketId: string
@@ -163,6 +166,7 @@ export const submitMarketOrder = async ({
       price: price.toString(),
       orderType: orderTypeToGrpcOrderType(orderType),
       feeRecipient: FEE_RECIPIENT,
+      triggerPrice: '0', // TODO
       quantity: quantity.toString()
     }
   })

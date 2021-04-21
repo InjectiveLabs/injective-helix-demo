@@ -60,11 +60,11 @@ export default Vue.extend({
         return ZERO_IN_WEI
       }
 
-      if (!balances.has(market.baseDenom)) {
+      if (!balances[market.baseDenom]) {
         return ZERO_IN_WEI
       }
 
-      return new BigNumberInWei(balances.get(market.baseDenom) || 0)
+      return new BigNumberInWei(balances[market.baseDenom] || 0)
     },
 
     quoteTokenBalance(): BigNumberInWei {
@@ -74,11 +74,11 @@ export default Vue.extend({
         return ZERO_IN_WEI
       }
 
-      if (!balances.has(market.quoteDenom)) {
+      if (!balances[market.quoteDenom]) {
         return ZERO_IN_WEI
       }
 
-      return new BigNumberInWei(balances.get(market.quoteDenom) || 0)
+      return new BigNumberInWei(balances[market.quoteDenom] || 0)
     },
 
     isModalOpen(): boolean {

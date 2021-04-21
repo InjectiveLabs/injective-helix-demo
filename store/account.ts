@@ -6,6 +6,7 @@ import {
   fetchSubaccount,
   deposit
 } from '~/app/services/account'
+import { backupPromiseCall } from '~/app/utils/async'
 import { UiSubaccount } from '~/types/subaccount'
 
 const initialStateFactory = () => ({
@@ -39,11 +40,21 @@ export const mutations = {
 export const actions = actionTree(
   { state, mutations },
   {
-    async fetchSubaccounts({ commit }, injectiveAddress: AccountAddress) {
-      const subaccountIds = await fetchSubaccounts(injectiveAddress)
+    async init({ dispatch }) {
+      await dispatch('fetchSubaccounts')
+    },
+
+    async fetchSubaccounts({ commit }, injectiveAddress?: AccountAddress) {
+      const {
+        injectiveAddress: connectedInjectiveAddress
+      } = this.app.$accessor.wallet
+
+      const injAddress = injectiveAddress || connectedInjectiveAddress
+
+      const subaccountIds = await fetchSubaccounts(injAddress)
 
       if (subaccountIds.length === 0) {
-        throw new Error('There are no subaccounts for this address')
+        return
       }
 
       const [subaccountId] = subaccountIds
@@ -52,8 +63,20 @@ export const actions = actionTree(
       commit('setSubaccount', await fetchSubaccount(subaccountId))
     },
 
+    async updateSubaccount({ commit, state }) {
+      const { subaccount } = state
+
+      if (!subaccount) {
+        return
+      }
+
+      const { subaccountId } = subaccount
+
+      commit('setSubaccount', await fetchSubaccount(subaccountId))
+    },
+
     async deposit(
-      { state },
+      { state, dispatch },
       { amount, denom }: { amount: BigNumberInBase; denom: string }
     ) {
       const { subaccount } = state
@@ -80,7 +103,8 @@ export const actions = actionTree(
         amount: amount.toWei()
       })
 
-      // await testnetBackupPromiseCall(() => this.getTokenBalances())
+      await backupPromiseCall(() => dispatch('updateSubaccount'))
+      await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
     }
   }
 )

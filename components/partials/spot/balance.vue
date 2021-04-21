@@ -1,10 +1,5 @@
 <template>
-  <v-panel
-    :title="$t('injective_chain_balance')"
-    :class="{ 'wallet-not-connected': !isUserWalletConnected }"
-    overflow="overflow-hidden"
-    class="h-full relative"
-  >
+  <v-panel :title="$t('injective_chain_balance')" class="h-full relative">
     <div v-if="!isUserWalletConnected" class="w-full h-full">
       <v-ui-overlay :shadow="false">
         <p class="text-center">{{ $t('not_connected_balances') }}</p>
@@ -39,7 +34,7 @@
         <span v-else class="text-gray-400 font-normal text-xs">&mdash;</span>
       </v-ui-text-info>
     </div>
-    <div slot="title-context">
+    <div v-if="isUserWalletConnected" slot="title-context">
       <v-ui-button xs primary @click.stop="openTransferModal">{{
         $t('transfer')
       }}</v-ui-button>
@@ -74,11 +69,11 @@ export default Vue.extend({
         return ZERO_IN_WEI
       }
 
-      if (!balances.has(market.baseDenom)) {
+      if (!balances[market.baseDenom]) {
         return ZERO_IN_WEI
       }
 
-      return new BigNumberInWei(balances.get(market.baseDenom) || 0)
+      return new BigNumberInWei(balances[market.baseDenom] || 0)
     },
 
     quoteTokenBalance(): BigNumberInWei {
@@ -88,11 +83,11 @@ export default Vue.extend({
         return ZERO_IN_WEI
       }
 
-      if (!balances.has(market.quoteDenom)) {
+      if (!balances[market.quoteDenom]) {
         return ZERO_IN_WEI
       }
 
-      return new BigNumberInWei(balances.get(market.quoteDenom) || 0)
+      return new BigNumberInWei(balances[market.quoteDenom] || 0)
     }
   },
 

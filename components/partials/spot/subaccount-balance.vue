@@ -1,10 +1,5 @@
 <template>
-  <v-panel
-    :title="$t('subaccount_funds_available')"
-    :class="{ 'wallet-not-connected': !isUserWalletConnected }"
-    overflow="overflow-hidden"
-    class="h-full relative"
-  >
+  <v-panel :title="$t('subaccount_funds_available')" class="h-full relative">
     <div v-if="!isUserWalletConnected" class="w-full h-full">
       <v-ui-overlay :shadow="false">
         <p class="text-center">{{ $t('not_connected_balances') }}</p>
@@ -19,10 +14,10 @@
                 <span>{{ $t('asset') }}</span>
               </th>
               <th is="v-ui-table-th" right>
-                <span>{{ $t('balance') }}</span>
+                <span>{{ $t('available') }}</span>
               </th>
               <th is="v-ui-table-th" right>
-                <span>{{ $t('available') }}</span>
+                <span>{{ $t('balance') }}</span>
               </th>
             </tr>
           </thead>
@@ -67,7 +62,7 @@
         </table>
       </div>
     </div>
-    <div slot="title-context">
+    <div v-if="isUserWalletConnected" slot="title-context">
       <v-ui-button xs primary @click.stop="openDepositModal">{{
         $t('deposit')
       }}</v-ui-button>

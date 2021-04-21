@@ -11,9 +11,7 @@ export const promisify = (fn: Function): Promise<any> =>
     })
   )
 
-export const testnetBackupPromiseCall = async <T>(
-  promise: () => Promise<T>
-) => {
+export const backupPromiseCall = async <T>(promise: () => Promise<T>) => {
   await promise()
   await sleep(1000)
 

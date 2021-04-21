@@ -3,7 +3,7 @@ import { fetchBalances } from '~/app/services/bank'
 import { BankBalances } from '~/types'
 
 const initialStateFactory = () => ({
-  balances: new Map() as BankBalances
+  balances: {} as BankBalances
 })
 
 const initialState = initialStateFactory()
@@ -31,17 +31,19 @@ export const actions = actionTree(
       await dispatch('fetchBalances')
     },
 
-    async fetchBalances({ commit }) {
+    async fetchBalances({ commit }, injectiveAddress?: string) {
       const {
-        injectiveAddress,
+        injectiveAddress: connectedInjectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
 
-      if (!injectiveAddress || !isUserWalletConnected) {
+      const injAddress = injectiveAddress || connectedInjectiveAddress
+
+      if (!isUserWalletConnected || !injAddress) {
         return
       }
 
-      commit('setBalances', await fetchBalances(injectiveAddress))
+      commit('setBalances', await fetchBalances(injAddress))
     }
   }
 )

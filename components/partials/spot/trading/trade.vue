@@ -697,8 +697,8 @@ export default Vue.extend({
 
       this.$accessor.spot
         .submitLimitOrder({
-          price: price.toWei(),
-          quantity: amount.toWei(),
+          price,
+          quantity: amount,
           orderType
         })
         .then(() => {
@@ -722,8 +722,8 @@ export default Vue.extend({
 
       this.$accessor.spot
         .submitMarketOrder({
-          quantity: amount.toWei(),
-          price: executionPrice.toWei(),
+          quantity: amount,
+          price: executionPrice,
           orderType
         })
         .then(() => {

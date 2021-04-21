@@ -3,11 +3,9 @@
     <td is="v-ui-table-td" xs class="h-8">
       <v-ui-format-order-price
         v-bind="{
-          value: price
-            .toBase(market.quoteToken.decimals)
-            .dp(market.maxPriceScaleDecimals),
+          value: price.dp(market.maxPriceScaleDecimals),
           type: order.orderType,
-          token: market.quoteToken
+          decimals: market.maxPriceScaleDecimals
         }"
         class="flex justify-end"
       />
@@ -15,8 +13,10 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: filledQuantity.dp(market.maxQuantityScaleDecimals),
-          token: market.baseToken
+          value: quantity
+            .toBase(market.quoteToken.decimals)
+            .dp(market.maxQuantityScaleDecimals),
+          decimals: market.maxQuantityScaleDecimals
         }"
         class="block"
       />
@@ -27,7 +27,7 @@
           value: total
             .toBase(market.quoteToken.decimals)
             .dp(market.maxPriceScaleDecimals),
-          token: market.quoteToken
+          decimals: market.maxPriceScaleDecimals
         }"
         class="text-right block text-white"
       />
@@ -45,11 +45,13 @@
     </td>
     <td is="v-ui-table-td" xs center class="h-8">
       <v-ui-badge v-if="orderFullyFilled" primary xs>
-        {{ $t('orders.filled') }}
+        {{ $t('filled') }}
       </v-ui-badge>
       <v-ui-badge v-else-if="orderFillable" dark xs>
         <div class="w-16">
-          {{ `${filledQuantity.toFixed(2)}%` }}
+          {{
+            `${filledQuantity.toBase(market.quoteToken.decimals).toFixed(2)}%`
+          }}
         </div>
       </v-ui-badge>
     </td>
@@ -62,7 +64,7 @@
       >
         <v-ui-icon
           :icon="$enums.Icon.Trash"
-          :tooltip="$t('orders.cancel_order')"
+          :tooltip="$t('cancel_order')"
           sm
           accent
           pointer
@@ -104,58 +106,58 @@ export default Vue.extend({
       return this.$accessor.spot.market
     },
 
-    price(): BigNumberInWei {
+    price(): BigNumberInBase {
+      const { market, order } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(order.price)
+    },
+
+    quantity(): BigNumberInWei {
       const { market, order } = this
 
       if (!market) {
         return ZERO_IN_WEI
       }
 
-      return new BigNumberInWei(order.price)
+      return new BigNumberInWei(order.quantity)
     },
 
-    quantity(): BigNumberInBase {
+    unfilledQuantity(): BigNumberInWei {
       const { market, order } = this
 
       if (!market) {
-        return ZERO_IN_BASE
+        return ZERO_IN_WEI
       }
 
-      return new BigNumberInBase(order.quantity)
+      return new BigNumberInWei(order.unfilledQuantity)
     },
 
-    unfilledQuantity(): BigNumberInBase {
-      const { market, order } = this
-
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      return new BigNumberInBase(order.unfilledQuantity)
-    },
-
-    filledQuantity(): BigNumberInBase {
+    filledQuantity(): BigNumberInWei {
       const { unfilledQuantity, quantity } = this
 
       return quantity.minus(unfilledQuantity)
     },
 
     orderFullyFilled(): boolean {
-      const { unfilledQuantity, quantity } = this
+      const { unfilledQuantity } = this
 
-      return unfilledQuantity.gte(quantity)
+      return unfilledQuantity.isZero()
     },
 
     orderFillable(): boolean {
       const { unfilledQuantity, quantity } = this
 
-      return unfilledQuantity.lt(quantity)
+      return unfilledQuantity.lte(quantity)
     },
 
     total(): BigNumberInWei {
       const { price, quantity } = this
 
-      return price.multipliedBy(quantity)
+      return quantity.multipliedBy(price)
     },
 
     orderTypeLocalized(): string {
