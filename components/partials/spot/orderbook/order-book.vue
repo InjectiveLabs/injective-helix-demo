@@ -37,7 +37,7 @@
             <div class="inline-block">
               <v-ui-format-order-price
                 v-bind="{
-                  value: lastPrice.toBase(market.quoteToken.decimals),
+                  value: lastPrice,
                   type: isLastTradeBuy
                     ? TradeDirection.Buy
                     : TradeDirection.Sell,
@@ -77,14 +77,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import {
-  BigNumberInBase,
-  BigNumberInWei,
-  BigNumber
-} from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumber } from '@injectivelabs/utils'
 import Record from './record.vue'
 import RecordEmpty from './record-empty.vue'
-import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
+import { ZERO_IN_BASE } from '~/app/utils/constants'
 import {
   UiSpotMarketTrade,
   UiSpotMarket,
@@ -166,20 +162,20 @@ export default Vue.extend({
       }, [] as string[])
     },
 
-    buysTotal(): BigNumberInWei {
+    buysTotal(): BigNumberInBase {
       const { buys } = this
 
       return buys.reduce((total, buy) => {
         return total.plus(buy.price)
-      }, ZERO_IN_WEI)
+      }, ZERO_IN_BASE)
     },
 
-    sellsTotal(): BigNumberInWei {
+    sellsTotal(): BigNumberInBase {
       const { sells } = this
 
       return sells.reduce((total, sell) => {
         return total.plus(sell.price)
-      }, ZERO_IN_WEI)
+      }, ZERO_IN_BASE)
     },
 
     buysWithDepth(): UiOrderbookPriceLevel[] {
@@ -242,10 +238,10 @@ export default Vue.extend({
 
     showDirection(): boolean {
       const [lastTrade, priorLastTrade] = this.trades || []
-      const lastTradePrice = new BigNumberInWei(
+      const lastTradePrice = new BigNumberInBase(
         lastTrade && lastTrade.price ? lastTrade.price : 0
       )
-      const priorLastTradePrice = new BigNumberInWei(
+      const priorLastTradePrice = new BigNumberInBase(
         priorLastTrade && priorLastTrade.price ? priorLastTrade.price : 0
       )
 
@@ -271,19 +267,19 @@ export default Vue.extend({
       return lastTrade.tradeDirection === TradeDirection.Buy
     },
 
-    lastPrice(): BigNumberInWei {
+    lastPrice(): BigNumberInBase {
       const { trades, market } = this
       const [lastTrade] = trades || []
 
       if (!lastTrade || !market) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
       if (!lastTrade.price) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(lastTrade.price)
+      return new BigNumberInBase(lastTrade.price)
     }
   },
 

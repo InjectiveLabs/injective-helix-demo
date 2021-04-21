@@ -12,9 +12,12 @@ import {
   TESTNET_CHAIN_ID,
   ZERO_IN_BASE
 } from '~/app/utils/constants'
-import { SpotMarketMap, UiPriceLevel, UiSpotMarket } from '~/types'
+import { UiPriceLevel, UiSpotMarket } from '~/types'
 import { spotConsumer } from '~/app/singletons/SpotMarketConsumer'
-import { spotMarketToUiSpotMarket } from '~/app/transformers/spot'
+import {
+  orderTypeToGrpcOrderType,
+  spotMarketToUiSpotMarket
+} from '~/app/transformers/spot'
 import { spotChronosConsumer } from '~/app/singletons/SpotMarketChronosConsumer'
 
 export const fetchSpotMarkets = async (): Promise<UiSpotMarket[]> => {
@@ -99,6 +102,8 @@ export const submitLimitOrder = async ({
   address: AccountAddress
   injectiveAddress: AccountAddress
 }) => {
+  console.log(orderTypeToGrpcOrderType(orderType), orderType)
+
   const message = SpotMarketComposer.createLimitOrder({
     subaccountId,
     marketId,
@@ -203,25 +208,6 @@ export const cancelOrder = async ({
     await txProvider.broadcast()
   } catch (error) {
     throw new Web3Exception(error.message)
-  }
-}
-
-export const orderTypeToGrpcOrderType = (
-  orderType: SpotOrderType
-): SpotMarketMap => {
-  switch (orderType) {
-    case SpotOrderType.Buy:
-      return SpotMarketMap.BUY
-    case SpotOrderType.Sell:
-      return SpotMarketMap.SELL
-    case SpotOrderType.StopBuy:
-      return SpotMarketMap.STOP_BUY
-    case SpotOrderType.TakeBuy:
-      return SpotMarketMap.TAKE_BUY
-    case SpotOrderType.TakeSell:
-      return SpotMarketMap.TAKE_SELL
-    default:
-      return SpotMarketMap.BUY
   }
 }
 

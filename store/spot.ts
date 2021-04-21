@@ -184,11 +184,10 @@ export const actions = actionTree(
       })
 
       await backupPromiseCall(() => dispatch('fetchSubaccountOrders'))
-      await backupPromiseCall(() => dispatch('fetchSubaccountTrades'))
     },
 
     async submitLimitOrder(
-      _,
+      { dispatch },
       {
         price,
         quantity,
@@ -228,10 +227,12 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId,
         marketId: market.marketId
       })
+
+      await backupPromiseCall(() => dispatch('fetchSubaccountOrders'))
     },
 
     async submitMarketOrder(
-      _,
+      { dispatch },
       {
         quantity,
         price,
@@ -271,6 +272,9 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId,
         marketId: market.marketId
       })
+
+      await backupPromiseCall(() => dispatch('fetchSubaccountOrders'))
+      await backupPromiseCall(() => dispatch('fetchSubaccountTrades'))
     },
 
     async fetchSubaccountMarketTrades({ state, commit }) {

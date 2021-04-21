@@ -30,12 +30,13 @@ export interface UiOrderbookPriceLevel {
 }
 
 export enum SpotMarketMap {
-  BUY = 0,
-  SELL = 1,
-  STOP_BUY = 2,
-  STOP_SELL = 3,
-  TAKE_BUY = 4,
-  TAKE_SELL = 5
+  UNSPECIFIED = 0,
+  BUY = 1,
+  SELL = 2,
+  STOP_BUY = 3,
+  STOP_SELL = 4,
+  TAKE_BUY = 5,
+  TAKE_SELL = 6
 }
 
 export {
