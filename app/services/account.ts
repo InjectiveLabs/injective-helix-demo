@@ -5,11 +5,10 @@ import {
 import { AccountAddress } from '@injectivelabs/ts-types'
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { Web3Exception } from '@injectivelabs/exceptions'
+import { TxProvider } from '../providers/TxProvider'
 import { subaccountConsumer } from '~/app/singletons/SubaccountConsumer'
 import { peggyDenomToTokenFromContractAddress } from '~/app/transformers/peggy'
-import { transactionConsumer } from '~/app/singletons/TransactionConsumer'
 import { TESTNET_CHAIN_ID } from '~/app/utils/constants'
-import { getWeb3Strategy } from '~/app/web3'
 import { authConsumer } from '~/app/singletons/AuthConsumer'
 import { UiSubaccount } from '~/types/subaccount'
 
@@ -62,7 +61,6 @@ export const deposit = async ({
   address: AccountAddress
   injectiveAddress: AccountAddress
 }) => {
-  const web3Strategy = getWeb3Strategy()
   const message = SubaccountComposer.deposit({
     subaccountId,
     denom,
@@ -70,25 +68,14 @@ export const deposit = async ({
     amount: amount.toString()
   })
 
-  const txResponse = await transactionConsumer.prepareTxRequest({
-    address,
-    message,
-    chainId: TESTNET_CHAIN_ID
-  })
-
   try {
-    const signature = await web3Strategy.signTypedDataV4(
-      txResponse.getData(),
-      address
-    )
-
-    return await transactionConsumer.broadcastTxRequest({
-      signature,
+    const txProvider = new TxProvider({
+      address,
       message,
-      pubKeyType: txResponse.getPubKeyType(),
-      typedData: txResponse.getData(),
       chainId: TESTNET_CHAIN_ID
     })
+
+    await txProvider.broadcast()
   } catch (error) {
     throw new Web3Exception(error.message)
   }

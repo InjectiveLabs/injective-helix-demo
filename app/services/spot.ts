@@ -6,7 +6,7 @@ import {
 import { AccountAddress } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { Web3Exception } from '@injectivelabs/exceptions'
-import { transactionConsumer } from '~/app/singletons/TransactionConsumer'
+import { TxProvider } from '../providers/TxProvider'
 import {
   FEE_RECIPIENT,
   TESTNET_CHAIN_ID,
@@ -16,7 +16,6 @@ import { SpotMarketMap, UiPriceLevel, UiSpotMarket } from '~/types'
 import { spotConsumer } from '~/app/singletons/SpotMarketConsumer'
 import { spotMarketToUiSpotMarket } from '~/app/transformers/spot'
 import { spotChronosConsumer } from '~/app/singletons/SpotMarketChronosConsumer'
-import { getWeb3Strategy } from '~/app/web3'
 
 export const fetchSpotMarkets = async (): Promise<UiSpotMarket[]> => {
   const markets = SpotMarketTransformer.grpcMarketsToMarkets(
@@ -100,7 +99,6 @@ export const submitLimitOrder = async ({
   address: AccountAddress
   injectiveAddress: AccountAddress
 }) => {
-  const web3Strategy = getWeb3Strategy()
   const message = SpotMarketComposer.createLimitOrder({
     subaccountId,
     marketId,
@@ -114,27 +112,14 @@ export const submitLimitOrder = async ({
     }
   })
 
-  const txResponse = await transactionConsumer.prepareTxRequest({
-    address,
-    message,
-    chainId: TESTNET_CHAIN_ID
-  })
-
-  console.log(txResponse.getData())
-
   try {
-    const signature = await web3Strategy.signTypedDataV4(
-      txResponse.getData(),
-      address
-    )
-
-    return await transactionConsumer.broadcastTxRequest({
-      signature,
+    const txProvider = new TxProvider({
+      address,
       message,
-      pubKeyType: txResponse.getPubKeyType(),
-      typedData: txResponse.getData(),
       chainId: TESTNET_CHAIN_ID
     })
+
+    await txProvider.broadcast()
   } catch (error) {
     throw new Web3Exception(error.message)
   }
@@ -157,7 +142,6 @@ export const submitMarketOrder = async ({
   address: AccountAddress
   injectiveAddress: AccountAddress
 }) => {
-  const web3Strategy = getWeb3Strategy()
   const message = SpotMarketComposer.createMarketOrder({
     subaccountId,
     marketId,
@@ -171,25 +155,14 @@ export const submitMarketOrder = async ({
     }
   })
 
-  const txResponse = await transactionConsumer.prepareTxRequest({
-    address,
-    message,
-    chainId: TESTNET_CHAIN_ID
-  })
-
   try {
-    const signature = await web3Strategy.signTypedDataV4(
-      txResponse.getData(),
-      address
-    )
-
-    return await transactionConsumer.broadcastTxRequest({
-      signature,
+    const txProvider = new TxProvider({
+      address,
       message,
-      pubKeyType: txResponse.getPubKeyType(),
-      typedData: txResponse.getData(),
       chainId: TESTNET_CHAIN_ID
     })
+
+    await txProvider.broadcast()
   } catch (error) {
     throw new Web3Exception(error.message)
   }
@@ -210,7 +183,6 @@ export const cancelOrder = async ({
   address: AccountAddress
   injectiveAddress: AccountAddress
 }) => {
-  const web3Strategy = getWeb3Strategy()
   const message = SpotMarketComposer.cancelSpotOrder({
     subaccountId,
     marketId,
@@ -221,25 +193,14 @@ export const cancelOrder = async ({
     }
   })
 
-  const txResponse = await transactionConsumer.prepareTxRequest({
-    address,
-    message,
-    chainId: TESTNET_CHAIN_ID
-  })
-
   try {
-    const signature = await web3Strategy.signTypedDataV4(
-      txResponse.getData(),
-      address
-    )
-
-    return await transactionConsumer.broadcastTxRequest({
-      signature,
+    const txProvider = new TxProvider({
+      address,
       message,
-      pubKeyType: txResponse.getPubKeyType(),
-      typedData: txResponse.getData(),
       chainId: TESTNET_CHAIN_ID
     })
+
+    await txProvider.broadcast()
   } catch (error) {
     throw new Web3Exception(error.message)
   }
