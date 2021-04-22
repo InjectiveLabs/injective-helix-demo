@@ -236,7 +236,7 @@ export default Vue.extend({
 
   beforeDestroy() {
     // localStorage.set(LOCAL_STORAGE_GRID_KEY, this.grid.layout)
-    this.$accessor.spot.resetMarket()
+    this.$accessor.spot.reset()
     document.title = headTitle
     clearInterval(this.interval)
   }

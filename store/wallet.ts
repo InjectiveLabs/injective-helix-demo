@@ -4,6 +4,7 @@ import { Wallet } from '@injectivelabs/web3-strategy'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { confirm, connect, transfer } from '~/app/services/wallet'
 import { getInjectiveAddress } from '~/app/services/account'
+import { backupPromiseCall } from '~/app/utils/async'
 
 const initialStateFactory = () => ({
   wallet: Wallet.Metamask,
@@ -78,11 +79,12 @@ export const actions = actionTree(
       const addressConfirmation = await confirm(address)
       const injectiveAddress = getInjectiveAddress(address)
 
-      await this.app.$accessor.account.fetchSubaccounts(injectiveAddress)
-      await this.app.$accessor.bank.fetchBalances(injectiveAddress)
+      commit('setInjectiveAddress', injectiveAddress)
+
+      await this.app.$accessor.account.fetchSubaccounts()
+      await this.app.$accessor.bank.fetchBalances()
 
       commit('setAddress', address)
-      commit('setInjectiveAddress', injectiveAddress)
       commit('setAddresses', addresses)
       commit('setAddressConfirmation', addressConfirmation)
     },
@@ -93,8 +95,8 @@ export const actions = actionTree(
       const addressConfirmation = await confirm(address)
       const injectiveAddress = getInjectiveAddress(address)
 
-      await this.app.$accessor.account.fetchSubaccounts(injectiveAddress)
-      await this.app.$accessor.bank.fetchBalances(injectiveAddress)
+      await this.app.$accessor.account.fetchSubaccounts()
+      await this.app.$accessor.bank.fetchBalances()
 
       commit('setAddress', address)
       commit('setInjectiveAddress', injectiveAddress)
@@ -121,7 +123,7 @@ export const actions = actionTree(
         amount: amount.toWei()
       })
 
-      // await testnetBackupPromiseCall(() => this.getTokenBalances())
+      await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
     }
   }
 )

@@ -1,12 +1,18 @@
 import {
   SpotMarketComposer,
+  SpotMarketStreamType,
   SpotMarketTransformer,
-  SpotOrderType
+  SpotOrderType,
+  SpotMarketOrderbookStreamCallback,
+  SpotMarketTradeStreamCallback,
+  SpotMarketOrderStreamCallback
 } from '@injectivelabs/spot-consumer'
 import { AccountAddress } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { TxProvider } from '../providers/TxProvider'
+import { spotMarketStream } from '../singletons/SpotMarketStream'
+import { streamManager } from '../singletons/StreamManager'
 import {
   FEE_RECIPIENT,
   TESTNET_CHAIN_ID,
@@ -53,6 +59,62 @@ export const fetchSpotMarketOrderbook = async (marketId: string) => {
   return SpotMarketTransformer.grpcOrderbookToOrderbook(
     await spotConsumer.fetchMarketOrderbook(marketId)
   )
+}
+
+export const streamOrderbook = (
+  marketId: string,
+  callback: SpotMarketOrderbookStreamCallback
+) => {
+  const stream = spotMarketStream.orderbook.start({
+    marketId,
+    callback
+  })
+
+  streamManager.set(stream, SpotMarketStreamType.Orderbook)
+}
+
+export const streamTrades = (
+  marketId: string,
+  callback: SpotMarketTradeStreamCallback
+) => {
+  const stream = spotMarketStream.trades.start({
+    marketId,
+    callback
+  })
+
+  streamManager.set(stream, SpotMarketStreamType.Trades)
+}
+
+export const streamSubaccountTrades = (
+  marketId: string,
+  subaccountId: string,
+  callback: SpotMarketTradeStreamCallback
+) => {
+  const stream = spotMarketStream.trades.subaccount({
+    marketId,
+    subaccountId,
+    callback
+  })
+
+  streamManager.set(stream, SpotMarketStreamType.SubaccountTrades)
+}
+
+export const streamSubaccountOrders = (
+  marketId: string,
+  subaccountId: string,
+  callback: SpotMarketOrderStreamCallback
+) => {
+  const stream = spotMarketStream.orders.subaccount({
+    marketId,
+    subaccountId,
+    callback
+  })
+
+  streamManager.set(stream, SpotMarketStreamType.SubaccountOrders)
+}
+
+export const cancelMarketStreams = () => {
+  streamManager.cancelAll()
 }
 
 export const fetchSpotMarketTrades = async ({
@@ -102,8 +164,6 @@ export const submitLimitOrder = async ({
   address: AccountAddress
   injectiveAddress: AccountAddress
 }) => {
-  console.log(orderTypeToGrpcOrderType(orderType), orderType)
-
   const message = SpotMarketComposer.createLimitOrder({
     subaccountId,
     marketId,

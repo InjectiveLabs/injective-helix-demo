@@ -1,5 +1,6 @@
 import { actionTree, getterTree } from 'nuxt-typed-vuex'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { StreamOperation } from '@injectivelabs/spot-consumer'
 import {
   UiOrderbook,
   UiSpotMarketOrder,
@@ -14,7 +15,12 @@ import {
   fetchSpotMarketTrades,
   submitLimitOrder,
   submitMarketOrder,
-  cancelOrder
+  cancelOrder,
+  streamOrderbook,
+  cancelMarketStreams,
+  streamTrades,
+  streamSubaccountOrders,
+  streamSubaccountTrades
 } from '~/app/services/spot'
 import { backupPromiseCall } from '~/app/utils/async'
 
@@ -69,6 +75,10 @@ export const mutations = {
     state.trades = trades
   },
 
+  pushTrade(state: SpotStoreState, trade: UiSpotMarketTrade) {
+    state.trades = [trade, ...state.trades]
+  },
+
   setSubaccountTrades(
     state: SpotStoreState,
     subaccountTrades: UiSpotMarketTrade[]
@@ -83,6 +93,80 @@ export const mutations = {
     state.subaccountOrders = subaccountOrders
   },
 
+  pushSubaccountOrder(
+    state: SpotStoreState,
+    subaccountOrder: UiSpotMarketOrder
+  ) {
+    state.subaccountOrders = [subaccountOrder, ...state.subaccountOrders]
+  },
+
+  updateSubaccountOrder(
+    state: SpotStoreState,
+    subaccountOrder: UiSpotMarketOrder
+  ) {
+    const index = state.subaccountOrders.findIndex(
+      (order) => order.orderHash === subaccountOrder.orderHash
+    )
+
+    if (index > 0) {
+      state.subaccountOrders = [...state.subaccountOrders].splice(
+        index,
+        1,
+        subaccountOrder
+      )
+    }
+  },
+
+  deleteSubaccountOrder(
+    state: SpotStoreState,
+    subaccountOrder: UiSpotMarketOrder
+  ) {
+    const index = state.subaccountOrders.findIndex(
+      (order) => order.orderHash === subaccountOrder.orderHash
+    )
+
+    if (index > 0) {
+      state.subaccountOrders = [...state.subaccountOrders].splice(index, 1)
+    }
+  },
+
+  pushSubaccountTrade(
+    state: SpotStoreState,
+    subaccountTrade: UiSpotMarketTrade
+  ) {
+    state.subaccountTrades = [subaccountTrade, ...state.subaccountTrades]
+  },
+
+  updateSubaccountTrade(
+    state: SpotStoreState,
+    subaccountTrade: UiSpotMarketTrade
+  ) {
+    const index = state.subaccountTrades.findIndex(
+      (order) => order.orderHash === subaccountTrade.orderHash
+    )
+
+    if (index > 0) {
+      state.subaccountTrades = [...state.subaccountTrades].splice(
+        index,
+        1,
+        subaccountTrade
+      )
+    }
+  },
+
+  deleteSubaccountTrade(
+    state: SpotStoreState,
+    subaccountTrade: UiSpotMarketTrade
+  ) {
+    const index = state.subaccountTrades.findIndex(
+      (order) => order.orderHash === subaccountTrade.orderHash
+    )
+
+    if (index > 0) {
+      state.subaccountTrades = [...state.subaccountTrades].splice(index, 1)
+    }
+  },
+
   setOrderbook(state: SpotStoreState, orderbook: UiOrderbook) {
     state.orderbook = orderbook
   }
@@ -91,6 +175,11 @@ export const mutations = {
 export const actions = actionTree(
   { state, mutations },
   {
+    reset({ commit }) {
+      commit('resetMarket')
+      cancelMarketStreams()
+    },
+
     async init({ commit }) {
       commit('setMarkets', await fetchSpotMarkets())
     },
@@ -109,8 +198,86 @@ export const actions = actionTree(
         })
       )
 
+      streamOrderbook(market.marketId, ({ orderbook }) => {
+        if (!orderbook) {
+          return
+        }
+
+        commit('setOrderbook', orderbook)
+      })
+
+      streamTrades(market.marketId, ({ trade, operation }) => {
+        if (!trade) {
+          return
+        }
+
+        switch (operation) {
+          case StreamOperation.Insert:
+            commit('pushTrade', trade)
+        }
+      })
+
+      await dispatch('setSubaccountStreams')
       await dispatch('fetchSubaccountOrders')
       await dispatch('fetchSubaccountTrades')
+    },
+
+    setSubaccountStreams({ state, commit }) {
+      const { market } = state
+      const { subaccount } = this.app.$accessor.account
+      const { isUserWalletConnected } = this.app.$accessor.wallet
+
+      if (!market) {
+        return
+      }
+
+      if (!isUserWalletConnected || !subaccount) {
+        return
+      }
+
+      streamSubaccountOrders(
+        market.marketId,
+        subaccount.subaccountId,
+        ({ order, operation }) => {
+          if (!order) {
+            return
+          }
+
+          switch (operation) {
+            case StreamOperation.Insert:
+              commit('pushSubaccountOrder', order)
+              break
+            case StreamOperation.Delete:
+              commit('deleteSubaccountOrder', order)
+              break
+            case StreamOperation.Update:
+              commit('updateSubaccountOrder', order)
+              break
+          }
+        }
+      )
+
+      streamSubaccountTrades(
+        market.marketId,
+        subaccount.subaccountId,
+        ({ trade, operation }) => {
+          if (!trade) {
+            return
+          }
+
+          switch (operation) {
+            case StreamOperation.Insert:
+              commit('pushSubaccountTrade', trade)
+              break
+            case StreamOperation.Delete:
+              commit('deleteSubaccountTrade', trade)
+              break
+            case StreamOperation.Update:
+              commit('updateSubaccountTrade', trade)
+              break
+          }
+        }
+      )
     },
 
     async fetchSubaccountOrders({ state, commit }) {
@@ -122,15 +289,17 @@ export const actions = actionTree(
         return
       }
 
-      if (isUserWalletConnected && subaccount) {
-        commit(
-          'setSubaccountOrders',
-          await fetchSpotMarketOrders({
-            marketId: market.marketId,
-            subaccountId: subaccount.subaccountId
-          })
-        )
+      if (!isUserWalletConnected || !subaccount) {
+        return
       }
+
+      commit(
+        'setSubaccountOrders',
+        await fetchSpotMarketOrders({
+          marketId: market.marketId,
+          subaccountId: subaccount.subaccountId
+        })
+      )
     },
 
     async fetchSubaccountTrades({ state, commit }) {
@@ -142,15 +311,17 @@ export const actions = actionTree(
         return
       }
 
-      if (isUserWalletConnected && subaccount) {
-        commit(
-          'setSubaccountTrades',
-          await fetchSpotMarketTrades({
-            marketId: market.marketId,
-            subaccountId: subaccount.subaccountId
-          })
-        )
+      if (!isUserWalletConnected || !subaccount) {
+        return
       }
+
+      commit(
+        'setSubaccountTrades',
+        await fetchSpotMarketTrades({
+          marketId: market.marketId,
+          subaccountId: subaccount.subaccountId
+        })
+      )
     },
 
     async cancelOrder({ dispatch }, order: UiSpotMarketOrder) {

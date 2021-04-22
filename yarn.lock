@@ -1558,24 +1558,24 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/exchange-api@^2.0.4":
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/exchange-api/-/exchange-api-2.0.4.tgz#1eeb61b86665952730190b11fc1e042388658acd"
-  integrity sha512-X0R22WlvFGJhXiKcknxwirA8SuhjQxrSpmh4KqjsARpG8ySDs7gr3LE0HS/UYaZSn0f4bPdY5LyruIFDLXeO/Q==
+"@injectivelabs/exchange-api@^2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/exchange-api/-/exchange-api-2.0.5.tgz#e79a9ad698f2846603392d143d9ca398592467cd"
+  integrity sha512-VoTKzZoZM+pZkPPs22zdbJrqm6v2emJdKYEGWeOQ72p3g+1icKWMpure4gNp5DtnqUGYfsh0pSwczyK1v4QM3g==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     google-protobuf "^3.14.0"
 
-"@injectivelabs/exchange-consumer@^0.0.34":
-  version "0.0.34"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/exchange-consumer/-/exchange-consumer-0.0.34.tgz#8bc4136eebef9d42b6194f0c367b884bc2a10260"
-  integrity sha512-dODKQV8vifOK3McKBItxXw2li0UiKBgJLPQuXjXGpVvDBxySlTD2uZz8i9tf5buYU7jxQzQcb3za2wepAv0aZw==
+"@injectivelabs/exchange-consumer@^0.0.35":
+  version "0.0.35"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/exchange-consumer/-/exchange-consumer-0.0.35.tgz#1612c1f92357cd5080b6025d1c599800e5c4a5b0"
+  integrity sha512-3vx/ObDSHg/Lq6pBmuXuoP7GI2S6tTzv/1EgV2mUISG+99TbnP5e4odUCCSe9cMWVTSbytxqx4E5dLIMyLeK6w==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.14.0"
     "@injectivelabs/chain-api" "^1.4.5"
     "@injectivelabs/exceptions" "^0.0.18"
-    "@injectivelabs/exchange-api" "^2.0.4"
+    "@injectivelabs/exchange-api" "^2.0.5"
     "@injectivelabs/ts-types" "^0.0.15"
     "@injectivelabs/tx-utils" "^0.0.3"
     "@injectivelabs/utils" "^0.0.23"
@@ -1594,16 +1594,16 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/spot-consumer@^0.0.19":
-  version "0.0.19"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/spot-consumer/-/spot-consumer-0.0.19.tgz#fb3696098a23fdc0e8f7c69df7673bba7a7d12d0"
-  integrity sha512-hkZUaXbJ5hBgqoI2BjMyRmWfrnkn3Xw2juOgbe8H1C2MFcXdgOh13YatL/fundbESspA+WtDxODFklI2J0BIAQ==
+"@injectivelabs/spot-consumer@^0.0.20":
+  version "0.0.20"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/spot-consumer/-/spot-consumer-0.0.20.tgz#7fa346c92bcff3ec3afb8839a01acf1feb0896f0"
+  integrity sha512-0LROAEqqwXTgdlciWclylkB9264ZexH4fs2AvMQuv+EmxgeEFfv+BYyXjIxCSTVXiSqpKi8eTmo3AQt9FV1k3Q==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.14.0"
     "@injectivelabs/chain-api" "^1.4.5"
     "@injectivelabs/exceptions" "^0.0.18"
-    "@injectivelabs/exchange-api" "^2.0.4"
+    "@injectivelabs/exchange-api" "^2.0.5"
     "@injectivelabs/ts-types" "^0.0.15"
     "@injectivelabs/utils" "^0.0.23"
     link-module-alias "^1.2.0"

@@ -1,4 +1,3 @@
-import { AccountAddress } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'nuxt-typed-vuex'
 import {
@@ -44,14 +43,9 @@ export const actions = actionTree(
       await dispatch('fetchSubaccounts')
     },
 
-    async fetchSubaccounts({ commit }, injectiveAddress?: AccountAddress) {
-      const {
-        injectiveAddress: connectedInjectiveAddress
-      } = this.app.$accessor.wallet
-
-      const injAddress = injectiveAddress || connectedInjectiveAddress
-
-      const subaccountIds = await fetchSubaccounts(injAddress)
+    async fetchSubaccounts({ commit }) {
+      const { injectiveAddress } = this.app.$accessor.wallet
+      const subaccountIds = await fetchSubaccounts(injectiveAddress)
 
       if (subaccountIds.length === 0) {
         return
@@ -61,6 +55,11 @@ export const actions = actionTree(
 
       commit('setSubacccountIds', subaccountIds)
       commit('setSubaccount', await fetchSubaccount(subaccountId))
+
+      await this.app.$accessor.spot.fetchSubaccountMarketTrades()
+      await this.app.$accessor.spot.fetchSubaccountOrders()
+      await this.app.$accessor.spot.fetchSubaccountTrades()
+      await this.app.$accessor.spot.setSubaccountStreams()
     },
 
     async updateSubaccount({ commit, state }) {

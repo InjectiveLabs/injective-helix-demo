@@ -1,11 +1,16 @@
-import { peggyDenomToTokenFromContractAddress } from './peggy'
+import { TokenMeta } from '@injectivelabs/spot-consumer'
+import {
+  peggyDenomToTokenFromContractAddress,
+  peggyDenomToContractAddress
+} from './peggy'
 import {
   AllChronosSpotMarketSummary,
   ChronosSpotMarketSummary,
   BaseUiSpotMarket,
   UiSpotMarket,
   SpotOrderType,
-  SpotMarketMap
+  SpotMarketMap,
+  Token
 } from '~/types'
 
 export const spotMarketToUiSpotMarket = (
@@ -15,8 +20,26 @@ export const spotMarketToUiSpotMarket = (
   return {
     ...market,
     ...marketsSummary,
-    baseToken: peggyDenomToTokenFromContractAddress(market.baseDenom),
-    quoteToken: peggyDenomToTokenFromContractAddress(market.quoteDenom)
+    baseToken: market.baseToken
+      ? tokenMetaToToken(market.baseToken, market.baseDenom)
+      : peggyDenomToTokenFromContractAddress(market.baseDenom),
+    quoteToken: market.quoteToken
+      ? tokenMetaToToken(market.quoteToken, market.quoteDenom)
+      : peggyDenomToTokenFromContractAddress(market.quoteDenom)
+  }
+}
+
+export const tokenMetaToToken = (
+  tokenMeta: TokenMeta,
+  denom: string
+): Token => {
+  return {
+    symbol: tokenMeta.symbol,
+    name: tokenMeta.name,
+    icon: tokenMeta.logo,
+    decimals: tokenMeta.decimals,
+    address: peggyDenomToContractAddress(denom),
+    denom
   }
 }
 
