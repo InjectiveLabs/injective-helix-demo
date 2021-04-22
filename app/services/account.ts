@@ -7,7 +7,6 @@ import { BigNumberInWei } from '@injectivelabs/utils'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { TxProvider } from '../providers/TxProvider'
 import { subaccountConsumer } from '~/app/singletons/SubaccountConsumer'
-import { peggyDenomToTokenFromContractAddress } from '~/app/transformers/peggy'
 import { TESTNET_CHAIN_ID } from '~/app/utils/constants'
 import { authConsumer } from '~/app/singletons/AuthConsumer'
 import { UiSubaccount } from '~/types/subaccount'
@@ -30,7 +29,6 @@ export const fetchSubaccount = async (
   ).map((balance) => {
     return {
       denom: balance.denom,
-      token: peggyDenomToTokenFromContractAddress(balance.denom),
       totalBalance: balance.deposit ? balance.deposit.availableBalance : '0',
       availableBalance: balance.deposit ? balance.deposit.totalBalance : '0'
     }

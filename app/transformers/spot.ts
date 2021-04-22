@@ -20,12 +20,14 @@ export const spotMarketToUiSpotMarket = (
   return {
     ...market,
     ...marketsSummary,
-    baseToken: market.baseToken
-      ? tokenMetaToToken(market.baseToken, market.baseDenom)
-      : peggyDenomToTokenFromContractAddress(market.baseDenom),
-    quoteToken: market.quoteToken
-      ? tokenMetaToToken(market.quoteToken, market.quoteDenom)
-      : peggyDenomToTokenFromContractAddress(market.quoteDenom)
+    baseToken:
+      market.baseToken !== undefined
+        ? tokenMetaToToken(market.baseToken, market.baseDenom)
+        : peggyDenomToTokenFromContractAddress(market.baseDenom),
+    quoteToken:
+      market.quoteToken !== undefined
+        ? tokenMetaToToken(market.quoteToken, market.quoteDenom)
+        : peggyDenomToTokenFromContractAddress(market.quoteDenom)
   }
 }
 

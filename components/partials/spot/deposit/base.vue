@@ -51,7 +51,6 @@ import Vue, { PropType } from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
 import { UiSpotMarket } from '~/types'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -92,9 +91,7 @@ export default Vue.extend({
         return ''
       }
 
-      return balance
-        .toBase(market.baseToken.decimals)
-        .toFixed(UI_DEFAULT_DISPLAY_DECIMALS)
+      return balance.toBase().toFixed(market.maxQuantityScaleDecimals)
     }
   },
 

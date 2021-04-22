@@ -77,7 +77,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BigNumberInBase, BigNumber } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumber,
+  BigNumberInWei
+} from '@injectivelabs/utils'
 import Record from './record.vue'
 import RecordEmpty from './record-empty.vue'
 import { ZERO_IN_BASE } from '~/app/utils/constants'
@@ -179,13 +183,19 @@ export default Vue.extend({
     },
 
     buysWithDepth(): UiOrderbookPriceLevel[] {
-      const { buys, buysTotal } = this
+      const { buys, buysTotal, market } = this
+
+      if (!market) {
+        return []
+      }
 
       let accumulator = ZERO_IN_BASE
       return buys.map((record: UiPriceLevel, index: number) => {
         accumulator =
           index === 0
-            ? new BigNumberInBase(record.quantity)
+            ? new BigNumberInWei(record.quantity).toBase(
+                market.quoteToken.decimals
+              )
             : accumulator.plus(record.quantity)
 
         return {
@@ -197,14 +207,20 @@ export default Vue.extend({
     },
 
     sellsWithDepth(): UiOrderbookPriceLevel[] {
-      const { sells, sellsTotal } = this
+      const { sells, sellsTotal, market } = this
+
+      if (!market) {
+        return []
+      }
 
       let accumulator = ZERO_IN_BASE
       return sells
         .map((record: UiPriceLevel, index: number) => {
           accumulator =
             index === 0
-              ? new BigNumberInBase(record.quantity)
+              ? new BigNumberInWei(record.quantity).toBase(
+                  market.baseToken.decimals
+                )
               : accumulator.plus(record.quantity)
 
           return {

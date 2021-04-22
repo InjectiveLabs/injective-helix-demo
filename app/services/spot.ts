@@ -171,9 +171,9 @@ export const submitLimitOrder = async ({
     order: {
       orderType: orderTypeToGrpcOrderType(orderType),
       feeRecipient: FEE_RECIPIENT,
-      price: price.toString(),
+      price: price.toFixed(),
       triggerPrice: '0', // TODO
-      quantity: quantity.toString()
+      quantity: quantity.toFixed()
     }
   })
 
@@ -212,11 +212,11 @@ export const submitMarketOrder = async ({
     marketId,
     injectiveAddress,
     order: {
-      price: price.toString(),
+      price: price.toFixed(),
       orderType: orderTypeToGrpcOrderType(orderType),
       feeRecipient: FEE_RECIPIENT,
       triggerPrice: '0', // TODO
-      quantity: quantity.toString()
+      quantity: quantity.toFixed()
     }
   })
 

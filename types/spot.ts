@@ -14,7 +14,7 @@ import {
 import { Token } from './token'
 
 export interface UiSpotMarket
-  extends BaseUiSpotMarket,
+  extends Omit<BaseUiSpotMarket, 'quoteToken' | 'baseToken'>,
     ChronosSpotMarketSummary {
   quoteToken: Token
   baseToken: Token
@@ -23,7 +23,7 @@ export interface UiSpotMarket
 export interface UiOrderbookPriceLevel {
   price: string
   quantity: string
-  timestamp: string
+  timestamp: number
   oldQuantity?: string
   sumOfQuantities: string
   depth: number

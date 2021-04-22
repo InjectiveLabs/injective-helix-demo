@@ -23,7 +23,7 @@
         v-bind="{
           value: price,
           type: type,
-          decimals: market.maxPriceScaleDecimals
+          decimals: priceScaleDisplayDecimals
         }"
         class="text-right block"
       />
@@ -31,8 +31,8 @@
     <span class="w-1/3 text-xs px-2 z-10" @click.stop="onQuantityClick">
       <v-ui-format-amount
         v-bind="{
-          value: quantity.toBase(market.quoteToken.decimals),
-          decimals: market.maxQuantityScaleDecimals
+          value: quantity.toBase(quantityScaleDecimals),
+          decimals: quantityScaleDisplayDecimals
         }"
         class="text-right block"
         :class="{
@@ -44,8 +44,8 @@
     <span class="w-1/3 text-xs px-2 z-10" @click.stop="onSumQuantityClick">
       <v-ui-format-amount
         v-bind="{
-          value: sumOfQuantities.toBase(market.quoteToken.decimals),
-          decimals: market.maxQuantityScaleDecimals
+          value: sumOfQuantities,
+          decimals: quantityScaleDisplayDecimals
         }"
         class="text-right block text-white"
       />
@@ -102,6 +102,60 @@ export default Vue.extend({
       return this.$accessor.spot.market
     },
 
+    recordTypeBuy(): boolean {
+      const { type } = this
+
+      return type === SpotOrderType.Buy
+    },
+
+    priceScaleDecimals(): number {
+      const { recordTypeBuy, market } = this
+
+      if (!market) {
+        return 0
+      }
+
+      return recordTypeBuy
+        ? market.quoteToken.decimals
+        : market.baseToken.decimals
+    },
+
+    quantityScaleDecimals(): number {
+      const { recordTypeBuy, market } = this
+
+      if (!market) {
+        return 0
+      }
+
+      return recordTypeBuy
+        ? market.baseToken.decimals
+        : market.quoteToken.decimals
+    },
+
+    priceScaleDisplayDecimals(): number {
+      const { recordTypeBuy, market } = this
+
+      if (!market) {
+        return 0
+      }
+
+      return recordTypeBuy
+        ? market.maxQuantityScaleDecimals
+        : market.maxPriceScaleDecimals
+    },
+
+    quantityScaleDisplayDecimals(): number {
+      const { recordTypeBuy, market } = this
+
+      if (!market) {
+        return 0
+      }
+
+      return recordTypeBuy
+        ? market.maxPriceScaleDecimals
+        : market.maxQuantityScaleDecimals
+    },
+
     price(): BigNumberInBase {
       const { market, record } = this
 
@@ -112,14 +166,14 @@ export default Vue.extend({
       return new BigNumberInBase(record.price)
     },
 
-    sumOfQuantities(): BigNumberInWei {
+    sumOfQuantities(): BigNumberInBase {
       const { market, record } = this
 
       if (!market) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(record.sumOfQuantities || 0)
+      return new BigNumberInBase(record.sumOfQuantities || 0)
     },
 
     quantity(): BigNumberInWei {

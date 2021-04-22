@@ -3,9 +3,9 @@
     <td is="v-ui-table-td" xs class="h-8">
       <v-ui-format-order-price
         v-bind="{
-          value: price.dp(market.maxPriceScaleDecimals),
+          value: price.dp(priceScaleDecimals),
           type: order.orderType,
-          decimals: market.maxPriceScaleDecimals
+          decimals: priceScaleDisplayDecimals
         }"
         class="flex justify-end"
       />
@@ -13,8 +13,8 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: quantity.dp(market.maxQuantityScaleDecimals),
-          decimals: market.maxQuantityScaleDecimals
+          value: quantity.toBase(quantityScaleDecimals),
+          decimals: quantityScaleDisplayDecimals
         }"
         class="block"
       />
@@ -22,8 +22,8 @@
     <td is="v-ui-table-td" xs class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: total.dp(market.maxPriceScaleDecimals),
-          decimals: market.maxPriceScaleDecimals
+          value: total.toBase(quantityScaleDecimals),
+          decimals: quantityScaleDisplayDecimals
         }"
         class="text-right block text-white"
       />
@@ -46,7 +46,7 @@
       <v-ui-badge v-else-if="orderFillable" dark xs>
         <div class="w-16">
           {{
-            `${filledQuantity.toFixed(2)}%`
+            `${filledQuantity.toBase(quantityScaleDisplayDecimals).toFixed(2)}%`
           }}
         </div>
       </v-ui-badge>
@@ -78,8 +78,8 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { BigNumberInBase, Status } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '~/app/utils/constants'
+import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
+import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
 import { UiSpotMarket, SpotOrderType, UiSpotMarketOrder } from '~/types'
 
 export default Vue.extend({
@@ -102,6 +102,60 @@ export default Vue.extend({
       return this.$accessor.spot.market
     },
 
+    orderTypeBuy(): boolean {
+      const { order } = this
+
+      return order.orderType === SpotOrderType.Buy
+    },
+
+    priceScaleDecimals(): number {
+      const { orderTypeBuy, market } = this
+
+      if (!market) {
+        return 0
+      }
+
+      return orderTypeBuy
+        ? market.quoteToken.decimals
+        : market.baseToken.decimals
+    },
+
+    quantityScaleDecimals(): number {
+      const { orderTypeBuy, market } = this
+
+      if (!market) {
+        return 0
+      }
+
+      return orderTypeBuy
+        ? market.baseToken.decimals
+        : market.quoteToken.decimals
+    },
+
+    priceScaleDisplayDecimals(): number {
+      const { orderTypeBuy, market } = this
+
+      if (!market) {
+        return 0
+      }
+
+      return orderTypeBuy
+        ? market.maxQuantityScaleDecimals
+        : market.maxPriceScaleDecimals
+    },
+
+    quantityScaleDisplayDecimals(): number {
+      const { orderTypeBuy, market } = this
+
+      if (!market) {
+        return 0
+      }
+
+      return orderTypeBuy
+        ? market.maxPriceScaleDecimals
+        : market.maxQuantityScaleDecimals
+    },
+
     price(): BigNumberInBase {
       const { market, order } = this
 
@@ -112,27 +166,27 @@ export default Vue.extend({
       return new BigNumberInBase(order.price)
     },
 
-    quantity(): BigNumberInBase {
+    quantity(): BigNumberInWei {
       const { market, order } = this
 
       if (!market) {
-        return ZERO_IN_BASE
+        return ZERO_IN_WEI
       }
 
-      return new BigNumberInBase(order.quantity)
+      return new BigNumberInWei(order.quantity)
     },
 
-    unfilledQuantity(): BigNumberInBase {
+    unfilledQuantity(): BigNumberInWei {
       const { market, order } = this
 
       if (!market) {
-        return ZERO_IN_BASE
+        return ZERO_IN_WEI
       }
 
-      return new BigNumberInBase(order.unfilledQuantity)
+      return new BigNumberInWei(order.unfilledQuantity)
     },
 
-    filledQuantity(): BigNumberInBase {
+    filledQuantity(): BigNumberInWei {
       const { unfilledQuantity, quantity } = this
 
       return quantity.minus(unfilledQuantity)
@@ -150,7 +204,7 @@ export default Vue.extend({
       return unfilledQuantity.lte(quantity)
     },
 
-    total(): BigNumberInBase {
+    total(): BigNumberInWei {
       const { price, quantity } = this
 
       return quantity.multipliedBy(price)

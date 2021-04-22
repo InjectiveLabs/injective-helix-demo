@@ -333,16 +333,13 @@ export const actions = actionTree(
         isUserWalletConnected
       } = this.app.$accessor.wallet
 
-      if (!isUserWalletConnected || !injectiveAddress) {
-        throw new Error('Please connect your wallet')
-      }
-
-      if (!subaccount) {
-        throw new Error('Subaccount not found')
-      }
-
-      if (!market) {
-        throw new Error('Market not found')
+      if (
+        !isUserWalletConnected ||
+        !injectiveAddress ||
+        !subaccount ||
+        !market
+      ) {
+        return
       }
 
       await cancelOrder({
@@ -358,7 +355,7 @@ export const actions = actionTree(
     },
 
     async submitLimitOrder(
-      { dispatch },
+      _,
       {
         price,
         quantity,
@@ -377,16 +374,13 @@ export const actions = actionTree(
         isUserWalletConnected
       } = this.app.$accessor.wallet
 
-      if (!isUserWalletConnected || !injectiveAddress) {
-        throw new Error('Please connect your wallet')
-      }
-
-      if (!subaccount) {
-        throw new Error('Subaccount not found')
-      }
-
-      if (!market) {
-        throw new Error('Market not found')
+      if (
+        !isUserWalletConnected ||
+        !injectiveAddress ||
+        !subaccount ||
+        !market
+      ) {
+        return
       }
 
       await submitLimitOrder({
@@ -395,15 +389,13 @@ export const actions = actionTree(
         orderType,
         injectiveAddress,
         address,
-        subaccountId: subaccount.subaccountId,
-        marketId: market.marketId
+        marketId: market.marketId,
+        subaccountId: subaccount.subaccountId
       })
-
-      await backupPromiseCall(() => dispatch('fetchSubaccountOrders'))
     },
 
     async submitMarketOrder(
-      { dispatch },
+      _,
       {
         quantity,
         price,
@@ -422,16 +414,13 @@ export const actions = actionTree(
         isUserWalletConnected
       } = this.app.$accessor.wallet
 
-      if (!isUserWalletConnected || !injectiveAddress) {
-        throw new Error('Please connect your wallet')
-      }
-
-      if (!subaccount) {
-        throw new Error('Subaccount not found')
-      }
-
-      if (!market) {
-        throw new Error('Market not found')
+      if (
+        !isUserWalletConnected ||
+        !injectiveAddress ||
+        !subaccount ||
+        !market
+      ) {
+        return
       }
 
       await submitMarketOrder({
@@ -440,12 +429,9 @@ export const actions = actionTree(
         price,
         injectiveAddress,
         address,
-        subaccountId: subaccount.subaccountId,
-        marketId: market.marketId
+        marketId: market.marketId,
+        subaccountId: subaccount.subaccountId
       })
-
-      await backupPromiseCall(() => dispatch('fetchSubaccountOrders'))
-      await backupPromiseCall(() => dispatch('fetchSubaccountTrades'))
     },
 
     async fetchSubaccountMarketTrades({ state, commit }) {
@@ -453,16 +439,8 @@ export const actions = actionTree(
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
-      if (!isUserWalletConnected) {
-        throw new Error('Please connect your wallet')
-      }
-
-      if (!subaccount) {
-        throw new Error('Subaccount not found')
-      }
-
-      if (!market) {
-        throw new Error('Market not found')
+      if (!isUserWalletConnected || !subaccount || !market) {
+        return
       }
 
       commit(

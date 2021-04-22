@@ -3,9 +3,9 @@
     <td is="v-ui-table-td" xs class="h-8">
       <v-ui-format-order-price
         v-bind="{
-          value: price.toBase(market.quoteToken.decimals),
+          value: price,
           type: trade.tradeDirection,
-          decimals: market.maxPriceScaleDecimals
+          decimals: priceScaleDisplayDecimals
         }"
         class="block text-right"
       />
@@ -13,8 +13,8 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: quantity,
-          decimals: market.maxQuantityScaleDecimals
+          value: quantity.toBase(quantityScaleDecimals),
+          decimals: quantityScaleDisplayDecimals
         }"
         class="block text-right"
       />
@@ -22,8 +22,8 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: total.toBase(market.quoteToken.decimals),
-          token: market.maxPriceScaleDecimals
+          value: total.toBase(quantityScaleDecimals),
+          decimals: quantityScaleDisplayDecimals
         }"
         class="block text-right"
       />
@@ -31,8 +31,8 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: fee.toBase(market.quoteToken.decimals),
-          token: market.quoteToken
+          value: fee.toBase(quantityScaleDecimals),
+          decimals: quantityScaleDisplayDecimals
         }"
         class="text-right block text-white"
       />
@@ -91,30 +91,84 @@ export default Vue.extend({
       return this.$accessor.spot.market
     },
 
-    price(): BigNumberInWei {
-      const { market, trade } = this
+    tradeDirectionBuy(): boolean {
+      const { trade } = this
 
-      if (!market || !trade.price) {
-        return ZERO_IN_WEI
-      }
-
-      return new BigNumberInWei(trade.price)
+      return trade.tradeDirection === TradeDirection.Buy
     },
 
-    quantity(): BigNumberInBase {
+    priceScaleDecimals(): number {
+      const { tradeDirectionBuy, market } = this
+
+      if (!market) {
+        return 0
+      }
+
+      return tradeDirectionBuy
+        ? market.quoteToken.decimals
+        : market.baseToken.decimals
+    },
+
+    quantityScaleDecimals(): number {
+      const { tradeDirectionBuy, market } = this
+
+      if (!market) {
+        return 0
+      }
+
+      return tradeDirectionBuy
+        ? market.baseToken.decimals
+        : market.quoteToken.decimals
+    },
+
+    priceScaleDisplayDecimals(): number {
+      const { tradeDirectionBuy, market } = this
+
+      if (!market) {
+        return 0
+      }
+
+      return tradeDirectionBuy
+        ? market.maxQuantityScaleDecimals
+        : market.maxPriceScaleDecimals
+    },
+
+    quantityScaleDisplayDecimals(): number {
+      const { tradeDirectionBuy, market } = this
+
+      if (!market) {
+        return 0
+      }
+
+      return tradeDirectionBuy
+        ? market.maxPriceScaleDecimals
+        : market.maxQuantityScaleDecimals
+    },
+
+    price(): BigNumberInBase {
       const { market, trade } = this
 
       if (!market || !trade.price) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(trade.quantity)
+      return new BigNumberInBase(trade.price)
+    },
+
+    quantity(): BigNumberInWei {
+      const { market, trade } = this
+
+      if (!market || !trade.quantity) {
+        return ZERO_IN_WEI
+      }
+
+      return new BigNumberInWei(trade.quantity)
     },
 
     total(): BigNumberInWei {
       const { quantity, price } = this
 
-      return price.times(quantity)
+      return quantity.times(price)
     },
 
     time(): string {
@@ -124,13 +178,13 @@ export default Vue.extend({
         return ''
       }
 
-      return format(parseInt(trade.executedAt), 'kk:mm')
+      return format(trade.executedAt, 'kk:mm')
     },
 
     fee(): BigNumberInWei {
       const { market, trade } = this
 
-      if (!market || !trade.price) {
+      if (!market || !trade.fee) {
         return ZERO_IN_WEI
       }
 

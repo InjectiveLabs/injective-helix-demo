@@ -4,15 +4,15 @@ import { Token } from './token'
 export interface UiSubaccountBalance {
   totalBalance: string
   availableBalance: string
-  token: Token
   denom: string
 }
 
-export interface UiSubaccountBalanceToBN
+export interface UiSubaccountBalanceWithToken
   extends Omit<UiSubaccountBalance, 'totalBalance' | 'availableBalance'> {
   totalBalance: BigNumberInWei
   availableBalance: BigNumberInWei
   displayDecimals: number
+  token: Token
 }
 
 export interface UiSubaccount {

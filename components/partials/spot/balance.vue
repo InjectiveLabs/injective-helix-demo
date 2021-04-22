@@ -13,7 +13,7 @@
           v-if="baseTokenBalance.gt(0)"
           class="font-normal text-sm"
           v-bind="{
-            value: baseTokenBalance.toBase(market.baseToken.decimals),
+            value: baseTokenBalance.toBase(),
             decimals: market.maxQuantityScaleDecimals
           }"
         />
@@ -27,7 +27,7 @@
           v-if="quoteTokenBalance.gt(0)"
           class="font-normal text-sm"
           v-bind="{
-            value: quoteTokenBalance.toBase(market.quoteToken.decimals),
+            value: quoteTokenBalance.toBase(),
             decimals: market.maxPriceScaleDecimals
           }"
         />

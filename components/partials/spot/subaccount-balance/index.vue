@@ -22,42 +22,13 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="balance in balances" :key="`balance-${balance.denom}`">
-              <td is="v-ui-table-td">
-                <p class="text-gray-200 font-semibold text-xs">
-                  {{ balance.token.symbol }}
-                </p>
-              </td>
-              <td is="v-ui-table-td" xs right>
-                <v-ui-format-number
-                  v-bind="{
-                    value: balance.totalBalance.toBase(balance.token.decimals),
-                    decimals: balance.displayDecimals
-                  }"
-                />
-              </td>
-              <td is="v-ui-table-td" xs right>
-                <v-ui-format-number
-                  v-bind="{
-                    value: balance.availableBalance.toBase(
-                      balance.token.decimals
-                    ),
-                    decimals: balance.displayDecimals
-                  }"
-                />
-              </td>
-            </tr>
-            <tr v-if="balances.length === 0">
-              <td is="v-ui-table-td" xs right class="h-8">
-                <v-ui-text muted-lg xs>&mdash;</v-ui-text>
-              </td>
-              <td is="v-ui-table-td" xs right class="h-8">
-                <v-ui-text muted-lg xs>&mdash;</v-ui-text>
-              </td>
-              <td is="v-ui-table-td" xs right class="h-8">
-                <v-ui-text muted-lg xs>&mdash;</v-ui-text>
-              </td>
-            </tr>
+            <tr
+              is="v-balance"
+              v-for="balance in balances"
+              :key="`balance-${balance.denom}`"
+              :balance="balance"
+            ></tr>
+            <tr is="v-balance-empty" v-if="balances.length === 0"></tr>
           </tbody>
         </table>
       </div>
@@ -73,14 +44,21 @@
 <script lang="ts">
 import Vue from 'vue'
 import { BigNumberInWei } from '@injectivelabs/utils'
+import VBalance from './balance.vue'
+import VBalanceEmpty from './balance-empty.vue'
 import {
   Modal,
   UiSpotMarket,
   UiSubaccount,
-  UiSubaccountBalanceToBN
+  UiSubaccountBalanceWithToken
 } from '~/types'
 
 export default Vue.extend({
+  components: {
+    VBalance,
+    VBalanceEmpty
+  },
+
   computed: {
     market(): UiSpotMarket | undefined {
       return this.$accessor.spot.market
@@ -94,7 +72,7 @@ export default Vue.extend({
       return this.$accessor.account.subaccount
     },
 
-    balances(): UiSubaccountBalanceToBN[] {
+    balances(): UiSubaccountBalanceWithToken[] {
       const { subaccount, market } = this
 
       if (!subaccount || !market) {
@@ -116,6 +94,10 @@ export default Vue.extend({
         .filter((b) => b)
         .map((balance) => ({
           ...balance,
+          token:
+            market.baseDenom.toLowerCase() === balance.denom.toLowerCase()
+              ? market.baseToken
+              : market.quoteToken,
           displayDecimals:
             market.baseDenom.toLowerCase() === balance.denom.toLowerCase()
               ? market.maxQuantityScaleDecimals

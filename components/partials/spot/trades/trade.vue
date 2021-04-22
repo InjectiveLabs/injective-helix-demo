@@ -4,9 +4,9 @@
     <span class="w-1/3 text-xs px-2 cursor-pointer">
       <v-ui-format-order-price
         v-bind="{
-          value: price.toBase(market.quoteToken.decimals),
+          value: price,
           type: trade.tradeDirection,
-          decimals: market.maxPriceScaleDecimals
+          decimals: priceScaleDisplayDecimals
         }"
         class="block text-right"
       />
@@ -14,8 +14,8 @@
     <span class="w-1/3 text-xs px-2">
       <v-ui-format-amount
         v-bind="{
-          value: quantity,
-          decimals: market.maxQuantityScaleDecimals
+          value: quantity.toBase(quantityScaleDecimals),
+          decimals: quantityScaleDisplayDecimals
         }"
         class="block text-right"
       />
@@ -31,8 +31,8 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import { format, toDate } from 'date-fns'
-import { UiSpotMarket, UiSpotMarketTrade } from '~/types'
+import { format } from 'date-fns'
+import { TradeDirection, UiSpotMarket, UiSpotMarketTrade } from '~/types'
 import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
 
 export default Vue.extend({
@@ -48,34 +48,104 @@ export default Vue.extend({
       return this.$accessor.spot.market
     },
 
-    price(): BigNumberInWei {
-      const { market, trade } = this
+    tradeDirectionBuy(): boolean {
+      const { trade } = this
 
-      if (!market || !trade.price) {
-        return ZERO_IN_WEI
-      }
-
-      return new BigNumberInWei(trade.price)
+      return trade.tradeDirection === TradeDirection.Buy
     },
 
-    quantity(): BigNumberInBase {
+    priceScaleDecimals(): number {
+      const { tradeDirectionBuy, market } = this
+
+      if (!market) {
+        return 0
+      }
+
+      return tradeDirectionBuy
+        ? market.quoteToken.decimals
+        : market.baseToken.decimals
+    },
+
+    quantityScaleDecimals(): number {
+      const { tradeDirectionBuy, market } = this
+
+      if (!market) {
+        return 0
+      }
+
+      return tradeDirectionBuy
+        ? market.baseToken.decimals
+        : market.quoteToken.decimals
+    },
+
+    priceScaleDisplayDecimals(): number {
+      const { tradeDirectionBuy, market } = this
+
+      if (!market) {
+        return 0
+      }
+
+      return tradeDirectionBuy
+        ? market.maxQuantityScaleDecimals
+        : market.maxPriceScaleDecimals
+    },
+
+    quantityScaleDisplayDecimals(): number {
+      const { tradeDirectionBuy, market } = this
+
+      if (!market) {
+        return 0
+      }
+
+      return tradeDirectionBuy
+        ? market.maxPriceScaleDecimals
+        : market.maxQuantityScaleDecimals
+    },
+
+    price(): BigNumberInBase {
       const { market, trade } = this
 
       if (!market || !trade.price) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(trade.quantity)
+      return new BigNumberInBase(trade.price)
+    },
+
+    quantity(): BigNumberInWei {
+      const { market, trade } = this
+
+      if (!market || !trade.quantity) {
+        return ZERO_IN_WEI
+      }
+
+      return new BigNumberInWei(trade.quantity)
+    },
+
+    total(): BigNumberInWei {
+      const { quantity, price } = this
+
+      return quantity.times(price)
     },
 
     time(): string {
       const { market, trade } = this
 
-      if (!market || !trade.price) {
+      if (!market || !trade.executedAt) {
         return ''
       }
 
-      return format(toDate(new Date().getTime() / 1000), 'kk:mm')
+      return format(trade.executedAt, 'kk:mm')
+    },
+
+    fee(): BigNumberInWei {
+      const { market, trade } = this
+
+      if (!market || !trade.fee) {
+        return ZERO_IN_WEI
+      }
+
+      return new BigNumberInWei(trade.fee)
     },
 
     newTradeClass(): string {
