@@ -152,7 +152,7 @@ export const submitLimitOrder = async ({
   quantity,
   orderType,
   address,
-  marketId,
+  market,
   injectiveAddress,
   subaccountId
 }: {
@@ -160,20 +160,28 @@ export const submitLimitOrder = async ({
   quantity: BigNumberInBase
   orderType: SpotOrderType
   subaccountId: string
-  marketId: string
+  market: UiSpotMarket
   address: AccountAddress
   injectiveAddress: AccountAddress
 }) => {
+  const orderTypeBuy = orderType === SpotOrderType.Buy
+  const relativePrice = price.toWei(
+    market.quoteToken.decimals - market.baseToken.decimals
+  )
+  const relativeQuantity = quantity.toWei(
+    orderTypeBuy ? market.baseToken.decimals : market.quoteToken.decimals
+  )
+
   const message = SpotMarketComposer.createLimitOrder({
     subaccountId,
-    marketId,
     injectiveAddress,
+    marketId: market.marketId,
     order: {
       orderType: orderTypeToGrpcOrderType(orderType),
+      price: relativePrice.toFixed(),
+      quantity: relativeQuantity.toFixed(),
       feeRecipient: FEE_RECIPIENT,
-      price: price.toFixed(),
-      triggerPrice: '0', // TODO
-      quantity: quantity.toFixed()
+      triggerPrice: '0' // TODO
     }
   })
 
@@ -195,7 +203,7 @@ export const submitMarketOrder = async ({
   price,
   orderType,
   address,
-  marketId,
+  market,
   injectiveAddress,
   subaccountId
 }: {
@@ -203,20 +211,28 @@ export const submitMarketOrder = async ({
   price: BigNumberInBase
   orderType: SpotOrderType
   subaccountId: string
-  marketId: string
+  market: UiSpotMarket
   address: AccountAddress
   injectiveAddress: AccountAddress
 }) => {
+  const orderTypeBuy = orderType === SpotOrderType.Buy
+  const relativePrice = price.toWei(
+    market.quoteToken.decimals - market.baseToken.decimals
+  )
+  const relativeQuantity = quantity.toWei(
+    orderTypeBuy ? market.baseToken.decimals : market.quoteToken.decimals
+  )
+
   const message = SpotMarketComposer.createMarketOrder({
     subaccountId,
-    marketId,
     injectiveAddress,
+    marketId: market.marketId,
     order: {
-      price: price.toFixed(),
+      price: relativePrice.toFixed(),
       orderType: orderTypeToGrpcOrderType(orderType),
+      quantity: relativeQuantity.toFixed(),
       feeRecipient: FEE_RECIPIENT,
-      triggerPrice: '0', // TODO
-      quantity: quantity.toFixed()
+      triggerPrice: '0' // TODO
     }
   })
 
@@ -271,16 +287,26 @@ export const cancelOrder = async ({
   }
 }
 
-export const calculateExecutionPriceFromOrderbook = (
-  records: UiPriceLevel[],
+export const calculateExecutionPriceFromOrderbook = ({
+  records,
+  market,
+  amount
+}: {
+  records: UiPriceLevel[]
+  market: UiSpotMarket
   amount: BigNumberInBase
-): BigNumberInBase => {
+}): BigNumberInBase => {
   const { sum, remainAmountToFill } = records.reduce(
     ({ sum, remainAmountToFill }, order: UiPriceLevel) => {
       const min = BigNumberInBase.min(remainAmountToFill, order.quantity)
+      const price = new BigNumberInBase(
+        new BigNumberInBase(order.price).toWei(
+          market.baseToken.decimals - market.quoteToken.decimals
+        )
+      )
 
       return {
-        sum: sum.plus(new BigNumberInBase(order.price).times(min)),
+        sum: sum.plus(price.times(min)),
         remainAmountToFill: remainAmountToFill.minus(min)
       }
     },

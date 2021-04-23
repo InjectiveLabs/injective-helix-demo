@@ -22,8 +22,7 @@
       <v-ui-format-order-price
         v-bind="{
           value: price,
-          type: type,
-          decimals: priceScaleDisplayDecimals
+          type: type
         }"
         class="text-right block"
       />
@@ -31,8 +30,7 @@
     <span class="w-1/3 text-xs px-2 z-10" @click.stop="onQuantityClick">
       <v-ui-format-amount
         v-bind="{
-          value: quantity.toBase(quantityScaleDecimals),
-          decimals: quantityScaleDisplayDecimals
+          value: quantity.toBase(quantityScaleDecimals)
         }"
         class="text-right block"
         :class="{
@@ -44,8 +42,7 @@
     <span class="w-1/3 text-xs px-2 z-10" @click.stop="onSumQuantityClick">
       <v-ui-format-amount
         v-bind="{
-          value: sumOfQuantities,
-          decimals: quantityScaleDisplayDecimals
+          value: sumOfQuantities
         }"
         class="text-right block text-white"
       />
@@ -129,31 +126,7 @@ export default Vue.extend({
 
       return recordTypeBuy
         ? market.baseToken.decimals
-        : market.quoteToken.decimals
-    },
-
-    priceScaleDisplayDecimals(): number {
-      const { recordTypeBuy, market } = this
-
-      if (!market) {
-        return 0
-      }
-
-      return recordTypeBuy
-        ? market.maxQuantityScaleDecimals
-        : market.maxPriceScaleDecimals
-    },
-
-    quantityScaleDisplayDecimals(): number {
-      const { recordTypeBuy, market } = this
-
-      if (!market) {
-        return 0
-      }
-
-      return recordTypeBuy
-        ? market.maxPriceScaleDecimals
-        : market.maxQuantityScaleDecimals
+        : market.baseToken.decimals
     },
 
     price(): BigNumberInBase {
@@ -163,7 +136,11 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(record.price)
+      return new BigNumberInBase(
+        new BigNumberInBase(record.price).toWei(
+          market.baseToken.decimals - market.quoteToken.decimals
+        )
+      )
     },
 
     sumOfQuantities(): BigNumberInBase {
@@ -183,7 +160,11 @@ export default Vue.extend({
         return ZERO_IN_WEI
       }
 
-      return new BigNumberInWei(record.quantity)
+      return new BigNumberInWei(
+        new BigNumberInWei(record.quantity).toFixed(
+          market.maxQuantityScaleDecimals
+        )
+      )
     },
 
     depthWidth(): { width: string } {

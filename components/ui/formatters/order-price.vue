@@ -3,6 +3,7 @@ import Vue, { PropType, VNode } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { formatPrice } from '~/app/utils/formatters'
 import { SpotOrderType } from '~/types'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   props: {
@@ -30,14 +31,35 @@ export default Vue.extend({
     },
 
     decimals: {
-      required: true,
-      type: Number
+      required: false,
+      type: Number,
+      default: UI_DEFAULT_DISPLAY_DECIMALS
+    },
+
+    deriveDecimals: {
+      required: false,
+      type: Boolean,
+      default: true
     }
   },
 
   computed: {
     formatFunction(): Function {
       return formatPrice
+    },
+
+    derivedDecimals(): number {
+      const { value, decimals, deriveDecimals } = this
+
+      if (!deriveDecimals) {
+        return decimals
+      }
+
+      const valueToString = value.toFixed()
+      const parts = valueToString.split('.')
+      const derivedDecimals = parts[1] ? parts[1].length : 0
+
+      return derivedDecimals
     },
 
     textClass(): string {
@@ -62,7 +84,7 @@ export default Vue.extend({
       ...parentAttributes,
       props: {
         formatter: this.formatFunction,
-        decimals: this.decimals,
+        decimals: this.derivedDecimals,
         value: this.value,
         suffix: this.suffix,
         prefix: this.prefix

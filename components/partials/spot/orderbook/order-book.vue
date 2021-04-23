@@ -84,7 +84,7 @@ import {
 } from '@injectivelabs/utils'
 import Record from './record.vue'
 import RecordEmpty from './record-empty.vue'
-import { ZERO_IN_BASE } from '~/app/utils/constants'
+import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
 import {
   UiSpotMarketTrade,
   UiSpotMarket,
@@ -166,20 +166,20 @@ export default Vue.extend({
       }, [] as string[])
     },
 
-    buysTotal(): BigNumberInBase {
+    buysTotal(): BigNumberInWei {
       const { buys } = this
 
       return buys.reduce((total, buy) => {
-        return total.plus(buy.price)
-      }, ZERO_IN_BASE)
+        return total.plus(buy.quantity)
+      }, ZERO_IN_WEI)
     },
 
-    sellsTotal(): BigNumberInBase {
+    sellsTotal(): BigNumberInWei {
       const { sells } = this
 
       return sells.reduce((total, sell) => {
-        return total.plus(sell.price)
-      }, ZERO_IN_BASE)
+        return total.plus(sell.quantity)
+      }, ZERO_IN_WEI)
     },
 
     buysWithDepth(): UiOrderbookPriceLevel[] {
@@ -191,17 +191,19 @@ export default Vue.extend({
 
       let accumulator = ZERO_IN_BASE
       return buys.map((record: UiPriceLevel, index: number) => {
-        accumulator =
-          index === 0
-            ? new BigNumberInWei(record.quantity).toBase(
-                market.quoteToken.decimals
-              )
-            : accumulator.plus(record.quantity)
+        const quantity = new BigNumberInWei(record.quantity).toBase(
+          market.baseToken.decimals
+        )
+
+        accumulator = index === 0 ? quantity : accumulator.plus(quantity)
 
         return {
           ...record,
           sumOfQuantities: accumulator.toFixed(),
-          depth: accumulator.dividedBy(buysTotal).times(100).toNumber()
+          depth: accumulator
+            .dividedBy(buysTotal.toBase(market.baseToken.decimals))
+            .times(100)
+            .toNumber()
         }
       })
     },
@@ -216,17 +218,19 @@ export default Vue.extend({
       let accumulator = ZERO_IN_BASE
       return sells
         .map((record: UiPriceLevel, index: number) => {
-          accumulator =
-            index === 0
-              ? new BigNumberInWei(record.quantity).toBase(
-                  market.baseToken.decimals
-                )
-              : accumulator.plus(record.quantity)
+          const quantity = new BigNumberInWei(record.quantity).toBase(
+            market.baseToken.decimals
+          )
+
+          accumulator = index === 0 ? quantity : accumulator.plus(quantity)
 
           return {
             ...record,
             sumOfQuantities: accumulator.toFixed(),
-            depth: accumulator.dividedBy(sellsTotal).times(100).toNumber()
+            depth: accumulator
+              .dividedBy(sellsTotal.toBase(market.baseToken.decimals))
+              .times(100)
+              .toNumber()
           }
         })
         .reverse()
@@ -295,7 +299,11 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(lastTrade.price)
+      return new BigNumberInBase(
+        new BigNumberInBase(lastTrade.price).toWei(
+          market.baseToken.decimals - market.quoteToken.decimals
+        )
+      )
     }
   },
 

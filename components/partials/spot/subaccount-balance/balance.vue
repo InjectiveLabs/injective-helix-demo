@@ -6,18 +6,16 @@
       </p>
     </td>
     <td is="v-ui-table-td" xs right>
-      <v-ui-format-number
+      <v-ui-format-amount
         v-bind="{
-          value: balance.totalBalance.toBase(),
-          decimals: balance.displayDecimals
+          value: balance.totalBalance.toBase(balance.token.decimals)
         }"
       />
     </td>
     <td is="v-ui-table-td" xs right>
-      <v-ui-format-number
+      <v-ui-format-amount
         v-bind="{
-          value: balance.availableBalance.toBase(),
-          decimals: balance.displayDecimals
+          value: balance.availableBalance.toBase(balance.token.decimals)
         }"
       />
     </td>

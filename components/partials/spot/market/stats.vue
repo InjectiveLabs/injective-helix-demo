@@ -4,8 +4,7 @@
       <v-ui-text sm class="flex items-center justify-end w-full">
         <v-ui-format-price
           v-bind="{
-            value: lastPrice.toBase(market.quoteToken.decimals),
-            decimals: market.maxPriceScaleDecimals
+            value: lastPrice
           }"
         />
       </v-ui-text>
@@ -26,10 +25,9 @@
       :title="$t('volume_asset', { asset: market.quoteToken.symbol })"
     >
       <v-ui-text sm class="flex items-center justify-end w-full">
-        <v-ui-format-number
+        <v-ui-format-price
           v-bind="{
             dontGroupValues: true,
-            decimals: market.maxQuantityScaleDecimals,
             value: volume
           }"
         />
@@ -40,8 +38,7 @@
         <v-ui-format-price
           v-if="high.gt(0)"
           v-bind="{
-            value: high,
-            decimals: market.maxPriceScaleDecimals
+            value: high
           }"
         />
         <span v-else class="text-gray-500">&mdash;</span>
@@ -49,11 +46,10 @@
     </v-market-info>
     <v-market-info :title="$t('low')">
       <v-ui-text sm class="flex items-center justify-end w-full">
-        <v-ui-format-number
+        <v-ui-format-price
           v-if="high.gt(0)"
           v-bind="{
-            value: low,
-            decimals: market.maxPriceScaleDecimals
+            value: low
           }"
         />
         <span v-else class="text-gray-500">&mdash;</span>
@@ -64,8 +60,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BigNumberInWei } from '@injectivelabs/utils'
-import { ZERO_IN_WEI } from '~/app/utils/constants'
+import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
+import { ZERO_IN_WEI, ZERO_IN_BASE } from '~/app/utils/constants'
 import MarketInfo from '~/components/elements/market-info.vue'
 import { Change, UiSpotMarket, UiSpotMarketTrade } from '~/types'
 
@@ -83,19 +79,23 @@ export default Vue.extend({
       return this.$accessor.spot.trades
     },
 
-    lastPrice(): BigNumberInWei {
+    lastPrice(): BigNumberInBase {
       const { trades, market } = this
       const [lastTrade] = trades || []
 
       if (!lastTrade || !market) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
       if (!lastTrade.price) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(lastTrade.price)
+      return new BigNumberInBase(
+        new BigNumberInBase(lastTrade.price).toWei(
+          market.baseToken.decimals - market.quoteToken.decimals
+        )
+      )
     },
 
     high(): BigNumberInWei {

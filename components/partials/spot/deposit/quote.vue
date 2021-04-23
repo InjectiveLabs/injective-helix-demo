@@ -91,7 +91,9 @@ export default Vue.extend({
         return ''
       }
 
-      return balance.toBase().toFixed(market.maxPriceScaleDecimals)
+      return balance
+        .toBase(market.quoteToken.decimals)
+        .toFixed(market.maxPriceScaleDecimals)
     }
   },
 

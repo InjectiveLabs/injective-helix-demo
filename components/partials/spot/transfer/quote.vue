@@ -111,7 +111,9 @@ export default Vue.extend({
         return ''
       }
 
-      return token.balance.toBase().toFixed(market.maxPriceScaleDecimals)
+      return token.balance
+        .toBase(market.quoteToken.decimals)
+        .toFixed(market.maxPriceScaleDecimals)
     }
   },
 

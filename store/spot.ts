@@ -389,7 +389,7 @@ export const actions = actionTree(
         orderType,
         injectiveAddress,
         address,
-        marketId: market.marketId,
+        market,
         subaccountId: subaccount.subaccountId
       })
     },
@@ -429,7 +429,7 @@ export const actions = actionTree(
         price,
         injectiveAddress,
         address,
-        marketId: market.marketId,
+        market,
         subaccountId: subaccount.subaccountId
       })
     },

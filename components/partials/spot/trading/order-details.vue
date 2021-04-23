@@ -9,12 +9,9 @@
         <v-ui-text muted-md>{{ $t('total') }}</v-ui-text>
         <v-ui-text class="flex items-center text-gray-500">
           <span class="mr-1">≈</span>
-          <v-ui-format-number
+          <v-ui-format-price
             v-bind="{
-              value: total,
-              decimals: orderTypeBuy
-                ? market.maxPriceScaleDecimals
-                : market.maxQuantityScaleDecimals
+              value: total
             }"
           />
           <small class="opacity-75 ml-1 pt-px">{{
@@ -28,12 +25,9 @@
             {{ $t('amount') }}
           </v-ui-text>
           <v-ui-text v-if="!amount.isNaN()" muted class="flex items-center">
-            <v-ui-format-number
+            <v-ui-format-amount
               v-bind="{
-                value: amount,
-                decimals: orderTypeBuy
-                  ? market.maxQuantityScaleDecimals
-                  : market.maxPriceScaleDecimals
+                value: amount
               }"
               class="text-gray-300"
             />
@@ -50,12 +44,9 @@
             {{ $t('price') }}
           </v-ui-text>
           <v-ui-text v-if="price.gt(0)" muted class="flex items-center">
-            <v-ui-format-number
+            <v-ui-format-price
               v-bind="{
-                value: price,
-                decimals: orderTypeBuy
-                  ? market.maxPriceScaleDecimals
-                  : market.maxQuantityScaleDecimals
+                value: price
               }"
               class="text-gray-300"
             />
@@ -72,12 +63,9 @@
             $t('notional_value')
           }}</v-ui-text>
           <v-ui-text v-if="notionalValue.gt(0)" muted class="flex items-center">
-            <v-ui-format-number
+            <v-ui-format-price
               v-bind="{
-                value: notionalValue,
-                decimals: orderTypeBuy
-                  ? market.maxPriceScaleDecimals
-                  : market.maxQuantityScaleDecimals
+                value: notionalValue
               }"
               class="text-gray-300"
             />
@@ -94,12 +82,9 @@
             $t('fee')
           }}</v-ui-text>
           <v-ui-text v-if="fees.gt(0)" muted class="flex items-center">
-            <v-ui-format-number
+            <v-ui-format-price
               v-bind="{
-                value: fees,
-                decimals: orderTypeBuy
-                  ? market.maxPriceScaleDecimals
-                  : market.maxQuantityScaleDecimals
+                value: fees
               }"
               class="text-gray-300"
             />

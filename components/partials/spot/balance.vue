@@ -9,12 +9,11 @@
       <v-ui-text-info
         :title="$t('balance_asset', { asset: market.baseToken.symbol })"
       >
-        <v-ui-format-number
+        <v-ui-format-amount
           v-if="baseTokenBalance.gt(0)"
           class="font-normal text-sm"
           v-bind="{
-            value: baseTokenBalance.toBase(),
-            decimals: market.maxQuantityScaleDecimals
+            value: baseTokenBalance.toBase(market.baseToken.decimals)
           }"
         />
         <span v-else class="text-gray-400 font-normal text-xs">&mdash;</span>
@@ -23,12 +22,11 @@
         class="mt-3"
         :title="$t('balance_asset', { asset: market.quoteToken.symbol })"
       >
-        <v-ui-format-number
+        <v-ui-format-amount
           v-if="quoteTokenBalance.gt(0)"
           class="font-normal text-sm"
           v-bind="{
-            value: quoteTokenBalance.toBase(),
-            decimals: market.maxPriceScaleDecimals
+            value: quoteTokenBalance.toBase(market.quoteToken.decimals)
           }"
         />
         <span v-else class="text-gray-400 font-normal text-xs">&mdash;</span>
