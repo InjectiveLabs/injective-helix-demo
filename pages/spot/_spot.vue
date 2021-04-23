@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { GridLayout, GridItem } from 'vue-grid-layout'
 import { headTitle } from '~/app/utils/generators'
 import MarketPriceChartPanel from '~/components/partials/spot/market/chart.vue'
@@ -53,6 +53,7 @@ import OrdersPanel from '~/components/partials/spot/orders.vue'
 import HOCLoading from '~/components/elements/with-loading.vue'
 import { UiSpotMarket, UiSpotMarketTrade } from '~/types'
 import { localStorage } from '~/app/singletons/Storage'
+import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 const LOCAL_STORAGE_GRID_KEY = 'spot-market-grid-layout'
 const GRID_ROW_HEIGHT = 54
@@ -200,13 +201,17 @@ export default Vue.extend({
       }
 
       const [trade] = trades
-      const tradePrice = new BigNumberInWei(trade.price)
+      const tradePrice = new BigNumberInBase(
+        new BigNumberInBase(trade.price).toWei(
+          market.baseToken.decimals - market.quoteToken.decimals
+        )
+      )
 
       if (tradePrice.isNaN() || tradePrice.lte(0)) {
         return `0.00`
       }
 
-      return `${tradePrice.toFormat(market.maxPriceScaleDecimals)}`
+      return `${tradePrice.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)}`
     }
   },
 
