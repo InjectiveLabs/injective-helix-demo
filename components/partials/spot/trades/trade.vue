@@ -13,7 +13,7 @@
     <span class="w-1/3 text-xs px-2">
       <v-ui-format-amount
         v-bind="{
-          value: quantity.toBase(quantityScaleDecimals)
+          value: quantity.toBase(market.baseToken.decimals)
         }"
         class="block text-right"
       />
@@ -30,7 +30,7 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { format } from 'date-fns'
-import { TradeDirection, UiSpotMarket, UiSpotMarketTrade } from '~/types'
+import { UiSpotMarket, UiSpotMarketTrade } from '~/types'
 import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
 
 export default Vue.extend({
@@ -44,36 +44,6 @@ export default Vue.extend({
   computed: {
     market(): UiSpotMarket | undefined {
       return this.$accessor.spot.market
-    },
-
-    tradeDirectionBuy(): boolean {
-      const { trade } = this
-
-      return trade.tradeDirection === TradeDirection.Buy
-    },
-
-    priceScaleDecimals(): number {
-      const { tradeDirectionBuy, market } = this
-
-      if (!market) {
-        return 0
-      }
-
-      return tradeDirectionBuy
-        ? market.quoteToken.decimals
-        : market.baseToken.decimals
-    },
-
-    quantityScaleDecimals(): number {
-      const { tradeDirectionBuy, market } = this
-
-      if (!market) {
-        return 0
-      }
-
-      return tradeDirectionBuy
-        ? market.baseToken.decimals
-        : market.quoteToken.decimals
     },
 
     price(): BigNumberInBase {

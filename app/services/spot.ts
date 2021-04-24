@@ -164,13 +164,10 @@ export const submitLimitOrder = async ({
   address: AccountAddress
   injectiveAddress: AccountAddress
 }) => {
-  const orderTypeBuy = orderType === SpotOrderType.Buy
   const relativePrice = price.toWei(
     market.quoteToken.decimals - market.baseToken.decimals
   )
-  const relativeQuantity = quantity.toWei(
-    orderTypeBuy ? market.baseToken.decimals : market.quoteToken.decimals
-  )
+  const relativeQuantity = quantity.toWei(market.baseToken.decimals)
 
   const message = SpotMarketComposer.createLimitOrder({
     subaccountId,
@@ -215,13 +212,10 @@ export const submitMarketOrder = async ({
   address: AccountAddress
   injectiveAddress: AccountAddress
 }) => {
-  const orderTypeBuy = orderType === SpotOrderType.Buy
   const relativePrice = price.toWei(
     market.quoteToken.decimals - market.baseToken.decimals
   )
-  const relativeQuantity = quantity.toWei(
-    orderTypeBuy ? market.baseToken.decimals : market.quoteToken.decimals
-  )
+  const relativeQuantity = quantity.toWei(market.baseToken.decimals)
 
   const message = SpotMarketComposer.createMarketOrder({
     subaccountId,

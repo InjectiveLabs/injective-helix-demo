@@ -3,7 +3,7 @@
     <td is="v-ui-table-td" xs class="h-8">
       <v-ui-format-order-price
         v-bind="{
-          value: price.dp(priceScaleDecimals),
+          value: price,
           type: order.orderType
         }"
         class="flex justify-end"
@@ -12,7 +12,7 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: quantity.toBase(quantityScaleDecimals)
+          value: quantity.toBase(market.baseToken.decimals)
         }"
         class="block"
       />
@@ -20,7 +20,7 @@
     <td is="v-ui-table-td" xs class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: total.toBase(quantityScaleDecimals)
+          value: total.toBase(market.baseToken.decimals)
         }"
         class="text-right block text-white"
       />
@@ -42,7 +42,9 @@
       </v-ui-badge>
       <v-ui-badge v-else-if="orderFillable" dark xs>
         <div class="w-16">
-          {{ `${filledQuantity.toBase(quantityScaleDecimals).toFixed(2)}%` }}
+          {{
+            `${filledQuantity.toBase(market.baseToken.decimals).toFixed(2)}%`
+          }}
         </div>
       </v-ui-badge>
     </td>
@@ -95,36 +97,6 @@ export default Vue.extend({
   computed: {
     market(): UiSpotMarket | undefined {
       return this.$accessor.spot.market
-    },
-
-    orderTypeBuy(): boolean {
-      const { order } = this
-
-      return order.orderType === SpotOrderType.Buy
-    },
-
-    priceScaleDecimals(): number {
-      const { orderTypeBuy, market } = this
-
-      if (!market) {
-        return 0
-      }
-
-      return orderTypeBuy
-        ? market.quoteToken.decimals
-        : market.baseToken.decimals
-    },
-
-    quantityScaleDecimals(): number {
-      const { orderTypeBuy, market } = this
-
-      if (!market) {
-        return 0
-      }
-
-      return orderTypeBuy
-        ? market.baseToken.decimals
-        : market.quoteToken.decimals
     },
 
     price(): BigNumberInBase {

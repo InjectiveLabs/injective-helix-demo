@@ -12,7 +12,7 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: quantity.toBase(quantityScaleDecimals)
+          value: quantity.toBase(market.baseToken.decimals)
         }"
         class="block text-right"
       />
@@ -20,7 +20,7 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: total.toBase(quantityScaleDecimals)
+          value: total.toBase(market.baseToken.decimals)
         }"
         class="block text-right"
       />
@@ -28,7 +28,7 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: fee.toBase(priceScaleDecimals)
+          value: fee.toBase(market.quoteToken.decimals)
         }"
         class="text-right block text-white"
       />
@@ -85,36 +85,6 @@ export default Vue.extend({
   computed: {
     market(): UiSpotMarket | undefined {
       return this.$accessor.spot.market
-    },
-
-    tradeDirectionBuy(): boolean {
-      const { trade } = this
-
-      return trade.tradeDirection === TradeDirection.Buy
-    },
-
-    priceScaleDecimals(): number {
-      const { tradeDirectionBuy, market } = this
-
-      if (!market) {
-        return 0
-      }
-
-      return tradeDirectionBuy
-        ? market.quoteToken.decimals
-        : market.baseToken.decimals
-    },
-
-    quantityScaleDecimals(): number {
-      const { tradeDirectionBuy, market } = this
-
-      if (!market) {
-        return 0
-      }
-
-      return tradeDirectionBuy
-        ? market.baseToken.decimals
-        : market.quoteToken.decimals
     },
 
     price(): BigNumberInBase {
