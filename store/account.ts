@@ -3,10 +3,12 @@ import { actionTree, getterTree } from 'nuxt-typed-vuex'
 import {
   fetchSubaccounts,
   fetchSubaccount,
-  deposit
+  deposit,
+  streamSubaccountBalances
 } from '~/app/services/account'
+import { grpcSubaccountBalanceToUiSubaccountBalance } from '~/app/transformers/account'
 import { backupPromiseCall } from '~/app/utils/async'
-import { UiSubaccount } from '~/types/subaccount'
+import { UiSubaccount, UiSubaccountBalance } from '~/types/subaccount'
 
 const initialStateFactory = () => ({
   subaccountIds: [] as string[],
@@ -33,6 +35,21 @@ export const mutations = {
 
   setSubaccount(state: AccountStoreState, subaccount: UiSubaccount) {
     state.subaccount = subaccount
+  },
+
+  setSubaccountBalance(state: AccountStoreState, balance: UiSubaccountBalance) {
+    if (!state.subaccount) {
+      return
+    }
+
+    const index = state.subaccount.balances.findIndex(
+      (b) => b.denom === balance.denom
+    )
+    const balances = [...state.subaccount.balances].splice(index, 1, balance)
+
+    if (index > 0) {
+      state.subaccount = { ...state.subaccount, balances }
+    }
   }
 }
 
@@ -74,8 +91,31 @@ export const actions = actionTree(
       commit('setSubaccount', await fetchSubaccount(subaccountId))
     },
 
+    async streamSubaccountBalances({ commit, state }) {
+      const { subaccount } = state
+
+      if (!subaccount) {
+        return
+      }
+
+      streamSubaccountBalances(subaccount.subaccountId, ({ balance }) => {
+        if (!balance) {
+          return
+        }
+
+        commit(
+          'setSubaccountBalance',
+          grpcSubaccountBalanceToUiSubaccountBalance(balance)
+        )
+      })
+
+      const { subaccountId } = subaccount
+
+      commit('setSubaccount', await fetchSubaccount(subaccountId))
+    },
+
     async deposit(
-      { state, dispatch },
+      { state },
       { amount, denom }: { amount: BigNumberInBase; denom: string }
     ) {
       const { subaccount } = state
@@ -102,7 +142,7 @@ export const actions = actionTree(
         amount: amount.toWei()
       })
 
-      await backupPromiseCall(() => dispatch('updateSubaccount'))
+      // await backupPromiseCall(() => dispatch('updateSubaccount'))
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
     }
   }

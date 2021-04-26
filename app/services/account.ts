@@ -1,11 +1,16 @@
 import {
   SubaccountTransformer,
-  SubaccountComposer
+  SubaccountComposer,
+  SubaccountStreamType,
+  SubaccountBalanceStreamCallback
 } from '@injectivelabs/spot-consumer'
 import { AccountAddress } from '@injectivelabs/ts-types'
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { TxProvider } from '../providers/TxProvider'
+import { subaccountStream } from '../singletons/SubaccountStream'
+import { streamManager } from '../singletons/StreamManager'
+import { grpcSubaccountBalanceToUiSubaccountBalance } from '../transformers/account'
 import { subaccountConsumer } from '~/app/singletons/SubaccountConsumer'
 import { TESTNET_CHAIN_ID } from '~/app/utils/constants'
 import { authConsumer } from '~/app/singletons/AuthConsumer'
@@ -26,13 +31,7 @@ export const fetchSubaccount = async (
 ): Promise<UiSubaccount> => {
   const balances = SubaccountTransformer.grpcBalancesToBalances(
     await subaccountConsumer.fetchSubaccountBalances(subaccountId)
-  ).map((balance) => {
-    return {
-      denom: balance.denom,
-      totalBalance: balance.deposit ? balance.deposit.availableBalance : '0',
-      availableBalance: balance.deposit ? balance.deposit.totalBalance : '0'
-    }
-  })
+  ).map((balance) => grpcSubaccountBalanceToUiSubaccountBalance(balance))
 
   return {
     subaccountId,
@@ -44,6 +43,22 @@ export const fetchSubaccountHistory = async (subaccountId: string) => {
   return SubaccountTransformer.grpcTransferHistoryToTransferHistory(
     await subaccountConsumer.fetchSubaccountHistory(subaccountId)
   )
+}
+
+export const streamSubaccountBalances = (
+  subaccountId: string,
+  callback: SubaccountBalanceStreamCallback
+) => {
+  const stream = subaccountStream.balances.start({
+    subaccountId,
+    callback
+  })
+
+  streamManager.set(stream, SubaccountStreamType.Balances)
+}
+
+export const cancelMarketStreams = () => {
+  streamManager.cancel(SubaccountStreamType.Balances)
 }
 
 export const deposit = async ({

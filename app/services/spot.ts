@@ -114,7 +114,10 @@ export const streamSubaccountOrders = (
 }
 
 export const cancelMarketStreams = () => {
-  streamManager.cancelAll()
+  streamManager.cancel(SpotMarketStreamType.Orderbook)
+  streamManager.cancel(SpotMarketStreamType.SubaccountOrders)
+  streamManager.cancel(SpotMarketStreamType.SubaccountTrades)
+  streamManager.cancel(SpotMarketStreamType.Trades)
 }
 
 export const fetchSpotMarketTrades = async ({
