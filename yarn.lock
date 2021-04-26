@@ -1594,10 +1594,10 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/spot-consumer@^0.0.21":
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/spot-consumer/-/spot-consumer-0.0.21.tgz#15325711739d850f8098a33f2bd033458db4c5da"
-  integrity sha512-O5TylaDuCJtEfReBfe9/v7afmhZkU6bvYxf6wjuJvMjU6NpNM0D/n0f+PovF0VSVRIhO7CzfI4fvr+D7P/z1gA==
+"@injectivelabs/spot-consumer@^0.0.22":
+  version "0.0.22"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/spot-consumer/-/spot-consumer-0.0.22.tgz#c97e5880fd3e2f1c3f61650599bfa8fecaa547ac"
+  integrity sha512-c6TGABViN04d4ppnaURf8RHt0/M+UHMGSjJh6LK8eypTdRCggOWMpBSL/TThVsj2zGStiKE8pGiiS/ardld4XQ==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.14.0"

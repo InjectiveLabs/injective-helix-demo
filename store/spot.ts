@@ -220,6 +220,7 @@ export const actions = actionTree(
       await dispatch('setSubaccountStreams')
       await dispatch('fetchSubaccountOrders')
       await dispatch('fetchSubaccountTrades')
+      await this.app.$accessor.account.streamSubaccountBalances()
     },
 
     setSubaccountStreams({ state, commit }) {

@@ -91,7 +91,7 @@ export const actions = actionTree(
       commit('setSubaccount', await fetchSubaccount(subaccountId))
     },
 
-    async streamSubaccountBalances({ commit, state }) {
+    streamSubaccountBalances({ commit, state }) {
       const { subaccount } = state
 
       if (!subaccount) {
@@ -108,10 +108,6 @@ export const actions = actionTree(
           grpcSubaccountBalanceToUiSubaccountBalance(balance)
         )
       })
-
-      const { subaccountId } = subaccount
-
-      commit('setSubaccount', await fetchSubaccount(subaccountId))
     },
 
     async deposit(
