@@ -42,13 +42,13 @@ export const mutations = {
       return
     }
 
-    const index = state.subaccount.balances.findIndex(
-      (b) => b.denom === balance.denom
+    const balances = [...state.subaccount.balances].filter(
+      (b) => b.denom !== balance.denom
     )
-    const balances = [...state.subaccount.balances].splice(index, 1, balance)
 
-    if (index > 0) {
-      state.subaccount = { ...state.subaccount, balances }
+    state.subaccount = {
+      ...state.subaccount,
+      balances: [...balances, balance]
     }
   }
 }
