@@ -42,13 +42,25 @@ export const mutations = {
       return
     }
 
+    const currentBalance = [...state.subaccount.balances].find(
+      (b) => b.denom === balance.denom
+    )
     const balances = [...state.subaccount.balances].filter(
       (b) => b.denom !== balance.denom
     )
+    const updatedBalance = {
+      ...balance,
+      totalBalance:
+        balance.totalBalance ||
+        (currentBalance ? currentBalance.totalBalance : '0'),
+      availableBalance:
+        balance.availableBalance ||
+        (currentBalance ? currentBalance.availableBalance : '0')
+    }
 
     state.subaccount = {
       ...state.subaccount,
-      balances: [...balances, balance]
+      balances: [...balances, updatedBalance]
     }
   }
 }
