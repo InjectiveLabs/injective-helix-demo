@@ -50,9 +50,7 @@
       </v-ui-badge>
       <v-ui-badge v-else-if="orderFillable" dark xs>
         <div class="w-16">
-          {{
-            `${filledQuantity.toBase(market.baseToken.decimals).toFixed(2)}%`
-          }}
+          {{ `${filledQuantityPercentage.times(100).toFixed(2)}%` }}
         </div>
       </v-ui-badge>
     </td>
@@ -153,6 +151,20 @@ export default Vue.extend({
       const { unfilledQuantity, quantity } = this
 
       return quantity.minus(unfilledQuantity)
+    },
+
+    filledQuantityPercentage(): BigNumberInBase {
+      const { filledQuantity, quantity, market } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      if (filledQuantity.lte(0)) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(filledQuantity.dividedBy(quantity))
     },
 
     orderFullyFilled(): boolean {
