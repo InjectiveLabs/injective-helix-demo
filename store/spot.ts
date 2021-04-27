@@ -118,6 +118,25 @@ export const mutations = {
     }
   },
 
+  pushOrUpdateSubaccountOrder(
+    state: SpotStoreState,
+    subaccountOrder: UiSpotMarketOrder
+  ) {
+    const index = state.subaccountOrders.findIndex(
+      (order) => order.orderHash === subaccountOrder.orderHash
+    )
+
+    if (index > 0) {
+      state.subaccountOrders = [...state.subaccountOrders].splice(
+        index,
+        1,
+        subaccountOrder
+      )
+    } else {
+      state.subaccountOrders = [subaccountOrder, ...state.subaccountOrders]
+    }
+  },
+
   deleteSubaccountOrder(
     state: SpotStoreState,
     subaccountOrder: UiSpotMarketOrder
@@ -247,7 +266,7 @@ export const actions = actionTree(
 
           switch (order.state) {
             case SpotOrderState.Unfilled:
-              commit('pushSubaccountOrder', order)
+              commit('pushOrUpdateSubaccountOrder', order)
               break
             case SpotOrderState.Cancelled:
               commit('deleteSubaccountOrder', order)
