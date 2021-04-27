@@ -359,7 +359,6 @@ export const actions = actionTree(
         injectiveAddress,
         address,
         orderHash: order.orderHash,
-        orderType: order.orderType,
         marketId: market.marketId,
         subaccountId: subaccount.subaccountId
       })

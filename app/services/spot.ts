@@ -248,14 +248,12 @@ export const submitMarketOrder = async ({
 
 export const cancelOrder = async ({
   orderHash,
-  orderType,
   address,
   marketId,
   injectiveAddress,
   subaccountId
 }: {
   orderHash: string
-  orderType: SpotOrderType
   subaccountId: string
   marketId: string
   address: AccountAddress
@@ -266,8 +264,7 @@ export const cancelOrder = async ({
     marketId,
     injectiveAddress,
     order: {
-      orderHash,
-      isBuy: orderType === SpotOrderType.Buy
+      orderHash
     }
   })
 

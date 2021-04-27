@@ -44,6 +44,6 @@ export const NETWORK_ID: number = ChainId.Injective
 export const MAINNET_CHAIN_ID: ChainId = ChainId.Mainnet
 export const TESTNET_CHAIN_ID: ChainId = ChainId.Kovan
 
-export const RPC_POLING_INTERVAL: number = 2000
+export const RPC_POLING_INTERVAL: number = 4000
 
 export const TESTNET_GAS_PRICE = new BigNumber(6).times(GWEI_IN_WEI)

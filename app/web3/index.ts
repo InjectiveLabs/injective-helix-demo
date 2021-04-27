@@ -38,7 +38,8 @@ export const initWeb3Strategy = (wallet: Wallet) => {
     options: {
       wsRpcUrls: getRpcWsUrlsForChainIds(),
       rpcUrls: getRpcUrlsForChainIds(),
-      pollingInterval: RPC_POLING_INTERVAL
+      pollingInterval: RPC_POLING_INTERVAL,
+      blockTracker: false
     }
   })
 
