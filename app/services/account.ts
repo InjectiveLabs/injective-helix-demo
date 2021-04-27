@@ -78,7 +78,7 @@ export const deposit = async ({
     subaccountId,
     denom,
     injectiveAddress,
-    amount: amount.toString()
+    amount: amount.toFixed()
   })
 
   try {

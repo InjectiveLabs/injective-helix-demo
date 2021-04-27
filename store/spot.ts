@@ -1,6 +1,7 @@
 import { actionTree, getterTree } from 'nuxt-typed-vuex'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { StreamOperation } from '@injectivelabs/ts-types'
+import { SpotOrderState } from '@injectivelabs/spot-consumer'
 import {
   UiOrderbook,
   UiSpotMarketOrder,
@@ -239,20 +240,20 @@ export const actions = actionTree(
       streamSubaccountOrders(
         market.marketId,
         subaccount.subaccountId,
-        ({ order, operation }) => {
+        ({ order }) => {
           if (!order) {
             return
           }
 
-          switch (operation) {
-            case StreamOperation.Insert:
+          switch (order.state) {
+            case SpotOrderState.Unfilled:
               commit('pushSubaccountOrder', order)
               break
-            case StreamOperation.Delete:
+            case SpotOrderState.Cancelled:
               commit('deleteSubaccountOrder', order)
               break
-            case StreamOperation.Update:
-              commit('updateSubaccountOrder', order)
+            case SpotOrderState.Filled:
+              commit('deleteSubaccountOrder', order)
               break
           }
         }
