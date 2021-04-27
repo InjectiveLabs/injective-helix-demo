@@ -62,6 +62,11 @@ export const actions = actionTree(
 
     async fetchSubaccounts({ commit }) {
       const { injectiveAddress } = this.app.$accessor.wallet
+
+      if (!injectiveAddress) {
+        return
+      }
+
       const subaccountIds = await fetchSubaccounts(injectiveAddress)
 
       if (subaccountIds.length === 0) {

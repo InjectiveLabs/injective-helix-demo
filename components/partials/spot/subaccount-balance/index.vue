@@ -102,8 +102,8 @@ export default Vue.extend({
             market.baseDenom.toLowerCase() === balance.denom.toLowerCase()
               ? market.maxQuantityScaleDecimals
               : market.maxPriceScaleDecimals,
-          totalBalance: new BigNumberInWei(balance.totalBalance),
-          availableBalance: new BigNumberInWei(balance.availableBalance)
+          totalBalance: new BigNumberInWei(balance.totalBalance || 0),
+          availableBalance: new BigNumberInWei(balance.availableBalance || 0)
         }))
     }
   },

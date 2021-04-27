@@ -97,5 +97,6 @@ export default {
   success_transfer: 'Successfully Transferred',
   success_deposit: 'Successfully Deposited',
   injective_chain_balance: 'Injective Chain Balances',
-  balance_asset: 'Balance {asset}'
+  balance_asset: 'Balance {asset}',
+  unfilled: 'Unfilled'
 }

@@ -17,6 +17,14 @@
         class="block"
       />
     </td>
+    <td is="v-ui-table-td" xs right class="h-8">
+      <v-ui-format-amount
+        v-bind="{
+          value: unfilledQuantity.toBase(market.baseToken.decimals)
+        }"
+        class="block"
+      />
+    </td>
     <td is="v-ui-table-td" xs class="h-8">
       <v-ui-format-amount
         v-bind="{

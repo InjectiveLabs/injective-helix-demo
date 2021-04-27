@@ -5,6 +5,6 @@ export const grpcSubaccountBalanceToUiSubaccountBalance = (
   balance: SubaccountBalance
 ): UiSubaccountBalance => ({
   denom: balance.denom,
-  totalBalance: balance.deposit ? balance.deposit.availableBalance : '0',
-  availableBalance: balance.deposit ? balance.deposit.totalBalance : '0'
+  totalBalance: balance.deposit ? balance.deposit.totalBalance : '0',
+  availableBalance: balance.deposit ? balance.deposit.availableBalance : '0'
 })

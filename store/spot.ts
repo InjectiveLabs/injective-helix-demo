@@ -122,19 +122,11 @@ export const mutations = {
     state: SpotStoreState,
     subaccountOrder: UiSpotMarketOrder
   ) {
-    const index = state.subaccountOrders.findIndex(
-      (order) => order.orderHash === subaccountOrder.orderHash
+    const subaccountOrders = [...state.subaccountOrders].filter(
+      (order) => order.orderHash !== subaccountOrder.orderHash
     )
 
-    if (index > 0) {
-      state.subaccountOrders = [...state.subaccountOrders].splice(
-        index,
-        1,
-        subaccountOrder
-      )
-    } else {
-      state.subaccountOrders = [subaccountOrder, ...state.subaccountOrders]
-    }
+    state.subaccountOrders = [subaccountOrder, ...subaccountOrders]
   },
 
   deleteSubaccountOrder(

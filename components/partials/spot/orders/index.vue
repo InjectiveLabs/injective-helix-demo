@@ -10,6 +10,9 @@
             <span>{{ $t('amount') }}</span>
           </th>
           <th is="v-ui-table-th" right>
+            <span>{{ $t('unfilled') }}</span>
+          </th>
+          <th is="v-ui-table-th" right>
             <span>{{ $t('total') }}</span>
           </th>
           <th is="v-ui-table-th" center>
