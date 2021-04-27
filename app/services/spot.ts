@@ -7,7 +7,7 @@ import {
   SpotMarketTradeStreamCallback,
   SpotMarketOrderStreamCallback
 } from '@injectivelabs/spot-consumer'
-import { AccountAddress } from '@injectivelabs/ts-types'
+import { AccountAddress, TradeExecutionSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { TxProvider } from '../providers/TxProvider'
@@ -61,6 +61,37 @@ export const fetchSpotMarketOrderbook = async (marketId: string) => {
   )
 }
 
+export const fetchSpotMarketTrades = async ({
+  marketId,
+  subaccountId
+}: {
+  marketId: string
+  subaccountId?: AccountAddress
+}) => {
+  return SpotMarketTransformer.grpcTradesToTrades(
+    await spotConsumer.fetchMarketTrades({
+      marketId,
+      subaccountId,
+      executionSide: TradeExecutionSide.Taker
+    })
+  )
+}
+
+export const fetchSpotMarketOrders = async ({
+  marketId,
+  subaccountId
+}: {
+  marketId: string
+  subaccountId: AccountAddress
+}) => {
+  return SpotMarketTransformer.grpcOrdersToOrders(
+    await spotConsumer.fetchMarketOrders({
+      marketId,
+      subaccountId
+    })
+  )
+}
+
 export const streamOrderbook = (
   marketId: string,
   callback: SpotMarketOrderbookStreamCallback
@@ -79,7 +110,8 @@ export const streamTrades = (
 ) => {
   const stream = spotMarketStream.trades.start({
     marketId,
-    callback
+    callback,
+    executionSide: TradeExecutionSide.Taker
   })
 
   streamManager.set(stream, SpotMarketStreamType.Trades)
@@ -93,6 +125,7 @@ export const streamSubaccountTrades = (
   const stream = spotMarketStream.trades.subaccount({
     marketId,
     subaccountId,
+    executionSide: TradeExecutionSide.Taker,
     callback
   })
 
@@ -118,36 +151,6 @@ export const cancelMarketStreams = () => {
   streamManager.cancel(SpotMarketStreamType.SubaccountOrders)
   streamManager.cancel(SpotMarketStreamType.SubaccountTrades)
   streamManager.cancel(SpotMarketStreamType.Trades)
-}
-
-export const fetchSpotMarketTrades = async ({
-  marketId,
-  subaccountId
-}: {
-  marketId: string
-  subaccountId?: AccountAddress
-}) => {
-  return SpotMarketTransformer.grpcTradesToTrades(
-    await spotConsumer.fetchMarketTrades({
-      marketId,
-      subaccountId
-    })
-  )
-}
-
-export const fetchSpotMarketOrders = async ({
-  marketId,
-  subaccountId
-}: {
-  marketId: string
-  subaccountId: AccountAddress
-}) => {
-  return SpotMarketTransformer.grpcOrdersToOrders(
-    await spotConsumer.fetchMarketOrders({
-      marketId,
-      subaccountId
-    })
-  )
 }
 
 export const submitLimitOrder = async ({
