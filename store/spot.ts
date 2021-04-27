@@ -260,7 +260,7 @@ export const actions = actionTree(
             case SpotOrderState.Unfilled:
               commit('pushOrUpdateSubaccountOrder', order)
               break
-            case SpotOrderState.Cancelled:
+            case SpotOrderState.Canceled:
               commit('deleteSubaccountOrder', order)
               break
             case SpotOrderState.Filled:

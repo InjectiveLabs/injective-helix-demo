@@ -1504,10 +1504,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/contracts@^0.0.40":
-  version "0.0.40"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/contracts/-/contracts-0.0.40.tgz#384a713b018e56670bda0913dbb22bce25b6f446"
-  integrity sha512-lRzEayOsDABDincPDdgn4YH0L5YauuSFiaS5b4M1WKJlEHYu2C9C97dWFOEb8VT+ezcwVhAt+x/fECvJgER5tA==
+"@injectivelabs/contracts@^0.0.41":
+  version "0.0.41"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/contracts/-/contracts-0.0.41.tgz#1d70fca590fe00d82a3a6fa2795c5c39e1f4565a"
+  integrity sha512-8i8Av8hNq+Hov4Er1R4aRYFruA0g00dweXsQvZjfAeuVNDoyqOZGCldkZ52MAo3QJi2KlLQxZmrbuu2t3uC0Uw==
   dependencies:
     "@commitlint/cli" "^8.1.0"
     "@commitlint/config-conventional" "^8.1.0"
@@ -1516,7 +1516,7 @@
     "@injectivelabs/tx-utils" "^0.0.5"
     "@injectivelabs/utils" "^0.0.25"
     "@injectivelabs/web3-contract-typings" "^0.1.12"
-    "@injectivelabs/web3-strategy" "^0.0.37"
+    "@injectivelabs/web3-strategy" "^0.0.38"
     "@types/ethereumjs-util" "^6.1.0"
     "@types/jest" "^24.0.23"
     "@types/node" "^12.7.5"
@@ -1594,10 +1594,10 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/spot-consumer@^0.0.26":
-  version "0.0.26"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/spot-consumer/-/spot-consumer-0.0.26.tgz#cf27d3ed928c7e234a425457d532edbac40264c3"
-  integrity sha512-n4NHLt58baj5galrEMpMy8uXEfV1RaRnj/GhMBm9XmWxIbGhcar0x/+75IvcqD8pYbIL+aE/dn4yUJ79GgoLmA==
+"@injectivelabs/spot-consumer@^0.0.27":
+  version "0.0.27"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/spot-consumer/-/spot-consumer-0.0.27.tgz#58406c17128cd932d6be21af11ecc4532b027c23"
+  integrity sha512-phRw4V6X5GCwu5pjA0a/eSih/i7ob1NW8G8XEsuUbIFNOUZ2cZBt/SZ7TUEO4rKt1stFmWqB+W8F+CW0lqV9bQ==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.14.0"
@@ -1673,10 +1673,10 @@
   dependencies:
     typescript "^4.0.5"
 
-"@injectivelabs/web3-strategy@^0.0.37":
-  version "0.0.37"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/web3-strategy/-/web3-strategy-0.0.37.tgz#e182794f2512756438e41566c264458dce08e4de"
-  integrity sha512-tf7Vui3G5d9L+YpHpm/hmqaolWUOLhBsTgi1NdRSylbI1wQ9iVUnXZbRpsXym1p9tjuAMSsrbL5sVna9zM51+g==
+"@injectivelabs/web3-strategy@^0.0.38":
+  version "0.0.38"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/web3-strategy/-/web3-strategy-0.0.38.tgz#3aca01bddcade93fcc181cecdc4bed8f27f196b6"
+  integrity sha512-4cAu/ztWyjJCsvOdJ1b3PszYo9P0l9RpoxmkUZ/uXE8XqRlq487F4y7gQlaDyadwBq7omvKwkTko+JuRTzdrLw==
   dependencies:
     "@injectivelabs/assert" "^0.0.8"
     "@injectivelabs/exceptions" "^0.0.20"
