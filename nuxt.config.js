@@ -90,7 +90,9 @@ export default {
     APP_FEE_RECIPIENT: process.env.APP_FEE_RECIPIENT,
     APP_NETWORK: process.env.APP_NETWORK,
     APP_MAINTENANCE_ENABLED: process.env.APP_MAINTENANCE_ENABLED,
-    APP_BUGSNAG_KEY: process.env.APP_BUGSNAG_KEY
+    APP_BUGSNAG_KEY: process.env.APP_BUGSNAG_KEY,
+    APP_ALCHEMY_KEY: process.env.APP_ALCHEMY_KEY,
+    APP_ALCHEMY_KOVAN_KEY: process.env.APP_ALCHEMY_KOVAN_KEY
   },
 
   router: {

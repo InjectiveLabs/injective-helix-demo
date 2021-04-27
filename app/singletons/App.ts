@@ -19,7 +19,7 @@ class App {
 
   constructor() {
     this.region = Region.eu
-    this.chainId = CHAIN_ID || ChainId.Testnet
+    this.chainId = CHAIN_ID || ChainId.Injective
     this.network = NETWORK || Network.Local
   }
 

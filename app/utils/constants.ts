@@ -39,8 +39,8 @@ export const UI_DEFAULT_PRICE_DISPLAY_DECIMALS = 6
 export const UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS = 4
 
 export const NETWORK: Network = process.env.APP_NETWORK || Network.Staking
-export const CHAIN_ID: ChainId = ChainId.Testnet
-export const NETWORK_ID: number = ChainId.Testnet
+export const CHAIN_ID: ChainId = ChainId.Injective
+export const NETWORK_ID: number = ChainId.Injective
 export const MAINNET_CHAIN_ID: ChainId = ChainId.Mainnet
 export const TESTNET_CHAIN_ID: ChainId = ChainId.Kovan
 

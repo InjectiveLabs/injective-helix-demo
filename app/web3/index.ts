@@ -11,11 +11,9 @@ export const getRpcUrlsForChainIds = (): Record<ChainId, string> => {
   return {
     [ChainId.Ganache]: 'http://localhost:8545',
     [ChainId.HardHat]: 'http://localhost:8545',
-    [ChainId.Kovan]:
-      'https://eth-kovan.alchemyapi.io/v2/vSqxSDsS7fSB0VNQfWC1r0yVq5QCTy_n',
-    [ChainId.Testnet]: app.appRpcUrl,
-    [ChainId.Mainnet]:
-      'https://eth-mainnet.alchemyapi.io/v2/DqEv1TiHskO-G6JprqyhE25k1x0p3hpj',
+    [ChainId.Kovan]: `https://eth-kovan.alchemyapi.io/v2/${process.env.APP_ALCHEMY_KOVAN_KEY}`,
+    [ChainId.Mainnet]: `https://eth-mainnet.alchemyapi.io/v2/${process.env.APP_ALCHEMY_KEY}`,
+    [ChainId.Injective]: app.appRpcUrl,
     [ChainId.Rinkeby]: '',
     [ChainId.Ropsten]: ''
   }
@@ -25,11 +23,9 @@ export const getRpcWsUrlsForChainIds = (): Record<ChainId, string> => {
   return {
     [ChainId.Ganache]: 'ws://localhost:1318',
     [ChainId.HardHat]: 'ws://localhost:1318',
-    [ChainId.Kovan]:
-      'wss://eth-kovan.ws.alchemyapi.io/v2/vSqxSDsS7fSB0VNQfWC1r0yVq5QCTy_n',
-    [ChainId.Testnet]: app.wsRpcUrl,
-    [ChainId.Mainnet]:
-      'wss://eth-mainnet.ws.alchemyapi.io/v2/DqEv1TiHskO-G6JprqyhE25k1x0p3hpj',
+    [ChainId.Kovan]: `wss://eth-kovan.ws.alchemyapi.io/v2/${process.env.APP_ALCHEMY_KOVAN_KEY}`,
+    [ChainId.Mainnet]: `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.APP_ALCHEMY_KEY}`,
+    [ChainId.Injective]: app.wsRpcUrl,
     [ChainId.Rinkeby]: '',
     [ChainId.Ropsten]: ''
   }
