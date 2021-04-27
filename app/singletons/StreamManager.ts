@@ -1,3 +1,3 @@
-import { StreamManager } from '@injectivelabs/spot-consumer'
+import { StreamManager } from '@injectivelabs/utils'
 
 export const streamManager = new StreamManager()

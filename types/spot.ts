@@ -6,10 +6,9 @@ import {
   PriceLevel as UiPriceLevel,
   ChronosSpotMarketSummary,
   SpotOrderType,
-  TradeDirection,
-  TradeExecutionType,
   AllChronosSpotMarketSummary
 } from '@injectivelabs/spot-consumer'
+import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 
 import { Token } from './token'
 

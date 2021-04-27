@@ -1,6 +1,6 @@
 import { actionTree, getterTree } from 'nuxt-typed-vuex'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { StreamOperation } from '@injectivelabs/spot-consumer'
+import { StreamOperation } from '@injectivelabs/ts-types'
 import {
   UiOrderbook,
   UiSpotMarketOrder,

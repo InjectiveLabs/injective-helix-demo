@@ -3,7 +3,7 @@ import {
   SubaccountComposer,
   SubaccountStreamType,
   SubaccountBalanceStreamCallback
-} from '@injectivelabs/spot-consumer'
+} from '@injectivelabs/subaccount-consumer'
 import { AccountAddress } from '@injectivelabs/ts-types'
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { Web3Exception } from '@injectivelabs/exceptions'

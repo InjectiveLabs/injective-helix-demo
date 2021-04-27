@@ -1,4 +1,4 @@
-import { SubaccountStream } from '@injectivelabs/spot-consumer'
+import { SubaccountStream } from '@injectivelabs/subaccount-consumer'
 import { app } from './App'
 
 export const subaccountStream = new SubaccountStream(

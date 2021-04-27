@@ -1,4 +1,4 @@
-import { SubaccountBalance } from '@injectivelabs/spot-consumer'
+import { SubaccountBalance } from '@injectivelabs/subaccount-consumer'
 import { UiSubaccountBalance } from '~/types'
 
 export const grpcSubaccountBalanceToUiSubaccountBalance = (
