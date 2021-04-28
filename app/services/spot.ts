@@ -1,15 +1,16 @@
 import {
   SpotMarketComposer,
   SpotMarketStreamType,
-  SpotMarketTransformer,
+  SpotTransformer,
   SpotOrderType,
-  SpotMarketOrderbookStreamCallback,
-  SpotMarketTradeStreamCallback,
-  SpotMarketOrderStreamCallback
+  OrderbookStreamCallback as SpotMarketOrderbookStreamCallback,
+  TradeStreamCallback as SpotMarketTradeStreamCallback,
+  OrderStreamCallback as SpotMarketOrderStreamCallback
 } from '@injectivelabs/spot-consumer'
 import { AccountAddress, TradeExecutionSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { Web3Exception } from '@injectivelabs/exceptions'
+import { SubaccountStreamType } from '@injectivelabs/subaccount-consumer'
 import { TxProvider } from '../providers/TxProvider'
 import { spotMarketStream } from '../singletons/SpotMarketStream'
 import { streamManager } from '../singletons/StreamManager'
@@ -27,7 +28,7 @@ import {
 import { spotChronosConsumer } from '~/app/singletons/SpotMarketChronosConsumer'
 
 export const fetchSpotMarkets = async (): Promise<UiSpotMarket[]> => {
-  const markets = SpotMarketTransformer.grpcMarketsToMarkets(
+  const markets = SpotTransformer.grpcMarketsToMarkets(
     await spotConsumer.fetchMarkets()
   )
   const marketsSummary = await spotChronosConsumer.fetchSpotMarketsSummary()
@@ -45,7 +46,7 @@ export const fetchSpotMarkets = async (): Promise<UiSpotMarket[]> => {
 }
 
 export const fetchSpotMarket = async (marketId: string) => {
-  const market = SpotMarketTransformer.grpcMarketToMarket(
+  const market = SpotTransformer.grpcMarketToMarket(
     await spotConsumer.fetchMarket(marketId)
   )
   const marketSummary = await spotChronosConsumer.fetchSpotMarketSummary(
@@ -56,8 +57,8 @@ export const fetchSpotMarket = async (marketId: string) => {
 }
 
 export const fetchSpotMarketOrderbook = async (marketId: string) => {
-  return SpotMarketTransformer.grpcOrderbookToOrderbook(
-    await spotConsumer.fetchMarketOrderbook(marketId)
+  return SpotTransformer.grpcOrderbookToOrderbook(
+    await spotConsumer.fetchOrderbook(marketId)
   )
 }
 
@@ -68,8 +69,8 @@ export const fetchSpotMarketTrades = async ({
   marketId: string
   subaccountId?: AccountAddress
 }) => {
-  return SpotMarketTransformer.grpcTradesToTrades(
-    await spotConsumer.fetchMarketTrades({
+  return SpotTransformer.grpcTradesToTrades(
+    await spotConsumer.fetchTrades({
       marketId,
       subaccountId,
       executionSide: TradeExecutionSide.Taker
@@ -84,8 +85,8 @@ export const fetchSpotMarketOrders = async ({
   marketId: string
   subaccountId: AccountAddress
 }) => {
-  return SpotMarketTransformer.grpcOrdersToOrders(
-    await spotConsumer.fetchMarketOrders({
+  return SpotTransformer.grpcOrdersToOrders(
+    await spotConsumer.fetchOrders({
       marketId,
       subaccountId
     })
@@ -151,6 +152,7 @@ export const cancelMarketStreams = () => {
   streamManager.cancel(SpotMarketStreamType.SubaccountOrders)
   streamManager.cancel(SpotMarketStreamType.SubaccountTrades)
   streamManager.cancel(SpotMarketStreamType.Trades)
+  streamManager.cancel(SubaccountStreamType.Balances)
 }
 
 export const submitLimitOrder = async ({

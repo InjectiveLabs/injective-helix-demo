@@ -2,7 +2,7 @@ import {
   SubaccountTransformer,
   SubaccountComposer,
   SubaccountStreamType,
-  SubaccountBalanceStreamCallback
+  BalanceStreamCallback as SubaccountBalanceStreamCallback
 } from '@injectivelabs/subaccount-consumer'
 import { AccountAddress } from '@injectivelabs/ts-types'
 import { BigNumberInWei } from '@injectivelabs/utils'
@@ -57,7 +57,7 @@ export const streamSubaccountBalances = (
   streamManager.set(stream, SubaccountStreamType.Balances)
 }
 
-export const cancelMarketStreams = () => {
+export const cancelSubaccountStreams = () => {
   streamManager.cancel(SubaccountStreamType.Balances)
 }
 
