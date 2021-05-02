@@ -52,6 +52,10 @@ import {
   UiSubaccount,
   UiSubaccountBalanceWithToken
 } from '~/types'
+import {
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+} from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -99,9 +103,9 @@ export default Vue.extend({
               ? market.baseToken
               : market.quoteToken,
           displayDecimals:
-            market.baseDenom.toLowerCase() === balance.denom.toLowerCase()
-              ? market.maxQuantityScaleDecimals
-              : market.maxPriceScaleDecimals,
+            market.quoteDenom.toLowerCase() === balance.denom.toLowerCase()
+              ? UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+              : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
           totalBalance: new BigNumberInWei(balance.totalBalance || 0),
           availableBalance: new BigNumberInWei(balance.availableBalance || 0)
         }))

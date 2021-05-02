@@ -3,17 +3,17 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { StreamOperation } from '@injectivelabs/ts-types'
 import { SpotOrderState } from '@injectivelabs/spot-consumer'
 import {
-  UiOrderbook,
-  UiSpotMarketOrder,
-  UiSpotMarketTrade,
+  UiSpotOrderbook,
+  UiSpotLimitOrder,
+  UiSpotTrade,
   UiSpotMarket,
   SpotOrderType
 } from '~/types'
 import {
-  fetchSpotMarketOrderbook,
-  fetchSpotMarketOrders,
-  fetchSpotMarkets,
-  fetchSpotMarketTrades,
+  fetchMarketOrderbook,
+  fetchMarketOrders,
+  fetchMarkets,
+  fetchMarketTrades,
   submitLimitOrder,
   submitMarketOrder,
   cancelOrder,
@@ -28,10 +28,10 @@ import { backupPromiseCall } from '~/app/utils/async'
 const initialStateFactory = () => ({
   markets: [] as UiSpotMarket[],
   market: undefined as UiSpotMarket | undefined,
-  orderbook: undefined as UiOrderbook | undefined,
-  trades: [] as UiSpotMarketTrade[],
-  subaccountTrades: [] as UiSpotMarketTrade[],
-  subaccountOrders: [] as UiSpotMarketOrder[]
+  orderbook: undefined as UiSpotOrderbook | undefined,
+  trades: [] as UiSpotTrade[],
+  subaccountTrades: [] as UiSpotTrade[],
+  subaccountOrders: [] as UiSpotLimitOrder[]
 })
 
 const initialState = initialStateFactory()
@@ -39,10 +39,10 @@ const initialState = initialStateFactory()
 export const state = () => ({
   markets: initialState.markets as UiSpotMarket[],
   market: initialState.market as UiSpotMarket | undefined,
-  trades: initialState.trades as UiSpotMarketTrade[],
-  subaccountTrades: initialState.subaccountTrades as UiSpotMarketTrade[],
-  subaccountOrders: initialState.subaccountOrders as UiSpotMarketOrder[],
-  orderbook: initialState.orderbook as UiOrderbook | undefined
+  trades: initialState.trades as UiSpotTrade[],
+  subaccountTrades: initialState.subaccountTrades as UiSpotTrade[],
+  subaccountOrders: initialState.subaccountOrders as UiSpotLimitOrder[],
+  orderbook: initialState.orderbook as UiSpotOrderbook | undefined
 })
 
 export type SpotStoreState = ReturnType<typeof state>
@@ -72,38 +72,35 @@ export const mutations = {
     state.markets = markets
   },
 
-  setTrades(state: SpotStoreState, trades: UiSpotMarketTrade[]) {
+  setTrades(state: SpotStoreState, trades: UiSpotTrade[]) {
     state.trades = trades
   },
 
-  pushTrade(state: SpotStoreState, trade: UiSpotMarketTrade) {
+  pushTrade(state: SpotStoreState, trade: UiSpotTrade) {
     state.trades = [trade, ...state.trades]
   },
 
-  setSubaccountTrades(
-    state: SpotStoreState,
-    subaccountTrades: UiSpotMarketTrade[]
-  ) {
+  setSubaccountTrades(state: SpotStoreState, subaccountTrades: UiSpotTrade[]) {
     state.subaccountTrades = subaccountTrades
   },
 
   setSubaccountOrders(
     state: SpotStoreState,
-    subaccountOrders: UiSpotMarketOrder[]
+    subaccountOrders: UiSpotLimitOrder[]
   ) {
     state.subaccountOrders = subaccountOrders
   },
 
   pushSubaccountOrder(
     state: SpotStoreState,
-    subaccountOrder: UiSpotMarketOrder
+    subaccountOrder: UiSpotLimitOrder
   ) {
     state.subaccountOrders = [subaccountOrder, ...state.subaccountOrders]
   },
 
   updateSubaccountOrder(
     state: SpotStoreState,
-    subaccountOrder: UiSpotMarketOrder
+    subaccountOrder: UiSpotLimitOrder
   ) {
     const index = state.subaccountOrders.findIndex(
       (order) => order.orderHash === subaccountOrder.orderHash
@@ -120,7 +117,7 @@ export const mutations = {
 
   pushOrUpdateSubaccountOrder(
     state: SpotStoreState,
-    subaccountOrder: UiSpotMarketOrder
+    subaccountOrder: UiSpotLimitOrder
   ) {
     const subaccountOrders = [...state.subaccountOrders].filter(
       (order) => order.orderHash !== subaccountOrder.orderHash
@@ -131,7 +128,7 @@ export const mutations = {
 
   deleteSubaccountOrder(
     state: SpotStoreState,
-    subaccountOrder: UiSpotMarketOrder
+    subaccountOrder: UiSpotLimitOrder
   ) {
     const index = state.subaccountOrders.findIndex(
       (order) => order.orderHash === subaccountOrder.orderHash
@@ -142,17 +139,11 @@ export const mutations = {
     }
   },
 
-  pushSubaccountTrade(
-    state: SpotStoreState,
-    subaccountTrade: UiSpotMarketTrade
-  ) {
+  pushSubaccountTrade(state: SpotStoreState, subaccountTrade: UiSpotTrade) {
     state.subaccountTrades = [subaccountTrade, ...state.subaccountTrades]
   },
 
-  updateSubaccountTrade(
-    state: SpotStoreState,
-    subaccountTrade: UiSpotMarketTrade
-  ) {
+  updateSubaccountTrade(state: SpotStoreState, subaccountTrade: UiSpotTrade) {
     const index = state.subaccountTrades.findIndex(
       (order) => order.orderHash === subaccountTrade.orderHash
     )
@@ -166,10 +157,7 @@ export const mutations = {
     }
   },
 
-  deleteSubaccountTrade(
-    state: SpotStoreState,
-    subaccountTrade: UiSpotMarketTrade
-  ) {
+  deleteSubaccountTrade(state: SpotStoreState, subaccountTrade: UiSpotTrade) {
     const index = state.subaccountTrades.findIndex(
       (order) => order.orderHash === subaccountTrade.orderHash
     )
@@ -179,7 +167,7 @@ export const mutations = {
     }
   },
 
-  setOrderbook(state: SpotStoreState, orderbook: UiOrderbook) {
+  setOrderbook(state: SpotStoreState, orderbook: UiSpotOrderbook) {
     state.orderbook = orderbook
   }
 }
@@ -193,7 +181,7 @@ export const actions = actionTree(
     },
 
     async init({ commit }) {
-      commit('setMarkets', await fetchSpotMarkets())
+      commit('setMarkets', await fetchMarkets())
     },
 
     async changeMarket({ commit, dispatch }, market: UiSpotMarket | undefined) {
@@ -202,10 +190,10 @@ export const actions = actionTree(
       }
 
       commit('setMarket', market)
-      commit('setOrderbook', await fetchSpotMarketOrderbook(market.marketId))
+      commit('setOrderbook', await fetchMarketOrderbook(market.marketId))
       commit(
         'setTrades',
-        await fetchSpotMarketTrades({
+        await fetchMarketTrades({
           marketId: market.marketId
         })
       )
@@ -308,7 +296,7 @@ export const actions = actionTree(
 
       commit(
         'setSubaccountOrders',
-        await fetchSpotMarketOrders({
+        await fetchMarketOrders({
           marketId: market.marketId,
           subaccountId: subaccount.subaccountId
         })
@@ -330,14 +318,14 @@ export const actions = actionTree(
 
       commit(
         'setSubaccountTrades',
-        await fetchSpotMarketTrades({
+        await fetchMarketTrades({
           marketId: market.marketId,
           subaccountId: subaccount.subaccountId
         })
       )
     },
 
-    async cancelOrder({ dispatch }, order: UiSpotMarketOrder) {
+    async cancelOrder({ dispatch }, order: UiSpotLimitOrder) {
       const { subaccount } = this.app.$accessor.account
       const { market } = this.app.$accessor.spot
       const {
@@ -457,7 +445,7 @@ export const actions = actionTree(
 
       commit(
         'setSubaccountTrades',
-        await fetchSpotMarketTrades({
+        await fetchMarketTrades({
           marketId: market.marketId,
           subaccountId: subaccount.subaccountId
         })

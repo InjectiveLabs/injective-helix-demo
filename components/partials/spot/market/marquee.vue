@@ -70,11 +70,13 @@ export default Vue.extend({
   },
 
   methods: {
-    onClickMarket({ ticker }: UiSpotMarket) {
+    onClickMarket({ slug, marketId }: UiSpotMarket) {
+      this.$emit('selected')
       this.$router.push({
         name: 'spot-spot',
         params: {
-          spot: ticker.replace('/', '-').toLowerCase()
+          marketId,
+          spot: slug
         }
       })
     }

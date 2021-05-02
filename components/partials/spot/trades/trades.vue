@@ -19,7 +19,7 @@ import Vue from 'vue'
 import { BigNumber } from '@injectivelabs/utils'
 import Trade from './trade.vue'
 import TradeEmpty from './trade-empty.vue'
-import { UiSpotMarketTrade } from '~/types'
+import { UiSpotTrade } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -34,7 +34,7 @@ export default Vue.extend({
   },
 
   computed: {
-    trades(): UiSpotMarketTrade[] {
+    trades(): UiSpotTrade[] {
       return this.$accessor.spot.trades
     },
 

@@ -75,11 +75,14 @@ export default Vue.extend({
 
   methods: {
     onRowClick() {
+      const { market } = this
+
       this.$emit('selected')
       this.$router.push({
         name: 'spot-spot',
         params: {
-          spot: this.market.ticker.replace('/', '-').toLowerCase()
+          marketId: market.marketId,
+          spot: market.slug
         }
       })
     }

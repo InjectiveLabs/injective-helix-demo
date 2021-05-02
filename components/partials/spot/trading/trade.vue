@@ -153,7 +153,7 @@ import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import {
   SpotOrderType,
   TradeExecutionType,
-  UiOrderbook,
+  UiSpotOrderbook,
   UiPriceLevel,
   UiSpotMarket
 } from '~/types'
@@ -199,7 +199,7 @@ export default Vue.extend({
       return this.$accessor.spot.market
     },
 
-    orderbook(): UiOrderbook | undefined {
+    orderbook(): UiSpotOrderbook | undefined {
       return this.$accessor.spot.orderbook
     },
 
@@ -285,7 +285,7 @@ export default Vue.extend({
 
         const records = orderTypeBuy ? sells : buys
 
-        return calculateExecutionPriceFromOrderbook({records, amount, market})
+        return calculateExecutionPriceFromOrderbook({ records, amount, market })
       }
 
       if (price.isNaN()) {

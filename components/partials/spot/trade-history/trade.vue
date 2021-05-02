@@ -64,14 +64,14 @@ import {
   UiSpotMarket,
   TradeDirection,
   TradeExecutionType,
-  UiSpotMarketTrade
+  UiSpotTrade
 } from '~/types'
 
 export default Vue.extend({
   props: {
     trade: {
       required: true,
-      type: Object as PropType<UiSpotMarketTrade>
+      type: Object as PropType<UiSpotTrade>
     }
   },
 

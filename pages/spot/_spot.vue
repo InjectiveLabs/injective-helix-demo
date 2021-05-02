@@ -51,7 +51,7 @@ import OrderBookPanel from '~/components/partials/spot/orderbook/index.vue'
 import TradesPanel from '~/components/partials/spot/trades/index.vue'
 import OrdersPanel from '~/components/partials/spot/orders.vue'
 import HOCLoading from '~/components/elements/with-loading.vue'
-import { UiSpotMarket, UiSpotMarketTrade } from '~/types'
+import { UiSpotMarket, UiSpotTrade } from '~/types'
 import { localStorage } from '~/app/singletons/Storage'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
@@ -173,15 +173,21 @@ export default Vue.extend({
       return params.spot.replace('-', '/')
     },
 
+    marketIdFromRoute(): string {
+      const { params } = this.$route
+
+      return params.marketId
+    },
+
     marketFromRoute(): UiSpotMarket | undefined {
-      const { markets, tickerFromRoute } = this
+      const { markets, marketIdFromRoute } = this
 
       return markets.find(
-        (m) => m.ticker.toLowerCase() === tickerFromRoute.toLowerCase()
+        (m) => m.marketId.toLowerCase() === marketIdFromRoute.toLowerCase()
       )
     },
 
-    trades(): UiSpotMarketTrade[] {
+    trades(): UiSpotTrade[] {
       return this.$accessor.spot.trades
     },
 

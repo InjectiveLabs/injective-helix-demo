@@ -27,8 +27,8 @@ export const mutations = {
 export const actions = actionTree(
   { state },
   {
-    async init({ dispatch }) {
-      await dispatch('fetchBalances')
+    async init(_) {
+      await this.app.$accessor.bank.fetchBalances()
     },
 
     async fetchBalances({ commit }) {

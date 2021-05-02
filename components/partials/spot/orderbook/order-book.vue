@@ -1,21 +1,21 @@
 <template>
   <div class="flex flex-col flex-wrap w-full">
     <ul
-      ref="shortOrders"
+      ref="sellOrders"
       class="list-order-book flex-1 overflow-auto w-full"
-      @mouseenter="autoScrollShortsLocked = true"
-      @mouseleave="autoScrollShortsLocked = false"
+      @mouseenter="autoScrollSellsLocked = true"
+      @mouseleave="autoScrollSellsLocked = false"
     >
       <v-record-empty
         v-for="(emptyOrder, index) in sellsEmptyCount"
-        :key="`order-book-short-empty-${index}`"
+        :key="`order-book-sell-empty-${index}`"
       ></v-record-empty>
       <v-record
-        v-for="(short, index) in sellsWithDepth"
-        :key="`order-book-short-${index}`"
+        v-for="(sell, index) in sellsWithDepth"
+        :key="`order-book-sell-${index}`"
         :type="SpotOrderType.Sell"
         :user-orders="sellUserOrderPrices"
-        :record="short"
+        :record="sell"
       ></v-record>
     </ul>
     <div
@@ -55,21 +55,21 @@
       </div>
     </div>
     <ul
-      ref="longOrders"
+      ref="buyOrders"
       class="list-order-book flex-1 overflow-auto w-full"
-      @mouseenter="autoScrollLongsLocked = true"
-      @mouseleave="autoScrollLongsLocked = false"
+      @mouseenter="autoScrollBuysLocked = true"
+      @mouseleave="autoScrollBuysLocked = false"
     >
       <v-record
-        v-for="(long, index) in buysWithDepth"
-        :key="`order-book-long-${index}`"
+        v-for="(buy, index) in buysWithDepth"
+        :key="`order-book-buy-${index}`"
         :type="SpotOrderType.Buy"
         :user-orders="buyUserOrderPrices"
-        :record="long"
+        :record="buy"
       ></v-record>
       <v-record-empty
         v-for="(emptyOrder, index) in buysEmptyCount"
-        :key="`order-book-long-empty-${index}`"
+        :key="`order-book-buy-empty-${index}`"
       ></v-record-empty>
     </ul>
   </div>
@@ -86,11 +86,11 @@ import Record from './record.vue'
 import RecordEmpty from './record-empty.vue'
 import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
 import {
-  UiSpotMarketTrade,
+  UiSpotTrade,
   UiSpotMarket,
-  UiSpotMarketOrder,
+  UiSpotLimitOrder,
   UiPriceLevel,
-  UiOrderbook,
+  UiSpotOrderbook,
   TradeDirection,
   SpotOrderType,
   UiOrderbookPriceLevel
@@ -106,19 +106,19 @@ export default Vue.extend({
     return {
       TradeDirection,
       SpotOrderType,
-      autoScrollShortsLocked: false,
-      autoScrollLongsLocked: false,
+      autoScrollSellsLocked: false,
+      autoScrollBuysLocked: false,
 
       limit: 6
     }
   },
 
   computed: {
-    trades(): UiSpotMarketTrade[] {
+    trades(): UiSpotTrade[] {
       return this.$accessor.spot.trades
     },
 
-    subaccountOrders(): UiSpotMarketOrder[] {
+    subaccountOrders(): UiSpotLimitOrder[] {
       return this.$accessor.spot.subaccountOrders
     },
 
@@ -126,7 +126,7 @@ export default Vue.extend({
       return this.$accessor.spot.market
     },
 
-    orderbook(): UiOrderbook | undefined {
+    orderbook(): UiSpotOrderbook | undefined {
       return this.$accessor.spot.orderbook
     },
 
@@ -308,11 +308,11 @@ export default Vue.extend({
   },
 
   watch: {
-    shorts() {
+    sells() {
       this.$nextTick(this.onScrollShorts)
     },
 
-    longs() {
+    buyss() {
       this.$nextTick(this.onScrollLongs)
     }
   },
@@ -348,17 +348,17 @@ export default Vue.extend({
     },
 
     onScrollShorts() {
-      const el = this.$refs.shortOrders as any
+      const el = this.$refs.sellOrders as any
 
-      if (el && !this.autoScrollShortsLocked) {
+      if (el && !this.autoScrollSellsLocked) {
         el.scrollTop = el.scrollHeight
       }
     },
 
     onScrollLongs() {
-      const el = this.$refs.longOrders as any
+      const el = this.$refs.buysOrders as any
 
-      if (el && !this.autoScrollLongsLocked) {
+      if (el && !this.autoScrollBuysLocked) {
         el.scrollTop = 0
       }
     }

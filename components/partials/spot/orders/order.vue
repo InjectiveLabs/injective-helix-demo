@@ -83,13 +83,13 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
 import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
-import { UiSpotMarket, SpotOrderType, UiSpotMarketOrder } from '~/types'
+import { UiSpotMarket, SpotOrderType, UiSpotLimitOrder } from '~/types'
 
 export default Vue.extend({
   props: {
     order: {
       required: true,
-      type: Object as PropType<UiSpotMarketOrder>
+      type: Object as PropType<UiSpotLimitOrder>
     }
   },
 

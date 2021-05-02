@@ -90,6 +90,24 @@ export const actions = actionTree(
       })
     },
 
+    async getTokenBalanceAndAllowanceForDerivativeMarket({ commit }) {
+      const { address } = this.app.$accessor.wallet
+      const { market } = this.app.$accessor.derivatives
+
+      if (!market) {
+        throw new Error('Market not found')
+      }
+
+      const { quoteToken } = market
+
+      const quoteTokenWithBalance = (await getTokenBalanceAndAllowance({
+        address,
+        token: quoteToken
+      })) as TokenWithBalance
+
+      commit('setQuoteTokenWithBalance', quoteTokenWithBalance)
+    },
+
     async setTokenAllowance({ state, commit }, tokenAddress: TokenAddress) {
       const { baseTokenWithBalance, quoteTokenWithBalance } = state
       const { address } = this.app.$accessor.wallet

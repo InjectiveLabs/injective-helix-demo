@@ -20,6 +20,7 @@ export const spotMarketToUiSpotMarket = (
   return {
     ...market,
     ...marketsSummary,
+    slug: market.ticker.replace('/', '-').replace(' ', '-').toLowerCase(),
     baseToken:
       market.baseToken !== undefined
         ? tokenMetaToToken(market.baseToken, market.baseDenom)

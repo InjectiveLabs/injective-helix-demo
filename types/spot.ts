@@ -1,9 +1,8 @@
 import {
   SpotMarket as BaseUiSpotMarket,
-  SpotMarketTrade as UiSpotMarketTrade,
-  SpotMarketOrder as UiSpotMarketOrder,
-  Orderbook as UiOrderbook,
-  PriceLevel as UiPriceLevel,
+  SpotTrade as UiSpotTrade,
+  SpotLimitOrder as UiSpotLimitOrder,
+  Orderbook as UiSpotOrderbook,
   ChronosSpotMarketSummary,
   SpotOrderType,
   AllChronosSpotMarketSummary
@@ -15,17 +14,9 @@ import { Token } from './token'
 export interface UiSpotMarket
   extends Omit<BaseUiSpotMarket, 'quoteToken' | 'baseToken'>,
     ChronosSpotMarketSummary {
+  slug: string
   quoteToken: Token
   baseToken: Token
-}
-
-export interface UiOrderbookPriceLevel {
-  price: string
-  quantity: string
-  timestamp: number
-  oldQuantity?: string
-  sumOfQuantities: string
-  depth: number
 }
 
 export enum SpotMarketMap {
@@ -39,14 +30,13 @@ export enum SpotMarketMap {
 }
 
 export {
-  UiPriceLevel,
-  UiSpotMarketTrade,
+  UiSpotLimitOrder,
+  UiSpotTrade,
   TradeDirection,
   SpotOrderType,
   TradeExecutionType,
-  UiSpotMarketOrder,
   BaseUiSpotMarket,
   ChronosSpotMarketSummary,
   AllChronosSpotMarketSummary,
-  UiOrderbook
+  UiSpotOrderbook
 }

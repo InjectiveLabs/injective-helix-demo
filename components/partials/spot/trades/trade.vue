@@ -30,14 +30,14 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { format } from 'date-fns'
-import { UiSpotMarket, UiSpotMarketTrade } from '~/types'
+import { UiSpotMarket, UiSpotTrade } from '~/types'
 import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
 
 export default Vue.extend({
   props: {
     trade: {
       required: true,
-      type: Object as PropType<UiSpotMarketTrade>
+      type: Object as PropType<UiSpotTrade>
     }
   },
 

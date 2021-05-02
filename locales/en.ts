@@ -98,5 +98,8 @@ export default {
   success_deposit: 'Successfully Deposited',
   injective_chain_balance: 'Injective Chain Balances',
   balance_asset: 'Balance {asset}',
-  unfilled: 'Unfilled'
+  unfilled: 'Unfilled',
+  derivatives: 'Derivatives',
+  long: 'Long',
+  short: 'Short'
 }

@@ -48,7 +48,7 @@ import Vue from 'vue'
 import { BigNumber } from '@injectivelabs/utils'
 import Order from './order.vue'
 import OrderEmpty from './order-empty.vue'
-import { UiSpotMarket, UiSpotMarketOrder } from '~/types'
+import { UiSpotMarket, UiSpotLimitOrder } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -67,7 +67,7 @@ export default Vue.extend({
       return this.$accessor.spot.market
     },
 
-    orders(): UiSpotMarketOrder[] {
+    orders(): UiSpotLimitOrder[] {
       const { market } = this
 
       if (!market) {

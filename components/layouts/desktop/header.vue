@@ -14,6 +14,9 @@
     <div class="hidden lg:flex">
       <v-spot />
     </div>
+    <div class="hidden lg:flex">
+      <v-derivatives />
+    </div>
     <mobile-menu />
     <div class="ml-auto flex">
       <wallet-connect />
@@ -23,15 +26,17 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import VSpot from './spot.vue'
+import VDerivatives from './derivatives.vue'
 import Logo from '~/components/layouts/logo.vue'
 import MobileMenu from '~/components/layouts/mobile/menu.vue'
 import WalletConnect from '~/components/wallets/index.vue'
-import VSpot from './spot.vue'
 
 export default Vue.extend({
   components: {
     Logo,
     VSpot,
+    VDerivatives,
     MobileMenu,
     WalletConnect
   },

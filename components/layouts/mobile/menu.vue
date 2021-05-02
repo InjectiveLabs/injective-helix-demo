@@ -25,6 +25,9 @@
             <div class="text-xs py-1">
               <v-spot />
             </div>
+            <div class="text-xs py-1">
+              <v-derivatives />
+            </div>
           </v-drawer>
         </div>
       </div>
@@ -36,12 +39,14 @@
 import Vue from 'vue'
 import { directive as onClickaway } from 'vue-clickaway'
 import VSpot from '~/components/partials/spot/markets/index-mobile.vue'
+import VDerivatives from '~/components/partials/derivatives/markets/index-mobile.vue'
 import Drawer from '~/components/elements/drawer.vue'
 
 export default Vue.extend({
   components: {
     'v-drawer': Drawer,
-    VSpot
+    VSpot,
+    VDerivatives
   },
 
   directives: {

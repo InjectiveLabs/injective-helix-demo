@@ -1,19 +1,9 @@
 <template>
   <tr @click.stop="onRowClick">
     <td is="v-ui-table-td">
-      <div class="flex items-center">
-        <img
-          :alt="market.baseToken.name"
-          :src="market.baseToken.icon"
-          class="w-6 h-6 mr-4"
-        />
-        <div class="leading-none">
-          <p class="text-gray-100 font-semibold text-sm">{{ market.ticker }}</p>
-          <p class="text-gray-500 text-xs">
-            {{ market.baseToken.name }}
-          </p>
-        </div>
-      </div>
+      <span class="text-gray-100 font-semibold text-sm">{{
+        market.ticker
+      }}</span>
     </td>
     <td is="v-ui-table-td" right class="font-normal">
       <div v-if="lastTradedPrice.gt(0)" class="flex justify-end items-center">
@@ -130,11 +120,14 @@ export default Vue.extend({
 
   methods: {
     onRowClick() {
+      const { market } = this
+
       this.$emit('selected')
       this.$router.push({
         name: 'spot-spot',
         params: {
-          spot: this.market.ticker.replace('/', '-').toLowerCase()
+          marketId: market.marketId,
+          spot: market.slug
         }
       })
     }

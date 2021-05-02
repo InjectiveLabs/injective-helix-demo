@@ -63,7 +63,7 @@ import Vue from 'vue'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_WEI, ZERO_IN_BASE } from '~/app/utils/constants'
 import MarketInfo from '~/components/elements/market-info.vue'
-import { Change, UiSpotMarket, UiSpotMarketTrade } from '~/types'
+import { Change, UiSpotMarket, UiSpotTrade } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -75,7 +75,7 @@ export default Vue.extend({
       return this.$accessor.spot.market
     },
 
-    trades(): UiSpotMarketTrade[] {
+    trades(): UiSpotTrade[] {
       return this.$accessor.spot.trades
     },
 

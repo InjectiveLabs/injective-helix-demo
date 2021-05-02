@@ -27,7 +27,7 @@ import {
 } from '~/app/transformers/spot'
 import { spotChronosConsumer } from '~/app/singletons/SpotMarketChronosConsumer'
 
-export const fetchSpotMarkets = async (): Promise<UiSpotMarket[]> => {
+export const fetchMarkets = async (): Promise<UiSpotMarket[]> => {
   const markets = SpotTransformer.grpcMarketsToMarkets(
     await spotConsumer.fetchMarkets()
   )
@@ -45,7 +45,7 @@ export const fetchSpotMarkets = async (): Promise<UiSpotMarket[]> => {
   })
 }
 
-export const fetchSpotMarket = async (marketId: string) => {
+export const fetchMarket = async (marketId: string) => {
   const market = SpotTransformer.grpcMarketToMarket(
     await spotConsumer.fetchMarket(marketId)
   )
@@ -56,13 +56,13 @@ export const fetchSpotMarket = async (marketId: string) => {
   return spotMarketToUiSpotMarket(market, marketSummary)
 }
 
-export const fetchSpotMarketOrderbook = async (marketId: string) => {
+export const fetchMarketOrderbook = async (marketId: string) => {
   return SpotTransformer.grpcOrderbookToOrderbook(
     await spotConsumer.fetchOrderbook(marketId)
   )
 }
 
-export const fetchSpotMarketTrades = async ({
+export const fetchMarketTrades = async ({
   marketId,
   subaccountId
 }: {
@@ -78,7 +78,7 @@ export const fetchSpotMarketTrades = async ({
   )
 }
 
-export const fetchSpotMarketOrders = async ({
+export const fetchMarketOrders = async ({
   marketId,
   subaccountId
 }: {
@@ -148,11 +148,11 @@ export const streamSubaccountOrders = (
 }
 
 export const cancelMarketStreams = () => {
-  streamManager.cancel(SpotMarketStreamType.Orderbook)
-  streamManager.cancel(SpotMarketStreamType.SubaccountOrders)
-  streamManager.cancel(SpotMarketStreamType.SubaccountTrades)
-  streamManager.cancel(SpotMarketStreamType.Trades)
-  streamManager.cancel(SubaccountStreamType.Balances)
+  streamManager.cancelIfExists(SpotMarketStreamType.Orderbook)
+  streamManager.cancelIfExists(SpotMarketStreamType.SubaccountOrders)
+  streamManager.cancelIfExists(SpotMarketStreamType.SubaccountTrades)
+  streamManager.cancelIfExists(SpotMarketStreamType.Trades)
+  streamManager.cancelIfExists(SubaccountStreamType.Balances)
 }
 
 export const submitLimitOrder = async ({

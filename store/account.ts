@@ -68,8 +68,8 @@ export const mutations = {
 export const actions = actionTree(
   { state, mutations },
   {
-    async init({ dispatch }) {
-      await dispatch('fetchSubaccounts')
+    async init(_) {
+      await this.app.$accessor.account.fetchSubaccounts()
     },
 
     async fetchSubaccounts({ commit }) {
@@ -155,7 +155,6 @@ export const actions = actionTree(
         amount: amount.toWei()
       })
 
-      // await backupPromiseCall(() => dispatch('updateSubaccount'))
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
     }
   }
