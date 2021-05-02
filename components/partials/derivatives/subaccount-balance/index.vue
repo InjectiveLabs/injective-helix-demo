@@ -52,10 +52,7 @@ import {
   UiSubaccount,
   UiSubaccountBalanceWithToken
 } from '~/types'
-import {
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-} from '~/app/utils/constants'
+import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -88,23 +85,17 @@ export default Vue.extend({
           balance.denom.toLowerCase() === market.quoteDenom.toLowerCase()
       )!
 
-      const balances = [{ ...quoteBalance }]
-
-      return balances
-        .filter((b) => b)
-        .map((balance) => ({
-          ...balance,
-          token:
-            market.quoteDenom.toLowerCase() === balance.denom.toLowerCase()
-              ? market.quoteToken
-              : market.baseToken,
-          displayDecimals:
-            market.quoteDenom.toLowerCase() === balance.denom.toLowerCase()
-              ? UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-              : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-          totalBalance: new BigNumberInWei(balance.totalBalance || 0),
-          availableBalance: new BigNumberInWei(balance.availableBalance || 0)
-        }))
+      return [
+        {
+          ...quoteBalance,
+          token: market.quoteToken,
+          displayDecimals: UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+          totalBalance: new BigNumberInWei(quoteBalance.totalBalance || 0),
+          availableBalance: new BigNumberInWei(
+            quoteBalance.availableBalance || 0
+          )
+        }
+      ]
     }
   },
 

@@ -3,7 +3,6 @@ import {
   peggyDenomToTokenFromContractAddress,
   peggyDenomToContractAddress
 } from './peggy'
-import { tokensMetaData } from '~/app/tokens/meta'
 import {
   AllChronosDerivativeMarketSummary,
   ChronosDerivativeMarketSummary,
@@ -20,11 +19,14 @@ export const derivativeMarketToUiDerivativeMarket = (
     | AllChronosDerivativeMarketSummary
     | ChronosDerivativeMarketSummary
 ): UiDerivativeMarket => {
+  const slug = market.ticker.replace('/', '-').replace(' ', '-').toLowerCase()
+  const [baseTokenSymbol] = slug.split('-')
+
   return {
     ...market,
     ...marketsSummary,
+    baseTokenSymbol: (baseTokenSymbol || '').toUpperCase(),
     slug: market.ticker.replace('/', '-').replace(' ', '-').toLowerCase(),
-    baseToken: tokensMetaData.get('inj')! as Token,
     quoteToken:
       market.quoteToken !== undefined
         ? tokenMetaToToken(market.quoteToken, market.quoteDenom)

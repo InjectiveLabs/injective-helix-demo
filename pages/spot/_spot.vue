@@ -167,23 +167,17 @@ export default Vue.extend({
       return this.grid.layout
     },
 
-    tickerFromRoute(): string {
+    slugFromRoute(): string {
       const { params } = this.$route
 
-      return params.spot.replace('-', '/')
-    },
-
-    marketIdFromRoute(): string {
-      const { params } = this.$route
-
-      return params.marketId
+      return params.spot
     },
 
     marketFromRoute(): UiSpotMarket | undefined {
-      const { markets, marketIdFromRoute } = this
+      const { markets, slugFromRoute } = this
 
       return markets.find(
-        (m) => m.marketId.toLowerCase() === marketIdFromRoute.toLowerCase()
+        (m) => m.slug.toLowerCase() === slugFromRoute.toLowerCase()
       )
     },
 

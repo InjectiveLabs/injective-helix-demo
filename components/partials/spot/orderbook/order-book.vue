@@ -3,8 +3,8 @@
     <ul
       ref="sellOrders"
       class="list-order-book flex-1 overflow-auto w-full"
-      @mouseenter="autoScrollSellsLocked = true"
-      @mouseleave="autoScrollSellsLocked = false"
+      @mouseenter="autoScrollShortsLocked = true"
+      @mouseleave="autoScrollShortsLocked = false"
     >
       <v-record-empty
         v-for="(emptyOrder, index) in sellsEmptyCount"
@@ -40,8 +40,7 @@
                   value: lastPrice,
                   type: isLastTradeBuy
                     ? TradeDirection.Buy
-                    : TradeDirection.Sell,
-                  decimals: market.maxPriceScaleDecimals
+                    : TradeDirection.Sell
                 }"
                 class="flex justify-end"
               />
@@ -57,8 +56,8 @@
     <ul
       ref="buyOrders"
       class="list-order-book flex-1 overflow-auto w-full"
-      @mouseenter="autoScrollBuysLocked = true"
-      @mouseleave="autoScrollBuysLocked = false"
+      @mouseenter="autoScrollLongsLocked = true"
+      @mouseleave="autoScrollLongsLocked = false"
     >
       <v-record
         v-for="(buy, index) in buysWithDepth"
@@ -106,8 +105,8 @@ export default Vue.extend({
     return {
       TradeDirection,
       SpotOrderType,
-      autoScrollSellsLocked: false,
-      autoScrollBuysLocked: false,
+      autoScrollShortsLocked: false,
+      autoScrollLongsLocked: false,
 
       limit: 6
     }
@@ -312,7 +311,7 @@ export default Vue.extend({
       this.$nextTick(this.onScrollShorts)
     },
 
-    buyss() {
+    buys() {
       this.$nextTick(this.onScrollLongs)
     }
   },
@@ -350,15 +349,15 @@ export default Vue.extend({
     onScrollShorts() {
       const el = this.$refs.sellOrders as any
 
-      if (el && !this.autoScrollSellsLocked) {
+      if (el && !this.autoScrollShortsLocked) {
         el.scrollTop = el.scrollHeight
       }
     },
 
     onScrollLongs() {
-      const el = this.$refs.buysOrders as any
+      const el = this.$refs.buyOrders as any
 
-      if (el && !this.autoScrollBuysLocked) {
+      if (el && !this.autoScrollLongsLocked) {
         el.scrollTop = 0
       }
     }

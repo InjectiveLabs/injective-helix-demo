@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
 import { GridLayout, GridItem } from 'vue-grid-layout'
 import { headTitle } from '~/app/utils/generators'
 import MarketPriceChartPanel from '~/components/partials/derivatives/market/chart.vue'
@@ -50,6 +50,7 @@ import SubaccountBalancePanel from '~/components/partials/derivatives/subaccount
 import OrderBookPanel from '~/components/partials/derivatives/orderbook/index.vue'
 import TradesPanel from '~/components/partials/derivatives/trades/index.vue'
 import OrdersPanel from '~/components/partials/derivatives/orders.vue'
+import PositionsPanel from '~/components/partials/derivatives/positions/index.vue'
 import HOCLoading from '~/components/elements/with-loading.vue'
 import { UiDerivativeMarket, UiDerivativeTrade } from '~/types'
 import { localStorage } from '~/app/singletons/Storage'
@@ -93,36 +94,45 @@ const gridLayout = () => [
     x: 0,
     y: 3,
     w: 3,
-    h: 3,
+    h: 2,
     minW: 3,
-    minH: 3
+    minH: 2
   },
   {
     i: 'trading-panel',
     x: 0,
-    y: 6,
+    y: 5,
     w: 3,
-    h: 10,
+    h: 12,
     minW: 3,
-    minH: 8
+    minH: 10
+  },
+  {
+    i: 'positions-panel',
+    x: 3,
+    y: 10,
+    w: 6,
+    h: 2,
+    minW: 6,
+    minH: 2
   },
   {
     i: 'orders-panel',
     x: 3,
     y: 10,
     w: 6,
-    h: 6,
+    h: 5,
     minW: 6,
-    minH: 6
+    minH: 5
   },
   {
     i: 'trades-panel',
     x: 9,
     y: 10,
     w: 3,
-    h: 6,
+    h: 7,
     minW: 3,
-    minH: 6
+    minH: 7
   }
 ]
 
@@ -132,6 +142,7 @@ export default Vue.extend({
     BalancePanel,
     TradesPanel,
     OrdersPanel,
+    PositionsPanel,
     OrderBookPanel,
     TradingPanel,
     MarketPanel,
@@ -167,23 +178,17 @@ export default Vue.extend({
       return this.grid.layout
     },
 
-    tickerFromRoute(): string {
+    slugFromRoute(): string {
       const { params } = this.$route
 
-      return params.derivatives.replace('-', '/').replace('-', ' ')
-    },
-
-    marketIdFromRoute(): string {
-      const { params } = this.$route
-
-      return params.marketId
+      return params.derivative
     },
 
     marketFromRoute(): UiDerivativeMarket | undefined {
-      const { markets, marketIdFromRoute } = this
+      const { markets, slugFromRoute } = this
 
       return markets.find(
-        (m) => m.marketId.toLowerCase() === marketIdFromRoute.toLowerCase()
+        (m) => m.slug.toLowerCase() === slugFromRoute.toLowerCase()
       )
     },
 
@@ -207,10 +212,8 @@ export default Vue.extend({
       }
 
       const [trade] = trades
-      const tradePrice = new BigNumberInBase(
-        new BigNumberInBase(trade.executionPrice).toWei(
-          market.quoteToken.decimals
-        )
+      const tradePrice = new BigNumberInWei(trade.executionPrice).toBase(
+        market.quoteToken.decimals
       )
 
       if (tradePrice.isNaN() || tradePrice.lte(0)) {

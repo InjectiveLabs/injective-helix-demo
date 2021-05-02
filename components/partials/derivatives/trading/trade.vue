@@ -7,7 +7,7 @@
         half
         primary
       >
-        {{ $t('buy_asset', { asset: market.baseToken.symbol }) }}
+        {{ $t('long_asset', { asset: market.baseTokenSymbol }) }}
       </v-ui-button-select>
       <v-ui-button-select
         v-model="orderType"
@@ -15,7 +15,7 @@
         half
         accent
       >
-        {{ $t('sell_asset', { asset: market.baseToken.symbol }) }}
+        {{ $t('short_asset', { asset: market.baseTokenSymbol }) }}
       </v-ui-button-select>
     </div>
     <div class="w-full flex mt-4">
@@ -52,7 +52,7 @@
           @input="onAmountChange"
           @input-max="() => onMaxInput(100)"
         >
-          <span slot="addon">{{ market.baseToken.symbol.toUpperCase() }}</span>
+          <span slot="addon">{{ market.baseTokenSymbol.toUpperCase() }}</span>
           <div
             v-if="false"
             slot="context"
@@ -107,12 +107,20 @@
           {{ priceError }}
         </v-ui-text>
       </div>
+
+      <v-order-leverage
+        :leverage="form.leverage"
+        :max-leverage="maxLeverageAvailable.toFixed()"
+        @change="onLeverageChange"
+      />
     </div>
     <component
       :is="tradingTypeMarket ? `v-order-details-market` : 'v-order-details'"
       v-bind="{
         price: executionPrice,
         notionalValue,
+        liquidationPrice,
+        margin,
         orderType,
         fees,
         total,
@@ -143,6 +151,7 @@ import Vue from 'vue'
 import { TradeError } from 'types/errors'
 import { BigNumberInWei, Status, BigNumberInBase } from '@injectivelabs/utils'
 import OrderDetails from './order-details.vue'
+import OrderLeverage from './order-leverage.vue'
 import OrderDetailsMarket from './order-details-market.vue'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
@@ -157,24 +166,31 @@ import {
   UiPriceLevel,
   UiDerivativeMarket
 } from '~/types'
-import { calculateExecutionPriceFromOrderbook } from '~/app/services/derivatives'
+import {
+  calculateExecutionPriceFromOrderbook,
+  calculateLiquidationPrice,
+  calculateMargin
+} from '~/app/services/derivatives'
 
 interface TradeForm {
   reduceOnly: boolean
   amount: string
   price: string
+  leverage: string
 }
 
 const initialForm = (): TradeForm => ({
   reduceOnly: false,
   amount: '',
-  price: ''
+  price: '',
+  leverage: '1'
 })
 
 export default Vue.extend({
   components: {
     'v-button-checkbox': ButtonCheckbox,
     'v-order-details': OrderDetails,
+    'v-order-leverage': OrderLeverage,
     'v-order-details-market': OrderDetailsMarket
   },
 
@@ -265,7 +281,7 @@ export default Vue.extend({
     executionPrice(): BigNumberInBase {
       const {
         tradingTypeMarket,
-        orderTypeBuy,
+        orderTypeLong,
         shorts,
         longs,
         hasAmount,
@@ -283,7 +299,7 @@ export default Vue.extend({
           return ZERO_IN_BASE
         }
 
-        const records = orderTypeBuy ? shorts : longs
+        const records = orderTypeLong ? shorts : longs
 
         return calculateExecutionPriceFromOrderbook({ records, amount, market })
       }
@@ -307,28 +323,28 @@ export default Vue.extend({
       return tradingType === TradeExecutionType.Market
     },
 
-    orderTypeBuy(): boolean {
+    orderTypeLong(): boolean {
       const { orderType } = this
 
       return orderType === DerivativeOrderType.Long
     },
 
     localizedSubmitOrderType(): string {
-      const { tradingType, orderTypeBuy } = this
+      const { tradingType, orderTypeLong } = this
 
       if (tradingType === TradeExecutionType.LimitFill) {
-        if (orderTypeBuy) {
-          return this.$t('limit_buy')
+        if (orderTypeLong) {
+          return this.$t('limit_long')
         }
 
-        return this.$t('limit_sell')
+        return this.$t('limit_short')
       }
 
-      if (orderTypeBuy) {
-        return this.$t('market_buy')
+      if (orderTypeLong) {
+        return this.$t('market_long')
       }
 
-      return this.$t('market_sell')
+      return this.$t('market_short')
     },
 
     amountStep(): string {
@@ -386,7 +402,7 @@ export default Vue.extend({
     notEnoughOrdersToFillFromError(): TradeError | undefined {
       const {
         tradingTypeMarket,
-        orderTypeBuy,
+        orderTypeLong,
         shorts,
         longs,
         amount,
@@ -397,7 +413,7 @@ export default Vue.extend({
         return
       }
 
-      const orders = orderTypeBuy ? shorts : longs
+      const orders = orderTypeLong ? shorts : longs
 
       if (orders.length <= 0 && amount.gt(0)) {
         return {
@@ -413,7 +429,7 @@ export default Vue.extend({
         tradingTypeMarket,
         hasPrice,
         hasAmount,
-        orderTypeBuy,
+        orderTypeLong,
         shorts,
         longs,
         amount,
@@ -424,7 +440,7 @@ export default Vue.extend({
         return
       }
 
-      const orders = orderTypeBuy ? shorts : longs
+      const orders = orderTypeLong ? shorts : longs
       const totalAmount = orders.reduce((totalAmount, { quantity }) => {
         return totalAmount.plus(new BigNumberInWei(quantity).toBase())
       }, ZERO_IN_BASE)
@@ -526,6 +542,44 @@ export default Vue.extend({
       return form.amount
     },
 
+    maxLeverageAvailable(): BigNumberInBase {
+      const { market } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      const maxLeverage = new BigNumberInBase(
+        new BigNumberInBase(1).dividedBy(market.initialMarginRatio).dp(0)
+      )
+
+      const steps = [1, 2, 5, 10, 20, 50, 100, 150, 200]
+
+      const stepsLessThanMaxLeverage = steps.filter(
+        (step) => step <= maxLeverage.toNumber()
+      )
+
+      return stepsLessThanMaxLeverage.length > 0
+        ? new BigNumberInBase(
+            stepsLessThanMaxLeverage[stepsLessThanMaxLeverage.length - 1]
+          )
+        : new BigNumberInBase(20)
+    },
+
+    margin(): BigNumberInWei {
+      const { executionPrice, hasPrice, hasAmount, form, market } = this
+
+      if (!hasPrice || !hasAmount || !market) {
+        return new BigNumberInWei('')
+      }
+
+      return calculateMargin({
+        quantity: form.amount,
+        price: executionPrice.toFixed(),
+        leverage: form.leverage
+      })
+    },
+
     notionalValue(): BigNumberInBase {
       const { executionPrice, amount, market } = this
 
@@ -539,7 +593,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return notional
+      return new BigNumberInBase(notional)
     },
 
     fees(): BigNumberInBase {
@@ -561,7 +615,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return executionPrice.times(amount)
+      return new BigNumberInBase(executionPrice.times(amount))
     },
 
     totalWithFees(): BigNumberInBase {
@@ -572,6 +626,30 @@ export default Vue.extend({
       }
 
       return fees.plus(total)
+    },
+
+    liquidationPrice(): BigNumberInBase {
+      const {
+        executionPrice,
+        margin,
+        hasAmount,
+        hasPrice,
+        orderType,
+        market,
+        form
+      } = this
+
+      if (!hasAmount || !hasPrice || !market) {
+        return ZERO_IN_BASE
+      }
+
+      return calculateLiquidationPrice({
+        market,
+        orderType,
+        margin: margin.toFixed(),
+        price: executionPrice.toFixed(),
+        quantity: form.amount
+      }).toBase(market.quoteToken.decimals)
     }
   },
 
@@ -620,7 +698,7 @@ export default Vue.extend({
         fees,
         executionPrice,
         tradingTypeMarket,
-        orderTypeBuy,
+        orderTypeLong,
         orderbook
       } = this
       const percent = new BigNumber(percentage).dividedBy(100)
@@ -638,7 +716,7 @@ export default Vue.extend({
           leverage,
           availableMargin,
           percent,
-          orderbook: orderTypeBuy
+          orderbook: orderTypeLong
             ? [...orderbook.shorts].reverse()
             : orderbook.longs
         }).toFixed(market.decimalsAllowed.toNumber(), BigNumber.ROUND_DOWN)
@@ -711,8 +789,21 @@ export default Vue.extend({
       this.form.amount = amount === '0.0' ? amountStep : amount
     },
 
+    onLeverageChange(leverage: string) {
+      const { maxLeverageAvailable } = this
+      const leverageToBigNumber = new BigNumberInBase(leverage)
+
+      if (leverageToBigNumber.gte(maxLeverageAvailable)) {
+        this.form.leverage = maxLeverageAvailable.toFixed()
+      } else if (leverageToBigNumber.lte(1)) {
+        this.form.leverage = '1'
+      } else {
+        this.form.leverage = leverageToBigNumber.toFixed()
+      }
+    },
+
     submitLimitOrder() {
-      const { orderType, market, price, amount } = this
+      const { orderType, market, margin, price, amount } = this
 
       if (!market) {
         return
@@ -723,8 +814,9 @@ export default Vue.extend({
       this.$accessor.derivatives
         .submitLimitOrder({
           price,
-          quantity: amount,
-          orderType
+          margin,
+          orderType,
+          quantity: amount
         })
         .then(() => {
           this.$toast.success(this.$t('order_placed'))
@@ -737,7 +829,7 @@ export default Vue.extend({
     },
 
     submitMarketOrder() {
-      const { orderType, market, executionPrice, amount } = this
+      const { orderType, market, margin, executionPrice, amount } = this
 
       if (!market) {
         return
@@ -747,9 +839,10 @@ export default Vue.extend({
 
       this.$accessor.derivatives
         .submitMarketOrder({
-          quantity: amount,
+          orderType,
+          margin,
           price: executionPrice,
-          orderType
+          quantity: amount
         })
         .then(() => {
           this.$toast.success(this.$t('order_placed'))

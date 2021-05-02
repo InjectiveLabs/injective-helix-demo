@@ -17,7 +17,7 @@
             }"
           />
           <small class="opacity-75 pt-px ml-1">{{
-            orderTypeBuy ? market.quoteToken.symbol : market.baseToken.symbol
+            market.quoteToken.symbol
           }}</small>
         </v-ui-text>
       </p>
@@ -33,9 +33,7 @@
               }"
               class="text-gray-300"
             />
-            <small class="opacity-75 ml-1">{{
-              orderTypeBuy ? market.baseToken.symbol : market.quoteToken.symbol
-            }}</small>
+            <small class="opacity-75 ml-1">{{ market.baseTokenSymbol }}</small>
           </v-ui-text>
           <v-ui-text v-else muted-sm class="group-hover:text-white">
             &mdash;
@@ -55,7 +53,49 @@
               class="text-gray-300"
             />
             <small class="opacity-75 ml-1">{{
-              orderTypeBuy ? market.quoteToken.symbol : market.baseToken.symbol
+              market.quoteToken.symbol
+            }}</small>
+          </v-ui-text>
+          <v-ui-text v-else muted-sm class="group-hover:text-white">
+            &mdash;
+          </v-ui-text>
+        </p>
+        <p class="flex justify-between group leading-6">
+          <v-ui-text muted-sm class="group-hover:text-white">
+            {{ $t('liquidation_price') }}
+          </v-ui-text>
+          <v-ui-text
+            v-if="liquidationPrice.gt(0)"
+            muted
+            class="flex items-center"
+          >
+            <v-ui-format-price
+              v-bind="{
+                value: liquidationPrice
+              }"
+              class="text-gray-300"
+            />
+            <small class="opacity-75 ml-1">{{
+              market.quoteToken.symbol
+            }}</small>
+          </v-ui-text>
+          <v-ui-text v-else muted-sm class="group-hover:text-white">
+            &mdash;
+          </v-ui-text>
+        </p>
+        <p class="flex justify-between group leading-6">
+          <v-ui-text muted-sm class="group-hover:text-white">
+            {{ $t('margin') }}
+          </v-ui-text>
+          <v-ui-text v-if="margin.gt(0)" muted class="flex items-center">
+            <v-ui-format-price
+              v-bind="{
+                value: margin
+              }"
+              class="text-gray-300"
+            />
+            <small class="opacity-75 ml-1">{{
+              market.quoteToken.symbol
             }}</small>
           </v-ui-text>
           <v-ui-text v-else muted-sm class="group-hover:text-white">
@@ -75,7 +115,7 @@
               class="text-gray-300"
             />
             <small class="opacity-75 ml-1">{{
-              orderTypeBuy ? market.quoteToken.symbol : market.baseToken.symbol
+              market.quoteToken.symbol
             }}</small>
           </v-ui-text>
           <v-ui-text v-else muted-sm class="group-hover:text-white">
@@ -95,7 +135,7 @@
               class="text-gray-300"
             />
             <small class="opacity-75 ml-1">{{
-              orderTypeBuy ? market.quoteToken.symbol : market.baseToken.symbol
+              market.quoteToken.symbol
             }}</small>
           </v-ui-text>
           <v-ui-text v-else muted-sm class="group-hover:text-white">
@@ -129,6 +169,16 @@ export default Vue.extend({
       type: Object as PropType<BigNumberInBase>
     },
 
+    liquidationPrice: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    margin: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
     fees: {
       required: true,
       type: Object as PropType<BigNumberInBase>
@@ -158,12 +208,6 @@ export default Vue.extend({
   computed: {
     market(): UiDerivativeMarket | undefined {
       return this.$accessor.derivatives.market
-    },
-
-    orderTypeBuy(): boolean {
-      const { orderType } = this
-
-      return orderType === DerivativeOrderType.Long
     }
   },
 

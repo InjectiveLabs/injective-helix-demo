@@ -4,7 +4,7 @@
       <v-ui-text sm class="flex items-center justify-end w-full">
         <v-ui-format-price
           v-bind="{
-            value: lastPrice
+            value: lastPrice.toBase(market.quoteToken.decimals)
           }"
         />
       </v-ui-text>
@@ -60,8 +60,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import { ZERO_IN_WEI, ZERO_IN_BASE } from '~/app/utils/constants'
+import { BigNumberInWei } from '@injectivelabs/utils'
+import { ZERO_IN_WEI } from '~/app/utils/constants'
 import MarketInfo from '~/components/elements/market-info.vue'
 import { Change, UiDerivativeMarket, UiDerivativeTrade } from '~/types'
 
@@ -79,23 +79,19 @@ export default Vue.extend({
       return this.$accessor.derivatives.trades
     },
 
-    lastPrice(): BigNumberInBase {
+    lastPrice(): BigNumberInWei {
       const { trades, market } = this
       const [lastTrade] = trades || []
 
       if (!lastTrade || !market) {
-        return ZERO_IN_BASE
+        return ZERO_IN_WEI
       }
 
       if (!lastTrade.executionPrice) {
-        return ZERO_IN_BASE
+        return ZERO_IN_WEI
       }
 
-      return new BigNumberInBase(
-        new BigNumberInBase(lastTrade.executionPrice).toWei(
-          market.quoteToken.decimals
-        )
-      )
+      return new BigNumberInWei(lastTrade.executionPrice)
     },
 
     high(): BigNumberInWei {

@@ -59,11 +59,17 @@ export default {
   trading: 'Trading',
   buy_asset: 'Buy {asset}',
   sell_asset: 'Sell {asset}',
+  long_asset: 'Long {asset}',
+  short_asset: 'Short {asset}',
   limit: 'Limit',
   limit_buy: 'Limit Buy',
   limit_sell: 'Limit Sell',
   market_buy: 'Market Buy',
   market_sell: 'Market Sell',
+  limit_long: 'Limit Long',
+  limit_short: 'Limit Short',
+  market_long: 'Market Long',
+  market_short: 'Market Short',
   not_enough_fillable_orders: 'There are not enough orders to fill this amount',
   amount_decimals:
     'Amount <small style="opacity: 0.75;">({decimals} decimals)</small>',
@@ -101,5 +107,9 @@ export default {
   unfilled: 'Unfilled',
   derivatives: 'Derivatives',
   long: 'Long',
-  short: 'Short'
+  short: 'Short',
+  max_leverage: 'Max Leverage:  {max}',
+  margin: 'Margin',
+  liquidation_price: 'Liquidation Price',
+  positions: 'Positions'
 }

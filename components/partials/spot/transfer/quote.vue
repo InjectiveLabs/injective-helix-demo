@@ -29,7 +29,7 @@
             min="0"
           >
             <span slot="addon">{{
-              market ? market.baseToken.symbol : ''
+              market ? market.quoteToken.symbol : ''
             }}</span>
           </v-input>
           <div class="w-full mx-auto mt-4">

@@ -21,7 +21,7 @@
       />
       <v-ui-format-order-price
         v-bind="{
-          value: price,
+          value: price.toBase(market.quoteToken.decimals),
           type: type
         }"
         class="text-right block"
@@ -30,7 +30,7 @@
     <span class="w-1/3 text-xs px-2 z-10" @click.stop="onQuantityClick">
       <v-ui-format-amount
         v-bind="{
-          value: quantity.toBase(quantityScaleDecimals)
+          value: quantity
         }"
         class="text-right block"
         :class="{
@@ -99,48 +99,14 @@ export default Vue.extend({
       return this.$accessor.derivatives.market
     },
 
-    recordTypeBuy(): boolean {
-      const { type } = this
-
-      return type === DerivativeOrderType.Long
-    },
-
-    priceScaleDecimals(): number {
-      const { recordTypeBuy, market } = this
-
-      if (!market) {
-        return 0
-      }
-
-      return recordTypeBuy
-        ? market.quoteToken.decimals
-        : market.baseToken.decimals
-    },
-
-    quantityScaleDecimals(): number {
-      const { recordTypeBuy, market } = this
-
-      if (!market) {
-        return 0
-      }
-
-      return recordTypeBuy
-        ? market.baseToken.decimals
-        : market.baseToken.decimals
-    },
-
-    price(): BigNumberInBase {
+    price(): BigNumberInWei {
       const { market, record } = this
 
       if (!market) {
-        return ZERO_IN_BASE
+        return ZERO_IN_WEI
       }
 
-      return new BigNumberInBase(
-        new BigNumberInBase(record.price).toWei(
-          market.baseToken.decimals - market.quoteToken.decimals
-        )
-      )
+      return new BigNumberInWei(record.price)
     },
 
     sumOfQuantities(): BigNumberInBase {
@@ -153,15 +119,15 @@ export default Vue.extend({
       return new BigNumberInBase(record.sumOfQuantities || 0)
     },
 
-    quantity(): BigNumberInWei {
+    quantity(): BigNumberInBase {
       const { market, record } = this
 
       if (!market) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(
-        new BigNumberInWei(record.quantity).toFixed(
+      return new BigNumberInBase(
+        new BigNumberInBase(record.quantity).toFixed(
           market.maxQuantityScaleDecimals
         )
       )

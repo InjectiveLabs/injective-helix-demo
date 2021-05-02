@@ -2,7 +2,7 @@
 import Vue, { PropType, VNode } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { formatPrice } from '~/app/utils/formatters'
-import { SpotOrderType } from '~/types'
+import { SpotOrderType, DerivativeOrderType } from '~/types'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
@@ -26,7 +26,7 @@ export default Vue.extend({
 
     type: {
       required: false,
-      type: String as PropType<SpotOrderType>,
+      type: String as PropType<SpotOrderType | DerivativeOrderType>,
       default: SpotOrderType.Buy
     },
 
@@ -67,7 +67,7 @@ export default Vue.extend({
         return ''
       }
 
-      return [SpotOrderType.Buy].includes(this.type)
+      return [SpotOrderType.Buy, DerivativeOrderType.Long].includes(this.type)
         ? 'text-primary-500'
         : 'text-accent-500'
     }

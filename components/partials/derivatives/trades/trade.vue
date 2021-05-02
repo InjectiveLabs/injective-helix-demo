@@ -4,7 +4,7 @@
     <span class="w-1/3 text-xs px-2 cursor-pointer">
       <v-ui-format-order-price
         v-bind="{
-          value: price,
+          value: price.toBase(market.quoteToken.decimals),
           type: trade.tradeDirection
         }"
         class="block text-right"
@@ -13,7 +13,7 @@
     <span class="w-1/3 text-xs px-2">
       <v-ui-format-amount
         v-bind="{
-          value: quantity.toBase(market.baseToken.decimals)
+          value: quantity
         }"
         class="block text-right"
       />
@@ -46,38 +46,30 @@ export default Vue.extend({
       return this.$accessor.derivatives.market
     },
 
-    price(): BigNumberInBase {
+    price(): BigNumberInWei {
       const { market, trade } = this
 
       if (!market || !trade.executionPrice) {
-        return ZERO_IN_BASE
-      }
-
-      return new BigNumberInBase(
-        new BigNumberInBase(trade.executionPrice).toWei(
-          market.quoteToken.decimals
-        )
-      )
-    },
-
-    quantity(): BigNumberInWei {
-      const { market, trade } = this
-
-      if (!market || !trade.executionQuantity) {
         return ZERO_IN_WEI
       }
 
-      return new BigNumberInWei(
-        new BigNumberInWei(trade.executionQuantity).toFixed(
-          market.maxQuantityScaleDecimals
-        )
-      )
+      return new BigNumberInWei(trade.executionPrice)
+    },
+
+    quantity(): BigNumberInBase {
+      const { market, trade } = this
+
+      if (!market || !trade.executionQuantity) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(trade.executionQuantity)
     },
 
     total(): BigNumberInWei {
       const { quantity, price } = this
 
-      return quantity.times(price)
+      return price.times(quantity)
     },
 
     time(): string {

@@ -12,7 +12,7 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: quantity.toBase(market.baseToken.decimals)
+          value: quantity
         }"
         class="block"
       />
@@ -20,7 +20,7 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: unfilledQuantity.toBase(market.baseToken.decimals)
+          value: unfilledQuantity
         }"
         class="block"
       />
@@ -28,7 +28,7 @@
     <td is="v-ui-table-td" xs class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: total.toBase(market.baseToken.decimals)
+          value: total.toBase(market.quoteToken.decimals)
         }"
         class="text-right block text-white"
       />
@@ -109,47 +109,37 @@ export default Vue.extend({
       return this.$accessor.derivatives.market
     },
 
-    price(): BigNumberInBase {
+    price(): BigNumberInWei {
+      const { market, order } = this
+
+      if (!market) {
+        return ZERO_IN_WEI
+      }
+
+      return new BigNumberInWei(order.price)
+    },
+
+    quantity(): BigNumberInBase {
       const { market, order } = this
 
       if (!market) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(
-        new BigNumberInBase(order.price).toWei(market.quoteToken.decimals)
-      )
+      return new BigNumberInBase(order.quantity)
     },
 
-    quantity(): BigNumberInWei {
+    unfilledQuantity(): BigNumberInBase {
       const { market, order } = this
 
       if (!market) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(
-        new BigNumberInWei(order.quantity).toFixed(
-          market.maxQuantityScaleDecimals
-        )
-      )
+      return new BigNumberInBase(order.unfilledQuantity)
     },
 
-    unfilledQuantity(): BigNumberInWei {
-      const { market, order } = this
-
-      if (!market) {
-        return ZERO_IN_WEI
-      }
-
-      return new BigNumberInWei(
-        new BigNumberInWei(order.unfilledQuantity).toFixed(
-          market.maxQuantityScaleDecimals
-        )
-      )
-    },
-
-    filledQuantity(): BigNumberInWei {
+    filledQuantity(): BigNumberInBase {
       const { unfilledQuantity, quantity } = this
 
       return quantity.minus(unfilledQuantity)
@@ -184,7 +174,7 @@ export default Vue.extend({
     total(): BigNumberInWei {
       const { price, quantity } = this
 
-      return quantity.multipliedBy(price)
+      return price.multipliedBy(quantity)
     },
 
     orderTypeLocalized(): string {

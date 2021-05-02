@@ -8,17 +8,17 @@ import {
   DerivativeTransformer
 } from '@injectivelabs/derivatives-consumer'
 import { AccountAddress, TradeExecutionSide } from '@injectivelabs/ts-types'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { SubaccountStreamType } from '@injectivelabs/subaccount-consumer'
-
 import { TxProvider } from '~/app/providers/TxProvider'
 import { derivativeMarketStream } from '~/app/singletons/DerivativeMarketStream'
 import { streamManager } from '~/app/singletons/StreamManager'
 import {
   FEE_RECIPIENT,
   TESTNET_CHAIN_ID,
-  ZERO_IN_BASE
+  ZERO_IN_BASE,
+  ZERO_IN_WEI
 } from '~/app/utils/constants'
 import { UiPriceLevel, UiDerivativeMarket } from '~/types'
 import { derivativeConsumer } from '~/app/singletons/DerivativeMarketConsumer'
@@ -197,7 +197,7 @@ export const submitLimitOrder = async ({
       orderType: orderTypeToGrpcOrderType(orderType),
       price: price.toWei(market.quoteToken.decimals).toFixed(),
       margin: margin.toWei(market.quoteToken.decimals).toFixed(),
-      quantity: quantity.toWei().toFixed(),
+      quantity: quantity.toFixed(),
       feeRecipient: FEE_RECIPIENT,
       triggerPrice: '0' // TODO
     }
@@ -242,7 +242,7 @@ export const submitMarketOrder = async ({
     order: {
       price: price.toWei(market.quoteToken.decimals).toFixed(),
       margin: margin.toWei(market.quoteToken.decimals).toFixed(),
-      quantity: quantity.toWei().toFixed(),
+      quantity: quantity.toFixed(),
       orderType: orderTypeToGrpcOrderType(orderType),
       feeRecipient: FEE_RECIPIENT,
       triggerPrice: '0' // TODO
@@ -297,6 +297,58 @@ export const cancelOrder = async ({
   }
 }
 
+export const calculateMargin = ({
+  quantity,
+  price,
+  leverage
+}: {
+  quantity: string
+  price: string
+  leverage: string
+}): BigNumberInWei => {
+  return new BigNumberInWei(
+    new BigNumberInBase(quantity).times(price).dividedBy(leverage).dp(0)
+  )
+}
+
+export const calculateLiquidationPrice = ({
+  price,
+  quantity,
+  margin,
+  orderType,
+  market: { maintenanceMarginRatio }
+}: {
+  price: string
+  quantity: string
+  margin: string
+  orderType: DerivativeOrderType
+  market: UiDerivativeMarket
+}): BigNumberInWei => {
+  if (!price || !quantity || !margin) {
+    return ZERO_IN_WEI
+  }
+
+  const isOrderTypeLong = orderType === DerivativeOrderType.Long
+
+  const numerator = isOrderTypeLong
+    ? new BigNumberInWei(margin).minus(
+        new BigNumberInWei(price).times(quantity)
+      )
+    : new BigNumberInWei(margin).plus(new BigNumberInWei(price).times(quantity))
+
+  const maintenanceMarginRatioFactor = isOrderTypeLong
+    ? new BigNumberInBase(maintenanceMarginRatio).minus(1)
+    : new BigNumberInBase(maintenanceMarginRatio)
+
+  const denominator = isOrderTypeLong
+    ? maintenanceMarginRatioFactor.times(quantity)
+    : maintenanceMarginRatioFactor.times(quantity).plus(quantity)
+
+  const liquidationPrice = numerator.dividedBy(denominator)
+
+  return liquidationPrice.gte(0) ? liquidationPrice : ZERO_IN_WEI
+}
+
 export const calculateExecutionPriceFromOrderbook = ({
   records,
   market,
@@ -309,8 +361,8 @@ export const calculateExecutionPriceFromOrderbook = ({
   const { sum, remainAmountToFill } = records.reduce(
     ({ sum, remainAmountToFill }, order: UiPriceLevel) => {
       const min = BigNumberInBase.min(remainAmountToFill, order.quantity)
-      const price = new BigNumberInBase(
-        new BigNumberInBase(order.price).toWei(market.quoteToken.decimals)
+      const price = new BigNumberInWei(order.price).toBase(
+        market.quoteToken.decimals
       )
 
       return {
