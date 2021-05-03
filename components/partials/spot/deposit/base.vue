@@ -111,7 +111,7 @@ export default Vue.extend({
       this.$accessor.account
         .deposit({
           amount: new BigNumberInBase(form.amount),
-          denom: market.baseDenom
+          token: market.baseToken
         })
         .then(() => {
           this.$toast.success(this.$t('success_deposit'))

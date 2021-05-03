@@ -8,6 +8,7 @@ import {
 } from '~/app/services/account'
 import { grpcSubaccountBalanceToUiSubaccountBalance } from '~/app/transformers/account'
 import { backupPromiseCall } from '~/app/utils/async'
+import { Token } from '~/types'
 import { UiSubaccount, UiSubaccountBalance } from '~/types/subaccount'
 
 const initialStateFactory = () => ({
@@ -133,7 +134,7 @@ export const actions = actionTree(
 
     async deposit(
       { state },
-      { amount, denom }: { amount: BigNumberInBase; denom: string }
+      { amount, token }: { amount: BigNumberInBase; token: Token }
     ) {
       const { subaccount } = state
       const {
@@ -153,10 +154,10 @@ export const actions = actionTree(
 
       await deposit({
         address,
-        denom,
         injectiveAddress,
+        denom: token.denom,
         subaccountId: subaccount.subaccountId,
-        amount: amount.toWei()
+        amount: amount.toWei(token.decimals)
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
