@@ -2,7 +2,6 @@ import { Web3Strategy, Wallet } from '@injectivelabs/web3-strategy'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { ChainId } from '@injectivelabs/ts-types'
 import { app } from '~/app/singletons/App'
-import { localStorage } from '~/app/singletons/Storage'
 import { CHAIN_ID, RPC_POLING_INTERVAL } from '~/app/utils/constants'
 
 let web3Strategy: Web3Strategy
@@ -43,6 +42,7 @@ export const initWeb3Strategy = (wallet: Wallet) => {
     }
   })
 
+  /*
   web3Strategy.onAccountChange(() => {
     localStorage.clear()
     window.location.reload()
@@ -51,7 +51,7 @@ export const initWeb3Strategy = (wallet: Wallet) => {
   web3Strategy.onChainChange(() => {
     localStorage.clear()
     window.location.reload()
-  })
+  }) */
 
   return web3Strategy
 }

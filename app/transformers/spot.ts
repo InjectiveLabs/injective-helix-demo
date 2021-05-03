@@ -1,4 +1,6 @@
 import { TokenMeta } from '@injectivelabs/spot-consumer'
+import { BigNumberInWei } from '@injectivelabs/utils'
+import { getDecimalsFromNumber } from '../utils/helpers'
 import {
   peggyDenomToTokenFromContractAddress,
   peggyDenomToContractAddress
@@ -17,18 +19,29 @@ export const spotMarketToUiSpotMarket = (
   market: BaseUiSpotMarket,
   marketsSummary: AllChronosSpotMarketSummary | ChronosSpotMarketSummary
 ): UiSpotMarket => {
+  const quoteToken =
+    market.quoteToken !== undefined
+      ? tokenMetaToToken(market.quoteToken, market.quoteDenom)
+      : peggyDenomToTokenFromContractAddress(market.quoteDenom)
+  const baseToken =
+    market.baseToken !== undefined
+      ? tokenMetaToToken(market.baseToken, market.baseDenom)
+      : peggyDenomToTokenFromContractAddress(market.baseDenom)
+
   return {
     ...market,
     ...marketsSummary,
+    baseToken,
+    quoteToken,
     slug: market.ticker.replace('/', '-').replace(' ', '-').toLowerCase(),
-    baseToken:
-      market.baseToken !== undefined
-        ? tokenMetaToToken(market.baseToken, market.baseDenom)
-        : peggyDenomToTokenFromContractAddress(market.baseDenom),
-    quoteToken:
-      market.quoteToken !== undefined
-        ? tokenMetaToToken(market.quoteToken, market.quoteDenom)
-        : peggyDenomToTokenFromContractAddress(market.quoteDenom)
+    priceDecimals: getDecimalsFromNumber(
+      new BigNumberInWei(market.minPriceTickSize)
+        .toBase(baseToken.decimals - quoteToken.decimals)
+        .toNumber()
+    ),
+    quantityDecimals: getDecimalsFromNumber(
+      new BigNumberInWei(market.minQuantityTickSize).toBase().toNumber()
+    )
   }
 }
 

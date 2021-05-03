@@ -15,6 +15,8 @@ export interface UiSpotMarket
   extends Omit<BaseUiSpotMarket, 'quoteToken' | 'baseToken'>,
     ChronosSpotMarketSummary {
   slug: string
+  priceDecimals: number
+  quantityDecimals: number
   quoteToken: Token
   baseToken: Token
 }

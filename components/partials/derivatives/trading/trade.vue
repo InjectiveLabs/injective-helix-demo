@@ -3,7 +3,7 @@
     <div class="w-full flex">
       <v-ui-button-select
         v-model="orderType"
-        :option="DerivativeOrderType.Long"
+        :option="DerivativeOrderType.Buy"
         half
         primary
       >
@@ -11,7 +11,7 @@
       </v-ui-button-select>
       <v-ui-button-select
         v-model="orderType"
-        :option="DerivativeOrderType.Short"
+        :option="DerivativeOrderType.Sell"
         half
         accent
       >
@@ -41,7 +41,7 @@
         <v-input
           ref="input-amount"
           :value="form.amount"
-          :label="$t('amount_decimals', { decimals: amountDecimals })"
+          :label="$t('amount_decimals', { decimals: market.quantityDecimals })"
           :custom-handler="true"
           :max-selector="true"
           :placeholder="$t('amount')"
@@ -91,7 +91,7 @@
           :placeholder="$t('price')"
           :label="
             $t('price_decimals', {
-              decimals: priceDecimals
+              decimals: market.priceDecimals
             })
           "
           :disabled="tradingTypeMarket"
@@ -134,8 +134,8 @@
         :status="status"
         :disabled="hasErrors || !isUserWalletConnected"
         :ghost="hasErrors"
-        :primary="!hasErrors && orderType === DerivativeOrderType.Long"
-        :accent="!hasErrors && orderType === DerivativeOrderType.Short"
+        :primary="!hasErrors && orderType === DerivativeOrderType.Buy"
+        :accent="!hasErrors && orderType === DerivativeOrderType.Sell"
         class="uppercase"
         wide
         @click.stop="onSubmit"
@@ -153,11 +153,7 @@ import { BigNumberInWei, Status, BigNumberInBase } from '@injectivelabs/utils'
 import OrderDetails from './order-details.vue'
 import OrderLeverage from './order-leverage.vue'
 import OrderDetailsMarket from './order-details-market.vue'
-import {
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  ZERO_IN_BASE
-} from '~/app/utils/constants'
+import { ZERO_IN_BASE } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import {
   DerivativeOrderType,
@@ -199,7 +195,7 @@ export default Vue.extend({
       TradeExecutionType,
       DerivativeOrderType,
       tradingType: TradeExecutionType.Market,
-      orderType: DerivativeOrderType.Long,
+      orderType: DerivativeOrderType.Buy,
       detailsDrawerOpen: true,
       status: new Status(),
       form: initialForm()
@@ -219,24 +215,24 @@ export default Vue.extend({
       return this.$accessor.derivatives.orderbook
     },
 
-    longs(): UiPriceLevel[] {
+    buys(): UiPriceLevel[] {
       const { orderbook } = this
 
       if (!orderbook) {
         return []
       }
 
-      return orderbook.longs
+      return orderbook.buys
     },
 
-    shorts(): UiPriceLevel[] {
+    sells(): UiPriceLevel[] {
       const { orderbook } = this
 
       if (!orderbook) {
         return []
       }
 
-      return orderbook.shorts
+      return orderbook.sells
     },
 
     amount(): BigNumberInBase {
@@ -253,37 +249,12 @@ export default Vue.extend({
       return new BigNumberInBase(this.form.price)
     },
 
-    priceDecimals(): number {
-      const { market } = this
-
-      if (!market) {
-        return 0
-      }
-
-      return market.maxPriceScaleDecimals < UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-        ? market.maxPriceScaleDecimals
-        : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-    },
-
-    amountDecimals(): number {
-      const { market } = this
-
-      if (!market) {
-        return 0
-      }
-
-      return market.maxQuantityScaleDecimals >
-        UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-        ? market.maxQuantityScaleDecimals
-        : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-    },
-
     executionPrice(): BigNumberInBase {
       const {
         tradingTypeMarket,
-        orderTypeLong,
-        shorts,
-        longs,
+        orderTypeBuy,
+        sells,
+        buys,
         hasAmount,
         market,
         amount,
@@ -299,7 +270,7 @@ export default Vue.extend({
           return ZERO_IN_BASE
         }
 
-        const records = orderTypeLong ? shorts : longs
+        const records = orderTypeBuy ? sells : buys
 
         return calculateExecutionPriceFromOrderbook({ records, amount, market })
       }
@@ -323,24 +294,24 @@ export default Vue.extend({
       return tradingType === TradeExecutionType.Market
     },
 
-    orderTypeLong(): boolean {
+    orderTypeBuy(): boolean {
       const { orderType } = this
 
-      return orderType === DerivativeOrderType.Long
+      return orderType === DerivativeOrderType.Buy
     },
 
     localizedSubmitOrderType(): string {
-      const { tradingType, orderTypeLong } = this
+      const { tradingType, orderTypeBuy } = this
 
       if (tradingType === TradeExecutionType.LimitFill) {
-        if (orderTypeLong) {
+        if (orderTypeBuy) {
           return this.$t('limit_long')
         }
 
         return this.$t('limit_short')
       }
 
-      if (orderTypeLong) {
+      if (orderTypeBuy) {
         return this.$t('market_long')
       }
 
@@ -348,13 +319,13 @@ export default Vue.extend({
     },
 
     amountStep(): string {
-      const { market, amountDecimals } = this
+      const { market } = this
 
       if (!market) {
         return '1'
       }
 
-      const decimalsAllowed = new BigNumberInBase(amountDecimals)
+      const decimalsAllowed = new BigNumberInBase(market.quantityDecimals)
 
       if (decimalsAllowed.eq(0)) {
         return '1'
@@ -372,13 +343,13 @@ export default Vue.extend({
     },
 
     priceStep(): string {
-      const { market, priceDecimals } = this
+      const { market } = this
 
       if (!market) {
         return '1'
       }
 
-      const decimalsAllowed = new BigNumberInBase(priceDecimals)
+      const decimalsAllowed = new BigNumberInBase(market.priceDecimals)
 
       if (decimalsAllowed.eq(0)) {
         return '1'
@@ -402,9 +373,9 @@ export default Vue.extend({
     notEnoughOrdersToFillFromError(): TradeError | undefined {
       const {
         tradingTypeMarket,
-        orderTypeLong,
-        shorts,
-        longs,
+        orderTypeBuy,
+        sells,
+        buys,
         amount,
         hasAmount
       } = this
@@ -413,7 +384,7 @@ export default Vue.extend({
         return
       }
 
-      const orders = orderTypeLong ? shorts : longs
+      const orders = orderTypeBuy ? sells : buys
 
       if (orders.length <= 0 && amount.gt(0)) {
         return {
@@ -429,9 +400,9 @@ export default Vue.extend({
         tradingTypeMarket,
         hasPrice,
         hasAmount,
-        orderTypeLong,
-        shorts,
-        longs,
+        orderTypeBuy,
+        sells,
+        buys,
         amount,
         market
       } = this
@@ -440,7 +411,7 @@ export default Vue.extend({
         return
       }
 
-      const orders = orderTypeLong ? shorts : longs
+      const orders = orderTypeBuy ? sells : buys
       const totalAmount = orders.reduce((totalAmount, { quantity }) => {
         return totalAmount.plus(new BigNumberInWei(quantity).toBase())
       }, ZERO_IN_BASE)
@@ -566,11 +537,11 @@ export default Vue.extend({
         : new BigNumberInBase(20)
     },
 
-    margin(): BigNumberInWei {
+    margin(): BigNumberInBase {
       const { executionPrice, hasPrice, hasAmount, form, market } = this
 
       if (!hasPrice || !hasAmount || !market) {
-        return new BigNumberInWei('')
+        return ZERO_IN_BASE
       }
 
       return calculateMargin({
@@ -649,7 +620,7 @@ export default Vue.extend({
         margin: margin.toFixed(),
         price: executionPrice.toFixed(),
         quantity: form.amount
-      }).toBase(market.quoteToken.decimals)
+      })
     }
   },
 
@@ -698,7 +669,7 @@ export default Vue.extend({
         fees,
         executionPrice,
         tradingTypeMarket,
-        orderTypeLong,
+        orderTypeBuy,
         orderbook
       } = this
       const percent = new BigNumber(percentage).dividedBy(100)
@@ -716,9 +687,9 @@ export default Vue.extend({
           leverage,
           availableMargin,
           percent,
-          orderbook: orderTypeLong
-            ? [...orderbook.shorts].reverse()
-            : orderbook.longs
+          orderbook: orderTypeBuy
+            ? [...orderbook.sells].reverse()
+            : orderbook.buys
         }).toFixed(market.decimalsAllowed.toNumber(), BigNumber.ROUND_DOWN)
       }
 
@@ -755,28 +726,28 @@ export default Vue.extend({
     },
 
     onPriceBlur() {
-      const { market, form, priceDecimals, hasPrice } = this
+      const { market, form, hasPrice } = this
 
       if (!market || !hasPrice) {
         return
       }
 
       const roundedPrice = new BigNumberInBase(form.price).toFixed(
-        priceDecimals
+        market.priceDecimals
       )
 
       this.form.price = roundedPrice
     },
 
     onAmountBlur() {
-      const { market, form, amountDecimals, amountStep, hasAmount } = this
+      const { market, form, amountStep, hasAmount } = this
 
       if (!market || !hasAmount) {
         return
       }
 
       const roundedAmount = new BigNumberInBase(form.amount).toFixed(
-        amountDecimals
+        market.quantityDecimals
       )
 
       this.form.amount =

@@ -94,6 +94,10 @@ export const actions = actionTree(
       await this.app.$accessor.spot.fetchSubaccountOrders()
       await this.app.$accessor.spot.fetchSubaccountTrades()
       await this.app.$accessor.spot.setSubaccountStreams()
+      await this.app.$accessor.derivatives.fetchSubaccountMarketTrades()
+      await this.app.$accessor.derivatives.fetchSubaccountOrders()
+      await this.app.$accessor.derivatives.fetchSubaccountTrades()
+      await this.app.$accessor.derivatives.setSubaccountStreams()
     },
 
     async updateSubaccount({ commit, state }) {

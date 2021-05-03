@@ -13,7 +13,8 @@
           <span class="mr-1">≈</span>
           <v-ui-format-price
             v-bind="{
-              value: total
+              value: total,
+              decimals: market.priceDecimals
             }"
           />
           <small class="opacity-75 pt-px ml-1">{{
@@ -29,7 +30,8 @@
           <v-ui-text v-if="!amount.isNaN()" muted class="flex items-center">
             <v-ui-format-amount
               v-bind="{
-                value: amount
+                value: amount,
+                decimals: market.quantityDecimals
               }"
               class="text-gray-300"
             />
@@ -48,7 +50,8 @@
             <span class="mr-1">≈</span>
             <v-ui-format-price
               v-bind="{
-                value: price
+                value: price,
+                decimals: market.priceDecimals
               }"
               class="text-gray-300"
             />
@@ -71,7 +74,8 @@
           >
             <v-ui-format-price
               v-bind="{
-                value: liquidationPrice
+                value: liquidationPrice,
+                decimals: market.priceDecimals
               }"
               class="text-gray-300"
             />
@@ -90,7 +94,8 @@
           <v-ui-text v-if="margin.gt(0)" muted class="flex items-center">
             <v-ui-format-price
               v-bind="{
-                value: margin
+                value: margin,
+                decimals: market.priceDecimals
               }"
               class="text-gray-300"
             />
@@ -110,7 +115,8 @@
             <span class="mr-1">≈</span>
             <v-ui-format-price
               v-bind="{
-                value: notionalValue
+                value: notionalValue,
+                decimals: market.priceDecimals
               }"
               class="text-gray-300"
             />
@@ -130,7 +136,8 @@
             <span class="mr-1">≈</span>
             <v-ui-format-price
               v-bind="{
-                value: fees
+                value: fees,
+                decimals: market.priceDecimals
               }"
               class="text-gray-300"
             />

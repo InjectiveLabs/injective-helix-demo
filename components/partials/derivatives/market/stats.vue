@@ -4,7 +4,8 @@
       <v-ui-text sm class="flex items-center justify-end w-full">
         <v-ui-format-price
           v-bind="{
-            value: lastPrice.toBase(market.quoteToken.decimals)
+            value: lastPrice.toBase(market.quoteToken.decimals),
+            decimals: market.priceDecimals
           }"
         />
       </v-ui-text>

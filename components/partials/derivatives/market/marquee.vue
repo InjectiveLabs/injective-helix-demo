@@ -22,10 +22,8 @@
             <v-ui-format-order-price
               v-bind="{
                 value: singleMarket.price,
-                decimals: singleMarket.maxPriceScaleDecimals,
-                type: true
-                  ? DerivativeOrderType.Long
-                  : DerivativeOrderType.Short
+                decimals: singleMarket.priceDecimals,
+                type: true ? DerivativeOrderType.Buy : DerivativeOrderType.Sell
               }"
               class="mr-1"
             />

@@ -32,7 +32,7 @@ export default Vue.extend({
     deriveDecimals: {
       required: false,
       type: Boolean,
-      default: true
+      default: false
     }
   },
 

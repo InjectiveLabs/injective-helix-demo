@@ -41,7 +41,7 @@
         <v-input
           ref="input-amount"
           :value="form.amount"
-          :label="$t('amount_decimals', { decimals: amountDecimals })"
+          :label="$t('amount_decimals', { decimals: market.quantityDecimals })"
           :custom-handler="true"
           :max-selector="true"
           :placeholder="$t('amount')"
@@ -91,7 +91,7 @@
           :placeholder="$t('price')"
           :label="
             $t('price_decimals', {
-              decimals: priceDecimals
+              decimals: market.priceDecimals
             })
           "
           :disabled="tradingTypeMarket"
@@ -144,11 +144,7 @@ import { TradeError } from 'types/errors'
 import { BigNumberInWei, Status, BigNumberInBase } from '@injectivelabs/utils'
 import OrderDetails from './order-details.vue'
 import OrderDetailsMarket from './order-details-market.vue'
-import {
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  ZERO_IN_BASE
-} from '~/app/utils/constants'
+import { ZERO_IN_BASE } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import {
   SpotOrderType,
@@ -237,31 +233,6 @@ export default Vue.extend({
       return new BigNumberInBase(this.form.price)
     },
 
-    priceDecimals(): number {
-      const { market } = this
-
-      if (!market) {
-        return 0
-      }
-
-      return market.maxPriceScaleDecimals < UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-        ? market.maxPriceScaleDecimals
-        : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-    },
-
-    amountDecimals(): number {
-      const { market } = this
-
-      if (!market) {
-        return 0
-      }
-
-      return market.maxQuantityScaleDecimals >
-        UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-        ? market.maxQuantityScaleDecimals
-        : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-    },
-
     executionPrice(): BigNumberInBase {
       const {
         tradingTypeMarket,
@@ -332,13 +303,13 @@ export default Vue.extend({
     },
 
     amountStep(): string {
-      const { market, amountDecimals } = this
+      const { market } = this
 
       if (!market) {
         return '1'
       }
 
-      const decimalsAllowed = new BigNumberInBase(amountDecimals)
+      const decimalsAllowed = new BigNumberInBase(market.quantityDecimals)
 
       if (decimalsAllowed.eq(0)) {
         return '1'
@@ -356,13 +327,13 @@ export default Vue.extend({
     },
 
     priceStep(): string {
-      const { market, priceDecimals } = this
+      const { market } = this
 
       if (!market) {
         return '1'
       }
 
-      const decimalsAllowed = new BigNumberInBase(priceDecimals)
+      const decimalsAllowed = new BigNumberInBase(market.priceDecimals)
 
       if (decimalsAllowed.eq(0)) {
         return '1'
@@ -639,8 +610,8 @@ export default Vue.extend({
           availableMargin,
           percent,
           orderbook: orderTypeBuy
-            ? [...orderbook.shorts].reverse()
-            : orderbook.longs
+            ? [...orderbook.sells].reverse()
+            : orderbook.buys
         }).toFixed(market.decimalsAllowed.toNumber(), BigNumber.ROUND_DOWN)
       }
 
@@ -677,28 +648,28 @@ export default Vue.extend({
     },
 
     onPriceBlur() {
-      const { market, form, priceDecimals, hasPrice } = this
+      const { market, form, hasPrice } = this
 
       if (!market || !hasPrice) {
         return
       }
 
       const roundedPrice = new BigNumberInBase(form.price).toFixed(
-        priceDecimals
+        market.priceDecimals
       )
 
       this.form.price = roundedPrice
     },
 
     onAmountBlur() {
-      const { market, form, amountDecimals, amountStep, hasAmount } = this
+      const { market, form, amountStep, hasAmount } = this
 
       if (!market || !hasAmount) {
         return
       }
 
       const roundedAmount = new BigNumberInBase(form.amount).toFixed(
-        amountDecimals
+        market.quantityDecimals
       )
 
       this.form.amount =

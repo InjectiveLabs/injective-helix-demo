@@ -17,8 +17,7 @@ import { streamManager } from '~/app/singletons/StreamManager'
 import {
   FEE_RECIPIENT,
   TESTNET_CHAIN_ID,
-  ZERO_IN_BASE,
-  ZERO_IN_WEI
+  ZERO_IN_BASE
 } from '~/app/utils/constants'
 import { UiPriceLevel, UiDerivativeMarket } from '~/types'
 import { derivativeConsumer } from '~/app/singletons/DerivativeMarketConsumer'
@@ -305,8 +304,8 @@ export const calculateMargin = ({
   quantity: string
   price: string
   leverage: string
-}): BigNumberInWei => {
-  return new BigNumberInWei(
+}): BigNumberInBase => {
+  return new BigNumberInBase(
     new BigNumberInBase(quantity).times(price).dividedBy(leverage).dp(0)
   )
 }
@@ -323,30 +322,32 @@ export const calculateLiquidationPrice = ({
   margin: string
   orderType: DerivativeOrderType
   market: UiDerivativeMarket
-}): BigNumberInWei => {
+}): BigNumberInBase => {
   if (!price || !quantity || !margin) {
-    return ZERO_IN_WEI
+    return ZERO_IN_BASE
   }
 
-  const isOrderTypeLong = orderType === DerivativeOrderType.Long
+  const isOrderTypeBuy = orderType === DerivativeOrderType.Buy
 
-  const numerator = isOrderTypeLong
-    ? new BigNumberInWei(margin).minus(
-        new BigNumberInWei(price).times(quantity)
+  const numerator = isOrderTypeBuy
+    ? new BigNumberInBase(margin).minus(
+        new BigNumberInBase(price).times(quantity)
       )
-    : new BigNumberInWei(margin).plus(new BigNumberInWei(price).times(quantity))
+    : new BigNumberInBase(margin).plus(
+        new BigNumberInBase(price).times(quantity)
+      )
 
-  const maintenanceMarginRatioFactor = isOrderTypeLong
+  const maintenanceMarginRatioFactor = isOrderTypeBuy
     ? new BigNumberInBase(maintenanceMarginRatio).minus(1)
     : new BigNumberInBase(maintenanceMarginRatio)
 
-  const denominator = isOrderTypeLong
+  const denominator = isOrderTypeBuy
     ? maintenanceMarginRatioFactor.times(quantity)
     : maintenanceMarginRatioFactor.times(quantity).plus(quantity)
 
   const liquidationPrice = numerator.dividedBy(denominator)
 
-  return liquidationPrice.gte(0) ? liquidationPrice : ZERO_IN_WEI
+  return liquidationPrice.gte(0) ? liquidationPrice : ZERO_IN_BASE
 }
 
 export const calculateExecutionPriceFromOrderbook = ({

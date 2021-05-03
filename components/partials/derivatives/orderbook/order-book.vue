@@ -1,21 +1,21 @@
 <template>
   <div class="flex flex-col flex-wrap w-full">
     <ul
-      ref="shortOrders"
+      ref="sellOrders"
       class="list-order-book flex-1 overflow-auto w-full"
-      @mouseenter="autoScrollShortsLocked = true"
-      @mouseleave="autoScrollShortsLocked = false"
+      @mouseenter="autoScrollSellsLocked = true"
+      @mouseleave="autoScrollSellsLocked = false"
     >
       <v-record-empty
-        v-for="(emptyOrder, index) in shortsEmptyCount"
-        :key="`order-book-short-empty-${index}`"
+        v-for="(emptyOrder, index) in sellsEmptyCount"
+        :key="`order-book-sell-empty-${index}`"
       ></v-record-empty>
       <v-record
-        v-for="(short, index) in shortsWithDepth"
-        :key="`order-book-short-${index}`"
-        :type="DerivativeOrderType.Short"
-        :user-orders="shortUserOrderPrices"
-        :record="short"
+        v-for="(sell, index) in sellsWithDepth"
+        :key="`order-book-sell-${index}`"
+        :type="DerivativeOrderType.Sell"
+        :user-orders="sellUserOrderPrices"
+        :record="sell"
       ></v-record>
     </ul>
     <div
@@ -28,9 +28,9 @@
             <div class="inline-block mr-1">
               <v-ui-icon
                 xs
-                :rotate="!isLastTradeLong"
-                :primary="isLastTradeLong"
-                :accent="!isLastTradeLong"
+                :rotate="!isLastTradeBuy"
+                :primary="isLastTradeBuy"
+                :accent="!isLastTradeBuy"
                 :icon="$enums.Icon.Arrow"
               />
             </div>
@@ -38,9 +38,9 @@
               <v-ui-format-order-price
                 v-bind="{
                   value: lastPrice.toBase(market.quoteToken.decimals),
-                  type: isLastTradeLong
-                    ? TradeDirection.Long
-                    : TradeDirection.Short
+                  type: isLastTradeBuy
+                    ? TradeDirection.Buy
+                    : TradeDirection.Sell
                 }"
                 class="flex justify-end"
               />
@@ -54,21 +54,21 @@
       </div>
     </div>
     <ul
-      ref="longOrders"
+      ref="buyOrders"
       class="list-order-book flex-1 overflow-auto w-full"
-      @mouseenter="autoScrollLongsLocked = true"
-      @mouseleave="autoScrollLongsLocked = false"
+      @mouseenter="autoScrollBuysLocked = true"
+      @mouseleave="autoScrollBuysLocked = false"
     >
       <v-record
-        v-for="(long, index) in longsWithDepth"
-        :key="`order-book-long-${index}`"
-        :type="DerivativeOrderType.Long"
-        :user-orders="longUserOrderPrices"
-        :record="long"
+        v-for="(buy, index) in buysWithDepth"
+        :key="`order-book-buy-${index}`"
+        :type="DerivativeOrderType.Buy"
+        :user-orders="buyUserOrderPrices"
+        :record="buy"
       ></v-record>
       <v-record-empty
-        v-for="(emptyOrder, index) in longsEmptyCount"
-        :key="`order-book-long-empty-${index}`"
+        v-for="(emptyOrder, index) in buysEmptyCount"
+        :key="`order-book-buy-empty-${index}`"
       ></v-record-empty>
     </ul>
   </div>
@@ -105,8 +105,8 @@ export default Vue.extend({
     return {
       TradeDirection,
       DerivativeOrderType,
-      autoScrollShortsLocked: false,
-      autoScrollLongsLocked: false,
+      autoScrollSellsLocked: false,
+      autoScrollBuysLocked: false,
 
       limit: 6
     }
@@ -129,71 +129,71 @@ export default Vue.extend({
       return this.$accessor.derivatives.orderbook
     },
 
-    longs(): UiPriceLevel[] {
+    buys(): UiPriceLevel[] {
       const { orderbook } = this
 
       if (!orderbook) {
         return []
       }
 
-      return orderbook.longs
+      return orderbook.buys
     },
 
-    shorts(): UiPriceLevel[] {
+    sells(): UiPriceLevel[] {
       const { orderbook } = this
 
       if (!orderbook) {
         return []
       }
 
-      return orderbook.shorts
+      return orderbook.sells
     },
 
-    longUserOrderPrices(): string[] {
+    buyUserOrderPrices(): string[] {
       const { subaccountOrders } = this
 
       return subaccountOrders.reduce((records, { orderType, price }) => {
-        return orderType === DerivativeOrderType.Long
+        return orderType === DerivativeOrderType.Buy
           ? [...records, price]
           : records
       }, [] as string[])
     },
 
-    shortUserOrderPrices(): string[] {
+    sellUserOrderPrices(): string[] {
       const { subaccountOrders } = this
 
       return subaccountOrders.reduce((records, { orderType, price }) => {
-        return orderType === DerivativeOrderType.Short
+        return orderType === DerivativeOrderType.Sell
           ? [...records, price]
           : records
       }, [] as string[])
     },
 
-    longsTotal(): BigNumberInBase {
-      const { longs } = this
+    buysTotal(): BigNumberInBase {
+      const { buys } = this
 
-      return longs.reduce((total, long) => {
-        return total.plus(long.quantity)
+      return buys.reduce((total, buy) => {
+        return total.plus(buy.quantity)
       }, ZERO_IN_BASE)
     },
 
-    shortsTotal(): BigNumberInBase {
-      const { shorts } = this
+    sellsTotal(): BigNumberInBase {
+      const { sells } = this
 
-      return shorts.reduce((total, short) => {
-        return total.plus(short.quantity)
+      return sells.reduce((total, sell) => {
+        return total.plus(sell.quantity)
       }, ZERO_IN_BASE)
     },
 
-    longsWithDepth(): UiOrderbookPriceLevel[] {
-      const { longs, longsTotal, market } = this
+    buysWithDepth(): UiOrderbookPriceLevel[] {
+      const { buys, buysTotal, market } = this
 
       if (!market) {
         return []
       }
 
       let accumulator = ZERO_IN_BASE
-      return longs.map((record: UiPriceLevel, index: number) => {
+      return buys.map((record: UiPriceLevel, index: number) => {
         const quantity = new BigNumberInBase(record.quantity)
 
         accumulator = index === 0 ? quantity : accumulator.plus(quantity)
@@ -201,20 +201,20 @@ export default Vue.extend({
         return {
           ...record,
           sumOfQuantities: accumulator.toFixed(),
-          depth: accumulator.dividedBy(longsTotal).times(100).toNumber()
+          depth: accumulator.dividedBy(buysTotal).times(100).toNumber()
         }
       })
     },
 
-    shortsWithDepth(): UiOrderbookPriceLevel[] {
-      const { shorts, shortsTotal, market } = this
+    sellsWithDepth(): UiOrderbookPriceLevel[] {
+      const { sells, sellsTotal, market } = this
 
       if (!market) {
         return []
       }
 
       let accumulator = ZERO_IN_BASE
-      return shorts
+      return sells
         .map((record: UiPriceLevel, index: number) => {
           const quantity = new BigNumberInBase(record.quantity)
 
@@ -223,24 +223,24 @@ export default Vue.extend({
           return {
             ...record,
             sumOfQuantities: accumulator.toFixed(),
-            depth: accumulator.dividedBy(shortsTotal).times(100).toNumber()
+            depth: accumulator.dividedBy(sellsTotal).times(100).toNumber()
           }
         })
         .reverse()
     },
 
-    shortsEmptyCount(): any[] {
-      const { shorts, limit } = this
+    sellsEmptyCount(): any[] {
+      const { sells, limit } = this
 
-      const size = Object.keys(shorts).length
+      const size = Object.keys(sells).length
 
       return size < limit ? new Array(limit - size) : []
     },
 
-    longsEmptyCount(): any[] {
-      const { longs, limit } = this
+    buysEmptyCount(): any[] {
+      const { buys, limit } = this
 
-      const size = Object.keys(longs).length
+      const size = Object.keys(buys).length
 
       return size < limit ? new Array(limit - size) : []
     },
@@ -267,7 +267,7 @@ export default Vue.extend({
       return !noChangeSincePriorTradeOrPriorTradeNotExists
     },
 
-    isLastTradeLong(): boolean {
+    isLastTradeBuy(): boolean {
       const { showDirection, trades } = this
       const [lastTrade] = trades
 
@@ -279,7 +279,7 @@ export default Vue.extend({
         return true
       }
 
-      return lastTrade.tradeDirection === TradeDirection.Long
+      return lastTrade.tradeDirection === TradeDirection.Buy
     },
 
     lastPrice(): BigNumberInWei {
@@ -299,12 +299,12 @@ export default Vue.extend({
   },
 
   watch: {
-    shorts() {
-      this.$nextTick(this.onScrollShorts)
+    sells() {
+      this.$nextTick(this.onScrollSells)
     },
 
-    longs() {
-      this.$nextTick(this.onScrollLongs)
+    buys() {
+      this.$nextTick(this.onScrollBuys)
     }
   },
 
@@ -312,8 +312,8 @@ export default Vue.extend({
     this.$root.$on('resized-order-book-panel', this.onResize)
 
     this.$nextTick(() => {
-      this.onScrollShorts()
-      this.onScrollLongs()
+      this.onScrollSells()
+      this.onScrollBuys()
       this.onResize()
     })
   },
@@ -338,18 +338,18 @@ export default Vue.extend({
         .toNumber()
     },
 
-    onScrollShorts() {
-      const el = this.$refs.shortOrders as any
+    onScrollSells() {
+      const el = this.$refs.sellOrders as any
 
-      if (el && !this.autoScrollShortsLocked) {
+      if (el && !this.autoScrollSellsLocked) {
         el.scrollTop = el.scrollHeight
       }
     },
 
-    onScrollLongs() {
-      const el = this.$refs.longOrders as any
+    onScrollBuys() {
+      const el = this.$refs.buyOrders as any
 
-      if (el && !this.autoScrollLongsLocked) {
+      if (el && !this.autoScrollBuysLocked) {
         el.scrollTop = 0
       }
     }

@@ -7,7 +7,7 @@
     <span
       class="depth-col"
       :style="depthWidth"
-      :class="type === DerivativeOrderType.Long ? 'longs' : 'shorts'"
+      :class="type === DerivativeOrderType.Buy ? 'buys' : 'sells'"
     ></span>
     <span
       class="w-1/3 text-xs px-2 flex items-center justify-end z-10"
@@ -22,7 +22,8 @@
       <v-ui-format-order-price
         v-bind="{
           value: price.toBase(market.quoteToken.decimals),
-          type: type
+          type: type,
+          decimals: market.priceDecimals
         }"
         class="text-right block"
       />
@@ -30,7 +31,8 @@
     <span class="w-1/3 text-xs px-2 z-10" @click.stop="onQuantityClick">
       <v-ui-format-amount
         v-bind="{
-          value: quantity
+          value: quantity,
+          decimals: market.quantityDecimals
         }"
         class="text-right block"
         :class="{
@@ -42,7 +44,8 @@
     <span class="w-1/3 text-xs px-2 z-10" @click.stop="onSumQuantityClick">
       <v-ui-format-amount
         v-bind="{
-          value: sumOfQuantities
+          value: sumOfQuantities,
+          decimals: market.quantityDecimals
         }"
         class="text-right block text-white"
       />
@@ -126,11 +129,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(
-        new BigNumberInBase(record.quantity).toFixed(
-          market.maxQuantityScaleDecimals
-        )
-      )
+      return new BigNumberInBase(record.quantity)
     },
 
     depthWidth(): { width: string } {
@@ -149,7 +148,7 @@ export default Vue.extend({
         case Change.NoChange:
           return ''
         case Change.New:
-          return type === DerivativeOrderType.Long ? 'up' : 'down'
+          return type === DerivativeOrderType.Buy ? 'up' : 'down'
         case Change.Increase:
           return 'up'
         case Change.Decrease:
@@ -190,9 +189,7 @@ export default Vue.extend({
         return
       }
 
-      const priceToString = price.toFixed(market.maxPriceScaleDecimals)
-
-      this.$root.$emit('orderbook-price-click', priceToString)
+      this.$root.$emit('orderbook-price-click', price.toFixed())
     },
 
     onQuantityClick() {
@@ -202,10 +199,7 @@ export default Vue.extend({
         return
       }
 
-      this.$root.$emit(
-        'orderbook-size-click',
-        quantity.toFixed(market.maxQuantityScaleDecimals)
-      )
+      this.$root.$emit('orderbook-size-click', quantity.toFixed())
     },
 
     onSumQuantityClick() {

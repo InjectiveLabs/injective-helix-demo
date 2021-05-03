@@ -3,8 +3,9 @@
     <td is="v-ui-table-td" xs class="h-8">
       <v-ui-format-order-price
         v-bind="{
-          value: price,
-          type: order.orderType
+          value: price.toBase(market.quoteToken.decimals),
+          type: order.orderType,
+          decimals: market.priceDecimals
         }"
         class="flex justify-end"
       />
@@ -12,7 +13,8 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: quantity
+          value: quantity,
+          decimals: market.quantityDecimals
         }"
         class="block"
       />
@@ -20,7 +22,8 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: unfilledQuantity
+          value: unfilledQuantity,
+          decimals: market.quantityDecimals
         }"
         class="block"
       />
@@ -28,15 +31,16 @@
     <td is="v-ui-table-td" xs class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: total.toBase(market.quoteToken.decimals)
+          value: total.toBase(market.quoteToken.decimals),
+          decimals: market.priceDecimals
         }"
         class="text-right block text-white"
       />
     </td>
     <td is="v-ui-table-td" xs center class="h-8">
       <v-ui-badge
-        :primary="order.orderType === DerivativeOrderType.Long"
-        :accent="order.orderType === DerivativeOrderType.Short"
+        :primary="order.orderType === DerivativeOrderType.Buy"
+        :accent="order.orderType === DerivativeOrderType.Sell"
         sm
       >
         <div class="w-10">
@@ -180,7 +184,7 @@ export default Vue.extend({
     orderTypeLocalized(): string {
       const { order } = this
 
-      return order.orderType === DerivativeOrderType.Long
+      return order.orderType === DerivativeOrderType.Buy
         ? this.$t('long')
         : this.$t('short')
     }

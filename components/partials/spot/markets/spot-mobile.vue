@@ -8,7 +8,7 @@
         <v-ui-format-order-price
           v-bind="{
             value: lastTradedPrice,
-            decimals: market.maxPriceScaleDecimals,
+            decimals: market.priceDecimals,
             type: lastTradePriceIncreased
               ? SpotOrderType.Buy
               : SpotOrderType.Sell

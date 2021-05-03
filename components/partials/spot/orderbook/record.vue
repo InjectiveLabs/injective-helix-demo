@@ -22,7 +22,8 @@
       <v-ui-format-order-price
         v-bind="{
           value: price,
-          type: type
+          type: type,
+          decimals: market.priceDecimals
         }"
         class="text-right block"
       />
@@ -30,7 +31,8 @@
     <span class="w-1/3 text-xs px-2 z-10" @click.stop="onQuantityClick">
       <v-ui-format-amount
         v-bind="{
-          value: quantity.toBase(quantityScaleDecimals)
+          value: quantity.toBase(quantityScaleDecimals),
+          decimals: market.quantityDecimals
         }"
         class="text-right block"
         :class="{
@@ -42,7 +44,8 @@
     <span class="w-1/3 text-xs px-2 z-10" @click.stop="onSumQuantityClick">
       <v-ui-format-amount
         v-bind="{
-          value: sumOfQuantities
+          value: sumOfQuantities,
+          decimals: market.quantityDecimals
         }"
         class="text-right block text-white"
       />
@@ -160,11 +163,7 @@ export default Vue.extend({
         return ZERO_IN_WEI
       }
 
-      return new BigNumberInWei(
-        new BigNumberInWei(record.quantity).toFixed(
-          market.maxQuantityScaleDecimals
-        )
-      )
+      return new BigNumberInWei(record.quantity)
     },
 
     depthWidth(): { width: string } {
@@ -224,9 +223,7 @@ export default Vue.extend({
         return
       }
 
-      const priceToString = price.toFixed(market.maxPriceScaleDecimals)
-
-      this.$root.$emit('orderbook-price-click', priceToString)
+      this.$root.$emit('orderbook-price-click', price.toFixed())
     },
 
     onQuantityClick() {
@@ -236,10 +233,7 @@ export default Vue.extend({
         return
       }
 
-      this.$root.$emit(
-        'orderbook-size-click',
-        quantity.toFixed(market.maxQuantityScaleDecimals)
-      )
+      this.$root.$emit('orderbook-size-click', quantity.toFixed())
     },
 
     onSumQuantityClick() {

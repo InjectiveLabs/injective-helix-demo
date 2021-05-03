@@ -1,4 +1,6 @@
 import { TokenMeta } from '@injectivelabs/derivatives-consumer'
+import { BigNumberInWei } from '@injectivelabs/utils'
+import { getDecimalsFromNumber } from '../utils/helpers'
 import {
   peggyDenomToTokenFromContractAddress,
   peggyDenomToContractAddress
@@ -21,16 +23,23 @@ export const derivativeMarketToUiDerivativeMarket = (
 ): UiDerivativeMarket => {
   const slug = market.ticker.replace('/', '-').replace(' ', '-').toLowerCase()
   const [baseTokenSymbol] = slug.split('-')
+  const quoteToken =
+    market.quoteToken !== undefined
+      ? tokenMetaToToken(market.quoteToken, market.quoteDenom)
+      : peggyDenomToTokenFromContractAddress(market.quoteDenom)
 
   return {
     ...market,
     ...marketsSummary,
+    quoteToken,
+    priceDecimals: getDecimalsFromNumber(
+      new BigNumberInWei(market.minPriceTickSize)
+        .toBase(quoteToken.decimals)
+        .toNumber()
+    ),
+    quantityDecimals: getDecimalsFromNumber(market.minQuantityTickSize),
     baseTokenSymbol: (baseTokenSymbol || '').toUpperCase(),
-    slug: market.ticker.replace('/', '-').replace(' ', '-').toLowerCase(),
-    quoteToken:
-      market.quoteToken !== undefined
-        ? tokenMetaToToken(market.quoteToken, market.quoteDenom)
-        : peggyDenomToTokenFromContractAddress(market.quoteDenom)
+    slug: market.ticker.replace('/', '-').replace(' ', '-').toLowerCase()
   }
 }
 
@@ -54,17 +63,19 @@ export const orderTypeToGrpcOrderType = (
   switch (orderType) {
     case DerivativeOrderType.Unspecified:
       return DerivativeMarketMap.UNSPECIFIED
-    case DerivativeOrderType.Long:
-      return DerivativeMarketMap.LONG
-    case DerivativeOrderType.Short:
-      return DerivativeMarketMap.SHORT
-    case DerivativeOrderType.StopLong:
-      return DerivativeMarketMap.STOP_LONG
-    case DerivativeOrderType.TakeLong:
-      return DerivativeMarketMap.TAKE_LONG
-    case DerivativeOrderType.TakeShort:
-      return DerivativeMarketMap.TAKE_SHORT
+    case DerivativeOrderType.Buy:
+      return DerivativeMarketMap.BUY
+    case DerivativeOrderType.Sell:
+      return DerivativeMarketMap.SELL
+    case DerivativeOrderType.StopBuy:
+      return DerivativeMarketMap.STOP_BUY
+    case DerivativeOrderType.StopSell:
+      return DerivativeMarketMap.STOP_SELL
+    case DerivativeOrderType.TakeBuy:
+      return DerivativeMarketMap.TAKE_BUY
+    case DerivativeOrderType.TakeSell:
+      return DerivativeMarketMap.TAKE_SELL
     default:
-      return DerivativeMarketMap.LONG
+      return DerivativeMarketMap.BUY
   }
 }

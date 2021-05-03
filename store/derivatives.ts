@@ -229,9 +229,9 @@ export const actions = actionTree(
         }
       })
 
-      await this.app.$accessor.spot.setSubaccountStreams()
-      await this.app.$accessor.spot.fetchSubaccountOrders()
-      await this.app.$accessor.spot.fetchSubaccountTrades()
+      await this.app.$accessor.derivatives.setSubaccountStreams()
+      await this.app.$accessor.derivatives.fetchSubaccountOrders()
+      await this.app.$accessor.derivatives.fetchSubaccountTrades()
       await this.app.$accessor.account.streamSubaccountBalances()
     },
 
@@ -339,7 +339,7 @@ export const actions = actionTree(
 
     async cancelOrder(_, order: UiDerivativeLimitOrder) {
       const { subaccount } = this.app.$accessor.account
-      const { market } = this.app.$accessor.spot
+      const { market } = this.app.$accessor.derivatives
       const {
         address,
         injectiveAddress,
@@ -364,7 +364,7 @@ export const actions = actionTree(
       })
 
       await backupPromiseCall(() =>
-        this.app.$accessor.spot.fetchSubaccountOrders()
+        this.app.$accessor.derivatives.fetchSubaccountOrders()
       )
     },
 
@@ -383,7 +383,7 @@ export const actions = actionTree(
       }
     ) {
       const { subaccount } = this.app.$accessor.account
-      const { market } = this.app.$accessor.derivative
+      const { market } = this.app.$accessor.derivatives
       const {
         address,
         injectiveAddress,
@@ -426,7 +426,7 @@ export const actions = actionTree(
       }
     ) {
       const { subaccount } = this.app.$accessor.account
-      const { market } = this.app.$accessor.derivative
+      const { market } = this.app.$accessor.derivatives
       const {
         address,
         injectiveAddress,

@@ -4,7 +4,8 @@
       <v-ui-format-order-price
         v-bind="{
           value: price.toBase(market.quoteToken.decimals),
-          type: trade.tradeDirection
+          type: trade.tradeDirection,
+          decimals: market.priceDecimals
         }"
         class="block text-right"
       />
@@ -12,7 +13,8 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: quantity
+          value: quantity,
+          decimals: market.quantityDecimals
         }"
         class="block text-right"
       />
@@ -20,7 +22,8 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: total.toBase(market.quoteToken.decimals)
+          value: total.toBase(market.quoteToken.decimals),
+          decimals: market.priceDecimals
         }"
         class="block text-right"
       />
@@ -28,15 +31,16 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: fee.toBase(market.quoteToken.decimals)
+          value: fee.toBase(market.quoteToken.decimals),
+          decimals: market.priceDecimals
         }"
         class="text-right block text-white"
       />
     </td>
     <td is="v-ui-table-td" xs center class="h-8">
       <v-ui-badge
-        :primary="trade.tradeDirection === TradeDirection.Long"
-        :accent="trade.tradeDirection === TradeDirection.Short"
+        :primary="trade.tradeDirection === TradeDirection.Buy"
+        :accent="trade.tradeDirection === TradeDirection.Sell"
         sm
       >
         {{ tradeDirection }}
@@ -136,7 +140,7 @@ export default Vue.extend({
     tradeDirection(): string {
       const { trade } = this
 
-      return trade.tradeDirection === TradeDirection.Long
+      return trade.tradeDirection === TradeDirection.Buy
         ? this.$t('long')
         : this.$t('short')
     },

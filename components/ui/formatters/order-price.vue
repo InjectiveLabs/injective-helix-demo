@@ -39,7 +39,7 @@ export default Vue.extend({
     deriveDecimals: {
       required: false,
       type: Boolean,
-      default: true
+      default: false
     }
   },
 
@@ -67,7 +67,7 @@ export default Vue.extend({
         return ''
       }
 
-      return [SpotOrderType.Buy, DerivativeOrderType.Long].includes(this.type)
+      return [SpotOrderType.Buy, DerivativeOrderType.Buy].includes(this.type)
         ? 'text-primary-500'
         : 'text-accent-500'
     }

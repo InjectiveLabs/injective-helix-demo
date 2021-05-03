@@ -12,7 +12,8 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: quantity.toBase(market.baseToken.decimals)
+          value: quantity.toBase(market.baseToken.decimals),
+          decimals: market.quantityDecimals
         }"
         class="block"
       />
@@ -20,7 +21,8 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: unfilledQuantity.toBase(market.baseToken.decimals)
+          value: unfilledQuantity.toBase(market.baseToken.decimals),
+          decimals: market.quantityDecimals
         }"
         class="block"
       />
@@ -28,7 +30,8 @@
     <td is="v-ui-table-td" xs class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: total.toBase(market.baseToken.decimals)
+          value: total.toBase(market.baseToken.decimals),
+          decimals: market.priceDecimals
         }"
         class="text-right block text-white"
       />
@@ -126,11 +129,7 @@ export default Vue.extend({
         return ZERO_IN_WEI
       }
 
-      return new BigNumberInWei(
-        new BigNumberInWei(order.quantity).toFixed(
-          market.maxQuantityScaleDecimals
-        )
-      )
+      return new BigNumberInWei(order.quantity)
     },
 
     unfilledQuantity(): BigNumberInWei {
@@ -140,11 +139,7 @@ export default Vue.extend({
         return ZERO_IN_WEI
       }
 
-      return new BigNumberInWei(
-        new BigNumberInWei(order.unfilledQuantity).toFixed(
-          market.maxQuantityScaleDecimals
-        )
-      )
+      return new BigNumberInWei(order.unfilledQuantity)
     },
 
     filledQuantity(): BigNumberInWei {

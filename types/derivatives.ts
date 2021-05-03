@@ -15,18 +15,20 @@ export interface UiDerivativeMarket
   extends Omit<BaseUiDerivativeMarket, 'quoteToken'>,
     ChronosDerivativeMarketSummary {
   slug: string
+  priceDecimals: number
+  quantityDecimals: number
   baseTokenSymbol: string
   quoteToken: Token
 }
 
 export enum DerivativeMarketMap {
   UNSPECIFIED = 0,
-  LONG = 1,
-  SHORT = 2,
-  STOP_LONG = 3,
-  STOP_SHORT = 4,
-  TAKE_LONG = 5,
-  TAKE_SHORT = 6
+  BUY = 1,
+  SELL = 2,
+  STOP_BUY = 3,
+  STOP_SELL = 4,
+  TAKE_BUY = 5,
+  TAKE_SELL = 6
 }
 
 export {

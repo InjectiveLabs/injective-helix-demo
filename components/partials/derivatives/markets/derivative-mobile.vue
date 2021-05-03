@@ -8,10 +8,10 @@
         <v-ui-format-order-price
           v-bind="{
             value: lastTradedPrice,
-            decimals: market.maxPriceScaleDecimals,
+            decimals: market.priceDecimals,
             type: lastTradePriceIncreased
-              ? DerivativeOrderType.Long
-              : DerivativeOrderType.Short
+              ? DerivativeOrderType.Buy
+              : DerivativeOrderType.Sell
           }"
           class="mr-1"
         />

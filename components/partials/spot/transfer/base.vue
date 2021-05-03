@@ -113,7 +113,7 @@ export default Vue.extend({
 
       return token.balance
         .toBase(market.baseToken.decimals)
-        .toFixed(market.maxQuantityScaleDecimals)
+        .toFixed(market.quantityDecimals)
     }
   },
 

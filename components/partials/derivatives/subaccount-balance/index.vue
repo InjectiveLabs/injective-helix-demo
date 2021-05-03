@@ -83,7 +83,11 @@ export default Vue.extend({
       const quoteBalance = subaccount.balances.find(
         (balance) =>
           balance.denom.toLowerCase() === market.quoteDenom.toLowerCase()
-      )!
+      )
+
+      if (!quoteBalance) {
+        return []
+      }
 
       return [
         {

@@ -5,7 +5,8 @@
       <v-ui-format-order-price
         v-bind="{
           value: price,
-          type: trade.tradeDirection
+          type: trade.tradeDirection,
+          decimals: market.priceDecimals
         }"
         class="block text-right"
       />
@@ -13,7 +14,8 @@
     <span class="w-1/3 text-xs px-2">
       <v-ui-format-amount
         v-bind="{
-          value: quantity.toBase(market.baseToken.decimals)
+          value: quantity.toBase(market.baseToken.decimals),
+          decimals: market.quantityDecimals
         }"
         class="block text-right"
       />
@@ -67,11 +69,7 @@ export default Vue.extend({
         return ZERO_IN_WEI
       }
 
-      return new BigNumberInWei(
-        new BigNumberInWei(trade.quantity).toFixed(
-          market.maxQuantityScaleDecimals
-        )
-      )
+      return new BigNumberInWei(trade.quantity)
     },
 
     total(): BigNumberInWei {
@@ -108,7 +106,7 @@ export default Vue.extend({
         return ''
       }
 
-      return type === DerivativeOrderType.Long ? 'up' : 'down' */
+      return type === DerivativeOrderType.Buy ? 'up' : 'down' */
       return ''
     }
   }

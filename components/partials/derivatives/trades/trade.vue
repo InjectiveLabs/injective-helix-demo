@@ -5,6 +5,7 @@
       <v-ui-format-order-price
         v-bind="{
           value: price.toBase(market.quoteToken.decimals),
+          decimals: market.priceDecimals,
           type: trade.tradeDirection
         }"
         class="block text-right"
@@ -13,7 +14,8 @@
     <span class="w-1/3 text-xs px-2">
       <v-ui-format-amount
         v-bind="{
-          value: quantity
+          value: quantity,
+          decimals: market.quantityDecimals,
         }"
         class="block text-right"
       />
@@ -100,7 +102,7 @@ export default Vue.extend({
         return ''
       }
 
-      return type === DerivativeOrderType.Long ? 'up' : 'down' */
+      return type === DerivativeOrderType.Buy ? 'up' : 'down' */
       return ''
     }
   }

@@ -10,7 +10,7 @@
         <v-ui-format-price
           v-bind="{
             value: lastTradedPrice,
-            decimals: market.maxPriceScaleDecimals,
+            decimals: market.priceDecimals,
             class: {
               'text-primary-500': lastTradePriceIncreased,
               'text-accent-500': !lastTradePriceIncreased

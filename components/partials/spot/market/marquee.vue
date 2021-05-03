@@ -22,7 +22,7 @@
             <v-ui-format-order-price
               v-bind="{
                 value: singleMarket.price,
-                decimals: singleMarket.maxPriceScaleDecimals,
+                decimals: singleMarket.priceDecimals,
                 type: true ? SpotOrderType.Buy : SpotOrderType.Sell
               }"
               class="mr-1"
