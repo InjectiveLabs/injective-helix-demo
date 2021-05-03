@@ -149,7 +149,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { TradeError } from 'types/errors'
-import { BigNumberInWei, Status, BigNumberInBase } from '@injectivelabs/utils'
+import { Status, BigNumberInBase } from '@injectivelabs/utils'
 import OrderDetails from './order-details.vue'
 import OrderLeverage from './order-leverage.vue'
 import OrderDetailsMarket from './order-details-market.vue'
@@ -413,7 +413,7 @@ export default Vue.extend({
 
       const orders = orderTypeBuy ? sells : buys
       const totalAmount = orders.reduce((totalAmount, { quantity }) => {
-        return totalAmount.plus(new BigNumberInWei(quantity).toBase())
+        return totalAmount.plus(new BigNumberInBase(quantity))
       }, ZERO_IN_BASE)
 
       if (totalAmount.lt(amount)) {
