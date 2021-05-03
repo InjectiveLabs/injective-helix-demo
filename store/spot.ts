@@ -184,7 +184,7 @@ export const actions = actionTree(
       commit('setMarkets', await fetchMarkets())
     },
 
-    async changeMarket({ commit, dispatch }, market: UiSpotMarket | undefined) {
+    async changeMarket({ commit }, market: UiSpotMarket | undefined) {
       if (!market) {
         throw new Error('Market not found')
       }
@@ -217,9 +217,9 @@ export const actions = actionTree(
         }
       })
 
-      await dispatch('setSubaccountStreams')
-      await dispatch('fetchSubaccountOrders')
-      await dispatch('fetchSubaccountTrades')
+      await this.app.$accessor.spot.setSubaccountStreams()
+      await this.app.$accessor.spot.fetchSubaccountOrders()
+      await this.app.$accessor.spot.fetchSubaccountTrades()
       await this.app.$accessor.account.streamSubaccountBalances()
     },
 
@@ -325,7 +325,7 @@ export const actions = actionTree(
       )
     },
 
-    async cancelOrder({ dispatch }, order: UiSpotLimitOrder) {
+    async cancelOrder(_, order: UiSpotLimitOrder) {
       const { subaccount } = this.app.$accessor.account
       const { market } = this.app.$accessor.spot
       const {
@@ -351,7 +351,9 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId
       })
 
-      await backupPromiseCall(() => dispatch('fetchSubaccountOrders'))
+      await backupPromiseCall(() =>
+        this.app.$accessor.spot.fetchSubaccountOrders()
+      )
     },
 
     async submitLimitOrder(

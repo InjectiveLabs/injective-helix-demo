@@ -97,6 +97,10 @@ export const streamOrderbook = (
   marketId: string,
   callback: SpotMarketOrderbookStreamCallback
 ) => {
+  if (streamManager.exists(SpotMarketStreamType.Orderbook)) {
+    return
+  }
+
   const stream = spotMarketStream.orderbook.start({
     marketId,
     callback
@@ -109,6 +113,10 @@ export const streamTrades = (
   marketId: string,
   callback: SpotMarketTradeStreamCallback
 ) => {
+  if (streamManager.exists(SpotMarketStreamType.Trades)) {
+    return
+  }
+
   const stream = spotMarketStream.trades.start({
     marketId,
     callback,
@@ -123,6 +131,10 @@ export const streamSubaccountTrades = (
   subaccountId: string,
   callback: SpotMarketTradeStreamCallback
 ) => {
+  if (streamManager.exists(SpotMarketStreamType.SubaccountTrades)) {
+    return
+  }
+
   const stream = spotMarketStream.trades.subaccount({
     marketId,
     subaccountId,
@@ -138,6 +150,10 @@ export const streamSubaccountOrders = (
   subaccountId: string,
   callback: SpotMarketOrderStreamCallback
 ) => {
+  if (streamManager.exists(SpotMarketStreamType.SubaccountOrders)) {
+    return
+  }
+
   const stream = spotMarketStream.orders.subaccount({
     marketId,
     subaccountId,

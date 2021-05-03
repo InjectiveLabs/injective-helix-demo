@@ -111,6 +111,10 @@ export const streamOrderbook = (
   marketId: string,
   callback: DerivativeMarketOrderbookStreamCallback
 ) => {
+  if (streamManager.exists(DerivativeMarketStreamType.Orderbook)) {
+    return
+  }
+
   const stream = derivativeMarketStream.orderbook.start({
     marketId,
     callback
@@ -123,6 +127,10 @@ export const streamTrades = (
   marketId: string,
   callback: DerivativeMarketTradeStreamCallback
 ) => {
+  if (streamManager.exists(DerivativeMarketStreamType.Trades)) {
+    return
+  }
+
   const stream = derivativeMarketStream.trades.start({
     marketId,
     callback,
@@ -137,6 +145,10 @@ export const streamSubaccountTrades = (
   subaccountId: string,
   callback: DerivativeMarketTradeStreamCallback
 ) => {
+  if (streamManager.exists(DerivativeMarketStreamType.SubaccountTrades)) {
+    return
+  }
+
   const stream = derivativeMarketStream.trades.subaccount({
     marketId,
     subaccountId,
@@ -152,6 +164,10 @@ export const streamSubaccountOrders = (
   subaccountId: string,
   callback: DerivativeMarketOrderStreamCallback
 ) => {
+  if (streamManager.exists(DerivativeMarketStreamType.SubaccountOrders)) {
+    return
+  }
+
   const stream = derivativeMarketStream.orders.subaccount({
     marketId,
     subaccountId,

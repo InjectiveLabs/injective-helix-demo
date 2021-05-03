@@ -49,6 +49,10 @@ export const streamSubaccountBalances = (
   subaccountId: string,
   callback: SubaccountBalanceStreamCallback
 ) => {
+  if (streamManager.exists(SubaccountStreamType.Balances)) {
+    return
+  }
+
   const stream = subaccountStream.balances.start({
     subaccountId,
     callback
