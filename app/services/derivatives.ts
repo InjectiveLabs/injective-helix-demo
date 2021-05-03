@@ -305,9 +305,7 @@ export const calculateMargin = ({
   price: string
   leverage: string
 }): BigNumberInBase => {
-  return new BigNumberInBase(
-    new BigNumberInBase(quantity).times(price).dividedBy(leverage).dp(0)
-  )
+  return new BigNumberInBase(quantity).times(price).dividedBy(leverage)
 }
 
 export const calculateLiquidationPrice = ({
