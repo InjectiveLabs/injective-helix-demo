@@ -302,7 +302,44 @@ export const cancelOrder = async ({
   }
 }
 
-export const calculateExecutionPriceFromOrderbook = ({
+export const calculateWorstExecutionPriceFromOrderbook = ({
+  records,
+  market,
+  amount
+}: {
+  records: UiPriceLevel[]
+  market: UiSpotMarket
+  amount: BigNumberInBase
+}): BigNumberInBase => {
+  let remainAmountToFill = amount
+  let worstPrice = ZERO_IN_BASE
+
+  for (const record of records) {
+    const orderQuantity = new BigNumberInWei(record.quantity).toBase(
+      market.baseToken.decimals
+    )
+    const min = BigNumberInBase.min(remainAmountToFill, orderQuantity)
+    remainAmountToFill = remainAmountToFill.minus(min)
+
+    if (remainAmountToFill.lte(0)) {
+      return new BigNumberInBase(
+        new BigNumberInBase(record.price).toWei(
+          market.baseToken.decimals - market.quoteToken.decimals
+        )
+      )
+    } else {
+      worstPrice = new BigNumberInBase(
+        new BigNumberInBase(record.price).toWei(
+          market.baseToken.decimals - market.quoteToken.decimals
+        )
+      )
+    }
+  }
+
+  return worstPrice
+}
+
+export const calculateAverageExecutionPriceFromOrderbook = ({
   records,
   market,
   amount

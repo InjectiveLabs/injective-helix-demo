@@ -153,7 +153,7 @@ import {
   UiPriceLevel,
   UiSpotMarket
 } from '~/types'
-import { calculateExecutionPriceFromOrderbook } from '~/app/services/spot'
+import { calculateWorstExecutionPriceFromOrderbook } from '~/app/services/spot'
 
 interface TradeForm {
   reduceOnly: boolean
@@ -256,7 +256,11 @@ export default Vue.extend({
 
         const records = orderTypeBuy ? sells : buys
 
-        return calculateExecutionPriceFromOrderbook({ records, amount, market })
+        return calculateWorstExecutionPriceFromOrderbook({
+          records,
+          amount,
+          market
+        })
       }
 
       if (price.isNaN()) {
