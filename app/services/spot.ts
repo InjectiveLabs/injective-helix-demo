@@ -8,7 +8,7 @@ import {
   OrderStreamCallback as SpotMarketOrderStreamCallback
 } from '@injectivelabs/spot-consumer'
 import { AccountAddress, TradeExecutionSide } from '@injectivelabs/ts-types'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { SubaccountStreamType } from '@injectivelabs/subaccount-consumer'
 import { TxProvider } from '../providers/TxProvider'
@@ -313,7 +313,10 @@ export const calculateExecutionPriceFromOrderbook = ({
 }): BigNumberInBase => {
   const { sum, remainAmountToFill } = records.reduce(
     ({ sum, remainAmountToFill }, order: UiPriceLevel) => {
-      const min = BigNumberInBase.min(remainAmountToFill, order.quantity)
+      const orderQuantity = new BigNumberInWei(order.quantity).toBase(
+        market.baseToken.decimals
+      )
+      const min = BigNumberInBase.min(remainAmountToFill, orderQuantity)
       const price = new BigNumberInBase(
         new BigNumberInBase(order.price).toWei(
           market.baseToken.decimals - market.quoteToken.decimals

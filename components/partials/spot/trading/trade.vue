@@ -246,7 +246,7 @@ export default Vue.extend({
       } = this
 
       if (!market) {
-        return new BigNumberInBase('')
+        return ZERO_IN_BASE
       }
 
       if (tradingTypeMarket) {
