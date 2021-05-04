@@ -1,6 +1,5 @@
 <template>
   <div
-    v-show="false"
     id="tv_chart_container"
     ref="tradingView"
     class="tv_chart_container h-full"
