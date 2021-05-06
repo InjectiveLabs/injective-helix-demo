@@ -25,7 +25,6 @@ import {
   streamSubaccountTrades,
   fetchMarketPositions
 } from '~/app/services/derivatives'
-import { backupPromiseCall } from '~/app/utils/async'
 
 const initialStateFactory = () => ({
   markets: [] as UiDerivativeMarket[],
@@ -144,13 +143,11 @@ export const mutations = {
     state: DerivativeStoreState,
     subaccountOrder: UiDerivativeLimitOrder
   ) {
-    const index = state.subaccountOrders.findIndex(
-      (order) => order.orderHash === subaccountOrder.orderHash
+    const subaccountOrders = [...state.subaccountOrders].filter(
+      (order) => order.orderHash !== subaccountOrder.orderHash
     )
 
-    if (index > 0) {
-      state.subaccountOrders = [...state.subaccountOrders].splice(index, 1)
-    }
+    state.subaccountOrders = subaccountOrders
   },
 
   pushSubaccountTrade(
@@ -181,13 +178,11 @@ export const mutations = {
     state: DerivativeStoreState,
     subaccountTrade: UiDerivativeTrade
   ) {
-    const index = state.subaccountTrades.findIndex(
-      (order) => order.orderHash === subaccountTrade.orderHash
+    const subaccountTrades = [...state.subaccountTrades].filter(
+      (order) => order.orderHash !== subaccountTrade.orderHash
     )
 
-    if (index > 0) {
-      state.subaccountTrades = [...state.subaccountTrades].splice(index, 1)
-    }
+    state.subaccountTrades = subaccountTrades
   },
 
   setOrderbook(state: DerivativeStoreState, orderbook: UiDerivativeOrderbook) {
@@ -395,10 +390,6 @@ export const actions = actionTree(
         marketId: market.marketId,
         subaccountId: subaccount.subaccountId
       })
-
-      await backupPromiseCall(() =>
-        this.app.$accessor.derivatives.fetchSubaccountOrders()
-      )
     },
 
     async submitLimitOrder(
