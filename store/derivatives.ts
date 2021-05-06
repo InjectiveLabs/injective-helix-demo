@@ -7,7 +7,8 @@ import {
   UiDerivativeLimitOrder,
   UiDerivativeTrade,
   UiDerivativeMarket,
-  DerivativeOrderType
+  DerivativeOrderType,
+  UiPosition
 } from '~/types'
 import {
   fetchMarketOrderbook,
@@ -21,7 +22,8 @@ import {
   cancelMarketStreams,
   streamTrades,
   streamSubaccountOrders,
-  streamSubaccountTrades
+  streamSubaccountTrades,
+  fetchMarketPositions
 } from '~/app/services/derivatives'
 import { backupPromiseCall } from '~/app/utils/async'
 
@@ -30,6 +32,7 @@ const initialStateFactory = () => ({
   market: undefined as UiDerivativeMarket | undefined,
   orderbook: undefined as UiDerivativeOrderbook | undefined,
   trades: [] as UiDerivativeTrade[],
+  subaccountPosition: undefined as UiPosition | undefined,
   subaccountTrades: [] as UiDerivativeTrade[],
   subaccountOrders: [] as UiDerivativeLimitOrder[]
 })
@@ -41,6 +44,7 @@ export const state = () => ({
   market: initialState.market as UiDerivativeMarket | undefined,
   trades: initialState.trades as UiDerivativeTrade[],
   subaccountTrades: initialState.subaccountTrades as UiDerivativeTrade[],
+  subaccountPosition: initialState.subaccountPosition as UiPosition | undefined,
   subaccountOrders: initialState.subaccountOrders as UiDerivativeLimitOrder[],
   orderbook: initialState.orderbook as UiDerivativeOrderbook | undefined
 })
@@ -78,6 +82,13 @@ export const mutations = {
 
   pushTrade(state: DerivativeStoreState, trade: UiDerivativeTrade) {
     state.trades = [trade, ...state.trades]
+  },
+
+  setSubaccountPosition(
+    state: DerivativeStoreState,
+    subaccountPosition: UiPosition
+  ) {
+    state.subaccountPosition = subaccountPosition
   },
 
   setSubaccountTrades(
@@ -232,6 +243,7 @@ export const actions = actionTree(
       await this.app.$accessor.derivatives.setSubaccountStreams()
       await this.app.$accessor.derivatives.fetchSubaccountOrders()
       await this.app.$accessor.derivatives.fetchSubaccountTrades()
+      await this.app.$accessor.derivatives.fetchSubaccountPosition()
       await this.app.$accessor.account.streamSubaccountBalances()
     },
 
@@ -313,6 +325,27 @@ export const actions = actionTree(
           subaccountId: subaccount.subaccountId
         })
       )
+    },
+
+    async fetchSubaccountPosition({ state, commit }) {
+      const { market } = state
+      const { subaccount } = this.app.$accessor.account
+      const { isUserWalletConnected } = this.app.$accessor.wallet
+
+      if (!market) {
+        return
+      }
+
+      if (!isUserWalletConnected || !subaccount) {
+        return
+      }
+
+      const [position] = await fetchMarketPositions({
+        marketId: market.marketId,
+        subaccountId: subaccount.subaccountId
+      })
+
+      commit('setSubaccountPosition', position)
     },
 
     async fetchSubaccountTrades({ state, commit }) {

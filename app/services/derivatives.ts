@@ -92,6 +92,21 @@ export const fetchMarketTrades = async ({
   )
 }
 
+export const fetchMarketPositions = async ({
+  marketId,
+  subaccountId
+}: {
+  marketId: string
+  subaccountId?: AccountAddress
+}) => {
+  return DerivativeTransformer.grpcPositionsToPositions(
+    await derivativeConsumer.fetchPositions({
+      marketId,
+      subaccountId
+    })
+  )
+}
+
 export const fetchMarketOrders = async ({
   marketId,
   subaccountId

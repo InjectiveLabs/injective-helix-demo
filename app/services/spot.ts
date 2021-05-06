@@ -11,9 +11,9 @@ import { AccountAddress, TradeExecutionSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { SubaccountStreamType } from '@injectivelabs/subaccount-consumer'
-import { TxProvider } from '../providers/TxProvider'
-import { spotMarketStream } from '../singletons/SpotMarketStream'
-import { streamManager } from '../singletons/StreamManager'
+import { TxProvider } from '~/app/providers/TxProvider'
+import { spotMarketStream } from '~/app/singletons/SpotMarketStream'
+import { streamManager } from '~/app/singletons/StreamManager'
 import {
   FEE_RECIPIENT,
   TESTNET_CHAIN_ID,

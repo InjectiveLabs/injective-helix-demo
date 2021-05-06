@@ -111,5 +111,11 @@ export default {
   max_leverage: 'Max Leverage:  {max}',
   margin: 'Margin',
   liquidation_price: 'Liquidation Price',
-  positions: 'Positions'
+  positions: 'Positions',
+  close_position: 'Close Position',
+  entry_price: 'Entry Price',
+  unrealized_pnl: 'Unrealized PnL',
+  unrealized_pnl_tooltip: 'Unrealized PnL note',
+  leverage: 'Leverage',
+  not_available_n_a: 'N/A'
 }
