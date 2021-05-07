@@ -21,7 +21,7 @@
             <!-- TODO: change of the price, change the type -->
             <v-ui-format-order-price
               v-bind="{
-                value: singleMarket.price,
+                value: singleMarket.priceToBn,
                 decimals: singleMarket.priceDecimals,
                 type: true ? DerivativeOrderType.Buy : DerivativeOrderType.Sell
               }"
@@ -35,8 +35,13 @@
 </template>
 
 <script lang="ts">
+import { BigNumberInBase } from '@injectivelabs/utils'
 import Vue from 'vue'
 import { UiDerivativeMarket, DerivativeOrderType } from '~/types'
+
+interface UiDerivativeMarketWithBnPrice extends UiDerivativeMarket {
+  priceToBn: BigNumberInBase
+}
 
 export default Vue.extend({
   data() {
@@ -54,8 +59,11 @@ export default Vue.extend({
       return this.$accessor.derivatives.markets
     },
 
-    transformedMarkets(): UiDerivativeMarket[] {
-      return this.filteredMarkets
+    transformedMarkets(): UiDerivativeMarketWithBnPrice[] {
+      return this.filteredMarkets.map((market) => ({
+        ...market,
+        priceToBn: new BigNumberInBase(market.price)
+      }))
     },
 
     filteredMarkets(): UiDerivativeMarket[] {

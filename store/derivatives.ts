@@ -23,7 +23,8 @@ import {
   streamTrades,
   streamSubaccountOrders,
   streamSubaccountTrades,
-  fetchMarketPositions
+  fetchMarketPositions,
+  streamSubaccountPositions
 } from '~/app/services/derivatives'
 
 const initialStateFactory = () => ({
@@ -88,6 +89,10 @@ export const mutations = {
     subaccountPosition: UiPosition
   ) {
     state.subaccountPosition = subaccountPosition
+  },
+
+  deleteSubaccountPosition(state: DerivativeStoreState) {
+    state.subaccountPosition = undefined
   },
 
   setSubaccountTrades(
@@ -273,6 +278,24 @@ export const actions = actionTree(
             case DerivativeOrderState.Filled:
               commit('deleteSubaccountOrder', order)
               break
+          }
+        }
+      )
+
+      streamSubaccountPositions(
+        market.marketId,
+        subaccount.subaccountId,
+        ({ position }) => {
+          if (!position) {
+            return
+          }
+
+          const quantity = new BigNumberInBase(position.quantity)
+
+          if (quantity.lte(0)) {
+            commit('deleteSubaccountPosition')
+          } else {
+            commit('setSubaccountPosition', position)
           }
         }
       )

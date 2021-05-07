@@ -5,6 +5,7 @@ import {
   OrderbookStreamCallback as DerivativeMarketOrderbookStreamCallback,
   TradeStreamCallback as DerivativeMarketTradeStreamCallback,
   OrderStreamCallback as DerivativeMarketOrderStreamCallback,
+  PositionStreamCallback as DerivativeMarketPositionStreamCallback,
   DerivativeTransformer
 } from '@injectivelabs/derivatives-consumer'
 import { AccountAddress, TradeExecutionSide } from '@injectivelabs/ts-types'
@@ -37,6 +38,16 @@ const dummyMarketSummaries = [
     volume: 0,
     marketId:
       '0x7cc8b10d7deb61e744ef83bdec2bbcf4a056867e89b062c6a453020ca82bd4e4'
+  },
+  {
+    change: 0,
+    high: 0,
+    low: 0,
+    open: 0,
+    price: 0,
+    volume: 0,
+    marketId:
+      '0x883017f185381e33e02b5def170a4a451a1cd2e866f7bd480b54e13b929f1be9'
   }
 ]
 
@@ -192,10 +203,29 @@ export const streamSubaccountOrders = (
   streamManager.set(stream, DerivativeMarketStreamType.SubaccountOrders)
 }
 
+export const streamSubaccountPositions = (
+  marketId: string,
+  subaccountId: string,
+  callback: DerivativeMarketPositionStreamCallback
+) => {
+  if (streamManager.exists(DerivativeMarketStreamType.SubaccountPositions)) {
+    return
+  }
+
+  const stream = derivativeMarketStream.positions.subaccount({
+    marketId,
+    subaccountId,
+    callback
+  })
+
+  streamManager.set(stream, DerivativeMarketStreamType.SubaccountPositions)
+}
+
 export const cancelMarketStreams = () => {
   streamManager.cancelIfExists(DerivativeMarketStreamType.Orderbook)
   streamManager.cancelIfExists(DerivativeMarketStreamType.SubaccountOrders)
   streamManager.cancelIfExists(DerivativeMarketStreamType.SubaccountTrades)
+  streamManager.cancelIfExists(DerivativeMarketStreamType.SubaccountPositions)
   streamManager.cancelIfExists(DerivativeMarketStreamType.Trades)
   streamManager.cancelIfExists(SubaccountStreamType.Balances)
 }

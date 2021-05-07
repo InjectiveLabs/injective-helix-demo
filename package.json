@@ -31,7 +31,7 @@
     "@injectivelabs/chain-api": "1.4.7",
     "@injectivelabs/chain-consumer": "^0.0.46",
     "@injectivelabs/contracts": "^0.0.42",
-    "@injectivelabs/derivatives-consumer": "^0.0.15",
+    "@injectivelabs/derivatives-consumer": "^0.0.17",
     "@injectivelabs/exchange-api": "^2.1.7",
     "@injectivelabs/exchange-consumer": "^0.0.45",
     "@injectivelabs/networks": "^0.0.12",
