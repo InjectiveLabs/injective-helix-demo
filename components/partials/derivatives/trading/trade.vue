@@ -163,7 +163,7 @@ import {
   UiDerivativeMarket
 } from '~/types'
 import {
-  calculateExecutionPriceFromOrderbook,
+  calculateWorstExecutionPriceFromOrderbook,
   calculateLiquidationPrice,
   calculateMargin
 } from '~/app/services/derivatives'
@@ -272,7 +272,11 @@ export default Vue.extend({
 
         const records = orderTypeBuy ? sells : buys
 
-        return calculateExecutionPriceFromOrderbook({ records, amount, market })
+        return calculateWorstExecutionPriceFromOrderbook({
+          records,
+          amount,
+          market
+        })
       }
 
       if (price.isNaN()) {

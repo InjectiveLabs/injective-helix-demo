@@ -322,6 +322,50 @@ export const submitMarketOrder = async ({
   }
 }
 
+export const closePosition = async ({
+  quantity,
+  price,
+  orderType,
+  address,
+  market,
+  injectiveAddress,
+  subaccountId
+}: {
+  quantity: BigNumberInBase
+  price: BigNumberInBase
+  orderType: DerivativeOrderType
+  subaccountId: string
+  market: UiDerivativeMarket
+  address: AccountAddress
+  injectiveAddress: AccountAddress
+}) => {
+  const message = DerivativeMarketComposer.createMarketOrder({
+    subaccountId,
+    injectiveAddress,
+    marketId: market.marketId,
+    order: {
+      price: price.toWei(market.quoteToken.decimals).toFixed(),
+      margin: ZERO_IN_BASE.toWei(market.quoteToken.decimals).toFixed(),
+      quantity: quantity.toFixed(),
+      orderType: orderTypeToGrpcOrderType(orderType),
+      feeRecipient: FEE_RECIPIENT,
+      triggerPrice: '0' // TODO
+    }
+  })
+
+  try {
+    const txProvider = new TxProvider({
+      address,
+      message,
+      chainId: TESTNET_CHAIN_ID
+    })
+
+    await txProvider.broadcast()
+  } catch (error) {
+    throw new Web3Exception(error.message)
+  }
+}
+
 export const cancelOrder = async ({
   orderHash,
   address,
@@ -407,6 +451,35 @@ export const calculateLiquidationPrice = ({
   const liquidationPrice = numerator.dividedBy(denominator)
 
   return liquidationPrice.gte(0) ? liquidationPrice : ZERO_IN_BASE
+}
+
+export const calculateWorstExecutionPriceFromOrderbook = ({
+  records,
+  market,
+  amount
+}: {
+  records: UiPriceLevel[]
+  market: UiDerivativeMarket
+  amount: BigNumberInBase
+}): BigNumberInBase => {
+  let remainAmountToFill = amount
+  let worstPrice = ZERO_IN_BASE
+
+  for (const record of records) {
+    const orderQuantity = new BigNumberInWei(record.quantity)
+    const min = BigNumberInBase.min(remainAmountToFill, orderQuantity)
+    remainAmountToFill = remainAmountToFill.minus(min)
+
+    if (remainAmountToFill.lte(0)) {
+      return new BigNumberInWei(record.price).toBase(market.quoteToken.decimals)
+    } else {
+      worstPrice = new BigNumberInWei(record.price).toBase(
+        market.quoteToken.decimals
+      )
+    }
+  }
+
+  return worstPrice
 }
 
 export const calculateExecutionPriceFromOrderbook = ({

@@ -24,7 +24,8 @@ import {
   streamSubaccountOrders,
   streamSubaccountTrades,
   fetchMarketPositions,
-  streamSubaccountPositions
+  streamSubaccountPositions,
+  closePosition
 } from '~/app/services/derivatives'
 
 const initialStateFactory = () => ({
@@ -497,6 +498,46 @@ export const actions = actionTree(
         injectiveAddress,
         address,
         market,
+        subaccountId: subaccount.subaccountId
+      })
+    },
+
+    async closePosition(
+      _,
+      {
+        quantity,
+        price,
+        orderType
+      }: {
+        price: BigNumberInBase
+        quantity: BigNumberInBase
+        orderType: DerivativeOrderType
+      }
+    ) {
+      const { subaccount } = this.app.$accessor.account
+      const { market } = this.app.$accessor.derivatives
+      const {
+        address,
+        injectiveAddress,
+        isUserWalletConnected
+      } = this.app.$accessor.wallet
+
+      if (
+        !isUserWalletConnected ||
+        !injectiveAddress ||
+        !subaccount ||
+        !market
+      ) {
+        return
+      }
+
+      await closePosition({
+        quantity,
+        price,
+        injectiveAddress,
+        address,
+        market,
+        orderType,
         subaccountId: subaccount.subaccountId
       })
     },
