@@ -30,7 +30,7 @@ export class TxProvider {
   async prepare() {
     const { chainId, address, message } = this
 
-    return await transactionConsumer.prepareTxRequest({
+    return await transactionConsumer.prepareExchangeTxRequest({
       address,
       message,
       chainId
