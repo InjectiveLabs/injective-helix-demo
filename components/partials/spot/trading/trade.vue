@@ -53,11 +53,7 @@
           @input-max="() => onMaxInput(100)"
         >
           <span slot="addon">{{ market.baseToken.symbol.toUpperCase() }}</span>
-          <div
-            v-if="false"
-            slot="context"
-            class="text-xs text-gray-400 flex items-center"
-          >
+          <div slot="context" class="text-xs text-gray-400 flex items-center">
             <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(25)"
               >25%</span
             >
@@ -112,10 +108,10 @@
       :is="tradingTypeMarket ? `v-order-details-market` : 'v-order-details'"
       v-bind="{
         price: executionPrice,
-        notionalValue,
         orderType,
         fees,
         total,
+        totalWithFees,
         amount,
         detailsDrawerOpen
       }"
@@ -154,7 +150,10 @@ import {
   UiSpotMarket,
   UiSubaccount
 } from '~/types'
-import { calculateWorstExecutionPriceFromOrderbook } from '~/app/services/spot'
+import {
+  calculateWorstExecutionPriceFromOrderbook,
+  getApproxAmountForMarketOrder
+} from '~/app/services/spot'
 
 interface TradeForm {
   reduceOnly: boolean
@@ -577,34 +576,6 @@ export default Vue.extend({
       return form.amount
     },
 
-    notionalValue(): BigNumberInBase {
-      const { executionPrice, amount, market } = this
-
-      if (executionPrice.isNaN() || amount.isNaN() || !market) {
-        return ZERO_IN_BASE
-      }
-
-      const notional = executionPrice.times(amount)
-
-      if (notional.lt(0)) {
-        return ZERO_IN_BASE
-      }
-
-      return notional
-    },
-
-    fees(): BigNumberInBase {
-      const { notionalValue, market, tradingTypeMarket } = this
-
-      if (notionalValue.isNaN() || !market) {
-        return ZERO_IN_BASE
-      }
-
-      return notionalValue.times(
-        tradingTypeMarket ? market.takerFeeRate : market.makerFeeRate
-      )
-    },
-
     total(): BigNumberInBase {
       const { amount, hasPrice, hasAmount, executionPrice, market } = this
 
@@ -613,6 +584,18 @@ export default Vue.extend({
       }
 
       return executionPrice.times(amount)
+    },
+
+    fees(): BigNumberInBase {
+      const { total, market, tradingTypeMarket } = this
+
+      if (total.isNaN() || !market) {
+        return ZERO_IN_BASE
+      }
+
+      return total.times(
+        tradingTypeMarket ? market.takerFeeRate : market.makerFeeRate
+      )
     },
 
     totalWithFees(): BigNumberInBase {
@@ -664,47 +647,50 @@ export default Vue.extend({
     },
 
     getMaxAmountValue(percentage: number): string {
-      return percentage.toString()
-      /*
       const {
         market,
-        fees,
-        executionPrice,
+        buys,
+        sells,
         tradingTypeMarket,
         orderTypeBuy,
-        orderbook
+        baseAvailableBalance,
+        quoteAvailableBalance,
+        executionPrice
       } = this
-      const percent = new BigNumber(percentage).dividedBy(100)
+      const percentageToNumber = new BigNumberInBase(percentage).div(100)
+      const balance = orderTypeBuy
+        ? quoteAvailableBalance
+        : baseAvailableBalance
 
-      return ''
-
-      
       if (!market) {
         return ''
       }
 
+      const fee = new BigNumberInBase(
+        tradingTypeMarket ? market.takerFeeRate : market.makerFeeRate
+      )
+
       if (tradingTypeMarket) {
         return getApproxAmountForMarketOrder({
           market,
-          leverage,
-          availableMargin,
-          percent,
-          orderbook: orderTypeBuy
-            ? [...orderbook.sells].reverse()
-            : orderbook.buys
-        }).toFixed(market.decimalsAllowed.toNumber(), BigNumber.ROUND_DOWN)
+          balance,
+          percent: percentageToNumber.toNumber(),
+          records: orderTypeBuy ? [...sells].reverse() : buys
+        }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
       }
 
-      if (executionPrice.isNaN() || executionPrice.lte(0)) {
+      if (executionPrice.lte(0)) {
         return ''
       }
 
-      return availableMargin
-        .minus(fees)
-        .times(leverage)
-        .dividedBy(executionPrice.times(market.priceFactor))
-        .times(percent)
-        .toFixed(market.decimalsAllowed.toNumber(), BigNumber.ROUND_DOWN) */
+      if (balance.lte(0)) {
+        return ''
+      }
+
+      return new BigNumberInBase(balance)
+        .dividedBy(executionPrice.times(fee.plus(1)))
+        .times(percentageToNumber)
+        .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
     },
 
     onDetailsDrawerToggle() {

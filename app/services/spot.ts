@@ -370,3 +370,43 @@ export const calculateAverageExecutionPriceFromOrderbook = ({
 
   return sum.div(amount.minus(remainAmountToFill))
 }
+
+export const getApproxAmountForMarketOrder = ({
+  records,
+  balance,
+  market,
+  percent = 1
+}: {
+  records: UiPriceLevel[]
+  balance: BigNumberInBase
+  percent?: number
+  market: UiSpotMarket
+}) => {
+  const fee = new BigNumberInBase(market.takerFeeRate)
+  let totalQuantity = ZERO_IN_BASE
+  let balanceRemaining = balance.times(percent)
+
+  for (const record of records) {
+    const quantity = new BigNumberInWei(record.quantity).toBase(
+      market.baseToken.decimals
+    )
+    const price = new BigNumberInBase(record.price).toWei(
+      market.baseToken.decimals - market.quoteToken.decimals
+    )
+    const recordNotional = quantity.times(price)
+    const recordFees = recordNotional.times(fee)
+    const total = recordNotional.plus(recordFees)
+
+    if (total.gt(balanceRemaining)) {
+      const factor = fee.plus(1)
+      const usableQuantity = balanceRemaining.dividedBy(factor.times(price))
+
+      return totalQuantity.plus(usableQuantity)
+    } else {
+      totalQuantity = totalQuantity.plus(quantity)
+      balanceRemaining = balanceRemaining.minus(total)
+    }
+  }
+
+  return totalQuantity
+}

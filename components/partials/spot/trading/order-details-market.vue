@@ -13,7 +13,7 @@
           <span class="mr-1">≈</span>
           <v-ui-format-price
             v-bind="{
-              value: total
+              value: totalWithFees
             }"
           />
           <small class="opacity-75 pt-px ml-1">{{
@@ -66,11 +66,11 @@
           <v-ui-text muted-sm class="group-hover:text-white">
             {{ $t('notional_value') }}
           </v-ui-text>
-          <v-ui-text v-if="notionalValue.gt(0)" muted class="flex items-center">
+          <v-ui-text v-if="total.gt(0)" muted class="flex items-center">
             <span class="mr-1">≈</span>
             <v-ui-format-price
               v-bind="{
-                value: notionalValue
+                value: total
               }"
               class="text-gray-300"
             />
@@ -129,12 +129,12 @@ export default Vue.extend({
       type: Object as PropType<BigNumberInBase>
     },
 
-    fees: {
+    totalWithFees: {
       required: true,
       type: Object as PropType<BigNumberInBase>
     },
 
-    notionalValue: {
+    fees: {
       required: true,
       type: Object as PropType<BigNumberInBase>
     },
