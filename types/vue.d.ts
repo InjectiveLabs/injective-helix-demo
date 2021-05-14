@@ -1,6 +1,5 @@
 import VueI18n, { Path, Values, Locale } from 'vue-i18n/types'
 import VueRouter from 'vue-router'
-import { Utils } from '~/plugins/utils'
 import { accessorType } from '~/store'
 
 /**
@@ -15,10 +14,11 @@ declare module 'vue-i18n/types' {
 }
 
 declare module 'vue/types/vue' {
-  interface Vue extends Utils {
+  interface Vue {
     $t: typeof VueI18n.prototype.t
     $router: VueRouter
     $accessor: typeof accessorType
+    $onRejected: (e: any) => void
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

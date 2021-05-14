@@ -7,7 +7,7 @@
     >
       <v-ui-icon
         :class="isUserWalletConnected ? 'text-primary-500' : 'text-white'"
-        :icon="$enums.Icon.Wallet"
+        :icon="Icon.Wallet"
         lg
         class="mr-4 hidden md:block"
       />
@@ -26,14 +26,14 @@
           </p>
           <p class="font-bold text-sm text-white font-mono">
             <span>
-              {{ $formatters.formatWalletAddress(injectiveAddress) }}
+              {{ formattedAddress }}
             </span>
             <span
               v-clipboard="() => injectiveAddress"
               v-clipboard:success="() => $toast.success($t('address_copied'))"
             >
               <v-ui-icon
-                :icon="$enums.Icon.Copy"
+                :icon="Icon.Copy"
                 :tooltip="$t('copy_address')"
                 class="text-gray-500 hover:text-primary-500"
                 stroke-only
@@ -44,7 +44,7 @@
         </div>
       </div>
       <v-ui-icon
-        :icon="$enums.Icon.Dropdown"
+        :icon="Icon.Dropdown"
         xs
         class="text-gray-500 group-hover:text-gray-300 ml-4"
       />
@@ -55,7 +55,7 @@
       :class="isDropdownOpen ? 'opacity-100 visible' : 'opacity-0 invisible'"
       class="absolute flex justify-center border flex-wrap top-0 left-auto mr-0 -mx-px right-0 min-w-xs mt-12 rounded rounded-tl-none bg-dark-700 shadow-md"
     >
-      <ul class="py-2" v-if="!isUserWalletConnected">
+      <ul v-if="!isUserWalletConnected" class="py-2">
         <v-metamask />
       </ul>
       <div v-else class="flex flex-wrap w-full">
@@ -72,10 +72,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import VMetamask from './wallets/metamask.vue'
 import { AccountAddress } from '@injectivelabs/ts-types'
 import { Wallet } from '@injectivelabs/web3-strategy'
 import { directive as onClickaway } from 'vue-clickaway'
+import { formatWalletAddress } from '@injectivelabs/utils'
+import VMetamask from './wallets/metamask.vue'
+import { Icon } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -89,7 +91,8 @@ export default Vue.extend({
   data() {
     return {
       isDropdownOpen: false,
-      Wallet
+      Wallet,
+      Icon
     }
   },
 
@@ -108,6 +111,12 @@ export default Vue.extend({
 
     wallet(): Wallet {
       return this.$accessor.wallet.wallet
+    },
+
+    formattedAddress(): string {
+      const { injectiveAddress } = this
+
+      return formatWalletAddress(injectiveAddress)
     }
   },
 

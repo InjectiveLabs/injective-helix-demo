@@ -3,7 +3,6 @@
     <div ref="trading-view-wrap" class="h-full w-full relative">
       <v-ui-loading v-if="status.isLoading()" />
       <v-trading-chart
-        v-if="false"
         ref="trading-view"
         :interval="interval"
         :symbol="symbol"

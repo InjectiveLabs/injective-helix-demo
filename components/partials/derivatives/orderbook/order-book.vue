@@ -31,7 +31,7 @@
                 :rotate="!isLastTradeBuy"
                 :primary="isLastTradeBuy"
                 :accent="!isLastTradeBuy"
-                :icon="$enums.Icon.Arrow"
+                :icon="Icon.Arrow"
               />
             </div>
             <div class="inline-block">
@@ -92,7 +92,8 @@ import {
   UiDerivativeOrderbook,
   TradeDirection,
   DerivativeOrderType,
-  UiOrderbookPriceLevel
+  UiOrderbookPriceLevel,
+  Icon
 } from '~/types'
 
 export default Vue.extend({
@@ -103,6 +104,7 @@ export default Vue.extend({
 
   data() {
     return {
+      Icon,
       TradeDirection,
       DerivativeOrderType,
       autoScrollSellsLocked: false,

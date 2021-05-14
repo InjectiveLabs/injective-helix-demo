@@ -9,7 +9,7 @@
       </div>
       <div class="self-end ml-2 -mt-1">
         <v-ui-icon
-          :icon="$enums.Icon.Dropdown"
+          :icon="Icon.Dropdown"
           xs
           class="text-gray-500 group-hover:text-gray-200"
           :class="{ 'transform rotate-180': drawerIsOpen }"
@@ -24,6 +24,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Icon } from '~/types'
 
 export default Vue.extend({
   props: {
@@ -42,6 +43,7 @@ export default Vue.extend({
 
   data() {
     return {
+      Icon,
       isOpen: false
     }
   },

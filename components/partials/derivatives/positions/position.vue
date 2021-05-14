@@ -3,7 +3,7 @@
     <td is="v-ui-table-td" xs class="relative" center>
       <v-ui-button :status="status" xs @click="onClosePositionClick">
         <v-ui-icon
-          :icon="$enums.Icon.CloseCircle"
+          :icon="Icon.CloseCircle"
           :tooltip="$t('close_position')"
           sm
           accent
@@ -103,7 +103,8 @@ import {
   TradeDirection,
   DerivativeOrderType,
   UiDerivativeOrderbook,
-  UiPriceLevel
+  UiPriceLevel,
+  Icon
 } from '~/types'
 import { calculateWorstExecutionPriceFromOrderbook } from '~/app/services/derivatives'
 
@@ -117,6 +118,7 @@ export default Vue.extend({
 
   data() {
     return {
+      Icon,
       TradeDirection,
       status: new Status()
     }

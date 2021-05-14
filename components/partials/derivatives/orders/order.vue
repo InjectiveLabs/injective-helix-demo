@@ -66,7 +66,7 @@
         @click="onCancelOrder"
       >
         <v-ui-icon
-          :icon="$enums.Icon.Trash"
+          :icon="Icon.Trash"
           :tooltip="$t('cancel_order')"
           sm
           accent
@@ -75,7 +75,7 @@
       </v-ui-button>
       <v-ui-text v-else-if="orderFullyFilled" emp>
         <a href target="_blank">
-          <v-ui-icon :icon="$enums.Icon.ExternalLink" xs></v-ui-icon>
+          <v-ui-icon :icon="Icon.ExternalLink" xs></v-ui-icon>
         </a>
       </v-ui-text>
       <span v-else class="inline-block">&mdash;</span>
@@ -90,7 +90,8 @@ import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
 import {
   UiDerivativeMarket,
   DerivativeOrderType,
-  UiDerivativeLimitOrder
+  UiDerivativeLimitOrder,
+  Icon
 } from '~/types'
 
 export default Vue.extend({
@@ -103,6 +104,7 @@ export default Vue.extend({
 
   data() {
     return {
+      Icon,
       DerivativeOrderType,
       status: new Status()
     }

@@ -22,7 +22,7 @@
         </div>
         <div>
           <v-ui-icon
-            :icon="$enums.Icon.Dropdown"
+            :icon="Icon.Dropdown"
             class="transform -rotate-90 h-5 w-5 text-gray-400"
           />
         </div>
@@ -34,8 +34,15 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Wallet } from '@injectivelabs/web3-strategy'
+import { Icon } from '~/types'
 
 export default Vue.extend({
+  data() {
+    return {
+      Icon
+    }
+  },
+
   methods: {
     handleConnectClick() {
       this.$accessor.wallet

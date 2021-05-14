@@ -17,7 +17,7 @@
           :class="{ relative: showLocaleDropdown }"
           @click.prevent="onToggleLocaleDropdown"
         >
-          <v-ui-icon :icon="$enums.Icon.Globe" sm />
+          <v-ui-icon :icon="Icon.Globe" sm />
 
           <div
             v-if="showLocaleDropdown"
@@ -37,20 +37,20 @@
       <item>
         <div class="flex">
           <a href="https://twitter.com/InjectiveLabs" class="mr-4">
-            <v-ui-icon :icon="$enums.Icon.Twitter" sm />
+            <v-ui-icon :icon="Icon.Twitter" sm />
           </a>
           <a
             href="https://www.reddit.com/r/injective/"
             target="_blank"
             class="mr-4"
           >
-            <v-ui-icon :icon="$enums.Icon.Reddit" sm />
+            <v-ui-icon :icon="Icon.Reddit" sm />
           </a>
           <a href="https://discord.gg/injective" target="_blank" class="mr-4">
-            <v-ui-icon :icon="$enums.Icon.Discord" sm />
+            <v-ui-icon :icon="Icon.Discord" sm />
           </a>
           <a href="https://t.me/joininjective" target="_blank">
-            <v-ui-icon :icon="$enums.Icon.Telegram" sm />
+            <v-ui-icon :icon="Icon.Telegram" sm />
           </a>
         </div>
       </item>
@@ -79,11 +79,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { localStorage } from '~/app/singletons/Storage'
 import { directive as onClickaway } from 'vue-clickaway'
 import Item from './item.vue'
+import { localStorage } from '~/app/singletons/Storage'
 import { locales, Locale } from '~/locales'
 import LightLogo from '~/components/layouts/light-logo.vue'
+import { Icon } from '~/types'
 
 export default Vue.extend({
   directives: {
@@ -97,6 +98,7 @@ export default Vue.extend({
 
   data() {
     return {
+      Icon,
       locales,
       showLocaleDropdown: false
     }

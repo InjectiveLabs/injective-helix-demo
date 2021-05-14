@@ -22,7 +22,7 @@
                 <div class="items-center relative">
                   <span class="mr-1">{{ $t('unrealized_pnl') }}</span>
                   <v-ui-icon
-                    :icon="$enums.Icon.Info"
+                    :icon="Icon.Info"
                     class="text-gray-500 hover:text-gray-300"
                     :tooltip="$t('unrealized_pnl_tooltip')"
                     2xs
@@ -56,7 +56,7 @@ import Vue from 'vue'
 import { Status } from '@injectivelabs/utils'
 import Position from './position.vue'
 import PositionEmpty from './position-empty.vue'
-import { UiDerivativeMarket, UiPosition } from '~/types'
+import { UiDerivativeMarket, UiPosition, Icon } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -66,6 +66,7 @@ export default Vue.extend({
 
   data() {
     return {
+      Icon,
       status: new Status(),
       limit: 1
     }

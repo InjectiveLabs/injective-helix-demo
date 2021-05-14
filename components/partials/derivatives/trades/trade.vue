@@ -15,7 +15,7 @@
       <v-ui-format-amount
         v-bind="{
           value: quantity,
-          decimals: market.quantityDecimals,
+          decimals: market.quantityDecimals
         }"
         class="block text-right"
       />
@@ -81,7 +81,7 @@ export default Vue.extend({
         return ''
       }
 
-      return format(trade.executedAt, 'kk:mm')
+      return format(trade.executedAt, 'kk:mm:ss')
     },
 
     fee(): BigNumberInWei {

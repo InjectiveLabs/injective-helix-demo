@@ -186,12 +186,11 @@ export const actions = actionTree(
 
       commit('setMarket', market)
       commit('setOrderbook', await fetchMarketOrderbook(market.marketId))
-      commit(
-        'setTrades',
-        await fetchMarketTrades({
-          marketId: market.marketId
-        })
-      )
+
+      const trades = await fetchMarketTrades({
+        marketId: market.marketId
+      })
+      commit('setTrades', trades.reverse())
 
       streamOrderbook(market.marketId, ({ orderbook }) => {
         if (!orderbook) {
@@ -311,13 +310,12 @@ export const actions = actionTree(
         return
       }
 
-      commit(
-        'setSubaccountTrades',
-        await fetchMarketTrades({
-          marketId: market.marketId,
-          subaccountId: subaccount.subaccountId
-        })
-      )
+      const trades = await fetchMarketTrades({
+        marketId: market.marketId,
+        subaccountId: subaccount.subaccountId
+      })
+
+      commit('setSubaccountTrades', trades.reverse())
     },
 
     async cancelOrder(_, order: UiSpotLimitOrder) {

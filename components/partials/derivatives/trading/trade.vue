@@ -718,7 +718,7 @@ export default Vue.extend({
     },
 
     onOrderbookPriceClick(price: string) {
-      this.tradingType = this.$enums.TradingType.Limit
+      this.tradingType = TradeExecutionType.LimitFill
 
       this.$nextTick(() => {
         this.onPriceChange(price)

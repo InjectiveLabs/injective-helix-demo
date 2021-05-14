@@ -13,7 +13,7 @@
         </span>
       </span>
       <v-ui-icon
-        :icon="$enums.Icon.Dropdown"
+        :icon="Icon.Dropdown"
         xs
         class="text-gray-500 group-hover:text-gray-300"
       />
@@ -34,6 +34,7 @@
 import Vue from 'vue'
 import { directive as onClickaway } from 'vue-clickaway'
 import VDerivatives from '~/components/partials/derivatives/markets/index.vue'
+import { Icon } from '~/types'
 
 export default Vue.extend({
   directives: {
@@ -46,6 +47,7 @@ export default Vue.extend({
 
   data() {
     return {
+      Icon,
       isDropdownOpen: false
     }
   },

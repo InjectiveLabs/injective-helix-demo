@@ -16,7 +16,7 @@
       <v-ui-icon
         v-if="existsInUserOrders"
         2xs
-        :icon="$enums.Icon.Arrow"
+        :icon="Icon.Arrow"
         class="text-gray-400 transform rotate-90 mr-2"
       />
       <v-ui-format-order-price
@@ -65,7 +65,8 @@ import {
   Change,
   DerivativeOrderType,
   UiDerivativeMarket,
-  UiOrderbookPriceLevel
+  UiOrderbookPriceLevel,
+  Icon
 } from '~/types'
 
 export default Vue.extend({
@@ -88,6 +89,7 @@ export default Vue.extend({
 
   data() {
     return {
+      Icon,
       Change,
       DerivativeOrderType
     }
@@ -142,7 +144,6 @@ export default Vue.extend({
 
     newRecordClass(): string {
       const { quantityChange, type } = this
-      const { Change } = this.$enums
 
       switch (quantityChange) {
         case Change.NoChange:

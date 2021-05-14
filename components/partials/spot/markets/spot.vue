@@ -24,7 +24,7 @@
           :rotate="!lastTradePriceIncreased"
           :primary="lastTradePriceIncreased"
           :accent="!lastTradePriceIncreased"
-          :icon="$enums.Icon.Arrow"
+          :icon="Icon.Arrow"
         />
       </div>
       <span v-else class="text-gray-500">&mdash;</span>
@@ -63,13 +63,19 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '~/app/utils/constants'
-import { UiSpotMarket, Change } from '~/types'
+import { UiSpotMarket, Icon, Change } from '~/types'
 
 export default Vue.extend({
   props: {
     market: {
       required: true,
       type: Object as PropType<UiSpotMarket>
+    }
+  },
+
+  data() {
+    return {
+      Icon
     }
   },
 
@@ -111,10 +117,7 @@ export default Vue.extend({
         return true
       }
 
-      return [
-        this.$enums.Change.Increase,
-        this.$enums.Change.NoChange
-      ].includes(Change.Increase) // TODO
+      return [Change.Increase, Change.NoChange].includes(Change.Increase) // TODO
     }
   },
 

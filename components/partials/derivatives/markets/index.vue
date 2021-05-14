@@ -9,11 +9,7 @@
         >
         </v-input>
         <span class="absolute mr-2 right-0 top-0 mt-1"
-          ><v-ui-icon
-            :icon="$enums.Icon.Search"
-            xs
-            class="text-gray-400"
-          ></v-ui-icon
+          ><v-ui-icon :icon="Icon.Search" xs class="text-gray-400"></v-ui-icon
         ></span>
       </div>
     </div>
@@ -30,7 +26,7 @@
                 {{ $t('last_traded_price') }}
               </v-ui-text>
               <v-ui-icon
-                :icon="$enums.Icon.Info"
+                :icon="Icon.Info"
                 class="text-gray-600 hover:text-gray-300"
                 :tooltip="$t('last_traded_price_tooltip')"
                 2xs
@@ -65,7 +61,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Derivative from './derivative.vue'
-import { UiDerivativeMarket } from '~/types'
+import { UiDerivativeMarket, Icon } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -74,6 +70,7 @@ export default Vue.extend({
 
   data() {
     return {
+      Icon,
       filterMarkets: ''
     }
   },
