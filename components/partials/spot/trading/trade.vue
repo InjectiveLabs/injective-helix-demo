@@ -151,7 +151,8 @@ import {
   TradeExecutionType,
   UiSpotOrderbook,
   UiPriceLevel,
-  UiSpotMarket
+  UiSpotMarket,
+  UiSubaccount
 } from '~/types'
 import { calculateWorstExecutionPriceFromOrderbook } from '~/app/services/spot'
 
@@ -197,6 +198,52 @@ export default Vue.extend({
 
     orderbook(): UiSpotOrderbook | undefined {
       return this.$accessor.spot.orderbook
+    },
+
+    subaccount(): UiSubaccount | undefined {
+      return this.$accessor.account.subaccount
+    },
+
+    baseAvailableBalance(): BigNumberInBase {
+      const { subaccount, market } = this
+
+      if (!subaccount || !market) {
+        return ZERO_IN_BASE
+      }
+
+      const balance = subaccount.balances.find(
+        (balance) =>
+          balance.denom.toLowerCase() === market.baseDenom.toLowerCase()
+      )
+
+      if (!balance) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInWei(balance.availableBalance || 0).toBase(
+        market.baseToken.decimals
+      )
+    },
+
+    quoteAvailableBalance(): BigNumberInBase {
+      const { subaccount, market } = this
+
+      if (!subaccount || !market) {
+        return ZERO_IN_BASE
+      }
+
+      const balance = subaccount.balances.find(
+        (balance) =>
+          balance.denom.toLowerCase() === market.quoteDenom.toLowerCase()
+      )
+
+      if (!balance) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInWei(balance.availableBalance || 0).toBase(
+        market.quoteToken.decimals
+      )
     },
 
     buys(): UiPriceLevel[] {
@@ -355,7 +402,36 @@ export default Vue.extend({
     },
 
     availableBalanceError(): TradeError | undefined {
-      return undefined // TODO
+      const {
+        quoteAvailableBalance,
+        baseAvailableBalance,
+        totalWithFees,
+        orderTypeBuy
+      } = this
+
+      if (orderTypeBuy) {
+        if (
+          quoteAvailableBalance.lte(0) ||
+          quoteAvailableBalance.lt(totalWithFees)
+        ) {
+          return {
+            price: this.$t('not_enough_balance')
+          }
+        }
+
+        return undefined
+      }
+
+      if (
+        baseAvailableBalance.lte(0) ||
+        baseAvailableBalance.lt(totalWithFees)
+      ) {
+        return {
+          amount: this.$t('not_enough_balance')
+        }
+      }
+
+      return undefined
     },
 
     notEnoughOrdersToFillFromError(): TradeError | undefined {

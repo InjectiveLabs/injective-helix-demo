@@ -194,18 +194,13 @@ export default Vue.extend({
     },
 
     lastTradedPriceToString(): string {
-      const { trades, market } = this.$accessor.spot
+      const { market } = this.$accessor.spot
 
-      if (trades.length === 0 || !market) {
+      if (!market || !market.price) {
         return `0.00`
       }
 
-      const [trade] = trades
-      const tradePrice = new BigNumberInBase(
-        new BigNumberInBase(trade.price).toWei(
-          market.baseToken.decimals - market.quoteToken.decimals
-        )
-      )
+      const tradePrice = new BigNumberInBase(market.price)
 
       if (tradePrice.isNaN() || tradePrice.lte(0)) {
         return `0.00`

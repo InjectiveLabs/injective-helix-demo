@@ -5,21 +5,23 @@
     </td>
     <td is="v-ui-table-td" right xs>
       <div v-if="lastTradedPrice.gt(0)" class="flex justify-end items-center">
-        <v-ui-format-order-price
+        <v-ui-format-price
           v-bind="{
             value: lastTradedPrice,
             decimals: market.priceDecimals,
-            type: lastTradePriceIncreased
-              ? SpotOrderType.Buy
-              : SpotOrderType.Sell
+            class: {
+              'text-primary-500': lastPriceChange === Change.Increase,
+              'text-accent-500': lastPriceChange === Change.Decrease
+            }
           }"
           class="mr-1"
         />
         <v-ui-icon
+          v-if="[Change.New, Change.NoChange].includes(lastPriceChange)"
           xs
-          :rotate="!lastTradePriceIncreased"
-          :primary="lastTradePriceIncreased"
-          :accent="!lastTradePriceIncreased"
+          :rotate="lastPriceChange === Change.Decrease"
+          :primary="lastPriceChange === Change.Increase"
+          :accent="lastPriceChange === Change.Decrease"
           :icon="Icon.Arrow"
         />
       </div>
@@ -45,6 +47,7 @@ export default Vue.extend({
   data() {
     return {
       SpotOrderType,
+      Change,
       Icon
     }
   },
@@ -60,14 +63,20 @@ export default Vue.extend({
       return new BigNumberInBase(market.price)
     },
 
-    lastTradePriceIncreased(): boolean {
+    lastPriceChange(): Change {
       const { market } = this
 
       if (!market) {
-        return true
+        return Change.NoChange
       }
 
-      return [Change.Increase, Change.NoChange].includes(Change.Increase) // TODO
+      if (!market.lastPrice) {
+        return Change.NoChange
+      }
+
+      return new BigNumberInBase(market.price).gte(market.lastPrice)
+        ? Change.Increase
+        : Change.Decrease
     }
   },
 

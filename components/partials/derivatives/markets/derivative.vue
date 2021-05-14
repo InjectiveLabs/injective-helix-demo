@@ -12,18 +12,18 @@
             value: lastTradedPrice,
             decimals: market.priceDecimals,
             class: {
-              'text-primary-500': lastTradePriceIncreased,
-              'text-accent-500': !lastTradePriceIncreased
+              'text-primary-500': lastPriceChange === Change.Increase,
+              'text-accent-500': lastPriceChange === Change.Decrease
             }
           }"
           class="mr-1"
         />
         <v-ui-icon
-          v-if="lastTradePriceIncreased"
+          v-if="[Change.New, Change.NoChange].includes(lastPriceChange)"
           xs
-          :rotate="!lastTradePriceIncreased"
-          :primary="lastTradePriceIncreased"
-          :accent="!lastTradePriceIncreased"
+          :rotate="lastPriceChange === Change.Decrease"
+          :primary="lastPriceChange === Change.Increase"
+          :accent="lastPriceChange === Change.Decrease"
           :icon="Icon.Arrow"
         />
       </div>
@@ -75,7 +75,8 @@ export default Vue.extend({
 
   data() {
     return {
-      Icon
+      Icon,
+      Change
     }
   },
 
@@ -110,14 +111,20 @@ export default Vue.extend({
       return new BigNumberInBase(market.change)
     },
 
-    lastTradePriceIncreased(): boolean {
+    lastPriceChange(): Change {
       const { market } = this
 
       if (!market) {
-        return true
+        return Change.NoChange
       }
 
-      return [Change.Increase, Change.NoChange].includes(Change.Increase) // TODO
+      if (!market.lastPrice) {
+        return Change.NoChange
+      }
+
+      return new BigNumberInBase(market.price).gte(market.lastPrice)
+        ? Change.Increase
+        : Change.Decrease
     }
   },
 

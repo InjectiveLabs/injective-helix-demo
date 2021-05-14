@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { GridLayout, GridItem } from 'vue-grid-layout'
 import { headTitle } from '~/app/utils/generators'
 import MarketPriceChartPanel from '~/components/partials/derivatives/market/chart.vue'
@@ -205,16 +205,13 @@ export default Vue.extend({
     },
 
     lastTradedPriceToString(): string {
-      const { trades, market } = this.$accessor.derivatives
+      const { market } = this.$accessor.derivatives
 
-      if (trades.length === 0 || !market) {
+      if (!market || !market.price) {
         return `0.00`
       }
 
-      const [trade] = trades
-      const tradePrice = new BigNumberInWei(trade.executionPrice).toBase(
-        market.quoteToken.decimals
-      )
+      const tradePrice = new BigNumberInBase(market.price)
 
       if (tradePrice.isNaN() || tradePrice.lte(0)) {
         return `0.00`

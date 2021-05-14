@@ -15,6 +15,7 @@ export interface UiDerivativeMarket
   extends Omit<BaseUiDerivativeMarket, 'quoteToken'>,
     ChronosDerivativeMarketSummary {
   slug: string
+  lastPrice?: number,
   priceDecimals: number
   quantityDecimals: number
   baseTokenSymbol: string

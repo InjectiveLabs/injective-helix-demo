@@ -4,7 +4,11 @@
       <v-ui-text sm class="flex items-center justify-end w-full">
         <v-ui-format-price
           v-bind="{
-            value: lastPrice.toBase(market.quoteToken.decimals),
+            value: lastPrice,
+            class: {
+              'text-primary-500': lastPriceChange === Change.Increase,
+              'text-accent-500': lastPriceChange === Change.Decrease
+            },
             decimals: market.priceDecimals
           }"
         />
@@ -61,14 +65,26 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BigNumberInWei } from '@injectivelabs/utils'
-import { ZERO_IN_WEI } from '~/app/utils/constants'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { ZERO_IN_BASE } from '~/app/utils/constants'
 import MarketInfo from '~/components/elements/market-info.vue'
-import { Change, UiDerivativeMarket, UiDerivativeTrade } from '~/types'
+import {
+  DerivativeOrderType,
+  UiDerivativeMarket,
+  UiDerivativeTrade,
+  Change
+} from '~/types'
 
 export default Vue.extend({
   components: {
     'v-market-info': MarketInfo
+  },
+
+  data() {
+    return {
+      DerivativeOrderType,
+      Change
+    }
   },
 
   computed: {
@@ -80,69 +96,74 @@ export default Vue.extend({
       return this.$accessor.derivatives.trades
     },
 
-    lastPrice(): BigNumberInWei {
-      const { trades, market } = this
-      const [lastTrade] = trades || []
-
-      if (!lastTrade || !market) {
-        return ZERO_IN_WEI
-      }
-
-      if (!lastTrade.executionPrice) {
-        return ZERO_IN_WEI
-      }
-
-      return new BigNumberInWei(lastTrade.executionPrice)
-    },
-
-    high(): BigNumberInWei {
+    lastPrice(): BigNumberInBase {
       const { market } = this
 
       if (!market) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(market.high)
+      if (!market.price) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(market.price)
     },
 
-    low(): BigNumberInWei {
+    lastPriceChange(): Change {
       const { market } = this
 
       if (!market) {
-        return ZERO_IN_WEI
+        return Change.NoChange
       }
 
-      return new BigNumberInWei(market.low)
+      if (!market.lastPrice) {
+        return Change.NoChange
+      }
+
+      return new BigNumberInBase(market.price).gte(market.lastPrice)
+        ? Change.Increase
+        : Change.Decrease
     },
 
-    price(): BigNumberInWei {
+    high(): BigNumberInBase {
       const { market } = this
 
       if (!market) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(market.price)
+      return new BigNumberInBase(market.high)
     },
 
-    volume(): BigNumberInWei {
+    low(): BigNumberInBase {
       const { market } = this
 
       if (!market) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(market.volume)
+      return new BigNumberInBase(market.low)
     },
 
-    indexPriceIncreased(): boolean {
+    price(): BigNumberInBase {
       const { market } = this
 
       if (!market) {
-        return true
+        return ZERO_IN_BASE
       }
 
-      return [Change.Increase, Change.NoChange].includes(Change.Increase) // TODO
+      return new BigNumberInBase(market.price)
+    },
+
+    volume(): BigNumberInBase {
+      const { market } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(market.volume)
     }
   }
 })

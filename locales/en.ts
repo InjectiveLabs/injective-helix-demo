@@ -118,5 +118,6 @@ export default {
   unrealized_pnl_tooltip: 'Unrealized PnL note',
   leverage: 'Leverage',
   not_available_n_a: 'N/A',
-  position_closed: 'Position Closed'
+  position_closed: 'Position Closed',
+  not_enough_balance: 'Not enough balance '
 }
