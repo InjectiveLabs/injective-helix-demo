@@ -1582,7 +1582,7 @@
     "@improbable-eng/grpc-web" "^0.14.0"
     google-protobuf "^3.14.0"
 
-"@injectivelabs/exchange-api@^2.2.4":
+"@injectivelabs/exchange-api@^2.2.2", "@injectivelabs/exchange-api@^2.2.4":
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/@injectivelabs/exchange-api/-/exchange-api-2.2.4.tgz#547106cdb3a3e1063e6532362dfd7f77c7f57885"
   integrity sha512-r9PWr1V7E8OiQ1YlI2+SxmMIzsD40VKi82S+vlQpi0EO9CClYv5TGbEX7fJdhAuE7EC58478jWBvgCfEXcYzzQ==
