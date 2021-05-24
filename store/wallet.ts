@@ -5,6 +5,7 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { confirm, connect, transfer } from '~/app/services/wallet'
 import { getInjectiveAddress } from '~/app/services/account'
 import { backupPromiseCall } from '~/app/utils/async'
+import { TokenWithBalance } from '~/types'
 
 const initialStateFactory = () => ({
   wallet: Wallet.Metamask,
@@ -106,7 +107,7 @@ export const actions = actionTree(
 
     async transfer(
       { state, getters },
-      { amount, denom }: { amount: BigNumberInBase; denom: string }
+      { amount, token }: { amount: BigNumberInBase; token: TokenWithBalance }
     ) {
       const { address } = state
       const { isUserWalletConnected } = getters
@@ -118,9 +119,9 @@ export const actions = actionTree(
 
       await transfer({
         address,
-        denom,
+        denom: token.denom,
         gasPrice: new BigNumberInBase(gasPrice).toWei(),
-        amount: amount.toWei()
+        amount: amount.toWei(token.decimals)
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())

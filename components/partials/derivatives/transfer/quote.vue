@@ -126,7 +126,7 @@ export default Vue.extend({
       this.$accessor.wallet
         .transfer({
           amount: new BigNumberInBase(form.amount),
-          denom: token.denom
+          token
         })
         .then(() => {
           this.$toast.success(this.$t('success_transfer'))

@@ -12,7 +12,7 @@ export const getRpcUrlsForChainIds = (): Record<ChainId, string> => {
     [ChainId.HardHat]: 'http://localhost:8545',
     [ChainId.Kovan]: `https://eth-kovan.alchemyapi.io/v2/${process.env.APP_ALCHEMY_KOVAN_KEY}`,
     [ChainId.Mainnet]: `https://eth-mainnet.alchemyapi.io/v2/${process.env.APP_ALCHEMY_KEY}`,
-    [ChainId.Injective]: app.appRpcUrl,
+    [ChainId.Injective]: '',
     [ChainId.Rinkeby]: '',
     [ChainId.Ropsten]: ''
   }
@@ -24,7 +24,7 @@ export const getRpcWsUrlsForChainIds = (): Record<ChainId, string> => {
     [ChainId.HardHat]: 'ws://localhost:1318',
     [ChainId.Kovan]: `wss://eth-kovan.ws.alchemyapi.io/v2/${process.env.APP_ALCHEMY_KOVAN_KEY}`,
     [ChainId.Mainnet]: `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.APP_ALCHEMY_KEY}`,
-    [ChainId.Injective]: app.wsRpcUrl,
+    [ChainId.Injective]: '',
     [ChainId.Rinkeby]: '',
     [ChainId.Ropsten]: ''
   }
