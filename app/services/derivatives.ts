@@ -37,7 +37,7 @@ const dummyMarketSummaries = [
     price: 0,
     volume: 0,
     marketId:
-      '0x7cc8b10d7deb61e744ef83bdec2bbcf4a056867e89b062c6a453020ca82bd4e4'
+      '0x682410b0003227bb0eb3fb5bb0ad0f176cb9356c5177f234f4ff0002f339c763'
   },
   {
     change: 0,
@@ -47,7 +47,7 @@ const dummyMarketSummaries = [
     price: 0,
     volume: 0,
     marketId:
-      '0x883017f185381e33e02b5def170a4a451a1cd2e866f7bd480b54e13b929f1be9'
+      '0xc1e6c5e7ed954897da400534ef3578d8508beeaa4e212161baf4581a4ec23389'
   }
 ]
 
