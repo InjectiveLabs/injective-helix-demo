@@ -123,7 +123,7 @@ export default Vue.extend({
 
       this.status.setLoading()
 
-      this.$accessor.wallet
+      this.$accessor.token
         .transfer({
           amount: new BigNumberInBase(form.amount),
           token
