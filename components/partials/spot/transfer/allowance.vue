@@ -35,7 +35,7 @@ export default Vue.extend({
       this.status.setLoading()
 
       this.$accessor.token
-        .setTokenAllowance(this.token.address)
+        .setTokenAllowance(this.token)
         .then(() => {
           this.$emit('allowance-set')
           this.$toast.success(this.$t('allowance_set'))

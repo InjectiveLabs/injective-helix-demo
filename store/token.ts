@@ -1,11 +1,13 @@
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'nuxt-typed-vuex'
 import {
   getTokenBalanceAndAllowance,
-  setTokenAllowance
+  setTokenAllowance,
+  transfer
 } from '~/app/services/tokens'
-import { UNLIMITED_ALLOWANCE_IN_BASE_UNITS } from '~/app/utils/constants'
-import { TokenAddress, TokenWithBalance } from '~/types'
+import { backupPromiseCall } from '~/app/utils/async'
+import { UNLIMITED_ALLOWANCE } from '~/app/utils/constants'
+import { TokenWithBalance } from '~/types'
 
 const initialStateFactory = () => ({
   baseTokenWithBalance: (undefined as unknown) as TokenWithBalance,
@@ -108,20 +110,18 @@ export const actions = actionTree(
       commit('setQuoteTokenWithBalance', quoteTokenWithBalance)
     },
 
-    async setTokenAllowance({ state, commit }, tokenAddress: TokenAddress) {
+    async setTokenAllowance(
+      { state, commit },
+      { address: tokenAddress }: TokenWithBalance
+    ) {
       const { baseTokenWithBalance, quoteTokenWithBalance } = state
       const { address } = this.app.$accessor.wallet
-      const { market } = this.app.$accessor.spot
       const { gasPrice } = this.app.$accessor.app
-      const amount = UNLIMITED_ALLOWANCE_IN_BASE_UNITS
-
-      if (!market) {
-        throw new Error('Market not found')
-      }
+      const amount = UNLIMITED_ALLOWANCE
 
       await setTokenAllowance({
         address,
-        amount: amount.toWei(),
+        amount: amount as BigNumberInWei,
         gasPrice: new BigNumberInBase(gasPrice).toWei(),
         tokenAddress
       })
@@ -129,16 +129,37 @@ export const actions = actionTree(
       if (baseTokenWithBalance.address === tokenAddress) {
         commit('setBaseTokenWithBalance', {
           ...baseTokenWithBalance,
-          allowance: UNLIMITED_ALLOWANCE_IN_BASE_UNITS.toWei()
+          allowance: UNLIMITED_ALLOWANCE
         })
       }
 
       if (quoteTokenWithBalance.address === tokenAddress) {
         commit('setQuoteTokenWithBalance', {
           ...quoteTokenWithBalance,
-          allowance: UNLIMITED_ALLOWANCE_IN_BASE_UNITS.toWei()
+          allowance: UNLIMITED_ALLOWANCE
         })
       }
+    },
+
+    async transfer(
+      _,
+      { amount, token }: { amount: BigNumberInBase; token: TokenWithBalance }
+    ) {
+      const { address, isUserWalletConnected } = this.app.$accessor.wallet
+      const { gasPrice } = this.app.$accessor.app
+
+      if (!address || !isUserWalletConnected) {
+        return
+      }
+
+      await transfer({
+        address,
+        denom: token.denom,
+        gasPrice: new BigNumberInBase(gasPrice).toWei(),
+        amount: amount.toWei(token.decimals)
+      })
+
+      await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
     }
   }
 )

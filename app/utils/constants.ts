@@ -12,11 +12,7 @@ export const IS_PRODUCTION: boolean = process.env.NODE_ENV === 'production'
 export const ZERO: BigNumber = new BigNumber(0)
 export const ZERO_IN_WEI: BigNumberInWei = new BigNumberInWei(0)
 export const ZERO_IN_BASE: BigNumberInBase = new BigNumberInBase(0)
-export const UNLIMITED_ALLOWANCE_IN_BASE_UNITS: BigNumberInBase = new BigNumberInBase(
-  2
-)
-  .pow(256)
-  .minus(1)
+export const UNLIMITED_ALLOWANCE: BigNumber = new BigNumber(2).pow(256).minus(1)
 
 export const TX_DEFAULTS = {
   gas: 80_000_000,

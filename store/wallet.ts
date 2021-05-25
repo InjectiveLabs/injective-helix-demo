@@ -1,11 +1,8 @@
 import { actionTree, getterTree } from 'nuxt-typed-vuex'
 import { AccountAddress } from '@injectivelabs/ts-types'
 import { Wallet } from '@injectivelabs/web3-strategy'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { confirm, connect, transfer } from '~/app/services/wallet'
+import { confirm, connect } from '~/app/services/wallet'
 import { getInjectiveAddress } from '~/app/services/account'
-import { backupPromiseCall } from '~/app/utils/async'
-import { TokenWithBalance } from '~/types'
 
 const initialStateFactory = () => ({
   wallet: Wallet.Metamask,
@@ -103,28 +100,6 @@ export const actions = actionTree(
       commit('setInjectiveAddress', injectiveAddress)
       commit('setAddresses', addresses)
       commit('setAddressConfirmation', addressConfirmation)
-    },
-
-    async transfer(
-      { state, getters },
-      { amount, token }: { amount: BigNumberInBase; token: TokenWithBalance }
-    ) {
-      const { address } = state
-      const { isUserWalletConnected } = getters
-      const { gasPrice } = this.app.$accessor.app
-
-      if (!address || !isUserWalletConnected) {
-        return
-      }
-
-      await transfer({
-        address,
-        denom: token.denom,
-        gasPrice: new BigNumberInBase(gasPrice).toWei(),
-        amount: amount.toWei(token.decimals)
-      })
-
-      await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
     }
   }
 )

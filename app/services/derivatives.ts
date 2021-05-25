@@ -28,35 +28,11 @@ import {
 } from '~/app/transformers/derivatives'
 import { derivativeChronosConsumer } from '~/app/singletons/DerivativeMarketChronosConsumer'
 
-const dummyMarketSummaries = [
-  {
-    change: 0,
-    high: 0,
-    low: 0,
-    open: 0,
-    price: 0,
-    volume: 0,
-    marketId:
-      '0x682410b0003227bb0eb3fb5bb0ad0f176cb9356c5177f234f4ff0002f339c763'
-  },
-  {
-    change: 0,
-    high: 0,
-    low: 0,
-    open: 0,
-    price: 0,
-    volume: 0,
-    marketId:
-      '0xc1e6c5e7ed954897da400534ef3578d8508beeaa4e212161baf4581a4ec23389'
-  }
-]
-
 export const fetchMarkets = async (): Promise<UiDerivativeMarket[]> => {
   const markets = DerivativeTransformer.grpcMarketsToMarkets(
     await derivativeConsumer.fetchMarkets()
   )
-  // const marketsSummary = await derivativeChronosConsumer.fetchDerivativeMarketsSummary()
-  const marketsSummary = dummyMarketSummaries
+  const marketsSummary = await derivativeChronosConsumer.fetchDerivativeMarketsSummary()
   const marketWithSummaries = markets.filter((market) =>
     marketsSummary.find((m) => m.marketId === market.marketId)
   )

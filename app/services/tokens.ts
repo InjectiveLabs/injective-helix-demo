@@ -58,10 +58,14 @@ export const setTokenAllowance = async ({
 }) => {
   const contracts = getContracts()
   const web3Strategy = getWeb3Strategy()
-
-  const setAllowanceOfContractFunction = contracts.injective.setAllowanceOf({
+  const erc20Contract = new BaseCurrencyContract({
+    web3Strategy,
+    address: tokenAddress,
+    chainId: TESTNET_CHAIN_ID
+  })
+  const setAllowanceOfContractFunction = erc20Contract.setAllowanceOf({
     amount,
-    contractAddress: tokenAddress,
+    contractAddress: contracts.peggy.address,
     transactionOptions: getTransactionOptions({
       gasPrice: gasPrice.toFixed(),
       from: address
@@ -77,7 +81,7 @@ export const setTokenAllowance = async ({
     const txHash = await web3Strategy.sendTransaction(
       {
         from: address,
-        to: contracts.injective.address,
+        to: tokenAddress,
         gas: gas.toNumber().toString(16),
         gasPrice: gasPrice.toNumber().toString(16),
         data

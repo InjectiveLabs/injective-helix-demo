@@ -133,8 +133,8 @@ export default Vue.extend({
     toggle() {
       this.status.setLoading()
 
-      this.$accessor.tokens
-        .setAllowance(this.token)
+      this.$accessor.token
+        .setTokenAllowance(this.token)
         .then(() => {
           this.status.setIdle()
           this.$toast.success(this.$t('token_allowance_successful'))
