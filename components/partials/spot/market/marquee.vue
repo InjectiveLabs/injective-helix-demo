@@ -21,7 +21,7 @@
             <!-- TODO: change of the price, change the type -->
             <v-ui-format-order-price
               v-bind="{
-                value: singleMarket.price,
+                value: singleMarket.priceToBn,
                 decimals: singleMarket.priceDecimals,
                 type: true ? SpotOrderType.Buy : SpotOrderType.Sell
               }"
@@ -35,8 +35,13 @@
 </template>
 
 <script lang="ts">
+import { BigNumberInBase } from '@injectivelabs/utils'
 import Vue from 'vue'
 import { UiSpotMarket, SpotOrderType } from '~/types'
+
+interface UiSpotMarketWithBnPrice extends UiSpotMarket {
+  priceToBn: BigNumberInBase
+}
 
 export default Vue.extend({
   data() {
@@ -54,8 +59,11 @@ export default Vue.extend({
       return this.$accessor.spot.markets
     },
 
-    transformedMarkets(): UiSpotMarket[] {
-      return this.filteredMarkets
+    transformedMarkets(): UiSpotMarketWithBnPrice[] {
+      return this.filteredMarkets.map((market) => ({
+        ...market,
+        priceToBn: new BigNumberInBase(market.price)
+      }))
     },
 
     filteredMarkets(): UiSpotMarket[] {
