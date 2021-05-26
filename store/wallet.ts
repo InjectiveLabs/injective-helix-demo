@@ -55,7 +55,7 @@ export const mutations = {
     state.addresses = addresses
   },
 
-  logout(state: WalletStoreState) {
+  reset(state: WalletStoreState) {
     const initialState = initialStateFactory()
 
     state.address = initialState.address
@@ -93,13 +93,24 @@ export const actions = actionTree(
       const addressConfirmation = await confirm(address)
       const injectiveAddress = getInjectiveAddress(address)
 
+      commit('setInjectiveAddress', injectiveAddress)
+
       await this.app.$accessor.account.fetchSubaccounts()
       await this.app.$accessor.bank.fetchBalances()
 
       commit('setAddress', address)
-      commit('setInjectiveAddress', injectiveAddress)
       commit('setAddresses', addresses)
       commit('setAddressConfirmation', addressConfirmation)
+    },
+
+    async logout({ commit }) {
+      await this.app.$accessor.account.reset()
+      await this.app.$accessor.token.reset()
+      await this.app.$accessor.spot.resetSubaccount()
+      await this.app.$accessor.derivatives.resetSubaccount()
+      await this.app.$accessor.bank.reset()
+
+      commit('reset')
     }
   }
 )

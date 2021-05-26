@@ -22,13 +22,9 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              is="v-balance"
-              v-for="balance in balances"
-              :key="`balance-${balance.denom}`"
-              :balance="balance"
-            ></tr>
-            <tr is="v-balance-empty" v-if="balances.length === 0"></tr>
+            <tr is="v-balance" v-if="baseBalance" :balance="baseBalance"></tr>
+            <tr is="v-balance" v-if="quoteBalance" :balance="quoteBalance"></tr>
+            <tr is="v-balance-empty" v-if="!quoteBalance && !baseBalance"></tr>
           </tbody>
         </table>
       </div>
@@ -76,39 +72,54 @@ export default Vue.extend({
       return this.$accessor.account.subaccount
     },
 
-    balances(): UiSubaccountBalanceWithToken[] {
+    quoteBalance(): UiSubaccountBalanceWithToken | undefined {
       const { subaccount, market } = this
 
       if (!subaccount || !market) {
-        return []
+        return undefined
       }
 
       const quoteBalance = subaccount.balances.find(
         (balance) =>
-          balance.denom.toLowerCase() === market.baseDenom.toLowerCase()
-      )!
+          balance.denom.toLowerCase() === market.quoteDenom.toLowerCase()
+      )
+
+      return {
+        totalBalance: new BigNumberInWei(
+          quoteBalance ? quoteBalance.totalBalance : 0
+        ),
+        availableBalance: new BigNumberInWei(
+          quoteBalance ? quoteBalance.availableBalance : 0
+        ),
+        displayDecimals: UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+        token: market.quoteToken,
+        denom: market.quoteDenom
+      }
+    },
+
+    baseBalance(): UiSubaccountBalanceWithToken | undefined {
+      const { subaccount, market } = this
+
+      if (!subaccount || !market) {
+        return undefined
+      }
+
       const baseBalance = subaccount.balances.find(
         (balance) =>
-          balance.denom.toLowerCase() === market.quoteDenom.toLowerCase()
-      )!
+          balance.denom.toLowerCase() === market.baseDenom.toLowerCase()
+      )
 
-      const balances = [baseBalance, quoteBalance]
-
-      return balances
-        .filter((b) => b)
-        .map((balance) => ({
-          ...balance,
-          token:
-            market.baseDenom.toLowerCase() === balance.denom.toLowerCase()
-              ? market.baseToken
-              : market.quoteToken,
-          displayDecimals:
-            market.quoteDenom.toLowerCase() === balance.denom.toLowerCase()
-              ? UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-              : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-          totalBalance: new BigNumberInWei(balance.totalBalance || 0),
-          availableBalance: new BigNumberInWei(balance.availableBalance || 0)
-        }))
+      return {
+        totalBalance: new BigNumberInWei(
+          baseBalance ? baseBalance.totalBalance : 0
+        ),
+        availableBalance: new BigNumberInWei(
+          baseBalance ? baseBalance.availableBalance : 0
+        ),
+        displayDecimals: UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+        token: market.baseToken,
+        denom: market.baseDenom
+      }
     }
   },
 

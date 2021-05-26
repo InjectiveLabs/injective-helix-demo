@@ -22,13 +22,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              is="v-balance"
-              v-for="balance in balances"
-              :key="`balance-${balance.denom}`"
-              :balance="balance"
-            ></tr>
-            <tr is="v-balance-empty" v-if="balances.length === 0"></tr>
+            <tr is="v-balance" v-if="quoteBalance" :balance="quoteBalance"></tr>
+            <tr is="v-balance-empty" v-else></tr>
           </tbody>
         </table>
       </div>
@@ -73,11 +68,11 @@ export default Vue.extend({
       return this.$accessor.account.subaccount
     },
 
-    balances(): UiSubaccountBalanceWithToken[] {
+    quoteBalance(): UiSubaccountBalanceWithToken | undefined {
       const { subaccount, market } = this
 
       if (!subaccount || !market) {
-        return []
+        return undefined
       }
 
       const quoteBalance = subaccount.balances.find(
@@ -85,21 +80,17 @@ export default Vue.extend({
           balance.denom.toLowerCase() === market.quoteDenom.toLowerCase()
       )
 
-      if (!quoteBalance) {
-        return []
+      return {
+        totalBalance: new BigNumberInWei(
+          quoteBalance ? quoteBalance.totalBalance : 0
+        ),
+        availableBalance: new BigNumberInWei(
+          quoteBalance ? quoteBalance.availableBalance : 0
+        ),
+        displayDecimals: UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+        token: market.quoteToken,
+        denom: market.quoteDenom
       }
-
-      return [
-        {
-          ...quoteBalance,
-          token: market.quoteToken,
-          displayDecimals: UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-          totalBalance: new BigNumberInWei(quoteBalance.totalBalance || 0),
-          availableBalance: new BigNumberInWei(
-            quoteBalance.availableBalance || 0
-          )
-        }
-      ]
     }
   },
 

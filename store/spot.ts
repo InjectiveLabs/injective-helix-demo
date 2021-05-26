@@ -164,6 +164,13 @@ export const mutations = {
 
   setOrderbook(state: SpotStoreState, orderbook: UiSpotOrderbook) {
     state.orderbook = orderbook
+  },
+
+  resetSubaccount(state: SpotStoreState) {
+    const initialState = initialStateFactory()
+
+    state.subaccountTrades = initialState.subaccountTrades
+    state.subaccountOrders = initialState.subaccountOrders
   }
 }
 

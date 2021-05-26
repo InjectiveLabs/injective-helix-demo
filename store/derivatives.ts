@@ -193,6 +193,13 @@ export const mutations = {
 
   setOrderbook(state: DerivativeStoreState, orderbook: UiDerivativeOrderbook) {
     state.orderbook = orderbook
+  },
+
+  resetSubaccount(state: DerivativeStoreState) {
+    const initialState = initialStateFactory()
+
+    state.subaccountTrades = initialState.subaccountTrades
+    state.subaccountOrders = initialState.subaccountOrders
   }
 }
 

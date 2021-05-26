@@ -63,6 +63,13 @@ export const mutations = {
       ...state.subaccount,
       balances: [...balances, updatedBalance]
     }
+  },
+
+  reset(state: AccountStoreState) {
+    const initialState = initialStateFactory()
+
+    state.subaccount = initialState.subaccount
+    state.subaccountIds = initialState.subaccountIds
   }
 }
 

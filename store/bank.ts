@@ -12,15 +12,21 @@ export const state = () => ({
   balances: initialState.balances
 })
 
-export type TokenStoreState = ReturnType<typeof state>
+export type BankStoreState = ReturnType<typeof state>
 
 export const getters = getterTree(state, {
   //
 })
 
 export const mutations = {
-  setBalances(state: TokenStoreState, balances: BankBalances) {
+  setBalances(state: BankStoreState, balances: BankBalances) {
     state.balances = balances
+  },
+
+  reset(state: BankStoreState) {
+    const initialState = initialStateFactory()
+
+    state.balances = initialState.balances
   }
 }
 
