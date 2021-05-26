@@ -1,10 +1,7 @@
 import { TokenMeta } from '@injectivelabs/derivatives-consumer'
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { getDecimalsFromNumber } from '../utils/helpers'
-import {
-  peggyDenomToTokenFromContractAddress,
-  peggyDenomToContractAddress
-} from './peggy'
+import { peggyDenomToContractAddress } from './peggy'
 import {
   AllChronosDerivativeMarketSummary,
   ChronosDerivativeMarketSummary,
@@ -16,17 +13,14 @@ import {
 } from '~/types'
 
 export const derivativeMarketToUiDerivativeMarket = (
-  market: BaseUiDerivativeMarket,
+  market: BaseUiDerivativeMarket, // Markets with quote token meta data
   marketsSummary:
     | AllChronosDerivativeMarketSummary
     | ChronosDerivativeMarketSummary
 ): UiDerivativeMarket => {
   const slug = market.ticker.replace('/', '-').replace(' ', '-').toLowerCase()
   const [baseTokenSymbol] = slug.split('-')
-  const quoteToken =
-    market.quoteToken !== undefined
-      ? tokenMetaToToken(market.quoteToken, market.quoteDenom)
-      : peggyDenomToTokenFromContractAddress(market.quoteDenom)
+  const quoteToken = tokenMetaToToken(market.quoteToken!, market.quoteDenom)
 
   return {
     ...market,

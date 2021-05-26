@@ -19,7 +19,7 @@ import {
   TESTNET_CHAIN_ID,
   ZERO_IN_BASE
 } from '~/app/utils/constants'
-import { UiPriceLevel, UiSpotMarket } from '~/types'
+import { BaseUiSpotMarket, UiPriceLevel, UiSpotMarket } from '~/types'
 import { spotConsumer } from '~/app/singletons/SpotMarketConsumer'
 import {
   orderTypeToGrpcOrderType,
@@ -31,8 +31,12 @@ export const fetchMarkets = async (): Promise<UiSpotMarket[]> => {
   const markets = SpotTransformer.grpcMarketsToMarkets(
     await spotConsumer.fetchMarkets()
   )
+  const baseAndQuoteTokenMetaDataExist = (m: BaseUiSpotMarket) =>
+    m.quoteToken !== undefined && m.baseToken !== undefined
+  const filteredMarkets = markets.filter(baseAndQuoteTokenMetaDataExist)
+
   const marketsSummary = await spotChronosConsumer.fetchSpotMarketsSummary()
-  const marketWithSummaries = markets.filter((market) =>
+  const marketWithSummaries = filteredMarkets.filter((market) =>
     marketsSummary.find((m) => m.marketId === market.marketId)
   )
 

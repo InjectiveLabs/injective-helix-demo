@@ -1,10 +1,7 @@
 import { TokenMeta } from '@injectivelabs/spot-consumer'
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { getDecimalsFromNumber } from '../utils/helpers'
-import {
-  peggyDenomToTokenFromContractAddress,
-  peggyDenomToContractAddress
-} from './peggy'
+import { peggyDenomToContractAddress } from './peggy'
 import {
   AllChronosSpotMarketSummary,
   ChronosSpotMarketSummary,
@@ -16,17 +13,11 @@ import {
 } from '~/types'
 
 export const spotMarketToUiSpotMarket = (
-  market: BaseUiSpotMarket,
+  market: BaseUiSpotMarket, // Markets with base and quote token meta data
   marketsSummary: AllChronosSpotMarketSummary | ChronosSpotMarketSummary
 ): UiSpotMarket => {
-  const quoteToken =
-    market.quoteToken !== undefined
-      ? tokenMetaToToken(market.quoteToken, market.quoteDenom)
-      : peggyDenomToTokenFromContractAddress(market.quoteDenom)
-  const baseToken =
-    market.baseToken !== undefined
-      ? tokenMetaToToken(market.baseToken, market.baseDenom)
-      : peggyDenomToTokenFromContractAddress(market.baseDenom)
+  const quoteToken = tokenMetaToToken(market.quoteToken!, market.quoteDenom)
+  const baseToken = tokenMetaToToken(market.baseToken!, market.baseDenom)
 
   return {
     ...market,

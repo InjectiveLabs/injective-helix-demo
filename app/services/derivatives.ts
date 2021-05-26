@@ -20,7 +20,11 @@ import {
   TESTNET_CHAIN_ID,
   ZERO_IN_BASE
 } from '~/app/utils/constants'
-import { UiPriceLevel, UiDerivativeMarket } from '~/types'
+import {
+  UiPriceLevel,
+  UiDerivativeMarket,
+  BaseUiDerivativeMarket
+} from '~/types'
 import { derivativeConsumer } from '~/app/singletons/DerivativeMarketConsumer'
 import {
   orderTypeToGrpcOrderType,
@@ -32,8 +36,13 @@ export const fetchMarkets = async (): Promise<UiDerivativeMarket[]> => {
   const markets = DerivativeTransformer.grpcMarketsToMarkets(
     await derivativeConsumer.fetchMarkets()
   )
+
+  const quoteTokenMetaDataExist = (m: BaseUiDerivativeMarket) =>
+    m.quoteToken !== undefined
+  const filteredMarkets = markets.filter(quoteTokenMetaDataExist)
+
   const marketsSummary = await derivativeChronosConsumer.fetchDerivativeMarketsSummary()
-  const marketWithSummaries = markets.filter((market) =>
+  const marketWithSummaries = filteredMarkets.filter((market) =>
     marketsSummary.find((m) => m.marketId === market.marketId)
   )
 
