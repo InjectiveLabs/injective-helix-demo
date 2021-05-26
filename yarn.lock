@@ -1600,10 +1600,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/networks@^0.0.17":
-  version "0.0.17"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/networks/-/networks-0.0.17.tgz#694a4c2b0d3bf5421dd43cb045dd171df15fa420"
-  integrity sha512-lig+5cXGL469VEQ7dcr+p6wjxhV+sKPnsuJt2pgLcoYflW5PQ50Zg45Ol2BY45N8q+z8DZCbTLfiEoLAMh9z+w==
+"@injectivelabs/networks@^0.0.18":
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/networks/-/networks-0.0.18.tgz#831ceff6732eb857e210ac0b8217ff6f5d27368a"
+  integrity sha512-IRWGGUqn/EdnmJIjJjYzO5OfJrh5NKIAbQPkLm3O/nqKkZZgsCZpYg3x17kCIYa3vFZ8XYsYs3wYJW8nX/8OGg==
   dependencies:
     "@injectivelabs/exceptions" "^0.0.21"
     "@injectivelabs/utils" "^0.0.28"

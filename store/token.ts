@@ -72,7 +72,7 @@ export const actions = actionTree(
       const { market } = this.app.$accessor.spot
 
       if (!market) {
-        throw new Error('Market not found')
+        return
       }
 
       const { baseToken, quoteToken } = market
@@ -97,7 +97,7 @@ export const actions = actionTree(
       const { market } = this.app.$accessor.derivatives
 
       if (!market) {
-        throw new Error('Market not found')
+        return
       }
 
       const { quoteToken } = market

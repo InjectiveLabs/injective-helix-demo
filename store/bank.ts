@@ -38,12 +38,9 @@ export const actions = actionTree(
     },
 
     async fetchBalances({ commit }) {
-      const {
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { injectiveAddress } = this.app.$accessor.wallet
 
-      if (!isUserWalletConnected || !injectiveAddress) {
+      if (!injectiveAddress) {
         return
       }
 

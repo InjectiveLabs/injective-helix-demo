@@ -83,6 +83,10 @@ export const actions = actionTree(
       await this.app.$accessor.bank.fetchBalances()
 
       commit('setAddress', address)
+
+      await this.app.$accessor.token.getTokenBalanceAndAllowanceForDerivativeMarket()
+      await this.app.$accessor.token.getTokenBalanceAndAllowanceForMarket()
+
       commit('setAddresses', addresses)
       commit('setAddressConfirmation', addressConfirmation)
     },
@@ -99,6 +103,10 @@ export const actions = actionTree(
       await this.app.$accessor.bank.fetchBalances()
 
       commit('setAddress', address)
+
+      await this.app.$accessor.token.getTokenBalanceAndAllowanceForDerivativeMarket()
+      await this.app.$accessor.token.getTokenBalanceAndAllowanceForMarket()
+
       commit('setAddresses', addresses)
       commit('setAddressConfirmation', addressConfirmation)
     },
