@@ -107,7 +107,7 @@
     <component
       :is="tradingTypeMarket ? `v-order-details-market` : 'v-order-details'"
       v-bind="{
-        price: executionPrice,
+        price: averageExecutionPrice,
         orderType,
         fees,
         total,
@@ -151,6 +151,7 @@ import {
   UiSubaccount
 } from '~/types'
 import {
+  calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook,
   getApproxAmountForMarketOrder
 } from '~/app/services/spot'
@@ -303,6 +304,43 @@ export default Vue.extend({
         const records = orderTypeBuy ? sells : buys
 
         return calculateWorstExecutionPriceFromOrderbook({
+          records,
+          amount,
+          market
+        })
+      }
+
+      if (price.isNaN()) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(price)
+    },
+
+    averageExecutionPrice(): BigNumberInBase {
+      const {
+        tradingTypeMarket,
+        orderTypeBuy,
+        sells,
+        buys,
+        hasAmount,
+        market,
+        amount,
+        price
+      } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      if (tradingTypeMarket) {
+        if (!hasAmount) {
+          return ZERO_IN_BASE
+        }
+
+        const records = orderTypeBuy ? sells : buys
+
+        return calculateAverageExecutionPriceFromOrderbook({
           records,
           amount,
           market
@@ -666,10 +704,6 @@ export default Vue.extend({
         return ''
       }
 
-      const fee = new BigNumberInBase(
-        tradingTypeMarket ? market.takerFeeRate : market.makerFeeRate
-      )
-
       if (tradingTypeMarket) {
         return getApproxAmountForMarketOrder({
           market,
@@ -686,6 +720,33 @@ export default Vue.extend({
       if (balance.lte(0)) {
         return ''
       }
+
+      const [lowestSellRecord] = sells
+      const [highestBuyRecord] = buys
+      const lowestSell = lowestSellRecord
+        ? new BigNumberInBase(
+            new BigNumberInBase(lowestSellRecord.price).toWei(
+              market.baseToken.decimals - market.quoteToken.decimals
+            )
+          )
+        : ZERO_IN_BASE
+      const highestBuy = lowestSellRecord
+        ? new BigNumberInBase(
+            new BigNumberInBase(highestBuyRecord.price).toWei(
+              market.baseToken.decimals - market.quoteToken.decimals
+            )
+          )
+        : ZERO_IN_BASE
+
+      const fee = new BigNumberInBase(
+        orderTypeBuy
+          ? executionPrice.gte(lowestSell)
+            ? market.takerFeeRate
+            : market.makerFeeRate
+          : executionPrice.lte(highestBuy)
+          ? market.takerFeeRate
+          : market.makerFeeRate
+      )
 
       return new BigNumberInBase(balance)
         .dividedBy(executionPrice.times(fee.plus(1)))

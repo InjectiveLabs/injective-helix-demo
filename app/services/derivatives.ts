@@ -467,7 +467,7 @@ export const calculateWorstExecutionPriceFromOrderbook = ({
   return worstPrice
 }
 
-export const calculateExecutionPriceFromOrderbook = ({
+export const calculateAverageExecutionPriceFromOrderbook = ({
   records,
   market,
   amount

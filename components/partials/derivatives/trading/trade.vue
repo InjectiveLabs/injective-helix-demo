@@ -117,7 +117,7 @@
     <component
       :is="tradingTypeMarket ? `v-order-details-market` : 'v-order-details'"
       v-bind="{
-        price: executionPrice,
+        price: averageExecutionPrice,
         notionalValue,
         liquidationPrice,
         margin,
@@ -164,6 +164,7 @@ import {
 } from '~/types'
 import {
   calculateWorstExecutionPriceFromOrderbook,
+  calculateAverageExecutionPriceFromOrderbook,
   calculateLiquidationPrice,
   calculateMargin
 } from '~/app/services/derivatives'
@@ -262,7 +263,7 @@ export default Vue.extend({
       } = this
 
       if (!market) {
-        return new BigNumberInBase('')
+        return ZERO_IN_BASE
       }
 
       if (tradingTypeMarket) {
@@ -273,6 +274,43 @@ export default Vue.extend({
         const records = orderTypeBuy ? sells : buys
 
         return calculateWorstExecutionPriceFromOrderbook({
+          records,
+          amount,
+          market
+        })
+      }
+
+      if (price.isNaN()) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(price)
+    },
+
+    averageExecutionPrice(): BigNumberInBase {
+      const {
+        tradingTypeMarket,
+        orderTypeBuy,
+        sells,
+        buys,
+        hasAmount,
+        market,
+        amount,
+        price
+      } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      if (tradingTypeMarket) {
+        if (!hasAmount) {
+          return ZERO_IN_BASE
+        }
+
+        const records = orderTypeBuy ? sells : buys
+
+        return calculateAverageExecutionPriceFromOrderbook({
           records,
           amount,
           market

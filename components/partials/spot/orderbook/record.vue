@@ -234,7 +234,10 @@ export default Vue.extend({
         return
       }
 
-      this.$root.$emit('orderbook-size-click', quantity.toFixed())
+      this.$root.$emit(
+        'orderbook-size-click',
+        quantity.toBase(market.baseToken.decimals).toFixed()
+      )
     },
 
     onSumQuantityClick() {

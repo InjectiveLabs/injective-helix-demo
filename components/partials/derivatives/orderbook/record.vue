@@ -190,7 +190,10 @@ export default Vue.extend({
         return
       }
 
-      this.$root.$emit('orderbook-price-click', price.toFixed())
+      this.$root.$emit(
+        'orderbook-price-click',
+        price.toBase(market.quoteToken.decimals).toFixed()
+      )
     },
 
     onQuantityClick() {
