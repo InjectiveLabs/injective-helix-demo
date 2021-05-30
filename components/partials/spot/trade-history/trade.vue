@@ -157,9 +157,9 @@ export default Vue.extend({
         case TradeExecutionType.Market:
           return this.$t('market')
         case TradeExecutionType.LimitMatchRestingOrder:
-          return this.$t('limit') // TODO
+          return this.$t('limit')
         case TradeExecutionType.LimitMatchNewOrder:
-          return this.$t('limit') // TODO
+          return this.$t('limit')
         default:
           return this.$t('limit')
       }

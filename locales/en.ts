@@ -119,5 +119,9 @@ export default {
   leverage: 'Leverage',
   not_available_n_a: 'N/A',
   position_closed: 'Position Closed',
-  not_enough_balance: 'Not enough balance '
+  not_enough_balance: 'Not enough balance',
+  reduce_only: 'Reduce Only',
+  reduce_only_in_excess:
+    'Total size of reduce-only orders would exceed size of your position',
+  max_leverage_warn: 'Please decrease leverage.'
 }

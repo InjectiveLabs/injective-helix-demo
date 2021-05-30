@@ -9,7 +9,11 @@ import {
   DerivativeTransformer
 } from '@injectivelabs/derivatives-consumer'
 import { AccountAddress, TradeExecutionSide } from '@injectivelabs/ts-types'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  BigNumber,
+  BigNumberInBase,
+  BigNumberInWei
+} from '@injectivelabs/utils'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { SubaccountStreamType } from '@injectivelabs/subaccount-consumer'
 import { TxProvider } from '~/app/providers/TxProvider'
@@ -221,12 +225,14 @@ export const submitLimitOrder = async ({
   orderType,
   address,
   market,
+  reduceOnly,
   margin,
   injectiveAddress,
   subaccountId
 }: {
   margin: BigNumberInBase
   price: BigNumberInBase
+  reduceOnly: boolean
   quantity: BigNumberInBase
   orderType: DerivativeOrderType
   subaccountId: string
@@ -241,7 +247,9 @@ export const submitLimitOrder = async ({
     order: {
       orderType: orderTypeToGrpcOrderType(orderType),
       price: price.toWei(market.quoteToken.decimals).toFixed(),
-      margin: margin.toWei(market.quoteToken.decimals).toFixed(),
+      margin: reduceOnly
+        ? '0'
+        : margin.toWei(market.quoteToken.decimals).toFixed(),
       quantity: quantity.toFixed(),
       feeRecipient: FEE_RECIPIENT,
       triggerPrice: '0' // TODO
@@ -492,4 +500,51 @@ export const calculateAverageExecutionPriceFromOrderbook = ({
   )
 
   return sum.div(amount.minus(remainAmountToFill))
+}
+
+export const getApproxAmountForMarketOrder = ({
+  records,
+  availableMargin,
+  market,
+  leverage = '1',
+  percent = 1
+}: {
+  records: UiPriceLevel[]
+  availableMargin: BigNumberInBase
+  percent?: number
+  leverage: string
+  market: UiDerivativeMarket
+}) => {
+  const fee = new BigNumberInBase(market.takerFeeRate)
+  let totalQuantity = ZERO_IN_BASE
+  let marginRemaining = new BigNumberInBase(availableMargin)
+    .toWei(market.quoteToken.decimals)
+    .times(percent)
+
+  for (const record of records) {
+    const recordNotional = new BigNumberInBase(record.price).times(
+      record.quantity
+    )
+    const recordFees = recordNotional.times(fee)
+    const recordMargin = calculateMargin({
+      quantity: record.quantity,
+      price: record.price,
+      leverage
+    })
+    const total = recordMargin.plus(recordFees)
+
+    if (total.gt(marginRemaining)) {
+      const factor = new BigNumber(1).dividedBy(leverage).plus(fee)
+      const usableQuantity = marginRemaining.dividedBy(
+        factor.times(record.price)
+      )
+
+      return totalQuantity.plus(usableQuantity)
+    } else {
+      totalQuantity = totalQuantity.plus(record.quantity)
+      marginRemaining = marginRemaining.minus(total)
+    }
+  }
+
+  return totalQuantity
 }

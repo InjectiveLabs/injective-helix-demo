@@ -12,7 +12,7 @@
           <v-ui-format-price
             v-bind="{
               value: total,
-              decimals: market.priceDecimals,
+              decimals: market.priceDecimals
             }"
           />
           <small class="opacity-75 ml-1 pt-px">{{
@@ -29,7 +29,7 @@
             <v-ui-format-amount
               v-bind="{
                 value: amount,
-                decimals: market.quantityDecimals,
+                decimals: market.quantityDecimals
               }"
               class="text-gray-300"
             />
@@ -47,7 +47,7 @@
             <v-ui-format-price
               v-bind="{
                 value: price,
-                decimals: market.priceDecimals,
+                decimals: market.priceDecimals
               }"
               class="text-gray-300"
             />
@@ -59,7 +59,10 @@
             &mdash;
           </v-ui-text>
         </p>
-        <p class="flex justify-between group leading-6">
+        <p
+          v-if="!orderTypeReduceOnly"
+          class="flex justify-between group leading-6"
+        >
           <v-ui-text muted-sm class="group-hover:text-white">
             {{ $t('liquidation_price') }}
           </v-ui-text>
@@ -71,7 +74,7 @@
             <v-ui-format-price
               v-bind="{
                 value: liquidationPrice,
-                decimals: market.priceDecimals,
+                decimals: market.priceDecimals
               }"
               class="text-gray-300"
             />
@@ -83,7 +86,10 @@
             &mdash;
           </v-ui-text>
         </p>
-        <p class="flex justify-between group leading-6">
+        <p
+          v-if="!orderTypeReduceOnly"
+          class="flex justify-between group leading-6"
+        >
           <v-ui-text muted-sm class="group-hover:text-white">
             {{ $t('margin') }}
           </v-ui-text>
@@ -91,7 +97,7 @@
             <v-ui-format-price
               v-bind="{
                 value: margin,
-                decimals: market.priceDecimals,
+                decimals: market.priceDecimals
               }"
               class="text-gray-300"
             />
@@ -111,7 +117,7 @@
             <v-ui-format-price
               v-bind="{
                 value: notionalValue,
-                decimals: market.priceDecimals,
+                decimals: market.priceDecimals
               }"
               class="text-gray-300"
             />
@@ -131,7 +137,7 @@
             <v-ui-format-price
               v-bind="{
                 value: fees,
-                decimals: market.priceDecimals,
+                decimals: market.priceDecimals
               }"
               class="text-gray-300"
             />
@@ -198,6 +204,11 @@ export default Vue.extend({
     amount: {
       required: true,
       type: Object as PropType<BigNumberInBase>
+    },
+
+    orderTypeReduceOnly: {
+      required: true,
+      type: Boolean
     },
 
     detailsDrawerOpen: {

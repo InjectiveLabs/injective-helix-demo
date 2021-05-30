@@ -78,7 +78,7 @@ export class MetricsProvider {
 }
 
 export const metricsProvider = new MetricsProvider({
-  locale: 'en', // TODO
+  locale: 'en',
   baseUrl: 'https://telegraf.injective.dev/statsd',
   env: process.env.APP_ENV || 'local'
 })

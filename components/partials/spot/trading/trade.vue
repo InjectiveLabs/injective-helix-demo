@@ -447,10 +447,7 @@ export default Vue.extend({
       } = this
 
       if (orderTypeBuy) {
-        if (
-          quoteAvailableBalance.lte(0) ||
-          quoteAvailableBalance.lt(totalWithFees)
-        ) {
+        if (quoteAvailableBalance.lt(totalWithFees)) {
           return {
             price: this.$t('not_enough_balance')
           }
@@ -459,10 +456,7 @@ export default Vue.extend({
         return undefined
       }
 
-      if (
-        baseAvailableBalance.lte(0) ||
-        baseAvailableBalance.lt(totalWithFees)
-      ) {
+      if (baseAvailableBalance.lt(totalWithFees)) {
         return {
           amount: this.$t('not_enough_balance')
         }

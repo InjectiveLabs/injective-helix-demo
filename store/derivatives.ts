@@ -425,10 +425,12 @@ export const actions = actionTree(
       _,
       {
         price,
+        reduceOnly,
         margin,
         quantity,
         orderType
       }: {
+        reduceOnly: boolean
         price: BigNumberInBase
         margin: BigNumberInBase
         quantity: BigNumberInBase
@@ -454,6 +456,7 @@ export const actions = actionTree(
 
       await submitLimitOrder({
         price,
+        reduceOnly,
         quantity,
         margin,
         orderType,

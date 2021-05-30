@@ -63,7 +63,10 @@
             &mdash;
           </v-ui-text>
         </p>
-        <p class="flex justify-between group leading-6">
+        <p
+          v-if="!orderTypeReduceOnly"
+          class="flex justify-between group leading-6"
+        >
           <v-ui-text muted-sm class="group-hover:text-white">
             {{ $t('liquidation_price') }}
           </v-ui-text>
@@ -87,7 +90,10 @@
             &mdash;
           </v-ui-text>
         </p>
-        <p class="flex justify-between group leading-6">
+        <p
+          v-if="!orderTypeReduceOnly"
+          class="flex justify-between group leading-6"
+        >
           <v-ui-text muted-sm class="group-hover:text-white">
             {{ $t('margin') }}
           </v-ui-text>
@@ -204,6 +210,11 @@ export default Vue.extend({
     amount: {
       required: true,
       type: Object as PropType<BigNumberInBase>
+    },
+
+    orderTypeReduceOnly: {
+      required: true,
+      type: Boolean
     },
 
     detailsDrawerOpen: {
