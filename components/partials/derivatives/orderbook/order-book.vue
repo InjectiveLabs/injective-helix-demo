@@ -1,8 +1,8 @@
 <template>
-  <div class="flex flex-col flex-wrap w-full">
+  <div class="flex flex-col flex-wrap overflow-y-hidden w-full">
     <ul
       ref="sellOrders"
-      class="list-order-book flex-1 overflow-auto w-full"
+      class="list-order-book overflow-auto w-full"
       @mouseenter="autoScrollSellsLocked = true"
       @mouseleave="autoScrollSellsLocked = false"
     >
@@ -55,7 +55,7 @@
     </div>
     <ul
       ref="buyOrders"
-      class="list-order-book flex-1 overflow-auto w-full"
+      class="list-order-book overflow-auto w-full"
       @mouseenter="autoScrollBuysLocked = true"
       @mouseleave="autoScrollBuysLocked = false"
     >
@@ -332,12 +332,24 @@ export default Vue.extend({
       const rowSize = 24
       const middleContextHeight = 56
       const totalContentHeight = new BigNumber(height - middleContextHeight)
-
-      this.limit = totalContentHeight
-        .div(rowSize)
+      const halftotalContentHeight = totalContentHeight
         .div(2)
         .decimalPlaces(0, BigNumber.ROUND_HALF_CEIL)
         .toNumber()
+
+      this.limit = totalContentHeight
+        .div(2)
+        .div(rowSize)
+        .decimalPlaces(0, BigNumber.ROUND_HALF_CEIL)
+        .toNumber()
+
+      const sellOrdersRef = this.$refs.sellOrders as any
+      const buyOrdersRef = this.$refs.buyOrders as any
+
+      if (sellOrdersRef && buyOrdersRef) {
+        sellOrdersRef.style.height = `${halftotalContentHeight}px`
+        buyOrdersRef.style.height = `${halftotalContentHeight}px`
+      }
     },
 
     onScrollSells() {

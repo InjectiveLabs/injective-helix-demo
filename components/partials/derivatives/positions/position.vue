@@ -49,6 +49,7 @@
     </td>
     <td is="v-ui-table-td" xs center>
       <v-ui-format-percent
+        v-if="!pnl.isNaN()"
         v-bind="{
           appendPlusSign: true,
           precision: 2,
@@ -56,6 +57,7 @@
           class: pnl.gte(0) ? 'text-primary-500' : 'text-accent-500'
         }"
       />
+      <v-ui-text v-else muted>{{ $t('not_available_n_a') }}</v-ui-text>
     </td>
     <td is="v-ui-table-td" xs right>
       <v-ui-format-price

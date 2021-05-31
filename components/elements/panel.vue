@@ -32,12 +32,6 @@ export default Vue.extend({
       type: String
     },
 
-    contentClass: {
-      required: false,
-      default: '',
-      type: String
-    },
-
     portalName: {
       required: false,
       default: '',
