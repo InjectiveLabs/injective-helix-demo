@@ -414,7 +414,9 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(position.quantity).minus(position.holdQuantity)
+      return new BigNumberInBase(position.quantity).minus(
+        position.holdQuantity || 0 /* TODO */
+      )
     },
 
     localizedSubmitOrderType(): string {

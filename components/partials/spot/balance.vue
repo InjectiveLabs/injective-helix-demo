@@ -10,26 +10,22 @@
         :title="$t('balance_asset', { asset: market.baseToken.symbol })"
       >
         <v-ui-format-amount
-          v-if="baseTokenBalance.gt(0)"
           class="font-normal text-sm"
           v-bind="{
             value: baseTokenBalance.toBase(market.baseToken.decimals)
           }"
         />
-        <span v-else class="text-gray-400 font-normal text-xs">&mdash;</span>
       </v-ui-text-info>
       <v-ui-text-info
         class="mt-3"
         :title="$t('balance_asset', { asset: market.quoteToken.symbol })"
       >
         <v-ui-format-amount
-          v-if="quoteTokenBalance.gt(0)"
           class="font-normal text-sm"
           v-bind="{
             value: quoteTokenBalance.toBase(market.quoteToken.decimals)
           }"
         />
-        <span v-else class="text-gray-400 font-normal text-xs">&mdash;</span>
       </v-ui-text-info>
     </div>
     <div v-if="isUserWalletConnected" slot="title-context">
