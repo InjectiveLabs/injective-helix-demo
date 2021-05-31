@@ -288,11 +288,7 @@ export default Vue.extend({
     },
 
     showReduceOnly(): boolean {
-      const { tradingTypeMarket, orderType, position } = this
-
-      if (tradingTypeMarket) {
-        return false
-      }
+      const { orderType, position } = this
 
       if (!position) {
         return false
@@ -1026,7 +1022,14 @@ export default Vue.extend({
     },
 
     submitMarketOrder() {
-      const { orderType, market, margin, executionPrice, amount } = this
+      const {
+        orderType,
+        orderTypeReduceOnly,
+        market,
+        margin,
+        executionPrice,
+        amount
+      } = this
 
       if (!market) {
         return
@@ -1038,6 +1041,7 @@ export default Vue.extend({
         .submitMarketOrder({
           orderType,
           margin,
+          reduceOnly: orderTypeReduceOnly,
           price: executionPrice,
           quantity: amount
         })

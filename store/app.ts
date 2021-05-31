@@ -1,8 +1,9 @@
+import { ZERO_TO_STRING } from '~/app/utils/constants'
 import { Locale, english } from '~/locales'
 
 const initialState = {
   locale: english,
-  gasPrice: '0' // TODO - get from ethstation on init
+  gasPrice: ZERO_TO_STRING // TODO - get from ethstation on init
 }
 
 export const state = () => ({

@@ -22,7 +22,8 @@ import { streamManager } from '~/app/singletons/StreamManager'
 import {
   FEE_RECIPIENT,
   TESTNET_CHAIN_ID,
-  ZERO_IN_BASE
+  ZERO_IN_BASE,
+  ZERO_TO_STRING
 } from '~/app/utils/constants'
 import {
   UiPriceLevel,
@@ -248,11 +249,11 @@ export const submitLimitOrder = async ({
       orderType: orderTypeToGrpcOrderType(orderType),
       price: price.toWei(market.quoteToken.decimals).toFixed(),
       margin: reduceOnly
-        ? '0'
+        ? ZERO_TO_STRING
         : margin.toWei(market.quoteToken.decimals).toFixed(),
       quantity: quantity.toFixed(),
       feeRecipient: FEE_RECIPIENT,
-      triggerPrice: '0' // TODO
+      triggerPrice: ZERO_TO_STRING // TODO
     }
   })
 
@@ -272,6 +273,7 @@ export const submitLimitOrder = async ({
 export const submitMarketOrder = async ({
   quantity,
   price,
+  reduceOnly,
   orderType,
   address,
   market,
@@ -284,6 +286,7 @@ export const submitMarketOrder = async ({
   price: BigNumberInBase
   orderType: DerivativeOrderType
   subaccountId: string
+  reduceOnly: boolean
   market: UiDerivativeMarket
   address: AccountAddress
   injectiveAddress: AccountAddress
@@ -294,11 +297,13 @@ export const submitMarketOrder = async ({
     marketId: market.marketId,
     order: {
       price: price.toWei(market.quoteToken.decimals).toFixed(),
-      margin: margin.toWei(market.quoteToken.decimals).toFixed(),
+      margin: reduceOnly
+        ? ZERO_TO_STRING
+        : margin.toWei(market.quoteToken.decimals).toFixed(),
       quantity: quantity.toFixed(),
       orderType: orderTypeToGrpcOrderType(orderType),
       feeRecipient: FEE_RECIPIENT,
-      triggerPrice: '0' // TODO
+      triggerPrice: ZERO_TO_STRING // TODO
     }
   })
 
@@ -338,11 +343,11 @@ export const closePosition = async ({
     marketId: market.marketId,
     order: {
       price: price.toWei(market.quoteToken.decimals).toFixed(),
-      margin: ZERO_IN_BASE.toWei(market.quoteToken.decimals).toFixed(),
+      margin: ZERO_TO_STRING,
       quantity: quantity.toFixed(),
       orderType: orderTypeToGrpcOrderType(orderType),
       feeRecipient: FEE_RECIPIENT,
-      triggerPrice: '0' // TODO
+      triggerPrice: ZERO_TO_STRING // TODO
     }
   })
 

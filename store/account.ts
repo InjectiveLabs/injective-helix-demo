@@ -8,6 +8,7 @@ import {
 } from '~/app/services/account'
 import { grpcSubaccountBalanceToUiSubaccountBalance } from '~/app/transformers/account'
 import { backupPromiseCall } from '~/app/utils/async'
+import { ZERO_TO_STRING } from '~/app/utils/constants'
 import { Token } from '~/types'
 import { UiSubaccount, UiSubaccountBalance } from '~/types/subaccount'
 
@@ -53,10 +54,10 @@ export const mutations = {
       ...balance,
       totalBalance:
         balance.totalBalance ||
-        (currentBalance ? currentBalance.totalBalance : '0'),
+        (currentBalance ? currentBalance.totalBalance : ZERO_TO_STRING),
       availableBalance:
         balance.availableBalance ||
-        (currentBalance ? currentBalance.availableBalance : '0')
+        (currentBalance ? currentBalance.availableBalance : ZERO_TO_STRING)
     }
 
     state.subaccount = {

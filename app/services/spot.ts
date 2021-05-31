@@ -17,7 +17,8 @@ import { streamManager } from '~/app/singletons/StreamManager'
 import {
   FEE_RECIPIENT,
   TESTNET_CHAIN_ID,
-  ZERO_IN_BASE
+  ZERO_IN_BASE,
+  ZERO_TO_STRING
 } from '~/app/utils/constants'
 import { BaseUiSpotMarket, UiPriceLevel, UiSpotMarket } from '~/types'
 import { spotConsumer } from '~/app/singletons/SpotMarketConsumer'
@@ -206,7 +207,7 @@ export const submitLimitOrder = async ({
       price: relativePrice.toFixed(),
       quantity: relativeQuantity.toFixed(),
       feeRecipient: FEE_RECIPIENT,
-      triggerPrice: '0' // TODO
+      triggerPrice: ZERO_TO_STRING // TODO
     }
   })
 
@@ -254,7 +255,7 @@ export const submitMarketOrder = async ({
       orderType: orderTypeToGrpcOrderType(orderType),
       quantity: relativeQuantity.toFixed(),
       feeRecipient: FEE_RECIPIENT,
-      triggerPrice: '0' // TODO
+      triggerPrice: ZERO_TO_STRING // TODO
     }
   })
 
