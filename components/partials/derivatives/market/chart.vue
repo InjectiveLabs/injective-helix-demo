@@ -3,7 +3,6 @@
     <div ref="trading-view-wrap" class="h-full w-full relative">
       <v-ui-loading v-if="status.isLoading()" />
       <v-trading-chart
-        v-if="false"
         ref="trading-view"
         :interval="interval"
         :symbol="symbol"
@@ -60,7 +59,7 @@ export default Vue.extend({
     },
 
     datafeedEndpoint(): string {
-      return `${app.appUrlEndpoint.baseUrl}/chronos/v1/derivatives`
+      return `${app.appUrlEndpoint.baseUrl}/chronos/v1/derivative`
     }
   },
 
