@@ -33,6 +33,7 @@
         <v-ui-format-price
           v-bind="{
             dontGroupValues: true,
+            decimals: 0,
             value: volume
           }"
         />
@@ -65,7 +66,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '~/app/utils/constants'
 import MarketInfo from '~/components/elements/market-info.vue'
 import {
@@ -163,7 +164,12 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(market.volume)
+      return new BigNumberInBase(
+        new BigNumberInWei(market.volume)
+          .toBase(market.quoteToken.decimals)
+          .dp(0)
+          .toFixed()
+      )
     }
   }
 })
