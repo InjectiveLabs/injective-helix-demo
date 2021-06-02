@@ -1541,10 +1541,10 @@
     web3-core-subscriptions "^1.3.4"
     web3-utils "^1.3.4"
 
-"@injectivelabs/derivatives-consumer@^0.0.25":
-  version "0.0.25"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/derivatives-consumer/-/derivatives-consumer-0.0.25.tgz#6012468ebcfd822a0d977dd7fb842a5ae7d672f8"
-  integrity sha512-Nm4ENnBFcM583ejzcXdMsfZUxa0gFXfRTy0XkVVtHW1lbEjeRdezodbD7ghVGu44X4+qBfvrfXe4Mbwt8uRhuQ==
+"@injectivelabs/derivatives-consumer@^0.0.26":
+  version "0.0.26"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/derivatives-consumer/-/derivatives-consumer-0.0.26.tgz#ae09d7f01183f490447cfa07dcb30f44376f5764"
+  integrity sha512-CRzCdoMlxsXt1jRyigPGq2zP2UF/AQQoH/DxqoA5w5IcSS1/68XpawJPJTwG5U8ryl5AYCfc/y1K1vUSvVkOUw==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.14.0"
@@ -1619,10 +1619,10 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/spot-consumer@^0.0.38":
-  version "0.0.38"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/spot-consumer/-/spot-consumer-0.0.38.tgz#77ad5044c2472be08a8423a93dc4aac5de335604"
-  integrity sha512-D+4gmD3W6nluHqMhQy3zFezCbDJ9gQWEbm5TV4U8MDrWbyZIY0GSu4x5A6KFrkHZrq073LJdNXkdTjqit8sxJg==
+"@injectivelabs/spot-consumer@^0.0.39":
+  version "0.0.39"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/spot-consumer/-/spot-consumer-0.0.39.tgz#f3320261b9d773fe992e4a509498332efa3965f3"
+  integrity sha512-83hjSRQQjiVSWRf7bno7uu6DRab4QMhAuj9FNE2ywdQLB8F2NaI5pvmdWmDuwtOl55KReeNtMPWcExnjwvV03A==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.14.0"

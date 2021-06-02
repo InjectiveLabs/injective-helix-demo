@@ -1,5 +1,5 @@
 import { TokenMeta } from '@injectivelabs/spot-consumer'
-import { BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { getDecimalsFromNumber } from '../utils/helpers'
 import { peggyDenomToContractAddress } from './peggy'
 import {
@@ -26,8 +26,8 @@ export const spotMarketToUiSpotMarket = (
     quoteToken,
     slug: market.ticker.replace('/', '-').replace(' ', '-').toLowerCase(),
     priceDecimals: getDecimalsFromNumber(
-      new BigNumberInWei(market.minPriceTickSize)
-        .toBase(baseToken.decimals - quoteToken.decimals)
+      new BigNumberInBase(market.minPriceTickSize)
+        .toWei(baseToken.decimals - quoteToken.decimals)
         .toNumber()
     ),
     quantityDecimals: getDecimalsFromNumber(
