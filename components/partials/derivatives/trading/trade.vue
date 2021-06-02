@@ -415,7 +415,7 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(position.quantity).minus(
-        position.holdQuantity || 0 /* TODO */
+        position.aggregateReduceOnlyQuantity || 0 /* TODO */
       )
     },
 
