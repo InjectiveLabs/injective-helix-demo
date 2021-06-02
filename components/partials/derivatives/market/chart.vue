@@ -55,7 +55,7 @@ export default Vue.extend({
         return ''
       }
 
-      return `${this.market.oracleBase}/${this.market.oracleQuote}`
+      return `${this.market.ticker}`
     },
 
     datafeedEndpoint(): string {
