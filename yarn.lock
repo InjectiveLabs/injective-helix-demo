@@ -1565,15 +1565,6 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/exceptions@^0.0.21":
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/exceptions/-/exceptions-0.0.21.tgz#d6d8e987efaeffb36e7f443467e690d8a35a6a37"
-  integrity sha512-J1XogzN5RzHgmuQSREBbF+mWt0OzCpM/IESOG5CuG90cMmzP18ipOIdu5H/bXnAMaUNihXh9JgiNfXzVTE8nvQ==
-  dependencies:
-    "@injectivelabs/ts-types" "^0.0.18"
-    link-module-alias "^1.2.0"
-    shx "^0.3.2"
-
 "@injectivelabs/exceptions@^0.0.22":
   version "0.0.22"
   resolved "https://registry.yarnpkg.com/@injectivelabs/exceptions/-/exceptions-0.0.22.tgz#38788c062e44066a374e71bd45e1eed8e18964bb"
@@ -1609,13 +1600,13 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/networks@^0.0.19":
-  version "0.0.19"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/networks/-/networks-0.0.19.tgz#1931510131a45197962652234e5a23ce49e69ddf"
-  integrity sha512-vWKHrIiA5aIRnwLWA/Egai7TYpOPaZw5mcrXv022Sxh5ZwGD+ebLu+KC9h7K7jLwWpXMZx2cJlZ+16QbXhqwAg==
+"@injectivelabs/networks@^0.0.20":
+  version "0.0.20"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/networks/-/networks-0.0.20.tgz#cf58f1d47621697a02b8f1b6f985ef661762daf0"
+  integrity sha512-c2NPK5Mlw/1EnzLqVOgjU1h9RXWxHza4I7xuMc/hzLtjn9yi2yb0EnL0Tu137iyM+Atm2wzomWbmOp+DU802Gg==
   dependencies:
-    "@injectivelabs/exceptions" "^0.0.21"
-    "@injectivelabs/utils" "^0.0.28"
+    "@injectivelabs/exceptions" "^0.0.22"
+    "@injectivelabs/utils" "^0.0.29"
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
@@ -1651,14 +1642,6 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/ts-types@^0.0.18":
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/ts-types/-/ts-types-0.0.18.tgz#200a4cce7567692c2b9decafcabb65c81b7c8701"
-  integrity sha512-dfFJGQ16rpZa4MIVCTNf3XQ/pysM6lxCtQpOhsWu4ukEjhZhCkTEV0LMeOLIIB11extUvbw5+mw5dh4LT79wyw==
-  dependencies:
-    link-module-alias "^1.2.0"
-    shx "^0.3.2"
-
 "@injectivelabs/ts-types@^0.0.19":
   version "0.0.19"
   resolved "https://registry.yarnpkg.com/@injectivelabs/ts-types/-/ts-types-0.0.19.tgz#6a94033c8bb28eeb3842456a47986dbc0c49ef10"
@@ -1683,21 +1666,6 @@
     link-module-alias "^1.2.0"
     secp256k1 "^4.0.2"
     shx "^0.3.2"
-
-"@injectivelabs/utils@^0.0.28":
-  version "0.0.28"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/utils/-/utils-0.0.28.tgz#d9ffce1622a619d0c9a5d8639f2bed3060867fff"
-  integrity sha512-ft3qJ6y8vuNv6qI4kwNfRilnyPkjqPhAQ5xIfPB7FvGnnjci/AOflIML4KUudT0WEkl434XTJIVddLEeCB0bMg==
-  dependencies:
-    "@injectivelabs/exceptions" "^0.0.21"
-    "@injectivelabs/ts-types" "^0.0.18"
-    "@injectivelabs/web3-contract-typings" "^0.1.12"
-    "@types/ethereumjs-util" "^6.1.0"
-    axios "^0.21.1"
-    bignumber.js "^9.0.1"
-    link-module-alias "^1.2.0"
-    shx "^0.3.2"
-    store2 "^2.12.0"
 
 "@injectivelabs/utils@^0.0.29":
   version "0.0.29"
