@@ -37,20 +37,16 @@ export class TxProvider {
     })
   }
 
-  async sign() {
+  async sign(txData: any) {
     const { address, web3Strategy } = this
-    const txResponse = await this.prepare()
-    const signature = await web3Strategy.signTypedDataV4(
-      txResponse.getData(),
-      address
-    )
 
-    return { signature, txResponse }
+    return await web3Strategy.signTypedDataV4(txData, address)
   }
 
   async broadcast() {
     const { message, chainId } = this
-    const { signature, txResponse } = await this.sign()
+    const txResponse = await this.prepare()
+    const signature = await this.sign(txResponse.getData())
 
     return await transactionConsumer.broadcastTxRequest({
       signature,
