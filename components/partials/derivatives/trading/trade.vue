@@ -729,11 +729,13 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return calculateMargin({
-        quantity: form.amount,
-        price: executionPrice.toFixed(),
-        leverage: form.leverage
-      })
+      return new BigNumberInBase(
+        calculateMargin({
+          quantity: form.amount,
+          price: executionPrice.toFixed(),
+          leverage: form.leverage
+        }).toFixed(market.priceDecimals)
+      )
     },
 
     notionalValue(): BigNumberInBase {
