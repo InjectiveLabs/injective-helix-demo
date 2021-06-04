@@ -33,7 +33,7 @@ export default function ({
     width: '100%',
     container_id: 'tv_chart_container',
     allow_symbol_change: false,
-    datafeed: new UDFCompatibleDatafeed(datafeedEndpoint, 4e4),
+    datafeed: new UDFCompatibleDatafeed(datafeedEndpoint, 2000),
     library_path: `${BASE_URL}/chart/charting_library/`,
     custom_css_url: `${BASE_URL}/chart/charting_library/custom-v3.css`,
     locale: 'en',
