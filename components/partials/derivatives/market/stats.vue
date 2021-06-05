@@ -66,7 +66,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '~/app/utils/constants'
 import MarketInfo from '~/components/elements/market-info.vue'
 import {
@@ -165,10 +165,7 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(
-        new BigNumberInWei(market.volume)
-          .toBase(market.quoteToken.decimals)
-          .dp(0)
-          .toFixed()
+        new BigNumberInBase(market.volume).dp(0).toFixed()
       )
     }
   }

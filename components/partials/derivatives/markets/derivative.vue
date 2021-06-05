@@ -61,7 +61,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '~/app/utils/constants'
 import { UiDerivativeMarket, Icon, Change } from '~/types'
 
@@ -99,10 +99,7 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(
-        new BigNumberInWei(market.volume)
-          .toBase(market.quoteToken.decimals)
-          .dp(0)
-          .toFixed()
+        new BigNumberInBase(market.volume).dp(0).toFixed()
       )
     },
 
