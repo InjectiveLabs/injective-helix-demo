@@ -35,6 +35,7 @@ export default {
   transfer: 'Transfer',
   not_connected_balances: 'Connect your wallet to see your balances.',
   not_connect_orders: 'Connect your wallet to see your orders.',
+  not_connect_trades: 'Connect your wallet to see your trades.',
   not_connected_trading: 'Connect your wallet to start trading',
   order_book: 'Orderbook',
   sum: 'Sum',

@@ -31,7 +31,7 @@
             </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody v-if="isUserWalletConnected">
           <tr
             is="v-trade"
             v-for="(trade, index) in trades"
@@ -43,6 +43,22 @@
             v-for="(trade, index) in emptyTrades"
             :key="`empty-trades-${index}`"
           ></tr>
+        </tbody>
+        <tbody v-else>
+          <tr class="relative h-8">
+            <th colspan="7" class="w-full" :rowspan="limit">
+              <v-ui-overlay>
+                <p>{{ $t('not_connect_trades') }}</p>
+              </v-ui-overlay>
+            </th>
+          </tr>
+          <tr
+            v-for="(order, index) in [...emptyTrades.slice(1)]"
+            :key="`empty-trades-${index}`"
+            class="h-8"
+          >
+            <td></td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -70,6 +86,10 @@ export default Vue.extend({
   },
 
   computed: {
+    isUserWalletConnected(): boolean {
+      return this.$accessor.wallet.isUserWalletConnected
+    },
+
     market(): UiSpotMarket | undefined {
       return this.$accessor.spot.market
     },
