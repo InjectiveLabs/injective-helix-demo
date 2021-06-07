@@ -314,9 +314,12 @@ export default Vue.extend({
     this.$root.$on('resized-order-book-panel', this.onResize)
 
     this.$nextTick(() => {
+      this.onResize()
+    })
+
+    this.$nextTick(() => {
       this.onScrollSells()
       this.onScrollBuys()
-      this.onResize()
     })
   },
 
