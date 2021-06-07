@@ -15,6 +15,7 @@ import {
   fetchMarketOrders,
   fetchMarkets,
   fetchMarketTrades,
+  fetchMarketsSummary,
   submitLimitOrder,
   submitMarketOrder,
   cancelOrder,
@@ -392,6 +393,28 @@ export const actions = actionTree(
       })
 
       commit('setSubaccountTrades', trades.reverse())
+    },
+
+    async fetchMarketsSummary({ state, commit }) {
+      const { markets, market } = state
+
+      if (markets.length === 0) {
+        return
+      }
+
+      const updatedMarkets = await fetchMarketsSummary(markets)
+
+      if (market) {
+        const updatedMarket = updatedMarkets.find(
+          (m) => m.marketId === market.marketId
+        )
+
+        if (updatedMarket) {
+          commit('setMarket', updatedMarket)
+        }
+      }
+
+      commit('setMarkets', updatedMarkets)
     },
 
     async cancelOrder(_, order: UiDerivativeLimitOrder) {

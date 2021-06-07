@@ -48,7 +48,9 @@ export default Vue.extend({
       this.$accessor.account.init()
     ])
       .then(() => {
-        //
+        this.interval = setInterval(async () => {
+          await this.$accessor.app.poll()
+        }, 1000)
       })
       .catch(this.$onRejected)
       .finally(() => {

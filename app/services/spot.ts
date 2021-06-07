@@ -50,6 +50,27 @@ export const fetchMarkets = async (): Promise<UiSpotMarket[]> => {
   })
 }
 
+export const fetchMarketsSummary = async (
+  markets: UiSpotMarket[]
+): Promise<UiSpotMarket[]> => {
+  const marketsSummary = await spotChronosConsumer.fetchSpotMarketsSummary()
+  const marketWithSummaries = markets.filter((market) =>
+    marketsSummary.find((m) => m.marketId === market.marketId)
+  )
+
+  return marketWithSummaries.map((market) => {
+    const marketSummary = marketsSummary.find(
+      (m) => m.marketId === market.marketId
+    )!
+
+    return {
+      ...market,
+      ...marketSummary,
+      lastPrice: market.price
+    }
+  })
+}
+
 export const fetchMarket = async (marketId: string) => {
   const market = SpotTransformer.grpcMarketToMarket(
     await spotConsumer.fetchMarket(marketId)

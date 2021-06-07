@@ -60,6 +60,27 @@ export const fetchMarkets = async (): Promise<UiDerivativeMarket[]> => {
   })
 }
 
+export const fetchMarketsSummary = async (
+  markets: UiDerivativeMarket[]
+): Promise<UiDerivativeMarket[]> => {
+  const marketsSummary = await derivativeChronosConsumer.fetchDerivativeMarketsSummary()
+  const marketWithSummaries = markets.filter((market) =>
+    marketsSummary.find((m) => m.marketId === market.marketId)
+  )
+
+  return marketWithSummaries.map((market) => {
+    const marketSummary = marketsSummary.find(
+      (m) => m.marketId === market.marketId
+    )!
+
+    return {
+      ...market,
+      ...marketSummary,
+      lastPrice: market.price
+    }
+  })
+}
+
 export const fetchMarket = async (marketId: string) => {
   const market = DerivativeTransformer.grpcMarketToMarket(
     await derivativeConsumer.fetchMarket(marketId)

@@ -1,3 +1,4 @@
+import { actionTree } from 'typed-vuex'
 import { ZERO_TO_STRING } from '~/app/utils/constants'
 import { Locale, english } from '~/locales'
 
@@ -22,3 +23,13 @@ export const mutations = {
     state.gasPrice = gasPrice
   }
 }
+
+export const actions = actionTree(
+  { state },
+  {
+    async poll(_) {
+      await this.app.$accessor.derivatives.fetchMarketsSummary()
+      await this.app.$accessor.spot.fetchMarketsSummary()
+    }
+  }
+)
