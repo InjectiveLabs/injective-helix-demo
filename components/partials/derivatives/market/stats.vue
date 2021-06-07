@@ -61,30 +61,64 @@
         <span v-else class="text-gray-500">&mdash;</span>
       </v-ui-text>
     </v-market-info>
+    <v-market-info
+      v-if="market.isPerpetual"
+      :title="$t('funding_rate')"
+      class=""
+    >
+      <v-ui-icon
+        slot="icon"
+        :icon="Icon.Info"
+        class="text-gray-600 hover:text-gray-300"
+        :tooltip="$t('funding_rate_tooltip')"
+        2xs
+      />
+      <v-ui-text sm class="flex items-center justify-end w-full">
+        <v-ui-format-percent
+          v-bind="{
+            appendPlusSign: true,
+            precision: 2,
+            value: fundingRate.toFixed(2)
+          }"
+        />
+      </v-ui-text>
+    </v-market-info>
+    <client-only v-if="market.isPerpetual">
+      <v-market-next-funding-countdown />
+    </client-only>
+    <client-only v-if="!market.isPerpetual">
+      <v-market-expiry-countdown />
+    </client-only>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import NextFunding from './next-funding.vue'
+import MarketExpiry from './market-expiry.vue'
 import { ZERO_IN_BASE } from '~/app/utils/constants'
 import MarketInfo from '~/components/elements/market-info.vue'
 import {
   DerivativeOrderType,
   UiDerivativeMarket,
   UiDerivativeTrade,
-  Change
+  Change,
+  Icon
 } from '~/types'
 
 export default Vue.extend({
   components: {
-    'v-market-info': MarketInfo
+    'v-market-info': MarketInfo,
+    'v-market-expiry-countdown': MarketExpiry,
+    'v-market-next-funding-countdown': NextFunding
   },
 
   data() {
     return {
       DerivativeOrderType,
-      Change
+      Change,
+      Icon
     }
   },
 
@@ -167,6 +201,22 @@ export default Vue.extend({
       return new BigNumberInBase(
         new BigNumberInBase(market.volume).dp(0).toFixed()
       )
+    },
+
+    fundingRate(): BigNumberInBase {
+      const { market } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      if (!market.perpetualMarketFunding || !market.isPerpetual) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(
+        market.perpetualMarketFunding.cumulativeFunding
+      ).multipliedBy(100)
     }
   }
 })

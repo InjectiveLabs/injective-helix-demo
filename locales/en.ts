@@ -124,5 +124,12 @@ export default {
   reduce_only: 'Reduce Only',
   reduce_only_in_excess:
     'Total size of reduce-only orders would exceed size of your position',
-  max_leverage_warn: 'Please decrease leverage.'
+  max_leverage_warn: 'Please decrease leverage.',
+  next_funding: 'Next Funding',
+  expiry_date: 'Expiry Date',
+  days: 'Days',
+  funding_fee: 'Funding fee',
+  funding_rate: 'Funding Rate',
+  funding_rate_tooltip:
+    'The interest rate paid by position holders, determined by the difference between the perpetual swap price and underlying spot price. A positive funding rate implies that longs pay shorts, whereas a negative funding rate implies that shorts pay longs.'
 }

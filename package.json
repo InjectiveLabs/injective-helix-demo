@@ -28,6 +28,7 @@
     }
   },
   "dependencies": {
+    "@chenfengyuan/vue-countdown": "^1.1.5",
     "@injectivelabs/chain-api": "1.4.9",
     "@injectivelabs/chain-consumer": "^0.0.55",
     "@injectivelabs/contracts": "^0.0.45",
@@ -52,6 +53,7 @@
     "core-js": "^3.10.1",
     "date-fns": "^2.21.1",
     "deepmerge": "^4.2.2",
+    "moment": "^2.29.1",
     "nuxt": "^2.15.4",
     "nuxt-bugsnag": "^4.2.2",
     "nuxt-typed-vuex": "^0.1.22",
