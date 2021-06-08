@@ -42,6 +42,7 @@ export default Vue.extend({
 
   mounted() {
     Promise.all([
+      this.$accessor.app.init(),
       this.$accessor.spot.init(),
       this.$accessor.derivatives.init(),
       this.$accessor.bank.init(),

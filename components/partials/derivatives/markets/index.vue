@@ -47,9 +47,9 @@
         <tbody>
           <tr
             is="v-derivative"
-            v-for="(market, index) in filteredMarkets"
+            v-for="({ market, summary }, index) in filteredMarkets"
             :key="`derivative-markets-${market.ticker}-${index}`"
-            v-bind="{ market }"
+            v-bind="{ market, marketSummary: summary }"
             @selected="$emit('selected')"
           ></tr>
         </tbody>
@@ -61,7 +61,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Derivative from './derivative.vue'
-import { UiDerivativeMarket, Icon } from '~/types'
+import { UiDerivativeMarket, Icon, UiDerivativeMarketSummary, UiDerivativeMarketAndSummary } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -80,17 +80,32 @@ export default Vue.extend({
       return this.$accessor.derivatives.markets
     },
 
-    filteredMarkets(): UiDerivativeMarket[] {
-      const query = this.filterMarkets.toLowerCase()
+    marketsSummary(): UiDerivativeMarketSummary[] {
+      return this.$accessor.derivatives.marketsSummary
+    },
 
-      return this.markets.filter((market) => {
-        const { ticker, quoteDenom } = market
+    filteredMarkets(): UiDerivativeMarketAndSummary[] {
+      const { filterMarkets, markets, marketsSummary } = this
 
-        return (
-          quoteDenom.toLowerCase().startsWith(query) ||
-          ticker.toLowerCase().startsWith(query)
-        )
-      })
+      const query = filterMarkets.toLowerCase()
+
+      return markets
+        .map((market) => {
+          return {
+            market,
+            summary: marketsSummary.find(
+              (summary) => summary.marketId === market.marketId
+            )
+          }
+        })
+        .filter(({ market, summary }) => {
+          const { ticker, quoteDenom } = market
+          const satisfiesSearchCondition =
+            quoteDenom.toLowerCase().startsWith(query) ||
+            ticker.toLowerCase().startsWith(query)
+
+          return satisfiesSearchCondition && summary !== undefined
+        }) as UiDerivativeMarketAndSummary[]
     }
   }
 })

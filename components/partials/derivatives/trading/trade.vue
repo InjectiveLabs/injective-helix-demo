@@ -167,7 +167,8 @@ import {
   UiDerivativeMarket,
   UiSubaccount,
   UiPosition,
-  TradeDirection
+  TradeDirection,
+  UiDerivativeMarketSummary
 } from '~/types'
 import {
   calculateWorstExecutionPriceFromOrderbook,
@@ -218,6 +219,10 @@ export default Vue.extend({
 
     market(): UiDerivativeMarket | undefined {
       return this.$accessor.derivatives.market
+    },
+
+    marketSummary(): UiDerivativeMarketSummary | undefined {
+      return this.$accessor.derivatives.marketSummary
     },
 
     orderbook(): UiDerivativeOrderbook | undefined {
@@ -502,21 +507,28 @@ export default Vue.extend({
     },
 
     maxLeverageError(): TradeError | undefined {
-      const { form, executionPrice, orderType, hasPrice, market } = this
+      const {
+        form,
+        executionPrice,
+        orderType,
+        hasPrice,
+        market,
+        marketSummary
+      } = this
 
-      if (!hasPrice || !market) {
+      if (!hasPrice || !market || !marketSummary) {
         return
       }
 
       const isDerivativeOrderLong = orderType === DerivativeOrderType.Buy
       const divisor = isDerivativeOrderLong
-        ? new BigNumberInBase(market.price)
+        ? new BigNumberInBase(marketSummary.price)
             .times(market.initialMarginRatio)
-            .minus(market.price)
+            .minus(marketSummary.price)
             .plus(executionPrice)
-        : new BigNumberInBase(market.price)
+        : new BigNumberInBase(marketSummary.price)
             .times(market.initialMarginRatio)
-            .plus(market.price)
+            .plus(marketSummary.price)
             .minus(executionPrice)
       const maxLeverage = executionPrice.dividedBy(divisor)
 

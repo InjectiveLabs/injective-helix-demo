@@ -20,11 +20,17 @@ import {
   ZERO_IN_BASE,
   ZERO_TO_STRING
 } from '~/app/utils/constants'
-import { BaseUiSpotMarket, UiPriceLevel, UiSpotMarket } from '~/types'
+import {
+  BaseUiSpotMarket,
+  UiPriceLevel,
+  UiSpotMarket,
+  UiSpotMarketSummary
+} from '~/types'
 import { spotConsumer } from '~/app/singletons/SpotMarketConsumer'
 import {
   orderTypeToGrpcOrderType,
-  spotMarketToUiSpotMarket
+  spotMarketToUiSpotMarket,
+  spotMarketsToUiSpotMarkets
 } from '~/app/transformers/spot'
 import { spotChronosConsumer } from '~/app/singletons/SpotMarketChronosConsumer'
 
@@ -32,29 +38,37 @@ export const fetchMarkets = async (): Promise<UiSpotMarket[]> => {
   const markets = SpotTransformer.grpcMarketsToMarkets(
     await spotConsumer.fetchMarkets()
   )
-  const baseAndQuoteTokenMetaDataExist = (m: BaseUiSpotMarket) =>
-    m.quoteToken !== undefined && m.baseToken !== undefined
-  const filteredMarkets = markets.filter(baseAndQuoteTokenMetaDataExist)
 
-  const marketsSummary = await spotChronosConsumer.fetchSpotMarketsSummary()
-  const marketWithSummaries = filteredMarkets.filter((market) =>
-    marketsSummary.find((m) => m.marketId === market.marketId)
+  const quoteTokenMetaDataExist = (m: BaseUiSpotMarket) =>
+    m.quoteToken !== undefined
+  const filteredMarkets = markets.filter(quoteTokenMetaDataExist)
+
+  return spotMarketsToUiSpotMarkets(filteredMarkets)
+}
+
+export const fetchMarketSummary = async (
+  marketId: string
+): Promise<UiSpotMarketSummary> => {
+  const marketSummary = await spotChronosConsumer.fetchSpotMarketSummary(
+    marketId
   )
 
-  return marketWithSummaries.map((market) => {
-    const marketSummary = marketsSummary.find(
-      (m) => m.marketId === market.marketId
-    )!
-
-    return spotMarketToUiSpotMarket(market, marketSummary)
-  })
+  return {
+    ...marketSummary,
+    marketId
+  }
 }
 
 export const fetchMarketsSummary = async (
-  markets: UiSpotMarket[]
-): Promise<UiSpotMarket[]> => {
+  oldMarketsSummary?: UiSpotMarketSummary[]
+): Promise<UiSpotMarketSummary[]> => {
   const marketsSummary = await spotChronosConsumer.fetchSpotMarketsSummary()
-  const marketWithSummaries = markets.filter((market) =>
+
+  if (!oldMarketsSummary) {
+    return marketsSummary
+  }
+
+  const marketWithSummaries = oldMarketsSummary.filter((market) =>
     marketsSummary.find((m) => m.marketId === market.marketId)
   )
 
@@ -64,7 +78,6 @@ export const fetchMarketsSummary = async (
     )!
 
     return {
-      ...market,
       ...marketSummary,
       lastPrice: market.price
     }
@@ -75,11 +88,8 @@ export const fetchMarket = async (marketId: string) => {
   const market = SpotTransformer.grpcMarketToMarket(
     await spotConsumer.fetchMarket(marketId)
   )
-  const marketSummary = await spotChronosConsumer.fetchSpotMarketSummary(
-    marketId
-  )
 
-  return spotMarketToUiSpotMarket(market, marketSummary)
+  return spotMarketToUiSpotMarket(market)
 }
 
 export const fetchMarketOrderbook = async (marketId: string) => {

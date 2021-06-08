@@ -28,12 +28,14 @@ import {
 import {
   UiPriceLevel,
   UiDerivativeMarket,
-  BaseUiDerivativeMarket
+  BaseUiDerivativeMarket,
+  UiDerivativeMarketSummary
 } from '~/types'
 import { derivativeConsumer } from '~/app/singletons/DerivativeMarketConsumer'
 import {
   orderTypeToGrpcOrderType,
-  derivativeMarketToUiDerivativeMarket
+  derivativeMarketToUiDerivativeMarket,
+  derivativeMarketsToUiDerivativeMarkets
 } from '~/app/transformers/derivatives'
 import { derivativeChronosConsumer } from '~/app/singletons/DerivativeMarketChronosConsumer'
 
@@ -46,25 +48,32 @@ export const fetchMarkets = async (): Promise<UiDerivativeMarket[]> => {
     m.quoteToken !== undefined
   const filteredMarkets = markets.filter(quoteTokenMetaDataExist)
 
-  const marketsSummary = await derivativeChronosConsumer.fetchDerivativeMarketsSummary()
-  const marketWithSummaries = filteredMarkets.filter((market) =>
-    marketsSummary.find((m) => m.marketId === market.marketId)
+  return derivativeMarketsToUiDerivativeMarkets(filteredMarkets)
+}
+
+export const fetchMarketSummary = async (
+  marketId: string
+): Promise<UiDerivativeMarketSummary> => {
+  const marketSummary = await derivativeChronosConsumer.fetchDerivativeMarketSummary(
+    marketId
   )
 
-  return marketWithSummaries.map((market) => {
-    const marketSummary = marketsSummary.find(
-      (m) => m.marketId === market.marketId
-    )!
-
-    return derivativeMarketToUiDerivativeMarket(market, marketSummary)
-  })
+  return {
+    ...marketSummary,
+    marketId
+  }
 }
 
 export const fetchMarketsSummary = async (
-  markets: UiDerivativeMarket[]
-): Promise<UiDerivativeMarket[]> => {
+  oldMarketsSummary?: UiDerivativeMarketSummary[]
+): Promise<UiDerivativeMarketSummary[]> => {
   const marketsSummary = await derivativeChronosConsumer.fetchDerivativeMarketsSummary()
-  const marketWithSummaries = markets.filter((market) =>
+
+  if (!oldMarketsSummary) {
+    return marketsSummary
+  }
+
+  const marketWithSummaries = oldMarketsSummary.filter((market) =>
     marketsSummary.find((m) => m.marketId === market.marketId)
   )
 
@@ -74,7 +83,6 @@ export const fetchMarketsSummary = async (
     )!
 
     return {
-      ...market,
       ...marketSummary,
       lastPrice: market.price
     }
@@ -85,11 +93,8 @@ export const fetchMarket = async (marketId: string) => {
   const market = DerivativeTransformer.grpcMarketToMarket(
     await derivativeConsumer.fetchMarket(marketId)
   )
-  const marketSummary = await derivativeChronosConsumer.fetchDerivativeMarketSummary(
-    marketId
-  )
 
-  return derivativeMarketToUiDerivativeMarket(market, marketSummary)
+  return derivativeMarketToUiDerivativeMarket(market)
 }
 
 export const fetchMarketOrderbook = async (marketId: string) => {

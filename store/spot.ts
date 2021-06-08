@@ -7,13 +7,15 @@ import {
   UiSpotLimitOrder,
   UiSpotTrade,
   UiSpotMarket,
-  SpotOrderType
+  SpotOrderType,
+  UiSpotMarketSummary
 } from '~/types'
 import {
   fetchMarketOrderbook,
   fetchMarketOrders,
   fetchMarkets,
   fetchMarketsSummary,
+  fetchMarketSummary,
   fetchMarketTrades,
   submitLimitOrder,
   submitMarketOrder,
@@ -27,7 +29,9 @@ import {
 
 const initialStateFactory = () => ({
   markets: [] as UiSpotMarket[],
+  marketsSummary: [] as UiSpotMarketSummary[],
   market: undefined as UiSpotMarket | undefined,
+  marketSummary: undefined as UiSpotMarketSummary | undefined,
   orderbook: undefined as UiSpotOrderbook | undefined,
   trades: [] as UiSpotTrade[],
   subaccountTrades: [] as UiSpotTrade[],
@@ -38,7 +42,9 @@ const initialState = initialStateFactory()
 
 export const state = () => ({
   markets: initialState.markets as UiSpotMarket[],
+  marketsSummary: initialState.marketsSummary as UiSpotMarketSummary[],
   market: initialState.market as UiSpotMarket | undefined,
+  marketSummary: initialState.marketSummary as UiSpotMarketSummary | undefined,
   trades: initialState.trades as UiSpotTrade[],
   subaccountTrades: initialState.subaccountTrades as UiSpotTrade[],
   subaccountOrders: initialState.subaccountOrders as UiSpotLimitOrder[],
@@ -58,10 +64,15 @@ export const mutations = {
     state.market = market
   },
 
+  setMarketSummary(state: SpotStoreState, marketSummary: UiSpotMarketSummary) {
+    state.marketSummary = marketSummary
+  },
+
   resetMarket(state: SpotStoreState) {
     const initialState = initialStateFactory()
 
     state.market = initialState.market
+    state.marketSummary = initialState.marketSummary
     state.orderbook = initialState.orderbook
     state.trades = initialState.trades
     state.subaccountOrders = initialState.subaccountOrders
@@ -70,6 +81,13 @@ export const mutations = {
 
   setMarkets(state: SpotStoreState, markets: UiSpotMarket[]) {
     state.markets = markets
+  },
+
+  setMarketsSummary(
+    state: SpotStoreState,
+    marketsSummary: UiSpotMarketSummary[]
+  ) {
+    state.marketsSummary = marketsSummary
   },
 
   setTrades(state: SpotStoreState, trades: UiSpotTrade[]) {
@@ -185,6 +203,7 @@ export const actions = actionTree(
 
     async init({ commit }) {
       commit('setMarkets', await fetchMarkets())
+      commit('setMarketsSummary', await fetchMarketsSummary())
     },
 
     async changeMarket({ commit }, market: UiSpotMarket | undefined) {
@@ -194,6 +213,7 @@ export const actions = actionTree(
 
       commit('setMarket', market)
       commit('setOrderbook', await fetchMarketOrderbook(market.marketId))
+      commit('setMarketSummary', await fetchMarketSummary(market.marketId))
 
       const trades = await fetchMarketTrades({
         marketId: market.marketId
@@ -327,25 +347,25 @@ export const actions = actionTree(
     },
 
     async fetchMarketsSummary({ state, commit }) {
-      const { markets, market } = state
+      const { marketsSummary, market } = state
 
-      if (markets.length === 0) {
+      if (marketsSummary.length === 0) {
         return
       }
 
-      const updatedMarkets = await fetchMarketsSummary(markets)
+      const updatedMarketsSummary = await fetchMarketsSummary(marketsSummary)
 
       if (market) {
-        const updatedMarket = updatedMarkets.find(
+        const updatedMarketSummary = updatedMarketsSummary.find(
           (m) => m.marketId === market.marketId
         )
 
-        if (updatedMarket) {
-          commit('setMarket', updatedMarket)
+        if (updatedMarketSummary) {
+          commit('setMarketSummary', updatedMarketSummary)
         }
       }
 
-      commit('setMarkets', updatedMarkets)
+      commit('setMarketsSummary', updatedMarketsSummary)
     },
 
     async cancelOrder(_, order: UiSpotLimitOrder) {

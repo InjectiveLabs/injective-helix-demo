@@ -12,14 +12,22 @@ import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 import { Token } from './token'
 
 export interface UiSpotMarket
-  extends Omit<BaseUiSpotMarket, 'quoteToken' | 'baseToken'>,
-    ChronosSpotMarketSummary {
+  extends Omit<BaseUiSpotMarket, 'quoteToken' | 'baseToken'> {
   slug: string
-  lastPrice?: number
   priceDecimals: number
   quantityDecimals: number
   quoteToken: Token
   baseToken: Token
+}
+
+export interface UiSpotMarketSummary extends ChronosSpotMarketSummary {
+  marketId: string
+  lastPrice?: number
+}
+
+export interface UiSpotMarketAndSummary {
+  market: UiSpotMarket
+  summary: UiSpotMarketSummary
 }
 
 export enum SpotMarketMap {

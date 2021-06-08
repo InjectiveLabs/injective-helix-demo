@@ -8,14 +8,15 @@ import {
   UiDerivativeTrade,
   UiDerivativeMarket,
   DerivativeOrderType,
-  UiPosition
+  UiPosition,
+  UiDerivativeMarketSummary
 } from '~/types'
 import {
   fetchMarketOrderbook,
   fetchMarketOrders,
   fetchMarkets,
-  fetchMarketTrades,
   fetchMarketsSummary,
+  fetchMarketTrades,
   submitLimitOrder,
   submitMarketOrder,
   cancelOrder,
@@ -28,10 +29,13 @@ import {
   streamSubaccountPositions,
   closePosition
 } from '~/app/services/derivatives'
+import { fetchMarketSummary } from '~/app/services/spot'
 
 const initialStateFactory = () => ({
   markets: [] as UiDerivativeMarket[],
+  marketsSummary: [] as UiDerivativeMarketSummary[],
   market: undefined as UiDerivativeMarket | undefined,
+  marketSummary: undefined as UiDerivativeMarketSummary | undefined,
   orderbook: undefined as UiDerivativeOrderbook | undefined,
   trades: [] as UiDerivativeTrade[],
   subaccountPosition: undefined as UiPosition | undefined,
@@ -43,7 +47,11 @@ const initialState = initialStateFactory()
 
 export const state = () => ({
   markets: initialState.markets as UiDerivativeMarket[],
+  marketsSummary: initialState.marketsSummary as UiDerivativeMarketSummary[],
   market: initialState.market as UiDerivativeMarket | undefined,
+  marketSummary: initialState.marketSummary as
+    | UiDerivativeMarketSummary
+    | undefined,
   trades: initialState.trades as UiDerivativeTrade[],
   subaccountTrades: initialState.subaccountTrades as UiDerivativeTrade[],
   subaccountPosition: initialState.subaccountPosition as UiPosition | undefined,
@@ -64,10 +72,18 @@ export const mutations = {
     state.market = market
   },
 
+  setMarketSummary(
+    state: DerivativeStoreState,
+    marketSummary: UiDerivativeMarketSummary
+  ) {
+    state.marketSummary = marketSummary
+  },
+
   resetMarket(state: DerivativeStoreState) {
     const initialState = initialStateFactory()
 
     state.market = initialState.market
+    state.marketSummary = initialState.marketSummary
     state.orderbook = initialState.orderbook
     state.trades = initialState.trades
     state.subaccountOrders = initialState.subaccountOrders
@@ -76,6 +92,13 @@ export const mutations = {
 
   setMarkets(state: DerivativeStoreState, markets: UiDerivativeMarket[]) {
     state.markets = markets
+  },
+
+  setMarketsSummary(
+    state: DerivativeStoreState,
+    marketsSummary: UiDerivativeMarketSummary[]
+  ) {
+    state.marketsSummary = marketsSummary
   },
 
   setTrades(state: DerivativeStoreState, trades: UiDerivativeTrade[]) {
@@ -214,6 +237,7 @@ export const actions = actionTree(
 
     async init({ commit }) {
       commit('setMarkets', await fetchMarkets())
+      commit('setMarketsSummary', await fetchMarketsSummary())
     },
 
     async changeMarket({ commit }, market: UiDerivativeMarket | undefined) {
@@ -223,6 +247,7 @@ export const actions = actionTree(
 
       commit('setMarket', market)
       commit('setOrderbook', await fetchMarketOrderbook(market.marketId))
+      commit('setMarketSummary', await fetchMarketSummary(market.marketId))
 
       const trades = await fetchMarketTrades({
         marketId: market.marketId
@@ -396,25 +421,25 @@ export const actions = actionTree(
     },
 
     async fetchMarketsSummary({ state, commit }) {
-      const { markets, market } = state
+      const { marketsSummary, market } = state
 
-      if (markets.length === 0) {
+      if (marketsSummary.length === 0) {
         return
       }
 
-      const updatedMarkets = await fetchMarketsSummary(markets)
+      const updatedMarketsSummary = await fetchMarketsSummary(marketsSummary)
 
       if (market) {
-        const updatedMarket = updatedMarkets.find(
+        const updatedMarketSummary = updatedMarketsSummary.find(
           (m) => m.marketId === market.marketId
         )
 
-        if (updatedMarket) {
-          commit('setMarket', updatedMarket)
+        if (updatedMarketSummary) {
+          commit('setMarketSummary', updatedMarketSummary)
         }
       }
 
-      commit('setMarkets', updatedMarkets)
+      commit('setMarketsSummary', updatedMarketsSummary)
     },
 
     async cancelOrder(_, order: UiDerivativeLimitOrder) {

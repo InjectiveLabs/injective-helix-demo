@@ -37,7 +37,11 @@
 <script lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
 import Vue from 'vue'
-import { UiDerivativeMarket, DerivativeOrderType } from '~/types'
+import {
+  UiDerivativeMarket,
+  DerivativeOrderType,
+  UiDerivativeMarketSummary
+} from '~/types'
 
 interface UiDerivativeMarketWithBnPrice extends UiDerivativeMarket {
   priceToBn: BigNumberInBase
@@ -58,22 +62,39 @@ export default Vue.extend({
     markets(): UiDerivativeMarket[] {
       return this.$accessor.derivatives.markets
     },
+    marketsSummary(): UiDerivativeMarketSummary[] {
+      return this.$accessor.derivatives.marketsSummary
+    },
 
     transformedMarkets(): UiDerivativeMarketWithBnPrice[] {
-      return this.filteredMarkets.map((market) => ({
-        ...market,
-        priceToBn: new BigNumberInBase(market.price)
-      }))
+      const { filteredMarkets, marketsSummary } = this
+
+      return [...filteredMarkets].map((market) => {
+        const summary = marketsSummary.find(
+          (summary) => summary.marketId === market.marketId
+        )!
+
+        return {
+          ...market,
+          priceToBn: new BigNumberInBase(summary.price)
+        }
+      })
     },
 
     filteredMarkets(): UiDerivativeMarket[] {
-      const { market } = this
+      const { market, marketsSummary } = this
 
       if (!market) {
         return this.markets
       }
 
-      return this.markets.filter((m) => m.ticker !== market.ticker)
+      const marketSummaryExists = (m: UiDerivativeMarket) =>
+        marketsSummary.findIndex((summary) => summary.marketId === m.marketId) >
+        0
+
+      return this.markets
+        .filter((m) => m.ticker !== market.ticker)
+        .filter(marketSummaryExists)
     }
   },
 

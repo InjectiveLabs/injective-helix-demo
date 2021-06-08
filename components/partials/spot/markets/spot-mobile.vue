@@ -34,13 +34,24 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '~/app/utils/constants'
-import { Change, Icon, SpotOrderType, UiSpotMarket } from '~/types'
+import {
+  Change,
+  Icon,
+  SpotOrderType,
+  UiSpotMarket,
+  UiSpotMarketSummary
+} from '~/types'
 
 export default Vue.extend({
   props: {
     market: {
       required: true,
       type: Object as PropType<UiSpotMarket>
+    },
+
+    marketSummary: {
+      required: true,
+      type: Object as PropType<UiSpotMarketSummary>
     }
   },
 
@@ -54,27 +65,29 @@ export default Vue.extend({
 
   computed: {
     lastTradedPrice(): BigNumberInBase {
-      const { market } = this
+      const { market, marketSummary } = this
 
-      if (!market) {
+      if (!market || !marketSummary) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(market.price)
+      return new BigNumberInBase(marketSummary.price)
     },
 
     lastPriceChange(): Change {
-      const { market } = this
+      const { market, marketSummary } = this
 
-      if (!market) {
+      if (!market || !marketSummary) {
         return Change.NoChange
       }
 
-      if (!market.lastPrice) {
+      if (!marketSummary.lastPrice) {
         return Change.NoChange
       }
 
-      return new BigNumberInBase(market.price).gte(market.lastPrice)
+      return new BigNumberInBase(marketSummary.price).gte(
+        marketSummary.lastPrice
+      )
         ? Change.Increase
         : Change.Decrease
     }

@@ -12,14 +12,23 @@ import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 import { Token } from './token'
 
 export interface UiDerivativeMarket
-  extends Omit<BaseUiDerivativeMarket, 'quoteToken'>,
-    ChronosDerivativeMarketSummary {
+  extends Omit<BaseUiDerivativeMarket, 'quoteToken'> {
   slug: string
-  lastPrice?: number,
   priceDecimals: number
   quantityDecimals: number
   baseTokenSymbol: string
   quoteToken: Token
+}
+
+export interface UiDerivativeMarketSummary
+  extends ChronosDerivativeMarketSummary {
+  marketId: string
+  lastPrice?: number
+}
+
+export interface UiDerivativeMarketAndSummary {
+  market: UiDerivativeMarket
+  summary: UiDerivativeMarketSummary
 }
 
 export enum DerivativeMarketMap {

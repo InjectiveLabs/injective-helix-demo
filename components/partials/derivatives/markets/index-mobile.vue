@@ -5,9 +5,9 @@
         <tbody>
           <tr
             is="v-derivative"
-            v-for="(market, index) in markets"
+            v-for="({ market, summary }, index) in mappedMarkets"
             :key="`derivative-markets-${market.ticker}-${index}`"
-            v-bind="{ market }"
+            v-bind="{ market, marketSummary: summary }"
             @selected="$emit('selected')"
           ></tr>
         </tbody>
@@ -19,7 +19,11 @@
 <script lang="ts">
 import Vue from 'vue'
 import Derivative from './derivative-mobile.vue'
-import { UiDerivativeMarket } from '~/types'
+import {
+  UiDerivativeMarket,
+  UiDerivativeMarketSummary,
+  UiDerivativeMarketAndSummary
+} from '~/types'
 
 export default Vue.extend({
   components: {
@@ -29,6 +33,27 @@ export default Vue.extend({
   computed: {
     markets(): UiDerivativeMarket[] {
       return this.$accessor.derivatives.markets
+    },
+
+    marketsSummary(): UiDerivativeMarketSummary[] {
+      return this.$accessor.derivatives.marketsSummary
+    },
+
+    mappedMarkets(): UiDerivativeMarketAndSummary[] {
+      const { markets, marketsSummary } = this
+
+      return markets
+        .map((market) => {
+          return {
+            market,
+            summary: marketsSummary.find(
+              (summary) => summary.marketId === market.marketId
+            )
+          }
+        })
+        .filter(
+          ({ summary }) => summary !== undefined
+        ) as UiDerivativeMarketAndSummary[]
     }
   }
 })

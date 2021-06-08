@@ -3,8 +3,6 @@ import { BigNumberInWei } from '@injectivelabs/utils'
 import { getDecimalsFromNumber } from '../utils/helpers'
 import { peggyDenomToContractAddress } from './peggy'
 import {
-  AllChronosDerivativeMarketSummary,
-  ChronosDerivativeMarketSummary,
   BaseUiDerivativeMarket,
   UiDerivativeMarket,
   DerivativeOrderType,
@@ -13,10 +11,7 @@ import {
 } from '~/types'
 
 export const derivativeMarketToUiDerivativeMarket = (
-  market: BaseUiDerivativeMarket, // Markets with quote token meta data
-  marketsSummary:
-    | AllChronosDerivativeMarketSummary
-    | ChronosDerivativeMarketSummary
+  market: BaseUiDerivativeMarket
 ): UiDerivativeMarket => {
   const slug = market.ticker.replace('/', '-').replace(' ', '-').toLowerCase()
   const [baseTokenSymbol] = slug.split('-')
@@ -24,7 +19,6 @@ export const derivativeMarketToUiDerivativeMarket = (
 
   return {
     ...market,
-    ...marketsSummary,
     quoteToken,
     priceDecimals: getDecimalsFromNumber(
       new BigNumberInWei(market.minPriceTickSize)
@@ -35,6 +29,12 @@ export const derivativeMarketToUiDerivativeMarket = (
     baseTokenSymbol: (baseTokenSymbol || '').toUpperCase(),
     slug: market.ticker.replace('/', '-').replace(' ', '-').toLowerCase()
   }
+}
+
+export const derivativeMarketsToUiDerivativeMarkets = (
+  markets: BaseUiDerivativeMarket[] // Markets with quote token meta data
+): UiDerivativeMarket[] => {
+  return markets.map((m) => derivativeMarketToUiDerivativeMarket(m))
 }
 
 export const tokenMetaToToken = (

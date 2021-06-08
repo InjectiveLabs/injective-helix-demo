@@ -47,9 +47,9 @@
         <tbody>
           <tr
             is="v-spot"
-            v-for="(market, index) in filteredMarkets"
+            v-for="({ market, summary }, index) in filteredMarkets"
             :key="`spot-markets-${market.ticker}-${index}`"
-            v-bind="{ market }"
+            v-bind="{ market, marketSummary: summary }"
             @selected="$emit('selected')"
           ></tr>
         </tbody>
@@ -61,7 +61,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import Spot from './spot.vue'
-import { UiSpotMarket, Icon } from '~/types'
+import {
+  UiSpotMarket,
+  UiSpotMarketSummary,
+  UiSpotMarketAndSummary,
+  Icon
+} from '~/types'
 
 export default Vue.extend({
   components: {
@@ -80,18 +85,33 @@ export default Vue.extend({
       return this.$accessor.spot.markets
     },
 
-    filteredMarkets(): UiSpotMarket[] {
-      const query = this.filterMarkets.toLowerCase()
+    marketsSummary(): UiSpotMarketSummary[] {
+      return this.$accessor.spot.marketsSummary
+    },
 
-      return this.markets.filter((market) => {
-        const { ticker, baseDenom, quoteDenom } = market
+    filteredMarkets(): UiSpotMarketAndSummary[] {
+      const { filterMarkets, markets, marketsSummary } = this
 
-        return (
-          baseDenom.toLowerCase().startsWith(query) ||
-          quoteDenom.toLowerCase().startsWith(query) ||
-          ticker.toLowerCase().startsWith(query)
-        )
-      })
+      const query = filterMarkets.toLowerCase()
+
+      return markets
+        .map((market) => {
+          return {
+            market,
+            summary: marketsSummary.find(
+              (summary) => summary.marketId === market.marketId
+            )
+          }
+        })
+        .filter(({ market, summary }) => {
+          const { ticker, baseDenom, quoteDenom } = market
+          const satisfiesSearchCondition =
+            baseDenom.toLowerCase().startsWith(query) ||
+            quoteDenom.toLowerCase().startsWith(query) ||
+            ticker.toLowerCase().startsWith(query)
+
+          return satisfiesSearchCondition && summary !== undefined
+        }) as UiSpotMarketAndSummary[]
     }
   }
 })

@@ -3,8 +3,6 @@ import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { getDecimalsFromNumber } from '../utils/helpers'
 import { peggyDenomToContractAddress } from './peggy'
 import {
-  AllChronosSpotMarketSummary,
-  ChronosSpotMarketSummary,
   BaseUiSpotMarket,
   UiSpotMarket,
   SpotOrderType,
@@ -13,15 +11,13 @@ import {
 } from '~/types'
 
 export const spotMarketToUiSpotMarket = (
-  market: BaseUiSpotMarket, // Markets with base and quote token meta data
-  marketsSummary: AllChronosSpotMarketSummary | ChronosSpotMarketSummary
+  market: BaseUiSpotMarket
 ): UiSpotMarket => {
   const quoteToken = tokenMetaToToken(market.quoteToken!, market.quoteDenom)
   const baseToken = tokenMetaToToken(market.baseToken!, market.baseDenom)
 
   return {
     ...market,
-    ...marketsSummary,
     baseToken,
     quoteToken,
     slug: market.ticker.replace('/', '-').replace(' ', '-').toLowerCase(),
@@ -34,6 +30,12 @@ export const spotMarketToUiSpotMarket = (
       new BigNumberInWei(market.minQuantityTickSize).toBase().toNumber()
     )
   }
+}
+
+export const spotMarketsToUiSpotMarkets = (
+  markets: BaseUiSpotMarket[] // Markets with base and quote token meta data
+): UiSpotMarket[] => {
+  return markets.map((m) => spotMarketToUiSpotMarket(m))
 }
 
 export const tokenMetaToToken = (

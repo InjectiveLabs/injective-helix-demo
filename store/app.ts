@@ -1,10 +1,11 @@
 import { actionTree } from 'typed-vuex'
-import { ZERO_TO_STRING } from '~/app/utils/constants'
+import { TESTNET_GAS_PRICE } from '~/app/utils/constants'
+import { fetchGasPrice } from '~/app/services/gas'
 import { Locale, english } from '~/locales'
 
 const initialState = {
   locale: english,
-  gasPrice: ZERO_TO_STRING // TODO - get from ethstation on init
+  gasPrice: TESTNET_GAS_PRICE.toString()
 }
 
 export const state = () => ({
@@ -27,6 +28,17 @@ export const mutations = {
 export const actions = actionTree(
   { state },
   {
+    async init(_) {
+      await this.app.$accessor.app.fetchGasPrice()
+    },
+
+    async fetchGasPrice({ commit }) {
+      commit(
+        'setGasPrice',
+        (await fetchGasPrice()) || TESTNET_GAS_PRICE.toString()
+      )
+    },
+
     async poll(_) {
       await this.app.$accessor.derivatives.fetchMarketsSummary()
       await this.app.$accessor.spot.fetchMarketsSummary()

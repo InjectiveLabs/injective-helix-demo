@@ -36,9 +36,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+import { Status, StatusType } from '@injectivelabs/utils'
 import { GridLayout, GridItem } from 'vue-grid-layout'
-import { headTitle } from '~/app/utils/generators'
 import MarketPriceChartPanel from '~/components/partials/derivatives/market/chart.vue'
 import MarketPanel from '~/components/partials/derivatives/market/market.vue'
 import MarqueePanel from '~/components/partials/derivatives/market/marquee.vue'
@@ -52,9 +51,8 @@ import TradesPanel from '~/components/partials/derivatives/trades/index.vue'
 import OrdersPanel from '~/components/partials/derivatives/orders.vue'
 import PositionsPanel from '~/components/partials/derivatives/positions/index.vue'
 import HOCLoading from '~/components/elements/with-loading.vue'
-import { UiDerivativeMarket, UiDerivativeTrade } from '~/types'
+import { UiDerivativeMarket } from '~/types'
 import { localStorage } from '~/app/singletons/Storage'
-import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 const LOCAL_STORAGE_GRID_KEY = 'derivatives-market-grid-layout'
 const GRID_ROW_HEIGHT = 54
@@ -192,42 +190,12 @@ export default Vue.extend({
       )
     },
 
-    trades(): UiDerivativeTrade[] {
-      return this.$accessor.derivatives.trades
-    },
-
     market(): UiDerivativeMarket | undefined {
       return this.$accessor.derivatives.market
     },
 
     markets(): UiDerivativeMarket[] {
       return this.$accessor.derivatives.markets
-    },
-
-    lastTradedPriceToString(): string {
-      const { market } = this.$accessor.derivatives
-
-      if (!market || !market.price) {
-        return `0.00`
-      }
-
-      const tradePrice = new BigNumberInBase(market.price)
-
-      if (tradePrice.isNaN() || tradePrice.lte(0)) {
-        return `0.00`
-      }
-
-      return `${tradePrice.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)}`
-    }
-  },
-
-  watch: {
-    lastTradedPriceToString(newPrice: string) {
-      const { market } = this
-
-      if (market) {
-        document.title = `${newPrice} - ${market.ticker} | ${headTitle}`
-      }
     }
   },
 
@@ -248,7 +216,6 @@ export default Vue.extend({
   beforeDestroy() {
     // localStorage.set(LOCAL_STORAGE_GRID_KEY, this.grid.layout)
     this.$accessor.derivatives.reset()
-    document.title = headTitle
     clearInterval(this.interval)
   }
 })

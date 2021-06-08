@@ -37,7 +37,7 @@
 <script lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
 import Vue from 'vue'
-import { UiSpotMarket, SpotOrderType } from '~/types'
+import { UiSpotMarket, SpotOrderType, UiSpotMarketSummary } from '~/types'
 
 interface UiSpotMarketWithBnPrice extends UiSpotMarket {
   priceToBn: BigNumberInBase
@@ -59,21 +59,39 @@ export default Vue.extend({
       return this.$accessor.spot.markets
     },
 
+    marketsSummary(): UiSpotMarketSummary[] {
+      return this.$accessor.spot.marketsSummary
+    },
+
     transformedMarkets(): UiSpotMarketWithBnPrice[] {
-      return this.filteredMarkets.map((market) => ({
-        ...market,
-        priceToBn: new BigNumberInBase(market.price)
-      }))
+      const { filteredMarkets, marketsSummary } = this
+
+      return [...filteredMarkets].map((market) => {
+        const summary = marketsSummary.find(
+          (summary) => summary.marketId === market.marketId
+        )!
+
+        return {
+          ...market,
+          priceToBn: new BigNumberInBase(summary.price)
+        }
+      })
     },
 
     filteredMarkets(): UiSpotMarket[] {
-      const { market } = this
+      const { market, marketsSummary } = this
 
       if (!market) {
         return this.markets
       }
 
-      return this.markets.filter((m) => m.ticker !== market.ticker)
+      const marketSummaryExists = (m: UiSpotMarket) =>
+        marketsSummary.findIndex((summary) => summary.marketId === m.marketId) >
+        0
+
+      return this.markets
+        .filter((m) => m.ticker !== market.ticker)
+        .filter(marketSummaryExists)
     }
   },
 

@@ -20,8 +20,8 @@
           v-bind="{
             appendPlusSign: true,
             precision: 2,
-            value: market.change.toString(),
-            class: market.change > 0 ? 'text-primary-500' : 'text-accent-500'
+            value: change.toString(),
+            class: change.gte(0) ? 'text-primary-500' : 'text-accent-500'
           }"
         />
       </v-ui-text>
@@ -97,15 +97,20 @@ import Vue from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import NextFunding from './next-funding.vue'
 import MarketExpiry from './market-expiry.vue'
-import { ZERO_IN_BASE } from '~/app/utils/constants'
+import {
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+  ZERO_IN_BASE
+} from '~/app/utils/constants'
 import MarketInfo from '~/components/elements/market-info.vue'
 import {
   DerivativeOrderType,
   UiDerivativeMarket,
   UiDerivativeTrade,
   Change,
-  Icon
+  Icon,
+  UiDerivativeMarketSummary
 } from '~/types'
+import { headTitle } from '~/app/utils/generators'
 
 export default Vue.extend({
   components: {
@@ -127,79 +132,95 @@ export default Vue.extend({
       return this.$accessor.derivatives.market
     },
 
+    marketSummary(): UiDerivativeMarketSummary | undefined {
+      return this.$accessor.derivatives.marketSummary
+    },
+
     trades(): UiDerivativeTrade[] {
       return this.$accessor.derivatives.trades
     },
 
     lastPrice(): BigNumberInBase {
-      const { market } = this
+      const { market, marketSummary } = this
 
-      if (!market) {
+      if (!market || !marketSummary) {
         return ZERO_IN_BASE
       }
 
-      if (!market.price) {
+      if (!marketSummary.price) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(market.price)
+      return new BigNumberInBase(marketSummary.price)
     },
 
     lastPriceChange(): Change {
-      const { market } = this
+      const { market, marketSummary } = this
 
-      if (!market) {
+      if (!market || !marketSummary) {
         return Change.NoChange
       }
 
-      if (!market.lastPrice) {
+      if (!marketSummary.lastPrice) {
         return Change.NoChange
       }
 
-      return new BigNumberInBase(market.price).gte(market.lastPrice)
+      return new BigNumberInBase(marketSummary.price).gte(
+        marketSummary.lastPrice
+      )
         ? Change.Increase
         : Change.Decrease
     },
 
-    high(): BigNumberInBase {
-      const { market } = this
+    change(): BigNumberInBase {
+      const { market, marketSummary } = this
 
-      if (!market) {
+      if (!market || !marketSummary) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(market.high)
+      return new BigNumberInBase(marketSummary.change)
+    },
+
+    high(): BigNumberInBase {
+      const { market, marketSummary } = this
+
+      if (!market || !marketSummary) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(marketSummary.high)
     },
 
     low(): BigNumberInBase {
-      const { market } = this
+      const { market, marketSummary } = this
 
-      if (!market) {
+      if (!market || !marketSummary) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(market.low)
+      return new BigNumberInBase(marketSummary.low)
     },
 
     price(): BigNumberInBase {
-      const { market } = this
+      const { market, marketSummary } = this
 
-      if (!market) {
+      if (!market || !marketSummary) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(market.price)
+      return new BigNumberInBase(marketSummary.price)
     },
 
     volume(): BigNumberInBase {
-      const { market } = this
+      const { market, marketSummary } = this
 
-      if (!market) {
+      if (!market || !marketSummary) {
         return ZERO_IN_BASE
       }
 
       return new BigNumberInBase(
-        new BigNumberInBase(market.volume).dp(0).toFixed()
+        new BigNumberInBase(marketSummary.volume).dp(0).toFixed()
       )
     },
 
@@ -217,7 +238,37 @@ export default Vue.extend({
       return new BigNumberInBase(
         market.perpetualMarketFunding.cumulativeFunding
       ).multipliedBy(100)
+    },
+
+    lastTradedPriceToString(): string {
+      const { market, marketSummary } = this
+
+      if (!market || !marketSummary) {
+        return `0.00`
+      }
+
+      const lastPrice = new BigNumberInBase(marketSummary.price)
+
+      if (lastPrice.isNaN() || lastPrice.lte(0)) {
+        return `0.00`
+      }
+
+      return `${lastPrice.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)}`
     }
+  },
+
+  watch: {
+    lastTradedPriceToString(newPrice: string) {
+      const { market } = this
+
+      if (market) {
+        document.title = `${newPrice} - ${market.ticker} | ${headTitle}`
+      }
+    }
+  },
+
+  beforeDestroy() {
+    document.title = headTitle
   }
 })
 </script>

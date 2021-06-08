@@ -5,9 +5,9 @@
         <tbody>
           <tr
             is="v-spot"
-            v-for="(market, index) in markets"
+            v-for="({ market, summary }, index) in mappedMarkets"
             :key="`spot-markets-${market.ticker}-${index}`"
-            v-bind="{ market }"
+            v-bind="{ market, marketSummary: summary }"
             @selected="$emit('selected')"
           ></tr>
         </tbody>
@@ -19,7 +19,11 @@
 <script lang="ts">
 import Vue from 'vue'
 import Spot from './spot-mobile.vue'
-import { UiSpotMarket } from '~/types'
+import {
+  UiSpotMarket,
+  UiSpotMarketSummary,
+  UiSpotMarketAndSummary
+} from '~/types'
 
 export default Vue.extend({
   components: {
@@ -29,6 +33,27 @@ export default Vue.extend({
   computed: {
     markets(): UiSpotMarket[] {
       return this.$accessor.spot.markets
+    },
+
+    marketsSummary(): UiSpotMarketSummary[] {
+      return this.$accessor.spot.marketsSummary
+    },
+
+    mappedMarkets(): UiSpotMarketAndSummary[] {
+      const { markets, marketsSummary } = this
+
+      return markets
+        .map((market) => {
+          return {
+            market,
+            summary: marketsSummary.find(
+              (summary) => summary.marketId === market.marketId
+            )
+          }
+        })
+        .filter(
+          ({ summary }) => summary !== undefined
+        ) as UiSpotMarketAndSummary[]
     }
   }
 })
