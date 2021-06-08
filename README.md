@@ -23,8 +23,8 @@ $ cd injective-client
 $ yarn
 ```
 
-1. Duplicate the .env.example to .env and fill the values
-2. Compile the app
+2. Duplicate the .env.example to .env and fill the values
+3. Compile the app
 
 ```bash
 $ yarn run dev
