@@ -44,9 +44,6 @@ jobs:
       - name: Install Dependencies
         run: yarn install
 
-      - name: Yarn cache clean
-        run: yarn cache clean
-
       - name: Building the project
         run: yarn build
 
