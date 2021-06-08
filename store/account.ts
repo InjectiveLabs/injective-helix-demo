@@ -1,5 +1,5 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { actionTree, getterTree } from 'nuxt-typed-vuex'
+import { actionTree, getterTree } from 'typed-vuex'
 import {
   fetchSubaccounts,
   fetchSubaccount,

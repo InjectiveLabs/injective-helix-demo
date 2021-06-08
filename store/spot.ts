@@ -1,4 +1,4 @@
-import { actionTree, getterTree } from 'nuxt-typed-vuex'
+import { actionTree, getterTree } from 'typed-vuex'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { StreamOperation } from '@injectivelabs/ts-types'
 import { SpotOrderState } from '@injectivelabs/spot-consumer'

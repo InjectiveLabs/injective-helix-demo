@@ -1,4 +1,4 @@
-import { actionTree, getterTree } from 'nuxt-typed-vuex'
+import { actionTree, getterTree } from 'typed-vuex'
 import { AccountAddress } from '@injectivelabs/ts-types'
 import { Wallet } from '@injectivelabs/web3-strategy'
 import { confirm, connect } from '~/app/services/wallet'

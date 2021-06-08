@@ -1,4 +1,4 @@
-import { getterTree } from 'nuxt-typed-vuex'
+import { getterTree } from 'typed-vuex'
 import { Modal, ModalState } from '~/types'
 
 const modalValues = Object.values(Modal)

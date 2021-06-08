@@ -1469,10 +1469,10 @@
   dependencies:
     browser-headers "^0.4.1"
 
-"@injectivelabs/assert@^0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/assert/-/assert-0.0.12.tgz#5dafff81e92d8a90719c39bad49bdedca5a704cd"
-  integrity sha512-ugQOi2AxuhYdbkqC+Ori19lPEvh6jIsv92lnBNw8y8EuZETij8EkD1u1Kk3ysA8UheR2pWGfJZOJqCIfZTu6bg==
+"@injectivelabs/assert@^0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/assert/-/assert-0.0.13.tgz#3936abc4a05e2b6aa3d30d321376fbb59d81ea52"
+  integrity sha512-Pris65zSZREpi3e9rldRxCY8m5X9KBkGAWJYVZJEPEj6d/ppe32ZcQrJMD6Qb6EVvR7jVPgLA1DNFqCDkQPfag==
   dependencies:
     "@injectivelabs/exceptions" "^0.0.22"
     "@injectivelabs/ts-types" "^0.0.19"
@@ -1509,10 +1509,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/contracts@^0.0.45":
-  version "0.0.45"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/contracts/-/contracts-0.0.45.tgz#e1870f081b7601951252f2ed0a4194e70de72f4a"
-  integrity sha512-goaDkZYVh57F5j3cTN2vetFj4WWEJASAQ47dzv0n3qs9ye613J4AMH0dBaGKYZTVuERjC9wE5jYaHxgFoKpxQw==
+"@injectivelabs/contracts@^0.0.46":
+  version "0.0.46"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/contracts/-/contracts-0.0.46.tgz#5f49f16d4d8aef819cae95a8b59c721d8e6100a4"
+  integrity sha512-WBUMz/wmGM2kjauYUGpPS0h+2FQO7zRKCa+qV/EepiwmZdYPA+zauchXWhkag8BcTu7AMDWctmkxxAEkkfgf4g==
   dependencies:
     "@commitlint/cli" "^8.1.0"
     "@commitlint/config-conventional" "^8.1.0"
@@ -1521,7 +1521,7 @@
     "@injectivelabs/tx-utils" "^0.0.7"
     "@injectivelabs/utils" "^0.0.29"
     "@injectivelabs/web3-contract-typings" "^0.1.12"
-    "@injectivelabs/web3-strategy" "^0.0.42"
+    "@injectivelabs/web3-strategy" "^0.0.43"
     "@types/ethereumjs-util" "^6.1.0"
     "@types/jest" "^24.0.23"
     "@types/node" "^12.7.5"
@@ -1562,14 +1562,6 @@
     shx "^0.3.2"
     snakecase-keys "^4.0.1"
 
-"@injectivelabs/exceptions@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/exceptions/-/exceptions-0.0.1.tgz#91612b048d9dbca91c077881d2d2471e989c08e2"
-  integrity sha512-pzc82lKv7o9SAIyz1x2wZizz3x+5HLTI28hzKkoPhv5lzniStABODEcwKT9lU6LSmacey5xdsO4IUJZ5C7ZEmw==
-  dependencies:
-    link-module-alias "^1.2.0"
-    shx "^0.3.2"
-
 "@injectivelabs/exceptions@^0.0.22":
   version "0.0.22"
   resolved "https://registry.yarnpkg.com/@injectivelabs/exceptions/-/exceptions-0.0.22.tgz#38788c062e44066a374e71bd45e1eed8e18964bb"
@@ -1578,14 +1570,6 @@
     "@injectivelabs/ts-types" "^0.0.19"
     link-module-alias "^1.2.0"
     shx "^0.3.2"
-
-"@injectivelabs/exchange-api@^2.2.6":
-  version "2.2.6"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/exchange-api/-/exchange-api-2.2.6.tgz#29464033ad7e8554a0cae371cab38297ee4a6c6f"
-  integrity sha512-30ChKnV8V3zcq+5ONXJJohCNqYL4HBU1wLH4C43jUd/VaObMD3KXDUsTzKkVUgnGOueVjXSYGFUSNBK7PJ8N4Q==
-  dependencies:
-    "@improbable-eng/grpc-web" "^0.14.0"
-    google-protobuf "^3.14.0"
 
 "@injectivelabs/exchange-api@^2.2.7":
   version "2.2.7"
@@ -1613,10 +1597,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/networks@^0.0.21":
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/networks/-/networks-0.0.21.tgz#af858a207d1f85708136fdd6c5db2545c52235c3"
-  integrity sha512-GXOVSYThs+4kDFOOKndy93Nb2G3luz1WXMba0LhhqCo6M+8CMjLzQDjbs2B1zb3Irj96S80umGMb0VDpN9mrPw==
+"@injectivelabs/networks@^0.0.23":
+  version "0.0.23"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/networks/-/networks-0.0.23.tgz#a1b1eb874d5d8fa8523a9114427b95b0509a8450"
+  integrity sha512-dykZWPUXr0vZnw05NNy8wtw1ugr/yXjCpwTqQpCiDM+tOto0Rp/B7Gxn+xX0idenh8XGgG2iLHITP9NRcwfJAw==
   dependencies:
     "@injectivelabs/exceptions" "^0.0.22"
     "@injectivelabs/utils" "^0.0.29"
@@ -1702,12 +1686,12 @@
   dependencies:
     typescript "^4.0.5"
 
-"@injectivelabs/web3-strategy@^0.0.42":
-  version "0.0.42"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/web3-strategy/-/web3-strategy-0.0.42.tgz#7d1a15e7134440169463a203e3fd8c81058590ad"
-  integrity sha512-04lCNIoFtlRlGLMBZYGiHf3araX9ELmcZNeE1kaNSPXsebEklqvI2v4HJN7+Av8aVWgreEIBVAHwLsvz6O2DIQ==
+"@injectivelabs/web3-strategy@^0.0.43":
+  version "0.0.43"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/web3-strategy/-/web3-strategy-0.0.43.tgz#cd809243614820274b636a24f8fba7f8046b79ec"
+  integrity sha512-fxV93q7XeJZN5vWFVukvkrlfPtJsjnJ+jEwSFXFq9bE5PAWq0QB6XetvB/hraOXc8qZdYh1hvfdwXN8Ggwlmrg==
   dependencies:
-    "@injectivelabs/assert" "^0.0.12"
+    "@injectivelabs/assert" "^0.0.13"
     "@injectivelabs/exceptions" "^0.0.22"
     "@injectivelabs/ts-types" "^0.0.19"
     "@injectivelabs/utils" "^0.0.29"
@@ -11956,14 +11940,13 @@ nuxt-bugsnag@^4.2.2:
     deepmerge "^4.2.2"
     webpack-bugsnag-plugins "^1.4.3"
 
-nuxt-typed-vuex@^0.1.22:
-  version "0.1.22"
-  resolved "https://registry.yarnpkg.com/nuxt-typed-vuex/-/nuxt-typed-vuex-0.1.22.tgz#aff07cc39985146a75e8b40678fe0f2011d1a561"
-  integrity sha512-2X7/BSbN/tlBfVi5BR3unHTpVOnxxfiltR+E8XLdhlK9KHgSOWyDbnqFtxB5VAXA9efgTFlCq9UwG1xby+ubXQ==
+nuxt-typed-vuex@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/nuxt-typed-vuex/-/nuxt-typed-vuex-0.2.0.tgz#989ff05bf30aa10bc82456f03cf5645bc9621e3a"
+  integrity sha512-c+6LRuwv4aox0aarAccd5zdd3tWOBDxbc32VRLeVpAt//ZG8Lcutt4Xc067iyRaquOashkJvQ8//Ko18EaySTw==
   dependencies:
-    consola "^2.15.0"
-    normalize-path "^3.0.0"
-    typed-vuex "0.1.22"
+    typed-vuex "0.2.0"
+    upath "^2.0.1"
 
 nuxt@^2.15.4:
   version "2.15.4"
@@ -16365,10 +16348,10 @@ type@^2.0.0:
   resolved "https://registry.yarnpkg.com/type/-/type-2.5.0.tgz#0a2e78c2e77907b252abe5f298c1b01c63f0db3d"
   integrity sha512-180WMDQaIMm3+7hGXWf12GtdniDEy7nYcyFMKJn/eZz/6tSLXrUN9V0wKSbMjej0I1WHWbpREDEKHtqPQa9NNw==
 
-typed-vuex@0.1.22, typed-vuex@^0.1.22:
-  version "0.1.22"
-  resolved "https://registry.yarnpkg.com/typed-vuex/-/typed-vuex-0.1.22.tgz#e35a896fa7d76b37904041d38c55037b70ccf240"
-  integrity sha512-WJkYbLX9DbnjVnSKS1LNrqEXB6gbRCfk2qExAA+wa1RGQAURZpdSQ/A33YkgfQbzNitJbgR0qzjE7jclSWC6Ag==
+typed-vuex@0.2.0, typed-vuex@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/typed-vuex/-/typed-vuex-0.2.0.tgz#1c1b60150926a764c0a5a2d5eb6620ef8e9096aa"
+  integrity sha512-0JZJBcQiXJq4TnQh0W3sdZzTnwUiHO0AygttInsXO8BZ4eRTbNRmldKDIzsgA7WRlVi+pJ8oAKDlDDpkx0Ilpg==
 
 typedarray-to-buffer@^3.1.5:
   version "3.1.5"

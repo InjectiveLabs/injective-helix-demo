@@ -36,13 +36,16 @@ jobs:
       - name: Using Node ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 14.x
 
       - name: Setup npmrc
         run: echo "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN" > .npmrc
 
       - name: Install Dependencies
         run: yarn install
+
+      - name: Yarn cache clean
+        run: yarn cache clean
 
       - name: Building the project
         run: yarn build
