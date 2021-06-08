@@ -27,6 +27,7 @@ jobs:
       AWS_S3_BUCKET: ${{ secrets.AWS_S3_STAGING_BUCKET }}
       CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_STAGING_DISTRIBUTION_ID }}
       AWS_REGION: ${{ secrets.AWS_STAGING_REGION }}
+      NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
     runs-on: ubuntu-latest
 
     steps:
@@ -38,7 +39,7 @@ jobs:
           node-version: 12.x
 
       - name: Setup npmrc
-        run: echo "//registry.npmjs.org/:_authToken=${{secrets.NPM_AUTH_TOKEN}}" > .npmrc
+        run: echo "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN" > .npmrc
 
       - name: Install Dependencies
         run: yarn install
