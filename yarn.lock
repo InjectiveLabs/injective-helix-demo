@@ -1474,7 +1474,7 @@
   resolved "https://registry.yarnpkg.com/@injectivelabs/assert/-/assert-0.0.12.tgz#5dafff81e92d8a90719c39bad49bdedca5a704cd"
   integrity sha512-ugQOi2AxuhYdbkqC+Ori19lPEvh6jIsv92lnBNw8y8EuZETij8EkD1u1Kk3ysA8UheR2pWGfJZOJqCIfZTu6bg==
   dependencies:
-    "@injectivelabs/exceptions" "^0.0.1"
+    "@injectivelabs/exceptions" "^0.0.22"
     "@injectivelabs/ts-types" "^0.0.19"
     "@injectivelabs/utils" "^0.0.29"
     "@types/lodash.values" "^4.3.6"
