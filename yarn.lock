@@ -1509,10 +1509,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/contracts@^0.0.47":
-  version "0.0.47"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/contracts/-/contracts-0.0.47.tgz#836f4238a428aef5c9780ad8febec3ade633c482"
-  integrity sha512-NVrRHVAE47OUm32MqClbfG4JaGMWpKeUn25a228BpChvwI9jWzgReWL5y1bNm8CnzaNTaJr3lkXmDXq3xxDW4g==
+"@injectivelabs/contracts@^0.0.48":
+  version "0.0.48"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/contracts/-/contracts-0.0.48.tgz#93b8bbf7727619ff9ba821f48ed9a1525fb71505"
+  integrity sha512-7DishbOI/nmVASCexZkxhx44LxQr8Pz7aG2fVuOi6oLb8wJmgSIeTBd0k4Jbyw20KD3r5Qtyqxdpf4Y/h9/ALA==
   dependencies:
     "@commitlint/cli" "^8.1.0"
     "@commitlint/config-conventional" "^8.1.0"

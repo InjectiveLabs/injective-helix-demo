@@ -31,7 +31,7 @@
     "@chenfengyuan/vue-countdown": "^1.1.5",
     "@injectivelabs/chain-api": "1.4.9",
     "@injectivelabs/chain-consumer": "^0.0.56",
-    "@injectivelabs/contracts": "^0.0.47",
+    "@injectivelabs/contracts": "^0.0.48",
     "@injectivelabs/derivatives-consumer": "^0.0.28",
     "@injectivelabs/exchange-api": "^2.2.7",
     "@injectivelabs/exchange-consumer": "^0.0.56",
