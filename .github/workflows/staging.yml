@@ -1,4 +1,4 @@
-name: Static pages deployment to S3 Staging
+name: DEX deployment to the staging env
 
 on:
   push:
