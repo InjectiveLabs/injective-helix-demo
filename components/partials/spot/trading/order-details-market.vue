@@ -108,6 +108,7 @@
           <v-ui-text muted-sm class="group-hover:text-white flex items-center"
             ><span class="mr-2">{{ $t('fee') }}</span
             ><v-ui-icon
+              v-if="feeReturned.gt(0)"
               :icon="Icon.Info"
               class="text-gray-500 hover:text-gray-300"
               :tooltip="

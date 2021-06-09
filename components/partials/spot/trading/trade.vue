@@ -736,32 +736,7 @@ export default Vue.extend({
         return ''
       }
 
-      const [lowestSellRecord] = sells
-      const [highestBuyRecord] = buys
-      const lowestSell = lowestSellRecord
-        ? new BigNumberInBase(
-            new BigNumberInBase(lowestSellRecord.price).toWei(
-              market.baseToken.decimals - market.quoteToken.decimals
-            )
-          )
-        : ZERO_IN_BASE
-      const highestBuy = lowestSellRecord
-        ? new BigNumberInBase(
-            new BigNumberInBase(highestBuyRecord.price).toWei(
-              market.baseToken.decimals - market.quoteToken.decimals
-            )
-          )
-        : ZERO_IN_BASE
-
-      const fee = new BigNumberInBase(
-        orderTypeBuy
-          ? executionPrice.gte(lowestSell)
-            ? market.takerFeeRate
-            : market.makerFeeRate
-          : executionPrice.lte(highestBuy)
-          ? market.takerFeeRate
-          : market.makerFeeRate
-      )
+      const fee = new BigNumberInBase(market.takerFeeRate)
 
       return new BigNumberInBase(balance)
         .dividedBy(executionPrice.times(fee.plus(1)))

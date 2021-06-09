@@ -124,6 +124,7 @@
         notionalValue,
         liquidationPrice,
         margin,
+        feeReturned,
         orderTypeReduceOnly,
         orderType,
         fees,
@@ -767,14 +768,24 @@ export default Vue.extend({
     },
 
     fees(): BigNumberInBase {
-      const { notionalValue, market, tradingTypeMarket } = this
+      const { notionalValue, market } = this
+
+      if (notionalValue.isNaN() || !market) {
+        return ZERO_IN_BASE
+      }
+
+      return notionalValue.times(market.takerFeeRate)
+    },
+
+    feeReturned(): BigNumberInBase {
+      const { notionalValue, market } = this
 
       if (notionalValue.isNaN() || !market) {
         return ZERO_IN_BASE
       }
 
       return notionalValue.times(
-        tradingTypeMarket ? market.takerFeeRate : market.makerFeeRate
+        new BigNumberInBase(market.takerFeeRate).minus(market.makerFeeRate)
       )
     },
 
@@ -910,24 +921,7 @@ export default Vue.extend({
         return ''
       }
 
-      const [lowestSellRecord] = sells
-      const [highestBuyRecord] = buys
-      const lowestSell = lowestSellRecord
-        ? new BigNumberInBase(lowestSellRecord.price)
-        : ZERO_IN_BASE
-      const highestBuy = lowestSellRecord
-        ? new BigNumberInBase(highestBuyRecord.price)
-        : ZERO_IN_BASE
-
-      const fee = new BigNumberInBase(
-        orderTypeBuy
-          ? executionPrice.gte(lowestSell)
-            ? market.takerFeeRate
-            : market.makerFeeRate
-          : executionPrice.lte(highestBuy)
-          ? market.takerFeeRate
-          : market.makerFeeRate
-      )
+      const fee = new BigNumberInBase(market.takerFeeRate)
 
       return new BigNumberInBase(availableMargin)
         .dividedBy(executionPrice.times(fee.plus(1)))
