@@ -109,9 +109,12 @@
       v-bind="{
         price: averageExecutionPrice,
         orderType,
+        orderTypeBuy,
         fees,
         total,
         totalWithFees,
+        totalWithoutFees,
+        feeReturned,
         amount,
         detailsDrawerOpen
       }"
@@ -157,13 +160,11 @@ import {
 } from '~/app/services/spot'
 
 interface TradeForm {
-  reduceOnly: boolean
   amount: string
   price: string
 }
 
 const initialForm = (): TradeForm => ({
-  reduceOnly: false,
   amount: '',
   price: ''
 })
@@ -619,15 +620,13 @@ export default Vue.extend({
     },
 
     fees(): BigNumberInBase {
-      const { total, market, tradingTypeMarket } = this
+      const { total, market } = this
 
       if (total.isNaN() || !market) {
         return ZERO_IN_BASE
       }
 
-      return total.times(
-        tradingTypeMarket ? market.takerFeeRate : market.makerFeeRate
-      )
+      return total.times(market.takerFeeRate)
     },
 
     totalWithFees(): BigNumberInBase {
@@ -638,6 +637,28 @@ export default Vue.extend({
       }
 
       return fees.plus(total)
+    },
+
+    totalWithoutFees(): BigNumberInBase {
+      const { fees, total, market } = this
+
+      if (total.isNaN() || total.lte(0) || !market) {
+        return ZERO_IN_BASE
+      }
+
+      return total.minus(fees)
+    },
+
+    feeReturned(): BigNumberInBase {
+      const { total, market } = this
+
+      if (total.isNaN() || total.lte(0) || !market) {
+        return ZERO_IN_BASE
+      }
+
+      return total.times(
+        new BigNumberInBase(market.takerFeeRate).minus(market.makerFeeRate)
+      )
     }
   },
 

@@ -13,7 +13,7 @@
           <span class="mr-1">≈</span>
           <v-ui-format-price
             v-bind="{
-              value: totalWithFees
+              value: extractedTotal
             }"
           />
           <small class="opacity-75 pt-px ml-1">{{
@@ -33,9 +33,7 @@
               }"
               class="text-gray-300"
             />
-            <small class="opacity-75 ml-1">{{
-              orderTypeBuy ? market.baseToken.symbol : market.quoteToken.symbol
-            }}</small>
+            <small class="opacity-75 ml-1">{{ market.baseToken.symbol }}</small>
           </v-ui-text>
           <v-ui-text v-else muted-sm class="group-hover:text-white">
             &mdash;
@@ -55,7 +53,7 @@
               class="text-gray-300"
             />
             <small class="opacity-75 ml-1">{{
-              orderTypeBuy ? market.quoteToken.symbol : market.baseToken.symbol
+              market.quoteToken.symbol
             }}</small>
           </v-ui-text>
           <v-ui-text v-else muted-sm class="group-hover:text-white">
@@ -75,7 +73,7 @@
               class="text-gray-300"
             />
             <small class="opacity-75 ml-1">{{
-              orderTypeBuy ? market.quoteToken.symbol : market.baseToken.symbol
+              market.quoteToken.symbol
             }}</small>
           </v-ui-text>
           <v-ui-text v-else muted-sm class="group-hover:text-white">
@@ -83,9 +81,42 @@
           </v-ui-text>
         </p>
         <p class="flex justify-between group leading-6">
-          <v-ui-text muted-sm class="group-hover:text-white">{{
-            $t('fee')
-          }}</v-ui-text>
+          <v-ui-text muted-sm class="group-hover:text-white flex items-center"
+            ><span class="mr-2">{{ $t('est_receiving_amount') }}</span
+            ><v-ui-icon
+              :icon="Icon.Info"
+              class="text-gray-500 hover:text-gray-300"
+              :tooltip="$t('est_receiving_amount_note')"
+              2xs
+          /></v-ui-text>
+          <v-ui-text v-if="total.gt(0)" muted class="flex items-center">
+            <v-ui-format-price
+              v-bind="{
+                value: orderTypeBuy ? totalWithFees : totalWithoutFees
+              }"
+              class="text-gray-300"
+            />
+            <small class="opacity-75 ml-1">{{
+              market.quoteToken.symbol
+            }}</small>
+          </v-ui-text>
+          <v-ui-text v-else muted-sm class="group-hover:text-white">
+            &mdash;
+          </v-ui-text>
+        </p>
+        <p class="flex justify-between group leading-6">
+          <v-ui-text muted-sm class="group-hover:text-white flex items-center"
+            ><span class="mr-2">{{ $t('fee') }}</span
+            ><v-ui-icon
+              :icon="Icon.Info"
+              class="text-gray-500 hover:text-gray-300"
+              :tooltip="
+                $t('fee_order_details_note', {
+                  feeReturned: feeReturned.toFixed()
+                })
+              "
+              2xs
+          /></v-ui-text>
           <v-ui-text v-if="fees.gt(0)" muted class="flex items-center">
             <span class="mr-1">≈</span>
             <v-ui-format-price
@@ -95,7 +126,7 @@
               class="text-gray-300"
             />
             <small class="opacity-75 ml-1">{{
-              orderTypeBuy ? market.quoteToken.symbol : market.baseToken.symbol
+              market.quoteToken.symbol
             }}</small>
           </v-ui-text>
           <v-ui-text v-else muted-sm class="group-hover:text-white">
@@ -111,7 +142,8 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import Drawer from '~/components/elements/drawer.vue'
-import { SpotOrderType, UiSpotMarket } from '~/types'
+import { SpotOrderType, Icon, UiSpotMarket } from '~/types'
+import { ZERO_IN_BASE } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -119,6 +151,11 @@ export default Vue.extend({
   },
 
   props: {
+    orderTypeBuy: {
+      required: true,
+      type: Boolean
+    },
+
     orderType: {
       required: true,
       type: String as PropType<SpotOrderType>
@@ -130,6 +167,16 @@ export default Vue.extend({
     },
 
     totalWithFees: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    totalWithoutFees: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    feeReturned: {
       required: true,
       type: Object as PropType<BigNumberInBase>
     },
@@ -155,15 +202,29 @@ export default Vue.extend({
     }
   },
 
+  data() {
+    return {
+      Icon
+    }
+  },
+
   computed: {
     market(): UiSpotMarket | undefined {
       return this.$accessor.spot.market
     },
 
-    orderTypeBuy(): boolean {
-      const { orderType } = this
+    extractedTotal(): BigNumberInBase {
+      const { totalWithFees, amount, orderTypeBuy } = this
 
-      return orderType === SpotOrderType.Buy
+      if (orderTypeBuy) {
+        return totalWithFees
+      }
+
+      if (amount.isNaN()) {
+        return ZERO_IN_BASE
+      }
+
+      return amount
     }
   },
 

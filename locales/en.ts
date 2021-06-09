@@ -131,5 +131,10 @@ export default {
   funding_fee: 'Funding fee',
   funding_rate: 'Funding Rate',
   funding_rate_tooltip:
-    'The interest rate paid by position holders, determined by the difference between the perpetual swap price and underlying spot price. A positive funding rate implies that longs pay shorts, whereas a negative funding rate implies that shorts pay longs.'
+    'The interest rate paid by position holders, determined by the difference between the perpetual swap price and underlying spot price. A positive funding rate implies that longs pay shorts, whereas a negative funding rate implies that shorts pay longs.',
+  est_receiving_amount: 'Est. Receiving Amount',
+  est_receiving_amount_note:
+    'This amount is the least possible to be returned after the execution of the trade',
+  fee_order_details_note:
+    'If order is not filled in the block of creation there will be a fee return of {feeReturned}'
 }
