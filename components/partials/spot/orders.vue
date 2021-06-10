@@ -1,7 +1,7 @@
 <template>
   <v-panel>
     <tabs v-model="component" class="w-full">
-      <tab :label="$t('open_orders')">
+      <tab :label="`${$t('open_orders')} (${orders.length})`">
         <v-open-orders class="relative" />
       </tab>
       <tab :label="$t('trade_history')">
@@ -15,6 +15,7 @@
 import Vue from 'vue'
 import OpenOrders from './orders/index.vue'
 import TradeHistory from './trade-history/index.vue'
+import { UiSpotLimitOrder } from '~/types'
 
 const components = {
   openOrders: 0,
@@ -36,8 +37,8 @@ export default Vue.extend({
   },
 
   computed: {
-    isUserWalletConnected(): boolean {
-      return this.$accessor.wallet.isUserWalletConnected
+    orders(): UiSpotLimitOrder[] {
+      return this.$accessor.spot.subaccountOrders
     }
   }
 })

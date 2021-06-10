@@ -106,18 +106,8 @@
         </p>
         <p class="flex justify-between group leading-6">
           <v-ui-text muted-sm class="group-hover:text-white flex items-center"
-            ><span class="mr-2">{{ $t('fee') }}</span
-            ><v-ui-icon
-              v-if="feeReturned.gt(0)"
-              :icon="Icon.Info"
-              class="text-gray-500 hover:text-gray-300"
-              :tooltip="
-                $t('fee_order_details_note', {
-                  feeReturned: feeReturned.toFixed()
-                })
-              "
-              2xs
-          /></v-ui-text>
+            ><span>{{ $t('fee') }}</span></v-ui-text
+          >
           <v-ui-text v-if="fees.gt(0)" muted class="flex items-center">
             <span class="mr-1">≈</span>
             <v-ui-format-price

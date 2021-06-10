@@ -26,7 +26,7 @@
           </th>
         </tr>
       </thead>
-      <tbody>
+      <tbody v-if="isUserWalletConnected">
         <tr
           is="v-order"
           v-for="(order, index) in orders"
@@ -38,6 +38,22 @@
           v-for="(order, index) in emptyOrders"
           :key="`empty-orders-${index}`"
         ></tr>
+      </tbody>
+      <tbody v-else>
+        <tr class="relative h-8">
+          <th colspan="7" class="w-full" :rowspan="limit">
+            <v-ui-overlay>
+              <p>{{ $t('not_connect_orders') }}</p>
+            </v-ui-overlay>
+          </th>
+        </tr>
+        <tr
+          v-for="(order, index) in [...emptyOrders.slice(1)]"
+          :key="`empty-orders-${index}`"
+          class="h-8"
+        >
+          <td></td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -63,6 +79,10 @@ export default Vue.extend({
   },
 
   computed: {
+    isUserWalletConnected(): boolean {
+      return this.$accessor.wallet.isUserWalletConnected
+    },
+
     market(): UiDerivativeMarket | undefined {
       return this.$accessor.derivatives.market
     },

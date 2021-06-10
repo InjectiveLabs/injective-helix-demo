@@ -131,7 +131,7 @@
         wide
         @click.stop="onSubmit"
       >
-        {{ $t('place_order', { type: localizedSubmitOrderType }) }}
+        {{ $t(orderTypeBuy ? 'buy' : 'sell') }}
       </v-ui-button>
     </div>
   </div>
@@ -373,24 +373,6 @@ export default Vue.extend({
       return orderType === SpotOrderType.Buy
     },
 
-    localizedSubmitOrderType(): string {
-      const { tradingType, orderTypeBuy } = this
-
-      if (tradingType === TradeExecutionType.LimitFill) {
-        if (orderTypeBuy) {
-          return this.$t('limit_buy')
-        }
-
-        return this.$t('limit_sell')
-      }
-
-      if (orderTypeBuy) {
-        return this.$t('market_buy')
-      }
-
-      return this.$t('market_sell')
-    },
-
     amountStep(): string {
       const { market } = this
 
@@ -444,6 +426,8 @@ export default Vue.extend({
         quoteAvailableBalance,
         baseAvailableBalance,
         totalWithFees,
+        amount,
+        hasAmount,
         orderTypeBuy
       } = this
 
@@ -457,7 +441,11 @@ export default Vue.extend({
         return undefined
       }
 
-      if (baseAvailableBalance.lt(totalWithFees)) {
+      if (!hasAmount) {
+        return undefined
+      }
+
+      if (baseAvailableBalance.lt(amount)) {
         return {
           amount: this.$t('not_enough_balance')
         }
@@ -719,6 +707,12 @@ export default Vue.extend({
         return ''
       }
 
+      if (!orderTypeBuy) {
+        return new BigNumberInBase(balance)
+          .times(percentageToNumber)
+          .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
+      }
+
       if (tradingTypeMarket) {
         return getApproxAmountForMarketOrder({
           market,
@@ -840,7 +834,7 @@ export default Vue.extend({
           orderType
         })
         .then(() => {
-          this.$toast.success(this.$t('order_placed'))
+          this.$toast.success(this.$t('trade_placed'))
           this.$set(this, 'form', initialForm())
         })
         .catch(this.$onRejected)

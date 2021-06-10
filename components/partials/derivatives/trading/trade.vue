@@ -145,7 +145,7 @@
         wide
         @click.stop="onSubmit"
       >
-        {{ $t('place_order', { type: localizedSubmitOrderType }) }}
+        {{ $t(orderTypeBuy ? 'buy_long' : 'sell_short') }}
       </v-ui-button>
     </div>
   </div>
@@ -423,24 +423,6 @@ export default Vue.extend({
       return new BigNumberInBase(position.quantity).minus(
         position.aggregateReduceOnlyQuantity || 0 /* TODO */
       )
-    },
-
-    localizedSubmitOrderType(): string {
-      const { tradingType, orderTypeBuy } = this
-
-      if (tradingType === TradeExecutionType.LimitFill) {
-        if (orderTypeBuy) {
-          return this.$t('limit_long')
-        }
-
-        return this.$t('limit_short')
-      }
-
-      if (orderTypeBuy) {
-        return this.$t('market_long')
-      }
-
-      return this.$t('market_short')
     },
 
     amountStep(): string {
@@ -790,13 +772,13 @@ export default Vue.extend({
     },
 
     total(): BigNumberInBase {
-      const { amount, hasPrice, hasAmount, executionPrice, market } = this
+      const { fees, hasPrice, hasAmount, margin, market } = this
 
       if (!hasPrice || !hasAmount || !market) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(executionPrice.times(amount))
+      return new BigNumberInBase(fees.plus(margin))
     },
 
     totalWithFees(): BigNumberInBase {
@@ -1056,7 +1038,7 @@ export default Vue.extend({
           quantity: amount
         })
         .then(() => {
-          this.$toast.success(this.$t('order_placed'))
+          this.$toast.success(this.$t('trade_placed'))
           this.$set(this, 'form', initialForm())
         })
         .catch(this.$onRejected)

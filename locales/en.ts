@@ -102,6 +102,7 @@ export default {
   allowance_set: 'Allowance Set',
   set_allowance: 'Set Allowance',
   success_transfer: 'Successfully Transferred',
+  trade_placed: 'Trade placed',
   success_deposit: 'Successfully Deposited',
   injective_chain_balance: 'Injective Chain Balances',
   balance_asset: 'Balance {asset}',
@@ -136,5 +137,7 @@ export default {
   est_receiving_amount_note:
     'This amount is the least possible to be returned after the execution of the trade',
   fee_order_details_note:
-    'If order is not filled in the block of creation there will be a fee return of {feeReturned}'
+    'If order is not filled in the block of creation there will be a fee return of {feeReturned}',
+  buy_long: 'Buy/Long',
+  sell_short: 'Sell/Short'
 }
