@@ -9,7 +9,15 @@ const spot = [
   'zrx-usdt'
 ]
 
-const derivatives = ['inj-usdt-perp', 'btc-usd-0625']
+const derivatives = [
+  'btc-usdt',
+  'eth-usdt',
+  'link-usdt',
+  'grt-usdt',
+  'uni-usdt',
+  'comp-usdt',
+  'snx-usdt'
+]
 
 module.exports = [
   ...spot.map((s) => `/spot/${s}`),

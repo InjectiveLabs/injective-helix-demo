@@ -23,13 +23,13 @@ import {
   streamOrderbook,
   cancelMarketStreams,
   streamTrades,
+  fetchMarketSummary,
   streamSubaccountOrders,
   streamSubaccountTrades,
   fetchMarketPositions,
   streamSubaccountPositions,
   closePosition
 } from '~/app/services/derivatives'
-import { fetchMarketSummary } from '~/app/services/spot'
 
 const initialStateFactory = () => ({
   markets: [] as UiDerivativeMarket[],
