@@ -347,8 +347,6 @@ export default Vue.extend({
         .decimalPlaces(0, BigNumber.ROUND_HALF_CEIL)
         .toNumber()
 
-      console.log(halftotalContentHeight, panelContent.offsetHeight)
-
       this.limit = totalContentHeight
         .div(2)
         .div(rowSize)
