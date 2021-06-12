@@ -1,4 +1,5 @@
 import { AccountAddress, ChainId } from '@injectivelabs/ts-types'
+import { Web3Exception, ExchangeException } from '@injectivelabs/exceptions'
 import { Web3Strategy } from '@injectivelabs/web3-strategy'
 import { transactionConsumer } from '~/app/singletons/TransactionConsumer'
 import { getWeb3Strategy } from '~/app/web3'
@@ -30,18 +31,26 @@ export class TxProvider {
   async prepare() {
     const { chainId, address, message } = this
 
-    return await transactionConsumer.prepareExchangeTxRequest({
-      delegatedFee: false,
-      address,
-      message,
-      chainId
-    })
+    try {
+      return await transactionConsumer.prepareExchangeTxRequest({
+        delegatedFee: false,
+        address,
+        message,
+        chainId
+      })
+    } catch (e) {
+      throw new ExchangeException(e.message)
+    }
   }
 
   async sign(txData: any) {
     const { address, web3Strategy } = this
 
-    return await web3Strategy.signTypedDataV4(txData, address)
+    try {
+      return await web3Strategy.signTypedDataV4(txData, address)
+    } catch (e) {
+      throw new Web3Exception(e.message)
+    }
   }
 
   async broadcast() {
@@ -49,11 +58,15 @@ export class TxProvider {
     const txResponse = await this.prepare()
     const signature = await this.sign(txResponse.getData())
 
-    return await transactionConsumer.broadcastTxRequest({
-      signature,
-      message,
-      chainId,
-      txResponse
-    })
+    try {
+      return await transactionConsumer.broadcastTxRequest({
+        signature,
+        message,
+        chainId,
+        txResponse
+      })
+    } catch (e) {
+      throw new ExchangeException(e.message)
+    }
   }
 }
