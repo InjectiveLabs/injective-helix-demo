@@ -451,14 +451,11 @@ export const actions = actionTree(
         isUserWalletConnected
       } = this.app.$accessor.wallet
 
-      if (
-        !isUserWalletConnected ||
-        !injectiveAddress ||
-        !subaccount ||
-        !market
-      ) {
+      if (!isUserWalletConnected || !subaccount || !market) {
         return
       }
+
+      await this.app.$accessor.wallet.validate()
 
       await cancelOrder({
         injectiveAddress,
@@ -493,14 +490,11 @@ export const actions = actionTree(
         isUserWalletConnected
       } = this.app.$accessor.wallet
 
-      if (
-        !isUserWalletConnected ||
-        !injectiveAddress ||
-        !subaccount ||
-        !market
-      ) {
+      if (!isUserWalletConnected || !subaccount || !market) {
         return
       }
+
+      await this.app.$accessor.wallet.validate()
 
       await submitLimitOrder({
         price,
@@ -539,14 +533,11 @@ export const actions = actionTree(
         isUserWalletConnected
       } = this.app.$accessor.wallet
 
-      if (
-        !isUserWalletConnected ||
-        !injectiveAddress ||
-        !subaccount ||
-        !market
-      ) {
+      if (!isUserWalletConnected || !subaccount || !market) {
         return
       }
+
+      await this.app.$accessor.wallet.validate()
 
       await submitMarketOrder({
         quantity,
@@ -581,14 +572,11 @@ export const actions = actionTree(
         isUserWalletConnected
       } = this.app.$accessor.wallet
 
-      if (
-        !isUserWalletConnected ||
-        !injectiveAddress ||
-        !subaccount ||
-        !market
-      ) {
+      if (!isUserWalletConnected || !subaccount || !market) {
         return
       }
+
+      await this.app.$accessor.wallet.validate()
 
       await closePosition({
         quantity,

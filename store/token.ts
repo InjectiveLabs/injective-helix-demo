@@ -119,6 +119,8 @@ export const actions = actionTree(
       const { gasPrice } = this.app.$accessor.app
       const amount = UNLIMITED_ALLOWANCE
 
+      await this.app.$accessor.wallet.validate()
+
       await setTokenAllowance({
         address,
         amount: amount as BigNumberInWei,
@@ -151,6 +153,8 @@ export const actions = actionTree(
       if (!address || !isUserWalletConnected) {
         return
       }
+
+      await this.app.$accessor.wallet.validate()
 
       await transfer({
         address,

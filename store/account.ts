@@ -151,14 +151,11 @@ export const actions = actionTree(
         isUserWalletConnected
       } = this.app.$accessor.wallet
 
-      if (
-        !address ||
-        !isUserWalletConnected ||
-        !subaccount ||
-        !injectiveAddress
-      ) {
+      if (!subaccount || !isUserWalletConnected) {
         return
       }
+
+      await this.app.$accessor.wallet.validate()
 
       await deposit({
         address,

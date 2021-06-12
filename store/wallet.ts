@@ -3,6 +3,7 @@ import { AccountAddress } from '@injectivelabs/ts-types'
 import { Wallet } from '@injectivelabs/web3-strategy'
 import { confirm, connect } from '~/app/services/wallet'
 import { getInjectiveAddress } from '~/app/services/account'
+import { validateMetamask } from '~/app/services/metamask'
 
 const initialStateFactory = () => ({
   wallet: Wallet.Metamask,
@@ -30,7 +31,9 @@ export const getters = getterTree(state, {
       !!state.address && !!state.addressConfirmation
     const hasAddresses = state.addresses.length > 0
 
-    return hasAddresses && addressConnectedAndConfirmed
+    return (
+      hasAddresses && addressConnectedAndConfirmed && !!state.injectiveAddress
+    )
   }
 })
 
@@ -109,6 +112,14 @@ export const actions = actionTree(
 
       commit('setAddresses', addresses)
       commit('setAddressConfirmation', addressConfirmation)
+    },
+
+    async validate({ state }) {
+      const { chainId } = this.app.$accessor.app
+
+      if (state.wallet === Wallet.Metamask) {
+        await validateMetamask(chainId)
+      }
     },
 
     async logout({ commit }) {
