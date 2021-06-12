@@ -34,3 +34,11 @@ export enum Modal {
   Transfer = 'transfer',
   Deposit = 'deposit'
 }
+
+export enum Breakpoint {
+  Lg = 'lg',
+  Md = 'md',
+  Sm = 'sm',
+  Xs = 'xs',
+  Xxs = 'xxs'
+}

@@ -2,7 +2,7 @@
   <HOCLoading v-if="market" :key="$route.fullPath" :status="status">
     <div class="h-full w-full">
       <grid-layout
-        :layout.sync="grid.layout"
+        :layout="layout"
         :col-num="grid.colNum"
         :row-height="grid.rowHeight"
         :is-draggable="grid.isDraggable"
@@ -10,6 +10,7 @@
         :responsive="grid.responsive"
         :vertical-compact="true"
         :use-css-transforms="true"
+        @breakpoint-changed="handleBreakpointChanged"
       >
         <grid-item
           v-for="item in grid.layout"
@@ -51,88 +52,10 @@ import TradesPanel from '~/components/partials/derivatives/trades/index.vue'
 import OrdersPanel from '~/components/partials/derivatives/orders.vue'
 import PositionsPanel from '~/components/partials/derivatives/positions/index.vue'
 import HOCLoading from '~/components/elements/with-loading.vue'
-import { UiDerivativeMarket } from '~/types'
-import { localStorage } from '~/app/singletons/Storage'
+import { UiDerivativeMarket, Breakpoint } from '~/types'
+import { gridLayouts } from '~/components/partials/derivatives/grid'
 
-const LOCAL_STORAGE_GRID_KEY = 'derivatives-market-grid-layout'
 const GRID_ROW_HEIGHT = 54
-
-const gridLayout = () => [
-  { i: 'market-panel', x: 0, y: 0, w: 8, h: 1, minW: 8, maxH: 1 },
-  { i: 'marquee-panel', x: 8, y: 0, w: 4, h: 1, minW: 2, maxH: 1 },
-  {
-    i: 'balance-panel',
-    x: 0,
-    y: 1,
-    w: 3,
-    h: 2,
-    minW: 3,
-    minH: 2
-  },
-  {
-    i: 'market-price-chart-panel',
-    x: 3,
-    y: 1,
-    w: 6,
-    h: 9,
-    minW: 4,
-    minH: 9
-  },
-  {
-    i: 'order-book-panel',
-    x: 9,
-    y: 1,
-    w: 3,
-    h: 9,
-    minW: 3,
-    minH: 9
-  },
-  {
-    i: 'subaccount-balance-panel',
-    x: 0,
-    y: 3,
-    w: 3,
-    h: 2,
-    minW: 3,
-    minH: 2
-  },
-  {
-    i: 'trading-panel',
-    x: 0,
-    y: 5,
-    w: 3,
-    h: 12,
-    minW: 3,
-    minH: 10
-  },
-  {
-    i: 'positions-panel',
-    x: 3,
-    y: 10,
-    w: 6,
-    h: 2,
-    minW: 6,
-    minH: 2
-  },
-  {
-    i: 'orders-panel',
-    x: 3,
-    y: 10,
-    w: 6,
-    h: 5,
-    minW: 6,
-    minH: 5
-  },
-  {
-    i: 'trades-panel',
-    x: 9,
-    y: 10,
-    w: 3,
-    h: 7,
-    minW: 3,
-    minH: 7
-  }
-]
 
 export default Vue.extend({
   components: {
@@ -159,7 +82,7 @@ export default Vue.extend({
       interval: 0 as any,
 
       grid: {
-        layout: gridLayout(),
+        layout: gridLayouts(Breakpoint.Lg),
         colNum: 12,
         rowHeight: GRID_ROW_HEIGHT,
         margin: [16, 16],
@@ -203,9 +126,7 @@ export default Vue.extend({
     this.$accessor.derivatives
       .changeMarket(this.marketFromRoute)
       .then(() => {
-        if (localStorage.has(LOCAL_STORAGE_GRID_KEY)) {
-          this.grid.layout = localStorage.get(LOCAL_STORAGE_GRID_KEY) as any
-        }
+        //
       })
       .catch(this.$onRejected)
       .finally(() => {
@@ -214,9 +135,14 @@ export default Vue.extend({
   },
 
   beforeDestroy() {
-    // localStorage.set(LOCAL_STORAGE_GRID_KEY, this.grid.layout)
     this.$accessor.derivatives.reset()
     clearInterval(this.interval)
+  },
+
+  methods: {
+    handleBreakpointChanged(newBreakpoint: Breakpoint) {
+      this.grid.layout = gridLayouts(newBreakpoint)
+    }
   }
 })
 </script>
