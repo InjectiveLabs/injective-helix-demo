@@ -139,6 +139,11 @@ export default Vue.extend({
   methods: {
     handleBreakpointChanged(newBreakpoint: Breakpoint) {
       this.grid.layout = gridLayouts(newBreakpoint)
+      this.$nextTick(() => {
+        this.grid.layout.forEach((gridItem) => {
+          this.$root.$emit(`resized-${gridItem.i}`)
+        })
+      })
     }
   }
 })

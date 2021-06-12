@@ -20,7 +20,14 @@
     </ul>
     <div
       v-if="market"
-      class="h-14 bg-dark-800 flex flex-col items-center justify-center border-t border-b"
+      class="
+        h-14
+        bg-dark-800
+        flex flex-col
+        items-center
+        justify-center
+        border-t border-b
+      "
     >
       <div class="w-full flex justify-between px-2">
         <span class="text-white font-bold text-sm w-2/3 text-right pr-2">
@@ -339,6 +346,8 @@ export default Vue.extend({
         .div(2)
         .decimalPlaces(0, BigNumber.ROUND_HALF_CEIL)
         .toNumber()
+
+      console.log(halftotalContentHeight, panelContent.offsetHeight)
 
       this.limit = totalContentHeight
         .div(2)

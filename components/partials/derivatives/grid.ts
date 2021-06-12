@@ -155,12 +155,12 @@ const mdGrid = [
 ]
 
 const smGrid = [
-  { i: 'market-panel', x: 0, y: 0, w: 6, h: 2, minW: 6, maxH: 2 },
-  { i: 'marquee-panel', x: 0, y: 2, w: 6, h: 1, minW: 6, maxH: 1 },
+  { i: 'market-panel', x: 0, y: 0, w: 6, h: 1, minW: 6, maxH: 1 },
+  { i: 'marquee-panel', x: 0, y: 1, w: 6, h: 1, minW: 6, maxH: 1 },
   {
     i: 'balance-panel',
     x: 0,
-    y: 3,
+    y: 2,
     w: 3,
     h: 2,
     minW: 3,
@@ -169,7 +169,7 @@ const smGrid = [
   {
     i: 'subaccount-balance-panel',
     x: 3,
-    y: 3,
+    y: 2,
     w: 3,
     h: 2,
     minW: 3,
@@ -178,7 +178,7 @@ const smGrid = [
   {
     i: 'market-price-chart-panel',
     x: 0,
-    y: 5,
+    y: 4,
     w: 6,
     h: 6,
     minW: 6,
@@ -187,7 +187,7 @@ const smGrid = [
   {
     i: 'order-book-panel',
     x: 0,
-    y: 11,
+    y: 10,
     w: 3,
     h: 6,
     minW: 3,
@@ -196,7 +196,7 @@ const smGrid = [
   {
     i: 'trades-panel',
     x: 3,
-    y: 11,
+    y: 10,
     w: 3,
     h: 6,
     minW: 3,
@@ -205,7 +205,7 @@ const smGrid = [
   {
     i: 'positions-panel',
     x: 0,
-    y: 17,
+    y: 16,
     w: 6,
     h: 2,
     minW: 6,
@@ -214,7 +214,7 @@ const smGrid = [
   {
     i: 'trading-panel',
     x: 0,
-    y: 19,
+    y: 18,
     w: 6,
     h: 10,
     minW: 6,
@@ -223,7 +223,7 @@ const smGrid = [
   {
     i: 'orders-panel',
     x: 0,
-    y: 28,
+    y: 27,
     w: 6,
     h: 5,
     minW: 6,
