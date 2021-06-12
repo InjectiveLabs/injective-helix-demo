@@ -31,6 +31,7 @@ export class TxProvider {
     const { chainId, address, message } = this
 
     return await transactionConsumer.prepareExchangeTxRequest({
+      delegatedFee: false,
       address,
       message,
       chainId
@@ -52,8 +53,7 @@ export class TxProvider {
       signature,
       message,
       chainId,
-      pubKeyType: txResponse.getPubKeyType(),
-      typedData: txResponse.getData()
+      txResponse
     })
   }
 }
