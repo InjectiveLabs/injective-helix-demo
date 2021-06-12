@@ -19,7 +19,7 @@
           class="mr-1"
         />
         <v-ui-icon
-          v-if="[Change.New, Change.NoChange].includes(lastPriceChange)"
+          v-if="[Change.Decrease, Change.Increase].includes(lastPriceChange)"
           xs
           :rotate="lastPriceChange === Change.Decrease"
           :primary="lastPriceChange === Change.Increase"
@@ -124,6 +124,12 @@ export default Vue.extend({
       }
 
       if (!marketSummary.lastPrice) {
+        return Change.NoChange
+      }
+
+      if (
+        new BigNumberInBase(marketSummary.lastPrice).eq(marketSummary.price)
+      ) {
         return Change.NoChange
       }
 

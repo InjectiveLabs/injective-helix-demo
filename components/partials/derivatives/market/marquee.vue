@@ -18,12 +18,14 @@
             </p>
           </div>
           <v-ui-text sm class="flex items-center w-full">
-            <!-- TODO: change of the price, change the type -->
             <v-ui-format-order-price
               v-bind="{
                 value: singleMarket.priceToBn,
                 decimals: singleMarket.priceDecimals,
-                type: true ? DerivativeOrderType.Buy : DerivativeOrderType.Sell
+                type:
+                  singleMarket.priceChange === Change.Increase
+                    ? DerivativeOrderType.Buy
+                    : DerivativeOrderType.Sell
               }"
               class="mr-1"
             />
@@ -40,16 +42,19 @@ import Vue from 'vue'
 import {
   UiDerivativeMarket,
   DerivativeOrderType,
+  Change,
   UiDerivativeMarketSummary
 } from '~/types'
 
 interface UiDerivativeMarketWithBnPrice extends UiDerivativeMarket {
   priceToBn: BigNumberInBase
+  priceChange: Change
 }
 
 export default Vue.extend({
   data() {
     return {
+      Change,
       DerivativeOrderType
     }
   },
@@ -73,9 +78,13 @@ export default Vue.extend({
         const summary = marketsSummary.find(
           (summary) => summary.marketId === market.marketId
         )!
+        const lastPrice = new BigNumberInBase(summary.lastPrice || 0)
 
         return {
           ...market,
+          priceChange: lastPrice.gte(summary.price)
+            ? Change.Increase
+            : Change.Decrease,
           priceToBn: new BigNumberInBase(summary.price)
         }
       })

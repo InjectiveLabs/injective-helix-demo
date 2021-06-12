@@ -130,6 +130,12 @@ export default Vue.extend({
         return Change.NoChange
       }
 
+      if (
+        new BigNumberInBase(marketSummary.lastPrice).eq(marketSummary.price)
+      ) {
+        return Change.NoChange
+      }
+
       return new BigNumberInBase(marketSummary.price).gte(
         marketSummary.lastPrice
       )
