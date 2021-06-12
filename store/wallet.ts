@@ -118,7 +118,7 @@ export const actions = actionTree(
       const { chainId } = this.app.$accessor.app
 
       if (state.wallet === Wallet.Metamask) {
-        await validateMetamask(chainId)
+        await validateMetamask(state.address, chainId)
       }
     },
 
