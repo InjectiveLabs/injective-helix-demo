@@ -1492,10 +1492,10 @@
     "@improbable-eng/grpc-web" "^0.13.0"
     google-protobuf "^3.13.0"
 
-"@injectivelabs/chain-consumer@^0.0.56":
-  version "0.0.56"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/chain-consumer/-/chain-consumer-0.0.56.tgz#23887219b43cd028e24b616a4ce854442a95a8e4"
-  integrity sha512-YoGFreop8OProjTNB+nUhkCXuY2om5pDALkV9Kcprxrv05OD3iAttgWeHXCJsAniM60/BzgpCHCTy3KmLMjDqQ==
+"@injectivelabs/chain-consumer@^0.0.57":
+  version "0.0.57"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/chain-consumer/-/chain-consumer-0.0.57.tgz#f118eed92ea7e007b385f7fe4a793eb9b602b8f7"
+  integrity sha512-IQ//KpTgH9vnhO8xypN1D9p2NuKFCReTP+1mQQHXruqo5iO65rLm7UmgrVu4zjfNu4eyEb5eCPbSdZ1pyb1zZg==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.14.0"
@@ -1579,10 +1579,10 @@
     "@improbable-eng/grpc-web" "^0.14.0"
     google-protobuf "^3.14.0"
 
-"@injectivelabs/exchange-consumer@^0.0.56":
-  version "0.0.56"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/exchange-consumer/-/exchange-consumer-0.0.56.tgz#ec1e3661c5280e1c9715c52fcf1cea743ae67c6f"
-  integrity sha512-hA6z1OqRShVyqbXF1tiwpfZloC3mfuLXAwYCfnnrNtYJd4CWPkjlbGAqUvLKmRYnB7WCgYruBu6Aj+WyscOM/Q==
+"@injectivelabs/exchange-consumer@^0.0.57":
+  version "0.0.57"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/exchange-consumer/-/exchange-consumer-0.0.57.tgz#84283feb0837cb32b05e01d056697639bff37705"
+  integrity sha512-6vQq9GmtW82TwbxwILvHUFRRAK8rSh56fUHKlTKfr/nGGUXIUc93kkDpK5TzcTBuHosllglrXKw2+paX3+K5GQ==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.14.0"

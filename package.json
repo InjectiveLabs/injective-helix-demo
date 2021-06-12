@@ -30,11 +30,11 @@
   "dependencies": {
     "@chenfengyuan/vue-countdown": "^1.1.5",
     "@injectivelabs/chain-api": "1.4.9",
-    "@injectivelabs/chain-consumer": "^0.0.56",
+    "@injectivelabs/chain-consumer": "^0.0.57",
     "@injectivelabs/contracts": "^0.0.48",
     "@injectivelabs/derivatives-consumer": "^0.0.28",
     "@injectivelabs/exchange-api": "^2.2.7",
-    "@injectivelabs/exchange-consumer": "^0.0.56",
+    "@injectivelabs/exchange-consumer": "^0.0.57",
     "@injectivelabs/networks": "^0.0.24",
     "@injectivelabs/spot-consumer": "^0.0.41",
     "@injectivelabs/subaccount-consumer": "^0.0.18",
