@@ -1,4 +1,8 @@
-import { Web3Strategy, Wallet } from '@injectivelabs/web3-strategy'
+import {
+  Web3Strategy,
+  Wallet,
+  ConcreteStrategyOptions
+} from '@injectivelabs/web3-strategy'
 import { ChainId } from '@injectivelabs/ts-types'
 import { app } from '~/app/singletons/App'
 import { CHAIN_ID, RPC_POLING_INTERVAL } from '~/app/utils/constants'
@@ -29,11 +33,15 @@ export const getRpcWsUrlsForChainIds = (): Record<ChainId, string> => {
   }
 }
 
-export const initWeb3Strategy = (wallet: Wallet) => {
+export const initWeb3Strategy = (
+  wallet: Wallet,
+  options: Partial<ConcreteStrategyOptions> = {}
+) => {
   web3Strategy = new Web3Strategy({
     wallet,
     chainId: parseInt(CHAIN_ID.toString()),
     options: {
+      ...options,
       wsRpcUrls: getRpcWsUrlsForChainIds(),
       rpcUrls: getRpcUrlsForChainIds(),
       pollingInterval: RPC_POLING_INTERVAL,

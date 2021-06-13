@@ -14,6 +14,7 @@ export enum Icon {
   Info = 'info',
   Locked = 'locked',
   Metamask = 'metamask',
+  Ledger = 'ledger',
   Reddit = 'reddit',
   Search = 'search',
   Trash = 'trash',

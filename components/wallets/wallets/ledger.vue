@@ -14,7 +14,7 @@
       <div class="flex items-center p-2">
         <div class="min-w-0 flex-1 flex items-center">
           <div class="flex-shrink-0 mr-2">
-            <v-icon-metamask class="w-8 h-8" />
+            <v-icon-ledger class="w-8 h-8" />
           </div>
           <div
             class="
@@ -27,9 +27,9 @@
             "
           >
             <div>
-              <p class="text-lg text-gray-100 truncate">Metamask</p>
+              <p class="text-lg text-gray-100 truncate">Ledger</p>
               <p class="flex items-center text-sm text-gray-400">
-                <span class="truncate">Connect using browser wallet</span>
+                <span class="truncate">Connect using hardware wallet</span>
               </p>
             </div>
           </div>
@@ -42,29 +42,33 @@
         </div>
       </div>
     </div>
+    <v-modal-ledger
+      :is-open="isLedgerModalOpen"
+      @closed="isLedgerModalOpen = false"
+    />
   </li>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { Wallet } from '@injectivelabs/web3-strategy'
+import VModalLedger from '~/components/wallets/ledger/index.vue'
 import { Icon } from '~/types'
 
 export default Vue.extend({
+  components: {
+    VModalLedger
+  },
+
   data() {
     return {
-      Icon
+      Icon,
+      isLedgerModalOpen: false
     }
   },
 
   methods: {
     handleConnectClick() {
-      this.$accessor.wallet
-        .connectAndConfirm(Wallet.Metamask)
-        .then(() => {
-          this.$toast.success(this.$t('success_connect'))
-        })
-        .catch(this.$onRejected)
+      this.isLedgerModalOpen = true
     }
   }
 })

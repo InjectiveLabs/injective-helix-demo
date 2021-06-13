@@ -1509,10 +1509,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/contracts@^0.0.49":
-  version "0.0.49"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/contracts/-/contracts-0.0.49.tgz#d1a32e0997dcb21e4f9d2c43e172e14cf1ac1cc9"
-  integrity sha512-47NUjXUwWJ3AsApDAM8TQYKWnh7rivCjfKbWw83Ba2JZhodX8ShJvPlMMnLiFSxbG+bvP6+sIAKeG7LlyIn2/w==
+"@injectivelabs/contracts@^0.0.50":
+  version "0.0.50"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/contracts/-/contracts-0.0.50.tgz#59a6f9fb7d55cc889a03e69a40014e905cc57fb9"
+  integrity sha512-k4yuI+7kE8uYw/XSH6aSP9id5mxDdPbFqnXoe+aCGn2y18nIlKoyv0f09gJsYZ83wN7hNTR4IB+Kwwia0YuIdA==
   dependencies:
     "@commitlint/cli" "^8.1.0"
     "@commitlint/config-conventional" "^8.1.0"
@@ -1521,7 +1521,7 @@
     "@injectivelabs/tx-utils" "^0.0.9"
     "@injectivelabs/utils" "^0.0.31"
     "@injectivelabs/web3-contract-typings" "^0.1.12"
-    "@injectivelabs/web3-strategy" "^0.0.45"
+    "@injectivelabs/web3-strategy" "^0.0.46"
     "@types/ethereumjs-util" "^6.1.0"
     "@types/jest" "^24.0.23"
     "@types/node" "^12.7.5"
@@ -1694,10 +1694,10 @@
   dependencies:
     typescript "^4.0.5"
 
-"@injectivelabs/web3-strategy@^0.0.45":
-  version "0.0.45"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/web3-strategy/-/web3-strategy-0.0.45.tgz#5963c2c6ad53ea168804ec1013b75c638222fd2c"
-  integrity sha512-B/Dh1L2WKStHiBrAmYptz4gYjsSVobeKSGhWVzMt4XAY5kpidk1V6iPIrXhs4E9gIysm7Hb9xqBVZ8rehq6Frg==
+"@injectivelabs/web3-strategy@^0.0.46":
+  version "0.0.46"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/web3-strategy/-/web3-strategy-0.0.46.tgz#20444b5021f55224149969906f0d5de11d445769"
+  integrity sha512-nZpRhUHKTWs+P+ko4AmOkOySsnUSaJCJQHuG6cTllbO0dPXulZS999nHUkxNjEwlD3ofSQlqN40GLNCaMM0nuw==
   dependencies:
     "@injectivelabs/assert" "^0.0.15"
     "@injectivelabs/exceptions" "^0.0.24"
@@ -3191,6 +3191,13 @@
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@types/vue-clickaway/-/vue-clickaway-2.2.0.tgz#a560c5280dac0dd0906b5b78249be0c859acffc6"
   integrity sha512-bPRisDZhtscJ+2PmGIAyEBB7+ep6j/FFrPGr5kpWzAFylRxCcZrw70tlXUwslgZtSYZEU1e6QJkSOPHFw21XXQ==
+  dependencies:
+    vue "^2.0.0"
+
+"@types/vue-select@^3.11.1":
+  version "3.11.1"
+  resolved "https://registry.yarnpkg.com/@types/vue-select/-/vue-select-3.11.1.tgz#440ecbe3f200bdc29af2e263b329e7ba0b0aaabc"
+  integrity sha512-7Ho92vg5smiwCQLF6KXp50TNCYEaotXTloxw3OB1cinRb8WKIEYVU7Xiu95ObdQDZyz1ghL8Pzx39blNoIl4wg==
   dependencies:
     vue "^2.0.0"
 
@@ -16944,6 +16951,11 @@ vue-router@^3.5.1:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.5.1.tgz#edf3cf4907952d1e0583e079237220c5ff6eb6c9"
   integrity sha512-RRQNLT8Mzr8z7eL4p7BtKvRaTSGdCbTy2+Mm5HTJvLGYSSeG9gDzNasJPP/yOYKLy+/cLG/ftrqq5fvkFwBJEw==
+
+vue-select@^3.11.2:
+  version "3.11.2"
+  resolved "https://registry.yarnpkg.com/vue-select/-/vue-select-3.11.2.tgz#3ef93e3f2707e133c2df0b2920a05eea78764d18"
+  integrity sha512-pIOcY8ajWNSwg8Ns4eHVr5ZWwqKCSZeQRymTnlUI8i+3QiQXF6JIM4lylK6mVfbccs4S6vOyxB7zmJBpp7tDUg==
 
 vue-server-renderer@^2.6.12:
   version "2.6.12"

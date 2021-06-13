@@ -30,7 +30,7 @@
   "dependencies": {
     "@chenfengyuan/vue-countdown": "^1.1.5",
     "@injectivelabs/chain-consumer": "^0.0.58",
-    "@injectivelabs/contracts": "^0.0.49",
+    "@injectivelabs/contracts": "^0.0.50",
     "@injectivelabs/derivatives-consumer": "^0.0.29",
     "@injectivelabs/exceptions": "^0.0.24",
     "@injectivelabs/exchange-consumer": "^0.0.62",
@@ -38,7 +38,7 @@
     "@injectivelabs/spot-consumer": "^0.0.42",
     "@injectivelabs/subaccount-consumer": "^0.0.19",
     "@injectivelabs/utils": "^0.0.31",
-    "@injectivelabs/web3-strategy": "^0.0.45",
+    "@injectivelabs/web3-strategy": "^0.0.46",
     "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/google-gtag": "^1.0.4",
     "@nuxtjs/pwa": "^3.3.5",
@@ -63,7 +63,8 @@
     "vue-grid-layout": "^2.3.12",
     "vue-i18n": "^8.23.0",
     "vue-infinite-slide-bar": "^1.1.1",
-    "vue-router": "^3.5.1"
+    "vue-router": "^3.5.1",
+    "vue-select": "^3.11.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^12.0.1",
@@ -78,6 +79,7 @@
     "@types/lodash": "^4.14.168",
     "@types/node": "^14.14.37",
     "@types/vue-clickaway": "^2.2.0",
+    "@types/vue-select": "^3.11.1",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
     "@vue/test-utils": "^1.1.4",

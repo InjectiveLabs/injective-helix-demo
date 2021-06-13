@@ -1,7 +1,7 @@
 import { actionTree, getterTree } from 'typed-vuex'
 import { AccountAddress } from '@injectivelabs/ts-types'
-import { Wallet } from '@injectivelabs/web3-strategy'
-import { confirm, connect } from '~/app/services/wallet'
+import { ConcreteStrategyOptions, Wallet } from '@injectivelabs/web3-strategy'
+import { confirm, connect, getAddresses } from '~/app/services/wallet'
 import { getInjectiveAddress } from '~/app/services/account'
 import { validateMetamask } from '~/app/services/metamask'
 
@@ -71,8 +71,16 @@ export const mutations = {
 export const actions = actionTree(
   { state, mutations },
   {
-    async connect(_, wallet: Wallet): Promise<AccountAddress[]> {
-      return await connect(wallet)
+    async connect(_, wallet: Wallet) {
+      await connect(wallet)
+    },
+
+    async connectLedger(_, options: Partial<ConcreteStrategyOptions> = {}) {
+      await connect(Wallet.Ledger, options)
+    },
+
+    async getAddresses(_): Promise<AccountAddress[]> {
+      return await getAddresses()
     },
 
     async confirm({ commit }, addresses: AccountAddress[]) {
@@ -95,7 +103,8 @@ export const actions = actionTree(
     },
 
     async connectAndConfirm({ commit }, wallet: Wallet) {
-      const addresses = await connect(wallet)
+      await connect(wallet)
+      const addresses = await getAddresses()
       const [address] = addresses
       const addressConfirmation = await confirm(address)
       const injectiveAddress = getInjectiveAddress(address)

@@ -102,3 +102,33 @@
     }
   }
 }
+
+.v-select.input {
+  @apply px-1 font-sans;
+
+  .vs__search {
+    @apply text-xs opacity-75 text-gray-400;
+  }
+
+  .vs__dropdown-toggle {
+    width: 100%;
+    height: 100%;
+    border: none !important;
+  }
+
+  .vs__dropdown-menu {
+    @apply bg-dark-500 text-gray-200 px-2;
+  }
+
+  .vs__selected {
+    @apply text-gray-200;
+  }
+
+  .vs__dropdown-option {
+    @apply text-white font-semibold text-sm rounded;
+  }
+
+  .vs__dropdown-option--highlight {
+    @apply bg-primary-500 text-primary-900;
+  }
+}

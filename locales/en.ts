@@ -141,5 +141,16 @@ export default {
     'If order is not filled in the block of creation there will be a fee return of {feeReturned}',
   buy_long: 'Buy/Long',
   sell_short: 'Sell/Short',
-  index_price: 'Index Price'
+  index_price: 'Index Price',
+  select_ledger_address: 'Select Ledger Address',
+  follow_instructions: 'Please follow the instructions on your device',
+  address: 'Address',
+  select_address_to_connect: 'Select Address to Connect',
+  derivation_path: 'Derivation Path',
+  select_derivation_path: 'Select Derivation Path',
+  get_addresses: 'Get Addresses',
+  get_more_addresses: 'Get More Addresses',
+  please_wait_addresses: 'We are getting your addresses, please wait ...',
+  ledger_live: 'Ledger Live',
+  ledger_legacy: 'Ledger Legacy'
 }

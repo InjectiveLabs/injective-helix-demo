@@ -2,7 +2,15 @@
   <div class="flex justify-between items-center relative px-4 xl:w-64">
     <div
       id="wallet-dropdown"
-      class="items-center justify-start sm:justify-center select-none cursor-pointer flex w-full"
+      class="
+        items-center
+        justify-start
+        sm:justify-center
+        select-none
+        cursor-pointer
+        flex
+        w-full
+      "
       @click.stop="toggleDropdown"
     >
       <v-ui-icon
@@ -53,14 +61,40 @@
     <div
       v-on-clickaway="closeDropdown"
       :class="isDropdownOpen ? 'opacity-100 visible' : 'opacity-0 invisible'"
-      class="absolute flex justify-center border flex-wrap top-0 left-auto mr-0 -mx-px right-0 min-w-xs mt-12 rounded rounded-tl-none bg-dark-700 shadow-md"
+      class="
+        absolute
+        flex
+        justify-center
+        border
+        flex-wrap
+        top-0
+        left-auto
+        mr-0
+        -mx-px
+        right-0
+        min-w-xs
+        mt-12
+        rounded rounded-tl-none
+        bg-dark-700
+        shadow-md
+      "
     >
       <ul v-if="!isUserWalletConnected" class="py-2">
         <v-metamask />
+        <v-ledger class="mt-2" />
       </ul>
       <div v-else class="flex flex-wrap w-full">
         <div
-          class="w-full bg-dark-700 font-semibold py-2 px-4 text-sm cursor-pointer hover:bg-hover300"
+          class="
+            w-full
+            bg-dark-700
+            font-semibold
+            py-2
+            px-4
+            text-sm
+            cursor-pointer
+            hover:bg-hover300
+          "
           @click.stop="handleClickOnLogout"
         >
           <span>{{ $t('logout') }}</span>
@@ -77,11 +111,13 @@ import { Wallet } from '@injectivelabs/web3-strategy'
 import { directive as onClickaway } from 'vue-clickaway'
 import { formatWalletAddress } from '@injectivelabs/utils'
 import VMetamask from './wallets/metamask.vue'
+import VLedger from './wallets/ledger.vue'
 import { Icon } from '~/types'
 
 export default Vue.extend({
   components: {
-    VMetamask
+    VMetamask,
+    VLedger
   },
 
   directives: {
