@@ -28,13 +28,17 @@ import {
   streamSubaccountTrades,
   fetchMarketPositions,
   streamSubaccountPositions,
-  closePosition
+  closePosition,
+  fetchMarketIndexPrice,
+  streamMarketIndexPrice
 } from '~/app/services/derivatives'
+import { ZERO_TO_STRING } from '~/app/utils/constants'
 
 const initialStateFactory = () => ({
   markets: [] as UiDerivativeMarket[],
   marketsSummary: [] as UiDerivativeMarketSummary[],
   market: undefined as UiDerivativeMarket | undefined,
+  marketIndexPrice: ZERO_TO_STRING as string,
   marketSummary: undefined as UiDerivativeMarketSummary | undefined,
   orderbook: undefined as UiDerivativeOrderbook | undefined,
   trades: [] as UiDerivativeTrade[],
@@ -52,6 +56,7 @@ export const state = () => ({
   marketSummary: initialState.marketSummary as
     | UiDerivativeMarketSummary
     | undefined,
+  marketIndexPrice: initialState.marketIndexPrice as string,
   trades: initialState.trades as UiDerivativeTrade[],
   subaccountTrades: initialState.subaccountTrades as UiDerivativeTrade[],
   subaccountPosition: initialState.subaccountPosition as UiPosition | undefined,
@@ -79,11 +84,16 @@ export const mutations = {
     state.marketSummary = marketSummary
   },
 
+  setMarketIndexPrice(state: DerivativeStoreState, marketIndexPrice: string) {
+    state.marketIndexPrice = marketIndexPrice
+  },
+
   resetMarket(state: DerivativeStoreState) {
     const initialState = initialStateFactory()
 
     state.market = initialState.market
     state.marketSummary = initialState.marketSummary
+    state.marketIndexPrice = initialState.marketIndexPrice
     state.orderbook = initialState.orderbook
     state.trades = initialState.trades
     state.subaccountOrders = initialState.subaccountOrders
@@ -248,6 +258,7 @@ export const actions = actionTree(
       commit('setMarket', market)
       commit('setOrderbook', await fetchMarketOrderbook(market.marketId))
       commit('setMarketSummary', await fetchMarketSummary(market.marketId))
+      commit('setMarketIndexPrice', await fetchMarketIndexPrice(market))
 
       const trades = await fetchMarketTrades({
         marketId: market.marketId
@@ -270,6 +281,17 @@ export const actions = actionTree(
         switch (operation) {
           case StreamOperation.Insert:
             commit('pushTrade', trade)
+        }
+      })
+
+      streamMarketIndexPrice(market, ({ price, operation }) => {
+        if (!price) {
+          return
+        }
+
+        switch (operation) {
+          case StreamOperation.Update:
+            commit('setMarketIndexPrice', price)
         }
       })
 

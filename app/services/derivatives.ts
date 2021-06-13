@@ -16,6 +16,12 @@ import {
 } from '@injectivelabs/utils'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { SubaccountStreamType } from '@injectivelabs/subaccount-consumer'
+import {
+  OracleStreamType,
+  PricesStreamCallback
+} from '@injectivelabs/exchange-consumer'
+import { oracleStream } from '../singletons/OracleStream'
+import { oracleConsumer } from '../singletons/OracleConsumer'
 import { TxProvider } from '~/app/providers/TxProvider'
 import { derivativeMarketStream } from '~/app/singletons/DerivativeMarketStream'
 import { streamManager } from '~/app/singletons/StreamManager'
@@ -149,6 +155,16 @@ export const fetchMarketOrders = async ({
   )
 }
 
+export const fetchMarketIndexPrice = async (market: UiDerivativeMarket) => {
+  const price = await oracleConsumer.price({
+    baseSymbol: market.oracleBase,
+    quoteSymbol: market.oracleQuote,
+    oracleType: market.oracleType
+  })
+
+  return price || ZERO_TO_STRING
+}
+
 export const streamOrderbook = (
   marketId: string,
   callback: DerivativeMarketOrderbookStreamCallback
@@ -237,6 +253,24 @@ export const streamSubaccountPositions = (
   streamManager.set(stream, DerivativeMarketStreamType.SubaccountPositions)
 }
 
+export const streamMarketIndexPrice = (
+  market: UiDerivativeMarket,
+  callback: PricesStreamCallback
+) => {
+  if (streamManager.exists(OracleStreamType.Prices)) {
+    return
+  }
+
+  const stream = oracleStream.prices.start({
+    oracleType: market.oracleType,
+    baseSymbol: market.oracleBase,
+    quoteSymbol: market.oracleQuote,
+    callback
+  })
+
+  streamManager.set(stream, OracleStreamType.Prices)
+}
+
 export const cancelMarketStreams = () => {
   streamManager.cancelIfExists(DerivativeMarketStreamType.Orderbook)
   streamManager.cancelIfExists(DerivativeMarketStreamType.SubaccountOrders)
@@ -244,6 +278,7 @@ export const cancelMarketStreams = () => {
   streamManager.cancelIfExists(DerivativeMarketStreamType.SubaccountPositions)
   streamManager.cancelIfExists(DerivativeMarketStreamType.Trades)
   streamManager.cancelIfExists(SubaccountStreamType.Balances)
+  streamManager.cancelIfExists(OracleStreamType.Prices)
 }
 
 export const submitLimitOrder = async ({

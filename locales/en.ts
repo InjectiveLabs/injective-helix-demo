@@ -117,7 +117,8 @@ export default {
   close_position: 'Close Position',
   entry_price: 'Entry Price',
   unrealized_pnl: 'Unrealized PnL',
-  unrealized_pnl_tooltip: 'Unrealized PnL note',
+  unrealized_pnl_tooltip:
+    'The unrealized P&L is a reflection of what profit or loss will be realized if the position were to be closed now.',
   leverage: 'Leverage',
   not_available_n_a: 'N/A',
   position_closed: 'Position Closed',
@@ -139,5 +140,6 @@ export default {
   fee_order_details_note:
     'If order is not filled in the block of creation there will be a fee return of {feeReturned}',
   buy_long: 'Buy/Long',
-  sell_short: 'Sell/Short'
+  sell_short: 'Sell/Short',
+  index_price: 'Index Price'
 }

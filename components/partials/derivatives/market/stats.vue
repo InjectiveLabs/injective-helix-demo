@@ -14,6 +14,20 @@
         />
       </v-ui-text>
     </v-market-info>
+    <v-market-info v-if="false" :title="$t('index_price')">
+      <v-ui-text sm class="flex items-center justify-end w-full">
+        <v-ui-format-price
+          v-bind="{
+            value: indexPrice,
+            class: {
+              'text-primary-500': lastPriceChange === Change.Increase,
+              'text-accent-500': lastPriceChange === Change.Decrease
+            },
+            decimals: market.priceDecimals
+          }"
+        />
+      </v-ui-text>
+    </v-market-info>
     <v-market-info :title="$t('market_change_24h')" class="">
       <v-ui-text sm class="flex items-center justify-end w-full">
         <v-ui-format-percent
@@ -138,6 +152,10 @@ export default Vue.extend({
 
     trades(): UiDerivativeTrade[] {
       return this.$accessor.derivatives.trades
+    },
+
+    indexPrice(): BigNumberInBase {
+      return new BigNumberInBase(this.$accessor.derivatives.marketIndexPrice)
     },
 
     lastPrice(): BigNumberInBase {
