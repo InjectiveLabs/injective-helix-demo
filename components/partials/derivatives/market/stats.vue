@@ -14,7 +14,8 @@
         />
       </v-ui-text>
     </v-market-info>
-    <v-market-info v-if="false" :title="$t('index_price')">
+    <!--
+    <v-market-info :title="$t('index_price')">
       <v-ui-text sm class="flex items-center justify-end w-full">
         <v-ui-format-price
           v-bind="{
@@ -28,6 +29,7 @@
         />
       </v-ui-text>
     </v-market-info>
+    -->
     <v-market-info :title="$t('market_change_24h')" class="">
       <v-ui-text sm class="flex items-center justify-end w-full">
         <v-ui-format-percent
