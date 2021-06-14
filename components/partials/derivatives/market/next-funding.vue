@@ -50,7 +50,7 @@ export default Vue.extend({
         if (newMarket.perpetualMarketInfo) {
           this.milisecondsUntilFunding = moment(
             new BigNumber(newMarket.perpetualMarketInfo.nextFundingTimestamp)
-              .times(1000000)
+              .times(1000)
               .toNumber()
           ).diff(moment.utc())
         }
@@ -62,7 +62,7 @@ export default Vue.extend({
     if (this.market && this.market.perpetualMarketInfo) {
       this.milisecondsUntilFunding = moment(
         new BigNumber(this.market.perpetualMarketInfo.nextFundingTimestamp)
-          .times(1000000)
+          .times(1000)
           .toNumber()
       ).diff(moment.utc())
     }
