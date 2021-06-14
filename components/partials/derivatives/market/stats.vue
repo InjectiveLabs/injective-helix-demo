@@ -93,8 +93,8 @@
         <v-ui-format-percent
           v-bind="{
             appendPlusSign: true,
-            precision: 2,
-            value: fundingRate.toFixed(2)
+            precision: 6,
+            value: fundingRate.toFixed()
           }"
         />
       </v-ui-text>

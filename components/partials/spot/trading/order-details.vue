@@ -75,7 +75,7 @@
             &mdash;
           </v-ui-text>
         </p>
-        <p class="flex justify-between group leading-6">
+        <p v-if="!orderTypeBuy" class="flex justify-between group leading-6">
           <v-ui-text muted-sm class="group-hover:text-white flex items-center"
             ><span class="mr-2">{{ $t('est_receiving_amount') }}</span
             ><v-ui-icon
@@ -87,7 +87,7 @@
           <v-ui-text v-if="total.gt(0)" muted class="flex items-center">
             <v-ui-format-price
               v-bind="{
-                value: orderTypeBuy ? totalWithFees : totalWithoutFees
+                value: totalWithoutFees
               }"
               class="text-gray-300"
             />
