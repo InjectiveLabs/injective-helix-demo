@@ -14,12 +14,11 @@
         />
       </v-ui-text>
     </v-market-info>
-    <!--
-    <v-market-info :title="$t('index_price')">
+    <v-market-info :title="$t('mark_price')">
       <v-ui-text sm class="flex items-center justify-end w-full">
         <v-ui-format-price
           v-bind="{
-            value: indexPrice,
+            value: markPriceToBN,
             class: {
               'text-primary-500': lastPriceChange === Change.Increase,
               'text-accent-500': lastPriceChange === Change.Decrease
@@ -29,7 +28,6 @@
         />
       </v-ui-text>
     </v-market-info>
-    -->
     <v-market-info :title="$t('market_change_24h')" class="">
       <v-ui-text sm class="flex items-center justify-end w-full">
         <v-ui-format-percent
@@ -79,7 +77,7 @@
     </v-market-info>
     <v-market-info
       v-if="market.isPerpetual"
-      :title="$t('funding_rate')"
+      :title="$t('est_funding_rate')"
       class=""
     >
       <v-ui-icon
@@ -93,8 +91,8 @@
         <v-ui-format-percent
           v-bind="{
             appendPlusSign: true,
-            precision: 2,
-            value: fundingRate.toFixed(2)
+            precision: 6,
+            value: fundingRate.toFixed()
           }"
         />
       </v-ui-text>
@@ -156,8 +154,18 @@ export default Vue.extend({
       return this.$accessor.derivatives.trades
     },
 
-    indexPrice(): BigNumberInBase {
-      return new BigNumberInBase(this.$accessor.derivatives.marketIndexPrice)
+    markPrice(): string {
+      return this.$accessor.derivatives.marketMarkPrice
+    },
+
+    markPriceToBN(): BigNumberInBase {
+      const { markPrice } = this
+
+      if (!markPrice) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(markPrice)
     },
 
     lastPrice(): BigNumberInBase {
@@ -250,7 +258,7 @@ export default Vue.extend({
       )
     },
 
-    fundingRate(): BigNumberInBase {
+    twapEst(): BigNumberInBase {
       const { market } = this
 
       if (!market) {
@@ -261,9 +269,46 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
+      const currentUnixTime = Date.now() / 1000
+
       return new BigNumberInBase(
-        market.perpetualMarketFunding.cumulativeFunding
-      ).multipliedBy(100)
+        market.perpetualMarketFunding.cumulativePrice
+      ).dividedBy(new BigNumberInBase(currentUnixTime).mod(3600).times(24))
+    },
+
+    fundingRate(): BigNumberInBase {
+      const { market, twapEst } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      if (
+        !market.perpetualMarketFunding ||
+        !market.isPerpetual ||
+        !market.perpetualMarketInfo
+      ) {
+        return ZERO_IN_BASE
+      }
+
+      const hourlyFundingRateCap = new BigNumberInBase(
+        market.perpetualMarketInfo.hourlyFundingRateCap
+      )
+      const estFundingRate = new BigNumberInBase(
+        market.perpetualMarketInfo.hourlyInterestRate
+      ).plus(twapEst)
+
+      if (estFundingRate.gt(hourlyFundingRateCap)) {
+        return new BigNumberInBase(hourlyFundingRateCap).multipliedBy(100)
+      }
+
+      if (estFundingRate.lt(hourlyFundingRateCap.times(-1))) {
+        return new BigNumberInBase(hourlyFundingRateCap)
+          .times(-1)
+          .multipliedBy(100)
+      }
+
+      return new BigNumberInBase(estFundingRate).multipliedBy(100)
     },
 
     lastTradedPriceToString(): string {

@@ -36,10 +36,7 @@ export const actions = actionTree(
     },
 
     async fetchGasPrice({ commit }) {
-      commit(
-        'setGasPrice',
-        (await fetchGasPrice()) || TESTNET_GAS_PRICE.toString()
-      )
+      commit('setGasPrice', await fetchGasPrice())
     },
 
     async poll(_) {

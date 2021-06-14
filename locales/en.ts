@@ -132,6 +132,7 @@ export default {
   days: 'Days',
   funding_fee: 'Funding fee',
   funding_rate: 'Funding Rate',
+  est_funding_rate: 'Est. Funding Rate',
   funding_rate_tooltip:
     'The interest rate paid by position holders, determined by the difference between the perpetual swap price and underlying spot price. A positive funding rate implies that longs pay shorts, whereas a negative funding rate implies that shorts pay longs.',
   est_receiving_amount: 'Est. Receiving Amount',
@@ -141,7 +142,7 @@ export default {
     'If order is not filled in the block of creation there will be a fee return of {feeReturned}',
   buy_long: 'Buy/Long',
   sell_short: 'Sell/Short',
-  index_price: 'Index Price',
+  mark_price: 'Mark Price',
   select_ledger_address: 'Select Ledger Address',
   follow_instructions: 'Please follow the instructions on your device',
   address: 'Address',

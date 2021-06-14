@@ -155,7 +155,7 @@ export const fetchMarketOrders = async ({
   )
 }
 
-export const fetchMarketIndexPrice = async (market: UiDerivativeMarket) => {
+export const fetchMarketMarkPrice = async (market: UiDerivativeMarket) => {
   const price = await oracleConsumer.price({
     baseSymbol: market.oracleBase,
     quoteSymbol: market.oracleQuote,
@@ -253,7 +253,7 @@ export const streamSubaccountPositions = (
   streamManager.set(stream, DerivativeMarketStreamType.SubaccountPositions)
 }
 
-export const streamMarketIndexPrice = (
+export const streamMarketMarkPrice = (
   market: UiDerivativeMarket,
   callback: PricesStreamCallback
 ) => {

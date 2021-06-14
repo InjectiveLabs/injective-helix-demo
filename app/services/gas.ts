@@ -1,15 +1,15 @@
 import { HttpClient, BigNumber, BigNumberInWei } from '@injectivelabs/utils'
-import { GWEI_IN_WEI } from '../utils/constants'
+import { GWEI_IN_WEI, TESTNET_GAS_PRICE } from '../utils/constants'
 import { EthGasStationResult } from '~/types'
 
-export const fetchGasPrice = async (): Promise<string | undefined> => {
+export const fetchGasPrice = async (): Promise<string> => {
   const client = new HttpClient('https://ethgasstation.info/json')
   const response = (await client.get(`ethgasAPI.json`)) as {
     data: EthGasStationResult
   }
 
   if (!response || (response && !response.data)) {
-    return
+    return TESTNET_GAS_PRICE.toString()
   }
 
   return new BigNumberInWei(
