@@ -12,13 +12,38 @@
 
     <transition name="fade-shrink-in" appear>
       <div
-        class="relative w-5/6 md:w-auto max-h-modal shadow-inner bg-dark-800 border max-w-5xl mx-auto rounded z-20"
+        class="
+          relative
+          w-5/6
+          md:w-auto
+          max-h-modal
+          shadow-inner
+          bg-dark-800
+          border
+          max-w-5xl
+          mx-auto
+          rounded
+          z-20
+        "
       >
         <div class="absolute right-0 top-0 -mt-4 -mr-4">
           <button
             v-if="close"
             type="button"
-            class="w-10 h-10 align-middle rounded-full border shadow-md bg-dark-800 text-gray-300 text-2xl leading-none hover-scale outline-none focus:outline-none"
+            class="
+              w-10
+              h-10
+              align-middle
+              rounded-full
+              border
+              shadow-md
+              bg-dark-800
+              text-gray-300 text-2xl
+              leading-none
+              hover-scale
+              outline-none
+              focus:outline-none
+            "
             @click.stop="onClose"
           >
             &times;

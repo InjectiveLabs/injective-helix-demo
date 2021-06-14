@@ -61,7 +61,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import Derivative from './derivative.vue'
-import { UiDerivativeMarket, Icon, UiDerivativeMarketSummary, UiDerivativeMarketAndSummary } from '~/types'
+import {
+  UiDerivativeMarket,
+  Icon,
+  UiDerivativeMarketSummary,
+  UiDerivativeMarketAndSummary
+} from '~/types'
 
 export default Vue.extend({
   components: {

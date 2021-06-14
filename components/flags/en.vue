@@ -17,7 +17,7 @@
       id="layer_back"
       inkscape:groupmode="layer"
       inkscape:label="back"
-      style="display: inline;"
+      style="display: inline"
     >
       <image
         id="image_back"
@@ -36,7 +36,7 @@
       height="398"
       inkscape:groupmode="layer"
       inkscape:label="mask"
-      style="display: inline;"
+      style="display: inline"
       clip-path="url(#clipPathFlag)"
     >
       <g
@@ -98,12 +98,12 @@
               id="s"
               points="488533,-158734 -301930,415571 0,-513674 301930,415571 -488533,-158734 "
               transform="scale(1.94676e-6,1.94676e-6)"
-              style="fill: #ffde00;"
+              style="fill: #ffde00"
             />
             <clipPath id="clipPath3010" clipPathUnits="userSpaceOnUse">
               <rect
                 id="rect3012"
-                style="fill: #000000; stroke: none;"
+                style="fill: #000000; stroke: none"
                 width="26.666668"
                 height="20"
                 x="-5"
@@ -113,7 +113,7 @@
             <clipPath id="clipPath3000" clipPathUnits="userSpaceOnUse">
               <rect
                 id="rect3002"
-                style="fill: #000000; stroke: none;"
+                style="fill: #000000; stroke: none"
                 width="19.999998"
                 height="19.999998"
                 x="-5"
@@ -129,7 +129,7 @@
           >
             <rect
               id="rect6"
-              style="fill: #de2910;"
+              style="fill: #de2910"
               height="20"
               width="30"
               y="-15.4"
@@ -188,7 +188,7 @@
       id="layer_fore"
       inkscape:groupmode="layer"
       inkscape:label="fore"
-      style="display: inline;"
+      style="display: inline"
     >
       <image
         id="image_fore"

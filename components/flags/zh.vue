@@ -18,7 +18,7 @@
       id="layer_back"
       inkscape:groupmode="layer"
       inkscape:label="back"
-      style="display: inline;"
+      style="display: inline"
     >
       <image
         id="image_back"
@@ -37,7 +37,7 @@
       height="398"
       inkscape:groupmode="layer"
       inkscape:label="mask"
-      style="display: inline;"
+      style="display: inline"
       clip-path="url(#clipPathFlag)"
     >
       <g
@@ -125,7 +125,7 @@
       id="layer_fore"
       inkscape:groupmode="layer"
       inkscape:label="fore"
-      style="display: inline;"
+      style="display: inline"
     >
       <image
         id="image_fore"

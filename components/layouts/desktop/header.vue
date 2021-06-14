@@ -1,9 +1,29 @@
 <template>
   <header
-    class="w-full border-b border-dark-border shadow-md flex bg-dark-700 z-20 relative"
+    class="
+      w-full
+      border-b border-dark-border
+      shadow-md
+      flex
+      bg-dark-700
+      z-20
+      relative
+    "
   >
     <h1
-      class="font-black text-xl uppercase flex items-center border-r px-2 py-2 pl-4 lg:pr-6 cursor-pointer"
+      class="
+        font-black
+        text-xl
+        uppercase
+        flex
+        items-center
+        border-r
+        px-2
+        py-2
+        pl-4
+        lg:pr-6
+        cursor-pointer
+      "
       @click.stop="goHome"
     >
       <logo class="mr-2 lg:mr-4 w-6 h-6" />

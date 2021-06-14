@@ -1,6 +1,14 @@
 <template>
   <footer
-    class="h-full lg:h-footer w-full shadow-md flex flex-wrap lg:justify-between border-t"
+    class="
+      h-full
+      lg:h-footer
+      w-full
+      shadow-md
+      flex flex-wrap
+      lg:justify-between
+      border-t
+    "
   >
     <div class="ml-5 flex">
       <light-logo style="height: 3.5rem; margin-top: -2px" />
@@ -9,20 +17,40 @@
       </item>
     </div>
     <ul
-      class="list-footer justify-start flex lg:justify-end flex-wrap lg:flex-no-wrap h-full"
+      class="
+        list-footer
+        justify-start
+        flex
+        lg:justify-end
+        flex-wrap
+        lg:flex-no-wrap
+        h-full
+      "
     >
       <item>
         <div
           class="cursor-pointer leading-none"
           :class="{ relative: showLocaleDropdown }"
-          @click.prevent="onToggleLocaleDropdown"
+          @click.prevent.stop="onToggleLocaleDropdown"
         >
           <v-ui-icon :icon="Icon.Globe" sm />
 
           <div
             v-if="showLocaleDropdown"
             v-on-clickaway="onCloseLocaleDropdown"
-            class="flex items-center absolute bottom-0 z-10 bg-dark-600 w-24 p-2 rounded-lg shadow-dimmed text-center"
+            class="
+              flex
+              items-center
+              absolute
+              bottom-0
+              z-10
+              bg-dark-600
+              w-24
+              p-2
+              rounded-lg
+              shadow-dimmed
+              text-center
+            "
           >
             <a
               v-for="locale in visibleLocales"

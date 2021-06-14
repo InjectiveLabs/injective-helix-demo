@@ -2,7 +2,14 @@
   <div :class="classes" role="checkbox" tabindex="0" @click.stop="toggle">
     <span
       :class="token.allowance.gt(0) ? 'bg-primary-500' : 'bg-dark-500'"
-      class="inline-block w-full h-full rounded-full shadow-md transition-bg-color"
+      class="
+        inline-block
+        w-full
+        h-full
+        rounded-full
+        shadow-md
+        transition-bg-color
+      "
     ></span>
     <span :class="indicatorClasses" :style="indicatorStyles">
       <v-ui-icon

@@ -6,7 +6,15 @@
       @click="toggleDropdown"
     >
       <span
-        class="mr-2 uppercase tracking-wider text-xs flex items-center select-none"
+        class="
+          mr-2
+          uppercase
+          tracking-wider
+          text-xs
+          flex
+          items-center
+          select-none
+        "
       >
         <span class="text-gray-300 group-hover:text-gray-200 font-semibold">
           {{ $t('spot') }}
@@ -22,7 +30,23 @@
       <div
         v-if="isDropdownOpen"
         v-on-clickaway="closeDropdown"
-        class="absolute -mx-px flex justify-center border max-h-xs flex-wrap top-0 left-0 min-w-2xl mt-12 rounded rounded-tl-none bg-dark-700 shadow-md overflow-y-auto"
+        class="
+          absolute
+          -mx-px
+          flex
+          justify-center
+          border
+          max-h-xs
+          flex-wrap
+          top-0
+          left-0
+          min-w-2xl
+          mt-12
+          rounded rounded-tl-none
+          bg-dark-700
+          shadow-md
+          overflow-y-auto
+        "
       >
         <v-spot @selected="closeDropdown" />
       </div>

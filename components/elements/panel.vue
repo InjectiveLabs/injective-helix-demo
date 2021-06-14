@@ -3,7 +3,16 @@
     <div class="flex flex-col justify-between h-full">
       <div
         v-if="title || $slots['title'] || $slots['context']"
-        class="border-b items-center flex justify-between px-4 h-12 w-full v-panel-title"
+        class="
+          border-b
+          items-center
+          flex
+          justify-between
+          px-4
+          h-12
+          w-full
+          v-panel-title
+        "
       >
         <h4
           class="uppercase text-xs font-semibold text-gray-300"

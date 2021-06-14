@@ -2,7 +2,14 @@
   <div class="relative w-full h-full">
     <div class="absolute left-0 top-0 h-full w-full">
       <div
-        class="h-full w-full flex items-center justify-center text-xs text-gray-500"
+        class="
+          h-full
+          w-full
+          flex
+          items-center
+          justify-center
+          text-xs text-gray-500
+        "
         :class="shadow ? 'shadow-md' : ''"
       >
         <slot></slot>

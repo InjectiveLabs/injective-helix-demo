@@ -4,7 +4,15 @@
       <label
         v-if="label || error"
         :for="`input-${uid}`"
-        class="text-2xs mb-1 leading-loose opacity-75 flex items-center justify-between"
+        class="
+          text-2xs
+          mb-1
+          leading-loose
+          opacity-75
+          flex
+          items-center
+          justify-between
+        "
       >
         <!-- eslint-disable-next-line vue/no-v-html -->
         <span v-if="label" :class="error ? 'mr-2' : ''" v-html="label"></span>
