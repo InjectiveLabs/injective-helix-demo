@@ -76,6 +76,11 @@ export const setTokenAllowance = async ({
   const gas = new BigNumberInWei(
     await setAllowanceOfContractFunction.estimateGasAsync()
   )
+  const actualGasPrice = new BigNumberInBase(
+    gasPrice.lt(TESTNET_GAS_PRICE)
+      ? gasPrice.toNumber()
+      : TESTNET_GAS_PRICE.toNumber()
+  )
 
   try {
     const txHash = await web3Strategy.sendTransaction(
@@ -83,7 +88,7 @@ export const setTokenAllowance = async ({
         from: address,
         to: tokenAddress,
         gas: gas.toNumber().toString(16),
-        gasPrice: gasPrice.toNumber().toString(16),
+        gasPrice: actualGasPrice.toNumber().toString(16),
         data
       },
       { address, chainId: TESTNET_CHAIN_ID }

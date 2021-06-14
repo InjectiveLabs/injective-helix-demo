@@ -114,7 +114,6 @@ export const actions = actionTree(
       { state, commit },
       { address: tokenAddress }: TokenWithBalance
     ) {
-      const { baseTokenWithBalance, quoteTokenWithBalance } = state
       const { address } = this.app.$accessor.wallet
       const { gasPrice } = this.app.$accessor.app
       const amount = UNLIMITED_ALLOWANCE
@@ -127,6 +126,8 @@ export const actions = actionTree(
         gasPrice: new BigNumberInBase(gasPrice).toWei(),
         tokenAddress
       })
+
+      const { baseTokenWithBalance, quoteTokenWithBalance } = state
 
       if (baseTokenWithBalance.address === tokenAddress) {
         commit('setBaseTokenWithBalance', {

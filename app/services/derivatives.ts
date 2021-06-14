@@ -28,6 +28,7 @@ import { streamManager } from '~/app/singletons/StreamManager'
 import {
   FEE_RECIPIENT,
   TESTNET_CHAIN_ID,
+  TESTNET_DEFAULT_MAX_SLIPPAGE,
   ZERO_IN_BASE,
   ZERO_TO_STRING
 } from '~/app/utils/constants'
@@ -357,7 +358,10 @@ export const submitMarketOrder = async ({
     injectiveAddress,
     marketId: market.marketId,
     order: {
-      price: price.toWei(market.quoteToken.decimals).toFixed(),
+      price: price
+        .toWei(market.quoteToken.decimals)
+        .times(TESTNET_DEFAULT_MAX_SLIPPAGE)
+        .toFixed(),
       margin: reduceOnly
         ? ZERO_TO_STRING
         : margin.toWei(market.quoteToken.decimals).toFixed(),
@@ -403,7 +407,10 @@ export const closePosition = async ({
     injectiveAddress,
     marketId: market.marketId,
     order: {
-      price: price.toWei(market.quoteToken.decimals).toFixed(),
+      price: price
+        .toWei(market.quoteToken.decimals)
+        .times(TESTNET_DEFAULT_MAX_SLIPPAGE)
+        .toFixed(),
       margin: ZERO_TO_STRING,
       quantity: quantity.toFixed(),
       orderType: orderTypeToGrpcOrderType(orderType),

@@ -1,6 +1,6 @@
 
 <template>
-  <div class="range-wrap flex items-center relative">
+  <div class="range-wrap flex items-center relative select-none">
     <input
       v-bind="$attrs"
       class="range"

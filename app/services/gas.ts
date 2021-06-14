@@ -14,5 +14,7 @@ export const fetchGasPrice = async (): Promise<string> => {
 
   return new BigNumberInWei(
     new BigNumber(response.data.average / 10).multipliedBy(GWEI_IN_WEI)
-  ).toString()
+  )
+    .toBase()
+    .toString()
 }
