@@ -33,7 +33,7 @@
     "@injectivelabs/contracts": "^0.0.51",
     "@injectivelabs/derivatives-consumer": "^0.0.30",
     "@injectivelabs/exceptions": "^0.0.25",
-    "@injectivelabs/exchange-consumer": "^0.0.63",
+    "@injectivelabs/exchange-consumer": "^0.0.64",
     "@injectivelabs/networks": "^0.0.26",
     "@injectivelabs/spot-consumer": "^0.0.43",
     "@injectivelabs/subaccount-consumer": "^0.0.20",
