@@ -120,7 +120,7 @@
     <component
       :is="tradingTypeMarket ? `v-order-details-market` : 'v-order-details'"
       v-bind="{
-        price: averageExecutionPrice,
+        price: executionPrice,
         notionalValue,
         liquidationPrice,
         margin,
@@ -158,7 +158,10 @@ import { Status, BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import OrderDetails from './order-details.vue'
 import OrderLeverage from './order-leverage.vue'
 import OrderDetailsMarket from './order-details-market.vue'
-import { ZERO_IN_BASE } from '~/app/utils/constants'
+import {
+  TESTNET_DEFAULT_MAX_SLIPPAGE,
+  ZERO_IN_BASE
+} from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import {
   DerivativeOrderType,
@@ -173,7 +176,6 @@ import {
 } from '~/types'
 import {
   calculateWorstExecutionPriceFromOrderbook,
-  calculateAverageExecutionPriceFromOrderbook,
   calculateLiquidationPrice,
   calculateMargin,
   getApproxAmountForMarketOrder
@@ -340,55 +342,30 @@ export default Vue.extend({
 
         const records = orderTypeBuy ? sells : buys
 
-        return calculateWorstExecutionPriceFromOrderbook({
+        const worstPrice = calculateWorstExecutionPriceFromOrderbook({
           records,
           amount,
           market
         })
+
+        return new BigNumberInBase(
+          worstPrice
+            .times(
+              orderTypeBuy
+                ? TESTNET_DEFAULT_MAX_SLIPPAGE.div(100).plus(1)
+                : TESTNET_DEFAULT_MAX_SLIPPAGE.div(100).minus(1).times(-1)
+            )
+            .toFixed(market.priceDecimals)
+        )
       }
 
       if (price.isNaN()) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(price)
-    },
-
-    averageExecutionPrice(): BigNumberInBase {
-      const {
-        tradingTypeMarket,
-        orderTypeBuy,
-        sells,
-        buys,
-        hasAmount,
-        market,
-        amount,
-        price
-      } = this
-
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      if (tradingTypeMarket) {
-        if (!hasAmount) {
-          return ZERO_IN_BASE
-        }
-
-        const records = orderTypeBuy ? sells : buys
-
-        return calculateAverageExecutionPriceFromOrderbook({
-          records,
-          amount,
-          market
-        })
-      }
-
-      if (price.isNaN()) {
-        return ZERO_IN_BASE
-      }
-
-      return new BigNumberInBase(price)
+      return new BigNumberInBase(
+        new BigNumberInBase(price).toFixed(market.priceDecimals)
+      )
     },
 
     hasPrice(): boolean {

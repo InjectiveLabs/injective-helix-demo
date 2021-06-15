@@ -39,27 +39,6 @@
             &mdash;
           </v-ui-text>
         </p>
-
-        <p class="flex justify-between group leading-6">
-          <v-ui-text muted-sm class="group-hover:text-white">
-            {{ $t('price') }}
-          </v-ui-text>
-          <v-ui-text v-if="price.gt(0)" muted class="flex items-center">
-            <span class="mr-1">≈</span>
-            <v-ui-format-price
-              v-bind="{
-                value: price
-              }"
-              class="text-gray-300"
-            />
-            <small class="opacity-75 ml-1">{{
-              market.quoteToken.symbol
-            }}</small>
-          </v-ui-text>
-          <v-ui-text v-else muted-sm class="group-hover:text-white">
-            &mdash;
-          </v-ui-text>
-        </p>
         <p class="flex justify-between group leading-6">
           <v-ui-text muted-sm class="group-hover:text-white">
             {{ $t('notional_value') }}
@@ -124,6 +103,11 @@
             &mdash;
           </v-ui-text>
         </p>
+        <p class="mt-2">
+          <v-ui-text xs muted class="flex items-center">
+            {{ $t('worst_price_note', { slippage: slippage.toFixed() }) }}
+          </v-ui-text>
+        </p>
       </div>
     </v-drawer>
   </div>
@@ -134,7 +118,10 @@ import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import Drawer from '~/components/elements/drawer.vue'
 import { SpotOrderType, Icon, UiSpotMarket } from '~/types'
-import { ZERO_IN_BASE } from '~/app/utils/constants'
+import {
+  TESTNET_DEFAULT_MAX_SLIPPAGE,
+  ZERO_IN_BASE
+} from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -202,6 +189,10 @@ export default Vue.extend({
   computed: {
     market(): UiSpotMarket | undefined {
       return this.$accessor.spot.market
+    },
+
+    slippage(): BigNumberInBase {
+      return new BigNumberInBase(TESTNET_DEFAULT_MAX_SLIPPAGE)
     },
 
     extractedTotal(): BigNumberInBase {

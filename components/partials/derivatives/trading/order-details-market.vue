@@ -41,28 +41,6 @@
             &mdash;
           </v-ui-text>
         </p>
-
-        <p class="flex justify-between group leading-6">
-          <v-ui-text muted-sm class="group-hover:text-white">
-            {{ $t('price') }}
-          </v-ui-text>
-          <v-ui-text v-if="price.gt(0)" muted class="flex items-center">
-            <span class="mr-1">≈</span>
-            <v-ui-format-price
-              v-bind="{
-                value: price,
-                decimals: market.priceDecimals
-              }"
-              class="text-gray-300"
-            />
-            <small class="opacity-75 ml-1">{{
-              market.quoteToken.symbol
-            }}</small>
-          </v-ui-text>
-          <v-ui-text v-else muted-sm class="group-hover:text-white">
-            &mdash;
-          </v-ui-text>
-        </p>
         <p
           v-if="!orderTypeReduceOnly"
           class="flex justify-between group leading-6"
@@ -165,6 +143,11 @@
             &mdash;
           </v-ui-text>
         </p>
+        <p class="mt-2">
+          <v-ui-text xs muted class="flex items-center">
+            {{ $t('worst_price_note', { slippage: slippage.toFixed() }) }}
+          </v-ui-text>
+        </p>
       </div>
     </v-drawer>
   </div>
@@ -175,6 +158,7 @@ import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import Drawer from '~/components/elements/drawer.vue'
 import { DerivativeOrderType, Icon, UiDerivativeMarket } from '~/types'
+import { TESTNET_DEFAULT_MAX_SLIPPAGE } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -247,6 +231,10 @@ export default Vue.extend({
   computed: {
     market(): UiDerivativeMarket | undefined {
       return this.$accessor.derivatives.market
+    },
+
+    slippage(): BigNumberInBase {
+      return new BigNumberInBase(TESTNET_DEFAULT_MAX_SLIPPAGE)
     }
   },
 

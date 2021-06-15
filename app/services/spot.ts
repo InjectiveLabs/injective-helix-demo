@@ -17,7 +17,6 @@ import { streamManager } from '~/app/singletons/StreamManager'
 import {
   FEE_RECIPIENT,
   TESTNET_CHAIN_ID,
-  TESTNET_DEFAULT_MAX_SLIPPAGE,
   ZERO_IN_BASE,
   ZERO_TO_STRING
 } from '~/app/utils/constants'
@@ -277,13 +276,12 @@ export const submitMarketOrder = async ({
     market.quoteToken.decimals - market.baseToken.decimals
   )
   const relativeQuantity = quantity.toWei(market.baseToken.decimals)
-
   const message = SpotMarketComposer.createMarketOrder({
     subaccountId,
     injectiveAddress,
     marketId: market.marketId,
     order: {
-      price: relativePrice.times(TESTNET_DEFAULT_MAX_SLIPPAGE).toFixed(),
+      price: relativePrice.toFixed(),
       orderType: orderTypeToGrpcOrderType(orderType),
       quantity: relativeQuantity.toFixed(),
       feeRecipient: FEE_RECIPIENT,

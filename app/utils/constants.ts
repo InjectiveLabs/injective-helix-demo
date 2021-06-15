@@ -44,4 +44,4 @@ export const TESTNET_CHAIN_ID: ChainId = ChainId.Kovan
 export const RPC_POLING_INTERVAL: number = 4000
 
 export const TESTNET_GAS_PRICE = new BigNumber(6).times(GWEI_IN_WEI)
-export const TESTNET_DEFAULT_MAX_SLIPPAGE = new BigNumber(1.05) // +0.5% slippage
+export const TESTNET_DEFAULT_MAX_SLIPPAGE = new BigNumber(1) // +1% slippage

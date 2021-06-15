@@ -126,6 +126,8 @@ export default {
   reduce_only: 'Reduce Only',
   reduce_only_in_excess:
     'Total size of reduce-only orders would exceed size of your position',
+  worst_price_note:
+    'Note: If {slippage}% max slippage protection is violated, you need to resend your market order.',
   max_leverage_warn: 'Please decrease leverage.',
   next_funding: 'Next Funding',
   expiry_date: 'Expiry Date',
