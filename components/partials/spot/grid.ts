@@ -2,7 +2,7 @@ import { Breakpoint } from '~/types'
 
 const lgGrid = [
   { i: 'market-panel', x: 0, y: 0, w: 9, h: 1, minW: 0, maxH: 1 },
-  { i: 'marquee-panel', x: 0, y: 0, w: 3, h: 1, minW: 2, maxH: 1 },
+  { i: 'marquee-panel', x: 9, y: 0, w: 3, h: 1, minW: 2, maxH: 1 },
   {
     i: 'balance-panel',
     x: 0,
