@@ -20,7 +20,6 @@
 import Vue from 'vue'
 // @ts-ignore
 import VCountdown from '@chenfengyuan/vue-countdown'
-import { BigNumber } from '@injectivelabs/utils'
 import moment from 'moment'
 import MarketInfo from '~/components/elements/market-info.vue'
 import { UiDerivativeMarket } from '~/types'
@@ -41,37 +40,32 @@ export default Vue.extend({
   computed: {
     market(): UiDerivativeMarket | undefined {
       return this.$accessor.derivatives.market
-    }
-  },
+    },
 
-  watch: {
-    market(newMarket: UiDerivativeMarket) {
-      if (this.milisecondsUntilFunding <= 0) {
-        if (newMarket.perpetualMarketInfo) {
-          this.milisecondsUntilFunding = moment(
-            new BigNumber(newMarket.perpetualMarketInfo.nextFundingTimestamp)
-              .times(1000)
-              .toNumber()
-          ).diff(moment.utc())
-        }
-      }
+    perpetualMarket(): boolean {
+      const { market } = this
+
+      return !!market && market.isPerpetual
     }
   },
 
   created() {
-    if (this.market && this.market.perpetualMarketInfo) {
-      this.milisecondsUntilFunding = moment(
-        new BigNumber(this.market.perpetualMarketInfo.nextFundingTimestamp)
-          .times(1000)
-          .toNumber()
-      ).diff(moment.utc())
+    if (this.perpetualMarket) {
+      this.milisecondsUntilFunding = moment.utc().endOf('hour').milliseconds()
     }
   },
 
   mounted() {
-    if (this.milisecondsUntilFunding) {
+    if (this.perpetualMarket) {
       this.interval = setInterval(() => {
-        this.milisecondsUntilFunding = this.milisecondsUntilFunding - 1000
+        if (this.milisecondsUntilFunding - 1000 >= 0) {
+          this.milisecondsUntilFunding = this.milisecondsUntilFunding - 1000
+        } else {
+          this.milisecondsUntilFunding = moment
+            .utc()
+            .endOf('hour')
+            .diff(moment.utc())
+        }
       }, 1000)
     }
   },
