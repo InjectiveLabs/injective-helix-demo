@@ -165,6 +165,8 @@ export const actions = actionTree(
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
+      await this.app.$accessor.token.getTokenBalanceAndAllowanceForMarket()
+      await this.app.$accessor.token.getTokenBalanceAndAllowanceForDerivativeMarket()
     }
   }
 )
