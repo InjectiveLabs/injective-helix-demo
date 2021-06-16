@@ -33,7 +33,6 @@ export class TxProvider {
 
     try {
       return await transactionConsumer.prepareExchangeTxRequest({
-        delegatedFee: false,
         address,
         message,
         chainId
