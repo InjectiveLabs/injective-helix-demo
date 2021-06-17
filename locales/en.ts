@@ -141,7 +141,7 @@ export default {
   est_receiving_amount_note:
     'This amount is the least possible to be returned after the execution of the trade',
   fee_order_details_note:
-    "if your limit order doesn't get filled as a taker order, you will only need to pay {feeReturned} in fees",
+    "If your limit order doesn't get filled as a taker order, you will only need to pay {feeReturned} in fees",
   buy_long: 'Buy/Long',
   sell_short: 'Sell/Short',
   mark_price: 'Mark Price',
