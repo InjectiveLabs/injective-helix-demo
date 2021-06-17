@@ -45,8 +45,11 @@ export class TxProvider {
   async sign(txData: any) {
     const { address, web3Strategy } = this
 
+    const parsed = JSON.parse(txData)
+    parsed.domain.chainId = parseInt(parsed.domain.chainId, 16)
+
     try {
-      return await web3Strategy.signTypedDataV4(txData, address)
+      return await web3Strategy.signTypedDataV4(JSON.stringify(parsed), address)
     } catch (e) {
       throw new Web3Exception(e.message)
     }
