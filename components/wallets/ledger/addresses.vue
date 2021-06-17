@@ -92,8 +92,8 @@ export default Vue.extend({
 
       this.$accessor.wallet
         .getAddresses()
-        .then(() => {
-          //
+        .then((addresses: string[]) => {
+          this.$accessor.wallet.setAddresses([...addresses, ...this.addresses])
         })
         .catch(this.$onRejected)
         .finally(() => {
