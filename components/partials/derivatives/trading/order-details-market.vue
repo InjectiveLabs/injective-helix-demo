@@ -13,7 +13,7 @@
           <span class="mr-1">≈</span>
           <v-ui-format-price
             v-bind="{
-              value: total,
+              value: totalWithFees,
               decimals: market.priceDecimals
             }"
           />
@@ -172,6 +172,11 @@ export default Vue.extend({
     },
 
     total: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    totalWithFees: {
       required: true,
       type: Object as PropType<BigNumberInBase>
     },

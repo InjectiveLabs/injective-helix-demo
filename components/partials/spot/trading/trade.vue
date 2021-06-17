@@ -689,6 +689,7 @@ export default Vue.extend({
         baseAvailableBalance,
         quoteAvailableBalance,
         executionPrice,
+        slippage,
         reverseSlippage
       } = this
 
@@ -711,11 +712,12 @@ export default Vue.extend({
         return getApproxAmountForMarketOrder({
           market,
           balance,
+          slippage: orderTypeBuy
+            ? slippage.toNumber()
+            : reverseSlippage.toNumber(),
           percent: percentageToNumber.toNumber(),
           records: orderTypeBuy ? sells : buys
-        })
-          .times(reverseSlippage)
-          .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
+        }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
       }
 
       if (executionPrice.lte(0)) {

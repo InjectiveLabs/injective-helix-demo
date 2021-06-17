@@ -9,11 +9,7 @@ import {
   DerivativeTransformer
 } from '@injectivelabs/derivatives-consumer'
 import { AccountAddress, TradeExecutionSide } from '@injectivelabs/ts-types'
-import {
-  BigNumber,
-  BigNumberInBase,
-  BigNumberInWei
-} from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { SubaccountStreamType } from '@injectivelabs/subaccount-consumer'
 import {
@@ -572,45 +568,47 @@ export const calculateAverageExecutionPriceFromOrderbook = ({
 
 export const getApproxAmountForMarketOrder = ({
   records,
-  availableMargin,
+  margin,
   market,
   leverage = '1',
+  slippage,
   percent = 1
 }: {
   records: UiPriceLevel[]
-  availableMargin: BigNumberInBase
+  margin: BigNumberInBase
   percent?: number
+  slippage: number
   leverage: string
   market: UiDerivativeMarket
 }) => {
   const fee = new BigNumberInBase(market.takerFeeRate)
+  const availableMargin = new BigNumberInBase(margin).times(percent)
   let totalQuantity = ZERO_IN_BASE
-  let marginRemaining = new BigNumberInBase(availableMargin).times(percent)
+  let totalNotional = ZERO_IN_BASE
 
   for (const record of records) {
-    const recordNotional = new BigNumberInWei(
-      new BigNumberInBase(record.price).times(record.quantity)
-    ).toBase(market.quoteToken.decimals)
-    const recordFees = new BigNumberInWei(recordNotional.times(fee))
-    const recordMargin = new BigNumberInWei(
-      calculateMargin({
-        quantity: record.quantity,
-        price: record.price,
-        leverage
-      })
-    ).toBase(market.quoteToken.decimals)
-    const total = recordMargin.plus(recordFees)
+    const price = new BigNumberInBase(
+      new BigNumberInWei(record.price)
+        .toBase(market.quoteToken.decimals)
+        .times(slippage)
+    )
+    const quantity = new BigNumberInBase(
+      new BigNumberInBase(record.quantity).dp(market.quantityDecimals)
+    )
 
-    if (total.gt(marginRemaining)) {
-      const factor = new BigNumber(1).dividedBy(leverage).plus(fee)
-      const usableQuantity = marginRemaining.dividedBy(
-        factor.times(record.price)
-      )
+    totalQuantity = totalQuantity.plus(quantity)
+    totalNotional = totalQuantity.times(price)
 
-      return totalQuantity.plus(usableQuantity)
-    } else {
-      totalQuantity = totalQuantity.plus(record.quantity)
-      marginRemaining = marginRemaining.minus(total)
+    const totalFees = new BigNumberInWei(totalNotional.times(fee))
+    const totalMargin = calculateMargin({
+      quantity: totalQuantity.toFixed(),
+      price: price.toFixed(),
+      leverage
+    })
+    const total = totalMargin.plus(totalFees)
+
+    if (total.gt(availableMargin)) {
+      return availableMargin.times(leverage).dividedBy(fee.plus(1).times(price))
     }
   }
 

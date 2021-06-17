@@ -410,36 +410,36 @@ export const getApproxAmountForMarketOrder = ({
   records,
   balance,
   market,
+  slippage,
   percent = 1
 }: {
   records: UiPriceLevel[]
   balance: BigNumberInBase
   percent?: number
+  slippage: number
   market: UiSpotMarket
 }) => {
   const fee = new BigNumberInBase(market.takerFeeRate)
+  const availableBalance = balance.times(percent)
   let totalQuantity = ZERO_IN_BASE
-  let balanceRemaining = balance.times(percent)
+  let totalNotional = ZERO_IN_BASE
 
   for (const record of records) {
+    const price = new BigNumberInBase(record.price)
+      .times(slippage)
+      .toWei(market.baseToken.decimals - market.quoteToken.decimals)
     const quantity = new BigNumberInWei(record.quantity).toBase(
       market.baseToken.decimals
     )
-    const price = new BigNumberInBase(record.price).toWei(
-      market.baseToken.decimals - market.quoteToken.decimals
-    )
-    const recordNotional = quantity.times(price)
-    const recordFees = recordNotional.times(fee)
-    const total = recordNotional.plus(recordFees)
 
-    if (total.gt(balanceRemaining)) {
-      const factor = fee.plus(1)
-      const usableQuantity = balanceRemaining.dividedBy(factor.times(price))
+    totalQuantity = totalQuantity.plus(quantity)
+    totalNotional = totalQuantity.times(price)
 
-      return totalQuantity.plus(usableQuantity)
-    } else {
-      totalQuantity = totalQuantity.plus(quantity)
-      balanceRemaining = balanceRemaining.minus(total)
+    const totalFees = totalNotional.times(fee)
+    const total = totalNotional.plus(totalFees)
+
+    if (total.gt(availableBalance)) {
+      return availableBalance.dividedBy(fee.plus(1).times(price))
     }
   }
 

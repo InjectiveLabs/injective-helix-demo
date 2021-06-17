@@ -129,6 +129,7 @@
         orderType,
         fees,
         total,
+        totalWithFees,
         amount,
         detailsDrawerOpen
       }"
@@ -764,13 +765,13 @@ export default Vue.extend({
     },
 
     total(): BigNumberInBase {
-      const { fees, hasPrice, hasAmount, margin, market } = this
+      const { hasPrice, hasAmount, margin, market } = this
 
       if (!hasPrice || !hasAmount || !market) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(fees.plus(margin))
+      return new BigNumberInBase(margin)
     },
 
     totalWithFees(): BigNumberInBase {
@@ -864,7 +865,8 @@ export default Vue.extend({
         orderTypeReduceOnly,
         availableMargin,
         executionPrice,
-        reverseSlippage
+        reverseSlippage,
+        slippage
       } = this
       const percentageToNumber = new BigNumberInBase(percentage).div(100)
 
@@ -881,13 +883,14 @@ export default Vue.extend({
       if (tradingTypeMarket) {
         return getApproxAmountForMarketOrder({
           market,
-          availableMargin,
+          margin: availableMargin,
           leverage: form.leverage,
+          slippage: orderTypeBuy
+            ? slippage.toNumber()
+            : reverseSlippage.toNumber(),
           percent: percentageToNumber.toNumber(),
           records: orderTypeBuy ? sells : buys
-        })
-          .times(reverseSlippage)
-          .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
+        }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
       }
 
       if (executionPrice.lte(0)) {
