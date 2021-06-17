@@ -601,16 +601,6 @@ export const getApproxAmountForMarketOrder = ({
     ).toBase(market.quoteToken.decimals)
     const total = recordMargin.plus(recordFees)
 
-    console.log(
-      JSON.stringify({
-        marginRemaining: marginRemaining.toFixed(),
-        recordNotional: recordNotional.toFixed(),
-        recordFees: recordFees.toFixed(),
-        recordMargin: recordMargin.toFixed(),
-        total: total.toFixed()
-      })
-    )
-
     if (total.gt(marginRemaining)) {
       const factor = new BigNumber(1).dividedBy(leverage).plus(fee)
       const usableQuantity = marginRemaining.dividedBy(
