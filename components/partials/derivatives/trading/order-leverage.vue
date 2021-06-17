@@ -13,7 +13,7 @@
     <v-input-slider
       min="1"
       :max="maxLeverage.toString()"
-      step="0.1"
+      step="0.01"
       :value="leverage.toString()"
       @input="onLeverageChange"
     />
