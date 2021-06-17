@@ -279,6 +279,38 @@ export default Vue.extend({
       return !amount.isNaN() && amount.gt(0)
     },
 
+    tradingTypeMarket(): boolean {
+      const { tradingType } = this
+
+      return tradingType === TradeExecutionType.Market
+    },
+
+    orderTypeBuy(): boolean {
+      const { orderType } = this
+
+      return orderType === SpotOrderType.Buy
+    },
+
+    slippage(): BigNumberInBase {
+      const { orderTypeBuy } = this
+
+      return new BigNumberInBase(
+        orderTypeBuy
+          ? TESTNET_DEFAULT_MAX_SLIPPAGE.div(100).plus(1)
+          : TESTNET_DEFAULT_MAX_SLIPPAGE.div(100).minus(1).times(-1)
+      )
+    },
+
+    reverseSlippage(): BigNumberInBase {
+      const { orderTypeBuy } = this
+
+      return new BigNumberInBase(
+        orderTypeBuy
+          ? TESTNET_DEFAULT_MAX_SLIPPAGE.div(100).minus(1).times(-1)
+          : TESTNET_DEFAULT_MAX_SLIPPAGE.div(100).plus(1)
+      )
+    },
+
     price(): BigNumberInBase {
       return new BigNumberInBase(this.form.price)
     },
@@ -289,6 +321,7 @@ export default Vue.extend({
         orderTypeBuy,
         sells,
         buys,
+        slippage,
         hasAmount,
         market,
         amount,
@@ -313,13 +346,7 @@ export default Vue.extend({
         })
 
         return new BigNumberInBase(
-          worstPrice
-            .times(
-              orderTypeBuy
-                ? TESTNET_DEFAULT_MAX_SLIPPAGE.div(100).plus(1)
-                : TESTNET_DEFAULT_MAX_SLIPPAGE.div(100).minus(1).times(-1)
-            )
-            .toFixed(market.priceDecimals)
+          worstPrice.times(slippage).toFixed(market.priceDecimals)
         )
       }
 
@@ -336,18 +363,6 @@ export default Vue.extend({
       const { executionPrice } = this
 
       return !executionPrice.isNaN() && executionPrice.gt(0)
-    },
-
-    tradingTypeMarket(): boolean {
-      const { tradingType } = this
-
-      return tradingType === TradeExecutionType.Market
-    },
-
-    orderTypeBuy(): boolean {
-      const { orderType } = this
-
-      return orderType === SpotOrderType.Buy
     },
 
     amountStep(): string {
@@ -673,8 +688,10 @@ export default Vue.extend({
         orderTypeBuy,
         baseAvailableBalance,
         quoteAvailableBalance,
-        executionPrice
+        executionPrice,
+        reverseSlippage
       } = this
+
       const percentageToNumber = new BigNumberInBase(percentage).div(100)
       const balance = orderTypeBuy
         ? quoteAvailableBalance
@@ -695,8 +712,10 @@ export default Vue.extend({
           market,
           balance,
           percent: percentageToNumber.toNumber(),
-          records: orderTypeBuy ? [...sells].reverse() : buys
-        }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
+          records: orderTypeBuy ? sells : buys
+        })
+          .times(reverseSlippage)
+          .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
       }
 
       if (executionPrice.lte(0)) {

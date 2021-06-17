@@ -585,21 +585,31 @@ export const getApproxAmountForMarketOrder = ({
 }) => {
   const fee = new BigNumberInBase(market.takerFeeRate)
   let totalQuantity = ZERO_IN_BASE
-  let marginRemaining = new BigNumberInBase(availableMargin)
-    .toWei(market.quoteToken.decimals)
-    .times(percent)
+  let marginRemaining = new BigNumberInBase(availableMargin).times(percent)
 
   for (const record of records) {
-    const recordNotional = new BigNumberInBase(record.price).times(
-      record.quantity
-    )
-    const recordFees = recordNotional.times(fee)
-    const recordMargin = calculateMargin({
-      quantity: record.quantity,
-      price: record.price,
-      leverage
-    })
+    const recordNotional = new BigNumberInWei(
+      new BigNumberInBase(record.price).times(record.quantity)
+    ).toBase(market.quoteToken.decimals)
+    const recordFees = new BigNumberInWei(recordNotional.times(fee))
+    const recordMargin = new BigNumberInWei(
+      calculateMargin({
+        quantity: record.quantity,
+        price: record.price,
+        leverage
+      })
+    ).toBase(market.quoteToken.decimals)
     const total = recordMargin.plus(recordFees)
+
+    console.log(
+      JSON.stringify({
+        marginRemaining: marginRemaining.toFixed(),
+        recordNotional: recordNotional.toFixed(),
+        recordFees: recordFees.toFixed(),
+        recordMargin: recordMargin.toFixed(),
+        total: total.toFixed()
+      })
+    )
 
     if (total.gt(marginRemaining)) {
       const factor = new BigNumber(1).dividedBy(leverage).plus(fee)

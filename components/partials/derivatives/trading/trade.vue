@@ -291,6 +291,26 @@ export default Vue.extend({
       return !amount.isNaN() && amount.gt(0)
     },
 
+    slippage(): BigNumberInBase {
+      const { orderTypeBuy } = this
+
+      return new BigNumberInBase(
+        orderTypeBuy
+          ? TESTNET_DEFAULT_MAX_SLIPPAGE.div(100).plus(1)
+          : TESTNET_DEFAULT_MAX_SLIPPAGE.div(100).minus(1).times(-1)
+      )
+    },
+
+    reverseSlippage(): BigNumberInBase {
+      const { orderTypeBuy } = this
+
+      return new BigNumberInBase(
+        orderTypeBuy
+          ? TESTNET_DEFAULT_MAX_SLIPPAGE.div(100).minus(1).times(-1)
+          : TESTNET_DEFAULT_MAX_SLIPPAGE.div(100).plus(1)
+      )
+    },
+
     price(): BigNumberInBase {
       return new BigNumberInBase(this.form.price)
     },
@@ -328,7 +348,8 @@ export default Vue.extend({
         hasAmount,
         market,
         amount,
-        price
+        price,
+        slippage
       } = this
 
       if (!market) {
@@ -349,13 +370,7 @@ export default Vue.extend({
         })
 
         return new BigNumberInBase(
-          worstPrice
-            .times(
-              orderTypeBuy
-                ? TESTNET_DEFAULT_MAX_SLIPPAGE.div(100).plus(1)
-                : TESTNET_DEFAULT_MAX_SLIPPAGE.div(100).minus(1).times(-1)
-            )
-            .toFixed(market.priceDecimals)
+          worstPrice.times(slippage).toFixed(market.priceDecimals)
         )
       }
 
@@ -848,7 +863,8 @@ export default Vue.extend({
         maxReduceOnly,
         orderTypeReduceOnly,
         availableMargin,
-        executionPrice
+        executionPrice,
+        reverseSlippage
       } = this
       const percentageToNumber = new BigNumberInBase(percentage).div(100)
 
@@ -868,8 +884,10 @@ export default Vue.extend({
           availableMargin,
           leverage: form.leverage,
           percent: percentageToNumber.toNumber(),
-          records: orderTypeBuy ? [...sells].reverse() : buys
-        }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
+          records: orderTypeBuy ? sells : buys
+        })
+          .times(reverseSlippage)
+          .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
       }
 
       if (executionPrice.lte(0)) {
