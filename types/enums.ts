@@ -33,7 +33,8 @@ export enum Icon {
 export enum Modal {
   Connect = 'connect',
   Transfer = 'transfer',
-  Deposit = 'deposit'
+  Deposit = 'deposit',
+  Withdraw = 'withdraw'
 }
 
 export enum Breakpoint {

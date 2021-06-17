@@ -31,6 +31,7 @@
       </grid-layout>
       <modal-transfer />
       <modal-deposit />
+      <modal-withdraw />
     </div>
   </HOCLoading>
 </template>
@@ -44,6 +45,7 @@ import MarketPanel from '~/components/partials/derivatives/market/market.vue'
 import MarqueePanel from '~/components/partials/derivatives/market/marquee.vue'
 import ModalTransfer from '~/components/partials/derivatives/transfer.vue'
 import ModalDeposit from '~/components/partials/derivatives/deposit.vue'
+import ModalWithdraw from '~/components/partials/spot/withdraw.vue'
 import TradingPanel from '~/components/partials/derivatives/trading/index.vue'
 import BalancePanel from '~/components/partials/derivatives/balance.vue'
 import SubaccountBalancePanel from '~/components/partials/derivatives/subaccount-balance/index.vue'
@@ -63,6 +65,7 @@ export default Vue.extend({
     BalancePanel,
     TradesPanel,
     OrdersPanel,
+    ModalWithdraw,
     PositionsPanel,
     OrderBookPanel,
     TradingPanel,
