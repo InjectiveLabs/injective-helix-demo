@@ -83,10 +83,11 @@ export const fetchMarketsSummary = async (
     const marketSummary = marketsSummary.find(
       (m) => m.marketId === market.marketId
     )!
+    // Sometimes, chronos returns zeros
+    const summary = marketSummary.price ? marketSummary : market
 
     return {
-      ...marketSummary,
-      price: marketSummary.price || market.price,
+      ...summary,
       lastPrice: market.price
     }
   })

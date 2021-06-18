@@ -1,6 +1,7 @@
 import { TokenMeta } from '@injectivelabs/spot-consumer'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { getDecimalsFromNumber } from '../utils/helpers'
+import { sortSpotMarkets } from '../data/spot'
 import { peggyDenomToContractAddress } from './peggy'
 import {
   BaseUiSpotMarket,
@@ -35,7 +36,13 @@ export const spotMarketToUiSpotMarket = (
 export const spotMarketsToUiSpotMarkets = (
   markets: BaseUiSpotMarket[] // Markets with base and quote token meta data
 ): UiSpotMarket[] => {
-  return markets.map((m) => spotMarketToUiSpotMarket(m))
+  const mappedMarkets = markets.map((m) => spotMarketToUiSpotMarket(m))
+
+  mappedMarkets.sort(function (a, b) {
+    return sortSpotMarkets.indexOf(a.slug) - sortSpotMarkets.indexOf(b.slug)
+  })
+
+  return mappedMarkets
 }
 
 export const tokenMetaToToken = (
