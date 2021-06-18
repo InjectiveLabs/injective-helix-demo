@@ -82,7 +82,7 @@ export const deposit = async ({
     subaccountId,
     denom,
     injectiveAddress,
-    amount: amount.toFixed()
+    amount: amount.toFixed(0)
   })
 
   try {
@@ -115,7 +115,7 @@ export const withdraw = async ({
     subaccountId,
     denom,
     injectiveAddress,
-    amount: amount.toFixed()
+    amount: amount.toFixed(0)
   })
 
   try {
