@@ -43,7 +43,7 @@
           :value="form.amount"
           :label="$t('amount_decimals', { decimals: market.quantityDecimals })"
           :custom-handler="true"
-          :max-selector="true"
+          :max-selector="false"
           :placeholder="$t('amount')"
           type="number"
           :step="amountStep"
@@ -53,7 +53,11 @@
           @input-max="() => onMaxInput(100)"
         >
           <span slot="addon">{{ market.baseTokenSymbol.toUpperCase() }}</span>
-          <div slot="context" class="text-xs text-gray-400 flex items-center">
+          <div
+            v-if="false"
+            slot="context"
+            class="text-xs text-gray-400 flex items-center"
+          >
             <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(25)"
               >25%</span
             >

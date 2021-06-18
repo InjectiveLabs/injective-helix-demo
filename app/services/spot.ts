@@ -79,6 +79,7 @@ export const fetchMarketsSummary = async (
 
     return {
       ...marketSummary,
+      price: marketSummary.price || market.price,
       lastPrice: market.price
     }
   })
