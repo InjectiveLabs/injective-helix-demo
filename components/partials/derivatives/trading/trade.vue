@@ -233,6 +233,10 @@ export default Vue.extend({
       return this.$accessor.derivatives.marketSummary
     },
 
+    lastTradedPrice(): BigNumberInBase {
+      return this.$accessor.derivatives.lastTradedPrice
+    },
+
     orderbook(): UiDerivativeOrderbook | undefined {
       return this.$accessor.derivatives.orderbook
     },
@@ -493,22 +497,22 @@ export default Vue.extend({
         orderType,
         hasPrice,
         market,
-        marketSummary
+        lastTradedPrice
       } = this
 
-      if (!hasPrice || !market || !marketSummary) {
+      if (!hasPrice || !market) {
         return
       }
 
       const isDerivativeOrderLong = orderType === DerivativeOrderType.Buy
       const divisor = isDerivativeOrderLong
-        ? new BigNumberInBase(marketSummary.price)
+        ? new BigNumberInBase(lastTradedPrice)
             .times(market.initialMarginRatio)
-            .minus(marketSummary.price)
+            .minus(lastTradedPrice)
             .plus(executionPrice)
-        : new BigNumberInBase(marketSummary.price)
+        : new BigNumberInBase(lastTradedPrice)
             .times(market.initialMarginRatio)
-            .plus(marketSummary.price)
+            .plus(lastTradedPrice)
             .minus(executionPrice)
       const maxLeverage = executionPrice.dividedBy(divisor)
 

@@ -51,7 +51,7 @@ export default Vue.extend({
       .then(() => {
         this.interval = setInterval(async () => {
           await this.$accessor.app.poll()
-        }, 1000)
+        }, 2000)
       })
       .catch(this.$onRejected)
       .finally(() => {

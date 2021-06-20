@@ -1,5 +1,5 @@
 import { actionTree, getterTree } from 'typed-vuex'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { StreamOperation } from '@injectivelabs/ts-types'
 import { DerivativeOrderState } from '@injectivelabs/derivatives-consumer'
 import {
@@ -9,7 +9,8 @@ import {
   UiDerivativeMarket,
   DerivativeOrderType,
   UiPosition,
-  UiDerivativeMarketSummary
+  UiDerivativeMarketSummary,
+  Change
 } from '~/types'
 import {
   fetchMarketOrderbook,
@@ -32,7 +33,7 @@ import {
   fetchMarketMarkPrice,
   streamMarketMarkPrice
 } from '~/app/services/derivatives'
-import { ZERO_TO_STRING } from '~/app/utils/constants'
+import { ZERO_IN_BASE, ZERO_TO_STRING } from '~/app/utils/constants'
 
 const initialStateFactory = () => ({
   markets: [] as UiDerivativeMarket[],
@@ -69,6 +70,45 @@ export type DerivativeStoreState = ReturnType<typeof state>
 export const getters = getterTree(state, {
   marketSelected: (state) => {
     return !!state.market
+  },
+
+  lastTradedPrice: (state) => {
+    if (!state.market) {
+      return ZERO_IN_BASE
+    }
+
+    if (state.trades.length === 0) {
+      return ZERO_IN_BASE
+    }
+
+    const [trade] = state.trades
+
+    return new BigNumberInBase(
+      new BigNumberInWei(trade.executionPrice).toBase(
+        state.market.quoteToken.decimals
+      )
+    )
+  },
+
+  lastTradedPriceChange: (state): Change => {
+    if (!state.market) {
+      return Change.NoChange
+    }
+
+    if (state.trades.length === 0) {
+      return Change.NoChange
+    }
+
+    const [trade, secondLastTrade] = state.trades
+
+    if (!secondLastTrade) {
+      return Change.NoChange
+    }
+
+    const lastPrice = new BigNumberInBase(trade.executionPrice)
+    const secondLastPrice = new BigNumberInBase(secondLastTrade.executionPrice)
+
+    return lastPrice.gte(secondLastPrice) ? Change.Increase : Change.Decrease
   }
 })
 

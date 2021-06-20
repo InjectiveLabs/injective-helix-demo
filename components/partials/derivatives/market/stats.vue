@@ -158,6 +158,14 @@ export default Vue.extend({
       return this.$accessor.derivatives.marketMarkPrice
     },
 
+    lastPrice(): BigNumberInBase {
+      return this.$accessor.derivatives.lastTradedPrice
+    },
+
+    lastPriceChange(): Change {
+      return this.$accessor.derivatives.lastTradedPriceChange
+    },
+
     markPriceToBN(): BigNumberInBase {
       const { markPrice } = this
 
@@ -166,44 +174,6 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(markPrice)
-    },
-
-    lastPrice(): BigNumberInBase {
-      const { market, marketSummary } = this
-
-      if (!market || !marketSummary) {
-        return ZERO_IN_BASE
-      }
-
-      if (!marketSummary.price) {
-        return ZERO_IN_BASE
-      }
-
-      return new BigNumberInBase(marketSummary.price)
-    },
-
-    lastPriceChange(): Change {
-      const { market, marketSummary } = this
-
-      if (!market || !marketSummary) {
-        return Change.NoChange
-      }
-
-      if (!marketSummary.lastPrice) {
-        return Change.NoChange
-      }
-
-      if (
-        new BigNumberInBase(marketSummary.lastPrice).eq(marketSummary.price)
-      ) {
-        return Change.NoChange
-      }
-
-      return new BigNumberInBase(marketSummary.price).gte(
-        marketSummary.lastPrice
-      )
-        ? Change.Increase
-        : Change.Decrease
     },
 
     change(): BigNumberInBase {
@@ -234,16 +204,6 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(marketSummary.low)
-    },
-
-    price(): BigNumberInBase {
-      const { market, marketSummary } = this
-
-      if (!market || !marketSummary) {
-        return ZERO_IN_BASE
-      }
-
-      return new BigNumberInBase(marketSummary.price)
     },
 
     volume(): BigNumberInBase {
@@ -312,13 +272,7 @@ export default Vue.extend({
     },
 
     lastTradedPriceToString(): string {
-      const { market, marketSummary } = this
-
-      if (!market || !marketSummary) {
-        return `0.00`
-      }
-
-      const lastPrice = new BigNumberInBase(marketSummary.price)
+      const { lastPrice } = this
 
       if (lastPrice.isNaN() || lastPrice.lte(0)) {
         return `0.00`
