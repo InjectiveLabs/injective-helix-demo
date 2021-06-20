@@ -20,6 +20,8 @@
           :min-w="item.minW"
           :min-h="item.minH"
           :max-h="item.maxH"
+          :is-draggable="item.isDraggable"
+          :is-resizable="item.isResizable"
           :h="item.h"
           :i="item.i"
           drag-allow-from=".v-panel-title"

@@ -23,6 +23,8 @@
           :max-h="item.maxH"
           :h="item.h"
           :i="item.i"
+          :is-draggable="item.isDraggable"
+          :is-resizable="item.isResizable"
           drag-allow-from=".v-panel-title"
           @resized="$root.$emit(`resized-${item.i}`)"
         >

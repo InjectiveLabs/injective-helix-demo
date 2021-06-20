@@ -1,8 +1,28 @@
 import { Breakpoint } from '~/types'
 
 const lgGrid = [
-  { i: 'market-panel', x: 0, y: 0, w: 9, h: 1, minW: 9, maxH: 1 },
-  { i: 'marquee-panel', x: 9, y: 0, w: 3, h: 1, minW: 2, maxH: 1 },
+  {
+    i: 'market-panel',
+    x: 0,
+    y: 0,
+    w: 9,
+    h: 1,
+    minW: 9,
+    maxH: 1,
+    isDraggable: true,
+    isResizable: true
+  },
+  {
+    i: 'marquee-panel',
+    x: 9,
+    y: 0,
+    w: 3,
+    h: 1,
+    minW: 2,
+    maxH: 1,
+    isDraggable: true,
+    isResizable: true
+  },
   {
     i: 'balance-panel',
     x: 0,
@@ -19,7 +39,9 @@ const lgGrid = [
     w: 6,
     h: 9,
     minW: 4,
-    minH: 9
+    minH: 9,
+    isDraggable: true,
+    isResizable: true
   },
   {
     i: 'order-book-panel',
@@ -28,7 +50,9 @@ const lgGrid = [
     w: 3,
     h: 9,
     minW: 3,
-    minH: 9
+    minH: 9,
+    isDraggable: true,
+    isResizable: true
   },
   {
     i: 'subaccount-balance-panel',
@@ -37,7 +61,9 @@ const lgGrid = [
     w: 3,
     h: 2,
     minW: 3,
-    minH: 2
+    minH: 2,
+    isDraggable: true,
+    isResizable: true
   },
   {
     i: 'trading-panel',
@@ -46,7 +72,9 @@ const lgGrid = [
     w: 3,
     h: 12,
     minW: 3,
-    minH: 10
+    minH: 10,
+    isDraggable: true,
+    isResizable: true
   },
   {
     i: 'positions-panel',
@@ -55,7 +83,9 @@ const lgGrid = [
     w: 6,
     h: 2,
     minW: 6,
-    minH: 2
+    minH: 2,
+    isDraggable: true,
+    isResizable: true
   },
   {
     i: 'orders-panel',
@@ -64,7 +94,9 @@ const lgGrid = [
     w: 6,
     h: 5,
     minW: 6,
-    minH: 5
+    minH: 5,
+    isDraggable: true,
+    isResizable: true
   },
   {
     i: 'trades-panel',
@@ -73,13 +105,35 @@ const lgGrid = [
     w: 3,
     h: 7,
     minW: 3,
-    minH: 7
+    minH: 7,
+    isDraggable: true,
+    isResizable: true
   }
 ]
 
 const mdGrid = [
-  { i: 'market-panel', x: 0, y: 0, w: 10, h: 1, minW: 10, maxH: 1 },
-  { i: 'marquee-panel', x: 0, y: 1, w: 10, h: 1, minW: 10, maxH: 1 },
+  {
+    i: 'market-panel',
+    x: 0,
+    y: 0,
+    w: 10,
+    h: 1,
+    minW: 10,
+    maxH: 1,
+    isDraggable: true,
+    isResizable: true
+  },
+  {
+    i: 'marquee-panel',
+    x: 0,
+    y: 1,
+    w: 10,
+    h: 1,
+    minW: 10,
+    maxH: 1,
+    isDraggable: true,
+    isResizable: true
+  },
   {
     i: 'balance-panel',
     x: 0,
@@ -87,7 +141,9 @@ const mdGrid = [
     w: 5,
     h: 2,
     minW: 5,
-    minH: 2
+    minH: 2,
+    isDraggable: true,
+    isResizable: true
   },
   {
     i: 'subaccount-balance-panel',
@@ -96,7 +152,9 @@ const mdGrid = [
     w: 5,
     h: 2,
     minW: 5,
-    minH: 2
+    minH: 2,
+    isDraggable: true,
+    isResizable: true
   },
   {
     i: 'market-price-chart-panel',
@@ -105,7 +163,9 @@ const mdGrid = [
     w: 10,
     h: 6,
     minW: 10,
-    minH: 6
+    minH: 6,
+    isDraggable: true,
+    isResizable: true
   },
   {
     i: 'order-book-panel',
@@ -114,7 +174,9 @@ const mdGrid = [
     w: 5,
     h: 6,
     minW: 5,
-    minH: 6
+    minH: 6,
+    isDraggable: true,
+    isResizable: true
   },
   {
     i: 'trades-panel',
@@ -123,7 +185,9 @@ const mdGrid = [
     w: 5,
     h: 6,
     minW: 5,
-    minH: 6
+    minH: 6,
+    isDraggable: true,
+    isResizable: true
   },
   {
     i: 'positions-panel',
@@ -132,7 +196,9 @@ const mdGrid = [
     w: 10,
     h: 2,
     minW: 10,
-    minH: 2
+    minH: 2,
+    isDraggable: true,
+    isResizable: true
   },
   {
     i: 'trading-panel',
@@ -141,7 +207,9 @@ const mdGrid = [
     w: 10,
     h: 9,
     minW: 5,
-    minH: 9
+    minH: 9,
+    isDraggable: true,
+    isResizable: true
   },
   {
     i: 'orders-panel',
@@ -150,13 +218,35 @@ const mdGrid = [
     w: 10,
     h: 5,
     minW: 5,
-    minH: 5
+    minH: 5,
+    isDraggable: true,
+    isResizable: true
   }
 ]
 
 const smGrid = [
-  { i: 'market-panel', x: 0, y: 0, w: 6, h: 1, minW: 6, maxH: 1 },
-  { i: 'marquee-panel', x: 0, y: 1, w: 6, h: 1, minW: 6, maxH: 1 },
+  {
+    i: 'market-panel',
+    x: 0,
+    y: 0,
+    w: 6,
+    h: 1,
+    minW: 6,
+    maxH: 1,
+    isDraggable: true,
+    isResizable: true
+  },
+  {
+    i: 'marquee-panel',
+    x: 0,
+    y: 1,
+    w: 6,
+    h: 1,
+    minW: 6,
+    maxH: 1,
+    isDraggable: true,
+    isResizable: true
+  },
   {
     i: 'balance-panel',
     x: 0,
@@ -164,7 +254,9 @@ const smGrid = [
     w: 3,
     h: 2,
     minW: 3,
-    minH: 2
+    minH: 2,
+    isDraggable: true,
+    isResizable: true
   },
   {
     i: 'subaccount-balance-panel',
@@ -173,7 +265,9 @@ const smGrid = [
     w: 3,
     h: 2,
     minW: 3,
-    minH: 2
+    minH: 2,
+    isDraggable: true,
+    isResizable: true
   },
   {
     i: 'market-price-chart-panel',
@@ -182,7 +276,9 @@ const smGrid = [
     w: 6,
     h: 6,
     minW: 6,
-    minH: 6
+    minH: 6,
+    isDraggable: true,
+    isResizable: true
   },
   {
     i: 'order-book-panel',
@@ -191,7 +287,9 @@ const smGrid = [
     w: 3,
     h: 6,
     minW: 3,
-    minH: 6
+    minH: 6,
+    isDraggable: true,
+    isResizable: true
   },
   {
     i: 'trades-panel',
@@ -200,7 +298,9 @@ const smGrid = [
     w: 3,
     h: 6,
     minW: 3,
-    minH: 6
+    minH: 6,
+    isDraggable: true,
+    isResizable: true
   },
   {
     i: 'positions-panel',
@@ -209,7 +309,9 @@ const smGrid = [
     w: 6,
     h: 2,
     minW: 6,
-    minH: 2
+    minH: 2,
+    isDraggable: true,
+    isResizable: true
   },
   {
     i: 'trading-panel',
@@ -218,7 +320,9 @@ const smGrid = [
     w: 6,
     h: 10,
     minW: 6,
-    minH: 10
+    minH: 10,
+    isDraggable: true,
+    isResizable: true
   },
   {
     i: 'orders-panel',
@@ -227,13 +331,35 @@ const smGrid = [
     w: 6,
     h: 5,
     minW: 6,
-    minH: 5
+    minH: 5,
+    isDraggable: true,
+    isResizable: true
   }
 ]
 
 const xsGrid = [
-  { i: 'market-panel', x: 0, y: 0, w: 4, h: 2, minW: 4, maxH: 2 },
-  { i: 'marquee-panel', x: 0, y: 2, w: 4, h: 1, minW: 4, maxH: 1 },
+  {
+    i: 'market-panel',
+    x: 0,
+    y: 0,
+    w: 4,
+    h: 2,
+    minW: 4,
+    maxH: 2,
+    isDraggable: false,
+    isResizable: false
+  },
+  {
+    i: 'marquee-panel',
+    x: 0,
+    y: 2,
+    w: 4,
+    h: 1,
+    minW: 4,
+    maxH: 1,
+    isDraggable: false,
+    isResizable: false
+  },
   {
     i: 'balance-panel',
     x: 0,
@@ -241,7 +367,9 @@ const xsGrid = [
     w: 4,
     h: 2,
     minW: 4,
-    minH: 2
+    minH: 2,
+    isDraggable: false,
+    isResizable: false
   },
   {
     i: 'subaccount-balance-panel',
@@ -250,7 +378,9 @@ const xsGrid = [
     w: 4,
     h: 2,
     minW: 4,
-    minH: 2
+    minH: 2,
+    isDraggable: false,
+    isResizable: false
   },
   {
     i: 'market-price-chart-panel',
@@ -259,7 +389,9 @@ const xsGrid = [
     w: 4,
     h: 6,
     minW: 4,
-    minH: 6
+    minH: 6,
+    isDraggable: false,
+    isResizable: false
   },
   {
     i: 'order-book-panel',
@@ -268,7 +400,9 @@ const xsGrid = [
     w: 4,
     h: 6,
     minW: 4,
-    minH: 6
+    minH: 6,
+    isDraggable: false,
+    isResizable: false
   },
   {
     i: 'trades-panel',
@@ -277,7 +411,9 @@ const xsGrid = [
     w: 4,
     h: 6,
     minW: 4,
-    minH: 6
+    minH: 6,
+    isDraggable: false,
+    isResizable: false
   },
   {
     i: 'positions-panel',
@@ -286,7 +422,9 @@ const xsGrid = [
     w: 4,
     h: 2,
     minW: 4,
-    minH: 2
+    minH: 2,
+    isDraggable: false,
+    isResizable: false
   },
   {
     i: 'trading-panel',
@@ -295,7 +433,9 @@ const xsGrid = [
     w: 4,
     h: 10,
     minW: 4,
-    minH: 10
+    minH: 10,
+    isDraggable: false,
+    isResizable: false
   },
   {
     i: 'orders-panel',
@@ -304,13 +444,35 @@ const xsGrid = [
     w: 4,
     h: 5,
     minW: 4,
-    minH: 5
+    minH: 5,
+    isDraggable: false,
+    isResizable: false
   }
 ]
 
 const xxsGrid = [
-  { i: 'market-panel', x: 0, y: 0, w: 2, h: 2, minW: 2, maxH: 2 },
-  { i: 'marquee-panel', x: 0, y: 2, w: 2, h: 1, minW: 2, maxH: 1 },
+  {
+    i: 'market-panel',
+    x: 0,
+    y: 0,
+    w: 2,
+    h: 2,
+    minW: 2,
+    maxH: 2,
+    isDraggable: false,
+    isResizable: false
+  },
+  {
+    i: 'marquee-panel',
+    x: 0,
+    y: 2,
+    w: 2,
+    h: 1,
+    minW: 2,
+    maxH: 1,
+    isDraggable: false,
+    isResizable: false
+  },
   {
     i: 'balance-panel',
     x: 0,
@@ -318,7 +480,9 @@ const xxsGrid = [
     w: 2,
     h: 2,
     minW: 2,
-    minH: 2
+    minH: 2,
+    isDraggable: false,
+    isResizable: false
   },
   {
     i: 'subaccount-balance-panel',
@@ -327,7 +491,9 @@ const xxsGrid = [
     w: 2,
     h: 2,
     minW: 2,
-    minH: 2
+    minH: 2,
+    isDraggable: false,
+    isResizable: false
   },
   {
     i: 'market-price-chart-panel',
@@ -336,7 +502,9 @@ const xxsGrid = [
     w: 2,
     h: 6,
     minW: 2,
-    minH: 6
+    minH: 6,
+    isDraggable: false,
+    isResizable: false
   },
   {
     i: 'order-book-panel',
@@ -345,7 +513,9 @@ const xxsGrid = [
     w: 2,
     h: 6,
     minW: 2,
-    minH: 6
+    minH: 6,
+    isDraggable: false,
+    isResizable: false
   },
   {
     i: 'trades-panel',
@@ -354,7 +524,9 @@ const xxsGrid = [
     w: 2,
     h: 6,
     minW: 2,
-    minH: 6
+    minH: 6,
+    isDraggable: false,
+    isResizable: false
   },
   {
     i: 'positions-panel',
@@ -363,7 +535,9 @@ const xxsGrid = [
     w: 2,
     h: 2,
     minW: 2,
-    minH: 2
+    minH: 2,
+    isDraggable: false,
+    isResizable: false
   },
   {
     i: 'trading-panel',
@@ -372,7 +546,9 @@ const xxsGrid = [
     w: 2,
     h: 10,
     minW: 2,
-    minH: 10
+    minH: 10,
+    isDraggable: false,
+    isResizable: false
   },
   {
     i: 'orders-panel',
@@ -381,7 +557,9 @@ const xxsGrid = [
     w: 2,
     h: 5,
     minW: 2,
-    minH: 5
+    minH: 5,
+    isDraggable: false,
+    isResizable: false
   }
 ]
 
