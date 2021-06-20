@@ -1,8 +1,8 @@
 import { TokenMeta } from '@injectivelabs/derivatives-consumer'
 import { BigNumberInWei } from '@injectivelabs/utils'
-import { getDecimalsFromNumber } from '../utils/helpers'
-import { sortPerpetualMarkets } from '../data/derivative'
 import { peggyDenomToContractAddress } from './peggy'
+import { getDecimalsFromNumber } from '~/app/utils/helpers'
+import { sortPerpetualMarkets } from '~/components/partials/derivatives/sort'
 import {
   BaseUiDerivativeMarket,
   UiDerivativeMarket,

@@ -1,8 +1,8 @@
 import { TokenMeta } from '@injectivelabs/spot-consumer'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import { getDecimalsFromNumber } from '../utils/helpers'
-import { sortSpotMarkets } from '../data/spot'
 import { peggyDenomToContractAddress } from './peggy'
+import { getDecimalsFromNumber } from '~/app/utils/helpers'
+import { sortSpotMarkets } from '~/components/partials/spot/sort'
 import {
   BaseUiSpotMarket,
   UiSpotMarket,
