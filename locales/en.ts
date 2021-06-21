@@ -13,7 +13,7 @@ export default {
   welcome_to_ip:
     'Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.',
   welcome_to_ip_sub:
-    'Injective is the first front-running resistant, layer-2 exchange protocol that unlocks the full potential of borderless finance by supporting margin trading, derivatives, and futures.',
+    'The unmatched layer-2 trading platform. Access any financial market on Injective’s fast, multi-chain, secure, and zero gas fee exchange protocol.',
   maintenance_header: 'We are working on improving your trading experience.',
   maintenance_subheader: 'Please be patient, we will be back soon.',
   maintenance_body: '',
