@@ -32,6 +32,7 @@ export default {
   balance: 'Balance',
   available: 'Available',
   deposit: 'Deposit',
+  withdraw: 'Withdraw',
   transfer: 'Transfer',
   not_connected_balances: 'Connect your wallet to see your balances.',
   not_connect_orders: 'Connect your wallet to see your orders.',
@@ -97,13 +98,18 @@ export default {
   deposit_modal_title: 'Deposit to Subaccount',
   deposit_modal_note:
     'Your trading experience starts once you deposit your funds from the Injective Chain to your subaccount.',
+  withdraw_modal_title: 'Withdraw from Subaccount',
+  withdraw_modal_note:
+    'You can always withdraw your funds back to the Injective Chain, so you can interact with the rest of the functionalities on the Injective Chain',
   transfer_asset: 'Transfer {asset}',
   deposit_asset: 'Deposit {asset}',
+  withdraw_asset: 'Withdraw {asset}',
   allowance_set: 'Allowance Set',
   set_allowance: 'Set Allowance',
   success_transfer: 'Successfully Transferred',
   trade_placed: 'Trade placed',
   success_deposit: 'Successfully Deposited',
+  success_withdraw: 'Successfully Withdrawn',
   injective_chain_balance: 'Injective Chain Balances',
   balance_asset: 'Balance {asset}',
   unfilled: 'Unfilled',
@@ -127,7 +133,7 @@ export default {
   reduce_only_in_excess:
     'Total size of reduce-only orders would exceed size of your position',
   worst_price_note:
-    'Note: If {slippage}% max slippage protection is violated, you need to resend your market order.',
+    'Note: If {slippage}% max slippage protection is violated, you will need to resend your market order.',
   max_leverage_warn: 'Please decrease leverage.',
   next_funding: 'Next Funding',
   expiry_date: 'Expiry Date',

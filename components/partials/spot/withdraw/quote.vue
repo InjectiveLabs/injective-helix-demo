@@ -25,7 +25,7 @@
             min="0"
           >
             <span slot="addon">{{
-              market ? market.baseToken.symbol : ''
+              market ? market.quoteToken.symbol : ''
             }}</span>
           </v-input>
           <div class="w-full mx-auto mt-4">
@@ -35,7 +35,7 @@
               :primary="valid"
               :ghost="invalid"
               :disabled="!form.amount || invalid"
-              @click.stop="handleDepositClick"
+              @click.stop="handleWithdrawClick"
             >
               {{ $t('deposit') }}
             </v-ui-button>
@@ -93,13 +93,13 @@ export default Vue.extend({
       }
 
       return balance
-        .toBase(market.baseToken.decimals)
+        .toBase(market.quoteToken.decimals)
         .toFixed(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS, BigNumberInBase.ROUND_DOWN)
     }
   },
 
   methods: {
-    handleDepositClick() {
+    handleWithdrawClick() {
       const { form, market } = this
 
       if (!market) {
@@ -109,12 +109,12 @@ export default Vue.extend({
       this.status.setLoading()
 
       this.$accessor.account
-        .deposit({
+        .withdraw({
           amount: new BigNumberInBase(form.amount),
-          token: market.baseToken
+          token: market.quoteToken
         })
         .then(() => {
-          this.$toast.success(this.$t('success_deposit'))
+          this.$toast.success(this.$t('success_withdraw'))
           this.form.amount = ''
           this.$form.reset()
         })

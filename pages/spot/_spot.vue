@@ -20,6 +20,8 @@
           :min-w="item.minW"
           :min-h="item.minH"
           :max-h="item.maxH"
+          :is-draggable="item.isDraggable"
+          :is-resizable="item.isResizable"
           :h="item.h"
           :i="item.i"
           drag-allow-from=".v-panel-title"
@@ -30,6 +32,7 @@
       </grid-layout>
       <modal-transfer />
       <modal-deposit />
+      <modal-withdraw />
     </div>
   </HOCLoading>
 </template>
@@ -43,6 +46,7 @@ import MarketPanel from '~/components/partials/spot/market/market.vue'
 import MarqueePanel from '~/components/partials/spot/market/marquee.vue'
 import ModalTransfer from '~/components/partials/spot/transfer.vue'
 import ModalDeposit from '~/components/partials/spot/deposit.vue'
+import ModalWithdraw from '~/components/partials/spot/withdraw.vue'
 import TradingPanel from '~/components/partials/spot/trading/index.vue'
 import BalancePanel from '~/components/partials/spot/balance.vue'
 import SubaccountBalancePanel from '~/components/partials/spot/subaccount-balance/index.vue'
@@ -58,6 +62,7 @@ const GRID_ROW_HEIGHT = 54
 export default Vue.extend({
   components: {
     HOCLoading,
+    ModalWithdraw,
     BalancePanel,
     TradesPanel,
     OrdersPanel,

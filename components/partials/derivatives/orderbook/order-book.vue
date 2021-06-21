@@ -31,30 +31,31 @@
     >
       <div class="w-full flex justify-between px-2">
         <span class="text-white font-bold text-sm w-2/3 text-right pr-2">
-          <template v-if="hasLastTrade">
-            <div class="inline-block mr-1">
-              <v-ui-icon
-                xs
-                :rotate="!isLastTradeBuy"
-                :primary="isLastTradeBuy"
-                :accent="!isLastTradeBuy"
-                :icon="Icon.Arrow"
-              />
-            </div>
-            <div class="inline-block">
-              <v-ui-format-order-price
-                v-bind="{
-                  value: lastPrice.toBase(market.quoteToken.decimals),
-                  type: isLastTradeBuy
+          <div class="inline-block mr-1">
+            <v-ui-icon
+              v-if="
+                [Change.Increase, Change.Decrease].includes(
+                  lastTradedPriceChange
+                )
+              "
+              xs
+              :rotate="!lastTradedPriceChange === Change.Increase"
+              :primary="lastTradedPriceChange === Change.Increase"
+              :accent="!lastTradedPriceChange === Change.Increase"
+              :icon="Icon.Arrow"
+            />
+          </div>
+          <div class="inline-block">
+            <v-ui-format-order-price
+              v-bind="{
+                value: lastTradedPrice,
+                type:
+                  lastTradedPriceChange !== Change.Decrease
                     ? TradeDirection.Buy
                     : TradeDirection.Sell
-                }"
-                class="flex justify-end"
-              />
-            </div>
-          </template>
-          <div v-else class="inline-block">
-            <v-ui-text muted-lg> &mdash; </v-ui-text>
+              }"
+              class="flex justify-end"
+            />
           </div>
         </span>
         <span class="text-sm w-1/3 text-right pr-2" />
@@ -83,14 +84,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import {
-  BigNumberInBase,
-  BigNumber,
-  BigNumberInWei
-} from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumber } from '@injectivelabs/utils'
 import Record from './record.vue'
 import RecordEmpty from './record-empty.vue'
-import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
+import { ZERO_IN_BASE } from '~/app/utils/constants'
 import {
   UiDerivativeTrade,
   UiDerivativeMarket,
@@ -100,7 +97,8 @@ import {
   TradeDirection,
   DerivativeOrderType,
   UiOrderbookPriceLevel,
-  Icon
+  Icon,
+  Change
 } from '~/types'
 
 export default Vue.extend({
@@ -112,6 +110,7 @@ export default Vue.extend({
   data() {
     return {
       Icon,
+      Change,
       TradeDirection,
       DerivativeOrderType,
       autoScrollSellsLocked: false,
@@ -136,6 +135,14 @@ export default Vue.extend({
 
     orderbook(): UiDerivativeOrderbook | undefined {
       return this.$accessor.derivatives.orderbook
+    },
+
+    lastTradedPrice(): BigNumberInBase {
+      return this.$accessor.derivatives.lastTradedPrice
+    },
+
+    lastTradedPriceChange(): Change {
+      return this.$accessor.derivatives.lastTradedPriceChange
     },
 
     buys(): UiPriceLevel[] {
@@ -252,58 +259,6 @@ export default Vue.extend({
       const size = Object.keys(buys).length
 
       return size < limit ? new Array(limit - size) : []
-    },
-
-    hasLastTrade(): boolean {
-      return this.trades.length !== 0
-    },
-
-    showDirection(): boolean {
-      const [lastTrade, priorLastTrade] = this.trades || []
-      const lastTradePrice = new BigNumberInBase(
-        lastTrade && lastTrade.executionPrice ? lastTrade.executionPrice : 0
-      )
-      const priorLastTradePrice = new BigNumberInBase(
-        priorLastTrade && priorLastTrade.executionPrice
-          ? priorLastTrade.executionPrice
-          : 0
-      )
-
-      const noChangeSincePriorTradeOrPriorTradeNotExists = lastTradePrice.isEqualTo(
-        priorLastTradePrice
-      )
-
-      return !noChangeSincePriorTradeOrPriorTradeNotExists
-    },
-
-    isLastTradeBuy(): boolean {
-      const { showDirection, trades } = this
-      const [lastTrade] = trades
-
-      if (!showDirection) {
-        return true
-      }
-
-      if (!lastTrade) {
-        return true
-      }
-
-      return lastTrade.tradeDirection === TradeDirection.Buy
-    },
-
-    lastPrice(): BigNumberInWei {
-      const { trades, market } = this
-      const [lastTrade] = trades || []
-
-      if (!lastTrade || !market) {
-        return ZERO_IN_WEI
-      }
-
-      if (!lastTrade.executionPrice) {
-        return ZERO_IN_WEI
-      }
-
-      return new BigNumberInWei(lastTrade.executionPrice)
     }
   },
 

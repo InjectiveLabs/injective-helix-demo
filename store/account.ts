@@ -4,6 +4,7 @@ import {
   fetchSubaccounts,
   fetchSubaccount,
   deposit,
+  withdraw,
   streamSubaccountBalances
 } from '~/app/services/account'
 import { grpcSubaccountBalanceToUiSubaccountBalance } from '~/app/transformers/account'
@@ -158,6 +159,34 @@ export const actions = actionTree(
       await this.app.$accessor.wallet.validate()
 
       await deposit({
+        address,
+        injectiveAddress,
+        denom: token.denom,
+        subaccountId: subaccount.subaccountId,
+        amount: amount.toWei(token.decimals)
+      })
+
+      await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
+    },
+
+    async withdraw(
+      { state },
+      { amount, token }: { amount: BigNumberInBase; token: Token }
+    ) {
+      const { subaccount } = state
+      const {
+        address,
+        injectiveAddress,
+        isUserWalletConnected
+      } = this.app.$accessor.wallet
+
+      if (!subaccount || !isUserWalletConnected) {
+        return
+      }
+
+      await this.app.$accessor.wallet.validate()
+
+      await withdraw({
         address,
         injectiveAddress,
         denom: token.denom,

@@ -8,7 +8,8 @@ import {
   UiSpotTrade,
   UiSpotMarket,
   SpotOrderType,
-  UiSpotMarketSummary
+  UiSpotMarketSummary,
+  Change
 } from '~/types'
 import {
   fetchMarketOrderbook,
@@ -26,6 +27,7 @@ import {
   streamSubaccountOrders,
   streamSubaccountTrades
 } from '~/app/services/spot'
+import { ZERO_IN_BASE } from '~/app/utils/constants'
 
 const initialStateFactory = () => ({
   markets: [] as UiSpotMarket[],
@@ -56,6 +58,45 @@ export type SpotStoreState = ReturnType<typeof state>
 export const getters = getterTree(state, {
   marketSelected: (state) => {
     return !!state.market
+  },
+
+  lastTradedPrice: (state) => {
+    if (!state.market) {
+      return ZERO_IN_BASE
+    }
+
+    if (state.trades.length === 0) {
+      return ZERO_IN_BASE
+    }
+
+    const [trade] = state.trades
+
+    return new BigNumberInBase(
+      new BigNumberInBase(trade.price).toWei(
+        state.market.baseToken.decimals - state.market.quoteToken.decimals
+      )
+    )
+  },
+
+  lastTradedPriceChange: (state): Change => {
+    if (!state.market) {
+      return Change.NoChange
+    }
+
+    if (state.trades.length === 0) {
+      return Change.NoChange
+    }
+
+    const [trade, secondLastTrade] = state.trades
+
+    if (!secondLastTrade) {
+      return Change.NoChange
+    }
+
+    const lastPrice = new BigNumberInBase(trade.price)
+    const secondLastPrice = new BigNumberInBase(secondLastTrade.price)
+
+    return lastPrice.gte(secondLastPrice) ? Change.Increase : Change.Decrease
   }
 })
 

@@ -82,7 +82,40 @@ export const deposit = async ({
     subaccountId,
     denom,
     injectiveAddress,
-    amount: amount.toFixed()
+    amount: amount.toFixed(0)
+  })
+
+  try {
+    const txProvider = new TxProvider({
+      address,
+      message,
+      chainId: TESTNET_CHAIN_ID
+    })
+
+    await txProvider.broadcast()
+  } catch (error) {
+    throw new Web3Exception(error.message)
+  }
+}
+
+export const withdraw = async ({
+  amount,
+  address,
+  injectiveAddress,
+  denom,
+  subaccountId
+}: {
+  amount: BigNumberInWei
+  denom: string
+  subaccountId: string
+  address: AccountAddress
+  injectiveAddress: AccountAddress
+}) => {
+  const message = SubaccountComposer.withdraw({
+    subaccountId,
+    denom,
+    injectiveAddress,
+    amount: amount.toFixed(0)
   })
 
   try {

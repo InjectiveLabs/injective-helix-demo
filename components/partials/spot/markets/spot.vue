@@ -86,11 +86,32 @@ export default Vue.extend({
   },
 
   computed: {
+    currentMarket(): UiSpotMarket | undefined {
+      return this.$accessor.spot.market
+    },
+
+    currentLastTradedPrice(): BigNumberInBase {
+      return this.$accessor.spot.lastTradedPrice
+    },
+
     lastTradedPrice(): BigNumberInBase {
-      const { market, marketSummary } = this
+      const {
+        market,
+        currentMarket,
+        currentLastTradedPrice,
+        marketSummary
+      } = this
 
       if (!market || !marketSummary) {
         return ZERO_IN_BASE
+      }
+
+      if (
+        currentMarket &&
+        currentMarket.marketId === market.marketId &&
+        currentLastTradedPrice
+      ) {
+        return currentLastTradedPrice
       }
 
       return new BigNumberInBase(marketSummary.price)

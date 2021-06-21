@@ -1,7 +1,8 @@
 import { TokenMeta } from '@injectivelabs/derivatives-consumer'
 import { BigNumberInWei } from '@injectivelabs/utils'
-import { getDecimalsFromNumber } from '../utils/helpers'
 import { peggyDenomToContractAddress } from './peggy'
+import { getDecimalsFromNumber } from '~/app/utils/helpers'
+import { sortPerpetualMarkets } from '~/components/partials/derivatives/sort'
 import {
   BaseUiDerivativeMarket,
   UiDerivativeMarket,
@@ -34,7 +35,18 @@ export const derivativeMarketToUiDerivativeMarket = (
 export const derivativeMarketsToUiDerivativeMarkets = (
   markets: BaseUiDerivativeMarket[] // Markets with quote token meta data
 ): UiDerivativeMarket[] => {
-  return markets.map((m) => derivativeMarketToUiDerivativeMarket(m))
+  const mappedMarkets = markets.map((m) =>
+    derivativeMarketToUiDerivativeMarket(m)
+  )
+
+  mappedMarkets.sort(function (a, b) {
+    return (
+      sortPerpetualMarkets.indexOf(a.slug) -
+      sortPerpetualMarkets.indexOf(b.slug)
+    )
+  })
+
+  return mappedMarkets
 }
 
 export const tokenMetaToToken = (

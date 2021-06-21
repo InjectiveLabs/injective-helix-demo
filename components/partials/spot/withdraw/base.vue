@@ -35,7 +35,7 @@
               :primary="valid"
               :ghost="invalid"
               :disabled="!form.amount || invalid"
-              @click.stop="handleDepositClick"
+              @click.stop="handleWithdrawClick"
             >
               {{ $t('deposit') }}
             </v-ui-button>
@@ -99,7 +99,7 @@ export default Vue.extend({
   },
 
   methods: {
-    handleDepositClick() {
+    handleWithdrawClick() {
       const { form, market } = this
 
       if (!market) {
@@ -109,12 +109,12 @@ export default Vue.extend({
       this.status.setLoading()
 
       this.$accessor.account
-        .deposit({
+        .withdraw({
           amount: new BigNumberInBase(form.amount),
           token: market.baseToken
         })
         .then(() => {
-          this.$toast.success(this.$t('success_deposit'))
+          this.$toast.success(this.$t('success_withdraw'))
           this.form.amount = ''
           this.$form.reset()
         })

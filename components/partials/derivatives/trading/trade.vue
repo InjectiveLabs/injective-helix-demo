@@ -43,7 +43,7 @@
           :value="form.amount"
           :label="$t('amount_decimals', { decimals: market.quantityDecimals })"
           :custom-handler="true"
-          :max-selector="true"
+          :max-selector="false"
           :placeholder="$t('amount')"
           type="number"
           :step="amountStep"
@@ -53,7 +53,11 @@
           @input-max="() => onMaxInput(100)"
         >
           <span slot="addon">{{ market.baseTokenSymbol.toUpperCase() }}</span>
-          <div slot="context" class="text-xs text-gray-400 flex items-center">
+          <div
+            v-if="false"
+            slot="context"
+            class="text-xs text-gray-400 flex items-center"
+          >
             <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(25)"
               >25%</span
             >
@@ -227,6 +231,10 @@ export default Vue.extend({
 
     marketSummary(): UiDerivativeMarketSummary | undefined {
       return this.$accessor.derivatives.marketSummary
+    },
+
+    lastTradedPrice(): BigNumberInBase {
+      return this.$accessor.derivatives.lastTradedPrice
     },
 
     orderbook(): UiDerivativeOrderbook | undefined {
@@ -489,22 +497,22 @@ export default Vue.extend({
         orderType,
         hasPrice,
         market,
-        marketSummary
+        lastTradedPrice
       } = this
 
-      if (!hasPrice || !market || !marketSummary) {
+      if (!hasPrice || !market) {
         return
       }
 
       const isDerivativeOrderLong = orderType === DerivativeOrderType.Buy
       const divisor = isDerivativeOrderLong
-        ? new BigNumberInBase(marketSummary.price)
+        ? new BigNumberInBase(lastTradedPrice)
             .times(market.initialMarginRatio)
-            .minus(marketSummary.price)
+            .minus(lastTradedPrice)
             .plus(executionPrice)
-        : new BigNumberInBase(marketSummary.price)
+        : new BigNumberInBase(lastTradedPrice)
             .times(market.initialMarginRatio)
-            .plus(marketSummary.price)
+            .plus(lastTradedPrice)
             .minus(executionPrice)
       const maxLeverage = executionPrice.dividedBy(divisor)
 
