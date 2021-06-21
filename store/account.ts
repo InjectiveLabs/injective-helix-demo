@@ -167,6 +167,9 @@ export const actions = actionTree(
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
+      await backupPromiseCall(() =>
+        this.app.$accessor.account.updateSubaccount()
+      )
     },
 
     async withdraw(
@@ -195,6 +198,9 @@ export const actions = actionTree(
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
+      await backupPromiseCall(() =>
+        this.app.$accessor.account.updateSubaccount()
+      )
     }
   }
 )
