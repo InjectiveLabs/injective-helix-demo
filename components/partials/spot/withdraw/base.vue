@@ -37,7 +37,7 @@
               :disabled="!form.amount || invalid"
               @click.stop="handleWithdrawClick"
             >
-              {{ $t('deposit') }}
+              {{ $t('withdraw') }}
             </v-ui-button>
           </div>
         </ValidationProvider>
