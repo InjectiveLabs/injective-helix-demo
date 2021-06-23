@@ -25,12 +25,6 @@
               <v-ui-text>
                 {{ $t('last_traded_price') }}
               </v-ui-text>
-              <v-ui-icon
-                :icon="Icon.Info"
-                class="text-gray-600 hover:text-gray-300"
-                :tooltip="$t('last_traded_price_tooltip')"
-                2xs
-              />
             </th>
             <th is="v-ui-table-th" right>
               <v-ui-text>
