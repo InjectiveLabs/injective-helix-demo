@@ -775,24 +775,19 @@ export default Vue.extend({
     },
 
     onAmountBlur() {
-      const { market, form, amountStep, hasAmount } = this
+      const { market, form, hasAmount } = this
 
       if (!market || !hasAmount) {
         return
       }
 
-      const roundedAmount = new BigNumberInBase(form.amount).toFixed(
+      this.form.amount = new BigNumberInBase(form.amount || 0).toFixed(
         market.quantityDecimals
       )
-
-      this.form.amount =
-        roundedAmount === '0.0' ? amountStep : roundedAmount || '0'
     },
 
     onAmountChange(amount: string = '') {
-      const { amountStep } = this
-
-      this.form.amount = amount === '0.0' ? amountStep : amount
+      this.form.amount = amount
     },
 
     submitLimitOrder() {
