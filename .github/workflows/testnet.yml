@@ -11,7 +11,7 @@ jobs:
       ## Public
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       APP_BASE_URL: https://testnet.injective.exchange
-      APP_MAINTENANCE_ENABLED: false
+      APP_MAINTENANCE_ENABLED: true
       APP_NETWORK: staking
       APP_ENV: testnet
       SOURCE_DIR: dist
