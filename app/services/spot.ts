@@ -318,7 +318,7 @@ export const batchCancelOrders = async ({
   address: AccountAddress
   injectiveAddress: AccountAddress
 }) => {
-  const message = SpotMarketComposer.batchCancelDerivativeOrder({
+  const message = SpotMarketComposer.batchCancelSpotOrder({
     injectiveAddress,
     orders
   })
