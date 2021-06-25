@@ -1972,10 +1972,10 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/spot-consumer@^0.0.47":
-  version "0.0.47"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/spot-consumer/-/spot-consumer-0.0.47.tgz#954db5e63c3f3ebcc748d8d3ccc40c1b7697eee3"
-  integrity sha512-el3HOzvc+K8z9Q92uCF4WJ+HKPggk4sBoBgnqHdglVvc+XfVluLe/hT1iSMf34Th7QMyPCp48T1iNJkqi2vVAQ==
+"@injectivelabs/spot-consumer@^0.0.48":
+  version "0.0.48"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/spot-consumer/-/spot-consumer-0.0.48.tgz#2eb55eb7e04d3e241be430bbad7a49a3988160c7"
+  integrity sha512-Z1OZoVToYNLbVubnp+cZfw/RFdu/BMBcIKgjBYTRMAhnEVL6+JEOEl/I4EH5EsWhieDc5PH8mWK6q4KVaSfxag==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.14.0"
