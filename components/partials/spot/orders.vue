@@ -1,5 +1,14 @@
 <template>
   <v-panel>
+    <div
+      v-if="component === components.openOrders && orders.length > 0"
+      slot="context-absolute"
+      class="absolute right-0 top-0 mt-3 mr-2"
+    >
+      <v-ui-button xs primary @click.stop="handleCancelAllClick">
+        {{ $t('cancel_all') }}
+      </v-ui-button>
+    </div>
     <tabs v-model="component" class="w-full">
       <tab :label="`${$t('open_orders')} (${orders.length})`">
         <v-open-orders class="relative" />
@@ -39,6 +48,22 @@ export default Vue.extend({
   computed: {
     orders(): UiSpotLimitOrder[] {
       return this.$accessor.spot.subaccountOrders
+    }
+  },
+
+  methods: {
+    handleCancelAllClick() {
+      const { orders } = this
+
+      this.$accessor.spot
+        .batchCancelOrder(orders)
+        .then(() => {
+          this.$toast.success(this.$t('orders_cancelled'))
+        })
+        .catch(this.$onRejected)
+        .finally(() => {
+          //
+        })
     }
   }
 })

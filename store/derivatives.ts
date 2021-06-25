@@ -31,7 +31,8 @@ import {
   streamSubaccountPositions,
   closePosition,
   fetchMarketMarkPrice,
-  streamMarketMarkPrice
+  streamMarketMarkPrice,
+  batchCancelOrders
 } from '~/app/services/derivatives'
 import { ZERO_IN_BASE, ZERO_TO_STRING } from '~/app/utils/constants'
 
@@ -525,6 +526,32 @@ export const actions = actionTree(
         orderHash: order.orderHash,
         marketId: market.marketId,
         subaccountId: subaccount.subaccountId
+      })
+    },
+
+    async batchCancelOrder(_, orders: UiDerivativeLimitOrder[]) {
+      const { subaccount } = this.app.$accessor.account
+      const { market } = this.app.$accessor.derivatives
+      const {
+        address,
+        injectiveAddress,
+        isUserWalletConnected
+      } = this.app.$accessor.wallet
+
+      if (!isUserWalletConnected || !subaccount || !market) {
+        return
+      }
+
+      await this.app.$accessor.wallet.validate()
+
+      await batchCancelOrders({
+        injectiveAddress,
+        address,
+        orders: orders.map((o) => ({
+          orderHash: o.orderHash,
+          subaccountId: o.subaccountId,
+          marketId: o.marketId
+        }))
       })
     },
 

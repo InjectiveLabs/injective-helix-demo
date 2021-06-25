@@ -161,5 +161,7 @@ export default {
   get_more_addresses: 'Get More Addresses',
   please_wait_addresses: 'We are getting your addresses, please wait ...',
   ledger_live: 'Ledger Live',
-  ledger_legacy: 'Ledger Legacy'
+  ledger_legacy: 'Ledger Legacy',
+  cancel_all: 'Cancel All',
+  orders_cancelled: 'Orders Cancelled'
 }

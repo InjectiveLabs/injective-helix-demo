@@ -305,6 +305,37 @@ export const submitMarketOrder = async ({
   }
 }
 
+export const batchCancelOrders = async ({
+  orders,
+  address,
+  injectiveAddress
+}: {
+  orders: {
+    subaccountId: string
+    marketId: string
+    orderHash: string
+  }[]
+  address: AccountAddress
+  injectiveAddress: AccountAddress
+}) => {
+  const message = SpotMarketComposer.batchCancelDerivativeOrder({
+    injectiveAddress,
+    orders
+  })
+
+  try {
+    const txProvider = new TxProvider({
+      address,
+      message,
+      chainId: TESTNET_CHAIN_ID
+    })
+
+    await txProvider.broadcast()
+  } catch (error) {
+    throw new Web3Exception(error.message)
+  }
+}
+
 export const cancelOrder = async ({
   orderHash,
   address,

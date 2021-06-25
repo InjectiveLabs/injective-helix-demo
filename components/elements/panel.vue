@@ -23,6 +23,7 @@
         <slot name="title-context" />
       </div>
       <slot name="context" class="items-center flex justify-between w-full" />
+      <slot name="context-absolute"></slot>
       <div class="flex-1 overflow-y-auto v-panel-content">
         <slot ref="content" />
       </div>
