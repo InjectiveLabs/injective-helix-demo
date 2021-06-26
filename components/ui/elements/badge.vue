@@ -15,6 +15,12 @@ export default Vue.extend({
       type: Boolean
     },
 
+    xs: {
+      required: false,
+      default: true,
+      type: Boolean
+    },
+
     md: {
       required: false,
       default: false,
@@ -67,6 +73,8 @@ export default Vue.extend({
         classes.push('text-sm', 'px-3', 'py-px')
       } else if (this.sm) {
         classes.push('text-xs', 'px-3', 'py-px')
+      } else if (this.xs) {
+        classes.push('text-2xs', 'px-2', 'py-px')
       }
 
       if (this.primary) {

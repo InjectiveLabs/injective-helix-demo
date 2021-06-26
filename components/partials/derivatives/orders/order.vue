@@ -41,21 +41,22 @@
       <v-ui-badge
         :primary="order.orderType === DerivativeOrderType.Buy"
         :accent="order.orderType === DerivativeOrderType.Sell"
-        sm
+        xs
       >
-        <div class="w-10">
+        <div class="w-8">
           {{ orderTypeLocalized }}
         </div>
       </v-ui-badge>
+      <v-ui-badge v-if="isReduceOnly" dark xs class="ml-2">{{
+        $t('reduce_only')
+      }}</v-ui-badge>
     </td>
     <td is="v-ui-table-td" xs center class="h-8">
       <v-ui-badge v-if="orderFullyFilled" primary xs>
         {{ $t('filled') }}
       </v-ui-badge>
       <v-ui-badge v-else-if="orderFillable" dark xs>
-        <div class="w-16">
-          {{ `${filledQuantityPercentage.times(100).toFixed(2)}%` }}
-        </div>
+        {{ `${filledQuantityPercentage.times(100).toFixed(2)}%` }}
       </v-ui-badge>
     </td>
     <td is="v-ui-table-td" xs class="h-8 relative" center>
@@ -113,6 +114,16 @@ export default Vue.extend({
   computed: {
     market(): UiDerivativeMarket | undefined {
       return this.$accessor.derivatives.market
+    },
+
+    isReduceOnly(): boolean {
+      const { order } = this
+
+      if (order.isReduceOnly) {
+        return true
+      }
+
+      return new BigNumberInBase(order.margin).isZero()
     },
 
     price(): BigNumberInWei {

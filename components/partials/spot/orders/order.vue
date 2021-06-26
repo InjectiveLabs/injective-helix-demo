@@ -40,9 +40,9 @@
       <v-ui-badge
         :primary="order.orderType === SpotOrderType.Buy"
         :accent="order.orderType === SpotOrderType.Sell"
-        sm
+        xs
       >
-        <div class="w-10">
+        <div class="w-8">
           {{ orderTypeLocalized }}
         </div>
       </v-ui-badge>
@@ -52,7 +52,7 @@
         {{ $t('filled') }}
       </v-ui-badge>
       <v-ui-badge v-else-if="orderFillable" dark xs>
-        <div class="w-16">
+        <div class="w-12">
           {{ `${filledQuantityPercentage.times(100).toFixed(2)}%` }}
         </div>
       </v-ui-badge>

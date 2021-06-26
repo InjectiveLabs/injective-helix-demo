@@ -163,5 +163,7 @@ export default {
   ledger_live: 'Ledger Live',
   ledger_legacy: 'Ledger Legacy',
   cancel_all: 'Cancel All',
-  orders_cancelled: 'Orders Cancelled'
+  orders_cancelled: 'Orders Cancelled',
+  yes: 'Yes',
+  no: 'No'
 }
