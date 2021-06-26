@@ -89,17 +89,15 @@ export const actions = actionTree(
       const injectiveAddress = getInjectiveAddress(address)
 
       commit('setInjectiveAddress', injectiveAddress)
+      commit('setAddressConfirmation', addressConfirmation)
+      commit('setAddresses', addresses)
+      commit('setAddress', address)
 
       await this.app.$accessor.account.fetchSubaccounts()
       await this.app.$accessor.bank.fetchBalances()
 
-      commit('setAddress', address)
-
       await this.app.$accessor.token.getTokenBalanceAndAllowanceForDerivativeMarket()
       await this.app.$accessor.token.getTokenBalanceAndAllowanceForMarket()
-
-      commit('setAddresses', addresses)
-      commit('setAddressConfirmation', addressConfirmation)
     },
 
     async connectAndConfirm({ commit }, wallet: Wallet) {
@@ -110,17 +108,15 @@ export const actions = actionTree(
       const injectiveAddress = getInjectiveAddress(address)
 
       commit('setInjectiveAddress', injectiveAddress)
+      commit('setAddress', address)
+      commit('setAddresses', addresses)
+      commit('setAddressConfirmation', addressConfirmation)
 
       await this.app.$accessor.account.fetchSubaccounts()
       await this.app.$accessor.bank.fetchBalances()
 
-      commit('setAddress', address)
-
       await this.app.$accessor.token.getTokenBalanceAndAllowanceForDerivativeMarket()
       await this.app.$accessor.token.getTokenBalanceAndAllowanceForMarket()
-
-      commit('setAddresses', addresses)
-      commit('setAddressConfirmation', addressConfirmation)
     },
 
     async validate({ state }) {
