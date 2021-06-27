@@ -3,8 +3,9 @@
     <div class="flex flex-wrap items-center py-2 px-4 lg:py-1">
       <div class="flex items-center mr-4 mb-2 w-full md:w-auto lg:mb-0">
         <div class="leading-none">
-          <p class="mt-2">
-            <v-ui-text md class="font-bold">{{ market.ticker }}</v-ui-text>
+          <p class="text-gray-100 font-semibold text-sm">{{ market.ticker }}</p>
+          <p class="text-gray-500 text-xs">
+            {{ market.baseToken.name }}
           </p>
         </div>
       </div>

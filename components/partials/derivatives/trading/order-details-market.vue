@@ -35,7 +35,7 @@
               }"
               class="text-gray-300"
             />
-            <small class="opacity-75 ml-1">{{ market.baseTokenSymbol }}</small>
+            <small class="opacity-75 ml-1">{{ market.baseTokenMeta.symbol }}</small>
           </v-ui-text>
           <v-ui-text v-else muted-sm class="group-hover:text-white">
             &mdash;

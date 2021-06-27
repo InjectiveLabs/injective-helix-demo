@@ -12,13 +12,13 @@
           <th is="v-ui-table-th" class="w-1/3" right>
             <span>{{ $t('amount') }}</span>
             <span class="font-bold text-white uppercase">
-              {{ market.baseTokenSymbol }}
+              {{ market.baseTokenMeta.symbol }}
             </span>
           </th>
           <th is="v-ui-table-th" class="w-1/3" right>
             <span>{{ $t('sum') }}</span>
             <span class="font-bold text-white uppercase">
-              {{ market.baseTokenSymbol }}
+              {{ market.baseTokenMeta.symbol }}
             </span>
           </th>
         </tr>

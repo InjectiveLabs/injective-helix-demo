@@ -8,6 +8,7 @@ import {
   DerivativeOrderType,
   AllChronosDerivativeMarketSummary
 } from '@injectivelabs/derivatives-consumer'
+import { TokenMeta } from '@injectivelabs/token-metadata'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 import { Token } from './token'
 
@@ -16,7 +17,7 @@ export interface UiDerivativeMarket
   slug: string
   priceDecimals: number
   quantityDecimals: number
-  baseTokenSymbol: string
+  baseTokenMeta: TokenMeta
   quoteToken: Token
 }
 

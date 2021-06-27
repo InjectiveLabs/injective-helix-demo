@@ -1,5 +1,6 @@
 import { TokenMeta } from '@injectivelabs/derivatives-consumer'
 import { BigNumberInWei } from '@injectivelabs/utils'
+import { Erc20TokenMeta } from '@injectivelabs/token-metadata'
 import { peggyDenomToContractAddress } from './peggy'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
 import { sortPerpetualMarkets } from '~/components/partials/derivatives/sort'
@@ -16,18 +17,19 @@ export const derivativeMarketToUiDerivativeMarket = (
 ): UiDerivativeMarket => {
   const slug = market.ticker.replace('/', '-').replace(' ', '-').toLowerCase()
   const [baseTokenSymbol] = slug.split('-')
+  const baseTokenMeta = Erc20TokenMeta.getMeta(baseTokenSymbol)
   const quoteToken = tokenMetaToToken(market.quoteToken!, market.quoteDenom)
 
   return {
     ...market,
     quoteToken,
+    baseTokenMeta,
     priceDecimals: getDecimalsFromNumber(
       new BigNumberInWei(market.minPriceTickSize)
         .toBase(quoteToken.decimals)
         .toNumber()
     ),
     quantityDecimals: getDecimalsFromNumber(market.minQuantityTickSize),
-    baseTokenSymbol: (baseTokenSymbol || '').toUpperCase(),
     slug: market.ticker.replace('/', '-').replace(' ', '-').toLowerCase()
   }
 }

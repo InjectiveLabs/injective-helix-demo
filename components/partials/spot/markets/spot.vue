@@ -1,9 +1,12 @@
 <template>
   <tr @click.stop="onRowClick">
     <td is="v-ui-table-td">
-      <span class="text-gray-100 font-semibold text-sm">{{
-        market.ticker
-      }}</span>
+      <div class="leading-none">
+        <p class="text-gray-100 font-semibold text-sm">{{ market.ticker }}</p>
+        <p class="text-gray-500 text-xs">
+          {{ market.baseToken.name }}
+        </p>
+      </div>
     </td>
     <td is="v-ui-table-td" right class="font-normal">
       <div v-if="lastTradedPrice.gt(0)" class="flex justify-end items-center">

@@ -6,7 +6,7 @@ const prodModules = [
       config: {
         appVersion: process.env.npm_package_version,
         releaseStage: process.env.APP_ENV || 'development',
-        enabledReleaseStages: ['production', 'testnet']
+        enabledReleaseStages: ['production', 'testnet', 'staging']
       },
       publishRelease: true
     }

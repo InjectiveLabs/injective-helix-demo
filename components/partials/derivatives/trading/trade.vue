@@ -7,7 +7,7 @@
         half
         primary
       >
-        {{ $t('long_asset', { asset: market.baseTokenSymbol }) }}
+        {{ $t('long_asset', { asset: market.baseTokenMeta.symbol }) }}
       </v-ui-button-select>
       <v-ui-button-select
         v-model="orderType"
@@ -15,7 +15,7 @@
         half
         accent
       >
-        {{ $t('short_asset', { asset: market.baseTokenSymbol }) }}
+        {{ $t('short_asset', { asset: market.baseTokenMeta.symbol }) }}
       </v-ui-button-select>
     </div>
     <div class="w-full flex mt-4">
@@ -52,7 +52,9 @@
           @input="onAmountChange"
           @input-max="() => onMaxInput(100)"
         >
-          <span slot="addon">{{ market.baseTokenSymbol.toUpperCase() }}</span>
+          <span slot="addon">{{
+            market.baseTokenMeta.symbol.toUpperCase()
+          }}</span>
           <div
             v-if="false"
             slot="context"

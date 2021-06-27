@@ -122,9 +122,9 @@ export const actions = actionTree(
 
       await setTokenAllowance({
         address,
+        tokenAddress,
         amount: amount as BigNumberInWei,
-        gasPrice: new BigNumberInBase(gasPrice).toWei(),
-        tokenAddress
+        gasPrice: new BigNumberInBase(gasPrice).toWei()
       })
 
       const { baseTokenWithBalance, quoteTokenWithBalance } = state

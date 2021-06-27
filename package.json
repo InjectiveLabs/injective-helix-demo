@@ -37,6 +37,7 @@
     "@injectivelabs/networks": "^0.0.29",
     "@injectivelabs/spot-consumer": "^0.0.48",
     "@injectivelabs/subaccount-consumer": "^0.0.23",
+    "@injectivelabs/token-metadata": "^0.0.3",
     "@injectivelabs/utils": "^0.0.35",
     "@injectivelabs/web3-strategy": "^0.0.51",
     "@nuxtjs/dotenv": "^1.4.1",
