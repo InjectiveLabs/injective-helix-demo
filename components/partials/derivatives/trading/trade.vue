@@ -1004,7 +1004,8 @@ export default Vue.extend({
       const fee = new BigNumberInBase(market.takerFeeRate)
 
       return new BigNumberInBase(availableMargin)
-        .dividedBy(executionPrice.times(fee.plus(1)))
+        .times(form.leverage)
+        .dividedBy(executionPrice.times(fee.times(form.leverage).plus(1)))
         .times(percentageToNumber)
         .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
     },

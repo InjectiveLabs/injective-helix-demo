@@ -641,7 +641,9 @@ export const getApproxAmountForMarketOrder = ({
     const total = totalMargin.plus(totalFees)
 
     if (total.gt(availableMargin)) {
-      return availableMargin.times(leverage).dividedBy(fee.plus(1).times(price))
+      return availableMargin
+        .times(leverage)
+        .dividedBy(fee.times(leverage).plus(1).times(price))
     }
   }
 
