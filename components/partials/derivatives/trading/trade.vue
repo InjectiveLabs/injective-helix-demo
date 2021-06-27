@@ -112,6 +112,12 @@
         @change="onLeverageChange"
       />
 
+      <v-order-leverage-select
+        class="mt-2"
+        :leverage="form.leverage"
+        @change="onLeverageChange"
+      />
+
       <v-button-checkbox
         v-if="showReduceOnly"
         v-model="form.reduceOnly"
@@ -160,6 +166,7 @@ import { TradeError } from 'types/errors'
 import { Status, BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import OrderDetails from './order-details.vue'
 import OrderLeverage from './order-leverage.vue'
+import OrderLeverageSelect from './order-leverage-select.vue'
 import OrderDetailsMarket from './order-details-market.vue'
 import {
   TESTNET_DEFAULT_MAX_SLIPPAGE,
@@ -204,6 +211,7 @@ export default Vue.extend({
     'v-button-checkbox': ButtonCheckbox,
     'v-order-details': OrderDetails,
     'v-order-leverage': OrderLeverage,
+    'v-order-leverage-select': OrderLeverageSelect,
     'v-order-details-market': OrderDetailsMarket
   },
 

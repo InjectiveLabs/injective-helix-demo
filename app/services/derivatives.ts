@@ -640,18 +640,6 @@ export const getApproxAmountForMarketOrder = ({
     })
     const total = totalMargin.plus(totalFees)
 
-    console.log(
-      JSON.stringify({
-        price,
-        availableMargin,
-        slippage,
-        total,
-        totalMargin,
-        totalQuantity,
-        quantity
-      })
-    )
-
     if (total.gt(availableMargin)) {
       return availableMargin.times(leverage).dividedBy(fee.plus(1).times(price))
     }
