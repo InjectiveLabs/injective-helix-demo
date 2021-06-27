@@ -232,6 +232,10 @@ export default Vue.extend({
       return this.$accessor.derivatives.market
     },
 
+    marketMarkPrice(): string {
+      return this.$accessor.derivatives.marketMarkPrice
+    },
+
     marketSummary(): UiDerivativeMarketSummary | undefined {
       return this.$accessor.derivatives.marketSummary
     },
@@ -601,6 +605,56 @@ export default Vue.extend({
       return undefined
     },
 
+    markPriceThresholdError(): TradeError | undefined {
+      const {
+        market,
+        marketMarkPrice,
+        orderTypeBuy,
+        margin,
+        hasPrice,
+        hasAmount,
+        executionPrice,
+        amount
+      } = this
+
+      if (!marketMarkPrice || !market || !hasPrice || !hasAmount) {
+        return undefined
+      }
+
+      const markPrice = new BigNumberInBase(marketMarkPrice)
+
+      if (markPrice.lte(0)) {
+        return {
+          amount: this.$t('mark_price_invalid')
+        }
+      }
+
+      const notional = executionPrice.times(amount)
+      const dividend = orderTypeBuy
+        ? notional.minus(margin)
+        : margin.plus(notional)
+      const divisor = amount.times(
+        orderTypeBuy
+          ? new BigNumberInBase(1).minus(market.initialMarginRatio)
+          : new BigNumberInBase(market.initialMarginRatio).plus(1)
+      )
+      const condition = dividend.div(divisor)
+
+      if (orderTypeBuy && markPrice.lt(condition)) {
+        return {
+          amount: this.$t('order_insufficient_margin')
+        }
+      }
+
+      if (!orderTypeBuy && markPrice.gt(condition)) {
+        return {
+          amount: this.$t('order_insufficient_margin')
+        }
+      }
+
+      return undefined
+    },
+
     priceNotValidError(): TradeError | undefined {
       const { form } = this
 
@@ -672,6 +726,10 @@ export default Vue.extend({
 
       if (this.priceNotValidError) {
         return this.priceNotValidError
+      }
+
+      if (this.markPriceThresholdError) {
+        return this.markPriceThresholdError
       }
 
       return { price: '', amount: '' }
