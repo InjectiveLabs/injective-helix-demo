@@ -77,10 +77,6 @@ export default Vue.extend({
   },
 
   computed: {
-    am(): BigNumberInBase {
-      return new BigNumberInBase(this.form.amount)
-    },
-
     market(): UiDerivativeMarket | undefined {
       return this.$accessor.derivatives.market
     },
