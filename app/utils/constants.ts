@@ -45,3 +45,8 @@ export const RPC_POLING_INTERVAL: number = 4000
 
 export const TESTNET_GAS_PRICE = new BigNumber(6).times(GWEI_IN_WEI)
 export const TESTNET_DEFAULT_MAX_SLIPPAGE = new BigNumber(1) // +1% slippage
+
+// eslint-disable-next-line prefer-regex-literals
+export const NUMBER_REGEX = new RegExp(
+  /^(?!-0?(\.0+)?$)-?(0|[1-9]\d*)?(\.\d+)?(?<=\d)$/
+)

@@ -165,5 +165,6 @@ export default {
   cancel_all: 'Cancel All',
   orders_cancelled: 'Orders Cancelled',
   yes: 'Yes',
-  no: 'No'
+  no: 'No',
+  not_valid_number: 'Not a valid number'
 }

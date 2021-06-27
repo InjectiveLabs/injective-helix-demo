@@ -10,7 +10,7 @@
         <ValidationProvider
           v-slot="{ errors, valid }"
           name="form.amount"
-          :rules="`required|between:0.0001,${balanceToString}`"
+          :rules="`required|positiveNumber|between:0.0001,${balanceToString}`"
         >
           <v-input
             v-model="form.amount"
@@ -77,6 +77,10 @@ export default Vue.extend({
   },
 
   computed: {
+    am(): BigNumberInBase {
+      return new BigNumberInBase(this.form.amount)
+    },
+
     market(): UiDerivativeMarket | undefined {
       return this.$accessor.derivatives.market
     },

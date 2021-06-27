@@ -10,7 +10,7 @@
         <ValidationProvider
           v-slot="{ errors, valid }"
           name="form.amount"
-          :rules="`required|between:0.0001,${balanceToString}`"
+          :rules="`required|positiveNumber|between:0.0001,${balanceToString}`"
         >
           <v-input
             v-model="form.amount"

@@ -167,7 +167,8 @@ import OrderLeverage from './order-leverage.vue'
 import OrderDetailsMarket from './order-details-market.vue'
 import {
   TESTNET_DEFAULT_MAX_SLIPPAGE,
-  ZERO_IN_BASE
+  ZERO_IN_BASE,
+  NUMBER_REGEX
 } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import {
@@ -600,6 +601,38 @@ export default Vue.extend({
       return undefined
     },
 
+    priceNotValidError(): TradeError | undefined {
+      const { form } = this
+
+      if (!form.price) {
+        return undefined
+      }
+
+      if (NUMBER_REGEX.test(form.price)) {
+        return undefined
+      }
+
+      return {
+        price: this.$t('not_valid_number')
+      }
+    },
+
+    amountNotValidNumberError(): TradeError | undefined {
+      const { form } = this
+
+      if (!form.amount) {
+        return undefined
+      }
+
+      if (NUMBER_REGEX.test(form.amount)) {
+        return undefined
+      }
+
+      return {
+        amount: this.$t('not_valid_number')
+      }
+    },
+
     priceError(): string | null {
       const { price } = this.errors
 
@@ -631,6 +664,14 @@ export default Vue.extend({
 
       if (this.reduceOnlyExcessError) {
         return this.reduceOnlyExcessError
+      }
+
+      if (this.amountNotValidNumberError) {
+        return this.amountNotValidNumberError
+      }
+
+      if (this.priceNotValidError) {
+        return this.priceNotValidError
       }
 
       return { price: '', amount: '' }
@@ -935,7 +976,7 @@ export default Vue.extend({
       })
     },
 
-    onPriceChange(price: string) {
+    onPriceChange(price: string = '') {
       this.form.price = price
     },
 
@@ -946,11 +987,9 @@ export default Vue.extend({
         return
       }
 
-      const roundedPrice = new BigNumberInBase(form.price).toFixed(
+      this.form.price = new BigNumberInBase(form.price || 0).toFixed(
         market.priceDecimals
       )
-
-      this.form.price = roundedPrice
     },
 
     onAmountBlur() {
