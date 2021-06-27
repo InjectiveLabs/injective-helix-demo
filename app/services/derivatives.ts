@@ -603,8 +603,8 @@ export const getApproxAmountForMarketOrder = ({
   records,
   margin,
   market,
-  leverage = '1',
   slippage,
+  leverage = '1',
   percent = 1
 }: {
   records: UiPriceLevel[]
@@ -622,8 +622,8 @@ export const getApproxAmountForMarketOrder = ({
   for (const record of records) {
     const price = new BigNumberInBase(
       new BigNumberInWei(record.price)
-        .toBase(market.quoteToken.decimals)
         .times(slippage)
+        .toBase(market.quoteToken.decimals)
     )
     const quantity = new BigNumberInBase(
       new BigNumberInBase(record.quantity).dp(market.quantityDecimals)
@@ -639,6 +639,18 @@ export const getApproxAmountForMarketOrder = ({
       leverage
     })
     const total = totalMargin.plus(totalFees)
+
+    console.log(
+      JSON.stringify({
+        price,
+        availableMargin,
+        slippage,
+        total,
+        totalMargin,
+        totalQuantity,
+        quantity
+      })
+    )
 
     if (total.gt(availableMargin)) {
       return availableMargin.times(leverage).dividedBy(fee.plus(1).times(price))

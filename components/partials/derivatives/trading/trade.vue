@@ -43,7 +43,7 @@
           :value="form.amount"
           :label="$t('amount_decimals', { decimals: market.quantityDecimals })"
           :custom-handler="true"
-          :max-selector="false"
+          :max-selector="true"
           :placeholder="$t('amount')"
           type="number"
           :step="amountStep"
@@ -55,11 +55,7 @@
           <span slot="addon">{{
             market.baseTokenMeta.symbol.toUpperCase()
           }}</span>
-          <div
-            v-if="false"
-            slot="context"
-            class="text-xs text-gray-400 flex items-center"
-          >
+          <div slot="context" class="text-xs text-gray-400 flex items-center">
             <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(25)"
               >25%</span
             >
@@ -314,16 +310,6 @@ export default Vue.extend({
         orderTypeBuy
           ? TESTNET_DEFAULT_MAX_SLIPPAGE.div(100).plus(1)
           : TESTNET_DEFAULT_MAX_SLIPPAGE.div(100).minus(1).times(-1)
-      )
-    },
-
-    reverseSlippage(): BigNumberInBase {
-      const { orderTypeBuy } = this
-
-      return new BigNumberInBase(
-        orderTypeBuy
-          ? TESTNET_DEFAULT_MAX_SLIPPAGE.div(100).minus(1).times(-1)
-          : TESTNET_DEFAULT_MAX_SLIPPAGE.div(100).plus(1)
       )
     },
 
@@ -974,7 +960,6 @@ export default Vue.extend({
         orderTypeReduceOnly,
         availableMargin,
         executionPrice,
-        reverseSlippage,
         slippage
       } = this
       const percentageToNumber = new BigNumberInBase(percentage).div(100)
@@ -994,9 +979,7 @@ export default Vue.extend({
           market,
           margin: availableMargin,
           leverage: form.leverage,
-          slippage: orderTypeBuy
-            ? slippage.toNumber()
-            : reverseSlippage.toNumber(),
+          slippage: slippage.toNumber(),
           percent: percentageToNumber.toNumber(),
           records: orderTypeBuy ? sells : buys
         }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
