@@ -8,7 +8,7 @@
       type="range"
       @input="handleChange"
     />
-    <output class="font-mono ml-2 w-14 text-right">{{ value }}x</output>
+    <slot></slot>
   </div>
 </template>
 

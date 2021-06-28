@@ -495,7 +495,7 @@ export default Vue.extend({
       const {
         form,
         executionPrice,
-        orderType,
+        orderTypeBuy,
         hasPrice,
         market,
         lastTradedPrice
@@ -505,8 +505,7 @@ export default Vue.extend({
         return
       }
 
-      const isDerivativeOrderLong = orderType === DerivativeOrderType.Buy
-      const divisor = isDerivativeOrderLong
+      const divisor = orderTypeBuy
         ? new BigNumberInBase(lastTradedPrice)
             .times(market.initialMarginRatio)
             .minus(lastTradedPrice)

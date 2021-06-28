@@ -16,7 +16,23 @@
       step="0.01"
       :value="leverage.toString()"
       @input="onLeverageChange"
-    />
+    >
+      <div class="relative">
+        <input
+          id="leverage-input"
+          :value="leverage"
+          type="number"
+          min="0"
+          step="0.01"
+          max="20"
+          class="leverage-input pr-4"
+          @input="(e) => onLeverageChange(e.target.value)"
+        />
+        <span class="absolute top-0 right-0 text-xs text-gray-400 mt-1 mr-1"
+          >x</span
+        >
+      </div>
+    </v-input-slider>
   </div>
 </template>
 
