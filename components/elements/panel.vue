@@ -2,7 +2,7 @@
   <v-ui-card class="h-full">
     <div class="flex flex-col justify-between h-full">
       <div
-        v-if="title || $slots['title'] || $slots['context']"
+        v-if="title || $slots['title'] || $slots['title-context']"
         class="
           border-b
           items-center
@@ -23,7 +23,6 @@
         <slot name="title-context" />
       </div>
       <slot name="context" class="items-center flex justify-between w-full" />
-      <slot name="context-absolute"></slot>
       <div class="flex-1 overflow-y-auto v-panel-content">
         <slot ref="content" />
       </div>

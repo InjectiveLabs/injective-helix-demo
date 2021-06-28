@@ -1,22 +1,37 @@
 <template>
   <v-panel>
-    <div
-      v-if="component === components.openOrders && orders.length > 0"
-      slot="context-absolute"
-      class="absolute right-0 top-0 mt-3 mr-3"
-    >
-      <v-ui-button xs primary @click.stop="handleCancelAllClick">
-        {{ $t('cancel_all') }}
-      </v-ui-button>
+    <div slot="context">
+      <div class="flex items-center justify-between">
+        <div class="tabs">
+          <ul role="tablist" class="tablist">
+            <li
+              role="tab"
+              :aria-selected="component === components.openOrders"
+              class="tab"
+              @click.stop.prevent="onSelect(components.openOrders)"
+            >
+              <span>{{ $t('open_orders') }} {{ `(${orders.length})` }}</span>
+            </li>
+            <li
+              role="tab"
+              :aria-selected="component === components.tradeHistory"
+              class="tab"
+              @click.stop.prevent="onSelect(components.tradeHistory)"
+            >
+              <span>{{ $t('trade_history') }}</span>
+            </li>
+          </ul>
+        </div>
+        <v-ui-button xs primary class="mr-4" @click.stop="handleCancelAllClick">
+          {{ $t('cancel_all') }}
+        </v-ui-button>
+      </div>
     </div>
-    <tabs v-model="component" class="w-full">
-      <tab :label="`${$t('open_orders')} (${orders.length})`">
-        <v-open-orders class="relative" />
-      </tab>
-      <tab :label="$t('trade_history')">
-        <v-trade-history class="relative" />
-      </tab>
-    </tabs>
+    <component
+      :is="currentComponent"
+      transition="slide-content"
+      transition-mode="out-in"
+    ></component>
   </v-panel>
 </template>
 
@@ -48,10 +63,27 @@ export default Vue.extend({
   computed: {
     orders(): UiSpotLimitOrder[] {
       return this.$accessor.spot.subaccountOrders
+    },
+
+    currentComponent(): string {
+      const { component } = this
+
+      switch (component) {
+        case components.openOrders:
+          return 'v-open-orders'
+        case components.tradeHistory:
+          return 'v-trade-history'
+        default:
+          return 'v-open-orders'
+      }
     }
   },
 
   methods: {
+    onSelect(component: number) {
+      this.component = component
+    },
+
     handleCancelAllClick() {
       const { orders } = this
 
