@@ -46,7 +46,8 @@ export default Vue.extend({
       this.$accessor.spot.init(),
       this.$accessor.derivatives.init(),
       this.$accessor.bank.init(),
-      this.$accessor.account.init()
+      this.$accessor.account.init(),
+      this.$accessor.wallet.init()
     ])
       .then(() => {
         this.interval = setInterval(async () => {

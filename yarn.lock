@@ -1856,10 +1856,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/contracts@^0.0.55":
-  version "0.0.55"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/contracts/-/contracts-0.0.55.tgz#44922b0593fd50bf158eddb667f2e9ea4ac5c79e"
-  integrity sha512-2M+Ul9hZMiRUaSWR5OQ7Mo3IuX15Osss7gcbTQmf4hGTQ9fOv0eQi5v3vS80y2eyV3es/NOUJ112ME09vbNnhg==
+"@injectivelabs/contracts@^0.0.56":
+  version "0.0.56"
+  resolved "https://registry.npmjs.org/@injectivelabs/contracts/-/contracts-0.0.56.tgz#e6ab190b29147ab031fa19ae20cb0775a639f8cb"
+  integrity sha512-z4jXLLlhE3Beg/zdgjLmmgjiUhOLY4Z64wyGKQJRBjBZLamQk3Uc7pEOLiNGiMaoGA8GiKSbyTF7mjEHQqhMDQ==
   dependencies:
     "@commitlint/cli" "^8.1.0"
     "@commitlint/config-conventional" "^8.1.0"
@@ -1868,7 +1868,7 @@
     "@injectivelabs/tx-utils" "^0.0.13"
     "@injectivelabs/utils" "^0.0.35"
     "@injectivelabs/web3-contract-typings" "^0.1.12"
-    "@injectivelabs/web3-strategy" "^0.0.51"
+    "@injectivelabs/web3-strategy" "^0.0.52"
     "@types/ethereumjs-util" "^6.1.0"
     "@types/jest" "^24.0.23"
     "@types/node" "^12.7.5"
@@ -2135,10 +2135,10 @@
   dependencies:
     typescript "^4.0.5"
 
-"@injectivelabs/web3-strategy@^0.0.51":
-  version "0.0.51"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/web3-strategy/-/web3-strategy-0.0.51.tgz#5a3c0156cf079af8584ea7553f69986b0bd46349"
-  integrity sha512-Ig5C3wMmF/e+W3veTpz92gHqnnW4YoGcb58Eu5uaVQJbxWtnztI1qif9HyXoxPIyBophEMT7w//WH3GR1eNXVQ==
+"@injectivelabs/web3-strategy@^0.0.52":
+  version "0.0.52"
+  resolved "https://registry.npmjs.org/@injectivelabs/web3-strategy/-/web3-strategy-0.0.52.tgz#78969301963882eb173368a08a682981fc3a6dbb"
+  integrity sha512-/kLF9rdJC4LVEirFzIPQ/slN70ZUJe46OMF5TyD7wi0ct4fOaBXzbYJ5MANrrwicTxldzZ6CZlmrcDWcKhkU1A==
   dependencies:
     "@injectivelabs/assert" "^0.0.19"
     "@injectivelabs/exceptions" "^0.0.28"

@@ -3,7 +3,7 @@
     <div
       v-if="component === components.openOrders && orders.length > 0"
       slot="context-absolute"
-      class="absolute right-0 top-0 mt-3 mr-2"
+      class="absolute right-0 top-0 mt-3 mr-3"
     >
       <v-ui-button xs primary @click.stop="handleCancelAllClick">
         {{ $t('cancel_all') }}

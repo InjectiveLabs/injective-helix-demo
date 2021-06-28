@@ -71,11 +71,20 @@ export const mutations = {
 export const actions = actionTree(
   { state, mutations },
   {
-    async connect(_, wallet: Wallet) {
+    async init({ state }) {
+      await this.app.$accessor.wallet.connect(state.wallet || Wallet.Metamask)
+    },
+
+    async connect({ commit }, wallet: Wallet) {
+      commit('setWallet', wallet)
       await connect(wallet)
     },
 
-    async connectLedger(_, options: Partial<ConcreteStrategyOptions> = {}) {
+    async connectLedger(
+      { commit },
+      options: Partial<ConcreteStrategyOptions> = {}
+    ) {
+      commit('setWallet', Wallet.Ledger)
       await connect(Wallet.Ledger, options)
     },
 
@@ -101,7 +110,7 @@ export const actions = actionTree(
     },
 
     async connectAndConfirm({ commit }, wallet: Wallet) {
-      await connect(wallet)
+      await this.app.$accessor.wallet.connect(wallet)
       const addresses = await getAddresses()
       const [address] = addresses
       const addressConfirmation = await confirm(address)
