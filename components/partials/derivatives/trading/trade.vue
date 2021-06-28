@@ -306,9 +306,9 @@ export default Vue.extend({
     },
 
     hasAmount(): boolean {
-      const { amount } = this
+      const { amount, amountStep } = this
 
-      return !amount.isNaN() && amount.gt(0)
+      return !amount.isNaN() && amount.gt(0) && amount.gte(amountStep)
     },
 
     slippage(): BigNumberInBase {
@@ -1022,9 +1022,9 @@ export default Vue.extend({
     },
 
     onAmountBlur() {
-      const { market, form, hasAmount } = this
+      const { market, form } = this
 
-      if (!market || !hasAmount) {
+      if (!market) {
         return
       }
 
