@@ -19,7 +19,7 @@
     >
       <div class="relative">
         <input
-          id="leverage-input"
+          ref="leverage-input"
           :value="leverage"
           type="number"
           min="0"
@@ -59,7 +59,10 @@ export default Vue.extend({
 
   methods: {
     onLeverageChange(value: string) {
-      this.$emit('change', value)
+      if (!Number.isNaN(value)) {
+        this.$emit('change', value)
+        this.$forceUpdate()
+      }
     }
   }
 })
