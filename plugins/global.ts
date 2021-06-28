@@ -7,8 +7,3 @@ require('~/components/ui')
  * Import all Inputs
  */
 require('~/components/inputs')
-
-/**
- * Import all Tab Components
- */
-require('~/components/tabs')
