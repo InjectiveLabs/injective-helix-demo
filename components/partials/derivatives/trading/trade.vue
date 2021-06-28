@@ -85,7 +85,7 @@
       <div v-if="!tradingTypeMarket" class="mb-4">
         <v-input
           ref="input-price"
-          :value="priceInputValue"
+          :value="form.price"
           :placeholder="$t('price')"
           :label="
             $t('price_decimals', {
@@ -768,26 +768,6 @@ export default Vue.extend({
       return false
     },
 
-    priceInputValue(): string {
-      const { hasPrice, form, tradingTypeMarket } = this
-
-      if (!hasPrice || tradingTypeMarket) {
-        return ''
-      }
-
-      return form.price
-    },
-
-    amountInputValue(): string {
-      const { hasAmount, form } = this
-
-      if (!hasAmount) {
-        return ''
-      }
-
-      return form.amount
-    },
-
     maxLeverageAvailable(): BigNumberInBase {
       const { market } = this
 
@@ -913,18 +893,18 @@ export default Vue.extend({
 
   watch: {
     orderType() {
-      const { tradingType, priceInputValue, market } = this
+      const { tradingType, form, market } = this
 
       if (tradingType === TradeExecutionType.LimitFill && market) {
-        this.onPriceChange(priceInputValue)
+        this.onPriceChange(form.price)
       }
     },
 
     tradingType(newTradingType: TradeExecutionType) {
-      const { priceInputValue, market } = this
+      const { form, market } = this
 
       if (newTradingType === TradeExecutionType.LimitFill && market) {
-        this.onPriceChange(priceInputValue)
+        this.onPriceChange(form.price)
       }
     },
 
