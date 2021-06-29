@@ -13,6 +13,7 @@ jobs:
       APP_BASE_URL: https://testnet.injective.exchange
       APP_MAINTENANCE_ENABLED: true
       APP_NETWORK: staking
+      METRICS_ENABLED: true
       APP_ENV: testnet
       SOURCE_DIR: dist
       DEST_DIR: www

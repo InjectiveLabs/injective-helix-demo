@@ -13,6 +13,7 @@ jobs:
       APP_BASE_URL: https://staging.injective.exchange
       APP_MAINTENANCE_ENABLED: false
       APP_NETWORK: staking
+      METRICS_ENABLED: false
       APP_ENV: staging
       SOURCE_DIR: dist
       DEST_DIR: www

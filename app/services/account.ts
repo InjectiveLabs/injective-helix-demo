@@ -11,10 +11,12 @@ import { TxProvider } from '../providers/TxProvider'
 import { subaccountStream } from '../singletons/SubaccountStream'
 import { streamManager } from '../singletons/StreamManager'
 import { grpcSubaccountBalanceToUiSubaccountBalance } from '../transformers/account'
+import { metricsProvider } from '../providers/MetricsProvider'
 import { subaccountConsumer } from '~/app/singletons/SubaccountConsumer'
 import { TESTNET_CHAIN_ID } from '~/app/utils/constants'
 import { authConsumer } from '~/app/singletons/AuthConsumer'
 import { UiSubaccount } from '~/types/subaccount'
+import { AccountMetrics } from '~/types/metrics'
 
 export const getInjectiveAddress = (address: AccountAddress): string => {
   return authConsumer.getInjectiveAddress(address)
@@ -23,26 +25,41 @@ export const getInjectiveAddress = (address: AccountAddress): string => {
 export const fetchSubaccounts = async (
   address: AccountAddress
 ): Promise<string[]> => {
-  return await subaccountConsumer.fetchSubaccounts(address)
+  const promise = subaccountConsumer.fetchSubaccounts(address)
+
+  return await metricsProvider.sendAndRecord(
+    promise,
+    AccountMetrics.FetchSubaccount
+  )
 }
 
 export const fetchSubaccount = async (
   subaccountId: string
 ): Promise<UiSubaccount> => {
-  const balances = SubaccountTransformer.grpcBalancesToBalances(
-    await subaccountConsumer.fetchSubaccountBalances(subaccountId)
+  const promise = subaccountConsumer.fetchSubaccountBalances(subaccountId)
+  const balances = await metricsProvider.sendAndRecord(
+    promise,
+    AccountMetrics.FetchSubaccountBalances
+  )
+
+  const uiBalances = SubaccountTransformer.grpcBalancesToBalances(
+    balances
   ).map((balance) => grpcSubaccountBalanceToUiSubaccountBalance(balance))
 
   return {
     subaccountId,
-    balances
+    balances: uiBalances
   }
 }
 
 export const fetchSubaccountHistory = async (subaccountId: string) => {
-  return SubaccountTransformer.grpcTransferHistoryToTransferHistory(
-    await subaccountConsumer.fetchSubaccountHistory(subaccountId)
+  const promise = subaccountConsumer.fetchSubaccountHistory(subaccountId)
+  const history = await metricsProvider.sendAndRecord(
+    promise,
+    AccountMetrics.FetchSubaccountBalances
   )
+
+  return SubaccountTransformer.grpcTransferHistoryToTransferHistory(history)
 }
 
 export const streamSubaccountBalances = (
@@ -92,7 +109,10 @@ export const deposit = async ({
       chainId: TESTNET_CHAIN_ID
     })
 
-    await txProvider.broadcast()
+    await metricsProvider.sendAndRecord(
+      txProvider.broadcast(),
+      AccountMetrics.Deposit
+    )
   } catch (error) {
     throw new Web3Exception(error.message)
   }
@@ -125,7 +145,10 @@ export const withdraw = async ({
       chainId: TESTNET_CHAIN_ID
     })
 
-    await txProvider.broadcast()
+    await metricsProvider.sendAndRecord(
+      txProvider.broadcast(),
+      AccountMetrics.Withdraw
+    )
   } catch (error) {
     throw new Web3Exception(error.message)
   }

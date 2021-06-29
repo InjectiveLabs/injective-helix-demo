@@ -1,5 +1,5 @@
 import { HttpClient } from '@injectivelabs/utils'
-import { IS_PRODUCTION } from '../utils/constants'
+import { IS_PRODUCTION, METRICS_ENABLED } from '../utils/constants'
 
 export class MetricsProvider {
   private httpClient: HttpClient
@@ -32,22 +32,30 @@ export class MetricsProvider {
     return { response, duration: parseInt((end - start).toString()) }
   }
 
-  record(bucket: string, duration: number) {
-    if (IS_PRODUCTION && this.recordMetrics()) {
-      this.timing(bucket, duration)
-      this.incr(bucket)
+  async sendAndRecord<T>(promise: Promise<T>, bucket: string): Promise<T> {
+    try {
+      const start = performance.now()
+      const response = (await promise) as T
+      const end = performance.now()
+      const duration = parseInt((end - start).toString())
+
+      this.record(bucket, duration)
+      return response
+    } catch (error) {
+      this.recordError(bucket)
+      throw error
     }
   }
 
-  recordWithoutProbability(bucket: string, duration: number) {
-    if (IS_PRODUCTION) {
+  record(bucket: string, duration: number) {
+    if (this.recordMetrics()) {
       this.timing(bucket, duration)
       this.incr(bucket)
     }
   }
 
   recordError(bucket: string) {
-    if (IS_PRODUCTION && this.recordMetrics()) {
+    if (this.recordMetrics()) {
       this.incr(bucket + 'Errors')
     }
   }
@@ -73,7 +81,7 @@ export class MetricsProvider {
   }
 
   private recordMetrics(): boolean {
-    return Math.random() < 0.1
+    return IS_PRODUCTION && METRICS_ENABLED && Math.random() < 0.1
   }
 }
 

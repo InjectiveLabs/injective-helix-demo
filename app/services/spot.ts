@@ -11,6 +11,7 @@ import { AccountAddress, TradeExecutionSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { SubaccountStreamType } from '@injectivelabs/subaccount-consumer'
+import { metricsProvider } from '../providers/MetricsProvider'
 import { TxProvider } from '~/app/providers/TxProvider'
 import { spotMarketStream } from '~/app/singletons/SpotMarketStream'
 import { streamManager } from '~/app/singletons/StreamManager'
@@ -33,15 +34,19 @@ import {
   spotMarketsToUiSpotMarkets
 } from '~/app/transformers/spot'
 import { spotChronosConsumer } from '~/app/singletons/SpotMarketChronosConsumer'
+import { SpotMetrics } from '~/types/metrics'
 
 export const fetchMarkets = async (): Promise<UiSpotMarket[]> => {
-  const markets = SpotTransformer.grpcMarketsToMarkets(
-    await spotConsumer.fetchMarkets()
+  const promise = spotConsumer.fetchMarkets()
+  const markets = await metricsProvider.sendAndRecord(
+    promise,
+    SpotMetrics.FetchMarkets
   )
 
+  const transformedMarket = SpotTransformer.grpcMarketsToMarkets(await markets)
   const quoteTokenMetaDataExist = (m: BaseUiSpotMarket) =>
     m.quoteToken !== undefined
-  const filteredMarkets = markets.filter(quoteTokenMetaDataExist)
+  const filteredMarkets = transformedMarket.filter(quoteTokenMetaDataExist)
 
   return spotMarketsToUiSpotMarkets(filteredMarkets)
 }
@@ -49,8 +54,10 @@ export const fetchMarkets = async (): Promise<UiSpotMarket[]> => {
 export const fetchMarketSummary = async (
   marketId: string
 ): Promise<UiSpotMarketSummary> => {
-  const marketSummary = await spotChronosConsumer.fetchSpotMarketSummary(
-    marketId
+  const promise = spotChronosConsumer.fetchSpotMarketSummary(marketId)
+  const marketSummary = await metricsProvider.sendAndRecord(
+    promise,
+    SpotMetrics.FetchMarketSummary
   )
 
   return {
@@ -62,7 +69,11 @@ export const fetchMarketSummary = async (
 export const fetchMarketsSummary = async (
   oldMarketsSummary?: UiSpotMarketSummary[]
 ): Promise<UiSpotMarketSummary[]> => {
-  const marketsSummary = await spotChronosConsumer.fetchSpotMarketsSummary()
+  const promise = spotChronosConsumer.fetchSpotMarketsSummary()
+  const marketsSummary = await metricsProvider.sendAndRecord(
+    promise,
+    SpotMetrics.FetchMarketsSummary
+  )
 
   if (!oldMarketsSummary) {
     return marketsSummary
@@ -88,17 +99,24 @@ export const fetchMarketsSummary = async (
 }
 
 export const fetchMarket = async (marketId: string) => {
-  const market = SpotTransformer.grpcMarketToMarket(
-    await spotConsumer.fetchMarket(marketId)
+  const promise = spotConsumer.fetchMarket(marketId)
+  const market = await metricsProvider.sendAndRecord(
+    promise,
+    SpotMetrics.FetchMarket
   )
+  const transformedMarket = SpotTransformer.grpcMarketToMarket(market)
 
-  return spotMarketToUiSpotMarket(market)
+  return spotMarketToUiSpotMarket(transformedMarket)
 }
 
 export const fetchMarketOrderbook = async (marketId: string) => {
-  return SpotTransformer.grpcOrderbookToOrderbook(
-    await spotConsumer.fetchOrderbook(marketId)
+  const promise = spotConsumer.fetchOrderbook(marketId)
+  const orderbook = await metricsProvider.sendAndRecord(
+    promise,
+    SpotMetrics.FetchOrderbook
   )
+
+  return SpotTransformer.grpcOrderbookToOrderbook(orderbook)
 }
 
 export const fetchMarketTrades = async ({
@@ -108,13 +126,17 @@ export const fetchMarketTrades = async ({
   marketId: string
   subaccountId?: AccountAddress
 }) => {
-  return SpotTransformer.grpcTradesToTrades(
-    await spotConsumer.fetchTrades({
-      marketId,
-      subaccountId,
-      executionSide: TradeExecutionSide.Taker
-    })
+  const promise = spotConsumer.fetchTrades({
+    marketId,
+    subaccountId,
+    executionSide: TradeExecutionSide.Taker
+  })
+  const trades = await metricsProvider.sendAndRecord(
+    promise,
+    SpotMetrics.FetchTrades
   )
+
+  return SpotTransformer.grpcTradesToTrades(trades)
 }
 
 export const fetchMarketOrders = async ({
@@ -124,12 +146,16 @@ export const fetchMarketOrders = async ({
   marketId: string
   subaccountId: AccountAddress
 }) => {
-  return SpotTransformer.grpcOrdersToOrders(
-    await spotConsumer.fetchOrders({
-      marketId,
-      subaccountId
-    })
+  const promise = spotConsumer.fetchOrders({
+    marketId,
+    subaccountId
+  })
+  const orders = await metricsProvider.sendAndRecord(
+    promise,
+    SpotMetrics.FetchOrders
   )
+
+  return SpotTransformer.grpcOrdersToOrders(orders)
 }
 
 export const streamOrderbook = (
@@ -252,7 +278,10 @@ export const submitLimitOrder = async ({
       chainId: TESTNET_CHAIN_ID
     })
 
-    await txProvider.broadcast()
+    await metricsProvider.sendAndRecord(
+      txProvider.broadcast(),
+      SpotMetrics.CreateLimitOrder
+    )
   } catch (error) {
     throw new Web3Exception(error.message)
   }
@@ -299,7 +328,10 @@ export const submitMarketOrder = async ({
       chainId: TESTNET_CHAIN_ID
     })
 
-    await txProvider.broadcast()
+    await metricsProvider.sendAndRecord(
+      txProvider.broadcast(),
+      SpotMetrics.CreateMarketOrder
+    )
   } catch (error) {
     throw new Web3Exception(error.message)
   }
@@ -330,7 +362,10 @@ export const batchCancelOrders = async ({
       chainId: TESTNET_CHAIN_ID
     })
 
-    await txProvider.broadcast()
+    await metricsProvider.sendAndRecord(
+      txProvider.broadcast(),
+      SpotMetrics.BatchCancelLimitOrders
+    )
   } catch (error) {
     throw new Web3Exception(error.message)
   }
@@ -365,7 +400,10 @@ export const cancelOrder = async ({
       chainId: TESTNET_CHAIN_ID
     })
 
-    await txProvider.broadcast()
+    await metricsProvider.sendAndRecord(
+      txProvider.broadcast(),
+      SpotMetrics.CancelLimitOrder
+    )
   } catch (error) {
     throw new Web3Exception(error.message)
   }

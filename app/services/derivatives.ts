@@ -18,6 +18,7 @@ import {
 } from '@injectivelabs/exchange-consumer'
 import { oracleStream } from '../singletons/OracleStream'
 import { oracleConsumer } from '../singletons/OracleConsumer'
+import { metricsProvider } from '../providers/MetricsProvider'
 import { TxProvider } from '~/app/providers/TxProvider'
 import { derivativeMarketStream } from '~/app/singletons/DerivativeMarketStream'
 import { streamManager } from '~/app/singletons/StreamManager'
@@ -40,15 +41,19 @@ import {
   derivativeMarketsToUiDerivativeMarkets
 } from '~/app/transformers/derivatives'
 import { derivativeChronosConsumer } from '~/app/singletons/DerivativeMarketChronosConsumer'
+import { DerivativesMetrics } from '~/types/metrics'
 
 export const fetchMarkets = async (): Promise<UiDerivativeMarket[]> => {
-  const markets = DerivativeTransformer.grpcMarketsToMarkets(
-    await derivativeConsumer.fetchMarkets()
+  const promise = derivativeConsumer.fetchMarkets()
+  const markets = await metricsProvider.sendAndRecord(
+    promise,
+    DerivativesMetrics.FetchMarkets
   )
 
+  const transformedMarkets = DerivativeTransformer.grpcMarketsToMarkets(markets)
   const quoteTokenMetaDataExist = (m: BaseUiDerivativeMarket) =>
     m.quoteToken !== undefined
-  const filteredMarkets = markets.filter(quoteTokenMetaDataExist)
+  const filteredMarkets = transformedMarkets.filter(quoteTokenMetaDataExist)
 
   return derivativeMarketsToUiDerivativeMarkets(filteredMarkets)
 }
@@ -56,8 +61,12 @@ export const fetchMarkets = async (): Promise<UiDerivativeMarket[]> => {
 export const fetchMarketSummary = async (
   marketId: string
 ): Promise<UiDerivativeMarketSummary> => {
-  const marketSummary = await derivativeChronosConsumer.fetchDerivativeMarketSummary(
+  const promise = derivativeChronosConsumer.fetchDerivativeMarketSummary(
     marketId
+  )
+  const marketSummary = await metricsProvider.sendAndRecord(
+    promise,
+    DerivativesMetrics.FetchMarketSummary
   )
 
   return {
@@ -69,7 +78,11 @@ export const fetchMarketSummary = async (
 export const fetchMarketsSummary = async (
   oldMarketsSummary?: UiDerivativeMarketSummary[]
 ): Promise<UiDerivativeMarketSummary[]> => {
-  const marketsSummary = await derivativeChronosConsumer.fetchDerivativeMarketsSummary()
+  const promise = derivativeChronosConsumer.fetchDerivativeMarketsSummary()
+  const marketsSummary = await metricsProvider.sendAndRecord(
+    promise,
+    DerivativesMetrics.FetchMarketsSummary
+  )
 
   if (!oldMarketsSummary) {
     return marketsSummary
@@ -94,17 +107,24 @@ export const fetchMarketsSummary = async (
 }
 
 export const fetchMarket = async (marketId: string) => {
-  const market = DerivativeTransformer.grpcMarketToMarket(
-    await derivativeConsumer.fetchMarket(marketId)
+  const promise = derivativeConsumer.fetchMarket(marketId)
+  const market = await metricsProvider.sendAndRecord(
+    promise,
+    DerivativesMetrics.FetchMarket
   )
+  const transformedMarket = DerivativeTransformer.grpcMarketToMarket(market)
 
-  return derivativeMarketToUiDerivativeMarket(market)
+  return derivativeMarketToUiDerivativeMarket(transformedMarket)
 }
 
 export const fetchMarketOrderbook = async (marketId: string) => {
-  return DerivativeTransformer.grpcOrderbookToOrderbook(
-    await derivativeConsumer.fetchOrderbook(marketId)
+  const promise = derivativeConsumer.fetchOrderbook(marketId)
+  const orderbook = await metricsProvider.sendAndRecord(
+    promise,
+    DerivativesMetrics.FetchOrderbook
   )
+
+  return DerivativeTransformer.grpcOrderbookToOrderbook(orderbook)
 }
 
 export const fetchMarketTrades = async ({
@@ -114,13 +134,17 @@ export const fetchMarketTrades = async ({
   marketId: string
   subaccountId?: AccountAddress
 }) => {
-  return DerivativeTransformer.grpcTradesToTrades(
-    await derivativeConsumer.fetchTrades({
-      marketId,
-      subaccountId,
-      executionSide: TradeExecutionSide.Taker
-    })
+  const promise = derivativeConsumer.fetchTrades({
+    marketId,
+    subaccountId,
+    executionSide: TradeExecutionSide.Taker
+  })
+  const trades = await metricsProvider.sendAndRecord(
+    promise,
+    DerivativesMetrics.FetchTrades
   )
+
+  return DerivativeTransformer.grpcTradesToTrades(trades)
 }
 
 export const fetchMarketPositions = async ({
@@ -130,12 +154,16 @@ export const fetchMarketPositions = async ({
   marketId: string
   subaccountId?: AccountAddress
 }) => {
-  return DerivativeTransformer.grpcPositionsToPositions(
-    await derivativeConsumer.fetchPositions({
-      marketId,
-      subaccountId
-    })
+  const promise = derivativeConsumer.fetchPositions({
+    marketId,
+    subaccountId
+  })
+  const positions = await metricsProvider.sendAndRecord(
+    promise,
+    DerivativesMetrics.FetchPositions
   )
+
+  return DerivativeTransformer.grpcPositionsToPositions(positions)
 }
 
 export const fetchMarketOrders = async ({
@@ -145,20 +173,28 @@ export const fetchMarketOrders = async ({
   marketId: string
   subaccountId: AccountAddress
 }) => {
-  return DerivativeTransformer.grpcOrdersToOrders(
-    await derivativeConsumer.fetchOrders({
-      marketId,
-      subaccountId
-    })
+  const promise = derivativeConsumer.fetchOrders({
+    marketId,
+    subaccountId
+  })
+  const orders = await metricsProvider.sendAndRecord(
+    promise,
+    DerivativesMetrics.FetchOrders
   )
+
+  return DerivativeTransformer.grpcOrdersToOrders(orders)
 }
 
 export const fetchMarketMarkPrice = async (market: UiDerivativeMarket) => {
-  const price = await oracleConsumer.price({
+  const promise = oracleConsumer.price({
     baseSymbol: market.oracleBase,
     quoteSymbol: market.oracleQuote,
     oracleType: market.oracleType
   })
+  const price = await metricsProvider.sendAndRecord(
+    promise,
+    DerivativesMetrics.FetchOrders
+  )
 
   return price || ZERO_TO_STRING
 }
@@ -323,7 +359,10 @@ export const submitLimitOrder = async ({
       chainId: TESTNET_CHAIN_ID
     })
 
-    await txProvider.broadcast()
+    await metricsProvider.sendAndRecord(
+      txProvider.broadcast(),
+      DerivativesMetrics.CreateLimitOrder
+    )
   } catch (error) {
     throw new Web3Exception(error.message)
   }
@@ -373,7 +412,10 @@ export const submitMarketOrder = async ({
       chainId: TESTNET_CHAIN_ID
     })
 
-    await txProvider.broadcast()
+    await metricsProvider.sendAndRecord(
+      txProvider.broadcast(),
+      DerivativesMetrics.CreateMarketOrder
+    )
   } catch (error) {
     throw new Web3Exception(error.message)
   }
@@ -419,7 +461,10 @@ export const closePosition = async ({
       chainId: TESTNET_CHAIN_ID
     })
 
-    await txProvider.broadcast()
+    await metricsProvider.sendAndRecord(
+      txProvider.broadcast(),
+      DerivativesMetrics.CreateMarketOrder
+    )
   } catch (error) {
     throw new Web3Exception(error.message)
   }
@@ -454,7 +499,10 @@ export const cancelOrder = async ({
       chainId: TESTNET_CHAIN_ID
     })
 
-    await txProvider.broadcast()
+    await metricsProvider.sendAndRecord(
+      txProvider.broadcast(),
+      DerivativesMetrics.CancelLimitOrder
+    )
   } catch (error) {
     throw new Web3Exception(error.message)
   }
@@ -485,7 +533,10 @@ export const batchCancelOrders = async ({
       chainId: TESTNET_CHAIN_ID
     })
 
-    await txProvider.broadcast()
+    await metricsProvider.sendAndRecord(
+      txProvider.broadcast(),
+      DerivativesMetrics.BatchCancelLimitOrders
+    )
   } catch (error) {
     throw new Web3Exception(error.message)
   }
