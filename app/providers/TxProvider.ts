@@ -1,6 +1,7 @@
 import { AccountAddress, ChainId } from '@injectivelabs/ts-types'
 import { Web3Exception, ExchangeException } from '@injectivelabs/exceptions'
 import { Web3Strategy } from '@injectivelabs/web3-strategy'
+import { metricsProvider } from './MetricsProvider'
 import { transactionConsumer } from '~/app/singletons/TransactionConsumer'
 import { getWeb3Strategy } from '~/app/web3'
 
@@ -9,6 +10,8 @@ export class TxProvider {
 
   private address: string
 
+  private bucket: string
+
   private web3Strategy: Web3Strategy
 
   private chainId: ChainId
@@ -16,55 +19,66 @@ export class TxProvider {
   constructor({
     message,
     address,
-    chainId
+    chainId,
+    bucket
   }: {
     message: any
     address: AccountAddress
     chainId: ChainId
+    bucket: string
   }) {
     this.message = message
     this.address = address
     this.chainId = chainId
+    this.bucket = bucket
     this.web3Strategy = getWeb3Strategy()
   }
 
   async prepare() {
-    const { chainId, address, message } = this
+    const { chainId, address, message, bucket } = this
 
     try {
-      return await transactionConsumer.prepareExchangeTxRequest({
-        delegatedFee: true,
+      const promise = transactionConsumer.prepareExchangeTxRequest({
         address,
         message,
         chainId
       })
+
+      return await metricsProvider.sendAndRecord(promise, `${bucket}PrepareTx`)
     } catch (e) {
       throw new ExchangeException(e.message)
     }
   }
 
   async sign(txData: any) {
-    const { address, web3Strategy } = this
+    const { address, web3Strategy, bucket } = this
 
     try {
-      return await web3Strategy.signTypedDataV4(txData, address)
+      const promise = web3Strategy.signTypedDataV4(txData, address)
+
+      return await metricsProvider.sendAndRecord(promise, `${bucket}SignTx`)
     } catch (e) {
       throw new Web3Exception(e.message)
     }
   }
 
   async broadcast() {
-    const { message, chainId } = this
+    const { message, chainId, bucket } = this
     const txResponse = await this.prepare()
     const signature = await this.sign(txResponse.getData())
 
     try {
-      return await transactionConsumer.broadcastTxRequest({
+      const promise = transactionConsumer.broadcastTxRequest({
         signature,
         message,
         chainId,
         txResponse
       })
+
+      return await metricsProvider.sendAndRecord(
+        promise,
+        `${bucket}BroadcastTx`
+      )
     } catch (e) {
       throw new ExchangeException(e.message)
     }

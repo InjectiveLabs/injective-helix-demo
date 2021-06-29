@@ -106,13 +106,11 @@ export const deposit = async ({
     const txProvider = new TxProvider({
       address,
       message,
+      bucket: AccountMetrics.Deposit,
       chainId: TESTNET_CHAIN_ID
     })
 
-    await metricsProvider.sendAndRecord(
-      txProvider.broadcast(),
-      AccountMetrics.Deposit
-    )
+    await txProvider.broadcast()
   } catch (error) {
     throw new Web3Exception(error.message)
   }
@@ -141,14 +139,12 @@ export const withdraw = async ({
   try {
     const txProvider = new TxProvider({
       address,
+      bucket: AccountMetrics.Withdraw,
       message,
       chainId: TESTNET_CHAIN_ID
     })
 
-    await metricsProvider.sendAndRecord(
-      txProvider.broadcast(),
-      AccountMetrics.Withdraw
-    )
+    await txProvider.broadcast()
   } catch (error) {
     throw new Web3Exception(error.message)
   }

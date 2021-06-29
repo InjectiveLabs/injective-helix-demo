@@ -356,13 +356,11 @@ export const submitLimitOrder = async ({
     const txProvider = new TxProvider({
       address,
       message,
+      bucket: DerivativesMetrics.CreateLimitOrder,
       chainId: TESTNET_CHAIN_ID
     })
 
-    await metricsProvider.sendAndRecord(
-      txProvider.broadcast(),
-      DerivativesMetrics.CreateLimitOrder
-    )
+    await txProvider.broadcast()
   } catch (error) {
     throw new Web3Exception(error.message)
   }
@@ -409,13 +407,11 @@ export const submitMarketOrder = async ({
     const txProvider = new TxProvider({
       address,
       message,
+      bucket: DerivativesMetrics.CreateMarketOrder,
       chainId: TESTNET_CHAIN_ID
     })
 
-    await metricsProvider.sendAndRecord(
-      txProvider.broadcast(),
-      DerivativesMetrics.CreateMarketOrder
-    )
+    await txProvider.broadcast()
   } catch (error) {
     throw new Web3Exception(error.message)
   }
@@ -458,13 +454,11 @@ export const closePosition = async ({
     const txProvider = new TxProvider({
       address,
       message,
+      bucket: DerivativesMetrics.CreateMarketOrder,
       chainId: TESTNET_CHAIN_ID
     })
 
-    await metricsProvider.sendAndRecord(
-      txProvider.broadcast(),
-      DerivativesMetrics.CreateMarketOrder
-    )
+    await txProvider.broadcast()
   } catch (error) {
     throw new Web3Exception(error.message)
   }
@@ -496,13 +490,11 @@ export const cancelOrder = async ({
     const txProvider = new TxProvider({
       address,
       message,
+      bucket: DerivativesMetrics.CancelLimitOrder,
       chainId: TESTNET_CHAIN_ID
     })
 
-    await metricsProvider.sendAndRecord(
-      txProvider.broadcast(),
-      DerivativesMetrics.CancelLimitOrder
-    )
+    await txProvider.broadcast()
   } catch (error) {
     throw new Web3Exception(error.message)
   }
@@ -530,13 +522,11 @@ export const batchCancelOrders = async ({
     const txProvider = new TxProvider({
       address,
       message,
+      bucket: DerivativesMetrics.BatchCancelLimitOrders,
       chainId: TESTNET_CHAIN_ID
     })
 
-    await metricsProvider.sendAndRecord(
-      txProvider.broadcast(),
-      DerivativesMetrics.BatchCancelLimitOrders
-    )
+    await txProvider.broadcast()
   } catch (error) {
     throw new Web3Exception(error.message)
   }

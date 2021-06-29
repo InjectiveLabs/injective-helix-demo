@@ -275,13 +275,11 @@ export const submitLimitOrder = async ({
     const txProvider = new TxProvider({
       address,
       message,
+      bucket: SpotMetrics.CreateLimitOrder,
       chainId: TESTNET_CHAIN_ID
     })
 
-    await metricsProvider.sendAndRecord(
-      txProvider.broadcast(),
-      SpotMetrics.CreateLimitOrder
-    )
+    await txProvider.broadcast()
   } catch (error) {
     throw new Web3Exception(error.message)
   }
@@ -325,13 +323,11 @@ export const submitMarketOrder = async ({
     const txProvider = new TxProvider({
       address,
       message,
+      bucket: SpotMetrics.CreateMarketOrder,
       chainId: TESTNET_CHAIN_ID
     })
 
-    await metricsProvider.sendAndRecord(
-      txProvider.broadcast(),
-      SpotMetrics.CreateMarketOrder
-    )
+    await txProvider.broadcast()
   } catch (error) {
     throw new Web3Exception(error.message)
   }
@@ -359,13 +355,11 @@ export const batchCancelOrders = async ({
     const txProvider = new TxProvider({
       address,
       message,
+      bucket: SpotMetrics.BatchCancelLimitOrders,
       chainId: TESTNET_CHAIN_ID
     })
 
-    await metricsProvider.sendAndRecord(
-      txProvider.broadcast(),
-      SpotMetrics.BatchCancelLimitOrders
-    )
+    await txProvider.broadcast()
   } catch (error) {
     throw new Web3Exception(error.message)
   }
@@ -397,13 +391,11 @@ export const cancelOrder = async ({
     const txProvider = new TxProvider({
       address,
       message,
+      bucket: SpotMetrics.CancelLimitOrder,
       chainId: TESTNET_CHAIN_ID
     })
 
-    await metricsProvider.sendAndRecord(
-      txProvider.broadcast(),
-      SpotMetrics.CancelLimitOrder
-    )
+    await txProvider.broadcast()
   } catch (error) {
     throw new Web3Exception(error.message)
   }
