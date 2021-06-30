@@ -505,6 +505,24 @@ export const actions = actionTree(
       commit('setMarketsSummary', updatedMarketsSummary)
     },
 
+    async fetchSubaccountMarketTrades({ state, commit }) {
+      const { market } = state
+      const { subaccount } = this.app.$accessor.account
+      const { isUserWalletConnected } = this.app.$accessor.wallet
+
+      if (!isUserWalletConnected || !subaccount || !market) {
+        return
+      }
+
+      commit(
+        'setSubaccountTrades',
+        await fetchMarketTrades({
+          marketId: market.marketId,
+          subaccountId: subaccount.subaccountId
+        })
+      )
+    },
+
     async cancelOrder(_, order: UiDerivativeLimitOrder) {
       const { subaccount } = this.app.$accessor.account
       const { market } = this.app.$accessor.derivatives
@@ -518,6 +536,7 @@ export const actions = actionTree(
         return
       }
 
+      await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
       await cancelOrder({
@@ -542,6 +561,7 @@ export const actions = actionTree(
         return
       }
 
+      await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
       await batchCancelOrders({
@@ -583,6 +603,7 @@ export const actions = actionTree(
         return
       }
 
+      await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
       await submitLimitOrder({
@@ -626,6 +647,7 @@ export const actions = actionTree(
         return
       }
 
+      await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
       await submitMarketOrder({
@@ -665,6 +687,7 @@ export const actions = actionTree(
         return
       }
 
+      await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
       await closePosition({
@@ -676,24 +699,6 @@ export const actions = actionTree(
         orderType,
         subaccountId: subaccount.subaccountId
       })
-    },
-
-    async fetchSubaccountMarketTrades({ state, commit }) {
-      const { market } = state
-      const { subaccount } = this.app.$accessor.account
-      const { isUserWalletConnected } = this.app.$accessor.wallet
-
-      if (!isUserWalletConnected || !subaccount || !market) {
-        return
-      }
-
-      commit(
-        'setSubaccountTrades',
-        await fetchMarketTrades({
-          marketId: market.marketId,
-          subaccountId: subaccount.subaccountId
-        })
-      )
     }
   }
 )

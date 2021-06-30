@@ -1,6 +1,7 @@
 import type { Plugin } from '@nuxt/types'
 import merge from 'deepmerge'
 import { localStorage } from '~/app/singletons/Storage'
+import { AppState } from '~/types'
 
 const mutationsToPersist = [
   'wallet/reset',
@@ -8,6 +9,21 @@ const mutationsToPersist = [
   'wallet/setWallet',
   'wallet/setInjectiveAddress',
   'wallet/setAddressConfirmation'
+]
+
+const actionsThatSetAppStateToBusy = [
+  'account/deposit',
+  'account/withdraw',
+  'derivatives/cancelOrder',
+  'derivatives/batchCancelOrder',
+  'derivatives/submitLimitOrder',
+  'derivatives/submitMarketOrder',
+  'derivatives/closePosition',
+  'spot/cancelOrder',
+  'spot/batchCancelOrder',
+  'spot/submitLimitOrder',
+  'spot/submitMarketOrder',
+  'spot/closePosition'
 ]
 
 const store: Plugin = ({ store, app }) => {
@@ -35,6 +51,19 @@ const store: Plugin = ({ store, app }) => {
       }
 
       localStorage.set('state', stateToPersist)
+    }
+  })
+
+  store.subscribeAction({
+    after: ({ type }: { type: string }) => {
+      if (actionsThatSetAppStateToBusy.includes(type)) {
+        app.$accessor.app.setAppState(AppState.Idle)
+      }
+    },
+    error: ({ type }: { type: string }) => {
+      if (actionsThatSetAppStateToBusy.includes(type)) {
+        app.$accessor.app.setAppState(AppState.Idle)
+      }
     }
   })
 }

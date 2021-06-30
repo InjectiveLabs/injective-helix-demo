@@ -156,6 +156,7 @@ export const actions = actionTree(
         return
       }
 
+      await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
       await deposit({
@@ -187,6 +188,7 @@ export const actions = actionTree(
         return
       }
 
+      await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
       await withdraw({

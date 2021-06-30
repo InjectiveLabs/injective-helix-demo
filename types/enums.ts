@@ -44,3 +44,11 @@ export enum Breakpoint {
   Xs = 'xs',
   Xxs = 'xxs'
 }
+
+export enum AppState {
+  Busy = 'Busy',
+  Loading = 'Loading',
+  Idle = 'Idle',
+  Error = 'Error',
+  Success = 'Success'
+}

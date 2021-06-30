@@ -3,9 +3,11 @@ import { ChainId } from '@injectivelabs/ts-types'
 import { TESTNET_CHAIN_ID, TESTNET_GAS_PRICE } from '~/app/utils/constants'
 import { fetchGasPrice } from '~/app/services/gas'
 import { Locale, english } from '~/locales'
+import { AppState } from '~/types'
 
 const initialState = {
   locale: english,
+  state: AppState.Idle,
   chainId: TESTNET_CHAIN_ID,
   gasPrice: TESTNET_GAS_PRICE.toString()
 }
@@ -13,12 +15,17 @@ const initialState = {
 export const state = () => ({
   locale: initialState.locale as Locale,
   chainId: initialState.chainId as ChainId,
-  gasPrice: initialState.gasPrice as string
+  gasPrice: initialState.gasPrice as string,
+  state: initialState.state as AppState
 })
 
 export type AppStoreState = ReturnType<typeof state>
 
 export const mutations = {
+  setAppState(state: AppStoreState, appState: AppState) {
+    state.state = appState
+  },
+
   setAppLocale(state: AppStoreState, locale: Locale) {
     state.locale = locale
   },
@@ -33,6 +40,14 @@ export const actions = actionTree(
   {
     async init(_) {
       await this.app.$accessor.app.fetchGasPrice()
+    },
+
+    queue({ state, commit }) {
+      if (state.state === AppState.Busy) {
+        throw new Error('Please finish your previous transaction first')
+      } else {
+        commit('setAppState', AppState.Busy)
+      }
     },
 
     async fetchGasPrice({ commit }) {

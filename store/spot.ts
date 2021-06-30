@@ -410,6 +410,24 @@ export const actions = actionTree(
       commit('setMarketsSummary', updatedMarketsSummary)
     },
 
+    async fetchSubaccountMarketTrades({ state, commit }) {
+      const { market } = state
+      const { subaccount } = this.app.$accessor.account
+      const { isUserWalletConnected } = this.app.$accessor.wallet
+
+      if (!isUserWalletConnected || !subaccount || !market) {
+        return
+      }
+
+      commit(
+        'setSubaccountTrades',
+        await fetchMarketTrades({
+          marketId: market.marketId,
+          subaccountId: subaccount.subaccountId
+        })
+      )
+    },
+
     async cancelOrder(_, order: UiSpotLimitOrder) {
       const { subaccount } = this.app.$accessor.account
       const { market } = this.app.$accessor.spot
@@ -423,6 +441,7 @@ export const actions = actionTree(
         return
       }
 
+      await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
       await cancelOrder({
@@ -447,6 +466,7 @@ export const actions = actionTree(
         return
       }
 
+      await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
       await batchCancelOrders({
@@ -484,6 +504,7 @@ export const actions = actionTree(
         return
       }
 
+      await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
       await submitLimitOrder({
@@ -521,6 +542,7 @@ export const actions = actionTree(
         return
       }
 
+      await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
       await submitMarketOrder({
@@ -532,24 +554,6 @@ export const actions = actionTree(
         market,
         subaccountId: subaccount.subaccountId
       })
-    },
-
-    async fetchSubaccountMarketTrades({ state, commit }) {
-      const { market } = state
-      const { subaccount } = this.app.$accessor.account
-      const { isUserWalletConnected } = this.app.$accessor.wallet
-
-      if (!isUserWalletConnected || !subaccount || !market) {
-        return
-      }
-
-      commit(
-        'setSubaccountTrades',
-        await fetchMarketTrades({
-          marketId: market.marketId,
-          subaccountId: subaccount.subaccountId
-        })
-      )
     }
   }
 )
