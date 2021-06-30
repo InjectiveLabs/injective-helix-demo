@@ -16,7 +16,7 @@ export default {
     'The unmatched layer-2 trading platform. Access any financial market on Injective’s fast, multi-chain, secure, and zero gas fee exchange protocol.',
   maintenance_header: 'The Injective Canary Chain is now live!',
   maintenance_subheader:
-    'Please propose and vote on new listings via the staking dashboard <a href="https://staking.injective.network">here</a>. Markets that receive sufficient votes will be tradable on the Injective Exchange.',
+    'Please propose and vote on new listings via the staking dashboard <a href="https://staking.injective.network" class="text-primary-500">here</a>. Markets that receive sufficient votes will be tradable on the Injective Exchange.',
   maintenance_body: '',
   token_allowance_successful: 'Token allowance set successful',
   logout: 'Logout',
