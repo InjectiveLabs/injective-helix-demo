@@ -1962,10 +1962,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/networks@^0.0.31":
-  version "0.0.31"
-  resolved "https://registry.npmjs.org/@injectivelabs/networks/-/networks-0.0.31.tgz#bc1595b349fb0c82b7635e4744cc11ff2aedc8c4"
-  integrity sha512-FvEdgL0UgcnZw5AAzt3Og/+jBEr1Y8DCiA4WwtslzaTqdabB728+sLZLoeaiLzJlywllRgCCrT2fVh7QUtRv9Q==
+"@injectivelabs/networks@^0.0.33":
+  version "0.0.33"
+  resolved "https://registry.npmjs.org/@injectivelabs/networks/-/networks-0.0.33.tgz#b444ad925033fb24e2ec892a61cdaf7579d9e0c2"
+  integrity sha512-1NsB9m4ckgvwyqOwIaNlKlUr6TQ8Pi/8JQCpML4/QHItaGIA51ARuR8L1QdkDTMzLkgV0Yhm94LYGKJxlkwzXQ==
   dependencies:
     "@injectivelabs/exceptions" "^0.0.28"
     "@injectivelabs/utils" "^0.0.35"

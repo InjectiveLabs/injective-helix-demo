@@ -34,7 +34,7 @@
     "@injectivelabs/derivatives-consumer": "^0.0.34",
     "@injectivelabs/exceptions": "^0.0.28",
     "@injectivelabs/exchange-consumer": "^0.0.67",
-    "@injectivelabs/networks": "^0.0.31",
+    "@injectivelabs/networks": "^0.0.33",
     "@injectivelabs/spot-consumer": "^0.0.48",
     "@injectivelabs/subaccount-consumer": "^0.0.23",
     "@injectivelabs/token-metadata": "^0.0.3",
