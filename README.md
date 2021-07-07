@@ -18,8 +18,8 @@ _Decentralized Derivatives Trading. Any Market. Anytime. Anywhere._
 1. Clone the repository
 
 ```bash
-$ git clone git@github.com:InjectiveLabs/injective-client.git
-$ cd injective-client
+$ git clone git@github.com:InjectiveLabs/injective-dex.git
+$ cd injective-dex
 $ yarn
 ```
 
