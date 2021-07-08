@@ -717,9 +717,22 @@ export default Vue.extend({
       }
 
       if (!orderTypeBuy) {
-        return new BigNumberInBase(balance)
-          .times(percentageToNumber)
-          .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
+        const totalFillableAmount = buys.reduce((totalAmount, { quantity }) => {
+          return totalAmount.plus(new BigNumberInWei(quantity).toBase())
+        }, ZERO_IN_BASE)
+
+        const totalBalance = new BigNumberInBase(balance).times(
+          percentageToNumber
+        )
+
+        const amount = totalFillableAmount.gte(totalBalance)
+          ? totalBalance
+          : totalFillableAmount
+
+        return amount.toFixed(
+          market.quantityDecimals,
+          BigNumberInBase.ROUND_DOWN
+        )
       }
 
       if (tradingTypeMarket) {
