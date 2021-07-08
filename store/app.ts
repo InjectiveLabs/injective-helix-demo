@@ -44,7 +44,7 @@ export const actions = actionTree(
 
     queue({ state, commit }) {
       if (state.state === AppState.Busy) {
-        throw new Error('Please finish your previous transaction first')
+        throw new Error('You have a pending transaction.')
       } else {
         commit('setAppState', AppState.Busy)
       }
