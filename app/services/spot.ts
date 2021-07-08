@@ -12,6 +12,7 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { SubaccountStreamType } from '@injectivelabs/subaccount-consumer'
 import { metricsProvider } from '../providers/MetricsProvider'
+import { marketsSummaryToUiMarketsSummary } from '../transformers/spot'
 import { TxProvider } from '~/app/providers/TxProvider'
 import { spotMarketStream } from '~/app/singletons/SpotMarketStream'
 import { streamManager } from '~/app/singletons/StreamManager'
@@ -79,23 +80,14 @@ export const fetchMarketsSummary = async (
     return marketsSummary
   }
 
-  const marketWithSummaries = oldMarketsSummary.filter((market) =>
+  const marketsWithOldSummaries = oldMarketsSummary.filter((market) =>
     marketsSummary.find((m) => m.marketId === market.marketId)
   )
 
-  return marketWithSummaries.map((market) => {
-    const marketSummary = marketsSummary.find(
-      (m) => m.marketId === market.marketId
-    )!
-
-    // Sometimes, chronos returns zeros
-    const summary = marketSummary.price ? marketSummary : market
-
-    return {
-      ...summary,
-      lastPrice: market.price
-    }
-  })
+  return marketsSummaryToUiMarketsSummary(
+    marketsWithOldSummaries,
+    marketsSummary
+  )
 }
 
 export const fetchMarket = async (marketId: string) => {

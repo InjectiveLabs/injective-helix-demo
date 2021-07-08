@@ -9,7 +9,8 @@ import {
   UiDerivativeMarket,
   DerivativeOrderType,
   DerivativeMarketMap,
-  Token
+  Token,
+  UiDerivativeMarketSummary
 } from '~/types'
 
 export const derivativeMarketToUiDerivativeMarket = (
@@ -49,6 +50,33 @@ export const derivativeMarketsToUiDerivativeMarkets = (
   })
 
   return mappedMarkets
+}
+
+export const marketSummaryToUiMarketSummary = (
+  oldSummary: UiDerivativeMarketSummary,
+  newSummary: UiDerivativeMarketSummary
+): UiDerivativeMarketSummary => {
+  return {
+    ...newSummary,
+    lastPrice: oldSummary.price
+  }
+}
+
+export const marketsSummaryToUiMarketsSummary = (
+  oldSummaries: UiDerivativeMarketSummary[] = [],
+  newSummaries: UiDerivativeMarketSummary[] = []
+): UiDerivativeMarketSummary[] => {
+  return oldSummaries.map((oldSummary) => {
+    const newSummary = newSummaries.find(
+      (m) => m.marketId === oldSummary.marketId
+    )
+
+    // Sometimes, chronos returns zeros
+    const actualNewSummary =
+      newSummary && newSummary.price ? newSummary : oldSummary
+
+    return marketSummaryToUiMarketSummary(oldSummary, actualNewSummary)
+  })
 }
 
 export const tokenMetaToToken = (

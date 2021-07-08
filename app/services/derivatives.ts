@@ -38,7 +38,8 @@ import { derivativeConsumer } from '~/app/singletons/DerivativeMarketConsumer'
 import {
   orderTypeToGrpcOrderType,
   derivativeMarketToUiDerivativeMarket,
-  derivativeMarketsToUiDerivativeMarkets
+  derivativeMarketsToUiDerivativeMarkets,
+  marketsSummaryToUiMarketsSummary
 } from '~/app/transformers/derivatives'
 import { derivativeChronosConsumer } from '~/app/singletons/DerivativeMarketChronosConsumer'
 import { DerivativesMetrics } from '~/types/metrics'
@@ -88,22 +89,14 @@ export const fetchMarketsSummary = async (
     return marketsSummary
   }
 
-  const marketWithSummaries = oldMarketsSummary.filter((market) =>
+  const marketsWithOldSummaries = oldMarketsSummary.filter((market) =>
     marketsSummary.find((m) => m.marketId === market.marketId)
   )
 
-  return marketWithSummaries.map((market) => {
-    const marketSummary = marketsSummary.find(
-      (m) => m.marketId === market.marketId
-    )!
-    // Sometimes, chronos returns zeros
-    const summary = marketSummary.price ? marketSummary : market
-
-    return {
-      ...summary,
-      lastPrice: market.price
-    }
-  })
+  return marketsSummaryToUiMarketsSummary(
+    marketsWithOldSummaries,
+    marketsSummary
+  )
 }
 
 export const fetchMarket = async (marketId: string) => {

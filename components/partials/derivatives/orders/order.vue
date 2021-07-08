@@ -37,6 +37,15 @@
         class="text-right block text-white"
       />
     </td>
+    <td is="v-ui-table-td" xs class="h-8">
+      <v-ui-format-amount
+        v-bind="{
+          value: leverage,
+          decimals: 2
+        }"
+        class="text-right block text-white"
+      />
+    </td>
     <td is="v-ui-table-td" xs center class="h-8">
       <v-ui-badge
         :primary="order.orderType === DerivativeOrderType.Buy"
@@ -160,6 +169,12 @@ export default Vue.extend({
       const { unfilledQuantity, quantity } = this
 
       return quantity.minus(unfilledQuantity)
+    },
+
+    leverage(): BigNumberInBase {
+      const { quantity, price, order } = this
+
+      return new BigNumberInBase(price.times(quantity).dividedBy(order.margin))
     },
 
     filledQuantityPercentage(): BigNumberInBase {

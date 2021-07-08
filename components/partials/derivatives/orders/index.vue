@@ -15,6 +15,9 @@
           <th is="v-ui-table-th" right>
             <span>{{ $t('total') }}</span>
           </th>
+          <th is="v-ui-table-th" right>
+            <span>{{ $t('leverage') }}</span>
+          </th>
           <th is="v-ui-table-th" center>
             <span>{{ $t('type') }}</span>
           </th>

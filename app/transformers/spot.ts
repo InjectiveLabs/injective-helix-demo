@@ -8,7 +8,8 @@ import {
   UiSpotMarket,
   SpotOrderType,
   SpotMarketMap,
-  Token
+  Token,
+  UiSpotMarketSummary
 } from '~/types'
 
 export const spotMarketToUiSpotMarket = (
@@ -43,6 +44,33 @@ export const spotMarketsToUiSpotMarkets = (
   })
 
   return mappedMarkets
+}
+
+export const marketSummaryToUiMarketSummary = (
+  oldSummary: UiSpotMarketSummary,
+  newSummary: UiSpotMarketSummary
+): UiSpotMarketSummary => {
+  return {
+    ...newSummary,
+    lastPrice: oldSummary.price
+  }
+}
+
+export const marketsSummaryToUiMarketsSummary = (
+  oldSummaries: UiSpotMarketSummary[] = [],
+  newSummaries: UiSpotMarketSummary[] = []
+): UiSpotMarketSummary[] => {
+  return oldSummaries.map((oldSummary) => {
+    const newSummary = newSummaries.find(
+      (m) => m.marketId === oldSummary.marketId
+    )
+
+    // Sometimes, chronos returns zeros
+    const actualNewSummary =
+      newSummary && newSummary.price ? newSummary : oldSummary
+
+    return marketSummaryToUiMarketSummary(oldSummary, actualNewSummary)
+  })
 }
 
 export const tokenMetaToToken = (
