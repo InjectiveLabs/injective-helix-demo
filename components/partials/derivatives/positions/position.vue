@@ -48,15 +48,21 @@
       />
     </td>
     <td is="v-ui-table-td" xs center>
-      <v-ui-format-percent
-        v-if="!pnl.isNaN()"
-        v-bind="{
-          appendPlusSign: true,
-          precision: 2,
-          value: pnl.toString(),
-          class: pnl.gte(0) ? 'text-primary-500' : 'text-accent-500'
-        }"
-      />
+      <div v-if="!pnl.isNaN()" class="flex items-center justify-center">
+        <span
+          class="mr-1"
+          :class="pnl.gte(0) ? 'text-primary-500' : 'text-accent-500'"
+          >≈</span
+        >
+        <v-ui-format-percent
+          v-bind="{
+            appendPlusSign: true,
+            precision: 2,
+            value: pnl.toString(),
+            class: pnl.gte(0) ? 'text-primary-500' : 'text-accent-500'
+          }"
+        />
+      </div>
       <v-ui-text v-else muted>{{ $t('not_available_n_a') }}</v-ui-text>
     </td>
     <td is="v-ui-table-td" xs right>
@@ -206,13 +212,28 @@ export default Vue.extend({
     },
 
     pnl(): BigNumberInBase {
-      const { market, position } = this
+      const { market, sells, position, buys } = this
 
       if (!market) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(position.unrealizedPnl)
+      const [sell] = sells
+      const [buy] = buys
+      const highestBuy = new BigNumberInBase(buy ? buy.price : 0)
+      const lowestSell = new BigNumberInBase(sell ? sell.price : 0)
+      const isPositionLong = position.direction === TradeDirection.Long
+      const executionPrice = new BigNumberInBase(
+        highestBuy.plus(lowestSell).div(2)
+      )
+
+      return new BigNumberInBase(position.quantity)
+        .times(
+          new BigNumberInWei(executionPrice.minus(position.entryPrice)).toBase(
+            market.quoteToken.decimals
+          )
+        )
+        .times(isPositionLong ? 1 : -1)
     },
 
     effectiveLeverage(): BigNumberInBase {
