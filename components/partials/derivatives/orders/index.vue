@@ -126,10 +126,7 @@ export default Vue.extend({
       const height = panelContent.offsetHeight
       const rowSize = 32
       const titleHeight = 48
-      const contextHeight = 34
-      const totalContentHeight = new BigNumber(
-        height - titleHeight - contextHeight
-      )
+      const totalContentHeight = new BigNumber(height - titleHeight)
 
       this.limit = totalContentHeight
         .div(rowSize)

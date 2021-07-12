@@ -130,7 +130,8 @@ export const fetchMarketTrades = async ({
   const promise = derivativeConsumer.fetchTrades({
     marketId,
     subaccountId,
-    executionSide: TradeExecutionSide.Taker
+    // For market wide trades we get only `executionSide=Taker` trades
+    executionSide: subaccountId ? undefined : TradeExecutionSide.Taker
   })
   const trades = await metricsProvider.sendAndRecord(
     promise,
