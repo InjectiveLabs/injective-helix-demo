@@ -8,6 +8,7 @@ declare global {
       APP_MAINTENANCE_ENABLED: string
       APP_BASE_URL: string
       METRICS_ENABLED: string
+      GEO_IP_RESTRICTIONS_ENABLED: string
       APP_FEE_RECIPIENT: string
       APP_NETWORK: Network
       APP_BUGSNAG_KEY: string
