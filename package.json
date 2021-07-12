@@ -30,7 +30,7 @@
   "dependencies": {
     "@chenfengyuan/vue-countdown": "^1.1.5",
     "@injectivelabs/chain-consumer": "^0.0.62",
-    "@injectivelabs/contracts": "^0.0.56",
+    "@injectivelabs/contracts": "^0.0.58",
     "@injectivelabs/derivatives-consumer": "^0.0.34",
     "@injectivelabs/exceptions": "^0.0.28",
     "@injectivelabs/exchange-consumer": "^0.0.67",
@@ -39,7 +39,7 @@
     "@injectivelabs/subaccount-consumer": "^0.0.23",
     "@injectivelabs/token-metadata": "^0.0.3",
     "@injectivelabs/utils": "^0.0.35",
-    "@injectivelabs/web3-strategy": "^0.0.52",
+    "@injectivelabs/web3-strategy": "^0.0.53",
     "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/google-gtag": "^1.0.4",
     "@nuxtjs/pwa": "^3.3.5",
