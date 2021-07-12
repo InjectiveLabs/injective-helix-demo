@@ -238,7 +238,6 @@ export const streamSubaccountTrades = (
   const stream = derivativeMarketStream.trades.subaccount({
     marketId,
     subaccountId,
-    executionSide: TradeExecutionSide.Taker,
     callback
   })
 

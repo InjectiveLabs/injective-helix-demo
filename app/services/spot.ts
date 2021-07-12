@@ -196,7 +196,6 @@ export const streamSubaccountTrades = (
   const stream = spotMarketStream.trades.subaccount({
     marketId,
     subaccountId,
-    executionSide: TradeExecutionSide.Taker,
     callback
   })
 
