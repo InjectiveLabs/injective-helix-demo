@@ -256,11 +256,12 @@ export const actions = actionTree(
       commit('setMarket', market)
       commit('setOrderbook', await fetchMarketOrderbook(market.marketId))
       commit('setMarketSummary', await fetchMarketSummary(market.marketId))
-
-      const trades = await fetchMarketTrades({
-        marketId: market.marketId
-      })
-      commit('setTrades', trades.reverse())
+      commit(
+        'setTrades',
+        await fetchMarketTrades({
+          marketId: market.marketId
+        })
+      )
 
       await this.app.$accessor.spot.streamOrderbook()
       await this.app.$accessor.spot.streamTrades()
@@ -439,7 +440,7 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId
       })
 
-      commit('setSubaccountTrades', trades.reverse())
+      commit('setSubaccountTrades', trades)
     },
 
     async fetchMarketsSummary({ state, commit }) {

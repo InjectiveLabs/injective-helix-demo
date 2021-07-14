@@ -300,11 +300,12 @@ export const actions = actionTree(
       commit('setOrderbook', await fetchMarketOrderbook(market.marketId))
       commit('setMarketSummary', await fetchMarketSummary(market.marketId))
       commit('setMarketMarkPrice', await fetchMarketMarkPrice(market))
-
-      const trades = await fetchMarketTrades({
-        marketId: market.marketId
-      })
-      commit('setTrades', trades.reverse())
+      commit(
+        'setTrades',
+        await fetchMarketTrades({
+          marketId: market.marketId
+        })
+      )
 
       await this.app.$accessor.derivatives.streamOrderbook()
       await this.app.$accessor.derivatives.streamTrades()
@@ -568,7 +569,7 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId
       })
 
-      commit('setSubaccountTrades', trades.reverse())
+      commit('setSubaccountTrades', trades)
     },
 
     async fetchMarketsSummary({ state, commit }) {
