@@ -24,8 +24,8 @@
                 decimals: singleMarket.priceDecimals,
                 type:
                   singleMarket.priceChange === Change.Increase
-                    ? DerivativeOrderType.Buy
-                    : DerivativeOrderType.Sell
+                    ? DerivativeOrderSide.Buy
+                    : DerivativeOrderSide.Sell
               }"
               class="mr-1"
             />
@@ -41,7 +41,7 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import Vue from 'vue'
 import {
   UiDerivativeMarket,
-  DerivativeOrderType,
+  DerivativeOrderSide,
   Change,
   UiDerivativeMarketSummary
 } from '~/types'
@@ -55,7 +55,7 @@ export default Vue.extend({
   data() {
     return {
       Change,
-      DerivativeOrderType
+      DerivativeOrderSide
     }
   },
 

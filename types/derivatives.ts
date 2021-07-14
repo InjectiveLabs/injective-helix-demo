@@ -5,7 +5,7 @@ import {
   DerivativeLimitOrder as UiDerivativeLimitOrder,
   Orderbook as UiDerivativeOrderbook,
   ChronosDerivativeMarketSummary,
-  DerivativeOrderType,
+  DerivativeOrderSide,
   AllChronosDerivativeMarketSummary
 } from '@injectivelabs/derivatives-consumer'
 import { TokenMeta } from '@injectivelabs/token-metadata'
@@ -47,7 +47,7 @@ export {
   UiDerivativeLimitOrder,
   UiDerivativeTrade,
   TradeDirection,
-  DerivativeOrderType,
+  DerivativeOrderSide,
   TradeExecutionType,
   BaseUiDerivativeMarket,
   ChronosDerivativeMarketSummary,

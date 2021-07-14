@@ -4,7 +4,7 @@
       <v-ui-format-order-price
         v-bind="{
           value: price.toBase(market.quoteToken.decimals),
-          type: order.orderType,
+          type: order.orderSide,
           decimals: market.priceDecimals
         }"
         class="flex justify-end"
@@ -48,12 +48,12 @@
     </td>
     <td is="v-ui-table-td" xs center class="h-8">
       <v-ui-badge
-        :primary="order.orderType === DerivativeOrderType.Buy"
-        :accent="order.orderType === DerivativeOrderType.Sell"
+        :primary="order.orderSide === DerivativeOrderSide.Buy"
+        :accent="order.orderSide === DerivativeOrderSide.Sell"
         xs
       >
         <div class="w-8">
-          {{ orderTypeLocalized }}
+          {{ orderSideLocalized }}
         </div>
       </v-ui-badge>
       <v-ui-badge v-if="isReduceOnly" dark xs class="ml-2">{{
@@ -99,7 +99,7 @@ import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
 import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
 import {
   UiDerivativeMarket,
-  DerivativeOrderType,
+  DerivativeOrderSide,
   UiDerivativeLimitOrder,
   Icon
 } from '~/types'
@@ -115,7 +115,7 @@ export default Vue.extend({
   data() {
     return {
       Icon,
-      DerivativeOrderType,
+      DerivativeOrderSide,
       status: new Status()
     }
   },
@@ -209,10 +209,10 @@ export default Vue.extend({
       return price.multipliedBy(quantity)
     },
 
-    orderTypeLocalized(): string {
+    orderSideLocalized(): string {
       const { order } = this
 
-      return order.orderType === DerivativeOrderType.Buy
+      return order.orderSide === DerivativeOrderSide.Buy
         ? this.$t('long')
         : this.$t('short')
     }

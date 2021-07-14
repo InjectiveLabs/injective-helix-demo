@@ -137,7 +137,7 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import Drawer from '~/components/elements/drawer.vue'
-import { SpotOrderType, UiSpotMarket, Icon } from '~/types'
+import { SpotOrderSide, UiSpotMarket, Icon } from '~/types'
 import { ZERO_IN_BASE } from '~/app/utils/constants'
 
 export default Vue.extend({
@@ -153,7 +153,7 @@ export default Vue.extend({
 
     orderType: {
       required: true,
-      type: String as PropType<SpotOrderType>
+      type: String as PropType<SpotOrderSide>
     },
 
     total: {

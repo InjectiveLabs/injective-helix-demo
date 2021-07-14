@@ -3,7 +3,7 @@
     <div class="w-full flex">
       <v-ui-button-select
         v-model="orderType"
-        :option="DerivativeOrderType.Buy"
+        :option="DerivativeOrderSide.Buy"
         half
         primary
       >
@@ -11,7 +11,7 @@
       </v-ui-button-select>
       <v-ui-button-select
         v-model="orderType"
-        :option="DerivativeOrderType.Sell"
+        :option="DerivativeOrderSide.Sell"
         half
         accent
       >
@@ -148,8 +148,8 @@
         :status="status"
         :disabled="hasErrors || !isUserWalletConnected"
         :ghost="hasErrors"
-        :primary="!hasErrors && orderType === DerivativeOrderType.Buy"
-        :accent="!hasErrors && orderType === DerivativeOrderType.Sell"
+        :primary="!hasErrors && orderType === DerivativeOrderSide.Buy"
+        :accent="!hasErrors && orderType === DerivativeOrderSide.Sell"
         class="uppercase"
         wide
         @click.stop="onSubmit"
@@ -175,7 +175,7 @@ import {
 } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import {
-  DerivativeOrderType,
+  DerivativeOrderSide,
   TradeExecutionType,
   UiDerivativeOrderbook,
   UiPriceLevel,
@@ -218,9 +218,9 @@ export default Vue.extend({
   data() {
     return {
       TradeExecutionType,
-      DerivativeOrderType,
+      DerivativeOrderSide,
       tradingType: TradeExecutionType.Market,
-      orderType: DerivativeOrderType.Buy,
+      orderType: DerivativeOrderSide.Buy,
       detailsDrawerOpen: true,
       status: new Status(),
       form: initialForm()
@@ -334,14 +334,14 @@ export default Vue.extend({
 
       if (
         position.direction === TradeDirection.Long &&
-        orderType === DerivativeOrderType.Buy
+        orderType === DerivativeOrderSide.Buy
       ) {
         return false
       }
 
       if (
         position.direction === TradeDirection.Short &&
-        orderType === DerivativeOrderType.Sell
+        orderType === DerivativeOrderSide.Sell
       ) {
         return false
       }
@@ -408,7 +408,7 @@ export default Vue.extend({
     orderTypeBuy(): boolean {
       const { orderType } = this
 
-      return orderType === DerivativeOrderType.Buy
+      return orderType === DerivativeOrderSide.Buy
     },
 
     orderTypeReduceOnly(): boolean {

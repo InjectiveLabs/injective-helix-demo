@@ -7,7 +7,7 @@
     <span
       class="depth-col"
       :style="depthWidth"
-      :class="type === SpotOrderType.Buy ? 'buys' : 'sells'"
+      :class="type === SpotOrderSide.Buy ? 'buys' : 'sells'"
     ></span>
     <span
       class="w-1/3 text-xs px-2 flex items-center justify-end z-10"
@@ -63,7 +63,7 @@ import {
 import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
 import {
   Change,
-  SpotOrderType,
+  SpotOrderSide,
   UiSpotMarket,
   UiOrderbookPriceLevel,
   Icon
@@ -78,7 +78,7 @@ export default Vue.extend({
 
     type: {
       required: true,
-      type: String as PropType<SpotOrderType>
+      type: String as PropType<SpotOrderSide>
     },
 
     record: {
@@ -91,7 +91,7 @@ export default Vue.extend({
     return {
       Icon,
       Change,
-      SpotOrderType
+      SpotOrderSide
     }
   },
 
@@ -107,7 +107,7 @@ export default Vue.extend({
     recordTypeBuy(): boolean {
       const { type } = this
 
-      return type === SpotOrderType.Buy
+      return type === SpotOrderSide.Buy
     },
 
     priceScaleDecimals(): number {
@@ -183,7 +183,7 @@ export default Vue.extend({
         case Change.NoChange:
           return ''
         case Change.New:
-          return type === SpotOrderType.Buy ? 'up' : 'down'
+          return type === SpotOrderSide.Buy ? 'up' : 'down'
         case Change.Increase:
           return 'up'
         case Change.Decrease:

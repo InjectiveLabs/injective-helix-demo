@@ -7,7 +7,7 @@ import { sortPerpetualMarkets } from '~/components/partials/derivatives/sort'
 import {
   BaseUiDerivativeMarket,
   UiDerivativeMarket,
-  DerivativeOrderType,
+  DerivativeOrderSide,
   DerivativeMarketMap,
   Token,
   UiDerivativeMarketSummary
@@ -94,22 +94,22 @@ export const tokenMetaToToken = (
 }
 
 export const orderTypeToGrpcOrderType = (
-  orderType: DerivativeOrderType
+  orderType: DerivativeOrderSide
 ): DerivativeMarketMap => {
   switch (orderType) {
-    case DerivativeOrderType.Unspecified:
+    case DerivativeOrderSide.Unspecified:
       return DerivativeMarketMap.UNSPECIFIED
-    case DerivativeOrderType.Buy:
+    case DerivativeOrderSide.Buy:
       return DerivativeMarketMap.BUY
-    case DerivativeOrderType.Sell:
+    case DerivativeOrderSide.Sell:
       return DerivativeMarketMap.SELL
-    case DerivativeOrderType.StopBuy:
+    case DerivativeOrderSide.StopBuy:
       return DerivativeMarketMap.STOP_BUY
-    case DerivativeOrderType.StopSell:
+    case DerivativeOrderSide.StopSell:
       return DerivativeMarketMap.STOP_SELL
-    case DerivativeOrderType.TakeBuy:
+    case DerivativeOrderSide.TakeBuy:
       return DerivativeMarketMap.TAKE_BUY
-    case DerivativeOrderType.TakeSell:
+    case DerivativeOrderSide.TakeSell:
       return DerivativeMarketMap.TAKE_SELL
     default:
       return DerivativeMarketMap.BUY

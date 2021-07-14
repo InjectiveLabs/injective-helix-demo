@@ -36,7 +36,7 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '~/app/utils/constants'
 import {
   Change,
-  DerivativeOrderType,
+  DerivativeOrderSide,
   UiDerivativeMarket,
   Icon,
   UiDerivativeMarketSummary
@@ -59,7 +59,7 @@ export default Vue.extend({
     return {
       Icon,
       Change,
-      DerivativeOrderType
+      DerivativeOrderSide
     }
   },
 

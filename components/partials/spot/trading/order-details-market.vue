@@ -117,7 +117,7 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import Drawer from '~/components/elements/drawer.vue'
-import { SpotOrderType, Icon, UiSpotMarket } from '~/types'
+import { SpotOrderSide, Icon, UiSpotMarket } from '~/types'
 import { DEFAULT_MAX_SLIPPAGE, ZERO_IN_BASE } from '~/app/utils/constants'
 
 export default Vue.extend({
@@ -133,7 +133,7 @@ export default Vue.extend({
 
     orderType: {
       required: true,
-      type: String as PropType<SpotOrderType>
+      type: String as PropType<SpotOrderSide>
     },
 
     total: {

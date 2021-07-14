@@ -13,7 +13,7 @@
       <v-record
         v-for="(sell, index) in sellsWithDepth"
         :key="`order-book-sell-${index}`"
-        :type="SpotOrderType.Sell"
+        :type="SpotOrderSide.Sell"
         :user-orders="sellUserOrderPrices"
         :record="sell"
       ></v-record>
@@ -70,7 +70,7 @@
       <v-record
         v-for="(buy, index) in buysWithDepth"
         :key="`order-book-buy-${index}`"
-        :type="SpotOrderType.Buy"
+        :type="SpotOrderSide.Buy"
         :user-orders="buyUserOrderPrices"
         :record="buy"
       ></v-record>
@@ -99,7 +99,7 @@ import {
   UiPriceLevel,
   UiSpotOrderbook,
   TradeDirection,
-  SpotOrderType,
+  SpotOrderSide,
   UiOrderbookPriceLevel,
   Icon,
   Change
@@ -116,7 +116,7 @@ export default Vue.extend({
       Icon,
       Change,
       TradeDirection,
-      SpotOrderType,
+      SpotOrderSide,
       autoScrollSellsLocked: false,
       autoScrollBuysLocked: false,
 
@@ -172,16 +172,16 @@ export default Vue.extend({
     buyUserOrderPrices(): string[] {
       const { subaccountOrders } = this
 
-      return subaccountOrders.reduce((records, { orderType, price }) => {
-        return orderType === SpotOrderType.Buy ? [...records, price] : records
+      return subaccountOrders.reduce((records, { orderSide, price }) => {
+        return orderSide === SpotOrderSide.Buy ? [...records, price] : records
       }, [] as string[])
     },
 
     sellUserOrderPrices(): string[] {
       const { subaccountOrders } = this
 
-      return subaccountOrders.reduce((records, { orderType, price }) => {
-        return orderType === SpotOrderType.Sell ? [...records, price] : records
+      return subaccountOrders.reduce((records, { orderSide, price }) => {
+        return orderSide === SpotOrderSide.Sell ? [...records, price] : records
       }, [] as string[])
     },
 

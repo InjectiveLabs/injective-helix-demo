@@ -7,7 +7,7 @@ import {
   UiDerivativeLimitOrder,
   UiDerivativeTrade,
   UiDerivativeMarket,
-  DerivativeOrderType,
+  DerivativeOrderSide,
   UiPosition,
   UiDerivativeMarketSummary,
   Change
@@ -365,10 +365,13 @@ export const actions = actionTree(
           }
 
           switch (order.state) {
-            case DerivativeOrderState.Unfilled:
+            case DerivativeOrderState.Booked:
               commit('pushOrUpdateSubaccountOrder', order)
               break
-            case DerivativeOrderState.Canceled:
+            case DerivativeOrderState.PartialFilled:
+              commit('pushOrUpdateSubaccountOrder', order)
+              break
+            case DerivativeOrderState.Cancelled:
               commit('deleteSubaccountOrder', order)
               break
             case DerivativeOrderState.Filled:
@@ -588,7 +591,7 @@ export const actions = actionTree(
         price: BigNumberInBase
         margin: BigNumberInBase
         quantity: BigNumberInBase
-        orderType: DerivativeOrderType
+        orderType: DerivativeOrderSide
       }
     ) {
       const { subaccount } = this.app.$accessor.account
@@ -632,7 +635,7 @@ export const actions = actionTree(
         price: BigNumberInBase
         margin: BigNumberInBase
         quantity: BigNumberInBase
-        orderType: DerivativeOrderType
+        orderType: DerivativeOrderSide
       }
     ) {
       const { subaccount } = this.app.$accessor.account
@@ -672,7 +675,7 @@ export const actions = actionTree(
       }: {
         price: BigNumberInBase
         quantity: BigNumberInBase
-        orderType: DerivativeOrderType
+        orderType: DerivativeOrderSide
       }
     ) {
       const { subaccount } = this.app.$accessor.account

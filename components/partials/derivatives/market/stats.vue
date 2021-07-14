@@ -117,7 +117,7 @@ import {
 } from '~/app/utils/constants'
 import MarketInfo from '~/components/elements/market-info.vue'
 import {
-  DerivativeOrderType,
+  DerivativeOrderSide,
   UiDerivativeMarket,
   UiDerivativeTrade,
   Change,
@@ -135,7 +135,7 @@ export default Vue.extend({
 
   data() {
     return {
-      DerivativeOrderType,
+      DerivativeOrderSide,
       Change,
       Icon
     }

@@ -109,7 +109,7 @@ import {
   UiDerivativeMarket,
   UiPosition,
   TradeDirection,
-  DerivativeOrderType,
+  DerivativeOrderSide,
   UiDerivativeOrderbook,
   UiPriceLevel,
   Icon
@@ -293,7 +293,7 @@ export default Vue.extend({
         return this.$t('orders.no_liquidity')
       }
 
-      const isPositionLong = direction === DerivativeOrderType.Long
+      const isPositionLong = direction === DerivativeOrderSide.Long
 
       if (
         isPositionLong &&
@@ -335,8 +335,8 @@ export default Vue.extend({
         .closePosition({
           orderType:
             position.direction === TradeDirection.Long
-              ? DerivativeOrderType.Sell
-              : DerivativeOrderType.Buy,
+              ? DerivativeOrderSide.Sell
+              : DerivativeOrderSide.Buy,
           price: executionPrice,
           quantity: new BigNumberInBase(position.quantity)
         })

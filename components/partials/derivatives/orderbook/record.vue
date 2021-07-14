@@ -7,7 +7,7 @@
     <span
       class="depth-col"
       :style="depthWidth"
-      :class="type === DerivativeOrderType.Buy ? 'buys' : 'sells'"
+      :class="type === DerivativeOrderSide.Buy ? 'buys' : 'sells'"
     ></span>
     <span
       class="w-1/3 text-xs px-2 flex items-center justify-end z-10"
@@ -63,7 +63,7 @@ import {
 import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
 import {
   Change,
-  DerivativeOrderType,
+  DerivativeOrderSide,
   UiDerivativeMarket,
   UiOrderbookPriceLevel,
   Icon
@@ -78,7 +78,7 @@ export default Vue.extend({
 
     type: {
       required: true,
-      type: String as PropType<DerivativeOrderType>
+      type: String as PropType<DerivativeOrderSide>
     },
 
     record: {
@@ -91,7 +91,7 @@ export default Vue.extend({
     return {
       Icon,
       Change,
-      DerivativeOrderType
+      DerivativeOrderSide
     }
   },
 
@@ -149,7 +149,7 @@ export default Vue.extend({
         case Change.NoChange:
           return ''
         case Change.New:
-          return type === DerivativeOrderType.Buy ? 'up' : 'down'
+          return type === DerivativeOrderSide.Buy ? 'up' : 'down'
         case Change.Increase:
           return 'up'
         case Change.Decrease:

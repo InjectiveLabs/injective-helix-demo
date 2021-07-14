@@ -3,7 +3,7 @@
     <div class="w-full flex">
       <v-ui-button-select
         v-model="orderType"
-        :option="SpotOrderType.Buy"
+        :option="SpotOrderSide.Buy"
         half
         primary
       >
@@ -11,7 +11,7 @@
       </v-ui-button-select>
       <v-ui-button-select
         v-model="orderType"
-        :option="SpotOrderType.Sell"
+        :option="SpotOrderSide.Sell"
         half
         accent
       >
@@ -129,8 +129,8 @@
         :status="status"
         :disabled="hasErrors || !isUserWalletConnected"
         :ghost="hasErrors"
-        :primary="!hasErrors && orderType === SpotOrderType.Buy"
-        :accent="!hasErrors && orderType === SpotOrderType.Sell"
+        :primary="!hasErrors && orderType === SpotOrderSide.Buy"
+        :accent="!hasErrors && orderType === SpotOrderSide.Sell"
         class="uppercase"
         wide
         @click.stop="onSubmit"
@@ -154,7 +154,7 @@ import {
 } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import {
-  SpotOrderType,
+  SpotOrderSide,
   TradeExecutionType,
   UiSpotOrderbook,
   UiPriceLevel,
@@ -186,9 +186,9 @@ export default Vue.extend({
   data() {
     return {
       TradeExecutionType,
-      SpotOrderType,
+      SpotOrderSide,
       tradingType: TradeExecutionType.Market,
-      orderType: SpotOrderType.Buy,
+      orderType: SpotOrderSide.Buy,
       detailsDrawerOpen: true,
       status: new Status(),
       form: initialForm()
@@ -293,7 +293,7 @@ export default Vue.extend({
     orderTypeBuy(): boolean {
       const { orderType } = this
 
-      return orderType === SpotOrderType.Buy
+      return orderType === SpotOrderSide.Buy
     },
 
     slippage(): BigNumberInBase {

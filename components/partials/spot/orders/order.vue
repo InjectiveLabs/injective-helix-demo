@@ -4,7 +4,7 @@
       <v-ui-format-order-price
         v-bind="{
           value: price,
-          type: order.orderType
+          type: order.orderSide
         }"
         class="flex justify-end"
       />
@@ -38,12 +38,12 @@
     </td>
     <td is="v-ui-table-td" xs center class="h-8">
       <v-ui-badge
-        :primary="order.orderType === SpotOrderType.Buy"
-        :accent="order.orderType === SpotOrderType.Sell"
+        :primary="order.orderSide === SpotOrderSide.Buy"
+        :accent="order.orderSide === SpotOrderSide.Sell"
         xs
       >
         <div class="w-8">
-          {{ orderTypeLocalized }}
+          {{ orderSideLocalized }}
         </div>
       </v-ui-badge>
     </td>
@@ -86,7 +86,7 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
 import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
-import { UiSpotMarket, SpotOrderType, Icon, UiSpotLimitOrder } from '~/types'
+import { UiSpotMarket, SpotOrderSide, Icon, UiSpotLimitOrder } from '~/types'
 
 export default Vue.extend({
   props: {
@@ -99,7 +99,7 @@ export default Vue.extend({
   data() {
     return {
       Icon,
-      SpotOrderType,
+      SpotOrderSide,
       status: new Status()
     }
   },
@@ -181,10 +181,10 @@ export default Vue.extend({
       return quantity.multipliedBy(price)
     },
 
-    orderTypeLocalized(): string {
+    orderSideLocalized(): string {
       const { order } = this
 
-      return order.orderType === SpotOrderType.Buy
+      return order.orderSide === SpotOrderSide.Buy
         ? this.$t('buy')
         : this.$t('sell')
     }

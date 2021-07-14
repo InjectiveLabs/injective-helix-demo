@@ -13,7 +13,7 @@
       <v-record
         v-for="(sell, index) in sellsWithDepth"
         :key="`order-book-sell-${index}`"
-        :type="DerivativeOrderType.Sell"
+        :type="DerivativeOrderSide.Sell"
         :user-orders="sellUserOrderPrices"
         :record="sell"
       ></v-record>
@@ -70,7 +70,7 @@
       <v-record
         v-for="(buy, index) in buysWithDepth"
         :key="`order-book-buy-${index}`"
-        :type="DerivativeOrderType.Buy"
+        :type="DerivativeOrderSide.Buy"
         :user-orders="buyUserOrderPrices"
         :record="buy"
       ></v-record>
@@ -95,7 +95,7 @@ import {
   UiPriceLevel,
   UiDerivativeOrderbook,
   TradeDirection,
-  DerivativeOrderType,
+  DerivativeOrderSide,
   UiOrderbookPriceLevel,
   Icon,
   Change
@@ -112,7 +112,7 @@ export default Vue.extend({
       Icon,
       Change,
       TradeDirection,
-      DerivativeOrderType,
+      DerivativeOrderSide,
       autoScrollSellsLocked: false,
       autoScrollBuysLocked: false,
 
@@ -168,8 +168,8 @@ export default Vue.extend({
     buyUserOrderPrices(): string[] {
       const { subaccountOrders } = this
 
-      return subaccountOrders.reduce((records, { orderType, price }) => {
-        return orderType === DerivativeOrderType.Buy
+      return subaccountOrders.reduce((records, { orderSide, price }) => {
+        return orderSide === DerivativeOrderSide.Buy
           ? [...records, price]
           : records
       }, [] as string[])
@@ -178,8 +178,8 @@ export default Vue.extend({
     sellUserOrderPrices(): string[] {
       const { subaccountOrders } = this
 
-      return subaccountOrders.reduce((records, { orderType, price }) => {
-        return orderType === DerivativeOrderType.Sell
+      return subaccountOrders.reduce((records, { orderSide, price }) => {
+        return orderSide === DerivativeOrderSide.Sell
           ? [...records, price]
           : records
       }, [] as string[])

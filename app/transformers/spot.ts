@@ -6,7 +6,7 @@ import { sortSpotMarkets } from '~/components/partials/spot/sort'
 import {
   BaseUiSpotMarket,
   UiSpotMarket,
-  SpotOrderType,
+  SpotOrderSide,
   SpotMarketMap,
   Token,
   UiSpotMarketSummary
@@ -88,20 +88,20 @@ export const tokenMetaToToken = (
 }
 
 export const orderTypeToGrpcOrderType = (
-  orderType: SpotOrderType
+  orderType: SpotOrderSide
 ): SpotMarketMap => {
   switch (orderType) {
-    case SpotOrderType.Unspecified:
+    case SpotOrderSide.Unspecified:
       return SpotMarketMap.UNSPECIFIED
-    case SpotOrderType.Buy:
+    case SpotOrderSide.Buy:
       return SpotMarketMap.BUY
-    case SpotOrderType.Sell:
+    case SpotOrderSide.Sell:
       return SpotMarketMap.SELL
-    case SpotOrderType.StopBuy:
+    case SpotOrderSide.StopBuy:
       return SpotMarketMap.STOP_BUY
-    case SpotOrderType.TakeBuy:
+    case SpotOrderSide.TakeBuy:
       return SpotMarketMap.TAKE_BUY
-    case SpotOrderType.TakeSell:
+    case SpotOrderSide.TakeSell:
       return SpotMarketMap.TAKE_SELL
     default:
       return SpotMarketMap.BUY

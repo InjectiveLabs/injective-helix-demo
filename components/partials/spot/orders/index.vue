@@ -41,14 +41,14 @@
       </tbody>
       <tbody v-else>
         <tr class="relative h-8">
-          <th colspan="7" class="w-full" :rowspan="limit + 1">
+          <th colspan="7" class="w-full" :rowspan="limit">
             <v-ui-overlay>
               <p>{{ $t('not_connect_orders') }}</p>
             </v-ui-overlay>
           </th>
         </tr>
         <tr
-          v-for="(order, index) in [...emptyOrders]"
+          v-for="(order, index) in [...emptyOrders.slice(1)]"
           :key="`empty-orders-${index}`"
           class="h-8"
         >
@@ -108,7 +108,9 @@ export default Vue.extend({
     this.$root.$on('resized-orders-panel', this.onResize)
 
     this.$nextTick(() => {
-      this.onResize()
+      setTimeout(() => {
+        this.onResize()
+      }, 20)
     })
   },
 

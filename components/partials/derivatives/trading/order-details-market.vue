@@ -159,7 +159,7 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import Drawer from '~/components/elements/drawer.vue'
-import { DerivativeOrderType, Icon, UiDerivativeMarket } from '~/types'
+import { DerivativeOrderSide, Icon, UiDerivativeMarket } from '~/types'
 import { DEFAULT_MAX_SLIPPAGE } from '~/app/utils/constants'
 
 export default Vue.extend({
@@ -170,7 +170,7 @@ export default Vue.extend({
   props: {
     orderType: {
       required: true,
-      type: String as PropType<DerivativeOrderType>
+      type: String as PropType<DerivativeOrderSide>
     },
 
     total: {

@@ -2,7 +2,7 @@ import {
   SpotMarketComposer,
   SpotMarketStreamType,
   SpotTransformer,
-  SpotOrderType,
+  SpotOrderSide,
   OrderbookStreamCallback as SpotMarketOrderbookStreamCallback,
   TradeStreamCallback as SpotMarketTradeStreamCallback,
   OrderStreamCallback as SpotMarketOrderStreamCallback
@@ -138,14 +138,17 @@ export const fetchMarketTrades = async ({
 
 export const fetchMarketOrders = async ({
   marketId,
+  orderSide,
   subaccountId
 }: {
   marketId: string
+  orderSide?: SpotOrderSide
   subaccountId: AccountAddress
 }) => {
   const promise = spotConsumer.fetchOrders({
     marketId,
-    subaccountId
+    subaccountId,
+    orderSide
   })
   const orders = await metricsProvider.sendAndRecord(
     promise,
@@ -243,7 +246,7 @@ export const submitLimitOrder = async ({
 }: {
   price: BigNumberInBase
   quantity: BigNumberInBase
-  orderType: SpotOrderType
+  orderType: SpotOrderSide
   subaccountId: string
   market: UiSpotMarket
   address: AccountAddress
@@ -292,7 +295,7 @@ export const submitMarketOrder = async ({
 }: {
   quantity: BigNumberInBase
   price: BigNumberInBase
-  orderType: SpotOrderType
+  orderType: SpotOrderSide
   subaccountId: string
   market: UiSpotMarket
   address: AccountAddress
@@ -353,7 +356,7 @@ export const batchCancelOrders = async ({
       message,
       gasLimit: new BigNumberInBase(DEFAULT_EXCHANGE_LIMIT)
         .dividedBy(
-          5 /* Assuming we can only process 5 order cancellations with the current gas limit */
+          3 /* Assuming we can only process 3 order cancellations with the current gas limit */
         )
         .times(orders.length)
         .toNumber(),

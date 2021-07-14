@@ -33,11 +33,7 @@
         </v-ui-button>
       </div>
     </div>
-    <component
-      :is="currentComponent"
-      transition="slide-content"
-      transition-mode="out-in"
-    ></component>
+    <component :is="component" v-if="component"></component>
   </v-panel>
 </template>
 
@@ -48,9 +44,9 @@ import TradeHistory from './trade-history/index.vue'
 import { UiDerivativeLimitOrder } from '~/types'
 
 const components = {
-  openOrders: 0,
-  orderHistory: 1,
-  tradeHistory: 2
+  orderHistory: '',
+  openOrders: 'v-open-orders',
+  tradeHistory: 'v-trade-history'
 }
 
 export default Vue.extend({
@@ -69,24 +65,11 @@ export default Vue.extend({
   computed: {
     orders(): UiDerivativeLimitOrder[] {
       return this.$accessor.derivatives.subaccountOrders
-    },
-
-    currentComponent(): string {
-      const { component } = this
-
-      switch (component) {
-        case components.openOrders:
-          return 'v-open-orders'
-        case components.tradeHistory:
-          return 'v-trade-history'
-        default:
-          return 'v-open-orders'
-      }
     }
   },
 
   methods: {
-    onSelect(component: number) {
+    onSelect(component: string) {
       this.component = component
     },
 

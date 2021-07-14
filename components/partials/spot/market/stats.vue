@@ -75,7 +75,7 @@ import MarketInfo from '~/components/elements/market-info.vue'
 import {
   Change,
   UiSpotMarket,
-  SpotOrderType,
+  SpotOrderSide,
   UiSpotTrade,
   UiSpotMarketSummary
 } from '~/types'
@@ -88,7 +88,7 @@ export default Vue.extend({
   data() {
     return {
       Change,
-      SpotOrderType
+      SpotOrderSide
     }
   },
 

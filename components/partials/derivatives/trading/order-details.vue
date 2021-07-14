@@ -33,7 +33,9 @@
               }"
               class="text-gray-300"
             />
-            <small class="opacity-75 ml-1">{{ market.baseTokenMeta.symbol }}</small>
+            <small class="opacity-75 ml-1">{{
+              market.baseTokenMeta.symbol
+            }}</small>
           </v-ui-text>
           <v-ui-text v-else muted-sm class="group-hover:text-white">
             &mdash;
@@ -168,7 +170,7 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import Drawer from '~/components/elements/drawer.vue'
-import { DerivativeOrderType, UiDerivativeMarket, Icon } from '~/types'
+import { DerivativeOrderSide, UiDerivativeMarket, Icon } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -178,7 +180,7 @@ export default Vue.extend({
   props: {
     orderType: {
       required: true,
-      type: String as PropType<DerivativeOrderType>
+      type: String as PropType<DerivativeOrderSide>
     },
 
     totalWithFees: {

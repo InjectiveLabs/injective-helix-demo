@@ -37,7 +37,7 @@ import { ZERO_IN_BASE } from '~/app/utils/constants'
 import {
   Change,
   Icon,
-  SpotOrderType,
+  SpotOrderSide,
   UiSpotMarket,
   UiSpotMarketSummary
 } from '~/types'
@@ -57,7 +57,7 @@ export default Vue.extend({
 
   data() {
     return {
-      SpotOrderType,
+      SpotOrderSide,
       Change,
       Icon
     }

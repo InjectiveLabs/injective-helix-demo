@@ -111,7 +111,9 @@ export default Vue.extend({
     this.$root.$on('resized-orders-panel', this.onResize)
 
     this.$nextTick(() => {
-      this.onResize()
+      setTimeout(() => {
+        this.onResize()
+      }, 20)
     })
   },
 

@@ -24,8 +24,8 @@
                 decimals: singleMarket.priceDecimals,
                 type:
                   singleMarket.priceChange === Change.Increase
-                    ? SpotOrderType.Buy
-                    : SpotOrderType.Sell
+                    ? SpotOrderSide.Buy
+                    : SpotOrderSide.Sell
               }"
               class="mr-1"
             />
@@ -41,7 +41,7 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import Vue from 'vue'
 import {
   UiSpotMarket,
-  SpotOrderType,
+  SpotOrderSide,
   UiSpotMarketSummary,
   Change
 } from '~/types'
@@ -54,7 +54,7 @@ interface UiSpotMarketWithBnPrice extends UiSpotMarket {
 export default Vue.extend({
   data() {
     return {
-      SpotOrderType,
+      SpotOrderSide,
       Change
     }
   },

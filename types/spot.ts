@@ -4,7 +4,7 @@ import {
   SpotLimitOrder as UiSpotLimitOrder,
   Orderbook as UiSpotOrderbook,
   ChronosSpotMarketSummary,
-  SpotOrderType,
+  SpotOrderSide,
   AllChronosSpotMarketSummary
 } from '@injectivelabs/spot-consumer'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
@@ -44,7 +44,7 @@ export {
   UiSpotLimitOrder,
   UiSpotTrade,
   TradeDirection,
-  SpotOrderType,
+  SpotOrderSide,
   TradeExecutionType,
   BaseUiSpotMarket,
   ChronosSpotMarketSummary,

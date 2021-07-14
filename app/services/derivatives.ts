@@ -1,7 +1,7 @@
 import {
   DerivativeMarketComposer,
   DerivativeMarketStreamType,
-  DerivativeOrderType,
+  DerivativeOrderSide,
   OrderbookStreamCallback as DerivativeMarketOrderbookStreamCallback,
   TradeStreamCallback as DerivativeMarketTradeStreamCallback,
   OrderStreamCallback as DerivativeMarketOrderStreamCallback,
@@ -166,13 +166,16 @@ export const fetchMarketPositions = async ({
 
 export const fetchMarketOrders = async ({
   marketId,
-  subaccountId
+  subaccountId,
+  orderSide
 }: {
   marketId: string
+  orderSide?: DerivativeOrderSide
   subaccountId: AccountAddress
 }) => {
   const promise = derivativeConsumer.fetchOrders({
     marketId,
+    orderSide,
     subaccountId
   })
   const orders = await metricsProvider.sendAndRecord(
@@ -327,7 +330,7 @@ export const submitLimitOrder = async ({
   price: BigNumberInBase
   reduceOnly: boolean
   quantity: BigNumberInBase
-  orderType: DerivativeOrderType
+  orderType: DerivativeOrderSide
   subaccountId: string
   market: UiDerivativeMarket
   address: AccountAddress
@@ -377,7 +380,7 @@ export const submitMarketOrder = async ({
   margin: BigNumberInBase
   quantity: BigNumberInBase
   price: BigNumberInBase
-  orderType: DerivativeOrderType
+  orderType: DerivativeOrderSide
   subaccountId: string
   reduceOnly: boolean
   market: UiDerivativeMarket
@@ -425,7 +428,7 @@ export const closePosition = async ({
 }: {
   quantity: BigNumberInBase
   price: BigNumberInBase
-  orderType: DerivativeOrderType
+  orderType: DerivativeOrderSide
   subaccountId: string
   market: UiDerivativeMarket
   address: AccountAddress
@@ -521,7 +524,7 @@ export const batchCancelOrders = async ({
       message,
       gasLimit: new BigNumberInBase(DEFAULT_EXCHANGE_LIMIT)
         .dividedBy(
-          5 /* Assuming we can only process 5 order cancellations with the current gas limit */
+          3 /* Assuming we can only process 3 order cancellations with the current gas limit */
         )
         .times(orders.length)
         .toNumber(),
@@ -557,14 +560,14 @@ export const calculateLiquidationPrice = ({
   price: string
   quantity: string
   margin: string
-  orderType: DerivativeOrderType
+  orderType: DerivativeOrderSide
   market: UiDerivativeMarket
 }): BigNumberInBase => {
   if (!price || !quantity || !margin) {
     return ZERO_IN_BASE
   }
 
-  const isOrderTypeBuy = orderType === DerivativeOrderType.Buy
+  const isOrderTypeBuy = orderType === DerivativeOrderSide.Buy
 
   const numerator = isOrderTypeBuy
     ? new BigNumberInBase(margin).minus(

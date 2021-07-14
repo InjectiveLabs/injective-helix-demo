@@ -7,7 +7,7 @@ import {
   UiSpotLimitOrder,
   UiSpotTrade,
   UiSpotMarket,
-  SpotOrderType,
+  SpotOrderSide,
   UiSpotMarketSummary,
   Change
 } from '~/types'
@@ -309,10 +309,13 @@ export const actions = actionTree(
           }
 
           switch (order.state) {
-            case SpotOrderState.Unfilled:
+            case SpotOrderState.Booked:
               commit('pushOrUpdateSubaccountOrder', order)
               break
-            case SpotOrderState.Canceled:
+            case SpotOrderState.PartialFilled:
+              commit('pushOrUpdateSubaccountOrder', order)
+              break
+            case SpotOrderState.Cancelled:
               commit('deleteSubaccountOrder', order)
               break
             case SpotOrderState.Filled:
@@ -489,7 +492,7 @@ export const actions = actionTree(
       }: {
         price: BigNumberInBase
         quantity: BigNumberInBase
-        orderType: SpotOrderType
+        orderType: SpotOrderSide
       }
     ) {
       const { subaccount } = this.app.$accessor.account
@@ -527,7 +530,7 @@ export const actions = actionTree(
       }: {
         price: BigNumberInBase
         quantity: BigNumberInBase
-        orderType: SpotOrderType
+        orderType: SpotOrderSide
       }
     ) {
       const { subaccount } = this.app.$accessor.account

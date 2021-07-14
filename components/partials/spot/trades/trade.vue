@@ -106,7 +106,7 @@ export default Vue.extend({
         return ''
       }
 
-      return type === DerivativeOrderType.Buy ? 'up' : 'down' */
+      return type === DerivativeOrderSide.Buy ? 'up' : 'down' */
       return ''
     }
   }
