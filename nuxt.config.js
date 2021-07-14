@@ -100,7 +100,7 @@ export default {
 
   router: {
     linkActiveClass: 'is-active',
-    middleware: ['maintenance', 'geoip']
+    middleware: ['maintenance']
   },
 
   toast: {

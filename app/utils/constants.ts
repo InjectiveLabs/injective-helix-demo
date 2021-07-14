@@ -9,6 +9,8 @@ import { ChainId } from '@injectivelabs/ts-types'
 export const IS_DEVELOPMENT: boolean = process.env.NODE_ENV === 'development'
 export const IS_PRODUCTION: boolean = process.env.NODE_ENV === 'production'
 export const METRICS_ENABLED: boolean = process.env.METRICS_ENABLED === 'true'
+export const GEO_IP_RESTRICTIONS_ENABLED: boolean =
+  process.env.GEO_IP_RESTRICTIONS_ENABLED === 'true'
 
 export const ZERO: BigNumber = new BigNumber(0)
 export const ZERO_TO_STRING = '0'

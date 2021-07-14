@@ -93,6 +93,8 @@ export const actions = actionTree(
     },
 
     async confirm({ commit }, addresses: AccountAddress[]) {
+      await this.app.$accessor.app.validate()
+
       const [address] = addresses
       const addressConfirmation = await confirm(address)
       const injectiveAddress = getInjectiveAddress(address)
@@ -110,6 +112,8 @@ export const actions = actionTree(
     },
 
     async connectAndConfirm({ commit }, wallet: Wallet) {
+      await this.app.$accessor.app.validate()
+
       await this.app.$accessor.wallet.connect(wallet)
       const addresses = await getAddresses()
       const [address] = addresses

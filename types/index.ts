@@ -21,6 +21,11 @@ export interface UiPriceLevel {
   timestamp: number
 }
 
+export interface GeoLocation {
+  continent: ''
+  country: ''
+}
+
 export * from './aliases'
 export * from './enums'
 export * from './env'
