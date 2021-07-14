@@ -262,32 +262,63 @@ export const actions = actionTree(
       })
       commit('setTrades', trades.reverse())
 
-      streamOrderbook(market.marketId, ({ orderbook }) => {
-        if (!orderbook) {
-          return
-        }
-
-        commit('setOrderbook', orderbook)
-      })
-
-      streamTrades(market.marketId, ({ trade, operation }) => {
-        if (!trade) {
-          return
-        }
-
-        switch (operation) {
-          case StreamOperation.Insert:
-            commit('pushTrade', trade)
-        }
-      })
-
-      await this.app.$accessor.spot.setSubaccountStreams()
+      await this.app.$accessor.spot.streamOrderbook()
+      await this.app.$accessor.spot.streamTrades()
+      await this.app.$accessor.spot.streamSubaccountTrades()
+      await this.app.$accessor.spot.streamSubaccountOrders()
       await this.app.$accessor.spot.fetchSubaccountOrders()
       await this.app.$accessor.spot.fetchSubaccountTrades()
       await this.app.$accessor.account.streamSubaccountBalances()
     },
 
-    setSubaccountStreams({ state, commit }) {
+    streamOrderbook({ commit, state }) {
+      const { market } = state
+
+      if (!market) {
+        return
+      }
+
+      streamOrderbook({
+        marketId: market.marketId,
+        callback: ({ orderbook }) => {
+          if (!orderbook) {
+            return
+          }
+
+          commit('setOrderbook', orderbook)
+        },
+        onEndCallback: () => {
+          this.app.$accessor.spot.streamOrderbook()
+        }
+      })
+    },
+
+    streamTrades({ commit, state }) {
+      const { market } = state
+
+      if (!market) {
+        return
+      }
+
+      streamTrades({
+        marketId: market.marketId,
+        callback: ({ trade, operation }) => {
+          if (!trade) {
+            return
+          }
+
+          switch (operation) {
+            case StreamOperation.Insert:
+              commit('pushTrade', trade)
+          }
+        },
+        onEndCallback: () => {
+          this.app.$accessor.spot.streamTrades()
+        }
+      })
+    },
+
+    streamSubaccountOrders({ state, commit }) {
       const { market } = state
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
@@ -300,10 +331,10 @@ export const actions = actionTree(
         return
       }
 
-      streamSubaccountOrders(
-        market.marketId,
-        subaccount.subaccountId,
-        ({ order }) => {
+      streamSubaccountOrders({
+        marketId: market.marketId,
+        subaccountId: subaccount.subaccountId,
+        callback: ({ order }) => {
           if (!order) {
             return
           }
@@ -322,13 +353,30 @@ export const actions = actionTree(
               commit('deleteSubaccountOrder', order)
               break
           }
+        },
+        onEndCallback: () => {
+          this.app.$accessor.spot.streamSubaccountOrders()
         }
-      )
+      })
+    },
 
-      streamSubaccountTrades(
-        market.marketId,
-        subaccount.subaccountId,
-        ({ trade, operation }) => {
+    streamSubaccountTrades({ state, commit }) {
+      const { market } = state
+      const { subaccount } = this.app.$accessor.account
+      const { isUserWalletConnected } = this.app.$accessor.wallet
+
+      if (!market) {
+        return
+      }
+
+      if (!isUserWalletConnected || !subaccount) {
+        return
+      }
+
+      streamSubaccountTrades({
+        marketId: market.marketId,
+        subaccountId: subaccount.subaccountId,
+        callback: ({ trade, operation }) => {
           if (!trade) {
             return
           }
@@ -344,8 +392,11 @@ export const actions = actionTree(
               commit('updateSubaccountTrade', trade)
               break
           }
+        },
+        onEndCallback: () => {
+          this.app.$accessor.spot.streamSubaccountTrades()
         }
-      )
+      })
     },
 
     async fetchSubaccountOrders({ state, commit }) {

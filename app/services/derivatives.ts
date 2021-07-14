@@ -200,26 +200,40 @@ export const fetchMarketMarkPrice = async (market: UiDerivativeMarket) => {
   return price || ZERO_TO_STRING
 }
 
-export const streamOrderbook = (
-  marketId: string,
+export const streamOrderbook = ({
+  marketId,
+  callback,
+  onEndCallback
+}: {
+  marketId: string
   callback: DerivativeMarketOrderbookStreamCallback
-) => {
+  onEndCallback: () => void
+}) => {
   if (streamManager.exists(DerivativeMarketStreamType.Orderbook)) {
     return
   }
 
   const stream = derivativeMarketStream.orderbook.start({
     marketId,
-    callback
+    callback,
+    onEndCallback: () => {
+      streamManager.cancelIfExists(DerivativeMarketStreamType.Orderbook)
+      onEndCallback()
+    }
   })
 
   streamManager.set(stream, DerivativeMarketStreamType.Orderbook)
 }
 
-export const streamTrades = (
-  marketId: string,
+export const streamTrades = ({
+  marketId,
+  callback,
+  onEndCallback
+}: {
+  marketId: string
   callback: DerivativeMarketTradeStreamCallback
-) => {
+  onEndCallback: () => void
+}) => {
   if (streamManager.exists(DerivativeMarketStreamType.Trades)) {
     return
   }
@@ -227,17 +241,27 @@ export const streamTrades = (
   const stream = derivativeMarketStream.trades.start({
     marketId,
     callback,
-    executionSide: TradeExecutionSide.Taker
+    executionSide: TradeExecutionSide.Taker,
+    onEndCallback: () => {
+      streamManager.cancelIfExists(DerivativeMarketStreamType.Trades)
+      onEndCallback()
+    }
   })
 
   streamManager.set(stream, DerivativeMarketStreamType.Trades)
 }
 
-export const streamSubaccountTrades = (
-  marketId: string,
-  subaccountId: string,
+export const streamSubaccountTrades = ({
+  marketId,
+  subaccountId,
+  callback,
+  onEndCallback
+}: {
+  marketId: string
+  subaccountId: string
   callback: DerivativeMarketTradeStreamCallback
-) => {
+  onEndCallback: () => void
+}) => {
   if (streamManager.exists(DerivativeMarketStreamType.SubaccountTrades)) {
     return
   }
@@ -245,17 +269,27 @@ export const streamSubaccountTrades = (
   const stream = derivativeMarketStream.trades.subaccount({
     marketId,
     subaccountId,
-    callback
+    callback,
+    onEndCallback: () => {
+      streamManager.cancelIfExists(DerivativeMarketStreamType.SubaccountTrades)
+      onEndCallback()
+    }
   })
 
   streamManager.set(stream, DerivativeMarketStreamType.SubaccountTrades)
 }
 
-export const streamSubaccountOrders = (
-  marketId: string,
-  subaccountId: string,
+export const streamSubaccountOrders = ({
+  marketId,
+  subaccountId,
+  callback,
+  onEndCallback
+}: {
+  marketId: string
+  subaccountId: string
   callback: DerivativeMarketOrderStreamCallback
-) => {
+  onEndCallback: () => void
+}) => {
   if (streamManager.exists(DerivativeMarketStreamType.SubaccountOrders)) {
     return
   }
@@ -263,17 +297,27 @@ export const streamSubaccountOrders = (
   const stream = derivativeMarketStream.orders.subaccount({
     marketId,
     subaccountId,
-    callback
+    callback,
+    onEndCallback: () => {
+      streamManager.cancelIfExists(DerivativeMarketStreamType.SubaccountOrders)
+      onEndCallback()
+    }
   })
 
   streamManager.set(stream, DerivativeMarketStreamType.SubaccountOrders)
 }
 
-export const streamSubaccountPositions = (
-  marketId: string,
-  subaccountId: string,
+export const streamSubaccountPositions = ({
+  marketId,
+  subaccountId,
+  callback,
+  onEndCallback
+}: {
+  marketId: string
+  subaccountId: string
   callback: DerivativeMarketPositionStreamCallback
-) => {
+  onEndCallback: () => void
+}) => {
   if (streamManager.exists(DerivativeMarketStreamType.SubaccountPositions)) {
     return
   }
@@ -281,16 +325,27 @@ export const streamSubaccountPositions = (
   const stream = derivativeMarketStream.positions.subaccount({
     marketId,
     subaccountId,
-    callback
+    callback,
+    onEndCallback: () => {
+      streamManager.cancelIfExists(
+        DerivativeMarketStreamType.SubaccountPositions
+      )
+      onEndCallback()
+    }
   })
 
   streamManager.set(stream, DerivativeMarketStreamType.SubaccountPositions)
 }
 
-export const streamMarketMarkPrice = (
-  market: UiDerivativeMarket,
+export const streamMarketMarkPrice = ({
+  market,
+  callback,
+  onEndCallback
+}: {
+  market: UiDerivativeMarket
   callback: PricesStreamCallback
-) => {
+  onEndCallback: () => void
+}) => {
   if (streamManager.exists(OracleStreamType.Prices)) {
     return
   }
@@ -299,7 +354,11 @@ export const streamMarketMarkPrice = (
     oracleType: market.oracleType,
     baseSymbol: market.oracleBase,
     quoteSymbol: market.oracleQuote,
-    callback
+    callback,
+    onEndCallback: () => {
+      streamManager.cancelIfExists(OracleStreamType.Prices)
+      onEndCallback()
+    }
   })
 
   streamManager.set(stream, OracleStreamType.Prices)

@@ -158,26 +158,40 @@ export const fetchMarketOrders = async ({
   return SpotTransformer.grpcOrdersToOrders(orders)
 }
 
-export const streamOrderbook = (
-  marketId: string,
+export const streamOrderbook = ({
+  marketId,
+  callback,
+  onEndCallback
+}: {
+  marketId: string
   callback: SpotMarketOrderbookStreamCallback
-) => {
+  onEndCallback: () => void
+}) => {
   if (streamManager.exists(SpotMarketStreamType.Orderbook)) {
     return
   }
 
   const stream = spotMarketStream.orderbook.start({
     marketId,
-    callback
+    callback,
+    onEndCallback: () => {
+      streamManager.cancelIfExists(SpotMarketStreamType.Orderbook)
+      onEndCallback()
+    }
   })
 
   streamManager.set(stream, SpotMarketStreamType.Orderbook)
 }
 
-export const streamTrades = (
-  marketId: string,
+export const streamTrades = ({
+  marketId,
+  callback,
+  onEndCallback
+}: {
+  marketId: string
   callback: SpotMarketTradeStreamCallback
-) => {
+  onEndCallback: () => void
+}) => {
   if (streamManager.exists(SpotMarketStreamType.Trades)) {
     return
   }
@@ -185,17 +199,27 @@ export const streamTrades = (
   const stream = spotMarketStream.trades.start({
     marketId,
     callback,
-    executionSide: TradeExecutionSide.Taker
+    executionSide: TradeExecutionSide.Taker,
+    onEndCallback: () => {
+      streamManager.cancelIfExists(SpotMarketStreamType.Trades)
+      onEndCallback()
+    }
   })
 
   streamManager.set(stream, SpotMarketStreamType.Trades)
 }
 
-export const streamSubaccountTrades = (
-  marketId: string,
-  subaccountId: string,
+export const streamSubaccountTrades = ({
+  marketId,
+  subaccountId,
+  callback,
+  onEndCallback
+}: {
+  marketId: string
+  subaccountId: string
   callback: SpotMarketTradeStreamCallback
-) => {
+  onEndCallback: () => void
+}) => {
   if (streamManager.exists(SpotMarketStreamType.SubaccountTrades)) {
     return
   }
@@ -203,17 +227,27 @@ export const streamSubaccountTrades = (
   const stream = spotMarketStream.trades.subaccount({
     marketId,
     subaccountId,
-    callback
+    callback,
+    onEndCallback: () => {
+      streamManager.cancelIfExists(SpotMarketStreamType.SubaccountTrades)
+      onEndCallback()
+    }
   })
 
   streamManager.set(stream, SpotMarketStreamType.SubaccountTrades)
 }
 
-export const streamSubaccountOrders = (
-  marketId: string,
-  subaccountId: string,
+export const streamSubaccountOrders = ({
+  marketId,
+  subaccountId,
+  callback,
+  onEndCallback
+}: {
+  marketId: string
+  subaccountId: string
   callback: SpotMarketOrderStreamCallback
-) => {
+  onEndCallback: () => void
+}) => {
   if (streamManager.exists(SpotMarketStreamType.SubaccountOrders)) {
     return
   }
@@ -221,7 +255,11 @@ export const streamSubaccountOrders = (
   const stream = spotMarketStream.orders.subaccount({
     marketId,
     subaccountId,
-    callback
+    callback,
+    onEndCallback: () => {
+      streamManager.cancelIfExists(SpotMarketStreamType.SubaccountOrders)
+      onEndCallback()
+    }
   })
 
   streamManager.set(stream, SpotMarketStreamType.SubaccountOrders)

@@ -62,17 +62,26 @@ export const fetchSubaccountHistory = async (subaccountId: string) => {
   return SubaccountTransformer.grpcTransferHistoryToTransferHistory(history)
 }
 
-export const streamSubaccountBalances = (
-  subaccountId: string,
+export const streamSubaccountBalances = ({
+  subaccountId,
+  callback,
+  onEndCallback
+}: {
+  subaccountId: string
   callback: SubaccountBalanceStreamCallback
-) => {
+  onEndCallback: () => void
+}) => {
   if (streamManager.exists(SubaccountStreamType.Balances)) {
     return
   }
 
   const stream = subaccountStream.balances.start({
     subaccountId,
-    callback
+    callback,
+    onEndCallback: () => {
+      streamManager.cancelIfExists(SubaccountStreamType.Balances)
+      onEndCallback()
+    }
   })
 
   streamManager.set(stream, SubaccountStreamType.Balances)

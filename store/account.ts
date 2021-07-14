@@ -103,11 +103,15 @@ export const actions = actionTree(
       await this.app.$accessor.spot.fetchSubaccountMarketTrades()
       await this.app.$accessor.spot.fetchSubaccountOrders()
       await this.app.$accessor.spot.fetchSubaccountTrades()
-      await this.app.$accessor.spot.setSubaccountStreams()
+      await this.app.$accessor.spot.streamSubaccountOrders()
+      await this.app.$accessor.spot.streamSubaccountTrades()
+
       await this.app.$accessor.derivatives.fetchSubaccountMarketTrades()
       await this.app.$accessor.derivatives.fetchSubaccountOrders()
       await this.app.$accessor.derivatives.fetchSubaccountTrades()
-      await this.app.$accessor.derivatives.setSubaccountStreams()
+      await this.app.$accessor.derivatives.streamSubaccountOrders()
+      await this.app.$accessor.derivatives.streamSubaccountPositions()
+      await this.app.$accessor.derivatives.streamSubaccountTrades()
     },
 
     async updateSubaccount({ commit, state }) {
@@ -129,15 +133,21 @@ export const actions = actionTree(
         return
       }
 
-      streamSubaccountBalances(subaccount.subaccountId, ({ balance }) => {
-        if (!balance) {
-          return
-        }
+      streamSubaccountBalances({
+        subaccountId: subaccount.subaccountId,
+        callback: ({ balance }) => {
+          if (!balance) {
+            return
+          }
 
-        commit(
-          'setSubaccountBalance',
-          grpcSubaccountBalanceToUiSubaccountBalance(balance)
-        )
+          commit(
+            'setSubaccountBalance',
+            grpcSubaccountBalanceToUiSubaccountBalance(balance)
+          )
+        },
+        onEndCallback: () => {
+          this.app.$accessor.account.streamSubaccountBalances()
+        }
       })
     },
 
