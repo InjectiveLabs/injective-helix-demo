@@ -45,7 +45,6 @@ const networkIsTestnet = [
 export const CHAIN_ID: ChainId = process.env.APP_CHAIN_ID
   ? parseInt(process.env.APP_CHAIN_ID.toString())
   : parseInt((networkIsTestnet ? ChainId.Kovan : ChainId.Mainnet).toString())
-export const NETWORK_ID: number = ChainId.Injective
 
 // 6 gwei for Kovan, fetched from gasStation for Mainnet
 export const DEFAULT_GAS_PRICE = new BigNumber(6).times(GWEI_IN_WEI)
