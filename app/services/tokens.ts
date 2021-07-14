@@ -1,10 +1,10 @@
 import { AccountAddress } from '@injectivelabs/ts-types'
 import { Web3Exception } from '@injectivelabs/exceptions'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInWei } from '@injectivelabs/utils'
 import { BaseCurrencyContract } from '@injectivelabs/contracts/dist/contracts/BaseCurrency'
 import { peggyDenomToContractAddress } from '../transformers/peggy'
 import { getContracts } from '~/app/singletons/Contracts'
-import { TESTNET_CHAIN_ID, TESTNET_GAS_PRICE } from '~/app/utils/constants'
+import { CHAIN_ID } from '~/app/utils/constants'
 import { getTransactionOptions } from '~/app/utils/transaction'
 import { getWeb3Strategy, transactionReceiptAsync } from '~/app/web3'
 import { Token, TokenWithBalance } from '~/types'
@@ -23,7 +23,7 @@ export const getTokenBalanceAndAllowance = async ({
     const erc20Contract = new BaseCurrencyContract({
       web3Strategy,
       address: token.address,
-      chainId: TESTNET_CHAIN_ID
+      chainId: CHAIN_ID
     })
 
     const balance = await erc20Contract.getBalanceOf(address).callAsync()
@@ -61,7 +61,7 @@ export const setTokenAllowance = async ({
   const erc20Contract = new BaseCurrencyContract({
     web3Strategy,
     address: tokenAddress,
-    chainId: TESTNET_CHAIN_ID
+    chainId: CHAIN_ID
   })
   const setAllowanceOfContractFunction = erc20Contract.setAllowanceOf({
     amount,
@@ -76,11 +76,6 @@ export const setTokenAllowance = async ({
   const gas = new BigNumberInWei(
     await setAllowanceOfContractFunction.estimateGasAsync()
   )
-  const actualGasPrice = new BigNumberInBase(
-    gasPrice.lt(TESTNET_GAS_PRICE)
-      ? gasPrice.toNumber()
-      : TESTNET_GAS_PRICE.toNumber()
-  )
 
   try {
     const txHash = await web3Strategy.sendTransaction(
@@ -88,10 +83,10 @@ export const setTokenAllowance = async ({
         from: address,
         to: tokenAddress,
         gas: gas.toNumber().toString(16),
-        gasPrice: actualGasPrice.toNumber().toString(16),
+        gasPrice: gasPrice.toNumber().toString(16),
         data
       },
-      { address, chainId: TESTNET_CHAIN_ID }
+      { address, chainId: CHAIN_ID }
     )
 
     await transactionReceiptAsync(txHash)
@@ -128,11 +123,6 @@ export const transfer = async ({
   const gas = new BigNumberInWei(
     await depositForContractFunction.estimateGasAsync()
   )
-  const actualGasPrice = new BigNumberInBase(
-    gasPrice.lt(TESTNET_GAS_PRICE)
-      ? gasPrice.toNumber()
-      : TESTNET_GAS_PRICE.toNumber()
-  )
 
   try {
     const txHash = await web3Strategy.sendTransaction(
@@ -140,10 +130,10 @@ export const transfer = async ({
         from: address,
         to: contracts.peggy.address,
         gas: gas.toNumber().toString(16),
-        gasPrice: actualGasPrice.toNumber().toString(16),
+        gasPrice: gasPrice.toNumber().toString(16),
         data
       },
-      { address, chainId: TESTNET_CHAIN_ID }
+      { address, chainId: CHAIN_ID }
     )
     await transactionReceiptAsync(txHash)
   } catch (error) {

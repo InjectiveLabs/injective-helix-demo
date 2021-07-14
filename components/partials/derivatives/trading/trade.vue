@@ -169,7 +169,7 @@ import OrderLeverage from './order-leverage.vue'
 import OrderLeverageSelect from './order-leverage-select.vue'
 import OrderDetailsMarket from './order-details-market.vue'
 import {
-  TESTNET_DEFAULT_MAX_SLIPPAGE,
+  DEFAULT_MAX_SLIPPAGE,
   ZERO_IN_BASE,
   NUMBER_REGEX
 } from '~/app/utils/constants'
@@ -316,8 +316,8 @@ export default Vue.extend({
 
       return new BigNumberInBase(
         orderTypeBuy
-          ? TESTNET_DEFAULT_MAX_SLIPPAGE.div(100).plus(1)
-          : TESTNET_DEFAULT_MAX_SLIPPAGE.div(100).minus(1).times(-1)
+          ? DEFAULT_MAX_SLIPPAGE.div(100).plus(1)
+          : DEFAULT_MAX_SLIPPAGE.div(100).minus(1).times(-1)
       )
     },
 

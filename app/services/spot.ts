@@ -8,7 +8,11 @@ import {
   OrderStreamCallback as SpotMarketOrderStreamCallback
 } from '@injectivelabs/spot-consumer'
 import { AccountAddress, TradeExecutionSide } from '@injectivelabs/ts-types'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  DEFAULT_EXCHANGE_LIMIT
+} from '@injectivelabs/utils'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { SubaccountStreamType } from '@injectivelabs/subaccount-consumer'
 import { metricsProvider } from '../providers/MetricsProvider'
@@ -18,7 +22,7 @@ import { spotMarketStream } from '~/app/singletons/SpotMarketStream'
 import { streamManager } from '~/app/singletons/StreamManager'
 import {
   FEE_RECIPIENT,
-  TESTNET_CHAIN_ID,
+  CHAIN_ID,
   ZERO_IN_BASE,
   ZERO_TO_STRING
 } from '~/app/utils/constants'
@@ -268,7 +272,7 @@ export const submitLimitOrder = async ({
       address,
       message,
       bucket: SpotMetrics.CreateLimitOrder,
-      chainId: TESTNET_CHAIN_ID
+      chainId: CHAIN_ID
     })
 
     await txProvider.broadcast()
@@ -316,7 +320,7 @@ export const submitMarketOrder = async ({
       address,
       message,
       bucket: SpotMetrics.CreateMarketOrder,
-      chainId: TESTNET_CHAIN_ID
+      chainId: CHAIN_ID
     })
 
     await txProvider.broadcast()
@@ -347,8 +351,14 @@ export const batchCancelOrders = async ({
     const txProvider = new TxProvider({
       address,
       message,
+      gasLimit: new BigNumberInBase(DEFAULT_EXCHANGE_LIMIT)
+        .dividedBy(
+          5 /* Assuming we can only process 5 order cancellations with the current gas limit */
+        )
+        .times(orders.length)
+        .toNumber(),
       bucket: SpotMetrics.BatchCancelLimitOrders,
-      chainId: TESTNET_CHAIN_ID
+      chainId: CHAIN_ID
     })
 
     await txProvider.broadcast()
@@ -384,7 +394,7 @@ export const cancelOrder = async ({
       address,
       message,
       bucket: SpotMetrics.CancelLimitOrder,
-      chainId: TESTNET_CHAIN_ID
+      chainId: CHAIN_ID
     })
 
     await txProvider.broadcast()

@@ -1,8 +1,15 @@
 import { HttpClient, BigNumber, BigNumberInWei } from '@injectivelabs/utils'
-import { GWEI_IN_WEI, TESTNET_GAS_PRICE } from '../utils/constants'
+import { ChainId } from '@injectivelabs/ts-types'
+import { GWEI_IN_WEI, DEFAULT_GAS_PRICE, CHAIN_ID } from '../utils/constants'
 import { EthGasStationResult } from '~/types'
 
 export const fetchGasPrice = async (): Promise<string> => {
+  const isTestnet = [ChainId.Kovan, ChainId.Injective].includes(CHAIN_ID)
+
+  if (isTestnet) {
+    return DEFAULT_GAS_PRICE.toString()
+  }
+
   const client = new HttpClient('https://ethgasstation.info/json')
 
   try {
@@ -11,7 +18,7 @@ export const fetchGasPrice = async (): Promise<string> => {
     }
 
     if (!response || (response && !response.data)) {
-      return TESTNET_GAS_PRICE.toString()
+      return DEFAULT_GAS_PRICE.toString()
     }
 
     return new BigNumberInWei(
@@ -20,6 +27,6 @@ export const fetchGasPrice = async (): Promise<string> => {
       .toBase()
       .toString()
   } catch (e) {
-    return TESTNET_GAS_PRICE.toString()
+    return DEFAULT_GAS_PRICE.toString()
   }
 }

@@ -13,7 +13,7 @@ import { streamManager } from '../singletons/StreamManager'
 import { grpcSubaccountBalanceToUiSubaccountBalance } from '../transformers/account'
 import { metricsProvider } from '../providers/MetricsProvider'
 import { subaccountConsumer } from '~/app/singletons/SubaccountConsumer'
-import { TESTNET_CHAIN_ID } from '~/app/utils/constants'
+import { CHAIN_ID } from '~/app/utils/constants'
 import { authConsumer } from '~/app/singletons/AuthConsumer'
 import { UiSubaccount } from '~/types/subaccount'
 import { AccountMetrics } from '~/types/metrics'
@@ -107,7 +107,7 @@ export const deposit = async ({
       address,
       message,
       bucket: AccountMetrics.Deposit,
-      chainId: TESTNET_CHAIN_ID
+      chainId: CHAIN_ID
     })
 
     await txProvider.broadcast()
@@ -141,7 +141,7 @@ export const withdraw = async ({
       address,
       bucket: AccountMetrics.Withdraw,
       message,
-      chainId: TESTNET_CHAIN_ID
+      chainId: CHAIN_ID
     })
 
     await txProvider.broadcast()

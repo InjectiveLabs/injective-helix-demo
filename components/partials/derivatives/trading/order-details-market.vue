@@ -35,7 +35,9 @@
               }"
               class="text-gray-300"
             />
-            <small class="opacity-75 ml-1">{{ market.baseTokenMeta.symbol }}</small>
+            <small class="opacity-75 ml-1">{{
+              market.baseTokenMeta.symbol
+            }}</small>
           </v-ui-text>
           <v-ui-text v-else muted-sm class="group-hover:text-white">
             &mdash;
@@ -158,7 +160,7 @@ import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import Drawer from '~/components/elements/drawer.vue'
 import { DerivativeOrderType, Icon, UiDerivativeMarket } from '~/types'
-import { TESTNET_DEFAULT_MAX_SLIPPAGE } from '~/app/utils/constants'
+import { DEFAULT_MAX_SLIPPAGE } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -239,7 +241,7 @@ export default Vue.extend({
     },
 
     slippage(): BigNumberInBase {
-      return new BigNumberInBase(TESTNET_DEFAULT_MAX_SLIPPAGE)
+      return new BigNumberInBase(DEFAULT_MAX_SLIPPAGE)
     }
   },
 

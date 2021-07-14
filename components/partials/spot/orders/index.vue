@@ -41,14 +41,14 @@
       </tbody>
       <tbody v-else>
         <tr class="relative h-8">
-          <th colspan="7" class="w-full" :rowspan="limit">
+          <th colspan="7" class="w-full" :rowspan="limit + 1">
             <v-ui-overlay>
               <p>{{ $t('not_connect_orders') }}</p>
             </v-ui-overlay>
           </th>
         </tr>
         <tr
-          v-for="(order, index) in [...emptyOrders.slice(1)]"
+          v-for="(order, index) in [...emptyOrders]"
           :key="`empty-orders-${index}`"
           class="h-8"
         >

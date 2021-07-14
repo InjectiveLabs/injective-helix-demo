@@ -3,17 +3,14 @@ import {
   getUrlEndpointForNetwork,
   UrlEndpoint
 } from '@injectivelabs/networks'
-import { ChainId } from '@injectivelabs/ts-types'
 import { Wallet } from '@injectivelabs/web3-strategy'
-import { CHAIN_ID, NETWORK } from '../utils/constants'
+import { NETWORK } from '../utils/constants'
 import { localStorage } from './Storage'
 
 class App {
   network: Network
-  chainId: ChainId
 
   constructor() {
-    this.chainId = CHAIN_ID || ChainId.Injective
     this.network = NETWORK || Network.Local
   }
 

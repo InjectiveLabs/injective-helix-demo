@@ -1,6 +1,6 @@
 import { actionTree } from 'typed-vuex'
 import { ChainId } from '@injectivelabs/ts-types'
-import { TESTNET_CHAIN_ID, TESTNET_GAS_PRICE } from '~/app/utils/constants'
+import { CHAIN_ID, DEFAULT_GAS_PRICE } from '~/app/utils/constants'
 import { fetchGasPrice } from '~/app/services/gas'
 import { Locale, english } from '~/locales'
 import { AppState } from '~/types'
@@ -8,8 +8,8 @@ import { AppState } from '~/types'
 const initialState = {
   locale: english,
   state: AppState.Idle,
-  chainId: TESTNET_CHAIN_ID,
-  gasPrice: TESTNET_GAS_PRICE.toString()
+  chainId: CHAIN_ID,
+  gasPrice: DEFAULT_GAS_PRICE.toString()
 }
 
 export const state = () => ({

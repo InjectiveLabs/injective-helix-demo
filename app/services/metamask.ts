@@ -1,11 +1,11 @@
 import { ChainId, AccountAddress } from '@injectivelabs/ts-types'
 import { Web3Exception } from '@injectivelabs/exceptions'
-import { TESTNET_CHAIN_ID } from '../utils/constants'
+import { CHAIN_ID } from '../utils/constants'
 import { getWeb3Strategy } from '~/app/web3'
 
 export const validateMetamask = async (
   address: AccountAddress,
-  chainId: ChainId = TESTNET_CHAIN_ID
+  chainId: ChainId = CHAIN_ID
 ) => {
   const web3Strategy = getWeb3Strategy()
   const addresses = await web3Strategy.getAddresses()
@@ -32,7 +32,9 @@ export const validateMetamask = async (
 
   if (metamaskChainIdDoesntMatchTheActiveChainId) {
     throw new Web3Exception(
-      'Your metamask network is wrong. Please change to Kovan Network'
+      `Your metamask network is wrong. Please change to ${
+        chainId === ChainId.Kovan ? 'Ethereum Main' : 'Kovan'
+      } Network`
     )
   }
 }

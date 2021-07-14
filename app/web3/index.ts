@@ -5,7 +5,7 @@ import {
 } from '@injectivelabs/web3-strategy'
 import { ChainId } from '@injectivelabs/ts-types'
 import { app } from '~/app/singletons/App'
-import { CHAIN_ID, RPC_POLING_INTERVAL } from '~/app/utils/constants'
+import { CHAIN_ID } from '~/app/utils/constants'
 
 let web3Strategy: Web3Strategy
 
@@ -37,6 +37,8 @@ export const initWeb3Strategy = (
   wallet: Wallet,
   options: Partial<ConcreteStrategyOptions> = {}
 ) => {
+  const RPC_POLING_INTERVAL = 4000
+
   web3Strategy = new Web3Strategy({
     wallet,
     chainId: parseInt(CHAIN_ID.toString()),

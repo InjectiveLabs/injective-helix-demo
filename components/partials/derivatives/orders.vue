@@ -22,7 +22,13 @@
             </li>
           </ul>
         </div>
-        <v-ui-button xs primary class="mr-4" @click.stop="handleCancelAllClick">
+        <v-ui-button
+          v-if="component === components.openOrders"
+          xs
+          primary
+          class="mr-4"
+          @click.stop="handleCancelAllClick"
+        >
           {{ $t('cancel_all') }}
         </v-ui-button>
       </div>

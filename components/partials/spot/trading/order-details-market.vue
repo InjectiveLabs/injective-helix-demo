@@ -118,10 +118,7 @@ import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import Drawer from '~/components/elements/drawer.vue'
 import { SpotOrderType, Icon, UiSpotMarket } from '~/types'
-import {
-  TESTNET_DEFAULT_MAX_SLIPPAGE,
-  ZERO_IN_BASE
-} from '~/app/utils/constants'
+import { DEFAULT_MAX_SLIPPAGE, ZERO_IN_BASE } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -192,7 +189,7 @@ export default Vue.extend({
     },
 
     slippage(): BigNumberInBase {
-      return new BigNumberInBase(TESTNET_DEFAULT_MAX_SLIPPAGE)
+      return new BigNumberInBase(DEFAULT_MAX_SLIPPAGE)
     },
 
     extractedTotal(): BigNumberInBase {
