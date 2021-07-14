@@ -3,7 +3,7 @@ import { Middleware, Context } from '@nuxt/types'
 const maintenanceRouteName = 'maintenance'
 
 const maintenance: Middleware = ({ redirect, route }: Context) => {
-  const maintenanceEnabled = process.env.APP_MAINTENANCE_ENABLED === 'true'
+  const maintenanceEnabled = process.env.MAINTENANCE_ENABLED === 'true'
 
   if (route.name !== maintenanceRouteName && maintenanceEnabled) {
     return redirect('/maintenance')

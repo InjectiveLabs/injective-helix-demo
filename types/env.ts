@@ -5,7 +5,7 @@ declare global {
     // @ts-ignore
     interface ProcessEnv {
       NODE_ENV: string
-      APP_MAINTENANCE_ENABLED: string
+      MAINTENANCE_ENABLED: string
       APP_BASE_URL: string
       METRICS_ENABLED: string
       GEO_IP_RESTRICTIONS_ENABLED: string

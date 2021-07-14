@@ -9,14 +9,17 @@ jobs:
   deploy:
     env:
       ## Public
-      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       APP_BASE_URL: https://injective.exchange
-      APP_MAINTENANCE_ENABLED: true
       APP_NETWORK: mainnet
-      METRICS_ENABLED: false
       APP_ENV: mainnet
       SOURCE_DIR: dist
       DEST_DIR: www
+
+      ## Flags
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+      MAINTENANCE_ENABLED: true
+      METRICS_ENABLED: true
+      GEO_IP_RESTRICTIONS_ENABLED: true
 
       ## Secret
       APP_FEE_RECIPIENT: ${{ secrets.APP_FEE_RECIPIENT }}
@@ -66,14 +69,17 @@ jobs:
   deploy-stag:
     env:
       ## Public
-      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       APP_BASE_URL: https://staging.injective.exchange
-      APP_MAINTENANCE_ENABLED: false
       APP_NETWORK: mainnet
-      METRICS_ENABLED: false
       APP_ENV: staging
       SOURCE_DIR: dist
       DEST_DIR: www
+
+      ## Flags
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+      MAINTENANCE_ENABLED: false
+      METRICS_ENABLED: false
+      GEO_IP_RESTRICTIONS_ENABLED: true
 
       ## Secret
       APP_FEE_RECIPIENT: ${{ secrets.APP_FEE_RECIPIENT }}
