@@ -13,7 +13,7 @@ export const validateMetamask = async (
 
   if (metamaskIsLocked) {
     throw new Web3Exception(
-      'Your metamask is locked. Please unlock your Metamask.'
+      'Your Metamask is currently locked. Please unlock your Metamask.'
     )
   }
 
@@ -32,9 +32,9 @@ export const validateMetamask = async (
 
   if (metamaskChainIdDoesntMatchTheActiveChainId) {
     throw new Web3Exception(
-      `Your metamask network is wrong. Please change to ${
-        chainId === ChainId.Kovan ? 'Ethereum Main' : 'Kovan'
-      } Network`
+      `Please change your Metamask network to ${
+        chainId === ChainId.Kovan ? 'Ethereum Mainnet' : 'Kovan Test Network'
+      }`
     )
   }
 }
