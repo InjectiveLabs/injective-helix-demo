@@ -55,9 +55,7 @@ export class MetricsProvider {
   }
 
   recordError(bucket: string) {
-    if (this.recordMetrics()) {
-      this.incr(bucket + 'Errors')
-    }
+    this.incr(bucket + 'Errors')
   }
 
   private async timing(bucket: string, duration: number) {
@@ -81,7 +79,7 @@ export class MetricsProvider {
   }
 
   private recordMetrics(): boolean {
-    return IS_PRODUCTION && METRICS_ENABLED && Math.random() < 0.1
+    return IS_PRODUCTION && METRICS_ENABLED && Math.random() < 0.2
   }
 }
 
