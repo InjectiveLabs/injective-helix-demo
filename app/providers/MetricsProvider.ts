@@ -79,7 +79,7 @@ export class MetricsProvider {
   }
 
   private recordMetrics(): boolean {
-    return IS_PRODUCTION && METRICS_ENABLED && Math.random() < 0.2
+    return IS_PRODUCTION && METRICS_ENABLED
   }
 }
 
