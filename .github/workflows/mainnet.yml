@@ -12,6 +12,7 @@ jobs:
       APP_BASE_URL: https://injective.exchange
       APP_NETWORK: mainnet
       APP_ENV: mainnet
+      APP_CHAIN_ID: 1
       SOURCE_DIR: dist
       DEST_DIR: www
 
@@ -72,6 +73,7 @@ jobs:
       APP_BASE_URL: https://staging.injective.exchange
       APP_NETWORK: mainnet
       APP_ENV: staging
+      APP_CHAIN_ID: 1
       SOURCE_DIR: dist
       DEST_DIR: www
 
