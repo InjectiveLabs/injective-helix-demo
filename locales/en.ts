@@ -169,5 +169,6 @@ export default {
   no: 'No',
   not_valid_number: 'Not a valid number',
   mark_price_invalid: 'The mark price is not valid',
-  order_insufficient_margin: 'Order has insufficient margin'
+  order_insufficient_margin: 'Order has insufficient margin',
+  date: 'Date'
 }
