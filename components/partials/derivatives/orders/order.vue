@@ -39,12 +39,14 @@
     </td>
     <td is="v-ui-table-td" xs class="h-8">
       <v-ui-format-amount
+        v-if="!leverage.isNaN()"
         v-bind="{
           value: leverage,
           decimals: 2
         }"
         class="text-right block text-white"
       />
+      <v-ui-text v-else muted>&mdash;</v-ui-text>
     </td>
     <td is="v-ui-table-td" xs center class="h-8">
       <v-ui-badge
@@ -172,7 +174,11 @@ export default Vue.extend({
     },
 
     leverage(): BigNumberInBase {
-      const { quantity, price, order } = this
+      const { quantity, isReduceOnly, price, order } = this
+
+      if (isReduceOnly) {
+        return new BigNumberInBase('')
+      }
 
       return new BigNumberInBase(price.times(quantity).dividedBy(order.margin))
     },
