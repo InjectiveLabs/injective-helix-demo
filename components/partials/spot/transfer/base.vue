@@ -101,7 +101,7 @@ export default Vue.extend({
     hasBalance(): boolean {
       const { token } = this
 
-      return !token.balance.isNaN() && token.balance.gt(0)
+      return !token.balance.isNaN()
     },
 
     balanceToString(): string {

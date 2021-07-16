@@ -3,7 +3,8 @@ import { actionTree, getterTree } from 'typed-vuex'
 import {
   getTokenBalanceAndAllowance,
   setTokenAllowance,
-  transfer
+  transfer,
+  validateTransferRestrictions
 } from '~/app/services/tokens'
 import { backupPromiseCall } from '~/app/utils/async'
 import { UNLIMITED_ALLOWANCE } from '~/app/utils/constants'
@@ -156,6 +157,7 @@ export const actions = actionTree(
       }
 
       await this.app.$accessor.wallet.validate()
+      await validateTransferRestrictions(amount, token)
 
       await transfer({
         address,

@@ -9,6 +9,8 @@ import { ChainId } from '@injectivelabs/ts-types'
 export const IS_DEVELOPMENT: boolean = process.env.NODE_ENV === 'development'
 export const IS_PRODUCTION: boolean = process.env.NODE_ENV === 'production'
 export const METRICS_ENABLED: boolean = process.env.METRICS_ENABLED === 'true'
+export const TRANSFER_RESTRICTIONS_ENABLED: boolean =
+  process.env.TRANSFER_RESTRICTIONS_ENABLED === 'true'
 export const GEO_IP_RESTRICTIONS_ENABLED: boolean =
   process.env.GEO_IP_RESTRICTIONS_ENABLED === 'true'
 
@@ -49,6 +51,9 @@ export const CHAIN_ID: ChainId = process.env.APP_CHAIN_ID
 // 6 gwei for Kovan, fetched from gasStation for Mainnet
 export const DEFAULT_GAS_PRICE = new BigNumber(6).times(GWEI_IN_WEI)
 export const DEFAULT_MAX_SLIPPAGE = new BigNumber(1) // +1% slippage
+
+export const MAXIMUM_TRANSFER_ALLOWED = 50
+export const INJECTIVE_DENOM = 'inj'
 
 // eslint-disable-next-line prefer-regex-literals
 export const NUMBER_REGEX = new RegExp(/^-?(0|[1-9]\d*)?(\.\d+)?$/)

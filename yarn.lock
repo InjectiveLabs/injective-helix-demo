@@ -3195,6 +3195,11 @@
     "@types/node" "*"
     source-map "^0.6.0"
 
+"@types/coingecko-api@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/@types/coingecko-api/-/coingecko-api-1.0.1.tgz#347558c09a480a93800f196a02087a6438e06533"
+  integrity sha512-JPkcEPKwqg2f3PlJeqmGX5cnx+BcNVgynnKeEGHHa4eABjWfuECaAId8OrvmThi2fFlD+7ALza0VaO0/Zhaljg==
+
 "@types/compression@1.7.0":
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/@types/compression/-/compression-1.7.0.tgz#8dc2a56604873cf0dd4e746d9ae4d31ae77b2390"
@@ -5679,6 +5684,11 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
+
+coingecko-api@^1.0.10:
+  version "1.0.10"
+  resolved "https://registry.npmjs.org/coingecko-api/-/coingecko-api-1.0.10.tgz#ac8694d5999f00727fe55f0078ce2917603076b2"
+  integrity sha512-7YLLC85+daxAw5QlBWoHVBVpJRwoPr4HtwanCr8V/WRjoyHTa1Lb9DQAvv4MDJZHiz4no6HGnDQnddtjV35oRA==
 
 collapse-white-space@^1.0.2:
   version "1.0.6"
