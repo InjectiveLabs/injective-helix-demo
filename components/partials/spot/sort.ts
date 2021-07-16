@@ -15,5 +15,6 @@ export const sortSpotMarkets = [
   'grt-usdt',
   'grt-usdc',
   'uni-usdt',
-  'uni-usdc'
+  'uni-usdc',
+  'qnt-usdc'
 ]
