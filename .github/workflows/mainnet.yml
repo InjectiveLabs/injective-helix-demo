@@ -18,9 +18,10 @@ jobs:
 
       ## Flags
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-      MAINTENANCE_ENABLED: true
+      MAINTENANCE_ENABLED: false
       METRICS_ENABLED: true
       GEO_IP_RESTRICTIONS_ENABLED: true
+      TRANSFER_RESTRICTIONS_ENABLED: true
 
       ## Secret
       APP_FEE_RECIPIENT: ${{ secrets.APP_FEE_RECIPIENT }}
@@ -78,6 +79,7 @@ jobs:
       MAINTENANCE_ENABLED: false
       METRICS_ENABLED: false
       GEO_IP_RESTRICTIONS_ENABLED: true
+      TRANSFER_RESTRICTIONS_ENABLED: true
 
       ## Secret
       APP_FEE_RECIPIENT: ${{ secrets.APP_FEE_RECIPIENT }}
