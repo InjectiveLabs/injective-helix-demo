@@ -1,22 +1,25 @@
 const spot = [
   'inj-usdt',
-  'matic-usdt',
-  'bnb-usdt',
+  'inj-usdc',
+  'weth-usdt',
+  'weth-usdc',
+  'usdt-usdc',
   'link-usdt',
-  'uni-usdt',
-  'yfi-usdt',
+  'link-usdc',
   'aave-usdt',
-  'zrx-usdt'
+  'aave-usdc',
+  'matic-usdt',
+  'matic-usdc',
+  'sushi-usdt',
+  'sushi-usdc',
+  'grt-usdt',
+  'grt-usdc',
+  'uni-usdt',
+  'uni-usdc'
 ]
 
 const derivatives = [
-  'btc-usdt',
-  'eth-usdt',
-  'link-usdt',
-  'grt-usdt',
-  'uni-usdt',
-  'comp-usdt',
-  'snx-usdt'
+  //
 ]
 
 module.exports = [
