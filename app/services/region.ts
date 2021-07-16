@@ -1,5 +1,4 @@
 import { HttpClient } from '@injectivelabs/utils'
-import { BASE_URL } from '../utils/constants'
 import { restrictedCountries } from '../data/geoip'
 import { GeoLocation } from '~/types'
 
@@ -19,6 +18,6 @@ export const fetchGeoLocation = async (): Promise<GeoLocation | undefined> => {
 
 export const validateGeoLocation = (geoLocation: GeoLocation) => {
   if (restrictedCountries.includes(geoLocation.country)) {
-    throw new Error(`Your country is restricted from trading on ${BASE_URL}`)
+    throw new Error(`Your country is restricted from trading on this relayer`)
   }
 }
