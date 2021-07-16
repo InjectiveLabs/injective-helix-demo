@@ -1,9 +1,1 @@
-export const sortPerpetualMarkets = [
-  'btc-usdt',
-  'eth-usdt',
-  'link-usdt',
-  'uni-usdt',
-  'grt-usdt',
-  'comp-usdt',
-  'snx-usdt'
-]
+export const sortPerpetualMarkets = [] as string[]

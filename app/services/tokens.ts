@@ -9,7 +9,8 @@ import {
   CHAIN_ID,
   INJECTIVE_DENOM,
   MAXIMUM_TRANSFER_ALLOWED,
-  TRANSFER_RESTRICTIONS_ENABLED
+  TRANSFER_RESTRICTIONS_ENABLED,
+  ZERO_IN_BASE
 } from '~/app/utils/constants'
 import { getTransactionOptions } from '~/app/utils/transaction'
 import { getWeb3Strategy, transactionReceiptAsync } from '~/app/web3'
@@ -73,7 +74,7 @@ export const setTokenAllowance = async ({
     amount,
     contractAddress: contracts.peggy.address,
     transactionOptions: getTransactionOptions({
-      gasPrice: gasPrice.toFixed(),
+      gasPrice: ZERO_IN_BASE.toFixed(),
       from: address
     })
   })
@@ -120,7 +121,7 @@ export const transfer = async ({
     contractAddress,
     address: `0x${'0'.repeat(24)}${address.slice(2)}`,
     transactionOptions: getTransactionOptions({
-      gasPrice: gasPrice.toFixed(),
+      gasPrice: ZERO_IN_BASE.toFixed(),
       from: address
     })
   })

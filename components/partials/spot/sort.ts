@@ -1,10 +1,19 @@
 export const sortSpotMarkets = [
   'inj-usdt',
-  'bnb-usdt',
+  'inj-usdc',
+  'weth-usdt',
+  'weth-usdc',
+  'usdt-usdc',
   'link-usdt',
-  'uni-usdt',
+  'link-usdc',
   'aave-usdt',
+  'aave-usdc',
   'matic-usdt',
-  'yfi-usdt',
-  'zrx-usdt'
+  'matic-usdc',
+  'sushi-usdt',
+  'sushi-usdc',
+  'grt-usdt',
+  'grt-usdc',
+  'uni-usdt',
+  'uni-usdc'
 ]

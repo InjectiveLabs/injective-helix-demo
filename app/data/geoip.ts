@@ -1,6 +1,3 @@
-/**
- * Balkans, Crimea
- */
 export const restrictedCountries = [
   'BY',
   'MM',
