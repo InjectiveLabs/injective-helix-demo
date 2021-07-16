@@ -28,7 +28,7 @@
     >
       <logo class="mr-2 lg:mr-4 w-6 h-6" />
       <span class="text-white hidden lg:block">
-        {{ $t('injective') }}
+        {{ $t('injective') }} PRO
       </span>
     </h1>
     <div class="hidden lg:flex">
