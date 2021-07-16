@@ -32,7 +32,6 @@ jobs:
       AWS_S3_BUCKET: ${{ secrets.AWS_S3_TESTNET_BUCKET }}
       CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_TESTNET_DISTRIBUTION_ID }}
       AWS_REGION: ${{ secrets.AWS_TESTNET_REGION }}
-      NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
     runs-on: ubuntu-latest
 
     steps:
@@ -42,9 +41,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
-
-      - name: Setup npmrc
-        run: echo "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN" > .npmrc
 
       - name: Install Dependencies
         run: yarn install
@@ -93,7 +89,6 @@ jobs:
       AWS_S3_BUCKET: ${{ secrets.AWS_S3_STAGING_TESTNET_BUCKET }}
       CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_STAGING_TESTNET_DISTRIBUTION_ID }}
       AWS_REGION: ${{ secrets.AWS_STAGING_REGION }}
-      NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
     runs-on: ubuntu-latest
 
     steps:
@@ -103,9 +98,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
-
-      - name: Setup npmrc
-        run: echo "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN" > .npmrc
 
       - name: Install Dependencies
         run: yarn install
