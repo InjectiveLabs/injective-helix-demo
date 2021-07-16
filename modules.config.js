@@ -2,7 +2,7 @@ const prodModules = []
 
 if (process.env.APP_BUGSNAG_KEY) {
   prodModules.push([
-    ('nuxt-bugsnag',
+    'nuxt-bugsnag',
     {
       apiKey: process.env.APP_BUGSNAG_KEY,
       config: {
@@ -11,7 +11,7 @@ if (process.env.APP_BUGSNAG_KEY) {
         enabledReleaseStages: ['production', 'testnet', 'staging']
       },
       publishRelease: true
-    })
+    }
   ])
 }
 
