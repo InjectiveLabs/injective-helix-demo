@@ -731,7 +731,7 @@ export default Vue.extend({
 
         return amount.toFixed(
           market.quantityDecimals,
-          BigNumberInBase.ROUND_DOWN
+          BigNumberInBase.ROUND_FLOOR
         )
       }
 
@@ -742,7 +742,7 @@ export default Vue.extend({
           slippage: slippage.toNumber(),
           percent: percentageToNumber.toNumber(),
           records: orderTypeBuy ? sells : buys
-        }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
+        }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
       }
 
       if (executionPrice.lte(0)) {
@@ -758,7 +758,7 @@ export default Vue.extend({
       return new BigNumberInBase(balance)
         .dividedBy(executionPrice.times(fee.plus(1)))
         .times(percentageToNumber)
-        .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
+        .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
     },
 
     onDetailsDrawerToggle() {

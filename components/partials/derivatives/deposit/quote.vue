@@ -94,7 +94,7 @@ export default Vue.extend({
 
       return balance
         .toBase(market.quoteToken.decimals)
-        .toFixed(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS, BigNumberInBase.ROUND_DOWN)
+        .toFixed(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS, BigNumberInBase.ROUND_FLOOR)
     }
   },
 

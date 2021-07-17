@@ -958,7 +958,7 @@ export default Vue.extend({
       if (orderTypeReduceOnly && position) {
         return maxReduceOnly
           .times(percentageToNumber)
-          .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
+          .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
       }
 
       if (tradingTypeMarket) {
@@ -969,7 +969,7 @@ export default Vue.extend({
           slippage: slippage.toNumber(),
           percent: percentageToNumber.toNumber(),
           records: orderTypeBuy ? sells : buys
-        }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
+        }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
       }
 
       if (executionPrice.lte(0)) {
@@ -986,7 +986,7 @@ export default Vue.extend({
         .times(form.leverage)
         .dividedBy(executionPrice.times(fee.times(form.leverage).plus(1)))
         .times(percentageToNumber)
-        .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
+        .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
     },
 
     onDetailsDrawerToggle() {
