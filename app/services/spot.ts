@@ -40,6 +40,7 @@ import {
 } from '~/app/transformers/spot'
 import { spotChronosConsumer } from '~/app/singletons/SpotMarketChronosConsumer'
 import { SpotMetrics } from '~/types/metrics'
+import { filteredMarketsBasedOnDenom } from '~/components/partials/spot/filter'
 
 export const fetchMarkets = async (): Promise<UiSpotMarket[]> => {
   const promise = spotConsumer.fetchMarkets()
@@ -51,7 +52,9 @@ export const fetchMarkets = async (): Promise<UiSpotMarket[]> => {
   const transformedMarket = SpotTransformer.grpcMarketsToMarkets(await markets)
   const quoteTokenMetaDataExist = (m: BaseUiSpotMarket) =>
     m.quoteToken !== undefined
-  const filteredMarkets = transformedMarket.filter(quoteTokenMetaDataExist)
+  const filteredMarkets = transformedMarket
+    .filter(quoteTokenMetaDataExist)
+    .filter((m) => !filteredMarketsBasedOnDenom.includes(m.baseToken!.symbol))
 
   return spotMarketsToUiSpotMarkets(filteredMarkets)
 }
