@@ -131,7 +131,10 @@ export default Vue.extend({
         .then(() => {
           this.$toast.success(this.$t('success_transfer'))
           this.form.amount = ''
-          this.$form.reset()
+
+          if (this.$form) {
+            this.$form.reset()
+          }
         })
         .catch(this.$onRejected)
         .finally(() => {

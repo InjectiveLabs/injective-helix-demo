@@ -94,7 +94,10 @@ export default Vue.extend({
 
       return balance
         .toBase(market.quoteToken.decimals)
-        .toFixed(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS, BigNumberInBase.ROUND_FLOOR)
+        .toFixed(
+          UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+          BigNumberInBase.ROUND_FLOOR
+        )
     }
   },
 
@@ -116,7 +119,10 @@ export default Vue.extend({
         .then(() => {
           this.$toast.success(this.$t('success_deposit'))
           this.form.amount = ''
-          this.$form.reset()
+
+          if (this.$form) {
+            this.$form.reset()
+          }
         })
         .catch(this.$onRejected)
         .finally(() => {
