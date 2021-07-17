@@ -8,7 +8,7 @@ if (process.env.APP_BUGSNAG_KEY) {
       config: {
         appVersion: process.env.npm_package_version,
         releaseStage: process.env.APP_ENV || 'development',
-        enabledReleaseStages: ['production', 'testnet', 'staging']
+        enabledReleaseStages: ['production', 'testnet', 'mainnet', 'staging']
       },
       publishRelease: true
     }
