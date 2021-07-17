@@ -33,7 +33,7 @@ export const validateMetamask = async (
   if (metamaskChainIdDoesntMatchTheActiveChainId) {
     throw new Web3Exception(
       `Please change your Metamask network to ${
-        chainId === ChainId.Kovan ? 'Ethereum Mainnet' : 'Kovan Test Network'
+        chainId === ChainId.Kovan ? 'Kovan Test Network' : 'Ethereum Mainnet'
       }`
     )
   }
