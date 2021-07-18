@@ -287,9 +287,6 @@ export const actions = actionTree(
           }
 
           commit('setOrderbook', orderbook)
-        },
-        onEndCallback: () => {
-          this.app.$accessor.spot.streamOrderbook()
         }
       })
     },
@@ -312,9 +309,6 @@ export const actions = actionTree(
             case StreamOperation.Insert:
               commit('pushTrade', trade)
           }
-        },
-        onEndCallback: () => {
-          this.app.$accessor.spot.streamTrades()
         }
       })
     },
@@ -344,19 +338,19 @@ export const actions = actionTree(
             case SpotOrderState.Booked:
               commit('pushOrUpdateSubaccountOrder', order)
               break
+            case SpotOrderState.Unfilled:
+              commit('pushOrUpdateSubaccountOrder', order)
+              break
             case SpotOrderState.PartialFilled:
               commit('pushOrUpdateSubaccountOrder', order)
               break
-            case SpotOrderState.Cancelled:
+            case SpotOrderState.Canceled:
               commit('deleteSubaccountOrder', order)
               break
             case SpotOrderState.Filled:
               commit('deleteSubaccountOrder', order)
               break
           }
-        },
-        onEndCallback: () => {
-          this.app.$accessor.spot.streamSubaccountOrders()
         }
       })
     },
@@ -393,9 +387,6 @@ export const actions = actionTree(
               commit('updateSubaccountTrade', trade)
               break
           }
-        },
-        onEndCallback: () => {
-          this.app.$accessor.spot.streamSubaccountTrades()
         }
       })
     },

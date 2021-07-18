@@ -9,9 +9,9 @@ import { BigNumberInWei } from '@injectivelabs/utils'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { TxProvider } from '../providers/TxProvider'
 import { subaccountStream } from '../singletons/SubaccountStream'
-import { streamManager } from '../singletons/StreamManager'
 import { grpcSubaccountBalanceToUiSubaccountBalance } from '../transformers/account'
 import { metricsProvider } from '../providers/MetricsProvider'
+import { streamProvider } from '../providers/StreamProvider'
 import { subaccountConsumer } from '~/app/singletons/SubaccountConsumer'
 import { CHAIN_ID } from '~/app/utils/constants'
 import { authConsumer } from '~/app/singletons/AuthConsumer'
@@ -64,31 +64,28 @@ export const fetchSubaccountHistory = async (subaccountId: string) => {
 
 export const streamSubaccountBalances = ({
   subaccountId,
-  callback,
-  onEndCallback
+  callback
 }: {
   subaccountId: string
   callback: SubaccountBalanceStreamCallback
-  onEndCallback: () => void
 }) => {
-  if (streamManager.exists(SubaccountStreamType.Balances)) {
-    return
+  const streamFn = subaccountStream.balances.start.bind(
+    subaccountStream.balances
+  )
+  const streamFnArgs = {
+    subaccountId,
+    callback
   }
 
-  const stream = subaccountStream.balances.start({
-    subaccountId,
-    callback,
-    onEndCallback: () => {
-      streamManager.cancelIfExists(SubaccountStreamType.Balances)
-      onEndCallback()
-    }
+  streamProvider.subscribe({
+    fn: streamFn,
+    args: streamFnArgs,
+    key: SubaccountStreamType.Balances
   })
-
-  streamManager.set(stream, SubaccountStreamType.Balances)
 }
 
 export const cancelSubaccountStreams = () => {
-  streamManager.cancel(SubaccountStreamType.Balances)
+  streamProvider.cancel(SubaccountStreamType.Balances)
 }
 
 export const deposit = async ({

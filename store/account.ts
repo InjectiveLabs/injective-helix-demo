@@ -144,9 +144,6 @@ export const actions = actionTree(
             'setSubaccountBalance',
             grpcSubaccountBalanceToUiSubaccountBalance(balance)
           )
-        },
-        onEndCallback: () => {
-          this.app.$accessor.account.streamSubaccountBalances()
         }
       })
     },

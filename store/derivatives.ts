@@ -336,9 +336,6 @@ export const actions = actionTree(
           }
 
           commit('setOrderbook', orderbook)
-        },
-        onEndCallback: () => {
-          this.app.$accessor.derivatives.streamOrderbook()
         }
       })
     },
@@ -361,9 +358,6 @@ export const actions = actionTree(
             case StreamOperation.Insert:
               commit('pushTrade', trade)
           }
-        },
-        onEndCallback: () => {
-          this.app.$accessor.derivatives.streamTrades()
         }
       })
     },
@@ -386,9 +380,6 @@ export const actions = actionTree(
             case StreamOperation.Update:
               commit('setMarketMarkPrice', price)
           }
-        },
-        onEndCallback: () => {
-          this.app.$accessor.derivatives.streamOrderbook()
         }
       })
     },
@@ -418,19 +409,19 @@ export const actions = actionTree(
             case DerivativeOrderState.Booked:
               commit('pushOrUpdateSubaccountOrder', order)
               break
+            case DerivativeOrderState.Unfilled:
+              commit('pushOrUpdateSubaccountOrder', order)
+              break
             case DerivativeOrderState.PartialFilled:
               commit('pushOrUpdateSubaccountOrder', order)
               break
-            case DerivativeOrderState.Cancelled:
+            case DerivativeOrderState.Canceled:
               commit('deleteSubaccountOrder', order)
               break
             case DerivativeOrderState.Filled:
               commit('deleteSubaccountOrder', order)
               break
           }
-        },
-        onEndCallback: () => {
-          this.app.$accessor.derivatives.streamSubaccountOrders()
         }
       })
     },
@@ -467,9 +458,6 @@ export const actions = actionTree(
               commit('updateSubaccountTrade', trade)
               break
           }
-        },
-        onEndCallback: () => {
-          this.app.$accessor.derivatives.streamSubaccountTrades()
         }
       })
     },
@@ -502,9 +490,6 @@ export const actions = actionTree(
           } else {
             commit('setSubaccountPosition', position)
           }
-        },
-        onEndCallback: () => {
-          this.app.$accessor.derivatives.streamSubaccountPositions()
         }
       })
     },
