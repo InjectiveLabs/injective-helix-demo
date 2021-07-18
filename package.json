@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@chenfengyuan/vue-countdown": "^1.1.5",
+    "@injectivelabs/alchemy-api": "^0.0.4",
     "@injectivelabs/chain-consumer": "^0.0.62",
     "@injectivelabs/contracts": "^0.0.59",
     "@injectivelabs/derivatives-consumer": "^0.0.39",
@@ -37,7 +38,7 @@
     "@injectivelabs/networks": "^0.0.34",
     "@injectivelabs/spot-consumer": "^0.0.53",
     "@injectivelabs/subaccount-consumer": "^0.0.26",
-    "@injectivelabs/token-metadata": "^0.0.4",
+    "@injectivelabs/token-metadata": "^0.0.5",
     "@injectivelabs/utils": "^0.0.36",
     "@injectivelabs/web3-strategy": "^0.0.54",
     "@nuxtjs/dotenv": "^1.4.1",

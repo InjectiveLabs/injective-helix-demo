@@ -2,8 +2,10 @@ import { AccountAddress } from '@injectivelabs/ts-types'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { BaseCurrencyContract } from '@injectivelabs/contracts/dist/contracts/BaseCurrency'
-import { peggyDenomToContractAddress } from '../transformers/peggy'
-import { coinGeckoConsumer } from '../singletons/CoinGeckoConsumer'
+import { contractAddresses } from '@injectivelabs/contracts'
+import { peggyDenomToContractAddress } from '~/app/transformers/peggy'
+import { coinGeckoConsumer } from '~/app/singletons/CoinGeckoConsumer'
+import { alchemyApi } from '~/app/singletons/AlchemyApi'
 import { getContracts } from '~/app/singletons/Contracts'
 import {
   CHAIN_ID,
@@ -197,5 +199,28 @@ export const validateTransferRestrictions = async (
     throw new Error(
       `You cannot transfer more than $${MAXIMUM_TRANSFER_ALLOWED.toFixed()} worth of assets to our Canary Chain.`
     )
+  }
+}
+
+export const fetchTokenMetaData = async (denom: string): Promise<Token> => {
+  const address = denom.startsWith('peggy') ? denom.replace('peggy', '') : denom
+  const contractAddress =
+    address.toLowerCase() === 'inj'
+      ? contractAddresses[CHAIN_ID].injective
+      : address
+
+  const meta = await alchemyApi.fetchTokenMetadata(contractAddress)
+
+  if (!meta.symbol) {
+    throw new Error(`Metadata cant be fetched for ${denom.toUpperCase()}`)
+  }
+
+  return {
+    name: meta.name as string,
+    decimals: meta.decimals as number,
+    symbol: meta.symbol as string,
+    icon: meta.logo as string,
+    denom,
+    address
   }
 }
