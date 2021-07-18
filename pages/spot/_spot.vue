@@ -33,6 +33,7 @@
       <modal-transfer />
       <modal-deposit />
       <modal-withdraw />
+      <modal-take-out />
     </div>
   </HOCLoading>
 </template>
@@ -45,6 +46,7 @@ import MarketPriceChartPanel from '~/components/partials/spot/market/chart.vue'
 import MarketPanel from '~/components/partials/spot/market/market.vue'
 import MarqueePanel from '~/components/partials/spot/market/marquee.vue'
 import ModalTransfer from '~/components/partials/spot/transfer.vue'
+import ModalTakeOut from '~/components/partials/spot/take-out.vue'
 import ModalDeposit from '~/components/partials/spot/deposit.vue'
 import ModalWithdraw from '~/components/partials/spot/withdraw.vue'
 import TradingPanel from '~/components/partials/spot/trading/index.vue'
@@ -63,6 +65,7 @@ export default Vue.extend({
   components: {
     HOCLoading,
     ModalWithdraw,
+    ModalTakeOut,
     BalancePanel,
     TradesPanel,
     OrdersPanel,

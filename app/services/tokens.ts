@@ -3,6 +3,8 @@ import { Web3Exception } from '@injectivelabs/exceptions'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { BaseCurrencyContract } from '@injectivelabs/contracts/dist/contracts/BaseCurrency'
 import { contractAddresses } from '@injectivelabs/contracts'
+import { PeggyComposer } from '@injectivelabs/chain-consumer'
+import { TxProvider } from '~/app/providers/TxProvider'
 import { peggyDenomToContractAddress } from '~/app/transformers/peggy'
 import { coinGeckoConsumer } from '~/app/singletons/CoinGeckoConsumer'
 import { alchemyApi } from '~/app/singletons/AlchemyApi'
@@ -17,6 +19,7 @@ import {
 import { getTransactionOptions } from '~/app/utils/transaction'
 import { getWeb3Strategy, transactionReceiptAsync } from '~/app/web3'
 import { Token, TokenWithBalance } from '~/types'
+import { AccountMetrics } from '~/types/metrics'
 
 export const getTokenBalanceAndAllowance = async ({
   address,
@@ -145,6 +148,40 @@ export const transfer = async ({
       { address, chainId: CHAIN_ID }
     )
     await transactionReceiptAsync(txHash)
+  } catch (error) {
+    throw new Web3Exception(error.message)
+  }
+}
+
+export const withdraw = async ({
+  address,
+  denom,
+  amount,
+  injectiveAddress,
+  destinationAddress
+}: {
+  amount: BigNumberInWei
+  address: AccountAddress
+  denom: string
+  destinationAddress: string
+  injectiveAddress: AccountAddress
+}) => {
+  const message = PeggyComposer.withdraw({
+    denom,
+    amount,
+    address: destinationAddress,
+    cosmosAddress: injectiveAddress
+  })
+
+  try {
+    const txProvider = new TxProvider({
+      address,
+      message,
+      bucket: AccountMetrics.SendToEth,
+      chainId: CHAIN_ID
+    })
+
+    await txProvider.broadcast()
   } catch (error) {
     throw new Web3Exception(error.message)
   }

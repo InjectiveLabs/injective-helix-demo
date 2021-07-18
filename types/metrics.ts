@@ -3,7 +3,8 @@ export enum AccountMetrics {
   FetchSubaccountBalances = 'SubaccountBalancesListRequest',
   FetchSubaccountHistory = 'SubaccountHistoryRequest',
   Deposit = 'MsgDeposit',
-  Withdraw = 'MsgWithdraw'
+  Withdraw = 'MsgWithdraw',
+  SendToEth = 'MsgSendToEth'
 }
 
 export enum ChainMetrics {

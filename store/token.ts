@@ -1,6 +1,7 @@
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
 import {
+  withdraw,
   getTokenBalanceAndAllowance,
   setTokenAllowance,
   transfer,
@@ -164,6 +165,41 @@ export const actions = actionTree(
         denom: token.denom,
         gasPrice: new BigNumberInBase(gasPrice).toWei(),
         amount: amount.toWei(token.decimals)
+      })
+
+      await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
+      await this.app.$accessor.token.getTokenBalanceAndAllowanceForMarket()
+      await this.app.$accessor.token.getTokenBalanceAndAllowanceForDerivativeMarket()
+    },
+
+    async withdraw(
+      _,
+      {
+        amount,
+        denom
+      }: {
+        amount: BigNumberInBase
+        denom: string
+      }
+    ) {
+      const {
+        address,
+        injectiveAddress,
+        isUserWalletConnected
+      } = this.app.$accessor.wallet
+
+      if (!address || !isUserWalletConnected) {
+        return
+      }
+
+      await this.app.$accessor.wallet.validate()
+
+      await withdraw({
+        address,
+        denom,
+        injectiveAddress,
+        destinationAddress: address,
+        amount: amount.toWei()
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())

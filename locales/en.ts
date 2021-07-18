@@ -99,12 +99,16 @@ export default {
   deposit_modal_title: 'Deposit to Subaccount',
   deposit_modal_note:
     'Your trading experience starts once you deposit your funds from the Injective Chain to your subaccount.',
+  take_out_modal_title: 'Withdraw from Injective Chain',
+  take_out_modal_note:
+    'You can choose to withdraw your assets from the Injective Chain by filling up the form below',
   withdraw_modal_title: 'Withdraw from Subaccount',
   withdraw_modal_note:
     'You can always withdraw your funds back to the Injective Chain, so you can interact with the rest of the functionalities on the Injective Chain',
   transfer_asset: 'Transfer {asset}',
   deposit_asset: 'Deposit {asset}',
   withdraw_asset: 'Withdraw {asset}',
+  take_out_asset: 'Withdraw {asset}',
   allowance_set: 'Allowance Set',
   set_allowance: 'Set Allowance',
   success_transfer: 'Successfully Transferred',

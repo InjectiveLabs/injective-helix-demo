@@ -29,9 +29,14 @@
       </v-ui-text-info>
     </div>
     <div v-if="isUserWalletConnected" slot="title-context">
-      <v-ui-button xs primary @click.stop="openTransferModal">{{
-        $t('transfer')
-      }}</v-ui-button>
+      <div class="flex items-center">
+        <v-ui-button xs primary class="mr-2" @click.stop="openTransferModal">{{
+          $t('transfer')
+        }}</v-ui-button>
+        <v-ui-button xs primary @click.stop="openTakeOutModal">{{
+          $t('withdraw')
+        }}</v-ui-button>
+      </div>
     </div>
   </v-panel>
 </template>
@@ -88,6 +93,10 @@ export default Vue.extend({
   methods: {
     openTransferModal() {
       this.$accessor.modal.openModal(Modal.Transfer)
+    },
+
+    openTakeOutModal() {
+      this.$accessor.modal.openModal(Modal.TakeOut)
     }
   }
 })
