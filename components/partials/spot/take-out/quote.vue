@@ -114,7 +114,7 @@ export default Vue.extend({
       this.$accessor.token
         .withdraw({
           amount: new BigNumberInBase(form.amount),
-          denom: market.quoteDenom
+          token: market.quoteToken
         })
         .then(() => {
           this.$toast.success(this.$t('success_withdraw'))

@@ -21,7 +21,7 @@
     <div v-if="isUserWalletConnected" slot="title-context">
       <div class="flex items-center">
         <v-ui-button xs primary @click.stop="openTransferModal">{{
-          $t('transfer')
+          $t('deposit')
         }}</v-ui-button>
         <v-ui-button xs primary @click.stop="openTakeOutModal">{{
           $t('withdraw')

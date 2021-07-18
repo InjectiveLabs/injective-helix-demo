@@ -9,7 +9,7 @@ import {
 } from '~/app/services/tokens'
 import { backupPromiseCall } from '~/app/utils/async'
 import { UNLIMITED_ALLOWANCE } from '~/app/utils/constants'
-import { TokenWithBalance } from '~/types'
+import { Token, TokenWithBalance } from '~/types'
 
 const initialStateFactory = () => ({
   baseTokenWithBalance: (undefined as unknown) as TokenWithBalance,
@@ -176,10 +176,10 @@ export const actions = actionTree(
       _,
       {
         amount,
-        denom
+        token
       }: {
         amount: BigNumberInBase
-        denom: string
+        token: Token
       }
     ) {
       const {
@@ -196,10 +196,10 @@ export const actions = actionTree(
 
       await withdraw({
         address,
-        denom,
         injectiveAddress,
+        denom: token.denom,
         destinationAddress: address,
-        amount: amount.toWei()
+        amount: amount.toWei(token.decimals)
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
