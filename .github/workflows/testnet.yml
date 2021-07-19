@@ -9,6 +9,7 @@ jobs:
   deploy:
     env:
       ## Public
+      APP_NAME: "Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere."
       APP_BASE_URL: https://testnet.injective.exchange
       APP_NETWORK: staking
       APP_ENV: testnet
@@ -17,6 +18,7 @@ jobs:
       DEST_DIR: www
 
       ## Flags
+      META_TAGS_ENABLED: true
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       MAINTENANCE_ENABLED: true
       METRICS_ENABLED: false
@@ -24,6 +26,8 @@ jobs:
       TRANSFER_RESTRICTIONS_ENABLED: false
 
       ## Secret
+      APP_GOOGLE_ANALYTICS_KEY: ${{ secrets.APP_GOOGLE_ANALYTICS_KEY }}
+      APP_GOOGLE_SITE_VERIFICATION_KEY: ${{ secrets.APP_GOOGLE_SITE_VERIFICATION_KEY }},
       APP_FEE_RECIPIENT: ${{ secrets.APP_FEE_RECIPIENT }}
       APP_BUGSNAG_KEY: ${{ secrets.APP_BUGSNAG_KEY }}
       APP_ALCHEMY_KEY: ${{ secrets.APP_ALCHEMY_KEY }}
@@ -67,6 +71,7 @@ jobs:
   deploy-stag:
     env:
       ## Public
+      APP_NAME: "Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere."
       APP_BASE_URL: https://staging-testnet.injective.exchange
       APP_NETWORK: staking
       APP_ENV: staging
@@ -75,6 +80,7 @@ jobs:
       DEST_DIR: www
 
       ## Flags
+      META_TAGS_ENABLED: true
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       MAINTENANCE_ENABLED: false
       METRICS_ENABLED: false
@@ -82,6 +88,10 @@ jobs:
       TRANSFER_RESTRICTIONS_ENABLED: false
 
       ## Secret
+      APP_GOOGLE_ANALYTICS_KEY:  ${{ secrets.APP_GOOGLE_ANALYTICS_KEY }}
+      APP_GOOGLE_SITE_VERIFICATION_KEY:  ${{ secrets.APP_GOOGLE_SITE_VERIFICATION_KEY }},
+      APP_GOOGLE_ANALYTICS_KEY: ${{ secrets.APP_GOOGLE_ANALYTICS_KEY }}
+      APP_GOOGLE_SITE_VERIFICATION_KEY: ${{ secrets.APP_GOOGLE_SITE_VERIFICATION_KEY }},
       APP_FEE_RECIPIENT: ${{ secrets.APP_FEE_RECIPIENT }}
       APP_BUGSNAG_KEY: ${{ secrets.APP_BUGSNAG_KEY }}
       APP_ALCHEMY_KEY: ${{ secrets.APP_ALCHEMY_KEY }}
