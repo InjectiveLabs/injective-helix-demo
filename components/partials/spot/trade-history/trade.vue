@@ -4,7 +4,8 @@
       <v-ui-format-order-price
         v-bind="{
           value: price,
-          type: trade.tradeDirection
+          type: trade.tradeDirection,
+          decimals: market.priceDecimals,
         }"
         class="block text-right"
       />

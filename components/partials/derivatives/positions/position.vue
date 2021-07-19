@@ -35,7 +35,7 @@
       <v-ui-format-price
         v-bind="{
           value: price.toBase(market.quoteToken.decimals),
-          ecimals: market.priceDecimals
+          decimals: market.priceDecimals
         }"
       />
     </td>

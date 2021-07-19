@@ -4,7 +4,8 @@
       <v-ui-format-order-price
         v-bind="{
           value: price,
-          type: order.orderSide
+          type: order.orderSide,
+          decimals: market.priceDecimals
         }"
         class="flex justify-end"
       />
