@@ -1,6 +1,10 @@
 import { AccountAddress } from '@injectivelabs/ts-types'
 import { Web3Exception } from '@injectivelabs/exceptions'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  DEFAULT_GAS_LIMIT
+} from '@injectivelabs/utils'
 import { BaseCurrencyContract } from '@injectivelabs/contracts/dist/contracts/BaseCurrency'
 import { contractAddresses } from '@injectivelabs/contracts'
 import { PeggyComposer } from '@injectivelabs/chain-consumer'
@@ -157,18 +161,24 @@ export const withdraw = async ({
   address,
   denom,
   amount,
+  feePrice,
   injectiveAddress,
   destinationAddress
 }: {
   amount: BigNumberInWei
   address: AccountAddress
   denom: string
+  feePrice: string
   destinationAddress: string
   injectiveAddress: AccountAddress
 }) => {
   const message = PeggyComposer.withdraw({
     denom,
     amount,
+    bridgeFeeAmount: new BigNumberInBase(feePrice)
+      .times(DEFAULT_GAS_LIMIT)
+      .toFixed(),
+    bridgeFeeDenom: denom,
     address: destinationAddress,
     cosmosAddress: injectiveAddress
   })

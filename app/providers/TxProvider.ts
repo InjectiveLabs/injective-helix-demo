@@ -16,6 +16,8 @@ export class TxProvider {
 
   private feePrice?: string
 
+  private feeDenom?: string
+
   private web3Strategy: Web3Strategy
 
   private chainId: ChainId
@@ -26,13 +28,15 @@ export class TxProvider {
     chainId,
     bucket,
     gasLimit,
-    feePrice
+    feePrice,
+    feeDenom
   }: {
     message: any
     address: AccountAddress
     chainId: ChainId
     bucket: string
     feePrice?: string
+    feeDenom?: string
     gasLimit?: number
   }) {
     this.message = message
@@ -41,11 +45,20 @@ export class TxProvider {
     this.bucket = bucket
     this.gasLimit = gasLimit
     this.feePrice = feePrice
+    this.feeDenom = feeDenom
     this.web3Strategy = getWeb3Strategy()
   }
 
   async prepare() {
-    const { chainId, gasLimit, feePrice, address, message, bucket } = this
+    const {
+      chainId,
+      gasLimit,
+      feeDenom,
+      feePrice,
+      address,
+      message,
+      bucket
+    } = this
 
     try {
       const promise = transactionConsumer.prepareExchangeTxRequest({
@@ -53,7 +66,8 @@ export class TxProvider {
         message,
         chainId,
         gasLimit,
-        feePrice
+        feePrice,
+        feeDenom
       })
 
       return await metricsProvider.sendAndRecord(promise, `${bucket}PrepareTx`)
