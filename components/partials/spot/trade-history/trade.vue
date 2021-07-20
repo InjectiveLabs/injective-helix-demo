@@ -5,7 +5,7 @@
         v-bind="{
           value: price,
           type: trade.tradeDirection,
-          decimals: market.priceDecimals,
+          decimals: market.priceDecimals
         }"
         class="block text-right"
       />
@@ -128,7 +128,7 @@ export default Vue.extend({
         return ''
       }
 
-      return format(trade.executedAt, 'dd MMM kk:mm:ss')
+      return format(trade.executedAt, 'dd MMM HH:mm:ss')
     },
 
     fee(): BigNumberInWei {

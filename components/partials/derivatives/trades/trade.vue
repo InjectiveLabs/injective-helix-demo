@@ -81,7 +81,7 @@ export default Vue.extend({
         return ''
       }
 
-      return format(trade.executedAt, 'kk:mm:ss')
+      return format(trade.executedAt, 'HH:mm:ss')
     },
 
     fee(): BigNumberInWei {
