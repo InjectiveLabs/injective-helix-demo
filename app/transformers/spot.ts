@@ -34,10 +34,10 @@ export const baseUiSpotMarketToBaseUiSpotMarketWithPartialTokenMetaData = (
 ): BaseUiSpotMarketWithPartialTokenMetaData => {
   const slug = market.ticker.replace('/', '-').replace(' ', '-').toLowerCase()
   const baseToken = market.baseToken
-    ? grpcTokenMetaToToken(market.baseToken)
+    ? grpcTokenMetaToToken(market.baseToken, market.baseDenom)
     : tokenMetaToToken(getTokenMetaData(market.baseDenom), market.baseDenom)
   const quoteToken = market.quoteToken
-    ? grpcTokenMetaToToken(market.quoteToken)
+    ? grpcTokenMetaToToken(market.quoteToken, market.quoteDenom)
     : tokenMetaToToken(getTokenMetaData(market.quoteDenom), market.quoteDenom)
 
   return {

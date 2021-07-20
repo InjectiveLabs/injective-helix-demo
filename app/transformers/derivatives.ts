@@ -34,7 +34,7 @@ export const baseUiDerivativeMarketToBaseUiDerivativeMarketWithPartialTokenMetaD
   const [baseTokenSymbol] = slug.split('-')
   const baseToken = tokenMetaToToken(getTokenMetaDataBySymbol(baseTokenSymbol))
   const quoteToken = market.quoteToken
-    ? grpcTokenMetaToToken(market.quoteToken)
+    ? grpcTokenMetaToToken(market.quoteToken, market.quoteDenom)
     : tokenMetaToToken(getTokenMetaData(market.quoteDenom), market.quoteDenom)
 
   return {
