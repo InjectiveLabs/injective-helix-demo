@@ -1,6 +1,7 @@
 export const excludedMessagesFromReporting = [
   'Metamask is not installed.',
   'MetaMask Tx Signature: User denied transaction signature.',
+  'MetaMask Message Signature: User denied message signature.',
   'Please update your Chrome Browser',
   'Your Metamask is currently locked. Please unlock your Metamask.',
   'You are connected to the wrong address. Please logout and connect to Metamask again',
