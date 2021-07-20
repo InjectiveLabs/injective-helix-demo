@@ -23,6 +23,7 @@
             type="number"
             step="0.0001"
             min="0"
+            @blur="onBlur"
           >
             <span slot="addon">{{
               market ? market.baseToken.symbol : ''
@@ -102,6 +103,18 @@ export default Vue.extend({
   },
 
   methods: {
+    onBlur() {
+      const { market, form } = this
+
+      if (!market) {
+        return
+      }
+
+      this.form.amount = new BigNumberInBase(form.amount || 0).toFixed(
+        UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+      )
+    },
+
     handleWithdrawClick() {
       const { form, market } = this
 

@@ -102,6 +102,18 @@ export default Vue.extend({
   },
 
   methods: {
+    onBlur() {
+      const { market, form } = this
+
+      if (!market) {
+        return
+      }
+
+      this.form.amount = new BigNumberInBase(form.amount || 0).toFixed(
+        UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+      )
+    },
+
     handleDepositClick() {
       const { form, market } = this
 

@@ -164,7 +164,9 @@ export const actions = actionTree(
         address,
         denom: token.denom,
         gasPrice: new BigNumberInBase(gasPrice).toWei(),
-        amount: amount.toWei(token.decimals)
+        amount: new BigNumberInBase(
+          amount.toFixed(3, BigNumberInBase.ROUND_DOWN)
+        ).toWei(token.decimals)
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())

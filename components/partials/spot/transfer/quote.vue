@@ -27,6 +27,7 @@
             type="number"
             step="0.0001"
             min="0"
+            @blur="onBlur"
           >
             <span slot="addon">{{
               market ? market.quoteToken.symbol : ''
@@ -113,11 +114,23 @@ export default Vue.extend({
 
       return token.balance
         .toBase(market.quoteToken.decimals)
-        .toFixed(market.priceDecimals)
+        .toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
     }
   },
 
   methods: {
+    onBlur() {
+      const { market, form } = this
+
+      if (!market) {
+        return
+      }
+
+      this.form.amount = new BigNumberInBase(form.amount || 0).toFixed(
+        market.priceDecimals
+      )
+    },
+
     handleTransferClick() {
       const { form, token } = this
 
