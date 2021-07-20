@@ -180,9 +180,11 @@ export const actions = actionTree(
       _,
       {
         amount,
+        balance,
         token
       }: {
         amount: BigNumberInBase
+        balance: BigNumberInWei
         token: Token
       }
     ) {
@@ -201,6 +203,7 @@ export const actions = actionTree(
       await withdraw({
         address,
         injectiveAddress,
+        maximumUsed: balance.toBase(token.decimals).eq(amount),
         denom: token.denom,
         feePrice: new BigNumberInBase(
           new BigNumberInWei(DEFAULT_BRIDGE_FEE_PRICE).toBase()

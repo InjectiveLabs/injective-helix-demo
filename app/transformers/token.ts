@@ -16,6 +16,7 @@ export const tokenMetaToToken = (
     symbol: tokenMeta.symbol,
     name: tokenMeta.name,
     icon: path.join(
+      '/',
       'vendor',
       '@injectivelabs',
       'token-metadata',

@@ -28,6 +28,9 @@
               market ? market.baseToken.symbol : ''
             }}</span>
           </v-input>
+          <v-ui-text xs muted class="flex items-center mt-1">
+            {{ $t('small_bridge_fee_note') }}
+          </v-ui-text>
           <div class="w-full mx-auto mt-4">
             <v-ui-button
               :status="status"
@@ -103,7 +106,7 @@ export default Vue.extend({
 
   methods: {
     handleWithdrawClick() {
-      const { form, market } = this
+      const { form, market, balance } = this
 
       if (!market) {
         return
@@ -113,6 +116,7 @@ export default Vue.extend({
 
       this.$accessor.token
         .withdraw({
+          balance,
           amount: new BigNumberInBase(form.amount),
           token: market.baseToken
         })
