@@ -16,7 +16,10 @@ import {
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { SubaccountStreamType } from '@injectivelabs/subaccount-consumer'
 import { metricsProvider } from '../providers/MetricsProvider'
-import { marketsSummaryToUiMarketsSummary } from '../transformers/spot'
+import {
+  baseUiSpotMarketToBaseUiSpotMarketWithPartialTokenMetaData,
+  marketsSummaryToUiMarketsSummary
+} from '../transformers/spot'
 import { streamProvider } from '../providers/StreamProvider'
 import { TxProvider } from '~/app/providers/TxProvider'
 import { spotMarketStream } from '~/app/singletons/SpotMarketStream'
@@ -27,7 +30,7 @@ import {
   ZERO_TO_STRING
 } from '~/app/utils/constants'
 import {
-  BaseUiSpotMarket,
+  BaseUiSpotMarketWithTokenMetaData,
   UiPriceLevel,
   UiSpotMarket,
   UiSpotMarketSummary
@@ -40,7 +43,6 @@ import {
 } from '~/app/transformers/spot'
 import { spotChronosConsumer } from '~/app/singletons/SpotMarketChronosConsumer'
 import { SpotMetrics } from '~/types/metrics'
-import { filteredMarketsBasedOnDenom } from '~/components/partials/spot/filter'
 
 export const fetchMarkets = async (): Promise<UiSpotMarket[]> => {
   const promise = spotConsumer.fetchMarkets()
@@ -49,14 +51,9 @@ export const fetchMarkets = async (): Promise<UiSpotMarket[]> => {
     SpotMetrics.FetchMarkets
   )
 
-  const transformedMarket = SpotTransformer.grpcMarketsToMarkets(await markets)
-  const quoteTokenMetaDataExist = (m: BaseUiSpotMarket) =>
-    m.quoteToken !== undefined
-  const filteredMarkets = transformedMarket
-    .filter(quoteTokenMetaDataExist)
-    .filter((m) => !filteredMarketsBasedOnDenom.includes(m.baseToken!.symbol))
-
-  return spotMarketsToUiSpotMarkets(filteredMarkets)
+  return spotMarketsToUiSpotMarkets(
+    SpotTransformer.grpcMarketsToMarkets(markets)
+  )
 }
 
 export const fetchMarketSummary = async (
@@ -103,7 +100,9 @@ export const fetchMarket = async (marketId: string) => {
     promise,
     SpotMetrics.FetchMarket
   )
-  const transformedMarket = SpotTransformer.grpcMarketToMarket(market)
+  const transformedMarket = baseUiSpotMarketToBaseUiSpotMarketWithPartialTokenMetaData(
+    SpotTransformer.grpcMarketToMarket(market)
+  ) as BaseUiSpotMarketWithTokenMetaData
 
   return spotMarketToUiSpotMarket(transformedMarket)
 }

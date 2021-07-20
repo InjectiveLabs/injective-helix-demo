@@ -35,15 +35,16 @@ import {
 import {
   UiPriceLevel,
   UiDerivativeMarket,
-  BaseUiDerivativeMarket,
-  UiDerivativeMarketSummary
+  UiDerivativeMarketSummary,
+  BaseUiDerivativeMarketWithTokenMetaData
 } from '~/types'
 import { derivativeConsumer } from '~/app/singletons/DerivativeMarketConsumer'
 import {
   orderTypeToGrpcOrderType,
   derivativeMarketToUiDerivativeMarket,
   derivativeMarketsToUiDerivativeMarkets,
-  marketsSummaryToUiMarketsSummary
+  marketsSummaryToUiMarketsSummary,
+  baseUiDerivativeMarketToBaseUiDerivativeMarketWithPartialTokenMetaData
 } from '~/app/transformers/derivatives'
 import { derivativeChronosConsumer } from '~/app/singletons/DerivativeMarketChronosConsumer'
 import { DerivativesMetrics } from '~/types/metrics'
@@ -55,12 +56,9 @@ export const fetchMarkets = async (): Promise<UiDerivativeMarket[]> => {
     DerivativesMetrics.FetchMarkets
   )
 
-  const transformedMarkets = DerivativeTransformer.grpcMarketsToMarkets(markets)
-  const quoteTokenMetaDataExist = (m: BaseUiDerivativeMarket) =>
-    m.quoteToken !== undefined
-  const filteredMarkets = transformedMarkets.filter(quoteTokenMetaDataExist)
-
-  return derivativeMarketsToUiDerivativeMarkets(filteredMarkets)
+  return derivativeMarketsToUiDerivativeMarkets(
+    DerivativeTransformer.grpcMarketsToMarkets(markets)
+  )
 }
 
 export const fetchMarketSummary = async (
@@ -109,7 +107,9 @@ export const fetchMarket = async (marketId: string) => {
     promise,
     DerivativesMetrics.FetchMarket
   )
-  const transformedMarket = DerivativeTransformer.grpcMarketToMarket(market)
+  const transformedMarket = baseUiDerivativeMarketToBaseUiDerivativeMarketWithPartialTokenMetaData(
+    DerivativeTransformer.grpcMarketToMarket(market)
+  ) as BaseUiDerivativeMarketWithTokenMetaData
 
   return derivativeMarketToUiDerivativeMarket(transformedMarket)
 }

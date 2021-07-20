@@ -1,6 +1,6 @@
-import { TokenMeta } from '@injectivelabs/spot-consumer'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import { peggyDenomToContractAddress } from './peggy'
+import { getTokenMetaData } from '../services/tokens'
+import { grpcTokenMetaToToken, tokenMetaToToken } from './token'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
 import { sortSpotMarkets } from '~/components/partials/spot/sort'
 import {
@@ -8,24 +8,19 @@ import {
   UiSpotMarket,
   SpotOrderSide,
   SpotMarketMap,
-  Token,
-  UiSpotMarketSummary
+  UiSpotMarketSummary,
+  BaseUiSpotMarketWithPartialTokenMetaData,
+  BaseUiSpotMarketWithTokenMetaData
 } from '~/types'
 
 export const spotMarketToUiSpotMarket = (
-  market: BaseUiSpotMarket
+  market: BaseUiSpotMarketWithTokenMetaData
 ): UiSpotMarket => {
-  const quoteToken = tokenMetaToToken(market.quoteToken!, market.quoteDenom)
-  const baseToken = tokenMetaToToken(market.baseToken!, market.baseDenom)
-
   return {
     ...market,
-    baseToken,
-    quoteToken,
-    slug: market.ticker.replace('/', '-').replace(' ', '-').toLowerCase(),
     priceDecimals: getDecimalsFromNumber(
       new BigNumberInBase(market.minPriceTickSize)
-        .toWei(baseToken.decimals - quoteToken.decimals)
+        .toWei(market.baseToken.decimals - market.quoteToken.decimals)
         .toNumber()
     ),
     quantityDecimals: getDecimalsFromNumber(
@@ -34,10 +29,37 @@ export const spotMarketToUiSpotMarket = (
   }
 }
 
+export const baseUiSpotMarketToBaseUiSpotMarketWithPartialTokenMetaData = (
+  market: BaseUiSpotMarket
+): BaseUiSpotMarketWithPartialTokenMetaData => {
+  const slug = market.ticker.replace('/', '-').replace(' ', '-').toLowerCase()
+  const baseToken = market.baseToken
+    ? grpcTokenMetaToToken(market.baseToken)
+    : tokenMetaToToken(getTokenMetaData(market.baseDenom), market.baseDenom)
+  const quoteToken = market.quoteToken
+    ? grpcTokenMetaToToken(market.quoteToken)
+    : tokenMetaToToken(getTokenMetaData(market.quoteDenom), market.quoteDenom)
+
+  return {
+    ...market,
+    slug,
+    baseToken,
+    quoteToken
+  }
+}
+
 export const spotMarketsToUiSpotMarkets = (
-  markets: BaseUiSpotMarket[] // Markets with base and quote token meta data
+  markets: BaseUiSpotMarket[]
 ): UiSpotMarket[] => {
-  const mappedMarkets = markets.map((m) => spotMarketToUiSpotMarket(m))
+  const tokenMetaDataExists = (m: BaseUiSpotMarketWithPartialTokenMetaData) =>
+    m.baseToken !== undefined && m.quoteToken !== undefined
+  const filteredMarkets = markets
+    .map((market) =>
+      baseUiSpotMarketToBaseUiSpotMarketWithPartialTokenMetaData(market)
+    )
+    .filter(tokenMetaDataExists) as BaseUiSpotMarketWithTokenMetaData[]
+
+  const mappedMarkets = filteredMarkets.map((m) => spotMarketToUiSpotMarket(m))
 
   mappedMarkets.sort(function (a, b) {
     return sortSpotMarkets.indexOf(a.slug) - sortSpotMarkets.indexOf(b.slug)
@@ -71,20 +93,6 @@ export const marketsSummaryToUiMarketsSummary = (
 
     return marketSummaryToUiMarketSummary(oldSummary, actualNewSummary)
   })
-}
-
-export const tokenMetaToToken = (
-  tokenMeta: TokenMeta,
-  denom: string
-): Token => {
-  return {
-    symbol: tokenMeta.symbol,
-    name: tokenMeta.name,
-    icon: tokenMeta.logo,
-    decimals: tokenMeta.decimals,
-    address: peggyDenomToContractAddress(denom),
-    denom
-  }
 }
 
 export const orderTypeToGrpcOrderType = (

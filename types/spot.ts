@@ -8,16 +8,25 @@ import {
   AllChronosSpotMarketSummary
 } from '@injectivelabs/spot-consumer'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
-
 import { Token } from './token'
 
-export interface UiSpotMarket
+export interface BaseUiSpotMarketWithPartialTokenMetaData
   extends Omit<BaseUiSpotMarket, 'quoteToken' | 'baseToken'> {
   slug: string
-  priceDecimals: number
-  quantityDecimals: number
+  quoteToken?: Token
+  baseToken?: Token
+}
+
+export interface BaseUiSpotMarketWithTokenMetaData
+  extends Omit<BaseUiSpotMarket, 'quoteToken' | 'baseToken'> {
+  slug: string
   quoteToken: Token
   baseToken: Token
+}
+
+export interface UiSpotMarket extends BaseUiSpotMarketWithTokenMetaData {
+  priceDecimals: number
+  quantityDecimals: number
 }
 
 export interface UiSpotMarketSummary extends ChronosSpotMarketSummary {

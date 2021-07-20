@@ -8,17 +8,27 @@ import {
   DerivativeOrderSide,
   AllChronosDerivativeMarketSummary
 } from '@injectivelabs/derivatives-consumer'
-import { TokenMeta } from '@injectivelabs/token-metadata'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 import { Token } from './token'
 
-export interface UiDerivativeMarket
+export interface BaseUiDerivativeMarketWithPartialTokenMetaData
   extends Omit<BaseUiDerivativeMarket, 'quoteToken'> {
   slug: string
+  quoteToken?: Token
+  baseToken?: Token
+}
+
+export interface BaseUiDerivativeMarketWithTokenMetaData
+  extends Omit<BaseUiDerivativeMarket, 'quoteToken'> {
+  slug: string
+  quoteToken: Token
+  baseToken: Token
+}
+
+export interface UiDerivativeMarket
+  extends BaseUiDerivativeMarketWithTokenMetaData {
   priceDecimals: number
   quantityDecimals: number
-  baseTokenMeta: TokenMeta
-  quoteToken: Token
 }
 
 export interface UiDerivativeMarketSummary

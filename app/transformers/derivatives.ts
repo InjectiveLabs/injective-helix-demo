@@ -1,7 +1,6 @@
-import { TokenMeta } from '@injectivelabs/derivatives-consumer'
 import { BigNumberInWei } from '@injectivelabs/utils'
-import { Erc20TokenMeta } from '@injectivelabs/token-metadata'
-import { peggyDenomToContractAddress } from './peggy'
+import { getTokenMetaData, getTokenMetaDataBySymbol } from '../services/tokens'
+import { grpcTokenMetaToToken, tokenMetaToToken } from './token'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
 import { sortPerpetualMarkets } from '~/components/partials/derivatives/sort'
 import {
@@ -9,36 +8,59 @@ import {
   UiDerivativeMarket,
   DerivativeOrderSide,
   DerivativeMarketMap,
-  Token,
-  UiDerivativeMarketSummary
+  UiDerivativeMarketSummary,
+  BaseUiDerivativeMarketWithTokenMetaData,
+  BaseUiDerivativeMarketWithPartialTokenMetaData
 } from '~/types'
 
 export const derivativeMarketToUiDerivativeMarket = (
-  market: BaseUiDerivativeMarket
+  market: BaseUiDerivativeMarketWithTokenMetaData
 ): UiDerivativeMarket => {
+  return {
+    ...market,
+    quantityDecimals: getDecimalsFromNumber(market.minQuantityTickSize),
+    priceDecimals: getDecimalsFromNumber(
+      new BigNumberInWei(market.minPriceTickSize)
+        .toBase(market.quoteToken.decimals)
+        .toNumber()
+    )
+  }
+}
+
+export const baseUiDerivativeMarketToBaseUiDerivativeMarketWithPartialTokenMetaData = (
+  market: BaseUiDerivativeMarket
+): BaseUiDerivativeMarketWithPartialTokenMetaData => {
   const slug = market.ticker.replace('/', '-').replace(' ', '-').toLowerCase()
   const [baseTokenSymbol] = slug.split('-')
-  const baseTokenMeta = Erc20TokenMeta.getMeta(baseTokenSymbol)
-  const quoteToken = tokenMetaToToken(market.quoteToken!, market.quoteDenom)
+  const baseToken = tokenMetaToToken(getTokenMetaDataBySymbol(baseTokenSymbol))
+  const quoteToken = market.quoteToken
+    ? grpcTokenMetaToToken(market.quoteToken)
+    : tokenMetaToToken(getTokenMetaData(market.quoteDenom), market.quoteDenom)
 
   return {
     ...market,
-    quoteToken,
-    baseTokenMeta,
-    priceDecimals: getDecimalsFromNumber(
-      new BigNumberInWei(market.minPriceTickSize)
-        .toBase(quoteToken.decimals)
-        .toNumber()
-    ),
-    quantityDecimals: getDecimalsFromNumber(market.minQuantityTickSize),
-    slug: market.ticker.replace('/', '-').replace(' ', '-').toLowerCase()
+    slug,
+    baseToken,
+    quoteToken
   }
 }
 
 export const derivativeMarketsToUiDerivativeMarkets = (
-  markets: BaseUiDerivativeMarket[] // Markets with quote token meta data
+  markets: BaseUiDerivativeMarket[]
 ): UiDerivativeMarket[] => {
-  const mappedMarkets = markets.map((m) =>
+  const tokenMetaDataExists = (
+    m: BaseUiDerivativeMarketWithPartialTokenMetaData
+  ) => m.baseToken !== undefined && m.quoteToken !== undefined
+
+  const filteredMarkets = markets
+    .map((market) =>
+      baseUiDerivativeMarketToBaseUiDerivativeMarketWithPartialTokenMetaData(
+        market
+      )
+    )
+    .filter(tokenMetaDataExists) as BaseUiDerivativeMarketWithTokenMetaData[]
+
+  const mappedMarkets = filteredMarkets.map((m) =>
     derivativeMarketToUiDerivativeMarket(m)
   )
 
@@ -77,20 +99,6 @@ export const marketsSummaryToUiMarketsSummary = (
 
     return marketSummaryToUiMarketSummary(oldSummary, actualNewSummary)
   })
-}
-
-export const tokenMetaToToken = (
-  tokenMeta: TokenMeta,
-  denom: string
-): Token => {
-  return {
-    symbol: tokenMeta.symbol,
-    name: tokenMeta.name,
-    icon: tokenMeta.logo,
-    decimals: tokenMeta.decimals,
-    address: peggyDenomToContractAddress(denom),
-    denom
-  }
 }
 
 export const orderTypeToGrpcOrderType = (
