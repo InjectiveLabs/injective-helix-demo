@@ -21,7 +21,8 @@ module.exports = [
     'portal-vue/nuxt',
     '@nuxtjs/toast',
     '@nuxtjs/google-gtag',
-    '@nuxtjs/sitemap'
+    '@nuxtjs/sitemap',
+    '@nuxtjs/vendor'
   ],
   ...(process.env.NODE_ENV === 'production' ? prodModules : [])
 ]

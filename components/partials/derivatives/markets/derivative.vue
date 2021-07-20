@@ -1,11 +1,18 @@
 <template>
   <tr @click.stop="onRowClick">
     <td is="v-ui-table-td">
-      <div class="leading-none">
-        <p class="text-gray-100 font-semibold text-sm">{{ market.ticker }}</p>
-        <p class="text-gray-500 text-xs">
-          {{ market.baseTokenMeta.name }}
-        </p>
+      <div class="flex items-center">
+        <img
+          :src="market.baseToken.icon"
+          :alt="market.baseToken.name"
+          class="w-6 h-6 mr-4"
+        />
+        <div class="leading-none">
+          <p class="text-gray-100 font-semibold text-sm">{{ market.ticker }}</p>
+          <p class="text-gray-500 text-xs">
+            {{ market.baseToken.name }}
+          </p>
+        </div>
       </div>
     </td>
     <td is="v-ui-table-td" right class="font-normal">

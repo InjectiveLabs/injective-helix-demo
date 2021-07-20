@@ -107,6 +107,13 @@ export default {
     routes
   },
 
+  vendor: [
+    {
+      src: '@injectivelabs/token-metadata/dist/images',
+      dst: './static/vendor/@injectivelabs/token-metadata'
+    }
+  ],
+
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
@@ -124,6 +131,7 @@ export default {
    */
   build: {
     ...build,
+
     /*
      ** You can extend webpack config here
      */
