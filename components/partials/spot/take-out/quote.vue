@@ -29,7 +29,12 @@
             }}</span>
           </v-input>
           <v-ui-text xs muted class="flex items-center mt-1">
-            {{ $t('small_bridge_fee_note') }}
+            {{
+              $t('small_bridge_fee_note', {
+                fee: bridgeFee.toFixed(),
+                asset: market ? market.quoteToken.symbol : ''
+              })
+            }}
           </v-ui-text>
           <div class="w-full mx-auto mt-4">
             <v-ui-button
@@ -52,9 +57,18 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
-import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  DEFAULT_BRIDGE_FEE_PRICE,
+  DEFAULT_GAS_LIMIT,
+  Status
+} from '@injectivelabs/utils'
 import { UiSpotMarket } from '~/types'
-import { UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import {
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+  ZERO_IN_BASE
+} from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -88,6 +102,32 @@ export default Vue.extend({
       return this.$refs.form as InstanceType<typeof ValidationObserver>
     },
 
+    feePrice(): BigNumberInBase {
+      const { market } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(
+        new BigNumberInBase(
+          new BigNumberInWei(DEFAULT_BRIDGE_FEE_PRICE).toBase()
+        ).toWei(market.quoteToken.decimals)
+      )
+    },
+
+    bridgeFee(): BigNumberInBase {
+      const { feePrice, market } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInWei(feePrice.times(DEFAULT_GAS_LIMIT)).toBase(
+        market.quoteToken.decimals
+      )
+    },
+
     balanceToString(): string {
       const { market, balance } = this
 
@@ -106,7 +146,7 @@ export default Vue.extend({
 
   methods: {
     handleWithdrawClick() {
-      const { form, market, balance } = this
+      const { form, market, bridgeFee } = this
 
       if (!market) {
         return
@@ -116,7 +156,7 @@ export default Vue.extend({
 
       this.$accessor.token
         .withdraw({
-          balance,
+          bridgeFee,
           amount: new BigNumberInBase(form.amount),
           token: market.quoteToken
         })

@@ -1,8 +1,4 @@
-import {
-  BigNumberInBase,
-  BigNumberInWei,
-  DEFAULT_BRIDGE_FEE_PRICE
-} from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
 import {
   withdraw,
@@ -180,11 +176,11 @@ export const actions = actionTree(
       _,
       {
         amount,
-        balance,
+        bridgeFee,
         token
       }: {
         amount: BigNumberInBase
-        balance: BigNumberInWei
+        bridgeFee: BigNumberInBase
         token: Token
       }
     ) {
@@ -203,14 +199,9 @@ export const actions = actionTree(
       await withdraw({
         address,
         injectiveAddress,
-        maximumUsed: balance.toBase(token.decimals).eq(amount),
         denom: token.denom,
-        feePrice: new BigNumberInBase(
-          new BigNumberInWei(DEFAULT_BRIDGE_FEE_PRICE).toBase()
-        )
-          .toWei(token.decimals)
-          .toFixed(),
         destinationAddress: address,
+        bridgeFee: bridgeFee.toWei(token.decimals),
         amount: amount.toWei(token.decimals)
       })
 
