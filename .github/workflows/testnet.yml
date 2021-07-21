@@ -9,7 +9,7 @@ jobs:
   deploy:
     env:
       ## Public
-      APP_NAME: "Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere."
+      APP_NAME: 'Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'
       APP_BASE_URL: https://testnet.injective.exchange
       APP_NETWORK: staking
       APP_ENV: testnet
@@ -71,7 +71,7 @@ jobs:
   deploy-stag:
     env:
       ## Public
-      APP_NAME: "Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere."
+      APP_NAME: 'Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'
       APP_BASE_URL: https://staging-testnet.injective.exchange
       APP_NETWORK: staking
       APP_ENV: staging
@@ -88,8 +88,6 @@ jobs:
       TRANSFER_RESTRICTIONS_ENABLED: false
 
       ## Secret
-      APP_GOOGLE_ANALYTICS_KEY:  ${{ secrets.APP_GOOGLE_ANALYTICS_KEY }}
-      APP_GOOGLE_SITE_VERIFICATION_KEY:  ${{ secrets.APP_GOOGLE_SITE_VERIFICATION_KEY }},
       APP_GOOGLE_ANALYTICS_KEY: ${{ secrets.APP_GOOGLE_ANALYTICS_KEY }}
       APP_GOOGLE_SITE_VERIFICATION_KEY: ${{ secrets.APP_GOOGLE_SITE_VERIFICATION_KEY }},
       APP_FEE_RECIPIENT: ${{ secrets.APP_FEE_RECIPIENT }}
