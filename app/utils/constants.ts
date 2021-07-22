@@ -54,6 +54,7 @@ export const DEFAULT_MAX_SLIPPAGE = new BigNumber(1) // +1% slippage
 
 export const MAXIMUM_TRANSFER_ALLOWED = 50
 export const INJECTIVE_DENOM = 'inj'
+export const INJ_FEE_BUFFER = 0.005
 
 // eslint-disable-next-line prefer-regex-literals
 export const NUMBER_REGEX = new RegExp(/^-?(0|[1-9]\d*)?(\.\d+)?$/)

@@ -51,7 +51,11 @@ import Vue, { PropType } from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
 import { UiSpotMarket } from '~/types'
-import { UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import {
+  INJECTIVE_DENOM,
+  INJ_FEE_BUFFER,
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+} from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -94,6 +98,11 @@ export default Vue.extend({
 
       return balance
         .toBase(market.baseToken.decimals)
+        .minus(
+          balance.gt(INJ_FEE_BUFFER) && market.baseDenom === INJECTIVE_DENOM
+            ? INJ_FEE_BUFFER
+            : 0
+        )
         .toFixed(
           UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
           BigNumberInBase.ROUND_FLOOR
