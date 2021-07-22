@@ -23,7 +23,7 @@
           </ul>
         </div>
         <v-ui-button
-          v-if="component === components.openOrders"
+          v-if="component === components.openOrders && orders.length > 0"
           xs
           primary
           class="mr-4"
