@@ -11,7 +11,7 @@ export interface UiOrderbookPriceLevel {
   quantity: string
   timestamp: number
   oldQuantity?: string
-  sumOfQuantities: string
+  total: string
   depth: number
 }
 

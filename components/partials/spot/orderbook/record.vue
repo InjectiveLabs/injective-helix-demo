@@ -44,7 +44,7 @@
     <span class="w-1/3 text-xs px-2 z-10" @click.stop="onSumQuantityClick">
       <v-ui-format-amount
         v-bind="{
-          value: sumOfQuantities,
+          value: total,
           decimals: market.quantityDecimals
         }"
         class="text-right block text-white"
@@ -148,14 +148,16 @@ export default Vue.extend({
       )
     },
 
-    sumOfQuantities(): BigNumberInBase {
+    total(): BigNumberInBase {
       const { market, record } = this
 
       if (!market) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(record.sumOfQuantities || 0)
+      return new BigNumberInWei(record.total || 0).toBase(
+        market.quoteToken.decimals
+      )
     },
 
     quantity(): BigNumberInWei {
@@ -241,13 +243,13 @@ export default Vue.extend({
     },
 
     onSumQuantityClick() {
-      const { sumOfQuantities, market } = this
+      const { total, market } = this
 
       if (!market) {
         return
       }
 
-      this.$root.$emit('orderbook-size-click', sumOfQuantities)
+      this.$root.$emit('orderbook-total-click', total)
     }
   }
 })

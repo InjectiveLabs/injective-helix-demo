@@ -185,7 +185,7 @@ export default Vue.extend({
       }, [] as string[])
     },
 
-    buysTotal(): BigNumberInBase {
+    buysTotalNotional(): BigNumberInBase {
       const { buys } = this
 
       return buys.reduce((total, buy) => {
@@ -193,7 +193,7 @@ export default Vue.extend({
       }, ZERO_IN_BASE)
     },
 
-    sellsTotal(): BigNumberInBase {
+    sellsTotalNotional(): BigNumberInBase {
       const { sells } = this
 
       return sells.reduce((total, sell) => {
@@ -202,7 +202,7 @@ export default Vue.extend({
     },
 
     buysWithDepth(): UiOrderbookPriceLevel[] {
-      const { buys, buysTotal, market } = this
+      const { buys, buysTotalNotional, market } = this
 
       if (!market) {
         return []
@@ -210,20 +210,22 @@ export default Vue.extend({
 
       let accumulator = ZERO_IN_BASE
       return buys.map((record: UiPriceLevel, index: number) => {
-        const quantity = new BigNumberInBase(record.quantity)
+        const notional = new BigNumberInBase(record.quantity).times(
+          record.price
+        )
 
-        accumulator = index === 0 ? quantity : accumulator.plus(quantity)
+        accumulator = index === 0 ? notional : accumulator.plus(notional)
 
         return {
           ...record,
-          sumOfQuantities: accumulator.toFixed(),
-          depth: accumulator.dividedBy(buysTotal).times(100).toNumber()
+          total: accumulator.toFixed(),
+          depth: accumulator.dividedBy(buysTotalNotional).times(100).toNumber()
         }
       })
     },
 
     sellsWithDepth(): UiOrderbookPriceLevel[] {
-      const { sells, sellsTotal, market } = this
+      const { sells, sellsTotalNotional, market } = this
 
       if (!market) {
         return []
@@ -232,14 +234,19 @@ export default Vue.extend({
       let accumulator = ZERO_IN_BASE
       return sells
         .map((record: UiPriceLevel, index: number) => {
-          const quantity = new BigNumberInBase(record.quantity)
+          const notional = new BigNumberInBase(record.quantity).times(
+            record.price
+          )
 
-          accumulator = index === 0 ? quantity : accumulator.plus(quantity)
+          accumulator = index === 0 ? notional : accumulator.plus(notional)
 
           return {
             ...record,
-            sumOfQuantities: accumulator.toFixed(),
-            depth: accumulator.dividedBy(sellsTotal).times(100).toNumber()
+            total: accumulator.toFixed(),
+            depth: accumulator
+              .dividedBy(sellsTotalNotional)
+              .times(100)
+              .toNumber()
           }
         })
         .reverse()
