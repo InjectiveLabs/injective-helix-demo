@@ -559,12 +559,14 @@ export const batchCancelOrders = async ({
     const txProvider = new TxProvider({
       address,
       message,
-      gasLimit: new BigNumberInBase(DEFAULT_EXCHANGE_LIMIT)
-        .dividedBy(
-          3 /* Assuming we can only process 3 order cancellations with the current gas limit */
-        )
-        .times(orders.length)
-        .toNumber(),
+      gasLimit: new BigNumberInBase(
+        new BigNumberInBase(DEFAULT_EXCHANGE_LIMIT)
+          .dividedBy(
+            3 /* Assuming we can only process 3 order cancellations with the current gas limit */
+          )
+          .times(orders.length)
+          .toFixed(0)
+      ).toNumber(),
       bucket: DerivativesMetrics.BatchCancelLimitOrders,
       chainId: CHAIN_ID
     })
