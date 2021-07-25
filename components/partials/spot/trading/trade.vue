@@ -484,7 +484,9 @@ export default Vue.extend({
 
       const orders = orderTypeBuy ? sells : buys
       const totalAmount = orders.reduce((totalAmount, { quantity }) => {
-        return totalAmount.plus(new BigNumberInWei(quantity).toBase())
+        return totalAmount.plus(
+          new BigNumberInWei(quantity).toBase(market.baseToken.decimals)
+        )
       }, ZERO_IN_BASE)
 
       if (totalAmount.lt(amount)) {
@@ -718,7 +720,9 @@ export default Vue.extend({
 
       if (!orderTypeBuy) {
         const totalFillableAmount = buys.reduce((totalAmount, { quantity }) => {
-          return totalAmount.plus(new BigNumberInWei(quantity).toBase())
+          return totalAmount.plus(
+            new BigNumberInWei(quantity).toBase(market.baseToken.decimals)
+          )
         }, ZERO_IN_BASE)
 
         const totalBalance = new BigNumberInBase(balance).times(

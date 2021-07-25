@@ -31,7 +31,7 @@
     <span class="w-1/3 text-xs px-2 z-10" @click.stop="onQuantityClick">
       <v-ui-format-amount
         v-bind="{
-          value: quantity.toBase(quantityScaleDecimals),
+          value: quantity.toBase(market.baseToken.decimals),
           decimals: market.quantityDecimals
         }"
         class="text-right block"
@@ -108,30 +108,6 @@ export default Vue.extend({
       const { type } = this
 
       return type === SpotOrderSide.Buy
-    },
-
-    priceScaleDecimals(): number {
-      const { recordTypeBuy, market } = this
-
-      if (!market) {
-        return 0
-      }
-
-      return recordTypeBuy
-        ? market.quoteToken.decimals
-        : market.baseToken.decimals
-    },
-
-    quantityScaleDecimals(): number {
-      const { recordTypeBuy, market } = this
-
-      if (!market) {
-        return 0
-      }
-
-      return recordTypeBuy
-        ? market.baseToken.decimals
-        : market.baseToken.decimals
     },
 
     price(): BigNumberInBase {
