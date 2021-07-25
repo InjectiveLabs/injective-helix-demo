@@ -52,9 +52,7 @@
           @input="onAmountChange"
           @input-max="() => onMaxInput(100)"
         >
-          <span slot="addon">{{
-            market.baseToken.symbol.toUpperCase()
-          }}</span>
+          <span slot="addon">{{ market.baseToken.symbol.toUpperCase() }}</span>
           <div slot="context" class="text-xs text-gray-400 flex items-center">
             <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(25)"
               >25%</span
@@ -394,9 +392,13 @@ export default Vue.extend({
     },
 
     hasPrice(): boolean {
-      const { executionPrice } = this
+      const { executionPrice, priceStep } = this
 
-      return !executionPrice.isNaN() && executionPrice.gt(0)
+      return (
+        !executionPrice.isNaN() &&
+        executionPrice.gt(0) &&
+        executionPrice.gte(priceStep)
+      )
     },
 
     tradingTypeMarket(): boolean {
@@ -445,7 +447,7 @@ export default Vue.extend({
       }
 
       if (decimalsAllowed.gt(1)) {
-        return '0.' + '0'.repeat(decimalsAllowed.toNumber() - 2) + '1'
+        return '0.' + '0'.repeat(decimalsAllowed.toNumber() - 1) + '1'
       }
 
       return '1'
@@ -469,7 +471,7 @@ export default Vue.extend({
       }
 
       if (decimalsAllowed.gt(1)) {
-        return '0.' + '0'.repeat(decimalsAllowed.toNumber() - 2) + '1'
+        return '0.' + '0'.repeat(decimalsAllowed.toNumber() - 1) + '1'
       }
 
       return '1'
