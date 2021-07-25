@@ -61,11 +61,8 @@ export class StreamProvider {
       ...args,
       onEndCallback: (_status?: StreamStatusResponse): any => {
         this.reconnect(key)
-        // console.log({ key, status, type: 'end' })
       },
-      onStatusCallback: (_status: StreamStatusResponse): any => {
-        // console.log({ key, status })
-      }
+      onStatusCallback: (_status: StreamStatusResponse): any => {}
     }
     const stream = fn(argsWithCallbacks)
 
