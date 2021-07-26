@@ -9,11 +9,7 @@ import {
   DerivativeTransformer
 } from '@injectivelabs/derivatives-consumer'
 import { AccountAddress, TradeExecutionSide } from '@injectivelabs/ts-types'
-import {
-  BigNumberInBase,
-  BigNumberInWei,
-  DEFAULT_EXCHANGE_LIMIT
-} from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { SubaccountStreamType } from '@injectivelabs/subaccount-consumer'
 import {
@@ -559,14 +555,6 @@ export const batchCancelOrders = async ({
     const txProvider = new TxProvider({
       address,
       message,
-      gasLimit: new BigNumberInBase(
-        new BigNumberInBase(DEFAULT_EXCHANGE_LIMIT)
-          .dividedBy(
-            3 /* Assuming we can only process 3 order cancellations with the current gas limit */
-          )
-          .times(orders.length)
-          .toFixed(0)
-      ).toNumber(),
       bucket: DerivativesMetrics.BatchCancelLimitOrders,
       chainId: CHAIN_ID
     })
