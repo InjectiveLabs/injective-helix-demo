@@ -1,4 +1,4 @@
-import { BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { getTokenMetaData, getTokenMetaDataBySymbol } from '../services/tokens'
 import { grpcTokenMetaToToken, tokenMetaToToken } from './token'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
@@ -20,8 +20,8 @@ export const derivativeMarketToUiDerivativeMarket = (
     ...market,
     quantityDecimals: getDecimalsFromNumber(market.minQuantityTickSize),
     priceDecimals: getDecimalsFromNumber(
-      new BigNumberInWei(market.minPriceTickSize)
-        .toBase(market.quoteToken.decimals)
+      new BigNumberInBase(market.minPriceTickSize)
+        .toWei(-market.quoteToken.decimals)
         .toNumber()
     )
   }
