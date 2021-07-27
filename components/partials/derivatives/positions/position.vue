@@ -56,6 +56,7 @@
         <span class="mr-1">≈</span>
         <div class="flex items-center">
           <span class="mr-1 flex items-center">
+            <span>{{ notionalPnl.gte(0) ? '+' : '-' }}</span>
             <v-ui-format-price
               v-bind="{
                 value: notionalPnl,
