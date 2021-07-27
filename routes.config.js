@@ -18,9 +18,7 @@ const spot = [
   'uni-usdc'
 ]
 
-const derivatives = [
-  //
-]
+const derivatives = ['inj-usdt-perp']
 
 module.exports = [
   ...spot.map((s) => `/spot/${s}`),

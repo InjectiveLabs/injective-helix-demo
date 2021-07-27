@@ -6,7 +6,7 @@ const pwa = require('./pwa.config')
 
 export default {
   ssr: false,
-  target: 'server',
+  target: 'static',
 
   /*
    ** Headers of the page
