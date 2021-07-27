@@ -41,7 +41,6 @@ export const NETWORK: Network = process.env.APP_NETWORK || Network.Staking
 const networkIsTestnet = [
   Network.Staking,
   Network.Devnet,
-  Network.Internal,
   Network.Local
 ].includes(NETWORK)
 export const CHAIN_ID: ChainId = process.env.APP_CHAIN_ID
