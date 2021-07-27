@@ -34,7 +34,7 @@
     <td is="v-ui-table-td" xs right>
       <v-ui-format-price
         v-bind="{
-          value: price.toBase(market.quoteToken.decimals),
+          value: price,
           decimals: market.priceDecimals
         }"
       />
@@ -42,7 +42,7 @@
     <td is="v-ui-table-td" xs right>
       <v-ui-format-price
         v-bind="{
-          value: liquidationPrice.toBase(market.quoteToken.decimals),
+          value: liquidationPrice,
           decimals: market.priceDecimals
         }"
       />
@@ -58,7 +58,7 @@
           <span class="mr-1 flex items-center">
             <v-ui-format-price
               v-bind="{
-                value: notionalPnl.toBase(market.quoteToken.decimals),
+                value: notionalPnl,
                 class: pnlClass,
                 decimals: market.priceDecimals
               }"
@@ -81,7 +81,7 @@
     <td is="v-ui-table-td" xs right>
       <v-ui-format-price
         v-bind="{
-          value: notionalValue.toBase(market.quoteToken.decimals),
+          value: notionalValue,
           decimals: market.priceDecimals
         }"
         class="text-right block text-white"
@@ -92,7 +92,7 @@
         <v-ui-text>
           <v-ui-format-price
             v-bind="{
-              value: margin.toBase(market.quoteToken.decimals),
+              value: margin,
               decimals: market.priceDecimals
             }"
           />
@@ -166,28 +166,32 @@ export default Vue.extend({
       return this.$accessor.derivatives.market
     },
 
-    price(): BigNumberInWei {
-      const { market, position } = this
-
-      if (!market) {
-        return ZERO_IN_WEI
-      }
-
-      return new BigNumberInWei(position.entryPrice)
-    },
-
-    margin(): BigNumberInWei {
-      const { market, position } = this
-
-      if (!market) {
-        return ZERO_IN_WEI
-      }
-
-      return new BigNumberInWei(position.margin)
-    },
-
     orderbook(): UiDerivativeOrderbook | undefined {
       return this.$accessor.derivatives.orderbook
+    },
+
+    price(): BigNumberInBase {
+      const { market, position } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInWei(position.entryPrice).toBase(
+        market.quoteToken.decimals
+      )
+    },
+
+    margin(): BigNumberInBase {
+      const { market, position } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInWei(position.margin).toBase(
+        market.quoteToken.decimals
+      )
     },
 
     buys(): UiPriceLevel[] {
@@ -220,28 +224,72 @@ export default Vue.extend({
       return new BigNumberInBase(position.quantity)
     },
 
-    markPrice(): BigNumberInWei {
+    markPrice(): BigNumberInBase {
       const { market, position } = this
 
       if (!market) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(position.markPrice)
+      return new BigNumberInWei(position.markPrice).toBase(
+        market.quoteToken.decimals
+      )
     },
 
-    notionalValue(): BigNumberInWei {
+    notionalValue(): BigNumberInBase {
       const { market, quantity, markPrice } = this
 
       if (!market) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
       return markPrice.times(quantity)
     },
 
+    liquidationPrice(): BigNumberInBase {
+      const { position, market } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInWei(position.liquidationPrice).toBase(
+        market.quoteToken.decimals
+      )
+    },
+
+    executionPrice(): BigNumberInBase {
+      const { sells, buys, market, position } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      const records = position.direction === TradeDirection.Long ? buys : sells
+
+      return calculateWorstExecutionPriceFromOrderbook({
+        records,
+        market,
+        amount: new BigNumberInBase(position.quantity)
+      })
+    },
+
+    bankruptcyPrice(): BigNumberInBase {
+      const { market, price, margin, position } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return price.plus(
+        new BigNumberInBase(margin)
+          .dividedBy(position.quantity)
+          .times(position.direction === TradeDirection.Long ? 1 : -1)
+      )
+    },
+
     pnl(): BigNumberInBase {
-      const { market, sells, margin, position, buys } = this
+      const { market, sells, margin, position, price, buys } = this
 
       if (!market) {
         return ZERO_IN_BASE
@@ -251,22 +299,18 @@ export default Vue.extend({
       const [buy] = buys
       const highestBuy = new BigNumberInBase(buy ? buy.price : 0)
       const lowestSell = new BigNumberInBase(sell ? sell.price : 0)
-      const executionPrice = new BigNumberInBase(
+      const executionPrice = new BigNumberInWei(
         highestBuy.plus(lowestSell).div(2)
-      )
+      ).toBase(market.quoteToken.decimals)
 
       if (executionPrice.isZero()) {
         return new BigNumberInBase('')
       }
 
       return new BigNumberInBase(position.quantity)
-        .times(
-          new BigNumberInWei(executionPrice.minus(position.entryPrice)).toBase(
-            market.quoteToken.decimals
-          )
-        )
+        .times(executionPrice.minus(price))
         .times(position.direction === TradeDirection.Long ? 1 : -1)
-        .dividedBy(margin.toBase(market.quoteToken.decimals))
+        .dividedBy(margin)
         .times(100)
     },
 
@@ -303,46 +347,6 @@ export default Vue.extend({
 
       return new BigNumberInBase(
         notionalValue.dividedBy(margin.plus(notionalPnl))
-      )
-    },
-
-    liquidationPrice(): BigNumberInWei {
-      const { position, market } = this
-
-      if (!market) {
-        return ZERO_IN_WEI
-      }
-
-      return new BigNumberInWei(position.liquidationPrice)
-    },
-
-    executionPrice(): BigNumberInBase {
-      const { sells, buys, market, position } = this
-
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      const records = position.direction === TradeDirection.Long ? buys : sells
-
-      return calculateWorstExecutionPriceFromOrderbook({
-        records,
-        market,
-        amount: new BigNumberInBase(position.quantity)
-      })
-    },
-
-    bankruptcyPrice(): BigNumberInBase {
-      const { market, position } = this
-
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      return new BigNumberInBase(position.entryPrice).plus(
-        new BigNumberInBase(position.margin)
-          .dividedBy(position.quantity)
-          .times(position.direction === TradeDirection.Long ? 1 : -1)
       )
     },
 
@@ -393,11 +397,11 @@ export default Vue.extend({
         : new BigNumberInBase(1).plus(market.takerFeeRate)
       const condition = bankruptcyPrice.dividedBy(divisor)
 
-      if (isPositionLong && executionPrice.lt(condition)) {
+      if (isPositionLong && executionPrice.gt(condition)) {
         return this.$t('execution_price_surpasses_bankruptcy_price')
       }
 
-      if (!isPositionLong && executionPrice.gt(condition)) {
+      if (!isPositionLong && executionPrice.lt(condition)) {
         return this.$t('execution_price_surpasses_bankruptcy_price')
       }
 
