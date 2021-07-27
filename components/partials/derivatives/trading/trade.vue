@@ -181,7 +181,8 @@ import {
   UiSubaccount,
   UiPosition,
   TradeDirection,
-  UiDerivativeMarketSummary
+  UiDerivativeMarketSummary,
+  UiDerivativeLimitOrder
 } from '~/types'
 import {
   calculateWorstExecutionPriceFromOrderbook,
@@ -252,6 +253,10 @@ export default Vue.extend({
 
     subaccount(): UiSubaccount | undefined {
       return this.$accessor.account.subaccount
+    },
+
+    orders(): UiDerivativeLimitOrder[] {
+      return this.$accessor.derivatives.subaccountOrders
     },
 
     position(): UiPosition | undefined {
@@ -418,14 +423,20 @@ export default Vue.extend({
     },
 
     maxReduceOnly(): BigNumberInBase {
-      const { market, position, orderTypeReduceOnly } = this
+      const { market, position, orders, orderTypeReduceOnly } = this
 
       if (!orderTypeReduceOnly || !position || !market) {
         return ZERO_IN_BASE
       }
 
+      const reduceOnlyOrders = orders.filter((o) => o.isReduceOnly)
+      const aggregateReduceOnlyQuantity = reduceOnlyOrders.reduce(
+        (total, order) => total.plus(order.quantity),
+        ZERO_IN_BASE
+      )
+
       return new BigNumberInBase(position.quantity).minus(
-        position.aggregateReduceOnlyQuantity || 0 /* TODO */
+        aggregateReduceOnlyQuantity
       )
     },
 
