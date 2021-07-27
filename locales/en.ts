@@ -45,6 +45,7 @@ export default {
   amount: 'Amount',
   total: 'Total',
   type: 'Type',
+  side: 'Side',
   buy: 'Buy',
   sell: 'Sell',
   order_success_canceling: 'Order canceled',
