@@ -684,6 +684,7 @@ export default Vue.extend({
   mounted() {
     this.$root.$on('orderbook-price-click', this.onOrderbookPriceClick)
     this.$root.$on('orderbook-size-click', this.onOrderbookSizeClick)
+    this.$root.$on('orderbook-notional-click', this.onOrderbookNotionalClick)
   },
 
   methods: {
@@ -775,6 +776,28 @@ export default Vue.extend({
 
     onOrderbookSizeClick(size: string) {
       this.onAmountChange(size)
+    },
+
+    onOrderbookNotionalClick({
+      total,
+      price,
+      type
+    }: {
+      total: BigNumberInBase
+      price: BigNumberInBase
+      type: SpotOrderSide
+    }) {
+      const { market, slippage, tradingTypeMarket, orderType } = this
+
+      if (!market || !tradingTypeMarket || orderType === type) {
+        return
+      }
+
+      this.onAmountChange(
+        total
+          .dividedBy(price.times(slippage).toFixed(market.priceDecimals))
+          .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
+      )
     },
 
     onOrderbookPriceClick(price: string) {

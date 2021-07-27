@@ -41,7 +41,7 @@
         }"
       />
     </span>
-    <span class="w-1/3 text-xs px-2 z-10" @click.stop="onSumQuantityClick">
+    <span class="w-1/3 text-xs px-2 z-10" @click.stop="onTotalNotionalClick">
       <v-ui-format-amount
         v-bind="{
           value: total,
@@ -218,14 +218,14 @@ export default Vue.extend({
       )
     },
 
-    onSumQuantityClick() {
-      const { total, market } = this
+    onTotalNotionalClick() {
+      const { total, price, type, market } = this
 
       if (!market) {
         return
       }
 
-      this.$root.$emit('orderbook-total-click', total)
+      this.$root.$emit('orderbook-notional-click', { total, type, price })
     }
   }
 })

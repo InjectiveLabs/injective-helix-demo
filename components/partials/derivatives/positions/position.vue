@@ -241,7 +241,7 @@ export default Vue.extend({
     },
 
     pnl(): BigNumberInBase {
-      const { market, sells, position, buys } = this
+      const { market, sells, margin, position, buys } = this
 
       if (!market) {
         return ZERO_IN_BASE
@@ -255,6 +255,10 @@ export default Vue.extend({
         highestBuy.plus(lowestSell).div(2)
       )
 
+      if (executionPrice.isZero()) {
+        return new BigNumberInBase('')
+      }
+
       return new BigNumberInBase(position.quantity)
         .times(
           new BigNumberInWei(executionPrice.minus(position.entryPrice)).toBase(
@@ -262,6 +266,8 @@ export default Vue.extend({
           )
         )
         .times(position.direction === TradeDirection.Long ? 1 : -1)
+        .dividedBy(margin.toBase(market.quoteToken.decimals))
+        .times(100)
     },
 
     notionalPnl(): BigNumberInWei {
@@ -271,11 +277,19 @@ export default Vue.extend({
         return ZERO_IN_WEI
       }
 
+      if (pnl.isNaN()) {
+        return ZERO_IN_WEI
+      }
+
       return new BigNumberInWei(pnl.dividedBy(100).times(margin))
     },
 
     pnlClass(): string {
       const { pnl } = this
+
+      if (pnl.isNaN()) {
+        return ''
+      }
 
       return pnl.gte(0) ? 'text-primary-500' : 'text-accent-500'
     },
