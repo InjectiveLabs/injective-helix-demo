@@ -21,7 +21,7 @@
               <span>{{ $t('fee') }}</span>
             </th>
             <th is="v-ui-table-th" center>
-              <span>{{ $t('direction') }}</span>
+              <span>{{ $t('side') }}</span>
             </th>
             <th is="v-ui-table-th" center>
               <span>{{ $t('execution_type') }}</span>

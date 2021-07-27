@@ -19,7 +19,7 @@
             <span>{{ $t('leverage') }}</span>
           </th>
           <th is="v-ui-table-th" center>
-            <span>{{ $t('type') }}</span>
+            <span>{{ $t('side') }}</span>
           </th>
           <th is="v-ui-table-th" center>
             <span>{{ $t('filled') }}</span>

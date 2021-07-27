@@ -7,7 +7,7 @@
             <tr>
               <th is="v-ui-table-th" center>&nbsp;</th>
               <th is="v-ui-table-th" center>
-                <span>{{ $t('type') }}</span>
+                <span>{{ $t('side') }}</span>
               </th>
               <th is="v-ui-table-th" right>
                 <span>{{ $t('size') }}</span>
