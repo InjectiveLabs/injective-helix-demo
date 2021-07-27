@@ -58,7 +58,7 @@
           <span class="mr-1 flex items-center">
             <v-ui-format-price
               v-bind="{
-                value: notionalPnl,
+                value: notionalPnl.toBase(market.quoteToken.decimals),
                 class: pnlClass,
                 decimals: market.priceDecimals
               }"
@@ -264,18 +264,14 @@ export default Vue.extend({
         .times(position.direction === TradeDirection.Long ? 1 : -1)
     },
 
-    notionalPnl(): BigNumberInBase {
-      const { pnl, market, position } = this
+    notionalPnl(): BigNumberInWei {
+      const { pnl, market, margin } = this
 
       if (!market) {
-        return ZERO_IN_BASE
+        return ZERO_IN_WEI
       }
 
-      return new BigNumberInBase(
-        new BigNumberInWei(pnl.dividedBy(100).times(position.margin)).toBase(
-          market.quoteToken.decimals
-        )
-      )
+      return new BigNumberInWei(pnl.dividedBy(100).times(margin))
     },
 
     pnlClass(): string {
@@ -285,13 +281,11 @@ export default Vue.extend({
     },
 
     effectiveLeverage(): BigNumberInBase {
-      const { notionalValue, margin, market, pnl } = this
+      const { notionalPnl, notionalValue, margin, market, pnl } = this
 
-      if (margin.lte(0) || notionalValue.lte(0) || !market || pnl.isNaN()) {
+      if (!market || margin.lte(0) || notionalValue.lte(0) || pnl.isNaN()) {
         return ZERO_IN_BASE
       }
-
-      const notionalPnl = new BigNumberInWei(pnl.dividedBy(100).times(margin))
 
       return new BigNumberInBase(
         notionalValue.dividedBy(margin.plus(notionalPnl))
