@@ -292,41 +292,104 @@ export default Vue.extend({
       })
     },
 
-    /*
-    positionCloseError(): string | undefined {
-      const { liquidationPrice, pnl, position } = this
-      const { direction } = position
+    bankruptcyPrice(): BigNumberInBase {
+      const { market, position } = this
 
-      if (!position.market) {
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(position.entryPrice).plus(
+        new BigNumberInBase(position.margin)
+          .dividedBy(position.quantity)
+          .times(position.direction === TradeDirection.Long ? 1 : -1)
+      )
+    },
+
+    notEnoughtLiqudityError(): string | undefined {
+      const { pnl, market } = this
+
+      if (!market) {
         return
       }
 
-      if (!pnl) {
-        return this.$t('orders.no_liquidity')
+      if (!pnl.isNaN()) {
+        return
       }
 
-      if (pnl.isNaN()) {
-        return this.$t('orders.no_liquidity')
+      return this.$t('no_liquidity')
+    },
+
+    autoLiquidationOnCloseError(): string | undefined {
+      const { liquidationPrice, executionPrice, market, position } = this
+
+      if (!market) {
+        return
       }
 
-      const isPositionLong = direction === DerivativeOrderSide.Long
+      const isPositionLong = position.direction === TradeDirection.Long
 
-      if (
-        isPositionLong &&
-        position.averageWeightedPrice.lte(liquidationPrice)
-      ) {
-        return this.$t('orders.close_auto_liquidation')
+      if (isPositionLong && executionPrice.lte(liquidationPrice)) {
+        return this.$t('close_auto_liquidation')
       }
 
-      if (
-        !isPositionLong &&
-        position.averageWeightedPrice.gte(liquidationPrice)
-      ) {
-        return this.$t('orders.close_auto_liquidation')
+      if (!isPositionLong && executionPrice.gte(liquidationPrice)) {
+        return this.$t('close_auto_liquidation')
       }
 
       return undefined
-    }, */
+    },
+
+    executionPriceSurpassesBankruptcyPrice(): string | undefined {
+      const { executionPrice, market, position, bankruptcyPrice } = this
+
+      if (!market) {
+        return
+      }
+
+      const isPositionLong = position.direction === TradeDirection.Long
+      const divisor = isPositionLong
+        ? new BigNumberInBase(1).minus(market.takerFeeRate)
+        : new BigNumberInBase(1).plus(market.takerFeeRate)
+      const condition = bankruptcyPrice.dividedBy(divisor)
+
+      if (isPositionLong && executionPrice.lt(condition)) {
+        return this.$t('execution_price_surpasses_bankruptcy_price')
+      }
+
+      if (!isPositionLong && executionPrice.gt(condition)) {
+        return this.$t('execution_price_surpasses_bankruptcy_price')
+      }
+
+      return undefined
+    },
+
+    positionCloseError(): string | undefined {
+      const {
+        executionPriceSurpassesBankruptcyPrice,
+        notEnoughtLiqudityError,
+        autoLiquidationOnCloseError,
+        market
+      } = this
+
+      if (!market) {
+        return
+      }
+
+      if (notEnoughtLiqudityError) {
+        return notEnoughtLiqudityError
+      }
+
+      if (autoLiquidationOnCloseError) {
+        return autoLiquidationOnCloseError
+      }
+
+      if (executionPriceSurpassesBankruptcyPrice) {
+        return executionPriceSurpassesBankruptcyPrice
+      }
+
+      return undefined
+    },
 
     directionLocalized(): string {
       const { position } = this
@@ -343,10 +406,14 @@ export default Vue.extend({
     },
 
     onClosePositionClick() {
-      const { position, executionPrice, market } = this
+      const { position, positionCloseError, executionPrice, market } = this
 
       if (!market) {
         return
+      }
+
+      if (positionCloseError) {
+        return this.$toast.error(positionCloseError)
       }
 
       this.status.setLoading()

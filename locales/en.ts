@@ -180,5 +180,10 @@ export default {
   add_margin_to_position_note:
     'You can increase the margin your position has to prevent liquidation',
   add_margin: 'Add Margin',
-  success_added_margin: 'You have successfully added margin to your position'
+  success_added_margin: 'You have successfully added margin to your position',
+  no_liquidity: 'Not enough Liquidity',
+  close_auto_liquidation:
+    'Closing this position with current market depth would result in auto-liquidation.',
+  execution_price_surpasses_bankruptcy_price:
+    'Execution price surpasses bankruptcy price'
 }
