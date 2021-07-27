@@ -175,5 +175,10 @@ export default {
   mark_price_invalid: 'The mark price is not valid',
   order_insufficient_margin: 'Order has insufficient margin',
   date: 'Date',
-  small_bridge_fee_note: 'Bridge fee: {fee}{asset}'
+  small_bridge_fee_note: 'Bridge fee: {fee}{asset}',
+  add_margin_to_position_title: 'Add Margin',
+  add_margin_to_position_note:
+    'You can increase the margin your position has to prevent liquidation',
+  add_margin: 'Add Margin',
+  success_added_margin: 'You have successfully added margin to your position'
 }

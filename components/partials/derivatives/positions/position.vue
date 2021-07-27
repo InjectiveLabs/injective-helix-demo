@@ -75,14 +75,30 @@
       />
     </td>
     <td is="v-ui-table-td" xs right>
-      <v-ui-text>
-        <v-ui-format-price
-          v-bind="{
-            value: margin.toBase(market.quoteToken.decimals),
-            decimals: market.priceDecimals
-          }"
-        />
-      </v-ui-text>
+      <div class="flex items-center">
+        <v-ui-text>
+          <v-ui-format-price
+            v-bind="{
+              value: margin.toBase(market.quoteToken.decimals),
+              decimals: market.priceDecimals
+            }"
+          />
+        </v-ui-text>
+        <button
+          role="button"
+          type="button"
+          class="
+            border border-primary-500
+            text-primary-500
+            hover:text-primary-300
+            ml-2
+            px-1
+          "
+          @click.stop.prevent="onAddMarginButtonClick"
+        >
+          &plus;
+        </button>
+      </div>
     </td>
     <td is="v-ui-table-td" xs right>
       <span v-if="effectiveLeverage.gt(0)" class="whitespace-pre">
@@ -322,6 +338,10 @@ export default Vue.extend({
   },
 
   methods: {
+    onAddMarginButtonClick() {
+      this.$root.$emit('add-margin-to-position', this.position)
+    },
+
     onClosePositionClick() {
       const { position, executionPrice, market } = this
 

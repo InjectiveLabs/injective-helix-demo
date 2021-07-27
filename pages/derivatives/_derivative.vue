@@ -35,6 +35,7 @@
       <modal-deposit />
       <modal-withdraw />
       <modal-take-out />
+      <modal-add-margin />
     </div>
   </HOCLoading>
 </template>
@@ -49,6 +50,7 @@ import MarqueePanel from '~/components/partials/derivatives/market/marquee.vue'
 import ModalTransfer from '~/components/partials/derivatives/transfer.vue'
 import ModalDeposit from '~/components/partials/derivatives/deposit.vue'
 import ModalTakeOut from '~/components/partials/derivatives/take-out.vue'
+import ModalAddMargin from '~/components/partials/derivatives/positions/add-margin/index.vue'
 import ModalWithdraw from '~/components/partials/derivatives/withdraw.vue'
 import TradingPanel from '~/components/partials/derivatives/trading/index.vue'
 import BalancePanel from '~/components/partials/derivatives/balance.vue'
@@ -66,6 +68,7 @@ const GRID_ROW_HEIGHT = 54
 export default Vue.extend({
   components: {
     HOCLoading,
+    ModalAddMargin,
     BalancePanel,
     TradesPanel,
     ModalTakeOut,

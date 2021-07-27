@@ -497,6 +497,43 @@ export const closePosition = async ({
   }
 }
 
+export const addMarginToPosition = async ({
+  amount,
+  address,
+  market,
+  injectiveAddress,
+  srcSubaccountId,
+  dstSubaccountId
+}: {
+  amount: BigNumberInWei
+  srcSubaccountId: string
+  dstSubaccountId: string
+  market: UiDerivativeMarket
+  address: AccountAddress
+  injectiveAddress: AccountAddress
+}) => {
+  const message = DerivativeMarketComposer.addMarginToPosition({
+    srcSubaccountId,
+    dstSubaccountId,
+    injectiveAddress,
+    amount: amount.toFixed(),
+    marketId: market.marketId
+  })
+
+  try {
+    const txProvider = new TxProvider({
+      address,
+      message,
+      bucket: DerivativesMetrics.CreateMarketOrder,
+      chainId: CHAIN_ID
+    })
+
+    await txProvider.broadcast()
+  } catch (error) {
+    throw new Web3Exception(error.message)
+  }
+}
+
 export const cancelOrder = async ({
   orderHash,
   address,

@@ -32,7 +32,7 @@
     "@injectivelabs/alchemy-api": "^0.0.4",
     "@injectivelabs/chain-consumer": "^0.0.63",
     "@injectivelabs/contracts": "^0.0.59",
-    "@injectivelabs/derivatives-consumer": "^0.0.41",
+    "@injectivelabs/derivatives-consumer": "^0.0.43",
     "@injectivelabs/exceptions": "^0.0.29",
     "@injectivelabs/exchange-consumer": "^0.0.72",
     "@injectivelabs/networks": "^0.0.35",

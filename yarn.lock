@@ -1934,10 +1934,10 @@
     web3-core-subscriptions "^1.3.4"
     web3-utils "^1.3.4"
 
-"@injectivelabs/derivatives-consumer@^0.0.41":
-  version "0.0.41"
-  resolved "https://registry.npmjs.org/@injectivelabs/derivatives-consumer/-/derivatives-consumer-0.0.41.tgz#daad0a525e3115d0dc09f74c4e9e51756037bf17"
-  integrity sha512-ZyZfYCDcmkT5tZ6u3m/Vr2lZu9SMZLX7wyratu9p9ti0UbK8yZPIC2ifRgRsXQLLpJhoNUV8bRAqYhgstn36Ug==
+"@injectivelabs/derivatives-consumer@^0.0.43":
+  version "0.0.43"
+  resolved "https://registry.npmjs.org/@injectivelabs/derivatives-consumer/-/derivatives-consumer-0.0.43.tgz#f55a51e56f994ccc4a5c90a244151265d28b94e9"
+  integrity sha512-02Qe7SaQkQfi4eXWjm1H135ZpQ67EqVt+7biOa3Jh15wft7vPwZIF0OC5/aALyXzruSbL0ACVmOUnqAOH80d+Q==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.14.0"
