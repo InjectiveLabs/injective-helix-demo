@@ -56,10 +56,10 @@
         <span class="mr-1">≈</span>
         <div class="flex items-center">
           <span class="mr-1 flex items-center">
-            <span>{{ notionalPnl.gte(0) ? '+' : '-' }}</span>
+            <span>{{ pnl.gte(0) ? '+' : '-' }}</span>
             <v-ui-format-price
               v-bind="{
-                value: notionalPnl,
+                value: pnl,
                 class: pnlClass,
                 decimals: market.priceDecimals
               }"
@@ -71,7 +71,7 @@
               v-bind="{
                 appendPlusSign: true,
                 precision: 2,
-                value: pnl.toString()
+                value: percentagePnl.toString()
               }"
             />)</span
           >
@@ -290,7 +290,7 @@ export default Vue.extend({
     },
 
     pnl(): BigNumberInBase {
-      const { market, sells, margin, position, price, buys } = this
+      const { market, sells, position, price, buys } = this
 
       if (!market) {
         return ZERO_IN_BASE
@@ -311,11 +311,9 @@ export default Vue.extend({
       return new BigNumberInBase(position.quantity)
         .times(executionPrice.minus(price))
         .times(position.direction === TradeDirection.Long ? 1 : -1)
-        .dividedBy(margin)
-        .times(100)
     },
 
-    notionalPnl(): BigNumberInWei {
+    percentagePnl(): BigNumberInWei {
       const { pnl, market, margin } = this
 
       if (!market) {
@@ -326,7 +324,7 @@ export default Vue.extend({
         return ZERO_IN_WEI
       }
 
-      return new BigNumberInWei(pnl.dividedBy(100).times(margin))
+      return new BigNumberInWei(pnl.dividedBy(margin).times(100))
     },
 
     pnlClass(): string {
@@ -340,15 +338,13 @@ export default Vue.extend({
     },
 
     effectiveLeverage(): BigNumberInBase {
-      const { notionalPnl, notionalValue, margin, market, pnl } = this
+      const { pnl, notionalValue, margin, market } = this
 
       if (!market || margin.lte(0) || notionalValue.lte(0) || pnl.isNaN()) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(
-        notionalValue.dividedBy(margin.plus(notionalPnl))
-      )
+      return new BigNumberInBase(notionalValue.dividedBy(margin.plus(pnl)))
     },
 
     notEnoughtLiqudityError(): string | undefined {
@@ -358,11 +354,11 @@ export default Vue.extend({
         return
       }
 
-      if (!pnl.isNaN()) {
-        return
+      if (pnl.isNaN()) {
+        return this.$t('no_liquidity')
       }
 
-      return this.$t('no_liquidity')
+      return undefined
     },
 
     autoLiquidationOnCloseError(): string | undefined {
