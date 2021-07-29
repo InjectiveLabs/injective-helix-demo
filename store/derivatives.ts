@@ -480,15 +480,9 @@ export const actions = actionTree(
         marketId: market.marketId,
         subaccountId: subaccount.subaccountId,
         callback: ({ position }) => {
-          if (!position) {
-            return
-          }
+          const quantity = new BigNumberInBase(position ? position.quantity : 0)
 
-          console.log(position)
-
-          const quantity = new BigNumberInBase(position.quantity)
-
-          if (quantity.lte(0)) {
+          if (!position || quantity.lte(0)) {
             commit('deleteSubaccountPosition')
           } else {
             commit('setSubaccountPosition', position)
