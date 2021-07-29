@@ -134,7 +134,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Status, BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
+import { ZERO_IN_BASE } from '~/app/utils/constants'
 import {
   UiDerivativeMarket,
   UiPosition,
@@ -313,18 +313,18 @@ export default Vue.extend({
         .times(position.direction === TradeDirection.Long ? 1 : -1)
     },
 
-    percentagePnl(): BigNumberInWei {
+    percentagePnl(): BigNumberInBase {
       const { pnl, market, margin } = this
 
       if (!market) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
       if (pnl.isNaN()) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(pnl.dividedBy(margin).times(100))
+      return new BigNumberInBase(pnl.dividedBy(margin).times(100))
     },
 
     pnlClass(): string {

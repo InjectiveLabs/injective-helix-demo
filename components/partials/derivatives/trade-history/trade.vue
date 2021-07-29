@@ -3,7 +3,7 @@
     <td is="v-ui-table-td" xs class="h-8">
       <v-ui-format-order-price
         v-bind="{
-          value: price.toBase(market.quoteToken.decimals),
+          value: price,
           type: trade.tradeDirection,
           decimals: market.priceDecimals
         }"
@@ -22,7 +22,7 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: total.toBase(market.quoteToken.decimals),
+          value: total,
           decimals: market.priceDecimals
         }"
         class="block text-right"
@@ -31,7 +31,7 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: fee.toBase(market.quoteToken.decimals),
+          value: fee,
           decimals: market.priceDecimals
         }"
         class="text-right block text-white"
@@ -63,7 +63,7 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { format } from 'date-fns'
-import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
+import { ZERO_IN_BASE } from '~/app/utils/constants'
 import {
   UiDerivativeMarket,
   TradeDirection,
@@ -91,14 +91,16 @@ export default Vue.extend({
       return this.$accessor.derivatives.market
     },
 
-    price(): BigNumberInWei {
+    price(): BigNumberInBase {
       const { market, trade } = this
 
       if (!market || !trade.executionPrice) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(trade.executionPrice)
+      return new BigNumberInWei(trade.executionPrice).toBase(
+        market.quoteToken.decimals
+      )
     },
 
     quantity(): BigNumberInBase {
@@ -111,7 +113,7 @@ export default Vue.extend({
       return new BigNumberInBase(trade.executionQuantity)
     },
 
-    total(): BigNumberInWei {
+    total(): BigNumberInBase {
       const { quantity, price } = this
 
       return price.times(quantity)
@@ -127,14 +129,14 @@ export default Vue.extend({
       return format(trade.executedAt, 'dd MMM HH:mm:ss')
     },
 
-    fee(): BigNumberInWei {
+    fee(): BigNumberInBase {
       const { market, trade } = this
 
       if (!market || !trade.fee) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(trade.fee)
+      return new BigNumberInWei(trade.fee).toBase(market.quoteToken.decimals)
     },
 
     tradeDirection(): string {

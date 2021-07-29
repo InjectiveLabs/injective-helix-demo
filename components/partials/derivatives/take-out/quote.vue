@@ -80,7 +80,7 @@ export default Vue.extend({
   props: {
     balance: {
       required: true,
-      type: Object as PropType<BigNumberInWei>
+      type: Object as PropType<BigNumberInBase>
     }
   },
 
@@ -130,18 +130,12 @@ export default Vue.extend({
     },
 
     balanceToString(): string {
-      const { market, balance } = this
+      const { balance } = this
 
-      if (!market) {
-        return ''
-      }
-
-      return balance
-        .toBase(market.quoteToken.decimals)
-        .toFixed(
-          UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-          BigNumberInBase.ROUND_FLOOR
-        )
+      return balance.toFixed(
+        UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+        BigNumberInBase.ROUND_FLOOR
+      )
     }
   },
 

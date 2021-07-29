@@ -185,20 +185,32 @@ export default Vue.extend({
       }, [] as string[])
     },
 
-    buysTotalNotional(): BigNumberInWei {
-      const { buys } = this
+    buysTotalNotional(): BigNumberInBase {
+      const { buys, market } = this
 
-      return buys.reduce((total, buy) => {
-        return total.plus(new BigNumberInBase(buy.quantity).times(buy.price))
-      }, ZERO_IN_WEI)
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return buys
+        .reduce((total, buy) => {
+          return total.plus(new BigNumberInWei(buy.quantity).times(buy.price))
+        }, ZERO_IN_WEI)
+        .toBase(market.quoteToken.decimals)
     },
 
-    sellsTotalNotional(): BigNumberInWei {
-      const { sells } = this
+    sellsTotalNotional(): BigNumberInBase {
+      const { market, sells } = this
 
-      return sells.reduce((total, sell) => {
-        return total.plus(new BigNumberInBase(sell.quantity).times(sell.price))
-      }, ZERO_IN_WEI)
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return sells
+        .reduce((total, sell) => {
+          return total.plus(new BigNumberInWei(sell.quantity).times(sell.price))
+        }, ZERO_IN_WEI)
+        .toBase(market.quoteToken.decimals)
     },
 
     buysWithDepth(): UiOrderbookPriceLevel[] {

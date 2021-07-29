@@ -13,7 +13,7 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: quantity.toBase(market.baseToken.decimals),
+          value: quantity,
           decimals: market.quantityDecimals
         }"
         class="block"
@@ -22,7 +22,7 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: unfilledQuantity.toBase(market.baseToken.decimals),
+          value: unfilledQuantity,
           decimals: market.quantityDecimals
         }"
         class="block"
@@ -31,7 +31,7 @@
     <td is="v-ui-table-td" xs class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: total.toBase(market.baseToken.decimals),
+          value: total,
           decimals: market.priceDecimals
         }"
         class="text-right block text-white"
@@ -86,7 +86,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
-import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
+import { ZERO_IN_BASE } from '~/app/utils/constants'
 import { UiSpotMarket, SpotOrderSide, Icon, UiSpotLimitOrder } from '~/types'
 
 export default Vue.extend({
@@ -124,27 +124,31 @@ export default Vue.extend({
       )
     },
 
-    quantity(): BigNumberInWei {
+    quantity(): BigNumberInBase {
       const { market, order } = this
 
       if (!market) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(order.quantity)
+      return new BigNumberInWei(order.quantity).toBase(
+        market.baseToken.decimals
+      )
     },
 
-    unfilledQuantity(): BigNumberInWei {
+    unfilledQuantity(): BigNumberInBase {
       const { market, order } = this
 
       if (!market) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(order.unfilledQuantity)
+      return new BigNumberInWei(order.unfilledQuantity).toBase(
+        market.baseToken.decimals
+      )
     },
 
-    filledQuantity(): BigNumberInWei {
+    filledQuantity(): BigNumberInBase {
       const { unfilledQuantity, quantity } = this
 
       return quantity.minus(unfilledQuantity)
@@ -176,7 +180,7 @@ export default Vue.extend({
       return unfilledQuantity.lte(quantity)
     },
 
-    total(): BigNumberInWei {
+    total(): BigNumberInBase {
       const { price, quantity } = this
 
       return quantity.multipliedBy(price)

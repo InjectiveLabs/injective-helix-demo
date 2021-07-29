@@ -23,12 +23,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import VQuote from './deposit/quote.vue'
 import ModalElement from '~/components/elements/modal.vue'
 import { Modal } from '~/types/enums'
 import { BankBalances, UiDerivativeMarket } from '~/types'
-import { ZERO_IN_WEI } from '~/app/utils/constants'
+import { ZERO_IN_BASE } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -45,18 +45,20 @@ export default Vue.extend({
       return this.$accessor.bank.balances
     },
 
-    quoteTokenBalance(): BigNumberInWei {
+    quoteTokenBalance(): BigNumberInBase {
       const { balances, market } = this
 
       if (!market) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
       if (!balances[market.quoteDenom]) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(balances[market.quoteDenom] || 0)
+      return new BigNumberInWei(balances[market.quoteDenom] || 0).toBase(
+        market.quoteToken.decimals
+      )
     },
 
     isModalOpen(): boolean {

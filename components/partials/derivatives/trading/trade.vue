@@ -1016,8 +1016,8 @@ export default Vue.extend({
       price,
       type
     }: {
-      total: BigNumberInWei
-      price: BigNumberInWei
+      total: BigNumberInBase
+      price: BigNumberInBase
       type: DerivativeOrderSide
     }) {
       const { market, slippage, tradingTypeMarket, orderType } = this
@@ -1028,13 +1028,7 @@ export default Vue.extend({
 
       this.onAmountChange(
         total
-          .toBase(market.quoteToken.decimals)
-          .dividedBy(
-            price
-              .toBase(market.quoteToken.decimals)
-              .times(slippage)
-              .toFixed(market.priceDecimals)
-          )
+          .dividedBy(price.times(slippage).toFixed(market.priceDecimals))
           .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
       )
     },

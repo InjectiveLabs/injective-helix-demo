@@ -14,7 +14,7 @@
     <span class="w-1/3 text-xs px-2">
       <v-ui-format-amount
         v-bind="{
-          value: quantity.toBase(market.baseToken.decimals),
+          value: quantity,
           decimals: market.quantityDecimals
         }"
         class="block text-right"
@@ -33,7 +33,7 @@ import Vue, { PropType } from 'vue'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import { UiSpotMarket, UiSpotTrade } from '~/types'
-import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
+import { ZERO_IN_BASE } from '~/app/utils/constants'
 
 export default Vue.extend({
   props: {
@@ -62,17 +62,19 @@ export default Vue.extend({
       )
     },
 
-    quantity(): BigNumberInWei {
+    quantity(): BigNumberInBase {
       const { market, trade } = this
 
       if (!market || !trade.quantity) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(trade.quantity)
+      return new BigNumberInWei(trade.quantity).toBase(
+        market.baseToken.decimals
+      )
     },
 
-    total(): BigNumberInWei {
+    total(): BigNumberInBase {
       const { quantity, price } = this
 
       return quantity.times(price)
@@ -88,14 +90,14 @@ export default Vue.extend({
       return format(trade.executedAt, 'HH:mm:ss')
     },
 
-    fee(): BigNumberInWei {
+    fee(): BigNumberInBase {
       const { market, trade } = this
 
       if (!market || !trade.fee) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(trade.fee)
+      return new BigNumberInWei(trade.fee).toBase(market.quoteToken.decimals)
     },
 
     newTradeClass(): string {

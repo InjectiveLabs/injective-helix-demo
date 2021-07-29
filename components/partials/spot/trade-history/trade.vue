@@ -13,7 +13,7 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: quantity.toBase(market.baseToken.decimals),
+          value: quantity,
           decimals: market.quantityDecimals
         }"
         class="block text-right"
@@ -22,7 +22,7 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: total.toBase(market.baseToken.decimals),
+          value: total,
           decimals: market.priceDecimals
         }"
         class="block text-right"
@@ -31,7 +31,7 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: fee.toBase(market.quoteToken.decimals),
+          value: fee,
           decimals: market.priceDecimals
         }"
         class="text-right block text-white"
@@ -63,7 +63,7 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { format } from 'date-fns'
-import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
+import { ZERO_IN_BASE } from '~/app/utils/constants'
 import {
   UiSpotMarket,
   TradeDirection,
@@ -105,17 +105,19 @@ export default Vue.extend({
       )
     },
 
-    quantity(): BigNumberInWei {
+    quantity(): BigNumberInBase {
       const { market, trade } = this
 
       if (!market || !trade.quantity) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(trade.quantity)
+      return new BigNumberInWei(trade.quantity).toBase(
+        market.baseToken.decimals
+      )
     },
 
-    total(): BigNumberInWei {
+    total(): BigNumberInBase {
       const { quantity, price } = this
 
       return quantity.times(price)
@@ -131,14 +133,14 @@ export default Vue.extend({
       return format(trade.executedAt, 'dd MMM HH:mm:ss')
     },
 
-    fee(): BigNumberInWei {
+    fee(): BigNumberInBase {
       const { market, trade } = this
 
       if (!market || !trade.fee) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(trade.fee)
+      return new BigNumberInWei(trade.fee).toBase(market.quoteToken.decimals)
     },
 
     tradeDirection(): string {

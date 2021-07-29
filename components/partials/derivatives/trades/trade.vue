@@ -4,7 +4,7 @@
     <span class="w-1/3 text-xs px-2 cursor-pointer">
       <v-ui-format-order-price
         v-bind="{
-          value: price.toBase(market.quoteToken.decimals),
+          value: price,
           decimals: market.priceDecimals,
           type: trade.tradeDirection
         }"
@@ -33,7 +33,7 @@ import Vue, { PropType } from 'vue'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import { UiDerivativeMarket, UiDerivativeTrade } from '~/types'
-import { ZERO_IN_BASE, ZERO_IN_WEI } from '~/app/utils/constants'
+import { ZERO_IN_BASE } from '~/app/utils/constants'
 
 export default Vue.extend({
   props: {
@@ -48,14 +48,16 @@ export default Vue.extend({
       return this.$accessor.derivatives.market
     },
 
-    price(): BigNumberInWei {
+    price(): BigNumberInBase {
       const { market, trade } = this
 
       if (!market || !trade.executionPrice) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(trade.executionPrice)
+      return new BigNumberInWei(trade.executionPrice).toBase(
+        market.quoteToken.decimals
+      )
     },
 
     quantity(): BigNumberInBase {
@@ -68,7 +70,7 @@ export default Vue.extend({
       return new BigNumberInBase(trade.executionQuantity)
     },
 
-    total(): BigNumberInWei {
+    total(): BigNumberInBase {
       const { quantity, price } = this
 
       return price.times(quantity)
@@ -82,16 +84,6 @@ export default Vue.extend({
       }
 
       return format(trade.executedAt, 'HH:mm:ss')
-    },
-
-    fee(): BigNumberInWei {
-      const { market, trade } = this
-
-      if (!market || !trade.fee) {
-        return ZERO_IN_WEI
-      }
-
-      return new BigNumberInWei(trade.fee)
     },
 
     newTradeClass(): string {

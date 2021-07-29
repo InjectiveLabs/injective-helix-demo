@@ -1,6 +1,6 @@
 <script lang="ts">
 import Vue, { VNode, PropType } from 'vue'
-import { BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { formatPrice } from '~/app/utils/formatters'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
@@ -20,7 +20,7 @@ export default Vue.extend({
 
     value: {
       required: true,
-      type: Object as PropType<BigNumberInWei>
+      type: Object as PropType<BigNumberInBase>
     },
 
     decimals: {

@@ -12,7 +12,7 @@
         <v-ui-format-amount
           class="font-normal text-sm"
           v-bind="{
-            value: baseTokenBalance.toBase(market.baseToken.decimals)
+            value: baseTokenBalance
           }"
         />
       </v-ui-text-info>
@@ -23,7 +23,7 @@
         <v-ui-format-amount
           class="font-normal text-sm"
           v-bind="{
-            value: quoteTokenBalance.toBase(market.quoteToken.decimals)
+            value: quoteTokenBalance
           }"
         />
       </v-ui-text-info>
@@ -43,9 +43,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { BankBalances, Modal, UiSpotMarket } from '~/types'
-import { ZERO_IN_WEI } from '~/app/utils/constants'
+import { ZERO_IN_BASE } from '~/app/utils/constants'
 
 export default Vue.extend({
   computed: {
@@ -61,32 +61,36 @@ export default Vue.extend({
       return this.$accessor.bank.balances
     },
 
-    baseTokenBalance(): BigNumberInWei {
+    baseTokenBalance(): BigNumberInBase {
       const { balances, market } = this
 
       if (!market) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
       if (!balances[market.baseDenom]) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(balances[market.baseDenom] || 0)
+      return new BigNumberInWei(balances[market.baseDenom] || 0).toBase(
+        market.baseToken.decimals
+      )
     },
 
-    quoteTokenBalance(): BigNumberInWei {
+    quoteTokenBalance(): BigNumberInBase {
       const { balances, market } = this
 
       if (!market) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
       if (!balances[market.quoteDenom]) {
-        return ZERO_IN_WEI
+        return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(balances[market.quoteDenom] || 0)
+      return new BigNumberInWei(balances[market.quoteDenom] || 0).toBase(
+        market.quoteToken.decimals
+      )
     }
   },
 
