@@ -31,8 +31,7 @@
     <td is="v-ui-table-td" xs right class="h-8">
       <v-ui-format-amount
         v-bind="{
-          value: fee,
-          decimals: market.priceDecimals
+          value: fee
         }"
         class="text-right block text-white"
       />

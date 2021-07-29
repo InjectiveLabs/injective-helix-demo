@@ -128,13 +128,13 @@ export default Vue.extend({
     },
 
     isReduceOnly(): boolean {
-      const { order } = this
+      const { margin, order } = this
 
       if (order.isReduceOnly) {
         return true
       }
 
-      return new BigNumberInBase(order.margin).isZero()
+      return margin.isZero()
     },
 
     price(): BigNumberInBase {
@@ -145,6 +145,16 @@ export default Vue.extend({
       }
 
       return new BigNumberInWei(order.price).toBase(market.quoteToken.decimals)
+    },
+
+    margin(): BigNumberInBase {
+      const { market, order } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInWei(order.margin).toBase(market.quoteToken.decimals)
     },
 
     quantity(): BigNumberInBase {
@@ -174,13 +184,13 @@ export default Vue.extend({
     },
 
     leverage(): BigNumberInBase {
-      const { quantity, isReduceOnly, price, order } = this
+      const { quantity, isReduceOnly, margin, price } = this
 
       if (isReduceOnly) {
         return new BigNumberInBase('')
       }
 
-      return new BigNumberInBase(price.times(quantity).dividedBy(order.margin))
+      return new BigNumberInBase(price.times(quantity).dividedBy(margin))
     },
 
     filledQuantityPercentage(): BigNumberInBase {

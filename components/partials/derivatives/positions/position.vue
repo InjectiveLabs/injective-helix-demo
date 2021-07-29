@@ -134,7 +134,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Status, BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '~/app/utils/constants'
+import { DEFAULT_MAX_SLIPPAGE, ZERO_IN_BASE } from '~/app/utils/constants'
 import {
   UiDerivativeMarket,
   UiPosition,
@@ -268,8 +268,18 @@ export default Vue.extend({
         : new BigNumberInBase(0.01)
     },
 
+    slippage(): BigNumberInBase {
+      const { position } = this
+
+      return new BigNumberInBase(
+        position.direction === TradeDirection.Long
+          ? DEFAULT_MAX_SLIPPAGE.div(100).minus(1).times(-1)
+          : DEFAULT_MAX_SLIPPAGE.div(100).plus(1)
+      )
+    },
+
     executionPrice(): BigNumberInBase {
-      const { sells, buys, market, position } = this
+      const { sells, slippage, buys, market, position } = this
 
       if (!market) {
         return ZERO_IN_BASE
@@ -277,11 +287,15 @@ export default Vue.extend({
 
       const records = position.direction === TradeDirection.Long ? buys : sells
 
-      return calculateWorstExecutionPriceFromOrderbook({
+      const worstPrice = calculateWorstExecutionPriceFromOrderbook({
         records,
         market,
         amount: new BigNumberInBase(position.quantity)
       })
+
+      return new BigNumberInBase(
+        worstPrice.times(slippage).toFixed(market.priceDecimals)
+      )
     },
 
     totalReduceOnlyQuantity(): BigNumberInBase {
