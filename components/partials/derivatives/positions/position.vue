@@ -142,7 +142,8 @@ import {
   DerivativeOrderSide,
   UiDerivativeOrderbook,
   UiPriceLevel,
-  Icon
+  Icon,
+  UiDerivativeLimitOrder
 } from '~/types'
 import { calculateWorstExecutionPriceFromOrderbook } from '~/app/services/derivatives'
 
@@ -169,6 +170,10 @@ export default Vue.extend({
 
     orderbook(): UiDerivativeOrderbook | undefined {
       return this.$accessor.derivatives.orderbook
+    },
+
+    orders(): UiDerivativeLimitOrder[] {
+      return this.$accessor.derivatives.subaccountOrders
     },
 
     price(): BigNumberInBase {
@@ -279,6 +284,21 @@ export default Vue.extend({
       })
     },
 
+    totalReduceOnlyQuantity(): BigNumberInBase {
+      const { market, position, orders } = this
+
+      if (!position || !market) {
+        return ZERO_IN_BASE
+      }
+
+      const reduceOnlyOrders = orders.filter((o) => o.isReduceOnly)
+
+      return reduceOnlyOrders.reduce(
+        (total, order) => total.plus(order.quantity),
+        ZERO_IN_BASE
+      )
+    },
+
     bankruptcyPrice(): BigNumberInBase {
       const { market, price, margin, position } = this
 
@@ -385,6 +405,19 @@ export default Vue.extend({
       return undefined
     },
 
+    aggregateReduceOnlyQuantityExceedError(): string | undefined {
+      const { totalReduceOnlyQuantity, position } = this
+
+      if (
+        totalReduceOnlyQuantity.gt(0) &&
+        totalReduceOnlyQuantity.lt(position.quantity)
+      ) {
+        return this.$t('reduce_only_exceed_position')
+      }
+
+      return undefined
+    },
+
     executionPriceSurpassesBankruptcyPrice(): string | undefined {
       const { executionPrice, market, position, bankruptcyPrice } = this
 
@@ -414,6 +447,7 @@ export default Vue.extend({
         executionPriceSurpassesBankruptcyPrice,
         notEnoughtLiqudityError,
         autoLiquidationOnCloseError,
+        aggregateReduceOnlyQuantityExceedError,
         market
       } = this
 
@@ -427,6 +461,10 @@ export default Vue.extend({
 
       if (autoLiquidationOnCloseError) {
         return autoLiquidationOnCloseError
+      }
+
+      if (aggregateReduceOnlyQuantityExceedError) {
+        return aggregateReduceOnlyQuantityExceedError
       }
 
       if (executionPriceSurpassesBankruptcyPrice) {

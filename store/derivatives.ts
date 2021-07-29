@@ -484,6 +484,8 @@ export const actions = actionTree(
             return
           }
 
+          console.log(position)
+
           const quantity = new BigNumberInBase(position.quantity)
 
           if (quantity.lte(0)) {
