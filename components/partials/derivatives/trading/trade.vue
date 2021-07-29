@@ -1020,17 +1020,25 @@ export default Vue.extend({
       price: BigNumberInBase
       type: DerivativeOrderSide
     }) {
-      const { market, slippage, tradingTypeMarket, orderType } = this
+      const { market, slippage } = this
 
-      if (!market || !tradingTypeMarket || orderType === type) {
+      if (!market) {
         return
       }
 
-      this.onAmountChange(
-        total
-          .dividedBy(price.times(slippage).toFixed(market.priceDecimals))
-          .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
-      )
+      this.tradingType = TradeExecutionType.Market
+      this.orderType =
+        type === DerivativeOrderSide.Buy
+          ? DerivativeOrderSide.Sell
+          : DerivativeOrderSide.Buy
+
+      const amount = total
+        .dividedBy(price.times(slippage).toFixed(market.priceDecimals))
+        .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
+
+      this.$nextTick(() => {
+        this.onAmountChange(amount)
+      })
     },
 
     onOrderbookPriceClick(price: string) {
