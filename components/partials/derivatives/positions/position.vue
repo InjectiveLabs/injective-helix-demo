@@ -254,9 +254,13 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(position.liquidationPrice).toBase(
-        market.quoteToken.decimals
-      )
+      const liquidationPrice = new BigNumberInWei(
+        position.liquidationPrice
+      ).toBase(market.quoteToken.decimals)
+
+      return liquidationPrice.gt(0)
+        ? liquidationPrice
+        : new BigNumberInBase(0.01)
     },
 
     executionPrice(): BigNumberInBase {
