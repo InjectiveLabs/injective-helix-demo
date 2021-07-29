@@ -556,6 +556,26 @@ export default Vue.extend({
       return undefined
     },
 
+    maxOrdersError(): string | undefined {
+      const { orders, tradingTypeMarket, orderType } = this
+      const MAX_NUMBER_OF_ORDERS = 20
+      const filteredOrders = orders.filter(
+        (order) => order.orderSide === orderType
+      )
+
+      if (tradingTypeMarket) {
+        return undefined
+      }
+
+      if (filteredOrders.length >= MAX_NUMBER_OF_ORDERS) {
+        return this.$t('you_can_only_have_max_orders', {
+          number: MAX_NUMBER_OF_ORDERS
+        })
+      }
+
+      return undefined
+    },
+
     notEnoughOrdersToFillFromError(): TradeError | undefined {
       const {
         tradingTypeMarket,
@@ -1163,7 +1183,12 @@ export default Vue.extend({
     },
 
     onSubmit() {
-      const { hasErrors, tradingTypeMarket, isUserWalletConnected } = this
+      const {
+        hasErrors,
+        maxOrdersError,
+        tradingTypeMarket,
+        isUserWalletConnected
+      } = this
 
       if (!isUserWalletConnected) {
         return this.$toast.error(this.$t('please_connect_your_wallet'))
@@ -1171,6 +1196,10 @@ export default Vue.extend({
 
       if (hasErrors) {
         return this.$toast.error(this.$t('error_in_form'))
+      }
+
+      if (maxOrdersError) {
+        return this.$toast.error(maxOrdersError)
       }
 
       return tradingTypeMarket

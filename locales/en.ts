@@ -186,5 +186,7 @@ export default {
   close_auto_liquidation:
     'Closing this position with current market depth would result in auto-liquidation.',
   execution_price_surpasses_bankruptcy_price:
-    'Execution price surpasses bankruptcy price'
+    'Execution price surpasses bankruptcy price',
+  you_can_only_have_max_orders:
+    'You can only have {number} orders per side per market per subaccount'
 }
