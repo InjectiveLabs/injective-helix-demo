@@ -15,7 +15,9 @@ const spot = [
   'grt-usdt',
   'grt-usdc',
   'uni-usdt',
-  'uni-usdc'
+  'uni-usdc',
+  'snx-usdt',
+  'qnt-usdt'
 ]
 
 const derivatives = ['inj-usdt-perp']
