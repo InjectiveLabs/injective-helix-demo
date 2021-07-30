@@ -26,3 +26,6 @@ module.exports = [
   ...spot.map((s) => `/spot/${s}`),
   ...derivatives.map((d) => `/derivatives/${d}`)
 ]
+
+module.exports.spot = spot
+module.exports.derivatives = derivatives

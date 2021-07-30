@@ -2,7 +2,7 @@ import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { getTokenMetaData } from '../services/tokens'
 import { grpcTokenMetaToToken, tokenMetaToToken } from './token'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
-import { sortSpotMarkets } from '~/components/partials/spot/sort'
+import { spot as sortSpotMarkets } from '~/routes.config'
 import {
   BaseUiSpotMarket,
   UiSpotMarket,

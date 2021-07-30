@@ -2,7 +2,7 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { getTokenMetaData, getTokenMetaDataBySymbol } from '../services/tokens'
 import { grpcTokenMetaToToken, tokenMetaToToken } from './token'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
-import { sortPerpetualMarkets } from '~/components/partials/derivatives/sort'
+import { derivatives as sortPerpetualMarkets } from '~/routes.config'
 import {
   BaseUiDerivativeMarket,
   UiDerivativeMarket,
