@@ -1880,10 +1880,10 @@
     "@improbable-eng/grpc-web" "^0.13.0"
     google-protobuf "^3.13.0"
 
-"@injectivelabs/chain-consumer@^0.0.63":
-  version "0.0.63"
-  resolved "https://registry.npmjs.org/@injectivelabs/chain-consumer/-/chain-consumer-0.0.63.tgz#483a79700d60d02166bb41b965b66a91bce27258"
-  integrity sha512-olqHftIS1UOBM2CF00cOUA1zDPCtEqYKjvaVzGl/RbgVncS1h4CMfJ6bKbjucpJGDq1yhdGg356u95prmv6iKg==
+"@injectivelabs/chain-consumer@^0.0.66":
+  version "0.0.66"
+  resolved "https://registry.npmjs.org/@injectivelabs/chain-consumer/-/chain-consumer-0.0.66.tgz#d538f3280c632680c97b6af9ffdc8a6f49c67237"
+  integrity sha512-tWNdZKA0W+2/rgkAyPI7DaWGOcxtk1uq9B788pPlQt6ZUPw5koZm7AcGN7VzST6xwtjYJMmLm+jktbjQ8p6XJg==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.14.0"

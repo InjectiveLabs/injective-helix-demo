@@ -113,6 +113,7 @@ export default {
   allowance_set: 'Allowance Set',
   set_allowance: 'Set Allowance',
   success_transfer: 'Successfully Deposited',
+  success_transfer_assets: 'Successfully Transferred',
   trade_placed: 'Trade placed',
   success_deposit: 'Successfully Deposited',
   success_withdraw: 'Successfully Withdrawn',
@@ -190,5 +191,10 @@ export default {
   execution_price_surpasses_bankruptcy_price:
     'Execution price surpasses bankruptcy price',
   you_can_only_have_max_orders:
-    'You can only have {number} orders per side per market per subaccount'
+    'You can only have {number} orders per side per market per subaccount',
+  transfer_on_chain_title: 'Transfer on Injective Chain',
+  transfer_on_chain_note:
+    'Transfer your assets to an address on the Injective Chain',
+  select_asset: 'Select Asset',
+  destination: 'Destination'
 }

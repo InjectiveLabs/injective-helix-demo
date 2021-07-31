@@ -95,7 +95,22 @@
             cursor-pointer
             hover:bg-hover300
           "
-          @click.stop="handleClickOnLogout"
+          @click.stop="onTransferNavClick"
+        >
+          <span>{{ $t('transfer') }}</span>
+        </div>
+        <div
+          class="
+            w-full
+            bg-dark-700
+            font-semibold
+            py-2
+            px-4
+            text-sm
+            cursor-pointer
+            hover:bg-hover300
+          "
+          @click.stop="onLogoutClick"
         >
           <span>{{ $t('logout') }}</span>
         </div>
@@ -112,7 +127,7 @@ import { directive as onClickaway } from 'vue-clickaway'
 import { formatWalletAddress } from '@injectivelabs/utils'
 import VMetamask from './wallets/metamask.vue'
 import VLedger from './wallets/ledger.vue'
-import { Icon } from '~/types'
+import { Icon, Modal } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -167,8 +182,12 @@ export default Vue.extend({
       this.isDropdownOpen = !this.isDropdownOpen
     },
 
-    handleClickOnLogout() {
+    onLogoutClick() {
       this.$accessor.wallet.logout()
+    },
+
+    onTransferNavClick() {
+      this.$accessor.modal.openModal(Modal.TransferOnChain)
     }
   }
 })

@@ -1,15 +1,23 @@
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
-import { fetchBalances } from '~/app/services/bank'
-import { BankBalances } from '~/types'
+import {
+  fetchBalances,
+  fetchBalancesWithTokenMetaData,
+  transfer
+} from '~/app/services/bank'
+import { backupPromiseCall } from '~/app/utils/async'
+import { BankBalances, BankBalanceWithTokenMetaData, Token } from '~/types'
 
 const initialStateFactory = () => ({
-  balances: {} as BankBalances
+  balances: {} as BankBalances,
+  balancesWithTokenMetaData: [] as BankBalanceWithTokenMetaData[]
 })
 
 const initialState = initialStateFactory()
 
 export const state = () => ({
-  balances: initialState.balances
+  balances: initialState.balances,
+  balancesWithTokenMetaData: initialState.balancesWithTokenMetaData
 })
 
 export type BankStoreState = ReturnType<typeof state>
@@ -21,6 +29,13 @@ export const getters = getterTree(state, {
 export const mutations = {
   setBalances(state: BankStoreState, balances: BankBalances) {
     state.balances = balances
+  },
+
+  setBalancesWithTokenMetaData(
+    state: BankStoreState,
+    balancesWithTokenMetaData: BankBalanceWithTokenMetaData[]
+  ) {
+    state.balancesWithTokenMetaData = balancesWithTokenMetaData
   },
 
   reset(state: BankStoreState) {
@@ -44,7 +59,50 @@ export const actions = actionTree(
         return
       }
 
-      commit('setBalances', await fetchBalances(injectiveAddress))
+      const balances = await fetchBalances(injectiveAddress)
+
+      commit('setBalances', balances)
+      commit(
+        'setBalancesWithTokenMetaData',
+        await fetchBalancesWithTokenMetaData(balances)
+      )
+    },
+
+    async transfer(
+      _,
+      {
+        amount,
+        denom,
+        destination,
+        token
+      }: {
+        amount: BigNumberInBase
+        denom: string
+        destination: string
+        token: Token
+      }
+    ) {
+      const {
+        address,
+        injectiveAddress,
+        isUserWalletConnected
+      } = this.app.$accessor.wallet
+
+      if (!address || !isUserWalletConnected) {
+        return
+      }
+
+      await this.app.$accessor.wallet.validate()
+
+      await transfer({
+        address,
+        injectiveAddress,
+        destination,
+        denom,
+        amount: amount.toWei(token.decimals)
+      })
+
+      await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
     }
   }
 )

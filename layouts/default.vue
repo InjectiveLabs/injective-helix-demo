@@ -10,6 +10,7 @@
             </main>
             <app-footer />
             <egg />
+            <modal-transfer />
           </client-only>
         </div>
       </HOCLoading>
@@ -20,6 +21,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
+import ModalTransfer from '~/components/transfer/index.vue'
 import Header from '~/components/layouts/desktop/header.vue'
 import Footer from '~/components/layouts/desktop/footer/index.vue'
 import Egg from '~/components/elements/egg.vue'
@@ -28,6 +30,7 @@ import HOCLoading from '~/components/elements/with-loading.vue'
 export default Vue.extend({
   components: {
     HOCLoading,
+    ModalTransfer,
     'app-header': Header,
     'app-footer': Footer,
     Egg

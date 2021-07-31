@@ -5,6 +5,7 @@ import { NUMBER_REGEX } from '~/app/utils/constants'
 localize({
   en: {
     messages: {
+      injaddress: 'This field is not a valid Injective address',
       required: 'This field is required',
       positiveNumber: 'This field is not a valid number',
       email: 'This field should be a valid email',
@@ -20,6 +21,11 @@ localize({
   }
 })
 
+extend('injaddress', {
+  validate: (value: string) => {
+    return value.startsWith('inj')
+  }
+})
 extend('required', required)
 extend('email', email)
 extend('between', between)
