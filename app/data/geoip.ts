@@ -18,10 +18,12 @@ export const restrictedCountries = [
   'YE',
   'ZW',
   'AL',
+  'CN',
   'BA',
   'BG',
   'CR',
   'RS',
+  'TW',
   'RO',
   'MK',
   'SI'
