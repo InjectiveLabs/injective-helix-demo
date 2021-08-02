@@ -79,7 +79,8 @@
         shadow-md
       "
     >
-      <ul v-if="!isUserWalletConnected" class="py-2">
+      <ul v-if="!isUserWalletConnected" class="py-2 px-1">
+        <v-disclaimer v-if="TRANSFER_RESTRICTIONS_ENABLED" />
         <v-metamask />
         <v-ledger class="mt-2" />
       </ul>
@@ -125,14 +126,17 @@ import { AccountAddress } from '@injectivelabs/ts-types'
 import { Wallet } from '@injectivelabs/web3-strategy'
 import { directive as onClickaway } from 'vue-clickaway'
 import { formatWalletAddress } from '@injectivelabs/utils'
+import VDisclaimer from './disclaimer.vue'
 import VMetamask from './wallets/metamask.vue'
 import VLedger from './wallets/ledger.vue'
+import { TRANSFER_RESTRICTIONS_ENABLED } from '~/app/utils/constants'
 import { Icon, Modal } from '~/types'
 
 export default Vue.extend({
   components: {
     VMetamask,
-    VLedger
+    VLedger,
+    VDisclaimer
   },
 
   directives: {
@@ -141,6 +145,7 @@ export default Vue.extend({
 
   data() {
     return {
+      TRANSFER_RESTRICTIONS_ENABLED,
       isDropdownOpen: false,
       Wallet,
       Icon

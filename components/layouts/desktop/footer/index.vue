@@ -13,7 +13,7 @@
     <div class="ml-5 flex">
       <light-logo style="height: 3.5rem; margin-top: -2px" />
       <item class="ml-10 text-xs">
-        <span>&copy; {{ new Date().getFullYear() }} Injective Protocol</span>
+        <span>&copy; {{ new Date().getFullYear() }} Injective Labs Inc.</span>
       </item>
     </div>
     <ul
