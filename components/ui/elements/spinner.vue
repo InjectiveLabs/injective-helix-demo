@@ -39,10 +39,10 @@ export default Vue.extend({
   width: 48px;
   height: 48px;
   margin: 6px;
-  border: 6px solid #00F2FE;
+  border: 6px solid #00ffcc;
   border-radius: 50%;
   animation: loading-spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border-color: #00F2FE transparent transparent transparent;
+  border-color: #00ffcc transparent transparent transparent;
 }
 .loading-spinner.xs div {
   box-sizing: border-box;
@@ -51,10 +51,10 @@ export default Vue.extend({
   width: 16px;
   height: 16px;
   margin: 2px;
-  border: 2px solid #00F2FE;
+  border: 2px solid #00ffcc;
   border-radius: 50%;
   animation: loading-spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border-color: #00F2FE transparent transparent transparent;
+  border-color: #00ffcc transparent transparent transparent;
 }
 .loading-spinner div:nth-child(1) {
   animation-delay: -0.45s;

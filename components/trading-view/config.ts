@@ -35,7 +35,7 @@ export default function ({
     allow_symbol_change: false,
     datafeed: new UDFCompatibleDatafeed(datafeedEndpoint, 2000),
     library_path: `${BASE_URL}/chart/charting_library/`,
-    custom_css_url: `${BASE_URL}/chart/charting_library/custom-v7.css`,
+    custom_css_url: `${BASE_URL}/chart/charting_library/custom.css?v2`,
     locale: 'en',
     theme: 'dark',
     drawings_access: {
