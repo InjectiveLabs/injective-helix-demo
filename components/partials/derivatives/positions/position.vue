@@ -382,7 +382,13 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(notionalValue.dividedBy(margin.plus(pnl)))
+      const effectiveLeverage = new BigNumberInBase(
+        notionalValue.dividedBy(margin.plus(pnl))
+      )
+
+      return effectiveLeverage.gt(0)
+        ? effectiveLeverage
+        : new BigNumberInBase(0.01)
     },
 
     notEnoughtLiqudityError(): string | undefined {
