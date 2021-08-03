@@ -5,14 +5,12 @@
         <div class="text-center w-full lg:w-2/3 mx-auto pt-10 lg:pt-16">
           <h1 class="font-black text-white text-3xl uppercase tracking-wide">
             <img
-              src="logo.svg"
-              alt="Injective Protocol"
-              class="h-40 mx-auto w-auto"
+              src="/images/home-main.svg"
+              alt="Injective Exchange"
+              class="h-48 mx-auto w-auto"
             />
           </h1>
-          <h3
-            class="text-primary-500 uppercase tracking-wider font-black mt-12"
-          >
+          <h3 class="text-primary-500 uppercase tracking-wider font-black">
             {{ $t('welcome_to_ip') }}
           </h3>
           <h4 class="text-gray-300 text-lg mt-2">

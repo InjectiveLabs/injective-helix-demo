@@ -10,10 +10,17 @@
     }
   }
 
-  &.btn-accent {
-    @apply bg-accent-500;
+  &.btn-red {
+    @apply bg-red-500;
     &:hover {
-      @apply bg-accent-600;
+      @apply bg-red-600;
+    }
+  }
+
+  &.btn-aqua {
+    @apply bg-aqua-500;
+    &:hover {
+      @apply bg-aqua-600;
     }
   }
 
@@ -134,9 +141,9 @@
   }
 
   &.btn-accent {
-    @apply text-accent-500;
+    @apply text-red-500;
     &:hover {
-      @apply text-accent-700;
+      @apply text-red-700;
     }
   }
 

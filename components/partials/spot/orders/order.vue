@@ -39,8 +39,8 @@
     </td>
     <td is="v-ui-table-td" xs center class="h-8">
       <v-ui-badge
-        :primary="order.orderSide === SpotOrderSide.Buy"
-        :accent="order.orderSide === SpotOrderSide.Sell"
+        :aqua="order.orderSide === SpotOrderSide.Buy"
+        :red="order.orderSide === SpotOrderSide.Sell"
         xs
       >
         <div class="w-8">
@@ -49,7 +49,7 @@
       </v-ui-badge>
     </td>
     <td is="v-ui-table-td" xs center class="h-8">
-      <v-ui-badge v-if="orderFullyFilled" primary xs>
+      <v-ui-badge v-if="orderFullyFilled" aqua xs>
         {{ $t('filled') }}
       </v-ui-badge>
       <v-ui-badge v-else-if="orderFillable" dark xs>
@@ -69,7 +69,7 @@
           :icon="Icon.Trash"
           :tooltip="$t('cancel_order')"
           sm
-          accent
+          red
           pointer
         ></v-ui-icon>
       </v-ui-button>

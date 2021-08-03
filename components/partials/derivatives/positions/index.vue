@@ -10,7 +10,7 @@
                 <span>{{ $t('side') }}</span>
               </th>
               <th is="v-ui-table-th" right>
-                <span>{{ $t('size') }}</span>
+                <span>{{ $t('amount') }}</span>
               </th>
               <th is="v-ui-table-th" right>
                 <span>{{ $t('entry_price') }}</span>

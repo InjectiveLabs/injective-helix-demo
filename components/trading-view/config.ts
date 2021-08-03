@@ -35,7 +35,7 @@ export default function ({
     allow_symbol_change: false,
     datafeed: new UDFCompatibleDatafeed(datafeedEndpoint, 2000),
     library_path: `${BASE_URL}/chart/charting_library/`,
-    custom_css_url: `${BASE_URL}/chart/charting_library/custom-v3.css`,
+    custom_css_url: `${BASE_URL}/chart/charting_library/custom-v7.css`,
     locale: 'en',
     theme: 'dark',
     drawings_access: {
@@ -83,66 +83,60 @@ export default function ({
       'mainSeriesProperties.showCountdown': false,
 
       // Bar style
-      'mainSeriesProperties.barStyle.upColor': theme.colors.primary[500],
-      'mainSeriesProperties.barStyle.downColor': theme.colors.accent[500],
+      'mainSeriesProperties.barStyle.upColor': theme.colors.aqua[500],
+      'mainSeriesProperties.barStyle.downColor': theme.colors.red[500],
       'mainSeriesProperties.barStyle.barColorsOnPrevClose': false,
       'mainSeriesProperties.barStyle.dontDrawOpen': true,
       // Candle Style
-      'mainSeriesProperties.candleStyle.upColor': theme.colors.primary[500],
-      'mainSeriesProperties.candleStyle.borderUpColor':
-        theme.colors.primary[500],
-      'mainSeriesProperties.candleStyle.downColor': theme.colors.accent[500],
-      'mainSeriesProperties.candleStyle.borderDownColor':
-        theme.colors.accent[500],
+      'mainSeriesProperties.candleStyle.upColor': theme.colors.aqua[500],
+      'mainSeriesProperties.candleStyle.borderUpColor': theme.colors.aqua[500],
+      'mainSeriesProperties.candleStyle.downColor': theme.colors.red[500],
+      'mainSeriesProperties.candleStyle.borderDownColor': theme.colors.red[500],
       'mainSeriesProperties.candleStyle.drawWick': true,
-      'mainSeriesProperties.candleStyle.wickUpColor': theme.colors.primary[500],
-      'mainSeriesProperties.candleStyle.wickDownColor':
-        theme.colors.accent[500],
+      'mainSeriesProperties.candleStyle.wickUpColor': theme.colors.aqua[500],
+      'mainSeriesProperties.candleStyle.wickDownColor': theme.colors.red[500],
       'mainSeriesProperties.candleStyle.barColorsOnPrevClose': false,
       // Hollow Candle Style
-      'mainSeriesProperties.hollowCandleStyle.upColor':
-        theme.colors.primary[500],
+      'mainSeriesProperties.hollowCandleStyle.upColor': theme.colors.aqua[500],
       'mainSeriesProperties.hollowCandleStyle.borderUpColor':
-        theme.colors.primary[500],
-      'mainSeriesProperties.hollowCandleStyle.downColor':
-        theme.colors.accent[500],
+        theme.colors.aqua[500],
+      'mainSeriesProperties.hollowCandleStyle.downColor': theme.colors.red[500],
       'mainSeriesProperties.hollowCandleStyle.borderDownColor':
-        theme.colors.accent[500],
+        theme.colors.red[500],
       'mainSeriesProperties.hollowCandleStyle.drawWick': false,
       // Heikin Ashi styles
-      'mainSeriesProperties.haStyle.upColor': theme.colors.primary[500],
-      'mainSeriesProperties.haStyle.downColor': theme.colors.accent[500],
+      'mainSeriesProperties.haStyle.upColor': theme.colors.aqua[500],
+      'mainSeriesProperties.haStyle.downColor': theme.colors.red[500],
       'mainSeriesProperties.haStyle.drawWick': true,
       'mainSeriesProperties.haStyle.drawBorder': true,
       'mainSeriesProperties.haStyle.borderColor': '',
-      'mainSeriesProperties.haStyle.borderUpColor': theme.colors.primary[500],
-      'mainSeriesProperties.haStyle.borderDownColor': theme.colors.accent[500],
-      'mainSeriesProperties.haStyle.wickUpColor': theme.colors.primary[500],
-      'mainSeriesProperties.haStyle.wickDownColor': theme.colors.accent[500],
+      'mainSeriesProperties.haStyle.borderUpColor': theme.colors.aqua[500],
+      'mainSeriesProperties.haStyle.borderDownColor': theme.colors.red[500],
+      'mainSeriesProperties.haStyle.wickUpColor': theme.colors.aqua[500],
+      'mainSeriesProperties.haStyle.wickDownColor': theme.colors.red[500],
       'mainSeriesProperties.haStyle.barColorsOnPrevClose': false,
       // Area Style
-      'mainSeriesProperties.areaStyle.color1': theme.colors.primary[500],
-      'mainSeriesProperties.areaStyle.color2': theme.colors.accent[500],
-      'mainSeriesProperties.areaStyle.linecolor': theme.colors.accent[500],
+      'mainSeriesProperties.areaStyle.color1': theme.colors.aqua[500],
+      'mainSeriesProperties.areaStyle.color2': theme.colors.red[500],
+      'mainSeriesProperties.areaStyle.linecolor': theme.colors.red[500],
       // Line styles
-      'mainSeriesProperties.lineStyle.color': theme.colors.accent[500],
+      'mainSeriesProperties.lineStyle.color': theme.colors.red[500],
       'mainSeriesProperties.lineStyle.linestyle': 0,
       'mainSeriesProperties.lineStyle.linewidth': 1,
       // Baseline styles
       'mainSeriesProperties.baselineStyle.baselineColor':
         theme.colors.gray[200],
       'mainSeriesProperties.baselineStyle.topFillColor1':
-        theme.colors.primary[500],
+        theme.colors.aqua[500],
       'mainSeriesProperties.baselineStyle.topFillColor2':
         'rgba( 78, 205, 196	, 0.1)',
       'mainSeriesProperties.baselineStyle.bottomFillColor1':
-        theme.colors.accent[500],
+        theme.colors.red[500],
       'mainSeriesProperties.baselineStyle.bottomFillColor2':
         'rgba( 205, 78, 87, 0.1)',
-      'mainSeriesProperties.baselineStyle.topLineColor':
-        theme.colors.primary[500],
+      'mainSeriesProperties.baselineStyle.topLineColor': theme.colors.aqua[500],
       'mainSeriesProperties.baselineStyle.bottomLineColor':
-        theme.colors.accent[500],
+        theme.colors.red[500],
       // Legend properties
       'paneProperties.legendProperties.showSeriesTitle': false,
       'paneProperties.legendProperties.showSeriesOHLC': true,
@@ -157,8 +151,8 @@ export default function ({
       volumePaneSize: 'medium'
     },
     studies_overrides: {
-      'volume.volume.color.0': theme.colors.accent[500],
-      'volume.volume.color.1': theme.colors.primary[500]
+      'volume.volume.color.0': theme.colors.red[500],
+      'volume.volume.color.1': theme.colors.aqua[500]
     },
     time_frames: [
       { text: '1D', resolution: '5', description: '1 Day' },

@@ -22,8 +22,8 @@
             value: lastTradedPrice,
             decimals: market.priceDecimals,
             class: {
-              'text-primary-500': lastPriceChange === Change.Increase,
-              'text-accent-500': lastPriceChange === Change.Decrease
+              'text-aqua-500': lastPriceChange === Change.Increase,
+              'text-red-500': lastPriceChange === Change.Decrease
             }
           }"
           class="mr-1"
@@ -32,8 +32,8 @@
           v-if="[Change.Decrease, Change.Increase].includes(lastPriceChange)"
           xs
           :rotate="lastPriceChange === Change.Decrease"
-          :primary="lastPriceChange === Change.Increase"
-          :accent="lastPriceChange === Change.Decrease"
+          :aqua="lastPriceChange === Change.Increase"
+          :red="lastPriceChange === Change.Decrease"
           :icon="Icon.Arrow"
         />
       </div>
@@ -46,7 +46,7 @@
             appendPlusSign: true,
             precision: 2,
             value: change.toFixed(),
-            class: change.gte(0) ? 'text-primary-500' : 'text-accent-500'
+            class: change.gte(0) ? 'text-aqua-500' : 'text-red-500'
           }"
         />
       </v-ui-text>

@@ -6,15 +6,15 @@
           :icon="Icon.CloseCircle"
           :tooltip="$t('close_position')"
           sm
-          accent
+          red
           pointer
         ></v-ui-icon>
       </v-ui-button>
     </td>
     <td is="v-ui-table-td" xs center>
       <v-ui-badge
-        :primary="position.direction === TradeDirection.Long"
-        :accent="position.direction === TradeDirection.Short"
+        :aqua="position.direction === TradeDirection.Long"
+        :red="position.direction === TradeDirection.Short"
         sm
       >
         <div class="w-10">
@@ -47,7 +47,7 @@
         }"
       />
     </td>
-    <td is="v-ui-table-td" center>
+    <td is="v-ui-table-td" xs center>
       <div
         v-if="!pnl.isNaN()"
         class="flex items-center justify-center text-2xs"
@@ -372,7 +372,7 @@ export default Vue.extend({
         return ''
       }
 
-      return pnl.gte(0) ? 'text-primary-500' : 'text-accent-500'
+      return pnl.gte(0) ? 'text-primary-500' : 'text-red-500'
     },
 
     effectiveLeverage(): BigNumberInBase {

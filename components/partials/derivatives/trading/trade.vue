@@ -5,7 +5,7 @@
         v-model="orderType"
         :option="DerivativeOrderSide.Buy"
         half
-        primary
+        aqua
       >
         {{ $t('long_asset', { asset: market.baseToken.symbol }) }}
       </v-ui-button-select>
@@ -13,7 +13,7 @@
         v-model="orderType"
         :option="DerivativeOrderSide.Sell"
         half
-        accent
+        red
       >
         {{ $t('short_asset', { asset: market.baseToken.symbol }) }}
       </v-ui-button-select>
@@ -68,13 +68,13 @@
             >
           </div>
         </v-input>
-        <v-ui-text v-if="amountError" semibold accent v-bind="{ '2xs': true }">
+        <v-ui-text v-if="amountError" semibold red v-bind="{ '2xs': true }">
           {{ amountError }}
         </v-ui-text>
         <v-ui-text
           v-if="priceError && tradingTypeMarket"
           semibold
-          accent
+          red
           v-bind="{ '2xs': true }"
         >
           {{ priceError }}
@@ -99,7 +99,7 @@
         >
           <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
         </v-input>
-        <v-ui-text v-if="priceError" semibold accent v-bind="{ '2xs': true }">
+        <v-ui-text v-if="priceError" semibold red v-bind="{ '2xs': true }">
           {{ priceError }}
         </v-ui-text>
       </div>
@@ -146,8 +146,8 @@
         :status="status"
         :disabled="hasErrors || !isUserWalletConnected"
         :ghost="hasErrors"
-        :primary="!hasErrors && orderType === DerivativeOrderSide.Buy"
-        :accent="!hasErrors && orderType === DerivativeOrderSide.Sell"
+        :aqua="!hasErrors && orderType === DerivativeOrderSide.Buy"
+        :red="!hasErrors && orderType === DerivativeOrderSide.Sell"
         class="uppercase"
         wide
         @click.stop="onSubmit"

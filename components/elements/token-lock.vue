@@ -17,7 +17,7 @@
         :rotating="status.isLoading()"
         :muted="status.isLoading()"
         :primary="!status.isLoading() && token.allowance.gt(0)"
-        :accent="!status.isLoading() && !token.allowance.gt(0)"
+        :red="!status.isLoading() && !token.allowance.gt(0)"
         :style="{ marginTop: lg ? '6px' : '-9px', marginRight: '2px' }"
         v-bind="{ '2xs': sm, sm: lg }"
       ></v-ui-icon>

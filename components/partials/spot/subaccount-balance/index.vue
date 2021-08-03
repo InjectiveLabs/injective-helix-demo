@@ -31,10 +31,11 @@
     </div>
     <div v-if="isUserWalletConnected" slot="title-context">
       <div class="flex items-center">
-        <v-ui-button xs primary class="mr-2" @click.stop="openDepositModal">{{
+        <v-ui-button xs primary text @click.stop="openDepositModal">{{
           $t('deposit')
         }}</v-ui-button>
-        <v-ui-button xs primary @click.stop="openWithdrawalModal">{{
+        <div class="mx-2 w-px h-4 bg-dark-500"></div>
+        <v-ui-button xs primary text @click.stop="openWithdrawalModal">{{
           $t('withdraw')
         }}</v-ui-button>
       </div>

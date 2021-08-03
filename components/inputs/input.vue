@@ -16,7 +16,7 @@
       >
         <!-- eslint-disable-next-line vue/no-v-html -->
         <span v-if="label" :class="error ? 'mr-2' : ''" v-html="label"></span>
-        <span v-if="error" class="text-accent-500 italic font-semibold">
+        <span v-if="error" class="text-red-500 italic font-semibold">
           * {{ error }}
         </span>
       </label>

@@ -10,8 +10,8 @@
             value: lastTradedPrice,
             decimals: market.priceDecimals,
             class: {
-              'text-primary-500': lastPriceChange === Change.Increase,
-              'text-accent-500': lastPriceChange === Change.Decrease
+              'text-aqua-500': lastPriceChange === Change.Increase,
+              'text-red-500': lastPriceChange === Change.Decrease
             }
           }"
           class="mr-1"
@@ -20,8 +20,8 @@
           v-if="[Change.New, Change.NoChange].includes(lastPriceChange)"
           xs
           :rotate="lastPriceChange === Change.Decrease"
-          :primary="lastPriceChange === Change.Increase"
-          :accent="lastPriceChange === Change.Decrease"
+          :aqua="lastPriceChange === Change.Increase"
+          :red="lastPriceChange === Change.Decrease"
           :icon="Icon.Arrow"
         />
       </div>

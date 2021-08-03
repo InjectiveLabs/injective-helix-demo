@@ -39,9 +39,9 @@
                 )
               "
               xs
-              :rotate="!lastTradedPriceChange === Change.Increase"
-              :primary="lastTradedPriceChange === Change.Increase"
-              :accent="!lastTradedPriceChange === Change.Increase"
+              :rotate="lastTradedPriceChange === Change.Decrease"
+              :aqua="lastTradedPriceChange === Change.Increase"
+              :red="lastTradedPriceChange === Change.Decrease"
               :icon="Icon.Arrow"
             />
           </div>

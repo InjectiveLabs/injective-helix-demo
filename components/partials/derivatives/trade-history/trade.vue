@@ -38,8 +38,8 @@
     </td>
     <td is="v-ui-table-td" xs center class="h-8">
       <v-ui-badge
-        :primary="trade.tradeDirection === TradeDirection.Buy"
-        :accent="trade.tradeDirection === TradeDirection.Sell"
+        :aqua="trade.tradeDirection === TradeDirection.Buy"
+        :red="trade.tradeDirection === TradeDirection.Sell"
         sm
       >
         {{ tradeDirection }}

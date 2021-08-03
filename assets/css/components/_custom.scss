@@ -3,8 +3,8 @@
 }
 
 .toasted.bubble.error {
-  @apply text-accent-900 font-bold;
-  background: theme('colors.accent.500') !important;
+  @apply text-red-900 font-bold;
+  background: theme('colors.red.500') !important;
 }
 
 .toasted.bubble.info {
@@ -21,8 +21,8 @@
 }
 
 .toasted.bubble.success {
-  @apply text-primary-900 font-bold;
-  background: theme('colors.primary.500') !important;
+  @apply text-aqua-900 font-bold;
+  background: theme('colors.aqua.500') !important;
 }
 
 .bg-gradient-300 {
@@ -41,12 +41,16 @@
   margin-top: -385px;
 }
 
-[class*='bg-accent-'] .spinner {
-  border-top-color: theme('colors.accent.300');
+[class*='bg-red-'] .spinner {
+  border-top-color: theme('colors.red.300');
 }
 
 [class*='bg-primary-'] .spinner {
   border-top-color: theme('colors.primary.300');
+}
+
+[class*='bg-aqua-'] .spinner {
+  border-top-color: theme('colors.aqua.300');
 }
 
 .spinner {
@@ -81,13 +85,13 @@
 
   &.longs,
   &.buys {
-    background: theme('colors.primary.500');
+    background: theme('colors.aqua.500');
     opacity: 0.2;
   }
 
   &.shorts,
   &.sells {
-    background: theme('colors.accent.500');
+    background: theme('colors.red.500');
     opacity: 0.2;
   }
 }
@@ -107,7 +111,7 @@
 
   &.down {
     @apply visible;
-    fill: theme('colors.accent.500');
+    fill: theme('colors.red.500');
     opacity: 0.35;
     animation: sizeColDown 0.5s ease-in-out;
     color: rgb(255, 255, 255) !important;
@@ -125,7 +129,7 @@
 
 @keyframes sizeColDown {
   0% {
-    background-color: theme('colors.accent.500');
+    background-color: theme('colors.red.500');
   }
   100% {
     background-color: unset;

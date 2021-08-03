@@ -26,6 +26,7 @@
           v-if="component === components.openOrders && orders.length > 0"
           xs
           primary
+          text
           class="mr-4"
           @click.stop="handleCancelAllClick"
         >

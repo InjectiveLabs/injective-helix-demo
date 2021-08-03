@@ -43,7 +43,13 @@ export default Vue.extend({
       type: Boolean
     },
 
-    accent: {
+    red: {
+      required: false,
+      default: false,
+      type: Boolean
+    },
+
+    aqua: {
       required: false,
       default: false,
       type: Boolean
@@ -113,8 +119,10 @@ export default Vue.extend({
             'hover:bg-primary-600',
             'text-primary-900'
           )
-        } else if (this.accent) {
-          classes.push('bg-accent-500', 'hover:bg-accent-600', 'text-white-900')
+        } else if (this.red) {
+          classes.push('bg-red-500', 'hover:bg-red-600', 'text-white-900')
+        } else if (this.aqua) {
+          classes.push('bg-aqua-500', 'hover:bg-aqua-600', 'text-aqua-900')
         } else {
           classes.push('text-white', 'font-bold', 'bg-dark-500')
         }

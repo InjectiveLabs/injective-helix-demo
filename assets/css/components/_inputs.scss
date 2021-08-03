@@ -20,13 +20,13 @@
 
 .is-invalid {
   .input {
-    @apply border-accent-500;
+    @apply border-red-500;
   }
 }
 
 .is-valid {
   .input {
-    @apply border-primary-500;
+    @apply border-aqua-500;
   }
 }
 

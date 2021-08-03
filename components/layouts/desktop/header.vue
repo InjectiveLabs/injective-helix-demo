@@ -26,7 +26,7 @@
       "
       @click.stop="goHome"
     >
-      <logo class="mr-2 lg:mr-4 w-6 h-6" />
+      <logo class="mr-2 w-8 h-8" />
       <span class="text-white hidden lg:block">
         {{ $t('injective') }} PRO
       </span>

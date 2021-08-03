@@ -93,7 +93,13 @@ export default Vue.extend({
       type: Boolean
     },
 
-    accent: {
+    red: {
+      required: false,
+      default: false,
+      type: Boolean
+    },
+
+    aqua: {
       required: false,
       default: false,
       type: Boolean
@@ -177,11 +183,19 @@ export default Vue.extend({
         }
       }
 
-      if (this.accent) {
-        classes.push('text-accent-500')
+      if (this.red) {
+        classes.push('text-red-500')
 
         if (this.pointer) {
-          classes.push('hover:text-accent-600')
+          classes.push('hover:text-red-600')
+        }
+      }
+
+      if (this.aqua) {
+        classes.push('text-aqua-500')
+
+        if (this.pointer) {
+          classes.push('hover:text-aqua-600')
         }
       }
 

@@ -39,7 +39,13 @@ export default Vue.extend({
       default: false
     },
 
-    accent: {
+    red: {
+      required: false,
+      type: Boolean,
+      default: false
+    },
+
+    aqua: {
       required: false,
       type: Boolean,
       default: false
@@ -156,8 +162,10 @@ export default Vue.extend({
 
       if (this.primary) {
         classes.push('text-primary-500')
-      } else if (this.accent) {
-        classes.push('text-accent-500')
+      } else if (this.aqua) {
+        classes.push('text-aqua-500')
+      } else if (this.red) {
+        classes.push('text-red-500')
       } else if (this.warning) {
         classes.push('text-gray-300')
       }

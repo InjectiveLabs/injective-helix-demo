@@ -36,8 +36,8 @@
         }"
         class="text-right block"
         :class="{
-          'text-accent-500': quantityChange === Change.Decrease,
-          'text-primary-500': quantityChange === Change.Increase
+          'text-red-500': quantityChange === Change.Decrease,
+          'text-aqua-500': quantityChange === Change.Increase
         }"
       />
     </span>

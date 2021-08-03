@@ -1,7 +1,7 @@
 .fallBar,
 .fallStick {
-  fill: theme('colors.accent.500');
-  background-color: theme('colors.accent.500');
+  fill: theme('colors.red.500');
+  background-color: theme('colors.red.500');
 }
 
 .riseStick {
@@ -45,7 +45,7 @@
   stroke: theme('colors.primary.600');
 }
 .candles .hovered.fallBar {
-  stroke: theme('colors.accent.600');
+  stroke: theme('colors.red.600');
 }
 .candles .hovered.equal {
   stroke: theme('colors.gray.500');

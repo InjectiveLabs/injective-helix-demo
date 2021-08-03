@@ -11,9 +11,9 @@ export default {
   metamask: 'Metamask',
   spot_markets: 'Spot Markets',
   welcome_to_ip:
-    'Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.',
+    'Access, create and trade unlimited decentralized finance markets',
   welcome_to_ip_sub:
-    'The unmatched layer-2 trading platform. Access any financial market on Injective’s fast, multi-chain, secure, and zero gas fee exchange protocol.',
+    'Create any financial market on Injective’s fast, cross-chain, low fee, secure, and fully decentralized exchange protocol.',
   maintenance_header: 'The Injective Canary Chain is now live!',
   maintenance_subheader:
     'Please propose and vote on new listings via the staking dashboard <a href="https://staking.injective.network" class="text-primary-500">here</a>. Markets that receive sufficient votes will be tradable on the Injective Exchange.',

@@ -47,7 +47,7 @@ export const metaTags = (): {
     {
       hid: 'og:image',
       property: 'og:image',
-      content: `${BASE_URL}/images/share-main.jpg`
+      content: `${BASE_URL}/images/og.jpeg`
     },
     {
       hid: 'og:description',
@@ -66,7 +66,7 @@ export const metaTags = (): {
     },
     {
       name: 'twitter:image',
-      content: `${BASE_URL}/images/share-main.jpg`
+      content: `${BASE_URL}/images/og.jpeg`
     },
     {
       hid: 'twitter:creator',
@@ -96,9 +96,9 @@ export const metaTags = (): {
       ogSiteName: title,
       ogTitle: title,
       ogDescription: description,
-      ogHost: 'https://exchange.injective.network',
-      ogUrl: 'https://exchange.injective.network',
-      ogImage: `${BASE_URL}/images/share-main.png`,
+      ogHost: 'https://injective.exchange',
+      ogUrl: 'https://injective.exchange',
+      ogImage: `${BASE_URL}/images/og.jpeg`,
       twitterCard: 'summary_large_image',
       twitterSite: '@InjectiveLabs',
       twitterCreator: '@InjectiveLabs'

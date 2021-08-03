@@ -5,7 +5,7 @@
         v-model="orderType"
         :option="SpotOrderSide.Buy"
         half
-        primary
+        aqua
       >
         {{ $t('buy_asset', { asset: market.baseToken.symbol }) }}
       </v-ui-button-select>
@@ -13,7 +13,7 @@
         v-model="orderType"
         :option="SpotOrderSide.Sell"
         half
-        accent
+        red
       >
         {{ $t('sell_asset', { asset: market.baseToken.symbol }) }}
       </v-ui-button-select>
@@ -72,13 +72,13 @@
             >
           </div>
         </v-input>
-        <v-ui-text v-if="amountError" semibold accent v-bind="{ '2xs': true }">
+        <v-ui-text v-if="amountError" semibold red v-bind="{ '2xs': true }">
           {{ amountError }}
         </v-ui-text>
         <v-ui-text
           v-if="priceError && tradingTypeMarket"
           semibold
-          accent
+          red
           v-bind="{ '2xs': true }"
         >
           {{ priceError }}
@@ -103,7 +103,7 @@
         >
           <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
         </v-input>
-        <v-ui-text v-if="priceError" semibold accent v-bind="{ '2xs': true }">
+        <v-ui-text v-if="priceError" semibold red v-bind="{ '2xs': true }">
           {{ priceError }}
         </v-ui-text>
       </div>
@@ -129,8 +129,8 @@
         :status="status"
         :disabled="hasErrors || !isUserWalletConnected"
         :ghost="hasErrors"
-        :primary="!hasErrors && orderType === SpotOrderSide.Buy"
-        :accent="!hasErrors && orderType === SpotOrderSide.Sell"
+        :aqua="!hasErrors && orderType === SpotOrderSide.Buy"
+        :red="!hasErrors && orderType === SpotOrderSide.Sell"
         class="uppercase"
         wide
         @click.stop="onSubmit"
