@@ -1934,16 +1934,16 @@
     web3-core-subscriptions "^1.3.4"
     web3-utils "^1.3.4"
 
-"@injectivelabs/derivatives-consumer@^0.0.43":
-  version "0.0.43"
-  resolved "https://registry.npmjs.org/@injectivelabs/derivatives-consumer/-/derivatives-consumer-0.0.43.tgz#f55a51e56f994ccc4a5c90a244151265d28b94e9"
-  integrity sha512-02Qe7SaQkQfi4eXWjm1H135ZpQ67EqVt+7biOa3Jh15wft7vPwZIF0OC5/aALyXzruSbL0ACVmOUnqAOH80d+Q==
+"@injectivelabs/derivatives-consumer@^0.0.45":
+  version "0.0.45"
+  resolved "https://registry.npmjs.org/@injectivelabs/derivatives-consumer/-/derivatives-consumer-0.0.45.tgz#0b322162eec504bec6f137ae658464b63219244a"
+  integrity sha512-UE08qFUmEreCuyqDgvu/KkKNseTcKM4FPe1a/lfbmDDlfeYexQ0dDell0S3ZSBnR2EnrDmnxmSkltu4kX1j2Fw==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.14.0"
     "@injectivelabs/chain-api" "^1.4.12"
     "@injectivelabs/exceptions" "^0.0.26"
-    "@injectivelabs/exchange-api" "^2.2.9"
+    "@injectivelabs/exchange-api" "^2.2.10"
     "@injectivelabs/ts-types" "^0.0.25"
     "@injectivelabs/utils" "^0.0.36"
     link-module-alias "^1.2.0"
@@ -1968,24 +1968,24 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/exchange-api@^2.2.9":
-  version "2.2.9"
-  resolved "https://registry.npmjs.org/@injectivelabs/exchange-api/-/exchange-api-2.2.9.tgz#d1d8552ffabb1bdb42fa3861a4c74ae88d02a0e6"
-  integrity sha512-NQuMA8NSN24zASdEpaXb8PBn5bnWD3Nby9rV9RuI/cY9Be7PPfUOr4S0yH6RtreTQauJ5dSjDLIrL1XpX8fPDA==
+"@injectivelabs/exchange-api@^2.2.10":
+  version "2.2.10"
+  resolved "https://registry.npmjs.org/@injectivelabs/exchange-api/-/exchange-api-2.2.10.tgz#6f8792a88bcdd985011ceab6dd5eeed59e87c4fb"
+  integrity sha512-cX8G/D8kp4TnNGrh/X+c43JdruOXcN4ExjsilDw45a6VYK2194AgFTPK9DRNvH9+6cViJ37iV6ltSV7iucT0Sg==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     google-protobuf "^3.14.0"
 
-"@injectivelabs/exchange-consumer@^0.0.72":
-  version "0.0.72"
-  resolved "https://registry.npmjs.org/@injectivelabs/exchange-consumer/-/exchange-consumer-0.0.72.tgz#3ef610e35c1967056c191074e8bc65a10ea67d69"
-  integrity sha512-b+S0oJcfFO3WRj9dbyFnmJI71XZQct2U/DVNQ4zVXcC+isYIJZrdeyEWwybHK0hBZuvlC94Fokyyv0dkWMFVgQ==
+"@injectivelabs/exchange-consumer@^0.0.74":
+  version "0.0.74"
+  resolved "https://registry.npmjs.org/@injectivelabs/exchange-consumer/-/exchange-consumer-0.0.74.tgz#acb0cd6391b0bf90b0c021b3e84eef22709dd02a"
+  integrity sha512-jbn+ulZjBmFR8XlhfQZhiNAMYBikS5kdBYvV3UA9aPG+oieraJljfrALoWBzS5Fjquu7U81U+6oVo1RxI5SQJQ==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.14.0"
     "@injectivelabs/chain-api" "^1.4.12"
     "@injectivelabs/exceptions" "^0.0.26"
-    "@injectivelabs/exchange-api" "^2.2.9"
+    "@injectivelabs/exchange-api" "^2.2.10"
     "@injectivelabs/ts-types" "^0.0.25"
     "@injectivelabs/tx-utils" "^0.0.14"
     "@injectivelabs/utils" "^0.0.36"
@@ -2004,42 +2004,42 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/spot-consumer@^0.0.55":
-  version "0.0.55"
-  resolved "https://registry.npmjs.org/@injectivelabs/spot-consumer/-/spot-consumer-0.0.55.tgz#0f6791f973b42aaf43d2d7b6c92e4ff966860f40"
-  integrity sha512-Ilb/XCNhptJubIOL1nJaUHCpmOUPomnOrxfLtQHImR0PIoWq0ksqCzc2rvWMsUB/m9wodI5lKlfE5HTz4o2O/w==
+"@injectivelabs/spot-consumer@^0.0.57":
+  version "0.0.57"
+  resolved "https://registry.npmjs.org/@injectivelabs/spot-consumer/-/spot-consumer-0.0.57.tgz#5e22ca2110f1a4109e4cb1200d5298b8a16283f5"
+  integrity sha512-g5vqZVxupUQfUdjEwkCA4aXnIkMl+5UUXEazyLjOUsCli95rN+yYXNzp7qpmdVQEhPh2Y4aPt4LBfiyZxWATXQ==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.14.0"
     "@injectivelabs/chain-api" "^1.4.12"
     "@injectivelabs/exceptions" "^0.0.26"
-    "@injectivelabs/exchange-api" "^2.2.9"
+    "@injectivelabs/exchange-api" "^2.2.10"
     "@injectivelabs/ts-types" "^0.0.25"
     "@injectivelabs/utils" "^0.0.36"
     link-module-alias "^1.2.0"
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/subaccount-consumer@^0.0.28":
-  version "0.0.28"
-  resolved "https://registry.npmjs.org/@injectivelabs/subaccount-consumer/-/subaccount-consumer-0.0.28.tgz#f148b475f5efab2b4c9ca36884b2965a2b1ef035"
-  integrity sha512-h8jdTLmt/PFoMQfjNacHw6JRIwZaWm5iDq+q2EJYQOGlGtt5CDpWNp9RJnE5NxLosB73aX/tkG80BYWe1F5vQw==
+"@injectivelabs/subaccount-consumer@^0.0.30":
+  version "0.0.30"
+  resolved "https://registry.npmjs.org/@injectivelabs/subaccount-consumer/-/subaccount-consumer-0.0.30.tgz#79789067db7b390ff971a484fa6da487a594fc3f"
+  integrity sha512-xtS9YpHXO1xRfnIST1KhbhcWozhuUFjCfeCBVdW/j5xeN7Pneh9D3I8MTh61MGafjTzV4cqTaCxeMJTQDwpNNQ==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.14.0"
     "@injectivelabs/chain-api" "^1.4.12"
     "@injectivelabs/exceptions" "^0.0.26"
-    "@injectivelabs/exchange-api" "^2.2.9"
+    "@injectivelabs/exchange-api" "^2.2.10"
     "@injectivelabs/ts-types" "^0.0.25"
     "@injectivelabs/utils" "^0.0.36"
     link-module-alias "^1.2.0"
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/token-metadata@^0.0.10":
-  version "0.0.10"
-  resolved "https://registry.npmjs.org/@injectivelabs/token-metadata/-/token-metadata-0.0.10.tgz#e54232b8cbaf412b2559079c6204607c2e103aee"
-  integrity sha512-UZZuacq0DXtrf/EQ6jISsoB9Kehg1y7Vsymsmt2Ho8iL1HdMsdHMCSdqcbXo2V8MddIdG3E04G4z2WRtGtXTuQ==
+"@injectivelabs/token-metadata@^0.0.12":
+  version "0.0.12"
+  resolved "https://registry.npmjs.org/@injectivelabs/token-metadata/-/token-metadata-0.0.12.tgz#f0068002354f6ef717de4695e8ec4618c24c7fa4"
+  integrity sha512-4m/rkpk92qd96tpdJDowLg3xdVvCv1SLexP4javDFnwpNuZSWWvEk84cqQJ9/HfPNcd7dIiWeCXqV1SO6SVkAA==
   dependencies:
     "@injectivelabs/ts-types" "^0.0.25"
     "@types/lodash.values" "^4.3.6"
