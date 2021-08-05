@@ -5,7 +5,7 @@
         <div class="text-center w-full lg:w-2/3 mx-auto pt-10 lg:pt-16">
           <h1 class="font-black text-white text-3xl uppercase tracking-wide">
             <img
-              src="/images/home-main.svg?v3"
+              src="/images/home-main.svg?v5"
               alt="Injective Exchange"
               class="h-48 mx-auto w-auto"
             />
