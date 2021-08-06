@@ -59,7 +59,10 @@ export const spotMarketsToUiSpotMarkets = (
     .map((market) =>
       baseUiSpotMarketToBaseUiSpotMarketWithPartialTokenMetaData(market)
     )
-    .filter(tokenMetaDataExists) as BaseUiSpotMarketWithTokenMetaData[]
+    .filter(tokenMetaDataExists)
+    .filter((market) =>
+      sortSpotMarkets.includes(market.slug)
+    ) as BaseUiSpotMarketWithTokenMetaData[]
 
   const mappedMarkets = filteredMarkets.map((m) => spotMarketToUiSpotMarket(m))
 

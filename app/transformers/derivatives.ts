@@ -58,7 +58,10 @@ export const derivativeMarketsToUiDerivativeMarkets = (
         market
       )
     )
-    .filter(tokenMetaDataExists) as BaseUiDerivativeMarketWithTokenMetaData[]
+    .filter(tokenMetaDataExists)
+    .filter((market) =>
+      sortPerpetualMarkets.includes(market.slug)
+    ) as BaseUiDerivativeMarketWithTokenMetaData[]
 
   const mappedMarkets = filteredMarkets.map((m) =>
     derivativeMarketToUiDerivativeMarket(m)
