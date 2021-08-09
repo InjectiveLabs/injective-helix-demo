@@ -263,9 +263,7 @@ export default Vue.extend({
         position.liquidationPrice
       ).toBase(market.quoteToken.decimals)
 
-      return liquidationPrice.gt(0)
-        ? liquidationPrice
-        : new BigNumberInBase(0.01)
+      return liquidationPrice.gt(0) ? liquidationPrice : new BigNumberInBase(0)
     },
 
     slippage(): BigNumberInBase {
@@ -314,17 +312,16 @@ export default Vue.extend({
     },
 
     bankruptcyPrice(): BigNumberInBase {
-      const { market, price, margin, position } = this
+      const { market, price, margin, position, quantity } = this
 
       if (!market) {
         return ZERO_IN_BASE
       }
 
-      return price.plus(
-        new BigNumberInBase(margin)
-          .dividedBy(position.quantity)
-          .times(position.direction === TradeDirection.Long ? 1 : -1)
-      )
+      const isPositionLong = position.direction === TradeDirection.Long
+      const unitMargin = new BigNumberInBase(margin).dividedBy(quantity)
+
+      return isPositionLong ? price.minus(unitMargin) : price.plus(unitMargin)
     },
 
     pnl(): BigNumberInBase {
@@ -388,7 +385,7 @@ export default Vue.extend({
 
       return effectiveLeverage.gt(0)
         ? effectiveLeverage
-        : new BigNumberInBase(0.01)
+        : new BigNumberInBase(0)
     },
 
     notEnoughtLiqudityError(): string | undefined {
@@ -451,11 +448,11 @@ export default Vue.extend({
         : new BigNumberInBase(1).plus(market.takerFeeRate)
       const condition = bankruptcyPrice.dividedBy(divisor)
 
-      if (isPositionLong && executionPrice.gt(condition)) {
+      if (isPositionLong && executionPrice.lt(condition)) {
         return this.$t('execution_price_surpasses_bankruptcy_price')
       }
 
-      if (!isPositionLong && executionPrice.lt(condition)) {
+      if (!isPositionLong && executionPrice.gt(condition)) {
         return this.$t('execution_price_surpasses_bankruptcy_price')
       }
 
