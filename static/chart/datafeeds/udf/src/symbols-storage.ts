@@ -201,7 +201,7 @@ export class SymbolsStorage {
 				.then((response: ExchangeDataResponse) => {
 					try {
 						this._onExchangeDataReceived(exchange, response);
-					} catch (error) {
+					} catch (error: any) {
 						reject(error);
 						return;
 					}
@@ -263,7 +263,7 @@ export class SymbolsStorage {
 
 				this._symbolsList.push(symbolName);
 			}
-		} catch (error) {
+		} catch (error: any) {
 			throw new Error(`SymbolsStorage: API error when processing exchange ${exchange} symbol #${symbolIndex} (${data.symbol[symbolIndex]}): ${error.message}`);
 		}
 	}

@@ -48,7 +48,7 @@ export const getTokenBalanceAndAllowance = async ({
       balance: new BigNumberInWei(balance || 0),
       allowance: new BigNumberInWei(allowance || 0)
     }
-  } catch (e) {
+  } catch (e: any) {
     return {
       ...token,
       balance: new BigNumberInWei(0),
@@ -64,8 +64,8 @@ export const setTokenAllowance = async ({
   tokenAddress
 }: {
   address: AccountAddress
-  amount: BigNumberInWei
-  gasPrice: BigNumberInWei
+  amount: string // BigNumberInWei
+  gasPrice: string // BigNumberInWei
   tokenAddress: string
 }) => {
   const contracts = getContracts()
@@ -95,14 +95,14 @@ export const setTokenAllowance = async ({
         from: address,
         to: tokenAddress,
         gas: gas.toNumber().toString(16),
-        gasPrice: gasPrice.toNumber().toString(16),
+        gasPrice: new BigNumberInWei(gasPrice).toNumber().toString(16),
         data
       },
       { address, chainId: CHAIN_ID }
     )
 
     await transactionReceiptAsync(txHash)
-  } catch (error) {
+  } catch (error: any) {
     throw new Web3Exception(error.message)
   }
 }
@@ -113,8 +113,8 @@ export const transfer = async ({
   denom,
   gasPrice
 }: {
-  amount: BigNumberInWei
-  gasPrice: BigNumberInWei
+  amount: string // BigNumberInWei
+  gasPrice: string // BigNumberInWei
   denom: string
   address: AccountAddress
 }) => {
@@ -142,13 +142,13 @@ export const transfer = async ({
         from: address,
         to: contracts.peggy.address,
         gas: gas.toNumber().toString(16),
-        gasPrice: gasPrice.toNumber().toString(16),
+        gasPrice: new BigNumberInWei(gasPrice).toNumber().toString(16),
         data
       },
       { address, chainId: CHAIN_ID }
     )
     await transactionReceiptAsync(txHash)
-  } catch (error) {
+  } catch (error: any) {
     throw new Web3Exception(error.message)
   }
 }
@@ -161,20 +161,20 @@ export const withdraw = async ({
   injectiveAddress,
   destinationAddress
 }: {
-  amount: BigNumberInWei
+  amount: string // BigNumberInWei
   address: AccountAddress
   denom: string
-  bridgeFee: BigNumberInWei
+  bridgeFee: string // BigNumberInWei
   destinationAddress: string
   injectiveAddress: AccountAddress
 }) => {
   const message = PeggyComposer.withdraw({
     denom,
-    amount: amount.minus(bridgeFee),
-    bridgeFeeAmount: bridgeFee.toFixed(),
+    amount: new BigNumberInWei(amount).minus(bridgeFee).toFixed(),
+    bridgeFeeAmount: bridgeFee,
     bridgeFeeDenom: denom,
     address: destinationAddress,
-    cosmosAddress: injectiveAddress
+    injectiveAddress
   })
 
   try {
@@ -186,7 +186,7 @@ export const withdraw = async ({
     })
 
     await txProvider.broadcast()
-  } catch (error) {
+  } catch (error: any) {
     throw new Web3Exception(error.message)
   }
 }

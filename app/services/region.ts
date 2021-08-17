@@ -11,7 +11,7 @@ export const fetchGeoLocation = async (): Promise<GeoLocation | undefined> => {
     }
 
     return data
-  } catch (error) {
+  } catch (error: any) {
     return undefined
   }
 }

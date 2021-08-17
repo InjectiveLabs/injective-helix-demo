@@ -58,7 +58,7 @@ export class TxProvider {
       })
 
       return await metricsProvider.sendAndRecord(promise, `${bucket}PrepareTx`)
-    } catch (e) {
+    } catch (e: any) {
       throw new ExchangeException(e.message)
     }
   }
@@ -70,7 +70,7 @@ export class TxProvider {
       const promise = web3Strategy.signTypedDataV4(txData, address)
 
       return await metricsProvider.sendAndRecord(promise, `${bucket}SignTx`)
-    } catch (e) {
+    } catch (e: any) {
       throw new Web3Exception(e.message)
     }
   }
@@ -92,7 +92,7 @@ export class TxProvider {
         promise,
         `${bucket}BroadcastTx`
       )
-    } catch (e) {
+    } catch (e: any) {
       throw new ExchangeException(e.message)
     }
   }

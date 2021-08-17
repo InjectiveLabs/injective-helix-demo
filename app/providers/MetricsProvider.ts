@@ -41,7 +41,7 @@ export class MetricsProvider {
 
       this.record(bucket, duration)
       return response
-    } catch (error) {
+    } catch (error: any) {
       this.recordError(bucket)
       throw error
     }

@@ -117,7 +117,7 @@ export const deposit = async ({
     })
 
     await txProvider.broadcast()
-  } catch (error) {
+  } catch (error: any) {
     throw new Web3Exception(error.message)
   }
 }
@@ -151,7 +151,7 @@ export const withdraw = async ({
     })
 
     await txProvider.broadcast()
-  } catch (error) {
+  } catch (error: any) {
     throw new Web3Exception(error.message)
   }
 }

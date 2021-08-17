@@ -125,8 +125,8 @@ export const actions = actionTree(
       await setTokenAllowance({
         address,
         tokenAddress,
-        amount: amount as BigNumberInWei,
-        gasPrice: new BigNumberInBase(gasPrice).toWei()
+        gasPrice,
+        amount: (amount as BigNumberInWei).toFixed()
       })
 
       const { baseTokenWithBalance, quoteTokenWithBalance } = state
@@ -163,10 +163,10 @@ export const actions = actionTree(
       await transfer({
         address,
         denom: token.denom,
-        gasPrice: new BigNumberInBase(gasPrice).toWei(),
+        gasPrice,
         amount: new BigNumberInBase(
           amount.toFixed(3, BigNumberInBase.ROUND_DOWN)
-        ).toWei(token.decimals)
+        ).toWei(token.decimals).toFixed()
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
@@ -203,8 +203,8 @@ export const actions = actionTree(
         injectiveAddress,
         denom: token.denom,
         destinationAddress: address,
-        bridgeFee: bridgeFee.toWei(token.decimals),
-        amount: amount.toWei(token.decimals)
+        bridgeFee: bridgeFee.toWei(token.decimals).toFixed(),
+        amount: amount.toWei(token.decimals).toFixed()
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())

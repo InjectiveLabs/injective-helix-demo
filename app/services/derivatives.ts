@@ -394,7 +394,7 @@ export const submitLimitOrder = async ({
     })
 
     await txProvider.broadcast()
-  } catch (error) {
+  } catch (error: any) {
     throw new Web3Exception(error.message)
   }
 }
@@ -445,7 +445,7 @@ export const submitMarketOrder = async ({
     })
 
     await txProvider.broadcast()
-  } catch (error) {
+  } catch (error: any) {
     throw new Web3Exception(error.message)
   }
 }
@@ -492,7 +492,7 @@ export const closePosition = async ({
     })
 
     await txProvider.broadcast()
-  } catch (error) {
+  } catch (error: any) {
     throw new Web3Exception(error.message)
   }
 }
@@ -529,7 +529,7 @@ export const addMarginToPosition = async ({
     })
 
     await txProvider.broadcast()
-  } catch (error) {
+  } catch (error: any) {
     throw new Web3Exception(error.message)
   }
 }
@@ -565,7 +565,7 @@ export const cancelOrder = async ({
     })
 
     await txProvider.broadcast()
-  } catch (error) {
+  } catch (error: any) {
     throw new Web3Exception(error.message)
   }
 }
@@ -597,7 +597,7 @@ export const batchCancelOrders = async ({
     })
 
     await txProvider.broadcast()
-  } catch (error) {
+  } catch (error: any) {
     throw new Web3Exception(error.message)
   }
 }
