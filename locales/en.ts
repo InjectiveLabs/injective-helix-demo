@@ -14,9 +14,9 @@ export default {
     'Access, create and trade unlimited decentralized finance markets',
   welcome_to_ip_sub:
     'Create any financial market on Injective’s fast, cross-chain, low fee, secure, and fully decentralized exchange protocol.',
-  maintenance_header: 'The Injective Canary Chain is now live!',
+  maintenance_header: 'Ongoing Maintenance',
   maintenance_subheader:
-    'Please propose and vote on new listings via the staking dashboard <a href="https://staking.injective.network" class="text-primary-500">here</a>. Markets that receive sufficient votes will be tradable on the Injective Exchange.',
+    'We are working on improving your experience. We will be back as soon as possible.',
   maintenance_body: '',
   token_allowance_successful: 'Token allowance set successful',
   logout: 'Logout',
