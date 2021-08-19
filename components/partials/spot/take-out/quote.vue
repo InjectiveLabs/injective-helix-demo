@@ -37,6 +37,14 @@
               })
             }}
           </v-ui-text>
+          <v-ui-text xs muted class="flex items-center mt-2">
+            {{
+              $t('small_gas_fee_note', {
+                fee: gas.toFixed(),
+                asset: 'INJ'
+              })
+            }}
+          </v-ui-text>
           <div class="w-full mx-auto mt-4">
             <v-ui-button
               :status="status"
@@ -101,6 +109,18 @@ export default Vue.extend({
 
     $form(): InstanceType<typeof ValidationObserver> {
       return this.$refs.form as InstanceType<typeof ValidationObserver>
+    },
+
+    gas(): BigNumberInBase {
+      const { market } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInWei(DEFAULT_GAS_LIMIT)
+        .times(DEFAULT_BRIDGE_FEE_PRICE)
+        .toBase()
     },
 
     feePrice(): BigNumberInBase {

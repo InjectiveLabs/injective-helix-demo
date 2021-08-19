@@ -48,7 +48,7 @@ export default {
   side: 'Side',
   buy: 'Buy',
   sell: 'Sell',
-  order_success_canceling: 'Order canceled',
+  order_success_canceling: 'Order Cancelled',
   actions: 'Actions',
   trades: 'Trades',
   time: 'Time',
@@ -179,7 +179,8 @@ export default {
   mark_price_invalid: 'The mark price is not valid',
   order_insufficient_margin: 'Order has insufficient margin',
   date: 'Date',
-  small_bridge_fee_note: 'Bridge fee: {fee}{asset}',
+  small_bridge_fee_note: 'Bridge fee: {fee} {asset}',
+  small_gas_fee_note: 'Gas: {fee} {asset}',
   add_margin_to_position_title: 'Add Margin',
   add_margin_to_position_note:
     'You can increase the margin your position has to prevent liquidation',

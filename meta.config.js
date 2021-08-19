@@ -16,8 +16,8 @@ module.exports = {
   titleTemplate: process.env.APP_NAME,
   meta,
   link: [
-    { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico?v3' },
-    { rel: 'shortcut icon', type: 'image/x-icon', href: '/favicon.ico?v3' },
-    { rel: 'apple-touch-icon', type: 'image/x-icon', href: '/favicon.ico?v3' }
+    { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+    { rel: 'shortcut icon', type: 'image/x-icon', href: '/favicon.ico' },
+    { rel: 'apple-touch-icon', type: 'image/x-icon', href: '/favicon.ico' }
   ]
 }
