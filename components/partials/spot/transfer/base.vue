@@ -33,6 +33,9 @@
               market ? market.baseToken.symbol : ''
             }}</span>
           </v-input>
+          <v-ui-text xs muted class="flex items-center mt-2">
+            {{ $t('transfer_wait_time_note') }}
+          </v-ui-text>
           <div class="w-full mx-auto mt-4">
             <v-ui-button
               :status="status"

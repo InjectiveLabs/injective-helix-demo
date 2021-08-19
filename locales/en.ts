@@ -199,5 +199,7 @@ export default {
   select_asset: 'Select Asset',
   destination: 'Destination',
   disclaimer_note:
-    'By connecting a wallet, you agree to the Injective Labs <a href="https://injectivelabs.org/terms-and-conditions" class="text-primary-500" target="_blank" />Terms and Conditions</a> and acknowledge that you have read and understand the Injective Protocol <a href="https://injectiveprotocol.com/disclaimer" class="text-primary-500" target="_blank">disclaimer</a>.'
+    'By connecting a wallet, you agree to the Injective Labs <a href="https://injectivelabs.org/terms-and-conditions" class="text-primary-500" target="_blank" />Terms and Conditions</a> and acknowledge that you have read and understand the Injective Protocol <a href="https://injectiveprotocol.com/disclaimer" class="text-primary-500" target="_blank">disclaimer</a>.',
+  transfer_wait_time_note:
+    'Note: It should take around 4 minutes for your transfer to appear after your transaction has been confirmed on Ethereum.'
 }
