@@ -1994,10 +1994,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/networks@^0.0.39":
-  version "0.0.39"
-  resolved "https://registry.npmjs.org/@injectivelabs/networks/-/networks-0.0.39.tgz#f3341fe9992730cbcfc678cdb89ff806a47f97fe"
-  integrity sha512-rRun19LipMOGIQOiManjZAmgGSk/FFQAbDU0/pCtseWZCSTV2UnjLoaGBnrTwl9gh/z4jrgwvgwZHTvrAn3y8Q==
+"@injectivelabs/networks@^0.0.41":
+  version "0.0.41"
+  resolved "https://registry.npmjs.org/@injectivelabs/networks/-/networks-0.0.41.tgz#2132cdbbd873f9b28c20f6b75ccde95eb7521747"
+  integrity sha512-+dfPUAQFpSWoOfBz1+N0NIU0+NAD14fwEBCh6kM/V09GIQStB5GBJopMACv7ZCLFIX8SYEYeIhBQH7OesE1mKA==
   dependencies:
     "@injectivelabs/exceptions" "^0.0.29"
     "@injectivelabs/utils" "^0.0.37"
