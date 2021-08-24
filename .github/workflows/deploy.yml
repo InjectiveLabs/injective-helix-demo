@@ -11,8 +11,8 @@ jobs:
       ## Public
       APP_NAME: 'Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'
       APP_BASE_URL: https://injective.exchange
-      APP_NETWORK: public
-      APP_ENV: mainnetOld
+      APP_NETWORK: mainnetOld
+      APP_ENV: mainnet
       APP_CHAIN_ID: 1
       SOURCE_DIR: dist
       DEST_DIR: www
