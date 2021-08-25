@@ -7,9 +7,9 @@ on:
 
 jobs:
   deploy:
+    if: false
     env:
       ## Public
-      if: false
       APP_NAME: 'Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'
       APP_BASE_URL: https://injective.exchange
       APP_NETWORK: mainnetOld
@@ -70,9 +70,9 @@ jobs:
         run: aws cloudfront create-invalidation --distribution-id=$CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
 
   deploy-stag:
+    if: false
     env:
       ## Public
-      if: false
       APP_NAME: 'STAGING - Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'
       APP_BASE_URL: https://staging.injective.exchange
       APP_NETWORK: mainnetOld
@@ -133,9 +133,9 @@ jobs:
         run: aws cloudfront create-invalidation --distribution-id=$CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
 
   deploy-testnet:
+    if: true
     env:
       ## Public
-      if: true
       APP_NAME: 'TESTNET - Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'
       APP_BASE_URL: https://testnet.injective.exchange
       APP_NETWORK: staking
@@ -147,7 +147,7 @@ jobs:
       ## Flags
       META_TAGS_ENABLED: true
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-      MAINTENANCE_ENABLED: true
+      MAINTENANCE_ENABLED: false
       METRICS_ENABLED: false
       GEO_IP_RESTRICTIONS_ENABLED: false
       TRANSFER_RESTRICTIONS_ENABLED: false
@@ -196,9 +196,9 @@ jobs:
         run: aws cloudfront create-invalidation --distribution-id=$CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
 
   deploy-testnet-stag:
+    if: false
     env:
       ## Public
-      if: false
       APP_NAME: 'TESTNET STAGING - Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'
       APP_BASE_URL: https://staging-testnet.injective.exchange
       APP_NETWORK: staking
