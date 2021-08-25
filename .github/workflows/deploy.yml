@@ -9,6 +9,7 @@ jobs:
   deploy:
     env:
       ## Public
+      if: false
       APP_NAME: 'Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'
       APP_BASE_URL: https://injective.exchange
       APP_NETWORK: mainnetOld
@@ -71,6 +72,7 @@ jobs:
   deploy-stag:
     env:
       ## Public
+      if: false
       APP_NAME: 'STAGING - Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'
       APP_BASE_URL: https://staging.injective.exchange
       APP_NETWORK: mainnetOld
@@ -133,6 +135,7 @@ jobs:
   deploy-testnet:
     env:
       ## Public
+      if: false
       APP_NAME: 'TESTNET - Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'
       APP_BASE_URL: https://testnet.injective.exchange
       APP_NETWORK: staking
@@ -144,7 +147,7 @@ jobs:
       ## Flags
       META_TAGS_ENABLED: true
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-      MAINTENANCE_ENABLED: false
+      MAINTENANCE_ENABLED: true
       METRICS_ENABLED: false
       GEO_IP_RESTRICTIONS_ENABLED: false
       TRANSFER_RESTRICTIONS_ENABLED: false
@@ -195,6 +198,7 @@ jobs:
   deploy-testnet-stag:
     env:
       ## Public
+      if: false
       APP_NAME: 'TESTNET STAGING - Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'
       APP_BASE_URL: https://staging-testnet.injective.exchange
       APP_NETWORK: staking
