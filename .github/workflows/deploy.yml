@@ -135,7 +135,7 @@ jobs:
   deploy-testnet:
     env:
       ## Public
-      if: false
+      if: true
       APP_NAME: 'TESTNET - Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'
       APP_BASE_URL: https://testnet.injective.exchange
       APP_NETWORK: staking
