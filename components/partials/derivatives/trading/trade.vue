@@ -512,7 +512,7 @@ export default Vue.extend({
         orderTypeBuy,
         hasPrice,
         market,
-        lastTradedPrice
+        marketMarkPrice
       } = this
 
       if (!hasPrice || !market) {
@@ -520,13 +520,13 @@ export default Vue.extend({
       }
 
       const divisor = orderTypeBuy
-        ? new BigNumberInBase(lastTradedPrice)
+        ? new BigNumberInBase(marketMarkPrice)
             .times(market.initialMarginRatio)
-            .minus(lastTradedPrice)
+            .minus(marketMarkPrice)
             .plus(executionPrice)
-        : new BigNumberInBase(lastTradedPrice)
+        : new BigNumberInBase(marketMarkPrice)
             .times(market.initialMarginRatio)
-            .plus(lastTradedPrice)
+            .plus(marketMarkPrice)
             .minus(executionPrice)
       const maxLeverage = executionPrice.dividedBy(divisor)
 
