@@ -112,6 +112,7 @@
 
       <v-order-leverage-select
         class="mt-2"
+        :max-leverage="maxLeverageAvailable.toFixed()"
         :leverage="form.leverage"
         @change="onLeverageChange"
       />

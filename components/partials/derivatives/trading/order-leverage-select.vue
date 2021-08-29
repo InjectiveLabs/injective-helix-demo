@@ -15,10 +15,16 @@
 </template>
 
 <script lang="ts">
+import BigNumber from 'bignumber.js'
 import Vue from 'vue'
 export default Vue.extend({
   props: {
     leverage: {
+      type: String,
+      required: true
+    },
+
+    maxLeverage: {
       type: String,
       required: true
     }
@@ -26,7 +32,17 @@ export default Vue.extend({
 
   data() {
     return {
-      leverages: [1, 2, 3, 5, 10, 20]
+      leverageSteps: [1, 2, 3, 5, 10, 20, 50, 100]
+    }
+  },
+
+  computed: {
+    leverages(): number[] {
+      const { leverageSteps, maxLeverage } = this
+
+      return leverageSteps.filter((l) => {
+        return new BigNumber(l).lte(maxLeverage)
+      })
     }
   },
 
