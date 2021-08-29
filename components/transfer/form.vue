@@ -85,7 +85,10 @@ import Vue, { PropType } from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
 import { BankBalanceWithTokenMetaData } from '~/types'
-import { UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import {
+  INJ_FEE_BUFFER,
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+} from '~/app/utils/constants'
 import VSelectCustom from '~/components/inputs/select-custom.vue'
 
 export default Vue.extend({
@@ -134,6 +137,7 @@ export default Vue.extend({
 
       return new BigNumberInWei(balance.balance)
         .toBase(balance.token.decimals)
+        .minus(INJ_FEE_BUFFER)
         .toFixed(
           UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
           BigNumberInBase.ROUND_FLOOR
