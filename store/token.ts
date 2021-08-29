@@ -146,6 +146,10 @@ export const actions = actionTree(
       }
     },
 
+    async validateTransferRestrictions(_, { amount, token }) {
+      await validateTransferRestrictions(amount, token)
+    },
+
     async transfer(
       _,
       { amount, token }: { amount: BigNumberInBase; token: TokenWithBalance }
@@ -158,15 +162,20 @@ export const actions = actionTree(
       }
 
       await this.app.$accessor.wallet.validate()
-      await validateTransferRestrictions(amount, token)
+      await this.app.$accessor.token.validateTransferRestrictions({
+        amount,
+        token
+      })
 
       await transfer({
         address,
-        denom: token.denom,
         gasPrice,
+        denom: token.denom,
         amount: new BigNumberInBase(
           amount.toFixed(3, BigNumberInBase.ROUND_DOWN)
-        ).toWei(token.decimals).toFixed()
+        )
+          .toWei(token.decimals)
+          .toFixed()
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())

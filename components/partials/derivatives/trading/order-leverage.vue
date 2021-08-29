@@ -24,7 +24,7 @@
           type="number"
           min="0"
           step="0.01"
-          max="20"
+          max="maxLeverage.toString()"
           class="leverage-input pr-4"
           @input="(e) => onLeverageChange(e.target.value)"
         />

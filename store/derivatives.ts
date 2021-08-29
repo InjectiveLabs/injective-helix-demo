@@ -10,7 +10,8 @@ import {
   DerivativeOrderSide,
   UiPosition,
   UiDerivativeMarketSummary,
-  Change
+  Change,
+  Token
 } from '~/types'
 import {
   fetchMarketOrderbook,
@@ -33,7 +34,8 @@ import {
   fetchMarketMarkPrice,
   streamMarketMarkPrice,
   batchCancelOrders,
-  addMarginToPosition
+  addMarginToPosition,
+  validateNotionalRestrictions
 } from '~/app/services/derivatives'
 import { ZERO_IN_BASE, ZERO_TO_STRING } from '~/app/utils/constants'
 
@@ -490,6 +492,7 @@ export const actions = actionTree(
         }
       })
     },
+
     async fetchSubaccountOrders({ state, commit }) {
       const { market } = state
       const { subaccount } = this.app.$accessor.account
@@ -594,6 +597,17 @@ export const actions = actionTree(
       )
     },
 
+    async validateNotionalRestrictions(
+      _,
+      {
+        amount,
+        price,
+        token
+      }: { amount: BigNumberInBase; price: BigNumberInBase; token: Token }
+    ) {
+      await validateNotionalRestrictions({ amount, price, token })
+    },
+
     async cancelOrder(_, order: UiDerivativeLimitOrder) {
       const { subaccount } = this.app.$accessor.account
       const { market } = this.app.$accessor.derivatives
@@ -676,6 +690,11 @@ export const actions = actionTree(
 
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
+      await this.app.$accessor.derivatives.validateNotionalRestrictions({
+        price,
+        amount: quantity,
+        token: market.quoteToken
+      })
 
       await submitLimitOrder({
         price,
@@ -720,6 +739,11 @@ export const actions = actionTree(
 
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
+      await this.app.$accessor.derivatives.validateNotionalRestrictions({
+        price,
+        amount: quantity,
+        token: market.quoteToken
+      })
 
       await submitMarketOrder({
         quantity,
