@@ -140,6 +140,14 @@ export const actions = actionTree(
       }
     },
 
+    async validateTransferRestrictions({ state }) {
+      const { chainId } = this.app.$accessor.app
+
+      if (state.wallet === Wallet.Metamask) {
+        await validateMetamask(state.address, chainId)
+      }
+    },
+
     async logout({ commit }) {
       await this.app.$accessor.account.reset()
       await this.app.$accessor.token.reset()
