@@ -388,7 +388,7 @@ export default Vue.extend({
         : new BigNumberInBase(0)
     },
 
-    notEnoughtLiqudityError(): string | undefined {
+    notEnoughLiquidityError(): string | undefined {
       const { pnl, market } = this
 
       if (!market) {
@@ -462,7 +462,7 @@ export default Vue.extend({
     positionCloseError(): string | undefined {
       const {
         executionPriceSurpassesBankruptcyPrice,
-        notEnoughtLiqudityError,
+        notEnoughLiquidityError,
         autoLiquidationOnCloseError,
         aggregateReduceOnlyQuantityExceedError,
         market
@@ -472,8 +472,8 @@ export default Vue.extend({
         return
       }
 
-      if (notEnoughtLiqudityError) {
-        return notEnoughtLiqudityError
+      if (notEnoughLiquidityError) {
+        return notEnoughLiquidityError
       }
 
       if (autoLiquidationOnCloseError) {
