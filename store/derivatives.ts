@@ -278,6 +278,7 @@ export const mutations = {
 
     state.subaccountTrades = initialState.subaccountTrades
     state.subaccountOrders = initialState.subaccountOrders
+    state.subaccountPosition = initialState.subaccountPosition
   }
 }
 
