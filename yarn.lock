@@ -1897,10 +1897,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/contracts@^0.0.68":
-  version "0.0.68"
-  resolved "https://registry.npmjs.org/@injectivelabs/contracts/-/contracts-0.0.68.tgz#632913768cb69c40d7c55dd592ef6d9b3a652f18"
-  integrity sha512-jJev7mgcgdjA0xR+evcA+BoO8bfbyo9MGp64XohVFMOloeVHLiCdiGsbRByh96bO5RbSt+8doWIwejs9ZqNnHQ==
+"@injectivelabs/contracts@^0.0.70":
+  version "0.0.70"
+  resolved "https://registry.npmjs.org/@injectivelabs/contracts/-/contracts-0.0.70.tgz#7b30aa96af62aabdef7195cb58171b9db45e6187"
+  integrity sha512-SbVySbL0LP9p6r4UUjV9gwPTTlF3KvQUtiMCB3XG/rrOSX2h2etq5DF0/9StNlVssOBsfWy10hghuuUUBQ/myg==
   dependencies:
     "@commitlint/cli" "^8.1.0"
     "@commitlint/config-conventional" "^8.1.0"
@@ -1909,7 +1909,7 @@
     "@injectivelabs/tx-utils" "^0.0.15"
     "@injectivelabs/utils" "^0.0.37"
     "@injectivelabs/web3-contract-typings" "^0.1.12"
-    "@injectivelabs/web3-strategy" "^0.0.61"
+    "@injectivelabs/web3-strategy" "^0.0.63"
     "@types/ethereumjs-util" "^6.1.0"
     "@types/jest" "^24.0.23"
     "@types/node" "^12.7.5"
@@ -1976,10 +1976,10 @@
     "@improbable-eng/grpc-web" "^0.14.0"
     google-protobuf "^3.14.0"
 
-"@injectivelabs/exchange-consumer@^0.0.82":
-  version "0.0.82"
-  resolved "https://registry.npmjs.org/@injectivelabs/exchange-consumer/-/exchange-consumer-0.0.82.tgz#f04e5d953599a34c5e81192ede8fc14add9a31c3"
-  integrity sha512-Z+N/v146a6nKQ0DUBSTOycqor+NmUwe8TEGRmFMI3VOkJpGvAMrmTyXmp9XRx/i1Sf1SMclMrQw6C+nY+h2CyA==
+"@injectivelabs/exchange-consumer@^0.0.86":
+  version "0.0.86"
+  resolved "https://registry.npmjs.org/@injectivelabs/exchange-consumer/-/exchange-consumer-0.0.86.tgz#81fe2656aad01f2757d426caab3d9d70380ad224"
+  integrity sha512-4qvDFhcUjwgsy7UD/28Myg22axX/ZDEVW3480uYLNyg/N863bc6itGbhsoF+pzPMdKt22ApsdzRk125VZnNIVw==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.14.0"
@@ -2123,10 +2123,10 @@
   dependencies:
     typescript "^4.0.5"
 
-"@injectivelabs/web3-strategy@^0.0.61":
-  version "0.0.61"
-  resolved "https://registry.npmjs.org/@injectivelabs/web3-strategy/-/web3-strategy-0.0.61.tgz#a6567c7a90634003aa9d7f0eae5a9305e5b3b7bc"
-  integrity sha512-iq2XiT5TCSU7P/VfSGv86AdwqnoFcLKpQ6wgcIW4UXuq1vTBDMooLaCM1LwgZSc+bAWuKvggx7xGJ5pOxeeC9A==
+"@injectivelabs/web3-strategy@^0.0.63":
+  version "0.0.63"
+  resolved "https://registry.npmjs.org/@injectivelabs/web3-strategy/-/web3-strategy-0.0.63.tgz#c78760b993744e75251efc33a3bbfd673a064dd2"
+  integrity sha512-5bQ0J6RR5qOiF4+IsAIKMMvovY6prZ3TrolFNP+qiMskeZQyUBOuoMnBwb0bLk+b/FCvms+YKI1RFhQ9KBXuPQ==
   dependencies:
     "@injectivelabs/assert" "^0.0.21"
     "@injectivelabs/exceptions" "^0.0.29"

@@ -1,18 +1,23 @@
 /* eslint-disable no-console */
 import { Context } from '@nuxt/types'
-import { excludedMessagesFromReporting } from '~/app/data/bugsnag'
 import { IS_PRODUCTION } from '~/app/utils/constants'
+
+const isErrorExcludedFromReporting = (error: any): boolean => {
+  const errorMessage = error === 'object' ? error.message : error
+
+  return (
+    errorMessage.startsWith('Metamask:') ||
+    errorMessage.includes('MetaMask') ||
+    errorMessage.includes('Metamask') ||
+    errorMessage.includes('metamask')
+  )
+}
 
 export default ({ app }: Context, inject: any) => {
   inject('onRejected', (error: Error) => {
     app.$toast.error(error.message)
 
-    const excludedErrorsForBugsnag =
-      !excludedMessagesFromReporting.includes(error.message) ||
-      error.message.includes('Metamask') ||
-      error.message.includes('metamask')
-
-    if (IS_PRODUCTION && excludedErrorsForBugsnag) {
+    if (IS_PRODUCTION && !isErrorExcludedFromReporting(error)) {
       app.$bugsnag.notify(error)
     } else {
       console.error(error)
