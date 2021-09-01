@@ -54,7 +54,8 @@ export class TxProvider {
         message,
         chainId,
         feePrice,
-        feeDenom
+        feeDenom,
+        estimateGas: false
       })
 
       return await metricsProvider.sendAndRecord(promise, `${bucket}PrepareTx`)
