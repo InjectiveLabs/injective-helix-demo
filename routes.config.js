@@ -28,14 +28,22 @@ const spot = [
 
 const derivatives = [
   'inj-usdt-perp',
-  'btc-usdt',
-  'eth-usdt',
   'inj-usdt',
+  'btc-usdt-perp',
+  'btc-usdt',
+  'eth-usdt-perp',
+  'eth-usdt',
+  'link-usdt-perp',
   'link-usdt',
+  'comp-usdt-perp',
   'comp-usdt',
+  'uni-usdt-perp',
   'uni-usdt',
+  'grt-usdt-perp',
   'grt-usdt',
+  'snx-usdt-perp',
   'snx-usdt',
+  'bat-usdt-perp',
   'bat-usdt'
 ]
 
