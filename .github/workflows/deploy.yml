@@ -147,7 +147,7 @@ jobs:
       ## Flags
       META_TAGS_ENABLED: true
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-      MAINTENANCE_ENABLED: true
+      MAINTENANCE_ENABLED: false
       METRICS_ENABLED: false
       GEO_IP_RESTRICTIONS_ENABLED: false
       TRANSFER_RESTRICTIONS_ENABLED: false
@@ -196,7 +196,7 @@ jobs:
         run: aws cloudfront create-invalidation --distribution-id=$CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
 
   deploy-testnet-stag:
-    if: false
+    if: true
     env:
       ## Public
       APP_NAME: 'TESTNET STAGING - Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'
