@@ -11,6 +11,7 @@ import { coinGeckoConsumer } from '~/app/singletons/CoinGeckoConsumer'
 import { getContracts } from '~/app/singletons/Contracts'
 import {
   CHAIN_ID,
+  GAS_LIMIT_MULTIPLIER,
   INJECTIVE_DENOM,
   MAXIMUM_TRANSFER_ALLOWED,
   TRANSFER_RESTRICTIONS_ENABLED,
@@ -94,7 +95,9 @@ export const setTokenAllowance = async ({
       {
         from: address,
         to: tokenAddress,
-        gas: gas.toNumber().toString(16),
+        gas: new BigNumberInWei(gas.times(GAS_LIMIT_MULTIPLIER).toFixed(0))
+          .toNumber()
+          .toString(16),
         gasPrice: new BigNumberInWei(gasPrice).toNumber().toString(16),
         data
       },
@@ -141,7 +144,9 @@ export const transfer = async ({
       {
         from: address,
         to: contracts.peggy.address,
-        gas: gas.toNumber().toString(16),
+        gas: new BigNumberInWei(gas.times(GAS_LIMIT_MULTIPLIER).toFixed(0))
+          .toNumber()
+          .toString(16),
         gasPrice: new BigNumberInWei(gasPrice).toNumber().toString(16),
         data
       },
