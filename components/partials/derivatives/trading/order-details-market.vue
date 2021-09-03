@@ -91,6 +91,7 @@
             &mdash;
           </v-ui-text>
         </p>
+        <!--
         <p class="flex justify-between group leading-6">
           <v-ui-text muted-sm class="group-hover:text-white">
             {{ $t('notional_value') }}
@@ -112,6 +113,7 @@
             &mdash;
           </v-ui-text>
         </p>
+        -->
         <p class="flex justify-between group leading-6">
           <v-ui-text muted-sm class="group-hover:text-white flex items-center"
             ><span class="mr-2">{{ $t('fee') }}</span

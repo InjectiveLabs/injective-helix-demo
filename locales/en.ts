@@ -152,9 +152,9 @@ export default {
   est_funding_rate: 'Est. Funding Rate',
   funding_rate_tooltip:
     'The interest rate paid by position holders, determined by the difference between the perpetual swap price and underlying spot price. A positive funding rate implies that longs pay shorts, whereas a negative funding rate implies that shorts pay longs.',
-  est_receiving_amount: 'Est. Receiving Amount',
+  est_receiving_amount: 'Est. Receiving Amount (Worst Case)',
   est_receiving_amount_note:
-    'This amount is the least possible to be returned after the execution of the trade',
+    'The lowest amount you can actually receive for trade.',
   fee_order_details_note:
     "If your limit order doesn't get filled as a taker order, you will only need to pay {feeReturned} in fees",
   buy_long: 'Buy/Long',
