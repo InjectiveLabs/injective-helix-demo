@@ -3,7 +3,8 @@ import { Context } from '@nuxt/types'
 import { IS_PRODUCTION } from '~/app/utils/constants'
 
 const isErrorExcludedFromReporting = (error: any): boolean => {
-  const errorMessage = error === 'object' ? error.message : error
+  const errorMessage =
+    typeof error === 'object' && error !== null ? error.message : error || ''
 
   return (
     errorMessage.startsWith('Metamask:') ||
