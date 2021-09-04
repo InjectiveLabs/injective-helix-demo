@@ -22,8 +22,8 @@ export interface UiPriceLevel {
 }
 
 export interface GeoLocation {
-  continent: ''
-  country: ''
+  continent: string
+  country: string
 }
 
 export * from './aliases'

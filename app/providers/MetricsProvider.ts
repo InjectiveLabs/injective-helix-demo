@@ -1,23 +1,14 @@
 import { HttpClient } from '@injectivelabs/utils'
+import { app } from '../singletons/App'
 import { IS_PRODUCTION, METRICS_ENABLED } from '../utils/constants'
 
 export class MetricsProvider {
   private httpClient: HttpClient
   public env: string
-  public locale: string
 
-  constructor({
-    baseUrl,
-    locale,
-    env
-  }: {
-    baseUrl: string
-    locale: string
-    env: string
-  }) {
+  constructor({ baseUrl, env }: { baseUrl: string; env: string }) {
     this.httpClient = new HttpClient(baseUrl)
     this.env = env
-    this.locale = locale
   }
 
   async wrap<T>(
@@ -61,20 +52,21 @@ export class MetricsProvider {
   private async timing(bucket: string, duration: number) {
     return await this.httpClient.post(`timing/${bucket}.timing`, {
       dur: duration,
-      tags: 'locale=' + this.locale + ',env=' + this.env
+      tags: 'locale=' + app.regionForMetrics + ',env=' + this.env
     })
   }
 
   private async incr(bucket: string) {
     return await this.httpClient.post(`incr/${bucket}.counter`, {
-      tags: 'locale=' + this.locale + ',env=' + this.env
+      tags: 'locale=' + app.regionForMetrics + ',env=' + this.env
     })
   }
 
   async pageLoadTiming(page: string, duration: number) {
     return await this.httpClient.post('timing/pageloads.timing', {
       dur: duration,
-      tags: 'locale=' + this.locale + ',env=' + this.env + ',page=' + page
+      tags:
+        'locale=' + app.regionForMetrics + ',env=' + this.env + ',page=' + page
     })
   }
 
@@ -84,7 +76,6 @@ export class MetricsProvider {
 }
 
 export const metricsProvider = new MetricsProvider({
-  locale: 'en',
   baseUrl: 'https://telegraf.injective.dev/statsd',
   env: process.env.APP_ENV || 'local'
 })
