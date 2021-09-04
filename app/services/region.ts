@@ -2,7 +2,7 @@ import { HttpClient } from '@injectivelabs/utils'
 import { restrictedCountries } from '../data/geoip'
 import { GeoLocation } from '~/types'
 
-export const fetchGeoLocation = async (): Promise<GeoLocation | undefined> => {
+export const fetchGeoLocation = async (): Promise<GeoLocation> => {
   const httpClient = new HttpClient('https://geoip.injective.dev/')
 
   try {
@@ -12,7 +12,10 @@ export const fetchGeoLocation = async (): Promise<GeoLocation | undefined> => {
 
     return data
   } catch (error: any) {
-    return undefined
+    return {
+      country: '',
+      continent: ''
+    }
   }
 }
 

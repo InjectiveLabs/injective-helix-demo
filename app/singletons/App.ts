@@ -28,7 +28,7 @@ class App {
   get regionForMetrics(): string {
     const { geoLocation } = this
 
-    if (geoLocation) {
+    if (geoLocation && geoLocation.country) {
       return geoLocation.country
     }
 

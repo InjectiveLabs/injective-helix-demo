@@ -52,13 +52,13 @@ export class MetricsProvider {
   private async timing(bucket: string, duration: number) {
     return await this.httpClient.post(`timing/${bucket}.timing`, {
       dur: duration,
-      tags: 'locale=' + app.regionForMetrics + ',env=' + this.env
+      tags: 'region=' + app.regionForMetrics + ',env=' + this.env
     })
   }
 
   private async incr(bucket: string) {
     return await this.httpClient.post(`incr/${bucket}.counter`, {
-      tags: 'locale=' + app.regionForMetrics + ',env=' + this.env
+      tags: 'region=' + app.regionForMetrics + ',env=' + this.env
     })
   }
 
@@ -66,7 +66,7 @@ export class MetricsProvider {
     return await this.httpClient.post('timing/pageloads.timing', {
       dur: duration,
       tags:
-        'locale=' + app.regionForMetrics + ',env=' + this.env + ',page=' + page
+        'region=' + app.regionForMetrics + ',env=' + this.env + ',page=' + page
     })
   }
 
