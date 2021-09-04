@@ -9,6 +9,7 @@ import { fetchGasPrice } from '~/app/services/gas'
 import { Locale, english } from '~/locales'
 import { AppState, GeoLocation } from '~/types'
 import { fetchGeoLocation, validateGeoLocation } from '~/app/services/region'
+import { app } from '~/app/singletons/App'
 
 const initialState = {
   locale: english,
@@ -52,9 +53,11 @@ export const mutations = {
 export const actions = actionTree(
   { state },
   {
-    async init(_) {
+    async init({ state }) {
       await this.app.$accessor.app.fetchGasPrice()
       await this.app.$accessor.app.fetchGeoLocation()
+
+      app.setGeoLocation(state.geoLocation)
     },
 
     queue({ state, commit }) {
