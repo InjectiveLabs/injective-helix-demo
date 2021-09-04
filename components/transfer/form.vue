@@ -135,9 +135,13 @@ export default Vue.extend({
         return ''
       }
 
-      return new BigNumberInWei(balance.balance)
-        .toBase(balance.token.decimals)
-        .minus(INJ_FEE_BUFFER)
+      const balanceInBase = new BigNumberInWei(balance.balance).toBase(
+        balance.token.decimals
+      )
+      const buffer = balanceInBase.gt(INJ_FEE_BUFFER) ? INJ_FEE_BUFFER : 0
+
+      return balanceInBase
+        .minus(buffer)
         .toFixed(
           UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
           BigNumberInBase.ROUND_FLOOR
