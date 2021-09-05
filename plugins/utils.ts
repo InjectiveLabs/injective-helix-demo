@@ -3,6 +3,9 @@ import { Context } from '@nuxt/types'
 import { IS_PRODUCTION } from '~/app/utils/constants'
 
 const isErrorExcludedFromReporting = (error: any): boolean => {
+  const disabledMessages = [
+    'Your country is restricted from trading on this relayer'
+  ]
   const errorMessage =
     typeof error === 'object' && error !== null ? error.message : error || ''
 
@@ -10,7 +13,8 @@ const isErrorExcludedFromReporting = (error: any): boolean => {
     errorMessage.startsWith('Metamask:') ||
     errorMessage.includes('MetaMask') ||
     errorMessage.includes('Metamask') ||
-    errorMessage.includes('metamask')
+    errorMessage.includes('metamask') ||
+    disabledMessages.includes(errorMessage)
   )
 }
 
