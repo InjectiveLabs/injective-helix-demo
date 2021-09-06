@@ -63,12 +63,9 @@
         </div>
       </item>
       <item class="text-footer">
-        <a href="https://docs.injectiveprotocol.com/">Docs</a>
-      </item>
-      <item class="text-footer">
         <a
           class="cursor-pointer"
-          href="https://injectiveprotocol.com/privacy-policy"
+          href="https://injectivelabs.org/privacy-policy"
           target="_blank"
           >Privacy Policy</a
         >
@@ -76,7 +73,7 @@
       <item class="text-footer">
         <a
           class="cursor-pointer"
-          href="https://injectiveprotocol.com/terms-and-conditions"
+          href="https://injectivelabs.org/terms-and-conditions"
           target="_blank"
           >Terms & Conditions</a
         >
