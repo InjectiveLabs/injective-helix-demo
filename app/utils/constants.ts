@@ -51,7 +51,7 @@ export const CHAIN_ID: ChainId = process.env.APP_CHAIN_ID
 export const DEFAULT_GAS_PRICE = new BigNumber(6).times(GWEI_IN_WEI)
 export const DEFAULT_MAX_SLIPPAGE = new BigNumber(1) // +1% slippage
 
-export const MAXIMUM_TRANSFER_ALLOWED = 50
+export const MAXIMUM_TRANSFER_ALLOWED = 5000
 export const INJECTIVE_DENOM = 'inj'
 export const INJ_FEE_BUFFER = 0.01
 export const GAS_LIMIT_MULTIPLIER = 1.2
