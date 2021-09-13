@@ -1,6 +1,7 @@
 const spot = [
   'inj-usdt',
   'inj-usdc',
+  'axs-usdt',
   'wbtc-usdc',
   'wbtc-usdt',
   'weth-usdt',
