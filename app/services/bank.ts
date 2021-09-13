@@ -88,7 +88,7 @@ export const fetchBalancesWithTokenMetaData = (
       return {
         denom,
         balance: balances[denom],
-        token: tokenMetaToToken(getTokenMetaData(denom))
+        token: tokenMetaToToken(getTokenMetaData(denom), denom)
       }
     })
     .filter(
