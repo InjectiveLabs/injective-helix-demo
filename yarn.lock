@@ -2036,10 +2036,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/token-metadata@^0.0.15":
-  version "0.0.15"
-  resolved "https://registry.npmjs.org/@injectivelabs/token-metadata/-/token-metadata-0.0.15.tgz#8bebe650993617fcb3130859bec83f66cd2f554b"
-  integrity sha512-or6hXiJOJ5cr8WKEb7neNtSCAekcLFKPqtjDGhdntRmATdTMcMUqIRa3ySsTZZg5gqCwWiYAgunfPkK9T3L99g==
+"@injectivelabs/token-metadata@^0.0.17":
+  version "0.0.17"
+  resolved "https://registry.npmjs.org/@injectivelabs/token-metadata/-/token-metadata-0.0.17.tgz#371e2d1ca259db65ae3f9e5471774371a0766a2c"
+  integrity sha512-kzUxuZqIoeqFj1kHuvET4mNrd1346tiPYCb6xBYiDiVG67UzJFzVAzB0v7a0fLy/XEydh7JdJ5QB6EbF84m5tg==
   dependencies:
     "@injectivelabs/ts-types" "^0.0.25"
     "@types/lodash.values" "^4.3.6"

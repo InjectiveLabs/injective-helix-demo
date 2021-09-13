@@ -76,7 +76,9 @@
           </v-ui-text>
         </p>
         <p v-if="!orderTypeBuy" class="flex justify-between group leading-6">
-          <v-ui-text muted-sm class="group-hover:text-white flex items-center"
+          <v-ui-text
+            muted-sm
+            class="group-hover:text-white flex items-center max-w-4xs sm:max-w-lg"
             ><span class="mr-2">{{ $t('est_receiving_amount') }}</span
             ><v-ui-icon
               :icon="Icon.Info"

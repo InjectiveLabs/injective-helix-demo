@@ -28,7 +28,7 @@ import {
   ZERO_IN_BASE,
   ZERO_TO_STRING,
   TRANSFER_RESTRICTIONS_ENABLED,
-  MAXIMUM_TRANSFER_ALLOWED
+  MAXIMUM_NOTIONAL_ALLOWED
 } from '~/app/utils/constants'
 import {
   UiPriceLevel,
@@ -368,11 +368,11 @@ export const validateNotionalRestrictions = ({
   const usdTokenSymbols = ['USDT', 'USDC']
 
   if (usdTokenSymbols.includes(token.symbol)) {
-    if (notional.gt(MAXIMUM_TRANSFER_ALLOWED)) {
+    if (notional.gt(MAXIMUM_NOTIONAL_ALLOWED)) {
       throw new Error(
         `Notional of ${notional.toString()}${
           token.symbol
-        } exceeds maximum of ${MAXIMUM_TRANSFER_ALLOWED.toString()}${
+        } exceeds maximum of ${MAXIMUM_NOTIONAL_ALLOWED.toString()}${
           token.symbol
         } allowed.`
       )
