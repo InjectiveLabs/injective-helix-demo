@@ -101,13 +101,7 @@
         <button
           role="button"
           type="button"
-          class="
-            border border-primary-500
-            text-primary-500
-            hover:text-primary-300
-            ml-2
-            px-1
-          "
+          class="border border-primary-500 text-primary-500 hover:text-primary-300 ml-2 px-1"
           @click.stop.prevent="onAddMarginButtonClick"
         >
           &plus;
@@ -291,9 +285,16 @@ export default Vue.extend({
         amount: new BigNumberInBase(position.quantity)
       })
 
-      return new BigNumberInBase(
+      const minTickPrice = new BigNumberInBase(
+        new BigNumberInBase(1).shiftedBy(-market.priceDecimals)
+      )
+      const worstPriceWithSlippage = new BigNumberInBase(
         worstPrice.times(slippage).toFixed(market.priceDecimals)
       )
+
+      return worstPriceWithSlippage.isZero()
+        ? minTickPrice
+        : worstPriceWithSlippage
     },
 
     totalReduceOnlyQuantity(): BigNumberInBase {
