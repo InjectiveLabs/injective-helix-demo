@@ -128,7 +128,10 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Status, BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import { DEFAULT_MAX_SLIPPAGE, ZERO_IN_BASE } from '~/app/utils/constants'
+import {
+  DEFAULT_MAX_SLIPPAGE_FOR_CLOSING_POSITIONS,
+  ZERO_IN_BASE
+} from '~/app/utils/constants'
 import {
   UiDerivativeMarket,
   UiPosition,
@@ -265,8 +268,10 @@ export default Vue.extend({
 
       return new BigNumberInBase(
         position.direction === TradeDirection.Long
-          ? DEFAULT_MAX_SLIPPAGE.div(100).minus(1).times(-1)
-          : DEFAULT_MAX_SLIPPAGE.div(100).plus(1)
+          ? DEFAULT_MAX_SLIPPAGE_FOR_CLOSING_POSITIONS.div(100)
+              .minus(1)
+              .times(-1)
+          : DEFAULT_MAX_SLIPPAGE_FOR_CLOSING_POSITIONS.div(100).plus(1)
       )
     },
 

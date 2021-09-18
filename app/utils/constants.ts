@@ -49,7 +49,8 @@ export const CHAIN_ID: ChainId = process.env.APP_CHAIN_ID
 
 // 6 gwei for Kovan, fetched from gasStation for Mainnet
 export const DEFAULT_GAS_PRICE = new BigNumber(6).times(GWEI_IN_WEI)
-export const DEFAULT_MAX_SLIPPAGE = new BigNumber(100) // +1% slippage
+export const DEFAULT_MAX_SLIPPAGE = new BigNumber(1) // +1% slippage
+export const DEFAULT_MAX_SLIPPAGE_FOR_CLOSING_POSITIONS = new BigNumber(100) // +1% slippage
 
 export const MAXIMUM_TRANSFER_ALLOWED = 1000
 export const MAXIMUM_NOTIONAL_ALLOWED = 5000
