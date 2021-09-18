@@ -3,11 +3,14 @@
     <div class="w-full md:w-xl flex flex-col shadow-md mx-2 px-2">
       <div class="mt-6">
         <h3 class="text-center text-2xl font-bold">
-          {{ $t('select_ledger_address') }}
+          {{ $t('Connect using Ledger') }}
         </h3>
       </div>
       <v-ledger-address-manager />
       <v-ledger-confirm v-if="addresses.length > 0" @connected="onClose" />
+      <p class="text-xs text-gray-400 my-2">
+        {{ $t('Connect using Ledger instructions') }}
+      </p>
     </div>
   </modal>
 </template>

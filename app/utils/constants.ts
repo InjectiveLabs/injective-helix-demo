@@ -36,9 +36,9 @@ export const UI_DEFAULT_DISPLAY_DECIMALS = 4
 export const UI_DEFAULT_PRICE_DISPLAY_DECIMALS = 4
 export const UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS = 4
 
-export const NETWORK: Network = process.env.APP_NETWORK || Network.Staking
+export const NETWORK: Network = process.env.APP_NETWORK || Network.Testnet
 export const IS_TESTNET = [
-  Network.Staking,
+  Network.Testnet,
   Network.Devnet,
   Network.Local
 ].includes(NETWORK)
