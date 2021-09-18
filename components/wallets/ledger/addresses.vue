@@ -31,7 +31,7 @@
             }}
           </v-ui-button>
         </div>
-        <p v-else class="text-gray-300 text-2xs my-2">
+        <p v-else class="text-gray-400 text-2xs my-2">
           {{ $t('please_wait_addresses') }}
         </p>
       </div>

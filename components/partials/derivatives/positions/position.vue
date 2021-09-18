@@ -101,13 +101,7 @@
         <button
           role="button"
           type="button"
-          class="
-            border border-primary-500
-            text-primary-500
-            hover:text-primary-300
-            ml-2
-            px-1
-          "
+          class="border border-primary-500 text-primary-500 hover:text-primary-300 ml-2 px-1"
           @click.stop.prevent="onAddMarginButtonClick"
         >
           &plus;
@@ -134,7 +128,10 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Status, BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import { DEFAULT_MAX_SLIPPAGE, ZERO_IN_BASE } from '~/app/utils/constants'
+import {
+  DEFAULT_MAX_SLIPPAGE_FOR_CLOSING_POSITIONS,
+  ZERO_IN_BASE
+} from '~/app/utils/constants'
 import {
   UiDerivativeMarket,
   UiPosition,
@@ -271,8 +268,10 @@ export default Vue.extend({
 
       return new BigNumberInBase(
         position.direction === TradeDirection.Long
-          ? DEFAULT_MAX_SLIPPAGE.div(100).minus(1).times(-1)
-          : DEFAULT_MAX_SLIPPAGE.div(100).plus(1)
+          ? DEFAULT_MAX_SLIPPAGE_FOR_CLOSING_POSITIONS.div(100)
+              .minus(1)
+              .times(-1)
+          : DEFAULT_MAX_SLIPPAGE_FOR_CLOSING_POSITIONS.div(100).plus(1)
       )
     },
 
@@ -291,9 +290,16 @@ export default Vue.extend({
         amount: new BigNumberInBase(position.quantity)
       })
 
-      return new BigNumberInBase(
+      const minTickPrice = new BigNumberInBase(
+        new BigNumberInBase(1).shiftedBy(-market.priceDecimals)
+      )
+      const worstPriceWithSlippage = new BigNumberInBase(
         worstPrice.times(slippage).toFixed(market.priceDecimals)
       )
+
+      return worstPriceWithSlippage.isZero()
+        ? minTickPrice
+        : worstPriceWithSlippage
     },
 
     totalReduceOnlyQuantity(): BigNumberInBase {

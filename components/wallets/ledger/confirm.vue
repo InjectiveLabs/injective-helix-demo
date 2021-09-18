@@ -91,6 +91,7 @@ export default Vue.extend({
         .catch(this.$onRejected)
         .finally(() => {
           this.status.setIdle()
+          this.$toast.success(this.$t('success_connect'))
           this.$emit('connected')
         })
     }
