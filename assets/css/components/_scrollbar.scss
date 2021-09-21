@@ -1,12 +1,13 @@
 /* Works on Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: theme('colors.dark.700') theme('colors.dark.900');
+  scrollbar-color: theme('colors.dark.500') theme('colors.dark.800');
 }
 
 /* Works on Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
   width: 10px;
+  height: 10px;
 }
 
 *::-webkit-scrollbar-track {
@@ -14,7 +15,7 @@
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: theme('colors.dark.700');
+  background-color: theme('colors.dark.500');
   border-radius: 20px;
-  border: 2px solid theme('colors.dark.900');
+  border: 2px solid theme('colors.dark.800');
 }
