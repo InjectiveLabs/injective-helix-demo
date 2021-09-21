@@ -170,7 +170,8 @@ import OrderDetailsMarket from './order-details-market.vue'
 import {
   DEFAULT_MAX_SLIPPAGE,
   ZERO_IN_BASE,
-  NUMBER_REGEX
+  NUMBER_REGEX,
+  DEFAULT_PRICE_WARNING_DEVIATION
 } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import {
@@ -698,6 +699,38 @@ export default Vue.extend({
       }
     },
 
+    priceHasHighDeviationWarning(): boolean {
+      const {
+        price,
+        orderTypeBuy,
+        tradingTypeMarket,
+        orderTypeReduceOnly,
+        lastTradedPrice
+      } = this
+
+      if (orderTypeReduceOnly) {
+        return false
+      }
+
+      if (tradingTypeMarket) {
+        return false
+      }
+
+      if (price.lte(0)) {
+        return false
+      }
+
+      const deviation = new BigNumberInBase(1)
+        .minus(
+          orderTypeBuy
+            ? price.dividedBy(lastTradedPrice)
+            : lastTradedPrice.dividedBy(price)
+        )
+        .times(100)
+
+      return deviation.gt(DEFAULT_PRICE_WARNING_DEVIATION)
+    },
+
     amountNotValidNumberError(): TradeError | undefined {
       const { form } = this
 
@@ -1188,7 +1221,8 @@ export default Vue.extend({
         hasErrors,
         maxOrdersError,
         tradingTypeMarket,
-        isUserWalletConnected
+        isUserWalletConnected,
+        priceHasHighDeviationWarning
       } = this
 
       if (!isUserWalletConnected) {
@@ -1203,9 +1237,20 @@ export default Vue.extend({
         return this.$toast.error(maxOrdersError)
       }
 
-      return tradingTypeMarket
-        ? this.submitMarketOrder()
-        : this.submitLimitOrder()
+      if (tradingTypeMarket) {
+        return this.submitMarketOrder()
+      }
+
+      if (!priceHasHighDeviationWarning) {
+        return this.submitLimitOrder()
+      }
+
+      return this.$onConfirm(
+        this.$t('high_price_deviation_warning', {
+          percentage: DEFAULT_PRICE_WARNING_DEVIATION
+        }),
+        this.submitLimitOrder
+      )
     }
   }
 })

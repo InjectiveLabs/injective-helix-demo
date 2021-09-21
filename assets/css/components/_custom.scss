@@ -25,6 +25,23 @@
   background: theme('colors.aqua.500') !important;
 }
 
+.toasted.bubble.default {
+  @apply text-gray-200 shadow-sm;
+  background: theme('colors.dark.500') !important;
+}
+
+.toasted-container .toasted.default .action.text-primary-500 {
+  @apply text-primary-500 font-bold;
+}
+
+.toasted-container .toasted.default .action.text-red-500 {
+  @apply text-red-500 font-bold;
+}
+
+.toasted-container .toasted.default .action.text-gray-300 {
+  @apply text-gray-300 font-bold;
+}
+
 .bg-gradient-300 {
   background-color: rgba(181, 187, 202, 0.03);
 }

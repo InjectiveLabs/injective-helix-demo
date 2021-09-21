@@ -3,6 +3,8 @@ export default {
   copy_address: 'Copy Address',
   max: 'Max',
   min: 'Min',
+  cancel: 'Cancel',
+  confirm: 'Confirm',
   injective: 'Injective',
   not_connected: 'Not Connected',
   connect: 'Connect',
@@ -206,5 +208,7 @@ export default {
     'Orderbook liquidity cannot satisfy the worst price for the specified amount',
   'Connect using Ledger': 'Connect using Ledger',
   'Connect using Ledger instructions':
-    'Note: To ensure smooth process while connecting your Ledger Hardware Wallet, please ensure you are running the on latest Chrome version, have your Ledger device connected, unlocked and your Ethereum app open. '
+    'Note: To ensure smooth process while connecting your Ledger Hardware Wallet, please ensure you are running the on latest Chrome version, have your Ledger device connected, unlocked and your Ethereum app open. ',
+  high_price_deviation_warning:
+    'Your order price deviates at least {percentage}% from the latest market price!'
 }

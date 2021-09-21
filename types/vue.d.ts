@@ -19,6 +19,7 @@ declare module 'vue/types/vue' {
     $router: VueRouter
     $accessor: typeof accessorType
     $onRejected: (e: any) => void
+    $onConfirm: (message: string, handler: Function) => void
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
