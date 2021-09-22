@@ -1,5 +1,5 @@
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import { getTokenMetaData } from '../services/tokens'
+import { getCoinGeckoId, getTokenMetaData } from '../services/tokens'
 import { grpcTokenMetaToToken, tokenMetaToToken } from './token'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
 import { spot as sortSpotMarkets } from '~/routes.config'
@@ -41,6 +41,14 @@ export const baseUiSpotMarketToBaseUiSpotMarketWithPartialTokenMetaData = (
   const quoteToken = market.quoteToken
     ? grpcTokenMetaToToken(market.quoteToken, market.quoteDenom)
     : tokenMetaToToken(getTokenMetaData(market.quoteDenom), market.quoteDenom)
+
+  if (baseToken && !baseToken.coinGeckoId) {
+    baseToken.coinGeckoId = getCoinGeckoId(baseToken.symbol)
+  }
+
+  if (quoteToken && !quoteToken.coinGeckoId) {
+    quoteToken.coinGeckoId = getCoinGeckoId(quoteToken.symbol)
+  }
 
   return {
     ...market,

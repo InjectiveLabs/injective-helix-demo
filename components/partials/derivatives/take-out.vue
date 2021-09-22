@@ -14,7 +14,12 @@
           <h3 class="text-center text-base uppercase">
             {{ $t('take_out_asset', { asset: market.quoteToken.symbol }) }}
           </h3>
-          <v-quote :balance="quoteTokenBalance" />
+          <v-quote
+            :balance="quoteTokenBalance"
+            :price-in-usd="
+              erc20TokenWithBalance ? erc20TokenWithBalance.priceInUsd : 0
+            "
+          />
         </div>
       </div>
     </div>
@@ -27,7 +32,7 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import VQuote from './take-out/quote.vue'
 import ModalElement from '~/components/elements/modal.vue'
 import { Modal } from '~/types/enums'
-import { BankBalances, UiDerivativeMarket } from '~/types'
+import { BankBalances, TokenWithBalance, UiDerivativeMarket } from '~/types'
 import { ZERO_IN_BASE } from '~/app/utils/constants'
 
 export default Vue.extend({
@@ -39,6 +44,10 @@ export default Vue.extend({
   computed: {
     market(): UiDerivativeMarket | undefined {
       return this.$accessor.derivatives.market
+    },
+
+    erc20TokenWithBalance(): TokenWithBalance {
+      return this.$accessor.token.quoteTokenWithBalance
     },
 
     balances(): BankBalances {

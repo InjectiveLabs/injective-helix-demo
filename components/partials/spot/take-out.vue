@@ -14,13 +14,27 @@
           <h3 class="text-center text-base uppercase">
             {{ $t('take_out_asset', { asset: market.baseToken.symbol }) }}
           </h3>
-          <v-base :balance="baseTokenBalance" />
+          <v-base
+            :balance="baseTokenBalance"
+            :price-in-usd="
+              baseErc20TokenWithBalance
+                ? baseErc20TokenWithBalance.priceInUsd
+                : 0
+            "
+          />
         </div>
         <div class="w-full lg:w-1/2 lg:border-l px-4">
           <h3 class="text-center text-base uppercase">
             {{ $t('take_out_asset', { asset: market.quoteToken.symbol }) }}
           </h3>
-          <v-quote :balance="quoteTokenBalance" />
+          <v-quote
+            :balance="quoteTokenBalance"
+            :price-in-usd="
+              quoteErc20TokenWithBalance
+                ? quoteErc20TokenWithBalance.priceInUsd
+                : 0
+            "
+          />
         </div>
       </div>
     </div>
@@ -34,7 +48,7 @@ import VBase from './take-out/base.vue'
 import VQuote from './take-out/quote.vue'
 import ModalElement from '~/components/elements/modal.vue'
 import { Modal } from '~/types/enums'
-import { BankBalances, UiSpotMarket } from '~/types'
+import { BankBalances, TokenWithBalance, UiSpotMarket } from '~/types'
 import { ZERO_IN_BASE } from '~/app/utils/constants'
 
 export default Vue.extend({
@@ -51,6 +65,14 @@ export default Vue.extend({
 
     balances(): BankBalances {
       return this.$accessor.bank.balances
+    },
+
+    baseErc20TokenWithBalance(): TokenWithBalance {
+      return this.$accessor.token.baseTokenWithBalance
+    },
+
+    quoteErc20TokenWithBalance(): TokenWithBalance {
+      return this.$accessor.token.quoteTokenWithBalance
     },
 
     baseTokenBalance(): BigNumberInBase {

@@ -1,23 +1,16 @@
 <template>
   <div :class="classes" role="checkbox" tabindex="0" @click.stop="toggle">
     <span
-      :class="token.allowance.gt(0) ? 'bg-primary-500' : 'bg-dark-500'"
-      class="
-        inline-block
-        w-full
-        h-full
-        rounded-full
-        shadow-md
-        transition-bg-color
-      "
+      :class="allowance.gt(0) ? 'bg-primary-500' : 'bg-dark-500'"
+      class="inline-block w-full h-full rounded-full shadow-md transition-bg-color"
     ></span>
     <span :class="indicatorClasses" :style="indicatorStyles">
       <v-ui-icon
         :icon="indicatorIcon"
         :rotating="status.isLoading()"
         :muted="status.isLoading()"
-        :primary="!status.isLoading() && token.allowance.gt(0)"
-        :red="!status.isLoading() && !token.allowance.gt(0)"
+        :primary="!status.isLoading() && allowance.gt(0)"
+        :red="!status.isLoading() && !allowance.gt(0)"
         :style="{ marginTop: lg ? '6px' : '-9px', marginRight: '2px' }"
         v-bind="{ '2xs': sm, sm: lg }"
       ></v-ui-icon>
@@ -27,7 +20,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { Status } from '@injectivelabs/utils'
+import { BigNumberInWei, Status } from '@injectivelabs/utils'
 import { Icon, TokenWithBalance } from '~/types'
 
 export default Vue.extend({
@@ -57,6 +50,12 @@ export default Vue.extend({
   },
 
   computed: {
+    allowance(): BigNumberInWei {
+      const { token } = this
+
+      return new BigNumberInWei(token.allowance)
+    },
+
     classes(): string {
       const classes = [
         'block',
@@ -121,7 +120,7 @@ export default Vue.extend({
         return Sync
       }
 
-      return this.token.allowance.gt(0) ? Unlocked : Locked
+      return new BigNumberInWei(this.allowance).gt(0) ? Unlocked : Locked
     },
 
     indicatorStyles(): { transform: string; marginTop: string | null } {
@@ -129,7 +128,7 @@ export default Vue.extend({
 
       return {
         marginTop: this.sm ? '2px' : null,
-        transform: this.token.allowance.gt(0)
+        transform: new BigNumberInWei(this.allowance).gt(0)
           ? `translateX(${distance})`
           : 'translateX(0)'
       }

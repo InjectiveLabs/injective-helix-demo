@@ -43,19 +43,52 @@ export const getTokenBalanceAndAllowance = async ({
     const allowance = await erc20Contract
       .getAllowanceOf(address, contracts.peggy.address)
       .callAsync()
+    const priceInUsd = await getUsdtTokenPriceFromCoinGecko(token.coinGeckoId)
 
     return {
       ...token,
-      balance: new BigNumberInWei(balance || 0),
-      allowance: new BigNumberInWei(allowance || 0)
+      priceInUsd,
+      balance: balance || '0',
+      allowance: allowance || '0'
     }
   } catch (e: any) {
     return {
       ...token,
-      balance: new BigNumberInWei(0),
-      allowance: new BigNumberInWei(0)
+      priceInUsd: 0,
+      balance: '0',
+      allowance: '0'
     }
   }
+}
+
+export const getCoinGeckoId = (symbol: string): string => {
+  return Erc20TokenMeta.getCoinGeckoIdFromSymbol(symbol)
+}
+
+export const getUsdtTokenPriceFromCoinGecko = async (coinId: string) => {
+  if (!coinId) {
+    return 0
+  }
+
+  const {
+    data: { market_data: marketData }
+  } = await coinGeckoConsumer.fetchCoin(coinId)
+
+  if (!marketData) {
+    return 0
+  }
+
+  const { current_price: currentPrice } = marketData
+
+  if (!currentPrice) {
+    return 0
+  }
+
+  if (!currentPrice.usd) {
+    return 0
+  }
+
+  return new BigNumberInBase(currentPrice.usd).toNumber()
 }
 
 export const setTokenAllowance = async ({
