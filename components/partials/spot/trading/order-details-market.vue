@@ -88,9 +88,9 @@
           </v-ui-text>
         </p>
         <p class="flex justify-between group leading-6">
-          <v-ui-text muted-sm class="group-hover:text-white flex items-center"
-            ><span>{{ $t('fee') }}</span></v-ui-text
-          >
+          <v-ui-text muted-sm class="group-hover:text-white flex items-center">
+            <span>{{ $t('fee') }}</span>
+          </v-ui-text>
           <v-ui-text v-if="fees.gt(0)" muted class="flex items-center">
             <span class="mr-1">≈</span>
             <v-ui-format-price
