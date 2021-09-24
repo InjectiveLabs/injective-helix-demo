@@ -2,7 +2,7 @@
   <div class="h-full w-full flex flex-wrap py-4">
     <div class="w-full">
       <div class="container">
-        <div class="text-center w-full lg:w-2/3 mx-auto pt-10 lg:pt-16">
+        <div class="text-center w-full lg:w-2/3 mx-auto">
           <h1 class="font-black text-white text-3xl uppercase tracking-wide">
             <img
               src="/images/home-main.svg?v5"
@@ -21,11 +21,11 @@
     </div>
     <div class="container">
       <div class="mt-12 w-full mx-auto lg:w-3/4">
-        <v-panel :title="$t('spot_markets')">
-          <v-spot />
-        </v-panel>
-        <v-panel :title="$t('derivatives')" class="mt-6">
+        <v-panel :title="$t('derivatives')">
           <v-derivatives />
+        </v-panel>
+        <v-panel :title="$t('spot_markets')" class="mt-6">
+          <v-spot />
         </v-panel>
       </div>
     </div>

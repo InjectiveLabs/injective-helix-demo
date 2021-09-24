@@ -1,6 +1,6 @@
 <template>
   <div
-    class="px-6 grid grid-cols-2 xl:grid-cols-12 text-xs xs:text-sm lg:text-xs 2xl:text-sm gap-2 xl:gap-4 py-4 shadow text-gray-200 rounded-2xl bg-gray-900 items-center"
+    class="px-6 grid grid-cols-2 md:grid-cols-12 text-xs xs:text-sm lg:text-xs xl:text-sm gap-2 md:gap-4 py-4 shadow text-gray-200 rounded-2xl bg-gray-900 items-center"
   >
     <slot></slot>
   </div>

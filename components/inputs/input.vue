@@ -10,7 +10,7 @@
           {{ $attrs.label || '' }}
           <span
             v-if="error && !errorBelow"
-            class="text-red-200 italic font-semibold"
+            class="text-red-400 italic font-semibold"
           >
             * {{ error }}
           </span>

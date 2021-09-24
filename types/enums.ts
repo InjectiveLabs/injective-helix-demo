@@ -32,6 +32,10 @@ export enum Icon {
 
 export enum Modal {
   Connect = 'connect',
+  BridgeDeposit = 'bridge-deposit',
+  BridgeWithdraw = 'bridge-withdraw',
+  SubaccountDeposit = 'subaccount-deposit',
+  SubaccountWithdraw = 'subaccount-withdraw',
   Transfer = 'transfer',
   Deposit = 'deposit',
   Withdraw = 'withdraw',

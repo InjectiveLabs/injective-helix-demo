@@ -31,7 +31,7 @@
       >
         <div
           v-if="isOpen"
-          class="inline-block align-bottom bg-gray-850 shadow-card rounded-2xl p-8 text-left transform transition-all w-full max-w-lg sm:max-w-lg lg:max-w-xl"
+          class="inline-block align-bottom bg-gray-850 shadow-card rounded-2xl p-8 text-left transform transition-all w-full max-w-lg sm:max-w-lg lg:max-w-3xl"
           role="dialog"
           :aria-modal="isOpen"
           aria-labelledby="modal-headline"
@@ -55,7 +55,7 @@
               </div>
             </div>
             <slot name="header" />
-            <div class="mt-8">
+            <div class="mt-12">
               <slot />
             </div>
             <slot name="footer" />

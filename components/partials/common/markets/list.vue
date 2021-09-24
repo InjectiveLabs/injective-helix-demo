@@ -48,7 +48,6 @@
           class="col-span-1"
           :market="market"
           :summary="summary"
-          :type="type"
         />
         <template slot="empty">
           <span class="col-span-1 xl:col-span-3 text-center xl:text-left">{{
@@ -67,7 +66,6 @@ import TableHeader from '~/components/partials/common/elements/table-header.vue'
 import VSearch from '~/components/inputs/search.vue'
 import VMarket from '~/components/partials/common/markets/market.vue'
 import {
-  MarketType,
   UiDerivativeMarket,
   UiDerivativeMarketSummary,
   UiSpotMarket,
@@ -98,11 +96,6 @@ export default Vue.extend({
         Array<UiDerivativeMarketSummary | UiSpotMarketSummary>
       >,
       required: true
-    },
-
-    type: {
-      required: true,
-      type: String as PropType<MarketType>
     }
   },
 

@@ -1,8 +1,8 @@
 <template>
   <TableRow>
-    <span class="col-span-3 text-right xl:text-left">
+    <span class="col-span-2 md:col-span-3">
       <div
-        class="flex items-center mb-2 xl:mb-0 cursor-pointer"
+        class="flex items-center mb-4 md:mb-0 cursor-pointer justify-center md:justify-start"
         @click.stop="handleClickOnMarket"
       >
         <img
@@ -13,14 +13,19 @@
         <div class="mr-4">
           {{ market.ticker }}
           <span
-            class="text-gray-400 dark:text-gray-500 text-xs xl:text-xs 2xl:text-sm block"
+            class="text-gray-400 dark:text-gray-500 text-xs md:text-xs 2xl:text-sm block"
           >
             {{ market.baseToken.name }}
           </span>
         </div>
       </div>
     </span>
-    <span class="col-span-3 font-mono text-right flex items-center justify-end">
+    <span class="col-span-1 font-mono text-left md:hidden">{{
+      $t('last_traded_price')
+    }}</span>
+    <span
+      class="col-span-1 md:col-span-3 font-mono text-right flex items-center justify-end"
+    >
       <v-icon-arrow
         class="transform rotate-90 w-3 h-3 mr-1"
         :class="{
@@ -40,12 +45,18 @@
         }}</span>
       </span>
     </span>
-    <span class="col-span-3 font-mono text-right">
+    <span class="col-span-1 font-mono text-left md:hidden">{{
+      $t('market_change_24h')
+    }}</span>
+    <span class="col-span-1 md:col-span-3 font-mono text-right">
       <span :class="change.gte(0) ? 'text-aqua-500' : 'text-red-500'">
         {{ changeToFormat }}%
       </span>
     </span>
-    <span class="col-span-3 font-mono text-right">
+    <span class="col-span-1 font-mono text-left md:hidden">{{
+      $t('market_volume_24h')
+    }}</span>
+    <span class="col-span-1 md:col-span-3 font-mono text-right">
       {{ volumeToFormat }}
       <span class="text-xs text-gray-400 dark:text-gray-500 ml-1">{{
         market.quoteToken.symbol
@@ -85,11 +96,6 @@ export default Vue.extend({
     summary: {
       required: true,
       type: Object as PropType<UiDerivativeMarketSummary | UiSpotMarketSummary>
-    },
-
-    type: {
-      required: true,
-      type: String as PropType<MarketType>
     }
   },
 
@@ -117,9 +123,9 @@ export default Vue.extend({
     },
 
     currentMarket(): UiSpotMarket | UiDerivativeMarket | undefined {
-      const { currentSpotMarket, currentDerivativeMarket, type } = this
+      const { currentSpotMarket, currentDerivativeMarket, market } = this
 
-      return type === MarketType.Spot
+      return market.type === MarketType.Spot
         ? currentSpotMarket
         : currentDerivativeMarket
     },
@@ -128,10 +134,10 @@ export default Vue.extend({
       const {
         currentLastSpotTradedPrice,
         currentLastDerivativeTradedPrice,
-        type
+        market
       } = this
 
-      return type === MarketType.Spot
+      return market.type === MarketType.Spot
         ? currentLastSpotTradedPrice
         : currentLastDerivativeTradedPrice
     },
@@ -158,10 +164,16 @@ export default Vue.extend({
       const { market, lastTradedPrice } = this
 
       if (!market) {
-        return lastTradedPrice.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+        return lastTradedPrice.toFormat(
+          UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+          BigNumberInBase.ROUND_DOWN
+        )
       }
 
-      return lastTradedPrice.toFormat(market.priceDecimals)
+      return lastTradedPrice.toFormat(
+        market.priceDecimals,
+        BigNumberInBase.ROUND_DOWN
+      )
     },
 
     volume(): BigNumberInBase {
@@ -177,7 +189,7 @@ export default Vue.extend({
     volumeToFormat(): string {
       const { volume } = this
 
-      return volume.toFormat(0)
+      return volume.toFormat(0, BigNumberInBase.ROUND_DOWN)
     },
 
     change(): BigNumberInBase {
@@ -193,7 +205,7 @@ export default Vue.extend({
     changeToFormat(): string {
       const { change } = this
 
-      return change.toFormat(2)
+      return change.toFormat(2, BigNumberInBase.ROUND_DOWN)
     },
 
     lastPriceChange(): Change {
@@ -215,9 +227,9 @@ export default Vue.extend({
 
   methods: {
     handleClickOnMarket() {
-      const { market, type } = this
+      const { market } = this
 
-      if (type === MarketType.Derivative) {
+      if (market.type === MarketType.Derivative) {
         return this.$router.push({
           name: 'derivatives-derivative',
           params: {
@@ -227,7 +239,7 @@ export default Vue.extend({
         })
       }
 
-      if (type === MarketType.Spot) {
+      if (market.type === MarketType.Spot) {
         return this.$router.push({
           name: 'spot-spot',
           params: {

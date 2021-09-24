@@ -1,6 +1,3 @@
-import { BigNumberInWei } from '@injectivelabs/utils'
-import { Token } from './token'
-
 export interface UiSubaccountBalance {
   totalBalance: string
   availableBalance: string
@@ -8,11 +5,12 @@ export interface UiSubaccountBalance {
 }
 
 export interface UiSubaccountBalanceWithToken
-  extends Omit<UiSubaccountBalance, 'totalBalance' | 'availableBalance'> {
-  totalBalance: BigNumberInWei
-  availableBalance: BigNumberInWei
-  displayDecimals: number
-  token: Token
+  extends Omit<
+    UiSubaccountBalance,
+    'totalBalance' | 'denom' | 'availableBalance'
+  > {
+  totalBalance: string // BigNumberInWei
+  availableBalance: string // BigNumberInWei
 }
 
 export interface UiSubaccount {

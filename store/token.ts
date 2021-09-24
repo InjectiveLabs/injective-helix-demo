@@ -9,7 +9,12 @@ import {
 } from '~/app/services/tokens'
 import { backupPromiseCall } from '~/app/utils/async'
 import { UNLIMITED_ALLOWANCE } from '~/app/utils/constants'
-import { Token, TokenWithBalance } from '~/types'
+import {
+  Token,
+  TokenWithBalance,
+  UiDerivativeMarket,
+  UiSpotMarket
+} from '~/types'
 
 const initialStateFactory = () => ({
   baseTokenWithBalance: (undefined as unknown) as TokenWithBalance,
@@ -69,6 +74,34 @@ export const mutations = {
 export const actions = actionTree(
   { state },
   {
+    async getTokenBalanceAndAllowance({ commit }) {
+      const { address } = this.app.$accessor.wallet
+      const { market: spotMarket } = this.app.$accessor.spot
+      const { market: derivativeMarket } = this.app.$accessor.derivatives
+
+      if (!spotMarket && !derivativeMarket) {
+        return
+      }
+
+      const market =
+        spotMarket || (derivativeMarket as UiSpotMarket | UiDerivativeMarket)
+      const { baseToken, quoteToken } = market
+
+      const baseTokenWithBalance = (await getTokenBalanceAndAllowance({
+        address,
+        token: baseToken
+      })) as TokenWithBalance
+      const quoteTokenWithBalance = (await getTokenBalanceAndAllowance({
+        address,
+        token: quoteToken
+      })) as TokenWithBalance
+
+      commit('setTokensWithBalance', {
+        baseTokenWithBalance,
+        quoteTokenWithBalance
+      })
+    },
+
     async getTokenBalanceAndAllowanceForMarket({ commit }) {
       const { address } = this.app.$accessor.wallet
       const { market } = this.app.$accessor.spot
@@ -212,8 +245,10 @@ export const actions = actionTree(
         injectiveAddress,
         denom: token.denom,
         destinationAddress: address,
-        bridgeFee: bridgeFee.toWei(token.decimals).toFixed(),
-        amount: amount.toWei(token.decimals).toFixed()
+        bridgeFee: new BigNumberInWei(
+          bridgeFee.toWei(token.decimals).toFixed(0)
+        ),
+        amount: amount.toWei(token.decimals)
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())

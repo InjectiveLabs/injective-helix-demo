@@ -1,27 +1,17 @@
 <template>
   <div>
-    <v-list
-      :markets="markets"
-      :summaries="marketsSummary"
-      :type="MarketType.Spot"
-    />
+    <v-list :markets="markets" :summaries="marketsSummary" />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import VList from './list.vue'
-import { UiSpotMarket, MarketType, UiSpotMarketSummary } from '~/types'
+import { UiSpotMarket, UiSpotMarketSummary } from '~/types'
 
 export default Vue.extend({
   components: {
     VList
-  },
-
-  data() {
-    return {
-      MarketType
-    }
   },
 
   computed: {

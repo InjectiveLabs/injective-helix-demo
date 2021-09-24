@@ -10,7 +10,8 @@ import {
   SpotMarketMap,
   UiSpotMarketSummary,
   BaseUiSpotMarketWithPartialTokenMetaData,
-  BaseUiSpotMarketWithTokenMetaData
+  BaseUiSpotMarketWithTokenMetaData,
+  MarketType
 } from '~/types'
 
 export const spotMarketToUiSpotMarket = (
@@ -18,6 +19,7 @@ export const spotMarketToUiSpotMarket = (
 ): UiSpotMarket => {
   return {
     ...market,
+    type: MarketType.Spot,
     priceDecimals: getDecimalsFromNumber(
       new BigNumberInWei(market.minPriceTickSize)
         .toBase(market.quoteToken.decimals - market.baseToken.decimals)

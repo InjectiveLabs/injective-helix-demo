@@ -186,7 +186,8 @@ module.exports = {
       minHeight: {
         ...extraSizings,
         chart: '70vh',
-        orders: '30vh'
+        orders: '30vh',
+        loading: '4rem'
       },
 
       minWidth: {

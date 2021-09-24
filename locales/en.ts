@@ -115,6 +115,7 @@ export default {
   take_out_asset: 'Withdraw {asset}',
   allowance_set: 'Allowance Set',
   set_allowance: 'Set Allowance',
+  set_allowance_asset: 'Set Allowance for {asset}',
   success_transfer: 'Successfully Deposited',
   success_transfer_assets: 'Successfully Transferred',
   trade_placed: 'Trade placed',
@@ -241,5 +242,23 @@ export default {
     'There are no markets found. You can go ahead and propose some!',
   'last_traded_price Tooltip': '',
   'market_change_24h Tooltip': '',
-  'market_volume_24h Tooltip': ''
+  'market_volume_24h Tooltip': '',
+  balances: 'Balances',
+  'Injective Chain': 'Injective Chain',
+  Subaccount: 'Subaccount',
+  'available_total_subaccount_balance Tooltip':
+    'Your subaccount Available/Total Balance',
+  'Deposit to Injective Chain': 'Deposit to Injective Chain',
+  'Deposit to Subaccount': 'Deposit to your Subaccount',
+  'Available for Deposit': 'Available for Deposit',
+  'Available for Deposit Tooltip':
+    'The amount of {asset} you can deposit on the Injective Chain.',
+  'Enter your amount': 'Enter your amount',
+  'Withdraw from Injective Chain': 'Withdraw from Injective Chain',
+  Deposit: 'Deposit',
+  'Available to Withdraw': 'Available to Withdraw',
+  'Available to Withdraw Tooltip':
+    'The amount you can withdraw from the Injective Chain.',
+  'Available to Withdraw Subaccount Tooltip':
+    'The amount you can withdraw from your Subaccount.'
 }

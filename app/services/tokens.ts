@@ -199,17 +199,17 @@ export const withdraw = async ({
   injectiveAddress,
   destinationAddress
 }: {
-  amount: string // BigNumberInWei
+  amount: BigNumberInWei
   address: AccountAddress
   denom: string
-  bridgeFee: string // BigNumberInWei
+  bridgeFee: BigNumberInWei
   destinationAddress: string
   injectiveAddress: AccountAddress
 }) => {
   const message = PeggyComposer.withdraw({
     denom,
-    amount: new BigNumberInWei(amount).minus(bridgeFee).toFixed(),
-    bridgeFeeAmount: bridgeFee,
+    amount: amount.minus(bridgeFee).toFixed(),
+    bridgeFeeAmount: bridgeFee.toFixed(),
     bridgeFeeDenom: denom,
     address: destinationAddress,
     injectiveAddress

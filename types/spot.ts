@@ -8,6 +8,7 @@ import {
   AllChronosSpotMarketSummary
 } from '@injectivelabs/spot-consumer'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
+import { MarketType } from './enums'
 import { Token } from './token'
 
 export interface BaseUiSpotMarketWithPartialTokenMetaData
@@ -27,6 +28,7 @@ export interface BaseUiSpotMarketWithTokenMetaData
 export interface UiSpotMarket extends BaseUiSpotMarketWithTokenMetaData {
   priceDecimals: number
   quantityDecimals: number
+  type: MarketType
 }
 
 export interface UiSpotMarketSummary extends ChronosSpotMarketSummary {

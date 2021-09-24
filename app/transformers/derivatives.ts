@@ -14,7 +14,8 @@ import {
   DerivativeMarketMap,
   UiDerivativeMarketSummary,
   BaseUiDerivativeMarketWithTokenMetaData,
-  BaseUiDerivativeMarketWithPartialTokenMetaData
+  BaseUiDerivativeMarketWithPartialTokenMetaData,
+  MarketType
 } from '~/types'
 
 export const derivativeMarketToUiDerivativeMarket = (
@@ -22,6 +23,7 @@ export const derivativeMarketToUiDerivativeMarket = (
 ): UiDerivativeMarket => {
   return {
     ...market,
+    type: MarketType.Derivative,
     quantityDecimals: getDecimalsFromNumber(market.minQuantityTickSize),
     priceDecimals: getDecimalsFromNumber(
       new BigNumberInBase(market.minPriceTickSize)
