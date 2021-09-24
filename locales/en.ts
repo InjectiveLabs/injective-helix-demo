@@ -93,7 +93,8 @@ export default {
   price_chart: 'Price Chart',
   filled: 'Filled',
   cancel_order: 'Cancel Order',
-  please_connect_your_wallet: 'Please connect with your wallet',
+  please_connect_to_your_wallet:
+    'Please connect to your wallet to see more details',
   amount_to_transfer: 'Amount to transfer',
   available_balance: 'Available Balance',
   transfer_modal_title: 'Deposit to Injective Chain',
@@ -212,5 +213,28 @@ export default {
   high_price_deviation_warning:
     'Your order price deviates at least {percentage}% from the latest market price!',
   high_execution_price_deviation_warning:
-    'Your execution price deviates at least {percentage}% from the latest market price!'
+    'Your execution price deviates at least {percentage}% from the latest market price!',
+
+  home: 'Home',
+  open: 'Open',
+  'Trezor Connection Note':
+    "Note: At this point there is no support for Trezor - please don't use Trezor (including Metamask's Trezor integration) as it might cause your funds being stuck on the Injective Chain.",
+  close: 'Close',
+  'Connect using browser wallet': 'Connect using browser wallet',
+  'Connect to Wallet': 'Connect to Wallet',
+  Ledger: 'Ledger',
+  'Select address to connect': 'Select address to connect',
+  'Please follow the instructions on your device':
+    'Please follow the instructions on your device',
+  'Ledger Live': 'Ledger Live',
+  'Ledger Legacy': 'Ledger Legacy',
+  'Connect using hardware wallet': 'Connect using hardware wallet',
+  'Get addresses': 'Get addresses',
+  'Get more addresses': 'Get more addresses',
+  'We are getting your addresses, please wait ...':
+    'We are getting your addresses, please wait ...',
+  'Select Derivation Path': 'Select Derivation Path',
+  'Derivation Path': 'Derivation Path',
+  'Select Address': 'Select Address',
+  'Select Ledger Address': 'Select Ledger Address'
 }

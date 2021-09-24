@@ -31,7 +31,10 @@ import { Icon as Icons } from '~/types'
 
 // Icons
 Object.values(Icons).forEach((icon) => {
-  return Vue.component(`v-icon-${icon}`, require(`./icons/${icon}.vue`).default)
+  return Vue.component(
+    `v-ui-icon-${icon}`,
+    require(`./icons/${icon}.vue`).default
+  )
 })
 
 Vue.component('VPanel', Panel)

@@ -3,14 +3,15 @@ import { AccountAddress } from '@injectivelabs/ts-types'
 import { ConcreteStrategyOptions, Wallet } from '@injectivelabs/web3-strategy'
 import { confirm, connect, getAddresses } from '~/app/services/wallet'
 import { getInjectiveAddress } from '~/app/services/account'
-import { validateMetamask } from '~/app/services/metamask'
+import { validateMetamask, isMetamaskInstalled } from '~/app/services/metamask'
 
 const initialStateFactory = () => ({
   wallet: Wallet.Metamask,
   address: '' as AccountAddress,
   injectiveAddress: '' as AccountAddress,
   addressConfirmation: '' as string,
-  addresses: [] as AccountAddress[]
+  addresses: [] as AccountAddress[],
+  metamaskInstalled: false as boolean
 })
 
 const initialState = initialStateFactory()
@@ -20,7 +21,8 @@ export const state = () => ({
   addresses: initialState.addresses as AccountAddress[],
   address: initialState.address as AccountAddress,
   injectiveAddress: initialState.injectiveAddress as AccountAddress,
-  addressConfirmation: initialState.addressConfirmation as string
+  addressConfirmation: initialState.addressConfirmation as string,
+  metamaskInstalled: initialState.metamaskInstalled as boolean
 })
 
 export type WalletStoreState = ReturnType<typeof state>
@@ -54,6 +56,10 @@ export const mutations = {
     state.injectiveAddress = injectiveAddress
   },
 
+  setMetamaskInstalled(state: WalletStoreState, metamaskInstalled: boolean) {
+    state.metamaskInstalled = metamaskInstalled
+  },
+
   setAddresses(state: WalletStoreState, addresses: AccountAddress[]) {
     state.addresses = addresses
   },
@@ -73,6 +79,10 @@ export const actions = actionTree(
   {
     async init({ state }) {
       await this.app.$accessor.wallet.connect(state.wallet || Wallet.Metamask)
+    },
+
+    async isMetamaskInstalled({ commit }) {
+      commit('setMetamaskInstalled', await isMetamaskInstalled())
     },
 
     async connect({ commit }, wallet: Wallet) {

@@ -29,6 +29,15 @@ module.exports = {
       padding: '1rem'
     },
 
+    boxShadow: {
+      primary: '0px 0px 4px #00f2ff',
+      card: '0px 0px 16px rgb(22 25 34 / 30%)',
+      DEFAULT: '0px 0px 4px #08090c',
+      sm: '0px 0px 5px #08090c',
+      md: '0px 0px 6px #08090c',
+      'top-bar-dark': '0px 1px 0px #2A2F41'
+    },
+
     colors: {
       white: '#fff',
       black: '#04070a',
@@ -46,28 +55,18 @@ module.exports = {
         900: '#14151a'
       },
 
-      /* primary: {
-        100: '#f0feff',
-        200: '#b3fbff',
-        300: '#75f8ff',
-        400: '#3df5ff',
-        500: '#00F2FE',
-        600: '#00c2cc',
-        700: '#009199',
-        800: '#006166',
-        900: '#003033'
-      }, */
-
       primary: {
-        100: '#f0fffc',
-        200: '#b3fff0',
-        300: '#7affe4',
-        400: '#3dffd8',
-        500: '#00ffcc',
-        600: '#00cca3',
-        700: '#00997a',
-        800: '#006652',
-        900: '#003329'
+        100: '#F0FEFF',
+        200: '#DCF5F3',
+        300: '#75F8FF',
+        400: '#33F5FE',
+        500: '#00F2FE',
+        600: '#00F2F1',
+        700: '#24DAC6',
+        800: '#4ECDC4',
+        850: '#00C2CC',
+        900: '#0DBFC8',
+        950: '#003033'
       },
 
       aqua: {
@@ -83,28 +82,29 @@ module.exports = {
       },
 
       red: {
-        100: '#fcf3f4',
-        200: '#f0cbce',
-        300: '#e4a0a4',
-        400: '#ff5778',
-        500: '#ff2954',
-        600: '#eb002f',
-        700: '#83252b',
-        800: '#53181c',
-        900: '#280b0d'
+        100: '#fff0f3',
+        200: '#ffb3c2',
+        300: '#ff7a95',
+        400: '#ff3d64',
+        500: '#ff0033',
+        600: '#cc0029',
+        700: '#99001f',
+        800: '#660014',
+        900: '#33000a'
       },
 
       gray: {
-        50: '#F8FAFC',
-        100: '#F1F5F9',
-        200: '#E2E8F0',
-        300: '#CBD5E1',
-        400: '#94A3B8',
-        500: '#64748B',
-        600: '#475569',
-        700: '#334155',
-        800: '#1E293B',
-        900: '#0F172A'
+        100: '#F8F8F8',
+        200: '#F2F2F2',
+        300: '#D9DADC',
+        400: '#a6a8ad',
+        500: '#5C606E',
+        600: '#434858',
+        700: '#2A2F41',
+        800: '#202431',
+        850: '#191c27',
+        900: '#14151A',
+        1000: '#151821'
       }
     },
 
@@ -116,13 +116,20 @@ module.exports = {
         5: '5 5 0%'
       },
 
-      shadow: {
-        inner: 'inset 0 0 8px 1px rgba(12,16,25,0.45)'
+      borderColor: {
+        DEFAULT: '#2A2F41'
       },
 
       screens: {
-        '2xl': '1536px',
-        '3xl': '1960px'
+        xs: '480px',
+        sm: '640px',
+        md: '768px',
+        '2md': '800px',
+        '3md': '840px',
+        ...defaultTheme.screens,
+        '2xl': '1366px',
+        '3xl': '1440px',
+        '4xl': '1681px'
       },
 
       fontSize: {
@@ -130,9 +137,18 @@ module.exports = {
         footer: '0.85rem'
       },
 
+      zIndex: {
+        ...defaultTheme.zIndex,
+        1000: '1000',
+        1100: '1100',
+        1110: '1110',
+        1120: '1120'
+      },
+
       fontFamily: {
-        sans: ['Nunito Sans', ...defaultTheme.fontFamily.sans],
-        mono: ['Droid Sans', ...defaultTheme.fontFamily.mono]
+        sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
+        serif: ['Droid Sans', ...defaultTheme.fontFamily.serif],
+        mono: ['Fira Mono', ...defaultTheme.fontFamily.mono]
       },
 
       opacity: {

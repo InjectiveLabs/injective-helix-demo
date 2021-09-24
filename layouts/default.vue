@@ -1,16 +1,24 @@
 <template>
-  <div id="pro" class="w-full h-full min-h-screen bg-dark-900 relative">
+  <div id="pro" class="w-full h-full min-h-screen bg-gray-900 relative">
     <transition name="page" appear>
       <HOCLoading :status="status">
         <div>
+          <v-sidebar-mobile
+            :is-sidebar-open="isOpenSidebar"
+            @sidebar-closed="onCloseSideBar"
+          />
           <client-only>
-            <app-header />
-            <main class="overflow-y-auto">
-              <nuxt />
-            </main>
-            <app-footer />
-            <egg />
-            <modal-transfer />
+            <div class="bg-gray-900 relative">
+              <v-topbar @sidebar-opened="isOpenSidebar = true" />
+              <main class="w-full h-full">
+                <portal-target name="backLink" />
+                <div class="py-8 relative">
+                  <div class="mx-auto px-4 sm:px-6 md:px-8">
+                    <nuxt />
+                  </div>
+                </div>
+              </main>
+            </div>
           </client-only>
         </div>
       </HOCLoading>
@@ -21,23 +29,20 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import ModalTransfer from '~/components/transfer/index.vue'
-import Header from '~/components/layouts/desktop/header.vue'
-import Footer from '~/components/layouts/desktop/footer/index.vue'
-import Egg from '~/components/elements/egg.vue'
-import HOCLoading from '~/components/elements/with-loading.vue'
+import Topbar from '~/components/layout/topbar.vue'
+import SidebarMobile from '~/components/layout/sidebar-mobile.vue'
+import HOCLoading from '~/components/hoc/loading.vue'
 
 export default Vue.extend({
   components: {
     HOCLoading,
-    ModalTransfer,
-    'app-header': Header,
-    'app-footer': Footer,
-    Egg
+    'v-topbar': Topbar,
+    'v-sidebar-mobile': SidebarMobile
   },
 
   data() {
     return {
+      isOpenSidebar: false,
       status: new Status(StatusType.Loading),
       interval: 0 as any
     }
@@ -65,6 +70,14 @@ export default Vue.extend({
 
   destroyed() {
     clearInterval(this.interval)
+  },
+
+  methods: {
+    onCloseSideBar() {
+      if (this.isOpenSidebar) {
+        this.isOpenSidebar = false
+      }
+    }
   }
 })
 </script>

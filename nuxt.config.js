@@ -15,7 +15,7 @@ export default {
   /*
    ** Customize the progress-bar color
    */
-  loading: { color: '#00ffcc' },
+  loading: { color: '#00F2FE' },
   /*
    ** Global CSS
    */
@@ -25,6 +25,8 @@ export default {
    */
   plugins: [
     '~/plugins/global',
+    '~/plugins/icons',
+    '~/plugins/elements',
     '~/plugins/i18n',
     '~/plugins/utils',
     '~/plugins/store',

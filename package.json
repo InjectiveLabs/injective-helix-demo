@@ -41,6 +41,7 @@
     "@injectivelabs/token-metadata": "^0.0.19",
     "@injectivelabs/utils": "^0.0.37",
     "@injectivelabs/web3-strategy": "^0.0.66",
+    "@metamask/detect-provider": "^1.2.0",
     "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/google-gtag": "^1.0.4",
     "@nuxtjs/pwa": "^3.3.5",

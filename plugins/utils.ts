@@ -29,6 +29,16 @@ export default ({ app }: Context, inject: any) => {
     }
   })
 
+  inject('onError', (error: Error) => {
+    app.$toast.error(error.message)
+
+    if (IS_PRODUCTION && !isErrorExcludedFromReporting(error)) {
+      app.$bugsnag.notify(error)
+    } else {
+      console.error(error)
+    }
+  })
+
   inject('onConfirm', <T extends Function>(message: string, callback: T) => {
     return app.$toast.show(message, {
       duration: 30000,
