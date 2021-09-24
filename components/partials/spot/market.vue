@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-market v-if="market" :market="market" :summary="marketSummary" />
+  <div v-if="market">
+    <v-market :market="market" :summary="marketSummary" />
   </div>
 </template>
 

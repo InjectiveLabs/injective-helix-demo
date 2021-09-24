@@ -115,10 +115,10 @@ export default Vue.extend({
       const classes = ['text-center', 'rounded-3xl', 'focus:outline-none']
 
       if (this.disabled) {
-        classes.push('pointer-events-none', 'text-gray-500', 'font-semibold')
+        classes.push('pointer-events-none', 'text-gray-600')
 
         if (!this.text) {
-          classes.push('border', 'border-gray-500')
+          classes.push('border', 'border-gray-700')
         }
       }
 

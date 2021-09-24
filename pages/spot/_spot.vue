@@ -1,6 +1,6 @@
 <template>
-  <HOCLoading v-if="market" :key="$route.fullPath" :status="status">
-    <div class="flex flex-wrap h-full w-full">
+  <HOCLoading :key="$route.fullPath" :status="status">
+    <div v-if="market" class="flex flex-wrap h-full w-full">
       <div class="w-full lg:w-1/4 lg:px-2">
         <v-balances />
         <v-trading class="mt-6" />
@@ -12,7 +12,7 @@
           </div>
           <div class="flex flex-wrap -mx-2 mt-6">
             <div class="w-full lg:w-2/3 px-2">
-              <v-market-chart v-if="market" :market="market" />
+              <v-market-chart :market="market" />
             </div>
             <div class="w-full lg:w-1/3 px-2">
               <v-orderbook />
