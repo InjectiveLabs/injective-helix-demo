@@ -10,7 +10,9 @@
         <span class="font-mono">{{ baseTokenBalanceToFormat }}</span>
       </v-text-info>
       <v-text-info class="mt-2" :title="market.quoteToken.symbol">
-        <span class="font-mono">{{ quoteTokenBalanceToFormat }}</span>
+        <span class="font-mono">
+          {{ quoteTokenBalanceToFormat }}
+        </span>
       </v-text-info>
     </div>
   </div>

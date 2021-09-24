@@ -1,14 +1,14 @@
 <template>
-  <div v-if="market" class="-mx-2 h-10">
+  <div v-if="market" class="h-10 bg-dark-900">
     <div class="flex overflow-x-auto overflow-y-none">
       <v-market-info :title="$t('last_traded_price')">
         <v-ui-text sm class="flex items-center justify-end w-full">
           <v-ui-format-order-price
             v-bind="{
-              value: lastPrice,
+              value: currentLastTrade,
               class: {
-                'text-aqua-500': lastPriceChange === Change.Increase,
-                'text-red-500': lastPriceChange === Change.Decrease
+                'text-aqua-500': currentLastTradeChange === Change.Increase,
+                'text-red-500': currentLastTradeChange === Change.Decrease
               },
               decimals: market.priceDecimals
             }"
@@ -66,7 +66,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
@@ -78,13 +78,27 @@ import {
   Change,
   UiSpotMarket,
   SpotOrderSide,
-  UiSpotTrade,
-  UiSpotMarketSummary
+  UiSpotMarketSummary,
+  UiDerivativeMarket,
+  UiDerivativeMarketSummary,
+  MarketType
 } from '~/types'
 
 export default Vue.extend({
   components: {
     'v-market-info': MarketInfo
+  },
+
+  props: {
+    market: {
+      type: Object as PropType<UiSpotMarket | UiDerivativeMarket>,
+      required: true
+    },
+
+    summary: {
+      type: Object as PropType<UiSpotMarketSummary | UiDerivativeMarketSummary>,
+      required: true
+    }
   },
 
   data() {
@@ -95,74 +109,110 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiSpotMarket | undefined {
+    currentSpotMarket(): UiSpotMarket | undefined {
       return this.$accessor.spot.market
     },
 
-    marketSummary(): UiSpotMarketSummary | undefined {
-      return this.$accessor.spot.marketSummary
+    currentDerivativeMarket(): UiDerivativeMarket | undefined {
+      return this.$accessor.derivatives.market
     },
 
-    trades(): UiSpotTrade[] {
-      return this.$accessor.spot.trades
-    },
-
-    lastPrice(): BigNumberInBase {
+    currentLastSpotTradedPrice(): BigNumberInBase {
       return this.$accessor.spot.lastTradedPrice
     },
 
-    lastPriceChange(): Change {
+    currentLastDerivativeTradedPrice(): BigNumberInBase {
+      return this.$accessor.derivatives.lastTradedPrice
+    },
+
+    currentLastSpotTradedPriceChange(): Change {
       return this.$accessor.spot.lastTradedPriceChange
     },
 
-    high(): BigNumberInBase {
-      const { market, marketSummary } = this
+    currentLastDerivativeTradedPriceChange(): Change {
+      return this.$accessor.derivatives.lastTradedPriceChange
+    },
 
-      if (!market || !marketSummary) {
+    currentMarket(): UiSpotMarket | UiDerivativeMarket | undefined {
+      const { currentSpotMarket, currentDerivativeMarket, market } = this
+
+      return market.type === MarketType.Spot
+        ? currentSpotMarket
+        : currentDerivativeMarket
+    },
+
+    currentLastTrade(): BigNumberInBase {
+      const {
+        currentLastSpotTradedPrice,
+        currentLastDerivativeTradedPrice,
+        market
+      } = this
+
+      return market.type === MarketType.Spot
+        ? currentLastSpotTradedPrice
+        : currentLastDerivativeTradedPrice
+    },
+
+    currentLastTradeChange(): Change {
+      const {
+        currentLastSpotTradedPriceChange,
+        currentLastDerivativeTradedPriceChange,
+        market
+      } = this
+
+      return market.type === MarketType.Spot
+        ? currentLastSpotTradedPriceChange
+        : currentLastDerivativeTradedPriceChange
+    },
+
+    high(): BigNumberInBase {
+      const { market, summary } = this
+
+      if (!market || !summary) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(marketSummary.high)
+      return new BigNumberInBase(summary.high)
     },
 
     change(): BigNumberInBase {
-      const { market, marketSummary } = this
+      const { market, summary } = this
 
-      if (!market || !marketSummary) {
+      if (!market || !summary) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(marketSummary.change)
+      return new BigNumberInBase(summary.change)
     },
 
     low(): BigNumberInBase {
-      const { market, marketSummary } = this
+      const { market, summary } = this
 
-      if (!market || !marketSummary) {
+      if (!market || !summary) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(marketSummary.low)
+      return new BigNumberInBase(summary.low)
     },
 
     volume(): BigNumberInBase {
-      const { market, marketSummary } = this
+      const { market, summary } = this
 
-      if (!market || !marketSummary) {
+      if (!market || !summary) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(marketSummary.volume)
+      return new BigNumberInBase(summary.volume)
     },
 
     lastTradedPriceToString(): string {
-      const { lastPrice } = this
+      const { currentLastTrade } = this
 
-      if (lastPrice.isNaN() || lastPrice.lte(0)) {
+      if (currentLastTrade.isNaN() || currentLastTrade.lte(0)) {
         return `0.00`
       }
 
-      return `${lastPrice.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)}`
+      return `${currentLastTrade.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)}`
     }
   },
 

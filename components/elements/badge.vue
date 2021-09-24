@@ -13,32 +13,44 @@ export default Vue.extend({
       default: true,
       type: Boolean
     },
+
     xs: {
       required: false,
       default: true,
       type: Boolean
     },
+
     md: {
       required: false,
       default: false,
       type: Boolean
     },
+
     lg: {
       required: false,
       default: false,
       type: Boolean
     },
+
     primary: {
       required: false,
       default: false,
       type: Boolean
     },
-    accent: {
+
+    red: {
+      required: false,
+      default: false,
+      type: Boolean
+    },
+
+    gray: {
       required: false,
       default: false,
       type: Boolean
     }
   },
+
   computed: {
     classes(): string {
       const classes = [
@@ -51,8 +63,9 @@ export default Vue.extend({
         'overflow-hidden',
         'text-decoration-none',
         'items-center',
-        'shadow-md'
+        'shadow'
       ]
+
       if (this.lg) {
         classes.push('text-sm', 'px-4', 'py-1')
       } else if (this.md) {
@@ -62,16 +75,15 @@ export default Vue.extend({
       } else if (this.xs) {
         classes.push('text-2xs', 'px-2', 'py-px')
       }
+
       if (this.primary) {
-        classes.push(
-          'bg-primary-900',
-          'text-gray-200',
-          'dark:bg-primary-500',
-          'dark:text-gray-800'
-        )
-      } else if (this.accent) {
-        classes.push('bg-accent-200', 'text-gray-200')
+        classes.push('bg-primary-500', 'text-gray-800')
+      } else if (this.red) {
+        classes.push('bg-red-500', 'text-gray-900')
+      } else if (this.gray) {
+        classes.push('bg-gray-700', 'text-gray-200')
       }
+
       return classes.join(' ')
     }
   }

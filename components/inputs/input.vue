@@ -1,13 +1,14 @@
 <template>
+  <!-- eslint-disable vue/no-v-html -->
   <div class="w-full input-wrap" :class="classes">
     <div>
-      <div class="flex items-center">
+      <div class="flex items-center justify-between">
         <label
           v-if="!large"
           :for="$attrs.id"
           class="block text-xs font-semibold text-gray-200"
+          v-html="$attrs.label || ''"
         >
-          {{ $attrs.label || '' }}
           <span
             v-if="error && !errorBelow"
             class="text-red-400 italic font-semibold"

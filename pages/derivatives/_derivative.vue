@@ -32,7 +32,6 @@
         </grid-item>
       </grid-layout>
       <modal-transfer />
-      <modal-deposit />
       <modal-withdraw />
       <modal-take-out />
       <modal-add-margin />
@@ -48,7 +47,6 @@ import MarketPriceChartPanel from '~/components/partials/derivatives/market/char
 import MarketPanel from '~/components/partials/derivatives/market/market.vue'
 import MarqueePanel from '~/components/partials/derivatives/market/marquee.vue'
 import ModalTransfer from '~/components/partials/derivatives/transfer.vue'
-import ModalDeposit from '~/components/partials/derivatives/deposit.vue'
 import ModalTakeOut from '~/components/partials/derivatives/take-out.vue'
 import ModalAddMargin from '~/components/partials/derivatives/positions/add-margin/index.vue'
 import ModalWithdraw from '~/components/partials/derivatives/withdraw.vue'
@@ -83,7 +81,6 @@ export default Vue.extend({
     GridLayout,
     GridItem,
     ModalTransfer,
-    ModalDeposit,
     SubaccountBalancePanel
   },
 

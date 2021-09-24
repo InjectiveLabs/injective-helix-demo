@@ -260,5 +260,7 @@ export default {
   'Available to Withdraw Tooltip':
     'The amount you can withdraw from the Injective Chain.',
   'Available to Withdraw Subaccount Tooltip':
-    'The amount you can withdraw from your Subaccount.'
+    'The amount you can withdraw from your Subaccount.',
+  Orderbook: 'Orderbook',
+  Cancel: 'Cancel'
 }

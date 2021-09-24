@@ -10,7 +10,7 @@
       <slot name="title-context" />
     </div>
     <slot name="context" class="flex justify-between items-center w-full" />
-    <v-card class="mt-6 relative flex-1 lg:px-4 xl:px-6">
+    <v-card class="relative flex-1 lg:px-4 xl:px-6">
       <div class="v-panel-content">
         <slot ref="content" />
       </div>

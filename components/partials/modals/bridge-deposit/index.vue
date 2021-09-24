@@ -58,9 +58,7 @@ export default Vue.extend({
     market(): UiSpotMarket | UiDerivativeMarket | undefined {
       const { spotMarket, derivativeMarket } = this
 
-      return this.$route.name === 'spott-spot' /* TODO */
-        ? spotMarket
-        : derivativeMarket
+      return this.$route.name === 'spot-spot' ? spotMarket : derivativeMarket
     },
 
     baseTokenWithBalance(): TokenWithBalance | undefined {

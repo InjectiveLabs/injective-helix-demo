@@ -61,8 +61,8 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import TableBody from '~/components/partials/common/elements/table-body.vue'
-import TableHeader from '~/components/partials/common/elements/table-header.vue'
+import TableBody from '~/components/elements/table-body.vue'
+import TableHeader from '~/components/elements/table-header.vue'
 import VSearch from '~/components/inputs/search.vue'
 import VMarket from '~/components/partials/common/markets/market.vue'
 import {

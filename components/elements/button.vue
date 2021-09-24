@@ -55,7 +55,7 @@ export default Vue.extend({
       type: Boolean
     },
 
-    accentText: {
+    redText: {
       required: false,
       default: false,
       type: Boolean
@@ -73,7 +73,31 @@ export default Vue.extend({
       type: Boolean
     },
 
+    textXs: {
+      required: false,
+      default: false,
+      type: Boolean
+    },
+
+    textSm: {
+      required: false,
+      default: false,
+      type: Boolean
+    },
+
     primary: {
+      required: false,
+      default: false,
+      type: Boolean
+    },
+
+    aqua: {
+      required: false,
+      default: false,
+      type: Boolean
+    },
+
+    red: {
       required: false,
       default: false,
       type: Boolean
@@ -88,7 +112,7 @@ export default Vue.extend({
 
   computed: {
     classes() {
-      const classes = ['text-center', 'rounded-3xl']
+      const classes = ['text-center', 'rounded-3xl', 'focus:outline-none']
 
       if (this.disabled) {
         classes.push('pointer-events-none', 'text-gray-500', 'font-semibold')
@@ -106,10 +130,14 @@ export default Vue.extend({
         classes.push('px-6', 'py-2.5', 'text-base', 'leading-5', 'max-h-10')
       } else if (this.textLg) {
         classes.push('px-2', 'py-1', 'text-base')
+      } else if (this.textSm) {
+        classes.push('px-2', 'py-1', 'text-sm')
+      } else if (this.textXs) {
+        classes.push('px-2', 'py-1', 'text-2xs')
       }
 
       if (!this.disabled) {
-        if (this.text || this.textLg) {
+        if (this.text || this.textLg || this.textXs || this.textSm) {
           classes.push(
             'font-bold',
             'tracking-wide',
@@ -118,19 +146,30 @@ export default Vue.extend({
           )
         } else if (this.primary) {
           classes.push(
-            'text-gray-200',
             'font-semibold',
             'bg-primary-500',
             'hover:bg-primary-400',
             'text-gray-800',
             'shadow-none'
           )
-        } else if (this.accentText) {
+        } else if (this.aqua) {
           classes.push(
-            'text-accent-200',
             'font-semibold',
-            'hover:text-accent-100'
+            'bg-aqua-500',
+            'hover:bg-aqua-400',
+            'text-gray-800',
+            'shadow-none'
           )
+        } else if (this.red) {
+          classes.push(
+            'font-semibold',
+            'bg-red-500',
+            'hover:bg-red-400',
+            'text-gray-800',
+            'shadow-none'
+          )
+        } else if (this.redText) {
+          classes.push('text-red-200', 'font-semibold', 'hover:text-red-100')
         } else if (this.outline) {
           classes.push(
             'text-white',

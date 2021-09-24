@@ -1,23 +1,25 @@
 <template>
-  <v-panel :title="$t('price_chart')">
+  <div class="bg-gray-900 px-4 py-2 rounded-lg h-full">
     <div ref="trading-view-wrap" class="h-full w-full relative">
-      <v-ui-loading v-if="status.isLoading()" />
-      <v-trading-chart
-        ref="trading-view"
-        :interval="interval"
-        :symbol="symbol"
-        :datafeed-endpoint="datafeedEndpoint"
-        @ready="onReady"
-      />
+      <HOCLoading :status="status">
+        <v-trading-chart
+          ref="trading-view"
+          :interval="interval"
+          :symbol="symbol"
+          :datafeed-endpoint="datafeedEndpoint"
+          @ready="onReady"
+        />
+      </HOCLoading>
     </div>
-  </v-panel>
+  </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
+import HOCLoading from '~/components/hoc/loading.vue'
 import TradingChart from '~/components/trading-view/chart.vue'
-import { UiSpotMarket } from '~/types'
+import { MarketType, UiDerivativeMarket, UiSpotMarket } from '~/types'
 import { app } from '~/app/singletons/App'
 
 interface TradingChartInterface {
@@ -27,7 +29,15 @@ interface TradingChartInterface {
 
 export default Vue.extend({
   components: {
-    'v-trading-chart': TradingChart
+    'v-trading-chart': TradingChart,
+    HOCLoading
+  },
+
+  props: {
+    market: {
+      type: Object as PropType<UiSpotMarket | UiDerivativeMarket>,
+      required: true
+    }
   },
 
   data() {
@@ -38,10 +48,6 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiSpotMarket | undefined {
-      return this.$accessor.spot.market
-    },
-
     tradingView(): TradingChartInterface {
       return (this.$refs['trading-view'] as unknown) as TradingChartInterface
     },
@@ -51,33 +57,31 @@ export default Vue.extend({
     },
 
     symbol(): string {
-      if (!this.market) {
-        return ''
+      const { market } = this
+
+      if (market.type === MarketType.Derivative) {
+        return market.ticker
       }
 
-      return `${this.market.baseDenom}/${this.market.quoteDenom}`
+      return `${(market as UiSpotMarket).baseDenom}/${
+        (market as UiSpotMarket).quoteDenom
+      }`
     },
 
     datafeedEndpoint(): string {
-      return `${app.appUrlEndpoint.baseUrl}/chronos/v1/spot`
+      const { market } = this
+
+      return `${app.appUrlEndpoint.baseUrl}/chronos/v1/${
+        market.type === MarketType.Derivative ? 'derivative' : 'spot'
+      }`
     }
   },
 
   mounted() {
-    this.onResize()
     this.status.setIdle()
-    window.addEventListener('resize', this.onResize)
-  },
-
-  beforeDestroy() {
-    window.removeEventListener('resize', this.onResize)
   },
 
   methods: {
-    onResize() {
-      //
-    },
-
     onReady() {
       this.status.setIdle()
       this.$nextTick(() => {

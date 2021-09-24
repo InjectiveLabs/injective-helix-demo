@@ -29,7 +29,7 @@ export default function ({
     timezone,
     timeframe: '1D',
     toolbar_bg: theme.colors.dark[800],
-    height: '100%',
+    height: '512px',
     width: '100%',
     container_id: 'tv_chart_container',
     allow_symbol_change: false,

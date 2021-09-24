@@ -21,8 +21,8 @@
 }
 
 .toasted.bubble.success {
-  @apply text-aqua-900 font-bold;
-  background: theme('colors.aqua.500') !important;
+  @apply text-primary-900 font-bold;
+  background: theme('colors.primary.500') !important;
 }
 
 .toasted.bubble.default {

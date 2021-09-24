@@ -13,9 +13,7 @@
               <main class="w-full h-full">
                 <portal-target name="backLink" />
                 <div class="py-8 relative">
-                  <div class="mx-auto px-4 sm:px-6 md:px-8">
-                    <nuxt />
-                  </div>
+                  <nuxt />
                 </div>
               </main>
               <v-footer />

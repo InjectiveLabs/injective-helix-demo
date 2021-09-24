@@ -1,10 +1,17 @@
 <template>
-  <p class="flex items-center text-xs">
-    <span class="opacity-75">
+  <p
+    class="flex items-center text-xs w-full"
+    :class="{
+      'text-xs': !lg,
+      'text-base': lg
+    }"
+  >
+    <span class="opacity-75 flex items-center">
       {{ title }}
+      <slot name="context" />
     </span>
     <span class="flex-grow border-b border-dashed mx-4"></span>
-    <span class="text-gray-100 font-semibold">
+    <span class="text-gray-100 flex justify-end">
       <slot></slot>
     </span>
   </p>
@@ -19,6 +26,12 @@ export default Vue.extend({
       required: true,
       default: '',
       type: String
+    },
+
+    lg: {
+      default: false,
+      type: Boolean,
+      required: false
     }
   }
 })

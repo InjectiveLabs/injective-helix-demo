@@ -3,19 +3,17 @@
     <div>
       <div>
         <div class="flex items-center justify-between">
-          <p
-            class="uppercase text-2xs text-gray-400 font-semibold tracking-wider flex items-center"
-          >
+          <p class="text-2xs text-gray-300 flex items-center">
             {{ $t('Injective Chain') }}
           </p>
           <div class="flex items-center">
-            <v-ui-button xs primary text @click.stop="openBridgeDepositModal">{{
+            <v-button text-xs primary @click.stop="openBridgeDepositModal">{{
               $t('deposit')
-            }}</v-ui-button>
+            }}</v-button>
             <div class="mx-2 w-px h-4 bg-dark-500"></div>
-            <v-ui-button xs primary text @click.stop="openWithdrawModal">{{
+            <v-button text-xs primary @click.stop="openWithdrawModal">{{
               $t('withdraw')
-            }}</v-ui-button>
+            }}</v-button>
           </div>
         </div>
         <div class="mt-4">
@@ -25,26 +23,22 @@
       </div>
       <div class="mt-6">
         <div class="flex items-center justify-between">
-          <p
-            class="uppercase text-2xs text-gray-400 font-semibold tracking-wider flex items-center"
-          >
+          <p class="text-2xs text-gray-300 flex items-center">
             {{ $t('Subaccount') }}
           </p>
           <div class="flex items-center">
-            <v-ui-button
-              xs
+            <v-button
               primary
-              text
+              text-xs
               @click.stop="openSubaccountTransferModal"
-              >{{ $t('deposit') }}</v-ui-button
+              >{{ $t('deposit') }}</v-button
             >
             <div class="mx-2 w-px h-4 bg-dark-500"></div>
-            <v-ui-button
-              xs
+            <v-button
               primary
-              text
+              text-xs
               @click.stop="openSubaccountWithdrawModal"
-              >{{ $t('withdraw') }}</v-ui-button
+              >{{ $t('withdraw') }}</v-button
             >
           </div>
         </div>
@@ -88,7 +82,7 @@ export default Vue.extend({
     currentMarket(): UiSpotMarket | UiDerivativeMarket | undefined {
       const { currentSpotMarket, currentDerivativeMarket } = this
 
-      return this.$route.name === 'spott-spot' // TODO
+      return this.$route.name === 'spot-spot'
         ? currentSpotMarket
         : currentDerivativeMarket
     }

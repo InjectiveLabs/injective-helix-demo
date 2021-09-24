@@ -12,17 +12,15 @@
         />
         <div class="mr-4">
           {{ market.ticker }}
-          <span
-            class="text-gray-400 dark:text-gray-500 text-xs md:text-xs 2xl:text-sm block"
-          >
+          <span class="text-gray-500 text-xs md:text-xs 2xl:text-sm block">
             {{ market.baseToken.name }}
           </span>
         </div>
       </div>
     </span>
-    <span class="col-span-1 font-mono text-left md:hidden">{{
-      $t('last_traded_price')
-    }}</span>
+    <span class="col-span-1 font-mono text-left md:hidden">
+      {{ $t('last_traded_price') }}
+    </span>
     <span
       class="col-span-1 md:col-span-3 font-mono text-right flex items-center justify-end"
     >
@@ -40,27 +38,27 @@
         }"
       >
         {{ lastTradedPriceToFormat }}
-        <span class="text-xs text-gray-400 dark:text-gray-500 ml-1">{{
-          market.quoteToken.symbol
-        }}</span>
+        <span class="text-xs text-gray-500 ml-1">
+          {{ market.quoteToken.symbol }}
+        </span>
       </span>
     </span>
-    <span class="col-span-1 font-mono text-left md:hidden">{{
-      $t('market_change_24h')
-    }}</span>
+    <span class="col-span-1 font-mono text-left md:hidden">
+      {{ $t('market_change_24h') }}
+    </span>
     <span class="col-span-1 md:col-span-3 font-mono text-right">
       <span :class="change.gte(0) ? 'text-aqua-500' : 'text-red-500'">
         {{ changeToFormat }}%
       </span>
     </span>
-    <span class="col-span-1 font-mono text-left md:hidden">{{
-      $t('market_volume_24h')
-    }}</span>
+    <span class="col-span-1 font-mono text-left md:hidden">
+      {{ $t('market_volume_24h') }}
+    </span>
     <span class="col-span-1 md:col-span-3 font-mono text-right">
       {{ volumeToFormat }}
-      <span class="text-xs text-gray-400 dark:text-gray-500 ml-1">{{
-        market.quoteToken.symbol
-      }}</span>
+      <span class="text-xs text-gray-500 ml-1">
+        {{ market.quoteToken.symbol }}
+      </span>
     </span>
   </TableRow>
 </template>
@@ -68,7 +66,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import TableRow from '~/components/partials/common/elements/table-row.vue'
+import TableRow from '~/components/elements/table-row.vue'
 import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   ZERO_IN_BASE
