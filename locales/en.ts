@@ -210,5 +210,7 @@ export default {
   'Connect using Ledger instructions':
     'Note: To ensure smooth process while connecting your Ledger Hardware Wallet, please ensure you are running the on latest Chrome version, have your Ledger device connected, unlocked and your Ethereum app open. ',
   high_price_deviation_warning:
-    'Your order price deviates at least {percentage}% from the latest market price!'
+    'Your order price deviates at least {percentage}% from the latest market price!',
+  high_execution_price_deviation_warning:
+    'Your execution price deviates at least {percentage}% from the latest market price!'
 }

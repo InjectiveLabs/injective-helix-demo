@@ -128,10 +128,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Status, BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import {
-  DEFAULT_MAX_SLIPPAGE_FOR_CLOSING_POSITIONS,
-  ZERO_IN_BASE
-} from '~/app/utils/constants'
+import { ZERO_IN_BASE } from '~/app/utils/constants'
 import {
   UiDerivativeMarket,
   UiPosition,
@@ -142,7 +139,6 @@ import {
   Icon,
   UiDerivativeLimitOrder
 } from '~/types'
-import { calculateWorstExecutionPriceFromOrderbook } from '~/app/services/derivatives'
 
 export default Vue.extend({
   props: {
@@ -171,6 +167,10 @@ export default Vue.extend({
 
     orders(): UiDerivativeLimitOrder[] {
       return this.$accessor.derivatives.subaccountOrders
+    },
+
+    lastTradedPrice(): BigNumberInBase {
+      return this.$accessor.derivatives.lastTradedPrice
     },
 
     price(): BigNumberInBase {
@@ -263,45 +263,6 @@ export default Vue.extend({
       return liquidationPrice.gt(0) ? liquidationPrice : new BigNumberInBase(0)
     },
 
-    slippage(): BigNumberInBase {
-      const { position } = this
-
-      return new BigNumberInBase(
-        position.direction === TradeDirection.Long
-          ? DEFAULT_MAX_SLIPPAGE_FOR_CLOSING_POSITIONS.div(100)
-              .minus(1)
-              .times(-1)
-          : DEFAULT_MAX_SLIPPAGE_FOR_CLOSING_POSITIONS.div(100).plus(1)
-      )
-    },
-
-    executionPrice(): BigNumberInBase {
-      const { sells, slippage, buys, market, position } = this
-
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      const records = position.direction === TradeDirection.Long ? buys : sells
-
-      const worstPrice = calculateWorstExecutionPriceFromOrderbook({
-        records,
-        market,
-        amount: new BigNumberInBase(position.quantity)
-      })
-
-      const minTickPrice = new BigNumberInBase(
-        new BigNumberInBase(1).shiftedBy(-market.priceDecimals)
-      )
-      const worstPriceWithSlippage = new BigNumberInBase(
-        worstPrice.times(slippage).toFixed(market.priceDecimals)
-      )
-
-      return worstPriceWithSlippage.isZero()
-        ? minTickPrice
-        : worstPriceWithSlippage
-    },
-
     totalReduceOnlyQuantity(): BigNumberInBase {
       const { market, position, orders } = this
 
@@ -328,6 +289,24 @@ export default Vue.extend({
       const unitMargin = new BigNumberInBase(margin).dividedBy(quantity)
 
       return isPositionLong ? price.minus(unitMargin) : price.plus(unitMargin)
+    },
+
+    feeAdjustedBankruptcyPrice(): BigNumberInBase {
+      const { bankruptcyPrice, position, market } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      const isPositionLong = position.direction === TradeDirection.Long
+
+      return isPositionLong
+        ? bankruptcyPrice.dividedBy(
+            new BigNumberInBase(1).minus(market.takerFeeRate)
+          )
+        : bankruptcyPrice.dividedBy(
+            new BigNumberInBase(1).plus(market.takerFeeRate)
+          )
     },
 
     pnl(): BigNumberInBase {
@@ -408,26 +387,6 @@ export default Vue.extend({
       return undefined
     },
 
-    autoLiquidationOnCloseError(): string | undefined {
-      const { liquidationPrice, executionPrice, market, position } = this
-
-      if (!market) {
-        return
-      }
-
-      const isPositionLong = position.direction === TradeDirection.Long
-
-      if (isPositionLong && executionPrice.lte(liquidationPrice)) {
-        return this.$t('close_auto_liquidation')
-      }
-
-      if (!isPositionLong && executionPrice.gte(liquidationPrice)) {
-        return this.$t('close_auto_liquidation')
-      }
-
-      return undefined
-    },
-
     aggregateReduceOnlyQuantityExceedError(): string | undefined {
       const { totalReduceOnlyQuantity, position } = this
 
@@ -441,35 +400,9 @@ export default Vue.extend({
       return undefined
     },
 
-    executionPriceSurpassesBankruptcyPrice(): string | undefined {
-      const { executionPrice, market, position, bankruptcyPrice } = this
-
-      if (!market) {
-        return
-      }
-
-      const isPositionLong = position.direction === TradeDirection.Long
-      const divisor = isPositionLong
-        ? new BigNumberInBase(1).minus(market.takerFeeRate)
-        : new BigNumberInBase(1).plus(market.takerFeeRate)
-      const condition = bankruptcyPrice.dividedBy(divisor)
-
-      if (isPositionLong && executionPrice.lt(condition)) {
-        return this.$t('execution_price_surpasses_bankruptcy_price')
-      }
-
-      if (!isPositionLong && executionPrice.gt(condition)) {
-        return this.$t('execution_price_surpasses_bankruptcy_price')
-      }
-
-      return undefined
-    },
-
     positionCloseError(): string | undefined {
       const {
-        executionPriceSurpassesBankruptcyPrice,
         notEnoughLiquidityError,
-        autoLiquidationOnCloseError,
         aggregateReduceOnlyQuantityExceedError,
         market
       } = this
@@ -482,16 +415,8 @@ export default Vue.extend({
         return notEnoughLiquidityError
       }
 
-      if (autoLiquidationOnCloseError) {
-        return autoLiquidationOnCloseError
-      }
-
       if (aggregateReduceOnlyQuantityExceedError) {
         return aggregateReduceOnlyQuantityExceedError
-      }
-
-      if (executionPriceSurpassesBankruptcyPrice) {
-        return executionPriceSurpassesBankruptcyPrice
       }
 
       return undefined
@@ -511,16 +436,8 @@ export default Vue.extend({
       this.$root.$emit('add-margin-to-position', this.position)
     },
 
-    onClosePositionClick() {
-      const { position, positionCloseError, executionPrice, market } = this
-
-      if (!market) {
-        return
-      }
-
-      if (positionCloseError) {
-        return this.$toast.error(positionCloseError)
-      }
+    handleClosePosition() {
+      const { position, feeAdjustedBankruptcyPrice } = this
 
       this.status.setLoading()
 
@@ -530,7 +447,7 @@ export default Vue.extend({
             position.direction === TradeDirection.Long
               ? DerivativeOrderSide.Sell
               : DerivativeOrderSide.Buy,
-          price: executionPrice,
+          price: feeAdjustedBankruptcyPrice,
           quantity: new BigNumberInBase(position.quantity)
         })
         .then(() => {
@@ -540,6 +457,20 @@ export default Vue.extend({
         .finally(() => {
           this.status.setIdle()
         })
+    },
+
+    onClosePositionClick() {
+      const { positionCloseError, market } = this
+
+      if (!market) {
+        return
+      }
+
+      if (positionCloseError) {
+        return this.$toast.error(positionCloseError)
+      }
+
+      return this.handleClosePosition()
     }
   }
 })

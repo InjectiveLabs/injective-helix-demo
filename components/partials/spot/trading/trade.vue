@@ -150,7 +150,8 @@ import OrderDetailsMarket from './order-details-market.vue'
 import {
   DEFAULT_MAX_SLIPPAGE,
   ZERO_IN_BASE,
-  NUMBER_REGEX
+  NUMBER_REGEX,
+  DEFAULT_PRICE_WARNING_DEVIATION
 } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import {
@@ -210,6 +211,10 @@ export default Vue.extend({
 
     subaccount(): UiSubaccount | undefined {
       return this.$accessor.account.subaccount
+    },
+
+    lastTradedPrice(): BigNumberInBase {
+      return this.$accessor.spot.lastTradedPrice
     },
 
     baseAvailableBalance(): BigNumberInBase {
@@ -410,6 +415,28 @@ export default Vue.extend({
       }
 
       return '1'
+    },
+
+    priceHasHighDeviationWarning(): boolean {
+      const { price, orderTypeBuy, tradingTypeMarket, lastTradedPrice } = this
+
+      if (tradingTypeMarket) {
+        return false
+      }
+
+      if (price.lte(0)) {
+        return false
+      }
+
+      const deviation = new BigNumberInBase(1)
+        .minus(
+          orderTypeBuy
+            ? price.dividedBy(lastTradedPrice)
+            : lastTradedPrice.dividedBy(price)
+        )
+        .times(100)
+
+      return deviation.gt(DEFAULT_PRICE_WARNING_DEVIATION)
     },
 
     availableBalanceError(): TradeError | undefined {
@@ -897,7 +924,12 @@ export default Vue.extend({
     },
 
     onSubmit() {
-      const { hasErrors, tradingTypeMarket, isUserWalletConnected } = this
+      const {
+        hasErrors,
+        tradingTypeMarket,
+        priceHasHighDeviationWarning,
+        isUserWalletConnected
+      } = this
 
       if (!isUserWalletConnected) {
         return this.$toast.error(this.$t('please_connect_your_wallet'))
@@ -907,9 +939,20 @@ export default Vue.extend({
         return this.$toast.error(this.$t('error_in_form'))
       }
 
-      return tradingTypeMarket
-        ? this.submitMarketOrder()
-        : this.submitLimitOrder()
+      if (tradingTypeMarket) {
+        return this.submitMarketOrder()
+      }
+
+      if (!priceHasHighDeviationWarning) {
+        return this.submitLimitOrder()
+      }
+
+      return this.$onConfirm(
+        this.$t('high_price_deviation_warning', {
+          percentage: DEFAULT_PRICE_WARNING_DEVIATION
+        }),
+        this.submitLimitOrder
+      )
     }
   }
 })
