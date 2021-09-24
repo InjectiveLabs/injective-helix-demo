@@ -22,14 +22,10 @@
     <div class="container">
       <div class="mt-12 w-full mx-auto lg:w-3/4">
         <v-panel :title="$t('spot_markets')">
-          <div class="table-compact table-select px-4 pb-4">
-            <v-spot />
-          </div>
+          <v-spot />
         </v-panel>
         <v-panel :title="$t('derivatives')" class="mt-6">
-          <div class="table-compact table-select px-4 pb-4 mt-6">
-            <v-derivatives />
-          </div>
+          <v-derivatives />
         </v-panel>
       </div>
     </div>
@@ -38,8 +34,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import VSpot from '~/components/partials/spot/markets/index.vue'
-import VDerivatives from '~/components/partials/derivatives/markets/index.vue'
+import VSpot from '~/components/partials/common/markets/spot.vue'
+import VDerivatives from '~/components/partials/common/markets/derivatives.vue'
 
 export default Vue.extend({
   components: {

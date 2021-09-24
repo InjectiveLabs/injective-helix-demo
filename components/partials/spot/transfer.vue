@@ -39,7 +39,7 @@ import VBase from './transfer/base.vue'
 import VQuote from './transfer/quote.vue'
 import ModalElement from '~/components/elements/modal.vue'
 import { UiSpotMarket, Modal, TokenWithBalance } from '~/types'
-import HOCLoading from '~/components/elements/with-loading.vue'
+import HOCLoading from '~/components/hoc/loading.vue'
 
 export default Vue.extend({
   components: {

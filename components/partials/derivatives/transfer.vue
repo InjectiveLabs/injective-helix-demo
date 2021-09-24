@@ -29,7 +29,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import VQuote from './transfer/quote.vue'
 import ModalElement from '~/components/elements/modal.vue'
 import { UiDerivativeMarket, Modal, TokenWithBalance } from '~/types'
-import HOCLoading from '~/components/elements/with-loading.vue'
+import HOCLoading from '~/components/hoc/loading.vue'
 
 export default Vue.extend({
   components: {

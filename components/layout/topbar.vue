@@ -15,10 +15,10 @@
           class="flex items-center py-2 px-6 border-r cursor-pointer"
           @click="$router.push({ name: 'index' })"
         >
-          <v-logo class="h-8 w-auto mr-4" alt="Injective" />
-          <div class="text-white">
-            <v-logo-text class="w-24" />
-            <p class="text-xs uppercase flex mx-px">
+          <v-logo class="h-6 w-auto mr-2" alt="Injective" />
+          <div class="text-white flex items-end">
+            <v-logo-text class="w-24 mr-2" />
+            <p class="text-xs uppercase flex">
               <span>p</span>
               <span class="mx-1">r</span>
               <span>o</span>

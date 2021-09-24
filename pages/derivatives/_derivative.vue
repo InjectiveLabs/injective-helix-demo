@@ -59,7 +59,7 @@ import OrderBookPanel from '~/components/partials/derivatives/orderbook/index.vu
 import TradesPanel from '~/components/partials/derivatives/trades/index.vue'
 import OrdersPanel from '~/components/partials/derivatives/orders.vue'
 import PositionsPanel from '~/components/partials/derivatives/positions/index.vue'
-import HOCLoading from '~/components/elements/with-loading.vue'
+import HOCLoading from '~/components/hoc/loading.vue'
 import { UiDerivativeMarket, Breakpoint } from '~/types'
 import { gridLayouts } from '~/components/partials/derivatives/grid'
 

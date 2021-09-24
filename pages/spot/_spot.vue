@@ -55,7 +55,7 @@ import SubaccountBalancePanel from '~/components/partials/spot/subaccount-balanc
 import OrderBookPanel from '~/components/partials/spot/orderbook/index.vue'
 import TradesPanel from '~/components/partials/spot/trades/index.vue'
 import OrdersPanel from '~/components/partials/spot/orders.vue'
-import HOCLoading from '~/components/elements/with-loading.vue'
+import HOCLoading from '~/components/hoc/loading.vue'
 import { UiSpotMarket, Breakpoint } from '~/types'
 import { gridLayouts } from '~/components/partials/spot/grid'
 

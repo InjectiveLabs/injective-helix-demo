@@ -18,6 +18,7 @@
                   </div>
                 </div>
               </main>
+              <v-footer />
             </div>
           </client-only>
         </div>
@@ -29,6 +30,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
+import Footer from '~/components/layout/footer/index.vue'
 import Topbar from '~/components/layout/topbar.vue'
 import SidebarMobile from '~/components/layout/sidebar-mobile.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
@@ -37,6 +39,7 @@ export default Vue.extend({
   components: {
     HOCLoading,
     'v-topbar': Topbar,
+    'v-footer': Footer,
     'v-sidebar-mobile': SidebarMobile
   },
 

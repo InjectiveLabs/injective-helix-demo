@@ -236,5 +236,10 @@ export default {
   'Select Derivation Path': 'Select Derivation Path',
   'Derivation Path': 'Derivation Path',
   'Select Address': 'Select Address',
-  'Select Ledger Address': 'Select Ledger Address'
+  'Select Ledger Address': 'Select Ledger Address',
+  'There are no results found - Markets':
+    'There are no markets found. You can go ahead and propose some!',
+  'last_traded_price Tooltip': '',
+  'market_change_24h Tooltip': '',
+  'market_volume_24h Tooltip': ''
 }

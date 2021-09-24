@@ -47,6 +47,11 @@ export enum Breakpoint {
   Xxs = 'xxs'
 }
 
+export enum MarketType {
+  Spot = 'Spot',
+  Derivative = 'Derivative'
+}
+
 export enum AppState {
   Busy = 'Busy',
   Loading = 'Loading',

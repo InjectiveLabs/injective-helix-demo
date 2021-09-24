@@ -33,7 +33,15 @@ import Swap from '~/components/icons/swap.vue'
 import Wallet from '~/components/icons/wallet.vue'
 import CategoryAlt from '~/components/icons/category-alt.vue'
 import ArrowSwap from '~/components/icons/arrow-swap.vue'
+import Twitter from '~/components/icons/twitter.vue'
+import Reddit from '~/components/icons/reddit.vue'
+import Discord from '~/components/icons/discord.vue'
+import Telegram from '~/components/icons/telegram.vue'
 
+Vue.component('VIconTwitter', Twitter)
+Vue.component('VIconDiscord', Discord)
+Vue.component('VIconTelegram', Telegram)
+Vue.component('VIconReddit', Reddit)
 Vue.component('VIconArrow', Arrow)
 Vue.component('VIconArrowSwap', ArrowSwap)
 Vue.component('VIconBox', Box)
