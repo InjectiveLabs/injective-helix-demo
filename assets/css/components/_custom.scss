@@ -154,19 +154,23 @@
 }
 
 .slideout-menu-left {
-  left: 0;
+  @apply left-0;
 }
 
 .slideout-menu-right {
-  right: 0;
+  @apply right-0;
 }
 
 .slideout-open,
 .slideout-open body,
 .slideout-open .slideout-panel {
-  overflow: hidden;
+  @apply overflow-hidden;
+}
+
+.slideout-open .slideout-panel {
+  @apply bg-gray-900 opacity-10;
 }
 
 .slideout-open .slideout-menu {
-  display: block;
+  @apply block;
 }

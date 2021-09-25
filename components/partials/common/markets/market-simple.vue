@@ -200,7 +200,7 @@ export default Vue.extend({
         : Change.Decrease
     },
 
-    typeToString() {
+    typeToString(): string {
       const { market } = this
 
       return market.type === MarketType.Spot ? this.$t('spot') : this.$t('perp')
