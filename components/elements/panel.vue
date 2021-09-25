@@ -2,7 +2,7 @@
   <div class="flex flex-col">
     <div
       v-if="title || $slots['title'] || $slots['title-context']"
-      class="flex justify-between items-center"
+      class="flex justify-between items-center mb-6"
     >
       <h3 class="text-xl font-bold text-gray-200">
         <slot name="title">{{ title }}</slot>

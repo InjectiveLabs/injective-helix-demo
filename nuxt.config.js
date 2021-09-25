@@ -31,7 +31,6 @@ export default {
     '~/plugins/utils',
     '~/plugins/store',
 
-    { src: '~/plugins/slider', ssr: false },
     { src: '~/plugins/tooltip', ssr: false },
     { src: '~/plugins/clipboard', ssr: false },
     { src: '~/plugins/veevalidate', ssr: false }

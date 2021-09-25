@@ -264,5 +264,6 @@ export default {
   Orderbook: 'Orderbook',
   Cancel: 'Cancel',
   Close: 'Close',
-  open_positions: 'Open Positions'
+  open_positions: 'Open Positions',
+  getting_started: 'Getting Started'
 }

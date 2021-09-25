@@ -10,7 +10,7 @@
           <client-only>
             <div class="bg-gray-900 relative">
               <v-topbar @sidebar-opened="isOpenSidebar = true" />
-              <main class="w-full h-full">
+              <main class="w-full h-full min-h-screen">
                 <portal-target name="backLink" />
                 <div class="py-8 relative">
                   <nuxt />
