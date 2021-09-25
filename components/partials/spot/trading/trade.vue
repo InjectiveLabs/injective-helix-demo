@@ -58,22 +58,21 @@
         >
           <span slot="addon">{{ market.baseToken.symbol.toUpperCase() }}</span>
           <div
-            v-if="true"
             slot="context"
             class="text-xs text-gray-400 flex items-center font-mono"
           >
-            <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(25)"
-              >25%</span
-            >
-            <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(50)"
-              >50%</span
-            >
-            <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(75)"
-              >75%</span
-            >
-            <span class="cursor-pointer" @click.stop="onMaxInput(100)"
-              >100%</span
-            >
+            <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(25)">
+              25%
+            </span>
+            <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(50)">
+              50%
+            </span>
+            <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(75)">
+              75%
+            </span>
+            <span class="cursor-pointer" @click.stop="onMaxInput(100)">
+              100%
+            </span>
           </div>
         </v-input>
         <span v-if="amountError" class="text-2xs font-semibold text-red-500">

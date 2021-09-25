@@ -1,5 +1,5 @@
 <template>
-  <div v-if="market" class="mt-4 py-4 border-t relative">
+  <div v-if="market" class="mt-6 py-6 border-t relative">
     <v-drawer
       :custom-handler="true"
       :custom-is-open="detailsDrawerOpen"
@@ -10,9 +10,13 @@
           <span class="font-mono flex items-center">
             <span class="mr-1">≈</span>
             {{ extractedTotalToFormat }}
-            <span class="text-gray-500 ml-1">{{
-              orderTypeBuy ? market.quoteToken.symbol : market.baseToken.symbol
-            }}</span>
+            <span class="text-gray-500 ml-1">
+              {{
+                orderTypeBuy
+                  ? market.quoteToken.symbol
+                  : market.baseToken.symbol
+              }}
+            </span>
           </span>
         </v-text-info>
       </p>

@@ -3,26 +3,26 @@
     <table class="table">
       <thead>
         <tr>
-          <th is="v-ui-table-th" right class="text-xs">
-            <span>{{ $t('price') }}</span>
+          <th class="text-right">
+            {{ $t('price') }}
           </th>
-          <th is="v-ui-table-th" right class="text-xs">
-            <span>{{ $t('amount') }}</span>
+          <th class="text-right">
+            {{ $t('amount') }}
           </th>
-          <th is="v-ui-table-th" right class="text-xs">
-            <span>{{ $t('notional_size') }}</span>
+          <th class="text-right">
+            {{ $t('notional_size') }}
           </th>
-          <th is="v-ui-table-th" right class="text-xs">
-            <span>{{ $t('fee') }}</span>
+          <th class="text-right">
+            {{ $t('fee') }}
           </th>
-          <th is="v-ui-table-th" center class="text-xs">
-            <span>{{ $t('side') }}</span>
+          <th class="text-center">
+            {{ $t('side') }}
           </th>
-          <th is="v-ui-table-th" center class="text-xs">
-            <span>{{ $t('execution_type') }}</span>
+          <th class="text-center">
+            {{ $t('execution_type') }}
           </th>
-          <th is="v-ui-table-th" right class="text-xs">
-            <span>{{ $t('time') }}</span>
+          <th class="text-right">
+            {{ $t('time') }}
           </th>
         </tr>
       </thead>
@@ -35,6 +35,7 @@
         ></tr>
       </tbody>
     </table>
+    <v-user-wallet-connect-warning v-if="!isUserWalletConnected" />
   </div>
 </template>
 

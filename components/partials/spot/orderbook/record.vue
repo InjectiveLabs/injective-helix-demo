@@ -38,10 +38,11 @@
         {{ quantityToFormat }}
       </span>
     </span>
-    <span class="w-1/3 text-xs px-2 z-10" @click.stop="onTotalNotionalClick">
-      <span class="block text-right font-mono">
-        {{ totalToFormat }}
-      </span>
+    <span
+      class="w-1/3 text-xs px-2 z-10 font-mono"
+      @click.stop="onTotalNotionalClick"
+    >
+      {{ totalToFormat }}
     </span>
   </li>
 </template>
@@ -93,12 +94,12 @@ export default Vue.extend({
   },
 
   computed: {
-    existsInUserOrders(): boolean {
-      return this.userOrders.includes(this.record.price.toString())
-    },
-
     market(): UiSpotMarket | undefined {
       return this.$accessor.spot.market
+    },
+
+    existsInUserOrders(): boolean {
+      return this.userOrders.includes(this.record.price.toString())
     },
 
     recordTypeBuy(): boolean {

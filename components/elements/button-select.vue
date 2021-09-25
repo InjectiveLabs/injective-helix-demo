@@ -2,8 +2,10 @@
   <button
     type="button"
     role="button"
-    class="rounded-2xl px-5 py-2 uppercase text-xs tracking-wide outline-none bg-gray-900 focus:outline-none"
+    class="uppercase rounded-2xl text-xs tracking-wide outline-none bg-gray-900 focus:outline-none"
     :class="{
+      'px-5 py-2 text-xs': !xs,
+      'px-2 py-2 text-2xs': xs,
       'text-gray-100  shadow-sm': isSelected && !primary && !red && !aqua,
       'text-gray-300': !isSelected,
       'border border-aqua-500 text-aqua-500': isSelected && aqua,
@@ -37,6 +39,12 @@ export default Vue.extend({
     },
 
     primary: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+
+    xs: {
       type: Boolean,
       required: false,
       default: false

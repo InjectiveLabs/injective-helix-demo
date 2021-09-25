@@ -24,13 +24,13 @@
           type="number"
           min="0"
           step="0.01"
-          max="maxLeverage.toString()"
+          :max="maxLeverage.toString()"
           class="leverage-input pr-4"
           @input="(e) => onLeverageChange(e.target.value)"
         />
-        <span class="absolute top-0 right-0 text-xs text-gray-400 mt-1 mr-1"
-          >x</span
-        >
+        <span class="absolute top-0 right-0 text-xs text-gray-400 mt-1 mr-1">
+          x
+        </span>
       </div>
     </v-input-slider>
   </div>

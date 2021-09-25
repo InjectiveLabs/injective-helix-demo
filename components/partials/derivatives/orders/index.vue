@@ -1,31 +1,31 @@
 <template>
-  <div v-if="market" class="table-responsive table-compact">
+  <div v-if="market" class="table-responsive min-h-3xs">
     <table class="table">
-      <thead class="border-b">
+      <thead>
         <tr>
-          <th is="v-ui-table-th" right>
-            <span>{{ $t('price') }}</span>
+          <th class="text-right">
+            {{ $t('price') }}
           </th>
-          <th is="v-ui-table-th" right>
-            <span>{{ $t('amount') }}</span>
+          <th class="text-right">
+            {{ $t('amount') }}
           </th>
-          <th is="v-ui-table-th" right>
-            <span>{{ $t('unfilled') }}</span>
+          <th class="text-right">
+            {{ $t('unfilled') }}
           </th>
-          <th is="v-ui-table-th" right>
-            <span>{{ $t('total') }}</span>
+          <th class="text-right">
+            {{ $t('total') }}
           </th>
-          <th is="v-ui-table-th" right>
-            <span>{{ $t('leverage') }}</span>
+          <th class="text-right">
+            {{ $t('leverage') }}
           </th>
-          <th is="v-ui-table-th" center>
-            <span>{{ $t('side') }}</span>
+          <th class="text-center">
+            {{ $t('side') }}
           </th>
-          <th is="v-ui-table-th" center>
-            <span>{{ $t('filled') }}</span>
+          <th class="text-center">
+            {{ $t('filled') }}
           </th>
-          <th is="v-ui-table-th" center>
-            <span>{{ $t('actions') }}</span>
+          <th class="text-center">
+            {{ $t('actions') }}
           </th>
         </tr>
       </thead>
@@ -36,43 +36,20 @@
           :key="`orders-${index}-${order.orderHash}`"
           :order="order"
         ></tr>
-        <tr
-          is="v-order-empty"
-          v-for="(order, index) in emptyOrders"
-          :key="`empty-orders-${index}`"
-        ></tr>
-      </tbody>
-      <tbody v-else>
-        <tr class="relative h-8">
-          <th colspan="8" class="w-full" :rowspan="limit">
-            <v-ui-overlay>
-              <p>{{ $t('not_connect_orders') }}</p>
-            </v-ui-overlay>
-          </th>
-        </tr>
-        <tr
-          v-for="(order, index) in [...emptyOrders.slice(1)]"
-          :key="`empty-orders-${index}`"
-          class="h-8"
-        >
-          <td></td>
-        </tr>
       </tbody>
     </table>
+    <v-user-wallet-connect-warning v-if="!isUserWalletConnected" />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { BigNumber } from '@injectivelabs/utils'
 import Order from './order.vue'
-import OrderEmpty from './order-empty.vue'
 import { UiDerivativeMarket, UiDerivativeLimitOrder } from '~/types'
 
 export default Vue.extend({
   components: {
-    'v-order': Order,
-    'v-order-empty': OrderEmpty
+    'v-order': Order
   },
 
   data() {
@@ -98,42 +75,6 @@ export default Vue.extend({
       }
 
       return this.$accessor.derivatives.subaccountOrders
-    },
-
-    emptyOrders(): any[] {
-      const { limit, orders } = this
-
-      return orders.length < limit ? new Array(limit - orders.length) : []
-    }
-  },
-
-  mounted() {
-    this.$root.$on('resized-orders-panel', this.onResize)
-
-    this.$nextTick(() => {
-      setTimeout(() => {
-        this.onResize()
-      }, 20)
-    })
-  },
-
-  methods: {
-    onResize() {
-      const panelContent = this.$el.closest('.v-panel-content') as HTMLElement
-
-      if (!panelContent) {
-        return
-      }
-
-      const height = panelContent.offsetHeight
-      const rowSize = 32
-      const titleHeight = 48
-      const totalContentHeight = new BigNumber(height - titleHeight)
-
-      this.limit = totalContentHeight
-        .div(rowSize)
-        .decimalPlaces(0, BigNumber.ROUND_HALF_CEIL)
-        .toNumber()
     }
   }
 })

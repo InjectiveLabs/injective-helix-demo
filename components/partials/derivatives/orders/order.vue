@@ -1,55 +1,29 @@
 <template>
   <tr v-if="market">
-    <td is="v-ui-table-td" xs class="h-8">
-      <v-ui-format-order-price
-        v-bind="{
-          value: price,
-          type: order.orderSide,
-          decimals: market.priceDecimals
+    <td class="h-8 font-mono text-right">
+      <span
+        :class="{
+          'text-aqua-500': order.orderSide === DerivativeOrderSide.Buy,
+          'text-red-500': order.orderSide === DerivativeOrderSide.Sell
         }"
-        class="flex justify-end"
-      />
+      >
+        {{ priceToFormat }}
+      </span>
     </td>
-    <td is="v-ui-table-td" xs right class="h-8">
-      <v-ui-format-amount
-        v-bind="{
-          value: quantity,
-          decimals: market.quantityDecimals
-        }"
-        class="block"
-      />
+    <td class="h-8 text-right font-mono">
+      {{ quantityToFormat }}
     </td>
-    <td is="v-ui-table-td" xs right class="h-8">
-      <v-ui-format-amount
-        v-bind="{
-          value: unfilledQuantity,
-          decimals: market.quantityDecimals
-        }"
-        class="block"
-      />
+    <td class="h-8 text-right font-mono">
+      {{ unfilledQuantityToFormat }}
     </td>
-    <td is="v-ui-table-td" xs class="h-8">
-      <v-ui-format-amount
-        v-bind="{
-          value: total,
-          decimals: market.priceDecimals
-        }"
-        class="text-right block text-white"
-      />
+    <td class="h-8 font-mono text-right">
+      {{ totalToFormat }}
     </td>
-    <td is="v-ui-table-td" xs class="h-8" right>
-      <v-ui-format-amount
-        v-if="!leverage.isNaN()"
-        v-bind="{
-          value: leverage,
-          decimals: 2
-        }"
-        class="block text-white"
-      />
-      <v-ui-text v-else muted>&mdash;</v-ui-text>
+    <td class="h-8 text-right font-mono">
+      {{ leverage.isNaN() ? '' : leverage.toFormat(2) }}
     </td>
-    <td is="v-ui-table-td" xs center class="h-8">
-      <v-ui-badge
+    <td class="h-8 text-center">
+      <v-badge
         :aqua="order.orderSide === DerivativeOrderSide.Buy"
         :red="order.orderSide === DerivativeOrderSide.Sell"
         xs
@@ -57,39 +31,31 @@
         <div class="w-8">
           {{ orderSideLocalized }}
         </div>
-      </v-ui-badge>
-      <v-ui-badge v-if="isReduceOnly" dark xs class="ml-2">{{
-        $t('reduce_only')
-      }}</v-ui-badge>
+      </v-badge>
+      <v-badge v-if="isReduceOnly" dark xs class="ml-2">
+        {{ $t('reduce_only') }}
+      </v-badge>
     </td>
-    <td is="v-ui-table-td" xs center class="h-8">
-      <v-ui-badge v-if="orderFullyFilled" aqua xs>
+    <td class="h-8 text-center">
+      <v-badge v-if="orderFullyFilled" primary xs>
         {{ $t('filled') }}
-      </v-ui-badge>
-      <v-ui-badge v-else-if="orderFillable" dark xs>
-        {{ `${filledQuantityPercentage.times(100).toFixed(2)}%` }}
-      </v-ui-badge>
+      </v-badge>
+      <v-badge v-else-if="orderFillable" gray xs>
+        <div class="w-12 font-mono">
+          {{ `${filledQuantityPercentage.times(100).toFixed(2)}%` }}
+        </div>
+      </v-badge>
     </td>
-    <td is="v-ui-table-td" xs class="h-8 relative" center>
-      <v-ui-button
+    <td class="h-8 relative text-center">
+      <v-button
         v-if="orderFillable"
         :status="status"
-        xs
+        text-xs
+        class="text-red-500 hover:text-red-600"
         @click="onCancelOrder"
       >
-        <v-ui-icon
-          :icon="Icon.Trash"
-          :tooltip="$t('cancel_order')"
-          sm
-          red
-          pointer
-        ></v-ui-icon>
-      </v-ui-button>
-      <v-ui-text v-else-if="orderFullyFilled" emp>
-        <a href target="_blank">
-          <v-ui-icon :icon="Icon.ExternalLink" xs></v-ui-icon>
-        </a>
-      </v-ui-text>
+        {{ $t('cancel') }}
+      </v-button>
       <span v-else class="inline-block">&mdash;</span>
     </td>
   </tr>
@@ -98,7 +64,11 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '~/app/utils/constants'
+import {
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+  ZERO_IN_BASE
+} from '~/app/utils/constants'
 import {
   UiDerivativeMarket,
   DerivativeOrderSide,
@@ -147,6 +117,16 @@ export default Vue.extend({
       return new BigNumberInWei(order.price).toBase(market.quoteToken.decimals)
     },
 
+    priceToFormat(): string {
+      const { market, price } = this
+
+      if (!market) {
+        return price.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return price.toFormat(market.priceDecimals)
+    },
+
     margin(): BigNumberInBase {
       const { market, order } = this
 
@@ -155,6 +135,16 @@ export default Vue.extend({
       }
 
       return new BigNumberInWei(order.margin).toBase(market.quoteToken.decimals)
+    },
+
+    marginToFormat(): string {
+      const { market, margin } = this
+
+      if (!market) {
+        return margin.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return margin.toFormat(market.priceDecimals)
     },
 
     quantity(): BigNumberInBase {
@@ -167,6 +157,16 @@ export default Vue.extend({
       return new BigNumberInBase(order.quantity)
     },
 
+    quantityToFormat(): string {
+      const { market, quantity } = this
+
+      if (!market) {
+        return quantity.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
+      }
+
+      return quantity.toFormat(market.quantityDecimals)
+    },
+
     unfilledQuantity(): BigNumberInBase {
       const { market, order } = this
 
@@ -175,6 +175,16 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(order.unfilledQuantity)
+    },
+
+    unfilledQuantityToFormat(): string {
+      const { market, unfilledQuantity } = this
+
+      if (!market) {
+        return unfilledQuantity.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
+      }
+
+      return unfilledQuantity.toFormat(market.quantityDecimals)
     },
 
     filledQuantity(): BigNumberInBase {
@@ -223,6 +233,16 @@ export default Vue.extend({
       const { price, quantity } = this
 
       return price.multipliedBy(quantity)
+    },
+
+    totalToFormat(): string {
+      const { market, total } = this
+
+      if (!market) {
+        return total.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return total.toFormat(market.priceDecimals)
     },
 
     orderSideLocalized(): string {

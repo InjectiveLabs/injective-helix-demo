@@ -2,64 +2,47 @@
   <div v-if="market" class="h-10 bg-dark-900">
     <div class="flex overflow-x-auto overflow-y-none">
       <v-market-info :title="$t('last_traded_price')">
-        <v-ui-text sm class="flex items-center justify-end w-full">
-          <v-ui-format-order-price
-            v-bind="{
-              value: currentLastTrade,
-              class: {
-                'text-aqua-500': currentLastTradeChange === Change.Increase,
-                'text-red-500': currentLastTradeChange === Change.Decrease
-              },
-              decimals: market.priceDecimals
+        <span class="text-sm text-right font-mono block">
+          <span
+            :class="{
+              'text-aqua-500': currentLastTradeChange === Change.Increase,
+              'text-red-500': currentLastTradeChange === Change.Decrease
             }"
-          />
-        </v-ui-text>
+          >
+            {{ currentLastTradePriceToFormat }}
+          </span>
+        </span>
       </v-market-info>
       <v-market-info :title="$t('market_change_24h')" class="">
-        <v-ui-text sm class="flex items-center justify-end w-full">
-          <v-ui-format-percent
-            v-bind="{
-              appendPlusSign: true,
-              precision: 2,
-              value: change.toString(),
-              class: change.gte(0) ? 'text-aqua-500' : 'text-red-500'
+        <span class="text-sm text-right font-mono block">
+          <span
+            :class="{
+              'text-aqua-500': change.gte(0),
+              'text-red-500': change.lt(0)
             }"
-          />
-        </v-ui-text>
+          >
+            {{ (change.gt(0) ? '+' : '') + change.toFormat(2) }}%
+          </span>
+        </span>
       </v-market-info>
       <v-market-info
         :title="$t('volume_asset', { asset: market.quoteToken.symbol })"
       >
-        <v-ui-text sm class="flex items-center justify-end w-full">
-          <v-ui-format-price
-            v-bind="{
-              dontGroupValues: true,
-              value: volume
-            }"
-          />
-        </v-ui-text>
+        <span class="text-sm text-right font-mono block">
+          {{ volumeToFormat }}
+        </span>
       </v-market-info>
       <v-market-info :title="$t('high')">
-        <v-ui-text sm class="flex items-center justify-end w-full">
-          <v-ui-format-price
-            v-if="high.gt(0)"
-            v-bind="{
-              value: high
-            }"
-          />
-          <span v-else class="text-gray-500">&mdash;</span>
-        </v-ui-text>
+        <span class="text-sm text-right font-mono block">
+          <span v-if="high.gt(0)">{{ highToFormat }}</span>
+          <span v-else class="text-gray-400">&mdash;</span>
+        </span>
       </v-market-info>
       <v-market-info :title="$t('low')">
-        <v-ui-text sm class="flex items-center justify-end w-full">
-          <v-ui-format-price
-            v-if="high.gt(0)"
-            v-bind="{
-              value: low
-            }"
-          />
-          <span v-else class="text-gray-500">&mdash;</span>
-        </v-ui-text>
+        <span class="text-sm text-right font-mono block">
+          <span v-if="low.gt(0)">{{ lowToFormat }}</span>
+          <span v-else class="text-gray-400">&mdash;</span>
+        </span>
       </v-market-info>
     </div>
   </div>
@@ -153,6 +136,16 @@ export default Vue.extend({
         : currentLastDerivativeTradedPrice
     },
 
+    currentLastTradePriceToFormat(): string {
+      const { market, currentLastTrade } = this
+
+      if (!market) {
+        return currentLastTrade.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return currentLastTrade.toFormat(market.priceDecimals)
+    },
+
     currentLastTradeChange(): Change {
       const {
         currentLastSpotTradedPriceChange,
@@ -175,6 +168,16 @@ export default Vue.extend({
       return new BigNumberInBase(summary.high)
     },
 
+    highToFormat(): string {
+      const { market, high } = this
+
+      if (!market) {
+        return high.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return high.toFormat(market.priceDecimals)
+    },
+
     change(): BigNumberInBase {
       const { market, summary } = this
 
@@ -195,6 +198,16 @@ export default Vue.extend({
       return new BigNumberInBase(summary.low)
     },
 
+    lowToFormat(): string {
+      const { market, low } = this
+
+      if (!market) {
+        return low.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return low.toFormat(market.priceDecimals)
+    },
+
     volume(): BigNumberInBase {
       const { market, summary } = this
 
@@ -203,6 +216,16 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(summary.volume)
+    },
+
+    volumeToFormat(): string {
+      const { market, volume } = this
+
+      if (!market) {
+        return volume.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return volume.toFormat(market.priceDecimals)
     },
 
     lastTradedPriceToString(): string {

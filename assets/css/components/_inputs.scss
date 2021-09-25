@@ -65,3 +65,19 @@
     @apply pointer-events-none cursor-not-allowed bg-gray-700;
   }
 }
+
+.leverage-input {
+  @apply font-mono ml-2 w-14 py-1 text-sm text-right rounded-lg appearance-none bg-dark-800 text-gray-300 shadow;
+
+  /* Chrome, Safari, Edge, Opera */
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  &[type='number'] {
+    -moz-appearance: textfield;
+  }
+}

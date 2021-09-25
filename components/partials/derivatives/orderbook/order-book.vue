@@ -2,14 +2,10 @@
   <div class="flex flex-col flex-wrap overflow-y-hidden w-full">
     <ul
       ref="sellOrders"
-      class="list-order-book overflow-auto w-full"
+      class="list-order-book overflow-auto w-full h-48"
       @mouseenter="autoScrollSellsLocked = true"
       @mouseleave="autoScrollSellsLocked = false"
     >
-      <v-record-empty
-        v-for="(emptyOrder, index) in sellsEmptyCount"
-        :key="`order-book-sell-empty-${index}`"
-      ></v-record-empty>
       <v-record
         v-for="(sell, index) in sellsWithDepth"
         :key="`order-book-sell-${index}`"
@@ -20,42 +16,36 @@
     </ul>
     <div
       v-if="market"
-      class="
-        h-14
-        bg-dark-800
-        flex flex-col
-        items-center
-        justify-center
-        border-t border-b
-      "
+      class="h-14 bg-dark-800 flex flex-col items-center justify-center border-t border-b"
     >
       <div class="w-full flex justify-between px-2">
         <span class="text-white font-bold text-sm w-2/3 text-right pr-2">
-          <div class="inline-block mr-1">
-            <v-ui-icon
+          <div class="transform inline-block rotate-90 mt-3">
+            <v-icon-arrow
               v-if="
                 [Change.Increase, Change.Decrease].includes(
                   lastTradedPriceChange
                 )
               "
-              xs
-              :rotate="lastTradedPriceChange === Change.Decrease"
-              :aqua="lastTradedPriceChange === Change.Increase"
-              :red="lastTradedPriceChange === Change.Decrease"
-              :icon="Icon.Arrow"
-            />
+              class="w-3 h-3"
+              :class="{
+                'text-red-500 -rotate-90':
+                  lastTradedPriceChange === Change.Decrease,
+                'text-aqua-500': lastTradedPriceChange === Change.Increase
+              }"
+            ></v-icon-arrow>
           </div>
           <div class="inline-block">
-            <v-ui-format-order-price
-              v-bind="{
-                value: lastTradedPrice,
-                type:
-                  lastTradedPriceChange !== Change.Decrease
-                    ? TradeDirection.Buy
-                    : TradeDirection.Sell
+            <span
+              :class="{
+                'text-red-500 -rotate-90':
+                  lastTradedPriceChange === Change.Decrease,
+                'text-aqua-500': lastTradedPriceChange !== Change.Decrease
               }"
-              class="flex justify-end"
-            />
+              class="font-mono"
+            >
+              {{ lastTradedPriceToFormat }}
+            </span>
           </div>
         </span>
         <span class="text-sm w-1/3 text-right pr-2" />
@@ -63,7 +53,7 @@
     </div>
     <ul
       ref="buyOrders"
-      class="list-order-book overflow-auto w-full"
+      class="list-order-book overflow-auto w-full h-48"
       @mouseenter="autoScrollBuysLocked = true"
       @mouseleave="autoScrollBuysLocked = false"
     >
@@ -74,20 +64,18 @@
         :user-orders="buyUserOrderPrices"
         :record="buy"
       ></v-record>
-      <v-record-empty
-        v-for="(emptyOrder, index) in buysEmptyCount"
-        :key="`order-book-buy-empty-${index}`"
-      ></v-record-empty>
     </ul>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { BigNumberInBase, BigNumber } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import Record from './record.vue'
-import RecordEmpty from './record-empty.vue'
-import { ZERO_IN_BASE } from '~/app/utils/constants'
+import {
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+  ZERO_IN_BASE
+} from '~/app/utils/constants'
 import {
   UiDerivativeTrade,
   UiDerivativeMarket,
@@ -103,8 +91,7 @@ import {
 
 export default Vue.extend({
   components: {
-    'v-record': Record,
-    'v-record-empty': RecordEmpty
+    'v-record': Record
   },
 
   data() {
@@ -114,9 +101,7 @@ export default Vue.extend({
       TradeDirection,
       DerivativeOrderSide,
       autoScrollSellsLocked: false,
-      autoScrollBuysLocked: false,
-
-      limit: 6
+      autoScrollBuysLocked: false
     }
   },
 
@@ -143,6 +128,16 @@ export default Vue.extend({
 
     lastTradedPriceChange(): Change {
       return this.$accessor.derivatives.lastTradedPriceChange
+    },
+
+    lastTradedPriceToFormat(): string {
+      const { market, lastTradedPrice } = this
+
+      if (!market) {
+        return lastTradedPrice.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return lastTradedPrice.toFormat(market.priceDecimals)
     },
 
     buys(): UiPriceLevel[] {
@@ -250,22 +245,6 @@ export default Vue.extend({
           }
         })
         .reverse()
-    },
-
-    sellsEmptyCount(): any[] {
-      const { sells, limit } = this
-
-      const size = Object.keys(sells).length
-
-      return size < limit ? new Array(limit - size) : []
-    },
-
-    buysEmptyCount(): any[] {
-      const { buys, limit } = this
-
-      const size = Object.keys(buys).length
-
-      return size < limit ? new Array(limit - size) : []
     }
   },
 
@@ -280,12 +259,6 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.$root.$on('resized-order-book-panel', this.onResize)
-
-    this.$nextTick(() => {
-      this.onResize()
-    })
-
     this.$nextTick(() => {
       this.onScrollSells()
       this.onScrollBuys()
@@ -293,37 +266,6 @@ export default Vue.extend({
   },
 
   methods: {
-    onResize() {
-      const panelContent = this.$el.closest('.v-panel-content') as HTMLElement
-
-      if (!panelContent) {
-        return
-      }
-
-      const height = panelContent.offsetHeight
-      const rowSize = 24
-      const middleContextHeight = 56
-      const totalContentHeight = new BigNumber(height - middleContextHeight)
-      const halftotalContentHeight = totalContentHeight
-        .div(2)
-        .decimalPlaces(0, BigNumber.ROUND_HALF_CEIL)
-        .toNumber()
-
-      this.limit = totalContentHeight
-        .div(2)
-        .div(rowSize)
-        .decimalPlaces(0, BigNumber.ROUND_HALF_CEIL)
-        .toNumber()
-
-      const sellOrdersRef = this.$refs.sellOrders as any
-      const buyOrdersRef = this.$refs.buyOrders as any
-
-      if (sellOrdersRef && buyOrdersRef) {
-        sellOrdersRef.style.height = `${halftotalContentHeight}px`
-        buyOrdersRef.style.height = `${halftotalContentHeight}px`
-      }
-    },
-
     onScrollSells() {
       const el = this.$refs.sellOrders as any
 

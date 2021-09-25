@@ -7,13 +7,13 @@
             {{ $t('Injective Chain') }}
           </p>
           <div class="flex items-center">
-            <v-button text-xs primary @click.stop="openBridgeDepositModal">{{
-              $t('deposit')
-            }}</v-button>
+            <v-button text-xs primary @click.stop="openBridgeDepositModal">
+              {{ $t('deposit') }}
+            </v-button>
             <div class="mx-2 w-px h-4 bg-dark-500"></div>
-            <v-button text-xs primary @click.stop="openWithdrawModal">{{
-              $t('withdraw')
-            }}</v-button>
+            <v-button text-xs primary @click.stop="openWithdrawModal">
+              {{ $t('withdraw') }}
+            </v-button>
           </div>
         </div>
         <div class="mt-4">
@@ -27,19 +27,13 @@
             {{ $t('Subaccount') }}
           </p>
           <div class="flex items-center">
-            <v-button
-              primary
-              text-xs
-              @click.stop="openSubaccountTransferModal"
-              >{{ $t('deposit') }}</v-button
-            >
+            <v-button primary text-xs @click.stop="openSubaccountTransferModal"
+              >{{ $t('deposit') }}
+            </v-button>
             <div class="mx-2 w-px h-4 bg-dark-500"></div>
-            <v-button
-              primary
-              text-xs
-              @click.stop="openSubaccountWithdrawModal"
-              >{{ $t('withdraw') }}</v-button
-            >
+            <v-button primary text-xs @click.stop="openSubaccountWithdrawModal"
+              >{{ $t('withdraw') }}
+            </v-button>
           </div>
         </div>
         <div class="mt-4">

@@ -262,5 +262,7 @@ export default {
   'Available to Withdraw Subaccount Tooltip':
     'The amount you can withdraw from your Subaccount.',
   Orderbook: 'Orderbook',
-  Cancel: 'Cancel'
+  Cancel: 'Cancel',
+  Close: 'Close',
+  open_positions: 'Open Positions'
 }

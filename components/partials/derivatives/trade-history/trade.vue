@@ -1,59 +1,40 @@
 <template>
   <tr v-if="market">
-    <td is="v-ui-table-td" xs class="h-8">
-      <v-ui-format-order-price
-        v-bind="{
-          value: price,
-          type: trade.tradeDirection,
-          decimals: market.priceDecimals
+    <td class="h-8 text-right font-mono">
+      <span
+        :class="{
+          'text-aqua-500': trade.tradeDirection === TradeDirection.Buy,
+          'text-red-500': trade.tradeDirection === TradeDirection.Sell
         }"
-        class="block text-right"
-      />
+      >
+        {{ priceToFormat }}
+      </span>
     </td>
-    <td is="v-ui-table-td" xs right class="h-8">
-      <v-ui-format-amount
-        v-bind="{
-          value: quantity,
-          decimals: market.quantityDecimals
-        }"
-        class="block text-right"
-      />
+    <td class="h-8 text-right font-mono">
+      {{ quantityToFormat }}
     </td>
-    <td is="v-ui-table-td" xs right class="h-8">
-      <v-ui-format-amount
-        v-bind="{
-          value: total,
-          decimals: market.priceDecimals
-        }"
-        class="block text-right"
-      />
+    <td class="h-8 text-right font-mono">
+      {{ totalToFormat }}
     </td>
-    <td is="v-ui-table-td" xs right class="h-8">
-      <v-ui-format-amount
-        v-bind="{
-          value: fee
-        }"
-        class="text-right block text-white"
-      />
+    <td class="h-8 text-right font-mono">
+      {{ feeToFormat }}
     </td>
-    <td is="v-ui-table-td" xs center class="h-8">
-      <v-ui-badge
+    <td class="h-8 text-center">
+      <v-badge
         :aqua="trade.tradeDirection === TradeDirection.Buy"
         :red="trade.tradeDirection === TradeDirection.Sell"
         sm
       >
         {{ tradeDirection }}
-      </v-ui-badge>
+      </v-badge>
     </td>
-    <td is="v-ui-table-td" xs center class="h-8">
-      <v-ui-badge dark sm>
+    <td class="h-8 text-center">
+      <v-badge gray sm>
         {{ tradeExecutionType }}
-      </v-ui-badge>
+      </v-badge>
     </td>
-    <td is="v-ui-table-td" xs right class="h-8">
-      <v-ui-text muted class="font-mono block text-right">
-        {{ time }}
-      </v-ui-text>
+    <td class="h-8 text-right font-mono">
+      <span class="text-gray-400 text-xs">{{ time }}</span>
     </td>
   </tr>
 </template>
@@ -62,7 +43,11 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { format } from 'date-fns'
-import { ZERO_IN_BASE } from '~/app/utils/constants'
+import {
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+  ZERO_IN_BASE
+} from '~/app/utils/constants'
 import {
   UiDerivativeMarket,
   TradeDirection,
@@ -102,6 +87,16 @@ export default Vue.extend({
       )
     },
 
+    priceToFormat(): string {
+      const { market, price } = this
+
+      if (!market) {
+        return price.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return price.toFormat(market.priceDecimals)
+    },
+
     quantity(): BigNumberInBase {
       const { market, trade } = this
 
@@ -112,10 +107,30 @@ export default Vue.extend({
       return new BigNumberInBase(trade.executionQuantity)
     },
 
+    quantityToFormat(): string {
+      const { market, quantity } = this
+
+      if (!market) {
+        return quantity.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
+      }
+
+      return quantity.toFormat(market.quantityDecimals)
+    },
+
     total(): BigNumberInBase {
       const { quantity, price } = this
 
       return price.times(quantity)
+    },
+
+    totalToFormat(): string {
+      const { market, total } = this
+
+      if (!market) {
+        return total.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return total.toFormat(market.priceDecimals)
     },
 
     time(): string {
@@ -136,6 +151,16 @@ export default Vue.extend({
       }
 
       return new BigNumberInWei(trade.fee).toBase(market.quoteToken.decimals)
+    },
+
+    feeToFormat(): string {
+      const { market, fee } = this
+
+      if (!market) {
+        return fee.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return fee.toFormat(market.priceDecimals)
     },
 
     tradeDirection(): string {

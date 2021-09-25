@@ -1,10 +1,12 @@
 <template>
-  <div class="px-4 w-auto md:px-2 lg:px-3 2xl:px-4 flex-grow-0 flex-shrink-0">
-    <v-ui-text xs class="text-gray-500 mb-1 w-full text-right block">
+  <div class="px-4 w-auto md:px-2 lg:px-3 2xl:px-4">
+    <span class="text-gray-500 mb-1 w-full text-right block text-xs">
       {{ title }}
       <slot name="icon"></slot>
-    </v-ui-text>
-    <slot></slot>
+    </span>
+    <div>
+      <slot></slot>
+    </div>
   </div>
 </template>
 

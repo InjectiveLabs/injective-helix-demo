@@ -10,9 +10,13 @@
           <span class="font-mono flex items-center">
             <span class="mr-1">≈</span>
             {{ extractedTotalToFormat }}
-            <span class="text-gray-500 ml-1">{{
-              orderTypeBuy ? market.quoteToken.symbol : market.baseToken.symbol
-            }}</span>
+            <span class="text-gray-500 ml-1">
+              {{
+                orderTypeBuy
+                  ? market.quoteToken.symbol
+                  : market.baseToken.symbol
+              }}
+            </span>
           </span>
         </v-text-info>
       </p>

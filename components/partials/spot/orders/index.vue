@@ -3,26 +3,26 @@
     <table class="table">
       <thead>
         <tr>
-          <th class="text-right text-xs">
-            <span>{{ $t('price') }}</span>
+          <th class="text-right">
+            {{ $t('price') }}
           </th>
-          <th class="text-right text-xs">
-            <span>{{ $t('amount') }}</span>
+          <th class="text-right">
+            {{ $t('amount') }}
           </th>
-          <th class="text-right text-xs">
-            <span>{{ $t('unfilled') }}</span>
+          <th class="text-right">
+            {{ $t('unfilled') }}
           </th>
-          <th class="text-right text-xs">
-            <span>{{ $t('total') }}</span>
+          <th class="text-right">
+            {{ $t('total') }}
           </th>
-          <th class="text-center text-xs">
-            <span>{{ $t('side') }}</span>
+          <th class="text-center">
+            {{ $t('side') }}
           </th>
-          <th class="text-center text-xs">
-            <span>{{ $t('filled') }}</span>
+          <th class="text-center">
+            {{ $t('filled') }}
           </th>
-          <th class="text-center text-xs">
-            <span>{{ $t('actions') }}</span>
+          <th class="text-center">
+            {{ $t('actions') }}
           </th>
         </tr>
       </thead>

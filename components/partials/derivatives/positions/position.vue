@@ -1,53 +1,40 @@
 <template>
   <tr v-if="market">
-    <td is="v-ui-table-td" xs class="relative" center>
-      <v-ui-button :status="status" xs @click="onClosePositionClick">
-        <v-ui-icon
-          :icon="Icon.CloseCircle"
-          :tooltip="$t('close_position')"
-          sm
-          red
-          pointer
-        ></v-ui-icon>
-      </v-ui-button>
+    <td class="text-center relative">
+      <v-button
+        text-xs
+        class="text-red-500 hover:text-red-600"
+        @click="onClosePositionClick"
+      >
+        {{ $t('Close') }}
+      </v-button>
     </td>
-    <td is="v-ui-table-td" xs center>
-      <v-ui-badge
-        :aqua="position.direction === TradeDirection.Long"
-        :red="position.direction === TradeDirection.Short"
+    <td class="text-center">
+      <v-badge
+        :aqua="position.direction === TradeDirection.Buy"
+        :red="position.direction === TradeDirection.Sell"
         sm
       >
-        <div class="w-10">
-          {{ directionLocalized }}
-        </div>
-      </v-ui-badge>
+        {{ directionLocalized }}
+      </v-badge>
     </td>
-    <td is="v-ui-table-td" xs right>
-      <v-ui-format-amount
-        v-bind="{
-          value: quantity,
-          decimals: market.quantityDecimals
+    <td class="text-right font-mono">
+      <span
+        :class="{
+          'text-aqua-500': position.direction === TradeDirection.Buy,
+          'text-red-500': position.direction === TradeDirection.Sell
         }"
-        class="block"
-      />
+      >
+        {{ priceToFormat }}
+      </span>
     </td>
-    <td is="v-ui-table-td" xs right>
-      <v-ui-format-price
-        v-bind="{
-          value: price,
-          decimals: market.priceDecimals
-        }"
-      />
+    <td class="text-right font-mono">
+      {{ quantityToFormat }}
     </td>
-    <td is="v-ui-table-td" xs right>
-      <v-ui-format-price
-        v-bind="{
-          value: liquidationPrice,
-          decimals: market.priceDecimals
-        }"
-      />
+    <td class="text-right font-mono">
+      {{ liquidationPriceToFormat }}
     </td>
-    <td is="v-ui-table-td" xs center>
+    <td class="text-center">
       <div
         v-if="!pnl.isNaN()"
         class="flex items-center justify-center text-2xs"
@@ -57,47 +44,33 @@
         <div class="flex items-center">
           <span class="mr-1 flex items-center">
             <span>{{ pnl.gte(0) ? '+' : '-' }}</span>
-            <v-ui-format-price
-              v-bind="{
-                value: pnl,
-                class: pnlClass,
-                decimals: market.priceDecimals
+            <span
+              :class="{
+                'text-aqua-500': pnl.gte(0),
+                'text-red-500': pnl.lt(0)
               }"
-              class="text-right block"
-            /><span class="ml-1">{{ market.quoteToken.symbol }}</span></span
-          >
-          <span class="flex" style="margin-top: -2px"
-            >(<v-ui-format-percent
-              v-bind="{
-                appendPlusSign: true,
-                precision: 2,
-                value: percentagePnl.toString()
-              }"
-            />)</span
-          >
+            >
+              {{ pnlToFormat }}
+            </span>
+            <span class="ml-1">{{ market.quoteToken.symbol }}</span>
+          </span>
+          <span class="flex" style="margin-top: -2px">
+            ({{
+              (percentagePnl.gte(0) ? '+' : '') + percentagePnl.toFormat(2)
+            }})%
+          </span>
         </div>
       </div>
-      <v-ui-text v-else muted>{{ $t('not_available_n_a') }}</v-ui-text>
+      <span v-else class="text-gray-400">{{ $t('not_available_n_a') }}</span>
     </td>
-    <td is="v-ui-table-td" xs right>
-      <v-ui-format-price
-        v-bind="{
-          value: notionalValue,
-          decimals: market.priceDecimals
-        }"
-        class="text-right block text-white"
-      />
+    <td class="text-right font-mono">
+      {{ notionalValueToFormat }}
     </td>
-    <td is="v-ui-table-td" xs right>
-      <div class="flex items-center">
-        <v-ui-text>
-          <v-ui-format-price
-            v-bind="{
-              value: margin,
-              decimals: market.priceDecimals
-            }"
-          />
-        </v-ui-text>
+    <td class="text-right">
+      <div class="flex items-center h-8">
+        <span class="font-mono">
+          {{ marginToFormat }}
+        </span>
         <button
           role="button"
           type="button"
@@ -108,19 +81,12 @@
         </button>
       </div>
     </td>
-    <td is="v-ui-table-td" xs right>
-      <span v-if="effectiveLeverage.gt(0)" class="whitespace-pre">
-        <v-ui-format-amount
-          emp
-          v-bind="{
-            value: effectiveLeverage,
-            decimals: 2
-          }"
-          class="inline-block -mr-1"
-        />
-        <v-ui-text muted>&times;</v-ui-text>
+    <td class="text-right font-mono">
+      <span v-if="effectiveLeverage.gt(0)" class="flex items-center">
+        {{ effectiveLeverage.toFormat(2) }}
+        <span class="text-gray-300">&times;</span>
       </span>
-      <v-ui-text v-else muted>{{ $t('not_available_n_a') }}</v-ui-text>
+      <span v-else class="text-gray-400">{{ $t('not_available_n_a') }}</span>
     </td>
   </tr>
 </template>
@@ -128,7 +94,11 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Status, BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '~/app/utils/constants'
+import {
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+  ZERO_IN_BASE
+} from '~/app/utils/constants'
 import {
   UiDerivativeMarket,
   UiPosition,
@@ -185,6 +155,16 @@ export default Vue.extend({
       )
     },
 
+    priceToFormat(): string {
+      const { market, price } = this
+
+      if (!market) {
+        return price.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return price.toFormat(market.priceDecimals)
+    },
+
     margin(): BigNumberInBase {
       const { market, position } = this
 
@@ -195,6 +175,16 @@ export default Vue.extend({
       return new BigNumberInWei(position.margin).toBase(
         market.quoteToken.decimals
       )
+    },
+
+    marginToFormat(): string {
+      const { market, margin } = this
+
+      if (!market) {
+        return margin.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return margin.toFormat(market.priceDecimals)
     },
 
     buys(): UiPriceLevel[] {
@@ -227,6 +217,16 @@ export default Vue.extend({
       return new BigNumberInBase(position.quantity)
     },
 
+    quantityToFormat(): string {
+      const { market, quantity } = this
+
+      if (!market) {
+        return quantity.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
+      }
+
+      return quantity.toFormat(market.quantityDecimals)
+    },
+
     markPrice(): BigNumberInBase {
       const { market, position } = this
 
@@ -249,6 +249,16 @@ export default Vue.extend({
       return markPrice.times(quantity)
     },
 
+    notionalValueToFormat(): string {
+      const { market, notionalValue } = this
+
+      if (!market) {
+        return notionalValue.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return notionalValue.toFormat(market.priceDecimals)
+    },
+
     liquidationPrice(): BigNumberInBase {
       const { position, market } = this
 
@@ -261,6 +271,16 @@ export default Vue.extend({
       ).toBase(market.quoteToken.decimals)
 
       return liquidationPrice.gt(0) ? liquidationPrice : new BigNumberInBase(0)
+    },
+
+    liquidationPriceToFormat(): string {
+      const { market, liquidationPrice } = this
+
+      if (!market) {
+        return liquidationPrice.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return liquidationPrice.toFormat(market.priceDecimals)
     },
 
     totalReduceOnlyQuantity(): BigNumberInBase {
@@ -331,6 +351,16 @@ export default Vue.extend({
       return new BigNumberInBase(position.quantity)
         .times(executionPrice.minus(price))
         .times(position.direction === TradeDirection.Long ? 1 : -1)
+    },
+
+    pnlToFormat(): string {
+      const { market, pnl } = this
+
+      if (!market) {
+        return pnl.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return pnl.toFormat(market.priceDecimals)
     },
 
     percentagePnl(): BigNumberInBase {
