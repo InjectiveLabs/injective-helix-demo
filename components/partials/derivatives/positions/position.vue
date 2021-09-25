@@ -2,17 +2,22 @@
   <tr v-if="market">
     <td class="text-center relative">
       <v-button
-        text-xs
-        class="text-red-500 hover:text-red-600"
+        text
+        :class="{
+          'border border-aqua-500 text-aqua-500': position.direction === TradeDirection.Long,
+          'border border-red-500 text-red-500': position.direction === TradeDirection.Short
+        }"
         @click="onClosePositionClick"
+        class="flex items-center px-2 py-1"
       >
         {{ $t('Close') }}
+        <v-icon-close class="w-3 h-3 ml-1 mt-px"/>
       </v-button>
     </td>
     <td class="text-center">
       <v-badge
-        :aqua="position.direction === TradeDirection.Buy"
-        :red="position.direction === TradeDirection.Sell"
+        :aqua="position.direction === TradeDirection.Long"
+        :red="position.direction === TradeDirection.Short"
         sm
       >
         {{ directionLocalized }}
@@ -21,8 +26,8 @@
     <td class="text-right font-mono">
       <span
         :class="{
-          'text-aqua-500': position.direction === TradeDirection.Buy,
-          'text-red-500': position.direction === TradeDirection.Sell
+          'text-aqua-500': position.direction === TradeDirection.Long,
+          'text-red-500': position.direction === TradeDirection.Short
         }"
       >
         {{ priceToFormat }}
@@ -37,7 +42,7 @@
     <td class="text-center">
       <div
         v-if="!pnl.isNaN()"
-        class="flex items-center justify-center text-2xs"
+        class="flex items-center justify-end text-xs"
         :class="pnlClass"
       >
         <span class="mr-1">≈</span>
@@ -67,7 +72,7 @@
       {{ notionalValueToFormat }}
     </td>
     <td class="text-right">
-      <div class="flex items-center h-8">
+      <div class="flex items-center justify-end h-8">
         <span class="font-mono">
           {{ marginToFormat }}
         </span>
@@ -82,7 +87,7 @@
       </div>
     </td>
     <td class="text-right font-mono">
-      <span v-if="effectiveLeverage.gt(0)" class="flex items-center">
+      <span v-if="effectiveLeverage.gt(0)" class="flex items-center justify-end">
         {{ effectiveLeverage.toFormat(2) }}
         <span class="text-gray-300">&times;</span>
       </span>
@@ -384,7 +389,7 @@ export default Vue.extend({
         return ''
       }
 
-      return pnl.gte(0) ? 'text-primary-500' : 'text-red-500'
+      return pnl.gte(0) ? 'text-aqua-500' : 'text-red-500'
     },
 
     effectiveLeverage(): BigNumberInBase {

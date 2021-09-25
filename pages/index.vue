@@ -34,7 +34,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import VCards from '~/components/partials/home/cards.vue'
-import VPortfolio from '~/components/partials/home/portfolio/index.vue'
+import VPortfolio from '~/components/partials/common/portfolio/index.vue'
 import VSpot from '~/components/partials/common/markets/spot.vue'
 import VDerivatives from '~/components/partials/common/markets/derivatives.vue'
 

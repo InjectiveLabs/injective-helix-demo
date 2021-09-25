@@ -3,7 +3,7 @@
 }
 
 .toasted.bubble.error {
-  @apply text-red-900 font-bold;
+  @apply text-gray-800 font-bold;
   background: theme('colors.red.500') !important;
 }
 
@@ -21,7 +21,7 @@
 }
 
 .toasted.bubble.success {
-  @apply text-primary-900 font-bold;
+  @apply text-gray-800 font-bold;
   background: theme('colors.primary.500') !important;
 }
 

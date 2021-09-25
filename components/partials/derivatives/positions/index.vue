@@ -17,8 +17,8 @@
             <th class="text-right">
               <span>{{ $t('liquidation_price') }}</span>
             </th>
-            <th class="text-center">
-              <div class="flex items-center relative">
+            <th class="text-right">
+              <div class="flex items-center justify-end relative">
                 <span class="mr-1">{{ $t('unrealized_pnl') }}</span>
                 <v-icon-info-tooltip
                   class="ml-2"

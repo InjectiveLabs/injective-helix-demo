@@ -38,6 +38,12 @@ export default Vue.extend({
       type: Boolean
     },
 
+    aqua: {
+      required: false,
+      default: false,
+      type: Boolean
+    },
+
     red: {
       required: false,
       default: false,
@@ -82,6 +88,8 @@ export default Vue.extend({
         classes.push('bg-red-500', 'text-gray-900')
       } else if (this.gray) {
         classes.push('bg-gray-700', 'text-gray-200')
+      } else if (this.aqua) {
+        classes.push('bg-aqua-500', 'text-gray-800')
       }
 
       return classes.join(' ')

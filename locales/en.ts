@@ -15,7 +15,7 @@ export default {
   welcome_to_ip:
     'Access, create and trade unlimited decentralized finance markets',
   welcome_to_ip_sub:
-    'The Canary Chain currently has a $5000 trading limit which is why liquidity may be low right now. Over the coming weeks, the trading limits will increase as Injective moves into its canonical (final) mainnet release.',
+    'The Canary Chain has a $5,000 trading limit which will be uplifted upon the canonical release over the coming weeks.',
   maintenance_header: 'Ongoing Maintenance',
   maintenance_subheader:
     'We are working on improving your experience. We will be back as soon as possible.',

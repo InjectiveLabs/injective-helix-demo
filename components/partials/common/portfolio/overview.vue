@@ -17,14 +17,6 @@
         <template slot="value"> - </template>
         <template slot="title"> Colateral </template>
       </v-item>
-      <v-item class="col-span-2 lg:col-span-6">
-        <template slot="value"> - </template>
-        <template slot="title"> Rewards </template>
-      </v-item>
-      <v-item class="col-span-2 lg:col-span-6">
-        <template slot="value"> - </template>
-        <template slot="title"> Power </template>
-      </v-item>
     </div>
   </div>
 </template>
