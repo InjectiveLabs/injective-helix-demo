@@ -1,6 +1,6 @@
 <template>
   <nav class="block flex-1 md:flex">
-    <v-nav-item-dummy>
+    <v-nav-item-dummy @click.stop="$root.$emit('toggle-market-slideout')">
       {{ $t('markets') }}
     </v-nav-item-dummy>
     <v-nav-item :to="{ name: 'portfolio' }">

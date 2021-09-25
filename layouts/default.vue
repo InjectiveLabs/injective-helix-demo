@@ -17,6 +17,7 @@
                 </div>
               </main>
               <v-footer />
+              <v-market-slideout />
             </div>
           </client-only>
         </div>
@@ -30,12 +31,14 @@ import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import Footer from '~/components/layout/footer/index.vue'
 import Topbar from '~/components/layout/topbar.vue'
+import MarketSlideout from '~/components/partials/common/markets/slideout.vue'
 import SidebarMobile from '~/components/layout/sidebar-mobile.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
 
 export default Vue.extend({
   components: {
     HOCLoading,
+    'v-market-slideout': MarketSlideout,
     'v-topbar': Topbar,
     'v-footer': Footer,
     'v-sidebar-mobile': SidebarMobile

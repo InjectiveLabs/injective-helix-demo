@@ -265,5 +265,6 @@ export default {
   Cancel: 'Cancel',
   Close: 'Close',
   open_positions: 'Open Positions',
-  getting_started: 'Getting Started'
+  getting_started: 'Getting Started',
+  perp: 'Perp'
 }

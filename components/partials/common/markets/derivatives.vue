@@ -7,7 +7,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import VList from './list.vue'
-import { UiDerivativeMarket, UiDerivativeMarketSummary } from '~/types'
+import {
+  UiDerivativeMarket,
+  UiDerivativeMarketSummary,
+  UiSpotMarket,
+  UiSpotMarketSummary
+} from '~/types'
 
 export default Vue.extend({
   components: {
