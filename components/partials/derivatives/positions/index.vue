@@ -8,10 +8,10 @@
             <span>{{ $t('side') }}</span>
           </th>
           <th class="text-right">
-            <span>{{ $t('amount') }}</span>
+            <span>{{ $t('entry_price') }}</span>
           </th>
           <th class="text-right">
-            <span>{{ $t('entry_price') }}</span>
+            <span>{{ $t('amount') }}</span>
           </th>
           <th class="text-right">
             <span>{{ $t('liquidation_price') }}</span>
