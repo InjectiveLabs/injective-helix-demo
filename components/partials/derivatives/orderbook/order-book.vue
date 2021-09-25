@@ -184,7 +184,7 @@ export default Vue.extend({
       const { buys } = this
 
       return buys.reduce((total, buy) => {
-        return total.plus(buy.quantity)
+        return total.plus(new BigNumberInBase(buy.quantity).times(buy.price))
       }, ZERO_IN_BASE)
     },
 
@@ -192,7 +192,7 @@ export default Vue.extend({
       const { sells } = this
 
       return sells.reduce((total, sell) => {
-        return total.plus(sell.quantity)
+        return total.plus(new BigNumberInBase(sell.quantity).times(sell.price))
       }, ZERO_IN_BASE)
     },
 

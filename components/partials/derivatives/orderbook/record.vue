@@ -39,7 +39,7 @@
       </span>
     </span>
     <span
-      class="w-1/3 text-xs px-2 z-10 font-mono"
+      class="w-1/3 text-xs px-2 z-10 font-mono text-right"
       @click.stop="onTotalNotionalClick"
     >
       {{ totalToFormat }}
@@ -135,9 +135,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(record.total || 0).toBase(
-        market.quoteToken.decimals
-      )
+      return new BigNumberInBase(record.total || 0)
     },
 
     totalToFormat(): string {
