@@ -57,7 +57,7 @@ export default Vue.extend({
     async setIndexPriceStudy() {
       /* TODO
       const { market, tradingView } = this
-      
+
       if (!market || market.type === MarketType.StockFutures) {
         return
       }

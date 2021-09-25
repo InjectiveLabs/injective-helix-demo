@@ -6,13 +6,13 @@
           <tr>
             <th class="w-1/3 text-right">
               <span>{{ $t('price') }}</span>
-              <span class="text-white uppercase">
+              <span class="text-white font-semibold uppercase">
                 {{ market.quoteToken.symbol }}
               </span>
             </th>
             <th class="w-1/3 text-right">
               <span>{{ $t('amount') }}</span>
-              <span emp class="uppercase">
+              <span class="text-white font-semibold uppercase">
                 {{ market.baseToken.symbol }}
               </span>
             </th>

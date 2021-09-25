@@ -16,8 +16,9 @@
           :href="card.link"
           class="text-primary-500 hover:text-primary-600"
           target="_blank"
-          >{{ card.linkText }}</a
         >
+          {{ card.linkText }}
+        </a>
         {{ card.description }}
       </v-home-card>
     </div>

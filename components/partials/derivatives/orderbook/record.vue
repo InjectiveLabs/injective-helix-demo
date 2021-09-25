@@ -1,7 +1,7 @@
 <template>
   <li
     v-if="market"
-    class="flex h-6 items-center last:mb-0 first:mt-0 relative cursor-pointer"
+    class="flex h-6 items-center last:mb-0 first:mt-0 relative cursor-pointer w-full overflow-hidden"
   >
     <span class="size-col" :class="newRecordClass"></span>
     <span

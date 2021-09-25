@@ -37,16 +37,18 @@
           class="cursor-pointer"
           href="https://injectivelabs.org/privacy-policy"
           target="_blank"
-          >Privacy Policy</a
         >
+          Privacy Policy
+        </a>
       </item>
       <item class="text-footer">
         <a
           class="cursor-pointer"
           href="https://injectivelabs.org/terms-and-conditions"
           target="_blank"
-          >Terms & Conditions</a
         >
+          Terms & Conditions
+        </a>
       </item>
     </ul>
   </footer>

@@ -2,7 +2,7 @@
   <div class="flex flex-col flex-wrap w-full overflow-y-hidden">
     <ul
       ref="sellOrders"
-      class="list-order-book overflow-auto w-full h-48"
+      class="list-order-book overflow-auto w-full h-52"
       @mouseenter="autoScrollSellsLocked = true"
       @mouseleave="autoScrollSellsLocked = false"
     >
@@ -16,7 +16,7 @@
     </ul>
     <div
       v-if="market"
-      class="h-16 bg-dark-800 flex flex-col items-center justify-center border-t border-b"
+      class="h-12 bg-dark-800 flex flex-col items-center justify-center border-t border-b"
     >
       <div class="w-full flex justify-between px-2">
         <span class="text-white font-bold text-sm w-2/3 text-right pr-2">
@@ -42,7 +42,7 @@
                   lastTradedPriceChange === Change.Decrease,
                 'text-aqua-500': lastTradedPriceChange !== Change.Decrease
               }"
-              class="font-mono"
+              class="font-mono text-lg"
             >
               {{ lastTradedPriceToFormat }}
             </span>
@@ -53,7 +53,7 @@
     </div>
     <ul
       ref="buyOrders"
-      class="list-order-book overflow-auto w-full h-48"
+      class="list-order-book overflow-auto w-full h-52"
       @mouseenter="autoScrollBuysLocked = true"
       @mouseleave="autoScrollBuysLocked = false"
     >

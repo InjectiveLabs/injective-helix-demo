@@ -1,4 +1,3 @@
-
 <template>
   <div class="range-wrap flex items-center relative select-none">
     <input

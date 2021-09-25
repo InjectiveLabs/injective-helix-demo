@@ -129,7 +129,7 @@ export default function ({
       'mainSeriesProperties.baselineStyle.topFillColor1':
         theme.colors.aqua[500],
       'mainSeriesProperties.baselineStyle.topFillColor2':
-        'rgba( 78, 205, 196	, 0.1)',
+        'rgba( 78, 205, 196, 0.1)',
       'mainSeriesProperties.baselineStyle.bottomFillColor1':
         theme.colors.red[500],
       'mainSeriesProperties.baselineStyle.bottomFillColor2':

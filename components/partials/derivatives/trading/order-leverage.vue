@@ -2,13 +2,10 @@
   <!-- eslint-disable vue/no-v-html -->
   <div class="pt-1">
     <div>
-      <v-ui-text
-        muted-md
-        tag="h3"
-        v-bind="{ '2xs': true }"
+      <h3
+        class="text-xs text-gray-400"
         v-html="$t('max_leverage', { max: maxLeverage })"
-      >
-      </v-ui-text>
+      ></h3>
     </div>
     <v-input-slider
       min="1"
@@ -38,8 +35,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import VInputSlider from '~/components/inputs/slider.vue'
 
 export default Vue.extend({
+  components: {
+    VInputSlider
+  },
+
   model: {
     prop: 'leverage',
     event: 'change'

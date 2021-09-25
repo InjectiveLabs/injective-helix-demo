@@ -7,7 +7,8 @@
         }"
         text-xs
         @click.stop="onTradingTypeToggle"
-        >{{ $t('market') }}
+      >
+        {{ $t('market') }}
       </v-button>
       <div class="mx-2 w-px h-4 bg-dark-500"></div>
       <v-button
@@ -17,7 +18,8 @@
         }"
         text-xs
         @click.stop="onTradingTypeToggle"
-        >{{ $t('limit') }}
+      >
+        {{ $t('limit') }}
       </v-button>
     </div>
     <div class="mt-4">

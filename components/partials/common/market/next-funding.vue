@@ -5,8 +5,8 @@
         v-if="milisecondsUntilFunding > 0"
         :time="milisecondsUntilFunding"
       >
-        <template slot-scope="{ hours, minutes, seconds }"
-          >{{ hours >= 10 ? hours : '0' + hours }}:{{
+        <template slot-scope="{ hours, minutes, seconds }">
+          {{ hours >= 10 ? hours : '0' + hours }}:{{
             minutes >= 10 ? minutes : '0' + minutes
           }}:{{ seconds >= 10 ? seconds : '0' + seconds }}
         </template>

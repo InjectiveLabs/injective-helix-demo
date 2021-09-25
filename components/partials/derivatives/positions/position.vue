@@ -4,14 +4,16 @@
       <v-button
         text
         :class="{
-          'border border-aqua-500 text-aqua-500': position.direction === TradeDirection.Long,
-          'border border-red-500 text-red-500': position.direction === TradeDirection.Short
+          'border border-aqua-500 text-aqua-500':
+            position.direction === TradeDirection.Long,
+          'border border-red-500 text-red-500':
+            position.direction === TradeDirection.Short
         }"
-        @click="onClosePositionClick"
         class="flex items-center px-2 py-1"
+        @click="onClosePositionClick"
       >
         {{ $t('Close') }}
-        <v-icon-close class="w-3 h-3 ml-1 mt-px"/>
+        <v-icon-close class="w-3 h-3 ml-1 mt-px" />
       </v-button>
     </td>
     <td class="text-center">
@@ -87,7 +89,10 @@
       </div>
     </td>
     <td class="text-right font-mono">
-      <span v-if="effectiveLeverage.gt(0)" class="flex items-center justify-end">
+      <span
+        v-if="effectiveLeverage.gt(0)"
+        class="flex items-center justify-end"
+      >
         {{ effectiveLeverage.toFormat(2) }}
         <span class="text-gray-300">&times;</span>
       </span>

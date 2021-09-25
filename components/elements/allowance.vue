@@ -1,6 +1,6 @@
 <template>
   <div class="w-full text-center">
-    <p class="text-sm text-gray-800 dark:text-gray-200">
+    <p class="text-sm text-gray-200">
       {{
         $t(`Set allowance for ${tokenWithBalance.symbol}`, {
           asset: tokenWithBalance.symbol

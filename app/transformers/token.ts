@@ -36,7 +36,7 @@ export const grpcTokenMetaToToken = (
   if (!tokenMeta) {
     return
   }
-  
+
   return {
     symbol: tokenMeta.symbol,
     name: tokenMeta.name,

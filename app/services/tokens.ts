@@ -247,11 +247,11 @@ export const validateTransferRestrictions = async (
   )
 
   if (!coin) {
-    throw new Error(`Asset's data couldn't be fetched.`)
+    throw new Error("Asset's data couldn't be fetched.")
   }
 
   if (!coin.id) {
-    throw new Error(`Asset's data couldn't be fetched.`)
+    throw new Error("Asset's data couldn't be fetched.")
   }
 
   const {
@@ -259,17 +259,17 @@ export const validateTransferRestrictions = async (
   } = await coinGeckoConsumer.fetchCoin(coin.id)
 
   if (!marketData) {
-    throw new Error(`Asset's market data couldn't be fetched.`)
+    throw new Error("Asset's market data couldn't be fetched.")
   }
 
   const { current_price: currentPrice } = marketData
 
   if (!currentPrice) {
-    throw new Error(`Asset's prices couldn't be fetched.`)
+    throw new Error("Asset's prices couldn't be fetched.")
   }
 
   if (!currentPrice.usd) {
-    throw new Error(`Asset's USD price couldn't be fetched.`)
+    throw new Error("Asset's USD price couldn't be fetched.")
   }
 
   const usdPrice = currentPrice.usd

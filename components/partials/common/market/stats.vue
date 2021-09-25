@@ -271,7 +271,7 @@ export default Vue.extend({
       const { currentLastTrade } = this
 
       if (currentLastTrade.isNaN() || currentLastTrade.lte(0)) {
-        return `0.00`
+        return '0.00'
       }
 
       return `${currentLastTrade.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)}`

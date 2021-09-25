@@ -2,7 +2,7 @@
   <div class="flex flex-col flex-wrap overflow-y-hidden w-full">
     <ul
       ref="sellOrders"
-      class="list-order-book overflow-auto w-full h-48"
+      class="list-order-book overflow-y-auto w-full h-52"
       @mouseenter="autoScrollSellsLocked = true"
       @mouseleave="autoScrollSellsLocked = false"
     >
@@ -16,7 +16,7 @@
     </ul>
     <div
       v-if="market"
-      class="h-14 bg-dark-800 flex flex-col items-center justify-center border-t border-b"
+      class="h-12 bg-dark-800 flex flex-col items-center justify-center border-t border-b"
     >
       <div class="w-full flex justify-between px-2">
         <span class="text-white font-bold text-sm w-2/3 text-right pr-2">
@@ -42,7 +42,7 @@
                   lastTradedPriceChange === Change.Decrease,
                 'text-aqua-500': lastTradedPriceChange !== Change.Decrease
               }"
-              class="font-mono"
+              class="font-mono text-lg"
             >
               {{ lastTradedPriceToFormat }}
             </span>
@@ -53,7 +53,7 @@
     </div>
     <ul
       ref="buyOrders"
-      class="list-order-book overflow-auto w-full h-48"
+      class="list-order-book overflow-auto w-full h-52"
       @mouseenter="autoScrollBuysLocked = true"
       @mouseleave="autoScrollBuysLocked = false"
     >
@@ -70,7 +70,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import Record from './record.vue'
 import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
@@ -181,18 +181,34 @@ export default Vue.extend({
     },
 
     buysTotalNotional(): BigNumberInBase {
-      const { buys } = this
+      const { buys, market } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
 
       return buys.reduce((total, buy) => {
-        return total.plus(new BigNumberInBase(buy.quantity).times(buy.price))
+        return total.plus(
+          new BigNumberInWei(buy.quantity)
+            .times(buy.price)
+            .toBase(market.quoteToken.decimals)
+        )
       }, ZERO_IN_BASE)
     },
 
     sellsTotalNotional(): BigNumberInBase {
-      const { sells } = this
+      const { sells, market } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
 
       return sells.reduce((total, sell) => {
-        return total.plus(new BigNumberInBase(sell.quantity).times(sell.price))
+        return total.plus(
+          new BigNumberInWei(sell.quantity)
+            .times(sell.price)
+            .toBase(market.quoteToken.decimals)
+        )
       }, ZERO_IN_BASE)
     },
 
@@ -205,9 +221,9 @@ export default Vue.extend({
 
       let accumulator = ZERO_IN_BASE
       return buys.map((record: UiPriceLevel, index: number) => {
-        const notional = new BigNumberInBase(record.quantity).times(
-          record.price
-        )
+        const notional = new BigNumberInWei(record.quantity)
+          .times(record.price)
+          .toBase(market.quoteToken.decimals)
 
         accumulator = index === 0 ? notional : accumulator.plus(notional)
 
@@ -229,9 +245,9 @@ export default Vue.extend({
       let accumulator = ZERO_IN_BASE
       return sells
         .map((record: UiPriceLevel, index: number) => {
-          const notional = new BigNumberInBase(record.quantity).times(
-            record.price
-          )
+          const notional = new BigNumberInWei(record.quantity)
+            .times(record.price)
+            .toBase(market.quoteToken.decimals)
 
           accumulator = index === 0 ? notional : accumulator.plus(notional)
 

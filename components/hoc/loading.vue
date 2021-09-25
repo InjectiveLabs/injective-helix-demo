@@ -27,7 +27,7 @@ export default Vue.extend({
         return this.$slots.default[0]
       }
 
-      return createElement('div', { class: 'min-h-loading' }, [
+      return createElement('div', { class: 'py-4 min-h-loading' }, [
         createElement('v-loading', {
           ...parentAttributes
         })

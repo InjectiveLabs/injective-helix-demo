@@ -27,12 +27,12 @@
             {{ $t('Subaccount') }}
           </p>
           <div class="flex items-center">
-            <v-button primary text-xs @click.stop="openSubaccountTransferModal"
-              >{{ $t('deposit') }}
+            <v-button primary text-xs @click.stop="openSubaccountTransferModal">
+              {{ $t('deposit') }}
             </v-button>
             <div class="mx-2 w-px h-4 bg-dark-500"></div>
-            <v-button primary text-xs @click.stop="openSubaccountWithdrawModal"
-              >{{ $t('withdraw') }}
+            <v-button primary text-xs @click.stop="openSubaccountWithdrawModal">
+              {{ $t('withdraw') }}
             </v-button>
           </div>
         </div>

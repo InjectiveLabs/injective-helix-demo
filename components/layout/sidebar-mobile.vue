@@ -28,28 +28,12 @@
       >
         <div
           v-if="isSidebarOpen"
-          class="
-            relative
-            flex-1 flex flex-col
-            max-w-xs
-            w-full
-            pt-5
-            pb-4
-            bg-black
-          "
+          class="relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-black"
         >
           <div class="absolute top-0 right-0 mr-2 pt-2">
             <button
               v-if="isSidebarOpen"
-              class="
-                ml-1
-                flex
-                items-center
-                justify-center
-                h-10
-                w-10
-                rounded-full
-              "
+              class="ml-1 flex items-center justify-center h-10 w-10 rounded-full"
               @click="onSidebarClose"
             >
               <span class="sr-only">{{ $t('close') }}</span>

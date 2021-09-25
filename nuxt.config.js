@@ -24,7 +24,6 @@ export default {
    ** Plugins to load before mounting the App
    */
   plugins: [
-    '~/plugins/global',
     '~/plugins/icons',
     '~/plugins/elements',
     '~/plugins/i18n',
@@ -35,6 +34,14 @@ export default {
     { src: '~/plugins/clipboard', ssr: false },
     { src: '~/plugins/veevalidate', ssr: false }
   ],
+
+  typescript: {
+    typeCheck: {
+      eslint: {
+        files: './**/*.{ts,js,vue}'
+      }
+    }
+  },
 
   'google-gtag': {
     id: process.env.APP_GOOGLE_ANALYTICS_KEY
@@ -50,6 +57,7 @@ export default {
    */
   buildModules: [
     '@nuxt/typescript-build',
+    '@nuxtjs/eslint-module',
     '@nuxtjs/dotenv',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/stylelint-module',

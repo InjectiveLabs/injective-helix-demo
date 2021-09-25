@@ -103,7 +103,7 @@
             <clipPath id="clipPath3010" clipPathUnits="userSpaceOnUse">
               <rect
                 id="rect3012"
-                style="fill: #000000; stroke: none"
+                style="fill: #000; stroke: none"
                 width="26.666668"
                 height="20"
                 x="-5"
@@ -113,7 +113,7 @@
             <clipPath id="clipPath3000" clipPathUnits="userSpaceOnUse">
               <rect
                 id="rect3002"
-                style="fill: #000000; stroke: none"
+                style="fill: #000; stroke: none"
                 width="19.999998"
                 height="19.999998"
                 x="-5"

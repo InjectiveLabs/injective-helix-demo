@@ -6,15 +6,15 @@
           <tr>
             <th class="w-1/3 text-right">
               <span>{{ $t('price') }}</span>
-              <v-ui-text emp class="uppercase">
+              <span class="text-white font-semibold uppercase">
                 {{ market.quoteToken.symbol }}
-              </v-ui-text>
+              </span>
             </th>
             <th class="w-1/3 text-right">
               <span>{{ $t('amount') }}</span>
-              <v-ui-text emp class="uppercase">
+              <span class="text-white font-semibold uppercase">
                 {{ market.baseToken.symbol }}
-              </v-ui-text>
+              </span>
             </th>
             <th class="w-1/3 text-right">
               <span>{{ $t('time') }}</span>

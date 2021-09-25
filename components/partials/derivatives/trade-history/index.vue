@@ -1,42 +1,40 @@
 <template>
-  <div class="flex flex-col">
-    <div v-if="market" class="table-responsive min-h-3xs">
-      <table class="table">
-        <thead>
-          <tr>
-            <th class="text-right">
-              <span>{{ $t('price') }}</span>
-            </th>
-            <th class="text-right">
-              <span>{{ $t('amount') }}</span>
-            </th>
-            <th class="text-right">
-              <span>{{ $t('notional_size') }}</span>
-            </th>
-            <th class="text-right">
-              <span>{{ $t('fee') }}</span>
-            </th>
-            <th class="text-center">
-              <span>{{ $t('side') }}</span>
-            </th>
-            <th class="text-center">
-              <span>{{ $t('execution_type') }}</span>
-            </th>
-            <th class="text-right">
-              <span>{{ $t('time') }}</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody v-if="isUserWalletConnected">
-          <tr
-            is="v-trade"
-            v-for="(trade, index) in trades"
-            :key="`trades-history-${index}-`"
-            :trade="trade"
-          ></tr>
-        </tbody>
-      </table>
-    </div>
+  <div v-if="market" class="table-responsive min-h-3xs">
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="text-right">
+            <span>{{ $t('price') }}</span>
+          </th>
+          <th class="text-right">
+            <span>{{ $t('amount') }}</span>
+          </th>
+          <th class="text-right">
+            <span>{{ $t('notional_size') }}</span>
+          </th>
+          <th class="text-right">
+            <span>{{ $t('fee') }}</span>
+          </th>
+          <th class="text-center">
+            <span>{{ $t('side') }}</span>
+          </th>
+          <th class="text-center">
+            <span>{{ $t('execution_type') }}</span>
+          </th>
+          <th class="text-right">
+            <span>{{ $t('time') }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody v-if="isUserWalletConnected">
+        <tr
+          is="v-trade"
+          v-for="(trade, index) in trades"
+          :key="`trades-history-${index}-`"
+          :trade="trade"
+        ></tr>
+      </tbody>
+    </table>
     <v-user-wallet-connect-warning v-if="!isUserWalletConnected" />
   </div>
 </template>

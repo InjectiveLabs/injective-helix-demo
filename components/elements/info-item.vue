@@ -1,18 +1,10 @@
 <template>
   <div>
     <div class="text-xs sm:text-sm">
-      <p
-        class="
-          col-span-
-          uppercase
-          font-semibold
-          text-gray-800
-          dark:text-gray-100
-        "
-      >
+      <p class="col-span-2 uppercase font-semibold text-gray-100">
         <slot name="title" />
       </p>
-      <p class="text-gray-600 mt-1 dark:text-gray-300 text-left break-words">
+      <p class="text-gray-300 text-left break-words">
         <slot></slot>
       </p>
     </div>
