@@ -44,6 +44,15 @@
           <span v-else class="text-gray-400">&mdash;</span>
         </span>
       </v-market-info>
+      <v-market-next-funding v-if="market.type === MarketType.Derivative" />
+      <v-market-info
+        v-if="market.type === MarketType.Derivative && expiryAt"
+        :title="$t('expiry_date')"
+      >
+        <span class="text-sm text-right font-mono block">
+          {{ expiryAt }}
+        </span>
+      </v-market-info>
     </div>
   </div>
 </template>
@@ -51,6 +60,8 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { fromUnixTime, formatDistanceToNow } from 'date-fns'
+import MarketNextFunding from './next-funding.vue'
 import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   ZERO_IN_BASE
@@ -69,7 +80,8 @@ import {
 
 export default Vue.extend({
   components: {
-    'v-market-info': MarketInfo
+    'v-market-info': MarketInfo,
+    'v-market-next-funding': MarketNextFunding
   },
 
   props: {
@@ -87,6 +99,7 @@ export default Vue.extend({
   data() {
     return {
       Change,
+      MarketType,
       SpotOrderSide
     }
   },
@@ -226,6 +239,32 @@ export default Vue.extend({
       }
 
       return volume.toFormat(market.priceDecimals)
+    },
+
+    expiryAt(): string {
+      const { market } = this
+
+      if (!market || market.type === MarketType.Spot) {
+        return ''
+      }
+
+      const expiryFuturesMarketInfo = (market as UiDerivativeMarket)
+        .expiryFuturesMarketInfo
+
+      if (!expiryFuturesMarketInfo) {
+        return ''
+      }
+
+      if (!expiryFuturesMarketInfo.expirationTimestamp) {
+        return ''
+      }
+
+      return formatDistanceToNow(
+        fromUnixTime(expiryFuturesMarketInfo.expirationTimestamp),
+        {
+          addSuffix: true
+        }
+      )
     },
 
     lastTradedPriceToString(): string {
