@@ -3,7 +3,7 @@
     <table class="table">
       <thead>
         <tr>
-          <th class="text-right">
+          <th class="text-left">
             {{ $t('market') }}
           </th>
           <th class="text-right">

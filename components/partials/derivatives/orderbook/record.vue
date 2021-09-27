@@ -2,6 +2,10 @@
   <li
     v-if="market"
     class="flex h-6 items-center last:mb-0 first:mt-0 relative cursor-pointer w-full overflow-hidden"
+    :class="{
+      'border-aqua-500': recordTypeBuy,
+      'border-red-500': !recordTypeBuy
+    }"
   >
     <span class="size-col" :class="newRecordClass"></span>
     <span
