@@ -192,6 +192,7 @@ export const actions = actionTree(
       streamSubaccountPositions({
         subaccountId: subaccount.subaccountId,
         callback: ({ position }) => {
+          // eslint-disable-next-line no-console
           console.log(position)
         }
       })
