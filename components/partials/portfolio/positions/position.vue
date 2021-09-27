@@ -16,6 +16,9 @@
         <v-icon-close class="w-3 h-3 ml-1 mt-px" />
       </v-button>
     </td>
+    <td class="text-left">
+      {{ position.ticker }}
+    </td>
     <td class="text-center">
       <v-badge
         :aqua="position.direction === TradeDirection.Long"
