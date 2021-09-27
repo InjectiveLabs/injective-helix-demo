@@ -247,7 +247,7 @@ export default {
   'Injective Chain': 'Injective Chain',
   Subaccount: 'Subaccount',
   'available_total_subaccount_balance Tooltip':
-    'Your subaccount Available/Total Balance',
+    'Your subaccount available/total balance',
   'Deposit to Injective Chain': 'Deposit to Injective Chain',
   'Deposit to Subaccount': 'Deposit to your Subaccount',
   'Available for Deposit': 'Available for Deposit',
@@ -266,5 +266,9 @@ export default {
   Close: 'Close',
   open_positions: 'Open Positions',
   getting_started: 'Getting Started',
-  perp: 'Perp'
+  perp: 'Perp',
+  markets: 'Markets',
+  Portfolio: 'Portfolio',
+  open_derivatives_order: 'Open Derivative Orders',
+  open_spot_order: 'Open Spot Orders'
 }

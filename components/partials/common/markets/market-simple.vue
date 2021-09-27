@@ -12,7 +12,7 @@
         />
         {{ market.ticker }}
         <span
-          class="bg-primary-500 text-gray-800 rounded py-px px-1 text-3xs font-semibold ml-auto"
+          class="text-primary-500 uppercase tracking-widest text-2xs font-semibold ml-auto"
         >
           {{ typeToString }}
         </span>
@@ -210,6 +210,8 @@ export default Vue.extend({
   methods: {
     handleClickOnMarket() {
       const { market } = this
+
+      this.$root.$emit('toggle-market-slideout')
 
       if (market.type === MarketType.Derivative) {
         return this.$router.push({

@@ -117,7 +117,9 @@ import {
   UiDerivativeOrderbook,
   UiPriceLevel,
   Icon,
-  UiDerivativeLimitOrder
+  UiDerivativeLimitOrder,
+  UiSpotMarket,
+  UiSpotLimitOrder
 } from '~/types'
 
 export default Vue.extend({
@@ -137,16 +139,22 @@ export default Vue.extend({
   },
 
   computed: {
+    markets(): UiDerivativeMarket[] {
+      return this.$accessor.derivatives.markets
+    },
+
     market(): UiDerivativeMarket | undefined {
-      return this.$accessor.derivatives.market
+      const { markets, position } = this
+
+      return markets.find((m) => m.marketId === position.marketId)
     },
 
     orderbook(): UiDerivativeOrderbook | undefined {
-      return this.$accessor.derivatives.orderbook
+      return this.$accessor.derivatives.orderbook // TODO
     },
 
-    orders(): UiDerivativeLimitOrder[] {
-      return this.$accessor.derivatives.subaccountOrders
+    orders(): Array<UiDerivativeLimitOrder | UiSpotLimitOrder> {
+      return this.$accessor.portfolio.subaccountOrders
     },
 
     price(): BigNumberInBase {
@@ -296,7 +304,9 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const reduceOnlyOrders = orders.filter((o) => o.isReduceOnly)
+      const reduceOnlyOrders = orders.filter(
+        (o) => (o as UiDerivativeLimitOrder).isReduceOnly
+      )
 
       return reduceOnlyOrders.reduce(
         (total, order) => total.plus(order.quantity),

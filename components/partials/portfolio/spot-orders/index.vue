@@ -1,9 +1,11 @@
 <template>
-  <div v-if="market" class="table-responsive min-h-3xs">
+  <div class="table-responsive min-h-3xs">
     <table class="table">
       <thead>
         <tr>
-          <slot name="thead"></slot>
+          <th class="text-right">
+            {{ $t('market') }}
+          </th>
           <th class="text-right">
             {{ $t('price') }}
           </th>
@@ -27,7 +29,7 @@
           </th>
         </tr>
       </thead>
-      <tbody v-if="isUserWalletConnected">
+      <tbody>
         <tr
           is="v-order"
           v-for="(order, index) in orders"
@@ -36,37 +38,23 @@
         ></tr>
       </tbody>
     </table>
-    <v-user-wallet-connect-warning v-if="!isUserWalletConnected" />
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import Order from './order.vue'
-import { UiSpotMarket, UiSpotLimitOrder } from '~/types'
+import { UiSpotLimitOrder } from '~/types'
 
 export default Vue.extend({
   components: {
     'v-order': Order
   },
 
-  computed: {
-    isUserWalletConnected(): boolean {
-      return this.$accessor.wallet.isUserWalletConnected
-    },
-
-    market(): UiSpotMarket | undefined {
-      return this.$accessor.spot.market
-    },
-
-    orders(): UiSpotLimitOrder[] {
-      const { market } = this
-
-      if (!market) {
-        return []
-      }
-
-      return this.$accessor.spot.subaccountOrders
+  props: {
+    orders: {
+      required: true,
+      type: Array as PropType<UiSpotLimitOrder[]>
     }
   }
 })
