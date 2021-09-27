@@ -1,16 +1,18 @@
 <template>
   <HOCLoading :key="$route.fullPath" :status="status">
     <div v-if="market" class="flex flex-wrap h-full w-full">
-      <div class="w-full lg:w-1/4 lg:px-2">
-        <v-balances />
-        <v-trading class="mt-6" />
-      </div>
-      <div class="w-full lg:w-3/4 lg:px-2">
+      <div class="w-full px-2">
         <v-card>
-          <div class="w-full">
-            <v-market />
-          </div>
-          <div class="flex flex-wrap -mx-2 mt-6">
+          <v-market />
+        </v-card>
+      </div>
+      <div class="w-full lg:w-1/4 lg:px-2 mt-4">
+        <v-balances />
+        <v-trading class="mt-4" />
+      </div>
+      <div class="w-full lg:w-3/4 lg:px-2 mt-4">
+        <v-card>
+          <div class="flex flex-wrap -mx-2">
             <div class="w-full lg:w-2/3 px-2">
               <v-market-chart :market="market" />
             </div>
@@ -19,7 +21,7 @@
             </div>
           </div>
         </v-card>
-        <v-card class="mt-6">
+        <v-card class="mt-4">
           <div class="w-full">
             <v-orders />
           </div>

@@ -35,4 +35,12 @@
       }
     }
   }
+
+  thead[xs] {
+    tr {
+      th {
+        @apply text-2xs;
+      }
+    }
+  }
 }

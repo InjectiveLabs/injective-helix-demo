@@ -12,7 +12,7 @@
               <v-topbar @sidebar-opened="isOpenSidebar = true" />
               <main class="w-full h-full min-h-screen">
                 <portal-target name="backLink" />
-                <div class="py-8 relative">
+                <div class="py-4 relative">
                   <nuxt />
                 </div>
               </main>

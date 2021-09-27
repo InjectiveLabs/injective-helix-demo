@@ -13,6 +13,21 @@
           </span>
         </span>
       </v-market-info>
+      <v-market-info
+        v-if="market.type === MarketType.Derivative"
+        :title="$t('mark_price')"
+      >
+        <span class="text-sm text-right font-mono block">
+          <span
+            :class="{
+              'text-aqua-500': currentLastTradeChange === Change.Increase,
+              'text-red-500': currentLastTradeChange === Change.Decrease
+            }"
+          >
+            {{ markPriceToFormat }}
+          </span>
+        </span>
+      </v-market-info>
       <v-market-info :title="$t('market_change_24h')" class="">
         <span class="text-sm text-right font-mono block">
           <span
@@ -42,6 +57,25 @@
         <span class="text-sm text-right font-mono block">
           <span v-if="low.gt(0)">{{ lowToFormat }}</span>
           <span v-else class="text-gray-400">&mdash;</span>
+        </span>
+      </v-market-info>
+      <v-market-info
+        v-if="market.type === MarketType.Derivative"
+        :title="$t('est_funding_rate')"
+        :tooltip="$t('funding_rate_tooltip')"
+      >
+        <span
+          v-if="fundingRate.gt(0)"
+          class="text-sm text-right font-mono block"
+        >
+          <span
+            :class="{
+              'text-aqua-500': fundingRate.gte(0),
+              'text-red-500': fundingRate.lt(0)
+            }"
+          >
+            {{ (fundingRate.gt(0) ? '+' : '') + fundingRate.toFormat(4) }}%
+          </span>
         </span>
       </v-market-info>
       <v-market-next-funding v-if="market.type === MarketType.Derivative" />
@@ -129,6 +163,10 @@ export default Vue.extend({
       return this.$accessor.derivatives.lastTradedPriceChange
     },
 
+    derivativeMarkPrice(): string {
+      return this.$accessor.derivatives.marketMarkPrice
+    },
+
     currentMarket(): UiSpotMarket | UiDerivativeMarket | undefined {
       const { currentSpotMarket, currentDerivativeMarket, market } = this
 
@@ -147,6 +185,30 @@ export default Vue.extend({
       return market.type === MarketType.Spot
         ? currentLastSpotTradedPrice
         : currentLastDerivativeTradedPrice
+    },
+
+    markPrice(): BigNumberInBase {
+      const { derivativeMarkPrice, market } = this
+
+      if (!derivativeMarkPrice) {
+        return ZERO_IN_BASE
+      }
+
+      if (market.type === MarketType.Spot) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(derivativeMarkPrice)
+    },
+
+    markPriceToFormat(): string {
+      const { market, markPrice } = this
+
+      if (!market) {
+        return markPrice.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return markPrice.toFormat(market.priceDecimals)
     },
 
     currentLastTradePriceToFormat(): string {
@@ -189,6 +251,74 @@ export default Vue.extend({
       }
 
       return high.toFormat(market.priceDecimals)
+    },
+
+    twapEst(): BigNumberInBase {
+      const { market } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      if (market.type === MarketType.Spot) {
+        return ZERO_IN_BASE
+      }
+
+      const derivativeMarket = market as UiDerivativeMarket
+
+      if (
+        !derivativeMarket.perpetualMarketFunding ||
+        !derivativeMarket.isPerpetual
+      ) {
+        return ZERO_IN_BASE
+      }
+
+      const currentUnixTime = Date.now() / 1000
+
+      return new BigNumberInBase(
+        derivativeMarket.perpetualMarketFunding.cumulativePrice
+      ).dividedBy(new BigNumberInBase(currentUnixTime).mod(3600).times(24))
+    },
+
+    fundingRate(): BigNumberInBase {
+      const { market, twapEst } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      if (market.type === MarketType.Spot) {
+        return ZERO_IN_BASE
+      }
+
+      const derivativeMarket = market as UiDerivativeMarket
+
+      if (
+        !derivativeMarket.perpetualMarketFunding ||
+        !derivativeMarket.isPerpetual ||
+        !derivativeMarket.perpetualMarketInfo
+      ) {
+        return ZERO_IN_BASE
+      }
+
+      const hourlyFundingRateCap = new BigNumberInBase(
+        derivativeMarket.perpetualMarketInfo.hourlyFundingRateCap
+      )
+      const estFundingRate = new BigNumberInBase(
+        derivativeMarket.perpetualMarketInfo.hourlyInterestRate
+      ).plus(twapEst)
+
+      if (estFundingRate.gt(hourlyFundingRateCap)) {
+        return new BigNumberInBase(hourlyFundingRateCap).multipliedBy(100)
+      }
+
+      if (estFundingRate.lt(hourlyFundingRateCap.times(-1))) {
+        return new BigNumberInBase(hourlyFundingRateCap)
+          .times(-1)
+          .multipliedBy(100)
+      }
+
+      return new BigNumberInBase(estFundingRate).multipliedBy(100)
     },
 
     change(): BigNumberInBase {

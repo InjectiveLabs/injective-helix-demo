@@ -142,7 +142,7 @@ export default Vue.extend({
             'font-bold',
             'tracking-wide',
             'text-primary-500',
-            'hover:text-primary-400'
+            'hover:text-primary-600'
           )
         } else if (this.primary) {
           classes.push(

@@ -2,7 +2,7 @@
   <div>
     <div v-if="market" class="h-8">
       <table class="table">
-        <thead>
+        <thead xs>
           <tr>
             <th class="w-1/3 text-right">
               <span>{{ $t('price') }}</span>
