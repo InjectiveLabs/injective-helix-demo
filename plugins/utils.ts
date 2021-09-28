@@ -28,4 +28,27 @@ export default ({ app }: Context, inject: any) => {
       console.error(error)
     }
   })
+
+  inject('onConfirm', <T extends Function>(message: string, callback: T) => {
+    return app.$toast.show(message, {
+      duration: 30000,
+      action: [
+        {
+          class: 'text-primary-500',
+          text: 'Confirm',
+          onClick: (_e: any, toastObject: any) => {
+            toastObject.goAway(0)
+            callback()
+          }
+        },
+        {
+          class: 'text-gray-300',
+          text: 'Cancel',
+          onClick: (_e: any, toastObject: any) => {
+            toastObject.goAway(0)
+          }
+        }
+      ]
+    })
+  })
 }

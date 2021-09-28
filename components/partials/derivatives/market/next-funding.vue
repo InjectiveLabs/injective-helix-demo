@@ -49,23 +49,13 @@ export default Vue.extend({
     }
   },
 
-  created() {
-    if (this.perpetualMarket) {
-      this.milisecondsUntilFunding = moment.utc().endOf('hour').milliseconds()
-    }
-  },
-
   mounted() {
     if (this.perpetualMarket) {
       this.interval = setInterval(() => {
-        if (this.milisecondsUntilFunding - 1000 >= 0) {
-          this.milisecondsUntilFunding = this.milisecondsUntilFunding - 1000
-        } else {
-          this.milisecondsUntilFunding = moment
-            .utc()
-            .endOf('hour')
-            .diff(moment.utc())
-        }
+        this.milisecondsUntilFunding = moment
+          .utc()
+          .endOf('hour')
+          .diff(moment.utc())
       }, 1000)
     }
   },

@@ -1,5 +1,9 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { getTokenMetaData, getTokenMetaDataBySymbol } from '../services/tokens'
+import {
+  getTokenMetaData,
+  getTokenMetaDataBySymbol,
+  getCoinGeckoId
+} from '../services/tokens'
 import { grpcTokenMetaToToken, tokenMetaToToken } from './token'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
 import { derivatives as sortPerpetualMarkets } from '~/routes.config'
@@ -36,6 +40,10 @@ export const baseUiDerivativeMarketToBaseUiDerivativeMarketWithPartialTokenMetaD
   const quoteToken = market.quoteToken
     ? grpcTokenMetaToToken(market.quoteToken, market.quoteDenom)
     : tokenMetaToToken(getTokenMetaData(market.quoteDenom), market.quoteDenom)
+
+  if (quoteToken && !quoteToken.coinGeckoId) {
+    quoteToken.coinGeckoId = getCoinGeckoId(quoteToken.symbol)
+  }
 
   return {
     ...market,

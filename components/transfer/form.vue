@@ -86,6 +86,7 @@ import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
 import { BankBalanceWithTokenMetaData } from '~/types'
 import {
+  INJECTIVE_DENOM,
   INJ_FEE_BUFFER,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
@@ -138,7 +139,11 @@ export default Vue.extend({
       const balanceInBase = new BigNumberInWei(balance.balance).toBase(
         balance.token.decimals
       )
-      const buffer = balanceInBase.gt(INJ_FEE_BUFFER) ? INJ_FEE_BUFFER : 0
+      const buffer =
+        balanceInBase.gt(INJ_FEE_BUFFER) &&
+        balance.token.denom === INJECTIVE_DENOM
+          ? INJ_FEE_BUFFER
+          : 0
 
       return balanceInBase
         .minus(buffer)

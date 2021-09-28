@@ -59,7 +59,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
-import { BigNumberInBase, Status } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
 import VAllowance from './allowance.vue'
 import { UiSpotMarket, TokenWithBalance } from '~/types'
 
@@ -99,13 +99,16 @@ export default Vue.extend({
     hasAllowanceSet(): boolean {
       const { token } = this
 
-      return !token.allowance.isNaN() && token.allowance.gt(0)
+      return (
+        !new BigNumberInWei(token.allowance).isNaN() &&
+        new BigNumberInWei(token.allowance).gt(0)
+      )
     },
 
     hasBalance(): boolean {
       const { token } = this
 
-      return !token.balance.isNaN()
+      return !new BigNumberInWei(token.balance).isNaN()
     },
 
     balanceToString(): string {
@@ -115,7 +118,7 @@ export default Vue.extend({
         return ''
       }
 
-      return token.balance
+      return new BigNumberInWei(token.balance)
         .toBase(market.quoteToken.decimals)
         .toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
     }

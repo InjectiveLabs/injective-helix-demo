@@ -1,5 +1,4 @@
 import { ChainId } from '@injectivelabs/ts-types'
-import { BigNumberInWei } from '@injectivelabs/utils'
 
 export type TokenAddress = string
 export type TokenAssetData = string
@@ -15,6 +14,7 @@ interface Base {
 export interface Token extends Base {
   address: string
   denom: string
+  coinGeckoId: string
 }
 
 export interface TokenWithAddresses extends Base {
@@ -24,6 +24,8 @@ export interface TokenWithAddresses extends Base {
 export interface TokenWithBalance extends Base {
   address: string
   denom: string
-  balance: BigNumberInWei
-  allowance: BigNumberInWei
+  balance: string // BigNumberInWei
+  allowance: string // BigNumberInWei
+  coinGeckoId: string
+  priceInUsd?: number
 }

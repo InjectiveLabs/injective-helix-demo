@@ -67,6 +67,7 @@ export default Vue.extend({
     markets(): UiDerivativeMarket[] {
       return this.$accessor.derivatives.markets
     },
+
     marketsSummary(): UiDerivativeMarketSummary[] {
       return this.$accessor.derivatives.marketsSummary
     },

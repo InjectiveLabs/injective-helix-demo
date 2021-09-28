@@ -32,7 +32,7 @@
           <v-ui-text xs muted class="flex items-center mt-1">
             {{
               $t('small_bridge_fee_note', {
-                fee: bridgeFee.toFixed(),
+                fee: bridgeFeeToString,
                 asset: market ? market.baseToken.symbol : ''
               })
             }}
@@ -75,7 +75,9 @@ import {
 } from '@injectivelabs/utils'
 import { UiSpotMarket } from '~/types'
 import {
+  BRIDGE_FEE_IN_USD,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   ZERO_IN_BASE
 } from '~/app/utils/constants'
 
@@ -89,6 +91,11 @@ export default Vue.extend({
     balance: {
       required: true,
       type: Object as PropType<BigNumberInBase>
+    },
+
+    priceInUsd: {
+      required: true,
+      type: Number
     }
   },
 
@@ -123,30 +130,24 @@ export default Vue.extend({
         .toBase()
     },
 
-    feePrice(): BigNumberInBase {
-      const { market } = this
+    bridgeFee(): BigNumberInBase {
+      const { priceInUsd } = this
 
-      if (!market) {
+      if (!priceInUsd) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(
-        new BigNumberInBase(
-          new BigNumberInWei(DEFAULT_BRIDGE_FEE_PRICE).toBase()
-        ).toWei(market.baseToken.decimals)
-      )
+      if (!priceInUsd) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(BRIDGE_FEE_IN_USD).dividedBy(priceInUsd)
     },
 
-    bridgeFee(): BigNumberInBase {
-      const { feePrice, market } = this
+    bridgeFeeToString(): string {
+      const { bridgeFee } = this
 
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      return new BigNumberInWei(feePrice.times(DEFAULT_GAS_LIMIT)).toBase(
-        market.baseToken.decimals
-      )
+      return bridgeFee.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
     },
 
     balanceToString(): string {
