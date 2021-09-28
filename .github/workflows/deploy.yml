@@ -133,12 +133,12 @@ jobs:
         run: aws cloudfront create-invalidation --distribution-id=$CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
 
   deploy-testnet:
-    if: false
+    if: true
     env:
       ## Public
       APP_NAME: 'TESTNET - Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'
       APP_BASE_URL: https://testnet.injective.exchange
-      APP_NETWORK: staking
+      APP_NETWORK: testnet
       APP_ENV: testnet
       APP_CHAIN_ID: 42
       SOURCE_DIR: dist
