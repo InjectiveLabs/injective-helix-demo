@@ -270,5 +270,8 @@ export default {
   markets: 'Markets',
   Portfolio: 'Portfolio',
   open_derivatives_order: 'Open Derivative Orders',
-  open_spot_order: 'Open Spot Orders'
+  open_spot_order: 'Open Spot Orders',
+  'Transfer Assets Now': 'Transfer Assets Now',
+  Restrictions: 'Restrictions',
+  Languages: 'Languages'
 }

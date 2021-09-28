@@ -3,6 +3,7 @@
     "target": "ES2018",
     "module": "ESNext",
     "moduleResolution": "Node",
+    "resolveJsonModule": true,
     "lib": [
       "ESNext",
       "ESNext.AsyncIterable",
