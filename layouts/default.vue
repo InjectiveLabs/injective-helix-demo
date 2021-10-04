@@ -8,7 +8,7 @@
             @sidebar-closed="onCloseSideBar"
           />
           <client-only>
-            <div class="relative">
+            <div class="relative bg-gray-1050">
               <v-topbar @sidebar-opened="isOpenSidebar = true" />
               <main class="w-full h-full min-h-screen">
                 <portal-target name="backLink" />

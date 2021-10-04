@@ -267,6 +267,7 @@ export default {
   open_positions: 'Open Positions',
   getting_started: 'Getting Started',
   perp: 'Perp',
+  perpetuals: 'Perpetuals',
   markets: 'Markets',
   Portfolio: 'Portfolio',
   open_derivatives_order: 'Open Derivative Orders',

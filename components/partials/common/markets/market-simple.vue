@@ -8,14 +8,9 @@
         <img
           :src="market.baseToken.icon"
           :alt="market.baseToken.name"
-          class="w-4 h-4 mr-2"
+          class="w-5 h-5 mr-2"
         />
         {{ market.ticker }}
-        <span
-          class="text-primary-500 uppercase tracking-widest text-2xs font-semibold ml-auto"
-        >
-          {{ typeToString }}
-        </span>
       </div>
     </span>
     <span
@@ -198,12 +193,6 @@ export default Vue.extend({
       return new BigNumberInBase(summary.price).gte(summary.lastPrice)
         ? Change.Increase
         : Change.Decrease
-    },
-
-    typeToString(): string {
-      const { market } = this
-
-      return market.type === MarketType.Spot ? this.$t('spot') : this.$t('perp')
     }
   },
 

@@ -36,6 +36,16 @@
   }
 }
 
+.v-table-row {
+  &:nth-child(even) {
+    background-color: theme('colors.gray.850');
+  }
+
+  &:hover {
+    background-color: theme('colors.gray.1000') !important;
+  }
+}
+
 .list-trades {
   @apply overflow-y-auto;
 

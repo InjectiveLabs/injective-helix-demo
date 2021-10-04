@@ -15,6 +15,9 @@ if (process.env.META_TAGS_ENABLED === 'true') {
 module.exports = {
   titleTemplate: process.env.APP_NAME,
   meta,
+  htmlAttrs: {
+    class: 'bg-gray-1000'
+  },
   link: [
     { rel: 'icon', type: 'image/png', href: '/favicon-v4.png' },
     { rel: 'shortcut-icon', type: 'image/png', href: '/favicon-v4.png' },

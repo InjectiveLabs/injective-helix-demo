@@ -4,7 +4,7 @@
       <div class="flex items-center justify-center">
         <v-button
           :class="{
-            'text-gray-500': component === components.trades
+            'text-gray-500': component !== components.orderbook
           }"
           text-sm
           class="font-normal"
@@ -15,7 +15,7 @@
         <div class="mx-2 w-px h-4 bg-gray-700"></div>
         <v-button
           :class="{
-            'text-gray-500': component === components.orderbook
+            'text-gray-500': component !== components.trades
           }"
           text-sm
           class="font-normal"
