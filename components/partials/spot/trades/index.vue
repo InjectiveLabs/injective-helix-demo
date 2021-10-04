@@ -23,7 +23,7 @@
         </thead>
       </table>
     </div>
-    <v-trades class="flex-1" />
+    <v-trades />
   </div>
 </template>
 

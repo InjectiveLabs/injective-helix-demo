@@ -2,7 +2,7 @@
   <div class="flex flex-col flex-wrap overflow-y-hidden w-full">
     <ul
       ref="sellOrders"
-      class="list-order-book overflow-y-auto w-full h-52"
+      class="list-order-book overflow-y-auto w-full h-48"
       @mouseenter="autoScrollSellsLocked = true"
       @mouseleave="autoScrollSellsLocked = false"
     >
@@ -16,11 +16,11 @@
     </ul>
     <div
       v-if="market"
-      class="h-12 bg-gray-900 flex flex-col items-center justify-center border-t border-b"
+      class="h-8 bg-gray-900 flex flex-col items-center justify-center border-t border-b"
     >
       <div class="w-full flex justify-between px-2">
         <span class="text-white font-bold text-sm w-2/3 text-right pr-2">
-          <div class="transform inline-block rotate-90 mt-3">
+          <div class="transform inline-block rotate-90 mt-2">
             <v-icon-arrow
               v-if="
                 [Change.Increase, Change.Decrease].includes(
@@ -53,7 +53,7 @@
     </div>
     <ul
       ref="buyOrders"
-      class="list-order-book overflow-auto w-full h-52"
+      class="list-order-book overflow-auto w-full h-48"
       @mouseenter="autoScrollBuysLocked = true"
       @mouseleave="autoScrollBuysLocked = false"
     >

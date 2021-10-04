@@ -162,7 +162,8 @@ module.exports = {
       height: {
         ...extraSizings,
         footer: '2.5rem',
-        orders: '6rem'
+        orders: '8rem',
+        trades: '26rem'
       },
 
       minHeight: {

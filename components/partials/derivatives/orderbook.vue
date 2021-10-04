@@ -26,7 +26,7 @@
       </div>
     </div>
 
-    <div class="mt-2 h-lg">
+    <div class="bg-gray-900 rounded-lg mt-2 h-md">
       <component :is="component" v-if="component"></component>
     </div>
   </div>

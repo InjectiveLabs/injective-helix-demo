@@ -116,6 +116,7 @@
       />
 
       <v-order-leverage-select
+        v-if="false"
         class="mt-4"
         :max-leverage="maxLeverageAvailable.toFixed()"
         :leverage="form.leverage"
