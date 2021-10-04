@@ -12,7 +12,7 @@
         />
         <div class="mr-4">
           {{ market.ticker }}
-          <span class="text-gray-500 text-xs md:text-xs 2xl:text-sm block">
+          <span class="text-gray-500 text-xs block">
             {{ market.baseToken.name }}
           </span>
         </div>

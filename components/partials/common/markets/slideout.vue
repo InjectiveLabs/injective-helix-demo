@@ -3,7 +3,7 @@
     id="market-slideout"
     class="slideout-menu bg-gray-800 fixed shadow-sm border-r left-0 top-0 bottom-0 w-xl min-h-screen hidden overflow-y-auto z-10"
   >
-    <div v-on-clickaway="toggleSlideout" class="mt-12 py-4 px-4">
+    <div v-on-clickaway="closeSlideout" class="mt-12 py-4 px-4">
       <v-list-simple :markets="markets" :summaries="marketsSummary" />
     </div>
   </div>
@@ -82,6 +82,12 @@ export default Vue.extend({
   methods: {
     toggleSlideout() {
       if (this.slideout) {
+        this.slideout.toggle()
+      }
+    },
+
+    closeSlideout() {
+      if (this.slideout && this.slideout.isOpen()) {
         this.slideout.toggle()
       }
     }
