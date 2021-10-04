@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-900 px-4 py-2 rounded-lg h-full">
+  <div class="bg-gray-800 rounded-l-xl h-full overflow-hidden shadow-sm">
     <div ref="trading-view-wrap" class="h-full w-full relative">
       <HOCLoading :status="status">
         <v-trading-chart

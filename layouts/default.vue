@@ -1,5 +1,5 @@
 <template>
-  <div id="pro" class="w-full h-full min-h-screen bg-gray-900 relative">
+  <div id="pro" class="w-full h-full min-h-screen bg-gray-1050 relative">
     <transition name="page" appear>
       <HOCLoading :status="status">
         <div>
@@ -8,11 +8,11 @@
             @sidebar-closed="onCloseSideBar"
           />
           <client-only>
-            <div class="bg-gray-900 relative">
+            <div class="relative">
               <v-topbar @sidebar-opened="isOpenSidebar = true" />
               <main class="w-full h-full min-h-screen">
                 <portal-target name="backLink" />
-                <div class="py-4 relative">
+                <div class="relative">
                   <nuxt />
                 </div>
               </main>

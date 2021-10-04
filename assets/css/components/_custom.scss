@@ -9,7 +9,7 @@
 
 .toasted.bubble.info {
   @apply text-gray-500 shadow-md;
-  background: theme('colors.dark.700') !important;
+  background: theme('colors.gray.700') !important;
 
   .action {
     @apply font-bold;
@@ -27,7 +27,7 @@
 
 .toasted.bubble.default {
   @apply text-gray-200 shadow-sm;
-  background: theme('colors.dark.500') !important;
+  background: theme('colors.gray.500') !important;
 }
 
 .toasted-container .toasted.default .action.text-primary-500 {
@@ -120,7 +120,7 @@
 
   &.up {
     @apply visible;
-    fill: theme('colors.primary.500');
+    fill: theme('colors.aqua.500');
     opacity: 0.35;
     animation: sizeColUp 0.5s ease-in-out;
     color: rgb(255, 255, 255) !important;
@@ -137,7 +137,7 @@
 
 @keyframes sizeColUp {
   0% {
-    background-color: theme('colors.primary.500');
+    background-color: theme('colors.aqua.500');
   }
   100% {
     background-color: unset;

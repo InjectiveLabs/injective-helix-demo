@@ -31,7 +31,7 @@
       >
         <div
           v-if="isOpen"
-          class="inline-block align-bottom bg-gray-850 shadow-card rounded-2xl p-8 text-left transform transition-all w-full max-w-lg sm:max-w-lg lg:max-w-3xl"
+          class="inline-block align-bottom bg-gray-850 shadow-card rounded-xl p-8 text-left transform transition-all w-full max-w-lg lg:max-w-2xl"
           role="dialog"
           :aria-modal="isOpen"
           aria-labelledby="modal-headline"
@@ -90,6 +90,10 @@ export default Vue.extend({
 
   mounted() {
     this.onEscKeyDown()
+  },
+
+  beforeDestroy() {
+    document.body.classList.remove('overflow-hidden')
   },
 
   methods: {

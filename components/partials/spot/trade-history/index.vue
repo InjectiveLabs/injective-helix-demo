@@ -1,5 +1,5 @@
 <template>
-  <div v-if="market" class="table-responsive min-h-3xs">
+  <div v-if="market" class="table-responsive min-h-orders">
     <table class="table">
       <thead>
         <tr>

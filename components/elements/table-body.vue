@@ -3,7 +3,7 @@
     <slot></slot>
     <div
       v-if="showEmpty"
-      class="col-span-1 px-6 text-sm py-4 grid grid-cols-1 md:grid-cols-5 shadow text-gray-200 rounded-2xl bg-gray-900 items-center"
+      class="col-span-1 px-6 text-sm py-4 grid grid-cols-1 md:grid-cols-5 shadow text-gray-200 rounded-xl bg-gray-900 items-center"
     >
       <slot name="empty"></slot>
     </div>

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="market" class="h-10 bg-dark-900">
+  <div v-if="market" class="h-10">
     <div class="flex overflow-x-auto overflow-y-none">
       <v-market-info :title="$t('last_traded_price')">
         <span class="text-sm text-right font-mono block">

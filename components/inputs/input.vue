@@ -54,7 +54,7 @@
             @click.stop="handleMaxSelector"
           >
             <span
-              class="bg-dark-700 rounded uppercase tracking-1"
+              class="bg-gray-700 rounded uppercase tracking-1"
               :class="maxClasses"
             >
               {{ $t('max') }}

@@ -1,6 +1,6 @@
 <template>
   <header
-    class="relative z-1100 flex-shrink-0 flex h-16 bg-black shadow-top-bar-dark"
+    class="relative z-1100 flex-shrink-0 flex h-12 bg-black shadow-top-bar-dark"
   >
     <button
       class="px-4 border-r border-gray-600 text-gray-200 lg:hidden"
@@ -12,7 +12,7 @@
     <div class="flex-1 px-2 lg:px-8 flex justify-end lg:justify-between">
       <div class="hidden lg:flex items-center">
         <div
-          class="flex items-center py-2 px-6 border-r cursor-pointer"
+          class="flex items-center py-2 pr-2 lg:pr-8 border-r cursor-pointer"
           @click="$router.push({ name: 'index' })"
         >
           <v-logo class="h-6 w-auto mr-2" alt="Injective" />

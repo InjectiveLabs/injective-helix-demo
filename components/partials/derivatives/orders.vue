@@ -4,7 +4,7 @@
       <div class="flex items-center justify-center">
         <v-button
           :class="{
-            'text-gray-500': component === components.tradeHistory
+            'text-gray-500': component !== components.openOrders
           }"
           text-sm
           class="font-normal"
@@ -12,10 +12,21 @@
         >
           <span>{{ $t('open_orders') }} {{ `(${orders.length})` }}</span>
         </v-button>
-        <div class="mx-2 w-px h-4 bg-dark-500"></div>
+        <div class="mx-2 w-px h-4 bg-gray-700"></div>
         <v-button
           :class="{
-            'text-gray-500': component === components.openOrders
+            'text-gray-500': component !== components.openPositions
+          }"
+          text-sm
+          class="font-normal"
+          @click.stop="onSelect(components.openPositions)"
+        >
+          <span>{{ $t('open_positions') }}</span>
+        </v-button>
+        <div class="mx-2 w-px h-4 bg-gray-700"></div>
+        <v-button
+          :class="{
+            'text-gray-500': component !== components.tradeHistory
           }"
           text-sm
           class="font-normal"
@@ -43,19 +54,22 @@
 <script lang="ts">
 import Vue from 'vue'
 import OpenOrders from './orders/index.vue'
+import OpenPositions from './positions/index.vue'
 import TradeHistory from './trade-history/index.vue'
 import { UiDerivativeLimitOrder } from '~/types'
 
 const components = {
   orderHistory: '',
   openOrders: 'v-open-orders',
+  openPositions: 'v-open-positions',
   tradeHistory: 'v-trade-history'
 }
 
 export default Vue.extend({
   components: {
     'v-trade-history': TradeHistory,
-    'v-open-orders': OpenOrders
+    'v-open-orders': OpenOrders,
+    'v-open-positions': OpenPositions
   },
 
   data() {

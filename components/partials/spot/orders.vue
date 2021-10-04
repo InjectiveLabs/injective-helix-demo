@@ -4,7 +4,7 @@
       <div class="flex items-center justify-center">
         <v-button
           :class="{
-            'text-gray-500': component === components.tradeHistory
+            'text-gray-500': component !== components.openOrders
           }"
           text-sm
           class="font-normal"
@@ -12,10 +12,10 @@
         >
           <span>{{ $t('open_orders') }} {{ `(${orders.length})` }}</span>
         </v-button>
-        <div class="mx-2 w-px h-4 bg-dark-500"></div>
+        <div class="mx-2 w-px h-4 bg-gray-700"></div>
         <v-button
           :class="{
-            'text-gray-500': component === components.openOrders
+            'text-gray-500': component !== components.tradeHistory
           }"
           text-sm
           class="font-normal"
@@ -34,7 +34,7 @@
       </v-button>
     </div>
 
-    <div class="bg-gray-900 px-4 py-2 rounded-lg mt-2">
+    <div class="bg-gray-900 rounded-lg mt-2">
       <component :is="component" v-if="component"></component>
     </div>
   </div>

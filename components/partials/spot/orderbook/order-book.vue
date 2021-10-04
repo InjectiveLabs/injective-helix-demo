@@ -16,7 +16,7 @@
     </ul>
     <div
       v-if="market"
-      class="h-12 bg-dark-800 flex flex-col items-center justify-center border-t border-b"
+      class="h-12 bg-gray-900 flex flex-col items-center justify-center border-t border-b"
     >
       <div class="w-full flex justify-between px-2">
         <span class="text-white font-bold text-sm w-2/3 text-right pr-2">

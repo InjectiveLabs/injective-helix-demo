@@ -12,7 +12,7 @@
         >
           <span>{{ $t('Orderbook') }}</span>
         </v-button>
-        <div class="mx-2 w-px h-4 bg-dark-500"></div>
+        <div class="mx-2 w-px h-4 bg-gray-700"></div>
         <v-button
           :class="{
             'text-gray-500': component === components.orderbook
@@ -26,7 +26,7 @@
       </div>
     </div>
 
-    <div class="bg-gray-900 px-4 py-2 rounded-lg mt-2 h-lg">
+    <div class="bg-gray-900 rounded-lg mt-2 h-lg">
       <component :is="component" v-if="component"></component>
     </div>
   </div>

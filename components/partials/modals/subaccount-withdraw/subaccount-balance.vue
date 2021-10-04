@@ -12,7 +12,7 @@
       </div>
       <div class="mt-4 text-center">
         <span
-          class="font-mono flex items-center justify-center text-gray-200 text-2xl"
+          class="font-mono flex items-center justify-center text-gray-200 text-base lg:text-xl"
         >
           {{ availableForWithdrawToFormat }}
           <span class="text-gray-500 ml-2">{{ token.symbol }}</span>

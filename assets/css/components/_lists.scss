@@ -27,11 +27,11 @@
 
   li {
     &:nth-child(odd) {
-      background-color: theme('colors.dark.hover300');
+      background-color: theme('colors.gray.950');
     }
 
     &:hover {
-      background-color: theme('colors.dark.hover200') !important;
+      background-color: theme('colors.gray.800') !important;
     }
   }
 }
@@ -41,11 +41,11 @@
 
   li {
     &:nth-child(odd) {
-      background-color: theme('colors.dark.hover300');
+      background-color: theme('colors.gray.950');
     }
 
     &:hover {
-      background-color: theme('colors.dark.hover200') !important;
+      background-color: theme('colors.gray.800') !important;
     }
   }
 }

@@ -10,7 +10,7 @@
       >
         {{ $t('market') }}
       </v-button>
-      <div class="mx-2 w-px h-4 bg-dark-500"></div>
+      <div class="mx-2 w-px h-4 bg-gray-500"></div>
       <v-button
         sm
         :class="{

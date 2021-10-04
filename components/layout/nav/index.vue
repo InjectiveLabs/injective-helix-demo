@@ -4,7 +4,7 @@
       {{ $t('markets') }}
     </v-nav-item-dummy>
     <v-nav-item v-if="isUserWalletConnected" :to="{ name: 'portfolio' }">
-      {{ $t('portfolio') }}
+      {{ $t('Portfolio') }}
     </v-nav-item>
   </nav>
 </template>
