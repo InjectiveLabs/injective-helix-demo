@@ -21,7 +21,7 @@
           class="font-normal"
           @click.stop="onSelectMarketType(MarketType.Spot)"
         >
-          <span>{{ $t('spot') }}</span>
+          <span>{{ $t('spots') }}</span>
         </v-button>
       </div>
     </div>

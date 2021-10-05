@@ -1,6 +1,6 @@
 <template>
-  <div class="flex-1">
-    <div class="flex items-center justify-between">
+  <div class="flex flex-wrap flex-col h-full">
+    <div class="w-full flex items-center justify-between">
       <div class="flex items-center justify-center">
         <v-button
           :class="{
@@ -34,7 +34,7 @@
       </v-button>
     </div>
 
-    <div class="bg-gray-900 rounded-lg mt-2">
+    <div class="bg-gray-900 px-4 py-2 rounded-lg mt-2 flex-1">
       <component :is="component" v-if="component"></component>
     </div>
   </div>
