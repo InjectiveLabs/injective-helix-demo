@@ -12,7 +12,6 @@
           </h3>
         </div>
         <v-cards class="mt-12" />
-        <v-portfolio class="mt-12" />
         <v-panel :title="$t('derivatives')" class="mt-12">
           <v-derivatives />
         </v-panel>
@@ -27,7 +26,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import VCards from '~/components/partials/home/cards.vue'
-import VPortfolio from '~/components/partials/common/portfolio/index.vue'
 import VSpot from '~/components/partials/common/markets/spot.vue'
 import VDerivatives from '~/components/partials/common/markets/derivatives.vue'
 import VLogo from '~/components/elements/logo.vue'
@@ -37,7 +35,6 @@ export default Vue.extend({
   components: {
     VSpot,
     VCards,
-    VPortfolio,
     VDerivatives,
     VLogoText,
     VLogo

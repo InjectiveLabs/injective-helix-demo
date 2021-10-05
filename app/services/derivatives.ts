@@ -210,7 +210,7 @@ export const streamOrderbook = ({
     derivativeMarketStream.orderbook
   )
   const streamFnArgs = {
-    marketId,
+    marketIds: [marketId],
     callback
   }
 

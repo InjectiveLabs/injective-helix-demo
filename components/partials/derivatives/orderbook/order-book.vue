@@ -1,22 +1,24 @@
 <template>
   <div class="flex flex-col flex-wrap overflow-y-hidden w-full">
-    <ul
-      ref="sellOrders"
-      class="list-order-book overflow-y-auto w-full h-48"
-      @mouseenter="autoScrollSellsLocked = true"
-      @mouseleave="autoScrollSellsLocked = false"
-    >
-      <v-record
-        v-for="(sell, index) in sellsWithDepth"
-        :key="`order-book-sell-${index}`"
-        :type="DerivativeOrderSide.Sell"
-        :user-orders="sellUserOrderPrices"
-        :record="sell"
-      ></v-record>
-    </ul>
+    <div ref="sellOrders" class="overflow-y-auto w-full h-48 4xl:h-xs">
+      <ul
+        class="list-order-book transform -scale-y-100"
+        @mouseenter="autoScrollSellsLocked = true"
+        @mouseleave="autoScrollSellsLocked = false"
+      >
+        <v-record
+          v-for="(sell, index) in sellsWithDepth"
+          :key="`order-book-sell-${index}`"
+          class="-scale-y-100 transform"
+          :type="DerivativeOrderSide.Sell"
+          :user-orders="sellUserOrderPrices"
+          :record="sell"
+        ></v-record>
+      </ul>
+    </div>
     <div
       v-if="market"
-      class="h-8 bg-gray-900 flex flex-col items-center justify-center border-t border-b"
+      class="h-8 4xl:h-24 bg-gray-900 flex flex-col items-center justify-center border-t border-b"
     >
       <div class="w-full flex justify-between px-2">
         <span class="text-white font-bold text-sm w-2/3 text-right pr-2">
@@ -27,7 +29,7 @@
                   lastTradedPriceChange
                 )
               "
-              class="w-3 h-3"
+              class="w-3 h-3 2xl:w-6 4xl:h-6"
               :class="{
                 'text-red-500 -rotate-90':
                   lastTradedPriceChange === Change.Decrease,
@@ -42,7 +44,7 @@
                   lastTradedPriceChange === Change.Decrease,
                 'text-aqua-500': lastTradedPriceChange !== Change.Decrease
               }"
-              class="font-mono text-lg"
+              class="font-mono text-lg 4xl:text-3xl"
             >
               {{ lastTradedPriceToFormat }}
             </span>
@@ -53,7 +55,7 @@
     </div>
     <ul
       ref="buyOrders"
-      class="list-order-book overflow-auto w-full h-48"
+      class="list-order-book overflow-auto w-full h-48 4xl:h-xs"
       @mouseenter="autoScrollBuysLocked = true"
       @mouseleave="autoScrollBuysLocked = false"
     >
@@ -243,24 +245,19 @@ export default Vue.extend({
       }
 
       let accumulator = ZERO_IN_BASE
-      return sells
-        .map((record: UiPriceLevel, index: number) => {
-          const notional = new BigNumberInWei(record.quantity)
-            .times(record.price)
-            .toBase(market.quoteToken.decimals)
+      return sells.map((record: UiPriceLevel, index: number) => {
+        const notional = new BigNumberInWei(record.quantity)
+          .times(record.price)
+          .toBase(market.quoteToken.decimals)
 
-          accumulator = index === 0 ? notional : accumulator.plus(notional)
+        accumulator = index === 0 ? notional : accumulator.plus(notional)
 
-          return {
-            ...record,
-            total: accumulator.toFixed(),
-            depth: accumulator
-              .dividedBy(sellsTotalNotional)
-              .times(100)
-              .toNumber()
-          }
-        })
-        .reverse()
+        return {
+          ...record,
+          total: accumulator.toFixed(),
+          depth: accumulator.dividedBy(sellsTotalNotional).times(100).toNumber()
+        }
+      })
     }
   },
 

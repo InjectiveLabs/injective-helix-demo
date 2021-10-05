@@ -1,34 +1,35 @@
 <template>
   <HOCLoading :key="$route.fullPath" :status="status">
-    <div
-      v-if="market"
-      class="min-h-screen grid grid-cols-6 lg:grid-cols-12 gap-1 p-1"
-    >
-      <div class="col-span-6 lg:col-span-12">
+    <div v-if="market" class="min-h-screen flex flex-col flex-wrap">
+      <div class="w-full">
         <v-market />
       </div>
-      <div class="col-span-6 lg:col-span-3">
-        <v-balances />
-        <v-trading class="mt-2" />
-      </div>
-      <div class="col-span-6 lg:col-span-9">
-        <div class="flex flex-wrap flex-col h-full">
-          <div class="w-full">
-            <v-card tight>
-              <div class="grid grid-cols-6 lg:grid-cols-12">
-                <div class="col-span-6 lg:col-span-8">
-                  <v-market-chart :market="market" />
-                </div>
-                <div class="col-span-6 lg:col-span-4">
-                  <v-orderbook class="p-2 lg:p-3" />
-                </div>
-              </div>
-            </v-card>
+      <div class="flex-1 grid grid-cols-6 lg:grid-cols-12 gap-1 p-1">
+        <div class="col-span-6 lg:col-span-3">
+          <div class="flex flex-col flex-wrap h-full">
+            <v-balances />
+            <v-trading class="mt-1 flex-1" />
           </div>
-          <div class="w-full flex-1 mt-1">
-            <v-card class="h-full">
-              <v-orders />
-            </v-card>
+        </div>
+        <div class="col-span-6 lg:col-span-9">
+          <div class="flex flex-wrap flex-col h-full">
+            <div class="w-full">
+              <v-card tight>
+                <div class="grid grid-cols-6 lg:grid-cols-12">
+                  <div class="col-span-6 lg:col-span-8">
+                    <v-market-chart :market="market" />
+                  </div>
+                  <div class="col-span-6 lg:col-span-4">
+                    <v-orderbook class="p-2 lg:p-3" />
+                  </div>
+                </div>
+              </v-card>
+            </div>
+            <div class="w-full flex-1 mt-1">
+              <v-card class="h-full">
+                <v-orders />
+              </v-card>
+            </div>
           </div>
         </div>
       </div>

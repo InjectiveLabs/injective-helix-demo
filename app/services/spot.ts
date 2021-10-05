@@ -167,7 +167,7 @@ export const streamOrderbook = ({
     spotMarketStream.orderbook
   )
   const streamFnArgs = {
-    marketId,
+    marketIds: [marketId],
     callback
   }
 

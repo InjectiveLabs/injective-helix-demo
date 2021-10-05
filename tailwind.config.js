@@ -108,6 +108,10 @@ module.exports = {
         DEFAULT: '#2A2F41'
       },
 
+      scale: {
+        '-100': '-1'
+      },
+
       screens: {
         xs: '480px',
         sm: '640px',
