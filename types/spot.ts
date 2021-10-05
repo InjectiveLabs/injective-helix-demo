@@ -29,6 +29,7 @@ export interface UiSpotMarket extends BaseUiSpotMarketWithTokenMetaData {
   priceDecimals: number
   quantityDecimals: number
   type: MarketType
+  subType: MarketType
 }
 
 export interface UiSpotMarketSummary extends ChronosSpotMarketSummary {

@@ -20,6 +20,7 @@ export const spotMarketToUiSpotMarket = (
   return {
     ...market,
     type: MarketType.Spot,
+    subType: MarketType.Spot,
     priceDecimals: getDecimalsFromNumber(
       new BigNumberInWei(market.minPriceTickSize)
         .toBase(market.quoteToken.decimals - market.baseToken.decimals)

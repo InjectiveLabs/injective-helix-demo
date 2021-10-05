@@ -1,19 +1,14 @@
 <template>
-  <div>
-    <h3 class="text-xl font-bold text-gray-200">
-      {{ $t('Portfolio') }}
-    </h3>
-    <v-card class="mt-6">
-      <div class="flex flex-wrap -mx-4">
-        <div class="w-full lg:w-1/4 px-4">
-          <v-overview />
-        </div>
-        <div class="w-full lg:w-3/4 px-4">
-          <v-stats />
-        </div>
+  <v-card class="mt-6">
+    <div class="flex flex-wrap -mx-4">
+      <div class="w-full lg:w-1/4 px-4">
+        <v-overview />
       </div>
-    </v-card>
-  </div>
+      <div class="w-full lg:w-3/4 px-4">
+        <v-stats />
+      </div>
+    </div>
+  </v-card>
 </template>
 
 <script lang="ts">

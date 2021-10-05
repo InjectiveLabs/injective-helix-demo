@@ -4,11 +4,11 @@
       <div class="flex items-center">
         <v-button
           :class="{
-            'text-gray-500': marketType !== MarketType.Derivative
+            'text-gray-500': marketType !== MarketType.Perpetual
           }"
           text-sm
           class="font-normal"
-          @click.stop="onSelectMarketType(MarketType.Derivative)"
+          @click.stop="onSelectMarketType(MarketType.Perpetual)"
         >
           <span>{{ $t('perpetuals') }}</span>
         </v-button>
@@ -22,6 +22,17 @@
           @click.stop="onSelectMarketType(MarketType.Spot)"
         >
           <span>{{ $t('spots') }}</span>
+        </v-button>
+        <div class="mx-2 w-px h-4 bg-gray-700"></div>
+        <v-button
+          :class="{
+            'text-gray-500': marketType !== MarketType.Futures
+          }"
+          text-sm
+          class="font-normal opacity-50"
+          @click.stop="() => {}"
+        >
+          <span>{{ $t('futures') }}</span>
         </v-button>
       </div>
     </div>
@@ -119,8 +130,8 @@ export default Vue.extend({
   data() {
     return {
       MarketType,
-      filterMarkets: '',
-      marketType: ''
+      marketType: '',
+      filterMarkets: ''
     }
   },
 
@@ -145,7 +156,7 @@ export default Vue.extend({
             quoteDenom.toLowerCase().startsWith(query) ||
             ticker.toLowerCase().startsWith(query)
           const marketTypeCondition = marketType
-            ? market.type === marketType
+            ? market.subType === marketType
             : true
 
           return (

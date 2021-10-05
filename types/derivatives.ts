@@ -31,6 +31,7 @@ export interface UiDerivativeMarket
   priceDecimals: number
   quantityDecimals: number
   type: MarketType
+  subType: MarketType
 }
 
 export interface UiDerivativeMarketSummary

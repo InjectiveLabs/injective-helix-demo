@@ -1,6 +1,42 @@
 <template>
   <div>
-    <div class="w-full">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center">
+        <v-button
+          :class="{
+            'text-gray-500': marketType !== MarketType.Perpetual
+          }"
+          text-sm
+          class="font-normal"
+          @click.stop="onSelectMarketType(MarketType.Perpetual)"
+        >
+          <span>{{ $t('perpetuals') }}</span>
+        </v-button>
+        <div class="mx-2 w-px h-4 bg-gray-700"></div>
+        <v-button
+          :class="{
+            'text-gray-500': marketType !== MarketType.Spot
+          }"
+          text-sm
+          class="font-normal"
+          @click.stop="onSelectMarketType(MarketType.Spot)"
+        >
+          <span>{{ $t('spots') }}</span>
+        </v-button>
+        <div class="mx-2 w-px h-4 bg-gray-700"></div>
+        <v-button
+          :class="{
+            'text-gray-500': marketType !== MarketType.Futures
+          }"
+          text-sm
+          class="font-normal opacity-50"
+          @click.stop="() => {}"
+        >
+          <span>{{ $t('futures') }}</span>
+        </v-button>
+      </div>
+    </div>
+    <div class="w-full mt-2">
       <v-search
         name="search"
         class="w-full"
@@ -66,6 +102,7 @@ import TableHeader from '~/components/elements/table-header.vue'
 import VSearch from '~/components/inputs/search.vue'
 import VMarket from '~/components/partials/common/markets/market.vue'
 import {
+  MarketType,
   UiDerivativeMarket,
   UiDerivativeMarketSummary,
   UiSpotMarket,
@@ -101,13 +138,15 @@ export default Vue.extend({
 
   data() {
     return {
+      MarketType,
+      marketType: '',
       filterMarkets: ''
     }
   },
 
   computed: {
     filteredMarkets(): UiMarketAndSummary[] {
-      const { filterMarkets, markets, summaries } = this
+      const { filterMarkets, marketType, markets, summaries } = this
 
       const query = filterMarkets.toLowerCase()
 
@@ -125,9 +164,22 @@ export default Vue.extend({
           const satisfiesSearchCondition =
             quoteDenom.toLowerCase().startsWith(query) ||
             ticker.toLowerCase().startsWith(query)
+          const marketTypeCondition = marketType
+            ? market.subType === marketType
+            : true
 
-          return satisfiesSearchCondition && summary !== undefined
+          return (
+            satisfiesSearchCondition &&
+            summary !== undefined &&
+            marketTypeCondition
+          )
         }) as UiMarketAndSummary[]
+    }
+  },
+
+  methods: {
+    onSelectMarketType(type: MarketType) {
+      this.marketType = this.marketType === type ? '' : type
     }
   }
 })

@@ -53,7 +53,9 @@ export enum Breakpoint {
 
 export enum MarketType {
   Spot = 'Spot',
-  Derivative = 'Derivative'
+  Derivative = 'Derivative',
+  Perpetual = 'Perpetual',
+  Futures = 'Futures'
 }
 
 export enum AppState {

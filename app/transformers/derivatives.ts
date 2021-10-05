@@ -24,6 +24,7 @@ export const derivativeMarketToUiDerivativeMarket = (
   return {
     ...market,
     type: MarketType.Derivative,
+    subType: MarketType.Perpetual,
     quantityDecimals: getDecimalsFromNumber(market.minQuantityTickSize),
     priceDecimals: getDecimalsFromNumber(
       new BigNumberInBase(market.minPriceTickSize)
