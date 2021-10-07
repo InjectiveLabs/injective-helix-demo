@@ -1,5 +1,5 @@
 <template>
-  <v-panel>
+  <v-panel class="w-full">
     <div>
       <div>
         <div class="flex items-center justify-between">

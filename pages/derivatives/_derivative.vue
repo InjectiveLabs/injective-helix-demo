@@ -6,13 +6,13 @@
       </div>
       <div class="flex-1 grid grid-cols-6 lg:grid-cols-12 gap-1 p-1">
         <div class="col-span-6 lg:col-span-3">
-          <div class="flex flex-col flex-wrap h-full">
+          <div class="flex flex-col flex-wrap h-full w-full">
             <v-balances />
             <v-trading class="mt-1 flex-1" />
           </div>
         </div>
         <div class="col-span-6 lg:col-span-9">
-          <div class="flex flex-wrap flex-col h-full">
+          <div class="flex flex-wrap flex-col w-full h-full">
             <div class="w-full">
               <v-card tight>
                 <div class="grid grid-cols-6 lg:grid-cols-12">
