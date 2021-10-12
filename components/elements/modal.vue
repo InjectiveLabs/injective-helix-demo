@@ -1,5 +1,8 @@
 <template>
-  <div v-show="isOpen" class="fixed z-1100 inset-0 overflow-y-auto py-4">
+  <div
+    v-show="isVisibleOnViewport"
+    class="fixed z-1100 inset-0 overflow-y-auto py-4"
+  >
     <div
       class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:p-0"
     >
@@ -17,7 +20,9 @@
           :aria-hidden="isOpen"
           @click="handleCloseModal"
         >
-          <div class="absolute inset-0 bg-gray-700 opacity-90" />
+          <div
+            class="absolute inset-0 bg-gray-900 opacity-90 backdrop-filter backdrop-blur-sm"
+          />
         </div>
       </transition>
 
@@ -30,7 +35,7 @@
         leave-to-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
       >
         <div
-          v-if="isOpen"
+          v-show="isOpen"
           class="inline-block align-bottom bg-gray-850 shadow-card rounded-xl p-8 text-left transform transition-all w-full max-w-lg lg:max-w-2xl"
           role="dialog"
           :aria-modal="isOpen"
@@ -78,12 +83,24 @@ export default Vue.extend({
     }
   },
 
+  data() {
+    return {
+      isVisibleOnViewport: false
+    }
+  },
+
   watch: {
     isOpen(newIsOpen: boolean) {
       if (newIsOpen) {
-        document.body.classList.add('overflow-hidden')
+        this.isVisibleOnViewport = true
+        this.$nextTick(() => {
+          document.body.classList.add('overflow-hidden')
+        })
       } else {
         document.body.classList.remove('overflow-hidden')
+        setTimeout(() => {
+          this.isVisibleOnViewport = false
+        }, 300)
       }
     }
   },

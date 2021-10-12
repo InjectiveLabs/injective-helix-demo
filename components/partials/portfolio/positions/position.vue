@@ -3,11 +3,11 @@
     <td class="text-center relative">
       <v-button
         text
+        :aqua="position.direction === TradeDirection.Long"
+        :red="position.direction === TradeDirection.Short"
         :class="{
-          'border border-aqua-500 text-aqua-500':
-            position.direction === TradeDirection.Long,
-          'border border-red-500 text-red-500':
-            position.direction === TradeDirection.Short
+          'border border-aqua-500': position.direction === TradeDirection.Long,
+          'border border-red-500 ': position.direction === TradeDirection.Short
         }"
         class="flex items-center px-2 py-1"
         @click="onClosePositionClick"
@@ -16,7 +16,7 @@
         <v-icon-close class="w-3 h-3 ml-1 mt-px" />
       </v-button>
     </td>
-    <td class="text-left">
+    <td class="text-left cursor-pointer" @click="handleClickOnMarket">
       {{ position.ticker }}
     </td>
     <td class="text-center">
@@ -520,6 +520,22 @@ export default Vue.extend({
       }
 
       return this.handleClosePosition()
+    },
+
+    handleClickOnMarket() {
+      const { market } = this
+
+      if (!market) {
+        return
+      }
+
+      return this.$router.push({
+        name: 'derivatives-derivative',
+        params: {
+          marketId: market.marketId,
+          derivative: market.slug
+        }
+      })
     }
   }
 })

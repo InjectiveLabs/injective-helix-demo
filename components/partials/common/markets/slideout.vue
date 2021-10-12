@@ -1,20 +1,19 @@
 <template>
-  <div
-    id="market-slideout"
-    class="slideout-menu bg-gray-800 fixed shadow-sm border-r left-0 top-0 bottom-0 w-xl min-h-screen hidden overflow-y-auto z-10"
+  <v-slideout
+    :is-open="isSlideoutOpen"
+    show-header
+    @slideout-closed="closeSlideout"
   >
-    <div v-on-clickaway="closeSlideout" class="mt-12 py-4 px-4">
+    <div>
       <v-list-simple :markets="markets" :summaries="marketsSummary" />
     </div>
-  </div>
+  </v-slideout>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { directive as onClickaway } from 'vue-clickaway'
-// @ts-ignore
-import Slideout from 'slideout'
 import VListSimple from './list-simple.vue'
+import VSlideout from '~/components/elements/slideout.vue'
 import {
   UiDerivativeMarket,
   UiDerivativeMarketSummary,
@@ -23,17 +22,14 @@ import {
 } from '~/types'
 
 export default Vue.extend({
-  directives: {
-    onClickaway
-  },
-
   components: {
-    VListSimple
+    VListSimple,
+    VSlideout
   },
 
   data() {
     return {
-      slideout: null as any
+      isSlideoutOpen: false
     }
   },
 
@@ -68,27 +64,17 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.slideout = new Slideout({
-      panel: document.querySelector('main'),
-      menu: document.getElementById('market-slideout'),
-      padding: 576,
-      tolerance: 70,
-      easing: 'cubic-bezier(.32,2,.55,.27)'
-    })
-
     this.$root.$on('toggle-market-slideout', this.toggleSlideout)
   },
 
   methods: {
     toggleSlideout() {
-      if (this.slideout) {
-        this.slideout.toggle()
-      }
+      this.isSlideoutOpen = !this.isSlideoutOpen
     },
 
     closeSlideout() {
-      if (this.slideout && this.slideout.isOpen()) {
-        this.slideout.toggle()
+      if (this.isSlideoutOpen) {
+        this.isSlideoutOpen = false
       }
     }
   }

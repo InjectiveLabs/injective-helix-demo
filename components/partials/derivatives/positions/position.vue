@@ -3,11 +3,11 @@
     <td class="text-center relative">
       <v-button
         text
+        :aqua="position.direction === TradeDirection.Long"
+        :red="position.direction === TradeDirection.Short"
         :class="{
-          'border border-aqua-500 text-aqua-500':
-            position.direction === TradeDirection.Long,
-          'border border-red-500 text-red-500':
-            position.direction === TradeDirection.Short
+          'border border-aqua-500': position.direction === TradeDirection.Long,
+          'border border-red-500 ': position.direction === TradeDirection.Short
         }"
         class="flex items-center px-2 py-1"
         @click="onClosePositionClick"

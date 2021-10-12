@@ -21,7 +21,9 @@
           class="font-normal"
           @click.stop="onSelect(components.openPositions)"
         >
-          <span>{{ $t('open_positions') }}</span>
+          <span>
+            {{ $t('open_positions') }} <span v-if="position">(1)</span>
+          </span>
         </v-button>
         <div class="mx-2 w-px h-4 bg-gray-700"></div>
         <v-button
@@ -56,7 +58,7 @@ import Vue from 'vue'
 import OpenOrders from './orders/index.vue'
 import OpenPositions from './positions/index.vue'
 import TradeHistory from './trade-history/index.vue'
-import { UiDerivativeLimitOrder } from '~/types'
+import { UiDerivativeLimitOrder, UiPosition } from '~/types'
 
 const components = {
   orderHistory: '',
@@ -82,6 +84,10 @@ export default Vue.extend({
   computed: {
     orders(): UiDerivativeLimitOrder[] {
       return this.$accessor.derivatives.subaccountOrders
+    },
+
+    position(): UiPosition | undefined {
+      return this.$accessor.derivatives.subaccountPosition
     }
   },
 

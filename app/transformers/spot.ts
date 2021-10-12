@@ -1,4 +1,8 @@
-import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
+import {
+  BigNumber,
+  BigNumberInWei,
+  BigNumberInBase
+} from '@injectivelabs/utils'
 import { getCoinGeckoId, getTokenMetaData } from '../services/tokens'
 import { grpcTokenMetaToToken, tokenMetaToToken } from './token'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
@@ -11,7 +15,8 @@ import {
   UiSpotMarketSummary,
   BaseUiSpotMarketWithPartialTokenMetaData,
   BaseUiSpotMarketWithTokenMetaData,
-  MarketType
+  MarketType,
+  Change
 } from '~/types'
 
 export const spotMarketToUiSpotMarket = (
@@ -90,7 +95,12 @@ export const marketSummaryToUiMarketSummary = (
 ): UiSpotMarketSummary => {
   return {
     ...newSummary,
-    lastPrice: oldSummary.price
+    lastPrice: oldSummary.price,
+    lastPriceChange: new BigNumber(oldSummary.price).eq(newSummary.price)
+      ? oldSummary.lastPriceChange || Change.NoChange
+      : new BigNumber(newSummary.price).gte(oldSummary.price)
+      ? Change.Increase
+      : Change.Decrease
   }
 }
 

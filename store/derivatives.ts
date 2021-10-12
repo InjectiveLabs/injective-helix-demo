@@ -103,7 +103,10 @@ export const getters = getterTree(state, {
       return Change.NoChange
     }
 
-    const [trade, secondLastTrade] = state.trades
+    const [trade] = state.trades
+    const [secondLastTrade] = state.trades.filter(
+      (t) => !new BigNumberInBase(t.executionPrice).eq(trade.executionPrice)
+    )
 
     if (!secondLastTrade) {
       return Change.NoChange

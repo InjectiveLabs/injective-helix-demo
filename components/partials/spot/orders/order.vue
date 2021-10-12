@@ -13,9 +13,6 @@
     <td class="h-8 text-right font-mono">
       {{ quantityToFormat }}
     </td>
-    <td class="h-8 text-right font-mono">
-      {{ unfilledQuantityToFormat }}
-    </td>
     <td class="h-8 font-mono text-right">
       {{ totalToFormat }}
     </td>
@@ -29,6 +26,9 @@
           {{ orderSideLocalized }}
         </div>
       </v-badge>
+    </td>
+    <td class="h-8 text-right font-mono">
+      {{ unfilledQuantityToFormat }}
     </td>
     <td class="h-8 text-center">
       <v-badge v-if="orderFullyFilled" primary xs>

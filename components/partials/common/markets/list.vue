@@ -4,6 +4,17 @@
       <div class="flex items-center">
         <v-button
           :class="{
+            'text-gray-500': marketType !== ''
+          }"
+          text-sm
+          class="font-normal"
+          @click.stop="onSelectMarketType('')"
+        >
+          <span>{{ $t('all') }}</span>
+        </v-button>
+        <div class="mx-2 w-px h-4 bg-gray-700"></div>
+        <v-button
+          :class="{
             'text-gray-500': marketType !== MarketType.Perpetual
           }"
           text-sm
@@ -53,7 +64,7 @@
             <span class="flex-1 text-right">{{ $t('last_traded_price') }}</span>
             <v-icon-info-tooltip
               class="ml-2"
-              :tooltip="$t('last_traded_price Tooltip')"
+              :tooltip="$t('last_traded_price_tooltip')"
             />
           </div>
         </span>
@@ -62,7 +73,7 @@
             {{ $t('market_change_24h') }}
             <v-icon-info-tooltip
               class="ml-2"
-              :tooltip="$t('market_change_24h Tooltip')"
+              :tooltip="$t('market_change_24h_tooltip')"
             />
           </div>
         </span>
@@ -71,7 +82,7 @@
             {{ $t('market_volume_24h') }}
             <v-icon-info-tooltip
               class="ml-2"
-              :tooltip="$t('market_volume_24h Tooltip')"
+              :tooltip="$t('market_volume_24h_tooltip')"
             />
           </div>
         </span>
@@ -178,7 +189,7 @@ export default Vue.extend({
   },
 
   methods: {
-    onSelectMarketType(type: MarketType) {
+    onSelectMarketType(type: MarketType | string) {
       this.marketType = this.marketType === type ? '' : type
     }
   }

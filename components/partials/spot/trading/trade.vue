@@ -434,8 +434,8 @@ export default Vue.extend({
       const deviation = new BigNumberInBase(1)
         .minus(
           orderTypeBuy
-            ? price.dividedBy(lastTradedPrice)
-            : lastTradedPrice.dividedBy(price)
+            ? lastTradedPrice.dividedBy(price)
+            : price.dividedBy(lastTradedPrice)
         )
         .times(100)
 

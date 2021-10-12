@@ -3,7 +3,7 @@
     <div class="text-center">
       <div class="flex items-center justify-center">
         <p class="uppercase text-xs font-semibold text-gray-200">
-          {{ $t('Available for Withdraw') }}
+          {{ $t('Available to Withdraw') }}
         </p>
         <v-icon-info-tooltip
           class="ml-2 text-gray-200"
@@ -54,7 +54,7 @@
               :disabled="!form.amount || invalid"
               @click.stop="handleClickOnWithdraw"
             >
-              {{ $t('Withdraw') }}
+              {{ $t('withdraw') }}
             </v-button>
           </div>
         </div>

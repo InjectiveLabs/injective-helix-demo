@@ -19,6 +19,8 @@ const extraSizings = {
 }
 
 module.exports = {
+  mode: 'jit',
+
   future: {
     removeDeprecatedGapUtilities: true
   },
@@ -178,6 +180,10 @@ module.exports = {
 
       minWidth: {
         ...extraSizings
+      },
+
+      margin: {
+        '10px': '10px'
       }
     }
   },

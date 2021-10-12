@@ -107,6 +107,12 @@ export default Vue.extend({
       required: false,
       default: false,
       type: Boolean
+    },
+
+    inheritColors: {
+      required: false,
+      default: false,
+      type: Boolean
     }
   },
 
@@ -138,12 +144,13 @@ export default Vue.extend({
 
       if (!this.disabled) {
         if (this.text || this.textLg || this.textXs || this.textSm) {
-          classes.push(
-            'font-bold',
-            'tracking-wide',
-            'text-primary-500',
-            'hover:text-primary-600'
-          )
+          const color = this.aqua
+            ? ['text-aqua-500', 'hover:text-aqua-600']
+            : this.red
+            ? ['text-red-500', 'hover:text-red-600']
+            : ['text-primary-500', 'hover:text-primary-600']
+
+          classes.push('font-bold', 'tracking-wide', ...color)
         } else if (this.primary) {
           classes.push(
             'font-semibold',

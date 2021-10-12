@@ -1,7 +1,7 @@
 <template>
   <v-modal :is-open="isModalOpen" @modal-closed="closeModal">
     <h3 slot="title">
-      {{ $t('Deposit to Subaccount') }}
+      {{ $t('Withdraw from Subaccount') }}
     </h3>
 
     <div v-if="market" class="relative">

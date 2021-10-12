@@ -10,6 +10,7 @@ import {
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 import { MarketType } from './enums'
 import { Token } from './token'
+import { Change } from '.'
 
 export interface BaseUiSpotMarketWithPartialTokenMetaData
   extends Omit<BaseUiSpotMarket, 'quoteToken' | 'baseToken'> {
@@ -35,6 +36,7 @@ export interface UiSpotMarket extends BaseUiSpotMarketWithTokenMetaData {
 export interface UiSpotMarketSummary extends ChronosSpotMarketSummary {
   marketId: string
   lastPrice?: number
+  lastPriceChange?: Change
 }
 
 export interface UiSpotMarketAndSummary {

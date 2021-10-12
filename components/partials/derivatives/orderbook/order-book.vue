@@ -22,20 +22,21 @@
     >
       <div class="w-full flex justify-between px-2">
         <span class="text-white font-bold text-sm w-2/3 text-right pr-2">
-          <div class="transform inline-block rotate-90 mt-2">
+          <div class="transform inline-block mt-2">
             <v-icon-arrow
               v-if="
                 [Change.Increase, Change.Decrease].includes(
                   lastTradedPriceChange
                 )
               "
-              class="w-3 h-3 2xl:w-6 4xl:h-6"
+              class="transform w-3 h-3 2xl:w-6 4xl:h-6"
               :class="{
                 'text-red-500 -rotate-90':
                   lastTradedPriceChange === Change.Decrease,
-                'text-aqua-500': lastTradedPriceChange === Change.Increase
+                'text-aqua-500 rotate-90':
+                  lastTradedPriceChange === Change.Increase
               }"
-            ></v-icon-arrow>
+            />
           </div>
           <div class="inline-block">
             <span

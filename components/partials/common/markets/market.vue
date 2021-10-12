@@ -25,15 +25,15 @@
       class="col-span-1 md:col-span-3 font-mono text-right flex items-center justify-end"
     >
       <v-icon-arrow
-        class="transform rotate-90 w-3 h-3 mr-1"
+        class="transform w-3 h-3 mr-1"
         :class="{
-          'text-aqua-500': lastPriceChange === Change.Increase,
-          'text-red-500': lastPriceChange === Change.Decrease
+          'text-aqua-500 rotate-90': lastPriceChange !== Change.Decrease,
+          'text-red-500 -rotate-90': lastPriceChange === Change.Decrease
         }"
       />
       <span
         :class="{
-          'text-aqua-500': lastPriceChange === Change.Increase,
+          'text-aqua-500': lastPriceChange !== Change.Decrease,
           'text-red-500': lastPriceChange === Change.Decrease
         }"
       >
@@ -213,13 +213,11 @@ export default Vue.extend({
         return Change.NoChange
       }
 
-      if (!summary.lastPrice) {
+      if (!summary.lastPriceChange) {
         return Change.NoChange
       }
 
-      return new BigNumberInBase(summary.price).gte(summary.lastPrice)
-        ? Change.Increase
-        : Change.Decrease
+      return summary.lastPriceChange
     }
   },
 

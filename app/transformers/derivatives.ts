@@ -1,4 +1,8 @@
-import { BigNumberInBase } from '@injectivelabs/utils'
+import {
+  BigNumber,
+  BigNumberInBase,
+  BigNumberInWei
+} from '@injectivelabs/utils'
 import {
   getTokenMetaData,
   getTokenMetaDataBySymbol,
@@ -15,7 +19,8 @@ import {
   UiDerivativeMarketSummary,
   BaseUiDerivativeMarketWithTokenMetaData,
   BaseUiDerivativeMarketWithPartialTokenMetaData,
-  MarketType
+  MarketType,
+  Change
 } from '~/types'
 
 export const derivativeMarketToUiDerivativeMarket = (
@@ -94,7 +99,12 @@ export const marketSummaryToUiMarketSummary = (
 ): UiDerivativeMarketSummary => {
   return {
     ...newSummary,
-    lastPrice: oldSummary.price
+    lastPrice: oldSummary.price,
+    lastPriceChange: new BigNumber(oldSummary.price).eq(newSummary.price)
+      ? oldSummary.lastPriceChange || Change.NoChange
+      : new BigNumber(newSummary.price).gte(oldSummary.price)
+      ? Change.Increase
+      : Change.Decrease
   }
 }
 

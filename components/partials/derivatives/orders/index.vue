@@ -10,9 +10,6 @@
             {{ $t('amount') }}
           </th>
           <th class="text-right">
-            {{ $t('unfilled') }}
-          </th>
-          <th class="text-right">
             {{ $t('total') }}
           </th>
           <th class="text-right">
@@ -20,6 +17,9 @@
           </th>
           <th class="text-center">
             {{ $t('side') }}
+          </th>
+          <th class="text-right">
+            {{ $t('unfilled') }}
           </th>
           <th class="text-center">
             {{ $t('filled') }}

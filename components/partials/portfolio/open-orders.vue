@@ -138,7 +138,7 @@ export default Vue.extend({
     handleCancelAllSpotClick() {
       const { spotOrders } = this
 
-      this.$accessor.spot
+      this.$accessor.portfolio
         .batchCancelOrder(spotOrders)
         .then(() => {
           this.$toast.success(this.$t('orders_cancelled'))
@@ -152,7 +152,7 @@ export default Vue.extend({
     handleCancelAllDerivativesClick() {
       const { derivativeOrders } = this
 
-      this.$accessor.derivatives
+      this.$accessor.portfolio
         .batchCancelOrder(derivativeOrders)
         .then(() => {
           this.$toast.success(this.$t('orders_cancelled'))

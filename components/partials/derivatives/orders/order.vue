@@ -13,9 +13,6 @@
     <td class="h-8 text-right font-mono">
       {{ quantityToFormat }}
     </td>
-    <td class="h-8 text-right font-mono">
-      {{ unfilledQuantityToFormat }}
-    </td>
     <td class="h-8 font-mono text-right">
       {{ totalToFormat }}
     </td>
@@ -35,6 +32,9 @@
       <v-badge v-if="isReduceOnly" dark xs class="ml-2">
         {{ $t('reduce_only') }}
       </v-badge>
+    </td>
+    <td class="h-8 text-right font-mono">
+      {{ unfilledQuantityToFormat }}
     </td>
     <td class="h-8 text-center">
       <v-badge v-if="orderFullyFilled" primary xs>

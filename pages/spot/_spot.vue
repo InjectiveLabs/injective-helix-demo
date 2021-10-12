@@ -1,7 +1,7 @@
 <template>
   <HOCLoading :key="$route.fullPath" :status="status">
     <div v-if="market" class="min-h-screen flex flex-col flex-wrap">
-      <div class="w-full">
+      <div class="w-full px-1">
         <v-market />
       </div>
       <div class="flex-1 grid grid-cols-6 lg:grid-cols-12 gap-1 p-1">

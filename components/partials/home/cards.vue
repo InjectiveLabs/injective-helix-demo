@@ -7,7 +7,7 @@
       <v-home-card
         v-for="(card, index) in cards"
         :key="`home-card-${index}`"
-        class="col-span-4 lg:col-span-6"
+        class="col-span-4"
       >
         <template slot="category">{{ card.category }}</template>
         <template slot="title">{{ card.title }}</template>
@@ -38,20 +38,36 @@ export default Vue.extend({
     return {
       cards: [
         {
-          category: 'TO DO',
-          title: 'Introducing INJ',
-          link: 'https://hub.injective.exchange',
-          description:
-            'Tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.',
-          linkText: 'Learn more'
-        },
-        {
-          category: 'Injective Hub',
+          category: 'External Link',
           title: 'Injective Hub',
           link: 'https://hub.injective.exchange',
           description:
-            'Tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.',
-          linkText: 'Learn more'
+            'A unified interface for Injective staking, governance, insurance funds and wallets.',
+          linkText: 'View the Injective Hub'
+        },
+        {
+          category: 'Docs',
+          title: 'Injective API',
+          link: 'https://api.injective.exchange/',
+          description: 'An institutional grade API custom made for Injective.',
+          linkText: 'Connect now'
+        },
+        /*
+        {
+          category: 'External Link',
+          title: 'Injective Explorer',
+          link: 'https://explorer.injective.network',
+          description:
+            'An analytics platform that enables anyone to search addresses, trades, tokens, transactions, and other activities on the Injective Chain.',
+          linkText: 'Explore Injective'
+        }, */
+        {
+          category: 'External Link',
+          title: 'Injective Ecosystem',
+          link: 'https://injectiveprotocol.com/ecosystem',
+          description:
+            'Injective has one of the fastest growing DeFi ecosystems in the world.',
+          linkText: 'Join Injective'
         }
       ]
     }

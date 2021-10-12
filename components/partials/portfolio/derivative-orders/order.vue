@@ -1,6 +1,8 @@
 <template>
   <tr v-if="market">
-    <td class="h-8 text-left">{{ market.ticker }}</td>
+    <td class="h-8 text-left cursor-pointer" @click="handleClickOnMarket">
+      {{ market.ticker }}
+    </td>
     <td class="h-8 font-mono text-right">
       <span
         :class="{
@@ -13,9 +15,6 @@
     </td>
     <td class="h-8 text-right font-mono">
       {{ quantityToFormat }}
-    </td>
-    <td class="h-8 text-right font-mono">
-      {{ unfilledQuantityToFormat }}
     </td>
     <td class="h-8 font-mono text-right">
       {{ totalToFormat }}
@@ -36,6 +35,9 @@
       <v-badge v-if="isReduceOnly" dark xs class="ml-2">
         {{ $t('reduce_only') }}
       </v-badge>
+    </td>
+    <td class="h-8 text-right font-mono">
+      {{ unfilledQuantityToFormat }}
     </td>
     <td class="h-8 text-center">
       <v-badge v-if="orderFullyFilled" primary xs>
@@ -274,6 +276,22 @@ export default Vue.extend({
         .finally(() => {
           this.status.setIdle()
         })
+    },
+
+    handleClickOnMarket() {
+      const { market } = this
+
+      if (!market) {
+        return
+      }
+
+      return this.$router.push({
+        name: 'derivatives-derivative',
+        params: {
+          marketId: market.marketId,
+          derivative: market.slug
+        }
+      })
     }
   }
 })

@@ -186,13 +186,11 @@ export default Vue.extend({
         return Change.NoChange
       }
 
-      if (!summary.lastPrice) {
+      if (!summary.lastPriceChange) {
         return Change.NoChange
       }
 
-      return new BigNumberInBase(summary.price).gte(summary.lastPrice)
-        ? Change.Increase
-        : Change.Decrease
+      return summary.lastPriceChange
     }
   },
 

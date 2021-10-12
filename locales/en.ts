@@ -25,9 +25,11 @@ export default {
   success_connect: 'Successfully Connected',
   market: 'Market',
   last_traded_price: 'Last Traded Price',
-  last_traded_price_tooltip: 'Last Traded Price',
+  last_traded_price_tooltip: 'The last price at which a trade occurred.',
   market_change_24h: 'Change (24h)',
+  market_change_24h_tooltip: 'The change in price over the past 24 hours.',
   market_volume_24h: 'Volume (24h)',
+  market_volume_24h_tooltip: 'The total trade volume over the past 24 hours.',
   filter_markets: 'Filter Markets',
   spot: 'Spot',
   subaccount_funds_available: 'Subaccount Funds',
@@ -255,6 +257,7 @@ export default {
     'The amount of {asset} you can deposit on the Injective Chain.',
   'Enter your amount': 'Enter your amount',
   'Withdraw from Injective Chain': 'Withdraw from Injective Chain',
+  'Withdraw from Subaccount': 'Withdraw from Subaccount',
   Deposit: 'Deposit',
   'Available to Withdraw': 'Available to Withdraw',
   'Available to Withdraw Tooltip':
@@ -276,5 +279,6 @@ export default {
   open_spot_order: 'Open Spot Orders',
   'Transfer Assets Now': 'Transfer Assets Now',
   Restrictions: 'Restrictions',
-  Languages: 'Languages'
+  Languages: 'Languages',
+  all: 'All'
 }
