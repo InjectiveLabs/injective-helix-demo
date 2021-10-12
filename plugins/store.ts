@@ -24,7 +24,9 @@ const actionsThatSetAppStateToBusy = [
   'spot/batchCancelOrder',
   'spot/submitLimitOrder',
   'spot/submitMarketOrder',
-  'spot/closePosition'
+  'portfolio/closePosition',
+  'portfolio/cancelOrder',
+  'portfolio/batchCancelOrder'
 ]
 
 const store: Plugin = ({ store, app }) => {

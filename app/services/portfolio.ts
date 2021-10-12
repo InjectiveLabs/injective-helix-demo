@@ -2,6 +2,7 @@ import {
   DerivativeMarketStreamType,
   DerivativeTransformer,
   OrderStreamCallback as DerivativeMarketOrderStreamCallback,
+  OrderbookStreamCallback as DerivativeMarketOrderbookStreamCallback,
   PositionStreamCallback
 } from '@injectivelabs/derivatives-consumer'
 import {
@@ -19,7 +20,7 @@ import { CHAIN_ID } from '../utils/constants'
 import { streamProvider } from '../providers/StreamProvider'
 import { spotMarketStream } from '../singletons/SpotMarketStream'
 import { derivativeMarketStream } from '../singletons/DerivativeMarketStream'
-import { DerivativeOrderSide } from '~/types/derivatives'
+import { DerivativeOrderSide, UiDerivativeOrderbook } from '~/types/derivatives'
 import { SpotOrderSide } from '~/types/spot'
 import { DerivativesMetrics, SpotMetrics } from '~/types/metrics'
 
@@ -68,6 +69,24 @@ export const fetchSubaccountPositions = async ({
   )
 
   return DerivativeTransformer.grpcPositionsToPositions(positions)
+}
+
+export const fetchDerivativeOrderbooks = async (marketIds: string[]) => {
+  const orderbooks = await Promise.all(
+    marketIds.map(async (marketId) => {
+      const promise = derivativeConsumer.fetchOrderbook(marketId)
+      const orderbook = await metricsProvider.sendAndRecord(
+        promise,
+        DerivativesMetrics.FetchOrderbook
+      )
+
+      return DerivativeTransformer.grpcOrderbookToOrderbook(orderbook)
+    })
+  )
+
+  return marketIds.reduce((derivativeOrderbooks, marketId, index) => {
+    return { ...derivativeOrderbooks, [marketId]: orderbooks[index] }
+  }, {} as Record<string, UiDerivativeOrderbook>)
 }
 
 export const cancelOrder = async ({
@@ -204,8 +223,35 @@ export const streamSubaccountPositions = ({
   })
 }
 
+export const streamOrderbooks = ({
+  marketIds,
+  callback
+}: {
+  marketIds: string[]
+  callback: DerivativeMarketOrderbookStreamCallback
+}) => {
+  const streamFn = derivativeMarketStream.orderbook.start.bind(
+    derivativeMarketStream.orderbook
+  )
+  const streamFnArgs = {
+    marketIds,
+    callback
+  }
+
+  streamProvider.subscribe({
+    fn: streamFn,
+    args: streamFnArgs,
+    key: DerivativeMarketStreamType.Orderbook
+  })
+}
+
+export const cancelPortfolioOrderbookStreams = () => {
+  streamProvider.cancel(DerivativeMarketStreamType.Orderbook)
+}
+
 export const cancelPortfolioStreams = () => {
   streamProvider.cancel(DerivativeMarketStreamType.SubaccountOrders)
   streamProvider.cancel(DerivativeMarketStreamType.SubaccountPositions)
+  streamProvider.cancel(DerivativeMarketStreamType.Orderbook)
   streamProvider.cancel(SpotMarketStreamType.SubaccountOrders)
 }

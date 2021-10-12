@@ -324,15 +324,21 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
+      const minTickPrice = new BigNumberInBase(
+        new BigNumberInBase(1).shiftedBy(-market.priceDecimals)
+      )
       const isPositionLong = position.direction === TradeDirection.Long
-
-      return isPositionLong
+      const feeAdjustedBankruptcyPrice = isPositionLong
         ? bankruptcyPrice.dividedBy(
             new BigNumberInBase(1).minus(market.takerFeeRate)
           )
         : bankruptcyPrice.dividedBy(
             new BigNumberInBase(1).plus(market.takerFeeRate)
           )
+
+      return feeAdjustedBankruptcyPrice.gte(0)
+        ? feeAdjustedBankruptcyPrice
+        : minTickPrice
     },
 
     pnl(): BigNumberInBase {

@@ -2,7 +2,14 @@ import { actionTree, getterTree } from 'typed-vuex'
 import { SpotOrderState } from '@injectivelabs/spot-consumer'
 import { DerivativeOrderState } from '@injectivelabs/derivatives-consumer'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiSpotLimitOrder, UiDerivativeLimitOrder, UiPosition } from '~/types'
+import {
+  UiSpotLimitOrder,
+  UiDerivativeLimitOrder,
+  UiPosition,
+  UiDerivativeOrderbook,
+  UiDerivativeMarket,
+  DerivativeOrderSide
+} from '~/types'
 import {
   cancelOrder,
   fetchSubaccountOrders,
@@ -11,11 +18,16 @@ import {
   cancelPortfolioStreams,
   batchCancelOrders,
   streamSubaccountPositions,
-  fetchSubaccountPositions
+  fetchSubaccountPositions,
+  streamOrderbooks,
+  fetchDerivativeOrderbooks,
+  cancelPortfolioOrderbookStreams
 } from '~/app/services/portfolio'
+import { closePosition } from '~/app/services/derivatives'
 
 const initialStateFactory = () => ({
   subaccountOrders: [] as Array<UiSpotLimitOrder | UiDerivativeLimitOrder>,
+  derivativeOrderbooks: {} as Record<string, UiDerivativeOrderbook>,
   subaccountPositions: [] as Array<UiPosition>
 })
 
@@ -25,7 +37,8 @@ export const state = () => ({
   subaccountOrders: initialState.subaccountOrders as Array<
     UiSpotLimitOrder | UiDerivativeLimitOrder
   >,
-  subaccountPositions: initialState.subaccountPositions as Array<UiPosition>
+  subaccountPositions: initialState.subaccountPositions as Array<UiPosition>,
+  derivativeOrderbooks: {} as Record<string, UiDerivativeOrderbook>
 })
 
 export type PortfolioStoreState = ReturnType<typeof state>
@@ -47,6 +60,13 @@ export const mutations = {
     subaccountOrders: Array<UiSpotLimitOrder | UiDerivativeLimitOrder>
   ) {
     state.subaccountOrders = subaccountOrders
+  },
+
+  setDerivativeOrderbooks(
+    state: PortfolioStoreState,
+    derivativeOrderbooks: Record<string, UiDerivativeOrderbook>
+  ) {
+    state.derivativeOrderbooks = derivativeOrderbooks
   },
 
   pushSubaccountOrder(
@@ -84,6 +104,37 @@ export const mutations = {
     state.subaccountOrders = [subaccountOrder, ...subaccountOrders]
   },
 
+  pushOrUpdateSubaccountPosition(
+    state: PortfolioStoreState,
+    subaccountPosition: UiPosition
+  ) {
+    const subaccountPositions = [...state.subaccountPositions].filter(
+      (position) => position.marketId !== subaccountPosition.marketId
+    )
+
+    const updatedSubaccountPositions = [
+      subaccountPosition,
+      ...subaccountPositions
+    ]
+    const filteredNonZeroQuantityPositions = updatedSubaccountPositions.filter(
+      (position) => new BigNumberInBase(position.quantity).gt(0)
+    )
+    state.subaccountPositions = filteredNonZeroQuantityPositions
+  },
+
+  pushOrUpdateOrderbook(
+    state: PortfolioStoreState,
+    {
+      orderbook,
+      marketId
+    }: { orderbook: UiDerivativeOrderbook; marketId: string }
+  ) {
+    state.derivativeOrderbooks = {
+      ...state.derivativeOrderbooks,
+      [marketId]: orderbook
+    }
+  },
+
   deleteSubaccountOrder(
     state: PortfolioStoreState,
     subaccountOrder: UiSpotLimitOrder | UiDerivativeLimitOrder
@@ -100,6 +151,7 @@ export const mutations = {
 
     state.subaccountOrders = initialState.subaccountOrders
     state.subaccountPositions = initialState.subaccountPositions
+    state.derivativeOrderbooks = initialState.derivativeOrderbooks
   }
 }
 
@@ -114,8 +166,10 @@ export const actions = actionTree(
     async init(_) {
       await this.app.$accessor.portfolio.fetchSubaccountOrders()
       await this.app.$accessor.portfolio.fetchSubaccountPositions()
-      await this.app.$accessor.portfolio.streamSubaccountOrders()
       await this.app.$accessor.portfolio.streamSubaccountPositions()
+      await this.app.$accessor.portfolio.fetchDerivativeOrderbooks()
+      await this.app.$accessor.portfolio.streamOrderbooks()
+      await this.app.$accessor.portfolio.streamSubaccountOrders()
     },
 
     streamSubaccountOrders({ state, commit }) {
@@ -184,6 +238,8 @@ export const actions = actionTree(
     streamSubaccountPositions({ state, commit }) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
+      const { subaccountPositions } = state
+      const oldSubaccountPositions = [...subaccountPositions]
 
       if (!isUserWalletConnected || !subaccount) {
         return
@@ -192,8 +248,20 @@ export const actions = actionTree(
       streamSubaccountPositions({
         subaccountId: subaccount.subaccountId,
         callback: ({ position }) => {
-          // eslint-disable-next-line no-console
-          console.log(position)
+          if (position) {
+            commit('pushOrUpdateSubaccountPosition', position)
+
+            /**
+             * If a new position was streamed, setup streaming
+             * for the orderbook of the position's marketId as well
+             */
+            const positionExists = oldSubaccountPositions.find(
+              (p) => p.marketId === position.marketId
+            )
+            if (!positionExists) {
+              this.app.$accessor.portfolio.streamOrderbooks()
+            }
+          }
         }
       })
     },
@@ -214,6 +282,23 @@ export const actions = actionTree(
       )
     },
 
+    async fetchDerivativeOrderbooks({ state, commit }) {
+      const { subaccount } = this.app.$accessor.account
+      const { isUserWalletConnected } = this.app.$accessor.wallet
+      const { subaccountPositions } = state
+
+      if (!isUserWalletConnected || !subaccount) {
+        return
+      }
+
+      commit(
+        'setDerivativeOrderbooks',
+        await fetchDerivativeOrderbooks(
+          subaccountPositions.map((position) => position.marketId)
+        )
+      )
+    },
+
     async fetchSubaccountPositions({ state, commit }) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
@@ -227,6 +312,30 @@ export const actions = actionTree(
       })
 
       commit('setSubaccountPositions', positions)
+    },
+
+    streamOrderbooks({ commit, state }) {
+      const { subaccountPositions } = state
+
+      if (!subaccountPositions.length) {
+        return
+      }
+
+      /**
+       * Cancel in case there is existing stream,
+       * We do this if there is a new position open
+       * and we need to setup a stream for that position's marketId
+       */
+      cancelPortfolioOrderbookStreams()
+
+      streamOrderbooks({
+        marketIds: subaccountPositions.map((position) => position.marketId),
+        callback: ({ orderbook, marketId }) => {
+          if (orderbook) {
+            commit('pushOrUpdateOrderbook', { orderbook, marketId })
+          }
+        }
+      })
     },
 
     async cancelOrder(_, order: UiSpotLimitOrder | UiDerivativeLimitOrder) {
@@ -249,6 +358,45 @@ export const actions = actionTree(
         address,
         orderHash: order.orderHash,
         marketId: order.marketId,
+        subaccountId: subaccount.subaccountId
+      })
+    },
+
+    async closePosition(
+      _,
+      {
+        quantity,
+        price,
+        market,
+        orderType
+      }: {
+        price: BigNumberInBase
+        market: UiDerivativeMarket
+        quantity: BigNumberInBase
+        orderType: DerivativeOrderSide
+      }
+    ) {
+      const { subaccount } = this.app.$accessor.account
+      const {
+        address,
+        injectiveAddress,
+        isUserWalletConnected
+      } = this.app.$accessor.wallet
+
+      if (!isUserWalletConnected || !subaccount) {
+        return
+      }
+
+      await this.app.$accessor.app.queue()
+      await this.app.$accessor.wallet.validate()
+
+      await closePosition({
+        quantity,
+        price,
+        injectiveAddress,
+        address,
+        market,
+        orderType,
         subaccountId: subaccount.subaccountId
       })
     },

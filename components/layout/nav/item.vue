@@ -1,7 +1,7 @@
 <template>
   <nuxt-link
     v-bind="$attrs"
-    class="text-gray-200 hover:bg-gray-800 hover:text-white flex items-center px-6 tracking-widest py-2 uppercase text-xs rounded"
+    class="text-gray-200 hover:bg-gray-800 hover:text-white flex items-center px-6 tracking-widest py-2 uppercase text-xs rounded mx-px"
     @click.native="handleClickEvent"
   >
     <span class="block">

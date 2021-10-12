@@ -152,8 +152,14 @@ export default Vue.extend({
       return markets.find((m) => m.marketId === position.marketId)
     },
 
+    orderbooks(): Record<string, UiDerivativeOrderbook> {
+      return this.$accessor.portfolio.derivativeOrderbooks
+    },
+
     orderbook(): UiDerivativeOrderbook | undefined {
-      return this.$accessor.derivatives.orderbook // TODO
+      const { orderbooks, position } = this
+
+      return orderbooks[position.marketId]
     },
 
     orders(): Array<UiDerivativeLimitOrder | UiSpotLimitOrder> {
@@ -337,15 +343,21 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
+      const minTickPrice = new BigNumberInBase(
+        new BigNumberInBase(1).shiftedBy(-market.priceDecimals)
+      )
       const isPositionLong = position.direction === TradeDirection.Long
-
-      return isPositionLong
+      const feeAdjustedBankruptcyPrice = isPositionLong
         ? bankruptcyPrice.dividedBy(
             new BigNumberInBase(1).minus(market.takerFeeRate)
           )
         : bankruptcyPrice.dividedBy(
             new BigNumberInBase(1).plus(market.takerFeeRate)
           )
+
+      return feeAdjustedBankruptcyPrice.gte(0)
+        ? feeAdjustedBankruptcyPrice
+        : minTickPrice
     },
 
     pnl(): BigNumberInBase {
@@ -485,13 +497,32 @@ export default Vue.extend({
       this.$root.$emit('add-margin-to-position', this.position)
     },
 
+    onClosePositionClick() {
+      const { positionCloseError, market } = this
+
+      if (!market) {
+        return
+      }
+
+      if (positionCloseError) {
+        return this.$toast.error(positionCloseError)
+      }
+
+      return this.handleClosePosition()
+    },
+
     handleClosePosition() {
-      const { position, feeAdjustedBankruptcyPrice } = this
+      const { position, market, feeAdjustedBankruptcyPrice } = this
+
+      if (!market) {
+        return
+      }
 
       this.status.setLoading()
 
-      this.$accessor.derivatives
+      this.$accessor.portfolio
         .closePosition({
+          market,
           orderType:
             position.direction === TradeDirection.Long
               ? DerivativeOrderSide.Sell
@@ -506,20 +537,6 @@ export default Vue.extend({
         .finally(() => {
           this.status.setIdle()
         })
-    },
-
-    onClosePositionClick() {
-      const { positionCloseError, market } = this
-
-      if (!market) {
-        return
-      }
-
-      if (positionCloseError) {
-        return this.$toast.error(positionCloseError)
-      }
-
-      return this.handleClosePosition()
     },
 
     handleClickOnMarket() {
