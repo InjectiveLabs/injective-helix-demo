@@ -7,7 +7,7 @@
         })
       }}
     </p>
-    <div class="w-full mt-6 md:w-2/3 md:mx-auto lg:w-full 3xl:w-2/3">
+    <div class="w-full mt-6 md:w-2/3 md:mx-auto lg:w-full 2xl:w-2/3">
       <v-button
         lg
         primary

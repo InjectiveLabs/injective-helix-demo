@@ -1,5 +1,5 @@
 <template>
-  <div class="table-responsive min-h-3xs">
+  <div class="table-responsive min-h-orders max-h-xs 4xl:max-h-lg">
     <table class="table">
       <thead>
         <tr>
@@ -13,28 +13,28 @@
             {{ $t('amount') }}
           </th>
           <th class="text-right">
-            {{ $t('total') }}
+            {{ $t('notional_size') }}
+          </th>
+          <th class="text-right">
+            {{ $t('fee') }}
           </th>
           <th class="text-center">
             {{ $t('side') }}
           </th>
+          <th class="text-center">
+            {{ $t('execution_type') }}
+          </th>
           <th class="text-right">
-            {{ $t('unfilled') }}
-          </th>
-          <th class="text-center">
-            {{ $t('filled') }}
-          </th>
-          <th class="text-center">
-            {{ $t('actions') }}
+            {{ $t('time') }}
           </th>
         </tr>
       </thead>
       <tbody>
         <tr
-          is="v-order"
-          v-for="(order, index) in orders"
-          :key="`orders-${index}-${order.orderHash}`"
-          :order="order"
+          is="v-trade"
+          v-for="(trade, index) in trades"
+          :key="`trades-${index}-${trade.marketId}`"
+          :trade="trade"
         ></tr>
       </tbody>
     </table>
@@ -43,18 +43,18 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import Order from './order.vue'
-import { UiSpotLimitOrder } from '~/types'
+import Trade from './trade.vue'
+import { UiDerivativeTrade } from '~/types'
 
 export default Vue.extend({
   components: {
-    'v-order': Order
+    'v-trade': Trade
   },
 
   props: {
-    orders: {
+    trades: {
       required: true,
-      type: Array as PropType<UiSpotLimitOrder[]>
+      type: Array as PropType<UiDerivativeTrade[]>
     }
   }
 })

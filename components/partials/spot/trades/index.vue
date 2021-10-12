@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div v-if="market" class="h-8">
+  <div class="flex flex-col flex-wrap h-full">
+    <div v-if="market" class="h-8 w-full">
       <table class="table">
         <thead xs>
           <tr>
@@ -23,7 +23,7 @@
         </thead>
       </table>
     </div>
-    <v-trades />
+    <v-trades class="flex-1" />
   </div>
 </template>
 

@@ -26,7 +26,7 @@ export default Vue.extend({
         return ['text-2xs', 'xl:text-3xs', '2xl:text-2xs', '4xl:text-xs']
       }
 
-      return ['text-2xs', '3xl:text-xs']
+      return ['text-2xs', '2xl:text-xs']
     }
   }
 })

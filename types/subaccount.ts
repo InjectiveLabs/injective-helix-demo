@@ -1,3 +1,10 @@
+import { GrpcCoin } from '@injectivelabs/chain-consumer'
+import {
+  SubaccountTransfer as GrpcSubaccountTransfer,
+  TransferType
+} from '@injectivelabs/subaccount-consumer'
+import { Token } from '.'
+
 export interface UiSubaccountBalance {
   totalBalance: string
   availableBalance: string
@@ -17,3 +24,13 @@ export interface UiSubaccount {
   subaccountId: string
   balances: UiSubaccountBalance[]
 }
+
+export interface UiSubaccountTransfer extends GrpcSubaccountTransfer {
+  amount: {
+    amount: string
+    denom: string
+  }
+  token: Token
+}
+
+export { GrpcSubaccountTransfer, TransferType }

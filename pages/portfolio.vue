@@ -50,6 +50,10 @@ export default Vue.extend({
       .finally(() => {
         this.status.setIdle()
       })
+  },
+
+  beforeDestroy() {
+    this.$accessor.portfolio.reset()
   }
 })
 </script>

@@ -6,6 +6,9 @@
     <v-nav-item v-if="isUserWalletConnected" :to="{ name: 'portfolio' }">
       {{ $t('Portfolio') }}
     </v-nav-item>
+    <v-nav-item v-if="isUserWalletConnected" :to="{ name: 'history' }">
+      {{ $t('History') }}
+    </v-nav-item>
   </nav>
 </template>
 

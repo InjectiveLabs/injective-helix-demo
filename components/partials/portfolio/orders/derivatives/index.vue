@@ -1,5 +1,5 @@
 <template>
-  <div class="table-responsive min-h-3xs">
+  <div class="table-responsive min-h-orders max-h-xs 4xl:max-h-lg">
     <table class="table">
       <thead>
         <tr>

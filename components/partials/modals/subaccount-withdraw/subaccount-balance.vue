@@ -7,7 +7,11 @@
         </p>
         <v-icon-info-tooltip
           class="ml-2 text-gray-200"
-          :tooltip="$t('Available to Withdraw Subaccount Tooltip')"
+          :tooltip="
+            $t('Available to Withdraw Subaccount Tooltip', {
+              asset: token.symbol
+            })
+          "
         />
       </div>
       <div class="mt-4 text-center">

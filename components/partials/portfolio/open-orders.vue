@@ -4,7 +4,7 @@
       <div class="flex items-center justify-center">
         <v-button
           :class="{
-            'text-gray-500': component === components.openSpotOrders
+            'text-gray-500': component !== components.openDerivativeOrders
           }"
           text-sm
           class="font-normal"
@@ -18,7 +18,7 @@
         <div class="mx-2 w-px h-4 bg-gray-500"></div>
         <v-button
           :class="{
-            'text-gray-500': component === components.openDerivativeOrders
+            'text-gray-500': component !== components.openSpotOrders
           }"
           text-sm
           class="font-normal"
@@ -61,8 +61,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import OpenSpotOrders from './spot-orders/index.vue'
-import OpenDerivativeOrders from './derivative-orders/index.vue'
+import OpenSpotOrders from './orders/spot/index.vue'
+import OpenDerivativeOrders from './orders/derivatives/index.vue'
 import {
   UiDerivativeLimitOrder,
   UiDerivativeMarket,

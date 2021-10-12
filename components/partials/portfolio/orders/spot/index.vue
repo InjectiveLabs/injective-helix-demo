@@ -1,11 +1,11 @@
 <template>
-  <div
-    v-if="market"
-    class="table-responsive min-h-orders max-h-xs 4xl:max-h-lg"
-  >
+  <div class="table-responsive min-h-orders max-h-xs 4xl:max-h-lg">
     <table class="table">
       <thead>
         <tr>
+          <th class="text-left">
+            {{ $t('market') }}
+          </th>
           <th class="text-right">
             {{ $t('price') }}
           </th>
@@ -14,9 +14,6 @@
           </th>
           <th class="text-right">
             {{ $t('total') }}
-          </th>
-          <th class="text-right">
-            {{ $t('leverage') }}
           </th>
           <th class="text-center">
             {{ $t('side') }}
@@ -32,7 +29,7 @@
           </th>
         </tr>
       </thead>
-      <tbody v-if="isUserWalletConnected">
+      <tbody>
         <tr
           is="v-order"
           v-for="(order, index) in orders"
@@ -41,43 +38,23 @@
         ></tr>
       </tbody>
     </table>
-    <v-user-wallet-connect-warning v-if="!isUserWalletConnected" />
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import Order from './order.vue'
-import { UiDerivativeMarket, UiDerivativeLimitOrder } from '~/types'
+import { UiSpotLimitOrder } from '~/types'
 
 export default Vue.extend({
   components: {
     'v-order': Order
   },
 
-  data() {
-    return {
-      limit: 9
-    }
-  },
-
-  computed: {
-    isUserWalletConnected(): boolean {
-      return this.$accessor.wallet.isUserWalletConnected
-    },
-
-    market(): UiDerivativeMarket | undefined {
-      return this.$accessor.derivatives.market
-    },
-
-    orders(): UiDerivativeLimitOrder[] {
-      const { market } = this
-
-      if (!market) {
-        return []
-      }
-
-      return this.$accessor.derivatives.subaccountOrders
+  props: {
+    orders: {
+      required: true,
+      type: Array as PropType<UiSpotLimitOrder[]>
     }
   }
 })

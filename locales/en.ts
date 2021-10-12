@@ -261,9 +261,9 @@ export default {
   Deposit: 'Deposit',
   'Available to Withdraw': 'Available to Withdraw',
   'Available to Withdraw Tooltip':
-    'The amount you can withdraw from the Injective Chain.',
+    'The amount of {asset} you can withdraw from the Injective Chain.',
   'Available to Withdraw Subaccount Tooltip':
-    'The amount you can withdraw from your Subaccount.',
+    'The amount of {asset} you can withdraw from your Subaccount.',
   Orderbook: 'Orderbook',
   Cancel: 'Cancel',
   Close: 'Close',
@@ -280,5 +280,13 @@ export default {
   'Transfer Assets Now': 'Transfer Assets Now',
   Restrictions: 'Restrictions',
   Languages: 'Languages',
-  all: 'All'
+  all: 'All',
+  derivatives_trade_history: 'Derivatives Trade History',
+  spot_trade_history: 'Spot Trade History',
+  wallet_history: 'Wallet History',
+  subaccount_transfer_history: 'Subaccount Transfer History',
+  History: 'History',
+  deposits: 'Deposits',
+  withdrawals: 'Withdrawals',
+  subaccount: 'Subaccount'
 }

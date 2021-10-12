@@ -168,13 +168,13 @@ module.exports = {
       height: {
         ...extraSizings,
         footer: '2.5rem',
-        orders: '8rem',
+        orders: '10rem',
         trades: '26rem'
       },
 
       minHeight: {
         ...extraSizings,
-        orders: '6rem',
+        orders: '10rem',
         loading: '4rem'
       },
 
@@ -192,6 +192,7 @@ module.exports = {
     borderWidth: ['even', 'odd', 'first', 'last', 'responsive'],
     backgroundColor: ['hover'],
     borderColor: ['hover'],
+    maxHeight: ['responsive'],
     textColor: ['group-hover', 'hover']
   },
 

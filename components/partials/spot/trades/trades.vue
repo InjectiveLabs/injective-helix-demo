@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full overflow-y-auto h-trades">
+  <div class="w-full overflow-y-auto">
     <ul class="list-trades w-full">
       <v-trade
         v-for="(trade, index) in trades"
