@@ -31,7 +31,9 @@
           class="hidden lg:block my-auto"
         ></VLanguageSelector>
       </div>
-      <v-user-wallet v-if="isUserWalletConnected" />
+      <v-user-wallet
+        v-if="isUserWalletConnected && isUserConnectedProcessCompleted"
+      />
       <v-user-wallet-connect v-else />
     </div>
   </header>
@@ -56,15 +58,41 @@ export default Vue.extend({
     VUserWalletConnect
   },
 
+  data() {
+    return {
+      isUserConnectedProcessCompleted: false
+    }
+  },
+
   computed: {
-    isUserWalletConnected() {
+    isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
     }
+  },
+
+  watch: {
+    isUserWalletConnected(newIsUserWalletConnected) {
+      if (!newIsUserWalletConnected) {
+        this.isUserConnectedProcessCompleted = false
+      }
+    }
+  },
+
+  mounted() {
+    if (this.isUserWalletConnected) {
+      this.isUserConnectedProcessCompleted = true
+    }
+
+    this.$root.$on('wallet-connected', this.handleConnectedWallet)
   },
 
   methods: {
     handleClickOnSidebarToggle() {
       this.$emit('sidebar-opened')
+    },
+
+    handleConnectedWallet() {
+      this.isUserConnectedProcessCompleted = true
     }
   }
 })

@@ -40,7 +40,7 @@ export default Vue.extend({
         {
           category: 'External Link',
           title: 'Injective Hub',
-          link: 'https://hub.injective.exchange',
+          link: 'https://hub.injective.network',
           description:
             'A unified interface for Injective staking, governance, insurance funds and wallets.',
           linkText: 'View the Injective Hub'

@@ -39,7 +39,7 @@
           </th>
         </tr>
       </thead>
-      <tbody>
+      <tbody v-if="isUserWalletConnected">
         <tr
           is="v-position"
           v-for="position in positions"
@@ -48,6 +48,7 @@
         ></tr>
       </tbody>
     </table>
+    <v-user-wallet-connect-warning v-if="!isUserWalletConnected" />
   </div>
 </template>
 
@@ -72,6 +73,10 @@ export default Vue.extend({
   computed: {
     positions(): UiPosition[] {
       return this.$accessor.portfolio.subaccountPositions
+    },
+
+    isUserWalletConnected(): boolean {
+      return this.$accessor.wallet.isUserWalletConnected
     }
   }
 })

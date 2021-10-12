@@ -31,7 +31,11 @@
       </div>
 
       <v-button
-        v-if="component === components.openSpotOrders && spotOrders.length > 0"
+        v-if="
+          component === components.openSpotOrders &&
+          spotOrders.length > 0 &&
+          isUserWalletConnected
+        "
         text-xs
         @click.stop="handleCancelAllSpotClick"
       >
@@ -40,7 +44,8 @@
       <v-button
         v-if="
           component === components.openDerivativeOrders &&
-          derivativeOrders.length > 0
+          derivativeOrders.length > 0 &&
+          isUserWalletConnected
         "
         text-xs
         @click.stop="handleCancelAllDerivativesClick"
@@ -89,6 +94,10 @@ export default Vue.extend({
   },
 
   computed: {
+    isUserWalletConnected(): boolean {
+      return this.$accessor.wallet.isUserWalletConnected
+    },
+
     orders(): Array<UiSpotLimitOrder | UiDerivativeLimitOrder> {
       return this.$accessor.portfolio.subaccountOrders
     },

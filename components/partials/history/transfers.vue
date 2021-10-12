@@ -42,7 +42,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import VDeposits from './transfers/deposits.vue'
-import VWithdrawals from './transfers/withdrawls.vue'
+import VWithdrawals from './transfers/withdrawals.vue'
 import { TransferType, UiSubaccountTransfer } from '~/types'
 
 const components = {

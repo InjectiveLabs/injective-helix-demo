@@ -119,6 +119,18 @@ export const actions = actionTree(
 
       await this.app.$accessor.token.getTokenBalanceAndAllowanceForDerivativeMarket()
       await this.app.$accessor.token.getTokenBalanceAndAllowanceForMarket()
+
+      if (this.app.context.route.name === 'portfolio') {
+        await this.app.$accessor.portfolio.init()
+      }
+
+      if (this.app.context.route.name === 'history') {
+        await this.app.$accessor.history.init()
+      }
+
+      if (this.app.context.route.name === 'wallet') {
+        await this.app.$accessor.history.init() // TODO
+      }
     },
 
     async connectAndConfirm({ commit }, wallet: Wallet) {
@@ -140,6 +152,18 @@ export const actions = actionTree(
 
       await this.app.$accessor.token.getTokenBalanceAndAllowanceForDerivativeMarket()
       await this.app.$accessor.token.getTokenBalanceAndAllowanceForMarket()
+
+      if (this.app.context.route.name === 'portfolio') {
+        await this.app.$accessor.portfolio.init()
+      }
+
+      if (this.app.context.route.name === 'history') {
+        await this.app.$accessor.history.init()
+      }
+
+      if (this.app.context.route.name === 'wallet') {
+        await this.app.$accessor.history.init() // TODO
+      }
     },
 
     async validate({ state }) {
@@ -164,6 +188,8 @@ export const actions = actionTree(
       await this.app.$accessor.spot.resetSubaccount()
       await this.app.$accessor.derivatives.resetSubaccount()
       await this.app.$accessor.bank.reset()
+      await this.app.$accessor.portfolio.reset()
+      await this.app.$accessor.history.reset()
 
       commit('reset')
     }

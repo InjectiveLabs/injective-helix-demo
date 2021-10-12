@@ -17,7 +17,7 @@
           </th>
         </tr>
       </thead>
-      <tbody>
+      <tbody v-if="isUserWalletConnected">
         <tr
           is="v-transfer"
           v-for="(transfer, index) in transfers"
@@ -26,6 +26,7 @@
         ></tr>
       </tbody>
     </table>
+    <v-user-wallet-connect-warning v-if="!isUserWalletConnected" />
   </div>
 </template>
 
@@ -43,6 +44,12 @@ export default Vue.extend({
     transfers: {
       required: true,
       type: Array as PropType<UiSubaccountTransfer[]>
+    }
+  },
+
+  computed: {
+    isUserWalletConnected(): boolean {
+      return this.$accessor.wallet.isUserWalletConnected
     }
   }
 })

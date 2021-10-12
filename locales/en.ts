@@ -286,7 +286,9 @@ export default {
   wallet_history: 'Wallet History',
   subaccount_transfer_history: 'Subaccount Transfer History',
   History: 'History',
+  Wallet: 'Wallet',
   deposits: 'Deposits',
+  download: 'Download',
   withdrawals: 'Withdrawals',
   subaccount: 'Subaccount'
 }

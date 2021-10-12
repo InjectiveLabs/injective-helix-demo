@@ -29,7 +29,7 @@
           </th>
         </tr>
       </thead>
-      <tbody>
+      <tbody v-if="isUserWalletConnected">
         <tr
           is="v-trade"
           v-for="(trade, index) in trades"
@@ -38,6 +38,7 @@
         ></tr>
       </tbody>
     </table>
+    <v-user-wallet-connect-warning v-if="!isUserWalletConnected" />
   </div>
 </template>
 
@@ -55,6 +56,12 @@ export default Vue.extend({
     trades: {
       required: true,
       type: Array as PropType<UiDerivativeTrade[]>
+    }
+  },
+
+  computed: {
+    isUserWalletConnected(): boolean {
+      return this.$accessor.wallet.isUserWalletConnected
     }
   }
 })

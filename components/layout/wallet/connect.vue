@@ -90,9 +90,11 @@ export default Vue.extend({
     },
 
     handleConnectedWallet() {
-      this.isOpenConnectModal = false
       this.$toast.success(this.$t('success_connect'))
       this.status.setIdle()
+      this.$nextTick(() => {
+        this.isOpenConnectModal = false
+      })
     },
 
     handleLedgerConnectingWallet() {

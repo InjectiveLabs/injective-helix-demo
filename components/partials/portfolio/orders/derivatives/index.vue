@@ -32,7 +32,7 @@
           </th>
         </tr>
       </thead>
-      <tbody>
+      <tbody v-if="isUserWalletConnected">
         <tr
           is="v-order"
           v-for="(order, index) in orders"
@@ -41,6 +41,7 @@
         ></tr>
       </tbody>
     </table>
+    <v-user-wallet-connect-warning v-if="!isUserWalletConnected" />
   </div>
 </template>
 
@@ -58,6 +59,12 @@ export default Vue.extend({
     orders: {
       required: true,
       type: Array as PropType<UiDerivativeLimitOrder[]>
+    }
+  },
+
+  computed: {
+    isUserWalletConnected(): boolean {
+      return this.$accessor.wallet.isUserWalletConnected
     }
   }
 })

@@ -6,6 +6,7 @@ import { AppState } from '~/types'
 const mutationsToPersist = [
   'wallet/reset',
   'wallet/setAddress',
+  'wallet/setAddresses',
   'wallet/setWallet',
   'wallet/setInjectiveAddress',
   'wallet/setAddressConfirmation'

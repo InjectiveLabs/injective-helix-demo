@@ -37,8 +37,6 @@ export default Vue.extend({
     HOCLoading
   },
 
-  middleware: ['connected'],
-
   data() {
     return {
       status: new Status(StatusType.Loading)

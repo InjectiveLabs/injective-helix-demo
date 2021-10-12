@@ -3,11 +3,14 @@
     <v-nav-item-dummy @click.stop="$root.$emit('toggle-market-slideout')">
       {{ $t('markets') }}
     </v-nav-item-dummy>
-    <v-nav-item v-if="isUserWalletConnected" :to="{ name: 'portfolio' }">
+    <v-nav-item :to="{ name: 'portfolio' }">
       {{ $t('Portfolio') }}
     </v-nav-item>
-    <v-nav-item v-if="isUserWalletConnected" :to="{ name: 'history' }">
+    <v-nav-item :to="{ name: 'history' }">
       {{ $t('History') }}
+    </v-nav-item>
+    <v-nav-item :to="{ name: 'wallet' }">
+      {{ $t('Wallet') }}
     </v-nav-item>
   </nav>
 </template>
@@ -21,12 +24,6 @@ export default Vue.extend({
   components: {
     VNavItem,
     VNavItemDummy
-  },
-
-  computed: {
-    isUserWalletConnected(): boolean {
-      return this.$accessor.wallet.isUserWalletConnected
-    }
   }
 })
 </script>
