@@ -80,6 +80,17 @@ export default Vue.extend({
       .catch(this.$onError)
   },
 
+  beforeDestroy() {
+    this.$root.$off('wallet-connecting', this.handleConnectingWallet)
+    this.$root.$off('wallet-connected', this.handleConnectedWallet)
+    this.$root.$off('wallet-disconnected', this.handleDisconnectedWallet)
+    this.$root.$off(
+      'wallet-ledger-connecting',
+      this.handleLedgerConnectingWallet
+    )
+    this.$root.$off('wallet-clicked', this.handleWalletClicked)
+  },
+
   methods: {
     handleWalletClicked() {
       this.isOpenConnectModal = true

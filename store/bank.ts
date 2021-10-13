@@ -42,6 +42,7 @@ export const mutations = {
     const initialState = initialStateFactory()
 
     state.balances = initialState.balances
+    state.balancesWithTokenMetaData = initialState.balancesWithTokenMetaData
   }
 }
 

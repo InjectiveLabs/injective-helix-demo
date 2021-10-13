@@ -17,6 +17,7 @@ import {
 } from '~/types'
 
 const initialStateFactory = () => ({
+  erc20TokensWithBalanceFromBank: [] as TokenWithBalance[],
   baseTokenWithBalance: (undefined as unknown) as TokenWithBalance,
   quoteTokenWithBalance: (undefined as unknown) as TokenWithBalance
 })
@@ -24,6 +25,7 @@ const initialStateFactory = () => ({
 const initialState = initialStateFactory()
 
 export const state = () => ({
+  erc20TokensWithBalanceFromBank: initialState.erc20TokensWithBalanceFromBank as TokenWithBalance[],
   baseTokenWithBalance: initialState.baseTokenWithBalance as TokenWithBalance,
   quoteTokenWithBalance: initialState.quoteTokenWithBalance as TokenWithBalance
 })
@@ -63,9 +65,18 @@ export const mutations = {
     state.baseTokenWithBalance = tokenWithBalance
   },
 
+  setErc20TokensWithBalanceFromBank(
+    state: TokenStoreState,
+    erc20TokensWithBalanceFromBank: TokenWithBalance[]
+  ) {
+    state.erc20TokensWithBalanceFromBank = erc20TokensWithBalanceFromBank
+  },
+
   reset(state: TokenStoreState) {
     const initialState = initialStateFactory()
 
+    state.erc20TokensWithBalanceFromBank =
+      initialState.erc20TokensWithBalanceFromBank
     state.baseTokenWithBalance = initialState.baseTokenWithBalance
     state.quoteTokenWithBalance = initialState.quoteTokenWithBalance
   }
@@ -74,6 +85,38 @@ export const mutations = {
 export const actions = actionTree(
   { state },
   {
+    async getAllTokenWithBalanceAndAllowance({ commit }) {
+      const { address, isUserWalletConnected } = this.app.$accessor.wallet
+
+      if (!address || !isUserWalletConnected) {
+        return
+      }
+
+      const { balancesWithTokenMetaData } = this.app.$accessor.bank
+
+      if (balancesWithTokenMetaData.length === 0) {
+        await this.app.$accessor.bank.fetchBalances()
+      }
+
+      const {
+        balancesWithTokenMetaData: newBalancesWithTokenMetaData
+      } = this.app.$accessor.bank
+
+      const ercTokensWithBalanceAndAllowance = await Promise.all(
+        newBalancesWithTokenMetaData.map(async ({ token }) => {
+          return (await getTokenBalanceAndAllowance({
+            address,
+            token
+          })) as TokenWithBalance
+        })
+      )
+
+      commit(
+        'setErc20TokensWithBalanceFromBank',
+        ercTokensWithBalanceAndAllowance
+      )
+    },
+
     async getTokenBalanceAndAllowance({ commit }) {
       const { address } = this.app.$accessor.wallet
       const { market: spotMarket } = this.app.$accessor.spot

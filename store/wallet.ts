@@ -71,6 +71,10 @@ export const mutations = {
     state.addresses = initialState.addresses
     state.injectiveAddress = initialState.injectiveAddress
     state.addressConfirmation = initialState.addressConfirmation
+  },
+
+  resetPage(_state: WalletStoreState) {
+    //
   }
 }
 
@@ -79,6 +83,10 @@ export const actions = actionTree(
   {
     async init({ state }) {
       await this.app.$accessor.wallet.connect(state.wallet || Wallet.Metamask)
+    },
+
+    async initPage(_) {
+      await this.app.$accessor.token.getAllTokenWithBalanceAndAllowance()
     },
 
     async isMetamaskInstalled({ commit }) {
@@ -129,7 +137,7 @@ export const actions = actionTree(
       }
 
       if (this.app.context.route.name === 'wallet') {
-        await this.app.$accessor.history.init() // TODO
+        await this.app.$accessor.wallet.initPage()
       }
     },
 
@@ -162,7 +170,7 @@ export const actions = actionTree(
       }
 
       if (this.app.context.route.name === 'wallet') {
-        await this.app.$accessor.history.init() // TODO
+        await this.app.$accessor.wallet.initPage()
       }
     },
 
@@ -192,6 +200,13 @@ export const actions = actionTree(
       await this.app.$accessor.history.reset()
 
       commit('reset')
+      commit('resetPage')
+    },
+
+    async resetPage({ commit }) {
+      await this.app.$accessor.token.reset()
+
+      commit('resetPage')
     }
   }
 )
