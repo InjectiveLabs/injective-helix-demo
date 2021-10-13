@@ -170,6 +170,7 @@ export const actions = actionTree(
       await this.app.$accessor.portfolio.fetchDerivativeOrderbooks()
       await this.app.$accessor.portfolio.streamOrderbooks()
       await this.app.$accessor.portfolio.streamSubaccountOrders()
+      await this.app.$accessor.account.updateSubaccount()
     },
 
     streamSubaccountOrders({ state, commit }) {

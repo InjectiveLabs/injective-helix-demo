@@ -5,7 +5,8 @@ import {
   fetchSubaccount,
   deposit,
   withdraw,
-  streamSubaccountBalances
+  streamSubaccountBalances,
+  fetchPortfolioValue
 } from '~/app/services/account'
 import { grpcSubaccountBalanceToUiSubaccountBalance } from '~/app/transformers/account'
 import { backupPromiseCall } from '~/app/utils/async'
@@ -15,14 +16,16 @@ import { UiSubaccount, UiSubaccountBalance } from '~/types/subaccount'
 
 const initialStateFactory = () => ({
   subaccountIds: [] as string[],
-  subaccount: undefined as UiSubaccount | undefined
+  subaccount: undefined as UiSubaccount | undefined,
+  portfolioValue: ZERO_TO_STRING as string
 })
 
 const initialState = initialStateFactory()
 
 export const state = () => ({
   subaccountIds: initialState.subaccountIds as string[],
-  subaccount: initialState.subaccount as UiSubaccount | undefined
+  subaccount: initialState.subaccount as UiSubaccount | undefined,
+  portfolioValue: initialState.portfolioValue as string
 })
 
 export type AccountStoreState = ReturnType<typeof state>
@@ -38,6 +41,10 @@ export const mutations = {
 
   setSubaccount(state: AccountStoreState, subaccount: UiSubaccount) {
     state.subaccount = subaccount
+  },
+
+  setPortfolioValue(state: AccountStoreState, portfolioValue: string) {
+    state.portfolioValue = portfolioValue
   },
 
   setSubaccountBalance(state: AccountStoreState, balance: UiSubaccountBalance) {
@@ -99,6 +106,7 @@ export const actions = actionTree(
 
       commit('setSubacccountIds', subaccountIds)
       commit('setSubaccount', await fetchSubaccount(subaccountId))
+      commit('setPortfolioValue', await fetchPortfolioValue(injectiveAddress))
 
       await this.app.$accessor.spot.fetchSubaccountMarketTrades()
       await this.app.$accessor.spot.fetchSubaccountOrders()
@@ -117,14 +125,16 @@ export const actions = actionTree(
 
     async updateSubaccount({ commit, state }) {
       const { subaccount } = state
+      const { injectiveAddress } = this.app.$accessor.wallet
 
-      if (!subaccount) {
+      if (!subaccount || !injectiveAddress) {
         return
       }
 
       const { subaccountId } = subaccount
 
       commit('setSubaccount', await fetchSubaccount(subaccountId))
+      commit('setPortfolioValue', await fetchPortfolioValue(injectiveAddress))
     },
 
     streamSubaccountBalances({ commit, state }) {

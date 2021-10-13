@@ -47,7 +47,7 @@
         <v-input
           ref="input-amount"
           :value="form.amount"
-          :label="$t('amount_decimals', { decimals: market.quantityDecimals })"
+          :label="$t('amount')"
           :custom-handler="true"
           :max-selector="true"
           :placeholder="$t('amount')"
@@ -92,11 +92,7 @@
           ref="input-price"
           :value="form.price"
           :placeholder="$t('price')"
-          :label="
-            $t('price_decimals', {
-              decimals: market.priceDecimals
-            })
-          "
+          :label="$t('price')"
           :disabled="tradingTypeMarket"
           type="number"
           :step="priceStep"

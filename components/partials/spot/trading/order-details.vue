@@ -28,8 +28,8 @@
             <span class="text-gray-500 ml-1">
               {{
                 orderTypeBuy
-                  ? market.quoteToken.symbol
-                  : market.baseToken.symbol
+                  ? market.baseToken.symbol
+                  : market.quoteToken.symbol
               }}
             </span>
           </span>
@@ -47,6 +47,11 @@
         </v-text-info>
 
         <v-text-info :title="$t('notional_value')" class="mt-2">
+          <v-icon-info-tooltip
+            slot="context"
+            class="ml-2"
+            :tooltip="$t('notional_value_tooltip')"
+          />
           <span v-if="total.gt(0)" class="font-mono flex items-center">
             {{ totalToFormat }}
             <span class="text-gray-500 ml-1">

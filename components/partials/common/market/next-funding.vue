@@ -1,5 +1,9 @@
 <template>
-  <v-market-info v-if="market" :title="$t('next_funding')">
+  <v-market-info
+    v-if="market"
+    :title="$t('next_funding')"
+    :tooltip="$t('next_funding_tooltip')"
+  >
     <span class="text-sm text-right font-mono block">
       <v-countdown
         v-if="milisecondsUntilFunding > 0"

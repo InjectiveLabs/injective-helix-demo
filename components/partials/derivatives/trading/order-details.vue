@@ -43,6 +43,11 @@
           :title="$t('liquidation_price')"
           class="mt-2"
         >
+          <v-icon-info-tooltip
+            slot="context"
+            class="ml-2"
+            :tooltip="$t('liquidation_price_tooltip')"
+          />
           <span
             v-if="liquidationPrice.gt(0)"
             class="font-mono flex items-center"
@@ -60,6 +65,11 @@
           :title="$t('margin')"
           class="mt-2"
         >
+          <v-icon-info-tooltip
+            slot="context"
+            class="ml-2"
+            :tooltip="$t('margin_tooltip')"
+          />
           <span v-if="margin.gt(0)" class="font-mono flex items-center">
             {{ marginToFormat }}
             <span class="text-gray-500 ml-1">
@@ -70,6 +80,11 @@
         </v-text-info>
 
         <v-text-info :title="$t('notional_value')" class="mt-2">
+          <v-icon-info-tooltip
+            slot="context"
+            class="ml-2"
+            :tooltip="$t('notional_value_tooltip')"
+          />
           <span v-if="notionalValue.gt(0)" class="font-mono flex items-center">
             {{ notionalValueToFormat }}
             <span class="text-gray-500 ml-1">

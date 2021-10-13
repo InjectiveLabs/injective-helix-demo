@@ -20,7 +20,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import VPortfolio from '~/components/partials/common/portfolio/index.vue'
+import VPortfolio from '~/components/partials/portfolio/box/index.vue'
 import VOpenPositions from '~/components/partials/portfolio/open-positions.vue'
 import VOpenOrders from '~/components/partials/portfolio/open-orders.vue'
 import HOCLoading from '~/components/hoc/loading.vue'

@@ -1,7 +1,10 @@
 <template>
   <div v-if="market" class="h-10">
     <div class="flex overflow-x-auto overflow-y-none">
-      <v-market-info :title="$t('last_traded_price')">
+      <v-market-info
+        :title="$t('last_traded_price')"
+        :tooltip="$t('last_traded_price_tooltip')"
+      >
         <span class="text-sm text-right font-mono block">
           <span
             :class="{
@@ -16,6 +19,7 @@
       <v-market-info
         v-if="market.type === MarketType.Derivative"
         :title="$t('mark_price')"
+        :tooltip="$t('mark_price_tooltip')"
       >
         <span class="text-sm text-right font-mono block">
           <span
@@ -28,7 +32,10 @@
           </span>
         </span>
       </v-market-info>
-      <v-market-info :title="$t('market_change_24h')" class="">
+      <v-market-info
+        :title="$t('market_change_24h')"
+        :tooltip="$t('market_change_24h_tooltip')"
+      >
         <span class="text-sm text-right font-mono block">
           <span
             :class="{
@@ -42,6 +49,7 @@
       </v-market-info>
       <v-market-info
         :title="$t('volume_asset', { asset: market.quoteToken.symbol })"
+        :tooltip="$t('market_volume_24h_tooltip')"
       >
         <span class="text-sm text-right font-mono block">
           {{ volumeToFormat }}

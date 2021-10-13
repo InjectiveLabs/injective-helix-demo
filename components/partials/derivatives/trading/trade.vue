@@ -47,7 +47,7 @@
         <v-input
           ref="input-amount"
           :value="form.amount"
-          :label="$t('amount_decimals', { decimals: market.quantityDecimals })"
+          :label="$t('amount')"
           :custom-handler="true"
           :max-selector="true"
           :placeholder="$t('amount')"
@@ -89,11 +89,7 @@
           ref="input-price"
           :value="form.price"
           :placeholder="$t('price')"
-          :label="
-            $t('price_decimals', {
-              decimals: market.priceDecimals
-            })
-          "
+          :label="$t('price')"
           :disabled="tradingTypeMarket"
           type="number"
           :step="priceStep"
@@ -281,6 +277,10 @@ export default Vue.extend({
 
     position(): UiPosition | undefined {
       return this.$accessor.derivatives.subaccountPosition
+    },
+
+    derivativeMarkPrice(): string {
+      return this.$accessor.derivatives.marketMarkPrice
     },
 
     availableMargin(): BigNumberInBase {
@@ -894,13 +894,22 @@ export default Vue.extend({
     },
 
     notionalValue(): BigNumberInBase {
-      const { executionPrice, amount, market } = this
+      const {
+        derivativeMarkPrice,
+        tradingTypeMarket,
+        executionPrice,
+        amount,
+        market
+      } = this
 
-      if (executionPrice.isNaN() || amount.isNaN() || !market) {
+      if (amount.isNaN() || !market) {
         return ZERO_IN_BASE
       }
 
-      const notional = executionPrice.times(amount)
+      const price = tradingTypeMarket
+        ? new BigNumberInBase(derivativeMarkPrice)
+        : executionPrice
+      const notional = amount.times(price)
 
       if (notional.lt(0)) {
         return ZERO_IN_BASE

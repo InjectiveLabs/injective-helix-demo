@@ -1,6 +1,6 @@
 <template>
   <v-card class="mt-6">
-    <div class="flex flex-wrap -mx-4">
+    <div v-if="isUserWalletConnected" class="flex flex-wrap -mx-4">
       <div class="w-full lg:w-1/4 px-4">
         <v-overview />
       </div>
@@ -8,6 +8,7 @@
         <v-stats />
       </div>
     </div>
+    <v-user-wallet-connect-warning v-else />
   </v-card>
 </template>
 
@@ -20,6 +21,12 @@ export default Vue.extend({
   components: {
     VOverview,
     VStats
+  },
+
+  computed: {
+    isUserWalletConnected(): boolean {
+      return this.$accessor.wallet.isUserWalletConnected
+    }
   }
 })
 </script>

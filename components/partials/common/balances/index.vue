@@ -5,6 +5,10 @@
         <div class="flex items-center justify-between">
           <p class="text-2xs text-gray-300 flex items-center">
             {{ $t('Injective Chain') }}
+            <v-icon-info-tooltip
+              class="ml-2"
+              :tooltip="$t('injective_chain_tooltip')"
+            />
           </p>
           <div class="flex items-center">
             <v-button text-xs primary @click.stop="openBridgeDepositModal">
@@ -25,6 +29,10 @@
         <div class="flex items-center justify-between">
           <p class="text-2xs text-gray-300 flex items-center">
             {{ $t('Subaccount') }}
+            <v-icon-info-tooltip
+              class="ml-2"
+              :tooltip="$t('subaccount_tooltip')"
+            />
           </p>
           <div class="flex items-center">
             <v-button primary text-xs @click.stop="openSubaccountTransferModal">

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="px-6 grid-cols-12 gap-4 text-gray-200 uppercase md:grid hidden md:mb-6 items-center"
+    class="px-6 grid-cols-12 gap-4 text-gray-200 uppercase md:grid hidden md:mb-4 items-center"
     :class="fontSizeClasses"
   >
     <slot></slot>

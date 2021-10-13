@@ -1,4 +1,5 @@
 export enum AccountMetrics {
+  FetchPortfolioValue = 'PortfolioValueRequest',
   FetchSubaccount = 'SubaccountsListRequest',
   FetchSubaccountBalances = 'SubaccountBalancesListRequest',
   FetchSubaccountHistory = 'SubaccountHistoryRequest',

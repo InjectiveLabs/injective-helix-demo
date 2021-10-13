@@ -56,6 +56,11 @@
         </v-text-info>
 
         <v-text-info :title="$t('fee')" class="mt-2">
+          <v-icon-info-tooltip
+            slot="context"
+            class="ml-2"
+            :tooltip="$t('fees_tooltip')"
+          />
           <span v-if="fees.gt(0)" class="font-mono flex items-center">
             <span class="mr-1">≈</span>
             {{ feesToFormat }}

@@ -58,7 +58,7 @@
     </div>
     <div class="overflow-x-auto lg:overflow-x-visible w-full mt-6">
       <TableHeader v-if="markets.length !== 0" sm>
-        <span class="col-span-3">{{ $t('market') }}</span>
+        <span class="col-span-3 text-left">{{ $t('market') }}</span>
         <span class="col-span-3">
           <div class="flex items-center">
             <span class="flex-1 text-right">{{ $t('last_traded_price') }}</span>

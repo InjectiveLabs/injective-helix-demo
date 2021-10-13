@@ -7,7 +7,7 @@
       <slot name="value" />
     </p>
     <div
-      class="mt-1 mb-2 xl:mb-3 text-2xs xs:text-xs text-center h-3 xs:h-4 xl:h-6"
+      class="mt-1 mb-2 xl:mb-3 text-2xs xs:text-xs text-center h-2 sm:h-3"
       v-bind="$attrs"
     >
       <slot name="context"></slot>

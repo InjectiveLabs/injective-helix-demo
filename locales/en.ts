@@ -151,6 +151,8 @@ export default {
     'Note: If {slippage}% max slippage protection is violated, you will need to resend your market order.',
   max_leverage_warn: 'Please decrease leverage.',
   next_funding: 'Next Funding',
+  next_funding_tooltip:
+    'The time remaining before the next funding rate is calculated.',
   expiry_date: 'Expiry Date',
   days: 'Days',
   funding_fee: 'Funding fee',
@@ -162,10 +164,12 @@ export default {
   est_receiving_amount_note:
     'The lowest amount you can actually receive for the trade.',
   fee_order_details_note:
-    "If your limit order doesn't get filled as a taker order, you will only need to pay {feeReturned} in fees",
+    "Trading fees associated with the trade. If your limit order doesn't get filled as a taker order, you will only need to pay {feeReturned} in fees",
   buy_long: 'Buy/Long',
   sell_short: 'Sell/Short',
   mark_price: 'Mark Price',
+  mark_price_tooltip:
+    'The value of the contract as reported by the price oracle. The mark price can be different from the last traded price to prevent price manipulation.',
   select_ledger_address: 'Select Ledger Address',
   follow_instructions: 'Please follow the instructions on your device',
   address: 'Address',
@@ -245,12 +249,13 @@ export default {
   'Select Ledger Address': 'Select Ledger Address',
   'There are no results found - Markets':
     'There are no markets found. You can go ahead and propose some!',
-  'last_traded_price Tooltip': '',
-  'market_change_24h Tooltip': '',
-  'market_volume_24h Tooltip': '',
   balances: 'Balances',
   'Injective Chain': 'Injective Chain',
   Subaccount: 'Subaccount',
+  subaccount_tooltip:
+    'Your subaccount is your trading account. You need to deposit from your wallet into the subaccount in order to start trading.',
+  injective_chain_tooltip:
+    'The native chain of Injective Protocol. Only funds on the Injective Chain can be used in trades.',
   'available_total_subaccount_balance Tooltip':
     'Your subaccount available/total balance',
   'Deposit to Injective Chain': 'Deposit to Injective Chain',
@@ -307,5 +312,25 @@ export default {
   'Available Margin': 'Available Margin',
   'Available Margin Tooltip':
     'The available margin you can add to this position',
-  'Confirm order execution': 'Confirm order execution'
+  'Confirm order execution': 'Confirm order execution',
+  liquidation_price_tooltip:
+    'The price at which your position will be liquidated or force-excited to prevent further losses.',
+  fees_tooltip:
+    'Trading fees associated with the trade. Trading fees on Injective can be lowered using rebates.',
+  notional_value_tooltip:
+    'The total value of the trade based on the execution price.',
+  margin_tooltip: 'The total margin required to execute the trade',
+  portfolio_value: 'Portfolio value',
+  portfolio_value_tooltip:
+    'Your total portfolio value represented in USD. This includes all of your holdings on the Injective Chain, including bank module balances and balances across your subaccounts.',
+  start_trading: 'Start Trading Now',
+  available_margin: 'Available Margin',
+  available_margin_tooltip:
+    'Available margin for derivatives trading. The available margin is calculated from the stable coins (USDT, USDC, etc) in your balance.',
+  unrealized_pnl_portfolio: 'Unrealized PnL',
+  unrealized_pnl_portfolio_tooltip:
+    'An approximate value of the unrealized PnL from your open positions.',
+  total_potential: 'Total Value',
+  total_potential_tooltip:
+    'An approximate total value of your stable coins (USDT, USDC, etc) balances and any unrealized PnL you currently have.'
 }

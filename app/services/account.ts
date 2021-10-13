@@ -52,14 +52,15 @@ export const fetchSubaccount = async (
   }
 }
 
-export const fetchSubaccountHistory = async (subaccountId: string) => {
-  const promise = subaccountConsumer.fetchSubaccountHistory(subaccountId)
-  const history = await metricsProvider.sendAndRecord(
+export const fetchPortfolioValue = async (
+  subaccountId: string
+): Promise<string> => {
+  const promise = subaccountConsumer.fetchPortfolio(subaccountId)
+  const portfolioValue = await metricsProvider.sendAndRecord(
     promise,
-    AccountMetrics.FetchSubaccountBalances
+    AccountMetrics.FetchPortfolioValue
   )
-
-  return SubaccountTransformer.grpcTransferHistoryToTransferHistory(history)
+  return portfolioValue
 }
 
 export const streamSubaccountBalances = ({
