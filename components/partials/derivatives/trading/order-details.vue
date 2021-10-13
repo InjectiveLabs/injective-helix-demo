@@ -57,7 +57,7 @@
 
         <v-text-info
           v-if="!orderTypeReduceOnly"
-          :title="$t('notional_value')"
+          :title="$t('margin')"
           class="mt-2"
         >
           <span v-if="margin.gt(0)" class="font-mono flex items-center">

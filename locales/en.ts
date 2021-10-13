@@ -214,9 +214,12 @@ export default {
   'Connect using Ledger instructions':
     'Note: To ensure smooth process while connecting your Ledger Hardware Wallet, please ensure you are running the on latest Chrome version, have your Ledger device connected, unlocked and your Ethereum app open. ',
   high_price_deviation_warning:
-    'Your order price deviates at least {percentage}% from the latest market price!',
+    'Order execution disabled. Please confirm turning off the setting for making orders with high price deviation.',
+  high_execution_price_deviation_warning_note:
+    'Your execution price deviates at least {percentage}% from the latest market price. You have to confirm your order to have it executed. You can also cancel this confirmation modal for future orders by clicking "Cancel and Save Preference".',
   high_execution_price_deviation_warning:
-    'Your execution price deviates at least {percentage}% from the latest market price!',
+    'Your execution price deviates at least {percentage}% from the latest market price.',
+  cancel_and_save_preference: 'Cancel and Save Preference',
 
   home: 'Home',
   open: 'Open',
@@ -300,5 +303,9 @@ export default {
     'We cannot find any token balances for your address',
   'Ready to get started?': 'Injective Bridge',
   'Cta Note':
-    'Transfer assets to Injective and experience lightning fast speeds, zero gas fees and a world of unlimited DeFi Markets.'
+    'Transfer assets to Injective and experience lightning fast speeds, zero gas fees and a world of unlimited DeFi Markets.',
+  'Available Margin': 'Available Margin',
+  'Available Margin Tooltip':
+    'The available margin you can add to this position',
+  'Confirm order execution': 'Confirm order execution'
 }

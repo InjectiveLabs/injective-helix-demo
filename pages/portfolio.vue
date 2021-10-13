@@ -11,6 +11,7 @@
             <v-open-orders />
           </v-panel>
         </div>
+        <v-modal-add-margin />
       </div>
     </HOCLoading>
   </div>
@@ -23,13 +24,15 @@ import VPortfolio from '~/components/partials/common/portfolio/index.vue'
 import VOpenPositions from '~/components/partials/portfolio/open-positions.vue'
 import VOpenOrders from '~/components/partials/portfolio/open-orders.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
+import VModalAddMargin from '~/components/partials/modals/add-margin/index.vue'
 
 export default Vue.extend({
   components: {
     VOpenPositions,
     VPortfolio,
     VOpenOrders,
-    HOCLoading
+    HOCLoading,
+    VModalAddMargin
   },
 
   data() {

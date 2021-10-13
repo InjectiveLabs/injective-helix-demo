@@ -803,13 +803,14 @@ export const actions = actionTree(
     async addMarginToPosition(
       _,
       {
+        market,
         amount
       }: {
+        market: UiDerivativeMarket
         amount: BigNumberInBase
       }
     ) {
       const { subaccount } = this.app.$accessor.account
-      const { market } = this.app.$accessor.derivatives
       const {
         address,
         injectiveAddress,

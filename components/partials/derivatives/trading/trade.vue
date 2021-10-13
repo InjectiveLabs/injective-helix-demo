@@ -162,6 +162,11 @@
         {{ $t(orderTypeBuy ? 'buy_long' : 'sell_short') }}
       </v-button>
     </div>
+
+    <v-modal-order-confirm
+      @confirmed="submitLimitOrder"
+      @disabled="handleDisableAcceptHighPriceDeviations"
+    />
   </div>
 </template>
 
@@ -180,6 +185,7 @@ import {
   DEFAULT_PRICE_WARNING_DEVIATION
 } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
+import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
 import {
   DerivativeOrderSide,
   TradeExecutionType,
@@ -190,7 +196,8 @@ import {
   UiPosition,
   TradeDirection,
   UiDerivativeMarketSummary,
-  UiDerivativeLimitOrder
+  UiDerivativeLimitOrder,
+  Modal
 } from '~/types'
 import {
   calculateWorstExecutionPriceFromOrderbook,
@@ -219,7 +226,8 @@ export default Vue.extend({
     'v-order-details': OrderDetails,
     'v-order-leverage': OrderLeverage,
     'v-order-leverage-select': OrderLeverageSelect,
-    'v-order-details-market': OrderDetailsMarket
+    'v-order-details-market': OrderDetailsMarket,
+    VModalOrderConfirm
   },
 
   data() {
@@ -237,6 +245,10 @@ export default Vue.extend({
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
+    },
+
+    acceptHighPriceDeviations(): boolean {
+      return this.$accessor.app.acceptHighPriceDeviations
     },
 
     market(): UiDerivativeMarket | undefined {
@@ -1148,6 +1160,14 @@ export default Vue.extend({
           : TradeExecutionType.LimitFill
     },
 
+    handleEnableAcceptHighPriceDeviations() {
+      this.$accessor.app.setAcceptHighPriceDeviations(true)
+    },
+
+    handleDisableAcceptHighPriceDeviations() {
+      this.$accessor.app.setAcceptHighPriceDeviations(false)
+    },
+
     onLeverageChange(leverage: string) {
       const { maxLeverageAvailable } = this
       const leverageToBigNumber = new BigNumberInBase(leverage)
@@ -1235,7 +1255,8 @@ export default Vue.extend({
         maxOrdersError,
         tradingTypeMarket,
         isUserWalletConnected,
-        priceHasHighDeviationWarning
+        priceHasHighDeviationWarning,
+        acceptHighPriceDeviations
       } = this
 
       if (!isUserWalletConnected) {
@@ -1258,12 +1279,18 @@ export default Vue.extend({
         return this.submitLimitOrder()
       }
 
-      return this.$onConfirm(
-        this.$t('high_price_deviation_warning', {
-          percentage: DEFAULT_PRICE_WARNING_DEVIATION
-        }),
-        this.submitLimitOrder
-      )
+      // If price has high deviation, we open a confirm modal
+      if (acceptHighPriceDeviations) {
+        return this.$accessor.modal.openModal(Modal.OrderConfirm)
+      } else {
+        // If price has high deviation, show a confirm toast that can disable the setting
+        return this.$onConfirm(
+          this.$t('high_price_deviation_warning', {
+            percentage: DEFAULT_PRICE_WARNING_DEVIATION
+          }),
+          this.handleEnableAcceptHighPriceDeviations
+        )
+      }
     }
   }
 })

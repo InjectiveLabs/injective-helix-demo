@@ -1,34 +1,28 @@
 <template>
-  <modal :is-open="isModalOpen" @closed="closeModal">
-    <div v-if="market" class="w-full md:w-3xl flex flex-col shadow">
-      <div class="my-6 flex flex-wrap">
-        <div class="w-full mb-6 px-4">
-          <h3 class="text-center text-2xl uppercase">
-            {{ $t('add_margin_to_position_title') }}
-          </h3>
-          <p class="text-sm text-center opacity-90 mt-4">
-            {{ $t('add_margin_to_position_note') }}
-          </p>
-        </div>
-        <div class="w-full px-4">
-          <v-form :balance="quoteTokenBalance"></v-form>
+  <v-modal :is-open="isModalOpen" @modal-closed="closeModal">
+    <h3 slot="title">
+      {{ $t('add_margin_to_position_title') }}
+    </h3>
+
+    <div v-if="market && quoteBalance" class="relative">
+      <div class="flex flex-wrap">
+        <div class="px-4 w-full">
+          <v-form :balance="quoteBalance" :market="market" />
         </div>
       </div>
     </div>
-  </modal>
+  </v-modal>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import Form from './form.vue'
-import ModalElement from '~/components/elements/modal.vue'
 import { UiDerivativeMarket, UiPosition, UiSubaccount } from '~/types'
 import { ZERO_IN_BASE } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
-    modal: ModalElement,
     'v-form': Form
   },
 
@@ -39,15 +33,25 @@ export default Vue.extend({
   },
 
   computed: {
+    markets(): UiDerivativeMarket[] {
+      return this.$accessor.derivatives.markets
+    },
+
     market(): UiDerivativeMarket | undefined {
-      return this.$accessor.derivatives.market
+      const { markets, position } = this
+
+      if (!position) {
+        return undefined
+      }
+
+      return markets.find((market) => market.marketId === position.marketId)
     },
 
     subaccount(): UiSubaccount | undefined {
       return this.$accessor.account.subaccount
     },
 
-    quoteTokenBalance(): BigNumberInBase {
+    quoteBalance(): BigNumberInBase {
       const { subaccount, market } = this
 
       if (!market) {
