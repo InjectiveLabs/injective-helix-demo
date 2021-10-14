@@ -95,7 +95,7 @@ export const actions = actionTree(
       const { balancesWithTokenMetaData } = this.app.$accessor.bank
 
       if (balancesWithTokenMetaData.length === 0) {
-        await this.app.$accessor.bank.fetchBalances()
+        await this.app.$accessor.bank.fetchBalancesWithTokenMetaData()
       }
 
       const {

@@ -26,7 +26,6 @@
         ></tr>
       </tbody>
     </table>
-    <v-user-wallet-connect-warning v-if="!isUserWalletConnected" />
   </div>
 </template>
 

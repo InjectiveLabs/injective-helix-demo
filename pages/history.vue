@@ -3,11 +3,17 @@
     <HOCLoading :status="status">
       <div class="container">
         <div class="w-full mx-auto lg:w-3/4">
-          <v-overview v-if="false" class="mt-6" />
-          <v-panel v-if="false" :title="$t('wallet_history')" class="mt-12">
+          <v-overview v-if="!isUserWalletConnected" class="mt-6" />
+          <v-panel v-if="false" :title="$t('wallet_history')">
             <v-wallet-history />
           </v-panel>
-          <v-panel :title="$t('trade_history')" class="mt-6">
+          <v-panel
+            :title="$t('trade_history')"
+            :class="{
+              'mt-12': !isUserWalletConnected,
+              'mt-6': isUserWalletConnected
+            }"
+          >
             <v-trade-history />
           </v-panel>
           <v-panel :title="$t('subaccount_transfer_history')" class="mt-12">
@@ -40,6 +46,12 @@ export default Vue.extend({
   data() {
     return {
       status: new Status(StatusType.Loading)
+    }
+  },
+
+  computed: {
+    isUserWalletConnected(): boolean {
+      return this.$accessor.wallet.isUserWalletConnected
     }
   },
 

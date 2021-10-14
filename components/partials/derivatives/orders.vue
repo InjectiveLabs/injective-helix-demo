@@ -47,7 +47,7 @@
       </v-button>
     </div>
 
-    <div class="bg-gray-900 px-4 py-2 rounded-lg mt-2 flex-1">
+    <div class="bg-gray-900 px-4 py-2 rounded-lg mt-2 flex-1 w-full">
       <component :is="component" v-if="component"></component>
     </div>
   </div>

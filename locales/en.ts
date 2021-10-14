@@ -57,7 +57,6 @@ export default {
   trades: 'Trades',
   time: 'Time',
   size: 'Size',
-  notional_size: 'Notional Size',
   notional_value: 'Notional Value',
   fee: 'Fee',
   direction: 'Direction',
@@ -97,6 +96,8 @@ export default {
   cancel_order: 'Cancel Order',
   please_connect_to_your_wallet:
     'Please connect to your wallet to see more details',
+  please_connect_to_your_wallet_cta:
+    'Please connect to your wallet to start trading on Injective!',
   amount_to_transfer: 'Amount to transfer',
   available_balance: 'Available Balance',
   transfer_modal_title: 'Deposit to Injective Chain',
@@ -137,7 +138,7 @@ export default {
   entry_price: 'Entry Price',
   unrealized_pnl: 'Unrealized PnL',
   unrealized_pnl_tooltip:
-    'The unrealized P&L is a reflection of what profit or loss will be realized if the position were to be closed now.',
+    'The unrealized profit/loss (PnL) is a reflection of what profit or loss would be realized if the position were to be closed.',
   leverage: 'Leverage',
   not_available_n_a: 'N/A',
   position_closed: 'Position Closed',
@@ -318,19 +319,38 @@ export default {
   fees_tooltip:
     'Trading fees associated with the trade. Trading fees on Injective can be lowered using rebates.',
   notional_value_tooltip:
-    'The total value of the trade based on the execution price.',
+    'The total value of the trade based on the mark price. The notional value is determined by the following formula: Mark Price * Base Asset Amount.',
   margin_tooltip: 'The total margin required to execute the trade',
   portfolio_value: 'Portfolio value',
   portfolio_value_tooltip:
-    'Your total portfolio value represented in USD. This includes all of your holdings on the Injective Chain, including bank module balances and balances across your subaccounts.',
+    'Your total portfolio value represented in USD. This includes all of your holdings on the Injective Chain, including bank module balances, balances across your subaccounts, open orders total value and unrealized PnL.',
   start_trading: 'Start Trading Now',
   available_margin: 'Available Margin',
-  available_margin_tooltip:
-    'Available margin for derivatives trading. The available margin is calculated from the stable coins (USDT, USDC, etc) in your balance.',
+  available_margin_tooltip: 'Your total available margin for trading',
+  margin_hold: 'Margin Hold',
+  margin_hold_tooltip: 'The amount of margin you have in your open orders',
+  assets_value: 'Assets Value',
+  assets_value_tooltip: 'The total value of your assets in the bank module.',
   unrealized_pnl_portfolio: 'Unrealized PnL',
   unrealized_pnl_portfolio_tooltip:
     'An approximate value of the unrealized PnL from your open positions.',
   total_potential: 'Total Value',
   total_potential_tooltip:
-    'An approximate total value of your stable coins (USDT, USDC, etc) balances and any unrealized PnL you currently have.'
+    'An approximate total value of your stable coins (USDT, USDC, etc) balances and any unrealized PnL you currently have.',
+  side_tooltip: 'This indicates which side of the trade you took',
+  amount_tooltip:
+    'The total value of the base asset at the time the trade was executed (i.e. for BTC-USDC, BTC is the base asset and USDC is the quote asset).',
+  execution_type_tooltip:
+    'Indicates whether the trade was a limit or market order.',
+  time_tooltip:
+    'The time at which the trade was executed (times are shown in the UTC timezone)',
+  recent_news: 'Recent news',
+  injective_home_title_1: 'Injective eliminates all barriers to trading',
+  injective_home_title_2: 'Join a global community',
+  injective_home_subtitle_1:
+    'Access unlimited DeFi markets. With Injective, you can trade any financial market on the first fast, cross-chain, low fee, secure, and fully decentralized derivatives exchange protocol. ',
+  injective_home_subtitle_2:
+    'Injective is governed entirely by the community. We encourage early adopters to learn more about our products, connect with other community members, and have your say in shaping the future of our protocol.',
+  gas_fees: 'Gas Fees',
+  Total: 'Total'
 }

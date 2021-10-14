@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="overflow-x-auto lg:overflow-x-visible w-full">
-      <TableHeader>
-        <span class="col-span-6">{{ $t('Asset') }}</span>
+      <TableHeader v-if="isUserWalletConnected">
+        <span class="col-span-3">{{ $t('Asset') }}</span>
         <span class="col-span-3">
           <div class="flex items-center">
             <span class="flex-1 text-right">{{
@@ -13,6 +13,11 @@
         <span class="col-span-3">
           <div class="flex items-center relative justify-end">
             {{ $t('ERC20 Balance') }}
+          </div>
+        </span>
+        <span class="col-span-3">
+          <div class="flex items-center relative justify-end">
+            {{ $t('Total') }}
           </div>
         </span>
       </TableHeader>
@@ -33,7 +38,7 @@
           }}</span>
         </template>
       </TableBody>
-      <v-user-wallet-connect-warning v-else />
+      <v-user-wallet-connect-warning v-else cta />
     </div>
   </div>
 </template>

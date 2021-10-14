@@ -12,7 +12,7 @@
       </div>
     </div>
 
-    <div class="bg-gray-900 px-4 py-2 rounded-lg mt-2">
+    <div class="bg-gray-900 px-4 py-2 rounded-lg mt-2 w-full">
       <component :is="component" v-if="component"></component>
     </div>
   </div>

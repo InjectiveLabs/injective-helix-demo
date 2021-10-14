@@ -106,7 +106,6 @@ export const actions = actionTree(
 
       commit('setSubacccountIds', subaccountIds)
       commit('setSubaccount', await fetchSubaccount(subaccountId))
-      commit('setPortfolioValue', await fetchPortfolioValue(injectiveAddress))
 
       await this.app.$accessor.spot.fetchSubaccountMarketTrades()
       await this.app.$accessor.spot.fetchSubaccountOrders()
@@ -134,6 +133,16 @@ export const actions = actionTree(
       const { subaccountId } = subaccount
 
       commit('setSubaccount', await fetchSubaccount(subaccountId))
+    },
+
+    async fetchPortfolioValue({ commit, state }) {
+      const { subaccount } = state
+      const { injectiveAddress } = this.app.$accessor.wallet
+
+      if (!subaccount || !injectiveAddress) {
+        return
+      }
+
       commit('setPortfolioValue', await fetchPortfolioValue(injectiveAddress))
     },
 

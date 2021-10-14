@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Vue from 'vue'
 import Arrow from '~/components/icons/arrow.vue'
 import Box from '~/components/icons/box.vue'
@@ -7,6 +8,7 @@ import Check from '~/components/icons/check.vue'
 import CheckCircle from '~/components/icons/check-circle.vue'
 import Close from '~/components/icons/close.vue'
 import Copy from '~/components/icons/copy.vue'
+import News from '~/components/icons/news.vue'
 import Square from '~/components/icons/square.vue'
 import Dashboard from '~/components/icons/dashboard.vue'
 import Exit from '~/components/icons/exit.vue'
@@ -37,9 +39,12 @@ import Twitter from '~/components/icons/twitter.vue'
 import Reddit from '~/components/icons/reddit.vue'
 import Discord from '~/components/icons/discord.vue'
 import Telegram from '~/components/icons/telegram.vue'
+import Youtube from '~/components/icons/youtube.vue'
 
 Vue.component('VIconTwitter', Twitter)
+Vue.component('VIconYoutube', Youtube)
 Vue.component('VIconDiscord', Discord)
+Vue.component('VIconNews', News)
 Vue.component('VIconTelegram', Telegram)
 Vue.component('VIconReddit', Reddit)
 Vue.component('VIconArrow', Arrow)

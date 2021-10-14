@@ -46,21 +46,6 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </v-text-info>
 
-        <v-text-info :title="$t('notional_value')" class="mt-2">
-          <v-icon-info-tooltip
-            slot="context"
-            class="ml-2"
-            :tooltip="$t('notional_value_tooltip')"
-          />
-          <span v-if="total.gt(0)" class="font-mono flex items-center">
-            {{ totalToFormat }}
-            <span class="text-gray-500 ml-1">
-              {{ market.quoteToken.symbol }}
-            </span>
-          </span>
-          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </v-text-info>
-
         <v-text-info
           v-if="!orderTypeBuy"
           :title="$t('est_receiving_amount')"
@@ -78,8 +63,9 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </v-text-info>
 
-        <v-text-info v-if="!orderTypeBuy" :title="$t('fee')" class="mt-2">
+        <v-text-info :title="$t('fee')" class="mt-2">
           <v-icon-info-tooltip
+            v-if="!orderTypeBuy"
             slot="context"
             class="ml-2"
             :tooltip="
@@ -87,6 +73,12 @@
                 feeReturned: feeReturned.toFixed()
               })
             "
+          />
+          <v-icon-info-tooltip
+            v-else
+            slot="context"
+            class="ml-2"
+            :tooltip="$t('fees_tooltip')"
           />
           <span v-if="fees.gt(0)" class="font-mono flex items-center">
             {{ feesToFormat }}
@@ -208,16 +200,6 @@ export default Vue.extend({
       return extractedTotal.toFormat(
         orderTypeBuy ? market.priceDecimals : market.quantityDecimals
       )
-    },
-
-    totalToFormat(): string {
-      const { total, market } = this
-
-      if (!market) {
-        return total.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return total.toFormat(market.priceDecimals)
     },
 
     totalWithoutFeesToFormat(): string {

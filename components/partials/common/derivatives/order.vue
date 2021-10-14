@@ -1,5 +1,12 @@
 <template>
   <tr v-if="market">
+    <td
+      v-if="!isOnMarketPage"
+      class="h-8 text-left cursor-pointer"
+      @click="handleClickOnMarket"
+    >
+      {{ market.ticker }}
+    </td>
     <td class="h-8 font-mono text-right">
       <span
         :class="{
@@ -9,15 +16,25 @@
       >
         {{ priceToFormat }}
       </span>
+      <span class="text-2xs text-gray-500">
+        {{ market.quoteToken.symbol }}
+      </span>
     </td>
     <td class="h-8 text-right font-mono">
       {{ quantityToFormat }}
+      <span class="text-2xs text-gray-500">
+        {{ market.baseToken.symbol }}
+      </span>
     </td>
     <td class="h-8 font-mono text-right">
       {{ totalToFormat }}
+      <span class="text-2xs text-gray-500">
+        {{ market.quoteToken.symbol }}
+      </span>
     </td>
     <td class="h-8 text-right font-mono">
-      {{ leverage.isNaN() ? '' : leverage.toFormat(2) }}
+      <span v-if="leverage.isNaN()">&mdash;</span>
+      <span v-else>{{ leverage.toFormat(2) }}</span>
     </td>
     <td class="h-8 text-center">
       <v-badge
@@ -35,6 +52,9 @@
     </td>
     <td class="h-8 text-right font-mono">
       {{ unfilledQuantityToFormat }}
+      <span class="text-2xs text-gray-500">
+        {{ market.baseToken.symbol }}
+      </span>
     </td>
     <td class="h-8 text-center">
       <v-badge v-if="orderFullyFilled" primary xs>
@@ -93,8 +113,32 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiDerivativeMarket | undefined {
+    currentMarket(): UiDerivativeMarket | undefined {
       return this.$accessor.derivatives.market
+    },
+
+    isOnMarketPage(): boolean {
+      return this.$route.name === 'derivatives-derivative'
+    },
+
+    markets(): UiDerivativeMarket[] {
+      const { isOnMarketPage } = this
+
+      if (isOnMarketPage) {
+        return []
+      }
+
+      return this.$accessor.derivatives.markets
+    },
+
+    market(): UiDerivativeMarket | undefined {
+      const { markets, currentMarket, isOnMarketPage, order } = this
+
+      if (isOnMarketPage) {
+        return currentMarket
+      }
+
+      return markets.find((m) => m.marketId === order.marketId)
     },
 
     isReduceOnly(): boolean {
@@ -267,6 +311,22 @@ export default Vue.extend({
         .finally(() => {
           this.status.setIdle()
         })
+    },
+
+    handleClickOnMarket() {
+      const { market } = this
+
+      if (!market) {
+        return
+      }
+
+      return this.$router.push({
+        name: 'derivatives-derivative',
+        params: {
+          marketId: market.marketId,
+          derivative: market.slug
+        }
+      })
     }
   }
 })

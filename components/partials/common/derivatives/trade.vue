@@ -1,6 +1,10 @@
 <template>
   <tr v-if="market">
-    <td class="h-8 text-left cursor-pointer" @click="handleClickOnMarket">
+    <td
+      v-if="!isOnMarketPage"
+      class="h-8 text-left cursor-pointer"
+      @click="handleClickOnMarket"
+    >
       {{ market.ticker }}
     </td>
     <td class="h-8 text-right font-mono">
@@ -12,15 +16,27 @@
       >
         {{ priceToFormat }}
       </span>
+      <span class="text-2xs text-gray-500">
+        {{ market.quoteToken.symbol }}
+      </span>
     </td>
     <td class="h-8 text-right font-mono">
       {{ quantityToFormat }}
+      <span class="text-2xs text-gray-500">
+        {{ market.baseToken.symbol }}
+      </span>
     </td>
     <td class="h-8 text-right font-mono">
       {{ totalToFormat }}
+      <span class="text-2xs text-gray-500">
+        {{ market.quoteToken.symbol }}
+      </span>
     </td>
     <td class="h-8 text-right font-mono">
       {{ feeToFormat }}
+      <span class="text-2xs text-gray-500">
+        {{ market.quoteToken.symbol }}
+      </span>
     </td>
     <td class="h-8 text-center">
       <v-badge
@@ -74,12 +90,30 @@ export default Vue.extend({
   },
 
   computed: {
+    currentMarket(): UiDerivativeMarket | undefined {
+      return this.$accessor.derivatives.market
+    },
+
+    isOnMarketPage(): boolean {
+      return this.$route.name === 'derivatives-derivative'
+    },
+
     markets(): UiDerivativeMarket[] {
+      const { isOnMarketPage } = this
+
+      if (isOnMarketPage) {
+        return []
+      }
+
       return this.$accessor.derivatives.markets
     },
 
     market(): UiDerivativeMarket | undefined {
-      const { markets, trade } = this
+      const { markets, currentMarket, isOnMarketPage, trade } = this
+
+      if (isOnMarketPage) {
+        return currentMarket
+      }
 
       return markets.find((m) => m.marketId === trade.marketId)
     },

@@ -66,8 +66,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import OpenSpotOrders from './orders/spot/index.vue'
-import OpenDerivativeOrders from './orders/derivatives/index.vue'
+import OpenSpotOrders from './orders/spot-orders.vue'
+import OpenDerivativeOrders from './orders/derivative-orders.vue'
 import {
   UiDerivativeLimitOrder,
   UiDerivativeMarket,

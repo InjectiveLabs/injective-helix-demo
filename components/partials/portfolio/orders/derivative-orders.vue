@@ -1,10 +1,7 @@
 <template>
-  <div
-    v-if="market"
-    class="table-responsive min-h-orders max-h-xs 4xl:max-h-lg"
-  >
+  <div class="table-responsive min-h-orders max-h-xs 4xl:max-h-lg">
     <table class="table">
-      <orders-table-header />
+      <orders-table-header market-column-enabled />
       <tbody v-if="isUserWalletConnected">
         <tr
           is="v-order"
@@ -14,15 +11,14 @@
         ></tr>
       </tbody>
     </table>
-    <v-user-wallet-connect-warning v-if="!isUserWalletConnected" />
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import Order from '~/components/partials/common/spot/order.vue'
+import Vue, { PropType } from 'vue'
+import Order from '~/components/partials/common/derivatives/order.vue'
+import { UiDerivativeLimitOrder } from '~/types'
 import OrdersTableHeader from '~/components/partials/common/spot/orders-table-header.vue'
-import { UiSpotMarket, UiSpotLimitOrder } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -30,23 +26,16 @@ export default Vue.extend({
     OrdersTableHeader
   },
 
+  props: {
+    orders: {
+      required: true,
+      type: Array as PropType<UiDerivativeLimitOrder[]>
+    }
+  },
+
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
-    },
-
-    market(): UiSpotMarket | undefined {
-      return this.$accessor.spot.market
-    },
-
-    orders(): UiSpotLimitOrder[] {
-      const { market } = this
-
-      if (!market) {
-        return []
-      }
-
-      return this.$accessor.spot.subaccountOrders
     }
   }
 })

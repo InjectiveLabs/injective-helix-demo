@@ -43,8 +43,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import VSpotTradeHistory from './trades/spot/index.vue'
-import VDerivativeTradeHistory from './trades/derivatives/index.vue'
+import VSpotTradeHistory from './trades/spot-trades.vue'
+import VDerivativeTradeHistory from './trades/derivative-trades.vue'
 import {
   UiDerivativeMarket,
   UiDerivativeTrade,

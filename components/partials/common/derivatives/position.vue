@@ -16,8 +16,38 @@
         <v-icon-close class="w-3 h-3 ml-1 mt-px" />
       </v-button>
     </td>
-    <td class="text-left cursor-pointer" @click="handleClickOnMarket">
+    <td
+      v-if="!isOnMarketPage"
+      class="text-left cursor-pointer"
+      @click="handleClickOnMarket"
+    >
       {{ position.ticker }}
+    </td>
+
+    <td class="text-right font-mono">
+      <span
+        :class="{
+          'text-aqua-500': position.direction === TradeDirection.Long,
+          'text-red-500': position.direction === TradeDirection.Short
+        }"
+      >
+        {{ priceToFormat }}
+      </span>
+      <span class="text-2xs text-gray-500">
+        {{ market.quoteToken.symbol }}
+      </span>
+    </td>
+    <td class="text-right font-mono">
+      {{ quantityToFormat }}
+      <span class="text-2xs text-gray-500">
+        {{ market.baseToken.symbol }}
+      </span>
+    </td>
+    <td class="text-right font-mono">
+      {{ liquidationPriceToFormat }}
+      <span class="text-2xs text-gray-500">
+        {{ market.quoteToken.symbol }}
+      </span>
     </td>
     <td class="text-center">
       <v-badge
@@ -28,22 +58,6 @@
         {{ directionLocalized }}
       </v-badge>
     </td>
-    <td class="text-right font-mono">
-      <span
-        :class="{
-          'text-aqua-500': position.direction === TradeDirection.Long,
-          'text-red-500': position.direction === TradeDirection.Short
-        }"
-      >
-        {{ priceToFormat }}
-      </span>
-    </td>
-    <td class="text-right font-mono">
-      {{ quantityToFormat }}
-    </td>
-    <td class="text-right font-mono">
-      {{ liquidationPriceToFormat }}
-    </td>
     <td class="text-center">
       <div
         v-if="!pnl.isNaN()"
@@ -53,7 +67,7 @@
         <span class="mr-1">≈</span>
         <div class="flex items-center">
           <span class="mr-1 flex items-center">
-            <span>{{ pnl.gte(0) ? '+' : '-' }}</span>
+            <span>{{ pnl.gte(0) ? '+' : '' }}</span>
             <span
               :class="{
                 'text-aqua-500': pnl.gte(0),
@@ -75,11 +89,17 @@
     </td>
     <td class="text-right font-mono">
       {{ notionalValueToFormat }}
+      <span class="text-2xs text-gray-500">
+        {{ market.quoteToken.symbol }}
+      </span>
     </td>
     <td class="text-right">
       <div class="flex items-center justify-end h-8">
         <span class="font-mono">
           {{ marginToFormat }}
+        </span>
+        <span class="text-2xs text-gray-500 mt-1 ml-1">
+          {{ market.quoteToken.symbol }}
         </span>
         <button
           role="button"
@@ -121,7 +141,6 @@ import {
   UiPriceLevel,
   Icon,
   UiDerivativeLimitOrder,
-  UiSpotMarket,
   UiSpotLimitOrder
 } from '~/types'
 
@@ -142,27 +161,70 @@ export default Vue.extend({
   },
 
   computed: {
+    currentMarket(): UiDerivativeMarket | undefined {
+      return this.$accessor.derivatives.market
+    },
+
+    currentOrderbook(): UiDerivativeOrderbook | undefined {
+      return this.$accessor.derivatives.orderbook
+    },
+
+    currentOrders(): UiDerivativeLimitOrder[] {
+      return this.$accessor.derivatives.subaccountOrders
+    },
+
+    isOnMarketPage(): boolean {
+      return this.$route.name === 'derivatives-derivative'
+    },
+
     markets(): UiDerivativeMarket[] {
+      const { isOnMarketPage } = this
+
+      if (isOnMarketPage) {
+        return []
+      }
+
       return this.$accessor.derivatives.markets
     },
 
     market(): UiDerivativeMarket | undefined {
-      const { markets, position } = this
+      const { markets, currentMarket, isOnMarketPage, position } = this
+
+      if (isOnMarketPage) {
+        return currentMarket
+      }
 
       return markets.find((m) => m.marketId === position.marketId)
     },
 
     orderbooks(): Record<string, UiDerivativeOrderbook> {
+      const { isOnMarketPage } = this
+
+      if (isOnMarketPage) {
+        return {}
+      }
+
       return this.$accessor.portfolio.derivativeOrderbooks
     },
 
     orderbook(): UiDerivativeOrderbook | undefined {
+      const { isOnMarketPage, currentOrderbook } = this
       const { orderbooks, position } = this
+
+      if (isOnMarketPage) {
+        return currentOrderbook
+      }
 
       return orderbooks[position.marketId]
     },
 
     orders(): Array<UiDerivativeLimitOrder | UiSpotLimitOrder> {
+      const { isOnMarketPage, currentOrders } = this
+
+      if (isOnMarketPage) {
+        return currentOrders
+      }
+
       return this.$accessor.portfolio.subaccountOrders
     },
 
@@ -520,7 +582,7 @@ export default Vue.extend({
 
       this.status.setLoading()
 
-      this.$accessor.portfolio
+      this.$accessor.derivatives
         .closePosition({
           market,
           orderType:

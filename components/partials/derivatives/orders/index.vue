@@ -4,34 +4,7 @@
     class="table-responsive min-h-orders max-h-xs 4xl:max-h-lg"
   >
     <table class="table">
-      <thead>
-        <tr>
-          <th class="text-right">
-            {{ $t('price') }}
-          </th>
-          <th class="text-right">
-            {{ $t('amount') }}
-          </th>
-          <th class="text-right">
-            {{ $t('total') }}
-          </th>
-          <th class="text-right">
-            {{ $t('leverage') }}
-          </th>
-          <th class="text-center">
-            {{ $t('side') }}
-          </th>
-          <th class="text-right">
-            {{ $t('unfilled') }}
-          </th>
-          <th class="text-center">
-            {{ $t('filled') }}
-          </th>
-          <th class="text-center">
-            {{ $t('actions') }}
-          </th>
-        </tr>
-      </thead>
+      <orders-table-header />
       <tbody v-if="isUserWalletConnected">
         <tr
           is="v-order"
@@ -47,12 +20,14 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import Order from './order.vue'
+import Order from '~/components/partials/common/derivatives/order.vue'
+import OrdersTableHeader from '~/components/partials/common/derivatives/orders-table-header.vue'
 import { UiDerivativeMarket, UiDerivativeLimitOrder } from '~/types'
 
 export default Vue.extend({
   components: {
-    'v-order': Order
+    'v-order': Order,
+    OrdersTableHeader
   },
 
   data() {

@@ -6,12 +6,9 @@ import {
   UiSpotLimitOrder,
   UiDerivativeLimitOrder,
   UiPosition,
-  UiDerivativeOrderbook,
-  UiDerivativeMarket,
-  DerivativeOrderSide
+  UiDerivativeOrderbook
 } from '~/types'
 import {
-  cancelOrder,
   fetchSubaccountOrders,
   streamSubaccountSpotOrders,
   streamSubaccountDerivativeOrders,
@@ -23,7 +20,6 @@ import {
   fetchDerivativeOrderbooks,
   cancelPortfolioOrderbookStreams
 } from '~/app/services/portfolio'
-import { closePosition } from '~/app/services/derivatives'
 
 const initialStateFactory = () => ({
   subaccountOrders: [] as Array<UiSpotLimitOrder | UiDerivativeLimitOrder>,
@@ -170,10 +166,12 @@ export const actions = actionTree(
       await this.app.$accessor.portfolio.fetchDerivativeOrderbooks()
       await this.app.$accessor.portfolio.streamOrderbooks()
       await this.app.$accessor.portfolio.streamSubaccountOrders()
-      await this.app.$accessor.account.updateSubaccount()
+      await this.app.$accessor.token.getAllTokenWithBalanceAndAllowance()
+      await this.app.$accessor.bank.fetchBalances()
+      await this.app.$accessor.account.fetchPortfolioValue()
     },
 
-    streamSubaccountOrders({ state, commit }) {
+    streamSubaccountOrders({ commit }) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -336,69 +334,6 @@ export const actions = actionTree(
             commit('pushOrUpdateOrderbook', { orderbook, marketId })
           }
         }
-      })
-    },
-
-    async cancelOrder(_, order: UiSpotLimitOrder | UiDerivativeLimitOrder) {
-      const { subaccount } = this.app.$accessor.account
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
-
-      if (!isUserWalletConnected || !subaccount) {
-        return
-      }
-
-      await this.app.$accessor.app.queue()
-      await this.app.$accessor.wallet.validate()
-
-      await cancelOrder({
-        injectiveAddress,
-        address,
-        orderHash: order.orderHash,
-        marketId: order.marketId,
-        subaccountId: subaccount.subaccountId
-      })
-    },
-
-    async closePosition(
-      _,
-      {
-        quantity,
-        price,
-        market,
-        orderType
-      }: {
-        price: BigNumberInBase
-        market: UiDerivativeMarket
-        quantity: BigNumberInBase
-        orderType: DerivativeOrderSide
-      }
-    ) {
-      const { subaccount } = this.app.$accessor.account
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
-
-      if (!isUserWalletConnected || !subaccount) {
-        return
-      }
-
-      await this.app.$accessor.app.queue()
-      await this.app.$accessor.wallet.validate()
-
-      await closePosition({
-        quantity,
-        price,
-        injectiveAddress,
-        address,
-        market,
-        orderType,
-        subaccountId: subaccount.subaccountId
       })
     },
 

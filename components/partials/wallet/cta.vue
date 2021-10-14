@@ -7,15 +7,17 @@
     </div>
 
     <v-card class="mt-6 relative text-center">
-      <h4 class="text-md lg:text-lg text-gray-200 w-full mx-auto lg:w-2/3">
-        {{ $t('Cta Note') }}
-      </h4>
-      <div class="mt-4">
-        <v-button primary lg>
-          <a :href="bridgeUrl" target="_blank">
-            {{ $t('Join our Ecosystem now') }}
-          </a>
-        </v-button>
+      <div class="p-4">
+        <h4 class="text-md lg:text-lg text-gray-300 w-full mx-auto lg:w-2/3">
+          {{ $t('Cta Note') }}
+        </h4>
+        <div class="mt-4">
+          <v-button primary lg>
+            <a :href="bridgeUrl" target="_blank">
+              {{ $t('Join our Ecosystem now') }}
+            </a>
+          </v-button>
+        </div>
       </div>
     </v-card>
   </div>

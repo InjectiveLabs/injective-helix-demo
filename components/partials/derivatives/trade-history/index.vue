@@ -4,31 +4,7 @@
     class="table-responsive min-h-orders max-h-xs 4xl:max-h-lg"
   >
     <table class="table">
-      <thead>
-        <tr>
-          <th class="text-right">
-            {{ $t('price') }}
-          </th>
-          <th class="text-right">
-            {{ $t('amount') }}
-          </th>
-          <th class="text-right">
-            {{ $t('notional_size') }}
-          </th>
-          <th class="text-right">
-            {{ $t('fee') }}
-          </th>
-          <th class="text-center">
-            {{ $t('side') }}
-          </th>
-          <th class="text-center">
-            {{ $t('execution_type') }}
-          </th>
-          <th class="text-right">
-            {{ $t('time') }}
-          </th>
-        </tr>
-      </thead>
+      <trades-table-header />
       <tbody v-if="isUserWalletConnected">
         <tr
           is="v-trade"
@@ -44,13 +20,15 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import Trade from './trade.vue'
+import Trade from '~/components/partials/common/derivatives/trade.vue'
+import TradesTableHeader from '~/components/partials/common/derivatives/trades-table-header.vue'
 import { UiDerivativeMarket, UiDerivativeTrade } from '~/types'
 import { UiSubaccount } from '~/types/subaccount'
 
 export default Vue.extend({
   components: {
-    'v-trade': Trade
+    'v-trade': Trade,
+    TradesTableHeader
   },
 
   computed: {

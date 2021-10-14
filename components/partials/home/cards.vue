@@ -11,6 +11,9 @@
       >
         <template slot="category">{{ card.category }}</template>
         <template slot="title">{{ card.title }}</template>
+        <template v-if="false" slot="illustration">
+          <img :src="card.illustration" :alt="card.title" class="w-56 h-56" />
+        </template>
         <a
           slot="link"
           :href="card.link"
@@ -43,31 +46,25 @@ export default Vue.extend({
           link: 'https://hub.injective.network',
           description:
             'A unified interface for Injective staking, governance, insurance funds and wallets.',
-          linkText: 'View the Injective Hub'
+          linkText: 'View the Injective Hub',
+          illustration: '/svg/hub.svg?v4'
         },
         {
           category: 'Docs',
           title: 'Injective API',
           link: 'https://api.injective.exchange/',
           description: 'An institutional grade API custom made for Injective.',
-          linkText: 'Connect now'
+          linkText: 'Connect now',
+          illustration: '/svg/api.svg?v4'
         },
-        /*
-        {
-          category: 'External Link',
-          title: 'Injective Explorer',
-          link: 'https://explorer.injective.network',
-          description:
-            'An analytics platform that enables anyone to search addresses, trades, tokens, transactions, and other activities on the Injective Chain.',
-          linkText: 'Explore Injective'
-        }, */
         {
           category: 'External Link',
           title: 'Injective Ecosystem',
           link: 'https://injectiveprotocol.com/ecosystem',
           description:
             'Injective has one of the fastest growing DeFi ecosystems in the world.',
-          linkText: 'Join Injective'
+          linkText: 'Join Injective',
+          illustration: '/svg/ecosystem.svg?v4'
         }
       ]
     }

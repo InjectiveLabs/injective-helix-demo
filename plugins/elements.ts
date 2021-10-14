@@ -1,4 +1,6 @@
+// @ts-nocheck
 import Vue from 'vue'
+import VUserWalletConnectWarning from '~/components/elements/user-wallet-connect-warning.vue'
 import Card from '~/components/elements/card.vue'
 import Panel from '~/components/elements/panel.vue'
 import Badge from '~/components/elements/badge.vue'
@@ -8,7 +10,6 @@ import Modal from '~/components/elements/modal.vue'
 import Input from '~/components/inputs/input.vue'
 import ButtonSelect from '~/components/elements/button-select.vue'
 import VIconInfoTooltip from '~/components/elements/info-icon-tooltip.vue'
-import VUserWalletConnectWarning from '~/components/elements/user-wallet-connect-warning.vue'
 
 Vue.component('VCard', Card)
 Vue.component('VPanel', Panel)

@@ -1,30 +1,39 @@
 <template>
   <tr v-if="market">
-    <td class="h-8 text-left cursor-pointer" @click="handleClickOnMarket">
+    <td
+      v-if="!isOnMarketPage"
+      class="h-8 text-left cursor-pointer"
+      @click="handleClickOnMarket"
+    >
       {{ market.ticker }}
     </td>
     <td class="h-8 font-mono text-right">
       <span
         :class="{
-          'text-aqua-500': order.orderSide === SpotOrderSide.Buy,
-          'text-red-500': order.orderSide === SpotOrderSide.Sell
+          'text-aqua-500': orderTypeBuy,
+          'text-red-500': !orderTypeBuy
         }"
       >
         {{ priceToFormat }}
       </span>
+      <span class="text-2xs text-gray-500">
+        {{ orderTypeBuy ? market.quoteToken.symbol : market.baseToken.symbol }}
+      </span>
     </td>
     <td class="h-8 text-right font-mono">
       {{ quantityToFormat }}
+      <span class="text-2xs text-gray-500">
+        {{ orderTypeBuy ? market.baseToken.symbol : market.quoteToken.symbol }}
+      </span>
     </td>
     <td class="h-8 font-mono text-right">
       {{ totalToFormat }}
+      <span class="text-2xs text-gray-500">
+        {{ orderTypeBuy ? market.quoteToken.symbol : market.baseToken.symbol }}
+      </span>
     </td>
     <td class="h-8 text-center">
-      <v-badge
-        :aqua="order.orderSide === SpotOrderSide.Buy"
-        :red="order.orderSide === SpotOrderSide.Sell"
-        xs
-      >
+      <v-badge :aqua="orderTypeBuy" :red="!orderTypeBuy" xs>
         <div class="w-8">
           {{ orderSideLocalized }}
         </div>
@@ -32,6 +41,9 @@
     </td>
     <td class="h-8 text-right font-mono">
       {{ unfilledQuantityToFormat }}
+      <span class="text-2xs text-gray-500">
+        {{ orderTypeBuy ? market.baseToken.symbol : market.quoteToken.symbol }}
+      </span>
     </td>
     <td class="h-8 text-center">
       <v-badge v-if="orderFullyFilled" primary xs>
@@ -85,14 +97,38 @@ export default Vue.extend({
   },
 
   computed: {
+    currentMarket(): UiSpotMarket | undefined {
+      return this.$accessor.spot.market
+    },
+
+    isOnMarketPage(): boolean {
+      return this.$route.name === 'spot-spot'
+    },
+
     markets(): UiSpotMarket[] {
+      const { isOnMarketPage } = this
+
+      if (isOnMarketPage) {
+        return []
+      }
+
       return this.$accessor.spot.markets
     },
 
     market(): UiSpotMarket | undefined {
-      const { markets, order } = this
+      const { markets, currentMarket, isOnMarketPage, order } = this
+
+      if (isOnMarketPage) {
+        return currentMarket
+      }
 
       return markets.find((m) => m.marketId === order.marketId)
+    },
+
+    orderTypeBuy(): boolean {
+      const { order } = this
+
+      return order.orderSide === SpotOrderSide.Buy
     },
 
     price(): BigNumberInBase {

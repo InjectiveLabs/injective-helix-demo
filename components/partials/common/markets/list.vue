@@ -56,7 +56,9 @@
         @searched="filterMarkets = $event"
       />
     </div>
-    <div class="overflow-x-auto lg:overflow-x-visible w-full mt-6">
+    <div
+      class="overflow-y-auto overflow-x-auto lg:overflow-x-visible w-full mt-6 max-h-lg lg:max-h-xl"
+    >
       <TableHeader v-if="markets.length !== 0" sm>
         <span class="col-span-3 text-left">{{ $t('market') }}</span>
         <span class="col-span-3">

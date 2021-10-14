@@ -765,24 +765,30 @@ export const actions = actionTree(
     async closePosition(
       _,
       {
+        market,
         quantity,
         price,
         orderType
       }: {
+        market?: UiDerivativeMarket
         price: BigNumberInBase
         quantity: BigNumberInBase
         orderType: DerivativeOrderSide
       }
     ) {
       const { subaccount } = this.app.$accessor.account
-      const { market } = this.app.$accessor.derivatives
+      const { market: currentMarket } = this.app.$accessor.derivatives
       const {
         address,
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
 
-      if (!isUserWalletConnected || !subaccount || !market) {
+      if (
+        !isUserWalletConnected ||
+        !subaccount ||
+        (!market && !currentMarket)
+      ) {
         return
       }
 
@@ -794,8 +800,8 @@ export const actions = actionTree(
         price,
         injectiveAddress,
         address,
-        market,
         orderType,
+        market: (currentMarket || market) as UiDerivativeMarket,
         subaccountId: subaccount.subaccountId
       })
     },

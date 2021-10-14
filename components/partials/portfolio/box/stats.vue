@@ -1,6 +1,6 @@
 <template>
   <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
-    <v-item class="col-span-2 lg:col-span-4">
+    <v-item class="col-span-2 lg:col-span-3">
       <template slot="value">
         <span v-if="isUserWalletConnected" class="font-mono text-lg">{{
           4
@@ -17,7 +17,24 @@
         </div>
       </template>
     </v-item>
-    <v-item class="col-span-2 lg:col-span-4">
+    <v-item class="col-span-2 lg:col-span-3">
+      <template slot="value">
+        <span v-if="isUserWalletConnected" class="font-mono text-lg">{{
+          4
+        }}</span>
+        <span v-else>&mdash;</span>
+      </template>
+      <template slot="title">
+        <div class="flex items-center justify-center">
+          {{ $t('margin_hold') }}
+          <v-icon-info-tooltip
+            class="ml-2"
+            :tooltip="$t('margin_hold_tooltip')"
+          />
+        </div>
+      </template>
+    </v-item>
+    <v-item class="col-span-2 lg:col-span-3">
       <template slot="value">
         <span v-if="isUserWalletConnected" class="font-mono text-lg">{{
           5
@@ -34,19 +51,19 @@
         </div>
       </template>
     </v-item>
-    <v-item class="col-span-2 lg:col-span-4">
+    <v-item class="col-span-2 lg:col-span-3">
       <template slot="value">
-        <span v-if="isUserWalletConnected" class="font-mono text-lg">{{
-          6
-        }}</span>
+        <span v-if="isUserWalletConnected" class="font-mono text-lg">
+          {{ bankBalanceToString }} USD
+        </span>
         <span v-else>&mdash;</span>
       </template>
       <template slot="title">
         <div class="flex items-center justify-center">
-          {{ $t('total_potential') }}
+          {{ $t('assets_value') }}
           <v-icon-info-tooltip
             class="ml-2"
-            :tooltip="$t('total_potential_tooltip')"
+            :tooltip="$t('assets_value_tooltip')"
           />
         </div>
       </template>
@@ -55,12 +72,25 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import Vue, { PropType } from 'vue'
 import VItem from '~/components/partials/common/stats/item.vue'
 
 export default Vue.extend({
   components: {
     VItem
+  },
+
+  props: {
+    bankBalance: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    bankBalanceToString: {
+      required: true,
+      type: String
+    }
   },
 
   computed: {

@@ -63,6 +63,15 @@ export const actions = actionTree(
       const balances = await fetchBalances(injectiveAddress)
 
       commit('setBalances', balances)
+    },
+
+    async fetchBalancesWithTokenMetaData({ state, commit }) {
+      const { balances } = state
+      const { injectiveAddress } = this.app.$accessor.wallet
+
+      if (!injectiveAddress) {
+        return
+      }
       commit(
         'setBalancesWithTokenMetaData',
         await fetchBalancesWithTokenMetaData(balances)
