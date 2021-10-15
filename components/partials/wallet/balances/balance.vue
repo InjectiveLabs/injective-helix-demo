@@ -27,7 +27,9 @@
     <span class="col-span-1 font-mono text-left xl:hidden">{{
       $t('Injective Chain Balance')
     }}</span>
-    <span class="col-span-1 xl:col-span-3 font-mono text-right">
+    <span
+      class="col-span-1 xl:col-span-3 font-mono text-right whitespace-nowrap"
+    >
       <div class="flex items-center justify-end">
         {{ bankBalanceToString }}
         <span class="text-xs text-gray-400 dark:text-gray-500 ml-1">{{
@@ -43,7 +45,9 @@
     <span class="col-span-1 font-mono text-left xl:hidden">{{
       $t('ERC20 Balance')
     }}</span>
-    <span class="col-span-1 xl:col-span-3 font-mono text-right">
+    <span
+      class="col-span-1 xl:col-span-3 font-mono text-right whitespace-nowrap"
+    >
       <div class="flex items-center justify-end">
         {{ erc20BalanceToString }}
         <span class="text-xs text-gray-400 dark:text-gray-500 ml-1">{{
@@ -59,7 +63,9 @@
     <span class="col-span-1 font-mono text-left xl:hidden">{{
       $t('Total')
     }}</span>
-    <span class="col-span-1 xl:col-span-3 font-mono text-right">
+    <span
+      class="col-span-1 xl:col-span-3 font-mono text-right whitespace-nowrap"
+    >
       <div class="flex items-center justify-end">
         {{ totalToString }}
         <span class="text-xs text-gray-400 dark:text-gray-500 ml-1">{{
@@ -80,7 +86,7 @@ import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import TableRow from '~/components/elements/table-row.vue'
 import {
-  UI_DEFAULT_DISPLAY_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   ZERO_IN_BASE,
   MAX_DISPLAYABLE_NUMBER
 } from '~/app/utils/constants'
@@ -114,11 +120,11 @@ export default Vue.extend({
 
       if (bankBalance.gt(MAX_DISPLAYABLE_NUMBER)) {
         return `> ${MAX_DISPLAYABLE_NUMBER.toFormat(
-          UI_DEFAULT_DISPLAY_DECIMALS
+          UI_DEFAULT_MIN_DISPLAY_DECIMALS
         )}`
       }
 
-      return bankBalance.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+      return bankBalance.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
     bankBalanceInUsd(): BigNumberInBase {
@@ -132,11 +138,11 @@ export default Vue.extend({
 
       if (bankBalanceInUsd.gt(MAX_DISPLAYABLE_NUMBER)) {
         return ` > ${MAX_DISPLAYABLE_NUMBER.toFormat(
-          UI_DEFAULT_DISPLAY_DECIMALS
+          UI_DEFAULT_MIN_DISPLAY_DECIMALS
         )}`
       }
 
-      return bankBalanceInUsd.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+      return bankBalanceInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
     erc20Balance(): BigNumberInBase {
@@ -160,11 +166,11 @@ export default Vue.extend({
 
       if (erc20Balance.gt(MAX_DISPLAYABLE_NUMBER)) {
         return `> ${MAX_DISPLAYABLE_NUMBER.toFormat(
-          UI_DEFAULT_DISPLAY_DECIMALS
+          UI_DEFAULT_MIN_DISPLAY_DECIMALS
         )}`
       }
 
-      return erc20Balance.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+      return erc20Balance.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
     erc20BalanceInUsd(): BigNumberInBase {
@@ -178,11 +184,11 @@ export default Vue.extend({
 
       if (erc20BalanceInUsd.gt(MAX_DISPLAYABLE_NUMBER)) {
         return ` > ${MAX_DISPLAYABLE_NUMBER.toFormat(
-          UI_DEFAULT_DISPLAY_DECIMALS
+          UI_DEFAULT_MIN_DISPLAY_DECIMALS
         )}`
       }
 
-      return erc20BalanceInUsd.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+      return erc20BalanceInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
     total(): BigNumberInBase {
@@ -196,11 +202,11 @@ export default Vue.extend({
 
       if (total.gt(MAX_DISPLAYABLE_NUMBER)) {
         return `> ${MAX_DISPLAYABLE_NUMBER.toFormat(
-          UI_DEFAULT_DISPLAY_DECIMALS
+          UI_DEFAULT_MIN_DISPLAY_DECIMALS
         )}`
       }
 
-      return total.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+      return total.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
     totalInUsd(): BigNumberInBase {
@@ -214,11 +220,11 @@ export default Vue.extend({
 
       if (totalInUsd.gt(MAX_DISPLAYABLE_NUMBER)) {
         return ` > ${MAX_DISPLAYABLE_NUMBER.toFormat(
-          UI_DEFAULT_DISPLAY_DECIMALS
+          UI_DEFAULT_MIN_DISPLAY_DECIMALS
         )}`
       }
 
-      return totalInUsd.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+      return totalInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     }
   }
 })

@@ -71,7 +71,7 @@
         v-if="orderFillable"
         :status="status"
         text-xs
-        class="text-red-500 hover:text-red-600"
+        red
         @click="onCancelOrder"
       >
         {{ $t('cancel') }}

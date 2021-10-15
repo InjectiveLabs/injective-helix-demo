@@ -37,6 +37,7 @@ module.exports = {
       DEFAULT: '0px 0px 4px #08090c',
       sm: '0px 0px 5px #08090c',
       md: '0px 0px 6px #08090c',
+      none: 'none',
       'top-bar-dark': '0px 1px 0px #2A2F41'
     },
 
@@ -44,6 +45,7 @@ module.exports = {
       white: '#fff',
       black: '#04070a',
       transparent: 'transparent',
+      current: 'current-color',
 
       primary: {
         100: '#f0feff',

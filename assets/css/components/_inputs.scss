@@ -81,3 +81,73 @@
     -moz-appearance: textfield;
   }
 }
+
+.v-select.input-select {
+  @apply border border-transparent bg-gray-900 text-gray-200 rounded h-12 px-2 text-sm w-full max-w-full outline-none appearance-none;
+
+  .vs__search {
+    @apply text-sm text-gray-400;
+  }
+
+  .vs__dropdown-toggle {
+    width: 100%;
+    height: 100%;
+    border: none !important;
+  }
+
+  .vs__dropdown-menu {
+    @apply border-primary-500 bg-gray-800 text-gray-400 px-2;
+
+    margin-top: 2px;
+    left: -1px;
+    width: calc(100% + 2px);
+  }
+
+  .vs__selected {
+    @apply h-12 p-0 m-0 pl-2 border-none text-gray-200 break-all;
+  }
+
+  .vs__dropdown-option {
+    @apply text-gray-200 font-semibold text-sm rounded py-3 px-2;
+  }
+
+  .vs__actions {
+    @apply cursor-pointer;
+  }
+
+  .vs__actions svg {
+    @apply text-gray-200;
+  }
+
+  .vs__actions svg path {
+    @apply fill-current;
+  }
+
+  .vs__dropdown-option--highlight {
+    @apply bg-primary-500 text-gray-800;
+  }
+
+  .input {
+    @apply text-current shadow-none;
+  }
+
+  &:focus {
+    @apply border-gray-700;
+  }
+
+  &[disabled] {
+    @apply bg-gray-700;
+  }
+}
+
+.v-select.input-select.vs--open {
+  @apply border border-primary-500 bg-gray-800 text-gray-400;
+
+  .input {
+    @apply shadow-none text-gray-200;
+  }
+
+  .vs__selected {
+    @apply opacity-100 text-gray-200;
+  }
+}

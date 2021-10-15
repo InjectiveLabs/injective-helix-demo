@@ -1,6 +1,7 @@
-import { GrpcCoin } from '@injectivelabs/chain-consumer'
 import {
   SubaccountTransfer as GrpcSubaccountTransfer,
+  AccountPortfolio,
+  SubaccountPortfolio,
   TransferType
 } from '@injectivelabs/subaccount-consumer'
 import { Token } from '.'
@@ -33,4 +34,9 @@ export interface UiSubaccountTransfer extends GrpcSubaccountTransfer {
   token: Token
 }
 
-export { GrpcSubaccountTransfer, TransferType }
+export {
+  GrpcSubaccountTransfer,
+  AccountPortfolio,
+  SubaccountPortfolio,
+  TransferType
+}

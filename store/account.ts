@@ -6,18 +6,22 @@ import {
   deposit,
   withdraw,
   streamSubaccountBalances,
-  fetchPortfolioValue
+  fetchAccountPortfolio
 } from '~/app/services/account'
 import { grpcSubaccountBalanceToUiSubaccountBalance } from '~/app/transformers/account'
 import { backupPromiseCall } from '~/app/utils/async'
 import { ZERO_TO_STRING } from '~/app/utils/constants'
 import { Token } from '~/types'
-import { UiSubaccount, UiSubaccountBalance } from '~/types/subaccount'
+import {
+  UiSubaccount,
+  AccountPortfolio,
+  UiSubaccountBalance
+} from '~/types/subaccount'
 
 const initialStateFactory = () => ({
   subaccountIds: [] as string[],
   subaccount: undefined as UiSubaccount | undefined,
-  portfolioValue: ZERO_TO_STRING as string
+  accountPortfolio: undefined as AccountPortfolio | undefined
 })
 
 const initialState = initialStateFactory()
@@ -25,7 +29,9 @@ const initialState = initialStateFactory()
 export const state = () => ({
   subaccountIds: initialState.subaccountIds as string[],
   subaccount: initialState.subaccount as UiSubaccount | undefined,
-  portfolioValue: initialState.portfolioValue as string
+  accountPortfolio: initialState.accountPortfolio as
+    | AccountPortfolio
+    | undefined
 })
 
 export type AccountStoreState = ReturnType<typeof state>
@@ -43,8 +49,11 @@ export const mutations = {
     state.subaccount = subaccount
   },
 
-  setPortfolioValue(state: AccountStoreState, portfolioValue: string) {
-    state.portfolioValue = portfolioValue
+  setPortfolioValue(
+    state: AccountStoreState,
+    accountPortfolio: AccountPortfolio
+  ) {
+    state.accountPortfolio = accountPortfolio
   },
 
   setSubaccountBalance(state: AccountStoreState, balance: UiSubaccountBalance) {
@@ -135,7 +144,7 @@ export const actions = actionTree(
       commit('setSubaccount', await fetchSubaccount(subaccountId))
     },
 
-    async fetchPortfolioValue({ commit, state }) {
+    async fetchAccountPortfolio({ commit, state }) {
       const { subaccount } = state
       const { injectiveAddress } = this.app.$accessor.wallet
 
@@ -143,7 +152,7 @@ export const actions = actionTree(
         return
       }
 
-      commit('setPortfolioValue', await fetchPortfolioValue(injectiveAddress))
+      commit('setPortfolioValue', await fetchAccountPortfolio(injectiveAddress))
     },
 
     streamSubaccountBalances({ commit, state }) {

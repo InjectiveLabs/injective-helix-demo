@@ -3,7 +3,7 @@
     <h3 class="text-xl font-bold text-gray-200">
       {{ $t('getting_started') }}
     </h3>
-    <div class="grid grid-cols-4 lg:grid-cols-12 gap-4 lg:gap-8 mt-6">
+    <div class="grid grid-cols-4 lg:grid-cols-12 gap-4 lg:gap-6 mt-6">
       <v-home-card
         v-for="(card, index) in cards"
         :key="`home-card-${index}`"
@@ -11,8 +11,12 @@
       >
         <template slot="category">{{ card.category }}</template>
         <template slot="title">{{ card.title }}</template>
-        <template v-if="false" slot="illustration">
-          <img :src="card.illustration" :alt="card.title" class="w-56 h-56" />
+        <template slot="illustration">
+          <img
+            :src="card.illustration"
+            :alt="card.title"
+            class="w-40 h-40 mt-10 mr-4"
+          />
         </template>
         <a
           slot="link"
@@ -47,7 +51,7 @@ export default Vue.extend({
           description:
             'A unified interface for Injective staking, governance, insurance funds and wallets.',
           linkText: 'View the Injective Hub',
-          illustration: '/svg/hub.svg?v4'
+          illustration: '/svg/hub-new.svg'
         },
         {
           category: 'Docs',
@@ -55,16 +59,16 @@ export default Vue.extend({
           link: 'https://api.injective.exchange/',
           description: 'An institutional grade API custom made for Injective.',
           linkText: 'Connect now',
-          illustration: '/svg/api.svg?v4'
+          illustration: '/svg/api-new-v3.svg'
         },
         {
           category: 'External Link',
-          title: 'Injective Ecosystem',
+          title: 'The Ecosystem',
           link: 'https://injectiveprotocol.com/ecosystem',
           description:
             'Injective has one of the fastest growing DeFi ecosystems in the world.',
           linkText: 'Join Injective',
-          illustration: '/svg/ecosystem.svg?v4'
+          illustration: '/svg/ecosystem-new.svg'
         }
       ]
     }

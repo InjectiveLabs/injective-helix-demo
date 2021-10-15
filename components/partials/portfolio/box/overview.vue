@@ -11,7 +11,7 @@
         </span>
       </p>
       <h2 class="mt-4 text-lg lg:text-2xl font-mono text-gray-100">
-        {{ totalToString }} USD
+        &#8776; {{ totalToString }} USD
       </h2>
     </div>
   </div>
@@ -20,11 +20,26 @@
 <script lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
 import Vue, { PropType } from 'vue'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   props: {
-    bankBalance: {
+    bankBalancesTotalInUsd: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    unrealizedPnLInUsd: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    availableBalanceInUsd: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    lockedBalanceInUsd: {
       required: true,
       type: Object as PropType<BigNumberInBase>
     }
@@ -35,26 +50,24 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    portfolioValue(): string {
-      return this.$accessor.account.portfolioValue
-    },
-
-    portfolioValueToFormat(): string {
-      const { portfolioValue } = this
-
-      return new BigNumberInBase(portfolioValue).toFormat(2)
-    },
-
     total(): BigNumberInBase {
-      const { bankBalance } = this
+      const {
+        bankBalancesTotalInUsd,
+        unrealizedPnLInUsd,
+        availableBalanceInUsd,
+        lockedBalanceInUsd
+      } = this
 
-      return bankBalance /* plus ... */
+      return bankBalancesTotalInUsd
+        .plus(lockedBalanceInUsd)
+        .plus(unrealizedPnLInUsd)
+        .plus(availableBalanceInUsd)
     },
 
     totalToString(): string {
       const { total } = this
 
-      return total.toFormat(UI_DEFAULT_DISPLAY_DECIMALS) /* plus ... */
+      return total.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     }
   }
 })

@@ -1964,16 +1964,16 @@
     web3-core-subscriptions "^1.5.2"
     web3-utils "^1.5.2"
 
-"@injectivelabs/derivatives-consumer@^0.0.60":
-  version "0.0.60"
-  resolved "https://registry.npmjs.org/@injectivelabs/derivatives-consumer/-/derivatives-consumer-0.0.60.tgz#61adfeb0b977b3abb3a70119280560ee9ff5780c"
-  integrity sha512-hPbyqFWbFwxqUwkPGjKIgSr2CJNr2IqNjY00RZSGS5mPlVI82d1muIbiOCcjbbdMLYIq/YCo55m60hbVCM6i0g==
+"@injectivelabs/derivatives-consumer@^0.0.62":
+  version "0.0.62"
+  resolved "https://registry.npmjs.org/@injectivelabs/derivatives-consumer/-/derivatives-consumer-0.0.62.tgz#bbd5347b761b92d2763b79b4e98a8735bcc7bf48"
+  integrity sha512-iYlI/kZBDV4I35f78T4CY14FmYrRrax1FUHFDq14V4BTG4hKoy1yVVz8Wl85ZMa6VRs3j/IXiXf+3KhL2xZO0w==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.14.0"
     "@injectivelabs/chain-api" "^1.4.13"
     "@injectivelabs/exceptions" "^0.0.26"
-    "@injectivelabs/exchange-api" "^2.2.18"
+    "@injectivelabs/exchange-api" "^2.2.21"
     "@injectivelabs/ts-types" "^0.0.25"
     "@injectivelabs/utils" "^0.0.38"
     link-module-alias "^1.2.0"
@@ -1998,24 +1998,24 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/exchange-api@^2.2.18":
-  version "2.2.18"
-  resolved "https://registry.npmjs.org/@injectivelabs/exchange-api/-/exchange-api-2.2.18.tgz#364a17b5de9c6bd880fc16a516d4951fb0428305"
-  integrity sha512-4JOFfquCOODFZDnLzPDmN/UG0K1m6X8/Klqaah3/HKZcDIsiwCRAou3iS59kNWeOFuB7sx3QhE3XABI8k7pyJA==
+"@injectivelabs/exchange-api@^2.2.21":
+  version "2.2.21"
+  resolved "https://registry.npmjs.org/@injectivelabs/exchange-api/-/exchange-api-2.2.21.tgz#4690f43584ec08b207beb91b67188ab7e0d1f6a1"
+  integrity sha512-X+K+kd3k4Iq/aV5b4jhc0bsot5qmPL3oRDkSqvXppwgrMka5iN2QI1YEku2A4AXLCRIFiBkZNSxUWAfEcMzNGw==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     google-protobuf "^3.14.0"
 
-"@injectivelabs/exchange-consumer@^0.0.96":
-  version "0.0.96"
-  resolved "https://registry.npmjs.org/@injectivelabs/exchange-consumer/-/exchange-consumer-0.0.96.tgz#f1f31c80a3900ea7e00025b0ee03ba210ce343d7"
-  integrity sha512-MJNvPUBtwotAVmzQQlA3L9eVnBzkVBpkmoC8dkiqHGL7F6aDpCARxX4ZPNgCw217DXmTJRpQqayi5Vd78NFPfg==
+"@injectivelabs/exchange-consumer@^0.0.98":
+  version "0.0.98"
+  resolved "https://registry.npmjs.org/@injectivelabs/exchange-consumer/-/exchange-consumer-0.0.98.tgz#880be1671eed57c3a27652b0b42ed0fb7e751bde"
+  integrity sha512-FF/Eytpr7WVtQc7OQW5kFCf2naI5FEuILFCmpuru+QwICfzqqYUU9yNb4f0lRstWc0dcZtDHpMJk0sfaTrQFkg==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.14.0"
     "@injectivelabs/chain-api" "^1.4.13"
     "@injectivelabs/exceptions" "^0.0.26"
-    "@injectivelabs/exchange-api" "^2.2.18"
+    "@injectivelabs/exchange-api" "^2.2.21"
     "@injectivelabs/ts-types" "^0.0.25"
     "@injectivelabs/tx-utils" "^0.0.15"
     "@injectivelabs/utils" "^0.0.38"
@@ -2034,32 +2034,32 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/spot-consumer@^0.0.71":
-  version "0.0.71"
-  resolved "https://registry.npmjs.org/@injectivelabs/spot-consumer/-/spot-consumer-0.0.71.tgz#8add96fe832692b2889800b31dca7b60738c7593"
-  integrity sha512-rfMU4YAwET59EEWXw32vRb4QZjXuzmEWqhgZpVQrWGtYGCBip8AmH1OA9IEg27jydKoaJE8Csd5Ft0fYkxAoMg==
+"@injectivelabs/spot-consumer@^0.0.73":
+  version "0.0.73"
+  resolved "https://registry.npmjs.org/@injectivelabs/spot-consumer/-/spot-consumer-0.0.73.tgz#540ad50e6b871b95e65ba718f436b6a024f52cf3"
+  integrity sha512-hCMmBmIYEALZNt5AU+b7lgoU9md2PF7vbdAo68zTcRk4yMl2BLM7rS70Vy1uwYgyznakVEq8DnwN0FGa0HC/gA==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.14.0"
     "@injectivelabs/chain-api" "^1.4.13"
     "@injectivelabs/exceptions" "^0.0.26"
-    "@injectivelabs/exchange-api" "^2.2.18"
+    "@injectivelabs/exchange-api" "^2.2.21"
     "@injectivelabs/ts-types" "^0.0.25"
     "@injectivelabs/utils" "^0.0.38"
     link-module-alias "^1.2.0"
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/subaccount-consumer@^0.0.42":
-  version "0.0.42"
-  resolved "https://registry.npmjs.org/@injectivelabs/subaccount-consumer/-/subaccount-consumer-0.0.42.tgz#de09779b2cdb936b1b8c4728dde7e6fe738a6245"
-  integrity sha512-paMaKVcBg6vZWfjwUeSljSin5toS3zWJ5YhOScelwLuvH2zrxmXmMmIJAP747/66NyLS+V9ZDizV13Zwfg1Qdw==
+"@injectivelabs/subaccount-consumer@^0.0.44":
+  version "0.0.44"
+  resolved "https://registry.npmjs.org/@injectivelabs/subaccount-consumer/-/subaccount-consumer-0.0.44.tgz#56a161706792000390758ac5e502b573df4927cc"
+  integrity sha512-21yjZx/ut76iNlfVaUpDD2no16F9Osw2JMb0qKGvI+ulUHD5BtkCsbgLXh+WhiHe7cbciX5bReoF169UIOU0jQ==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.14.0"
     "@injectivelabs/chain-api" "^1.4.13"
     "@injectivelabs/exceptions" "^0.0.26"
-    "@injectivelabs/exchange-api" "^2.2.18"
+    "@injectivelabs/exchange-api" "^2.2.21"
     "@injectivelabs/ts-types" "^0.0.25"
     "@injectivelabs/utils" "^0.0.38"
     link-module-alias "^1.2.0"
@@ -5344,15 +5344,10 @@ caniuse-api@^3.0.0:
     lodash.memoize "^4.1.2"
     lodash.uniq "^4.5.0"
 
-caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001196, caniuse-lite@^1.0.30001205:
-  version "1.0.30001208"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001208.tgz#a999014a35cebd4f98c405930a057a0d75352eb9"
-  integrity sha512-OE5UE4+nBOro8Dyvv0lfx+SRtfVIOM9uhKqFmJeUbGriqhhStgp1A0OyBpgy3OUF8AhYCT+PVwPC1gMl2ZcQMA==
-
-caniuse-lite@^1.0.30001208:
-  version "1.0.30001211"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001211.tgz#be40d528bb10272eba0037a88adc40054810f8e2"
-  integrity sha512-v3GXWKofIkN3PkSidLI5d1oqeKNsam9nQkqieoMhP87nxOY0RPDC8X2+jcv8pjV4dRozPLSoMqNii9sDViOlIg==
+caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001196, caniuse-lite@^1.0.30001205, caniuse-lite@^1.0.30001208:
+  version "1.0.30001267"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001267.tgz"
+  integrity sha512-r1mjTzAuJ9W8cPBGbbus8E0SKcUP7gn03R14Wk8FlAlqhH9hroy9nLqmpuXlfKEw/oILW+FGz47ipXV2O7x8lg==
 
 canvas-confetti@^1.4.0:
   version "1.4.0"

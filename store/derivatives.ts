@@ -614,14 +614,13 @@ export const actions = actionTree(
 
     async cancelOrder(_, order: UiDerivativeLimitOrder) {
       const { subaccount } = this.app.$accessor.account
-      const { market } = this.app.$accessor.derivatives
       const {
         address,
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
 
-      if (!isUserWalletConnected || !subaccount || !market) {
+      if (!isUserWalletConnected || !subaccount) {
         return
       }
 
@@ -632,7 +631,7 @@ export const actions = actionTree(
         injectiveAddress,
         address,
         orderHash: order.orderHash,
-        marketId: market.marketId,
+        marketId: order.marketId,
         subaccountId: subaccount.subaccountId
       })
     },

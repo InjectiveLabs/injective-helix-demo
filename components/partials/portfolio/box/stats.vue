@@ -2,9 +2,10 @@
   <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
     <v-item class="col-span-2 lg:col-span-3">
       <template slot="value">
-        <span v-if="isUserWalletConnected" class="font-mono text-lg">{{
-          4
-        }}</span>
+        <span v-if="isUserWalletConnected" class="font-mono text-lg">
+          {{ availableBalanceInUsdToString }}
+          <span class="text-xs text-gray-400">USD</span>
+        </span>
         <span v-else>&mdash;</span>
       </template>
       <template slot="title">
@@ -19,9 +20,10 @@
     </v-item>
     <v-item class="col-span-2 lg:col-span-3">
       <template slot="value">
-        <span v-if="isUserWalletConnected" class="font-mono text-lg">{{
-          4
-        }}</span>
+        <span v-if="isUserWalletConnected" class="font-mono text-lg">
+          {{ lockedBalanceInUsdToString }}
+          <span class="text-xs text-gray-400">USD</span>
+        </span>
         <span v-else>&mdash;</span>
       </template>
       <template slot="title">
@@ -36,9 +38,10 @@
     </v-item>
     <v-item class="col-span-2 lg:col-span-3">
       <template slot="value">
-        <span v-if="isUserWalletConnected" class="font-mono text-lg">{{
-          5
-        }}</span>
+        <span v-if="isUserWalletConnected" class="font-mono text-lg">
+          {{ unrealizedPnLInUsdToString }}
+          <span class="text-xs text-gray-400">USD</span>
+        </span>
         <span v-else>&mdash;</span>
       </template>
       <template slot="title">
@@ -54,7 +57,8 @@
     <v-item class="col-span-2 lg:col-span-3">
       <template slot="value">
         <span v-if="isUserWalletConnected" class="font-mono text-lg">
-          {{ bankBalanceToString }} USD
+          {{ bankBalancesTotalInUsdToString }}
+          <span class="text-xs text-gray-400">USD</span>
         </span>
         <span v-else>&mdash;</span>
       </template>
@@ -82,12 +86,42 @@ export default Vue.extend({
   },
 
   props: {
-    bankBalance: {
+    bankBalancesTotalInUsd: {
       required: true,
       type: Object as PropType<BigNumberInBase>
     },
 
-    bankBalanceToString: {
+    bankBalancesTotalInUsdToString: {
+      required: true,
+      type: String
+    },
+
+    unrealizedPnLInUsd: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    unrealizedPnLInUsdToString: {
+      required: true,
+      type: String
+    },
+
+    availableBalanceInUsd: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    availableBalanceInUsdToString: {
+      required: true,
+      type: String
+    },
+
+    lockedBalanceInUsd: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    lockedBalanceInUsdToString: {
       required: true,
       type: String
     }

@@ -5,6 +5,7 @@ import {
   getTokenBalanceAndAllowance,
   setTokenAllowance,
   transfer,
+  getUsdtTokenPriceFromCoinGecko,
   validateTransferRestrictions
 } from '~/app/services/tokens'
 import { backupPromiseCall } from '~/app/utils/async'
@@ -18,6 +19,7 @@ import {
 
 const initialStateFactory = () => ({
   erc20TokensWithBalanceFromBank: [] as TokenWithBalance[],
+  tokensWithPriceInUsd: {} as Record<string, string>,
   baseTokenWithBalance: (undefined as unknown) as TokenWithBalance,
   quoteTokenWithBalance: (undefined as unknown) as TokenWithBalance
 })
@@ -26,6 +28,10 @@ const initialState = initialStateFactory()
 
 export const state = () => ({
   erc20TokensWithBalanceFromBank: initialState.erc20TokensWithBalanceFromBank as TokenWithBalance[],
+  tokensWithPriceInUsd: initialState.tokensWithPriceInUsd as Record<
+    string,
+    string
+  >,
   baseTokenWithBalance: initialState.baseTokenWithBalance as TokenWithBalance,
   quoteTokenWithBalance: initialState.quoteTokenWithBalance as TokenWithBalance
 })
@@ -72,6 +78,13 @@ export const mutations = {
     state.erc20TokensWithBalanceFromBank = erc20TokensWithBalanceFromBank
   },
 
+  setTokensWithPriceInUsd(
+    state: TokenStoreState,
+    tokensWithPriceInUsd: Record<string, string>
+  ) {
+    state.tokensWithPriceInUsd = tokensWithPriceInUsd
+  },
+
   reset(state: TokenStoreState) {
     const initialState = initialStateFactory()
 
@@ -115,6 +128,42 @@ export const actions = actionTree(
         'setErc20TokensWithBalanceFromBank',
         ercTokensWithBalanceAndAllowance
       )
+    },
+
+    async getAllTokenWithPriceInUsd({ commit }) {
+      const { address, isUserWalletConnected } = this.app.$accessor.wallet
+
+      if (!address || !isUserWalletConnected) {
+        return
+      }
+
+      const { balancesWithTokenMetaData } = this.app.$accessor.bank
+
+      if (balancesWithTokenMetaData.length === 0) {
+        await this.app.$accessor.bank.fetchBalancesWithTokenMetaData()
+      }
+
+      const {
+        balancesWithTokenMetaData: newBalancesWithTokenMetaData
+      } = this.app.$accessor.bank
+
+      const tokensPriceInUsd = await Promise.all(
+        newBalancesWithTokenMetaData.map(async ({ token }) => {
+          return await getUsdtTokenPriceFromCoinGecko(token.coinGeckoId)
+        })
+      )
+
+      const tokensWithPriceInUsd = tokensPriceInUsd.reduce(
+        (tokens, price, index) => {
+          return {
+            ...tokens,
+            [newBalancesWithTokenMetaData[index].denom]: price
+          }
+        },
+        {}
+      )
+
+      commit('setTokensWithPriceInUsd', tokensWithPriceInUsd)
     },
 
     async getTokenBalanceAndAllowance({ commit }) {

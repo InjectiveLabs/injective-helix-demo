@@ -3,14 +3,23 @@
     <div v-if="isUserWalletConnected">
       <v-overview
         v-bind="{
-          bankBalance: bankBalancesTotal
+          bankBalancesTotalInUsd,
+          availableBalanceInUsd,
+          unrealizedPnLInUsd,
+          lockedBalanceInUsd
         }"
       />
       <v-stats
         class="mt-6"
         v-bind="{
-          bankBalance: bankBalancesTotal,
-          bankBalanceToString
+          bankBalancesTotalInUsd,
+          bankBalancesTotalInUsdToString,
+          availableBalanceInUsd,
+          availableBalanceInUsdToString,
+          unrealizedPnLInUsd,
+          unrealizedPnLInUsdToString,
+          lockedBalanceInUsd,
+          lockedBalanceInUsdToString
         }"
       />
     </div>
@@ -25,13 +34,14 @@ import VOverview from './overview.vue'
 import VStats from './stats.vue'
 import {
   MAX_SMALLER_DISPLAYABLE_NUMBER,
-  UI_DEFAULT_DISPLAY_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   ZERO_IN_BASE
 } from '~/app/utils/constants'
 import {
   BankBalanceWithTokenMetaData,
   BankBalanceWithTokenMetaDataAndBalance,
-  TokenWithBalance
+  TokenWithBalance,
+  AccountPortfolio
 } from '~/types'
 
 export default Vue.extend({
@@ -45,12 +55,82 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
+    accountPortfolio(): AccountPortfolio | undefined {
+      return this.$accessor.account.accountPortfolio
+    },
+
     bankBalances(): BankBalanceWithTokenMetaData[] {
       return this.$accessor.bank.balancesWithTokenMetaData
     },
 
     erc20TokensWithBalanceAndAllowance(): TokenWithBalance[] {
       return this.$accessor.token.erc20TokensWithBalanceFromBank
+    },
+
+    availableBalanceInUsd(): BigNumberInBase {
+      const { accountPortfolio } = this
+
+      if (!accountPortfolio) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInWei(accountPortfolio.availableBalance || 0).toBase()
+    },
+
+    availableBalanceInUsdToString(): string {
+      const { availableBalanceInUsd } = this
+
+      if (availableBalanceInUsd.gt(MAX_SMALLER_DISPLAYABLE_NUMBER)) {
+        return `> ${MAX_SMALLER_DISPLAYABLE_NUMBER.toFormat(
+          UI_DEFAULT_MIN_DISPLAY_DECIMALS
+        )}`
+      }
+
+      return availableBalanceInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+    },
+
+    lockedBalanceInUsd(): BigNumberInBase {
+      const { accountPortfolio } = this
+
+      if (!accountPortfolio) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInWei(accountPortfolio.lockedBalance || 0).toBase()
+    },
+
+    lockedBalanceInUsdToString(): string {
+      const { lockedBalanceInUsd } = this
+
+      if (lockedBalanceInUsd.gt(MAX_SMALLER_DISPLAYABLE_NUMBER)) {
+        return `> ${MAX_SMALLER_DISPLAYABLE_NUMBER.toFormat(
+          UI_DEFAULT_MIN_DISPLAY_DECIMALS
+        )}`
+      }
+
+      return lockedBalanceInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+    },
+
+    unrealizedPnLInUsd(): BigNumberInBase {
+      const { accountPortfolio } = this
+
+      if (!accountPortfolio) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInWei(accountPortfolio.unrealizedPnl || 0).toBase()
+    },
+
+    unrealizedPnLInUsdToString(): string {
+      const { unrealizedPnLInUsd } = this
+
+      if (unrealizedPnLInUsd.gt(MAX_SMALLER_DISPLAYABLE_NUMBER)) {
+        return `> ${MAX_SMALLER_DISPLAYABLE_NUMBER.toFormat(
+          UI_DEFAULT_MIN_DISPLAY_DECIMALS
+        )}`
+      }
+
+      return unrealizedPnLInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
     balances(): BankBalanceWithTokenMetaDataAndBalance[] {
@@ -74,26 +154,28 @@ export default Vue.extend({
       })
     },
 
-    bankBalancesTotal(): BigNumberInBase {
+    bankBalancesTotalInUsd(): BigNumberInBase {
       const { balances } = this
 
       return balances.reduce((total, balance) => {
         return total.plus(
-          new BigNumberInWei(balance.balance).toBase(balance.token.decimals)
+          new BigNumberInWei(balance.balance)
+            .toBase(balance.token.decimals)
+            .times(balance.token.priceInUsd || 0)
         )
       }, ZERO_IN_BASE)
     },
 
-    bankBalanceToString(): string {
-      const { bankBalancesTotal } = this
+    bankBalancesTotalInUsdToString(): string {
+      const { bankBalancesTotalInUsd } = this
 
-      if (bankBalancesTotal.gt(MAX_SMALLER_DISPLAYABLE_NUMBER)) {
+      if (bankBalancesTotalInUsd.gt(MAX_SMALLER_DISPLAYABLE_NUMBER)) {
         return `> ${MAX_SMALLER_DISPLAYABLE_NUMBER.toFormat(
-          UI_DEFAULT_DISPLAY_DECIMALS
+          UI_DEFAULT_MIN_DISPLAY_DECIMALS
         )}`
       }
 
-      return bankBalancesTotal.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+      return bankBalancesTotalInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     }
   }
 })

@@ -2,7 +2,7 @@
   <div class="h-full w-full flex flex-wrap py-4">
     <HOCLoading :status="status">
       <div class="container">
-        <div class="w-full mx-auto lg:w-3/4">
+        <div class="w-full mx-auto xl:w-4/5">
           <v-portfolio />
           <v-panel :title="$t('open_positions')" class="mt-12">
             <v-open-positions />

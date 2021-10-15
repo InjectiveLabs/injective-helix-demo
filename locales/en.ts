@@ -352,5 +352,22 @@ export default {
   injective_home_subtitle_2:
     'Injective is governed entirely by the community. We encourage early adopters to learn more about our products, connect with other community members, and have your say in shaping the future of our protocol.',
   gas_fees: 'Gas Fees',
-  Total: 'Total'
+  Total: 'Total',
+  Twitter: 'Twitter',
+  Reddit: 'Reddit',
+  Discord: 'Discord',
+  Youtube: 'Youtube',
+  Telegram: 'Telegram',
+  transfer_on_chain: 'Transfer on Injective',
+  'Successfully Transferred': 'Successfully Transferred',
+  'Enter amount': 'Enter amount',
+  'Available to Transfer On Chain': 'Available to Transfer On Injective',
+  'Available to Transfer On Chain Tooltip':
+    'The available amount you can transfer to another injective address on Injective',
+  'Asset Transfer': 'Asset Transfer',
+  'Asset Transfer Tooltip':
+    'The asset you want to transfer on the Injective Chain',
+  'Injective Address Destination': 'Destination',
+  'Injective Address Destination Tooltip':
+    'The destination injective address you want to sent the assets to'
 }

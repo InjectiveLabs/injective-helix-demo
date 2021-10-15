@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="overflow-x-auto lg:overflow-x-visible w-full">
+    <div class="overflow-y-auto overflow-x-auto lg:overflow-x-visible w-full">
       <TableHeader v-if="isUserWalletConnected">
         <span class="col-span-3">{{ $t('Asset') }}</span>
         <span class="col-span-3">
