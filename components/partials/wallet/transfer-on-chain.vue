@@ -45,7 +45,9 @@
                 step="0.01"
                 min="0"
               >
-                <span slot="addon">INJ</span>
+                <span v-if="currentBalanceWithTokenMeta" slot="addon">{{
+                  currentBalanceWithTokenMeta.token.symbol
+                }}</span>
               </v-input>
             </ValidationProvider>
           </div>
@@ -62,10 +64,10 @@
                 :options="
                   balancesWithTokenMetaData.map((a) => ({
                     code: a.denom,
-                    label: a.token.symbol
+                    label: a.token.symbol.toUpperCase()
                   }))
                 "
-                :label="$t('Asset Transfer')"
+                :label="$t('asset')"
                 :placeholder="$t('Asset Transfer Tooltip')"
               >
               </v-select-custom>
@@ -135,7 +137,7 @@ export default Vue.extend({
       status: new Status(),
 
       form: {
-        denom: INJECTIVE_DENOM,
+        denom: '',
         amount: '',
         destination: ''
       }
@@ -242,7 +244,7 @@ export default Vue.extend({
         })
         .then(() => {
           this.$toast.success(this.$t('Successfully Transferred'))
-          this.form.denom = INJECTIVE_DENOM
+          this.form.denom = ''
           this.form.amount = ''
           this.form.destination = ''
 

@@ -2,7 +2,7 @@
   <thead>
     <tr>
       <th class="text-center">&nbsp;</th>
-      <th v-if="marketColumnEnabled" class="text-center">
+      <th v-if="marketColumnEnabled" class="text-left">
         <span>{{ $t('market') }}</span>
       </th>
       <th class="text-right">

@@ -343,7 +343,7 @@ export default {
   execution_type_tooltip:
     'Indicates whether the trade was a limit or market order.',
   time_tooltip:
-    'The time at which the trade was executed (times are shown in the UTC timezone)',
+    "The time at which the trade was executed (times are shown in your browser's timezone)",
   recent_news: 'Recent news',
   injective_home_title_1: 'Injective eliminates all barriers to trading',
   injective_home_title_2: 'Join a global community',
@@ -365,8 +365,7 @@ export default {
   'Available to Transfer On Chain Tooltip':
     'The available amount you can transfer to another injective address on Injective',
   'Asset Transfer': 'Asset Transfer',
-  'Asset Transfer Tooltip':
-    'The asset you want to transfer on the Injective Chain',
+  'Asset Transfer Tooltip': 'The asset you want to transfer',
   'Injective Address Destination': 'Destination',
   'Injective Address Destination Tooltip':
     'The destination injective address you want to sent the assets to'

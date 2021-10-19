@@ -74,7 +74,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(accountPortfolio.availableBalance || 0).toBase()
+      return new BigNumberInBase(accountPortfolio.availableBalance || 0)
     },
 
     availableBalanceInUsdToString(): string {
@@ -96,7 +96,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(accountPortfolio.lockedBalance || 0).toBase()
+      return new BigNumberInBase(accountPortfolio.lockedBalance || 0)
     },
 
     lockedBalanceInUsdToString(): string {
@@ -118,7 +118,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(accountPortfolio.unrealizedPnl || 0).toBase()
+      return new BigNumberInBase(accountPortfolio.unrealizedPnl || 0)
     },
 
     unrealizedPnLInUsdToString(): string {

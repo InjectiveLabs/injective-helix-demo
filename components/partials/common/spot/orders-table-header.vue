@@ -1,7 +1,7 @@
 <template>
   <thead>
     <tr>
-      <th v-if="marketColumnEnabled" class="text-right">
+      <th v-if="marketColumnEnabled" class="text-left">
         {{ $t('market') }}
       </th>
       <th class="text-right">

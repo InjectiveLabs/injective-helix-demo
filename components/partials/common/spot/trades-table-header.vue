@@ -35,10 +35,19 @@
         </div>
       </th>
       <th class="text-center">
-        {{ $t('execution_type') }}
+        <div class="flex items-center justify-center">
+          {{ $t('execution_type') }}
+          <v-icon-info-tooltip
+            class="ml-2"
+            :tooltip="$t('execution_type_tooltip')"
+          />
+        </div>
       </th>
       <th class="text-right">
-        {{ $t('time') }}
+        <div class="flex items-center justify-center">
+          {{ $t('time') }}
+          <v-icon-info-tooltip class="ml-2" :tooltip="$t('time_tooltip')" />
+        </div>
       </th>
     </tr>
   </thead>

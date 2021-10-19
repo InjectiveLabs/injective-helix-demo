@@ -138,6 +138,10 @@
   &[disabled] {
     @apply bg-gray-700;
   }
+
+  input::placeholder {
+    @apply text-xs opacity-75;
+  }
 }
 
 .v-select.input-select.vs--open {

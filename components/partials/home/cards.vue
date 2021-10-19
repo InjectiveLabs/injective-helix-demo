@@ -59,7 +59,7 @@ export default Vue.extend({
           link: 'https://api.injective.exchange/',
           description: 'An institutional grade API custom made for Injective.',
           linkText: 'Connect now',
-          illustration: '/svg/api-new-v3.svg'
+          illustration: '/svg/api-new-v4.svg'
         },
         {
           category: 'External Link',
