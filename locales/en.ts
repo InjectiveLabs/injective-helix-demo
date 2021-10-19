@@ -333,7 +333,7 @@ export default {
   assets_value_tooltip: 'The total value of your assets in the bank module.',
   unrealized_pnl_portfolio: 'Unrealized PnL',
   unrealized_pnl_portfolio_tooltip:
-    'An approximate value of the unrealized PnL from your open positions.',
+    'An approximate value of the unrealized PnL from your open positions based on the current mark price.',
   total_potential: 'Total Value',
   total_potential_tooltip:
     'An approximate total value of your stable coins (USDT, USDC, etc) balances and any unrealized PnL you currently have.',
