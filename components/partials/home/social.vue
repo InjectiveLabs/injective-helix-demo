@@ -10,12 +10,12 @@
     </div>
 
     <div class="w-full">
-      <div class="grid grid-cols-2 lg:grid-cols-10 gap-4 lg:gap-6 mt-6">
+      <div class="grid grid-cols-2 md:grid-cols-10 gap-4 md:gap-6 mt-6">
         <v-social-item
-          class="col-span-2 lg:col-span-2"
+          class="col-span-2 md:col-span-2"
           link="https://discord.com/invite/NK4qdbv"
         >
-          <span class=""> Get involved with the Injective team </span>
+          <span class=""> Join the Injective Community on Discord. </span>
           <template slot="title">
             {{ $t('Discord') }}
           </template>
@@ -24,10 +24,10 @@
           </template>
         </v-social-item>
         <v-social-item
-          class="col-span-2 lg:col-span-2"
+          class="col-span-2 md:col-span-2"
           link="https://twitter.com/InjectiveLabs"
         >
-          <span class=""> Follow for the latest news and updates </span>
+          <span class=""> Follow the latest news on Injective </span>
           <template slot="title">
             {{ $t('Twitter') }}
           </template>
@@ -36,10 +36,10 @@
           </template>
         </v-social-item>
         <v-social-item
-          class="col-span-2 lg:col-span-2"
+          class="col-span-2 md:col-span-2"
           link="https://t.me/joininjective"
         >
-          <span class="">Connect with Injective’s community</span>
+          <span class="">Join the Injective Community on Telegram</span>
           <template slot="title">
             {{ $t('Telegram') }}
           </template>
@@ -48,7 +48,7 @@
           </template>
         </v-social-item>
         <v-social-item
-          class="col-span-2 lg:col-span-2"
+          class="col-span-2 md:col-span-2"
           link="https://www.youtube.com/channel/UCN99m0dicoMjNmJV9mxioqQ"
         >
           <span class="">Watch exclusive Injective content</span>
@@ -60,7 +60,7 @@
           </template>
         </v-social-item>
         <v-social-item
-          class="col-span-2 lg:col-span-2"
+          class="col-span-2 md:col-span-2"
           link="https://www.reddit.com/r/injective/"
         >
           <span class="">Join Injective enthusiasts</span>

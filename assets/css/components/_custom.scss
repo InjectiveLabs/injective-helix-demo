@@ -1,3 +1,51 @@
+.table-orders {
+  @apply h-full min-h-orders max-h-2xs;
+
+  @screen lg {
+    @apply max-h-xs;
+  }
+
+  @screen 4xl {
+    @apply max-h-lg;
+  }
+}
+
+.orderbook-h {
+  @apply h-md;
+
+  @screen lg {
+    @apply h-xl;
+  }
+
+  @screen 4xl {
+    @apply h-3xl;
+  }
+}
+
+.orderbook-half-h {
+  @apply h-48;
+
+  @screen lg {
+    @apply h-2xs;
+  }
+
+  @screen 4xl {
+    height: 21rem;
+  }
+}
+
+.orderbook-middle-h {
+  @apply h-8;
+
+  @screen lg {
+    @apply h-8;
+  }
+
+  @screen 4xl {
+    @apply h-16;
+  }
+}
+
 .toasted.bubble {
   @apply shadow-md border;
 }

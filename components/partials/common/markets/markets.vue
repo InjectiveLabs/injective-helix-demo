@@ -1,12 +1,12 @@
 <template>
   <div>
-    <v-list :markets="markets" :summaries="marketsSummary" />
+    <v-table :markets="markets" :summaries="marketsSummary" />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import VList from './list.vue'
+import VTable from './table.vue'
 import {
   UiDerivativeMarket,
   UiDerivativeMarketSummary,
@@ -16,7 +16,7 @@ import {
 
 export default Vue.extend({
   components: {
-    VList
+    VTable
   },
 
   computed: {

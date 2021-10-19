@@ -171,6 +171,10 @@ export const actions = actionTree(
       await this.app.$accessor.account.fetchAccountPortfolio()
     },
 
+    async poll(_) {
+      await this.app.$accessor.account.fetchAccountPortfolio()
+    },
+
     streamSubaccountOrders({ commit }) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet

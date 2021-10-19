@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="overflow-y-auto overflow-x-auto lg:overflow-x-visible w-full">
+    <div class="overflow-y-auto overflow-x-auto md:overflow-x-visible w-full">
       <TableHeader v-if="isUserWalletConnected">
         <span class="col-span-3">{{ $t('Asset') }}</span>
         <span class="col-span-3">
@@ -33,7 +33,7 @@
           :balance="balance"
         />
         <template slot="empty">
-          <span class="col-span-1 xl:col-span-3 text-center xl:text-left">{{
+          <span class="col-span-1 md:col-span-3 text-center md:text-left">{{
             $t('There are no results found - Balances')
           }}</span>
         </template>

@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="market"
-    class="table-responsive min-h-orders max-h-xs 4xl:max-h-lg"
+    class="table-responsive min-h-orders max-h-xs lg:max-h-md 4xl:max-h-lg"
   >
     <table class="table">
       <orders-table-header />

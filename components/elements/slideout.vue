@@ -46,7 +46,10 @@
           :aria-modal="isOpen"
           aria-labelledby="modal-headline"
         >
-          <div class="w-screen max-w-xl">
+          <div
+            v-touch:swipe.left="handleCloseSlideout"
+            class="w-screen max-w-xl"
+          >
             <div
               class="h-full flex flex-col py-6 bg-gray-800 shadow-xl overflow-y-scroll"
             >

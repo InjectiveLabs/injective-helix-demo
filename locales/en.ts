@@ -149,18 +149,18 @@ export default {
   reduce_only_exceed_position:
     'Total size of reduce-only orders exceed the size of your position',
   worst_price_note:
-    'Note: If {slippage}% max slippage protection is violated, you will need to resend your market order.',
+    'Note: If the execution price exceeds the {slippage}% slippage protection, your order will be automatically cancelled.',
   max_leverage_warn: 'Please decrease leverage.',
   next_funding: 'Next Funding',
   next_funding_tooltip:
-    'The time remaining before the next funding rate is calculated.',
+    'The time remaining for the end of the funding interval.',
   expiry_date: 'Expiry Date',
   days: 'Days',
   funding_fee: 'Funding fee',
   funding_rate: 'Funding Rate',
   est_funding_rate: 'Est. Funding Rate',
   funding_rate_tooltip:
-    'The interest rate paid by position holders, determined by the difference between the perpetual swap price and underlying spot price. A positive funding rate implies that longs pay shorts, whereas a negative funding rate implies that shorts pay longs.',
+    'The interest rate paid is determined by the difference between the perpetual swap price and the underlying spot price. If the funding rate is positive, traders with long positions will pay traders with short positions. If the funding rate is negative, traders with short positions will pay those in long positions.',
   est_receiving_amount: 'Est. Receiving Amount (Worst Case)',
   est_receiving_amount_note:
     'The lowest amount you can actually receive for the trade.',
@@ -219,9 +219,9 @@ export default {
   'Connect using Ledger instructions':
     'Note: To ensure smooth process while connecting your Ledger Hardware Wallet, please ensure you are running the on latest Chrome version, have your Ledger device connected, unlocked and your Ethereum app open. ',
   high_price_deviation_warning:
-    'Order execution disabled. Please confirm turning off the setting for making orders with high price deviation.',
+    'You have previously turned on the warning notification for high price deviations. Click confirm if you agree to turn off this warning.',
   high_execution_price_deviation_warning_note:
-    'Your execution price deviates at least {percentage}% from the latest market price. You have to confirm your order to have it executed. You can also cancel this confirmation modal for future orders by clicking "Cancel and Save Preference".',
+    'The execution price for your order deviates at least {percentage}% than the last traded price. Click confirm if you still want to execute it. You can also disable this confirmation dialog for future orders by clicking "Cancel and Save Preference".',
   high_execution_price_deviation_warning:
     'Your execution price deviates at least {percentage}% from the latest market price.',
   cancel_and_save_preference: 'Cancel and Save Preference',
@@ -350,7 +350,7 @@ export default {
   injective_home_subtitle_1:
     'Access unlimited DeFi markets. With Injective, you can trade any financial market on the first fast, cross-chain, low fee, secure, and fully decentralized derivatives exchange protocol. ',
   injective_home_subtitle_2:
-    'Injective is governed entirely by the community. We encourage early adopters to learn more about our products, connect with other community members, and have your say in shaping the future of our protocol.',
+    'Injective is governed entirely by the community.  Early adopters are encouraged to learn more about Injective products, connect with other community members, and have your say in shaping the future of the protocol.',
   gas_fees: 'Gas Fees',
   Total: 'Total',
   Twitter: 'Twitter',

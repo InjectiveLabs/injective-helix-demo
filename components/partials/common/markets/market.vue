@@ -1,28 +1,39 @@
 <template>
-  <TableRow>
-    <span class="col-span-2 md:col-span-3">
+  <TableRow @click.native.stop="handleClickOnMarket">
+    <span
+      class="text-base md:text-sm"
+      :class="{
+        'col-span-2 md:col-span-3': !simple,
+        'col-span-2 md:col-span-4': simple
+      }"
+    >
       <div
-        class="flex items-center mb-4 md:mb-0 cursor-pointer justify-center md:justify-start"
-        @click.stop="handleClickOnMarket"
+        class="flex items-center cursor-pointer justify-center md:justify-start"
       >
         <img
           :src="market.baseToken.icon"
           :alt="market.baseToken.name"
-          class="w-6 h-6 mr-4"
+          class="w-4 h-4 md:w-6 md:h-6 mr-4"
         />
-        <div class="mr-4">
+        <div class="mr-4 whitespace-nowrap">
           {{ market.ticker }}
-          <span class="text-gray-500 text-xs block">
+          <span v-if="!simple" class="text-gray-500 text-xs hidden md:block">
             {{ market.baseToken.name }}
           </span>
         </div>
       </div>
     </span>
-    <span class="col-span-1 font-mono text-left md:hidden">
+    <span
+      class="col-span-1 text-2xs md:text-sm text-gray-300 text-left md:hidden"
+    >
       {{ $t('last_traded_price') }}
     </span>
     <span
-      class="col-span-1 md:col-span-3 font-mono text-right flex items-center justify-end"
+      class="font-mono text-right text-2xs md:text-sm flex items-center justify-end"
+      :class="{
+        'col-span-1 md:col-span-3': !simple,
+        'col-span-1 md:col-span-4': simple
+      }"
     >
       <v-icon-arrow
         class="transform w-3 h-3 mr-1"
@@ -43,18 +54,33 @@
         </span>
       </span>
     </span>
-    <span class="col-span-1 font-mono text-left md:hidden">
+    <span
+      class="col-span-1 text-2xs md:text-sm text-gray-300 text-left md:hidden"
+    >
       {{ $t('market_change_24h') }}
     </span>
-    <span class="col-span-1 md:col-span-3 font-mono text-right">
+    <span
+      class="font-mono text-right text-2xs md:text-sm"
+      :class="{
+        'col-span-1 md:col-span-3': !simple,
+        'col-span-1 md:col-span-4': simple
+      }"
+    >
       <span :class="change.gte(0) ? 'text-aqua-500' : 'text-red-500'">
         {{ changeToFormat }}%
       </span>
     </span>
-    <span class="col-span-1 font-mono text-left md:hidden">
+    <span
+      v-if="!simple"
+      class="col-span-1 text-2xs md:text-sm text-gray-300 text-left md:hidden"
+    >
       {{ $t('market_volume_24h') }}
     </span>
-    <span class="col-span-1 md:col-span-3 font-mono text-right">
+    <span
+      v-if="!simple"
+      class="text-2xs md:text-sm font-mono text-right"
+      :class="{ 'col-span-1 md:col-span-3': !simple, 'col-span-4': simple }"
+    >
       {{ volumeToFormat }}
       <span class="text-xs text-gray-500 ml-1">
         {{ market.quoteToken.symbol }}
@@ -86,6 +112,12 @@ export default Vue.extend({
   },
 
   props: {
+    simple: {
+      required: false,
+      default: false,
+      type: Boolean
+    },
+
     market: {
       required: true,
       type: Object as PropType<UiDerivativeMarket | UiSpotMarket>

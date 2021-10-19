@@ -26,7 +26,7 @@
     >
       <v-icon-exit class="block md:hidden cursor-pointer w-6 h-6" />
       <span
-        class="cursor-pointer text-xs font-semibold"
+        class="cursor-pointer text-xs font-semibold hidden md:inline-block"
         @click="handleClickOnLogout"
       >
         {{ $t('logout') }}

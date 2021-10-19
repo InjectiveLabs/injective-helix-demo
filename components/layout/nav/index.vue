@@ -1,6 +1,9 @@
 <template>
-  <nav class="block flex-1 md:flex">
-    <v-nav-item-dummy @click.stop="$root.$emit('toggle-market-slideout')">
+  <nav class="block flex-1 lg:flex">
+    <v-nav-item :to="{ name: 'index' }" class="block lg:hidden">
+      {{ $t('home') }}
+    </v-nav-item>
+    <v-nav-item-dummy @click.stop="handleOpenMarketsSlideout">
       {{ $t('markets') }}
     </v-nav-item-dummy>
     <v-nav-item :to="{ name: 'portfolio' }">
@@ -24,6 +27,13 @@ export default Vue.extend({
   components: {
     VNavItem,
     VNavItemDummy
+  },
+
+  methods: {
+    handleOpenMarketsSlideout() {
+      this.$root.$emit('toggle-market-slideout')
+      this.$root.$emit('close-sidebar')
+    }
   }
 })
 </script>

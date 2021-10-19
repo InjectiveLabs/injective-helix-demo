@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isSidebarOpen" class="md:hidden">
+  <div v-if="isSidebarOpen" class="lg:hidden">
     <div v-touch:swipe.left="onSidebarClose" class="fixed inset-0 flex z-1110">
       <transition
         enter-active-class="transition-opacity ease-linear duration-300"
@@ -63,6 +63,10 @@ export default Vue.extend({
       default: false,
       type: Boolean
     }
+  },
+
+  mounted() {
+    this.$root.$on('close-sidebar', this.onSidebarClose)
   },
 
   methods: {

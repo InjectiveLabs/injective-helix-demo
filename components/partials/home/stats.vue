@@ -10,8 +10,10 @@
     </div>
 
     <v-card class="mt-6">
-      <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
-        <v-stat-item class="col-span-2 lg:col-span-3" sm>
+      <div
+        class="grid grid-cols-2 md:grid-cols-6 lg:grid-cols-12 gap-4 lg:gap-6"
+      >
+        <v-stat-item class="col-span-2 md:col-span-3" sm>
           <template slot="value">
             <span
               class="font-mono font-bold text-xl xl:text-2xl text-primary-500"
@@ -23,7 +25,7 @@
             {{ $t('trading') }}
           </template>
         </v-stat-item>
-        <v-stat-item class="col-span-2 lg:col-span-3" sm>
+        <v-stat-item class="col-span-2 md:col-span-3" sm>
           <template slot="value">
             <span
               class="font-mono font-bold text-xl xl:text-2xl text-primary-500"
@@ -35,7 +37,7 @@
             {{ $t('leverage') }}
           </template>
         </v-stat-item>
-        <v-stat-item class="col-span-2 lg:col-span-3" sm>
+        <v-stat-item class="col-span-2 md:col-span-3" sm>
           <template slot="value">
             <span
               class="font-mono font-bold text-2xl xl:text-3xl text-primary-500"
@@ -47,7 +49,7 @@
             {{ $t('markets') }}
           </template>
         </v-stat-item>
-        <v-stat-item class="col-span-2 lg:col-span-3" sm>
+        <v-stat-item class="col-span-2 md:col-span-3" sm>
           <template slot="value">
             <span
               class="font-mono font-bold text-xl xl:text-2xl text-primary-500"

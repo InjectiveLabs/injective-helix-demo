@@ -2,7 +2,7 @@
   <v-card>
     <div class="relative h-full">
       <div class="flex flex-col flex-wrap h-full">
-        <div class="w-full">
+        <div v-if="false" class="w-full">
           <p class="uppercase text-2xs text-gray-500">
             <slot name="category" />
           </p>
@@ -12,14 +12,14 @@
             <slot name="title" />
           </h3>
         </div>
-        <p class="text-gray-300 tracking-tight text-2xs my-2 w-1/2">
+        <p class="text-gray-300 tracking-tight text-2xs my-2 w-full lg:w-1/2">
           <slot></slot>
         </p>
         <div class="mt-auto text-xs font-semibold">
           <slot name="link" />
         </div>
       </div>
-      <div class="absolute right-0 top-0 -mt-16 -mr-6">
+      <div class="absolute right-0 top-0 -mt-16 -mr-6 hidden lg:block">
         <slot name="illustration"></slot>
       </div>
     </div>

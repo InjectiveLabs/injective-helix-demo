@@ -46,6 +46,7 @@ import VMetamask from './wallets/metamask.vue'
 import VLedger from './wallets/ledger.vue'
 import VModalLedger from './wallets/ledger/index.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
+import { WalletConnectStatus } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -63,10 +64,29 @@ export default Vue.extend({
     }
   },
 
+  computed: {
+    walletConnectStatus(): WalletConnectStatus {
+      return this.$accessor.wallet.walletConnectStatus
+    }
+  },
+
+  watch: {
+    walletConnectStatus(newWalletConnectStatus: WalletConnectStatus) {
+      if (newWalletConnectStatus === WalletConnectStatus.connecting) {
+        this.handleConnectingWallet()
+      }
+
+      if (
+        [WalletConnectStatus.connected, WalletConnectStatus.idle].includes(
+          newWalletConnectStatus
+        )
+      ) {
+        this.handleConnectedWallet()
+      }
+    }
+  },
+
   mounted() {
-    this.$root.$on('wallet-connecting', this.handleConnectingWallet)
-    this.$root.$on('wallet-connected', this.handleConnectedWallet)
-    this.$root.$on('wallet-disconnected', this.handleDisconnectedWallet)
     this.$root.$on(
       'wallet-ledger-connecting',
       this.handleLedgerConnectingWallet
@@ -81,9 +101,6 @@ export default Vue.extend({
   },
 
   beforeDestroy() {
-    this.$root.$off('wallet-connecting', this.handleConnectingWallet)
-    this.$root.$off('wallet-connected', this.handleConnectedWallet)
-    this.$root.$off('wallet-disconnected', this.handleDisconnectedWallet)
     this.$root.$off(
       'wallet-ledger-connecting',
       this.handleLedgerConnectingWallet

@@ -72,7 +72,7 @@ export default Vue.extend({
       })
   },
 
-  destroyed() {
+  beforeDestroy() {
     clearInterval(this.interval)
   },
 

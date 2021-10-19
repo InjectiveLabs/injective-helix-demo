@@ -5,14 +5,14 @@
     @slideout-closed="closeSlideout"
   >
     <div>
-      <v-list-simple :markets="markets" :summaries="marketsSummary" />
+      <v-table :markets="markets" :summaries="marketsSummary" simple />
     </div>
   </v-slideout>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import VListSimple from './list-simple.vue'
+import VTable from './table.vue'
 import VSlideout from '~/components/elements/slideout.vue'
 import {
   UiDerivativeMarket,
@@ -23,7 +23,7 @@ import {
 
 export default Vue.extend({
   components: {
-    VListSimple,
+    VTable,
     VSlideout
   },
 

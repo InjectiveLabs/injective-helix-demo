@@ -3,7 +3,7 @@
     <h3 class="text-xl font-bold text-gray-200">
       {{ $t('getting_started') }}
     </h3>
-    <div class="grid grid-cols-4 lg:grid-cols-12 gap-4 lg:gap-6 mt-6">
+    <div class="grid grid-cols-4 md:grid-cols-12 gap-4 lg:gap-6 mt-6">
       <v-home-card
         v-for="(card, index) in cards"
         :key="`home-card-${index}`"
@@ -50,7 +50,7 @@ export default Vue.extend({
           link: 'https://hub.injective.network',
           description:
             'A unified interface for Injective staking, governance, insurance funds and wallets.',
-          linkText: 'View the Injective Hub',
+          linkText: 'Visit our Hub',
           illustration: '/svg/hub-new.svg'
         },
         {
@@ -58,7 +58,7 @@ export default Vue.extend({
           title: 'Injective API',
           link: 'https://api.injective.exchange/',
           description: 'An institutional grade API custom made for Injective.',
-          linkText: 'Connect now',
+          linkText: 'Explore the docs',
           illustration: '/svg/api-new-v4.svg'
         },
         {

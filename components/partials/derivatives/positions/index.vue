@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-if="market"
-    class="table-responsive h-full min-h-orders max-h-xs 4xl:max-h-lg"
-  >
+  <div v-if="market" class="table-responsive table-orders">
     <table class="table">
       <position-table-header />
       <tbody v-if="isUserWalletConnected">

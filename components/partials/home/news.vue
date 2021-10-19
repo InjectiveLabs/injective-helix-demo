@@ -9,7 +9,7 @@
         :key="article.title"
         :href="article.link"
         target="_blank"
-        class="w-full sm:w-1/2 lg:w-1/3 text-sm flex items-center text-gray-300 hover:text-gray-200 px-4"
+        class="w-full mt-2 md:mt-0 md:w-1/3 text-sm flex items-center text-gray-300 hover:text-gray-200 px-4"
       >
         <v-icon-news class="w-4 h-4 mr-1" />
         {{ article.title }}
@@ -27,6 +27,10 @@ export default Vue.extend({
     return {
       articles: [
         {
+          title: 'Injective Explorer Release',
+          link: 'https://blog.injectiveprotocol.com/injective-explorer-release/'
+        },
+        {
           title: 'Injective Update: September 2021',
           link:
             'https://blog.injectiveprotocol.com/injective-update-september-2021/'
@@ -35,11 +39,6 @@ export default Vue.extend({
           title: 'Launch of Unified Governance Interface',
           link:
             'https://blog.injectiveprotocol.com/injective-launches-unified-governance-interface-with-commonwealth/'
-        },
-        {
-          title: 'Equinox Staking Rewards Distribution',
-          link:
-            'https://blog.injectiveprotocol.com/equinox-staking-rewards-distribution/'
         }
       ]
     }

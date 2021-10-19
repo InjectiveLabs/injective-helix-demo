@@ -5,6 +5,13 @@ export enum Change {
   Decrease = 'decrease'
 }
 
+export enum WalletConnectStatus {
+  connecting = 'Connecting',
+  disconnected = 'Disconnected',
+  idle = 'Idle',
+  connected = 'Connected'
+}
+
 export enum Icon {
   Arrow = 'arrow',
   Copy = 'copy',

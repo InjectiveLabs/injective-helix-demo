@@ -1,6 +1,6 @@
 <template>
-  <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
-    <v-item class="col-span-2 lg:col-span-3">
+  <div class="grid grid-cols-2 sm:grid-cols-6 lg:grid-cols-12 gap-4 lg:gap-6">
+    <v-item class="col-span-2 sm:col-span-3">
       <template slot="value">
         <span v-if="isUserWalletConnected" class="font-mono text-lg">
           {{ availableBalanceInUsdToString }}
@@ -18,7 +18,7 @@
         </div>
       </template>
     </v-item>
-    <v-item class="col-span-2 lg:col-span-3">
+    <v-item class="col-span-2 sm:col-span-3">
       <template slot="value">
         <span v-if="isUserWalletConnected" class="font-mono text-lg">
           {{ lockedBalanceInUsdToString }}
@@ -36,7 +36,7 @@
         </div>
       </template>
     </v-item>
-    <v-item class="col-span-2 lg:col-span-3">
+    <v-item class="col-span-2 sm:col-span-3">
       <template slot="value">
         <span v-if="isUserWalletConnected" class="font-mono text-lg">
           {{ unrealizedPnLInUsdToString }}
@@ -54,7 +54,7 @@
         </div>
       </template>
     </v-item>
-    <v-item class="col-span-2 lg:col-span-3">
+    <v-item class="col-span-2 sm:col-span-3">
       <template slot="value">
         <span v-if="isUserWalletConnected" class="font-mono text-lg">
           {{ bankBalancesTotalInUsdToString }}

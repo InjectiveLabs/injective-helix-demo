@@ -2,7 +2,7 @@
   <div class="h-full w-full flex flex-wrap py-4">
     <HOCLoading :status="status">
       <div class="container">
-        <div class="w-full mx-auto xl:w-4/5">
+        <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12">
           <v-overview v-if="!isUserWalletConnected" class="mt-6" />
           <v-panel v-if="false" :title="$t('wallet_history')">
             <v-wallet-history />

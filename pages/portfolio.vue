@@ -2,7 +2,7 @@
   <div class="h-full w-full flex flex-wrap py-4">
     <HOCLoading :status="status">
       <div class="container">
-        <div class="w-full mx-auto xl:w-4/5">
+        <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12">
           <v-portfolio />
           <v-panel :title="$t('open_positions')" class="mt-12">
             <v-open-positions />
@@ -37,7 +37,8 @@ export default Vue.extend({
 
   data() {
     return {
-      status: new Status(StatusType.Loading)
+      status: new Status(StatusType.Loading),
+      interval: 0 as any
     }
   },
 
@@ -45,7 +46,9 @@ export default Vue.extend({
     this.$accessor.portfolio
       .init()
       .then(() => {
-        //
+        this.interval = setInterval(async () => {
+          await this.$accessor.portfolio.poll()
+        }, 10000)
       })
       .catch(this.$onRejected)
       .finally(() => {
@@ -55,6 +58,7 @@ export default Vue.extend({
 
   beforeDestroy() {
     this.$accessor.portfolio.reset()
+    clearInterval(this.interval)
   }
 })
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col flex-wrap w-full overflow-y-hidden">
-    <div ref="sellOrders" class="overflow-y-auto w-full h-48 4xl:h-xs">
+    <div ref="sellOrders" class="overflow-y-auto w-full orderbook-half-h">
       <ul
         class="list-order-book transform -scale-y-100"
         @mouseenter="autoScrollSellsLocked = true"
@@ -18,45 +18,34 @@
     </div>
     <div
       v-if="market"
-      class="h-8 4xl:h-24 bg-gray-900 flex flex-col items-center justify-center border-t border-b"
+      class="orderbook-middle-h bg-gray-900 flex flex-col items-center justify-center border-t border-b"
     >
-      <div class="w-full flex justify-between px-2">
-        <span class="text-white font-bold text-sm w-2/3 text-right pr-2">
-          <div class="transform inline-block mt-2">
-            <v-icon-arrow
-              v-if="
-                [Change.Increase, Change.Decrease].includes(
-                  lastTradedPriceChange
-                )
-              "
-              class="transform w-3 h-3 2xl:w-6 4xl:h-6"
-              :class="{
-                'text-red-500 -rotate-90':
-                  lastTradedPriceChange === Change.Decrease,
-                'text-aqua-500 rotate-90':
-                  lastTradedPriceChange === Change.Increase
-              }"
-            />
-          </div>
-          <div class="inline-block">
-            <span
-              :class="{
-                'text-red-500 -rotate-90':
-                  lastTradedPriceChange === Change.Decrease,
-                'text-aqua-500': lastTradedPriceChange !== Change.Decrease
-              }"
-              class="font-mono text-lg 4xl:text-3xl"
-            >
-              {{ lastTradedPriceToFormat }}
-            </span>
-          </div>
+      <div class="w-full flex items-center justify-center">
+        <v-icon-arrow
+          v-if="
+            [Change.Increase, Change.Decrease].includes(lastTradedPriceChange)
+          "
+          class="transform w-3 h-3 lg:w-4 lg:h-4 4xl:w-5 4xl:h-5"
+          :class="{
+            'text-red-500 -rotate-90':
+              lastTradedPriceChange === Change.Decrease,
+            'text-aqua-500 rotate-90': lastTradedPriceChange === Change.Increase
+          }"
+        />
+        <span
+          :class="{
+            'text-red-500': lastTradedPriceChange === Change.Decrease,
+            'text-aqua-500': lastTradedPriceChange !== Change.Decrease
+          }"
+          class="font-bold font-mono text-base lg:text-lg 4xl:text-xl"
+        >
+          {{ lastTradedPriceToFormat }}
         </span>
-        <span class="text-sm w-1/3 text-right pr-2" />
       </div>
     </div>
     <ul
       ref="buyOrders"
-      class="list-order-book overflow-auto w-full h-48 4xl:h-xs"
+      class="list-order-book overflow-auto w-full orderbook-half-h"
       @mouseenter="autoScrollBuysLocked = true"
       @mouseleave="autoScrollBuysLocked = false"
     >

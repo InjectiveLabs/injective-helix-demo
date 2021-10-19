@@ -31,7 +31,7 @@ const actionsThatSetAppStateToBusy = [
   'portfolio/batchCancelOrder'
 ]
 
-const store: Plugin = ({ store, app }) => {
+const store: Plugin = ({ store, app }, inject) => {
   const localState = localStorage.get('state') as any
 
   // Replace Local State

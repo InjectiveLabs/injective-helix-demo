@@ -1927,10 +1927,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/contracts@^0.0.75":
-  version "0.0.75"
-  resolved "https://registry.npmjs.org/@injectivelabs/contracts/-/contracts-0.0.75.tgz#ed18f43d23951bab858b24a7310de278161cc593"
-  integrity sha512-B0kAiIJmMbVpfCzRJ2EaZyJzwumkAEMMLsEkhFXPIaDD0DJbtinyOfGJgDiQjIte6Hb+szcs4lCooM8tLf3BCw==
+"@injectivelabs/contracts@^0.0.76":
+  version "0.0.76"
+  resolved "https://registry.npmjs.org/@injectivelabs/contracts/-/contracts-0.0.76.tgz#3e872c182841cbb1915e49c4d04fe308e1b4a40e"
+  integrity sha512-0BBJKe9yAdEyFHbyfE/zNZbvI1/M8Dg/5NEhysTcL+BwLOkyiH9k8YLZN1svrELtM1Ymc+vZAkaMs86ccKhf2A==
   dependencies:
     "@commitlint/cli" "^13.1.0"
     "@commitlint/config-conventional" "^13.1.0"
@@ -1939,7 +1939,7 @@
     "@injectivelabs/tx-utils" "^0.0.15"
     "@injectivelabs/utils" "^0.0.38"
     "@injectivelabs/web3-contract-typings" "^0.1.13"
-    "@injectivelabs/web3-strategy" "^0.0.68"
+    "@injectivelabs/web3-strategy" "^0.0.69"
     "@types/ethereumjs-util" "^6.1.0"
     "@types/jest" "^27.0.1"
     "@types/node" "^16.9.2"
@@ -2153,10 +2153,10 @@
   dependencies:
     typescript "^4.0.5"
 
-"@injectivelabs/web3-strategy@^0.0.68":
-  version "0.0.68"
-  resolved "https://registry.npmjs.org/@injectivelabs/web3-strategy/-/web3-strategy-0.0.68.tgz#dbd82114b2c78b0b0e720a31bf0c4d74949e40e1"
-  integrity sha512-5A4o1iqGns/MOY6ZGAMTyY4exiDUGHfZZM0OdbyZMZZrRsQBd6dA3X5c/M5dGQTiZ8xHuROHEpn6C3D6oxv8Kw==
+"@injectivelabs/web3-strategy@^0.0.69":
+  version "0.0.69"
+  resolved "https://registry.npmjs.org/@injectivelabs/web3-strategy/-/web3-strategy-0.0.69.tgz#f3cf3462746009ffc158f09cb2b8291bfecd1ad5"
+  integrity sha512-8xuZOGVdMdIvI0m6+v/1LWmxthG/hhUjGVkCsL2WHILCcBD6TXJ2qqaukhoPvUH7/WACTMILocNDHz7AfI+17g==
   dependencies:
     "@injectivelabs/assert" "^0.0.22"
     "@injectivelabs/exceptions" "^0.0.29"
@@ -17602,6 +17602,11 @@ vue-toasted@^1.1.28:
   version "1.1.28"
   resolved "https://registry.yarnpkg.com/vue-toasted/-/vue-toasted-1.1.28.tgz#dbabb83acc89f7a9e8765815e491d79f0dc65c26"
   integrity sha512-UUzr5LX51UbbiROSGZ49GOgSzFxaMHK6L00JV8fir/CYNJCpIIvNZ5YmS4Qc8Y2+Z/4VVYRpeQL2UO0G800Raw==
+
+vue2-touch-events@^3.2.2:
+  version "3.2.2"
+  resolved "https://registry.npmjs.org/vue2-touch-events/-/vue2-touch-events-3.2.2.tgz#77b760a70659ed8a75e7c685163e73497be87042"
+  integrity sha512-rGV8jxgOQEJYkJCp7uOBe3hjvmG1arThrq1wGtJHwJTgi65+P2a+0l4CYcQO/U1ZFqTq2/TT2+oTE6H7Y+6Eog==
 
 vue@^2.0.0, vue@^2.6.12:
   version "2.6.12"

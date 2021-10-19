@@ -1,10 +1,10 @@
 <template>
   <TableRow>
-    <span class="col-span-1 font-mono text-left xl:hidden">{{
+    <span class="col-span-1 font-mono text-left md:hidden">{{
       $t('Asset')
     }}</span>
-    <span class="col-span-1 xl:col-span-3 text-right xl:text-left">
-      <div class="flex items-center">
+    <span class="col-span-1 md:col-span-3 text-right md:text-left">
+      <div class="flex items-center justify-end md:justify-start">
         <div v-if="balance.token.icon" class="w-6 h-6">
           <img
             :src="balance.token.icon"
@@ -17,18 +17,18 @@
             {{ balance.token.name }}
           </div>
           <span
-            class="text-gray-400 dark:text-gray-500 text-xs xl:text-xs 2xl:text-sm block"
+            class="text-gray-400 dark:text-gray-500 text-2xs md:text-xs 4xl:text-sm block"
           >
             {{ balance.token.symbol }}
           </span>
         </div>
       </div>
     </span>
-    <span class="col-span-1 font-mono text-left xl:hidden">{{
+    <span class="col-span-1 font-mono text-left md:hidden">{{
       $t('Injective Chain Balance')
     }}</span>
     <span
-      class="col-span-1 xl:col-span-3 font-mono text-right whitespace-nowrap"
+      class="col-span-1 md:col-span-3 font-mono text-right whitespace-nowrap"
     >
       <div class="flex items-center justify-end">
         {{ bankBalanceToString }}
@@ -42,11 +42,11 @@
         </span>
       </div>
     </span>
-    <span class="col-span-1 font-mono text-left xl:hidden">{{
+    <span class="col-span-1 font-mono text-left md:hidden">{{
       $t('ERC20 Balance')
     }}</span>
     <span
-      class="col-span-1 xl:col-span-3 font-mono text-right whitespace-nowrap"
+      class="col-span-1 md:col-span-3 font-mono text-right whitespace-nowrap"
     >
       <div class="flex items-center justify-end">
         {{ erc20BalanceToString }}
@@ -60,11 +60,11 @@
         </span>
       </div>
     </span>
-    <span class="col-span-1 font-mono text-left xl:hidden">{{
+    <span class="col-span-1 font-mono text-left md:hidden">{{
       $t('Total')
     }}</span>
     <span
-      class="col-span-1 xl:col-span-3 font-mono text-right whitespace-nowrap"
+      class="col-span-1 md:col-span-3 font-mono text-right whitespace-nowrap"
     >
       <div class="flex items-center justify-end">
         {{ totalToString }}

@@ -91,6 +91,14 @@ export default Vue.extend({
     }
   },
 
+  watch: {
+    position(newPosition: UiPosition | undefined) {
+      if (newPosition) {
+        this.component = components.openPositions
+      }
+    }
+  },
+
   methods: {
     onSelect(component: string) {
       this.component = component
