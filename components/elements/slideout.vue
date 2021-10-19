@@ -51,7 +51,7 @@
             class="w-screen max-w-xl"
           >
             <div
-              class="h-full flex flex-col py-6 bg-gray-800 shadow-xl overflow-y-scroll"
+              class="h-full flex flex-col py-6 bg-gray-800 shadow-xl overflow-y-auto"
             >
               <div v-if="$slots['title']" class="px-4 sm:px-6">
                 <div class="flex items-start justify-between">
@@ -113,10 +113,10 @@ export default Vue.extend({
       if (newIsOpen) {
         this.isVisibleOnViewport = true
         this.$nextTick(() => {
-          document.body.classList.add('overflow-hidden', 'mr-10px')
+          document.body.classList.add('overflow-hidden')
         })
       } else {
-        document.body.classList.remove('overflow-hidden', 'mr-10px')
+        document.body.classList.remove('overflow-hidden')
         setTimeout(() => {
           this.isVisibleOnViewport = false
         }, 300)

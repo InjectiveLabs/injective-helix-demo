@@ -18,6 +18,9 @@ module.exports = {
   htmlAttrs: {
     class: 'bg-gray-1000'
   },
+  bodyAttrs: {
+    class: 'overflow-fix'
+  },
   link: [
     { rel: 'icon', type: 'image/png', href: '/favicon-v4.png' },
     { rel: 'shortcut-icon', type: 'image/png', href: '/favicon-v4.png' },

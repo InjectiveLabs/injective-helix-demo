@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    if: true
+    if: false
     env:
       ## Public
       APP_NAME: 'Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'
@@ -133,7 +133,7 @@ jobs:
         run: aws cloudfront create-invalidation --distribution-id=$CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
 
   deploy-testnet:
-    if: false
+    if: true
     env:
       ## Public
       APP_NAME: 'TESTNET - Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'

@@ -1,20 +1,21 @@
 <template>
   <div class="flex flex-col flex-wrap overflow-y-hidden w-full">
-    <div ref="sellOrders" class="overflow-y-auto w-full orderbook-half-h">
-      <ul
-        class="list-order-book transform -scale-y-100"
-        @mouseenter="autoScrollSellsLocked = true"
-        @mouseleave="autoScrollSellsLocked = false"
-      >
-        <v-record
-          v-for="(sell, index) in sellsWithDepth"
-          :key="`order-book-sell-${index}`"
-          class="-scale-y-100 transform"
-          :type="DerivativeOrderSide.Sell"
-          :user-orders="sellUserOrderPrices"
-          :record="sell"
-        ></v-record>
-      </ul>
+    <div ref="sellOrders" class="overflow-y-scroll w-full orderbook-half-h">
+      <div class="flex h-full w-full">
+        <ul
+          class="list-order-book w-full mt-auto"
+          @mouseenter="autoScrollSellsLocked = true"
+          @mouseleave="autoScrollSellsLocked = false"
+        >
+          <v-record
+            v-for="(sell, index) in sellsWithDepth"
+            :key="`order-book-sell-${index}`"
+            :type="DerivativeOrderSide.Sell"
+            :user-orders="sellUserOrderPrices"
+            :record="sell"
+          ></v-record>
+        </ul>
+      </div>
     </div>
     <div
       v-if="market"
@@ -45,7 +46,7 @@
     </div>
     <ul
       ref="buyOrders"
-      class="list-order-book overflow-auto w-full orderbook-half-h"
+      class="list-order-book overflow-y-scroll w-full orderbook-half-h"
       @mouseenter="autoScrollBuysLocked = true"
       @mouseleave="autoScrollBuysLocked = false"
     >
@@ -235,19 +236,24 @@ export default Vue.extend({
       }
 
       let accumulator = ZERO_IN_BASE
-      return sells.map((record: UiPriceLevel, index: number) => {
-        const notional = new BigNumberInWei(record.quantity)
-          .times(record.price)
-          .toBase(market.quoteToken.decimals)
+      return [...sells]
+        .map((record: UiPriceLevel, index: number) => {
+          const notional = new BigNumberInWei(record.quantity)
+            .times(record.price)
+            .toBase(market.quoteToken.decimals)
 
-        accumulator = index === 0 ? notional : accumulator.plus(notional)
+          accumulator = index === 0 ? notional : accumulator.plus(notional)
 
-        return {
-          ...record,
-          total: accumulator.toFixed(),
-          depth: accumulator.dividedBy(sellsTotalNotional).times(100).toNumber()
-        }
-      })
+          return {
+            ...record,
+            total: accumulator.toFixed(),
+            depth: accumulator
+              .dividedBy(sellsTotalNotional)
+              .times(100)
+              .toNumber()
+          }
+        })
+        .reverse()
     }
   },
 

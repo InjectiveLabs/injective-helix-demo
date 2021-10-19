@@ -94,10 +94,10 @@ export default Vue.extend({
       if (newIsOpen) {
         this.isVisibleOnViewport = true
         this.$nextTick(() => {
-          document.body.classList.add('overflow-hidden', 'mr-10px')
+          document.body.classList.add('overflow-hidden')
         })
       } else {
-        document.body.classList.remove('overflow-hidden', 'mr-10px')
+        document.body.classList.remove('overflow-hidden')
         setTimeout(() => {
           this.isVisibleOnViewport = false
         }, 300)

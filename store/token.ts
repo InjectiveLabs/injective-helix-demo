@@ -337,10 +337,10 @@ export const actions = actionTree(
         injectiveAddress,
         denom: token.denom,
         destinationAddress: address,
+        amount: amount.toWei(token.decimals),
         bridgeFee: new BigNumberInWei(
           bridgeFee.toWei(token.decimals).toFixed(0)
-        ),
-        amount: amount.toWei(token.decimals)
+        )
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())

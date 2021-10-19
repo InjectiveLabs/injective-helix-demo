@@ -1,5 +1,5 @@
 <template>
-  <div v-if="market" class="h-10">
+  <div v-if="market">
     <div class="flex overflow-x-auto overflow-y-none">
       <v-market-info
         :title="$t('last_traded_price')"
@@ -85,6 +85,7 @@
             {{ (fundingRate.gt(0) ? '+' : '') + fundingRate.toFormat(4) }}%
           </span>
         </span>
+        <span v-else class="text-sm text-right font-mono block">&mdash;</span>
       </v-market-info>
       <v-market-next-funding v-if="market.type === MarketType.Derivative" />
       <v-market-info

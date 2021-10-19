@@ -1,31 +1,6 @@
 <template>
   <div>
-    <div v-if="market" class="h-8">
-      <table class="table">
-        <thead xs>
-          <tr>
-            <th class="w-1/3 text-right">
-              <span>{{ $t('price') }}</span>
-              <span class="font-semibold text-white uppercase">
-                {{ market.quoteToken.symbol }}
-              </span>
-            </th>
-            <th class="w-1/3 text-right">
-              <span>{{ $t('amount') }}</span>
-              <span class="font-semibold text-white uppercase">
-                {{ market.baseToken.symbol }}
-              </span>
-            </th>
-            <th class="w-1/3 text-right">
-              <span>{{ $t('total') }}</span>
-              <span class="font-semibold text-white uppercase">
-                {{ market.quoteToken.symbol }}
-              </span>
-            </th>
-          </tr>
-        </thead>
-      </table>
-    </div>
+    <v-table-head :market="market" />
     <v-orderbook />
   </div>
 </template>
@@ -33,11 +8,13 @@
 <script lang="ts">
 import Vue from 'vue'
 import OrderBook from './order-book.vue'
+import VTableHead from '~/components/partials/common/orderbook/table-head.vue'
 import { UiSpotMarket } from '~/types'
 
 export default Vue.extend({
   components: {
-    'v-orderbook': OrderBook
+    'v-orderbook': OrderBook,
+    VTableHead
   },
 
   computed: {

@@ -1,45 +1,37 @@
 <template>
   <div class="flex flex-col flex-wrap h-full">
-    <div v-if="market" class="h-8 w-full">
-      <table class="table">
-        <thead xs>
-          <tr>
-            <th class="w-1/3 text-right">
-              <span>{{ $t('price') }}</span>
-              <span class="text-white font-semibold uppercase">
-                {{ market.quoteToken.symbol }}
-              </span>
-            </th>
-            <th class="w-1/3 text-right">
-              <span>{{ $t('amount') }}</span>
-              <span class="text-white font-semibold uppercase">
-                {{ market.baseToken.symbol }}
-              </span>
-            </th>
-            <th class="w-1/3 text-right">
-              <span>{{ $t('time') }}</span>
-            </th>
-          </tr>
-        </thead>
-      </table>
+    <v-table-head :market="market" />
+    <div class="flex-1 w-full overflow-y-auto">
+      <ul class="list-trades w-full">
+        <v-trade
+          v-for="(trade, index) in trades"
+          :key="`trade-${index}`"
+          :trade="trade"
+        ></v-trade>
+      </ul>
     </div>
-    <v-trades class="flex-1" />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import Trades from './trades.vue'
-import { UiSpotMarket } from '~/types'
+import VTrade from './trade.vue'
+import VTableHead from '~/components/partials/common/trades/table-head.vue'
+import { UiSpotMarket, UiSpotTrade } from '~/types'
 
 export default Vue.extend({
   components: {
-    'v-trades': Trades
+    VTableHead,
+    VTrade
   },
 
   computed: {
     market(): UiSpotMarket | undefined {
       return this.$accessor.spot.market
+    },
+
+    trades(): UiSpotTrade[] {
+      return this.$accessor.spot.trades
     }
   }
 })

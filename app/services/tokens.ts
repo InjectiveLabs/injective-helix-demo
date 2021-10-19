@@ -219,8 +219,8 @@ export const withdraw = async ({
 }) => {
   const message = PeggyComposer.withdraw({
     denom,
-    amount: amount.minus(bridgeFee).toFixed(),
-    bridgeFeeAmount: bridgeFee.toFixed(),
+    amount: amount.minus(bridgeFee).toFixed(0, BigNumberInWei.ROUND_DOWN),
+    bridgeFeeAmount: bridgeFee.toFixed(0, BigNumberInWei.ROUND_DOWN),
     bridgeFeeDenom: denom,
     address: destinationAddress,
     injectiveAddress

@@ -328,7 +328,8 @@ export default {
   available_margin: 'Available Margin',
   available_margin_tooltip: 'Your total available margin for trading',
   margin_hold: 'Margin Hold',
-  margin_hold_tooltip: 'The amount of margin you have in your open orders',
+  margin_hold_tooltip:
+    'The amount of margin you have in your open orders and open positions',
   assets_value: 'Assets Value',
   assets_value_tooltip: 'The total value of your assets in the bank module.',
   unrealized_pnl_portfolio: 'Unrealized PnL',
@@ -368,5 +369,7 @@ export default {
   'Asset Transfer Tooltip': 'The asset you want to transfer',
   'Injective Address Destination': 'Destination',
   'Injective Address Destination Tooltip':
-    'The destination injective address you want to sent the assets to'
+    'The destination injective address you want to sent the assets to',
+  'Buffer for gas note':
+    'Note: You have to leave a small amount of INJ in your Injective Chain balance to pay for the gas fees when required.'
 }

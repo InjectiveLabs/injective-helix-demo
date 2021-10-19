@@ -182,10 +182,6 @@ module.exports = {
 
       minWidth: {
         ...extraSizings
-      },
-
-      margin: {
-        '10px': '10px'
       }
     }
   },

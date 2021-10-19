@@ -19,6 +19,12 @@
           {{ availableForDepositToFormat }}
           <span class="text-gray-500 ml-2">{{ token.symbol }}</span>
         </span>
+        <p
+          v-if="token.denom === INJECTIVE_DENOM"
+          class="mt-2 text-left text-xs text-gray-400"
+        >
+          * {{ $t('Buffer for gas note') }}
+        </p>
       </div>
     </div>
 
@@ -70,7 +76,12 @@ import Vue, { PropType } from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import { TokenWithBalance } from '~/types'
-import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import {
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+  INJECTIVE_DENOM,
+  INJ_FEE_BUFFER,
+  ZERO_IN_BASE
+} from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -92,6 +103,7 @@ export default Vue.extend({
 
   data() {
     return {
+      INJECTIVE_DENOM,
       status: new Status(),
 
       form: {
@@ -102,9 +114,11 @@ export default Vue.extend({
 
   computed: {
     availableForDeposit(): BigNumberInBase {
-      const { balance } = this
+      const { balance, token } = this
 
-      return balance
+      return balance.gt(INJ_FEE_BUFFER) && token.denom === INJECTIVE_DENOM
+        ? balance.minus(INJ_FEE_BUFFER)
+        : balance
     },
 
     availableForDepositToFormat(): string {
