@@ -50,7 +50,7 @@ export default Vue.extend({
 
   methods: {
     handleClickOnLedgerConnect() {
-      this.$root.$emit('wallet-ledger-connecting')
+      this.$emit('wallet-ledger-connecting')
       this.isLedgerModalOpen = true
     }
   }

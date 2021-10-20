@@ -53,6 +53,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Wallet } from '@injectivelabs/web3-strategy'
+import { WalletConnectStatus } from '~/types'
 
 export default Vue.extend({
   computed: {
@@ -63,15 +64,16 @@ export default Vue.extend({
 
   methods: {
     handleClickOnMetamaskConnect() {
-      this.$root.$emit('wallet-connecting')
-
       this.$accessor.wallet
         .connectAndConfirm(Wallet.Metamask)
         .then(() => {
-          this.$root.$emit('wallet-connected')
+          this.$emit('wallet-connected')
         })
-        .catch(() => {
-          this.$root.$emit('wallet-disconnected')
+        .catch((e) => {
+          this.$accessor.wallet.setWalletConnectStatus(
+            WalletConnectStatus.disconnected
+          )
+          this.$onError(e)
         })
     }
   }

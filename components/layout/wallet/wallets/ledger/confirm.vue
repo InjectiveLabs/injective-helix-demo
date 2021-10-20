@@ -47,6 +47,7 @@ import { Status } from '@injectivelabs/utils'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { AccountAddress } from '@injectivelabs/ts-types'
 import VSelectCustom from '~/components/inputs/select-custom.vue'
+import { WalletConnectStatus } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -84,7 +85,12 @@ export default Vue.extend({
         .then(() => {
           //
         })
-        .catch(this.$onError)
+        .catch((e) => {
+          this.$accessor.wallet.setWalletConnectStatus(
+            WalletConnectStatus.disconnected
+          )
+          this.$onError(e)
+        })
         .finally(() => {
           this.status.setIdle()
           this.$emit('connected')

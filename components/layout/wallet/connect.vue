@@ -15,7 +15,9 @@
         <HOCLoading :status="status">
           <ul class="divide-y divide-gray-800 border-gray-700 rounded-lg">
             <v-metamask />
-            <v-ledger />
+            <v-ledger
+              @wallet-ledger-connecting="handleLedgerConnectingWallet"
+            />
             <li class="text-xs text-gray-300 px-4 py-2">
               <p class="text-center leading-4">
                 * {{ $t('Trezor Connection Note') }}
@@ -76,6 +78,10 @@ export default Vue.extend({
         this.handleConnectingWallet()
       }
 
+      if (newWalletConnectStatus === WalletConnectStatus.disconnected) {
+        this.handleDisconnectedWallet()
+      }
+
       if (
         [WalletConnectStatus.connected, WalletConnectStatus.idle].includes(
           newWalletConnectStatus
@@ -87,10 +93,6 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.$root.$on(
-      'wallet-ledger-connecting',
-      this.handleLedgerConnectingWallet
-    )
     this.$root.$on('wallet-clicked', this.handleWalletClicked)
 
     Promise.all([this.$accessor.wallet.isMetamaskInstalled()])
@@ -101,10 +103,6 @@ export default Vue.extend({
   },
 
   beforeDestroy() {
-    this.$root.$off(
-      'wallet-ledger-connecting',
-      this.handleLedgerConnectingWallet
-    )
     this.$root.$off('wallet-clicked', this.handleWalletClicked)
   },
 
