@@ -371,5 +371,18 @@ export default {
   'Injective Address Destination Tooltip':
     'The destination injective address you want to sent the assets to',
   'Buffer for gas note':
-    'Note: You have to leave a small amount of INJ in your Injective Chain balance to pay for the gas fees when required.'
+    'Note: You have to leave a small amount of INJ in your Injective Chain balance to pay for the gas fees when required.',
+  'Acknowledge Terms': 'Acknowledge Terms',
+  acknowledge_title:
+    'In addition, you hereby represent, warrant, and agree that: ',
+  acknowledge_1:
+    'You are not a person or company who is a resident of, is located, incorporated, or has a registered agent in, the United States of America or a Restricted Territory (as defined in the T&C).',
+  acknowledge_2:
+    'You will not in the future access this site or use Injective.Exchange while located in the United States of America or a Restricted Territory.',
+  acknowledge_3:
+    'You are not using, and will not in the future use, a virtual private network or other means to mask your physical location from a Restricted Territory.',
+  acknowledge_4:
+    'You are lawfully permitted to access this site and trade on Injective.Exchange under the laws of the jurisdiction in which you reside and are located.',
+  acknowledge_5:
+    'You understand the risks associated with using leverage, entering into perpetual contracts, and trading in digital assets.'
 }

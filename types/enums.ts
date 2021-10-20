@@ -38,6 +38,7 @@ export enum Icon {
 }
 
 export enum Modal {
+  Terms = 'terms',
   OrderConfirm = 'order-confirm',
   Connect = 'connect',
   BridgeDeposit = 'bridge-deposit',

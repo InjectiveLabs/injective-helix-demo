@@ -1,6 +1,6 @@
 <template>
   <div class="ml-4 flex items-center md:ml-6">
-    <v-button md primary @click="isOpenConnectModal = !isOpenConnectModal">
+    <v-button md primary @click="handleWalletConnectClicked">
       {{ $t('connect') }}
     </v-button>
 
@@ -23,17 +23,11 @@
                 * {{ $t('Trezor Connection Note') }}
               </p>
             </li>
-            <li class="text-xs text-gray-300 px-4 py-2">
-              <!-- eslint-disable vue/no-v-html -->
-              <p
-                class="text-center leading-4"
-                v-html="$t('disclaimer_note')"
-              ></p>
-            </li>
           </ul>
         </HOCLoading>
       </div>
     </v-modal>
+    <v-modal-terms />
     <v-modal-ledger
       :is-open="isLedgerModalOpen"
       @closed="isLedgerModalOpen = false"
@@ -48,10 +42,13 @@ import VMetamask from './wallets/metamask.vue'
 import VLedger from './wallets/ledger.vue'
 import VModalLedger from './wallets/ledger/index.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
-import { WalletConnectStatus } from '~/types'
+import { Modal, WalletConnectStatus } from '~/types'
+import { GEO_IP_RESTRICTIONS_ENABLED } from '~/app/utils/constants'
+import VModalTerms from '~/components/partials/modals/terms.vue'
 
 export default Vue.extend({
   components: {
+    VModalTerms,
     HOCLoading,
     VMetamask,
     VLedger,
@@ -93,7 +90,8 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.$root.$on('wallet-clicked', this.handleWalletClicked)
+    this.$root.$on('wallet-clicked', this.handleWalletConnectClicked)
+    this.$root.$on('terms-confirmed', this.handleTermsConfirmed)
 
     Promise.all([this.$accessor.wallet.isMetamaskInstalled()])
       .then(() => {
@@ -103,11 +101,20 @@ export default Vue.extend({
   },
 
   beforeDestroy() {
-    this.$root.$off('wallet-clicked', this.handleWalletClicked)
+    this.$root.$off('wallet-clicked', this.handleWalletConnectClicked)
+    this.$root.$off('terms-confirmed', this.handleTermsConfirmed)
   },
 
   methods: {
-    handleWalletClicked() {
+    handleWalletConnectClicked() {
+      if (GEO_IP_RESTRICTIONS_ENABLED) {
+        this.$accessor.modal.openModal(Modal.Terms)
+      } else {
+        this.isOpenConnectModal = true
+      }
+    },
+
+    handleTermsConfirmed() {
       this.isOpenConnectModal = true
     },
 

@@ -18,8 +18,8 @@
             class="mr-4"
             :class="{
               'w-40 h-40 mt-8': index === 0,
-              'w-32 h-32 mt-14': index === 1,
-              'w-40 h-40 mt-10': index === 2
+              'w-44 h-44 mt-8': index === 1,
+              'w-32 h-32 mt-14': index === 2
             }"
           />
         </template>
@@ -64,7 +64,7 @@ export default Vue.extend({
           link: 'https://api.injective.exchange/',
           description: 'An institutional grade API custom made for Injective.',
           linkText: 'Explore the docs',
-          illustration: '/svg/api-new-v10.svg'
+          illustration: '/svg/api-v1.svg'
         },
         {
           category: 'External Link',
@@ -73,7 +73,7 @@ export default Vue.extend({
           description:
             'Injective has one of the fastest growing DeFi ecosystems in the world.',
           linkText: 'Join Injective',
-          illustration: '/svg/ecosystem-new.svg'
+          illustration: '/svg/ecosystem-v1.svg'
         }
       ]
     }

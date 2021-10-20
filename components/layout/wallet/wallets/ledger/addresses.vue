@@ -57,11 +57,11 @@ export default Vue.extend({
         {
           label: this.$t('Ledger Live'),
           path: LedgerDerivationPathType.LedgerLive
-        },
+        } /*
         {
           label: this.$t('Ledger Legacy'),
           path: LedgerDerivationPathType.LedgerMew
-        }
+        } */
       ],
 
       form: {

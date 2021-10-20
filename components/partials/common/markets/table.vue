@@ -57,7 +57,11 @@
       />
     </div>
     <div
-      class="overflow-y-auto overflow-x-auto md:overflow-x-visible w-full mt-6 max-h-lg lg:max-h-xl"
+      class="overflow-y-auto overflow-x-auto md:overflow-x-visible w-full mt-6"
+      :class="{
+        'max-h-lg lg:max-h-xl': !simple,
+        'h-full': simple
+      }"
     >
       <TableHeader v-if="markets.length !== 0" sm>
         <span
