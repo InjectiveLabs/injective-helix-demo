@@ -127,9 +127,9 @@ export const actions = actionTree(
     },
 
     async confirm({ commit }, addresses: AccountAddress[]) {
-      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
-
       await this.app.$accessor.app.validate()
+
+      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
 
       const [address] = addresses
       const addressConfirmation = await confirm(address)
@@ -162,10 +162,10 @@ export const actions = actionTree(
     },
 
     async connectAndConfirm({ commit }, wallet: Wallet) {
-      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
-
       await this.app.$accessor.app.validate()
       await this.app.$accessor.wallet.connect(wallet)
+
+      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
 
       const addresses = await getAddresses()
       const [address] = addresses
