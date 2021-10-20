@@ -15,7 +15,7 @@ export default {
   /*
    ** Customize the progress-bar color
    */
-  loading: { color: '#00ffcc' },
+  loading: { color: '#00F2FE' },
   /*
    ** Global CSS
    */
@@ -24,16 +24,25 @@ export default {
    ** Plugins to load before mounting the App
    */
   plugins: [
-    '~/plugins/global',
+    '~/plugins/icons',
+    '~/plugins/elements',
     '~/plugins/i18n',
     '~/plugins/utils',
     '~/plugins/store',
 
-    { src: '~/plugins/slider', ssr: false },
+    { src: '~/plugins/touch-events', ssr: false },
     { src: '~/plugins/tooltip', ssr: false },
     { src: '~/plugins/clipboard', ssr: false },
     { src: '~/plugins/veevalidate', ssr: false }
   ],
+
+  typescript: {
+    typeCheck: {
+      eslint: {
+        files: './**/*.{ts,js,vue}'
+      }
+    }
+  },
 
   'google-gtag': {
     id: process.env.APP_GOOGLE_ANALYTICS_KEY
@@ -49,6 +58,7 @@ export default {
    */
   buildModules: [
     '@nuxt/typescript-build',
+    '@nuxtjs/eslint-module',
     '@nuxtjs/dotenv',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/stylelint-module',
@@ -66,7 +76,6 @@ export default {
   pwa,
 
   tailwindcss: {
-    jit: true,
     cssPath: './assets/css/app.scss',
     configPath: './tailwind.config.js'
   },

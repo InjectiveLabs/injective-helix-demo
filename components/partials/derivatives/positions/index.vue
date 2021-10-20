@@ -1,78 +1,40 @@
 <template>
-  <v-panel :title="$t('positions')" class="h-full relative">
-    <div v-if="market" class="flex flex-col">
-      <div class="table-responsive table-compact">
-        <table class="table">
-          <thead class="border-b">
-            <tr>
-              <th is="v-ui-table-th" center>&nbsp;</th>
-              <th is="v-ui-table-th" center>
-                <span>{{ $t('side') }}</span>
-              </th>
-              <th is="v-ui-table-th" right>
-                <span>{{ $t('amount') }}</span>
-              </th>
-              <th is="v-ui-table-th" right>
-                <span>{{ $t('entry_price') }}</span>
-              </th>
-              <th is="v-ui-table-th" right>
-                <span>{{ $t('liquidation_price') }}</span>
-              </th>
-              <th is="v-ui-table-th" center>
-                <div class="items-center relative">
-                  <span class="mr-1">{{ $t('unrealized_pnl') }}</span>
-                  <v-ui-icon
-                    :icon="Icon.Info"
-                    class="text-gray-500 hover:text-gray-300"
-                    :tooltip="$t('unrealized_pnl_tooltip')"
-                    2xs
-                  />
-                </div>
-              </th>
-              <th is="v-ui-table-th" right>
-                <span>{{ $t('notional_size') }}</span>
-              </th>
-              <th is="v-ui-table-th" right>
-                <span>{{ $t('margin') }}</span>
-              </th>
-              <th is="v-ui-table-th" right>
-                <span>{{ $t('leverage') }}</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr is="v-position" v-if="position" :position="position"></tr>
-            <tr is="v-position-empty" v-else></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </v-panel>
+  <div v-if="market" class="table-responsive table-orders">
+    <table class="table">
+      <position-table-header />
+      <tbody v-if="isUserWalletConnected">
+        <tr is="v-position" v-if="position" :position="position"></tr>
+      </tbody>
+    </table>
+    <v-user-wallet-connect-warning v-if="!isUserWalletConnected" />
+  </div>
 </template>
-
 
 <script lang="ts">
 import Vue from 'vue'
 import { Status } from '@injectivelabs/utils'
-import Position from './position.vue'
-import PositionEmpty from './position-empty.vue'
+import Position from '~/components/partials/common/derivatives/position.vue'
 import { UiDerivativeMarket, UiPosition, Icon } from '~/types'
+import PositionTableHeader from '~/components/partials/common/derivatives/position-table.header.vue'
 
 export default Vue.extend({
   components: {
     'v-position': Position,
-    'v-position-empty': PositionEmpty
+    PositionTableHeader
   },
 
   data() {
     return {
       Icon,
-      status: new Status(),
-      limit: 1
+      status: new Status()
     }
   },
 
   computed: {
+    isUserWalletConnected(): boolean {
+      return this.$accessor.wallet.isUserWalletConnected
+    },
+
     market(): UiDerivativeMarket | undefined {
       return this.$accessor.derivatives.market
     },

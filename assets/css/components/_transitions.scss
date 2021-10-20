@@ -19,7 +19,7 @@ $easing: 'ease-in-out';
 .fadeHeight-enter,
 .fadeHeight-leave-to {
   opacity: 0;
-  max-height: 0px;
+  max-height: 0;
 }
 
 .slide-enter-active {

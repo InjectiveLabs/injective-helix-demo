@@ -15,9 +15,15 @@ if (process.env.META_TAGS_ENABLED === 'true') {
 module.exports = {
   titleTemplate: process.env.APP_NAME,
   meta,
+  htmlAttrs: {
+    class: 'bg-gray-1000'
+  },
+  bodyAttrs: {
+    class: 'overflow-fix'
+  },
   link: [
-    { rel: 'icon', type: 'image/png', href: '/favicon-v2.png' },
-    { rel: 'shortcut icon', type: 'image/png', href: '/favicon-v2.png' },
-    { rel: 'apple-touch-icon', type: 'image/png', href: '/favicon-v2.png' }
+    { rel: 'icon', type: 'image/png', href: '/favicon-v4.png' },
+    { rel: 'shortcut-icon', type: 'image/png', href: '/favicon-v4.png' },
+    { rel: 'apple-touch-icon', type: 'image/png', href: '/favicon-v4.png' }
   ]
 }

@@ -1,75 +1,73 @@
 <template>
-  <div :class="validationClass" class="relative">
-    <div class="flex items-center justify-between">
-      <label
-        v-if="label || error"
-        :for="`input-${uid}`"
-        class="
-          text-2xs
-          mb-1
-          leading-loose
-          opacity-75
-          flex
-          items-center
-          justify-between
-        "
-      >
-        <!-- eslint-disable-next-line vue/no-v-html -->
-        <span v-if="label" :class="error ? 'mr-2' : ''" v-html="label"></span>
-        <span v-if="error" class="text-red-500 italic font-semibold">
-          * {{ error }}
-        </span>
-      </label>
-      <div v-if="$slots['context']">
-        <slot name="context" />
-      </div>
-    </div>
-    <div :class="{ 'has-addon': addon || $slots['addon'] }" class="relative">
-      <input
-        :id="`input-${uid}`"
-        ref="input"
-        v-bind="$attrs"
-        class="input"
-        :class="{
-          'input-lg': lg,
-          'text-lg': lg,
-          'pr-12': maxSelector
-        }"
-        :value="value"
-        @wheel="$event.target.blur()"
-        @blur.stop="$emit('blur')"
-        @focus="$event.target.select()"
-        @input="handleChange"
-      />
-
-      <span v-if="addon" class="addon">
-        <component :is="addon" />
-      </span>
-
-      <span
-        v-if="maxSelector"
-        class="addon-max cursor-pointer"
-        @click.stop="handleMaxSelector"
-      >
-        <span
-          class="px-2 py-1 bg-dark-700 border border-dark-600 rounded text-xs"
+  <!-- eslint-disable vue/no-v-html -->
+  <div class="w-full input-wrap" :class="classes">
+    <div>
+      <div class="flex items-center justify-between">
+        <label
+          v-if="!large"
+          :for="$attrs.id"
+          class="block text-xs font-semibold text-gray-200"
+          v-html="$attrs.label || ''"
         >
-          {{ $t('max') }}
-        </span>
-      </span>
+          <span
+            v-if="error && !errorBelow"
+            class="text-red-400 italic font-semibold"
+          >
+            * {{ error }}
+          </span>
+        </label>
+        <div v-if="$slots['context']" class="leading-none">
+          <slot name="context" />
+        </div>
+      </div>
+      <div class="relative" :class="{ 'mt-2': !dense }">
+        <textarea
+          v-if="multiLine"
+          v-bind="$attrs"
+          rows="6"
+          :value="value"
+          class="input textarea"
+          @input="handleChangeOnInput"
+        ></textarea>
+        <input
+          v-else
+          v-bind="$attrs"
+          class="input"
+          :value="value"
+          :class="{ 'input-large': large, 'input-round': round }"
+          @blur="handleBlur"
+          @input="handleChangeOnInput"
+        />
+        <div
+          class="addon absolute inset-y-0 right-0 flex items-center"
+          :class="{ 'pr-3': !large }"
+        >
+          <span v-if="showClose" @click="handleCloseEvent">
+            <v-icon-close
+              class="cursor-pointer h-4 w-4 text-gray-200 hover:text-primary-500"
+            />
+          </span>
 
+          <span
+            v-if="!isMaxValue && maxSelector"
+            class="cursor-pointer"
+            @click.stop="handleMaxSelector"
+          >
+            <span
+              class="bg-gray-700 rounded uppercase tracking-1"
+              :class="maxClasses"
+            >
+              {{ $t('max') }}
+            </span>
+          </span>
+          <slot name="addon" />
+        </div>
+      </div>
       <span
-        v-if="minSelector"
-        class="addon-min"
-        @click.stop="handleMinSelector"
+        v-if="error && errorBelow"
+        class="text-red-400 italic font-semibold absolute mt-1"
       >
-        <span class="px-2 py-1 bg-dark-700 shadow-md text-gray-300 text-sm">
-          {{ $t('min') }}
-        </span>
-      </span>
-
-      <span v-if="!addon && $slots['addon']" class="addon">
-        <slot name="addon"></slot>
+        * {{ error }}
       </span>
     </div>
   </div>
@@ -77,89 +75,97 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { uniqueId } from '~/app/utils/generators'
 import { DOMEvent } from '~/types'
 
 export default Vue.extend({
   inheritAttrs: false,
 
   props: {
+    dense: {
+      type: Boolean,
+      default: false
+    },
+
+    large: {
+      type: Boolean,
+      default: false
+    },
+
+    round: {
+      type: Boolean,
+      default: false
+    },
+
     errors: {
-      required: false,
       type: Array as PropType<string[]>,
       default: () => []
     },
 
-    addon: {
-      required: false,
-      type: String,
-      default: ''
+    maxSelector: {
+      type: Boolean,
+      default: false
     },
 
-    lg: {
-      required: false,
+    showClose: {
+      type: Boolean,
+      default: false
+    },
+
+    showCheck: {
+      type: Boolean,
+      default: false
+    },
+
+    valid: {
       type: Boolean,
       default: false
     },
 
     value: {
       required: true,
-      type: [Object, String, Number],
-      default: ''
+      type: [Object, String, Number]
     },
 
-    label: {
-      required: false,
-      type: String,
-      default: ''
-    },
-
-    minSelector: {
-      required: false,
+    multiLine: {
       type: Boolean,
       default: false
     },
 
-    valid: {
-      required: false,
-      type: Boolean,
-      default: false
-    },
-
-    maxSelector: {
-      required: false,
-      type: Boolean,
-      default: false
-    },
-
-    customHandler: {
-      required: false,
+    errorBelow: {
       type: Boolean,
       default: false
     }
   },
 
   computed: {
-    uid(): string {
-      return uniqueId()
+    maxClasses(): string[] {
+      const { large } = this
+
+      if (large) {
+        return ['text-base', 'pr-2']
+      }
+
+      return ['px-2', 'py-1', 'mr-2', 'border', 'text-xs']
     },
 
-    validationClass(): { 'is-invalid': boolean; 'is-valid': boolean } | null {
+    classes(): string | null {
+      const { large } = this
+
+      const classes = ['w-full ']
+
+      if (large) {
+        return 'flex-grow'
+      }
+
       if (this.valid) {
-        return {
-          'is-invalid': false,
-          'is-valid': true
-        }
+        classes.push('is-valid')
       }
 
       if (!this.valid && this.errors.length > 0) {
-        return {
-          'is-invalid': true,
-          'is-valid': false
-        }
+        classes.push('is-invalid')
       }
 
-      return null
+      return classes.join(' ')
     },
 
     error(): string | null {
@@ -168,53 +174,41 @@ export default Vue.extend({
       }
 
       return null
+    },
+
+    isMaxValue(): boolean {
+      const { max } = this.$attrs
+      const { value } = this
+
+      return max === value
     }
   },
 
   methods: {
-    handleManualChange() {
-      const value = (this.$refs.input as HTMLInputElement).value
-
-      if (value !== this.value) {
-        this.$emit('input', value)
-      }
-    },
-
-    handleChange(event: DOMEvent<HTMLSelectElement>) {
+    handleChangeOnInput(event: DOMEvent<HTMLInputElement>) {
       this.$emit('input', event.target.value)
-    },
-
-    handleKeyUp(event: DOMEvent<HTMLSelectElement>) {
-      this.$emit('keyup', event.target.value)
     },
 
     handleChangeFromString(value: string) {
       this.$emit('input', value)
     },
 
+    handleCloseEvent() {
+      this.$emit('close')
+    },
+
+    handleBlur() {
+      this.$emit('blur')
+    },
+
     handleMaxSelector() {
       const { maxSelector } = this
       const { max } = this.$attrs
-
       if (max || maxSelector) {
-        if (!this.customHandler && max) {
+        if (max) {
           this.handleChangeFromString(max)
         }
-
         this.$emit('input-max')
-      }
-    },
-
-    handleMinSelector() {
-      const { minSelector } = this
-      const { min } = this.$attrs
-
-      if (min || minSelector) {
-        if (!this.customHandler && min) {
-          this.handleChangeFromString(min)
-        }
-
-        this.$emit('input-min')
       }
     }
   }

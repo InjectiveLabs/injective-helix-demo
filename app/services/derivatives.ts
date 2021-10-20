@@ -210,7 +210,7 @@ export const streamOrderbook = ({
     derivativeMarketStream.orderbook
   )
   const streamFnArgs = {
-    marketId,
+    marketIds: [marketId],
     callback
   }
 
@@ -506,7 +506,14 @@ export const closePosition = async ({
     injectiveAddress,
     marketId: market.marketId,
     order: {
-      price: new BigNumberInBase(price.toFixed(market.priceDecimals))
+      price: new BigNumberInBase(
+        price.toFixed(
+          market.priceDecimals,
+          orderType === DerivativeOrderSide.Buy
+            ? BigNumberInBase.ROUND_DOWN
+            : BigNumberInBase.ROUND_UP
+        )
+      )
         .toWei(market.quoteToken.decimals)
         .toFixed(),
       margin: ZERO_TO_STRING,

@@ -8,11 +8,15 @@ import * as account from '~/store/account'
 import * as token from '~/store/token'
 import * as bank from '~/store/bank'
 import * as modal from '~/store/modal'
+import * as portfolio from '~/store/portfolio'
+import * as history from '~/store/history'
 
 export const accessorType = getAccessorType({
   modules: {
     app,
     modal,
+    portfolio,
+    history,
     account,
     bank,
     spot,

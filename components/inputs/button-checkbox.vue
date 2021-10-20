@@ -4,51 +4,15 @@
     <button
       type="button"
       aria-pressed="false"
-      class="
-        relative
-        inline-flex
-        flex-shrink-0
-        h-6
-        w-12
-        border-2 border-transparent
-        rounded-full
-        cursor-pointer
-        transition-colors
-        ease-in-out
-        duration-200
-        focus:outline-none
-        focus:ring-2 focus:ring-offset-2 focus:ring-primary-500
-      "
+      class="relative inline-flex flex-shrink-0 h-6 w-12 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
       :class="[checked ? 'bg-primary-600' : 'bg-gray-200']"
     >
       <span
-        class="
-          relative
-          inline-block
-          h-5
-          w-5
-          rounded-full
-          bg-white
-          shadow
-          transform
-          ring-0
-          transition
-          ease-in-out
-          duration-200
-        "
+        class="relative inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
         :class="[checked ? 'translate-x-6' : 'translate-x-0']"
       >
         <span
-          class="
-            absolute
-            inset-0
-            h-full
-            w-full
-            flex
-            items-center
-            justify-center
-            transition-opacity
-          "
+          class="absolute inset-0 h-full w-full flex items-center justify-center transition-opacity"
           aria-hidden="true"
           :class="[
             checked
@@ -67,16 +31,7 @@
           </svg>
         </span>
         <span
-          class="
-            absolute
-            inset-0
-            h-full
-            w-full
-            flex
-            items-center
-            justify-center
-            transition-opacity
-          "
+          class="absolute inset-0 h-full w-full flex items-center justify-center transition-opacity"
           aria-hidden="true"
           :class="[
             checked

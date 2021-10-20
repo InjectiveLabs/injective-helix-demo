@@ -15,7 +15,7 @@ export default {
   welcome_to_ip:
     'Access, create and trade unlimited decentralized finance markets',
   welcome_to_ip_sub:
-    'The Canary Chain currently has a $5000 trading limit which is why liquidity may be low right now. Over the coming weeks, the trading limits will increase as Injective moves into its canonical (final) mainnet release.',
+    'The Canary Chain has a $5,000 trading limit which will be uplifted upon the canonical release over the coming weeks.',
   maintenance_header: 'Ongoing Maintenance',
   maintenance_subheader:
     'We are working on improving your experience. We will be back as soon as possible.',
@@ -25,9 +25,11 @@ export default {
   success_connect: 'Successfully Connected',
   market: 'Market',
   last_traded_price: 'Last Traded Price',
-  last_traded_price_tooltip: 'Last Traded Price',
+  last_traded_price_tooltip: 'The last price at which a trade occurred.',
   market_change_24h: 'Change (24h)',
+  market_change_24h_tooltip: 'The change in price over the past 24 hours.',
   market_volume_24h: 'Volume (24h)',
+  market_volume_24h_tooltip: 'The total trade volume over the past 24 hours.',
   filter_markets: 'Filter Markets',
   spot: 'Spot',
   subaccount_funds_available: 'Subaccount Funds',
@@ -55,7 +57,6 @@ export default {
   trades: 'Trades',
   time: 'Time',
   size: 'Size',
-  notional_size: 'Notional Size',
   notional_value: 'Notional Value',
   fee: 'Fee',
   direction: 'Direction',
@@ -93,7 +94,10 @@ export default {
   price_chart: 'Price Chart',
   filled: 'Filled',
   cancel_order: 'Cancel Order',
-  please_connect_your_wallet: 'Please connect with your wallet',
+  please_connect_to_your_wallet:
+    'Please connect to your wallet to see more details',
+  please_connect_to_your_wallet_cta:
+    'Please connect to your wallet to start trading on Injective!',
   amount_to_transfer: 'Amount to transfer',
   available_balance: 'Available Balance',
   transfer_modal_title: 'Deposit to Injective Chain',
@@ -114,6 +118,7 @@ export default {
   take_out_asset: 'Withdraw {asset}',
   allowance_set: 'Allowance Set',
   set_allowance: 'Set Allowance',
+  set_allowance_asset: 'Set Allowance for {asset}',
   success_transfer: 'Successfully Deposited',
   success_transfer_assets: 'Successfully Transferred',
   trade_placed: 'Trade placed',
@@ -133,7 +138,7 @@ export default {
   entry_price: 'Entry Price',
   unrealized_pnl: 'Unrealized PnL',
   unrealized_pnl_tooltip:
-    'The unrealized P&L is a reflection of what profit or loss will be realized if the position were to be closed now.',
+    'The unrealized profit/loss (PnL) is a reflection of what profit or loss would be realized if the position were to be closed.',
   leverage: 'Leverage',
   not_available_n_a: 'N/A',
   position_closed: 'Position Closed',
@@ -144,24 +149,28 @@ export default {
   reduce_only_exceed_position:
     'Total size of reduce-only orders exceed the size of your position',
   worst_price_note:
-    'Note: If {slippage}% max slippage protection is violated, you will need to resend your market order.',
+    'Note: If the execution price exceeds the {slippage}% slippage protection, your order will be automatically cancelled.',
   max_leverage_warn: 'Please decrease leverage.',
   next_funding: 'Next Funding',
+  next_funding_tooltip:
+    'The time remaining for the end of the funding interval.',
   expiry_date: 'Expiry Date',
   days: 'Days',
   funding_fee: 'Funding fee',
   funding_rate: 'Funding Rate',
   est_funding_rate: 'Est. Funding Rate',
   funding_rate_tooltip:
-    'The interest rate paid by position holders, determined by the difference between the perpetual swap price and underlying spot price. A positive funding rate implies that longs pay shorts, whereas a negative funding rate implies that shorts pay longs.',
+    'The interest rate paid is determined by the difference between the perpetual swap price and the underlying spot price. If the funding rate is positive, traders with long positions will pay traders with short positions. If the funding rate is negative, traders with short positions will pay those in long positions.',
   est_receiving_amount: 'Est. Receiving Amount (Worst Case)',
   est_receiving_amount_note:
     'The lowest amount you can actually receive for the trade.',
   fee_order_details_note:
-    "If your limit order doesn't get filled as a taker order, you will only need to pay {feeReturned} in fees",
+    "Trading fees associated with the trade. If your limit order doesn't get filled as a taker order, you will only need to pay {feeReturned} in fees",
   buy_long: 'Buy/Long',
   sell_short: 'Sell/Short',
   mark_price: 'Mark Price',
+  mark_price_tooltip:
+    'The value of the contract as reported by the price oracle. The mark price can be different from the last traded price to prevent price manipulation.',
   select_ledger_address: 'Select Ledger Address',
   follow_instructions: 'Please follow the instructions on your device',
   address: 'Address',
@@ -210,7 +219,157 @@ export default {
   'Connect using Ledger instructions':
     'Note: To ensure smooth process while connecting your Ledger Hardware Wallet, please ensure you are running the on latest Chrome version, have your Ledger device connected, unlocked and your Ethereum app open. ',
   high_price_deviation_warning:
-    'Your order price deviates at least {percentage}% from the latest market price!',
+    'You have previously turned on the warning notification for high price deviations. Click confirm if you agree to turn off this warning.',
+  high_execution_price_deviation_warning_note:
+    'The execution price for your order deviates at least {percentage}% than the last traded price. Click confirm if you still want to execute it. You can also disable this confirmation dialog for future orders by clicking "Cancel and Save Preference".',
   high_execution_price_deviation_warning:
-    'Your execution price deviates at least {percentage}% from the latest market price!'
+    'Your execution price deviates at least {percentage}% from the latest market price.',
+  cancel_and_save_preference: 'Cancel and Save Preference',
+
+  home: 'Home',
+  open: 'Open',
+  'Trezor Connection Note':
+    "Note: At this point there is no support for Trezor - please don't use Trezor (including Metamask's Trezor integration) as it might cause your funds being stuck on the Injective Chain.",
+  close: 'Close',
+  'Connect using browser wallet': 'Connect using browser wallet',
+  'Connect to Wallet': 'Connect to Wallet',
+  Ledger: 'Ledger',
+  'Select address to connect': 'Select address to connect',
+  'Please follow the instructions on your device':
+    'Please follow the instructions on your device',
+  'Ledger Live': 'Ledger Live',
+  'Ledger Legacy': 'Ledger Legacy',
+  'Connect using hardware wallet': 'Connect using hardware wallet',
+  'Get addresses': 'Get addresses',
+  'Get more addresses': 'Get more addresses',
+  'We are getting your addresses, please wait ...':
+    'We are getting your addresses, please wait ...',
+  'Select Derivation Path': 'Select Derivation Path',
+  'Derivation Path': 'Derivation Path',
+  'Select Address': 'Select Address',
+  'Select Ledger Address': 'Select Ledger Address',
+  'There are no results found - Markets':
+    'There are no markets found. You can go ahead and propose some!',
+  balances: 'Balances',
+  'Injective Chain': 'Injective Chain',
+  Subaccount: 'Subaccount',
+  subaccount_tooltip:
+    'Your subaccount is your trading account. You need to deposit from your wallet into the subaccount in order to start trading.',
+  injective_chain_tooltip:
+    'The native chain of Injective Protocol. Only funds on the Injective Chain can be used in trades.',
+  'available_total_subaccount_balance Tooltip':
+    'Your subaccount available/total balance',
+  'Deposit to Injective Chain': 'Deposit to Injective Chain',
+  'Deposit to Subaccount': 'Deposit to your Subaccount',
+  'Available for Deposit': 'Available for Deposit',
+  'Available for Deposit Tooltip':
+    'The amount of {asset} you can deposit on the Injective Chain.',
+  'Enter your amount': 'Enter your amount',
+  'Withdraw from Injective Chain': 'Withdraw from Injective Chain',
+  'Withdraw from Subaccount': 'Withdraw from Subaccount',
+  Deposit: 'Deposit',
+  'Available to Withdraw': 'Available to Withdraw',
+  'Available to Withdraw Tooltip':
+    'The amount of {asset} you can withdraw from the Injective Chain.',
+  'Available to Withdraw Subaccount Tooltip':
+    'The amount of {asset} you can withdraw from your Subaccount.',
+  Orderbook: 'Orderbook',
+  Cancel: 'Cancel',
+  Close: 'Close',
+  open_positions: 'Open Positions',
+  getting_started: 'Getting Started',
+  perp: 'Perp',
+  futures: 'Futures',
+  perpetuals: 'Perpetuals',
+  spots: 'Spots',
+  markets: 'Markets',
+  Portfolio: 'Portfolio',
+  open_derivatives_order: 'Open Derivative Orders',
+  open_spot_order: 'Open Spot Orders',
+  'Transfer Assets Now': 'Transfer Assets Now',
+  Restrictions: 'Restrictions',
+  Languages: 'Languages',
+  all: 'All',
+  derivatives_trade_history: 'Derivatives Trade History',
+  spot_trade_history: 'Spot Trade History',
+  wallet_history: 'Wallet History',
+  subaccount_transfer_history: 'Subaccount Transfer History',
+  History: 'History',
+  Wallet: 'Wallet',
+  deposits: 'Deposits',
+  download: 'Download',
+  withdrawals: 'Withdrawals',
+  subaccount: 'Subaccount',
+  'Injective Chain Balance': 'Injective Chain Balance',
+  'ERC20 Balance': 'ERC20 Balance',
+  Balances: 'Balances',
+  Asset: 'Asset',
+  'Join our Ecosystem now': 'Join the Injective Ecosystem!',
+  'There are no results found - Balances':
+    'We cannot find any token balances for your address',
+  'Ready to get started?': 'Injective Bridge',
+  'Cta Note':
+    'Transfer assets to Injective and experience lightning fast speeds, zero gas fees and a world of unlimited DeFi Markets.',
+  'Available Margin': 'Available Margin',
+  'Available Margin Tooltip':
+    'The available margin you can add to this position',
+  'Confirm order execution': 'Confirm order execution',
+  liquidation_price_tooltip:
+    'The price at which your position will be liquidated or force-excited to prevent further losses.',
+  fees_tooltip:
+    'Trading fees associated with the trade. Trading fees on Injective can be lowered using rebates.',
+  notional_value_tooltip:
+    'The total value of the trade based on the mark price. The notional value is determined by the following formula: Mark Price * Base Asset Amount.',
+  margin_tooltip: 'The total margin required to execute the trade',
+  portfolio_value: 'Portfolio value',
+  portfolio_value_tooltip:
+    'Your total portfolio value represented in USD. This includes all of your holdings on the Injective Chain, including bank module balances, balances across your subaccounts, open orders total value and unrealized PnL.',
+  start_trading: 'Start Trading Now',
+  available_margin: 'Available Margin',
+  available_margin_tooltip: 'Your total available margin for trading',
+  margin_hold: 'Margin Hold',
+  margin_hold_tooltip:
+    'The amount of margin you have in your open orders and open positions',
+  assets_value: 'Assets Value',
+  assets_value_tooltip: 'The total value of your assets in the bank module.',
+  unrealized_pnl_portfolio: 'Unrealized PnL',
+  unrealized_pnl_portfolio_tooltip:
+    'An approximate value of the unrealized PnL from your open positions based on the current mark price.',
+  total_potential: 'Total Value',
+  total_potential_tooltip:
+    'An approximate total value of your stable coins (USDT, USDC, etc) balances and any unrealized PnL you currently have.',
+  side_tooltip: 'This indicates which side of the trade you took',
+  amount_tooltip:
+    'The total value of the base asset at the time the trade was executed (i.e. for BTC-USDC, BTC is the base asset and USDC is the quote asset).',
+  execution_type_tooltip:
+    'Indicates whether the trade was a limit or market order.',
+  time_tooltip:
+    "The time at which the trade was executed (times are shown in your browser's timezone)",
+  recent_news: 'Recent news',
+  injective_home_title_1: 'Injective eliminates all barriers to trading',
+  injective_home_title_2: 'Join a global community',
+  injective_home_subtitle_1:
+    'Access unlimited DeFi markets. With Injective, you can trade any financial market on the first fast, cross-chain, low fee, secure, and fully decentralized derivatives exchange protocol. ',
+  injective_home_subtitle_2:
+    'Injective is governed entirely by the community.  Early adopters are encouraged to learn more about Injective products, connect with other community members, and have your say in shaping the future of the protocol.',
+  gas_fees: 'Gas Fees',
+  Total: 'Total',
+  Twitter: 'Twitter',
+  Reddit: 'Reddit',
+  Discord: 'Discord',
+  Youtube: 'Youtube',
+  Telegram: 'Telegram',
+  transfer_on_chain: 'Transfer on Injective',
+  'Successfully Transferred': 'Successfully Transferred',
+  'Enter amount': 'Enter amount',
+  'Available to Transfer On Chain': 'Available to Transfer On Injective',
+  'Available to Transfer On Chain Tooltip':
+    'The available amount you can transfer to another injective address on Injective',
+  'Asset Transfer': 'Asset Transfer',
+  'Asset Transfer Tooltip': 'The asset you want to transfer',
+  'Injective Address Destination': 'Destination',
+  'Injective Address Destination Tooltip':
+    'The destination injective address you want to sent the assets to',
+  'Buffer for gas note':
+    'Note: You have to leave a small amount of INJ in your Injective Chain balance to pay for the gas fees when required.'
 }

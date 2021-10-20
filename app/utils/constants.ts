@@ -32,6 +32,7 @@ export const GWEI_IN_WEI: BigNumber = new BigNumber(1000000000)
 
 export const BASE_URL: string = process.env.APP_BASE_URL
 export const FEE_RECIPIENT: string = process.env.APP_FEE_RECIPIENT
+export const UI_DEFAULT_MIN_DISPLAY_DECIMALS = 2
 export const UI_DEFAULT_DISPLAY_DECIMALS = 4
 export const UI_DEFAULT_PRICE_DISPLAY_DECIMALS = 4
 export const UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS = 4
@@ -53,6 +54,8 @@ export const DEFAULT_PRICE_WARNING_DEVIATION = new BigNumber(5) // 5%
 export const DEFAULT_MAX_SLIPPAGE = new BigNumber(5) // +1% slippage
 export const DEFAULT_MAX_SLIPPAGE_FOR_CLOSING_POSITIONS = new BigNumber(100) // +1% slippage
 
+export const MAX_DISPLAYABLE_NUMBER = new BigNumberInBase(1_000_000_000)
+export const MAX_SMALLER_DISPLAYABLE_NUMBER = new BigNumberInBase(1_000_000)
 export const MAXIMUM_TRANSFER_ALLOWED = 1000
 export const MAXIMUM_NOTIONAL_ALLOWED = 5000
 export const INJECTIVE_DENOM = 'inj'

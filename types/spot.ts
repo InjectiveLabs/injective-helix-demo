@@ -8,7 +8,9 @@ import {
   AllChronosSpotMarketSummary
 } from '@injectivelabs/spot-consumer'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
+import { MarketType } from './enums'
 import { Token } from './token'
+import { Change } from '.'
 
 export interface BaseUiSpotMarketWithPartialTokenMetaData
   extends Omit<BaseUiSpotMarket, 'quoteToken' | 'baseToken'> {
@@ -27,11 +29,14 @@ export interface BaseUiSpotMarketWithTokenMetaData
 export interface UiSpotMarket extends BaseUiSpotMarketWithTokenMetaData {
   priceDecimals: number
   quantityDecimals: number
+  type: MarketType
+  subType: MarketType
 }
 
 export interface UiSpotMarketSummary extends ChronosSpotMarketSummary {
   marketId: string
   lastPrice?: number
+  lastPriceChange?: Change
 }
 
 export interface UiSpotMarketAndSummary {

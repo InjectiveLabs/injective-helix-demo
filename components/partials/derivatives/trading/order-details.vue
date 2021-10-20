@@ -1,165 +1,117 @@
 <template>
-  <div v-if="market" class="mt-4 py-4 border-t relative">
+  <div v-if="market" class="mt-6 py-6 border-t relative">
     <v-drawer
       :custom-handler="true"
       :custom-is-open="detailsDrawerOpen"
       @drawer-toggle="onDrawerToggle"
     >
       <p slot="header" class="flex justify-between text-sm">
-        <v-ui-text muted-md>{{ $t('total') }}</v-ui-text>
-        <v-ui-text class="flex items-center text-gray-500">
-          <span class="mr-1">≈</span>
-          <v-ui-format-price
-            v-bind="{
-              value: totalWithFees,
-              decimals: market.priceDecimals
-            }"
-          />
-          <small class="opacity-75 ml-1 pt-px">{{
-            market.quoteToken.symbol
-          }}</small>
-        </v-ui-text>
+        <v-text-info :title="$t('total')" lg>
+          <span class="font-mono flex items-center">
+            <span class="mr-1">≈</span>
+            {{ totalWithFeesToFormat }}
+            <span class="text-gray-500 ml-1">
+              {{ market.quoteToken.symbol }}
+            </span>
+          </span>
+        </v-text-info>
       </p>
-      <div class="text-xs mt-2">
-        <p class="flex justify-between group leading-6">
-          <v-ui-text muted-sm class="group-hover:text-white">
-            {{ $t('amount') }}
-          </v-ui-text>
-          <v-ui-text v-if="!amount.isNaN()" muted class="flex items-center">
-            <v-ui-format-amount
-              v-bind="{
-                value: amount,
-                decimals: market.quantityDecimals
-              }"
-              class="text-gray-300"
-            />
-            <small class="opacity-75 ml-1">{{ market.baseToken.symbol }}</small>
-          </v-ui-text>
-          <v-ui-text v-else muted-sm class="group-hover:text-white">
-            &mdash;
-          </v-ui-text>
-        </p>
-        <p class="flex justify-between group leading-6">
-          <v-ui-text muted-sm class="group-hover:text-white">
-            {{ $t('price') }}
-          </v-ui-text>
-          <v-ui-text v-if="price.gt(0)" muted class="flex items-center">
-            <v-ui-format-price
-              v-bind="{
-                value: price,
-                decimals: market.priceDecimals
-              }"
-              class="text-gray-300"
-            />
-            <small class="opacity-75 ml-1">{{
-              market.quoteToken.symbol
-            }}</small>
-          </v-ui-text>
-          <v-ui-text v-else muted-sm class="group-hover:text-white">
-            &mdash;
-          </v-ui-text>
-        </p>
-        <p
+
+      <div class="mt-4">
+        <v-text-info :title="$t('amount')">
+          <span v-if="!amount.isNaN()" class="font-mono flex items-center">
+            {{ amountToFormat }}
+            <span class="text-gray-500 ml-1">
+              {{ market.baseToken.symbol }}
+            </span>
+          </span>
+          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
+        </v-text-info>
+
+        <v-text-info :title="$t('price')" class="mt-2">
+          <span v-if="price.gt(0)" class="font-mono flex items-center">
+            {{ priceToFormat }}
+            <span class="text-gray-500 ml-1">
+              {{ market.quoteToken.symbol }}
+            </span>
+          </span>
+          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
+        </v-text-info>
+
+        <v-text-info
           v-if="!orderTypeReduceOnly"
-          class="flex justify-between group leading-6"
+          :title="$t('liquidation_price')"
+          class="mt-2"
         >
-          <v-ui-text muted-sm class="group-hover:text-white">
-            {{ $t('liquidation_price') }}
-          </v-ui-text>
-          <v-ui-text
+          <v-icon-info-tooltip
+            slot="context"
+            class="ml-2"
+            :tooltip="$t('liquidation_price_tooltip')"
+          />
+          <span
             v-if="liquidationPrice.gt(0)"
-            muted
-            class="flex items-center"
+            class="font-mono flex items-center"
           >
-            <v-ui-format-price
-              v-bind="{
-                value: liquidationPrice,
-                decimals: market.priceDecimals
-              }"
-              class="text-gray-300"
-            />
-            <small class="opacity-75 ml-1">{{
-              market.quoteToken.symbol
-            }}</small>
-          </v-ui-text>
-          <v-ui-text v-else muted-sm class="group-hover:text-white">
-            &mdash;
-          </v-ui-text>
-        </p>
-        <p
+            {{ liquidationPriceToFormat }}
+            <span class="text-gray-500 ml-1">
+              {{ market.quoteToken.symbol }}
+            </span>
+          </span>
+          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
+        </v-text-info>
+
+        <v-text-info
           v-if="!orderTypeReduceOnly"
-          class="flex justify-between group leading-6"
+          :title="$t('margin')"
+          class="mt-2"
         >
-          <v-ui-text muted-sm class="group-hover:text-white">
-            {{ $t('margin') }}
-          </v-ui-text>
-          <v-ui-text v-if="margin.gt(0)" muted class="flex items-center">
-            <v-ui-format-price
-              v-bind="{
-                value: margin,
-                decimals: market.priceDecimals
-              }"
-              class="text-gray-300"
-            />
-            <small class="opacity-75 ml-1">{{
-              market.quoteToken.symbol
-            }}</small>
-          </v-ui-text>
-          <v-ui-text v-else muted-sm class="group-hover:text-white">
-            &mdash;
-          </v-ui-text>
-        </p>
-        <p class="flex justify-between group leading-6">
-          <v-ui-text muted-sm class="group-hover:text-white">{{
-            $t('notional_value')
-          }}</v-ui-text>
-          <v-ui-text v-if="notionalValue.gt(0)" muted class="flex items-center">
-            <v-ui-format-price
-              v-bind="{
-                value: notionalValue,
-                decimals: market.priceDecimals
-              }"
-              class="text-gray-300"
-            />
-            <small class="opacity-75 ml-1">{{
-              market.quoteToken.symbol
-            }}</small>
-          </v-ui-text>
-          <v-ui-text v-else muted-sm class="group-hover:text-white">
-            &mdash;
-          </v-ui-text>
-        </p>
-        <p class="flex justify-between group leading-6">
-          <v-ui-text muted-sm class="group-hover:text-white flex items-center">
-            <span class="mr-2">{{ $t('fee') }}</span>
-            <v-ui-icon
-              v-if="feeReturned.gt(0)"
-              :icon="Icon.Info"
-              class="text-gray-500 hover:text-gray-300"
-              :tooltip="
-                $t('fee_order_details_note', {
-                  feeReturned: feeReturned.toFixed()
-                })
-              "
-              2xs
-            />
-          </v-ui-text>
-          <v-ui-text v-if="fees.gt(0)" muted class="flex items-center">
-            <v-ui-format-price
-              v-bind="{
-                value: fees,
-                decimals: market.priceDecimals
-              }"
-              class="text-gray-300"
-            />
-            <small class="opacity-75 ml-1">{{
-              market.quoteToken.symbol
-            }}</small>
-          </v-ui-text>
-          <v-ui-text v-else muted-sm class="group-hover:text-white">
-            &mdash;
-          </v-ui-text>
-        </p>
+          <v-icon-info-tooltip
+            slot="context"
+            class="ml-2"
+            :tooltip="$t('margin_tooltip')"
+          />
+          <span v-if="margin.gt(0)" class="font-mono flex items-center">
+            {{ marginToFormat }}
+            <span class="text-gray-500 ml-1">
+              {{ market.quoteToken.symbol }}
+            </span>
+          </span>
+          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
+        </v-text-info>
+
+        <v-text-info :title="$t('notional_value')" class="mt-2">
+          <v-icon-info-tooltip
+            slot="context"
+            class="ml-2"
+            :tooltip="$t('notional_value_tooltip')"
+          />
+          <span v-if="notionalValue.gt(0)" class="font-mono flex items-center">
+            {{ notionalValueToFormat }}
+            <span class="text-gray-500 ml-1">
+              {{ market.quoteToken.symbol }}
+            </span>
+          </span>
+          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
+        </v-text-info>
+
+        <v-text-info :title="$t('fee')" class="mt-2">
+          <v-icon-info-tooltip
+            slot="context"
+            class="ml-2"
+            :tooltip="
+              $t('fee_order_details_note', {
+                feeReturned: feeReturned.toFixed()
+              })
+            "
+          />
+          <span v-if="fees.gt(0)" class="font-mono flex items-center">
+            {{ feesToFormat }}
+            <span class="text-gray-500 ml-1">
+              {{ market.quoteToken.symbol }}
+            </span>
+          </span>
+          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
+        </v-text-info>
       </div>
     </v-drawer>
   </div>
@@ -170,6 +122,11 @@ import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import Drawer from '~/components/elements/drawer.vue'
 import { DerivativeOrderSide, UiDerivativeMarket, Icon } from '~/types'
+import {
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+  ZERO_IN_BASE
+} from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -247,6 +204,80 @@ export default Vue.extend({
   computed: {
     market(): UiDerivativeMarket | undefined {
       return this.$accessor.derivatives.market
+    },
+
+    totalWithFeesToFormat(): string {
+      const { totalWithFees, market } = this
+
+      if (!market) {
+        return totalWithFees.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return totalWithFees.toFormat(market.priceDecimals)
+    },
+
+    priceToFormat(): string {
+      const { price, market } = this
+
+      if (!market) {
+        return price.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return price.toFormat(market.priceDecimals)
+    },
+
+    notionalValueToFormat(): string {
+      const { notionalValue, market } = this
+
+      if (!market) {
+        return notionalValue.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return notionalValue.toFormat(market.priceDecimals)
+    },
+
+    liquidationPriceToFormat(): string {
+      const { liquidationPrice, market } = this
+
+      if (!market) {
+        return liquidationPrice.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return liquidationPrice.toFormat(market.priceDecimals)
+    },
+
+    marginToFormat(): string {
+      const { margin, market } = this
+
+      if (!market) {
+        return margin.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return margin.toFormat(market.priceDecimals)
+    },
+
+    feesToFormat(): string {
+      const { fees, market } = this
+
+      if (!market) {
+        return fees.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return fees.toFormat(market.priceDecimals)
+    },
+
+    amountToFormat(): string {
+      const { amount, market } = this
+
+      if (amount.isNaN()) {
+        return ZERO_IN_BASE.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
+      }
+
+      if (!market) {
+        return amount.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
+      }
+
+      return amount.toFormat(market.quantityDecimals)
     }
   },
 

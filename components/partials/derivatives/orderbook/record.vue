@@ -1,7 +1,11 @@
 <template>
   <li
     v-if="market"
-    class="flex h-6 items-center last:mb-0 first:mt-0 relative cursor-pointer"
+    class="flex h-6 items-center last:mb-0 first:mt-0 relative cursor-pointer w-full overflow-hidden"
+    :class="{
+      'border-aqua-500': recordTypeBuy,
+      'border-red-500': !recordTypeBuy
+    }"
   >
     <span class="size-col" :class="newRecordClass"></span>
     <span
@@ -13,42 +17,36 @@
       class="w-1/3 text-xs px-2 flex items-center justify-end z-10"
       @click.stop="onPriceClick"
     >
-      <v-ui-icon
+      <v-icon-arrow
         v-if="existsInUserOrders"
-        2xs
-        :icon="Icon.Arrow"
-        class="text-gray-400 transform rotate-90 mr-2"
+        class="text-gray-300 transform rotate-180 mr-2 w-2 h-2"
       />
-      <v-ui-format-order-price
-        v-bind="{
-          value: price,
-          type: type,
-          decimals: market.priceDecimals
+      <span
+        class="block text-right font-mono"
+        :class="{
+          'text-aqua-500': recordTypeBuy,
+          'text-red-500': !recordTypeBuy
         }"
-        class="text-right block"
-      />
+      >
+        {{ priceToFormat }}
+      </span>
     </span>
     <span class="w-1/3 text-xs px-2 z-10" @click.stop="onQuantityClick">
-      <v-ui-format-amount
-        v-bind="{
-          value: quantity,
-          decimals: market.quantityDecimals
-        }"
-        class="text-right block"
+      <span
+        class="block text-right font-mono"
         :class="{
           'text-red-500': quantityChange === Change.Decrease,
           'text-aqua-500': quantityChange === Change.Increase
         }"
-      />
+      >
+        {{ quantityToFormat }}
+      </span>
     </span>
-    <span class="w-1/3 text-xs px-2 z-10" @click.stop="onTotalNotionalClick">
-      <v-ui-format-amount
-        v-bind="{
-          value: total,
-          decimals: market.quantityDecimals
-        }"
-        class="text-right block text-white"
-      />
+    <span
+      class="w-1/3 text-xs px-2 z-10 font-mono text-right"
+      @click.stop="onTotalNotionalClick"
+    >
+      {{ totalToFormat }}
     </span>
   </li>
 </template>
@@ -60,7 +58,11 @@ import {
   BigNumber,
   BigNumberInWei
 } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '~/app/utils/constants'
+import {
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+  ZERO_IN_BASE
+} from '~/app/utils/constants'
 import {
   Change,
   DerivativeOrderSide,
@@ -96,12 +98,18 @@ export default Vue.extend({
   },
 
   computed: {
+    market(): UiDerivativeMarket | undefined {
+      return this.$accessor.derivatives.market
+    },
+
     existsInUserOrders(): boolean {
       return this.userOrders.includes(this.record.price.toString())
     },
 
-    market(): UiDerivativeMarket | undefined {
-      return this.$accessor.derivatives.market
+    recordTypeBuy(): boolean {
+      const { type } = this
+
+      return type === DerivativeOrderSide.Buy
     },
 
     price(): BigNumberInBase {
@@ -114,6 +122,16 @@ export default Vue.extend({
       return new BigNumberInWei(record.price).toBase(market.quoteToken.decimals)
     },
 
+    priceToFormat(): string {
+      const { market, price } = this
+
+      if (!market) {
+        return price.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return price.toFormat(market.priceDecimals)
+    },
+
     total(): BigNumberInBase {
       const { market, record } = this
 
@@ -121,9 +139,17 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(record.total || 0).toBase(
-        market.quoteToken.decimals
-      )
+      return new BigNumberInBase(record.total || 0)
+    },
+
+    totalToFormat(): string {
+      const { market, total } = this
+
+      if (!market) {
+        return total.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return total.toFormat(market.priceDecimals)
     },
 
     quantity(): BigNumberInBase {
@@ -134,6 +160,16 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(record.quantity)
+    },
+
+    quantityToFormat(): string {
+      const { market, quantity } = this
+
+      if (!market) {
+        return quantity.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
+      }
+
+      return quantity.toFormat(market.quantityDecimals)
     },
 
     depthWidth(): { width: string } {

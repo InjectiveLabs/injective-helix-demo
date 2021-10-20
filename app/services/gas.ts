@@ -6,13 +6,13 @@ import {
   DEFAULT_GAS_PRICE,
   CHAIN_ID
 } from '../utils/constants'
-import { EtherchainResult, EthGasStationResult } from '~/types'
+import { EtherchainResult, EthGasStationResult } from '~/types/gas'
 
 export const fetchGasPriceFromEtherchain = async (): Promise<string> => {
   try {
     const response = (await new HttpClient(
       'https://www.etherchain.org/api/'
-    ).get(`gasPriceOracle`)) as {
+    ).get('gasPriceOracle')) as {
       data: EtherchainResult
     }
 
@@ -32,7 +32,7 @@ export const fetchGasPriceFromEthGasStation = async (): Promise<string> => {
   try {
     const response = (await new HttpClient(
       'https://ethgasstation.info/json'
-    ).get(`ethgasAPI.json`)) as {
+    ).get('ethgasAPI.json')) as {
       data: EthGasStationResult
     }
 

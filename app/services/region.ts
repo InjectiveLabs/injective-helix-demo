@@ -21,6 +21,6 @@ export const fetchGeoLocation = async (): Promise<GeoLocation> => {
 
 export const validateGeoLocation = (geoLocation: GeoLocation) => {
   if (restrictedCountries.includes(geoLocation.country)) {
-    throw new Error(`Your country is restricted from trading on this relayer`)
+    throw new Error('Your country is restricted from trading on this relayer')
   }
 }
