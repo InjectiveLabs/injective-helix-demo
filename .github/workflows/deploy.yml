@@ -4,11 +4,10 @@ on:
   push:
     branches:
       - master
-      - dev
 
 jobs:
   deploy:
-    if: false
+    if: true
     env:
       ## Public
       APP_NAME: 'Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'
