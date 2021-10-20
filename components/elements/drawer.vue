@@ -1,17 +1,15 @@
 <template>
   <div>
     <div
-      class="group flex justify-end w-full cursor-pointer"
+      class="group flex justify-end w-full cursor-pointer relative"
       @click.stop="toggle"
     >
-      <div class="flex-1">
+      <div class="flex-1 pr-5">
         <slot name="header" />
       </div>
-      <div class="self-end ml-2 -mt-1">
-        <v-ui-icon
-          :icon="Icon.Dropdown"
-          xs
-          class="text-gray-500 group-hover:text-gray-200"
+      <div class="absolute right-0 top-0 mt-1">
+        <v-icon-caret-down
+          class="text-gray-500 group-hover:text-gray-200 w-4 h-4"
           :class="{ 'transform rotate-180': drawerIsOpen }"
         />
       </div>

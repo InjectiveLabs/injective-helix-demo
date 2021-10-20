@@ -1,19 +1,26 @@
 <template>
-  <v-panel class="relative w-full" :title="$t('order_book')">
-    <v-orderbook-context slot="context" keep-alive></v-orderbook-context>
+  <div>
+    <v-table-head :market="market" />
     <v-orderbook />
-  </v-panel>
+  </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import OrderBook from './order-book.vue'
-import OrderBookContext from './order-book-context.vue'
+import VTableHead from '~/components/partials/common/orderbook/table-head.vue'
+import { UiSpotMarket } from '~/types'
 
 export default Vue.extend({
   components: {
     'v-orderbook': OrderBook,
-    'v-orderbook-context': OrderBookContext
+    VTableHead
+  },
+
+  computed: {
+    market(): UiSpotMarket | undefined {
+      return this.$accessor.spot.market
+    }
   }
 })
 </script>

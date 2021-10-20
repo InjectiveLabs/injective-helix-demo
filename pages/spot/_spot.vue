@@ -1,39 +1,42 @@
 <template>
-  <HOCLoading v-if="market" :key="$route.fullPath" :status="status">
-    <div class="h-full w-full">
-      <grid-layout
-        :layout="layout"
-        :row-height="grid.rowHeight"
-        :is-draggable="grid.isDraggable"
-        :is-resizable="grid.isResizable"
-        :responsive="grid.responsive"
-        :vertical-compact="true"
-        :use-css-transforms="true"
-        @breakpoint-changed="handleBreakpointChanged"
-      >
-        <grid-item
-          v-for="item in grid.layout"
-          :key="`grid-item-${item.i}`"
-          :x="item.x"
-          :y="item.y"
-          :w="item.w"
-          :min-w="item.minW"
-          :min-h="item.minH"
-          :max-h="item.maxH"
-          :is-draggable="item.isDraggable"
-          :is-resizable="item.isResizable"
-          :h="item.h"
-          :i="item.i"
-          drag-allow-from=".v-panel-title"
-          @resized="$root.$emit(`resized-${item.i}`)"
-        >
-          <component :is="item.i" />
-        </grid-item>
-      </grid-layout>
-      <modal-transfer />
-      <modal-deposit />
-      <modal-withdraw />
-      <modal-take-out />
+  <HOCLoading :key="$route.fullPath" :status="status">
+    <div v-if="market" class="min-h-screen flex flex-col flex-wrap">
+      <div class="w-full px-1">
+        <v-market />
+      </div>
+      <div class="flex-1 grid grid-cols-6 lg:grid-cols-12 gap-1 p-1">
+        <div class="col-span-6 lg:col-span-3">
+          <div class="flex flex-col flex-wrap h-full w-full">
+            <v-balances />
+            <v-trading class="mt-1 flex-1" />
+          </div>
+        </div>
+        <div class="col-span-6 lg:col-span-9">
+          <div class="flex flex-col flex-wrap h-full w-full">
+            <div class="w-full">
+              <v-card tight>
+                <div class="grid grid-cols-6 lg:grid-cols-12">
+                  <div class="col-span-6 lg:col-span-8">
+                    <v-market-chart :market="market" />
+                  </div>
+                  <div class="col-span-6 lg:col-span-4">
+                    <v-orderbook class="p-2 lg:p-3" />
+                  </div>
+                </div>
+              </v-card>
+            </div>
+            <div class="w-full flex-1 mt-1">
+              <v-card class="h-full">
+                <v-orders />
+              </v-card>
+            </div>
+          </div>
+        </div>
+      </div>
+      <v-modal-bridge-deposit />
+      <v-modal-bridge-withdraw />
+      <v-modal-subaccount-deposit />
+      <v-modal-subaccount-withdraw />
     </div>
   </HOCLoading>
 </template>
@@ -41,69 +44,42 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { GridLayout, GridItem } from 'vue-grid-layout'
-import MarketPriceChartPanel from '~/components/partials/spot/market/chart.vue'
-import MarketPanel from '~/components/partials/spot/market/market.vue'
-import MarqueePanel from '~/components/partials/spot/market/marquee.vue'
-import ModalTransfer from '~/components/partials/spot/transfer.vue'
-import ModalTakeOut from '~/components/partials/spot/take-out.vue'
-import ModalDeposit from '~/components/partials/spot/deposit.vue'
-import ModalWithdraw from '~/components/partials/spot/withdraw.vue'
-import TradingPanel from '~/components/partials/spot/trading/index.vue'
-import BalancePanel from '~/components/partials/spot/balance.vue'
-import SubaccountBalancePanel from '~/components/partials/spot/subaccount-balance/index.vue'
-import OrderBookPanel from '~/components/partials/spot/orderbook/index.vue'
-import TradesPanel from '~/components/partials/spot/trades/index.vue'
-import OrdersPanel from '~/components/partials/spot/orders.vue'
-import HOCLoading from '~/components/elements/with-loading.vue'
-import { UiSpotMarket, Breakpoint } from '~/types'
-import { gridLayouts } from '~/components/partials/spot/grid'
-
-const GRID_ROW_HEIGHT = 54
+import VModalBridgeDeposit from '~/components/partials/modals/bridge-deposit/index.vue'
+import VModalBridgeWithdraw from '~/components/partials/modals/bridge-withdraw/index.vue'
+import VModalSubaccountDeposit from '~/components/partials/modals/subaccount-deposit/index.vue'
+import VModalSubaccountWithdraw from '~/components/partials/modals/subaccount-withdraw/index.vue'
+import VBalances from '~/components/partials/common/balances/index.vue'
+import VTrading from '~/components/partials/spot/trading/index.vue'
+import VMarketChart from '~/components/partials/common/market/chart.vue'
+import VMarket from '~/components/partials/spot/market.vue'
+import VOrders from '~/components/partials/spot/orders.vue'
+import VOrderbook from '~/components/partials/spot/orderbook.vue'
+import HOCLoading from '~/components/hoc/loading.vue'
+import { UiSpotMarket } from '~/types'
 
 export default Vue.extend({
   components: {
     HOCLoading,
-    ModalWithdraw,
-    ModalTakeOut,
-    BalancePanel,
-    TradesPanel,
-    OrdersPanel,
-    OrderBookPanel,
-    TradingPanel,
-    MarketPanel,
-    MarqueePanel,
-    MarketPriceChartPanel,
-    GridLayout,
-    GridItem,
-    ModalTransfer,
-    ModalDeposit,
-    SubaccountBalancePanel
+    VModalBridgeDeposit,
+    VModalBridgeWithdraw,
+    VModalSubaccountDeposit,
+    VModalSubaccountWithdraw,
+    VTrading,
+    VBalances,
+    VOrders,
+    VOrderbook,
+    VMarketChart,
+    VMarket
   },
 
   data() {
     return {
       status: new Status(StatusType.Loading),
-      interval: 0 as any,
-
-      grid: {
-        layout: gridLayouts(Breakpoint.Lg),
-        // colNum: 12,
-        rowHeight: GRID_ROW_HEIGHT,
-        margin: [16, 16],
-        isDraggable: true,
-        isResizable: true,
-        autoSize: true,
-        responsive: true
-      }
+      interval: 0 as any
     }
   },
 
   computed: {
-    layout(): any {
-      return this.grid.layout
-    },
-
     slugFromRoute(): string {
       const { params } = this.$route
 
@@ -145,14 +121,7 @@ export default Vue.extend({
   },
 
   methods: {
-    handleBreakpointChanged(newBreakpoint: Breakpoint) {
-      this.grid.layout = gridLayouts(newBreakpoint)
-      this.$nextTick(() => {
-        this.grid.layout.forEach((gridItem) => {
-          this.$root.$emit(`resized-${gridItem.i}`)
-        })
-      })
-    }
+    //
   }
 })
 </script>

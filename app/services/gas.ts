@@ -1,6 +1,11 @@
 import { HttpClient, BigNumber, BigNumberInWei } from '@injectivelabs/utils'
 import { ChainId } from '@injectivelabs/ts-types'
-import { IS_TESTNET, GWEI_IN_WEI, DEFAULT_GAS_PRICE, CHAIN_ID } from '../utils/constants'
+import {
+  IS_TESTNET,
+  GWEI_IN_WEI,
+  DEFAULT_GAS_PRICE,
+  CHAIN_ID
+} from '../utils/constants'
 import { EthGasStationResult } from '~/types'
 
 export const fetchGasPrice = async (): Promise<string> => {
@@ -11,7 +16,7 @@ export const fetchGasPrice = async (): Promise<string> => {
   try {
     const response = (await new HttpClient(
       'https://ethgasstation.info/json'
-    ).get(`ethgasAPI.json`)) as {
+    ).get('ethgasAPI.json')) as {
       data: EthGasStationResult
     }
 

@@ -28,14 +28,14 @@ export default function ({
     interval,
     timezone,
     timeframe: '1D',
-    toolbar_bg: theme.colors.dark[800],
+    toolbar_bg: theme.colors.gray[900],
     height: '100%',
     width: '100%',
     container_id: 'tv_chart_container',
     allow_symbol_change: false,
     datafeed: new UDFCompatibleDatafeed(datafeedEndpoint, 2000),
     library_path: `${BASE_URL}/chart/charting_library/`,
-    custom_css_url: `${BASE_URL}/chart/charting_library/custom.css?v2`,
+    custom_css_url: `${BASE_URL}/chart/charting_library/custom.css?v5`,
     locale: 'en',
     theme: 'dark',
     drawings_access: {
@@ -64,19 +64,19 @@ export default function ({
     ],
     client_id: 'injective.exchange',
     loading_screen: {
-      backgroundColor: theme.colors.dark[800],
+      backgroundColor: theme.colors.gray[800],
       foregroundColor: theme.colors.gray[200]
     },
     overrides: {
-      'paneProperties.background': theme.colors.dark[900],
-      'paneProperties.vertGridProperties.color': theme.colors.dark[700],
-      'paneProperties.horzGridProperties.color': theme.colors.dark[700],
+      'paneProperties.background': theme.colors.gray[900],
+      'paneProperties.vertGridProperties.color': theme.colors.gray[700],
+      'paneProperties.horzGridProperties.color': theme.colors.gray[700],
       'paneProperties.vertGridProperties.style': 1,
       'paneProperties.horzGridProperties.style': 1,
       'paneProperties.crossHairProperties.color': theme.colors.gray[200],
 
-      'scalesProperties.textColor': theme.colors.gray[300],
-      'scalesProperties.lineColor': theme.colors.dark.border,
+      'scalesProperties.textColor': theme.colors.gray[200],
+      'scalesProperties.lineColor': theme.colors.gray[700],
 
       // Select chart type
       'mainSeriesProperties.style': STYLE_CANDLES,
@@ -129,7 +129,7 @@ export default function ({
       'mainSeriesProperties.baselineStyle.topFillColor1':
         theme.colors.aqua[500],
       'mainSeriesProperties.baselineStyle.topFillColor2':
-        'rgba( 78, 205, 196	, 0.1)',
+        'rgba( 78, 205, 196, 0.1)',
       'mainSeriesProperties.baselineStyle.bottomFillColor1':
         theme.colors.red[500],
       'mainSeriesProperties.baselineStyle.bottomFillColor2':
@@ -147,7 +147,7 @@ export default function ({
       'scalesProperties.fontSize': 12,
       'scalesProperties.showSymbolLabels': false,
       'scalesProperties.showStudyLastValue': false,
-      'symbolWatermarkProperties.color': theme.colors.dark.hover200,
+      'symbolWatermarkProperties.color': theme.colors.gray[800],
       volumePaneSize: 'medium'
     },
     studies_overrides: {

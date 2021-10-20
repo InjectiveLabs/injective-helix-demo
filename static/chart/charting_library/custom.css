@@ -1,6 +1,6 @@
 body,
 html {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Montserrat', sans-serif;
 }
 
 body {
@@ -72,12 +72,12 @@ span.pane-legend-line.apply-overflow-tooltip.main {
 }
 
 .item-2xPVYue0-:hover {
-  color: #3ea49d !important;
+  color: #009199 !important;
 }
 
 .isActive-2j-GhQs_- {
   background-color: #14151a !important;
-  color: #3ea49d !important;
+  color: #009199 !important;
 }
 
 .tv-tabbed-dialog {
@@ -100,7 +100,7 @@ span.pane-legend-line.apply-overflow-tooltip.main {
 }
 
 a.properties-tabs-label.active:after {
-  background-color: #3ea49d !important;
+  background-color: #009199 !important;
 }
 
 ._tv-dialog-content label,
@@ -129,12 +129,12 @@ a.properties-tabs-label.active:after {
 .sbOptions a:hover,
 .tv-insert-study-item:hover {
   background-color: transparent !important;
-  color: #3ea49d !important;
+  color: #009199 !important;
 }
 
 .sbOptions a.active {
   background-color: transparent !important;
-  border-left: 3px solid #3ea49d !important;
+  border-left: 3px solid #009199 !important;
 }
 
 .tv-dialog__close svg {
@@ -170,7 +170,7 @@ a.properties-tabs-label.active:after {
 
 .item.selected {
   background: #333b44 !important;
-  border-left: 4px solid #3ea49d !important;
+  border-left: 4px solid #009199 !important;
 }
 
 ._tv-button.tv-left {
@@ -285,24 +285,29 @@ html.theme-dark .button-13wlLwhJ-:hover:before {
 .feature-no-touch .button-263WXsg-- .icon-1Y-3MM9F-:active,
 .feature-no-touch .button-263WXsg-- .icon-1Y-3MM9F-:hover,
 .feature-touch .button-263WXsg-- .icon-1Y-3MM9F-:active {
-  color: #00ffcc !important;
+  color: #00f2ff !important;
   opacity: 0.75;
 }
 
 html.theme-dark
   .button-263WXsg--.isTransparent-sRmateFl-.isActive-2mI1-NUL-
   .icon-1Y-3MM9F- {
-  color: #00ffcc !important;
+  color: #00f2ff !important;
 }
 
 html.theme-dark .button-263WXsg--:hover .bg-1kRv1Pf2-,
 html.theme-dark .button-88UE6omC-:hover:before {
-  background: #121826 !important;
+  background: #1d2130 !important;
 }
 
 html.theme-dark .scrollBot-2HHpZNuf-,
 html.theme-dark .scrollTop-1eXi8ltS-,
 html.theme-dark .item-stVdeCwG-.interactive-3E0jwVyG-:hover {
-  background: #121826 !important;
+  background: #1d2130 !important;
   color: #d3d7e2 !important;
+  opacity: 0.97 !important;
+}
+
+html.theme-dark .group-2JyOhh7Z- {
+  background: #1d2130 !important;
 }

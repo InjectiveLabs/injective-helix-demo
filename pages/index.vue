@@ -1,36 +1,14 @@
 <template>
   <div class="h-full w-full flex flex-wrap py-4">
-    <div class="w-full">
-      <div class="container">
-        <div class="text-center w-full lg:w-2/3 mx-auto pt-10 lg:pt-16">
-          <h1 class="font-black text-white text-3xl uppercase tracking-wide">
-            <img
-              src="/images/home-main.svg?v5"
-              alt="Injective Exchange"
-              class="h-48 mx-auto w-auto"
-            />
-          </h1>
-          <h3 class="text-primary-500 uppercase tracking-wider font-black">
-            {{ $t('welcome_to_ip') }}
-          </h3>
-          <h4 class="text-gray-300 text-lg mt-2">
-            {{ $t('welcome_to_ip_sub') }}
-          </h4>
-        </div>
-      </div>
-    </div>
     <div class="container">
-      <div class="mt-12 w-full mx-auto lg:w-3/4">
-        <v-panel :title="$t('spot_markets')">
-          <div class="table-compact table-select px-4 pb-4">
-            <v-spot />
-          </div>
+      <div class="w-full mx-auto xl:w-4/5">
+        <v-cards class="mt-6" />
+        <v-recent-news class="mt-16" />
+        <v-panel :title="$t('markets')" class="mt-16">
+          <v-markets />
         </v-panel>
-        <v-panel :title="$t('derivatives')" class="mt-6">
-          <div class="table-compact table-select px-4 pb-4 mt-6">
-            <v-derivatives />
-          </div>
-        </v-panel>
+        <v-stats class="mt-16" />
+        <v-social class="mt-16" />
       </div>
     </div>
   </div>
@@ -38,13 +16,19 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import VSpot from '~/components/partials/spot/markets/index.vue'
-import VDerivatives from '~/components/partials/derivatives/markets/index.vue'
+import VSocial from '~/components/partials/home/social.vue'
+import VStats from '~/components/partials/home/stats.vue'
+import VCards from '~/components/partials/home/cards.vue'
+import VRecentNews from '~/components/partials/home/news.vue'
+import VMarkets from '~/components/partials/common/markets/markets.vue'
 
 export default Vue.extend({
   components: {
-    VSpot,
-    VDerivatives
+    VCards,
+    VSocial,
+    VMarkets,
+    VRecentNews,
+    VStats
   }
 })
 </script>

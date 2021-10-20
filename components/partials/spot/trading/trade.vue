@@ -1,47 +1,53 @@
 <template>
-  <div v-if="market" class="p-4 w-full">
-    <div class="w-full flex">
-      <v-ui-button-select
-        v-model="orderType"
-        :option="SpotOrderSide.Buy"
-        half
-        aqua
-      >
-        {{ $t('buy_asset', { asset: market.baseToken.symbol }) }}
-      </v-ui-button-select>
-      <v-ui-button-select
-        v-model="orderType"
-        :option="SpotOrderSide.Sell"
-        half
-        red
-      >
-        {{ $t('sell_asset', { asset: market.baseToken.symbol }) }}
-      </v-ui-button-select>
-    </div>
-    <div class="w-full flex mt-4">
-      <v-ui-button-select
-        v-model="tradingType"
-        class="w-1/2"
-        :option="TradeExecutionType.Market"
-        small
+  <div v-if="market" class="w-full">
+    <div class="flex items-center justify-center">
+      <v-button
+        :class="{
+          'text-gray-500': tradingType === TradeExecutionType.LimitFill
+        }"
+        text-xs
+        @click.stop="onTradingTypeToggle"
       >
         {{ $t('market') }}
-      </v-ui-button-select>
-      <v-ui-button-select
-        v-model="tradingType"
-        class="w-1/2"
-        :option="TradeExecutionType.LimitFill"
-        small
+      </v-button>
+      <div class="mx-2 w-px h-4 bg-gray-500"></div>
+      <v-button
+        sm
+        :class="{
+          'text-gray-500': tradingType === TradeExecutionType.Market
+        }"
+        text-xs
+        @click.stop="onTradingTypeToggle"
       >
         {{ $t('limit') }}
-      </v-ui-button-select>
+      </v-button>
     </div>
     <div class="mt-4">
-      <div class="mb-4">
+      <div class="bg-gray-900 rounded-2xl flex">
+        <v-button-select
+          v-model="orderType"
+          :option="SpotOrderSide.Buy"
+          aqua
+          class="w-1/2"
+        >
+          {{ $t('buy_asset', { asset: market.baseToken.symbol }) }}
+        </v-button-select>
+        <v-button-select
+          v-model="orderType"
+          :option="SpotOrderSide.Sell"
+          red
+          class="w-1/2"
+        >
+          {{ $t('sell_asset', { asset: market.baseToken.symbol }) }}
+        </v-button-select>
+      </div>
+    </div>
+    <div class="mt-8">
+      <div>
         <v-input
           ref="input-amount"
           :value="form.amount"
-          :label="$t('amount_decimals', { decimals: market.quantityDecimals })"
+          :label="$t('amount')"
           :custom-handler="true"
           :max-selector="true"
           :placeholder="$t('amount')"
@@ -54,46 +60,39 @@
         >
           <span slot="addon">{{ market.baseToken.symbol.toUpperCase() }}</span>
           <div
-            v-if="true"
             slot="context"
-            class="text-xs text-gray-400 flex items-center"
+            class="text-xs text-gray-400 flex items-center font-mono"
           >
-            <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(25)"
-              >25%</span
-            >
-            <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(50)"
-              >50%</span
-            >
-            <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(75)"
-              >75%</span
-            >
-            <span class="cursor-pointer" @click.stop="onMaxInput(100)"
-              >100%</span
-            >
+            <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(25)">
+              25%
+            </span>
+            <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(50)">
+              50%
+            </span>
+            <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(75)">
+              75%
+            </span>
+            <span class="cursor-pointer" @click.stop="onMaxInput(100)">
+              100%
+            </span>
           </div>
         </v-input>
-        <v-ui-text v-if="amountError" semibold red v-bind="{ '2xs': true }">
+        <span v-if="amountError" class="text-2xs font-semibold text-red-500">
           {{ amountError }}
-        </v-ui-text>
-        <v-ui-text
+        </span>
+        <span
           v-if="priceError && tradingTypeMarket"
-          semibold
-          red
-          v-bind="{ '2xs': true }"
+          class="text-2xs font-semibold text-red-500"
         >
           {{ priceError }}
-        </v-ui-text>
+        </span>
       </div>
-      <div v-if="!tradingTypeMarket" class="mb-4">
+      <div v-if="!tradingTypeMarket" class="mt-6">
         <v-input
           ref="input-price"
           :value="form.price"
           :placeholder="$t('price')"
-          :label="
-            $t('price_decimals', {
-              decimals: market.priceDecimals
-            })
-          "
+          :label="$t('price')"
           :disabled="tradingTypeMarket"
           type="number"
           :step="priceStep"
@@ -103,9 +102,9 @@
         >
           <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
         </v-input>
-        <v-ui-text v-if="priceError" semibold red v-bind="{ '2xs': true }">
+        <span v-if="priceError" class="text-red-500 font-semibold text-2xs">
           {{ priceError }}
-        </v-ui-text>
+        </span>
       </div>
     </div>
     <component
@@ -124,20 +123,25 @@
       }"
       @drawer-toggle="onDetailsDrawerToggle"
     />
-    <div class="pt-2">
-      <v-ui-button
+    <div class="mt-4">
+      <v-button
+        lg
         :status="status"
         :disabled="hasErrors || !isUserWalletConnected"
         :ghost="hasErrors"
         :aqua="!hasErrors && orderType === SpotOrderSide.Buy"
         :red="!hasErrors && orderType === SpotOrderSide.Sell"
-        class="uppercase"
-        wide
+        class="w-full"
         @click.stop="onSubmit"
       >
         {{ $t(orderTypeBuy ? 'buy' : 'sell') }}
-      </v-ui-button>
+      </v-button>
     </div>
+
+    <v-modal-order-confirm
+      @confirmed="submitLimitOrder"
+      @disabled="handleDisableAcceptHighPriceDeviations"
+    />
   </div>
 </template>
 
@@ -154,13 +158,15 @@ import {
   DEFAULT_PRICE_WARNING_DEVIATION
 } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
+import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
 import {
   SpotOrderSide,
   TradeExecutionType,
   UiSpotOrderbook,
   UiPriceLevel,
   UiSpotMarket,
-  UiSubaccount
+  UiSubaccount,
+  Modal
 } from '~/types'
 import {
   calculateWorstExecutionPriceFromOrderbook,
@@ -181,7 +187,8 @@ export default Vue.extend({
   components: {
     'v-button-checkbox': ButtonCheckbox,
     'v-order-details': OrderDetails,
-    'v-order-details-market': OrderDetailsMarket
+    'v-order-details-market': OrderDetailsMarket,
+    VModalOrderConfirm
   },
 
   data() {
@@ -199,6 +206,10 @@ export default Vue.extend({
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
+    },
+
+    acceptHighPriceDeviations(): boolean {
+      return this.$accessor.app.acceptHighPriceDeviations
     },
 
     market(): UiSpotMarket | undefined {
@@ -431,8 +442,8 @@ export default Vue.extend({
       const deviation = new BigNumberInBase(1)
         .minus(
           orderTypeBuy
-            ? price.dividedBy(lastTradedPrice)
-            : lastTradedPrice.dividedBy(price)
+            ? lastTradedPrice.dividedBy(price)
+            : price.dividedBy(lastTradedPrice)
         )
         .times(100)
 
@@ -873,6 +884,21 @@ export default Vue.extend({
       this.form.amount = amount
     },
 
+    onTradingTypeToggle() {
+      this.tradingType =
+        this.tradingType === TradeExecutionType.LimitFill
+          ? TradeExecutionType.Market
+          : TradeExecutionType.LimitFill
+    },
+
+    handleEnableAcceptHighPriceDeviations() {
+      this.$accessor.app.setAcceptHighPriceDeviations(true)
+    },
+
+    handleDisableAcceptHighPriceDeviations() {
+      this.$accessor.app.setAcceptHighPriceDeviations(false)
+    },
+
     submitLimitOrder() {
       const { orderType, market, price, amount } = this
 
@@ -928,7 +954,8 @@ export default Vue.extend({
         hasErrors,
         tradingTypeMarket,
         priceHasHighDeviationWarning,
-        isUserWalletConnected
+        isUserWalletConnected,
+        acceptHighPriceDeviations
       } = this
 
       if (!isUserWalletConnected) {
@@ -947,12 +974,18 @@ export default Vue.extend({
         return this.submitLimitOrder()
       }
 
-      return this.$onConfirm(
-        this.$t('high_price_deviation_warning', {
-          percentage: DEFAULT_PRICE_WARNING_DEVIATION
-        }),
-        this.submitLimitOrder
-      )
+      // If price has high deviation, we open a confirm modal
+      if (acceptHighPriceDeviations) {
+        return this.$accessor.modal.openModal(Modal.OrderConfirm)
+      } else {
+        // If price has high deviation, show a confirm toast that can disable the setting
+        return this.$onConfirm(
+          this.$t('high_price_deviation_warning', {
+            percentage: DEFAULT_PRICE_WARNING_DEVIATION
+          }),
+          this.handleEnableAcceptHighPriceDeviations
+        )
+      }
     }
   }
 })

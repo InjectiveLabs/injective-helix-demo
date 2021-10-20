@@ -49,6 +49,10 @@ const derivatives = [
 ]
 
 module.exports = [
+  '/',
+  '/portfolio',
+  '/wallet',
+  '/history',
   ...spot.map((s) => `/spot/${s}`),
   ...derivatives.map((d) => `/derivatives/${d}`)
 ]

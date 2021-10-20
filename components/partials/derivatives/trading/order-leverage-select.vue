@@ -1,16 +1,17 @@
 <template>
   <div class="flex items-center w-full">
-    <v-ui-button-select
+    <v-button-select
       v-for="l in leverages"
       :key="`leverage-${l}`"
       :value="leverage"
       :option="l.toString()"
       primary
+      xs
       class="flex-1 text-xs"
       @selected="handleOnSelect(l)"
     >
       {{ `${l}x` }}
-    </v-ui-button-select>
+    </v-button-select>
   </div>
 </template>
 

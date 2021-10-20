@@ -1,7 +1,7 @@
 /* Works on Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: theme('colors.dark.500') theme('colors.dark.800');
+  scrollbar-color: theme('colors.gray.700') theme('colors.gray.800');
 }
 
 /* Works on Chrome, Edge, and Safari */
@@ -11,11 +11,11 @@
 }
 
 *::-webkit-scrollbar-track {
-  background: theme('colors.dark.900');
+  background: theme('colors.gray.900');
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: theme('colors.dark.500');
+  background-color: theme('colors.gray.700');
   border-radius: 20px;
-  border: 2px solid theme('colors.dark.800');
+  border: 2px solid theme('colors.gray.900');
 }

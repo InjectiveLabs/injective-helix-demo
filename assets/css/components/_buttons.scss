@@ -25,9 +25,9 @@
   }
 
   &.btn-dark {
-    @apply bg-dark-700;
+    @apply bg-gray-700;
     &:hover {
-      @apply bg-dark-800;
+      @apply bg-gray-800;
     }
   }
 

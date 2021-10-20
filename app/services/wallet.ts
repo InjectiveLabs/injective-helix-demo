@@ -3,11 +3,20 @@ import { AccountAddress } from '@injectivelabs/ts-types'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { getWeb3Strategy, initWeb3Strategy } from '~/app/web3'
 
-export const connect = (
-  wallet: Wallet,
-  options: Partial<ConcreteStrategyOptions> = {}
-) => {
-  initWeb3Strategy(wallet, options)
+export const connect = ({
+  wallet,
+  options = {},
+  onAccountChangeCallback = () => {}
+}: {
+  wallet: Wallet
+  options?: Partial<ConcreteStrategyOptions>
+  onAccountChangeCallback?: (account: string) => void
+}) => {
+  initWeb3Strategy({
+    wallet,
+    options,
+    onAccountChangeCallback
+  })
 }
 
 export const getAddresses = async (): Promise<AccountAddress[]> => {

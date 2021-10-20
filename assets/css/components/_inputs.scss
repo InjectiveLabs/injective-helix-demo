@@ -1,42 +1,5 @@
-.has-addon {
-  .input {
-    width: calc(100% - 3.5rem);
-    @apply rounded-r-none;
-  }
-
-  .addon {
-    @apply text-gray-100 font-semibold absolute bg-dark-700 right-0 w-14 top-0 h-full text-sm px-2 flex border items-center justify-center cursor-pointer select-none border-dark-600;
-
-    .icon {
-      @apply w-6 h-6;
-    }
-  }
-
-  .addon-max,
-  .addon-min {
-    margin-right: 3.85rem;
-  }
-}
-
-.is-invalid {
-  .input {
-    @apply border-red-500;
-  }
-}
-
-.is-valid {
-  .input {
-    @apply border-aqua-500;
-  }
-}
-
-.addon-max,
-.addon-min {
-  @apply absolute right-0 top-0 h-full select-none cursor-pointer mt-2;
-}
-
 .input {
-  @apply border border-dark-600 w-full bg-dark-900 text-white shadow-md rounded px-3 w-full h-10 text-sm outline-none appearance-none max-w-full font-mono;
+  @apply border border-transparent bg-gray-900 shadow-sm text-gray-200 rounded w-full h-12 text-sm outline-none appearance-none max-w-full px-4;
 
   &[type='number']::-webkit-inner-spin-button,
   &[type='number']::-webkit-outer-spin-button {
@@ -45,7 +8,7 @@
   }
 
   &:focus {
-    @apply border-dark-500;
+    @apply border-gray-600;
   }
 
   &::placeholder {
@@ -53,88 +16,58 @@
   }
 
   &[disabled] {
-    @apply pointer-events-none cursor-not-allowed bg-dark-800;
+    @apply pointer-events-none cursor-not-allowed bg-gray-700;
   }
 
   &.textarea {
-    @apply h-32 pt-2;
+    @apply h-auto w-full pt-4;
   }
 
-  &.input-sm {
-    @apply h-8;
-  }
-
-  &select {
-    padding-right: 1rem;
-    appearance: none;
-    background-repeat: no-repeat;
-    background-size: 10px 6px;
-    background-position: center right 0.75rem;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 6"><path fill="%23757575" fill-rule="nonzero" d="M8.293.293a1 1 0 0 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-4-4A1 1 0 0 1 1.707.293L5 3.586 8.293.293z"/></svg>');
+  &-round {
+    @apply h-10 rounded-3xl;
   }
 }
 
-.input-lg {
-  &::placeholder {
-    @apply text-lg;
-    @apply text-white;
-    @apply font-semibold;
-  }
-
-  @apply border-dark-600;
-  @apply bg-transparent;
+.input-wrap .addon {
+  @apply text-gray-300;
 }
 
-.input-sm {
+.is-valid {
   .input {
-    @apply h-8 text-2xs;
-
-    &::placeholder {
-      @apply text-2xs opacity-75;
-    }
-  }
-
-  .addon {
-    @apply mt-0;
-
-    .icon {
-      @apply w-4 h-4;
-    }
+    @apply border-primary-500;
   }
 }
 
-.v-select.input {
-  @apply px-1 font-sans;
+.is-invalid {
+  .input {
+    @apply border-red-400;
+  }
+}
 
-  .vs__search {
-    @apply text-xs opacity-75 text-gray-400;
+.input-large {
+  @apply bg-transparent text-gray-400 rounded-lg px-6 w-full h-20 outline-none appearance-none max-w-full text-3xl border-none font-medium;
+
+  &[type='number']::-webkit-inner-spin-button,
+  &[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
   }
 
-  .vs__dropdown-toggle {
-    width: 100%;
-    height: 100%;
-    border: none !important;
+  &:focus {
+    @apply border-gray-700;
   }
 
-  .vs__dropdown-menu {
-    @apply bg-dark-500 text-gray-200 px-2;
+  &::placeholder {
+    @apply text-xl opacity-75;
   }
 
-  .vs__selected {
-    @apply text-gray-200;
-  }
-
-  .vs__dropdown-option {
-    @apply text-white font-semibold text-sm rounded;
-  }
-
-  .vs__dropdown-option--highlight {
-    @apply bg-primary-500 text-primary-900;
+  &[disabled] {
+    @apply pointer-events-none cursor-not-allowed bg-gray-700;
   }
 }
 
 .leverage-input {
-  @apply font-mono ml-2 w-14 py-1 text-sm text-right rounded-lg appearance-none bg-dark-800 text-gray-300 shadow;
+  @apply font-mono ml-2 w-14 py-1 text-sm text-right rounded-lg appearance-none bg-gray-900 text-gray-300;
 
   /* Chrome, Safari, Edge, Opera */
   &::-webkit-outer-spin-button,
@@ -146,5 +79,79 @@
   /* Firefox */
   &[type='number'] {
     -moz-appearance: textfield;
+  }
+}
+
+.v-select.input-select {
+  @apply border border-transparent bg-gray-900 text-gray-200 rounded h-12 px-2 text-sm w-full max-w-full outline-none appearance-none;
+
+  .vs__search {
+    @apply text-sm text-gray-400;
+  }
+
+  .vs__dropdown-toggle {
+    width: 100%;
+    height: 100%;
+    border: none !important;
+  }
+
+  .vs__dropdown-menu {
+    @apply border-primary-500 bg-gray-800 text-gray-400 px-2;
+
+    margin-top: 2px;
+    left: -1px;
+    width: calc(100% + 2px);
+  }
+
+  .vs__selected {
+    @apply h-12 p-0 m-0 pl-2 border-none text-gray-200 break-all;
+  }
+
+  .vs__dropdown-option {
+    @apply text-gray-200 font-semibold text-sm rounded py-3 px-2;
+  }
+
+  .vs__actions {
+    @apply cursor-pointer;
+  }
+
+  .vs__actions svg {
+    @apply text-gray-200;
+  }
+
+  .vs__actions svg path {
+    @apply fill-current;
+  }
+
+  .vs__dropdown-option--highlight {
+    @apply bg-primary-500 text-gray-800;
+  }
+
+  .input {
+    @apply text-current shadow-none;
+  }
+
+  &:focus {
+    @apply border-gray-700;
+  }
+
+  &[disabled] {
+    @apply bg-gray-700;
+  }
+
+  input::placeholder {
+    @apply text-xs opacity-75;
+  }
+}
+
+.v-select.input-select.vs--open {
+  @apply border border-primary-500 bg-gray-800 text-gray-400;
+
+  .input {
+    @apply shadow-none text-gray-200;
+  }
+
+  .vs__selected {
+    @apply opacity-100 text-gray-200;
   }
 }

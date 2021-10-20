@@ -5,6 +5,13 @@ export enum Change {
   Decrease = 'decrease'
 }
 
+export enum WalletConnectStatus {
+  connecting = 'Connecting',
+  disconnected = 'Disconnected',
+  idle = 'Idle',
+  connected = 'Connected'
+}
+
 export enum Icon {
   Arrow = 'arrow',
   Copy = 'copy',
@@ -31,7 +38,12 @@ export enum Icon {
 }
 
 export enum Modal {
+  OrderConfirm = 'order-confirm',
   Connect = 'connect',
+  BridgeDeposit = 'bridge-deposit',
+  BridgeWithdraw = 'bridge-withdraw',
+  SubaccountDeposit = 'subaccount-deposit',
+  SubaccountWithdraw = 'subaccount-withdraw',
   Transfer = 'transfer',
   Deposit = 'deposit',
   Withdraw = 'withdraw',
@@ -45,6 +57,13 @@ export enum Breakpoint {
   Sm = 'sm',
   Xs = 'xs',
   Xxs = 'xxs'
+}
+
+export enum MarketType {
+  Spot = 'Spot',
+  Derivative = 'Derivative',
+  Perpetual = 'Perpetual',
+  Futures = 'Futures'
 }
 
 export enum AppState {
