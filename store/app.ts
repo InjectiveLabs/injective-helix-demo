@@ -66,7 +66,6 @@ export const actions = actionTree(
   { state },
   {
     async init({ state }) {
-      await this.app.$accessor.app.fetchGasPrice()
       await this.app.$accessor.app.fetchGeoLocation()
 
       app.setGeoLocation(state.geoLocation)
