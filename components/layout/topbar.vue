@@ -34,7 +34,7 @@
       <v-user-wallet
         v-if="isUserWalletConnected && isUserConnectedProcessCompleted"
       />
-      <v-user-wallet-connect v-else />
+      <v-user-wallet-connect v-else @wallet-connected="handleConnectedWallet" />
     </div>
   </header>
 </template>
@@ -82,8 +82,6 @@ export default Vue.extend({
     if (this.isUserWalletConnected) {
       this.isUserConnectedProcessCompleted = true
     }
-
-    this.$root.$on('wallet-connected', this.handleConnectedWallet)
   },
 
   methods: {

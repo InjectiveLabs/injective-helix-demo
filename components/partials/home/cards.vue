@@ -15,7 +15,12 @@
           <img
             :src="card.illustration"
             :alt="card.title"
-            class="w-40 h-40 mt-10 mr-4"
+            class="mr-4"
+            :class="{
+              'w-40 h-40 mt-8': index === 0,
+              'w-32 h-32 mt-14': index === 1,
+              'w-40 h-40 mt-10': index === 2
+            }"
           />
         </template>
         <a
@@ -59,7 +64,7 @@ export default Vue.extend({
           link: 'https://api.injective.exchange/',
           description: 'An institutional grade API custom made for Injective.',
           linkText: 'Explore the docs',
-          illustration: '/svg/api-new-v4.svg'
+          illustration: '/svg/api-new-v10.svg'
         },
         {
           category: 'External Link',
