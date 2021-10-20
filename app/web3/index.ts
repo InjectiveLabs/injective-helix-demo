@@ -33,10 +33,15 @@ export const getRpcWsUrlsForChainIds = (): Record<ChainId, string> => {
   }
 }
 
-export const initWeb3Strategy = (
-  wallet: Wallet,
-  options: Partial<ConcreteStrategyOptions> = {}
-) => {
+export const initWeb3Strategy = ({
+  wallet,
+  options = {},
+  onAccountChangeCallback = () => {}
+}: {
+  wallet: Wallet
+  options?: Partial<ConcreteStrategyOptions>
+  onAccountChangeCallback?: (account: string) => void
+}) => {
   const RPC_POLING_INTERVAL = 4000
 
   web3Strategy = new Web3Strategy({
@@ -51,23 +56,16 @@ export const initWeb3Strategy = (
     }
   })
 
-  /*
-  web3Strategy.onAccountChange(() => {
-    localStorage.clear()
-    window.location.reload()
-  })
-
-  web3Strategy.onChainChange(() => {
-    localStorage.clear()
-    window.location.reload()
-  }) */
+  if (wallet === Wallet.Metamask) {
+    web3Strategy.onAccountChange(onAccountChangeCallback)
+  }
 
   return web3Strategy
 }
 
 export const getWeb3Strategy = (wallet?: Wallet) => {
   if (!web3Strategy) {
-    initWeb3Strategy(wallet || app.wallet)
+    initWeb3Strategy({ wallet: wallet || app.wallet })
   }
 
   return web3Strategy

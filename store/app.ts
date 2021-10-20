@@ -12,6 +12,10 @@ import { fetchGeoLocation, validateGeoLocation } from '~/app/services/region'
 import { app } from '~/app/singletons/App'
 
 const initialState = {
+  // User Settings
+  acceptHighPriceDeviations: true,
+
+  // App Settings
   locale: english,
   state: AppState.Idle,
   chainId: CHAIN_ID,
@@ -23,6 +27,7 @@ const initialState = {
 }
 
 export const state = () => ({
+  acceptHighPriceDeviations: initialState.acceptHighPriceDeviations,
   locale: initialState.locale as Locale,
   chainId: initialState.chainId as ChainId,
   gasPrice: initialState.gasPrice as string,
@@ -39,6 +44,13 @@ export const mutations = {
 
   setAppLocale(state: AppStoreState, locale: Locale) {
     state.locale = locale
+  },
+
+  setAcceptHighPriceDeviations(
+    state: AppStoreState,
+    acceptHighPriceDeviations: boolean
+  ) {
+    state.acceptHighPriceDeviations = acceptHighPriceDeviations
   },
 
   setGasPrice(state: AppStoreState, gasPrice: string) {

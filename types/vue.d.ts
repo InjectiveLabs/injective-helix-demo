@@ -1,5 +1,6 @@
 import VueI18n, { Path, Values, Locale } from 'vue-i18n/types'
 import VueRouter from 'vue-router'
+import { Toasted } from 'vue-toasted'
 import { accessorType } from '~/store'
 
 /**
@@ -15,10 +16,12 @@ declare module 'vue-i18n/types' {
 
 declare module 'vue/types/vue' {
   interface Vue {
+    $toast: Toasted
     $t: typeof VueI18n.prototype.t
     $router: VueRouter
     $accessor: typeof accessorType
     $onRejected: (e: any) => void
+    $onError: (e: any) => void
     $onConfirm: (message: string, handler: Function) => void
   }
 
@@ -30,6 +33,7 @@ declare module 'vue/types/vue' {
 
 declare module '@nuxt/types' {
   interface NuxtAppOptions {
+    $toast: Toasted
     $accessor: typeof accessorType
   }
 }

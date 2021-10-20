@@ -15,7 +15,7 @@ import { streamProvider } from '../providers/StreamProvider'
 import { subaccountConsumer } from '~/app/singletons/SubaccountConsumer'
 import { CHAIN_ID } from '~/app/utils/constants'
 import { authConsumer } from '~/app/singletons/AuthConsumer'
-import { UiSubaccount } from '~/types/subaccount'
+import { UiSubaccount, AccountPortfolio } from '~/types/subaccount'
 import { AccountMetrics } from '~/types/metrics'
 
 export const getInjectiveAddress = (address: AccountAddress): string => {
@@ -52,14 +52,22 @@ export const fetchSubaccount = async (
   }
 }
 
-export const fetchSubaccountHistory = async (subaccountId: string) => {
-  const promise = subaccountConsumer.fetchSubaccountHistory(subaccountId)
-  const history = await metricsProvider.sendAndRecord(
+export const fetchAccountPortfolio = async (
+  injAddress: string
+): Promise<AccountPortfolio> => {
+  const promise = subaccountConsumer.fetchPortfolioValue(injAddress)
+  const accountPortfolio = await metricsProvider.sendAndRecord(
     promise,
-    AccountMetrics.FetchSubaccountBalances
+    AccountMetrics.FetchPortfolioValue
   )
 
-  return SubaccountTransformer.grpcTransferHistoryToTransferHistory(history)
+  if (!accountPortfolio) {
+    throw new Error(`The account with ${injAddress} address is not found`)
+  }
+
+  return SubaccountTransformer.grpcAccountPortfolioToAccountPortfolio(
+    accountPortfolio
+  )
 }
 
 export const streamSubaccountBalances = ({

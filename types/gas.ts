@@ -17,3 +17,12 @@ export interface EthGasStationResult {
   fastest: number
   safeLow: number
 }
+
+export interface EtherchainResult {
+  standard: number
+  fast: number
+  fastest: number
+  safeLow: number
+  currentBaseFee: number
+  recommendedBaseFee: number
+}

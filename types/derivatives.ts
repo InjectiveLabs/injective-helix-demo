@@ -10,6 +10,7 @@ import {
 } from '@injectivelabs/derivatives-consumer'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 import { Token } from './token'
+import { Change, MarketType } from '.'
 
 export interface BaseUiDerivativeMarketWithPartialTokenMetaData
   extends Omit<BaseUiDerivativeMarket, 'quoteToken'> {
@@ -29,12 +30,15 @@ export interface UiDerivativeMarket
   extends BaseUiDerivativeMarketWithTokenMetaData {
   priceDecimals: number
   quantityDecimals: number
+  type: MarketType
+  subType: MarketType
 }
 
 export interface UiDerivativeMarketSummary
   extends ChronosDerivativeMarketSummary {
   marketId: string
   lastPrice?: number
+  lastPriceChange?: Change
 }
 
 export interface UiDerivativeMarketAndSummary {

@@ -1,4 +1,3 @@
-
 <template>
   <svg id="zh-flag">
     <defs>

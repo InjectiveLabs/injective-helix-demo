@@ -15,7 +15,8 @@ import {
   INJECTIVE_DENOM,
   MAXIMUM_TRANSFER_ALLOWED,
   TRANSFER_RESTRICTIONS_ENABLED,
-  ZERO_IN_BASE
+  ZERO_IN_BASE,
+  ZERO_TO_STRING
 } from '~/app/utils/constants'
 import { getTransactionOptions } from '~/app/utils/transaction'
 import { getWeb3Strategy, transactionReceiptAsync } from '~/app/web3'
@@ -31,33 +32,43 @@ export const getTokenBalanceAndAllowance = async ({
 }): Promise<TokenWithBalance> => {
   const web3Strategy = getWeb3Strategy()
   const contracts = getContracts()
+  let balance = ZERO_TO_STRING
+  let priceInUsd = ZERO_TO_STRING
+  let allowance = ZERO_TO_STRING
+
+  const erc20Contract = new BaseCurrencyContract({
+    web3Strategy,
+    address: token.address,
+    chainId: CHAIN_ID
+  })
 
   try {
-    const erc20Contract = new BaseCurrencyContract({
-      web3Strategy,
-      address: token.address,
-      chainId: CHAIN_ID
-    })
+    balance = await erc20Contract.getBalanceOf(address).callAsync()
+  } catch (e: any) {
+    balance = ZERO_TO_STRING
+  }
 
-    const balance = await erc20Contract.getBalanceOf(address).callAsync()
-    const allowance = await erc20Contract
+  try {
+    allowance = await erc20Contract
       .getAllowanceOf(address, contracts.peggy.address)
       .callAsync()
-    const priceInUsd = await getUsdtTokenPriceFromCoinGecko(token.coinGeckoId)
-
-    return {
-      ...token,
-      priceInUsd,
-      balance: balance || '0',
-      allowance: allowance || '0'
-    }
   } catch (e: any) {
-    return {
-      ...token,
-      priceInUsd: 0,
-      balance: '0',
-      allowance: '0'
-    }
+    allowance = ZERO_TO_STRING
+  }
+
+  try {
+    priceInUsd = (
+      await getUsdtTokenPriceFromCoinGecko(token.coinGeckoId)
+    ).toString()
+  } catch (e: any) {
+    priceInUsd = ZERO_TO_STRING
+  }
+
+  return {
+    ...token,
+    balance,
+    allowance,
+    priceInUsd: new BigNumberInBase(priceInUsd || 0).toNumber()
   }
 }
 
@@ -199,17 +210,17 @@ export const withdraw = async ({
   injectiveAddress,
   destinationAddress
 }: {
-  amount: string // BigNumberInWei
+  amount: BigNumberInWei
   address: AccountAddress
   denom: string
-  bridgeFee: string // BigNumberInWei
+  bridgeFee: BigNumberInWei
   destinationAddress: string
   injectiveAddress: AccountAddress
 }) => {
   const message = PeggyComposer.withdraw({
     denom,
-    amount: new BigNumberInWei(amount).minus(bridgeFee).toFixed(),
-    bridgeFeeAmount: bridgeFee,
+    amount: amount.minus(bridgeFee).toFixed(0, BigNumberInWei.ROUND_DOWN),
+    bridgeFeeAmount: bridgeFee.toFixed(0, BigNumberInWei.ROUND_DOWN),
     bridgeFeeDenom: denom,
     address: destinationAddress,
     injectiveAddress
@@ -247,11 +258,11 @@ export const validateTransferRestrictions = async (
   )
 
   if (!coin) {
-    throw new Error(`Asset's data couldn't be fetched.`)
+    throw new Error("Asset's data couldn't be fetched.")
   }
 
   if (!coin.id) {
-    throw new Error(`Asset's data couldn't be fetched.`)
+    throw new Error("Asset's data couldn't be fetched.")
   }
 
   const {
@@ -259,17 +270,17 @@ export const validateTransferRestrictions = async (
   } = await coinGeckoConsumer.fetchCoin(coin.id)
 
   if (!marketData) {
-    throw new Error(`Asset's market data couldn't be fetched.`)
+    throw new Error("Asset's market data couldn't be fetched.")
   }
 
   const { current_price: currentPrice } = marketData
 
   if (!currentPrice) {
-    throw new Error(`Asset's prices couldn't be fetched.`)
+    throw new Error("Asset's prices couldn't be fetched.")
   }
 
   if (!currentPrice.usd) {
-    throw new Error(`Asset's USD price couldn't be fetched.`)
+    throw new Error("Asset's USD price couldn't be fetched.")
   }
 
   const usdPrice = currentPrice.usd

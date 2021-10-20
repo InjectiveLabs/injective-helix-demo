@@ -4,8 +4,10 @@ import { localStorage } from '~/app/singletons/Storage'
 import { AppState } from '~/types'
 
 const mutationsToPersist = [
+  'app/acceptHighPriceDeviations',
   'wallet/reset',
   'wallet/setAddress',
+  'wallet/setAddresses',
   'wallet/setWallet',
   'wallet/setInjectiveAddress',
   'wallet/setAddressConfirmation'
@@ -24,10 +26,12 @@ const actionsThatSetAppStateToBusy = [
   'spot/batchCancelOrder',
   'spot/submitLimitOrder',
   'spot/submitMarketOrder',
-  'spot/closePosition'
+  'portfolio/closePosition',
+  'portfolio/cancelOrder',
+  'portfolio/batchCancelOrder'
 ]
 
-const store: Plugin = ({ store, app }) => {
+const store: Plugin = ({ store, app }, inject) => {
   const localState = localStorage.get('state') as any
 
   // Replace Local State
@@ -37,6 +41,10 @@ const store: Plugin = ({ store, app }) => {
   store.subscribe(({ type }) => {
     if (mutationsToPersist.includes(type)) {
       const stateToPersist = {
+        app: {
+          acceptHighPriceDeviations: app.$accessor.app.acceptHighPriceDeviations
+        },
+
         wallet: {
           wallet: app.$accessor.wallet.wallet,
           addresses: app.$accessor.wallet.addresses,

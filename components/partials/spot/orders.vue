@@ -1,41 +1,43 @@
 <template>
-  <v-panel>
-    <div slot="context">
-      <div class="flex items-center justify-between">
-        <div class="tabs">
-          <ul role="tablist" class="tablist">
-            <li
-              role="tab"
-              :aria-selected="component === components.openOrders"
-              class="tab"
-              @click.stop.prevent="onSelect(components.openOrders)"
-            >
-              <span>{{ $t('open_orders') }} {{ `(${orders.length})` }}</span>
-            </li>
-            <li
-              role="tab"
-              :aria-selected="component === components.tradeHistory"
-              class="tab"
-              @click.stop.prevent="onSelect(components.tradeHistory)"
-            >
-              <span>{{ $t('trade_history') }}</span>
-            </li>
-          </ul>
-        </div>
-        <v-ui-button
-          v-if="component === components.openOrders && orders.length > 0"
-          xs
-          primary
-          text
-          class="mr-4"
-          @click.stop="handleCancelAllClick"
+  <div class="flex flex-wrap flex-col h-full">
+    <div class="w-full flex items-center justify-between">
+      <div class="flex items-center justify-center">
+        <v-button
+          :class="{
+            'text-gray-500': component !== components.openOrders
+          }"
+          text-sm
+          class="font-normal"
+          @click.stop="onSelect(components.openOrders)"
         >
-          {{ $t('cancel_all') }}
-        </v-ui-button>
+          <span>{{ $t('open_orders') }} {{ `(${orders.length})` }}</span>
+        </v-button>
+        <div class="mx-2 w-px h-4 bg-gray-700"></div>
+        <v-button
+          :class="{
+            'text-gray-500': component !== components.tradeHistory
+          }"
+          text-sm
+          class="font-normal"
+          @click.stop="onSelect(components.tradeHistory)"
+        >
+          <span>{{ $t('trade_history') }}</span>
+        </v-button>
       </div>
+
+      <v-button
+        v-if="component === components.openOrders && orders.length > 0"
+        text-xs
+        @click.stop="handleCancelAllClick"
+      >
+        {{ $t('cancel_all') }}
+      </v-button>
     </div>
-    <component :is="component" v-if="component"></component>
-  </v-panel>
+
+    <div class="bg-gray-900 px-4 py-2 rounded-lg mt-2 flex-1">
+      <component :is="component" v-if="component"></component>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">

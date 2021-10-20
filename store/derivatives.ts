@@ -103,7 +103,10 @@ export const getters = getterTree(state, {
       return Change.NoChange
     }
 
-    const [trade, secondLastTrade] = state.trades
+    const [trade] = state.trades
+    const [secondLastTrade] = state.trades.filter(
+      (t) => !new BigNumberInBase(t.executionPrice).eq(trade.executionPrice)
+    )
 
     if (!secondLastTrade) {
       return Change.NoChange
@@ -611,14 +614,13 @@ export const actions = actionTree(
 
     async cancelOrder(_, order: UiDerivativeLimitOrder) {
       const { subaccount } = this.app.$accessor.account
-      const { market } = this.app.$accessor.derivatives
       const {
         address,
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
 
-      if (!isUserWalletConnected || !subaccount || !market) {
+      if (!isUserWalletConnected || !subaccount) {
         return
       }
 
@@ -629,7 +631,7 @@ export const actions = actionTree(
         injectiveAddress,
         address,
         orderHash: order.orderHash,
-        marketId: market.marketId,
+        marketId: order.marketId,
         subaccountId: subaccount.subaccountId
       })
     },
@@ -762,24 +764,30 @@ export const actions = actionTree(
     async closePosition(
       _,
       {
+        market,
         quantity,
         price,
         orderType
       }: {
+        market?: UiDerivativeMarket
         price: BigNumberInBase
         quantity: BigNumberInBase
         orderType: DerivativeOrderSide
       }
     ) {
       const { subaccount } = this.app.$accessor.account
-      const { market } = this.app.$accessor.derivatives
+      const { market: currentMarket } = this.app.$accessor.derivatives
       const {
         address,
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
 
-      if (!isUserWalletConnected || !subaccount || !market) {
+      if (
+        !isUserWalletConnected ||
+        !subaccount ||
+        (!market && !currentMarket)
+      ) {
         return
       }
 
@@ -791,8 +799,8 @@ export const actions = actionTree(
         price,
         injectiveAddress,
         address,
-        market,
         orderType,
+        market: (currentMarket || market) as UiDerivativeMarket,
         subaccountId: subaccount.subaccountId
       })
     },
@@ -800,13 +808,14 @@ export const actions = actionTree(
     async addMarginToPosition(
       _,
       {
+        market,
         amount
       }: {
+        market: UiDerivativeMarket
         amount: BigNumberInBase
       }
     ) {
       const { subaccount } = this.app.$accessor.account
-      const { market } = this.app.$accessor.derivatives
       const {
         address,
         injectiveAddress,

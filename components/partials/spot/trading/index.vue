@@ -1,7 +1,7 @@
 <template>
-  <v-panel class="h-full" :title="$t('trading')">
+  <v-card>
     <v-trade />
-  </v-panel>
+  </v-card>
 </template>
 
 <script lang="ts">

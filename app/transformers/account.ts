@@ -1,6 +1,12 @@
 import { SubaccountBalance } from '@injectivelabs/subaccount-consumer'
+import { getTokenMetaData } from '../services/tokens'
+import { tokenMetaToToken } from './token'
 import { ZERO_TO_STRING } from '~/app/utils/constants'
-import { UiSubaccountBalance } from '~/types'
+import {
+  GrpcSubaccountTransfer,
+  UiSubaccountBalance,
+  UiSubaccountTransfer
+} from '~/types'
 
 export const grpcSubaccountBalanceToUiSubaccountBalance = (
   balance: SubaccountBalance
@@ -11,3 +17,22 @@ export const grpcSubaccountBalanceToUiSubaccountBalance = (
     ? balance.deposit.availableBalance
     : ZERO_TO_STRING
 })
+
+export const subaccountHistoryToSubaccountUiHistory = (
+  transferList: GrpcSubaccountTransfer[]
+): UiSubaccountTransfer[] => {
+  return transferList
+    .filter((transfer) => transfer.amount)
+    .map((transfer) => {
+      return {
+        ...transfer,
+        token: tokenMetaToToken(
+          getTokenMetaData(transfer.amount!.denom),
+          transfer.amount!.denom
+        )
+      }
+    })
+    .filter(
+      (transfer) => transfer.token !== undefined
+    ) as UiSubaccountTransfer[]
+}

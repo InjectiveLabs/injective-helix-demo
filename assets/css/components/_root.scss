@@ -1,58 +1,18 @@
+html {
+  @apply bg-gray-1000;
+}
+
 body {
-  @apply bg-dark-700 font-sans text-base leading-normal text-gray-100 antialiased;
+  @apply font-sans text-base leading-normal text-gray-100 antialiased bg-gray-1000;
   scroll-behavior: smooth;
   text-rendering: optimizeSpeed;
 
-  & * {
-    @apply border-dark-border;
+  .vue-grid-item.vue-grid-placeholder {
+    @apply rounded bg-primary-500;
+    opacity: 0.35;
   }
 
-  #pro {
-    header {
-      @apply h-12 fixed;
-
-      .header-nav {
-        @apply h-full font-semibold cursor-pointer;
-
-        & > div,
-        & > span {
-          @apply cursor-pointer;
-
-          &:hover,
-          &.is-active {
-            @apply bg-dark-700;
-          }
-
-          &.is-active {
-            @apply font-semibold;
-          }
-
-          .light & {
-            &:hover,
-            &.is-active {
-              @apply bg-primary-500;
-            }
-
-            &.is-active {
-              @apply font-semibold;
-            }
-          }
-        }
-      }
-    }
-
-    .vue-grid-item.vue-grid-placeholder {
-      @apply rounded bg-primary-500;
-      opacity: 0.35;
-    }
-
-    .vue-grid-item {
-      touch-action: none;
-    }
-
-    main {
-      padding-top: 3rem;
-      min-height: calc(100vh - 3.3rem);
-    }
+  .vue-grid-item {
+    touch-action: none;
   }
 }
