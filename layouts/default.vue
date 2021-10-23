@@ -53,6 +53,7 @@ export default Vue.extend({
   },
 
   mounted() {
+    this.$accessor.app.fetchGasPrice()
     Promise.all([
       this.$accessor.app.init(),
       this.$accessor.spot.init(),
