@@ -1,42 +1,24 @@
 <template>
-  <div class="flex-1">
-    <div class="flex items-center justify-between">
-      <div class="flex items-center justify-center">
-        <v-button
-          :class="{
-            'text-gray-500': component !== components.deposits
-          }"
-          text-sm
-          class="font-normal"
-          @click.stop="onSelect(components.deposits)"
-        >
-          <span>
-            {{ $t('deposits') }}
-            {{ `(${deposits.length})` }}
-          </span>
-        </v-button>
-        <div class="mx-2 w-px h-4 bg-gray-500"></div>
-        <v-button
-          :class="{
-            'text-gray-500': component !== components.withdrawals
-          }"
-          text-sm
-          class="font-normal"
-          @click.stop="onSelect(components.withdrawals)"
-        >
-          <span> {{ $t('withdrawals') }} {{ `(${withdrawals.length})` }} </span>
-        </v-button>
-      </div>
-    </div>
+  <v-card-table-wrap>
+    <template #filters>
+      <v-button-filter v-model="component" :option="components.deposits">
+        <span>
+          {{ $t('deposits') }}
+          {{ `(${deposits.length})` }}
+        </span>
+      </v-button-filter>
+      <div class="mx-2 w-px h-4 bg-gray-500"></div>
+      <v-button-filter v-model="component" :option="components.withdrawals">
+        <span> {{ $t('withdrawals') }} {{ `(${withdrawals.length})` }} </span>
+      </v-button-filter>
+    </template>
 
-    <div class="bg-gray-900 px-4 py-2 rounded-lg mt-2">
-      <component
-        :is="component"
-        v-if="component"
-        :transfers="currentTransfers"
-      ></component>
-    </div>
-  </div>
+    <component
+      :is="component"
+      v-if="component"
+      :transfers="currentTransfers"
+    ></component>
+  </v-card-table-wrap>
 </template>
 
 <script lang="ts">

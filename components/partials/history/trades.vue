@@ -1,44 +1,32 @@
 <template>
-  <div class="flex-1">
-    <div class="flex items-center justify-between">
-      <div class="flex items-center justify-center">
-        <v-button
-          :class="{
-            'text-gray-500': component !== components.derivativeTradeHistory
-          }"
-          text-sm
-          class="font-normal"
-          @click.stop="onSelect(components.derivativeTradeHistory)"
-        >
-          <span>
-            {{ $t('derivatives_trade_history') }}
-            {{ `(${derivativesTrades.length})` }}
-          </span>
-        </v-button>
-        <div class="mx-2 w-px h-4 bg-gray-500"></div>
-        <v-button
-          :class="{
-            'text-gray-500': component !== components.spotTradeHistory
-          }"
-          text-sm
-          class="font-normal"
-          @click.stop="onSelect(components.spotTradeHistory)"
-        >
-          <span>
-            {{ $t('spot_trade_history') }} {{ `(${spotTrades.length})` }}
-          </span>
-        </v-button>
-      </div>
-    </div>
+  <v-card-table-wrap>
+    <template #filters>
+      <v-button-filter
+        v-model="component"
+        :option="components.derivativeTradeHistory"
+      >
+        <span>
+          {{ $t('derivatives_trade_history') }}
+          {{ `(${derivativesTrades.length})` }}
+        </span>
+      </v-button-filter>
+      <div class="mx-2 w-px h-4 bg-gray-500"></div>
+      <v-button-filter
+        v-model="component"
+        :option="components.spotTradeHistory"
+      >
+        <span>
+          {{ $t('spot_trade_history') }} {{ `(${spotTrades.length})` }}
+        </span>
+      </v-button-filter>
+    </template>
 
-    <div class="bg-gray-900 px-4 py-2 rounded-lg mt-2">
-      <component
-        :is="component"
-        v-if="component"
-        :trades="currentTrades"
-      ></component>
-    </div>
-  </div>
+    <component
+      :is="component"
+      v-if="component"
+      :trades="currentTrades"
+    ></component>
+  </v-card-table-wrap>
 </template>
 
 <script lang="ts">

@@ -51,6 +51,10 @@
   }
 }
 
+.card-table-wrap-content {
+  @apply bg-gray-900 px-4 py-2 rounded-lg mt-2 flex-1 w-full;
+}
+
 .toasted.bubble {
   @apply shadow-md border;
 }

@@ -33,21 +33,12 @@
       >
         {{ priceToFormat }}
       </span>
-      <span class="text-2xs text-gray-500">
-        {{ market.quoteToken.symbol }}
-      </span>
     </td>
     <td class="text-right font-mono">
       {{ quantityToFormat }}
-      <span class="text-2xs text-gray-500">
-        {{ market.baseToken.symbol }}
-      </span>
     </td>
     <td class="text-right font-mono">
       {{ liquidationPriceToFormat }}
-      <span class="text-2xs text-gray-500">
-        {{ market.quoteToken.symbol }}
-      </span>
     </td>
     <td class="text-center">
       <v-badge
@@ -97,9 +88,6 @@
       <div class="flex items-center justify-end h-8">
         <span class="font-mono">
           {{ marginToFormat }}
-        </span>
-        <span class="text-2xs text-gray-500 mt-1 ml-1">
-          {{ market.quoteToken.symbol }}
         </span>
         <button
           role="button"

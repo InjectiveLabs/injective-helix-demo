@@ -16,15 +16,9 @@
       >
         {{ priceToFormat }}
       </span>
-      <span class="text-2xs text-gray-500">
-        {{ market.quoteToken.symbol }}
-      </span>
     </td>
     <td class="h-8 text-right font-mono">
       {{ quantityToFormat }}
-      <span class="text-2xs text-gray-500">
-        {{ market.baseToken.symbol }}
-      </span>
     </td>
     <td class="h-8 font-mono text-right">
       {{ totalToFormat }}
@@ -52,9 +46,6 @@
     </td>
     <td class="h-8 text-right font-mono">
       {{ unfilledQuantityToFormat }}
-      <span class="text-2xs text-gray-500">
-        {{ market.baseToken.symbol }}
-      </span>
     </td>
     <td class="h-8 text-center">
       <v-badge v-if="orderFullyFilled" primary xs>

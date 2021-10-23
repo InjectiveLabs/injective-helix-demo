@@ -1,35 +1,23 @@
 <template>
-  <div class="flex-1">
-    <div class="flex items-center justify-between">
-      <div class="flex items-center justify-center">
-        <v-button
-          :class="{
-            'text-gray-500': component !== components.openDerivativeOrders
-          }"
-          text-sm
-          class="font-normal"
-          @click.stop="onSelect(components.openDerivativeOrders)"
-        >
-          <span>
-            {{ $t('open_derivatives_order') }}
-            {{ `(${derivativeOrders.length})` }}
-          </span>
-        </v-button>
-        <div class="mx-2 w-px h-4 bg-gray-500"></div>
-        <v-button
-          :class="{
-            'text-gray-500': component !== components.openSpotOrders
-          }"
-          text-sm
-          class="font-normal"
-          @click.stop="onSelect(components.openSpotOrders)"
-        >
-          <span>
-            {{ $t('open_spot_order') }} {{ `(${spotOrders.length})` }}
-          </span>
-        </v-button>
-      </div>
-
+  <v-card-table-wrap>
+    <template #filters>
+      <v-button-filter
+        v-model="component"
+        :option="components.openDerivativeOrders"
+      >
+        <span>
+          {{ $t('open_derivatives_order') }}
+          {{ `(${derivativeOrders.length})` }}
+        </span>
+      </v-button-filter>
+      <div class="mx-2 w-px h-4 bg-gray-500"></div>
+      <v-button-filter v-model="component" :option="components.openSpotOrders">
+        <span>
+          {{ $t('open_spot_order') }} {{ `(${spotOrders.length})` }}
+        </span>
+      </v-button-filter>
+    </template>
+    <template #context>
       <v-button
         v-if="
           component === components.openSpotOrders &&
@@ -52,16 +40,13 @@
       >
         {{ $t('cancel_all') }}
       </v-button>
-    </div>
-
-    <div class="bg-gray-900 px-4 py-2 rounded-lg mt-2">
-      <component
-        :is="component"
-        v-if="component"
-        :orders="currentOrders"
-      ></component>
-    </div>
-  </div>
+    </template>
+    <component
+      :is="component"
+      v-if="component"
+      :orders="currentOrders"
+    ></component>
+  </v-card-table-wrap>
 </template>
 
 <script lang="ts">

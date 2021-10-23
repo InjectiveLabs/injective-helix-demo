@@ -1,6 +1,9 @@
 <template>
   <div class="bg-gray-800 rounded-l-xl h-full overflow-hidden shadow-sm">
-    <div ref="trading-view-wrap" class="h-full w-full relative">
+    <div
+      ref="trading-view-wrap"
+      class="min-h-sm lg:min-h-full h-full w-full relative"
+    >
       <HOCLoading :status="status">
         <v-trading-chart
           ref="trading-view"

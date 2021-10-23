@@ -1,43 +1,27 @@
 <template>
-  <div class="flex flex-wrap flex-col h-full">
-    <div class="w-full flex items-center justify-between">
-      <div class="flex items-center justify-center">
-        <v-button
-          :class="{
-            'text-gray-500': component !== components.openOrders
-          }"
-          text-sm
-          class="font-normal"
-          @click.stop="onSelect(components.openOrders)"
-        >
-          <span>{{ $t('open_orders') }} {{ `(${orders.length})` }}</span>
-        </v-button>
-        <div class="mx-2 w-px h-4 bg-gray-700"></div>
-        <v-button
-          :class="{
-            'text-gray-500': component !== components.openPositions
-          }"
-          text-sm
-          class="font-normal"
-          @click.stop="onSelect(components.openPositions)"
-        >
-          <span>
-            {{ $t('open_positions') }} <span v-if="position">(1)</span>
-          </span>
-        </v-button>
-        <div class="mx-2 w-px h-4 bg-gray-700"></div>
-        <v-button
-          :class="{
-            'text-gray-500': component !== components.tradeHistory
-          }"
-          text-sm
-          class="font-normal"
-          @click.stop="onSelect(components.tradeHistory)"
-        >
-          <span>{{ $t('trade_history') }}</span>
-        </v-button>
-      </div>
-
+  <v-card-table-wrap>
+    <template #filters>
+      <v-button-filter v-model="component" :option="components.openOrders">
+        <span>
+          {{ $t('open_orders') }}
+          {{ `(${orders.length})` }}
+        </span>
+      </v-button-filter>
+      <div class="mx-2 w-px h-4 bg-gray-500"></div>
+      <v-button-filter v-model="component" :option="components.openPositions">
+        <span>
+          {{ $t('open_positions') }}
+          <span v-if="position">(1)</span>
+        </span>
+      </v-button-filter>
+      <div class="mx-2 w-px h-4 bg-gray-500"></div>
+      <v-button-filter v-model="component" :option="components.tradeHistory">
+        <span>
+          {{ $t('trade_history') }}
+        </span>
+      </v-button-filter>
+    </template>
+    <template #context>
       <v-button
         v-if="component === components.openOrders && orders.length > 0"
         text-xs
@@ -45,12 +29,9 @@
       >
         {{ $t('cancel_all') }}
       </v-button>
-    </div>
-
-    <div class="bg-gray-900 px-4 py-2 rounded-lg mt-2 flex-1 w-full">
-      <component :is="component" v-if="component"></component>
-    </div>
-  </div>
+    </template>
+    <component :is="component" v-if="component"></component>
+  </v-card-table-wrap>
 </template>
 
 <script lang="ts">
