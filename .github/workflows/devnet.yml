@@ -6,7 +6,7 @@ on:
       - dev
 jobs:
   devnet:
-    name: "Deploy to devnet"
+    name: 'Deploy to devnet'
     runs-on: ubuntu-latest
     env:
       SSH_USER: ${{ secrets.DEVNET_SSH_USER }}
@@ -34,6 +34,9 @@ jobs:
 
       - name: Install Dependencies
         run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn install'
+
+      - name: Remove prev build
+        run: ssh devnet 'cd "'$SOURCE_DIR'"  && rm -rf dist'
 
       - name: Building the project
         run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn build'
