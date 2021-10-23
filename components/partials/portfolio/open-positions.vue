@@ -1,21 +1,14 @@
 <template>
-  <div class="flex-1">
-    <div class="flex items-center justify-between">
-      <div class="flex items-center justify-center">
-        <v-button
-          text-sm
-          class="font-normal"
-          @click.stop="onSelect(components.openPositions)"
-        >
-          <span>{{ $t('open_positions') }}</span>
-        </v-button>
-      </div>
-    </div>
-
-    <div class="bg-gray-900 px-4 py-2 rounded-lg mt-2 w-full">
-      <component :is="component" v-if="component"></component>
-    </div>
-  </div>
+  <v-card-table-wrap>
+    <template #filters>
+      <v-button-filter v-model="component" :option="components.openPositions">
+        <span>
+          {{ $t('open_positions') }}
+        </span>
+      </v-button-filter>
+    </template>
+    <component :is="component" v-if="component"></component>
+  </v-card-table-wrap>
 </template>
 
 <script lang="ts">
