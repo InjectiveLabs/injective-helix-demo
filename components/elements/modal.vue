@@ -91,22 +91,16 @@ export default Vue.extend({
 
   watch: {
     isOpen(newIsOpen: boolean) {
-      if (newIsOpen) {
-        this.isVisibleOnViewport = true
-        this.$nextTick(() => {
-          document.body.classList.add('overflow-hidden')
-        })
-      } else {
-        document.body.classList.remove('overflow-hidden')
-        setTimeout(() => {
-          this.isVisibleOnViewport = false
-        }, 300)
-      }
+      newIsOpen ? this.handleOnOpen() : this.handleOnClose()
     }
   },
 
   mounted() {
     this.onEscKeyDown()
+
+    if (this.isOpen) {
+      this.handleOnOpen()
+    }
   },
 
   beforeDestroy() {
@@ -114,6 +108,20 @@ export default Vue.extend({
   },
 
   methods: {
+    handleOnOpen() {
+      this.isVisibleOnViewport = true
+      this.$nextTick(() => {
+        document.body.classList.add('overflow-hidden')
+      })
+    },
+
+    handleOnClose() {
+      document.body.classList.remove('overflow-hidden')
+      setTimeout(() => {
+        this.isVisibleOnViewport = false
+      }, 300)
+    },
+
     handleCloseModal() {
       if (this.isOpen) {
         this.$emit('modal-closed')

@@ -16,26 +16,20 @@
       >
         {{ priceToFormat }}
       </span>
-      <span class="text-2xs text-gray-500">
-        {{ tradeTypeBuy ? market.quoteToken.symbol : market.baseToken.symbol }}
-      </span>
     </td>
     <td class="h-8 text-right font-mono">
       {{ quantityToFormat }}
-      <span class="text-2xs text-gray-500">
-        {{ tradeTypeBuy ? market.baseToken.symbol : market.quoteToken.symbol }}
-      </span>
     </td>
     <td class="h-8 text-right font-mono">
       {{ totalToFormat }}
       <span class="text-2xs text-gray-500">
-        {{ tradeTypeBuy ? market.quoteToken.symbol : market.baseToken.symbol }}
+        {{ market.quoteToken.symbol }}
       </span>
     </td>
     <td class="h-8 text-right font-mono">
       {{ feeToFormat }}
       <span class="text-2xs text-gray-500">
-        {{ tradeTypeBuy ? market.quoteToken.symbol : market.baseToken.symbol }}
+        {{ market.quoteToken.symbol }}
       </span>
     </td>
     <td class="h-8 text-center">
