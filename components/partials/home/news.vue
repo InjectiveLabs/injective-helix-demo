@@ -27,18 +27,17 @@ export default Vue.extend({
     return {
       articles: [
         {
+          title: 'Injective Spanish Twitter Campaign',
+          link:
+            'https://blog.injectiveprotocol.com/injective-spanish-community-twitter-campaign/'
+        },
+        {
+          title: 'Injective Pro Launch',
+          link: 'https://blog.injectiveprotocol.com/injective-pro-launch/'
+        },
+        {
           title: 'Injective Explorer Release',
           link: 'https://blog.injectiveprotocol.com/injective-explorer-release/'
-        },
-        {
-          title: 'Injective Update: September 2021',
-          link:
-            'https://blog.injectiveprotocol.com/injective-update-september-2021/'
-        },
-        {
-          title: 'Launch of Unified Governance Interface',
-          link:
-            'https://blog.injectiveprotocol.com/injective-launches-unified-governance-interface-with-commonwealth/'
         }
       ]
     }

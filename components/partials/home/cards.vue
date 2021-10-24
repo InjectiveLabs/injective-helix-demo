@@ -15,12 +15,7 @@
           <img
             :src="card.illustration"
             :alt="card.title"
-            class="mr-4"
-            :class="{
-              'w-40 h-40 mt-8': index === 0,
-              'w-44 h-44 mt-8': index === 1,
-              'w-32 h-32 mt-14': index === 2
-            }"
+            :class="card.imageClass"
           />
         </template>
         <a
@@ -56,7 +51,9 @@ export default Vue.extend({
           description:
             'A unified interface for Injective staking, governance, insurance funds and wallets.',
           linkText: 'Visit our Hub',
-          illustration: '/svg/hub-new.svg'
+          illustration: '/svg/hub-new.svg',
+          imageClass:
+            'w-32 h-32 -mt-5 md:w-24 md:h-24 md:mt-4 lg:w-36 lg:h-36 lg:-mt-5'
         },
         {
           category: 'Docs',
@@ -64,7 +61,9 @@ export default Vue.extend({
           link: 'https://api.injective.exchange/',
           description: 'An institutional grade API custom made for Injective.',
           linkText: 'Explore the docs',
-          illustration: '/svg/api-v1.svg'
+          illustration: '/svg/api-v1.svg',
+          imageClass:
+            'w-36 h-36 -mt-6 md:w-38 md:h-38 md:-mt-2 lg:w-40 lg:h-40 lg:-mt-8'
         },
         {
           category: 'External Link',
@@ -73,7 +72,9 @@ export default Vue.extend({
           description:
             'Injective has one of the fastest growing DeFi ecosystems in the world.',
           linkText: 'Join Injective',
-          illustration: '/svg/ecosystem-v1.svg'
+          illustration: '/svg/ecosystem-v1.svg',
+          imageClass:
+            'w-24 h-24 md:w-24 md:h-24 md:mt-4 lg:w-32 lg:h-32 lg:-mt-2'
         }
       ]
     }

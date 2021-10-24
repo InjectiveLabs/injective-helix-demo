@@ -73,7 +73,7 @@
         :tooltip="$t('funding_rate_tooltip')"
       >
         <span
-          v-if="fundingRate.gt(0)"
+          v-if="!fundingRate.isNaN()"
           class="text-sm text-right font-mono block"
         >
           <span

@@ -1,9 +1,7 @@
 <template>
   <v-button
-    :class="{
-      'text-gray-500': component !== option
-    }"
     text-sm
+    :gray="component !== option"
     class="font-normal"
     @click.stop="onSelect"
   >

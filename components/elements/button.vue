@@ -55,12 +55,6 @@ export default Vue.extend({
       type: Boolean
     },
 
-    redText: {
-      required: false,
-      default: false,
-      type: Boolean
-    },
-
     outline: {
       required: false,
       default: false,
@@ -103,13 +97,13 @@ export default Vue.extend({
       type: Boolean
     },
 
-    disabled: {
+    gray: {
       required: false,
       default: false,
       type: Boolean
     },
 
-    inheritColors: {
+    disabled: {
       required: false,
       default: false,
       type: Boolean
@@ -148,6 +142,8 @@ export default Vue.extend({
             ? ['text-aqua-500', 'hover:text-aqua-600']
             : this.red
             ? ['text-red-500', 'hover:text-red-600']
+            : this.gray || this.default
+            ? ['text-gray-500', 'hover:text-primary-500']
             : ['text-primary-500', 'hover:text-primary-600']
 
           classes.push('font-bold', 'tracking-wide', ...color)
@@ -175,8 +171,14 @@ export default Vue.extend({
             'text-gray-800',
             'shadow-none'
           )
-        } else if (this.redText) {
-          classes.push('text-red-200', 'font-semibold', 'hover:text-red-100')
+        } else if (this.red) {
+          classes.push(
+            'font-semibold',
+            'bg-red-500',
+            'hover:bg-red-400',
+            'text-gray-800',
+            'shadow-none'
+          )
         } else if (this.outline) {
           classes.push(
             'text-white',
