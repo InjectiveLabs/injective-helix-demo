@@ -101,7 +101,7 @@
     </td>
     <td class="text-right font-mono">
       <span
-        v-if="effectiveLeverage.gt(0)"
+        v-if="effectiveLeverage.gte(0)"
         class="flex items-center justify-end"
       >
         {{ effectiveLeverage.toFormat(2) }}

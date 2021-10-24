@@ -1,0 +1,45 @@
+name: CD Devnet
+
+on:
+  push:
+    branches:
+      - dev
+jobs:
+  devnet:
+    name: 'Deploy to devnet'
+    runs-on: ubuntu-latest
+    env:
+      SSH_USER: ${{ secrets.DEVNET_SSH_USER }}
+      SSH_KEY: ${{ secrets.DEVNET_SSH_KEY }}
+      SSH_HOST: ${{ secrets.DEVNET_SSH_HOST }}
+      SOURCE_DIR: ${{ secrets.DEVNET_SOURCE_PATH}}
+      GIT_BRANCH: ${{secrets.DEVNET_GIT_BRANCH}}
+    steps:
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/devnet.key
+          chmod 600 ~/.ssh/devnet.key
+          cat >>~/.ssh/config <<END
+          Host devnet
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/devnet.key
+            StrictHostKeyChecking no
+            SendEnv $SOURCE_DIR
+          END
+
+      - name: Check out the source
+        run: ssh devnet 'cd "'$SOURCE_DIR'" && git fetch && git reset --hard "'$GIT_BRANCH'"'
+
+      - name: Install Dependencies
+        run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn install'
+
+      - name: Remove prev build
+        run: ssh devnet 'cd "'$SOURCE_DIR'"  && rm -rf dist'
+
+      - name: Building the project
+        run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn build'
+
+      - name: Generating the static pages
+        run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn generate'
