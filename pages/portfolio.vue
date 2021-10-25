@@ -3,7 +3,7 @@
     <HOCLoading :status="status">
       <div class="container">
         <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12">
-          <v-portfolio />
+          <v-portfolio class="mt-6" />
           <v-panel :title="$t('open_positions')" class="mt-12">
             <v-open-positions />
           </v-panel>

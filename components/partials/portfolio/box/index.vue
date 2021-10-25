@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mt-6">
+  <v-card>
     <div v-if="isUserWalletConnected">
       <v-overview
         v-bind="{

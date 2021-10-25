@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "ES2018",
     "module": "ESNext",
+    "declaration": true,
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "lib": [

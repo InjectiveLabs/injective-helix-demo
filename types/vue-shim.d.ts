@@ -18,11 +18,11 @@ declare module 'vue/types/vue' {
   interface Vue {
     $toast: Toasted
     $t: typeof VueI18n.prototype.t
+    $onError: (e: string) => void
+    $onRejected: (e: string) => void
+    $onConfirm: (e: string, cb: Function) => void
     $router: VueRouter
     $accessor: typeof accessorType
-    $onRejected: (e: any) => void
-    $onError: (e: any) => void
-    $onConfirm: (message: string, handler: Function) => void
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -33,7 +33,7 @@ declare module 'vue/types/vue' {
 
 declare module '@nuxt/types' {
   interface NuxtAppOptions {
-    $toast: Toasted
     $accessor: typeof accessorType
+    $toast: Toasted
   }
 }

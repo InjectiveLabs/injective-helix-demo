@@ -384,5 +384,15 @@ export default {
   acknowledge_4:
     'You are lawfully permitted to access this site and trade on Injective.Exchange under the laws of the jurisdiction in which you reside and are located.',
   acknowledge_5:
-    'You understand the risks associated with using leverage, entering into perpetual contracts, and trading in digital assets.'
+    'You understand the risks associated with using leverage, entering into perpetual contracts, and trading in digital assets.',
+  'Fee Discounts': 'Fee Discounts',
+  tier: 'Tier',
+  staked_amount: 'Staked Amount',
+  fees_paid: 'Fees Paid',
+  maker_fee_discount: 'Maker Fee Discount',
+  taker_fee_discount: 'Taker Fee Discount',
+  'My Tier': 'My Tier',
+  'Staked Amount': 'Staked Amount',
+  'Fee Paid Amount': 'Fee Paid Amount',
+  'Maker/Taker Discount': 'Maker/Taker Rate Discount'
 }
