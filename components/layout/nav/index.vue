@@ -9,10 +9,13 @@
     <v-nav-item :to="{ name: 'portfolio' }">
       {{ $t('Portfolio') }}
     </v-nav-item>
+    <v-nav-item :to="{ name: 'rewards' }">
+      {{ $t('Rewards') }}
+    </v-nav-item>
     <v-nav-item :to="{ name: 'history' }">
       {{ $t('History') }}
     </v-nav-item>
-    <v-nav-item :to="{ name: 'wallet' }">
+    <v-nav-item v-if="false" :to="{ name: 'wallet' }">
       {{ $t('Wallet') }}
     </v-nav-item>
   </nav>

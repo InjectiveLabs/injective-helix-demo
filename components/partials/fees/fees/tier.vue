@@ -1,14 +1,27 @@
 <template>
   <tr>
-    <td class="h-8 text-left font-mono"># {{ index + 1 }}</td>
+    <td class="h-8 text-left font-mono">
+      <div class="flex items-center">
+        <span>#{{ index }}</span>
+        <!-- <span v-if="index > 0">#{{ index }}</span> -->
+        <v-icon-check-circle
+          v-if="isUserTierLevel"
+          class="w-4 h-4 ml-2 text-primary-500"
+        />
+      </div>
+    </td>
+    <td class="h-8 text-right font-mono">&#8805; {{ stakedAmountToFormat }}</td>
     <td class="h-8 text-right font-mono">
-      {{ stakedAmountToFormat }}
+      <span class="text-gray-500 uppercase text-2xs tracking-wider">
+        {{ $t('and') }}
+      </span>
     </td>
     <td class="h-8 text-right font-mono">
-      {{ feesAmountToFormat }}
+      &#8805; {{ feePaidAmountToFormat }}
     </td>
-    <td class="h-8 text-right font-mono">{{ makerFeeDiscountToFormat }}%</td>
-    <td class="h-8 text-right font-mono">{{ takerFeeDiscountToFormat }}%</td>
+    <td class="h-8 text-right font-mono">
+      % {{ makerFeeDiscountToFormat }} / {{ takerFeeDiscountToFormat }}
+    </td>
   </tr>
 </template>
 
@@ -20,7 +33,7 @@ import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   ZERO_IN_BASE
 } from '~/app/utils/constants'
-import { FeeDiscountTierInfo } from '~/types/exchange'
+import { FeeDiscountAccountInfo, FeeDiscountTierInfo } from '~/types/exchange'
 
 export default Vue.extend({
   props: {
@@ -36,6 +49,24 @@ export default Vue.extend({
   },
 
   computed: {
+    isUserWalletConnected(): boolean {
+      return this.$accessor.wallet.isUserWalletConnected
+    },
+
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
+    },
+
+    isUserTierLevel(): boolean {
+      const { feeDiscountAccountInfo, index, isUserWalletConnected } = this
+
+      if (!feeDiscountAccountInfo || !isUserWalletConnected) {
+        return false
+      }
+
+      return new BigNumberInBase(feeDiscountAccountInfo.tierLevel).eq(index)
+    },
+
     stakedAmount(): BigNumberInBase {
       const { tier } = this
 
@@ -43,7 +74,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(tier.stakedAmount)
+      return new BigNumberInWei(tier.stakedAmount).toBase()
     },
 
     stakedAmountToFormat(): string {
@@ -52,7 +83,7 @@ export default Vue.extend({
       return stakedAmount.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
     },
 
-    feesAmount(): BigNumberInBase {
+    feePaidAmount(): BigNumberInBase {
       const { tier } = this
 
       if (!tier.feePaidAmount) {
@@ -62,7 +93,7 @@ export default Vue.extend({
       return new BigNumberInWei(tier.feePaidAmount).toBase(6 /* USDT */)
     },
 
-    feesAmountToFormat(): string {
+    feePaidAmountToFormat(): string {
       const { stakedAmount } = this
 
       return stakedAmount.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
@@ -75,13 +106,13 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(tier.makerDiscountRate).toBase()
+      return new BigNumberInWei(tier.makerDiscountRate).times(100).toBase()
     },
 
     makerFeeDiscountToFormat(): string {
       const { makerFeeDiscount } = this
 
-      return makerFeeDiscount.toFormat(4)
+      return makerFeeDiscount.toFormat(2)
     },
 
     takerFeeDiscount(): BigNumberInBase {
@@ -91,13 +122,13 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(tier.takerDiscountRate).toBase()
+      return new BigNumberInWei(tier.takerDiscountRate).times(100).toBase()
     },
 
     takerFeeDiscountToFormat(): string {
       const { takerFeeDiscount } = this
 
-      return takerFeeDiscount.toFormat(4)
+      return takerFeeDiscount.toFormat(2)
     }
   }
 })

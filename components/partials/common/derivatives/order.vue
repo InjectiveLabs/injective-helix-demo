@@ -83,8 +83,7 @@ import {
 import {
   UiDerivativeMarket,
   DerivativeOrderSide,
-  UiDerivativeLimitOrder,
-  Icon
+  UiDerivativeLimitOrder
 } from '~/types'
 
 export default Vue.extend({
@@ -97,7 +96,6 @@ export default Vue.extend({
 
   data() {
     return {
-      Icon,
       DerivativeOrderSide,
       status: new Status()
     }

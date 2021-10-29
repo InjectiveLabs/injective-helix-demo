@@ -1,14 +1,17 @@
 <template>
   <div class="ml-4 flex items-center md:ml-6">
     <div class="flex items-center border-r border-gray-700 pr-4 md:pr-8">
-      <span class="mr-4 md:mr-6 font-mono text-sm text-gray-200">
+      <span
+        class="mr-4 md:mr-6 font-mono text-sm text-primary-500 cursor-pointer"
+        @click="handleClickOnAddress"
+      >
         {{ formattedAddress }}
       </span>
       <button
         role="button"
         class="hidden md:block mr-4"
         type="button"
-        @click="handleClickOnRevealButton"
+        @click.stop="handleClickOnRevealButton"
       >
         <v-icon-show class="w-5 h-5 text-gray-500 hover:text-primary-500" />
       </button>
@@ -67,6 +70,10 @@ export default Vue.extend({
   methods: {
     handleClickOnRevealButton() {
       this.shouldShowFullAddress = !this.shouldShowFullAddress
+    },
+
+    handleClickOnAddress() {
+      this.$router.push({ name: 'wallet' })
     },
 
     handleClickOnLogout() {

@@ -8,7 +8,12 @@
       <slot name="context" />
     </div>
 
-    <div class="card-table-wrap-content">
+    <div
+      :class="{
+        'card-table-wrap-content': !bgLighter,
+        'card-table-wrap-content-lighter': bgLighter
+      }"
+    >
       <slot></slot>
     </div>
   </div>
@@ -16,5 +21,14 @@
 
 <script lang="ts">
 import Vue from 'vue'
-export default Vue.extend({})
+
+export default Vue.extend({
+  props: {
+    bgLighter: {
+      required: false,
+      type: Boolean,
+      default: false
+    }
+  }
+})
 </script>

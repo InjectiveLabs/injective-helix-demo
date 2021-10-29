@@ -22,7 +22,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Icon } from '~/types'
 
 export default Vue.extend({
   props: {
@@ -41,7 +40,6 @@ export default Vue.extend({
 
   data() {
     return {
-      Icon,
       isOpen: false
     }
   },

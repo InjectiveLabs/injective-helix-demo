@@ -13,3 +13,10 @@ export type BankBalanceWithTokenMetaDataAndBalance = {
   denom: string
   token: TokenWithBalance
 }
+
+export type SubaccountBalanceWithTokenMetaData = {
+  availableBalance: string
+  totalBalance: string
+  denom: string
+  token: TokenWithBalance
+}

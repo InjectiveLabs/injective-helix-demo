@@ -1,30 +1,29 @@
 <template>
-  <v-card>
-    <div v-if="isUserWalletConnected">
-      <v-overview
-        v-bind="{
-          bankBalancesTotalInUsd,
-          availableBalanceInUsd,
-          unrealizedPnLInUsd,
-          lockedBalanceInUsd
-        }"
-      />
-      <v-stats
-        class="mt-6"
-        v-bind="{
-          bankBalancesTotalInUsd,
-          bankBalancesTotalInUsdToString,
-          availableBalanceInUsd,
-          availableBalanceInUsdToString,
-          unrealizedPnLInUsd,
-          unrealizedPnLInUsdToString,
-          lockedBalanceInUsd,
-          lockedBalanceInUsdToString
-        }"
-      />
-    </div>
-    <v-user-wallet-connect-warning v-else cta />
-  </v-card>
+  <div v-if="isUserWalletConnected" class="flex flex-wrap justify-between">
+    <v-overview
+      class="w-full lg:w-1/4"
+      v-bind="{
+        bankBalancesTotalInUsd,
+        availableBalanceInUsd,
+        unrealizedPnLInUsd,
+        lockedBalanceInUsd
+      }"
+    />
+    <v-stats
+      class="w-full mt-4 lg:w-3/4 lg:mt-0"
+      v-bind="{
+        bankBalancesTotalInUsd,
+        bankBalancesTotalInUsdToString,
+        availableBalanceInUsd,
+        availableBalanceInUsdToString,
+        unrealizedPnLInUsd,
+        unrealizedPnLInUsdToString,
+        lockedBalanceInUsd,
+        lockedBalanceInUsdToString
+      }"
+    />
+  </div>
+  <v-user-wallet-connect-warning v-else cta />
 </template>
 
 <script lang="ts">

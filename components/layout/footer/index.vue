@@ -33,12 +33,22 @@
         </div>
       </item>
       <item class="text-footer">
+        <nuxt-link class="cursor-pointer" :to="{ name: 'fees' }">
+          {{ $t('fee_discounts_footer') }}
+        </nuxt-link>
+      </item>
+      <item class="text-footer">
+        <nuxt-link class="cursor-pointer" :to="{ name: 'faq' }">
+          {{ $t('faq') }}
+        </nuxt-link>
+      </item>
+      <item class="text-footer">
         <a
           class="cursor-pointer"
           href="https://injectivelabs.org/privacy-policy"
           target="_blank"
         >
-          Privacy Policy
+          {{ $t('Privacy Policy') }}
         </a>
       </item>
       <item class="text-footer">
@@ -47,7 +57,7 @@
           href="https://injectivelabs.org/terms-and-conditions"
           target="_blank"
         >
-          Terms & Conditions
+          {{ $t('Terms & Conditions') }}
         </a>
       </item>
     </ul>

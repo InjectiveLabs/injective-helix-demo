@@ -79,7 +79,6 @@ import {
   TradeDirection,
   SpotOrderSide,
   UiOrderbookPriceLevel,
-  Icon,
   Change
 } from '~/types'
 
@@ -90,7 +89,6 @@ export default Vue.extend({
 
   data() {
     return {
-      Icon,
       Change,
       TradeDirection,
       SpotOrderSide,

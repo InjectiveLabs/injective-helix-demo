@@ -3,7 +3,9 @@
     <HOCLoading :status="status">
       <div class="container">
         <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12">
-          <v-portfolio class="mt-6" />
+          <v-panel :title="$t('Portfolio')" class="mt-6">
+            <v-portfolio />
+          </v-panel>
           <v-panel :title="$t('open_positions')" class="mt-12">
             <v-open-positions />
           </v-panel>
@@ -20,7 +22,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import VPortfolio from '~/components/partials/portfolio/box/index.vue'
+import VPortfolio from '~/components/partials/portfolio/portfolio.vue'
 import VOpenPositions from '~/components/partials/portfolio/open-positions.vue'
 import VOpenOrders from '~/components/partials/portfolio/open-orders.vue'
 import HOCLoading from '~/components/hoc/loading.vue'

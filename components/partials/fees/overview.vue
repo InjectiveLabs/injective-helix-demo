@@ -1,33 +1,16 @@
 <template>
   <v-card>
     <div v-if="isUserWalletConnected">
-      <div>
-        <div class="p-2 w-full text-center">
-          <p class="text-xs uppercase text-gray-400">
-            <span class="flex w-full justify-center">
-              {{ $t('Estimated Rewards') }}
-              <v-icon-info-tooltip
-                class="ml-2"
-                :tooltip="$t('Estimated Rewards Tooltip')"
-              />
-            </span>
-          </p>
-          <h2 class="mt-4 text-lg lg:text-2xl font-mono text-gray-100">
-            <span v-if="feeDiscountAccountInfo && tradingRewardsCampaign">
-              &#8776; {{ estimatedRewards }} INJ
-            </span>
-            <span v-else>&mdash;</span>
-          </h2>
-        </div>
-      </div>
-
       <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6 mt-4">
         <v-item class="col-span-2 lg:col-span-3">
           <template slot="value">
-            <span v-if="feeDiscountAccountInfo" class="font-mono">{{
-              tierLevel
-            }}</span>
-            <span v-else class="text-xs text-gray-400 font-mono"></span>
+            <span
+              v-if="feeDiscountAccountInfo && tierLevel > 0"
+              class="font-mono"
+            >
+              {{ tierLevel }}
+            </span>
+            <span v-else class="text-xs text-gray-400 font-mono">&mdash;</span>
           </template>
           <template slot="title">
             <div class="flex items-center justify-center">
@@ -81,10 +64,10 @@
           </template>
           <template slot="title">
             <div class="flex items-center justify-center">
-              {{ $t('Fee Paid Amount') }}
+              {{ $t('Maker/Taker Discount') }}
               <v-icon-info-tooltip
                 class="ml-2"
-                :tooltip="$t('Maker/Taker Discount')"
+                :tooltip="$t('Maker/Taker Discount Tooltip')"
               />
             </div>
           </template>
@@ -162,16 +145,16 @@ export default Vue.extend({
         .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
-    tierLevel(): string {
+    tierLevel(): number {
       const { feeDiscountAccountInfo } = this
 
       if (!feeDiscountAccountInfo) {
-        return ''
+        return 0
       }
 
       return feeDiscountAccountInfo
-        ? new BigNumberInBase(feeDiscountAccountInfo.tierLevel).toFormat(0)
-        : ''
+        ? new BigNumberInBase(feeDiscountAccountInfo.tierLevel).toNumber()
+        : 0
     },
 
     stakedAmount(): string {

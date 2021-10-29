@@ -97,7 +97,7 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import Drawer from '~/components/elements/drawer.vue'
-import { DerivativeOrderSide, Icon, UiDerivativeMarket } from '~/types'
+import { DerivativeOrderSide, UiDerivativeMarket } from '~/types'
 import {
   DEFAULT_MAX_SLIPPAGE,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
@@ -168,12 +168,6 @@ export default Vue.extend({
     detailsDrawerOpen: {
       required: true,
       type: Boolean
-    }
-  },
-
-  data() {
-    return {
-      Icon
     }
   },
 

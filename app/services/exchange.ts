@@ -1,5 +1,6 @@
 import { ExchangeTransformer } from '@injectivelabs/chain-consumer'
 import { exchangeConsumer } from '~/app/singletons/ExchangeConsumer'
+import { feeDiscountScheduleToUiFeeDiscountSchedule } from '~/app/transformers/exchange'
 
 export const fetchFeeDiscountSchedule = async () => {
   const feeDiscountSchedule = await exchangeConsumer.fetchFeeDiscountSchedule()
@@ -8,8 +9,10 @@ export const fetchFeeDiscountSchedule = async () => {
     throw new Error('There is an issue fetching the FeeDiscountSchedule')
   }
 
-  return ExchangeTransformer.grpcFeeDiscountScheduleToFeeDiscountSchedule(
-    feeDiscountSchedule
+  return feeDiscountScheduleToUiFeeDiscountSchedule(
+    ExchangeTransformer.grpcFeeDiscountScheduleToFeeDiscountSchedule(
+      feeDiscountSchedule
+    )
   )
 }
 

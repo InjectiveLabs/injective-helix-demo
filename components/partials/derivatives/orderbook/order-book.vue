@@ -78,7 +78,6 @@ import {
   TradeDirection,
   DerivativeOrderSide,
   UiOrderbookPriceLevel,
-  Icon,
   Change
 } from '~/types'
 
@@ -89,7 +88,6 @@ export default Vue.extend({
 
   data() {
     return {
-      Icon,
       Change,
       TradeDirection,
       DerivativeOrderSide,

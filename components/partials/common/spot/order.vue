@@ -69,7 +69,7 @@ import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   ZERO_IN_BASE
 } from '~/app/utils/constants'
-import { UiSpotMarket, SpotOrderSide, Icon, UiSpotLimitOrder } from '~/types'
+import { UiSpotMarket, SpotOrderSide, UiSpotLimitOrder } from '~/types'
 
 export default Vue.extend({
   props: {
@@ -81,7 +81,6 @@ export default Vue.extend({
 
   data() {
     return {
-      Icon,
       SpotOrderSide,
       status: new Status()
     }

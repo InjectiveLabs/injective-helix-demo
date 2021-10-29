@@ -127,7 +127,6 @@ import {
   DerivativeOrderSide,
   UiDerivativeOrderbook,
   UiPriceLevel,
-  Icon,
   UiDerivativeLimitOrder,
   UiSpotLimitOrder
 } from '~/types'
@@ -142,7 +141,6 @@ export default Vue.extend({
 
   data() {
     return {
-      Icon,
       TradeDirection,
       status: new Status()
     }

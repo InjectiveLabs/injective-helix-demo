@@ -82,13 +82,13 @@ export const mutations = {
 export const actions = actionTree(
   { state, mutations },
   {
-    async init(_) {
+    async initFees(_) {
       await this.app.$accessor.exchange.fetchFeeDiscountSchedule()
-      await this.app.$accessor.exchange.fetchTradingRewardsCampaign()
+      await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
     },
 
     async initRewards(_) {
-      await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
+      await this.app.$accessor.exchange.fetchTradingRewardsCampaign()
       await this.app.$accessor.exchange.fetchTradeRewardPoints()
     },
 

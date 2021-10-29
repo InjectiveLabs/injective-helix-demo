@@ -1,12 +1,5 @@
 <template>
   <v-card-table-wrap>
-    <template #filters>
-      <v-button-filter v-model="component" :option="components.fees">
-        <span>
-          {{ $t('Fee Discounts') }}
-        </span>
-      </v-button-filter>
-    </template>
     <component :is="component" v-if="component"></component>
   </v-card-table-wrap>
 </template>

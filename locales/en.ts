@@ -1,4 +1,7 @@
+import faq from './faq/en'
+
 export default {
+  ...faq,
   address_copied: 'Address Copied',
   copy_address: 'Copy Address',
   max: 'Max',
@@ -394,5 +397,24 @@ export default {
   'My Tier': 'My Tier',
   'Staked Amount': 'Staked Amount',
   'Fee Paid Amount': 'Fee Paid Amount',
-  'Maker/Taker Discount': 'Maker/Taker Rate Discount'
+  'Maker/Taker Discount': 'Maker/Taker Rate Discount',
+  portfolio_summary: 'Portfolio Summary',
+  subaccount_holdings: 'Subaccount Holdings',
+  faq: 'FAQ',
+  fee_discounts_footer: 'Fee Discounts',
+  'Privacy Policy': 'Privacy Policy',
+  'Terms & Conditions': 'Terms & Conditions',
+  'Frequently Asked Questions': 'Frequently Asked Questions',
+  'Search for FAQs': 'Search for FAQs',
+  'faq-category-All': 'All',
+  'faq-category-General': 'General',
+  available_subaccount_balance_tooltip: '',
+  total_subaccount_balance_tooltip: '',
+  and: 'and',
+  fee_discount_staked_amount: 'Staked Amount',
+  fee_discount_staked_amount_tooltip: '',
+  fee_discount_fees_paid: 'Fees Paid',
+  fee_discount_fees_paid_tooltip: '',
+  fee_discount_maker_taker: 'Maker/Taker Rate Discount',
+  fee_discount_maker_taker_tooltip: ''
 }
