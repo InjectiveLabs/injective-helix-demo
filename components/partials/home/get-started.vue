@@ -4,9 +4,9 @@
       {{ $t('getting_started') }}
     </h3>
     <div class="grid grid-cols-4 md:grid-cols-12 gap-4 lg:gap-6 mt-6">
-      <v-home-card
+      <v-resource-card
         v-for="(card, index) in cards"
-        :key="`home-card-${index}`"
+        :key="`resource-card-${index}`"
         class="col-span-4"
       >
         <template slot="category">{{ card.category }}</template>
@@ -27,20 +27,15 @@
           {{ card.linkText }}
         </a>
         {{ card.description }}
-      </v-home-card>
+      </v-resource-card>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import VHomeCard from './card.vue'
 
 export default Vue.extend({
-  components: {
-    VHomeCard
-  },
-
   data() {
     return {
       cards: [

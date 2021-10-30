@@ -3,6 +3,7 @@ import Vue from 'vue'
 import VUserWalletConnectWarning from '~/components/elements/user-wallet-connect-warning.vue'
 import Card from '~/components/elements/card.vue'
 import Separator from '~/components/elements/separator.vue'
+import ResourceCard from '~/components/elements/resource-card.vue'
 import CardTableWrap from '~/components/elements/card-table-wrap.vue'
 import Panel from '~/components/elements/panel.vue'
 import Badge from '~/components/elements/badge.vue'
@@ -16,6 +17,7 @@ import VIconInfoTooltip from '~/components/elements/info-icon-tooltip.vue'
 
 Vue.component('VCard', Card)
 Vue.component('VSeparator', Separator)
+Vue.component('VResourceCard', ResourceCard)
 Vue.component('VButtonFilter', ButtonFilter)
 Vue.component('VCardTableWrap', CardTableWrap)
 Vue.component('VPanel', Panel)

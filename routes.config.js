@@ -53,6 +53,9 @@ module.exports = [
   '/portfolio',
   '/wallet',
   '/history',
+  '/fees',
+  '/rewards',
+  '/faq',
   ...spot.map((s) => `/spot/${s}`),
   ...derivatives.map((d) => `/derivatives/${d}`)
 ]

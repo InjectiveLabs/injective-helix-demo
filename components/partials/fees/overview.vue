@@ -15,7 +15,10 @@
           <template slot="title">
             <div class="flex items-center justify-center">
               {{ $t('My Tier') }}
-              <v-icon-info-tooltip class="ml-2" :tooltip="$t('Tier Tooltip')" />
+              <v-icon-info-tooltip
+                class="ml-2"
+                :tooltip="$t('My Tier Tooltip')"
+              />
             </div>
           </template>
         </v-item>
@@ -29,10 +32,10 @@
           </template>
           <template slot="title">
             <div class="flex items-center justify-center">
-              {{ $t('Staked Amount') }}
+              {{ $t('My Staked Amount') }}
               <v-icon-info-tooltip
                 class="ml-2"
-                :tooltip="$t('Staked Amount Tooltip')"
+                :tooltip="$t('My Staked Amount Tooltip')"
               />
             </div>
           </template>
@@ -40,17 +43,17 @@
         <v-item class="col-span-2 lg:col-span-3">
           <template slot="value">
             <span v-if="feeDiscountAccountInfo" class="font-mono text-lg">
-              {{ feeAmount }}
+              {{ feePaidAmount }}
               <span class="text-xs text-gray-400">USDT/USDC</span>
             </span>
             <span v-else>&mdash;</span>
           </template>
           <template slot="title">
             <div class="flex items-center justify-center">
-              {{ $t('Fee Paid Amount') }}
+              {{ $t('My Fee Paid Amount') }}
               <v-icon-info-tooltip
                 class="ml-2"
-                :tooltip="$t('Fee Paid Amount Tooltip')"
+                :tooltip="$t('My Fee Paid Amount Tooltip')"
               />
             </div>
           </template>
@@ -64,10 +67,10 @@
           </template>
           <template slot="title">
             <div class="flex items-center justify-center">
-              {{ $t('Maker/Taker Discount') }}
+              {{ $t('My Maker/Taker Discount') }}
               <v-icon-info-tooltip
                 class="ml-2"
-                :tooltip="$t('Maker/Taker Discount Tooltip')"
+                :tooltip="$t('My Maker/Taker Discount Tooltip')"
               />
             </div>
           </template>
@@ -102,49 +105,6 @@ export default Vue.extend({
       return this.$accessor.exchange.feeDiscountAccountInfo
     },
 
-    tradingRewardsCampaign(): TradingRewardsCampaign | undefined {
-      return this.$accessor.exchange.tradingRewardsCampaign
-    },
-
-    tradeRewardsPoints(): string[] {
-      return this.$accessor.exchange.tradeRewardsPoints
-    },
-
-    estimatedRewards(): string {
-      const {
-        tradeRewardsPoints,
-        feeDiscountAccountInfo,
-        tradingRewardsCampaign
-      } = this
-
-      if (!feeDiscountAccountInfo) {
-        return ''
-      }
-
-      if (!tradingRewardsCampaign) {
-        return ''
-      }
-
-      if (!tradeRewardsPoints) {
-        return ''
-      }
-
-      if (!tradeRewardsPoints.length) {
-        return ''
-      }
-
-      const [points] = tradeRewardsPoints
-      const [
-        schedule
-      ] = tradingRewardsCampaign.tradingRewardPoolCampaignScheduleList
-      const [inj] = schedule.maxCampaignRewardsList // TODO
-
-      return new BigNumberInWei(points)
-        .times(tradingRewardsCampaign.totalTradeRewardPoints)
-        .dividedBy(inj.amount)
-        .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
-    },
-
     tierLevel(): number {
       const { feeDiscountAccountInfo } = this
 
@@ -173,7 +133,7 @@ export default Vue.extend({
       ).toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
-    feeAmount(): string {
+    feePaidAmount(): string {
       const { feeDiscountAccountInfo } = this
 
       if (!feeDiscountAccountInfo) {

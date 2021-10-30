@@ -1,9 +1,8 @@
 <template>
   <tr>
     <td class="h-8 text-left font-mono">
-      <div class="flex items-center">
+      <div v-if="index > 0" class="flex items-center">
         <span>#{{ index }}</span>
-        <!-- <span v-if="index > 0">#{{ index }}</span> -->
         <v-icon-check-circle
           v-if="isUserTierLevel"
           class="w-4 h-4 ml-2 text-primary-500"

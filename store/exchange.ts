@@ -8,8 +8,7 @@ import {
 import {
   FeeDiscountAccountInfo,
   TradingRewardsCampaign,
-  FeeDiscountSchedule,
-  FeeDiscountTierInfo
+  FeeDiscountSchedule
 } from '~/types/exchange'
 
 const initialStateFactory = () => ({

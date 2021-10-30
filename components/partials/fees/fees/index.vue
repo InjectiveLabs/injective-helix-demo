@@ -48,7 +48,7 @@
       <tbody v-if="feeDiscountSchedule">
         <tr
           is="v-tier"
-          v-for="(tier, index) in feeDiscountSchedule.tierInfosList"
+          v-for="(tier, index) in tierLevelsWithZeroTierLevel"
           :key="`tier-${index}`"
           :tier="tier"
           :index="index"
@@ -62,7 +62,7 @@
 import Vue from 'vue'
 import { Status } from '@injectivelabs/utils'
 import Tier from '~/components/partials/fees/fees/tier.vue'
-import { FeeDiscountSchedule } from '~/types/exchange'
+import { FeeDiscountSchedule, FeeDiscountTierInfo } from '~/types/exchange'
 
 export default Vue.extend({
   components: {
@@ -78,6 +78,24 @@ export default Vue.extend({
   computed: {
     feeDiscountSchedule(): FeeDiscountSchedule | undefined {
       return this.$accessor.exchange.feeDiscountSchedule
+    },
+
+    tierLevelsWithZeroTierLevel(): FeeDiscountTierInfo[] {
+      const { feeDiscountSchedule } = this
+
+      if (!feeDiscountSchedule) {
+        return []
+      }
+
+      return [
+        {
+          makerDiscountRate: '0',
+          takerDiscountRate: '0',
+          stakedAmount: '0',
+          feePaidAmount: '0'
+        },
+        ...feeDiscountSchedule.tierInfosList
+      ]
     }
   }
 })
