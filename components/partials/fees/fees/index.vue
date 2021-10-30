@@ -1,5 +1,5 @@
 <template>
-  <div class="table-responsive h-full min-h-orders max-h-xs 4xl:max-h-lg">
+  <div class="table-responsive h-full">
     <table class="table">
       <thead>
         <tr>
@@ -10,7 +10,6 @@
             <div class="flex items-end justify-end">
               <span>
                 {{ $t('fee_discount_staked_amount') }}
-                <span class="text-2xs text-gray-400 ml-2">(INJ)</span>
               </span>
               <v-icon-info-tooltip
                 class="ml-2"
@@ -23,7 +22,6 @@
             <div class="flex items-end justify-end">
               <span>
                 {{ $t('fees_paid') }}
-                <span class="text-2xs text-gray-400 ml-2">(USDT/USDC)</span>
               </span>
               <v-icon-info-tooltip
                 class="ml-2"
@@ -34,11 +32,22 @@
           <th class="text-right">
             <div class="flex items-end justify-end">
               <span>
-                {{ $t('fee_discount_maker_taker') }}
+                {{ $t('fee_discount_maker') }}
               </span>
               <v-icon-info-tooltip
                 class="ml-2"
-                :tooltip="$t('fee_discount_maker_taker_tooltip')"
+                :tooltip="$t('fee_discount_maker_tooltip')"
+              />
+            </div>
+          </th>
+          <th class="text-right">
+            <div class="flex items-end justify-end">
+              <span>
+                {{ $t('fee_discount_taker') }}
+              </span>
+              <v-icon-info-tooltip
+                class="ml-2"
+                :tooltip="$t('fee_discount_taker_tooltip')"
               />
             </div>
           </th>

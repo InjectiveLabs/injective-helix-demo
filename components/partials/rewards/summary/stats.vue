@@ -7,7 +7,7 @@
           class="font-mono text-lg"
         >
           {{ feePaidAmountToFormat }}
-          <span class="text-xs text-gray-400">USDT/USDC</span>
+          <span class="text-xs text-gray-400">USD</span>
         </span>
         <span v-else>&mdash;</span>
       </template>
@@ -45,7 +45,7 @@
           class="font-mono text-lg"
         >
           {{ estimatedRewardsToFormat }}
-          <span class="text-xs text-gray-400">USDT/USDC</span>
+          <span class="text-xs text-gray-400">INJ</span>
         </span>
         <span v-else>&mdash;</span>
       </template>
@@ -68,6 +68,7 @@ import Vue from 'vue'
 import { format } from 'date-fns'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  UI_DEFAULT_DISPLAY_DECIMALS,
   ZERO_IN_BASE
 } from '~/app/utils/constants'
 import VItem from '~/components/partials/common/stats/item.vue'
@@ -75,16 +76,11 @@ import {
   FeeDiscountAccountInfo,
   TradingRewardsCampaign
 } from '~/types/exchange'
+import { cosmosSdkDecToBigNumber } from '~/app/transformers'
 
 export default Vue.extend({
   components: {
     VItem
-  },
-
-  data() {
-    return {
-      now: new Date().getTime()
-    }
   },
 
   computed: {
@@ -116,14 +112,16 @@ export default Vue.extend({
       }
 
       return new BigNumberInWei(
-        feeDiscountAccountInfo.accountInfo.feePaidAmount
+        cosmosSdkDecToBigNumber(
+          feeDiscountAccountInfo.accountInfo.feePaidAmount
+        )
       ).toBase(6 /* USDT */)
     },
 
     feePaidAmountToFormat(): string {
       const { feePaidAmount } = this
 
-      return feePaidAmount.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      return feePaidAmount.toFixed(UI_DEFAULT_DISPLAY_DECIMALS)
     },
 
     tradeRewardPoints(): BigNumberInBase {
@@ -160,16 +158,36 @@ export default Vue.extend({
       return new BigNumberInBase(schedule.startTimestamp).toNumber()
     },
 
+    campaignDurationInSeconds(): number {
+      const { tradingRewardsCampaign } = this
+
+      if (!tradingRewardsCampaign) {
+        return 0
+      }
+
+      if (!tradingRewardsCampaign.tradingRewardCampaignInfo) {
+        return 0
+      }
+
+      return new BigNumberInBase(
+        tradingRewardsCampaign.tradingRewardCampaignInfo
+          .campaignDurationSeconds || 0
+      ).toNumber()
+    },
+
     epochStartDate(): string {
       const { currentEpochStartTimestamp } = this
 
-      return format(currentEpochStartTimestamp, 'dd MMM')
+      return format(currentEpochStartTimestamp * 1000, "do 'of' LLL")
     },
 
     epochEndDate(): string {
-      const { currentEpochStartTimestamp, now } = this
+      const { currentEpochStartTimestamp, campaignDurationInSeconds } = this
 
-      return format(currentEpochStartTimestamp + now, 'dd MMM')
+      return format(
+        (currentEpochStartTimestamp + campaignDurationInSeconds) * 1000,
+        "do 'of' LLL"
+      )
     },
 
     injMaxCampaignRewards(): BigNumberInBase {

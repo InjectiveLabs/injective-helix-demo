@@ -1,7 +1,7 @@
 <template>
   <tr>
     <td class="h-8 text-left font-mono">
-      <div v-if="index > 0" class="flex items-center">
+      <div class="flex items-center">
         <span>#{{ index }}</span>
         <v-icon-check-circle
           v-if="isUserTierLevel"
@@ -9,7 +9,10 @@
         />
       </div>
     </td>
-    <td class="h-8 text-right font-mono">&#8805; {{ stakedAmountToFormat }}</td>
+    <td class="h-8 text-right font-mono">
+      &#8805; {{ stakedAmountToFormat }}
+      <span class="text-2xs text-gray-500"> INJ </span>
+    </td>
     <td class="h-8 text-right font-mono">
       <span class="text-gray-500 uppercase text-2xs tracking-wider">
         {{ $t('and') }}
@@ -17,21 +20,17 @@
     </td>
     <td class="h-8 text-right font-mono">
       &#8805; {{ feePaidAmountToFormat }}
+      <span class="text-2xs text-gray-500"> USD </span>
     </td>
-    <td class="h-8 text-right font-mono">
-      % {{ makerFeeDiscountToFormat }} / {{ takerFeeDiscountToFormat }}
-    </td>
+    <td class="h-8 text-right font-mono">{{ makerFeeDiscountToFormat }}%</td>
+    <td class="h-8 text-right font-mono">{{ takerFeeDiscountToFormat }}%</td>
   </tr>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import {
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  ZERO_IN_BASE
-} from '~/app/utils/constants'
+import { ZERO_IN_BASE } from '~/app/utils/constants'
 import { FeeDiscountAccountInfo, FeeDiscountTierInfo } from '~/types/exchange'
 
 export default Vue.extend({
@@ -79,7 +78,7 @@ export default Vue.extend({
     stakedAmountToFormat(): string {
       const { stakedAmount } = this
 
-      return stakedAmount.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
+      return stakedAmount.toFormat(0)
     },
 
     feePaidAmount(): BigNumberInBase {
@@ -95,7 +94,7 @@ export default Vue.extend({
     feePaidAmountToFormat(): string {
       const { stakedAmount } = this
 
-      return stakedAmount.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      return stakedAmount.toFormat(0)
     },
 
     makerFeeDiscount(): BigNumberInBase {
@@ -111,7 +110,7 @@ export default Vue.extend({
     makerFeeDiscountToFormat(): string {
       const { makerFeeDiscount } = this
 
-      return makerFeeDiscount.toFormat(2)
+      return makerFeeDiscount.toFormat(0)
     },
 
     takerFeeDiscount(): BigNumberInBase {
@@ -127,7 +126,7 @@ export default Vue.extend({
     takerFeeDiscountToFormat(): string {
       const { takerFeeDiscount } = this
 
-      return takerFeeDiscount.toFormat(2)
+      return takerFeeDiscount.toFormat(0)
     }
   }
 })

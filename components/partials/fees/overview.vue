@@ -44,7 +44,7 @@
           <template slot="value">
             <span v-if="feeDiscountAccountInfo" class="font-mono text-lg">
               {{ feePaidAmount }}
-              <span class="text-xs text-gray-400">USDT/USDC</span>
+              <span class="text-xs text-gray-400">USD</span>
             </span>
             <span v-else>&mdash;</span>
           </template>
@@ -84,12 +84,13 @@
 <script lang="ts">
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import Vue from 'vue'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
-import VItem from '~/components/partials/common/stats/item.vue'
+import { cosmosSdkDecToBigNumber } from '~/app/transformers'
 import {
-  FeeDiscountAccountInfo,
-  TradingRewardsCampaign
-} from '~/types/exchange'
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  UI_DEFAULT_DISPLAY_DECIMALS
+} from '~/app/utils/constants'
+import VItem from '~/components/partials/common/stats/item.vue'
+import { FeeDiscountAccountInfo } from '~/types/exchange'
 
 export default Vue.extend({
   components: {
@@ -145,10 +146,12 @@ export default Vue.extend({
       }
 
       return new BigNumberInWei(
-        feeDiscountAccountInfo.accountInfo.feePaidAmount
+        cosmosSdkDecToBigNumber(
+          feeDiscountAccountInfo.accountInfo.feePaidAmount
+        )
       )
         .toBase(6 /* USDT */)
-        .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+        .toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
     },
 
     makerFeeDiscount(): string {

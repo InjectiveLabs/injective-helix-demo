@@ -219,7 +219,7 @@ export default Vue.extend({
         injMaxCampaignRewards
       } = this
 
-      if (injMaxCampaignRewards.lte(0)) {
+      if (totalTradeRewardPoints.lte(0)) {
         return ZERO_IN_BASE
       }
 
