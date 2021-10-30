@@ -428,7 +428,7 @@ export default {
   Rewards: 'Rewards',
   resources: 'Resources',
   calculator: 'Calculator',
-  'Trading rewards summary': 'Trading rewards summary',
+  'Trading rewards summary': 'Trade & Earn',
   trading_fee_to_date: 'Trading fee to date',
   trading_fee_to_date_tooltip: 'Trading fee to date tooltip',
   current_epoch: 'Current Epoch',

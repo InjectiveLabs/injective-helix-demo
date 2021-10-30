@@ -4,10 +4,7 @@
       <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6 mt-4">
         <v-item class="col-span-2 lg:col-span-3">
           <template slot="value">
-            <span
-              v-if="feeDiscountAccountInfo && tierLevel > 0"
-              class="font-mono"
-            >
+            <span v-if="feeDiscountAccountInfo" class="font-mono">
               {{ tierLevel }}
             </span>
             <span v-else class="text-xs text-gray-400 font-mono">&mdash;</span>
@@ -130,7 +127,7 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(
-        feeDiscountAccountInfo.accountInfo.stakedAmount
+        cosmosSdkDecToBigNumber(feeDiscountAccountInfo.accountInfo.stakedAmount)
       ).toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
