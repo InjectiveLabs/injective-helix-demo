@@ -1,6 +1,8 @@
 const spot = [
   'inj-usdt',
   'inj-usdc',
+  'bnb-usdt',
+  'bnb-usdc',
   'axs-usdt',
   'wbtc-usdc',
   'wbtc-usdt',
@@ -30,6 +32,8 @@ const spot = [
 const derivatives = [
   'inj-usdt-perp',
   'inj-usdt',
+  'bnb-usdt-perp',
+  'bnb-usdt',
   'btc-usdt-perp',
   'btc-usdt',
   'eth-usdt-perp',

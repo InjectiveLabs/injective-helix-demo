@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-1">
+  <div class="flex flex-col h-full">
     <div class="flex items-center justify-between">
       <div class="flex items-center justify-center">
         <slot name="filters" />

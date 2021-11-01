@@ -92,9 +92,9 @@ export default Vue.extend({
     },
 
     feePaidAmountToFormat(): string {
-      const { stakedAmount } = this
+      const { feePaidAmount } = this
 
-      return stakedAmount.toFormat(0)
+      return feePaidAmount.toFormat(0)
     },
 
     makerFeeDiscount(): BigNumberInBase {
