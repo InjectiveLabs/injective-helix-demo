@@ -32,6 +32,7 @@ import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '~/app/utils/constants'
 import { FeeDiscountAccountInfo, FeeDiscountTierInfo } from '~/types/exchange'
+import { cosmosSdkDecToBigNumber } from '~/app/transformers'
 
 export default Vue.extend({
   props: {
@@ -72,7 +73,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(tier.stakedAmount).toBase()
+      return new BigNumberInBase(cosmosSdkDecToBigNumber(tier.stakedAmount))
     },
 
     stakedAmountToFormat(): string {
@@ -88,7 +89,9 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(tier.feePaidAmount).toBase(6 /* USDT */)
+      return new BigNumberInWei(
+        cosmosSdkDecToBigNumber(tier.feePaidAmount)
+      ).toBase(6 /* USDT */)
     },
 
     feePaidAmountToFormat(): string {
