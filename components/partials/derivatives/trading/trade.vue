@@ -402,8 +402,6 @@ export default Vue.extend({
           market
         })
 
-        console.log(worstPrice.toFixed())
-
         return new BigNumberInBase(
           worstPrice.times(slippage).toFixed(market.priceDecimals)
         )
