@@ -1,5 +1,5 @@
 <template>
-  <div v-if="market" class="w-full">
+  <div v-if="market" class="px-4 w-full">
     <div class="flex items-center justify-center">
       <v-button
         :class="{

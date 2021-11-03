@@ -45,7 +45,7 @@ export default Vue.extend({
           link: 'https://hub.injective.network',
           description:
             'A unified interface for Injective staking, governance, insurance funds and wallets.',
-          linkText: 'Visit our Hub',
+          linkText: 'Visit the Injective Hub',
           illustration: '/svg/hub-new.svg',
           imageClass:
             'w-32 h-32 -mt-5 md:w-24 md:h-24 md:mt-4 lg:w-36 lg:h-36 lg:-mt-5'

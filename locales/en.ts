@@ -141,7 +141,7 @@ export default {
   entry_price: 'Entry Price',
   unrealized_pnl: 'Unrealized PnL',
   unrealized_pnl_tooltip:
-    'The unrealized profit/loss (PnL) is a reflection of what profit or loss would be realized if the position were to be closed.',
+    'The unrealized PnL is an approximation of the realized profit or loss if the position was to be closed.',
   leverage: 'Leverage',
   not_available_n_a: 'N/A',
   position_closed: 'Position Closed',
@@ -152,7 +152,7 @@ export default {
   reduce_only_exceed_position:
     'Total size of reduce-only orders exceed the size of your position',
   worst_price_note:
-    'Note: If the execution price exceeds the {slippage}% slippage protection, your order will be automatically cancelled.',
+    'Note: If the execution price exceeds the {slippage}% slippage protection, your order will be automatically cancelled',
   max_leverage_warn: 'Please decrease leverage.',
   next_funding: 'Next Funding',
   next_funding_tooltip:
@@ -168,12 +168,12 @@ export default {
   est_receiving_amount_note:
     'The lowest amount you can actually receive for the trade.',
   fee_order_details_note:
-    "Trading fees associated with the trade. If your limit order doesn't get filled as a taker order, you will only need to pay {feeReturned} in fees",
+    "Trading fees associated with the trade. If your limit order doesn't get filled as a taker order, you will only need to pay {feeReturned} in fees.",
   buy_long: 'Buy/Long',
   sell_short: 'Sell/Short',
   mark_price: 'Mark Price',
   mark_price_tooltip:
-    'The value of the contract as reported by the price oracle. The mark price can be different from the last traded price to prevent price manipulation.',
+    'The oracle price for the base asset.',
   select_ledger_address: 'Select Ledger Address',
   follow_instructions: 'Please follow the instructions on your device',
   address: 'Address',
@@ -202,9 +202,9 @@ export default {
   success_added_margin: 'You have successfully added margin to your position',
   no_liquidity: 'Not enough Liquidity',
   close_auto_liquidation:
-    'Closing this position with current market depth would result in auto-liquidation.',
+    'Closing this position with the current market depth would result in auto-liquidation.',
   execution_price_surpasses_bankruptcy_price:
-    'Execution price surpasses bankruptcy price',
+    'Execution price surpasses the bankruptcy price',
   you_can_only_have_max_orders:
     'You can only have {number} orders per side per market per subaccount',
   transfer_on_chain_title: 'Transfer on Injective Chain',
@@ -257,9 +257,9 @@ export default {
   'Injective Chain': 'Injective Chain',
   Subaccount: 'Subaccount',
   subaccount_tooltip:
-    'Your subaccount is your trading account. You need to deposit from your wallet into the subaccount in order to start trading.',
+    'The available funds on your subaccount. In order to trade, you must transfer funds from the Injective Chain to your subaccount.',
   injective_chain_tooltip:
-    'The native chain of Injective Protocol. Only funds on the Injective Chain can be used in trades.',
+    'Your available funds on the Injective Chain',
   'available_total_subaccount_balance Tooltip':
     'Your subaccount available/total balance',
   'Deposit to Injective Chain': 'Deposit to Injective Chain',
@@ -322,32 +322,32 @@ export default {
   fees_tooltip:
     'Trading fees associated with the trade. Trading fees on Injective can be lowered using rebates.',
   notional_value_tooltip:
-    'The total value of the trade based on the mark price. The notional value is determined by the following formula: Mark Price * Base Asset Amount.',
-  margin_tooltip: 'The total margin required to execute the trade',
+    'The total value of the position which is determined by the mark price with the following formula: Mark Price * Base Asset Amount.',
+  margin_tooltip: 'The total margin required to execute the trade.',
   portfolio_value: 'Portfolio value',
   portfolio_value_tooltip:
     'Your total portfolio value represented in USD. This includes all of your holdings on the Injective Chain, including bank module balances, balances across your subaccounts, open orders total value and unrealized PnL.',
   start_trading: 'Start Trading Now',
   available_margin: 'Available Margin',
-  available_margin_tooltip: 'Your total available margin for trading',
+  available_margin_tooltip: 'Your total available margin for trading.',
   margin_hold: 'Margin Hold',
   margin_hold_tooltip:
-    'The amount of margin you have in your open orders and open positions',
+    'The amount of margin you have in your open orders and positions.',
   assets_value: 'Assets Value',
   assets_value_tooltip: 'The total value of your assets in the bank module.',
   unrealized_pnl_portfolio: 'Unrealized PnL',
   unrealized_pnl_portfolio_tooltip:
-    'An approximate value of the unrealized PnL from your open positions based on the current mark price.',
+    'The unrealized PnL is an approximation of the realized profit or loss if the position was to be closed.',
   total_potential: 'Total Value',
   total_potential_tooltip:
     'An approximate total value of your stable coins (USDT, USDC, etc) balances and any unrealized PnL you currently have.',
-  side_tooltip: 'This indicates which side of the trade you took',
+  side_tooltip: 'The side of your trade: long or short',
   amount_tooltip:
-    'The total value of the base asset at the time the trade was executed (i.e. for BTC-USDC, BTC is the base asset and USDC is the quote asset).',
+    'The total value of the base asset at the time which the trade was executed (i.e. for BTC/USDT, BTC is the base asset and USDT is the quote asset).',
   execution_type_tooltip:
-    'Indicates whether the trade was a limit or market order.',
+    'The type of your order: limit or market.',
   time_tooltip:
-    "The time at which the trade was executed (times are shown in your browser's timezone)",
+    "The time at which the trade was executed (times are shown in your browser's timezone).",
   recent_news: 'Recent news',
   injective_home_title_1: 'Injective eliminates all barriers to trading',
   injective_home_title_2: 'Join a global community',
@@ -367,7 +367,7 @@ export default {
   'Enter amount': 'Enter amount',
   'Available to Transfer On Chain': 'Available to Transfer On Injective',
   'Available to Transfer On Chain Tooltip':
-    'The available amount you can transfer to another injective address on Injective',
+    'The available amount you can transfer to another address on the Injective Chain',
   'Asset Transfer': 'Asset Transfer',
   'Asset Transfer Tooltip': 'The asset you want to transfer',
   'Injective Address Destination': 'Destination',
