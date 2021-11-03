@@ -167,13 +167,17 @@ export default {
   est_receiving_amount: 'Est. Receiving Amount (Worst Case)',
   est_receiving_amount_note:
     'The lowest amount you can actually receive for the trade.',
+  est_fee_rebate: 'Est. Fee Rebate',
+  est_fee_rebate_note:
+    'The estimated rebate is the rebate that is granted if the limit order is filled as a maker order.',
   fee_order_details_note:
     "Trading fees associated with the trade. If your limit order doesn't get filled as a taker order, you will only need to pay {feeReturned} in fees.",
+  fee_order_details_note_negative_margin:
+    "Trading fees associated with the trade. If your limit order doesn't get filled as a taker order, you are not going to pay any trading fees.",
   buy_long: 'Buy/Long',
   sell_short: 'Sell/Short',
   mark_price: 'Mark Price',
-  mark_price_tooltip:
-    'The oracle price for the base asset.',
+  mark_price_tooltip: 'The oracle price for the base asset.',
   select_ledger_address: 'Select Ledger Address',
   follow_instructions: 'Please follow the instructions on your device',
   address: 'Address',
@@ -258,8 +262,7 @@ export default {
   Subaccount: 'Subaccount',
   subaccount_tooltip:
     'The available funds on your subaccount. In order to trade, you must transfer funds from the Injective Chain to your subaccount.',
-  injective_chain_tooltip:
-    'Your available funds on the Injective Chain',
+  injective_chain_tooltip: 'Your available funds on the Injective Chain',
   'available_total_subaccount_balance Tooltip':
     'Your subaccount available/total balance',
   'Deposit to Injective Chain': 'Deposit to Injective Chain',
@@ -344,8 +347,7 @@ export default {
   side_tooltip: 'The side of your trade: long or short',
   amount_tooltip:
     'The total value of the base asset at the time which the trade was executed (i.e. for BTC/USDT, BTC is the base asset and USDT is the quote asset).',
-  execution_type_tooltip:
-    'The type of your order: limit or market.',
+  execution_type_tooltip: 'The type of your order: limit or market.',
   time_tooltip:
     "The time at which the trade was executed (times are shown in your browser's timezone).",
   recent_news: 'Recent news',
@@ -442,5 +444,7 @@ export default {
   countdown_campaign: 'Countdown',
   countdown_campaign_tooltip: 'Countdown tooltip',
   reward_earned_up_to_date: 'Rewards earned up to date',
-  reward_earned_up_to_date_tooltip: 'Rewards earned up to date tooltip'
+  reward_earned_up_to_date_tooltip: 'Rewards earned up to date tooltip',
+  market_total_tooltip:
+    'This total is calculated based on the approximated price you are going to get when execution the trade. Please note that the Total you end up with might have a slight deviation from the value shown here, as slippage is also applied on the execution price.'
 }

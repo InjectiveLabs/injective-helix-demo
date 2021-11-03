@@ -7,6 +7,11 @@
     >
       <p slot="header" class="flex justify-between">
         <v-text-info :title="$t('total')" lg>
+          <v-icon-info-tooltip
+            slot="context"
+            class="ml-2"
+            :tooltip="$t('market_total_tooltip')"
+          />
           <span class="font-mono flex items-center">
             <span class="mr-1">≈</span>
             {{ totalWithFeesToFormat }}

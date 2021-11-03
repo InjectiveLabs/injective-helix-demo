@@ -118,6 +118,7 @@
         totalWithFees,
         totalWithoutFees,
         feeReturned,
+        feeRebates,
         amount,
         detailsDrawerOpen
       }"
@@ -689,6 +690,18 @@ export default Vue.extend({
     },
 
     feeReturned(): BigNumberInBase {
+      const { total, market } = this
+
+      if (total.isNaN() || total.lte(0) || !market) {
+        return ZERO_IN_BASE
+      }
+
+      return total.times(
+        new BigNumberInBase(market.takerFeeRate).minus(market.makerFeeRate)
+      )
+    },
+
+    feeRebates(): BigNumberInBase {
       const { total, market } = this
 
       if (total.isNaN() || total.lte(0) || !market) {

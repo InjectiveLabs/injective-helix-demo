@@ -69,19 +69,44 @@
             slot="context"
             class="ml-2"
             :tooltip="
-              $t('fee_order_details_note', {
-                feeReturned: feeReturned.toFixed()
-              })
+              marketHasNegativeMakerFee
+                ? $t('fee_order_details_note', {
+                    feeReturned: feeReturned.toFixed()
+                  })
+                : $t('fee_order_details_note_negative_margin')
             "
           />
           <v-icon-info-tooltip
             v-else
             slot="context"
             class="ml-2"
-            :tooltip="$t('fees_tooltip')"
+            :tooltip="
+              marketHasNegativeMakerFee
+                ? $t('fees_tooltip')
+                : $t('fee_order_details_note_negative_margin')
+            "
           />
           <span v-if="fees.gt(0)" class="font-mono flex items-center">
             {{ feesToFormat }}
+            <span class="text-gray-500 ml-1">
+              {{ market.quoteToken.symbol }}
+            </span>
+          </span>
+          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
+        </v-text-info>
+
+        <v-text-info
+          :title="$t('est_fee_rebate')"
+          v-if="marketHasNegativeMakerFee"
+          class="mt-2"
+        >
+          <v-icon-info-tooltip
+            slot="context"
+            class="ml-2"
+            :tooltip="$t('est_fee_rebate_note')"
+          />
+          <span v-if="feeRebates.gt(0)" class="font-mono flex items-center">
+            {{ feeRebatesToFormat }}
             <span class="text-gray-500 ml-1">
               {{ market.quoteToken.symbol }}
             </span>
@@ -136,6 +161,11 @@ export default Vue.extend({
     },
 
     feeReturned: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    feeRebates: {
       required: true,
       type: Object as PropType<BigNumberInBase>
     },
@@ -230,6 +260,26 @@ export default Vue.extend({
       }
 
       return fees.toFormat(market.priceDecimals)
+    },
+
+    marketHasNegativeMakerFee(): boolean {
+      const { market } = this
+
+      if (!market) {
+        return false
+      }
+
+      return new BigNumberInBase(market.makerFeeRate).lt(0)
+    },
+
+    feeRebatesToFormat(): string {
+      const { feeRebates, market } = this
+
+      if (!market) {
+        return feeRebates.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return feeRebates.toFormat(market.priceDecimals)
     },
 
     amountToFormat(): string {

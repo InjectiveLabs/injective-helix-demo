@@ -134,6 +134,7 @@
         liquidationPrice,
         margin,
         feeReturned,
+        feeRebates,
         orderTypeReduceOnly,
         orderType,
         fees,
@@ -381,8 +382,7 @@ export default Vue.extend({
         hasAmount,
         market,
         amount,
-        price,
-        slippage
+        price
       } = this
 
       if (!market) {
@@ -402,9 +402,7 @@ export default Vue.extend({
           market
         })
 
-        return new BigNumberInBase(
-          worstPrice.times(slippage).toFixed(market.priceDecimals)
-        )
+        return new BigNumberInBase(worstPrice.toFixed(market.priceDecimals))
       }
 
       if (price.isNaN()) {
@@ -413,6 +411,22 @@ export default Vue.extend({
 
       return new BigNumberInBase(
         new BigNumberInBase(price).toFixed(market.priceDecimals)
+      )
+    },
+
+    executionPriceWithSlippage(): BigNumberInBase {
+      const { tradingTypeMarket, executionPrice, market, slippage } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      if (!tradingTypeMarket) {
+        return executionPrice
+      }
+
+      return new BigNumberInBase(
+        executionPrice.times(slippage).toFixed(market.priceDecimals)
       )
     },
 
@@ -940,6 +954,18 @@ export default Vue.extend({
       )
     },
 
+    feeRebates(): BigNumberInBase {
+      const { notionalValue, market } = this
+
+      if (notionalValue.isNaN() || !market) {
+        return ZERO_IN_BASE
+      }
+
+      return notionalValue.times(
+        new BigNumberInBase(market.takerFeeRate).minus(market.makerFeeRate)
+      )
+    },
+
     total(): BigNumberInBase {
       const { hasPrice, hasAmount, margin, market } = this
 
@@ -1230,7 +1256,7 @@ export default Vue.extend({
         orderTypeReduceOnly,
         market,
         margin,
-        executionPrice,
+        executionPriceWithSlippage,
         amount
       } = this
 
@@ -1245,7 +1271,7 @@ export default Vue.extend({
           orderType,
           margin,
           reduceOnly: orderTypeReduceOnly,
-          price: executionPrice,
+          price: executionPriceWithSlippage,
           quantity: amount
         })
         .then(() => {
