@@ -93,7 +93,11 @@ export const actions = actionTree(
     },
 
     async fetchFeeDiscountSchedule({ commit }) {
-      commit('setFeeDiscountSchedule', await fetchFeeDiscountSchedule())
+      const feeDiscountSchedule = await fetchFeeDiscountSchedule()
+
+      if (feeDiscountSchedule) {
+        commit('setFeeDiscountSchedule', feeDiscountSchedule)
+      }
     },
 
     async fetchFeeDiscountAccountInfo({ commit }) {
@@ -106,14 +110,21 @@ export const actions = actionTree(
         return
       }
 
-      commit(
-        'setFeeDiscountAccountInfo',
-        await fetchFeeDiscountAccountInfo(injectiveAddress)
+      const feeDiscountAccountInfo = await fetchFeeDiscountAccountInfo(
+        injectiveAddress
       )
+
+      if (feeDiscountAccountInfo) {
+        commit('setFeeDiscountAccountInfo', feeDiscountAccountInfo)
+      }
     },
 
     async fetchTradingRewardsCampaign({ commit }) {
-      commit('setTradingRewardsCampaign', await fetchTradingRewardsCampaign())
+      const tradingRewardsCampaign = await fetchTradingRewardsCampaign()
+
+      if (tradingRewardsCampaign) {
+        commit('setTradingRewardsCampaign', tradingRewardsCampaign)
+      }
     },
 
     async fetchTradeRewardPoints({ commit }) {

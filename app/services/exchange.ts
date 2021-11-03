@@ -6,7 +6,7 @@ export const fetchFeeDiscountSchedule = async () => {
   const feeDiscountSchedule = await exchangeConsumer.fetchFeeDiscountSchedule()
 
   if (!feeDiscountSchedule) {
-    throw new Error('There is an issue fetching the FeeDiscountSchedule')
+    return
   }
 
   return feeDiscountScheduleToUiFeeDiscountSchedule(
@@ -22,7 +22,7 @@ export const fetchFeeDiscountAccountInfo = async (injectiveAddress: string) => {
   )
 
   if (!feeDiscountAccountInfo) {
-    throw new Error('Failed to fetch fee discount schedule')
+    return
   }
 
   return {
@@ -39,7 +39,7 @@ export const fetchTradingRewardsCampaign = async () => {
   const tradingRewardsCampaign = await exchangeConsumer.fetchTradingRewardsCampaign()
 
   if (!tradingRewardsCampaign) {
-    throw new Error('There is an issue fetching the TradingRewardsCampaign')
+    return
   }
 
   return {
