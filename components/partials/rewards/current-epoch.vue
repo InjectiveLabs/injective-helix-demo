@@ -60,6 +60,7 @@
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { formatDistanceStrict } from 'date-fns'
 import Vue from 'vue'
+import { cosmosSdkDecToBigNumber } from '~/app/transformers'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   ZERO_IN_BASE
@@ -100,13 +101,25 @@ export default Vue.extend({
 
       const [points] = tradeRewardsPoints
 
-      return new BigNumberInWei(points).toBase()
+      if (!points) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(cosmosSdkDecToBigNumber(points))
+    },
+
+    tradeRewardPointsFactored(): BigNumberInBase {
+      const { tradeRewardPoints } = this
+
+      return new BigNumberInWei(tradeRewardPoints).toBase(
+        6 /* Default factor for points, USDT decimals */
+      )
     },
 
     tradeRewardPointsToFormat(): string {
-      const { tradeRewardPoints } = this
+      const { tradeRewardPointsFactored } = this
 
-      return tradeRewardPoints.times(100).toFormat(2)
+      return tradeRewardPointsFactored.times(100).toFormat(2)
     },
 
     campaignDurationInSeconds(): number {
@@ -197,7 +210,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(inj.amount || 0).toBase()
+      return new BigNumberInBase(cosmosSdkDecToBigNumber(inj.amount || 0))
     },
 
     totalTradeRewardPoints(): BigNumberInBase {
@@ -207,9 +220,11 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(
-        tradingRewardsCampaign.totalTradeRewardPoints || 0
-      ).toBase()
+      return new BigNumberInBase(
+        cosmosSdkDecToBigNumber(
+          tradingRewardsCampaign.totalTradeRewardPoints || 0
+        )
+      )
     },
 
     estimatedRewards(): BigNumberInBase {
