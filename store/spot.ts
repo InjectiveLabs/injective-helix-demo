@@ -267,11 +267,11 @@ export const actions = actionTree(
       )
 
       await this.app.$accessor.spot.streamOrderbook()
-      await this.app.$accessor.spot.streamTrades()
-      await this.app.$accessor.spot.streamSubaccountTrades()
+      // await this.app.$accessor.spot.streamTrades()
+      // await this.app.$accessor.spot.streamSubaccountTrades()
       await this.app.$accessor.spot.streamSubaccountOrders()
       await this.app.$accessor.spot.fetchSubaccountOrders()
-      await this.app.$accessor.spot.fetchSubaccountTrades()
+      // await this.app.$accessor.spot.fetchSubaccountTrades()
       await this.app.$accessor.account.streamSubaccountBalances()
       await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
     },
