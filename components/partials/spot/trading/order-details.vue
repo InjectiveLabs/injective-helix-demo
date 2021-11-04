@@ -70,10 +70,10 @@
             class="ml-2"
             :tooltip="
               marketHasNegativeMakerFee
-                ? $t('fee_order_details_note', {
+                ? $t('fee_order_details_note_negative_margin')
+                : $t('fee_order_details_note', {
                     feeReturned: feeReturned.toFixed()
                   })
-                : $t('fee_order_details_note_negative_margin')
             "
           />
           <v-icon-info-tooltip
@@ -82,8 +82,8 @@
             class="ml-2"
             :tooltip="
               marketHasNegativeMakerFee
-                ? $t('fees_tooltip')
-                : $t('fee_order_details_note_negative_margin')
+                ? $t('fee_order_details_note_negative_margin')
+                : $t('fees_tooltip')
             "
           />
           <span v-if="fees.gt(0)" class="font-mono flex items-center">
