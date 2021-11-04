@@ -130,22 +130,18 @@ export const fetchMarketTrades = async ({
   marketId: string
   subaccountId?: AccountAddress
 }) => {
-  try {
-    const promise = derivativeConsumer.fetchTrades({
-      marketId,
-      subaccountId,
-      // For market wide trades we get only `executionSide=Taker` trades
-      executionSide: subaccountId ? undefined : TradeExecutionSide.Taker
-    })
-    const trades = await metricsProvider.sendAndRecord(
-      promise,
-      DerivativesMetrics.FetchTrades
-    )
+  const promise = derivativeConsumer.fetchTrades({
+    marketId,
+    subaccountId,
+    // For market wide trades we get only `executionSide=Taker` trades
+    executionSide: subaccountId ? undefined : TradeExecutionSide.Taker
+  })
+  const trades = await metricsProvider.sendAndRecord(
+    promise,
+    DerivativesMetrics.FetchTrades
+  )
 
-    return DerivativeTransformer.grpcTradesToTrades(trades)
-  } catch (e: any) {
-    return [] // TODO
-  }
+  return DerivativeTransformer.grpcTradesToTrades(trades)
 }
 
 export const fetchMarketPositions = async ({

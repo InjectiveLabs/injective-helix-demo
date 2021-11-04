@@ -120,22 +120,18 @@ export const fetchMarketTrades = async ({
   marketId: string
   subaccountId?: AccountAddress
 }) => {
-  try {
-    const promise = spotConsumer.fetchTrades({
-      marketId,
-      subaccountId,
-      // For market wide trades we get only `executionSide=Taker` trades
-      executionSide: subaccountId ? undefined : TradeExecutionSide.Taker
-    })
-    const trades = await metricsProvider.sendAndRecord(
-      promise,
-      SpotMetrics.FetchTrades
-    )
+  const promise = spotConsumer.fetchTrades({
+    marketId,
+    subaccountId,
+    // For market wide trades we get only `executionSide=Taker` trades
+    executionSide: subaccountId ? undefined : TradeExecutionSide.Taker
+  })
+  const trades = await metricsProvider.sendAndRecord(
+    promise,
+    SpotMetrics.FetchTrades
+  )
 
-    return SpotTransformer.grpcTradesToTrades(trades)
-  } catch (e: any) {
-    return [] // TODO
-  }
+  return SpotTransformer.grpcTradesToTrades(trades)
 }
 
 export const fetchMarketOrders = async ({
