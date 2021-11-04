@@ -8,6 +8,10 @@
       <slot name="context" />
     </div>
 
+    <div>
+      <slot name="mobile-context" />
+    </div>
+
     <div class="card-table-wrap-content">
       <slot></slot>
     </div>

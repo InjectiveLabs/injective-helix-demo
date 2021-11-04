@@ -3,10 +3,11 @@
     v-bind="$attrs"
     ref="search-input"
     round
+    :small="small"
     :value="search"
     @input="input"
   >
-    <v-icon-search slot="addon" class="w-6 h-6" />
+    <v-icon-search slot="addon" :class="[small ? 'w-4 h-4' : 'w-6 h-6']" />
   </v-input>
 </template>
 <script lang="ts">
@@ -17,6 +18,11 @@ export default Vue.extend({
     search: {
       required: true,
       type: String
+    },
+
+    small: {
+      type: Boolean,
+      default: false
     }
   },
 
