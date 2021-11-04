@@ -116,8 +116,8 @@
         </v-text-info>
 
         <v-text-info
-          :title="$t('est_fee_rebate')"
           v-if="marketHasNegativeMakerFee"
+          :title="$t('est_fee_rebate')"
           class="mt-2"
         >
           <v-icon-info-tooltip

@@ -36,6 +36,8 @@ const derivatives = [
   'bnb-usdt',
   'btc-usdt-perp',
   'btc-usdt',
+  'btc-usdc-perp',
+  'btc-usdc',
   'eth-usdt-perp',
   'eth-usdt',
   'link-usdt-perp',
