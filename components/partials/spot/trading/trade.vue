@@ -112,6 +112,8 @@
       v-bind="{
         price: executionPrice,
         orderType,
+        makerFeeRateDiscount,
+        takerFeeRateDiscount,
         orderTypeBuy,
         fees,
         total,
@@ -173,6 +175,8 @@ import {
   calculateWorstExecutionPriceFromOrderbook,
   getApproxAmountForMarketOrder
 } from '~/app/services/spot'
+import { cosmosSdkDecToBigNumber } from '~/app/transformers'
+import { FeeDiscountAccountInfo } from '~/types/exchange'
 
 interface TradeForm {
   amount: string
@@ -227,6 +231,10 @@ export default Vue.extend({
 
     lastTradedPrice(): BigNumberInBase {
       return this.$accessor.spot.lastTradedPrice
+    },
+
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
     },
 
     baseAvailableBalance(): BigNumberInBase {
@@ -320,6 +328,66 @@ export default Vue.extend({
         orderTypeBuy
           ? DEFAULT_MAX_SLIPPAGE.div(100).plus(1)
           : DEFAULT_MAX_SLIPPAGE.div(100).minus(1).times(-1)
+      )
+    },
+
+    makerFeeRateDiscount(): BigNumberInBase {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return ZERO_IN_BASE
+      }
+
+      if (!feeDiscountAccountInfo.accountInfo) {
+        return ZERO_IN_BASE
+      }
+
+      const discount = cosmosSdkDecToBigNumber(
+        feeDiscountAccountInfo.accountInfo.makerDiscountRate
+      )
+
+      return new BigNumberInBase(discount)
+    },
+
+    takerFeeRateDiscount(): BigNumberInBase {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return ZERO_IN_BASE
+      }
+
+      if (!feeDiscountAccountInfo.accountInfo) {
+        return ZERO_IN_BASE
+      }
+
+      const discount = cosmosSdkDecToBigNumber(
+        feeDiscountAccountInfo.accountInfo.takerDiscountRate
+      )
+
+      return new BigNumberInBase(discount)
+    },
+
+    makerFeeRate(): BigNumberInBase {
+      const { market, makerFeeRateDiscount } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(market.makerFeeRate).times(
+        new BigNumberInBase(1).minus(makerFeeRateDiscount)
+      )
+    },
+
+    takerFeeRate(): BigNumberInBase {
+      const { market, takerFeeRateDiscount } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(market.takerFeeRate).times(
+        new BigNumberInBase(1).minus(takerFeeRateDiscount)
       )
     },
 

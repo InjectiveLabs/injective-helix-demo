@@ -95,17 +95,31 @@
         </v-text-info>
 
         <v-text-info :title="$t('fee')" class="mt-2">
-          <v-icon-info-tooltip
-            slot="context"
-            class="ml-2"
-            :tooltip="
-              marketHasNegativeMakerFee
-                ? $t('fee_order_details_note_negative_margin')
-                : $t('fee_order_details_note', {
-                    feeReturned: feeReturned.toFixed()
+          <div slot="context">
+            <div class="flex items-center">
+              <v-icon-info-tooltip
+                slot="context"
+                class="ml-2"
+                :tooltip="
+                  marketHasNegativeMakerFee
+                    ? $t('fee_order_details_note_negative_margin')
+                    : $t('fee_order_details_note', {
+                        feeReturned: feeReturned.toFixed()
+                      })
+                "
+              />
+              <v-icon-check-tooltip
+                v-if="makerFeeRateDiscount.gt(0) || takerFeeRateDiscount.gt(0)"
+                class="ml-2 text-primary-500"
+                :tooltip="
+                  $t('fees_tooltip_discount', {
+                    maker: makerFeeRateDiscount.times(100).toFixed(),
+                    taker: takerFeeRateDiscount.times(100).toFixed()
                   })
-            "
-          />
+                "
+              />
+            </div>
+          </div>
           <span v-if="fees.gt(0)" class="font-mono flex items-center">
             {{ feesToFormat }}
             <span class="text-gray-500 ml-1">
@@ -171,6 +185,16 @@ export default Vue.extend({
     },
 
     liquidationPrice: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    takerFeeRateDiscount: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    makerFeeRateDiscount: {
       required: true,
       type: Object as PropType<BigNumberInBase>
     },

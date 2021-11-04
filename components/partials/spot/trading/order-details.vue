@@ -64,28 +64,41 @@
         </v-text-info>
 
         <v-text-info :title="$t('fee')" class="mt-2">
-          <v-icon-info-tooltip
-            v-if="!orderTypeBuy"
-            slot="context"
-            class="ml-2"
-            :tooltip="
-              marketHasNegativeMakerFee
-                ? $t('fee_order_details_note_negative_margin')
-                : $t('fee_order_details_note', {
-                    feeReturned: feeReturned.toFixed()
+          <div slot="context">
+            <div class="flex items-center">
+              <v-icon-info-tooltip
+                v-if="!orderTypeBuy"
+                class="ml-2"
+                :tooltip="
+                  marketHasNegativeMakerFee
+                    ? $t('fee_order_details_note_negative_margin')
+                    : $t('fee_order_details_note', {
+                        feeReturned: feeReturned.toFixed()
+                      })
+                "
+              />
+              <v-icon-info-tooltip
+                v-else
+                class="ml-2"
+                :tooltip="
+                  marketHasNegativeMakerFee
+                    ? $t('fee_order_details_note_negative_margin')
+                    : $t('fees_tooltip')
+                "
+              />
+              <v-icon-check-tooltip
+                v-if="makerFeeRateDiscount.gt(0) || takerFeeRateDiscount.gt(0)"
+                class="ml-2 text-primary-500"
+                :tooltip="
+                  $t('fees_tooltip_discount', {
+                    maker: makerFeeRateDiscount.times(100).toFixed(),
+                    taker: takerFeeRateDiscount.times(100).toFixed()
                   })
-            "
-          />
-          <v-icon-info-tooltip
-            v-else
-            slot="context"
-            class="ml-2"
-            :tooltip="
-              marketHasNegativeMakerFee
-                ? $t('fee_order_details_note_negative_margin')
-                : $t('fees_tooltip')
-            "
-          />
+                "
+              />
+            </div>
+          </div>
+
           <span v-if="fees.gt(0)" class="font-mono flex items-center">
             {{ feesToFormat }}
             <span class="text-gray-500 ml-1">
@@ -100,11 +113,16 @@
           :title="$t('est_fee_rebate')"
           class="mt-2"
         >
-          <v-icon-info-tooltip
-            slot="context"
-            class="ml-2"
-            :tooltip="$t('est_fee_rebate_note')"
-          />
+          <div slot="context">
+            <v-icon-info-tooltip
+              class="ml-2"
+              :tooltip="$t('est_fee_rebate_note')"
+            />
+            <v-icon-info-tooltip
+              class="ml-2"
+              :tooltip="$t('est_fee_rebate_note')"
+            />
+          </div>
           <span v-if="feeRebates.gt(0)" class="font-mono flex items-center">
             {{ feeRebatesToFormat }}
             <span class="text-gray-500 ml-1">
@@ -166,6 +184,16 @@ export default Vue.extend({
     },
 
     feeRebates: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    takerFeeRateDiscount: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    makerFeeRateDiscount: {
       required: true,
       type: Object as PropType<BigNumberInBase>
     },

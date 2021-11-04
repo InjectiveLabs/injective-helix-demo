@@ -132,6 +132,8 @@
         price: executionPrice,
         notionalValue,
         liquidationPrice,
+        makerFeeRateDiscount,
+        takerFeeRateDiscount,
         margin,
         feeReturned,
         feeRebates,
@@ -202,6 +204,8 @@ import {
   calculateMargin,
   getApproxAmountForMarketOrder
 } from '~/app/services/derivatives'
+import { FeeDiscountAccountInfo } from '~/types/exchange'
+import { cosmosSdkDecToBigNumber } from '~/app/transformers'
 
 interface TradeForm {
   reduceOnly: boolean
@@ -284,6 +288,10 @@ export default Vue.extend({
       return this.$accessor.derivatives.marketMarkPrice
     },
 
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
+    },
+
     availableMargin(): BigNumberInBase {
       const { subaccount, market } = this
 
@@ -342,6 +350,66 @@ export default Vue.extend({
         orderTypeBuy
           ? DEFAULT_MAX_SLIPPAGE.div(100).plus(1)
           : DEFAULT_MAX_SLIPPAGE.div(100).minus(1).times(-1)
+      )
+    },
+
+    makerFeeRateDiscount(): BigNumberInBase {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return ZERO_IN_BASE
+      }
+
+      if (!feeDiscountAccountInfo.accountInfo) {
+        return ZERO_IN_BASE
+      }
+
+      const discount = cosmosSdkDecToBigNumber(
+        feeDiscountAccountInfo.accountInfo.makerDiscountRate
+      )
+
+      return new BigNumberInBase(discount)
+    },
+
+    takerFeeRateDiscount(): BigNumberInBase {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return ZERO_IN_BASE
+      }
+
+      if (!feeDiscountAccountInfo.accountInfo) {
+        return ZERO_IN_BASE
+      }
+
+      const discount = cosmosSdkDecToBigNumber(
+        feeDiscountAccountInfo.accountInfo.takerDiscountRate
+      )
+
+      return new BigNumberInBase(discount)
+    },
+
+    makerFeeRate(): BigNumberInBase {
+      const { market, makerFeeRateDiscount } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(market.makerFeeRate).times(
+        new BigNumberInBase(1).minus(makerFeeRateDiscount)
+      )
+    },
+
+    takerFeeRate(): BigNumberInBase {
+      const { market, takerFeeRateDiscount } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(market.takerFeeRate).times(
+        new BigNumberInBase(1).minus(takerFeeRateDiscount)
       )
     },
 
@@ -933,36 +1001,36 @@ export default Vue.extend({
     },
 
     fees(): BigNumberInBase {
-      const { notionalValue, market } = this
+      const { notionalValue, takerFeeRate } = this
 
-      if (notionalValue.isNaN() || !market) {
+      if (notionalValue.isNaN()) {
         return ZERO_IN_BASE
       }
 
-      return notionalValue.times(market.takerFeeRate)
+      return notionalValue.times(takerFeeRate)
     },
 
     feeReturned(): BigNumberInBase {
-      const { notionalValue, market } = this
+      const { notionalValue, takerFeeRate, makerFeeRate } = this
 
-      if (notionalValue.isNaN() || !market) {
+      if (notionalValue.isNaN()) {
         return ZERO_IN_BASE
       }
 
       return notionalValue.times(
-        new BigNumberInBase(market.takerFeeRate).minus(market.makerFeeRate)
+        new BigNumberInBase(takerFeeRate).minus(makerFeeRate)
       )
     },
 
     feeRebates(): BigNumberInBase {
-      const { notionalValue, market } = this
+      const { notionalValue, takerFeeRate, makerFeeRate } = this
 
-      if (notionalValue.isNaN() || !market) {
+      if (notionalValue.isNaN()) {
         return ZERO_IN_BASE
       }
 
       return notionalValue.times(
-        new BigNumberInBase(market.takerFeeRate).minus(market.makerFeeRate)
+        new BigNumberInBase(takerFeeRate).minus(makerFeeRate)
       )
     },
 
@@ -1059,6 +1127,7 @@ export default Vue.extend({
       const {
         market,
         buys,
+        takerFeeRate,
         sells,
         form,
         tradingTypeMarket,
@@ -1101,7 +1170,7 @@ export default Vue.extend({
         return ''
       }
 
-      const fee = new BigNumberInBase(market.takerFeeRate)
+      const fee = new BigNumberInBase(takerFeeRate)
 
       return new BigNumberInBase(availableMargin)
         .times(form.leverage)

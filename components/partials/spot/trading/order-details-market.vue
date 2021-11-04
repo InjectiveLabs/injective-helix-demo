@@ -62,11 +62,25 @@
         </v-text-info>
 
         <v-text-info :title="$t('fee')" class="mt-2">
-          <v-icon-info-tooltip
-            slot="context"
-            class="ml-2"
-            :tooltip="$t('fees_tooltip')"
-          />
+          <div slot="context">
+            <div class="flex items-center">
+              <v-icon-info-tooltip
+                slot="context"
+                class="ml-2"
+                :tooltip="$t('fees_tooltip')"
+              />
+              <v-icon-check-tooltip
+                v-if="makerFeeRateDiscount.gt(0) || takerFeeRateDiscount.gt(0)"
+                class="ml-2 text-primary-500"
+                :tooltip="
+                  $t('fees_tooltip_discount', {
+                    maker: makerFeeRateDiscount.times(100).toFixed(),
+                    taker: takerFeeRateDiscount.times(100).toFixed()
+                  })
+                "
+              />
+            </div>
+          </div>
           <span v-if="fees.gt(0)" class="font-mono flex items-center">
             <span class="mr-1">≈</span>
             {{ feesToFormat }}
@@ -124,6 +138,16 @@ export default Vue.extend({
     },
 
     totalWithoutFees: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    takerFeeRateDiscount: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    makerFeeRateDiscount: {
       required: true,
       type: Object as PropType<BigNumberInBase>
     },

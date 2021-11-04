@@ -14,6 +14,7 @@ import Modal from '~/components/elements/modal.vue'
 import Input from '~/components/inputs/input.vue'
 import ButtonSelect from '~/components/elements/button-select.vue'
 import VIconInfoTooltip from '~/components/elements/info-icon-tooltip.vue'
+import VIconCheckTooltip from '~/components/elements/info-check-tooltip.vue'
 
 Vue.component('VCard', Card)
 Vue.component('VSeparator', Separator)
@@ -28,4 +29,5 @@ Vue.component('VButton', Button)
 Vue.component('VModal', Modal)
 Vue.component('VInput', Input)
 Vue.component('VIconInfoTooltip', VIconInfoTooltip)
+Vue.component('VIconCheckTooltip', VIconCheckTooltip)
 Vue.component('VUserWalletConnectWarning', VUserWalletConnectWarning)
