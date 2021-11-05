@@ -778,7 +778,7 @@ export default Vue.extend({
 
       return new BigNumberInBase(
         total.times(market.makerFeeRate).absoluteValue()
-      )
+      ).times(0.6 /* Only 60% of the fees are getting returned */)
     }
   },
 

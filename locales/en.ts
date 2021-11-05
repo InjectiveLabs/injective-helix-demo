@@ -451,7 +451,7 @@ export default {
   market_total_tooltip:
     'This total is calculated based on the approximated price you are going to get when execution the trade. Please note that the Total you end up with might have a slight deviation from the value shown here, as slippage is also applied on the execution price.',
   fees_tooltip_discount:
-    'Based on your tier, you are eligible for {maker}% maker discount and {taker}% discount.',
+    'Based on your tier, you are eligible for {maker}% maker discount and {taker}% taker discount.',
   remaining: 'remaining',
   campaign_duration: 'Campaign Duration',
   campaign_duration_tooltip: 'Campaign Duration Tooltip',
