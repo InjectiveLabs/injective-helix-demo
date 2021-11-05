@@ -133,7 +133,7 @@ export default Vue.extend({
       const { spotOrders } = this
 
       this.$accessor.portfolio
-        .batchCancelOrder(spotOrders)
+        .batchCancelSpotOrders(spotOrders)
         .then(() => {
           this.$toast.success(this.$t('orders_cancelled'))
         })
@@ -147,7 +147,7 @@ export default Vue.extend({
       const { derivativeOrders } = this
 
       this.$accessor.portfolio
-        .batchCancelOrder(derivativeOrders)
+        .batchCancelDerivativeOrders(derivativeOrders)
         .then(() => {
           this.$toast.success(this.$t('orders_cancelled'))
         })

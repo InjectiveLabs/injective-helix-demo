@@ -76,19 +76,23 @@ export default Vue.extend({
     closeAllPosition() {
       const { positions } = this
 
-      const positionsToCancel = positions.map((position) => {
-        const market = this.getMarket(position.marketId) as UiDerivativeMarket
+      const positionsToCancel = positions
+        .map((position) => {
+          const market = this.getMarket(position.marketId) as UiDerivativeMarket
 
-        return {
-          market,
-          price: getPositionFeeAdjustedBankruptcyPrice({ position, market }),
-          orderType:
-            position.direction === TradeDirection.Long
-              ? DerivativeOrderSide.Sell
-              : DerivativeOrderSide.Buy,
-          quantity: new BigNumberInBase(position.quantity)
-        }
-      })
+          return {
+            market,
+            price: market
+              ? getPositionFeeAdjustedBankruptcyPrice({ position, market })
+              : new BigNumberInBase(0),
+            orderType:
+              position.direction === TradeDirection.Long
+                ? DerivativeOrderSide.Sell
+                : DerivativeOrderSide.Buy,
+            quantity: new BigNumberInBase(position.quantity)
+          }
+        })
+        .filter(({ market }) => market !== undefined)
 
       this.$accessor.derivatives
         .closeAllPosition({

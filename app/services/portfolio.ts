@@ -6,17 +6,13 @@ import {
   PositionStreamCallback
 } from '@injectivelabs/derivatives-consumer'
 import {
-  SpotMarketComposer,
   SpotMarketStreamType,
   SpotTransformer,
   OrderStreamCallback as SpotMarketOrderStreamCallback
 } from '@injectivelabs/spot-consumer'
-import { Web3Exception } from '@injectivelabs/exceptions'
 import { metricsProvider } from '../providers/MetricsProvider'
 import { derivativeConsumer } from '../singletons/DerivativeMarketConsumer'
 import { spotConsumer } from '../singletons/SpotMarketConsumer'
-import { TxProvider } from '../providers/TxProvider'
-import { CHAIN_ID } from '../utils/constants'
 import { streamProvider } from '../providers/StreamProvider'
 import { spotMarketStream } from '../singletons/SpotMarketStream'
 import { derivativeMarketStream } from '../singletons/DerivativeMarketStream'
@@ -87,74 +83,6 @@ export const fetchDerivativeOrderbooks = async (marketIds: string[]) => {
   return marketIds.reduce((derivativeOrderbooks, marketId, index) => {
     return { ...derivativeOrderbooks, [marketId]: orderbooks[index] }
   }, {} as Record<string, UiDerivativeOrderbook>)
-}
-
-export const cancelOrder = async ({
-  orderHash,
-  address,
-  marketId,
-  injectiveAddress,
-  subaccountId
-}: {
-  orderHash: string
-  subaccountId: string
-  marketId: string
-  address: string
-  injectiveAddress: string
-}) => {
-  const message = SpotMarketComposer.cancelSpotOrder({
-    subaccountId,
-    marketId,
-    injectiveAddress,
-    order: {
-      orderHash
-    }
-  })
-
-  try {
-    const txProvider = new TxProvider({
-      address,
-      message,
-      bucket: SpotMetrics.CancelLimitOrder,
-      chainId: CHAIN_ID
-    })
-
-    await txProvider.broadcast()
-  } catch (error: any) {
-    throw new Web3Exception(error.message)
-  }
-}
-
-export const batchCancelOrders = async ({
-  orders,
-  address,
-  injectiveAddress
-}: {
-  orders: {
-    subaccountId: string
-    marketId: string
-    orderHash: string
-  }[]
-  address: string
-  injectiveAddress: string
-}) => {
-  const message = SpotMarketComposer.batchCancelSpotOrder({
-    injectiveAddress,
-    orders
-  })
-
-  try {
-    const txProvider = new TxProvider({
-      address,
-      message,
-      bucket: SpotMetrics.BatchCancelLimitOrders,
-      chainId: CHAIN_ID
-    })
-
-    await txProvider.broadcast()
-  } catch (error: any) {
-    throw new Web3Exception(error.message)
-  }
 }
 
 export const streamSubaccountSpotOrders = ({
