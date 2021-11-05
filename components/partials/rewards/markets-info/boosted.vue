@@ -2,15 +2,15 @@
   <v-item>
     <div class="flex justify-between text-xs w-full mx-auto lg:w-3/4">
       <div class="flex-1 px-4 lg:px-6">
-        <p class="text-gray-400 text-center uppercase font-semibold">
+        <p class="text-gray-200 text-center font-semibold">
           {{ $t('derivatives') }}
         </p>
-        <div
+        <v-text-info
           v-for="derivative in boostedMarkets.derivatives"
           :key="`derivative-${derivative.ticker}`"
-          class="flex items-center justify-between text-xs mt-2"
+          :title="derivative.ticker"
+          class="mt-2"
         >
-          <p class="text-gray-200 font-semibold">{{ derivative.ticker }}</p>
           <p class="text-gray-300 font-mono">
             <span>
               {{ derivative.makerPointsMultiplier }}x
@@ -24,18 +24,19 @@
               </span>
             </span>
           </p>
-        </div>
+        </v-text-info>
       </div>
+
       <div class="flex-1 px-4 lg:px-12">
-        <p class="text-gray-400 text-center uppercase font-semibold">
+        <p class="text-gray-200 text-center font-semibold">
           {{ $t('spot') }}
         </p>
-        <div
+        <v-text-info
           v-for="spot in boostedMarkets.spot"
           :key="`spot-${spot.ticker}`"
-          class="flex items-center justify-between text-xs mt-2"
+          :title="spot.ticker"
+          class="mt-2"
         >
-          <p class="text-gray-200 font-semibold">{{ spot.ticker }}</p>
           <p class="text-gray-300 font-mono">
             <span>
               {{ spot.makerPointsMultiplier }}x
@@ -49,7 +50,7 @@
               </span>
             </span>
           </p>
-        </div>
+        </v-text-info>
       </div>
     </div>
     <template slot="title">
