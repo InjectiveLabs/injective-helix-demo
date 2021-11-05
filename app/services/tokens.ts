@@ -77,7 +77,7 @@ export const getIbcTokenBalanceAndAllowance = async (
 ): Promise<TokenWithBalance> => {
   const allowance = ZERO_TO_STRING
   const balance = ZERO_TO_STRING
-  let priceInUsd = ZERO_TO_STRING
+  let priceInUsd
 
   try {
     priceInUsd = (

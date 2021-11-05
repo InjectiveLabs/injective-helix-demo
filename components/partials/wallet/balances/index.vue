@@ -48,7 +48,7 @@ import Vue from 'vue'
 import VBalance from './balance.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import TableHeader from '~/components/elements/table-header.vue'
-import { Token, TokenWithBalance } from '~/types/token'
+import { TokenWithBalance } from '~/types/token'
 import {
   BankBalanceWithTokenMetaData,
   BankBalanceWithTokenMetaDataAndBalance,
