@@ -1910,14 +1910,22 @@
     "@improbable-eng/grpc-web" "^0.13.0"
     google-protobuf "^3.13.0"
 
-"@injectivelabs/chain-consumer@^0.0.83":
-  version "0.0.83"
-  resolved "https://registry.npmjs.org/@injectivelabs/chain-consumer/-/chain-consumer-0.0.83.tgz#f44a79f0419312f6baf18087bd751ab5dee76ee0"
-  integrity sha512-mCtkM4MjaE3J4/cuo0Kt+AjvwCcvmmTcguf4J9Q6k9PX4ZB1aiJeTecQiF+zraoq6bYmxRoy78xFPpuYzCxBaA==
+"@injectivelabs/chain-api@^1.6.2":
+  version "1.6.2"
+  resolved "https://registry.npmjs.org/@injectivelabs/chain-api/-/chain-api-1.6.2.tgz#6295cd9b8a7c401d7c3672135db6729b34171aee"
+  integrity sha512-Rzkx+KxvLVZk01XOA611v4fms0L/aoLl94JUfreG4TmiaUufUXxO0EMWo/UatpXa4uorFPr/ISnfMLR/2zUtrA==
+  dependencies:
+    "@improbable-eng/grpc-web" "^0.13.0"
+    google-protobuf "^3.13.0"
+
+"@injectivelabs/chain-consumer@^0.0.91":
+  version "0.0.91"
+  resolved "https://registry.npmjs.org/@injectivelabs/chain-consumer/-/chain-consumer-0.0.91.tgz#ecbaac3c8434beae71ceb16939eeb2d5cec48678"
+  integrity sha512-IZHXNPEy74VYpYDftgNyByk6EuDme4w4ttEB/iB3S9srfg3Qg/4igsTrj0IcmfvIgyUPNQX+BIEyuS7K/gI1Hw==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.14.0"
-    "@injectivelabs/chain-api" "^1.4.13"
+    "@injectivelabs/chain-api" "^1.6.2"
     "@injectivelabs/exceptions" "^0.0.26"
     "@injectivelabs/ts-types" "^0.0.22"
     "@injectivelabs/utils" "^0.0.33"
@@ -2066,10 +2074,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/token-metadata@^0.0.21":
-  version "0.0.21"
-  resolved "https://registry.npmjs.org/@injectivelabs/token-metadata/-/token-metadata-0.0.21.tgz#7cc3e7f9d28d4219dddfedbda3982d8595504060"
-  integrity sha512-nBLhkpWTTbmXaReXy+tpWH5BEiGo6ENc0AGZY6Gi3lMDc2C3HJg+oU4H/0VFGSfbIbbtGFUPjk2BDr9o3uTBYQ==
+"@injectivelabs/token-metadata@^0.0.23":
+  version "0.0.23"
+  resolved "https://registry.npmjs.org/@injectivelabs/token-metadata/-/token-metadata-0.0.23.tgz#3fa7de2caaa7b8b69f6446f6b3a28f82ae67f0fb"
+  integrity sha512-z8/javoT4J1KqErMNoFlvJLHO6F1KO2o8G68RryTshtzKeS8E2ZbFxqZs0QDofKcj3HsnbJX6Ztr43kB3mTVFA==
   dependencies:
     "@injectivelabs/ts-types" "^0.0.25"
     "@types/lodash.values" "^4.3.6"

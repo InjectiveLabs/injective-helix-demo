@@ -3,6 +3,7 @@ import { actionTree, getterTree } from 'typed-vuex'
 import {
   withdraw,
   getTokenBalanceAndAllowance,
+  getIbcTokenBalanceAndAllowance,
   setTokenAllowance,
   transfer,
   getUsdtTokenPriceFromCoinGecko,
@@ -19,6 +20,7 @@ import {
 
 const initialStateFactory = () => ({
   erc20TokensWithBalanceFromBank: [] as TokenWithBalance[],
+  ibcTokensWithBalanceFromBank: [] as TokenWithBalance[],
   tokensWithPriceInUsd: {} as Record<string, string>,
   baseTokenWithBalance: (undefined as unknown) as TokenWithBalance,
   quoteTokenWithBalance: (undefined as unknown) as TokenWithBalance
@@ -28,6 +30,7 @@ const initialState = initialStateFactory()
 
 export const state = () => ({
   erc20TokensWithBalanceFromBank: initialState.erc20TokensWithBalanceFromBank as TokenWithBalance[],
+  ibcTokensWithBalanceFromBank: initialState.ibcTokensWithBalanceFromBank as TokenWithBalance[],
   tokensWithPriceInUsd: initialState.tokensWithPriceInUsd as Record<
     string,
     string
@@ -78,6 +81,13 @@ export const mutations = {
     state.erc20TokensWithBalanceFromBank = erc20TokensWithBalanceFromBank
   },
 
+  setIbcTokensWithBalanceFromBank(
+    state: TokenStoreState,
+    ibcTokensWithBalanceFromBank: TokenWithBalance[]
+  ) {
+    state.ibcTokensWithBalanceFromBank = ibcTokensWithBalanceFromBank
+  },
+
   setTokensWithPriceInUsd(
     state: TokenStoreState,
     tokensWithPriceInUsd: Record<string, string>
@@ -90,6 +100,8 @@ export const mutations = {
 
     state.erc20TokensWithBalanceFromBank =
       initialState.erc20TokensWithBalanceFromBank
+    state.ibcTokensWithBalanceFromBank =
+      initialState.ibcTokensWithBalanceFromBank
     state.baseTokenWithBalance = initialState.baseTokenWithBalance
     state.quoteTokenWithBalance = initialState.quoteTokenWithBalance
   }
@@ -105,14 +117,22 @@ export const actions = actionTree(
         return
       }
 
-      const { balancesWithTokenMetaData } = this.app.$accessor.bank
+      const {
+        balancesWithTokenMetaData,
+        ibcBalancesWithTokenMetaData
+      } = this.app.$accessor.bank
 
       if (balancesWithTokenMetaData.length === 0) {
         await this.app.$accessor.bank.fetchBalancesWithTokenMetaData()
       }
 
+      if (ibcBalancesWithTokenMetaData.length === 0) {
+        await this.app.$accessor.bank.fetchIbcBalancesWithTokenMetaData()
+      }
+
       const {
-        balancesWithTokenMetaData: newBalancesWithTokenMetaData
+        balancesWithTokenMetaData: newBalancesWithTokenMetaData,
+        ibcBalancesWithTokenMetaData: newIbcBalancesWithTokenMetaData
       } = this.app.$accessor.bank
 
       const ercTokensWithBalanceAndAllowance = await Promise.all(
@@ -124,10 +144,19 @@ export const actions = actionTree(
         })
       )
 
+      const ibcTokensWithBalanceFromBank = await Promise.all(
+        newIbcBalancesWithTokenMetaData.map(async ({ token }) => {
+          return (await getIbcTokenBalanceAndAllowance(
+            token
+          )) as TokenWithBalance
+        })
+      )
+
       commit(
         'setErc20TokensWithBalanceFromBank',
         ercTokensWithBalanceAndAllowance
       )
+      commit('setIbcTokensWithBalanceFromBank', ibcTokensWithBalanceFromBank)
     },
 
     async getAllTokenWithPriceInUsd({ commit }) {
