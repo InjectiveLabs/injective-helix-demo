@@ -8,18 +8,19 @@
       <slot name="context" />
     </div>
 
+    <div>
+      <slot name="mobile-context" />
+    </div>
+
     <div
       :class="{
         'card-table-wrap-content': !bgLighter,
         'card-table-wrap-content-lighter': bgLighter
       }"
     >
-    <div>
-      <slot name="mobile-context" />
-    </div>
-
-    <div class="card-table-wrap-content">
-      <slot></slot>
+      <div class="card-table-wrap-content">
+        <slot></slot>
+      </div>
     </div>
   </div>
 </template>
