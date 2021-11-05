@@ -121,10 +121,6 @@
               class="ml-2"
               :tooltip="$t('est_fee_rebate_note')"
             />
-            <v-icon-info-tooltip
-              class="ml-2"
-              :tooltip="$t('est_fee_rebate_note')"
-            />
           </div>
           <span v-if="feeRebates.gt(0)" class="font-mono flex items-center">
             {{ feeRebatesToFormat }}
