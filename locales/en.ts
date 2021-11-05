@@ -31,6 +31,7 @@ export default {
   market_volume_24h: 'Volume (24h)',
   market_volume_24h_tooltip: 'The total trade volume over the past 24 hours.',
   filter_markets: 'Filter Markets',
+  filter_by_market: 'Filter by market',
   spot: 'Spot',
   subaccount_funds_available: 'Subaccount Funds',
   asset: 'Asset',
@@ -169,8 +170,7 @@ export default {
   buy_long: 'Buy/Long',
   sell_short: 'Sell/Short',
   mark_price: 'Mark Price',
-  mark_price_tooltip:
-    'The oracle price for the base asset.',
+  mark_price_tooltip: 'The oracle price for the base asset.',
   select_ledger_address: 'Select Ledger Address',
   follow_instructions: 'Please follow the instructions on your device',
   address: 'Address',
@@ -255,8 +255,7 @@ export default {
   Subaccount: 'Subaccount',
   subaccount_tooltip:
     'The available funds on your subaccount. In order to trade, you must transfer funds from the Injective Chain to your subaccount.',
-  injective_chain_tooltip:
-    'Your available funds on the Injective Chain',
+  injective_chain_tooltip: 'Your available funds on the Injective Chain',
   'available_total_subaccount_balance Tooltip':
     'Your subaccount available/total balance',
   'Deposit to Injective Chain': 'Deposit to Injective Chain',
@@ -341,8 +340,7 @@ export default {
   side_tooltip: 'The side of your trade: long or short',
   amount_tooltip:
     'The total value of the base asset at the time which the trade was executed (i.e. for BTC/USDT, BTC is the base asset and USDT is the quote asset).',
-  execution_type_tooltip:
-    'The type of your order: limit or market.',
+  execution_type_tooltip: 'The type of your order: limit or market.',
   time_tooltip:
     "The time at which the trade was executed (times are shown in your browser's timezone).",
   recent_news: 'Recent news',

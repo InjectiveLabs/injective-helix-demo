@@ -23,13 +23,25 @@
 
     <template #context>
       <div class="hidden sm:block">
-        <VSearch dense small :search="search" @searched="updateSearch" />
+        <VSearch
+          dense
+          small
+          :placeholder="$t('filter_by_market')"
+          :search="search"
+          @searched="updateSearch"
+        />
       </div>
     </template>
 
     <template #mobile-context>
       <div class="sm:hidden p-1 mt-1">
-        <VSearch dense small :search="search" @searched="updateSearch" />
+        <VSearch
+          dense
+          small
+          :placeholder="$t('filter_by_market')"
+          :search="search"
+          @searched="updateSearch"
+        />
       </div>
     </template>
 
