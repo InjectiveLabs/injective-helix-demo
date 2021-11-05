@@ -67,17 +67,11 @@ export default Vue.extend({
       this.component = component
     },
 
-    getMarket(marketId: string): UiDerivativeMarket | undefined {
-      const { markets } = this
-
-      return markets.find((m) => m.marketId === marketId)
-    },
-
     closeAllPosition() {
-      const { positions } = this
+      const { positions, markets } = this
 
       const positionsToCancel = positions.map((position) => {
-        const market = this.getMarket(position.marketId) as UiDerivativeMarket
+        const market = markets.find((m) => m.marketId === position.marketId)!
 
         return {
           market,
