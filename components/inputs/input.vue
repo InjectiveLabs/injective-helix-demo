@@ -34,7 +34,11 @@
           v-bind="$attrs"
           class="input"
           :value="value"
-          :class="{ 'input-large': large, 'input-round': round }"
+          :class="{
+            'input-large': large,
+            'input-round': round,
+            'input-small': small
+          }"
           @blur="handleBlur"
           @input="handleChangeOnInput"
         />
@@ -87,6 +91,11 @@ export default Vue.extend({
     },
 
     large: {
+      type: Boolean,
+      default: false
+    },
+
+    small: {
       type: Boolean,
       default: false
     },

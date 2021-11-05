@@ -1,6 +1,6 @@
 import {
   SpotMarket as BaseUiSpotMarket,
-  SpotTrade as UiSpotTrade,
+  SpotTrade,
   SpotLimitOrder as UiSpotLimitOrder,
   Orderbook as UiSpotOrderbook,
   ChronosSpotMarketSummary,
@@ -17,6 +17,10 @@ export interface BaseUiSpotMarketWithPartialTokenMetaData
   slug: string
   quoteToken?: Token
   baseToken?: Token
+}
+
+export interface UiSpotTrade extends SpotTrade {
+  ticker?: string
 }
 
 export interface BaseUiSpotMarketWithTokenMetaData
@@ -56,7 +60,6 @@ export enum SpotMarketMap {
 
 export {
   UiSpotLimitOrder,
-  UiSpotTrade,
   TradeDirection,
   SpotOrderSide,
   TradeExecutionType,
