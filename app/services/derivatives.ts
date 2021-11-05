@@ -34,7 +34,9 @@ import {
   UiPriceLevel,
   UiDerivativeMarket,
   UiDerivativeMarketSummary,
+  UiPosition,
   BaseUiDerivativeMarketWithTokenMetaData,
+  TradeDirection,
   Token
 } from '~/types'
 import { derivativeConsumer } from '~/app/singletons/DerivativeMarketConsumer'
@@ -708,6 +710,43 @@ export const calculateMargin = ({
   leverage: string
 }): BigNumberInBase => {
   return new BigNumberInBase(quantity).times(price).dividedBy(leverage)
+}
+
+export const getPositionFeeAdjustedBankruptcyPrice = ({
+  position,
+  market
+}: {
+  position: UiPosition
+  market: UiDerivativeMarket
+}) => {
+  const price = new BigNumberInWei(position.entryPrice).toBase(
+    market.quoteToken.decimals
+  )
+
+  const unitMargin = new BigNumberInWei(position.margin)
+    .toBase(market.quoteToken.decimals)
+    .dividedBy(position.quantity)
+  const isPositionLong = position.direction === TradeDirection.Long
+
+  const bankruptcyPrice = isPositionLong
+    ? price.minus(unitMargin)
+    : price.plus(unitMargin)
+
+  const minTickPrice = new BigNumberInBase(
+    new BigNumberInBase(1).shiftedBy(-market.priceDecimals)
+  )
+
+  const feeAdjustedBankruptcyPrice = isPositionLong
+    ? bankruptcyPrice.dividedBy(
+        new BigNumberInBase(1).minus(market.takerFeeRate)
+      )
+    : bankruptcyPrice.dividedBy(
+        new BigNumberInBase(1).plus(market.takerFeeRate)
+      )
+
+  return feeAdjustedBankruptcyPrice.gte(0)
+    ? feeAdjustedBankruptcyPrice
+    : minTickPrice
 }
 
 export const calculateLiquidationPrice = ({

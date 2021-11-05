@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import OpenPositions from './positions/index.vue'
 import {
   DerivativeOrderSide,
@@ -30,7 +30,7 @@ import {
   UiDerivativeMarket,
   UiPosition
 } from '~/types'
-import { ZERO_IN_BASE } from '~/app/utils/constants'
+import { getPositionFeeAdjustedBankruptcyPrice } from '~/app/services/derivatives'
 
 const components = {
   openPositions: 'v-open-positions'
@@ -73,55 +73,22 @@ export default Vue.extend({
       return markets.find((m) => m.marketId === marketId)
     },
 
-    getPrice(position: UiPosition): BigNumberInBase {
-      const market = this.getMarket(position.marketId) || {
-        quoteToken: { decimals: 18 },
-        priceDecimals: ZERO_IN_BASE,
-        takerFeeRate: ZERO_IN_BASE
-      }
-
-      const price = new BigNumberInWei(position.entryPrice).toBase(
-        market.quoteToken.decimals
-      )
-
-      const unitMargin = new BigNumberInWei(position.margin)
-        .toBase(market.quoteToken.decimals)
-        .dividedBy(position.quantity)
-      const isPositionLong = position.direction === TradeDirection.Long
-
-      const bankruptcyPrice = isPositionLong
-        ? price.minus(unitMargin)
-        : price.plus(unitMargin)
-
-      const minTickPrice = new BigNumberInBase(
-        new BigNumberInBase(1).shiftedBy(-market.priceDecimals)
-      )
-
-      const feeAdjustedBankruptcyPrice = isPositionLong
-        ? bankruptcyPrice.dividedBy(
-            new BigNumberInBase(1).minus(market.takerFeeRate)
-          )
-        : bankruptcyPrice.dividedBy(
-            new BigNumberInBase(1).plus(market.takerFeeRate)
-          )
-
-      return feeAdjustedBankruptcyPrice.gte(0)
-        ? feeAdjustedBankruptcyPrice
-        : minTickPrice
-    },
-
     closeAllPosition() {
       const { positions } = this
 
-      const positionsToCancel = positions.map((position) => ({
-        market: this.getMarket(position.marketId) as UiDerivativeMarket,
-        price: this.getPrice(position),
-        orderType:
-          position.direction === TradeDirection.Long
-            ? DerivativeOrderSide.Sell
-            : DerivativeOrderSide.Buy,
-        quantity: new BigNumberInBase(position.quantity)
-      }))
+      const positionsToCancel = positions.map((position) => {
+        const market = this.getMarket(position.marketId) as UiDerivativeMarket
+
+        return {
+          market,
+          price: getPositionFeeAdjustedBankruptcyPrice({ position, market }),
+          orderType:
+            position.direction === TradeDirection.Long
+              ? DerivativeOrderSide.Sell
+              : DerivativeOrderSide.Buy,
+          quantity: new BigNumberInBase(position.quantity)
+        }
+      })
 
       this.$accessor.derivatives
         .closeAllPosition({
