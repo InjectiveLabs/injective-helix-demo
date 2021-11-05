@@ -14,6 +14,11 @@
         'card-table-wrap-content-lighter': bgLighter
       }"
     >
+    <div>
+      <slot name="mobile-context" />
+    </div>
+
+    <div class="card-table-wrap-content">
       <slot></slot>
     </div>
   </div>

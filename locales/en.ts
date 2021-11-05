@@ -34,6 +34,7 @@ export default {
   market_volume_24h: 'Volume (24h)',
   market_volume_24h_tooltip: 'The total trade volume over the past 24 hours.',
   filter_markets: 'Filter Markets',
+  filter_by_market: 'Filter by market',
   spot: 'Spot',
   subaccount_funds_available: 'Subaccount Funds',
   asset: 'Asset',
@@ -145,6 +146,7 @@ export default {
   leverage: 'Leverage',
   not_available_n_a: 'N/A',
   position_closed: 'Position Closed',
+  all_position_closed: 'All Position Closed',
   not_enough_balance: 'Not enough balance',
   reduce_only: 'Reduce Only',
   reduce_only_in_excess:
@@ -190,6 +192,7 @@ export default {
   ledger_live: 'Ledger Live',
   ledger_legacy: 'Ledger Legacy',
   cancel_all: 'Cancel All',
+  close_all: 'Close All',
   orders_cancelled: 'Orders Cancelled',
   yes: 'Yes',
   no: 'No',

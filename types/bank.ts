@@ -20,3 +20,9 @@ export type SubaccountBalanceWithTokenMetaData = {
   denom: string
   token: TokenWithBalance
 }
+
+export interface IbcBankBalanceWithTokenMetaData
+  extends BankBalanceWithTokenMetaData {
+  baseDenom: string
+  channelId: string
+}
