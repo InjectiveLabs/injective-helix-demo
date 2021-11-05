@@ -73,8 +73,11 @@ export default Vue.extend({
   },
 
   watch: {
-    position(newPosition: UiPosition | undefined) {
-      if (newPosition) {
+    position(
+      newPosition: UiPosition | undefined,
+      oldPosition: UiPosition | undefined
+    ) {
+      if (newPosition && !oldPosition) {
         this.component = components.openPositions
       }
     }

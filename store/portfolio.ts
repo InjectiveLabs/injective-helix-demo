@@ -13,13 +13,15 @@ import {
   streamSubaccountSpotOrders,
   streamSubaccountDerivativeOrders,
   cancelPortfolioStreams,
-  batchCancelOrders,
   streamSubaccountPositions,
   fetchSubaccountPositions,
   streamOrderbooks,
   fetchDerivativeOrderbooks,
   cancelPortfolioOrderbookStreams
 } from '~/app/services/portfolio'
+
+import { batchCancelOrders as batchCancelDerivativeOrders } from '~/app/services/derivatives'
+import { batchCancelOrders as batchCancelSpotOrders } from '~/app/services/spot'
 
 const initialStateFactory = () => ({
   subaccountOrders: [] as Array<UiSpotLimitOrder | UiDerivativeLimitOrder>,
@@ -342,9 +344,9 @@ export const actions = actionTree(
       })
     },
 
-    async batchCancelOrder(
+    async batchCancelSpotOrders(
       _,
-      orders: Array<UiSpotLimitOrder | UiDerivativeLimitOrder>
+      orders: UiSpotLimitOrder[]
     ) {
       const { subaccount } = this.app.$accessor.account
       const {
@@ -360,7 +362,36 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await batchCancelOrders({
+      await batchCancelSpotOrders({
+        injectiveAddress,
+        address,
+        orders: orders.map((o) => ({
+          orderHash: o.orderHash,
+          subaccountId: o.subaccountId,
+          marketId: o.marketId
+        }))
+      })
+    },
+
+    async batchCancelDerivativeOrders(
+      _,
+      orders: UiDerivativeLimitOrder[]
+    ) {
+      const { subaccount } = this.app.$accessor.account
+      const {
+        address,
+        injectiveAddress,
+        isUserWalletConnected
+      } = this.app.$accessor.wallet
+
+      if (!isUserWalletConnected || !subaccount) {
+        return
+      }
+
+      await this.app.$accessor.app.queue()
+      await this.app.$accessor.wallet.validate()
+
+      await batchCancelDerivativeOrders({
         injectiveAddress,
         address,
         orders: orders.map((o) => ({
