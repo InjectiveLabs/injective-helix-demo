@@ -3,16 +3,15 @@
     <HOCLoading :status="status">
       <div class="container">
         <div class="w-full mx-auto xl:w-4/5">
-          <v-panel :title="$t('Trading rewards summary')" class="mt-6">
-            <v-overview />
+          <v-panel :title="$t('Trade & Earn')" class="mt-6">
+            <v-campaign />
           </v-panel>
           <v-panel :title="$t('Current Epoch')" class="mt-12">
             <v-current-epoch />
           </v-panel>
-          <v-panel :title="$t('Past Epoch')" class="mt-12">
-            <v-past-epoch />
+          <v-panel :title="$t('Markets Information')" class="mt-12">
+            <v-markets-info />
           </v-panel>
-          <v-resources class="mt-12" />
         </div>
       </div>
     </HOCLoading>
@@ -22,19 +21,17 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import VOverview from '~/components/partials/rewards/overview.vue'
-import VResources from '~/components/partials/rewards/resources.vue'
+import VCampaign from '~/components/partials/rewards/campaign.vue'
 import VCurrentEpoch from '~/components/partials/rewards/current-epoch.vue'
-import VPastEpoch from '~/components/partials/rewards/past-epoch.vue'
+import VMarketsInfo from '~/components/partials/rewards/markets-info.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
 
 export default Vue.extend({
   components: {
     HOCLoading,
-    VResources,
-    VOverview,
-    VCurrentEpoch,
-    VPastEpoch
+    VCampaign,
+    VMarketsInfo,
+    VCurrentEpoch
   },
 
   data() {

@@ -1,6 +1,9 @@
 import { ExchangeTransformer } from '@injectivelabs/chain-consumer'
 import { exchangeConsumer } from '~/app/singletons/ExchangeConsumer'
-import { feeDiscountScheduleToUiFeeDiscountSchedule } from '~/app/transformers/exchange'
+import {
+  feeDiscountScheduleToUiFeeDiscountSchedule,
+  tradingRewardCampaignInfoToUiTradingRewardCampaignInfo
+} from '~/app/transformers/exchange'
 
 export const fetchFeeDiscountSchedule = async () => {
   const feeDiscountSchedule = await exchangeConsumer.fetchFeeDiscountSchedule()
@@ -42,10 +45,14 @@ export const fetchTradingRewardsCampaign = async () => {
     return
   }
 
+  const tradingRewardsCampaignInfo = tradingRewardsCampaign.getTradingRewardCampaignInfo()
+
   return {
-    tradingRewardCampaignInfo: tradingRewardsCampaign.hasTradingRewardCampaignInfo()
-      ? ExchangeTransformer.grpcTradingRewardCampaignInfoToTradingRewardCampaignInfo(
-          tradingRewardsCampaign.getTradingRewardCampaignInfo()!
+    tradingRewardCampaignInfo: tradingRewardsCampaignInfo
+      ? tradingRewardCampaignInfoToUiTradingRewardCampaignInfo(
+          ExchangeTransformer.grpcTradingRewardCampaignInfoToTradingRewardCampaignInfo(
+            tradingRewardsCampaignInfo
+          )
         )
       : undefined,
     tradingRewardPoolCampaignScheduleList: tradingRewardsCampaign

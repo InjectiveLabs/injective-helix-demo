@@ -430,7 +430,7 @@ export default {
   Rewards: 'Rewards',
   resources: 'Resources',
   calculator: 'Calculator',
-  'Trading rewards summary': 'Trade & Earn',
+  'Trade & Earn': 'Trade & Earn',
   trading_fee_to_date: 'Trading fee to date',
   trading_fee_to_date_tooltip: 'Trading fee to date tooltip',
   current_epoch: 'Current Epoch',
@@ -448,5 +448,22 @@ export default {
   market_total_tooltip:
     'This total is calculated based on the approximated price you are going to get when execution the trade. Please note that the Total you end up with might have a slight deviation from the value shown here, as slippage is also applied on the execution price.',
   fees_tooltip_discount:
-    'Based on your tier, you are eligible for {maker}% maker discount and {taker}% discount.'
+    'Based on your tier, you are eligible for {maker}% maker discount and {taker}% discount.',
+  remaining: 'remaining',
+  campaign_duration: 'Campaign Duration',
+  campaign_duration_tooltip: 'Campaign Duration Tooltip',
+  max_campaign_rewards: 'Max allocated Rewards',
+  max_campaign_rewards_tooltip: 'Max allocated Rewards tooltip',
+  fee_paid_amount: 'Fee Paid Amount',
+  fee_paid_amount_tooltip: 'Fee Paid Amount tooltip',
+  'Markets Information': 'Markets Information',
+  quote_denoms: 'Quote Denoms',
+  quote_denoms_tooltip: 'Quote Denom Tooltip',
+  boosted_markets: 'Boosted Markets',
+  boosted_markets_tooltip: 'Boosted Markets tooltip',
+  disqualified_markets: 'Disqualified Markets',
+  disqualified_markets_tooltip: 'Disqualified Markets tooltip',
+  maker_points_mul: 'maker pts',
+  taker_points_mul: 'taker pts',
+  maker_taker_points_multiplier_tooltip: 'Maker/Taker Points multiplier'
 }

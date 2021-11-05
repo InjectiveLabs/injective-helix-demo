@@ -24,6 +24,7 @@
     >
       <slot name="value" />
     </p>
+    <slot></slot>
     <div
       v-if="!$slots['title-horizontal']"
       class="text-2xs xs:text-xs text-center h-2 sm:h-3"

@@ -21,34 +21,38 @@
     <v-item class="col-span-2 lg:col-span-4">
       <template slot="value">
         <span v-if="isUserWalletConnected" class="font-mono text-lg">
-          {{ claimableRewardsToFormat }}
+          {{ estimatedRewardsToFormat }}
           <span class="text-xs text-gray-400">INJ</span>
         </span>
         <span v-else>&mdash;</span>
       </template>
       <template slot="title">
         <div class="flex items-center justify-center">
-          {{ $t('claimable_inj') }}
+          {{ $t('est_rewards') }}
           <v-icon-info-tooltip
             class="ml-2"
-            :tooltip="$t('claimable_inj_tooltip')"
+            :tooltip="$t('est_rewards_tooltip')"
           />
         </div>
       </template>
     </v-item>
     <v-item class="col-span-2 lg:col-span-4">
       <template slot="value">
-        <span v-if="currentEpochStartTimestamp > 0" class="font-mono text-lg">
-          {{ epochCountdown }}
+        <span
+          v-if="feePaidAmount.gt(0) && isUserWalletConnected"
+          class="font-mono text-lg"
+        >
+          {{ feePaidAmountToFormat }}
+          <span class="text-xs text-gray-400">USD</span>
         </span>
         <span v-else>&mdash;</span>
       </template>
       <template slot="title">
         <div class="flex items-center justify-center">
-          {{ $t('countdown_campaign') }}
+          {{ $t('fee_paid_amount') }}
           <v-icon-info-tooltip
             class="ml-2"
-            :tooltip="$t('countdown_campaign_tooltip')"
+            :tooltip="$t('fee_paid_amount_tooltip')"
           />
         </div>
       </template>
@@ -58,7 +62,6 @@
 
 <script lang="ts">
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { formatDistanceStrict } from 'date-fns'
 import Vue from 'vue'
 import { cosmosSdkDecToBigNumber } from '~/app/transformers'
 import {
@@ -66,7 +69,10 @@ import {
   ZERO_IN_BASE
 } from '~/app/utils/constants'
 import VItem from '~/components/partials/common/stats/item.vue'
-import { TradingRewardsCampaign } from '~/types/exchange'
+import {
+  FeeDiscountAccountInfo,
+  TradingRewardsCampaign
+} from '~/types/exchange'
 
 export default Vue.extend({
   components: {
@@ -86,6 +92,10 @@ export default Vue.extend({
 
     tradingRewardsCampaign(): TradingRewardsCampaign | undefined {
       return this.$accessor.exchange.tradingRewardsCampaign
+    },
+
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
     },
 
     tradeRewardsPoints(): string[] {
@@ -120,73 +130,6 @@ export default Vue.extend({
       const { tradeRewardPointsFactored } = this
 
       return tradeRewardPointsFactored.times(100).toFormat(2)
-    },
-
-    campaignDurationInSeconds(): number {
-      const { tradingRewardsCampaign } = this
-
-      if (!tradingRewardsCampaign) {
-        return 0
-      }
-
-      if (!tradingRewardsCampaign.tradingRewardCampaignInfo) {
-        return 0
-      }
-
-      return new BigNumberInBase(
-        tradingRewardsCampaign.tradingRewardCampaignInfo
-          .campaignDurationSeconds || 0
-      ).toNumber()
-    },
-
-    currentEpochStartTimestamp(): number {
-      const { tradingRewardsCampaign } = this
-
-      if (!tradingRewardsCampaign) {
-        return 0
-      }
-
-      if (!tradingRewardsCampaign.tradingRewardCampaignInfo) {
-        return 0
-      }
-
-      const [
-        schedule
-      ] = tradingRewardsCampaign.tradingRewardPoolCampaignScheduleList
-
-      if (!schedule) {
-        return 0
-      }
-
-      return new BigNumberInBase(schedule.startTimestamp).toNumber()
-    },
-
-    epochPassPercentage(): BigNumberInBase {
-      const {
-        now,
-        currentEpochStartTimestamp,
-        campaignDurationInSeconds
-      } = this
-
-      const end = new BigNumberInBase(currentEpochStartTimestamp).plus(
-        campaignDurationInSeconds
-      )
-
-      return end.dividedBy(now).times(100)
-    },
-
-    epochCountdown(): string {
-      const { currentEpochStartTimestamp, now } = this
-
-      return formatDistanceStrict(currentEpochStartTimestamp, now, {
-        addSuffix: true
-      })
-    },
-
-    epochPassPercentageToFormat(): string {
-      const { epochPassPercentage } = this
-
-      return epochPassPercentage.toFormat(2)
     },
 
     injMaxCampaignRewards(): BigNumberInBase {
@@ -227,6 +170,30 @@ export default Vue.extend({
       )
     },
 
+    feePaidAmount(): BigNumberInBase {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return ZERO_IN_BASE
+      }
+
+      if (!feeDiscountAccountInfo.accountInfo) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInWei(
+        cosmosSdkDecToBigNumber(
+          feeDiscountAccountInfo.accountInfo.feePaidAmount
+        )
+      ).toBase(6 /* USDT */)
+    },
+
+    feePaidAmountToFormat(): string {
+      const { feePaidAmount } = this
+
+      return feePaidAmount.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+    },
+
     estimatedRewards(): BigNumberInBase {
       const {
         tradeRewardPoints,
@@ -247,18 +214,6 @@ export default Vue.extend({
       const { estimatedRewards } = this
 
       return estimatedRewards.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
-    },
-
-    claimableRewards(): BigNumberInBase {
-      const { estimatedRewards, epochPassPercentage } = this
-
-      return estimatedRewards.times(epochPassPercentage).dividedBy(100)
-    },
-
-    claimableRewardsToFormat(): string {
-      const { claimableRewards } = this
-
-      return claimableRewards.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     }
   }
 })
