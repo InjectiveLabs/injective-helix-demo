@@ -51,7 +51,8 @@ import TableHeader from '~/components/elements/table-header.vue'
 import { TokenWithBalance } from '~/types/token'
 import {
   BankBalanceWithTokenMetaData,
-  BankBalanceWithTokenMetaDataAndBalance
+  BankBalanceWithTokenMetaDataAndBalance,
+  IbcBankBalanceWithTokenMetaData
 } from '~/types/bank'
 
 export default Vue.extend({
@@ -70,11 +71,19 @@ export default Vue.extend({
       return this.$accessor.bank.balancesWithTokenMetaData
     },
 
+    ibcBankBalances(): IbcBankBalanceWithTokenMetaData[] {
+      return this.$accessor.bank.ibcBalancesWithTokenMetaData
+    },
+
     erc20TokensWithBalanceAndAllowance(): TokenWithBalance[] {
       return this.$accessor.token.erc20TokensWithBalanceFromBank
     },
 
-    balances(): BankBalanceWithTokenMetaDataAndBalance[] {
+    ibcTokensWithBalanceFromBank(): TokenWithBalance[] {
+      return this.$accessor.token.ibcTokensWithBalanceFromBank
+    },
+
+    ercBalances(): BankBalanceWithTokenMetaDataAndBalance[] {
       const { bankBalances, erc20TokensWithBalanceAndAllowance } = this
 
       return bankBalances.map((bankBalance) => {
@@ -93,6 +102,33 @@ export default Vue.extend({
           }
         }
       })
+    },
+
+    ibcBalances(): BankBalanceWithTokenMetaDataAndBalance[] {
+      const { ibcBankBalances, ibcTokensWithBalanceFromBank } = this
+
+      return ibcBankBalances.map((bankBalance) => {
+        const tokenWithBalance = ibcTokensWithBalanceFromBank.find(
+          (token) =>
+            token.address.toLowerCase() ===
+            bankBalance.token.address.toLowerCase()
+        )
+
+        return {
+          ...bankBalance,
+          token: tokenWithBalance || {
+            ...bankBalance.token,
+            balance: '0',
+            allowance: '0'
+          }
+        }
+      })
+    },
+
+    balances(): BankBalanceWithTokenMetaDataAndBalance[] {
+      const { ercBalances, ibcBalances } = this
+
+      return [...ercBalances, ...ibcBalances]
     }
   }
 })
