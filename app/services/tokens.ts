@@ -72,6 +72,29 @@ export const getTokenBalanceAndAllowance = async ({
   }
 }
 
+export const getIbcTokenBalanceAndAllowance = async (
+  token: Token
+): Promise<TokenWithBalance> => {
+  const allowance = ZERO_TO_STRING
+  const balance = ZERO_TO_STRING
+  let priceInUsd
+
+  try {
+    priceInUsd = (
+      await getUsdtTokenPriceFromCoinGecko(token.coinGeckoId)
+    ).toString()
+  } catch (e: any) {
+    priceInUsd = ZERO_TO_STRING
+  }
+
+  return {
+    ...token,
+    balance,
+    allowance,
+    priceInUsd: new BigNumberInBase(priceInUsd || 0).toNumber()
+  }
+}
+
 export const getCoinGeckoId = (symbol: string): string => {
   return Erc20TokenMeta.getCoinGeckoIdFromSymbol(symbol)
 }
@@ -314,5 +337,7 @@ export const getTokenMetaData = (denom: string): TokenMeta | undefined => {
 export const getTokenMetaDataBySymbol = (
   symbol: string
 ): TokenMeta | undefined => {
-  return Erc20TokenMeta.getMetaBySymbol(symbol)
+  return CHAIN_ID === ChainId.Mainnet
+    ? Erc20TokenMeta.getMetaBySymbol(symbol)
+    : Erc20TokenMeta.getMetaBySymbolForKovan(symbol)
 }

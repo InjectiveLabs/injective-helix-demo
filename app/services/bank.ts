@@ -2,13 +2,19 @@ import { BankComposer, GrpcCoin } from '@injectivelabs/chain-consumer'
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { AccountAddress } from '@injectivelabs/ts-types'
 import { Web3Exception } from '@injectivelabs/exceptions'
-import { getTokenMetaData } from './tokens'
+import { getTokenMetaData, getTokenMetaDataBySymbol } from './tokens'
+import { fetchDenomTrace } from './ibc'
 import { metricsProvider } from '~/app/providers/MetricsProvider'
 import { tokenMetaToToken } from '~/app/transformers/token'
 import { TxProvider } from '~/app/providers/TxProvider'
 import { CHAIN_ID } from '~/app/utils/constants'
 import { bankConsumer } from '~/app/singletons/BankConsumer'
-import { BankBalances, BankBalanceWithTokenMetaData } from '~/types'
+
+import {
+  BankBalances,
+  BankBalanceWithTokenMetaData,
+  IbcBankBalanceWithTokenMetaData
+} from '~/types'
 import { AccountMetrics, ChainMetrics } from '~/types/metrics'
 
 export const fetchBalances = async (injectiveAddress: string) => {
@@ -21,9 +27,21 @@ export const fetchBalances = async (injectiveAddress: string) => {
     ChainMetrics.FetchBalances
   )
 
-  return balances.reduce((balances: BankBalances, balance: GrpcCoin) => {
-    return { ...balances, [balance.getDenom()]: balance.getAmount() }
-  }, {})
+  const bankBalances = balances
+    .filter((balance) => !balance.getDenom().startsWith('ibc'))
+    .reduce((balances: BankBalances, balance: GrpcCoin) => {
+      return { ...balances, [balance.getDenom()]: balance.getAmount() }
+    }, {})
+  const ibcBankBalances = balances
+    .filter((balance) => balance.getDenom().startsWith('ibc'))
+    .reduce((balances: BankBalances, balance: GrpcCoin) => {
+      return { ...balances, [balance.getDenom()]: balance.getAmount() }
+    }, {})
+
+  return {
+    bankBalances,
+    ibcBankBalances
+  }
 }
 
 export const fetchBalance = async ({
@@ -94,4 +112,24 @@ export const fetchBalancesWithTokenMetaData = (
     .filter(
       (balance) => balance.token !== undefined
     ) as BankBalanceWithTokenMetaData[]
+}
+
+export const fetchIbcSupplyWithTokenMeta = async (
+  balances: BankBalances
+): Promise<IbcBankBalanceWithTokenMetaData[]> => {
+  return (await Promise.all(
+    Object.keys(balances).map(async (denom) => {
+      const { baseDenom, path } = await fetchDenomTrace(denom)
+
+      return {
+        denom,
+        baseDenom,
+        balance: balances[denom],
+        channelId: path.replace('transfer/', ''),
+        token: tokenMetaToToken(getTokenMetaDataBySymbol(baseDenom), denom)
+      }
+    })
+  ).then((ibcBalance) =>
+    ibcBalance.filter((balance) => balance.token !== undefined)
+  )) as IbcBankBalanceWithTokenMetaData[]
 }
