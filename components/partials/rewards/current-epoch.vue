@@ -4,7 +4,7 @@
       <template slot="value">
         <span v-if="isUserWalletConnected" class="font-mono text-lg">
           {{ tradeRewardPointsToFormat }}
-          <span class="text-sm text-gray-400">%</span>
+          <span class="text-xs text-gray-400">{{ $t('pts') }}</span>
         </span>
         <span v-else>&mdash;</span>
       </template>
@@ -14,6 +14,24 @@
           <v-icon-info-tooltip
             class="ml-2"
             :tooltip="$t('reward_points_tooltip')"
+          />
+        </div>
+      </template>
+    </v-item>
+    <v-item class="col-span-2 lg:col-span-4">
+      <template slot="value">
+        <span v-if="totalTradeRewardPoints.gte(0)" class="font-mono text-lg">
+          {{ totalTradeRewardPointsToFormat }}
+          <span class="text-xs text-gray-400">{{ $t('pts') }}</span>
+        </span>
+        <span v-else>&mdash;</span>
+      </template>
+      <template slot="title">
+        <div class="flex items-center justify-center">
+          {{ $t('total_reward_points') }}
+          <v-icon-info-tooltip
+            class="ml-2"
+            :tooltip="$t('total_reward_points_tooltip')"
           />
         </div>
       </template>
@@ -36,27 +54,6 @@
         </div>
       </template>
     </v-item>
-    <v-item class="col-span-2 lg:col-span-4">
-      <template slot="value">
-        <span
-          v-if="feePaidAmount.gt(0) && isUserWalletConnected"
-          class="font-mono text-lg"
-        >
-          {{ feePaidAmountToFormat }}
-          <span class="text-xs text-gray-400">USD</span>
-        </span>
-        <span v-else>&mdash;</span>
-      </template>
-      <template slot="title">
-        <div class="flex items-center justify-center">
-          {{ $t('fee_paid_amount') }}
-          <v-icon-info-tooltip
-            class="ml-2"
-            :tooltip="$t('fee_paid_amount_tooltip')"
-          />
-        </div>
-      </template>
-    </v-item>
   </div>
 </template>
 
@@ -69,10 +66,7 @@ import {
   ZERO_IN_BASE
 } from '~/app/utils/constants'
 import VItem from '~/components/partials/common/stats/item.vue'
-import {
-  FeeDiscountAccountInfo,
-  TradingRewardsCampaign
-} from '~/types/exchange'
+import { TradingRewardsCampaign } from '~/types/exchange'
 
 export default Vue.extend({
   components: {
@@ -92,10 +86,6 @@ export default Vue.extend({
 
     tradingRewardsCampaign(): TradingRewardsCampaign | undefined {
       return this.$accessor.exchange.tradingRewardsCampaign
-    },
-
-    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
-      return this.$accessor.exchange.feeDiscountAccountInfo
     },
 
     tradeRewardsPoints(): string[] {
@@ -170,28 +160,10 @@ export default Vue.extend({
       )
     },
 
-    feePaidAmount(): BigNumberInBase {
-      const { feeDiscountAccountInfo } = this
+    totalTradeRewardPointsToFormat(): string {
+      const { totalTradeRewardPoints } = this
 
-      if (!feeDiscountAccountInfo) {
-        return ZERO_IN_BASE
-      }
-
-      if (!feeDiscountAccountInfo.accountInfo) {
-        return ZERO_IN_BASE
-      }
-
-      return new BigNumberInWei(
-        cosmosSdkDecToBigNumber(
-          feeDiscountAccountInfo.accountInfo.feePaidAmount
-        )
-      ).toBase(6 /* USDT */)
-    },
-
-    feePaidAmountToFormat(): string {
-      const { feePaidAmount } = this
-
-      return feePaidAmount.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      return totalTradeRewardPoints.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
     estimatedRewards(): BigNumberInBase {

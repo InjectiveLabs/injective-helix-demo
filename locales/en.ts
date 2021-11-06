@@ -442,6 +442,8 @@ export default {
   est_rewards_tooltip: 'Est. Rewards tooltip',
   reward_points: 'Reward Points',
   reward_points_tooltip: 'Reward Points tooltip',
+  total_reward_points: 'Total Reward Points',
+  total_reward_points_tooltip: 'Total Reward Points tooltip',
   claimable_inj: 'Claimable INJ',
   claimable_inj_tooltip: 'Claimable INJ tooltip',
   countdown_campaign: 'Countdown',
@@ -468,5 +470,6 @@ export default {
   disqualified_markets_tooltip: 'Disqualified Markets tooltip',
   maker_points_mul: 'maker pts',
   taker_points_mul: 'taker pts',
-  maker_taker_points_multiplier_tooltip: 'Maker/Taker Points multiplier'
+  maker_taker_points_multiplier_tooltip: 'Maker/Taker Points multiplier',
+  pts: 'pts'
 }
