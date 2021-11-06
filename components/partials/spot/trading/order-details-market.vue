@@ -50,7 +50,7 @@
           <v-icon-info-tooltip
             slot="context"
             class="ml-2"
-            :tooltip="$t('est_receiving_amount_note Tooltip')"
+            :tooltip="$t('est_receiving_amount_note')"
           />
           <span v-if="total.gt(0)" class="font-mono flex items-center">
             {{ totalToFormat }}

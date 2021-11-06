@@ -51,6 +51,11 @@
           :title="$t('est_receiving_amount')"
           class="mt-2"
         >
+          <v-icon-info-tooltip
+            slot="context"
+            class="ml-2"
+            :tooltip="$t('est_receiving_amount_note')"
+          />
           <span
             v-if="totalWithoutFees.gt(0)"
             class="font-mono flex items-center"
