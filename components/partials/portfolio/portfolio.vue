@@ -21,6 +21,7 @@
 import Vue from 'vue'
 import Summary from './summary/index.vue'
 import Holdings from './holdings/index.vue'
+
 const components = {
   holdings: 'v-holdings',
   summary: 'v-summary'

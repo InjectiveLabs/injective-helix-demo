@@ -18,7 +18,7 @@
         'card-table-wrap-content-lighter': bgLighter
       }"
     >
-      <div class="card-table-wrap-content">
+      <div>
         <slot></slot>
       </div>
     </div>
