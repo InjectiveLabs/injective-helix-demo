@@ -19,12 +19,6 @@
           {{ availableForDepositToFormat }}
           <span class="text-gray-500 ml-2">{{ token.symbol }}</span>
         </span>
-        <p
-          v-if="token.denom === INJECTIVE_DENOM"
-          class="mt-2 text-left text-xs text-gray-400"
-        >
-          * {{ $t('Buffer for gas note') }}
-        </p>
       </div>
     </div>
 
@@ -65,6 +59,12 @@
               {{ $t('Deposit') }}
             </v-button>
           </div>
+          <p
+            v-if="token.denom === INJECTIVE_DENOM"
+            class="mt-4 text-center text-xs text-gray-400"
+          >
+            * {{ $t('Buffer for gas note') }}
+          </p>
         </div>
       </ValidationObserver>
     </div>
