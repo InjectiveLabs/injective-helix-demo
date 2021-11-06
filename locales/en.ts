@@ -146,7 +146,7 @@ export default {
   leverage: 'Leverage',
   not_available_n_a: 'N/A',
   position_closed: 'Position Closed',
-  all_position_closed: 'All Position Closed',
+  all_position_closed: 'All Positions Closed',
   not_enough_balance: 'Not enough balance',
   reduce_only: 'Reduce Only',
   reduce_only_in_excess:

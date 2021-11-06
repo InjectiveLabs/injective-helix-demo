@@ -16,7 +16,11 @@ import ButtonSelect from '~/components/elements/button-select.vue'
 import VIconInfoTooltip from '~/components/elements/info-icon-tooltip.vue'
 import VIconCheckTooltip from '~/components/elements/info-check-tooltip.vue'
 
+// UI Specific elements
+import VNumber from '~/components/partials/common/elements/number.vue'
+
 Vue.component('VCard', Card)
+Vue.component('VNumber', VNumber)
 Vue.component('VSeparator', Separator)
 Vue.component('VResourceCard', ResourceCard)
 Vue.component('VButtonFilter', ButtonFilter)

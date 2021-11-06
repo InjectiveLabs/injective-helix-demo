@@ -1,7 +1,9 @@
 import { BigNumber } from '@injectivelabs/utils'
 
-export const getSignificantDecimalsFromNumber = (number: number): number => {
-  if (Math.floor(number) === number) {
+export const getSignificantDecimalsFromNumber = (
+  number: number | string
+): number => {
+  if (Math.floor(new BigNumber(number).toNumber()) === number) {
     return 0
   }
 
@@ -14,7 +16,7 @@ export const getSignificantDecimalsFromNumber = (number: number): number => {
   return decimals.replace('0', '').length || 0
 }
 
-export const getDecimalsFromNumber = (number: number): number => {
+export const getDecimalsFromNumber = (number: number | string): number => {
   const numberToBn = new BigNumber(number).toNumber()
   const numberParts = numberToBn.toString().split('.')
   const [, decimals] = numberParts
