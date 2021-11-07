@@ -2,10 +2,12 @@
   <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
     <v-item class="col-span-2 lg:col-span-4">
       <template slot="value">
-        <span class="font-mono text-lg">
-          {{ injMaxCampaignRewardsToFormat }}
-          <span class="text-sm text-gray-400">INJ</span>
-        </span>
+        <v-emp-number
+          :number="injMaxCampaignRewards"
+          :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
+        >
+          <span>INJ</span>
+        </v-emp-number>
       </template>
       <template slot="title">
         <div class="flex items-center justify-center">
@@ -37,7 +39,9 @@
       <template slot="value">
         <span v-if="currentEpochStartTimestamp > 0" class="font-mono text-lg">
           {{ epochCountdown }}
-          <span class="text-xs text-gray-400">{{ $t('remaining') }}</span>
+          <span class="font-sans text-xs text-gray-400">{{
+            $t('remaining')
+          }}</span>
         </span>
         <span v-else>&mdash;</span>
       </template>
@@ -80,6 +84,7 @@ export default Vue.extend({
 
   data() {
     return {
+      UI_DEFAULT_MIN_DISPLAY_DECIMALS,
       now: Math.floor(Date.now() / 1000)
     }
   },
@@ -183,12 +188,6 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(cosmosSdkDecToBigNumber(inj.amount || 0))
-    },
-
-    injMaxCampaignRewardsToFormat(): string {
-      const { injMaxCampaignRewards } = this
-
-      return injMaxCampaignRewards.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     }
   }
 })

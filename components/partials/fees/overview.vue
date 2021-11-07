@@ -4,7 +4,10 @@
       <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6 mt-4">
         <v-item class="col-span-2 lg:col-span-3">
           <template slot="value">
-            <span v-if="feeDiscountAccountInfo" class="font-mono">
+            <span
+              v-if="feeDiscountAccountInfo"
+              class="font-mono text-lg leading-5"
+            >
               {{ tierLevel }}
             </span>
             <span v-else class="text-xs text-gray-400 font-mono">&mdash;</span>
@@ -21,11 +24,13 @@
         </v-item>
         <v-item class="col-span-2 lg:col-span-3">
           <template slot="value">
-            <span v-if="feeDiscountAccountInfo" class="font-mono text-lg">
-              {{ stakedAmount }}
-              <span class="text-xs text-gray-400">INJ</span>
-            </span>
-            <span v-else>&mdash;</span>
+            <v-emp-number
+              v-if="feeDiscountAccountInfo"
+              :number="stakedAmount"
+              :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
+            >
+              <span>INJ</span>
+            </v-emp-number>
           </template>
           <template slot="title">
             <div class="flex items-center justify-center">
@@ -39,10 +44,9 @@
         </v-item>
         <v-item class="col-span-2 lg:col-span-3">
           <template slot="value">
-            <span v-if="feeDiscountAccountInfo" class="font-mono text-lg">
-              {{ feePaidAmount }}
-              <span class="text-xs text-gray-400">USD</span>
-            </span>
+            <v-emp-number v-if="feeDiscountAccountInfo" :number="feePaidAmount">
+              <span>INJ</span>
+            </v-emp-number>
             <span v-else>&mdash;</span>
           </template>
           <template slot="title">
@@ -57,7 +61,10 @@
         </v-item>
         <v-item class="col-span-2 lg:col-span-3">
           <template slot="value">
-            <span v-if="feeDiscountAccountInfo" class="font-mono">
+            <span
+              v-if="feeDiscountAccountInfo"
+              class="font-mono text-lg leading-5"
+            >
               % {{ makerFeeDiscount }} / {{ takerFeeDiscount }}
             </span>
             <span v-else class="text-xs text-gray-400 font-mono"></span>
@@ -84,7 +91,7 @@ import Vue from 'vue'
 import { cosmosSdkDecToBigNumber } from '~/app/transformers'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  UI_DEFAULT_DISPLAY_DECIMALS
+  ZERO_IN_BASE
 } from '~/app/utils/constants'
 import VItem from '~/components/partials/common/stats/item.vue'
 import { FeeDiscountAccountInfo } from '~/types/exchange'
@@ -92,6 +99,12 @@ import { FeeDiscountAccountInfo } from '~/types/exchange'
 export default Vue.extend({
   components: {
     VItem
+  },
+
+  data() {
+    return {
+      UI_DEFAULT_MIN_DISPLAY_DECIMALS
+    }
   },
 
   computed: {
@@ -115,40 +128,38 @@ export default Vue.extend({
         : 0
     },
 
-    stakedAmount(): string {
+    stakedAmount(): BigNumberInBase {
       const { feeDiscountAccountInfo } = this
 
       if (!feeDiscountAccountInfo) {
-        return ''
+        return ZERO_IN_BASE
       }
 
       if (!feeDiscountAccountInfo.accountInfo) {
-        return ''
+        return ZERO_IN_BASE
       }
 
       return new BigNumberInBase(
         cosmosSdkDecToBigNumber(feeDiscountAccountInfo.accountInfo.stakedAmount)
-      ).toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      )
     },
 
-    feePaidAmount(): string {
+    feePaidAmount(): BigNumberInBase {
       const { feeDiscountAccountInfo } = this
 
       if (!feeDiscountAccountInfo) {
-        return ''
+        return ZERO_IN_BASE
       }
 
       if (!feeDiscountAccountInfo.accountInfo) {
-        return ''
+        return ZERO_IN_BASE
       }
 
       return new BigNumberInWei(
         cosmosSdkDecToBigNumber(
           feeDiscountAccountInfo.accountInfo.feePaidAmount
         )
-      )
-        .toBase(6 /* USDT */)
-        .toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+      ).toBase(6 /* USDT */)
     },
 
     makerFeeDiscount(): string {

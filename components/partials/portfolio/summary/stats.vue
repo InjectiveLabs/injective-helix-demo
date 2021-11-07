@@ -2,14 +2,12 @@
   <div class="grid grid-cols-2 sm:grid-cols-6 lg:grid-cols-12 gap-4 lg:gap-6">
     <v-item class="col-span-2 sm:col-span-3">
       <template slot="value">
-        <v-number
+        <v-emp-number
           v-if="isUserWalletConnected"
           :number="availableBalanceInUsd"
-          lg
-          size-adjust
         >
-          <tempalte slot="addon">USD</tempalte>
-        </v-number>
+          <span>USD</span>
+        </v-emp-number>
         <span v-else>&mdash;</span>
       </template>
       <template slot="title">
@@ -24,14 +22,9 @@
     </v-item>
     <v-item class="col-span-2 sm:col-span-3">
       <template slot="value">
-        <v-number
-          v-if="isUserWalletConnected"
-          :number="lockedBalanceInUsd"
-          lg
-          size-adjust
-        >
-          <tempalte slot="addon">USD</tempalte>
-        </v-number>
+        <v-emp-number v-if="isUserWalletConnected" :number="lockedBalanceInUsd">
+          <span>USD</span>
+        </v-emp-number>
         <span v-else>&mdash;</span>
       </template>
       <template slot="title">
@@ -46,14 +39,9 @@
     </v-item>
     <v-item class="col-span-2 sm:col-span-3">
       <template slot="value">
-        <v-number
-          v-if="isUserWalletConnected"
-          :number="unrealizedPnLInUsd"
-          lg
-          size-adjust
-        >
-          <tempalte slot="addon">USD</tempalte>
-        </v-number>
+        <v-emp-number v-if="isUserWalletConnected" :number="unrealizedPnLInUsd">
+          <span>USD</span>
+        </v-emp-number>
         <span v-else>&mdash;</span>
       </template>
       <template slot="title">
@@ -68,14 +56,12 @@
     </v-item>
     <v-item class="col-span-2 sm:col-span-3">
       <template slot="value">
-        <v-number
+        <v-emp-number
           v-if="isUserWalletConnected"
           :number="bankBalancesTotalInUsd"
-          lg
-          size-adjust
         >
-          <tempalte slot="addon">USD</tempalte>
-        </v-number>
+          <span>USD</span>
+        </v-emp-number>
         <span v-else>&mdash;</span>
       </template>
       <template slot="title">

@@ -1,7 +1,7 @@
 <template>
   <div v-if="isUserWalletConnected" class="flex flex-wrap justify-between">
     <v-overview
-      class="w-full lg:w-1/4"
+      class="w-full"
       v-bind="{
         bankBalancesTotalInUsd,
         availableBalanceInUsd,
@@ -10,7 +10,7 @@
       }"
     />
     <v-stats
-      class="w-full mt-4 lg:w-3/4 lg:mt-0"
+      class="w-full mt-4"
       v-bind="{
         bankBalancesTotalInUsd,
         availableBalanceInUsd,

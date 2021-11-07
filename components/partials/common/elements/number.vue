@@ -1,12 +1,14 @@
 <template>
-  <span :class="classes">
-    <span>{{ prefix || '' }}{{ formattedNumber[0] }}</span>
-    <span v-if="formattedNumber[1]" class="text-gray-500 opacity-50">
-      {{ formattedNumber[1] || '' }}
+  <div>
+    <span class="break-all font-mono leading-5">
+      <span class=""> {{ prefix || '' }}{{ formattedNumber[0] }} </span>
+      <span v-if="formattedNumber[1]" class="text-gray-500 opacity-50">
+        {{ formattedNumber[1] || '' }}
+      </span>
+      {{ suffix || '' }}
     </span>
-    {{ suffix || '' }}
-    <slot slot="addon" class="text-xs text-gray-400"></slot>
-  </span>
+    <slot name="addon"></slot>
+  </div>
 </template>
 
 <script lang="ts">
@@ -17,11 +19,6 @@ import { getDecimalsFromNumber } from '~/app/utils/helpers'
 
 export default Vue.extend({
   props: {
-    sizeAdjust: {
-      required: true,
-      type: Boolean
-    },
-
     decimals: {
       required: false,
       default: UI_DEFAULT_DISPLAY_DECIMALS,
@@ -31,21 +28,6 @@ export default Vue.extend({
     useNumberDecimals: {
       required: false,
       default: false,
-      type: Boolean
-    },
-
-    xs: {
-      required: false,
-      type: Boolean
-    },
-
-    sm: {
-      required: false,
-      type: Boolean
-    },
-
-    lg: {
-      required: false,
       type: Boolean
     },
 
@@ -74,37 +56,6 @@ export default Vue.extend({
   },
 
   computed: {
-    classes() {
-      const { sizeAdjust, number, decimals, dontGroupValues, xs, sm, lg } = this
-      const classes = ['font-mono']
-
-      if (this.$attrs.class) {
-        return classes.join(' ')
-      }
-
-      if (xs) {
-        classes.push('text-xs')
-      } else if (sm) {
-        classes.push('text-sm')
-      } else if (lg) {
-        if (sizeAdjust) {
-          if (number.toFixed(decimals).length > 12 + decimals) {
-            classes.push('text-xs')
-          } else if (number.toFixed(decimals).length > 8) {
-            classes.push('text-sm')
-          }
-        } else {
-          classes.push('text-lg')
-        }
-      }
-
-      if (!dontGroupValues) {
-        classes.push('flex', 'items-center', 'justify-center')
-      }
-
-      return classes.join(' ')
-    },
-
     formattedNumber(): string[] {
       const { dontGroupValues, number, useNumberDecimals, decimals } = this
 
@@ -115,7 +66,10 @@ export default Vue.extend({
       const actualDecimals = useNumberDecimals
         ? getDecimalsFromNumber(number.toNumber())
         : decimals
-      const formattedNumber = number.toFormat(actualDecimals)
+      const formattedNumber = number.toFormat(
+        actualDecimals,
+        BigNumberInBase.ROUND_DOWN
+      )
 
       if (dontGroupValues) {
         return [formattedNumber]
@@ -128,7 +82,7 @@ export default Vue.extend({
           : []
         : match[2]
         ? [`${match[1]}${match[3]}${match[4]}`, match[5]]
-        : [`${match[1]}.0`]
+        : [`${match[1]}`]
 
       return groups
     }

@@ -2,28 +2,12 @@
   <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
     <v-item class="col-span-2 lg:col-span-4">
       <template slot="value">
-        <span v-if="isUserWalletConnected" class="font-mono text-lg">
-          {{ tradeRewardPointsToFormat }}
-          <span class="text-xs text-gray-400">{{ $t('pts') }}</span>
-        </span>
-        <span v-else>&mdash;</span>
-      </template>
-      <template slot="title">
-        <div class="flex items-center justify-center">
-          {{ $t('reward_points') }}
-          <v-icon-info-tooltip
-            class="ml-2"
-            :tooltip="$t('reward_points_tooltip')"
-          />
-        </div>
-      </template>
-    </v-item>
-    <v-item class="col-span-2 lg:col-span-4">
-      <template slot="value">
-        <span v-if="totalTradeRewardPoints.gte(0)" class="font-mono text-lg">
-          {{ totalTradeRewardPointsToFormat }}
-          <span class="text-xs text-gray-400">{{ $t('pts') }}</span>
-        </span>
+        <v-emp-number
+          v-if="totalTradeRewardPoints.gte(0)"
+          :number="totalTradeRewardPointsFactored"
+        >
+          <span>{{ $t('pts') }}</span>
+        </v-emp-number>
         <span v-else>&mdash;</span>
       </template>
       <template slot="title">
@@ -38,10 +22,29 @@
     </v-item>
     <v-item class="col-span-2 lg:col-span-4">
       <template slot="value">
-        <span v-if="isUserWalletConnected" class="font-mono text-lg">
-          {{ estimatedRewardsToFormat }}
-          <span class="text-xs text-gray-400">INJ</span>
-        </span>
+        <v-emp-number
+          v-if="isUserWalletConnected"
+          :number="tradeRewardPointsFactored"
+        >
+          <span>{{ $t('pts') }}</span>
+        </v-emp-number>
+        <span v-else>&mdash;</span>
+      </template>
+      <template slot="title">
+        <div class="flex items-center justify-center">
+          {{ $t('reward_points') }}
+          <v-icon-info-tooltip
+            class="ml-2"
+            :tooltip="$t('reward_points_tooltip')"
+          />
+        </div>
+      </template>
+    </v-item>
+    <v-item class="col-span-2 lg:col-span-4">
+      <template slot="value">
+        <v-emp-number v-if="isUserWalletConnected" :number="estimatedRewards">
+          <span>INJ</span>
+        </v-emp-number>
         <span v-else>&mdash;</span>
       </template>
       <template slot="title">
@@ -61,10 +64,7 @@
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import Vue from 'vue'
 import { cosmosSdkDecToBigNumber } from '~/app/transformers'
-import {
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  ZERO_IN_BASE
-} from '~/app/utils/constants'
+import { ZERO_IN_BASE } from '~/app/utils/constants'
 import VItem from '~/components/partials/common/stats/item.vue'
 import { TradingRewardsCampaign } from '~/types/exchange'
 
@@ -116,12 +116,6 @@ export default Vue.extend({
       )
     },
 
-    tradeRewardPointsToFormat(): string {
-      const { tradeRewardPointsFactored } = this
-
-      return tradeRewardPointsFactored.times(100).toFormat(2)
-    },
-
     injMaxCampaignRewards(): BigNumberInBase {
       const { tradingRewardsCampaign } = this
 
@@ -160,10 +154,12 @@ export default Vue.extend({
       )
     },
 
-    totalTradeRewardPointsToFormat(): string {
+    totalTradeRewardPointsFactored(): BigNumberInBase {
       const { totalTradeRewardPoints } = this
 
-      return totalTradeRewardPoints.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      return new BigNumberInWei(totalTradeRewardPoints).toBase(
+        6 /* Default factor for points, USDT decimals */
+      )
     },
 
     estimatedRewards(): BigNumberInBase {
@@ -180,12 +176,6 @@ export default Vue.extend({
       return tradeRewardPoints
         .dividedBy(totalTradeRewardPoints)
         .times(injMaxCampaignRewards)
-    },
-
-    estimatedRewardsToFormat(): string {
-      const { estimatedRewards } = this
-
-      return estimatedRewards.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     }
   }
 })

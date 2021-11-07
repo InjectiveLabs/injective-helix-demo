@@ -83,7 +83,10 @@
                 :tooltip="$t('fees_tooltip')"
               />
               <v-icon-check-tooltip
-                v-if="makerFeeRateDiscount.gt(0) || takerFeeRateDiscount.gt(0)"
+                v-if="
+                  !marketHasNegativeMakerFee &&
+                  (makerFeeRateDiscount.gt(0) || takerFeeRateDiscount.gt(0))
+                "
                 class="ml-2 text-primary-500"
                 :tooltip="
                   $t('fees_tooltip_discount', {
@@ -207,6 +210,16 @@ export default Vue.extend({
 
     slippage(): BigNumberInBase {
       return new BigNumberInBase(DEFAULT_MAX_SLIPPAGE)
+    },
+
+    marketHasNegativeMakerFee(): boolean {
+      const { market } = this
+
+      if (!market) {
+        return false
+      }
+
+      return new BigNumberInBase(market.makerFeeRate).lt(0)
     },
 
     totalWithFeesToFormat(): string {

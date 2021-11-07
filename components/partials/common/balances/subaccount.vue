@@ -6,7 +6,18 @@
       <v-text-info v-if="baseBalance" :title="market.baseToken.symbol">
         <div class="flex items-center">
           <span class="font-mono">
-            {{ baseAvailableBalanceToFormat }}/{{ baseTotalBalanceToFormat }}
+            {{ baseAvailableBalanceToFormat }}
+            <span
+              v-if="
+                baseAvailableBalanceToFormat.length +
+                  baseTotalBalanceToFormat.length <=
+                24
+              "
+            >
+              /
+            </span>
+            <br v-else />
+            {{ baseTotalBalanceToFormat }}
           </span>
           <v-icon-info-tooltip
             class="ml-2"
@@ -17,7 +28,18 @@
       <v-text-info class="mt-2" :title="market.quoteToken.symbol">
         <div class="flex items-center">
           <span class="font-mono">
-            {{ quoteAvailableBalanceToFormat }}/{{ quoteTotalBalanceToFormat }}
+            {{ quoteAvailableBalanceToFormat }}
+            <span
+              v-if="
+                quoteAvailableBalanceToFormat.length +
+                  quoteTotalBalanceToFormat.length <=
+                24
+              "
+            >
+              /
+            </span>
+            <br v-else />
+            {{ quoteTotalBalanceToFormat }}
           </span>
           <v-icon-info-tooltip
             class="ml-2"

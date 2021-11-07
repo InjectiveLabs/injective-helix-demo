@@ -18,9 +18,11 @@ import VIconCheckTooltip from '~/components/elements/info-check-tooltip.vue'
 
 // UI Specific elements
 import VNumber from '~/components/partials/common/elements/number.vue'
+import VEmpNumber from '~/components/partials/common/elements/emp-number.vue'
 
 Vue.component('VCard', Card)
 Vue.component('VNumber', VNumber)
+Vue.component('VEmpNumber', VEmpNumber)
 Vue.component('VSeparator', Separator)
 Vue.component('VResourceCard', ResourceCard)
 Vue.component('VButtonFilter', ButtonFilter)

@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="p-2 w-full text-center lg:text-left">
+    <div class="p-2 w-full text-center">
       <p class="text-xs uppercase text-gray-400">
-        <span class="flex w-full justify-center lg:justify-start">
+        <span class="flex w-full justify-center">
           {{ $t('portfolio_value') }}
           <v-icon-info-tooltip
             class="ml-2"
@@ -11,7 +11,7 @@
         </span>
       </p>
       <h2 class="mt-2 text-lg lg:text-xl 2xl:text-2xl font-mono text-gray-100">
-        &#8776; {{ totalToString }} USD
+        <span>&#8776; {{ totalToString }} USD</span>
       </h2>
     </div>
   </div>
@@ -20,7 +20,7 @@
 <script lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
 import Vue, { PropType } from 'vue'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { getDecimalsBasedOnNumber } from '~/app/utils/helpers'
 
 export default Vue.extend({
   props: {
@@ -64,10 +64,21 @@ export default Vue.extend({
         .plus(availableBalanceInUsd)
     },
 
-    totalToString(): string {
+    formattedNumberWithDecimals(): {
+      number: BigNumberInBase
+      decimals: number
+    } {
       const { total } = this
 
-      return total.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      return getDecimalsBasedOnNumber(total)
+    },
+
+    totalToString(): string {
+      const {
+        formattedNumberWithDecimals: { number, decimals }
+      } = this
+
+      return number.toFormat(decimals)
     }
   }
 })
