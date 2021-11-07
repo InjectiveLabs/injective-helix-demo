@@ -1,11 +1,13 @@
 <template>
   <div>
-    <span class="break-all font-mono leading-5">
-      <span class=""> {{ prefix || '' }}{{ formattedNumber[0] }} </span>
-      <span v-if="formattedNumber[1]" class="text-gray-500 opacity-50">
-        {{ formattedNumber[1] || '' }}
-      </span>
-      {{ suffix || '' }}
+    <span class="break-all font-mono leading-5 inline-block">
+      <div class="flex">
+        <span class="">{{ prefix || '' }}{{ formattedNumber[0] }}</span>
+        <span v-if="formattedNumber[1]" class="opacity-33">{{
+          formattedNumber[1] || ''
+        }}</span>
+        {{ suffix || '' }}
+      </div>
     </span>
     <slot name="addon"></slot>
   </div>

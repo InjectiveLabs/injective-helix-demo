@@ -4,7 +4,7 @@
       class="group flex justify-end w-full cursor-pointer relative"
       @click.stop="toggle"
     >
-      <div class="flex-1 pr-5">
+      <div class="max-w-full flex-1 pr-5">
         <slot name="header" />
       </div>
       <div class="absolute right-0 top-0 mt-1">

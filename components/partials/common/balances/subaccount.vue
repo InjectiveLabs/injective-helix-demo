@@ -7,16 +7,14 @@
         <div class="flex items-center">
           <span class="font-mono">
             {{ baseAvailableBalanceToFormat }}
-            <span
+            <span> / </span>
+            <br
               v-if="
-                baseAvailableBalanceToFormat.length +
-                  baseTotalBalanceToFormat.length <=
+                quoteAvailableBalanceToFormat.length +
+                  quoteTotalBalanceToFormat.length >
                 24
               "
-            >
-              /
-            </span>
-            <br v-else />
+            />
             {{ baseTotalBalanceToFormat }}
           </span>
           <v-icon-info-tooltip
@@ -29,16 +27,14 @@
         <div class="flex items-center">
           <span class="font-mono">
             {{ quoteAvailableBalanceToFormat }}
-            <span
+            <span> / </span>
+            <br
               v-if="
                 quoteAvailableBalanceToFormat.length +
-                  quoteTotalBalanceToFormat.length <=
+                  quoteTotalBalanceToFormat.length >
                 24
               "
-            >
-              /
-            </span>
-            <br v-else />
+            />
             {{ quoteTotalBalanceToFormat }}
           </span>
           <v-icon-info-tooltip

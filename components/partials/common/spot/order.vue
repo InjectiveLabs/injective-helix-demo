@@ -14,17 +14,33 @@
           'text-red-500': !orderTypeBuy
         }"
       >
-        {{ priceToFormat }}
+        <v-number
+          :decimals="
+            market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+          "
+          :number="price"
+        />
       </span>
     </td>
     <td class="h-8 text-right font-mono">
-      {{ quantityToFormat }}
+      <v-number
+        :decimals="
+          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+        "
+        :number="quantity"
+      />
     </td>
     <td class="h-8 font-mono text-right">
-      {{ totalToFormat }}
-      <span class="text-2xs text-gray-500">
-        {{ market.quoteToken.symbol }}
-      </span>
+      <v-number
+        :decimals="
+          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+        "
+        :number="total"
+      >
+        <span slot="addon" class="text-2xs text-gray-500">
+          {{ market.quoteToken.symbol }}
+        </span>
+      </v-number>
     </td>
     <td class="h-8 text-center">
       <v-badge :aqua="orderTypeBuy" :red="!orderTypeBuy" xs>
@@ -34,7 +50,12 @@
       </v-badge>
     </td>
     <td class="h-8 text-right font-mono">
-      {{ unfilledQuantityToFormat }}
+      <v-number
+        :decimals="
+          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+        "
+        :number="unfilledQuantity"
+      />
     </td>
     <td class="h-8 text-center">
       <v-badge v-if="orderFullyFilled" primary xs>
@@ -81,6 +102,8 @@ export default Vue.extend({
 
   data() {
     return {
+      UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+      UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
       SpotOrderSide,
       status: new Status()
     }
@@ -135,16 +158,6 @@ export default Vue.extend({
       )
     },
 
-    priceToFormat(): string {
-      const { market, price } = this
-
-      if (!market) {
-        return price.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return price.toFormat(market.priceDecimals)
-    },
-
     quantity(): BigNumberInBase {
       const { market, order } = this
 
@@ -157,16 +170,6 @@ export default Vue.extend({
       )
     },
 
-    quantityToFormat(): string {
-      const { market, quantity } = this
-
-      if (!market) {
-        return quantity.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
-      }
-
-      return quantity.toFormat(market.quantityDecimals)
-    },
-
     unfilledQuantity(): BigNumberInBase {
       const { market, order } = this
 
@@ -177,16 +180,6 @@ export default Vue.extend({
       return new BigNumberInWei(order.unfilledQuantity).toBase(
         market.baseToken.decimals
       )
-    },
-
-    unfilledQuantityToFormat(): string {
-      const { market, unfilledQuantity } = this
-
-      if (!market) {
-        return unfilledQuantity.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
-      }
-
-      return unfilledQuantity.toFormat(market.quantityDecimals)
     },
 
     filledQuantity(): BigNumberInBase {
@@ -225,16 +218,6 @@ export default Vue.extend({
       const { price, quantity } = this
 
       return quantity.multipliedBy(price)
-    },
-
-    totalToFormat(): string {
-      const { market, total } = this
-
-      if (!market) {
-        return total.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return total.toFormat(market.priceDecimals)
     },
 
     orderSideLocalized(): string {

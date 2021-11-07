@@ -1,6 +1,6 @@
 <template>
   <p
-    class="flex items-center w-full"
+    class="flex flex-wrap items-center w-full"
     :class="{
       'text-xs': !lg,
       'text-base': lg
