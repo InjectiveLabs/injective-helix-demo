@@ -31,14 +31,29 @@
           'text-red-500': position.direction === TradeDirection.Short
         }"
       >
-        {{ priceToFormat }}
+        <v-number
+          :decimals="
+            market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+          "
+          :number="price"
+        />
       </span>
     </td>
     <td class="text-right font-mono">
-      {{ quantityToFormat }}
+      <v-number
+        :decimals="
+          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+        "
+        :number="quantity"
+      />
     </td>
     <td class="text-right font-mono">
-      {{ liquidationPriceToFormat }}
+      <v-number
+        :decimals="
+          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+        "
+        :number="liquidationPrice"
+      />
     </td>
     <td class="text-center">
       <v-badge
@@ -79,16 +94,25 @@
       <span v-else class="text-gray-400">{{ $t('not_available_n_a') }}</span>
     </td>
     <td class="text-right font-mono">
-      {{ notionalValueToFormat }}
-      <span class="text-2xs text-gray-500">
-        {{ market.quoteToken.symbol }}
-      </span>
+      <v-number
+        :decimals="
+          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+        "
+        :number="notionalValue"
+      >
+        <span slot="addon" class="text-2xs text-gray-500">
+          {{ market.quoteToken.symbol }}
+        </span>
+      </v-number>
     </td>
     <td class="text-right">
       <div class="flex items-center justify-end h-8">
-        <span class="font-mono">
-          {{ marginToFormat }}
-        </span>
+        <v-number
+          :decimals="
+            market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+          "
+          :number="margin"
+        />
         <button
           role="button"
           type="button"
@@ -127,7 +151,6 @@ import {
   DerivativeOrderSide,
   UiDerivativeOrderbook,
   UiPriceLevel,
-  Icon,
   UiDerivativeLimitOrder,
   UiSpotLimitOrder
 } from '~/types'
@@ -142,7 +165,8 @@ export default Vue.extend({
 
   data() {
     return {
-      Icon,
+      UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+      UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
       TradeDirection,
       status: new Status()
     }
@@ -228,16 +252,6 @@ export default Vue.extend({
       )
     },
 
-    priceToFormat(): string {
-      const { market, price } = this
-
-      if (!market) {
-        return price.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return price.toFormat(market.priceDecimals)
-    },
-
     margin(): BigNumberInBase {
       const { market, position } = this
 
@@ -248,16 +262,6 @@ export default Vue.extend({
       return new BigNumberInWei(position.margin).toBase(
         market.quoteToken.decimals
       )
-    },
-
-    marginToFormat(): string {
-      const { market, margin } = this
-
-      if (!market) {
-        return margin.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return margin.toFormat(market.priceDecimals)
     },
 
     buys(): UiPriceLevel[] {
@@ -290,16 +294,6 @@ export default Vue.extend({
       return new BigNumberInBase(position.quantity)
     },
 
-    quantityToFormat(): string {
-      const { market, quantity } = this
-
-      if (!market) {
-        return quantity.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
-      }
-
-      return quantity.toFormat(market.quantityDecimals)
-    },
-
     markPrice(): BigNumberInBase {
       const { market, position } = this
 
@@ -322,16 +316,6 @@ export default Vue.extend({
       return markPrice.times(quantity)
     },
 
-    notionalValueToFormat(): string {
-      const { market, notionalValue } = this
-
-      if (!market) {
-        return notionalValue.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return notionalValue.toFormat(market.priceDecimals)
-    },
-
     liquidationPrice(): BigNumberInBase {
       const { position, market } = this
 
@@ -344,16 +328,6 @@ export default Vue.extend({
       ).toBase(market.quoteToken.decimals)
 
       return liquidationPrice.gt(0) ? liquidationPrice : new BigNumberInBase(0)
-    },
-
-    liquidationPriceToFormat(): string {
-      const { market, liquidationPrice } = this
-
-      if (!market) {
-        return liquidationPrice.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return liquidationPrice.toFormat(market.priceDecimals)
     },
 
     totalReduceOnlyQuantity(): BigNumberInBase {

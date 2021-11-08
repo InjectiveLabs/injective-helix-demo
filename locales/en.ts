@@ -1,4 +1,7 @@
+import faq from './faq/en'
+
 export default {
+  ...faq,
   address_copied: 'Address Copied',
   copy_address: 'Copy Address',
   max: 'Max',
@@ -31,6 +34,7 @@ export default {
   market_volume_24h: 'Volume (24h)',
   market_volume_24h_tooltip: 'The total trade volume over the past 24 hours.',
   filter_markets: 'Filter Markets',
+  filter_by_market: 'Filter by market',
   spot: 'Spot',
   subaccount_funds_available: 'Subaccount Funds',
   asset: 'Asset',
@@ -138,10 +142,11 @@ export default {
   entry_price: 'Entry Price',
   unrealized_pnl: 'Unrealized PnL',
   unrealized_pnl_tooltip:
-    'The unrealized profit/loss (PnL) is a reflection of what profit or loss would be realized if the position were to be closed.',
+    'The unrealized PnL is an approximation of the realized profit or loss if the position was to be closed.',
   leverage: 'Leverage',
   not_available_n_a: 'N/A',
   position_closed: 'Position Closed',
+  all_position_closed: 'All Positions Closed',
   not_enough_balance: 'Not enough balance',
   reduce_only: 'Reduce Only',
   reduce_only_in_excess:
@@ -149,7 +154,7 @@ export default {
   reduce_only_exceed_position:
     'Total size of reduce-only orders exceed the size of your position',
   worst_price_note:
-    'Note: If the execution price exceeds the {slippage}% slippage protection, your order will be automatically cancelled.',
+    'Note: If the execution price exceeds the {slippage}% slippage protection, your order will be automatically cancelled',
   max_leverage_warn: 'Please decrease leverage.',
   next_funding: 'Next Funding',
   next_funding_tooltip:
@@ -164,13 +169,17 @@ export default {
   est_receiving_amount: 'Est. Receiving Amount (Worst Case)',
   est_receiving_amount_note:
     'The lowest amount you can actually receive for the trade.',
+  est_fee_rebate: 'Est. Fee Rebate',
+  est_fee_rebate_note:
+    'The estimated rebate is the rebate that is granted if the limit order is filled as a maker order.',
   fee_order_details_note:
-    "Trading fees associated with the trade. If your limit order doesn't get filled as a taker order, you will only need to pay {feeReturned} in fees",
+    "Trading fees associated with the trade. If your limit order doesn't get filled as a taker order, you will only need to pay {feeReturned} in fees.",
+  fee_order_details_note_negative_margin:
+    "Trading fees associated with the trade. If your limit order doesn't get filled as a taker order, you are not going to pay any trading fees.",
   buy_long: 'Buy/Long',
   sell_short: 'Sell/Short',
   mark_price: 'Mark Price',
-  mark_price_tooltip:
-    'The value of the contract as reported by the price oracle. The mark price can be different from the last traded price to prevent price manipulation.',
+  mark_price_tooltip: 'The oracle price for the base asset.',
   select_ledger_address: 'Select Ledger Address',
   follow_instructions: 'Please follow the instructions on your device',
   address: 'Address',
@@ -183,6 +192,7 @@ export default {
   ledger_live: 'Ledger Live',
   ledger_legacy: 'Ledger Legacy',
   cancel_all: 'Cancel All',
+  close_all: 'Close All',
   orders_cancelled: 'Orders Cancelled',
   yes: 'Yes',
   no: 'No',
@@ -199,9 +209,9 @@ export default {
   success_added_margin: 'You have successfully added margin to your position',
   no_liquidity: 'Not enough Liquidity',
   close_auto_liquidation:
-    'Closing this position with current market depth would result in auto-liquidation.',
+    'Closing this position with the current market depth would result in auto-liquidation.',
   execution_price_surpasses_bankruptcy_price:
-    'Execution price surpasses bankruptcy price',
+    'Execution price surpasses the bankruptcy price',
   you_can_only_have_max_orders:
     'You can only have {number} orders per side per market per subaccount',
   transfer_on_chain_title: 'Transfer on Injective Chain',
@@ -215,6 +225,8 @@ export default {
     'Note: It should take around 4 minutes for your transfer to appear after your transaction has been confirmed on Ethereum.',
   orderbook_liquidity_cannot_satisfy:
     'Orderbook liquidity cannot satisfy the worst price for the specified amount',
+  order_price_low_warn: 'Order price is too low',
+  order_price_high_warn: 'Order price is too high',
   'Connect using Ledger': 'Connect using Ledger',
   'Connect using Ledger instructions':
     'Note: To ensure smooth process while connecting your Ledger Hardware Wallet, please ensure you are running the on latest Chrome version, have your Ledger device connected, unlocked and your Ethereum app open. ',
@@ -254,9 +266,8 @@ export default {
   'Injective Chain': 'Injective Chain',
   Subaccount: 'Subaccount',
   subaccount_tooltip:
-    'Your subaccount is your trading account. You need to deposit from your wallet into the subaccount in order to start trading.',
-  injective_chain_tooltip:
-    'The native chain of Injective Protocol. Only funds on the Injective Chain can be used in trades.',
+    'The available funds on your subaccount. In order to trade, you must transfer funds from the Injective Chain to your subaccount.',
+  injective_chain_tooltip: 'Your available funds on the Injective Chain',
   'available_total_subaccount_balance Tooltip':
     'Your subaccount available/total balance',
   'Deposit to Injective Chain': 'Deposit to Injective Chain',
@@ -319,32 +330,31 @@ export default {
   fees_tooltip:
     'Trading fees associated with the trade. Trading fees on Injective can be lowered using rebates.',
   notional_value_tooltip:
-    'The total value of the trade based on the mark price. The notional value is determined by the following formula: Mark Price * Base Asset Amount.',
-  margin_tooltip: 'The total margin required to execute the trade',
+    'The total value of the position which is determined by the mark price with the following formula: Mark Price * Base Asset Amount.',
+  margin_tooltip: 'The total margin required to execute the trade.',
   portfolio_value: 'Portfolio value',
   portfolio_value_tooltip:
     'Your total portfolio value represented in USD. This includes all of your holdings on the Injective Chain, including bank module balances, balances across your subaccounts, open orders total value and unrealized PnL.',
   start_trading: 'Start Trading Now',
   available_margin: 'Available Margin',
-  available_margin_tooltip: 'Your total available margin for trading',
+  available_margin_tooltip: 'Your total available margin for trading.',
   margin_hold: 'Margin Hold',
   margin_hold_tooltip:
-    'The amount of margin you have in your open orders and open positions',
+    'The amount of margin you have in your open orders and positions.',
   assets_value: 'Assets Value',
   assets_value_tooltip: 'The total value of your assets in the bank module.',
   unrealized_pnl_portfolio: 'Unrealized PnL',
   unrealized_pnl_portfolio_tooltip:
-    'An approximate value of the unrealized PnL from your open positions based on the current mark price.',
+    'The unrealized PnL is an approximation of the realized profit or loss if the position was to be closed.',
   total_potential: 'Total Value',
   total_potential_tooltip:
     'An approximate total value of your stable coins (USDT, USDC, etc) balances and any unrealized PnL you currently have.',
-  side_tooltip: 'This indicates which side of the trade you took',
+  side_tooltip: 'The side of your trade: long or short',
   amount_tooltip:
-    'The total value of the base asset at the time the trade was executed (i.e. for BTC-USDC, BTC is the base asset and USDC is the quote asset).',
-  execution_type_tooltip:
-    'Indicates whether the trade was a limit or market order.',
+    'The total value of the base asset at the time which the trade was executed (i.e. for BTC/USDT, BTC is the base asset and USDT is the quote asset).',
+  execution_type_tooltip: 'The type of your order: limit or market.',
   time_tooltip:
-    "The time at which the trade was executed (times are shown in your browser's timezone)",
+    "The time at which the trade was executed (times are shown in your browser's timezone).",
   recent_news: 'Recent news',
   injective_home_title_1: 'Injective eliminates all barriers to trading',
   injective_home_title_2: 'Join a global community',
@@ -364,7 +374,7 @@ export default {
   'Enter amount': 'Enter amount',
   'Available to Transfer On Chain': 'Available to Transfer On Injective',
   'Available to Transfer On Chain Tooltip':
-    'The available amount you can transfer to another injective address on Injective',
+    'The available amount you can transfer to another address on the Injective Chain',
   'Asset Transfer': 'Asset Transfer',
   'Asset Transfer Tooltip': 'The asset you want to transfer',
   'Injective Address Destination': 'Destination',
@@ -384,5 +394,84 @@ export default {
   acknowledge_4:
     'You are lawfully permitted to access this site and trade on Injective.Exchange under the laws of the jurisdiction in which you reside and are located.',
   acknowledge_5:
-    'You understand the risks associated with using leverage, entering into perpetual contracts, and trading in digital assets.'
+    'You understand the risks associated with using leverage, entering into perpetual contracts, and trading in digital assets.',
+  'Fee Discounts': 'Fee Discounts',
+  tier: 'Tier',
+  staked_amount: 'Staked Amount',
+  fees_paid: 'Fees Paid',
+  maker_fee_discount: 'Maker Fee Discount',
+  taker_fee_discount: 'Taker Fee Discount',
+  'My Tier': 'My Tier',
+  'My Tier Tooltip': 'My Tier Tooltip',
+  'My Staked Amount': 'Staked Amount',
+  'My Staked Amount Tooltip': 'Staked Amount Tooltip',
+  'My Fee Paid Amount': 'Fee Paid Amount',
+  'My Fee Paid Amount Tooltip': 'Fee Paid Amount Tooltip',
+  'My Maker/Taker Discount': 'Maker/Taker Rate Discount',
+  'My Maker/Taker Discount Tooltip': 'Maker/Taker Rate Discount Tooltip',
+  portfolio_summary: 'Portfolio Summary',
+  subaccount_holdings: 'Subaccount Holdings',
+  faq: 'FAQ',
+  fee_discounts_footer: 'Fee Discounts',
+  'Privacy Policy': 'Privacy Policy',
+  'Terms & Conditions': 'Terms & Conditions',
+  'Frequently Asked Questions': 'Frequently Asked Questions',
+  'Search for FAQs': 'Search for FAQs',
+  'faq-category-All': 'All',
+  'faq-category-General': 'General',
+  available_subaccount_balance_tooltip: '',
+  total_subaccount_balance_tooltip: '',
+  and: 'and',
+  fee_discount_staked_amount: 'Staked Amount',
+  fee_discount_staked_amount_tooltip: '',
+  fee_discount_fees_paid: 'Fees Paid',
+  fee_discount_fees_paid_tooltip: '',
+  fee_discount_maker: 'Maker Rate Discount',
+  fee_discount_maker_tooltip: '',
+  fee_discount_taker: 'Taker Rate Discount',
+  fee_discount_taker_tooltip: '',
+  'Current Epoch': 'Current Epoch',
+  'Past Epoch': 'Past Epoch',
+  Rewards: 'Rewards',
+  resources: 'Resources',
+  calculator: 'Calculator',
+  'Trade & Earn': 'Trade & Earn',
+  trading_fee_to_date: 'Trading fee to date',
+  trading_fee_to_date_tooltip: 'Trading fee to date tooltip',
+  current_epoch: 'Current Epoch',
+  current_epoch_tooltip: 'Current Epoch tooltip',
+  est_rewards: 'Est. Rewards',
+  est_rewards_tooltip: 'Est. Rewards tooltip',
+  reward_points: 'Reward Points',
+  reward_points_tooltip: 'Reward Points tooltip',
+  total_reward_points: 'Total Reward Points',
+  total_reward_points_tooltip: 'Total Reward Points tooltip',
+  claimable_inj: 'Claimable INJ',
+  claimable_inj_tooltip: 'Claimable INJ tooltip',
+  countdown_campaign: 'Countdown',
+  countdown_campaign_tooltip: 'Countdown tooltip',
+  reward_earned_up_to_date: 'Rewards earned up to date',
+  reward_earned_up_to_date_tooltip: 'Rewards earned up to date tooltip',
+  market_total_tooltip:
+    'This total is calculated based on the approximated price you are going to get when execution the trade. Please note that the Total you end up with might have a slight deviation from the value shown here, as slippage is also applied on the execution price.',
+  fees_tooltip_discount:
+    'Based on your tier, you are eligible for {maker}% maker discount and {taker}% taker discount.',
+  remaining: 'remaining',
+  campaign_duration: 'Campaign Duration',
+  campaign_duration_tooltip: 'Campaign Duration Tooltip',
+  max_campaign_rewards: 'Max allocated Rewards',
+  max_campaign_rewards_tooltip: 'Max allocated Rewards tooltip',
+  fee_paid_amount: 'Fee Paid Amount',
+  fee_paid_amount_tooltip: 'Fee Paid Amount tooltip',
+  'Markets Information': 'Markets Information',
+  quote_denoms: 'Quote Denoms',
+  quote_denoms_tooltip: 'Quote Denom Tooltip',
+  boosted_markets: 'Boosted Markets',
+  boosted_markets_tooltip: 'Boosted Markets tooltip',
+  disqualified_markets: 'Disqualified Markets',
+  disqualified_markets_tooltip: 'Disqualified Markets tooltip',
+  maker_points_mul: 'maker pts',
+  taker_points_mul: 'taker pts',
+  maker_taker_points_multiplier_tooltip: 'Maker/Taker Points multiplier',
+  pts: 'pts'
 }

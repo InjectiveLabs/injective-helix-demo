@@ -17,3 +17,9 @@ export const getChangeFromBigNumberValues = (
 
   return diff.lt(0) ? Change.Increase : Change.Decrease
 }
+
+export const cosmosSdkDecToBigNumber = (
+  number: string | number | BigNumber
+): BigNumber => {
+  return new BigNumber(number).dividedBy(new BigNumber(10).pow(18))
+}

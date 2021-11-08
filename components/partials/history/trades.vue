@@ -10,7 +10,7 @@
           {{ `(${derivativesTrades.length})` }}
         </span>
       </v-button-filter>
-      <div class="mx-2 w-px h-4 bg-gray-500"></div>
+      <v-separator />
       <v-button-filter
         v-model="component"
         :option="components.spotTradeHistory"
@@ -19,6 +19,30 @@
           {{ $t('spot_trade_history') }} {{ `(${spotTrades.length})` }}
         </span>
       </v-button-filter>
+    </template>
+
+    <template #context>
+      <div class="hidden sm:block">
+        <VSearch
+          dense
+          small
+          :placeholder="$t('filter_by_market')"
+          :search="search"
+          @searched="updateSearch"
+        />
+      </div>
+    </template>
+
+    <template #mobile-context>
+      <div class="sm:hidden p-1 mt-1">
+        <VSearch
+          dense
+          small
+          :placeholder="$t('filter_by_market')"
+          :search="search"
+          @searched="updateSearch"
+        />
+      </div>
     </template>
 
     <component
@@ -33,6 +57,7 @@
 import Vue from 'vue'
 import VSpotTradeHistory from './trades/spot-trades.vue'
 import VDerivativeTradeHistory from './trades/derivative-trades.vue'
+import VSearch from '~/components/inputs/search.vue'
 import {
   UiDerivativeMarket,
   UiDerivativeTrade,
@@ -48,11 +73,13 @@ const components = {
 export default Vue.extend({
   components: {
     'v-spot-trade-history': VSpotTradeHistory,
-    'v-derivative-trade-history': VDerivativeTradeHistory
+    'v-derivative-trade-history': VDerivativeTradeHistory,
+    VSearch
   },
 
   data() {
     return {
+      search: '',
       components,
       component: components.derivativeTradeHistory
     }
@@ -75,9 +102,30 @@ export default Vue.extend({
       const { spotMarkets, trades } = this
       const spotMarketsIds = spotMarkets.map(({ marketId }) => marketId)
 
-      return trades.filter((o) =>
-        spotMarketsIds.includes(o.marketId)
-      ) as UiSpotTrade[]
+      return trades
+        .filter((o) => {
+          return spotMarketsIds.includes(o.marketId)
+        })
+        .map((trade) => ({
+          ...trade,
+          ticker:
+            spotMarkets.find(
+              (spotMarket) => trade.marketId === spotMarket.marketId
+            )?.ticker || ''
+        })) as UiSpotTrade[]
+    },
+
+    filteredSpotTrades(): UiSpotTrade[] {
+      const { search, spotTrades } = this
+
+      if (search.trim() === '') {
+        return spotTrades
+      }
+
+      return spotTrades.filter(
+        ({ ticker }) =>
+          ticker && ticker.toLowerCase().includes(search.toLowerCase())
+      )
     },
 
     derivativesTrades(): UiDerivativeTrade[] {
@@ -86,23 +134,46 @@ export default Vue.extend({
         ({ marketId }) => marketId
       )
 
-      return trades.filter((o) =>
-        derivativeMarketsIds.includes(o.marketId)
-      ) as UiDerivativeTrade[]
+      return trades
+        .filter((o) => derivativeMarketsIds.includes(o.marketId))
+        .map((trade) => ({
+          ...trade,
+          ticker:
+            derivativeMarkets.find(
+              (derivativeMarket) => trade.marketId === derivativeMarket.marketId
+            )?.ticker || ''
+        })) as UiDerivativeTrade[]
+    },
+
+    filteredDerivativesTrades(): UiDerivativeTrade[] {
+      const { search, derivativesTrades } = this
+
+      if (search.trim() === '') {
+        return derivativesTrades
+      }
+
+      return derivativesTrades.filter(
+        ({ ticker }) =>
+          ticker && ticker.toLowerCase().includes(search.toLowerCase())
+      )
     },
 
     currentTrades(): Array<UiSpotTrade | UiDerivativeTrade> {
-      const { derivativesTrades, component, spotTrades } = this
+      const { filteredDerivativesTrades, component, filteredSpotTrades } = this
 
       return component === components.derivativeTradeHistory
-        ? derivativesTrades
-        : spotTrades
+        ? filteredDerivativesTrades
+        : filteredSpotTrades
     }
   },
 
   methods: {
     onSelect(component: string) {
       this.component = component
+    },
+
+    updateSearch(search: string) {
+      this.search = search
     }
   }
 })

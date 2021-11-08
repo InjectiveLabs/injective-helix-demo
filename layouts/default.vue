@@ -53,13 +53,23 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.$accessor.app.fetchGasPrice()
     Promise.all([
       this.$accessor.app.init(),
+      this.$accessor.app.fetchGasPrice(),
+      this.$accessor.bank.init(),
+      this.$accessor.account.init()
+    ])
+      .then(() => {
+        //
+      })
+      .catch(this.$onRejected)
+      .finally(() => {
+        this.status.setIdle()
+      })
+
+    Promise.all([
       this.$accessor.spot.init(),
       this.$accessor.derivatives.init(),
-      this.$accessor.bank.init(),
-      this.$accessor.account.init(),
       this.$accessor.wallet.init()
     ])
       .then(() => {

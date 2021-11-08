@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col flex-wrap h-full">
     <v-table-head :market="market" />
-    <div class="flex-1 w-full overflow-y-auto">
+    <div class="flex-1 w-full overflow-y-auto overflow-x-hidden rounded-b-lg">
       <ul class="list-trades w-full">
         <v-trade
           v-for="(trade, index) in trades"

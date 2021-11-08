@@ -48,7 +48,8 @@
     <span
       class="col-span-1 md:col-span-3 font-mono text-right whitespace-nowrap"
     >
-      <div class="flex items-center justify-end">
+      <div v-if="isIbcToken" class="md:pr-6">&mdash;</div>
+      <div v-else class="flex items-center justify-end">
         {{ erc20BalanceToString }}
         <span class="text-xs text-gray-400 dark:text-gray-500 ml-1">{{
           balance.token.symbol
@@ -225,6 +226,16 @@ export default Vue.extend({
       }
 
       return totalInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+    },
+
+    isIbcToken(): boolean {
+      const { balance } = this
+
+      if (balance.denom) {
+        return balance.denom.startsWith('ibc')
+      }
+
+      return false
     }
   }
 })

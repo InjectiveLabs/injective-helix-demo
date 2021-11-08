@@ -2,7 +2,6 @@ import { AccountAddress, ChainId } from '@injectivelabs/ts-types'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { BaseCurrencyContract } from '@injectivelabs/contracts/dist/contracts/BaseCurrency'
-import { contractAddresses } from '@injectivelabs/contracts'
 import { PeggyComposer } from '@injectivelabs/chain-consumer'
 import { Erc20TokenMeta, TokenMeta } from '@injectivelabs/token-metadata'
 import { TxProvider } from '~/app/providers/TxProvider'
@@ -55,6 +54,29 @@ export const getTokenBalanceAndAllowance = async ({
   } catch (e: any) {
     allowance = ZERO_TO_STRING
   }
+
+  try {
+    priceInUsd = (
+      await getUsdtTokenPriceFromCoinGecko(token.coinGeckoId)
+    ).toString()
+  } catch (e: any) {
+    priceInUsd = ZERO_TO_STRING
+  }
+
+  return {
+    ...token,
+    balance,
+    allowance,
+    priceInUsd: new BigNumberInBase(priceInUsd || 0).toNumber()
+  }
+}
+
+export const getIbcTokenBalanceAndAllowance = async (
+  token: Token
+): Promise<TokenWithBalance> => {
+  const allowance = ZERO_TO_STRING
+  const balance = ZERO_TO_STRING
+  let priceInUsd
 
   try {
     priceInUsd = (
@@ -296,7 +318,7 @@ export const getTokenMetaData = (denom: string): TokenMeta | undefined => {
   const address = denom.startsWith('peggy') ? denom.replace('peggy', '') : denom
   const erc20Address =
     address.toLowerCase() === 'inj'
-      ? contractAddresses[CHAIN_ID].injective
+      ? getTokenMetaDataBySymbol('INJ')!.address
       : address
 
   const meta =
@@ -314,5 +336,7 @@ export const getTokenMetaData = (denom: string): TokenMeta | undefined => {
 export const getTokenMetaDataBySymbol = (
   symbol: string
 ): TokenMeta | undefined => {
-  return Erc20TokenMeta.getMetaBySymbol(symbol)
+  return CHAIN_ID === ChainId.Mainnet
+    ? Erc20TokenMeta.getMetaBySymbol(symbol)
+    : Erc20TokenMeta.getMetaBySymbolForKovan(symbol)
 }

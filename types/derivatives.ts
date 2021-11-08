@@ -1,6 +1,6 @@
 import {
   DerivativeMarket as BaseUiDerivativeMarket,
-  DerivativeTrade as UiDerivativeTrade,
+  DerivativeTrade,
   Position as UiPosition,
   DerivativeLimitOrder as UiDerivativeLimitOrder,
   Orderbook as UiDerivativeOrderbook,
@@ -34,6 +34,10 @@ export interface UiDerivativeMarket
   subType: MarketType
 }
 
+export interface UiDerivativeTrade extends DerivativeTrade {
+  ticker?: string
+}
+
 export interface UiDerivativeMarketSummary
   extends ChronosDerivativeMarketSummary {
   marketId: string
@@ -59,7 +63,6 @@ export enum DerivativeMarketMap {
 export {
   UiPosition,
   UiDerivativeLimitOrder,
-  UiDerivativeTrade,
   TradeDirection,
   DerivativeOrderSide,
   TradeExecutionType,

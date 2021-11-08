@@ -1,30 +1,25 @@
 <template>
-  <v-card class="mt-6">
-    <div v-if="isUserWalletConnected">
-      <v-overview
-        v-bind="{
-          bankBalancesTotalInUsd,
-          availableBalanceInUsd,
-          unrealizedPnLInUsd,
-          lockedBalanceInUsd
-        }"
-      />
-      <v-stats
-        class="mt-6"
-        v-bind="{
-          bankBalancesTotalInUsd,
-          bankBalancesTotalInUsdToString,
-          availableBalanceInUsd,
-          availableBalanceInUsdToString,
-          unrealizedPnLInUsd,
-          unrealizedPnLInUsdToString,
-          lockedBalanceInUsd,
-          lockedBalanceInUsdToString
-        }"
-      />
-    </div>
-    <v-user-wallet-connect-warning v-else cta />
-  </v-card>
+  <div v-if="isUserWalletConnected" class="flex flex-wrap justify-between">
+    <v-overview
+      class="w-full"
+      v-bind="{
+        bankBalancesTotalInUsd,
+        availableBalanceInUsd,
+        unrealizedPnLInUsd,
+        lockedBalanceInUsd
+      }"
+    />
+    <v-stats
+      class="w-full mt-4"
+      v-bind="{
+        bankBalancesTotalInUsd,
+        availableBalanceInUsd,
+        unrealizedPnLInUsd,
+        lockedBalanceInUsd
+      }"
+    />
+  </div>
+  <v-user-wallet-connect-warning v-else cta />
 </template>
 
 <script lang="ts">
@@ -32,11 +27,7 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import Vue from 'vue'
 import VOverview from './overview.vue'
 import VStats from './stats.vue'
-import {
-  MAX_SMALLER_DISPLAYABLE_NUMBER,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  ZERO_IN_BASE
-} from '~/app/utils/constants'
+import { ZERO_IN_BASE } from '~/app/utils/constants'
 import {
   BankBalanceWithTokenMetaData,
   BankBalanceWithTokenMetaDataAndBalance,
@@ -77,18 +68,6 @@ export default Vue.extend({
       return new BigNumberInBase(accountPortfolio.availableBalance || 0)
     },
 
-    availableBalanceInUsdToString(): string {
-      const { availableBalanceInUsd } = this
-
-      if (availableBalanceInUsd.gt(MAX_SMALLER_DISPLAYABLE_NUMBER)) {
-        return `> ${MAX_SMALLER_DISPLAYABLE_NUMBER.toFormat(
-          UI_DEFAULT_MIN_DISPLAY_DECIMALS
-        )}`
-      }
-
-      return availableBalanceInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
-    },
-
     lockedBalanceInUsd(): BigNumberInBase {
       const { accountPortfolio } = this
 
@@ -99,18 +78,6 @@ export default Vue.extend({
       return new BigNumberInBase(accountPortfolio.lockedBalance || 0)
     },
 
-    lockedBalanceInUsdToString(): string {
-      const { lockedBalanceInUsd } = this
-
-      if (lockedBalanceInUsd.gt(MAX_SMALLER_DISPLAYABLE_NUMBER)) {
-        return `> ${MAX_SMALLER_DISPLAYABLE_NUMBER.toFormat(
-          UI_DEFAULT_MIN_DISPLAY_DECIMALS
-        )}`
-      }
-
-      return lockedBalanceInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
-    },
-
     unrealizedPnLInUsd(): BigNumberInBase {
       const { accountPortfolio } = this
 
@@ -119,18 +86,6 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(accountPortfolio.unrealizedPnl || 0)
-    },
-
-    unrealizedPnLInUsdToString(): string {
-      const { unrealizedPnLInUsd } = this
-
-      if (unrealizedPnLInUsd.gt(MAX_SMALLER_DISPLAYABLE_NUMBER)) {
-        return `> ${MAX_SMALLER_DISPLAYABLE_NUMBER.toFormat(
-          UI_DEFAULT_MIN_DISPLAY_DECIMALS
-        )}`
-      }
-
-      return unrealizedPnLInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
     balances(): BankBalanceWithTokenMetaDataAndBalance[] {
@@ -164,18 +119,6 @@ export default Vue.extend({
             .times(balance.token.priceInUsd || 0)
         )
       }, ZERO_IN_BASE)
-    },
-
-    bankBalancesTotalInUsdToString(): string {
-      const { bankBalancesTotalInUsd } = this
-
-      if (bankBalancesTotalInUsd.gt(MAX_SMALLER_DISPLAYABLE_NUMBER)) {
-        return `> ${MAX_SMALLER_DISPLAYABLE_NUMBER.toFormat(
-          UI_DEFAULT_MIN_DISPLAY_DECIMALS
-        )}`
-      }
-
-      return bankBalancesTotalInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     }
   }
 })

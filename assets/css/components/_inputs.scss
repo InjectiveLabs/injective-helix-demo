@@ -26,6 +26,10 @@
   &-round {
     @apply h-10 rounded-3xl;
   }
+
+  &-small {
+    @apply h-8;
+  }
 }
 
 .input-wrap .addon {

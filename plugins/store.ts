@@ -9,6 +9,7 @@ const mutationsToPersist = [
   'wallet/setAddress',
   'wallet/setAddresses',
   'wallet/setWallet',
+  'wallet/setWalletOptions',
   'wallet/setInjectiveAddress',
   'wallet/setAddressConfirmation'
 ]
@@ -21,6 +22,7 @@ const actionsThatSetAppStateToBusy = [
   'derivatives/submitLimitOrder',
   'derivatives/submitMarketOrder',
   'derivatives/closePosition',
+  'derivatives/closeAllPosition',
   'derivatives/addMarginToPosition',
   'spot/cancelOrder',
   'spot/batchCancelOrder',
@@ -28,7 +30,8 @@ const actionsThatSetAppStateToBusy = [
   'spot/submitMarketOrder',
   'portfolio/closePosition',
   'portfolio/cancelOrder',
-  'portfolio/batchCancelOrder'
+  'portfolio/batchCancelSpotOrders',
+  'portfolio/batchCancelDerivativeOrders'
 ]
 
 const store: Plugin = ({ store, app }, inject) => {
@@ -47,6 +50,7 @@ const store: Plugin = ({ store, app }, inject) => {
 
         wallet: {
           wallet: app.$accessor.wallet.wallet,
+          walletOptions: app.$accessor.wallet.walletOptions,
           addresses: app.$accessor.wallet.addresses,
           address: app.$accessor.wallet.address,
           injectiveAddress: app.$accessor.wallet.injectiveAddress,

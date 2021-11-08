@@ -1,6 +1,9 @@
 <template>
   <div class="flex flex-col flex-wrap overflow-y-hidden w-full">
-    <div ref="sellOrders" class="overflow-y-scroll w-full orderbook-half-h">
+    <div
+      ref="sellOrders"
+      class="overflow-y-scroll overflow-x-hidden w-full orderbook-half-h"
+    >
       <div class="flex h-full w-full">
         <ul
           class="list-order-book w-full mt-auto"
@@ -46,7 +49,7 @@
     </div>
     <ul
       ref="buyOrders"
-      class="list-order-book overflow-y-scroll w-full orderbook-half-h"
+      class="list-order-book overflow-y-scroll overflow-x-hidden w-full orderbook-half-h rounded-b-lg"
       @mouseenter="autoScrollBuysLocked = true"
       @mouseleave="autoScrollBuysLocked = false"
     >
@@ -78,7 +81,6 @@ import {
   TradeDirection,
   DerivativeOrderSide,
   UiOrderbookPriceLevel,
-  Icon,
   Change
 } from '~/types'
 
@@ -89,7 +91,6 @@ export default Vue.extend({
 
   data() {
     return {
-      Icon,
       Change,
       TradeDirection,
       DerivativeOrderSide,

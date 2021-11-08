@@ -7,13 +7,30 @@
         </span>
       </v-button-filter>
     </template>
+    <template #context>
+      <v-button
+        v-if="positions.length > 0 && isUserWalletConnected"
+        text-xs
+        @click.stop="closeAllPosition"
+      >
+        {{ $t('close_all') }}
+      </v-button>
+    </template>
     <component :is="component" v-if="component"></component>
   </v-card-table-wrap>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import OpenPositions from './positions/index.vue'
+import {
+  DerivativeOrderSide,
+  TradeDirection,
+  UiDerivativeMarket,
+  UiPosition
+} from '~/types'
+import { getPositionFeeAdjustedBankruptcyPrice } from '~/app/services/derivatives'
 
 const components = {
   openPositions: 'v-open-positions'
@@ -31,9 +48,54 @@ export default Vue.extend({
     }
   },
 
+  computed: {
+    isUserWalletConnected(): boolean {
+      return this.$accessor.wallet.isUserWalletConnected
+    },
+
+    markets(): UiDerivativeMarket[] {
+      return this.$accessor.derivatives.markets
+    },
+
+    positions(): UiPosition[] {
+      return this.$accessor.portfolio.subaccountPositions
+    }
+  },
+
   methods: {
     onSelect(component: string) {
       this.component = component
+    },
+
+    closeAllPosition() {
+      const { positions, markets } = this
+
+      const positionsToCancel = positions
+        .map((position) => {
+          const market = markets.find((m) => m.marketId === position.marketId)!
+
+          return {
+            market,
+            price: market
+              ? getPositionFeeAdjustedBankruptcyPrice({ position, market })
+              : new BigNumberInBase(0),
+            orderType:
+              position.direction === TradeDirection.Long
+                ? DerivativeOrderSide.Sell
+                : DerivativeOrderSide.Buy,
+            quantity: new BigNumberInBase(position.quantity)
+          }
+        })
+        .filter(({ market }) => market !== undefined)
+
+      this.$accessor.derivatives
+        .closeAllPosition({
+          positions: positionsToCancel
+        })
+        .then(() => {
+          this.$toast.success(this.$t('all_position_closed'))
+        })
+        .catch(this.$onRejected)
     }
   }
 })

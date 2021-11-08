@@ -24,7 +24,13 @@
           'text-red-500': !recordTypeBuy
         }"
       >
-        {{ priceToFormat }}
+        <v-number
+          :decimals="
+            market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+          "
+          :number="price"
+          dont-group-values
+        />
       </span>
     </span>
     <span class="w-1/3 text-xs px-2 z-10" @click.stop="onQuantityClick">
@@ -35,14 +41,28 @@
           'text-aqua-500': quantityChange === Change.Increase
         }"
       >
-        {{ quantityToFormat }}
+        <v-number
+          :decimals="
+            market
+              ? market.quantityDecimals
+              : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+          "
+          :number="quantity"
+          dont-group-values
+        />
       </span>
     </span>
     <span
       class="w-1/3 text-xs px-2 z-10 font-mono text-right"
       @click.stop="onTotalNotionalClick"
     >
-      {{ totalToFormat }}
+      <v-number
+        :decimals="
+          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+        "
+        :number="total"
+        dont-group-values
+      />
     </span>
   </li>
 </template>
@@ -63,8 +83,7 @@ import {
   Change,
   DerivativeOrderSide,
   UiDerivativeMarket,
-  UiOrderbookPriceLevel,
-  Icon
+  UiOrderbookPriceLevel
 } from '~/types'
 
 export default Vue.extend({
@@ -87,7 +106,8 @@ export default Vue.extend({
 
   data() {
     return {
-      Icon,
+      UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+      UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
       Change,
       DerivativeOrderSide
     }
@@ -118,16 +138,6 @@ export default Vue.extend({
       return new BigNumberInWei(record.price).toBase(market.quoteToken.decimals)
     },
 
-    priceToFormat(): string {
-      const { market, price } = this
-
-      if (!market) {
-        return price.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return price.toFormat(market.priceDecimals)
-    },
-
     total(): BigNumberInBase {
       const { market, record } = this
 
@@ -138,16 +148,6 @@ export default Vue.extend({
       return new BigNumberInBase(record.total || 0)
     },
 
-    totalToFormat(): string {
-      const { market, total } = this
-
-      if (!market) {
-        return total.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return total.toFormat(market.priceDecimals)
-    },
-
     quantity(): BigNumberInBase {
       const { market, record } = this
 
@@ -156,16 +156,6 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(record.quantity)
-    },
-
-    quantityToFormat(): string {
-      const { market, quantity } = this
-
-      if (!market) {
-        return quantity.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
-      }
-
-      return quantity.toFormat(market.quantityDecimals)
     },
 
     depthWidth(): { width: string } {

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-1">
+  <div class="flex flex-col h-full">
     <div class="flex items-center justify-between">
       <div class="flex items-center justify-center">
         <slot name="filters" />
@@ -8,13 +8,33 @@
       <slot name="context" />
     </div>
 
-    <div class="card-table-wrap-content">
-      <slot></slot>
+    <div>
+      <slot name="mobile-context" />
+    </div>
+
+    <div
+      :class="{
+        'card-table-wrap-content': !bgLighter,
+        'card-table-wrap-content-lighter': bgLighter
+      }"
+    >
+      <div>
+        <slot></slot>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-export default Vue.extend({})
+
+export default Vue.extend({
+  props: {
+    bgLighter: {
+      required: false,
+      type: Boolean,
+      default: false
+    }
+  }
+})
 </script>

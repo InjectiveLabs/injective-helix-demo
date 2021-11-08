@@ -30,6 +30,7 @@ import {
   streamSubaccountTrades,
   fetchMarketPositions,
   streamSubaccountPositions,
+  closeAllPosition,
   closePosition,
   fetchMarketMarkPrice,
   streamMarketMarkPrice,
@@ -326,6 +327,7 @@ export const actions = actionTree(
       await this.app.$accessor.derivatives.fetchSubaccountTrades()
       await this.app.$accessor.derivatives.fetchSubaccountPosition()
       await this.app.$accessor.account.streamSubaccountBalances()
+      // await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
     },
 
     streamOrderbook({ commit, state }) {
@@ -801,6 +803,41 @@ export const actions = actionTree(
         address,
         orderType,
         market: (currentMarket || market) as UiDerivativeMarket,
+        subaccountId: subaccount.subaccountId
+      })
+    },
+
+    async closeAllPosition(
+      _,
+      {
+        positions
+      }: {
+        positions: {
+          market: UiDerivativeMarket
+          orderType: DerivativeOrderSide
+          price: BigNumberInBase
+          quantity: BigNumberInBase
+        }[]
+      }
+    ) {
+      const { subaccount } = this.app.$accessor.account
+      const {
+        address,
+        injectiveAddress,
+        isUserWalletConnected
+      } = this.app.$accessor.wallet
+
+      if (!isUserWalletConnected || !subaccount || positions.length === 0) {
+        return
+      }
+
+      await this.app.$accessor.app.queue()
+      await this.app.$accessor.wallet.validate()
+
+      await closeAllPosition({
+        positions,
+        injectiveAddress,
+        address,
         subaccountId: subaccount.subaccountId
       })
     },
