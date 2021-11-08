@@ -54,7 +54,6 @@ export default Vue.extend({
     isOpen(isOpen) {
       if (isOpen) {
         this.$accessor.wallet.setAddresses([])
-        this.$accessor.wallet.connectLedger()
       }
     }
   },

@@ -2421,10 +2421,10 @@
     methods "^1.1.2"
     path-to-regexp "^6.1.0"
 
-"@ledgerhq/cryptoassets@^6.12.2":
-  version "6.12.2"
-  resolved "https://registry.npmjs.org/@ledgerhq/cryptoassets/-/cryptoassets-6.12.2.tgz#e0573358ae498aa639c9eea927f8e4873bcb2916"
-  integrity sha512-Q8ZYe74lWoCqagB1QXt8jBFDqhbKc1IP0/ZYtil2W0PNM+Kv563//LnupmcfkR0uN0czvZrDS/runSx0ASO+JQ==
+"@ledgerhq/cryptoassets@^6.13.0":
+  version "6.13.0"
+  resolved "https://registry.npmjs.org/@ledgerhq/cryptoassets/-/cryptoassets-6.13.0.tgz#7dd2990f89df70ad0e3481446bf37f22a7c0fc91"
+  integrity sha512-SNz0kyp/HT3q9bVILddiRo1QvXX7VcEgtYc51o/rHv3xHyY2eaosyVNHMTGCWKIjY+bbMh1QD/iO0TmdW/mehw==
   dependencies:
     invariant "2"
 
@@ -2459,11 +2459,11 @@
   integrity sha512-fQFnl2VIXh9Yd41lGjReCeK+Q2hwxQJvLZfqHnKqWapTz68NHOv5QcI0OHuZVNEbv0xhgdLhi5b65kgYeQSUVg==
 
 "@ledgerhq/hw-app-eth@^6.12.2":
-  version "6.12.2"
-  resolved "https://registry.npmjs.org/@ledgerhq/hw-app-eth/-/hw-app-eth-6.12.2.tgz#053927766da373f51b4d53872a4a3f73e1f33b22"
-  integrity sha512-FDF661Jeo1bR1B9UjKhxjGUDSiA/qQt88j/1edbxQKTHKbvPTLH4m68andeneetS6l+6jc8fX/2IwDpCEQ4mTA==
+  version "6.13.0"
+  resolved "https://registry.npmjs.org/@ledgerhq/hw-app-eth/-/hw-app-eth-6.13.0.tgz#bf45d56c73e3f904cc5ae2726e66c0f41821c438"
+  integrity sha512-AAZYpNZldMn7mQIPk/GKI8qPYHgMF2D0QUf17k6oo3SV0DXR4dsIz6k335DyITtMG5kiqGcaqN+4vDG58HHrAw==
   dependencies:
-    "@ledgerhq/cryptoassets" "^6.12.2"
+    "@ledgerhq/cryptoassets" "^6.13.0"
     "@ledgerhq/errors" "^6.10.0"
     "@ledgerhq/hw-transport" "^6.11.2"
     "@ledgerhq/logs" "^6.10.0"
