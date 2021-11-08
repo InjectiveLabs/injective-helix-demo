@@ -57,11 +57,11 @@ export default Vue.extend({
         {
           label: this.$t('Ledger Live'),
           path: LedgerDerivationPathType.LedgerLive
-        } /*
+        },
         {
           label: this.$t('Ledger Legacy'),
           path: LedgerDerivationPathType.LedgerMew
-        } */
+        }
       ],
 
       form: {
@@ -79,9 +79,7 @@ export default Vue.extend({
 
   watch: {
     'form.path'(newValue: LedgerDerivationPathType) {
-      this.$accessor.wallet.connectLedger({
-        baseDerivationPath: newValue
-      })
+      this.$accessor.wallet.setAddresses([])
     }
   },
 
@@ -89,10 +87,13 @@ export default Vue.extend({
     handleClickOnFetchAddresses() {
       this.status.setLoading()
 
+      this.$accessor.wallet.setWalletOptions({
+        derivationPathType: this.form.path
+      })
       this.$accessor.wallet
-        .getAddresses()
-        .then((addresses: string[]) => {
-          this.$accessor.wallet.setAddresses([...addresses, ...this.addresses])
+        .getLedgerAddresses()
+        .then(() => {
+          //
         })
         .catch(this.$onError)
         .finally(() => {

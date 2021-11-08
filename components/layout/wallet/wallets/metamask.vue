@@ -52,7 +52,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Wallet } from '@injectivelabs/web3-strategy'
 import { WalletConnectStatus } from '~/types'
 
 export default Vue.extend({
@@ -65,7 +64,7 @@ export default Vue.extend({
   methods: {
     handleClickOnMetamaskConnect() {
       this.$accessor.wallet
-        .connectAndConfirm(Wallet.Metamask)
+        .connectMetamask()
         .then(() => {
           this.$emit('wallet-connected')
         })
