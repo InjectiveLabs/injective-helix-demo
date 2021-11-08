@@ -3,7 +3,6 @@ const spot = [
   'inj-usdc',
   'bnb-usdt',
   'bnb-usdc',
-  'axs-usdt',
   'wbtc-usdc',
   'wbtc-usdt',
   'weth-usdt',
@@ -19,6 +18,7 @@ const spot = [
   'sushi-usdt',
   'sushi-usdc',
   'grt-usdt',
+  'axs-usdt',
   'grt-usdc',
   'uni-usdt',
   'uni-usdc',
@@ -26,6 +26,7 @@ const spot = [
   'qnt-usdt',
   'yfi-usdt',
   'snx-usdt',
+  'axs-usdt',
   'zrx-usdt'
 ]
 
