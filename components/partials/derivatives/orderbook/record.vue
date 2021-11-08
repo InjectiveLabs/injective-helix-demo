@@ -29,6 +29,7 @@
             market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
           "
           :number="price"
+          dont-group-values
         />
       </span>
     </span>
@@ -47,6 +48,7 @@
               : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
           "
           :number="quantity"
+          dont-group-values
         />
       </span>
     </span>
@@ -59,6 +61,7 @@
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
         :number="total"
+        dont-group-values
       />
     </span>
   </li>

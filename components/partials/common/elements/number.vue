@@ -3,7 +3,7 @@
     <span class="break-all font-mono leading-5 inline-block">
       <div class="flex">
         <span class="">{{ prefix || '' }}{{ formattedNumber[0] }}</span>
-        <span v-if="formattedNumber[1]" class="opacity-33">{{
+        <span v-if="formattedNumber[1]" class="opacity-25">{{
           formattedNumber[1] || ''
         }}</span>
         {{ suffix || '' }}
