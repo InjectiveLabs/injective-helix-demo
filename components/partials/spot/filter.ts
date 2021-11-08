@@ -1,1 +1,20 @@
-export const filteredMarketsBasedOnDenom = ['QNT']
+export const filteredMarkets = [
+  'inj-usdc',
+  'wbtc-usdt',
+  'weth-usdc',
+  'link-usdc',
+  'aave-usdc',
+  'sushi-usdc',
+  'grt-usdc',
+  'uni-usdc',
+  'snx-usdc',
+  'aave-usdt',
+  'matic-usdc',
+  'matic-usdt',
+  'usdt-usdc',
+  'sushi-usdt',
+  'grt-usdt',
+  'uni-usdt',
+  'snx-usdt',
+  'qnt-usdt'
+]
