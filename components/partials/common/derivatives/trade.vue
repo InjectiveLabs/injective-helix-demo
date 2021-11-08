@@ -188,8 +188,8 @@ export default Vue.extend({
       const { trade } = this
 
       return trade.tradeDirection === TradeDirection.Buy
-        ? this.$t('long')
-        : this.$t('short')
+        ? this.$t('buy')
+        : this.$t('sell')
     },
 
     tradeExecutionType(): string {
