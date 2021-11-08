@@ -5,13 +5,13 @@
         <v-market />
       </div>
       <div class="flex-1 grid grid-cols-6 lg:grid-cols-12 gap-1 p-1">
-        <div class="col-span-6 lg:col-span-3 4xl:col-span-2">
+        <div class="col-span-6 lg:col-span-3 4xl:col-span-3">
           <div class="flex flex-col flex-wrap h-full w-full">
             <v-balances />
             <v-trading class="mt-1 flex-1" />
           </div>
         </div>
-        <div class="col-span-6 lg:col-span-9 4xl:col-span-10">
+        <div class="col-span-6 lg:col-span-9 4xl:col-span-9">
           <div class="flex flex-wrap flex-col w-full h-full">
             <div class="w-full">
               <v-card tight>

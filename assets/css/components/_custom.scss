@@ -23,7 +23,7 @@
   }
 
   @screen 4xl {
-    @apply h-3xl;
+    height: 38rem;
   }
 }
 
@@ -31,11 +31,11 @@
   @apply h-48;
 
   @screen lg {
-    @apply h-2xs;
+    height: 15.5rem;
   }
 
   @screen 4xl {
-    height: 21rem;
+    height: 16rem;
   }
 }
 
@@ -43,7 +43,7 @@
   @apply h-8;
 
   @screen lg {
-    @apply h-8;
+    @apply h-12;
   }
 
   @screen 4xl {

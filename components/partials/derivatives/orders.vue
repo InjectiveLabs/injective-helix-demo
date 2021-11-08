@@ -1,17 +1,17 @@
 <template>
   <v-card-table-wrap>
     <template #filters>
-      <v-button-filter v-model="component" :option="components.openOrders">
-        <span>
-          {{ $t('open_orders') }}
-          {{ `(${orders.length})` }}
-        </span>
-      </v-button-filter>
-      <v-separator />
       <v-button-filter v-model="component" :option="components.openPositions">
         <span>
           {{ $t('open_positions') }}
           <span v-if="position">(1)</span>
+        </span>
+      </v-button-filter>
+      <v-separator />
+      <v-button-filter v-model="component" :option="components.openOrders">
+        <span>
+          {{ $t('open_orders') }}
+          {{ `(${orders.length})` }}
         </span>
       </v-button-filter>
       <v-separator />
@@ -80,6 +80,14 @@ export default Vue.extend({
       if (newPosition && !oldPosition) {
         this.component = components.openPositions
       }
+    }
+  },
+
+  mounted() {
+    if (this.position) {
+      this.component = components.openPositions
+    } else if (this.orders.length > 0) {
+      this.component = components.openOrders
     }
   },
 
