@@ -123,9 +123,9 @@ export default Vue.extend({
         return 0
       }
 
-      return feeDiscountAccountInfo
-        ? new BigNumberInBase(feeDiscountAccountInfo.tierLevel).toNumber()
-        : 0
+      return new BigNumberInBase(
+        feeDiscountAccountInfo.tierLevel || 0
+      ).toNumber()
     },
 
     stakedAmount(): BigNumberInBase {

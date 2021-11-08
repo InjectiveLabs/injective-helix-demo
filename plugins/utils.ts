@@ -3,8 +3,7 @@ import { Context } from '@nuxt/types'
 import {
   IS_DEVELOPMENT,
   IS_PRODUCTION,
-  IS_TESTNET,
-  NETWORK
+  IS_TESTNET
 } from '~/app/utils/constants'
 
 const isErrorExcludedFromReporting = (error: any): boolean => {
