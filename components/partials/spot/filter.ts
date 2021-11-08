@@ -1,6 +1,7 @@
 export const filteredMarkets = [
   'inj-usdc',
   'wbtc-usdt',
+  'wbtc-usdc',
   'weth-usdc',
   'link-usdc',
   'aave-usdc',
