@@ -132,8 +132,11 @@
         price: executionPrice,
         notionalValue,
         liquidationPrice,
+        makerFeeRateDiscount,
+        takerFeeRateDiscount,
         margin,
         feeReturned,
+        feeRebates,
         orderTypeReduceOnly,
         orderType,
         fees,
@@ -201,6 +204,8 @@ import {
   calculateMargin,
   getApproxAmountForMarketOrder
 } from '~/app/services/derivatives'
+import { FeeDiscountAccountInfo } from '~/types/exchange'
+import { cosmosSdkDecToBigNumber } from '~/app/transformers'
 
 interface TradeForm {
   reduceOnly: boolean
@@ -283,6 +288,10 @@ export default Vue.extend({
       return this.$accessor.derivatives.marketMarkPrice
     },
 
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
+    },
+
     availableMargin(): BigNumberInBase {
       const { subaccount, market } = this
 
@@ -344,6 +353,66 @@ export default Vue.extend({
       )
     },
 
+    makerFeeRateDiscount(): BigNumberInBase {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return ZERO_IN_BASE
+      }
+
+      if (!feeDiscountAccountInfo.accountInfo) {
+        return ZERO_IN_BASE
+      }
+
+      const discount = cosmosSdkDecToBigNumber(
+        feeDiscountAccountInfo.accountInfo.makerDiscountRate
+      )
+
+      return new BigNumberInBase(discount)
+    },
+
+    takerFeeRateDiscount(): BigNumberInBase {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return ZERO_IN_BASE
+      }
+
+      if (!feeDiscountAccountInfo.accountInfo) {
+        return ZERO_IN_BASE
+      }
+
+      const discount = cosmosSdkDecToBigNumber(
+        feeDiscountAccountInfo.accountInfo.takerDiscountRate
+      )
+
+      return new BigNumberInBase(discount)
+    },
+
+    makerFeeRate(): BigNumberInBase {
+      const { market, makerFeeRateDiscount } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(market.makerFeeRate).times(
+        new BigNumberInBase(1).minus(makerFeeRateDiscount)
+      )
+    },
+
+    takerFeeRate(): BigNumberInBase {
+      const { market, takerFeeRateDiscount } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(market.takerFeeRate).times(
+        new BigNumberInBase(1).minus(takerFeeRateDiscount)
+      )
+    },
+
     price(): BigNumberInBase {
       return new BigNumberInBase(this.form.price)
     },
@@ -381,8 +450,7 @@ export default Vue.extend({
         hasAmount,
         market,
         amount,
-        price,
-        slippage
+        price
       } = this
 
       if (!market) {
@@ -402,9 +470,7 @@ export default Vue.extend({
           market
         })
 
-        return new BigNumberInBase(
-          worstPrice.times(slippage).toFixed(market.priceDecimals)
-        )
+        return new BigNumberInBase(worstPrice.toFixed(market.priceDecimals))
       }
 
       if (price.isNaN()) {
@@ -413,6 +479,22 @@ export default Vue.extend({
 
       return new BigNumberInBase(
         new BigNumberInBase(price).toFixed(market.priceDecimals)
+      )
+    },
+
+    executionPriceWithSlippage(): BigNumberInBase {
+      const { tradingTypeMarket, executionPrice, market, slippage } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      if (!tradingTypeMarket) {
+        return executionPrice
+      }
+
+      return new BigNumberInBase(
+        executionPrice.times(slippage).toFixed(market.priceDecimals)
       )
     },
 
@@ -553,7 +635,9 @@ export default Vue.extend({
       if (maxLeverage.gte(0) && leverage.gt(maxLeverage)) {
         return {
           price: leverage.eq(1)
-            ? this.$t('orderbook_liquidity_cannot_satisfy')
+            ? orderTypeBuy
+              ? this.$t('order_price_high_warn')
+              : this.$t('order_price_low_warn')
             : this.$t('max_leverage_warn')
         }
       }
@@ -919,25 +1003,37 @@ export default Vue.extend({
     },
 
     fees(): BigNumberInBase {
-      const { notionalValue, market } = this
+      const { notionalValue, takerFeeRate } = this
 
-      if (notionalValue.isNaN() || !market) {
+      if (notionalValue.isNaN()) {
         return ZERO_IN_BASE
       }
 
-      return notionalValue.times(market.takerFeeRate)
+      return notionalValue.times(takerFeeRate)
     },
 
     feeReturned(): BigNumberInBase {
-      const { notionalValue, market } = this
+      const { notionalValue, takerFeeRate, makerFeeRate } = this
 
-      if (notionalValue.isNaN() || !market) {
+      if (notionalValue.isNaN()) {
         return ZERO_IN_BASE
       }
 
       return notionalValue.times(
-        new BigNumberInBase(market.takerFeeRate).minus(market.makerFeeRate)
+        new BigNumberInBase(takerFeeRate).minus(makerFeeRate)
       )
+    },
+
+    feeRebates(): BigNumberInBase {
+      const { total, market } = this
+
+      if (total.isNaN() || !market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(
+        total.times(market.makerFeeRate).absoluteValue()
+      ).times(0.6 /* Only 60% of the fees are getting returned */)
     },
 
     total(): BigNumberInBase {
@@ -1033,6 +1129,7 @@ export default Vue.extend({
       const {
         market,
         buys,
+        takerFeeRate,
         sells,
         form,
         tradingTypeMarket,
@@ -1075,7 +1172,7 @@ export default Vue.extend({
         return ''
       }
 
-      const fee = new BigNumberInBase(market.takerFeeRate)
+      const fee = new BigNumberInBase(takerFeeRate)
 
       return new BigNumberInBase(availableMargin)
         .times(form.leverage)
@@ -1230,7 +1327,7 @@ export default Vue.extend({
         orderTypeReduceOnly,
         market,
         margin,
-        executionPrice,
+        executionPriceWithSlippage,
         amount
       } = this
 
@@ -1245,7 +1342,7 @@ export default Vue.extend({
           orderType,
           margin,
           reduceOnly: orderTypeReduceOnly,
-          price: executionPrice,
+          price: executionPriceWithSlippage,
           quantity: amount
         })
         .then(() => {

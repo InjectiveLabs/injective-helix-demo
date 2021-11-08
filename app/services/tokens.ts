@@ -2,7 +2,6 @@ import { AccountAddress, ChainId } from '@injectivelabs/ts-types'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { BaseCurrencyContract } from '@injectivelabs/contracts/dist/contracts/BaseCurrency'
-import { contractAddresses } from '@injectivelabs/contracts'
 import { PeggyComposer } from '@injectivelabs/chain-consumer'
 import { Erc20TokenMeta, TokenMeta } from '@injectivelabs/token-metadata'
 import { TxProvider } from '~/app/providers/TxProvider'
@@ -319,7 +318,7 @@ export const getTokenMetaData = (denom: string): TokenMeta | undefined => {
   const address = denom.startsWith('peggy') ? denom.replace('peggy', '') : denom
   const erc20Address =
     address.toLowerCase() === 'inj'
-      ? contractAddresses[CHAIN_ID].injective
+      ? getTokenMetaDataBySymbol('INJ')!.address
       : address
 
   const meta =

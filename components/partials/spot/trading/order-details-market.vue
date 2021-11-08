@@ -7,6 +7,12 @@
     >
       <p slot="header" class="flex justify-between">
         <v-text-info :title="$t('total')" lg>
+          <v-icon-info-tooltip
+            slot="context"
+            class="ml-2"
+            :tooltip="$t('market_total_tooltip')"
+          />
+
           <span class="font-mono flex items-center">
             <span class="mr-1">≈</span>
             {{ extractedTotalToFormat }}
@@ -44,7 +50,7 @@
           <v-icon-info-tooltip
             slot="context"
             class="ml-2"
-            :tooltip="$t('est_receiving_amount_note Tooltip')"
+            :tooltip="$t('est_receiving_amount_note')"
           />
           <span v-if="total.gt(0)" class="font-mono flex items-center">
             {{ totalToFormat }}
@@ -56,11 +62,28 @@
         </v-text-info>
 
         <v-text-info :title="$t('fee')" class="mt-2">
-          <v-icon-info-tooltip
-            slot="context"
-            class="ml-2"
-            :tooltip="$t('fees_tooltip')"
-          />
+          <div slot="context">
+            <div class="flex items-center">
+              <v-icon-info-tooltip
+                slot="context"
+                class="ml-2"
+                :tooltip="$t('fees_tooltip')"
+              />
+              <v-icon-check-tooltip
+                v-if="
+                  !marketHasNegativeMakerFee &&
+                  (makerFeeRateDiscount.gt(0) || takerFeeRateDiscount.gt(0))
+                "
+                class="ml-2 text-primary-500"
+                :tooltip="
+                  $t('fees_tooltip_discount', {
+                    maker: makerFeeRateDiscount.times(100).toFixed(),
+                    taker: takerFeeRateDiscount.times(100).toFixed()
+                  })
+                "
+              />
+            </div>
+          </div>
           <span v-if="fees.gt(0)" class="font-mono flex items-center">
             <span class="mr-1">≈</span>
             {{ feesToFormat }}
@@ -122,6 +145,16 @@ export default Vue.extend({
       type: Object as PropType<BigNumberInBase>
     },
 
+    takerFeeRateDiscount: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    makerFeeRateDiscount: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
     feeReturned: {
       required: true,
       type: Object as PropType<BigNumberInBase>
@@ -161,6 +194,16 @@ export default Vue.extend({
 
     slippage(): BigNumberInBase {
       return new BigNumberInBase(DEFAULT_MAX_SLIPPAGE)
+    },
+
+    marketHasNegativeMakerFee(): boolean {
+      const { market } = this
+
+      if (!market) {
+        return false
+      }
+
+      return new BigNumberInBase(market.makerFeeRate).lt(0)
     },
 
     extractedTotal(): BigNumberInBase {

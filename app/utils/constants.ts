@@ -55,7 +55,6 @@ export const DEFAULT_MAX_SLIPPAGE = new BigNumber(5) // +1% slippage
 export const DEFAULT_MAX_SLIPPAGE_FOR_CLOSING_POSITIONS = new BigNumber(100) // +1% slippage
 
 export const MAX_DISPLAYABLE_NUMBER = new BigNumberInBase(1_000_000_000)
-export const MAX_SMALLER_DISPLAYABLE_NUMBER = new BigNumberInBase(1_000_000)
 export const MAXIMUM_TRANSFER_ALLOWED = 1000
 export const MAXIMUM_NOTIONAL_ALLOWED = 5000
 export const INJECTIVE_DENOM = 'inj'

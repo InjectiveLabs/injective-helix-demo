@@ -14,6 +14,13 @@ export type BankBalanceWithTokenMetaDataAndBalance = {
   token: TokenWithBalance
 }
 
+export type SubaccountBalanceWithTokenMetaData = {
+  availableBalance: string
+  totalBalance: string
+  denom: string
+  token: TokenWithBalance
+}
+
 export interface IbcBankBalanceWithTokenMetaData
   extends BankBalanceWithTokenMetaData {
   baseDenom: string

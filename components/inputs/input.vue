@@ -9,13 +9,13 @@
           class="block text-xs font-semibold text-gray-200"
           v-html="$attrs.label || ''"
         >
-          <span
-            v-if="error && !errorBelow"
-            class="text-red-400 italic font-semibold"
-          >
-            * {{ error }}
-          </span>
         </label>
+        <span
+          v-if="error && !errorBelow"
+          class="text-red-400 italic font-semibold"
+        >
+          * {{ error }}
+        </span>
         <div v-if="$slots['context']" class="leading-none">
           <slot name="context" />
         </div>
@@ -41,6 +41,7 @@
           }"
           @blur="handleBlur"
           @input="handleChangeOnInput"
+          @wheel="$event.target.blur()"
         />
         <div
           class="addon absolute inset-y-0 right-0 flex items-center"

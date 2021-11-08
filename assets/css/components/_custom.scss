@@ -23,7 +23,7 @@
   }
 
   @screen 4xl {
-    @apply h-3xl;
+    height: 38rem;
   }
 }
 
@@ -31,11 +31,11 @@
   @apply h-48;
 
   @screen lg {
-    @apply h-2xs;
+    height: 15.5rem;
   }
 
   @screen 4xl {
-    height: 21rem;
+    height: 16rem;
   }
 }
 
@@ -43,7 +43,7 @@
   @apply h-8;
 
   @screen lg {
-    @apply h-8;
+    @apply h-12;
   }
 
   @screen 4xl {
@@ -53,6 +53,10 @@
 
 .card-table-wrap-content {
   @apply bg-gray-900 px-4 py-2 rounded-lg mt-2 flex-1 w-full;
+}
+
+.card-table-wrap-content-lighter {
+  @apply bg-gray-800 px-4 py-2 rounded-lg mt-2 flex-1 w-full;
 }
 
 .toasted.bubble {

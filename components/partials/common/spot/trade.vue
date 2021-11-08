@@ -14,23 +14,45 @@
           'text-red-500': !tradeTypeBuy
         }"
       >
-        {{ priceToFormat }}
+        <v-number
+          :decimals="
+            market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+          "
+          :number="price"
+        />
       </span>
     </td>
     <td class="h-8 text-right font-mono">
-      {{ quantityToFormat }}
+      <v-number
+        :decimals="
+          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+        "
+        :number="quantity"
+      />
     </td>
     <td class="h-8 text-right font-mono">
-      {{ totalToFormat }}
-      <span class="text-2xs text-gray-500">
-        {{ market.quoteToken.symbol }}
-      </span>
+      <v-number
+        :decimals="
+          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+        "
+        :number="total"
+      >
+        <span slot="addon" class="text-2xs text-gray-500">
+          {{ market.quoteToken.symbol }}
+        </span>
+      </v-number>
     </td>
     <td class="h-8 text-right font-mono">
-      {{ feeToFormat }}
-      <span class="text-2xs text-gray-500">
-        {{ market.quoteToken.symbol }}
-      </span>
+      <v-number
+        :decimals="
+          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+        "
+        :number="fee"
+      >
+        <span slot="addon" class="text-2xs text-gray-500">
+          {{ market.quoteToken.symbol }}
+        </span>
+      </v-number>
     </td>
     <td class="h-8 text-center">
       <v-badge :aqua="tradeTypeBuy" :red="!tradeTypeBuy" sm>
@@ -74,6 +96,8 @@ export default Vue.extend({
 
   data() {
     return {
+      UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+      UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
       TradeDirection,
       TradeExecutionType
     }
@@ -128,16 +152,6 @@ export default Vue.extend({
       )
     },
 
-    priceToFormat(): string {
-      const { market, price } = this
-
-      if (!market) {
-        return price.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return price.toFormat(market.priceDecimals)
-    },
-
     quantity(): BigNumberInBase {
       const { market, trade } = this
 
@@ -150,30 +164,10 @@ export default Vue.extend({
       )
     },
 
-    quantityToFormat(): string {
-      const { market, quantity } = this
-
-      if (!market) {
-        return quantity.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
-      }
-
-      return quantity.toFormat(market.quantityDecimals)
-    },
-
     total(): BigNumberInBase {
       const { quantity, price } = this
 
       return quantity.times(price)
-    },
-
-    totalToFormat(): string {
-      const { market, total } = this
-
-      if (!market) {
-        return total.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return total.toFormat(market.priceDecimals)
     },
 
     time(): string {
@@ -194,16 +188,6 @@ export default Vue.extend({
       }
 
       return new BigNumberInWei(trade.fee).toBase(market.quoteToken.decimals)
-    },
-
-    feeToFormat(): string {
-      const { market, fee } = this
-
-      if (!market) {
-        return fee.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return fee.toFormat(market.priceDecimals)
     },
 
     tradeDirection(): string {

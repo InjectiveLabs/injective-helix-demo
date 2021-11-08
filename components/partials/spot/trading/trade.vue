@@ -1,5 +1,5 @@
 <template>
-  <div v-if="market" class="w-full">
+  <div v-if="market" class="px-4 w-full">
     <div class="flex items-center justify-center">
       <v-button
         :class="{
@@ -112,12 +112,15 @@
       v-bind="{
         price: executionPrice,
         orderType,
+        makerFeeRateDiscount,
+        takerFeeRateDiscount,
         orderTypeBuy,
         fees,
         total,
         totalWithFees,
         totalWithoutFees,
         feeReturned,
+        feeRebates,
         amount,
         detailsDrawerOpen
       }"
@@ -172,6 +175,8 @@ import {
   calculateWorstExecutionPriceFromOrderbook,
   getApproxAmountForMarketOrder
 } from '~/app/services/spot'
+import { cosmosSdkDecToBigNumber } from '~/app/transformers'
+import { FeeDiscountAccountInfo } from '~/types/exchange'
 
 interface TradeForm {
   amount: string
@@ -226,6 +231,10 @@ export default Vue.extend({
 
     lastTradedPrice(): BigNumberInBase {
       return this.$accessor.spot.lastTradedPrice
+    },
+
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
     },
 
     baseAvailableBalance(): BigNumberInBase {
@@ -319,6 +328,66 @@ export default Vue.extend({
         orderTypeBuy
           ? DEFAULT_MAX_SLIPPAGE.div(100).plus(1)
           : DEFAULT_MAX_SLIPPAGE.div(100).minus(1).times(-1)
+      )
+    },
+
+    makerFeeRateDiscount(): BigNumberInBase {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return ZERO_IN_BASE
+      }
+
+      if (!feeDiscountAccountInfo.accountInfo) {
+        return ZERO_IN_BASE
+      }
+
+      const discount = cosmosSdkDecToBigNumber(
+        feeDiscountAccountInfo.accountInfo.makerDiscountRate
+      )
+
+      return new BigNumberInBase(discount)
+    },
+
+    takerFeeRateDiscount(): BigNumberInBase {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return ZERO_IN_BASE
+      }
+
+      if (!feeDiscountAccountInfo.accountInfo) {
+        return ZERO_IN_BASE
+      }
+
+      const discount = cosmosSdkDecToBigNumber(
+        feeDiscountAccountInfo.accountInfo.takerDiscountRate
+      )
+
+      return new BigNumberInBase(discount)
+    },
+
+    makerFeeRate(): BigNumberInBase {
+      const { market, makerFeeRateDiscount } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(market.makerFeeRate).times(
+        new BigNumberInBase(1).minus(makerFeeRateDiscount)
+      )
+    },
+
+    takerFeeRate(): BigNumberInBase {
+      const { market, takerFeeRateDiscount } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(market.takerFeeRate).times(
+        new BigNumberInBase(1).minus(takerFeeRateDiscount)
       )
     },
 
@@ -698,6 +767,18 @@ export default Vue.extend({
       return total.times(
         new BigNumberInBase(market.takerFeeRate).minus(market.makerFeeRate)
       )
+    },
+
+    feeRebates(): BigNumberInBase {
+      const { total, market } = this
+
+      if (total.isNaN() || !market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(
+        total.times(market.makerFeeRate).absoluteValue()
+      ).times(0.6 /* Only 60% of the fees are getting returned */)
     }
   },
 

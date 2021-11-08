@@ -1,6 +1,8 @@
 const spot = [
   'inj-usdt',
   'inj-usdc',
+  'bnb-usdt',
+  'bnb-usdc',
   'axs-usdt',
   'wbtc-usdc',
   'wbtc-usdt',
@@ -30,8 +32,12 @@ const spot = [
 const derivatives = [
   'inj-usdt-perp',
   'inj-usdt',
+  'bnb-usdt-perp',
+  'bnb-usdt',
   'btc-usdt-perp',
   'btc-usdt',
+  'btc-usdc-perp',
+  'btc-usdc',
   'eth-usdt-perp',
   'eth-usdt',
   'link-usdt-perp',
@@ -53,6 +59,9 @@ module.exports = [
   '/portfolio',
   '/wallet',
   '/history',
+  '/fees',
+  '/rewards',
+  '/faq',
   ...spot.map((s) => `/spot/${s}`),
   ...derivatives.map((d) => `/derivatives/${d}`)
 ]

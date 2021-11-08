@@ -10,7 +10,7 @@
           {{ `(${derivativesTrades.length})` }}
         </span>
       </v-button-filter>
-      <div class="mx-2 w-px h-4 bg-gray-500"></div>
+      <v-separator />
       <v-button-filter
         v-model="component"
         :option="components.spotTradeHistory"

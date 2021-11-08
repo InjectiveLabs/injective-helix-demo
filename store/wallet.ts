@@ -196,6 +196,14 @@ export const actions = actionTree(
         await this.app.$accessor.wallet.initPage()
       }
 
+      if (this.app.context.route.name === 'rewards') {
+        await this.app.$accessor.exchange.initRewards()
+      }
+
+      if (this.app.context.route.name === 'fees') {
+        await this.app.$accessor.exchange.initFees()
+      }
+
       commit('setWalletConnectStatus', WalletConnectStatus.connected)
     },
 
@@ -239,6 +247,14 @@ export const actions = actionTree(
 
       if (this.app.context.route.name === 'wallet') {
         await this.app.$accessor.wallet.initPage()
+      }
+
+      if (this.app.context.route.name === 'rewards') {
+        await this.app.$accessor.exchange.initRewards()
+      }
+
+      if (this.app.context.route.name === 'fees') {
+        await this.app.$accessor.exchange.initFees()
       }
 
       commit('setWalletConnectStatus', WalletConnectStatus.connected)

@@ -1,6 +1,11 @@
 /* eslint-disable no-console */
 import { Context } from '@nuxt/types'
-import { IS_PRODUCTION } from '~/app/utils/constants'
+import {
+  IS_DEVELOPMENT,
+  IS_PRODUCTION,
+  IS_TESTNET,
+  NETWORK
+} from '~/app/utils/constants'
 
 const isErrorExcludedFromReporting = (error: any): boolean => {
   const disabledMessages = [
@@ -24,7 +29,9 @@ export default ({ app }: Context, inject: any) => {
 
     if (IS_PRODUCTION && !isErrorExcludedFromReporting(error)) {
       app.$bugsnag.notify(error)
-    } else {
+    }
+
+    if (IS_DEVELOPMENT || IS_TESTNET) {
       console.error(error)
     }
   })
@@ -34,7 +41,9 @@ export default ({ app }: Context, inject: any) => {
 
     if (IS_PRODUCTION && !isErrorExcludedFromReporting(error)) {
       app.$bugsnag.notify(error)
-    } else {
+    }
+
+    if (IS_DEVELOPMENT || IS_TESTNET) {
       console.error(error)
     }
   })

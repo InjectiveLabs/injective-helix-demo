@@ -19,7 +19,7 @@ import Vue from 'vue'
 import { Status } from '@injectivelabs/utils'
 import Position from '~/components/partials/common/derivatives/position.vue'
 import PositionTableHeader from '~/components/partials/common/derivatives/position-table.header.vue'
-import { UiPosition, Icon } from '~/types'
+import { UiPosition } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -29,7 +29,6 @@ export default Vue.extend({
 
   data() {
     return {
-      Icon,
       status: new Status()
     }
   },

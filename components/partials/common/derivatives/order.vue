@@ -14,17 +14,33 @@
           'text-red-500': order.orderSide === DerivativeOrderSide.Sell
         }"
       >
-        {{ priceToFormat }}
+        <v-number
+          :decimals="
+            market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+          "
+          :number="price"
+        />
       </span>
     </td>
     <td class="h-8 text-right font-mono">
-      {{ quantityToFormat }}
+      <v-number
+        :decimals="
+          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+        "
+        :number="quantity"
+      />
     </td>
     <td class="h-8 font-mono text-right">
-      {{ totalToFormat }}
-      <span class="text-2xs text-gray-500">
-        {{ market.quoteToken.symbol }}
-      </span>
+      <v-number
+        :decimals="
+          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+        "
+        :number="total"
+      >
+        <span slot="addon" class="text-2xs text-gray-500">
+          {{ market.quoteToken.symbol }}
+        </span>
+      </v-number>
     </td>
     <td class="h-8 text-right font-mono">
       <span v-if="leverage.isNaN()">&mdash;</span>
@@ -45,7 +61,12 @@
       </v-badge>
     </td>
     <td class="h-8 text-right font-mono">
-      {{ unfilledQuantityToFormat }}
+      <v-number
+        :decimals="
+          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+        "
+        :number="unfilledQuantity"
+      />
     </td>
     <td class="h-8 text-center">
       <v-badge v-if="orderFullyFilled" primary xs>
@@ -83,8 +104,7 @@ import {
 import {
   UiDerivativeMarket,
   DerivativeOrderSide,
-  UiDerivativeLimitOrder,
-  Icon
+  UiDerivativeLimitOrder
 } from '~/types'
 
 export default Vue.extend({
@@ -97,8 +117,9 @@ export default Vue.extend({
 
   data() {
     return {
-      Icon,
       DerivativeOrderSide,
+      UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+      UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
       status: new Status()
     }
   },
@@ -152,16 +173,6 @@ export default Vue.extend({
       return new BigNumberInWei(order.price).toBase(market.quoteToken.decimals)
     },
 
-    priceToFormat(): string {
-      const { market, price } = this
-
-      if (!market) {
-        return price.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return price.toFormat(market.priceDecimals)
-    },
-
     margin(): BigNumberInBase {
       const { market, order } = this
 
@@ -170,16 +181,6 @@ export default Vue.extend({
       }
 
       return new BigNumberInWei(order.margin).toBase(market.quoteToken.decimals)
-    },
-
-    marginToFormat(): string {
-      const { market, margin } = this
-
-      if (!market) {
-        return margin.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return margin.toFormat(market.priceDecimals)
     },
 
     quantity(): BigNumberInBase {
@@ -210,16 +211,6 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(order.unfilledQuantity)
-    },
-
-    unfilledQuantityToFormat(): string {
-      const { market, unfilledQuantity } = this
-
-      if (!market) {
-        return unfilledQuantity.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
-      }
-
-      return unfilledQuantity.toFormat(market.quantityDecimals)
     },
 
     filledQuantity(): BigNumberInBase {
@@ -268,16 +259,6 @@ export default Vue.extend({
       const { price, quantity } = this
 
       return price.multipliedBy(quantity)
-    },
-
-    totalToFormat(): string {
-      const { market, total } = this
-
-      if (!market) {
-        return total.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return total.toFormat(market.priceDecimals)
     },
 
     orderSideLocalized(): string {

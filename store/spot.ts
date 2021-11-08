@@ -273,6 +273,7 @@ export const actions = actionTree(
       await this.app.$accessor.spot.fetchSubaccountOrders()
       await this.app.$accessor.spot.fetchSubaccountTrades()
       await this.app.$accessor.account.streamSubaccountBalances()
+      // await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
     },
 
     streamOrderbook({ commit, state }) {

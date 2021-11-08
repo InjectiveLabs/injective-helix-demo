@@ -170,6 +170,7 @@ export const actions = actionTree(
       await this.app.$accessor.portfolio.streamSubaccountOrders()
       await this.app.$accessor.token.getAllTokenWithBalanceAndAllowance()
       await this.app.$accessor.bank.fetchBalances()
+      await this.app.$accessor.token.getAllTokenWithBalanceAndAllowance()
       await this.app.$accessor.account.fetchAccountPortfolio()
     },
 
