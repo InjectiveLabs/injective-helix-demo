@@ -81,7 +81,7 @@ export default Vue.extend({
       this.status.setLoading()
 
       this.$accessor.wallet
-        .confirm([this.form.address])
+        .connectLedger([this.form.address])
         .then(() => {
           //
         })
