@@ -225,6 +225,8 @@ export default {
     'Note: It should take around 4 minutes for your transfer to appear after your transaction has been confirmed on Ethereum.',
   orderbook_liquidity_cannot_satisfy:
     'Orderbook liquidity cannot satisfy the worst price for the specified amount',
+  order_price_low_warn: 'Order price is too low',
+  order_price_high_warn: 'Order price is too high',
   'Connect using Ledger': 'Connect using Ledger',
   'Connect using Ledger instructions':
     'Note: To ensure smooth process while connecting your Ledger Hardware Wallet, please ensure you are running the on latest Chrome version, have your Ledger device connected, unlocked and your Ethereum app open. ',

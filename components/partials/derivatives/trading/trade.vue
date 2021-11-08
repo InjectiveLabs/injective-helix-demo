@@ -635,7 +635,9 @@ export default Vue.extend({
       if (maxLeverage.gte(0) && leverage.gt(maxLeverage)) {
         return {
           price: leverage.eq(1)
-            ? this.$t('orderbook_liquidity_cannot_satisfy')
+            ? orderTypeBuy
+              ? this.$t('order_price_high_warn')
+              : this.$t('order_price_low_warn')
             : this.$t('max_leverage_warn')
         }
       }
