@@ -284,10 +284,6 @@ export default Vue.extend({
       return this.$accessor.derivatives.subaccountPosition
     },
 
-    derivativeMarkPrice(): string {
-      return this.$accessor.derivatives.marketMarkPrice
-    },
-
     feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
       return this.$accessor.exchange.feeDiscountAccountInfo
     },
@@ -761,12 +757,12 @@ export default Vue.extend({
 
       const notional = executionPrice.times(amount)
       const dividend = orderTypeBuy
-        ? notional.minus(margin)
+        ? margin.minus(notional)
         : margin.plus(notional)
       const divisor = amount.times(
         orderTypeBuy
-          ? new BigNumberInBase(1).minus(market.initialMarginRatio)
-          : new BigNumberInBase(market.initialMarginRatio).plus(1)
+          ? new BigNumberInBase(market.initialMarginRatio).minus(1)
+          : new BigNumberInBase(1).plus(market.initialMarginRatio)
       )
       const condition = dividend.div(divisor)
 
@@ -979,7 +975,7 @@ export default Vue.extend({
 
     notionalValue(): BigNumberInBase {
       const {
-        derivativeMarkPrice,
+        marketMarkPrice,
         tradingTypeMarket,
         executionPrice,
         amount,
@@ -991,7 +987,7 @@ export default Vue.extend({
       }
 
       const price = tradingTypeMarket
-        ? new BigNumberInBase(derivativeMarkPrice)
+        ? new BigNumberInBase(marketMarkPrice)
         : executionPrice
       const notional = amount.times(price)
 
