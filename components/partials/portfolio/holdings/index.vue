@@ -108,7 +108,7 @@ export default Vue.extend({
     sortedBalances(): SubaccountBalanceWithTokenMetaDataWithUsdBalance[] {
       const { balances } = this
 
-      return balances.sort(
+      return [...balances].sort(
         (
           v1: SubaccountBalanceWithTokenMetaDataWithUsdBalance,
           v2: SubaccountBalanceWithTokenMetaDataWithUsdBalance

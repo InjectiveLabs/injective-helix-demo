@@ -147,7 +147,7 @@ export default Vue.extend({
     sortedBalances(): BankBalanceWithTokenMetaDataAndBalanceWithUsdBalance[] {
       const { balances } = this
 
-      return balances
+      return [...balances]
         .map((balance) => {
           const balanceInUsd = new BigNumberInWei(balance.balance)
             .toBase(balance.token.decimals)
