@@ -28,7 +28,7 @@
         :show-empty="balances.length === 0"
       >
         <v-balance
-          v-for="(balance, index) in balances"
+          v-for="(balance, index) in sortedBalances"
           :key="`balance-${index}`"
           class="col-span-1"
           :balance="balance"
@@ -46,12 +46,14 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { BigNumberInWei } from '@injectivelabs/utils'
 import VBalance from './balance.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import TableHeader from '~/components/elements/table-header.vue'
 import { UiSubaccount } from '~/types'
 import { TokenWithBalance } from '~/types/token'
-import { SubaccountBalanceWithTokenMetaData } from '~/types/bank'
+import { SubaccountBalanceWithTokenMetaDataWithUsdBalance } from '~/types/bank'
+import { INJECTIVE_DENOM } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -73,7 +75,7 @@ export default Vue.extend({
       return this.$accessor.token.erc20TokensWithBalanceFromBank
     },
 
-    balances(): SubaccountBalanceWithTokenMetaData[] {
+    balances(): SubaccountBalanceWithTokenMetaDataWithUsdBalance[] {
       const { subaccount, erc20TokensWithBalanceAndAllowance } = this
 
       if (!subaccount) {
@@ -86,14 +88,43 @@ export default Vue.extend({
             (token) => token.denom.toLowerCase() === balance.denom.toLowerCase()
           )
 
+          const balanceInUsd = tokenWithBalance
+            ? new BigNumberInWei(balance.totalBalance)
+                .toBase(tokenWithBalance.decimals)
+                .times(tokenWithBalance?.priceInUsd || 0)
+            : new BigNumberInWei(0)
+
           return {
             ...balance,
+            balanceInUsd,
             token: tokenWithBalance
           }
         })
         .filter(
           (balance) => !!balance.token
-        ) as SubaccountBalanceWithTokenMetaData[]
+        ) as SubaccountBalanceWithTokenMetaDataWithUsdBalance[]
+    },
+
+    sortedBalances(): SubaccountBalanceWithTokenMetaDataWithUsdBalance[] {
+      const { balances } = this
+
+      return balances.sort(
+        (
+          v1: SubaccountBalanceWithTokenMetaDataWithUsdBalance,
+          v2: SubaccountBalanceWithTokenMetaDataWithUsdBalance
+        ) => {
+          // sort INJ to the top
+          if (v1.denom === INJECTIVE_DENOM) {
+            return -1
+          }
+
+          if (v2.denom === INJECTIVE_DENOM) {
+            return 1
+          }
+
+          return v2.balanceInUsd.minus(v1.balanceInUsd).toNumber()
+        }
+      )
     }
   }
 })

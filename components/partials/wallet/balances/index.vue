@@ -27,7 +27,7 @@
         :show-empty="balances.length === 0"
       >
         <v-balance
-          v-for="(balance, index) in balances"
+          v-for="(balance, index) in sortedBalances"
           :key="`balance-${index}`"
           class="col-span-1"
           :balance="balance"
@@ -45,6 +45,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { BigNumberInWei } from '@injectivelabs/utils'
 import VBalance from './balance.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import TableHeader from '~/components/elements/table-header.vue'
@@ -52,8 +53,10 @@ import { TokenWithBalance } from '~/types/token'
 import {
   BankBalanceWithTokenMetaData,
   BankBalanceWithTokenMetaDataAndBalance,
+  BankBalanceWithTokenMetaDataAndBalanceWithUsdBalance,
   IbcBankBalanceWithTokenMetaData
 } from '~/types/bank'
+import { INJECTIVE_DENOM } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -128,7 +131,50 @@ export default Vue.extend({
     balances(): BankBalanceWithTokenMetaDataAndBalance[] {
       const { ercBalances, ibcBalances } = this
 
-      return [...ercBalances, ...ibcBalances]
+      // calculate and append total USD balances
+      return [...ercBalances, ...ibcBalances].map((balance) => {
+        const balanceInUsd = new BigNumberInWei(balance.balance)
+          .toBase(balance.token.decimals)
+          .times(balance.token?.priceInUsd || 0)
+
+        return {
+          ...balance,
+          balanceInUsd
+        }
+      })
+    },
+
+    sortedBalances(): BankBalanceWithTokenMetaDataAndBalanceWithUsdBalance[] {
+      const { balances } = this
+
+      return balances
+        .map((balance) => {
+          const balanceInUsd = new BigNumberInWei(balance.balance)
+            .toBase(balance.token.decimals)
+            .times(balance.token?.priceInUsd || 0)
+
+          return {
+            ...balance,
+            balanceInUsd
+          }
+        })
+        .sort(
+          (
+            v1: BankBalanceWithTokenMetaDataAndBalanceWithUsdBalance,
+            v2: BankBalanceWithTokenMetaDataAndBalanceWithUsdBalance
+          ) => {
+            // sort INJ to the top
+            if (v1.denom === INJECTIVE_DENOM) {
+              return -1
+            }
+
+            if (v2.denom === INJECTIVE_DENOM) {
+              return 1
+            }
+
+            return v2.balanceInUsd.minus(v1.balanceInUsd).toNumber()
+          }
+        )
     }
   }
 })
