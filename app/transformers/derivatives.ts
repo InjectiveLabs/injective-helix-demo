@@ -1,8 +1,4 @@
-import {
-  BigNumber,
-  BigNumberInBase,
-  BigNumberInWei
-} from '@injectivelabs/utils'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import {
   getTokenMetaData,
   getTokenMetaDataBySymbol,
@@ -11,6 +7,7 @@ import {
 import { grpcTokenMetaToToken, tokenMetaToToken } from './token'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
 import { derivatives as sortPerpetualMarkets } from '~/routes.config'
+import { filteredMarkets as filterPerpetualMarkets } from '~/components/partials/derivatives/filter'
 import {
   BaseUiDerivativeMarket,
   UiDerivativeMarket,
@@ -75,8 +72,9 @@ export const derivativeMarketsToUiDerivativeMarkets = (
       )
     )
     .filter(tokenMetaDataExists)
-    .filter((market) =>
-      sortPerpetualMarkets.includes(market.slug)
+    .filter((market) => sortPerpetualMarkets.includes(market.slug))
+    .filter(
+      (market) => !filterPerpetualMarkets.includes(market.slug)
     ) as BaseUiDerivativeMarketWithTokenMetaData[]
 
   const mappedMarkets = filteredMarkets.map((m) =>

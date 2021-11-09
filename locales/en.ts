@@ -292,7 +292,7 @@ export default {
   perp: 'Perp',
   futures: 'Futures',
   perpetuals: 'Perpetuals',
-  spots: 'Spots',
+  spots: 'Spot',
   markets: 'Markets',
   Portfolio: 'Portfolio',
   open_derivatives_order: 'Open Derivative Orders',

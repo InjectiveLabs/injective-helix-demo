@@ -265,8 +265,8 @@ export default Vue.extend({
       const { order } = this
 
       return order.orderSide === DerivativeOrderSide.Buy
-        ? this.$t('long')
-        : this.$t('short')
+        ? this.$t('buy')
+        : this.$t('sell')
     }
   },
 

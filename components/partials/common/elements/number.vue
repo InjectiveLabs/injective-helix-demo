@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span class="break-all font-mono leading-5 inline-block">
+    <span class="font-mono leading-5 inline-block">
       <div class="flex">
         <span class="">{{ prefix || '' }}{{ formattedNumber[0] }}</span>
         <span v-if="formattedNumber[1]" class="opacity-25">{{
