@@ -25,10 +25,8 @@
         }"
       >
         <v-number
-          :decimals="
-            market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-          "
-          :number="price"
+          :decimals="aggregation"
+          :number="record.displayPrice"
           dont-group-values
         />
       </span>
@@ -101,6 +99,11 @@ export default Vue.extend({
     record: {
       required: true,
       type: Object as PropType<UiOrderbookPriceLevel>
+    },
+
+    aggregation: {
+      type: Number,
+      required: true
     }
   },
 
