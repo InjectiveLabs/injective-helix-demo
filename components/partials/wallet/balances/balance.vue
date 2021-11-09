@@ -91,7 +91,7 @@ import {
   ZERO_IN_BASE,
   MAX_DISPLAYABLE_NUMBER
 } from '~/app/utils/constants'
-import { BankBalanceWithTokenMetaDataAndBalance } from '~/types/bank'
+import { BankBalanceWithTokenMetaDataAndBalanceWithUsdBalance } from '~/types/bank'
 
 export default Vue.extend({
   components: {
@@ -101,7 +101,7 @@ export default Vue.extend({
   props: {
     balance: {
       required: true,
-      type: Object as PropType<BankBalanceWithTokenMetaDataAndBalance>
+      type: Object as PropType<BankBalanceWithTokenMetaDataAndBalanceWithUsdBalance>
     }
   },
 
@@ -128,22 +128,16 @@ export default Vue.extend({
       return bankBalance.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
-    bankBalanceInUsd(): BigNumberInBase {
-      const { bankBalance, balance } = this
-
-      return bankBalance.times(balance.token.priceInUsd || 0)
-    },
-
     bankBalanceInUsdToString(): string {
-      const { bankBalanceInUsd } = this
+      const { balance } = this
 
-      if (bankBalanceInUsd.gt(MAX_DISPLAYABLE_NUMBER)) {
+      if (balance.balanceInUsd.gt(MAX_DISPLAYABLE_NUMBER)) {
         return ` > ${MAX_DISPLAYABLE_NUMBER.toFormat(
           UI_DEFAULT_MIN_DISPLAY_DECIMALS
         )}`
       }
 
-      return bankBalanceInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      return balance.balanceInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
     erc20Balance(): BigNumberInBase {
