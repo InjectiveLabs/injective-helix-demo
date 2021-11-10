@@ -33,7 +33,7 @@
         </div>
       </item>
       <item class="text-footer">
-        <nuxt-link class="cursor-pointer" :to="{ name: 'fees' }">
+        <nuxt-link class="cursor-pointer" :to="{ name: 'fee-discounts' }">
           {{ $t('fee_discounts_footer') }}
         </nuxt-link>
       </item>

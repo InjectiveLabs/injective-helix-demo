@@ -196,11 +196,11 @@ export const actions = actionTree(
         await this.app.$accessor.wallet.initPage()
       }
 
-      if (this.app.context.route.name === 'rewards') {
+      if (this.app.context.route.name === 'trade-and-earn') {
         await this.app.$accessor.exchange.initRewards()
       }
 
-      if (this.app.context.route.name === 'fees') {
+      if (this.app.context.route.name === 'fee-discounts') {
         await this.app.$accessor.exchange.initFees()
       }
 
@@ -249,11 +249,11 @@ export const actions = actionTree(
         await this.app.$accessor.wallet.initPage()
       }
 
-      if (this.app.context.route.name === 'rewards') {
+      if (this.app.context.route.name === 'trade-and-earn') {
         await this.app.$accessor.exchange.initRewards()
       }
 
-      if (this.app.context.route.name === 'fees') {
+      if (this.app.context.route.name === 'fee-discounts') {
         await this.app.$accessor.exchange.initFees()
       }
 
