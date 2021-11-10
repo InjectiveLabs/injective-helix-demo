@@ -259,8 +259,13 @@ export default Vue.extend({
           new BigNumberInBase(0)
         )
 
+        const aggregatePrices = orderGroup.map(
+          ({ price }: UiPriceLevel) => price
+        )
+
         return {
           ...firstOrder,
+          aggregatePrices,
           notional,
           quantity
         }
@@ -344,8 +349,13 @@ export default Vue.extend({
             new BigNumberInBase(0)
           )
 
+          const aggregatePrices = orderGroup.map(
+            ({ price }: UiPriceLevel) => price
+          )
+
           return {
             ...firstOrder,
+            aggregatePrices,
             notional,
             quantity
           }

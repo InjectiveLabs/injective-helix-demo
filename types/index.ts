@@ -15,6 +15,8 @@ export interface UiOrderbookPriceLevel {
   oldQuantity?: string
   total: string
   depth: number
+  aggregatePrices?: string[]
+  displayPrice?: string
 }
 
 export interface UiPriceLevel {
@@ -22,6 +24,7 @@ export interface UiPriceLevel {
   quantity: string
   timestamp: number
   notional?: BigNumberInBase
+  aggregatePrices?: string[]
 }
 
 export interface GeoLocation {

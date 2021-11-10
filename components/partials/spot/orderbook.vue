@@ -25,6 +25,7 @@
         </v-button>
       </div>
       <v-aggregation-selector
+        v-if="component === components.orderbook"
         class="pr-2"
         :value="aggregation"
         @click="handleAggregationChange"
@@ -46,6 +47,7 @@ import Vue from 'vue'
 import Orderbook from './orderbook/index.vue'
 import Trades from './trades/index.vue'
 import AggregationSelector from '~/components/partials/common/orderbook/aggregation-selector.vue'
+import { UI_DEFAULT_AGGREGATION_DECIMALS } from '~/app/utils/constants'
 
 const components = {
   orderbook: 'v-orderbook',
@@ -61,10 +63,16 @@ export default Vue.extend({
 
   data() {
     return {
-      aggregation: 3, // default aggregation decimal
+      aggregation: UI_DEFAULT_AGGREGATION_DECIMALS, // default aggregation decimal
       components,
       component: components.orderbook
     }
+  },
+
+  mounted() {
+    this.aggregation =
+      this.$accessor.spot.market?.priceDecimals ||
+      UI_DEFAULT_AGGREGATION_DECIMALS
   },
 
   methods: {
