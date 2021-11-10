@@ -35,7 +35,6 @@ import {
   UiDerivativeMarket,
   UiDerivativeMarketSummary,
   UiPosition,
-  UiSpotMarket,
   BaseUiDerivativeMarketWithTokenMetaData,
   TradeDirection,
   Token
