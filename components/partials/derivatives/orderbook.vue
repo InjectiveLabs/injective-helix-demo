@@ -24,10 +24,20 @@
           <span>{{ $t('trades') }}</span>
         </v-button>
       </div>
+      <v-aggregation-selector
+        v-if="component === components.orderbook"
+        class="pr-2"
+        :value="aggregation"
+        @click="handleAggregationChange"
+      />
     </div>
 
     <div class="bg-gray-900 rounded-lg mt-2 orderbook-h">
-      <component :is="component" v-if="component"></component>
+      <component
+        :is="component"
+        v-if="component"
+        :aggregation="aggregation"
+      ></component>
     </div>
   </div>
 </template>
@@ -36,6 +46,8 @@
 import Vue from 'vue'
 import Orderbook from './orderbook/index.vue'
 import Trades from './trades/index.vue'
+import AggregationSelector from '~/components/partials/common/orderbook/aggregation-selector.vue'
+import { UI_DEFAULT_AGGREGATION_DECIMALS } from '~/app/utils/constants'
 
 const components = {
   orderbook: 'v-orderbook',
@@ -44,20 +56,32 @@ const components = {
 
 export default Vue.extend({
   components: {
+    'v-aggregation-selector': AggregationSelector,
     'v-trades': Trades,
     'v-orderbook': Orderbook
   },
 
   data() {
     return {
+      aggregation: UI_DEFAULT_AGGREGATION_DECIMALS, // default aggregation decimal
       components,
       component: components.orderbook
     }
   },
 
+  mounted() {
+    this.aggregation =
+      this.$accessor.spot.market?.priceDecimals ||
+      UI_DEFAULT_AGGREGATION_DECIMALS
+  },
+
   methods: {
     onSelect(component: string) {
       this.component = component
+    },
+
+    handleAggregationChange(aggregation: number) {
+      this.aggregation = aggregation
     }
   }
 })
