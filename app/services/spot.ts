@@ -491,6 +491,20 @@ export const calculateAverageExecutionPriceFromOrderbook = ({
   return sum.div(amount.minus(remainAmountToFill))
 }
 
+export const getAggregationPrice = ({
+  price,
+  aggregation
+}: {
+  price: BigNumberInBase
+  aggregation: number
+}): string => {
+  const aggregateBy = new BigNumberInBase(10 ** aggregation)
+
+  return new BigNumberInBase(price.multipliedBy(aggregateBy))
+    .dividedBy(aggregateBy)
+    .toFormat()
+}
+
 export const getApproxAmountForMarketOrder = ({
   records,
   balance,

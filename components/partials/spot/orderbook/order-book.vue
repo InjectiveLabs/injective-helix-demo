@@ -74,6 +74,7 @@ import {
   BigNumberInWei
 } from '@injectivelabs/utils'
 import Record from './record.vue'
+import { getAggregationPrice } from '~/app/services/spot'
 import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   ZERO_IN_BASE,
@@ -219,23 +220,24 @@ export default Vue.extend({
         return []
       }
 
-      const orders = {} as Record<number, any>
+      const orders = {} as Record<string, any>
       buys.forEach((record: UiPriceLevel) => {
         const price = new BigNumberInBase(
           new BigNumberInBase(
             new BigNumberInBase(record.price).toWei(
               market.baseToken.decimals - market.quoteToken.decimals
             )
-          ).toFormat(aggregation)
+          ).decimalPlaces(aggregation)
         )
 
-        const dividerValue = 10 ** aggregation
-        const priceKey =
-          Math.floor(price.toNumber() * dividerValue) / dividerValue
-        orders[priceKey] = (orders[priceKey] || []).concat({
-          ...record,
-          displayPrice: price
-        })
+        const aggregatedPriceKey = getAggregationPrice({ price, aggregation })
+        orders[aggregatedPriceKey] = [
+          ...(orders[aggregatedPriceKey] || []),
+          {
+            ...record,
+            displayPrice: price
+          }
+        ]
       })
 
       return Object.entries(orders).map(([, orderGroup]) => {
@@ -282,7 +284,7 @@ export default Vue.extend({
           const v1Price = new BigNumberInWei(v1.price)
           const v2Price = new BigNumberInWei(v2.price)
 
-          return v1Price.minus(v2Price).toNumber()
+          return v2Price.minus(v1Price).toNumber()
         })
         .map((record: UiPriceLevel, index: number) => {
           const notional = record.notional || new BigNumberInBase(0)
@@ -307,23 +309,24 @@ export default Vue.extend({
         return []
       }
 
-      const orders = {} as Record<number, any>
+      const orders = {} as Record<string, any>
       sells.forEach((record: UiPriceLevel, index: number) => {
         const price = new BigNumberInBase(
           new BigNumberInBase(
             new BigNumberInBase(record.price).toWei(
               market.baseToken.decimals - market.quoteToken.decimals
             )
-          ).toFormat(aggregation, BigNumber.ROUND_CEIL)
+          ).decimalPlaces(aggregation, BigNumber.ROUND_CEIL)
         )
 
-        const dividerValue = 10 ** aggregation
-        const priceKey =
-          Math.floor(price.toNumber() * dividerValue) / dividerValue
-        orders[priceKey] = (orders[priceKey] || []).concat({
-          ...record,
-          displayPrice: price
-        })
+        const aggregatedPriceKey = getAggregationPrice({ price, aggregation })
+        orders[aggregatedPriceKey] = [
+          ...(orders[aggregatedPriceKey] || []),
+          {
+            ...record,
+            displayPrice: price
+          }
+        ]
       })
 
       return Object.entries(orders)
