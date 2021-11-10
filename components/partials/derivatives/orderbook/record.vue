@@ -25,10 +25,8 @@
         }"
       >
         <v-number
-          :decimals="
-            market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-          "
-          :number="price"
+          :decimals="aggregation"
+          :number="record.displayPrice"
           dont-group-values
         />
       </span>
@@ -69,11 +67,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import {
-  BigNumberInBase,
-  BigNumber,
-  BigNumberInWei
-} from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumber } from '@injectivelabs/utils'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
@@ -101,6 +95,11 @@ export default Vue.extend({
     record: {
       required: true,
       type: Object as PropType<UiOrderbookPriceLevel>
+    },
+
+    aggregation: {
+      type: Number,
+      required: true
     }
   },
 
@@ -119,23 +118,19 @@ export default Vue.extend({
     },
 
     existsInUserOrders(): boolean {
-      return this.userOrders.includes(this.record.price.toString())
+      return this.userOrders.some((price) => {
+        if (!this.record.aggregatePrices) {
+          return false
+        }
+
+        return this.record.aggregatePrices.includes(price)
+      })
     },
 
     recordTypeBuy(): boolean {
       const { type } = this
 
       return type === DerivativeOrderSide.Buy
-    },
-
-    price(): BigNumberInBase {
-      const { market, record } = this
-
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      return new BigNumberInWei(record.price).toBase(market.quoteToken.decimals)
     },
 
     total(): BigNumberInBase {
@@ -208,13 +203,13 @@ export default Vue.extend({
 
   methods: {
     onPriceClick() {
-      const { market, price } = this
+      const { market, record } = this
 
-      if (!market) {
+      if (!market || !record.displayPrice) {
         return
       }
 
-      this.$root.$emit('orderbook-price-click', price.toFixed())
+      this.$root.$emit('orderbook-price-click', record.displayPrice)
     },
 
     onQuantityClick() {
@@ -228,13 +223,17 @@ export default Vue.extend({
     },
 
     onTotalNotionalClick() {
-      const { total, price, type, market } = this
+      const { total, record, type, market } = this
 
-      if (!market) {
+      if (!market || !record.displayPrice) {
         return
       }
 
-      this.$root.$emit('orderbook-notional-click', { total, type, price })
+      this.$root.$emit('orderbook-notional-click', {
+        total,
+        type,
+        price: record.displayPrice
+      })
     }
   }
 })

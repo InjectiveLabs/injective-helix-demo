@@ -7,7 +7,8 @@
       <div>
         <button
           type="button"
-          class="inline-flex tracking-widest items-center justify-between w-full border-b py-1 text-xs uppercase outline-none focus:outline-none text-gray-500 border-gray-600"
+          class="inline-flex tracking-widest items-center justify-between w-full py-1 text-xs uppercase outline-none focus:outline-none text-gray-500 border-gray-600"
+          :class="{ 'border-b': !hideBottomBorder }"
           aria-haspopup="true"
           :aria-expanded="isDropdownOpen"
           @click="onDropdownToggle"
@@ -27,7 +28,7 @@
       >
         <div
           v-show="isDropdownOpen"
-          class="origin-top-right absolute left-0 top-0 w-full shadow-md divide-y divide-gray-100 z-10 bg-gray-800 divide-gray-500"
+          class="origin-top-right absolute left-0 top-0 w-full shadow-md divide-y divide-gray-100 z-20 bg-gray-800 divide-gray-500"
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="options-menu"
@@ -51,6 +52,11 @@ export default Vue.extend({
 
   props: {
     darkMode: {
+      type: Boolean,
+      default: false
+    },
+
+    hideBottomBorder: {
       type: Boolean,
       default: false
     }
