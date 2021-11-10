@@ -35,6 +35,7 @@ import {
   UiDerivativeMarket,
   UiDerivativeMarketSummary,
   UiPosition,
+  UiSpotMarket,
   BaseUiDerivativeMarketWithTokenMetaData,
   TradeDirection,
   Token
@@ -710,6 +711,20 @@ export const calculateMargin = ({
   leverage: string
 }): BigNumberInBase => {
   return new BigNumberInBase(quantity).times(price).dividedBy(leverage)
+}
+
+export const getAggregationPrice = ({
+  price,
+  aggregation
+}: {
+  price: BigNumberInBase
+  aggregation: number
+}): string => {
+  const aggregateBy = new BigNumberInBase(10 ** aggregation)
+
+  return new BigNumberInBase(price.multipliedBy(aggregateBy))
+    .dividedBy(aggregateBy)
+    .toFormat()
 }
 
 export const getPositionFeeAdjustedBankruptcyPrice = ({
