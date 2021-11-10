@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-table-head :market="market" />
-    <v-orderbook />
+    <v-orderbook :aggregation="$attrs.aggregation" />
   </div>
 </template>
 
