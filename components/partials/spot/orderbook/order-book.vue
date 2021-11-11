@@ -227,7 +227,7 @@ export default Vue.extend({
             new BigNumberInBase(record.price).toWei(
               market.baseToken.decimals - market.quoteToken.decimals
             )
-          ).decimalPlaces(aggregation)
+          ).decimalPlaces(aggregation, BigNumber.ROUND_FLOOR)
         )
 
         const aggregatedPriceKey = getAggregationPrice({ price, aggregation })
