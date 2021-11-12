@@ -36,7 +36,7 @@ export default Vue.extend({
       }
 
       if (NETWORK === Network.Testnet) {
-        return 'https://testnet.hub.injective.dev/bridge'
+        return 'https://hub.injective.dev/bridge'
       }
 
       return 'https://hub.injective.network/bridge'
