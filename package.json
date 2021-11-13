@@ -13,7 +13,7 @@
     "lint:js": "eslint --ext \".js,.vue\" --ignore-path .gitignore .",
     "lint:style": "stylelint \"**/*.{vue,css,scss}\" --ignore-path .gitignore .stylelintignore .eslintignore",
     "lint": "yarn lint:js && yarn lint:style",
-    "prettier": "yarn prettier --ignore-path .eslintignore --write .",
+    "pretty": "yarn prettier --ignore-path .eslintignore --write .",
     "test": "yarn jest",
     "coverage": "yarn jest --coverage"
   },
