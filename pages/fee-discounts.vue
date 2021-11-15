@@ -16,8 +16,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import VOverview from '~/components/partials/fees/overview.vue'
-import VFees from '~/components/partials/fees/index.vue'
+import VOverview from '~/components/partials/fee-discounts/overview.vue'
+import VFees from '~/components/partials/fee-discounts/index.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
 
 export default Vue.extend({
