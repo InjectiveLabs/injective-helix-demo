@@ -402,13 +402,17 @@ export default {
   maker_fee_discount: 'Maker Fee Discount',
   taker_fee_discount: 'Taker Fee Discount',
   'My Tier': 'My Tier',
-  'My Tier Tooltip': 'My Tier Tooltip',
+  'My Tier Tooltip':
+    'The fee tier you currently hold on Injective based on your INJ staked amount and fees paid on the protocol in the current epoch. You can see a full breakdown of the tiers in the table below.',
   'My Staked Amount': 'Staked Amount',
-  'My Staked Amount Tooltip': 'Staked Amount Tooltip',
-  'My Fee Paid Amount': 'Fee Paid Amount',
-  'My Fee Paid Amount Tooltip': 'Fee Paid Amount Tooltip',
+  'My Staked Amount Tooltip':
+    'The amount of INJ that you have staked. Staking INJ secures the protocol, earns you rewards and can help you obtain a more preferable fee tier.',
+  'My Fee Paid Amount': 'Total Fees Paid',
+  'My Fee Paid Amount Tooltip':
+    'The total fees you have paid on Injective during the current epoch. You pay fees during trades and traders on the protocol. The amount of fees paid helps determine your fee tier.',
   'My Maker/Taker Discount': 'Maker/Taker Rate Discount',
-  'My Maker/Taker Discount Tooltip': 'Maker/Taker Rate Discount Tooltip',
+  'My Maker/Taker Discount Tooltip':
+    'Your current trading fee discount based on your fee tier.',
   portfolio_summary: 'Portfolio Summary',
   subaccount_holdings: 'Subaccount Holdings',
   faq: 'FAQ',
@@ -423,13 +427,15 @@ export default {
   total_subaccount_balance_tooltip: '',
   and: 'and',
   fee_discount_staked_amount: 'Staked Amount',
-  fee_discount_staked_amount_tooltip: '',
-  fee_discount_fees_paid: 'Fees Paid',
-  fee_discount_fees_paid_tooltip: '',
+  fee_discount_staked_amount_tooltip:
+    'The amount of INJ required to be staked. Staking INJ secures the protocol, earns rewards and can help obtain a more preferable fee tier.',
+  fee_discount_fees_paid: 'Total Fees Paid',
+  fee_discount_fees_paid_tooltip:
+    'The total fees required to be paid on Injective. Fees are paid to execute trades on the protocol. The amount of fees paid helps determine the fee tier.',
   fee_discount_maker: 'Maker Rate Discount',
-  fee_discount_maker_tooltip: '',
+  fee_discount_maker_tooltip: 'Maker fee discount based on the fee tier.',
   fee_discount_taker: 'Taker Rate Discount',
-  fee_discount_taker_tooltip: '',
+  fee_discount_taker_tooltip: 'Taker fee discount based on the fee tier.',
   'Current Epoch': 'Current Epoch',
   'Past Epoch': 'Past Epoch',
   Rewards: 'Rewards',
