@@ -45,7 +45,7 @@
         <v-item class="col-span-2 lg:col-span-3">
           <template slot="value">
             <v-emp-number v-if="feeDiscountAccountInfo" :number="feePaidAmount">
-              <span>INJ</span>
+              <span>USD</span>
             </v-emp-number>
             <span v-else>&mdash;</span>
           </template>
