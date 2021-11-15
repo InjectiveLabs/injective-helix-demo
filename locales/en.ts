@@ -326,7 +326,7 @@ export default {
     'The available margin you can add to this position',
   'Confirm order execution': 'Confirm order execution',
   liquidation_price_tooltip:
-    'The price at which your position will be liquidated or force-excited to prevent further losses.',
+    'The price at which your position will be liquidated or force-exited to prevent further losses.',
   fees_tooltip:
     'Trading fees associated with the trade. Trading fees on Injective can be lowered using rebates.',
   notional_value_tooltip:

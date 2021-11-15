@@ -70,7 +70,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status } from '@injectivelabs/utils'
-import Tier from '~/components/partials/fees/fees/tier.vue'
+import Tier from '~/components/partials/fee-discounts/fees/tier.vue'
 import { FeeDiscountSchedule, FeeDiscountTierInfo } from '~/types/exchange'
 
 export default Vue.extend({

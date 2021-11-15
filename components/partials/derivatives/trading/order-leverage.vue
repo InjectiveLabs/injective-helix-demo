@@ -25,7 +25,7 @@
           class="leverage-input pr-4"
           @input="(e) => onLeverageChange(e.target.value)"
         />
-        <span class="absolute top-0 right-0 text-xs text-gray-400 mt-1 mr-1">
+        <span class="absolute top-0 right-0 text-xs text-gray-400 mt-1.5 mr-1.5">
           x
         </span>
       </div>

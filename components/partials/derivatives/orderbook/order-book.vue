@@ -13,6 +13,7 @@
           <v-record
             v-for="(sell, index) in sellsWithDepth"
             :key="`order-book-sell-${index}`"
+            :aggregation="aggregation"
             :type="DerivativeOrderSide.Sell"
             :user-orders="sellUserOrderPrices"
             :record="sell"
@@ -56,6 +57,7 @@
       <v-record
         v-for="(buy, index) in buysWithDepth"
         :key="`order-book-buy-${index}`"
+        :aggregation="aggregation"
         :type="DerivativeOrderSide.Buy"
         :user-orders="buyUserOrderPrices"
         :record="buy"
@@ -66,8 +68,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  BigNumber,
+  BigNumberInBase,
+  BigNumberInWei
+} from '@injectivelabs/utils'
 import Record from './record.vue'
+import { getAggregationPrice } from '~/app/services/derivatives'
 import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   ZERO_IN_BASE
@@ -87,6 +94,13 @@ import {
 export default Vue.extend({
   components: {
     'v-record': Record
+  },
+
+  props: {
+    aggregation: {
+      type: Number,
+      required: true
+    }
   },
 
   data() {
@@ -206,42 +220,168 @@ export default Vue.extend({
       }, ZERO_IN_BASE)
     },
 
-    buysWithDepth(): UiOrderbookPriceLevel[] {
-      const { buys, buysTotalNotional, market } = this
+    aggregatedBuyOrders(): UiOrderbookPriceLevel[] {
+      const { aggregation, buys, market } = this
 
       if (!market) {
         return []
       }
 
-      let accumulator = ZERO_IN_BASE
-      return buys.map((record: UiPriceLevel, index: number) => {
-        const notional = new BigNumberInWei(record.quantity)
-          .times(record.price)
-          .toBase(market.quoteToken.decimals)
+      const orders = {} as Record<string, any>
+      buys.forEach((record: UiPriceLevel) => {
+        const price = new BigNumberInBase(
+          new BigNumberInWei(record.price)
+            .toBase(market.quoteToken.decimals)
+            .decimalPlaces(aggregation, BigNumber.ROUND_FLOOR)
+        )
 
-        accumulator = index === 0 ? notional : accumulator.plus(notional)
+        const aggregatedPriceKey = getAggregationPrice({ price, aggregation })
+        orders[aggregatedPriceKey] = [
+          ...(orders[aggregatedPriceKey] || []),
+          {
+            ...record,
+            displayPrice: price
+          }
+        ]
+      })
+
+      return Object.entries(orders).map(([, orderGroup]) => {
+        const [firstOrder] = orderGroup
+
+        const quantity = orderGroup.reduce(
+          (sum: BigNumberInWei, order: UiPriceLevel) => {
+            return sum.plus(new BigNumberInWei(order.quantity))
+          },
+          new BigNumberInWei(0)
+        )
+
+        const notional = orderGroup.reduce(
+          (sum: BigNumberInWei, order: UiPriceLevel) => {
+            const notional = new BigNumberInWei(order.quantity)
+              .times(order.price)
+              .toBase(market.quoteToken.decimals)
+
+            return sum.plus(notional)
+          },
+          new BigNumberInBase(0)
+        )
+
+        const aggregatePrices = orderGroup.map(
+          ({ price }: UiPriceLevel) => price
+        )
 
         return {
-          ...record,
-          total: accumulator.toFixed(),
-          depth: accumulator.dividedBy(buysTotalNotional).times(100).toNumber()
+          ...firstOrder,
+          aggregatePrices,
+          notional,
+          quantity
         }
       })
     },
 
-    sellsWithDepth(): UiOrderbookPriceLevel[] {
-      const { sells, sellsTotalNotional, market } = this
+    buysWithDepth(): UiOrderbookPriceLevel[] {
+      const { aggregatedBuyOrders, buysTotalNotional } = this
+
+      let accumulator = ZERO_IN_BASE
+
+      return aggregatedBuyOrders
+        .sort((v1: UiOrderbookPriceLevel, v2: UiOrderbookPriceLevel) => {
+          const v1Price = new BigNumberInWei(v1.price)
+          const v2Price = new BigNumberInWei(v2.price)
+
+          return v2Price.minus(v1Price).toNumber()
+        })
+        .map((record: UiPriceLevel, index: number) => {
+          const notional = record.notional || new BigNumberInBase(0)
+
+          accumulator = index === 0 ? notional : accumulator.plus(notional)
+
+          return {
+            ...record,
+            total: accumulator.toFixed(),
+            depth: accumulator
+              .dividedBy(buysTotalNotional)
+              .times(100)
+              .toNumber()
+          }
+        })
+    },
+
+    aggregatedSellOrders(): UiOrderbookPriceLevel[] {
+      const { aggregation, sells, market } = this
 
       if (!market) {
         return []
       }
 
-      let accumulator = ZERO_IN_BASE
-      return [...sells]
-        .map((record: UiPriceLevel, index: number) => {
-          const notional = new BigNumberInWei(record.quantity)
-            .times(record.price)
+      const orders = {} as Record<string, any>
+      sells.forEach((record: UiPriceLevel, index: number) => {
+        const price = new BigNumberInBase(
+          new BigNumberInWei(record.price)
             .toBase(market.quoteToken.decimals)
+            .decimalPlaces(aggregation, BigNumber.ROUND_CEIL)
+        )
+
+        const aggregatedPriceKey = getAggregationPrice({ price, aggregation })
+        orders[aggregatedPriceKey] = [
+          ...(orders[aggregatedPriceKey] || []),
+          {
+            ...record,
+            displayPrice: price
+          }
+        ]
+      })
+
+      return Object.entries(orders)
+        .reverse()
+        .map(([, orderGroup]) => {
+          const [firstOrder] = orderGroup
+
+          const quantity = orderGroup.reduce(
+            (sum: BigNumberInWei, order: UiPriceLevel) => {
+              return sum.plus(new BigNumberInWei(order.quantity))
+            },
+            new BigNumberInWei(0)
+          )
+
+          const notional = orderGroup.reduce(
+            (sum: BigNumberInWei, order: UiPriceLevel) => {
+              const notional = new BigNumberInWei(order.quantity)
+                .times(order.price)
+                .toBase(market.quoteToken.decimals)
+
+              return sum.plus(notional)
+            },
+            new BigNumberInBase(0)
+          )
+
+          const aggregatePrices = orderGroup.map(
+            ({ price }: UiPriceLevel) => price
+          )
+
+          return {
+            ...firstOrder,
+            aggregatePrices,
+            notional,
+            quantity
+          }
+        })
+    },
+
+    sellsWithDepth(): UiOrderbookPriceLevel[] {
+      const { aggregatedSellOrders, sellsTotalNotional } = this
+
+      let accumulator = ZERO_IN_BASE
+
+      return aggregatedSellOrders
+        .sort((v1: UiOrderbookPriceLevel, v2: UiOrderbookPriceLevel) => {
+          const v1Price = new BigNumberInWei(v1.price)
+          const v2Price = new BigNumberInWei(v2.price)
+
+          return v1Price.minus(v2Price).toNumber()
+        })
+        .map((record: UiPriceLevel, index: number) => {
+          const notional = record.notional || new BigNumberInBase(0)
 
           accumulator = index === 0 ? notional : accumulator.plus(notional)
 

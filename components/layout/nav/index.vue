@@ -9,7 +9,7 @@
     <v-nav-item :to="{ name: 'portfolio' }">
       {{ $t('Portfolio') }}
     </v-nav-item>
-    <v-nav-item v-if="false" :to="{ name: 'rewards' }">
+    <v-nav-item :to="{ name: 'trade-and-earn' }">
       {{ $t('Rewards') }}
     </v-nav-item>
     <v-nav-item :to="{ name: 'history' }">

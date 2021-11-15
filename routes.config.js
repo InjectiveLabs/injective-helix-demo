@@ -60,8 +60,9 @@ module.exports = [
   '/portfolio',
   '/wallet',
   '/history',
-  '/fees',
-  '/rewards',
+  '/fee-discounts',
+  '/trade-and-earn',
+  '/dmm',
   '/faq',
   ...spot.map((s) => `/spot/${s}`),
   ...derivatives.map((d) => `/derivatives/${d}`)

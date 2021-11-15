@@ -21,9 +21,9 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import VCampaign from '~/components/partials/rewards/campaign.vue'
-import VCurrentEpoch from '~/components/partials/rewards/current-epoch.vue'
-import VMarketsInfo from '~/components/partials/rewards/markets-info.vue'
+import VCampaign from '~/components/partials/trade-and-earn/campaign.vue'
+import VCurrentEpoch from '~/components/partials/trade-and-earn/current-epoch.vue'
+import VMarketsInfo from '~/components/partials/trade-and-earn/markets-info.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
 
 export default Vue.extend({
