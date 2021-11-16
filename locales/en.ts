@@ -479,5 +479,7 @@ export default {
   maker_points_mul: 'maker pts',
   taker_points_mul: 'taker pts',
   maker_taker_points_multiplier_tooltip: 'Maker/Taker Points multiplier',
-  pts: 'pts'
+  pts: 'pts',
+  switch_to_injective_address: 'Switch to Injective Address',
+  switch_to_ethereum_address: 'Switch to Ethereum Address'
 }
