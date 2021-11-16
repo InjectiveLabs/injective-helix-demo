@@ -8,6 +8,26 @@
         {{ formattedAddress }}
       </span>
       <button
+        v-tooltip="{
+          content: isInjectiveAddress
+            ? $t('switch_to_ethereum_address')
+            : $t('switch_to_injective_address')
+        }"
+        role="button"
+        class="hidden md:block mr-4"
+        type="button"
+        @click.stop="handleClickOnSwitchIcon"
+      >
+        <v-icon-injective
+          v-if="isInjectiveAddress"
+          class="w-5 h-5 text-gray-500 hover:text-primary-500"
+        />
+        <v-icon-ethereum
+          v-else
+          class="w-6 h-6 text-gray-500 hover:text-primary-500"
+        />
+      </button>
+      <button
         role="button"
         class="hidden md:block mr-4"
         type="button"
@@ -16,7 +36,7 @@
         <v-icon-show class="w-5 h-5 text-gray-500 hover:text-primary-500" />
       </button>
       <button
-        v-clipboard="() => injectiveAddress"
+        v-clipboard="() => currentAddress"
         v-clipboard:success="() => $toast.success($t('address_copied'))"
         role="button"
         type="button"
@@ -41,11 +61,19 @@
 <script lang="ts">
 import Vue from 'vue'
 import { formatWalletAddress } from '@injectivelabs/utils'
+import VIconEthereum from '~/components/icons/icon-ethereum.vue'
+import VIconInjective from '~/components/icons/icon-injective.vue'
 
 export default Vue.extend({
+  components: {
+    VIconEthereum,
+    VIconInjective
+  },
+
   data() {
     return {
-      shouldShowFullAddress: false
+      shouldShowFullAddress: false,
+      isInjectiveAddress: true
     }
   },
 
@@ -54,22 +82,36 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
+    address(): string {
+      return this.$accessor.wallet.address
+    },
+
     injectiveAddress(): string {
       return this.$accessor.wallet.injectiveAddress
     },
 
+    currentAddress(): string {
+      const { address, injectiveAddress, isInjectiveAddress } = this
+
+      return isInjectiveAddress ? injectiveAddress : address
+    },
+
     formattedAddress(): string {
-      const { shouldShowFullAddress, injectiveAddress } = this
+      const { shouldShowFullAddress, currentAddress } = this
 
       return shouldShowFullAddress
-        ? injectiveAddress
-        : formatWalletAddress(injectiveAddress)
+        ? currentAddress
+        : formatWalletAddress(currentAddress)
     }
   },
 
   methods: {
     handleClickOnRevealButton() {
       this.shouldShowFullAddress = !this.shouldShowFullAddress
+    },
+
+    handleClickOnSwitchIcon() {
+      this.isInjectiveAddress = !this.isInjectiveAddress
     },
 
     handleClickOnAddress() {
