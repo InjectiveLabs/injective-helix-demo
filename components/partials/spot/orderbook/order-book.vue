@@ -68,11 +68,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import {
-  BigNumber,
-  BigNumberInBase,
-  BigNumberInWei
-} from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import Record from './record.vue'
 import { getAggregationPrice } from '~/app/services/spot'
 import {
@@ -223,19 +219,23 @@ export default Vue.extend({
       const orders = {} as Record<string, any>
       buys.forEach((record: UiPriceLevel) => {
         const price = new BigNumberInBase(
-          new BigNumberInBase(
-            new BigNumberInBase(record.price).toWei(
-              market.baseToken.decimals - market.quoteToken.decimals
-            )
-          ).decimalPlaces(aggregation, BigNumber.ROUND_FLOOR)
+          new BigNumberInBase(record.price).toWei(
+            market.baseToken.decimals - market.quoteToken.decimals
+          )
         )
 
-        const aggregatedPriceKey = getAggregationPrice({ price, aggregation })
+        const aggregatedPrice = getAggregationPrice({
+          price,
+          aggregation,
+          isBuy: true
+        })
+        const aggregatedPriceKey = aggregatedPrice.toFormat()
+
         orders[aggregatedPriceKey] = [
           ...(orders[aggregatedPriceKey] || []),
           {
             ...record,
-            displayPrice: price
+            displayPrice: aggregatedPrice
           }
         ]
       })
@@ -312,19 +312,23 @@ export default Vue.extend({
       const orders = {} as Record<string, any>
       sells.forEach((record: UiPriceLevel, index: number) => {
         const price = new BigNumberInBase(
-          new BigNumberInBase(
-            new BigNumberInBase(record.price).toWei(
-              market.baseToken.decimals - market.quoteToken.decimals
-            )
-          ).decimalPlaces(aggregation, BigNumber.ROUND_CEIL)
+          new BigNumberInBase(record.price).toWei(
+            market.baseToken.decimals - market.quoteToken.decimals
+          )
         )
 
-        const aggregatedPriceKey = getAggregationPrice({ price, aggregation })
+        const aggregatedPrice = getAggregationPrice({
+          price,
+          aggregation,
+          isBuy: false
+        })
+        const aggregatedPriceKey = aggregatedPrice.toFormat()
+
         orders[aggregatedPriceKey] = [
           ...(orders[aggregatedPriceKey] || []),
           {
             ...record,
-            displayPrice: price
+            displayPrice: aggregatedPrice
           }
         ]
       })
