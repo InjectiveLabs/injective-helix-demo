@@ -8,7 +8,7 @@
 
     <div class="text-center cursor-pointer">
       <SelectorItem
-        v-for="item in list"
+        v-for="item in filteredList"
         :key="`list-${item.value}`"
         :item="item"
         @click="handleClick"
@@ -34,12 +34,29 @@ export default Vue.extend({
     value: {
       type: Number,
       required: true
+    },
+
+    minTick: {
+      type: Number,
+      required: true
     }
   },
 
   data() {
     return {
       list: [
+        {
+          value: -2,
+          text: '100'
+        },
+        {
+          value: -1,
+          text: '10'
+        },
+        {
+          value: 0,
+          text: '1'
+        },
         {
           value: 1,
           text: '0.1'
@@ -61,6 +78,14 @@ export default Vue.extend({
       const { list, value } = this
 
       return list.find((item) => value === item.value)?.text || ''
+    },
+
+    filteredList(): Record<string, any>[] {
+      const { minTick, list } = this
+
+      const index = list.findIndex(({ value }) => value === minTick)
+
+      return [...list].slice(Math.max(index - 3, 0), index + 1)
     }
   },
 
