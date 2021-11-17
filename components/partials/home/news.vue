@@ -27,17 +27,19 @@ export default Vue.extend({
     return {
       articles: [
         {
-          title: 'Injective Spanish Twitter Campaign',
+          title: 'Injective Astro: A $120 Million Liquidity Incentive Program',
           link:
-            'https://blog.injectiveprotocol.com/injective-spanish-community-twitter-campaign/'
+            'https://blog.injectiveprotocol.com/injective-launches-astro-a-120-million-liquidity-incentive-program/'
         },
         {
-          title: 'Injective Pro Launch',
-          link: 'https://blog.injectiveprotocol.com/injective-pro-launch/'
+          title: 'Injective VIP Fee Discount Program Launch',
+          link:
+            'https://blog.injectiveprotocol.com/injective-vip-fee-discount-program-launch/'
         },
         {
-          title: 'Injective Explorer Release',
-          link: 'https://blog.injectiveprotocol.com/injective-explorer-release/'
+          title: 'Injective Canonical Chain Mainnet Release',
+          link:
+            'https://blog.injectiveprotocol.com/injective-canonical-chain-mainnet-release/'
         }
       ]
     }

@@ -121,6 +121,9 @@ export default Vue.extend({
       const spotMarketIds =
         tradingRewardsCampaign.tradingRewardCampaignInfo.tradingRewardBoostInfo
           .boostedSpotMarketIdsList
+      const disqualifiedMarketIds =
+        tradingRewardsCampaign.tradingRewardCampaignInfo
+          .disqualifiedMarketIdsList
       const spotMarketsBoosts =
         tradingRewardsCampaign.tradingRewardCampaignInfo.tradingRewardBoostInfo
           .spotMarketMultipliersList
@@ -158,6 +161,19 @@ export default Vue.extend({
         },
         [] as PointsMultiplierWithMarketTicker[]
       )
+      const nonBoostedSpot = [...spotMarkets]
+        .filter(
+          (spotMarket) =>
+            !spotMarketIds.includes(spotMarket.marketId) &&
+            !disqualifiedMarketIds.includes(spotMarket.marketId)
+        )
+        .map((m) => m.ticker)
+        .reduce((records, ticker) => {
+          return [
+            ...records,
+            { ticker, makerPointsMultiplier: '1', takerPointsMultiplier: '1' }
+          ]
+        }, [] as PointsMultiplierWithMarketTicker[])
 
       const derivatives = derivativeMarketsTickerBasedOnIds.reduce(
         (records, ticker, index) => {
@@ -177,7 +193,24 @@ export default Vue.extend({
         [] as PointsMultiplierWithMarketTicker[]
       )
 
-      return { spot, derivatives } as {
+      const nonBoostedDerivatives = [...derivativeMarkets]
+        .filter(
+          (derivative) =>
+            !derivativeMarketIds.includes(derivative.marketId) &&
+            !disqualifiedMarketIds.includes(derivative.marketId)
+        )
+        .map((m) => m.ticker)
+        .reduce((records, ticker) => {
+          return [
+            ...records,
+            { ticker, makerPointsMultiplier: '1', takerPointsMultiplier: '1' }
+          ]
+        }, [] as PointsMultiplierWithMarketTicker[])
+
+      return {
+        spot: [...spot, ...nonBoostedSpot],
+        derivatives: [...derivatives, ...nonBoostedDerivatives]
+      } as {
         spot: PointsMultiplierWithMarketTicker[]
         derivatives: PointsMultiplierWithMarketTicker[]
       }
