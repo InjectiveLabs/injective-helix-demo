@@ -106,7 +106,7 @@
         </v-text-info>
 
         <v-text-info
-          v-if="takerExpectedPts.gt(0)"
+          v-if="takerExpectedPts.gte(0)"
           :title="$t('expected_points')"
           class="mt-2"
         >
@@ -116,7 +116,10 @@
             :tooltip="$t('expected_points_note')"
           />
           <span class="font-mono flex items-center">
-            {{ `${takerExpectedPtsToFormat}${$t('pts')}` }}
+            {{ `${takerExpectedPtsToFormat}` }}
+            <span class="text-gray-500 ml-1">
+              {{ $t('pts') }}
+            </span>
           </span>
         </v-text-info>
 

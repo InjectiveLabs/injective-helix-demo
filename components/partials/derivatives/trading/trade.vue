@@ -1065,7 +1065,11 @@ export default Vue.extend({
         (spotMarketId) => spotMarketId === market.marketId
       )
       const boostedMultiplier =
-        boosted >= 0 ? multipliersList[boosted].makerPointsMultiplier : 1
+        boosted >= 0
+          ? cosmosSdkDecToBigNumber(
+              multipliersList[boosted].makerPointsMultiplier
+            )
+          : 1
 
       return new BigNumberInBase(fees).times(boostedMultiplier)
     },
@@ -1116,7 +1120,11 @@ export default Vue.extend({
         (spotMarketId) => spotMarketId === market.marketId
       )
       const boostedMultiplier =
-        boosted >= 0 ? multipliersList[boosted].takerPointsMultiplier : 1
+        boosted >= 0
+          ? cosmosSdkDecToBigNumber(
+              multipliersList[boosted].takerPointsMultiplier
+            )
+          : 1
 
       return new BigNumberInBase(fees).times(boostedMultiplier)
     },
