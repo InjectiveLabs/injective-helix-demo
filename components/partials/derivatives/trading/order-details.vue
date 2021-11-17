@@ -173,7 +173,7 @@
             :tooltip="$t('expected_points_note')"
           />
           <span class="font-mono flex items-center">
-            {{ `${makerExpectedPtsToFormat} - ${takerExpectedPtsToFormat}` }}
+            {{ `${makerExpectedPtsToFormat}/${takerExpectedPtsToFormat}` }}
             <span class="text-gray-500 ml-1">
               {{ $t('pts') }}
             </span>
@@ -194,6 +194,10 @@ import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   ZERO_IN_BASE
 } from '~/app/utils/constants'
+import {
+  getDecimalsBasedOnNumber,
+  getDecimalsFromNumber
+} from '~/app/utils/helpers'
 
 export default Vue.extend({
   components: {
@@ -359,13 +363,9 @@ export default Vue.extend({
     },
 
     feesToFormat(): string {
-      const { fees, market } = this
+      const { fees } = this
 
-      if (!market) {
-        return fees.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return fees.toFormat(market.priceDecimals)
+      return fees.toFormat(getDecimalsFromNumber(fees.toNumber()))
     },
 
     marketHasNegativeMakerFee(): boolean {
@@ -391,25 +391,33 @@ export default Vue.extend({
     makerFeeRateToFormat(): string {
       const { makerFeeRate } = this
 
-      return makerFeeRate.times(100).toFormat(2)
+      const number = makerFeeRate.times(100)
+
+      return number.toFormat(getDecimalsFromNumber(number.toNumber()))
     },
 
     takerFeeRateToFormat(): string {
       const { takerFeeRate } = this
 
-      return takerFeeRate.times(100).toFormat(2)
+      const number = takerFeeRate.times(100)
+
+      return number.toFormat(getDecimalsFromNumber(number.toNumber()))
     },
 
     makerExpectedPtsToFormat(): string {
       const { makerExpectedPts } = this
 
-      return makerExpectedPts.toFormat(2)
+      return makerExpectedPts.toFormat(
+        getDecimalsFromNumber(makerExpectedPts.toNumber())
+      )
     },
 
     takerExpectedPtsToFormat(): string {
       const { takerExpectedPts } = this
 
-      return takerExpectedPts.toFormat(2)
+      return takerExpectedPts.toFormat(
+        getDecimalsFromNumber(takerExpectedPts.toNumber())
+      )
     },
 
     amountToFormat(): string {
