@@ -61,6 +61,17 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </v-text-info>
 
+        <v-text-info :title="$t('maker_taker_rate')" class="mt-2">
+          <v-icon-info-tooltip
+            slot="context"
+            class="ml-2"
+            :tooltip="$t('maker_taker_rate_note')"
+          />
+          <span class="font-mono flex items-center">
+            {{ `${makerFeeRateToFormat}%/${takerFeeRateToFormat}%` }}
+          </span>
+        </v-text-info>
+
         <v-text-info :title="$t('fee')" class="mt-2">
           <div slot="context">
             <div class="flex items-center">
@@ -94,6 +105,24 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </v-text-info>
 
+        <v-text-info
+          v-if="takerExpectedPts.gte(0)"
+          :title="$t('expected_points')"
+          class="mt-2"
+        >
+          <v-icon-info-tooltip
+            slot="context"
+            class="ml-2"
+            :tooltip="$t('expected_points_note')"
+          />
+          <span class="font-mono flex items-center">
+            {{ `${takerExpectedPtsToFormat}` }}
+            <span class="text-gray-500 ml-1">
+              {{ $t('pts') }}
+            </span>
+          </span>
+        </v-text-info>
+
         <p class="mt-4 text-gray-500 text-xs">
           {{ $t('worst_price_note', { slippage: slippage.toFixed() }) }}
         </p>
@@ -113,6 +142,7 @@ import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   ZERO_IN_BASE
 } from '~/app/utils/constants'
+import { getDecimalsFromNumber } from '~/app/utils/helpers'
 
 export default Vue.extend({
   components: {
@@ -151,6 +181,26 @@ export default Vue.extend({
     },
 
     makerFeeRateDiscount: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    takerFeeRate: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    makerFeeRate: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    takerExpectedPts: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    makerExpectedPts: {
       required: true,
       type: Object as PropType<BigNumberInBase>
     },
@@ -247,13 +297,41 @@ export default Vue.extend({
     },
 
     feesToFormat(): string {
-      const { fees, market } = this
+      const { fees } = this
 
-      if (!market) {
-        return fees.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
+      return fees.toFormat(getDecimalsFromNumber(fees.toNumber()))
+    },
 
-      return fees.toFormat(market.priceDecimals)
+    makerFeeRateToFormat(): string {
+      const { makerFeeRate } = this
+
+      const number = makerFeeRate.times(100)
+
+      return number.toFormat(getDecimalsFromNumber(number.toNumber()))
+    },
+
+    takerFeeRateToFormat(): string {
+      const { takerFeeRate } = this
+
+      const number = takerFeeRate.times(100)
+
+      return number.toFormat(getDecimalsFromNumber(number.toNumber()))
+    },
+
+    makerExpectedPtsToFormat(): string {
+      const { makerExpectedPts } = this
+
+      return makerExpectedPts.toFormat(
+        getDecimalsFromNumber(makerExpectedPts.toNumber())
+      )
+    },
+
+    takerExpectedPtsToFormat(): string {
+      const { takerExpectedPts } = this
+
+      return takerExpectedPts.toFormat(
+        getDecimalsFromNumber(takerExpectedPts.toNumber())
+      )
     },
 
     amountToFormat(): string {

@@ -318,17 +318,16 @@ export const actions = actionTree(
       await this.app.$accessor.derivatives.streamOrderbook()
       await this.app.$accessor.derivatives.streamTrades()
       await this.app.$accessor.derivatives.streamMarketMarkPrices()
-
       await this.app.$accessor.derivatives.streamSubaccountOrders()
       await this.app.$accessor.derivatives.streamSubaccountPositions()
       await this.app.$accessor.derivatives.streamSubaccountTrades()
-
       await this.app.$accessor.derivatives.fetchSubaccountOrders()
       await this.app.$accessor.derivatives.fetchSubaccountTrades()
       await this.app.$accessor.derivatives.fetchSubaccountPosition()
       await this.app.$accessor.account.streamSubaccountBalances()
       await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
       await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
+      await this.app.$accessor.exchange.fetchTradingRewardsCampaign()
     },
 
     streamOrderbook({ commit, state }) {

@@ -25,7 +25,7 @@
         }"
       >
         <v-number
-          :decimals="aggregation"
+          :decimals="aggregation < 0 ? 0 : aggregation"
           :number="record.displayPrice"
           dont-group-values
         />

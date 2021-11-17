@@ -1,5 +1,8 @@
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from './constants'
+import {
+  UI_DEFAULT_MAX_DISPLAY_DECIMALS,
+  UI_DEFAULT_DISPLAY_DECIMALS
+} from './constants'
 
 export const getSignificantDecimalsFromNumber = (
   number: number | string
@@ -50,7 +53,7 @@ export const getDecimalsFromNumber = (number: number | string): number => {
 
   const actualDecimals = decimals ? decimals.length : 1
 
-  return actualDecimals > UI_DEFAULT_DISPLAY_DECIMALS
-    ? UI_DEFAULT_DISPLAY_DECIMALS
+  return actualDecimals > UI_DEFAULT_MAX_DISPLAY_DECIMALS
+    ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
     : actualDecimals
 }

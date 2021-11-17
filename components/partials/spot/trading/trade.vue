@@ -112,6 +112,10 @@
       v-bind="{
         price: executionPrice,
         orderType,
+        makerFeeRate,
+        takerFeeRate,
+        makerExpectedPts,
+        takerExpectedPts,
         makerFeeRateDiscount,
         takerFeeRateDiscount,
         orderTypeBuy,
@@ -176,7 +180,10 @@ import {
   getApproxAmountForMarketOrder
 } from '~/app/services/spot'
 import { cosmosSdkDecToBigNumber } from '~/app/transformers'
-import { FeeDiscountAccountInfo } from '~/types/exchange'
+import {
+  FeeDiscountAccountInfo,
+  TradingRewardsCampaign
+} from '~/types/exchange'
 
 interface TradeForm {
   amount: string
@@ -235,6 +242,10 @@ export default Vue.extend({
 
     feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
       return this.$accessor.exchange.feeDiscountAccountInfo
+    },
+
+    tradingRewardsCampaign(): TradingRewardsCampaign | undefined {
+      return this.$accessor.exchange.tradingRewardsCampaign
     },
 
     baseAvailableBalance(): BigNumberInBase {
@@ -735,6 +746,116 @@ export default Vue.extend({
       }
 
       return total.times(market.takerFeeRate)
+    },
+
+    makerExpectedPts(): BigNumberInBase {
+      const { market, tradingRewardsCampaign, fees } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      if (!tradingRewardsCampaign) {
+        return ZERO_IN_BASE
+      }
+
+      if (!tradingRewardsCampaign.tradingRewardCampaignInfo) {
+        return ZERO_IN_BASE
+      }
+
+      const disqualified = tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
+        (marketId) => marketId === market.marketId
+      )
+
+      if (disqualified) {
+        return ZERO_IN_BASE
+      }
+
+      const denomIncluded = tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
+        (denom) => denom === market.quoteDenom
+      )
+
+      if (!denomIncluded) {
+        return ZERO_IN_BASE
+      }
+
+      const boostedList = tradingRewardsCampaign.tradingRewardCampaignInfo
+        .tradingRewardBoostInfo
+        ? tradingRewardsCampaign.tradingRewardCampaignInfo
+            .tradingRewardBoostInfo.boostedSpotMarketIdsList
+        : []
+      const multipliersList = tradingRewardsCampaign.tradingRewardCampaignInfo
+        .tradingRewardBoostInfo
+        ? tradingRewardsCampaign.tradingRewardCampaignInfo
+            .tradingRewardBoostInfo.spotMarketMultipliersList
+        : []
+
+      const boosted = boostedList.findIndex(
+        (spotMarketId) => spotMarketId === market.marketId
+      )
+      const boostedMultiplier =
+        boosted >= 0
+          ? cosmosSdkDecToBigNumber(
+              multipliersList[boosted].makerPointsMultiplier
+            )
+          : 1
+
+      return new BigNumberInBase(fees).times(boostedMultiplier)
+    },
+
+    takerExpectedPts(): BigNumberInBase {
+      const { market, tradingRewardsCampaign, fees } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      if (!tradingRewardsCampaign) {
+        return ZERO_IN_BASE
+      }
+
+      if (!tradingRewardsCampaign.tradingRewardCampaignInfo) {
+        return ZERO_IN_BASE
+      }
+
+      const disqualified = tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
+        (marketId) => marketId === market.marketId
+      )
+
+      if (disqualified) {
+        return ZERO_IN_BASE
+      }
+
+      const denomIncluded = tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
+        (denom) => denom === market.quoteDenom
+      )
+
+      if (!denomIncluded) {
+        return ZERO_IN_BASE
+      }
+
+      const boostedList = tradingRewardsCampaign.tradingRewardCampaignInfo
+        .tradingRewardBoostInfo
+        ? tradingRewardsCampaign.tradingRewardCampaignInfo
+            .tradingRewardBoostInfo.boostedSpotMarketIdsList
+        : []
+      const multipliersList = tradingRewardsCampaign.tradingRewardCampaignInfo
+        .tradingRewardBoostInfo
+        ? tradingRewardsCampaign.tradingRewardCampaignInfo
+            .tradingRewardBoostInfo.spotMarketMultipliersList
+        : []
+
+      const boosted = boostedList.findIndex(
+        (spotMarketId) => spotMarketId === market.marketId
+      )
+      const boostedMultiplier =
+        boosted >= 0
+          ? cosmosSdkDecToBigNumber(
+              multipliersList[boosted].takerPointsMultiplier
+            )
+          : 1
+
+      return new BigNumberInBase(fees).times(boostedMultiplier)
     },
 
     totalWithFees(): BigNumberInBase {

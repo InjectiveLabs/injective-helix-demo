@@ -72,10 +72,7 @@ import {
   ZERO_IN_BASE
 } from '~/app/utils/constants'
 import VItem from '~/components/partials/common/stats/item.vue'
-import {
-  FeeDiscountAccountInfo,
-  TradingRewardsCampaign
-} from '~/types/exchange'
+import { TradingRewardsCampaign } from '~/types/exchange'
 
 export default Vue.extend({
   components: {
@@ -100,10 +97,6 @@ export default Vue.extend({
 
     tradeRewardsPoints(): string[] {
       return this.$accessor.exchange.tradeRewardsPoints
-    },
-
-    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
-      return this.$accessor.exchange.feeDiscountAccountInfo
     },
 
     campaignDurationInSeconds(): number {
