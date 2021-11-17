@@ -27,6 +27,7 @@
       <v-aggregation-selector
         v-if="component === components.orderbook"
         class="pr-2"
+        :min-tick="minTick"
         :value="aggregation"
         @click="handleAggregationChange"
       />
@@ -64,15 +65,18 @@ export default Vue.extend({
   data() {
     return {
       aggregation: UI_DEFAULT_AGGREGATION_DECIMALS, // default aggregation decimal
+      minTick: UI_DEFAULT_AGGREGATION_DECIMALS,
       components,
       component: components.orderbook
     }
   },
 
   mounted() {
-    this.aggregation =
-      this.$accessor.spot.market?.priceDecimals ||
-      UI_DEFAULT_AGGREGATION_DECIMALS
+    const market = this.$accessor.spot.market
+    if (market && market.priceDecimals) {
+      this.aggregation = market.priceDecimals
+      this.minTick = market.priceDecimals
+    }
   },
 
   methods: {
