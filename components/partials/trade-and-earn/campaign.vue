@@ -102,10 +102,6 @@ export default Vue.extend({
       return this.$accessor.exchange.tradeRewardsPoints
     },
 
-    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
-      return this.$accessor.exchange.feeDiscountAccountInfo
-    },
-
     campaignDurationInSeconds(): number {
       const { tradingRewardsCampaign } = this
 

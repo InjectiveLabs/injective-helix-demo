@@ -447,15 +447,19 @@ export default {
   current_epoch: 'Current Epoch',
   current_epoch_tooltip: 'Current Epoch tooltip',
   est_rewards: 'Est. Rewards',
-  est_rewards_tooltip: 'Est. Rewards tooltip',
-  reward_points: 'Reward Points',
-  reward_points_tooltip: 'Reward Points tooltip',
+  est_rewards_tooltip:
+    'Estimated reward to be distributed to this address based on your reward points /  total reward points * total allocated rewards. This is calculated assuming that your reward points grow just as fast as total reward points until the end of the campaign.  In order to maintain or maximize your reward, you should maintain the same or higher trading activity until the end of the campaign.',
+  reward_points: 'Reward Points Earned',
+  reward_points_tooltip:
+    'The current reward points you earned during this campaign. Reward points will reset to 0 at the beginning of next campaign.',
   total_reward_points: 'Total Reward Points',
-  total_reward_points_tooltip: 'Total Reward Points tooltip',
+  total_reward_points_tooltip:
+    'The current total reward points collected by all addresses on Injective in this campaign. This number will grow until the end of campaign.',
   claimable_inj: 'Claimable INJ',
   claimable_inj_tooltip: 'Claimable INJ tooltip',
   countdown_campaign: 'Countdown',
-  countdown_campaign_tooltip: 'Countdown tooltip',
+  countdown_campaign_tooltip:
+    'Time remaining until reward distribution and the end of current campaign. Any reward point earned after the countdown will be counted toward the next campaign.',
   reward_earned_up_to_date: 'Rewards earned up to date',
   reward_earned_up_to_date_tooltip: 'Rewards earned up to date tooltip',
   market_total_tooltip:
@@ -464,22 +468,32 @@ export default {
     'Based on your tier, you are eligible for {maker}% maker discount and {taker}% taker discount.',
   remaining: 'remaining',
   campaign_duration: 'Campaign Duration',
-  campaign_duration_tooltip: 'Campaign Duration Tooltip',
-  max_campaign_rewards: 'Max allocated Rewards',
-  max_campaign_rewards_tooltip: 'Max allocated Rewards tooltip',
+  campaign_duration_tooltip:
+    'The duration of this campaign. A new campaign will start immediately after the previous campaign until 2026.',
+  max_campaign_rewards: 'Total allocated Rewards',
+  max_campaign_rewards_tooltip:
+    'The total number of INJ that will be distributed in this epoch. Reward distribution will happen at the end of the epoch period.',
   fee_paid_amount: 'Fee Paid Amount',
   fee_paid_amount_tooltip: 'Fee Paid Amount tooltip',
   'Markets Information': 'Markets Information',
   quote_denoms: 'Quote Denoms',
-  quote_denoms_tooltip: 'Quote Denom Tooltip',
-  boosted_markets: 'Boosted Markets',
-  boosted_markets_tooltip: 'Boosted Markets tooltip',
+  quote_denoms_tooltip:
+    'Markets involving these assets are qualified for Trade & Earn unless explicitly disqualified otherwise (check disqualified markets). Whether that be a derivatives market using these assets as margin, or a spot market using these assets as either base or quote currency.',
+  boosted_markets: 'Market Rewards',
+  boosted_markets_tooltip:
+    'The reward rate for taker and maker orders in each market. For example: 3x maker pts means that trading fees paid by make orders in this market will receive reward points equal to 3 times the value of trading fees.',
   disqualified_markets: 'Disqualified Markets',
-  disqualified_markets_tooltip: 'Disqualified Markets tooltip',
+  disqualified_markets_tooltip:
+    'Markets that are disqualified from Trade & Earn. Trading activity in these markets will not earn any reward points.',
   maker_points_mul: 'maker pts',
   taker_points_mul: 'taker pts',
-  maker_taker_points_multiplier_tooltip: 'Maker/Taker Points multiplier',
   pts: 'pts',
   switch_to_injective_address: 'Switch to Injective Address',
-  switch_to_ethereum_address: 'Switch to Ethereum Address'
+  switch_to_ethereum_address: 'Switch to Ethereum Address',
+  maker_taker_rate: 'Maker/Taker Fee Rate',
+  maker_taker_rate_note:
+    'Maker/Taker fee rate for the current market. Can be lowered based on the fee discounts incentive program.',
+  expected_points: 'Expected Points',
+  expected_points_note:
+    'The expected points you are going to get for the Trade and Earn incentive program based on the execution type of your order (maker or taker).'
 }

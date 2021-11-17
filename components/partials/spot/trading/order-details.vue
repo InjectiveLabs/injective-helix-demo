@@ -46,6 +46,17 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </v-text-info>
 
+        <v-text-info :title="$t('maker_taker_rate')" class="mt-2">
+          <v-icon-info-tooltip
+            slot="context"
+            class="ml-2"
+            :tooltip="$t('maker_taker_rate_note')"
+          />
+          <span class="font-mono flex items-center">
+            {{ `${makerFeeRateToFormat}%/${takerFeeRateToFormat}%` }}
+          </span>
+        </v-text-info>
+
         <v-text-info
           v-if="!orderTypeBuy"
           :title="$t('est_receiving_amount')"
@@ -135,6 +146,25 @@
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </v-text-info>
+
+        <v-text-info
+          v-if="makerExpectedPts.gt(0) || takerExpectedPts.gt(0)"
+          :title="$t('expected_points')"
+          class="mt-2"
+        >
+          <v-icon-info-tooltip
+            slot="context"
+            class="ml-2"
+            :tooltip="$t('expected_points_note')"
+          />
+          <span class="font-mono flex items-center">
+            {{
+              `${makerExpectedPtsToFormat} - ${takerExpectedPtsToFormat} ${$t(
+                'pts'
+              )}`
+            }}
+          </span>
+        </v-text-info>
       </div>
     </v-drawer>
   </div>
@@ -198,6 +228,26 @@ export default Vue.extend({
     },
 
     makerFeeRateDiscount: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    takerFeeRate: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    makerFeeRate: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    takerExpectedPts: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    makerExpectedPts: {
       required: true,
       type: Object as PropType<BigNumberInBase>
     },
@@ -292,6 +342,30 @@ export default Vue.extend({
       }
 
       return fees.toFormat(market.priceDecimals)
+    },
+
+    makerFeeRateToFormat(): string {
+      const { makerFeeRate } = this
+
+      return makerFeeRate.times(100).toFormat(2)
+    },
+
+    takerFeeRateToFormat(): string {
+      const { takerFeeRate } = this
+
+      return takerFeeRate.times(100).toFormat(2)
+    },
+
+    makerExpectedPtsToFormat(): string {
+      const { makerExpectedPts } = this
+
+      return makerExpectedPts.toFormat(2)
+    },
+
+    takerExpectedPtsToFormat(): string {
+      const { takerExpectedPts } = this
+
+      return takerExpectedPts.toFormat(2)
     },
 
     marketHasNegativeMakerFee(): boolean {
