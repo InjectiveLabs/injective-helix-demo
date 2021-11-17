@@ -72,10 +72,7 @@ import {
   ZERO_IN_BASE
 } from '~/app/utils/constants'
 import VItem from '~/components/partials/common/stats/item.vue'
-import {
-  FeeDiscountAccountInfo,
-  TradingRewardsCampaign
-} from '~/types/exchange'
+import { TradingRewardsCampaign } from '~/types/exchange'
 
 export default Vue.extend({
   components: {
