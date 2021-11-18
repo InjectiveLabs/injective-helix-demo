@@ -105,6 +105,7 @@
       </div>
 
       <v-order-leverage
+        v-if="!orderTypeReduceOnly"
         class="mt-6"
         :leverage="form.leverage"
         :max-leverage="maxLeverageAvailable.toFixed()"
@@ -185,7 +186,8 @@ import {
   DEFAULT_MAX_SLIPPAGE,
   ZERO_IN_BASE,
   NUMBER_REGEX,
-  DEFAULT_PRICE_WARNING_DEVIATION
+  DEFAULT_PRICE_WARNING_DEVIATION,
+  DEFAULT_MAX_PRICE_BAND_DIFFERENCE
 } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
@@ -856,6 +858,48 @@ export default Vue.extend({
       }
     },
 
+    priceHighDeviationFromLastTradedPrice(): TradeError | undefined {
+      const {
+        tradingTypeMarket,
+        executionPrice,
+        orderTypeBuy,
+        hasPrice,
+        hasAmount,
+        market,
+        lastTradedPrice
+      } = this
+
+      if (!tradingTypeMarket || !hasPrice || !hasAmount || !market) {
+        return
+      }
+
+      const acceptablePrice = orderTypeBuy
+        ? lastTradedPrice.times(
+            new BigNumberInBase(1).plus(
+              DEFAULT_MAX_PRICE_BAND_DIFFERENCE.div(100)
+            )
+          )
+        : lastTradedPrice.times(
+            new BigNumberInBase(1).minus(
+              DEFAULT_MAX_PRICE_BAND_DIFFERENCE.div(100)
+            )
+          )
+
+      if (orderTypeBuy && executionPrice.gt(acceptablePrice)) {
+        return {
+          amount: this.$t('your_order_has_high_price_deviation')
+        }
+      }
+
+      if (!orderTypeBuy && executionPrice.lt(acceptablePrice)) {
+        return {
+          amount: this.$t('your_order_has_high_price_deviation')
+        }
+      }
+
+      return undefined
+    },
+
     priceError(): string | null {
       const { price } = this.errors
 
@@ -883,6 +927,10 @@ export default Vue.extend({
 
       if (this.maxLeverageError) {
         return this.maxLeverageError
+      }
+
+      if (this.priceHighDeviationFromLastTradedPrice) {
+        return this.priceHighDeviationFromLastTradedPrice
       }
 
       if (this.reduceOnlyExcessError) {
@@ -969,7 +1017,14 @@ export default Vue.extend({
     },
 
     margin(): BigNumberInBase {
-      const { executionPrice, hasPrice, hasAmount, form, market } = this
+      const {
+        executionPrice,
+        orderTypeReduceOnly,
+        hasPrice,
+        hasAmount,
+        form,
+        market
+      } = this
 
       if (!hasPrice || !hasAmount || !market) {
         return ZERO_IN_BASE

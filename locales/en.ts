@@ -495,5 +495,7 @@ export default {
     'Maker/Taker fee rate for the current market. Can be lowered based on the fee discounts incentive program.',
   expected_points: 'Expected Points',
   expected_points_note:
-    'The expected points you are going to get for the Trade and Earn incentive program based on the execution type of your order (maker or taker).'
+    'The expected points you are going to get for the Trade and Earn incentive program based on the execution type of your order (maker or taker).',
+  your_order_has_high_price_deviation:
+    'The execution price for this trade is far away from the last traded price.'
 }
