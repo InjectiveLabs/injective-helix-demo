@@ -5,7 +5,7 @@
   >
     <div class="flex justify-between items-center mb-2">
       <span class="font-bold">{{ $t('average_price') }}:</span>
-      <span>{{ averagePrice }}</span>
+      <span>≈ {{ averagePrice }}</span>
     </div>
     <div class="flex justify-between items-center mb-2">
       <span class="font-bold">
@@ -27,7 +27,7 @@
       <span class="font-bold">
         {{ $t('total_volume_in_base', { symbol: market.quoteToken.symbol }) }}:
       </span>
-      <span>
+      <span class="flex items-center">
         <v-number
           :decimals="
             market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS

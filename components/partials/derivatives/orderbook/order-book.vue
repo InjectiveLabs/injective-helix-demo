@@ -340,7 +340,7 @@ export default Vue.extend({
             ...record,
             total,
             depth: total.dividedBy(buysTotalNotional).times(100).toNumber()
-          }
+          } as UiOrderbookPriceLevel
         })
     },
 
@@ -435,7 +435,7 @@ export default Vue.extend({
             ...record,
             total,
             depth: total.dividedBy(sellsTotalNotional).times(100).toNumber()
-          }
+          } as UiOrderbookPriceLevel
         })
         .reverse()
     },

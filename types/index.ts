@@ -26,9 +26,8 @@ export interface UiOrderbookSummary {
 
 export interface UiPriceLevel {
   price: string
-  quantity: BigNumberInWei
+  quantity: BigNumberInWei | string
   timestamp: number
-  notional?: BigNumberInBase
   aggregatePrices?: string[]
 }
 
