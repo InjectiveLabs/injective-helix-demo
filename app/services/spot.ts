@@ -8,7 +8,11 @@ import {
   OrderStreamCallback as SpotMarketOrderStreamCallback
 } from '@injectivelabs/spot-consumer'
 import { AccountAddress, TradeExecutionSide } from '@injectivelabs/ts-types'
-import { BigNumber, BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  BigNumber,
+  BigNumberInBase,
+  BigNumberInWei
+} from '@injectivelabs/utils'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { SubaccountStreamType } from '@injectivelabs/subaccount-consumer'
 import { metricsProvider } from '../providers/MetricsProvider'
@@ -47,7 +51,7 @@ export const fetchMarkets = async (): Promise<UiSpotMarket[]> => {
     SpotMetrics.FetchMarkets
   )
 
-  return spotMarketsToUiSpotMarkets(
+  return await spotMarketsToUiSpotMarkets(
     SpotTransformer.grpcMarketsToMarkets(markets)
   )
 }
@@ -96,9 +100,9 @@ export const fetchMarket = async (marketId: string) => {
     promise,
     SpotMetrics.FetchMarket
   )
-  const transformedMarket = baseUiSpotMarketToBaseUiSpotMarketWithPartialTokenMetaData(
+  const transformedMarket = (await baseUiSpotMarketToBaseUiSpotMarketWithPartialTokenMetaData(
     SpotTransformer.grpcMarketToMarket(market)
-  ) as BaseUiSpotMarketWithTokenMetaData
+  )) as BaseUiSpotMarketWithTokenMetaData
 
   return spotMarketToUiSpotMarket(transformedMarket)
 }

@@ -61,7 +61,7 @@ export const fetchMarkets = async (): Promise<UiDerivativeMarket[]> => {
     DerivativesMetrics.FetchMarkets
   )
 
-  return derivativeMarketsToUiDerivativeMarkets(
+  return await derivativeMarketsToUiDerivativeMarkets(
     DerivativeTransformer.grpcMarketsToMarkets(markets)
   )
 }
@@ -112,9 +112,9 @@ export const fetchMarket = async (marketId: string) => {
     promise,
     DerivativesMetrics.FetchMarket
   )
-  const transformedMarket = baseUiDerivativeMarketToBaseUiDerivativeMarketWithPartialTokenMetaData(
+  const transformedMarket = (await baseUiDerivativeMarketToBaseUiDerivativeMarketWithPartialTokenMetaData(
     DerivativeTransformer.grpcMarketToMarket(market)
-  ) as BaseUiDerivativeMarketWithTokenMetaData
+  )) as BaseUiDerivativeMarketWithTokenMetaData
 
   return derivativeMarketToUiDerivativeMarket(transformedMarket)
 }

@@ -3,7 +3,7 @@ import {
   BigNumberInWei,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import { getCoinGeckoId, getTokenMetaData } from '../services/tokens'
+import { getCoinGeckoId, getTokenMetaDataWithIbc } from '../services/tokens'
 import { grpcTokenMetaToToken, tokenMetaToToken } from './token'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
 import { spot as sortSpotMarkets } from '~/routes.config'
@@ -40,16 +40,22 @@ export const spotMarketToUiSpotMarket = (
   }
 }
 
-export const baseUiSpotMarketToBaseUiSpotMarketWithPartialTokenMetaData = (
+export const baseUiSpotMarketToBaseUiSpotMarketWithPartialTokenMetaData = async (
   market: BaseUiSpotMarket
-): BaseUiSpotMarketWithPartialTokenMetaData => {
+): Promise<BaseUiSpotMarketWithPartialTokenMetaData> => {
   const slug = market.ticker.replace('/', '-').replace(' ', '-').toLowerCase()
   const baseToken = market.baseToken
     ? grpcTokenMetaToToken(market.baseToken, market.baseDenom)
-    : tokenMetaToToken(getTokenMetaData(market.baseDenom), market.baseDenom)
+    : tokenMetaToToken(
+        await getTokenMetaDataWithIbc(market.baseDenom),
+        market.baseDenom
+      )
   const quoteToken = market.quoteToken
     ? grpcTokenMetaToToken(market.quoteToken, market.quoteDenom)
-    : tokenMetaToToken(getTokenMetaData(market.quoteDenom), market.quoteDenom)
+    : tokenMetaToToken(
+        await getTokenMetaDataWithIbc(market.quoteDenom),
+        market.quoteDenom
+      )
 
   if (baseToken && !baseToken.coinGeckoId) {
     baseToken.coinGeckoId = getCoinGeckoId(baseToken.symbol)
@@ -67,13 +73,16 @@ export const baseUiSpotMarketToBaseUiSpotMarketWithPartialTokenMetaData = (
   }
 }
 
-export const spotMarketsToUiSpotMarkets = (
+export const spotMarketsToUiSpotMarkets = async (
   markets: BaseUiSpotMarket[]
-): UiSpotMarket[] => {
+): Promise<UiSpotMarket[]> => {
   const tokenMetaDataExists = (m: BaseUiSpotMarketWithPartialTokenMetaData) =>
     m.baseToken !== undefined && m.quoteToken !== undefined
-  const filteredMarkets = markets
-    .map(baseUiSpotMarketToBaseUiSpotMarketWithPartialTokenMetaData)
+  const filteredMarkets = (
+    await Promise.all(
+      markets.map(baseUiSpotMarketToBaseUiSpotMarketWithPartialTokenMetaData)
+    )
+  )
     .filter(tokenMetaDataExists)
     .filter((market) => sortSpotMarkets.includes(market.slug))
     .filter(
