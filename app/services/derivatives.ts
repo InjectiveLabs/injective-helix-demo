@@ -38,6 +38,7 @@ import {
   UiPriceLevel,
   UiDerivativeMarket,
   UiDerivativeMarketSummary,
+  UiOrderbookPriceLevel,
   UiPosition,
   BaseUiDerivativeMarketWithTokenMetaData,
   TradeDirection,
@@ -745,6 +746,16 @@ export const getAggregationPrice = ({
       .multipliedBy(aggregateBy)
       .dividedBy(aggregateBy)
   )
+}
+
+export const computeOrderbookSummary = (
+  summary: { quantity: BigNumberInBase; total: BigNumberInBase },
+  record: UiOrderbookPriceLevel
+) => {
+  return {
+    quantity: summary.quantity.plus(new BigNumberInBase(record.quantity)),
+    total: summary.total.plus(new BigNumberInBase(record.total || 0))
+  }
 }
 
 export const getPositionFeeAdjustedBankruptcyPrice = ({
