@@ -54,7 +54,8 @@ export const CHAIN_ID: ChainId = process.env.APP_CHAIN_ID
 export const DEFAULT_GAS_PRICE = new BigNumber(6).times(GWEI_IN_WEI)
 export const DEFAULT_PRICE_WARNING_DEVIATION = new BigNumber(5) // 5%
 export const DEFAULT_MAX_SLIPPAGE = new BigNumber(5) // +1% slippage
-export const DEFAULT_MAX_SLIPPAGE_FOR_CLOSING_POSITIONS = new BigNumber(100) // +1% slippage
+export const DEFAULT_MAX_SLIPPAGE_FOR_CLOSING_POSITIONS = new BigNumber(100) // +100% slippage
+export const DEFAULT_MAX_PRICE_BAND_DIFFERENCE = new BigNumber(50) // +50%
 
 export const MAX_DISPLAYABLE_NUMBER = new BigNumberInBase(1_000_000_000)
 export const MAXIMUM_TRANSFER_ALLOWED = 1000
