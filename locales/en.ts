@@ -502,5 +502,7 @@ export default {
   expected_points_note:
     'The expected points you are going to get for the Trade and Earn incentive program based on the execution type of your order (maker or taker).',
   your_order_has_high_price_deviation:
-    'The execution price for this trade is far away from the last traded price.'
+    'The execution price for this trade is far away from the current orderbook mid price.',
+  execution_price_far_away_from_last_traded_price:
+    'Please note that the execution price for this trade deviates a lot from the last traded price.'
 }

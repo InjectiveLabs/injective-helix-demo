@@ -130,7 +130,14 @@
       }"
       @drawer-toggle="onDetailsDrawerToggle"
     />
-    <div class="mt-4">
+    <div>
+      <p
+        v-if="executionPriceHasHighDeviationWarning && !hasErrors"
+        class="text-2xs text-red-200 mb-4"
+      >
+        {{ $t('execution_price_far_away_from_last_traded_price') }}
+      </p>
+
       <v-button
         lg
         :status="status"
@@ -163,6 +170,7 @@ import {
   ZERO_IN_BASE,
   NUMBER_REGEX,
   DEFAULT_PRICE_WARNING_DEVIATION,
+  DEFAULT_MARKET_PRICE_WARNING_DEVIATION,
   DEFAULT_MAX_PRICE_BAND_DIFFERENCE
 } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
@@ -544,6 +552,33 @@ export default Vue.extend({
       return deviation.gt(DEFAULT_PRICE_WARNING_DEVIATION)
     },
 
+    executionPriceHasHighDeviationWarning(): boolean {
+      const {
+        executionPrice,
+        orderTypeBuy,
+        tradingTypeMarket,
+        lastTradedPrice
+      } = this
+
+      if (!tradingTypeMarket) {
+        return false
+      }
+
+      if (executionPrice.lte(0)) {
+        return false
+      }
+
+      const deviation = new BigNumberInBase(1)
+        .minus(
+          orderTypeBuy
+            ? lastTradedPrice.dividedBy(executionPrice)
+            : executionPrice.dividedBy(lastTradedPrice)
+        )
+        .times(100)
+
+      return deviation.gt(DEFAULT_MARKET_PRICE_WARNING_DEVIATION)
+    },
+
     availableBalanceError(): TradeError | undefined {
       const {
         quoteAvailableBalance,
@@ -666,10 +701,9 @@ export default Vue.extend({
       }
     },
 
-    priceHighDeviationFromLastTradedPrice(): TradeError | undefined {
+    priceHighDeviationFromMidOrderbookPrice(): TradeError | undefined {
       const {
         tradingTypeMarket,
-        orderTypeBuy,
         hasPrice,
         hasAmount,
         market,
@@ -690,26 +724,18 @@ export default Vue.extend({
       const lowestSell = new BigNumberInWei(sell ? sell.price : 0).toBase(
         market.quoteToken.decimals - market.baseToken.decimals
       )
+      const middlePrice = highestBuy.plus(lowestSell).dividedBy(2)
+      const acceptableMax = middlePrice.times(
+        new BigNumberInBase(1).plus(DEFAULT_MAX_PRICE_BAND_DIFFERENCE.div(100))
+      )
+      const acceptableMin = middlePrice.times(
+        new BigNumberInBase(1).minus(DEFAULT_MAX_PRICE_BAND_DIFFERENCE.div(100))
+      )
 
-      const acceptablePrice = orderTypeBuy
-        ? highestBuy.times(
-            new BigNumberInBase(1).minus(
-              DEFAULT_MAX_PRICE_BAND_DIFFERENCE.div(100)
-            )
-          )
-        : lowestSell.times(
-            new BigNumberInBase(1).plus(
-              DEFAULT_MAX_PRICE_BAND_DIFFERENCE.div(100)
-            )
-          )
-
-      if (orderTypeBuy && executionPrice.lt(acceptablePrice)) {
-        return {
-          price: this.$t('your_order_has_high_price_deviation')
-        }
-      }
-
-      if (!orderTypeBuy && executionPrice.gt(acceptablePrice)) {
+      if (
+        executionPrice.lt(acceptableMin) ||
+        executionPrice.gt(acceptableMax)
+      ) {
         return {
           price: this.$t('your_order_has_high_price_deviation')
         }
@@ -751,8 +777,8 @@ export default Vue.extend({
         return this.priceNotValidError
       }
 
-      if (this.priceHighDeviationFromLastTradedPrice) {
-        return this.priceHighDeviationFromLastTradedPrice
+      if (this.priceHighDeviationFromMidOrderbookPrice) {
+        return this.priceHighDeviationFromMidOrderbookPrice
       }
 
       return { price: '', amount: '' }
