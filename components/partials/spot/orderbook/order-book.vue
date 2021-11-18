@@ -13,10 +13,16 @@
           <v-record
             v-for="(sell, index) in sellsWithDepth"
             :key="`order-book-sell-${index}`"
+            :ref="`order-book-sell-${index}`"
+            :class="{
+              active: sellHoverPosition !== null && index >= sellHoverPosition
+            }"
+            :position="index"
             :aggregation="aggregation"
             :type="SpotOrderSide.Sell"
             :user-orders="sellUserOrderPrices"
             :record="sell"
+            @update:active-position="handleSellOrderHover"
           ></v-record>
         </ul>
       </div>
@@ -57,20 +63,36 @@
       <v-record
         v-for="(buy, index) in buysWithDepth"
         :key="`order-book-buy-${index}`"
+        :ref="`order-book-buy-${index}`"
+        :class="{
+          active: buyHoverPosition !== null && index <= buyHoverPosition
+        }"
+        :position="index"
         :aggregation="aggregation"
         :type="SpotOrderSide.Buy"
         :user-orders="buyUserOrderPrices"
         :record="buy"
+        @update:active-position="handleBuyOrderHover"
       ></v-record>
     </ul>
+
+    <!-- orderbook summary popup -->
+    <div ref="orderbookSummary" class="orderbook-summary">
+      <SummaryPopup :market="market" :summary="orderBookSummary" />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { createPopper, Instance } from '@popperjs/core'
 import Record from './record.vue'
-import { getAggregationPrice } from '~/app/services/spot'
+import SummaryPopup from '~/components/partials/common/orderbook/summary-popup.vue'
+import {
+  computeOrderbookSummary,
+  getAggregationPrice
+} from '~/app/services/spot'
 import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   ZERO_IN_BASE,
@@ -85,11 +107,13 @@ import {
   TradeDirection,
   SpotOrderSide,
   UiOrderbookPriceLevel,
+  UiOrderbookSummary,
   Change
 } from '~/types'
 
 export default Vue.extend({
   components: {
+    SummaryPopup,
     'v-record': Record
   },
 
@@ -106,7 +130,21 @@ export default Vue.extend({
       TradeDirection,
       SpotOrderSide,
       autoScrollSellsLocked: false,
-      autoScrollBuysLocked: false
+      autoScrollBuysLocked: false,
+      buyHoverPosition: null as number | null,
+      sellHoverPosition: null as number | null,
+      popper: {} as Instance,
+      popperOption: {
+        placement: 'left',
+        modifiers: [
+          {
+            name: 'preventOverflow',
+            options: {
+              mainAxis: false
+            }
+          }
+        ]
+      } as Object
     }
   },
 
@@ -235,7 +273,7 @@ export default Vue.extend({
           ...(orders[aggregatedPriceKey] || []),
           {
             ...record,
-            displayPrice: aggregatedPrice
+            aggregatedPrice
           }
         ]
       })
@@ -250,17 +288,6 @@ export default Vue.extend({
           new BigNumberInWei(0)
         )
 
-        const notional = orderGroup.reduce(
-          (sum: BigNumberInWei, order: UiPriceLevel) => {
-            const notional = new BigNumberInWei(order.quantity)
-              .times(order.price)
-              .toBase(market.quoteToken.decimals)
-
-            return sum.plus(notional)
-          },
-          new BigNumberInBase(0)
-        )
-
         const aggregatePrices = orderGroup.map(
           ({ price }: UiPriceLevel) => price
         )
@@ -268,16 +295,17 @@ export default Vue.extend({
         return {
           ...firstOrder,
           aggregatePrices,
-          notional,
           quantity
         }
       })
     },
 
     buysWithDepth(): UiOrderbookPriceLevel[] {
-      const { aggregatedBuyOrders, buysTotalNotional } = this
+      const { aggregatedBuyOrders, buysTotalNotional, market } = this
 
-      let accumulator = ZERO_IN_BASE
+      if (!market) {
+        return []
+      }
 
       return aggregatedBuyOrders
         .sort((v1: UiOrderbookPriceLevel, v2: UiOrderbookPriceLevel) => {
@@ -286,20 +314,37 @@ export default Vue.extend({
 
           return v2Price.minus(v1Price).toNumber()
         })
-        .map((record: UiPriceLevel, index: number) => {
-          const notional = record.notional || new BigNumberInBase(0)
-
-          accumulator = index === 0 ? notional : accumulator.plus(notional)
+        .map((record: UiPriceLevel) => {
+          const total = new BigNumberInWei(record.quantity)
+            .times(record.price)
+            .toBase(market.quoteToken.decimals)
 
           return {
             ...record,
-            total: accumulator.toFixed(),
-            depth: accumulator
-              .dividedBy(buysTotalNotional)
-              .times(100)
-              .toNumber()
-          }
+            total,
+            depth: total.dividedBy(buysTotalNotional).times(100).toNumber()
+          } as UiOrderbookPriceLevel
         })
+    },
+
+    buyOrdersSummary(): UiOrderbookSummary | undefined {
+      const { buysWithDepth, buyHoverPosition, market } = this
+
+      if (!market || buysWithDepth.length === 0 || buyHoverPosition === null) {
+        return
+      }
+
+      const buyOrdersSummary = buysWithDepth
+        .slice(0, Number(buyHoverPosition) + 1)
+        .reduce(computeOrderbookSummary, {
+          quantity: new BigNumberInWei(0),
+          total: new BigNumberInBase(0)
+        })
+
+      return {
+        ...buyOrdersSummary,
+        quantity: buyOrdersSummary.quantity.toBase(market.baseToken.decimals)
+      }
     },
 
     aggregatedSellOrders(): UiOrderbookPriceLevel[] {
@@ -328,7 +373,7 @@ export default Vue.extend({
           ...(orders[aggregatedPriceKey] || []),
           {
             ...record,
-            displayPrice: aggregatedPrice
+            aggregatedPrice
           }
         ]
       })
@@ -345,17 +390,6 @@ export default Vue.extend({
             new BigNumberInWei(0)
           )
 
-          const notional = orderGroup.reduce(
-            (sum: BigNumberInWei, order: UiPriceLevel) => {
-              const notional = new BigNumberInWei(order.quantity)
-                .times(order.price)
-                .toBase(market.quoteToken.decimals)
-
-              return sum.plus(notional)
-            },
-            new BigNumberInBase(0)
-          )
-
           const aggregatePrices = orderGroup.map(
             ({ price }: UiPriceLevel) => price
           )
@@ -363,43 +397,95 @@ export default Vue.extend({
           return {
             ...firstOrder,
             aggregatePrices,
-            notional,
             quantity
           }
         })
     },
 
     sellsWithDepth(): UiOrderbookPriceLevel[] {
-      const { aggregatedSellOrders, sellsTotalNotional } = this
+      const { aggregatedSellOrders, sellsTotalNotional, market } = this
 
-      let accumulator = ZERO_IN_BASE
+      if (market) {
+        return aggregatedSellOrders
+          .sort((v1: UiOrderbookPriceLevel, v2: UiOrderbookPriceLevel) => {
+            const v1Price = new BigNumberInWei(v1.price)
+            const v2Price = new BigNumberInWei(v2.price)
 
-      return aggregatedSellOrders
-        .sort((v1: UiOrderbookPriceLevel, v2: UiOrderbookPriceLevel) => {
-          const v1Price = new BigNumberInWei(v1.price)
-          const v2Price = new BigNumberInWei(v2.price)
+            return v1Price.minus(v2Price).toNumber()
+          })
+          .map((record: UiPriceLevel) => {
+            const total = new BigNumberInWei(record.quantity)
+              .times(record.price)
+              .toBase(market.quoteToken.decimals)
 
-          return v1Price.minus(v2Price).toNumber()
+            return {
+              ...record,
+              total,
+              depth: total.dividedBy(sellsTotalNotional).times(100).toNumber()
+            } as UiOrderbookPriceLevel
+          })
+          .reverse()
+      }
+
+      return []
+    },
+
+    sellOrdersSummary(): UiOrderbookSummary | undefined {
+      const { sellsWithDepth, sellHoverPosition, market } = this
+
+      if (
+        !market ||
+        sellsWithDepth.length === 0 ||
+        sellHoverPosition === null
+      ) {
+        return
+      }
+
+      const sellOrdersSummary = sellsWithDepth
+        .slice(Number(sellHoverPosition))
+        .reduce(computeOrderbookSummary, {
+          quantity: new BigNumberInWei(0),
+          total: new BigNumberInBase(0)
         })
-        .map((record: UiPriceLevel, index: number) => {
-          const notional = record.notional || new BigNumberInBase(0)
 
-          accumulator = index === 0 ? notional : accumulator.plus(notional)
+      return {
+        ...sellOrdersSummary,
+        quantity: sellOrdersSummary.quantity.toBase(market.baseToken.decimals)
+      }
+    },
 
-          return {
-            ...record,
-            total: accumulator.toFixed(),
-            depth: accumulator
-              .dividedBy(sellsTotalNotional)
-              .times(100)
-              .toNumber()
-          }
-        })
-        .reverse()
+    orderBookSummary(): UiOrderbookSummary | undefined {
+      const {
+        buyHoverPosition,
+        sellHoverPosition,
+        buyOrdersSummary,
+        sellOrdersSummary
+      } = this
+
+      if (buyHoverPosition !== null) {
+        return buyOrdersSummary
+      }
+
+      if (sellHoverPosition !== null) {
+        return sellOrdersSummary
+      }
+
+      return undefined
+    },
+
+    $orderbookSummaryElement(): InstanceType<typeof HTMLElement> {
+      return this.$refs.orderbookSummary as InstanceType<typeof HTMLElement>
     }
   },
 
   watch: {
+    aggregation() {
+      this.$nextTick(() => {
+        this.onScrollSells()
+        this.onScrollBuys()
+      })
+    },
+
     sells() {
       this.$nextTick(this.onScrollSells)
     },
@@ -430,6 +516,58 @@ export default Vue.extend({
 
       if (el && !this.autoScrollBuysLocked) {
         el.scrollTop = 0
+      }
+    },
+
+    handleSellOrderHover(position: number | null) {
+      const { $orderbookSummaryElement, popperOption } = this
+      this.sellHoverPosition = position
+
+      if (position !== null) {
+        const hoverElement = this.$refs[`order-book-sell-${position}`] as {
+          $el: InstanceType<typeof Element>
+        }[]
+
+        this.popper = createPopper(
+          hoverElement[0].$el,
+          $orderbookSummaryElement,
+          popperOption
+        )
+
+        this.$nextTick(() =>
+          $orderbookSummaryElement.setAttribute('data-show', '')
+        )
+      } else {
+        if (this.popper.destroy) {
+          this.popper.destroy()
+        }
+        $orderbookSummaryElement.removeAttribute('data-show')
+      }
+    },
+
+    handleBuyOrderHover(position: number | null) {
+      const { $orderbookSummaryElement, popperOption } = this
+      this.buyHoverPosition = position
+
+      if (position !== null) {
+        const hoverElement = this.$refs[`order-book-buy-${position}`] as {
+          $el: InstanceType<typeof Element>
+        }[]
+
+        this.popper = createPopper(
+          hoverElement[0].$el,
+          $orderbookSummaryElement,
+          popperOption
+        )
+
+        this.$nextTick(() =>
+          $orderbookSummaryElement.setAttribute('data-show', '')
+        )
+      } else {
+        if (this.popper.destroy) {
+          this.popper.destroy()
+        }
+        $orderbookSummaryElement.removeAttribute('data-show')
       }
     }
   }

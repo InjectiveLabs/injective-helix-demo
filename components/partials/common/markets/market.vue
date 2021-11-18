@@ -15,7 +15,7 @@
           :alt="market.baseToken.name"
           class="w-4 h-4 md:w-6 md:h-6 mr-4"
         />
-        <div class="mr-4 whitespace-nowrap">
+        <div class="w-32 mr-4 text-left">
           {{ market.ticker }}
           <span v-if="!simple" class="text-gray-500 text-xs hidden md:block">
             {{ market.baseToken.name }}

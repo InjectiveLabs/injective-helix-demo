@@ -393,6 +393,10 @@ export default Vue.extend({
 
       const number = makerFeeRate.times(100)
 
+      if (number.lte(0)) {
+        return ZERO_IN_BASE.toFormat(0)
+      }
+
       return number.toFormat(getDecimalsFromNumber(number.toNumber()))
     },
 
@@ -407,9 +411,9 @@ export default Vue.extend({
     makerExpectedPtsToFormat(): string {
       const { makerExpectedPts } = this
 
-      return makerExpectedPts.toFormat(
-        getDecimalsFromNumber(makerExpectedPts.toNumber())
-      )
+      return makerExpectedPts
+        .abs()
+        .toFormat(getDecimalsFromNumber(makerExpectedPts.toNumber()))
     },
 
     takerExpectedPtsToFormat(): string {

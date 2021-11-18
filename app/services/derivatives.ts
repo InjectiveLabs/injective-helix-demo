@@ -38,6 +38,7 @@ import {
   UiPriceLevel,
   UiDerivativeMarket,
   UiDerivativeMarketSummary,
+  UiOrderbookPriceLevel,
   UiPosition,
   BaseUiDerivativeMarketWithTokenMetaData,
   TradeDirection,
@@ -61,7 +62,7 @@ export const fetchMarkets = async (): Promise<UiDerivativeMarket[]> => {
     DerivativesMetrics.FetchMarkets
   )
 
-  return derivativeMarketsToUiDerivativeMarkets(
+  return await derivativeMarketsToUiDerivativeMarkets(
     DerivativeTransformer.grpcMarketsToMarkets(markets)
   )
 }
@@ -112,9 +113,9 @@ export const fetchMarket = async (marketId: string) => {
     promise,
     DerivativesMetrics.FetchMarket
   )
-  const transformedMarket = baseUiDerivativeMarketToBaseUiDerivativeMarketWithPartialTokenMetaData(
+  const transformedMarket = (await baseUiDerivativeMarketToBaseUiDerivativeMarketWithPartialTokenMetaData(
     DerivativeTransformer.grpcMarketToMarket(market)
-  ) as BaseUiDerivativeMarketWithTokenMetaData
+  )) as BaseUiDerivativeMarketWithTokenMetaData
 
   return derivativeMarketToUiDerivativeMarket(transformedMarket)
 }
@@ -745,6 +746,16 @@ export const getAggregationPrice = ({
       .multipliedBy(aggregateBy)
       .dividedBy(aggregateBy)
   )
+}
+
+export const computeOrderbookSummary = (
+  summary: { quantity: BigNumberInBase; total: BigNumberInBase },
+  record: UiOrderbookPriceLevel
+) => {
+  return {
+    quantity: summary.quantity.plus(new BigNumberInBase(record.quantity)),
+    total: summary.total.plus(new BigNumberInBase(record.total || 0))
+  }
 }
 
 export const getPositionFeeAdjustedBankruptcyPrice = ({

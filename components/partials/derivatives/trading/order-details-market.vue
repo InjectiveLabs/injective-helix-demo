@@ -74,14 +74,14 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </v-text-info>
 
-        <v-text-info :title="$t('maker_taker_rate')" class="mt-2">
+        <v-text-info :title="$t('taker_rate')" class="mt-2">
           <v-icon-info-tooltip
             slot="context"
             class="ml-2"
-            :tooltip="$t('maker_taker_rate_note')"
+            :tooltip="$t('taker_rate_note')"
           />
           <span class="font-mono flex items-center">
-            {{ `${makerFeeRateToFormat}%/${takerFeeRateToFormat}%` }}
+            {{ `${takerFeeRateToFormat}%` }}
           </span>
         </v-text-info>
 

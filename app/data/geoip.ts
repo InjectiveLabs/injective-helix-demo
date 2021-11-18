@@ -18,7 +18,6 @@ export const restrictedCountries = [
   'IR',
   'LR',
   'SD',
-  'TR',
   'YE',
   'CD',
   'CG',

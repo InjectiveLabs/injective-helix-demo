@@ -4,6 +4,7 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { BaseCurrencyContract } from '@injectivelabs/contracts/dist/contracts/BaseCurrency'
 import { PeggyComposer } from '@injectivelabs/chain-consumer'
 import { Erc20TokenMeta, TokenMeta } from '@injectivelabs/token-metadata'
+import { fetchDenomTrace } from './ibc'
 import { TxProvider } from '~/app/providers/TxProvider'
 import { peggyDenomToContractAddress } from '~/app/transformers/peggy'
 import { coinGeckoConsumer } from '~/app/singletons/CoinGeckoConsumer'
@@ -331,6 +332,31 @@ export const getTokenMetaData = (denom: string): TokenMeta | undefined => {
   }
 
   return meta
+}
+
+export const getIbcTokenMetaData = async (
+  denom: string
+): Promise<TokenMeta | undefined> => {
+  const { baseDenom: symbol } = await fetchDenomTrace(denom)
+
+  const meta =
+    CHAIN_ID === ChainId.Mainnet
+      ? Erc20TokenMeta.getMetaBySymbol(symbol)
+      : Erc20TokenMeta.getMetaBySymbolForKovan(symbol)
+
+  if (!meta) {
+    return
+  }
+
+  return meta
+}
+
+export const getTokenMetaDataWithIbc = async (
+  denom: string
+): Promise<TokenMeta | undefined> => {
+  return denom.startsWith('ibc/')
+    ? await getIbcTokenMetaData(denom)
+    : await getTokenMetaData(denom)
 }
 
 export const getTokenMetaDataBySymbol = (
