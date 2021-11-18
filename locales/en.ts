@@ -486,7 +486,7 @@ export default {
     'Markets involving these assets are qualified for Trade & Earn unless explicitly disqualified otherwise (check disqualified markets). Whether that be a derivatives market using these assets as margin, or a spot market using these assets as either base or quote currency.',
   boosted_markets: 'Market Rewards',
   boosted_markets_tooltip:
-    'The reward rate for taker and maker orders in each market. For example: 3x maker pts means that trading fees paid by make orders in this market will receive reward points equal to 3 times the value of trading fees.',
+    'The reward rate for taker and maker orders in each market. For example: 3x maker pts means that trading fees paid by maker orders in this market will receive reward points equal to 3 times the value of trading fees.',
   disqualified_markets: 'Disqualified Markets',
   disqualified_markets_tooltip:
     'Markets that are disqualified from Trade & Earn. Trading activity in these markets will not earn any reward points.',
