@@ -2,7 +2,7 @@
   <div class="bg-gray-800 rounded-l-xl h-full overflow-hidden shadow-sm">
     <div
       ref="trading-view-wrap"
-      class="min-h-sm lg:min-h-full h-full w-full relative"
+      class="min-h-sm lg:min-h-full h-full w-full relative flex"
     >
       <HOCLoading :status="status">
         <v-trading-chart
