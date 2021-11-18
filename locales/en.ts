@@ -36,7 +36,7 @@ export default {
   filter_markets: 'Filter Markets',
   filter_by_market: 'Filter by market',
   spot: 'Spot',
-  subaccount_funds_available: 'Subaccount Funds',
+  subaccount_funds_available: 'Trading Account Funds',
   asset: 'Asset',
   balance: 'Balance',
   available: 'Available',
@@ -109,7 +109,7 @@ export default {
     "Trading on our Layer-2 Injective Chain requires you to transfer your balance to our Injective Chain. First, set allowance to the asset you want to transfer (if you haven't already), enter desired amount and complete your transfer",
   deposit_modal_title: 'Deposit to Subaccount',
   deposit_modal_note:
-    'Your trading experience starts once you deposit your funds from the Injective Chain to your subaccount.',
+    'Your trading experience starts once you deposit your funds from the Injective Chain to your trading account.',
   take_out_modal_title: 'Withdraw from Injective Chain',
   take_out_modal_note:
     'You can choose to withdraw your assets from the Injective Chain by filling up the form below',
@@ -213,7 +213,7 @@ export default {
   execution_price_surpasses_bankruptcy_price:
     'Execution price surpasses the bankruptcy price',
   you_can_only_have_max_orders:
-    'You can only have {number} orders per side per market per subaccount',
+    'You can only have {number} orders per side per market per trading account',
   transfer_on_chain_title: 'Transfer on Injective Chain',
   transfer_on_chain_note:
     'Transfer your assets to an address on the Injective Chain',
@@ -264,26 +264,26 @@ export default {
     'There are no markets found. You can go ahead and propose some!',
   balances: 'Balances',
   'Injective Chain': 'Injective Chain',
-  Subaccount: 'Subaccount',
+  Subaccount: 'Trading Account',
   subaccount_tooltip:
-    'The available funds on your subaccount. In order to trade, you must transfer funds from the Injective Chain to your subaccount.',
+    'The available funds on your trading account. In order to trade, you must transfer funds from the Injective Chain to your trading account.',
   injective_chain_tooltip: 'Your available funds on the Injective Chain',
   'available_total_subaccount_balance Tooltip':
-    'Your subaccount available/total balance',
+    'Your trading account available/total balance',
   'Deposit to Injective Chain': 'Deposit to Injective Chain',
-  'Deposit to Subaccount': 'Deposit to your Subaccount',
+  'Deposit to Subaccount': 'Deposit to your Trading Account',
   'Available for Deposit': 'Available for Deposit',
   'Available for Deposit Tooltip':
     'The amount of {asset} you can deposit on the Injective Chain.',
   'Enter your amount': 'Enter your amount',
   'Withdraw from Injective Chain': 'Withdraw from Injective Chain',
-  'Withdraw from Subaccount': 'Withdraw from Subaccount',
+  'Withdraw from Subaccount': 'Withdraw from Trading Account',
   Deposit: 'Deposit',
   'Available to Withdraw': 'Available to Withdraw',
   'Available to Withdraw Tooltip':
     'The amount of {asset} you can withdraw from the Injective Chain.',
   'Available to Withdraw Subaccount Tooltip':
-    'The amount of {asset} you can withdraw from your Subaccount.',
+    'The amount of {asset} you can withdraw from your Trading Account.',
   Orderbook: 'Orderbook',
   Cancel: 'Cancel',
   Close: 'Close',
@@ -304,13 +304,13 @@ export default {
   derivatives_trade_history: 'Derivatives Trade History',
   spot_trade_history: 'Spot Trade History',
   wallet_history: 'Wallet History',
-  subaccount_transfer_history: 'Subaccount Transfer History',
+  subaccount_transfer_history: 'Trading Account Transfer History',
   History: 'History',
   Wallet: 'Wallet',
   deposits: 'Deposits',
   download: 'Download',
   withdrawals: 'Withdrawals',
-  subaccount: 'Subaccount',
+  subaccount: 'Trading Account',
   'Injective Chain Balance': 'Injective Chain Balance',
   'ERC20 Balance': 'ERC20 Balance',
   Balances: 'Balances',
@@ -334,7 +334,7 @@ export default {
   margin_tooltip: 'The total margin required to execute the trade.',
   portfolio_value: 'Portfolio value',
   portfolio_value_tooltip:
-    'Your total portfolio value represented in USD. This includes all of your holdings on the Injective Chain, including bank module balances, balances across your subaccounts, open orders total value and unrealized PnL.',
+    'Your total portfolio value represented in USD. This includes all of your holdings on the Injective Chain, including bank module balances, balances across your trading accounts, open orders total value and unrealized PnL.',
   start_trading: 'Start Trading Now',
   available_margin: 'Available Margin',
   available_margin_tooltip: 'Your total available margin for trading.',
@@ -414,7 +414,7 @@ export default {
   'My Maker/Taker Discount Tooltip':
     'Your current trading fee discount based on your fee tier.',
   portfolio_summary: 'Portfolio Summary',
-  subaccount_holdings: 'Subaccount Holdings',
+  subaccount_holdings: 'Trading Account Holdings',
   faq: 'FAQ',
   fee_discounts_footer: 'Fee Discounts',
   'Privacy Policy': 'Privacy Policy',
@@ -423,8 +423,10 @@ export default {
   'Search for FAQs': 'Search for FAQs',
   'faq-category-All': 'All',
   'faq-category-General': 'General',
-  available_subaccount_balance_tooltip: '',
-  total_subaccount_balance_tooltip: '',
+  available_subaccount_balance_tooltip:
+    'The available balance you can use in your trading account, excluding the balance that is used in trades (orders or positions).',
+  total_subaccount_balance_tooltip:
+    'The total balance in your trading account.',
   and: 'and',
   fee_discount_staked_amount: 'Staked Amount',
   fee_discount_staked_amount_tooltip:
