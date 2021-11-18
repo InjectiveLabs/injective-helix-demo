@@ -105,6 +105,7 @@
       </div>
 
       <v-order-leverage
+        v-if="!orderTypeReduceOnly"
         class="mt-6"
         :leverage="form.leverage"
         :max-leverage="maxLeverageAvailable.toFixed()"
@@ -1016,7 +1017,14 @@ export default Vue.extend({
     },
 
     margin(): BigNumberInBase {
-      const { executionPrice, hasPrice, hasAmount, form, market } = this
+      const {
+        executionPrice,
+        orderTypeReduceOnly,
+        hasPrice,
+        hasAmount,
+        form,
+        market
+      } = this
 
       if (!hasPrice || !hasAmount || !market) {
         return ZERO_IN_BASE
