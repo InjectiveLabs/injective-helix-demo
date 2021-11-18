@@ -861,39 +861,49 @@ export default Vue.extend({
     priceHighDeviationFromLastTradedPrice(): TradeError | undefined {
       const {
         tradingTypeMarket,
-        executionPrice,
         orderTypeBuy,
         hasPrice,
         hasAmount,
         market,
-        lastTradedPrice
+        sells,
+        buys,
+        executionPrice
       } = this
 
-      if (!tradingTypeMarket || !hasPrice || !hasAmount || !market) {
+      if (tradingTypeMarket || !hasPrice || !hasAmount || !market) {
         return
       }
 
+      const [sell] = sells
+      const [buy] = buys
+      const highestBuy = new BigNumberInWei(buy ? buy.price : 0).toBase(
+        market.quoteToken.decimals
+      )
+      const lowestSell = new BigNumberInWei(sell ? sell.price : 0).toBase(
+        market.quoteToken.decimals
+      )
+
       const acceptablePrice = orderTypeBuy
-        ? lastTradedPrice.times(
-            new BigNumberInBase(1).plus(
-              DEFAULT_MAX_PRICE_BAND_DIFFERENCE.div(100)
-            )
-          )
-        : lastTradedPrice.times(
+        ? highestBuy.times(
             new BigNumberInBase(1).minus(
               DEFAULT_MAX_PRICE_BAND_DIFFERENCE.div(100)
             )
           )
+        : lowestSell.times(
+            new BigNumberInBase(1).plus(
+              DEFAULT_MAX_PRICE_BAND_DIFFERENCE.div(100)
+            )
+          )
 
-      if (orderTypeBuy && executionPrice.gt(acceptablePrice)) {
+      if (orderTypeBuy && executionPrice.lt(acceptablePrice)) {
         return {
-          amount: this.$t('your_order_has_high_price_deviation')
+          price: this.$t('your_order_has_high_price_deviation')
         }
       }
 
-      if (!orderTypeBuy && executionPrice.lt(acceptablePrice)) {
+      if (!orderTypeBuy && executionPrice.gt(acceptablePrice)) {
         return {
-          amount: this.$t('your_order_has_high_price_deviation')
+          price: this.$t('your_order_has_high_price_deviation')
         }
       }
 
