@@ -403,6 +403,13 @@ export default Vue.extend({
   },
 
   watch: {
+    aggregation() {
+      this.$nextTick(() => {
+        this.onScrollSells()
+        this.onScrollBuys()
+      })
+    },
+
     sells() {
       this.$nextTick(this.onScrollSells)
     },
