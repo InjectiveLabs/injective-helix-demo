@@ -363,13 +363,9 @@ export default Vue.extend({
     makerExpectedPtsToFormat(): string {
       const { makerExpectedPts } = this
 
-      if (makerExpectedPts.lte(0)) {
-        return ZERO_IN_BASE.toFormat(0)
-      }
-
-      return makerExpectedPts.toFormat(
-        getDecimalsFromNumber(makerExpectedPts.toNumber())
-      )
+      return makerExpectedPts
+        .abs()
+        .toFormat(getDecimalsFromNumber(makerExpectedPts.toNumber()))
     },
 
     takerExpectedPtsToFormat(): string {
