@@ -386,6 +386,12 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
+      const makerFeeRate = new BigNumberInBase(market.makerFeeRate)
+
+      if (makerFeeRate.lte(0)) {
+        return makerFeeRate
+      }
+
       return new BigNumberInBase(market.makerFeeRate).times(
         new BigNumberInBase(1).minus(makerFeeRateDiscount)
       )
@@ -396,6 +402,13 @@ export default Vue.extend({
 
       if (!market) {
         return ZERO_IN_BASE
+      }
+
+      const makerFeeRate = new BigNumberInBase(market.makerFeeRate)
+      const takerFeeRate = new BigNumberInBase(market.takerFeeRate)
+
+      if (makerFeeRate.lte(0)) {
+        return takerFeeRate
       }
 
       return new BigNumberInBase(market.takerFeeRate).times(
