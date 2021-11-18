@@ -74,8 +74,8 @@ export default Vue.extend({
   mounted() {
     const market = this.$accessor.derivatives.market
     if (market && market.priceDecimals) {
-      this.aggregation = 1
-      this.minTick = 1
+      this.aggregation = market.priceDecimals
+      this.minTick = market.priceDecimals
     }
   },
 

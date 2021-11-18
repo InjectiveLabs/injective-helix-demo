@@ -8,7 +8,11 @@ import {
   OrderStreamCallback as SpotMarketOrderStreamCallback
 } from '@injectivelabs/spot-consumer'
 import { AccountAddress, TradeExecutionSide } from '@injectivelabs/ts-types'
-import { BigNumber, BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  BigNumber,
+  BigNumberInBase,
+  BigNumberInWei
+} from '@injectivelabs/utils'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { SubaccountStreamType } from '@injectivelabs/subaccount-consumer'
 import { metricsProvider } from '../providers/MetricsProvider'
@@ -27,6 +31,7 @@ import {
 } from '~/app/utils/constants'
 import {
   BaseUiSpotMarketWithTokenMetaData,
+  UiOrderbookPriceLevel,
   UiPriceLevel,
   UiSpotMarket,
   UiSpotMarketSummary
@@ -520,6 +525,16 @@ export const getAggregationPrice = ({
       .multipliedBy(aggregateBy)
       .dividedBy(aggregateBy)
   )
+}
+
+export const computeOrderbookSummary = (
+  summary: { quantity: BigNumberInWei; total: BigNumberInBase },
+  record: UiOrderbookPriceLevel
+) => {
+  return {
+    quantity: summary.quantity.plus(new BigNumberInWei(record.quantity)),
+    total: summary.total.plus(new BigNumberInBase(record.total || 0))
+  }
 }
 
 export const getApproxAmountForMarketOrder = ({

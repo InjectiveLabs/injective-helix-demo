@@ -1,4 +1,4 @@
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 
 export interface DOMEvent<T extends EventTarget> extends Event {
   target: T
@@ -10,18 +10,23 @@ export interface Constructable<T> {
 
 export interface UiOrderbookPriceLevel {
   price: string
-  quantity: string
+  quantity: BigNumberInWei
   timestamp: number
   oldQuantity?: string
-  total: string
+  total: BigNumberInBase
   depth: number
   aggregatePrices?: string[]
-  displayPrice?: string
+  aggregatedPrice?: string
+}
+
+export interface UiOrderbookSummary {
+  quantity: BigNumberInBase
+  total: BigNumberInBase
 }
 
 export interface UiPriceLevel {
   price: string
-  quantity: string
+  quantity: BigNumberInWei
   timestamp: number
   notional?: BigNumberInBase
   aggregatePrices?: string[]
