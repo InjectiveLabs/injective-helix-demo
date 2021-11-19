@@ -85,7 +85,7 @@ export default Vue.extend({
 
       const index = list.findIndex(({ value }) => value === minTick)
 
-      return list.slice(Math.max(index - 3, 0), index + 1)
+      return list.slice(Math.max(index - 2, 0), index + 1)
     }
   },
 
