@@ -27,8 +27,17 @@
         }"
       >
         <v-number
+          :prefix="
+            aggregatedValue.gt(record.aggregatedPrice) && recordTypeBuy
+              ? '<'
+              : ''
+          "
           :decimals="aggregation < 0 ? 0 : aggregation"
-          :number="record.aggregatedPrice"
+          :number="
+            aggregatedValue.gt(record.aggregatedPrice)
+              ? aggregatedValue
+              : record.aggregatedPrice
+          "
           dont-group-values
         />
       </span>
@@ -210,6 +219,14 @@ export default Vue.extend({
       }
 
       return oldQuantityBN.gte(quantityBN) ? Change.Decrease : Change.Increase
+    },
+
+    aggregatedValue(): BigNumberInBase {
+      const { aggregation } = this
+
+      const value = new BigNumberInBase(10 ** Math.abs(aggregation))
+
+      return aggregation < 0 ? value : new BigNumberInBase(1).dividedBy(value)
     }
   },
 

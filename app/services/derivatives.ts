@@ -727,7 +727,7 @@ export const getAggregationPrice = ({
   isBuy: boolean
 }): BigNumberInBase => {
   const aggregateBy = new BigNumberInBase(10 ** Math.abs(aggregation))
-  if (aggregation < 0) {
+  if (aggregation <= 0) {
     // handles 10, 100 and 1000
     return new BigNumberInBase(
       price
