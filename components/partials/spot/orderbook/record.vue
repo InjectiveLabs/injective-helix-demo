@@ -27,9 +27,17 @@
         }"
       >
         <v-number
-          :prefix="aggregatedValue.gte(record.aggregatedPrice) ? '<' : ''"
+          :prefix="
+            aggregatedValue.gt(record.aggregatedPrice) && recordTypeBuy
+              ? '<'
+              : ''
+          "
           :decimals="aggregation < 0 ? 0 : aggregation"
-          :number="record.aggregatedPrice"
+          :number="
+            aggregatedValue.gt(record.aggregatedPrice)
+              ? aggregatedValue
+              : record.aggregatedPrice
+          "
           dont-group-values
         />
       </span>

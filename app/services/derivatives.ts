@@ -729,15 +729,12 @@ export const getAggregationPrice = ({
   const aggregateBy = new BigNumberInBase(10 ** Math.abs(aggregation))
   if (aggregation <= 0) {
     // handles 10, 100 and 1000
-    const aggregatedValue = new BigNumberInBase(
+    return new BigNumberInBase(
       price
         .dividedBy(aggregateBy)
         .integerValue(isBuy ? BigNumber.ROUND_FLOOR : BigNumber.ROUND_CEIL)
         .multipliedBy(aggregateBy)
     )
-
-    // prevents orderbook displaying 0 value
-    return aggregateBy.gt(aggregatedValue) ? aggregateBy : aggregatedValue
   }
 
   return new BigNumberInBase(
