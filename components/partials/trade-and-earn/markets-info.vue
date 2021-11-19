@@ -1,7 +1,11 @@
 <template>
   <div>
     <div class="flex items-center">
-      <v-button-filter v-model="component" :option="components.quoteDenoms">
+      <v-button-filter
+        v-if="false"
+        v-model="component"
+        :option="components.quoteDenoms"
+      >
         <span>
           {{ $t('quote_denoms') }}
         </span>
@@ -52,7 +56,7 @@ export default Vue.extend({
   data() {
     return {
       components,
-      component: components.quoteDenoms
+      component: components.boostedMarkets
     }
   }
 })
