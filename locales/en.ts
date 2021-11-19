@@ -454,17 +454,15 @@ export default {
   est_rewards: 'Est. Rewards',
   est_rewards_tooltip:
     'Estimated reward to be distributed to this address based on your reward points /  total reward points * total allocated rewards. This is calculated assuming that your reward points grow just as fast as total reward points until the end of the campaign.  In order to maintain or maximize your reward, you should maintain the same or higher trading activity until the end of the campaign.',
-  reward_points: 'Reward Points Earned',
+  reward_points: 'My Reward Points Earned',
   reward_points_tooltip:
     'The current reward points you earned during this campaign. Reward points will reset to 0 at the beginning of next campaign.',
   total_reward_points: 'Total Reward Points',
   total_reward_points_tooltip:
     'The current total reward points collected by all addresses on Injective in this campaign. This number will grow until the end of campaign.',
-  claimable_inj: 'Claimable INJ',
-  claimable_inj_tooltip: 'Claimable INJ tooltip',
-  countdown_campaign: 'Countdown',
+  countdown_campaign: 'Campaign end time',
   countdown_campaign_tooltip:
-    'Time remaining until reward distribution and the end of current campaign. Any reward point earned after the countdown will be counted toward the next campaign.',
+    'Date and time when the current campaign ends (in UTC). Any reward point earned after the countdown will be counted toward the next campaign.',
   reward_earned_up_to_date: 'Rewards earned up to date',
   reward_earned_up_to_date_tooltip: 'Rewards earned up to date tooltip',
   market_total_tooltip:
@@ -507,5 +505,7 @@ export default {
   your_order_has_high_price_deviation:
     'The execution price for this trade is far away from the current orderbook mid price.',
   execution_price_far_away_from_last_traded_price:
-    'Please note that the execution price for this trade deviates a lot from the last traded price.'
+    'Please note that the execution price for this trade deviates a lot from the last traded price.',
+  there_are_no_disqualified_markets_on_this_relayer:
+    'There are no disqualified markets on this relayer.'
 }

@@ -39,9 +39,6 @@
       <template slot="value">
         <span v-if="currentEpochStartTimestamp > 0" class="font-mono text-lg">
           {{ epochCountdown }}
-          <span class="font-sans text-xs text-gray-400">{{
-            $t('remaining')
-          }}</span>
         </span>
         <span v-else>&mdash;</span>
       </template>
@@ -63,6 +60,7 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   formatDuration,
   formatDistanceToNowStrict,
+  format,
   intervalToDuration
 } from 'date-fns'
 import Vue from 'vue'
@@ -139,6 +137,15 @@ export default Vue.extend({
     },
 
     epochCountdown(): string {
+      const { currentEpochStartTimestamp, campaignDurationInSeconds } = this
+
+      return format(
+        (currentEpochStartTimestamp + campaignDurationInSeconds) * 1000,
+        'dd MMM HH:mm:ss'
+      )
+    },
+
+    epochCountdownDistance(): string {
       const { currentEpochStartTimestamp, campaignDurationInSeconds } = this
 
       return formatDistanceToNowStrict(

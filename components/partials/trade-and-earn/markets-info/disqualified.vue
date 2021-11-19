@@ -1,8 +1,11 @@
 <template>
   <v-item>
     <template slot="value">
-      <span class="font-mono text-lg">
+      <span v-if="disqualifiedMarkets.length > 0" class="font-mono text-lg">
         {{ disqualifiedMarkets.join(', ') }}
+      </span>
+      <span v-else class="text-xs font-normal">
+        {{ $t('there_are_no_disqualified_markets_on_this_relayer') }}
       </span>
     </template>
     <template slot="title">
