@@ -2,20 +2,17 @@
   <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
     <v-item class="col-span-2 lg:col-span-4">
       <template slot="value">
-        <v-emp-number
-          v-if="totalTradeRewardPoints.gte(0)"
-          :number="totalTradeRewardPointsFactored"
-        >
-          <span>{{ $t('pts') }}</span>
+        <v-emp-number v-if="isUserWalletConnected" :number="estimatedRewards">
+          <span>INJ</span>
         </v-emp-number>
         <span v-else>&mdash;</span>
       </template>
       <template slot="title">
         <div class="flex items-center justify-center">
-          {{ $t('total_reward_points') }}
+          {{ $t('est_rewards') }}
           <v-icon-info-tooltip
             class="ml-2"
-            :tooltip="$t('total_reward_points_tooltip')"
+            :tooltip="$t('est_rewards_tooltip')"
           />
         </div>
       </template>
@@ -42,17 +39,20 @@
     </v-item>
     <v-item class="col-span-2 lg:col-span-4">
       <template slot="value">
-        <v-emp-number v-if="isUserWalletConnected" :number="estimatedRewards">
-          <span>INJ</span>
+        <v-emp-number
+          v-if="totalTradeRewardPoints.gte(0)"
+          :number="totalTradeRewardPointsFactored"
+        >
+          <span>{{ $t('pts') }}</span>
         </v-emp-number>
         <span v-else>&mdash;</span>
       </template>
       <template slot="title">
         <div class="flex items-center justify-center">
-          {{ $t('est_rewards') }}
+          {{ $t('total_reward_points') }}
           <v-icon-info-tooltip
             class="ml-2"
-            :tooltip="$t('est_rewards_tooltip')"
+            :tooltip="$t('total_reward_points_tooltip')"
           />
         </div>
       </template>
