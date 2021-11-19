@@ -165,7 +165,8 @@ export const setTokenAllowance = async ({
         gas: new BigNumberInWei(gas.times(GAS_LIMIT_MULTIPLIER).toFixed(0))
           .toNumber()
           .toString(16),
-        gasPrice: new BigNumberInWei(gasPrice).toNumber().toString(16),
+        maxFeePerGas: new BigNumberInWei(gasPrice).toNumber().toString(16),
+        maxPriorityFeePerGas: null,
         data
       },
       { address, chainId: CHAIN_ID }
@@ -214,7 +215,8 @@ export const transfer = async ({
         gas: new BigNumberInWei(gas.times(GAS_LIMIT_MULTIPLIER).toFixed(0))
           .toNumber()
           .toString(16),
-        gasPrice: new BigNumberInWei(gasPrice).toNumber().toString(16),
+        maxFeePerGas: new BigNumberInWei(gasPrice).toNumber().toString(16),
+        maxPriorityFeePerGas: null,
         data
       },
       { address, chainId: CHAIN_ID }
