@@ -146,12 +146,17 @@ export default Vue.extend({
 
       const spot = spotMarketsTickerBasedOnIds.reduce(
         (records, ticker, index) => {
+          const hardCodeMakerToZero = ticker === 'AXS/USDT'
+
           return [
             ...records,
             {
               ticker,
               makerPointsMultiplier: cosmosSdkDecToBigNumber(
-                spotMarketsBoosts[index].makerPointsMultiplier
+                // hardcode maker to 0
+                hardCodeMakerToZero
+                  ? 0
+                  : spotMarketsBoosts[index].makerPointsMultiplier
               ).toFixed(),
               takerPointsMultiplier: cosmosSdkDecToBigNumber(
                 spotMarketsBoosts[index].takerPointsMultiplier
