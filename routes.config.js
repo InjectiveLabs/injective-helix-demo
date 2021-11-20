@@ -3,7 +3,6 @@ const spot = [
   'inj-usdc',
   'bnb-usdt',
   'bnb-usdc',
-  'atom-usdt',
   'wbtc-usdc',
   'wbtc-usdt',
   'weth-usdt',
