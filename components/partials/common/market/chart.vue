@@ -66,9 +66,11 @@ export default Vue.extend({
         return market.ticker
       }
 
-      return `${(market as UiSpotMarket).baseDenom}/${
+      const spotTicker = `${(market as UiSpotMarket).baseDenom}/${
         (market as UiSpotMarket).quoteDenom
       }`
+
+      return spotTicker.replace('ibc/', 'ibc@')
     },
 
     datafeedEndpoint(): string {
