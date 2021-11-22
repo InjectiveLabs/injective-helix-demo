@@ -8,6 +8,16 @@
         >
           <span>INJ</span>
         </v-emp-number>
+
+        <v-emp-number
+          sm
+          class="text-gray-400"
+          prefix="≈"
+          :number="injMaxCampaignRewardsInUsd"
+          :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
+        >
+          <span class="text-3xs">USD</span>
+        </v-emp-number>
       </template>
       <template slot="title">
         <div class="flex items-center justify-center">
@@ -95,6 +105,10 @@ export default Vue.extend({
 
     tradeRewardsPoints(): string[] {
       return this.$accessor.exchange.tradeRewardsPoints
+    },
+
+    injUsdPrice(): number {
+      return this.$accessor.token.injUsdtPrice
     },
 
     campaignDurationInSeconds(): number {
@@ -188,6 +202,14 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(cosmosSdkDecToBigNumber(inj.amount || 0))
+    },
+
+    injMaxCampaignRewardsInUsd(): BigNumberInBase {
+      const { injMaxCampaignRewards, injUsdPrice } = this
+
+      return injMaxCampaignRewards.multipliedBy(
+        new BigNumberInBase(injUsdPrice)
+      )
     }
   }
 })

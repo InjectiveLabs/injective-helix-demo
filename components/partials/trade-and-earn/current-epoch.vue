@@ -2,10 +2,24 @@
   <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
     <v-item class="col-span-2 lg:col-span-4">
       <template slot="value">
-        <v-emp-number v-if="isUserWalletConnected" :number="estimatedRewards">
+        <v-emp-number
+          v-if="isUserWalletConnected"
+          :number="estimatedRewards"
+          :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
+        >
           <span>INJ</span>
         </v-emp-number>
         <span v-else>&mdash;</span>
+        <v-emp-number
+          v-if="isUserWalletConnected"
+          sm
+          class="text-gray-400"
+          prefix="≈"
+          :number="estimatedRewardsInUsd"
+          :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
+        >
+          <span class="text-3xs">USD</span>
+        </v-emp-number>
       </template>
       <template slot="title">
         <div class="flex items-center justify-center">
@@ -64,7 +78,11 @@
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import Vue from 'vue'
 import { cosmosSdkDecToBigNumber } from '~/app/transformers'
-import { ZERO_IN_BASE } from '~/app/utils/constants'
+import {
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  ZERO_IN_BASE
+} from '~/app/utils/constants'
+
 import VItem from '~/components/partials/common/stats/item.vue'
 import { TradingRewardsCampaign } from '~/types/exchange'
 
@@ -75,6 +93,7 @@ export default Vue.extend({
 
   data() {
     return {
+      UI_DEFAULT_MIN_DISPLAY_DECIMALS,
       now: Math.floor(Date.now() / 1000)
     }
   },
@@ -90,6 +109,10 @@ export default Vue.extend({
 
     tradeRewardsPoints(): string[] {
       return this.$accessor.exchange.tradeRewardsPoints
+    },
+
+    injUsdPrice(): number {
+      return this.$accessor.token.injUsdtPrice
     },
 
     tradeRewardPoints(): BigNumberInBase {
@@ -176,6 +199,12 @@ export default Vue.extend({
       return tradeRewardPoints
         .dividedBy(totalTradeRewardPoints)
         .times(injMaxCampaignRewards)
+    },
+
+    estimatedRewardsInUsd(): BigNumberInBase {
+      const { estimatedRewards, injUsdPrice } = this
+
+      return estimatedRewards.multipliedBy(new BigNumberInBase(injUsdPrice))
     }
   }
 })
