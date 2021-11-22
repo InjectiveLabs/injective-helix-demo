@@ -29,7 +29,7 @@ const testnetSpot = IS_TESTNET
   : []
 const mainnetSpot = [
   'inj-usdt',
-  'atom-usdt',
+  // 'atom-usdt',
   'weth-usdt',
   'link-usdt',
   'link-usdc',
@@ -40,8 +40,6 @@ const spot = [...mainnetSpot, ...testnetSpot]
 const testnetDerivatives = IS_TESTNET
   ? [
       'inj-usdt-perp',
-      'eth-usdt-perp',
-      'bnb-usdt-perp',
       'eth-usdt-perp-band',
       'link-usdt-perp',
       'comp-usdt-perp',
@@ -51,7 +49,11 @@ const testnetDerivatives = IS_TESTNET
       'bat-usdt-perp'
     ]
   : []
-const mainnetDerivatives = ['btc-usdt-perp']
+const mainnetDerivatives = [
+  'btc-usdt-perp'
+  // 'eth-usdt-perp',
+  // 'bnb-usdt-perp'
+]
 const derivatives = [...mainnetDerivatives, ...testnetDerivatives]
 
 module.exports = [
