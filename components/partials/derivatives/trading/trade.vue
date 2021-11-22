@@ -1261,15 +1261,15 @@ export default Vue.extend({
     },
 
     feeRebates(): BigNumberInBase {
-      const { total, market } = this
+      const { total, makerFeeRate, market } = this
 
       if (total.isNaN() || !market) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(
-        total.times(market.makerFeeRate).absoluteValue()
-      ).times(0.6 /* Only 60% of the fees are getting returned */)
+      return new BigNumberInBase(total.times(makerFeeRate).abs()).times(
+        0.6 /* Only 60% of the fees are getting returned */
+      )
     },
 
     total(): BigNumberInBase {

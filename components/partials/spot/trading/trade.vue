@@ -835,13 +835,13 @@ export default Vue.extend({
     },
 
     fees(): BigNumberInBase {
-      const { total, market } = this
+      const { total, takerFeeRate, market } = this
 
       if (total.isNaN() || !market) {
         return ZERO_IN_BASE
       }
 
-      return total.times(market.takerFeeRate)
+      return total.times(takerFeeRate)
     },
 
     makerExpectedPts(): BigNumberInBase {
@@ -983,27 +983,27 @@ export default Vue.extend({
     },
 
     feeReturned(): BigNumberInBase {
-      const { total, market } = this
+      const { total, takerFeeRate, makerFeeRate, market } = this
 
       if (total.isNaN() || total.lte(0) || !market) {
         return ZERO_IN_BASE
       }
 
       return total.times(
-        new BigNumberInBase(market.takerFeeRate).minus(market.makerFeeRate)
+        new BigNumberInBase(takerFeeRate).minus(makerFeeRate.abs())
       )
     },
 
     feeRebates(): BigNumberInBase {
-      const { total, market } = this
+      const { total, makerFeeRate, market } = this
 
       if (total.isNaN() || !market) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(
-        total.times(market.makerFeeRate).absoluteValue()
-      ).times(0.6 /* Only 60% of the fees are getting returned */)
+      return new BigNumberInBase(total.times(makerFeeRate).abs()).times(
+        0.6 /* Only 60% of the fees are getting returned */
+      )
     }
   },
 
@@ -1050,6 +1050,7 @@ export default Vue.extend({
         market,
         buys,
         sells,
+        takerFeeRate,
         tradingTypeMarket,
         orderTypeBuy,
         baseAvailableBalance,
@@ -1106,7 +1107,7 @@ export default Vue.extend({
         return ''
       }
 
-      const fee = new BigNumberInBase(market.takerFeeRate)
+      const fee = new BigNumberInBase(takerFeeRate)
 
       return new BigNumberInBase(balance)
         .dividedBy(executionPrice.times(fee.plus(1)))
