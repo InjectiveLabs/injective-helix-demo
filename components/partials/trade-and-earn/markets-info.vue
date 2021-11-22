@@ -10,7 +10,7 @@
           {{ $t('quote_denoms') }}
         </span>
       </v-button-filter>
-      <v-separator />
+      <v-separator v-if="false" />
       <v-button-filter v-model="component" :option="components.boostedMarkets">
         <span>
           {{ $t('boosted_markets') }}
