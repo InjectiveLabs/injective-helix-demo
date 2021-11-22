@@ -54,11 +54,7 @@ const testnetDerivatives = [
   'snx-usdt-perp',
   'bat-usdt-perp'
 ]
-const mainnetDerivatives = [
-  'btc-usdt-perp'
-  // 'eth-usdt-perp',
-  // 'bnb-usdt-perp'
-]
+const mainnetDerivatives = ['btc-usdt-perp', 'eth-usdt-perp', 'bnb-usdt-perp']
 const derivatives = IS_TESTNET ? testnetDerivatives : mainnetDerivatives
 
 module.exports = [

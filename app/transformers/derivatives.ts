@@ -7,7 +7,6 @@ import {
 import { grpcTokenMetaToToken, tokenMetaToToken } from './token'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
 import { derivatives as sortPerpetualMarkets } from '~/routes.config'
-import { filteredMarkets as filterPerpetualMarkets } from '~/components/partials/derivatives/filter'
 import {
   BaseUiDerivativeMarket,
   UiDerivativeMarket,
@@ -80,9 +79,8 @@ export const derivativeMarketsToUiDerivativeMarkets = async (
     )
   )
     .filter(tokenMetaDataExists)
-    .filter((market) => sortPerpetualMarkets.includes(market.slug))
-    .filter(
-      (market) => !filterPerpetualMarkets.includes(market.slug)
+    .filter((market) =>
+      sortPerpetualMarkets.includes(market.slug)
     ) as BaseUiDerivativeMarketWithTokenMetaData[]
 
   const mappedMarkets = filteredMarkets.map((m) =>

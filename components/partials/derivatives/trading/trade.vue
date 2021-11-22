@@ -1174,10 +1174,13 @@ export default Vue.extend({
       const boosted = boostedList.findIndex(
         (spotMarketId) => spotMarketId === market.marketId
       )
+
       const boostedMultiplier =
         boosted >= 0
           ? cosmosSdkDecToBigNumber(
-              multipliersList[boosted].makerPointsMultiplier
+              multipliersList[boosted]
+                ? multipliersList[boosted].makerPointsMultiplier
+                : 1
             )
           : 1
 
@@ -1232,7 +1235,9 @@ export default Vue.extend({
       const boostedMultiplier =
         boosted >= 0
           ? cosmosSdkDecToBigNumber(
-              multipliersList[boosted].takerPointsMultiplier
+              multipliersList[boosted]
+                ? multipliersList[boosted].takerPointsMultiplier
+                : 1
             )
           : 1
 

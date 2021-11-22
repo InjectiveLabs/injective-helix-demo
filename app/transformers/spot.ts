@@ -18,7 +18,6 @@ import {
   MarketType,
   Change
 } from '~/types'
-import { filteredMarkets as filterSpotMarkets } from '~/components/partials/spot/filter'
 
 export const spotMarketToUiSpotMarket = (
   market: BaseUiSpotMarketWithTokenMetaData
@@ -84,9 +83,8 @@ export const spotMarketsToUiSpotMarkets = async (
     )
   )
     .filter(tokenMetaDataExists)
-    .filter((market) => sortSpotMarkets.includes(market.slug))
-    .filter(
-      (market) => !filterSpotMarkets.includes(market.slug)
+    .filter((market) =>
+      sortSpotMarkets.includes(market.slug)
     ) as BaseUiSpotMarketWithTokenMetaData[]
 
   const mappedMarkets = filteredMarkets.map((m) => spotMarketToUiSpotMarket(m))
