@@ -845,9 +845,13 @@ export default Vue.extend({
     },
 
     makerExpectedPts(): BigNumberInBase {
-      const { market, tradingRewardsCampaign, fees } = this
+      const { market, makerFeeRate, tradingRewardsCampaign, fees } = this
 
       if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      if (makerFeeRate.lte(0)) {
         return ZERO_IN_BASE
       }
 
