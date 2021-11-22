@@ -10,13 +10,22 @@
               :tooltip="$t('injective_chain_tooltip')"
             />
           </p>
-          <div class="flex items-center">
+          <div v-if="!isIbcDenom" class="flex items-center">
             <v-button text-xs primary @click.stop="openBridgeDepositModal">
               {{ $t('deposit') }}
             </v-button>
             <div class="mx-2 w-px h-4 bg-gray-500"></div>
             <v-button text-xs primary @click.stop="openWithdrawModal">
               {{ $t('withdraw') }}
+            </v-button>
+          </div>
+          <div v-else class="flex items-center">
+            <v-button text-xs primary @click.stop.prevent="() => {}">
+              <a :href="hubBridgeUrl" target="_blank">{{ $t('deposit') }}</a>
+            </v-button>
+            <div class="mx-2 w-px h-4 bg-gray-500"></div>
+            <v-button text-xs primary @click.stop.prevent="() => {}">
+              <a :href="hubBridgeUrl" target="_blank">{{ $t('withdraw') }}</a>
             </v-button>
           </div>
         </div>
@@ -60,7 +69,8 @@
 import Vue from 'vue'
 import VBank from './bank.vue'
 import VSubaccountBalances from './subaccount.vue'
-import { Modal, UiDerivativeMarket, UiSpotMarket } from '~/types'
+import { MarketType, Modal, UiDerivativeMarket, UiSpotMarket } from '~/types'
+import { getHubUrl } from '~/app/utils/testnet'
 
 export default Vue.extend({
   components: {
@@ -87,6 +97,28 @@ export default Vue.extend({
       return this.$route.name === 'spot-spot'
         ? currentSpotMarket
         : currentDerivativeMarket
+    },
+
+    isIbcDenom(): boolean {
+      const { currentMarket } = this
+
+      if (!currentMarket) {
+        return false
+      }
+
+      if (currentMarket.type === MarketType.Spot) {
+        return (
+          (currentMarket as UiSpotMarket).baseDenom.startsWith('ibc') ||
+          (currentMarket as UiSpotMarket).quoteDenom.startsWith('ibc')
+        )
+      }
+
+      // Derivative
+      return currentMarket.quoteDenom.startsWith('ibc')
+    },
+
+    hubBridgeUrl(): string {
+      return `${getHubUrl()}/bridge`
     }
   },
 

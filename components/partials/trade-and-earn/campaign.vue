@@ -47,9 +47,14 @@
     </v-item>
     <v-item class="col-span-2 lg:col-span-4">
       <template slot="value">
-        <span v-if="currentEpochStartTimestamp > 0" class="font-mono text-lg">
-          {{ epochCountdown }}
-        </span>
+        <div v-if="currentEpochStartTimestamp > 0">
+          <span class="block font-mono text-lg">
+            {{ epochCountdown }}
+          </span>
+          <span class="block text-xs text-gray-400">
+            {{ epochCountdownDistance }} {{ $t('remaining') }}
+          </span>
+        </div>
         <span v-else>&mdash;</span>
       </template>
       <template slot="title">
