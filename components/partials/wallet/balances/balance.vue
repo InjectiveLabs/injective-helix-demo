@@ -125,7 +125,10 @@ export default Vue.extend({
         )}`
       }
 
-      return bankBalance.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      return bankBalance.toFormat(
+        UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+        BigNumberInBase.ROUND_DOWN
+      )
     },
 
     bankBalanceInUsdToString(): string {
@@ -165,7 +168,10 @@ export default Vue.extend({
         )}`
       }
 
-      return erc20Balance.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      return erc20Balance.toFormat(
+        UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+        BigNumberInBase.ROUND_DOWN
+      )
     },
 
     erc20BalanceInUsd(): BigNumberInBase {
@@ -201,7 +207,10 @@ export default Vue.extend({
         )}`
       }
 
-      return total.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      return total.toFormat(
+        UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+        BigNumberInBase.ROUND_DOWN
+      )
     },
 
     totalInUsd(): BigNumberInBase {

@@ -12,7 +12,7 @@
         </label>
         <span
           v-if="error && !errorBelow"
-          class="text-red-400 italic font-semibold"
+          class="text-red-400 italic font-semibold text-2xs"
         >
           * {{ error }}
         </span>
@@ -70,7 +70,7 @@
       </div>
       <span
         v-if="error && errorBelow"
-        class="text-red-400 italic font-semibold absolute mt-1"
+        class="text-red-400 italic font-semibold absolute mt-1 text-2xs"
       >
         * {{ error }}
       </span>
