@@ -1,5 +1,6 @@
 <template>
   <v-number
+    :prefix="prefix"
     :number="formattedNumberWithDecimals.number"
     :decimals="formattedNumberWithDecimals.decimals"
     :class="classes"
@@ -27,6 +28,16 @@ export default Vue.extend({
       required: false,
       default: UI_DEFAULT_DISPLAY_DECIMALS,
       type: Number
+    },
+
+    prefix: {
+      type: String,
+      default: ''
+    },
+
+    sm: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -42,11 +53,12 @@ export default Vue.extend({
 
     classes(): string {
       const {
-        formattedNumberWithDecimals: { number, decimals }
+        formattedNumberWithDecimals: { number, decimals },
+        sm
       } = this
       const classes = ['flex', 'items-end', 'justify-center']
 
-      if (number.toFixed(decimals).length > 16 + decimals) {
+      if (number.toFixed(decimals).length > 16 + decimals || sm) {
         classes.push('text-xs')
       } else if (number.toFixed(decimals).length > 12 + decimals) {
         classes.push('text-sm')
