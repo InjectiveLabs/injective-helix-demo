@@ -201,7 +201,8 @@ import {
   NUMBER_REGEX,
   DEFAULT_PRICE_WARNING_DEVIATION,
   DEFAULT_MARKET_PRICE_WARNING_DEVIATION,
-  DEFAULT_MAX_PRICE_BAND_DIFFERENCE
+  DEFAULT_MAX_PRICE_BAND_DIFFERENCE,
+  DEFAULT_MIN_PRICE_BAND_DIFFERENCE
 } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
@@ -937,10 +938,10 @@ export default Vue.extend({
       )
       const middlePrice = highestBuy.plus(lowestSell).dividedBy(2)
       const acceptableMax = middlePrice.times(
-        new BigNumberInBase(1).plus(DEFAULT_MAX_PRICE_BAND_DIFFERENCE.div(100))
+        DEFAULT_MAX_PRICE_BAND_DIFFERENCE.div(100)
       )
       const acceptableMin = middlePrice.times(
-        new BigNumberInBase(1).minus(DEFAULT_MAX_PRICE_BAND_DIFFERENCE.div(100))
+        new BigNumberInBase(1).minus(DEFAULT_MIN_PRICE_BAND_DIFFERENCE.div(100))
       )
 
       if (
