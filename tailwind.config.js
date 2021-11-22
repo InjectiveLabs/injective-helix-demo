@@ -130,6 +130,7 @@ module.exports = {
       },
 
       fontSize: {
+        '3xs': '0.625rem',
         '2xs': '0.7rem',
         footer: '0.85rem'
       },

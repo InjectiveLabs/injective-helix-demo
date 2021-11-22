@@ -41,7 +41,10 @@ export default Vue.extend({
   },
 
   mounted() {
-    Promise.all([this.$accessor.exchange.initRewards()])
+    Promise.all([
+      this.$accessor.exchange.initRewards(),
+      this.$accessor.token.getInjUsdPrice()
+    ])
       .then(() => {
         //
       })

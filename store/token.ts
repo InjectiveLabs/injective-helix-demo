@@ -10,7 +10,10 @@ import {
   validateTransferRestrictions
 } from '~/app/services/tokens'
 import { backupPromiseCall } from '~/app/utils/async'
-import { UNLIMITED_ALLOWANCE } from '~/app/utils/constants'
+import {
+  UNLIMITED_ALLOWANCE,
+  INJ_COIN_GECKO_ID
+} from '~/app/utils/constants'
 import {
   Token,
   TokenWithBalance,
@@ -23,7 +26,8 @@ const initialStateFactory = () => ({
   ibcTokensWithBalanceFromBank: [] as TokenWithBalance[],
   tokensWithPriceInUsd: {} as Record<string, string>,
   baseTokenWithBalance: (undefined as unknown) as TokenWithBalance,
-  quoteTokenWithBalance: (undefined as unknown) as TokenWithBalance
+  quoteTokenWithBalance: (undefined as unknown) as TokenWithBalance,
+  injUsdtPrice: 0 as number
 })
 
 const initialState = initialStateFactory()
@@ -36,7 +40,8 @@ export const state = () => ({
     string
   >,
   baseTokenWithBalance: initialState.baseTokenWithBalance as TokenWithBalance,
-  quoteTokenWithBalance: initialState.quoteTokenWithBalance as TokenWithBalance
+  quoteTokenWithBalance: initialState.quoteTokenWithBalance as TokenWithBalance,
+  injUsdtPrice: initialState.injUsdtPrice as number
 })
 
 export type TokenStoreState = ReturnType<typeof state>
@@ -95,6 +100,10 @@ export const mutations = {
     state.tokensWithPriceInUsd = tokensWithPriceInUsd
   },
 
+  setInjUsdPrice(state: TokenStoreState, injUsdtPrice: number) {
+    state.injUsdtPrice = injUsdtPrice
+  },
+
   reset(state: TokenStoreState) {
     const initialState = initialStateFactory()
 
@@ -104,6 +113,7 @@ export const mutations = {
       initialState.ibcTokensWithBalanceFromBank
     state.baseTokenWithBalance = initialState.baseTokenWithBalance
     state.quoteTokenWithBalance = initialState.quoteTokenWithBalance
+    state.injUsdtPrice = initialState.injUsdtPrice
   }
 }
 
@@ -264,6 +274,13 @@ export const actions = actionTree(
       })) as TokenWithBalance
 
       commit('setQuoteTokenWithBalance', quoteTokenWithBalance)
+    },
+
+    async getInjUsdPrice({ commit }) {
+      commit(
+        'setInjUsdPrice',
+        await getUsdtTokenPriceFromCoinGecko(INJ_COIN_GECKO_ID)
+      )
     },
 
     async setTokenAllowance(
