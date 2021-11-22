@@ -87,7 +87,7 @@
           <span class="flex" style="margin-top: -2px">
             ({{
               (percentagePnl.gte(0) ? '+' : '') + percentagePnl.toFormat(2)
-            }})%
+            }}%)
           </span>
         </div>
       </div>
