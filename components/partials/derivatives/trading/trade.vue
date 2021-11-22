@@ -201,7 +201,8 @@ import {
   NUMBER_REGEX,
   DEFAULT_PRICE_WARNING_DEVIATION,
   DEFAULT_MARKET_PRICE_WARNING_DEVIATION,
-  DEFAULT_MAX_PRICE_BAND_DIFFERENCE
+  DEFAULT_MAX_PRICE_BAND_DIFFERENCE,
+  DEFAULT_MIN_PRICE_BAND_DIFFERENCE
 } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
@@ -937,10 +938,10 @@ export default Vue.extend({
       )
       const middlePrice = highestBuy.plus(lowestSell).dividedBy(2)
       const acceptableMax = middlePrice.times(
-        new BigNumberInBase(1).plus(DEFAULT_MAX_PRICE_BAND_DIFFERENCE.div(100))
+        DEFAULT_MAX_PRICE_BAND_DIFFERENCE.div(100)
       )
       const acceptableMin = middlePrice.times(
-        new BigNumberInBase(1).minus(DEFAULT_MAX_PRICE_BAND_DIFFERENCE.div(100))
+        new BigNumberInBase(1).minus(DEFAULT_MIN_PRICE_BAND_DIFFERENCE.div(100))
       )
 
       if (
@@ -1130,9 +1131,13 @@ export default Vue.extend({
     },
 
     makerExpectedPts(): BigNumberInBase {
-      const { market, tradingRewardsCampaign, fees } = this
+      const { market, makerFeeRate, tradingRewardsCampaign, fees } = this
 
       if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      if (makerFeeRate.lte(0)) {
         return ZERO_IN_BASE
       }
 
@@ -1257,15 +1262,15 @@ export default Vue.extend({
     },
 
     feeRebates(): BigNumberInBase {
-      const { total, market } = this
+      const { total, makerFeeRate, market } = this
 
       if (total.isNaN() || !market) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(
-        total.times(market.makerFeeRate).absoluteValue()
-      ).times(0.6 /* Only 60% of the fees are getting returned */)
+      return new BigNumberInBase(total.times(makerFeeRate).abs()).times(
+        0.6 /* Only 60% of the fees are getting returned */
+      )
     },
 
     total(): BigNumberInBase {

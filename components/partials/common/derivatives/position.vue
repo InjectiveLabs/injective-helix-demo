@@ -87,7 +87,7 @@
           <span class="flex" style="margin-top: -2px">
             ({{
               (percentagePnl.gte(0) ? '+' : '') + percentagePnl.toFormat(2)
-            }})%
+            }}%)
           </span>
         </div>
       </div>
@@ -379,7 +379,7 @@ export default Vue.extend({
             new BigNumberInBase(1).plus(market.takerFeeRate)
           )
 
-      return feeAdjustedBankruptcyPrice.gte(0)
+      return feeAdjustedBankruptcyPrice.gt(0)
         ? feeAdjustedBankruptcyPrice
         : minTickPrice
     },
