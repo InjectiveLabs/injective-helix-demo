@@ -379,7 +379,7 @@ export default Vue.extend({
             new BigNumberInBase(1).plus(market.takerFeeRate)
           )
 
-      return feeAdjustedBankruptcyPrice.gte(0)
+      return feeAdjustedBankruptcyPrice.gt(0)
         ? feeAdjustedBankruptcyPrice
         : minTickPrice
     },
