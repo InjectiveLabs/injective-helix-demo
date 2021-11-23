@@ -17,11 +17,7 @@
             <span class="mr-1">≈</span>
             {{ extractedTotalToFormat }}
             <span class="text-gray-500 ml-1">
-              {{
-                orderTypeBuy
-                  ? market.quoteToken.symbol
-                  : market.baseToken.symbol
-              }}
+              {{ market.quoteToken.symbol }}
             </span>
           </span>
         </v-text-info>
@@ -32,11 +28,7 @@
           <span v-if="!amount.isNaN()" class="font-mono flex items-center">
             {{ amountToFormat }}
             <span class="text-gray-500 ml-1">
-              {{
-                orderTypeBuy
-                  ? market.quoteToken.symbol
-                  : market.baseToken.symbol
-              }}
+              {{ market.baseToken.symbol }}
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
@@ -257,33 +249,23 @@ export default Vue.extend({
     },
 
     extractedTotal(): BigNumberInBase {
-      const { totalWithFees, amount, orderTypeBuy } = this
-
-      if (orderTypeBuy) {
-        return totalWithFees
-      }
+      const { totalWithFees, amount } = this
 
       if (amount.isNaN()) {
         return ZERO_IN_BASE
       }
 
-      return amount
+      return totalWithFees
     },
 
     extractedTotalToFormat(): string {
-      const { extractedTotal, orderTypeBuy, market } = this
+      const { extractedTotal, market } = this
 
       if (!market) {
-        return extractedTotal.toFormat(
-          orderTypeBuy
-            ? UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-            : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-        )
+        return extractedTotal.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
       }
 
-      return extractedTotal.toFormat(
-        orderTypeBuy ? market.priceDecimals : market.quantityDecimals
-      )
+      return extractedTotal.toFormat(market.priceDecimals)
     },
 
     totalToFormat(): string {
