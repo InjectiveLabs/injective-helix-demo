@@ -22,9 +22,19 @@ const isErrorExcludedFromReporting = (error: any): boolean => {
   )
 }
 
+const parseMessage = (error: any): string => {
+  const message = error.message || error
+
+  if (message.toLowerCase().includes('response closed')) {
+    return 'Something happened. Please refresh the page.'
+  }
+
+  return message
+}
+
 export default ({ app }: Context, inject: any) => {
   inject('onRejected', (error: Error) => {
-    app.$toast.error(error.message)
+    app.$toast.error(parseMessage(error))
 
     if (IS_PRODUCTION && !isErrorExcludedFromReporting(error)) {
       app.$bugsnag.notify(error)
@@ -36,7 +46,7 @@ export default ({ app }: Context, inject: any) => {
   })
 
   inject('onError', (error: Error) => {
-    app.$toast.error(error.message)
+    app.$toast.error(parseMessage(error))
 
     if (IS_PRODUCTION && !isErrorExcludedFromReporting(error)) {
       app.$bugsnag.notify(error)
