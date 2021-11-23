@@ -38,6 +38,7 @@ export const UI_DEFAULT_MAX_DISPLAY_DECIMALS = 6
 export const UI_DEFAULT_PRICE_DISPLAY_DECIMALS = 4
 export const UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS = 4
 export const UI_DEFAULT_AGGREGATION_DECIMALS = 3
+export const UI_DEFAULT_AGGREGATION_DECIMALS_STRING = '3'
 
 export const NETWORK: Network = process.env.APP_NETWORK || Network.Testnet
 export const IS_TESTNET = [

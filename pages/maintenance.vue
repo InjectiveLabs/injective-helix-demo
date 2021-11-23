@@ -1,7 +1,7 @@
 <template>
   <!-- eslint-disable vue/no-v-html -->
   <main
-    class="flex flex-wrap flex-col justify-center items-center h-full w-full px-4"
+    class="flex flex-wrap flex-col justify-center items-center h-full w-full px-4 min-h-screen"
   >
     <div class="container">
       <h1 class="text-white font-bold mt-4 text-3xl text-center">
