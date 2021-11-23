@@ -62,8 +62,18 @@ export default Vue.extend({
       return this.$accessor.derivatives.market
     },
 
-    balances(): BankBalances {
+    bankBalances(): BankBalances {
       return this.$accessor.bank.balances
+    },
+
+    ibcBalances(): BankBalances {
+      return this.$accessor.bank.ibcBalances
+    },
+
+    balances(): BankBalances {
+      const { bankBalances, ibcBalances } = this
+
+      return { ...bankBalances, ...ibcBalances }
     },
 
     market(): UiSpotMarket | UiDerivativeMarket | undefined {

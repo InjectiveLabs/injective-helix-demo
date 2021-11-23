@@ -38,8 +38,18 @@ export default Vue.extend({
   },
 
   computed: {
-    balances(): BankBalances {
+    bankBalances(): BankBalances {
       return this.$accessor.bank.balances
+    },
+
+    ibcBalances(): BankBalances {
+      return this.$accessor.bank.ibcBalances
+    },
+
+    balances(): BankBalances {
+      const { bankBalances, ibcBalances } = this
+
+      return { ...bankBalances, ...ibcBalances }
     },
 
     baseTokenBalance(): BigNumberInBase {
