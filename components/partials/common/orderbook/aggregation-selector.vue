@@ -23,6 +23,7 @@
 import Vue from 'vue'
 import SelectorItem from '~/components/layout/selectors/selector-item.vue'
 import Dropdown from '~/components/elements/dropdown.vue'
+import { aggregationList } from '~/app/data/aggregation'
 
 export default Vue.extend({
   components: {
@@ -32,44 +33,29 @@ export default Vue.extend({
 
   props: {
     value: {
-      type: Number,
+      type: String,
       required: true
     },
 
     minTick: {
       type: Number,
       required: true
+    },
+
+    start: {
+      type: String,
+      default: null
+    },
+
+    end: {
+      type: String,
+      default: null
     }
   },
 
   data() {
     return {
-      list: [
-        {
-          value: -2,
-          text: '100'
-        },
-        {
-          value: -1,
-          text: '10'
-        },
-        {
-          value: 0,
-          text: '1'
-        },
-        {
-          value: 1,
-          text: '0.1'
-        },
-        {
-          value: 2,
-          text: '0.01'
-        },
-        {
-          value: 3,
-          text: '0.001'
-        }
-      ]
+      list: aggregationList
     }
   },
 
@@ -81,9 +67,16 @@ export default Vue.extend({
     },
 
     filteredList(): Record<string, any>[] {
-      const { minTick, list } = this
+      const { list, minTick, start, end } = this
 
-      const index = list.findIndex(({ value }) => value === minTick)
+      if (start && end) {
+        const startIndex = list.findIndex(({ value }) => value === start)
+        const endIndex = list.findIndex(({ value }) => value === end)
+
+        return list.slice(startIndex, endIndex + 1)
+      }
+
+      const index = list.findIndex(({ value }) => value === minTick.toString())
 
       return list.slice(Math.max(index - 2, 0), index + 1)
     }
