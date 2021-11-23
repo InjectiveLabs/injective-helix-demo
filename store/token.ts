@@ -10,10 +10,7 @@ import {
   validateTransferRestrictions
 } from '~/app/services/tokens'
 import { backupPromiseCall } from '~/app/utils/async'
-import {
-  UNLIMITED_ALLOWANCE,
-  INJ_COIN_GECKO_ID
-} from '~/app/utils/constants'
+import { UNLIMITED_ALLOWANCE, INJ_COIN_GECKO_ID } from '~/app/utils/constants'
 import {
   Token,
   TokenWithBalance,
@@ -217,6 +214,13 @@ export const actions = actionTree(
       const market =
         spotMarket || (derivativeMarket as UiSpotMarket | UiDerivativeMarket)
       const { baseToken, quoteToken } = market
+
+      if (
+        baseToken.denom.startsWith('ibc') ||
+        quoteToken.denom.startsWith('ibc')
+      ) {
+        return
+      }
 
       const baseTokenWithBalance = (await getTokenBalanceAndAllowance({
         address,
