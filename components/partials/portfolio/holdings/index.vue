@@ -71,12 +71,24 @@ export default Vue.extend({
       return this.$accessor.account.subaccount
     },
 
-    erc20TokensWithBalanceAndAllowance(): TokenWithBalance[] {
+    erc20TokensWithBalanceFromBank(): TokenWithBalance[] {
       return this.$accessor.token.erc20TokensWithBalanceFromBank
     },
 
+    ibcTokensWithBalanceFromBank(): TokenWithBalance[] {
+      return this.$accessor.token.ibcTokensWithBalanceFromBank
+    },
+
     balances(): SubaccountBalanceWithTokenMetaDataWithUsdBalance[] {
-      const { subaccount, erc20TokensWithBalanceAndAllowance } = this
+      const {
+        subaccount,
+        erc20TokensWithBalanceFromBank,
+        ibcTokensWithBalanceFromBank
+      } = this
+      const tokensWithBalances = [
+        ...ibcTokensWithBalanceFromBank,
+        ...erc20TokensWithBalanceFromBank
+      ]
 
       if (!subaccount) {
         return []
@@ -84,7 +96,7 @@ export default Vue.extend({
 
       return subaccount.balances
         .map((balance) => {
-          const tokenWithBalance = erc20TokensWithBalanceAndAllowance.find(
+          const tokenWithBalance = tokensWithBalances.find(
             (token) => token.denom.toLowerCase() === balance.denom.toLowerCase()
           )
 
