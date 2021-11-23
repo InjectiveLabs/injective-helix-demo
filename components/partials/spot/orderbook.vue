@@ -29,6 +29,8 @@
         class="pr-2"
         :min-tick="minTick"
         :value="aggregation"
+        :start="start"
+        :end="end"
         @click="handleAggregationChange"
       />
     </div>
@@ -37,7 +39,7 @@
       <component
         :is="component"
         v-if="component"
-        :aggregation="aggregation"
+        :aggregation="Number(aggregation)"
       ></component>
     </div>
   </div>
@@ -48,7 +50,11 @@ import Vue from 'vue'
 import Orderbook from './orderbook/index.vue'
 import Trades from './trades/index.vue'
 import AggregationSelector from '~/components/partials/common/orderbook/aggregation-selector.vue'
-import { UI_DEFAULT_AGGREGATION_DECIMALS } from '~/app/utils/constants'
+import {
+  UI_DEFAULT_AGGREGATION_DECIMALS,
+  UI_DEFAULT_AGGREGATION_DECIMALS_STRING
+} from '~/app/utils/constants'
+import { customAggregations } from '~/app/data/aggregation'
 
 const components = {
   orderbook: 'v-orderbook',
@@ -64,18 +70,26 @@ export default Vue.extend({
 
   data() {
     return {
-      aggregation: UI_DEFAULT_AGGREGATION_DECIMALS, // default aggregation decimal
+      aggregation: UI_DEFAULT_AGGREGATION_DECIMALS_STRING, // default aggregation decimal
       minTick: UI_DEFAULT_AGGREGATION_DECIMALS,
       components,
-      component: components.orderbook
+      component: components.orderbook,
+      start: null as string | null,
+      end: null as string | null
     }
   },
 
   mounted() {
     const market = this.$accessor.spot.market
     if (market && market.priceDecimals) {
-      this.aggregation = market.priceDecimals
+      const customAggregation = customAggregations[market.ticker]
       this.minTick = market.priceDecimals
+
+      // applies custom aggregation base on pre configured settings
+      this.start = customAggregation?.start || null
+      this.end = customAggregation?.end || null
+      this.aggregation =
+        customAggregation?.default || market.priceDecimals.toString()
     }
   },
 
@@ -84,7 +98,7 @@ export default Vue.extend({
       this.component = component
     },
 
-    handleAggregationChange(aggregation: number) {
+    handleAggregationChange(aggregation: string) {
       this.aggregation = aggregation
     }
   }
