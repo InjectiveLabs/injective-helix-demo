@@ -436,7 +436,7 @@ export default {
     'The amount of INJ required to be staked. Staking INJ secures the protocol, earns rewards and can help obtain a more preferable fee tier.',
   fee_discount_fees_paid: 'Total Fees Paid',
   fee_discount_fees_paid_tooltip:
-    'The total fees required to be paid on Injective. Fees are paid to execute trades on the protocol. The amount of fees paid helps determine the fee tier.',
+    'The total fees required to be paid on Injective. Fees are paid to execute trades on the protocol. The amount of fees paid helps determine the fee tier. The total fees collected are summed up on a 30 day rolling basis period.',
   fee_discount_maker: 'Maker Rate Discount',
   fee_discount_maker_tooltip: 'Maker fee discount based on the fee tier.',
   fee_discount_taker: 'Taker Rate Discount',
