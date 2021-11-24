@@ -38,12 +38,12 @@ export const customAggregations = {
   'BNB/USDT': {
     start: getDecimalPlaceFromValue('10'),
     end: getDecimalPlaceFromValue('0.1'),
-    default: getDecimalPlaceFromValue('1')
+    default: getDecimalPlaceFromValue('0.1')
   },
   'BNB/USDT PERP': {
     start: getDecimalPlaceFromValue('10'),
     end: getDecimalPlaceFromValue('0.1'),
-    default: getDecimalPlaceFromValue('1')
+    default: getDecimalPlaceFromValue('0.1')
   },
   'BTC/USDT': {
     start: getDecimalPlaceFromValue('100'),
