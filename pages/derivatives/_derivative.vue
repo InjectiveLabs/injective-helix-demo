@@ -77,38 +77,25 @@ export default Vue.extend({
 
   data() {
     return {
-      status: new Status(StatusType.Loading),
-      interval: 0 as any
+      status: new Status(StatusType.Loading)
     }
   },
 
   computed: {
-    slugFromRoute(): string {
-      const { params } = this.$route
-
-      return params.derivative
-    },
-
-    marketFromRoute(): UiDerivativeMarket | undefined {
-      const { markets, slugFromRoute } = this
-
-      return markets.find(
-        (m) => m.slug.toLowerCase() === slugFromRoute.toLowerCase()
-      )
-    },
-
     market(): UiDerivativeMarket | undefined {
       return this.$accessor.derivatives.market
     },
 
-    markets(): UiDerivativeMarket[] {
-      return this.$accessor.derivatives.markets
+    slugFromRoute(): string {
+      const { params } = this.$route
+
+      return params.derivative
     }
   },
 
   mounted() {
     this.$accessor.derivatives
-      .changeMarket(this.marketFromRoute)
+      .changeMarket(this.slugFromRoute)
       .then(() => {
         //
       })
@@ -120,7 +107,6 @@ export default Vue.extend({
 
   beforeDestroy() {
     this.$accessor.derivatives.reset()
-    clearInterval(this.interval)
   },
 
   methods: {

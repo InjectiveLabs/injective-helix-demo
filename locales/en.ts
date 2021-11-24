@@ -507,5 +507,6 @@ export default {
   execution_price_far_away_from_last_traded_price:
     'Please note that the execution price for this trade deviates a lot from the last traded price.',
   there_are_no_disqualified_markets_on_this_relayer:
-    'There are no disqualified markets on this relayer.'
+    'There are no disqualified markets on this relayer.',
+  liquidation: 'Liquidation'
 }

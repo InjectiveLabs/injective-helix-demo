@@ -74,38 +74,25 @@ export default Vue.extend({
 
   data() {
     return {
-      status: new Status(StatusType.Loading),
-      interval: 0 as any
+      status: new Status(StatusType.Loading)
     }
   },
 
   computed: {
-    slugFromRoute(): string {
-      const { params } = this.$route
-
-      return params.spot
-    },
-
-    marketFromRoute(): UiSpotMarket | undefined {
-      const { markets, slugFromRoute } = this
-
-      return markets.find(
-        (m) => m.slug.toLowerCase() === slugFromRoute.toLowerCase()
-      )
-    },
-
     market(): UiSpotMarket | undefined {
       return this.$accessor.spot.market
     },
 
-    markets(): UiSpotMarket[] {
-      return this.$accessor.spot.markets
+    slugFromRoute(): string {
+      const { params } = this.$route
+
+      return params.spot
     }
   },
 
   mounted() {
     this.$accessor.spot
-      .changeMarket(this.marketFromRoute)
+      .changeMarket(this.slugFromRoute)
       .then(() => {
         //
       })
@@ -117,7 +104,6 @@ export default Vue.extend({
 
   beforeDestroy() {
     this.$accessor.spot.reset()
-    clearInterval(this.interval)
   },
 
   methods: {

@@ -190,6 +190,10 @@ export default Vue.extend({
     tradeExecutionType(): string {
       const { trade } = this
 
+      if (trade.isLiquidation) {
+        return this.$t('liquidation')
+      }
+
       switch (trade.tradeExecutionType) {
         case TradeExecutionType.LimitFill:
           return this.$t('limit')

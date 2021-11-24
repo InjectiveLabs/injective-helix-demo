@@ -65,9 +65,7 @@ export default Vue.extend({
       })
       .catch(this.$onRejected)
       .finally(() => {
-        this.$nextTick(() => {
-          this.status.setIdle()
-        })
+        this.status.setIdle()
       })
 
     Promise.all([
@@ -80,9 +78,6 @@ export default Vue.extend({
         //
       })
       .catch(this.$onRejected)
-      .finally(() => {
-        this.status.setIdle()
-      })
   },
 
   beforeDestroy() {

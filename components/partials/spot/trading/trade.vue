@@ -726,15 +726,26 @@ export default Vue.extend({
         market.quoteToken.decimals - market.baseToken.decimals
       )
       const middlePrice = highestBuy.plus(lowestSell).dividedBy(2)
+
+      if (middlePrice.lte(0)) {
+        return undefined
+      }
+
+      const minTickPrice = new BigNumberInBase(
+        new BigNumberInBase(1).shiftedBy(-market.priceDecimals)
+      )
       const acceptableMax = middlePrice.times(
         DEFAULT_MAX_PRICE_BAND_DIFFERENCE.div(100)
       )
       const acceptableMin = middlePrice.times(
         new BigNumberInBase(1).minus(DEFAULT_MIN_PRICE_BAND_DIFFERENCE.div(100))
       )
+      const cappedAcceptableMin = acceptableMin.gt(0)
+        ? acceptableMin
+        : minTickPrice
 
       if (
-        executionPrice.lt(acceptableMin) ||
+        executionPrice.lt(cappedAcceptableMin) ||
         executionPrice.gt(acceptableMax)
       ) {
         return {

@@ -299,9 +299,20 @@ export const actions = actionTree(
       commit('setMarketsSummary', await fetchMarketsSummary())
     },
 
-    async changeMarket({ commit }, market: UiDerivativeMarket | undefined) {
+    async changeMarket({ commit, state }, marketSlug: string) {
+      const { markets } = state
+
+      if (!markets.length) {
+        await this.app.$accessor.derivatives.init()
+      }
+
+      const { markets: newMarkets } = state
+      const market = newMarkets.find(
+        (market) => market.slug.toLowerCase() === marketSlug.toLowerCase()
+      )
+
       if (!market) {
-        throw new Error('Market not found')
+        throw new Error('Market not found. Please refresh the page.')
       }
 
       commit('setMarket', market)
