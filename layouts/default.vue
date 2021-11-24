@@ -54,20 +54,6 @@ export default Vue.extend({
 
   mounted() {
     Promise.all([
-      this.$accessor.app.init(),
-      this.$accessor.app.fetchGasPrice(),
-      this.$accessor.bank.init(),
-      this.$accessor.account.init()
-    ])
-      .then(() => {
-        //
-      })
-      .catch(this.$onRejected)
-      .finally(() => {
-        this.status.setIdle()
-      })
-
-    Promise.all([
       this.$accessor.spot.init(),
       this.$accessor.derivatives.init(),
       this.$accessor.wallet.init()
@@ -76,6 +62,22 @@ export default Vue.extend({
         this.interval = setInterval(async () => {
           await this.$accessor.app.poll()
         }, 2000)
+      })
+      .catch(this.$onRejected)
+      .finally(() => {
+        this.$nextTick(() => {
+          this.status.setIdle()
+        })
+      })
+
+    Promise.all([
+      this.$accessor.app.init(),
+      this.$accessor.app.fetchGasPrice(),
+      this.$accessor.bank.init(),
+      this.$accessor.account.init()
+    ])
+      .then(() => {
+        //
       })
       .catch(this.$onRejected)
       .finally(() => {

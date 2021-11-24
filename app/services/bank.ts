@@ -32,6 +32,7 @@ export const fetchBalances = async (injectiveAddress: string) => {
     .reduce((balances: BankBalances, balance: GrpcCoin) => {
       return { ...balances, [balance.getDenom()]: balance.getAmount() }
     }, {})
+
   const ibcBankBalances = balances
     .filter((balance) => balance.getDenom().startsWith('ibc'))
     .reduce((balances: BankBalances, balance: GrpcCoin) => {
