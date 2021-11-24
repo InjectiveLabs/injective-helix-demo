@@ -462,7 +462,7 @@ export default {
     'The current total reward points collected by all addresses on Injective in this campaign. This number will grow until the end of campaign.',
   countdown_campaign: 'Campaign end time',
   countdown_campaign_tooltip:
-    'Date and time when the current campaign ends (in UTC). Any reward point earned after the countdown will be counted toward the next campaign.',
+    'Date and time when the current campaign ends (shown in the timezone of your browser). Any reward point earned after the countdown will be counted toward the next campaign.',
   reward_earned_up_to_date: 'Rewards earned up to date',
   reward_earned_up_to_date_tooltip: 'Rewards earned up to date tooltip',
   market_total_tooltip:
