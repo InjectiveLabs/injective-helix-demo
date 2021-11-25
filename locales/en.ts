@@ -30,6 +30,7 @@ export default {
   last_traded_price: 'Last Traded Price',
   last_traded_price_tooltip: 'The last price at which a trade occurred.',
   market_change_24h: 'Change (24h)',
+  total_market_volume_24h: 'Total Volume (24H)',
   market_change_24h_tooltip: 'The change in price over the past 24 hours.',
   market_volume_24h: 'Volume (24h)',
   market_volume_24h_tooltip: 'The total trade volume over the past 24 hours.',
