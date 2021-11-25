@@ -33,7 +33,7 @@ const testnetSpot = [
 ]
 const mainnetSpot = [
   'inj-usdt',
-  // 'atom-usdt',
+  'atom-usdt',
   'weth-usdt',
   'link-usdt',
   'axs-usdt'
