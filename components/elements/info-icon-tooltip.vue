@@ -2,8 +2,8 @@
   <v-icon-info
     v-tooltip="{ content: tooltip }"
     v-bind="$attrs"
-    :class="classes"
-    class="fill-current text-gray-500"
+    :class="[classes, color]"
+    class="fill-current"
     v-on="$listeners"
   />
 </template>
@@ -22,6 +22,11 @@ export default Vue.extend({
     lg: {
       type: Boolean,
       default: false
+    },
+
+    color: {
+      type: String,
+      default: 'text-gray-500'
     }
   },
 

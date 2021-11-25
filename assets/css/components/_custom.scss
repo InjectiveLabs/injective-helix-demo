@@ -51,13 +51,6 @@
   }
 }
 
-.orderbook-summary {
-  @apply opacity-0;
-}
-.orderbook-summary[data-show] {
-  @apply opacity-100;
-}
-
 .card-table-wrap-content {
   @apply bg-gray-900 px-4 py-2 rounded-lg mt-2 flex-1 w-full;
 }

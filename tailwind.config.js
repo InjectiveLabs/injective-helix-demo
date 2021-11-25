@@ -149,9 +149,18 @@ module.exports = {
         mono: ['Fira Mono', ...defaultTheme.fontFamily.mono]
       },
 
+      borderRadius: {
+        '4xl': '32px'
+      },
+
       opacity: {
         33: '0.33',
         90: '0.9'
+      },
+
+      lineHeight: {
+        3.5: '0.875rem',
+        5.5: '1.375rem'
       },
 
       maxHeight: {
