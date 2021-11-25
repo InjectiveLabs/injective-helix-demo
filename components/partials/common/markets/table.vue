@@ -46,6 +46,21 @@
           <span>{{ $t('futures') }}</span>
         </v-button>
       </div>
+
+      <span
+        v-if="totalVolume.gt(0)"
+        class="text-sm text-primary-500 mr-2 hidden sm:block"
+      >
+        {{ $t('total_market_volume_24h') }}: {{ totalVolumeToFormat }} USDT
+      </span>
+    </div>
+    <div>
+      <span
+        v-if="totalVolume.gt(0)"
+        class="text-sm text-primary-500 ml-2 mt-4 sm:hidden"
+      >
+        {{ $t('total_market_volume_24h') }}: {{ totalVolumeToFormat }} USDT
+      </span>
     </div>
     <div class="w-full mt-2">
       <v-search
@@ -119,6 +134,7 @@
 </template>
 
 <script lang="ts">
+import { BigNumberInBase } from '@injectivelabs/utils'
 import Vue, { PropType } from 'vue'
 import TableBody from '~/components/elements/table-body.vue'
 import TableHeader from '~/components/elements/table-header.vue'
@@ -131,6 +147,7 @@ import {
   UiSpotMarket,
   UiSpotMarketSummary
 } from '~/types'
+import { ZERO_IN_BASE } from '~/app/utils/constants'
 
 export interface UiMarketAndSummary {
   market: UiDerivativeMarket | UiSpotMarket
@@ -203,6 +220,21 @@ export default Vue.extend({
             marketTypeCondition
           )
         }) as UiMarketAndSummary[]
+    },
+
+    totalVolume(): BigNumberInBase {
+      const { filteredMarkets } = this
+
+      return filteredMarkets.reduce(
+        (total, { summary }) => total.plus(summary.volume || ZERO_IN_BASE),
+        ZERO_IN_BASE
+      )
+    },
+
+    totalVolumeToFormat(): string {
+      const { totalVolume } = this
+
+      return totalVolume.toFormat(0, BigNumberInBase.ROUND_DOWN)
     }
   },
 

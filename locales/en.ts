@@ -30,6 +30,7 @@ export default {
   last_traded_price: 'Last Traded Price',
   last_traded_price_tooltip: 'The last price at which a trade occurred.',
   market_change_24h: 'Change (24h)',
+  total_market_volume_24h: 'Total Volume (24H)',
   market_change_24h_tooltip: 'The change in price over the past 24 hours.',
   market_volume_24h: 'Volume (24h)',
   market_volume_24h_tooltip: 'The total trade volume over the past 24 hours.',
@@ -462,7 +463,7 @@ export default {
     'The current total reward points collected by all addresses on Injective in this campaign. This number will grow until the end of campaign.',
   countdown_campaign: 'Campaign end time',
   countdown_campaign_tooltip:
-    'Date and time when the current campaign ends (in UTC). Any reward point earned after the countdown will be counted toward the next campaign.',
+    'Date and time when the current campaign ends (shown in the timezone of your browser). Any reward point earned after the countdown will be counted toward the next campaign.',
   reward_earned_up_to_date: 'Rewards earned up to date',
   reward_earned_up_to_date_tooltip: 'Rewards earned up to date tooltip',
   market_total_tooltip:
