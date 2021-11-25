@@ -1,7 +1,9 @@
 import faq from './faq/en'
+import dmm from './dmm/en'
 
 export default {
   ...faq,
+  ...dmm,
   address_copied: 'Address Copied',
   copy_address: 'Copy Address',
   max: 'Max',

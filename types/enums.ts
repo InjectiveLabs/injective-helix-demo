@@ -50,7 +50,8 @@ export enum Modal {
   Withdraw = 'withdraw',
   TakeOut = 'take-out',
   TransferOnChain = 'transfer-on-chain',
-  GasFeeRebate = 'gas-fee-rebate'
+  GasFeeRebate = 'gas-fee-rebate',
+  MarketRewardFactors = 'market-reward-factors'
 }
 
 export enum Breakpoint {
@@ -74,4 +75,9 @@ export enum AppState {
   Idle = 'Idle',
   Error = 'Error',
   Success = 'Success'
+}
+
+export enum DMMType {
+  Ranking = 'Ranking',
+  History = 'History'
 }
