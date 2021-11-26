@@ -148,8 +148,12 @@ export const actions = actionTree(
       const { subaccount } = state
       const { injectiveAddress } = this.app.$accessor.wallet
 
-      if (!subaccount || !injectiveAddress) {
+      if (!injectiveAddress) {
         return
+      }
+
+      if (!subaccount) {
+        await this.app.$accessor.account.init()
       }
 
       commit('setPortfolioValue', await fetchAccountPortfolio(injectiveAddress))

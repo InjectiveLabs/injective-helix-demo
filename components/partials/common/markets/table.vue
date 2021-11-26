@@ -48,7 +48,7 @@
       </div>
 
       <span
-        v-if="totalVolume.gt(0)"
+        v-if="totalVolume.gt(0) && !simple"
         class="text-sm text-primary-500 mr-2 hidden sm:block"
       >
         {{ $t('total_market_volume_24h') }}: {{ totalVolumeToFormat }} USDT
@@ -56,7 +56,7 @@
     </div>
     <div>
       <span
-        v-if="totalVolume.gt(0)"
+        v-if="totalVolume.gt(0) && !simple"
         class="text-sm text-primary-500 ml-2 mt-4 sm:hidden"
       >
         {{ $t('total_market_volume_24h') }}: {{ totalVolumeToFormat }} USDT
