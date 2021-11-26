@@ -536,7 +536,7 @@ export default Vue.extend({
     },
 
     handleClosePosition() {
-      const { position, market, feeAdjustedBankruptcyPrice } = this
+      const { position, market, liquidationPrice } = this
 
       if (!market) {
         return
@@ -551,7 +551,7 @@ export default Vue.extend({
             position.direction === TradeDirection.Long
               ? DerivativeOrderSide.Sell
               : DerivativeOrderSide.Buy,
-          price: feeAdjustedBankruptcyPrice,
+          price: liquidationPrice,
           quantity: new BigNumberInBase(position.quantity)
         })
         .then(() => {
