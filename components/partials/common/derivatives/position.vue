@@ -542,6 +542,13 @@ export default Vue.extend({
         return
       }
 
+      const minTickPrice = new BigNumberInBase(
+        new BigNumberInBase(1).shiftedBy(-market.priceDecimals)
+      )
+      const actualPrice = liquidationPrice.lte(0)
+        ? minTickPrice
+        : liquidationPrice
+
       this.status.setLoading()
 
       this.$accessor.derivatives
@@ -551,7 +558,7 @@ export default Vue.extend({
             position.direction === TradeDirection.Long
               ? DerivativeOrderSide.Sell
               : DerivativeOrderSide.Buy,
-          price: liquidationPrice,
+          price: actualPrice,
           quantity: new BigNumberInBase(position.quantity)
         })
         .then(() => {
