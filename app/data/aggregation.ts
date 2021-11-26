@@ -1,6 +1,5 @@
 export interface CustomAggregation {
-  start: string
-  end: string
+  maxTick: string
   default: string
 }
 
@@ -36,33 +35,35 @@ const getDecimalPlaceFromValue = (value: string) =>
 
 export const customAggregations = {
   'BNB/USDT': {
-    start: getDecimalPlaceFromValue('10'),
-    end: getDecimalPlaceFromValue('0.1'),
+    maxTick: getDecimalPlaceFromValue('10'),
     default: getDecimalPlaceFromValue('0.1')
   },
   'BNB/USDT PERP': {
-    start: getDecimalPlaceFromValue('10'),
-    end: getDecimalPlaceFromValue('0.1'),
+    maxTick: getDecimalPlaceFromValue('10'),
     default: getDecimalPlaceFromValue('0.1')
   },
   'BTC/USDT': {
-    start: getDecimalPlaceFromValue('100'),
-    end: getDecimalPlaceFromValue('0.1'),
+    maxTick: getDecimalPlaceFromValue('100'),
     default: getDecimalPlaceFromValue('10')
   },
   'BTC/USDT PERP': {
-    start: getDecimalPlaceFromValue('100'),
-    end: getDecimalPlaceFromValue('0.1'),
+    maxTick: getDecimalPlaceFromValue('100'),
     default: getDecimalPlaceFromValue('10')
   },
+  'ETH/USDT': {
+    maxTick: getDecimalPlaceFromValue('10'),
+    default: getDecimalPlaceFromValue('1')
+  },
+  'ETH/USDT PERP': {
+    maxTick: getDecimalPlaceFromValue('10'),
+    default: getDecimalPlaceFromValue('1')
+  },
   'WETH/USDT': {
-    start: getDecimalPlaceFromValue('10'),
-    end: getDecimalPlaceFromValue('0.1'),
+    maxTick: getDecimalPlaceFromValue('10'),
     default: getDecimalPlaceFromValue('1')
   },
   'WETH/USDT PERP': {
-    start: getDecimalPlaceFromValue('10'),
-    end: getDecimalPlaceFromValue('0.1'),
+    maxTick: getDecimalPlaceFromValue('10'),
     default: getDecimalPlaceFromValue('1')
   }
 } as Record<string, CustomAggregation>

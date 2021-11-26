@@ -29,8 +29,7 @@
         class="pr-2"
         :min-tick="minTick"
         :value="aggregation"
-        :start="start"
-        :end="end"
+        :max-tick="maxTick"
         @click="handleAggregationChange"
       />
     </div>
@@ -74,8 +73,7 @@ export default Vue.extend({
       minTick: UI_DEFAULT_AGGREGATION_DECIMALS,
       components,
       component: components.orderbook,
-      start: null as string | null,
-      end: null as string | null
+      maxTick: null as string | null
     }
   },
 
@@ -86,8 +84,7 @@ export default Vue.extend({
       this.minTick = market.priceDecimals
 
       // applies custom aggregation base on pre configured settings
-      this.start = customAggregation?.start || null
-      this.end = customAggregation?.end || null
+      this.maxTick = customAggregation?.maxTick || null
       this.aggregation =
         customAggregation?.default || market.priceDecimals.toString()
     }

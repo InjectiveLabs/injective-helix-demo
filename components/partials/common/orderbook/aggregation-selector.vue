@@ -42,12 +42,7 @@ export default Vue.extend({
       required: true
     },
 
-    start: {
-      type: String,
-      default: null
-    },
-
-    end: {
+    maxTick: {
       type: String,
       default: null
     }
@@ -67,11 +62,11 @@ export default Vue.extend({
     },
 
     filteredList(): Record<string, any>[] {
-      const { list, minTick, start, end } = this
+      const { list, minTick, maxTick } = this
 
-      if (start && end) {
-        const startIndex = list.findIndex(({ value }) => value === start)
-        const endIndex = list.findIndex(({ value }) => value === end)
+      if (maxTick) {
+        const startIndex = list.findIndex(({ value }) => value === maxTick)
+        const endIndex = list.findIndex(({ value }) => value === minTick.toString())
 
         return list.slice(startIndex, endIndex + 1)
       }
