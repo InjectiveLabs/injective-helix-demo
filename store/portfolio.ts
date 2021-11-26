@@ -162,6 +162,7 @@ export const actions = actionTree(
     },
 
     async init(_) {
+      await this.app.$accessor.account.fetchAccountPortfolio()
       await this.app.$accessor.portfolio.fetchSubaccountOrders()
       await this.app.$accessor.portfolio.fetchSubaccountPositions()
       await this.app.$accessor.portfolio.streamSubaccountPositions()
@@ -171,7 +172,6 @@ export const actions = actionTree(
       await this.app.$accessor.token.getAllTokenWithBalanceAndAllowance()
       await this.app.$accessor.bank.fetchBalances()
       await this.app.$accessor.token.getAllTokenWithBalanceAndAllowance()
-      await this.app.$accessor.account.fetchAccountPortfolio()
     },
 
     async poll(_) {
@@ -344,10 +344,7 @@ export const actions = actionTree(
       })
     },
 
-    async batchCancelSpotOrders(
-      _,
-      orders: UiSpotLimitOrder[]
-    ) {
+    async batchCancelSpotOrders(_, orders: UiSpotLimitOrder[]) {
       const { subaccount } = this.app.$accessor.account
       const {
         address,
@@ -373,10 +370,7 @@ export const actions = actionTree(
       })
     },
 
-    async batchCancelDerivativeOrders(
-      _,
-      orders: UiDerivativeLimitOrder[]
-    ) {
+    async batchCancelDerivativeOrders(_, orders: UiDerivativeLimitOrder[]) {
       const { subaccount } = this.app.$accessor.account
       const {
         address,
