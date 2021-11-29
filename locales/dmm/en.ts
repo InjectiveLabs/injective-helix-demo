@@ -2,14 +2,17 @@ export default {
   dmm: {
     nav: {
       tradingRewards: 'Trading rewards',
-      currentEpochRecords: 'Score records in current epoch',
-      dedicatedMarketMakingRanking: 'Dedicated market making ranking',
-      marketMakingHistory: 'My market making history'
+      dedicatedMarketMakingRewards: 'Dedicated Market Making rewards',
+      dedicatedMarketMakingRankings: 'Dedicated market making ranking',
+      currentEpochRecords: 'Score records in current epoch'
     },
 
     epoch: {
       prefix: 'Epoch',
-      current: 'Current'
+      current: 'Current',
+      pastEpoch: 'Past epochs',
+      currentEpoch: 'Current epochs',
+      upcomingEpoch: 'Upcoming epochs'
     },
 
     ranking: {
