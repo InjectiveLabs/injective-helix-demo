@@ -5,22 +5,26 @@
         <div class="w-full mx-auto xl:w-4/5">
           <!-- header nav -->
           <div
-            class="flex justify-center uppercase text-gray-500 text-sm font-semibold pt-6"
+            class="flex justify-center uppercase text-gray-500 text-xs sm:text-sm font-semibold pt-6 xs:w-4/5 md:w-full mx-auto"
           >
             <VHeaderItem
+              class="w-1/2 text-right mr-6"
               :class="{ 'text-primary-500': selectedType === DMMType.Ranking }"
               :type="DMMType.Ranking"
               @click="handleTypeClick"
             >
               {{ $t('dmm.nav.dedicatedMarketMakingRanking') }}
             </VHeaderItem>
-            <span class="mx-6">|</span>
+
+            <span class="border-r text-gray-500 w-1" />
+
             <VHeaderItem
+              class="w-1/2 ml-6"
               :class="{ 'text-primary-500': selectedType === DMMType.History }"
               :type="DMMType.History"
               @click="handleTypeClick"
             >
-              {{ $t('dmm.nav.marketMakingHistory') }}
+              {{ $t('dmm.nav.currentEpochRecords') }}
             </VHeaderItem>
           </div>
 

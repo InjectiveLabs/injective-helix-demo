@@ -3,45 +3,74 @@
     <TableHeader sm dense>
       <span>#</span>
 
-      <span class="col-span-5">
+      <span class="col-span-4">
         {{ $t('dmm.history.timestamp') }}
       </span>
 
-      <div class="col-span-3 flex items-center">
-        <span>
-          {{ $t('dmm.history.marketMakerScore') }}
-        </span>
-        <v-icon-info-tooltip
-          lg
-          class="ml-3"
-          color="text-gray-200"
-          :tooltip="$t('dmm.history.marketMakerScoreTooltip')"
-        />
-      </div>
+      <div class="col-span-7 flex items-center grid grid-cols-4 gap-2 md:gap-4">
+        <div class="flex items-center">
+          <span>
+            {{ $t('dmm.history.elcs') }}
+          </span>
+          <v-icon-info-tooltip
+            lg
+            class="ml-3 min-w-4 min-h-4"
+            color="text-gray-200"
+            :tooltip="$t('dmm.history.elcsTooltip')"
+          />
+        </div>
 
-      <div class="col-span-3 flex items-center justify-end">
-        <span> {{ $t('dmm.history.marketMakerScore') }}% </span>
-        <v-icon-info-tooltip
-          lg
-          class="ml-3"
-          color="text-gray-200"
-          :tooltip="$t('dmm.history.marketMakerScorePercentageTooltip')"
-        />
+        <div class="flex items-center">
+          <span> {{ $t('dmm.history.elcs') }} % </span>
+          <v-icon-info-tooltip
+            lg
+            class="ml-3 min-w-4 min-h-4"
+            color="text-gray-200"
+            :tooltip="$t('dmm.history.elcsTooltip')"
+          />
+        </div>
+
+        <div class="flex items-center">
+          <span>
+            {{ $t('dmm.history.evcs') }}
+          </span>
+          <v-icon-info-tooltip
+            lg
+            class="ml-3 min-w-4 min-h-4"
+            color="text-gray-200"
+            :tooltip="$t('dmm.history.evcsTooltip')"
+          />
+        </div>
+
+        <div class="flex items-center justify-end">
+          <span> {{ $t('dmm.history.evcs') }} % </span>
+          <v-icon-info-tooltip
+            lg
+            class="ml-3 min-w-4 min-h-4"
+            color="text-gray-200"
+            :tooltip="$t('dmm.history.evcsPercentageTooltip')"
+          />
+        </div>
       </div>
     </TableHeader>
 
     <TableBody
       v-if="isUserWalletConnected"
-      class="min-h-[480px] max-h-[480px] overflow-y-scroll"
+      class="max-h-[480px] overflow-y-scroll"
+      :class="[
+        { 'min-h-[480px]': isEmpty },
+        rows > 10 ? 'md:overflow-y-scroll' : 'md:overflow-y-hidden'
+      ]"
       :show-empty="isEmpty"
       dense
     >
       <div v-if="!isEmpty">
         <VHistoryRow
-          v-for="(item, index) in 15"
+          v-for="(item, index) in rows"
           :key="`dmm-history-${index}`"
           :active="index === 1"
           :item="historyMockData"
+          :scrollbar="rows > 10"
         />
       </div>
       <template slot="empty">
@@ -81,11 +110,14 @@ export default Vue.extend({
   data() {
     return {
       isEmpty: false,
+      rows: 15,
       historyMockData: {
         number: 1,
         timestamp: 'Oct 25th 2021 05:25:00 UTC',
-        score: '2.3',
-        scorePercentage: '25.3'
+        elcs: '2.3',
+        elcsPercentage: '25.3',
+        evcs: '1.8',
+        evcsPercentage: '18.4'
       }
     }
   },

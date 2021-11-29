@@ -4,7 +4,7 @@
       {{ $t('dmm.ranking.elcsTitle') }}
     </h3>
 
-    <div class="flex items-center justify-between mt-5">
+    <div class="flex items-center justify-between mt-5 flex-wrap">
       <div class="flex items-center">
         <h4 class="text-gray-500 text-xs">
           {{ $t('dmm.ranking.marketRewardFactor') }}
@@ -38,11 +38,11 @@
         </div>
 
         <div class="col-span-8 grid grid-cols-5">
-          <span>{{ $t('dmm.ranking.elcsBuy') }} </span>
+          <span>{{ $t('dmm.ranking.elcsBuy') }}</span>
 
-          <span>{{ $t('dmm.ranking.elcsSell') }} </span>
+          <span>{{ $t('dmm.ranking.elcsSell') }}</span>
 
-          <span>{{ $t('dmm.ranking.elcs') }} </span>
+          <span>{{ $t('dmm.ranking.elcs') }}</span>
 
           <span>-</span>
 
@@ -53,12 +53,17 @@
         </div>
       </TableHeader>
 
-      <TableBody class="max-h-60 overflow-y-scroll" dense>
+      <TableBody
+        class="max-h-60 overflow-y-scroll"
+        :class="[rows > 5 ? 'md:overflow-y-scroll' : 'md:overflow-y-hidden']"
+        dense
+      >
         <VElcsRow
-          v-for="(item, index) in 8"
+          v-for="(item, index) in rows"
           :key="`rank-elcs-${index}`"
           :active="index === 1"
           :item="elcsMockData"
+          :scrollbar="rows > 5"
         />
       </TableBody>
     </div>
@@ -87,6 +92,7 @@ export default Vue.extend({
 
   data() {
     return {
+      rows: 10,
       rewardFactor: '1.5',
       elcsMockData: {
         rank: 1,

@@ -186,12 +186,14 @@ module.exports = {
       },
 
       minHeight: {
+        4: '1rem',
         ...extraSizings,
         orders: '10rem',
         loading: '4rem'
       },
 
       minWidth: {
+        4: '1rem',
         ...extraSizings
       }
     }

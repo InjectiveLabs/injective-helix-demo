@@ -1,7 +1,7 @@
 <template>
   <v-dropdown
     class="bg-gray-800 rounded-full w-4/5 lg:w-3/5 xl:w-2/5 max-w-xl mx-auto"
-    selected-class="px-5 py-4"
+    selected-class="px-3 py-2 xs:px-4 xs:py-3 md:px-5 md:py-4"
     menu-class="border border-primary-500 rounded-2xl"
     hide-bottom-border
   >

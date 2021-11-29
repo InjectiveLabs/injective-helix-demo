@@ -1,33 +1,58 @@
 <template>
   <TableRow class="font-serif" :class="{ active: active }" sm dense>
-    <div class="col-span-4 grid grid-cols-4">
-      <span class="text-left">
-        {{ item.rank }}
-      </span>
+    <span class="md:hidden">
+      {{ $t('dmm.ranking.rank') }}
+    </span>
+    <span class="text-right md:text-left">
+      {{ item.rank }}
+    </span>
 
-      <span class="col-span-3">
-        <div class="flex items-center">
-          <span>{{ formattedAddress }}</span>
-          <div v-if="active" class="flex items-center">
-            <v-icon-profile class="text-gray-200 h-5 w-5 ml-3 mr-2" />
-            <span>({{ $t('dmm.ranking.you') }})</span>
-          </div>
-        </div>
-      </span>
+    <span class="md:hidden">
+      {{ $t('dmm.ranking.address') }}
+    </span>
+    <div class="flex items-center md:col-span-3 justify-end md:justify-start">
+      <span>{{ formattedAddress }}</span>
+      <div v-if="active" class="flex items-center">
+        <v-icon-profile class="text-gray-200 h-4 w-4 ml-3 mr-2" />
+        <span>({{ $t('dmm.ranking.you') }})</span>
+      </div>
     </div>
 
-    <div class="col-span-8 grid grid-cols-5">
-      <span class="ml-1">{{ item.buy }} </span>
+    <div
+      class="col-span-2 md:col-span-8 grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-0"
+    >
+      <span class="md:hidden">{{ $t('dmm.ranking.elcsBuy') }}</span>
+      <span :class="{ 'md:ml-1': scrollbar }" class="text-right md:text-left">
+        {{ item.buy }}
+      </span>
 
-      <span class="ml-2">{{ item.sell }} </span>
+      <span class="md:hidden">
+        {{ $t('dmm.ranking.elcsSell') }}
+      </span>
 
-      <span class="ml-2">{{ item.elcs }} </span>
+      <span :class="{ 'md:ml-2': scrollbar }" class="text-right md:text-left">
+        {{ item.sell }}
+      </span>
 
-      <span class="ml-2">{{ item.paramOne }} </span>
+      <span class="md:hidden">
+        {{ $t('dmm.ranking.elcs') }}
+      </span>
+      <span :class="{ 'md:ml-2': scrollbar }" class="text-right md:text-left">
+        {{ item.elcs }}
+      </span>
 
-      <div class="grid col-span-1 grid-cols-2">
-        <span class="ml-2">{{ item.paramTwo }} </span>
+      <span class="md:hidden"> - </span>
+      <span :class="{ 'md:ml-2': scrollbar }" class="text-right md:text-left">
+        {{ item.paramOne }}
+      </span>
 
+      <div class="grid col-span-2 md:col-span-1 grid-cols-2 gap-2 md:gap-0">
+        <span class="md:hidden"> - </span>
+        <span :class="{ 'md:ml-2': scrollbar }" class="text-right md:text-left">
+          {{ item.paramTwo }}
+        </span>
+
+        <span class="md:hidden"> - </span>
         <span class="text-right">{{ item.paramThree }} </span>
       </div>
     </div>
@@ -54,6 +79,11 @@ export default Vue.extend({
     item: {
       type: Object as PropType<RankingElcs>,
       required: true
+    },
+
+    scrollbar: {
+      type: Boolean,
+      default: false
     }
   },
 
