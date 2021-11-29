@@ -17,23 +17,11 @@
 
     <div class="rounded-2xl mt-4 overflow-y-hidden">
       <TableHeader sm dense>
-        <span class="col-span-3">
+        <span class="col-span-4">
           {{ $t('dmm.summary.address') }}
         </span>
 
-        <div class="col-span-2 flex items-center relative">
-          <span>
-            {{ $t('dmm.summary.elcsTotal') }}
-          </span>
-          <v-icon-info-tooltip
-            lg
-            class="ml-3"
-            color="text-gray-200"
-            :tooltip="$t('dmm.summary.elcsTotalTooltip')"
-          />
-        </div>
-
-        <div class="col-span-2 flex items-center relative">
+        <div class="col-span-3 flex items-center relative">
           <span>{{ $t('dmm.summary.elcsTotal') }}%</span>
           <v-icon-info-tooltip
             lg

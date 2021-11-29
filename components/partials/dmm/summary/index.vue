@@ -5,7 +5,8 @@
     </h3>
     <v-card class="mt-6">
       <div class="p-2">
-        <VElcsTable />
+        <VEpochProgressBar />
+        <VElcsTable class="mt-6" />
         <VEvcsTable class="mt-6" />
       </div>
     </v-card>
@@ -16,10 +17,12 @@
 import Vue from 'vue'
 import VElcsTable from './elcs-table.vue'
 import VEvcsTable from './evcs-table.vue'
+import VEpochProgressBar from '~/components/partials/dmm/common/epoch-progress-bar.vue'
 import { UiDerivativeMarket, UiSpotMarket } from '~/types'
 
 export default Vue.extend({
   components: {
+    VEpochProgressBar,
     VElcsTable,
     VEvcsTable
   },

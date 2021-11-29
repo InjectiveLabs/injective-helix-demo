@@ -4,7 +4,7 @@
       {{ $t('dmm.summary.address') }}
     </span>
 
-    <span class="md:col-span-3 text-right md:text-left">
+    <span class="md:col-span-4 text-right md:text-left">
       <div class="flex items-center md:justify-start justify-end">
         <span>{{ formattedAddress }}</span>
         <div v-if="active" class="flex items-center">
@@ -14,19 +14,9 @@
       </div>
     </span>
 
-    <span class="md:hidden">
-      {{ $t('dmm.summary.elcsTotal') }}
-    </span>
-    <span
-      class="md:col-span-2 text-right md:text-left"
-      :class="{ 'md:ml-1': scrollbar }"
-    >
-      {{ item.total }}
-    </span>
-
     <span class="md:hidden"> {{ $t('dmm.summary.elcsTotal') }}% </span>
     <span
-      class="md:col-span-2 text-right md:text-left"
+      class="md:col-span-3 text-right md:text-left"
       :class="{ 'md:ml-2': scrollbar }"
     >
       {{ item.totalPercentage }}%

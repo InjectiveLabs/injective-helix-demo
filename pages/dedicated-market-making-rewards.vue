@@ -13,7 +13,7 @@
               :type="DMMType.Ranking"
               @click="handleTypeClick"
             >
-              {{ $t('dmm.nav.dedicatedMarketMakingRanking') }}
+              {{ $t('dmm.nav.dedicatedMarketMakingRankings') }}
             </VHeaderItem>
 
             <span class="border-r text-gray-500 w-1" />

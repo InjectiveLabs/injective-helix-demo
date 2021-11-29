@@ -17,19 +17,18 @@
         class="lg:hidden"
         :to="{ name: 'dedicated-market-making-rewards' }"
       >
-        {{ $t('dmm.nav.marketMakingRewards') }}
+        {{ $t('dmm.nav.dedicatedMarketMakingRewards') }}
       </v-nav-item>
-      <v-nav-item
+      <v-nav-item-dummy
         ref="rewards"
         class="hidden lg:block"
-        :to="{ name: 'trade-and-earn' }"
         @mouseenter.native="showDropdown"
         @mouseleave.native="hideDropdown"
         @focus.native="showDropdown"
         @blur.native="hideDropdown"
       >
         {{ $t('Rewards') }}
-      </v-nav-item>
+      </v-nav-item-dummy>
       <v-nav-item :to="{ name: 'history' }">
         {{ $t('History') }}
       </v-nav-item>
@@ -57,7 +56,7 @@
           class="hover:text-primary-500"
           dense
         >
-          {{ $t('dmm.nav.marketMakingRewards') }}
+          {{ $t('dmm.nav.dedicatedMarketMakingRewards') }}
         </v-nav-item>
       </div>
     </VPopperBox>
