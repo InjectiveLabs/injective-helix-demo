@@ -6,7 +6,8 @@ import {
   deposit,
   withdraw,
   streamSubaccountBalances,
-  fetchAccountPortfolio
+  fetchAccountPortfolio,
+  cancelSubaccountStreams
 } from '~/app/services/account'
 import { grpcSubaccountBalanceToUiSubaccountBalance } from '~/app/transformers/account'
 import { backupPromiseCall } from '~/app/utils/async'
@@ -116,19 +117,23 @@ export const actions = actionTree(
       commit('setSubacccountIds', subaccountIds)
       commit('setSubaccount', await fetchSubaccount(subaccountId))
 
-      await this.app.$accessor.spot.fetchSubaccountMarketTrades()
-      await this.app.$accessor.spot.fetchSubaccountOrders()
-      await this.app.$accessor.spot.fetchSubaccountTrades()
-      await this.app.$accessor.spot.streamSubaccountOrders()
-      await this.app.$accessor.spot.streamSubaccountTrades()
+      if (this.app.context.route.name === 'spot-spot') {
+        await this.app.$accessor.spot.fetchSubaccountMarketTrades()
+        await this.app.$accessor.spot.fetchSubaccountOrders()
+        await this.app.$accessor.spot.fetchSubaccountTrades()
+        await this.app.$accessor.spot.streamSubaccountOrders()
+        await this.app.$accessor.spot.streamSubaccountTrades()
+      }
 
-      await this.app.$accessor.derivatives.fetchSubaccountMarketTrades()
-      await this.app.$accessor.derivatives.fetchSubaccountOrders()
-      await this.app.$accessor.derivatives.fetchSubaccountTrades()
-      await this.app.$accessor.derivatives.fetchSubaccountPosition()
-      await this.app.$accessor.derivatives.streamSubaccountOrders()
-      await this.app.$accessor.derivatives.streamSubaccountPositions()
-      await this.app.$accessor.derivatives.streamSubaccountTrades()
+      if (this.app.context.route.name === 'derivatives-derivative') {
+        await this.app.$accessor.derivatives.fetchSubaccountMarketTrades()
+        await this.app.$accessor.derivatives.fetchSubaccountOrders()
+        await this.app.$accessor.derivatives.fetchSubaccountTrades()
+        await this.app.$accessor.derivatives.fetchSubaccountPosition()
+        await this.app.$accessor.derivatives.streamSubaccountOrders()
+        await this.app.$accessor.derivatives.streamSubaccountPositions()
+        await this.app.$accessor.derivatives.streamSubaccountTrades()
+      }
     },
 
     async updateSubaccount({ commit, state }) {
@@ -243,6 +248,11 @@ export const actions = actionTree(
       await backupPromiseCall(() =>
         this.app.$accessor.account.updateSubaccount()
       )
+    },
+
+    async reset({ commit }) {
+      await cancelSubaccountStreams()
+      commit('reset')
     }
   }
 )
