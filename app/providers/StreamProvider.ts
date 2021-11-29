@@ -84,6 +84,13 @@ export class StreamProvider {
     this.streamManager.delete(key)
   }
 
+  cancelAll() {
+    this.streamManager.forEach((stream, key) => {
+      stream.stream.cancel()
+    })
+    this.streamManager = new Map()
+  }
+
   private reconnect(key: StreamKey) {
     if (!this.exists(key)) {
       return
