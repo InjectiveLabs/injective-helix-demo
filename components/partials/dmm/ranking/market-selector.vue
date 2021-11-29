@@ -111,11 +111,6 @@ export default Vue.extend({
   },
 
   props: {
-    selectedEpoch: {
-      type: Object,
-      required: true
-    },
-
     markets: {
       type: Array as PropType<Array<UiSpotMarket | UiDerivativeMarket>>,
       required: true

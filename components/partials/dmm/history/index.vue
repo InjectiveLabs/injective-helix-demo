@@ -9,7 +9,11 @@
           <p class="text-gray-500 uppercase text-xs">
             {{ $t('dmm.history.subaccountID') }}
           </p>
-          <h3 class="text-gray-200 text-2xl mt-3">{{ injectiveAddress }}</h3>
+          <h3
+            class="text-gray-200 text-base sm:text-lg md:text-2xl mt-3 break-all"
+          >
+            {{ injectiveAddress }}
+          </h3>
         </div>
 
         <VHistoryTable class="mt-6" />

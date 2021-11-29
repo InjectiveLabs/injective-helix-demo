@@ -12,11 +12,16 @@
       </span>
     </TableHeader>
 
-    <TableBody class="max-h-60 overflow-y-scroll" dense>
+    <TableBody
+      class="max-h-60 overflow-y-scroll"
+      :class="[rows > 5 ? 'md:overflow-y-scroll' : 'md:overflow-y-hidden']"
+      dense
+    >
       <VMarketRewardRow
-        v-for="(item, index) in 8"
+        v-for="(item, index) in rows"
         :key="`market-reward-${index}`"
         :item="marketRewardMockData"
+        :scrollbar="rows > 5"
       />
     </TableBody>
   </div>
@@ -44,6 +49,7 @@ export default Vue.extend({
 
   data() {
     return {
+      rows: 5,
       rewardFactor: '1.5',
       marketRewardMockData: {
         market: 'INJ/USDT Spot',

@@ -2,7 +2,7 @@ export default {
   dmm: {
     nav: {
       tradingRewards: 'Trading rewards',
-      marketMakingRewards: 'Dedicated Market Making rewards',
+      currentEpochRecords: 'Score records in current epoch',
       dedicatedMarketMakingRanking: 'Dedicated market making ranking',
       marketMakingHistory: 'My market making history'
     },
@@ -35,30 +35,38 @@ export default {
       currentEpoch: 'Current epoch',
       upcomingEpoch: 'Upcoming epochs',
       elcsTotalTokens: 'total inj tokens in ELCS',
-      elcsTotalTokensPercentage: '{percentage}% of Total INJ Token of this epoch',
+      elcsTotalTokensPercentage:
+        '{percentage}% of Total INJ Token of this epoch',
       evcsTotalTokens: 'total inj tokens in EVCS',
-      evcsTotalTokensPercentage: '{percentage}% of Total INJ Token of this epoch',
+      evcsTotalTokensPercentage:
+        '{percentage}% of Total INJ Token of this epoch',
       elcsTitle: 'Exchange Liquidity contribution score (ELCS)',
       evcsTitle: 'Exchange volume contribution score (EVCS)',
       address: 'INJ Chain Address',
       addressTooltip: 'INJ Chain Address',
-      total: 'ELCS Total',
-      totalTooltip: 'ELCS Total',
-      totalPercentageTooltip: 'ELCS Total',
+      elcsTotal: 'ELCS Total',
+      elcsTotalTooltip: 'ELCS Total',
+      elcsTotalPercentageTooltip: 'ELCS Total',
+      evcsTotal: 'EVCS Total',
+      evcsTotalTooltip: 'EVCS Total',
+      evcsTotalPercentageTooltip: 'EVCS Total',
       rewardsInj: 'Expected rewards in INJ',
       rewardsInjTooltip: 'Expected rewards in INJ',
       rewardsUsd: 'Expected rewards in Usd',
-      rewardsUsdTooltip: 'Expected rewards in Usd'
+      rewardsUsdTooltip: 'Expected rewards in Usd',
+      you: 'you'
     },
 
     history: {
-      title: 'My Market Making History',
+      title: 'Score Records in Current Epoch',
       subaccountID: 'Subaccount ID',
       timestamp: 'Time stamp',
-      marketMakerScore: 'Market maker score',
-      marketMakerScoreTooltip: 'Market maker score',
-      marketMakerScorePercentageTooltip:
-        'Current market maker percentage score',
+      elcs: 'ELCS Total',
+      evcs: 'Evcs Total',
+      elcsTooltip: 'ELCS Total',
+      evcsTooltip: 'Evcs Total',
+      elcsPercentageTooltip: 'ELCS Total',
+      evcsPercentageTooltip: 'Evcs Total',
       emptyTitle: 'You don’t have any market making history',
       contactNow: 'Contact now'
     },

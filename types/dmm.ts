@@ -38,8 +38,10 @@ export interface RankingEvcs {
 export interface DmmHistory {
   number: string
   timestamp: string
-  score: string
-  scorePercentage: string
+  elcs: string
+  elcsPercentage: string
+  evcs: string
+  evcsPercentage: string
 }
 
 export interface MarketRewardFactor {

@@ -1,18 +1,48 @@
 <template>
-  <TableRow class="font-serif" sm dense>
-    <span class="col-span-3">
-      {{ formattedAddress }}
+  <TableRow class="font-serif" :class="{ active: active }" sm dense>
+    <span class="md:hidden">
+      {{ $t('dmm.summary.address') }}
     </span>
 
-    <span class="col-span-2 ml-1">
+    <span class="md:col-span-3 text-right md:text-left">
+      <div class="flex items-center md:justify-start justify-end">
+        <span>{{ formattedAddress }}</span>
+        <div v-if="active" class="flex items-center">
+          <v-icon-profile class="text-gray-200 h-4 w-4 ml-3 mr-2" />
+          <span>({{ $t('dmm.ranking.you') }})</span>
+        </div>
+      </div>
+    </span>
+
+    <span class="md:hidden">
+      {{ $t('dmm.summary.elcsTotal') }}
+    </span>
+    <span
+      class="md:col-span-2 text-right md:text-left"
+      :class="{ 'md:ml-1': scrollbar }"
+    >
       {{ item.total }}
     </span>
 
-    <span class="col-span-2 ml-2"> {{ item.totalPercentage }}% </span>
+    <span class="md:hidden"> {{ $t('dmm.summary.elcsTotal') }}% </span>
+    <span
+      class="md:col-span-2 text-right md:text-left"
+      :class="{ 'md:ml-2': scrollbar }"
+    >
+      {{ item.totalPercentage }}%
+    </span>
 
-    <div class="col-span-5 grid grid-cols-2">
-      <span class="ml-2"> {{ item.rewardsInInj }} INJ </span>
+    <div class="col-span-2 md:col-span-5 grid grid-cols-2 gap-2 md:gap-0">
+      <span class="md:hidden">
+        {{ $t('dmm.summary.rewardsInj') }}
+      </span>
+      <span class="text-right md:text-left" :class="{ 'md:ml-2': scrollbar }">
+        {{ item.rewardsInInj }} INJ
+      </span>
 
+      <span class="md:hidden">
+        {{ $t('dmm.summary.rewardsUsd') }}
+      </span>
       <span class="text-right"> ${{ item.rewardsInUsd }} </span>
     </div>
   </TableRow>
@@ -30,9 +60,19 @@ export default Vue.extend({
   },
 
   props: {
+    active: {
+      type: Boolean,
+      default: false
+    },
+
     item: {
       type: Object as PropType<SummaryElcs>,
       required: true
+    },
+
+    scrollbar: {
+      type: Boolean,
+      default: false
     }
   },
 

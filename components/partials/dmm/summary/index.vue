@@ -5,7 +5,7 @@
     </h3>
     <v-card class="mt-6">
       <div class="p-2">
-        <VElcsTable class="mt-6" />
+        <VElcsTable />
         <VEvcsTable class="mt-6" />
       </div>
     </v-card>

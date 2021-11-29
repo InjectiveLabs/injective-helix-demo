@@ -6,7 +6,7 @@
 
     <div class="mt-4">
       <div class="grid grid-cols-4 md:grid-cols-12 gap-4 lg:gap-6 mt-6">
-        <v-card class="col-span-4 lg:p-4">
+        <v-card class="col-span-12 md:col-span-6 lg:col-span-4" lg>
           <div class="flex">
             <div>
               <p class="text-lg text-gray-200 font-bold">

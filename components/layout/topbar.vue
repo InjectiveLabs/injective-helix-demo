@@ -3,16 +3,16 @@
     class="relative z-1100 flex-shrink-0 flex h-12 bg-black shadow-top-bar-dark"
   >
     <button
-      class="px-4 border-r border-gray-600 text-gray-200 lg:hidden"
+      class="px-4 border-r border-gray-600 text-gray-200 xl:hidden"
       @click.stop="handleClickOnSidebarToggle"
     >
       <span class="sr-only">{{ $t('open') }}</span>
       <v-icon-menu class="w-6 h-6" />
     </button>
-    <div class="flex-1 px-2 lg:px-8 flex justify-end lg:justify-between">
-      <div class="hidden lg:flex items-center">
+    <div class="flex-1 px-2 xl:px-8 flex justify-end xl:justify-between">
+      <div class="hidden xl:flex items-center">
         <div
-          class="flex items-center py-2 pr-2 lg:pr-8 border-r cursor-pointer"
+          class="flex items-center py-2 pr-2 xl:pr-8 border-r cursor-pointer"
           @click="$router.push({ name: 'index' })"
         >
           <v-logo class="h-6 w-auto mr-2" alt="Injective" />
@@ -28,7 +28,7 @@
         <v-nav class="ml-2" />
         <VLanguageSelector
           v-if="false"
-          class="hidden lg:block my-auto"
+          class="hidden xl:block my-auto"
         ></VLanguageSelector>
       </div>
       <v-user-wallet
