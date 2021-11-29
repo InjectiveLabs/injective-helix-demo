@@ -3,6 +3,7 @@ import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from './constants'
+import { Change, UiDerivativeMarketSummary, UiSpotMarketSummary } from '~/types'
 
 export const getSignificantDecimalsFromNumber = (
   number: number | string
@@ -56,4 +57,36 @@ export const getDecimalsFromNumber = (number: number | string): number => {
   return actualDecimals > UI_DEFAULT_MAX_DISPLAY_DECIMALS
     ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
     : actualDecimals
+}
+
+export const zeroDerivativeMarketSummary = (
+  marketId: string
+): UiDerivativeMarketSummary => {
+  return {
+    marketId,
+    change: 0,
+    high: 0,
+    low: 0,
+    open: 0,
+    price: 0,
+    volume: 0,
+    lastPrice: 0,
+    lastPriceChange: Change.NoChange
+  }
+}
+
+export const zeroSpotMarketSummary = (
+  marketId: string
+): UiSpotMarketSummary => {
+  return {
+    marketId,
+    change: 0,
+    high: 0,
+    low: 0,
+    open: 0,
+    price: 0,
+    volume: 0,
+    lastPrice: 0,
+    lastPriceChange: Change.NoChange
+  }
 }

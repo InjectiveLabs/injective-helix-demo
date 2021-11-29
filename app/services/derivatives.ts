@@ -93,8 +93,18 @@ export const fetchMarketsSummary = async (
     DerivativesMetrics.FetchMarketsSummary
   )
 
+  if (!oldMarketsSummary && !marketsSummary) {
+    throw new Error(
+      'Market summaries can not be fetched. Please refresh the page. '
+    )
+  }
+
   if (!oldMarketsSummary) {
     return marketsSummary
+  }
+
+  if (!marketsSummary) {
+    return oldMarketsSummary
   }
 
   const marketsWithOldSummaries = oldMarketsSummary.filter((market) =>
