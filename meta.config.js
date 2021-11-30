@@ -15,10 +15,12 @@ if (process.env.META_TAGS_ENABLED === 'true') {
 
 if (process.env.NODE_ENV === 'production') {
   scripts.push({
-    body: true,
     src:
       'https://cdn.elev.io/sdk/bootloader/v4/elevio-bootloader.js?cid=' +
-      process.env.APP_ELEVIO_ID
+      process.env.APP_ELEVIO_ID,
+    async: true,
+    defer: true,
+    body: true
   })
 }
 
