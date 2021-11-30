@@ -12,6 +12,7 @@ declare global {
       METRICS_ENABLED: string
       GEO_IP_RESTRICTIONS_ENABLED: string
       TRANSFER_RESTRICTIONS_ENABLED: string
+      APP_ELEVIO_ID: string
       APP_FEE_RECIPIENT: string
       APP_GOOGLE_ANALYTICS_KEY: string
       APP_GOOGLE_SITE_VERIFICATION_KEY: string

@@ -278,6 +278,7 @@ export const actions = actionTree(
 
     async logout({ commit }) {
       await this.app.$accessor.account.reset()
+      await this.app.$accessor.account.reset()
       await this.app.$accessor.token.reset()
       await this.app.$accessor.spot.resetSubaccount()
       await this.app.$accessor.derivatives.resetSubaccount()
