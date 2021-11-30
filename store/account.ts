@@ -3,6 +3,7 @@ import { actionTree, getterTree } from 'typed-vuex'
 import {
   fetchSubaccounts,
   fetchSubaccount,
+  fetchSubaccountBalances,
   deposit,
   withdraw,
   streamSubaccountBalances,
@@ -12,7 +13,7 @@ import {
 import { grpcSubaccountBalanceToUiSubaccountBalance } from '~/app/transformers/account'
 import { backupPromiseCall } from '~/app/utils/async'
 import { ZERO_TO_STRING } from '~/app/utils/constants'
-import { Token } from '~/types'
+import { SubaccountBalanceWithTokenMetaData, Token } from '~/types'
 import {
   UiSubaccount,
   AccountPortfolio,
@@ -22,6 +23,7 @@ import {
 const initialStateFactory = () => ({
   subaccountIds: [] as string[],
   subaccount: undefined as UiSubaccount | undefined,
+  subaccountBalancesWithTokenMetaData: [] as SubaccountBalanceWithTokenMetaData[],
   accountPortfolio: undefined as AccountPortfolio | undefined
 })
 
@@ -30,6 +32,7 @@ const initialState = initialStateFactory()
 export const state = () => ({
   subaccountIds: initialState.subaccountIds as string[],
   subaccount: initialState.subaccount as UiSubaccount | undefined,
+  subaccountBalancesWithTokenMetaData: initialState.subaccountBalancesWithTokenMetaData as SubaccountBalanceWithTokenMetaData[],
   accountPortfolio: initialState.accountPortfolio as
     | AccountPortfolio
     | undefined
@@ -84,11 +87,20 @@ export const mutations = {
     }
   },
 
+  setSubaccountBalancesWithTokenMetaData(
+    state: AccountStoreState,
+    subaccountBalancesWithTokenMetaData: SubaccountBalanceWithTokenMetaData[]
+  ) {
+    state.subaccountBalancesWithTokenMetaData = subaccountBalancesWithTokenMetaData
+  },
+
   reset(state: AccountStoreState) {
     const initialState = initialStateFactory()
 
     state.subaccount = initialState.subaccount
     state.subaccountIds = initialState.subaccountIds
+    state.subaccountBalancesWithTokenMetaData =
+      initialState.subaccountBalancesWithTokenMetaData
   }
 }
 
@@ -133,6 +145,15 @@ export const actions = actionTree(
         await this.app.$accessor.derivatives.streamSubaccountOrders()
         await this.app.$accessor.derivatives.streamSubaccountPositions()
         await this.app.$accessor.derivatives.streamSubaccountTrades()
+      }
+    },
+
+    async fetchSubaccountsBalances({ commit, state }) {
+      if (state.subaccount && state.subaccount.balances) {
+        commit(
+          'setSubaccountBalancesWithTokenMetaData',
+          await fetchSubaccountBalances(state.subaccount.balances)
+        )
       }
     },
 

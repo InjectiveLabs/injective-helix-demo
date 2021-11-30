@@ -5,17 +5,27 @@ import {
   BalanceStreamCallback as SubaccountBalanceStreamCallback
 } from '@injectivelabs/subaccount-consumer'
 import { AccountAddress } from '@injectivelabs/ts-types'
-import { BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { TxProvider } from '../providers/TxProvider'
 import { subaccountStream } from '../singletons/SubaccountStream'
 import { grpcSubaccountBalanceToUiSubaccountBalance } from '../transformers/account'
 import { metricsProvider } from '../providers/MetricsProvider'
 import { streamProvider } from '../providers/StreamProvider'
+import {
+  getTokenMetaDataWithIbc,
+  getUsdTokensPriceFromExplorerCoinGecko
+} from './tokens'
+import { tokenMetaToToken } from '~/app/transformers/token'
 import { subaccountConsumer } from '~/app/singletons/SubaccountConsumer'
 import { CHAIN_ID } from '~/app/utils/constants'
 import { authConsumer } from '~/app/singletons/AuthConsumer'
-import { UiSubaccount, AccountPortfolio } from '~/types/subaccount'
+import {
+  UiSubaccount,
+  UiSubaccountBalance,
+  AccountPortfolio
+} from '~/types/subaccount'
+import { SubaccountBalanceWithTokenMetaData } from '~/types/bank'
 import { AccountMetrics } from '~/types/metrics'
 
 export const getInjectiveAddress = (address: AccountAddress): string => {
@@ -50,6 +60,50 @@ export const fetchSubaccount = async (
     subaccountId,
     balances: uiBalances
   }
+}
+
+export const fetchSubaccountBalances = async (
+  balances: UiSubaccountBalance[]
+): Promise<SubaccountBalanceWithTokenMetaData[]> => {
+  const balanceWithTokenMeta = (await Promise.all(
+    balances.map(async (balance) => {
+      return {
+        denom: balance.denom,
+        availableBalance: balance.availableBalance,
+        totalBalance: balance.totalBalance,
+        token: tokenMetaToToken(
+          await getTokenMetaDataWithIbc(balance.denom),
+          balance.denom
+        )
+      }
+    })
+  ).then((balances) =>
+    balances.filter((balance) => balance.token !== undefined)
+  )) as SubaccountBalanceWithTokenMetaData[]
+
+  const coinGeckoIds = balanceWithTokenMeta
+    .reduce((ids: string[], balance) => {
+      return [...ids, balance.token.coinGeckoId]
+    }, [])
+    .join(',')
+
+  const pricesInUsd = await getUsdTokensPriceFromExplorerCoinGecko(coinGeckoIds)
+
+  return balanceWithTokenMeta.map((balance) => {
+    const coinGeckoToken = pricesInUsd.find(
+      ({ id }) => id === balance.token.coinGeckoId
+    )
+
+    return {
+      ...balance,
+      token: {
+        ...balance.token,
+        priceInUsd: new BigNumberInBase(
+          coinGeckoToken?.current_price || 0
+        ).toNumber()
+      }
+    }
+  })
 }
 
 export const fetchAccountPortfolio = async (

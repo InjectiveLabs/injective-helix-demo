@@ -8,6 +8,7 @@ import { fetchDenomTrace } from './ibc'
 import { TxProvider } from '~/app/providers/TxProvider'
 import { peggyDenomToContractAddress } from '~/app/transformers/peggy'
 import { coinGeckoConsumer } from '~/app/singletons/CoinGeckoConsumer'
+import { explorerCoinGeckoConsumer } from '~/app/singletons/ExplorerCoinGeckoConsumer'
 import { getContracts } from '~/app/singletons/Contracts'
 import {
   CHAIN_ID,
@@ -123,6 +124,20 @@ export const getUsdtTokenPriceFromCoinGecko = async (coinId: string) => {
   }
 
   return new BigNumberInBase(currentPrice.usd).toNumber()
+}
+
+export const getUsdTokensPriceFromExplorerCoinGecko = async (
+  coinIds: string
+) => {
+  if (!coinIds) {
+    return []
+  }
+
+  const {
+    data: { data }
+  } = await explorerCoinGeckoConsumer.fetchCoins(coinIds)
+
+  return data
 }
 
 export const setTokenAllowance = async ({

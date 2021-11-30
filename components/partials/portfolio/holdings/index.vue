@@ -51,8 +51,10 @@ import VBalance from './balance.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import TableHeader from '~/components/elements/table-header.vue'
 import { UiSubaccount } from '~/types'
-import { TokenWithBalance } from '~/types/token'
-import { SubaccountBalanceWithTokenMetaDataWithUsdBalance } from '~/types/bank'
+import {
+  SubaccountBalanceWithTokenMetaData,
+  SubaccountBalanceWithTokenMetaDataWithUsdBalance
+} from '~/types/bank'
 import { INJECTIVE_DENOM } from '~/app/utils/constants'
 
 export default Vue.extend({
@@ -71,50 +73,27 @@ export default Vue.extend({
       return this.$accessor.account.subaccount
     },
 
-    erc20TokensWithBalanceFromBank(): TokenWithBalance[] {
-      return this.$accessor.token.erc20TokensWithBalanceFromBank
-    },
-
-    ibcTokensWithBalanceFromBank(): TokenWithBalance[] {
-      return this.$accessor.token.ibcTokensWithBalanceFromBank
+    subaccountBalanceWithTokenMetaData(): SubaccountBalanceWithTokenMetaData[] {
+      return this.$accessor.account.subaccountBalancesWithTokenMetaData
     },
 
     balances(): SubaccountBalanceWithTokenMetaDataWithUsdBalance[] {
-      const {
-        subaccount,
-        erc20TokensWithBalanceFromBank,
-        ibcTokensWithBalanceFromBank
-      } = this
-      const tokensWithBalances = [
-        ...ibcTokensWithBalanceFromBank,
-        ...erc20TokensWithBalanceFromBank
-      ]
+      const { subaccount, subaccountBalanceWithTokenMetaData } = this
 
       if (!subaccount) {
         return []
       }
 
-      return subaccount.balances
-        .map((balance) => {
-          const tokenWithBalance = tokensWithBalances.find(
-            (token) => token.denom.toLowerCase() === balance.denom.toLowerCase()
-          )
+      return subaccountBalanceWithTokenMetaData.map((balance) => {
+        const balanceInUsd = new BigNumberInWei(balance.totalBalance)
+          .toBase(balance.token.decimals)
+          .times(balance.token.priceInUsd || 0)
 
-          const balanceInUsd = tokenWithBalance
-            ? new BigNumberInWei(balance.totalBalance)
-                .toBase(tokenWithBalance.decimals)
-                .times(tokenWithBalance?.priceInUsd || 0)
-            : new BigNumberInWei(0)
-
-          return {
-            ...balance,
-            balanceInUsd,
-            token: tokenWithBalance
-          }
-        })
-        .filter(
-          (balance) => !!balance.token
-        ) as SubaccountBalanceWithTokenMetaDataWithUsdBalance[]
+        return {
+          ...balance,
+          balanceInUsd
+        }
+      }) as SubaccountBalanceWithTokenMetaDataWithUsdBalance[]
     },
 
     sortedBalances(): SubaccountBalanceWithTokenMetaDataWithUsdBalance[] {
