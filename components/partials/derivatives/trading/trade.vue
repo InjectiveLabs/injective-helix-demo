@@ -1184,11 +1184,11 @@ export default Vue.extend({
       const multipliersList = tradingRewardsCampaign.tradingRewardCampaignInfo
         .tradingRewardBoostInfo
         ? tradingRewardsCampaign.tradingRewardCampaignInfo
-            .tradingRewardBoostInfo.spotMarketMultipliersList
+            .tradingRewardBoostInfo.derivativeMarketMultipliersList
         : []
 
       const boosted = boostedList.findIndex(
-        (spotMarketId) => spotMarketId === market.marketId
+        (derivativeMarketId) => derivativeMarketId === market.marketId
       )
 
       const boostedMultiplier =
@@ -1242,11 +1242,11 @@ export default Vue.extend({
       const multipliersList = tradingRewardsCampaign.tradingRewardCampaignInfo
         .tradingRewardBoostInfo
         ? tradingRewardsCampaign.tradingRewardCampaignInfo
-            .tradingRewardBoostInfo.spotMarketMultipliersList
+            .tradingRewardBoostInfo.derivativeMarketMultipliersList
         : []
 
       const boosted = boostedList.findIndex(
-        (spotMarketId) => spotMarketId === market.marketId
+        (derivativeMarketId) => derivativeMarketId === market.marketId
       )
       const boostedMultiplier =
         boosted >= 0
