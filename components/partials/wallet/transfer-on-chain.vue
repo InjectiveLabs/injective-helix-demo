@@ -123,7 +123,10 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   ZERO_IN_BASE
 } from '~/app/utils/constants'
-import { BankBalanceWithTokenMetaData } from '~/types'
+import {
+  BankBalanceWithTokenMetaData,
+  IbcBankBalanceWithTokenMetaData
+} from '~/types'
 
 export default Vue.extend({
   components: {
@@ -149,8 +152,23 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    balancesWithTokenMetaData(): BankBalanceWithTokenMetaData[] {
+    bankBalancesWithTokenMetaData(): BankBalanceWithTokenMetaData[] {
       return this.$accessor.bank.balancesWithTokenMetaData
+    },
+
+    ibcBalancesWithTokenMetaData(): IbcBankBalanceWithTokenMetaData[] {
+      return this.$accessor.bank.ibcBalancesWithTokenMetaData
+    },
+
+    balancesWithTokenMetaData(): Array<
+      BankBalanceWithTokenMetaData | IbcBankBalanceWithTokenMetaData
+    > {
+      const {
+        bankBalancesWithTokenMetaData,
+        ibcBalancesWithTokenMetaData
+      } = this
+
+      return [...bankBalancesWithTokenMetaData, ...ibcBalancesWithTokenMetaData]
     },
 
     address(): string {

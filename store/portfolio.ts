@@ -169,6 +169,7 @@ export const actions = actionTree(
       await this.app.$accessor.portfolio.fetchDerivativeOrderbooks()
       await this.app.$accessor.portfolio.streamOrderbooks()
       await this.app.$accessor.portfolio.streamSubaccountOrders()
+      await this.app.$accessor.account.fetchSubaccountsBalances()
       await this.app.$accessor.token.getAllTokenWithBalanceAndAllowance()
       await this.app.$accessor.bank.fetchBalances()
       await this.app.$accessor.token.getAllTokenWithBalanceAndAllowance()
