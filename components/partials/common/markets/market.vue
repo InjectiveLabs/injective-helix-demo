@@ -257,6 +257,8 @@ export default Vue.extend({
     handleClickOnMarket() {
       const { market } = this
 
+      this.$root.$emit('toggle-market-slideout')
+
       if (market.type === MarketType.Derivative) {
         return this.$router.push({
           name: 'derivatives-derivative',
