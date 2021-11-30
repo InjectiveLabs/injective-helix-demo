@@ -65,6 +65,7 @@ export default Vue.extend({
 
   mounted() {
     this.$root.$on('toggle-market-slideout', this.toggleSlideout)
+    this.$root.$on('close-market-slideout', this.closeSlideout)
   },
 
   methods: {
