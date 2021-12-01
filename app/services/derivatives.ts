@@ -99,12 +99,12 @@ export const fetchMarketsSummary = async (
     )
   }
 
-  if (!oldMarketsSummary) {
-    return marketsSummary
+  if (!marketsSummary) {
+    return oldMarketsSummary as UiDerivativeMarketSummary[]
   }
 
-  if (!marketsSummary) {
-    return oldMarketsSummary
+  if (!oldMarketsSummary) {
+    return marketsSummary
   }
 
   const marketsWithOldSummaries = oldMarketsSummary.filter((market) =>
