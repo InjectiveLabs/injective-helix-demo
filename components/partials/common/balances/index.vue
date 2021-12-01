@@ -20,11 +20,11 @@
             </v-button>
           </div>
           <div v-else class="flex items-center">
-            <v-button text-xs primary @click.stop.prevent="() => {}">
+            <v-button text-xs primary>
               <a :href="hubBridgeUrl" target="_blank">{{ $t('deposit') }}</a>
             </v-button>
             <div class="mx-2 w-px h-4 bg-gray-500"></div>
-            <v-button text-xs primary @click.stop.prevent="() => {}">
+            <v-button text-xs primary>
               <a :href="hubBridgeUrl" target="_blank">{{ $t('withdraw') }}</a>
             </v-button>
           </div>
