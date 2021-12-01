@@ -155,15 +155,15 @@ export default Vue.extend({
     },
 
     totalBalanceInUsdToString(): string {
-      const { availableBalanceInUsd } = this
+      const { totalBalanceInUsd } = this
 
-      if (availableBalanceInUsd.gt(MAX_DISPLAYABLE_NUMBER)) {
+      if (totalBalanceInUsd.gt(MAX_DISPLAYABLE_NUMBER)) {
         return ` > ${MAX_DISPLAYABLE_NUMBER.toFormat(
           UI_DEFAULT_MIN_DISPLAY_DECIMALS
         )}`
       }
 
-      return availableBalanceInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      return totalBalanceInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     }
   }
 })
