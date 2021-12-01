@@ -435,7 +435,6 @@ export default Vue.extend({
         orderTypeBuy,
         sells,
         buys,
-        slippage,
         hasAmount,
         market,
         amount,
