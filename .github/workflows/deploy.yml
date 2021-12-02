@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    if: false
+    if: true
     env:
       ## Public
       APP_NAME: 'Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'
@@ -19,7 +19,7 @@ jobs:
       DEST_DIR: www
 
       ## Flags
-      GAS_FREE_DEPOSIT_REBATE_ENABLED: true
+      GAS_FREE_DEPOSIT_REBATE_ENABLED: false
       META_TAGS_ENABLED: true
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       MAINTENANCE_ENABLED: false
@@ -84,7 +84,7 @@ jobs:
       DEST_DIR: www
 
       ## Flags
-      GAS_FREE_DEPOSIT_REBATE_ENABLED: true
+      GAS_FREE_DEPOSIT_REBATE_ENABLED: false
       META_TAGS_ENABLED: true
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       MAINTENANCE_ENABLED: false
