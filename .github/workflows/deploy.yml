@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    if: true
+    if: false
     env:
       ## Public
       APP_NAME: 'Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'
