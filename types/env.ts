@@ -8,6 +8,7 @@ declare global {
       NODE_ENV: string
       MAINTENANCE_ENABLED: string
       APP_BASE_URL: string
+      APP_GAS_REBATE_API: string
       META_TAGS_ENABLED: string
       METRICS_ENABLED: string
       GEO_IP_RESTRICTIONS_ENABLED: string

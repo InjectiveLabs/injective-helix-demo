@@ -49,7 +49,8 @@ export enum Modal {
   Deposit = 'deposit',
   Withdraw = 'withdraw',
   TakeOut = 'take-out',
-  TransferOnChain = 'transfer-on-chain'
+  TransferOnChain = 'transfer-on-chain',
+  GasFeeRebate = 'gas-fee-rebate'
 }
 
 export enum Breakpoint {

@@ -9,6 +9,8 @@ import { ChainId } from '@injectivelabs/ts-types'
 export const IS_DEVELOPMENT: boolean = process.env.NODE_ENV === 'development'
 export const IS_PRODUCTION: boolean = process.env.NODE_ENV === 'production'
 export const METRICS_ENABLED: boolean = process.env.METRICS_ENABLED === 'true'
+export const GAS_FREE_DEPOSIT_REBATE_ENABLED: boolean =
+  process.env.GAS_FREE_DEPOSIT_REBATE_ENABLED === 'true'
 export const TRANSFER_RESTRICTIONS_ENABLED: boolean =
   process.env.TRANSFER_RESTRICTIONS_ENABLED === 'true'
 export const GEO_IP_RESTRICTIONS_ENABLED: boolean =
@@ -71,3 +73,9 @@ export const INJ_COIN_GECKO_ID = 'injective-protocol'
 
 // eslint-disable-next-line prefer-regex-literals
 export const NUMBER_REGEX = new RegExp(/^-?(0|[1-9]\d*)?(\.\d+)?$/)
+
+export const PEGGY_GRAPH_URL =
+  'https://api.thegraph.com/subgraphs/name/injectivelabs/injective-peggo-mainnet'
+export const APP_GAS_REBATE_API = process.env.APP_GAS_REBATE_API as string
+export const MIN_AMOUNT_REQUIRED_FOR_GAS_REBATE = 500
+export const MIN_TIMESTAMP_REQUIRED_FOR_GAS_REBATE = 1638313200 // 01 Dec 2020 00:00

@@ -85,6 +85,7 @@ export default {
     APP_ENV: process.env.APP_ENV,
     APP_VER: process.env.npm_package_version,
     APP_BASE_URL: process.env.APP_BASE_URL,
+    APP_GAS_REBATE_API: process.env.APP_GAS_REBATE_API,
     METRICS_ENABLED: process.env.METRICS_ENABLED,
     META_TAGS_ENABLED: process.env.META_TAGS_ENABLED,
     GEO_IP_RESTRICTIONS_ENABLED: process.env.GEO_IP_RESTRICTIONS_ENABLED,
