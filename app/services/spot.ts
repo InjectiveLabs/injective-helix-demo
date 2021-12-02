@@ -90,7 +90,7 @@ export const fetchMarketsSummary = async (
   }
 
   if (!oldMarketsSummary) {
-    return marketsSummary
+    return marketsSummary.length > 0 ? marketsSummary : undefined
   }
 
   const marketsWithOldSummaries = oldMarketsSummary.filter((market) =>
