@@ -254,11 +254,14 @@ export const actions = actionTree(
 
       const marketsSummary = await fetchMarketsSummary()
 
-      commit(
-        'setMarketsSummary',
-        marketsSummary ||
+      if (!marketsSummary || (marketsSummary && marketsSummary.length === 0)) {
+        commit(
+          'setMarketsSummary',
           markets.map((market) => zeroSpotMarketSummary(market.marketId))
-      )
+        )
+      } else {
+        commit('setMarketsSummary', marketsSummary)
+      }
     },
 
     async changeMarket({ commit, state }, marketSlug: string) {
@@ -469,26 +472,27 @@ export const actions = actionTree(
 
       const updatedMarketsSummary = await fetchMarketsSummary(marketsSummary)
 
-      if (!updatedMarketsSummary) {
+      if (
+        !updatedMarketsSummary ||
+        (updatedMarketsSummary && updatedMarketsSummary.length === 0)
+      ) {
         commit(
           'setMarketsSummary',
           markets.map((market) => zeroSpotMarketSummary(market.marketId))
         )
+      } else {
+        if (market) {
+          const updatedMarketSummary = updatedMarketsSummary.find(
+            (m) => m.marketId === market.marketId
+          )
 
-        return
-      }
-
-      if (market) {
-        const updatedMarketSummary = updatedMarketsSummary.find(
-          (m) => m.marketId === market.marketId
-        )
-
-        if (updatedMarketSummary) {
-          commit('setMarketSummary', updatedMarketSummary)
+          if (updatedMarketSummary) {
+            commit('setMarketSummary', updatedMarketSummary)
+          }
         }
-      }
 
-      commit('setMarketsSummary', updatedMarketsSummary)
+        commit('setMarketsSummary', updatedMarketsSummary)
+      }
     },
 
     async fetchSubaccountMarketTrades({ state, commit }) {

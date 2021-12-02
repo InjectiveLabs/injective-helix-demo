@@ -36,6 +36,7 @@
       }"
     >
       <v-icon-arrow
+        v-if="!lastTradedPrice.isNaN()"
         class="transform w-3 h-3 mr-1"
         :class="{
           'text-aqua-500 rotate-90': lastPriceChange !== Change.Decrease,
