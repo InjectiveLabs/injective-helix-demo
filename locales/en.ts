@@ -509,5 +509,19 @@ export default {
     'Please note that the execution price for this trade deviates a lot from the last traded price.',
   there_are_no_disqualified_markets_on_this_relayer:
     'There are no disqualified markets on this relayer.',
-  liquidation: 'Liquidation'
+  liquidation: 'Liquidation',
+
+  gas_fee_of_first_deposit_covered: 'Gas fee of your first deposit is covered!',
+  read_more: 'Read more',
+  deposit_zero_gas_fees: 'Deposit with zero gas fees',
+  gas_fee_rebates_steps:
+    'Receive a gas fee rebate by following the steps outlined!',
+  step_number: 'Step {number} of {total}',
+  step_1_gas_fee_rebate:
+    'Transfer {amount} USDT or more in a single transaction after {date} from Ethereum to the Injective Chain.',
+  step_2_gas_fee_rebate:
+    "Make a trade that's notional value exceed {amount} USDT in any market of your choice on the Injective Pro Relayer.",
+  redeem: 'Redeem',
+  redeem_success:
+    'You have successfully redeemed your gas fees rebate - check your wETH balance!'
 }

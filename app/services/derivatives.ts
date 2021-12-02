@@ -24,6 +24,7 @@ import { oracleStream } from '../singletons/OracleStream'
 import { oracleConsumer } from '../singletons/OracleConsumer'
 import { metricsProvider } from '../providers/MetricsProvider'
 import { streamProvider } from '../providers/StreamProvider'
+import { zeroDerivativeMarketSummary } from '../utils/helpers'
 import { TxProvider } from '~/app/providers/TxProvider'
 import { derivativeMarketStream } from '~/app/singletons/DerivativeMarketStream'
 import {
@@ -78,6 +79,10 @@ export const fetchMarketSummary = async (
     DerivativesMetrics.FetchMarketSummary
   )
 
+  if (!marketSummary) {
+    return zeroDerivativeMarketSummary(marketId)
+  }
+
   return {
     ...marketSummary,
     marketId
@@ -86,7 +91,7 @@ export const fetchMarketSummary = async (
 
 export const fetchMarketsSummary = async (
   oldMarketsSummary?: UiDerivativeMarketSummary[]
-): Promise<UiDerivativeMarketSummary[]> => {
+): Promise<UiDerivativeMarketSummary[] | undefined> => {
   const promise = derivativeChronosConsumer.fetchDerivativeMarketsSummary()
   const marketsSummary = await metricsProvider.sendAndRecord(
     promise,
@@ -94,9 +99,7 @@ export const fetchMarketsSummary = async (
   )
 
   if (!oldMarketsSummary && !marketsSummary) {
-    throw new Error(
-      'Market summaries can not be fetched. Please refresh the page. '
-    )
+    return undefined
   }
 
   if (!marketsSummary) {

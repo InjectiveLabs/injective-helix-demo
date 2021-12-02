@@ -225,10 +225,13 @@ export default Vue.extend({
     totalVolume(): BigNumberInBase {
       const { filteredMarkets } = this
 
-      return filteredMarkets.reduce(
-        (total, { summary }) => total.plus(summary.volume || ZERO_IN_BASE),
-        ZERO_IN_BASE
-      )
+      return filteredMarkets.reduce((total, { summary }) => {
+        if (!summary.volume || Number.isNaN(summary.volume)) {
+          return total
+        }
+
+        return total.plus(summary.volume)
+      }, ZERO_IN_BASE)
     },
 
     totalVolumeToFormat(): string {

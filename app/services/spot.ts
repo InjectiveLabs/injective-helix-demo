@@ -74,7 +74,7 @@ export const fetchMarketSummary = async (
 
 export const fetchMarketsSummary = async (
   oldMarketsSummary?: UiSpotMarketSummary[]
-): Promise<UiSpotMarketSummary[]> => {
+): Promise<UiSpotMarketSummary[] | undefined> => {
   const promise = spotChronosConsumer.fetchSpotMarketsSummary()
   const marketsSummary = await metricsProvider.sendAndRecord(
     promise,
@@ -82,9 +82,7 @@ export const fetchMarketsSummary = async (
   )
 
   if (!oldMarketsSummary && !marketsSummary) {
-    throw new Error(
-      'Market summaries can not be fetched. Please refresh the page. '
-    )
+    return undefined
   }
 
   if (!marketsSummary) {

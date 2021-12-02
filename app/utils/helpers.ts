@@ -64,13 +64,13 @@ export const zeroDerivativeMarketSummary = (
 ): UiDerivativeMarketSummary => {
   return {
     marketId,
-    change: 0,
-    high: 0,
-    low: 0,
-    open: 0,
-    price: 0,
-    volume: 0,
-    lastPrice: 0,
+    change: NaN,
+    high: NaN,
+    low: NaN,
+    open: NaN,
+    price: NaN,
+    volume: NaN,
+    lastPrice: NaN,
     lastPriceChange: Change.NoChange
   }
 }
@@ -80,13 +80,13 @@ export const zeroSpotMarketSummary = (
 ): UiSpotMarketSummary => {
   return {
     marketId,
-    change: 0,
-    high: 0,
-    low: 0,
-    open: 0,
-    price: 0,
-    volume: 0,
-    lastPrice: 0,
+    change: NaN,
+    high: NaN,
+    low: NaN,
+    open: NaN,
+    price: NaN,
+    volume: NaN,
+    lastPrice: NaN,
     lastPriceChange: Change.NoChange
   }
 }
