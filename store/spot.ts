@@ -29,6 +29,7 @@ import {
   batchCancelOrders
 } from '~/app/services/spot'
 import { ZERO_IN_BASE } from '~/app/utils/constants'
+import { zeroSpotMarketSummary } from '~/app/utils/helpers'
 
 const initialStateFactory = () => ({
   markets: [] as UiSpotMarket[],
@@ -247,8 +248,17 @@ export const actions = actionTree(
     },
 
     async init({ commit }) {
-      commit('setMarkets', await fetchMarkets())
-      commit('setMarketsSummary', await fetchMarketsSummary())
+      const markets = await fetchMarkets()
+
+      commit('setMarkets', markets)
+
+      const marketsSummary = await fetchMarketsSummary()
+
+      commit(
+        'setMarketsSummary',
+        marketsSummary ||
+          markets.map((market) => zeroSpotMarketSummary(market.marketId))
+      )
     },
 
     async changeMarket({ commit, state }, marketSlug: string) {
@@ -451,13 +461,22 @@ export const actions = actionTree(
     },
 
     async fetchMarketsSummary({ state, commit }) {
-      const { marketsSummary, market } = state
+      const { marketsSummary, markets, market } = state
 
       if (marketsSummary.length === 0) {
         return
       }
 
       const updatedMarketsSummary = await fetchMarketsSummary(marketsSummary)
+
+      if (!updatedMarketsSummary) {
+        commit(
+          'setMarketsSummary',
+          markets.map((market) => zeroSpotMarketSummary(market.marketId))
+        )
+
+        return
+      }
 
       if (market) {
         const updatedMarketSummary = updatedMarketsSummary.find(

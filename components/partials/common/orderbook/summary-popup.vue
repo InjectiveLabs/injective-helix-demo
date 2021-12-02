@@ -85,10 +85,13 @@ export default Vue.extend({
 
     averagePrice(): string {
       const { totalPrice, totalVolume, market } = this
+      const averagePrice = totalPrice.dividedBy(totalVolume)
 
-      return totalPrice
-        .dividedBy(totalVolume)
-        .toFormat(market?.priceDecimals || UI_DEFAULT_AGGREGATION_DECIMALS)
+      if (!market) {
+        return averagePrice.toFormat(UI_DEFAULT_AGGREGATION_DECIMALS)
+      }
+
+      return averagePrice.toFormat(market.priceDecimals)
     }
   }
 })
