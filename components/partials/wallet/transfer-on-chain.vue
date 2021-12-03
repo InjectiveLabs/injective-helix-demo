@@ -120,7 +120,7 @@ import VSelectCustom from '~/components/inputs/select-custom.vue'
 import {
   INJECTIVE_DENOM,
   INJ_FEE_BUFFER,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  UI_DEFAULT_DISPLAY_DECIMALS,
   ZERO_IN_BASE
 } from '~/app/utils/constants'
 import {
@@ -203,7 +203,7 @@ export default Vue.extend({
       const { balance } = this
 
       return balance.toFormat(
-        UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+        UI_DEFAULT_DISPLAY_DECIMALS,
         BigNumberInBase.ROUND_DOWN
       )
     },
@@ -224,7 +224,7 @@ export default Vue.extend({
       const { balanceWithGasBuffer } = this
 
       return balanceWithGasBuffer.toFixed(
-        UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+        UI_DEFAULT_DISPLAY_DECIMALS,
         BigNumberInBase.ROUND_DOWN
       )
     },
@@ -233,7 +233,7 @@ export default Vue.extend({
       const { balanceWithGasBuffer } = this
 
       return balanceWithGasBuffer.toFormat(
-        UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+        UI_DEFAULT_DISPLAY_DECIMALS,
         BigNumberInBase.ROUND_DOWN
       )
     },
