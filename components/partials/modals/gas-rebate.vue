@@ -39,9 +39,13 @@
           </span>
         </v-step-circle>
       </div>
-      <div class="mt-6 flex items-center justify-center">
+      <div class="mt-6">
+        <p class="text-center text-xs text-gray-400">
+          * {{ $t('gas_fee_rebate_note') }}
+        </p>
+
         <v-button
-          class="w-full"
+          class="w-full mt-4"
           :status="status"
           lg
           :primary="canRedeem"

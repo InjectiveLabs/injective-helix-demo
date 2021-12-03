@@ -33,7 +33,8 @@ import Vue from 'vue'
 import VModalGasRebate from '~/components/partials/modals/gas-rebate.vue'
 import {
   MIN_AMOUNT_REQUIRED_FOR_GAS_REBATE,
-  MIN_TIMESTAMP_REQUIRED_FOR_GAS_REBATE
+  MIN_TIMESTAMP_REQUIRED_FOR_GAS_REBATE,
+  ZERO_IN_BASE
 } from '~/app/utils/constants'
 import {
   BankBalanceWithTokenMetaData,
@@ -131,7 +132,9 @@ export default Vue.extend({
     hasTradeWithMinimumNotionalUsdt(): boolean {
       const { derivativeMarkets, spotMarkets, tradeMessages } = this
 
-      return tradeMessages.some((message) => {
+      let sum = ZERO_IN_BASE
+
+      for (const message of tradeMessages) {
         const isSpotMarket = message.type.includes('MsgCreateSpotMarketOrder')
         const markets = [...derivativeMarkets, ...spotMarkets]
         const market = markets.find(
@@ -139,7 +142,11 @@ export default Vue.extend({
         )
 
         if (!market) {
-          return false
+          continue
+        }
+
+        if (sum.gte(MIN_AMOUNT_REQUIRED_FOR_GAS_REBATE)) {
+          break
         }
 
         if (isSpotMarket) {
@@ -153,16 +160,18 @@ export default Vue.extend({
             message.value.order.order_info.quantity
           ).toBase(spotMarket.baseToken.decimals)
 
-          return price.times(quantity).gte(MIN_AMOUNT_REQUIRED_FOR_GAS_REBATE)
+          sum = sum.plus(price.times(quantity))
+        } else {
+          const derivativeMarket = market as UiDerivativeMarket
+          const margin = new BigNumberInWei(message.value.order.margin).toBase(
+            derivativeMarket.quoteToken.decimals
+          )
+
+          sum = sum.plus(margin)
         }
+      }
 
-        const derivativeMarket = market as UiDerivativeMarket
-        const margin = new BigNumberInWei(message.value.order.margin).toBase(
-          derivativeMarket.quoteToken.decimals
-        )
-
-        return margin.gte(MIN_AMOUNT_REQUIRED_FOR_GAS_REBATE)
-      })
+      return sum.gte(MIN_AMOUNT_REQUIRED_FOR_GAS_REBATE)
     },
 
     hasDepositedMoreThanMinimalUsdt(): boolean {
