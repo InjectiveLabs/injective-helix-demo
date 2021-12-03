@@ -87,7 +87,7 @@ import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import TableRow from '~/components/elements/table-row.vue'
 import {
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  UI_DEFAULT_DISPLAY_DECIMALS,
   ZERO_IN_BASE,
   MAX_DISPLAYABLE_NUMBER
 } from '~/app/utils/constants'
@@ -121,12 +121,12 @@ export default Vue.extend({
 
       if (bankBalance.gt(MAX_DISPLAYABLE_NUMBER)) {
         return `> ${MAX_DISPLAYABLE_NUMBER.toFormat(
-          UI_DEFAULT_MIN_DISPLAY_DECIMALS
+          UI_DEFAULT_DISPLAY_DECIMALS
         )}`
       }
 
       return bankBalance.toFormat(
-        UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+        UI_DEFAULT_DISPLAY_DECIMALS,
         BigNumberInBase.ROUND_DOWN
       )
     },
@@ -136,11 +136,11 @@ export default Vue.extend({
 
       if (balance.balanceInUsd.gt(MAX_DISPLAYABLE_NUMBER)) {
         return ` > ${MAX_DISPLAYABLE_NUMBER.toFormat(
-          UI_DEFAULT_MIN_DISPLAY_DECIMALS
+          UI_DEFAULT_DISPLAY_DECIMALS
         )}`
       }
 
-      return balance.balanceInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      return balance.balanceInUsd.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
     },
 
     erc20Balance(): BigNumberInBase {
@@ -164,12 +164,12 @@ export default Vue.extend({
 
       if (erc20Balance.gt(MAX_DISPLAYABLE_NUMBER)) {
         return `> ${MAX_DISPLAYABLE_NUMBER.toFormat(
-          UI_DEFAULT_MIN_DISPLAY_DECIMALS
+          UI_DEFAULT_DISPLAY_DECIMALS
         )}`
       }
 
       return erc20Balance.toFormat(
-        UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+        UI_DEFAULT_DISPLAY_DECIMALS,
         BigNumberInBase.ROUND_DOWN
       )
     },
@@ -185,11 +185,11 @@ export default Vue.extend({
 
       if (erc20BalanceInUsd.gt(MAX_DISPLAYABLE_NUMBER)) {
         return ` > ${MAX_DISPLAYABLE_NUMBER.toFormat(
-          UI_DEFAULT_MIN_DISPLAY_DECIMALS
+          UI_DEFAULT_DISPLAY_DECIMALS
         )}`
       }
 
-      return erc20BalanceInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      return erc20BalanceInUsd.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
     },
 
     total(): BigNumberInBase {
@@ -203,12 +203,12 @@ export default Vue.extend({
 
       if (total.gt(MAX_DISPLAYABLE_NUMBER)) {
         return `> ${MAX_DISPLAYABLE_NUMBER.toFormat(
-          UI_DEFAULT_MIN_DISPLAY_DECIMALS
+          UI_DEFAULT_DISPLAY_DECIMALS
         )}`
       }
 
       return total.toFormat(
-        UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+        UI_DEFAULT_DISPLAY_DECIMALS,
         BigNumberInBase.ROUND_DOWN
       )
     },
@@ -224,11 +224,11 @@ export default Vue.extend({
 
       if (totalInUsd.gt(MAX_DISPLAYABLE_NUMBER)) {
         return ` > ${MAX_DISPLAYABLE_NUMBER.toFormat(
-          UI_DEFAULT_MIN_DISPLAY_DECIMALS
+          UI_DEFAULT_DISPLAY_DECIMALS
         )}`
       }
 
-      return totalInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      return totalInUsd.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
     },
 
     isIbcToken(): boolean {
