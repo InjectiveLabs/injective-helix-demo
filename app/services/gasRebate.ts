@@ -9,6 +9,14 @@ export const fetchUserTransactionMessages = async (address: string) => {
     limit: 10
   })
 
+  if (!transactions) {
+    return []
+  }
+
+  if (!transactions.data) {
+    return []
+  }
+
   return transactions.data
     .map((transaction) => {
       return transaction.messages
@@ -19,7 +27,11 @@ export const fetchUserTransactionMessages = async (address: string) => {
 }
 
 export const fetchUserDeposits = async (address: string) => {
-  return await apolloConsumer.fetchUserDeposits(address)
+  try {
+    return await apolloConsumer.fetchUserDeposits(address)
+  } catch (e) {
+    return []
+  }
 }
 
 export const redeem = async ({
