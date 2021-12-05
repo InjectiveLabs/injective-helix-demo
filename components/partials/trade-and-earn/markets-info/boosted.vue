@@ -1,6 +1,6 @@
 <template>
   <v-item>
-    <div class="flex justify-between text-xs w-full mx-auto lg:w-3/4">
+    <div class="flex justify-between text-xs w-full mx-auto">
       <div class="flex-1 px-4 lg:px-6">
         <p class="text-gray-200 text-center font-semibold">
           {{ $t('derivatives') }}
@@ -71,9 +71,14 @@ import { cosmosSdkDecToBigNumber } from '~/app/transformers'
 import VItem from '~/components/partials/common/stats/item.vue'
 import { UiDerivativeMarket, UiSpotMarket } from '~/types'
 import { PointsMultiplier, TradingRewardsCampaign } from '~/types/exchange'
+import {
+  derivatives as sortPerpetualMarkets,
+  spot as sortSpotMarkets
+} from '~/routes.config'
 
 interface PointsMultiplierWithMarketTicker extends PointsMultiplier {
   ticker: string
+  slug: string
 }
 
 export default Vue.extend({
@@ -136,20 +141,30 @@ export default Vue.extend({
 
       const spotMarketsTickerBasedOnIds = spotMarkets
         .filter((spotMarket) => spotMarketIds.includes(spotMarket.marketId))
-        .map((m) => m.ticker)
+        .sort(
+          (a, b) =>
+            spotMarketIds.indexOf(a.marketId) -
+            spotMarketIds.indexOf(b.marketId)
+        )
+        .map((m) => ({ ticker: m.ticker, slug: m.slug }))
 
       const derivativeMarketsTickerBasedOnIds = derivativeMarkets
         .filter((derivativeMarket) =>
           derivativeMarketIds.includes(derivativeMarket.marketId)
         )
-        .map((m) => m.ticker)
+        .sort(
+          (a, b) =>
+            derivativeMarketIds.indexOf(a.marketId) -
+            derivativeMarketIds.indexOf(b.marketId)
+        )
+        .map((m) => ({ ticker: m.ticker, slug: m.slug }))
 
       const spot = spotMarketsTickerBasedOnIds.reduce(
-        (records, ticker, index) => {
+        (records, market, index) => {
           return [
             ...records,
             {
-              ticker,
+              ...market,
               makerPointsMultiplier: cosmosSdkDecToBigNumber(
                 spotMarketsBoosts[index].makerPointsMultiplier
               ).toFixed(),
@@ -167,20 +182,24 @@ export default Vue.extend({
             !spotMarketIds.includes(spotMarket.marketId) &&
             !disqualifiedMarketIds.includes(spotMarket.marketId)
         )
-        .map((m) => m.ticker)
-        .reduce((records, ticker) => {
+        .map((m) => ({ ticker: m.ticker, slug: m.slug }))
+        .reduce((records, market) => {
           return [
             ...records,
-            { ticker, makerPointsMultiplier: '1', takerPointsMultiplier: '1' }
+            {
+              ...market,
+              makerPointsMultiplier: '1',
+              takerPointsMultiplier: '1'
+            }
           ]
         }, [] as PointsMultiplierWithMarketTicker[])
 
       const derivatives = derivativeMarketsTickerBasedOnIds.reduce(
-        (records, ticker, index) => {
+        (records, market, index) => {
           return [
             ...records,
             {
-              ticker,
+              ...market,
               makerPointsMultiplier: cosmosSdkDecToBigNumber(
                 derivativeMarketsBoosts[index].makerPointsMultiplier
               ).toFixed(),
@@ -199,17 +218,37 @@ export default Vue.extend({
             !derivativeMarketIds.includes(derivative.marketId) &&
             !disqualifiedMarketIds.includes(derivative.marketId)
         )
-        .map((m) => m.ticker)
-        .reduce((records, ticker) => {
+        .map((m) => ({ ticker: m.ticker, slug: m.slug }))
+        .reduce((records, market) => {
           return [
             ...records,
-            { ticker, makerPointsMultiplier: '1', takerPointsMultiplier: '1' }
+            {
+              ...market,
+              makerPointsMultiplier: '1',
+              takerPointsMultiplier: '1'
+            }
           ]
         }, [] as PointsMultiplierWithMarketTicker[])
 
+      const spotWithBoostInfo = [...spot, ...nonBoostedSpot].sort(function (
+        a,
+        b
+      ) {
+        return sortSpotMarkets.indexOf(a.slug) - sortSpotMarkets.indexOf(b.slug)
+      })
+      const derivativesWithBoostInfo = [
+        ...derivatives,
+        ...nonBoostedDerivatives
+      ].sort(function (a, b) {
+        return (
+          sortPerpetualMarkets.indexOf(a.slug) -
+          sortPerpetualMarkets.indexOf(b.slug)
+        )
+      })
+
       return {
-        spot: [...spot, ...nonBoostedSpot],
-        derivatives: [...derivatives, ...nonBoostedDerivatives]
+        spot: spotWithBoostInfo,
+        derivatives: derivativesWithBoostInfo
       } as {
         spot: PointsMultiplierWithMarketTicker[]
         derivatives: PointsMultiplierWithMarketTicker[]
