@@ -4,67 +4,77 @@
       {{ $t('dmm.ranking.elcsTitle') }}
     </h3>
 
-    <div class="flex items-center justify-between mt-5 flex-wrap">
-      <div class="flex items-center">
-        <h4 class="text-gray-500 text-xs">
-          {{ $t('dmm.ranking.marketRewardFactor') }}
-        </h4>
-        <v-icon-info-tooltip
-          lg
-          class="ml-3 mr-4"
-          color="text-gray-200"
-          :tooltip="$t('dmm.ranking.marketRewardFactorTooltip')"
-        />
-        <p class="text-gray-200 text-xl">{{ rewardFactor }}</p>
-      </div>
-
-      <div>
-        <p class="text-gray-500 text-xs">
-          {{ $t('dmm.ranking.lastUpdatedTime') }}: 11 /15/2021 08:25:25
-        </p>
-      </div>
+    <div class="flex items-center">
+      <h4 class="text-gray-500 text-xs">
+        {{ $t('dmm.ranking.marketRewardFactor') }}
+      </h4>
+      <v-icon-info-tooltip
+        lg
+        class="ml-3 mr-4"
+        color="text-gray-200"
+        :tooltip="$t('dmm.ranking.marketRewardFactorTooltip')"
+      />
+      <p class="text-gray-200 text-xl">{{ rewardFactor }}</p>
     </div>
 
     <div class="rounded-2xl mt-4 overflow-y-hidden">
       <TableHeader sm dense>
-        <div class="col-span-4 grid grid-cols-4">
-          <span>
-            {{ $t('dmm.ranking.rank') }}
-          </span>
+        <span class="col-span-3">
+          {{ $t('dmm.ranking.address') }}
+        </span>
 
-          <span class="col-span-3">
-            {{ $t('dmm.ranking.address') }}
-          </span>
+        <div class="col-span-3 flex items-center relative">
+          <span>{{ $t('dmm.ranking.elcsBuy') }}</span>
+          <v-icon-info-tooltip
+            lg
+            class="ml-3"
+            color="text-gray-200"
+            :tooltip="$t('dmm.ranking.elcsBuyTooltip')"
+          />
         </div>
 
-        <div class="col-span-8 grid grid-cols-5">
-          <span>{{ $t('dmm.ranking.elcsBuy') }}</span>
-
+        <div class="col-span-3 flex items-center relative">
           <span>{{ $t('dmm.ranking.elcsSell') }}</span>
+          <v-icon-info-tooltip
+            lg
+            class="ml-3"
+            color="text-gray-200"
+            :tooltip="$t('dmm.ranking.elcsSellTooltip')"
+          />
+        </div>
 
+        <div class="col-span-3 flex items-center relative">
           <span>{{ $t('dmm.ranking.elcs') }}</span>
-
-          <span>-</span>
-
-          <div class="grid col-span-1 grid-cols-2">
-            <span>-</span>
-            <span class="text-right mr-2">-</span>
-          </div>
+          <v-icon-info-tooltip
+            lg
+            class="ml-3"
+            color="text-gray-200"
+            :tooltip="$t('dmm.ranking.elcsTooltip')"
+          />
         </div>
       </TableHeader>
-
       <TableBody
         class="max-h-60 overflow-y-scroll"
-        :class="[rows > 5 ? 'md:overflow-y-scroll' : 'md:overflow-y-hidden']"
+        :class="[
+          formattedMarket.length > 5
+            ? 'md:overflow-y-scroll'
+            : 'md:overflow-y-hidden'
+        ]"
+        :show-empty="formattedMarket.length === 0"
         dense
       >
-        <VElcsRow
-          v-for="(item, index) in rows"
-          :key="`rank-elcs-${index}`"
-          :active="index === 1"
-          :item="elcsMockData"
-          :scrollbar="rows > 5"
+        <TableRow
+          v-for="(item, index) in formattedMarket"
+          :key="`market-elcs-${index}`"
+          :active="injectiveAddress === item.address"
+          :item="item"
+          :scrollbar="formattedMarket.length > 5"
         />
+        <template slot="empty">
+          <span class="col-span-1 md:col-span-3 text-center xl:text-left">
+            {{ $t('dmm.common.emptyResult') }}
+          </span>
+        </template>
       </TableBody>
     </div>
   </div>
@@ -72,41 +82,87 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import VElcsRow from './elcs-row.vue'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { DMMLCS } from '@injectivelabs/exchange-consumer'
+import TableRow from './elcs-row.vue'
 import TableHeader from '~/components/elements/table-header.vue'
 import TableBody from '~/components/elements/table-body.vue'
+import { UiDmmMarketMaker, UIEpochMarketELCSItem } from '~/types'
+import { UI_DEFAULT_DMM_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
     TableHeader,
     TableBody,
-    VElcsRow
+    TableRow
   },
 
   props: {
-    active: {
-      type: Boolean,
-      default: false
+    rewardFactor: {
+      type: String,
+      required: true
     }
   },
 
-  data() {
-    return {
-      rows: 10,
-      rewardFactor: '1.5',
-      elcsMockData: {
-        rank: 1,
-        address: 'inj1zevxz8gk07cdzetn99845yg7a2raznsse7pxwa',
-        buy: '2.3',
-        sell: '2.3',
-        elcs: '0.8',
-        paramOne: '0.2',
-        paramTwo: '0.2',
-        paramThree: '3.3'
+  computed: {
+    injectiveAddress(): string {
+      return this.$accessor.wallet.injectiveAddress
+    },
+
+    activeMarketId(): string {
+      return this.$accessor.dmm.activeMarketId
+    },
+
+    marketMakers(): UiDmmMarketMaker[] {
+      return this.$accessor.dmm.marketMakers
+    },
+
+    lcsMarketMap(): Record<string, Record<string, DMMLCS>> {
+      return this.$accessor.dmm.lcs.byMarketsMap
+    },
+
+    lcs(): Record<string, DMMLCS> | undefined {
+      const { activeMarketId, lcsMarketMap } = this
+
+      if (!lcsMarketMap) {
+        return undefined
       }
-    }
-  },
 
-  methods: {}
+      return lcsMarketMap[activeMarketId]
+    },
+
+    formattedMarket(): UIEpochMarketELCSItem[] {
+      const { lcs, marketMakers } = this
+
+      if (!lcs) {
+        return []
+      }
+
+      return Object.entries(lcs)
+        .map(([name, lcs]) => {
+          const marketMaker = marketMakers.find(
+            ({ name: dmmName }) => name === dmmName
+          )
+
+          return {
+            name,
+            address: marketMaker ? marketMaker.address : '',
+            buy: new BigNumberInBase(lcs.normBuy).toFormat(
+              UI_DEFAULT_DMM_DECIMALS
+            ),
+            sell: new BigNumberInBase(lcs.normSell).toFormat(
+              UI_DEFAULT_DMM_DECIMALS
+            ),
+            elcs: new BigNumberInBase(lcs.lcs).toFormat(UI_DEFAULT_DMM_DECIMALS)
+          }
+        })
+        .sort((v1: UIEpochMarketELCSItem, v2: UIEpochMarketELCSItem) => {
+          const v1Elcs = new BigNumberInBase(v1.elcs)
+          const v2Elcs = new BigNumberInBase(v2.elcs)
+
+          return v2Elcs.minus(v1Elcs).toNumber()
+        })
+    }
+  }
 })
 </script>

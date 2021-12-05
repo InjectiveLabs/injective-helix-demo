@@ -8,42 +8,38 @@
     <span class="md:hidden">
       {{ $t('dmm.history.timestamp') }}
     </span>
-    <span class="md:col-span-4 text-right md:text-left">
-      {{ item.timestamp }}
+    <span class="md:col-span-5 text-right md:text-left">
+      {{ timestamp }}
     </span>
 
-    <div
-      class="col-span-2 md:col-span-7 grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4"
+    <span class="md:hidden">
+      {{ $t('dmm.history.elcs') }}
+    </span>
+    <span
+      class="md:col-span-3 text-right md:text-left"
+      :class="{ 'md:ml-2': scrollbar }"
     >
-      <span class="md:hidden">
-        {{ $t('dmm.history.elcs') }}
-      </span>
-      <span class="text-right md:text-left" :class="{ 'md:ml-2': scrollbar }">
-        {{ item.elcs }}
-      </span>
+      {{ item.elcs }}
+    </span>
 
-      <span class="md:hidden"> {{ $t('dmm.history.elcs') }} % </span>
-      <span class="text-right md:text-left" :class="{ 'md:ml-2': scrollbar }">
-        {{ item.elcsPercentage }}%
-      </span>
-
-      <span class="md:hidden">
-        {{ $t('dmm.history.evcs') }}
-      </span>
-      <span class="text-right md:text-left" :class="{ 'md:ml-2': scrollbar }">
-        {{ item.evcs }}
-      </span>
-
-      <span class="md:hidden"> {{ $t('dmm.history.evcs') }} % </span>
-      <span class="text-right"> {{ item.evcsPercentage }}% </span>
-    </div>
+    <span class="md:hidden">
+      {{ $t('dmm.history.evcs') }}
+    </span>
+    <span
+      class="md:col-span-3 text-right md:text-left"
+      :class="{ 'md:ml-2': scrollbar }"
+    >
+      {{ item.evcs }}
+    </span>
   </TableRow>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { format } from 'date-fns'
 import TableRow from '~/components/elements/table-row.vue'
-import { DmmHistory } from '~/types'
+import { UIEpochRecordItem } from '~/types'
+import { DMM_TIME_STAMP_FORMAT } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -57,13 +53,25 @@ export default Vue.extend({
     },
 
     item: {
-      type: Object as PropType<DmmHistory>,
+      type: Object as PropType<UIEpochRecordItem>,
       required: true
     },
 
     scrollbar: {
       type: Boolean,
       default: false
+    }
+  },
+
+  computed: {
+    timestamp(): string {
+      const { item } = this
+
+      if (item.createdAt) {
+        return format(new Date(item.createdAt), DMM_TIME_STAMP_FORMAT)
+      }
+
+      return ''
     }
   }
 })

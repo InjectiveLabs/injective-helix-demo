@@ -8,107 +8,182 @@
       <h4 class="text-gray-500 text-xs uppercase">
         {{ $t('dmm.summary.elcsTotalTokens') }}
       </h4>
-      <p class="text-gray-200 text-xl mx-4 leading-5.5">{{ totalTokens }}</p>
+      <p class="text-gray-200 text-xl mx-4 leading-5.5">
+        {{ totalInjInString }}
+      </p>
 
       <p class="text-gray-500 text-xs mt-2 sm:mt-0">
-        {{ $t('dmm.summary.elcsTotalTokensPercentage', { percentage: '50' }) }}
+        {{
+          $t('dmm.summary.elcsTotalTokensPercentage', {
+            percentage: formattedRatio
+          })
+        }}
       </p>
     </div>
 
     <div class="rounded-2xl mt-4 overflow-y-hidden">
-      <TableHeader sm dense>
-        <span class="col-span-4">
-          {{ $t('dmm.summary.address') }}
-        </span>
-
-        <div class="col-span-3 flex items-center relative">
-          <span>{{ $t('dmm.summary.elcsTotal') }}%</span>
-          <v-icon-info-tooltip
-            lg
-            class="ml-3"
-            color="text-gray-200"
-            :tooltip="$t('dmm.summary.elcsTotalPercentageTooltip')"
-          />
-        </div>
-
-        <div class="col-span-5 grid grid-cols-2 gap-2 md:gap-4">
-          <div class="flex items-center relative">
-            <span>
-              {{ $t('dmm.summary.rewardsInj') }}
-            </span>
-            <v-icon-info-tooltip
-              lg
-              class="ml-3 min-w-4 min-h-4"
-              color="text-gray-200"
-              :tooltip="$t('dmm.summary.rewardsInjTooltip')"
-            />
-          </div>
-
-          <div class="flex items-center relative justify-end">
-            <span>
-              {{ $t('dmm.summary.rewardsUsd') }}
-            </span>
-            <v-icon-info-tooltip
-              lg
-              class="ml-3 min-w-4 min-h-4"
-              color="text-gray-200"
-              :tooltip="$t('dmm.summary.rewardsUsdTooltip')"
-            />
-          </div>
-        </div>
-      </TableHeader>
-
+      <TableHeader is-elcs :latest="isLatestEpoch" />
       <TableBody
         class="max-h-60 overflow-y-scroll"
-        :class="[rows > 5 ? 'md:overflow-y-scroll' : 'md:overflow-y-hidden']"
+        :class="[
+          formattedSummary.length > 5
+            ? 'md:overflow-y-scroll'
+            : 'md:overflow-y-hidden'
+        ]"
+        :show-empty="formattedSummary.length === 0"
         dense
       >
-        <VElcsRow
-          v-for="(item, index) in rows"
+        <TableRow
+          v-for="(item, index) in formattedSummary"
           :key="`summary-elcs-${index}`"
-          :active="index === 2"
-          :item="elcsMockData"
-          :scrollbar="rows > 5"
+          is-elcs
+          :active="injectiveAddress === item.address"
+          :item="item"
+          :latest="isLatestEpoch"
+          :scrollbar="formattedSummary.length > 5"
         />
+        <template slot="empty">
+          <span class="col-span-1 md:col-span-3 text-center xl:text-left">
+            {{ $t('dmm.common.emptyResult') }}
+          </span>
+        </template>
       </TableBody>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import VElcsRow from './elcs-row.vue'
-import TableHeader from '~/components/elements/table-header.vue'
+import Vue, { PropType } from 'vue'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { DMMLCS } from '@injectivelabs/exchange-consumer'
+import { UiDmmMarketMaker, UiEpochDate, UiEpochSummaryItem } from '~/types'
+import TableHeader from '~/components/partials/dmm/summary/table-header.vue'
 import TableBody from '~/components/elements/table-body.vue'
+import TableRow from '~/components/partials/dmm/summary/table-row.vue'
+import { UI_DEFAULT_DMM_DECIMALS, ZERO_IN_BASE } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
     TableHeader,
     TableBody,
-    VElcsRow
+    TableRow
   },
 
   props: {
-    active: {
-      type: Boolean,
-      default: false
+    totalInj: {
+      type: Object as PropType<BigNumberInBase>,
+      required: true
+    },
+
+    ratio: {
+      type: String,
+      required: true
     }
   },
 
-  data() {
-    return {
-      totalTokens: '255,252',
-      rows: 10,
-      elcsMockData: {
-        address: 'inj1zevxz8gk07cdzetn99845yg7a2raznsse7pxwa',
-        total: '0.25',
-        totalPercentage: '10.5',
-        rewardsInInj: '1525.2',
-        rewardsInUsd: '15,263'
+  computed: {
+    injectiveAddress(): string {
+      return this.$accessor.wallet.injectiveAddress
+    },
+
+    activeEpochId(): string {
+      return this.$accessor.dmm.activeEpochId
+    },
+
+    epochDates(): UiEpochDate[] {
+      return this.$accessor.dmm.dates
+    },
+
+    epochUsdPrice(): Number {
+      return this.$accessor.dmm.epochUsdPrice
+    },
+
+    marketMakers(): UiDmmMarketMaker[] {
+      return this.$accessor.dmm.marketMakers
+    },
+
+    lcsSummary(): Record<string, DMMLCS> {
+      return this.$accessor.dmm.lcs.summaryMap
+    },
+
+    totalLcs(): BigNumberInBase {
+      const { lcsSummary } = this
+
+      if (!lcsSummary) {
+        return ZERO_IN_BASE
       }
-    }
-  },
 
-  methods: {}
+      return Object.values(lcsSummary).reduce(
+        (total, lcs) => total.plus(new BigNumberInBase(lcs.lcs)),
+        ZERO_IN_BASE
+      )
+    },
+
+    formattedSummary(): UiEpochSummaryItem[] {
+      const {
+        epochUsdPrice,
+        lcsSummary,
+        totalInj,
+        totalLcs,
+        marketMakers
+      } = this
+
+      if (!lcsSummary) {
+        return []
+      }
+
+      return Object.entries(lcsSummary)
+        .map(([name, lcs]) => {
+          const marketMaker = marketMakers.find(
+            ({ name: dmmName }) => name === dmmName
+          )
+          const total = new BigNumberInBase(lcs.lcs)
+          const totalPercentage = total.dividedBy(totalLcs).times(100)
+          const rewardInInj = total.dividedBy(100).times(totalInj)
+          const rewardInUsd = rewardInInj.times(
+            new BigNumberInBase(epochUsdPrice.toString())
+          )
+
+          return {
+            name,
+            address: marketMaker ? marketMaker.address : '',
+            total: total.gt(0) ? total.toFormat(UI_DEFAULT_DMM_DECIMALS) : '0',
+            totalPercentage: total.gt(0)
+              ? totalPercentage.toFormat(UI_DEFAULT_DMM_DECIMALS)
+              : '0',
+            rewardInInj: total.gt(0)
+              ? rewardInInj.toFormat(UI_DEFAULT_DMM_DECIMALS)
+              : '0',
+            rewardInUsd: total.gt(0)
+              ? rewardInUsd.toFormat(UI_DEFAULT_DMM_DECIMALS)
+              : '0'
+          }
+        })
+        .sort((v1: UiEpochSummaryItem, v2: UiEpochSummaryItem) => {
+          const v1Total = new BigNumberInBase(v1.total)
+          const v2Total = new BigNumberInBase(v2.total)
+
+          return v2Total.minus(v1Total).toNumber()
+        })
+    },
+
+    formattedRatio(): string {
+      const { ratio } = this
+
+      return new BigNumberInBase(ratio).times(100).toFormat()
+    },
+
+    totalInjInString(): string {
+      const { totalInj } = this
+
+      return totalInj.toFormat()
+    },
+
+    isLatestEpoch(): boolean {
+      const { activeEpochId, epochDates } = this
+
+      return epochDates.findIndex(({ id }) => activeEpochId === id) === 0
+    }
+  }
 })
 </script>

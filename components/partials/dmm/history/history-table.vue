@@ -1,86 +1,67 @@
 <template>
   <div class="rounded-2xl mt-4 overflow-y-hidden">
-    <TableHeader sm dense>
+    <TableHeader v-if="formattedRecords.length > 0" sm dense>
       <span>#</span>
 
-      <span class="col-span-4">
+      <span class="col-span-5">
         {{ $t('dmm.history.timestamp') }}
       </span>
 
-      <div class="col-span-7 flex items-center grid grid-cols-4 gap-2 md:gap-4">
-        <div class="flex items-center">
-          <span>
-            {{ $t('dmm.history.elcs') }}
-          </span>
-          <v-icon-info-tooltip
-            lg
-            class="ml-3 min-w-4 min-h-4"
-            color="text-gray-200"
-            :tooltip="$t('dmm.history.elcsTooltip')"
-          />
-        </div>
+      <div class="col-span-3 flex items-center">
+        <span>
+          {{ $t('dmm.history.elcs') }}
+        </span>
+        <v-icon-info-tooltip
+          lg
+          class="ml-3 min-w-4 min-h-4"
+          color="text-gray-200"
+          :tooltip="$t('dmm.history.elcsTooltip')"
+        />
+      </div>
 
-        <div class="flex items-center">
-          <span> {{ $t('dmm.history.elcs') }} % </span>
-          <v-icon-info-tooltip
-            lg
-            class="ml-3 min-w-4 min-h-4"
-            color="text-gray-200"
-            :tooltip="$t('dmm.history.elcsTooltip')"
-          />
-        </div>
-
-        <div class="flex items-center">
-          <span>
-            {{ $t('dmm.history.evcs') }}
-          </span>
-          <v-icon-info-tooltip
-            lg
-            class="ml-3 min-w-4 min-h-4"
-            color="text-gray-200"
-            :tooltip="$t('dmm.history.evcsTooltip')"
-          />
-        </div>
-
-        <div class="flex items-center justify-end">
-          <span> {{ $t('dmm.history.evcs') }} % </span>
-          <v-icon-info-tooltip
-            lg
-            class="ml-3 min-w-4 min-h-4"
-            color="text-gray-200"
-            :tooltip="$t('dmm.history.evcsPercentageTooltip')"
-          />
-        </div>
+      <div class="col-span-3 flex items-center">
+        <span>
+          {{ $t('dmm.history.evcs') }}
+        </span>
+        <v-icon-info-tooltip
+          lg
+          class="ml-3 min-w-4 min-h-4"
+          color="text-gray-200"
+          :tooltip="$t('dmm.history.evcsTooltip')"
+        />
       </div>
     </TableHeader>
 
     <TableBody
-      v-if="isUserWalletConnected"
       class="max-h-[480px] overflow-y-scroll"
       :class="[
         { 'min-h-[480px]': isEmpty },
-        rows > 10 ? 'md:overflow-y-scroll' : 'md:overflow-y-hidden'
+        formattedRecords.length > 10
+          ? 'md:overflow-y-scroll'
+          : 'md:overflow-y-hidden'
       ]"
-      :show-empty="isEmpty"
+      :show-empty="formattedRecords.length === 0"
       dense
     >
-      <div v-if="!isEmpty">
-        <VHistoryRow
-          v-for="(item, index) in rows"
-          :key="`dmm-history-${index}`"
-          :active="index === 1"
-          :item="historyMockData"
-          :scrollbar="rows > 10"
-        />
-      </div>
+      <VHistoryRow
+        v-for="(item, index) in formattedRecords"
+        :key="`dmm-history-${index}`"
+        :item="item"
+        :scrollbar="formattedRecords.length > 10"
+      />
+
       <template slot="empty">
-        <div class="col-span-12 text-center">
+        <div class="col-span-12 text-center py-6">
           <p class="text-xl text-gray-200 font-bold">
             {{ $t('dmm.history.emptyTitle') }}
           </p>
-          <v-button lg primary class="min-w-[210px] mt-6">
+          <a
+            href="https://injective.typeform.com/to/VcgtcivA"
+            target="_blank"
+            class="min-w-[210px] mt-6 text-center rounded-3xl px-6 py-2.5 text-base leading-5 max-h-10 bg-primary-500 hover:bg-primary-400 text-gray-800 inline-block"
+          >
             <span class="font-bold">{{ $t('dmm.history.contactNow') }}</span>
-          </v-button>
+          </a>
         </div>
       </template>
     </TableBody>
@@ -89,9 +70,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { EpochResultRecord } from '@injectivelabs/exchange-consumer'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import VHistoryRow from './history-row.vue'
 import TableHeader from '~/components/elements/table-header.vue'
 import TableBody from '~/components/elements/table-body.vue'
+import { UIEpochRecordItem } from '~/types'
+import { UI_DEFAULT_DMM_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -109,22 +94,30 @@ export default Vue.extend({
 
   data() {
     return {
-      isEmpty: false,
-      rows: 15,
-      historyMockData: {
-        number: 1,
-        timestamp: 'Oct 25th 2021 05:25:00 UTC',
-        elcs: '2.3',
-        elcsPercentage: '25.3',
-        evcs: '1.8',
-        evcsPercentage: '18.4'
-      }
+      isEmpty: false
     }
   },
 
   computed: {
-    isUserWalletConnected(): boolean {
-      return this.$accessor.wallet.isUserWalletConnected
+    records(): EpochResultRecord[] {
+      return this.$accessor.dmm.records
+    },
+
+    formattedRecords(): UIEpochRecordItem[] {
+      const { records } = this
+
+      return records.map(({ createdAt, lcs, vcs }, index) => {
+        const dmmName = lcs ? Object.keys(lcs.summaryMap)[0] : null
+        const elcs = dmmName && lcs ? lcs.summaryMap[dmmName].lcs : '0'
+        const evcs = dmmName && vcs ? vcs.summaryMap[dmmName].vcs : '0'
+
+        return {
+          number: Number(index) + 1,
+          elcs: new BigNumberInBase(elcs).toFormat(UI_DEFAULT_DMM_DECIMALS),
+          evcs: new BigNumberInBase(evcs).toFormat(UI_DEFAULT_DMM_DECIMALS),
+          createdAt
+        }
+      })
     }
   },
 

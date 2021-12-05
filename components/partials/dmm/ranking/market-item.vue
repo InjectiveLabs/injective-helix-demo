@@ -2,15 +2,15 @@
   <div class="cursor-pointer" @click="handleClick">
     <div class="flex items-center justify-start">
       <img
-        :src="item.baseToken.icon"
-        :alt="item.baseToken.name"
+        :src="item.token.icon"
+        :alt="item.token.name"
         class="mr-4 ml-2"
         :class="[small ? 'w-5 h-5 md:w-7 md:h-7' : 'w-6 h-6 md:w-8 md:h-8']"
       />
       <div class="text-left">
         <p class="text-gray-200 text-sm font-bold">{{ item.ticker }}</p>
         <p class="text-gray-500 text-xs capitalize">
-          {{ item.baseToken.name }}
+          {{ item.token.name }}
         </p>
       </div>
     </div>

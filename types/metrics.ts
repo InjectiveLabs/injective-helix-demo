@@ -14,6 +14,12 @@ export enum ChainMetrics {
   FetchBalance = 'QueryBalanceRequest'
 }
 
+export enum DMMMetrics {
+  FetchEpochs = 'FetchEpochs',
+  FetchEpochSummary = 'FetchEpochSummary',
+  FetchDMMRecords = 'FetchDMMRecords'
+}
+
 export enum DerivativesMetrics {
   FetchMarkets = 'DerivativeMarketsRequest',
   FetchMarket = 'DerivativeMarketRequest',

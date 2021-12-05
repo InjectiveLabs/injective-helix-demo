@@ -15,6 +15,11 @@ export default {
       upcomingEpoch: 'Upcoming epochs'
     },
 
+    common: {
+      emptyResult: 'No participants yet',
+      lastUpdatedTime: 'Last updated time'
+    },
+
     ranking: {
       title: 'Master Making Ranking',
       elcsTitle: 'Exchange Liquidity contribution score (ELCS)',
@@ -24,10 +29,17 @@ export default {
       lastUpdatedTime: 'Last updated time',
       rank: 'Rank',
       address: 'INJ Chain Address',
-      elcsBuy: 'Epoch ELCS buy',
-      elcsSell: 'Epoch ELCS sell',
-      elcs: 'Epoch ELCS',
-      Subaccount: 'Subaccount',
+      elcsBuy: 'Buy score',
+      elcsBuyTooltip: 'Buy score tooltip',
+      elcsSell: 'Sell score',
+      elcsSellTooltip: 'Sell score tooltip',
+      elcs: 'ELCS',
+      elcsTooltip: 'ELCS tooltip',
+      evcs: 'EVCS',
+      evcsTooltip: 'EVCS tooltip',
+      volume: 'Volume',
+      volumeTooltip: 'volume tooltip',
+      account: 'account',
       you: 'you'
     },
 
@@ -47,43 +59,45 @@ export default {
       evcsTitle: 'Exchange volume contribution score (EVCS)',
       address: 'INJ Chain Address',
       addressTooltip: 'INJ Chain Address',
-      elcsTotal: 'ELCS Total',
-      elcsTotalTooltip: 'ELCS Total',
-      elcsTotalPercentageTooltip: 'ELCS Total',
-      evcsTotal: 'EVCS Total',
-      evcsTotalTooltip: 'EVCS Total',
-      evcsTotalPercentageTooltip: 'EVCS Total',
-      rewardsInj: 'Expected rewards in INJ',
-      rewardsInjTooltip: 'Expected rewards in INJ',
-      rewardsUsd: 'Expected rewards in Usd',
-      rewardsUsdTooltip: 'Expected rewards in Usd',
+      elcs: 'ELCS',
+      elcsTooltip: 'ELCS',
+      elcsPercentageTooltip: 'ELCS Percentage',
+      evcs: 'EVCS',
+      evcsTooltip: 'EVCS',
+      evcsPercentageTooltip: 'EVCS Percentage',
+      rewardsInj: 'Rewards in INJ',
+      rewardsInjTooltip: 'Rewards in INJ',
+      rewardsUsd: 'Rewards in Usd',
+      rewardsUsdTooltip: 'Rewards in Usd',
+      expected: 'Expected',
       you: 'you'
     },
 
     history: {
       title: 'Score Records in Current Epoch',
-      subaccountID: 'Subaccount ID',
+      address: 'Address',
       timestamp: 'Time stamp',
-      elcs: 'ELCS Total',
-      evcs: 'Evcs Total',
-      elcsTooltip: 'ELCS Total',
-      evcsTooltip: 'Evcs Total',
-      elcsPercentageTooltip: 'ELCS Total',
-      evcsPercentageTooltip: 'Evcs Total',
-      emptyTitle: 'You don’t have any market making history',
-      contactNow: 'Contact now'
+      elcs: 'ELCS',
+      evcs: 'EVCS',
+      elcsTooltip: 'ELCS Tooltip',
+      evcsTooltip: 'Evcs Tooltip',
+      emptyTitle: 'You are not a participant of the DMM Program',
+      contactNow: 'Apply Now',
+      connectMsg: 'Connect your wallet to see your score records'
     },
 
     resource: {
       title: 'Resources',
       rewardFactors: 'Market Reward Factors',
       rewardsFactorsDescription:
-        'Tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.',
+        'Each market has a different Market Reward Factor to encourage participations.',
       learnMore: 'Learn more',
       modalTitle: 'Market reward factors',
       markets: 'Markets',
       elcs: 'Elcs',
-      evcs: 'Evcs'
+      evcs: 'Evcs',
+      spot: 'Spot',
+      perp: 'Perp'
     }
   }
 }
