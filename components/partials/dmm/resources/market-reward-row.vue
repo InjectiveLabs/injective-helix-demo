@@ -4,7 +4,7 @@
       {{ $t('dmm.resource.markets') }}
     </span>
     <span class="md:col-span-4 text-right md:text-left">
-      {{ item.market }}
+      {{ item.ticker }}
     </span>
     <span class="md:hidden">
       {{ $t('dmm.resource.elcs') }}
@@ -13,7 +13,7 @@
       class="md:col-span-4 text-right md:text-left"
       :class="{ 'md:ml-1': scrollbar }"
     >
-      {{ item.elcs }}
+      {{ item.lcsAdjustFactor }}
     </span>
     <span class="md:hidden">
       {{ $t('dmm.resource.evcs') }}
@@ -22,7 +22,7 @@
       class="md:col-span-4 text-right md:text-left"
       :class="{ 'md:ml-2': scrollbar }"
     >
-      {{ item.evcs }}
+      {{ item.vcsAdjustFactor }}
     </span>
   </TableRow>
 </template>
@@ -30,7 +30,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import TableRow from '~/components/elements/table-row.vue'
-import { MarketRewardFactor } from '~/types'
+import { UiEpochMarketsWithTokenMeta } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -39,7 +39,7 @@ export default Vue.extend({
 
   props: {
     item: {
-      type: Object as PropType<MarketRewardFactor>,
+      type: Object as PropType<UiEpochMarketsWithTokenMeta>,
       required: true
     },
 

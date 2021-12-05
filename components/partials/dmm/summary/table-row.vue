@@ -1,8 +1,9 @@
 <template>
-  <TableRow class="font-serif" :class="{ active: active }" sm dense>
+  <TableRow class="font-serif col-span-12" :class="{ active: active }" sm dense>
     <span class="md:hidden">
       {{ $t('dmm.summary.address') }}
     </span>
+
     <span class="md:col-span-3 text-right md:text-left">
       <div class="flex items-center md:justify-start justify-end">
         <span>{{ formattedAddress }}</span>
@@ -14,16 +15,18 @@
     </span>
 
     <span class="md:hidden">
-      {{ $t('dmm.summary.evcsTotal') }}
+      {{ $t(isElcs ? 'dmm.summary.elcs' : 'dmm.summary.evcs') }}
     </span>
     <span
       class="md:col-span-2 text-right md:text-left"
-      :class="{ 'md:ml-1': scrollbar }"
+      :class="{ 'md:ml-2': scrollbar }"
     >
       {{ item.total }}
     </span>
 
-    <span class="md:hidden"> {{ $t('dmm.summary.evcsTotal') }}% </span>
+    <span class="md:hidden">
+      {{ $t(isElcs ? 'dmm.summary.elcs' : 'dmm.summary.evcs') }}%
+    </span>
     <span
       class="md:col-span-2 text-right md:text-left"
       :class="{ 'md:ml-2': scrollbar }"
@@ -36,13 +39,16 @@
         {{ $t('dmm.summary.rewardsInj') }}
       </span>
       <span class="text-right md:text-left" :class="{ 'md:ml-2': scrollbar }">
-        {{ item.rewardsInInj }} INJ
+        {{ item.rewardInInj }} INJ
       </span>
 
       <span class="md:hidden">
         {{ $t('dmm.summary.rewardsUsd') }}
       </span>
-      <span class="text-right"> ${{ item.rewardsInUsd }} </span>
+      <span class="text-right">
+        <span>≈</span>
+        <span>${{ item.rewardInUsd }}</span>
+      </span>
     </div>
   </TableRow>
 </template>
@@ -51,7 +57,7 @@
 import Vue, { PropType } from 'vue'
 import { formatWalletAddress } from '@injectivelabs/utils'
 import TableRow from '~/components/elements/table-row.vue'
-import { SummaryElcs } from '~/types'
+import { UiEpochSummaryItem } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -64,8 +70,13 @@ export default Vue.extend({
       default: false
     },
 
+    isElcs: {
+      type: Boolean,
+      default: false
+    },
+
     item: {
-      type: Object as PropType<SummaryElcs>,
+      type: Object as PropType<UiEpochSummaryItem>,
       required: true
     },
 

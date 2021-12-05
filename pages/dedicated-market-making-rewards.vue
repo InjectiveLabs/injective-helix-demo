@@ -29,11 +29,22 @@
           </div>
 
           <div v-if="selectedType === DMMType.Ranking" class="mt-6">
-            <VEpochSelector :selected-epoch.sync="epoch" />
-            <VSummary class="mt-8" />
-            <VRanking class="mt-8" />
-
-            <VResource class="mt-8 mb-14" />
+            <VEpochSelector
+              :disabled="fetchEpochStatus.isLoading()"
+              @update="fetchEpochSummary"
+            />
+            <div
+              class="relative"
+              :class="{ 'mt-8': fetchEpochStatus.isLoading() }"
+            >
+              <HOCLoading :status="fetchEpochStatus">
+                <div>
+                  <VSummary class="mt-8" />
+                  <VRanking class="mt-8" />
+                  <VResource class="mt-8 mb-14" />
+                </div>
+              </HOCLoading>
+            </div>
           </div>
 
           <div v-if="selectedType === DMMType.History" class="mt-6">
@@ -72,19 +83,52 @@ export default Vue.extend({
     return {
       DMMType,
       selectedType: DMMType.Ranking,
-      status: new Status(StatusType.Idle),
-      epoch: {
-        id: 1,
-        text: 'Oct 21 - Oct 30'
-      }
+      status: new Status(StatusType.Loading),
+      fetchEpochStatus: new Status(StatusType.Idle)
     }
   },
 
-  mounted() {},
+  computed: {
+    activeEpochId(): string {
+      return this.$accessor.dmm.activeEpochId
+    }
+  },
+
+  mounted() {
+    Promise.all([
+      this.$accessor.dmm.fetchEpochs(),
+      this.$accessor.dmm.fetchEpochSummary()
+    ])
+      .then(() => {
+        //
+      })
+      .catch(this.$onRejected)
+      .finally(() => {
+        this.status.setIdle()
+      })
+  },
 
   methods: {
     handleTypeClick(type: DMMType) {
       this.selectedType = type
+    },
+
+    fetchEpochSummary(epochId: string) {
+      const { activeEpochId } = this
+
+      if (activeEpochId !== epochId) {
+        this.fetchEpochStatus.setLoading()
+
+        this.$accessor.dmm
+          .fetchEpochSummary(epochId)
+          .then(() => {
+            //
+          })
+          .catch(this.$onRejected)
+          .finally(() => {
+            this.fetchEpochStatus.setIdle()
+          })
+      }
     }
   }
 })

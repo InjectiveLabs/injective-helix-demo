@@ -1988,16 +1988,16 @@
     web3-core-subscriptions "^1.5.2"
     web3-utils "^1.5.2"
 
-"@injectivelabs/derivatives-consumer@^0.0.73":
-  version "0.0.73"
-  resolved "https://registry.npmjs.org/@injectivelabs/derivatives-consumer/-/derivatives-consumer-0.0.73.tgz#557ce2c50e9f2faba47db3d261c7e227227e0a10"
-  integrity sha512-/C2zOa8qj0P+LbrtkEi1iwEucm7k6Kmx6mqvsDeWT+M6rnzaF/a+vfKt1p7i/c/o1IXri8kCRrKepc7ligmRbA==
+"@injectivelabs/derivatives-consumer@^0.0.75":
+  version "0.0.75"
+  resolved "https://registry.npmjs.org/@injectivelabs/derivatives-consumer/-/derivatives-consumer-0.0.75.tgz#8ca008102969c09f619b0996cb73cc1b834e46a2"
+  integrity sha512-mcbu2AD5qEkc2v9/IhRK2b5h1PRQ47DnZQgwFIHqB4zF9aoBn0NCr2Wk3PuZsEHrKbVCoknAEcXcXtLv46sGJw==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.14.0"
     "@injectivelabs/chain-api" "^1.6.2"
     "@injectivelabs/exceptions" "^0.0.26"
-    "@injectivelabs/exchange-api" "^2.2.37"
+    "@injectivelabs/exchange-api" "^2.2.38"
     "@injectivelabs/ts-types" "^0.0.28"
     "@injectivelabs/utils" "^0.0.41"
     link-module-alias "^1.2.0"
@@ -2030,16 +2030,24 @@
     "@improbable-eng/grpc-web" "^0.14.0"
     google-protobuf "^3.14.0"
 
-"@injectivelabs/exchange-consumer@^0.0.109":
-  version "0.0.109"
-  resolved "https://registry.npmjs.org/@injectivelabs/exchange-consumer/-/exchange-consumer-0.0.109.tgz#bc54baa2d92531aa5431837ca1fa3539fb32cc1e"
-  integrity sha512-tzEPcd1ys3aGP5uf8lDXkHE8LA3dCoTP2B6/sKUj6qDDEulqttG67Gs6eQiRGmkE/wEK+5OKUU6MJ5RADccV0g==
+"@injectivelabs/exchange-api@^2.2.38":
+  version "2.2.38"
+  resolved "https://registry.npmjs.org/@injectivelabs/exchange-api/-/exchange-api-2.2.38.tgz#91dd4b6525ef70764d5b8ce2a13a91923c19b686"
+  integrity sha512-M/UXxmyG5ky2X+EcD4ApAlxCP6LKBfKWXUZheESR+xf7Z+lYCx41nuP8+yuLJ5lGnX3WsIbwfd2S31k7GrAq5Q==
+  dependencies:
+    "@improbable-eng/grpc-web" "^0.14.0"
+    google-protobuf "^3.14.0"
+
+"@injectivelabs/exchange-consumer@^0.0.111":
+  version "0.0.111"
+  resolved "https://registry.npmjs.org/@injectivelabs/exchange-consumer/-/exchange-consumer-0.0.111.tgz#9345443e681c3c3494b2a2ee8add0c77d389e88a"
+  integrity sha512-vhcMUhzx5ddEVmgLthQ776+SUwbvbpApsZmmxUtHIWEhkXibmuwyak//Xo+eQDiefdEa0k45ZhEFbvZzwPgriQ==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.14.0"
     "@injectivelabs/chain-api" "^1.6.2"
     "@injectivelabs/exceptions" "^0.0.26"
-    "@injectivelabs/exchange-api" "^2.2.37"
+    "@injectivelabs/exchange-api" "^2.2.38"
     "@injectivelabs/ts-types" "^0.0.28"
     "@injectivelabs/tx-utils" "^0.0.18"
     "@injectivelabs/utils" "^0.0.41"

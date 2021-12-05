@@ -58,6 +58,11 @@ export default Vue.extend({
       default: false
     },
 
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+
     hideBottomBorder: {
       type: Boolean,
       default: false
@@ -120,7 +125,9 @@ export default Vue.extend({
     },
 
     onDropdownToggle() {
-      this.isDropdownOpen = !this.isDropdownOpen
+      if (!this.disabled) {
+        this.isDropdownOpen = !this.isDropdownOpen
+      }
     }
   }
 })

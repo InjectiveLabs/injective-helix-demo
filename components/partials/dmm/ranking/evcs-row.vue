@@ -1,58 +1,39 @@
 <template>
   <TableRow class="font-serif" :class="{ active: active }" sm dense>
-    <div
-      class="col-span-2 md:col-span-7 grid grid-cols-2 md:grid-cols-6 gap-2 md:gap-0"
-    >
-      <span class="md:hidden">
-        {{ $t('dmm.ranking.rank') }}
-      </span>
-      <span class="text-right md:text-left">
-        {{ item.rank }}
-      </span>
-
-      <span class="md:hidden">
-        {{ $t('dmm.ranking.Subaccount') }}
-      </span>
-      <span class="md:col-span-3">
-        <div class="flex items-center justify-end md:justify-start">
-          <span>{{ formattedAddress }}</span>
-          <div v-if="active" class="flex items-center">
-            <v-icon-profile class="text-gray-200 h-4 w-4 ml-3 mr-2" />
-            <span>({{ $t('dmm.ranking.you') }})</span>
-          </div>
+    <span class="md:hidden">
+      {{ $t('dmm.ranking.address') }}
+    </span>
+    <span class="md:col-span-4">
+      <div class="flex items-center justify-end md:justify-start">
+        <span>{{ formattedAddress }}</span>
+        <div v-if="active" class="flex items-center">
+          <v-icon-profile class="text-gray-200 h-4 w-4 ml-3 mr-2" />
+          <span>({{ $t('dmm.ranking.you') }})</span>
         </div>
-      </span>
-
-      <span class="md:hidden">
-        {{ $t('dmm.ranking.elcs') }}
-      </span>
-      <span
-        class="md:col-span-2 text-right md:text-left"
-        :class="{ 'md:ml-1': scrollbar }"
-      >
-        {{ item.elcs }}
-      </span>
-    </div>
-
-    <div class="col-span-2 md:col-span-5 grid grid-cols-2 gap-2 md:gap-0">
-      <span class="md:hidden">-</span>
-      <span class="text-right md:text-left" :class="{ 'md:ml-1': scrollbar }">
-        {{ item.paramOne }}
-      </span>
-
-      <div
-        class="col-span-2 md:col-span-1 grid grid-cols-2 md:flex justify-between gap-2 md:gap-0"
-      >
-        <span class="md:hidden">-</span>
-        <span class="text-right md:text-left" :class="{ 'md:ml-1': scrollbar }">
-          {{ item.paramTwo }}
-        </span>
-        <span class="md:hidden">-</span>
-        <span class="text-right md:text-left" :class="{ 'md:ml-1': scrollbar }">
-          {{ item.paramThree }}
-        </span>
       </div>
-    </div>
+    </span>
+
+    <span class="md:hidden">
+      {{ $t('dmm.ranking.volume') }}
+    </span>
+
+    <span
+      class="md:col-span-4 text-right md:text-left"
+      :class="{ 'md:ml-1': scrollbar }"
+    >
+      {{ item.volume }} USD
+    </span>
+
+    <span class="md:hidden">
+      {{ $t('dmm.ranking.evcs') }}
+    </span>
+
+    <span
+      class="md:col-span-4 text-right md:text-left"
+      :class="{ 'md:ml-1': scrollbar }"
+    >
+      {{ item.evcs }}
+    </span>
   </TableRow>
 </template>
 
@@ -60,7 +41,7 @@
 import Vue, { PropType } from 'vue'
 import { formatWalletAddress } from '@injectivelabs/utils'
 import TableRow from '~/components/elements/table-row.vue'
-import { RankingEvcs } from '~/types'
+import { UIEpochMarketEVCSItem } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -74,7 +55,7 @@ export default Vue.extend({
     },
 
     item: {
-      type: Object as PropType<RankingEvcs>,
+      type: Object as PropType<UIEpochMarketEVCSItem>,
       required: true
     },
 
@@ -88,11 +69,11 @@ export default Vue.extend({
     formattedAddress(): string {
       const { item } = this
 
-      if (!item.subaccount) {
+      if (!item.address) {
         return ''
       }
 
-      return formatWalletAddress(item.subaccount)
+      return formatWalletAddress(item.address)
     }
   }
 })

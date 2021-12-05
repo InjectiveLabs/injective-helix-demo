@@ -1,13 +1,27 @@
 <template>
   <div>
-    <h3 class="text-xl font-bold text-gray-200">
-      {{ $t('dmm.summary.title') }}
-    </h3>
+    <div class="flex justify-between items-end flex-wrap">
+      <h3 class="text-xl font-bold text-gray-200">
+        {{ $t('dmm.summary.title') }}
+      </h3>
+      <span class="text-sm text-gray-500">
+        {{ $t('dmm.common.lastUpdatedTime') }}: {{ lastUpdated }}
+      </span>
+    </div>
     <v-card class="mt-6">
       <div class="p-2">
-        <VEpochProgressBar />
-        <VElcsTable class="mt-6" />
-        <VEvcsTable class="mt-6" />
+        <!-- hide for V1 -->
+        <VEpochProgressBar v-if="false" />
+        <VElcsTable
+          :total-inj="elcsInjAmount"
+          :ratio="elcsRatio"
+          class="mt-6"
+        />
+        <VEvcsTable
+          :total-inj="evcsInjAmount"
+          :ratio="evcsRatio"
+          class="mt-6"
+        />
       </div>
     </v-card>
   </div>
@@ -15,10 +29,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { format } from 'date-fns'
 import VElcsTable from './elcs-table.vue'
 import VEvcsTable from './evcs-table.vue'
 import VEpochProgressBar from '~/components/partials/dmm/common/epoch-progress-bar.vue'
-import { UiDerivativeMarket, UiSpotMarket } from '~/types'
+import { UiEpochMeta } from '~/types'
+import { DMM_TIME_STAMP_FORMAT, ZERO_IN_BASE } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -27,42 +44,67 @@ export default Vue.extend({
     VEvcsTable
   },
 
-  data() {
-    return {
-      totalTokens: '255,252',
-      selectedMarket: null as
-        | undefined
-        | null
-        | UiSpotMarket
-        | UiDerivativeMarket
-    }
-  },
-
   computed: {
-    derivativeMarkets(): UiDerivativeMarket[] {
-      return this.$accessor.derivatives.markets
+    epochLastUpdated(): string {
+      return this.$accessor.dmm.updatedAt
     },
 
-    spotMarkets(): UiSpotMarket[] {
-      return this.$accessor.spot.markets
+    epochMeta(): UiEpochMeta {
+      return this.$accessor.dmm.meta
     },
 
-    markets(): Array<UiSpotMarket | UiDerivativeMarket> {
-      const { spotMarkets, derivativeMarkets } = this
+    lastUpdated(): string {
+      const { epochLastUpdated } = this
 
-      return [...derivativeMarkets, ...spotMarkets]
-    }
-  },
+      return format(new Date(epochLastUpdated), DMM_TIME_STAMP_FORMAT)
+    },
 
-  mounted() {
-    this.selectedMarket = this.markets.find(
-      (market) => market.ticker === 'INJ/USDT'
-    )
-  },
+    elcsInjAmount(): BigNumberInBase {
+      const { epochMeta } = this
 
-  methods: {
-    handleMarketChange(market: UiSpotMarket | UiDerivativeMarket) {
-      this.selectedMarket = market
+      const amount = new BigNumberInBase(epochMeta.rewardInjNum).times(
+        new BigNumberInBase(epochMeta.lcsRewardFraction)
+      )
+
+      if (amount.gt(0)) {
+        return amount
+      }
+
+      return ZERO_IN_BASE
+    },
+
+    evcsInjAmount(): BigNumberInBase {
+      const { epochMeta } = this
+
+      const amount = new BigNumberInBase(epochMeta.rewardInjNum).times(
+        new BigNumberInBase(epochMeta.vcsRewardFraction)
+      )
+
+      if (amount.gt(0)) {
+        return amount
+      }
+
+      return ZERO_IN_BASE
+    },
+
+    elcsRatio(): string {
+      const { epochMeta } = this
+
+      if (epochMeta && epochMeta.lcsRewardFraction) {
+        return epochMeta.lcsRewardFraction
+      }
+
+      return '0'
+    },
+
+    evcsRatio(): string {
+      const { epochMeta } = this
+
+      if (epochMeta && epochMeta.vcsRewardFraction) {
+        return epochMeta.vcsRewardFraction
+      }
+
+      return '0'
     }
   }
 })

@@ -8,12 +8,12 @@
     hide-bottom-border
   >
     <template slot="title">
-      <VMarketItem v-if="selectedMarket" :item="selectedMarket" />
+      <VMarketItem v-if="activeMarketId !== ''" :item="activeMarket" />
     </template>
 
     <div class="p-4">
       <div class="bg-gray-900 p-4 rounded-4xl">
-        <VMarketItem v-if="selectedMarket" :item="selectedMarket" />
+        <VMarketItem v-if="activeMarketId !== ''" :item="activeMarket" />
 
         <div class="flex items-center justify-between mt-6">
           <div class="flex items-center">
@@ -101,7 +101,7 @@ import Vue, { PropType } from 'vue'
 import VMarketItem from './market-item.vue'
 import VSearch from '~/components/inputs/search.vue'
 import Dropdown from '~/components/elements/dropdown.vue'
-import { MarketType, UiDerivativeMarket, UiSpotMarket } from '~/types'
+import { MarketType, UiEpochMarketsWithTokenMeta } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -112,12 +112,12 @@ export default Vue.extend({
 
   props: {
     markets: {
-      type: Array as PropType<Array<UiSpotMarket | UiDerivativeMarket>>,
+      type: Array as PropType<Array<UiEpochMarketsWithTokenMeta>>,
       required: true
     },
 
-    selectedMarket: {
-      type: Object as PropType<UiSpotMarket | UiDerivativeMarket>,
+    activeMarketId: {
+      type: String,
       required: true
     }
   },
@@ -131,30 +131,41 @@ export default Vue.extend({
   },
 
   computed: {
-    filteredMarkets(): Array<UiSpotMarket | UiDerivativeMarket> {
+    activeMarket(): UiEpochMarketsWithTokenMeta {
+      const { activeMarketId, markets } = this
+
+      return markets.find(
+        ({ marketId }) => activeMarketId === marketId
+      ) as UiEpochMarketsWithTokenMeta
+    },
+
+    filteredMarkets(): Array<UiEpochMarketsWithTokenMeta> {
       const { filterMarkets, marketType, markets } = this
 
       const query = filterMarkets.toLowerCase()
 
       return markets.filter((market) => {
-        const { ticker, quoteDenom } = market
+        const {
+          ticker,
+          token: { name }
+        } = market
         const satisfiesSearchCondition =
-          quoteDenom.toLowerCase().startsWith(query) ||
-          ticker.toLowerCase().startsWith(query)
+          ticker.toLowerCase().startsWith(query) ||
+          name.toLowerCase().startsWith(query)
         const marketTypeCondition = marketType
           ? market.subType === marketType
           : true
 
         return satisfiesSearchCondition && marketTypeCondition
-      }) as Array<UiSpotMarket | UiDerivativeMarket>
+      }) as Array<UiEpochMarketsWithTokenMeta>
     }
   },
 
   methods: {
-    handleClick(item: any) {
+    handleClick(item: UiEpochMarketsWithTokenMeta) {
       // @ts-ignore
       this.$refs.dropdown.onDropdownClose()
-      this.$emit('click', item)
+      this.$emit('click', item.marketId)
     },
 
     onSelectMarketType(type: MarketType | string) {
