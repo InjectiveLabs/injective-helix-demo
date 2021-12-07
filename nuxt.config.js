@@ -85,6 +85,8 @@ export default {
     APP_ENV: process.env.APP_ENV,
     APP_VER: process.env.npm_package_version,
     APP_BASE_URL: process.env.APP_BASE_URL,
+    APP_EXCHANGE_API_ENDPOINT: process.env.APP_EXCHANGE_API_ENDPOINT,
+    APP_SENTRY_GRPC_ENDPOINT: process.env.APP_SENTRY_GRPC_ENDPOINT,
     APP_GAS_REBATE_API: process.env.APP_GAS_REBATE_API,
     METRICS_ENABLED: process.env.METRICS_ENABLED,
     GAS_FREE_DEPOSIT_REBATE_ENABLED:
