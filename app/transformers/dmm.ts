@@ -1,12 +1,4 @@
-import {
-  EpochMeta,
-  EpochResultRecord,
-  GrpcEpoch,
-  GrpcEpochMeta,
-  GrpcMarketConfig,
-  MarketConfig,
-  DMMTransformer
-} from '@injectivelabs/exchange-consumer'
+import { EpochMeta, MarketConfig } from '@injectivelabs/exchange-consumer'
 import {
   UiEpoch,
   UiEpochMeta,
