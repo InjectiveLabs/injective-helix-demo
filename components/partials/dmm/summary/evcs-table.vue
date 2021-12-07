@@ -59,11 +59,7 @@ import { UiDmmMarketMaker, UiEpochDate, UiEpochSummaryItem } from '~/types'
 import TableHeader from '~/components/partials/dmm/summary/table-header.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import TableRow from '~/components/partials/dmm/summary/table-row.vue'
-import {
-  ZERO_IN_BASE,
-  UI_DEFAULT_DMM_DECIMALS,
-  ZERO
-} from '~/app/utils/constants'
+import { ZERO_IN_BASE, UI_DEFAULT_DMM_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
