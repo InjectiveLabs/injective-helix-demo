@@ -19,13 +19,17 @@ jobs:
       DEST_DIR: www
 
       ## Flags
-      GAS_FREE_DEPOSIT_REBATE_ENABLED: false
+      GAS_FREE_DEPOSIT_REBATE_ENABLED: true
       META_TAGS_ENABLED: true
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       MAINTENANCE_ENABLED: false
       METRICS_ENABLED: true
       GEO_IP_RESTRICTIONS_ENABLED: true
       TRANSFER_RESTRICTIONS_ENABLED: false
+
+      ## Endpoints
+      APP_EXCHANGE_API_ENDPOINT: ''
+      APP_SENTRY_GRPC_ENDPOINT: ''
 
       ## Secret
       APP_GAS_REBATE_API: ${{ secrets.APP_GAS_REBATE_API }}
@@ -93,6 +97,10 @@ jobs:
       GEO_IP_RESTRICTIONS_ENABLED: true
       TRANSFER_RESTRICTIONS_ENABLED: false
 
+      ## Endpoints
+      APP_EXCHANGE_API_ENDPOINT: ''
+      APP_SENTRY_GRPC_ENDPOINT: ''
+
       ## Secret
       APP_GAS_REBATE_API: ${{ secrets.APP_GAS_REBATE_API }}
       APP_ELEVIO_ID: ${{ secrets.APP_ELEVIO_ID }}
@@ -159,6 +167,10 @@ jobs:
       GEO_IP_RESTRICTIONS_ENABLED: false
       TRANSFER_RESTRICTIONS_ENABLED: false
 
+      ## Endpoints
+      APP_EXCHANGE_API_ENDPOINT: ''
+      APP_SENTRY_GRPC_ENDPOINT: ''
+
       ## Secret
       APP_GAS_REBATE_API: ${{ secrets.APP_GAS_REBATE_API }}
       APP_ELEVIO_ID: ${{ secrets.APP_ELEVIO_ID }}
@@ -224,6 +236,10 @@ jobs:
       METRICS_ENABLED: false
       GEO_IP_RESTRICTIONS_ENABLED: false
       TRANSFER_RESTRICTIONS_ENABLED: false
+
+      ## Endpoints
+      APP_EXCHANGE_API_ENDPOINT: ''
+      APP_SENTRY_GRPC_ENDPOINT: ''
 
       ## Secret
       APP_GAS_REBATE_API: ${{ secrets.APP_GAS_REBATE_API }}

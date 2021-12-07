@@ -4,7 +4,11 @@ import {
   UrlEndpoint
 } from '@injectivelabs/networks'
 import { Wallet } from '@injectivelabs/web3-strategy'
-import { NETWORK } from '../utils/constants'
+import {
+  APP_EXCHANGE_API_ENDPOINT,
+  APP_SENTRY_GRPC_ENDPOINT,
+  NETWORK
+} from '../utils/constants'
 import { localStorage } from './Storage'
 import { GeoLocation } from '~/types'
 
@@ -18,7 +22,18 @@ class App {
   }
 
   get appUrlEndpoint(): UrlEndpoint {
-    return getUrlEndpointForNetwork(this.network)
+    const endpoints = getUrlEndpointForNetwork(this.network)
+    const baseExplorerApiEndpoint =
+      APP_EXCHANGE_API_ENDPOINT || endpoints.exchangeUrl
+    const sentryGrpcApiEndpoint = APP_SENTRY_GRPC_ENDPOINT || endpoints.chainUrl
+
+    return {
+      ...endpoints,
+      exchangeUrl: baseExplorerApiEndpoint,
+      baseUrl: `${baseExplorerApiEndpoint}/api`,
+      explorerUrl: `${baseExplorerApiEndpoint}/api/explorer/v1`,
+      chainUrl: sentryGrpcApiEndpoint
+    }
   }
 
   setGeoLocation(geoLocation: GeoLocation) {
