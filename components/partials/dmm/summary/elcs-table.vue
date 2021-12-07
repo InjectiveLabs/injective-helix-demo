@@ -139,7 +139,7 @@ export default Vue.extend({
           )
           const total = new BigNumberInBase(lcs.lcs)
           const totalPercentage = total.dividedBy(totalLcs).times(100)
-          const rewardInInj = total.dividedBy(100).times(totalInj)
+          const rewardInInj = totalPercentage.dividedBy(100).times(totalInj)
           const rewardInUsd = rewardInInj.times(
             new BigNumberInBase(epochUsdPrice.toString())
           )
