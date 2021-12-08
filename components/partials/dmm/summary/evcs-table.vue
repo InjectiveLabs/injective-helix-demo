@@ -159,8 +159,8 @@ export default Vue.extend({
           }
         })
         .sort((v1: UiEpochSummaryItem, v2: UiEpochSummaryItem) => {
-          const v1Total = new BigNumberInBase(v1.total)
-          const v2Total = new BigNumberInBase(v2.total)
+          const v1Total = new BigNumberInBase(v1.total.replace(',', ''))
+          const v2Total = new BigNumberInBase(v2.total.replace(',', ''))
 
           return v2Total.minus(v1Total).toNumber()
         })

@@ -143,8 +143,8 @@ export default Vue.extend({
           }
         })
         .sort((v1: UIEpochMarketEVCSItem, v2: UIEpochMarketEVCSItem) => {
-          const v1Evcs = new BigNumberInBase(v1.evcs)
-          const v2Evcs = new BigNumberInBase(v2.evcs)
+          const v1Evcs = new BigNumberInBase(v1.evcs.replace(',', ''))
+          const v2Evcs = new BigNumberInBase(v2.evcs.replace(',', ''))
 
           return v2Evcs.minus(v1Evcs).toNumber()
         })
