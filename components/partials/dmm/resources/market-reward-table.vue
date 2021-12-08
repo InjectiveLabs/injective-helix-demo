@@ -8,24 +8,12 @@
         <span>
           {{ $t('dmm.resource.elcs') }}
         </span>
-        <v-icon-info-tooltip
-          lg
-          class="ml-3"
-          color="text-gray-200"
-          :tooltip="$t('dmm.tooltip.elcsRewardFactor')"
-        />
       </div>
 
       <div class="col-span-4 flex items-center relative">
         <span>
           {{ $t('dmm.resource.evcs') }}
         </span>
-        <v-icon-info-tooltip
-          lg
-          class="ml-3"
-          color="text-gray-200"
-          :tooltip="$t('dmm.tooltip.evcsRewardFactor')"
-        />
       </div>
     </TableHeader>
 
