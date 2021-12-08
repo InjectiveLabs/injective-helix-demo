@@ -39,7 +39,7 @@ export default {
     },
 
     ranking: {
-      title: 'Master Making Ranking',
+      title: 'Market breakdown',
       elcsTitle: 'Exchange Liquidity contribution score (ELCS)',
       evcsTitle: 'Exchange Volume contribution score (EVCS)',
       marketRewardFactor: 'Market reward factor',
@@ -56,17 +56,17 @@ export default {
     },
 
     summary: {
-      title: 'Dedicated Market Making Summary',
+      title: 'Summary',
       tokensDistributionTitle: 'tokens distribution',
       pastEpochs: 'Past epochs',
       currentEpoch: 'Current epoch',
       upcomingEpoch: 'Upcoming epochs',
-      elcsTotalTokens: 'total inj tokens in ELCS',
+      elcsTotalTokens: 'INJ tokens for ELCS pool',
       elcsTotalTokensPercentage:
-        '{percentage}% of Total INJ Token of this epoch',
-      evcsTotalTokens: 'total inj tokens in EVCS',
+        '{percentage}% of total INJ token dedicated for this epoch',
+      evcsTotalTokens: 'INJ tokens for EVCS pool',
       evcsTotalTokensPercentage:
-        '{percentage}% of Total INJ Token of this epoch',
+        '{percentage}% of total INJ token dedicated for this epoch',
       elcsTitle: 'Exchange Liquidity contribution score (ELCS)',
       evcsTitle: 'Exchange volume contribution score (EVCS)',
       address: 'INJ Chain Address',
