@@ -119,7 +119,9 @@ export default Vue.extend({
       return transactionsMessages.filter(
         (transactionMessage: UserTransactionMessage) =>
           transactionMessage.type.includes('MsgCreateSpotMarketOrder') ||
-          transactionMessage.type.includes('MsgCreateDerivativeMarketOrder')
+          transactionMessage.type.includes('MsgCreateDerivativeMarketOrder') ||
+          transactionMessage.type.includes('MsgCreateSpotLimitOrder') ||
+          transactionMessage.type.includes('MsgCreateDerivativeLimitOrder')
       )
     },
 
@@ -135,7 +137,9 @@ export default Vue.extend({
       let sum = ZERO_IN_BASE
 
       for (const message of tradeMessages) {
-        const isSpotMarket = message.type.includes('MsgCreateSpotMarketOrder')
+        const isSpotMarket =
+          message.type.includes('MsgCreateSpotMarketOrder') ||
+          message.type.includes('MsgCreateSpotLimitOrder')
         const markets = [...derivativeMarkets, ...spotMarkets]
         const market = markets.find(
           (market) => market.marketId === message.value.order.market_id
