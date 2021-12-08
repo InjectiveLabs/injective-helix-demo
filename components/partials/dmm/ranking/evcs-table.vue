@@ -12,7 +12,7 @@
         lg
         class="ml-3 mr-4"
         color="text-gray-200"
-        :tooltip="$t('dmm.ranking.marketRewardFactorTooltip')"
+        :tooltip="$t('dmm.tooltip.evcsRewardFactor')"
       />
       <p class="text-gray-200 text-xl">{{ rewardFactor }}</p>
     </div>
@@ -29,7 +29,7 @@
             lg
             class="ml-3"
             color="text-gray-200"
-            :tooltip="$t('dmm.ranking.volumeTooltip')"
+            :tooltip="$t('dmm.tooltip.volume')"
           />
         </div>
 
@@ -39,7 +39,7 @@
             lg
             class="ml-3"
             color="text-gray-200"
-            :tooltip="$t('dmm.ranking.evcs')"
+            :tooltip="$t('dmm.tooltip.evcs')"
           />
         </div>
       </TableHeader>

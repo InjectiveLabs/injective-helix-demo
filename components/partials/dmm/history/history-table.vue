@@ -15,7 +15,7 @@
           lg
           class="ml-3 min-w-4 min-h-4"
           color="text-gray-200"
-          :tooltip="$t('dmm.history.elcsTooltip')"
+          :tooltip="$t('dmm.tooltip.elcs')"
         />
       </div>
 
@@ -27,7 +27,7 @@
           lg
           class="ml-3 min-w-4 min-h-4"
           color="text-gray-200"
-          :tooltip="$t('dmm.history.evcsTooltip')"
+          :tooltip="$t('dmm.tooltip.evcs')"
         />
       </div>
     </TableHeader>

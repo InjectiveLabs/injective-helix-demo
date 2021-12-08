@@ -12,60 +12,34 @@
         lg
         class="ml-3"
         color="text-gray-200"
-        :tooltip="
-          $t(
-            isElcs
-              ? 'dmm.summary.elcsTooltip'
-              : 'dmm.summary.evcsTooltip'
-          )
-        "
+        :tooltip="$t(isElcs ? 'dmm.tooltip.elcs' : 'dmm.tooltip.evcs')"
       />
     </div>
 
     <div class="col-span-2 flex items-center relative">
-      <span>
-        {{ $t(isElcs ? 'dmm.summary.elcs' : 'dmm.summary.evcs') }}%
-      </span>
+      <span> {{ $t(isElcs ? 'dmm.summary.elcs' : 'dmm.summary.evcs') }}% </span>
       <v-icon-info-tooltip
         lg
         class="ml-3"
         color="text-gray-200"
         :tooltip="
           $t(
-            isElcs
-              ? 'dmm.summary.elcsPercentageTooltip'
-              : 'dmm.summary.evcsPercentageTooltip'
+            isElcs ? 'dmm.tooltip.elcsPercentage' : 'dmm.tooltip.evcsPercentage'
           )
         "
       />
     </div>
 
     <div class="col-span-5 grid grid-cols-2 gap-2 md:gap-4">
-      <div class="flex items-center relative">
-        <span>
-          <span v-if="latest">{{ $t('dmm.summary.expected') }}</span>
-          <span>{{ $t('dmm.summary.rewardsInj') }}</span>
-        </span>
-        <v-icon-info-tooltip
-          lg
-          class="ml-3 min-w-4 min-h-4"
-          color="text-gray-200"
-          :tooltip="$t('dmm.summary.rewardsInjTooltip')"
-        />
-      </div>
+      <span>
+        <span v-if="latest">{{ $t('dmm.summary.expected') }}</span>
+        <span>{{ $t('dmm.summary.rewardsInj') }}</span>
+      </span>
 
-      <div class="flex items-center relative justify-end">
-        <span>
-          <span v-if="latest">{{ $t('dmm.summary.expected') }}</span>
-          <span>{{ $t('dmm.summary.rewardsUsd') }}</span>
-        </span>
-        <v-icon-info-tooltip
-          lg
-          class="ml-3 min-w-4 min-h-4"
-          color="text-gray-200"
-          :tooltip="$t('dmm.summary.rewardsUsdTooltip')"
-        />
-      </div>
+      <span class="md:text-right">
+        <span v-if="latest">{{ $t('dmm.summary.expected') }}</span>
+        <span>{{ $t('dmm.summary.rewardsUsd') }}</span>
+      </span>
     </div>
   </TableHeader>
 </template>

@@ -20,25 +20,37 @@ export default {
       lastUpdatedTime: 'Last updated time'
     },
 
+    tooltip: {
+      elcs:
+        'The absolute score based on the liquidity contributed to Injective Protocol.',
+      elcsPercentage:
+        'The participant is entitled to receive this percentage of the distributed INJ tokens assigned to the ELCS pool.',
+      evcs:
+        'The absolute score based on the volume contributed to Injective Protocol.',
+      evcsPercentage:
+        'The participant is entitled to receive this percentage of the distributed INJ tokens assigned to the EVCS pool.',
+      elcsRewardFactor: "This factor will be applied to this market's ELCS.",
+      evcsRewardFactor: "This factor will be applied to this market's EVCS.",
+      buyScore:
+        'The absolute score based on the buy side orders provided in this market.',
+      sellScore:
+        'The absolute score based on the sell side orders provided in this market.',
+      volume: 'The real volume contribution towards Injective Protocol.'
+    },
+
     ranking: {
       title: 'Master Making Ranking',
       elcsTitle: 'Exchange Liquidity contribution score (ELCS)',
       evcsTitle: 'Exchange Volume contribution score (EVCS)',
       marketRewardFactor: 'Market reward factor',
-      marketRewardFactorTooltip: 'Market reward factor',
       lastUpdatedTime: 'Last updated time',
       rank: 'Rank',
       address: 'INJ Chain Address',
       elcsBuy: 'Buy score',
-      elcsBuyTooltip: 'Buy score tooltip',
       elcsSell: 'Sell score',
-      elcsSellTooltip: 'Sell score tooltip',
       elcs: 'ELCS',
-      elcsTooltip: 'ELCS tooltip',
       evcs: 'EVCS',
-      evcsTooltip: 'EVCS tooltip',
       volume: 'Volume',
-      volumeTooltip: 'volume tooltip',
       account: 'account',
       you: 'you'
     },
@@ -58,17 +70,10 @@ export default {
       elcsTitle: 'Exchange Liquidity contribution score (ELCS)',
       evcsTitle: 'Exchange volume contribution score (EVCS)',
       address: 'INJ Chain Address',
-      addressTooltip: 'INJ Chain Address',
       elcs: 'ELCS',
-      elcsTooltip: 'ELCS',
-      elcsPercentageTooltip: 'ELCS Percentage',
       evcs: 'EVCS',
-      evcsTooltip: 'EVCS',
-      evcsPercentageTooltip: 'EVCS Percentage',
       rewardsInj: 'Rewards in INJ',
-      rewardsInjTooltip: 'Rewards in INJ',
       rewardsUsd: 'Rewards in Usd',
-      rewardsUsdTooltip: 'Rewards in Usd',
       expected: 'Expected',
       you: 'you'
     },
@@ -79,8 +84,6 @@ export default {
       timestamp: 'Time stamp',
       elcs: 'ELCS',
       evcs: 'EVCS',
-      elcsTooltip: 'ELCS Tooltip',
-      evcsTooltip: 'Evcs Tooltip',
       emptyTitle: 'You are not a participant of the DMM Program',
       contactNow: 'Apply Now',
       connectMsg: 'Connect your wallet to see your score records'

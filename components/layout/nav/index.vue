@@ -13,10 +13,7 @@
       <v-nav-item class="lg:hidden" :to="{ name: 'trade-and-earn' }">
         {{ $t('dmm.nav.tradingRewards') }}
       </v-nav-item>
-      <v-nav-item
-        class="lg:hidden"
-        :to="{ name: 'dedicated-market-making-rewards' }"
-      >
+      <v-nav-item class="lg:hidden" :to="{ name: 'dedicated-market-making' }">
         {{ $t('dmm.nav.dedicatedMarketMakingRewards') }}
       </v-nav-item>
       <v-nav-item-dummy
@@ -52,7 +49,7 @@
           {{ $t('dmm.nav.tradingRewards') }}
         </v-nav-item>
         <v-nav-item
-          :to="{ name: 'dedicated-market-making-rewards' }"
+          :to="{ name: 'dedicated-market-making' }"
           class="hover:text-primary-500"
           dense
         >

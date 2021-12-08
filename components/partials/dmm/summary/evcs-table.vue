@@ -22,7 +22,7 @@
     </div>
 
     <div class="rounded-2xl mt-4 overflow-y-hidden">
-      <TableHeader />
+      <TableHeader :latest="isLatestEpoch" />
       <TableBody
         class="max-h-60 overflow-y-scroll"
         :class="[
