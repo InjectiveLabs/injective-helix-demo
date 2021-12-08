@@ -3,9 +3,12 @@
     <span class="md:hidden">
       {{ $t('dmm.ranking.address') }}
     </span>
-    <span class="md:col-span-4">
+    <span class="md:col-span-6">
       <div class="flex items-center justify-end md:justify-start">
-        <span>{{ formattedAddress }}</span>
+        <span>
+          <span class="hidden sm:block">{{ item.address }}</span>
+          <span class="sm:hidden">{{ formattedAddress }}</span>
+        </span>
         <div v-if="active" class="flex items-center">
           <v-icon-profile class="text-gray-200 h-4 w-4 ml-3 mr-2" />
           <span>({{ $t('dmm.ranking.you') }})</span>
@@ -18,7 +21,7 @@
     </span>
 
     <span
-      class="md:col-span-4 text-right md:text-left"
+      class="md:col-span-3 text-right md:text-left"
       :class="{ 'md:ml-1': scrollbar }"
     >
       {{ item.volume }} USD
@@ -29,7 +32,7 @@
     </span>
 
     <span
-      class="md:col-span-4 text-right md:text-left"
+      class="md:col-span-3 text-right md:text-left"
       :class="{ 'md:ml-1': scrollbar }"
     >
       {{ item.evcs }}

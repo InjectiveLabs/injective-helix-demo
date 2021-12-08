@@ -13,11 +13,11 @@
       </p>
 
       <p class="text-gray-500 text-xs mt-2 sm:mt-0">
-        {{
+        ({{
           $t('dmm.summary.elcsTotalTokensPercentage', {
             percentage: formattedRatio
           })
-        }}
+        }})
       </p>
     </div>
 

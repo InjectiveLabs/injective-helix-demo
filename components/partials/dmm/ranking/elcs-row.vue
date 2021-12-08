@@ -3,8 +3,11 @@
     <span class="md:hidden">
       {{ $t('dmm.ranking.address') }}
     </span>
-    <div class="flex items-center md:col-span-3 justify-end md:justify-start">
-      <span>{{ formattedAddress }}</span>
+    <div class="flex items-center md:col-span-6 justify-end md:justify-start">
+      <span>
+        <span class="hidden sm:block">{{ item.address }}</span>
+        <span class="sm:hidden">{{ formattedAddress }}</span>
+      </span>
       <div v-if="active" class="flex items-center">
         <v-icon-profile class="text-gray-200 h-4 w-4 ml-3 mr-2" />
         <span>({{ $t('dmm.ranking.you') }})</span>
@@ -14,7 +17,7 @@
     <span class="md:hidden">{{ $t('dmm.ranking.elcsBuy') }}</span>
     <span
       :class="{ 'md:ml-1': scrollbar }"
-      class="text-right md:col-span-3 md:text-left"
+      class="text-right md:col-span-2 md:text-left"
     >
       {{ item.buy }}
     </span>
@@ -25,7 +28,7 @@
 
     <span
       :class="{ 'md:ml-2': scrollbar }"
-      class="text-right md:col-span-3 md:text-left"
+      class="text-right md:col-span-2 md:text-left"
     >
       {{ item.sell }}
     </span>
@@ -35,7 +38,7 @@
     </span>
     <span
       :class="{ 'md:ml-2': scrollbar }"
-      class="text-right md:col-span-3 md:text-left"
+      class="text-right md:col-span-2 md:text-left"
     >
       {{ item.elcs }}
     </span>

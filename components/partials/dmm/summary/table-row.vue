@@ -4,9 +4,16 @@
       {{ $t('dmm.summary.address') }}
     </span>
 
-    <span class="md:col-span-3 text-right md:text-left">
+    <span class="md:col-span-5 text-right md:text-left">
       <div class="flex items-center md:justify-start justify-end">
-        <span>{{ formattedAddress }}</span>
+        <span>
+          <span class="sm:hidden md:block xl:hidden">
+            {{ formattedAddress }}
+          </span>
+          <span class="hidden sm:block md:hidden xl:block">
+            {{ item.address }}
+          </span>
+        </span>
         <div v-if="active" class="flex items-center">
           <v-icon-profile class="text-gray-200 h-4 w-4 ml-3 mr-2" />
           <span>({{ $t('dmm.ranking.you') }})</span>
@@ -14,38 +21,32 @@
       </div>
     </span>
 
-    <span class="md:hidden">
-      {{ $t(isElcs ? 'dmm.summary.elcs' : 'dmm.summary.evcs') }}
-    </span>
-    <span
-      class="md:col-span-2 text-right md:text-left"
-      :class="{ 'md:ml-2': scrollbar }"
-    >
-      {{ item.total }}
-    </span>
+    <div class="col-span-2 md:col-span-7 grid grid-cols-2 md:grid-cols-10 gap-2 md:gap-0">
+      <span class="md:hidden">
+        {{ $t(isElcs ? 'dmm.summary.elcs' : 'dmm.summary.evcs') }}
+      </span>
+      <span class="md:col-span-2 text-right md:text-left" :class="{ 'md:ml-2': scrollbar }">
+        {{ item.total }}
+      </span>
 
-    <span class="md:hidden">
-      {{ $t(isElcs ? 'dmm.summary.elcs' : 'dmm.summary.evcs') }}%
-    </span>
-    <span
-      class="md:col-span-2 text-right md:text-left"
-      :class="{ 'md:ml-2': scrollbar }"
-    >
-      {{ item.totalPercentage }}%
-    </span>
+      <span class="md:hidden">
+        {{ $t(isElcs ? 'dmm.summary.elcs' : 'dmm.summary.evcs') }} %
+      </span>
+      <span class="md:col-span-2 text-right md:text-left" :class="{ 'md:ml-2': scrollbar }">
+        {{ item.totalPercentage }} %
+      </span>
 
-    <div class="col-span-2 md:col-span-5 grid grid-cols-2 gap-2 md:gap-0">
       <span class="md:hidden">
         {{ $t('dmm.summary.rewardsInj') }}
       </span>
-      <span class="text-right md:text-left" :class="{ 'md:ml-2': scrollbar }">
+      <span class="md:col-span-3 text-right md:text-left" :class="{ 'md:ml-2': scrollbar }">
         {{ item.rewardInInj }} INJ
       </span>
 
       <span class="md:hidden">
         {{ $t('dmm.summary.rewardsUsd') }}
       </span>
-      <span class="text-right">
+      <span class="md:col-span-3 text-right">
         <span>≈</span>
         <span>${{ item.rewardInUsd }}</span>
       </span>
