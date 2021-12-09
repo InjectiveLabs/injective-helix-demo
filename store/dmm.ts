@@ -151,12 +151,12 @@ export const actions = actionTree(
       const epochDates = await fetchEpochs()
 
       commit('setDates', epochDates)
-      commit('setActiveEpochId', epochDates[0].id)
     },
 
     async fetchEpochSummary({ commit }, epochId?: string) {
       const { meta, result } = await fetchEpochSummary({ epochId })
 
+      commit('setActiveEpochId', meta.meta.id)
       commit('setMarkets', meta.markets)
       commit('setMeta', meta.meta)
       commit('setMarketMakers', meta.marketMakers)

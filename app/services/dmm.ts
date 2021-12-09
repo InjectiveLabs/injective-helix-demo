@@ -66,7 +66,7 @@ export const fetchEpochSummary = async ({ epochId }: { epochId?: string }) => {
     DMMMetrics.FetchEpochSummary
   )
 
-  const emptyMeta = { meta: {}, markets: [], marketMakers: [] }
+  const emptyMeta = { meta: { id: '' }, markets: [], marketMakers: [] }
   const emptyResult = {
     createdAt: '',
     lcs: { summaryMap: {}, byMarketsMap: {} },

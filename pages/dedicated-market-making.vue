@@ -117,6 +117,7 @@ export default Vue.extend({
       const { activeEpochId } = this
 
       if (activeEpochId !== epochId) {
+        this.$accessor.dmm.setActiveEpochId(epochId)
         this.fetchEpochStatus.setLoading()
 
         this.$accessor.dmm

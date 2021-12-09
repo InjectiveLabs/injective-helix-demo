@@ -10,7 +10,7 @@
     <template slot="title">
       <span>
         {{ $t('dmm.epoch.prefix') }} {{ selectedEpoch.text }}
-        <span v-if="selectedEpoch.id === 1">
+        <span v-if="selectedEpoch.id === latestEpochId">
           ({{ $t('dmm.epoch.current') }})
         </span>
       </span>
@@ -70,6 +70,16 @@ export default Vue.extend({
           )}`
         }
       })
+    },
+
+    latestEpochId(): string {
+      const { epochDates } = this
+
+      if (epochDates.length > 0) {
+        return epochDates[0].id
+      }
+
+      return ''
     },
 
     selectedEpoch(): Record<string, any> {
