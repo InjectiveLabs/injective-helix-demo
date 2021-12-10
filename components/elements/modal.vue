@@ -36,7 +36,8 @@
       >
         <div
           v-show="isOpen"
-          class="inline-block align-bottom bg-gray-850 shadow-card rounded-xl p-8 text-left transform transition-all w-full max-w-lg lg:max-w-2xl"
+          class="inline-block align-bottom bg-gray-850 shadow-card rounded-xl p-8 text-left transform transition-all w-full max-w-lg"
+          :class="{ 'lg:max-w-2xl': !sm }"
           role="dialog"
           :aria-modal="isOpen"
           aria-labelledby="modal-headline"
@@ -80,6 +81,11 @@ export default Vue.extend({
       required: true,
       default: false,
       type: Boolean
+    },
+
+    sm: {
+      type: Boolean,
+      default: false
     }
   },
 

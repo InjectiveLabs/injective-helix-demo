@@ -10,15 +10,6 @@
           {{ `(${derivativesTrades.length})` }}
         </span>
       </v-button-filter>
-      <v-separator />
-      <v-button-filter
-        v-model="component"
-        :option="components.spotTradeHistory"
-      >
-        <span>
-          {{ $t('spot_trade_history') }} {{ `(${spotTrades.length})` }}
-        </span>
-      </v-button-filter>
     </template>
 
     <template #context>
@@ -48,31 +39,27 @@
     <component
       :is="component"
       v-if="component"
-      :trades="currentTrades"
+      :trades="filteredDerivativesTrades"
     ></component>
   </v-card-table-wrap>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import VSpotTradeHistory from './trades/spot-trades.vue'
 import VDerivativeTradeHistory from './trades/derivative-trades.vue'
 import VSearch from '~/components/inputs/search.vue'
 import {
   UiDerivativeMarket,
   UiDerivativeTrade,
-  UiSpotMarket,
   UiSpotTrade
 } from '~/types'
 
 const components = {
-  spotTradeHistory: 'v-spot-trade-history',
   derivativeTradeHistory: 'v-derivative-trade-history'
 }
 
 export default Vue.extend({
   components: {
-    'v-spot-trade-history': VSpotTradeHistory,
     'v-derivative-trade-history': VDerivativeTradeHistory,
     VSearch
   },
@@ -92,40 +79,6 @@ export default Vue.extend({
 
     derivativeMarkets(): UiDerivativeMarket[] {
       return this.$accessor.derivatives.markets
-    },
-
-    spotMarkets(): UiSpotMarket[] {
-      return this.$accessor.spot.markets
-    },
-
-    spotTrades(): UiSpotTrade[] {
-      const { spotMarkets, trades } = this
-      const spotMarketsIds = spotMarkets.map(({ marketId }) => marketId)
-
-      return trades
-        .filter((o) => {
-          return spotMarketsIds.includes(o.marketId)
-        })
-        .map((trade) => ({
-          ...trade,
-          ticker:
-            spotMarkets.find(
-              (spotMarket) => trade.marketId === spotMarket.marketId
-            )?.ticker || ''
-        })) as UiSpotTrade[]
-    },
-
-    filteredSpotTrades(): UiSpotTrade[] {
-      const { search, spotTrades } = this
-
-      if (search.trim() === '') {
-        return spotTrades
-      }
-
-      return spotTrades.filter(
-        ({ ticker }) =>
-          ticker && ticker.toLowerCase().includes(search.toLowerCase())
-      )
     },
 
     derivativesTrades(): UiDerivativeTrade[] {
@@ -156,14 +109,6 @@ export default Vue.extend({
         ({ ticker }) =>
           ticker && ticker.toLowerCase().includes(search.toLowerCase())
       )
-    },
-
-    currentTrades(): Array<UiSpotTrade | UiDerivativeTrade> {
-      const { filteredDerivativesTrades, component, filteredSpotTrades } = this
-
-      return component === components.derivativeTradeHistory
-        ? filteredDerivativesTrades
-        : filteredSpotTrades
     }
   },
 

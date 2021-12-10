@@ -9,6 +9,7 @@
         </v-panel>
         <v-stats class="mt-16" />
         <v-social class="mt-16" />
+        <v-modal-white-list-only />
       </div>
     </div>
   </div>
@@ -21,12 +22,14 @@ import VStats from '~/components/partials/home/stats.vue'
 import VGetStarted from '~/components/partials/home/get-started.vue'
 import VRecentNews from '~/components/partials/home/news.vue'
 import VMarkets from '~/components/partials/common/markets/markets.vue'
+import VModalWhiteListOnly from '~/components/partials/modals/white-list-only.vue'
 
 export default Vue.extend({
   components: {
     VGetStarted,
     VSocial,
     VMarkets,
+    VModalWhiteListOnly,
     VRecentNews,
     VStats
   }

@@ -109,7 +109,7 @@ export default {
 
   router: {
     linkActiveClass: 'is-active',
-    middleware: ['maintenance']
+    middleware: ['maintenance', 'isWhiteListed']
   },
 
   toast: {

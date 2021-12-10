@@ -5,8 +5,8 @@
     </v-button>
 
     <v-modal
-      :is-open="isOpenConnectModal"
-      @modal-closed="isOpenConnectModal = false"
+      :is-open="isOpenConnectModal || isModalOpen"
+      @modal-closed="handleCloseModal"
     >
       <h3 slot="title">
         {{ $t('connect_to_wallet') }}
@@ -28,10 +28,7 @@
       </div>
     </v-modal>
     <v-modal-terms />
-    <v-modal-ledger
-      :is-open="isLedgerModalOpen"
-      @closed="isLedgerModalOpen = false"
-    />
+    <v-modal-ledger :is-open="isLedgerModalOpen" @closed="handleCloseModal" />
   </div>
 </template>
 
@@ -45,6 +42,7 @@ import HOCLoading from '~/components/hoc/loading.vue'
 import { Modal, WalletConnectStatus } from '~/types'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '~/app/utils/constants'
 import VModalTerms from '~/components/partials/modals/terms.vue'
+import whiteListedAddresses from '~/whitelist.config'
 
 export default Vue.extend({
   components: {
@@ -66,6 +64,18 @@ export default Vue.extend({
   computed: {
     walletConnectStatus(): WalletConnectStatus {
       return this.$accessor.wallet.walletConnectStatus
+    },
+
+    walletAddress(): string {
+      return this.$accessor.wallet.address
+    },
+
+    walletInjectiveAddress(): string {
+      return this.$accessor.wallet.injectiveAddress
+    },
+
+    isModalOpen(): boolean {
+      return this.$accessor.modal.modals[Modal.Connect]
     }
   },
 
@@ -127,17 +137,34 @@ export default Vue.extend({
       this.$emit('wallet-connected')
       this.status.setIdle()
       this.$nextTick(() => {
-        this.isOpenConnectModal = false
+        this.handleCloseModal()
+        this.checkIsWhiteListed()
       })
     },
 
     handleLedgerConnectingWallet() {
-      this.isOpenConnectModal = false
+      this.handleCloseModal()
       this.isLedgerModalOpen = true
     },
 
     handleDisconnectedWallet() {
       this.status.setIdle()
+    },
+
+    handleCloseModal() {
+      this.$accessor.modal.closeModal(Modal.Connect)
+      this.isOpenConnectModal = false
+    },
+
+    checkIsWhiteListed() {
+      const { walletAddress, walletInjectiveAddress } = this
+      const isWhitelisted =
+        whiteListedAddresses.includes(walletAddress) ||
+        whiteListedAddresses.includes(walletInjectiveAddress)
+
+      if (!isWhitelisted) {
+        this.$accessor.modal.openModal(Modal.WhiteListOnly)
+      }
     }
   }
 })

@@ -50,7 +50,8 @@ export enum Modal {
   Withdraw = 'withdraw',
   TakeOut = 'take-out',
   TransferOnChain = 'transfer-on-chain',
-  GasFeeRebate = 'gas-fee-rebate'
+  GasFeeRebate = 'gas-fee-rebate',
+  WhiteListOnly = 'white-list-only'
 }
 
 export enum Breakpoint {

@@ -23,7 +23,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import VItem from '~/components/partials/common/stats/item.vue'
-import { UiDerivativeMarket, UiSpotMarket } from '~/types'
+import { UiDerivativeMarket } from '~/types'
 import { TradingRewardsCampaign } from '~/types/exchange'
 
 export default Vue.extend({
@@ -40,16 +40,12 @@ export default Vue.extend({
       return this.$accessor.exchange.tradingRewardsCampaign
     },
 
-    spotMarkets(): UiSpotMarket[] {
-      return this.$accessor.spot.markets
-    },
-
     derivativeMarkets(): UiDerivativeMarket[] {
       return this.$accessor.derivatives.markets
     },
 
     disqualifiedMarkets(): string[] {
-      const { tradingRewardsCampaign, spotMarkets, derivativeMarkets } = this
+      const { tradingRewardsCampaign, derivativeMarkets } = this
 
       if (!tradingRewardsCampaign) {
         return []
@@ -69,20 +65,13 @@ export default Vue.extend({
         tradingRewardsCampaign.tradingRewardCampaignInfo
           .disqualifiedMarketIdsList
 
-      const spotMarketsTickerBasedOnIds = spotMarkets
-        .filter((spotMarket) => marketIds.includes(spotMarket.marketId))
-        .map((m) => m.ticker)
-
       const derivativeMarketsTickerBasedOnIds = derivativeMarkets
         .filter((derivativeMarket) =>
           marketIds.includes(derivativeMarket.marketId)
         )
         .map((m) => m.ticker)
 
-      return [
-        ...derivativeMarketsTickerBasedOnIds,
-        ...spotMarketsTickerBasedOnIds
-      ]
+      return [...derivativeMarketsTickerBasedOnIds]
     }
   }
 })

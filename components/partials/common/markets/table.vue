@@ -23,17 +23,6 @@
         >
           <span>{{ $t('perpetuals') }}</span>
         </v-button>
-        <div class="mx-2 w-px h-4 bg-gray-700"></div>
-        <v-button
-          :class="{
-            'text-gray-500': marketType !== MarketType.Spot
-          }"
-          text-sm
-          class="font-normal"
-          @click.stop="onSelectMarketType(MarketType.Spot)"
-        >
-          <span>{{ $t('spots') }}</span>
-        </v-button>
         <div class="hidden md:block mx-2 w-px h-4 bg-gray-700"></div>
         <v-button
           :class="{
