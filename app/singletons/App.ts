@@ -23,16 +23,16 @@ class App {
 
   get appUrlEndpoint(): UrlEndpoint {
     const endpoints = getUrlEndpointForNetwork(this.network)
-    const baseExplorerApiEndpoint =
+    const baseExchangeApiEndpoint =
       APP_EXCHANGE_API_ENDPOINT || endpoints.exchangeUrl
     const sentryGrpcApiEndpoint = APP_SENTRY_GRPC_ENDPOINT || endpoints.chainUrl
 
     return {
       ...endpoints,
-      exchangeUrl: 'https://dmm.exchange.injective.dev',
-      baseUrl: 'https://dmm.exchange.injective.dev/api',
-      explorerUrl: `${baseExplorerApiEndpoint}/api/explorer/v1`,
-      chainUrl: 'https://public.grpc.injective.network'
+      exchangeUrl: baseExchangeApiEndpoint,
+      baseUrl: `${baseExchangeApiEndpoint}/api`,
+      explorerUrl: `${baseExchangeApiEndpoint}/api/explorer/v1`,
+      chainUrl: sentryGrpcApiEndpoint
     }
   }
 
