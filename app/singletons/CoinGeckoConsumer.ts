@@ -36,6 +36,19 @@ export class CoinGeckoConsumer {
       }
     }
   }
+
+  async fetchHistory(id: string, date: string) {
+    // @ts-ignore
+    return (await this.httpClient.coins.fetchHistory(id, { date })) as {
+      data: {
+        id: string
+        symbol: string
+        name: string
+        // eslint-disable-next-line camelcase
+        market_data: { current_price: { usd: string } }
+      }
+    }
+  }
 }
 
 export const coinGeckoConsumer = new CoinGeckoConsumer()

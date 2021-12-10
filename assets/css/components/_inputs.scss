@@ -36,6 +36,16 @@
   @apply text-gray-300;
 }
 
+.input-light {
+  .input {
+    @apply bg-gray-800;
+  }
+
+  .addon {
+    @apply text-gray-500;
+  }
+}
+
 .is-valid {
   .input {
     @apply border-primary-500;

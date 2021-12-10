@@ -3,6 +3,7 @@
     <div
       v-on-clickaway="onDropdownClose"
       class="relative inline-block text-left w-full"
+      :class="selectedClass"
     >
       <div>
         <button
@@ -28,11 +29,12 @@
       >
         <div
           v-show="isDropdownOpen"
-          class="origin-top-right absolute left-0 top-0 w-full shadow-md divide-y divide-gray-100 z-20 bg-gray-800 divide-gray-500"
+          class="origin-top-right absolute left-0 top-0 w-full shadow-md divide-y divide-gray-100 z-20 bg-gray-800 divide-gray-500 overflow-hidden"
+          :class="menuClass"
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="options-menu"
-          @click="onDropdownClose"
+          @click="handleClick"
         >
           <slot />
         </div>
@@ -56,7 +58,27 @@ export default Vue.extend({
       default: false
     },
 
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+
     hideBottomBorder: {
+      type: Boolean,
+      default: false
+    },
+
+    menuClass: {
+      type: String,
+      default: ''
+    },
+
+    selectedClass: {
+      type: String,
+      default: ''
+    },
+
+    preventClose: {
       type: Boolean,
       default: false
     }
@@ -87,6 +109,15 @@ export default Vue.extend({
       })
     },
 
+    handleClick() {
+      const { preventClose } = this
+
+      // add support to prevent closing menu on click
+      if (!preventClose) {
+        this.onDropdownClose()
+      }
+    },
+
     onDropdownClose() {
       if (this.isDropdownOpen) {
         this.isDropdownOpen = false
@@ -94,7 +125,9 @@ export default Vue.extend({
     },
 
     onDropdownToggle() {
-      this.isDropdownOpen = !this.isDropdownOpen
+      if (!this.disabled) {
+        this.isDropdownOpen = !this.isDropdownOpen
+      }
     }
   }
 })

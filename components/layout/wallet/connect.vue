@@ -125,6 +125,7 @@ export default Vue.extend({
     handleConnectedWallet() {
       this.$toast.success(this.$t('success_connect'))
       this.$emit('wallet-connected')
+      this.$root.$emit('wallet-connected')
       this.status.setIdle()
       this.$nextTick(() => {
         this.isOpenConnectModal = false

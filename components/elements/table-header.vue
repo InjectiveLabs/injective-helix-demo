@@ -1,7 +1,10 @@
 <template>
   <div
-    class="px-6 grid-cols-12 gap-4 text-gray-200 uppercase md:grid hidden md:mb-4 items-center"
-    :class="fontSizeClasses"
+    class="grid-cols-12 gap-4 text-gray-200 uppercase md:grid hidden items-center"
+    :class="[
+      fontSizeClasses,
+      dense ? 'px-4 py-4 bg-gray-900 rounded-t-2xl leading-3.5' : 'px-6 md:mb-4'
+    ]"
   >
     <slot></slot>
   </div>
@@ -13,6 +16,11 @@ import Vue from 'vue'
 export default Vue.extend({
   props: {
     sm: {
+      type: Boolean,
+      default: false
+    },
+
+    dense: {
       type: Boolean,
       default: false
     }
