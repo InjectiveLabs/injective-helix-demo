@@ -50,6 +50,26 @@
   }
 }
 
+.v-table-row-dense {
+  border-radius: 0 !important;
+
+  &:nth-child(odd) {
+    background-color: theme('colors.gray.850');
+  }
+
+  &:nth-child(even) {
+    background-color: theme('colors.gray.900');
+  }
+
+  &:not(.active):hover {
+    background-color: theme('colors.gray.1000');
+  }
+
+  &.active {
+    @apply bg-opacity-20 bg-primary-500;
+  }
+}
+
 .list-trades {
   @apply overflow-y-auto;
 
