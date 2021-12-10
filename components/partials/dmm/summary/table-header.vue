@@ -1,10 +1,10 @@
 <template>
   <TableHeader sm dense>
-    <span class="col-span-5">
+    <span class="col-span-4">
       {{ $t('dmm.summary.address') }}
     </span>
 
-    <div class="col-span-7 grid grid-cols-10 gap-2 md:gap-0">
+    <div class="col-span-8 grid grid-cols-10 gap-2 md:gap-0">
       <div class="flex items-center relative col-span-2">
         <span>
           {{ $t(isElcs ? 'dmm.summary.elcs' : 'dmm.summary.evcs') }}

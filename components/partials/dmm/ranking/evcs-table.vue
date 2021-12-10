@@ -19,11 +19,11 @@
 
     <div class="rounded-2xl mt-4 overflow-y-hidden">
       <TableHeader sm dense>
-        <span class="col-span-6">
+        <span class="col-span-4">
           {{ $t('dmm.ranking.address') }}
         </span>
 
-        <div class="col-span-3 flex items-center relative">
+        <div class="col-span-4 flex items-center relative">
           <span>{{ $t('dmm.ranking.volume') }}</span>
           <v-icon-info-tooltip
             lg
@@ -33,7 +33,7 @@
           />
         </div>
 
-        <div class="col-span-3 flex items-center relative">
+        <div class="col-span-4 flex items-center relative">
           <span>{{ $t('dmm.ranking.evcs') }}</span>
           <v-icon-info-tooltip
             lg

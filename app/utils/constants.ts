@@ -75,6 +75,7 @@ export const INJ_FEE_BUFFER = 0.01
 export const GAS_LIMIT_MULTIPLIER = 1.2
 export const BRIDGE_FEE_IN_USD = 10
 export const INJ_COIN_GECKO_ID = 'injective-protocol'
+export const BITCOIN_GECKO_ID = 'bitcoin'
 
 // eslint-disable-next-line prefer-regex-literals
 export const NUMBER_REGEX = new RegExp(/^-?(0|[1-9]\d*)?(\.\d+)?$/)

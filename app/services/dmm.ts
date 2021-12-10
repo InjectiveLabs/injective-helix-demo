@@ -20,7 +20,7 @@ import {
   UiEpochMarkets,
   UiEpochMarketsWithTokenMeta
 } from '~/types'
-import { INJ_COIN_GECKO_ID } from '~/app/utils/constants'
+import { BITCOIN_GECKO_ID, INJ_COIN_GECKO_ID } from '~/app/utils/constants'
 
 export const fetchDMMRecords = async ({
   accountAddress,
@@ -91,11 +91,20 @@ export const fetchEpochSummary = async ({ epochId }: { epochId?: string }) => {
 export const findActiveMarket = (
   markets: UiEpochMarketsWithTokenMeta[]
 ): string => {
-  const injMarket = markets.find(({ token }: UiEpochMarketsWithTokenMeta) => {
-    return token?.coinGeckoId === INJ_COIN_GECKO_ID
-  })
+  const btcMarkets = markets.filter(
+    ({ token }: UiEpochMarketsWithTokenMeta) => {
+      return token?.coinGeckoId === BITCOIN_GECKO_ID
+    }
+  )
 
-  return injMarket?.marketId || markets[0].marketId
+  // set default market to BTC PERP || BTC Spot
+  const defaultMarket =
+    btcMarkets.length > 0
+      ? btcMarkets.find(({ subType }) => subType === MarketType.Perpetual) ||
+        btcMarkets[0]
+      : undefined
+
+  return defaultMarket?.marketId || markets[0].marketId
 }
 
 export const fetchMarkets = async (markets: UiEpochMarkets[]) => {
