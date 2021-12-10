@@ -1,7 +1,7 @@
 export default {
   dmm: {
     nav: {
-      tradingRewards: 'Trading & Earn',
+      tradingRewards: 'Trade & Earn',
       dedicatedMarketMakingRewards: 'Dedicated Market Making',
       dedicatedMarketMakingRankings: 'Dedicated market making ranking',
       currentEpochRecords: 'Score records in current epoch'
