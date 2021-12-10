@@ -29,10 +29,10 @@ class App {
 
     return {
       ...endpoints,
-      exchangeUrl: baseExplorerApiEndpoint,
-      baseUrl: `${baseExplorerApiEndpoint}/api`,
+      exchangeUrl: 'https://dmm.exchange.injective.dev',
+      baseUrl: 'https://dmm.exchange.injective.dev/api',
       explorerUrl: `${baseExplorerApiEndpoint}/api/explorer/v1`,
-      chainUrl: sentryGrpcApiEndpoint
+      chainUrl: 'https://public.grpc.injective.network'
     }
   }
 
