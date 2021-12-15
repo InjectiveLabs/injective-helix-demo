@@ -1,4 +1,5 @@
 import { BigNumber } from '@injectivelabs/utils'
+import { formatDuration, intervalToDuration } from 'date-fns'
 import { SECONDS_IN_A_DAY } from '~/app/utils/constants'
 
 export const tomorrow = (): BigNumber => {
@@ -25,4 +26,26 @@ export const getEndDateStringFromTimeInSeconds = (
   const currentDate = new Date(timeInSeconds.toNumber() * 1000)
 
   return currentDate.toLocaleString('en-us')
+}
+
+const countDownDisplaySuffix: Record<string, any> = {
+  xDays: 'd',
+  xHours: 'h',
+  xMinutes: 'm',
+  xSeconds: 's'
+}
+
+export const formatDurationFromSeconds = (seconds: number): string => {
+  const duration = intervalToDuration({ start: 0, end: seconds * 1000 })
+
+  return formatDuration(duration, {
+    format: ['days', 'hours', 'minutes', 'seconds'],
+    locale: {
+      formatDistance: (type, count) => {
+        const formattedCount = count < 10 ? `0${count}` : count
+
+        return `${formattedCount}${countDownDisplaySuffix[type]}`
+      }
+    }
+  })
 }

@@ -96,3 +96,7 @@
   font-style: normal;
   font-display: swap;
 }
+
+.text-gradient {
+  @apply text-transparent bg-clip-text bg-gradient-to-tr from-blue-200 to-primary-500;
+}
