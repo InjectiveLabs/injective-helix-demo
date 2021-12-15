@@ -12,8 +12,8 @@
         {{ countDownTimer }}
       </div>
       <div>
-        <a :href="auctionUrl" target="_blank">
-          <v-button primary lg @click="closeModal">
+        <a :href="auctionUrl" target="_blank" @click="closeModal">
+          <v-button primary lg>
             <span>{{ $t('auction.countdown.button') }}</span>
           </v-button>
         </a>
