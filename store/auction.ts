@@ -8,7 +8,6 @@ export const hardcodedEndTime = 1639573200 * 1000
 
 const initialState = {
   auctionModuleState: undefined,
-  // cache auctions rounds that have been shown to client
   auctionsViewed: []
 }
 
