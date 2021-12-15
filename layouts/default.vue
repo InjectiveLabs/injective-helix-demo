@@ -18,7 +18,7 @@
               </main>
               <v-footer />
               <v-market-slideout />
-              <v-modal-auction-countdown />
+              <v-modal-auction-countdown v-if="SHOW_AUCTION_COUNTDOWN" />
             </div>
           </client-only>
         </div>
@@ -52,6 +52,7 @@ export default Vue.extend({
 
   data() {
     return {
+      SHOW_AUCTION_COUNTDOWN,
       isOpenSidebar: false,
       status: new Status(StatusType.Loading),
       interval: 0 as any
@@ -85,14 +86,8 @@ export default Vue.extend({
       })
       .catch(this.$onRejected)
 
-    if (
-      SHOW_AUCTION_COUNTDOWN &&
-      !this.$accessor.auction.auctionsViewed.includes(hardcodedAuctionRound) &&
-      hardcodedEndTime > Date.now()
-    ) {
-      this.$accessor.auction.fetchAuctionModuleState().then(() => {
-        this.$accessor.modal.openModal(Modal.AuctionCountdown)
-      })
+    if (SHOW_AUCTION_COUNTDOWN) {
+      this.$accessor.auction.fetchAuctionModuleState()
     }
   },
 

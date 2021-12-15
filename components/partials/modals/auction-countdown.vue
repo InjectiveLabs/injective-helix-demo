@@ -12,11 +12,11 @@
         {{ countDownTimer }}
       </div>
       <div>
-        <v-button primary lg @click="closeModal">
-          <a :href="auctionUrl" target="_blank">
+        <a :href="auctionUrl" target="_blank" @click="closeModal">
+          <v-button primary lg>
             <span>{{ $t('auction.countdown.button') }}</span>
-          </a>
-        </v-button>
+          </v-button>
+        </a>
       </div>
     </div>
   </v-modal>
@@ -113,8 +113,15 @@ export default Vue.extend({
     }
   },
 
+  watch: {
+    auctionModuleState() {
+      this.handleAuctionModalOpen()
+    }
+  },
+
   mounted() {
     this.setIntervalForNow()
+    this.handleAuctionModalOpen()
   },
 
   methods: {
@@ -124,12 +131,38 @@ export default Vue.extend({
       }, 1000)
     },
 
+    handleAuctionModalOpen() {
+      const { auctionsViewed, auctionModuleState, now } = this
+      const mSecondsInADay = 24 * 60 * 60 * 1000
+
+      if (auctionModuleState) {
+        const auctionEndingTimestamp =
+          auctionModuleState.auctionEndingTimestamp * 1000
+        const auctionClosesInLessThanADay =
+          now + mSecondsInADay >= auctionEndingTimestamp
+        const auctionIsNotClosed = now < auctionEndingTimestamp
+        const auctionModalIsNotClosed = !auctionsViewed.includes(
+          auctionModuleState.auctionRound
+        )
+
+        if (
+          auctionClosesInLessThanADay &&
+          auctionIsNotClosed &&
+          auctionModalIsNotClosed
+        ) {
+          this.$accessor.modal.openModal(Modal.AuctionCountdown)
+        }
+      }
+    },
+
     closeModal() {
       const { auctionModuleState } = this
 
-      const round = auctionModuleState?.auctionRound || hardcodedAuctionRound
-      // store viewed status in auction cache
-      this.$accessor.auction.setAuctionsViewed(round)
+      if (!auctionModuleState) {
+        return
+      }
+
+      this.$accessor.auction.setAuctionsViewed(auctionModuleState.auctionRound)
       this.$accessor.modal.closeModal(Modal.AuctionCountdown)
     }
   }
