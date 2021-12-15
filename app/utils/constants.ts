@@ -15,6 +15,8 @@ export const TRANSFER_RESTRICTIONS_ENABLED: boolean =
   process.env.TRANSFER_RESTRICTIONS_ENABLED === 'true'
 export const GEO_IP_RESTRICTIONS_ENABLED: boolean =
   process.env.GEO_IP_RESTRICTIONS_ENABLED === 'true'
+export const SHOW_AUCTION_COUNTDOWN: boolean =
+  process.env.SHOW_AUCTION_COUNTDOWN === 'true'
 
 export const ZERO: BigNumber = new BigNumber(0)
 export const ZERO_TO_STRING = '0'

@@ -36,8 +36,8 @@
       >
         <div
           v-show="isOpen"
-          class="inline-block align-bottom bg-gray-850 shadow-card rounded-xl text-left transform transition-all w-full max-w-lg lg:max-w-2xl"
-          :class="[dense ? 'p-6' : 'p-8']"
+          class="inline-block align-bottom bg-gray-850 shadow-card rounded-xl text-left transform transition-all w-full max-w-lg"
+          :class="[dense ? 'p-6' : 'p-8', { 'lg:max-w-2xl': !sm }]"
           role="dialog"
           :aria-modal="isOpen"
           aria-labelledby="modal-headline"
@@ -46,7 +46,7 @@
             <div class="block w-full">
               <div class="flex items-center justify-between">
                 <div
-                  class="text-xs uppercase text-gray-100 tracking-wider font-semibold"
+                  class="text-xs uppercase text-gray-100 tracking-wider font-semibold grow"
                 >
                   <slot name="title" />
                 </div>
@@ -84,6 +84,11 @@ export default Vue.extend({
     },
 
     dense: {
+      type: Boolean,
+      default: false
+    },
+
+    sm: {
       type: Boolean,
       default: false
     }

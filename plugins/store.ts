@@ -5,6 +5,7 @@ import { AppState } from '~/types'
 
 const mutationsToPersist = [
   'app/acceptHighPriceDeviations',
+  'auction/setAuctionsViewed',
   'wallet/reset',
   'wallet/setAddress',
   'wallet/setAddresses',
@@ -45,7 +46,12 @@ const store: Plugin = ({ store, app }, inject) => {
     if (mutationsToPersist.includes(type)) {
       const stateToPersist = {
         app: {
-          acceptHighPriceDeviations: app.$accessor.app.acceptHighPriceDeviations
+          acceptHighPriceDeviations:
+            app.$accessor.app.acceptHighPriceDeviations
+        },
+
+        auction: {
+          auctionsViewed: app.$accessor.auction.auctionsViewed
         },
 
         wallet: {
