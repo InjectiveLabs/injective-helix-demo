@@ -2,6 +2,7 @@ import { getAccessorType } from 'typed-vuex'
 
 import * as account from '~/store/account'
 import * as app from '~/store/app'
+import * as auction from '~/store/auction'
 import * as bank from '~/store/bank'
 import * as derivatives from '~/store/derivatives'
 import * as dmm from '~/store/dmm'
@@ -17,6 +18,7 @@ import * as wallet from '~/store/wallet'
 export const accessorType = getAccessorType({
   modules: {
     app,
+    auction,
     account,
     bank,
     derivatives,
