@@ -80,19 +80,21 @@ export default Vue.extend({
       const countdownTimer = formatDurationFromSeconds(timeDifferenceInSeconds)
 
       if (countdownTimer === '') {
-        return '00d 00m 00s'
-      }
-
-      if (!countdownTimer.includes('d') && !countdownTimer.includes('m')) {
-        return `00d 00m ${countdownTimer}`
-      }
-
-      if (!countdownTimer.includes('d') && !countdownTimer.includes('s')) {
-        return `00d ${countdownTimer} 00s`
+        return '00h 00m 00s'
       }
 
       if (!countdownTimer.includes('d')) {
-        return `00d ${countdownTimer}`
+        if (!countdownTimer.includes('h') && !countdownTimer.includes('m')) {
+          return `00h 00m ${countdownTimer}`
+        }
+
+        if (!countdownTimer.includes('h') && !countdownTimer.includes('s')) {
+          return `00h ${countdownTimer} 00s`
+        }
+
+        if (!countdownTimer.includes('h')) {
+          return `00h ${countdownTimer}`
+        }
       }
 
       return countdownTimer
