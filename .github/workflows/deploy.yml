@@ -26,6 +26,7 @@ jobs:
       METRICS_ENABLED: true
       GEO_IP_RESTRICTIONS_ENABLED: true
       TRANSFER_RESTRICTIONS_ENABLED: false
+      SHOW_AUCTION_COUNTDOWN: true
 
       ## Endpoints
       APP_EXCHANGE_API_ENDPOINT: ''
@@ -96,6 +97,7 @@ jobs:
       METRICS_ENABLED: false
       GEO_IP_RESTRICTIONS_ENABLED: true
       TRANSFER_RESTRICTIONS_ENABLED: false
+      SHOW_AUCTION_COUNTDOWN: false
 
       ## Endpoints
       APP_EXCHANGE_API_ENDPOINT: ''
@@ -166,6 +168,7 @@ jobs:
       METRICS_ENABLED: false
       GEO_IP_RESTRICTIONS_ENABLED: false
       TRANSFER_RESTRICTIONS_ENABLED: false
+      SHOW_AUCTION_COUNTDOWN: false
 
       ## Endpoints
       APP_EXCHANGE_API_ENDPOINT: ''
@@ -236,6 +239,7 @@ jobs:
       METRICS_ENABLED: false
       GEO_IP_RESTRICTIONS_ENABLED: false
       TRANSFER_RESTRICTIONS_ENABLED: false
+      SHOW_AUCTION_COUNTDOWN: false
 
       ## Endpoints
       APP_EXCHANGE_API_ENDPOINT: ''
