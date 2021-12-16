@@ -533,5 +533,6 @@ export default {
       title: 'First Injective Burn Countdown',
       button: 'Watch the Burn'
     }
-  }
+  },
+  terra: 'Terra'
 }

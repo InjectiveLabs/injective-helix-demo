@@ -4,6 +4,7 @@ import {
   BigNumberInBase
 } from '@injectivelabs/utils'
 import { getCoinGeckoId, getTokenMetaDataWithIbc } from '../services/tokens'
+import { marketBaseFromTicker } from '../data/market-base'
 import { grpcTokenMetaToToken, tokenMetaToToken } from './token'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
 import { spot as sortSpotMarkets } from '~/routes.config'
@@ -26,6 +27,7 @@ export const spotMarketToUiSpotMarket = (
     ...market,
     type: MarketType.Spot,
     subType: MarketType.Spot,
+    marketBase: marketBaseFromTicker(market.ticker),
     priceDecimals: getDecimalsFromNumber(
       new BigNumberInWei(market.minPriceTickSize)
         .toBase(market.quoteToken.decimals - market.baseToken.decimals)

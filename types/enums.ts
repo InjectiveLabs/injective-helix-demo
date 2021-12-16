@@ -70,6 +70,10 @@ export enum MarketType {
   Futures = 'Futures'
 }
 
+export enum MarketBase {
+  Terra = 'terra'
+}
+
 export enum AppState {
   Busy = 'Busy',
   Loading = 'Loading',
