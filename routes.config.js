@@ -61,9 +61,9 @@ const testnetDerivatives = [
 const mainnetDerivatives = [
   'btc-usdt-perp',
   'eth-usdt-perp',
-  'bnb-usdt-perp'
   // 'inj-usdt-perp',
-  // 'luna-ust-perp'
+  // 'luna-ust-perp',
+  'bnb-usdt-perp'
 ]
 const derivatives = IS_TESTNET ? testnetDerivatives : mainnetDerivatives
 
