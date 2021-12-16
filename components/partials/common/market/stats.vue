@@ -435,13 +435,13 @@ export default Vue.extend({
       const { market } = this
 
       if (market) {
-        document.title = `${newPrice} - ${market.ticker} | ${metaTags.headTitle}`
+        document.title = `${newPrice} - ${market.ticker} | ${metaTags.title}`
       }
     }
   },
 
   beforeDestroy() {
-    document.title = metaTags.headTitle
+    document.title = metaTags.title
   }
 })
 </script>
