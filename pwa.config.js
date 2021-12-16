@@ -1,5 +1,5 @@
 const resolve = require('path').resolve
-const { metaTags } = require('./app/utils/generators')
+const { pwaMetaTags, manifestMetaTags } = require('./meta.config')
 
 module.exports = {
   pwa: {
@@ -9,11 +9,11 @@ module.exports = {
 
     meta: {
       favicon: true,
-      ...metaTags().pwaMetaTags()
+      ...pwaMetaTags
     },
 
     manifest: {
-      ...metaTags().manifestMetaTags()
+      ...manifestMetaTags
     }
   }
 }

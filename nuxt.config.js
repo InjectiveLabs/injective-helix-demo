@@ -1,7 +1,7 @@
 const modules = require('./modules.config')
 const routes = require('./routes.config')
 const build = require('./build.config')
-const meta = require('./meta.config')
+const head = require('./head.config')
 const pwa = require('./pwa.config')
 
 export default {
@@ -11,7 +11,7 @@ export default {
   /*
    ** Headers of the page
    */
-  head: meta,
+  head,
   /*
    ** Customize the progress-bar color
    */

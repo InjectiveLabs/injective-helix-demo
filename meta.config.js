@@ -1,42 +1,97 @@
-const { metaTags } = require('./app/utils/generators')
-const scripts = []
-const meta = [
-  { charset: 'utf-8' },
-  { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-  {
-    name: 'google-site-verification',
-    content: process.env.APP_GOOGLE_SITE_VERIFICATION_KEY
-  }
-]
+const { BASE_URL } = require('./app/utils/constants')
 
-if (process.env.META_TAGS_ENABLED === 'true') {
-  meta.push(...metaTags().appMetaTags())
+const metaTags = {
+  title: process.env.APP_NAME
+    ? process.env.APP_NAME
+    : 'Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.',
+  description:
+    'Injective is the first front-running resistant, layer-2 exchange protocol that unlocks the full potential of borderless finance by supporting margin trading, derivatives, and futures.',
+  keywords:
+    'injective protocol, dapp, decentralized app, cryptocurrency, criptocurrency exchange, exchange, exchange token, ethereum, ethereum token, erc20, futures, perpetuals, futures protocol',
+  author: 'InjectiveLabs',
+  url: 'https://injective.exchange',
+  shortName: 'Injective Pro DEX',
+  twitterHandle: '@InjectiveLabs',
+  ogImage: `${BASE_URL}/images/og.jpeg` // Change this to another image (change the name of the file as well to clear cache from social media)
 }
 
-if (process.env.NODE_ENV === 'production') {
-  scripts.push({
-    src:
-      'https://cdn.elev.io/sdk/bootloader/v4/elevio-bootloader.js?cid=' +
-      process.env.APP_ELEVIO_ID,
-    async: true,
-    defer: true,
-    body: true
-  })
+const nuxtMetaTags = [
+  {
+    hid: 'og:url',
+    property: 'og:url',
+    content: `${BASE_URL}`
+  },
+  { hid: 'keywords', name: 'keywords', content: metaTags.keywords },
+  { hid: 'description', name: 'description', content: metaTags.description },
+  { hid: 'author', name: 'author', content: metaTags.author },
+  { hid: 'og:type', property: 'og:type', content: 'exchange' },
+  {
+    hid: 'og:image',
+    property: 'og:image',
+    content: metaTags.ogImage
+  },
+  {
+    hid: 'og:description',
+    property: 'og:description',
+    content: metaTags.description
+  },
+  {
+    hid: 'twitter:card',
+    property: 'twitter:card',
+    content: 'summary_large_image'
+  },
+  {
+    hid: 'twitter:site',
+    property: 'twitter:site',
+    content: metaTags.twitterHandle
+  },
+  {
+    name: 'twitter:image',
+    content: metaTags.ogImage
+  },
+  {
+    hid: 'twitter:creator',
+    property: 'twitter:creator',
+    content: metaTags.twitterHandle
+  },
+  {
+    hid: 'twitter:description',
+    property: 'twitter:description',
+    content: metaTags.description
+  },
+  {
+    hid: 'twitter:title',
+    property: 'twitter:title',
+    content: metaTags.title
+  },
+  { hid: 'og:title', property: 'og:title', content: metaTags.title },
+  { hid: 'og:site_name', property: 'og:site_name', content: metaTags.title },
+  { hid: 'title', property: 'title', content: metaTags.title }
+]
+
+const pwaMetaTags = {
+  name: metaTags.title,
+  description: metaTags.description,
+  ogSiteName: metaTags.title,
+  ogTitle: metaTags.title,
+  ogDescription: metaTags.description,
+  ogHost: metaTags.url,
+  ogUrl: metaTags.url,
+  ogImage: metaTags.ogImage,
+  twitterCard: 'summary_large_image',
+  twitterSite: '@InjectiveLabs',
+  twitterCreator: '@InjectiveLabs'
+}
+
+const manifestMetaTags = {
+  name: metaTags.title,
+  description: metaTags.description,
+  short_name: metaTags.shortName
 }
 
 module.exports = {
-  titleTemplate: process.env.APP_NAME,
-  meta,
-  htmlAttrs: {
-    class: 'bg-gray-1000'
-  },
-  bodyAttrs: {
-    class: 'overflow-fix'
-  },
-  script: scripts,
-  link: [
-    { rel: 'icon', type: 'image/png', href: '/favicon-v4.png' },
-    { rel: 'shortcut-icon', type: 'image/png', href: '/favicon-v4.png' },
-    { rel: 'apple-touch-icon', type: 'image/png', href: '/favicon-v4.png' }
-  ]
+  metaTags,
+  nuxtMetaTags,
+  pwaMetaTags,
+  manifestMetaTags
 }

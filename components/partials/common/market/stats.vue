@@ -122,7 +122,6 @@ import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   ZERO_IN_BASE
 } from '~/app/utils/constants'
-import { headTitle } from '~/app/utils/generators'
 import MarketInfo from '~/components/elements/market-info.vue'
 import {
   Change,
@@ -133,6 +132,7 @@ import {
   UiDerivativeMarketSummary,
   MarketType
 } from '~/types'
+const { metaTags } = require('~/meta.config')
 
 export default Vue.extend({
   components: {
@@ -435,13 +435,13 @@ export default Vue.extend({
       const { market } = this
 
       if (market) {
-        document.title = `${newPrice} - ${market.ticker} | ${headTitle}`
+        document.title = `${newPrice} - ${market.ticker} | ${metaTags.title}`
       }
     }
   },
 
   beforeDestroy() {
-    document.title = headTitle
+    document.title = metaTags.title
   }
 })
 </script>
