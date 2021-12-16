@@ -27,6 +27,7 @@ import VOpenPositions from '~/components/partials/portfolio/open-positions.vue'
 import VOpenOrders from '~/components/partials/portfolio/open-orders.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
 import VModalAddMargin from '~/components/partials/modals/add-margin/index.vue'
+import { ORDERBOOK_POLLING_ENABLED } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -40,7 +41,8 @@ export default Vue.extend({
   data() {
     return {
       status: new Status(StatusType.Loading),
-      interval: 0 as any
+      interval: 0 as any,
+      orderbookInterval: 0 as any
     }
   },
 
@@ -48,9 +50,8 @@ export default Vue.extend({
     this.$accessor.portfolio
       .init()
       .then(() => {
-        this.interval = setInterval(async () => {
-          await this.$accessor.portfolio.poll()
-        }, 10000)
+        this.setPortfolioPolling()
+        this.setOrderbookPolling()
       })
       .catch(this.$onRejected)
       .finally(() => {
@@ -61,6 +62,23 @@ export default Vue.extend({
   beforeDestroy() {
     this.$accessor.portfolio.reset()
     clearInterval(this.interval)
+    clearInterval(this.orderbookInterval)
+  },
+
+  methods: {
+    setPortfolioPolling() {
+      this.interval = setInterval(async () => {
+        await this.$accessor.portfolio.poll()
+      }, 10000)
+    },
+
+    setOrderbookPolling() {
+      if (ORDERBOOK_POLLING_ENABLED) {
+        this.orderbookInterval = setInterval(async () => {
+          await this.$accessor.portfolio.fetchDerivativeOrderbooks()
+        }, 2000)
+      }
+    }
   }
 })
 </script>

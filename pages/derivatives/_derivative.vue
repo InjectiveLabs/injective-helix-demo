@@ -58,6 +58,7 @@ import VOrders from '~/components/partials/derivatives/orders.vue'
 import VOrderbook from '~/components/partials/derivatives/orderbook.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
 import { UiDerivativeMarket } from '~/types'
+import { ORDERBOOK_POLLING_ENABLED } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -77,7 +78,8 @@ export default Vue.extend({
 
   data() {
     return {
-      status: new Status(StatusType.Loading)
+      status: new Status(StatusType.Loading),
+      interval: 0 as any
     }
   },
 
@@ -97,7 +99,7 @@ export default Vue.extend({
     this.$accessor.derivatives
       .changeMarket(this.slugFromRoute)
       .then(() => {
-        //
+        this.setOrderbookPolling()
       })
       .catch(this.$onRejected)
       .finally(() => {
@@ -107,10 +109,17 @@ export default Vue.extend({
 
   beforeDestroy() {
     this.$accessor.derivatives.reset()
+    clearInterval(this.interval)
   },
 
   methods: {
-    //
+    setOrderbookPolling() {
+      if (ORDERBOOK_POLLING_ENABLED) {
+        this.interval = setInterval(async () => {
+          await this.$accessor.derivatives.pollOrderbook()
+        }, 2000)
+      }
+    }
   }
 })
 </script>

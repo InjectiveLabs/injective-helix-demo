@@ -28,7 +28,10 @@ import {
   streamSubaccountTrades,
   batchCancelOrders
 } from '~/app/services/spot'
-import { ZERO_IN_BASE } from '~/app/utils/constants'
+import {
+  ORDERBOOK_STREAMING_ENABLED,
+  ZERO_IN_BASE
+} from '~/app/utils/constants'
 import { zeroSpotMarketSummary } from '~/app/utils/helpers'
 
 const initialStateFactory = () => ({
@@ -253,15 +256,13 @@ export const actions = actionTree(
       commit('setMarkets', markets)
 
       const marketsSummary = await fetchMarketsSummary()
+      const marketSummaryNotExists =
+        !marketsSummary || (marketsSummary && marketsSummary.length === 0)
+      const actualMarketsSummary = marketSummaryNotExists
+        ? markets.map((market) => zeroSpotMarketSummary(market.marketId))
+        : marketsSummary
 
-      if (!marketsSummary || (marketsSummary && marketsSummary.length === 0)) {
-        commit(
-          'setMarketsSummary',
-          markets.map((market) => zeroSpotMarketSummary(market.marketId))
-        )
-      } else {
-        commit('setMarketsSummary', marketsSummary)
-      }
+      commit('setMarketsSummary', actualMarketsSummary as UiSpotMarketSummary[])
     },
 
     async changeMarket({ commit, state }, marketSlug: string) {
@@ -290,7 +291,10 @@ export const actions = actionTree(
         })
       )
 
-      await this.app.$accessor.spot.streamOrderbook()
+      if (ORDERBOOK_STREAMING_ENABLED) {
+        await this.app.$accessor.spot.streamOrderbook()
+      }
+
       await this.app.$accessor.spot.streamTrades()
       await this.app.$accessor.spot.streamSubaccountTrades()
       await this.app.$accessor.spot.streamSubaccountOrders()
@@ -299,6 +303,16 @@ export const actions = actionTree(
       await this.app.$accessor.account.streamSubaccountBalances()
       await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
       await this.app.$accessor.exchange.fetchTradingRewardsCampaign()
+    },
+
+    async pollOrderbook({ commit, state }) {
+      const { market } = state
+
+      if (!market) {
+        return
+      }
+
+      commit('setOrderbook', await fetchMarketOrderbook(market.marketId))
     },
 
     streamOrderbook({ commit, state }) {

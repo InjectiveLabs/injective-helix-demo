@@ -38,7 +38,11 @@ import {
   addMarginToPosition,
   validateNotionalRestrictions
 } from '~/app/services/derivatives'
-import { ZERO_IN_BASE, ZERO_TO_STRING } from '~/app/utils/constants'
+import {
+  ORDERBOOK_STREAMING_ENABLED,
+  ZERO_IN_BASE,
+  ZERO_TO_STRING
+} from '~/app/utils/constants'
 import { zeroDerivativeMarketSummary } from '~/app/utils/helpers'
 
 const initialStateFactory = () => ({
@@ -301,15 +305,16 @@ export const actions = actionTree(
       commit('setMarkets', markets)
 
       const marketsSummary = await fetchMarketsSummary()
+      const marketSummaryNotExists =
+        !marketsSummary || (marketsSummary && marketsSummary.length === 0)
+      const actualMarketsSummary = marketSummaryNotExists
+        ? markets.map((market) => zeroDerivativeMarketSummary(market.marketId))
+        : marketsSummary
 
-      if (!marketsSummary || (marketsSummary && marketsSummary.length === 0)) {
-        commit(
-          'setMarketsSummary',
-          markets.map((market) => zeroDerivativeMarketSummary(market.marketId))
-        )
-      } else {
-        commit('setMarketsSummary', marketsSummary)
-      }
+      commit(
+        'setMarketsSummary',
+        actualMarketsSummary as UiDerivativeMarketSummary[]
+      )
     },
 
     async changeMarket({ commit, state }, marketSlug: string) {
@@ -339,7 +344,10 @@ export const actions = actionTree(
         })
       )
 
-      await this.app.$accessor.derivatives.streamOrderbook()
+      if (ORDERBOOK_STREAMING_ENABLED) {
+        await this.app.$accessor.derivatives.streamOrderbook()
+      }
+
       await this.app.$accessor.derivatives.streamTrades()
       await this.app.$accessor.derivatives.streamMarketMarkPrices()
       await this.app.$accessor.derivatives.streamSubaccountOrders()
@@ -352,6 +360,16 @@ export const actions = actionTree(
       await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
       await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
       await this.app.$accessor.exchange.fetchTradingRewardsCampaign()
+    },
+
+    async pollOrderbook({ commit, state }) {
+      const { market } = state
+
+      if (!market) {
+        return
+      }
+
+      commit('setOrderbook', await fetchMarketOrderbook(market.marketId))
     },
 
     streamOrderbook({ commit, state }) {

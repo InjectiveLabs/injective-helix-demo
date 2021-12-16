@@ -22,6 +22,7 @@ import {
 
 import { batchCancelOrders as batchCancelDerivativeOrders } from '~/app/services/derivatives'
 import { batchCancelOrders as batchCancelSpotOrders } from '~/app/services/spot'
+import { ORDERBOOK_STREAMING_ENABLED } from '~/app/utils/constants'
 
 const initialStateFactory = () => ({
   subaccountOrders: [] as Array<UiSpotLimitOrder | UiDerivativeLimitOrder>,
@@ -167,7 +168,11 @@ export const actions = actionTree(
       await this.app.$accessor.portfolio.fetchSubaccountPositions()
       await this.app.$accessor.portfolio.streamSubaccountPositions()
       await this.app.$accessor.portfolio.fetchDerivativeOrderbooks()
-      await this.app.$accessor.portfolio.streamOrderbooks()
+
+      if (ORDERBOOK_STREAMING_ENABLED) {
+        await this.app.$accessor.portfolio.streamOrderbooks()
+      }
+
       await this.app.$accessor.portfolio.streamSubaccountOrders()
       await this.app.$accessor.account.fetchSubaccountsBalances()
       await this.app.$accessor.token.getAllTokenWithBalanceAndAllowance()
