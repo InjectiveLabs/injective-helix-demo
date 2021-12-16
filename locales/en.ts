@@ -534,5 +534,8 @@ export default {
       button: 'Watch the Burn'
     }
   },
-  terra: 'Terra'
+  terra: 'Terra',
+  overview: 'Overview',
+  subaccount_deposit_modal_note:
+    'To get started with trading you need to deposit your funds from the Injective Chain balance to a dedicated trading account. Select the asset you want to transfer, enter the amount, deposit and start trading!'
 }

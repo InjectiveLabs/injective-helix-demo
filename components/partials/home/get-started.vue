@@ -4,74 +4,110 @@
       {{ $t('getting_started') }}
     </h3>
     <div class="grid grid-cols-4 md:grid-cols-12 gap-4 lg:gap-6 mt-6">
-      <v-resource-card
-        v-for="(card, index) in cards"
-        :key="`resource-card-${index}`"
-        class="col-span-4"
-      >
-        <template slot="category">{{ card.category }}</template>
-        <template slot="title">{{ card.title }}</template>
-        <template slot="illustration">
-          <img
-            :src="card.illustration"
-            :alt="card.title"
-            :class="card.imageClass"
-          />
+      <v-onboarding-card class="col-span-4">
+        <template slot="title">
+          <span class="font-black">1.</span> {{ cards.bridge.title }}
         </template>
         <a
           slot="link"
-          :href="card.link"
+          :href="cards.bridge.link"
           class="text-primary-500 hover:text-primary-600"
           target="_blank"
         >
-          {{ card.linkText }}
+          {{ cards.bridge.linkText }}
         </a>
-        {{ card.description }}
-      </v-resource-card>
+        {{ cards.bridge.description }}
+      </v-onboarding-card>
+      <v-onboarding-card class="col-span-4">
+        <template slot="title">
+          <span class="font-black">2.</span> {{ cards.deposit.title }}
+        </template>
+        <span slot="link">
+          <span
+            class="cursor-pointer text-primary-500 hover:text-primary-600"
+            @click.stop="openDepositToSubaccountModal"
+          >
+            {{ cards.deposit.linkText }}
+          </span>
+        </span>
+        {{ cards.deposit.description }}
+      </v-onboarding-card>
+      <v-onboarding-card class="col-span-4">
+        <template slot="title">
+          <span class="font-black">3.</span> {{ cards.trading.title }}
+        </template>
+        <span slot="link">
+          <span
+            class="cursor-pointer text-primary-500 hover:text-primary-600"
+            @click.stop="openMarketSlideout"
+          >
+            {{ cards.trading.linkText }}
+          </span>
+        </span>
+        {{ cards.trading.description }}
+      </v-onboarding-card>
     </div>
+    <v-modal-subaccount-deposit-with-select />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import VOnboardingCard from '~/components/elements/onboarding-card.vue'
+import VModalSubaccountDepositWithSelect from '~/components/partials/modals/subaccount-deposit-with-select/index.vue'
+import { Modal } from '~/types'
 
 export default Vue.extend({
+  components: {
+    VOnboardingCard,
+    VModalSubaccountDepositWithSelect
+  },
+
   data() {
     return {
-      cards: [
-        {
-          category: 'Rewards',
-          title: 'Injective Rewards',
-          link: 'https://injective.exchange/trade-and-earn',
+      cards: {
+        bridge: {
+          title: 'Bridge Assets',
+          link: 'https://hub.injective.network/bridge',
           description:
-            'Earn rewards with every trade via the $120 Million Injective Astro program.',
-          linkText: 'Trade and Earn',
-          illustration: '/svg/astro-1.svg',
-          imageClass:
-            'w-24 h-24 md:w-24 md:h-24 md:mt-4 lg:w-32 lg:h-32 lg:-mt-2'
+            'Bridge assets from Ethereum, Cosmoshub or Terra to the Injective Chain.',
+          linkText: 'Bridge Now'
         },
-        {
-          category: 'External Link',
-          title: 'Injective Hub',
-          link: 'https://hub.injective.network',
+        deposit: {
+          title: 'Deposit to Trading Account',
           description:
-            'A unified interface for Injective staking, governance, insurance funds and wallets.',
-          linkText: 'Visit the Injective Hub',
-          illustration: '/svg/astro-2.svg',
-          imageClass:
-            'w-32 h-32 -mt-5 md:w-24 md:h-24 md:mt-4 lg:w-36 lg:h-36 lg:-mt-5'
+            'After successfully bridging the assets to Injective chain, move the desired amount to your trading account.',
+          linkText: 'Deposit'
         },
-        {
-          category: 'Docs',
-          title: 'Injective API',
-          link: 'https://api.injective.exchange/',
-          description: 'An institutional grade API custom made for Injective.',
-          linkText: 'Explore the docs',
-          illustration: '/svg/astro-3.svg',
-          imageClass:
-            'w-24 h-24 -mt-2 md:w-32 md:h-32 md:-mt-2 lg:w-32 lg:h-32 lg:-mt-2'
+        trading: {
+          title: 'Start Trading',
+          description:
+            'Select your desired market and start trading with zero gas fees and earn Astro rewards for every trade you make.',
+          linkText: 'Select Market'
         }
-      ]
+      }
+    }
+  },
+
+  computed: {
+    isUserWalletConnected(): boolean {
+      return this.$accessor.wallet.isUserWalletConnected
+    }
+  },
+
+  methods: {
+    openMarketSlideout() {
+      this.$root.$emit('toggle-market-slideout-from-content')
+    },
+
+    openDepositToSubaccountModal() {
+      const { isUserWalletConnected } = this
+
+      if (isUserWalletConnected) {
+        this.$accessor.modal.openModal(Modal.SubaccountDepositWithSelect)
+      } else {
+        this.$root.$emit('wallet-clicked')
+      }
     }
   }
 })
