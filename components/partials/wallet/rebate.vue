@@ -42,8 +42,9 @@ import {
   SubaccountBalanceWithTokenMetaData,
   Token,
   UiDerivativeMarket,
+  UiDerivativeTrade,
   UiSpotMarket,
-  UserTransactionMessage
+  UiSpotTrade
 } from '~/types'
 import { UserDeposit } from '~/types/gql'
 
@@ -75,8 +76,8 @@ export default Vue.extend({
       return this.$accessor.gasRebate.deposits
     },
 
-    transactionsMessages(): UserTransactionMessage[] {
-      return this.$accessor.gasRebate.transactionsMessages
+    trades(): Array<UiSpotTrade | UiDerivativeTrade> {
+      return this.$accessor.gasRebate.trades
     },
 
     bankBalances(): BankBalanceWithTokenMetaData[] {
@@ -113,36 +114,24 @@ export default Vue.extend({
       )
     },
 
-    tradeMessages(): UserTransactionMessage[] {
-      const { transactionsMessages } = this
-
-      return transactionsMessages.filter(
-        (transactionMessage: UserTransactionMessage) =>
-          transactionMessage.type.includes('MsgCreateSpotMarketOrder') ||
-          transactionMessage.type.includes('MsgCreateDerivativeMarketOrder') ||
-          transactionMessage.type.includes('MsgCreateSpotLimitOrder') ||
-          transactionMessage.type.includes('MsgCreateDerivativeLimitOrder')
-      )
-    },
-
     hasTrades(): boolean {
-      const { tradeMessages } = this
+      const { trades } = this
 
-      return tradeMessages.length > 0
+      return trades.length > 0
     },
 
     hasTradeWithMinimumNotionalUsdt(): boolean {
-      const { derivativeMarkets, spotMarkets, tradeMessages } = this
+      const { derivativeMarkets, spotMarkets, trades } = this
 
       let sum = ZERO_IN_BASE
 
-      for (const message of tradeMessages) {
-        const isSpotMarket =
-          message.type.includes('MsgCreateSpotMarketOrder') ||
-          message.type.includes('MsgCreateSpotLimitOrder')
+      for (const trade of trades) {
+        const isSpotMarket = spotMarkets
+          .map((market) => market.marketId)
+          .includes(trade.marketId)
         const markets = [...derivativeMarkets, ...spotMarkets]
         const market = markets.find(
-          (market) => market.marketId === message.value.order.market_id
+          (market) => market.marketId === trade.marketId
         )
 
         if (!market) {
@@ -155,21 +144,23 @@ export default Vue.extend({
 
         if (isSpotMarket) {
           const spotMarket = market as UiSpotMarket
+          const spotTrade = trade as UiSpotTrade
           const price = new BigNumberInBase(
-            new BigNumberInBase(message.value.order.order_info.price).toWei(
+            new BigNumberInBase(spotTrade.price).toWei(
               spotMarket.baseToken.decimals - spotMarket.quoteToken.decimals
             )
           )
-          const quantity = new BigNumberInWei(
-            message.value.order.order_info.quantity
-          ).toBase(spotMarket.baseToken.decimals)
+          const quantity = new BigNumberInWei(spotTrade.quantity).toBase(
+            spotMarket.baseToken.decimals
+          )
 
           sum = sum.plus(price.times(quantity))
         } else {
           const derivativeMarket = market as UiDerivativeMarket
-          const margin = new BigNumberInWei(message.value.order.margin).toBase(
-            derivativeMarket.quoteToken.decimals
-          )
+          const derivativeTrade = trade as UiDerivativeTrade
+          const margin = new BigNumberInWei(
+            derivativeTrade.executionMargin
+          ).toBase(derivativeMarket.quoteToken.decimals)
 
           sum = sum.plus(margin)
         }
