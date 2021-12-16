@@ -38,8 +38,8 @@ const mainnetSpot = [
   'atom-usdt',
   'weth-usdt',
   'link-usdt',
-  // 'ust-usdt',
-  // 'luna-ust',
+  'ust-usdt',
+  'luna-ust',
   'gf-usdt'
 ]
 const spot = IS_TESTNET ? testnetSpot : mainnetSpot
@@ -62,7 +62,7 @@ const mainnetDerivatives = [
   'btc-usdt-perp',
   'eth-usdt-perp',
   // 'inj-usdt-perp',
-  // 'luna-ust-perp',
+  'luna-ust-perp',
   'bnb-usdt-perp'
 ]
 const derivatives = IS_TESTNET ? testnetDerivatives : mainnetDerivatives
