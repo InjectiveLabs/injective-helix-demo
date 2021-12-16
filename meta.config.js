@@ -11,6 +11,8 @@ const metaTags = {
     'injective protocol, dapp, decentralized app, cryptocurrency, criptocurrency exchange, exchange, exchange token, ethereum, ethereum token, erc20, futures, perpetuals, futures protocol',
   author: 'InjectiveLabs',
   url: 'https://injective.exchange',
+  shortName: 'Injective Pro DEX',
+  twitterHandle: '@InjectiveLabs',
   ogImage: `${BASE_URL}/images/og.jpeg` // Change this to another image (change the name of the file as well to clear cache from social media)
 }
 
@@ -42,7 +44,7 @@ const nuxtMetaTags = [
   {
     hid: 'twitter:site',
     property: 'twitter:site',
-    content: '@InjectiveLabs'
+    content: metaTags.twitterHandle
   },
   {
     name: 'twitter:image',
@@ -51,7 +53,7 @@ const nuxtMetaTags = [
   {
     hid: 'twitter:creator',
     property: 'twitter:creator',
-    content: '@InjectiveLabs'
+    content: metaTags.twitterHandle
   },
   {
     hid: 'twitter:description',
@@ -85,7 +87,7 @@ const pwaMetaTags = {
 const manifestMetaTags = {
   name: metaTags.title,
   description: metaTags.description,
-  short_name: 'Injective DEX'
+  short_name: metaTags.shortName
 }
 
 module.exports = {
