@@ -1,7 +1,7 @@
 <template>
   <v-slideout
     :is-open="isSlideoutOpen"
-    show-header
+    :show-header="showHeader"
     @slideout-closed="closeSlideout"
   >
     <div>
@@ -29,6 +29,7 @@ export default Vue.extend({
 
   data() {
     return {
+      showHeader: true,
       isSlideoutOpen: false
     }
   },
@@ -65,12 +66,22 @@ export default Vue.extend({
 
   mounted() {
     this.$root.$on('toggle-market-slideout', this.toggleSlideout)
+    this.$root.$on(
+      'toggle-market-slideout-from-content',
+      this.toggleSlideoutFromContent
+    )
     this.$root.$on('close-market-slideout', this.closeSlideout)
   },
 
   methods: {
     toggleSlideout() {
       this.isSlideoutOpen = !this.isSlideoutOpen
+      this.showHeader = true
+    },
+
+    toggleSlideoutFromContent() {
+      this.isSlideoutOpen = !this.isSlideoutOpen
+      this.showHeader = false
     },
 
     closeSlideout() {

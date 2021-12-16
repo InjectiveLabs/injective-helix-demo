@@ -2,7 +2,8 @@
   <div class="h-full w-full flex flex-wrap py-4">
     <div class="container">
       <div class="w-full mx-auto xl:w-4/5">
-        <v-get-started class="mt-6" />
+        <v-overview class="mt-6" />
+        <v-get-started class="mt-16" />
         <v-recent-news class="mt-16" />
         <v-panel :title="$t('markets')" class="mt-16">
           <v-markets />
@@ -19,6 +20,7 @@ import Vue from 'vue'
 import VSocial from '~/components/partials/home/social.vue'
 import VStats from '~/components/partials/home/stats.vue'
 import VGetStarted from '~/components/partials/home/get-started.vue'
+import VOverview from '~/components/partials/home/overview.vue'
 import VRecentNews from '~/components/partials/home/news.vue'
 import VMarkets from '~/components/partials/common/markets/markets.vue'
 
@@ -26,6 +28,7 @@ export default Vue.extend({
   components: {
     VGetStarted,
     VSocial,
+    VOverview,
     VMarkets,
     VRecentNews,
     VStats

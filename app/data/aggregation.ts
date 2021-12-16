@@ -48,7 +48,7 @@ export const customAggregations = {
   },
   'LUNA/UST PERP': {
     maxTick: getDecimalPlaceFromValue('10'),
-    default: getDecimalPlaceFromValue('0.1')
+    default: getDecimalPlaceFromValue('0.01')
   },
   'BTC/USDT': {
     maxTick: getDecimalPlaceFromValue('100'),

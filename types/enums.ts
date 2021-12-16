@@ -47,6 +47,7 @@ export enum Modal {
   MarketRewardFactors = 'market-reward-factors',
   OrderConfirm = 'order-confirm',
   SubaccountDeposit = 'subaccount-deposit',
+  SubaccountDepositWithSelect = 'subaccount-deposit-with-select',
   SubaccountWithdraw = 'subaccount-withdraw',
   TakeOut = 'take-out',
   Terms = 'terms',

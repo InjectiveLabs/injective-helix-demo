@@ -98,6 +98,7 @@ export const actions = actionTree(
       if (!injectiveAddress) {
         return
       }
+
       commit(
         'setBalancesWithTokenMetaData',
         await fetchBalancesWithTokenMetaData(balances)
