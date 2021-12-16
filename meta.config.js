@@ -10,7 +10,8 @@ const metaTags = {
   keywords:
     'injective protocol, dapp, decentralized app, cryptocurrency, criptocurrency exchange, exchange, exchange token, ethereum, ethereum token, erc20, futures, perpetuals, futures protocol',
   author: 'InjectiveLabs',
-  url: 'https://injective.exchange'
+  url: 'https://injective.exchange',
+  ogImage: `${BASE_URL}/images/og.jpeg` // Change this to another image (change the name of the file as well to clear cache from social media)
 }
 
 const nuxtMetaTags = [
@@ -26,7 +27,7 @@ const nuxtMetaTags = [
   {
     hid: 'og:image',
     property: 'og:image',
-    content: `${BASE_URL}/images/og.jpeg`
+    content: metaTags.ogImage
   },
   {
     hid: 'og:description',
@@ -45,7 +46,7 @@ const nuxtMetaTags = [
   },
   {
     name: 'twitter:image',
-    content: `${BASE_URL}/images/og.jpeg`
+    content: metaTags.ogImage
   },
   {
     hid: 'twitter:creator',
@@ -75,7 +76,7 @@ const pwaMetaTags = {
   ogDescription: metaTags.description,
   ogHost: metaTags.url,
   ogUrl: metaTags.url,
-  ogImage: `${BASE_URL}/images/og.jpeg`,
+  ogImage: metaTags.ogImage,
   twitterCard: 'summary_large_image',
   twitterSite: '@InjectiveLabs',
   twitterCreator: '@InjectiveLabs'
