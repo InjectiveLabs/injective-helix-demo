@@ -1,18 +1,12 @@
 import { actionTree, getterTree } from 'typed-vuex'
 import { UiSpotTrade, UiDerivativeTrade } from '~/types'
 import { fetchSubaccountTrades } from '~/app/services/history'
-import {
-  fetchUserTransactionMessages,
-  fetchUserDeposits,
-  redeem
-} from '~/app/services/gasRebate'
+import { fetchUserDeposits, redeem } from '~/app/services/gasRebate'
 import { UserDeposit } from '~/types/gql'
-import { UserTransactionMessage } from '~/types/gasRebate'
 import { backupPromiseCall } from '~/app/utils/async'
 
 const initialStateFactory = () => ({
   trades: [] as Array<UiSpotTrade | UiDerivativeTrade>,
-  transactionsMessages: [] as Array<UserTransactionMessage>,
   deposits: [] as Array<UserDeposit>
 })
 
@@ -20,7 +14,6 @@ const initialState = initialStateFactory()
 
 export const state = () => ({
   trades: initialState.trades as Array<UiSpotTrade | UiDerivativeTrade>,
-  transactionsMessages: initialState.transactionsMessages as UserTransactionMessage[],
   deposits: initialState.deposits as UserDeposit[]
 })
 
@@ -36,13 +29,6 @@ export const mutations = {
     trades: Array<UiSpotTrade | UiDerivativeTrade>
   ) {
     state.trades = trades
-  },
-
-  setTransactionsMessages(
-    state: GasRebateStoreState,
-    transactionsMessages: Array<UserTransactionMessage>
-  ) {
-    state.transactionsMessages = transactionsMessages
   },
 
   setDeposits(state: GasRebateStoreState, deposits: Array<UserDeposit>) {
@@ -63,7 +49,6 @@ export const actions = actionTree(
 
     async init(_) {
       await this.app.$accessor.gasRebate.fetchTrades()
-      await this.app.$accessor.gasRebate.fetchTransactions()
       await this.app.$accessor.gasRebate.fetchDeposits()
       await this.app.$accessor.account.fetchSubaccountsBalances()
     },
@@ -81,22 +66,6 @@ export const actions = actionTree(
         await fetchSubaccountTrades({
           subaccountId: subaccount.subaccountId
         })
-      )
-    },
-
-    async fetchTransactions({ commit }) {
-      const {
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
-
-      if (!isUserWalletConnected || !injectiveAddress) {
-        return
-      }
-
-      commit(
-        'setTransactionsMessages',
-        await fetchUserTransactionMessages(injectiveAddress)
       )
     },
 

@@ -70,7 +70,7 @@ export default Vue.extend({
         (market as UiSpotMarket).quoteDenom
       }`
 
-      return spotTicker.replace('ibc/', 'ibc@')
+      return spotTicker.replaceAll('ibc/', 'ibc@')
     },
 
     datafeedEndpoint(): string {

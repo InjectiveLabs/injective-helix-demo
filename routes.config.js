@@ -6,6 +6,8 @@ const testnetSpot = [
   'weth-usdt',
   'link-usdt',
   'link-usdc',
+  'ust-usdt',
+  'luna-ust',
   'axs-usdt',
   'inj-usdc',
   'bnb-usdt',
@@ -36,6 +38,8 @@ const mainnetSpot = [
   'atom-usdt',
   'weth-usdt',
   'link-usdt',
+  'ust-usdt',
+  'luna-ust',
   'gf-usdt'
 ]
 const spot = IS_TESTNET ? testnetSpot : mainnetSpot
@@ -45,6 +49,7 @@ const testnetDerivatives = [
   'eth-usdt-perp',
   'bnb-usdt-perp',
   'inj-usdt-perp',
+  'luna-ust-perp',
   'eth-usdt-perp-band',
   'link-usdt-perp',
   'comp-usdt-perp',
@@ -53,7 +58,13 @@ const testnetDerivatives = [
   'snx-usdt-perp',
   'bat-usdt-perp'
 ]
-const mainnetDerivatives = ['btc-usdt-perp', 'eth-usdt-perp', 'bnb-usdt-perp']
+const mainnetDerivatives = [
+  'btc-usdt-perp',
+  'eth-usdt-perp',
+  // 'inj-usdt-perp',
+  'luna-ust-perp',
+  'bnb-usdt-perp'
+]
 const derivatives = IS_TESTNET ? testnetDerivatives : mainnetDerivatives
 
 module.exports = [
