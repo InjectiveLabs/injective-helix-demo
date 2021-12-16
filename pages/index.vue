@@ -4,7 +4,7 @@
       <div class="w-full mx-auto xl:w-4/5">
         <v-overview class="mt-6" />
         <v-get-started class="mt-16" />
-        <v-recent-news class="mt-16" />
+        <v-recent-news v-if="false" class="mt-16" />
         <v-panel :title="$t('markets')" class="mt-16">
           <v-markets />
         </v-panel>
