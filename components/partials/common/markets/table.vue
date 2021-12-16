@@ -34,6 +34,17 @@
         >
           <span>{{ $t('spots') }}</span>
         </v-button>
+        <div class="mx-2 w-px h-4 bg-gray-700"></div>
+        <v-button
+          :class="{
+            'text-gray-500': marketBase !== MarketBase.Terra
+          }"
+          text-sm
+          class="font-normal"
+          @click.stop="onSelectMarketBase(MarketBase.Terra)"
+        >
+          <span>{{ $t('terra') }}</span>
+        </v-button>
         <div class="hidden md:block mx-2 w-px h-4 bg-gray-700"></div>
         <v-button
           :class="{
@@ -141,6 +152,7 @@ import TableHeader from '~/components/elements/table-header.vue'
 import VSearch from '~/components/inputs/search.vue'
 import VMarket from '~/components/partials/common/markets/market.vue'
 import {
+  MarketBase,
   MarketType,
   UiDerivativeMarket,
   UiDerivativeMarketSummary,
@@ -184,15 +196,17 @@ export default Vue.extend({
 
   data() {
     return {
+      MarketBase,
       MarketType,
-      marketType: '',
+      marketType: '' as string,
+      marketBase: '' as string,
       filterMarkets: ''
     }
   },
 
   computed: {
     filteredMarkets(): UiMarketAndSummary[] {
-      const { filterMarkets, marketType, markets, summaries } = this
+      const { filterMarkets, marketType, marketBase, markets, summaries } = this
 
       const query = filterMarkets.toLowerCase()
 
@@ -211,13 +225,20 @@ export default Vue.extend({
             quoteDenom.toLowerCase().startsWith(query) ||
             ticker.toLowerCase().startsWith(query)
           const marketTypeCondition = marketType
-            ? market.subType === marketType
+            ? marketType === market.subType
             : true
+          const marketBaseCondition = !marketBase
+            ? true
+            : marketBase && market.marketBase
+            ? marketBase === market.marketBase
+            : false
 
           return (
+            marketTypeCondition &&
+            marketBaseCondition &&
             satisfiesSearchCondition &&
-            summary !== undefined &&
-            marketTypeCondition
+            market &&
+            summary !== undefined
           )
         }) as UiMarketAndSummary[]
     },
@@ -244,6 +265,10 @@ export default Vue.extend({
   methods: {
     onSelectMarketType(type: MarketType | string) {
       this.marketType = this.marketType === type ? '' : type
+    },
+
+    onSelectMarketBase(type: MarketBase | string) {
+      this.marketBase = this.marketBase === type ? '' : type
     }
   }
 })

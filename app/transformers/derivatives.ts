@@ -4,6 +4,7 @@ import {
   getCoinGeckoId,
   getTokenMetaDataWithIbc
 } from '../services/tokens'
+import { marketBaseFromTicker } from '../data/market-base'
 import { grpcTokenMetaToToken, tokenMetaToToken } from './token'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
 import { derivatives as sortPerpetualMarkets } from '~/routes.config'
@@ -26,6 +27,7 @@ export const derivativeMarketToUiDerivativeMarket = (
     ...market,
     type: MarketType.Derivative,
     subType: MarketType.Perpetual,
+    marketBase: marketBaseFromTicker(market.ticker),
     quantityDecimals: getDecimalsFromNumber(market.minQuantityTickSize),
     priceDecimals: getDecimalsFromNumber(
       new BigNumberInBase(market.minPriceTickSize)
