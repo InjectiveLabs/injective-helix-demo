@@ -51,7 +51,8 @@ export const isNumericKeycode = (keyCode?: number) =>
   keyCode &&
   ((keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105))
 
-export const isDotKeycode = (keyCode?: number) => keyCode && keyCode === 190
+export const isDotKeycode = (keyCode?: number) =>
+  keyCode && (keyCode === 190 || keyCode === 110)
 
 export const getDecimalsFromNumber = (number: number | string): number => {
   const numberToBn = new BigNumber(number).toNumber()
