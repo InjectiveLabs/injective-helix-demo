@@ -30,7 +30,7 @@ jobs:
       ORDERBOOK_POLLING_ENABLED: false
 
       ## Endpoints
-      APP_EXCHANGE_API_ENDPOINT: ''
+      APP_EXCHANGE_API_ENDPOINT: 'https://exchange-api.picasso.exchange'
       APP_SENTRY_GRPC_ENDPOINT: ''
 
       ## Secret
