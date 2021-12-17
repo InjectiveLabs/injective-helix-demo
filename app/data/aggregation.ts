@@ -27,6 +27,10 @@ export const aggregationList = [
   {
     value: '3',
     text: '0.001'
+  },
+  {
+    value: '4',
+    text: '0.0001'
   }
 ]
 
