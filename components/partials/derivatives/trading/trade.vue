@@ -1518,18 +1518,14 @@ export default Vue.extend({
         return
       }
 
-      // prevent dot for quantity decimals 0
-      if (market.quantityDecimals === 0 && isDotKeycode(event.keyCode)) {
-        event.preventDefault()
-
-        return
-      }
-
-      if (
+      const inputIsDotQuantityDecimalZero =
+        market.quantityDecimals === 0 && isDotKeycode(event.keyCode)
+      const inputDecimalExceedQuantityDecimal =
         getDecimalsFromNumber(form.amount) === market.quantityDecimals &&
         isNumericKeycode(event.keyCode) &&
         market.quantityDecimals !== 0
-      ) {
+
+      if (inputIsDotQuantityDecimalZero || inputDecimalExceedQuantityDecimal) {
         event.preventDefault()
       }
     },
