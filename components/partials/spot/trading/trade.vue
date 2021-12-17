@@ -56,6 +56,7 @@
           min="0"
           @blur="onAmountBlur"
           @input="onAmountChange"
+          @keydown="onAmountKeydown"
           @input-max="() => onMaxInput(100)"
         >
           <span slot="addon">{{ market.baseToken.symbol.toUpperCase() }}</span>
@@ -177,6 +178,7 @@ import {
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
 import {
+  DOMEvent,
   SpotOrderSide,
   TradeExecutionType,
   UiSpotOrderbook,
@@ -194,6 +196,11 @@ import {
   FeeDiscountAccountInfo,
   TradingRewardsCampaign
 } from '~/types/exchange'
+import {
+  getDecimalsFromNumber,
+  isDotKeycode,
+  isNumericKeycode
+} from '~/app/utils/helpers'
 
 interface TradeForm {
   amount: string
@@ -1208,8 +1215,28 @@ export default Vue.extend({
       }
 
       this.form.amount = new BigNumberInBase(form.amount || 0).toFixed(
-        market.quantityDecimals
+        market.quantityDecimals,
+        BigNumberInBase.ROUND_DOWN
       )
+    },
+
+    onAmountKeydown(event: DOMEvent<HTMLInputElement>) {
+      const { market, form } = this
+
+      if (!market) {
+        return
+      }
+
+      const inputIsDotQuantityDecimalZero =
+        market.quantityDecimals === 0 && isDotKeycode(event.keyCode)
+      const inputDecimalExceedQuantityDecimal =
+        getDecimalsFromNumber(form.amount) === market.quantityDecimals &&
+        isNumericKeycode(event.keyCode) &&
+        market.quantityDecimals !== 0
+
+      if (inputIsDotQuantityDecimalZero || inputDecimalExceedQuantityDecimal) {
+        event.preventDefault()
+      }
     },
 
     onAmountChange(amount: string = '') {

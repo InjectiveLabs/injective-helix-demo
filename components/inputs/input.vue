@@ -40,6 +40,7 @@
             'input-small': small
           }"
           @blur="handleBlur"
+          @keydown="handleKeydown"
           @input="handleChangeOnInput"
           @wheel="$event.target.blur()"
         />
@@ -209,6 +210,10 @@ export default Vue.extend({
 
     handleBlur() {
       this.$emit('blur')
+    },
+
+    handleKeydown(event: DOMEvent<HTMLInputElement>) {
+      this.$emit('keydown', event)
     },
 
     handleMaxSelector() {

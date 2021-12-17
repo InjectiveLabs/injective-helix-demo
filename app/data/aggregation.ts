@@ -27,6 +27,10 @@ export const aggregationList = [
   {
     value: '3',
     text: '0.001'
+  },
+  {
+    value: '4',
+    text: '0.0001'
   }
 ]
 
@@ -44,7 +48,7 @@ export const customAggregations = {
   },
   'LUNA/UST': {
     maxTick: getDecimalPlaceFromValue('10'),
-    default: getDecimalPlaceFromValue('0.1')
+    default: getDecimalPlaceFromValue('0.01')
   },
   'LUNA/UST PERP': {
     maxTick: getDecimalPlaceFromValue('10'),
