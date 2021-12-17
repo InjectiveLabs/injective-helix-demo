@@ -56,6 +56,7 @@
           min="0"
           @blur="onAmountBlur"
           @input="onAmountChange"
+          @keydown="onAmountKeydown"
           @input-max="() => onMaxInput(100)"
         >
           <span slot="addon">{{ market.baseToken.symbol.toUpperCase() }}</span>
@@ -162,7 +163,11 @@
 <script lang="ts">
 import Vue from 'vue'
 import { TradeError } from 'types/errors'
-import { BigNumberInWei, Status, BigNumberInBase } from '@injectivelabs/utils'
+import {
+  BigNumberInWei,
+  Status,
+  BigNumberInBase
+} from '@injectivelabs/utils'
 import OrderDetails from './order-details.vue'
 import OrderDetailsMarket from './order-details-market.vue'
 import {
@@ -177,6 +182,7 @@ import {
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
 import {
+  DOMEvent,
   SpotOrderSide,
   TradeExecutionType,
   UiSpotOrderbook,
@@ -194,6 +200,11 @@ import {
   FeeDiscountAccountInfo,
   TradingRewardsCampaign
 } from '~/types/exchange'
+import {
+  getDecimalsFromNumber,
+  isDotKeycode,
+  isNumericKeycode
+} from '~/app/utils/helpers'
 
 interface TradeForm {
   amount: string
@@ -1208,8 +1219,32 @@ export default Vue.extend({
       }
 
       this.form.amount = new BigNumberInBase(form.amount || 0).toFixed(
-        market.quantityDecimals
+        market.quantityDecimals,
+        BigNumberInBase.ROUND_DOWN
       )
+    },
+
+    onAmountKeydown(event: DOMEvent<HTMLInputElement>) {
+      const { market, form } = this
+
+      if (!market) {
+        return
+      }
+
+      // prevent dot for quantity decimals 0
+      if (market.quantityDecimals === 0 && isDotKeycode(event.keyCode)) {
+        event.preventDefault()
+
+        return
+      }
+
+      if (
+        getDecimalsFromNumber(form.amount) === market.quantityDecimals &&
+        isNumericKeycode(event.keyCode) &&
+        market.quantityDecimals !== 0
+      ) {
+        event.preventDefault()
+      }
     },
 
     onAmountChange(amount: string = '') {

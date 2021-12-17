@@ -47,12 +47,18 @@ export const getDecimalsBasedOnNumber = (
   }
 }
 
+export const isNumericKeycode = (keyCode?: number) =>
+  keyCode &&
+  ((keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105))
+
+export const isDotKeycode = (keyCode?: number) => keyCode && keyCode === 190
+
 export const getDecimalsFromNumber = (number: number | string): number => {
   const numberToBn = new BigNumber(number).toNumber()
   const numberParts = numberToBn.toString().split('.')
   const [, decimals] = numberParts
 
-  const actualDecimals = decimals ? decimals.length : 1
+  const actualDecimals = decimals ? decimals.length : 0
 
   return actualDecimals > UI_DEFAULT_MAX_DISPLAY_DECIMALS
     ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
