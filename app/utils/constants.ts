@@ -8,6 +8,7 @@ import { ChainId } from '@injectivelabs/ts-types'
 
 export const IS_DEVELOPMENT: boolean = process.env.NODE_ENV === 'development'
 export const IS_PRODUCTION: boolean = process.env.NODE_ENV === 'production'
+export const IS_MAINNET_STAGING: boolean = process.env.APP_ENV === 'staging'
 export const METRICS_ENABLED: boolean = process.env.METRICS_ENABLED === 'true'
 export const GAS_FREE_DEPOSIT_REBATE_ENABLED: boolean =
   process.env.GAS_FREE_DEPOSIT_REBATE_ENABLED === 'true'
