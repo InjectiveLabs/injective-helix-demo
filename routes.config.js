@@ -1,4 +1,4 @@
-const { IS_TESTNET } = require('./app/utils/constants')
+const { IS_TESTNET, IS_MAINNET_STAGING } = require('./app/utils/constants')
 
 const testnetSpot = [
   'inj-usdt',
@@ -42,7 +42,12 @@ const mainnetSpot = [
   'luna-ust',
   'gf-usdt'
 ]
-const spot = IS_TESTNET ? testnetSpot : mainnetSpot
+const mainnetStagingSpot = [...mainnetSpot]
+const spot = IS_TESTNET
+  ? testnetSpot
+  : IS_MAINNET_STAGING
+  ? mainnetStagingSpot
+  : mainnetSpot
 
 const testnetDerivatives = [
   'btc-usdt-perp',
@@ -61,11 +66,15 @@ const testnetDerivatives = [
 const mainnetDerivatives = [
   'btc-usdt-perp',
   'eth-usdt-perp',
-  // 'inj-usdt-perp',
   'luna-ust-perp',
   'bnb-usdt-perp'
 ]
-const derivatives = IS_TESTNET ? testnetDerivatives : mainnetDerivatives
+const mainnetStagingDerivatives = [...mainnetDerivatives, 'inj-usdt-perp']
+const derivatives = IS_TESTNET
+  ? testnetDerivatives
+  : IS_MAINNET_STAGING
+  ? mainnetStagingDerivatives
+  : mainnetDerivatives
 
 module.exports = [
   '/',
