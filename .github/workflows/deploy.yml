@@ -26,11 +26,11 @@ jobs:
       METRICS_ENABLED: true
       GEO_IP_RESTRICTIONS_ENABLED: true
       TRANSFER_RESTRICTIONS_ENABLED: false
-      SHOW_AUCTION_COUNTDOWN: true
+      SHOW_AUCTION_COUNTDOWN: false
       ORDERBOOK_POLLING_ENABLED: false
 
       ## Endpoints
-      APP_EXCHANGE_API_ENDPOINT: 'https://exchange-api.picasso.exchange'
+      APP_EXCHANGE_API_ENDPOINT: ''
       APP_SENTRY_GRPC_ENDPOINT: ''
 
       ## Secret
