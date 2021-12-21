@@ -141,41 +141,50 @@ export default Vue.extend({
 
       const spotMarketsTickerBasedOnIds = spotMarkets
         .filter((spotMarket) => spotMarketIds.includes(spotMarket.marketId))
+        .filter((spot) => sortSpotMarkets.includes(spot.slug))
         .sort(
           (a, b) =>
             spotMarketIds.indexOf(a.marketId) -
             spotMarketIds.indexOf(b.marketId)
         )
-        .map((m) => ({ ticker: m.ticker, slug: m.slug }))
+        .map((m) => ({
+          ticker: m.ticker,
+          slug: m.slug,
+          index: spotMarketIds.indexOf(m.marketId)
+        }))
 
       const derivativeMarketsTickerBasedOnIds = derivativeMarkets
         .filter((derivativeMarket) =>
           derivativeMarketIds.includes(derivativeMarket.marketId)
+        )
+        .filter((derivativeMarket) =>
+          sortPerpetualMarkets.includes(derivativeMarket.slug)
         )
         .sort(
           (a, b) =>
             derivativeMarketIds.indexOf(a.marketId) -
             derivativeMarketIds.indexOf(b.marketId)
         )
-        .map((m) => ({ ticker: m.ticker, slug: m.slug }))
+        .map((m) => ({
+          ticker: m.ticker,
+          slug: m.slug,
+          index: derivativeMarketIds.indexOf(m.marketId)
+        }))
 
-      const spot = spotMarketsTickerBasedOnIds.reduce(
-        (records, market, index) => {
-          return [
-            ...records,
-            {
-              ...market,
-              makerPointsMultiplier: cosmosSdkDecToBigNumber(
-                spotMarketsBoosts[index].makerPointsMultiplier
-              ).toFixed(),
-              takerPointsMultiplier: cosmosSdkDecToBigNumber(
-                spotMarketsBoosts[index].takerPointsMultiplier
-              ).toFixed()
-            } as PointsMultiplierWithMarketTicker
-          ]
-        },
-        [] as PointsMultiplierWithMarketTicker[]
-      )
+      const spot = spotMarketsTickerBasedOnIds.reduce((records, market) => {
+        return [
+          ...records,
+          {
+            ...market,
+            makerPointsMultiplier: cosmosSdkDecToBigNumber(
+              spotMarketsBoosts[market.index].makerPointsMultiplier
+            ).toFixed(),
+            takerPointsMultiplier: cosmosSdkDecToBigNumber(
+              spotMarketsBoosts[market.index].takerPointsMultiplier
+            ).toFixed()
+          } as PointsMultiplierWithMarketTicker
+        ]
+      }, [] as PointsMultiplierWithMarketTicker[])
       const nonBoostedSpot = [...spotMarkets]
         .filter(
           (spotMarket) =>
@@ -195,16 +204,16 @@ export default Vue.extend({
         }, [] as PointsMultiplierWithMarketTicker[])
 
       const derivatives = derivativeMarketsTickerBasedOnIds.reduce(
-        (records, market, index) => {
+        (records, market) => {
           return [
             ...records,
             {
               ...market,
               makerPointsMultiplier: cosmosSdkDecToBigNumber(
-                derivativeMarketsBoosts[index].makerPointsMultiplier
+                derivativeMarketsBoosts[market.index].makerPointsMultiplier
               ).toFixed(),
               takerPointsMultiplier: cosmosSdkDecToBigNumber(
-                derivativeMarketsBoosts[index].takerPointsMultiplier
+                derivativeMarketsBoosts[market.index].takerPointsMultiplier
               ).toFixed()
             } as PointsMultiplierWithMarketTicker
           ]
@@ -230,16 +239,13 @@ export default Vue.extend({
           ]
         }, [] as PointsMultiplierWithMarketTicker[])
 
-      const spotWithBoostInfo = [...spot, ...nonBoostedSpot].sort(function (
-        a,
-        b
-      ) {
+      const spotWithBoostInfo = [...spot, ...nonBoostedSpot].sort((a, b) => {
         return sortSpotMarkets.indexOf(a.slug) - sortSpotMarkets.indexOf(b.slug)
       })
       const derivativesWithBoostInfo = [
         ...derivatives,
         ...nonBoostedDerivatives
-      ].sort(function (a, b) {
+      ].sort((a, b) => {
         return (
           sortPerpetualMarkets.indexOf(a.slug) -
           sortPerpetualMarkets.indexOf(b.slug)
