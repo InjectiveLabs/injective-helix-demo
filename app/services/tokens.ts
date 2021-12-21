@@ -4,6 +4,8 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { BaseCurrencyContract } from '@injectivelabs/contracts/dist/contracts/BaseCurrency'
 import { PeggyComposer } from '@injectivelabs/chain-consumer'
 import { Erc20TokenMeta, TokenMeta } from '@injectivelabs/token-metadata'
+import { contractAddresses } from '@injectivelabs/contracts'
+import { alchemyApi } from '../web3/alchemy'
 import { fetchDenomTrace } from './ibc'
 import { TxProvider } from '~/app/providers/TxProvider'
 import { peggyDenomToContractAddress } from '~/app/transformers/peggy'
@@ -31,29 +33,40 @@ export const getTokenBalanceAndAllowance = async ({
   address: AccountAddress
   token: Token
 }): Promise<TokenWithBalance> => {
-  const web3Strategy = getWeb3Strategy()
-  const contracts = getContracts()
   let balance = ZERO_TO_STRING
   let priceInUsd = ZERO_TO_STRING
   let allowance = ZERO_TO_STRING
 
-  const erc20Contract = new BaseCurrencyContract({
-    web3Strategy,
-    address: token.address,
-    chainId: CHAIN_ID
-  })
-
   try {
-    balance = await erc20Contract.getBalanceOf(address).callAsync()
-  } catch (e: any) {
+    const tokenBalances = await alchemyApi.fetchTokenBalances({
+      address,
+      contractAddresses: [token.address]
+    })
+    const tokenBalance = tokenBalances.tokenBalances
+      .filter((tokenBalance) => tokenBalance.tokenBalance)
+      .find((tokenBalance) => {
+        return (
+          ((tokenBalance as unknown) as {
+            contractAddress: string
+          }).contractAddress.toLowerCase() === token.address.toLowerCase()
+        )
+      })
+    const actualBalance = tokenBalance ? tokenBalance.tokenBalance || 0 : 0
+
+    balance = new BigNumberInWei(actualBalance || 0).toFixed()
+  } catch (e) {
     balance = ZERO_TO_STRING
   }
 
   try {
-    allowance = await erc20Contract
-      .getAllowanceOf(address, contracts.peggy.address)
-      .callAsync()
-  } catch (e: any) {
+    const allowanceResponse = await alchemyApi.fetchTokenAllowance({
+      owner: address,
+      spender: contractAddresses[CHAIN_ID].peggy,
+      contract: token.address
+    })
+
+    allowance = new BigNumberInWei(allowanceResponse || 0).toFixed()
+  } catch (e) {
     allowance = ZERO_TO_STRING
   }
 
