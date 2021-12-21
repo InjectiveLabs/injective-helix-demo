@@ -1114,22 +1114,13 @@ export default Vue.extend({
     },
 
     notionalValue(): BigNumberInBase {
-      const {
-        marketMarkPrice,
-        tradingTypeMarket,
-        executionPrice,
-        amount,
-        market
-      } = this
+      const { executionPrice, amount, market } = this
 
       if (amount.isNaN() || !market) {
         return ZERO_IN_BASE
       }
 
-      const price = tradingTypeMarket
-        ? new BigNumberInBase(marketMarkPrice)
-        : executionPrice
-      const notional = amount.times(price)
+      const notional = amount.times(executionPrice)
 
       if (notional.lt(0)) {
         return ZERO_IN_BASE
