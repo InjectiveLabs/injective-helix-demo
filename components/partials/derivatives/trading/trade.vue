@@ -829,6 +829,33 @@ export default Vue.extend({
       return undefined
     },
 
+    initialMinMarginRequirementError(): TradeError | undefined {
+      const {
+        market,
+        margin,
+        hasPrice,
+        hasAmount,
+        executionPrice,
+        amount
+      } = this
+
+      if (!market || !hasPrice || !hasAmount) {
+        return undefined
+      }
+
+      const condition = executionPrice
+        .times(amount)
+        .times(market.initialMarginRatio)
+
+      if (margin.lte(condition)) {
+        return {
+          amount: this.$t('order_insufficient_margin')
+        }
+      }
+
+      return undefined
+    },
+
     priceNotValidError(): TradeError | undefined {
       const { form } = this
 
@@ -1021,6 +1048,10 @@ export default Vue.extend({
 
       if (this.markPriceThresholdError) {
         return this.markPriceThresholdError
+      }
+
+      if (this.initialMinMarginRequirementError) {
+        return this.initialMinMarginRequirementError
       }
 
       return { price: '', amount: '' }
