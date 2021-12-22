@@ -51,39 +51,6 @@ export default Vue.extend({
     this.tradingView.onChartReady(() => {
       this.$emit('ready')
     })
-  },
-
-  methods: {
-    async setIndexPriceStudy() {
-      /* TODO
-      const { market, tradingView } = this
-
-      if (!market || market.type === MarketType.StockFutures) {
-        return
-      }
-
-      try {
-        // @ts-ignore
-        await tradingView
-          // @ts-ignore
-          .chart()
-          .createStudy(
-            'Compare',
-            false,
-            false,
-            ['close', `.${market.ticker}`],
-            {
-              'Plot.linewidth': 1,
-              'Plot.color': '#c7d5da'
-            },
-            {
-              priceScale: 'as-series'
-            }
-          )
-        // @ts-ignore
-        tradingView.chart().getPanes()[0].getRightPriceScales()[0].setMode(0)
-      } catch (err) {} */
-    }
   }
 })
 </script>

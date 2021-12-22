@@ -26,7 +26,6 @@ import { MarketType, UiDerivativeMarket, UiSpotMarket } from '~/types'
 import { app } from '~/app/singletons/App'
 
 interface TradingChartInterface {
-  setIndexPriceStudy: Function
   $el: HTMLElement
 }
 
@@ -46,7 +45,7 @@ export default Vue.extend({
   data() {
     return {
       status: new Status(StatusType.Loading),
-      interval: '15'
+      interval: '120'
     }
   },
 
@@ -89,9 +88,6 @@ export default Vue.extend({
   methods: {
     onReady() {
       this.status.setIdle()
-      this.$nextTick(() => {
-        this.tradingView.setIndexPriceStudy()
-      })
     }
   }
 })
