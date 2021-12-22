@@ -100,6 +100,7 @@ jobs:
       TRANSFER_RESTRICTIONS_ENABLED: false
       SHOW_AUCTION_COUNTDOWN: false
       ORDERBOOK_POLLING_ENABLED: false
+      PRICE_BAND_ENABLED: false
 
       ## Endpoints
       APP_EXCHANGE_API_ENDPOINT: ''

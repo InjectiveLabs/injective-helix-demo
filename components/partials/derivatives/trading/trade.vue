@@ -203,7 +203,8 @@ import {
   DEFAULT_PRICE_WARNING_DEVIATION,
   DEFAULT_MARKET_PRICE_WARNING_DEVIATION,
   DEFAULT_MAX_PRICE_BAND_DIFFERENCE,
-  DEFAULT_MIN_PRICE_BAND_DIFFERENCE
+  DEFAULT_MIN_PRICE_BAND_DIFFERENCE,
+  PRICE_BAND_ENABLED
 } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
@@ -969,6 +970,10 @@ export default Vue.extend({
       const middlePrice = highestBuy.plus(lowestSell).dividedBy(2)
 
       if (middlePrice.lte(0)) {
+        return undefined
+      }
+
+      if (!PRICE_BAND_ENABLED) {
         return undefined
       }
 
