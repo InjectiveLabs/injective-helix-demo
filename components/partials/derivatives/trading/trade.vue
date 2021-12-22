@@ -787,7 +787,7 @@ export default Vue.extend({
         margin,
         hasPrice,
         hasAmount,
-        executionPrice,
+        executionPriceWithSlippage,
         amount
       } = this
 
@@ -803,7 +803,7 @@ export default Vue.extend({
         }
       }
 
-      const notional = executionPrice.times(amount)
+      const notional = executionPriceWithSlippage.times(amount)
       const dividend = orderTypeBuy
         ? margin.minus(notional)
         : margin.plus(notional)
