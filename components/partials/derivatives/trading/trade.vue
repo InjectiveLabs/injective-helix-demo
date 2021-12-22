@@ -279,10 +279,6 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    acceptHighPriceDeviations(): boolean {
-      return this.$accessor.app.acceptHighPriceDeviations
-    },
-
     market(): UiDerivativeMarket | undefined {
       return this.$accessor.derivatives.market
     },
@@ -1657,8 +1653,7 @@ export default Vue.extend({
         maxOrdersError,
         tradingTypeMarket,
         isUserWalletConnected,
-        priceHasHighDeviationWarning,
-        acceptHighPriceDeviations
+        priceHasHighDeviationWarning
       } = this
 
       if (!isUserWalletConnected) {
@@ -1682,17 +1677,7 @@ export default Vue.extend({
       }
 
       // If price has high deviation, we open a confirm modal
-      if (acceptHighPriceDeviations) {
-        return this.$accessor.modal.openModal(Modal.OrderConfirm)
-      } else {
-        // If price has high deviation, show a confirm toast that can disable the setting
-        return this.$onConfirm(
-          this.$t('high_price_deviation_warning', {
-            percentage: DEFAULT_PRICE_WARNING_DEVIATION
-          }),
-          this.handleEnableAcceptHighPriceDeviations
-        )
-      }
+      return this.$accessor.modal.openModal(Modal.OrderConfirm)
     }
   }
 })

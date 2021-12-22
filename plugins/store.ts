@@ -4,7 +4,6 @@ import { localStorage } from '~/app/singletons/Storage'
 import { AppState } from '~/types'
 
 const mutationsToPersist = [
-  'app/acceptHighPriceDeviations',
   'auction/setAuctionsViewed',
   'wallet/reset',
   'wallet/setAddress',
@@ -45,11 +44,6 @@ const store: Plugin = ({ store, app }, inject) => {
   store.subscribe(({ type }) => {
     if (mutationsToPersist.includes(type)) {
       const stateToPersist = {
-        app: {
-          acceptHighPriceDeviations:
-            app.$accessor.app.acceptHighPriceDeviations
-        },
-
         auction: {
           auctionsViewed: app.$accessor.auction.auctionsViewed
         },

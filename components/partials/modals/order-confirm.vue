@@ -19,9 +19,6 @@
         <v-button lg class="mr-4" red @click.stop="handleCancel">
           {{ $t('cancel') }}
         </v-button>
-        <v-button text-xs @click.stop="handleCancelAndSavePreference">
-          {{ $t('cancel_and_save_preference') }}
-        </v-button>
       </div>
     </div>
   </v-modal>
