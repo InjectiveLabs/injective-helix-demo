@@ -1087,8 +1087,7 @@ export default Vue.extend({
         orderTypeBuy,
         baseAvailableBalance,
         quoteAvailableBalance,
-        executionPrice,
-        slippage
+        executionPrice
       } = this
 
       const percentageToNumber = new BigNumberInBase(percentage).div(100)
@@ -1125,7 +1124,7 @@ export default Vue.extend({
         return getApproxAmountForMarketOrder({
           market,
           balance,
-          slippage: slippage.toNumber(),
+          slippage: 1,
           percent: percentageToNumber.toNumber(),
           records: orderTypeBuy ? sells : buys
         }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)

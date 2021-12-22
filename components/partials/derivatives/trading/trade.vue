@@ -1415,8 +1415,7 @@ export default Vue.extend({
         maxReduceOnly,
         orderTypeReduceOnly,
         availableMargin,
-        executionPrice,
-        slippage
+        executionPrice
       } = this
       const percentageToNumber = new BigNumberInBase(percentage).div(100)
 
@@ -1435,7 +1434,7 @@ export default Vue.extend({
           market,
           margin: availableMargin,
           leverage: form.leverage,
-          slippage: slippage.toNumber(),
+          slippage: 1,
           percent: percentageToNumber.toNumber(),
           records: orderTypeBuy ? sells : buys
         }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
