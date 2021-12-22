@@ -1,7 +1,6 @@
 import '~/static/chart/datafeeds/udf/build/polyfills.js'
+import { Datafeed } from './datafeed/index'
 import { BASE_URL } from '~/app/utils/constants'
-// @ts-ignore
-import { UDFCompatibleDatafeed } from '~/static/chart/datafeeds/udf/build/bundle.js'
 import { TokenSymbol } from '~/types'
 
 const { theme } = require('../../tailwind.config')
@@ -33,7 +32,7 @@ export default function ({
     width: '100%',
     container_id: 'tv_chart_container',
     allow_symbol_change: false,
-    datafeed: new UDFCompatibleDatafeed(datafeedEndpoint, 2000),
+    datafeed: new Datafeed(datafeedEndpoint, 2000),
     library_path: `${BASE_URL}/chart/charting_library/`,
     custom_css_url: `${BASE_URL}/chart/charting_library/custom.css?v5`,
     locale: 'en',

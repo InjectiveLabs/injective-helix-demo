@@ -87,7 +87,9 @@ export default Vue.extend({
 
   methods: {
     onReady() {
-      this.status.setIdle()
+      setTimeout(() => {
+        this.status.setIdle()
+      }, 3000)
     }
   }
 })
