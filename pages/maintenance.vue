@@ -11,6 +11,13 @@
         class="text-gray-300 text-xl mx-auto w-full lg:w-2/3 text-center mt-1"
         v-html="$t('maintenance_subheader')"
       ></h2>
+      <div class="text-center mt-6">
+        <v-button primary lg>
+          <a href="https://hub.injective.network/trade" target="_blank">{{
+            $t('maintenance_button')
+          }}</a>
+        </v-button>
+      </div>
       <h3
         class="text-gray-500 text-md text-center"
         v-html="$t('maintenance_body')"
