@@ -17,6 +17,7 @@ import {
   fetchMarketOrderbook,
   fetchMarketOrders,
   fetchMarkets,
+  fetchMarket,
   fetchMarketsSummary,
   fetchMarketTrades,
   submitLimitOrder,
@@ -635,6 +636,16 @@ export const actions = actionTree(
 
         commit('setMarketsSummary', updatedMarketsSummary)
       }
+    },
+
+    async fetchMarket({ state, commit }) {
+      const { market } = state
+
+      if (!market) {
+        return
+      }
+
+      commit('setMarket', await fetchMarket(market.marketId))
     },
 
     async fetchSubaccountMarketTrades({ state, commit }) {
