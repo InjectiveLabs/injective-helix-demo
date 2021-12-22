@@ -143,14 +143,20 @@ export const getUsdTokensPriceFromExplorerCoinGecko = async (
   coinIds: string
 ) => {
   if (!coinIds) {
-    return []
+    return [] as {
+      id: string
+      symbol: string
+      name: string
+      // eslint-disable-next-line camelcase
+      current_price: string
+    }[]
   }
 
   const {
     data: { data }
   } = await explorerCoinGeckoConsumer.fetchCoins(coinIds)
 
-  return data
+  return data || []
 }
 
 export const setTokenAllowance = async ({
