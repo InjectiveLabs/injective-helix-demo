@@ -275,7 +275,7 @@ export default Vue.extend({
       return high.toFormat(market.priceDecimals)
     },
 
-    twapEst(): BigNumberInBase {
+    tWapEst(): BigNumberInBase {
       const { market } = this
 
       if (!market) {
@@ -303,7 +303,7 @@ export default Vue.extend({
     },
 
     fundingRate(): BigNumberInBase {
-      const { market, twapEst } = this
+      const { market, tWapEst } = this
 
       if (!market) {
         return ZERO_IN_BASE
@@ -328,7 +328,7 @@ export default Vue.extend({
       )
       const estFundingRate = new BigNumberInBase(
         derivativeMarket.perpetualMarketInfo.hourlyInterestRate
-      ).plus(twapEst)
+      ).plus(tWapEst)
 
       if (estFundingRate.gt(hourlyFundingRateCap)) {
         return new BigNumberInBase(hourlyFundingRateCap).multipliedBy(100)

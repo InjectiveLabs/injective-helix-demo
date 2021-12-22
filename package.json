@@ -30,7 +30,7 @@
   "dependencies": {
     "@apollo/client": "^3.5.5",
     "@chenfengyuan/vue-countdown": "^1.1.5",
-    "@injectivelabs/alchemy-api": "^0.0.8",
+    "@injectivelabs/alchemy-api": "^0.0.10",
     "@injectivelabs/chain-consumer": "^0.0.100",
     "@injectivelabs/contracts": "^0.0.81",
     "@injectivelabs/derivatives-consumer": "^0.0.78",

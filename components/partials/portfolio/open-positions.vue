@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import OpenPositions from './positions/index.vue'
 import {
   DerivativeOrderSide,
@@ -73,11 +73,14 @@ export default Vue.extend({
       const positionsToCancel = positions
         .map((position) => {
           const market = markets.find((m) => m.marketId === position.marketId)!
+          const liquidationPrice = new BigNumberInWei(
+            position.liquidationPrice
+          ).toBase(market.quoteToken.decimals)
 
           return {
             market,
-            price: market
-              ? getPositionFeeAdjustedBankruptcyPrice({ position, market })
+            price: liquidationPrice.gt(0)
+              ? liquidationPrice
               : new BigNumberInBase(0),
             orderType:
               position.direction === TradeDirection.Long

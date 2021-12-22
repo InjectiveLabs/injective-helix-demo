@@ -23,7 +23,8 @@ export default {
     'The Canary Chain has a $5,000 trading limit which will be uplifted upon the canonical release over the coming weeks.',
   maintenance_header: 'Ongoing Maintenance',
   maintenance_subheader:
-    'We are working on improving your experience. We will be back as soon as possible.',
+    'While this relayer is down for maintenance, the <strong class="text-primary-500">Injective Chain</strong> is never down! You can find other relayers in the Injective Ecosystem on the button below!',
+  maintenance_button: 'Relayers',
   maintenance_body: '',
   token_allowance_successful: 'Token allowance set successful',
   logout: 'Logout',
@@ -239,7 +240,7 @@ export default {
   high_price_deviation_warning:
     'You have previously turned on the warning notification for high price deviations. Click confirm if you agree to turn off this warning.',
   high_execution_price_deviation_warning_note:
-    'The execution price for your order deviates at least {percentage}% than the last traded price. Click confirm if you still want to execute it. You can also disable this confirmation dialog for future orders by clicking "Cancel and Save Preference".',
+    'The execution price for your order deviates at least {percentage}% than the last traded price. Click confirm if you still want to execute it.',
   high_execution_price_deviation_warning:
     'Your execution price deviates at least {percentage}% from the latest market price.',
   cancel_and_save_preference: 'Cancel and Save Preference',

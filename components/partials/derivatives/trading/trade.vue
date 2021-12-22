@@ -203,7 +203,8 @@ import {
   DEFAULT_PRICE_WARNING_DEVIATION,
   DEFAULT_MARKET_PRICE_WARNING_DEVIATION,
   DEFAULT_MAX_PRICE_BAND_DIFFERENCE,
-  DEFAULT_MIN_PRICE_BAND_DIFFERENCE
+  DEFAULT_MIN_PRICE_BAND_DIFFERENCE,
+  PRICE_BAND_ENABLED
 } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
@@ -277,10 +278,6 @@ export default Vue.extend({
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
-    },
-
-    acceptHighPriceDeviations(): boolean {
-      return this.$accessor.app.acceptHighPriceDeviations
     },
 
     market(): UiDerivativeMarket | undefined {
@@ -787,7 +784,7 @@ export default Vue.extend({
         margin,
         hasPrice,
         hasAmount,
-        executionPrice,
+        executionPriceWithSlippage,
         amount
       } = this
 
@@ -803,7 +800,7 @@ export default Vue.extend({
         }
       }
 
-      const notional = executionPrice.times(amount)
+      const notional = executionPriceWithSlippage.times(amount)
       const dividend = orderTypeBuy
         ? margin.minus(notional)
         : margin.plus(notional)
@@ -821,6 +818,33 @@ export default Vue.extend({
       }
 
       if (!orderTypeBuy && markPrice.gt(condition)) {
+        return {
+          amount: this.$t('order_insufficient_margin')
+        }
+      }
+
+      return undefined
+    },
+
+    initialMinMarginRequirementError(): TradeError | undefined {
+      const {
+        market,
+        margin,
+        hasPrice,
+        hasAmount,
+        executionPrice,
+        amount
+      } = this
+
+      if (!market || !hasPrice || !hasAmount) {
+        return undefined
+      }
+
+      const condition = executionPrice
+        .times(amount)
+        .times(market.initialMarginRatio)
+
+      if (margin.lte(condition)) {
         return {
           amount: this.$t('order_insufficient_margin')
         }
@@ -949,6 +973,10 @@ export default Vue.extend({
         return undefined
       }
 
+      if (!PRICE_BAND_ENABLED) {
+        return undefined
+      }
+
       const minTickPrice = new BigNumberInBase(
         new BigNumberInBase(1).shiftedBy(-market.priceDecimals)
       )
@@ -1021,6 +1049,10 @@ export default Vue.extend({
 
       if (this.markPriceThresholdError) {
         return this.markPriceThresholdError
+      }
+
+      if (this.initialMinMarginRequirementError) {
+        return this.initialMinMarginRequirementError
       }
 
       return { price: '', amount: '' }
@@ -1114,22 +1146,13 @@ export default Vue.extend({
     },
 
     notionalValue(): BigNumberInBase {
-      const {
-        marketMarkPrice,
-        tradingTypeMarket,
-        executionPrice,
-        amount,
-        market
-      } = this
+      const { executionPrice, amount, market } = this
 
       if (amount.isNaN() || !market) {
         return ZERO_IN_BASE
       }
 
-      const price = tradingTypeMarket
-        ? new BigNumberInBase(marketMarkPrice)
-        : executionPrice
-      const notional = amount.times(price)
+      const notional = amount.times(executionPrice)
 
       if (notional.lt(0)) {
         return ZERO_IN_BASE
@@ -1393,8 +1416,7 @@ export default Vue.extend({
         maxReduceOnly,
         orderTypeReduceOnly,
         availableMargin,
-        executionPrice,
-        slippage
+        executionPrice
       } = this
       const percentageToNumber = new BigNumberInBase(percentage).div(100)
 
@@ -1413,7 +1435,7 @@ export default Vue.extend({
           market,
           margin: availableMargin,
           leverage: form.leverage,
-          slippage: slippage.toNumber(),
+          slippage: 1,
           percent: percentageToNumber.toNumber(),
           records: orderTypeBuy ? sells : buys
         }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
@@ -1636,8 +1658,7 @@ export default Vue.extend({
         maxOrdersError,
         tradingTypeMarket,
         isUserWalletConnected,
-        priceHasHighDeviationWarning,
-        acceptHighPriceDeviations
+        priceHasHighDeviationWarning
       } = this
 
       if (!isUserWalletConnected) {
@@ -1661,17 +1682,7 @@ export default Vue.extend({
       }
 
       // If price has high deviation, we open a confirm modal
-      if (acceptHighPriceDeviations) {
-        return this.$accessor.modal.openModal(Modal.OrderConfirm)
-      } else {
-        // If price has high deviation, show a confirm toast that can disable the setting
-        return this.$onConfirm(
-          this.$t('high_price_deviation_warning', {
-            percentage: DEFAULT_PRICE_WARNING_DEVIATION
-          }),
-          this.handleEnableAcceptHighPriceDeviations
-        )
-      }
+      return this.$accessor.modal.openModal(Modal.OrderConfirm)
     }
   }
 })

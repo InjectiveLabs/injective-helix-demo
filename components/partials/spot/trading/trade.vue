@@ -173,7 +173,8 @@ import {
   DEFAULT_PRICE_WARNING_DEVIATION,
   DEFAULT_MARKET_PRICE_WARNING_DEVIATION,
   DEFAULT_MAX_PRICE_BAND_DIFFERENCE,
-  DEFAULT_MIN_PRICE_BAND_DIFFERENCE
+  DEFAULT_MIN_PRICE_BAND_DIFFERENCE,
+  PRICE_BAND_ENABLED
 } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
@@ -235,10 +236,6 @@ export default Vue.extend({
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
-    },
-
-    acceptHighPriceDeviations(): boolean {
-      return this.$accessor.app.acceptHighPriceDeviations
     },
 
     market(): UiSpotMarket | undefined {
@@ -751,6 +748,10 @@ export default Vue.extend({
         return undefined
       }
 
+      if (!PRICE_BAND_ENABLED) {
+        return undefined
+      }
+
       const minTickPrice = new BigNumberInBase(
         new BigNumberInBase(1).shiftedBy(-market.priceDecimals)
       )
@@ -1087,8 +1088,7 @@ export default Vue.extend({
         orderTypeBuy,
         baseAvailableBalance,
         quoteAvailableBalance,
-        executionPrice,
-        slippage
+        executionPrice
       } = this
 
       const percentageToNumber = new BigNumberInBase(percentage).div(100)
@@ -1125,7 +1125,7 @@ export default Vue.extend({
         return getApproxAmountForMarketOrder({
           market,
           balance,
-          slippage: slippage.toNumber(),
+          slippage: 1,
           percent: percentageToNumber.toNumber(),
           records: orderTypeBuy ? sells : buys
         }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
@@ -1313,8 +1313,7 @@ export default Vue.extend({
         hasErrors,
         tradingTypeMarket,
         priceHasHighDeviationWarning,
-        isUserWalletConnected,
-        acceptHighPriceDeviations
+        isUserWalletConnected
       } = this
 
       if (!isUserWalletConnected) {
@@ -1334,17 +1333,7 @@ export default Vue.extend({
       }
 
       // If price has high deviation, we open a confirm modal
-      if (acceptHighPriceDeviations) {
-        return this.$accessor.modal.openModal(Modal.OrderConfirm)
-      } else {
-        // If price has high deviation, show a confirm toast that can disable the setting
-        return this.$onConfirm(
-          this.$t('high_price_deviation_warning', {
-            percentage: DEFAULT_PRICE_WARNING_DEVIATION
-          }),
-          this.handleEnableAcceptHighPriceDeviations
-        )
-      }
+      return this.$accessor.modal.openModal(Modal.OrderConfirm)
     }
   }
 })

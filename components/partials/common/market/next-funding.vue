@@ -5,10 +5,7 @@
     :tooltip="$t('next_funding_tooltip')"
   >
     <span class="text-sm text-right font-mono block">
-      <v-countdown
-        v-if="milisecondsUntilFunding > 0"
-        :time="milisecondsUntilFunding"
-      >
+      <v-countdown v-if="msUntilFunding > 0" :time="msUntilFunding">
         <template slot-scope="{ hours, minutes, seconds }">
           {{ hours >= 10 ? hours : '0' + hours }}:{{
             minutes >= 10 ? minutes : '0' + minutes
@@ -36,7 +33,7 @@ export default Vue.extend({
 
   data() {
     return {
-      milisecondsUntilFunding: 0 as number,
+      msUntilFunding: 0 as number,
       interval: null as any
     }
   },
@@ -53,13 +50,19 @@ export default Vue.extend({
     }
   },
 
+  watch: {
+    msUntilFunding(msUntilFunding) {
+      // Fetch market's funding when new funding is available
+      if (msUntilFunding <= 1000) {
+        this.$accessor.derivatives.fetchMarket()
+      }
+    }
+  },
+
   mounted() {
     if (this.perpetualMarket) {
       this.interval = setInterval(() => {
-        this.milisecondsUntilFunding = moment
-          .utc()
-          .endOf('hour')
-          .diff(moment.utc())
+        this.msUntilFunding = moment.utc().endOf('hour').diff(moment.utc())
       }, 1000)
     }
   },

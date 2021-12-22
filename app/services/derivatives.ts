@@ -12,7 +12,8 @@ import { AccountAddress, TradeExecutionSide } from '@injectivelabs/ts-types'
 import {
   BigNumber,
   BigNumberInBase,
-  BigNumberInWei
+  BigNumberInWei,
+  DEFAULT_EXCHANGE_LIMIT
 } from '@injectivelabs/utils'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { SubaccountStreamType } from '@injectivelabs/subaccount-consumer'
@@ -520,14 +521,19 @@ export const closeAllPosition = async ({
   address: AccountAddress
   injectiveAddress: AccountAddress
 }) => {
-  const message = positions.map((position) =>
-    DerivativeMarketComposer.createMarketOrder({
+  const message = positions.map((position) => {
+    const minTickPrice = new BigNumberInBase(
+      new BigNumberInBase(1).shiftedBy(-position.market.priceDecimals)
+    )
+    const actualPrice = position.price.lte(0) ? minTickPrice : position.price
+
+    return DerivativeMarketComposer.createMarketOrder({
       subaccountId,
       injectiveAddress,
       marketId: position.market.marketId,
       order: {
         price: new BigNumberInBase(
-          position.price.toFixed(
+          actualPrice.toFixed(
             position.market.priceDecimals,
             position.orderType === DerivativeOrderSide.Buy
               ? BigNumberInBase.ROUND_DOWN
@@ -543,12 +549,18 @@ export const closeAllPosition = async ({
         triggerPrice: ZERO_TO_STRING // TODO
       }
     })
-  )
+  })
 
   try {
     const txProvider = new TxProvider({
       address,
       message,
+      gasLimit: new BigNumberInBase(
+        new BigNumberInBase(DEFAULT_EXCHANGE_LIMIT)
+          .times(positions.length)
+          .dividedBy(4)
+          .toFixed(0)
+      ).toNumber(),
       bucket: DerivativesMetrics.CreateMarketOrder,
       chainId: CHAIN_ID
     })
