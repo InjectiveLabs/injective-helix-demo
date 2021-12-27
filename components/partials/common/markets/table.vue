@@ -34,17 +34,19 @@
         >
           <span>{{ $t('spots') }}</span>
         </v-button>
-        <div class="mx-2 w-px h-4 bg-gray-700"></div>
-        <v-button
-          :class="{
-            'text-gray-500': marketBase !== MarketBase.Terra
-          }"
-          text-sm
-          class="font-normal"
-          @click.stop="onSelectMarketBase(MarketBase.Terra)"
-        >
-          <span>{{ $t('terra') }}</span>
-        </v-button>
+        <template v-if="false">
+          <div class="mx-2 w-px h-4 bg-gray-700"></div>
+          <v-button
+            :class="{
+              'text-gray-500': marketBase !== MarketBase.Terra
+            }"
+            text-sm
+            class="font-normal"
+            @click.stop="onSelectMarketBase(MarketBase.Terra)"
+          >
+            <span>{{ $t('terra') }}</span>
+          </v-button>
+        </template>
         <div class="hidden md:block mx-2 w-px h-4 bg-gray-700"></div>
         <v-button
           :class="{
