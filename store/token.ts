@@ -203,9 +203,13 @@ export const actions = actionTree(
     },
 
     async getTokenBalanceAndAllowance({ commit }) {
-      const { address } = this.app.$accessor.wallet
+      const { address, isUserWalletConnected } = this.app.$accessor.wallet
       const { market: spotMarket } = this.app.$accessor.spot
       const { market: derivativeMarket } = this.app.$accessor.derivatives
+
+      if (!address || !isUserWalletConnected) {
+        return
+      }
 
       if (!spotMarket && !derivativeMarket) {
         return

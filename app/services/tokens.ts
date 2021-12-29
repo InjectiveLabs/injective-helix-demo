@@ -3,7 +3,11 @@ import { Web3Exception } from '@injectivelabs/exceptions'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { BaseCurrencyContract } from '@injectivelabs/contracts/dist/contracts/BaseCurrency'
 import { PeggyComposer } from '@injectivelabs/chain-consumer'
-import { Erc20TokenMeta, TokenMeta } from '@injectivelabs/token-metadata'
+import {
+  erc20TokenMeta,
+  Erc20TokenMetaFactory,
+  TokenMeta
+} from '@injectivelabs/token-metadata'
 import { contractAddresses } from '@injectivelabs/contracts'
 import { alchemyApi } from '../web3/alchemy'
 import { fetchDenomTrace } from './ibc'
@@ -17,6 +21,7 @@ import {
   GAS_LIMIT_MULTIPLIER,
   INJECTIVE_DENOM,
   MAXIMUM_TRANSFER_ALLOWED,
+  NETWORK,
   TRANSFER_RESTRICTIONS_ENABLED,
   ZERO_IN_BASE,
   ZERO_TO_STRING
@@ -110,7 +115,7 @@ export const getIbcTokenBalanceAndAllowance = async (
 }
 
 export const getCoinGeckoId = (symbol: string): string => {
-  return Erc20TokenMeta.getCoinGeckoIdFromSymbol(symbol)
+  return erc20TokenMeta.getCoinGeckoIdFromSymbol(symbol)
 }
 
 export const getUsdtTokenPriceFromCoinGecko = async (coinId: string) => {
@@ -358,10 +363,9 @@ export const getTokenMetaData = (denom: string): TokenMeta | undefined => {
       ? getTokenMetaDataBySymbol('INJ')!.address
       : address
 
-  const meta =
-    CHAIN_ID === ChainId.Mainnet
-      ? Erc20TokenMeta.getMetaByAddress(erc20Address)
-      : Erc20TokenMeta.getMetaByKovanAddress(erc20Address)
+  const meta = Erc20TokenMetaFactory.make(NETWORK).getMetaByAddress(
+    erc20Address
+  )
 
   if (!meta) {
     return
@@ -374,11 +378,7 @@ export const getIbcTokenMetaData = async (
   denom: string
 ): Promise<TokenMeta | undefined> => {
   const { baseDenom: symbol } = await fetchDenomTrace(denom)
-
-  const meta =
-    CHAIN_ID === ChainId.Mainnet
-      ? Erc20TokenMeta.getMetaBySymbol(symbol)
-      : Erc20TokenMeta.getMetaBySymbolForKovan(symbol)
+  const meta = Erc20TokenMetaFactory.make(NETWORK).getMetaBySymbol(symbol)
 
   if (!meta) {
     return
@@ -398,7 +398,5 @@ export const getTokenMetaDataWithIbc = async (
 export const getTokenMetaDataBySymbol = (
   symbol: string
 ): TokenMeta | undefined => {
-  return CHAIN_ID === ChainId.Mainnet
-    ? Erc20TokenMeta.getMetaBySymbol(symbol)
-    : Erc20TokenMeta.getMetaBySymbolForKovan(symbol)
+  return Erc20TokenMetaFactory.make(NETWORK).getMetaBySymbol(symbol)
 }
