@@ -207,7 +207,7 @@ export const actions = actionTree(
       const { market: spotMarket } = this.app.$accessor.spot
       const { market: derivativeMarket } = this.app.$accessor.derivatives
 
-      if(!address || !isUserWalletConnected) {
+      if (!address || !isUserWalletConnected) {
         return
       }
 
