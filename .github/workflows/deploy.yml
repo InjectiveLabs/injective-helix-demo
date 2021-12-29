@@ -27,7 +27,6 @@ jobs:
       GEO_IP_RESTRICTIONS_ENABLED: true
       TRANSFER_RESTRICTIONS_ENABLED: false
       SHOW_AUCTION_COUNTDOWN: false
-      ORDERBOOK_POLLING_ENABLED: false
 
       ## Endpoints
       APP_EXCHANGE_API_ENDPOINT: ''
@@ -99,7 +98,6 @@ jobs:
       GEO_IP_RESTRICTIONS_ENABLED: true
       TRANSFER_RESTRICTIONS_ENABLED: false
       SHOW_AUCTION_COUNTDOWN: false
-      ORDERBOOK_POLLING_ENABLED: false
       PRICE_BAND_ENABLED: false
 
       ## Endpoints
@@ -172,7 +170,6 @@ jobs:
       GEO_IP_RESTRICTIONS_ENABLED: false
       TRANSFER_RESTRICTIONS_ENABLED: false
       SHOW_AUCTION_COUNTDOWN: false
-      ORDERBOOK_POLLING_ENABLED: false
 
       ## Endpoints
       APP_EXCHANGE_API_ENDPOINT: ''
@@ -244,7 +241,6 @@ jobs:
       GEO_IP_RESTRICTIONS_ENABLED: false
       TRANSFER_RESTRICTIONS_ENABLED: false
       SHOW_AUCTION_COUNTDOWN: false
-      ORDERBOOK_POLLING_ENABLED: false
 
       ## Endpoints
       APP_EXCHANGE_API_ENDPOINT: ''

@@ -22,8 +22,7 @@ export const SHOW_AUCTION_COUNTDOWN: boolean =
   process.env.SHOW_AUCTION_COUNTDOWN === 'true'
 export const ORDERBOOK_POLLING_ENABLED: boolean =
   process.env.ORDERBOOK_POLLING_ENABLED === 'true'
-export const ORDERBOOK_STREAMING_ENABLED: boolean =
-  process.env.ORDERBOOK_POLLING_ENABLED !== 'true'
+export const ORDERBOOK_STREAMING_ENABLED: boolean = !ORDERBOOK_POLLING_ENABLED
 
 export const ZERO: BigNumber = new BigNumber(0)
 export const ZERO_TO_STRING = '0'
