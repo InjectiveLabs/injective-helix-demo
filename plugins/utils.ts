@@ -6,6 +6,17 @@ import {
   IS_TESTNET
 } from '~/app/utils/constants'
 
+const isErrorExcludedFromToast = (error: any): boolean => {
+  const disabledPatterns = [
+    /^(dmm \[inj)(.*)(\] didn't participate in the epoch \[epoch_)(.*)(])/
+  ]
+
+  const errorMessage =
+    typeof error === 'object' && error !== null ? error.message : error || ''
+
+  return disabledPatterns.some((pattern) => pattern.test(errorMessage))
+}
+
 const isErrorExcludedFromReporting = (error: any): boolean => {
   const disabledMessages = [
     'Your country is restricted from trading on this relayer'
@@ -18,7 +29,8 @@ const isErrorExcludedFromReporting = (error: any): boolean => {
     errorMessage.includes('MetaMask') ||
     errorMessage.includes('Metamask') ||
     errorMessage.includes('metamask') ||
-    disabledMessages.includes(errorMessage)
+    disabledMessages.includes(errorMessage) ||
+    isErrorExcludedFromToast(error)
   )
 }
 
@@ -34,7 +46,9 @@ const parseMessage = (error: any): string => {
 
 export default ({ app }: Context, inject: any) => {
   inject('onRejected', (error: Error) => {
-    app.$toast.error(parseMessage(error))
+    if (!isErrorExcludedFromToast(error)) {
+      app.$toast.error(parseMessage(error))
+    }
 
     if (IS_PRODUCTION && !isErrorExcludedFromReporting(error)) {
       app.$bugsnag.notify(error)
@@ -46,7 +60,9 @@ export default ({ app }: Context, inject: any) => {
   })
 
   inject('onError', (error: Error) => {
-    app.$toast.error(parseMessage(error))
+    if (!isErrorExcludedFromToast(error)) {
+      app.$toast.error(parseMessage(error))
+    }
 
     if (IS_PRODUCTION && !isErrorExcludedFromReporting(error)) {
       app.$bugsnag.notify(error)

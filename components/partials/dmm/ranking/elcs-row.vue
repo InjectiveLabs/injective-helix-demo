@@ -49,6 +49,8 @@ import Vue, { PropType } from 'vue'
 import { formatWalletAddress } from '@injectivelabs/utils'
 import TableRow from '~/components/elements/table-row.vue'
 import { UIEpochMarketELCSItem } from '~/types'
+import { hardCodedDmmNames } from '~/app/data/dmm'
+
 export default Vue.extend({
   components: {
     TableRow
@@ -68,12 +70,24 @@ export default Vue.extend({
     }
   },
   computed: {
-    formattedAddress(): string {
+    hardcodedName(): string {
       const { item } = this
+
       if (!item.address) {
         return ''
       }
-      return formatWalletAddress(item.address)
+
+      return hardCodedDmmNames[item.address] || ''
+    },
+
+    formattedAddress(): string {
+      const { item, hardcodedName } = this
+
+      if (!item.address) {
+        return ''
+      }
+
+      return hardcodedName !== '' ? hardcodedName : formatWalletAddress(item.address)
     }
   }
 })

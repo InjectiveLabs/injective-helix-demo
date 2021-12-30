@@ -31,18 +31,24 @@ export const fetchDMMRecords = async ({
   dmmName?: string
   epochId?: string
 }) => {
-  const promise = dmmConsumer.fetchDMMRecords({
-    accountAddress,
-    dmmName,
-    epochId
-  })
+  try {
+    const promise = dmmConsumer.fetchDMMRecords({
+      accountAddress,
+      dmmName,
+      epochId
+    })
 
-  const dmmRecords = await metricsProvider.sendAndRecord(
-    promise,
-    DMMMetrics.FetchDMMRecords
-  )
+    const dmmRecords = await metricsProvider.sendAndRecord(
+      promise,
+      DMMMetrics.FetchDMMRecords
+    )
 
-  return dmmRecords.map(DMMTransformer.grpcEpochResultRecordToEpochResultRecord)
+    return dmmRecords.map(
+      DMMTransformer.grpcEpochResultRecordToEpochResultRecord
+    )
+  } catch (e: any) {
+    throw new Error(e.message)
+  }
 }
 
 export const fetchEpochs = async () => {
