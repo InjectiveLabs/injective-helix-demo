@@ -31,16 +31,34 @@
     </v-item>
     <v-item class="col-span-2 lg:col-span-4">
       <template slot="value">
-        <span class="font-mono text-lg">
-          {{ campaignDurationToString }}
-        </span>
+        <v-emp-number
+          v-if="feeDiscountAccountInfo && isUserWalletConnected"
+          :number="stakedAmount"
+          :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
+        >
+          <span>INJ</span>
+        </v-emp-number>
+        <span v-else>&mdash;</span>
+      </template>
+      <template slot="context">
+        <a
+          v-if="isUserWalletConnected"
+          :href="hubUrl"
+          class="text-primary-500"
+          target="_blank"
+          >{{ $t('stake_more') }}
+        </a>
       </template>
       <template slot="title">
         <div class="flex items-center justify-center">
-          {{ $t('campaign_duration') }}
+          {{ $t('trade_and_earn_my_staked_amount') }}
           <v-icon-info-tooltip
             class="ml-2"
-            :tooltip="$t('campaign_duration_tooltip')"
+            :tooltip="
+              $t('trade_and_earn_my_staked_amount_tooltip', {
+                maxRewards: DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
+              })
+            "
           />
         </div>
       </template>
@@ -82,10 +100,14 @@ import Vue from 'vue'
 import { cosmosSdkDecToBigNumber } from '~/app/transformers'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS,
   ZERO_IN_BASE
 } from '~/app/utils/constants'
 import VItem from '~/components/partials/common/stats/item.vue'
-import { TradingRewardsCampaign } from '~/types/exchange'
+import {
+  FeeDiscountAccountInfo,
+  TradingRewardsCampaign
+} from '~/types/exchange'
 
 export default Vue.extend({
   components: {
@@ -94,6 +116,7 @@ export default Vue.extend({
 
   data() {
     return {
+      DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS,
       UI_DEFAULT_MIN_DISPLAY_DECIMALS,
       now: Math.floor(Date.now() / 1000)
     }
@@ -104,8 +127,28 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
+    },
+
     tradingRewardsCampaign(): TradingRewardsCampaign | undefined {
       return this.$accessor.exchange.tradingRewardsCampaign
+    },
+
+    stakedAmount(): BigNumberInBase {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return ZERO_IN_BASE
+      }
+
+      if (!feeDiscountAccountInfo.accountInfo) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(
+        cosmosSdkDecToBigNumber(feeDiscountAccountInfo.accountInfo.stakedAmount)
+      )
     },
 
     tradeRewardsPoints(): string[] {
@@ -215,6 +258,10 @@ export default Vue.extend({
       return injMaxCampaignRewards.multipliedBy(
         new BigNumberInBase(injUsdPrice)
       )
+    },
+
+    hubUrl(): string {
+      return 'https://hub.injective.network/stake'
     }
   }
 })

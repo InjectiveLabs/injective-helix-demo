@@ -457,7 +457,7 @@ export default {
   current_epoch_tooltip: 'Current Epoch tooltip',
   est_rewards: 'Est. Rewards',
   est_rewards_tooltip:
-    'Estimated reward to be distributed to this address based on your reward points /  total reward points * total allocated rewards. This is calculated assuming that your reward points grow just as fast as total reward points until the end of the campaign.  In order to maintain or maximize your reward, you should maintain the same or higher trading activity until the end of the campaign.',
+    'Estimated reward to be distributed to this address based on your reward points /  total reward points * total allocated rewards. This is calculated assuming that your reward points grow just as fast as total reward points until the end of the campaign.  In order to maintain or maximize your reward, you should maintain the same or higher trading activity until the end of the campaign. Rewards amount is capped at {maxRewards} INJ or the equivalent amount of INJ staked, whichever is higher',
   reward_points: 'My Reward Points Earned',
   reward_points_tooltip:
     'The current reward points you earned during this campaign. Reward points will reset to 0 at the beginning of next campaign.',
@@ -538,5 +538,10 @@ export default {
   terra: 'Terra',
   overview: 'Overview',
   subaccount_deposit_modal_note:
-    'To get started with trading you need to deposit your funds from the Injective Chain balance to a dedicated trading account. Select the asset you want to transfer, enter the amount, deposit and start trading!'
+    'To get started with trading you need to deposit your funds from the Injective Chain balance to a dedicated trading account. Select the asset you want to transfer, enter the amount, deposit and start trading!',
+
+  trade_and_earn_my_staked_amount: 'My Staked Amount',
+  trade_and_earn_my_staked_amount_tooltip:
+    'The default maximum rewards you can receive is capped at {maxRewards} INJ. You may increase this cap by staking more than {maxRewards} INJ and it will be the same level as your staked amount.',
+  stake_more: 'Stake More'
 }
