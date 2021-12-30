@@ -144,7 +144,9 @@ export const actions = actionTree(
         epochId: activeEpochId
       })
 
-      commit('setRecords', records)
+      if (records) {
+        commit('setRecords', records)
+      }
     },
 
     async fetchEpochs({ commit }) {
