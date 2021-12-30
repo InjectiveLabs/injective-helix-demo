@@ -26,7 +26,11 @@
           {{ $t('est_rewards') }}
           <v-icon-info-tooltip
             class="ml-2"
-            :tooltip="$t('est_rewards_tooltip')"
+            :tooltip="
+              $t('est_rewards_tooltip', {
+                maxRewards: DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
+              })
+            "
           />
         </div>
       </template>
@@ -80,11 +84,15 @@ import Vue from 'vue'
 import { cosmosSdkDecToBigNumber } from '~/app/transformers'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS,
   ZERO_IN_BASE
 } from '~/app/utils/constants'
 
 import VItem from '~/components/partials/common/stats/item.vue'
-import { TradingRewardsCampaign } from '~/types/exchange'
+import {
+  FeeDiscountAccountInfo,
+  TradingRewardsCampaign
+} from '~/types/exchange'
 
 export default Vue.extend({
   components: {
@@ -93,6 +101,7 @@ export default Vue.extend({
 
   data() {
     return {
+      DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS,
       UI_DEFAULT_MIN_DISPLAY_DECIMALS,
       now: Math.floor(Date.now() / 1000)
     }
@@ -101,6 +110,10 @@ export default Vue.extend({
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
+    },
+
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
     },
 
     tradingRewardsCampaign(): TradingRewardsCampaign | undefined {
@@ -129,6 +142,22 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(cosmosSdkDecToBigNumber(points))
+    },
+
+    stakedAmount(): BigNumberInBase {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return ZERO_IN_BASE
+      }
+
+      if (!feeDiscountAccountInfo.accountInfo) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(
+        cosmosSdkDecToBigNumber(feeDiscountAccountInfo.accountInfo.stakedAmount)
+      )
     },
 
     tradeRewardPointsFactored(): BigNumberInBase {
@@ -189,16 +218,23 @@ export default Vue.extend({
       const {
         tradeRewardPoints,
         totalTradeRewardPoints,
-        injMaxCampaignRewards
+        injMaxCampaignRewards,
+        stakedAmount
       } = this
 
       if (totalTradeRewardPoints.lte(0)) {
         return ZERO_IN_BASE
       }
 
-      return tradeRewardPoints
+      const estRewards = tradeRewardPoints
         .dividedBy(totalTradeRewardPoints)
         .times(injMaxCampaignRewards)
+
+      if (estRewards.lte(DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS)) {
+        return estRewards
+      }
+
+      return estRewards.gte(stakedAmount) ? stakedAmount : estRewards
     },
 
     estimatedRewardsInUsd(): BigNumberInBase {

@@ -86,7 +86,7 @@ export const actions = actionTree(
       await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
     },
 
-    async initRewards(_) {
+    async initTradeAndEarn(_) {
       await this.app.$accessor.exchange.fetchTradingRewardsCampaign()
       await this.app.$accessor.exchange.fetchTradeRewardPoints()
       await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()

@@ -202,7 +202,7 @@ export const actions = actionTree(
       }
 
       if (this.app.context.route.name === 'trade-and-earn') {
-        await this.app.$accessor.exchange.initRewards()
+        await this.app.$accessor.exchange.initTradeAndEarn()
       }
 
       if (this.app.context.route.name === 'fee-discounts') {
@@ -255,7 +255,7 @@ export const actions = actionTree(
       }
 
       if (this.app.context.route.name === 'trade-and-earn') {
-        await this.app.$accessor.exchange.initRewards()
+        await this.app.$accessor.exchange.initTradeAndEarn()
       }
 
       if (this.app.context.route.name === 'fee-discounts') {
