@@ -14,7 +14,7 @@
               <h3
                 class="text-gray-200 text-base sm:text-lg md:text-2xl mt-3 break-all"
               >
-                {{ injectiveAddress }}
+                {{ dmmDisplayName }}
               </h3>
 
               <VHistoryTable class="mt-6" />
@@ -43,6 +43,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import VHistoryTable from './history-table.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
 import { UiDmmMarketMaker } from '~/types'
+import { hardCodedDmmNames } from '~/app/data/dmm'
 
 export default Vue.extend({
   components: {
@@ -67,6 +68,12 @@ export default Vue.extend({
 
     marketMakers(): UiDmmMarketMaker[] {
       return this.$accessor.dmm.marketMakers
+    },
+
+    dmmDisplayName(): string {
+      const { injectiveAddress } = this
+
+      return hardCodedDmmNames[injectiveAddress] || injectiveAddress
     },
 
     dmmName(): string | undefined {
