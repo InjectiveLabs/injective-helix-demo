@@ -234,6 +234,10 @@ export default Vue.extend({
         return estRewards
       }
 
+      if (stakedAmount.lte(DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS)) {
+        return new BigNumberInBase(DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS)
+      }
+
       return estRewards.gte(stakedAmount) ? stakedAmount : estRewards
     },
 

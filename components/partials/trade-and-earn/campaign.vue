@@ -261,7 +261,7 @@ export default Vue.extend({
     },
 
     hubUrl(): string {
-      return 'https://hub.injective.network/stake'
+      return 'https://hub.injective.network/staking'
     }
   }
 })
