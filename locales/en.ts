@@ -543,5 +543,13 @@ export default {
   trade_and_earn_my_staked_amount: 'My Staked Amount',
   trade_and_earn_my_staked_amount_tooltip:
     'The default maximum rewards you can receive is capped at {maxRewards} INJ. You may increase this cap by staking more than {maxRewards} INJ and it will be the same level as your staked amount.',
-  stake_more: 'Stake More'
+  stake_more: 'Stake More',
+  stake_now: 'Stake Now',
+  'Successfully Staked': 'Successfully Staked',
+  Delegate: 'Delegate',
+  'Enter your amount to be delegated': 'Enter your amount to be delegated',
+  'Available for Delegation': 'Available for Delegation',
+  'Available for Delegation Tooltip':
+    'The amount of INJ you have available for delegation.',
+  'Delegate To {validator}': 'Delegate To {validator}'
 }

@@ -13,6 +13,7 @@ import * as modal from '~/store/modal'
 import * as portfolio from '~/store/portfolio'
 import * as spot from '~/store/spot'
 import * as token from '~/store/token'
+import * as staking from '~/store/staking'
 import * as wallet from '~/store/wallet'
 
 export const accessorType = getAccessorType({
@@ -28,6 +29,7 @@ export const accessorType = getAccessorType({
     history,
     modal,
     portfolio,
+    staking,
     spot,
     token,
     wallet

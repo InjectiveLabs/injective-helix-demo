@@ -11,7 +11,9 @@ export enum AccountMetrics {
 
 export enum ChainMetrics {
   FetchBalances = 'QueryAllBalancesRequest',
-  FetchBalance = 'QueryBalanceRequest'
+  FetchBalance = 'QueryBalanceRequest',
+  FetchValidator = 'QueryValidatorRequest',
+  Delegate = 'MsgDelegate'
 }
 
 export enum DMMMetrics {

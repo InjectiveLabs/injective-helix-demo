@@ -31,7 +31,8 @@ const actionsThatSetAppStateToBusy = [
   'portfolio/closePosition',
   'portfolio/cancelOrder',
   'portfolio/batchCancelSpotOrders',
-  'portfolio/batchCancelDerivativeOrders'
+  'portfolio/batchCancelDerivativeOrders',
+  'staking/delegateToValidator'
 ]
 
 const store: Plugin = ({ store, app }, inject) => {

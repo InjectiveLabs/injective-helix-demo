@@ -42,6 +42,7 @@ export const GWEI_IN_WEI: BigNumber = new BigNumber(1000000000)
 
 export const BASE_URL: string = process.env.APP_BASE_URL
 export const FEE_RECIPIENT: string = process.env.APP_FEE_RECIPIENT
+export const VALIDATOR_ADDRESS: string = process.env.APP_VALIDATOR_ADDRESS
 export const APP_EXCHANGE_API_ENDPOINT: string =
   process.env.APP_EXCHANGE_API_ENDPOINT || ''
 export const APP_SENTRY_GRPC_ENDPOINT: string =
