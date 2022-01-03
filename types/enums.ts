@@ -53,7 +53,8 @@ export enum Modal {
   Terms = 'terms',
   Transfer = 'transfer',
   TransferOnChain = 'transfer-on-chain',
-  Withdraw = 'withdraw'
+  Withdraw = 'withdraw',
+  DelegateToValidator = 'delegate-to-validator'
 }
 
 export enum Breakpoint {
