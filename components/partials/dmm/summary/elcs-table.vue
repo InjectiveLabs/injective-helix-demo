@@ -159,6 +159,7 @@ export default Vue.extend({
               : '0'
           }
         })
+        .filter((summary: UiEpochSummaryItem) => summary.address !== '' && summary.name !== '')
         .sort((v1: UiEpochSummaryItem, v2: UiEpochSummaryItem) => {
           const v1Total = new BigNumberInBase(v1.total.replace(',', ''))
           const v2Total = new BigNumberInBase(v2.total.replace(',', ''))
