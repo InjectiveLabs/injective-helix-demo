@@ -588,19 +588,27 @@ export const closePosition = async ({
   address: AccountAddress
   injectiveAddress: AccountAddress
 }) => {
+  const executionPrice = new BigNumberInBase(
+    price.toFixed(
+      market.priceDecimals,
+      orderType === DerivativeOrderSide.Buy
+        ? BigNumberInBase.ROUND_DOWN
+        : BigNumberInBase.ROUND_UP
+    )
+  )
+  const minTickPrice = new BigNumberInBase(
+    new BigNumberInBase(1).shiftedBy(-market.priceDecimals)
+  )
+  const actualExecutionPrice = executionPrice.lte(0)
+    ? minTickPrice
+    : executionPrice
+
   const message = DerivativeMarketComposer.createMarketOrder({
     subaccountId,
     injectiveAddress,
     marketId: market.marketId,
     order: {
-      price: new BigNumberInBase(
-        price.toFixed(
-          market.priceDecimals,
-          orderType === DerivativeOrderSide.Buy
-            ? BigNumberInBase.ROUND_DOWN
-            : BigNumberInBase.ROUND_UP
-        )
-      )
+      price: new BigNumberInBase(actualExecutionPrice)
         .toWei(market.quoteToken.decimals)
         .toFixed(),
       margin: ZERO_TO_STRING,
