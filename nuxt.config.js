@@ -108,7 +108,8 @@ export default {
       process.env.APP_GOOGLE_SITE_VERIFICATION_KEY,
     APP_BUGSNAG_KEY: process.env.APP_BUGSNAG_KEY,
     APP_ALCHEMY_KEY: process.env.APP_ALCHEMY_KEY,
-    APP_ALCHEMY_KOVAN_KEY: process.env.APP_ALCHEMY_KOVAN_KEY
+    APP_ALCHEMY_KOVAN_KEY: process.env.APP_ALCHEMY_KOVAN_KEY,
+    APP_COINGECKO_KEY: process.env.APP_COINGECKO_KEY
   },
 
   router: {

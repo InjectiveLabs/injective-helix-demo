@@ -10,11 +10,10 @@ import {
 } from '@injectivelabs/token-metadata'
 import { contractAddresses } from '@injectivelabs/contracts'
 import { alchemyApi } from '../web3/alchemy'
+import { coinGeckoApi } from '../singletons/CoinGeckoApi'
 import { fetchDenomTrace } from './ibc'
 import { TxProvider } from '~/app/providers/TxProvider'
 import { peggyDenomToContractAddress } from '~/app/transformers/peggy'
-import { coinGeckoConsumer } from '~/app/singletons/CoinGeckoConsumer'
-import { explorerCoinGeckoConsumer } from '~/app/singletons/ExplorerCoinGeckoConsumer'
 import { getContracts } from '~/app/singletons/Contracts'
 import {
   CHAIN_ID,
@@ -123,45 +122,13 @@ export const getUsdtTokenPriceFromCoinGecko = async (coinId: string) => {
     return 0
   }
 
-  const {
-    data: { market_data: marketData }
-  } = await coinGeckoConsumer.fetchCoin(coinId)
+  const priceInUsd = await coinGeckoApi.fetchUsdPrice(coinId)
 
-  if (!marketData) {
+  if (!priceInUsd) {
     return 0
   }
 
-  const { current_price: currentPrice } = marketData
-
-  if (!currentPrice) {
-    return 0
-  }
-
-  if (!currentPrice.usd) {
-    return 0
-  }
-
-  return new BigNumberInBase(currentPrice.usd).toNumber()
-}
-
-export const getUsdTokensPriceFromExplorerCoinGecko = async (
-  coinIds: string
-) => {
-  if (!coinIds) {
-    return [] as {
-      id: string
-      symbol: string
-      name: string
-      // eslint-disable-next-line camelcase
-      current_price: string
-    }[]
-  }
-
-  const {
-    data: { data }
-  } = await explorerCoinGeckoConsumer.fetchCoins(coinIds)
-
-  return data || []
+  return new BigNumberInBase(priceInUsd).toNumber()
 }
 
 export const setTokenAllowance = async ({
@@ -316,7 +283,7 @@ export const validateTransferRestrictions = async (
     return
   }
 
-  const { data: coins } = await coinGeckoConsumer.fetchCoins()
+  const { data: coins } = await coinGeckoApi.fetchCoins()
   const coin = coins.find(
     (coin) => coin.symbol.toLowerCase() === token.symbol.toLowerCase()
   )
@@ -329,9 +296,7 @@ export const validateTransferRestrictions = async (
     throw new Error("Asset's data couldn't be fetched.")
   }
 
-  const {
-    data: { market_data: marketData }
-  } = await coinGeckoConsumer.fetchCoin(coin.id)
+  const { market_data: marketData } = await coinGeckoApi.fetchCoin(coin.id)
 
   if (!marketData) {
     throw new Error("Asset's market data couldn't be fetched.")

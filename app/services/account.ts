@@ -14,7 +14,7 @@ import { metricsProvider } from '../providers/MetricsProvider'
 import { streamProvider } from '../providers/StreamProvider'
 import {
   getTokenMetaDataWithIbc,
-  getUsdTokensPriceFromExplorerCoinGecko
+  getUsdtTokenPriceFromCoinGecko
 } from './tokens'
 import { tokenMetaToToken } from '~/app/transformers/token'
 import { subaccountConsumer } from '~/app/singletons/SubaccountConsumer'
@@ -81,26 +81,22 @@ export const fetchSubaccountBalances = async (
     balances.filter((balance) => balance.token !== undefined)
   )) as SubaccountBalanceWithTokenMetaData[]
 
-  const coinGeckoIds = balanceWithTokenMeta
-    .reduce((ids: string[], balance) => {
-      return [...ids, balance.token.coinGeckoId]
-    }, [])
-    .join(',')
+  const coinGeckoIds = balanceWithTokenMeta.reduce((ids: string[], balance) => {
+    return [...ids, balance.token.coinGeckoId]
+  }, [])
 
-  const pricesInUsd = await getUsdTokensPriceFromExplorerCoinGecko(coinGeckoIds)
-
-  return balanceWithTokenMeta.map((balance) => {
-    const coinGeckoToken = pricesInUsd.find(
-      ({ id }) => id === balance.token.coinGeckoId
+  const pricesInUsd = await Promise.all(
+    coinGeckoIds.map(
+      async (coinGeckoId) => await getUsdtTokenPriceFromCoinGecko(coinGeckoId)
     )
+  )
 
+  return balanceWithTokenMeta.map((balance, index) => {
     return {
       ...balance,
       token: {
         ...balance.token,
-        priceInUsd: new BigNumberInBase(
-          coinGeckoToken?.current_price || 0
-        ).toNumber()
+        priceInUsd: new BigNumberInBase(pricesInUsd[index] || 0).toNumber()
       }
     }
   })
