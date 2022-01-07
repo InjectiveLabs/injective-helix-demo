@@ -33,6 +33,7 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '~/app/utils/constants'
 import { FeeDiscountAccountInfo, FeeDiscountTierInfo } from '~/types/exchange'
 import { cosmosSdkDecToBigNumber } from '~/app/transformers'
+import { getDecimalsFromNumber } from '~/app/utils/helpers'
 
 export default Vue.extend({
   props: {
@@ -113,7 +114,7 @@ export default Vue.extend({
     makerFeeDiscountToFormat(): string {
       const { makerFeeDiscount } = this
 
-      return makerFeeDiscount.toFormat(0)
+      return makerFeeDiscount.toFormat(getDecimalsFromNumber(makerFeeDiscount.toNumber()))
     },
 
     takerFeeDiscount(): BigNumberInBase {
@@ -129,7 +130,7 @@ export default Vue.extend({
     takerFeeDiscountToFormat(): string {
       const { takerFeeDiscount } = this
 
-      return takerFeeDiscount.toFormat(0)
+      return takerFeeDiscount.toFormat(getDecimalsFromNumber(takerFeeDiscount.toNumber()))
     }
   }
 })
