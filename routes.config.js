@@ -61,7 +61,12 @@ const testnetDerivatives = [
   'uni-usdt-perp',
   'grt-usdt-perp',
   'snx-usdt-perp',
-  'bat-usdt-perp'
+  'bat-usdt-perp',
+  'comp-usdt',
+  'link-usdt',
+  'uni-usdt',
+  'grt-usdt',
+  'snx-usdt'
 ]
 const mainnetDerivatives = [
   'btc-usdt-perp',
