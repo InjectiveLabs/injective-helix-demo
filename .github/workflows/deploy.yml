@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    if: true
+    if: false
     env:
       ## Public
       APP_NAME: 'Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'
@@ -35,6 +35,7 @@ jobs:
       ## Secret
       APP_GAS_REBATE_API: ${{ secrets.APP_GAS_REBATE_API }}
       APP_ELEVIO_ID: ${{ secrets.APP_ELEVIO_ID }}
+      APP_COINGECKO_KEY: ${{ secrets.APP_COINGECKO_KEY }}
       APP_GOOGLE_ANALYTICS_KEY: ${{ secrets.APP_GOOGLE_ANALYTICS_KEY }}
       APP_GOOGLE_SITE_VERIFICATION_KEY: ${{ secrets.APP_GOOGLE_SITE_VERIFICATION_KEY }},
       APP_FEE_RECIPIENT: ${{ secrets.APP_FEE_RECIPIENT }}
@@ -107,6 +108,7 @@ jobs:
       ## Secret
       APP_GAS_REBATE_API: ${{ secrets.APP_GAS_REBATE_API }}
       APP_ELEVIO_ID: ${{ secrets.APP_ELEVIO_ID }}
+      APP_COINGECKO_KEY: ${{ secrets.APP_COINGECKO_KEY }}
       APP_GOOGLE_ANALYTICS_KEY: ${{ secrets.APP_GOOGLE_ANALYTICS_KEY }}
       APP_GOOGLE_SITE_VERIFICATION_KEY: ${{ secrets.APP_GOOGLE_SITE_VERIFICATION_KEY }},
       APP_FEE_RECIPIENT: ${{ secrets.APP_FEE_RECIPIENT }}
@@ -178,6 +180,7 @@ jobs:
       ## Secret
       APP_GAS_REBATE_API: ${{ secrets.APP_GAS_REBATE_API }}
       APP_ELEVIO_ID: ${{ secrets.APP_ELEVIO_ID }}
+      APP_COINGECKO_KEY: ${{ secrets.APP_COINGECKO_KEY }}
       APP_GOOGLE_ANALYTICS_KEY: ${{ secrets.APP_GOOGLE_ANALYTICS_KEY }}
       APP_GOOGLE_SITE_VERIFICATION_KEY: ${{ secrets.APP_GOOGLE_SITE_VERIFICATION_KEY }},
       APP_FEE_RECIPIENT: ${{ secrets.APP_FEE_RECIPIENT }}
@@ -249,6 +252,7 @@ jobs:
       ## Secret
       APP_GAS_REBATE_API: ${{ secrets.APP_GAS_REBATE_API }}
       APP_ELEVIO_ID: ${{ secrets.APP_ELEVIO_ID }}
+      APP_COINGECKO_KEY: ${{ secrets.APP_COINGECKO_KEY }}
       APP_GOOGLE_ANALYTICS_KEY: ${{ secrets.APP_GOOGLE_ANALYTICS_KEY }}
       APP_GOOGLE_SITE_VERIFICATION_KEY: ${{ secrets.APP_GOOGLE_SITE_VERIFICATION_KEY }},
       APP_FEE_RECIPIENT: ${{ secrets.APP_FEE_RECIPIENT }}

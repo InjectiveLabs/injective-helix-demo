@@ -3,9 +3,9 @@ import { SpotTransformer } from '@injectivelabs/spot-consumer'
 import { DerivativeTransformer } from '@injectivelabs/derivatives-consumer'
 import { isAfter, format } from 'date-fns'
 import { baseUiSpotMarketToBaseUiSpotMarketWithPartialTokenMetaData } from '../transformers/spot'
+import { coinGeckoApi } from '../singletons/CoinGeckoApi'
 import { baseUiDerivativeMarketToBaseUiDerivativeMarketWithPartialTokenMetaData } from '~/app/transformers/derivatives'
 import { metricsProvider } from '~/app/providers/MetricsProvider'
-import { coinGeckoConsumer } from '~/app/singletons/CoinGeckoConsumer'
 import { dmmConsumer } from '~/app/singletons/DMMConsumer'
 import { spotConsumer } from '~/app/singletons/SpotMarketConsumer'
 import { derivativeConsumer } from '~/app/singletons/DerivativeMarketConsumer'
@@ -171,27 +171,18 @@ export const fetchEpochUsdPrice = async (
 ): Promise<number> => {
   const date = new Date(meta.endTime)
   if (isAfter(date, new Date())) {
-    const {
-      data: {
-        market_data: {
-          current_price: { usd: currentPrice }
-        }
-      }
-    } = await coinGeckoConsumer.fetchCoin(INJ_COIN_GECKO_ID)
+    const priceInUsd = await coinGeckoApi.fetchUsdPrice(INJ_COIN_GECKO_ID)
 
-    return Number(currentPrice)
+    return Number(priceInUsd || 0)
   }
 
   const {
-    data: {
-      market_data: {
-        current_price: { usd: historyPrice }
-      }
+    market_data: {
+      current_price: { usd: historyPrice }
     }
-  } = await coinGeckoConsumer.fetchHistory(
-    INJ_COIN_GECKO_ID,
-    `${date.getUTCDate()}-${format(date, 'MM-yyyy')}`
-  )
+  } = await coinGeckoApi.fetchHistory(INJ_COIN_GECKO_ID, {
+    date: `${date.getUTCDate()}-${format(date, 'MM-yyyy')}`
+  })
 
   return Number(historyPrice)
 }

@@ -2114,6 +2114,16 @@
     lodash.values "^4.3.0"
     shx "^0.3.2"
 
+"@injectivelabs/token-utils@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.npmjs.org/@injectivelabs/token-utils/-/token-utils-0.0.4.tgz#8857e31baeabf41dde654f36a7c7b15890171067"
+  integrity sha512-eKPQ4Yf+W6P3NSETUS93yz9Ndhx0tOTZA7qEwKxf5tJ2VEZu7LnYQDCdS6Dk2pk/Y74eF5dxvFCKKhf0/GZheQ==
+  dependencies:
+    "@injectivelabs/exceptions" "^0.0.32"
+    "@injectivelabs/utils" "^0.0.41"
+    link-module-alias "^1.2.0"
+    shx "^0.3.2"
+
 "@injectivelabs/ts-types@^0.0.22":
   version "0.0.22"
   resolved "https://registry.yarnpkg.com/@injectivelabs/ts-types/-/ts-types-0.0.22.tgz#4303f4dc4486c4c0994bc5d3b94b3792b4307e2d"
