@@ -222,36 +222,24 @@ export default Vue.extend({
       }, [] as string[])
     },
 
-    buysTotalNotional(): BigNumberInBase {
-      const { buys, market } = this
+    midOrderbookPrice(): BigNumberInBase {
+      const { sells, buys, market } = this
 
       if (!market) {
         return ZERO_IN_BASE
       }
 
-      return buys.reduce((total, buy) => {
-        return total.plus(
-          new BigNumberInWei(buy.quantity)
-            .times(buy.price)
-            .toBase(market.quoteToken.decimals)
-        )
-      }, ZERO_IN_BASE)
-    },
+      const [sell] = sells
+      const [buy] = buys
+      const highestBuy = new BigNumberInBase(buy ? buy.price : 0)
+      const lowestSell = new BigNumberInBase(sell ? sell.price : 0)
+      const sum = highestBuy.plus(lowestSell)
 
-    sellsTotalNotional(): BigNumberInBase {
-      const { sells, market } = this
-
-      if (!market) {
+      if (sum.lte(0)) {
         return ZERO_IN_BASE
       }
 
-      return sells.reduce((total, sell) => {
-        return total.plus(
-          new BigNumberInWei(sell.quantity)
-            .times(sell.price)
-            .toBase(market.quoteToken.decimals)
-        )
-      }, ZERO_IN_BASE)
+      return new BigNumberInWei(sum.div(2)).toBase(market.quoteToken.decimals)
     },
 
     aggregatedBuyOrders(): UiOrderbookPriceLevel[] {
@@ -317,48 +305,6 @@ export default Vue.extend({
       })
     },
 
-    buysWithDepth(): UiOrderbookPriceLevel[] {
-      const { aggregatedBuyOrders, buysTotalNotional, market } = this
-
-      if (!market) {
-        return []
-      }
-
-      return aggregatedBuyOrders
-        .sort((v1: UiOrderbookPriceLevel, v2: UiOrderbookPriceLevel) => {
-          const v1Price = new BigNumberInWei(v1.price)
-          const v2Price = new BigNumberInWei(v2.price)
-
-          return v2Price.minus(v1Price).toNumber()
-        })
-        .map((record: UiPriceLevel) => {
-          const total = new BigNumberInWei(record.quantity)
-            .times(record.price)
-            .toBase(market.quoteToken.decimals)
-
-          return {
-            ...record,
-            total,
-            depth: total.dividedBy(buysTotalNotional).times(100).toNumber()
-          } as UiOrderbookPriceLevel
-        })
-    },
-
-    buyOrdersSummary(): UiOrderbookSummary | undefined {
-      const { buysWithDepth, buyHoverPosition, market } = this
-
-      if (!market || buysWithDepth.length === 0 || buyHoverPosition === null) {
-        return
-      }
-
-      return buysWithDepth
-        .slice(0, Number(buyHoverPosition) + 1)
-        .reduce(computeOrderbookSummary, {
-          quantity: new BigNumberInBase(0),
-          total: new BigNumberInBase(0)
-        })
-    },
-
     aggregatedSellOrders(): UiOrderbookPriceLevel[] {
       const { aggregation, sells, market } = this
 
@@ -412,29 +358,141 @@ export default Vue.extend({
         })
     },
 
-    sellsWithDepth(): UiOrderbookPriceLevel[] {
-      const { aggregatedSellOrders, sellsTotalNotional, market } = this
+    buysTotalNotional(): BigNumberInBase {
+      const { aggregatedBuyOrders: buys, midOrderbookPrice, market } = this
+      const threshold = new BigNumberInBase(1).minus(
+        new BigNumberInBase(20).div(100)
+      )
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      const filteredBuys = buys
+        .filter((buy) => {
+          return new BigNumberInWei(buy.price)
+            .toBase(market.quoteToken.decimals)
+            .div(midOrderbookPrice)
+            .gte(threshold)
+        })
+        .sort((a, b) => {
+          const aNotional = new BigNumberInWei(a.quantity).times(a.price)
+          const bNotional = new BigNumberInWei(b.quantity).times(b.price)
+
+          return new BigNumberInBase(bNotional).minus(aNotional).toNumber()
+        })
+
+      const [highestNotionalBuy] = filteredBuys
+
+      return highestNotionalBuy
+        ? new BigNumberInWei(highestNotionalBuy.quantity)
+            .times(highestNotionalBuy.price)
+            .toBase(market.quoteToken.decimals)
+        : ZERO_IN_BASE
+    },
+
+    sellsHighestBaseQuantity(): BigNumberInBase {
+      const { aggregatedSellOrders: sells, midOrderbookPrice, market } = this
+      const threshold = new BigNumberInBase(1).minus(
+        new BigNumberInBase(20).div(100)
+      )
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      const filteredSells = sells
+        .filter((sell) => {
+          return midOrderbookPrice
+            .div(
+              new BigNumberInWei(sell.price).toBase(market.quoteToken.decimals)
+            )
+            .gte(threshold)
+        })
+        .sort((a, b) => {
+          return new BigNumberInBase(b.quantity).minus(a.quantity).toNumber()
+        })
+      const [highestSell] = filteredSells
+
+      return highestSell
+        ? new BigNumberInBase(highestSell.quantity)
+        : ZERO_IN_BASE
+    },
+
+    buysWithDepth(): UiOrderbookPriceLevel[] {
+      const { aggregatedBuyOrders, buysTotalNotional, market } = this
 
       if (!market) {
         return []
       }
 
-      return aggregatedSellOrders
-        .sort((v1: UiOrderbookPriceLevel, v2: UiOrderbookPriceLevel) => {
+      const sortedAggregatedBuyOrders = [...aggregatedBuyOrders].sort(
+        (v1: UiOrderbookPriceLevel, v2: UiOrderbookPriceLevel) => {
+          const v1Price = new BigNumberInWei(v1.price)
+          const v2Price = new BigNumberInWei(v2.price)
+
+          return v2Price.minus(v1Price).toNumber()
+        }
+      )
+
+      return sortedAggregatedBuyOrders.map((record: UiPriceLevel) => {
+        const total = new BigNumberInWei(record.quantity)
+          .times(record.price)
+          .toBase(market.quoteToken.decimals)
+
+        return {
+          ...record,
+          total,
+          depth: total.dividedBy(buysTotalNotional).times(100).toNumber()
+        } as UiOrderbookPriceLevel
+      })
+    },
+
+    buyOrdersSummary(): UiOrderbookSummary | undefined {
+      const { buysWithDepth, buyHoverPosition, market } = this
+
+      if (!market || buysWithDepth.length === 0 || buyHoverPosition === null) {
+        return
+      }
+
+      return buysWithDepth
+        .slice(0, Number(buyHoverPosition) + 1)
+        .reduce(computeOrderbookSummary, {
+          quantity: new BigNumberInBase(0),
+          total: new BigNumberInBase(0)
+        })
+    },
+
+    sellsWithDepth(): UiOrderbookPriceLevel[] {
+      const { aggregatedSellOrders, sellsHighestBaseQuantity, market } = this
+
+      if (!market) {
+        return []
+      }
+
+      const sortedAggregatedSellOrders = [...aggregatedSellOrders].sort(
+        (v1: UiOrderbookPriceLevel, v2: UiOrderbookPriceLevel) => {
           const v1Price = new BigNumberInWei(v1.price)
           const v2Price = new BigNumberInWei(v2.price)
 
           return v1Price.minus(v2Price).toNumber()
-        })
+        }
+      )
+
+      return sortedAggregatedSellOrders
         .map((record: UiPriceLevel) => {
-          const total = new BigNumberInWei(record.quantity)
+          const baseQuantity = new BigNumberInWei(record.quantity)
+          const total = baseQuantity
             .times(record.price)
             .toBase(market.quoteToken.decimals)
 
           return {
             ...record,
             total,
-            depth: total.dividedBy(sellsTotalNotional).times(100).toNumber()
+            depth: baseQuantity
+              .dividedBy(sellsHighestBaseQuantity)
+              .times(100)
+              .toNumber()
           } as UiOrderbookPriceLevel
         })
         .reverse()
