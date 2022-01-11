@@ -3,7 +3,7 @@ const { BASE_URL } = require('./app/utils/constants')
 const metaTags = {
   title: process.env.APP_NAME
     ? process.env.APP_NAME
-    : 'Injective Exchange - DeFi DEX | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.',
+    : 'Injective Pro: Decentralized Cryptocurrency Derivatives, Ethereum and Altcoin Exchange',
   description:
     'Injective is the first front-running resistant, layer-2 exchange protocol that unlocks the full potential of borderless finance by supporting margin trading, derivatives, and futures.',
   keywords:
