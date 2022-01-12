@@ -18,7 +18,8 @@ declare global {
       GEO_IP_RESTRICTIONS_ENABLED: string
       TRANSFER_RESTRICTIONS_ENABLED: string
       APP_ELEVIO_ID: string
-      APP_COINGECKO_KEY: string
+      APP_COINGECKO_API_KEY: string
+      APP_PROXY_DETECTION_API_KEY: string
       APP_FEE_RECIPIENT: string
       APP_VALIDATOR_ADDRESS: string
       APP_GOOGLE_ANALYTICS_KEY: string

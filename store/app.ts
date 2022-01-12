@@ -8,7 +8,11 @@ import {
 import { fetchGasPrice } from '~/app/services/gas'
 import { Locale, english } from '~/locales'
 import { AppState, GeoLocation } from '~/types'
-import { fetchGeoLocation, validateGeoLocation } from '~/app/services/region'
+import {
+  fetchGeoLocation,
+  validateGeoLocation,
+  detectVPNOrProxyUsage
+} from '~/app/services/region'
 import { app } from '~/app/singletons/App'
 
 const initialState = {
@@ -77,8 +81,12 @@ export const actions = actionTree(
     },
 
     async validate({ state }) {
-      if (state.geoLocation && GEO_IP_RESTRICTIONS_ENABLED) {
-        await validateGeoLocation(state.geoLocation)
+      if (GEO_IP_RESTRICTIONS_ENABLED) {
+        if (state.geoLocation) {
+          await validateGeoLocation(state.geoLocation)
+        }
+
+        await detectVPNOrProxyUsage()
       }
     },
 
