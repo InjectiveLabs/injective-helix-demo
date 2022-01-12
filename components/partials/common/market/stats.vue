@@ -296,10 +296,15 @@ export default Vue.extend({
       }
 
       const currentUnixTime = Date.now() / 1000
+      const divisor = new BigNumberInBase(currentUnixTime).mod(3600).times(24)
+
+      if (divisor.lte(0)) {
+        return ZERO_IN_BASE
+      }
 
       return new BigNumberInBase(
         derivativeMarket.perpetualMarketFunding.cumulativePrice
-      ).dividedBy(new BigNumberInBase(currentUnixTime).mod(3600).times(24))
+      ).dividedBy(divisor)
     },
 
     fundingRate(): BigNumberInBase {
