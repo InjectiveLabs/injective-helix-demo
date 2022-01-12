@@ -514,7 +514,8 @@ export default {
     'There are no disqualified markets on this relayer.',
   liquidation: 'Liquidation',
 
-  gas_fee_of_first_deposit_covered: 'Gas fee of your first deposit is covered!',
+  gas_fee_of_first_deposit_covered:
+    'The gas fee of your first deposit is covered by Injective Pro!',
   read_more: 'Read more',
   deposit_zero_gas_fees: 'Get back the gas fee you paid for the first deposit',
   gas_fee_rebates_steps:
