@@ -7,15 +7,13 @@ export const hardcodedAuctionRound = 23
 export const hardcodedEndTime = 1639573200 * 1000
 
 const initialState = {
-  auctionModuleState: undefined,
-  auctionsViewed: []
+  auctionModuleState: undefined
 }
 
 export const state = () => ({
   auctionModuleState: initialState.auctionModuleState as
     | AuctionModuleState
-    | undefined,
-  auctionsViewed: initialState.auctionsViewed as number[]
+    | undefined
 })
 
 export type AuctionStoreState = ReturnType<typeof state>
@@ -26,10 +24,6 @@ export const mutations = {
     auctionModuleState: AuctionModuleState
   ) {
     state.auctionModuleState = auctionModuleState
-  },
-
-  setAuctionsViewed(state: AuctionStoreState, auctionRound: number) {
-    state.auctionsViewed = [...state.auctionsViewed, auctionRound]
   }
 }
 

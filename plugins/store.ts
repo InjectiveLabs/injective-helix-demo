@@ -4,7 +4,7 @@ import { localStorage } from '~/app/singletons/Storage'
 import { AppState } from '~/types'
 
 const mutationsToPersist = [
-  'auction/setAuctionsViewed',
+  'app/setUserState',
   'wallet/reset',
   'wallet/setAddress',
   'wallet/setAddresses',
@@ -45,8 +45,8 @@ const store: Plugin = ({ store, app }, inject) => {
   store.subscribe(({ type }) => {
     if (mutationsToPersist.includes(type)) {
       const stateToPersist = {
-        auction: {
-          auctionsViewed: app.$accessor.auction.auctionsViewed
+        app: {
+          userState: app.$accessor.app.userState
         },
 
         wallet: {
@@ -74,6 +74,7 @@ const store: Plugin = ({ store, app }, inject) => {
         app.$accessor.app.setAppState(AppState.Idle)
       }
     },
+
     error: ({ type }: { type: string }) => {
       if (actionsThatSetAppStateToBusy.includes(type)) {
         app.$accessor.app.setAppState(AppState.Idle)

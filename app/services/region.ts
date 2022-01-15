@@ -1,5 +1,6 @@
 import { HttpClient } from '@injectivelabs/utils'
 import { restrictedCountries } from '../data/geoip'
+import { GEO_IP_RESTRICTIONS_ENABLED } from '../utils/constants'
 import { GeoLocation } from '~/types'
 
 export const fetchGeoLocation = async (): Promise<GeoLocation> => {
@@ -67,7 +68,10 @@ export const validateIpAddressForVPN = async (ipAddress: string) => {
 }
 
 export const detectVPNOrProxyUsage = async () => {
-  if (!process.env.APP_PROXY_DETECTION_API_KEY) {
+  const geoIpRestrictionsEnabled =
+    !process.env.APP_PROXY_DETECTION_API_KEY || !GEO_IP_RESTRICTIONS_ENABLED
+
+  if (geoIpRestrictionsEnabled) {
     return
   }
 
@@ -75,5 +79,21 @@ export const detectVPNOrProxyUsage = async () => {
     await validateIpAddressForVPN(await fetchIpAddress())
   } catch (e: any) {
     throw new Error(e.message)
+  }
+}
+
+export const detectVPNOrProxyUsageNoThrow = async () => {
+  const geoIpRestrictionsEnabled =
+    !process.env.APP_PROXY_DETECTION_API_KEY || !GEO_IP_RESTRICTIONS_ENABLED
+
+  if (geoIpRestrictionsEnabled) {
+    return true
+  }
+
+  try {
+    await validateIpAddressForVPN(await fetchIpAddress())
+    return true
+  } catch (e: any) {
+    return false
   }
 }

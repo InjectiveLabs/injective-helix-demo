@@ -3,7 +3,9 @@ import { ChainId } from '@injectivelabs/ts-types'
 import {
   CHAIN_ID,
   DEFAULT_GAS_PRICE,
-  GEO_IP_RESTRICTIONS_ENABLED
+  GEO_IP_RESTRICTIONS_ENABLED,
+  SECONDS_IN_A_DAY,
+  VPN_PROXY_VALIDATION_PERIOD
 } from '~/app/utils/constants'
 import { fetchGasPrice } from '~/app/services/gas'
 import { Locale, english } from '~/locales'
@@ -11,9 +13,17 @@ import { AppState, GeoLocation } from '~/types'
 import {
   fetchGeoLocation,
   validateGeoLocation,
-  detectVPNOrProxyUsage
+  detectVPNOrProxyUsage,
+  detectVPNOrProxyUsageNoThrow
 } from '~/app/services/region'
 import { app } from '~/app/singletons/App'
+import { todayInSeconds } from '~/app/utils/time'
+
+export interface UserBasedState {
+  vpnOrProxyUsageValidationTimestamp: number
+  auctionsViewed: number[]
+  geoLocation: GeoLocation
+}
 
 const initialState = {
   // App Settings
@@ -21,10 +31,16 @@ const initialState = {
   state: AppState.Idle,
   chainId: CHAIN_ID,
   gasPrice: DEFAULT_GAS_PRICE.toString(),
-  geoLocation: {
-    continent: '',
-    country: ''
-  }
+
+  // User settings
+  userState: {
+    vpnOrProxyUsageValidationTimestamp: 0,
+    auctionsViewed: [],
+    geoLocation: {
+      continent: '',
+      country: ''
+    }
+  } as UserBasedState
 }
 
 export const state = () => ({
@@ -32,7 +48,7 @@ export const state = () => ({
   chainId: initialState.chainId as ChainId,
   gasPrice: initialState.gasPrice as string,
   state: initialState.state as AppState,
-  geoLocation: initialState.geoLocation as GeoLocation
+  userState: initialState.userState as UserBasedState
 })
 
 export type AppStoreState = ReturnType<typeof state>
@@ -50,8 +66,15 @@ export const mutations = {
     state.gasPrice = gasPrice
   },
 
-  setGeoLocation(state: AppStoreState, geoLocation: GeoLocation) {
-    state.geoLocation = geoLocation
+  setUserState(state: AppStoreState, userState: UserBasedState) {
+    state.userState = userState
+  },
+
+  setAuctionsViewed(state: AppStoreState, auctionRound: number) {
+    state.userState = {
+      ...state.userState,
+      auctionsViewed: [...state.userState.auctionsViewed, auctionRound]
+    }
   }
 }
 
@@ -60,8 +83,33 @@ export const actions = actionTree(
   {
     async init({ state }) {
       await this.app.$accessor.app.fetchGeoLocation()
+      await this.app.$accessor.app.detectVPNOrProxyUsage()
 
-      app.setGeoLocation(state.geoLocation)
+      app.setGeoLocation(state.userState.geoLocation)
+    },
+
+    async detectVPNOrProxyUsage({ state }) {
+      if (!state.userState.vpnOrProxyUsageValidationTimestamp) {
+        return
+      }
+
+      const unixTimestamp = state.userState.vpnOrProxyUsageValidationTimestamp
+      const now = todayInSeconds()
+      const shouldCheckVpnOrProxyUsage = SECONDS_IN_A_DAY.times(
+        VPN_PROXY_VALIDATION_PERIOD
+      )
+        .plus(unixTimestamp)
+        .gt(now)
+
+      if (!shouldCheckVpnOrProxyUsage) {
+        return
+      }
+
+      const vpnOrProxyUsageDetected = await detectVPNOrProxyUsageNoThrow()
+
+      if (vpnOrProxyUsageDetected) {
+        await this.app.$accessor.wallet.logout()
+      }
     },
 
     queue({ state, commit }) {
@@ -76,17 +124,25 @@ export const actions = actionTree(
       commit('setGasPrice', await fetchGasPrice())
     },
 
-    async fetchGeoLocation({ commit }) {
-      commit('setGeoLocation', await fetchGeoLocation())
+    async fetchGeoLocation({ state, commit }) {
+      commit('setUserState', {
+        ...state.userState,
+        geoLocation: await fetchGeoLocation()
+      })
     },
 
-    async validate({ state }) {
+    async validate({ state, commit }) {
       if (GEO_IP_RESTRICTIONS_ENABLED) {
-        if (state.geoLocation) {
-          await validateGeoLocation(state.geoLocation)
+        if (state.userState.geoLocation) {
+          await validateGeoLocation(state.userState.geoLocation)
         }
 
         await detectVPNOrProxyUsage()
+
+        commit('setUserState', {
+          ...state.userState,
+          vpnOrProxyUsageValidationTimestamp: todayInSeconds()
+        })
       }
     },
 
