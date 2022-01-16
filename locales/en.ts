@@ -552,5 +552,8 @@ export default {
   'Available for Delegation': 'Available for Delegation',
   'Available for Delegation Tooltip':
     'The amount of INJ you have available for delegation.',
-  'Delegate To {validator}': 'Delegate To {validator}'
+  'Delegate To {validator}': 'Delegate To {validator}',
+
+  // 15.01.2022
+  analytics: 'Analytics'
 }
