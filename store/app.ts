@@ -88,7 +88,7 @@ export const actions = actionTree(
       app.setGeoLocation(state.userState.geoLocation)
     },
 
-    async detectVPNOrProxyUsage({ state }) {
+    async detectVPNOrProxyUsage({ state, commit }) {
       if (!state.userState.vpnOrProxyUsageValidationTimestamp) {
         return
       }
@@ -109,6 +109,11 @@ export const actions = actionTree(
 
       if (vpnOrProxyUsageDetected) {
         await this.app.$accessor.wallet.logout()
+      } else {
+        commit('setUserState', {
+          ...state.userState,
+          vpnOrProxyUsageValidationTimestamp: todayInSeconds()
+        })
       }
     },
 
