@@ -19,7 +19,9 @@ const isErrorExcludedFromToast = (error: any): boolean => {
 
 const isErrorExcludedFromReporting = (error: any): boolean => {
   const disabledMessages = [
-    'Your country is restricted from trading on this relayer'
+    'Your country is restricted from trading on this relayer',
+    'Your IP address is detected as a proxy or you are using a VPN provider.',
+    'Please make sure your Ledger device is connected, unlocked and your Ethereum app is open'
   ]
   const errorMessage =
     typeof error === 'object' && error !== null ? error.message : error || ''
@@ -29,6 +31,10 @@ const isErrorExcludedFromReporting = (error: any): boolean => {
     errorMessage.includes('MetaMask') ||
     errorMessage.includes('Metamask') ||
     errorMessage.includes('metamask') ||
+    errorMessage.includes('metamask') ||
+    errorMessage.startsWith('cannot find epoch with id') ||
+    errorMessage.startsWith('Failed to fetch') ||
+    errorMessage.startsWith('Network Error') ||
     disabledMessages.includes(errorMessage) ||
     isErrorExcludedFromToast(error)
   )
