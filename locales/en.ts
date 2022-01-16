@@ -227,7 +227,7 @@ export default {
   select_asset: 'Select Asset',
   destination: 'Destination',
   disclaimer_note:
-    'By connecting a wallet, you agree to the Injective Labs <a href="https://injectivelabs.org/terms-and-conditions" class="text-primary-500" target="_blank" />Terms and Conditions</a> and acknowledge that you have read and understand the Injective Protocol <a href="https://injectiveprotocol.com/disclaimer" class="text-primary-500" target="_blank">disclaimer</a>.',
+    'By connecting a wallet, you agree to the Injective Labs <a href="https://injectivelabs.org/terms-and-conditions" class="text-primary-500" target="_blank" />Terms and Conditions</a>, have read the <a href="https://injectivelabs.org/privacy-policy" class="text-primary-500" target="_blank" />Privacy Policy</a> and acknowledge that you have read and understand the Injective Protocol <a href="https://injectiveprotocol.com/disclaimer" class="text-primary-500" target="_blank">disclaimer</a>.',
   transfer_wait_time_note:
     'Note: It should take around 4 minutes for your transfer to appear after your transaction has been confirmed on Ethereum.',
   orderbook_liquidity_cannot_satisfy:
@@ -514,7 +514,8 @@ export default {
     'There are no disqualified markets on this relayer.',
   liquidation: 'Liquidation',
 
-  gas_fee_of_first_deposit_covered: 'Gas fee of your first deposit is covered!',
+  gas_fee_of_first_deposit_covered:
+    'The gas fee of your first deposit is covered by Injective Pro!',
   read_more: 'Read more',
   deposit_zero_gas_fees: 'Get back the gas fee you paid for the first deposit',
   gas_fee_rebates_steps:
@@ -551,5 +552,8 @@ export default {
   'Available for Delegation': 'Available for Delegation',
   'Available for Delegation Tooltip':
     'The amount of INJ you have available for delegation.',
-  'Delegate To {validator}': 'Delegate To {validator}'
+  'Delegate To {validator}': 'Delegate To {validator}',
+
+  // 15.01.2022
+  analytics: 'Analytics'
 }

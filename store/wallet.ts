@@ -170,9 +170,9 @@ export const actions = actionTree(
     },
 
     async confirm({ commit }, addresses: AccountAddress[]) {
-      await this.app.$accessor.app.validate()
-
       commit('setWalletConnectStatus', WalletConnectStatus.connecting)
+
+      await this.app.$accessor.app.validate()
 
       const [address] = addresses
       const addressConfirmation = await confirm(address)
@@ -213,9 +213,10 @@ export const actions = actionTree(
     },
 
     async connectMetamask({ commit }) {
+      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
+
       await this.app.$accessor.app.validate()
 
-      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
       commit('setWallet', Wallet.Metamask)
 
       await connect({
@@ -266,14 +267,6 @@ export const actions = actionTree(
     },
 
     async validate({ state }) {
-      const { chainId } = this.app.$accessor.app
-
-      if (state.wallet === Wallet.Metamask) {
-        await validateMetamask(state.address, chainId)
-      }
-    },
-
-    async validateTransferRestrictions({ state }) {
       const { chainId } = this.app.$accessor.app
 
       if (state.wallet === Wallet.Metamask) {

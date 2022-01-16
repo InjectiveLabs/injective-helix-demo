@@ -45,6 +45,15 @@
       <item class="text-footer">
         <a
           class="cursor-pointer"
+          href="https://info.injective.exchange"
+          target="_blank"
+        >
+          {{ $t('analytics') }}
+        </a>
+      </item>
+      <item class="text-footer">
+        <a
+          class="cursor-pointer"
           href="https://injectivelabs.org/privacy-policy"
           target="_blank"
         >

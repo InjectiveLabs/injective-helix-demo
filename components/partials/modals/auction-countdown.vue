@@ -30,7 +30,6 @@ import { differenceInSeconds, fromUnixTime } from 'date-fns'
 import { Modal } from '~/types'
 import { NETWORK } from '~/app/utils/constants'
 import { formatDurationFromSeconds } from '~/app/utils/time'
-import { hardcodedAuctionRound } from '~/store/auction'
 
 export default Vue.extend({
   data() {
@@ -41,7 +40,7 @@ export default Vue.extend({
 
   computed: {
     auctionsViewed(): number[] {
-      return this.$accessor.auction.auctionsViewed
+      return this.$accessor.app.userState.auctionsViewed
     },
 
     auctionModuleState(): AuctionModuleState | undefined {
@@ -162,7 +161,7 @@ export default Vue.extend({
         return
       }
 
-      this.$accessor.auction.setAuctionsViewed(auctionModuleState.auctionRound)
+      this.$accessor.app.setAuctionsViewed(auctionModuleState.auctionRound)
       this.$accessor.modal.closeModal(Modal.AuctionCountdown)
     }
   }
