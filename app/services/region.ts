@@ -78,7 +78,11 @@ export const detectVPNOrProxyUsage = async () => {
   try {
     await validateIpAddressForVPN(await fetchIpAddress())
   } catch (e: any) {
-    throw new Error(e.message)
+    if (e.message && e.message.startsWith('Request failed')) {
+      return false /* Request failed, check next time */
+    } else {
+      throw new Error(e.message)
+    }
   }
 }
 
@@ -92,8 +96,13 @@ export const detectVPNOrProxyUsageNoThrow = async () => {
 
   try {
     await validateIpAddressForVPN(await fetchIpAddress())
+
     return false /* User is not using a VPN or a proxy */
   } catch (e: any) {
+    if (e.message && e.message.startsWith('Request failed')) {
+      return false /* Request failed, check next time */
+    }
+
     return true /* User is using a VPN or a proxy */
   }
 }
