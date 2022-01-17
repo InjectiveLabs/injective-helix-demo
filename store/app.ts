@@ -99,7 +99,7 @@ export const actions = actionTree(
         VPN_PROXY_VALIDATION_PERIOD
       )
         .plus(unixTimestamp)
-        .gt(now)
+        .lte(now)
 
       if (!shouldCheckVpnOrProxyUsage) {
         return

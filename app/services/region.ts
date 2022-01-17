@@ -28,7 +28,7 @@ export const validateGeoLocation = (geoLocation: GeoLocation) => {
 
 export const fetchIpAddress = async () => {
   try {
-    const httpClient = new HttpClient('https://api.ipify.org/?format=json')
+    const httpClient = new HttpClient('https://www.myexternalip.com/json')
     const { data } = await httpClient.get('')
 
     return data.ip
@@ -87,13 +87,13 @@ export const detectVPNOrProxyUsageNoThrow = async () => {
     !process.env.APP_PROXY_DETECTION_API_KEY || !GEO_IP_RESTRICTIONS_ENABLED
 
   if (geoIpRestrictionsEnabled) {
-    return true
+    return false
   }
 
   try {
     await validateIpAddressForVPN(await fetchIpAddress())
-    return true
+    return false /* User is not using a VPN or a proxy */
   } catch (e: any) {
-    return false
+    return true /* User is using a VPN or a proxy */
   }
 }
