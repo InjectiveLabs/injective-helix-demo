@@ -1,38 +1,5 @@
 const { IS_TESTNET, IS_MAINNET_STAGING } = require('./app/utils/constants')
 
-const testnetSpot = [
-  'inj-usdt',
-  'atom-usdt',
-  'weth-usdt',
-  'link-usdt',
-  'link-usdc',
-  'ust-usdt',
-  'luna-ust',
-  'axs-usdt',
-  'inj-usdc',
-  'bnb-usdt',
-  'bnb-usdc',
-  'wbtc-usdc',
-  'wbtc-usdt',
-  'usdt-usdc',
-  'usdc-usdt',
-  'weth-usdc',
-  'aave-usdt',
-  'aave-usdc',
-  'matic-usdt',
-  'matic-usdc',
-  'sushi-usdt',
-  'sushi-usdc',
-  'grt-usdt',
-  'grt-usdc',
-  'uni-usdt',
-  'uni-usdc',
-  'snx-usdt',
-  'qnt-usdt',
-  'yfi-usdt',
-  'snx-usdt',
-  'zrx-usdt'
-]
 const mainnetSpot = [
   'inj-usdt',
   'atom-usdt',
@@ -42,6 +9,7 @@ const mainnetSpot = [
   'luna-ust',
   'gf-usdt'
 ]
+const testnetSpot = [...mainnetSpot]
 const mainnetStagingSpot = [...mainnetSpot]
 const spot = IS_TESTNET
   ? testnetSpot
@@ -49,25 +17,6 @@ const spot = IS_TESTNET
   ? mainnetStagingSpot
   : mainnetSpot
 
-const testnetDerivatives = [
-  'btc-usdt-perp',
-  'eth-usdt-perp',
-  'bnb-usdt-perp',
-  'inj-usdt-perp',
-  'luna-ust-perp',
-  'eth-usdt-perp-band',
-  'link-usdt-perp',
-  'comp-usdt-perp',
-  'uni-usdt-perp',
-  'grt-usdt-perp',
-  'snx-usdt-perp',
-  'bat-usdt-perp',
-  'comp-usdt',
-  'link-usdt',
-  'uni-usdt',
-  'grt-usdt',
-  'snx-usdt'
-]
 const mainnetDerivatives = [
   'btc-usdt-perp',
   'inj-usdt-perp',
@@ -75,6 +24,7 @@ const mainnetDerivatives = [
   'luna-ust-perp',
   'bnb-usdt-perp'
 ]
+const testnetDerivatives = [...mainnetDerivatives]
 const mainnetStagingDerivatives = [...mainnetDerivatives]
 const derivatives = IS_TESTNET
   ? testnetDerivatives
