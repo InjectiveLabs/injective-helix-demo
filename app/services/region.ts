@@ -57,7 +57,7 @@ export const validateIpAddressForVPN = async (ipAddress: string) => {
 
     const { privacy } = response.data
 
-    if (privacy.proxy || privacy.hosting || privacy.mobile) {
+    if (privacy.proxy) {
       throw new Error(
         'Your IP address is detected as a proxy or you are using a VPN provider.'
       )
