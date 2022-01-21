@@ -5,8 +5,16 @@
     </span>
     <span class="md:col-span-4">
       <div class="flex items-center justify-end md:justify-start">
-        <span>
+        <span class="flex items-center">
           {{ formattedAddress }}
+          <a
+            v-if="hardCodedLink"
+            :href="hardCodedLink"
+            target="_blank"
+            class="text-primary-500 cursor-pointer font-semibold ml-1 text-xs uppercase"
+          >
+            {{ $t('dmm.common.link') }}
+          </a>
         </span>
         <div v-if="active" class="flex items-center">
           <v-icon-profile class="text-gray-200 h-4 w-4 ml-3 mr-2" />
@@ -44,7 +52,7 @@ import Vue, { PropType } from 'vue'
 import { formatWalletAddress } from '@injectivelabs/utils'
 import TableRow from '~/components/elements/table-row.vue'
 import { UIEpochMarketEVCSItem } from '~/types'
-import { hardCodedDmmNames } from '~/app/data/dmm'
+import { hardCodedDmmNames, hardCodedDMMLinks } from '~/app/data/dmm'
 
 export default Vue.extend({
   components: {
@@ -77,6 +85,12 @@ export default Vue.extend({
       }
 
       return hardCodedDmmNames[item.address] || ''
+    },
+
+    hardCodedLink(): string | undefined {
+      const { item } = this
+
+      return hardCodedDMMLinks[item.address]
     },
 
     formattedAddress(): string {

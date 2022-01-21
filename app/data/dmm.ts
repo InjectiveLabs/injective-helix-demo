@@ -6,3 +6,9 @@ export const hardCodedDmmNames = {
   inj1x2ck0ql2ngyxqtw8jteyc0tchwnwxv7npaungt: 'Anti Capital 1 ',
   inj1yzmv3utcm0xx4ahsn7lyew0zzdjp4z7wlx44vx: 'Anti Capital 2 '
 } as Record<string, string>
+
+export const hardCodedDMMLinks = {
+  inj1rwv4zn3jptsqs7l8lpa3uvzhs57y8duemete9e: 'https://www.assc.ai/ ',
+  inj1x2ck0ql2ngyxqtw8jteyc0tchwnwxv7npaungt: 'https://www.assc.ai/',
+  inj1yzmv3utcm0xx4ahsn7lyew0zzdjp4z7wlx44vx: 'https://www.assc.ai/'
+} as Record<string, string>

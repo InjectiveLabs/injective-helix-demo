@@ -17,7 +17,8 @@ export default {
 
     common: {
       emptyResult: 'No participants yet',
-      lastUpdatedTime: 'Last updated time'
+      lastUpdatedTime: 'Last updated time',
+      link: 'Link'
     },
 
     tooltip: {
