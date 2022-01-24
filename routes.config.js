@@ -20,7 +20,7 @@ const spot = IS_TESTNET
 const mainnetDerivatives = [
   'btc-usdt-perp',
   'inj-usdt-perp',
-  'eth-usdt-perp',
+  // 'eth-usdt-perp',
   'luna-ust-perp',
   'bnb-usdt-perp'
 ]
