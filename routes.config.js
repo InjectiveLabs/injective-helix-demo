@@ -20,12 +20,12 @@ const spot = IS_TESTNET
 const mainnetDerivatives = [
   'btc-usdt-perp',
   'inj-usdt-perp',
-  // 'eth-usdt-perp',
+  'eth-usdt-perp',
   'luna-ust-perp',
   'bnb-usdt-perp'
 ]
 const testnetDerivatives = [...mainnetDerivatives]
-const mainnetStagingDerivatives = [...mainnetDerivatives, 'eth-usdt-perp']
+const mainnetStagingDerivatives = [...mainnetDerivatives]
 const derivatives = IS_TESTNET
   ? testnetDerivatives
   : IS_MAINNET_STAGING
