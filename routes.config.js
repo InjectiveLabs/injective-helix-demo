@@ -25,7 +25,7 @@ const mainnetDerivatives = [
   'bnb-usdt-perp'
 ]
 const testnetDerivatives = [...mainnetDerivatives]
-const mainnetStagingDerivatives = [...mainnetDerivatives]
+const mainnetStagingDerivatives = [...mainnetDerivatives, 'eth-usdt-perp']
 const derivatives = IS_TESTNET
   ? testnetDerivatives
   : IS_MAINNET_STAGING
