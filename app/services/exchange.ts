@@ -2,8 +2,14 @@ import { ExchangeTransformer } from '@injectivelabs/chain-consumer'
 import { exchangeConsumer } from '~/app/singletons/ExchangeConsumer'
 import {
   feeDiscountScheduleToUiFeeDiscountSchedule,
-  tradingRewardCampaignInfoToUiTradingRewardCampaignInfo
+  tradeRewardCampaignToUiTradeRewardCampaign
 } from '~/app/transformers/exchange'
+
+export const fetchParams = async () => {
+  return ExchangeTransformer.grpcParamsToParams(
+    await exchangeConsumer.fetchParams()
+  )
+}
 
 export const fetchFeeDiscountSchedule = async () => {
   const feeDiscountSchedule = await exchangeConsumer.fetchFeeDiscountSchedule()
@@ -28,14 +34,9 @@ export const fetchFeeDiscountAccountInfo = async (injectiveAddress: string) => {
     return
   }
 
-  return {
-    tierLevel: feeDiscountAccountInfo.getTierLevel(),
-    accountInfo: feeDiscountAccountInfo.hasAccountInfo()
-      ? ExchangeTransformer.grpcFeeDiscountTierInfoToFeeDiscountTierInfo(
-          feeDiscountAccountInfo.getAccountInfo()!
-        )
-      : undefined
-  }
+  return ExchangeTransformer.grpcFeeDiscountAccountInfoToFeeDiscountAccountInfo(
+    feeDiscountAccountInfo
+  )
 }
 
 export const fetchTradingRewardsCampaign = async () => {
@@ -45,23 +46,23 @@ export const fetchTradingRewardsCampaign = async () => {
     return
   }
 
-  const tradingRewardsCampaignInfo = tradingRewardsCampaign.getTradingRewardCampaignInfo()
-
-  return {
-    tradingRewardCampaignInfo: tradingRewardsCampaignInfo
-      ? tradingRewardCampaignInfoToUiTradingRewardCampaignInfo(
-          ExchangeTransformer.grpcTradingRewardCampaignInfoToTradingRewardCampaignInfo(
-            tradingRewardsCampaignInfo
-          )
-        )
-      : undefined,
-    tradingRewardPoolCampaignScheduleList: tradingRewardsCampaign
-      .getTradingRewardPoolCampaignScheduleList()
-      .map(ExchangeTransformer.grpcCampaignRewardPoolToCampaignRewardPool),
-    totalTradeRewardPoints: tradingRewardsCampaign.getTotalTradeRewardPoints()
-  }
+  return tradeRewardCampaignToUiTradeRewardCampaign(
+    ExchangeTransformer.grpcTradingRewardsCampaignToTradingRewardsCampaign(
+      tradingRewardsCampaign
+    )
+  )
 }
 
 export const fetchTradeRewardPoints = async (injectiveAddress: string[]) => {
   return await exchangeConsumer.fetchTradeRewardPoints(injectiveAddress)
+}
+
+export const fetchPendingTradeRewardPoints = async (
+  injectiveAddress: string[],
+  timestamp: number
+) => {
+  return await exchangeConsumer.fetchPendingTradeRewardPoints(
+    injectiveAddress,
+    timestamp
+  )
 }

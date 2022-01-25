@@ -1,9 +1,9 @@
 import { getTokenMetaData } from '../services/tokens'
 import { tokenMetaToToken } from './token'
 import {
-  TradingRewardCampaignInfo,
   BaseFeeDiscountSchedule,
-  BaseTradingRewardCampaignInfo,
+  BaseTradeRewardCampaign,
+  TradeRewardCampaign,
   FeeDiscountSchedule
 } from '~/types/exchange'
 import { Token } from '~/types'
@@ -19,13 +19,23 @@ export const feeDiscountScheduleToUiFeeDiscountSchedule = (
   }
 }
 
-export const tradingRewardCampaignInfoToUiTradingRewardCampaignInfo = (
-  tradingRewardCampaignInfo: BaseTradingRewardCampaignInfo
-): TradingRewardCampaignInfo => {
+export const tradeRewardCampaignToUiTradeRewardCampaign = (
+  tradeRewardCampaign: BaseTradeRewardCampaign
+): TradeRewardCampaign => {
+  const quoteDenomsList = tradeRewardCampaign.tradingRewardCampaignInfo
+    ? tradeRewardCampaign.tradingRewardCampaignInfo.quoteDenomsList
+    : []
+  const tradingRewardCampaignInfo = tradeRewardCampaign.tradingRewardCampaignInfo
+    ? {
+        ...tradeRewardCampaign.tradingRewardCampaignInfo,
+        quoteSymbolsList: (quoteDenomsList
+          .map((denom) => tokenMetaToToken(getTokenMetaData(denom), denom))
+          .filter((token) => token) as Token[]).map((token) => token.symbol)
+      }
+    : undefined
+
   return {
-    ...tradingRewardCampaignInfo,
-    quoteSymbolsList: (tradingRewardCampaignInfo.quoteDenomsList
-      .map((denom) => tokenMetaToToken(getTokenMetaData(denom), denom))
-      .filter((token) => token) as Token[]).map((token) => token.symbol)
+    ...tradeRewardCampaign,
+    tradingRewardCampaignInfo
   }
 }

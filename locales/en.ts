@@ -479,7 +479,7 @@ export default {
     'The duration of this campaign. A new campaign will start immediately after the previous campaign until 2026.',
   max_campaign_rewards: 'Total allocated Rewards',
   max_campaign_rewards_tooltip:
-    'The total number of INJ that will be distributed in this epoch. Reward distribution will happen at the end of the epoch period.',
+    'The total number of INJ that will be distributed in this epoch. Reward distribution will happen at the end of the vesting period after each campaign is finished.',
   fee_paid_amount: 'Fee Paid Amount',
   fee_paid_amount_tooltip: 'Fee Paid Amount tooltip',
   'Markets Information': 'Markets Information',
@@ -555,5 +555,22 @@ export default {
   'Delegate To {validator}': 'Delegate To {validator}',
 
   // 15.01.2022
-  analytics: 'Analytics'
+  analytics: 'Analytics',
+
+  tradeAndEarn: {
+    previousEpoch: 'Previous Epoch',
+    campaignEndsAt: 'Ends at {date}',
+    campaignEndedAt: 'Ended at {date}',
+    myRewardPoints: 'My Reward Points / Total Reward Points',
+    myRewardPoints_tooltip:
+      'The current reward points you earned during this campaign and the total reward points in the campaign. Reward points will reset to 0 at the beginning of next campaign.',
+    pending_max_campaign_rewards: 'Total allocated Rewards',
+    pending_max_campaign_rewards_tooltip:
+      'The total number of INJ that was distributed in the previous epoch. Reward distribution will happen at the end of the vesting period.',
+    est_rewards_stake: 'Est. Rewards',
+    est_rewards_stake_tooltip:
+      'Estimated reward to be distributed to this address based on your reward points /  total reward points * total allocated rewards. This is calculated assuming that your reward points grow just as fast as total reward points until the end of the campaign.  In order to maintain or maximize your reward, you should maintain the same or higher trading activity until the end of the campaign. Rewards amount is capped at {maxRewards} INJ or the equivalent amount of INJ staked, whichever is higher',
+    stake_total_to_receive_full_amount:
+      'Stake total of {total} INJ to receive the full amount'
+  }
 }

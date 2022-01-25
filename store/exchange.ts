@@ -3,24 +3,30 @@ import {
   fetchFeeDiscountSchedule,
   fetchFeeDiscountAccountInfo,
   fetchTradingRewardsCampaign,
-  fetchTradeRewardPoints
+  fetchTradeRewardPoints,
+  fetchPendingTradeRewardPoints,
+  fetchParams
 } from '~/app/services/exchange'
 import {
   FeeDiscountAccountInfo,
   TradingRewardsCampaign,
-  FeeDiscountSchedule
+  FeeDiscountSchedule,
+  ExchangeParams
 } from '~/types/exchange'
 
 const initialStateFactory = () => ({
+  params: undefined as ExchangeParams | undefined,
   feeDiscountSchedule: undefined as FeeDiscountSchedule | undefined,
   feeDiscountAccountInfo: undefined as FeeDiscountAccountInfo | undefined,
   tradingRewardsCampaign: undefined as TradingRewardsCampaign | undefined,
-  tradeRewardsPoints: [] as string[]
+  tradeRewardsPoints: [] as string[],
+  pendingTradeRewardsPoints: [] as string[]
 })
 
 const initialState = initialStateFactory()
 
 export const state = () => ({
+  params: initialState.params as ExchangeParams | undefined,
   feeDiscountSchedule: initialState.feeDiscountSchedule as
     | FeeDiscountSchedule
     | undefined,
@@ -30,7 +36,8 @@ export const state = () => ({
   tradingRewardsCampaign: initialState.tradingRewardsCampaign as
     | TradingRewardsCampaign
     | undefined,
-  tradeRewardsPoints: initialState.tradeRewardsPoints as string[]
+  tradeRewardsPoints: initialState.tradeRewardsPoints as string[],
+  pendingTradeRewardsPoints: initialState.pendingTradeRewardsPoints as string[]
 })
 
 export type ExchangeStoreState = ReturnType<typeof state>
@@ -40,6 +47,10 @@ export const getters = getterTree(state, {
 })
 
 export const mutations = {
+  setParams(state: ExchangeStoreState, params: ExchangeParams) {
+    state.params = params
+  },
+
   setFeeDiscountSchedule(
     state: ExchangeStoreState,
     feeDiscountSchedule: FeeDiscountSchedule
@@ -68,6 +79,13 @@ export const mutations = {
     state.tradeRewardsPoints = tradeRewardsPoints
   },
 
+  setPendingTradeRewardPoints(
+    state: ExchangeStoreState,
+    tradeRewardsPoints: string[]
+  ) {
+    state.pendingTradeRewardsPoints = tradeRewardsPoints
+  },
+
   reset(state: ExchangeStoreState) {
     const initialState = initialStateFactory()
 
@@ -75,6 +93,7 @@ export const mutations = {
     state.feeDiscountAccountInfo = initialState.feeDiscountAccountInfo
     state.tradingRewardsCampaign = initialState.tradingRewardsCampaign
     state.tradeRewardsPoints = initialState.tradeRewardsPoints
+    state.pendingTradeRewardsPoints = initialState.pendingTradeRewardsPoints
   }
 }
 
@@ -87,9 +106,15 @@ export const actions = actionTree(
     },
 
     async initTradeAndEarn(_) {
+      await this.app.$accessor.exchange.fetchParams()
       await this.app.$accessor.exchange.fetchTradingRewardsCampaign()
       await this.app.$accessor.exchange.fetchTradeRewardPoints()
+      await this.app.$accessor.exchange.fetchPendingTradeRewardPoints()
       await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
+    },
+
+    async fetchParams({ commit }) {
+      commit('setParams', await fetchParams())
     },
 
     async fetchFeeDiscountSchedule({ commit }) {
@@ -140,6 +165,42 @@ export const actions = actionTree(
       commit(
         'setTradeRewardPoints',
         await fetchTradeRewardPoints([injectiveAddress])
+      )
+    },
+
+    async fetchPendingTradeRewardPoints({ commit, state }) {
+      const {
+        isUserWalletConnected,
+        injectiveAddress
+      } = this.app.$accessor.wallet
+
+      if (!isUserWalletConnected || !injectiveAddress) {
+        return
+      }
+
+      const { params, tradingRewardsCampaign } = state
+
+      if (!params || !tradingRewardsCampaign) {
+        return
+      }
+
+      const [
+        currentCampaignSchedule
+      ] = tradingRewardsCampaign.tradingRewardPoolCampaignScheduleList
+
+      if (!currentCampaignSchedule) {
+        return
+      }
+
+      const campaignStartTimestamp = currentCampaignSchedule.startTimestamp
+      const pendingPoolTimestamp = campaignStartTimestamp
+
+      commit(
+        'setPendingTradeRewardPoints',
+        await fetchPendingTradeRewardPoints(
+          [injectiveAddress],
+          pendingPoolTimestamp
+        )
       )
     },
 

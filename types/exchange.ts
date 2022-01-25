@@ -1,8 +1,12 @@
 import {
   FeeDiscountTierInfo,
+  FeeDiscountTierTTL,
+  FeeDiscountAccountInfo,
   PointsMultiplier,
+  ExchangeParams,
   TradingRewardCampaignBoostInfo,
   TradingRewardCampaignInfo as BaseTradingRewardCampaignInfo,
+  TradeRewardCampaign as BaseTradeRewardCampaign,
   CampaignRewardPool,
   FeeDiscountSchedule as BaseFeeDiscountSchedule
 } from '@injectivelabs/chain-consumer'
@@ -12,27 +16,28 @@ export interface FeeDiscountSchedule extends BaseFeeDiscountSchedule {
   quoteTokenMeta: Token[]
 }
 
-export interface FeeDiscountAccountInfo {
-  tierLevel: number
-  accountInfo: FeeDiscountTierInfo | undefined
-}
-
 export interface TradingRewardCampaignInfo
   extends BaseTradingRewardCampaignInfo {
   quoteSymbolsList: string[]
 }
 
-export interface TradingRewardsCampaign {
+export interface TradeRewardCampaign extends BaseTradeRewardCampaign {
   tradingRewardCampaignInfo: TradingRewardCampaignInfo | undefined
-  tradingRewardPoolCampaignScheduleList: CampaignRewardPool[]
-  totalTradeRewardPoints: string
+}
+
+export interface TradingRewardsCampaign extends TradeRewardCampaign {
+  //
 }
 
 export {
+  FeeDiscountTierTTL,
+  FeeDiscountAccountInfo,
   FeeDiscountTierInfo,
   PointsMultiplier,
   BaseFeeDiscountSchedule,
+  BaseTradeRewardCampaign,
   BaseTradingRewardCampaignInfo,
   TradingRewardCampaignBoostInfo,
-  CampaignRewardPool
+  CampaignRewardPool,
+  ExchangeParams
 }

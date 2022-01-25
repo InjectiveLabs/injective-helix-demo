@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-panel :title="$t('Markets Information')">
     <div class="flex items-center">
       <v-button-filter
         v-if="false"
@@ -29,7 +29,7 @@
     <div class="mt-4">
       <component :is="component" v-if="component"></component>
     </div>
-  </div>
+  </v-panel>
 </template>
 
 <script lang="ts">
