@@ -31,7 +31,7 @@
     "@apollo/client": "^3.5.5",
     "@chenfengyuan/vue-countdown": "^1.1.5",
     "@injectivelabs/alchemy-api": "^0.0.16",
-    "@injectivelabs/chain-consumer": "^0.0.106",
+    "@injectivelabs/chain-consumer": "^0.0.108",
     "@injectivelabs/contracts": "^0.0.90",
     "@injectivelabs/derivatives-consumer": "^0.0.85",
     "@injectivelabs/exceptions": "^0.0.36",

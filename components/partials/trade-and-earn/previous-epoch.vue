@@ -28,7 +28,7 @@
             {{ $t('tradeAndEarn.pending_max_campaign_rewards') }}
             <v-icon-info-tooltip
               class="ml-2"
-              :tooltip="$t('pending_max_campaign_rewards_tooltip')"
+              :tooltip="$t('tradeAndEarn.pending_max_campaign_rewards_tooltip')"
             />
           </div>
         </template>
@@ -80,18 +80,19 @@
           <a
             v-if="isUserWalletConnected"
             :href="hubUrl"
-            class="text-primary-500"
+            class="text-primary-500 flex justify-center"
             target="_blank"
           >
             {{ $t('stake_more') }}
+            <v-icon-info-tooltip
+              class="ml-2"
+              :tooltip="
+                $t('tradeAndEarn.stake_total_to_receive_full_amount', {
+                  total: pendingEstimatedRewards.toFormat(2)
+                })
+              "
+            />
           </a>
-          <p class="text-2xs text-gray-500 mt-1">
-            {{
-              $t('tradeAndEarn.stake_total_to_receive_full_amount', {
-                total: pendingEstimatedRewards.toNumber()
-              })
-            }}
-          </p>
         </template>
         <template slot="title">
           <div class="flex items-center justify-center">
@@ -124,7 +125,8 @@ import {
 import VItem from '~/components/partials/common/stats/item.vue'
 import {
   FeeDiscountAccountInfo,
-  TradingRewardsCampaign
+  TradingRewardsCampaign,
+  ExchangeParams
 } from '~/types/exchange'
 
 export default Vue.extend({
@@ -143,6 +145,10 @@ export default Vue.extend({
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
+    },
+
+    exchangeParams(): ExchangeParams | undefined {
+      return this.$accessor.exchange.params
     },
 
     feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
@@ -304,10 +310,12 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
+      const [
+        pendingTotalTradeRewardPoints
+      ] = tradingRewardsCampaign.pendingTotalTradeRewardPointsList
+
       return new BigNumberInBase(
-        cosmosSdkDecToBigNumber(
-          tradingRewardsCampaign.pendingTotalTradeRewardPoints || 0
-        )
+        cosmosSdkDecToBigNumber(pendingTotalTradeRewardPoints || 0)
       )
     },
 
@@ -330,8 +338,12 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return totalPendingTradeRewardPoints
-        .dividedBy(pendingTradeRewardPoints)
+      if (pendingTradeRewardPoints.lte(0)) {
+        return ZERO_IN_BASE
+      }
+
+      return pendingTradeRewardPoints
+        .dividedBy(totalPendingTradeRewardPoints)
         .times(injMaxPendingCampaignRewards)
     },
 

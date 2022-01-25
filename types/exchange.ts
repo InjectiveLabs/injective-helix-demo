@@ -3,6 +3,7 @@ import {
   FeeDiscountTierTTL,
   FeeDiscountAccountInfo,
   PointsMultiplier,
+  ExchangeParams,
   TradingRewardCampaignBoostInfo,
   TradingRewardCampaignInfo as BaseTradingRewardCampaignInfo,
   TradeRewardCampaign as BaseTradeRewardCampaign,
@@ -37,5 +38,6 @@ export {
   BaseTradeRewardCampaign,
   BaseTradingRewardCampaignInfo,
   TradingRewardCampaignBoostInfo,
-  CampaignRewardPool
+  CampaignRewardPool,
+  ExchangeParams
 }

@@ -5,6 +5,12 @@ import {
   tradeRewardCampaignToUiTradeRewardCampaign
 } from '~/app/transformers/exchange'
 
+export const fetchParams = async () => {
+  return ExchangeTransformer.grpcParamsToParams(
+    await exchangeConsumer.fetchParams()
+  )
+}
+
 export const fetchFeeDiscountSchedule = async () => {
   const feeDiscountSchedule = await exchangeConsumer.fetchFeeDiscountSchedule()
 
@@ -52,7 +58,11 @@ export const fetchTradeRewardPoints = async (injectiveAddress: string[]) => {
 }
 
 export const fetchPendingTradeRewardPoints = async (
-  injectiveAddress: string[]
+  injectiveAddress: string[],
+  timestamp: number
 ) => {
-  return await exchangeConsumer.fetchPendingTradeRewardPoints(injectiveAddress)
+  return await exchangeConsumer.fetchPendingTradeRewardPoints(
+    injectiveAddress,
+    timestamp
+  )
 }

@@ -4,15 +4,18 @@ import {
   fetchFeeDiscountAccountInfo,
   fetchTradingRewardsCampaign,
   fetchTradeRewardPoints,
-  fetchPendingTradeRewardPoints
+  fetchPendingTradeRewardPoints,
+  fetchParams
 } from '~/app/services/exchange'
 import {
   FeeDiscountAccountInfo,
   TradingRewardsCampaign,
-  FeeDiscountSchedule
+  FeeDiscountSchedule,
+  ExchangeParams
 } from '~/types/exchange'
 
 const initialStateFactory = () => ({
+  params: undefined as ExchangeParams | undefined,
   feeDiscountSchedule: undefined as FeeDiscountSchedule | undefined,
   feeDiscountAccountInfo: undefined as FeeDiscountAccountInfo | undefined,
   tradingRewardsCampaign: undefined as TradingRewardsCampaign | undefined,
@@ -23,6 +26,7 @@ const initialStateFactory = () => ({
 const initialState = initialStateFactory()
 
 export const state = () => ({
+  params: initialState.params as ExchangeParams | undefined,
   feeDiscountSchedule: initialState.feeDiscountSchedule as
     | FeeDiscountSchedule
     | undefined,
@@ -43,6 +47,10 @@ export const getters = getterTree(state, {
 })
 
 export const mutations = {
+  setParams(state: ExchangeStoreState, params: ExchangeParams) {
+    state.params = params
+  },
+
   setFeeDiscountSchedule(
     state: ExchangeStoreState,
     feeDiscountSchedule: FeeDiscountSchedule
@@ -98,10 +106,15 @@ export const actions = actionTree(
     },
 
     async initTradeAndEarn(_) {
+      await this.app.$accessor.exchange.fetchParams()
       await this.app.$accessor.exchange.fetchTradingRewardsCampaign()
       await this.app.$accessor.exchange.fetchTradeRewardPoints()
       await this.app.$accessor.exchange.fetchPendingTradeRewardPoints()
       await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
+    },
+
+    async fetchParams({ commit }) {
+      commit('setParams', await fetchParams())
     },
 
     async fetchFeeDiscountSchedule({ commit }) {
@@ -155,7 +168,7 @@ export const actions = actionTree(
       )
     },
 
-    async fetchPendingTradeRewardPoints({ commit }) {
+    async fetchPendingTradeRewardPoints({ commit, state }) {
       const {
         isUserWalletConnected,
         injectiveAddress
@@ -165,9 +178,29 @@ export const actions = actionTree(
         return
       }
 
+      const { params, tradingRewardsCampaign } = state
+
+      if (!params || !tradingRewardsCampaign) {
+        return
+      }
+
+      const [
+        currentCampaignSchedule
+      ] = tradingRewardsCampaign.tradingRewardPoolCampaignScheduleList
+
+      if (!currentCampaignSchedule) {
+        return
+      }
+
+      const campaignStartTimestamp = currentCampaignSchedule.startTimestamp
+      const pendingPoolTimestamp = campaignStartTimestamp
+
       commit(
         'setPendingTradeRewardPoints',
-        await fetchPendingTradeRewardPoints([injectiveAddress])
+        await fetchPendingTradeRewardPoints(
+          [injectiveAddress],
+          pendingPoolTimestamp
+        )
       )
     },
 
