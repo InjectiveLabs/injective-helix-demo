@@ -3,15 +3,9 @@
     <HOCLoading :status="status">
       <div class="container">
         <div class="w-full mx-auto xl:w-4/5">
-          <v-panel :title="$t('Trade & Earn')" class="mt-6">
-            <v-campaign />
-          </v-panel>
-          <v-panel :title="$t('Current Epoch')" class="mt-12">
-            <v-current-epoch />
-          </v-panel>
-          <v-panel :title="$t('Markets Information')" class="mt-12">
-            <v-markets-info />
-          </v-panel>
+          <v-current-epoch class="mt-6" />
+          <v-previous-epoch class="mt-12" />
+          <v-markets-info class="mt-12" />
         </div>
       </div>
     </HOCLoading>
@@ -21,7 +15,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import VCampaign from '~/components/partials/trade-and-earn/campaign.vue'
+import VPreviousEpoch from '~/components/partials/trade-and-earn/previous-epoch.vue'
 import VCurrentEpoch from '~/components/partials/trade-and-earn/current-epoch.vue'
 import VMarketsInfo from '~/components/partials/trade-and-earn/markets-info.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
@@ -29,7 +23,7 @@ import HOCLoading from '~/components/hoc/loading.vue'
 export default Vue.extend({
   components: {
     HOCLoading,
-    VCampaign,
+    VPreviousEpoch,
     VMarketsInfo,
     VCurrentEpoch
   },
