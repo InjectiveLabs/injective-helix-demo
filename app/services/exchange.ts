@@ -50,3 +50,9 @@ export const fetchTradingRewardsCampaign = async () => {
 export const fetchTradeRewardPoints = async (injectiveAddress: string[]) => {
   return await exchangeConsumer.fetchTradeRewardPoints(injectiveAddress)
 }
+
+export const fetchPendingTradeRewardPoints = async (
+  injectiveAddress: string[]
+) => {
+  return await exchangeConsumer.fetchPendingTradeRewardPoints(injectiveAddress)
+}

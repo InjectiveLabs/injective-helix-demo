@@ -1,13 +1,13 @@
 <template>
-  <v-panel :title="$t('Current Epoch')">
-    <div v-if="currentEpochStartTimestamp > 0" slot="title-context">
-      {{ $t('tradeAndEarn.campaignEndsAt', { date: epochCountdown }) }}
+  <v-panel :title="$t('tradeAndEarn.previousEpoch')">
+    <div v-if="previousEpochStartTimestamp > 0" slot="title-context">
+      {{ $t('tradeAndEarn.campaignEndedAt', { date: previousEpochCountdown }) }}
     </div>
     <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
       <v-item class="col-span-2 lg:col-span-4">
         <template slot="value">
           <v-emp-number
-            :number="injMaxCampaignRewards"
+            :number="injMaxPendingCampaignRewards"
             :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
           >
             <span>INJ</span>
@@ -17,7 +17,7 @@
             sm
             class="text-gray-400"
             prefix="≈"
-            :number="injMaxCampaignRewardsInUsd"
+            :number="injMaxPendingCampaignRewardsInUsd"
             :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
           >
             <span class="text-3xs">USD</span>
@@ -25,10 +25,10 @@
         </template>
         <template slot="title">
           <div class="flex items-center justify-center">
-            {{ $t('max_campaign_rewards') }}
+            {{ $t('tradeAndEarn.pending_max_campaign_rewards') }}
             <v-icon-info-tooltip
               class="ml-2"
-              :tooltip="$t('max_campaign_rewards_tooltip')"
+              :tooltip="$t('pending_max_campaign_rewards_tooltip')"
             />
           </div>
         </template>
@@ -39,11 +39,11 @@
             v-if="isUserWalletConnected"
             class="flex flex-wrap justify-center"
           >
-            <v-emp-number :number="tradeRewardPointsFactored">
+            <v-emp-number :number="pendingTradeRewardPointsFactored">
               <span>{{ $t('pts') }}</span>
             </v-emp-number>
             <span class="px-2">/</span>
-            <v-emp-number :number="totalTradeRewardPointsFactored">
+            <v-emp-number :number="totalPendingTradeRewardPointsFactored">
               <span>{{ $t('pts') }}</span>
             </v-emp-number>
           </div>
@@ -63,30 +63,43 @@
         <template slot="value">
           <v-emp-number
             v-if="isUserWalletConnected"
-            :number="estimatedRewards"
+            :number="pendingEstimatedRewardsCapped"
             :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
           >
             <span>INJ</span>
           </v-emp-number>
           <span v-else>&mdash;</span>
-          <v-emp-number
+        </template>
+        <template
+          v-if="
+            pendingEstimatedRewards.gt(0) &&
+            pendingEstimatedRewardsCapped.lte(pendingEstimatedRewards)
+          "
+          slot="context"
+        >
+          <a
             v-if="isUserWalletConnected"
-            sm
-            class="text-gray-400"
-            prefix="≈"
-            :number="estimatedRewardsInUsd"
-            :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
+            :href="hubUrl"
+            class="text-primary-500"
+            target="_blank"
           >
-            <span class="text-3xs">USD</span>
-          </v-emp-number>
+            {{ $t('stake_more') }}
+          </a>
+          <p class="text-2xs text-gray-500 mt-1">
+            {{
+              $t('tradeAndEarn.stake_total_to_receive_full_amount', {
+                total: pendingEstimatedRewards.toNumber()
+              })
+            }}
+          </p>
         </template>
         <template slot="title">
           <div class="flex items-center justify-center">
-            {{ $t('est_rewards') }}
+            {{ $t('tradeAndEarn.est_rewards_stake') }}
             <v-icon-info-tooltip
               class="ml-2"
               :tooltip="
-                $t('est_rewards_tooltip', {
+                $t('tradeAndEarn.est_rewards_stake_tooltip', {
                   maxRewards: DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
                 })
               "
@@ -140,30 +153,6 @@ export default Vue.extend({
       return this.$accessor.exchange.tradingRewardsCampaign
     },
 
-    tradeRewardsPoints(): string[] {
-      return this.$accessor.exchange.tradeRewardsPoints
-    },
-
-    injUsdPrice(): number {
-      return this.$accessor.token.injUsdtPrice
-    },
-
-    tradeRewardPoints(): BigNumberInBase {
-      const { tradeRewardsPoints } = this
-
-      if (!tradeRewardsPoints.length) {
-        return ZERO_IN_BASE
-      }
-
-      const [points] = tradeRewardsPoints
-
-      if (!points) {
-        return ZERO_IN_BASE
-      }
-
-      return new BigNumberInBase(cosmosSdkDecToBigNumber(points))
-    },
-
     stakedAmount(): BigNumberInBase {
       const { feeDiscountAccountInfo } = this
 
@@ -180,12 +169,16 @@ export default Vue.extend({
       )
     },
 
-    tradeRewardPointsFactored(): BigNumberInBase {
-      const { tradeRewardPoints } = this
+    tradeRewardsPoints(): string[] {
+      return this.$accessor.exchange.tradeRewardsPoints
+    },
 
-      return new BigNumberInWei(tradeRewardPoints).toBase(
-        6 /* Default factor for points, USDT decimals */
-      )
+    pendingTradeRewardsPoints(): string[] {
+      return this.$accessor.exchange.pendingTradeRewardsPoints
+    },
+
+    injUsdPrice(): number {
+      return this.$accessor.token.injUsdtPrice
     },
 
     campaignDurationInSeconds(): number {
@@ -227,16 +220,28 @@ export default Vue.extend({
       return new BigNumberInBase(schedule.startTimestamp).toNumber()
     },
 
-    epochCountdown(): string {
+    previousEpochStartTimestamp(): number {
       const { currentEpochStartTimestamp, campaignDurationInSeconds } = this
 
+      if (currentEpochStartTimestamp === 0) {
+        return 0
+      }
+
+      return new BigNumberInBase(currentEpochStartTimestamp)
+        .minus(campaignDurationInSeconds)
+        .toNumber()
+    },
+
+    previousEpochCountdown(): string {
+      const { previousEpochStartTimestamp, campaignDurationInSeconds } = this
+
       return format(
-        (currentEpochStartTimestamp + campaignDurationInSeconds) * 1000,
+        (previousEpochStartTimestamp + campaignDurationInSeconds) * 1000,
         'dd MMM HH:mm:ss'
       )
     },
 
-    injMaxCampaignRewards(): BigNumberInBase {
+    injMaxPendingCampaignRewards(): BigNumberInBase {
       const { tradingRewardsCampaign } = this
 
       if (!tradingRewardsCampaign) {
@@ -245,7 +250,7 @@ export default Vue.extend({
 
       const [
         schedule
-      ] = tradingRewardsCampaign.tradingRewardPoolCampaignScheduleList
+      ] = tradingRewardsCampaign.pendingTradingRewardPoolCampaignScheduleList
 
       if (!schedule) {
         return ZERO_IN_BASE
@@ -260,15 +265,39 @@ export default Vue.extend({
       return new BigNumberInBase(cosmosSdkDecToBigNumber(inj.amount || 0))
     },
 
-    injMaxCampaignRewardsInUsd(): BigNumberInBase {
-      const { injMaxCampaignRewards, injUsdPrice } = this
+    injMaxPendingCampaignRewardsInUsd(): BigNumberInBase {
+      const { injMaxPendingCampaignRewards, injUsdPrice } = this
 
-      return injMaxCampaignRewards.multipliedBy(
+      return injMaxPendingCampaignRewards.multipliedBy(
         new BigNumberInBase(injUsdPrice)
       )
     },
 
-    totalTradeRewardPoints(): BigNumberInBase {
+    pendingTradeRewardPoints(): BigNumberInBase {
+      const { pendingTradeRewardsPoints } = this
+
+      if (!pendingTradeRewardsPoints.length) {
+        return ZERO_IN_BASE
+      }
+
+      const [points] = pendingTradeRewardsPoints
+
+      if (!points) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(cosmosSdkDecToBigNumber(points))
+    },
+
+    pendingTradeRewardPointsFactored(): BigNumberInBase {
+      const { pendingTradeRewardPoints } = this
+
+      return new BigNumberInWei(pendingTradeRewardPoints).toBase(
+        6 /* Default factor for points, USDT decimals */
+      )
+    },
+
+    totalPendingTradeRewardPoints(): BigNumberInBase {
       const { tradingRewardsCampaign } = this
 
       if (!tradingRewardsCampaign) {
@@ -277,50 +306,61 @@ export default Vue.extend({
 
       return new BigNumberInBase(
         cosmosSdkDecToBigNumber(
-          tradingRewardsCampaign.totalTradeRewardPoints || 0
+          tradingRewardsCampaign.pendingTotalTradeRewardPoints || 0
         )
       )
     },
 
-    totalTradeRewardPointsFactored(): BigNumberInBase {
-      const { totalTradeRewardPoints } = this
+    totalPendingTradeRewardPointsFactored(): BigNumberInBase {
+      const { totalPendingTradeRewardPoints } = this
 
-      return new BigNumberInWei(totalTradeRewardPoints).toBase(
+      return new BigNumberInWei(totalPendingTradeRewardPoints).toBase(
         6 /* Default factor for points, USDT decimals */
       )
     },
 
-    estimatedRewards(): BigNumberInBase {
+    pendingEstimatedRewards(): BigNumberInBase {
       const {
-        tradeRewardPoints,
-        totalTradeRewardPoints,
-        injMaxCampaignRewards,
-        stakedAmount
+        pendingTradeRewardPoints,
+        totalPendingTradeRewardPoints,
+        injMaxPendingCampaignRewards
       } = this
 
-      if (totalTradeRewardPoints.lte(0)) {
+      if (totalPendingTradeRewardPoints.lte(0)) {
         return ZERO_IN_BASE
       }
 
-      const estRewards = tradeRewardPoints
-        .dividedBy(totalTradeRewardPoints)
-        .times(injMaxCampaignRewards)
+      return totalPendingTradeRewardPoints
+        .dividedBy(pendingTradeRewardPoints)
+        .times(injMaxPendingCampaignRewards)
+    },
 
-      if (estRewards.lte(DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS)) {
-        return estRewards
+    pendingEstimatedRewardsCapped(): BigNumberInBase {
+      const { pendingEstimatedRewards, stakedAmount } = this
+
+      if (pendingEstimatedRewards.lte(DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS)) {
+        return pendingEstimatedRewards
       }
 
       if (stakedAmount.lte(DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS)) {
         return new BigNumberInBase(DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS)
       }
 
-      return estRewards.gte(stakedAmount) ? stakedAmount : estRewards
+      return pendingEstimatedRewards.gte(stakedAmount)
+        ? stakedAmount
+        : pendingEstimatedRewards
     },
 
-    estimatedRewardsInUsd(): BigNumberInBase {
-      const { estimatedRewards, injUsdPrice } = this
+    pendingEstimatedRewardsCappedInUsd(): BigNumberInBase {
+      const { pendingEstimatedRewardsCapped, injUsdPrice } = this
 
-      return estimatedRewards.multipliedBy(new BigNumberInBase(injUsdPrice))
+      return pendingEstimatedRewardsCapped.multipliedBy(
+        new BigNumberInBase(injUsdPrice)
+      )
+    },
+
+    hubUrl(): string {
+      return 'https://hub.injective.network/staking'
     }
   }
 })

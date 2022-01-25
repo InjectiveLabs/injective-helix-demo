@@ -3,7 +3,8 @@ import {
   fetchFeeDiscountSchedule,
   fetchFeeDiscountAccountInfo,
   fetchTradingRewardsCampaign,
-  fetchTradeRewardPoints
+  fetchTradeRewardPoints,
+  fetchPendingTradeRewardPoints
 } from '~/app/services/exchange'
 import {
   FeeDiscountAccountInfo,
@@ -15,7 +16,8 @@ const initialStateFactory = () => ({
   feeDiscountSchedule: undefined as FeeDiscountSchedule | undefined,
   feeDiscountAccountInfo: undefined as FeeDiscountAccountInfo | undefined,
   tradingRewardsCampaign: undefined as TradingRewardsCampaign | undefined,
-  tradeRewardsPoints: [] as string[]
+  tradeRewardsPoints: [] as string[],
+  pendingTradeRewardsPoints: [] as string[]
 })
 
 const initialState = initialStateFactory()
@@ -30,7 +32,8 @@ export const state = () => ({
   tradingRewardsCampaign: initialState.tradingRewardsCampaign as
     | TradingRewardsCampaign
     | undefined,
-  tradeRewardsPoints: initialState.tradeRewardsPoints as string[]
+  tradeRewardsPoints: initialState.tradeRewardsPoints as string[],
+  pendingTradeRewardsPoints: initialState.pendingTradeRewardsPoints as string[]
 })
 
 export type ExchangeStoreState = ReturnType<typeof state>
@@ -68,6 +71,13 @@ export const mutations = {
     state.tradeRewardsPoints = tradeRewardsPoints
   },
 
+  setPendingTradeRewardPoints(
+    state: ExchangeStoreState,
+    tradeRewardsPoints: string[]
+  ) {
+    state.pendingTradeRewardsPoints = tradeRewardsPoints
+  },
+
   reset(state: ExchangeStoreState) {
     const initialState = initialStateFactory()
 
@@ -75,6 +85,7 @@ export const mutations = {
     state.feeDiscountAccountInfo = initialState.feeDiscountAccountInfo
     state.tradingRewardsCampaign = initialState.tradingRewardsCampaign
     state.tradeRewardsPoints = initialState.tradeRewardsPoints
+    state.pendingTradeRewardsPoints = initialState.pendingTradeRewardsPoints
   }
 }
 
@@ -89,6 +100,7 @@ export const actions = actionTree(
     async initTradeAndEarn(_) {
       await this.app.$accessor.exchange.fetchTradingRewardsCampaign()
       await this.app.$accessor.exchange.fetchTradeRewardPoints()
+      await this.app.$accessor.exchange.fetchPendingTradeRewardPoints()
       await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
     },
 
@@ -140,6 +152,22 @@ export const actions = actionTree(
       commit(
         'setTradeRewardPoints',
         await fetchTradeRewardPoints([injectiveAddress])
+      )
+    },
+
+    async fetchPendingTradeRewardPoints({ commit }) {
+      const {
+        isUserWalletConnected,
+        injectiveAddress
+      } = this.app.$accessor.wallet
+
+      if (!isUserWalletConnected || !injectiveAddress) {
+        return
+      }
+
+      commit(
+        'setPendingTradeRewardPoints',
+        await fetchPendingTradeRewardPoints([injectiveAddress])
       )
     },
 
