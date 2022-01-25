@@ -1,7 +1,7 @@
 <template>
-  <v-panel :title="$t('tradeAndEarn.previousEpoch')">
-    <div v-if="previousEpochStartTimestamp > 0" slot="title-context">
-      {{ $t('tradeAndEarn.campaignEndedAt', { date: previousEpochCountdown }) }}
+  <v-panel :title="$t('tradeAndEarn.pendingRewards')">
+    <div v-if="pendingRewardsStartTimestamp > 0" slot="title-context">
+      {{ $t('tradeAndEarn.campaignAsAt', { date: pendingRewardsCountdown }) }}
     </div>
     <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
       <v-item class="col-span-2 lg:col-span-4">
@@ -69,6 +69,16 @@
             <span>INJ</span>
           </v-emp-number>
           <span v-else>&mdash;</span>
+          <v-emp-number
+            v-if="isUserWalletConnected"
+            sm
+            class="text-gray-400"
+            prefix="≈"
+            :number="pendingEstimatedRewardsCappedInUsd"
+            :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
+          >
+            <span class="text-3xs">USD</span>
+          </v-emp-number>
         </template>
         <template
           v-if="
@@ -226,7 +236,7 @@ export default Vue.extend({
       return new BigNumberInBase(schedule.startTimestamp).toNumber()
     },
 
-    previousEpochStartTimestamp(): number {
+    pendingRewardsStartTimestamp(): number {
       const { currentEpochStartTimestamp, campaignDurationInSeconds } = this
 
       if (currentEpochStartTimestamp === 0) {
@@ -238,11 +248,11 @@ export default Vue.extend({
         .toNumber()
     },
 
-    previousEpochCountdown(): string {
-      const { previousEpochStartTimestamp, campaignDurationInSeconds } = this
+    pendingRewardsCountdown(): string {
+      const { pendingRewardsStartTimestamp, campaignDurationInSeconds } = this
 
       return format(
-        (previousEpochStartTimestamp + campaignDurationInSeconds) * 1000,
+        (pendingRewardsStartTimestamp + campaignDurationInSeconds) * 1000,
         'dd MMM HH:mm:ss'
       )
     },

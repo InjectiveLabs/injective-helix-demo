@@ -558,9 +558,9 @@ export default {
   analytics: 'Analytics',
 
   tradeAndEarn: {
-    previousEpoch: 'Previous Epoch',
+    pendingRewards: 'Pending Rewards',
     campaignEndsAt: 'Ends at {date}',
-    campaignEndedAt: 'Ended at {date}',
+    campaignAsAt: 'As at {date}',
     myRewardPoints: 'My Reward Points / Total Reward Points',
     myRewardPoints_tooltip:
       'The current reward points you earned during this campaign and the total reward points in the campaign. Reward points will reset to 0 at the beginning of next campaign.',

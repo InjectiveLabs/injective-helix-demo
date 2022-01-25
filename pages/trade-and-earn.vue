@@ -4,7 +4,7 @@
       <div class="container">
         <div class="w-full mx-auto xl:w-4/5">
           <v-current-epoch class="mt-6" />
-          <v-previous-epoch class="mt-12" />
+          <v-previous-rewards class="mt-12" />
           <v-markets-info class="mt-12" />
         </div>
       </div>
@@ -15,7 +15,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import VPreviousEpoch from '~/components/partials/trade-and-earn/previous-epoch.vue'
+import VPreviousRewards from '~/components/partials/trade-and-earn/previous-rewards.vue'
 import VCurrentEpoch from '~/components/partials/trade-and-earn/current-epoch.vue'
 import VMarketsInfo from '~/components/partials/trade-and-earn/markets-info.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
@@ -23,7 +23,7 @@ import HOCLoading from '~/components/hoc/loading.vue'
 export default Vue.extend({
   components: {
     HOCLoading,
-    VPreviousEpoch,
+    VPreviousRewards,
     VMarketsInfo,
     VCurrentEpoch
   },
