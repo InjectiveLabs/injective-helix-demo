@@ -21,7 +21,7 @@ export default {
     'Access, create and trade unlimited decentralized finance markets',
   welcome_to_ip_sub:
     'The Canary Chain has a $5,000 trading limit which will be uplifted upon the canonical release over the coming weeks.',
-  maintenance_header: 'Ongoing Maintenance',
+  maintenance_header: 'Ongoing Scheduled Maintenance',
   maintenance_subheader:
     'While this relayer is down for maintenance, the <strong class="text-primary-500">Injective Chain</strong> is never down! You can find other relayers in the Injective Ecosystem on the button below!',
   maintenance_button: 'Relayers',

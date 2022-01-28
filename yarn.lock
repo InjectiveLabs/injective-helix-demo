@@ -2039,6 +2039,15 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
+"@injectivelabs/exceptions@^0.0.38":
+  version "0.0.38"
+  resolved "https://registry.npmjs.org/@injectivelabs/exceptions/-/exceptions-0.0.38.tgz#7688f191f12f30b25e89c172d61ba0d68df9cdd5"
+  integrity sha512-m7ZsifNgNHT8IkBwtkenuE4L5FfAW2nKAo7pU4NX6Q2XWuNOJR2ErGsIGGeCvhFKs2WeGsI6juPK9R1igwrWbA==
+  dependencies:
+    "@injectivelabs/ts-types" "^0.0.34"
+    link-module-alias "^1.2.0"
+    shx "^0.3.2"
+
 "@injectivelabs/exchange-api@^2.2.55":
   version "2.2.55"
   resolved "https://registry.npmjs.org/@injectivelabs/exchange-api/-/exchange-api-2.2.55.tgz#e1e292a3afdbcb5dcdbadb79ac728f76fe2be844"
@@ -2065,13 +2074,13 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/networks@^0.0.58":
-  version "0.0.58"
-  resolved "https://registry.npmjs.org/@injectivelabs/networks/-/networks-0.0.58.tgz#f3e6f6795503fc98fb034153afef5130dbce9006"
-  integrity sha512-HVjLeKvGfpSAzh5/XksqWtY7e4tPK5l333mKZuh1STpfCtjhS+k3cZavZFm1tx+8eJo5Wn2lKuY8kT84WWmSBA==
+"@injectivelabs/networks@^0.0.62":
+  version "0.0.62"
+  resolved "https://registry.npmjs.org/@injectivelabs/networks/-/networks-0.0.62.tgz#c33889e8f7fdfdfc6624e498dabc39430acc1878"
+  integrity sha512-EOYn1JBTo0N5qFInNs8ZHtXwCx+/NDdps09CqV4Z10JEvPzlGvztH6WJfo5rW1rKtcJGxuwAiizGGcCK0fgCfQ==
   dependencies:
-    "@injectivelabs/exceptions" "^0.0.36"
-    "@injectivelabs/utils" "^0.0.45"
+    "@injectivelabs/exceptions" "^0.0.38"
+    "@injectivelabs/utils" "^0.0.47"
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
@@ -2107,13 +2116,13 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/token-metadata@^0.0.46":
-  version "0.0.46"
-  resolved "https://registry.npmjs.org/@injectivelabs/token-metadata/-/token-metadata-0.0.46.tgz#9b9528380e043a3fa390d9508449c60e6317dd04"
-  integrity sha512-ctk49OIIKVGD62oM+5gIWolIjqdPmWjLBJLkIYHIMNdL5VsMbTfSe5mn1fsz42b17t5Oo8N93ptrk1s9pJDlwQ==
+"@injectivelabs/token-metadata@^0.0.50":
+  version "0.0.50"
+  resolved "https://registry.npmjs.org/@injectivelabs/token-metadata/-/token-metadata-0.0.50.tgz#40c1eb89a5abf001c655b4b6dda9e2fa1e2ec1f5"
+  integrity sha512-w1bQEJ5o3nVyyA9ENLuHy/Jd13S8ShhS0bb3nFtiTRYKAqQ/0IvXl3sYx47yT2SYjyQfsTiSLJKM4aXu34JqDQ==
   dependencies:
-    "@injectivelabs/networks" "^0.0.58"
-    "@injectivelabs/ts-types" "^0.0.32"
+    "@injectivelabs/networks" "^0.0.62"
+    "@injectivelabs/ts-types" "^0.0.34"
     "@types/lodash.values" "^4.3.6"
     copyfiles "^2.4.1"
     jsonschema "^1.4.0"
@@ -2152,6 +2161,14 @@
   version "0.0.32"
   resolved "https://registry.npmjs.org/@injectivelabs/ts-types/-/ts-types-0.0.32.tgz#1edadf4aa338d3e5cdb7d381387c82489ea1eabc"
   integrity sha512-y7Zkf6d+OWGKOFoXWsE9Y2i2dYqG9rWHN3vB02y5IO1hPTtBIs9jqdNuYvzsYCp/veI5u2zGiUyBuZLoUqc4cA==
+  dependencies:
+    link-module-alias "^1.2.0"
+    shx "^0.3.2"
+
+"@injectivelabs/ts-types@^0.0.34":
+  version "0.0.34"
+  resolved "https://registry.npmjs.org/@injectivelabs/ts-types/-/ts-types-0.0.34.tgz#0b838690e7b5c54a80cbaa9b90e532ccb77cb6e7"
+  integrity sha512-KJiTAlmeLFJA0ivHWy15EQ/WcnIDI/N2DTtu6XVa4ltzPnwZxlUlVhDXZCeV0n8HoOsOfE/dyxd4U75pzh01aw==
   dependencies:
     link-module-alias "^1.2.0"
     shx "^0.3.2"
@@ -2198,6 +2215,21 @@
   dependencies:
     "@injectivelabs/exceptions" "^0.0.36"
     "@injectivelabs/ts-types" "^0.0.32"
+    "@injectivelabs/web3-contract-typings" "^0.1.12"
+    "@types/ethereumjs-util" "^6.1.0"
+    axios "^0.21.1"
+    bignumber.js "^9.0.1"
+    link-module-alias "^1.2.0"
+    shx "^0.3.2"
+    store2 "^2.12.0"
+
+"@injectivelabs/utils@^0.0.47":
+  version "0.0.47"
+  resolved "https://registry.npmjs.org/@injectivelabs/utils/-/utils-0.0.47.tgz#2eb646af79c85153eab2e10121e2608873516976"
+  integrity sha512-MudXAUaQJGgWJuBlj92XaIF61K3AqcwfBZhpdYR3vz9PceCU5PVOTFxlDH4d1z6z3WzXzFWOJgoCbtswdAs7jw==
+  dependencies:
+    "@injectivelabs/exceptions" "^0.0.38"
+    "@injectivelabs/ts-types" "^0.0.34"
     "@injectivelabs/web3-contract-typings" "^0.1.12"
     "@types/ethereumjs-util" "^6.1.0"
     axios "^0.21.1"
