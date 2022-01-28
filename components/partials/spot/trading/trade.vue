@@ -6,7 +6,7 @@
           'text-gray-500': tradingType === TradeExecutionType.LimitFill
         }"
         text-xs
-        @click.stop="onTradingTypeToggle"
+        @click.stop="onTradingTypeToggle(TradeExecutionType.Market)"
       >
         {{ $t('market') }}
       </v-button>
@@ -17,7 +17,7 @@
           'text-gray-500': tradingType === TradeExecutionType.Market
         }"
         text-xs
-        @click.stop="onTradingTypeToggle"
+        @click.stop="onTradingTypeToggle(TradeExecutionType.LimitFill)"
       >
         {{ $t('limit') }}
       </v-button>
@@ -1243,11 +1243,8 @@ export default Vue.extend({
       this.form.amount = amount
     },
 
-    onTradingTypeToggle() {
-      this.tradingType =
-        this.tradingType === TradeExecutionType.LimitFill
-          ? TradeExecutionType.Market
-          : TradeExecutionType.LimitFill
+    onTradingTypeToggle(selectedTradingType: TradeExecutionType) {
+      this.tradingType = selectedTradingType
     },
 
     handleEnableAcceptHighPriceDeviations() {
