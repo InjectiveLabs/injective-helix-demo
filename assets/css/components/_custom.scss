@@ -198,7 +198,7 @@
 
 @keyframes sizeColUp {
   0% {
-    background-color: theme('colors.aqua.500');
+    background-color: rgba(#0ee29b, 0.35);
   }
   100% {
     background-color: unset;
@@ -207,7 +207,7 @@
 
 @keyframes sizeColDown {
   0% {
-    background-color: theme('colors.red.500');
+    background-color: rgba(#f3164d, 0.35);
   }
   100% {
     background-color: unset;
