@@ -12,7 +12,7 @@
         >
           <v-record
             v-for="(sell, index) in sellsWithDepth"
-            :key="`order-book-sell-${index}`"
+            :key="`order-book-sell-${ sell.total }`"
             :ref="`order-book-sell-${index}`"
             :class="{
               active: sellHoverPosition !== null && index >= sellHoverPosition
@@ -62,7 +62,7 @@
     >
       <v-record
         v-for="(buy, index) in buysWithDepth"
-        :key="`order-book-buy-${index}`"
+        :key="`order-book-buy-${buy.total}`"
         :ref="`order-book-buy-${index}`"
         :class="{
           active: buyHoverPosition !== null && index <= buyHoverPosition
