@@ -1,4 +1,5 @@
 import { DMMConsumer } from '@injectivelabs/exchange-consumer'
-import { app } from './App'
 
-export const dmmConsumer = new DMMConsumer(app.appUrlEndpoint.dmmExchangeUrl)
+const dmmEndpoint = 'https://dmm.exchange.injective.network'
+
+export const dmmConsumer = new DMMConsumer(dmmEndpoint)

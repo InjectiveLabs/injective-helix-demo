@@ -24,6 +24,7 @@ import HOCLoading from '~/components/hoc/loading.vue'
 import TradingChart from '~/components/trading-view/chart.vue'
 import { MarketType, UiDerivativeMarket, UiSpotMarket } from '~/types'
 import { app } from '~/app/singletons/App'
+import { getChronosDatafeedEndpoint } from '~/app/utils/helpers'
 
 interface TradingChartInterface {
   $el: HTMLElement
@@ -75,9 +76,9 @@ export default Vue.extend({
     datafeedEndpoint(): string {
       const { market } = this
 
-      return `${app.appUrlEndpoint.baseUrl}/chronos/v1/${
+      return getChronosDatafeedEndpoint(
         market.type === MarketType.Derivative ? 'derivative' : 'spot'
-      }`
+      )
     }
   },
 

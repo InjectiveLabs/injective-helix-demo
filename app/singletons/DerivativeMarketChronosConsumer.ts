@@ -2,5 +2,5 @@ import { DerivativeMarketChronosConsumer } from '@injectivelabs/derivatives-cons
 import { app } from './App'
 
 export const derivativeChronosConsumer = new DerivativeMarketChronosConsumer(
-  app.appUrlEndpoint.baseUrl
+  `${app.endpoints.exchangeApi}/api`
 )

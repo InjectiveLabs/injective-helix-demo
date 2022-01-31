@@ -21,18 +21,17 @@ class App {
     this.network = NETWORK || Network.Local
   }
 
-  get appUrlEndpoint(): UrlEndpoint {
+  get endpoints(): UrlEndpoint {
     const endpoints = getUrlEndpointForNetwork(this.network)
     const baseExchangeApiEndpoint =
-      APP_EXCHANGE_API_ENDPOINT || endpoints.exchangeUrl
-    const sentryGrpcApiEndpoint = APP_SENTRY_GRPC_ENDPOINT || endpoints.chainUrl
+      APP_EXCHANGE_API_ENDPOINT || endpoints.exchangeApi
+    const sentryGrpcApiEndpoint =
+      APP_SENTRY_GRPC_ENDPOINT || endpoints.sentryGrpcApi
 
     return {
       ...endpoints,
-      exchangeUrl: baseExchangeApiEndpoint,
-      baseUrl: `${baseExchangeApiEndpoint}/api`,
-      explorerUrl: `${baseExchangeApiEndpoint}/api/explorer/v1`,
-      chainUrl: sentryGrpcApiEndpoint
+      exchangeApi: baseExchangeApiEndpoint,
+      sentryGrpcApi: sentryGrpcApiEndpoint
     }
   }
 

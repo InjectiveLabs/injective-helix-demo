@@ -4,6 +4,7 @@ import {
   UI_DEFAULT_DISPLAY_DECIMALS
 } from './constants'
 import { Change, UiDerivativeMarketSummary, UiSpotMarketSummary } from '~/types'
+import { app } from '~/app/singletons/App'
 
 export const getSignificantDecimalsFromNumber = (
   number: number | string
@@ -96,4 +97,8 @@ export const zeroSpotMarketSummary = (
     lastPrice: NaN,
     lastPriceChange: Change.NoChange
   }
+}
+
+export const getChronosDatafeedEndpoint = (marketType: string): string => {
+  return `${app.endpoints.exchangeApi}/api/chronos/v1/${marketType}`
 }

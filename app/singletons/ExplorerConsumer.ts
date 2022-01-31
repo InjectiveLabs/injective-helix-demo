@@ -59,5 +59,5 @@ class ExplorerConsumer {
 }
 
 export const explorerConsumer = new ExplorerConsumer(
-  app.appUrlEndpoint.explorerUrl
+  `${app.endpoints.exchangeApi}/api/explorer/v1`
 )
