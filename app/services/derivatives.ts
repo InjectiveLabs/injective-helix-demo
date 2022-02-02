@@ -39,6 +39,7 @@ import {
 import {
   UiPriceLevel,
   UiDerivativeMarket,
+  UiDerivativeLimitOrder,
   UiDerivativeMarketSummary,
   UiOrderbookPriceLevel,
   UiPosition,
@@ -391,10 +392,8 @@ export const validateNotionalRestrictions = ({
   if (usdTokenSymbols.includes(token.symbol)) {
     if (notional.gt(MAXIMUM_NOTIONAL_ALLOWED)) {
       throw new Error(
-        `Notional of ${notional.toString()}${
-          token.symbol
-        } exceeds maximum of ${MAXIMUM_NOTIONAL_ALLOWED.toString()}${
-          token.symbol
+        `Notional of ${notional.toString()}${token.symbol
+        } exceeds maximum of ${MAXIMUM_NOTIONAL_ALLOWED.toString()}${token.symbol
         } allowed.`
       )
     }
@@ -633,6 +632,76 @@ export const closePosition = async ({
   }
 }
 
+export const closePositionAndReduceOnlyOrders = async ({
+  quantity,
+  price,
+  orderType,
+  address,
+  market,
+  injectiveAddress,
+  subaccountId,
+  reduceOnlyOrders
+}: {
+  quantity: BigNumberInBase
+  price: BigNumberInBase
+  orderType: DerivativeOrderSide
+  subaccountId: string
+  market: UiDerivativeMarket
+  address: AccountAddress
+  injectiveAddress: AccountAddress,
+  reduceOnlyOrders: {
+    marketId: string
+    subaccountId: string
+    orderHash: string
+  }[]
+}) => {
+  const executionPrice = new BigNumberInBase(
+    price.toFixed(
+      market.priceDecimals,
+      orderType === DerivativeOrderSide.Buy
+        ? BigNumberInBase.ROUND_DOWN
+        : BigNumberInBase.ROUND_UP
+    )
+  )
+  const minTickPrice = new BigNumberInBase(
+    new BigNumberInBase(1).shiftedBy(-market.priceDecimals)
+  )
+  const actualExecutionPrice = executionPrice.lte(0)
+    ? minTickPrice
+    : executionPrice
+
+  // TODO: create BatchUpdateDerivativeOrders at https://github.com/InjectiveLabs/injective-ts/blob/master/packages/derivatives-consumer/src/composers/DerivativeMarketComposer.ts in order to shape the message to the chain
+  const message = DerivativeMarketComposer.BatchUpdateDerivativeOrders({
+    subaccountId,
+    injectiveAddress,
+    marketId: market.marketId,
+    order: {
+      price: new BigNumberInBase(actualExecutionPrice)
+        .toWei(market.quoteToken.decimals)
+        .toFixed(),
+      margin: ZERO_TO_STRING,
+      quantity: quantity.toFixed(),
+      orderType: orderTypeToGrpcOrderType(orderType),
+      feeRecipient: FEE_RECIPIENT,
+      triggerPrice: ZERO_TO_STRING // TODO
+    },
+    reduceOnlyOrders
+  })
+
+  try {
+    const txProvider = new TxProvider({
+      address,
+      message,
+      bucket: DerivativesMetrics.BatchUpdateOrders,
+      chainId: CHAIN_ID
+    })
+
+    await txProvider.broadcast()
+  } catch (error: any) {
+    throw new Web3Exception(error.message)
+  }
+}
+
 export const addMarginToPosition = async ({
   amount,
   address,
@@ -817,11 +886,11 @@ export const getPositionFeeAdjustedBankruptcyPrice = ({
 
   const feeAdjustedBankruptcyPrice = isPositionLong
     ? bankruptcyPrice.dividedBy(
-        new BigNumberInBase(1).minus(market.takerFeeRate)
-      )
+      new BigNumberInBase(1).minus(market.takerFeeRate)
+    )
     : bankruptcyPrice.dividedBy(
-        new BigNumberInBase(1).plus(market.takerFeeRate)
-      )
+      new BigNumberInBase(1).plus(market.takerFeeRate)
+    )
 
   return feeAdjustedBankruptcyPrice.gte(0)
     ? feeAdjustedBankruptcyPrice
@@ -849,11 +918,11 @@ export const calculateLiquidationPrice = ({
 
   const numerator = isOrderTypeBuy
     ? new BigNumberInBase(margin).minus(
-        new BigNumberInBase(price).times(quantity)
-      )
+      new BigNumberInBase(price).times(quantity)
+    )
     : new BigNumberInBase(margin).plus(
-        new BigNumberInBase(price).times(quantity)
-      )
+      new BigNumberInBase(price).times(quantity)
+    )
 
   const maintenanceMarginRatioFactor = isOrderTypeBuy
     ? new BigNumberInBase(maintenanceMarginRatio).minus(1)

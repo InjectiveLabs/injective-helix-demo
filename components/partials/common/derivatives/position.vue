@@ -185,6 +185,12 @@ export default Vue.extend({
       return this.$accessor.derivatives.subaccountOrders
     },
 
+    reduceOnlyCurrentOrders(): UiDerivativeLimitOrder[] {
+      const { currentOrders } = this
+
+      return currentOrders.filter(order => order.isReduceOnly)
+    },
+
     isOnMarketPage(): boolean {
       return this.$route.name === 'derivatives-derivative'
     },
@@ -536,7 +542,7 @@ export default Vue.extend({
     },
 
     handleClosePosition() {
-      const { position, market, liquidationPrice } = this
+      const { position, market, liquidationPrice, reduceOnlyCurrentOrders } = this
 
       if (!market) {
         return
@@ -559,7 +565,8 @@ export default Vue.extend({
               ? DerivativeOrderSide.Sell
               : DerivativeOrderSide.Buy,
           price: actualPrice,
-          quantity: new BigNumberInBase(position.quantity)
+          quantity: new BigNumberInBase(position.quantity),
+          reduceOnlyOrders: reduceOnlyCurrentOrders
         })
         .then(() => {
           this.$toast.success(this.$t('position_closed'))
