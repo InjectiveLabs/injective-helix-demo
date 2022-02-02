@@ -392,8 +392,10 @@ export const validateNotionalRestrictions = ({
   if (usdTokenSymbols.includes(token.symbol)) {
     if (notional.gt(MAXIMUM_NOTIONAL_ALLOWED)) {
       throw new Error(
-        `Notional of ${notional.toString()}${token.symbol
-        } exceeds maximum of ${MAXIMUM_NOTIONAL_ALLOWED.toString()}${token.symbol
+        `Notional of ${notional.toString()}${
+          token.symbol
+        } exceeds maximum of ${MAXIMUM_NOTIONAL_ALLOWED.toString()}${
+          token.symbol
         } allowed.`
       )
     }
@@ -886,11 +888,11 @@ export const getPositionFeeAdjustedBankruptcyPrice = ({
 
   const feeAdjustedBankruptcyPrice = isPositionLong
     ? bankruptcyPrice.dividedBy(
-      new BigNumberInBase(1).minus(market.takerFeeRate)
-    )
+        new BigNumberInBase(1).minus(market.takerFeeRate)
+      )
     : bankruptcyPrice.dividedBy(
-      new BigNumberInBase(1).plus(market.takerFeeRate)
-    )
+        new BigNumberInBase(1).plus(market.takerFeeRate)
+      )
 
   return feeAdjustedBankruptcyPrice.gte(0)
     ? feeAdjustedBankruptcyPrice
@@ -918,11 +920,11 @@ export const calculateLiquidationPrice = ({
 
   const numerator = isOrderTypeBuy
     ? new BigNumberInBase(margin).minus(
-      new BigNumberInBase(price).times(quantity)
-    )
+        new BigNumberInBase(price).times(quantity)
+      )
     : new BigNumberInBase(margin).plus(
-      new BigNumberInBase(price).times(quantity)
-    )
+        new BigNumberInBase(price).times(quantity)
+      )
 
   const maintenanceMarginRatioFactor = isOrderTypeBuy
     ? new BigNumberInBase(maintenanceMarginRatio).minus(1)
