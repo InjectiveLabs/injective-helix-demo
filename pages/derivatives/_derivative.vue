@@ -38,6 +38,7 @@
       <v-modal-subaccount-deposit />
       <v-modal-subaccount-withdraw />
       <v-modal-add-margin />
+      <v-modal-market-beta v-if="marketIsBeta" />
     </div>
   </HOCLoading>
 </template>
@@ -50,6 +51,7 @@ import VModalBridgeDeposit from '~/components/partials/modals/bridge-deposit/ind
 import VModalBridgeWithdraw from '~/components/partials/modals/bridge-withdraw/index.vue'
 import VModalSubaccountDeposit from '~/components/partials/modals/subaccount-deposit/index.vue'
 import VModalSubaccountWithdraw from '~/components/partials/modals/subaccount-withdraw/index.vue'
+import VModalMarketBeta from '~/components/partials/modals/market-beta.vue'
 import VBalances from '~/components/partials/common/balances/index.vue'
 import VTrading from '~/components/partials/derivatives/trading/index.vue'
 import VMarketChart from '~/components/partials/common/market/chart.vue'
@@ -57,8 +59,9 @@ import VMarket from '~/components/partials/derivatives/market.vue'
 import VOrders from '~/components/partials/derivatives/orders.vue'
 import VOrderbook from '~/components/partials/derivatives/orderbook.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
-import { UiDerivativeMarket } from '~/types'
+import { Modal, UiDerivativeMarket } from '~/types'
 import { ORDERBOOK_POLLING_ENABLED } from '~/app/utils/constants'
+import { betaMarketSlugs } from '~/app/data/market'
 
 export default Vue.extend({
   components: {
@@ -68,6 +71,7 @@ export default Vue.extend({
     VModalBridgeWithdraw,
     VModalSubaccountDeposit,
     VModalSubaccountWithdraw,
+    VModalMarketBeta,
     VTrading,
     VBalances,
     VOrders,
@@ -88,6 +92,12 @@ export default Vue.extend({
       return this.$accessor.derivatives.market
     },
 
+    marketIsBeta(): boolean {
+      const { params } = this.$route
+
+      return betaMarketSlugs.includes(params.derivative)
+    },
+
     slugFromRoute(): string {
       const { params } = this.$route
 
@@ -104,11 +114,16 @@ export default Vue.extend({
       .catch(this.$onRejected)
       .finally(() => {
         this.status.setIdle()
+
+        if (this.marketIsBeta) {
+          this.$accessor.modal.openModal(Modal.MarketBeta)
+        }
       })
   },
 
   beforeDestroy() {
     this.$accessor.derivatives.reset()
+    this.$accessor.modal.reset()
     clearInterval(this.interval)
   },
 

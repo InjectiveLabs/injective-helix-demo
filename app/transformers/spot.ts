@@ -4,7 +4,7 @@ import {
   BigNumberInBase
 } from '@injectivelabs/utils'
 import { getCoinGeckoId, getTokenMetaDataWithIbc } from '../services/tokens'
-import { marketBaseFromTicker } from '../data/market-base'
+import { marketBaseFromTicker } from '../data/market'
 import { grpcTokenMetaToToken, tokenMetaToToken } from './token'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
 import { spot as sortSpotMarkets } from '~/routes.config'

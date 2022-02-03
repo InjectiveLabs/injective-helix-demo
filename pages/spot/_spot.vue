@@ -37,6 +37,7 @@
       <v-modal-bridge-withdraw />
       <v-modal-subaccount-deposit />
       <v-modal-subaccount-withdraw />
+      <v-modal-market-beta v-if="marketIsBeta" />
     </div>
   </HOCLoading>
 </template>
@@ -48,6 +49,7 @@ import VModalBridgeDeposit from '~/components/partials/modals/bridge-deposit/ind
 import VModalBridgeWithdraw from '~/components/partials/modals/bridge-withdraw/index.vue'
 import VModalSubaccountDeposit from '~/components/partials/modals/subaccount-deposit/index.vue'
 import VModalSubaccountWithdraw from '~/components/partials/modals/subaccount-withdraw/index.vue'
+import VModalMarketBeta from '~/components/partials/modals/market-beta.vue'
 import VBalances from '~/components/partials/common/balances/index.vue'
 import VTrading from '~/components/partials/spot/trading/index.vue'
 import VMarketChart from '~/components/partials/common/market/chart.vue'
@@ -55,8 +57,9 @@ import VMarket from '~/components/partials/spot/market.vue'
 import VOrders from '~/components/partials/spot/orders.vue'
 import VOrderbook from '~/components/partials/spot/orderbook.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
-import { UiSpotMarket } from '~/types'
+import { Modal, UiSpotMarket } from '~/types'
 import { ORDERBOOK_POLLING_ENABLED } from '~/app/utils/constants'
+import { betaMarketSlugs } from '~/app/data/market'
 
 export default Vue.extend({
   components: {
@@ -65,6 +68,7 @@ export default Vue.extend({
     VModalBridgeWithdraw,
     VModalSubaccountDeposit,
     VModalSubaccountWithdraw,
+    VModalMarketBeta,
     VTrading,
     VBalances,
     VOrders,
@@ -85,6 +89,12 @@ export default Vue.extend({
       return this.$accessor.spot.market
     },
 
+    marketIsBeta(): boolean {
+      const { params } = this.$route
+
+      return betaMarketSlugs.includes(params.spot)
+    },
+
     slugFromRoute(): string {
       const { params } = this.$route
 
@@ -101,11 +111,16 @@ export default Vue.extend({
       .catch(this.$onRejected)
       .finally(() => {
         this.status.setIdle()
+
+        if (this.marketIsBeta) {
+          this.$accessor.modal.openModal(Modal.MarketBeta)
+        }
       })
   },
 
   beforeDestroy() {
     this.$accessor.spot.reset()
+    this.$accessor.modal.reset()
     clearInterval(this.interval)
   },
 
