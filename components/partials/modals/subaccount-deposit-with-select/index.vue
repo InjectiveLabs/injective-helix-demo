@@ -47,7 +47,9 @@ import {
   Modal,
   BankBalances,
   BankBalanceWithTokenMetaData,
-  Token
+  Token,
+  UiDerivativeMarket,
+  UiSpotMarket
 } from '~/types'
 import { ZERO_IN_BASE } from '~/app/utils/constants'
 import VSelectCustom from '~/components/inputs/select-custom.vue'
@@ -68,6 +70,24 @@ export default Vue.extend({
   },
 
   computed: {
+    derivativeMarkets(): UiDerivativeMarket[] {
+      return this.$accessor.derivatives.markets
+    },
+
+    spotMarkets(): UiSpotMarket[] {
+      return this.$accessor.spot.markets
+    },
+
+    tradeableDenoms(): string[] {
+      const { derivativeMarkets, spotMarkets } = this
+
+      const derivativeQuoteDenoms = derivativeMarkets.map((a) => a.quoteDenom)
+      const spotBaseDenoms = spotMarkets.map((a) => a.baseDenom)
+      const spotQuoteDenoms = spotMarkets.map((a) => a.quoteDenom)
+
+      return [...derivativeQuoteDenoms, ...spotBaseDenoms, ...spotQuoteDenoms]
+    },
+
     bankBalances(): BankBalances {
       return this.$accessor.bank.balances
     },
@@ -85,9 +105,23 @@ export default Vue.extend({
     },
 
     supply(): BankBalanceWithTokenMetaData[] {
-      const { bankBalancesWithTokenMeta, ibcBankBalancesWithTokenMeta } = this
+      const {
+        bankBalancesWithTokenMeta,
+        ibcBankBalancesWithTokenMeta,
+        tradeableDenoms
+      } = this
+      const supply = [
+        ...bankBalancesWithTokenMeta,
+        ...ibcBankBalancesWithTokenMeta
+      ]
 
-      return [...bankBalancesWithTokenMeta, ...ibcBankBalancesWithTokenMeta]
+      return supply.reduce((bankBalances, bankBalance) => {
+        if (tradeableDenoms.includes(bankBalance.denom)) {
+          return [...bankBalances, bankBalance]
+        }
+
+        return bankBalances
+      }, [] as BankBalanceWithTokenMetaData[])
     },
 
     token(): Token | undefined {
