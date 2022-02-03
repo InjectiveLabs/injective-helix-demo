@@ -2005,10 +2005,10 @@
     web3-core-subscriptions "^1.5.2"
     web3-utils "^1.5.2"
 
-"@injectivelabs/derivatives-consumer@^0.0.87":
-  version "0.0.87"
-  resolved "https://registry.npmjs.org/@injectivelabs/derivatives-consumer/-/derivatives-consumer-0.0.87.tgz#c1dc43996a4ba685cd8e1dddf62d521d011890f2"
-  integrity sha512-qmK+ntobL+mDi2+CJhcBqfBlTCRu3KFH897ZBk5pOxQ7i8Sj94Zj1qwLCQraVQKGRLdsI4zxPup4Nsefgdr1PQ==
+"@injectivelabs/derivatives-consumer@^0.0.89":
+  version "0.0.89"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/derivatives-consumer/-/derivatives-consumer-0.0.89.tgz#a45fb4455fad5462cfb02f5198d7b0fd974e75d9"
+  integrity sha512-bf07tvGHEX0GFQZfWQEQZpBZbyBGoqym7c8VoO7H39iP8zcRuS5nx6zzeC8VZPBuFp9N9UQdNw8gTH1VixjuUQ==
   dependencies:
     "@improbable-eng/grpc-web" "^0.15.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.15.0"
@@ -2075,10 +2075,10 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/spot-consumer@^0.0.98":
-  version "0.0.98"
-  resolved "https://registry.npmjs.org/@injectivelabs/spot-consumer/-/spot-consumer-0.0.98.tgz#c7f292e89f8e918e416a0ae704a646a8a98fdd68"
-  integrity sha512-K/E7dvv5KIoZFki7m3UiCdDvdORaNNkPsLGYVplW8JhIgYpwlriyrYY9QIodYkhSgvcmIweB5zNNY26Cw5jfGQ==
+"@injectivelabs/spot-consumer@^0.0.100":
+  version "0.0.100"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/spot-consumer/-/spot-consumer-0.0.100.tgz#3bc9f00086c9de002fde3cf6757ecbae8d9c8739"
+  integrity sha512-WOPY0tOWhE/K+Hv+kZFM49sb2NzAZ+a9rr1o+/MTgj1Da/jpq6ag9NkUmujibagmCPzIrlLJdXEfk6UkF9JcHg==
   dependencies:
     "@improbable-eng/grpc-web" "^0.15.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.15.0"
@@ -2091,10 +2091,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/subaccount-consumer@^0.0.68":
-  version "0.0.68"
-  resolved "https://registry.npmjs.org/@injectivelabs/subaccount-consumer/-/subaccount-consumer-0.0.68.tgz#6c2ffd7fd4fc9304e2ff95768e950b3ca4053578"
-  integrity sha512-VZuHqW50cKEqm6vqwy7y9m5h2S1Rjj7ffbjw3+9zpDzMs4Mh3FUPSnW5KTWZShzXuu3pPslwEzBylsZkaZqD4g==
+"@injectivelabs/subaccount-consumer@^0.0.70":
+  version "0.0.70"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/subaccount-consumer/-/subaccount-consumer-0.0.70.tgz#200edea6f0012dc2ce42f69f34bcadbeb23e5eb1"
+  integrity sha512-lOn538uJ2EYnJQuCIwhZ4ZIGoHYJOCOJipeHtKwifL2jEhc+FKq1eOCVcvpZ4ejtMqWu8avpe+4HxgwoLuG7oA==
   dependencies:
     "@improbable-eng/grpc-web" "^0.15.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.15.0"
