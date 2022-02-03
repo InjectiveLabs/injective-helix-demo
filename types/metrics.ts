@@ -36,7 +36,6 @@ export enum DerivativesMetrics {
   CancelLimitOrder = 'MsgCancelDerivativeOrder',
   BatchCancelLimitOrders = 'MsgBatchCancelDerivativeOrders',
   BatchUpdateOrders = 'MsgBatchUpdateOrders'
-
 }
 
 export enum SpotMetrics {

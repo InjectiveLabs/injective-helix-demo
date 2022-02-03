@@ -19,7 +19,8 @@ import { Web3Exception } from '@injectivelabs/exceptions'
 import { SubaccountStreamType } from '@injectivelabs/subaccount-consumer'
 import {
   OracleStreamType,
-  PricesStreamCallback
+  PricesStreamCallback,
+  MarketComposer
 } from '@injectivelabs/exchange-consumer'
 import { oracleStream } from '../singletons/OracleStream'
 import { oracleConsumer } from '../singletons/OracleConsumer'
@@ -650,7 +651,7 @@ export const closePositionAndReduceOnlyOrders = async ({
   subaccountId: string
   market: UiDerivativeMarket
   address: AccountAddress
-  injectiveAddress: AccountAddress,
+  injectiveAddress: AccountAddress
   reduceOnlyOrders: {
     marketId: string
     subaccountId: string
@@ -672,22 +673,21 @@ export const closePositionAndReduceOnlyOrders = async ({
     ? minTickPrice
     : executionPrice
 
-  // TODO: create BatchUpdateDerivativeOrders at https://github.com/InjectiveLabs/injective-ts/blob/master/packages/derivatives-consumer/src/composers/DerivativeMarketComposer.ts in order to shape the message to the chain
-  const message = DerivativeMarketComposer.BatchUpdateDerivativeOrders({
+  const message = MarketComposer.batchUpdateOrders({
     subaccountId,
     injectiveAddress,
-    marketId: market.marketId,
-    order: {
+    derivativeOrdersToCancel: reduceOnlyOrders,
+    derivativeOrdersToCreate: [{
+      orderType: orderTypeToGrpcOrderType(orderType),
+      triggerPrice: ZERO_TO_STRING,
+      feeRecipient: FEE_RECIPIENT,
+      marketId: market.marketId,
       price: new BigNumberInBase(actualExecutionPrice)
         .toWei(market.quoteToken.decimals)
         .toFixed(),
       margin: ZERO_TO_STRING,
-      quantity: quantity.toFixed(),
-      orderType: orderTypeToGrpcOrderType(orderType),
-      feeRecipient: FEE_RECIPIENT,
-      triggerPrice: ZERO_TO_STRING // TODO
-    },
-    reduceOnlyOrders
+      quantity: quantity.toFixed()
+    }]
   })
 
   try {

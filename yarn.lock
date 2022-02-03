@@ -2047,10 +2047,10 @@
     "@improbable-eng/grpc-web" "^0.14.0"
     google-protobuf "^3.14.0"
 
-"@injectivelabs/exchange-consumer@^0.0.123":
-  version "0.0.123"
-  resolved "https://registry.npmjs.org/@injectivelabs/exchange-consumer/-/exchange-consumer-0.0.123.tgz#28274a6982e0f634af3c1967d25b56eb634e3968"
-  integrity sha512-lrAcCMVMrq/nuGwVj2f/c0Hr+aFI/jsQW72IE84HHLxhpFGmqiyQ9feYJT66THi/WjKAZv9Cy0jdq1f6Fg1fdQ==
+"@injectivelabs/exchange-consumer@^0.0.126":
+  version "0.0.126"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/exchange-consumer/-/exchange-consumer-0.0.126.tgz#cbc20ff8df52904700c8f73ebb395674b8d52d9d"
+  integrity sha512-rbFg84JOdS4IoD8Us5oqLI7F1L1wZeby1WYHzgnG3L2EpdFdzPll/l3ZyKRKO0SEKEGLjTbbNHCgnTiNqp5y8w==
   dependencies:
     "@improbable-eng/grpc-web" "^0.15.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.15.0"
