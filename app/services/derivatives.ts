@@ -677,17 +677,19 @@ export const closePositionAndReduceOnlyOrders = async ({
     subaccountId,
     injectiveAddress,
     derivativeOrdersToCancel: reduceOnlyOrders,
-    derivativeOrdersToCreate: [{
-      orderType: orderTypeToGrpcOrderType(orderType),
-      triggerPrice: ZERO_TO_STRING,
-      feeRecipient: FEE_RECIPIENT,
-      marketId: market.marketId,
-      price: new BigNumberInBase(actualExecutionPrice)
-        .toWei(market.quoteToken.decimals)
-        .toFixed(),
-      margin: ZERO_TO_STRING,
-      quantity: quantity.toFixed()
-    }]
+    derivativeOrdersToCreate: [
+      {
+        marketId: market.marketId,
+        orderType: orderTypeToGrpcOrderType(orderType),
+        triggerPrice: ZERO_TO_STRING,
+        feeRecipient: FEE_RECIPIENT,
+        price: new BigNumberInBase(actualExecutionPrice)
+          .toWei(market.quoteToken.decimals)
+          .toFixed(),
+        margin: ZERO_TO_STRING,
+        quantity: quantity.toFixed()
+      }
+    ]
   })
 
   try {

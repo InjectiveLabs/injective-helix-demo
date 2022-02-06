@@ -877,8 +877,7 @@ export const actions = actionTree(
         market,
         quantity,
         price,
-        orderType,
-        reduceOnlyOrders
+        orderType
       }: {
         market?: UiDerivativeMarket
         price: BigNumberInBase
@@ -906,19 +905,14 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await closePositionAndReduceOnlyOrders({
+      await closePosition({
         quantity,
         price,
         injectiveAddress,
         address,
         orderType,
         market: (currentMarket || market) as UiDerivativeMarket,
-        subaccountId: subaccount.subaccountId,
-        reduceOnlyOrders: reduceOnlyOrders.map((o) => ({
-          orderHash: o.orderHash,
-          subaccountId: o.subaccountId,
-          marketId: o.marketId
-        }))
+        subaccountId: subaccount.subaccountId
       })
     },
 

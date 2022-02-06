@@ -22,6 +22,7 @@ const actionsThatSetAppStateToBusy = [
   'derivatives/submitLimitOrder',
   'derivatives/submitMarketOrder',
   'derivatives/closePosition',
+  'derivatives/closePositionAndReduceOnlyOrders',
   'derivatives/closeAllPosition',
   'derivatives/addMarginToPosition',
   'spot/cancelOrder',
