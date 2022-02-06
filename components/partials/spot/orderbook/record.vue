@@ -28,13 +28,13 @@
       >
         <v-number
           :prefix="
-            aggregatedValue.gt(record.aggregatedPrice) && recordTypeBuy
+            aggregatedValue.gt(record.aggregatedPrice || 0) && recordTypeBuy
               ? '<'
               : ''
           "
           :decimals="aggregation < 0 ? 0 : aggregation"
           :number="
-            aggregatedValue.gt(record.aggregatedPrice)
+            aggregatedValue.gt(record.aggregatedPrice || 0)
               ? aggregatedValue
               : record.aggregatedPrice
           "

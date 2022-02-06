@@ -21,3 +21,5 @@ export const marketBaseFromTicker = (
 
   return undefined
 }
+
+export const betaMarketSlugs = [] as string[]

@@ -8,6 +8,7 @@ const mainnetSpot = [
   'ust-usdt',
   'luna-ust',
   'gf-usdt'
+  // 'huahua-usdt'
 ]
 const testnetSpot = [...mainnetSpot]
 const mainnetStagingSpot = [...mainnetSpot]
@@ -23,6 +24,7 @@ const mainnetDerivatives = [
   'eth-usdt-perp',
   'luna-ust-perp',
   'bnb-usdt-perp'
+  // 'atom-usdt-perp'
 ]
 const testnetDerivatives = [...mainnetDerivatives]
 const mainnetStagingDerivatives = [...mainnetDerivatives]

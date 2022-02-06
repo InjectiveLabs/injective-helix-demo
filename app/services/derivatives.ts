@@ -19,7 +19,8 @@ import { Web3Exception } from '@injectivelabs/exceptions'
 import { SubaccountStreamType } from '@injectivelabs/subaccount-consumer'
 import {
   OracleStreamType,
-  PricesStreamCallback
+  PricesStreamCallback,
+  MarketComposer
 } from '@injectivelabs/exchange-consumer'
 import { oracleStream } from '../singletons/OracleStream'
 import { oracleConsumer } from '../singletons/OracleConsumer'
@@ -39,6 +40,7 @@ import {
 import {
   UiPriceLevel,
   UiDerivativeMarket,
+  UiDerivativeLimitOrder,
   UiDerivativeMarketSummary,
   UiOrderbookPriceLevel,
   UiPosition,
@@ -624,6 +626,77 @@ export const closePosition = async ({
       address,
       message,
       bucket: DerivativesMetrics.CreateMarketOrder,
+      chainId: CHAIN_ID
+    })
+
+    await txProvider.broadcast()
+  } catch (error: any) {
+    throw new Web3Exception(error.message)
+  }
+}
+
+export const closePositionAndReduceOnlyOrders = async ({
+  quantity,
+  price,
+  orderType,
+  address,
+  market,
+  injectiveAddress,
+  subaccountId,
+  reduceOnlyOrders
+}: {
+  quantity: BigNumberInBase
+  price: BigNumberInBase
+  orderType: DerivativeOrderSide
+  subaccountId: string
+  market: UiDerivativeMarket
+  address: AccountAddress
+  injectiveAddress: AccountAddress
+  reduceOnlyOrders: {
+    marketId: string
+    subaccountId: string
+    orderHash: string
+  }[]
+}) => {
+  const executionPrice = new BigNumberInBase(
+    price.toFixed(
+      market.priceDecimals,
+      orderType === DerivativeOrderSide.Buy
+        ? BigNumberInBase.ROUND_DOWN
+        : BigNumberInBase.ROUND_UP
+    )
+  )
+  const minTickPrice = new BigNumberInBase(
+    new BigNumberInBase(1).shiftedBy(-market.priceDecimals)
+  )
+  const actualExecutionPrice = executionPrice.lte(0)
+    ? minTickPrice
+    : executionPrice
+
+  const message = MarketComposer.batchUpdateOrders({
+    subaccountId,
+    injectiveAddress,
+    derivativeOrdersToCancel: reduceOnlyOrders,
+    derivativeOrdersToCreate: [
+      {
+        marketId: market.marketId,
+        orderType: orderTypeToGrpcOrderType(orderType),
+        triggerPrice: ZERO_TO_STRING,
+        feeRecipient: FEE_RECIPIENT,
+        price: new BigNumberInBase(actualExecutionPrice)
+          .toWei(market.quoteToken.decimals)
+          .toFixed(),
+        margin: ZERO_TO_STRING,
+        quantity: quantity.toFixed()
+      }
+    ]
+  })
+
+  try {
+    const txProvider = new TxProvider({
+      address,
+      message,
+      bucket: DerivativesMetrics.BatchUpdateOrders,
       chainId: CHAIN_ID
     })
 

@@ -51,6 +51,7 @@
                   <slot name="title" />
                 </div>
                 <button
+                  v-if="!isAlwaysOpen"
                   type="button"
                   class="bg-transparent rounded-md text-gray-200 hover:text-primary-500"
                   @click="handleClickOnCloseButton"
@@ -77,6 +78,12 @@ import Vue from 'vue'
 
 export default Vue.extend({
   props: {
+    isAlwaysOpen: {
+      required: false,
+      default: false,
+      type: Boolean
+    },
+
     isOpen: {
       required: true,
       default: false,
@@ -134,7 +141,7 @@ export default Vue.extend({
     },
 
     handleCloseModal() {
-      if (this.isOpen) {
+      if (this.isOpen && !this.isAlwaysOpen) {
         this.$emit('modal-closed')
       }
     },
@@ -144,6 +151,10 @@ export default Vue.extend({
     },
 
     onEscKeyDown() {
+      if (this.isAlwaysOpen) {
+        return
+      }
+
       const onEscape = (e: KeyboardEvent) => {
         if (this.isOpen && e.keyCode === 27) {
           this.handleCloseModal()

@@ -37,7 +37,8 @@ import {
   streamMarketMarkPrice,
   batchCancelOrders,
   addMarginToPosition,
-  validateNotionalRestrictions
+  validateNotionalRestrictions,
+  closePositionAndReduceOnlyOrders
 } from '~/app/services/derivatives'
 import {
   ORDERBOOK_STREAMING_ENABLED,
@@ -838,6 +839,51 @@ export const actions = actionTree(
         price: BigNumberInBase
         quantity: BigNumberInBase
         orderType: DerivativeOrderSide
+      }
+    ) {
+      const { subaccount } = this.app.$accessor.account
+      const { market: currentMarket } = this.app.$accessor.derivatives
+      const {
+        address,
+        injectiveAddress,
+        isUserWalletConnected
+      } = this.app.$accessor.wallet
+
+      if (
+        !isUserWalletConnected ||
+        !subaccount ||
+        (!market && !currentMarket)
+      ) {
+        return
+      }
+
+      await this.app.$accessor.app.queue()
+      await this.app.$accessor.wallet.validate()
+
+      await closePosition({
+        quantity,
+        price,
+        injectiveAddress,
+        address,
+        orderType,
+        market: (currentMarket || market) as UiDerivativeMarket,
+        subaccountId: subaccount.subaccountId
+      })
+    },
+
+    async closePositionAndReduceOnlyOrders(
+      _,
+      {
+        market,
+        quantity,
+        price,
+        orderType
+      }: {
+        market?: UiDerivativeMarket
+        price: BigNumberInBase
+        quantity: BigNumberInBase
+        orderType: DerivativeOrderSide
+        reduceOnlyOrders: UiDerivativeLimitOrder[]
       }
     ) {
       const { subaccount } = this.app.$accessor.account

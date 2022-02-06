@@ -46,5 +46,11 @@ export const mutations = {
 
       state.modals = { ...initialState.modals, [modal]: true }
     }
+  },
+
+  reset(state: ModalStoreState) {
+    const initialState = initialStateFactory()
+
+    state.modals = initialState.modals
   }
 }

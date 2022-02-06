@@ -572,5 +572,13 @@ export default {
       'Estimated reward to be distributed to this address based on your reward points /  total reward points * total allocated rewards. This is calculated assuming that your reward points grow just as fast as total reward points until the end of the campaign.  In order to maintain or maximize your reward, you should maintain the same or higher trading activity until the end of the campaign. Rewards amount is capped at {maxRewards} INJ or the equivalent amount of INJ staked, whichever is higher',
     stake_total_to_receive_full_amount:
       'Stake total of {total} INJ to receive the full amount'
+  },
+
+  marketBeta: {
+    title: 'Acknowledge the risk of trading on the market',
+    'I Understand': 'I Understand',
+    beta: 'beta',
+    description:
+      'This market is in the Beta phase. During this phase, typically there is no great depth in the order book. This means slippage may be applied when you make a trade.'
   }
 }

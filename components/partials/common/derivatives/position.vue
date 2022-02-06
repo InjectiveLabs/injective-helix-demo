@@ -185,6 +185,18 @@ export default Vue.extend({
       return this.$accessor.derivatives.subaccountOrders
     },
 
+    reduceOnlyCurrentOrders(): UiDerivativeLimitOrder[] {
+      const { currentOrders } = this
+
+      return currentOrders.filter(order => order.isReduceOnly)
+    },
+
+    hasReduceOnlyOrders(): boolean {
+      const { reduceOnlyCurrentOrders } = this
+
+      return reduceOnlyCurrentOrders.length > 0
+    },
+
     isOnMarketPage(): boolean {
       return this.$route.name === 'derivatives-derivative'
     },
@@ -536,6 +548,16 @@ export default Vue.extend({
     },
 
     handleClosePosition() {
+      const { hasReduceOnlyOrders } = this
+
+      if (hasReduceOnlyOrders) {
+        return this.closePositionAndReduceOnlyOrders()
+      }
+
+      return this.closePosition()
+    },
+
+    closePosition() {
       const { position, market, liquidationPrice } = this
 
       if (!market) {
@@ -560,6 +582,42 @@ export default Vue.extend({
               : DerivativeOrderSide.Buy,
           price: actualPrice,
           quantity: new BigNumberInBase(position.quantity)
+        })
+        .then(() => {
+          this.$toast.success(this.$t('position_closed'))
+        })
+        .catch(this.$onRejected)
+        .finally(() => {
+          this.status.setIdle()
+        })
+    },
+
+    closePositionAndReduceOnlyOrders() {
+      const { position, market, liquidationPrice, reduceOnlyCurrentOrders } = this
+
+      if (!market) {
+        return
+      }
+
+      const minTickPrice = new BigNumberInBase(
+        new BigNumberInBase(1).shiftedBy(-market.priceDecimals)
+      )
+      const actualPrice = liquidationPrice.lte(0)
+        ? minTickPrice
+        : liquidationPrice
+
+      this.status.setLoading()
+
+      this.$accessor.derivatives
+        .closePositionAndReduceOnlyOrders({
+          market,
+          orderType:
+            position.direction === TradeDirection.Long
+              ? DerivativeOrderSide.Sell
+              : DerivativeOrderSide.Buy,
+          price: actualPrice,
+          quantity: new BigNumberInBase(position.quantity),
+          reduceOnlyOrders: reduceOnlyCurrentOrders
         })
         .then(() => {
           this.$toast.success(this.$t('position_closed'))

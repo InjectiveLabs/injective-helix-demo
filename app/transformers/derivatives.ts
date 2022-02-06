@@ -4,7 +4,7 @@ import {
   getCoinGeckoId,
   getTokenMetaDataWithIbc
 } from '../services/tokens'
-import { marketBaseFromTicker } from '../data/market-base'
+import { marketBaseFromTicker } from '../data/market'
 import { grpcTokenMetaToToken, tokenMetaToToken } from './token'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
 import { derivatives as sortPerpetualMarkets } from '~/routes.config'

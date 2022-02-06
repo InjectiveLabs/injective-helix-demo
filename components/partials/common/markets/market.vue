@@ -16,7 +16,17 @@
           class="w-4 h-4 md:w-6 md:h-6 mr-4"
         />
         <div class="w-32 mr-4 text-left">
-          {{ market.ticker }}
+          <div class="flex">
+            {{ market.ticker }}
+            <span
+              v-if="isMarketBeta"
+              primary
+              xs
+              class="ml-2 text-2xs uppercase text-primary-500"
+            >
+              {{ $t('marketBeta.beta') }}
+            </span>
+          </div>
           <span v-if="!simple" class="text-gray-500 text-xs hidden md:block">
             {{ market.baseToken.name }}
           </span>
@@ -115,6 +125,7 @@ import {
   UiSpotMarket,
   UiSpotMarketSummary
 } from '~/types'
+import { betaMarketSlugs } from '~/app/data/market'
 
 export default Vue.extend({
   components: {
@@ -162,6 +173,7 @@ export default Vue.extend({
       return this.$accessor.derivatives.lastTradedPrice
     },
 
+    /* Current market is the market that we are currently trading on */
     currentMarket(): UiSpotMarket | UiDerivativeMarket | undefined {
       const { currentSpotMarket, currentDerivativeMarket, market } = this
 
@@ -214,6 +226,16 @@ export default Vue.extend({
         market.priceDecimals,
         BigNumberInBase.ROUND_DOWN
       )
+    },
+
+    isMarketBeta(): boolean {
+      const { market } = this
+
+      if (!market) {
+        return false
+      }
+
+      return betaMarketSlugs.includes(market.slug)
     },
 
     volume(): BigNumberInBase {

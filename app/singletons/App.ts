@@ -23,14 +23,14 @@ class App {
 
   get endpoints(): UrlEndpoint {
     const endpoints = getUrlEndpointForNetwork(this.network)
-    const baseExchangeApiEndpoint =
+    const exchangeApiEndpoint =
       APP_EXCHANGE_API_ENDPOINT || endpoints.exchangeApi
     const sentryGrpcApiEndpoint =
       APP_SENTRY_GRPC_ENDPOINT || endpoints.sentryGrpcApi
 
     return {
       ...endpoints,
-      exchangeApi: baseExchangeApiEndpoint,
+      exchangeApi: exchangeApiEndpoint,
       sentryGrpcApi: sentryGrpcApiEndpoint
     }
   }
