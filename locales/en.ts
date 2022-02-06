@@ -1,9 +1,11 @@
 import faq from './faq/en'
 import dmm from './dmm/en'
+import activities from './activities/en'
 
 export default {
   ...faq,
   ...dmm,
+  ...activities,
   address_copied: 'Address Copied',
   copy_address: 'Copy Address',
   max: 'Max',

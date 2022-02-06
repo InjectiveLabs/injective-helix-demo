@@ -7,6 +7,7 @@ import * as bank from '~/store/bank'
 import * as derivatives from '~/store/derivatives'
 import * as dmm from '~/store/dmm'
 import * as exchange from '~/store/exchange'
+import * as activities from '~/store/activities'
 import * as gasRebate from '~/store/gasRebate'
 import * as history from '~/store/history'
 import * as modal from '~/store/modal'
@@ -29,6 +30,7 @@ export const accessorType = getAccessorType({
     history,
     modal,
     portfolio,
+    activities,
     staking,
     spot,
     token,

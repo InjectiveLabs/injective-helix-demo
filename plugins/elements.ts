@@ -13,6 +13,7 @@ import ButtonFilter from '~/components/elements/button-filter.vue'
 import Modal from '~/components/elements/modal.vue'
 import Input from '~/components/inputs/input.vue'
 import ButtonSelect from '~/components/elements/button-select.vue'
+import CardSelect from '~/components/elements/card-select.vue'
 import VIconInfoTooltip from '~/components/elements/info-icon-tooltip.vue'
 import VIconCheckTooltip from '~/components/elements/info-check-tooltip.vue'
 
@@ -30,6 +31,7 @@ Vue.component('VCardTableWrap', CardTableWrap)
 Vue.component('VPanel', Panel)
 Vue.component('VBadge', Badge)
 Vue.component('VButtonSelect', ButtonSelect)
+Vue.component('VCardSelect', CardSelect)
 Vue.component('VTextInfo', TextInfo)
 Vue.component('VButton', Button)
 Vue.component('VModal', Modal)
