@@ -21,7 +21,7 @@ jobs:
       ## Flags
       MAINTENANCE_ENABLED: false
       GAS_FREE_DEPOSIT_REBATE_ENABLED: true
-      META_TAGS_ENABLED: false
+      META_TAGS_ENABLED: true
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       METRICS_ENABLED: true
       GEO_IP_RESTRICTIONS_ENABLED: true
