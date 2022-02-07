@@ -23,10 +23,9 @@ const mainnetDerivatives = [
   'eth-usdt-perp',
   'luna-ust-perp',
   'bnb-usdt-perp'
-  // 'atom-usdt-perp'
 ]
 const testnetDerivatives = [...mainnetDerivatives]
-const mainnetStagingDerivatives = [...mainnetDerivatives]
+const mainnetStagingDerivatives = [...mainnetDerivatives, 'atom-usdt-perp']
 const derivatives = IS_TESTNET
   ? testnetDerivatives
   : IS_MAINNET_STAGING
