@@ -1,7 +1,7 @@
 <template>
   <v-panel :title="$t('Current Epoch')">
     <div v-if="currentEpochStartTimestamp > 0" slot="title-context">
-      {{ $t('tradeAndEarn.campaignEndsAt', { date: epochCountdown }) }}
+      {{ $t('tradeAndEarn.campaignEndingOn', { date: epochCountdown }) }}
     </div>
     <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
       <v-item class="col-span-2 lg:col-span-4">
