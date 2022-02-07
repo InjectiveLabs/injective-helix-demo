@@ -1,7 +1,7 @@
 <template>
   <v-panel :title="$t('tradeAndEarn.pendingRewards')">
     <div v-if="pendingRewardsStartTimestamp > 0" slot="title-context">
-      {{ $t('tradeAndEarn.campaignAsAt', { date: pendingRewardsCountdown }) }}
+      {{ $t('tradeAndEarn.campaignAsOf', { date: pendingRewardsCountdown }) }}
     </div>
     <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
       <v-item class="col-span-2 lg:col-span-4">
