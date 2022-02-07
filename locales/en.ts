@@ -559,8 +559,8 @@ export default {
 
   tradeAndEarn: {
     pendingRewards: 'Pending Rewards',
-    campaignEndsAt: 'Ends at {date}',
-    campaignAsAt: 'As at {date}',
+    campaignEndingOn: 'Ending on {date}',
+    campaignAsOf: 'As of {date}',
     myRewardPoints: 'My Reward Points / Total Reward Points',
     myRewardPoints_tooltip:
       'The current reward points you earned during this campaign and the total reward points in the campaign. Reward points will reset to 0 at the beginning of next campaign.',
