@@ -7,9 +7,6 @@
       <v-nav-item-dummy @click.stop="handleOpenMarketsSlideout">
         {{ $t('markets') }}
       </v-nav-item-dummy>
-      <v-nav-item :to="{ name: 'portfolio' }">
-        {{ $t('Portfolio') }}
-      </v-nav-item>
       <v-nav-item class="lg:hidden" :to="{ name: 'trade-and-earn' }">
         {{ $t('dmm.nav.tradingRewards') }}
       </v-nav-item>
@@ -26,12 +23,6 @@
       >
         {{ $t('Rewards') }}
       </v-nav-item-dummy>
-      <v-nav-item :to="{ name: 'history' }">
-        {{ $t('History') }}
-      </v-nav-item>
-      <v-nav-item :to="{ name: 'wallet' }">
-        {{ $t('Wallet') }}
-      </v-nav-item>
     </nav>
 
     <VPopperBox

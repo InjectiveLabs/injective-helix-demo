@@ -1,6 +1,6 @@
 <template>
   <div class="ml-4 flex items-center md:ml-6">
-    <div class="flex items-center border-r border-gray-700 pr-4 md:pr-8">
+    <div class="flex items-center">
       <span
         class="mr-4 md:mr-6 font-mono text-sm text-primary-500 cursor-pointer"
         @click="handleClickOnAddress"
@@ -40,20 +40,18 @@
         v-clipboard:success="() => $toast.success($t('address_copied'))"
         role="button"
         type="button"
+        class="mr-4"
       >
         <v-icon-copy class="w-5 h-5 text-gray-500 hover:text-primary-500" />
       </button>
-    </div>
-    <div
-      class="pl-4 md:pl-8 relative flex items-center text-gray-200 hover:text-primary-500"
-    >
-      <v-icon-exit class="block md:hidden cursor-pointer w-6 h-6" />
-      <span
-        class="cursor-pointer text-xs font-semibold hidden md:inline-block"
+      <button
+        role="button"
+        type="button"
+        class="cursor-pointer text-xs font-semibold"
         @click="handleClickOnLogout"
       >
-        {{ $t('logout') }}
-      </span>
+        <v-icon-exit class="w-5 h-5 text-gray-500 hover:text-primary-500" />
+      </button>
     </div>
   </div>
 </template>

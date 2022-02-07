@@ -1,5 +1,6 @@
 export default {
   activities: {
+    activities: 'Activities',
     spotOrders: 'Spot Orders',
     derivativeOrders: 'Derivative Orders',
     earnHistory: 'Earn History',

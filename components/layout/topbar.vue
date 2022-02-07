@@ -26,15 +26,19 @@
           </div>
         </div>
         <v-nav class="ml-2" />
-        <VLanguageSelector
-          v-if="false"
-          class="hidden xl:block my-auto"
-        ></VLanguageSelector>
       </div>
-      <v-user-wallet
-        v-if="isUserWalletConnected && isUserConnectedProcessCompleted"
-      />
-      <v-user-wallet-connect v-else @wallet-connected="handleConnectedWallet" />
+      <div class="flex py-2">
+        <v-nav-item :to="{ name: 'activities' }">
+          {{ $t('activities.activities') }}
+        </v-nav-item>
+        <v-user-wallet
+          v-if="isUserWalletConnected && isUserConnectedProcessCompleted"
+        />
+        <v-user-wallet-connect
+          v-else
+          @wallet-connected="handleConnectedWallet"
+        />
+      </div>
     </div>
   </header>
 </template>
@@ -43,15 +47,15 @@
 import Vue from 'vue'
 import VUserWallet from './wallet/wallet.vue'
 import VUserWalletConnect from './wallet/connect.vue'
-import VLanguageSelector from './selectors/language-selector.vue'
+import VNavItem from './nav/item.vue'
 import VNav from '~/components/layout/nav/index.vue'
 import VLogo from '~/components/elements/logo.vue'
 import VLogoText from '~/components/elements/logo-text.vue'
 
 export default Vue.extend({
   components: {
-    VLanguageSelector,
     VNav,
+    VNavItem,
     VUserWallet,
     VLogo,
     VLogoText,
