@@ -582,5 +582,14 @@ export default {
     beta: 'beta',
     description:
       'This market is in the Beta phase. During this phase, typically there is no great depth in the order book. This means slippage may be applied when you make a trade.'
+  },
+
+  navigation: {
+    wallet: 'Wallet',
+    disconnect: 'Disconnect',
+    myAccount: 'My Account',
+    connectedWallets: 'Connected Wallets',
+    connected: 'Connected',
+    referrals: 'Referrals'
   }
 }

@@ -1,83 +1,114 @@
 <template>
-  <div class="ml-4 flex items-center md:ml-6">
+  <div class="flex items-center">
     <div class="flex items-center">
-      <span
-        class="mr-4 md:mr-6 font-mono text-sm text-primary-500 cursor-pointer"
-        @click="handleClickOnAddress"
-      >
-        {{ formattedAddress }}
-      </span>
-      <button
-        v-tooltip="{
-          content: isInjectiveAddress
-            ? $t('switch_to_ethereum_address')
-            : $t('switch_to_injective_address')
+      <div
+        id="wallet-address"
+        class="font-mono text-sm cursor-pointer flex items-center p-2 rounded-lg"
+        :class="{
+          'text-primary-500 bg-gray-800': isWalletDropdownOpen,
+          'text-gray-300': !isWalletDropdownOpen
         }"
-        role="button"
-        class="hidden md:block mr-4"
-        type="button"
-        @click.stop="handleClickOnSwitchIcon"
+        @mouseenter="handleShowDropdown"
+        @mouseleave="handleHideDropdown"
+        @focus="handleShowDropdown"
+        @blur="handleHideDropdown"
       >
-        <v-icon-injective
-          v-if="isInjectiveAddress"
-          class="w-5 h-5 text-gray-500 hover:text-primary-500"
-        />
-        <v-icon-ethereum
-          v-else
-          class="w-6 h-6 text-gray-500 hover:text-primary-500"
-        />
-      </button>
-      <button
-        role="button"
-        class="hidden md:block mr-4"
-        type="button"
-        @click.stop="handleClickOnRevealButton"
-      >
-        <v-icon-show class="w-5 h-5 text-gray-500 hover:text-primary-500" />
-      </button>
-      <button
-        v-clipboard="() => currentAddress"
-        v-clipboard:success="() => $toast.success($t('address_copied'))"
-        role="button"
-        type="button"
-        class="mr-4"
-      >
-        <v-icon-copy class="w-5 h-5 text-gray-500 hover:text-primary-500" />
-      </button>
-      <button
-        role="button"
-        type="button"
-        class="cursor-pointer text-xs font-semibold"
-        @click="handleClickOnLogout"
-      >
-        <v-icon-exit class="w-5 h-5 text-gray-500 hover:text-primary-500" />
-      </button>
+        <v-icon-user class="w-4 h-4 mr-2" />
+        <span class="">
+          {{ formattedInjectiveAddress }}
+        </span>
+      </div>
     </div>
+
+    <VPopperBox
+      ref="popper-wallet"
+      class="popper bg-gray-800 rounded flex flex-col flex-wrap absolute min-w-xs z-10 shadow"
+      binding-element="#wallet-address"
+    >
+      <div>
+        <div class="flex items-center justify-between px-4 py-4">
+          <h3 class="text-xs tracking-wide uppercase">
+            {{ $t('navigation.myAccount') }}
+          </h3>
+          <span
+            class="text-xs text-primary-500 cursor-pointer"
+            @click="handleClickOnLogout"
+            >{{ $t('navigation.disconnect') }}
+          </span>
+        </div>
+        <div class="mt-2 flex items-center justify-between px-4">
+          <div class="flex items-center">
+            <v-logo-mini class="w-8 h-8 mr-4" />
+            <span class="font-mono text-sm">{{
+              formattedInjectiveAddress
+            }}</span>
+          </div>
+          <div class="flex">
+            <button
+              v-clipboard="() => injectiveAddress"
+              v-clipboard:success="() => $toast.success($t('address_copied'))"
+              role="button"
+              type="button"
+            >
+              <v-icon-copy
+                class="w-5 h-5 text-gray-500 hover:text-primary-500"
+              />
+            </button>
+          </div>
+        </div>
+        <div class="mt-6 pt-4 px-4 border-t">
+          <h3 class="text-xs tracking-wide uppercase">
+            {{ $t('navigation.referrals') }}
+          </h3>
+        </div>
+        <div class="mt-6 pt-4 px-4 border-t bg-gray-900">
+          <h3 class="text-xs tracking-wide uppercase">
+            {{ $t('navigation.connectedWallets') }}
+          </h3>
+          <ul class="py-2">
+            <v-connected-wallet v-if="wallet === Wallet.Metamask">
+              <v-icon-metamask class="ml-1 w-6 h-6" />
+            </v-connected-wallet>
+            <v-connected-wallet v-if="wallet === Wallet.Ledger">
+              <v-icon-ledger class="ml-1 w-6 h-6" />
+            </v-connected-wallet>
+          </ul>
+        </div>
+      </div>
+    </VPopperBox>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { formatWalletAddress } from '@injectivelabs/utils'
-import VIconEthereum from '~/components/icons/icon-ethereum.vue'
-import VIconInjective from '~/components/icons/icon-injective.vue'
+import { Wallet } from '@injectivelabs/web3-strategy'
+import VConnectedWallet from './connected-wallet.vue'
+import VLogoMini from '~/components/elements/logo-mini.vue'
+import VPopperBox from '~/components/elements/popper-box.vue'
 
 export default Vue.extend({
   components: {
-    VIconEthereum,
-    VIconInjective
+    VPopperBox,
+    VLogoMini,
+    VConnectedWallet
   },
 
   data() {
     return {
-      shouldShowFullAddress: false,
-      isInjectiveAddress: true
+      Wallet,
+      isInjectiveAddress: true,
+      isWalletDropdownOpen: false
     }
   },
 
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
+    },
+
+    wallet(): Wallet {
+      return this.$accessor.wallet.wallet
     },
 
     address(): string {
@@ -88,36 +119,36 @@ export default Vue.extend({
       return this.$accessor.wallet.injectiveAddress
     },
 
-    currentAddress(): string {
-      const { address, injectiveAddress, isInjectiveAddress } = this
+    formattedAddress(): string {
+      const { address } = this
 
-      return isInjectiveAddress ? injectiveAddress : address
+      return formatWalletAddress(address)
     },
 
-    formattedAddress(): string {
-      const { shouldShowFullAddress, currentAddress } = this
+    formattedInjectiveAddress(): string {
+      const { injectiveAddress } = this
 
-      return shouldShowFullAddress
-        ? currentAddress
-        : formatWalletAddress(currentAddress)
+      return formatWalletAddress(injectiveAddress)
+    },
+
+    $popper(): any {
+      return this.$refs['popper-wallet']
     }
   },
 
   methods: {
-    handleClickOnRevealButton() {
-      this.shouldShowFullAddress = !this.shouldShowFullAddress
-    },
-
-    handleClickOnSwitchIcon() {
-      this.isInjectiveAddress = !this.isInjectiveAddress
-    },
-
-    handleClickOnAddress() {
-      this.$router.push({ name: 'wallet' })
-    },
-
     handleClickOnLogout() {
       this.$accessor.wallet.logout()
+    },
+
+    handleShowDropdown() {
+      this.$popper.showDropdown()
+      this.isWalletDropdownOpen = true
+    },
+
+    handleHideDropdown() {
+      this.$popper.hideDropdown()
+      this.isWalletDropdownOpen = false
     }
   }
 })

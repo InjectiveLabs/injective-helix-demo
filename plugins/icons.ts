@@ -37,6 +37,7 @@ import Square from '~/components/icons/square.vue'
 import Staking from '~/components/icons/staking.vue'
 import Sun from '~/components/icons/sun.vue'
 import Swap from '~/components/icons/swap.vue'
+import User from '~/components/icons/user.vue'
 import Telegram from '~/components/icons/telegram.vue'
 import Twitter from '~/components/icons/twitter.vue'
 import Wallet from '~/components/icons/wallet.vue'
@@ -81,5 +82,6 @@ Vue.component('VIconSun', Sun)
 Vue.component('VIconSwap', Swap)
 Vue.component('VIconTelegram', Telegram)
 Vue.component('VIconTwitter', Twitter)
+Vue.component('VIconUser', User)
 Vue.component('VIconWallet', Wallet)
 Vue.component('VIconYoutube', Youtube)

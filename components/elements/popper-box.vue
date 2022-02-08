@@ -17,7 +17,18 @@ export default Vue.extend({
 
     options: {
       type: Object,
-      required: true
+      required: false,
+      default: () => ({
+        placement: 'bottom',
+        modifiers: [
+          {
+            name: 'offset',
+            options: {
+              offset: [0, 8]
+            }
+          }
+        ]
+      })
     },
 
     hideArrow: {
@@ -40,12 +51,14 @@ export default Vue.extend({
   },
 
   mounted() {
-    if (this.$parent.$refs[this.bindingElement]) {
-      const { $el } = this.$parent.$refs[this.bindingElement] as {
-        $el: InstanceType<typeof Element>
-      }
+    const bindingElement = document.querySelector(this.bindingElement)
 
-      this.popper = createPopper($el, this.$popperElement, this.options)
+    if (bindingElement) {
+      this.popper = createPopper(
+        bindingElement,
+        this.$popperElement,
+        this.options
+      )
     }
   },
 

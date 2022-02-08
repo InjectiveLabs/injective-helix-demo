@@ -359,7 +359,7 @@ export const actions = actionTree(
       )
     },
 
-    async fetchSubaccountPositions({ state, commit }) {
+    async fetchSubaccountPositions({ commit }) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -424,15 +424,6 @@ export const actions = actionTree(
           marketId: o.marketId
         }))
       })
-    },
-
-    async cancelSpotStreaming(_) {
-      //
-    },
-
-    async resetSpot({ commit }) {
-      commit('resetSpotSubaccount')
-      await this.app.$accessor.activities.cancelSpotStreaming()
     }
   }
 )

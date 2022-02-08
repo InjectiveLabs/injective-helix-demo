@@ -28,8 +28,8 @@
         <v-nav class="ml-2" />
       </div>
       <div class="flex py-2">
-        <v-nav-item :to="{ name: 'activities' }">
-          {{ $t('activities.activities') }}
+        <v-nav-item :to="{ name: 'wallet' }">
+          {{ $t('navigation.wallet') }}
         </v-nav-item>
         <v-user-wallet
           v-if="isUserWalletConnected && isUserConnectedProcessCompleted"

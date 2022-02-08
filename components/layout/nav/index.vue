@@ -7,6 +7,10 @@
       <v-nav-item-dummy @click.stop="handleOpenMarketsSlideout">
         {{ $t('markets') }}
       </v-nav-item-dummy>
+      <v-nav-item :to="{ name: 'activities' }">
+        {{ $t('activities.activities') }}
+      </v-nav-item>
+      <!--
       <v-nav-item class="lg:hidden" :to="{ name: 'trade-and-earn' }">
         {{ $t('dmm.nav.tradingRewards') }}
       </v-nav-item>
@@ -23,13 +27,13 @@
       >
         {{ $t('Rewards') }}
       </v-nav-item-dummy>
+      -->
     </nav>
 
     <VPopperBox
       ref="popper"
       class="popper px-4 pt-4 bg-gray-800 rounded-xl flex flex-col flex-wrap text-xs absolute"
       binding-element="rewards"
-      :options="popperOption"
     >
       <div>
         <v-nav-item
@@ -66,17 +70,7 @@ export default Vue.extend({
 
   data() {
     return {
-      popperOption: {
-        placement: 'bottom',
-        modifiers: [
-          {
-            name: 'offset',
-            options: {
-              offset: [0, 8]
-            }
-          }
-        ]
-      } as Object
+      //
     }
   },
 
