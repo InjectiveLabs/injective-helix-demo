@@ -1,4 +1,4 @@
-import { getterTree } from 'typed-vuex'
+import { actionTree, getterTree } from 'typed-vuex'
 import { Modal, ModalState } from '~/types'
 
 const modalValues = Object.values(Modal)
@@ -9,13 +9,15 @@ const modals = modalValues.reduce((previous: ModalState, current: Modal) => {
 }, {} as ModalState)
 
 const initialStateFactory = () => ({
-  modals
+  modals,
+  persistModal: undefined
 })
 
 const initialState = initialStateFactory()
 
 export const state = () => ({
-  modals: initialState.modals as ModalState
+  modals: initialState.modals as ModalState,
+  persistModal: initialState.persistModal as Modal | undefined
 })
 
 export type ModalStoreState = ReturnType<typeof state>
@@ -25,6 +27,10 @@ export const getters = getterTree(state, {
 })
 
 export const mutations = {
+  setPersistModal(state: ModalStoreState, modal: Modal | undefined) {
+    state.persistModal = modal
+  },
+
   closeModal(state: ModalStoreState, modal: Modal) {
     if (modalExists(modal) && state.modals[modal]) {
       state.modals = { ...state.modals, [modal]: false }
@@ -54,3 +60,19 @@ export const mutations = {
     state.modals = initialState.modals
   }
 }
+
+export const actions = actionTree(
+  { state, mutations },
+  {
+    openPersistedModalIfExist({ commit, state }) {
+      const { persistModal } = state
+
+      if (!persistModal) {
+        return
+      }
+
+      commit('openModal', persistModal)
+      commit('setPersistModal', undefined)
+    }
+  }
+)

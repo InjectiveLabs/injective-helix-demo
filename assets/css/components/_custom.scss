@@ -131,6 +131,10 @@
   border-top-color: theme('colors.aqua.300');
 }
 
+[class*='bg-gray-200'] .spinner {
+  border-top-color: theme('colors.primary.850');
+}
+
 .spinner {
   @apply block mx-auto w-6 h-6 bg-transparent border-4 rounded-full top-0 left-0 border-transparent;
   border-top-color: theme('colors.white');

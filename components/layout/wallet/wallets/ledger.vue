@@ -14,11 +14,11 @@
           >
             <div>
               <p class="text-xl font-semibold text-gray-200 truncate">
-                {{ $t('Ledger') }}
+                {{ $t('connect.ledger') }}
               </p>
               <p class="flex items-center text-sm text-gray-200">
                 <span class="truncate">{{
-                  $t('Connect using hardware wallet')
+                  $t('connect.connectUsingHardware')
                 }}</span>
               </p>
             </div>

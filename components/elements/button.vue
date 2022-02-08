@@ -49,6 +49,11 @@ export default Vue.extend({
       type: Boolean
     },
 
+    xl: {
+      default: false,
+      type: Boolean
+    },
+
     text: {
       required: false,
       default: false,
@@ -103,6 +108,11 @@ export default Vue.extend({
       type: Boolean
     },
 
+    light: {
+      default: false,
+      type: Boolean
+    },
+
     disabled: {
       required: false,
       default: false,
@@ -128,6 +138,8 @@ export default Vue.extend({
         classes.push('px-4', 'py-2', 'text-sm')
       } else if (this.lg) {
         classes.push('px-6', 'py-2.5', 'text-base', 'leading-5', 'max-h-10')
+      } else if (this.xl) {
+        classes.push('px-6', 'py-3')
       } else if (this.textLg) {
         classes.push('px-2', 'py-1', 'text-base')
       } else if (this.textSm) {
@@ -171,14 +183,8 @@ export default Vue.extend({
             'text-gray-800',
             'shadow-none'
           )
-        } else if (this.red) {
-          classes.push(
-            'font-semibold',
-            'bg-red-500',
-            'hover:bg-red-400',
-            'text-gray-800',
-            'shadow-none'
-          )
+        } else if (this.light) {
+          classes.push('bg-gray-200', 'text-gray-700', 'hover:bg-gray-100')
         } else if (this.outline) {
           classes.push(
             'text-white',
