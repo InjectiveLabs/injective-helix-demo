@@ -2,13 +2,14 @@ import {
   DerivativeMarketStreamType,
   DerivativeTransformer,
   OrderStreamCallback as DerivativeMarketOrderStreamCallback,
-  OrderbookStreamCallback as DerivativeMarketOrderbookStreamCallback,
+  TradeStreamCallback as DerivativeMarketTradeStreamCallback,
   PositionStreamCallback
 } from '@injectivelabs/derivatives-consumer'
 import {
   SpotMarketStreamType,
   SpotTransformer,
-  OrderStreamCallback as SpotMarketOrderStreamCallback
+  OrderStreamCallback as SpotMarketOrderStreamCallback,
+  TradeStreamCallback as SpotMarketTradeStreamCallback
 } from '@injectivelabs/spot-consumer'
 import { metricsProvider } from '../providers/MetricsProvider'
 import { derivativeConsumer } from '../singletons/DerivativeMarketConsumer'
@@ -130,6 +131,28 @@ export const streamSubaccountSpotOrders = ({
   })
 }
 
+export const streamSubaccountSpotTrades = ({
+  subaccountId,
+  callback
+}: {
+  subaccountId: string
+  callback: SpotMarketTradeStreamCallback
+}) => {
+  const streamFn = spotMarketStream.trades.subaccount.bind(
+    spotMarketStream.trades
+  )
+  const streamFnArgs = {
+    subaccountId,
+    callback
+  }
+
+  streamProvider.subscribe({
+    fn: streamFn,
+    args: streamFnArgs,
+    key: SpotMarketStreamType.SubaccountTrades
+  })
+}
+
 export const streamSubaccountDerivativeOrders = ({
   subaccountId,
   callback
@@ -149,6 +172,28 @@ export const streamSubaccountDerivativeOrders = ({
     fn: streamFn,
     args: streamFnArgs,
     key: DerivativeMarketStreamType.SubaccountOrders
+  })
+}
+
+export const streamSubaccountDerivativeTrades = ({
+  subaccountId,
+  callback
+}: {
+  subaccountId: string
+  callback: DerivativeMarketTradeStreamCallback
+}) => {
+  const streamFn = derivativeMarketStream.trades.subaccount.bind(
+    derivativeMarketStream.trades
+  )
+  const streamFnArgs = {
+    subaccountId,
+    callback
+  }
+
+  streamProvider.subscribe({
+    fn: streamFn,
+    args: streamFnArgs,
+    key: DerivativeMarketStreamType.SubaccountTrades
   })
 }
 

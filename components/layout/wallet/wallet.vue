@@ -56,7 +56,7 @@
             </button>
           </div>
         </div>
-        <div class="mt-6 pt-4 px-4 border-t">
+        <div v-if="false" class="mt-6 pt-4 px-4 border-t">
           <h3 class="text-xs tracking-wide uppercase">
             {{ $t('navigation.referrals') }}
           </h3>

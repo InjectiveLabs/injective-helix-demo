@@ -8,7 +8,7 @@
       <span
         class="flex items-center bg-primary-500-faded w-auto px-1 rounded-md"
       >
-        <span class="rounded-full w-1 h-1 mr-2 bg-primary-500"></span>
+        <span class="rounded-full w-1 h-1 mx-2 bg-primary-500"></span>
         <span class="text-primary-500 text-2xs">{{
           $t('navigation.connected')
         }}</span>

@@ -2,6 +2,7 @@ import { actionTree, getterTree } from 'typed-vuex'
 import { SpotOrderState } from '@injectivelabs/spot-consumer'
 import { DerivativeOrderState } from '@injectivelabs/derivatives-consumer'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { StreamOperation } from '@injectivelabs/ts-types'
 import {
   UiSpotLimitOrder,
   UiDerivativeLimitOrder,
@@ -17,11 +18,12 @@ import {
   fetchSubaccountDerivativeTrades,
   streamSubaccountDerivativeOrders,
   streamSubaccountPositions,
-  fetchSubaccountPositions
+  fetchSubaccountPositions,
+  streamSubaccountDerivativeTrades,
+  streamSubaccountSpotTrades
 } from '~/app/services/activities'
 import { batchCancelOrders as batchCancelDerivativeOrders } from '~/app/services/derivatives'
 import { batchCancelOrders as batchCancelSpotOrders } from '~/app/services/spot'
-import { ORDERBOOK_STREAMING_ENABLED } from '~/app/utils/constants'
 
 const initialStateFactory = () => ({
   subaccountSpotOrders: [] as Array<UiSpotLimitOrder>,
@@ -67,6 +69,17 @@ export const mutations = {
     trades: Array<UiDerivativeTrade>
   ) {
     state.subaccountDerivativeTrades = trades
+  },
+
+  pushDerivativeTrade(state: ActivitiesStoreState, trade: UiDerivativeTrade) {
+    state.subaccountDerivativeTrades = [
+      trade,
+      ...state.subaccountDerivativeTrades
+    ]
+  },
+
+  pushSpotTrade(state: ActivitiesStoreState, trade: UiSpotTrade) {
+    state.subaccountSpotTrades = [trade, ...state.subaccountSpotTrades]
   },
 
   setSubaccountSpotOrders(
@@ -207,13 +220,6 @@ export const mutations = {
 export const actions = actionTree(
   { state, mutations },
   {
-    async initSpotStreaming(_) {
-      if (ORDERBOOK_STREAMING_ENABLED) {
-        await this.app.$accessor.portfolio.streamOrderbooks()
-        await this.app.$accessor.portfolio.streamSubaccountOrders()
-      }
-    },
-
     streamSubaccountSpotOrders({ commit }) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
@@ -248,6 +254,15 @@ export const actions = actionTree(
           }
         }
       })
+    },
+
+    streamSubaccountDerivativeOrders({ commit }) {
+      const { subaccount } = this.app.$accessor.account
+      const { isUserWalletConnected } = this.app.$accessor.wallet
+
+      if (!isUserWalletConnected || !subaccount) {
+        return
+      }
 
       streamSubaccountDerivativeOrders({
         subaccountId: subaccount.subaccountId,
@@ -272,6 +287,52 @@ export const actions = actionTree(
             case DerivativeOrderState.Filled:
               commit('deleteSubaccountDerivativeOrder', order)
               break
+          }
+        }
+      })
+    },
+
+    streamSubaccountDerivativeTrades({ commit }) {
+      const { subaccount } = this.app.$accessor.account
+      const { isUserWalletConnected } = this.app.$accessor.wallet
+
+      if (!isUserWalletConnected || !subaccount) {
+        return
+      }
+
+      streamSubaccountDerivativeTrades({
+        subaccountId: subaccount.subaccountId,
+        callback: ({ trade, operation }) => {
+          if (!trade) {
+            return
+          }
+
+          switch (operation) {
+            case StreamOperation.Insert:
+              commit('pushDerivativeTrade', trade)
+          }
+        }
+      })
+    },
+
+    streamSubaccountSpotTrades({ commit }) {
+      const { subaccount } = this.app.$accessor.account
+      const { isUserWalletConnected } = this.app.$accessor.wallet
+
+      if (!isUserWalletConnected || !subaccount) {
+        return
+      }
+
+      streamSubaccountSpotTrades({
+        subaccountId: subaccount.subaccountId,
+        callback: ({ trade, operation }) => {
+          if (!trade) {
+            return
+          }
+
+          switch (operation) {
+            case StreamOperation.Insert:
+              commit('pushSpotTrade', trade)
           }
         }
       })

@@ -12,7 +12,7 @@
           </v-card-select>
           <v-card-select
             v-model="component"
-            :option="components.derivative"
+            :option="components.derivatives"
             class="col-span-3"
           >
             {{ $t('activities.derivativeOrders') }}
@@ -43,17 +43,19 @@
 <script lang="ts">
 import Vue from 'vue'
 import VSpot from '~/components/partials/activities/spot/index.vue'
+import VDerivatives from '~/components/partials/activities/derivatives/index.vue'
 
 const components = {
   spot: 'spot',
-  derivative: 'derivative',
+  derivatives: 'derivatives',
   earnHistory: 'earn-history',
   transactionHistory: 'transaction-history'
 }
 
 export default Vue.extend({
   components: {
-    VSpot
+    VSpot,
+    VDerivatives
   },
 
   data() {
