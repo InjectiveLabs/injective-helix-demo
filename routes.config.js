@@ -2,6 +2,7 @@ const { IS_TESTNET, IS_MAINNET_STAGING } = require('./app/utils/constants')
 
 const mainnetSpot = [
   'inj-usdt',
+  'huahua-usdt',
   'atom-usdt',
   'weth-usdt',
   'link-usdt',
@@ -10,7 +11,7 @@ const mainnetSpot = [
   'gf-usdt'
 ]
 const testnetSpot = [...mainnetSpot]
-const mainnetStagingSpot = [...mainnetSpot, 'huahua-usdt']
+const mainnetStagingSpot = [...mainnetSpot]
 const spot = IS_TESTNET
   ? testnetSpot
   : IS_MAINNET_STAGING
