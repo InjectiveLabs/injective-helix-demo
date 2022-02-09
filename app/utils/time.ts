@@ -28,14 +28,13 @@ export const getEndDateStringFromTimeInSeconds = (
   return currentDate.toLocaleString('en-us')
 }
 
-const countDownDisplaySuffix: Record<string, any> = {
-  xDays: 'd',
-  xHours: 'h',
-  xMinutes: 'm',
-  xSeconds: 's'
-}
-
 export const formatDurationFromSeconds = (seconds: number): string => {
+  const countDownDisplaySuffix: Record<string, any> = {
+    xDays: 'd',
+    xHours: 'h',
+    xMinutes: 'm',
+    xSeconds: 's'
+  }
   const duration = intervalToDuration({ start: 0, end: seconds * 1000 })
 
   return formatDuration(duration, {
