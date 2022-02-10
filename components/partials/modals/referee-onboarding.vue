@@ -77,7 +77,14 @@
           <span class="text-xs tracking-wide">{{ injectiveAddress }}</span>
         </div>
 
-        <v-button primary xl class="w-full" :disabled="invalid">
+        <v-button
+          primary
+          xl
+          class="w-full"
+          :disabled="invalid"
+          :status="referStatus"
+          @click="handleConfirm"
+        >
           <span class="font-bold">
             {{ $t('referralModal.confirm') }}
           </span>
@@ -104,6 +111,7 @@ export default Vue.extend({
   data() {
     return {
       Wallet,
+      referStatus: new Status(StatusType.Idle),
       metamaskStatus: new Status(StatusType.Idle),
       form: {
         code: ''
@@ -113,7 +121,7 @@ export default Vue.extend({
 
   computed: {
     isModalOpen(): boolean {
-      return this.$accessor.modal.modals[Modal.ReferralOnboarding]
+      return this.$accessor.modal.modals[Modal.RefereeOnboarding]
     },
 
     isUserWalletConnected(): boolean {
@@ -135,6 +143,7 @@ export default Vue.extend({
 
   mounted() {
     const { code } = this.$route.query
+
     if (code) {
       this.form.code = code as string
       this.$nextTick(() => {
@@ -145,21 +154,33 @@ export default Vue.extend({
 
   methods: {
     closeModal() {
-      this.$accessor.modal.closeModal(Modal.ReferralOnboarding)
+      this.$accessor.modal.closeModal(Modal.RefereeOnboarding)
       this.$accessor.modal.setPersistModal(undefined)
     },
 
     handleConfirm() {
-      if (this.$form) {
-        this.$form.reset()
-      }
+      const { form } = this
 
-      this.closeModal()
+      this.referStatus.setLoading()
+
+      this.$accessor.referral
+        .refer(form.code)
+        .then(() => {
+          if (this.$form) {
+            this.$form.reset()
+          }
+
+          this.closeModal()
+        })
+        .catch(this.$onRejected)
+        .finally(() => {
+          this.referStatus.setIdle()
+        })
     },
 
     connectLedger() {
-      this.$accessor.modal.setPersistModal(Modal.ReferralOnboarding)
-      this.$accessor.modal.closeModal(Modal.ReferralOnboarding)
+      this.$accessor.modal.setPersistModal(Modal.RefereeOnboarding)
+      this.$accessor.modal.closeModal(Modal.RefereeOnboarding)
       this.$root.$emit('connect-ledger')
     },
 

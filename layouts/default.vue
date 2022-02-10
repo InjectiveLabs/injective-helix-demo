@@ -60,9 +60,11 @@ export default Vue.extend({
   },
 
   mounted() {
+    this.$root.$on('wallet-connected', this.handleWalletConnected)
     Promise.all([
       this.$accessor.spot.init(),
       this.$accessor.derivatives.init(),
+      this.$accessor.referral.init(),
       this.$accessor.wallet.init()
     ])
       .then(() => {
@@ -92,6 +94,7 @@ export default Vue.extend({
   },
 
   beforeDestroy() {
+    this.$root.$off('wallet-connected', this.handleWalletConnected)
     clearInterval(this.interval)
   },
 
@@ -100,6 +103,10 @@ export default Vue.extend({
       if (this.isOpenSidebar) {
         this.isOpenSidebar = false
       }
+    },
+
+    handleWalletConnected() {
+      this.$accessor.referral.init()
     }
   }
 })

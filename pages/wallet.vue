@@ -22,7 +22,7 @@
         </div>
       </div>
     </HOCLoading>
-    <v-referral-onboarding-modal />
+    <v-referee-onboarding-modal />
   </div>
 </template>
 
@@ -34,7 +34,7 @@ import VTransferOnChain from '~/components/partials/wallet/transfer-on-chain.vue
 import VCta from '~/components/partials/wallet/cta.vue'
 import VRebate from '~/components/partials/wallet/rebate.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
-import VReferralOnboardingModal from '~/components/partials/modals/referral-onboarding.vue'
+import VRefereeOnboardingModal from '~/components/partials/modals/referee-onboarding.vue'
 import { Modal } from '~/types'
 import { GAS_FREE_DEPOSIT_REBATE_ENABLED } from '~/app/utils/constants'
 
@@ -43,7 +43,7 @@ export default Vue.extend({
     VBalances,
     VRebate,
     VCta,
-    VReferralOnboardingModal,
+    VRefereeOnboardingModal,
     VTransferOnChain,
     HOCLoading
   },
@@ -77,7 +77,7 @@ export default Vue.extend({
       const { code } = $route.query
 
       if ($route.name === 'register' && code && code.toString().trim() !== '') {
-        this.$accessor.modal.openModal(Modal.ReferralOnboarding)
+        this.$accessor.modal.openModal(Modal.RefereeOnboarding)
       }
     }
   }
