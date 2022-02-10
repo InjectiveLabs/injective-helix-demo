@@ -2,14 +2,14 @@ import { actionTree, getterTree } from 'typed-vuex'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { StreamOperation } from '@injectivelabs/ts-types'
 import {
-  DerivativeTransformer,
   UiDerivativeLimitOrder,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithTokenMeta,
   UiDerivativeOrderbook,
   UiDerivativeTrade,
   UiPosition
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/ui-common/dist/derivative/types'
+import { DerivativeTransformer, zeroDerivativeMarketSummary } from '@injectivelabs/ui-common'
 import { Change } from '@injectivelabs/ui-common/dist/types'
 import {
   DerivativeOrderSide,
@@ -30,7 +30,6 @@ import {
   ZERO_IN_BASE,
   ZERO_TO_STRING
 } from '~/app/utils/constants'
-import { zeroDerivativeMarketSummary } from '~/app/utils/helpers'
 import {
   derivativeActionServiceFactory,
   derivativeService,
@@ -320,7 +319,7 @@ export const actions = actionTree(
 
       commit('setMarkets', uiMarketsWithTokenMeta)
 
-      const marketsSummary = await fetchMarketsSummary()
+      const marketsSummary = await derivativeService.fetchMarketsSummary()
       const marketSummaryNotExists =
         !marketsSummary || (marketsSummary && marketsSummary.length === 0)
       const actualMarketsSummary = marketSummaryNotExists
@@ -640,11 +639,15 @@ export const actions = actionTree(
         return
       }
 
-      const updatedMarketsSummary = await fetchMarketsSummary(marketsSummary)
+      const updatedMarketsSummary = await derivativeService.fetchMarketsSummary()
+      const combinedMarketsSummary = DerivativeTransformer.marketsSummaryComparisons(
+        updatedMarketsSummary,
+        state.marketsSummary
+      )
 
       if (
-        !updatedMarketsSummary ||
-        (updatedMarketsSummary && updatedMarketsSummary.length === 0)
+        !combinedMarketsSummary ||
+        (combinedMarketsSummary && combinedMarketsSummary.length === 0)
       ) {
         commit(
           'setMarketsSummary',
@@ -652,7 +655,7 @@ export const actions = actionTree(
         )
       } else {
         if (market) {
-          const updatedMarketSummary = updatedMarketsSummary.find(
+          const updatedMarketSummary = combinedMarketsSummary.find(
             (m) => m.marketId === market.marketId
           )
 
@@ -661,7 +664,7 @@ export const actions = actionTree(
           }
         }
 
-        commit('setMarketsSummary', updatedMarketsSummary)
+        commit('setMarketsSummary', combinedMarketsSummary)
       }
     },
 

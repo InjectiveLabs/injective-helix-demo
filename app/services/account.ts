@@ -1,12 +1,12 @@
 import {
   SubaccountTransformer,
   SubaccountStreamType,
+  AccountPortfolio,
   BalanceStreamCallback as SubaccountBalanceStreamCallback
 } from '@injectivelabs/subaccount-consumer'
 import { SubaccountService as BaseSubaccountService } from '@injectivelabs/ui-common'
 import { subaccountStream } from '../singletons/SubaccountStream'
 import { streamProvider } from '../providers/StreamProvider'
-import { AccountPortfolio } from '~/types/subaccount'
 import { AccountMetrics } from '~/types/metrics'
 
 export class SubaccountService extends BaseSubaccountService {

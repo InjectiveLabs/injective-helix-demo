@@ -3,12 +3,14 @@ import { SpotOrderState } from '@injectivelabs/spot-consumer'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { StreamOperation } from '@injectivelabs/ts-types'
 import {
-  UiDerivativeLimitOrder,
-  UiDerivativeTrade,
-  UiPosition,
   UiSpotLimitOrder,
   UiSpotTrade
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/ui-common/dist/spot/types'
+import {
+  UiDerivativeLimitOrder,
+  UiDerivativeTrade,
+  UiPosition
+} from '@injectivelabs/ui-common/dist/derivative/types'
 import { DerivativeOrderState } from '@injectivelabs/derivatives-consumer'
 import {
   streamSubaccountSpotOrders,

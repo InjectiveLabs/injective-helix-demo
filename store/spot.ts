@@ -3,12 +3,14 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { StreamOperation } from '@injectivelabs/ts-types'
 import { Change } from '@injectivelabs/ui-common/dist/types'
 import {
-  SpotTransformer,
   UiSpotLimitOrder,
   UiSpotMarketSummary,
   UiSpotMarketWithTokenMeta,
   UiSpotOrderbook,
-  UiSpotTrade,
+  UiSpotTrade
+} from '@injectivelabs/ui-common/dist/spot/types'
+import {
+  SpotTransformer,
   zeroSpotMarketSummary
 } from '@injectivelabs/ui-common'
 import { SpotOrderSide, SpotOrderState } from '@injectivelabs/spot-consumer'
@@ -269,7 +271,7 @@ export const actions = actionTree(
 
       commit('setMarkets', uiMarketsWithTokenMeta)
 
-      const marketsSummary = await fetchMarketsSummary()
+      const marketsSummary = await spotService.fetchMarketsSummary()
       const marketSummaryNotExists =
         !marketsSummary || (marketsSummary && marketsSummary.length === 0)
       const actualMarketsSummary = marketSummaryNotExists
@@ -501,11 +503,15 @@ export const actions = actionTree(
         return
       }
 
-      const updatedMarketsSummary = await fetchMarketsSummary(marketsSummary)
+      const updatedMarketsSummary = await spotService.fetchMarketsSummary()
+      const combinedMarketsSummary = SpotTransformer.marketsSummaryComparisons(
+        updatedMarketsSummary,
+        state.marketsSummary
+      )
 
       if (
-        !updatedMarketsSummary ||
-        (updatedMarketsSummary && updatedMarketsSummary.length === 0)
+        !combinedMarketsSummary ||
+        (combinedMarketsSummary && combinedMarketsSummary.length === 0)
       ) {
         commit(
           'setMarketsSummary',
@@ -513,7 +519,7 @@ export const actions = actionTree(
         )
       } else {
         if (market) {
-          const updatedMarketSummary = updatedMarketsSummary.find(
+          const updatedMarketSummary = combinedMarketsSummary.find(
             (m) => m.marketId === market.marketId
           )
 
@@ -522,7 +528,7 @@ export const actions = actionTree(
           }
         }
 
-        commit('setMarketsSummary', updatedMarketsSummary)
+        commit('setMarketsSummary', combinedMarketsSummary)
       }
     },
 

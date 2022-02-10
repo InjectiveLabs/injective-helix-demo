@@ -1,10 +1,10 @@
+import { BankBalances } from '@injectivelabs/ui-common/dist/bank/types'
 import {
-  BankBalances,
   BankBalanceWithTokenMetaData,
   IbcBankBalanceWithTokenMetaData,
-  Token,
-  TokenTransformer
-} from '@injectivelabs/ui-common'
+  Token
+} from '@injectivelabs/ui-common/dist/token/types'
+import { TokenTransformer } from '@injectivelabs/ui-common'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
 import {

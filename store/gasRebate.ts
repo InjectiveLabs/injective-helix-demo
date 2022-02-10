@@ -1,5 +1,6 @@
 import { actionTree, getterTree } from 'typed-vuex'
-import { UiDerivativeTrade, UiSpotTrade } from '@injectivelabs/ui-common'
+import { UiDerivativeTrade } from '@injectivelabs/ui-common/dist/derivative/types'
+import { UiSpotTrade } from '@injectivelabs/ui-common/dist/spot/types'
 import { UserDeposit } from '@injectivelabs/ui-common/dist/bridge/gql/types'
 import { redeem } from '~/app/services/gasRebate'
 import { backupPromiseCall } from '~/app/utils/async'

@@ -22,7 +22,7 @@ import {
   UiBaseDerivativeMarket,
   UiDerivativeMarketWithTokenMeta,
   UiPosition
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/ui-common/dist/derivative/types'
 import {
   UiOrderbookPriceLevel,
   UiPriceLevel

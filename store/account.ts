@@ -1,12 +1,13 @@
 import { AccountPortfolio } from '@injectivelabs/subaccount-consumer'
+import { SubaccountTransformer } from '@injectivelabs/ui-common'
+import {
+  UiSubaccount,
+  UiSubaccountBalance
+} from '@injectivelabs/ui-common/dist/subaccount/types'
 import {
   SubaccountBalanceWithTokenMetaData,
-  TokenTransformer,
-  UiSubaccount,
-  SubaccountTransformer,
-  UiSubaccountBalance,
   Token
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/ui-common/dist/token/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
 import {

@@ -10,7 +10,6 @@ import * as exchange from '~/store/exchange'
 import * as activities from '~/store/activities'
 import * as gasRebate from '~/store/gasRebate'
 import * as modal from '~/store/modal'
-import * as portfolio from '~/store/portfolio'
 import * as spot from '~/store/spot'
 import * as token from '~/store/token'
 import * as wallet from '~/store/wallet'
@@ -26,7 +25,6 @@ export const accessorType = getAccessorType({
     exchange,
     gasRebate,
     modal,
-    portfolio,
     activities,
     spot,
     token,
