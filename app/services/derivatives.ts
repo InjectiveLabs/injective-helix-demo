@@ -1,226 +1,36 @@
 import {
-  DerivativeMarketComposer,
   DerivativeMarketStreamType,
   DerivativeOrderSide,
   OrderbookStreamCallback as DerivativeMarketOrderbookStreamCallback,
   TradeStreamCallback as DerivativeMarketTradeStreamCallback,
   OrderStreamCallback as DerivativeMarketOrderStreamCallback,
-  PositionStreamCallback as DerivativeMarketPositionStreamCallback,
-  DerivativeTransformer
+  PositionStreamCallback as DerivativeMarketPositionStreamCallback
 } from '@injectivelabs/derivatives-consumer'
-import { AccountAddress, TradeExecutionSide } from '@injectivelabs/ts-types'
+import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import {
   BigNumber,
   BigNumberInBase,
-  BigNumberInWei,
-  DEFAULT_EXCHANGE_LIMIT
+  BigNumberInWei
 } from '@injectivelabs/utils'
-import { Web3Exception } from '@injectivelabs/exceptions'
 import { SubaccountStreamType } from '@injectivelabs/subaccount-consumer'
 import {
   OracleStreamType,
-  PricesStreamCallback,
-  MarketComposer
+  PricesStreamCallback
 } from '@injectivelabs/exchange-consumer'
-import { oracleStream } from '../singletons/OracleStream'
-import { oracleConsumer } from '../singletons/OracleConsumer'
-import { metricsProvider } from '../providers/MetricsProvider'
-import { streamProvider } from '../providers/StreamProvider'
-import { zeroDerivativeMarketSummary } from '../utils/helpers'
-import { TxProvider } from '~/app/providers/TxProvider'
-import { derivativeMarketStream } from '~/app/singletons/DerivativeMarketStream'
 import {
-  FEE_RECIPIENT,
-  CHAIN_ID,
-  ZERO_IN_BASE,
-  ZERO_TO_STRING,
-  TRANSFER_RESTRICTIONS_ENABLED,
-  MAXIMUM_NOTIONAL_ALLOWED
-} from '~/app/utils/constants'
-import {
-  UiPriceLevel,
-  UiDerivativeMarket,
-  UiDerivativeLimitOrder,
-  UiDerivativeMarketSummary,
-  UiOrderbookPriceLevel,
-  UiPosition,
-  BaseUiDerivativeMarketWithTokenMetaData,
   TradeDirection,
-  Token
-} from '~/types'
-import { derivativeConsumer } from '~/app/singletons/DerivativeMarketConsumer'
+  UiBaseDerivativeMarket,
+  UiDerivativeMarketWithTokenMeta,
+  UiPosition
+} from '@injectivelabs/ui-common'
 import {
-  orderTypeToGrpcOrderType,
-  derivativeMarketToUiDerivativeMarket,
-  derivativeMarketsToUiDerivativeMarkets,
-  marketsSummaryToUiMarketsSummary,
-  baseUiDerivativeMarketToBaseUiDerivativeMarketWithPartialTokenMetaData
-} from '~/app/transformers/derivatives'
-import { derivativeChronosConsumer } from '~/app/singletons/DerivativeMarketChronosConsumer'
-import { DerivativesMetrics } from '~/types/metrics'
-
-export const fetchMarkets = async (): Promise<UiDerivativeMarket[]> => {
-  const promise = derivativeConsumer.fetchMarkets()
-  const markets = await metricsProvider.sendAndRecord(
-    promise,
-    DerivativesMetrics.FetchMarkets
-  )
-
-  return await derivativeMarketsToUiDerivativeMarkets(
-    DerivativeTransformer.grpcMarketsToMarkets(markets)
-  )
-}
-
-export const fetchMarketSummary = async (
-  marketId: string
-): Promise<UiDerivativeMarketSummary> => {
-  const promise = derivativeChronosConsumer.fetchDerivativeMarketSummary(
-    marketId
-  )
-  const marketSummary = await metricsProvider.sendAndRecord(
-    promise,
-    DerivativesMetrics.FetchMarketSummary
-  )
-
-  if (!marketSummary) {
-    return zeroDerivativeMarketSummary(marketId)
-  }
-
-  return {
-    ...marketSummary,
-    marketId
-  }
-}
-
-export const fetchMarketsSummary = async (
-  oldMarketsSummary?: UiDerivativeMarketSummary[]
-): Promise<UiDerivativeMarketSummary[] | undefined> => {
-  const promise = derivativeChronosConsumer.fetchDerivativeMarketsSummary()
-  const marketsSummary = await metricsProvider.sendAndRecord(
-    promise,
-    DerivativesMetrics.FetchMarketsSummary
-  )
-
-  if (!oldMarketsSummary && !marketsSummary) {
-    return undefined
-  }
-
-  if (!marketsSummary) {
-    return oldMarketsSummary as UiDerivativeMarketSummary[]
-  }
-
-  if (!oldMarketsSummary) {
-    return marketsSummary
-  }
-
-  const marketsWithOldSummaries = oldMarketsSummary.filter((market) =>
-    marketsSummary.find((m) => m.marketId === market.marketId)
-  )
-
-  return marketsSummaryToUiMarketsSummary(
-    marketsWithOldSummaries,
-    marketsSummary
-  )
-}
-
-export const fetchMarket = async (marketId: string) => {
-  const promise = derivativeConsumer.fetchMarket(marketId)
-  const market = await metricsProvider.sendAndRecord(
-    promise,
-    DerivativesMetrics.FetchMarket
-  )
-  const transformedMarket = (await baseUiDerivativeMarketToBaseUiDerivativeMarketWithPartialTokenMetaData(
-    DerivativeTransformer.grpcMarketToMarket(market)
-  )) as BaseUiDerivativeMarketWithTokenMetaData
-
-  return derivativeMarketToUiDerivativeMarket(transformedMarket)
-}
-
-export const fetchMarketOrderbook = async (marketId: string) => {
-  const promise = derivativeConsumer.fetchOrderbook(marketId)
-  const orderbook = await metricsProvider.sendAndRecord(
-    promise,
-    DerivativesMetrics.FetchOrderbook
-  )
-
-  return DerivativeTransformer.grpcOrderbookToOrderbook(orderbook)
-}
-
-export const fetchMarketTrades = async ({
-  marketId,
-  subaccountId
-}: {
-  marketId: string
-  subaccountId?: AccountAddress
-}) => {
-  const promise = derivativeConsumer.fetchTrades({
-    marketId,
-    subaccountId,
-    // For market wide trades we get only `executionSide=Taker` trades
-    executionSide: subaccountId ? undefined : TradeExecutionSide.Taker
-  })
-  const trades = await metricsProvider.sendAndRecord(
-    promise,
-    DerivativesMetrics.FetchTrades
-  )
-
-  return DerivativeTransformer.grpcTradesToTrades(trades)
-}
-
-export const fetchMarketPositions = async ({
-  marketId,
-  subaccountId
-}: {
-  marketId: string
-  subaccountId?: AccountAddress
-}) => {
-  const promise = derivativeConsumer.fetchPositions({
-    marketId,
-    subaccountId
-  })
-  const positions = await metricsProvider.sendAndRecord(
-    promise,
-    DerivativesMetrics.FetchPositions
-  )
-
-  return DerivativeTransformer.grpcPositionsToPositions(positions)
-}
-
-export const fetchMarketOrders = async ({
-  marketId,
-  subaccountId,
-  orderSide
-}: {
-  marketId: string
-  orderSide?: DerivativeOrderSide
-  subaccountId: AccountAddress
-}) => {
-  const promise = derivativeConsumer.fetchOrders({
-    marketId,
-    orderSide,
-    subaccountId
-  })
-  const orders = await metricsProvider.sendAndRecord(
-    promise,
-    DerivativesMetrics.FetchOrders
-  )
-
-  return DerivativeTransformer.grpcOrdersToOrders(orders)
-}
-
-export const fetchMarketMarkPrice = async (market: UiDerivativeMarket) => {
-  const promise = oracleConsumer.price({
-    baseSymbol: market.oracleBase,
-    quoteSymbol: market.oracleQuote,
-    oracleType: market.oracleType
-  })
-  const price = await metricsProvider.sendAndRecord(
-    promise,
-    DerivativesMetrics.FetchOrders
-  )
-
-  return price || ZERO_TO_STRING
-}
+  UiOrderbookPriceLevel,
+  UiPriceLevel
+} from '@injectivelabs/ui-common/dist/types'
+import { oracleStream } from '../singletons/OracleStream'
+import { streamProvider } from '../providers/StreamProvider'
+import { ZERO_IN_BASE } from '../utils/constants'
+import { derivativeMarketStream } from '~/app/singletons/DerivativeMarketStream'
 
 export const streamOrderbook = ({
   marketId,
@@ -346,7 +156,7 @@ export const streamMarketMarkPrice = ({
   market,
   callback
 }: {
-  market: UiDerivativeMarket
+  market: UiBaseDerivativeMarket
   callback: PricesStreamCallback
 }) => {
   const streamFn = oracleStream.prices.start.bind(oracleStream.prices)
@@ -372,443 +182,6 @@ export const cancelMarketStreams = () => {
   streamProvider.cancel(DerivativeMarketStreamType.Trades)
   streamProvider.cancel(SubaccountStreamType.Balances)
   streamProvider.cancel(OracleStreamType.Prices)
-}
-
-export const validateNotionalRestrictions = ({
-  price,
-  amount,
-  token
-}: {
-  price: BigNumberInBase
-  amount: BigNumberInBase
-  token: Token
-}) => {
-  if (!TRANSFER_RESTRICTIONS_ENABLED) {
-    return
-  }
-
-  const notional = price.times(amount)
-  const usdTokenSymbols = ['USDT', 'USDC']
-
-  if (usdTokenSymbols.includes(token.symbol)) {
-    if (notional.gt(MAXIMUM_NOTIONAL_ALLOWED)) {
-      throw new Error(
-        `Notional of ${notional.toString()}${
-          token.symbol
-        } exceeds maximum of ${MAXIMUM_NOTIONAL_ALLOWED.toString()}${
-          token.symbol
-        } allowed.`
-      )
-    }
-  } else {
-    // If token is not USDT/USDC
-  }
-}
-
-export const submitLimitOrder = async ({
-  price,
-  quantity,
-  orderType,
-  address,
-  market,
-  reduceOnly,
-  margin,
-  injectiveAddress,
-  subaccountId
-}: {
-  margin: BigNumberInBase
-  price: BigNumberInBase
-  reduceOnly: boolean
-  quantity: BigNumberInBase
-  orderType: DerivativeOrderSide
-  subaccountId: string
-  market: UiDerivativeMarket
-  address: AccountAddress
-  injectiveAddress: AccountAddress
-}) => {
-  const message = DerivativeMarketComposer.createLimitOrder({
-    subaccountId,
-    injectiveAddress,
-    marketId: market.marketId,
-    order: {
-      orderType: orderTypeToGrpcOrderType(orderType),
-      price: price.toWei(market.quoteToken.decimals).toFixed(),
-      margin: reduceOnly
-        ? ZERO_TO_STRING
-        : margin.toWei(market.quoteToken.decimals).toFixed(),
-      quantity: quantity.toFixed(),
-      feeRecipient: FEE_RECIPIENT,
-      triggerPrice: ZERO_TO_STRING // TODO
-    }
-  })
-
-  try {
-    const txProvider = new TxProvider({
-      address,
-      message,
-      bucket: DerivativesMetrics.CreateLimitOrder,
-      chainId: CHAIN_ID
-    })
-
-    await txProvider.broadcast()
-  } catch (error: any) {
-    throw new Web3Exception(error.message)
-  }
-}
-
-export const submitMarketOrder = async ({
-  quantity,
-  price,
-  reduceOnly,
-  orderType,
-  address,
-  market,
-  margin,
-  injectiveAddress,
-  subaccountId
-}: {
-  margin: BigNumberInBase
-  quantity: BigNumberInBase
-  price: BigNumberInBase
-  orderType: DerivativeOrderSide
-  subaccountId: string
-  reduceOnly: boolean
-  market: UiDerivativeMarket
-  address: AccountAddress
-  injectiveAddress: AccountAddress
-}) => {
-  const message = DerivativeMarketComposer.createMarketOrder({
-    subaccountId,
-    injectiveAddress,
-    marketId: market.marketId,
-    order: {
-      price: price.toWei(market.quoteToken.decimals).toFixed(),
-      margin: reduceOnly
-        ? ZERO_TO_STRING
-        : margin.toWei(market.quoteToken.decimals).toFixed(),
-      quantity: quantity.toFixed(),
-      orderType: orderTypeToGrpcOrderType(orderType),
-      feeRecipient: FEE_RECIPIENT,
-      triggerPrice: ZERO_TO_STRING // TODO
-    }
-  })
-
-  try {
-    const txProvider = new TxProvider({
-      address,
-      message,
-      bucket: DerivativesMetrics.CreateMarketOrder,
-      chainId: CHAIN_ID
-    })
-
-    await txProvider.broadcast()
-  } catch (error: any) {
-    throw new Web3Exception(error.message)
-  }
-}
-
-export const closeAllPosition = async ({
-  positions,
-  address,
-  injectiveAddress,
-  subaccountId
-}: {
-  positions: {
-    market: UiDerivativeMarket
-    orderType: DerivativeOrderSide
-    price: BigNumberInBase
-    quantity: BigNumberInBase
-  }[]
-  subaccountId: string
-  address: AccountAddress
-  injectiveAddress: AccountAddress
-}) => {
-  const message = positions.map((position) => {
-    const minTickPrice = new BigNumberInBase(
-      new BigNumberInBase(1).shiftedBy(-position.market.priceDecimals)
-    )
-    const actualPrice = position.price.lte(0) ? minTickPrice : position.price
-
-    return DerivativeMarketComposer.createMarketOrder({
-      subaccountId,
-      injectiveAddress,
-      marketId: position.market.marketId,
-      order: {
-        price: new BigNumberInBase(
-          actualPrice.toFixed(
-            position.market.priceDecimals,
-            position.orderType === DerivativeOrderSide.Buy
-              ? BigNumberInBase.ROUND_DOWN
-              : BigNumberInBase.ROUND_UP
-          )
-        )
-          .toWei(position.market.quoteToken.decimals)
-          .toFixed(),
-        margin: ZERO_TO_STRING,
-        quantity: position.quantity.toFixed(),
-        orderType: orderTypeToGrpcOrderType(position.orderType),
-        feeRecipient: FEE_RECIPIENT,
-        triggerPrice: ZERO_TO_STRING // TODO
-      }
-    })
-  })
-
-  try {
-    const txProvider = new TxProvider({
-      address,
-      message,
-      gasLimit: new BigNumberInBase(
-        new BigNumberInBase(DEFAULT_EXCHANGE_LIMIT)
-          .times(positions.length)
-          .dividedBy(4)
-          .toFixed(0)
-      ).toNumber(),
-      bucket: DerivativesMetrics.CreateMarketOrder,
-      chainId: CHAIN_ID
-    })
-
-    await txProvider.broadcast()
-  } catch (error: any) {
-    throw new Web3Exception(error.message)
-  }
-}
-
-export const closePosition = async ({
-  quantity,
-  price,
-  orderType,
-  address,
-  market,
-  injectiveAddress,
-  subaccountId
-}: {
-  quantity: BigNumberInBase
-  price: BigNumberInBase
-  orderType: DerivativeOrderSide
-  subaccountId: string
-  market: UiDerivativeMarket
-  address: AccountAddress
-  injectiveAddress: AccountAddress
-}) => {
-  const executionPrice = new BigNumberInBase(
-    price.toFixed(
-      market.priceDecimals,
-      orderType === DerivativeOrderSide.Buy
-        ? BigNumberInBase.ROUND_DOWN
-        : BigNumberInBase.ROUND_UP
-    )
-  )
-  const minTickPrice = new BigNumberInBase(
-    new BigNumberInBase(1).shiftedBy(-market.priceDecimals)
-  )
-  const actualExecutionPrice = executionPrice.lte(0)
-    ? minTickPrice
-    : executionPrice
-
-  const message = DerivativeMarketComposer.createMarketOrder({
-    subaccountId,
-    injectiveAddress,
-    marketId: market.marketId,
-    order: {
-      price: new BigNumberInBase(actualExecutionPrice)
-        .toWei(market.quoteToken.decimals)
-        .toFixed(),
-      margin: ZERO_TO_STRING,
-      quantity: quantity.toFixed(),
-      orderType: orderTypeToGrpcOrderType(orderType),
-      feeRecipient: FEE_RECIPIENT,
-      triggerPrice: ZERO_TO_STRING // TODO
-    }
-  })
-
-  try {
-    const txProvider = new TxProvider({
-      address,
-      message,
-      bucket: DerivativesMetrics.CreateMarketOrder,
-      chainId: CHAIN_ID
-    })
-
-    await txProvider.broadcast()
-  } catch (error: any) {
-    throw new Web3Exception(error.message)
-  }
-}
-
-export const closePositionAndReduceOnlyOrders = async ({
-  quantity,
-  price,
-  orderType,
-  address,
-  market,
-  injectiveAddress,
-  subaccountId,
-  reduceOnlyOrders
-}: {
-  quantity: BigNumberInBase
-  price: BigNumberInBase
-  orderType: DerivativeOrderSide
-  subaccountId: string
-  market: UiDerivativeMarket
-  address: AccountAddress
-  injectiveAddress: AccountAddress
-  reduceOnlyOrders: {
-    marketId: string
-    subaccountId: string
-    orderHash: string
-  }[]
-}) => {
-  const executionPrice = new BigNumberInBase(
-    price.toFixed(
-      market.priceDecimals,
-      orderType === DerivativeOrderSide.Buy
-        ? BigNumberInBase.ROUND_DOWN
-        : BigNumberInBase.ROUND_UP
-    )
-  )
-  const minTickPrice = new BigNumberInBase(
-    new BigNumberInBase(1).shiftedBy(-market.priceDecimals)
-  )
-  const actualExecutionPrice = executionPrice.lte(0)
-    ? minTickPrice
-    : executionPrice
-
-  const message = MarketComposer.batchUpdateOrders({
-    subaccountId,
-    injectiveAddress,
-    derivativeOrdersToCancel: reduceOnlyOrders,
-    derivativeOrdersToCreate: [
-      {
-        marketId: market.marketId,
-        orderType: orderTypeToGrpcOrderType(orderType),
-        triggerPrice: ZERO_TO_STRING,
-        feeRecipient: FEE_RECIPIENT,
-        price: new BigNumberInBase(actualExecutionPrice)
-          .toWei(market.quoteToken.decimals)
-          .toFixed(),
-        margin: ZERO_TO_STRING,
-        quantity: quantity.toFixed()
-      }
-    ]
-  })
-
-  try {
-    const txProvider = new TxProvider({
-      address,
-      message,
-      bucket: DerivativesMetrics.BatchUpdateOrders,
-      chainId: CHAIN_ID
-    })
-
-    await txProvider.broadcast()
-  } catch (error: any) {
-    throw new Web3Exception(error.message)
-  }
-}
-
-export const addMarginToPosition = async ({
-  amount,
-  address,
-  market,
-  injectiveAddress,
-  srcSubaccountId,
-  dstSubaccountId
-}: {
-  amount: BigNumberInWei
-  srcSubaccountId: string
-  dstSubaccountId: string
-  market: UiDerivativeMarket
-  address: AccountAddress
-  injectiveAddress: AccountAddress
-}) => {
-  const message = DerivativeMarketComposer.addMarginToPosition({
-    srcSubaccountId,
-    dstSubaccountId,
-    injectiveAddress,
-    amount: amount.toFixed(),
-    marketId: market.marketId
-  })
-
-  try {
-    const txProvider = new TxProvider({
-      address,
-      message,
-      bucket: DerivativesMetrics.CreateMarketOrder,
-      chainId: CHAIN_ID
-    })
-
-    await txProvider.broadcast()
-  } catch (error: any) {
-    throw new Web3Exception(error.message)
-  }
-}
-
-export const cancelOrder = async ({
-  orderHash,
-  address,
-  marketId,
-  injectiveAddress,
-  subaccountId
-}: {
-  orderHash: string
-  subaccountId: string
-  marketId: string
-  address: AccountAddress
-  injectiveAddress: AccountAddress
-}) => {
-  const message = DerivativeMarketComposer.cancelDerivativeOrder({
-    subaccountId,
-    marketId,
-    injectiveAddress,
-    order: {
-      orderHash
-    }
-  })
-
-  try {
-    const txProvider = new TxProvider({
-      address,
-      message,
-      bucket: DerivativesMetrics.CancelLimitOrder,
-      chainId: CHAIN_ID
-    })
-
-    await txProvider.broadcast()
-  } catch (error: any) {
-    throw new Web3Exception(error.message)
-  }
-}
-
-export const batchCancelOrders = async ({
-  orders,
-  address,
-  injectiveAddress
-}: {
-  orders: {
-    subaccountId: string
-    marketId: string
-    orderHash: string
-  }[]
-  address: AccountAddress
-  injectiveAddress: AccountAddress
-}) => {
-  const message = DerivativeMarketComposer.batchCancelDerivativeOrder({
-    injectiveAddress,
-    orders
-  })
-
-  try {
-    const txProvider = new TxProvider({
-      address,
-      message,
-      bucket: DerivativesMetrics.BatchCancelLimitOrders,
-      chainId: CHAIN_ID
-    })
-
-    await txProvider.broadcast()
-  } catch (error: any) {
-    throw new Web3Exception(error.message)
-  }
 }
 
 export const calculateMargin = ({
@@ -869,7 +242,7 @@ export const getPositionFeeAdjustedBankruptcyPrice = ({
   market
 }: {
   position: UiPosition
-  market: UiDerivativeMarket
+  market: UiDerivativeMarketWithTokenMeta
 }) => {
   const price = new BigNumberInWei(position.entryPrice).toBase(
     market.quoteToken.decimals
@@ -912,7 +285,7 @@ export const calculateLiquidationPrice = ({
   quantity: string
   margin: string
   orderType: DerivativeOrderSide
-  market: UiDerivativeMarket
+  market: UiBaseDerivativeMarket
 }): BigNumberInBase => {
   if (!price || !quantity || !margin) {
     return ZERO_IN_BASE
@@ -947,7 +320,7 @@ export const calculateWorstExecutionPriceFromOrderbook = ({
   amount
 }: {
   records: UiPriceLevel[]
-  market: UiDerivativeMarket
+  market: UiDerivativeMarketWithTokenMeta
   amount: BigNumberInBase
 }): BigNumberInBase => {
   let remainAmountToFill = amount
@@ -976,7 +349,7 @@ export const calculateAverageExecutionPriceFromOrderbook = ({
   amount
 }: {
   records: UiPriceLevel[]
-  market: UiDerivativeMarket
+  market: UiDerivativeMarketWithTokenMeta
   amount: BigNumberInBase
 }): BigNumberInBase => {
   const { sum, remainAmountToFill } = records.reduce(
@@ -1010,7 +383,7 @@ export const getApproxAmountForMarketOrder = ({
   percent?: number
   slippage: number
   leverage: string
-  market: UiDerivativeMarket
+  market: UiDerivativeMarketWithTokenMeta
 }) => {
   const fee = new BigNumberInBase(market.takerFeeRate)
   const availableMargin = new BigNumberInBase(margin).times(percent)

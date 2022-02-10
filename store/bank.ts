@@ -1,18 +1,18 @@
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { actionTree, getterTree } from 'typed-vuex'
-import {
-  fetchBalances,
-  fetchBalancesWithTokenMetaData,
-  fetchIbcSupplyWithTokenMeta,
-  transfer
-} from '~/app/services/bank'
-import { backupPromiseCall } from '~/app/utils/async'
 import {
   BankBalances,
   BankBalanceWithTokenMetaData,
   IbcBankBalanceWithTokenMetaData,
-  Token
-} from '~/types'
+  Token,
+  TokenTransformer
+} from '@injectivelabs/ui-common'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { actionTree, getterTree } from 'typed-vuex'
+import {
+  bankActionServiceFactory,
+  bankService,
+  tokenService
+} from '~/app/services'
+import { backupPromiseCall } from '~/app/utils/async'
 
 const initialStateFactory = () => ({
   balances: {} as BankBalances,
@@ -83,7 +83,7 @@ export const actions = actionTree(
         return
       }
 
-      const { bankBalances, ibcBankBalances } = await fetchBalances(
+      const { bankBalances, ibcBankBalances } = await bankService.fetchBalances(
         injectiveAddress
       )
 
@@ -99,10 +99,23 @@ export const actions = actionTree(
         return
       }
 
-      commit(
-        'setBalancesWithTokenMetaData',
-        await fetchBalancesWithTokenMetaData(balances)
-      )
+      const balancesWithTokenMeta = (
+        await Promise.all(
+          Object.keys(balances).map(async (denom) => {
+            const tokenMeta = await tokenService.getTokenMetaDataWithIbc(denom)
+
+            return {
+              denom,
+              balance: balances[denom],
+              token: TokenTransformer.tokenMetaToToken(tokenMeta, denom)
+            }
+          })
+        )
+      ).filter(
+        (balance) => balance.token !== undefined
+      ) as BankBalanceWithTokenMetaData[]
+
+      commit('setBalancesWithTokenMetaData', balancesWithTokenMeta)
     },
 
     async fetchIbcBalancesWithTokenMetaData({ state, commit }) {
@@ -113,10 +126,28 @@ export const actions = actionTree(
         return
       }
 
-      commit(
-        'setIbcBalancesWithTokenMetaData',
-        await fetchIbcSupplyWithTokenMeta(ibcBalances)
-      )
+      const ibcBalancesWithTokenMeta = (
+        await Promise.all(
+          Object.keys(ibcBalances).map(async (denom) => {
+            const { baseDenom, path } = await tokenService.fetchDenomTrace(
+              denom
+            )
+            const tokenMeta = tokenService.getTokenMetaDataBySymbol(baseDenom)
+
+            return {
+              denom,
+              baseDenom,
+              balance: ibcBalances[denom],
+              channelId: path.replace('transfer/', ''),
+              token: TokenTransformer.tokenMetaToToken(tokenMeta, denom)
+            }
+          })
+        )
+      ).filter(
+        (balance) => balance.token !== undefined
+      ) as IbcBankBalanceWithTokenMetaData[]
+
+      commit('setIbcBalancesWithTokenMetaData', ibcBalancesWithTokenMeta)
     },
 
     async transfer(
@@ -138,6 +169,7 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const bankActionService = bankActionServiceFactory()
 
       if (!address || !isUserWalletConnected) {
         return
@@ -145,12 +177,12 @@ export const actions = actionTree(
 
       await this.app.$accessor.wallet.validate()
 
-      await transfer({
+      await bankActionService.transfer({
         address,
         injectiveAddress,
         destination,
         denom,
-        amount: amount.toWei(token.decimals)
+        amount: amount.toWei(token.decimals).toFixed()
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())

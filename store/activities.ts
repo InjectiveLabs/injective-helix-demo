@@ -1,29 +1,28 @@
 import { actionTree, getterTree } from 'typed-vuex'
 import { SpotOrderState } from '@injectivelabs/spot-consumer'
-import { DerivativeOrderState } from '@injectivelabs/derivatives-consumer'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { StreamOperation } from '@injectivelabs/ts-types'
 import {
-  UiSpotLimitOrder,
   UiDerivativeLimitOrder,
+  UiDerivativeTrade,
   UiPosition,
-  UiSpotTrade,
-  UiDerivativeTrade
-} from '~/types'
+  UiSpotLimitOrder,
+  UiSpotTrade
+} from '@injectivelabs/ui-common'
+import { DerivativeOrderState } from '@injectivelabs/derivatives-consumer'
 import {
-  fetchSubaccountSpotOrders,
-  fetchSubaccountDerivativeOrders,
   streamSubaccountSpotOrders,
-  fetchSubaccountSpotTrades,
-  fetchSubaccountDerivativeTrades,
   streamSubaccountDerivativeOrders,
   streamSubaccountPositions,
-  fetchSubaccountPositions,
   streamSubaccountDerivativeTrades,
   streamSubaccountSpotTrades
 } from '~/app/services/activities'
-import { batchCancelOrders as batchCancelDerivativeOrders } from '~/app/services/derivatives'
-import { batchCancelOrders as batchCancelSpotOrders } from '~/app/services/spot'
+import {
+  derivativeActionServiceFactory,
+  derivativeService,
+  spotActionServiceFactory,
+  spotService
+} from '~/app/services'
 
 const initialStateFactory = () => ({
   subaccountSpotOrders: [] as Array<UiSpotLimitOrder>,
@@ -366,7 +365,7 @@ export const actions = actionTree(
 
       commit(
         'setSubaccountSpotTrades',
-        await fetchSubaccountSpotTrades({
+        await spotService.fetchTrades({
           subaccountId: subaccount.subaccountId
         })
       )
@@ -382,7 +381,7 @@ export const actions = actionTree(
 
       commit(
         'setSubaccountDerivativeTrades',
-        await fetchSubaccountDerivativeTrades({
+        await derivativeService.fetchTrades({
           subaccountId: subaccount.subaccountId
         })
       )
@@ -398,7 +397,7 @@ export const actions = actionTree(
 
       commit(
         'setSubaccountSpotOrders',
-        await fetchSubaccountSpotOrders({
+        await spotService.fetchOrders({
           subaccountId: subaccount.subaccountId
         })
       )
@@ -414,7 +413,7 @@ export const actions = actionTree(
 
       commit(
         'setSubaccountDerivativeOrders',
-        await fetchSubaccountDerivativeOrders({
+        await derivativeService.fetchOrders({
           subaccountId: subaccount.subaccountId
         })
       )
@@ -428,7 +427,7 @@ export const actions = actionTree(
         return
       }
 
-      const positions = await fetchSubaccountPositions({
+      const positions = await derivativeService.fetchPositions({
         subaccountId: subaccount.subaccountId
       })
 
@@ -442,6 +441,7 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const spotActionService = spotActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount) {
         return
@@ -450,7 +450,7 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await batchCancelSpotOrders({
+      await spotActionService.batchCancelOrders({
         injectiveAddress,
         address,
         orders: orders.map((o) => ({
@@ -468,6 +468,7 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const derivativeActionService = derivativeActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount) {
         return
@@ -476,7 +477,7 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await batchCancelDerivativeOrders({
+      await derivativeActionService.batchCancelOrders({
         injectiveAddress,
         address,
         orders: orders.map((o) => ({

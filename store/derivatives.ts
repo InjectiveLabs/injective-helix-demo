@@ -1,56 +1,47 @@
 import { actionTree, getterTree } from 'typed-vuex'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { StreamOperation } from '@injectivelabs/ts-types'
-import { DerivativeOrderState } from '@injectivelabs/derivatives-consumer'
 import {
-  UiDerivativeOrderbook,
+  DerivativeTransformer,
   UiDerivativeLimitOrder,
-  UiDerivativeTrade,
-  UiDerivativeMarket,
-  DerivativeOrderSide,
-  UiPosition,
   UiDerivativeMarketSummary,
-  Change,
-  Token
-} from '~/types'
+  UiDerivativeMarketWithTokenMeta,
+  UiDerivativeOrderbook,
+  UiDerivativeTrade,
+  UiPosition
+} from '@injectivelabs/ui-common'
+import { Change } from '@injectivelabs/ui-common/dist/types'
 import {
-  fetchMarketOrderbook,
-  fetchMarketOrders,
-  fetchMarkets,
-  fetchMarket,
-  fetchMarketsSummary,
-  fetchMarketTrades,
-  submitLimitOrder,
-  submitMarketOrder,
-  cancelOrder,
+  DerivativeOrderSide,
+  DerivativeOrderState
+} from '@injectivelabs/derivatives-consumer'
+import {
   streamOrderbook,
   cancelMarketStreams,
   streamTrades,
-  fetchMarketSummary,
   streamSubaccountOrders,
   streamSubaccountTrades,
-  fetchMarketPositions,
   streamSubaccountPositions,
-  closeAllPosition,
-  closePosition,
-  fetchMarketMarkPrice,
-  streamMarketMarkPrice,
-  batchCancelOrders,
-  addMarginToPosition,
-  validateNotionalRestrictions,
-  closePositionAndReduceOnlyOrders
+  streamMarketMarkPrice
 } from '~/app/services/derivatives'
 import {
+  FEE_RECIPIENT,
   ORDERBOOK_STREAMING_ENABLED,
   ZERO_IN_BASE,
   ZERO_TO_STRING
 } from '~/app/utils/constants'
 import { zeroDerivativeMarketSummary } from '~/app/utils/helpers'
+import {
+  derivativeActionServiceFactory,
+  derivativeService,
+  tokenService
+} from '~/app/services'
+import { derivatives as allowedPerpetualMarkets } from '~/routes.config'
 
 const initialStateFactory = () => ({
-  markets: [] as UiDerivativeMarket[],
+  markets: [] as UiDerivativeMarketWithTokenMeta[],
   marketsSummary: [] as UiDerivativeMarketSummary[],
-  market: undefined as UiDerivativeMarket | undefined,
+  market: undefined as UiDerivativeMarketWithTokenMeta | undefined,
   marketMarkPrice: ZERO_TO_STRING as string,
   marketSummary: undefined as UiDerivativeMarketSummary | undefined,
   orderbook: undefined as UiDerivativeOrderbook | undefined,
@@ -63,9 +54,9 @@ const initialStateFactory = () => ({
 const initialState = initialStateFactory()
 
 export const state = () => ({
-  markets: initialState.markets as UiDerivativeMarket[],
+  markets: initialState.markets as UiDerivativeMarketWithTokenMeta[],
   marketsSummary: initialState.marketsSummary as UiDerivativeMarketSummary[],
-  market: initialState.market as UiDerivativeMarket | undefined,
+  market: initialState.market as UiDerivativeMarketWithTokenMeta | undefined,
   marketSummary: initialState.marketSummary as
     | UiDerivativeMarketSummary
     | undefined,
@@ -128,7 +119,10 @@ export const getters = getterTree(state, {
 })
 
 export const mutations = {
-  setMarket(state: DerivativeStoreState, market: UiDerivativeMarket) {
+  setMarket(
+    state: DerivativeStoreState,
+    market: UiDerivativeMarketWithTokenMeta
+  ) {
     state.market = market
   },
 
@@ -155,7 +149,10 @@ export const mutations = {
     state.subaccountTrades = initialState.subaccountTrades
   },
 
-  setMarkets(state: DerivativeStoreState, markets: UiDerivativeMarket[]) {
+  setMarkets(
+    state: DerivativeStoreState,
+    markets: UiDerivativeMarketWithTokenMeta[]
+  ) {
     state.markets = markets
   },
 
@@ -302,9 +299,26 @@ export const actions = actionTree(
     },
 
     async init({ commit }) {
-      const markets = await fetchMarkets()
+      const markets = await derivativeService.fetchMarkets()
+      const marketsWithTokenMeta = await tokenService.getDerivativeMarketsWithTokenMeta(
+        markets
+      )
+      const uiMarkets = DerivativeTransformer.derivativeMarketsToUiSpotMarkets(
+        marketsWithTokenMeta
+      )
+      // Only include markets that we pre-defined to generate static routes for
+      const uiMarketsWithTokenMeta = uiMarkets
+        .filter((market) => {
+          return allowedPerpetualMarkets.includes(market.slug)
+        })
+        .sort((a, b) => {
+          return (
+            allowedPerpetualMarkets.indexOf(a.slug) -
+            allowedPerpetualMarkets.indexOf(b.slug)
+          )
+        })
 
-      commit('setMarkets', markets)
+      commit('setMarkets', uiMarketsWithTokenMeta)
 
       const marketsSummary = await fetchMarketsSummary()
       const marketSummaryNotExists =
@@ -336,12 +350,21 @@ export const actions = actionTree(
       }
 
       commit('setMarket', market)
-      commit('setOrderbook', await fetchMarketOrderbook(market.marketId))
-      commit('setMarketSummary', await fetchMarketSummary(market.marketId))
-      commit('setMarketMarkPrice', await fetchMarketMarkPrice(market))
+      commit(
+        'setOrderbook',
+        await derivativeService.fetchOrderbook(market.marketId)
+      )
+      commit(
+        'setMarketSummary',
+        await derivativeService.fetchMarketSummary(market.marketId)
+      )
+      commit(
+        'setMarketMarkPrice',
+        await derivativeService.fetchMarketMarkPrice(market)
+      )
       commit(
         'setTrades',
-        await fetchMarketTrades({
+        await derivativeService.fetchTrades({
           marketId: market.marketId
         })
       )
@@ -371,7 +394,10 @@ export const actions = actionTree(
         return
       }
 
-      commit('setOrderbook', await fetchMarketOrderbook(market.marketId))
+      commit(
+        'setOrderbook',
+        await derivativeService.fetchOrderbook(market.marketId)
+      )
     },
 
     streamOrderbook({ commit, state }) {
@@ -558,7 +584,7 @@ export const actions = actionTree(
 
       commit(
         'setSubaccountOrders',
-        await fetchMarketOrders({
+        await derivativeService.fetchOrders({
           marketId: market.marketId,
           subaccountId: subaccount.subaccountId
         })
@@ -578,7 +604,7 @@ export const actions = actionTree(
         return
       }
 
-      const [position] = await fetchMarketPositions({
+      const [position] = await derivativeService.fetchPositions({
         marketId: market.marketId,
         subaccountId: subaccount.subaccountId
       })
@@ -599,7 +625,7 @@ export const actions = actionTree(
         return
       }
 
-      const trades = await fetchMarketTrades({
+      const trades = await derivativeService.fetchTrades({
         marketId: market.marketId,
         subaccountId: subaccount.subaccountId
       })
@@ -646,7 +672,12 @@ export const actions = actionTree(
         return
       }
 
-      commit('setMarket', await fetchMarket(market.marketId))
+      const updatedMarket = await derivativeService.fetchMarket(market.marketId)
+
+      commit('setMarket', {
+        ...updatedMarket,
+        ...market
+      })
     },
 
     async fetchSubaccountMarketTrades({ state, commit }) {
@@ -660,22 +691,11 @@ export const actions = actionTree(
 
       commit(
         'setSubaccountTrades',
-        await fetchMarketTrades({
+        await derivativeService.fetchTrades({
           marketId: market.marketId,
           subaccountId: subaccount.subaccountId
         })
       )
-    },
-
-    async validateNotionalRestrictions(
-      _,
-      {
-        amount,
-        price,
-        token
-      }: { amount: BigNumberInBase; price: BigNumberInBase; token: Token }
-    ) {
-      await validateNotionalRestrictions({ amount, price, token })
     },
 
     async cancelOrder(_, order: UiDerivativeLimitOrder) {
@@ -685,6 +705,7 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const derivativeActionService = derivativeActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount) {
         return
@@ -693,7 +714,7 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await cancelOrder({
+      await derivativeActionService.cancelOrder({
         injectiveAddress,
         address,
         orderHash: order.orderHash,
@@ -710,6 +731,7 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const derivativeActionService = derivativeActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount || !market) {
         return
@@ -718,7 +740,7 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await batchCancelOrders({
+      await derivativeActionService.batchCancelOrders({
         injectiveAddress,
         address,
         orders: orders.map((o) => ({
@@ -752,6 +774,7 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const derivativeActionService = derivativeActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount || !market) {
         return
@@ -759,13 +782,8 @@ export const actions = actionTree(
 
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
-      await this.app.$accessor.derivatives.validateNotionalRestrictions({
-        price,
-        amount: quantity,
-        token: market.quoteToken
-      })
 
-      await submitLimitOrder({
+      await derivativeActionService.submitLimitOrder({
         price,
         reduceOnly,
         quantity,
@@ -774,6 +792,7 @@ export const actions = actionTree(
         injectiveAddress,
         address,
         market,
+        feeRecipient: FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
       })
     },
@@ -801,6 +820,7 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const derivativeActionService = derivativeActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount || !market) {
         return
@@ -808,13 +828,8 @@ export const actions = actionTree(
 
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
-      await this.app.$accessor.derivatives.validateNotionalRestrictions({
-        price,
-        amount: quantity,
-        token: market.quoteToken
-      })
 
-      await submitMarketOrder({
+      await derivativeActionService.submitMarketOrder({
         quantity,
         reduceOnly,
         margin,
@@ -823,6 +838,7 @@ export const actions = actionTree(
         injectiveAddress,
         address,
         market,
+        feeRecipient: FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
       })
     },
@@ -835,7 +851,7 @@ export const actions = actionTree(
         price,
         orderType
       }: {
-        market?: UiDerivativeMarket
+        market?: UiDerivativeMarketWithTokenMeta
         price: BigNumberInBase
         quantity: BigNumberInBase
         orderType: DerivativeOrderSide
@@ -848,6 +864,7 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const derivativeActionService = derivativeActionServiceFactory()
 
       if (
         !isUserWalletConnected ||
@@ -860,13 +877,14 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await closePosition({
+      await derivativeActionService.closePosition({
         quantity,
         price,
         injectiveAddress,
         address,
         orderType,
-        market: (currentMarket || market) as UiDerivativeMarket,
+        feeRecipient: FEE_RECIPIENT,
+        market: (currentMarket || market) as UiDerivativeMarketWithTokenMeta,
         subaccountId: subaccount.subaccountId
       })
     },
@@ -879,7 +897,7 @@ export const actions = actionTree(
         price,
         orderType
       }: {
-        market?: UiDerivativeMarket
+        market?: UiDerivativeMarketWithTokenMeta
         price: BigNumberInBase
         quantity: BigNumberInBase
         orderType: DerivativeOrderSide
@@ -893,6 +911,7 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const derivativeActionService = derivativeActionServiceFactory()
 
       if (
         !isUserWalletConnected ||
@@ -905,13 +924,14 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await closePosition({
+      await derivativeActionService.closePosition({
         quantity,
         price,
         injectiveAddress,
         address,
         orderType,
-        market: (currentMarket || market) as UiDerivativeMarket,
+        feeRecipient: FEE_RECIPIENT,
+        market: (currentMarket || market) as UiDerivativeMarketWithTokenMeta,
         subaccountId: subaccount.subaccountId
       })
     },
@@ -922,7 +942,7 @@ export const actions = actionTree(
         positions
       }: {
         positions: {
-          market: UiDerivativeMarket
+          market: UiDerivativeMarketWithTokenMeta
           orderType: DerivativeOrderSide
           price: BigNumberInBase
           quantity: BigNumberInBase
@@ -935,6 +955,7 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const derivativeActionService = derivativeActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount || positions.length === 0) {
         return
@@ -943,10 +964,11 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await closeAllPosition({
+      await derivativeActionService.closeAllPosition({
         positions,
         injectiveAddress,
         address,
+        feeRecipient: FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
       })
     },
@@ -957,7 +979,7 @@ export const actions = actionTree(
         market,
         amount
       }: {
-        market: UiDerivativeMarket
+        market: UiDerivativeMarketWithTokenMeta
         amount: BigNumberInBase
       }
     ) {
@@ -967,6 +989,7 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const derivativeActionService = derivativeActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount || !market) {
         return
@@ -975,10 +998,11 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await addMarginToPosition({
+      await derivativeActionService.addMarginToPosition({
         injectiveAddress,
         address,
         market,
+        feeRecipient: FEE_RECIPIENT,
         amount: amount.toWei(market.quoteToken.decimals),
         srcSubaccountId: subaccount.subaccountId,
         dstSubaccountId: subaccount.subaccountId

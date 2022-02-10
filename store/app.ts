@@ -7,7 +7,6 @@ import {
   SECONDS_IN_A_DAY,
   VPN_PROXY_VALIDATION_PERIOD
 } from '~/app/utils/constants'
-import { fetchGasPrice } from '~/app/services/gas'
 import { Locale, english } from '~/locales'
 import { AppState, GeoLocation } from '~/types'
 import {
@@ -18,6 +17,7 @@ import {
 } from '~/app/services/region'
 import { app } from '~/app/singletons/App'
 import { todayInSeconds } from '~/app/utils/time'
+import { gasService } from '~/app/services'
 
 export interface UserBasedState {
   vpnOrProxyUsageValidationTimestamp: number
@@ -126,7 +126,7 @@ export const actions = actionTree(
     },
 
     async fetchGasPrice({ commit }) {
-      commit('setGasPrice', await fetchGasPrice())
+      commit('setGasPrice', await gasService.fetchGasPrice())
     },
 
     async fetchGeoLocation({ state, commit }) {

@@ -36,7 +36,6 @@ import MarketSlideout from '~/components/partials/common/markets/slideout.vue'
 import SidebarMobile from '~/components/layout/sidebar-mobile.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
 import VModalAuctionCountdown from '~/components/partials/modals/auction-countdown.vue'
-import { hardcodedAuctionRound, hardcodedEndTime } from '~/store/auction'
 import { SHOW_AUCTION_COUNTDOWN } from '~/app/utils/constants'
 import { Modal } from '~/types/enums'
 

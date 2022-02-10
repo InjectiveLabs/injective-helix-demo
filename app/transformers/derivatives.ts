@@ -130,26 +130,3 @@ export const marketsSummaryToUiMarketsSummary = (
     return marketSummaryToUiMarketSummary(oldSummary, actualNewSummary)
   })
 }
-
-export const orderTypeToGrpcOrderType = (
-  orderType: DerivativeOrderSide
-): DerivativeMarketMap => {
-  switch (orderType) {
-    case DerivativeOrderSide.Unspecified:
-      return DerivativeMarketMap.UNSPECIFIED
-    case DerivativeOrderSide.Buy:
-      return DerivativeMarketMap.BUY
-    case DerivativeOrderSide.Sell:
-      return DerivativeMarketMap.SELL
-    case DerivativeOrderSide.StopBuy:
-      return DerivativeMarketMap.STOP_BUY
-    case DerivativeOrderSide.StopSell:
-      return DerivativeMarketMap.STOP_SELL
-    case DerivativeOrderSide.TakeBuy:
-      return DerivativeMarketMap.TAKE_BUY
-    case DerivativeOrderSide.TakeSell:
-      return DerivativeMarketMap.TAKE_SELL
-    default:
-      return DerivativeMarketMap.BUY
-  }
-}

@@ -1,22 +1,21 @@
+import {
+  INJ_COIN_GECKO_ID,
+  Token,
+  TokenWithBalance,
+  UiDerivativeMarketWithTokenMeta,
+  UiSpotMarketWithTokenMeta,
+  UNLIMITED_ALLOWANCE
+} from '@injectivelabs/ui-common'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
 import {
-  withdraw,
-  getTokenBalanceAndAllowance,
-  getIbcTokenBalanceAndAllowance,
-  setTokenAllowance,
-  transfer,
-  getUsdtTokenPriceFromCoinGecko,
-  validateTransferRestrictions
-} from '~/app/services/tokens'
+  peggyActionServiceFactory,
+  tokenCoinGeckoService,
+  tokenErc20ActionServiceFactory,
+  tokenErc20Service,
+  tokenService
+} from '~/app/services'
 import { backupPromiseCall } from '~/app/utils/async'
-import { UNLIMITED_ALLOWANCE, INJ_COIN_GECKO_ID } from '~/app/utils/constants'
-import {
-  Token,
-  TokenWithBalance,
-  UiDerivativeMarket,
-  UiSpotMarket
-} from '~/types'
 
 const initialStateFactory = () => ({
   erc20TokensWithBalanceFromBank: [] as TokenWithBalance[],
@@ -144,7 +143,7 @@ export const actions = actionTree(
 
       const ercTokensWithBalanceAndAllowance = await Promise.all(
         newBalancesWithTokenMetaData.map(async ({ token }) => {
-          return (await getTokenBalanceAndAllowance({
+          return (await tokenErc20Service.fetchTokenBalanceAndAllowance({
             address,
             token
           })) as TokenWithBalance
@@ -153,9 +152,10 @@ export const actions = actionTree(
 
       const ibcTokensWithBalanceFromBank = await Promise.all(
         newIbcBalancesWithTokenMetaData.map(async ({ token }) => {
-          return (await getIbcTokenBalanceAndAllowance(
+          return (await tokenErc20Service.fetchTokenBalanceAndAllowance({
+            address: token.address,
             token
-          )) as TokenWithBalance
+          })) as TokenWithBalance
         })
       )
 
@@ -185,7 +185,9 @@ export const actions = actionTree(
 
       const tokensPriceInUsd = await Promise.all(
         newBalancesWithTokenMetaData.map(async ({ token }) => {
-          return await getUsdtTokenPriceFromCoinGecko(token.coinGeckoId)
+          return await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
+            token.coinGeckoId
+          )
         })
       )
 
@@ -216,7 +218,10 @@ export const actions = actionTree(
       }
 
       const market =
-        spotMarket || (derivativeMarket as UiSpotMarket | UiDerivativeMarket)
+        spotMarket ||
+        (derivativeMarket as
+          | UiSpotMarketWithTokenMeta
+          | UiDerivativeMarketWithTokenMeta)
       const { baseToken, quoteToken } = market
 
       if (
@@ -226,14 +231,18 @@ export const actions = actionTree(
         return
       }
 
-      const baseTokenWithBalance = (await getTokenBalanceAndAllowance({
-        address,
-        token: baseToken
-      })) as TokenWithBalance
-      const quoteTokenWithBalance = (await getTokenBalanceAndAllowance({
-        address,
-        token: quoteToken
-      })) as TokenWithBalance
+      const baseTokenWithBalance = (await tokenErc20Service.fetchTokenBalanceAndAllowance(
+        {
+          address,
+          token: baseToken
+        }
+      )) as TokenWithBalance
+      const quoteTokenWithBalance = (await tokenErc20Service.fetchTokenBalanceAndAllowance(
+        {
+          address,
+          token: quoteToken
+        }
+      )) as TokenWithBalance
 
       commit('setTokensWithBalance', {
         baseTokenWithBalance,
@@ -251,14 +260,18 @@ export const actions = actionTree(
 
       const { baseToken, quoteToken } = market
 
-      const baseTokenWithBalance = (await getTokenBalanceAndAllowance({
-        address,
-        token: baseToken
-      })) as TokenWithBalance
-      const quoteTokenWithBalance = (await getTokenBalanceAndAllowance({
-        address,
-        token: quoteToken
-      })) as TokenWithBalance
+      const baseTokenWithBalance = (await tokenErc20Service.fetchTokenBalanceAndAllowance(
+        {
+          address,
+          token: baseToken
+        }
+      )) as TokenWithBalance
+      const quoteTokenWithBalance = (await tokenErc20Service.fetchTokenBalanceAndAllowance(
+        {
+          address,
+          token: quoteToken
+        }
+      )) as TokenWithBalance
 
       commit('setTokensWithBalance', {
         baseTokenWithBalance,
@@ -276,10 +289,12 @@ export const actions = actionTree(
 
       const { quoteToken } = market
 
-      const quoteTokenWithBalance = (await getTokenBalanceAndAllowance({
-        address,
-        token: quoteToken
-      })) as TokenWithBalance
+      const quoteTokenWithBalance = (await tokenErc20Service.fetchTokenBalanceAndAllowance(
+        {
+          address,
+          token: quoteToken
+        }
+      )) as TokenWithBalance
 
       commit('setQuoteTokenWithBalance', quoteTokenWithBalance)
     },
@@ -287,7 +302,9 @@ export const actions = actionTree(
     async getInjUsdPrice({ commit }) {
       commit(
         'setInjUsdPrice',
-        await getUsdtTokenPriceFromCoinGecko(INJ_COIN_GECKO_ID)
+        await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
+          INJ_COIN_GECKO_ID
+        )
       )
     },
 
@@ -297,15 +314,15 @@ export const actions = actionTree(
     ) {
       const { address } = this.app.$accessor.wallet
       const { gasPrice } = this.app.$accessor.app
-      const amount = UNLIMITED_ALLOWANCE
+      const tokenErc20ActionService = tokenErc20ActionServiceFactory()
 
       await this.app.$accessor.wallet.validate()
 
-      await setTokenAllowance({
+      await tokenErc20ActionService.setTokenAllowance({
         address,
         tokenAddress,
         gasPrice,
-        amount: (amount as BigNumberInWei).toFixed()
+        amount: UNLIMITED_ALLOWANCE.toFixed()
       })
 
       const { baseTokenWithBalance, quoteTokenWithBalance } = state
@@ -325,30 +342,28 @@ export const actions = actionTree(
       }
     },
 
-    async validateTransferRestrictions(_, { amount, token }) {
-      await validateTransferRestrictions(amount, token)
-    },
-
     async transfer(
       _,
       { amount, token }: { amount: BigNumberInBase; token: TokenWithBalance }
     ) {
-      const { address, isUserWalletConnected } = this.app.$accessor.wallet
+      const {
+        address,
+        injectiveAddress,
+        isUserWalletConnected
+      } = this.app.$accessor.wallet
       const { gasPrice } = this.app.$accessor.app
+      const peggyActionService = peggyActionServiceFactory()
 
       if (!address || !isUserWalletConnected) {
         return
       }
 
       await this.app.$accessor.wallet.validate()
-      await this.app.$accessor.token.validateTransferRestrictions({
-        amount,
-        token
-      })
 
-      await transfer({
+      await peggyActionService.transfer({
         address,
         gasPrice,
+        destinationAddress: injectiveAddress,
         denom: token.denom,
         amount: new BigNumberInBase(
           amount.toFixed(3, BigNumberInBase.ROUND_DOWN)
@@ -379,6 +394,7 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const peggyActionService = peggyActionServiceFactory()
 
       if (!address || !isUserWalletConnected) {
         return
@@ -386,15 +402,15 @@ export const actions = actionTree(
 
       await this.app.$accessor.wallet.validate()
 
-      await withdraw({
+      await peggyActionService.withdraw({
         address,
         injectiveAddress,
         denom: token.denom,
         destinationAddress: address,
-        amount: amount.toWei(token.decimals),
+        amount: amount.toWei(token.decimals).toFixed(0),
         bridgeFee: new BigNumberInWei(
           bridgeFee.toWei(token.decimals).toFixed(0)
-        )
+        ).toFixed(0)
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())

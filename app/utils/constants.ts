@@ -14,8 +14,7 @@ export const PRICE_BAND_ENABLED: boolean =
   process.env.PRICE_BAND_ENABLED !== 'false' // Enabled by default
 export const GAS_FREE_DEPOSIT_REBATE_ENABLED: boolean =
   process.env.GAS_FREE_DEPOSIT_REBATE_ENABLED === 'true'
-export const TRANSFER_RESTRICTIONS_ENABLED: boolean =
-  process.env.TRANSFER_RESTRICTIONS_ENABLED === 'true'
+
 export const GEO_IP_RESTRICTIONS_ENABLED: boolean =
   process.env.GEO_IP_RESTRICTIONS_ENABLED === 'true'
 export const SHOW_AUCTION_COUNTDOWN: boolean =
@@ -42,7 +41,6 @@ export const GWEI_IN_WEI: BigNumber = new BigNumber(1000000000)
 
 export const BASE_URL: string = process.env.APP_BASE_URL
 export const FEE_RECIPIENT: string = process.env.APP_FEE_RECIPIENT
-export const VALIDATOR_ADDRESS: string = process.env.APP_VALIDATOR_ADDRESS
 export const APP_EXCHANGE_API_ENDPOINT: string =
   process.env.APP_EXCHANGE_API_ENDPOINT || ''
 export const APP_SENTRY_GRPC_ENDPOINT: string =
@@ -78,8 +76,6 @@ export const DEFAULT_MAX_PRICE_BAND_DIFFERENCE = new BigNumber(400) // +400%
 export const DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS = 25
 
 export const MAX_DISPLAYABLE_NUMBER = new BigNumberInBase(1_000_000_000)
-export const MAXIMUM_TRANSFER_ALLOWED = 1000
-export const MAXIMUM_NOTIONAL_ALLOWED = 5000
 export const INJECTIVE_DENOM = 'inj'
 export const INJ_FEE_BUFFER = 0.01
 export const GAS_LIMIT_MULTIPLIER = 1.2

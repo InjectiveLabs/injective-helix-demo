@@ -1,24 +1,25 @@
+import { AccountPortfolio } from '@injectivelabs/subaccount-consumer'
+import {
+  SubaccountBalanceWithTokenMetaData,
+  TokenTransformer,
+  UiSubaccount,
+  SubaccountTransformer,
+  UiSubaccountBalance,
+  Token
+} from '@injectivelabs/ui-common'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
 import {
-  fetchSubaccounts,
-  fetchSubaccount,
-  fetchSubaccountBalances,
-  deposit,
-  withdraw,
+  subaccountActionServiceFactory,
+  subaccountService,
+  tokenService
+} from '~/app/services'
+import {
   streamSubaccountBalances,
-  fetchAccountPortfolio,
   cancelSubaccountStreams
 } from '~/app/services/account'
-import { grpcSubaccountBalanceToUiSubaccountBalance } from '~/app/transformers/account'
 import { backupPromiseCall } from '~/app/utils/async'
 import { ZERO_TO_STRING } from '~/app/utils/constants'
-import { SubaccountBalanceWithTokenMetaData, Token } from '~/types'
-import {
-  UiSubaccount,
-  AccountPortfolio,
-  UiSubaccountBalance
-} from '~/types/subaccount'
 
 const initialStateFactory = () => ({
   subaccountIds: [] as string[],
@@ -118,7 +119,9 @@ export const actions = actionTree(
         return
       }
 
-      const subaccountIds = await fetchSubaccounts(injectiveAddress)
+      const subaccountIds = await subaccountService.fetchSubaccounts(
+        injectiveAddress
+      )
 
       if (subaccountIds.length === 0) {
         return
@@ -127,7 +130,10 @@ export const actions = actionTree(
       const [subaccountId] = subaccountIds
 
       commit('setSubacccountIds', subaccountIds)
-      commit('setSubaccount', await fetchSubaccount(subaccountId))
+      commit(
+        'setSubaccount',
+        await subaccountService.fetchSubaccount(subaccountId)
+      )
 
       if (this.app.context.route.name === 'spot-spot') {
         await this.app.$accessor.spot.fetchSubaccountMarketTrades()
@@ -150,9 +156,14 @@ export const actions = actionTree(
 
     async fetchSubaccountsBalances({ commit, state }) {
       if (state.subaccount && state.subaccount.balances) {
+        const subaccountBalances = state.subaccount.balances
+        const subaccountBalancesWithTokenMeta = await tokenService.getSubaccountBalancesWithTokenMeta(
+          subaccountBalances
+        )
+
         commit(
           'setSubaccountBalancesWithTokenMetaData',
-          await fetchSubaccountBalances(state.subaccount.balances)
+          subaccountBalancesWithTokenMeta
         )
       }
     },
@@ -167,7 +178,10 @@ export const actions = actionTree(
 
       const { subaccountId } = subaccount
 
-      commit('setSubaccount', await fetchSubaccount(subaccountId))
+      commit(
+        'setSubaccount',
+        await subaccountService.fetchSubaccount(subaccountId)
+      )
     },
 
     async fetchAccountPortfolio({ commit, state }) {
@@ -182,7 +196,10 @@ export const actions = actionTree(
         await this.app.$accessor.account.init()
       }
 
-      commit('setPortfolioValue', await fetchAccountPortfolio(injectiveAddress))
+      commit(
+        'setPortfolioValue',
+        await subaccountService.fetchAccountPortfolio(injectiveAddress)
+      )
     },
 
     streamSubaccountBalances({ commit, state }) {
@@ -201,7 +218,9 @@ export const actions = actionTree(
 
           commit(
             'setSubaccountBalance',
-            grpcSubaccountBalanceToUiSubaccountBalance(balance)
+            SubaccountTransformer.subaccountBalanceToUiSubaccountBalance(
+              balance
+            )
           )
         }
       })
@@ -217,6 +236,7 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const subaccountActionService = subaccountActionServiceFactory()
 
       if (!subaccount || !isUserWalletConnected) {
         return
@@ -225,12 +245,12 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await deposit({
+      await subaccountActionService.deposit({
         address,
         injectiveAddress,
         denom: token.denom,
         subaccountId: subaccount.subaccountId,
-        amount: amount.toWei(token.decimals)
+        amount: amount.toWei(token.decimals).toFixed(0)
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
@@ -249,6 +269,7 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const subaccountActionService = subaccountActionServiceFactory()
 
       if (!subaccount || !isUserWalletConnected) {
         return
@@ -257,12 +278,12 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await withdraw({
+      await subaccountActionService.withdraw({
         address,
         injectiveAddress,
         denom: token.denom,
         subaccountId: subaccount.subaccountId,
-        amount: amount.toWei(token.decimals)
+        amount: amount.toWei(token.decimals).toFixed(0)
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())

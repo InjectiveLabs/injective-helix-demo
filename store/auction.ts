@@ -2,10 +2,6 @@ import { actionTree } from 'typed-vuex'
 import { AuctionModuleState } from '@injectivelabs/chain-consumer'
 import { fetchAuctionModuleState } from '~/app/services/auction'
 
-// hard code auction round to optimize performance by skipping fetchAuction api call if auctionsViewed contains auctionRound
-export const hardcodedAuctionRound = 23
-export const hardcodedEndTime = 1639573200 * 1000
-
 const initialState = {
   auctionModuleState: undefined
 }

@@ -1,7 +1,6 @@
 import { HttpClient } from '@injectivelabs/utils'
 import { APP_GAS_REBATE_API } from '../utils/constants'
 import { explorerConsumer } from '~/app/singletons/ExplorerConsumer'
-import { apolloConsumer } from '~/app/singletons/ApolloConsumer'
 
 export const fetchUserTransactionMessages = async (address: string) => {
   const transactions = await explorerConsumer.fetchAccountTransactions({
@@ -24,14 +23,6 @@ export const fetchUserTransactionMessages = async (address: string) => {
     .reduce((allMessages, messages) => {
       return [...allMessages, ...messages]
     }, [])
-}
-
-export const fetchUserDeposits = async (address: string) => {
-  try {
-    return await apolloConsumer.fetchUserDeposits(address)
-  } catch (e) {
-    return []
-  }
 }
 
 export const redeem = async ({

@@ -10,7 +10,6 @@
       <v-nav-item :to="{ name: 'activities' }">
         {{ $t('activities.activities') }}
       </v-nav-item>
-      <!--
       <v-nav-item class="lg:hidden" :to="{ name: 'trade-and-earn' }">
         {{ $t('dmm.nav.tradingRewards') }}
       </v-nav-item>
@@ -27,7 +26,6 @@
       >
         {{ $t('Rewards') }}
       </v-nav-item-dummy>
-      -->
     </nav>
 
     <VPopperBox

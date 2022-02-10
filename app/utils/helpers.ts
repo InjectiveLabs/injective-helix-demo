@@ -3,7 +3,6 @@ import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from './constants'
-import { Change, UiDerivativeMarketSummary, UiSpotMarketSummary } from '~/types'
 import { app } from '~/app/singletons/App'
 
 export const getSignificantDecimalsFromNumber = (
@@ -65,38 +64,6 @@ export const getDecimalsFromNumber = (number: number | string): number => {
   return actualDecimals > UI_DEFAULT_MAX_DISPLAY_DECIMALS
     ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
     : actualDecimals
-}
-
-export const zeroDerivativeMarketSummary = (
-  marketId: string
-): UiDerivativeMarketSummary => {
-  return {
-    marketId,
-    change: NaN,
-    high: NaN,
-    low: NaN,
-    open: NaN,
-    price: NaN,
-    volume: NaN,
-    lastPrice: NaN,
-    lastPriceChange: Change.NoChange
-  }
-}
-
-export const zeroSpotMarketSummary = (
-  marketId: string
-): UiSpotMarketSummary => {
-  return {
-    marketId,
-    change: NaN,
-    high: NaN,
-    low: NaN,
-    open: NaN,
-    price: NaN,
-    volume: NaN,
-    lastPrice: NaN,
-    lastPriceChange: Change.NoChange
-  }
 }
 
 export const getChronosDatafeedEndpoint = (marketType: string): string => {
