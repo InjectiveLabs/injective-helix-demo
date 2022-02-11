@@ -10,9 +10,13 @@ import {
   CampaignRewardPool,
   FeeDiscountSchedule as BaseFeeDiscountSchedule
 } from '@injectivelabs/chain-consumer'
-import { Token } from '.'
+import { Token } from '@injectivelabs/ui-common'
 
 export interface FeeDiscountSchedule extends BaseFeeDiscountSchedule {
+  //
+}
+
+export interface FeeDiscountScheduleWithTokenMeta extends FeeDiscountSchedule {
   quoteTokenMeta: Token[]
 }
 

@@ -116,17 +116,15 @@
 import Vue from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
-import VSelectCustom from '~/components/inputs/select-custom.vue'
-import {
-  INJECTIVE_DENOM,
-  INJ_FEE_BUFFER,
-  UI_DEFAULT_DISPLAY_DECIMALS,
-  ZERO_IN_BASE
-} from '~/app/utils/constants'
 import {
   BankBalanceWithTokenMetaData,
-  IbcBankBalanceWithTokenMetaData
-} from '~/types'
+  IbcBankBalanceWithTokenMetaData,
+  INJECTIVE_DENOM,
+  INJ_FEE_BUFFER,
+  ZERO_IN_BASE
+} from '@injectivelabs/ui-common'
+import VSelectCustom from '~/components/inputs/select-custom.vue'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {

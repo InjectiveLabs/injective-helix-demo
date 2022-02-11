@@ -86,11 +86,15 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
 import {
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+  SpotOrderSide,
+  UiSpotLimitOrder,
+  UiSpotMarketWithTokenMeta,
   ZERO_IN_BASE
+} from '@injectivelabs/ui-common'
+import {
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
-import { UiSpotMarket, SpotOrderSide, UiSpotLimitOrder } from '~/types'
 
 export default Vue.extend({
   props: {
@@ -110,7 +114,7 @@ export default Vue.extend({
   },
 
   computed: {
-    currentMarket(): UiSpotMarket | undefined {
+    currentMarket(): UiSpotMarketWithTokenMeta | undefined {
       return this.$accessor.spot.market
     },
 
@@ -118,7 +122,7 @@ export default Vue.extend({
       return this.$route.name === 'spot-spot'
     },
 
-    markets(): UiSpotMarket[] {
+    markets(): UiSpotMarketWithTokenMeta[] {
       const { isOnMarketPage } = this
 
       if (isOnMarketPage) {
@@ -128,7 +132,7 @@ export default Vue.extend({
       return this.$accessor.spot.markets
     },
 
-    market(): UiSpotMarket | undefined {
+    market(): UiSpotMarketWithTokenMeta | undefined {
       const { markets, currentMarket, isOnMarketPage, order } = this
 
       if (isOnMarketPage) {

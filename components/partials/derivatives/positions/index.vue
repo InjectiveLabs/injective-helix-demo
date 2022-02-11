@@ -13,8 +13,11 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status } from '@injectivelabs/utils'
+import {
+  UiDerivativeMarketWithTokenMeta,
+  UiPosition
+} from '@injectivelabs/ui-common'
 import Position from '~/components/partials/common/derivatives/position.vue'
-import { UiDerivativeMarket, UiPosition } from '~/types'
 import PositionTableHeader from '~/components/partials/common/derivatives/position-table.header.vue'
 
 export default Vue.extend({
@@ -34,7 +37,7 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    market(): UiDerivativeMarket | undefined {
+    market(): UiDerivativeMarketWithTokenMeta | undefined {
       return this.$accessor.derivatives.market
     },
 

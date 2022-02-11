@@ -38,15 +38,15 @@ import {
   Status,
   StatusType
 } from '@injectivelabs/utils'
-import VSubaccountBalance from './subaccount-balance.vue'
 import {
-  UiSpotMarket,
-  Modal,
-  UiDerivativeMarket,
+  UiSpotMarketWithTokenMeta,
+  UiDerivativeMarketWithTokenMeta,
+  ZERO_IN_BASE,
   MarketType,
   UiSubaccount
-} from '~/types'
-import { ZERO_IN_BASE } from '~/app/utils/constants'
+} from '@injectivelabs/ui-common'
+import VSubaccountBalance from './subaccount-balance.vue'
+import { Modal } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -60,11 +60,11 @@ export default Vue.extend({
   },
 
   computed: {
-    spotMarket(): UiSpotMarket | undefined {
+    spotMarket(): UiSpotMarketWithTokenMeta | undefined {
       return this.$accessor.spot.market
     },
 
-    derivativeMarket(): UiDerivativeMarket | undefined {
+    derivativeMarket(): UiDerivativeMarketWithTokenMeta | undefined {
       return this.$accessor.derivatives.market
     },
 
@@ -72,7 +72,10 @@ export default Vue.extend({
       return this.$accessor.account.subaccount
     },
 
-    market(): UiSpotMarket | UiDerivativeMarket | undefined {
+    market():
+      | UiSpotMarketWithTokenMeta
+      | UiDerivativeMarketWithTokenMeta
+      | undefined {
       const { spotMarket, derivativeMarket } = this
 
       return this.$route.name === 'spot-spot' ? spotMarket : derivativeMarket

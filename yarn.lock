@@ -1377,6 +1377,14 @@
     crc-32 "^1.2.0"
     ethereumjs-util "^7.1.0"
 
+"@ethereumjs/common@^2.6.1", "@ethereumjs/common@^2.6.2":
+  version "2.6.2"
+  resolved "https://registry.yarnpkg.com/@ethereumjs/common/-/common-2.6.2.tgz#eb006c9329c75c80f634f340dc1719a5258244df"
+  integrity sha512-vDwye5v0SVeuDky4MtKsu+ogkH2oFUV8pBKzH/eNBzT8oI91pKa8WyzDuYuxOQsgNgv5R34LfFDh2aaw3H4HbQ==
+  dependencies:
+    crc-32 "^1.2.0"
+    ethereumjs-util "^7.1.4"
+
 "@ethereumjs/tx@^3.2.1":
   version "3.3.0"
   resolved "https://registry.npmjs.org/@ethereumjs/tx/-/tx-3.3.0.tgz#14ed1b7fa0f28e1cd61e3ecbdab824205f6a4378"
@@ -1384,6 +1392,14 @@
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     ethereumjs-util "^7.1.0"
+
+"@ethereumjs/tx@^3.5.0":
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/@ethereumjs/tx/-/tx-3.5.0.tgz#783b0aeb08518b9991b23f5155763bbaf930a037"
+  integrity sha512-/+ZNbnJhQhXC83Xuvy6I9k4jT5sXiV0tMR9C+AzSSpcCV64+NB8dTE1m3x98RYMqb8+TLYWA+HML4F5lfXTlJw==
+  dependencies:
+    "@ethereumjs/common" "^2.6.1"
+    ethereumjs-util "^7.1.4"
 
 "@ethersproject/abi@5.0.7":
   version "5.0.7"
@@ -1844,10 +1860,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/contracts@^0.0.100":
-  version "0.0.100"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/contracts/-/contracts-0.0.100.tgz#72298d309315276a3a9112d836a32f47ba9a11f5"
-  integrity sha512-FoLP1jpxd29O9IiDot3HebQHNt4s0MxMNPoV4yoi0y4LVedyN8alzrXb45JJh/9qrwXtKAWhxWtq4CD7KPciqQ==
+"@injectivelabs/contracts@^0.0.101":
+  version "0.0.101"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/contracts/-/contracts-0.0.101.tgz#bc7317f64457d87d072b0365c9c0752b12205590"
+  integrity sha512-k+VnFmZ5c+Ej+BdX+8SpXata9LyhSdMghAmpMhKCiMXHLtv2o2zf+YNTLlQBfydBFLJ2vdOGX+NgozD79nVGew==
   dependencies:
     "@commitlint/cli" "^13.1.0"
     "@commitlint/config-conventional" "^13.1.0"
@@ -1855,7 +1871,7 @@
     "@injectivelabs/ts-types" "^0.0.38"
     "@injectivelabs/utils" "^0.0.54"
     "@injectivelabs/web3-contract-typings" "^0.1.13"
-    "@injectivelabs/web3-strategy" "^0.0.92"
+    "@injectivelabs/web3-strategy" "^0.0.93"
     "@types/ethereumjs-util" "^6.1.0"
     "@types/jest" "^27.0.1"
     "@types/node" "^16.9.2"
@@ -2015,14 +2031,6 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/ts-types@^0.0.25":
-  version "0.0.25"
-  resolved "https://registry.npmjs.org/@injectivelabs/ts-types/-/ts-types-0.0.25.tgz#c7f401fd27aedeab7776d767a6c3ce39b6d95ceb"
-  integrity sha512-wmJWcQ+RX+tHs2oCNXpSpZ8p0DIpcfP64Hl0CjzFkO3TsTPAGLheT8bQBQf386iNhaN2Hoo0CehNYM6JI88jVA==
-  dependencies:
-    link-module-alias "^1.2.0"
-    shx "^0.3.2"
-
 "@injectivelabs/ts-types@^0.0.38":
   version "0.0.38"
   resolved "https://registry.yarnpkg.com/@injectivelabs/ts-types/-/ts-types-0.0.38.tgz#a8da3aa8bd93e1bdd0e97ec2f0f4e77d0eeecc5f"
@@ -2051,17 +2059,17 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@injectivelabs/ui-common@^0.0.25":
-  version "0.0.25"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-common/-/ui-common-0.0.25.tgz#119d586ba6df8515557e31d21e95e3000da31ac6"
-  integrity sha512-V7t7oJs8QP9hCP90kIDPt7GQl9al0I5QXzYlv71v6/eB7obxO87KnIpjPurGqGuxpma4YM9/pohBROuN7NVNwA==
+"@injectivelabs/ui-common@^0.0.29":
+  version "0.0.29"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-common/-/ui-common-0.0.29.tgz#f3f538596fd1b3ffbe34093814fa97e978d8d240"
+  integrity sha512-oaYF7ihd1H6XQ/H2CIljRF9qvSk9BxVlRBzAIFrANmjIGbLeb4GmsaJFzu8/DhiroUHd5rtCpB8bkFbo7Rp2MA==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@improbable-eng/grpc-web" "^0.15.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.15.0"
     "@injectivelabs/alchemy-api" "^0.0.22"
     "@injectivelabs/chain-consumer" "^0.0.114"
-    "@injectivelabs/contracts" "^0.0.100"
+    "@injectivelabs/contracts" "^0.0.101"
     "@injectivelabs/derivatives-consumer" "^0.0.96"
     "@injectivelabs/exceptions" "^0.0.42"
     "@injectivelabs/exchange-consumer" "^0.0.138"
@@ -2072,7 +2080,7 @@
     "@injectivelabs/token-utils" "^0.0.17"
     "@injectivelabs/ts-types" "^0.0.38"
     "@injectivelabs/utils" "^0.0.54"
-    "@injectivelabs/web3-strategy" "^0.0.92"
+    "@injectivelabs/web3-strategy" "^0.0.93"
     bech32 "^2.0.0"
     date-fns "^2.28.0"
     ethereumjs-util "^7.1.4"
@@ -2115,12 +2123,14 @@
   dependencies:
     typescript "^4.0.5"
 
-"@injectivelabs/web3-strategy@^0.0.92":
-  version "0.0.92"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/web3-strategy/-/web3-strategy-0.0.92.tgz#b75eb931f70007a8a4818dcf8bf09c7fba80c500"
-  integrity sha512-yGkKV6vOrrR1psdOTYz5Hq+Oyew/TQ/LjMP5lEyigyTz5s5HjlN/qIBcND2yX3QS0uwZKirJ+ruFvAYCeOhpqA==
+"@injectivelabs/web3-strategy@^0.0.93":
+  version "0.0.93"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/web3-strategy/-/web3-strategy-0.0.93.tgz#df91e8507c6816d18bb31667c047ad2d5b4e6b49"
+  integrity sha512-2a3dxrGM9KZ8/+yBRQnpg2qY8ZKS+mVvHFqHsGxPe+y4jXOB227BpRiWXBL0S3HDCXyymfuofDntaC9UlcFGaA==
   dependencies:
     "@alch/alchemy-web3" "^1.2.3"
+    "@ethereumjs/common" "^2.6.2"
+    "@ethereumjs/tx" "^3.5.0"
     "@injectivelabs/assert" "^0.0.38"
     "@injectivelabs/exceptions" "^0.0.42"
     "@injectivelabs/ts-types" "^0.0.38"
@@ -2131,13 +2141,11 @@
     "@ledgerhq/hw-transport-webhid" "^6.24.1"
     "@ledgerhq/hw-transport-webusb" "^6.24.1"
     "@types/eth-sig-util" "^2.1.1"
-    "@types/ethereumjs-tx" "^2.0.0"
     "@types/ethereumjs-util" "^6.1.0"
     "@types/hdkey" "^2.0.0"
     "@types/ledgerhq__hw-transport-webusb" "^4.70.1"
     eip1193-provider "^1.0.1"
     eth-sig-util "^3.0.1"
-    ethereumjs-tx "^2.1.2"
     ethereumjs-util "^7.1.0"
     hdkey "^2.0.1"
     link-module-alias "^1.2.0"
@@ -3182,13 +3190,6 @@
   integrity sha512-vYP1UD19i0532+eQY7vXHfAKCzAQiI6aoLvomqu+ZewzUX/jvDSr41JGl8zQ9dMbfiHPDhMFY26bScCyZ7vzlg==
   dependencies:
     "@types/node" "*"
-
-"@types/ethereumjs-tx@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@types/ethereumjs-tx/-/ethereumjs-tx-2.0.0.tgz#4a0671f9169e09b853fc08f39ad96c26aaec361e"
-  integrity sha512-98So26BLWAJ38SBx78SzLqhGKTFdM6iQlPKOL2gF/netwcZkq3cmUfod6XeKKZ/rBlQYrW2G84zZFrZSl0FqcA==
-  dependencies:
-    ethereumjs-tx "*"
 
 "@types/ethereumjs-util@^6.1.0":
   version "6.1.0"
@@ -7685,19 +7686,6 @@ ethereumjs-abi@^0.6.8:
     bn.js "^4.11.8"
     ethereumjs-util "^6.0.0"
 
-ethereumjs-common@^1.5.0:
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/ethereumjs-common/-/ethereumjs-common-1.5.2.tgz#2065dbe9214e850f2e955a80e650cb6999066979"
-  integrity sha512-hTfZjwGX52GS2jcVO6E2sx4YuFnf0Fhp5ylo4pEPhEffNln7vS59Hr5sLnp3/QCazFLluuBZ+FZ6J5HTp0EqCA==
-
-ethereumjs-tx@*, ethereumjs-tx@^2.1.2:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/ethereumjs-tx/-/ethereumjs-tx-2.1.2.tgz#5dfe7688bf177b45c9a23f86cf9104d47ea35fed"
-  integrity sha512-zZEK1onCeiORb0wyCXUvg94Ve5It/K6GD1K+26KfFKodiBiS6d9lfCXlUKGBBdQ+bv7Day+JK0tj1K+BeNFRAw==
-  dependencies:
-    ethereumjs-common "^1.5.0"
-    ethereumjs-util "^6.0.0"
-
 ethereumjs-util@*, ethereumjs-util@^7.0.10, ethereumjs-util@^7.0.8:
   version "7.0.10"
   resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-7.0.10.tgz#5fb7b69fa1fda0acc59634cf39d6b0291180fc1f"
@@ -8891,11 +8879,6 @@ graphql-tag@^2.12.3:
   integrity sha512-FdSNcu2QQcWnM2VNvSCCDCVS5PpPqpzgFT8+GXzqJuoDd0CBncxCY278u4mhRO7tMgo2JjgJA5aZ+nWSQ/Z+xg==
   dependencies:
     tslib "^2.1.0"
-
-graphql@^16.0.1:
-  version "16.0.1"
-  resolved "https://registry.npmjs.org/graphql/-/graphql-16.0.1.tgz#93a13cd4e0e38ca8d0832e79614c8578bfd34f10"
-  integrity sha512-oPvCuu6dlLdiz8gZupJ47o1clgb72r1u8NDBcQYjcV6G/iEdmE11B1bBlkhXRvV0LisP/SXRFP7tT6AgaTjpzg==
 
 graphql@^16.3.0:
   version "16.3.0"

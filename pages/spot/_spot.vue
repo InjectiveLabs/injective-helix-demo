@@ -45,6 +45,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { UiSpotMarketWithTokenMeta } from '@injectivelabs/ui-common'
 import VModalBridgeDeposit from '~/components/partials/modals/bridge-deposit/index.vue'
 import VModalBridgeWithdraw from '~/components/partials/modals/bridge-withdraw/index.vue'
 import VModalSubaccountDeposit from '~/components/partials/modals/subaccount-deposit/index.vue'
@@ -57,7 +58,7 @@ import VMarket from '~/components/partials/spot/market.vue'
 import VOrders from '~/components/partials/spot/orders.vue'
 import VOrderbook from '~/components/partials/spot/orderbook.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
-import { Modal, UiSpotMarket } from '~/types'
+import { Modal } from '~/types'
 import { ORDERBOOK_POLLING_ENABLED } from '~/app/utils/constants'
 import { betaMarketSlugs } from '~/app/data/market'
 
@@ -85,7 +86,7 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiSpotMarket | undefined {
+    market(): UiSpotMarketWithTokenMeta | undefined {
       return this.$accessor.spot.market
     },
 

@@ -15,9 +15,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import {
+  UiSpotMarketWithTokenMeta,
+  UiSpotTrade
+} from '@injectivelabs/ui-common'
 import VTrade from './trade.vue'
 import VTableHead from '~/components/partials/common/trades/table-head.vue'
-import { UiSpotMarket, UiSpotTrade } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -26,7 +29,7 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiSpotMarket | undefined {
+    market(): UiSpotMarketWithTokenMeta | undefined {
       return this.$accessor.spot.market
     },
 

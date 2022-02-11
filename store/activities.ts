@@ -4,13 +4,11 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { StreamOperation } from '@injectivelabs/ts-types'
 import {
   UiSpotLimitOrder,
-  UiSpotTrade
-} from '@injectivelabs/ui-common/dist/spot/types'
-import {
+  UiSpotTrade,
   UiDerivativeLimitOrder,
   UiDerivativeTrade,
   UiPosition
-} from '@injectivelabs/ui-common/dist/derivative/types'
+} from '@injectivelabs/ui-common'
 import { DerivativeOrderState } from '@injectivelabs/derivatives-consumer'
 import {
   streamSubaccountSpotOrders,
@@ -24,7 +22,7 @@ import {
   derivativeService,
   spotActionServiceFactory,
   spotService
-} from '~/app/services'
+} from '~/app/Services'
 
 const initialStateFactory = () => ({
   subaccountSpotOrders: [] as Array<UiSpotLimitOrder>,

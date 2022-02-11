@@ -187,17 +187,18 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import {
+  UiDerivativeMarketWithTokenMeta,
+  ZERO_IN_BASE
+} from '@injectivelabs/ui-common'
+import { DerivativeOrderSide } from '@injectivelabs/derivatives-consumer'
 import Drawer from '~/components/elements/drawer.vue'
-import { DerivativeOrderSide, UiDerivativeMarket, Icon } from '~/types'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  ZERO_IN_BASE
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
-import {
-  getDecimalsBasedOnNumber,
-  getDecimalsFromNumber
-} from '~/app/utils/helpers'
+import { getDecimalsFromNumber } from '~/app/utils/helpers'
+import { Icon } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -308,7 +309,7 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiDerivativeMarket | undefined {
+    market(): UiDerivativeMarketWithTokenMeta | undefined {
       return this.$accessor.derivatives.market
     },
 

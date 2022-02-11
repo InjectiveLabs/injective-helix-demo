@@ -38,7 +38,7 @@
 import Vue, { PropType } from 'vue'
 import { format } from 'date-fns'
 import TableRow from '~/components/elements/table-row.vue'
-import { UIEpochRecordItem } from '~/types'
+import { UIEpochRecordItem } from '~/app/services/dmm'
 import { DMM_TIME_STAMP_FORMAT } from '~/app/utils/constants'
 
 export default Vue.extend({

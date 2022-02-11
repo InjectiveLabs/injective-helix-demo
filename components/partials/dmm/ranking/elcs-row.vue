@@ -56,7 +56,7 @@
 import Vue, { PropType } from 'vue'
 import { formatWalletAddress } from '@injectivelabs/utils'
 import TableRow from '~/components/elements/table-row.vue'
-import { UIEpochMarketELCSItem } from '~/types'
+import { UIEpochMarketELCSItem } from '~/app/services/dmm'
 import { hardCodedDmmNames, hardCodedDMMLinks } from '~/app/data/dmm'
 
 export default Vue.extend({

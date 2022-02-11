@@ -1,17 +1,16 @@
 import { actionTree, getterTree } from 'typed-vuex'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { StreamOperation } from '@injectivelabs/ts-types'
-import { Change } from '@injectivelabs/ui-common/dist/types'
 import {
+  Change,
+  SpotTransformer,
+  zeroSpotMarketSummary,
+  ZERO_IN_BASE,
   UiSpotLimitOrder,
   UiSpotMarketSummary,
   UiSpotMarketWithTokenMeta,
   UiSpotOrderbook,
   UiSpotTrade
-} from '@injectivelabs/ui-common/dist/spot/types'
-import {
-  SpotTransformer,
-  zeroSpotMarketSummary
 } from '@injectivelabs/ui-common'
 import { SpotOrderSide, SpotOrderState } from '@injectivelabs/spot-consumer'
 import {
@@ -23,14 +22,13 @@ import {
 } from '~/app/services/spot'
 import {
   FEE_RECIPIENT,
-  ORDERBOOK_STREAMING_ENABLED,
-  ZERO_IN_BASE
+  ORDERBOOK_STREAMING_ENABLED
 } from '~/app/utils/constants'
 import {
   spotActionServiceFactory,
   spotService,
   tokenService
-} from '~/app/services'
+} from '~/app/Services'
 import { spot as allowedSpotMarkets } from '~/routes.config'
 
 const initialStateFactory = () => ({

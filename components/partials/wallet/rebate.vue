@@ -29,24 +29,23 @@
 <script lang="ts">
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import Vue from 'vue'
-// import { localStorage } from '~/app/singletons/Storage'
-import VModalGasRebate from '~/components/partials/modals/gas-rebate.vue'
 import {
-  MIN_AMOUNT_REQUIRED_FOR_GAS_REBATE,
-  MIN_TIMESTAMP_REQUIRED_FOR_GAS_REBATE,
-  ZERO_IN_BASE
-} from '~/app/utils/constants'
-import {
+  UiDerivativeMarketWithTokenMeta,
+  UiDerivativeTrade,
+  UiSpotMarketWithTokenMeta,
+  UiSpotTrade,
   BankBalanceWithTokenMetaData,
-  Modal,
   SubaccountBalanceWithTokenMetaData,
   Token,
-  UiDerivativeMarket,
-  UiDerivativeTrade,
-  UiSpotMarket,
-  UiSpotTrade
-} from '~/types'
-import { UserDeposit } from '~/types/gql'
+  ZERO_IN_BASE
+} from '@injectivelabs/ui-common'
+import { UserDeposit } from '@injectivelabs/ui-common/dist/bridge/gql/types'
+import { Modal } from '~/types'
+import {
+  MIN_AMOUNT_REQUIRED_FOR_GAS_REBATE,
+  MIN_TIMESTAMP_REQUIRED_FOR_GAS_REBATE
+} from '~/app/utils/constants'
+import VModalGasRebate from '~/components/partials/modals/gas-rebate.vue'
 
 export default Vue.extend({
   components: {
@@ -64,11 +63,11 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    derivativeMarkets(): UiDerivativeMarket[] {
+    derivativeMarkets(): UiDerivativeMarketWithTokenMeta[] {
       return this.$accessor.derivatives.markets
     },
 
-    spotMarkets(): UiSpotMarket[] {
+    spotMarkets(): UiSpotMarketWithTokenMeta[] {
       return this.$accessor.spot.markets
     },
 
@@ -143,7 +142,7 @@ export default Vue.extend({
         }
 
         if (isSpotMarket) {
-          const spotMarket = market as UiSpotMarket
+          const spotMarket = market as UiSpotMarketWithTokenMeta
           const spotTrade = trade as UiSpotTrade
           const price = new BigNumberInBase(
             new BigNumberInBase(spotTrade.price).toWei(
@@ -156,7 +155,7 @@ export default Vue.extend({
 
           sum = sum.plus(price.times(quantity))
         } else {
-          const derivativeMarket = market as UiDerivativeMarket
+          const derivativeMarket = market as UiDerivativeMarketWithTokenMeta
           const derivativeTrade = trade as UiDerivativeTrade
           const margin = new BigNumberInWei(
             derivativeTrade.executionMargin

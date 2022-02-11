@@ -21,7 +21,8 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInWei, Status } from '@injectivelabs/utils'
-import { Icon, TokenWithBalance } from '~/types'
+import { TokenWithBalance } from '@injectivelabs/ui-common'
+import { Icon } from '~/types'
 
 export default Vue.extend({
   props: {

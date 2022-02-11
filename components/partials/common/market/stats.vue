@@ -117,21 +117,20 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { fromUnixTime, formatDistanceToNow } from 'date-fns'
-import MarketNextFunding from './next-funding.vue'
 import {
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  ZERO_IN_BASE
-} from '~/app/utils/constants'
-import MarketInfo from '~/components/elements/market-info.vue'
-import {
-  Change,
-  UiSpotMarket,
-  SpotOrderSide,
   UiSpotMarketSummary,
-  UiDerivativeMarket,
+  UiSpotMarketWithTokenMeta,
   UiDerivativeMarketSummary,
-  MarketType
-} from '~/types'
+  UiDerivativeMarketWithTokenMeta,
+  Change,
+  MarketType,
+  ZERO_IN_BASE
+} from '@injectivelabs/ui-common'
+import { SpotOrderSide } from '@injectivelabs/spot-consumer'
+import MarketNextFunding from './next-funding.vue'
+import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import MarketInfo from '~/components/elements/market-info.vue'
+
 const { metaTags } = require('~/meta.config')
 
 export default Vue.extend({
@@ -142,7 +141,9 @@ export default Vue.extend({
 
   props: {
     market: {
-      type: Object as PropType<UiSpotMarket | UiDerivativeMarket>,
+      type: Object as PropType<
+        UiSpotMarketWithTokenMeta | UiDerivativeMarketWithTokenMeta
+      >,
       required: true
     },
 
@@ -161,11 +162,11 @@ export default Vue.extend({
   },
 
   computed: {
-    currentSpotMarket(): UiSpotMarket | undefined {
+    currentSpotMarket(): UiSpotMarketWithTokenMeta | undefined {
       return this.$accessor.spot.market
     },
 
-    currentDerivativeMarket(): UiDerivativeMarket | undefined {
+    currentDerivativeMarket(): UiDerivativeMarketWithTokenMeta | undefined {
       return this.$accessor.derivatives.market
     },
 
@@ -189,7 +190,10 @@ export default Vue.extend({
       return this.$accessor.derivatives.marketMarkPrice
     },
 
-    currentMarket(): UiSpotMarket | UiDerivativeMarket | undefined {
+    currentMarket():
+      | UiSpotMarketWithTokenMeta
+      | UiDerivativeMarketWithTokenMeta
+      | undefined {
       const { currentSpotMarket, currentDerivativeMarket, market } = this
 
       return market.type === MarketType.Spot
@@ -286,7 +290,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const derivativeMarket = market as UiDerivativeMarket
+      const derivativeMarket = market as UiDerivativeMarketWithTokenMeta
 
       if (
         !derivativeMarket.perpetualMarketFunding ||
@@ -318,7 +322,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const derivativeMarket = market as UiDerivativeMarket
+      const derivativeMarket = market as UiDerivativeMarketWithTokenMeta
 
       if (
         !derivativeMarket.perpetualMarketFunding ||
@@ -405,7 +409,7 @@ export default Vue.extend({
         return ''
       }
 
-      const expiryFuturesMarketInfo = (market as UiDerivativeMarket)
+      const expiryFuturesMarketInfo = (market as UiDerivativeMarketWithTokenMeta)
         .expiryFuturesMarketInfo
 
       if (!expiryFuturesMarketInfo) {

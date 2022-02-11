@@ -1,8 +1,13 @@
 import {
   ExchangeTransformer,
-  AuctionModuleState
+  AuctionModuleState,
+  AuctionConsumer
 } from '@injectivelabs/chain-consumer'
-import { chainAuctionConsumer } from '~/app/singletons/ChainAuctionConsumer'
+import { app } from '../singletons/App'
+
+export const chainAuctionConsumer = new AuctionConsumer(
+  app.endpoints.sentryGrpcApi
+)
 
 export const fetchAuctionModuleState = async (): Promise<AuctionModuleState> => {
   try {

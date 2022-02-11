@@ -24,7 +24,7 @@
 <script lang="ts">
 import { Status } from '@injectivelabs/utils'
 import Vue, { PropType } from 'vue'
-import { TokenWithBalance } from '~/types/token'
+import { TokenWithBalance } from '@injectivelabs/ui-common'
 
 export default Vue.extend({
   props: {

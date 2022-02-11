@@ -1,10 +1,11 @@
 import {
-  INJ_COIN_GECKO_ID,
   Token,
   TokenWithBalance,
-  UiDerivativeMarketWithTokenMeta,
+  TokenWithBalanceAndPrice,
   UiSpotMarketWithTokenMeta,
-  UNLIMITED_ALLOWANCE
+  UNLIMITED_ALLOWANCE,
+  INJ_COIN_GECKO_ID,
+  UiDerivativeMarketWithTokenMeta
 } from '@injectivelabs/ui-common'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
@@ -14,15 +15,15 @@ import {
   tokenErc20ActionServiceFactory,
   tokenErc20Service,
   tokenService
-} from '~/app/services'
+} from '~/app/Services'
 import { backupPromiseCall } from '~/app/utils/async'
 
 const initialStateFactory = () => ({
   erc20TokensWithBalanceFromBank: [] as TokenWithBalance[],
   ibcTokensWithBalanceFromBank: [] as TokenWithBalance[],
   tokensWithPriceInUsd: {} as Record<string, string>,
-  baseTokenWithBalance: (undefined as unknown) as TokenWithBalance,
-  quoteTokenWithBalance: (undefined as unknown) as TokenWithBalance,
+  baseTokenWithBalance: (undefined as unknown) as TokenWithBalanceAndPrice,
+  quoteTokenWithBalance: (undefined as unknown) as TokenWithBalanceAndPrice,
   injUsdtPrice: 0 as number
 })
 
@@ -35,8 +36,8 @@ export const state = () => ({
     string,
     string
   >,
-  baseTokenWithBalance: initialState.baseTokenWithBalance as TokenWithBalance,
-  quoteTokenWithBalance: initialState.quoteTokenWithBalance as TokenWithBalance,
+  baseTokenWithBalance: initialState.baseTokenWithBalance as TokenWithBalanceAndPrice,
+  quoteTokenWithBalance: initialState.quoteTokenWithBalance as TokenWithBalanceAndPrice,
   injUsdtPrice: initialState.injUsdtPrice as number
 })
 
@@ -50,27 +51,27 @@ export const mutations = {
   setTokensWithBalance(
     state: TokenStoreState,
     {
-      baseTokenWithBalance,
-      quoteTokenWithBalance
+      baseTokenWithBalanceAndPrice,
+      quoteTokenWithBalanceAndPrice
     }: {
-      baseTokenWithBalance: TokenWithBalance
-      quoteTokenWithBalance: TokenWithBalance
+      baseTokenWithBalanceAndPrice: TokenWithBalanceAndPrice
+      quoteTokenWithBalanceAndPrice: TokenWithBalanceAndPrice
     }
   ) {
-    state.baseTokenWithBalance = baseTokenWithBalance
-    state.quoteTokenWithBalance = quoteTokenWithBalance
+    state.baseTokenWithBalance = baseTokenWithBalanceAndPrice
+    state.quoteTokenWithBalance = quoteTokenWithBalanceAndPrice
   },
 
   setQuoteTokenWithBalance(
     state: TokenStoreState,
-    tokenWithBalance: TokenWithBalance
+    tokenWithBalance: TokenWithBalanceAndPrice
   ) {
     state.quoteTokenWithBalance = tokenWithBalance
   },
 
   setBaseTokenWithBalance(
     state: TokenStoreState,
-    tokenWithBalance: TokenWithBalance
+    tokenWithBalance: TokenWithBalanceAndPrice
   ) {
     state.baseTokenWithBalance = tokenWithBalance
   },
@@ -244,9 +245,23 @@ export const actions = actionTree(
         }
       )) as TokenWithBalance
 
+      const baseTokenWithBalanceAndPrice = {
+        ...baseTokenWithBalance,
+        usdPrice: await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
+          baseToken.coinGeckoId
+        )
+      } as TokenWithBalanceAndPrice
+
+      const quoteTokenWithBalanceAndPrice = {
+        ...quoteTokenWithBalance,
+        usdPrice: await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
+          quoteToken.coinGeckoId
+        )
+      } as TokenWithBalanceAndPrice
+
       commit('setTokensWithBalance', {
-        baseTokenWithBalance,
-        quoteTokenWithBalance
+        baseTokenWithBalanceAndPrice,
+        quoteTokenWithBalanceAndPrice
       })
     },
 
@@ -273,9 +288,23 @@ export const actions = actionTree(
         }
       )) as TokenWithBalance
 
+      const baseTokenWithBalanceAndPrice = {
+        ...baseTokenWithBalance,
+        usdPrice: await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
+          baseToken.coinGeckoId
+        )
+      } as TokenWithBalanceAndPrice
+
+      const quoteTokenWithBalanceAndPrice = {
+        ...quoteTokenWithBalance,
+        usdPrice: await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
+          quoteToken.coinGeckoId
+        )
+      } as TokenWithBalanceAndPrice
+
       commit('setTokensWithBalance', {
-        baseTokenWithBalance,
-        quoteTokenWithBalance
+        baseTokenWithBalanceAndPrice,
+        quoteTokenWithBalanceAndPrice
       })
     },
 
@@ -295,8 +324,14 @@ export const actions = actionTree(
           token: quoteToken
         }
       )) as TokenWithBalance
+      const quoteTokenWithBalanceAndPrice = {
+        ...quoteTokenWithBalance,
+        usdPrice: await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
+          quoteToken.coinGeckoId
+        )
+      } as TokenWithBalanceAndPrice
 
-      commit('setQuoteTokenWithBalance', quoteTokenWithBalance)
+      commit('setQuoteTokenWithBalance', quoteTokenWithBalanceAndPrice)
     },
 
     async getInjUsdPrice({ commit }) {

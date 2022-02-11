@@ -67,15 +67,20 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { cosmosSdkDecToBigNumber } from '~/app/transformers'
+import {
+  UiSpotMarketWithTokenMeta,
+  UiDerivativeMarketWithTokenMeta,
+  cosmosSdkDecToBigNumber
+} from '@injectivelabs/ui-common'
 import VItem from '~/components/partials/common/stats/item.vue'
-import { UiDerivativeMarket, UiSpotMarket } from '~/types'
-import { PointsMultiplier, TradingRewardsCampaign } from '~/types/exchange'
+import {
+  PointsMultiplier,
+  TradingRewardsCampaign
+} from '~/app/services/exchange'
 import {
   derivatives as sortPerpetualMarkets,
   spot as sortSpotMarkets
 } from '~/routes.config'
-
 interface PointsMultiplierWithMarketTicker extends PointsMultiplier {
   ticker: string
   slug: string
@@ -95,11 +100,11 @@ export default Vue.extend({
       return this.$accessor.exchange.tradingRewardsCampaign
     },
 
-    spotMarkets(): UiSpotMarket[] {
+    spotMarkets(): UiSpotMarketWithTokenMeta[] {
       return this.$accessor.spot.markets
     },
 
-    derivativeMarkets(): UiDerivativeMarket[] {
+    derivativeMarkets(): UiDerivativeMarketWithTokenMeta[] {
       return this.$accessor.derivatives.markets
     },
 

@@ -20,10 +20,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import {
+  UiSpotMarketWithTokenMeta,
+  UiSpotTrade,
+  UiSubaccount
+} from '@injectivelabs/ui-common'
 import Trade from '~/components/partials/common/spot/trade.vue'
 import TradesTableHeader from '~/components/partials/common/spot/trades-table-header.vue'
-import { UiSpotMarket, UiSpotTrade } from '~/types'
-import { UiSubaccount } from '~/types/subaccount'
 
 export default Vue.extend({
   components: {
@@ -42,7 +45,7 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    market(): UiSpotMarket | undefined {
+    market(): UiSpotMarketWithTokenMeta | undefined {
       return this.$accessor.spot.market
     },
 

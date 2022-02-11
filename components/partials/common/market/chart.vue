@@ -20,12 +20,14 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
+import {
+  UiSpotMarketWithTokenMeta,
+  UiDerivativeMarketWithTokenMeta,
+  MarketType
+} from '@injectivelabs/ui-common'
 import HOCLoading from '~/components/hoc/loading.vue'
 import TradingChart from '~/components/trading-view/chart.vue'
-import { MarketType, UiDerivativeMarket, UiSpotMarket } from '~/types'
-import { app } from '~/app/singletons/App'
 import { getChronosDatafeedEndpoint } from '~/app/utils/helpers'
-
 interface TradingChartInterface {
   $el: HTMLElement
 }
@@ -38,7 +40,9 @@ export default Vue.extend({
 
   props: {
     market: {
-      type: Object as PropType<UiSpotMarket | UiDerivativeMarket>,
+      type: Object as PropType<
+        UiSpotMarketWithTokenMeta | UiDerivativeMarketWithTokenMeta
+      >,
       required: true
     }
   },
@@ -66,8 +70,8 @@ export default Vue.extend({
         return market.ticker
       }
 
-      const spotTicker = `${(market as UiSpotMarket).baseDenom}/${
-        (market as UiSpotMarket).quoteDenom
+      const spotTicker = `${(market as UiSpotMarketWithTokenMeta).baseDenom}/${
+        (market as UiSpotMarketWithTokenMeta).quoteDenom
       }`
 
       return spotTicker.replaceAll('ibc/', 'ibc@')

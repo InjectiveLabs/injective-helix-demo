@@ -27,19 +27,12 @@
 import { Network } from '@injectivelabs/networks'
 import Vue from 'vue'
 import { NETWORK } from '~/app/utils/constants'
+import { getHubUrl } from '~/app/utils/helpers'
 
 export default Vue.extend({
   computed: {
     bridgeUrl() {
-      if (NETWORK === Network.Devnet) {
-        return 'https://devnet.hub.injective.dev/bridge'
-      }
-
-      if (NETWORK === Network.Testnet) {
-        return 'https://hub.injective.dev/bridge'
-      }
-
-      return 'https://hub.injective.network/bridge'
+      return getHubUrl() + '/bridge'
     }
   }
 })

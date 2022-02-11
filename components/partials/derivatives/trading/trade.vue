@@ -192,14 +192,27 @@
 import Vue from 'vue'
 import { TradeError } from 'types/errors'
 import { Status, BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
+import {
+  DerivativeOrderSide,
+  UiDerivativeLimitOrder,
+  UiDerivativeMarketSummary,
+  UiDerivativeMarketWithTokenMeta,
+  UiDerivativeOrderbook,
+  UiPosition,
+  UiPriceLevel,
+  cosmosSdkDecToBigNumber,
+  NUMBER_REGEX,
+  ZERO_IN_BASE,
+  UiSubaccount
+} from '@injectivelabs/ui-common'
+
 import OrderDetails from './order-details.vue'
 import OrderLeverage from './order-leverage.vue'
 import OrderLeverageSelect from './order-leverage-select.vue'
 import OrderDetailsMarket from './order-details-market.vue'
 import {
   DEFAULT_MAX_SLIPPAGE,
-  ZERO_IN_BASE,
-  NUMBER_REGEX,
   DEFAULT_PRICE_WARNING_DEVIATION,
   DEFAULT_MARKET_PRICE_WARNING_DEVIATION,
   DEFAULT_MAX_PRICE_BAND_DIFFERENCE,
@@ -208,20 +221,7 @@ import {
 } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
-import {
-  DerivativeOrderSide,
-  DOMEvent,
-  TradeExecutionType,
-  UiDerivativeOrderbook,
-  UiPriceLevel,
-  UiDerivativeMarket,
-  UiSubaccount,
-  UiPosition,
-  TradeDirection,
-  UiDerivativeMarketSummary,
-  UiDerivativeLimitOrder,
-  Modal
-} from '~/types'
+import { DOMEvent, Modal } from '~/types'
 import {
   calculateWorstExecutionPriceFromOrderbook,
   calculateLiquidationPrice,
@@ -231,14 +231,12 @@ import {
 import {
   TradingRewardsCampaign,
   FeeDiscountAccountInfo
-} from '~/types/exchange'
-import { cosmosSdkDecToBigNumber } from '~/app/transformers'
+} from '~/app/services/exchange'
 import {
   getDecimalsFromNumber,
   isDotKeycode,
   isNumericKeycode
 } from '~/app/utils/helpers'
-
 interface TradeForm {
   reduceOnly: boolean
   amount: string
@@ -280,7 +278,7 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    market(): UiDerivativeMarket | undefined {
+    market(): UiDerivativeMarketWithTokenMeta | undefined {
       return this.$accessor.derivatives.market
     },
 

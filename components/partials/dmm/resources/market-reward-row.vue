@@ -30,7 +30,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import TableRow from '~/components/elements/table-row.vue'
-import { UiEpochMarketsWithTokenMeta } from '~/types'
+import { UiEpochMarketsWithTokenMeta } from '~/app/services/dmm'
 
 export default Vue.extend({
   components: {

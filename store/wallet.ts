@@ -130,10 +130,20 @@ export const actions = actionTree(
       commit('setMetamaskInstalled', await isMetamaskInstalled())
     },
 
+    /* Only init new Web3 strategy
+     ** if we don't have any addresses in the store,
+     ** otherwise fetch more addresses
+     */
     async getLedgerAddresses({ state, commit }) {
-      await connect({ wallet: Wallet.Ledger, options: state.walletOptions })
+      if (state.addresses.length === 0) {
+        await connect({ wallet: Wallet.Ledger, options: state.walletOptions })
 
-      commit('setAddresses', await getAddresses())
+        commit('setAddresses', await getAddresses())
+      } else {
+        const newAddresses = await getAddresses()
+
+        commit('setAddresses', [...state.addresses, ...newAddresses])
+      }
     },
 
     async connect({ commit }, wallet: Wallet) {

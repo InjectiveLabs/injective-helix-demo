@@ -76,8 +76,8 @@
 import Vue, { PropType } from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
+import { TokenWithBalance } from '@injectivelabs/ui-common'
 import VAllowance from './allowance.vue'
-import { UiSpotMarket, TokenWithBalance } from '~/types'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
@@ -105,10 +105,6 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiSpotMarket | undefined {
-      return this.$accessor.spot.market
-    },
-
     $form(): InstanceType<typeof ValidationObserver> {
       return this.$refs.form as InstanceType<typeof ValidationObserver>
     },

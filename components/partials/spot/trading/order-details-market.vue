@@ -126,13 +126,17 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import {
+  ZERO_IN_BASE,
+  UiSpotMarketWithTokenMeta
+} from '@injectivelabs/ui-common'
+import { SpotOrderSide } from '@injectivelabs/spot-consumer'
 import Drawer from '~/components/elements/drawer.vue'
-import { SpotOrderSide, Icon, UiSpotMarket } from '~/types'
+import { Icon } from '~/types'
 import {
   DEFAULT_MAX_SLIPPAGE,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  ZERO_IN_BASE
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
 
@@ -230,7 +234,7 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiSpotMarket | undefined {
+    market(): UiSpotMarketWithTokenMeta | undefined {
       return this.$accessor.spot.market
     },
 

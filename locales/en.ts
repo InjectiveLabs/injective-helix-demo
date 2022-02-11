@@ -310,11 +310,6 @@ export default {
   Restrictions: 'Restrictions',
   Languages: 'Languages',
   all: 'All',
-  derivatives_trade_history: 'Derivatives Trade History',
-  spot_trade_history: 'Spot Trade History',
-  wallet_history: 'Wallet History',
-  subaccount_transfer_history: 'Trading Account Transfer History',
-  History: 'History',
   Wallet: 'Wallet',
   deposits: 'Deposits',
   download: 'Download',
@@ -341,23 +336,6 @@ export default {
   notional_value_tooltip:
     'The total value of the position which is determined by the mark price with the following formula: Mark Price * Base Asset Amount.',
   margin_tooltip: 'The total margin required to execute the trade.',
-  portfolio_value: 'Portfolio value',
-  portfolio_value_tooltip:
-    'Your total portfolio value represented in USD. This includes all of your holdings on the Injective Chain, including bank module balances, balances across your trading accounts, open orders total value and unrealized PnL.',
-  start_trading: 'Start Trading Now',
-  available_margin: 'Available Margin',
-  available_margin_tooltip: 'Your total available margin for trading.',
-  margin_hold: 'Margin Hold',
-  margin_hold_tooltip:
-    'The amount of margin you have in your open orders and positions.',
-  assets_value: 'Assets Value',
-  assets_value_tooltip: 'The total value of your assets in the bank module.',
-  unrealized_pnl_portfolio: 'Unrealized PnL',
-  unrealized_pnl_portfolio_tooltip:
-    'The unrealized PnL is an approximation of the realized profit or loss if the position was to be closed.',
-  total_potential: 'Total Value',
-  total_potential_tooltip:
-    'An approximate total value of your stable coins (USDT, USDC, etc) balances and any unrealized PnL you currently have.',
   side_tooltip: 'The side of your trade: long or short',
   amount_tooltip:
     'The total value of the base asset at the time which the trade was executed (i.e. for BTC/USDT, BTC is the base asset and USDT is the quote asset).',
@@ -548,13 +526,6 @@ export default {
     'The default maximum rewards you can receive is capped at {maxRewards} INJ. You may increase this cap by staking more than {maxRewards} INJ and it will be the same level as your staked amount.',
   stake_more: 'Stake More',
   stake_now: 'Stake Now',
-  'Successfully Staked': 'Successfully Staked',
-  Delegate: 'Delegate',
-  'Enter your amount to be delegated': 'Enter your amount to be delegated',
-  'Available for Delegation': 'Available for Delegation',
-  'Available for Delegation Tooltip':
-    'The amount of INJ you have available for delegation.',
-  'Delegate To {validator}': 'Delegate To {validator}',
 
   // 15.01.2022
   analytics: 'Analytics',

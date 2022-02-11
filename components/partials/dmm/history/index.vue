@@ -42,7 +42,7 @@ import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import VHistoryTable from './history-table.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
-import { UiDmmMarketMaker } from '~/types'
+import { UiDmmMarketMaker } from '~/app/services/dmm'
 import { hardCodedDmmNames } from '~/app/data/dmm'
 
 export default Vue.extend({

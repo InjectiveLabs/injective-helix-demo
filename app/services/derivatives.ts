@@ -6,7 +6,7 @@ import {
   OrderStreamCallback as DerivativeMarketOrderStreamCallback,
   PositionStreamCallback as DerivativeMarketPositionStreamCallback
 } from '@injectivelabs/derivatives-consumer'
-import { TradeExecutionSide } from '@injectivelabs/ts-types'
+import { TradeDirection, TradeExecutionSide } from '@injectivelabs/ts-types'
 import {
   BigNumber,
   BigNumberInBase,
@@ -18,18 +18,15 @@ import {
   PricesStreamCallback
 } from '@injectivelabs/exchange-consumer'
 import {
-  TradeDirection,
   UiBaseDerivativeMarket,
   UiDerivativeMarketWithTokenMeta,
-  UiPosition
-} from '@injectivelabs/ui-common/dist/derivative/types'
-import {
+  UiPosition,
   UiOrderbookPriceLevel,
-  UiPriceLevel
-} from '@injectivelabs/ui-common/dist/types'
+  UiPriceLevel,
+  ZERO_IN_BASE
+} from '@injectivelabs/ui-common'
 import { oracleStream } from '../singletons/OracleStream'
 import { streamProvider } from '../providers/StreamProvider'
-import { ZERO_IN_BASE } from '../utils/constants'
 import { derivativeMarketStream } from '~/app/singletons/DerivativeMarketStream'
 
 export const streamOrderbook = ({

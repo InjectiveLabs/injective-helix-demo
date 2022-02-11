@@ -21,19 +21,21 @@
 <script lang="ts">
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import Vue, { PropType } from 'vue'
-import { ZERO_IN_BASE } from '~/app/utils/constants'
 import {
+  ZERO_IN_BASE,
   BankBalances,
-  MarketType,
-  UiDerivativeMarket,
-  UiSpotMarket
-} from '~/types'
+  UiDerivativeMarketWithTokenMeta,
+  UiSpotMarketWithTokenMeta,
+  MarketType
+} from '@injectivelabs/ui-common'
 
 export default Vue.extend({
   props: {
     market: {
       required: true,
-      type: Object as PropType<UiDerivativeMarket | UiSpotMarket>
+      type: Object as PropType<
+        UiDerivativeMarketWithTokenMeta | UiSpotMarketWithTokenMeta
+      >
     }
   },
 
@@ -63,12 +65,12 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      if (!balances[(market as UiSpotMarket).baseDenom]) {
+      if (!balances[(market as UiSpotMarketWithTokenMeta).baseDenom]) {
         return ZERO_IN_BASE
       }
 
       return new BigNumberInWei(
-        balances[(market as UiSpotMarket).baseDenom] || 0
+        balances[(market as UiSpotMarketWithTokenMeta).baseDenom] || 0
       ).toBase(market.baseToken.decimals)
     },
 

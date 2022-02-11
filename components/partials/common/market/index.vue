@@ -25,13 +25,13 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import MarketStats from './stats.vue'
 import {
-  UiDerivativeMarket,
   UiDerivativeMarketSummary,
-  UiSpotMarket,
-  UiSpotMarketSummary
-} from '~/types'
+  UiDerivativeMarketWithTokenMeta,
+  UiSpotMarketSummary,
+  UiSpotMarketWithTokenMeta
+} from '@injectivelabs/ui-common'
+import MarketStats from './stats.vue'
 
 export default Vue.extend({
   components: {
@@ -40,7 +40,9 @@ export default Vue.extend({
 
   props: {
     market: {
-      type: Object as PropType<UiSpotMarket | UiDerivativeMarket>,
+      type: Object as PropType<
+        UiSpotMarketWithTokenMeta | UiDerivativeMarketWithTokenMeta
+      >,
       required: true
     },
 

@@ -29,8 +29,9 @@
 <script lang="ts">
 import Vue from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiEpochDate } from '~/types'
-import { UI_DEFAULT_DMM_DECIMALS, ZERO_IN_BASE } from '~/app/utils/constants'
+import { ZERO_IN_BASE } from '@injectivelabs/ui-common'
+import { UiEpochDate } from '~/app/services/dmm'
+import { UI_DEFAULT_DMM_DECIMALS } from '~/app/utils/constants'
 export default Vue.extend({
   props: {},
 

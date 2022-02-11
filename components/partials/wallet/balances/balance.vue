@@ -37,7 +37,7 @@
         }}</span>
       </div>
       <div
-        v-if="balance.denom === INJECTIVE_DENOM && VALIDATOR_ADDRESS"
+        v-if="balance.denom === INJECTIVE_DENOM"
         class="flex items-center justify-end"
       >
         <span
@@ -86,14 +86,13 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import TableRow from '~/components/elements/table-row.vue'
 import {
-  UI_DEFAULT_DISPLAY_DECIMALS,
-  ZERO_IN_BASE,
   INJECTIVE_DENOM,
-  VALIDATOR_ADDRESS
-} from '~/app/utils/constants'
-import { BankBalanceWithTokenMetaDataAndBalanceWithUsdBalance } from '~/types/bank'
+  ZERO_IN_BASE,
+  BankBalanceWithTokenMetaDataAndBalanceWithUsdBalance
+} from '@injectivelabs/ui-common'
+import TableRow from '~/components/elements/table-row.vue'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import { Modal } from '~/types'
 
 export default Vue.extend({
@@ -110,8 +109,7 @@ export default Vue.extend({
 
   data() {
     return {
-      INJECTIVE_DENOM,
-      VALIDATOR_ADDRESS
+      INJECTIVE_DENOM
     }
   },
 

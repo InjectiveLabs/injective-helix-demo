@@ -17,9 +17,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import {
+  UiDerivativeLimitOrder,
+  UiDerivativeMarketWithTokenMeta
+} from '@injectivelabs/ui-common'
 import Order from '~/components/partials/common/derivatives/order.vue'
 import OrdersTableHeader from '~/components/partials/common/derivatives/orders-table-header.vue'
-import { UiDerivativeMarket, UiDerivativeLimitOrder } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -38,7 +41,7 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    market(): UiDerivativeMarket | undefined {
+    market(): UiDerivativeMarketWithTokenMeta | undefined {
       return this.$accessor.derivatives.market
     },
 

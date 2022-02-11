@@ -67,10 +67,15 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import {
+  UiSpotMarketWithTokenMeta,
+  UiDerivativeMarketWithTokenMeta,
+  MarketType
+} from '@injectivelabs/ui-common'
 import VBank from './bank.vue'
 import VSubaccountBalances from './subaccount.vue'
-import { MarketType, Modal, UiDerivativeMarket, UiSpotMarket } from '~/types'
-import { getHubUrl } from '~/app/utils/testnet'
+import { Modal } from '~/types'
+import { getHubUrl } from '~/app/utils/helpers'
 
 export default Vue.extend({
   components: {
@@ -83,15 +88,18 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    currentSpotMarket(): UiSpotMarket | undefined {
+    currentSpotMarket(): UiSpotMarketWithTokenMeta | undefined {
       return this.$accessor.spot.market
     },
 
-    currentDerivativeMarket(): UiDerivativeMarket | undefined {
+    currentDerivativeMarket(): UiDerivativeMarketWithTokenMeta | undefined {
       return this.$accessor.derivatives.market
     },
 
-    currentMarket(): UiSpotMarket | UiDerivativeMarket | undefined {
+    currentMarket():
+      | UiSpotMarketWithTokenMeta
+      | UiDerivativeMarketWithTokenMeta
+      | undefined {
       const { currentSpotMarket, currentDerivativeMarket } = this
 
       return this.$route.name === 'spot-spot'
@@ -108,8 +116,12 @@ export default Vue.extend({
 
       if (currentMarket.type === MarketType.Spot) {
         return (
-          (currentMarket as UiSpotMarket).baseDenom.startsWith('ibc') ||
-          (currentMarket as UiSpotMarket).quoteDenom.startsWith('ibc')
+          (currentMarket as UiSpotMarketWithTokenMeta).baseDenom.startsWith(
+            'ibc'
+          ) ||
+          (currentMarket as UiSpotMarketWithTokenMeta).quoteDenom.startsWith(
+            'ibc'
+          )
         )
       }
 

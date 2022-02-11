@@ -56,11 +56,16 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { DMMLCS } from '@injectivelabs/exchange-consumer'
-import { UiDmmMarketMaker, UiEpochDate, UiEpochSummaryItem } from '~/types'
+import { ZERO_IN_BASE } from '@injectivelabs/ui-common'
+import {
+  UiDmmMarketMaker,
+  UiEpochDate,
+  UiEpochSummaryItem
+} from '~/app/services/dmm'
 import TableHeader from '~/components/partials/dmm/summary/table-header.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import TableRow from '~/components/partials/dmm/summary/table-row.vue'
-import { UI_DEFAULT_DMM_DECIMALS, ZERO_IN_BASE } from '~/app/utils/constants'
+import { UI_DEFAULT_DMM_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -159,7 +164,10 @@ export default Vue.extend({
               : '0'
           }
         })
-        .filter((summary: UiEpochSummaryItem) => summary.address !== '' && summary.name !== '')
+        .filter(
+          (summary: UiEpochSummaryItem) =>
+            summary.address !== '' && summary.name !== ''
+        )
         .sort((v1: UiEpochSummaryItem, v2: UiEpochSummaryItem) => {
           const v1Total = new BigNumberInBase(v1.total.replace(',', ''))
           const v2Total = new BigNumberInBase(v2.total.replace(',', ''))

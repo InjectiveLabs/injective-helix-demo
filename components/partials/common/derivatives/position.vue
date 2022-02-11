@@ -139,21 +139,21 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Status, BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
+import { TradeDirection } from '@injectivelabs/ts-types'
+import {
+  DerivativeOrderSide,
+  UiDerivativeLimitOrder,
+  UiDerivativeMarketWithTokenMeta,
+  UiDerivativeOrderbook,
+  UiPosition,
+  UiSpotLimitOrder,
+  ZERO_IN_BASE,
+  UiPriceLevel
+} from '@injectivelabs/ui-common'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  ZERO_IN_BASE
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
-import {
-  UiDerivativeMarket,
-  UiPosition,
-  TradeDirection,
-  DerivativeOrderSide,
-  UiDerivativeOrderbook,
-  UiPriceLevel,
-  UiDerivativeLimitOrder,
-  UiSpotLimitOrder
-} from '~/types'
 
 export default Vue.extend({
   props: {
@@ -173,7 +173,7 @@ export default Vue.extend({
   },
 
   computed: {
-    currentMarket(): UiDerivativeMarket | undefined {
+    currentMarket(): UiDerivativeMarketWithTokenMeta | undefined {
       return this.$accessor.derivatives.market
     },
 
@@ -188,7 +188,7 @@ export default Vue.extend({
     reduceOnlyCurrentOrders(): UiDerivativeLimitOrder[] {
       const { currentOrders } = this
 
-      return currentOrders.filter(order => order.isReduceOnly)
+      return currentOrders.filter((order) => order.isReduceOnly)
     },
 
     hasReduceOnlyOrders(): boolean {
@@ -201,7 +201,7 @@ export default Vue.extend({
       return this.$route.name === 'derivatives-derivative'
     },
 
-    markets(): UiDerivativeMarket[] {
+    markets(): UiDerivativeMarketWithTokenMeta[] {
       const { isOnMarketPage } = this
 
       if (isOnMarketPage) {
@@ -211,7 +211,7 @@ export default Vue.extend({
       return this.$accessor.derivatives.markets
     },
 
-    market(): UiDerivativeMarket | undefined {
+    market(): UiDerivativeMarketWithTokenMeta | undefined {
       const { markets, currentMarket, isOnMarketPage, position } = this
 
       if (isOnMarketPage) {
@@ -593,7 +593,12 @@ export default Vue.extend({
     },
 
     closePositionAndReduceOnlyOrders() {
-      const { position, market, liquidationPrice, reduceOnlyCurrentOrders } = this
+      const {
+        position,
+        market,
+        liquidationPrice,
+        reduceOnlyCurrentOrders
+      } = this
 
       if (!market) {
         return

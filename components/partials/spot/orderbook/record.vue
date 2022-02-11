@@ -84,16 +84,16 @@ import {
   BigNumberInWei
 } from '@injectivelabs/utils'
 import {
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  ZERO_IN_BASE
-} from '~/app/utils/constants'
-import {
   Change,
-  SpotOrderSide,
-  UiSpotMarket,
-  UiOrderbookPriceLevel
-} from '~/types'
+  UiOrderbookPriceLevel,
+  ZERO_IN_BASE,
+  UiSpotMarketWithTokenMeta
+} from '@injectivelabs/ui-common'
+import { SpotOrderSide } from '@injectivelabs/spot-consumer'
+import {
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+} from '~/app/utils/constants'
 
 export default Vue.extend({
   props: {
@@ -133,7 +133,7 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiSpotMarket | undefined {
+    market(): UiSpotMarketWithTokenMeta | undefined {
       return this.$accessor.spot.market
     },
 

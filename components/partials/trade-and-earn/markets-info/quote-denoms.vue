@@ -21,7 +21,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import VItem from '~/components/partials/common/stats/item.vue'
-import { TradingRewardsCampaign } from '~/types/exchange'
+import { TradingRewardsCampaign } from '~/app/services/exchange'
 
 export default Vue.extend({
   components: {

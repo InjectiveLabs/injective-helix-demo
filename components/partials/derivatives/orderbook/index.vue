@@ -7,9 +7,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { UiDerivativeMarketWithTokenMeta } from '@injectivelabs/ui-common'
 import OrderBook from './order-book.vue'
 import VTableHead from '~/components/partials/common/orderbook/table-head.vue'
-import { UiDerivativeMarket } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -18,7 +18,7 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiDerivativeMarket | undefined {
+    market(): UiDerivativeMarketWithTokenMeta | undefined {
       return this.$accessor.derivatives.market
     }
   }

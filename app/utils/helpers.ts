@@ -1,7 +1,9 @@
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
+import { Network } from '@injectivelabs/networks'
 import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
-  UI_DEFAULT_DISPLAY_DECIMALS
+  UI_DEFAULT_DISPLAY_DECIMALS,
+  NETWORK
 } from './constants'
 import { app } from '~/app/singletons/App'
 
@@ -68,4 +70,16 @@ export const getDecimalsFromNumber = (number: number | string): number => {
 
 export const getChronosDatafeedEndpoint = (marketType: string): string => {
   return `${app.endpoints.exchangeApi}/api/chronos/v1/${marketType}`
+}
+
+export const getHubUrl = (): string => {
+  if (NETWORK === Network.Devnet) {
+    return 'https://devnet.dex.injective.dev'
+  }
+
+  if (NETWORK === Network.Testnet) {
+    return 'https://testnet.dex.injective.dev'
+  }
+
+  return 'https://hub.injective.network'
 }

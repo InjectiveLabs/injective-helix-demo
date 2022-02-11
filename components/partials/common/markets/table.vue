@@ -149,22 +149,22 @@
 <script lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
 import Vue, { PropType } from 'vue'
+import {
+  ZERO_IN_BASE,
+  UiDerivativeMarketSummary,
+  UiDerivativeMarketWithTokenMeta,
+  UiSpotMarketSummary,
+  UiSpotMarketWithTokenMeta,
+  MarketBase,
+  MarketType
+} from '@injectivelabs/ui-common'
 import TableBody from '~/components/elements/table-body.vue'
 import TableHeader from '~/components/elements/table-header.vue'
 import VSearch from '~/components/inputs/search.vue'
 import VMarket from '~/components/partials/common/markets/market.vue'
-import {
-  MarketBase,
-  MarketType,
-  UiDerivativeMarket,
-  UiDerivativeMarketSummary,
-  UiSpotMarket,
-  UiSpotMarketSummary
-} from '~/types'
-import { ZERO_IN_BASE } from '~/app/utils/constants'
 
 export interface UiMarketAndSummary {
-  market: UiDerivativeMarket | UiSpotMarket
+  market: UiDerivativeMarketWithTokenMeta | UiSpotMarketWithTokenMeta
   summary: UiDerivativeMarketSummary | UiSpotMarketSummary
 }
 
@@ -184,7 +184,9 @@ export default Vue.extend({
     },
 
     markets: {
-      type: Array as PropType<Array<UiDerivativeMarket | UiSpotMarket>>,
+      type: Array as PropType<
+        Array<UiDerivativeMarketWithTokenMeta | UiSpotMarketWithTokenMeta>
+      >,
       required: true
     },
 

@@ -1,26 +1,24 @@
 import { AccountPortfolio } from '@injectivelabs/subaccount-consumer'
-import { SubaccountTransformer } from '@injectivelabs/ui-common'
 import {
+  SubaccountTransformer,
+  ZERO_TO_STRING,
+  SubaccountBalanceWithTokenMetaData,
+  Token,
   UiSubaccount,
   UiSubaccountBalance
-} from '@injectivelabs/ui-common/dist/subaccount/types'
-import {
-  SubaccountBalanceWithTokenMetaData,
-  Token
-} from '@injectivelabs/ui-common/dist/token/types'
+} from '@injectivelabs/ui-common'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
 import {
   subaccountActionServiceFactory,
   subaccountService,
   tokenService
-} from '~/app/services'
+} from '~/app/Services'
 import {
   streamSubaccountBalances,
   cancelSubaccountStreams
 } from '~/app/services/account'
 import { backupPromiseCall } from '~/app/utils/async'
-import { ZERO_TO_STRING } from '~/app/utils/constants'
 
 const initialStateFactory = () => ({
   subaccountIds: [] as string[],

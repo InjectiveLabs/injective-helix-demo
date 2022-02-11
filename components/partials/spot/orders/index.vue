@@ -20,9 +20,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import {
+  UiSpotLimitOrder,
+  UiSpotMarketWithTokenMeta
+} from '@injectivelabs/ui-common'
 import Order from '~/components/partials/common/spot/order.vue'
 import OrdersTableHeader from '~/components/partials/common/spot/orders-table-header.vue'
-import { UiSpotMarket, UiSpotLimitOrder } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -35,7 +38,7 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    market(): UiSpotMarket | undefined {
+    market(): UiSpotMarketWithTokenMeta | undefined {
       return this.$accessor.spot.market
     },
 

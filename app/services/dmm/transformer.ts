@@ -5,7 +5,7 @@ import {
   UiEpochMarkets,
   UiDmmMarketMaker,
   UiEpochDate
-} from '~/types'
+} from './types'
 
 export const EpochMetaToUiDmmMarketMaker = (
   epochMeta: EpochMeta
@@ -59,4 +59,16 @@ export const EpochMetaToUiEpochDate = (epochMeta: EpochMeta): UiEpochDate => {
     endTime: epochMeta.endTime,
     rewardInjNum: epochMeta.rewardInjNum
   }
+}
+
+export class DMMTransformer {
+  static EpochMetaToUiDmmMarketMaker = EpochMetaToUiDmmMarketMaker
+
+  static EpochMetaToUIMeta = EpochMetaToUIMeta
+
+  static EpochMetaToUiMarkets = EpochMetaToUiMarkets
+
+  static EpochMetaToUiEpochMeta = EpochMetaToUiEpochMeta
+
+  static EpochMetaToUiEpochDate = EpochMetaToUiEpochDate
 }

@@ -35,7 +35,7 @@ import Vue from 'vue'
 import { format } from 'date-fns'
 import VEpochItem from './epoch-item.vue'
 import Dropdown from '~/components/elements/dropdown.vue'
-import { UiEpochDate } from '~/types'
+import { UiEpochDate } from '~/app/services/dmm'
 
 export default Vue.extend({
   components: {

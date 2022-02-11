@@ -46,6 +46,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { UiDerivativeMarketWithTokenMeta } from '@injectivelabs/ui-common'
 import VModalAddMargin from '~/components/partials/modals/add-margin/index.vue'
 import VModalBridgeDeposit from '~/components/partials/modals/bridge-deposit/index.vue'
 import VModalBridgeWithdraw from '~/components/partials/modals/bridge-withdraw/index.vue'
@@ -59,7 +60,7 @@ import VMarket from '~/components/partials/derivatives/market.vue'
 import VOrders from '~/components/partials/derivatives/orders.vue'
 import VOrderbook from '~/components/partials/derivatives/orderbook.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
-import { Modal, UiDerivativeMarket } from '~/types'
+import { Modal } from '~/types'
 import { ORDERBOOK_POLLING_ENABLED } from '~/app/utils/constants'
 import { betaMarketSlugs } from '~/app/data/market'
 
@@ -88,7 +89,7 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiDerivativeMarket | undefined {
+    market(): UiDerivativeMarketWithTokenMeta | undefined {
       return this.$accessor.derivatives.market
     },
 

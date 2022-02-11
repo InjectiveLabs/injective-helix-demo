@@ -55,11 +55,16 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { DMMVCS } from '@injectivelabs/exchange-consumer'
-import { UiDmmMarketMaker, UiEpochDate, UiEpochSummaryItem } from '~/types'
+import { ZERO_IN_BASE } from '@injectivelabs/ui-common'
+import {
+  UiDmmMarketMaker,
+  UiEpochDate,
+  UiEpochSummaryItem
+} from '~/app/services/dmm'
 import TableHeader from '~/components/partials/dmm/summary/table-header.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import TableRow from '~/components/partials/dmm/summary/table-row.vue'
-import { ZERO_IN_BASE, UI_DEFAULT_DMM_DECIMALS } from '~/app/utils/constants'
+import { UI_DEFAULT_DMM_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {

@@ -29,9 +29,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { UiSpotLimitOrder } from '@injectivelabs/ui-common'
 import OpenOrders from './orders/index.vue'
 import TradeHistory from './trade-history/index.vue'
-import { UiSpotLimitOrder } from '~/types'
 
 const components = {
   orderHistory: '',

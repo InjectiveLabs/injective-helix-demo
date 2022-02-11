@@ -1,4 +1,4 @@
-import { MarketBase } from '~/types'
+import { MarketBase } from '@injectivelabs/ui-common'
 
 export const marketBase = {
   [MarketBase.Terra]: ['UST', 'LUNA']

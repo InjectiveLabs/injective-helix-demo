@@ -17,9 +17,13 @@
 <script lang="ts">
 import Vue from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  UiDerivativeMarketWithTokenMeta,
+  UiPosition,
+  UiSubaccount,
+  ZERO_IN_BASE
+} from '@injectivelabs/ui-common'
 import Form from './form.vue'
-import { UiDerivativeMarket, UiPosition, UiSubaccount } from '~/types'
-import { ZERO_IN_BASE } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -33,11 +37,11 @@ export default Vue.extend({
   },
 
   computed: {
-    markets(): UiDerivativeMarket[] {
+    markets(): UiDerivativeMarketWithTokenMeta[] {
       return this.$accessor.derivatives.markets
     },
 
-    market(): UiDerivativeMarket | undefined {
+    market(): UiDerivativeMarketWithTokenMeta | undefined {
       const { markets, position } = this
 
       if (!position) {

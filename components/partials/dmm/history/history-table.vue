@@ -75,7 +75,7 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import VHistoryRow from './history-row.vue'
 import TableHeader from '~/components/elements/table-header.vue'
 import TableBody from '~/components/elements/table-body.vue'
-import { UIEpochRecordItem } from '~/types'
+import { UIEpochRecordItem } from '~/app/services/dmm'
 import { UI_DEFAULT_DMM_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({

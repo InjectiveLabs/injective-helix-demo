@@ -1,10 +1,9 @@
 import { actionTree } from 'typed-vuex'
 import { ChainId } from '@injectivelabs/ts-types'
+import { DEFAULT_GAS_PRICE, SECONDS_IN_A_DAY } from '@injectivelabs/ui-common'
 import {
   CHAIN_ID,
-  DEFAULT_GAS_PRICE,
   GEO_IP_RESTRICTIONS_ENABLED,
-  SECONDS_IN_A_DAY,
   VPN_PROXY_VALIDATION_PERIOD
 } from '~/app/utils/constants'
 import { Locale, english } from '~/locales'
@@ -17,7 +16,7 @@ import {
 } from '~/app/services/region'
 import { app } from '~/app/singletons/App'
 import { todayInSeconds } from '~/app/utils/time'
-import { gasService } from '~/app/services'
+import { gasService } from '~/app/Services'
 
 export interface UserBasedState {
   vpnOrProxyUsageValidationTimestamp: number

@@ -42,18 +42,18 @@ import {
   Status,
   StatusType
 } from '@injectivelabs/utils'
-import VBankBalance from './bank-balance.vue'
 import {
-  Modal,
+  UiDerivativeMarketWithTokenMeta,
+  UiSpotMarketWithTokenMeta,
   BankBalances,
   BankBalanceWithTokenMetaData,
   Token,
-  UiDerivativeMarket,
-  UiSpotMarket
-} from '~/types'
-import { ZERO_IN_BASE } from '~/app/utils/constants'
-import VSelectCustom from '~/components/inputs/select-custom.vue'
+  ZERO_IN_BASE
+} from '@injectivelabs/ui-common'
+import VBankBalance from './bank-balance.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
+import VSelectCustom from '~/components/inputs/select-custom.vue'
+import { Modal } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -70,11 +70,11 @@ export default Vue.extend({
   },
 
   computed: {
-    derivativeMarkets(): UiDerivativeMarket[] {
+    derivativeMarkets(): UiDerivativeMarketWithTokenMeta[] {
       return this.$accessor.derivatives.markets
     },
 
-    spotMarkets(): UiSpotMarket[] {
+    spotMarkets(): UiSpotMarketWithTokenMeta[] {
       return this.$accessor.spot.markets
     },
 

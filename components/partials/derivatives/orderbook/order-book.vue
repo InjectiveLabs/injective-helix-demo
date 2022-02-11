@@ -87,28 +87,26 @@
 import Vue from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { createPopper, Instance } from '@popperjs/core'
+import {
+  Change,
+  UiOrderbookPriceLevel,
+  UiOrderbookSummary,
+  UiPriceLevel,
+  UiDerivativeLimitOrder,
+  UiDerivativeMarketWithTokenMeta,
+  UiDerivativeOrderbook,
+  UiDerivativeTrade,
+  ZERO_IN_BASE
+} from '@injectivelabs/ui-common'
+import { TradeDirection } from '@injectivelabs/ts-types'
+import { DerivativeOrderSide } from '@injectivelabs/derivatives-consumer'
 import Record from './record.vue'
 import SummaryPopup from '~/components/partials/common/orderbook/summary-popup.vue'
 import {
   getAggregationPrice,
   computeOrderbookSummary
 } from '~/app/services/derivatives'
-import {
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  ZERO_IN_BASE
-} from '~/app/utils/constants'
-import {
-  UiDerivativeTrade,
-  UiDerivativeMarket,
-  UiDerivativeLimitOrder,
-  UiPriceLevel,
-  UiDerivativeOrderbook,
-  TradeDirection,
-  DerivativeOrderSide,
-  UiOrderbookPriceLevel,
-  UiOrderbookSummary,
-  Change
-} from '~/types'
+import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -156,7 +154,7 @@ export default Vue.extend({
       return this.$accessor.derivatives.subaccountOrders
     },
 
-    market(): UiDerivativeMarket | undefined {
+    market(): UiDerivativeMarketWithTokenMeta | undefined {
       return this.$accessor.derivatives.market
     },
 

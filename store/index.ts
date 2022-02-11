@@ -1,5 +1,4 @@
 import { getAccessorType } from 'typed-vuex'
-
 import * as account from '~/store/account'
 import * as app from '~/store/app'
 import * as auction from '~/store/auction'

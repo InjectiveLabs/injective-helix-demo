@@ -37,7 +37,6 @@ import SidebarMobile from '~/components/layout/sidebar-mobile.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
 import VModalAuctionCountdown from '~/components/partials/modals/auction-countdown.vue'
 import { SHOW_AUCTION_COUNTDOWN } from '~/app/utils/constants'
-import { Modal } from '~/types/enums'
 
 export default Vue.extend({
   components: {

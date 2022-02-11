@@ -42,7 +42,11 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiDerivativeMarket, UiSpotMarket, UiOrderbookSummary } from '~/types'
+import {
+  UiDerivativeMarketWithTokenMeta,
+  UiSpotMarketWithTokenMeta,
+  UiOrderbookSummary
+} from '@injectivelabs/ui-common'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
@@ -57,7 +61,9 @@ export default Vue.extend({
     },
 
     market: {
-      type: Object as PropType<UiDerivativeMarket | UiSpotMarket>,
+      type: Object as PropType<
+        UiDerivativeMarketWithTokenMeta | UiSpotMarketWithTokenMeta
+      >,
       default: null
     }
   },

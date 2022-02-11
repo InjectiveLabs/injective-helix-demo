@@ -1,11 +1,23 @@
 import { MarketConfig } from '@injectivelabs/exchange-consumer'
-import { MarketType, Token } from '~/types'
+import { MarketType, Token } from '@injectivelabs/ui-common'
+
+export enum DMMMetrics {
+  FetchEpochs = 'FetchEpochs',
+  FetchEpochSummary = 'FetchEpochSummary',
+  FetchDMMRecords = 'FetchDMMRecords'
+}
 
 export interface UiEpochMarkets extends MarketConfig {
   marketId: string
 }
 
-export interface UiEpochMarketsWithTokenMeta extends UiEpochMarkets {
+export interface UiBaseEpochMarkets extends UiEpochMarkets {
+  ticker: string
+  type: MarketType
+  subType: MarketType
+}
+
+export interface UiEpochMarketsWithTokenMeta extends UiBaseEpochMarkets {
   ticker: string
   token: Token
   type: MarketType
@@ -64,8 +76,8 @@ export interface UIEpochMarketEVCSItem {
 }
 
 export interface UIEpochRecordItem {
-  number: number,
-  elcs: string,
-  evcs: string,
+  number: number
+  elcs: string
+  evcs: string
   createdAt: string
 }

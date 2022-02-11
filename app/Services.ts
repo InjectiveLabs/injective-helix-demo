@@ -22,12 +22,13 @@ import {
   IS_TESTNET,
   NETWORK,
   METRICS_ENABLED,
-  PEGGY_GRAPH_URL,
   APP_EXCHANGE_API_ENDPOINT,
   APP_SENTRY_GRPC_ENDPOINT
-} from '../utils/constants'
-import { getWeb3Strategy } from '../web3'
-import { SubaccountService } from './account'
+} from './utils/constants'
+import { getWeb3Strategy } from './web3'
+import { SubaccountService } from './services/account'
+import { DmmService } from './services/dmm'
+import { ExchangeService } from './services/exchange'
 import { app } from '~/app/singletons/App'
 
 const alchemyRpcEndpoint = IS_TESTNET
@@ -66,16 +67,15 @@ export const tokenCoinGeckoService = new TokenCoinGeckoService(
   coinGeckoOptions
 )
 
-export const bridgeService = new BridgeService(
-  commonServiceOptions,
-  PEGGY_GRAPH_URL
-)
+export const bridgeService = new BridgeService(commonServiceOptions)
 
 export const bankService = new BankService(commonServiceOptions)
 export const derivativeService = new DerivativeService(commonServiceOptions)
 export const spotService = new SpotService(commonServiceOptions)
 export const tokenService = new TokenService(commonServiceOptions)
 export const gasService = new GasService(commonServiceOptions)
+export const dmmService = new DmmService(commonServiceOptions)
+export const exchangeService = new ExchangeService(commonServiceOptions)
 export const alchemyApiService = new AlchemyApi(alchemyRpcEndpoint)
 export const coinGeckoApi = new CoinGeckoApi(coinGeckoOptions)
 export const subaccountService = new SubaccountService(commonServiceOptions)

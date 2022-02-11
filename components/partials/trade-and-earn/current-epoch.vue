@@ -102,17 +102,16 @@
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import Vue from 'vue'
-import { cosmosSdkDecToBigNumber } from '~/app/transformers'
+import { ZERO_IN_BASE, cosmosSdkDecToBigNumber } from '@injectivelabs/ui-common'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS,
-  ZERO_IN_BASE
+  DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
 } from '~/app/utils/constants'
 import VItem from '~/components/partials/common/stats/item.vue'
 import {
   FeeDiscountAccountInfo,
   TradingRewardsCampaign
-} from '~/types/exchange'
+} from '~/app/services/exchange'
 
 export default Vue.extend({
   components: {

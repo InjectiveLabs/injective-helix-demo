@@ -35,15 +35,15 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import VToken from './token.vue'
 import {
-  UiSpotMarket,
-  Modal,
+  UiSpotMarketWithTokenMeta,
+  UiDerivativeMarketWithTokenMeta,
   TokenWithBalance,
-  UiDerivativeMarket,
   MarketType
-} from '~/types'
+} from '@injectivelabs/ui-common'
+import VToken from './token.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
+import { Modal } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -59,15 +59,18 @@ export default Vue.extend({
   },
 
   computed: {
-    spotMarket(): UiSpotMarket | undefined {
+    spotMarket(): UiSpotMarketWithTokenMeta | undefined {
       return this.$accessor.spot.market
     },
 
-    derivativeMarket(): UiDerivativeMarket | undefined {
+    derivativeMarket(): UiDerivativeMarketWithTokenMeta | undefined {
       return this.$accessor.derivatives.market
     },
 
-    market(): UiSpotMarket | UiDerivativeMarket | undefined {
+    market():
+      | UiSpotMarketWithTokenMeta
+      | UiDerivativeMarketWithTokenMeta
+      | undefined {
       const { spotMarket, derivativeMarket } = this
 
       return this.$route.name === 'spot-spot' ? spotMarket : derivativeMarket

@@ -88,13 +88,10 @@
 <script lang="ts">
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import Vue from 'vue'
-import { cosmosSdkDecToBigNumber } from '~/app/transformers'
-import {
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  ZERO_IN_BASE
-} from '~/app/utils/constants'
+import { cosmosSdkDecToBigNumber, ZERO_IN_BASE } from '@injectivelabs/ui-common'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import VItem from '~/components/partials/common/stats/item.vue'
-import { FeeDiscountAccountInfo } from '~/types/exchange'
+import { FeeDiscountAccountInfo } from '~/app/services/exchange'
 
 export default Vue.extend({
   components: {

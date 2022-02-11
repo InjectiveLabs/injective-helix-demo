@@ -6,8 +6,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import {
+  UiSpotMarketSummary,
+  UiSpotMarketWithTokenMeta
+} from '@injectivelabs/ui-common'
 import Market from '~/components/partials/common/market/index.vue'
-import { UiSpotMarket, UiSpotMarketSummary } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -15,7 +18,7 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiSpotMarket | undefined {
+    market(): UiSpotMarketWithTokenMeta | undefined {
       return this.$accessor.spot.market
     },
 

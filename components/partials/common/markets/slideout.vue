@@ -12,14 +12,14 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import {
+  UiDerivativeMarketSummary,
+  UiDerivativeMarketWithTokenMeta,
+  UiSpotMarketSummary,
+  UiSpotMarketWithTokenMeta
+} from '@injectivelabs/ui-common'
 import VTable from './table.vue'
 import VSlideout from '~/components/elements/slideout.vue'
-import {
-  UiDerivativeMarket,
-  UiDerivativeMarketSummary,
-  UiSpotMarket,
-  UiSpotMarketSummary
-} from '~/types'
 
 export default Vue.extend({
   components: {
@@ -35,7 +35,7 @@ export default Vue.extend({
   },
 
   computed: {
-    derivativeMarkets(): UiDerivativeMarket[] {
+    derivativeMarkets(): UiDerivativeMarketWithTokenMeta[] {
       return this.$accessor.derivatives.markets
     },
 
@@ -43,7 +43,7 @@ export default Vue.extend({
       return this.$accessor.derivatives.marketsSummary
     },
 
-    spotMarkets(): UiSpotMarket[] {
+    spotMarkets(): UiSpotMarketWithTokenMeta[] {
       return this.$accessor.spot.markets
     },
 
@@ -51,7 +51,9 @@ export default Vue.extend({
       return this.$accessor.spot.marketsSummary
     },
 
-    markets(): Array<UiSpotMarket | UiDerivativeMarket> {
+    markets(): Array<
+      UiSpotMarketWithTokenMeta | UiDerivativeMarketWithTokenMeta
+    > {
       const { spotMarkets, derivativeMarkets } = this
 
       return [...derivativeMarkets, ...spotMarkets]

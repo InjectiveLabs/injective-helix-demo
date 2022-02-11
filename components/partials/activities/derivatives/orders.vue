@@ -34,9 +34,9 @@
 <script lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import Vue from 'vue'
+import { UiDerivativeLimitOrder } from '@injectivelabs/ui-common'
 import Order from '~/components/partials/common/spot/order.vue'
 import OrdersTableHeader from '~/components/partials/common/spot/orders-table-header.vue'
-import { UiDerivativeLimitOrder } from '~/types'
 import HOCLoading from '~/components/hoc/loading.vue'
 
 export default Vue.extend({

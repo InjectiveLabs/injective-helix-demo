@@ -4,21 +4,16 @@ import {
   LCSResultRecord,
   VCSResultRecord
 } from '@injectivelabs/exchange-consumer'
-import {
-  fetchDMMRecords,
-  fetchEpochs,
-  fetchEpochSummary,
-  fetchEpochUsdPrice,
-  fetchMarkets,
-  findActiveMarket
-} from '~/app/services/dmm'
+import { TokenTransformer } from '@injectivelabs/ui-common'
 import {
   UiDmmMarketMaker,
   UiEpochMarkets,
   UiEpochMarketsWithTokenMeta,
   UiEpochDate,
-  UiEpochMeta
-} from '~/types'
+  UiEpochMeta,
+  findActiveMarket
+} from '~/app/services/dmm'
+import { dmmService, tokenService } from '~/app/Services'
 
 const initialStateFactory = () => ({
   activeEpochId: '' as string,
@@ -138,7 +133,7 @@ export const actions = actionTree(
       }
     ) {
       const { activeEpochId } = this.app.$accessor.dmm
-      const records = await fetchDMMRecords({
+      const records = await dmmService.fetchDMMRecords({
         accountAddress,
         dmmName,
         epochId: activeEpochId
@@ -150,13 +145,13 @@ export const actions = actionTree(
     },
 
     async fetchEpochs({ commit }) {
-      const epochDates = await fetchEpochs()
+      const epochDates = await dmmService.fetchEpochs()
 
       commit('setDates', epochDates)
     },
 
     async fetchEpochSummary({ commit }, epochId?: string) {
-      const { meta, result } = await fetchEpochSummary({ epochId })
+      const { meta, result } = await dmmService.fetchEpochSummary({ epochId })
 
       commit('setActiveEpochId', meta.meta.id)
       commit('setMarkets', meta.markets)
@@ -165,12 +160,30 @@ export const actions = actionTree(
       commit('setLcs', result.lcs)
       commit('setVcs', result.vcs)
       commit('setUpdatedAt', result.createdAt)
-      const marketsWithTokenMeta = await fetchMarkets(meta.markets)
+
+      const baseMarkets = await dmmService.fetchMarkets(meta.markets)
+      const marketsWithTokenMeta = baseMarkets
+        .map((market) => {
+          const [baseTokenSymbol] = market.ticker.split('/')
+          const baseToken = TokenTransformer.tokenMetaToToken(
+            tokenService.getTokenMetaDataBySymbol(baseTokenSymbol),
+            baseTokenSymbol
+          )
+
+          return {
+            ...market,
+            token: baseToken
+          }
+        })
+        .filter(
+          (market) => market.token !== undefined
+        ) as UiEpochMarketsWithTokenMeta[]
+
       commit('setMarketsWithTokenMeta', marketsWithTokenMeta)
       commit('setActiveMarketId', findActiveMarket(marketsWithTokenMeta))
       commit(
         'setEpochUsdPrice',
-        await fetchEpochUsdPrice(meta.meta as UiEpochMeta)
+        await dmmService.fetchEpochUsdPrice(meta.meta as UiEpochMeta)
       )
     }
   }

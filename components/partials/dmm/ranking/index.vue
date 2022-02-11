@@ -28,7 +28,7 @@ import { format } from 'date-fns'
 import VMarketSelector from './market-selector.vue'
 import VElcsTable from './elcs-table.vue'
 import VEvcsTable from './evcs-table.vue'
-import { UiEpochMarketsWithTokenMeta } from '~/types'
+import { UiEpochMarketsWithTokenMeta } from '~/app/services/dmm'
 import { DMM_TIME_STAMP_FORMAT } from '~/app/utils/constants'
 
 export default Vue.extend({

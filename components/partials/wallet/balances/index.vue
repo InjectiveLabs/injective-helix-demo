@@ -40,51 +40,34 @@
       </TableBody>
       <v-user-wallet-connect-warning v-else cta />
     </div>
-    <v-modal-delegate-to-validator
-      v-if="VALIDATOR_ADDRESS"
-      :validator="validator"
-    />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { BigNumberInWei } from '@injectivelabs/utils'
-import VBalance from './balance.vue'
-import VModalDelegateToValidator from '~/components/partials/modals/delegate-to-validator.vue'
-import TableBody from '~/components/elements/table-body.vue'
-import TableHeader from '~/components/elements/table-header.vue'
-import { TokenWithBalance } from '~/types/token'
 import {
   BankBalanceWithTokenMetaData,
   BankBalanceWithTokenMetaDataAndBalance,
   BankBalanceWithTokenMetaDataAndBalanceWithUsdBalance,
-  IbcBankBalanceWithTokenMetaData
-} from '~/types/bank'
-import { INJECTIVE_DENOM, VALIDATOR_ADDRESS } from '~/app/utils/constants'
-import { UiValidator } from '~/types/validators'
+  IbcBankBalanceWithTokenMetaData,
+  TokenWithBalance,
+  INJECTIVE_DENOM
+} from '@injectivelabs/ui-common'
+import VBalance from './balance.vue'
+import TableBody from '~/components/elements/table-body.vue'
+import TableHeader from '~/components/elements/table-header.vue'
 
 export default Vue.extend({
   components: {
     TableBody,
     TableHeader,
-    VBalance,
-    VModalDelegateToValidator
-  },
-
-  data() {
-    return {
-      VALIDATOR_ADDRESS
-    }
+    VBalance
   },
 
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
-    },
-
-    validator(): UiValidator | undefined {
-      return this.$accessor.staking.validator
     },
 
     bankBalances(): BankBalanceWithTokenMetaData[] {
@@ -192,12 +175,6 @@ export default Vue.extend({
             return v2.balanceInUsd.minus(v1.balanceInUsd).toNumber()
           }
         )
-    }
-  },
-
-  mounted() {
-    if (VALIDATOR_ADDRESS) {
-      this.$accessor.staking.fetchValidator(VALIDATOR_ADDRESS)
     }
   }
 })

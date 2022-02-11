@@ -98,10 +98,11 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { MarketType } from '@injectivelabs/ui-common'
 import VMarketItem from './market-item.vue'
 import VSearch from '~/components/inputs/search.vue'
 import Dropdown from '~/components/elements/dropdown.vue'
-import { MarketType, UiEpochMarketsWithTokenMeta } from '~/types'
+import { UiEpochMarketsWithTokenMeta } from '~/app/services/dmm'
 
 export default Vue.extend({
   components: {

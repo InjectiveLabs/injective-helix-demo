@@ -4,10 +4,12 @@ import {
   AccountPortfolio,
   BalanceStreamCallback as SubaccountBalanceStreamCallback
 } from '@injectivelabs/subaccount-consumer'
-import { SubaccountService as BaseSubaccountService } from '@injectivelabs/ui-common'
+import {
+  SubaccountService as BaseSubaccountService,
+  AccountMetrics
+} from '@injectivelabs/ui-common'
 import { subaccountStream } from '../singletons/SubaccountStream'
 import { streamProvider } from '../providers/StreamProvider'
-import { AccountMetrics } from '~/types/metrics'
 
 export class SubaccountService extends BaseSubaccountService {
   async fetchAccountPortfolio(injAddress: string): Promise<AccountPortfolio> {

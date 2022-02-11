@@ -36,10 +36,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { UiDerivativeLimitOrder, UiPosition } from '@injectivelabs/ui-common'
 import OpenOrders from './orders/index.vue'
 import OpenPositions from './positions/index.vue'
 import TradeHistory from './trade-history/index.vue'
-import { UiDerivativeLimitOrder, UiPosition } from '~/types'
 
 const components = {
   orderHistory: '',

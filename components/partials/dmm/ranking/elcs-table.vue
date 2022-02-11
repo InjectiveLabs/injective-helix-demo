@@ -87,7 +87,7 @@ import { DMMLCS } from '@injectivelabs/exchange-consumer'
 import TableRow from './elcs-row.vue'
 import TableHeader from '~/components/elements/table-header.vue'
 import TableBody from '~/components/elements/table-body.vue'
-import { UiDmmMarketMaker, UIEpochMarketELCSItem } from '~/types'
+import { UiDmmMarketMaker, UIEpochMarketELCSItem } from '~/app/services/dmm'
 import { UI_DEFAULT_DMM_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({

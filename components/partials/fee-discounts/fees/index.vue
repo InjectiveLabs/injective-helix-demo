@@ -71,7 +71,10 @@
 import Vue from 'vue'
 import { Status } from '@injectivelabs/utils'
 import Tier from '~/components/partials/fee-discounts/fees/tier.vue'
-import { FeeDiscountSchedule, FeeDiscountTierInfo } from '~/types/exchange'
+import {
+  FeeDiscountSchedule,
+  FeeDiscountTierInfo
+} from '~/app/services/exchange'
 
 export default Vue.extend({
   components: {

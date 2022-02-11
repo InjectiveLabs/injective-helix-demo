@@ -43,16 +43,17 @@ import {
   Status,
   StatusType
 } from '@injectivelabs/utils'
-import VBankBalance from './bank-balance.vue'
 import {
-  UiSpotMarket,
-  Modal,
-  UiDerivativeMarket,
+  UiSpotMarketWithTokenMeta,
+  UiDerivativeMarketWithTokenMeta,
   BankBalances,
-  MarketType,
-  TokenWithBalance
-} from '~/types'
-import { ZERO_IN_BASE } from '~/app/utils/constants'
+  TokenWithBalance,
+  TokenWithBalanceAndPrice,
+  ZERO_IN_BASE,
+  MarketType
+} from '@injectivelabs/ui-common'
+import VBankBalance from './bank-balance.vue'
+import { Modal } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -66,11 +67,11 @@ export default Vue.extend({
   },
 
   computed: {
-    spotMarket(): UiSpotMarket | undefined {
+    spotMarket(): UiSpotMarketWithTokenMeta | undefined {
       return this.$accessor.spot.market
     },
 
-    derivativeMarket(): UiDerivativeMarket | undefined {
+    derivativeMarket(): UiDerivativeMarketWithTokenMeta | undefined {
       return this.$accessor.derivatives.market
     },
 
@@ -78,15 +79,18 @@ export default Vue.extend({
       return this.$accessor.bank.balances
     },
 
-    baseTokenWithBalance(): TokenWithBalance | undefined {
+    baseTokenWithBalance(): TokenWithBalanceAndPrice | undefined {
       return this.$accessor.token.baseTokenWithBalance
     },
 
-    quoteTokenWithBalance(): TokenWithBalance | undefined {
+    quoteTokenWithBalance(): TokenWithBalanceAndPrice | undefined {
       return this.$accessor.token.quoteTokenWithBalance
     },
 
-    market(): UiSpotMarket | UiDerivativeMarket | undefined {
+    market():
+      | UiSpotMarketWithTokenMeta
+      | UiDerivativeMarketWithTokenMeta
+      | undefined {
       const { spotMarket, derivativeMarket } = this
 
       return this.$route.name === 'spot-spot' ? spotMarket : derivativeMarket
@@ -103,12 +107,12 @@ export default Vue.extend({
         return new BigNumberInBase('')
       }
 
-      if (!balances[(market as UiSpotMarket).baseDenom]) {
+      if (!balances[(market as UiSpotMarketWithTokenMeta).baseDenom]) {
         return ZERO_IN_BASE
       }
 
       return new BigNumberInWei(
-        balances[(market as UiSpotMarket).baseDenom] || 0
+        balances[(market as UiSpotMarketWithTokenMeta).baseDenom] || 0
       ).toBase(market.baseToken.decimals)
     },
 

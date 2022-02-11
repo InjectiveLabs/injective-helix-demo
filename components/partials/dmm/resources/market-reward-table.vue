@@ -39,7 +39,7 @@ import Vue from 'vue'
 import VMarketRewardRow from './market-reward-row.vue'
 import TableHeader from '~/components/elements/table-header.vue'
 import TableBody from '~/components/elements/table-body.vue'
-import { UiEpochMarketsWithTokenMeta } from '~/types'
+import { UiEpochMarketsWithTokenMeta } from '~/app/services/dmm'
 
 export default Vue.extend({
   components: {

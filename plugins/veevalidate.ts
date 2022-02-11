@@ -1,6 +1,6 @@
 import { extend, localize } from 'vee-validate'
 import { required, email, min, max, between } from 'vee-validate/dist/rules'
-import { NUMBER_REGEX } from '~/app/utils/constants'
+import { NUMBER_REGEX } from '@injectivelabs/ui-common'
 
 localize({
   en: {

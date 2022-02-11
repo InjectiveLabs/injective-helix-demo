@@ -71,7 +71,7 @@
 import Vue, { PropType } from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
-import { TokenWithBalance } from '~/types'
+import { TokenWithBalanceAndPrice } from '@injectivelabs/ui-common'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
@@ -83,7 +83,7 @@ export default Vue.extend({
   props: {
     token: {
       required: true,
-      type: Object as PropType<TokenWithBalance>
+      type: Object as PropType<TokenWithBalanceAndPrice>
     },
 
     balance: {

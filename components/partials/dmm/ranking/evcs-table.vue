@@ -47,7 +47,9 @@
       <TableBody
         class="max-h-60 overflow-y-scroll"
         :class="[
-          formattedMarket > 5 ? 'md:overflow-y-scroll' : 'md:overflow-y-hidden'
+          formattedMarket.length > 5
+            ? 'md:overflow-y-scroll'
+            : 'md:overflow-y-hidden'
         ]"
         :show-empty="formattedMarket.length === 0"
         dense
@@ -57,7 +59,7 @@
           :key="`rank-evcs-${index}`"
           :active="injectiveAddress === item.address"
           :item="item"
-          :scrollbar="formattedMarket > 5"
+          :scrollbar="formattedMarket.length > 5"
         />
         <template slot="empty">
           <span class="col-span-1 md:col-span-3 text-center xl:text-left">
@@ -76,7 +78,7 @@ import { MapOfStringDMMVCS } from '@injectivelabs/exchange-consumer'
 import VEvcsRow from './evcs-row.vue'
 import TableHeader from '~/components/elements/table-header.vue'
 import TableBody from '~/components/elements/table-body.vue'
-import { UiDmmMarketMaker, UIEpochMarketEVCSItem } from '~/types'
+import { UiDmmMarketMaker, UIEpochMarketEVCSItem } from '~/app/services/dmm'
 import { UI_DEFAULT_DMM_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
@@ -142,7 +144,10 @@ export default Vue.extend({
             evcs: new BigNumberInBase(vcs.vcs).toFormat(UI_DEFAULT_DMM_DECIMALS)
           }
         })
-        .filter((summary: UIEpochMarketEVCSItem) => summary.address !== '' && summary.name !== '')
+        .filter(
+          (summary: UIEpochMarketEVCSItem) =>
+            summary.address !== '' && summary.name !== ''
+        )
         .sort((v1: UIEpochMarketEVCSItem, v2: UIEpochMarketEVCSItem) => {
           const v1Evcs = new BigNumberInBase(v1.evcs.replace(',', ''))
           const v2Evcs = new BigNumberInBase(v2.evcs.replace(',', ''))

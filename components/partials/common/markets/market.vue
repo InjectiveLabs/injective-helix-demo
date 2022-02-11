@@ -112,19 +112,17 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import TableRow from '~/components/elements/table-row.vue'
 import {
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  ZERO_IN_BASE
-} from '~/app/utils/constants'
-import {
-  Change,
-  MarketType,
-  UiDerivativeMarket,
   UiDerivativeMarketSummary,
-  UiSpotMarket,
-  UiSpotMarketSummary
-} from '~/types'
+  UiDerivativeMarketWithTokenMeta,
+  MarketType,
+  ZERO_IN_BASE,
+  UiSpotMarketSummary,
+  UiSpotMarketWithTokenMeta
+} from '@injectivelabs/ui-common'
+import TableRow from '~/components/elements/table-row.vue'
+import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { Change } from '~/types'
 import { betaMarketSlugs } from '~/app/data/market'
 
 export default Vue.extend({
@@ -141,7 +139,9 @@ export default Vue.extend({
 
     market: {
       required: true,
-      type: Object as PropType<UiDerivativeMarket | UiSpotMarket>
+      type: Object as PropType<
+        UiDerivativeMarketWithTokenMeta | UiSpotMarketWithTokenMeta
+      >
     },
 
     summary: {
@@ -157,11 +157,11 @@ export default Vue.extend({
   },
 
   computed: {
-    currentSpotMarket(): UiSpotMarket | undefined {
+    currentSpotMarket(): UiSpotMarketWithTokenMeta | undefined {
       return this.$accessor.spot.market
     },
 
-    currentDerivativeMarket(): UiDerivativeMarket | undefined {
+    currentDerivativeMarket(): UiDerivativeMarketWithTokenMeta | undefined {
       return this.$accessor.derivatives.market
     },
 
@@ -174,7 +174,10 @@ export default Vue.extend({
     },
 
     /* Current market is the market that we are currently trading on */
-    currentMarket(): UiSpotMarket | UiDerivativeMarket | undefined {
+    currentMarket():
+      | UiSpotMarketWithTokenMeta
+      | UiDerivativeMarketWithTokenMeta
+      | undefined {
       const { currentSpotMarket, currentDerivativeMarket, market } = this
 
       return market.type === MarketType.Spot

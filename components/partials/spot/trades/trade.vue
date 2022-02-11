@@ -22,11 +22,15 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { format } from 'date-fns'
-import { UiSpotMarket, UiSpotTrade, TradeDirection } from '~/types'
+import { TradeDirection } from '@injectivelabs/ts-types'
+import {
+  UiSpotMarketWithTokenMeta,
+  UiSpotTrade,
+  ZERO_IN_BASE
+} from '@injectivelabs/ui-common'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  ZERO_IN_BASE
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
 
 export default Vue.extend({
@@ -44,7 +48,7 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiSpotMarket | undefined {
+    market(): UiSpotMarketWithTokenMeta | undefined {
       return this.$accessor.spot.market
     },
 

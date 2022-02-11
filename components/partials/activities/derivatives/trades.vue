@@ -23,9 +23,9 @@
 <script lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import Vue from 'vue'
+import { UiDerivativeTrade } from '@injectivelabs/ui-common'
 import Trade from '~/components/partials/common/spot/trade.vue'
 import TradesTableHeader from '~/components/partials/common/spot/trades-table-header.vue'
-import { UiDerivativeTrade } from '~/types'
 import HOCLoading from '~/components/hoc/loading.vue'
 
 export default Vue.extend({

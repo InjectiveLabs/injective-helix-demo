@@ -31,11 +31,12 @@
 import Vue from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { format } from 'date-fns'
+import { ZERO_IN_BASE } from '@injectivelabs/ui-common'
 import VElcsTable from './elcs-table.vue'
 import VEvcsTable from './evcs-table.vue'
 import VEpochProgressBar from '~/components/partials/dmm/common/epoch-progress-bar.vue'
-import { UiEpochMeta } from '~/types'
-import { DMM_TIME_STAMP_FORMAT, ZERO_IN_BASE } from '~/app/utils/constants'
+import { UiEpochMeta } from '~/app/services/dmm'
+import { DMM_TIME_STAMP_FORMAT } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {

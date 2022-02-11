@@ -1,17 +1,17 @@
-import { BankBalances } from '@injectivelabs/ui-common/dist/bank/types'
 import {
+  BankBalances,
   BankBalanceWithTokenMetaData,
   IbcBankBalanceWithTokenMetaData,
-  Token
-} from '@injectivelabs/ui-common/dist/token/types'
-import { TokenTransformer } from '@injectivelabs/ui-common'
+  Token,
+  TokenTransformer
+} from '@injectivelabs/ui-common'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
 import {
   bankActionServiceFactory,
   bankService,
   tokenService
-} from '~/app/services'
+} from '~/app/Services'
 import { backupPromiseCall } from '~/app/utils/async'
 
 const initialStateFactory = () => ({

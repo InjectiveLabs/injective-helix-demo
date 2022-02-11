@@ -1,7 +1,6 @@
 import '~/static/chart/datafeeds/udf/build/polyfills.js'
 import { Datafeed } from './datafeed/index'
 import { BASE_URL } from '~/app/utils/constants'
-import { TokenSymbol } from '~/types'
 
 const { theme } = require('../../tailwind.config')
 
@@ -12,7 +11,7 @@ export default function ({
   interval,
   datafeedEndpoint
 }: {
-  symbol: TokenSymbol
+  symbol: string
   interval: string
   datafeedEndpoint: string
 }) {

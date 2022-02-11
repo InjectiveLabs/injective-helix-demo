@@ -7,10 +7,13 @@ import {
   UiDerivativeMarketWithTokenMeta,
   UiDerivativeOrderbook,
   UiDerivativeTrade,
-  UiPosition
-} from '@injectivelabs/ui-common/dist/derivative/types'
-import { DerivativeTransformer, zeroDerivativeMarketSummary } from '@injectivelabs/ui-common'
-import { Change } from '@injectivelabs/ui-common/dist/types'
+  UiPosition,
+  DerivativeTransformer,
+  zeroDerivativeMarketSummary,
+  ZERO_IN_BASE,
+  ZERO_TO_STRING,
+  Change
+} from '@injectivelabs/ui-common'
 import {
   DerivativeOrderSide,
   DerivativeOrderState
@@ -26,15 +29,13 @@ import {
 } from '~/app/services/derivatives'
 import {
   FEE_RECIPIENT,
-  ORDERBOOK_STREAMING_ENABLED,
-  ZERO_IN_BASE,
-  ZERO_TO_STRING
+  ORDERBOOK_STREAMING_ENABLED
 } from '~/app/utils/constants'
 import {
   derivativeActionServiceFactory,
   derivativeService,
   tokenService
-} from '~/app/services'
+} from '~/app/Services'
 import { derivatives as allowedPerpetualMarkets } from '~/routes.config'
 
 const initialStateFactory = () => ({
