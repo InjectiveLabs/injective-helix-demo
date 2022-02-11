@@ -47,7 +47,6 @@ import {
   UiSpotMarketWithTokenMeta,
   UiDerivativeMarketWithTokenMeta,
   BankBalances,
-  TokenWithBalance,
   TokenWithBalanceAndPrice,
   ZERO_IN_BASE,
   MarketType

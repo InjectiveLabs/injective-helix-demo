@@ -24,9 +24,7 @@
 </template>
 
 <script lang="ts">
-import { Network } from '@injectivelabs/networks'
 import Vue from 'vue'
-import { NETWORK } from '~/app/utils/constants'
 import { getHubUrl } from '~/app/utils/helpers'
 
 export default Vue.extend({

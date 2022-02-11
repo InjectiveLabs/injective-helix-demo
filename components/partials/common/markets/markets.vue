@@ -9,8 +9,6 @@ import Vue from 'vue'
 import {
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithTokenMeta,
-  MarketType,
-  ZERO_IN_BASE,
   UiSpotMarketSummary,
   UiSpotMarketWithTokenMeta
 } from '@injectivelabs/ui-common'

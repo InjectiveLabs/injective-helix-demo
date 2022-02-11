@@ -1,5 +1,3 @@
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-
 export interface DOMEvent<T extends EventTarget> extends Event {
   target: T
   keyCode?: number

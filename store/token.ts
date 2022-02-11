@@ -13,8 +13,7 @@ import {
   peggyActionServiceFactory,
   tokenCoinGeckoService,
   tokenErc20ActionServiceFactory,
-  tokenErc20Service,
-  tokenService
+  tokenErc20Service
 } from '~/app/Services'
 import { backupPromiseCall } from '~/app/utils/async'
 
