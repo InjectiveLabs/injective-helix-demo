@@ -1,11 +1,18 @@
 import faq from './faq/en'
 import dmm from './dmm/en'
+import banners from './banners/en'
 import activities from './activities/en'
 
 export default {
+  ...banners,
   ...faq,
   ...dmm,
   ...activities,
+  common: {
+    deposit: 'Deposit',
+    trade: 'Trade',
+    transfer: 'Transfer'
+  },
   address_copied: 'Address Copied',
   copy_address: 'Copy Address',
   max: 'Max',

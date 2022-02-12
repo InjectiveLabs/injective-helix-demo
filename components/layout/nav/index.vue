@@ -17,7 +17,7 @@
         {{ $t('dmm.nav.dedicatedMarketMakingRewards') }}
       </v-nav-item>
       <v-nav-item-dummy
-        ref="rewards"
+        id="rewards"
         class="hidden lg:block"
         @mouseenter.native="showDropdown"
         @mouseleave.native="hideDropdown"
@@ -31,7 +31,7 @@
     <VPopperBox
       ref="popper"
       class="popper px-4 pt-4 bg-gray-800 rounded-xl flex flex-col flex-wrap text-xs absolute"
-      binding-element="rewards"
+      binding-element="#rewards"
     >
       <div>
         <v-nav-item
