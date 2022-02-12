@@ -173,16 +173,10 @@ export default Vue.extend({
       )
     },
 
-    totalInUsd(): BigNumberInBase {
-      const { total, balance } = this
-
-      return total.times(balance.token.priceInUsd || 0)
-    },
-
     totalInUsdToString(): string {
-      const { totalInUsd } = this
+      const { balance } = this
 
-      return totalInUsd.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+      return balance.balanceInUsd.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
     },
 
     isIbcToken(): boolean {

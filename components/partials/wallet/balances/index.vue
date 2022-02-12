@@ -86,6 +86,10 @@ export default Vue.extend({
       return this.$accessor.token.ibcTokensWithBalanceFromBank
     },
 
+    tokensWithPriceInUsd(): Record<string, string> {
+      return this.$accessor.token.tokensWithPriceInUsd
+    },
+
     ercBalances(): BankBalanceWithTokenMetaDataAndBalance[] {
       const { bankBalances, erc20TokensWithBalanceAndAllowance } = this
 
@@ -128,14 +132,16 @@ export default Vue.extend({
       })
     },
 
-    balances(): BankBalanceWithTokenMetaDataAndBalance[] {
-      const { ercBalances, ibcBalances } = this
+    balances(): BankBalanceWithTokenMetaDataAndBalanceWithUsdBalance[] {
+      const { ercBalances, ibcBalances, tokensWithPriceInUsd } = this
 
       // calculate and append total USD balances
       return [...ercBalances, ...ibcBalances].map((balance) => {
+        const usdPrice = tokensWithPriceInUsd[balance.token.denom] || 0
+
         const balanceInUsd = new BigNumberInWei(balance.balance)
           .toBase(balance.token.decimals)
-          .times(balance.token?.priceInUsd || 0)
+          .times(usdPrice)
 
         return {
           ...balance,
@@ -147,34 +153,23 @@ export default Vue.extend({
     sortedBalances(): BankBalanceWithTokenMetaDataAndBalanceWithUsdBalance[] {
       const { balances } = this
 
-      return [...balances]
-        .map((balance) => {
-          const balanceInUsd = new BigNumberInWei(balance.balance)
-            .toBase(balance.token.decimals)
-            .times(balance.token?.priceInUsd || 0)
-
-          return {
-            ...balance,
-            balanceInUsd
+      return [...balances].sort(
+        (
+          v1: BankBalanceWithTokenMetaDataAndBalanceWithUsdBalance,
+          v2: BankBalanceWithTokenMetaDataAndBalanceWithUsdBalance
+        ) => {
+          // sort INJ to the top
+          if (v1.denom === INJECTIVE_DENOM) {
+            return -1
           }
-        })
-        .sort(
-          (
-            v1: BankBalanceWithTokenMetaDataAndBalanceWithUsdBalance,
-            v2: BankBalanceWithTokenMetaDataAndBalanceWithUsdBalance
-          ) => {
-            // sort INJ to the top
-            if (v1.denom === INJECTIVE_DENOM) {
-              return -1
-            }
 
-            if (v2.denom === INJECTIVE_DENOM) {
-              return 1
-            }
-
-            return v2.balanceInUsd.minus(v1.balanceInUsd).toNumber()
+          if (v2.denom === INJECTIVE_DENOM) {
+            return 1
           }
-        )
+
+          return v2.balanceInUsd.minus(v1.balanceInUsd).toNumber()
+        }
+      )
     }
   }
 })

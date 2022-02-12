@@ -1,5 +1,5 @@
 <template>
-  <div ref="popper" @mouseleave="hideDropdown" @mouseenter="showDropdown">
+  <div :ref="uid" @mouseleave="hideDropdown" @mouseenter="showDropdown">
     <div v-if="!hideArrow" class="arrow" data-popper-arrow />
     <slot></slot>
   </div>
@@ -45,8 +45,14 @@ export default Vue.extend({
   },
 
   computed: {
+    uid(): string {
+      return Math.random().toString()
+    },
+
     $popperElement(): InstanceType<typeof HTMLElement> {
-      return this.$refs.popper as InstanceType<typeof HTMLElement>
+      const { uid } = this
+
+      return this.$refs[uid] as InstanceType<typeof HTMLElement>
     }
   },
 
@@ -68,7 +74,9 @@ export default Vue.extend({
 
       clearTimeout(this.delayHide)
       this.$nextTick(() => {
-        this.popper.update()
+        if (this.popper) {
+          this.popper.update()
+        }
         $popperElement.setAttribute('data-show', '')
       })
     },

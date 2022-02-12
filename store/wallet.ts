@@ -119,6 +119,7 @@ export const actions = actionTree(
     },
 
     async initPage(_) {
+      await this.app.$accessor.token.getAllTokenWithPriceInUsd()
       await this.app.$accessor.token.getAllTokenWithBalanceAndAllowance()
 
       if (GAS_FREE_DEPOSIT_REBATE_ENABLED) {
@@ -286,13 +287,10 @@ export const actions = actionTree(
 
     async logout({ commit }) {
       await this.app.$accessor.account.reset()
-      await this.app.$accessor.account.reset()
       await this.app.$accessor.token.reset()
       await this.app.$accessor.spot.resetSubaccount()
       await this.app.$accessor.derivatives.resetSubaccount()
       await this.app.$accessor.bank.reset()
-      await this.app.$accessor.portfolio.reset()
-      await this.app.$accessor.history.reset()
 
       commit('reset')
       commit('resetPage')

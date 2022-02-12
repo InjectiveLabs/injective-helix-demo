@@ -24,6 +24,7 @@
       ref="popper-wallet"
       class="popper bg-gray-800 rounded flex flex-col flex-wrap absolute min-w-xs z-10 shadow"
       binding-element="#wallet-address"
+      :options="popperOption"
     >
       <div>
         <div class="flex items-center justify-between px-4 py-4">
@@ -65,7 +66,7 @@
           <h3 class="text-xs tracking-wide uppercase">
             {{ $t('navigation.connectedWallets') }}
           </h3>
-          <ul class="py-2">
+          <ul class="pt-4 pb-6">
             <v-connected-wallet v-if="wallet === Wallet.Metamask">
               <v-icon-metamask class="ml-1 w-6 h-6" />
             </v-connected-wallet>
@@ -98,7 +99,18 @@ export default Vue.extend({
     return {
       Wallet,
       isInjectiveAddress: true,
-      isWalletDropdownOpen: false
+      isWalletDropdownOpen: false,
+      popperOption: {
+        placement: 'bottom-start',
+        modifiers: [
+          {
+            name: 'offset',
+            options: {
+              offset: [0, 8]
+            }
+          }
+        ]
+      }
     }
   },
 

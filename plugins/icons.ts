@@ -8,6 +8,7 @@ import CaretDownSlim from '~/components/icons/caret-down-slim.vue'
 import CategoryAlt from '~/components/icons/category-alt.vue'
 import Check from '~/components/icons/check.vue'
 import CheckCircle from '~/components/icons/check-circle.vue'
+import Chevron from '~/components/icons/chevron.vue'
 import Close from '~/components/icons/close.vue'
 import Copy from '~/components/icons/copy.vue'
 import Dashboard from '~/components/icons/dashboard.vue'
@@ -51,6 +52,7 @@ Vue.component('VIconCaretDownSlim', CaretDownSlim)
 Vue.component('VIconCategoryAlt', CategoryAlt)
 Vue.component('VIconCheck', Check)
 Vue.component('VIconCheckCircle', CheckCircle)
+Vue.component('VIconChevron', Chevron)
 Vue.component('VIconClose', Close)
 Vue.component('VIconCopy', Copy)
 Vue.component('VIconDashboard', Dashboard)
