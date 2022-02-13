@@ -1998,21 +1998,6 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/token-metadata@^0.0.60":
-  version "0.0.60"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-0.0.60.tgz#e7b0c543602a0a72e27f468f8789ef371bb09ec8"
-  integrity sha512-DKPFRTuk4I6zMuJFtrWTbFW6gvXgFlc6SXqbNAp3H+qDbAKQ9p7yp5+RlNbSz28nBcvljm9fV2IJIodwTCf5uw==
-  dependencies:
-    "@injectivelabs/networks" "^0.0.71"
-    "@injectivelabs/ts-types" "^0.0.38"
-    "@types/lodash.values" "^4.3.6"
-    copyfiles "^2.4.1"
-    jsonschema "^1.4.0"
-    link-module-alias "^1.2.0"
-    lodash "^4.17.21"
-    lodash.values "^4.3.0"
-    shx "^0.3.2"
-
 "@injectivelabs/token-metadata@^0.0.61":
   version "0.0.61"
   resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-0.0.61.tgz#d5914f64ccc0e73b049b54816b9bc51de5a09fcc"
@@ -2074,10 +2059,10 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@injectivelabs/ui-common@^0.0.30":
-  version "0.0.30"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-common/-/ui-common-0.0.30.tgz#eb14c43e21b3c0d1a53ae12026c7c5f7441a069f"
-  integrity sha512-HbBbkBVi6Wf821tFUmDWJYhQ/KAAPOCzphq9bZbVUtZhR2PvxSNEiPmYjNOzgbZk/TTr7IuytN7Oa6cNbj8O+A==
+"@injectivelabs/ui-common@^0.0.31":
+  version "0.0.31"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-common/-/ui-common-0.0.31.tgz#7bf75d94cbd52a69ac223f0e4cafdabdf26acfc9"
+  integrity sha512-F11djIlHDAx7Fd+IRQWLxmlg7b+Q6B80DijvrBKAWTpd+1HDkxshV1q0DdP5yX70bXpXTd1AfkOqbR6kQgbh6Q==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@improbable-eng/grpc-web" "^0.15.0"
@@ -2091,7 +2076,7 @@
     "@injectivelabs/networks" "^0.0.71"
     "@injectivelabs/spot-consumer" "^0.0.108"
     "@injectivelabs/subaccount-consumer" "^0.0.78"
-    "@injectivelabs/token-metadata" "^0.0.60"
+    "@injectivelabs/token-metadata" "^0.0.61"
     "@injectivelabs/token-utils" "^0.0.18"
     "@injectivelabs/ts-types" "^0.0.38"
     "@injectivelabs/utils" "^0.0.55"
