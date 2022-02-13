@@ -39,7 +39,7 @@
     "@injectivelabs/networks": "^0.0.66",
     "@injectivelabs/spot-consumer": "^0.0.103",
     "@injectivelabs/subaccount-consumer": "^0.0.73",
-    "@injectivelabs/token-metadata": "^0.0.55",
+    "@injectivelabs/token-metadata": "^0.0.61",
     "@injectivelabs/token-utils": "^0.0.13",
     "@injectivelabs/utils": "^0.0.50",
     "@injectivelabs/web3-strategy": "^0.0.87",

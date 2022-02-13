@@ -59,6 +59,7 @@ export const UI_DEFAULT_DMM_DECIMALS = 2
 export const NETWORK: Network = process.env.APP_NETWORK || Network.Testnet
 export const IS_TESTNET = [
   Network.Testnet,
+  Network.TestnetK8s,
   Network.Devnet,
   Network.Local
 ].includes(NETWORK)
