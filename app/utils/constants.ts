@@ -34,6 +34,9 @@ export const UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS = 4
 export const UI_DEFAULT_AGGREGATION_DECIMALS = 3
 export const UI_DEFAULT_AGGREGATION_DECIMALS_STRING = '3'
 export const UI_DEFAULT_DMM_DECIMALS = 2
+export const UI_MINIMAL_AMOUNT = new BigNumber(1).shiftedBy(
+  -UI_DEFAULT_MIN_DISPLAY_DECIMALS
+)
 
 export const NETWORK: Network = process.env.APP_NETWORK || Network.Testnet
 export const IS_TESTNET = [

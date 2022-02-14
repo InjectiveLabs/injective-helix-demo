@@ -2,12 +2,15 @@ import faq from './faq/en'
 import dmm from './dmm/en'
 import banners from './banners/en'
 import activities from './activities/en'
+import wallet from './wallet/en'
 import market from './market/en'
 
 export default {
+  ...activities,
   ...banners,
-  ...faq,
   ...dmm,
+  ...faq,
+  ...wallet,
   ...activities,
   ...market,
   common: {
@@ -297,7 +300,6 @@ export default {
   Restrictions: 'Restrictions',
   Languages: 'Languages',
   all: 'All',
-  Wallet: 'Wallet',
   deposits: 'Deposits',
   download: 'Download',
   withdrawals: 'Withdrawals',

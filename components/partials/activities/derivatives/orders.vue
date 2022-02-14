@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card lg>
     <HOCLoading :status="status">
       <v-card-table-wrap>
         <template #context>

@@ -40,6 +40,7 @@ export enum Icon {
 export enum Modal {
   AuctionCountdown = 'auction-countdown',
   Connect = 'connect',
+  DelegateToValidator = 'delegate-to-validator',
   GasFeeRebate = 'gas-fee-rebate',
   MarketRewardFactors = 'market-reward-factors',
   OrderConfirm = 'order-confirm',

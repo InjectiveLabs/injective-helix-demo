@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card lg>
     <HOCLoading :status="status">
       <v-card-table-wrap>
         <div class="table-responsive min-h-orders max-h-xs 4xl:max-h-lg">

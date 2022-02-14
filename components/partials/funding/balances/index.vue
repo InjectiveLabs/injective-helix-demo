@@ -46,25 +46,18 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import {
   BigNumberInBase,
-  BigNumberInWei,
-  Status,
-  StatusType
+  Status
 } from '@injectivelabs/utils'
 import {
-  BankBalanceWithToken,
-  BankBalanceWithTokenAndBalance,
   BankBalanceWithTokenAndBalanceWithUsdBalance,
-  IbcBankBalanceWithToken,
-  TokenWithBalance,
   INJECTIVE_DENOM
 } from '@injectivelabs/ui-common'
 import VBalance from './balance.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import TableHeader from '~/components/elements/table-header.vue'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import HOCLoading from '~/components/hoc/loading.vue'
 
 export default Vue.extend({
@@ -75,96 +68,21 @@ export default Vue.extend({
     VBalance
   },
 
-  data() {
-    return {
-      status: new Status(StatusType.Loading)
+  props: {
+    balances: {
+      type: Array as PropType<BankBalanceWithTokenAndBalanceWithUsdBalance[]>,
+      required: true
+    },
+
+    status: {
+      type: Object as PropType<Status>,
+      default: () => new Status()
     }
   },
 
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
-    },
-
-    bankBalances(): BankBalanceWithToken[] {
-      return this.$accessor.bank.balancesWithToken
-    },
-
-    ibcBankBalances(): IbcBankBalanceWithToken[] {
-      return this.$accessor.bank.ibcBalancesWithToken
-    },
-
-    erc20TokensWithBalanceAndAllowance(): TokenWithBalance[] {
-      return this.$accessor.token.erc20TokensWithBalanceFromBank
-    },
-
-    ibcTokensWithBalanceFromBank(): TokenWithBalance[] {
-      return this.$accessor.token.ibcTokensWithBalanceFromBank
-    },
-
-    tokensWithPriceInUsd(): Record<string, string> {
-      return this.$accessor.token.tokensWithPriceInUsd
-    },
-
-    ercBalances(): BankBalanceWithTokenAndBalance[] {
-      const { bankBalances, erc20TokensWithBalanceAndAllowance } = this
-
-      return bankBalances.map((bankBalance) => {
-        const tokenWithBalance = erc20TokensWithBalanceAndAllowance.find(
-          (token) =>
-            token.address.toLowerCase() ===
-            bankBalance.token.address.toLowerCase()
-        )
-
-        return {
-          ...bankBalance,
-          token: tokenWithBalance || {
-            ...bankBalance.token,
-            balance: '0',
-            allowance: '0'
-          }
-        }
-      })
-    },
-
-    ibcBalances(): BankBalanceWithTokenAndBalance[] {
-      const { ibcBankBalances, ibcTokensWithBalanceFromBank } = this
-
-      return ibcBankBalances.map((bankBalance) => {
-        const tokenWithBalance = ibcTokensWithBalanceFromBank.find(
-          (token) =>
-            token.address.toLowerCase() ===
-            bankBalance.token.address.toLowerCase()
-        )
-
-        return {
-          ...bankBalance,
-          token: tokenWithBalance || {
-            ...bankBalance.token,
-            balance: '0',
-            allowance: '0'
-          }
-        }
-      })
-    },
-
-    balances(): BankBalanceWithTokenAndBalanceWithUsdBalance[] {
-      const { ercBalances, ibcBalances, tokensWithPriceInUsd } = this
-
-      // calculate and append total USD balances
-      return [...ercBalances, ...ibcBalances].map((balance) => {
-        const usdPrice = tokensWithPriceInUsd[balance.token.denom] || 0
-
-        const balanceInUsd = new BigNumberInWei(balance.balance)
-          .toBase(balance.token.decimals)
-          .times(usdPrice)
-          .toFixed(UI_DEFAULT_DISPLAY_DECIMALS)
-
-        return {
-          ...balance,
-          balanceInUsd
-        }
-      })
     },
 
     sortedBalances(): BankBalanceWithTokenAndBalanceWithUsdBalance[] {
@@ -190,20 +108,6 @@ export default Vue.extend({
         }
       )
     }
-  },
-
-  mounted() {
-    Promise.all([
-      this.$accessor.token.getAllTokenWithPriceInUsd(),
-      this.$accessor.token.getAllTokenWithBalanceAndAllowance()
-    ])
-      .then(() => {
-        //
-      })
-      .catch(this.$onError)
-      .finally(() => {
-        this.status.setIdle()
-      })
   }
 })
 </script>
