@@ -10,46 +10,10 @@
       <v-nav-item :to="{ name: 'activities' }">
         {{ $t('activities.activities') }}
       </v-nav-item>
-      <v-nav-item class="lg:hidden" :to="{ name: 'trade-and-earn' }">
-        {{ $t('dmm.nav.tradingRewards') }}
+      <v-nav-item :to="{ name: 'trade-and-earn' }">
+        {{ $t('navigation.rewards') }}
       </v-nav-item>
-      <v-nav-item class="lg:hidden" :to="{ name: 'dedicated-market-making' }">
-        {{ $t('dmm.nav.dedicatedMarketMakingRewards') }}
-      </v-nav-item>
-      <v-nav-item-dummy
-        id="rewards"
-        class="hidden lg:block"
-        @mouseenter.native="showDropdown"
-        @mouseleave.native="hideDropdown"
-        @focus.native="showDropdown"
-        @blur.native="hideDropdown"
-      >
-        {{ $t('Rewards') }}
-      </v-nav-item-dummy>
     </nav>
-
-    <VPopperBox
-      ref="popper"
-      class="popper px-4 bg-gray-800 rounded-xl flex flex-col flex-wrap text-xs absolute"
-      binding-element="#rewards"
-    >
-      <div>
-        <v-nav-item
-          :to="{ name: 'trade-and-earn' }"
-          class="hover:text-primary-500"
-          dense
-        >
-          {{ $t('dmm.nav.tradingRewards') }}
-        </v-nav-item>
-        <v-nav-item
-          :to="{ name: 'dedicated-market-making' }"
-          class="hover:text-primary-500"
-          dense
-        >
-          {{ $t('dmm.nav.dedicatedMarketMakingRewards') }}
-        </v-nav-item>
-      </div>
-    </VPopperBox>
   </div>
 </template>
 
@@ -57,13 +21,11 @@
 import Vue from 'vue'
 import VNavItem from './item.vue'
 import VNavItemDummy from './item-dummy.vue'
-import VPopperBox from '~/components/elements/popper-box.vue'
 
 export default Vue.extend({
   components: {
     VNavItem,
-    VNavItemDummy,
-    VPopperBox
+    VNavItemDummy
   },
 
   data() {
@@ -76,16 +38,6 @@ export default Vue.extend({
     handleOpenMarketsSlideout() {
       this.$root.$emit('toggle-market-slideout')
       this.$root.$emit('close-sidebar')
-    },
-
-    showDropdown() {
-      // @ts-ignore
-      this.$refs.popper.showDropdown()
-    },
-
-    hideDropdown() {
-      // @ts-ignore
-      this.$refs.popper.hideDropdown()
     }
   }
 })

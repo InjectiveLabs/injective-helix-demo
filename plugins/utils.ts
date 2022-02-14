@@ -8,8 +8,8 @@ import {
 
 const isErrorExcludedFromToast = (error: any): boolean => {
   const disabledPatterns = [
-    /^(dmm \[inj)(.*)(\] didn't participate in the epoch \[epoch_)(.*)(])/
-  ]
+    //
+  ] as RegExp[]
 
   const errorMessage =
     typeof error === 'object' && error !== null ? error.message : error || ''

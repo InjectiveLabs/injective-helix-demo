@@ -1,5 +1,4 @@
 import faq from './faq/en'
-import dmm from './dmm/en'
 import banners from './banners/en'
 import activities from './activities/en'
 import wallet from './wallet/en'
@@ -8,7 +7,6 @@ import market from './market/en'
 export default {
   ...activities,
   ...banners,
-  ...dmm,
   ...faq,
   ...wallet,
   ...activities,
@@ -550,6 +548,7 @@ export default {
     myAccount: 'My Account',
     connectedWallets: 'Connected Wallets',
     connected: 'Connected',
-    referrals: 'Referrals'
+    referrals: 'Referrals',
+    rewards: 'Rewards'
   }
 }

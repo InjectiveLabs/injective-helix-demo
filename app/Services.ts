@@ -27,7 +27,6 @@ import {
 } from './utils/constants'
 import { getWeb3Strategy } from './web3'
 import { SubaccountService } from './services/account'
-import { DmmService } from './services/dmm'
 import { ExchangeService } from './services/exchange'
 import { AuctionService } from './services/auction'
 import { app } from '~/app/singletons/App'
@@ -75,7 +74,6 @@ export const derivativeService = new DerivativeService(commonServiceOptions)
 export const spotService = new SpotService(commonServiceOptions)
 export const tokenService = new TokenService(commonServiceOptions)
 export const gasService = new GasService(commonServiceOptions)
-export const dmmService = new DmmService(commonServiceOptions)
 export const exchangeService = new ExchangeService(commonServiceOptions)
 export const auctionService = new AuctionService(commonServiceOptions)
 export const alchemyApiService = new AlchemyApi(alchemyRpcEndpoint)
