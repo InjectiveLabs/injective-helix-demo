@@ -1,51 +1,58 @@
 <template>
-  <div>
-    <div class="overflow-y-auto overflow-x-auto md:overflow-x-visible w-full">
-      <TableHeader v-if="isUserWalletConnected">
-        <span class="col-span-3">{{ $t('Asset') }}</span>
-        <span class="col-span-3">
-          <div class="flex items-center">
-            <span class="flex-1 text-right">{{
-              $t('Injective Chain Balance')
-            }}</span>
-          </div>
-        </span>
-        <span class="col-span-3">
-          <div class="flex items-center relative justify-end">
-            {{ $t('ERC20 Balance') }}
-          </div>
-        </span>
-        <span class="col-span-3">
-          <div class="flex items-center relative justify-end">
-            {{ $t('Total') }}
-          </div>
-        </span>
-      </TableHeader>
+  <div class="relative">
+    <HOCLoading :status="status">
+      <div class="overflow-y-auto overflow-x-auto md:overflow-x-visible w-full">
+        <TableHeader v-if="isUserWalletConnected">
+          <span class="col-span-3">{{ $t('Asset') }}</span>
+          <span class="col-span-3">
+            <div class="flex items-center">
+              <span class="flex-1 text-right">{{
+                $t('Injective Chain Balance')
+              }}</span>
+            </div>
+          </span>
+          <span class="col-span-3">
+            <div class="flex items-center relative justify-end">
+              {{ $t('ERC20 Balance') }}
+            </div>
+          </span>
+          <span class="col-span-3">
+            <div class="flex items-center relative justify-end">
+              {{ $t('Total') }}
+            </div>
+          </span>
+        </TableHeader>
 
-      <TableBody
-        v-if="isUserWalletConnected"
-        :show-empty="balances.length === 0"
-      >
-        <v-balance
-          v-for="(balance, index) in sortedBalances"
-          :key="`balance-${index}`"
-          class="col-span-1"
-          :balance="balance"
-        />
-        <template slot="empty">
-          <span class="col-span-1 md:col-span-3 text-center md:text-left">{{
-            $t('There are no results found - Balances')
-          }}</span>
-        </template>
-      </TableBody>
-      <v-user-wallet-connect-warning v-else cta />
-    </div>
+        <TableBody
+          v-if="isUserWalletConnected"
+          :show-empty="balances.length === 0"
+        >
+          <v-balance
+            v-for="(balance, index) in sortedBalances"
+            :key="`balance-${index}`"
+            class="col-span-1"
+            :balance="balance"
+          />
+          <template slot="empty">
+            <span class="col-span-1 md:col-span-3 text-center md:text-left">{{
+              $t('There are no results found - Balances')
+            }}</span>
+          </template>
+        </TableBody>
+        <v-user-wallet-connect-warning v-else cta />
+      </div>
+    </HOCLoading>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  Status,
+  StatusType
+} from '@injectivelabs/utils'
 import {
   BankBalanceWithToken,
   BankBalanceWithTokenAndBalance,
@@ -58,12 +65,20 @@ import VBalance from './balance.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import TableHeader from '~/components/elements/table-header.vue'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import HOCLoading from '~/components/hoc/loading.vue'
 
 export default Vue.extend({
   components: {
     TableBody,
+    HOCLoading,
     TableHeader,
     VBalance
+  },
+
+  data() {
+    return {
+      status: new Status(StatusType.Loading)
+    }
   },
 
   computed: {
@@ -175,6 +190,20 @@ export default Vue.extend({
         }
       )
     }
+  },
+
+  mounted() {
+    Promise.all([
+      this.$accessor.token.getAllTokenWithPriceInUsd(),
+      this.$accessor.token.getAllTokenWithBalanceAndAllowance()
+    ])
+      .then(() => {
+        //
+      })
+      .catch(this.$onError)
+      .finally(() => {
+        this.status.setIdle()
+      })
   }
 })
 </script>

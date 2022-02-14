@@ -1,6 +1,7 @@
 import { actionTree } from 'typed-vuex'
 import { ChainId } from '@injectivelabs/ts-types'
 import { DEFAULT_GAS_PRICE, SECONDS_IN_A_DAY } from '@injectivelabs/ui-common'
+import { Status, StatusType } from '@injectivelabs/utils'
 import {
   CHAIN_ID,
   GEO_IP_RESTRICTIONS_ENABLED,
@@ -27,9 +28,12 @@ export interface UserBasedState {
 const initialState = {
   // App Settings
   locale: english,
-  state: AppState.Idle,
   chainId: CHAIN_ID,
   gasPrice: DEFAULT_GAS_PRICE.toString(),
+
+  // Loading States
+  state: AppState.Idle,
+  marketsLoadingState: StatusType.Idle,
 
   // User settings
   userState: {
@@ -47,6 +51,7 @@ export const state = () => ({
   chainId: initialState.chainId as ChainId,
   gasPrice: initialState.gasPrice as string,
   state: initialState.state as AppState,
+  marketsLoadingState: initialState.marketsLoadingState as StatusType,
   userState: initialState.userState as UserBasedState
 })
 
@@ -59,6 +64,13 @@ export const mutations = {
 
   setAppLocale(state: AppStoreState, locale: Locale) {
     state.locale = locale
+  },
+
+  setMarketsLoadingState(
+    state: AppStoreState,
+    marketsLoadingState: StatusType
+  ) {
+    state.marketsLoadingState = marketsLoadingState
   },
 
   setGasPrice(state: AppStoreState, gasPrice: string) {

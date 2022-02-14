@@ -105,7 +105,7 @@ export default Vue.extend({
 
   mounted() {
     this.$accessor.spot
-      .changeMarket(this.slugFromRoute)
+      .initMarket(this.slugFromRoute)
       .then(() => {
         this.setOrderbookPolling()
       })
@@ -116,6 +116,19 @@ export default Vue.extend({
         if (this.marketIsBeta) {
           this.$accessor.modal.openModal(Modal.MarketBeta)
         }
+      })
+
+    Promise.all([
+      this.$accessor.spot.initMarketStreams(),
+      this.$accessor.exchange.fetchTradingRewardsCampaign(),
+      this.$accessor.exchange.fetchFeeDiscountAccountInfo()
+    ])
+      .then(() => {
+        //
+      })
+      .catch(this.$onRejected)
+      .finally(() => {
+        //
       })
   },
 

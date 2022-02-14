@@ -47,12 +47,6 @@ export default Vue.extend({
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
     }
-  },
-
-  watch: {
-    subAccount() {
-      this.$accessor.derivatives.fetchSubaccountMarketTrades()
-    }
   }
 })
 </script>

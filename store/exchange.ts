@@ -155,7 +155,11 @@ export const actions = actionTree(
           ? tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList
           : []
         const quoteSymbolsList = ((
-          await Promise.all(quoteDenomsList.map(tokenService.getDenomToken))
+          await Promise.all(
+            quoteDenomsList.map(
+              async (denom) => await tokenService.getDenomToken(denom)
+            )
+          )
         ).filter((token) => token) as Token[]).map((token) => token.symbol)
 
         const tradingRewardCampaignInfo = {

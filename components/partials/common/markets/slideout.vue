@@ -4,8 +4,10 @@
     :show-header="showHeader"
     @slideout-closed="closeSlideout"
   >
-    <div>
-      <v-table :markets="markets" :summaries="marketsSummary" simple />
+    <div class="relative">
+      <HOCLoading :status="status">
+        <v-table :markets="markets" :summaries="marketsSummary" simple />
+      </HOCLoading>
     </div>
   </v-slideout>
 </template>
@@ -18,13 +20,16 @@ import {
   UiSpotMarketSummary,
   UiSpotMarketWithToken
 } from '@injectivelabs/ui-common'
+import { Status, StatusType } from '@injectivelabs/utils'
 import VTable from './table.vue'
 import VSlideout from '~/components/elements/slideout.vue'
+import HOCLoading from '~/components/hoc/loading.vue'
 
 export default Vue.extend({
   components: {
     VTable,
-    VSlideout
+    VSlideout,
+    HOCLoading
   },
 
   data() {
@@ -35,6 +40,16 @@ export default Vue.extend({
   },
 
   computed: {
+    marketsLoadingState(): StatusType {
+      return this.$accessor.app.marketsLoadingState
+    },
+
+    status(): Status {
+      const { marketsLoadingState } = this
+
+      return new Status(marketsLoadingState)
+    },
+
     derivativeMarkets(): UiDerivativeMarketWithToken[] {
       return this.$accessor.derivatives.markets
     },

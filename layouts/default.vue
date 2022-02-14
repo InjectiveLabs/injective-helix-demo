@@ -58,11 +58,7 @@ export default Vue.extend({
   },
 
   mounted() {
-    Promise.all([
-      this.$accessor.spot.init(),
-      this.$accessor.derivatives.init(),
-      this.$accessor.wallet.init()
-    ])
+    Promise.all([this.$accessor.wallet.init()])
       .then(() => {
         this.interval = setInterval(async () => {
           await this.$accessor.app.poll()
@@ -84,6 +80,8 @@ export default Vue.extend({
       })
       .catch(this.$onRejected)
 
+    this.onLoadMarketsInit()
+
     if (SHOW_AUCTION_COUNTDOWN) {
       this.$accessor.auction.fetchAuctionModuleState()
     }
@@ -94,6 +92,24 @@ export default Vue.extend({
   },
 
   methods: {
+    onLoadMarketsInit() {
+      this.$accessor.app.setMarketsLoadingState(StatusType.Loading)
+
+      Promise.all([
+        this.$accessor.spot.init(),
+        this.$accessor.derivatives.init()
+      ])
+        .then(() => {
+          this.interval = setInterval(async () => {
+            await this.$accessor.app.poll()
+          }, 2000)
+        })
+        .catch(this.$onRejected)
+        .finally(() => {
+          this.$accessor.app.setMarketsLoadingState(StatusType.Idle)
+        })
+    },
+
     onCloseSideBar() {
       if (this.isOpenSidebar) {
         this.isOpenSidebar = false

@@ -1,6 +1,8 @@
 <template>
-  <div>
-    <v-table :markets="markets" :summaries="marketsSummary" />
+  <div class="relative">
+    <HOCLoading :status="status">
+      <v-table :markets="markets" :summaries="marketsSummary" />
+    </HOCLoading>
   </div>
 </template>
 
@@ -12,14 +14,27 @@ import {
   UiSpotMarketSummary,
   UiSpotMarketWithToken
 } from '@injectivelabs/ui-common'
+import { Status, StatusType } from '@injectivelabs/utils'
 import VTable from './table.vue'
+import HOCLoading from '~/components/hoc/loading.vue'
 
 export default Vue.extend({
   components: {
-    VTable
+    VTable,
+    HOCLoading
   },
 
   computed: {
+    marketsLoadingState(): StatusType {
+      return this.$accessor.app.marketsLoadingState
+    },
+
+    status(): Status {
+      const { marketsLoadingState } = this
+
+      return new Status(marketsLoadingState)
+    },
+
     derivativeMarkets(): UiDerivativeMarketWithToken[] {
       return this.$accessor.derivatives.markets
     },

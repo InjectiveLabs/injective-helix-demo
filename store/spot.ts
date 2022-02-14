@@ -284,7 +284,7 @@ export const actions = actionTree(
       commit('setMarketsSummary', actualMarketsSummary as UiSpotMarketSummary[])
     },
 
-    async changeMarket({ commit, state }, marketSlug: string) {
+    async initMarket({ commit, state }, marketSlug: string) {
       const { markets } = state
 
       if (!markets.length) {
@@ -301,30 +301,31 @@ export const actions = actionTree(
       }
 
       commit('setMarket', market)
-      commit('setOrderbook', await spotService.fetchOrderbook(market.marketId))
       commit(
         'setMarketSummary',
         await spotService.fetchMarketSummary(market.marketId)
-      )
-      commit(
-        'setTrades',
-        await spotService.fetchTrades({
-          marketId: market.marketId
-        })
       )
 
       if (ORDERBOOK_STREAMING_ENABLED) {
         await this.app.$accessor.spot.streamOrderbook()
       }
 
+      // TODO
+      await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
+      await this.app.$accessor.exchange.fetchTradingRewardsCampaign()
+    },
+
+    async initMarketStreams({ commit, state }) {
+      const { market } = state
+
+      if (!market) {
+        return
+      }
+
       await this.app.$accessor.spot.streamTrades()
       await this.app.$accessor.spot.streamSubaccountTrades()
       await this.app.$accessor.spot.streamSubaccountOrders()
-      await this.app.$accessor.spot.fetchSubaccountOrders()
-      await this.app.$accessor.spot.fetchSubaccountTrades()
       await this.app.$accessor.account.streamSubaccountBalances()
-      await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
-      await this.app.$accessor.exchange.fetchTradingRewardsCampaign()
     },
 
     async pollOrderbook({ commit, state }) {
@@ -478,6 +479,41 @@ export const actions = actionTree(
       )
     },
 
+    async fetchOrderbook({ state, commit }) {
+      const { market } = state
+      const { subaccount } = this.app.$accessor.account
+      const { isUserWalletConnected } = this.app.$accessor.wallet
+
+      if (!market) {
+        return
+      }
+
+      if (!isUserWalletConnected || !subaccount) {
+        return
+      }
+
+      commit('setOrderbook', await spotService.fetchOrderbook(market.marketId))
+    },
+
+    async fetchTrades({ state, commit }) {
+      const { market } = state
+      const { subaccount } = this.app.$accessor.account
+      const { isUserWalletConnected } = this.app.$accessor.wallet
+
+      if (!market) {
+        return
+      }
+
+      if (!isUserWalletConnected || !subaccount) {
+        return
+      }
+
+      commit(
+        'setTrades',
+        await spotService.fetchTrades({ marketId: market.marketId })
+      )
+    },
+
     async fetchSubaccountTrades({ state, commit }) {
       const { market } = state
       const { subaccount } = this.app.$accessor.account
@@ -533,24 +569,6 @@ export const actions = actionTree(
 
         commit('setMarketsSummary', combinedMarketsSummary)
       }
-    },
-
-    async fetchSubaccountMarketTrades({ state, commit }) {
-      const { market } = state
-      const { subaccount } = this.app.$accessor.account
-      const { isUserWalletConnected } = this.app.$accessor.wallet
-
-      if (!isUserWalletConnected || !subaccount || !market) {
-        return
-      }
-
-      commit(
-        'setSubaccountTrades',
-        await spotService.fetchTrades({
-          marketId: market.marketId,
-          subaccountId: subaccount.subaccountId
-        })
-      )
     },
 
     async cancelOrder(_, order: UiSpotLimitOrder) {

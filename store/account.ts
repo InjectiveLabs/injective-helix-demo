@@ -99,8 +99,7 @@ export const mutations = {
 
     state.subaccount = initialState.subaccount
     state.subaccountIds = initialState.subaccountIds
-    state.subaccountBalancesWithToken =
-      initialState.subaccountBalancesWithToken
+    state.subaccountBalancesWithToken = initialState.subaccountBalancesWithToken
   }
 }
 
@@ -135,7 +134,6 @@ export const actions = actionTree(
       )
 
       if (this.app.context.route.name === 'spot-spot') {
-        await this.app.$accessor.spot.fetchSubaccountMarketTrades()
         await this.app.$accessor.spot.fetchSubaccountOrders()
         await this.app.$accessor.spot.fetchSubaccountTrades()
         await this.app.$accessor.spot.streamSubaccountOrders()
@@ -143,7 +141,6 @@ export const actions = actionTree(
       }
 
       if (this.app.context.route.name === 'derivatives-derivative') {
-        await this.app.$accessor.derivatives.fetchSubaccountMarketTrades()
         await this.app.$accessor.derivatives.fetchSubaccountOrders()
         await this.app.$accessor.derivatives.fetchSubaccountTrades()
         await this.app.$accessor.derivatives.fetchSubaccountPosition()
@@ -160,10 +157,7 @@ export const actions = actionTree(
           subaccountBalances
         )
 
-        commit(
-          'setSubaccountBalancesWithToken',
-          subaccountBalancesWithToken
-        )
+        commit('setSubaccountBalancesWithToken', subaccountBalancesWithToken)
       }
     },
 

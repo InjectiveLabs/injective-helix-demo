@@ -30,16 +30,20 @@
         {{ $t('cancel_all') }}
       </v-button>
     </template>
-    <component :is="component" v-if="component"></component>
+    <HOCLoading :status="status">
+      <component :is="component" v-if="component"></component>
+    </HOCLoading>
   </v-card-table-wrap>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import { Status, StatusType } from '@injectivelabs/utils'
 import { UiDerivativeLimitOrder, UiPosition } from '@injectivelabs/ui-common'
 import OpenOrders from './orders/index.vue'
 import OpenPositions from './positions/index.vue'
 import TradeHistory from './trade-history/index.vue'
+import HOCLoading from '~/components/hoc/loading.vue'
 
 const components = {
   orderHistory: '',
@@ -50,6 +54,7 @@ const components = {
 
 export default Vue.extend({
   components: {
+    HOCLoading,
     'v-trade-history': TradeHistory,
     'v-open-orders': OpenOrders,
     'v-open-positions': OpenPositions
@@ -57,6 +62,8 @@ export default Vue.extend({
 
   data() {
     return {
+      status: new Status(StatusType.Loading),
+
       components,
       component: components.openOrders
     }
@@ -84,14 +91,30 @@ export default Vue.extend({
   },
 
   mounted() {
-    if (this.position) {
-      this.component = components.openPositions
-    } else if (this.orders.length > 0) {
-      this.component = components.openOrders
-    }
+    Promise.all([
+      this.$accessor.derivatives.fetchSubaccountOrders(),
+      this.$accessor.derivatives.fetchSubaccountPosition(),
+      this.$accessor.derivatives.fetchSubaccountTrades()
+    ])
+      .then(() => {
+        //
+      })
+      .catch(this.$onError)
+      .finally(() => {
+        this.status.setIdle()
+        this.onInit()
+      })
   },
 
   methods: {
+    onInit() {
+      if (this.position) {
+        this.component = components.openPositions
+      } else if (this.orders.length > 0) {
+        this.component = components.openOrders
+      }
+    },
+
     onSelect(component: string) {
       this.component = component
     },

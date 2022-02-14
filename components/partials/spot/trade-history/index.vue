@@ -66,7 +66,7 @@ export default Vue.extend({
 
   watch: {
     subAccount() {
-      this.$accessor.spot.fetchSubaccountMarketTrades()
+      this.$accessor.spot.fetchSubaccountTrades()
     }
   }
 })

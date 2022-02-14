@@ -30,7 +30,7 @@
 
     <VPopperBox
       ref="popper"
-      class="popper px-4 pt-4 bg-gray-800 rounded-xl flex flex-col flex-wrap text-xs absolute"
+      class="popper px-4 bg-gray-800 rounded-xl flex flex-col flex-wrap text-xs absolute"
       binding-element="#rewards"
     >
       <div>
