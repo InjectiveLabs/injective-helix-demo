@@ -32,7 +32,12 @@ export const state = () => ({
 export type BankStoreState = ReturnType<typeof state>
 
 export const getters = getterTree(state, {
-  //
+  hasAnyBankBalance: (state: BankStoreState) => {
+    return (
+      Object.keys(state.balances).length > 0 ||
+      Object.keys(state.ibcBalances).length > 0
+    )
+  }
 })
 
 export const mutations = {

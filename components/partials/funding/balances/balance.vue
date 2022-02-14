@@ -36,17 +36,6 @@
           balance.token.symbol
         }}</span>
       </div>
-      <div
-        v-if="balance.denom === INJECTIVE_DENOM"
-        class="flex items-center justify-end"
-      >
-        <span
-          class="text-xs text-primary-500 cursor-pointer"
-          @click="openStakeModal"
-        >
-          {{ $t('stake_now') }}
-        </span>
-      </div>
     </span>
     <span class="col-span-1 font-mono text-left md:hidden">{{
       $t('ERC20 Balance')
@@ -189,12 +178,6 @@ export default Vue.extend({
       }
 
       return false
-    }
-  },
-
-  methods: {
-    openStakeModal() {
-      this.$accessor.modal.openModal(Modal.DelegateToValidator)
     }
   }
 })

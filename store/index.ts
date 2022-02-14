@@ -8,6 +8,7 @@ import * as dmm from '~/store/dmm'
 import * as exchange from '~/store/exchange'
 import * as activities from '~/store/activities'
 import * as gasRebate from '~/store/gasRebate'
+import * as onboard from '~/store/onboard'
 import * as modal from '~/store/modal'
 import * as spot from '~/store/spot'
 import * as token from '~/store/token'
@@ -21,6 +22,7 @@ export const accessorType = getAccessorType({
     bank,
     derivatives,
     dmm,
+    onboard,
     exchange,
     gasRebate,
     modal,

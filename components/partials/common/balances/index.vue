@@ -8,27 +8,25 @@
           :tooltip="$t('marketPage.fundingNote')"
         />
       </p>
-      <div v-if="isUserWalletConnected">
-        <div v-if="currentMarket" class="mt-2">
-          <div v-if="!hasBankBalances">
-            <p class="text-xs text-gray-500">
-              {{ $t('marketPage.noChainBalance') }}
-            </p>
+      <div v-if="isUserWalletConnected" class="relative">
+        <HOCLoading :status="status">
+          <div v-if="currentMarket" class="mt-2">
+            <div v-if="!hasAnyBankBalances">
+              <p class="text-xs text-gray-500">
+                {{ $t('marketPage.noChainBalance') }}
+              </p>
+            </div>
+            <v-subaccount-balance
+              v-if="hasAnyBankBalances"
+              v-bind="{
+                baseTradingBalance,
+                quoteTradingBalance,
+                market: currentMarket
+              }"
+            />
+            <v-onboard class="mt-6"></v-onboard>
           </div>
-          <v-subaccount-balance
-            v-if="hasBankBalances"
-            v-bind="{
-              baseTradingBalance,
-              quoteTradingBalance,
-              market: currentMarket
-            }"
-          >
-          </v-subaccount-balance>
-          <v-onboard
-            v-bind="{ hasBankBalances, hasTradingAccountBalances }"
-            class="mt-6"
-          ></v-onboard>
-        </div>
+        </HOCLoading>
       </div>
       <v-user-wallet-connect-warning v-else />
     </div>
@@ -41,14 +39,14 @@ import {
   UiSpotMarketWithToken,
   UiDerivativeMarketWithToken,
   MarketType,
-  BankBalances,
   UiSubaccount,
   UiSubaccountBalanceWithToken
 } from '@injectivelabs/ui-common'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import VSubaccountBalance from './subaccount.vue'
 import VOnboard from './onboard.vue'
 import { getHubUrl } from '~/app/utils/helpers'
+import HOCLoading from '~/components/hoc/loading.vue'
 
 type CurrentMarket =
   | UiSpotMarketWithToken
@@ -58,7 +56,14 @@ type CurrentMarket =
 export default Vue.extend({
   components: {
     VSubaccountBalance,
-    VOnboard
+    VOnboard,
+    HOCLoading
+  },
+
+  data() {
+    return {
+      status: new Status(StatusType.Loading)
+    }
   },
 
   computed: {
@@ -70,17 +75,16 @@ export default Vue.extend({
       return this.$accessor.account.subaccount
     },
 
-    bankBalances(): BankBalances {
-      return this.$accessor.bank.balances
+    hasMadeAnyTransfers(): boolean {
+      return this.$accessor.onboard.hasMadeAnyTransfers
     },
 
-    ibcBalances(): BankBalances {
-      return this.$accessor.bank.ibcBalances
+    hasMadeAnyTrades(): boolean {
+      return this.$accessor.onboard.hasMadeAnyTrades
     },
 
-    balances(): BankBalances {
-      const { bankBalances, ibcBalances } = this
-      return { ...bankBalances, ...ibcBalances }
+    hasAnyBankBalances(): boolean {
+      return this.$accessor.bank.hasAnyBankBalance
     },
 
     currentSpotMarket(): UiSpotMarketWithToken | undefined {
@@ -97,44 +101,6 @@ export default Vue.extend({
       return this.$route.name === 'spot-spot'
         ? currentSpotMarket
         : currentDerivativeMarket
-    },
-
-    baseBankBalance(): BigNumberInBase {
-      const { balances, currentMarket } = this
-
-      if (!currentMarket) {
-        return new BigNumberInBase('')
-      }
-
-      if (currentMarket.type === MarketType.Derivative) {
-        return new BigNumberInBase('')
-      }
-
-      const spotMarket = currentMarket as UiSpotMarketWithToken
-
-      if (!balances[spotMarket.baseDenom]) {
-        return new BigNumberInBase('')
-      }
-
-      return new BigNumberInWei(balances[spotMarket.baseDenom] || 0).toBase(
-        spotMarket.baseToken.decimals
-      )
-    },
-
-    quoteBankBalance(): BigNumberInBase {
-      const { balances, currentMarket } = this
-
-      if (!currentMarket) {
-        return new BigNumberInBase('')
-      }
-
-      if (!balances[currentMarket.quoteDenom]) {
-        return new BigNumberInBase('')
-      }
-
-      return new BigNumberInWei(balances[currentMarket.quoteDenom] || 0).toBase(
-        currentMarket.quoteToken.decimals
-      )
     },
 
     baseTradingBalance(): UiSubaccountBalanceWithToken | undefined {
@@ -178,12 +144,6 @@ export default Vue.extend({
       }
     },
 
-    hasBankBalances(): boolean {
-      const { baseBankBalance, quoteBankBalance } = this
-
-      return !(baseBankBalance.isNaN() && quoteBankBalance.isNaN())
-    },
-
     hasTradingAccountBalances(): boolean {
       const { baseTradingBalance, quoteTradingBalance, currentMarket } = this
 
@@ -212,8 +172,15 @@ export default Vue.extend({
     }
   },
 
-  methods: {
-    handleClickOnButton() {}
+  mounted() {
+    Promise.all([this.$accessor.onboard.init()])
+      .then(() => {
+        //
+      })
+      .catch(this.$onError)
+      .finally(() => {
+        this.status.setIdle()
+      })
   }
 })
 </script>

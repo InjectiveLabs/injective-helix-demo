@@ -45,25 +45,25 @@
 import Vue from 'vue'
 
 export default Vue.extend({
-  props: {
-    hasBankBalances: {
-      required: true,
-      type: Boolean
+  computed: {
+    hasAnyBankBalances(): boolean {
+      return this.$accessor.bank.hasAnyBankBalance
     },
 
-    hasTradingAccountBalances: {
-      required: true,
-      type: Boolean
-    }
-  },
+    hasMadeAnyTransfers(): boolean {
+      return this.$accessor.onboard.hasMadeAnyTransfers
+    },
 
-  computed: {
+    hasMadeAnyTrades(): boolean {
+      return this.$accessor.onboard.hasMadeAnyTrades
+    },
+
     activeStep(): number {
-      if (!this.hasBankBalances) {
+      if (!this.hasAnyBankBalances) {
         return 1
       }
 
-      if (!this.hasTradingAccountBalances) {
+      if (!this.hasMadeAnyTransfers) {
         return 2
       }
 
