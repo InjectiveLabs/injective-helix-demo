@@ -1,6 +1,6 @@
 import { actionTree } from 'typed-vuex'
 import { AuctionModuleState } from '@injectivelabs/chain-consumer'
-import { fetchAuctionModuleState } from '~/app/services/auction'
+import { auctionService } from '~/app/Services'
 
 const initialState = {
   auctionModuleState: undefined
@@ -27,7 +27,7 @@ export const actions = actionTree(
   { state },
   {
     async fetchAuctionModuleState({ commit }) {
-      const auctionModuleState = await fetchAuctionModuleState()
+      const auctionModuleState = await auctionService.fetchAuctionModuleState()
 
       commit('setAuctionModuleState', auctionModuleState)
     }

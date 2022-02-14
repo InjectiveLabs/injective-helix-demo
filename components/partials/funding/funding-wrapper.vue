@@ -1,5 +1,5 @@
 <template>
-  <VWallet
+  <VFunding
     :bank-account-balance="bankAccountBalance"
     :bank-account-balances="balances"
     :status="status"
@@ -22,12 +22,12 @@ import {
   Status,
   StatusType
 } from '@injectivelabs/utils'
-import VWallet from './index.vue'
+import VFunding from './index.vue'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
-    VWallet
+    VFunding
   },
 
   data() {

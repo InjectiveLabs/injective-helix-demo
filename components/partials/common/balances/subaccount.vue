@@ -1,46 +1,18 @@
 <template>
-  <div
-    class="p-2 xl:p-4 bg-gray-900 rounded-xl shadow-sm flex flex-col flex-wrap"
-  >
+  <div class="flex flex-col flex-wrap">
     <div>
-      <v-text-info v-if="baseBalance" :title="market.baseToken.symbol">
+      <v-text-info v-if="baseTradingBalance" :title="market.baseToken.symbol">
         <div class="flex items-center">
           <span class="font-mono">
-            {{ baseAvailableBalanceToFormat }}
-            <span> / </span>
-            <br
-              v-if="
-                quoteAvailableBalanceToFormat.length +
-                  quoteTotalBalanceToFormat.length >
-                24
-              "
-            />
-            {{ baseTotalBalanceToFormat }}
+            {{ baseTradingAvailableBalanceToFormat }}
           </span>
-          <v-icon-info-tooltip
-            class="ml-2"
-            :tooltip="$t('available_total_subaccount_balance Tooltip')"
-          />
         </div>
       </v-text-info>
       <v-text-info class="mt-2" :title="market.quoteToken.symbol">
         <div class="flex items-center">
           <span class="font-mono">
-            {{ quoteAvailableBalanceToFormat }}
-            <span> / </span>
-            <br
-              v-if="
-                quoteAvailableBalanceToFormat.length +
-                  quoteTotalBalanceToFormat.length >
-                24
-              "
-            />
-            {{ quoteTotalBalanceToFormat }}
+            {{ quoteTradingAvailableBalanceToFormat }}
           </span>
-          <v-icon-info-tooltip
-            class="ml-2"
-            :tooltip="$t('available_total_subaccount_balance Tooltip')"
-          />
         </div>
       </v-text-info>
     </div>
@@ -54,7 +26,6 @@ import {
   ZERO_IN_BASE,
   UiDerivativeMarketWithToken,
   UiSpotMarketWithToken,
-  MarketType,
   UiSubaccount,
   UiSubaccountBalanceWithToken
 } from '@injectivelabs/ui-common'
@@ -66,6 +37,17 @@ export default Vue.extend({
       type: Object as PropType<
         UiDerivativeMarketWithToken | UiSpotMarketWithToken
       >
+    },
+
+    baseTradingBalance: {
+      required: false,
+      default: undefined,
+      type: Object as PropType<UiSubaccountBalanceWithToken>
+    },
+
+    quoteTradingBalance: {
+      required: true,
+      type: Object as PropType<UiSubaccountBalanceWithToken>
     }
   },
 
@@ -74,99 +56,32 @@ export default Vue.extend({
       return this.$accessor.account.subaccount
     },
 
-    quoteBalance(): UiSubaccountBalanceWithToken | undefined {
-      const { subaccount, market } = this
+    baseTradingAvailableBalanceToFormat(): string {
+      const { baseTradingBalance, market } = this
 
-      if (!subaccount || !market) {
-        return undefined
-      }
-
-      const quoteBalance = subaccount.balances.find(
-        (balance) =>
-          balance.denom.toLowerCase() === market.quoteDenom.toLowerCase()
-      )
-
-      return {
-        totalBalance: quoteBalance ? quoteBalance.totalBalance : '0',
-        availableBalance: quoteBalance ? quoteBalance.availableBalance : '0'
-      }
-    },
-
-    baseBalance(): UiSubaccountBalanceWithToken | undefined {
-      const { subaccount, market } = this
-
-      if (!subaccount || !market || market.type === MarketType.Derivative) {
-        return undefined
-      }
-
-      const baseBalance = subaccount.balances.find(
-        (balance) =>
-          balance.denom.toLowerCase() ===
-          (market as UiSpotMarketWithToken).baseDenom.toLowerCase()
-      )
-
-      return {
-        totalBalance: baseBalance ? baseBalance.totalBalance : '0',
-        availableBalance: baseBalance ? baseBalance.availableBalance : '0'
-      }
-    },
-
-    baseAvailableBalanceToFormat(): string {
-      const { baseBalance, market } = this
-
-      if (!baseBalance) {
+      if (!baseTradingBalance) {
         return ZERO_IN_BASE.toFormat(
           market.quantityDecimals,
           BigNumberInBase.ROUND_DOWN
         )
       }
 
-      return new BigNumberInWei(baseBalance.availableBalance)
+      return new BigNumberInWei(baseTradingBalance.availableBalance)
         .toBase(market.baseToken.decimals)
         .toFormat(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
     },
 
-    baseTotalBalanceToFormat(): string {
-      const { baseBalance, market } = this
+    quoteTradingAvailableBalanceToFormat(): string {
+      const { quoteTradingBalance, market } = this
 
-      if (!baseBalance) {
+      if (!quoteTradingBalance) {
         return ZERO_IN_BASE.toFormat(
           market.quantityDecimals,
           BigNumberInBase.ROUND_DOWN
         )
       }
 
-      return new BigNumberInWei(baseBalance.totalBalance)
-        .toBase(market.baseToken.decimals)
-        .toFormat(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
-    },
-
-    quoteAvailableBalanceToFormat(): string {
-      const { quoteBalance, market } = this
-
-      if (!quoteBalance) {
-        return ZERO_IN_BASE.toFormat(
-          market.quantityDecimals,
-          BigNumberInBase.ROUND_DOWN
-        )
-      }
-
-      return new BigNumberInWei(quoteBalance.availableBalance)
-        .toBase(market.quoteToken.decimals)
-        .toFormat(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
-    },
-
-    quoteTotalBalanceToFormat(): string {
-      const { quoteBalance, market } = this
-
-      if (!quoteBalance) {
-        return ZERO_IN_BASE.toFormat(
-          market.quantityDecimals,
-          BigNumberInBase.ROUND_DOWN
-        )
-      }
-
-      return new BigNumberInWei(quoteBalance.totalBalance)
+      return new BigNumberInWei(quoteTradingBalance.availableBalance)
         .toBase(market.quoteToken.decimals)
         .toFormat(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
     }

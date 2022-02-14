@@ -1,66 +1,36 @@
 <template>
   <v-panel class="w-full">
     <div>
-      <div>
-        <div class="flex items-center justify-between">
-          <p class="text-2xs text-gray-300 flex items-center">
-            {{ $t('Injective Chain') }}
-            <v-icon-info-tooltip
-              class="ml-2"
-              :tooltip="$t('injective_chain_tooltip')"
-            />
-          </p>
-          <div v-if="!isIbcDenom" class="flex items-center">
-            <v-button text-xs primary @click.stop="openBridgeDepositModal">
-              {{ $t('deposit') }}
-            </v-button>
-            <div class="mx-2 w-px h-4 bg-gray-500"></div>
-            <v-button text-xs primary @click.stop="openWithdrawModal">
-              {{ $t('withdraw') }}
-            </v-button>
+      <p class="text-xs text-gray-300 flex items-center">
+        {{ $t('marketPage.funding') }}
+        <v-icon-info-tooltip
+          class="ml-2"
+          :tooltip="$t('marketPage.fundingNote')"
+        />
+      </p>
+      <div v-if="isUserWalletConnected">
+        <div v-if="currentMarket" class="mt-2">
+          <div v-if="!hasBankBalances">
+            <p class="text-xs text-gray-500">
+              {{ $t('marketPage.noChainBalance') }}
+            </p>
           </div>
-          <div v-else class="flex items-center">
-            <v-button text-xs primary>
-              <a :href="hubBridgeUrl" target="_blank">{{ $t('deposit') }}</a>
-            </v-button>
-            <div class="mx-2 w-px h-4 bg-gray-500"></div>
-            <v-button text-xs primary>
-              <a :href="hubBridgeUrl" target="_blank">{{ $t('withdraw') }}</a>
-            </v-button>
-          </div>
-        </div>
-        <div class="mt-4">
-          <v-bank v-if="isUserWalletConnected" :market="currentMarket" />
-          <v-user-wallet-connect-warning v-else />
+          <v-subaccount-balance
+            v-if="hasBankBalances"
+            v-bind="{
+              baseTradingBalance,
+              quoteTradingBalance,
+              market: currentMarket
+            }"
+          >
+          </v-subaccount-balance>
+          <v-onboard
+            v-bind="{ hasBankBalances, hasTradingAccountBalances }"
+            class="mt-6"
+          ></v-onboard>
         </div>
       </div>
-      <div class="mt-4">
-        <div class="flex items-center justify-between">
-          <p class="text-2xs text-gray-300 flex items-center">
-            {{ $t('Subaccount') }}
-            <v-icon-info-tooltip
-              class="ml-2"
-              :tooltip="$t('subaccount_tooltip')"
-            />
-          </p>
-          <div class="flex items-center">
-            <v-button primary text-xs @click.stop="openSubaccountTransferModal">
-              {{ $t('deposit') }}
-            </v-button>
-            <div class="mx-2 w-px h-4 bg-gray-500"></div>
-            <v-button primary text-xs @click.stop="openSubaccountWithdrawModal">
-              {{ $t('withdraw') }}
-            </v-button>
-          </div>
-        </div>
-        <div class="mt-4">
-          <v-subaccount-balances
-            v-if="isUserWalletConnected"
-            :market="currentMarket"
-          />
-          <v-user-wallet-connect-warning v-else />
-        </div>
-      </div>
+      <v-user-wallet-connect-warning v-else />
     </div>
   </v-panel>
 </template>
@@ -70,22 +40,47 @@ import Vue from 'vue'
 import {
   UiSpotMarketWithToken,
   UiDerivativeMarketWithToken,
-  MarketType
+  MarketType,
+  BankBalances,
+  UiSubaccount,
+  UiSubaccountBalanceWithToken
 } from '@injectivelabs/ui-common'
-import VBank from './bank.vue'
-import VSubaccountBalances from './subaccount.vue'
-import { Modal } from '~/types'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import VSubaccountBalance from './subaccount.vue'
+import VOnboard from './onboard.vue'
 import { getHubUrl } from '~/app/utils/helpers'
+
+type CurrentMarket =
+  | UiSpotMarketWithToken
+  | UiDerivativeMarketWithToken
+  | undefined
 
 export default Vue.extend({
   components: {
-    VBank,
-    VSubaccountBalances
+    VSubaccountBalance,
+    VOnboard
   },
 
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
+    },
+
+    subaccount(): UiSubaccount | undefined {
+      return this.$accessor.account.subaccount
+    },
+
+    bankBalances(): BankBalances {
+      return this.$accessor.bank.balances
+    },
+
+    ibcBalances(): BankBalances {
+      return this.$accessor.bank.ibcBalances
+    },
+
+    balances(): BankBalances {
+      const { bankBalances, ibcBalances } = this
+      return { ...bankBalances, ...ibcBalances }
     },
 
     currentSpotMarket(): UiSpotMarketWithToken | undefined {
@@ -96,10 +91,7 @@ export default Vue.extend({
       return this.$accessor.derivatives.market
     },
 
-    currentMarket():
-      | UiSpotMarketWithToken
-      | UiDerivativeMarketWithToken
-      | undefined {
+    currentMarket(): CurrentMarket {
       const { currentSpotMarket, currentDerivativeMarket } = this
 
       return this.$route.name === 'spot-spot'
@@ -107,26 +99,112 @@ export default Vue.extend({
         : currentDerivativeMarket
     },
 
-    isIbcDenom(): boolean {
-      const { currentMarket } = this
+    baseBankBalance(): BigNumberInBase {
+      const { balances, currentMarket } = this
+
+      if (!currentMarket) {
+        return new BigNumberInBase('')
+      }
+
+      if (currentMarket.type === MarketType.Derivative) {
+        return new BigNumberInBase('')
+      }
+
+      const spotMarket = currentMarket as UiSpotMarketWithToken
+
+      if (!balances[spotMarket.baseDenom]) {
+        return new BigNumberInBase('')
+      }
+
+      return new BigNumberInWei(balances[spotMarket.baseDenom] || 0).toBase(
+        spotMarket.baseToken.decimals
+      )
+    },
+
+    quoteBankBalance(): BigNumberInBase {
+      const { balances, currentMarket } = this
+
+      if (!currentMarket) {
+        return new BigNumberInBase('')
+      }
+
+      if (!balances[currentMarket.quoteDenom]) {
+        return new BigNumberInBase('')
+      }
+
+      return new BigNumberInWei(balances[currentMarket.quoteDenom] || 0).toBase(
+        currentMarket.quoteToken.decimals
+      )
+    },
+
+    baseTradingBalance(): UiSubaccountBalanceWithToken | undefined {
+      const { subaccount, currentMarket } = this
+
+      if (
+        !subaccount ||
+        !currentMarket ||
+        currentMarket.type === MarketType.Derivative
+      ) {
+        return undefined
+      }
+
+      const baseBalance = subaccount.balances.find(
+        (balance) =>
+          balance.denom.toLowerCase() ===
+          (currentMarket as UiSpotMarketWithToken).baseDenom.toLowerCase()
+      )
+
+      return {
+        totalBalance: baseBalance ? baseBalance.totalBalance : '0',
+        availableBalance: baseBalance ? baseBalance.availableBalance : '0'
+      }
+    },
+
+    quoteTradingBalance(): UiSubaccountBalanceWithToken | undefined {
+      const { subaccount, currentMarket } = this
+
+      if (!subaccount || !currentMarket) {
+        return undefined
+      }
+
+      const quoteBalance = subaccount.balances.find(
+        (balance) =>
+          balance.denom.toLowerCase() === currentMarket.quoteDenom.toLowerCase()
+      )
+
+      return {
+        totalBalance: quoteBalance ? quoteBalance.totalBalance : '0',
+        availableBalance: quoteBalance ? quoteBalance.availableBalance : '0'
+      }
+    },
+
+    hasBankBalances(): boolean {
+      const { baseBankBalance, quoteBankBalance } = this
+
+      return !(baseBankBalance.isNaN() && quoteBankBalance.isNaN())
+    },
+
+    hasTradingAccountBalances(): boolean {
+      const { baseTradingBalance, quoteTradingBalance, currentMarket } = this
 
       if (!currentMarket) {
         return false
       }
 
-      if (currentMarket.type === MarketType.Spot) {
-        return (
-          (currentMarket as UiSpotMarketWithToken).baseDenom.startsWith(
-            'ibc'
-          ) ||
-          (currentMarket as UiSpotMarketWithToken).quoteDenom.startsWith(
-            'ibc'
-          )
-        )
+      if (currentMarket.type === MarketType.Derivative) {
+        return new BigNumberInBase(
+          quoteTradingBalance ? quoteTradingBalance.availableBalance : 0
+        ).gt(0)
       }
 
-      // Derivative
-      return currentMarket.quoteDenom.startsWith('ibc')
+      return (
+        new BigNumberInBase(
+          quoteTradingBalance ? quoteTradingBalance.availableBalance : 0
+        ).gt(0) ||
+        new BigNumberInBase(
+          baseTradingBalance ? baseTradingBalance.availableBalance : 0
+        ).gt(0)
+      )
     },
 
     hubBridgeUrl(): string {
@@ -135,21 +213,7 @@ export default Vue.extend({
   },
 
   methods: {
-    openBridgeDepositModal() {
-      this.$accessor.modal.openModal(Modal.BridgeDeposit)
-    },
-
-    openWithdrawModal() {
-      this.$accessor.modal.openModal(Modal.BridgeWithdraw)
-    },
-
-    openSubaccountTransferModal() {
-      this.$accessor.modal.openModal(Modal.SubaccountDeposit)
-    },
-
-    openSubaccountWithdrawModal() {
-      this.$accessor.modal.openModal(Modal.SubaccountWithdraw)
-    }
+    handleClickOnButton() {}
   }
 })
 </script>

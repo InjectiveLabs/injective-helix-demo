@@ -39,22 +39,13 @@ export enum Icon {
 
 export enum Modal {
   AuctionCountdown = 'auction-countdown',
-  BridgeDeposit = 'bridge-deposit',
-  BridgeWithdraw = 'bridge-withdraw',
   Connect = 'connect',
-  Deposit = 'deposit',
+  DelegateToValidator = 'delegate-to-validator',
   GasFeeRebate = 'gas-fee-rebate',
   MarketRewardFactors = 'market-reward-factors',
   OrderConfirm = 'order-confirm',
-  SubaccountDeposit = 'subaccount-deposit',
   SubaccountDepositWithSelect = 'subaccount-deposit-with-select',
-  SubaccountWithdraw = 'subaccount-withdraw',
-  TakeOut = 'take-out',
   Terms = 'terms',
-  Transfer = 'transfer',
-  TransferOnChain = 'transfer-on-chain',
-  Withdraw = 'withdraw',
-  DelegateToValidator = 'delegate-to-validator',
   MarketBeta = 'market-beta'
 }
 

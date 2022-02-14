@@ -7,7 +7,10 @@ import {
   UiSubaccount,
   UiSubaccountBalance
 } from '@injectivelabs/ui-common'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  denomAmountToChainDenomAmountToFixed
+} from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
 import {
   subaccountActionServiceFactory,
@@ -243,7 +246,10 @@ export const actions = actionTree(
         injectiveAddress,
         denom: token.denom,
         subaccountId: subaccount.subaccountId,
-        amount: amount.toWei(token.decimals).toFixed(0)
+        amount: denomAmountToChainDenomAmountToFixed({
+          value: amount,
+          decimals: token.decimals
+        })
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
@@ -276,7 +282,10 @@ export const actions = actionTree(
         injectiveAddress,
         denom: token.denom,
         subaccountId: subaccount.subaccountId,
-        amount: amount.toWei(token.decimals).toFixed(0)
+        amount: denomAmountToChainDenomAmountToFixed({
+          value: amount,
+          decimals: token.decimals
+        })
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
