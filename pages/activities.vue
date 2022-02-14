@@ -8,28 +8,36 @@
             :option="components.spot"
             class="col-span-3"
           >
-            {{ $t('activities.spotOrders') }}
+            <span class="text-lg">
+              {{ $t('activities.spotOrders') }}
+            </span>
           </v-card-select>
           <v-card-select
             v-model="component"
             :option="components.derivatives"
             class="col-span-3"
           >
-            {{ $t('activities.derivativeOrders') }}
+            <span class="text-lg">
+              {{ $t('activities.derivativeOrders') }}
+            </span>
           </v-card-select>
           <v-card-select
             v-model="component"
             :option="components.earnHistory"
             class="col-span-3"
           >
-            {{ $t('activities.earnHistory') }}
+            <span class="text-lg">
+              {{ $t('activities.earnHistory') }}
+            </span>
           </v-card-select>
           <v-card-select
             v-model="component"
             :option="components.transactionHistory"
             class="col-span-3"
           >
-            {{ $t('activities.transactionHistory') }}
+            <span class="text-lg">
+              {{ $t('activities.transactionHistory') }}
+            </span>
           </v-card-select>
         </div>
         <div class="mt-6 pt-6 border-t">

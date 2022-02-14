@@ -1,20 +1,28 @@
 <template>
   <div
-    class="px-4 py-6 w-full border-t-4 cursor-pointer shadow-card"
+    class="group px-4 py-5 w-full border-t-4 cursor-pointer shadow-card text-gray-200 bg-gray-800"
     :class="{
-      'bg-gray-800 text-gray-300  border-primary-500 rounded-b-md': isSelected,
-      'bg-gray-850 text-gray-500 border-transparent rounded-md': !isSelected
+      'border-primary-500 rounded-b-md': isSelected,
+      'border-transparent rounded-b-md opacity-50 rounded-t-md hover:border-primary-500 hover:rounded-b-md hover:rounded-t-none hover:opacity-100': !isSelected
     }"
     @click="$emit('selected', option)"
   >
-    <div class="flex items-center -mt-1">
-      <span
-        class="w-6 h-6 rounded-full block mr-4"
-        :class="{ 'bg-primary-500': isSelected, 'bg-gray-600': !isSelected }"
-      ></span>
-      <span class="text-base">
+    <div class="-mt-1">
+      <slot name="subtitle"></slot>
+      <div class="flex items-center" :class="{ 'justify-between': lg }">
+        <span
+          class="rounded-full block mr-4"
+          :class="[
+            lg ? 'w-14 h-14' : 'w-6 h-6',
+            {
+              'bg-primary-500': isSelected,
+              'bg-gray-600  group-hover:bg-primary-500': !isSelected
+            }
+          ]"
+        ></span>
+
         <slot></slot>
-      </span>
+      </div>
     </div>
   </div>
 </template>
@@ -37,6 +45,11 @@ export default Vue.extend({
     option: {
       required: true,
       type: [String, Number]
+    },
+
+    lg: {
+      type: Boolean,
+      default: false
     }
   },
 
