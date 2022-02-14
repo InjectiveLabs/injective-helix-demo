@@ -1,16 +1,16 @@
 export default {
-  wallet: {
+  funding: {
+    asset: 'Asset',
+    total: 'Total',
+    totalTooltip: 'Total tooltip placeholder',
+    bankBalances: 'Balances',
     bankAccount: 'Injective Wallet',
     bankAccountTooltip: 'Injective wallet tooltip placeholder',
     tradingAccount: 'Trading Account',
+    tradingAccountBalances: 'Trading Account Balances',
     tradingAccountTooltip: 'Trading account tooltip placeholder',
     portfolioValue: 'Portfolio value',
-    asset: 'Asset',
-    total: 'Total',
     stakedAmount: 'Staked Amount',
-    value: 'Value',
-    deposit: 'Deposit',
-    withdraw: 'Withdraw',
     transferToTradingAccount: 'Transfer to Trading Account'
   }
 }

@@ -1,20 +1,22 @@
 import faq from './faq/en'
 import banners from './banners/en'
 import activities from './activities/en'
-import wallet from './wallet/en'
+import funding from './funding/en'
 import market from './market/en'
 
 export default {
   ...activities,
   ...banners,
   ...faq,
-  ...wallet,
+  ...funding,
   ...activities,
   ...market,
   common: {
     deposit: 'Deposit',
     trade: 'Trade',
-    transfer: 'Transfer'
+    transfer: 'Transfer',
+    value: 'Value',
+    withdraw: 'Withdraw'
   },
   address_copied: 'Address Copied',
   copy_address: 'Copy Address',

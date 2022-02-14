@@ -1,5 +1,5 @@
 <template>
-  <VFunding
+  <VWallet
     :bank-account-balance="bankAccountBalance"
     :bank-account-balances="balances"
     :status="status"
@@ -22,12 +22,12 @@ import {
   Status,
   StatusType
 } from '@injectivelabs/utils'
-import VFunding from './index.vue'
+import VWallet from './index.vue'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
-    VFunding
+    VWallet
   },
 
   data() {
@@ -132,7 +132,7 @@ export default Vue.extend({
   mounted() {
     Promise.all([
       this.$accessor.token.getAllTokenWithPriceInUsd(),
-      this.$accessor.token.getAllTokenWithBalanceAndAllowance()
+      this.$accessor.token.getBitcoinUsdPrice()
     ])
       .then(() => {
         //

@@ -127,7 +127,7 @@
         </span>
       </TableHeader>
 
-      <TableBody :show-empty="markets.length === 0">
+      <TableBody :show-empty="markets.length === 0" :round="simple">
         <v-market
           v-for="({ market, summary }, index) in filteredMarkets"
           :key="`market-${index}`"

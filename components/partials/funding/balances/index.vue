@@ -2,25 +2,25 @@
   <div class="relative">
     <HOCLoading :status="status">
       <div class="overflow-y-auto overflow-x-auto md:overflow-x-visible w-full">
-        <TableHeader v-if="isUserWalletConnected">
-          <span class="col-span-3">{{ $t('Asset') }}</span>
-          <span class="col-span-3">
-            <div class="flex items-center">
-              <span class="flex-1 text-right">{{
-                $t('Injective Chain Balance')
-              }}</span>
+        <TableHeader v-if="isUserWalletConnected" class="md:hidden xl:grid">
+          <span class="col-span-2">
+            {{ $t('funding.asset') }}
+          </span>
+          <span class="col-span-2 flex items-center">
+            <div>
+              {{ $t('funding.total') }}
             </div>
+            <v-icon-info-tooltip
+              class="ml-2"
+              color="text-gray-200"
+              :tooltip="$t('funding.totalTooltip')"
+              lg
+            />
           </span>
           <span class="col-span-3">
-            <div class="flex items-center relative justify-end">
-              {{ $t('ERC20 Balance') }}
-            </div>
+            {{ $t('common.value') }}
           </span>
-          <span class="col-span-3">
-            <div class="flex items-center relative justify-end">
-              {{ $t('Total') }}
-            </div>
-          </span>
+          <span class="col-span-5"> </span>
         </TableHeader>
 
         <TableBody
@@ -47,10 +47,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import {
-  BigNumberInBase,
-  Status
-} from '@injectivelabs/utils'
+import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import {
   BankBalanceWithTokenAndBalanceWithUsdBalance,
   INJECTIVE_DENOM

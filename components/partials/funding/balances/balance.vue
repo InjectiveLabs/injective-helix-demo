@@ -1,9 +1,9 @@
 <template>
-  <TableRow>
-    <span class="col-span-1 font-mono text-left md:hidden">{{
-      $t('Asset')
-    }}</span>
-    <span class="col-span-1 md:col-span-3 text-right md:text-left">
+  <TableRow md class="text-sm md:grid-cols-2 xl:grid-cols-12">
+    <span class="font-mono text-left md:hidden">
+      {{ $t('funding.asset') }}
+    </span>
+    <span class="md:col-span-2 text-right md:text-left">
       <div class="flex items-center justify-end md:justify-start">
         <div v-if="balance.token.logo" class="w-6 h-6">
           <img
@@ -12,63 +12,48 @@
             class="min-w-full h-auto rounded-full"
           />
         </div>
-        <div class="ml-4">
-          <div class="flex items-center">
-            {{ balance.token.name }}
-          </div>
-          <span
-            class="text-gray-400 dark:text-gray-500 text-2xs md:text-xs 4xl:text-sm block"
-          >
+        <div class="ml-3">
+          <span class="text-gray-200 font-bold">
             {{ balance.token.symbol }}
           </span>
         </div>
       </div>
     </span>
-    <span class="col-span-1 font-mono text-left md:hidden">{{
-      $t('Injective Chain Balance')
-    }}</span>
-    <span
-      class="col-span-1 md:col-span-3 font-mono text-right whitespace-nowrap"
-    >
-      <div class="flex items-center justify-end">
-        {{ bankBalanceToString }}
-        <span class="text-xs text-gray-400 dark:text-gray-500 ml-1">{{
-          balance.token.symbol
-        }}</span>
-      </div>
+    <span class="font-mono text-left md:hidden">
+      {{ $t('funding.total') }}
     </span>
-    <span class="col-span-1 font-mono text-left md:hidden">{{
-      $t('ERC20 Balance')
-    }}</span>
     <span
-      class="col-span-1 md:col-span-3 font-mono text-right whitespace-nowrap"
+      class="md:col-span-2 font-mono text-right md:text-left whitespace-nowrap"
     >
-      <div v-if="isIbcToken" class="md:pr-6">&mdash;</div>
-      <div v-else class="flex items-center justify-end">
-        {{ erc20BalanceToString }}
-        <span class="text-xs text-gray-400 dark:text-gray-500 ml-1">{{
-          balance.token.symbol
-        }}</span>
-      </div>
+      {{ bankBalanceToString }}
     </span>
-    <span class="col-span-1 font-mono text-left md:hidden">{{
-      $t('Total')
-    }}</span>
-    <span
-      class="col-span-1 md:col-span-3 font-mono text-right whitespace-nowrap"
-    >
-      <div class="flex items-center justify-end">
-        {{ totalToString }}
-        <span class="text-xs text-gray-400 dark:text-gray-500 ml-1">{{
-          balance.token.symbol
-        }}</span>
-      </div>
-      <div class="flex items-center justify-end">
-        <span class="text-2xs text-aqua-500">
-          &#8776; {{ totalInUsdToString }} USD
+    <span class="font-mono text-left md:hidden">
+      {{ $t('common.value') }}
+    </span>
+    <span class="md:col-span-3 font-mono whitespace-nowrap">
+      <span
+        class="flex xs:items-center items-end justify-end md:justify-start flex-col xs:flex-row"
+      >
+        <span>{{ totalInUsdToString }} USD</span>
+        <span class="text-opacity-50 text-gray-200 xs:ml-3">
+          {{ totalInBtcToString }} BTC
         </span>
-      </div>
+      </span>
     </span>
+    <div
+      class="col-span-2 md:col-span-5 text-right text-primary-500 text-sm flex justify-around sm:justify-end"
+    >
+      <span class="cursor-pointer" @click="handleDepositClick">
+        {{ $t('common.deposit') }}
+      </span>
+      <span class="cursor-pointer ml-6">{{ $t('common.withdraw') }}</span>
+      <span class="cursor-pointer ml-6 hidden sm:inline-block">
+        {{ $t('funding.transferToTradingAccount') }}
+      </span>
+      <span class="cursor-pointer ml-6 sm:hidden">
+        {{ $t('common.transfer') }}
+      </span>
+    </div>
   </TableRow>
 </template>
 
@@ -81,7 +66,10 @@ import {
   BankBalanceWithTokenAndBalanceWithUsdBalance
 } from '@injectivelabs/ui-common'
 import TableRow from '~/components/elements/table-row.vue'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import {
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  UI_DEFAULT_DISPLAY_DECIMALS
+} from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -102,6 +90,10 @@ export default Vue.extend({
   },
 
   computed: {
+    btcUsdPrice(): number {
+      return this.$accessor.token.btcUsdPrice
+    },
+
     bankBalance(): BigNumberInBase {
       const { balance } = this
 
@@ -110,6 +102,14 @@ export default Vue.extend({
       }
 
       return new BigNumberInWei(balance.balance).toBase(balance.token.decimals)
+    },
+
+    totalInBtc(): BigNumberInBase {
+      const { balance, btcUsdPrice } = this
+
+      return new BigNumberInBase(balance.balanceInUsd).dividedBy(
+        new BigNumberInBase(btcUsdPrice)
+      )
     },
 
     bankBalanceToString(): string {
@@ -121,44 +121,26 @@ export default Vue.extend({
       )
     },
 
-    erc20Balance(): BigNumberInBase {
-      const { balance } = this
+    totalInBtcToString(): string {
+      const { totalInBtc } = this
 
-      if (!balance.token) {
-        return ZERO_IN_BASE
+      if (totalInBtc.eq('0')) {
+        return '0.00'
       }
 
-      if (!balance.token.balance) {
-        return ZERO_IN_BASE
+      if (totalInBtc.lte('0.0001')) {
+        return '< 0.0001'
       }
 
-      return new BigNumberInWei(balance.token.balance).toBase(
-        balance.token.decimals
-      )
-    },
+      if (totalInBtc.lte('0.001')) {
+        return '< 0.001'
+      }
 
-    erc20BalanceToString(): string {
-      const { erc20Balance } = this
+      if (totalInBtc.lte('0.01')) {
+        return '< 0.01'
+      }
 
-      return erc20Balance.toFormat(
-        UI_DEFAULT_DISPLAY_DECIMALS,
-        BigNumberInBase.ROUND_DOWN
-      )
-    },
-
-    total(): BigNumberInBase {
-      const { bankBalance, erc20Balance } = this
-
-      return bankBalance.plus(erc20Balance)
-    },
-
-    totalToString(): string {
-      const { total } = this
-
-      return total.toFormat(
-        UI_DEFAULT_DISPLAY_DECIMALS,
-        BigNumberInBase.ROUND_DOWN
-      )
+      return totalInBtc.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
     totalInUsdToString(): string {
@@ -167,16 +149,26 @@ export default Vue.extend({
       return new BigNumberInBase(balance.balanceInUsd).toFormat(
         UI_DEFAULT_DISPLAY_DECIMALS
       )
-    },
+    }
+  },
 
-    isIbcToken(): boolean {
+  methods: {
+    handleDepositClick() {
       const { balance } = this
 
-      if (balance.denom) {
-        return balance.denom.startsWith('ibc')
-      }
+      this.$emit('deposit', balance.denom)
+    },
 
-      return false
+    handleWithdrawClick() {
+      const { balance } = this
+
+      this.$emit('withdraw', balance.denom)
+    },
+
+    handleTransfer() {
+      const { balance } = this
+
+      this.$emit('transfer', balance.denom)
     }
   }
 })

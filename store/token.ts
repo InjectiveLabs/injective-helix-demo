@@ -15,6 +15,7 @@ import {
   tokenErc20ActionServiceFactory,
   tokenErc20Service
 } from '~/app/Services'
+import { BTC_COIN_GECKO_ID } from '~/app/utils/constants'
 import { backupPromiseCall } from '~/app/utils/async'
 
 const initialStateFactory = () => ({
@@ -23,6 +24,7 @@ const initialStateFactory = () => ({
   tokensWithPriceInUsd: {} as Record<string, string>,
   baseTokenWithBalance: (undefined as unknown) as TokenWithBalanceAndPrice,
   quoteTokenWithBalance: (undefined as unknown) as TokenWithBalanceAndPrice,
+  btcUsdPrice: 0 as number,
   injUsdtPrice: 0 as number
 })
 
@@ -37,6 +39,7 @@ export const state = () => ({
   >,
   baseTokenWithBalance: initialState.baseTokenWithBalance as TokenWithBalanceAndPrice,
   quoteTokenWithBalance: initialState.quoteTokenWithBalance as TokenWithBalanceAndPrice,
+  btcUsdPrice: initialState.btcUsdPrice as number,
   injUsdtPrice: initialState.injUsdtPrice as number
 })
 
@@ -94,6 +97,10 @@ export const mutations = {
     tokensWithPriceInUsd: Record<string, string>
   ) {
     state.tokensWithPriceInUsd = tokensWithPriceInUsd
+  },
+
+  setBtcUsdPrice(state: TokenStoreState, btcUsdPrice: number) {
+    state.btcUsdPrice = btcUsdPrice
   },
 
   setInjUsdPrice(state: TokenStoreState, injUsdtPrice: number) {
@@ -173,18 +180,28 @@ export const actions = actionTree(
         return
       }
 
-      const { balancesWithToken } = this.app.$accessor.bank
+      const {
+        balancesWithToken,
+        ibcBalancesWithToken
+      } = this.app.$accessor.bank
 
       if (balancesWithToken.length === 0) {
         await this.app.$accessor.bank.fetchBalancesWithToken()
       }
 
+      if (ibcBalancesWithToken.length === 0) {
+        await this.app.$accessor.bank.fetchIbcBalancesWithToken()
+      }
+
       const {
-        balancesWithToken: newBalancesWithToken
+        balancesWithToken: newBalancesWithToken,
+        ibcBalancesWithToken: newIbcBalancesWithToken
       } = this.app.$accessor.bank
 
+      const balances = [...newBalancesWithToken, ...newIbcBalancesWithToken]
+
       const tokensPriceInUsd = await Promise.all(
-        newBalancesWithToken.map(async ({ token }) => {
+        balances.map(async ({ token }) => {
           return await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
             token.coinGeckoId
           )
@@ -195,7 +212,7 @@ export const actions = actionTree(
         (tokens, price, index) => {
           return {
             ...tokens,
-            [newBalancesWithToken[index].denom]: price
+            [balances[index].denom]: price
           }
         },
         {}
@@ -338,6 +355,15 @@ export const actions = actionTree(
         'setInjUsdPrice',
         await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
           INJ_COIN_GECKO_ID
+        )
+      )
+    },
+
+    async getBitcoinUsdPrice({ commit }) {
+      commit(
+        'setBtcUsdPrice',
+        await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
+          BTC_COIN_GECKO_ID
         )
       )
     },

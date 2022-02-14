@@ -1,10 +1,7 @@
 <template>
   <div
-    class="grid-cols-12 gap-4 text-gray-200 uppercase md:grid hidden items-center"
-    :class="[
-      fontSizeClasses,
-      dense ? 'px-4 py-4 bg-gray-900 rounded-t-2xl leading-3.5' : 'px-6 md:mb-4'
-    ]"
+    class="grid-cols-12 gap-4 text-gray-200 uppercase md:grid hidden items-center mb-2"
+    :class="[fontSizeClasses, md ? 'py-4 ' : 'px-3 py-2']"
   >
     <slot></slot>
   </div>
@@ -20,7 +17,7 @@ export default Vue.extend({
       default: false
     },
 
-    dense: {
+    md: {
       type: Boolean,
       default: false
     }

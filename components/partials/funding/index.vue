@@ -9,18 +9,18 @@
       <v-card-select v-model="component" lg :option="components.bankAccount">
         <template slot="subtitle">
           <div class="font-semibold text-lg flex items-center mb-4">
-            <span>{{ $t('wallet.bankAccount') }}</span>
+            <span>{{ $t('funding.bankAccount') }}</span>
             <v-icon-info-tooltip
               class="ml-3"
               color="text-gray-200"
-              :tooltip="$t('wallet.bankAccountTooltip')"
+              :tooltip="$t('funding.bankAccountTooltip')"
               lg
             />
           </div>
         </template>
         <div class="text-right tracking-wider">
           <p class="text-gray-500 text-xs uppercase mb-3">
-            {{ $t('wallet.portfolioValue') }}
+            {{ $t('funding.portfolioValue') }}
           </p>
           <p class="text-2xl">{{ bankAccountBalanceToString }} USD</p>
         </div>
@@ -29,18 +29,18 @@
       <v-card-select v-model="component" lg :option="components.tradingAccount">
         <template slot="subtitle">
           <div class="font-semibold text-lg flex items-center mb-4">
-            <span>{{ $t('wallet.tradingAccount') }}</span>
+            <span>{{ $t('funding.tradingAccount') }}</span>
             <v-icon-info-tooltip
               class="ml-3"
               color="text-gray-200"
-              :tooltip="$t('wallet.tradingAccountTooltip')"
+              :tooltip="$t('funding.tradingAccountTooltip')"
               lg
             />
           </div>
         </template>
         <div class="text-right tracking-wider">
           <p class="text-gray-500 text-xs uppercase mb-3">
-            {{ $t('wallet.portfolioValue') }}
+            {{ $t('funding.portfolioValue') }}
           </p>
           <p class="text-2xl">15,887.00 USD</p>
         </div>
@@ -48,7 +48,7 @@
     </div>
 
     <div class="w-full">
-      <v-panel :title="$t('balances')" class="mt-6">
+      <v-panel :title="$t('funding.bankBalances')" class="mt-6">
         <v-balances :status="status" :balances="bankAccountBalances" />
       </v-panel>
     </div>

@@ -67,3 +67,6 @@ export const MIN_TIMESTAMP_REQUIRED_FOR_GAS_REBATE = 1638313200 // 01 Dec 2020 0
 export const DMM_TIME_STAMP_FORMAT: string = "MMM-dd-yyyy HH:mm:ss 'UTC'xxx"
 
 export const VPN_PROXY_VALIDATION_PERIOD = 2 /* 2 days */
+
+// to be added to ui-common
+export const BTC_COIN_GECKO_ID = 'bitcoin'

@@ -1,12 +1,14 @@
 <template>
-  <div class="grid grid-cols-1">
+  <div
+    class="grid grid-cols-1"
+    :class="{ 'rounded-lg overflow-hidden': round }"
+  >
     <slot></slot>
     <div
       v-if="showEmpty"
       class="col-span-1 px-6 text-sm py-4 grid grid-cols-1 md:grid-cols-5 text-gray-200 bg-gray-900 items-center"
-      :class="{ 'rounded-lg': !dense }"
     >
-      <slot name="empty"></slot>
+      <slot name="empty" />
     </div>
   </div>
 </template>
@@ -21,9 +23,9 @@ export default Vue.extend({
       default: false
     },
 
-    dense: {
+    round: {
       type: Boolean,
-      default: true
+      default: false
     }
   }
 })
