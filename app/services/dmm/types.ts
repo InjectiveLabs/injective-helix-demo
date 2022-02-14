@@ -17,7 +17,7 @@ export interface UiBaseEpochMarkets extends UiEpochMarkets {
   subType: MarketType
 }
 
-export interface UiEpochMarketsWithTokenMeta extends UiBaseEpochMarkets {
+export interface UiEpochMarketsWithToken extends UiBaseEpochMarkets {
   ticker: string
   token: Token
   type: MarketType

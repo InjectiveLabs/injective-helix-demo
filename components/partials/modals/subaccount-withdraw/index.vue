@@ -39,8 +39,8 @@ import {
   StatusType
 } from '@injectivelabs/utils'
 import {
-  UiSpotMarketWithTokenMeta,
-  UiDerivativeMarketWithTokenMeta,
+  UiSpotMarketWithToken,
+  UiDerivativeMarketWithToken,
   ZERO_IN_BASE,
   MarketType,
   UiSubaccount
@@ -60,11 +60,11 @@ export default Vue.extend({
   },
 
   computed: {
-    spotMarket(): UiSpotMarketWithTokenMeta | undefined {
+    spotMarket(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
     },
 
-    derivativeMarket(): UiDerivativeMarketWithTokenMeta | undefined {
+    derivativeMarket(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 
@@ -72,10 +72,7 @@ export default Vue.extend({
       return this.$accessor.account.subaccount
     },
 
-    market():
-      | UiSpotMarketWithTokenMeta
-      | UiDerivativeMarketWithTokenMeta
-      | undefined {
+    market(): UiSpotMarketWithToken | UiDerivativeMarketWithToken | undefined {
       const { spotMarket, derivativeMarket } = this
 
       return this.$route.name === 'spot-spot' ? spotMarket : derivativeMarket

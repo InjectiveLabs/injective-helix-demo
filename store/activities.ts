@@ -11,12 +11,14 @@ import {
 } from '@injectivelabs/ui-common'
 import { DerivativeOrderState } from '@injectivelabs/derivatives-consumer'
 import {
-  streamSubaccountSpotOrders,
-  streamSubaccountDerivativeOrders,
-  streamSubaccountPositions,
-  streamSubaccountDerivativeTrades,
-  streamSubaccountSpotTrades
-} from '~/app/services/activities'
+  streamSubaccountOrders as streamSubaccountDerivativeOrders,
+  streamSubaccountTrades as streamSubaccountDerivativeTrades,
+  streamSubaccountPositions
+} from '~/app/streams/derivatives'
+import {
+  streamSubaccountOrders as streamSubaccountSpotOrders,
+  streamSubaccountTrades as streamSubaccountSpotTrades
+} from '~/app/streams/spot'
 import {
   derivativeActionServiceFactory,
   derivativeService,

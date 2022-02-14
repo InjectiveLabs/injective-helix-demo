@@ -23,8 +23,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import {
-  UiDerivativeMarketWithTokenMeta,
-  UiSpotMarketWithTokenMeta
+  UiDerivativeMarketWithToken,
+  UiSpotMarketWithToken
 } from '@injectivelabs/ui-common'
 import VItem from '~/components/partials/common/stats/item.vue'
 import { TradingRewardsCampaign } from '~/app/services/exchange'
@@ -43,11 +43,11 @@ export default Vue.extend({
       return this.$accessor.exchange.tradingRewardsCampaign
     },
 
-    spotMarkets(): UiSpotMarketWithTokenMeta[] {
+    spotMarkets(): UiSpotMarketWithToken[] {
       return this.$accessor.spot.markets
     },
 
-    derivativeMarkets(): UiDerivativeMarketWithTokenMeta[] {
+    derivativeMarkets(): UiDerivativeMarketWithToken[] {
       return this.$accessor.derivatives.markets
     },
 

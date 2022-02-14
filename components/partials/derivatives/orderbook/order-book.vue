@@ -93,7 +93,7 @@ import {
   UiOrderbookSummary,
   UiPriceLevel,
   UiDerivativeLimitOrder,
-  UiDerivativeMarketWithTokenMeta,
+  UiDerivativeMarketWithToken,
   UiDerivativeOrderbook,
   UiDerivativeTrade,
   ZERO_IN_BASE
@@ -154,7 +154,7 @@ export default Vue.extend({
       return this.$accessor.derivatives.subaccountOrders
     },
 
-    market(): UiDerivativeMarketWithTokenMeta | undefined {
+    market(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 

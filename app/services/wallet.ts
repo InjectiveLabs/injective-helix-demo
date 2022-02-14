@@ -1,5 +1,4 @@
 import { ConcreteStrategyOptions, Wallet } from '@injectivelabs/web3-strategy'
-import { AccountAddress } from '@injectivelabs/ts-types'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import {
   getWeb3Strategy,
@@ -26,7 +25,7 @@ export const connect = ({
   }
 }
 
-export const getAddresses = async (): Promise<AccountAddress[]> => {
+export const getAddresses = async (): Promise<string[]> => {
   const web3Strategy = getWeb3Strategy()
   const addresses = await web3Strategy.getAddresses()
 
@@ -37,7 +36,7 @@ export const getAddresses = async (): Promise<AccountAddress[]> => {
   return addresses
 }
 
-export const confirm = async (address: AccountAddress) => {
+export const confirm = async (address: string) => {
   const web3Strategy = getWeb3Strategy()
 
   return await web3Strategy.confirm(address)

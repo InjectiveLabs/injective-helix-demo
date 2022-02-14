@@ -68,8 +68,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import {
-  UiSpotMarketWithTokenMeta,
-  UiDerivativeMarketWithTokenMeta,
+  UiSpotMarketWithToken,
+  UiDerivativeMarketWithToken,
   MarketType
 } from '@injectivelabs/ui-common'
 import VBank from './bank.vue'
@@ -88,17 +88,17 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    currentSpotMarket(): UiSpotMarketWithTokenMeta | undefined {
+    currentSpotMarket(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
     },
 
-    currentDerivativeMarket(): UiDerivativeMarketWithTokenMeta | undefined {
+    currentDerivativeMarket(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 
     currentMarket():
-      | UiSpotMarketWithTokenMeta
-      | UiDerivativeMarketWithTokenMeta
+      | UiSpotMarketWithToken
+      | UiDerivativeMarketWithToken
       | undefined {
       const { currentSpotMarket, currentDerivativeMarket } = this
 
@@ -116,10 +116,10 @@ export default Vue.extend({
 
       if (currentMarket.type === MarketType.Spot) {
         return (
-          (currentMarket as UiSpotMarketWithTokenMeta).baseDenom.startsWith(
+          (currentMarket as UiSpotMarketWithToken).baseDenom.startsWith(
             'ibc'
           ) ||
-          (currentMarket as UiSpotMarketWithTokenMeta).quoteDenom.startsWith(
+          (currentMarket as UiSpotMarketWithToken).quoteDenom.startsWith(
             'ibc'
           )
         )

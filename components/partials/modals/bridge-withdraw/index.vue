@@ -44,8 +44,8 @@ import {
   StatusType
 } from '@injectivelabs/utils'
 import {
-  UiSpotMarketWithTokenMeta,
-  UiDerivativeMarketWithTokenMeta,
+  UiSpotMarketWithToken,
+  UiDerivativeMarketWithToken,
   BankBalances,
   TokenWithBalanceAndPrice,
   ZERO_IN_BASE,
@@ -66,11 +66,11 @@ export default Vue.extend({
   },
 
   computed: {
-    spotMarket(): UiSpotMarketWithTokenMeta | undefined {
+    spotMarket(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
     },
 
-    derivativeMarket(): UiDerivativeMarketWithTokenMeta | undefined {
+    derivativeMarket(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 
@@ -87,8 +87,8 @@ export default Vue.extend({
     },
 
     market():
-      | UiSpotMarketWithTokenMeta
-      | UiDerivativeMarketWithTokenMeta
+      | UiSpotMarketWithToken
+      | UiDerivativeMarketWithToken
       | undefined {
       const { spotMarket, derivativeMarket } = this
 
@@ -106,12 +106,12 @@ export default Vue.extend({
         return new BigNumberInBase('')
       }
 
-      if (!balances[(market as UiSpotMarketWithTokenMeta).baseDenom]) {
+      if (!balances[(market as UiSpotMarketWithToken).baseDenom]) {
         return ZERO_IN_BASE
       }
 
       return new BigNumberInWei(
-        balances[(market as UiSpotMarketWithTokenMeta).baseDenom] || 0
+        balances[(market as UiSpotMarketWithToken).baseDenom] || 0
       ).toBase(market.baseToken.decimals)
     },
 

@@ -8,7 +8,7 @@ import { TokenTransformer } from '@injectivelabs/ui-common'
 import {
   UiDmmMarketMaker,
   UiEpochMarkets,
-  UiEpochMarketsWithTokenMeta,
+  UiEpochMarketsWithToken,
   UiEpochDate,
   UiEpochMeta,
   findActiveMarket
@@ -23,7 +23,7 @@ const initialStateFactory = () => ({
   dates: [] as UiEpochDate[],
   marketMakers: [] as UiDmmMarketMaker[],
   markets: [] as UiEpochMarkets[],
-  marketsWithTokenMeta: [] as UiEpochMarketsWithTokenMeta[],
+  marketsWithToken: [] as UiEpochMarketsWithToken[],
   meta: {} as UiEpochMeta,
   lcs: {} as LCSResultRecord,
   vcs: {} as VCSResultRecord,
@@ -40,7 +40,7 @@ export const state = () => ({
   dates: initialState.dates as UiEpochDate[],
   marketMakers: initialState.marketMakers as UiDmmMarketMaker[],
   markets: initialState.markets as UiEpochMarkets[],
-  marketsWithTokenMeta: initialState.marketsWithTokenMeta as UiEpochMarketsWithTokenMeta[],
+  marketsWithToken: initialState.marketsWithToken as UiEpochMarketsWithToken[],
   meta: initialState.meta as UiEpochMeta,
   lcs: initialState.lcs as LCSResultRecord,
   vcs: initialState.vcs as VCSResultRecord,
@@ -82,11 +82,11 @@ export const mutations = {
     state.markets = markets
   },
 
-  setMarketsWithTokenMeta(
+  setMarketsWithToken(
     state: DMMStoreState,
-    marketsWithTokenMeta: UiEpochMarketsWithTokenMeta[]
+    marketsWithToken: UiEpochMarketsWithToken[]
   ) {
-    state.marketsWithTokenMeta = marketsWithTokenMeta
+    state.marketsWithToken = marketsWithToken
   },
 
   setLcs(state: DMMStoreState, lcs: LCSResultRecord) {
@@ -112,7 +112,7 @@ export const mutations = {
     state.meta = initialState.meta
     state.marketMakers = initialState.marketMakers
     state.markets = initialState.markets
-    state.marketsWithTokenMeta = initialState.marketsWithTokenMeta
+    state.marketsWithToken = initialState.marketsWithToken
     state.lcs = initialState.lcs
     state.vcs = initialState.vcs
     state.records = initialState.records
@@ -162,7 +162,7 @@ export const actions = actionTree(
       commit('setUpdatedAt', result.createdAt)
 
       const baseMarkets = await dmmService.fetchMarkets(meta.markets)
-      const marketsWithTokenMeta = baseMarkets
+      const marketsWithToken = baseMarkets
         .map((market) => {
           const [baseTokenSymbol] = market.ticker.split('/')
           const baseToken = TokenTransformer.tokenMetaToToken(
@@ -177,10 +177,10 @@ export const actions = actionTree(
         })
         .filter(
           (market) => market.token !== undefined
-        ) as UiEpochMarketsWithTokenMeta[]
+        ) as UiEpochMarketsWithToken[]
 
-      commit('setMarketsWithTokenMeta', marketsWithTokenMeta)
-      commit('setActiveMarketId', findActiveMarket(marketsWithTokenMeta))
+      commit('setMarketsWithToken', marketsWithToken)
+      commit('setActiveMarketId', findActiveMarket(marketsWithToken))
       commit(
         'setEpochUsdPrice',
         await dmmService.fetchEpochUsdPrice(meta.meta as UiEpochMeta)

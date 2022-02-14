@@ -1,125 +1,14 @@
 import {
-  SpotMarketStreamType,
-  OrderbookStreamCallback as SpotMarketOrderbookStreamCallback,
-  TradeStreamCallback as SpotMarketTradeStreamCallback,
-  OrderStreamCallback as SpotMarketOrderStreamCallback
-} from '@injectivelabs/spot-consumer'
-import { TradeExecutionSide } from '@injectivelabs/ts-types'
-import {
   BigNumber,
   BigNumberInBase,
   BigNumberInWei
 } from '@injectivelabs/utils'
-import { SubaccountStreamType } from '@injectivelabs/subaccount-consumer'
 import {
   UiOrderbookPriceLevel,
   UiPriceLevel,
   ZERO_IN_BASE,
-  UiSpotMarketWithTokenMeta
+  UiSpotMarketWithToken
 } from '@injectivelabs/ui-common'
-import { streamProvider } from '../providers/StreamProvider'
-import { spotMarketStream } from '~/app/singletons/SpotMarketStream'
-
-export const streamOrderbook = ({
-  marketId,
-  callback
-}: {
-  marketId: string
-  callback: SpotMarketOrderbookStreamCallback
-}) => {
-  const streamFn = spotMarketStream.orderbook.start.bind(
-    spotMarketStream.orderbook
-  )
-  const streamFnArgs = {
-    marketIds: [marketId],
-    callback
-  }
-
-  streamProvider.subscribe({
-    fn: streamFn,
-    args: streamFnArgs,
-    key: SpotMarketStreamType.Orderbook
-  })
-}
-
-export const streamTrades = ({
-  marketId,
-  callback
-}: {
-  marketId: string
-  callback: SpotMarketTradeStreamCallback
-}) => {
-  const streamFn = spotMarketStream.trades.start.bind(spotMarketStream.trades)
-  const streamFnArgs = {
-    marketId,
-    callback,
-    executionSide: TradeExecutionSide.Taker
-  }
-
-  streamProvider.subscribe({
-    fn: streamFn,
-    args: streamFnArgs,
-    key: SpotMarketStreamType.Trades
-  })
-}
-
-export const streamSubaccountTrades = ({
-  marketId,
-  subaccountId,
-  callback
-}: {
-  marketId: string
-  subaccountId: string
-  callback: SpotMarketTradeStreamCallback
-}) => {
-  const streamFn = spotMarketStream.trades.subaccount.bind(
-    spotMarketStream.trades
-  )
-  const streamFnArgs = {
-    marketId,
-    subaccountId,
-    callback
-  }
-
-  streamProvider.subscribe({
-    fn: streamFn,
-    args: streamFnArgs,
-    key: SpotMarketStreamType.SubaccountTrades
-  })
-}
-
-export const streamSubaccountOrders = ({
-  marketId,
-  subaccountId,
-  callback
-}: {
-  marketId: string
-  subaccountId: string
-  callback: SpotMarketOrderStreamCallback
-}) => {
-  const streamFn = spotMarketStream.orders.subaccount.bind(
-    spotMarketStream.orders
-  )
-  const streamFnArgs = {
-    marketId,
-    subaccountId,
-    callback
-  }
-
-  streamProvider.subscribe({
-    fn: streamFn,
-    args: streamFnArgs,
-    key: SpotMarketStreamType.SubaccountOrders
-  })
-}
-
-export const cancelMarketStreams = () => {
-  streamProvider.cancel(SpotMarketStreamType.Orderbook)
-  streamProvider.cancel(SpotMarketStreamType.SubaccountOrders)
-  streamProvider.cancel(SpotMarketStreamType.SubaccountTrades)
-  streamProvider.cancel(SpotMarketStreamType.Trades)
-  streamProvider.cancel(SubaccountStreamType.Balances)
-}
 
 export const calculateWorstExecutionPriceFromOrderbook = ({
   records,
@@ -127,7 +16,7 @@ export const calculateWorstExecutionPriceFromOrderbook = ({
   amount
 }: {
   records: UiPriceLevel[]
-  market: UiSpotMarketWithTokenMeta
+  market: UiSpotMarketWithToken
   amount: BigNumberInBase
 }): BigNumberInBase => {
   let remainAmountToFill = amount
@@ -164,7 +53,7 @@ export const calculateAverageExecutionPriceFromOrderbook = ({
   amount
 }: {
   records: UiPriceLevel[]
-  market: UiSpotMarketWithTokenMeta
+  market: UiSpotMarketWithToken
   amount: BigNumberInBase
 }): BigNumberInBase => {
   const { sum, remainAmountToFill } = records.reduce(
@@ -242,7 +131,7 @@ export const getApproxAmountForMarketOrder = ({
   balance: BigNumberInBase
   percent?: number
   slippage: number
-  market: UiSpotMarketWithTokenMeta
+  market: UiSpotMarketWithToken
 }) => {
   const fee = new BigNumberInBase(market.takerFeeRate)
   const availableBalance = balance.times(percent)

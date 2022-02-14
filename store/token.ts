@@ -2,10 +2,10 @@ import {
   Token,
   TokenWithBalance,
   TokenWithBalanceAndPrice,
-  UiSpotMarketWithTokenMeta,
+  UiSpotMarketWithToken,
   UNLIMITED_ALLOWANCE,
   INJ_COIN_GECKO_ID,
-  UiDerivativeMarketWithTokenMeta
+  UiDerivativeMarketWithToken
 } from '@injectivelabs/ui-common'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
@@ -124,25 +124,25 @@ export const actions = actionTree(
       }
 
       const {
-        balancesWithTokenMetaData,
-        ibcBalancesWithTokenMetaData
+        balancesWithToken,
+        ibcBalancesWithToken
       } = this.app.$accessor.bank
 
-      if (balancesWithTokenMetaData.length === 0) {
-        await this.app.$accessor.bank.fetchBalancesWithTokenMetaData()
+      if (balancesWithToken.length === 0) {
+        await this.app.$accessor.bank.fetchBalancesWithToken()
       }
 
-      if (ibcBalancesWithTokenMetaData.length === 0) {
-        await this.app.$accessor.bank.fetchIbcBalancesWithTokenMetaData()
+      if (ibcBalancesWithToken.length === 0) {
+        await this.app.$accessor.bank.fetchIbcBalancesWithToken()
       }
 
       const {
-        balancesWithTokenMetaData: newBalancesWithTokenMetaData,
-        ibcBalancesWithTokenMetaData: newIbcBalancesWithTokenMetaData
+        balancesWithToken: newBalancesWithToken,
+        ibcBalancesWithToken: newIbcBalancesWithToken
       } = this.app.$accessor.bank
 
       const ercTokensWithBalanceAndAllowance = await Promise.all(
-        newBalancesWithTokenMetaData.map(async ({ token }) => {
+        newBalancesWithToken.map(async ({ token }) => {
           return (await tokenErc20Service.fetchTokenBalanceAndAllowance({
             address,
             token
@@ -151,7 +151,7 @@ export const actions = actionTree(
       )
 
       const ibcTokensWithBalanceFromBank = await Promise.all(
-        newIbcBalancesWithTokenMetaData.map(async ({ token }) => {
+        newIbcBalancesWithToken.map(async ({ token }) => {
           return (await tokenErc20Service.fetchTokenBalanceAndAllowance({
             address: token.address,
             token
@@ -173,18 +173,18 @@ export const actions = actionTree(
         return
       }
 
-      const { balancesWithTokenMetaData } = this.app.$accessor.bank
+      const { balancesWithToken } = this.app.$accessor.bank
 
-      if (balancesWithTokenMetaData.length === 0) {
-        await this.app.$accessor.bank.fetchBalancesWithTokenMetaData()
+      if (balancesWithToken.length === 0) {
+        await this.app.$accessor.bank.fetchBalancesWithToken()
       }
 
       const {
-        balancesWithTokenMetaData: newBalancesWithTokenMetaData
+        balancesWithToken: newBalancesWithToken
       } = this.app.$accessor.bank
 
       const tokensPriceInUsd = await Promise.all(
-        newBalancesWithTokenMetaData.map(async ({ token }) => {
+        newBalancesWithToken.map(async ({ token }) => {
           return await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
             token.coinGeckoId
           )
@@ -195,7 +195,7 @@ export const actions = actionTree(
         (tokens, price, index) => {
           return {
             ...tokens,
-            [newBalancesWithTokenMetaData[index].denom]: price
+            [newBalancesWithToken[index].denom]: price
           }
         },
         {}
@@ -220,8 +220,8 @@ export const actions = actionTree(
       const market =
         spotMarket ||
         (derivativeMarket as
-          | UiSpotMarketWithTokenMeta
-          | UiDerivativeMarketWithTokenMeta)
+          | UiSpotMarketWithToken
+          | UiDerivativeMarketWithToken)
       const { baseToken, quoteToken } = market
 
       if (

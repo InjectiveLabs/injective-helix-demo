@@ -12,7 +12,6 @@ export interface GeoLocation {
   country: string
 }
 
-export * from './aliases'
 export * from './enums'
 export * from './env'
 export * from './errors'

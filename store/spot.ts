@@ -1,5 +1,9 @@
 import { actionTree, getterTree } from 'typed-vuex'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  spotPriceToChainPriceToFixed,
+  spotQuantityToChainQuantityToFixed
+} from '@injectivelabs/utils'
 import { StreamOperation } from '@injectivelabs/ts-types'
 import {
   Change,
@@ -8,7 +12,7 @@ import {
   ZERO_IN_BASE,
   UiSpotLimitOrder,
   UiSpotMarketSummary,
-  UiSpotMarketWithTokenMeta,
+  UiSpotMarketWithToken,
   UiSpotOrderbook,
   UiSpotTrade
 } from '@injectivelabs/ui-common'
@@ -19,7 +23,7 @@ import {
   streamTrades,
   streamSubaccountOrders,
   streamSubaccountTrades
-} from '~/app/services/spot'
+} from '~/app/streams/spot'
 import {
   FEE_RECIPIENT,
   ORDERBOOK_STREAMING_ENABLED
@@ -32,9 +36,9 @@ import {
 import { spot as allowedSpotMarkets } from '~/routes.config'
 
 const initialStateFactory = () => ({
-  markets: [] as UiSpotMarketWithTokenMeta[],
+  markets: [] as UiSpotMarketWithToken[],
   marketsSummary: [] as UiSpotMarketSummary[],
-  market: undefined as UiSpotMarketWithTokenMeta | undefined,
+  market: undefined as UiSpotMarketWithToken | undefined,
   marketSummary: undefined as UiSpotMarketSummary | undefined,
   orderbook: undefined as UiSpotOrderbook | undefined,
   trades: [] as UiSpotTrade[],
@@ -45,9 +49,9 @@ const initialStateFactory = () => ({
 const initialState = initialStateFactory()
 
 export const state = () => ({
-  markets: initialState.markets as UiSpotMarketWithTokenMeta[],
+  markets: initialState.markets as UiSpotMarketWithToken[],
   marketsSummary: initialState.marketsSummary as UiSpotMarketSummary[],
-  market: initialState.market as UiSpotMarketWithTokenMeta | undefined,
+  market: initialState.market as UiSpotMarketWithToken | undefined,
   marketSummary: initialState.marketSummary as UiSpotMarketSummary | undefined,
   trades: initialState.trades as UiSpotTrade[],
   subaccountTrades: initialState.subaccountTrades as UiSpotTrade[],
@@ -106,7 +110,7 @@ export const getters = getterTree(state, {
 })
 
 export const mutations = {
-  setMarket(state: SpotStoreState, market: UiSpotMarketWithTokenMeta) {
+  setMarket(state: SpotStoreState, market: UiSpotMarketWithToken) {
     state.market = market
   },
 
@@ -125,7 +129,7 @@ export const mutations = {
     state.subaccountTrades = initialState.subaccountTrades
   },
 
-  setMarkets(state: SpotStoreState, markets: UiSpotMarketWithTokenMeta[]) {
+  setMarkets(state: SpotStoreState, markets: UiSpotMarketWithToken[]) {
     state.markets = markets
   },
 
@@ -249,14 +253,15 @@ export const actions = actionTree(
 
     async init({ commit }) {
       const markets = await spotService.fetchMarkets()
-      const marketsWithTokenMeta = await tokenService.getSpotMarketsWithTokenMeta(
+      const marketsWithToken = await tokenService.getSpotMarketsWithToken(
         markets
       )
       const uiMarkets = SpotTransformer.spotMarketsToUiSpotMarkets(
-        marketsWithTokenMeta
+        marketsWithToken
       )
+
       // Only include markets that we pre-defined to generate static routes for
-      const uiMarketsWithTokenMeta = uiMarkets
+      const uiMarketsWithToken = uiMarkets
         .filter((market) => {
           return allowedSpotMarkets.includes(market.slug)
         })
@@ -267,7 +272,7 @@ export const actions = actionTree(
           )
         })
 
-      commit('setMarkets', uiMarketsWithTokenMeta)
+      commit('setMarkets', uiMarketsWithToken)
 
       const marketsSummary = await spotService.fetchMarketsSummary()
       const marketSummaryNotExists =
@@ -630,12 +635,19 @@ export const actions = actionTree(
       await this.app.$accessor.wallet.validate()
 
       await spotActionService.submitLimitOrder({
-        price,
-        quantity,
+        address,
         orderType,
         injectiveAddress,
-        address,
-        market,
+        price: spotPriceToChainPriceToFixed({
+          value: price,
+          baseDecimals: market.baseToken.decimals,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        quantity: spotQuantityToChainQuantityToFixed({
+          value: quantity,
+          baseDecimals: market.baseToken.decimals
+        }),
+        marketId: market.marketId,
         feeRecipient: FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
       })
@@ -670,12 +682,19 @@ export const actions = actionTree(
       await this.app.$accessor.wallet.validate()
 
       await spotActionService.submitMarketOrder({
-        quantity,
-        orderType,
-        price,
-        injectiveAddress,
         address,
-        market,
+        orderType,
+        injectiveAddress,
+        price: spotPriceToChainPriceToFixed({
+          value: price,
+          baseDecimals: market.baseToken.decimals,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        quantity: spotQuantityToChainQuantityToFixed({
+          value: quantity,
+          baseDecimals: market.baseToken.decimals
+        }),
+        marketId: market.marketId,
         feeRecipient: FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
       })

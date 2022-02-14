@@ -28,7 +28,7 @@ import { format } from 'date-fns'
 import VMarketSelector from './market-selector.vue'
 import VElcsTable from './elcs-table.vue'
 import VEvcsTable from './evcs-table.vue'
-import { UiEpochMarketsWithTokenMeta } from '~/app/services/dmm'
+import { UiEpochMarketsWithToken } from '~/app/services/dmm'
 import { DMM_TIME_STAMP_FORMAT } from '~/app/utils/constants'
 
 export default Vue.extend({
@@ -53,16 +53,16 @@ export default Vue.extend({
       return this.$accessor.dmm.activeMarketId
     },
 
-    markets(): UiEpochMarketsWithTokenMeta[] {
-      return this.$accessor.dmm.marketsWithTokenMeta
+    markets(): UiEpochMarketsWithToken[] {
+      return this.$accessor.dmm.marketsWithToken
     },
 
-    activeMarket(): UiEpochMarketsWithTokenMeta {
+    activeMarket(): UiEpochMarketsWithToken {
       const { activeMarketId, markets } = this
 
       return markets.find(
         ({ marketId }) => marketId === activeMarketId
-      ) as UiEpochMarketsWithTokenMeta
+      ) as UiEpochMarketsWithToken
     },
 
     elcsReward(): string {

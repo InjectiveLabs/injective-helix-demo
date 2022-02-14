@@ -91,7 +91,7 @@ import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   SpotOrderSide,
   UiSpotLimitOrder,
-  UiSpotMarketWithTokenMeta,
+  UiSpotMarketWithToken,
   UiSpotOrderbook,
   UiSpotTrade,
   Change,
@@ -154,7 +154,7 @@ export default Vue.extend({
       return this.$accessor.spot.subaccountOrders
     },
 
-    market(): UiSpotMarketWithTokenMeta | undefined {
+    market(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
     },
 

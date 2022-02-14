@@ -45,7 +45,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { UiSpotMarketWithTokenMeta } from '@injectivelabs/ui-common'
+import { UiSpotMarketWithToken } from '@injectivelabs/ui-common'
 import VModalBridgeDeposit from '~/components/partials/modals/bridge-deposit/index.vue'
 import VModalBridgeWithdraw from '~/components/partials/modals/bridge-withdraw/index.vue'
 import VModalSubaccountDeposit from '~/components/partials/modals/subaccount-deposit/index.vue'
@@ -86,7 +86,7 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiSpotMarketWithTokenMeta | undefined {
+    market(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
     },
 

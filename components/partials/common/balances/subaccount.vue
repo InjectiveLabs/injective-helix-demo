@@ -52,8 +52,8 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import Vue, { PropType } from 'vue'
 import {
   ZERO_IN_BASE,
-  UiDerivativeMarketWithTokenMeta,
-  UiSpotMarketWithTokenMeta,
+  UiDerivativeMarketWithToken,
+  UiSpotMarketWithToken,
   MarketType,
   UiSubaccount,
   UiSubaccountBalanceWithToken
@@ -64,7 +64,7 @@ export default Vue.extend({
     market: {
       required: true,
       type: Object as PropType<
-        UiDerivativeMarketWithTokenMeta | UiSpotMarketWithTokenMeta
+        UiDerivativeMarketWithToken | UiSpotMarketWithToken
       >
     }
   },
@@ -102,7 +102,7 @@ export default Vue.extend({
       const baseBalance = subaccount.balances.find(
         (balance) =>
           balance.denom.toLowerCase() ===
-          (market as UiSpotMarketWithTokenMeta).baseDenom.toLowerCase()
+          (market as UiSpotMarketWithToken).baseDenom.toLowerCase()
       )
 
       return {

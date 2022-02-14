@@ -1,10 +1,17 @@
 import { actionTree, getterTree } from 'typed-vuex'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { StreamOperation } from '@injectivelabs/ts-types'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  derivativeMarginToChainMarginToFixed,
+  derivativePriceToChainPrice,
+  derivativePriceToChainPriceToFixed,
+  derivativeQuantityToChainQuantityToFixed
+} from '@injectivelabs/utils'
+import { StreamOperation, TradeDirection } from '@injectivelabs/ts-types'
 import {
   UiDerivativeLimitOrder,
   UiDerivativeMarketSummary,
-  UiDerivativeMarketWithTokenMeta,
+  UiDerivativeMarketWithToken,
   UiDerivativeOrderbook,
   UiDerivativeTrade,
   UiPosition,
@@ -26,7 +33,7 @@ import {
   streamSubaccountTrades,
   streamSubaccountPositions,
   streamMarketMarkPrice
-} from '~/app/services/derivatives'
+} from '~/app/streams/derivatives'
 import {
   FEE_RECIPIENT,
   ORDERBOOK_STREAMING_ENABLED
@@ -39,9 +46,9 @@ import {
 import { derivatives as allowedPerpetualMarkets } from '~/routes.config'
 
 const initialStateFactory = () => ({
-  markets: [] as UiDerivativeMarketWithTokenMeta[],
+  markets: [] as UiDerivativeMarketWithToken[],
   marketsSummary: [] as UiDerivativeMarketSummary[],
-  market: undefined as UiDerivativeMarketWithTokenMeta | undefined,
+  market: undefined as UiDerivativeMarketWithToken | undefined,
   marketMarkPrice: ZERO_TO_STRING as string,
   marketSummary: undefined as UiDerivativeMarketSummary | undefined,
   orderbook: undefined as UiDerivativeOrderbook | undefined,
@@ -54,9 +61,9 @@ const initialStateFactory = () => ({
 const initialState = initialStateFactory()
 
 export const state = () => ({
-  markets: initialState.markets as UiDerivativeMarketWithTokenMeta[],
+  markets: initialState.markets as UiDerivativeMarketWithToken[],
   marketsSummary: initialState.marketsSummary as UiDerivativeMarketSummary[],
-  market: initialState.market as UiDerivativeMarketWithTokenMeta | undefined,
+  market: initialState.market as UiDerivativeMarketWithToken | undefined,
   marketSummary: initialState.marketSummary as
     | UiDerivativeMarketSummary
     | undefined,
@@ -119,10 +126,7 @@ export const getters = getterTree(state, {
 })
 
 export const mutations = {
-  setMarket(
-    state: DerivativeStoreState,
-    market: UiDerivativeMarketWithTokenMeta
-  ) {
+  setMarket(state: DerivativeStoreState, market: UiDerivativeMarketWithToken) {
     state.market = market
   },
 
@@ -151,7 +155,7 @@ export const mutations = {
 
   setMarkets(
     state: DerivativeStoreState,
-    markets: UiDerivativeMarketWithTokenMeta[]
+    markets: UiDerivativeMarketWithToken[]
   ) {
     state.markets = markets
   },
@@ -300,14 +304,15 @@ export const actions = actionTree(
 
     async init({ commit }) {
       const markets = await derivativeService.fetchMarkets()
-      const marketsWithTokenMeta = await tokenService.getDerivativeMarketsWithTokenMeta(
+      const marketsWithToken = await tokenService.getDerivativeMarketsWithToken(
         markets
       )
       const uiMarkets = DerivativeTransformer.derivativeMarketsToUiSpotMarkets(
-        marketsWithTokenMeta
+        marketsWithToken
       )
+
       // Only include markets that we pre-defined to generate static routes for
-      const uiMarketsWithTokenMeta = uiMarkets
+      const uiMarketsWithToken = uiMarkets
         .filter((market) => {
           return allowedPerpetualMarkets.includes(market.slug)
         })
@@ -318,7 +323,7 @@ export const actions = actionTree(
           )
         })
 
-      commit('setMarkets', uiMarketsWithTokenMeta)
+      commit('setMarkets', uiMarketsWithToken)
 
       const marketsSummary = await derivativeService.fetchMarketsSummary()
       const marketSummaryNotExists =
@@ -788,14 +793,20 @@ export const actions = actionTree(
       await this.app.$accessor.wallet.validate()
 
       await derivativeActionService.submitLimitOrder({
-        price,
         reduceOnly,
-        quantity,
-        margin,
         orderType,
         injectiveAddress,
         address,
-        market,
+        price: derivativePriceToChainPriceToFixed({
+          value: price,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        quantity: derivativeQuantityToChainQuantityToFixed({ value: quantity }),
+        margin: derivativeMarginToChainMarginToFixed({
+          value: margin,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        marketId: market.marketId,
         feeRecipient: FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
       })
@@ -834,14 +845,20 @@ export const actions = actionTree(
       await this.app.$accessor.wallet.validate()
 
       await derivativeActionService.submitMarketOrder({
-        quantity,
         reduceOnly,
-        margin,
         orderType,
-        price,
         injectiveAddress,
         address,
-        market,
+        price: derivativePriceToChainPriceToFixed({
+          value: price,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        quantity: derivativeQuantityToChainQuantityToFixed({ value: quantity }),
+        margin: derivativeMarginToChainMarginToFixed({
+          value: margin,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        marketId: market.marketId,
         feeRecipient: FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
       })
@@ -851,14 +868,10 @@ export const actions = actionTree(
       _,
       {
         market,
-        quantity,
-        price,
-        orderType
+        position
       }: {
-        market?: UiDerivativeMarketWithTokenMeta
-        price: BigNumberInBase
-        quantity: BigNumberInBase
-        orderType: DerivativeOrderSide
+        market?: UiDerivativeMarketWithToken
+        position: UiPosition
       }
     ) {
       const { subaccount } = this.app.$accessor.account
@@ -868,27 +881,40 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const actualMarket = (currentMarket ||
+        market) as UiDerivativeMarketWithToken
       const derivativeActionService = derivativeActionServiceFactory()
 
-      if (
-        !isUserWalletConnected ||
-        !subaccount ||
-        (!market && !currentMarket)
-      ) {
+      if (!isUserWalletConnected || !subaccount || !actualMarket) {
         return
       }
 
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
+      const orderType =
+        position.direction === TradeDirection.Long
+          ? DerivativeOrderSide.Sell
+          : DerivativeOrderSide.Buy
+      const liquidationPrice = new BigNumberInWei(position.liquidationPrice)
+      const minTickPrice = derivativePriceToChainPrice({
+        value: new BigNumberInBase(1).shiftedBy(-actualMarket.priceDecimals),
+        quoteDecimals: actualMarket.quoteToken.decimals
+      })
+      const actualLiquidationPrice = liquidationPrice.lte(0)
+        ? minTickPrice
+        : liquidationPrice
+
       await derivativeActionService.closePosition({
-        quantity,
-        price,
-        injectiveAddress,
         address,
         orderType,
+        injectiveAddress,
+        price: actualLiquidationPrice.toFixed(),
+        quantity: derivativeQuantityToChainQuantityToFixed({
+          value: position.quantity
+        }),
         feeRecipient: FEE_RECIPIENT,
-        market: (currentMarket || market) as UiDerivativeMarketWithTokenMeta,
+        marketId: position.marketId,
         subaccountId: subaccount.subaccountId
       })
     },
@@ -897,14 +923,10 @@ export const actions = actionTree(
       _,
       {
         market,
-        quantity,
-        price,
-        orderType
+        position
       }: {
-        market?: UiDerivativeMarketWithTokenMeta
-        price: BigNumberInBase
-        quantity: BigNumberInBase
-        orderType: DerivativeOrderSide
+        market?: UiDerivativeMarketWithToken
+        position: UiPosition
         reduceOnlyOrders: UiDerivativeLimitOrder[]
       }
     ) {
@@ -915,6 +937,8 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const actualMarket = (currentMarket ||
+        market) as UiDerivativeMarketWithToken
       const derivativeActionService = derivativeActionServiceFactory()
 
       if (
@@ -928,14 +952,29 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
+      const orderType =
+        position.direction === TradeDirection.Long
+          ? DerivativeOrderSide.Sell
+          : DerivativeOrderSide.Buy
+      const liquidationPrice = new BigNumberInWei(position.liquidationPrice)
+      const minTickPrice = derivativePriceToChainPrice({
+        value: new BigNumberInBase(1).shiftedBy(-actualMarket.priceDecimals),
+        quoteDecimals: actualMarket.quoteToken.decimals
+      })
+      const actualLiquidationPrice = liquidationPrice.lte(0)
+        ? minTickPrice
+        : liquidationPrice
+
       await derivativeActionService.closePosition({
-        quantity,
-        price,
-        injectiveAddress,
         address,
         orderType,
+        injectiveAddress,
+        price: actualLiquidationPrice.toFixed(),
+        quantity: derivativeQuantityToChainQuantityToFixed({
+          value: position.quantity
+        }),
         feeRecipient: FEE_RECIPIENT,
-        market: (currentMarket || market) as UiDerivativeMarketWithTokenMeta,
+        marketId: actualMarket.marketId,
         subaccountId: subaccount.subaccountId
       })
     },
@@ -946,10 +985,8 @@ export const actions = actionTree(
         positions
       }: {
         positions: {
-          market: UiDerivativeMarketWithTokenMeta
-          orderType: DerivativeOrderSide
-          price: BigNumberInBase
-          quantity: BigNumberInBase
+          market: UiDerivativeMarketWithToken
+          position: UiPosition
         }[]
       }
     ) {
@@ -969,9 +1006,31 @@ export const actions = actionTree(
       await this.app.$accessor.wallet.validate()
 
       await derivativeActionService.closeAllPosition({
-        positions,
-        injectiveAddress,
         address,
+        injectiveAddress,
+        positions: positions.map(({ position, market }) => {
+          const orderType =
+            position.direction === TradeDirection.Long
+              ? DerivativeOrderSide.Sell
+              : DerivativeOrderSide.Buy
+          const liquidationPrice = new BigNumberInWei(position.liquidationPrice)
+          const minTickPrice = derivativePriceToChainPrice({
+            value: new BigNumberInBase(1).shiftedBy(-market.priceDecimals),
+            quoteDecimals: market.quoteToken.decimals
+          })
+          const actualLiquidationPrice = liquidationPrice.lte(0)
+            ? minTickPrice
+            : liquidationPrice
+
+          return {
+            orderType,
+            marketId: market.marketId,
+            price: actualLiquidationPrice.toFixed(),
+            quantity: derivativeQuantityToChainQuantityToFixed({
+              value: position.quantity
+            })
+          }
+        }),
         feeRecipient: FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
       })
@@ -983,7 +1042,7 @@ export const actions = actionTree(
         market,
         amount
       }: {
-        market: UiDerivativeMarketWithTokenMeta
+        market: UiDerivativeMarketWithToken
         amount: BigNumberInBase
       }
     ) {
@@ -1003,11 +1062,14 @@ export const actions = actionTree(
       await this.app.$accessor.wallet.validate()
 
       await derivativeActionService.addMarginToPosition({
-        injectiveAddress,
         address,
-        market,
+        injectiveAddress,
+        amount: derivativeMarginToChainMarginToFixed({
+          value: amount,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        marketId: market.marketId,
         feeRecipient: FEE_RECIPIENT,
-        amount: amount.toWei(market.quoteToken.decimals),
         srcSubaccountId: subaccount.subaccountId,
         dstSubaccountId: subaccount.subaccountId
       })

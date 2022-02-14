@@ -1,5 +1,4 @@
 import { actionTree, getterTree } from 'typed-vuex'
-import { AccountAddress } from '@injectivelabs/ts-types'
 import { ConcreteStrategyOptions, Wallet } from '@injectivelabs/web3-strategy'
 import { getInjectiveAddress } from '@injectivelabs/ui-common'
 import { confirm, connect, getAddresses } from '~/app/services/wallet'
@@ -10,10 +9,10 @@ import { GAS_FREE_DEPOSIT_REBATE_ENABLED } from '~/app/utils/constants'
 
 const initialStateFactory = () => ({
   walletConnectStatus: WalletConnectStatus.idle as WalletConnectStatus,
-  address: '' as AccountAddress,
-  injectiveAddress: '' as AccountAddress,
+  address: '' as string,
+  injectiveAddress: '' as string,
   addressConfirmation: '' as string,
-  addresses: [] as AccountAddress[],
+  addresses: [] as string[],
   metamaskInstalled: false as boolean,
   wallet: Wallet.Metamask,
   walletOptions: {} as Partial<ConcreteStrategyOptions>
@@ -23,9 +22,9 @@ const initialState = initialStateFactory()
 
 export const state = () => ({
   walletConnectStatus: initialState.walletConnectStatus as WalletConnectStatus,
-  addresses: initialState.addresses as AccountAddress[],
-  address: initialState.address as AccountAddress,
-  injectiveAddress: initialState.injectiveAddress as AccountAddress,
+  addresses: initialState.addresses as string[],
+  address: initialState.address as string,
+  injectiveAddress: initialState.injectiveAddress as string,
   addressConfirmation: initialState.addressConfirmation as string,
   metamaskInstalled: initialState.metamaskInstalled as boolean,
   wallet: initialState.wallet as Wallet,
@@ -51,7 +50,7 @@ export const mutations = {
     state.wallet = wallet
   },
 
-  setAddress(state: WalletStoreState, address: AccountAddress) {
+  setAddress(state: WalletStoreState, address: string) {
     state.address = address
   },
 
@@ -67,7 +66,7 @@ export const mutations = {
     state.metamaskInstalled = metamaskInstalled
   },
 
-  setAddresses(state: WalletStoreState, addresses: AccountAddress[]) {
+  setAddresses(state: WalletStoreState, addresses: string[]) {
     state.addresses = addresses
   },
 
@@ -180,7 +179,7 @@ export const actions = actionTree(
       commit('setWalletConnectStatus', WalletConnectStatus.connected)
     },
 
-    async confirm({ commit }, addresses: AccountAddress[]) {
+    async confirm({ commit }, addresses: string[]) {
       commit('setWalletConnectStatus', WalletConnectStatus.connecting)
 
       await this.app.$accessor.app.validate()

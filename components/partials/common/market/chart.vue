@@ -21,8 +21,8 @@
 import Vue, { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import {
-  UiSpotMarketWithTokenMeta,
-  UiDerivativeMarketWithTokenMeta,
+  UiSpotMarketWithToken,
+  UiDerivativeMarketWithToken,
   MarketType
 } from '@injectivelabs/ui-common'
 import HOCLoading from '~/components/hoc/loading.vue'
@@ -41,7 +41,7 @@ export default Vue.extend({
   props: {
     market: {
       type: Object as PropType<
-        UiSpotMarketWithTokenMeta | UiDerivativeMarketWithTokenMeta
+        UiSpotMarketWithToken | UiDerivativeMarketWithToken
       >,
       required: true
     }
@@ -70,8 +70,8 @@ export default Vue.extend({
         return market.ticker
       }
 
-      const spotTicker = `${(market as UiSpotMarketWithTokenMeta).baseDenom}/${
-        (market as UiSpotMarketWithTokenMeta).quoteDenom
+      const spotTicker = `${(market as UiSpotMarketWithToken).baseDenom}/${
+        (market as UiSpotMarketWithToken).quoteDenom
       }`
 
       return spotTicker.replaceAll('ibc/', 'ibc@')

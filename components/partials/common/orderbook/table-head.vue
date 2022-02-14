@@ -36,8 +36,8 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import {
-  UiDerivativeMarketWithTokenMeta,
-  UiSpotMarketWithTokenMeta
+  UiDerivativeMarketWithToken,
+  UiSpotMarketWithToken
 } from '@injectivelabs/ui-common'
 
 export default Vue.extend({
@@ -45,7 +45,7 @@ export default Vue.extend({
     market: {
       required: true,
       type: Object as PropType<
-        UiDerivativeMarketWithTokenMeta | UiSpotMarketWithTokenMeta
+        UiDerivativeMarketWithToken | UiSpotMarketWithToken
       >
     }
   }

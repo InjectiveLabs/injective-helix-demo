@@ -45,18 +45,19 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
-  BankBalanceWithTokenMetaData,
-  BankBalanceWithTokenMetaDataAndBalance,
-  BankBalanceWithTokenMetaDataAndBalanceWithUsdBalance,
-  IbcBankBalanceWithTokenMetaData,
+  BankBalanceWithToken,
+  BankBalanceWithTokenAndBalance,
+  BankBalanceWithTokenAndBalanceWithUsdBalance,
+  IbcBankBalanceWithToken,
   TokenWithBalance,
   INJECTIVE_DENOM
 } from '@injectivelabs/ui-common'
 import VBalance from './balance.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import TableHeader from '~/components/elements/table-header.vue'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -70,12 +71,12 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    bankBalances(): BankBalanceWithTokenMetaData[] {
-      return this.$accessor.bank.balancesWithTokenMetaData
+    bankBalances(): BankBalanceWithToken[] {
+      return this.$accessor.bank.balancesWithToken
     },
 
-    ibcBankBalances(): IbcBankBalanceWithTokenMetaData[] {
-      return this.$accessor.bank.ibcBalancesWithTokenMetaData
+    ibcBankBalances(): IbcBankBalanceWithToken[] {
+      return this.$accessor.bank.ibcBalancesWithToken
     },
 
     erc20TokensWithBalanceAndAllowance(): TokenWithBalance[] {
@@ -90,7 +91,7 @@ export default Vue.extend({
       return this.$accessor.token.tokensWithPriceInUsd
     },
 
-    ercBalances(): BankBalanceWithTokenMetaDataAndBalance[] {
+    ercBalances(): BankBalanceWithTokenAndBalance[] {
       const { bankBalances, erc20TokensWithBalanceAndAllowance } = this
 
       return bankBalances.map((bankBalance) => {
@@ -111,7 +112,7 @@ export default Vue.extend({
       })
     },
 
-    ibcBalances(): BankBalanceWithTokenMetaDataAndBalance[] {
+    ibcBalances(): BankBalanceWithTokenAndBalance[] {
       const { ibcBankBalances, ibcTokensWithBalanceFromBank } = this
 
       return ibcBankBalances.map((bankBalance) => {
@@ -132,7 +133,7 @@ export default Vue.extend({
       })
     },
 
-    balances(): BankBalanceWithTokenMetaDataAndBalanceWithUsdBalance[] {
+    balances(): BankBalanceWithTokenAndBalanceWithUsdBalance[] {
       const { ercBalances, ibcBalances, tokensWithPriceInUsd } = this
 
       // calculate and append total USD balances
@@ -142,6 +143,7 @@ export default Vue.extend({
         const balanceInUsd = new BigNumberInWei(balance.balance)
           .toBase(balance.token.decimals)
           .times(usdPrice)
+          .toFixed(UI_DEFAULT_DISPLAY_DECIMALS)
 
         return {
           ...balance,
@@ -150,13 +152,13 @@ export default Vue.extend({
       })
     },
 
-    sortedBalances(): BankBalanceWithTokenMetaDataAndBalanceWithUsdBalance[] {
+    sortedBalances(): BankBalanceWithTokenAndBalanceWithUsdBalance[] {
       const { balances } = this
 
       return [...balances].sort(
         (
-          v1: BankBalanceWithTokenMetaDataAndBalanceWithUsdBalance,
-          v2: BankBalanceWithTokenMetaDataAndBalanceWithUsdBalance
+          v1: BankBalanceWithTokenAndBalanceWithUsdBalance,
+          v2: BankBalanceWithTokenAndBalanceWithUsdBalance
         ) => {
           // sort INJ to the top
           if (v1.denom === INJECTIVE_DENOM) {
@@ -167,7 +169,9 @@ export default Vue.extend({
             return 1
           }
 
-          return v2.balanceInUsd.minus(v1.balanceInUsd).toNumber()
+          return new BigNumberInBase(v2.balanceInUsd)
+            .minus(v1.balanceInUsd)
+            .toNumber()
         }
       )
     }

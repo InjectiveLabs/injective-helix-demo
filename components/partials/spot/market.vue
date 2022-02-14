@@ -8,7 +8,7 @@
 import Vue from 'vue'
 import {
   UiSpotMarketSummary,
-  UiSpotMarketWithTokenMeta
+  UiSpotMarketWithToken
 } from '@injectivelabs/ui-common'
 import Market from '~/components/partials/common/market/index.vue'
 
@@ -18,7 +18,7 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiSpotMarketWithTokenMeta | undefined {
+    market(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
     },
 

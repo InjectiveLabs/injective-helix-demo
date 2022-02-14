@@ -19,7 +19,7 @@
 import Vue from 'vue'
 import {
   UiDerivativeLimitOrder,
-  UiDerivativeMarketWithTokenMeta
+  UiDerivativeMarketWithToken
 } from '@injectivelabs/ui-common'
 import Order from '~/components/partials/common/derivatives/order.vue'
 import OrdersTableHeader from '~/components/partials/common/derivatives/orders-table-header.vue'
@@ -41,7 +41,7 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    market(): UiDerivativeMarketWithTokenMeta | undefined {
+    market(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 

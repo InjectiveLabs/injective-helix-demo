@@ -197,7 +197,7 @@ import {
   DerivativeOrderSide,
   UiDerivativeLimitOrder,
   UiDerivativeMarketSummary,
-  UiDerivativeMarketWithTokenMeta,
+  UiDerivativeMarketWithToken,
   UiDerivativeOrderbook,
   UiPosition,
   UiPriceLevel,
@@ -206,7 +206,6 @@ import {
   ZERO_IN_BASE,
   UiSubaccount
 } from '@injectivelabs/ui-common'
-
 import OrderDetails from './order-details.vue'
 import OrderLeverage from './order-leverage.vue'
 import OrderLeverageSelect from './order-leverage-select.vue'
@@ -278,7 +277,7 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    market(): UiDerivativeMarketWithTokenMeta | undefined {
+    market(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 

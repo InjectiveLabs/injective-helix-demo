@@ -1,5 +1,5 @@
 import { actionTree, getterTree } from 'typed-vuex'
-import { TokenTransformer, Token } from '@injectivelabs/ui-common'
+import { Token } from '@injectivelabs/ui-common'
 import { exchangeService, tokenService } from '~/app/Services'
 import {
   FeeDiscountAccountInfo,
@@ -116,20 +116,15 @@ export const actions = actionTree(
 
       if (feeDiscountSchedule) {
         const quoteTokenMeta = (await Promise.all(
-          feeDiscountSchedule.quoteDenomsList.map(async (denom) => {
-            return TokenTransformer.tokenMetaToToken(
-              await tokenService.getTokenMetaDataWithIbc(denom),
-              denom
-            )
-          })
+          feeDiscountSchedule.quoteDenomsList.map(tokenService.getDenomToken)
         )) as Token[]
 
-        const feeDiscountScheduleWithTokenMeta = {
+        const feeDiscountScheduleWithToken = {
           ...feeDiscountSchedule,
           quoteTokenMeta
         } as FeeDiscountSchedule
 
-        commit('setFeeDiscountSchedule', feeDiscountScheduleWithTokenMeta)
+        commit('setFeeDiscountSchedule', feeDiscountScheduleWithToken)
       }
     },
 
@@ -160,26 +155,19 @@ export const actions = actionTree(
           ? tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList
           : []
         const quoteSymbolsList = ((
-          await Promise.all(
-            quoteDenomsList.map(async (denom) =>
-              TokenTransformer.tokenMetaToToken(
-                await tokenService.getTokenMetaDataWithIbc(denom),
-                denom
-              )
-            )
-          )
+          await Promise.all(quoteDenomsList.map(tokenService.getDenomToken))
         ).filter((token) => token) as Token[]).map((token) => token.symbol)
 
         const tradingRewardCampaignInfo = {
           ...tradingRewardsCampaign.tradingRewardCampaignInfo,
           quoteSymbolsList
         }
-        const tradingRewardsCampaignWithTokenMeta = {
+        const tradingRewardsCampaignWithToken = {
           ...tradingRewardsCampaign,
           tradingRewardCampaignInfo
         } as TradingRewardsCampaign
 
-        commit('setTradingRewardsCampaign', tradingRewardsCampaignWithTokenMeta)
+        commit('setTradingRewardsCampaign', tradingRewardsCampaignWithToken)
       }
     },
 

@@ -16,7 +16,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status } from '@injectivelabs/utils'
-import { AccountAddress } from '@injectivelabs/ts-types'
 import VLedgerAddressManager from './addresses.vue'
 import VLedgerConfirm from './confirm.vue'
 
@@ -45,7 +44,7 @@ export default Vue.extend({
   },
 
   computed: {
-    addresses(): AccountAddress[] {
+    addresses(): string[] {
       return this.$accessor.wallet.addresses
     }
   },

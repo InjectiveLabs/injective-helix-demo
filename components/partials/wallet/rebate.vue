@@ -30,12 +30,12 @@
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import Vue from 'vue'
 import {
-  UiDerivativeMarketWithTokenMeta,
+  UiDerivativeMarketWithToken,
   UiDerivativeTrade,
-  UiSpotMarketWithTokenMeta,
+  UiSpotMarketWithToken,
   UiSpotTrade,
-  BankBalanceWithTokenMetaData,
-  SubaccountBalanceWithTokenMetaData,
+  BankBalanceWithToken,
+  SubaccountBalanceWithToken,
   Token,
   ZERO_IN_BASE
 } from '@injectivelabs/ui-common'
@@ -63,11 +63,11 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    derivativeMarkets(): UiDerivativeMarketWithTokenMeta[] {
+    derivativeMarkets(): UiDerivativeMarketWithToken[] {
       return this.$accessor.derivatives.markets
     },
 
-    spotMarkets(): UiSpotMarketWithTokenMeta[] {
+    spotMarkets(): UiSpotMarketWithToken[] {
       return this.$accessor.spot.markets
     },
 
@@ -79,28 +79,28 @@ export default Vue.extend({
       return this.$accessor.gasRebate.trades
     },
 
-    bankBalances(): BankBalanceWithTokenMetaData[] {
-      return this.$accessor.bank.balancesWithTokenMetaData
+    bankBalances(): BankBalanceWithToken[] {
+      return this.$accessor.bank.balancesWithToken
     },
 
-    subaccountBalanceWithTokenMetaData(): SubaccountBalanceWithTokenMetaData[] {
-      return this.$accessor.account.subaccountBalancesWithTokenMetaData
+    subaccountBalanceWithToken(): SubaccountBalanceWithToken[] {
+      return this.$accessor.account.subaccountBalancesWithToken
     },
 
-    bankUsdtBalance(): BankBalanceWithTokenMetaData | undefined {
+    bankUsdtBalance(): BankBalanceWithToken | undefined {
       const { bankBalances } = this
 
       return bankBalances.find(
-        (bankBalance: BankBalanceWithTokenMetaData) =>
+        (bankBalance: BankBalanceWithToken) =>
           bankBalance.token.symbol.toUpperCase() === 'USDT'
       )
     },
 
-    subaccountUsdtBalance(): SubaccountBalanceWithTokenMetaData | undefined {
-      const { subaccountBalanceWithTokenMetaData } = this
+    subaccountUsdtBalance(): SubaccountBalanceWithToken | undefined {
+      const { subaccountBalanceWithToken } = this
 
-      return subaccountBalanceWithTokenMetaData.find(
-        (balance: SubaccountBalanceWithTokenMetaData) =>
+      return subaccountBalanceWithToken.find(
+        (balance: SubaccountBalanceWithToken) =>
           balance.token.symbol.toUpperCase() === 'USDT'
       )
     },
@@ -142,7 +142,7 @@ export default Vue.extend({
         }
 
         if (isSpotMarket) {
-          const spotMarket = market as UiSpotMarketWithTokenMeta
+          const spotMarket = market as UiSpotMarketWithToken
           const spotTrade = trade as UiSpotTrade
           const price = new BigNumberInBase(
             new BigNumberInBase(spotTrade.price).toWei(
@@ -155,7 +155,7 @@ export default Vue.extend({
 
           sum = sum.plus(price.times(quantity))
         } else {
-          const derivativeMarket = market as UiDerivativeMarketWithTokenMeta
+          const derivativeMarket = market as UiDerivativeMarketWithToken
           const derivativeTrade = trade as UiDerivativeTrade
           const margin = new BigNumberInWei(
             derivativeTrade.executionMargin

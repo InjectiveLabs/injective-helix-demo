@@ -119,9 +119,9 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { fromUnixTime, formatDistanceToNow } from 'date-fns'
 import {
   UiSpotMarketSummary,
-  UiSpotMarketWithTokenMeta,
+  UiSpotMarketWithToken,
   UiDerivativeMarketSummary,
-  UiDerivativeMarketWithTokenMeta,
+  UiDerivativeMarketWithToken,
   Change,
   MarketType,
   ZERO_IN_BASE
@@ -142,7 +142,7 @@ export default Vue.extend({
   props: {
     market: {
       type: Object as PropType<
-        UiSpotMarketWithTokenMeta | UiDerivativeMarketWithTokenMeta
+        UiSpotMarketWithToken | UiDerivativeMarketWithToken
       >,
       required: true
     },
@@ -162,11 +162,11 @@ export default Vue.extend({
   },
 
   computed: {
-    currentSpotMarket(): UiSpotMarketWithTokenMeta | undefined {
+    currentSpotMarket(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
     },
 
-    currentDerivativeMarket(): UiDerivativeMarketWithTokenMeta | undefined {
+    currentDerivativeMarket(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 
@@ -191,8 +191,8 @@ export default Vue.extend({
     },
 
     currentMarket():
-      | UiSpotMarketWithTokenMeta
-      | UiDerivativeMarketWithTokenMeta
+      | UiSpotMarketWithToken
+      | UiDerivativeMarketWithToken
       | undefined {
       const { currentSpotMarket, currentDerivativeMarket, market } = this
 
@@ -290,7 +290,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const derivativeMarket = market as UiDerivativeMarketWithTokenMeta
+      const derivativeMarket = market as UiDerivativeMarketWithToken
 
       if (
         !derivativeMarket.perpetualMarketFunding ||
@@ -322,7 +322,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const derivativeMarket = market as UiDerivativeMarketWithTokenMeta
+      const derivativeMarket = market as UiDerivativeMarketWithToken
 
       if (
         !derivativeMarket.perpetualMarketFunding ||
@@ -409,7 +409,7 @@ export default Vue.extend({
         return ''
       }
 
-      const expiryFuturesMarketInfo = (market as UiDerivativeMarketWithTokenMeta)
+      const expiryFuturesMarketInfo = (market as UiDerivativeMarketWithToken)
         .expiryFuturesMarketInfo
 
       if (!expiryFuturesMarketInfo) {

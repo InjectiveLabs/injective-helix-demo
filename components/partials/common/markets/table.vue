@@ -152,9 +152,9 @@ import Vue, { PropType } from 'vue'
 import {
   ZERO_IN_BASE,
   UiDerivativeMarketSummary,
-  UiDerivativeMarketWithTokenMeta,
+  UiDerivativeMarketWithToken,
   UiSpotMarketSummary,
-  UiSpotMarketWithTokenMeta,
+  UiSpotMarketWithToken,
   MarketBase,
   MarketType
 } from '@injectivelabs/ui-common'
@@ -164,7 +164,7 @@ import VSearch from '~/components/inputs/search.vue'
 import VMarket from '~/components/partials/common/markets/market.vue'
 
 export interface UiMarketAndSummary {
-  market: UiDerivativeMarketWithTokenMeta | UiSpotMarketWithTokenMeta
+  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
   summary: UiDerivativeMarketSummary | UiSpotMarketSummary
 }
 
@@ -185,7 +185,7 @@ export default Vue.extend({
 
     markets: {
       type: Array as PropType<
-        Array<UiDerivativeMarketWithTokenMeta | UiSpotMarketWithTokenMeta>
+        Array<UiDerivativeMarketWithToken | UiSpotMarketWithToken>
       >,
       required: true
     },

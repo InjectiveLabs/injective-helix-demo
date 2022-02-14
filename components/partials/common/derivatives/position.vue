@@ -143,7 +143,7 @@ import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   DerivativeOrderSide,
   UiDerivativeLimitOrder,
-  UiDerivativeMarketWithTokenMeta,
+  UiDerivativeMarketWithToken,
   UiDerivativeOrderbook,
   UiPosition,
   UiSpotLimitOrder,
@@ -173,7 +173,7 @@ export default Vue.extend({
   },
 
   computed: {
-    currentMarket(): UiDerivativeMarketWithTokenMeta | undefined {
+    currentMarket(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 
@@ -201,7 +201,7 @@ export default Vue.extend({
       return this.$route.name === 'derivatives-derivative'
     },
 
-    markets(): UiDerivativeMarketWithTokenMeta[] {
+    markets(): UiDerivativeMarketWithToken[] {
       const { isOnMarketPage } = this
 
       if (isOnMarketPage) {
@@ -211,7 +211,7 @@ export default Vue.extend({
       return this.$accessor.derivatives.markets
     },
 
-    market(): UiDerivativeMarketWithTokenMeta | undefined {
+    market(): UiDerivativeMarketWithToken | undefined {
       const { markets, currentMarket, isOnMarketPage, position } = this
 
       if (isOnMarketPage) {
@@ -558,30 +558,18 @@ export default Vue.extend({
     },
 
     closePosition() {
-      const { position, market, liquidationPrice } = this
+      const { position, market } = this
 
       if (!market) {
         return
       }
 
-      const minTickPrice = new BigNumberInBase(
-        new BigNumberInBase(1).shiftedBy(-market.priceDecimals)
-      )
-      const actualPrice = liquidationPrice.lte(0)
-        ? minTickPrice
-        : liquidationPrice
-
       this.status.setLoading()
 
       this.$accessor.derivatives
         .closePosition({
-          market,
-          orderType:
-            position.direction === TradeDirection.Long
-              ? DerivativeOrderSide.Sell
-              : DerivativeOrderSide.Buy,
-          price: actualPrice,
-          quantity: new BigNumberInBase(position.quantity)
+          position,
+          market
         })
         .then(() => {
           this.$toast.success(this.$t('position_closed'))
@@ -616,12 +604,7 @@ export default Vue.extend({
       this.$accessor.derivatives
         .closePositionAndReduceOnlyOrders({
           market,
-          orderType:
-            position.direction === TradeDirection.Long
-              ? DerivativeOrderSide.Sell
-              : DerivativeOrderSide.Buy,
-          price: actualPrice,
-          quantity: new BigNumberInBase(position.quantity),
+          position,
           reduceOnlyOrders: reduceOnlyCurrentOrders
         })
         .then(() => {

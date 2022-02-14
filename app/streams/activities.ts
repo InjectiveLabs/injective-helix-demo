@@ -100,25 +100,3 @@ export const streamSubaccountDerivativeTrades = ({
     key: DerivativeMarketStreamType.SubaccountTrades
   })
 }
-
-export const streamSubaccountPositions = ({
-  subaccountId,
-  callback
-}: {
-  subaccountId: string
-  callback: PositionStreamCallback
-}) => {
-  const streamFn = derivativeMarketStream.positions.subaccount.bind(
-    derivativeMarketStream.positions
-  )
-  const streamFnArgs = {
-    subaccountId,
-    callback
-  }
-
-  streamProvider.subscribe({
-    fn: streamFn,
-    args: streamFnArgs,
-    key: DerivativeMarketStreamType.SubaccountPositions
-  })
-}

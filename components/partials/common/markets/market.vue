@@ -11,7 +11,7 @@
         class="flex items-center cursor-pointer justify-center md:justify-start"
       >
         <img
-          :src="market.baseToken.icon"
+          :src="market.baseToken.logo"
           :alt="market.baseToken.name"
           class="w-4 h-4 md:w-6 md:h-6 mr-4"
         />
@@ -114,11 +114,11 @@ import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   UiDerivativeMarketSummary,
-  UiDerivativeMarketWithTokenMeta,
+  UiDerivativeMarketWithToken,
   MarketType,
   ZERO_IN_BASE,
   UiSpotMarketSummary,
-  UiSpotMarketWithTokenMeta
+  UiSpotMarketWithToken
 } from '@injectivelabs/ui-common'
 import TableRow from '~/components/elements/table-row.vue'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
@@ -140,7 +140,7 @@ export default Vue.extend({
     market: {
       required: true,
       type: Object as PropType<
-        UiDerivativeMarketWithTokenMeta | UiSpotMarketWithTokenMeta
+        UiDerivativeMarketWithToken | UiSpotMarketWithToken
       >
     },
 
@@ -157,11 +157,11 @@ export default Vue.extend({
   },
 
   computed: {
-    currentSpotMarket(): UiSpotMarketWithTokenMeta | undefined {
+    currentSpotMarket(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
     },
 
-    currentDerivativeMarket(): UiDerivativeMarketWithTokenMeta | undefined {
+    currentDerivativeMarket(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 
@@ -175,8 +175,8 @@ export default Vue.extend({
 
     /* Current market is the market that we are currently trading on */
     currentMarket():
-      | UiSpotMarketWithTokenMeta
-      | UiDerivativeMarketWithTokenMeta
+      | UiSpotMarketWithToken
+      | UiDerivativeMarketWithToken
       | undefined {
       const { currentSpotMarket, currentDerivativeMarket, market } = this
 

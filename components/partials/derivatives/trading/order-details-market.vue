@@ -147,7 +147,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiDerivativeMarketWithTokenMeta } from '@injectivelabs/ui-common'
+import { UiDerivativeMarketWithToken } from '@injectivelabs/ui-common'
 import { DerivativeOrderSide } from '@injectivelabs/derivatives-consumer'
 import Drawer from '~/components/elements/drawer.vue'
 import {
@@ -255,7 +255,7 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiDerivativeMarketWithTokenMeta | undefined {
+    market(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 

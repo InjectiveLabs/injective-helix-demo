@@ -45,7 +45,6 @@
 import Vue from 'vue'
 import { Status } from '@injectivelabs/utils'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
-import { AccountAddress } from '@injectivelabs/ts-types'
 import VSelectCustom from '~/components/inputs/select-custom.vue'
 import { WalletConnectStatus } from '~/types'
 
@@ -67,7 +66,7 @@ export default Vue.extend({
   },
 
   computed: {
-    addresses(): AccountAddress[] {
+    addresses(): string[] {
       return this.$accessor.wallet.addresses
     },
 

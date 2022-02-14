@@ -67,7 +67,7 @@
 import Vue, { PropType } from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
-import { UiDerivativeMarketWithTokenMeta } from '@injectivelabs/ui-common'
+import { UiDerivativeMarketWithToken } from '@injectivelabs/ui-common'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
@@ -84,7 +84,7 @@ export default Vue.extend({
 
     market: {
       required: true,
-      type: Object as PropType<UiDerivativeMarketWithTokenMeta>
+      type: Object as PropType<UiDerivativeMarketWithToken>
     }
   },
 

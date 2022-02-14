@@ -170,7 +170,7 @@ import {
   NUMBER_REGEX,
   ZERO_IN_BASE,
   UiPriceLevel,
-  UiSpotMarketWithTokenMeta,
+  UiSpotMarketWithToken,
   UiSpotOrderbook,
   UiSubaccount
 } from '@injectivelabs/ui-common'
@@ -236,7 +236,7 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    market(): UiSpotMarketWithTokenMeta | undefined {
+    market(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
     },
 

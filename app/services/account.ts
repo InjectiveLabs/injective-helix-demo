@@ -1,15 +1,11 @@
 import {
   SubaccountTransformer,
-  SubaccountStreamType,
-  AccountPortfolio,
-  BalanceStreamCallback as SubaccountBalanceStreamCallback
+  AccountPortfolio
 } from '@injectivelabs/subaccount-consumer'
 import {
   SubaccountService as BaseSubaccountService,
   AccountMetrics
 } from '@injectivelabs/ui-common'
-import { subaccountStream } from '../singletons/SubaccountStream'
-import { streamProvider } from '../providers/StreamProvider'
 
 export class SubaccountService extends BaseSubaccountService {
   async fetchAccountPortfolio(injAddress: string): Promise<AccountPortfolio> {
@@ -27,30 +23,4 @@ export class SubaccountService extends BaseSubaccountService {
       accountPortfolio
     )
   }
-}
-
-export const streamSubaccountBalances = ({
-  subaccountId,
-  callback
-}: {
-  subaccountId: string
-  callback: SubaccountBalanceStreamCallback
-}) => {
-  const streamFn = subaccountStream.balances.start.bind(
-    subaccountStream.balances
-  )
-  const streamFnArgs = {
-    subaccountId,
-    callback
-  }
-
-  streamProvider.subscribe({
-    fn: streamFn,
-    args: streamFnArgs,
-    key: SubaccountStreamType.Balances
-  })
-}
-
-export const cancelSubaccountStreams = () => {
-  streamProvider.cancel(SubaccountStreamType.Balances)
 }

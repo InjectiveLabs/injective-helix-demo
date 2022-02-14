@@ -2,7 +2,7 @@
   <div class="cursor-pointer" @click="handleClick">
     <div class="flex items-center justify-start">
       <img
-        :src="item.baseToken.icon"
+        :src="item.baseToken.logo"
         :alt="item.baseToken.name"
         class="mr-4 ml-2"
         :class="[small ? 'w-5 h-5 md:w-7 md:h-7' : 'w-6 h-6 md:w-8 md:h-8']"
@@ -20,8 +20,8 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import {
-  UiDerivativeMarketWithTokenMeta,
-  UiSpotMarketWithTokenMeta
+  UiDerivativeMarketWithToken,
+  UiSpotMarketWithToken
 } from '@injectivelabs/ui-common'
 
 export default Vue.extend({
@@ -33,7 +33,7 @@ export default Vue.extend({
 
     item: {
       type: Object as PropType<
-        UiDerivativeMarketWithTokenMeta | UiSpotMarketWithTokenMeta
+        UiDerivativeMarketWithToken | UiSpotMarketWithToken
       >,
       required: true
     }

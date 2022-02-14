@@ -128,7 +128,7 @@ import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   ZERO_IN_BASE,
-  UiSpotMarketWithTokenMeta
+  UiSpotMarketWithToken
 } from '@injectivelabs/ui-common'
 import { SpotOrderSide } from '@injectivelabs/spot-consumer'
 import Drawer from '~/components/elements/drawer.vue'
@@ -234,7 +234,7 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiSpotMarketWithTokenMeta | undefined {
+    market(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
     },
 

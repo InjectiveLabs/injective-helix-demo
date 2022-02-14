@@ -82,7 +82,7 @@ import { BigNumberInBase, BigNumber } from '@injectivelabs/utils'
 import {
   Change,
   UiOrderbookPriceLevel,
-  UiDerivativeMarketWithTokenMeta,
+  UiDerivativeMarketWithToken,
   ZERO_IN_BASE
 } from '@injectivelabs/ui-common'
 import { DerivativeOrderSide } from '@injectivelabs/derivatives-consumer'
@@ -134,7 +134,7 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiDerivativeMarketWithTokenMeta | undefined {
+    market(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 

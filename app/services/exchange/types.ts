@@ -16,8 +16,8 @@ export interface FeeDiscountSchedule extends BaseFeeDiscountSchedule {
   //
 }
 
-export interface FeeDiscountScheduleWithTokenMeta extends FeeDiscountSchedule {
-  quoteTokenMeta: Token[]
+export interface FeeDiscountScheduleWithToken extends FeeDiscountSchedule {
+  quoteToken: Token[]
 }
 
 export interface TradingRewardCampaignInfo

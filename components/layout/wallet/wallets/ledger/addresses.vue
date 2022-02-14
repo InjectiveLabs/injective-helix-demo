@@ -41,7 +41,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status } from '@injectivelabs/utils'
-import { AccountAddress } from '@injectivelabs/ts-types'
 import { LedgerDerivationPathType } from '@injectivelabs/web3-strategy'
 import VSelectCustom from '~/components/inputs/select-custom.vue'
 
@@ -72,7 +71,7 @@ export default Vue.extend({
   },
 
   computed: {
-    addresses(): AccountAddress[] {
+    addresses(): string[] {
       return this.$accessor.wallet.addresses
     }
   },

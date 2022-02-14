@@ -68,8 +68,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import {
-  UiSpotMarketWithTokenMeta,
-  UiDerivativeMarketWithTokenMeta,
+  UiSpotMarketWithToken,
+  UiDerivativeMarketWithToken,
   cosmosSdkDecToBigNumber
 } from '@injectivelabs/ui-common'
 import VItem from '~/components/partials/common/stats/item.vue'
@@ -100,11 +100,11 @@ export default Vue.extend({
       return this.$accessor.exchange.tradingRewardsCampaign
     },
 
-    spotMarkets(): UiSpotMarketWithTokenMeta[] {
+    spotMarkets(): UiSpotMarketWithToken[] {
       return this.$accessor.spot.markets
     },
 
-    derivativeMarkets(): UiDerivativeMarketWithTokenMeta[] {
+    derivativeMarkets(): UiDerivativeMarketWithToken[] {
       return this.$accessor.derivatives.markets
     },
 

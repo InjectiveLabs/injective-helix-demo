@@ -71,7 +71,7 @@ import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 import {
-  UiSpotMarketWithTokenMeta,
+  UiSpotMarketWithToken,
   UiSpotTrade,
   ZERO_IN_BASE
 } from '@injectivelabs/ui-common'
@@ -98,7 +98,7 @@ export default Vue.extend({
   },
 
   computed: {
-    currentMarket(): UiSpotMarketWithTokenMeta | undefined {
+    currentMarket(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
     },
 
@@ -106,7 +106,7 @@ export default Vue.extend({
       return this.$route.name === 'spot-spot'
     },
 
-    markets(): UiSpotMarketWithTokenMeta[] {
+    markets(): UiSpotMarketWithToken[] {
       const { isOnMarketPage } = this
 
       if (isOnMarketPage) {
@@ -116,7 +116,7 @@ export default Vue.extend({
       return this.$accessor.spot.markets
     },
 
-    market(): UiSpotMarketWithTokenMeta | undefined {
+    market(): UiSpotMarketWithToken | undefined {
       const { markets, currentMarket, isOnMarketPage, trade } = this
 
       if (isOnMarketPage) {

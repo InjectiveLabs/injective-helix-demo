@@ -5,9 +5,9 @@
     }}</span>
     <span class="col-span-1 md:col-span-3 text-right md:text-left">
       <div class="flex items-center justify-end md:justify-start">
-        <div v-if="balance.token.icon" class="w-6 h-6">
+        <div v-if="balance.token.logo" class="w-6 h-6">
           <img
-            :src="balance.token.icon"
+            :src="balance.token.logo"
             :alt="balance.token.name"
             class="min-w-full h-auto rounded-full"
           />
@@ -89,7 +89,7 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   INJECTIVE_DENOM,
   ZERO_IN_BASE,
-  BankBalanceWithTokenMetaDataAndBalanceWithUsdBalance
+  BankBalanceWithTokenAndBalanceWithUsdBalance
 } from '@injectivelabs/ui-common'
 import TableRow from '~/components/elements/table-row.vue'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
@@ -103,7 +103,7 @@ export default Vue.extend({
   props: {
     balance: {
       required: true,
-      type: Object as PropType<BankBalanceWithTokenMetaDataAndBalanceWithUsdBalance>
+      type: Object as PropType<BankBalanceWithTokenAndBalanceWithUsdBalance>
     }
   },
 
@@ -176,7 +176,9 @@ export default Vue.extend({
     totalInUsdToString(): string {
       const { balance } = this
 
-      return balance.balanceInUsd.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+      return new BigNumberInBase(balance.balanceInUsd).toFormat(
+        UI_DEFAULT_DISPLAY_DECIMALS
+      )
     },
 
     isIbcToken(): boolean {

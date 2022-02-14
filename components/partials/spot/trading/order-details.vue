@@ -165,7 +165,7 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
-  UiSpotMarketWithTokenMeta,
+  UiSpotMarketWithToken,
   ZERO_IN_BASE
 } from '@injectivelabs/ui-common'
 import { SpotOrderSide } from '@injectivelabs/spot-consumer'
@@ -273,7 +273,7 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiSpotMarketWithTokenMeta | undefined {
+    market(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
     },
 

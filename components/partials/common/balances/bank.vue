@@ -24,8 +24,8 @@ import Vue, { PropType } from 'vue'
 import {
   ZERO_IN_BASE,
   BankBalances,
-  UiDerivativeMarketWithTokenMeta,
-  UiSpotMarketWithTokenMeta,
+  UiDerivativeMarketWithToken,
+  UiSpotMarketWithToken,
   MarketType
 } from '@injectivelabs/ui-common'
 
@@ -34,7 +34,7 @@ export default Vue.extend({
     market: {
       required: true,
       type: Object as PropType<
-        UiDerivativeMarketWithTokenMeta | UiSpotMarketWithTokenMeta
+        UiDerivativeMarketWithToken | UiSpotMarketWithToken
       >
     }
   },
@@ -65,12 +65,12 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      if (!balances[(market as UiSpotMarketWithTokenMeta).baseDenom]) {
+      if (!balances[(market as UiSpotMarketWithToken).baseDenom]) {
         return ZERO_IN_BASE
       }
 
       return new BigNumberInWei(
-        balances[(market as UiSpotMarketWithTokenMeta).baseDenom] || 0
+        balances[(market as UiSpotMarketWithToken).baseDenom] || 0
       ).toBase(market.baseToken.decimals)
     },
 

@@ -98,7 +98,7 @@ import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
 import {
   UiDerivativeLimitOrder,
-  UiDerivativeMarketWithTokenMeta,
+  UiDerivativeMarketWithToken,
   DerivativeOrderSide,
   ZERO_IN_BASE
 } from '@injectivelabs/ui-common'
@@ -125,7 +125,7 @@ export default Vue.extend({
   },
 
   computed: {
-    currentMarket(): UiDerivativeMarketWithTokenMeta | undefined {
+    currentMarket(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 
@@ -133,7 +133,7 @@ export default Vue.extend({
       return this.$route.name === 'derivatives-derivative'
     },
 
-    markets(): UiDerivativeMarketWithTokenMeta[] {
+    markets(): UiDerivativeMarketWithToken[] {
       const { isOnMarketPage } = this
 
       if (isOnMarketPage) {
@@ -143,7 +143,7 @@ export default Vue.extend({
       return this.$accessor.derivatives.markets
     },
 
-    market(): UiDerivativeMarketWithTokenMeta | undefined {
+    market(): UiDerivativeMarketWithToken | undefined {
       const { markets, currentMarket, isOnMarketPage, order } = this
 
       if (isOnMarketPage) {

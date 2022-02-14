@@ -30,7 +30,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import TableRow from '~/components/elements/table-row.vue'
-import { UiEpochMarketsWithTokenMeta } from '~/app/services/dmm'
+import { UiEpochMarketsWithToken } from '~/app/services/dmm'
 
 export default Vue.extend({
   components: {
@@ -39,7 +39,7 @@ export default Vue.extend({
 
   props: {
     item: {
-      type: Object as PropType<UiEpochMarketsWithTokenMeta>,
+      type: Object as PropType<UiEpochMarketsWithToken>,
       required: true
     },
 

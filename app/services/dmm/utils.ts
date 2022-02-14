@@ -1,14 +1,12 @@
 import { BITCOIN_GECKO_ID, MarketType } from '@injectivelabs/ui-common'
-import { UiEpochMarketsWithTokenMeta } from './types'
+import { UiEpochMarketsWithToken } from './types'
 
 export const findActiveMarket = (
-  markets: UiEpochMarketsWithTokenMeta[]
+  markets: UiEpochMarketsWithToken[]
 ): string => {
-  const btcMarkets = markets.filter(
-    ({ token }: UiEpochMarketsWithTokenMeta) => {
-      return token?.coinGeckoId === BITCOIN_GECKO_ID
-    }
-  )
+  const btcMarkets = markets.filter(({ token }: UiEpochMarketsWithToken) => {
+    return token?.coinGeckoId === BITCOIN_GECKO_ID
+  })
 
   // set default market to BTC PERP || BTC Spot
   const defaultMarket =

@@ -43,10 +43,10 @@ import {
   StatusType
 } from '@injectivelabs/utils'
 import {
-  UiDerivativeMarketWithTokenMeta,
-  UiSpotMarketWithTokenMeta,
+  UiDerivativeMarketWithToken,
+  UiSpotMarketWithToken,
   BankBalances,
-  BankBalanceWithTokenMetaData,
+  BankBalanceWithToken,
   Token,
   ZERO_IN_BASE
 } from '@injectivelabs/ui-common'
@@ -70,11 +70,11 @@ export default Vue.extend({
   },
 
   computed: {
-    derivativeMarkets(): UiDerivativeMarketWithTokenMeta[] {
+    derivativeMarkets(): UiDerivativeMarketWithToken[] {
       return this.$accessor.derivatives.markets
     },
 
-    spotMarkets(): UiSpotMarketWithTokenMeta[] {
+    spotMarkets(): UiSpotMarketWithToken[] {
       return this.$accessor.spot.markets
     },
 
@@ -96,24 +96,21 @@ export default Vue.extend({
       return this.$accessor.bank.ibcBalances
     },
 
-    bankBalancesWithTokenMeta(): BankBalanceWithTokenMetaData[] {
-      return this.$accessor.bank.balancesWithTokenMetaData
+    bankBalancesWithToken(): BankBalanceWithToken[] {
+      return this.$accessor.bank.balancesWithToken
     },
 
-    ibcBankBalancesWithTokenMeta(): BankBalanceWithTokenMetaData[] {
-      return this.$accessor.bank.ibcBalancesWithTokenMetaData
+    ibcBankBalancesWithToken(): BankBalanceWithToken[] {
+      return this.$accessor.bank.ibcBalancesWithToken
     },
 
-    supply(): BankBalanceWithTokenMetaData[] {
+    supply(): BankBalanceWithToken[] {
       const {
-        bankBalancesWithTokenMeta,
-        ibcBankBalancesWithTokenMeta,
+        bankBalancesWithToken,
+        ibcBankBalancesWithToken,
         tradeableDenoms
       } = this
-      const supply = [
-        ...bankBalancesWithTokenMeta,
-        ...ibcBankBalancesWithTokenMeta
-      ]
+      const supply = [...bankBalancesWithToken, ...ibcBankBalancesWithToken]
 
       return supply.reduce((bankBalances, bankBalance) => {
         if (tradeableDenoms.includes(bankBalance.denom)) {
@@ -121,7 +118,7 @@ export default Vue.extend({
         }
 
         return bankBalances
-      }, [] as BankBalanceWithTokenMetaData[])
+      }, [] as BankBalanceWithToken[])
     },
 
     token(): Token | undefined {
@@ -165,8 +162,8 @@ export default Vue.extend({
 
   mounted() {
     Promise.all([
-      this.$accessor.bank.fetchBalancesWithTokenMetaData(),
-      this.$accessor.bank.fetchIbcBalancesWithTokenMetaData()
+      this.$accessor.bank.fetchBalancesWithToken(),
+      this.$accessor.bank.fetchIbcBalancesWithToken()
     ])
       .then(() => {
         //

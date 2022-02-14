@@ -75,7 +75,7 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 import {
-  UiDerivativeMarketWithTokenMeta,
+  UiDerivativeMarketWithToken,
   UiDerivativeTrade,
   ZERO_IN_BASE
 } from '@injectivelabs/ui-common'
@@ -102,7 +102,7 @@ export default Vue.extend({
   },
 
   computed: {
-    currentMarket(): UiDerivativeMarketWithTokenMeta | undefined {
+    currentMarket(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 
@@ -110,7 +110,7 @@ export default Vue.extend({
       return this.$route.name === 'derivatives-derivative'
     },
 
-    markets(): UiDerivativeMarketWithTokenMeta[] {
+    markets(): UiDerivativeMarketWithToken[] {
       const { isOnMarketPage } = this
 
       if (isOnMarketPage) {
@@ -120,7 +120,7 @@ export default Vue.extend({
       return this.$accessor.derivatives.markets
     },
 
-    market(): UiDerivativeMarketWithTokenMeta | undefined {
+    market(): UiDerivativeMarketWithToken | undefined {
       const { markets, currentMarket, isOnMarketPage, trade } = this
 
       if (isOnMarketPage) {

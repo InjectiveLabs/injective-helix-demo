@@ -16,7 +16,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import {
-  UiDerivativeMarketWithTokenMeta,
+  UiDerivativeMarketWithToken,
   UiDerivativeTrade
 } from '@injectivelabs/ui-common'
 import VTrade from './trade.vue'
@@ -29,7 +29,7 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiDerivativeMarketWithTokenMeta | undefined {
+    market(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 

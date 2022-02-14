@@ -24,7 +24,7 @@ import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {
-  UiDerivativeMarketWithTokenMeta,
+  UiDerivativeMarketWithToken,
   UiDerivativeTrade,
   ZERO_IN_BASE
 } from '@injectivelabs/ui-common'
@@ -48,7 +48,7 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiDerivativeMarketWithTokenMeta | undefined {
+    market(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 

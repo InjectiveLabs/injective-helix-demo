@@ -102,7 +102,7 @@ import { MarketType } from '@injectivelabs/ui-common'
 import VMarketItem from './market-item.vue'
 import VSearch from '~/components/inputs/search.vue'
 import Dropdown from '~/components/elements/dropdown.vue'
-import { UiEpochMarketsWithTokenMeta } from '~/app/services/dmm'
+import { UiEpochMarketsWithToken } from '~/app/services/dmm'
 
 export default Vue.extend({
   components: {
@@ -113,7 +113,7 @@ export default Vue.extend({
 
   props: {
     markets: {
-      type: Array as PropType<Array<UiEpochMarketsWithTokenMeta>>,
+      type: Array as PropType<Array<UiEpochMarketsWithToken>>,
       required: true
     },
 
@@ -132,15 +132,15 @@ export default Vue.extend({
   },
 
   computed: {
-    activeMarket(): UiEpochMarketsWithTokenMeta {
+    activeMarket(): UiEpochMarketsWithToken {
       const { activeMarketId, markets } = this
 
       return markets.find(
         ({ marketId }) => activeMarketId === marketId
-      ) as UiEpochMarketsWithTokenMeta
+      ) as UiEpochMarketsWithToken
     },
 
-    filteredMarkets(): Array<UiEpochMarketsWithTokenMeta> {
+    filteredMarkets(): Array<UiEpochMarketsWithToken> {
       const { filterMarkets, marketType, markets } = this
 
       const query = filterMarkets.toLowerCase()
@@ -158,12 +158,12 @@ export default Vue.extend({
           : true
 
         return satisfiesSearchCondition && marketTypeCondition
-      }) as Array<UiEpochMarketsWithTokenMeta>
+      }) as Array<UiEpochMarketsWithToken>
     }
   },
 
   methods: {
-    handleClick(item: UiEpochMarketsWithTokenMeta) {
+    handleClick(item: UiEpochMarketsWithToken) {
       // @ts-ignore
       this.$refs.dropdown.onDropdownClose()
       this.$emit('click', item.marketId)

@@ -18,7 +18,7 @@
 import Vue from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
-  UiDerivativeMarketWithTokenMeta,
+  UiDerivativeMarketWithToken,
   UiPosition,
   UiSubaccount,
   ZERO_IN_BASE
@@ -37,11 +37,11 @@ export default Vue.extend({
   },
 
   computed: {
-    markets(): UiDerivativeMarketWithTokenMeta[] {
+    markets(): UiDerivativeMarketWithToken[] {
       return this.$accessor.derivatives.markets
     },
 
-    market(): UiDerivativeMarketWithTokenMeta | undefined {
+    market(): UiDerivativeMarketWithToken | undefined {
       const { markets, position } = this
 
       if (!position) {

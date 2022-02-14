@@ -2,7 +2,7 @@ import { AccountPortfolio } from '@injectivelabs/subaccount-consumer'
 import {
   SubaccountTransformer,
   ZERO_TO_STRING,
-  SubaccountBalanceWithTokenMetaData,
+  SubaccountBalanceWithToken,
   Token,
   UiSubaccount,
   UiSubaccountBalance
@@ -17,13 +17,13 @@ import {
 import {
   streamSubaccountBalances,
   cancelSubaccountStreams
-} from '~/app/services/account'
+} from '~/app/streams/account'
 import { backupPromiseCall } from '~/app/utils/async'
 
 const initialStateFactory = () => ({
   subaccountIds: [] as string[],
   subaccount: undefined as UiSubaccount | undefined,
-  subaccountBalancesWithTokenMetaData: [] as SubaccountBalanceWithTokenMetaData[],
+  subaccountBalancesWithToken: [] as SubaccountBalanceWithToken[],
   accountPortfolio: undefined as AccountPortfolio | undefined
 })
 
@@ -32,7 +32,7 @@ const initialState = initialStateFactory()
 export const state = () => ({
   subaccountIds: initialState.subaccountIds as string[],
   subaccount: initialState.subaccount as UiSubaccount | undefined,
-  subaccountBalancesWithTokenMetaData: initialState.subaccountBalancesWithTokenMetaData as SubaccountBalanceWithTokenMetaData[],
+  subaccountBalancesWithToken: initialState.subaccountBalancesWithToken as SubaccountBalanceWithToken[],
   accountPortfolio: initialState.accountPortfolio as
     | AccountPortfolio
     | undefined
@@ -87,11 +87,11 @@ export const mutations = {
     }
   },
 
-  setSubaccountBalancesWithTokenMetaData(
+  setSubaccountBalancesWithToken(
     state: AccountStoreState,
-    subaccountBalancesWithTokenMetaData: SubaccountBalanceWithTokenMetaData[]
+    subaccountBalancesWithToken: SubaccountBalanceWithToken[]
   ) {
-    state.subaccountBalancesWithTokenMetaData = subaccountBalancesWithTokenMetaData
+    state.subaccountBalancesWithToken = subaccountBalancesWithToken
   },
 
   reset(state: AccountStoreState) {
@@ -99,8 +99,8 @@ export const mutations = {
 
     state.subaccount = initialState.subaccount
     state.subaccountIds = initialState.subaccountIds
-    state.subaccountBalancesWithTokenMetaData =
-      initialState.subaccountBalancesWithTokenMetaData
+    state.subaccountBalancesWithToken =
+      initialState.subaccountBalancesWithToken
   }
 }
 
@@ -156,13 +156,13 @@ export const actions = actionTree(
     async fetchSubaccountsBalances({ commit, state }) {
       if (state.subaccount && state.subaccount.balances) {
         const subaccountBalances = state.subaccount.balances
-        const subaccountBalancesWithTokenMeta = await tokenService.getSubaccountBalancesWithTokenMeta(
+        const subaccountBalancesWithToken = await tokenService.getSubaccountBalancesWithToken(
           subaccountBalances
         )
 
         commit(
-          'setSubaccountBalancesWithTokenMetaData',
-          subaccountBalancesWithTokenMeta
+          'setSubaccountBalancesWithToken',
+          subaccountBalancesWithToken
         )
       }
     },

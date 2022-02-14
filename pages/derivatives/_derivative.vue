@@ -46,7 +46,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { UiDerivativeMarketWithTokenMeta } from '@injectivelabs/ui-common'
+import { UiDerivativeMarketWithToken } from '@injectivelabs/ui-common'
 import VModalAddMargin from '~/components/partials/modals/add-margin/index.vue'
 import VModalBridgeDeposit from '~/components/partials/modals/bridge-deposit/index.vue'
 import VModalBridgeWithdraw from '~/components/partials/modals/bridge-withdraw/index.vue'
@@ -89,7 +89,7 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiDerivativeMarketWithTokenMeta | undefined {
+    market(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 

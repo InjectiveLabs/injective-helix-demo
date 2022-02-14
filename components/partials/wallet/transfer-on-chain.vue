@@ -18,8 +18,8 @@
           >
             {{ balanceToString }}
             <span class="text-gray-500 ml-2">{{
-              currentBalanceWithTokenMeta
-                ? currentBalanceWithTokenMeta.token.symbol
+              currentBalanceWithToken
+                ? currentBalanceWithToken.token.symbol
                 : ''
             }}</span>
           </span>
@@ -45,8 +45,8 @@
                 step="0.01"
                 min="0"
               >
-                <span v-if="currentBalanceWithTokenMeta" slot="addon">{{
-                  currentBalanceWithTokenMeta.token.symbol
+                <span v-if="currentBalanceWithToken" slot="addon">{{
+                  currentBalanceWithToken.token.symbol
                 }}</span>
               </v-input>
             </ValidationProvider>
@@ -62,7 +62,7 @@
                 :errors="status.isLoading() ? [] : errors"
                 :valid="valid"
                 :options="
-                  balancesWithTokenMetaData.map((a) => ({
+                  balancesWithToken.map((a) => ({
                     code: a.denom,
                     label: a.token.symbol.toUpperCase()
                   }))
@@ -117,8 +117,8 @@ import Vue from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
 import {
-  BankBalanceWithTokenMetaData,
-  IbcBankBalanceWithTokenMetaData,
+  BankBalanceWithToken,
+  IbcBankBalanceWithToken,
   INJECTIVE_DENOM,
   INJ_FEE_BUFFER,
   ZERO_IN_BASE
@@ -150,23 +150,23 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    bankBalancesWithTokenMetaData(): BankBalanceWithTokenMetaData[] {
-      return this.$accessor.bank.balancesWithTokenMetaData
+    bankBalancesWithToken(): BankBalanceWithToken[] {
+      return this.$accessor.bank.balancesWithToken
     },
 
-    ibcBalancesWithTokenMetaData(): IbcBankBalanceWithTokenMetaData[] {
-      return this.$accessor.bank.ibcBalancesWithTokenMetaData
+    ibcBalancesWithToken(): IbcBankBalanceWithToken[] {
+      return this.$accessor.bank.ibcBalancesWithToken
     },
 
-    balancesWithTokenMetaData(): Array<
-      BankBalanceWithTokenMetaData | IbcBankBalanceWithTokenMetaData
+    balancesWithToken(): Array<
+      BankBalanceWithToken | IbcBankBalanceWithToken
     > {
       const {
-        bankBalancesWithTokenMetaData,
-        ibcBalancesWithTokenMetaData
+        bankBalancesWithToken,
+        ibcBalancesWithToken
       } = this
 
-      return [...bankBalancesWithTokenMetaData, ...ibcBalancesWithTokenMetaData]
+      return [...bankBalancesWithToken, ...ibcBalancesWithToken]
     },
 
     address(): string {
@@ -177,23 +177,23 @@ export default Vue.extend({
       return this.$accessor.wallet.injectiveAddress
     },
 
-    currentBalanceWithTokenMeta(): BankBalanceWithTokenMetaData | undefined {
-      const { balancesWithTokenMetaData, form } = this
+    currentBalanceWithToken(): BankBalanceWithToken | undefined {
+      const { balancesWithToken, form } = this
 
-      return balancesWithTokenMetaData.find(
+      return balancesWithToken.find(
         (balance) => balance.denom === form.denom
       )
     },
 
     balance(): BigNumberInBase {
-      const { currentBalanceWithTokenMeta } = this
+      const { currentBalanceWithToken } = this
 
-      if (!currentBalanceWithTokenMeta) {
+      if (!currentBalanceWithToken) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(currentBalanceWithTokenMeta.balance).toBase(
-        currentBalanceWithTokenMeta.token.decimals
+      return new BigNumberInWei(currentBalanceWithToken.balance).toBase(
+        currentBalanceWithToken.token.decimals
       )
     },
 
@@ -243,9 +243,9 @@ export default Vue.extend({
 
   methods: {
     handleClickOnTransfer() {
-      const { form, currentBalanceWithTokenMeta } = this
+      const { form, currentBalanceWithToken } = this
 
-      if (!currentBalanceWithTokenMeta) {
+      if (!currentBalanceWithToken) {
         return
       }
 
@@ -253,8 +253,8 @@ export default Vue.extend({
 
       this.$accessor.bank
         .transfer({
-          token: currentBalanceWithTokenMeta.token,
-          denom: currentBalanceWithTokenMeta.denom,
+          token: currentBalanceWithToken.token,
+          denom: currentBalanceWithToken.denom,
           destination: form.destination,
           amount: new BigNumberInBase(form.amount)
         })

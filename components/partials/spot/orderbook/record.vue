@@ -87,7 +87,7 @@ import {
   Change,
   UiOrderbookPriceLevel,
   ZERO_IN_BASE,
-  UiSpotMarketWithTokenMeta
+  UiSpotMarketWithToken
 } from '@injectivelabs/ui-common'
 import { SpotOrderSide } from '@injectivelabs/spot-consumer'
 import {
@@ -133,7 +133,7 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiSpotMarketWithTokenMeta | undefined {
+    market(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
     },
 
