@@ -2,12 +2,14 @@ import faq from './faq/en'
 import dmm from './dmm/en'
 import banners from './banners/en'
 import activities from './activities/en'
+import market from './market/en'
 
 export default {
   ...banners,
   ...faq,
   ...dmm,
   ...activities,
+  ...market,
   common: {
     deposit: 'Deposit',
     trade: 'Trade',
@@ -278,28 +280,6 @@ export default {
   'Select Ledger Address': 'Select Ledger Address',
   'There are no results found - Markets':
     'There are no markets found. You can go ahead and propose some!',
-  balances: 'Balances',
-  'Injective Chain': 'Injective Chain',
-  Subaccount: 'Trading Account',
-  subaccount_tooltip:
-    'The available funds on your trading account. In order to trade, you must transfer funds from the Injective Chain to your trading account.',
-  injective_chain_tooltip: 'Your available funds on the Injective Chain',
-  'available_total_subaccount_balance Tooltip':
-    'Your trading account available/total balance',
-  'Deposit to Injective Chain': 'Deposit to Injective Chain',
-  'Deposit to Subaccount': 'Deposit to your Trading Account',
-  'Available for Deposit': 'Available for Deposit',
-  'Available for Deposit Tooltip':
-    'The amount of {asset} you can deposit on the Injective Chain.',
-  'Enter your amount': 'Enter your amount',
-  'Withdraw from Injective Chain': 'Withdraw from Injective Chain',
-  'Withdraw from Subaccount': 'Withdraw from Trading Account',
-  Deposit: 'Deposit',
-  'Available to Withdraw': 'Available to Withdraw',
-  'Available to Withdraw Tooltip':
-    'The amount of {asset} you can withdraw from the Injective Chain.',
-  'Available to Withdraw Subaccount Tooltip':
-    'The amount of {asset} you can withdraw from your Trading Account.',
   Orderbook: 'Orderbook',
   Cancel: 'Cancel',
   Close: 'Close',
@@ -563,7 +543,7 @@ export default {
   },
 
   navigation: {
-    wallet: 'Wallet',
+    funding: 'Funding',
     disconnect: 'Disconnect',
     myAccount: 'My Account',
     connectedWallets: 'Connected Wallets',

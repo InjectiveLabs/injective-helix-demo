@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import VBalances from '~/components/partials/wallet/balances/index.vue'
+import VBalances from '~/components/partials/funding/balances/index.vue'
 import VWelcomeBanner from '~/components/partials/banners/welcome.vue'
 import VNewUserBanner from '~/components/partials/banners/new-user.vue'
 

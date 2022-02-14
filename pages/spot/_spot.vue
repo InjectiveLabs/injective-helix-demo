@@ -33,10 +33,6 @@
           </div>
         </div>
       </div>
-      <v-modal-bridge-deposit />
-      <v-modal-bridge-withdraw />
-      <v-modal-subaccount-deposit />
-      <v-modal-subaccount-withdraw />
       <v-modal-market-beta v-if="marketIsBeta" />
     </div>
   </HOCLoading>
@@ -46,10 +42,6 @@
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken } from '@injectivelabs/ui-common'
-import VModalBridgeDeposit from '~/components/partials/modals/bridge-deposit/index.vue'
-import VModalBridgeWithdraw from '~/components/partials/modals/bridge-withdraw/index.vue'
-import VModalSubaccountDeposit from '~/components/partials/modals/subaccount-deposit/index.vue'
-import VModalSubaccountWithdraw from '~/components/partials/modals/subaccount-withdraw/index.vue'
 import VModalMarketBeta from '~/components/partials/modals/market-beta.vue'
 import VBalances from '~/components/partials/common/balances/index.vue'
 import VTrading from '~/components/partials/spot/trading/index.vue'
@@ -65,10 +57,6 @@ import { betaMarketSlugs } from '~/app/data/market'
 export default Vue.extend({
   components: {
     HOCLoading,
-    VModalBridgeDeposit,
-    VModalBridgeWithdraw,
-    VModalSubaccountDeposit,
-    VModalSubaccountWithdraw,
     VModalMarketBeta,
     VTrading,
     VBalances,
