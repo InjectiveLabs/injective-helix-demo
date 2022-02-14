@@ -141,7 +141,6 @@ import Vue, { PropType } from 'vue'
 import { Status, BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {
-  DerivativeOrderSide,
   UiDerivativeLimitOrder,
   UiDerivativeMarketWithToken,
   UiDerivativeOrderbook,
@@ -581,24 +580,11 @@ export default Vue.extend({
     },
 
     closePositionAndReduceOnlyOrders() {
-      const {
-        position,
-        market,
-        liquidationPrice,
-        reduceOnlyCurrentOrders
-      } = this
+      const { position, market, reduceOnlyCurrentOrders } = this
 
       if (!market) {
         return
       }
-
-      const minTickPrice = new BigNumberInBase(
-        new BigNumberInBase(1).shiftedBy(-market.priceDecimals)
-      )
-      const actualPrice = liquidationPrice.lte(0)
-        ? minTickPrice
-        : liquidationPrice
-
       this.status.setLoading()
 
       this.$accessor.derivatives

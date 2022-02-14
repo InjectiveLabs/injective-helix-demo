@@ -1,16 +1,24 @@
 <template>
   <v-panel class="w-full">
     <div>
-      <p class="text-xs text-gray-300 flex items-center">
-        {{ $t('marketPage.funding') }}
-        <v-icon-info-tooltip
-          class="ml-2"
-          :tooltip="$t('marketPage.fundingNote')"
-        />
-      </p>
-      <div v-if="isUserWalletConnected" class="relative">
+      <div class="flex items-center justify-between">
+        <p class="text-xs text-gray-300 flex items-center">
+          {{ $t('marketPage.assets') }}
+          <v-icon-info-tooltip
+            class="ml-2"
+            :tooltip="$t('marketPage.assetsNote')"
+          />
+        </p>
+        <nuxt-link
+          :to="{ name: 'funding' }"
+          class="text-primary-500 text-2xs font-semibold"
+        >
+          {{ $t('marketPage.funding') }}
+        </nuxt-link>
+      </div>
+      <div v-if="isUserWalletConnected && currentMarket" class="mt-4 relative">
         <HOCLoading :status="status">
-          <div v-if="currentMarket" class="mt-2">
+          <div>
             <div v-if="!hasAnyBankBalances">
               <p class="text-xs text-gray-500">
                 {{ $t('marketPage.noChainBalance') }}

@@ -85,7 +85,7 @@ export class StreamProvider {
   }
 
   cancelAll() {
-    this.streamManager.forEach((stream, key) => {
+    this.streamManager.forEach((stream) => {
       stream.stream.cancel()
     })
     this.streamManager = new Map()

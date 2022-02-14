@@ -36,7 +36,7 @@ const actionsThatSetAppStateToBusy = [
   'staking/delegateToValidator'
 ]
 
-const store: Plugin = ({ store, app }, inject) => {
+const store: Plugin = ({ store, app }) => {
   const localState = localStorage.get('state') as any
 
   // Replace Local State

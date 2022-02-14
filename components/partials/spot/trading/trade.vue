@@ -50,7 +50,7 @@
           :label="$t('amount')"
           :custom-handler="true"
           :max-selector="true"
-          :placeholder="$t('amount')"
+          :placeholder="amountStep"
           type="number"
           :step="amountStep"
           min="0"
@@ -92,7 +92,7 @@
         <v-input
           ref="input-price"
           :value="form.price"
-          :placeholder="$t('price')"
+          :placeholder="priceStep"
           :label="$t('price')"
           :disabled="tradingTypeMarket"
           type="number"
@@ -1066,7 +1066,7 @@ export default Vue.extend({
     /**
      * We need to first update the form amount
      * in order to get the new fees that apply to this order
-     * and then we update the amount again to acount the fees
+     * and then we update the amount again to account the fees
      * into consideration
      */
     onMaxInput(percent = 100) {

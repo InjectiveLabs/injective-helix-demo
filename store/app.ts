@@ -1,7 +1,7 @@
 import { actionTree } from 'typed-vuex'
 import { ChainId } from '@injectivelabs/ts-types'
 import { DEFAULT_GAS_PRICE, SECONDS_IN_A_DAY } from '@injectivelabs/ui-common'
-import { Status, StatusType } from '@injectivelabs/utils'
+import { StatusType } from '@injectivelabs/utils'
 import {
   CHAIN_ID,
   GEO_IP_RESTRICTIONS_ENABLED,

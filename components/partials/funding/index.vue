@@ -57,11 +57,8 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import {
-  BankBalanceWithTokenAndBalanceWithUsdBalance,
-  BigNumberInBase,
-  Status
-} from '@injectivelabs/utils'
+import { BigNumberInBase, Status } from '@injectivelabs/utils'
+import { BankBalanceWithTokenAndBalanceWithUsdBalance } from '@injectivelabs/ui-common'
 import VBalances from '~/components/partials/funding/balances/index.vue'
 import VWelcomeBanner from '~/components/partials/banners/welcome.vue'
 import VNewUserBanner from '~/components/partials/banners/new-user.vue'

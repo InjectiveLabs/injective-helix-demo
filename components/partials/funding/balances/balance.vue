@@ -82,7 +82,6 @@ import {
 } from '@injectivelabs/ui-common'
 import TableRow from '~/components/elements/table-row.vue'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
-import { Modal } from '~/types'
 
 export default Vue.extend({
   components: {

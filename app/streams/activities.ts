@@ -1,8 +1,7 @@
 import {
   DerivativeMarketStreamType,
   OrderStreamCallback as DerivativeMarketOrderStreamCallback,
-  TradeStreamCallback as DerivativeMarketTradeStreamCallback,
-  PositionStreamCallback
+  TradeStreamCallback as DerivativeMarketTradeStreamCallback
 } from '@injectivelabs/derivatives-consumer'
 import {
   SpotMarketStreamType,

@@ -77,7 +77,7 @@ export default Vue.extend({
   },
 
   watch: {
-    'form.path'(newValue: LedgerDerivationPathType) {
+    'form.path'() {
       this.$accessor.wallet.setAddresses([])
     }
   },

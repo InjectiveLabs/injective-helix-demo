@@ -315,7 +315,7 @@ export const actions = actionTree(
       await this.app.$accessor.exchange.fetchTradingRewardsCampaign()
     },
 
-    async initMarketStreams({ commit, state }) {
+    async initMarketStreams({ state }) {
       const { market } = state
 
       if (!market) {

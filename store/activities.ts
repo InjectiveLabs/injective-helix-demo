@@ -339,7 +339,7 @@ export const actions = actionTree(
       })
     },
 
-    streamSubaccountPositions({ state, commit }) {
+    streamSubaccountPositions({ commit }) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 

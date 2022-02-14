@@ -369,7 +369,7 @@ export const actions = actionTree(
       }
     },
 
-    async initMarketStreams({ commit, state }) {
+    async initMarketStreams({ state }) {
       const { market } = state
 
       if (!market) {

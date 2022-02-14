@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-col flex-wrap">
-    <div>
+  <div class="p-2 bg-gray-900 rounded shadow-sm flex flex-col flex-wrap">
+    <div class="">
       <v-text-info v-if="baseTradingBalance" :title="market.baseToken.symbol">
         <div class="flex items-center">
           <span class="font-mono">

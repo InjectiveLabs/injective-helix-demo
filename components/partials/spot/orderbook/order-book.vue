@@ -360,7 +360,7 @@ export default Vue.extend({
       }
 
       const orders = {} as Record<string, any>
-      sells.forEach((record: UiPriceLevel, index: number) => {
+      sells.forEach((record: UiPriceLevel) => {
         const price = new BigNumberInBase(
           new BigNumberInBase(record.price).toWei(
             market.baseToken.decimals - market.quoteToken.decimals

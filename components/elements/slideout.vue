@@ -123,7 +123,7 @@ export default Vue.extend({
       }
     },
 
-    $route(to, from) {
+    $route(_to, _from) {
       this.handleCloseSlideout()
     }
   },
