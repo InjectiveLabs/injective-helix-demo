@@ -13,7 +13,7 @@
         <span
           class="rounded-full block mr-4"
           :class="[
-            lg ? 'w-14 h-14' : 'w-6 h-6',
+            lg ? 'w-12 h-12' : 'w-6 h-6',
             {
               'bg-primary-500': isSelected,
               'bg-gray-600  group-hover:bg-primary-500': !isSelected

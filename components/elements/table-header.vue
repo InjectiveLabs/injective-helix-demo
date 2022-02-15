@@ -12,12 +12,12 @@ import Vue from 'vue'
 
 export default Vue.extend({
   props: {
-    sm: {
+    md: {
       type: Boolean,
       default: false
     },
 
-    md: {
+    lg: {
       type: Boolean,
       default: false
     }
@@ -25,20 +25,13 @@ export default Vue.extend({
 
   computed: {
     classes(): string {
-      const { sm } = this
+      const { lg } = this
       const classes = []
 
-      if (sm) {
-        classes.push(
-          'px-4',
-          'py-2',
-          'text-2xs',
-          'xl:text-3xs',
-          '2xl:text-2xs',
-          '4xl:text-xs'
-        )
-      } else {
+      if (lg) {
         classes.push('py-2', 'px-6', 'text-2xs', '2xl:text-xs')
+      } else {
+        classes.push('px-3', 'py-4', 'text-2xs', '2xl:text-xs')
       }
 
       return classes.join(' ')

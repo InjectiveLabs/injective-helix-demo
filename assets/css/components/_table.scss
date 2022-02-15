@@ -11,23 +11,15 @@
   }
 
   td {
-    @apply text-gray-200 text-sm font-normal leading-tight bg-transparent border-none select-none align-middle px-3 py-2 whitespace-nowrap;
+    @apply text-gray-200 text-sm font-normal leading-tight bg-transparent border-none select-none align-middle px-3 py-4 whitespace-nowrap;
   }
 
   tbody {
     tr {
-      td {
-        &:first-child {
-          @apply rounded-l;
-        }
-
-        &:last-child {
-          @apply rounded-r;
-        }
-      }
+      @apply bg-gray-1000;
 
       &:nth-child(even) {
-        background-color: theme('colors.gray.1000');
+        @apply bg-opacity-50;
       }
 
       &:hover {

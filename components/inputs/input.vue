@@ -33,6 +33,7 @@
           v-else
           v-bind="$attrs"
           class="input"
+          autocomplete="off"
           :value="value"
           :class="{
             'input-large': large,

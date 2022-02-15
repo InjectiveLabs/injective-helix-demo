@@ -1,5 +1,15 @@
 <template>
   <div class="relative">
+    <div class="mb-6">
+      <v-search
+        dense
+        name="search"
+        class="max-w-xs"
+        :placeholder="$t('funding.filter')"
+        :search="search"
+        @searched="handleInputOnSearch"
+      />
+    </div>
     <div class="overflow-y-auto overflow-x-auto md:overflow-x-visible w-full">
       <TableHeader v-if="isUserWalletConnected" class="md:hidden xl:grid">
         <span class="col-span-2">
@@ -27,7 +37,7 @@
         :show-empty="balances.length === 0"
       >
         <v-balance
-          v-for="(balance, index) in balances"
+          v-for="(balance, index) in sortedBalances"
           :key="`balance-${index}`"
           class="col-span-1"
           :balance="balance"
@@ -51,6 +61,7 @@ import {
 } from '@injectivelabs/ui-common'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import VBalance from './balance.vue'
+import VSearch from '~/components/elements/search.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import TableHeader from '~/components/elements/table-header.vue'
 
@@ -58,7 +69,8 @@ export default Vue.extend({
   components: {
     TableBody,
     TableHeader,
-    VBalance
+    VBalance,
+    VSearch
   },
 
   props: {
@@ -68,16 +80,37 @@ export default Vue.extend({
     }
   },
 
+  data() {
+    return {
+      search: ''
+    }
+  },
+
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
     },
 
+    filteredBalances(): BankBalanceWithTokenAndBalanceWithUsdBalance[] {
+      const { balances, search } = this
+
+      return balances.filter(({ token }) => {
+        if (!search || search.trim() === '') {
+          return true
+        }
+
+        return token.symbol
+          .toLowerCase()
+          .trim()
+          .includes(search.toLowerCase().trim())
+      })
+    },
+
     // sort INJ to the top
     sortedBalances(): BankBalanceWithTokenAndBalanceWithUsdBalance[] {
-      const { balances } = this
+      const { filteredBalances } = this
 
-      return [...balances].sort(
+      return [...filteredBalances].sort(
         (
           v1: BankBalanceWithTokenAndBalanceWithUsdBalance,
           v2: BankBalanceWithTokenAndBalanceWithUsdBalance
@@ -95,6 +128,12 @@ export default Vue.extend({
             .toNumber()
         }
       )
+    }
+  },
+
+  methods: {
+    handleInputOnSearch(search: string) {
+      this.search = search
     }
   }
 })
