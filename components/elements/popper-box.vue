@@ -46,7 +46,7 @@ export default Vue.extend({
 
   computed: {
     uid(): string {
-      return Math.random().toString()
+      return window.crypto.getRandomValues(new Uint32Array(1))[0].toString()
     },
 
     $popperElement(): InstanceType<typeof HTMLElement> {

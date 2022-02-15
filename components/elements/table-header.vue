@@ -1,7 +1,7 @@
 <template>
   <div
     class="grid-cols-12 gap-4 text-gray-200 uppercase md:grid hidden items-center mb-2"
-    :class="[fontSizeClasses, md ? 'py-4 ' : 'px-3 py-2']"
+    :class="classes"
   >
     <slot></slot>
   </div>
@@ -24,14 +24,24 @@ export default Vue.extend({
   },
 
   computed: {
-    fontSizeClasses(): String[] {
+    classes(): string {
       const { sm } = this
+      const classes = []
 
       if (sm) {
-        return ['text-2xs', 'xl:text-3xs', '2xl:text-2xs', '4xl:text-xs']
+        classes.push(
+          'px-4',
+          'py-2',
+          'text-2xs',
+          'xl:text-3xs',
+          '2xl:text-2xs',
+          '4xl:text-xs'
+        )
+      } else {
+        classes.push('py-2', 'px-6', 'text-2xs', '2xl:text-xs')
       }
 
-      return ['text-2xs', '2xl:text-xs']
+      return classes.join(' ')
     }
   }
 })

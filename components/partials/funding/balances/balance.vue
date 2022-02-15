@@ -35,7 +35,10 @@
         class="flex xs:items-center items-end justify-end md:justify-start flex-col xs:flex-row"
       >
         <span>{{ totalInUsdToString }} USD</span>
-        <span class="text-opacity-50 text-gray-200 xs:ml-3">
+        <span
+          v-if="totalInBtc.gt(0)"
+          class="text-opacity-50 text-gray-200 text-2xs xs:ml-3"
+        >
           {{ totalInBtcToString }} BTC
         </span>
       </span>
@@ -107,6 +110,10 @@ export default Vue.extend({
     totalInBtc(): BigNumberInBase {
       const { balance, btcUsdPrice } = this
 
+      if (!btcUsdPrice) {
+        return ZERO_IN_BASE
+      }
+
       return new BigNumberInBase(balance.balanceInUsd).dividedBy(
         new BigNumberInBase(btcUsdPrice)
       )
@@ -156,19 +163,19 @@ export default Vue.extend({
     handleDepositClick() {
       const { balance } = this
 
-      this.$emit('deposit', balance.denom)
+      this.$emit('bridge-deposit', balance.denom)
     },
 
     handleWithdrawClick() {
       const { balance } = this
 
-      this.$emit('withdraw', balance.denom)
+      this.$emit('bridge-withdraw', balance.denom)
     },
 
     handleTransfer() {
       const { balance } = this
 
-      this.$emit('transfer', balance.denom)
+      this.$emit('bridge-transfer', balance.denom)
     }
   }
 })

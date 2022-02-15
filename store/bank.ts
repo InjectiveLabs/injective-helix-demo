@@ -16,17 +16,20 @@ import { backupPromiseCall } from '~/app/utils/async'
 const initialStateFactory = () => ({
   balances: {} as BankBalances,
   ibcBalances: {} as BankBalances,
-  balancesWithToken: [] as BankBalanceWithToken[],
-  ibcBalancesWithToken: [] as IbcBankBalanceWithToken[]
+  bankErc20BalancesWithToken: [] as BankBalanceWithToken[],
+  bankIbcBalancesWithToken: [] as IbcBankBalanceWithToken[]
 })
+
+//   balancesWithToken: [] as BankBalanceWithToken[],
+// ibcBalancesWithToken: [] as IbcBankBalanceWithToken[]
 
 const initialState = initialStateFactory()
 
 export const state = () => ({
   balances: initialState.balances,
   ibcBalances: initialState.balances,
-  balancesWithToken: initialState.balancesWithToken,
-  ibcBalancesWithToken: initialState.ibcBalancesWithToken
+  bankErc20BalancesWithToken: initialState.bankErc20BalancesWithToken,
+  bankIbcBalancesWithToken: initialState.bankIbcBalancesWithToken
 })
 
 export type BankStoreState = ReturnType<typeof state>
@@ -45,11 +48,11 @@ export const mutations = {
     state.balances = balances
   },
 
-  setBalancesWithToken(
+  setBankErc20BalancesWithToken(
     state: BankStoreState,
-    balancesWithToken: BankBalanceWithToken[]
+    bankErc20BalancesWithToken: BankBalanceWithToken[]
   ) {
-    state.balancesWithToken = balancesWithToken
+    state.bankErc20BalancesWithToken = bankErc20BalancesWithToken
   },
 
   setIbcBalances(state: BankStoreState, ibcBalances: BankBalances) {
@@ -58,17 +61,17 @@ export const mutations = {
 
   setIbcBalancesWithToken(
     state: BankStoreState,
-    ibcBalancesWithToken: IbcBankBalanceWithToken[]
+    bankIbcBalancesWithToken: IbcBankBalanceWithToken[]
   ) {
-    state.ibcBalancesWithToken = ibcBalancesWithToken
+    state.bankIbcBalancesWithToken = bankIbcBalancesWithToken
   },
 
   reset(state: BankStoreState) {
     const initialState = initialStateFactory()
 
     state.balances = initialState.balances
-    state.balancesWithToken = initialState.balancesWithToken
-    state.ibcBalancesWithToken = initialState.ibcBalancesWithToken
+    state.bankErc20BalancesWithToken = initialState.bankErc20BalancesWithToken
+    state.bankIbcBalancesWithToken = initialState.bankIbcBalancesWithToken
   }
 }
 
@@ -94,20 +97,26 @@ export const actions = actionTree(
       commit('setIbcBalances', ibcBankBalances)
     },
 
-    async fetchBalancesWithToken({ state, commit }) {
-      const { balances } = state
+    async fetchBankBalancesWithToken({ commit }) {
       const { injectiveAddress } = this.app.$accessor.wallet
 
       if (!injectiveAddress) {
         return
       }
 
-      const balancesWithToken = (
+      const { bankBalances, ibcBankBalances } = await bankService.fetchBalances(
+        injectiveAddress
+      )
+
+      commit('setBalances', bankBalances)
+      commit('setIbcBalances', ibcBankBalances)
+
+      const bankErc20BalancesWithToken = (
         await Promise.all(
-          Object.keys(balances).map(async (denom) => {
+          Object.keys(bankBalances).map(async (denom) => {
             return {
               denom,
-              balance: balances[denom],
+              balance: bankBalances[denom],
               token: await tokenService.getDenomToken(denom)
             }
           })
@@ -116,20 +125,9 @@ export const actions = actionTree(
         (balance) => balance.token !== undefined
       ) as BankBalanceWithToken[]
 
-      commit('setBalancesWithToken', balancesWithToken)
-    },
-
-    async fetchIbcBalancesWithToken({ state, commit }) {
-      const { ibcBalances } = state
-      const { injectiveAddress } = this.app.$accessor.wallet
-
-      if (!injectiveAddress) {
-        return
-      }
-
-      const ibcBalancesWithToken = (
+      const bankIbcBalancesWithToken = (
         await Promise.all(
-          Object.keys(ibcBalances).map(async (denom) => {
+          Object.keys(ibcBankBalances).map(async (denom) => {
             const { baseDenom, path } = await tokenService.fetchDenomTrace(
               denom
             )
@@ -137,7 +135,7 @@ export const actions = actionTree(
             return {
               denom,
               baseDenom,
-              balance: ibcBalances[denom],
+              balance: ibcBankBalances[denom],
               channelId: path.replace('transfer/', ''),
               token: await tokenService.getDenomToken(denom)
             }
@@ -147,7 +145,8 @@ export const actions = actionTree(
         (balance) => balance.token !== undefined
       ) as IbcBankBalanceWithToken[]
 
-      commit('setIbcBalancesWithToken', ibcBalancesWithToken)
+      commit('setBankErc20BalancesWithToken', bankErc20BalancesWithToken)
+      commit('setIbcBalancesWithToken', bankIbcBalancesWithToken)
     },
 
     async transfer(

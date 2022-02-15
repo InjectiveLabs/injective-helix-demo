@@ -97,11 +97,11 @@ export default Vue.extend({
     },
 
     bankBalancesWithToken(): BankBalanceWithToken[] {
-      return this.$accessor.bank.balancesWithToken
+      return this.$accessor.bank.bankErc20BalancesWithToken
     },
 
     ibcBankBalancesWithToken(): BankBalanceWithToken[] {
-      return this.$accessor.bank.ibcBalancesWithToken
+      return this.$accessor.bank.bankIbcBalancesWithToken
     },
 
     supply(): BankBalanceWithToken[] {
@@ -161,10 +161,7 @@ export default Vue.extend({
   },
 
   mounted() {
-    Promise.all([
-      this.$accessor.bank.fetchBalancesWithToken(),
-      this.$accessor.bank.fetchIbcBalancesWithToken()
-    ])
+    Promise.all([this.$accessor.bank.fetchBankBalancesWithToken()])
       .then(() => {
         //
       })

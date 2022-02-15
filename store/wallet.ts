@@ -118,8 +118,8 @@ export const actions = actionTree(
     },
 
     async initPage(_) {
-      await this.app.$accessor.token.getAllTokenWithPriceInUsd()
-      await this.app.$accessor.token.getAllTokenWithBalanceAndAllowance()
+      await this.app.$accessor.bank.fetchBankBalancesWithToken()
+      await this.app.$accessor.token.getErc20TokensWithBalanceAndPriceFromBank()
 
       if (GAS_FREE_DEPOSIT_REBATE_ENABLED) {
         await this.app.$accessor.gasRebate.init()
