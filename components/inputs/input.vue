@@ -153,7 +153,7 @@ export default Vue.extend({
       const { large } = this
 
       if (large) {
-        return ['text-base', 'pr-2']
+        return ['text-sm', 'px-2', 'mr-2']
       }
 
       return ['px-2', 'py-1', 'mr-2', 'border', 'text-xs']

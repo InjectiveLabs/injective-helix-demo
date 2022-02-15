@@ -1,5 +1,4 @@
 <template>
-  <!-- eslint-disable vue/no-v-html -->
   <v-modal :is-open="isModalOpen" sm @modal-closed="closeModal">
     <div slot="title" class="text-center">
       <h3 class="text-base">

@@ -37,7 +37,10 @@
         <div
           v-show="isOpen"
           class="inline-block align-bottom bg-gray-850 shadow-card rounded-xl text-left transform transition-all w-full max-w-lg"
-          :class="[dense ? 'p-6' : 'p-8', { 'lg:max-w-2xl': !sm }]"
+          :class="[
+            dense ? 'p-6' : 'p-8',
+            { 'lg:max-w-2xl': !sm, 'lg:max-w-4xl': !md }
+          ]"
           role="dialog"
           :aria-modal="isOpen"
           aria-labelledby="modal-headline"
@@ -96,6 +99,11 @@ export default Vue.extend({
     },
 
     sm: {
+      type: Boolean,
+      default: false
+    },
+
+    md: {
       type: Boolean,
       default: false
     }

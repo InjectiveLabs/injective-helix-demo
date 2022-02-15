@@ -59,7 +59,7 @@
 }
 
 .input-large {
-  @apply bg-transparent text-gray-400 rounded-lg px-6 w-full h-20 outline-none appearance-none max-w-full text-3xl border-none font-medium;
+  @apply bg-transparent text-gray-400 rounded-lg px-6 pr-2 w-full h-20 outline-none appearance-none max-w-full text-3xl border-none font-medium;
 
   &[type='number']::-webkit-inner-spin-button,
   &[type='number']::-webkit-outer-spin-button {
@@ -167,5 +167,51 @@
 
   .vs__selected {
     @apply opacity-100 text-gray-200;
+  }
+}
+
+.input-select.input-token.input-select .vs__selected {
+  @apply w-full h-20 relative border-none p-0 m-0 z-1000;
+}
+
+#bridge-input.input.input-large {
+  &::placeholder {
+    @apply text-3xl  opacity-75;
+  }
+}
+
+.v-select.input-token.input-select {
+  @apply rounded-lg h-20 shadow-none p-0;
+
+  .input {
+    @apply shadow-none text-gray-100;
+  }
+
+  .vs__selected {
+    @apply opacity-100 text-gray-100;
+  }
+
+  &::placeholder {
+    @apply text-xl opacity-75;
+  }
+
+  .vs__dropdown-toggle {
+    @apply border-none p-0;
+  }
+
+  .vs__actions {
+    @apply pt-0 pr-5;
+  }
+
+  .vs__selected-options {
+    @apply p-0;
+  }
+
+  .vs__selected .input {
+    @apply pr-0;
+
+    &:focus {
+      @apply border-none;
+    }
   }
 }

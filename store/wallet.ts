@@ -196,9 +196,6 @@ export const actions = actionTree(
       await this.app.$accessor.account.fetchSubaccounts()
       await this.app.$accessor.bank.fetchBalances()
 
-      await this.app.$accessor.token.getTokenBalanceAndAllowanceForDerivativeMarket()
-      await this.app.$accessor.token.getTokenBalanceAndAllowanceForMarket()
-
       if (this.app.context.route.name === 'portfolio') {
         await this.app.$accessor.portfolio.init()
       }
@@ -249,9 +246,6 @@ export const actions = actionTree(
 
       await this.app.$accessor.account.fetchSubaccounts()
       await this.app.$accessor.bank.fetchBalances()
-
-      await this.app.$accessor.token.getTokenBalanceAndAllowanceForDerivativeMarket()
-      await this.app.$accessor.token.getTokenBalanceAndAllowanceForMarket()
 
       if (this.app.context.route.name === 'portfolio') {
         await this.app.$accessor.portfolio.init()

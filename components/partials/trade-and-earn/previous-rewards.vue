@@ -193,7 +193,7 @@ export default Vue.extend({
     },
 
     injUsdPrice(): number {
-      return this.$accessor.token.injUsdtPrice
+      return this.$accessor.token.injUsdPrice
     },
 
     campaignDurationInSeconds(): number {

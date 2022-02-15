@@ -50,7 +50,10 @@
         {{ $t('common.deposit') }}
       </span>
       <span class="cursor-pointer ml-6">{{ $t('common.withdraw') }}</span>
-      <span class="cursor-pointer ml-6 hidden sm:inline-block">
+      <span
+        class="cursor-pointer ml-6 hidden sm:inline-block"
+        @click="handleTransfer"
+      >
         {{ $t('funding.transferToTradingAccount') }}
       </span>
       <span class="cursor-pointer ml-6 sm:hidden">
@@ -175,7 +178,7 @@ export default Vue.extend({
     handleTransfer() {
       const { balance } = this
 
-      this.$emit('bridge-transfer', balance.denom)
+      this.$root.$emit('bridge:transfer', balance.token)
     }
   }
 })

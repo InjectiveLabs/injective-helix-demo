@@ -2,10 +2,8 @@ import {
   Token,
   TokenWithBalance,
   TokenWithBalanceAndPrice,
-  UiSpotMarketWithToken,
   UNLIMITED_ALLOWANCE,
   INJ_COIN_GECKO_ID,
-  UiDerivativeMarketWithToken,
   BankBalanceWithToken
 } from '@injectivelabs/ui-common'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
@@ -22,10 +20,8 @@ import { backupPromiseCall } from '~/app/utils/async'
 const initialStateFactory = () => ({
   erc20TokensWithBalanceAndPriceFromBank: [] as TokenWithBalanceAndPrice[],
   ibcTokensWithBalanceAndPriceFromBank: [] as TokenWithBalanceAndPrice[],
-  baseTokenWithBalance: (undefined as unknown) as TokenWithBalanceAndPrice,
-  quoteTokenWithBalance: (undefined as unknown) as TokenWithBalanceAndPrice,
   btcUsdPrice: 0 as number,
-  injUsdtPrice: 0 as number
+  injUsdPrice: 0 as number
 })
 
 const initialState = initialStateFactory()
@@ -33,10 +29,8 @@ const initialState = initialStateFactory()
 export const state = () => ({
   erc20TokensWithBalanceAndPriceFromBank: initialState.erc20TokensWithBalanceAndPriceFromBank as TokenWithBalanceAndPrice[],
   ibcTokensWithBalanceAndPriceFromBank: initialState.ibcTokensWithBalanceAndPriceFromBank as TokenWithBalanceAndPrice[],
-  baseTokenWithBalance: initialState.baseTokenWithBalance as TokenWithBalanceAndPrice,
-  quoteTokenWithBalance: initialState.quoteTokenWithBalance as TokenWithBalanceAndPrice,
   btcUsdPrice: initialState.btcUsdPrice as number,
-  injUsdtPrice: initialState.injUsdtPrice as number
+  injUsdPrice: initialState.injUsdPrice as number
 })
 
 export type TokenStoreState = ReturnType<typeof state>
@@ -46,34 +40,6 @@ export const getters = getterTree(state, {
 })
 
 export const mutations = {
-  setTokensWithBalance(
-    state: TokenStoreState,
-    {
-      baseTokenWithBalanceAndPrice,
-      quoteTokenWithBalanceAndPrice
-    }: {
-      baseTokenWithBalanceAndPrice: TokenWithBalanceAndPrice
-      quoteTokenWithBalanceAndPrice: TokenWithBalanceAndPrice
-    }
-  ) {
-    state.baseTokenWithBalance = baseTokenWithBalanceAndPrice
-    state.quoteTokenWithBalance = quoteTokenWithBalanceAndPrice
-  },
-
-  setQuoteTokenWithBalance(
-    state: TokenStoreState,
-    tokenWithBalance: TokenWithBalanceAndPrice
-  ) {
-    state.quoteTokenWithBalance = tokenWithBalance
-  },
-
-  setBaseTokenWithBalance(
-    state: TokenStoreState,
-    tokenWithBalance: TokenWithBalanceAndPrice
-  ) {
-    state.baseTokenWithBalance = tokenWithBalance
-  },
-
   setErc20TokensWithBalanceAndPriceFromBank(
     state: TokenStoreState,
     erc20TokensWithBalanceAndPriceFromBank: TokenWithBalanceAndPrice[]
@@ -92,8 +58,8 @@ export const mutations = {
     state.btcUsdPrice = btcUsdPrice
   },
 
-  setInjUsdPrice(state: TokenStoreState, injUsdtPrice: number) {
-    state.injUsdtPrice = injUsdtPrice
+  setInjUsdPrice(state: TokenStoreState, injUsdPrice: number) {
+    state.injUsdPrice = injUsdPrice
   },
 
   reset(state: TokenStoreState) {
@@ -103,9 +69,8 @@ export const mutations = {
       initialState.erc20TokensWithBalanceAndPriceFromBank
     state.ibcTokensWithBalanceAndPriceFromBank =
       initialState.ibcTokensWithBalanceAndPriceFromBank
-    state.baseTokenWithBalance = initialState.baseTokenWithBalance
-    state.quoteTokenWithBalance = initialState.quoteTokenWithBalance
-    state.injUsdtPrice = initialState.injUsdtPrice
+    state.injUsdPrice = initialState.injUsdPrice
+    state.btcUsdPrice = initialState.btcUsdPrice
   }
 }
 
@@ -160,135 +125,6 @@ export const actions = actionTree(
       )
     },
 
-    async getTokenBalanceAndAllowance({ commit }) {
-      const { address, isUserWalletConnected } = this.app.$accessor.wallet
-      const { market: spotMarket } = this.app.$accessor.spot
-      const { market: derivativeMarket } = this.app.$accessor.derivatives
-
-      if (!address || !isUserWalletConnected) {
-        return
-      }
-
-      if (!spotMarket && !derivativeMarket) {
-        return
-      }
-
-      const market =
-        spotMarket ||
-        (derivativeMarket as
-          | UiSpotMarketWithToken
-          | UiDerivativeMarketWithToken)
-      const { baseToken, quoteToken } = market
-
-      if (
-        baseToken.denom.startsWith('ibc') ||
-        quoteToken.denom.startsWith('ibc')
-      ) {
-        return
-      }
-
-      const baseTokenWithBalance = (await tokenErc20Service.fetchTokenBalanceAndAllowance(
-        {
-          address,
-          token: baseToken
-        }
-      )) as TokenWithBalance
-      const quoteTokenWithBalance = (await tokenErc20Service.fetchTokenBalanceAndAllowance(
-        {
-          address,
-          token: quoteToken
-        }
-      )) as TokenWithBalance
-
-      const baseTokenWithBalanceAndPrice = {
-        ...baseTokenWithBalance,
-        usdPrice: await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
-          baseToken.coinGeckoId
-        )
-      } as TokenWithBalanceAndPrice
-
-      const quoteTokenWithBalanceAndPrice = {
-        ...quoteTokenWithBalance,
-        usdPrice: await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
-          quoteToken.coinGeckoId
-        )
-      } as TokenWithBalanceAndPrice
-
-      commit('setTokensWithBalance', {
-        baseTokenWithBalanceAndPrice,
-        quoteTokenWithBalanceAndPrice
-      })
-    },
-
-    async getTokenBalanceAndAllowanceForMarket({ commit }) {
-      const { address } = this.app.$accessor.wallet
-      const { market } = this.app.$accessor.spot
-
-      if (!market) {
-        return
-      }
-
-      const { baseToken, quoteToken } = market
-
-      const baseTokenWithBalance = (await tokenErc20Service.fetchTokenBalanceAndAllowance(
-        {
-          address,
-          token: baseToken
-        }
-      )) as TokenWithBalance
-      const quoteTokenWithBalance = (await tokenErc20Service.fetchTokenBalanceAndAllowance(
-        {
-          address,
-          token: quoteToken
-        }
-      )) as TokenWithBalance
-
-      const baseTokenWithBalanceAndPrice = {
-        ...baseTokenWithBalance,
-        usdPrice: await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
-          baseToken.coinGeckoId
-        )
-      } as TokenWithBalanceAndPrice
-
-      const quoteTokenWithBalanceAndPrice = {
-        ...quoteTokenWithBalance,
-        usdPrice: await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
-          quoteToken.coinGeckoId
-        )
-      } as TokenWithBalanceAndPrice
-
-      commit('setTokensWithBalance', {
-        baseTokenWithBalanceAndPrice,
-        quoteTokenWithBalanceAndPrice
-      })
-    },
-
-    async getTokenBalanceAndAllowanceForDerivativeMarket({ commit }) {
-      const { address } = this.app.$accessor.wallet
-      const { market } = this.app.$accessor.derivatives
-
-      if (!market) {
-        return
-      }
-
-      const { quoteToken } = market
-
-      const quoteTokenWithBalance = (await tokenErc20Service.fetchTokenBalanceAndAllowance(
-        {
-          address,
-          token: quoteToken
-        }
-      )) as TokenWithBalance
-      const quoteTokenWithBalanceAndPrice = {
-        ...quoteTokenWithBalance,
-        usdPrice: await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
-          quoteToken.coinGeckoId
-        )
-      } as TokenWithBalanceAndPrice
-
-      commit('setQuoteTokenWithBalance', quoteTokenWithBalanceAndPrice)
-    },
-
     async getInjUsdPrice({ commit }) {
       commit(
         'setInjUsdPrice',
@@ -324,21 +160,25 @@ export const actions = actionTree(
         amount: UNLIMITED_ALLOWANCE.toFixed()
       })
 
-      const { baseTokenWithBalance, quoteTokenWithBalance } = state
+      const { erc20TokensWithBalanceAndPriceFromBank } = state
+      const token = erc20TokensWithBalanceAndPriceFromBank.find(
+        (token) => token.address.toLowerCase() === tokenAddress.toLowerCase()
+      )
+      const index = erc20TokensWithBalanceAndPriceFromBank.findIndex(
+        (token) => token.address.toLowerCase() === tokenAddress.toLowerCase()
+      )
 
-      if (baseTokenWithBalance.address === tokenAddress) {
-        commit('setBaseTokenWithBalance', {
-          ...baseTokenWithBalance,
-          allowance: UNLIMITED_ALLOWANCE
-        })
+      if (!token || index < 0) {
+        return
       }
 
-      if (quoteTokenWithBalance.address === tokenAddress) {
-        commit('setQuoteTokenWithBalance', {
-          ...quoteTokenWithBalance,
-          allowance: UNLIMITED_ALLOWANCE
+      commit(
+        'setErc20TokensWithBalanceAndPriceFromBank',
+        erc20TokensWithBalanceAndPriceFromBank.splice(index, 1, {
+          ...token,
+          allowance: UNLIMITED_ALLOWANCE.toString()
         })
-      }
+      )
     },
 
     async transfer(
@@ -372,8 +212,6 @@ export const actions = actionTree(
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
-      await this.app.$accessor.token.getTokenBalanceAndAllowanceForMarket()
-      await this.app.$accessor.token.getTokenBalanceAndAllowanceForDerivativeMarket()
     },
 
     async withdraw(
@@ -413,8 +251,6 @@ export const actions = actionTree(
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
-      await this.app.$accessor.token.getTokenBalanceAndAllowanceForMarket()
-      await this.app.$accessor.token.getTokenBalanceAndAllowanceForDerivativeMarket()
     }
   }
 )

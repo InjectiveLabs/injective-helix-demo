@@ -3,6 +3,7 @@ import banners from './banners/en'
 import activities from './activities/en'
 import funding from './funding/en'
 import market from './market/en'
+import bridge from './bridge/en'
 
 export default {
   ...activities,
@@ -11,11 +12,13 @@ export default {
   ...funding,
   ...activities,
   ...market,
+  ...bridge,
   common: {
     deposit: 'Deposit',
     trade: 'Trade',
     transfer: 'Transfer',
     value: 'Value',
+    search: 'Search',
     withdraw: 'Withdraw'
   },
   address_copied: 'Address Copied',

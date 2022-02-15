@@ -9,6 +9,7 @@
             <v-new-user-banner class="mt-6" />
             <div class="border-b border-gray-600 w-full my-6"></div>
             <v-funding-balances class="mt-4" />
+            <v-bridge />
           </div>
         </div>
       </HOCLoading>
@@ -24,9 +25,11 @@ import VFundingBalances from '~/components/partials/funding/funding-balances.vue
 import VAccountSummary from '~/components/partials/funding/account-summary.vue'
 import VWelcomeBanner from '~/components/partials/banners/welcome.vue'
 import VNewUserBanner from '~/components/partials/banners/new-user.vue'
+import VBridge from '~/components/partials/funding/bridge.vue'
 
 export default Vue.extend({
   components: {
+    VBridge,
     HOCLoading,
     VFundingBalances,
     VAccountSummary,
@@ -41,7 +44,11 @@ export default Vue.extend({
   },
 
   mounted() {
-    Promise.all([this.$accessor.bank.fetchBankBalancesWithToken()])
+    Promise.all([
+      this.$accessor.bank.fetchBankBalancesWithToken(),
+      this.$accessor.account.fetchSubaccounts(),
+      this.$accessor.account.fetchSubaccountsBalances()
+    ])
       .then(() => {
         //
       })

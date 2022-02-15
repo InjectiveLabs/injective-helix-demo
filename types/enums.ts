@@ -46,7 +46,8 @@ export enum Modal {
   OrderConfirm = 'order-confirm',
   SubaccountDepositWithSelect = 'subaccount-deposit-with-select',
   Terms = 'terms',
-  MarketBeta = 'market-beta'
+  MarketBeta = 'market-beta',
+  Bridge = 'bridge'
 }
 
 export enum Breakpoint {
@@ -65,7 +66,18 @@ export enum AppState {
   Success = 'Success'
 }
 
-export enum DMMType {
-  Ranking = 'Ranking',
-  History = 'History'
+export enum TransferSide {
+  Bank = 'Bank',
+  TradingAccount = 'TradingAccount'
+}
+
+export enum TransferDirection {
+  bankToTradingAccount = 'bank-to-trading-account',
+  tradingAccountToBank = 'trading-account-to-bank'
+}
+
+export enum BridgeType {
+  Deposit = 'Deposit',
+  Withdraw = 'Withdraw',
+  Transfer = 'Transfer'
 }
