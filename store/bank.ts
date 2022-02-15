@@ -20,9 +20,6 @@ const initialStateFactory = () => ({
   bankIbcBalancesWithToken: [] as IbcBankBalanceWithToken[]
 })
 
-//   balancesWithToken: [] as BankBalanceWithToken[],
-// ibcBalancesWithToken: [] as IbcBankBalanceWithToken[]
-
 const initialState = initialStateFactory()
 
 export const state = () => ({
