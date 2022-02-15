@@ -11,6 +11,7 @@ export default {
     tradingAccountTooltip: 'Trading account tooltip placeholder',
     portfolioValue: 'Portfolio value',
     stakedAmount: 'Staked Amount',
-    transferToTradingAccount: 'Transfer to Trading Account'
+    transferToTradingAccount: 'Transfer to Trading Account',
+    filter: 'Filter by asset'
   }
 }

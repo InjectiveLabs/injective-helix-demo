@@ -6,7 +6,7 @@
 .table-orders {
   @apply h-full min-h-orders max-h-2xs;
 
-  @screen lg {
+@screen lg {
     @apply max-h-xs;
   }
 
@@ -52,7 +52,11 @@
 }
 
 .card-table-wrap-content {
-  @apply bg-gray-900 px-4 py-2 flex-1 w-full;
+  @apply flex-1 w-full;
+
+  th {
+    @apply pb-4 text-gray-200 uppercase;
+  }
 }
 
 .card-table-wrap-content-lighter {

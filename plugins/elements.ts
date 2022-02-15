@@ -15,6 +15,7 @@ import Panel from '~/components/elements/panel.vue'
 import ProgressSteps from '~/components/elements/progress-steps'
 import ResourceCard from '~/components/elements/resource-card.vue'
 import Separator from '~/components/elements/separator.vue'
+import Search from '~/components/elements/search.vue'
 import TextInfo from '~/components/elements/text-info.vue'
 import VUserWalletConnectWarning from '~/components/elements/user-wallet-connect-warning.vue'
 import VIconInfoTooltip from '~/components/elements/info-icon-tooltip.vue'
@@ -40,6 +41,7 @@ Vue.component('VPanel', Panel)
 Vue.component('VProgressSteps', ProgressSteps)
 Vue.component('VResourceCard', ResourceCard)
 Vue.component('VSeparator', Separator)
+Vue.component('VSearch', Search)
 Vue.component('VTextInfo', TextInfo)
 Vue.component('VUserWalletConnectWarning', VUserWalletConnectWarning)
 Vue.component('VIconInfoTooltip', VIconInfoTooltip)

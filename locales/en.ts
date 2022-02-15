@@ -323,17 +323,7 @@ export default {
   'Confirm order execution': 'Confirm order execution',
   liquidation_price_tooltip:
     'The price at which your position will be liquidated or force-exited to prevent further losses.',
-  fees_tooltip:
-    'Trading fees associated with the trade. Trading fees on Injective can be lowered using rebates.',
-  notional_value_tooltip:
-    'The total value of the position which is determined by the mark price with the following formula: Mark Price * Base Asset Amount.',
   margin_tooltip: 'The total margin required to execute the trade.',
-  side_tooltip: 'The side of your trade: long or short',
-  amount_tooltip:
-    'The total value of the base asset at the time which the trade was executed (i.e. for BTC/USDT, BTC is the base asset and USDT is the quote asset).',
-  execution_type_tooltip: 'The type of your order: limit or market.',
-  time_tooltip:
-    "The time at which the trade was executed (times are shown in your browser's timezone).",
   recent_news: 'Recent news',
   injective_home_title_1: 'Injective eliminates all barriers to trading',
   injective_home_title_2: 'Join a global community',
