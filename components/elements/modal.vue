@@ -65,7 +65,7 @@
               </div>
             </div>
             <slot name="header" />
-            <div :class="{ 'mt-12': !dense }">
+            <div :class="{ 'mt-6': !dense }">
               <slot />
             </div>
             <slot name="footer" />

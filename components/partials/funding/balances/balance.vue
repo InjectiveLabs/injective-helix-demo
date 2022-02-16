@@ -49,10 +49,12 @@
       <span class="cursor-pointer" @click="handleDepositClick">
         {{ $t('common.deposit') }}
       </span>
-      <span class="cursor-pointer ml-6">{{ $t('common.withdraw') }}</span>
+      <span class="cursor-pointer ml-6" @click="handleWithdrawClick">{{
+        $t('common.withdraw')
+      }}</span>
       <span
         class="cursor-pointer ml-6 hidden sm:inline-block"
-        @click="handleTransfer"
+        @click="handleTransferClick"
       >
         {{ $t('funding.transferToTradingAccount') }}
       </span>
@@ -166,16 +168,16 @@ export default Vue.extend({
     handleDepositClick() {
       const { balance } = this
 
-      this.$emit('bridge-deposit', balance.denom)
+      this.$root.$emit('bridge:deposit', balance.token)
     },
 
     handleWithdrawClick() {
       const { balance } = this
 
-      this.$emit('bridge-withdraw', balance.denom)
+      this.$root.$emit('bridge:withdraw', balance.token)
     },
 
-    handleTransfer() {
+    handleTransferClick() {
       const { balance } = this
 
       this.$root.$emit('bridge:transfer', balance.token)

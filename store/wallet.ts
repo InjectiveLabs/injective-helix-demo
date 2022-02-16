@@ -119,7 +119,8 @@ export const actions = actionTree(
 
     async initPage(_) {
       await this.app.$accessor.bank.fetchBankBalancesWithToken()
-      await this.app.$accessor.token.getErc20TokensWithBalanceAndPriceFromBank()
+      await this.app.$accessor.account.fetchSubaccounts()
+      await this.app.$accessor.account.fetchSubaccountsBalances()
 
       if (GAS_FREE_DEPOSIT_REBATE_ENABLED) {
         await this.app.$accessor.gasRebate.init()
@@ -193,8 +194,8 @@ export const actions = actionTree(
       commit('setAddresses', addresses)
       commit('setAddress', address)
 
-      await this.app.$accessor.account.fetchSubaccounts()
       await this.app.$accessor.bank.fetchBalances()
+      await this.app.$accessor.account.fetchSubaccounts()
 
       if (this.app.context.route.name === 'portfolio') {
         await this.app.$accessor.portfolio.init()
@@ -204,7 +205,7 @@ export const actions = actionTree(
         await this.app.$accessor.history.init()
       }
 
-      if (this.app.context.route.name === 'wallet') {
+      if (this.app.context.route.name === 'funding') {
         await this.app.$accessor.wallet.initPage()
       }
 
@@ -255,7 +256,7 @@ export const actions = actionTree(
         await this.app.$accessor.history.init()
       }
 
-      if (this.app.context.route.name === 'wallet') {
+      if (this.app.context.route.name === 'funding') {
         await this.app.$accessor.wallet.initPage()
       }
 

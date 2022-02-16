@@ -6,7 +6,7 @@
       class="bg-primary-500 min-w-6 h-6 mx-6 flex items-center justify-center rounded-full"
     >
       <v-icon-arrow-swap
-        class="text-gray-1000 w-4 h-4 rotate-180"
+        class="text-gray-1000 w-4 h-4 rotate-180 select-none"
         @click.native="handleDirectionSwitch"
       />
     </div>
@@ -19,7 +19,7 @@
 import Vue, { PropType } from 'vue'
 import { NetworkMeta } from '@injectivelabs/ui-common'
 import { TransferDirection, TransferSide } from '~/types'
-import VNetworkCardBase from '~/components/partials/bridge/network-card/index.vue'
+import VNetworkCardBase from '~/components/partials/funding/bridge/network-card/index.vue'
 import { transferSideMeta } from '~/app/data/bridge'
 
 export default Vue.extend({
@@ -28,7 +28,7 @@ export default Vue.extend({
   },
 
   props: {
-    direction: {
+    transferDirection: {
       required: true,
       type: String as PropType<TransferDirection>
     }
@@ -36,17 +36,17 @@ export default Vue.extend({
 
   computed: {
     sourceNetworkMeta(): NetworkMeta {
-      const { direction } = this
+      const { transferDirection } = this
 
-      return direction === TransferDirection.bankToTradingAccount
+      return transferDirection === TransferDirection.bankToTradingAccount
         ? transferSideMeta[TransferSide.Bank]
         : transferSideMeta[TransferSide.TradingAccount]
     },
 
     destinationNetworkMeta(): NetworkMeta {
-      const { direction } = this
+      const { transferDirection } = this
 
-      return direction === TransferDirection.bankToTradingAccount
+      return transferDirection === TransferDirection.bankToTradingAccount
         ? transferSideMeta[TransferSide.TradingAccount]
         : transferSideMeta[TransferSide.Bank]
     }

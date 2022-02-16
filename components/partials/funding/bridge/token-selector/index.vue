@@ -3,7 +3,8 @@
     <v-token-selector
       v-bind="$attrs"
       :options="supplyWithSortedBalanceInBase"
-      @input="handleTokenChange"
+      :disabled="isIbcTransfer"
+      @input:token="handleTokenChange"
       @input:amount="handleAmountChange"
     />
   </div>
@@ -16,7 +17,8 @@ import {
   BankBalanceWithToken,
   BankBalanceWithTokenAndBalance,
   Token,
-  SubaccountBalanceWithToken
+  SubaccountBalanceWithToken,
+  TokenWithBalanceAndPrice
 } from '@injectivelabs/ui-common'
 import VTokenSelector from './select.vue'
 import { TransferSide } from '~/types'
@@ -27,17 +29,26 @@ export default Vue.extend({
   },
 
   props: {
+    origin: {
+      type: String as PropType<BridgingNetwork | TransferSide>,
+      required: true
+    },
+
     destination: {
       type: String as PropType<BridgingNetwork | TransferSide>,
       required: true
     },
 
-    origin: {
-      type: String as PropType<BridgingNetwork | TransferSide>,
+    isIbcTransfer: {
+      type: Boolean,
       required: true
     }
   },
   computed: {
+    erc20TokensWithBalanceAndPriceFromBank(): TokenWithBalanceAndPrice[] {
+      return this.$accessor.token.erc20TokensWithBalanceAndPriceFromBank
+    },
+
     bankErc20BalancesWithToken(): BankBalanceWithToken[] {
       return this.$accessor.bank.bankErc20BalancesWithToken
     },
@@ -56,7 +67,7 @@ export default Vue.extend({
       return this.$accessor.account.subaccountBalancesWithToken
     },
 
-    subaccountBalancesWithTokenSupply(): BankBalanceWithToken[] {
+    subaccountBalancesWithTokenAsBankBalanceWithToken(): BankBalanceWithToken[] {
       const { subaccountBalancesWithToken } = this
 
       return subaccountBalancesWithToken.map((balance) => ({
@@ -65,16 +76,42 @@ export default Vue.extend({
       }))
     },
 
+    erc20TokensWithBalanceAndPriceFromBankAsBankBalanceWithToken(): BankBalanceWithToken[] {
+      const { erc20TokensWithBalanceAndPriceFromBank } = this
+
+      return erc20TokensWithBalanceAndPriceFromBank.map((token) => ({
+        token,
+        denom: token.denom,
+        balance: token.balance
+      }))
+    },
+
     supply(): BankBalanceWithToken[] {
       const {
         bankBalancesWithToken,
-        subaccountBalancesWithTokenSupply,
+        subaccountBalancesWithTokenAsBankBalanceWithToken,
+        erc20TokensWithBalanceAndPriceFromBankAsBankBalanceWithToken,
+        origin,
         destination,
-        origin
+        isIbcTransfer
       } = this
 
-      if (origin === BridgingNetwork.Ethereum) {
-        return [] // TODO
+      if (isIbcTransfer) {
+        return [] // IBC transfers are not supported on the Bridge Lite
+      }
+
+      if (
+        origin === BridgingNetwork.Ethereum &&
+        destination === BridgingNetwork.Injective
+      ) {
+        return erc20TokensWithBalanceAndPriceFromBankAsBankBalanceWithToken
+      }
+
+      if (
+        origin === BridgingNetwork.Injective &&
+        destination === BridgingNetwork.Ethereum
+      ) {
+        return bankBalancesWithToken
       }
 
       if (origin === TransferSide.Bank) {
@@ -82,11 +119,7 @@ export default Vue.extend({
       }
 
       if (origin === TransferSide.TradingAccount) {
-        return subaccountBalancesWithTokenSupply
-      }
-
-      if (destination === BridgingNetwork.Ethereum) {
-        return bankBalancesWithToken
+        return subaccountBalancesWithTokenAsBankBalanceWithToken
       }
 
       return bankBalancesWithToken
@@ -118,7 +151,7 @@ export default Vue.extend({
     },
 
     handleTokenChange(value: Token) {
-      this.$emit('input', value)
+      this.$emit('input:token', value)
     }
   }
 })

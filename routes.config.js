@@ -26,7 +26,7 @@ const mainnetDerivatives = [
   'bnb-usdt-perp',
   'atom-usdt-perp'
 ]
-const testnetDerivatives = [...mainnetDerivatives, 'bayc-weth-perp']
+const testnetDerivatives = [...mainnetDerivatives]
 const mainnetStagingDerivatives = [...mainnetDerivatives]
 const derivatives = IS_TESTNET
   ? testnetDerivatives
@@ -37,7 +37,7 @@ const derivatives = IS_TESTNET
 module.exports = [
   '/',
   '/portfolio',
-  '/wallet',
+  '/funding',
   '/history',
   '/fee-discounts',
   '/trade-and-earn',

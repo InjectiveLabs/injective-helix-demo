@@ -14,6 +14,7 @@
         :auto-scroll="false"
         :clearable="false"
         :searchable="false"
+        :disabled="disabled"
         :dropdown-should-open="dropdownShouldOpen"
         :options="filteredOptions"
         :value="value"
@@ -127,8 +128,14 @@ export default Vue.extend({
       default: ''
     },
 
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+
     balance: {
-      type: BigNumberInBase,
+      type: Object as PropType<BigNumberInBase>,
       required: true
     },
 
@@ -250,6 +257,7 @@ export default Vue.extend({
     handleChange(value: BankBalanceWithTokenAndBalanceInBase) {
       this.forceClose = true
       this.$emit('input', value.token)
+      this.$emit('input:token', value.token)
     }
   }
 })

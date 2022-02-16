@@ -102,6 +102,10 @@ export default Vue.extend({
   },
 
   computed: {
+    isUserWalletConnected(): boolean {
+      return this.$accessor.wallet.isUserWalletConnected
+    },
+
     bankBalances(): BankBalances {
       return this.$accessor.bank.balances
     },
@@ -178,6 +182,18 @@ export default Vue.extend({
             : 'tradingAccountBalances'
         }`
       )
+    }
+  },
+
+  watch: {
+    isUserWalletConnected(isUserWalletConnected: boolean) {
+      if (isUserWalletConnected) {
+        if (this.component === components.bankAccount) {
+          this.handleBankAccountClick()
+        } else {
+          this.handleTradingAccountClick()
+        }
+      }
     }
   },
 
