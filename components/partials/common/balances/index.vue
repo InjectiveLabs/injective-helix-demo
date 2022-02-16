@@ -32,7 +32,7 @@
                 market: currentMarket
               }"
             />
-            <v-onboard class="mt-6"></v-onboard>
+            <v-onboard v-if="!hasMadeAnyTrades" class="mt-6"></v-onboard>
           </div>
         </HOCLoading>
       </div>

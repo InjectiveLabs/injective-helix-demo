@@ -19,7 +19,7 @@
         :steps-notes="[
           $t('marketPage.noChainBalanceNote'),
           $t('marketPage.noTradingAccountBalance'),
-          $t('marketPage.tradeDescription')
+          $t('marketPage.startTrading')
         ]"
       />
     </div>

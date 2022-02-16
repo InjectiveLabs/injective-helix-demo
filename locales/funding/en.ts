@@ -12,6 +12,7 @@ export default {
     portfolioValue: 'Portfolio value',
     stakedAmount: 'Staked Amount',
     transferToTradingAccount: 'Transfer to Trading Account',
+    transfer: 'Transfer',
     filter: 'Filter by asset'
   }
 }

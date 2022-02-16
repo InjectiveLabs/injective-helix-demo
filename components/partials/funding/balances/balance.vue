@@ -56,7 +56,7 @@
         class="cursor-pointer ml-6 hidden sm:inline-block"
         @click="handleTransferClick"
       >
-        {{ $t('funding.transferToTradingAccount') }}
+        {{ $t('funding.transfer') }}
       </span>
       <span class="cursor-pointer ml-6 sm:hidden">
         {{ $t('common.transfer') }}
