@@ -215,7 +215,7 @@ export const actions = actionTree(
       }
 
       if (this.app.context.route.name === 'fee-discounts') {
-        await this.app.$accessor.exchange.initFees()
+        await this.app.$accessor.exchange.initFeeDiscounts()
       }
 
       commit('setWalletConnectStatus', WalletConnectStatus.connected)
@@ -266,7 +266,7 @@ export const actions = actionTree(
       }
 
       if (this.app.context.route.name === 'fee-discounts') {
-        await this.app.$accessor.exchange.initFees()
+        await this.app.$accessor.exchange.initFeeDiscounts()
       }
 
       commit('setWalletConnectStatus', WalletConnectStatus.connected)

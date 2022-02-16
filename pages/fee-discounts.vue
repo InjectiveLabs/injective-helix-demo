@@ -34,7 +34,10 @@ export default Vue.extend({
   },
 
   mounted() {
-    Promise.all([this.$accessor.exchange.initFees()])
+    Promise.all([
+      this.$accessor.exchange.fetchParams(),
+      this.$accessor.exchange.fetchFeeDiscountSchedule()
+    ])
       .then(() => {
         //
       })

@@ -94,17 +94,13 @@ export const mutations = {
 export const actions = actionTree(
   { state, mutations },
   {
-    async initFees(_) {
-      await this.app.$accessor.exchange.fetchFeeDiscountSchedule()
+    async initFeeDiscounts(_) {
       await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
     },
 
     async initTradeAndEarn(_) {
-      await this.app.$accessor.exchange.fetchParams()
-      await this.app.$accessor.exchange.fetchTradingRewardsCampaign()
       await this.app.$accessor.exchange.fetchTradeRewardPoints()
       await this.app.$accessor.exchange.fetchPendingTradeRewardPoints()
-      await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
     },
 
     async fetchParams({ commit }) {
@@ -116,7 +112,9 @@ export const actions = actionTree(
 
       if (feeDiscountSchedule) {
         const quoteTokenMeta = (await Promise.all(
-          feeDiscountSchedule.quoteDenomsList.map(tokenService.getDenomToken)
+          feeDiscountSchedule.quoteDenomsList.map(
+            async (denom) => await tokenService.getDenomToken(denom)
+          )
         )) as Token[]
 
         const feeDiscountScheduleWithToken = {

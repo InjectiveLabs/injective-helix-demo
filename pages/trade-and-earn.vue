@@ -36,8 +36,9 @@ export default Vue.extend({
 
   mounted() {
     Promise.all([
-      this.$accessor.exchange.initTradeAndEarn(),
-      this.$accessor.token.getInjUsdPrice()
+      this.$accessor.token.getInjUsdPrice(),
+      this.$accessor.exchange.fetchParams(),
+      this.$accessor.exchange.fetchTradingRewardsCampaign()
     ])
       .then(() => {
         //

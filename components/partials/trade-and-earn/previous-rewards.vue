@@ -3,127 +3,136 @@
     <div v-if="pendingRewardsStartTimestamp > 0" slot="title-context">
       {{ $t('tradeAndEarn.campaignAsOf', { date: pendingRewardsCountdown }) }}
     </div>
-    <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
-      <v-item class="col-span-2 lg:col-span-4">
-        <template slot="value">
-          <v-emp-number
-            :number="injMaxPendingCampaignRewards"
-            :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
-          >
-            <span>INJ</span>
-          </v-emp-number>
+    <HOCLoading :status="status">
+      <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
+        <v-item class="col-span-2 lg:col-span-4">
+          <template slot="value">
+            <v-emp-number
+              :number="injMaxPendingCampaignRewards"
+              :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
+            >
+              <span>INJ</span>
+            </v-emp-number>
 
-          <v-emp-number
-            sm
-            class="text-gray-400"
-            prefix="≈"
-            :number="injMaxPendingCampaignRewardsInUsd"
-            :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
-          >
-            <span class="text-3xs">USD</span>
-          </v-emp-number>
-        </template>
-        <template slot="title">
-          <div class="flex items-center justify-center">
-            {{ $t('tradeAndEarn.pending_max_campaign_rewards') }}
-            <v-icon-info-tooltip
-              class="ml-2"
-              :tooltip="$t('tradeAndEarn.pending_max_campaign_rewards_tooltip')"
-            />
-          </div>
-        </template>
-      </v-item>
-      <v-item class="col-span-2 lg:col-span-4">
-        <template slot="value">
-          <div
-            v-if="isUserWalletConnected"
-            class="flex flex-wrap justify-center"
-          >
-            <v-emp-number :number="pendingTradeRewardPointsFactored">
-              <span>{{ $t('pts') }}</span>
+            <v-emp-number
+              sm
+              class="text-gray-400"
+              prefix="≈"
+              :number="injMaxPendingCampaignRewardsInUsd"
+              :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
+            >
+              <span class="text-3xs">USD</span>
             </v-emp-number>
-            <span class="px-2">/</span>
-            <v-emp-number :number="totalPendingTradeRewardPointsFactored">
-              <span>{{ $t('pts') }}</span>
+          </template>
+          <template slot="title">
+            <div class="flex items-center justify-center">
+              {{ $t('tradeAndEarn.pending_max_campaign_rewards') }}
+              <v-icon-info-tooltip
+                class="ml-2"
+                :tooltip="
+                  $t('tradeAndEarn.pending_max_campaign_rewards_tooltip')
+                "
+              />
+            </div>
+          </template>
+        </v-item>
+        <v-item class="col-span-2 lg:col-span-4">
+          <template slot="value">
+            <div
+              v-if="isUserWalletConnected"
+              class="flex flex-wrap justify-center"
+            >
+              <v-emp-number :number="pendingTradeRewardPointsFactored">
+                <span>{{ $t('pts') }}</span>
+              </v-emp-number>
+              <span class="px-2">/</span>
+              <v-emp-number :number="totalPendingTradeRewardPointsFactored">
+                <span>{{ $t('pts') }}</span>
+              </v-emp-number>
+            </div>
+            <span v-else>&mdash;</span>
+          </template>
+          <template slot="title">
+            <div class="flex items-center justify-center">
+              {{ $t('tradeAndEarn.myRewardPoints') }}
+              <v-icon-info-tooltip
+                class="ml-2"
+                :tooltip="$t('tradeAndEarn.myRewardPoints_tooltip')"
+              />
+            </div>
+          </template>
+        </v-item>
+        <v-item class="col-span-2 lg:col-span-4">
+          <template slot="value">
+            <v-emp-number
+              v-if="isUserWalletConnected"
+              :number="pendingEstimatedRewardsCapped"
+              :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
+            >
+              <span>INJ</span>
             </v-emp-number>
-          </div>
-          <span v-else>&mdash;</span>
-        </template>
-        <template slot="title">
-          <div class="flex items-center justify-center">
-            {{ $t('tradeAndEarn.myRewardPoints') }}
-            <v-icon-info-tooltip
-              class="ml-2"
-              :tooltip="$t('tradeAndEarn.myRewardPoints_tooltip')"
-            />
-          </div>
-        </template>
-      </v-item>
-      <v-item class="col-span-2 lg:col-span-4">
-        <template slot="value">
-          <v-emp-number
-            v-if="isUserWalletConnected"
-            :number="pendingEstimatedRewardsCapped"
-            :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
+            <span v-else>&mdash;</span>
+            <v-emp-number
+              v-if="isUserWalletConnected"
+              sm
+              class="text-gray-400"
+              prefix="≈"
+              :number="pendingEstimatedRewardsCappedInUsd"
+              :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
+            >
+              <span class="text-3xs">USD</span>
+            </v-emp-number>
+          </template>
+          <template
+            v-if="
+              pendingEstimatedRewards.gt(0) &&
+              pendingEstimatedRewardsCapped.lte(pendingEstimatedRewards)
+            "
+            slot="context"
           >
-            <span>INJ</span>
-          </v-emp-number>
-          <span v-else>&mdash;</span>
-          <v-emp-number
-            v-if="isUserWalletConnected"
-            sm
-            class="text-gray-400"
-            prefix="≈"
-            :number="pendingEstimatedRewardsCappedInUsd"
-            :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
-          >
-            <span class="text-3xs">USD</span>
-          </v-emp-number>
-        </template>
-        <template
-          v-if="
-            pendingEstimatedRewards.gt(0) &&
-            pendingEstimatedRewardsCapped.lte(pendingEstimatedRewards)
-          "
-          slot="context"
-        >
-          <a
-            v-if="isUserWalletConnected"
-            :href="hubUrl"
-            class="text-primary-500 flex justify-center"
-            target="_blank"
-          >
-            {{ $t('stake_more') }}
-            <v-icon-info-tooltip
-              class="ml-2"
-              :tooltip="
-                $t('tradeAndEarn.stake_total_to_receive_full_amount', {
-                  total: pendingEstimatedRewards.toFormat(2)
-                })
-              "
-            />
-          </a>
-        </template>
-        <template slot="title">
-          <div class="flex items-center justify-center">
-            {{ $t('tradeAndEarn.est_rewards_stake') }}
-            <v-icon-info-tooltip
-              class="ml-2"
-              :tooltip="
-                $t('tradeAndEarn.est_rewards_stake_tooltip', {
-                  maxRewards: DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
-                })
-              "
-            />
-          </div>
-        </template>
-      </v-item>
-    </div>
+            <a
+              v-if="isUserWalletConnected"
+              :href="hubUrl"
+              class="text-primary-500 flex justify-center"
+              target="_blank"
+            >
+              {{ $t('stake_more') }}
+              <v-icon-info-tooltip
+                class="ml-2"
+                :tooltip="
+                  $t('tradeAndEarn.stake_total_to_receive_full_amount', {
+                    total: pendingEstimatedRewards.toFormat(2)
+                  })
+                "
+              />
+            </a>
+          </template>
+          <template slot="title">
+            <div class="flex items-center justify-center">
+              {{ $t('tradeAndEarn.est_rewards_stake') }}
+              <v-icon-info-tooltip
+                class="ml-2"
+                :tooltip="
+                  $t('tradeAndEarn.est_rewards_stake_tooltip', {
+                    maxRewards: DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
+                  })
+                "
+              />
+            </div>
+          </template>
+        </v-item>
+      </div>
+    </HOCLoading>
   </v-panel>
 </template>
 
 <script lang="ts">
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  Status,
+  StatusType
+} from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import Vue from 'vue'
 import { ZERO_IN_BASE, cosmosSdkDecToBigNumber } from '@injectivelabs/ui-common'
@@ -137,14 +146,18 @@ import {
   TradingRewardsCampaign,
   ExchangeParams
 } from '~/app/services/exchange'
+import HOCLoading from '~/components/hoc/loading.vue'
 
 export default Vue.extend({
   components: {
-    VItem
+    VItem,
+    HOCLoading
   },
 
   data() {
     return {
+      status: new Status(StatusType.Loading),
+
       DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS,
       UI_DEFAULT_MIN_DISPLAY_DECIMALS,
       now: Math.floor(Date.now() / 1000)
@@ -383,6 +396,17 @@ export default Vue.extend({
     hubUrl(): string {
       return 'https://hub.injective.network/staking'
     }
+  },
+
+  mounted() {
+    Promise.all([this.$accessor.exchange.fetchPendingTradeRewardPoints()])
+      .then(() => {
+        //
+      })
+      .catch(this.$onError)
+      .finally(() => {
+        this.status.setIdle()
+      })
   }
 })
 </script>
