@@ -7,10 +7,8 @@
       <div>
         <VDirectionSwitch
           v-if="bridgeType === BridgeType.Transfer"
-          v-bind="{
-            direction
-          }"
-          @transfer-direction:switch="handleDirectionSwitch"
+          v-bind="{ transferDirection }"
+          @transfer-direction:switch="handleTransferDirectionSwitch"
         />
       </div>
       <div v-if="isUserWalletConnected">
@@ -61,9 +59,9 @@ import {
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { injToken } from '~/app/data/token'
 import { BridgeType, Modal, TransferDirection } from '~/types'
-import VTokenSelector from '~/components/partials/bridge/token-selector/index.vue'
-import VBalance from '~/components/partials/bridge/balance.vue'
-import VDirectionSwitch from '~/components/partials/bridge/direction-switch.vue'
+import VTokenSelector from '~/components/partials/funding/bridge/token-selector/index.vue'
+import VBalance from '~/components/partials/funding/bridge/balance.vue'
+import VDirectionSwitch from '~/components/partials/funding/bridge/direction-switch.vue'
 
 export default Vue.extend({
   components: {
@@ -76,9 +74,13 @@ export default Vue.extend({
   data() {
     return {
       bridgeType: BridgeType.Transfer,
-      direction: TransferDirection.bankToTradingAccount,
-      TransferDirection,
       BridgeType,
+
+      transferDirection: TransferDirection.bankToTradingAccount,
+      TransferDirection,
+
+      bridgingNetwork: BridgingNetwork.Ethereum,
+      BridgingNetwork,
 
       form: {
         token: injToken,
@@ -99,7 +101,12 @@ export default Vue.extend({
         return this.$t('bridge.transferFromToTradingAccount')
       }
 
-      return ''
+      if (bridgeType === BridgeType.Deposit) {
+        return this.$t('bridge.depositToInjective')
+      }
+
+      // Withdraw
+      return this.$t('bridge.withdrawFromInjective')
     },
 
     bridgeNote(): string {
@@ -109,7 +116,12 @@ export default Vue.extend({
         return this.$t('bridge.selectTokenAndAmount')
       }
 
-      return ''
+      if (bridgeType === BridgeType.Deposit) {
+        return this.$t('bridge.selectTokenAndAmount')
+      }
+
+      // Withdraw
+      return this.$t('bridge.selectTokenAndAmount')
     },
 
     subaccountBalancesWithToken(): SubaccountBalanceWithToken[] {
@@ -128,7 +140,7 @@ export default Vue.extend({
       const {
         form,
         bridgeType,
-        direction,
+        transferDirection,
         subaccountBalancesWithToken,
         bankBalancesWithToken,
         ibcBankBalancesWithToken
@@ -138,7 +150,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      if (direction === TransferDirection.bankToTradingAccount) {
+      if (transferDirection === TransferDirection.bankToTradingAccount) {
         const balances = [...bankBalancesWithToken, ...ibcBankBalancesWithToken]
         const balance = balances.find(
           (balance) => balance.token.denom === form.token.denom
@@ -166,36 +178,78 @@ export default Vue.extend({
       )
     },
 
+    onDepositBalance(): BigNumberInBase {
+      const { bridgeType } = this
+
+      if (bridgeType !== BridgeType.Deposit) {
+        return ZERO_IN_BASE
+      }
+
+      // TODO
+      return ZERO_IN_BASE
+    },
+
+    onWithdrawBalance(): BigNumberInBase {
+      const { bridgeType } = this
+
+      if (bridgeType !== BridgeType.Withdraw) {
+        return ZERO_IN_BASE
+      }
+
+      // TODO
+      return ZERO_IN_BASE
+    },
+
     balance(): BigNumberInBase {
-      const { bridgeType, onTransferBalance } = this
+      const {
+        bridgeType,
+        onTransferBalance,
+        onDepositBalance,
+        onWithdrawBalance
+      } = this
 
       if (bridgeType === BridgeType.Transfer) {
         return onTransferBalance
       }
 
-      return ZERO_IN_BASE
+      if (bridgeType === BridgeType.Deposit) {
+        return onDepositBalance
+      }
+
+      // Withdraw
+      return onWithdrawBalance
     },
 
     origin(): BridgingNetwork | TransferDirection {
-      const { bridgeType } = this
+      const { bridgeType, bridgingNetwork } = this
 
       if (bridgeType === BridgeType.Transfer) {
-        return this.direction
+        return this.transferDirection
       }
 
-      return BridgingNetwork.Ethereum
+      if (bridgeType === BridgeType.Withdraw) {
+        return BridgingNetwork.Injective
+      }
+
+      // Deposit
+      return bridgingNetwork
     },
 
     destination(): BridgingNetwork | TransferDirection {
-      const { bridgeType } = this
+      const { bridgeType, bridgingNetwork } = this
 
       if (bridgeType === BridgeType.Transfer) {
-        return this.direction === TransferDirection.bankToTradingAccount
+        return this.transferDirection === TransferDirection.bankToTradingAccount
           ? TransferDirection.tradingAccountToBank
           : TransferDirection.bankToTradingAccount
       }
 
-      return BridgingNetwork.Ethereum
+      if (bridgeType === BridgeType.Deposit) {
+        return BridgingNetwork.Injective
+      }
+
+      // Withdraw
+      return bridgingNetwork
     },
 
     isModalOpen(): boolean {
@@ -208,11 +262,15 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.$root.$on('bridge:transfer', this.handleTransferModal)
+    this.$root.$on('bridge:transfer', this.handleTransfer)
+    this.$root.$on('bridge:deposit', this.handleDeposit)
+    this.$root.$on('bridge:withdraw', this.handleWithdraw)
   },
 
   beforeDestroy() {
-    this.$root.$off('bridge:transfer', this.handleTransferModal)
+    this.$root.$off('bridge:transfer', this.handleTransfer)
+    this.$root.$off('bridge:deposit', this.handleDeposit)
+    this.$root.$off('bridge:withdraw', this.handleWithdraw)
   },
 
   methods: {
@@ -224,9 +282,21 @@ export default Vue.extend({
       this.form.amount = amount
     },
 
-    handleTransferModal(token: Token) {
-      this.form.token = token
+    handleTransfer(token: Token) {
+      this.form.token = token || injToken
       this.bridgeType = BridgeType.Transfer
+      this.$accessor.modal.openModal(Modal.Bridge)
+    },
+
+    handleDeposit(token: Token) {
+      this.form.token = token || injToken
+      this.bridgeType = BridgeType.Deposit
+      this.$accessor.modal.openModal(Modal.Bridge)
+    },
+
+    handleWithdraw(token: Token) {
+      this.form.token = token || injToken
+      this.bridgeType = BridgeType.Withdraw
       this.$accessor.modal.openModal(Modal.Bridge)
     },
 
@@ -234,9 +304,9 @@ export default Vue.extend({
       this.$accessor.modal.closeModal(Modal.Bridge)
     },
 
-    handleDirectionSwitch() {
-      this.direction =
-        this.direction === TransferDirection.bankToTradingAccount
+    handleTransferDirectionSwitch() {
+      this.transferDirection =
+        this.transferDirection === TransferDirection.bankToTradingAccount
           ? TransferDirection.tradingAccountToBank
           : TransferDirection.bankToTradingAccount
     }
