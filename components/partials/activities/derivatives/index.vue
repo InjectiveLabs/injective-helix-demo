@@ -3,20 +3,11 @@
     <div class="w-full mx-auto">
       <div class="flex flex-wrap items-center justify-center">
         <v-button-select v-model="component" :option="components.orders" text>
-          {{ $t('activities.orders') }}
+          {{ $t('activities.openOrders') }}
         </v-button-select>
         <div class="mx-2 w-px h-4 bg-gray-500"></div>
         <v-button-select v-model="component" :option="components.trades" text>
-          {{ $t('activities.trades') }}
-        </v-button-select>
-        <div v-if="false" class="mx-2 w-px h-4 bg-gray-500"></div>
-        <v-button-select
-          v-if="false"
-          v-model="component"
-          :option="components.ordersHistory"
-          text
-        >
-          {{ $t('activities.ordersHistory') }}
+          {{ $t('activities.tradeHistory') }}
         </v-button-select>
       </div>
       <div class="mt-6 relative">
@@ -33,8 +24,7 @@ import VTrades from '~/components/partials/activities/derivatives/trades.vue'
 
 const components = {
   orders: 'orders',
-  trades: 'trades',
-  ordersHistory: 'orders-history'
+  trades: 'trades'
 }
 
 export default Vue.extend({

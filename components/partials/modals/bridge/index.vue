@@ -1,5 +1,5 @@
 <template>
-  <v-modal :is-open="isModalOpen" md @modal-closed="handleCloseModal">
+  <v-modal :is-open="isModalOpen" sm @modal-closed="handleCloseModal">
     <div slot="title">
       <h3>{{ bridgeTitle }}</h3>
     </div>

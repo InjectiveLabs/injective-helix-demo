@@ -28,7 +28,7 @@
           </div>
         </template>
         <div class="table-responsive min-h-orders max-h-lg mt-6">
-          <table class="table">
+          <table v-if="filteredTrades.length > 0" class="table">
             <trades-table-header market-column-enabled />
             <tbody v-if="isUserWalletConnected">
               <tr
@@ -39,6 +39,13 @@
               ></tr>
             </tbody>
           </table>
+
+          <div v-else class="min-h-orders w-full bg-gray-900 flex">
+            <div class="grow text-center m-auto">
+              <img src="/svg/empty-list.svg" class="mx-auto mb-2" />
+              <p>{{ $t('trade.emptyTrades') }}</p>
+            </div>
+          </div>
         </div>
       </v-card-table-wrap>
     </HOCLoading>

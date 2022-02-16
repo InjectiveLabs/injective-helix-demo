@@ -4,7 +4,7 @@
       <div class="col-span-12 flex justify-between">
         <div class="flex items-center">
           <v-button-filter v-model="component" :option="components.openOrders">
-            <span>
+            <span class="uppercase text-xs font-semibold">
               {{ $t('open_orders') }}
               {{ `(${orders.length})` }}
             </span>
@@ -14,7 +14,7 @@
             v-model="component"
             :option="components.tradeHistory"
           >
-            <span>
+            <span class="uppercase text-xs font-semibold">
               {{ $t('trade_history') }}
             </span>
           </v-button-filter>
@@ -22,10 +22,11 @@
 
         <v-button
           v-if="component === components.openOrders && orders.length > 0"
-          text-xs
+          red-outline
+          md
           @click.stop="handleCancelAllClick"
         >
-          {{ $t('cancel_all') }}
+          {{ $t('trade.cancelAllOrders') }}
         </v-button>
       </div>
     </template>

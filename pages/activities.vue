@@ -2,41 +2,50 @@
   <div class="h-full w-full flex flex-wrap py-4">
     <div class="container">
       <div class="w-full mx-auto 3xl:w-10/12 4xl:w-4/5">
-        <div class="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-12 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <v-card-select
+            v-model="component"
+            :option="components.positions"
+            class="col-span-1"
+          >
+            <span class="text-sm">
+              {{ $t('activities.positions') }}
+            </span>
+          </v-card-select>
           <v-card-select
             v-model="component"
             :option="components.spot"
-            class="col-span-3"
+            class="col-span-1"
           >
-            <span class="text-lg">
+            <span class="text-sm">
               {{ $t('activities.spotOrders') }}
             </span>
           </v-card-select>
           <v-card-select
             v-model="component"
             :option="components.derivatives"
-            class="col-span-3"
+            class="col-span-1"
           >
-            <span class="text-lg">
+            <span class="text-sm">
               {{ $t('activities.derivativeOrders') }}
             </span>
           </v-card-select>
           <v-card-select
             v-model="component"
-            :option="components.earnHistory"
-            class="col-span-3"
+            :option="components.rewardHistory"
+            class="col-span-1"
           >
-            <span class="text-lg">
-              {{ $t('activities.earnHistory') }}
+            <span class="text-sm">
+              {{ $t('activities.rewardHistory') }}
             </span>
           </v-card-select>
           <v-card-select
             v-model="component"
-            :option="components.transactionHistory"
-            class="col-span-3"
+            :option="components.fundingHistory"
+            class="col-span-1"
           >
-            <span class="text-lg">
-              {{ $t('activities.transactionHistory') }}
+            <span class="text-sm">
+              {{ $t('activities.fundingHistory') }}
             </span>
           </v-card-select>
         </div>
@@ -50,18 +59,21 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import VPositions from '~/components/partials/activities/positions/index.vue'
 import VSpot from '~/components/partials/activities/spot/index.vue'
 import VDerivatives from '~/components/partials/activities/derivatives/index.vue'
 
 const components = {
+  positions: 'positions',
   spot: 'spot',
   derivatives: 'derivatives',
-  earnHistory: 'earn-history',
-  transactionHistory: 'transaction-history'
+  rewardHistory: 'reward-history',
+  fundingHistory: 'funding-history'
 }
 
 export default Vue.extend({
   components: {
+    VPositions,
     VSpot,
     VDerivatives
   },

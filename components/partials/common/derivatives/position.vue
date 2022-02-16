@@ -1,45 +1,47 @@
 <template>
   <tr v-if="market">
-    <td class="text-center relative">
-      <v-button
-        text
-        :aqua="position.direction === TradeDirection.Long"
-        :red="position.direction === TradeDirection.Short"
-        :class="{
-          'border border-aqua-500': position.direction === TradeDirection.Long,
-          'border border-red-500 ': position.direction === TradeDirection.Short
-        }"
-        class="flex items-center px-2 py-1"
-        @click="onClosePositionClick"
-      >
-        {{ $t('Close') }}
-        <v-icon-close class="w-3 h-3 ml-1 mt-px" />
-      </v-button>
-    </td>
     <td
       v-if="!isOnMarketPage"
       class="text-left cursor-pointer"
       @click="handleClickOnMarket"
     >
-      {{ position.ticker }}
+      <div class="flex items-center justify-end md:justify-start">
+        <div v-if="market.baseToken.logo" class="w-6 h-6">
+          <img
+            :src="market.baseToken.logo"
+            :alt="market.baseToken.name"
+            class="min-w-full h-auto rounded-full"
+          />
+        </div>
+        <div class="ml-3">
+          <span class="text-gray-200 font-semibold">
+            {{ position.ticker }}
+          </span>
+        </div>
+      </div>
     </td>
 
-    <td class="text-right font-mono">
+    <td class="text-left pl-1">
       <span
         :class="{
           'text-aqua-500': position.direction === TradeDirection.Long,
           'text-red-500': position.direction === TradeDirection.Short
         }"
       >
-        <v-number
-          :decimals="
-            market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-          "
-          :number="price"
-        />
+        {{ directionLocalized }}
       </span>
     </td>
-    <td class="text-right font-mono">
+
+    <td class="text-left font-mono">
+      <v-number
+        :decimals="
+          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+        "
+        :number="price"
+      />
+    </td>
+
+    <td class="text-left font-mono">
       <v-number
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
@@ -47,7 +49,7 @@
         :number="quantity"
       />
     </td>
-    <td class="text-right font-mono">
+    <td class="text-left font-mono">
       <v-number
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -55,16 +57,7 @@
         :number="liquidationPrice"
       />
     </td>
-    <td class="text-center">
-      <v-badge
-        :aqua="position.direction === TradeDirection.Long"
-        :red="position.direction === TradeDirection.Short"
-        sm
-      >
-        {{ directionLocalized }}
-      </v-badge>
-    </td>
-    <td class="text-center">
+    <td class="text-left">
       <div
         v-if="!pnl.isNaN()"
         class="flex items-center justify-end text-xs"
@@ -132,6 +125,16 @@
         <span class="text-gray-300">&times;</span>
       </span>
       <span v-else class="text-gray-400">{{ $t('not_available_n_a') }}</span>
+    </td>
+
+    <td class="text-center relative">
+      <v-button :status="status" @click="onClosePositionClick">
+        <div
+          class="flex items-center justify-center rounded-full bg-red-550 bg-opacity-10 w-8 h-8 hover:bg-red-600 text-red-550 hover:text-red-600 hover:bg-opacity-10"
+        >
+          <v-icon-bin />
+        </div>
+      </v-button>
     </td>
   </tr>
 </template>
@@ -227,7 +230,7 @@ export default Vue.extend({
         return {}
       }
 
-      return this.$accessor.portfolio.derivativeOrderbooks
+      return this.$accessor.positions.orderbooks
     },
 
     orderbook(): UiDerivativeOrderbook | undefined {
@@ -248,7 +251,7 @@ export default Vue.extend({
         return currentOrders
       }
 
-      return this.$accessor.portfolio.subaccountOrders
+      return this.$accessor.derivatives.subaccountOrders
     },
 
     price(): BigNumberInBase {

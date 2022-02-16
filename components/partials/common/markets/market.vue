@@ -1,5 +1,5 @@
 <template>
-  <TableRow @click.native.stop="handleClickOnMarket">
+  <TableRow dense @click.native.stop="handleClickOnMarket">
     <span
       class="text-base md:text-sm"
       :class="{
@@ -71,11 +71,7 @@
       {{ $t('market_change_24h') }}
     </span>
     <span
-      class="font-mono text-right text-2xs md:text-sm"
-      :class="{
-        'col-span-1 md:col-span-3': !simple,
-        'col-span-1 md:col-span-3': simple
-      }"
+      class="font-mono text-right text-2xs md:text-sm col-span-1 md:col-span-3"
     >
       <span
         v-if="!change.isNaN()"

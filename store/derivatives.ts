@@ -54,6 +54,7 @@ const initialStateFactory = () => ({
   orderbook: undefined as UiDerivativeOrderbook | undefined,
   trades: [] as UiDerivativeTrade[],
   subaccountPosition: undefined as UiPosition | undefined,
+  subaccountPositions: [] as UiPosition[],
   subaccountTrades: [] as UiDerivativeTrade[],
   subaccountOrders: [] as UiDerivativeLimitOrder[]
 })
@@ -71,6 +72,7 @@ export const state = () => ({
   trades: initialState.trades as UiDerivativeTrade[],
   subaccountTrades: initialState.subaccountTrades as UiDerivativeTrade[],
   subaccountPosition: initialState.subaccountPosition as UiPosition | undefined,
+  subaccountPositions: initialState.subaccountPositions as UiPosition[],
   subaccountOrders: initialState.subaccountOrders as UiDerivativeLimitOrder[],
   orderbook: initialState.orderbook as UiDerivativeOrderbook | undefined
 })
@@ -182,6 +184,13 @@ export const mutations = {
     state.subaccountPosition = subaccountPosition
   },
 
+  setSubaccountPositions(
+    state: DerivativeStoreState,
+    subaccountPositions: UiPosition[]
+  ) {
+    state.subaccountPositions = subaccountPositions
+  },
+
   deleteSubaccountPosition(state: DerivativeStoreState) {
     state.subaccountPosition = undefined
   },
@@ -291,6 +300,7 @@ export const mutations = {
     state.subaccountTrades = initialState.subaccountTrades
     state.subaccountOrders = initialState.subaccountOrders
     state.subaccountPosition = initialState.subaccountPosition
+    state.subaccountPositions = initialState.subaccountPositions
   }
 }
 
@@ -624,6 +634,21 @@ export const actions = actionTree(
           subaccountId: subaccount.subaccountId
         })
       )
+    },
+
+    async fetchSubaccountPositions({ commit }) {
+      const { subaccount } = this.app.$accessor.account
+      const { isUserWalletConnected } = this.app.$accessor.wallet
+
+      if (!isUserWalletConnected || !subaccount) {
+        return
+      }
+
+      const positions = await derivativeService.fetchPositions({
+        subaccountId: subaccount.subaccountId
+      })
+
+      commit('setSubaccountPositions', positions)
     },
 
     async fetchSubaccountPosition({ state, commit }) {

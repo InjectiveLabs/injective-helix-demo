@@ -1,5 +1,5 @@
 <template>
-  <v-modal :is-open="isModalOpen" @modal-closed="closeModal">
+  <v-modal :is-open="isModalOpen" sm @modal-closed="closeModal">
     <h3 slot="title">
       {{ $t('add_margin_to_position_title') }}
     </h3>

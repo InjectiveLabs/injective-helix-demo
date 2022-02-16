@@ -17083,10 +17083,10 @@ vue-router@^3.5.1:
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.5.1.tgz#edf3cf4907952d1e0583e079237220c5ff6eb6c9"
   integrity sha512-RRQNLT8Mzr8z7eL4p7BtKvRaTSGdCbTy2+Mm5HTJvLGYSSeG9gDzNasJPP/yOYKLy+/cLG/ftrqq5fvkFwBJEw==
 
-vue-select@^3.11.2:
-  version "3.11.2"
-  resolved "https://registry.yarnpkg.com/vue-select/-/vue-select-3.11.2.tgz#3ef93e3f2707e133c2df0b2920a05eea78764d18"
-  integrity sha512-pIOcY8ajWNSwg8Ns4eHVr5ZWwqKCSZeQRymTnlUI8i+3QiQXF6JIM4lylK6mVfbccs4S6vOyxB7zmJBpp7tDUg==
+vue-select@^3.12.2:
+  version "3.16.0"
+  resolved "https://registry.npmjs.org/vue-select/-/vue-select-3.16.0.tgz#db2ee2ddf80bd8876ce57738107b8a1a741862f4"
+  integrity sha512-F0x7HXTUc5eq7YSjR0uX77RGA+Yk2+I8aMW+NePyPqRX9OPSiDtKpezFIFhnhxqrOvMh4uVR0jHkXIDmzs6nYQ==
 
 vue-server-renderer@^2.6.12:
   version "2.6.12"

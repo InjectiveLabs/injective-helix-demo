@@ -39,7 +39,7 @@
           class="inline-block align-bottom bg-gray-850 shadow-card rounded-xl text-left transform transition-all w-full max-w-lg"
           :class="[
             dense ? 'p-6' : 'p-8',
-            { 'lg:max-w-2xl': !sm, 'lg:max-w-4xl': !md }
+            { 'max-w-md': sm, 'lg:max-w-2xl': !sm, 'lg:max-w-4xl': !sm && !md }
           ]"
           role="dialog"
           :aria-modal="isOpen"

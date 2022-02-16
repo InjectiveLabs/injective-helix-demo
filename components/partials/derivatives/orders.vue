@@ -7,15 +7,15 @@
             v-model="component"
             :option="components.openPositions"
           >
-            <span>
-              {{ $t('open_positions') }}
+            <span class="uppercase text-xs font-semibold">
+              {{ $t('activities.openPositions') }}
               <span v-if="position">(1)</span>
             </span>
           </v-button-filter>
           <v-separator />
           <v-button-filter v-model="component" :option="components.openOrders">
-            <span>
-              {{ $t('open_orders') }}
+            <span class="uppercase text-xs font-semibold">
+              {{ $t('activities.openOrders') }}
               {{ `(${orders.length})` }}
             </span>
           </v-button-filter>
@@ -24,18 +24,19 @@
             v-model="component"
             :option="components.tradeHistory"
           >
-            <span>
-              {{ $t('trade_history') }}
+            <span class="uppercase text-xs font-semibold">
+              {{ $t('activities.tradeHistory') }}
             </span>
           </v-button-filter>
         </div>
 
         <v-button
           v-if="component === components.openOrders && orders.length > 0"
-          text-xs
+          red-outline
+          md
           @click.stop="handleCancelAllClick"
         >
-          {{ $t('cancel_all') }}
+          {{ $t('trade.cancelAllOrders') }}
         </v-button>
       </div>
     </template>

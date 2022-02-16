@@ -10,6 +10,7 @@ import * as gasRebate from '~/store/gasRebate'
 import * as onboard from '~/store/onboard'
 import * as modal from '~/store/modal'
 import * as spot from '~/store/spot'
+import * as positions from '~/store/positions'
 import * as token from '~/store/token'
 import * as wallet from '~/store/wallet'
 
@@ -25,6 +26,7 @@ export const accessorType = getAccessorType({
     gasRebate,
     modal,
     activities,
+    positions,
     spot,
     token,
     wallet

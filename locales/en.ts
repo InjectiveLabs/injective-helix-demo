@@ -164,10 +164,6 @@ export default {
   liquidation_price: 'Liquidation Price',
   positions: 'Positions',
   close_position: 'Close Position',
-  entry_price: 'Entry Price',
-  unrealized_pnl: 'Unrealized PnL',
-  unrealized_pnl_tooltip:
-    'The unrealized PnL is an approximation of the realized profit or loss if the position was to be closed.',
   leverage: 'Leverage',
   not_available_n_a: 'N/A',
   position_closed: 'Position Closed',
@@ -322,8 +318,6 @@ export default {
   'Available Margin Tooltip':
     'The available margin you can add to this position',
   'Confirm order execution': 'Confirm order execution',
-  liquidation_price_tooltip:
-    'The price at which your position will be liquidated or force-exited to prevent further losses.',
   margin_tooltip: 'The total margin required to execute the trade.',
   recent_news: 'Recent news',
   injective_home_title_1: 'Injective eliminates all barriers to trading',

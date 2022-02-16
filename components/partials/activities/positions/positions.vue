@@ -2,7 +2,7 @@
   <v-card lg>
     <HOCLoading :status="status">
       <v-card-table-wrap>
-        <template #actions>
+        <!-- <template #actions>
           <div
             class="col-span-12 sm:col-span-6 lg:col-span-4 grid grid-cols-5 gap-4"
           >
@@ -23,7 +23,6 @@
           <div class="col-span-12 sm:col-span-6 lg:col-span-8 sm:text-right">
             <v-button
               v-if="orders.length > 0 && isUserWalletConnected"
-              class="mt-4 sm:mt-0"
               red-outline
               md
               @click.stop="handleCancelOrders"
@@ -31,17 +30,17 @@
               {{ $t('trade.cancelAllOrders') }}
             </v-button>
           </div>
-        </template>
+        </template> -->
 
         <div class="table-responsive min-h-orders max-h-lg mt-6">
-          <table v-if="filteredOrders.length > 0" class="table">
-            <orders-table-header market-column-enabled />
+          <table v-if="filteredPositions.length > 0" class="table">
+            <position-table-header market-column-enabled />
             <tbody v-if="isUserWalletConnected">
               <tr
-                is="v-order"
-                v-for="(order, index) in filteredOrders"
-                :key="`orders-${index}-${order.orderHash}`"
-                :order="order"
+                is="v-position"
+                v-for="(position, index) in filteredPositions"
+                :key="`positions-${index}-${position.marketId}`"
+                :position="position"
               ></tr>
             </tbody>
           </table>
@@ -49,7 +48,7 @@
           <div v-else class="min-h-orders w-full bg-gray-900 flex">
             <div class="grow text-center m-auto">
               <img src="/svg/empty-list.svg" class="mx-auto mb-2" />
-              <p>{{ $t('trade.emptyOrders') }}</p>
+              <p>{{ $t('trade.emptyPositions') }}</p>
             </div>
           </div>
         </div>
@@ -59,23 +58,21 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
+import Vue from 'vue'
 import {
-  UiSpotLimitOrder,
-  UiSpotMarketWithToken
+  UiPosition,
+  UiDerivativeMarketWithToken
 } from '@injectivelabs/ui-common'
-import Order from '~/components/partials/common/spot/order.vue'
-import OrdersTableHeader from '~/components/partials/common/spot/orders-table-header.vue'
+import Position from '~/components/partials/common/derivatives/position.vue'
+import PositionTableHeader from '~/components/partials/common/derivatives/position-table.header.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
-import SideSelector from '~/components/partials/common/trades/side-selector.vue'
 
 export default Vue.extend({
   components: {
-    'v-order': Order,
-    OrdersTableHeader,
-    HOCLoading,
-    SideSelector
+    'v-position': Position,
+    PositionTableHeader,
+    HOCLoading
   },
 
   data() {
@@ -91,36 +88,41 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    orders(): UiSpotLimitOrder[] {
-      return this.$accessor.activities.subaccountSpotOrders
+    positions(): UiPosition[] {
+      return this.$accessor.positions.subaccountPositions
     },
 
-    markets(): UiSpotMarketWithToken[] {
-      return this.$accessor.spot.markets
+    markets(): UiDerivativeMarketWithToken[] {
+      return this.$accessor.derivatives.markets
     },
 
-    filteredOrders(): UiSpotLimitOrder[] {
-      const { markets, search, orders, side } = this
+    filteredPositions(): UiPosition[] {
+      const { positions } = this
 
-      return orders.filter((o) => {
-        const market = markets.find((m) => m.marketId === o.marketId)
+      return positions
+      // return orders.filter((o) => {
+      //   const market = markets.find((m) => m.marketId === o.marketId)
 
-        if (!market || (!search && !side)) {
-          return true
-        }
+      //   if (!market || (!search && !side)) {
+      //     return true
+      //   }
 
-        const isPartOfSearchFilter =
-          !search ||
-          market.ticker.toLowerCase().includes(search.trim().toLowerCase())
-        const isPartOfSideFilter = !side || o.orderSide === side
+      //   const isPartOfSearchFilter =
+      //     !search ||
+      //     market.ticker.toLowerCase().includes(search.trim().toLowerCase())
+      //   const isPartOfSideFilter = !side || o.orderSide === side
 
-        return isPartOfSearchFilter && isPartOfSideFilter
-      })
+      //   return isPartOfSearchFilter && isPartOfSideFilter
+      // })
     }
   },
 
   mounted() {
-    Promise.all([this.$accessor.activities.fetchSubaccountSpotOrders()])
+    Promise.all([
+      this.$accessor.derivatives.fetchSubaccountOrders(),
+      this.$accessor.positions.fetchOrderbook(),
+      this.$accessor.positions.fetchSubaccountPositions()
+    ])
       .then(() => {
         //
       })
@@ -131,21 +133,21 @@ export default Vue.extend({
   },
 
   methods: {
-    handleCancelOrders() {
-      const { orders } = this
+    // handleCancelOrders() {
+    //   const { orders } = this
 
-      this.status.setLoading()
+    //   this.status.setLoading()
 
-      this.$accessor.activities
-        .batchCancelSpotOrders(orders)
-        .then(() => {
-          this.$toast.success(this.$t('activities.cancelOrdersSuccess'))
-        })
-        .catch(this.$onRejected)
-        .finally(() => {
-          this.status.setIdle()
-        })
-    },
+    //   this.$accessor.activities
+    //     .batchCancelDerivativeOrders(orders)
+    //     .then(() => {
+    //       this.$toast.success(this.$t('activities.cancelOrdersSuccess'))
+    //     })
+    //     .catch(this.$onRejected)
+    //     .finally(() => {
+    //       this.status.setIdle()
+    //     })
+    // },
 
     handleInputOnSearch(search: string) {
       this.search = search
