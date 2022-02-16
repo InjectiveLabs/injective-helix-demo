@@ -195,11 +195,12 @@ export default Vue.extend({
           )
         } else if (this.redOutline) {
           classes.push(
-            'bg-red-300',
-            'text-red-900',
+            'bg-red-550',
+            'bg-opacity-10',
+            'text-red-550',
             'font-semibold',
             'border',
-            'hover:text-red-800'
+            'hover:text-red-500'
           )
         }
       }

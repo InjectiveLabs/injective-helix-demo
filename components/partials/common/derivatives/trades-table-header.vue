@@ -1,52 +1,67 @@
 <template>
   <thead>
     <tr>
+      <th class="text-left">
+        <div class="flex items-center">
+          {{ $t('trade.timestamp') }}
+          <v-icon-info-tooltip
+            class="ml-2"
+            :tooltip="$t('trade.timestamp_tooltip')"
+          />
+        </div>
+      </th>
+
       <th v-if="marketColumnEnabled" class="text-left">
-        {{ $t('market') }}
+        {{ $t('trade.pair') }}
       </th>
-      <th class="text-right">
-        {{ $t('price') }}
-      </th>
+
       <th>
-        <div class="flex items-center justify-end">
-          {{ $t('amount') }}
-          <v-icon-info-tooltip class="ml-2" :tooltip="$t('amount_tooltip')" />
-        </div>
-      </th>
-      <th>
-        <div class="flex items-center justify-end">
-          {{ $t('notional_value') }}
+        <div class="flex items-center">
+          {{ $t('trade.type') }}
           <v-icon-info-tooltip
             class="ml-2"
-            :tooltip="$t('notional_value_tooltip')"
+            :tooltip="$t('trade.type_tooltip')"
+          />
+        </div>
+      </th>
+
+      <th>
+        <div class="flex items-center">
+          <span>{{ $t('trade.side') }}</span>
+          <v-icon-info-tooltip
+            class="ml-2"
+            :tooltip="$t('trade.side_tooltip')"
+          />
+        </div>
+      </th>
+      <th class="text-left">
+        {{ $t('trade.price') }}
+      </th>
+      <th>
+        <div class="flex items-center">
+          <span>{{ $t('trade.amount') }}</span>
+          <v-icon-info-tooltip
+            class="ml-2"
+            :tooltip="$t('trade.amount_tooltip')"
           />
         </div>
       </th>
       <th>
         <div class="flex items-center justify-end">
-          {{ $t('fee') }}
-          <v-icon-info-tooltip class="ml-2" :tooltip="$t('fees_tooltip')" />
-        </div>
-      </th>
-      <th>
-        <div class="flex items-center justify-center">
-          {{ $t('side') }}
-          <v-icon-info-tooltip class="ml-2" :tooltip="$t('side_tooltip')" />
-        </div>
-      </th>
-      <th class="text-center">
-        <div class="flex items-center justify-center">
-          {{ $t('execution_type') }}
+          {{ $t('trade.fee') }}
           <v-icon-info-tooltip
             class="ml-2"
-            :tooltip="$t('execution_type_tooltip')"
+            :tooltip="$t('trade.fees_tooltip')"
           />
         </div>
       </th>
-      <th class="text-right">
-        <div class="flex items-center justify-center">
-          {{ $t('time') }}
-          <v-icon-info-tooltip class="ml-2" :tooltip="$t('time_tooltip')" />
+      <th>
+        <div class="flex items-center justify-end">
+          <span>{{ $t('trade.total') }}</span>
+          <v-icon-info-tooltip
+            class="ml-2"
+            :tooltip="$t('trade.total_tooltip')"
+          />
         </div>
       </th>
     </tr>

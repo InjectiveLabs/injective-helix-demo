@@ -81,3 +81,13 @@ export enum BridgeType {
   Withdraw = 'Withdraw',
   Transfer = 'Transfer'
 }
+
+export enum tradeTypes {
+  Limit = 'limit',
+  Market = 'market'
+}
+
+export enum tradeSides {
+  Buy = 'buy',
+  Sell = 'sell'
+}

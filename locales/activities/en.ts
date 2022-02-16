@@ -13,6 +13,7 @@ export default {
   },
 
   trade: {
+    all: 'All',
     timestamp: 'Time stamp',
     timestamp_tooltip:
       "The time at which the trade was executed (times are shown in your browser's timezone).",
@@ -27,13 +28,20 @@ export default {
       'The total value of the base asset at the time which the trade was executed (i.e. for BTC/USDT, BTC is the base asset and USDT is the quote asset).',
     filled: 'Filled',
     total: 'Total',
-    total_tooltip: 'The total value of the position which is determined by the mark price with the following formula: Mark Price * Base Asset Amount.',
+    total_tooltip:
+      'The total value of the position which is determined by the mark price with the following formula: Mark Price * Base Asset Amount.',
     fee: 'Fee',
     fees_tooltip:
       'Trading fees associated with the trade. Trading fees on Injective can be lowered using rebates.',
     buy: 'Buy',
     sell: 'Sell',
-    filter: 'Filter asset'
+    unfilled: 'Unfilled',
+    filter: 'Filter asset',
+    cancelAllOrders: 'Cancel all orders',
+    reduce_only: 'Reduce Only',
+    leverage: 'Leverage',
+    limit: 'Limit',
+    market: 'Market'
   },
 
   spot: {
