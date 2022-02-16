@@ -94,7 +94,7 @@
       <TableHeader v-if="markets.length !== 0" sm>
         <span
           class="text-left"
-          :class="{ 'col-span-4': simple, 'col-span-3': !simple }"
+          :class="{ 'col-span-5': simple, 'col-span-3': !simple }"
         >
           {{ $t('market') }}
         </span>
@@ -107,7 +107,7 @@
             />
           </div>
         </span>
-        <span :class="{ 'col-span-4': simple, 'col-span-3': !simple }">
+        <span class="col-span-3">
           <div class="flex items-center relative justify-end">
             {{ $t('market_change_24h') }}
             <v-icon-info-tooltip

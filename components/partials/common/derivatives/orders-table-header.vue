@@ -2,38 +2,42 @@
   <thead>
     <tr>
       <th v-if="marketColumnEnabled" class="text-left">
-        {{ $t('market') }}
-      </th>
-      <th class="text-right">
-        {{ $t('price') }}
+        {{ $t('trade.pair') }}
       </th>
       <th>
-        <div class="flex items-center justify-end">
-          <span>{{ $t('amount') }}</span>
-          <v-icon-info-tooltip class="ml-2" :tooltip="$t('amount_tooltip')" />
+        <div class="flex items-center">
+          <span>{{ $t('trade.side') }}</span>
+          <v-icon-info-tooltip
+            class="ml-2"
+            :tooltip="$t('trade.side_tooltip')"
+          />
         </div>
       </th>
-      <th class="text-right">
-        {{ $t('total') }}
-      </th>
-      <th class="text-right">
-        {{ $t('leverage') }}
+      <th class="text-left">
+        {{ $t('trade.price') }}
       </th>
       <th>
-        <div class="flex items-center justify-center">
-          {{ $t('side') }}
-          <v-icon-info-tooltip class="ml-2" :tooltip="$t('side_tooltip')" />
+        <div class="flex items-center">
+          <span>{{ $t('trade.amount') }}</span>
+          <v-icon-info-tooltip
+            class="ml-2"
+            :tooltip="$t('trade.amount_tooltip')"
+          />
         </div>
       </th>
-      <th class="text-right">
-        {{ $t('unfilled') }}
+      <th class="text-left">
+        {{ $t('trade.unfilled') }}
       </th>
-      <th class="text-center">
-        {{ $t('filled') }}
+      <th class="text-left">
+        {{ $t('trade.filled') }}
       </th>
-      <th class="text-center">
-        {{ $t('actions') }}
+      <th class="text-left">
+        {{ $t('trade.leverage') }}
       </th>
+      <th class="text-left">
+        {{ $t('trade.total') }}
+      </th>
+      <th></th>
     </tr>
   </thead>
 </template>

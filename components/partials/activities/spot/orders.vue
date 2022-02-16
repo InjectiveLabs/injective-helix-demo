@@ -2,24 +2,44 @@
   <v-card lg>
     <HOCLoading :status="status">
       <v-card-table-wrap>
-        <template #context>
-          <v-button
-            v-if="orders.length > 0 && isUserWalletConnected"
-            red-outline
-            md
-            @click.stop="handleCancelOrders"
+        <template #actions>
+          <div
+            class="col-span-12 sm:col-span-6 lg:col-span-4 grid grid-cols-5 gap-4"
           >
-            {{ $t('activities.cancelOrders') }}
-          </v-button>
+            <v-search
+              dense
+              class="col-span-3"
+              :placeholder="$t('trade.filter')"
+              :search="search"
+              @searched="handleInputOnSearch"
+            />
+            <side-selector
+              class="col-span-2"
+              :value="side"
+              @click="handleSideClick"
+            />
+          </div>
+
+          <div class="col-span-12 sm:col-span-6 lg:col-span-8 sm:text-right">
+            <v-button
+              v-if="orders.length > 0 && isUserWalletConnected"
+              class="mt-4 sm:mt-0"
+              red-outline
+              md
+              @click.stop="handleCancelOrders"
+            >
+              {{ $t('trade.cancelAllOrders') }}
+            </v-button>
+          </div>
         </template>
 
-        <div class="table-responsive min-h-orders max-h-xs 4xl:max-h-lg">
+        <div class="table-responsive min-h-orders max-h-lg mt-6">
           <table class="table">
             <orders-table-header market-column-enabled />
             <tbody v-if="isUserWalletConnected">
               <tr
                 is="v-order"
-                v-for="(order, index) in orders"
+                v-for="(order, index) in filteredOrders"
                 :key="`orders-${index}-${order.orderHash}`"
                 :order="order"
               ></tr>
@@ -32,22 +52,29 @@
 </template>
 
 <script lang="ts">
-import { Status, StatusType } from '@injectivelabs/utils'
 import Vue from 'vue'
-import { UiSpotLimitOrder } from '@injectivelabs/ui-common'
+import { Status, StatusType } from '@injectivelabs/utils'
+import {
+  UiSpotLimitOrder,
+  UiSpotMarketWithToken
+} from '@injectivelabs/ui-common'
 import Order from '~/components/partials/common/spot/order.vue'
 import OrdersTableHeader from '~/components/partials/common/spot/orders-table-header.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
+import SideSelector from '~/components/partials/common/trades/side-selector.vue'
 
 export default Vue.extend({
   components: {
     'v-order': Order,
     OrdersTableHeader,
-    HOCLoading
+    HOCLoading,
+    SideSelector
   },
 
   data() {
     return {
+      search: '',
+      side: undefined as string | undefined,
       status: new Status(StatusType.Loading)
     }
   },
@@ -59,6 +86,29 @@ export default Vue.extend({
 
     orders(): UiSpotLimitOrder[] {
       return this.$accessor.activities.subaccountSpotOrders
+    },
+
+    markets(): UiSpotMarketWithToken[] {
+      return this.$accessor.spot.markets
+    },
+
+    filteredOrders(): UiSpotLimitOrder[] {
+      const { markets, search, orders, side } = this
+
+      return orders.filter((o) => {
+        const market = markets.find((m) => m.marketId === o.marketId)
+
+        if (!market || (!search && !side)) {
+          return true
+        }
+
+        const isPartOfSearchFilter =
+          !search ||
+          market.ticker.toLowerCase().includes(search.trim().toLowerCase())
+        const isPartOfSideFilter = !side || o.orderSide === side
+
+        return isPartOfSearchFilter && isPartOfSideFilter
+      })
     }
   },
 
@@ -88,6 +138,14 @@ export default Vue.extend({
         .finally(() => {
           this.status.setIdle()
         })
+    },
+
+    handleInputOnSearch(search: string) {
+      this.search = search
+    },
+
+    handleSideClick(side: string | undefined) {
+      this.side = side
     }
   }
 })

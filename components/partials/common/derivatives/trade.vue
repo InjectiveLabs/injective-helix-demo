@@ -57,19 +57,19 @@
       />
     </td>
     <td class="h-8 text-right font-mono">
-      <v-number
-        :decimals="
-          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-        "
-        :number="total"
-      >
+      <v-number use-number-decimals :number="fee">
         <span slot="addon" class="text-2xs text-gray-500">
           {{ market.quoteToken.symbol }}
         </span>
       </v-number>
     </td>
     <td class="h-8 text-right font-mono">
-      <v-number use-number-decimals :number="fee">
+      <v-number
+        :decimals="
+          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+        "
+        :number="total"
+      >
         <span slot="addon" class="text-2xs text-gray-500">
           {{ market.quoteToken.symbol }}
         </span>

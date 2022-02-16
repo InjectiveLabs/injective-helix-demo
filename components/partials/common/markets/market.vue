@@ -4,18 +4,16 @@
       class="text-base md:text-sm"
       :class="{
         'col-span-2 md:col-span-3': !simple,
-        'col-span-2 md:col-span-4': simple
+        'col-span-2 md:col-span-5': simple
       }"
     >
-      <div
-        class="flex items-center cursor-pointer justify-center md:justify-start"
-      >
+      <div class="flex items-center cursor-pointer justify-start">
         <img
           :src="market.baseToken.logo"
           :alt="market.baseToken.name"
           class="w-4 h-4 md:w-6 md:h-6 mr-4"
         />
-        <div class="w-32 mr-4 text-left">
+        <div class="mr-4 text-left">
           <div class="flex">
             {{ market.ticker }}
             <span
@@ -76,7 +74,7 @@
       class="font-mono text-right text-2xs md:text-sm"
       :class="{
         'col-span-1 md:col-span-3': !simple,
-        'col-span-1 md:col-span-4': simple
+        'col-span-1 md:col-span-3': simple
       }"
     >
       <span

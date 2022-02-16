@@ -1,28 +1,35 @@
 <template>
   <v-card-table-wrap>
-    <template #filters>
-      <v-button-filter v-model="component" :option="components.openOrders">
-        <span>
-          {{ $t('open_orders') }}
-          {{ `(${orders.length})` }}
-        </span>
-      </v-button-filter>
-      <v-separator />
-      <v-button-filter v-model="component" :option="components.tradeHistory">
-        <span>
-          {{ $t('trade_history') }}
-        </span>
-      </v-button-filter>
+    <template #actions>
+      <div class="col-span-12 flex justify-between">
+        <div class="flex items-center">
+          <v-button-filter v-model="component" :option="components.openOrders">
+            <span>
+              {{ $t('open_orders') }}
+              {{ `(${orders.length})` }}
+            </span>
+          </v-button-filter>
+          <v-separator />
+          <v-button-filter
+            v-model="component"
+            :option="components.tradeHistory"
+          >
+            <span>
+              {{ $t('trade_history') }}
+            </span>
+          </v-button-filter>
+        </div>
+
+        <v-button
+          v-if="component === components.openOrders && orders.length > 0"
+          text-xs
+          @click.stop="handleCancelAllClick"
+        >
+          {{ $t('cancel_all') }}
+        </v-button>
+      </div>
     </template>
-    <template #context>
-      <v-button
-        v-if="component === components.openOrders && orders.length > 0"
-        text-xs
-        @click.stop="handleCancelAllClick"
-      >
-        {{ $t('cancel_all') }}
-      </v-button>
-    </template>
+
     <HOCLoading :status="status">
       <component :is="component" v-if="component"></component>
     </HOCLoading>

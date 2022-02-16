@@ -8,8 +8,8 @@
       <div>
         <button
           type="button"
-          class="inline-flex tracking-widest items-center justify-between w-full py-1 text-xs uppercase outline-none focus:outline-none text-gray-500 border-gray-600"
-          :class="{ 'border-b': !hideBottomBorder }"
+          class="inline-flex tracking-widest items-center justify-between w-full py-1 text-xs uppercase outline-none focus:outline-none text-gray-500"
+          :class="[selectorClass, { 'border-b': !hideBottomBorder }]"
           aria-haspopup="true"
           :aria-expanded="isDropdownOpen"
           @click="onDropdownToggle"
@@ -53,11 +53,6 @@ export default Vue.extend({
   },
 
   props: {
-    darkMode: {
-      type: Boolean,
-      default: false
-    },
-
     disabled: {
       type: Boolean,
       default: false
@@ -81,12 +76,31 @@ export default Vue.extend({
     preventClose: {
       type: Boolean,
       default: false
+    },
+
+    round: {
+      type: Boolean,
+      default: false
     }
   },
 
   data() {
     return {
       isDropdownOpen: false
+    }
+  },
+
+  computed: {
+    selectorClass(): string {
+      const { round } = this
+
+      if (!round) {
+        return 'border-gray-600'
+      }
+
+      // text-gray-500 border-gray-600
+
+      return 'bg-gray-900 rounded-full h-10 shadow-sm px-4 py-3' as string
     }
   },
 

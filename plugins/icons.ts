@@ -2,6 +2,7 @@
 import Vue from 'vue'
 import Arrow from '~/components/icons/arrow.vue'
 import ArrowSwap from '~/components/icons/arrow-swap.vue'
+import Bin from '~/components/icons/bin.vue'
 import Box from '~/components/icons/box.vue'
 import CaretDown from '~/components/icons/caret-down.vue'
 import CaretDownSlim from '~/components/icons/caret-down-slim.vue'
@@ -46,6 +47,7 @@ import Youtube from '~/components/icons/youtube.vue'
 
 Vue.component('VIconArrow', Arrow)
 Vue.component('VIconArrowSwap', ArrowSwap)
+Vue.component('VIconBin', Bin)
 Vue.component('VIconBox', Box)
 Vue.component('VIconCaretDown', CaretDown)
 Vue.component('VIconCaretDownSlim', CaretDownSlim)

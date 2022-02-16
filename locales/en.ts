@@ -19,7 +19,8 @@ export default {
     transfer: 'Transfer',
     value: 'Value',
     search: 'Search',
-    withdraw: 'Withdraw'
+    withdraw: 'Withdraw',
+    view: 'View'
   },
   address_copied: 'Address Copied',
   copy_address: 'Copy Address',
