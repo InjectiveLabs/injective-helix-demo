@@ -14,14 +14,16 @@
               @searched="handleInputOnSearch"
             />
 
-            <type-selector
+            <filter-selector
               class="self-start"
+              :type="TradeSelectorType.Type"
               :value="type"
               @click="handleTypeClick"
             />
 
-            <side-selector
+            <filter-selector
               class="self-start"
+              :type="TradeSelectorType.Side"
               :value="side"
               @click="handleSideClick"
             />
@@ -60,20 +62,20 @@ import { TradeExecutionType } from '@injectivelabs/ts-types'
 import Trade from '~/components/partials/common/spot/trade.vue'
 import TradesTableHeader from '~/components/partials/common/spot/trades-table-header.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
-import SideSelector from '~/components/partials/common/trades/side-selector.vue'
-import TypeSelector from '~/components/partials/common/trades/type-selector.vue'
+import FilterSelector from '~/components/partials/common/trades/trade-dropdown-filter.vue'
+import { TradeSelectorType } from '~/types/enums'
 
 export default Vue.extend({
   components: {
     'v-trade': Trade,
+    FilterSelector,
     TradesTableHeader,
-    TypeSelector,
-    SideSelector,
     HOCLoading
   },
 
   data() {
     return {
+      TradeSelectorType,
       search: '',
       type: undefined as string | undefined,
       side: undefined as string | undefined,

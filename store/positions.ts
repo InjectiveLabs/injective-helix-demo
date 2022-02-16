@@ -6,11 +6,7 @@ import {
   derivativeQuantityToChainQuantityToFixed
 } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
-import {
-  UiDerivativeMarketWithToken,
-  UiDerivativeOrderbook,
-  UiPosition
-} from '@injectivelabs/ui-common'
+import { UiDerivativeOrderbook, UiPosition } from '@injectivelabs/ui-common'
 import { DerivativeOrderSide } from '@injectivelabs/derivatives-consumer'
 import { FEE_RECIPIENT } from '~/app/utils/constants'
 import {
@@ -101,13 +97,11 @@ export const actions = actionTree(
       {
         positions
       }: {
-        positions: {
-          market: UiDerivativeMarketWithToken
-          position: UiPosition
-        }[]
+        positions: UiPosition[]
       }
     ) {
       const { subaccount } = this.app.$accessor.account
+      const { markets } = this.app.$accessor.derivatives
       const {
         address,
         injectiveAddress,
@@ -122,32 +116,49 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
+      const formmatedPositions = positions
+        .map((position) => {
+          const market = markets.find((m) => m.marketId === position.marketId)
+
+          if (market) {
+            const orderType =
+              position.direction === TradeDirection.Long
+                ? DerivativeOrderSide.Sell
+                : DerivativeOrderSide.Buy
+            const liquidationPrice = new BigNumberInWei(
+              position.liquidationPrice
+            )
+            const minTickPrice = derivativePriceToChainPrice({
+              value: new BigNumberInBase(1).shiftedBy(-market.priceDecimals),
+              quoteDecimals: market.quoteToken.decimals
+            })
+            const actualLiquidationPrice = liquidationPrice.lte(0)
+              ? minTickPrice
+              : liquidationPrice
+
+            return {
+              orderType,
+              marketId: market.marketId,
+              price: actualLiquidationPrice.toFixed(),
+              quantity: derivativeQuantityToChainQuantityToFixed({
+                value: position.quantity
+              })
+            }
+          }
+
+          return undefined
+        })
+        .filter((p) => p !== undefined) as {
+        orderType: DerivativeOrderSide
+        marketId: string
+        price: string
+        quantity: string
+      }[]
+
       await derivativeActionService.closeAllPosition({
         address,
         injectiveAddress,
-        positions: positions.map(({ position, market }) => {
-          const orderType =
-            position.direction === TradeDirection.Long
-              ? DerivativeOrderSide.Sell
-              : DerivativeOrderSide.Buy
-          const liquidationPrice = new BigNumberInWei(position.liquidationPrice)
-          const minTickPrice = derivativePriceToChainPrice({
-            value: new BigNumberInBase(1).shiftedBy(-market.priceDecimals),
-            quoteDecimals: market.quoteToken.decimals
-          })
-          const actualLiquidationPrice = liquidationPrice.lte(0)
-            ? minTickPrice
-            : liquidationPrice
-
-          return {
-            orderType,
-            marketId: market.marketId,
-            price: actualLiquidationPrice.toFixed(),
-            quantity: derivativeQuantityToChainQuantityToFixed({
-              value: position.quantity
-            })
-          }
-        }),
+        positions: formmatedPositions,
         feeRecipient: FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
       })

@@ -2,7 +2,7 @@
   <v-card lg>
     <HOCLoading :status="status">
       <v-card-table-wrap>
-        <!-- <template #actions>
+        <template #actions>
           <div
             class="col-span-12 sm:col-span-6 lg:col-span-4 grid grid-cols-5 gap-4"
           >
@@ -13,8 +13,9 @@
               :search="search"
               @searched="handleInputOnSearch"
             />
-            <side-selector
+            <filter-selector
               class="col-span-2"
+              :type="TradeSelectorType.PositionSide"
               :value="side"
               @click="handleSideClick"
             />
@@ -22,15 +23,15 @@
 
           <div class="col-span-12 sm:col-span-6 lg:col-span-8 sm:text-right">
             <v-button
-              v-if="orders.length > 0 && isUserWalletConnected"
+              v-if="positions.length > 0 && isUserWalletConnected"
               red-outline
               md
-              @click.stop="handleCancelOrders"
+              @click.stop="handleClosePositions"
             >
-              {{ $t('trade.cancelAllOrders') }}
+              {{ $t('trade.closeAllPositions') }}
             </v-button>
           </div>
-        </template> -->
+        </template>
 
         <div class="table-responsive min-h-orders max-h-lg mt-6">
           <table v-if="filteredPositions.length > 0" class="table">
@@ -67,16 +68,20 @@ import {
 import Position from '~/components/partials/common/derivatives/position.vue'
 import PositionTableHeader from '~/components/partials/common/derivatives/position-table.header.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
+import FilterSelector from '~/components/partials/common/trades/trade-dropdown-filter.vue'
+import { TradeSelectorType } from '~/types/enums'
 
 export default Vue.extend({
   components: {
     'v-position': Position,
+    FilterSelector,
     PositionTableHeader,
     HOCLoading
   },
 
   data() {
     return {
+      TradeSelectorType,
       search: '',
       side: undefined as string | undefined,
       status: new Status(StatusType.Loading)
@@ -97,23 +102,22 @@ export default Vue.extend({
     },
 
     filteredPositions(): UiPosition[] {
-      const { positions } = this
+      const { positions, markets, search, side } = this
 
-      return positions
-      // return orders.filter((o) => {
-      //   const market = markets.find((m) => m.marketId === o.marketId)
+      return positions.filter((p) => {
+        const market = markets.find((m) => m.marketId === p.marketId)
 
-      //   if (!market || (!search && !side)) {
-      //     return true
-      //   }
+        if (!market || (!search && !side)) {
+          return true
+        }
 
-      //   const isPartOfSearchFilter =
-      //     !search ||
-      //     market.ticker.toLowerCase().includes(search.trim().toLowerCase())
-      //   const isPartOfSideFilter = !side || o.orderSide === side
+        const isPartOfSearchFilter =
+          !search ||
+          market.ticker.toLowerCase().includes(search.trim().toLowerCase())
+        const isPartOfSideFilter = !side || p.direction === side
 
-      //   return isPartOfSearchFilter && isPartOfSideFilter
-      // })
+        return isPartOfSearchFilter && isPartOfSideFilter
+      })
     }
   },
 
@@ -133,21 +137,21 @@ export default Vue.extend({
   },
 
   methods: {
-    // handleCancelOrders() {
-    //   const { orders } = this
+    handleClosePositions() {
+      const { positions } = this
 
-    //   this.status.setLoading()
+      this.status.setLoading()
 
-    //   this.$accessor.activities
-    //     .batchCancelDerivativeOrders(orders)
-    //     .then(() => {
-    //       this.$toast.success(this.$t('activities.cancelOrdersSuccess'))
-    //     })
-    //     .catch(this.$onRejected)
-    //     .finally(() => {
-    //       this.status.setIdle()
-    //     })
-    // },
+      this.$accessor.positions
+        .closeAllPosition(positions)
+        .then(() => {
+          this.$toast.success(this.$t('activities.closePositionsSuccess'))
+        })
+        .catch(this.$onRejected)
+        .finally(() => {
+          this.status.setIdle()
+        })
+    },
 
     handleInputOnSearch(search: string) {
       this.search = search

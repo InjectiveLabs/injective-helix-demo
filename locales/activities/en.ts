@@ -11,7 +11,8 @@ export default {
     ordersHistory: 'Orders History',
     openPositions: 'Open positions',
     cancelOrders: 'Cancel Orders',
-    cancelOrdersSuccess: 'Your orders have been cancelled'
+    cancelOrdersSuccess: 'Your orders have been cancelled',
+    closePositionsSuccess: 'Your positions have been closed'
   },
 
   trade: {
@@ -40,6 +41,7 @@ export default {
     unfilled: 'Unfilled',
     filter: 'Filter asset',
     cancelAllOrders: 'Cancel all orders',
+    closeAllPositions: 'Close all positions',
     reduce_only: 'Reduce Only',
     leverage: 'Leverage',
     limit: 'Limit',
@@ -54,7 +56,9 @@ export default {
       'The price at which your position will be liquidated or force-exited to prevent further losses.',
     unrealized_pnl: 'Unrealized PnL',
     unrealized_pnl_tooltip:
-      'The unrealized PnL is an approximation of the realized profit or loss if the position was to be closed.'
+      'The unrealized PnL is an approximation of the realized profit or loss if the position was to be closed.',
+    long: 'Long',
+    short: 'Short'
   },
 
   spot: {

@@ -525,8 +525,8 @@ export default Vue.extend({
       const { position } = this
 
       return position.direction === TradeDirection.Long
-        ? this.$t('long')
-        : this.$t('short')
+        ? this.$t('trade.long')
+        : this.$t('trade.short')
     }
   },
 

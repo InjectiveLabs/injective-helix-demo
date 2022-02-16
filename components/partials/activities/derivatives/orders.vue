@@ -13,8 +13,9 @@
               :search="search"
               @searched="handleInputOnSearch"
             />
-            <side-selector
+            <filter-selector
               class="col-span-2"
+              :type="TradeSelectorType.Side"
               :value="side"
               @click="handleSideClick"
             />
@@ -67,18 +68,20 @@ import {
 import Order from '~/components/partials/common/derivatives/order.vue'
 import OrdersTableHeader from '~/components/partials/common/derivatives/orders-table-header.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
-import SideSelector from '~/components/partials/common/trades/side-selector.vue'
+import FilterSelector from '~/components/partials/common/trades/trade-dropdown-filter.vue'
+import { TradeSelectorType } from '~/types/enums'
 
 export default Vue.extend({
   components: {
     'v-order': Order,
+    FilterSelector,
     OrdersTableHeader,
-    HOCLoading,
-    SideSelector
+    HOCLoading
   },
 
   data() {
     return {
+      TradeSelectorType,
       search: '',
       side: undefined as string | undefined,
       status: new Status(StatusType.Loading)
