@@ -121,6 +121,7 @@ export const actions = actionTree(
       await this.app.$accessor.bank.fetchBankBalancesWithToken()
       await this.app.$accessor.account.fetchSubaccounts()
       await this.app.$accessor.account.fetchSubaccountsBalances()
+      await this.app.$accessor.onboard.init()
 
       if (GAS_FREE_DEPOSIT_REBATE_ENABLED) {
         await this.app.$accessor.gasRebate.init()
@@ -295,6 +296,8 @@ export const actions = actionTree(
 
     async resetPage({ commit }) {
       await this.app.$accessor.token.reset()
+      await this.app.$accessor.onboard.reset()
+      await this.app.$accessor.gasRebate.reset()
 
       commit('resetPage')
     }

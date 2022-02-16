@@ -37,10 +37,7 @@
         <div
           v-show="isOpen"
           class="inline-block align-bottom bg-gray-850 shadow-card rounded-xl text-left transform transition-all w-full max-w-lg"
-          :class="[
-            dense ? 'p-6' : 'p-8',
-            { 'max-w-md': sm, 'lg:max-w-2xl': !sm, 'lg:max-w-4xl': !sm && !md }
-          ]"
+          :class="classes"
           role="dialog"
           :aria-modal="isOpen"
           aria-labelledby="modal-headline"
@@ -106,12 +103,42 @@ export default Vue.extend({
     md: {
       type: Boolean,
       default: false
+    },
+
+    lg: {
+      type: Boolean,
+      default: false
     }
   },
 
   data() {
     return {
       isVisibleOnViewport: false
+    }
+  },
+
+  computed: {
+    classes(): string {
+      const { dense, sm, md, lg } = this
+      const classes = []
+
+      if (dense) {
+        classes.push('p-8')
+      } else {
+        classes.push('p-6')
+      }
+
+      if (sm) {
+        classes.push('max-w-md')
+      } else if (md) {
+        classes.push('max-w-lg', 'lg:max-w-2xl')
+      } else if (lg) {
+        classes.push('max-w-lg', 'lg:max-w-3xl')
+      } else {
+        classes.push('max-w-lg', 'lg:max-w-4xl')
+      }
+
+      return classes.join(' ')
     }
   },
 

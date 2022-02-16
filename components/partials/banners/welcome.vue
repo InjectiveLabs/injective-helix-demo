@@ -39,13 +39,21 @@
             {{ $t('banners.welcome.tradeDescription') }}
           </p>
 
-          <v-button lg primary class="mt-4 w-40">
-            <span v-if="activeStep === 1">{{ $t('common.deposit') }}</span>
-            <span v-else-if="activeStep === 2">
-              {{ $t('common.transfer') }}
-            </span>
-            <span v-else>{{ $t('common.trade') }}</span>
-          </v-button>
+          <p :class="{ 'text-center': activeStep === 2 }">
+            <v-button
+              type="button"
+              lg
+              primary
+              class="mt-4 w-40"
+              @click.native="handleClickOnButton"
+            >
+              <span v-if="activeStep === 1">{{ $t('common.deposit') }}</span>
+              <span v-else-if="activeStep === 2">
+                {{ $t('common.transfer') }}
+              </span>
+              <span v-else>{{ $t('common.trade') }}</span>
+            </v-button>
+          </p>
         </div>
       </div>
 
@@ -86,9 +94,44 @@
 import Vue from 'vue'
 
 export default Vue.extend({
-  data() {
-    return {
-      activeStep: 1
+  computed: {
+    hasAnyBankBalances(): boolean {
+      return this.$accessor.bank.hasAnyBankBalance
+    },
+
+    hasMadeAnyTransfers(): boolean {
+      return this.$accessor.onboard.hasMadeAnyTransfers
+    },
+
+    hasMadeAnyTrades(): boolean {
+      return this.$accessor.onboard.hasMadeAnyTrades
+    },
+
+    activeStep(): number {
+      if (!this.hasAnyBankBalances) {
+        return 1
+      }
+
+      if (!this.hasMadeAnyTransfers) {
+        return 2
+      }
+
+      return 3
+    }
+  },
+
+  methods: {
+    handleClickOnButton() {
+      if (this.activeStep === 1) {
+        this.$root.$emit('bridge:deposit')
+      } else if (this.activeStep === 2) {
+        this.$root.$emit('bridge:transfer')
+      } else {
+        this.$router.push({
+          name: 'derivatives-derivative',
+          params: { derivative: 'btc-usdt-perp' }
+        })
+      }
     }
   }
 })

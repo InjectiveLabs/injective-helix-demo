@@ -70,7 +70,7 @@ import {
 import VBalances from '~/components/partials/funding/balances/index.vue'
 import VTradingAccountBalances from '~/components/partials/funding/trading-account-balances/index.vue'
 import VWelcomeBanner from '~/components/partials/banners/welcome.vue'
-import VNewUserBanner from '~/components/partials/banners/new-user.vue'
+import VNewUserBanner from '~/components/partials/banners/gas-rebate.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
 import {
   UI_MINIMAL_AMOUNT,

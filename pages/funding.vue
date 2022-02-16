@@ -6,7 +6,7 @@
           <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12">
             <v-welcome-banner />
             <v-account-summary class="mt-6" />
-            <v-new-user-banner class="mt-6" />
+            <v-gas-rebate class="mt-6" />
             <div class="border-b border-gray-600 w-full my-6"></div>
             <v-funding-balances class="mt-4" />
             <v-bridge />
@@ -24,7 +24,7 @@ import HOCLoading from '~/components/hoc/loading.vue'
 import VFundingBalances from '~/components/partials/funding/funding-balances.vue'
 import VAccountSummary from '~/components/partials/funding/account-summary.vue'
 import VWelcomeBanner from '~/components/partials/banners/welcome.vue'
-import VNewUserBanner from '~/components/partials/banners/new-user.vue'
+import VGasRebate from '~/components/partials/banners/gas-rebate.vue'
 import VBridge from '~/components/partials/funding/bridge.vue'
 
 export default Vue.extend({
@@ -34,7 +34,7 @@ export default Vue.extend({
     VFundingBalances,
     VAccountSummary,
     VWelcomeBanner,
-    VNewUserBanner
+    VGasRebate
   },
 
   data() {
@@ -55,6 +55,18 @@ export default Vue.extend({
       .catch(this.$onError)
       .finally(() => {
         this.status.setIdle()
+      })
+
+    Promise.all([
+      this.$accessor.onboard.init(),
+      this.$accessor.gasRebate.init()
+    ])
+      .then(() => {
+        //
+      })
+      .catch(this.$onError)
+      .finally(() => {
+        //
       })
   }
 })

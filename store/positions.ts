@@ -92,14 +92,7 @@ export const actions = actionTree(
       commit('setSubaccountPositions', positions)
     },
 
-    async closeAllPosition(
-      _,
-      {
-        positions
-      }: {
-        positions: UiPosition[]
-      }
-    ) {
+    async closeAllPosition(_, positions: UiPosition[]) {
       const { subaccount } = this.app.$accessor.account
       const { markets } = this.app.$accessor.derivatives
       const {
@@ -116,7 +109,7 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      const formmatedPositions = positions
+      const formattedPositions = positions
         .map((position) => {
           const market = markets.find((m) => m.marketId === position.marketId)
 
@@ -158,7 +151,7 @@ export const actions = actionTree(
       await derivativeActionService.closeAllPosition({
         address,
         injectiveAddress,
-        positions: formmatedPositions,
+        positions: formattedPositions,
         feeRecipient: FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
       })

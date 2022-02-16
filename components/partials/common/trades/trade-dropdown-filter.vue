@@ -8,12 +8,12 @@
 
     <div class="text-center cursor-pointer">
       <selector-item
-        v-for="(type, index) in list"
+        v-for="(selectorType, index) in list"
         :key="`type-selector-${index}`"
         :item="type"
         @click="handleClick"
       >
-        {{ type.text }}
+        {{ selectorType.text }}
       </selector-item>
     </div>
   </v-dropdown>

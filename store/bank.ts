@@ -37,6 +37,13 @@ export const getters = getterTree(state, {
       Object.keys(state.balances).length > 0 ||
       Object.keys(state.ibcBalances).length > 0
     )
+  },
+
+  bankBalancesWithToken: (state: BankStoreState) => {
+    return [
+      ...state.bankErc20BalancesWithToken,
+      ...state.bankIbcBalancesWithToken
+    ]
   }
 })
 
