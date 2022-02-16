@@ -19,7 +19,7 @@
         </v-network-select>
       </div>
       <div v-if="isUserWalletConnected">
-        <template v-if="!isIbcTransfer">
+        <div v-if="!isIbcTransfer">
           <h3 class="text-xl font-semibold mt-6">
             {{ bridgeNote }}
           </h3>
@@ -47,7 +47,7 @@
               {{ $t('bridge.transferNow') }}
             </v-button>
           </div>
-        </template>
+        </div>
         <v-ibc-transfer-note v-else />
       </div>
       <v-user-wallet-connect-warning v-else />
@@ -61,14 +61,12 @@ import { ValidationObserver } from 'vee-validate'
 import {
   BankBalanceWithToken,
   BridgingNetwork,
-  KeplrNetworks,
   SubaccountBalanceWithToken,
   Token,
   TokenWithBalanceAndPrice,
   ZERO_IN_BASE
 } from '@injectivelabs/ui-common'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { injToken } from '~/app/data/token'
 import { BridgeType, Modal, TransferDirection } from '~/types'
 import VTokenSelector from '~/components/partials/funding/bridge/token-selector/index.vue'
 import VBalance from '~/components/partials/funding/bridge/balance.vue'
@@ -100,6 +98,21 @@ export default Vue.extend({
     transferDirection: {
       required: true,
       type: String as PropType<TransferDirection>
+    },
+
+    origin: {
+      required: true,
+      type: String as PropType<BridgingNetwork | TransferDirection>
+    },
+
+    destination: {
+      required: true,
+      type: String as PropType<BridgingNetwork | TransferDirection>
+    },
+
+    isIbcTransfer: {
+      required: true,
+      type: Boolean
     },
 
     form: {
@@ -289,49 +302,6 @@ export default Vue.extend({
       return onWithdrawBalance
     },
 
-    origin(): BridgingNetwork | TransferDirection {
-      const { bridgeType, bridgingNetwork } = this
-
-      if (bridgeType === BridgeType.Transfer) {
-        return this.transferDirection
-      }
-
-      if (bridgeType === BridgeType.Withdraw) {
-        return BridgingNetwork.Injective
-      }
-
-      // Deposit
-      return bridgingNetwork
-    },
-
-    destination(): BridgingNetwork | TransferDirection {
-      const { bridgeType, bridgingNetwork } = this
-
-      if (bridgeType === BridgeType.Transfer) {
-        return this.transferDirection === TransferDirection.bankToTradingAccount
-          ? TransferDirection.tradingAccountToBank
-          : TransferDirection.bankToTradingAccount
-      }
-
-      if (bridgeType === BridgeType.Deposit) {
-        return BridgingNetwork.Injective
-      }
-
-      // Withdraw
-      return bridgingNetwork
-    },
-
-    isIbcTransfer(): boolean {
-      const { origin, destination } = this
-
-      const cosmosNetworks = [...KeplrNetworks, BridgingNetwork.Terra]
-
-      return (
-        cosmosNetworks.includes(origin as BridgingNetwork) ||
-        cosmosNetworks.includes(destination as BridgingNetwork)
-      )
-    },
-
     isModalOpen(): boolean {
       return this.$accessor.modal.modals[Modal.Bridge]
     },
@@ -341,21 +311,9 @@ export default Vue.extend({
     }
   },
 
-  mounted() {
-    this.$root.$on('bridge:transfer', this.handleTransfer)
-    this.$root.$on('bridge:deposit', this.handleDeposit)
-    this.$root.$on('bridge:withdraw', this.handleWithdraw)
-  },
-
-  beforeDestroy() {
-    this.$root.$off('bridge:transfer', this.handleTransfer)
-    this.$root.$off('bridge:deposit', this.handleDeposit)
-    this.$root.$off('bridge:withdraw', this.handleWithdraw)
-  },
-
   methods: {
     handleTransferNowClick() {
-      //
+      this.$emit('bridge:confirm')
     },
 
     handleAmountChange(amount: string) {
@@ -366,25 +324,8 @@ export default Vue.extend({
       this.$emit('input-token:update', token)
     },
 
-    handleTransfer(token: Token) {
-      this.$emit('input-token:update', token || injToken)
-      this.$emit('bridge-type:update', BridgeType.Transfer)
-      this.$accessor.modal.openModal(Modal.Bridge)
-    },
-
-    handleDeposit(token: Token) {
-      this.$emit('input-token:update', token || injToken)
-      this.$emit('bridge-type:update', BridgeType.Deposit)
-      this.$accessor.modal.openModal(Modal.Bridge)
-    },
-
-    handleWithdraw(token: Token) {
-      this.$emit('input-token:update', token || injToken)
-      this.$emit('bridge-type:update', BridgeType.Withdraw)
-      this.$accessor.modal.openModal(Modal.Bridge)
-    },
-
     handleCloseModal() {
+      this.$emit('bridge:reset')
       this.$accessor.modal.closeModal(Modal.Bridge)
     },
 

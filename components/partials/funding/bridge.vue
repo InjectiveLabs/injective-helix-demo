@@ -1,36 +1,58 @@
 <template>
   <div>
     <v-modal-bridge
-      v-bind="{ form, bridgeType, transferDirection, bridgingNetwork }"
+      v-bind="{
+        form,
+        bridgeType,
+        origin,
+        destination,
+        isIbcTransfer,
+        transferDirection,
+        bridgingNetwork
+      }"
       @input-amount:update="handleAmountUpdate"
       @input-token:update="handleTokenUpdate"
       @transfer-direction:update="handleTransferDirectionUpdate"
       @bridge-type:update="handleBridgeTypeUpdate"
       @bridging-network:update="handleBridgingNetworkUpdate"
+      @bridge:confirm="handleModalConfirmOpen"
+      @bridge:reset="handleResetForm"
     />
     <v-modal-bridge-confirm
-      v-bind="{ form, bridgeType, transferDirection, bridgingNetwork }"
+      v-bind="{
+        form,
+        bridgeType,
+        origin,
+        destination,
+        isIbcTransfer,
+        transferDirection,
+        bridgingNetwork
+      }"
+      @bridge:confirmed="handleModalCompletedOpen"
     />
-    <v-modal-bridge-success
-      v-bind="{ form, bridgeType, transferDirection, bridgingNetwork }"
+    <v-modal-bridge-completed
+      v-bind="{
+        bridgeType,
+        isIbcTransfer
+      }"
     />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { BridgingNetwork, Token } from '@injectivelabs/ui-common'
+import { BridgingNetwork, KeplrNetworks, Token } from '@injectivelabs/ui-common'
 import { injToken } from '~/app/data/token'
 import { BridgeType, Modal, TransferDirection } from '~/types'
 import VModalBridge from '~/components/partials/modals/bridge/index.vue'
 import VModalBridgeConfirm from '~/components/partials/modals/bridge/confirm.vue'
-import VModalBridgeSuccess from '~/components/partials/modals/bridge/success.vue'
+import VModalBridgeCompleted from '~/components/partials/modals/bridge/completed.vue'
 
 export default Vue.extend({
   components: {
     VModalBridge,
     VModalBridgeConfirm,
-    VModalBridgeSuccess
+    VModalBridgeCompleted
   },
 
   data() {
@@ -51,7 +73,76 @@ export default Vue.extend({
     }
   },
 
+  computed: {
+    origin(): BridgingNetwork | TransferDirection {
+      const { bridgeType, bridgingNetwork } = this
+
+      if (bridgeType === BridgeType.Transfer) {
+        return this.transferDirection
+      }
+
+      if (bridgeType === BridgeType.Withdraw) {
+        return BridgingNetwork.Injective
+      }
+
+      // Deposit
+      return bridgingNetwork
+    },
+
+    destination(): BridgingNetwork | TransferDirection {
+      const { bridgeType, bridgingNetwork } = this
+
+      if (bridgeType === BridgeType.Transfer) {
+        return this.transferDirection === TransferDirection.bankToTradingAccount
+          ? TransferDirection.tradingAccountToBank
+          : TransferDirection.bankToTradingAccount
+      }
+
+      if (bridgeType === BridgeType.Deposit) {
+        return BridgingNetwork.Injective
+      }
+
+      // Withdraw
+      return bridgingNetwork
+    },
+
+    isIbcTransfer(): boolean {
+      const { origin, destination } = this
+
+      const cosmosNetworks = [...KeplrNetworks, BridgingNetwork.Terra]
+
+      return (
+        cosmosNetworks.includes(origin as BridgingNetwork) ||
+        cosmosNetworks.includes(destination as BridgingNetwork)
+      )
+    }
+  },
+
+  mounted() {
+    this.$root.$on('bridge:transfer', this.handleTransfer)
+    this.$root.$on('bridge:deposit', this.handleDeposit)
+    this.$root.$on('bridge:withdraw', this.handleWithdraw)
+  },
+
+  beforeDestroy() {
+    this.$root.$off('bridge:transfer', this.handleTransfer)
+    this.$root.$off('bridge:deposit', this.handleDeposit)
+    this.$root.$off('bridge:withdraw', this.handleWithdraw)
+  },
+
   methods: {
+    handleModalBridgeOpen() {
+      this.$accessor.modal.openModal(Modal.Bridge)
+    },
+
+    handleModalConfirmOpen() {
+      this.$accessor.modal.openModal(Modal.BridgeConfirm)
+    },
+
+    handleModalCompletedOpen() {
+      this.$accessor.modal.openModal(Modal.BridgeCompleted)
+    },
+
     handleAmountUpdate(amount: string) {
       this.form.amount = amount
     },
@@ -72,8 +163,28 @@ export default Vue.extend({
       this.transferDirection = transferDirection
     },
 
-    handleCloseModal() {
-      this.$accessor.modal.closeModal(Modal.Bridge)
+    handleResetForm() {
+      this.form.token = injToken
+      this.form.amount = ''
+      this.bridgeType = BridgeType.Transfer
+    },
+
+    handleTransfer(token: Token) {
+      this.form.token = token || injToken
+      this.bridgeType = BridgeType.Transfer
+      this.$accessor.modal.openModal(Modal.Bridge)
+    },
+
+    handleDeposit(token: Token) {
+      this.form.token = token || injToken
+      this.bridgeType = BridgeType.Deposit
+      this.$accessor.modal.openModal(Modal.Bridge)
+    },
+
+    handleWithdraw(token: Token) {
+      this.form.token = token || injToken
+      this.bridgeType = BridgeType.Withdraw
+      this.$accessor.modal.openModal(Modal.Bridge)
     }
   }
 })

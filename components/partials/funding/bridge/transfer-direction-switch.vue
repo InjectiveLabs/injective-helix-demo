@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-between items-center">
-    <v-network-card-base class="w-1/2" :network-meta="sourceNetworkMeta" />
+    <v-network-card-base class="w-1/2" :network-meta="originNetworkMeta" />
 
     <div
       class="bg-primary-500 min-w-6 h-6 mx-6 flex items-center justify-center rounded-full"
@@ -35,7 +35,7 @@ export default Vue.extend({
   },
 
   computed: {
-    sourceNetworkMeta(): NetworkMeta {
+    originNetworkMeta(): NetworkMeta {
       const { transferDirection } = this
 
       return transferDirection === TransferDirection.bankToTradingAccount

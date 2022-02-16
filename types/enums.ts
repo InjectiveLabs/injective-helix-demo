@@ -47,7 +47,9 @@ export enum Modal {
   SubaccountDepositWithSelect = 'subaccount-deposit-with-select',
   Terms = 'terms',
   MarketBeta = 'market-beta',
-  Bridge = 'bridge'
+  Bridge = 'bridge',
+  BridgeConfirm = 'bridge-confirm',
+  BridgeCompleted = 'bridge-completed'
 }
 
 export enum Breakpoint {
