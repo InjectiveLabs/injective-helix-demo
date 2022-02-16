@@ -1,5 +1,5 @@
 <template>
-  <v-card-table-wrap>
+  <v-card-table-wrap class="px-3 pb-3">
     <template #actions>
       <div class="col-span-12 flex justify-between">
         <div class="flex items-center">
