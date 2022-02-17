@@ -12,7 +12,8 @@ export default {
     openPositions: 'Open positions',
     cancelOrders: 'Cancel Orders',
     cancelOrdersSuccess: 'Your orders have been cancelled',
-    closePositionsSuccess: 'Your positions have been closed'
+    closePositionsSuccess: 'Your positions have been closed',
+    funds: 'Funds'
   },
 
   trade: {

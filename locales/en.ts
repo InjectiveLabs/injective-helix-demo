@@ -309,8 +309,6 @@ export default {
   Balances: 'Balances',
   Asset: 'Asset',
   'Join our Ecosystem now': 'Join the Injective Ecosystem!',
-  'There are no results found - Balances':
-    'We cannot find any token balances for your address',
   'Ready to get started?': 'Injective Bridge',
   'Cta Note':
     'Transfer assets to Injective and experience lightning fast speeds, zero gas fees and a world of unlimited DeFi Markets.',

@@ -17,7 +17,7 @@
           <p class="text-gray-500 text-xs uppercase mb-3">
             {{ $t('funding.walletValue') }}
           </p>
-          <p class="text-2xl">{{ bankBalanceToString }} USD</p>
+          <p class="text-2xl">{{ totalBankBalanceToString }} USD</p>
         </div>
       </v-card-select>
 
@@ -37,7 +37,7 @@
           <p class="text-gray-500 text-xs uppercase mb-3">
             {{ $t('funding.portfolioValue') }}
           </p>
-          <p class="text-2xl">{{ tradingAccountBalanceToString }}</p>
+          <p class="text-2xl">{{ tradingAccountBalancesToString }} USD</p>
         </div>
       </v-card-select>
     </div>
@@ -47,12 +47,23 @@
         <div v-if="status.isLoading()" class="h-16 w-full xl:w-1/4 relative">
           <v-loading />
         </div>
-        <v-account-summary v-else />
+        <v-account-summary v-else :total-balance="totalBalance" />
       </portal>
+
       <v-panel :title="panelTitle">
-        <HOCLoading :status="status">
-          <component :is="`v-${component}`" v-bind="{ balances }"></component>
-        </HOCLoading>
+        <portal-target
+          slot="context"
+          name="balances-tabs-filter"
+        ></portal-target>
+
+        <div>
+          <HOCLoading :status="status">
+            <component
+              :is="`v-${component}`"
+              v-bind="{ bankBalancesWithUsdBalance, subaccountBalancesWithUsdBalance }"
+            ></component>
+          </HOCLoading>
+        </div>
       </v-panel>
     </div>
   </div>
@@ -66,15 +77,20 @@ import {
   Status,
   StatusType
 } from '@injectivelabs/utils'
+import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   BankBalances,
   BankBalanceWithTokenAndBalanceWithUsdBalance,
   SubaccountBalanceWithTokenWithUsdBalance,
   TokenWithBalanceAndPrice,
+  UiDerivativeMarketWithToken,
+  UiDerivativeOrderbook,
+  UiPosition,
   ZERO_IN_BASE,
   ZERO_TO_STRING
 } from '@injectivelabs/ui-common'
 import VBankBalances from '~/components/partials/funding/bank-balances/index.vue'
+import VTradingAccountBalances from '~/components/partials/funding/trading-account-balances/index.vue'
 import VAccountSummary from '~/components/partials/funding/account-summary.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
 import {
@@ -92,9 +108,10 @@ const components = {
 
 export default Vue.extend({
   components: {
+    VAccountSummary,
     VBankBalances,
     VLoading,
-    VAccountSummary,
+    VTradingAccountBalances,
     HOCLoading
   },
 
@@ -116,6 +133,14 @@ export default Vue.extend({
       return this.$accessor.bank.balances
     },
 
+    positions(): UiPosition[] {
+      return this.$accessor.positions.subaccountPositions
+    },
+
+    markets(): UiDerivativeMarketWithToken[] {
+      return this.$accessor.derivatives.markets
+    },
+
     erc20TokensWithBalanceAndPriceFromBank(): TokenWithBalanceAndPrice[] {
       return this.$accessor.token.erc20TokensWithBalanceAndPriceFromBank
     },
@@ -128,8 +153,12 @@ export default Vue.extend({
       return this.$accessor.account.subaccountBalancesWithTokenAndPrice
     },
 
+    orderbooks(): Record<string, UiDerivativeOrderbook> {
+      return this.$accessor.positions.orderbooks
+    },
+
     // calculate and append total USD balances
-    balances(): BankBalanceWithTokenAndBalanceWithUsdBalance[] {
+    bankBalancesWithUsdBalance(): BankBalanceWithTokenAndBalanceWithUsdBalance[] {
       const {
         bankBalances,
         erc20TokensWithBalanceAndPriceFromBank,
@@ -156,7 +185,7 @@ export default Vue.extend({
       })
     },
 
-    tradingAccountBalances(): SubaccountBalanceWithTokenWithUsdBalance[] {
+    subaccountBalancesWithUsdBalance(): SubaccountBalanceWithTokenWithUsdBalance[] {
       const { subaccountBalancesWithTokenAndPrice } = this
 
       return subaccountBalancesWithTokenAndPrice.map((balance) => {
@@ -172,56 +201,142 @@ export default Vue.extend({
       })
     },
 
-    bankBalance(): BigNumberInBase {
-      const { balances } = this
+    totalBankBalance(): BigNumberInBase {
+      const { bankBalancesWithUsdBalance } = this
 
-      return balances.reduce(
+      return bankBalancesWithUsdBalance.reduce(
         (total, balance) =>
           total.plus(new BigNumberInBase(balance.balanceInUsd)),
         ZERO_IN_BASE
       )
     },
 
-    bankBalanceToString(): string {
-      const { bankBalance } = this
+    totalBankBalanceToString(): string {
+      const { totalBankBalance } = this
 
-      if (bankBalance.eq(0)) {
+      if (totalBankBalance.eq(0)) {
         return '0.00'
       }
 
-      if (bankBalance.lte(UI_MINIMAL_AMOUNT)) {
+      if (totalBankBalance.lte(UI_MINIMAL_AMOUNT)) {
         return `< ${UI_MINIMAL_AMOUNT.toFormat(
           UI_DEFAULT_MIN_DISPLAY_DECIMALS
         )}`
       }
 
-      return bankBalance.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      return totalBankBalance.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
-    tradingAccountBalance(): BigNumberInBase {
+    totalSubaccountBalances(): BigNumberInBase {
+      const { subaccountBalancesWithUsdBalance } = this
+
+      return subaccountBalancesWithUsdBalance.reduce(
+        (total, balance) =>
+          total.plus(new BigNumberInBase(balance.balanceInUsd)),
+        ZERO_IN_BASE
+      )
+    },
+
+    totalSubaccountBalancesToString(): string {
+      const { totalSubaccountBalances } = this
+
+      if (totalSubaccountBalances.eq(0)) {
+        return '0.00'
+      }
+
+      if (totalSubaccountBalances.lte(UI_MINIMAL_AMOUNT)) {
+        return `< ${UI_MINIMAL_AMOUNT.toFormat(
+          UI_DEFAULT_MIN_DISPLAY_DECIMALS
+        )}`
+      }
+
+      return totalSubaccountBalances.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+    },
+
+    totalPositionsPnl(): BigNumberInBase {
+      const { markets, orderbooks, positions } = this
+
+      return positions.reduce((total, p) => {
+        const market = markets.find((m) => m.marketId === p.marketId)
+        const orderbook = orderbooks[p.marketId]
+
+        if (!market || !orderbook) {
+          return total.plus(new BigNumberInBase(ZERO_IN_BASE))
+        }
+
+        const price = new BigNumberInWei(p.entryPrice).toBase(
+          market.quoteToken.decimals
+        )
+
+        const [sell] = orderbook.sells
+        const [buy] = orderbook.buys
+
+        const highestBuy = new BigNumberInBase(buy ? buy.price : 0)
+        const lowestSell = new BigNumberInBase(sell ? sell.price : 0)
+        const executionPrice = new BigNumberInWei(
+          highestBuy.plus(lowestSell).div(2)
+        ).toBase(market.quoteToken.decimals)
+
+        const pnl = executionPrice.isZero()
+          ? ZERO_IN_BASE
+          : new BigNumberInBase(p.quantity)
+              .times(executionPrice.minus(price))
+              .times(p.direction === TradeDirection.Long ? 1 : -1)
+
+        return total.plus(pnl)
+      }, ZERO_IN_BASE)
+    },
+
+    totalPositionsPnlInString(): string {
+      const { totalPositionsPnl } = this
+
+      return totalPositionsPnl.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+    },
+
+    totalPositionsMargin(): BigNumberInBase {
+      const { markets, positions } = this
+
+      return positions.reduce((total, p) => {
+        const market = markets.find((m) => m.marketId === p.marketId)
+
+        if (!market) {
+          return total.plus(new BigNumberInBase(ZERO_IN_BASE))
+        }
+
+        return total.plus(
+          new BigNumberInWei(p.margin).toBase(market.quoteToken.decimals)
+        )
+      }, ZERO_IN_BASE)
+    },
+
+    totalPositionMarginsToString(): string {
+      const { totalPositionsMargin } = this
+
+      return totalPositionsMargin.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+    },
+
+    tradingAccountBalances(): BigNumberInBase {
+      const {
+        totalSubaccountBalances,
+        totalPositionsMargin,
+        totalPositionsPnl
+      } = this
+
+      return totalSubaccountBalances
+        .plus(totalPositionsMargin)
+        .plus(totalPositionsPnl)
+    },
+
+    tradingAccountBalancesToString(): string {
       const { tradingAccountBalances } = this
 
-      return tradingAccountBalances.reduce(
-        (total, balance) =>
-          total.plus(new BigNumberInBase(balance.balanceInUsd)),
-        ZERO_IN_BASE
-      )
+      return tradingAccountBalances.toFormat(2)
     },
 
-    tradingAccountBalanceToString(): string {
-      const { tradingAccountBalance } = this
+    totalBalance(): BigNumberInBase {
+      const { totalBankBalance, tradingAccountBalances } = this
 
-      if (tradingAccountBalance.eq(0)) {
-        return '0.00'
-      }
-
-      if (tradingAccountBalance.lte(UI_MINIMAL_AMOUNT)) {
-        return `< ${UI_MINIMAL_AMOUNT.toFormat(
-          UI_DEFAULT_MIN_DISPLAY_DECIMALS
-        )}`
-      }
-
-      return tradingAccountBalance.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      return totalBankBalance.plus(tradingAccountBalances)
     },
 
     panelTitle(): string {

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="grid-cols-12 gap-4 text-gray-200 uppercase md:grid hidden items-center mb-2"
+    class="grid-cols-12 gap-4 text-gray-200 uppercase md:grid hidden items-center"
     :class="classes"
   >
     <slot></slot>

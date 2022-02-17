@@ -67,8 +67,11 @@ export const actions = actionTree(
         return
       }
 
+      const newMarkets =
+        markets.length === 0 ? await derivativeService.fetchMarkets() : markets
+
       const marketOrderbooks = await Promise.all(
-        markets.map(async ({ marketId }) => [
+        newMarkets.map(async ({ marketId }) => [
           marketId,
           await derivativeService.fetchOrderbook(marketId)
         ])

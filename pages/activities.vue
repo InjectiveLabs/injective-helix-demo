@@ -2,16 +2,7 @@
   <div class="h-full w-full flex flex-wrap py-4">
     <div class="container">
       <div class="w-full mx-auto 3xl:w-10/12 4xl:w-4/5">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          <v-card-select
-            v-model="component"
-            :option="components.positions"
-            class="col-span-1"
-          >
-            <span class="text-sm">
-              {{ $t('activities.positions') }}
-            </span>
-          </v-card-select>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <v-card-select
             v-model="component"
             :option="components.spot"
@@ -59,12 +50,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import VPositions from '~/components/partials/activities/positions/index.vue'
 import VSpot from '~/components/partials/activities/spot/index.vue'
 import VDerivatives from '~/components/partials/activities/derivatives/index.vue'
 
 const components = {
-  positions: 'positions',
   spot: 'spot',
   derivatives: 'derivatives',
   rewardHistory: 'reward-history',
@@ -73,7 +62,6 @@ const components = {
 
 export default Vue.extend({
   components: {
-    VPositions,
     VSpot,
     VDerivatives
   },

@@ -9,6 +9,7 @@ import ButtonSelect from '~/components/elements/button-select.vue'
 import Card from '~/components/elements/card.vue'
 import CardSelect from '~/components/elements/card-select.vue'
 import CardTableWrap from '~/components/elements/card-table-wrap.vue'
+import Checkbox from '~/components/elements/checkbox.vue'
 import Input from '~/components/inputs/input.vue'
 import Modal from '~/components/elements/modal.vue'
 import Panel from '~/components/elements/panel.vue'
@@ -33,6 +34,7 @@ Vue.component('VButtonSelect', ButtonSelect)
 Vue.component('VCard', Card)
 Vue.component('VCardSelect', CardSelect)
 Vue.component('VCardTableWrap', CardTableWrap)
+Vue.component('VCheckbox', Checkbox)
 Vue.component('VEmpNumber', VEmpNumber)
 Vue.component('VInput', Input)
 Vue.component('VModal', Modal)

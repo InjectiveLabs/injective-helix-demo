@@ -10,7 +10,7 @@
       <selector-item
         v-for="(item, index) in list"
         :key="`type-selector-${index}`"
-        :item="type"
+        :item="item"
         @click="handleClick"
       >
         {{ item.text }}

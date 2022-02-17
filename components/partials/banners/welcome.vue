@@ -10,6 +10,10 @@
         <p class="text-sm text-gray-500 mb-4">
           {{ $t('banners.welcome.subtitle') }}
         </p>
+        <img
+          src="/images/sphere.png"
+          class="3md:hidden w-40 sm:w-44 mb-6 mt-4 mx-auto"
+        />
         <v-progress-steps :steps="3" :active-step="activeStep" />
         <div
           class="flex w-full justify-between tracking-wide uppercase mt-2.5 text-xs text-gray-500"
@@ -58,15 +62,13 @@
       </div>
 
       <div class="mt-8 3md:mt-0">
-        <div class="3md:text-right">
+        <div class="3md:text-right text-sm 3md:text-xs lg:text-sm">
           <a
             href=" https://injectiveprotocol.zendesk.com/hc/en-us/sections/4415560819860--Bridge"
             target="_blank"
             class="inline-block mr-4"
           >
-            <span
-              class="bg-gray-900 py-2 px-4 flex items-center text-sm rounded-full"
-            >
+            <span class="bg-gray-900 py-2 px-4 flex items-center rounded-full">
               <span>{{ $t('banners.welcome.howItWorks') }}</span>
               <v-icon-arrow class="w-3 h-3 rotate-[135deg] ml-2" />
             </span>
@@ -77,14 +79,17 @@
             target="_blank"
             class="inline-block"
           >
-            <span
-              class="bg-gray-900 py-2 px-4 flex items-center text-sm rounded-full"
-            >
+            <span class="bg-gray-900 py-2 px-4 flex items-center rounded-full">
               <span>{{ $t('banners.welcome.faq') }}</span>
               <v-icon-arrow class="w-3 h-3 rotate-[135deg] ml-2" />
             </span>
           </a>
         </div>
+
+        <img
+          src="/images/sphere.png"
+          class="hidden 3md:block w-44 mt-4 ml-auto"
+        />
       </div>
     </div>
   </v-card>

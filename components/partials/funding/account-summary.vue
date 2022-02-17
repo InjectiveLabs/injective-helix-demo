@@ -6,23 +6,25 @@
     <div
       class="flex flex-wrap items-center justify-center lg:justify-between mt-4"
     >
-      <div class="flex font-mono items-end">
-        <h2 class="text-white text-xl lg:text-3xl mr-4">
-          {{ balanceToString }} USD
+      <div
+        class="flex font-mono items-end flex-wrap justify-center lg:justify-start"
+      >
+        <h2 class="text-white text-2xl sm:text-3xl xl:text-4xl mr-4">
+          {{ totalBalanceToString }} USD
         </h2>
-        <span class="text-sm text-gray-400">
-          {{ balanceInBtcToString }} BTC
+        <span class="text-2xl text-gray-400 mt-4 lg:mt-0">
+          {{ totalBalanceInBtcToString }} BTC
         </span>
       </div>
-      <div class="flex items-center">
+      <div class="flex items-center mt-6 lg:mt-0">
         <v-button outline md class="mr-6" @click="handleDepositClick">
-          {{ $t('common.deposit') }}
+          <span class="text-primary-500">{{ $t('common.deposit') }}</span>
         </v-button>
         <v-button outline md class="mr-4" @click="handleWithdrawClick">
-          {{ $t('common.withdraw') }}
+          <span class="text-primary-500">{{ $t('common.withdraw') }}</span>
         </v-button>
         <v-button outline md @click="handleTransferClick">
-          {{ $t('common.transfer') }}
+          <span class="text-primary-500">{{ $t('common.transfer') }}</span>
         </v-button>
       </div>
     </div>
@@ -30,158 +32,74 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import {
-  BankBalances,
-  BankBalanceWithTokenAndBalanceWithUsdBalance,
-  SubaccountBalanceWithTokenWithUsdBalance,
-  TokenWithBalanceAndPrice,
-  ZERO_IN_BASE,
-  ZERO_TO_STRING
-} from '@injectivelabs/ui-common'
+import Vue, { PropType } from 'vue'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { ZERO_IN_BASE } from '@injectivelabs/ui-common'
 import {
   UI_MINIMAL_AMOUNT,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  UI_DEFAULT_DISPLAY_DECIMALS
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
-import { SubaccountBalanceWithTokenAndPrice } from '~/types'
 
 export default Vue.extend({
-  components: {
-    //
-  },
-
-  computed: {
-    isUserWalletConnected(): boolean {
-      return this.$accessor.wallet.isUserWalletConnected
-    },
-
-    bankBalances(): BankBalances {
-      return this.$accessor.bank.balances
-    },
-
-    erc20TokensWithBalanceAndPriceFromBank(): TokenWithBalanceAndPrice[] {
-      return this.$accessor.token.erc20TokensWithBalanceAndPriceFromBank
-    },
-
-    ibcTokensWithBalanceAndPriceFromBank(): TokenWithBalanceAndPrice[] {
-      return this.$accessor.token.ibcTokensWithBalanceAndPriceFromBank
-    },
-
-    subaccountBalancesWithTokenAndPrice(): SubaccountBalanceWithTokenAndPrice[] {
-      return this.$accessor.account.subaccountBalancesWithTokenAndPrice
-    },
-
-    // calculate and append total USD balances
-    balances(): BankBalanceWithTokenAndBalanceWithUsdBalance[] {
-      const {
-        bankBalances,
-        erc20TokensWithBalanceAndPriceFromBank,
-        ibcTokensWithBalanceAndPriceFromBank
-      } = this
-
-      return [
-        ...erc20TokensWithBalanceAndPriceFromBank,
-        ...ibcTokensWithBalanceAndPriceFromBank
-      ].map((tokenWithBalance) => {
-        const balanceInUsd = new BigNumberInWei(
-          bankBalances[tokenWithBalance.denom] || 0
-        )
-          .toBase(tokenWithBalance.decimals)
-          .times(tokenWithBalance.usdPrice)
-          .toFixed(UI_DEFAULT_DISPLAY_DECIMALS)
-
-        return {
-          balanceInUsd,
-          balance: bankBalances[tokenWithBalance.denom] || ZERO_TO_STRING,
-          denom: tokenWithBalance.denom,
-          token: tokenWithBalance
-        }
-      })
-    },
-
-    tradingAccountBalances(): SubaccountBalanceWithTokenWithUsdBalance[] {
-      const { subaccountBalancesWithTokenAndPrice } = this
-
-      return subaccountBalancesWithTokenAndPrice.map((balance) => {
-        const balanceInUsd = new BigNumberInWei(balance.availableBalance)
-          .toBase(balance.token.decimals)
-          .times(balance.token.usdPrice)
-          .toFixed(UI_DEFAULT_DISPLAY_DECIMALS)
-
-        return {
-          ...balance,
-          balanceInUsd
-        }
-      })
-    },
-
-    bankBalance(): BigNumberInBase {
-      const { balances } = this
-
-      return balances.reduce(
-        (total, balance) =>
-          total.plus(new BigNumberInBase(balance.balanceInUsd)),
-        ZERO_IN_BASE
-      )
-    },
-
-    tradingAccountBalance(): BigNumberInBase {
-      const { tradingAccountBalances } = this
-
-      return tradingAccountBalances.reduce(
-        (total, balance) =>
-          total.plus(new BigNumberInBase(balance.balanceInUsd)),
-        ZERO_IN_BASE
-      )
-    },
-
-    balance(): BigNumberInBase {
-      const { tradingAccountBalance, bankBalance } = this
-
-      return tradingAccountBalance.plus(bankBalance)
-    },
-
-    balanceToString(): string {
-      const { balance } = this
-
-      if (balance.eq(0)) {
-        return '0.00'
-      }
-
-      if (balance.lte(UI_MINIMAL_AMOUNT)) {
-        return `< ${UI_MINIMAL_AMOUNT.toFormat(
-          UI_DEFAULT_MIN_DISPLAY_DECIMALS
-        )}`
-      }
-
-      return balance.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
-    },
-
-    balanceInBtc(): BigNumberInBase {
-      return ZERO_IN_BASE
-    },
-
-    balanceInBtcToString(): string {
-      const { balance } = this
-
-      if (balance.eq(0)) {
-        return '0.00'
-      }
-
-      if (balance.lte(UI_MINIMAL_AMOUNT)) {
-        return `< ${UI_MINIMAL_AMOUNT.toFormat(
-          UI_DEFAULT_MIN_DISPLAY_DECIMALS
-        )}`
-      }
-
-      return balance.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+  props: {
+    totalBalance: {
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     }
   },
 
-  mounted() {
-    //
+  computed: {
+    btcUsdPrice(): number {
+      return this.$accessor.token.btcUsdPrice
+    },
+
+    totalBalanceToString(): string {
+      const { totalBalance } = this
+
+      if (totalBalance.eq(0)) {
+        return '0.00'
+      }
+
+      if (totalBalance.lte(UI_MINIMAL_AMOUNT)) {
+        return `< ${UI_MINIMAL_AMOUNT.toFormat(
+          UI_DEFAULT_MIN_DISPLAY_DECIMALS
+        )}`
+      }
+
+      return totalBalance.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+    },
+
+    totalBalanceInBtc(): BigNumberInBase {
+      const { totalBalance, btcUsdPrice } = this
+
+      if (!btcUsdPrice) {
+        return ZERO_IN_BASE
+      }
+
+      return totalBalance.dividedBy(new BigNumberInBase(btcUsdPrice))
+    },
+
+    totalBalanceInBtcToString(): string {
+      const { totalBalanceInBtc } = this
+
+      if (totalBalanceInBtc.eq('0')) {
+        return '0.00'
+      }
+
+      if (totalBalanceInBtc.lte('0.0001')) {
+        return '< 0.0001'
+      }
+
+      if (totalBalanceInBtc.lte('0.001')) {
+        return '< 0.001'
+      }
+
+      if (totalBalanceInBtc.lte('0.01')) {
+        return '< 0.01'
+      }
+
+      return totalBalanceInBtc.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+    }
   },
 
   methods: {

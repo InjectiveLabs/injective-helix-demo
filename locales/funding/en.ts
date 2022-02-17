@@ -15,6 +15,12 @@ export default {
     transferToTradingAccount: 'Transfer to Trading Account',
     transfer: 'Transfer',
     filter: 'Filter by asset',
-    accountSummary: 'Account Summary'
+    accountSummary: 'Account Summary',
+    available: 'Available',
+    inOrder: 'In Order',
+    funds: 'Funds',
+    positions: 'Positions',
+    hideSmallBalances: 'Hide small balances',
+    empty: 'No token balances found'
   }
 }

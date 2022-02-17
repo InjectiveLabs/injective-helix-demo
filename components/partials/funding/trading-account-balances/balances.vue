@@ -33,10 +33,16 @@
             lg
           />
         </span>
-        <span class="col-span-3">
+        <span class="col-span-2">
+          {{ $t('funding.available') }}
+        </span>
+        <span class="col-span-2">
+          {{ $t('funding.inOrder') }}
+        </span>
+        <span class="col-span-2">
           {{ $t('common.value') }}
         </span>
-        <span class="col-span-5"> </span>
+        <span class="col-span-2"> </span>
       </TableHeader>
 
       <TableBody
@@ -66,7 +72,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import {
-  BankBalanceWithTokenAndBalanceWithUsdBalance,
+  SubaccountBalanceWithTokenWithUsdBalance,
   INJECTIVE_DENOM
 } from '@injectivelabs/ui-common'
 import { BigNumberInBase } from '@injectivelabs/utils'
@@ -84,9 +90,9 @@ export default Vue.extend({
   },
 
   props: {
-    bankBalancesWithUsdBalance: {
+    subaccountBalancesWithUsdBalance: {
       required: true,
-      type: Array as PropType<BankBalanceWithTokenAndBalanceWithUsdBalance[]>
+      type: Array as PropType<SubaccountBalanceWithTokenWithUsdBalance[]>
     }
   },
 
@@ -102,37 +108,43 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    filteredBalances(): BankBalanceWithTokenAndBalanceWithUsdBalance[] {
-      const { bankBalancesWithUsdBalance, search, hideSmallBalance } = this
+    filteredBalances(): SubaccountBalanceWithTokenWithUsdBalance[] {
+      const {
+        subaccountBalancesWithUsdBalance,
+        search,
+        hideSmallBalance
+      } = this
 
-      return bankBalancesWithUsdBalance.filter(({ token, balanceInUsd }) => {
-        if ((!search || search.trim() === '') && !hideSmallBalance) {
-          return true
+      return subaccountBalancesWithUsdBalance.filter(
+        ({ token, balanceInUsd }) => {
+          if ((!search || search.trim() === '') && !hideSmallBalance) {
+            return true
+          }
+
+          const symbol = token.symbol.toLowerCase().trim()
+          const isINJ = symbol === INJECTIVE_DENOM
+
+          const isPartOfSearchFilter = symbol.includes(
+            search.toLowerCase().trim()
+          )
+          const isNotSmallBalance =
+            !hideSmallBalance ||
+            isINJ ||
+            new BigNumberInBase(balanceInUsd).gt('1')
+
+          return isPartOfSearchFilter && isNotSmallBalance
         }
-
-        const symbol = token.symbol.toLowerCase().trim()
-        const isINJ = symbol === INJECTIVE_DENOM
-
-        const isPartOfSearchFilter = symbol.includes(
-          search.toLowerCase().trim()
-        )
-        const isNotSmallBalance =
-          !hideSmallBalance ||
-          isINJ ||
-          new BigNumberInBase(balanceInUsd).gt('1')
-
-        return isPartOfSearchFilter && isNotSmallBalance
-      })
+      )
     },
 
     // sort INJ to the top
-    sortedBalances(): BankBalanceWithTokenAndBalanceWithUsdBalance[] {
+    sortedBalances(): SubaccountBalanceWithTokenWithUsdBalance[] {
       const { filteredBalances } = this
 
       return [...filteredBalances].sort(
         (
-          v1: BankBalanceWithTokenAndBalanceWithUsdBalance,
-          v2: BankBalanceWithTokenAndBalanceWithUsdBalance
+          v1: SubaccountBalanceWithTokenWithUsdBalance,
+          v2: SubaccountBalanceWithTokenWithUsdBalance
         ) => {
           if (v1.denom === INJECTIVE_DENOM) {
             return -1

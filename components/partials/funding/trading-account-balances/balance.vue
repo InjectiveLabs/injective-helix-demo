@@ -25,12 +25,28 @@
     <span
       class="md:col-span-2 font-mono text-right md:text-left whitespace-nowrap"
     >
-      {{ bankBalanceToString }}
+      {{ totalBalanceInString }}
+    </span>
+    <span class="font-mono text-left md:hidden">
+      {{ $t('funding.available') }}
+    </span>
+    <span
+      class="md:col-span-2 font-mono text-right md:text-left whitespace-nowrap"
+    >
+      {{ availableBalanceToString }}
+    </span>
+    <span class="font-mono text-left md:hidden">
+      {{ $t('funding.inOrder') }}
+    </span>
+    <span
+      class="md:col-span-2 font-mono text-right md:text-left whitespace-nowrap"
+    >
+      {{ inOrderToString }}
     </span>
     <span class="font-mono text-left md:hidden">
       {{ $t('common.value') }}
     </span>
-    <span class="md:col-span-3 font-mono whitespace-nowrap">
+    <span class="md:col-span-2 font-mono whitespace-nowrap">
       <span
         class="flex xs:items-center items-end justify-end md:justify-start flex-col xs:flex-row"
       >
@@ -44,14 +60,18 @@
       </span>
     </span>
     <div
-      class="col-span-2 md:col-span-5 text-right text-primary-500 text-sm flex justify-around sm:justify-end"
+      class="col-span-2 text-right text-primary-500 text-sm flex justify-around sm:justify-end"
     >
-      <span class="cursor-pointer" @click="handleDepositClick">
-        {{ $t('common.deposit') }}
-      </span>
-      <span class="cursor-pointer ml-6" @click="handleWithdrawClick">{{
-        $t('common.withdraw')
-      }}</span>
+      <nuxt-link
+        v-if="spotMarketRoute"
+        class="cursor-pointer"
+        :to="{ name: 'spot-spot', params: { spot: spotMarketRoute } }"
+      >
+        <span class="mr-6">
+          {{ $t('common.trade') }}
+        </span>
+      </nuxt-link>
+
       <span class="cursor-pointer ml-6" @click="handleTransferClick">
         {{ $t('common.transfer') }}
       </span>
@@ -65,13 +85,14 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   INJECTIVE_DENOM,
   ZERO_IN_BASE,
-  BankBalanceWithTokenAndBalanceWithUsdBalance
+  SubaccountBalanceWithTokenWithUsdBalance
 } from '@injectivelabs/ui-common'
 import TableRow from '~/components/elements/table-row.vue'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
+import { spot as allowedSpotMarkets } from '~/routes.config'
 
 export default Vue.extend({
   components: {
@@ -81,12 +102,13 @@ export default Vue.extend({
   props: {
     balance: {
       required: true,
-      type: Object as PropType<BankBalanceWithTokenAndBalanceWithUsdBalance>
+      type: Object as PropType<SubaccountBalanceWithTokenWithUsdBalance>
     }
   },
 
   data() {
     return {
+      allowedSpotMarkets,
       INJECTIVE_DENOM
     }
   },
@@ -96,14 +118,43 @@ export default Vue.extend({
       return this.$accessor.token.btcUsdPrice
     },
 
-    bankBalance(): BigNumberInBase {
+    availableBalance(): BigNumberInBase {
       const { balance } = this
 
-      if (!balance.balance) {
+      if (!balance.availableBalance) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(balance.balance).toBase(balance.token.decimals)
+      return new BigNumberInWei(balance.availableBalance).toBase(
+        balance.token.decimals
+      )
+    },
+
+    totalBalance(): BigNumberInBase {
+      const { balance } = this
+
+      if (!balance.totalBalance) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInWei(balance.totalBalance).toBase(
+        balance.token.decimals
+      )
+    },
+
+    inOrderBalance(): BigNumberInBase {
+      const { availableBalance, totalBalance } = this
+
+      return totalBalance.minus(availableBalance)
+    },
+
+    availableBalanceToString(): string {
+      const { availableBalance } = this
+
+      return availableBalance.toFormat(
+        UI_DEFAULT_DISPLAY_DECIMALS,
+        BigNumberInBase.ROUND_DOWN
+      )
     },
 
     totalInBtc(): BigNumberInBase {
@@ -118,10 +169,19 @@ export default Vue.extend({
       )
     },
 
-    bankBalanceToString(): string {
-      const { bankBalance } = this
+    inOrderToString(): string {
+      const { inOrderBalance } = this
 
-      return bankBalance.toFormat(
+      return inOrderBalance.toFormat(
+        UI_DEFAULT_DISPLAY_DECIMALS,
+        BigNumberInBase.ROUND_DOWN
+      )
+    },
+
+    totalBalanceInString(): string {
+      const { totalBalance } = this
+
+      return totalBalance.toFormat(
         UI_DEFAULT_DISPLAY_DECIMALS,
         BigNumberInBase.ROUND_DOWN
       )
@@ -155,22 +215,20 @@ export default Vue.extend({
       return new BigNumberInBase(balance.balanceInUsd).toFormat(
         UI_DEFAULT_DISPLAY_DECIMALS
       )
+    },
+
+    spotMarketRoute(): string | undefined {
+      const { allowedSpotMarkets, balance } = this
+
+      const route = allowedSpotMarkets.find((marketRoute) => {
+        return marketRoute.startsWith(balance.token.symbol.toLowerCase())
+      })
+
+      return route
     }
   },
 
   methods: {
-    handleDepositClick() {
-      const { balance } = this
-
-      this.$root.$emit('bridge:deposit', balance.token)
-    },
-
-    handleWithdrawClick() {
-      const { balance } = this
-
-      this.$root.$emit('bridge:withdraw', balance.token)
-    },
-
     handleTransferClick() {
       const { balance } = this
 
