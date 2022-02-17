@@ -15,9 +15,9 @@
         </template>
         <div class="text-right tracking-wider">
           <p class="text-gray-500 text-xs uppercase mb-3">
-            {{ $t('funding.portfolioValue') }}
+            {{ $t('funding.walletValue') }}
           </p>
-          <p class="text-2xl">{{ bankAccountBalanceToString }} USD</p>
+          <p class="text-2xl">{{ bankBalanceToString }} USD</p>
         </div>
       </v-card-select>
 
@@ -37,12 +37,18 @@
           <p class="text-gray-500 text-xs uppercase mb-3">
             {{ $t('funding.portfolioValue') }}
           </p>
-          <p class="text-2xl">15,887.00 USD</p>
+          <p class="text-2xl">{{ tradingAccountBalanceToString }}</p>
         </div>
       </v-card-select>
     </div>
 
     <div class="w-full mt-6 relative">
+      <portal to="account-summary">
+        <div v-if="status.isLoading()" class="h-16 w-full xl:w-1/4 relative">
+          <v-loading />
+        </div>
+        <v-account-summary v-else />
+      </portal>
       <v-panel :title="panelTitle">
         <HOCLoading :status="status">
           <component :is="`v-${component}`" v-bind="{ balances }"></component>
@@ -63,33 +69,33 @@ import {
 import {
   BankBalances,
   BankBalanceWithTokenAndBalanceWithUsdBalance,
+  SubaccountBalanceWithTokenWithUsdBalance,
   TokenWithBalanceAndPrice,
   ZERO_IN_BASE,
   ZERO_TO_STRING
 } from '@injectivelabs/ui-common'
-import VBalances from '~/components/partials/funding/balances/index.vue'
-import VTradingAccountBalances from '~/components/partials/funding/trading-account-balances/index.vue'
-import VWelcomeBanner from '~/components/partials/banners/welcome.vue'
-import VNewUserBanner from '~/components/partials/banners/gas-rebate.vue'
+import VBankBalances from '~/components/partials/funding/bank-balances/index.vue'
+import VAccountSummary from '~/components/partials/funding/account-summary.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
 import {
   UI_MINIMAL_AMOUNT,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
+import { SubaccountBalanceWithTokenAndPrice } from '~/types'
+import VLoading from '~/components/elements/loading.vue'
 
 const components = {
-  bankAccount: 'balances',
+  bankAccount: 'bank-balances',
   tradingAccount: 'trading-account-balances'
 }
 
 export default Vue.extend({
   components: {
-    VBalances,
-    HOCLoading,
-    VTradingAccountBalances,
-    VNewUserBanner,
-    VWelcomeBanner
+    VBankBalances,
+    VLoading,
+    VAccountSummary,
+    HOCLoading
   },
 
   data() {
@@ -116,6 +122,10 @@ export default Vue.extend({
 
     ibcTokensWithBalanceAndPriceFromBank(): TokenWithBalanceAndPrice[] {
       return this.$accessor.token.ibcTokensWithBalanceAndPriceFromBank
+    },
+
+    subaccountBalancesWithTokenAndPrice(): SubaccountBalanceWithTokenAndPrice[] {
+      return this.$accessor.account.subaccountBalancesWithTokenAndPrice
     },
 
     // calculate and append total USD balances
@@ -146,7 +156,23 @@ export default Vue.extend({
       })
     },
 
-    bankAccountBalance(): BigNumberInBase {
+    tradingAccountBalances(): SubaccountBalanceWithTokenWithUsdBalance[] {
+      const { subaccountBalancesWithTokenAndPrice } = this
+
+      return subaccountBalancesWithTokenAndPrice.map((balance) => {
+        const balanceInUsd = new BigNumberInWei(balance.availableBalance)
+          .toBase(balance.token.decimals)
+          .times(balance.token.usdPrice)
+          .toFixed(UI_DEFAULT_DISPLAY_DECIMALS)
+
+        return {
+          ...balance,
+          balanceInUsd
+        }
+      })
+    },
+
+    bankBalance(): BigNumberInBase {
       const { balances } = this
 
       return balances.reduce(
@@ -156,20 +182,46 @@ export default Vue.extend({
       )
     },
 
-    bankAccountBalanceToString(): string {
-      const { bankAccountBalance } = this
+    bankBalanceToString(): string {
+      const { bankBalance } = this
 
-      if (bankAccountBalance.eq(0)) {
+      if (bankBalance.eq(0)) {
         return '0.00'
       }
 
-      if (bankAccountBalance.lte(UI_MINIMAL_AMOUNT)) {
+      if (bankBalance.lte(UI_MINIMAL_AMOUNT)) {
         return `< ${UI_MINIMAL_AMOUNT.toFormat(
           UI_DEFAULT_MIN_DISPLAY_DECIMALS
         )}`
       }
 
-      return bankAccountBalance.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      return bankBalance.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+    },
+
+    tradingAccountBalance(): BigNumberInBase {
+      const { tradingAccountBalances } = this
+
+      return tradingAccountBalances.reduce(
+        (total, balance) =>
+          total.plus(new BigNumberInBase(balance.balanceInUsd)),
+        ZERO_IN_BASE
+      )
+    },
+
+    tradingAccountBalanceToString(): string {
+      const { tradingAccountBalance } = this
+
+      if (tradingAccountBalance.eq(0)) {
+        return '0.00'
+      }
+
+      if (tradingAccountBalance.lte(UI_MINIMAL_AMOUNT)) {
+        return `< ${UI_MINIMAL_AMOUNT.toFormat(
+          UI_DEFAULT_MIN_DISPLAY_DECIMALS
+        )}`
+      }
+
+      return tradingAccountBalance.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
     panelTitle(): string {
@@ -185,43 +237,27 @@ export default Vue.extend({
     }
   },
 
-  watch: {
-    isUserWalletConnected(isUserWalletConnected: boolean) {
-      if (isUserWalletConnected) {
-        if (this.component === components.bankAccount) {
-          this.handleBankAccountClick()
-        } else {
-          this.handleTradingAccountClick()
-        }
-      }
-    }
-  },
-
   mounted() {
-    this.handleBankAccountClick()
-  },
+    Promise.all([
+      this.$accessor.token.getErc20TokensWithBalanceAndPriceFromBank(),
+      this.$accessor.account.fetchSubaccountsBalancesWithPrices()
+    ])
+      .then(() => {
+        //
+      })
+      .catch(this.$onError)
+      .finally(() => {
+        this.status.setIdle()
+      })
 
-  methods: {
-    handleBankAccountClick() {
-      this.status.setLoading()
-
-      Promise.all([
-        this.$accessor.token.getBitcoinUsdPrice(),
-        this.$accessor.token.getErc20TokensWithBalanceAndPriceFromBank()
-      ])
-        .then(() => {
-          //
-        })
-        .catch(this.$onError)
-        .finally(() => {
-          this.status.setIdle()
-        })
-    },
-
-    // TODO
-    handleTradingAccountClick() {
-      //
-    }
+    Promise.all([this.$accessor.token.getBitcoinUsdPrice()])
+      .then(() => {
+        //
+      })
+      .catch(this.$onError)
+      .finally(() => {
+        //
+      })
   }
 })
 </script>

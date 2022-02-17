@@ -20,9 +20,6 @@ import { backupPromiseCall } from '~/app/utils/async'
 const initialStateFactory = () => ({
   erc20TokensWithBalanceAndPriceFromBank: [] as TokenWithBalanceAndPrice[],
   ibcTokensWithBalanceAndPriceFromBank: [] as TokenWithBalanceAndPrice[],
-  bridgeTokenWithBalanceAndPrice: undefined as
-    | undefined
-    | TokenWithBalanceAndPrice,
   btcUsdPrice: 0 as number,
   injUsdPrice: 0 as number
 })

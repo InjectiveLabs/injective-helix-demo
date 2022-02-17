@@ -1,3 +1,8 @@
+import {
+  SubaccountBalanceWithToken,
+  TokenWithBalanceAndPrice
+} from '@injectivelabs/ui-common'
+
 export interface DOMEvent<T extends EventTarget> extends Event {
   target: T
   keyCode?: number
@@ -10,6 +15,11 @@ export interface Constructable<T> {
 export interface GeoLocation {
   continent: string
   country: string
+}
+
+export interface SubaccountBalanceWithTokenAndPrice
+  extends SubaccountBalanceWithToken {
+  token: TokenWithBalanceAndPrice
 }
 
 export * from './enums'
