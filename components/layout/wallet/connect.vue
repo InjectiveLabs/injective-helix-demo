@@ -1,7 +1,7 @@
 <template>
   <div class="ml-4 flex items-center md:ml-6">
     <v-button md primary @click="handleWalletConnectClicked">
-      {{ $t('connect') }}
+      {{ $t('connect.connect') }}
     </v-button>
 
     <v-modal
@@ -9,7 +9,7 @@
       @modal-closed="isOpenConnectModal = false"
     >
       <h3 slot="title">
-        {{ $t('connect_to_wallet') }}
+        {{ $t('connect.connectToWallet') }}
       </h3>
       <div class="relative mt-6">
         <HOCLoading :status="status">
@@ -20,7 +20,7 @@
             />
             <li class="text-xs text-gray-300 px-4 py-2">
               <p class="text-center leading-4">
-                * {{ $t('Trezor Connection Note') }}
+                * {{ $t('connect.trezorConnectionNote') }}
               </p>
             </li>
           </ul>
@@ -28,10 +28,7 @@
       </div>
     </v-modal>
     <v-modal-terms />
-    <v-modal-ledger
-      :is-open="isLedgerModalOpen"
-      @closed="isLedgerModalOpen = false"
-    />
+    <v-modal-ledger :is-open="isLedgerModalOpen" @closed="handleLedgerClosed" />
   </div>
 </template>
 
@@ -92,6 +89,7 @@ export default Vue.extend({
   mounted() {
     this.$root.$on('wallet-clicked', this.handleWalletConnectClicked)
     this.$root.$on('terms-confirmed', this.handleTermsConfirmed)
+    this.$root.$on('connect-ledger', this.handleLedgerConnectingWallet)
 
     Promise.all([this.$accessor.wallet.isMetamaskInstalled()])
       .then(() => {
@@ -103,6 +101,7 @@ export default Vue.extend({
   beforeDestroy() {
     this.$root.$off('wallet-clicked', this.handleWalletConnectClicked)
     this.$root.$off('terms-confirmed', this.handleTermsConfirmed)
+    this.$root.$off('connect-ledger', this.handleLedgerConnectingWallet)
   },
 
   methods: {
@@ -123,18 +122,24 @@ export default Vue.extend({
     },
 
     handleConnectedWallet() {
-      this.$toast.success(this.$t('success_connect'))
+      this.$toast.success(this.$t('connect.successfullyConnected'))
       this.$emit('wallet-connected')
       this.$root.$emit('wallet-connected')
       this.status.setIdle()
       this.$nextTick(() => {
         this.isOpenConnectModal = false
+        this.$accessor.modal.openPersistedModalIfExist()
       })
     },
 
     handleLedgerConnectingWallet() {
       this.isOpenConnectModal = false
       this.isLedgerModalOpen = true
+    },
+
+    handleLedgerClosed() {
+      this.isLedgerModalOpen = false
+      this.$accessor.modal.openPersistedModalIfExist()
     },
 
     handleDisconnectedWallet() {

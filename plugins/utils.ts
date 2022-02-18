@@ -47,7 +47,7 @@ const parseMessage = (error: any): string => {
     return 'Something happened. Please refresh the page.'
   }
 
-  return message
+  return `${message[0].toUpperCase()}${message.slice(1)}`
 }
 
 export default ({ app }: Context, inject: any) => {

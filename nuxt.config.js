@@ -113,7 +113,17 @@ export default {
 
   router: {
     linkActiveClass: 'is-active',
-    middleware: ['maintenance']
+    middleware: ['maintenance'],
+    extendRoutes(routes) {
+      return [
+        ...routes,
+        {
+          name: 'register',
+          path: '/register',
+          component: './pages/funding.vue'
+        }
+      ]
+    }
   },
 
   toast: {

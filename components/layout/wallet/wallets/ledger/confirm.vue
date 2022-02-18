@@ -18,8 +18,8 @@
                 }))
               "
               :valid="valid"
-              :label="$t('address')"
-              :placeholder="$t('Select address to connect')"
+              :label="$t('connect.address')"
+              :placeholder="$t('connect.selectAddressToConnect')"
             >
             </v-select-custom>
           </ValidationProvider>
@@ -33,7 +33,7 @@
             :disabled="!form.address || invalid"
             @click.stop="onConnect"
           >
-            {{ $t('connect') }}
+            {{ $t('connect.connect') }}
           </v-button>
         </div>
       </div>

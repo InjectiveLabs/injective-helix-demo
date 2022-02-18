@@ -49,7 +49,8 @@ export enum Modal {
   MarketBeta = 'market-beta',
   Bridge = 'bridge',
   BridgeConfirm = 'bridge-confirm',
-  BridgeCompleted = 'bridge-completed'
+  BridgeCompleted = 'bridge-completed',
+  RefereeOnboarding = 'referee-onboarding',
 }
 
 export enum Breakpoint {

@@ -46,21 +46,20 @@
   }
 }
 
-.is-valid {
-  .input {
-    @apply border-primary-500;
-  }
-}
-
-.is-invalid {
-  .input {
-    @apply border-red-400;
-  }
+.input-lg {
+  @apply text-xl h-14;
 }
 
 .input-large {
   @apply bg-transparent text-gray-400 rounded-lg px-6 pr-2 w-full h-20 outline-none appearance-none max-w-full text-3xl border-none font-medium;
+}
 
+.input-xl {
+  @apply bg-transparent text-gray-400 rounded-lg px-6 w-full h-20 outline-none appearance-none max-w-full text-3xl border-none font-medium;
+}
+
+.input-lg,
+.input-xl {
   &[type='number']::-webkit-inner-spin-button,
   &[type='number']::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -77,6 +76,18 @@
 
   &[disabled] {
     @apply pointer-events-none cursor-not-allowed bg-gray-700;
+  }
+}
+
+.is-valid {
+  .input {
+    @apply border-primary-500;
+  }
+}
+
+.is-invalid {
+  .input {
+    @apply border-red-400;
   }
 }
 

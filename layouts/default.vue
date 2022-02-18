@@ -73,7 +73,8 @@ export default Vue.extend({
       this.$accessor.app.init(),
       this.$accessor.app.fetchGasPrice(),
       this.$accessor.bank.init(),
-      this.$accessor.account.init()
+      this.$accessor.account.init(),
+      this.$accessor.referral.init()
     ])
       .then(() => {
         //
@@ -88,6 +89,7 @@ export default Vue.extend({
   },
 
   beforeDestroy() {
+    this.$root.$off('wallet-connected', this.handleWalletConnected)
     clearInterval(this.interval)
   },
 
@@ -114,6 +116,10 @@ export default Vue.extend({
       if (this.isOpenSidebar) {
         this.isOpenSidebar = false
       }
+    },
+
+    handleWalletConnected() {
+      this.$accessor.referral.init()
     }
   }
 })

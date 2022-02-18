@@ -4,7 +4,7 @@
     <div>
       <div class="flex items-center justify-between">
         <label
-          v-if="!large"
+          v-if="!lg && !xl"
           :for="$attrs.id"
           class="block text-xs font-semibold text-gray-200"
           v-html="$attrs.label || ''"
@@ -36,7 +36,8 @@
           autocomplete="off"
           :value="value"
           :class="{
-            'input-large': large,
+            'input-lg': lg,
+            'input-xl': xl,
             'input-round': round,
             'input-small': small
           }"
@@ -47,7 +48,7 @@
         />
         <div
           class="addon absolute inset-y-0 right-0 flex items-center"
-          :class="{ 'pr-3': !large }"
+          :class="{ 'pr-3': !lg && !xl }"
         >
           <span v-if="showClose" @click="handleCloseEvent">
             <v-icon-close
@@ -93,7 +94,12 @@ export default Vue.extend({
       default: false
     },
 
-    large: {
+    lg: {
+      type: Boolean,
+      default: false
+    },
+
+    xl: {
       type: Boolean,
       default: false
     },
@@ -151,22 +157,22 @@ export default Vue.extend({
 
   computed: {
     maxClasses(): string[] {
-      const { large } = this
+      const { lg } = this
 
-      if (large) {
-        return ['text-sm', 'px-2', 'mr-2']
+      if (lg) {
+        return ['text-base', 'pr-2']
       }
 
       return ['px-2', 'py-1', 'mr-2', 'border', 'text-xs']
     },
 
     classes(): string | null {
-      const { large } = this
+      const { xl } = this
 
       const classes = ['w-full ']
 
-      if (large) {
-        return 'flex-grow'
+      if (xl) {
+        classes.push('flex-grow')
       }
 
       if (this.valid) {

@@ -4,6 +4,7 @@ import activities from './activities/en'
 import funding from './funding/en'
 import market from './market/en'
 import bridge from './bridge/en'
+import wallet from './wallet/en'
 
 export default {
   ...activities,
@@ -13,6 +14,7 @@ export default {
   ...activities,
   ...market,
   ...bridge,
+  ...wallet,
   common: {
     deposit: 'Deposit',
     trade: 'Trade',
@@ -28,8 +30,6 @@ export default {
   confirm: 'Confirm',
   injective: 'Injective',
   not_connected: 'Not Connected',
-  connect: 'Connect',
-  connect_to_wallet: 'Connect to wallet',
   connected: 'Connected',
   metamask: 'Metamask',
   welcome_to_ip:
@@ -78,14 +78,6 @@ export default {
   select_ledger_address: 'Select Ledger Address',
   follow_instructions: 'Please follow the instructions on your device',
   address: 'Address',
-  select_address_to_connect: 'Select Address to Connect',
-  derivation_path: 'Derivation Path',
-  select_derivation_path: 'Select Derivation Path',
-  get_addresses: 'Get Addresses',
-  get_more_addresses: 'Get More Addresses',
-  please_wait_addresses: 'We are getting your addresses, please wait ...',
-  ledger_live: 'Ledger Live',
-  ledger_legacy: 'Ledger Legacy',
   cancel_all: 'Cancel All',
   close_all: 'Close All',
   orders_cancelled: 'Orders Cancelled',
@@ -109,18 +101,11 @@ export default {
     'Note: To ensure smooth process while connecting your Ledger Hardware Wallet, please ensure you are running the on latest Chrome version, have your Ledger device connected, unlocked and your Ethereum app open. ',
   home: 'Home',
   open: 'Open',
-  'Trezor Connection Note':
-    "Note: At this point there is no support for Trezor - please don't use Trezor (including Metamask's Trezor integration) as it might cause your funds being stuck on the Injective Chain.",
   close: 'Close',
-  'Connect using browser wallet': 'Connect using browser wallet',
-  'Connect to Wallet': 'Connect to Wallet',
-  Ledger: 'Ledger',
-  'Select address to connect': 'Select address to connect',
   'Please follow the instructions on your device':
     'Please follow the instructions on your device',
   'Ledger Live': 'Ledger Live',
   'Ledger Legacy': 'Ledger Legacy',
-  'Connect using hardware wallet': 'Connect using hardware wallet',
   'Get addresses': 'Get addresses',
   'Get more addresses': 'Get more addresses',
   'We are getting your addresses, please wait ...':

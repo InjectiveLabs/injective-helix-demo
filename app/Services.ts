@@ -30,6 +30,7 @@ import { SubaccountService } from './services/account'
 import { ExchangeService } from './services/exchange'
 import { AuctionService } from './services/auction'
 import { DerivativeService } from './services/derivatives'
+import { ReferralService } from './services/referral'
 import { app } from '~/app/singletons/App'
 
 const alchemyRpcEndpoint = IS_TESTNET
@@ -77,6 +78,7 @@ export const auctionService = new AuctionService(commonServiceOptions)
 export const alchemyApiService = new AlchemyApi(alchemyRpcEndpoint)
 export const coinGeckoApi = new CoinGeckoApi(coinGeckoOptions)
 export const subaccountService = new SubaccountService(commonServiceOptions)
+export const referralService = new ReferralService(commonServiceOptions)
 
 export const bankActionServiceFactory = () => {
   return new BankActionService(commonServiceOptions, getWeb3Strategy())

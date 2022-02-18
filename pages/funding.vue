@@ -19,6 +19,7 @@
           </div>
         </div>
       </HOCLoading>
+      <v-referee-onboarding-modal />
     </div>
   </div>
 </template>
@@ -31,6 +32,8 @@ import VBalances from '~/components/partials/funding/balances.vue'
 import VWelcomeBanner from '~/components/partials/banners/welcome.vue'
 import VGasRebate from '~/components/partials/banners/gas-rebate.vue'
 import VBridge from '~/components/partials/funding/bridge.vue'
+import { Modal } from '~/types'
+import VRefereeOnboardingModal from '~/components/partials/modals/referee-onboarding.vue'
 
 export default Vue.extend({
   components: {
@@ -38,7 +41,8 @@ export default Vue.extend({
     HOCLoading,
     VBalances,
     VWelcomeBanner,
-    VGasRebate
+    VGasRebate,
+    VRefereeOnboardingModal
   },
 
   data() {
@@ -72,6 +76,17 @@ export default Vue.extend({
       .finally(() => {
         //
       })
+  },
+
+  methods: {
+    checkForReferralCode() {
+      const { $route } = this
+      const { code } = $route.query
+
+      if ($route.name === 'register' && code && code.toString().trim() !== '') {
+        this.$accessor.modal.openModal(Modal.RefereeOnboarding)
+      }
+    }
   }
 })
 </script>

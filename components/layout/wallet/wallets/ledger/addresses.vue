@@ -10,8 +10,8 @@
               label: a.label
             }))
           "
-          :label="$t('Derivation Path')"
-          :placeholder="$t('Select Derivation Path')"
+          :label="$t('connect.derivationPath')"
+          :placeholder="$t('connect.selectDerivationPath')"
         >
         </v-select-custom>
       </div>
@@ -23,15 +23,15 @@
             >
               <span class="mr-2">{{
                 addresses.length === 0
-                  ? $t('Get addresses')
-                  : $t('Get more addresses')
+                  ? $t('connect.getAddresses')
+                  : $t('connect.getMoreAddresses')
               }}</span>
               <v-icon-arrow class="transform rotate-180 w-3 h-3"></v-icon-arrow>
             </div>
           </v-button>
         </div>
         <p v-else class="text-gray-400 text-xs my-2">
-          {{ $t('We are getting your addresses, please wait ...') }}
+          {{ $t('connect.getAddressNote') }}
         </p>
       </div>
     </div>
@@ -54,11 +54,11 @@ export default Vue.extend({
       status: new Status(),
       derivationPaths: [
         {
-          label: this.$t('Ledger Live'),
+          label: this.$t('connect.ledgerLive'),
           path: LedgerDerivationPathType.LedgerLive
         },
         {
-          label: this.$t('Ledger Legacy'),
+          label: this.$t('connect.ledgerLegacy'),
           path: LedgerDerivationPathType.LedgerMew
         }
       ],

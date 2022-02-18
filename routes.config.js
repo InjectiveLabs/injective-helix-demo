@@ -1,4 +1,9 @@
-const { IS_TESTNET, IS_MAINNET_STAGING } = require('./app/utils/constants')
+const { Network } = require('@injectivelabs/networks')
+const {
+  IS_TESTNET,
+  IS_MAINNET_STAGING,
+  NETWORK
+} = require('./app/utils/constants')
 
 const mainnetSpot = [
   'inj-usdt',
@@ -34,14 +39,19 @@ const derivatives = IS_TESTNET
   ? mainnetStagingDerivatives
   : mainnetDerivatives
 
+if (NETWORK === Network.Devnet) {
+  derivatives.push('bayc-weth-perp')
+}
+
 module.exports = [
   '/',
-  '/portfolio',
   '/funding',
-  '/history',
+  '/activities',
   '/fee-discounts',
   '/trade-and-earn',
   '/faq',
+  '/register',
+  '/trade-and-earn',
   ...spot.map((s) => `/spot/${s}`),
   ...derivatives.map((d) => `/derivatives/${d}`)
 ]
