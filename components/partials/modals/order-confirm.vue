@@ -1,13 +1,13 @@
 <template>
   <v-modal :is-open="isModalOpen" @modal-closed="closeModal">
     <h3 slot="title">
-      {{ $t('Confirm order execution') }}
+      {{ $t('trade.confirmOrderExecution') }}
     </h3>
 
     <div class="relative">
       <p>
         {{
-          $t('high_execution_price_deviation_warning_note', {
+          $t('trade.high_execution_price_deviation_warning_note', {
             percentage: DEFAULT_PRICE_WARNING_DEVIATION
           })
         }}

@@ -22,7 +22,7 @@
             </span>
           </template>
           <template slot="title">
-            {{ $t('trading') }}
+            {{ $t('trade.trading') }}
           </template>
         </v-stat-item>
         <v-stat-item class="col-span-2 md:col-span-3" sm>
@@ -34,7 +34,7 @@
             </span>
           </template>
           <template slot="title">
-            {{ $t('leverage') }}
+            {{ $t('trade.leverage') }}
           </template>
         </v-stat-item>
         <v-stat-item class="col-span-2 md:col-span-3" sm>
@@ -46,7 +46,7 @@
             </span>
           </template>
           <template slot="title">
-            {{ $t('markets') }}
+            {{ $t('trade.markets') }}
           </template>
         </v-stat-item>
         <v-stat-item class="col-span-2 md:col-span-3" sm>

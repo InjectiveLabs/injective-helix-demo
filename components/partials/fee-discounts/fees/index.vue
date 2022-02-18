@@ -21,7 +21,7 @@
           <th class="text-right">
             <div class="flex items-end justify-end">
               <span>
-                {{ $t('fees_paid') }}
+                {{ $t('trade.fees_paid') }}
               </span>
               <v-icon-info-tooltip
                 class="ml-2"

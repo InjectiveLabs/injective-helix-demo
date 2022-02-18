@@ -299,7 +299,7 @@ export default Vue.extend({
       this.$accessor.derivatives
         .cancelOrder(this.order)
         .then(() => {
-          this.$toast.success(this.$t('order_success_canceling'))
+          this.$toast.success(this.$t('trade.order_success_canceling'))
         })
         .catch(this.$onRejected)
         .finally(() => {

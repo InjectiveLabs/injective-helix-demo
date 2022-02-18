@@ -3,11 +3,11 @@
     <div class="text-center">
       <div class="flex items-center justify-center">
         <p class="uppercase text-xs font-semibold text-gray-200">
-          {{ $t('Available Margin') }}
+          {{ $t('trade.availableMargin') }}
         </p>
         <v-icon-info-tooltip
           class="ml-2 text-gray-200"
-          :tooltip="$t('Available Margin Tooltip')"
+          :tooltip="$t('trade.availableMarginTooltip')"
         />
       </div>
       <div class="mt-4 text-center">
@@ -35,7 +35,7 @@
                 :valid="valid"
                 :max="availableMarginToString"
                 :max-selector="availableMargin.gt(0.01)"
-                :label="$t('amount')"
+                :label="$t('trade.amount')"
                 :placeholder="$t('Enter your amount')"
                 type="number"
                 step="0.001"
@@ -54,7 +54,7 @@
               :disabled="!form.amount || invalid"
               @click.stop="handleClickOnWithdraw"
             >
-              {{ $t('add_margin') }}
+              {{ $t('trade.add_margin') }}
             </v-button>
           </div>
         </div>
@@ -140,7 +140,7 @@ export default Vue.extend({
           amount: new BigNumberInBase(form.amount)
         })
         .then(() => {
-          this.$toast.success(this.$t('success_added_margin'))
+          this.$toast.success(this.$t('trade.success_added_margin'))
           this.form.amount = ''
 
           if (this.$form) {

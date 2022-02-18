@@ -38,7 +38,7 @@
                 :valid="valid"
                 :max="availableForDepositToString"
                 :max-selector="availableForDeposit.gt(0.01)"
-                :label="$t('amount')"
+                :label="$t('trade.amount')"
                 :placeholder="$t('Enter your amount')"
                 type="number"
                 step="0.001"
@@ -57,7 +57,7 @@
               :disabled="!form.amount || invalid"
               @click.stop="handleClickOnDeposit"
             >
-              {{ $t('Deposit') }}
+              {{ $t('common.deposit') }}
             </v-button>
           </div>
           <p

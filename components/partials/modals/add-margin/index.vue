@@ -1,7 +1,7 @@
 <template>
   <v-modal :is-open="isModalOpen" sm @modal-closed="closeModal">
     <h3 slot="title">
-      {{ $t('add_margin_to_position_title') }}
+      {{ $t('trade.add_margin_to_position_title') }}
     </h3>
 
     <div v-if="market && quoteBalance" class="relative">
