@@ -31,7 +31,7 @@ export class ExchangeService extends BaseService {
     )
   }
 
-  fetchFeeDiscountAccountInfo = async (injectiveAddress: string) => {
+  async fetchFeeDiscountAccountInfo(injectiveAddress: string) {
     const feeDiscountAccountInfo = await this.consumer.fetchFeeDiscountAccountInfo(
       injectiveAddress
     )

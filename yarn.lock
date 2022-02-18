@@ -1896,10 +1896,10 @@
     web3-core-subscriptions "^1.5.2"
     web3-utils "^1.5.2"
 
-"@injectivelabs/derivatives-consumer@^0.0.102":
-  version "0.0.102"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/derivatives-consumer/-/derivatives-consumer-0.0.102.tgz#e115a0f22efde2e012b8a3f7b78cc08c3c0b4a17"
-  integrity sha512-kcIyrYJU5i7L9YWJU1e1iaS/CYnQ7NAT27No5/1j3KTHgYPwKi0e8dUje6CTezszSQ0zxBMFfz0uodsyiWMVJg==
+"@injectivelabs/derivatives-consumer@^0.0.103":
+  version "0.0.103"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/derivatives-consumer/-/derivatives-consumer-0.0.103.tgz#92acc382fc0cb5ff3fa51c2fa77c3fbd506f85e1"
+  integrity sha512-pUOLfG7c/EHYBVt5jLZ/w6Su5IUDScj6SWazKv1k4SYgWe3IF9MmkIfuhy7aHur0HdxUq4njYz8wKZm+U0N24A==
   dependencies:
     "@improbable-eng/grpc-web" "^0.15.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.15.0"
@@ -2059,10 +2059,10 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@injectivelabs/ui-common@^0.0.46":
-  version "0.0.46"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-common/-/ui-common-0.0.46.tgz#f53f2e663bd58a559293c69aaf678b5d459a8b37"
-  integrity sha512-ch+z/Szc9pdXpxvh/RZxI85OZJ8kpkv2IMw1htjq08kI1KGcHV90KFBqwPcduqPuv00pFgo8IuGqapHEHDoX4Q==
+"@injectivelabs/ui-common@^0.0.47":
+  version "0.0.47"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-common/-/ui-common-0.0.47.tgz#3be11aa9fde976b822d72255b2e674408092ba95"
+  integrity sha512-aiPsV/G9fifdMs25P6zgCfNnhJyczSTA34DL6dbMPBRVueSAYkFQPXVGHzl5GI5dNq/gQBoRg8MnMgmKZqLqwg==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@improbable-eng/grpc-web" "^0.15.0"
@@ -2070,7 +2070,7 @@
     "@injectivelabs/alchemy-api" "^0.0.22"
     "@injectivelabs/chain-consumer" "^0.0.114"
     "@injectivelabs/contracts" "^0.0.107"
-    "@injectivelabs/derivatives-consumer" "^0.0.102"
+    "@injectivelabs/derivatives-consumer" "^0.0.103"
     "@injectivelabs/exceptions" "^0.0.42"
     "@injectivelabs/exchange-consumer" "^0.0.144"
     "@injectivelabs/networks" "^0.0.76"

@@ -52,6 +52,8 @@
 import Vue from 'vue'
 import VSpot from '~/components/partials/activities/spot/index.vue'
 import VDerivatives from '~/components/partials/activities/derivatives/index.vue'
+import VFundingHistory from '~/components/partials/activities/funding-history/index.vue'
+import RewardsHistory from '~/components/partials/activities/reward-history/index.vue'
 
 const components = {
   spot: 'spot',
@@ -63,7 +65,9 @@ const components = {
 export default Vue.extend({
   components: {
     VSpot,
-    VDerivatives
+    VDerivatives,
+    VFundingHistory,
+    RewardsHistory
   },
 
   data() {

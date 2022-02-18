@@ -10,7 +10,6 @@ import {
   TokenErc20ServiceAction,
   PeggyActionService,
   SpotService,
-  DerivativeService,
   DerivativeActionService,
   SpotActionService,
   SubaccountActionService
@@ -29,6 +28,7 @@ import { getWeb3Strategy } from './web3'
 import { SubaccountService } from './services/account'
 import { ExchangeService } from './services/exchange'
 import { AuctionService } from './services/auction'
+import { DerivativeService } from './services/derivatives'
 import { app } from '~/app/singletons/App'
 
 const alchemyRpcEndpoint = IS_TESTNET

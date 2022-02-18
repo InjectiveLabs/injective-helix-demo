@@ -9,7 +9,10 @@ import {
   UiDerivativeTrade,
   UiPosition
 } from '@injectivelabs/ui-common'
-import { DerivativeOrderState } from '@injectivelabs/derivatives-consumer'
+import {
+  DerivativeOrderState,
+  FundingPayment
+} from '@injectivelabs/derivatives-consumer'
 import {
   streamSubaccountOrders as streamSubaccountDerivativeOrders,
   streamSubaccountTrades as streamSubaccountDerivativeTrades,
@@ -31,7 +34,8 @@ const initialStateFactory = () => ({
   subaccountDerivativeOrders: [] as Array<UiDerivativeLimitOrder>,
   subaccountSpotTrades: [] as Array<UiSpotTrade>,
   subaccountDerivativeTrades: [] as Array<UiDerivativeTrade>,
-  subaccountPositions: [] as Array<UiPosition>
+  subaccountPositions: [] as Array<UiPosition>,
+  subaccountFundingPayments: [] as Array<FundingPayment>
 })
 
 const initialState = initialStateFactory()
@@ -41,7 +45,8 @@ export const state = () => ({
   subaccountDerivativeOrders: initialState.subaccountDerivativeOrders as Array<UiDerivativeLimitOrder>,
   subaccountSpotTrades: initialState.subaccountSpotTrades as Array<UiSpotTrade>,
   subaccountDerivativeTrades: initialState.subaccountDerivativeTrades as Array<UiDerivativeTrade>,
-  subaccountPositions: initialState.subaccountPositions as Array<UiPosition>
+  subaccountPositions: initialState.subaccountPositions as Array<UiPosition>,
+  subaccountFundingPayments: initialState.subaccountFundingPayments as Array<FundingPayment>
 })
 
 export type ActivitiesStoreState = ReturnType<typeof state>
@@ -56,6 +61,13 @@ export const mutations = {
     subaccountPositions: Array<UiPosition>
   ) {
     state.subaccountPositions = subaccountPositions
+  },
+
+  setSubaccountFundingPayments(
+    state: ActivitiesStoreState,
+    subaccountFundingPayments: Array<FundingPayment>
+  ) {
+    state.subaccountFundingPayments = subaccountFundingPayments
   },
 
   setSubaccountSpotTrades(
@@ -434,6 +446,21 @@ export const actions = actionTree(
       })
 
       commit('setSubaccountPositions', positions)
+    },
+
+    async fetchSubaccountFundingPayments({ commit }) {
+      const { subaccount } = this.app.$accessor.account
+      const { isUserWalletConnected } = this.app.$accessor.wallet
+
+      if (!isUserWalletConnected || !subaccount) {
+        return
+      }
+
+      const positions = await derivativeService.fetchFundingPayments({
+        subaccountId: subaccount.subaccountId
+      })
+
+      commit('setSubaccountFundingPayments', positions)
     },
 
     async batchCancelSpotOrders(_, orders: UiSpotLimitOrder[]) {
