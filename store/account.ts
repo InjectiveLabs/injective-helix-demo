@@ -165,8 +165,17 @@ export const actions = actionTree(
     },
 
     async fetchSubaccountsBalances({ commit, state }) {
-      if (state.subaccount && state.subaccount.balances) {
-        const subaccountBalances = state.subaccount.balances
+      if (
+        !state.subaccount ||
+        !(state.subaccount && state.subaccount.balances)
+      ) {
+        await this.app.$accessor.fetchSubaccounts()
+      }
+
+      const { subaccount } = state
+
+      if (subaccount && subaccount.balances) {
+        const subaccountBalances = subaccount.balances
         const subaccountBalancesWithToken = await tokenService.getSubaccountBalancesWithToken(
           subaccountBalances
         )

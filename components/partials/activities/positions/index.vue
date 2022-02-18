@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import VPositions from '~/components/partials/funding/trading-account-balances/positions.vue'
+import VPositions from '~/components/partials/common/account/positions.vue'
 import VModalAddMargin from '~/components/partials/modals/add-margin/index.vue'
 
 const components = {

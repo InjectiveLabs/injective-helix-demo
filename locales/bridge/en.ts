@@ -29,6 +29,7 @@ export default {
       'Withdraw from trading account successful',
     depositToInjectiveSuccess: 'Your transaction is successfully submitted!',
     withdrawFromInjectiveSuccess: 'Your transaction is successfully submitted!',
+    seeOnExplorer: 'View on explorer',
 
     withdrawFromInjectiveNote:
       'Note: There is a Bridge fee of ≈{fee} {asset} included in the transaction',

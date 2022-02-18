@@ -19,6 +19,7 @@ import Separator from '~/components/elements/separator.vue'
 import Search from '~/components/elements/search.vue'
 import TextInfo from '~/components/elements/text-info.vue'
 import VUserWalletConnectWarning from '~/components/elements/user-wallet-connect-warning.vue'
+import VEmptyList from '~/components/elements/empty-list.vue'
 import VIconInfoTooltip from '~/components/elements/info-icon-tooltip.vue'
 import VIconCheckTooltip from '~/components/elements/info-check-tooltip.vue'
 
@@ -46,5 +47,6 @@ Vue.component('VSeparator', Separator)
 Vue.component('VSearch', Search)
 Vue.component('VTextInfo', TextInfo)
 Vue.component('VUserWalletConnectWarning', VUserWalletConnectWarning)
+Vue.component('VEmptyList', VEmptyList)
 Vue.component('VIconInfoTooltip', VIconInfoTooltip)
 Vue.component('VIconCheckTooltip', VIconCheckTooltip)

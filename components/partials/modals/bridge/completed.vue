@@ -14,7 +14,22 @@
             {{ bridgeNote }}
           </p>
           <div class="text-center mt-6">
-            <v-button lg primary class="w-full xs:w-1/2 font-bold">
+            <v-button
+              v-if="bridgeType === BridgeType.Transfer"
+              lg
+              primary
+              class="w-full xs:w-1/2 font-bold"
+            >
+              <a
+                :href="explorerUrl"
+                target="_blank"
+                class="flex items-center justify-center"
+              >
+                <span class="mr-2">{{ $t('bridge.seeOnExplorer') }}</span>
+                <v-icon-external-link class="w-3 h-3" />
+              </a>
+            </v-button>
+            <v-button v-else lg primary class="w-full xs:w-1/2 font-bold">
               <a
                 :href="hubUrl"
                 target="_blank"
@@ -56,6 +71,12 @@ export default Vue.extend({
     isIbcTransfer: {
       required: true,
       type: Boolean
+    }
+  },
+
+  data() {
+    return {
+      BridgeType
     }
   },
 

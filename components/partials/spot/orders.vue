@@ -1,7 +1,7 @@
 <template>
-  <v-card-table-wrap class="px-3 pb-3">
+  <v-card-table-wrap>
     <template #actions>
-      <div class="col-span-12 flex justify-between">
+      <div class="col-span-12 flex items-center justify-center my-4">
         <div class="flex items-center">
           <v-button-filter v-model="component" :option="components.openOrders">
             <span class="uppercase text-xs font-semibold">
@@ -32,7 +32,9 @@
     </template>
 
     <HOCLoading :status="status">
-      <component :is="component" v-if="component"></component>
+      <v-card>
+        <component :is="component" v-if="component"></component>
+      </v-card>
     </HOCLoading>
   </v-card-table-wrap>
 </template>

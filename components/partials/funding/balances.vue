@@ -60,7 +60,10 @@
           <HOCLoading :status="status">
             <component
               :is="`v-${component}`"
-              v-bind="{ bankBalancesWithUsdBalance, subaccountBalancesWithUsdBalance }"
+              v-bind="{
+                bankBalancesWithUsdBalance,
+                subaccountBalancesWithUsdBalance
+              }"
             ></component>
           </HOCLoading>
         </div>
@@ -355,7 +358,9 @@ export default Vue.extend({
   mounted() {
     Promise.all([
       this.$accessor.token.getErc20TokensWithBalanceAndPriceFromBank(),
-      this.$accessor.account.fetchSubaccountsBalancesWithPrices()
+      this.$accessor.account.fetchSubaccountsBalancesWithPrices(),
+      this.$accessor.positions.fetchOrderbook(),
+      this.$accessor.positions.fetchSubaccountPositions()
     ])
       .then(() => {
         //

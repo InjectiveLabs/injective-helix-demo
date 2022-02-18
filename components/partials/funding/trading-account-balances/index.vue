@@ -31,7 +31,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import VBalances from './balances.vue'
-import VPositions from './positions.vue'
+import VPositions from '~/components/partials/common/account/positions.vue'
 
 const components = {
   balances: 'balances',

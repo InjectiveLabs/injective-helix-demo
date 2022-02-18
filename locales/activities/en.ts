@@ -40,7 +40,7 @@ export default {
     buy: 'Buy',
     sell: 'Sell',
     unfilled: 'Unfilled',
-    filter: 'Filter asset',
+    filter: 'Filter by asset',
     cancelAllOrders: 'Cancel all orders',
     closeAllPositions: 'Close all positions',
     reduce_only: 'Reduce Only',

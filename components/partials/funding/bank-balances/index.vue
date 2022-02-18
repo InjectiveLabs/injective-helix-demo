@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <div class="mb-4 lg:mb-2 flex justify-between items-center flex-wrap">
+    <div class="mb-6 flex justify-between items-center flex-wrap">
       <v-search
         dense
         name="search"

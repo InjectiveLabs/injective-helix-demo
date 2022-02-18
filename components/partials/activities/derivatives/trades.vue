@@ -42,12 +42,11 @@
             </tbody>
           </table>
 
-          <div v-else class="min-h-orders w-full bg-gray-900 flex">
-            <div class="grow text-center m-auto">
-              <img src="/svg/empty-list.svg" class="mx-auto mb-2" />
-              <p>{{ $t('trade.emptyTrades') }}</p>
-            </div>
-          </div>
+          <v-empty-list
+            v-else
+            :message="$t('trade.emptyTrades')"
+            class="mt-6"
+          />
         </div>
       </v-card-table-wrap>
     </HOCLoading>

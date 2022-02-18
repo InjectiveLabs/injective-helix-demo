@@ -26,9 +26,7 @@
               </v-card>
             </div>
             <div class="w-full flex-1 mt-1">
-              <v-card class="h-full">
-                <v-orders />
-              </v-card>
+              <v-orders />
             </div>
           </div>
         </div>

@@ -50,11 +50,8 @@ export default Vue.extend({
   mounted() {
     Promise.all([
       this.$accessor.bank.fetchBankBalancesWithToken(),
-      this.$accessor.account.fetchSubaccounts(),
       this.$accessor.account.fetchSubaccountsBalances(),
-      this.$accessor.derivatives.fetchSubaccountOrders(),
-      this.$accessor.positions.fetchOrderbook(),
-      this.$accessor.positions.fetchSubaccountPositions()
+      this.$accessor.derivatives.fetchSubaccountOrders()
     ])
       .then(() => {
         //
