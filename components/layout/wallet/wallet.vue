@@ -47,7 +47,9 @@
           <div class="flex">
             <button
               v-clipboard="() => injectiveAddress"
-              v-clipboard:success="() => $toast.success($t('address_copied'))"
+              v-clipboard:success="
+                () => $toast.success($t('connect.copiedAddress'))
+              "
               role="button"
               type="button"
             >

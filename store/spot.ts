@@ -643,6 +643,7 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
       const spotActionService = spotActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount || !market) {
@@ -666,7 +667,7 @@ export const actions = actionTree(
           baseDecimals: market.baseToken.decimals
         }),
         marketId: market.marketId,
-        feeRecipient: FEE_RECIPIENT,
+        feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
       })
     },
@@ -690,6 +691,7 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
       const spotActionService = spotActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount || !market) {
@@ -713,7 +715,7 @@ export const actions = actionTree(
           baseDecimals: market.baseToken.decimals
         }),
         marketId: market.marketId,
-        feeRecipient: FEE_RECIPIENT,
+        feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
       })
     }

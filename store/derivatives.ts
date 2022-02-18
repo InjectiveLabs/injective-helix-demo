@@ -815,6 +815,7 @@ export const actions = actionTree(
     ) {
       const { subaccount } = this.app.$accessor.account
       const { market } = this.app.$accessor.derivatives
+      const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
       const {
         address,
         injectiveAddress,
@@ -844,7 +845,7 @@ export const actions = actionTree(
           quoteDecimals: market.quoteToken.decimals
         }),
         marketId: market.marketId,
-        feeRecipient: FEE_RECIPIENT,
+        feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
       })
     },
@@ -867,6 +868,7 @@ export const actions = actionTree(
     ) {
       const { subaccount } = this.app.$accessor.account
       const { market } = this.app.$accessor.derivatives
+      const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
       const {
         address,
         injectiveAddress,
@@ -896,7 +898,7 @@ export const actions = actionTree(
           quoteDecimals: market.quoteToken.decimals
         }),
         marketId: market.marketId,
-        feeRecipient: FEE_RECIPIENT,
+        feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
       })
     },
@@ -918,6 +920,8 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
+
       const actualMarket = (currentMarket ||
         market) as UiDerivativeMarketWithToken
       const derivativeActionService = derivativeActionServiceFactory()
@@ -950,7 +954,7 @@ export const actions = actionTree(
         quantity: derivativeQuantityToChainQuantityToFixed({
           value: position.quantity
         }),
-        feeRecipient: FEE_RECIPIENT,
+        feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
         marketId: position.marketId,
         subaccountId: subaccount.subaccountId
       })
@@ -974,6 +978,8 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
+
       const actualMarket = (currentMarket ||
         market) as UiDerivativeMarketWithToken
       const derivativeActionService = derivativeActionServiceFactory()
@@ -1010,7 +1016,7 @@ export const actions = actionTree(
         quantity: derivativeQuantityToChainQuantityToFixed({
           value: position.quantity
         }),
-        feeRecipient: FEE_RECIPIENT,
+        feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
         marketId: actualMarket.marketId,
         subaccountId: subaccount.subaccountId
       })
@@ -1033,6 +1039,8 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
+
       const derivativeActionService = derivativeActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount || positions.length === 0) {
@@ -1068,7 +1076,7 @@ export const actions = actionTree(
             })
           }
         }),
-        feeRecipient: FEE_RECIPIENT,
+        feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
       })
     },
@@ -1089,6 +1097,8 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
+
       const derivativeActionService = derivativeActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount || !market) {
@@ -1106,7 +1116,7 @@ export const actions = actionTree(
           quoteDecimals: market.quoteToken.decimals
         }),
         marketId: market.marketId,
-        feeRecipient: FEE_RECIPIENT,
+        feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
         srcSubaccountId: subaccount.subaccountId,
         dstSubaccountId: subaccount.subaccountId
       })

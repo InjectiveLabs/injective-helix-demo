@@ -169,7 +169,7 @@ export default Vue.extend({
     classes(): string | null {
       const { xl } = this
 
-      const classes = ['w-full ']
+      const classes = ['w-full']
 
       if (xl) {
         classes.push('flex-grow')
