@@ -32,7 +32,7 @@
     </template>
 
     <VHocLoading :status="status">
-      <v-card>
+      <v-card class="h-full">
         <component :is="component" v-if="component"></component>
       </v-card>
     </VHocLoading>
