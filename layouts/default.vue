@@ -84,6 +84,8 @@ export default Vue.extend({
     if (SHOW_AUCTION_COUNTDOWN) {
       this.$accessor.auction.fetchAuctionModuleState()
     }
+
+    this.$root.$on('wallet-connected', this.handleWalletConnected)
   },
 
   beforeDestroy() {

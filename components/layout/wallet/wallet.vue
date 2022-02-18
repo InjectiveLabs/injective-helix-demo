@@ -27,7 +27,7 @@
       :options="popperOption"
     >
       <div>
-        <div class="flex items-center justify-between px-4 py-4">
+        <div class="flex items-center justify-between px-6 py-4">
           <h3 class="text-xs tracking-wide uppercase">
             {{ $t('navigation.myAccount') }}
           </h3>
@@ -37,7 +37,7 @@
             >{{ $t('navigation.disconnect') }}
           </span>
         </div>
-        <div class="mt-2 flex items-center justify-between px-4">
+        <div class="mt-2 flex items-center justify-between px-6">
           <div class="flex items-center">
             <v-logo-mini class="w-8 h-8 mr-4" />
             <span class="font-mono text-sm">{{
@@ -59,12 +59,27 @@
             </button>
           </div>
         </div>
-        <div v-if="false" class="mt-6 pt-4 px-4 border-t">
-          <h3 class="text-xs tracking-wide uppercase">
-            {{ $t('navigation.referrals') }}
-          </h3>
+        <div v-if="referralCode" class="px-6 mt-6 pb-6">
+          <div class="border-t"></div>
+          <div class="flex items-center justify-between mt-6">
+            <h3 class="text-sm font-semibold tracking-wider uppercase">
+              {{ $t('navigation.referrals') }}
+            </h3>
+
+            <a
+              :href="referralDashboardLink"
+              target="_blank"
+              class="cursor-pointer"
+            >
+              <span
+                class="text-primary-500 text-sm font-semibold tracking-wide"
+              >
+                {{ referralCode }}
+              </span>
+            </a>
+          </div>
         </div>
-        <div class="mt-6 pt-4 px-4 border-t bg-gray-900">
+        <div class="pt-4 px-6 bg-gray-900" :class="{ 'mt-6': !referralCode }">
           <h3 class="text-xs tracking-wide uppercase">
             {{ $t('navigation.connectedWallets') }}
           </h3>
@@ -85,10 +100,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { formatWalletAddress } from '@injectivelabs/utils'
+import { RefereeInfo } from '@injectivelabs/referral-consumer'
 import { Wallet } from '@injectivelabs/web3-strategy'
 import VConnectedWallet from './connected-wallet.vue'
 import VLogoMini from '~/components/elements/logo-mini.vue'
 import VPopperBox from '~/components/elements/popper-box.vue'
+import { getReferralUrl } from '~/app/utils/helpers'
 
 export default Vue.extend({
   components: {
@@ -131,6 +148,24 @@ export default Vue.extend({
 
     injectiveAddress(): string {
       return this.$accessor.wallet.injectiveAddress
+    },
+
+    refereeInfo(): RefereeInfo | undefined {
+      return this.$accessor.referral.refereeInfo
+    },
+
+    referralCode(): string | undefined {
+      const { refereeInfo } = this
+
+      if (!refereeInfo) {
+        return undefined
+      }
+
+      return refereeInfo.referralCode
+    },
+
+    referralDashboardLink(): string {
+      return getReferralUrl()
     },
 
     formattedAddress(): string {

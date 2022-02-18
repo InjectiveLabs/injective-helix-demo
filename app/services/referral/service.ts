@@ -1,13 +1,15 @@
 import { ServiceOptions } from '@injectivelabs/ui-common'
 import {
   ReferralConsumer,
+  ReferralInfo,
   ReferralTransformer
 } from '@injectivelabs/referral-consumer'
 import { BaseService } from '@injectivelabs/ui-common/dist/BaseService'
 
 export enum ReferralMetrics {
   Refer = 'Refer',
-  GetFeeRecipient = 'GetFeeRecipient'
+  GetFeeRecipient = 'GetFeeRecipient',
+  GetReferralInfo = 'GetReferralInfo'
 }
 
 export class ReferralService extends BaseService {
@@ -30,6 +32,21 @@ export class ReferralService extends BaseService {
       )
 
       return response
+    } catch (e: any) {
+      throw new Error(e.message)
+    }
+  }
+
+  async getReferralInfo(address: string): Promise<ReferralInfo> {
+    const promise = this.consumer.getReferralInfo(address)
+
+    try {
+      const response = await this.fetchOrFetchAndMeasure(
+        promise,
+        ReferralMetrics.GetReferralInfo
+      )
+
+      return ReferralTransformer.grpcReferralInfoToReferralInfo(response)
     } catch (e: any) {
       throw new Error(e.message)
     }

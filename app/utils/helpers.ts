@@ -83,3 +83,7 @@ export const getHubUrl = (): string => {
 
   return 'https://hub.injective.network'
 }
+
+export const getReferralUrl = (): string => {
+  return 'https://devnet.referral.injective.dev/'
+}
