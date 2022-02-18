@@ -320,7 +320,7 @@ export default Vue.extend({
       this.$accessor.gasRebate
         .redeem()
         .then(() => {
-          this.$toast.success(this.$t('redeem_success'))
+          this.$toast.success(this.$t('banners.newUser.redeemSuccess'))
         })
         .catch(this.$onRejected)
         .finally(() => {

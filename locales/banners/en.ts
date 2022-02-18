@@ -13,6 +13,7 @@ export default {
       howItWorks: 'How it works',
       faq: 'F.A.Q'
     },
+
     newUser: {
       title: 'Deposit with zero gas fees',
       subtitle: 'New user offer',
@@ -25,7 +26,9 @@ export default {
         'Make a trade of worth 500 USDT or more in any market of your choice',
       stepThree: 'Step 3',
       stepList: 'Step {step} of 3',
-      claimRebate: 'Claim Rebate'
+      claimRebate: 'Claim Rebate',
+      redeemSuccess:
+        'You have successfully redeemed your gas fees rebate - check your wETH balance!'
     }
   }
 }
