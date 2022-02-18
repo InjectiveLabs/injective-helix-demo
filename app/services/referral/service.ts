@@ -15,7 +15,9 @@ export class ReferralService extends BaseService {
 
   constructor(options: ServiceOptions) {
     super(options)
-    this.consumer = new ReferralConsumer(this.endpoints.exchangeApi)
+    this.consumer = new ReferralConsumer(
+      'https://devnet.referral.grpc.injective.dev'
+    )
   }
 
   async refer({ address, code }: { address: string; code: string }) {

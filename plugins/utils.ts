@@ -41,13 +41,15 @@ const isErrorExcludedFromReporting = (error: any): boolean => {
 }
 
 const parseMessage = (error: any): string => {
-  const message = error.message || error
+  if (!error.message) {
+    return ''
+  }
 
-  if (message.toLowerCase().includes('response closed')) {
+  if (error.message.toLowerCase().includes('response closed')) {
     return 'Something happened. Please refresh the page.'
   }
 
-  return `${message[0].toUpperCase()}${message.slice(1)}`
+  return `${error.message[0].toUpperCase()}${error.message.slice(1)}`
 }
 
 export default ({ app }: Context, inject: any) => {
