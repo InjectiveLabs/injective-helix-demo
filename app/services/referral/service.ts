@@ -15,7 +15,7 @@ export class ReferralService extends BaseService {
 
   constructor(options: ServiceOptions) {
     super(options)
-    this.consumer = new ReferralConsumer(this.endpoints.sentryGrpcApi)
+    this.consumer = new ReferralConsumer(this.endpoints.exchangeApi)
   }
 
   async refer({ address, code }: { address: string; code: string }) {

@@ -17,7 +17,7 @@ export class DerivativeService extends BaseDerivativeService {
 
   constructor(options: ServiceOptions) {
     super(options)
-    this.fundingConsumer = new FundingConsumer(this.endpoints.sentryGrpcApi)
+    this.fundingConsumer = new FundingConsumer(this.endpoints.exchangeApi)
   }
 
   async fetchFundingPayments({
