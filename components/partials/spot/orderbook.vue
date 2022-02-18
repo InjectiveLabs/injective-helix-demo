@@ -35,13 +35,13 @@
     </div>
 
     <div class="bg-gray-900 rounded-lg mt-2 orderbook-h relative">
-      <HOCLoading :status="status">
+      <VHocLoading :status="status">
         <component
           :is="component"
           v-if="component"
           :aggregation="Number(aggregation)"
         ></component>
-      </HOCLoading>
+      </VHocLoading>
     </div>
   </div>
 </template>
@@ -51,7 +51,6 @@ import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import Orderbook from './orderbook/index.vue'
 import Trades from './trades/index.vue'
-import HOCLoading from '~/components/hoc/loading.vue'
 import AggregationSelector from '~/components/partials/common/orderbook/aggregation-selector.vue'
 import {
   UI_DEFAULT_AGGREGATION_DECIMALS,
@@ -66,7 +65,6 @@ const components = {
 
 export default Vue.extend({
   components: {
-    HOCLoading,
     'v-aggregation-selector': AggregationSelector,
     'v-trades': Trades,
     'v-orderbook': Orderbook

@@ -1,5 +1,5 @@
 <template>
-  <HOCLoading :key="$route.fullPath" :status="status">
+  <VHocLoading :key="$route.fullPath" :status="status">
     <div v-if="market" class="min-h-screen flex flex-col flex-wrap">
       <div class="w-full px-1">
         <v-market />
@@ -34,7 +34,7 @@
       <v-modal-add-margin />
       <v-modal-market-beta v-if="marketIsBeta" />
     </div>
-  </HOCLoading>
+  </VHocLoading>
 </template>
 
 <script lang="ts">
@@ -49,14 +49,12 @@ import VMarketChart from '~/components/partials/common/market/chart.vue'
 import VMarket from '~/components/partials/derivatives/market.vue'
 import VOrders from '~/components/partials/derivatives/orders.vue'
 import VOrderbook from '~/components/partials/derivatives/orderbook.vue'
-import HOCLoading from '~/components/hoc/loading.vue'
 import { Modal } from '~/types'
 import { ORDERBOOK_POLLING_ENABLED } from '~/app/utils/constants'
 import { betaMarketSlugs } from '~/app/data/market'
 
 export default Vue.extend({
   components: {
-    HOCLoading,
     VModalAddMargin,
     VModalMarketBeta,
     VTrading,

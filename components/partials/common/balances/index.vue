@@ -17,7 +17,7 @@
         </nuxt-link>
       </div>
       <div v-if="isUserWalletConnected && currentMarket" class="mt-4 relative">
-        <HOCLoading :status="status">
+        <VHocLoading :status="status">
           <div>
             <div v-if="!hasAnyBankBalances">
               <p class="text-xs text-gray-500">
@@ -34,7 +34,7 @@
             />
             <v-onboard v-if="!hasMadeAnyTrades" class="mt-6"></v-onboard>
           </div>
-        </HOCLoading>
+        </VHocLoading>
       </div>
       <v-user-wallet-connect-warning v-else />
     </div>
@@ -54,7 +54,6 @@ import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import VSubaccountBalance from './subaccount.vue'
 import VOnboard from './onboard.vue'
 import { getHubUrl } from '~/app/utils/helpers'
-import HOCLoading from '~/components/hoc/loading.vue'
 
 type CurrentMarket =
   | UiSpotMarketWithToken
@@ -64,8 +63,7 @@ type CurrentMarket =
 export default Vue.extend({
   components: {
     VSubaccountBalance,
-    VOnboard,
-    HOCLoading
+    VOnboard
   },
 
   data() {

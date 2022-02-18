@@ -1,6 +1,6 @@
 <template>
   <v-card lg>
-    <HOCLoading :status="status">
+    <VHocLoading :status="status">
       <v-card-table-wrap>
         <template #actions>
           <div
@@ -52,7 +52,7 @@
         </div>
         <v-empty-list v-else :message="$t('trade.emptyOrders')" class="mt-6" />
       </v-card-table-wrap>
-    </HOCLoading>
+    </VHocLoading>
   </v-card>
 </template>
 
@@ -65,7 +65,6 @@ import {
 } from '@injectivelabs/ui-common'
 import Order from '~/components/partials/common/spot/order.vue'
 import OrdersTableHeader from '~/components/partials/common/spot/orders-table-header.vue'
-import HOCLoading from '~/components/hoc/loading.vue'
 import FilterSelector from '~/components/partials/common/trades/trade-dropdown-filter.vue'
 import { TradeSelectorType } from '~/types/enums'
 
@@ -73,8 +72,7 @@ export default Vue.extend({
   components: {
     'v-order': Order,
     FilterSelector,
-    OrdersTableHeader,
-    HOCLoading
+    OrdersTableHeader
   },
 
   data() {

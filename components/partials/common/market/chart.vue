@@ -4,7 +4,7 @@
       ref="trading-view-wrap"
       class="min-h-sm lg:min-h-full h-full w-full relative flex"
     >
-      <HOCLoading :status="status">
+      <VHocLoading :status="status">
         <v-trading-chart
           ref="trading-view"
           :interval="interval"
@@ -12,7 +12,7 @@
           :datafeed-endpoint="datafeedEndpoint"
           @ready="onReady"
         />
-      </HOCLoading>
+      </VHocLoading>
     </div>
   </div>
 </template>
@@ -25,17 +25,16 @@ import {
   UiDerivativeMarketWithToken,
   MarketType
 } from '@injectivelabs/ui-common'
-import HOCLoading from '~/components/hoc/loading.vue'
 import TradingChart from '~/components/trading-view/chart.vue'
 import { getChronosDatafeedEndpoint } from '~/app/utils/helpers'
+
 interface TradingChartInterface {
   $el: HTMLElement
 }
 
 export default Vue.extend({
   components: {
-    'v-trading-chart': TradingChart,
-    HOCLoading
+    'v-trading-chart': TradingChart
   },
 
   props: {

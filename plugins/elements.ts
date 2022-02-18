@@ -20,6 +20,7 @@ import Search from '~/components/elements/search.vue'
 import TextInfo from '~/components/elements/text-info.vue'
 import VUserWalletConnectWarning from '~/components/elements/user-wallet-connect-warning.vue'
 import VEmptyList from '~/components/elements/empty-list.vue'
+import VHOCLoading from '~/components/hoc/loading.vue'
 import VIconInfoTooltip from '~/components/elements/info-icon-tooltip.vue'
 import VIconCheckTooltip from '~/components/elements/info-check-tooltip.vue'
 
@@ -44,6 +45,7 @@ Vue.component('VPanel', Panel)
 Vue.component('VProgressSteps', ProgressSteps)
 Vue.component('VResourceCard', ResourceCard)
 Vue.component('VSeparator', Separator)
+Vue.component('VHocLoading', VHOCLoading)
 Vue.component('VSearch', Search)
 Vue.component('VTextInfo', TextInfo)
 Vue.component('VUserWalletConnectWarning', VUserWalletConnectWarning)

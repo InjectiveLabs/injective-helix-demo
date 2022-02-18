@@ -1,7 +1,7 @@
 <template>
   <div class="h-full w-full flex flex-wrap">
     <div class="w-full">
-      <HOCLoading :status="status">
+      <VHocLoading :status="status">
         <div class="container py-4">
           <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12">
             <v-welcome-banner />
@@ -18,7 +18,7 @@
             <v-bridge />
           </div>
         </div>
-      </HOCLoading>
+      </VHocLoading>
       <v-referee-onboarding-modal />
     </div>
   </div>
@@ -27,7 +27,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import HOCLoading from '~/components/hoc/loading.vue'
 import VBalances from '~/components/partials/funding/balances.vue'
 import VWelcomeBanner from '~/components/partials/banners/welcome.vue'
 import VGasRebate from '~/components/partials/banners/gas-rebate.vue'
@@ -38,7 +37,6 @@ import VRefereeOnboardingModal from '~/components/partials/modals/referee-onboar
 export default Vue.extend({
   components: {
     VBridge,
-    HOCLoading,
     VBalances,
     VWelcomeBanner,
     VGasRebate,
@@ -54,8 +52,7 @@ export default Vue.extend({
   mounted() {
     Promise.all([
       this.$accessor.bank.fetchBankBalancesWithToken(),
-      this.$accessor.account.fetchSubaccounts(),
-      this.$accessor.derivatives.fetchSubaccountOrders()
+      this.$accessor.account.fetchSubaccounts()
     ])
       .then(() => {
         //

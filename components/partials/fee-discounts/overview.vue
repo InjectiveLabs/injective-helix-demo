@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <HOCLoading :status="status">
+    <VHocLoading :status="status">
       <div v-if="isUserWalletConnected">
         <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6 mt-4">
           <v-item class="col-span-2 lg:col-span-3">
@@ -88,7 +88,7 @@
         </div>
       </div>
       <v-user-wallet-connect-warning v-else cta />
-    </HOCLoading>
+    </VHocLoading>
   </v-card>
 </template>
 
@@ -104,12 +104,10 @@ import { cosmosSdkDecToBigNumber, ZERO_IN_BASE } from '@injectivelabs/ui-common'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import VItem from '~/components/partials/common/stats/item.vue'
 import { FeeDiscountAccountInfo } from '~/app/services/exchange'
-import HOCLoading from '~/components/hoc/loading.vue'
 
 export default Vue.extend({
   components: {
-    VItem,
-    HOCLoading
+    VItem
   },
 
   data() {

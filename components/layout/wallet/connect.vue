@@ -12,7 +12,7 @@
         {{ $t('connect.connectToWallet') }}
       </h3>
       <div class="relative mt-6">
-        <HOCLoading :status="status">
+        <VHocLoading :status="status">
           <ul class="divide-y divide-gray-800 border-gray-700 rounded-lg">
             <v-metamask />
             <v-ledger
@@ -24,7 +24,7 @@
               </p>
             </li>
           </ul>
-        </HOCLoading>
+        </VHocLoading>
       </div>
     </v-modal>
     <v-modal-terms />
@@ -38,7 +38,6 @@ import { Status } from '@injectivelabs/utils'
 import VMetamask from './wallets/metamask.vue'
 import VLedger from './wallets/ledger.vue'
 import VModalLedger from './wallets/ledger/index.vue'
-import HOCLoading from '~/components/hoc/loading.vue'
 import { Modal, WalletConnectStatus } from '~/types'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '~/app/utils/constants'
 import VModalTerms from '~/components/partials/modals/terms.vue'
@@ -46,7 +45,6 @@ import VModalTerms from '~/components/partials/modals/terms.vue'
 export default Vue.extend({
   components: {
     VModalTerms,
-    HOCLoading,
     VMetamask,
     VLedger,
     VModalLedger

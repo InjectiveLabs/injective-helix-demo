@@ -85,7 +85,7 @@
           </div>
         </div>
         <div>
-          <HOCLoading :status="status">
+          <VHocLoading :status="status">
             <component
               :is="`v-${component}`"
               v-bind="{
@@ -94,7 +94,7 @@
                 tradingAccountComponent
               }"
             ></component>
-          </HOCLoading>
+          </VHocLoading>
         </div>
       </v-panel>
     </div>
@@ -125,7 +125,6 @@ import {
 import VBankBalances from '~/components/partials/funding/bank-balances/index.vue'
 import VTradingAccountBalances from '~/components/partials/funding/trading-account-balances/index.vue'
 import VAccountSummary from '~/components/partials/funding/account-summary.vue'
-import HOCLoading from '~/components/hoc/loading.vue'
 import {
   UI_MINIMAL_AMOUNT,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
@@ -149,8 +148,7 @@ export default Vue.extend({
     VAccountSummary,
     VBankBalances,
     VLoading,
-    VTradingAccountBalances,
-    HOCLoading
+    VTradingAccountBalances
   },
 
   data() {
@@ -399,6 +397,7 @@ export default Vue.extend({
     Promise.all([
       this.$accessor.token.getErc20TokensWithBalanceAndPriceFromBank(),
       this.$accessor.account.fetchSubaccountsBalancesWithPrices(),
+      this.$accessor.derivatives.fetchSubaccountOrders(),
       this.$accessor.positions.fetchOrderbook(),
       this.$accessor.positions.fetchSubaccountPositions()
     ])

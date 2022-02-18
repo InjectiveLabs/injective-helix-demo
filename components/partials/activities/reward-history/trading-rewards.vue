@@ -1,6 +1,6 @@
 <template>
   <v-card lg>
-    <HOCLoading :status="status">
+    <VHocLoading :status="status">
       <v-card-table-wrap>
         <div
           v-if="tradingRewards.length > 0"
@@ -24,7 +24,7 @@
           class="mt-6"
         />
       </v-card-table-wrap>
-    </HOCLoading>
+    </VHocLoading>
   </v-card>
 </template>
 
@@ -33,13 +33,11 @@ import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradingReward } from '@injectivelabs/subaccount-consumer'
 import VTradingReward from './trading-reward.vue'
-import HOCLoading from '~/components/hoc/loading.vue'
 import { TradeSelectorType } from '~/types/enums'
 
 export default Vue.extend({
   components: {
-    VTradingReward,
-    HOCLoading
+    VTradingReward
   },
 
   data() {

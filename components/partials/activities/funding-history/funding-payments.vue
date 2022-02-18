@@ -1,6 +1,6 @@
 <template>
   <v-card lg>
-    <HOCLoading :status="status">
+    <VHocLoading :status="status">
       <v-card-table-wrap>
         <template #actions>
           <div
@@ -38,7 +38,7 @@
           class="mt-6"
         />
       </v-card-table-wrap>
-    </HOCLoading>
+    </VHocLoading>
   </v-card>
 </template>
 
@@ -48,13 +48,11 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { UiDerivativeMarketWithToken } from '@injectivelabs/ui-common'
 import { FundingPayment } from '@injectivelabs/derivatives-consumer'
 import VFundingPayment from './funding-payment.vue'
-import HOCLoading from '~/components/hoc/loading.vue'
 import { TradeSelectorType } from '~/types/enums'
 
 export default Vue.extend({
   components: {
-    VFundingPayment,
-    HOCLoading
+    VFundingPayment
   },
 
   data() {

@@ -1,6 +1,6 @@
 <template>
   <v-card lg>
-    <HOCLoading :status="status">
+    <VHocLoading :status="status">
       <v-card-table-wrap>
         <template #actions>
           <div
@@ -49,7 +49,7 @@
           />
         </div>
       </v-card-table-wrap>
-    </HOCLoading>
+    </VHocLoading>
   </v-card>
 </template>
 
@@ -63,7 +63,6 @@ import {
 import { TradeExecutionType } from '@injectivelabs/ts-types'
 import Trade from '~/components/partials/common/derivatives/trade.vue'
 import TradesTableHeader from '~/components/partials/common/derivatives/trades-table-header.vue'
-import HOCLoading from '~/components/hoc/loading.vue'
 import FilterSelector from '~/components/partials/common/trades/trade-dropdown-filter.vue'
 import { TradeSelectorType } from '~/types/enums'
 
@@ -71,8 +70,7 @@ export default Vue.extend({
   components: {
     'v-trade': Trade,
     TradesTableHeader,
-    FilterSelector,
-    HOCLoading
+    FilterSelector
   },
 
   data() {

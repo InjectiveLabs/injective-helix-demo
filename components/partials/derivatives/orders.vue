@@ -41,11 +41,11 @@
       </div>
     </template>
 
-    <HOCLoading :status="status">
+    <VHocLoading :status="status">
       <v-card>
         <component :is="component" v-if="component"></component>
       </v-card>
-    </HOCLoading>
+    </VHocLoading>
   </v-card-table-wrap>
 </template>
 
@@ -56,7 +56,6 @@ import { UiDerivativeLimitOrder, UiPosition } from '@injectivelabs/ui-common'
 import OpenOrders from './orders/index.vue'
 import OpenPositions from './positions/index.vue'
 import TradeHistory from './trade-history/index.vue'
-import HOCLoading from '~/components/hoc/loading.vue'
 
 const components = {
   orderHistory: '',
@@ -67,7 +66,6 @@ const components = {
 
 export default Vue.extend({
   components: {
-    HOCLoading,
     'v-trade-history': TradeHistory,
     'v-open-orders': OpenOrders,
     'v-open-positions': OpenPositions

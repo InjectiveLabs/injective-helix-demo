@@ -3,7 +3,7 @@
     <div v-if="pendingRewardsStartTimestamp > 0" slot="title-context">
       {{ $t('tradeAndEarn.campaignAsOf', { date: pendingRewardsCountdown }) }}
     </div>
-    <HOCLoading :status="status">
+    <VHocLoading :status="status">
       <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
         <v-item class="col-span-2 lg:col-span-4">
           <template slot="value">
@@ -122,7 +122,7 @@
           </template>
         </v-item>
       </div>
-    </HOCLoading>
+    </VHocLoading>
   </v-panel>
 </template>
 
@@ -146,12 +146,10 @@ import {
   TradingRewardsCampaign,
   ExchangeParams
 } from '~/app/services/exchange'
-import HOCLoading from '~/components/hoc/loading.vue'
 
 export default Vue.extend({
   components: {
-    VItem,
-    HOCLoading
+    VItem
   },
 
   data() {

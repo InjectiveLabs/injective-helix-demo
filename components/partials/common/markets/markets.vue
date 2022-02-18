@@ -1,8 +1,8 @@
 <template>
   <div class="relative">
-    <HOCLoading :status="status">
+    <VHocLoading :status="status">
       <v-table :markets="markets" :summaries="marketsSummary" />
-    </HOCLoading>
+    </VHocLoading>
   </div>
 </template>
 
@@ -16,12 +16,10 @@ import {
 } from '@injectivelabs/ui-common'
 import { Status, StatusType } from '@injectivelabs/utils'
 import VTable from './table.vue'
-import HOCLoading from '~/components/hoc/loading.vue'
 
 export default Vue.extend({
   components: {
-    VTable,
-    HOCLoading
+    VTable
   },
 
   computed: {

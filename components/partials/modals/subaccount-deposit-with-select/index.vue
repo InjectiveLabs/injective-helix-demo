@@ -5,7 +5,7 @@
     </h3>
 
     <div class="relative">
-      <HOCLoading :status="status">
+      <VHocLoading :status="status">
         <div class="flex flex-wrap">
           <p class="text-sm text-gray-300 text-center">
             {{ $t('subaccount_deposit_modal_note') }}
@@ -29,7 +29,7 @@
             </v-bank-balance>
           </div>
         </div>
-      </HOCLoading>
+      </VHocLoading>
     </div>
   </v-modal>
 </template>
@@ -51,14 +51,12 @@ import {
   ZERO_IN_BASE
 } from '@injectivelabs/ui-common'
 import VBankBalance from './bank-balance.vue'
-import HOCLoading from '~/components/hoc/loading.vue'
 import VSelectCustom from '~/components/inputs/select-custom.vue'
 import { Modal } from '~/types'
 
 export default Vue.extend({
   components: {
     VBankBalance,
-    HOCLoading,
     VSelectCustom
   },
 

@@ -1,7 +1,7 @@
 <template>
   <div id="pro" class="w-full h-full min-h-screen bg-gray-1050 relative">
     <transition name="page" appear>
-      <HOCLoading :status="status">
+      <VHocLoading :status="status">
         <div>
           <v-sidebar-mobile
             :is-sidebar-open="isOpenSidebar"
@@ -22,7 +22,7 @@
             </div>
           </client-only>
         </div>
-      </HOCLoading>
+      </VHocLoading>
     </transition>
   </div>
 </template>
@@ -34,13 +34,11 @@ import Footer from '~/components/layout/footer/index.vue'
 import Topbar from '~/components/layout/topbar.vue'
 import MarketSlideout from '~/components/partials/common/markets/slideout.vue'
 import SidebarMobile from '~/components/layout/sidebar-mobile.vue'
-import HOCLoading from '~/components/hoc/loading.vue'
 import VModalAuctionCountdown from '~/components/partials/modals/auction-countdown.vue'
 import { SHOW_AUCTION_COUNTDOWN } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
-    HOCLoading,
     VModalAuctionCountdown,
     'v-market-slideout': MarketSlideout,
     'v-topbar': Topbar,

@@ -5,9 +5,9 @@
     @slideout-closed="closeSlideout"
   >
     <div class="relative">
-      <HOCLoading :status="status">
+      <VHocLoading :status="status">
         <v-table :markets="markets" :summaries="marketsSummary" simple />
-      </HOCLoading>
+      </VHocLoading>
     </div>
   </v-slideout>
 </template>
@@ -23,13 +23,11 @@ import {
 import { Status, StatusType } from '@injectivelabs/utils'
 import VTable from './table.vue'
 import VSlideout from '~/components/elements/slideout.vue'
-import HOCLoading from '~/components/hoc/loading.vue'
 
 export default Vue.extend({
   components: {
     VTable,
-    VSlideout,
-    HOCLoading
+    VSlideout
   },
 
   data() {

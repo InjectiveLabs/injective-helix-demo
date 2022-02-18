@@ -1,6 +1,6 @@
 <template>
   <v-card lg>
-    <HOCLoading :status="status">
+    <VHocLoading :status="status">
       <v-card-table-wrap>
         <template #actions>
           <div
@@ -48,7 +48,7 @@
         </div>
         <v-empty-list v-else :message="$t('trade.emptyTrades')" class="mt-6" />
       </v-card-table-wrap>
-    </HOCLoading>
+    </VHocLoading>
   </v-card>
 </template>
 
@@ -59,7 +59,6 @@ import { UiSpotTrade, UiSpotMarketWithToken } from '@injectivelabs/ui-common'
 import { TradeExecutionType } from '@injectivelabs/ts-types'
 import Trade from '~/components/partials/common/spot/trade.vue'
 import TradesTableHeader from '~/components/partials/common/spot/trades-table-header.vue'
-import HOCLoading from '~/components/hoc/loading.vue'
 import FilterSelector from '~/components/partials/common/trades/trade-dropdown-filter.vue'
 import { TradeSelectorType } from '~/types/enums'
 
@@ -67,8 +66,7 @@ export default Vue.extend({
   components: {
     'v-trade': Trade,
     FilterSelector,
-    TradesTableHeader,
-    HOCLoading
+    TradesTableHeader
   },
 
   data() {
