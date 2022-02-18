@@ -115,42 +115,13 @@ export const actions = actionTree(
       commit('setBalances', bankBalances)
       commit('setIbcBalances', ibcBankBalances)
 
-      const bankErc20BalancesWithToken = (
-        await Promise.all(
-          Object.keys(bankBalances).map(async (denom) => {
-            return {
-              denom,
-              balance: bankBalances[denom],
-              token: await tokenService.getDenomToken(denom)
-            }
-          })
-        )
-      ).filter(
-        (balance) => balance.token !== undefined
-      ) as BankBalanceWithToken[]
+      const {
+        bankBalancesWithToken,
+        ibcBankBalancesWithToken
+      } = await tokenService.getBalancesWithToken(bankBalances, ibcBankBalances)
 
-      const bankIbcBalancesWithToken = (
-        await Promise.all(
-          Object.keys(ibcBankBalances).map(async (denom) => {
-            const { baseDenom, path } = await tokenService.fetchDenomTrace(
-              denom
-            )
-
-            return {
-              denom,
-              baseDenom,
-              balance: ibcBankBalances[denom],
-              channelId: path.replace('transfer/', ''),
-              token: await tokenService.getDenomToken(denom)
-            }
-          })
-        )
-      ).filter(
-        (balance) => balance.token !== undefined
-      ) as IbcBankBalanceWithToken[]
-
-      commit('setBankErc20BalancesWithToken', bankErc20BalancesWithToken)
-      commit('setIbcBalancesWithToken', bankIbcBalancesWithToken)
+      commit('setBankErc20BalancesWithToken', bankBalancesWithToken)
+      commit('setIbcBalancesWithToken', ibcBankBalancesWithToken)
     },
 
     async transfer(
