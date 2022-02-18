@@ -2,9 +2,11 @@
   <div class="text-xs">
     <input
       :id="uid"
-      v-model="componentValue"
+      :value="value"
+      :checked="!!value"
       class="checkbox"
       type="checkbox"
+      @change="handleChange"
     />
     <label :for="uid"><slot /></label>
   </div>
@@ -14,28 +16,34 @@
 import Vue from 'vue'
 
 export default Vue.extend({
+  model: {
+    prop: 'value',
+    event: 'input'
+  },
+
   props: {
     value: {
-      type: Boolean,
+      type: [Boolean, String],
       required: true
+    }
+  },
+
+  data() {
+    return {
+      checked: false
     }
   },
 
   computed: {
     uid(): string {
       return window.crypto.getRandomValues(new Uint32Array(1))[0].toString()
-    },
+    }
+  },
 
-    componentValue: {
-      get(): boolean {
-        const { value } = this
-
-        return value
-      },
-
-      set(newValue) {
-        this.$emit('update:value', newValue)
-      }
+  methods: {
+    handleChange() {
+      this.checked = !this.checked
+      this.$emit('input', this.checked)
     }
   }
 })

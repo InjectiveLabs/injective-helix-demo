@@ -35,9 +35,12 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { getExplorerUrl } from '@injectivelabs/ui-common'
 import { Modal, BridgeType } from '~/types/enums'
 import VIbcTransferNote from '~/components/partials/funding/bridge/ibc-transfer-note.vue'
 import { injToken } from '~/app/data/token'
+import { NETWORK } from '~/app/utils/constants'
+import { getHubUrl } from '~/app/utils/helpers'
 
 export default Vue.extend({
   components: {
@@ -96,7 +99,13 @@ export default Vue.extend({
     },
 
     hubUrl(): string {
-      return 'https://hub.injective.network/bridge'
+      return `${getHubUrl()}/bridge`
+    },
+
+    explorerUrl(): string {
+      const { injectiveAddress } = this
+
+      return `${getExplorerUrl(NETWORK)}/account/${injectiveAddress}`
     },
 
     isModalOpen(): boolean {

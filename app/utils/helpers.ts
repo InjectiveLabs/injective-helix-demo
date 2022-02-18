@@ -73,12 +73,12 @@ export const getChronosDatafeedEndpoint = (marketType: string): string => {
 }
 
 export const getHubUrl = (): string => {
-  if (NETWORK === Network.Devnet) {
-    return 'https://devnet.dex.injective.dev'
+  if ([Network.Devnet, Network.Local].includes(NETWORK)) {
+    return 'https://devnet.hub.injective.dev'
   }
 
-  if (NETWORK === Network.Testnet) {
-    return 'https://testnet.dex.injective.dev'
+  if ([Network.Testnet, Network.TestnetK8s].includes(NETWORK)) {
+    return 'https://hub.injective.dev'
   }
 
   return 'https://hub.injective.network'

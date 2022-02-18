@@ -10,7 +10,7 @@
         @searched="handleInputOnSearch"
       />
 
-      <v-checkbox :value.sync="hideSmallBalance" class="mt-4 sm:mt-0 ml-auto">
+      <v-checkbox v-model="hideSmallBalance" class="mt-4 sm:mt-0 ml-auto">
         {{ $t('funding.hideSmallBalances') }}
       </v-checkbox>
     </div>
