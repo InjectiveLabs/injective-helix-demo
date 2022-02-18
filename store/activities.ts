@@ -13,6 +13,7 @@ import {
   DerivativeOrderState,
   FundingPayment
 } from '@injectivelabs/derivatives-consumer'
+import { TradingReward } from '@injectivelabs/subaccount-consumer'
 import {
   streamSubaccountOrders as streamSubaccountDerivativeOrders,
   streamSubaccountTrades as streamSubaccountDerivativeTrades,
@@ -26,7 +27,8 @@ import {
   derivativeActionServiceFactory,
   derivativeService,
   spotActionServiceFactory,
-  spotService
+  spotService,
+  subaccountService
 } from '~/app/Services'
 
 const initialStateFactory = () => ({
@@ -35,7 +37,8 @@ const initialStateFactory = () => ({
   subaccountSpotTrades: [] as Array<UiSpotTrade>,
   subaccountDerivativeTrades: [] as Array<UiDerivativeTrade>,
   subaccountPositions: [] as Array<UiPosition>,
-  subaccountFundingPayments: [] as Array<FundingPayment>
+  subaccountFundingPayments: [] as Array<FundingPayment>,
+  tradingRewardsHistory: [] as Array<TradingReward>
 })
 
 const initialState = initialStateFactory()
@@ -46,7 +49,8 @@ export const state = () => ({
   subaccountSpotTrades: initialState.subaccountSpotTrades as Array<UiSpotTrade>,
   subaccountDerivativeTrades: initialState.subaccountDerivativeTrades as Array<UiDerivativeTrade>,
   subaccountPositions: initialState.subaccountPositions as Array<UiPosition>,
-  subaccountFundingPayments: initialState.subaccountFundingPayments as Array<FundingPayment>
+  subaccountFundingPayments: initialState.subaccountFundingPayments as Array<FundingPayment>,
+  tradingRewardsHistory: initialState.tradingRewardsHistory as Array<TradingReward>
 })
 
 export type ActivitiesStoreState = ReturnType<typeof state>
@@ -68,6 +72,13 @@ export const mutations = {
     subaccountFundingPayments: Array<FundingPayment>
   ) {
     state.subaccountFundingPayments = subaccountFundingPayments
+  },
+
+  setTradingRewardHistory(
+    state: ActivitiesStoreState,
+    tradingRewardsHistory: Array<TradingReward>
+  ) {
+    state.tradingRewardsHistory = tradingRewardsHistory
   },
 
   setSubaccountSpotTrades(
@@ -430,6 +441,23 @@ export const actions = actionTree(
         await derivativeService.fetchOrders({
           subaccountId: subaccount.subaccountId
         })
+      )
+    },
+
+    async fetchTradingRewardsHistory({ commit }) {
+      const { subaccount } = this.app.$accessor.account
+      const {
+        isUserWalletConnected,
+        injectiveAddress
+      } = this.app.$accessor.wallet
+
+      if (!isUserWalletConnected || !subaccount || !injectiveAddress) {
+        return
+      }
+
+      commit(
+        'setTradingRewardHistory',
+        await subaccountService.fetchTradingRewardHistory(injectiveAddress)
       )
     },
 

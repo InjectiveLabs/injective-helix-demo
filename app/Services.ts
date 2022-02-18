@@ -12,7 +12,8 @@ import {
   SpotService,
   DerivativeActionService,
   SpotActionService,
-  SubaccountActionService
+  SubaccountActionService,
+  ServiceOptions
 } from '@injectivelabs/ui-common'
 import { AlchemyApi } from '@injectivelabs/alchemy-api'
 import { CoinGeckoApi } from '@injectivelabs/token-utils'
@@ -50,12 +51,9 @@ const commonServiceOptions = {
     exchangeApiEndpoint: APP_EXCHANGE_API_ENDPOINT || endpoints.exchangeApi,
     sentryGrpcApiEndpoint: APP_SENTRY_GRPC_ENDPOINT || endpoints.sentryGrpcApi
   },
-  metrics: METRICS_ENABLED
-    ? {
-        region: app.regionForMetrics
-      }
-    : undefined
-}
+  metricsEnabled: METRICS_ENABLED || false,
+  metricsRegion: app.regionForMetrics
+} as ServiceOptions
 
 export const tokenErc20Service = new TokenErc20Service(
   commonServiceOptions,

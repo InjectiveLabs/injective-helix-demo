@@ -34,7 +34,7 @@
         </div>
         <v-empty-list
           v-else
-          :message="$t('activities.emptyFundingPayments')"
+          :message="$t('fundingPayments.emptyFundingPayments')"
           class="mt-6"
         />
       </v-card-table-wrap>
