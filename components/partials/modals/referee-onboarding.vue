@@ -1,5 +1,5 @@
 <template>
-  <v-modal :is-open="isModalOpen" xs @modal-closed="closeModal">
+  <v-modal :is-open="isModalOpen" sm @modal-closed="closeModal">
     <h3 slot="title">
       {{ $t('referralModal.title') }}
     </h3>

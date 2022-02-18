@@ -55,7 +55,7 @@ export default Vue.extend({
       this.$accessor.account.fetchSubaccounts()
     ])
       .then(() => {
-        //
+        this.checkForReferralCode()
       })
       .catch(this.$onError)
       .finally(() => {
