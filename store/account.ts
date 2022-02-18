@@ -165,30 +165,43 @@ export const actions = actionTree(
     },
 
     async fetchSubaccountsBalances({ commit, state }) {
-      if (
-        !state.subaccount ||
-        !(state.subaccount && state.subaccount.balances)
-      ) {
-        await this.app.$accessor.fetchSubaccounts()
-      }
-
       const { subaccount } = state
 
-      if (subaccount && subaccount.balances) {
-        const subaccountBalances = subaccount.balances
-        const subaccountBalancesWithToken = await tokenService.getSubaccountBalancesWithToken(
-          subaccountBalances
-        )
-
-        commit('setSubaccountBalancesWithToken', subaccountBalancesWithToken)
+      if (!subaccount) {
+        await this.app.$accessor.account.fetchSubaccounts()
       }
+
+      if (subaccount && !subaccount.balances) {
+        await this.app.$accessor.account.fetchSubaccounts()
+      }
+
+      const { subaccount: newSubaccount } = state
+
+      if (!newSubaccount) {
+        return
+      }
+
+      const subaccountBalances = newSubaccount.balances
+      const subaccountBalancesWithToken = await tokenService.getSubaccountBalancesWithToken(
+        subaccountBalances
+      )
+
+      commit('setSubaccountBalancesWithToken', subaccountBalancesWithToken)
     },
 
     async fetchSubaccountsBalancesWithPrices({ commit, state }) {
       const { subaccountBalancesWithToken } = state
 
+      if (subaccountBalancesWithToken.length === 0) {
+        await this.app.$accessor.account.fetchSubaccountsBalances()
+      }
+
+      const {
+        subaccountBalancesWithToken: newSubaccountBalancesWithToken
+      } = state
+
       const subaccountBalancesWithTokenAndPrice = await Promise.all(
-        subaccountBalancesWithToken.map(async (balance) => {
+        newSubaccountBalancesWithToken.map(async (balance) => {
           return {
             ...balance,
             token: {

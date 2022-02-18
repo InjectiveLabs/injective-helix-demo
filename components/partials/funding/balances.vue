@@ -51,18 +51,38 @@
       </portal>
 
       <v-panel :title="panelTitle">
-        <portal-target
+        <div
+          v-if="component === components.tradingAccount"
           slot="context"
-          name="balances-tabs-filter"
-        ></portal-target>
-
+          class="w-full mx-auto mb-4 -mt-3"
+        >
+          <div class="flex flex-wrap items-center justify-center">
+            <v-button-select
+              v-model="tradingAccountComponent"
+              :option="tradingAccountComponents.balances"
+              text
+            >
+              {{ $t('activities.funds') }}
+            </v-button-select>
+            <div class="mx-2 w-px h-4 bg-gray-500"></div>
+            <v-button-select
+              v-model="tradingAccountComponent"
+              :option="tradingAccountComponents.positions"
+              text
+            >
+              {{ $t('activities.positions') }}
+            </v-button-select>
+          </div>
+        </div>
         <div>
           <HOCLoading :status="status">
             <component
               :is="`v-${component}`"
               v-bind="{
                 bankBalancesWithUsdBalance,
-                subaccountBalancesWithUsdBalance
+                subaccountBalancesWithUsdBalance,
+                tradingAccountComponent,
+                tradingAccountComponents
               }"
             ></component>
           </HOCLoading>
@@ -109,6 +129,11 @@ const components = {
   tradingAccount: 'trading-account-balances'
 }
 
+const tradingAccountComponents = {
+  balances: 'balances',
+  positions: 'positions'
+}
+
 export default Vue.extend({
   components: {
     VAccountSummary,
@@ -123,7 +148,10 @@ export default Vue.extend({
       status: new Status(StatusType.Loading),
 
       components,
-      component: components.bankAccount
+      component: components.bankAccount,
+
+      tradingAccountComponent: tradingAccountComponents.balances,
+      tradingAccountComponents
     }
   },
 
