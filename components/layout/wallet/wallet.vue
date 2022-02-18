@@ -69,13 +69,12 @@
             <a
               :href="referralDashboardLink"
               target="_blank"
-              class="cursor-pointer"
+              class="cursor-pointer text-primary-500 text-sm font-semibold tracking-wide"
             >
-              <span
-                class="text-primary-500 text-sm font-semibold tracking-wide"
-              >
+              <span v-if="referralCode">
                 {{ referralCode }}
               </span>
+              <span v-else>&mdash;</span>
             </a>
           </div>
         </div>
