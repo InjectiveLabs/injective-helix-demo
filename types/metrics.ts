@@ -52,3 +52,11 @@ export enum SpotMetrics {
   CancelLimitOrder = 'MsgCancelSpotOrder',
   BatchCancelLimitOrders = 'MsgBatchCancelSpotOrders'
 }
+
+export enum ReferralMetrics {
+  GetFeeRecipient = 'GetFeeRecipient',
+  GetReferralInfo = 'GetReferralInfo',
+  GetRefereeList = 'GetRefereeList',
+  ClaimCommissions = 'ClaimCommissions',
+  Refer = 'Refer'
+}

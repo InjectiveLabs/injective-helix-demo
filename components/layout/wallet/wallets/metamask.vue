@@ -14,7 +14,7 @@
           >
             <div>
               <p class="text-xl font-semibold text-gray-200 truncate">
-                {{ $t('metamask') }}
+                {{ $t('connect.metamask') }}
                 <v-button
                   v-if="!metamaskInstalled"
                   text
@@ -27,14 +27,14 @@
                     target="_blank"
                     rel="noreferrer"
                   >
-                    {{ $t('download') }}
+                    {{ $t('connect.download') }}
                   </a>
                   <v-icon-arrow class="transform rotate-180 w-3 h-3 ml-1" />
                 </v-button>
               </p>
               <p class="flex items-center text-sm text-gray-200">
                 <span class="truncate">{{
-                  $t('Connect using browser wallet')
+                  $t('connect.connectUsingBrowser')
                 }}</span>
               </p>
             </div>

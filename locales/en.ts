@@ -1,10 +1,14 @@
 import faq from './faq/en'
 import dmm from './dmm/en'
+import wallet from './wallet/en'
 
 export default {
   ...faq,
   ...dmm,
-  address_copied: 'Address Copied',
+  ...wallet,
+  nav: {
+    wallet: 'Wallet'
+  },
   copy_address: 'Copy Address',
   max: 'Max',
   min: 'Min',
@@ -12,10 +16,7 @@ export default {
   confirm: 'Confirm',
   injective: 'Injective',
   not_connected: 'Not Connected',
-  connect: 'Connect',
-  connect_to_wallet: 'Connect to wallet',
   connected: 'Connected',
-  metamask: 'Metamask',
   spot_markets: 'Spot Markets',
   welcome_to_ip:
     'Access, create and trade unlimited decentralized finance markets',
@@ -27,8 +28,6 @@ export default {
   maintenance_button: 'Relayers',
   maintenance_body: '',
   token_allowance_successful: 'Token allowance set successful',
-  logout: 'Logout',
-  success_connect: 'Successfully Connected',
   market: 'Market',
   last_traded_price: 'Last Traded Price',
   last_traded_price_tooltip: 'The last price at which a trade occurred.',
@@ -105,10 +104,6 @@ export default {
   price_chart: 'Price Chart',
   filled: 'Filled',
   cancel_order: 'Cancel Order',
-  please_connect_to_your_wallet:
-    'Please connect to your wallet to see more details',
-  please_connect_to_your_wallet_cta:
-    'Please connect to your wallet to start trading on Injective!',
   amount_to_transfer: 'Amount to transfer',
   available_balance: 'Available Balance',
   transfer_modal_title: 'Deposit to Injective Chain',
@@ -190,14 +185,6 @@ export default {
   select_ledger_address: 'Select Ledger Address',
   follow_instructions: 'Please follow the instructions on your device',
   address: 'Address',
-  select_address_to_connect: 'Select Address to Connect',
-  derivation_path: 'Derivation Path',
-  select_derivation_path: 'Select Derivation Path',
-  get_addresses: 'Get Addresses',
-  get_more_addresses: 'Get More Addresses',
-  please_wait_addresses: 'We are getting your addresses, please wait ...',
-  ledger_live: 'Ledger Live',
-  ledger_legacy: 'Ledger Legacy',
   cancel_all: 'Cancel All',
   close_all: 'Close All',
   orders_cancelled: 'Orders Cancelled',
@@ -234,9 +221,6 @@ export default {
     'Orderbook liquidity cannot satisfy the worst price for the specified amount',
   order_price_low_warn: 'Order price is too low',
   order_price_high_warn: 'Order price is too high',
-  'Connect using Ledger': 'Connect using Ledger',
-  'Connect using Ledger instructions':
-    'Note: To ensure smooth process while connecting your Ledger Hardware Wallet, please ensure you are running the on latest Chrome version, have your Ledger device connected, unlocked and your Ethereum app open. ',
   high_price_deviation_warning:
     'You have previously turned on the warning notification for high price deviations. Click confirm if you agree to turn off this warning.',
   high_execution_price_deviation_warning_note:
@@ -244,21 +228,13 @@ export default {
   high_execution_price_deviation_warning:
     'Your execution price deviates at least {percentage}% from the latest market price.',
   cancel_and_save_preference: 'Cancel and Save Preference',
-
   home: 'Home',
   open: 'Open',
-  'Trezor Connection Note':
-    "Note: At this point there is no support for Trezor - please don't use Trezor (including Metamask's Trezor integration) as it might cause your funds being stuck on the Injective Chain.",
   close: 'Close',
-  'Connect using browser wallet': 'Connect using browser wallet',
-  'Connect to Wallet': 'Connect to Wallet',
-  Ledger: 'Ledger',
-  'Select address to connect': 'Select address to connect',
   'Please follow the instructions on your device':
     'Please follow the instructions on your device',
   'Ledger Live': 'Ledger Live',
   'Ledger Legacy': 'Ledger Legacy',
-  'Connect using hardware wallet': 'Connect using hardware wallet',
   'Get addresses': 'Get addresses',
   'Get more addresses': 'Get more addresses',
   'We are getting your addresses, please wait ...':
@@ -313,9 +289,7 @@ export default {
   wallet_history: 'Wallet History',
   subaccount_transfer_history: 'Trading Account Transfer History',
   History: 'History',
-  Wallet: 'Wallet',
   deposits: 'Deposits',
-  download: 'Download',
   withdrawals: 'Withdrawals',
   subaccount: 'Trading Account',
   'Injective Chain Balance': 'Injective Chain Balance',

@@ -271,6 +271,7 @@ export const cancelMarketStreams = () => {
 }
 
 export const submitLimitOrder = async ({
+  feeRecipient,
   price,
   quantity,
   orderType,
@@ -279,6 +280,7 @@ export const submitLimitOrder = async ({
   injectiveAddress,
   subaccountId
 }: {
+  feeRecipient: AccountAddress | undefined
   price: BigNumberInBase
   quantity: BigNumberInBase
   orderType: SpotOrderSide
@@ -300,7 +302,7 @@ export const submitLimitOrder = async ({
       orderType: orderTypeToGrpcOrderType(orderType),
       price: relativePrice.toFixed(),
       quantity: relativeQuantity.toFixed(),
-      feeRecipient: FEE_RECIPIENT,
+      feeRecipient: feeRecipient || FEE_RECIPIENT,
       triggerPrice: ZERO_TO_STRING // TODO
     }
   })
@@ -320,6 +322,7 @@ export const submitLimitOrder = async ({
 }
 
 export const submitMarketOrder = async ({
+  feeRecipient,
   quantity,
   price,
   orderType,
@@ -328,6 +331,7 @@ export const submitMarketOrder = async ({
   injectiveAddress,
   subaccountId
 }: {
+  feeRecipient: AccountAddress | undefined
   quantity: BigNumberInBase
   price: BigNumberInBase
   orderType: SpotOrderSide
@@ -339,6 +343,7 @@ export const submitMarketOrder = async ({
   const relativePrice = price.toWei(
     market.quoteToken.decimals - market.baseToken.decimals
   )
+
   const relativeQuantity = quantity.toWei(market.baseToken.decimals)
   const message = SpotMarketComposer.createMarketOrder({
     subaccountId,
@@ -348,7 +353,7 @@ export const submitMarketOrder = async ({
       price: relativePrice.toFixed(),
       orderType: orderTypeToGrpcOrderType(orderType),
       quantity: relativeQuantity.toFixed(),
-      feeRecipient: FEE_RECIPIENT,
+      feeRecipient: feeRecipient || FEE_RECIPIENT,
       triggerPrice: ZERO_TO_STRING // TODO
     }
   })
