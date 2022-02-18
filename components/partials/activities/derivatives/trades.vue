@@ -29,8 +29,11 @@
             />
           </div>
         </template>
-        <div class="table-responsive min-h-orders max-h-lg mt-6">
-          <table v-if="filteredTrades.length > 0" class="table">
+        <div
+          v-if="filteredTrades.length > 0"
+          class="table-responsive min-h-orders max-h-lg mt-6"
+        >
+          <table class="table">
             <trades-table-header market-column-enabled />
             <tbody v-if="isUserWalletConnected">
               <tr
@@ -41,13 +44,8 @@
               ></tr>
             </tbody>
           </table>
-
-          <v-empty-list
-            v-else
-            :message="$t('trade.emptyTrades')"
-            class="mt-6"
-          />
         </div>
+        <v-empty-list v-else :message="$t('trade.emptyTrades')" class="mt-6" />
       </v-card-table-wrap>
     </VHocLoading>
   </v-card>
