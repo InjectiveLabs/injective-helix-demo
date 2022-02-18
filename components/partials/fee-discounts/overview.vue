@@ -77,10 +77,10 @@
             </template>
             <template slot="title">
               <div class="flex items-center justify-center">
-                {{ $t('My Maker/Taker Discount') }}
+                {{ $t('trade.myMakerTakerDiscount') }}
                 <v-icon-info-tooltip
                   class="ml-2"
-                  :tooltip="$t('My Maker/Taker Discount Tooltip')"
+                  :tooltip="$t('trade.myMakerTakerDiscountTooltip')"
                 />
               </div>
             </template>

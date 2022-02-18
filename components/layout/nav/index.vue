@@ -5,7 +5,7 @@
         {{ $t('home') }}
       </v-nav-item>
       <v-nav-item-dummy @click.stop="handleOpenMarketsSlideout">
-        {{ $t('markets') }}
+        {{ $t('trade.markets') }}
       </v-nav-item-dummy>
       <v-nav-item :to="{ name: 'activities' }">
         {{ $t('activities.activities') }}

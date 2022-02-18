@@ -6,7 +6,7 @@
       @drawer-toggle="onDrawerToggle"
     >
       <p slot="header" class="flex justify-between text-sm">
-        <v-text-info :title="$t('total')" lg>
+        <v-text-info :title="$t('trade.total')" lg>
           <span class="font-mono flex items-center">
             <span class="mr-1">≈</span>
             {{ extractedTotalToFormat }}
@@ -18,7 +18,7 @@
       </p>
 
       <div class="mt-4">
-        <v-text-info :title="$t('amount')">
+        <v-text-info :title="$t('trade.amount')">
           <span v-if="!amount.isNaN()" class="font-mono flex items-center">
             {{ amountToFormat }}
             <span class="text-gray-500 ml-1">
@@ -28,7 +28,7 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </v-text-info>
 
-        <v-text-info :title="$t('price')" class="mt-2">
+        <v-text-info :title="$t('trade.price')" class="mt-2">
           <span v-if="price.gt(0)" class="font-mono flex items-center">
             {{ priceToFormat }}
             <span class="text-gray-500 ml-1">
@@ -38,11 +38,11 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </v-text-info>
 
-        <v-text-info :title="$t('maker_taker_rate')" class="mt-2">
+        <v-text-info :title="$t('trade.maker_taker_rate')" class="mt-2">
           <v-icon-info-tooltip
             slot="context"
             class="ml-2"
-            :tooltip="$t('maker_taker_rate_note')"
+            :tooltip="$t('trade.maker_taker_rate_note')"
           />
           <span class="font-mono flex items-center">
             {{ `${makerFeeRateToFormat}%/${takerFeeRateToFormat}%` }}
@@ -51,13 +51,13 @@
 
         <v-text-info
           v-if="!orderTypeBuy"
-          :title="$t('est_receiving_amount')"
+          :title="$t('trade.est_receiving_amount')"
           class="mt-2"
         >
           <v-icon-info-tooltip
             slot="context"
             class="ml-2"
-            :tooltip="$t('est_receiving_amount_note')"
+            :tooltip="$t('trade.est_receiving_amount_note')"
           />
           <span
             v-if="totalWithoutFees.gt(0)"
@@ -71,7 +71,7 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </v-text-info>
 
-        <v-text-info :title="$t('fee')" class="mt-2">
+        <v-text-info :title="$t('trade.fee')" class="mt-2">
           <div slot="context">
             <div class="flex items-center">
               <v-icon-info-tooltip
@@ -79,8 +79,8 @@
                 class="ml-2"
                 :tooltip="
                   marketHasNegativeMakerFee
-                    ? $t('fee_order_details_note_negative_margin')
-                    : $t('fee_order_details_note', {
+                    ? $t('trade.fee_order_details_note_negative_margin')
+                    : $t('trade.fee_order_details_note', {
                         feeReturned: feeReturned.toFixed()
                       })
                 "
@@ -90,8 +90,8 @@
                 class="ml-2"
                 :tooltip="
                   marketHasNegativeMakerFee
-                    ? $t('fee_order_details_note_negative_margin')
-                    : $t('fees_tooltip')
+                    ? $t('trade.fee_order_details_note_negative_margin')
+                    : $t('trade.fees_tooltip')
                 "
               />
               <v-icon-check-tooltip
@@ -101,7 +101,7 @@
                 "
                 class="ml-2 text-primary-500"
                 :tooltip="
-                  $t('fees_tooltip_discount', {
+                  $t('trade.fees_tooltip_discount', {
                     maker: makerFeeRateDiscount.times(100).toFixed(),
                     taker: takerFeeRateDiscount.times(100).toFixed()
                   })
@@ -121,13 +121,13 @@
 
         <v-text-info
           v-if="marketHasNegativeMakerFee"
-          :title="$t('est_fee_rebate')"
+          :title="$t('trade.est_fee_rebate')"
           class="mt-2"
         >
           <div slot="context">
             <v-icon-info-tooltip
               class="ml-2"
-              :tooltip="$t('est_fee_rebate_note')"
+              :tooltip="$t('trade.est_fee_rebate_note')"
             />
           </div>
           <span v-if="feeRebates.gt(0)" class="font-mono flex items-center">
@@ -141,13 +141,13 @@
 
         <v-text-info
           v-if="makerExpectedPts.gte(0) || takerExpectedPts.gte(0)"
-          :title="$t('expected_points')"
+          :title="$t('trade.expected_points')"
           class="mt-2"
         >
           <v-icon-info-tooltip
             slot="context"
             class="ml-2"
-            :tooltip="$t('expected_points_note')"
+            :tooltip="$t('trade.expected_points_note')"
           />
           <span class="font-mono flex items-center">
             {{ `${makerExpectedPtsToFormat}/${takerExpectedPtsToFormat}` }}
@@ -164,10 +164,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  UiSpotMarketWithToken,
-  ZERO_IN_BASE
-} from '@injectivelabs/ui-common'
+import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/ui-common'
 import { SpotOrderSide } from '@injectivelabs/spot-consumer'
 import Drawer from '~/components/elements/drawer.vue'
 import { Icon } from '~/types'

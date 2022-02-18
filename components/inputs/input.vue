@@ -64,7 +64,7 @@
               class="bg-gray-700 rounded uppercase tracking-1"
               :class="maxClasses"
             >
-              {{ $t('max') }}
+              {{ $t('trade.max') }}
             </span>
           </span>
           <slot name="addon" />

@@ -34,7 +34,7 @@
     <span
       class="col-span-1 text-2xs md:text-sm text-gray-300 text-left md:hidden"
     >
-      {{ $t('last_traded_price') }}
+      {{ $t('trade.last_traded_price') }}
     </span>
     <span
       class="font-mono text-right text-2xs md:text-sm flex items-center justify-end"
@@ -68,7 +68,7 @@
     <span
       class="col-span-1 text-2xs md:text-sm text-gray-300 text-left md:hidden"
     >
-      {{ $t('market_change_24h') }}
+      {{ $t('trade.market_change_24h') }}
     </span>
     <span
       class="font-mono text-right text-2xs md:text-sm col-span-1 md:col-span-3"
@@ -85,7 +85,7 @@
       v-if="!simple"
       class="col-span-1 text-2xs md:text-sm text-gray-300 text-left md:hidden"
     >
-      {{ $t('market_volume_24h') }}
+      {{ $t('trade.market_volume_24h') }}
     </span>
     <span
       v-if="!simple"

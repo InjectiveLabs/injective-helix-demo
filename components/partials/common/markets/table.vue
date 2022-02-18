@@ -10,7 +10,7 @@
           class="font-normal"
           @click.stop="onSelectMarketType('')"
         >
-          <span>{{ $t('all') }}</span>
+          <span>{{ $t('trade.all') }}</span>
         </v-button>
         <div class="mx-2 w-px h-4 bg-gray-700"></div>
         <v-button
@@ -21,7 +21,7 @@
           class="font-normal"
           @click.stop="onSelectMarketType(MarketType.Perpetual)"
         >
-          <span>{{ $t('perpetuals') }}</span>
+          <span>{{ $t('trade.perpetuals') }}</span>
         </v-button>
         <div class="mx-2 w-px h-4 bg-gray-700"></div>
         <v-button
@@ -32,7 +32,7 @@
           class="font-normal"
           @click.stop="onSelectMarketType(MarketType.Spot)"
         >
-          <span>{{ $t('spots') }}</span>
+          <span>{{ $t('trade.spots') }}</span>
         </v-button>
         <template v-if="false">
           <div class="mx-2 w-px h-4 bg-gray-700"></div>
@@ -56,7 +56,7 @@
           class="hidden md:block font-normal opacity-50"
           @click.stop="() => {}"
         >
-          <span>{{ $t('futures') }}</span>
+          <span>{{ $t('trade.futures') }}</span>
         </v-button>
       </div>
 
@@ -64,7 +64,8 @@
         v-if="totalVolume.gt(0) && !simple && false"
         class="text-sm text-primary-500 mr-2 hidden sm:block"
       >
-        {{ $t('total_market_volume_24h') }}: {{ totalVolumeToFormat }} USDT
+        {{ $t('trade.total_market_volume_24h') }}:
+        {{ totalVolumeToFormat }} USDT
       </span>
     </div>
     <div>
@@ -72,14 +73,15 @@
         v-if="totalVolume.gt(0) && !simple && false"
         class="text-sm text-primary-500 ml-2 mt-4 sm:hidden"
       >
-        {{ $t('total_market_volume_24h') }}: {{ totalVolumeToFormat }} USDT
+        {{ $t('trade.total_market_volume_24h') }}:
+        {{ totalVolumeToFormat }} USDT
       </span>
     </div>
     <div class="w-full mt-2">
       <v-search
         name="search"
         class="w-full"
-        :placeholder="$t('filter_markets')"
+        :placeholder="$t('trade.filter_markets')"
         :search="filterMarkets"
         @searched="filterMarkets = $event"
       />
@@ -96,32 +98,34 @@
           class="text-left"
           :class="{ 'col-span-5': simple, 'col-span-3': !simple }"
         >
-          {{ $t('market') }}
+          {{ $t('trade.market') }}
         </span>
         <span :class="{ 'col-span-4': simple, 'col-span-3': !simple }">
           <div class="flex items-center relative justify-end">
-            <span class="flex-1 text-right">{{ $t('last_traded_price') }}</span>
+            <span class="flex-1 text-right">{{
+              $t('trade.last_traded_price')
+            }}</span>
             <v-icon-info-tooltip
               class="ml-2"
-              :tooltip="$t('last_traded_price_tooltip')"
+              :tooltip="$t('trade.last_traded_price_tooltip')"
             />
           </div>
         </span>
         <span class="col-span-3">
           <div class="flex items-center relative justify-end">
-            {{ $t('market_change_24h') }}
+            {{ $t('trade.market_change_24h') }}
             <v-icon-info-tooltip
               class="ml-2"
-              :tooltip="$t('market_change_24h_tooltip')"
+              :tooltip="$t('trade.market_change_24h_tooltip')"
             />
           </div>
         </span>
         <span v-if="!simple" class="col-span-3">
           <div class="flex items-center relative justify-end">
-            {{ $t('market_volume_24h') }}
+            {{ $t('trade.market_volume_24h') }}
             <v-icon-info-tooltip
               class="ml-2"
-              :tooltip="$t('market_volume_24h_tooltip')"
+              :tooltip="$t('trade.market_volume_24h_tooltip')"
             />
           </div>
         </span>

@@ -1,7 +1,12 @@
 <template>
   <div>
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <v-card-select v-model="component" lg :option="components.bankAccount">
+      <v-card-select
+        v-model="component"
+        lg
+        :option="components.bankAccount"
+        :status="status"
+      >
         <template slot="subtitle">
           <div class="font-semibold text-lg flex items-center mb-4">
             <span>{{ $t('funding.bankAccount') }}</span>
@@ -21,7 +26,12 @@
         </div>
       </v-card-select>
 
-      <v-card-select v-model="component" lg :option="components.tradingAccount">
+      <v-card-select
+        v-model="component"
+        lg
+        :option="components.tradingAccount"
+        :status="status"
+      >
         <template slot="subtitle">
           <div class="font-semibold text-lg flex items-center mb-4">
             <span>{{ $t('funding.tradingAccount') }}</span>
@@ -81,8 +91,7 @@
               v-bind="{
                 bankBalancesWithUsdBalance,
                 subaccountBalancesWithUsdBalance,
-                tradingAccountComponent,
-                tradingAccountComponents
+                tradingAccountComponent
               }"
             ></component>
           </HOCLoading>
@@ -102,7 +111,8 @@ import {
 } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {
-  BankBalances,
+  BankBalanceWithToken,
+  IbcBankBalanceWithToken,
   BankBalanceWithTokenAndBalanceWithUsdBalance,
   SubaccountBalanceWithTokenWithUsdBalance,
   TokenWithBalanceAndPrice,
@@ -160,8 +170,8 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    bankBalances(): BankBalances {
-      return this.$accessor.bank.balances
+    bankBalances(): Array<BankBalanceWithToken | IbcBankBalanceWithToken> {
+      return this.$accessor.bank.bankBalancesWithToken
     },
 
     positions(): UiPosition[] {
@@ -200,16 +210,18 @@ export default Vue.extend({
         ...erc20TokensWithBalanceAndPriceFromBank,
         ...ibcTokensWithBalanceAndPriceFromBank
       ].map((tokenWithBalance) => {
-        const balanceInUsd = new BigNumberInWei(
-          bankBalances[tokenWithBalance.denom] || 0
-        )
+        const balance =
+          bankBalances.find(({ denom }) => denom === tokenWithBalance.denom)
+            ?.balance || ZERO_TO_STRING
+
+        const balanceInUsd = new BigNumberInWei(balance)
           .toBase(tokenWithBalance.decimals)
           .times(tokenWithBalance.usdPrice)
           .toFixed(UI_DEFAULT_DISPLAY_DECIMALS)
 
         return {
+          balance,
           balanceInUsd,
-          balance: bankBalances[tokenWithBalance.denom] || ZERO_TO_STRING,
           denom: tokenWithBalance.denom,
           token: tokenWithBalance
         }

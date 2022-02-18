@@ -84,7 +84,9 @@
           </span>
         </div>
       </div>
-      <span v-else class="text-gray-400">{{ $t('not_available_n_a') }}</span>
+      <span v-else class="text-gray-400">{{
+        $t('trade.not_available_n_a')
+      }}</span>
     </td>
     <td class="text-right font-mono">
       <v-number
@@ -124,7 +126,9 @@
         {{ effectiveLeverage.toFormat(2) }}
         <span class="text-gray-300">&times;</span>
       </span>
-      <span v-else class="text-gray-400">{{ $t('not_available_n_a') }}</span>
+      <span v-else class="text-gray-400">{{
+        $t('trade.not_available_n_a')
+      }}</span>
     </td>
 
     <td class="text-center relative">
@@ -480,7 +484,7 @@ export default Vue.extend({
       }
 
       if (pnl.isNaN()) {
-        return this.$t('no_liquidity')
+        return this.$t('trade.no_liquidity')
       }
 
       return undefined
@@ -493,7 +497,7 @@ export default Vue.extend({
         totalReduceOnlyQuantity.gt(0) &&
         totalReduceOnlyQuantity.lt(position.quantity)
       ) {
-        return this.$t('reduce_only_exceed_position')
+        return this.$t('trade.reduce_only_exceed_position')
       }
 
       return undefined
@@ -574,7 +578,7 @@ export default Vue.extend({
           market
         })
         .then(() => {
-          this.$toast.success(this.$t('position_closed'))
+          this.$toast.success(this.$t('trade.position_closed'))
         })
         .catch(this.$onRejected)
         .finally(() => {
@@ -597,7 +601,7 @@ export default Vue.extend({
           reduceOnlyOrders: reduceOnlyCurrentOrders
         })
         .then(() => {
-          this.$toast.success(this.$t('position_closed'))
+          this.$toast.success(this.$t('trade.position_closed'))
         })
         .catch(this.$onRejected)
         .finally(() => {

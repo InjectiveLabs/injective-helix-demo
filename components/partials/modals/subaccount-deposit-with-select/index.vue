@@ -21,7 +21,7 @@
                       label: a.token.symbol.toUpperCase()
                     }))
                   "
-                  :label="$t('asset')"
+                  :label="$t('trade.asset')"
                   :placeholder="$t('Asset Transfer Tooltip')"
                 >
                 </v-select-custom>

@@ -5,7 +5,7 @@
         <v-overview class="mt-6" />
         <v-get-started class="mt-16" />
         <v-recent-news v-if="false" class="mt-16" />
-        <v-panel :title="$t('markets')" class="mt-16">
+        <v-panel :title="$t('trade.markets')" class="mt-16">
           <v-markets />
         </v-panel>
         <v-stats class="mt-16" />

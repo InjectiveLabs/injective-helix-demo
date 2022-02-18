@@ -8,7 +8,7 @@
         text-xs
         @click.stop="onTradingTypeToggle(TradeExecutionType.Market)"
       >
-        {{ $t('market') }}
+        {{ $t('trade.market') }}
       </v-button>
       <div class="mx-2 w-px h-4 bg-gray-500"></div>
       <v-button
@@ -19,7 +19,7 @@
         text-xs
         @click.stop="onTradingTypeToggle(TradeExecutionType.LimitFill)"
       >
-        {{ $t('limit') }}
+        {{ $t('trade.limit') }}
       </v-button>
     </div>
     <div class="mt-4">
@@ -30,7 +30,7 @@
           aqua
           class="w-1/2"
         >
-          {{ $t('buy_asset', { asset: market.baseToken.symbol }) }}
+          {{ $t('trade.buy_asset', { asset: market.baseToken.symbol }) }}
         </v-button-select>
         <v-button-select
           v-model="orderType"
@@ -38,7 +38,7 @@
           red
           class="w-1/2"
         >
-          {{ $t('sell_asset', { asset: market.baseToken.symbol }) }}
+          {{ $t('trade.sell_asset', { asset: market.baseToken.symbol }) }}
         </v-button-select>
       </div>
     </div>
@@ -47,7 +47,7 @@
         <v-input
           ref="input-amount"
           :value="form.amount"
-          :label="$t('amount')"
+          :label="$t('trade.amount')"
           :custom-handler="true"
           :max-selector="true"
           :placeholder="amountStep"
@@ -93,7 +93,7 @@
           ref="input-price"
           :value="form.price"
           :placeholder="priceStep"
-          :label="$t('price')"
+          :label="$t('trade.price')"
           :disabled="tradingTypeMarket"
           type="number"
           :step="priceStep"
@@ -136,7 +136,7 @@
         v-if="executionPriceHasHighDeviationWarning && !hasErrors"
         class="text-2xs text-red-200 mb-4"
       >
-        {{ $t('execution_price_far_away_from_last_traded_price') }}
+        {{ $t('trade.execution_price_far_away_from_last_traded_price') }}
       </p>
 
       <v-button
@@ -149,7 +149,7 @@
         class="w-full"
         @click.stop="onSubmit"
       >
-        {{ $t(orderTypeBuy ? 'buy' : 'sell') }}
+        {{ $t(orderTypeBuy ? 'trade.buy' : 'trade.sell') }}
       </v-button>
     </div>
 
@@ -608,7 +608,7 @@ export default Vue.extend({
       if (orderTypeBuy) {
         if (quoteAvailableBalance.lt(totalWithFees)) {
           return {
-            price: this.$t('not_enough_balance')
+            price: this.$t('trade.not_enough_balance')
           }
         }
 
@@ -621,7 +621,7 @@ export default Vue.extend({
 
       if (baseAvailableBalance.lt(amount)) {
         return {
-          amount: this.$t('not_enough_balance')
+          amount: this.$t('trade.not_enough_balance')
         }
       }
 
@@ -646,7 +646,7 @@ export default Vue.extend({
 
       if (orders.length <= 0 && amount.gt(0)) {
         return {
-          amount: this.$t('not_enough_fillable_orders')
+          amount: this.$t('trade.not_enough_fillable_orders')
         }
       }
 
@@ -678,7 +678,7 @@ export default Vue.extend({
 
       if (totalAmount.lt(amount)) {
         return {
-          amount: this.$t('not_enough_fillable_orders')
+          amount: this.$t('trade.not_enough_fillable_orders')
         }
       }
 
@@ -768,7 +768,7 @@ export default Vue.extend({
         executionPrice.gt(acceptableMax)
       ) {
         return {
-          price: this.$t('your_order_has_high_price_deviation')
+          price: this.$t('trade.your_order_has_high_price_deviation')
         }
       }
 
@@ -1269,7 +1269,7 @@ export default Vue.extend({
           orderType
         })
         .then(() => {
-          this.$toast.success(this.$t('order_placed'))
+          this.$toast.success(this.$t('trade.order_placed'))
           this.$set(this, 'form', initialForm())
         })
         .catch(this.$onRejected)
@@ -1294,7 +1294,7 @@ export default Vue.extend({
           orderType
         })
         .then(() => {
-          this.$toast.success(this.$t('trade_placed'))
+          this.$toast.success(this.$t('trade.trade_placed'))
           this.$set(this, 'form', initialForm())
         })
         .catch(this.$onRejected)
@@ -1316,7 +1316,7 @@ export default Vue.extend({
       }
 
       if (hasErrors) {
-        return this.$toast.error(this.$t('error_in_form'))
+        return this.$toast.error(this.$t('trade.error_in_form'))
       }
 
       if (tradingTypeMarket) {

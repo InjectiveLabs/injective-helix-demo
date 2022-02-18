@@ -10,7 +10,7 @@
           class="font-normal"
           @click.stop="onSelect(components.orderbook)"
         >
-          <span>{{ $t('Orderbook') }}</span>
+          <span>{{ $t('trade.orderbook') }}</span>
         </v-button>
         <div class="mx-2 w-px h-4 bg-gray-700"></div>
         <v-button
@@ -21,7 +21,7 @@
           class="font-normal"
           @click.stop="onSelect(components.trades)"
         >
-          <span>{{ $t('trades') }}</span>
+          <span>{{ $t('trade.trades') }}</span>
         </v-button>
       </div>
       <v-aggregation-selector

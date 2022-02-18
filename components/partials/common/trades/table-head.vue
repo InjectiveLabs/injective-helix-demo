@@ -4,7 +4,7 @@
       <thead xs>
         <tr>
           <th class="w-1/3 text-right">
-            <span>{{ $t('price') }}</span>
+            <span>{{ $t('trade.price') }}</span>
             <span
               class="font-semibold text-white uppercase inline-block lg:hidden xl:inline-block"
             >
@@ -12,7 +12,7 @@
             </span>
           </th>
           <th class="w-1/3 text-right">
-            <span>{{ $t('amount') }}</span>
+            <span>{{ $t('trade.amount') }}</span>
             <span
               class="font-semibold text-white uppercase inline-block lg:hidden xl:inline-block"
             >
@@ -20,7 +20,7 @@
             </span>
           </th>
           <th class="w-1/3 text-right">
-            <span>{{ $t('time') }}</span>
+            <span>{{ $t('trade.time') }}</span>
           </th>
         </tr>
       </thead>

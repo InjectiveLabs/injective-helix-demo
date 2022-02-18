@@ -5,7 +5,7 @@
         <div class="flex items-center">
           <v-button-filter v-model="component" :option="components.openOrders">
             <span class="uppercase text-xs font-semibold">
-              {{ $t('open_orders') }}
+              {{ $t('trade.open_orders') }}
               {{ `(${orders.length})` }}
             </span>
           </v-button-filter>
@@ -15,7 +15,7 @@
             :option="components.tradeHistory"
           >
             <span class="uppercase text-xs font-semibold">
-              {{ $t('trade_history') }}
+              {{ $t('trade.trade_history') }}
             </span>
           </v-button-filter>
         </div>

@@ -191,28 +191,28 @@ export default Vue.extend({
       const { trade } = this
 
       return trade.tradeDirection === TradeDirection.Buy
-        ? this.$t('buy')
-        : this.$t('sell')
+        ? this.$t('trade.buy')
+        : this.$t('trade.sell')
     },
 
     tradeExecutionType(): string {
       const { trade } = this
 
       if (trade.isLiquidation) {
-        return this.$t('liquidation')
+        return this.$t('trade.liquidation')
       }
 
       switch (trade.tradeExecutionType) {
         case TradeExecutionType.LimitFill:
-          return this.$t('limit')
+          return this.$t('trade.limit')
         case TradeExecutionType.Market:
-          return this.$t('market')
+          return this.$t('trade.market')
         case TradeExecutionType.LimitMatchRestingOrder:
-          return this.$t('limit')
+          return this.$t('trade.limit')
         case TradeExecutionType.LimitMatchNewOrder:
-          return this.$t('limit')
+          return this.$t('trade.limit')
         default:
-          return this.$t('limit')
+          return this.$t('trade.limit')
       }
     }
   },

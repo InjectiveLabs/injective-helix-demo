@@ -24,11 +24,6 @@ export default Vue.extend({
     tradingAccountComponent: {
       type: String,
       required: true
-    },
-
-    tradingAccountComponents: {
-      type: Array,
-      required: true
     }
   }
 })
