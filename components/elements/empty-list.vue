@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full bg-gray-900 flex py-2">
+  <div class="w-full bg-gray-900 flex py-2 rounded-sm">
     <div class="grow text-center m-auto">
       <img src="/svg/empty-list.svg" class="mx-auto mb-2" />
       <p>
