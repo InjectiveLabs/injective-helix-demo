@@ -2,9 +2,13 @@ import { extend, localize } from 'vee-validate'
 import { required, email, min, max, between } from 'vee-validate/dist/rules'
 import { NUMBER_REGEX } from '~/app/utils/constants'
 
+// eslint-disable-next-line prefer-regex-literals
+const REFER_CODE_REGEX = new RegExp(/^[A-Z]([A-Z0-9]{7})$/)
+
 localize({
   en: {
     messages: {
+      referralCode: 'This is not a valid refer code',
       injaddress: 'This field is not a valid Injective address',
       required: 'This field is required',
       positiveNumber: 'This field is not a valid number',
@@ -33,4 +37,7 @@ extend('min', min)
 extend('max', max)
 extend('positiveNumber', (value: string) => {
   return NUMBER_REGEX.test(value)
+})
+extend('referralCode', (value: string) => {
+  return REFER_CODE_REGEX.test(value)
 })

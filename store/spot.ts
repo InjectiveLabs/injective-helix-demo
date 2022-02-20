@@ -605,7 +605,10 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
+      const { feeRecipient } = this.app.$accessor.referral
+
       await submitLimitOrder({
+        feeRecipient,
         price,
         quantity,
         orderType,
@@ -643,7 +646,10 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
+      const { feeRecipient } = this.app.$accessor.referral
+
       await submitMarketOrder({
+        feeRecipient,
         quantity,
         orderType,
         price,

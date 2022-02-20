@@ -30,7 +30,7 @@
         {{ $t('History') }}
       </v-nav-item>
       <v-nav-item :to="{ name: 'wallet' }">
-        {{ $t('Wallet') }}
+        {{ $t('nav.wallet') }}
       </v-nav-item>
     </nav>
 

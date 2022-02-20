@@ -765,7 +765,10 @@ export const actions = actionTree(
         token: market.quoteToken
       })
 
+      const { feeRecipient } = this.app.$accessor.referral
+
       await submitLimitOrder({
+        feeRecipient,
         price,
         reduceOnly,
         quantity,
@@ -814,7 +817,10 @@ export const actions = actionTree(
         token: market.quoteToken
       })
 
+      const { feeRecipient } = this.app.$accessor.referral
+
       await submitMarketOrder({
+        feeRecipient,
         quantity,
         reduceOnly,
         margin,
@@ -860,7 +866,10 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
+      const { feeRecipient } = this.app.$accessor.referral
+
       await closePosition({
+        feeRecipient,
         quantity,
         price,
         injectiveAddress,
@@ -905,7 +914,10 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
+      const { feeRecipient } = this.app.$accessor.referral
+
       await closePosition({
+        feeRecipient,
         quantity,
         price,
         injectiveAddress,
@@ -943,7 +955,10 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
+      const { feeRecipient } = this.app.$accessor.referral
+
       await closeAllPosition({
+        feeRecipient,
         positions,
         injectiveAddress,
         address,

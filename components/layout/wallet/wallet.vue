@@ -10,8 +10,8 @@
       <button
         v-tooltip="{
           content: isInjectiveAddress
-            ? $t('switch_to_ethereum_address')
-            : $t('switch_to_injective_address')
+            ? $t('connect.switchToEthereumAddress')
+            : $t('connect.switchToInjectiveAddress')
         }"
         role="button"
         class="hidden md:block mr-4"
@@ -37,7 +37,7 @@
       </button>
       <button
         v-clipboard="() => currentAddress"
-        v-clipboard:success="() => $toast.success($t('address_copied'))"
+        v-clipboard:success="() => $toast.success($t('connect.copiedAddress'))"
         role="button"
         type="button"
       >
@@ -52,7 +52,7 @@
         class="cursor-pointer text-xs font-semibold hidden md:inline-block"
         @click="handleClickOnLogout"
       >
-        {{ $t('logout') }}
+        {{ $t('connect.logout') }}
       </span>
     </div>
   </div>

@@ -45,13 +45,14 @@ if (NETWORK === Network.Devnet) {
 
 module.exports = [
   '/',
-  '/portfolio',
-  '/wallet',
-  '/history',
-  '/fee-discounts',
-  '/trade-and-earn',
   '/dmm',
   '/faq',
+  '/fee-discounts',
+  '/history',
+  '/portfolio',
+  '/register',
+  '/trade-and-earn',
+  '/wallet',
   ...spot.map((s) => `/spot/${s}`),
   ...derivatives.map((d) => `/derivatives/${d}`)
 ]

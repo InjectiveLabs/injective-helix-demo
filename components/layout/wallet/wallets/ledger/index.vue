@@ -1,13 +1,13 @@
 <template>
   <v-modal :is-open="isOpen" @modal-closed="onClose">
     <h3 slot="title">
-      {{ $t('Connect using Ledger') }}
+      {{ $t('connect.connectUsingLedger') }}
     </h3>
     <div class="relative mt-6">
       <v-ledger-address-manager />
       <v-ledger-confirm v-if="addresses.length > 0" @connected="onClose" />
       <p class="text-xs text-gray-400 mt-4">
-        {{ $t('Connect using Ledger instructions') }}
+        {{ $t('connect.connectUsingLedgerNote') }}
       </p>
     </div>
   </v-modal>

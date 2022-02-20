@@ -37,6 +37,7 @@
     "@injectivelabs/exceptions": "^0.0.41",
     "@injectivelabs/exchange-consumer": "^0.0.131",
     "@injectivelabs/networks": "^0.0.66",
+    "@injectivelabs/referral-consumer": "^0.0.10",
     "@injectivelabs/spot-consumer": "^0.0.103",
     "@injectivelabs/subaccount-consumer": "^0.0.73",
     "@injectivelabs/token-metadata": "^0.0.61",

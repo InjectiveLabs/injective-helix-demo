@@ -406,6 +406,7 @@ export const validateNotionalRestrictions = ({
 }
 
 export const submitLimitOrder = async ({
+  feeRecipient,
   price,
   quantity,
   orderType,
@@ -416,6 +417,7 @@ export const submitLimitOrder = async ({
   injectiveAddress,
   subaccountId
 }: {
+  feeRecipient: AccountAddress | undefined
   margin: BigNumberInBase
   price: BigNumberInBase
   reduceOnly: boolean
@@ -437,7 +439,7 @@ export const submitLimitOrder = async ({
         ? ZERO_TO_STRING
         : margin.toWei(market.quoteToken.decimals).toFixed(),
       quantity: quantity.toFixed(),
-      feeRecipient: FEE_RECIPIENT,
+      feeRecipient: feeRecipient || FEE_RECIPIENT,
       triggerPrice: ZERO_TO_STRING // TODO
     }
   })
@@ -457,6 +459,7 @@ export const submitLimitOrder = async ({
 }
 
 export const submitMarketOrder = async ({
+  feeRecipient,
   quantity,
   price,
   reduceOnly,
@@ -467,6 +470,7 @@ export const submitMarketOrder = async ({
   injectiveAddress,
   subaccountId
 }: {
+  feeRecipient: AccountAddress | undefined
   margin: BigNumberInBase
   quantity: BigNumberInBase
   price: BigNumberInBase
@@ -488,7 +492,7 @@ export const submitMarketOrder = async ({
         : margin.toWei(market.quoteToken.decimals).toFixed(),
       quantity: quantity.toFixed(),
       orderType: orderTypeToGrpcOrderType(orderType),
-      feeRecipient: FEE_RECIPIENT,
+      feeRecipient: feeRecipient || FEE_RECIPIENT,
       triggerPrice: ZERO_TO_STRING // TODO
     }
   })
@@ -508,11 +512,13 @@ export const submitMarketOrder = async ({
 }
 
 export const closeAllPosition = async ({
+  feeRecipient,
   positions,
   address,
   injectiveAddress,
   subaccountId
 }: {
+  feeRecipient: AccountAddress | undefined
   positions: {
     market: UiDerivativeMarket
     orderType: DerivativeOrderSide
@@ -547,7 +553,7 @@ export const closeAllPosition = async ({
         margin: ZERO_TO_STRING,
         quantity: position.quantity.toFixed(),
         orderType: orderTypeToGrpcOrderType(position.orderType),
-        feeRecipient: FEE_RECIPIENT,
+        feeRecipient: feeRecipient || FEE_RECIPIENT,
         triggerPrice: ZERO_TO_STRING // TODO
       }
     })
@@ -574,6 +580,7 @@ export const closeAllPosition = async ({
 }
 
 export const closePosition = async ({
+  feeRecipient,
   quantity,
   price,
   orderType,
@@ -582,6 +589,7 @@ export const closePosition = async ({
   injectiveAddress,
   subaccountId
 }: {
+  feeRecipient: AccountAddress | undefined
   quantity: BigNumberInBase
   price: BigNumberInBase
   orderType: DerivativeOrderSide
@@ -616,7 +624,7 @@ export const closePosition = async ({
       margin: ZERO_TO_STRING,
       quantity: quantity.toFixed(),
       orderType: orderTypeToGrpcOrderType(orderType),
-      feeRecipient: FEE_RECIPIENT,
+      feeRecipient: feeRecipient || FEE_RECIPIENT,
       triggerPrice: ZERO_TO_STRING // TODO
     }
   })
@@ -636,6 +644,7 @@ export const closePosition = async ({
 }
 
 export const closePositionAndReduceOnlyOrders = async ({
+  feeRecipient,
   quantity,
   price,
   orderType,
@@ -645,6 +654,7 @@ export const closePositionAndReduceOnlyOrders = async ({
   subaccountId,
   reduceOnlyOrders
 }: {
+  feeRecipient: AccountAddress | undefined
   quantity: BigNumberInBase
   price: BigNumberInBase
   orderType: DerivativeOrderSide
@@ -682,7 +692,7 @@ export const closePositionAndReduceOnlyOrders = async ({
         marketId: market.marketId,
         orderType: orderTypeToGrpcOrderType(orderType),
         triggerPrice: ZERO_TO_STRING,
-        feeRecipient: FEE_RECIPIENT,
+        feeRecipient: feeRecipient || FEE_RECIPIENT,
         price: new BigNumberInBase(actualExecutionPrice)
           .toWei(market.quoteToken.decimals)
           .toFixed(),

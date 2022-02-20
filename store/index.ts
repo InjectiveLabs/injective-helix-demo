@@ -11,9 +11,10 @@ import * as gasRebate from '~/store/gasRebate'
 import * as history from '~/store/history'
 import * as modal from '~/store/modal'
 import * as portfolio from '~/store/portfolio'
+import * as referral from '~/store/referral'
 import * as spot from '~/store/spot'
-import * as token from '~/store/token'
 import * as staking from '~/store/staking'
+import * as token from '~/store/token'
 import * as wallet from '~/store/wallet'
 
 export const accessorType = getAccessorType({
@@ -29,6 +30,7 @@ export const accessorType = getAccessorType({
     history,
     modal,
     portfolio,
+    referral,
     staking,
     spot,
     token,
