@@ -14,6 +14,7 @@ declare global {
       META_TAGS_ENABLED: string
       ORDERBOOK_POLLING_ENABLED: string
       METRICS_ENABLED: string
+      REFERRALS_ENABLED: string
       PRICE_BAND_ENABLED: string
       GEO_IP_RESTRICTIONS_ENABLED: string
       TRANSFER_RESTRICTIONS_ENABLED: string
