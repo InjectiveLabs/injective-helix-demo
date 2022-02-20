@@ -22,7 +22,7 @@
         </div>
       </div>
     </HOCLoading>
-    <v-referee-onboarding-modal />
+    <v-referee-onboarding-modal v-if="REFERRALS_ENABLED" />
   </div>
 </template>
 
@@ -36,7 +36,10 @@ import VRebate from '~/components/partials/wallet/rebate.vue'
 import HOCLoading from '~/components/hoc/loading.vue'
 import VRefereeOnboardingModal from '~/components/partials/modals/referee-onboarding.vue'
 import { Modal } from '~/types'
-import { GAS_FREE_DEPOSIT_REBATE_ENABLED } from '~/app/utils/constants'
+import {
+  GAS_FREE_DEPOSIT_REBATE_ENABLED,
+  REFERRALS_ENABLED
+} from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -51,6 +54,7 @@ export default Vue.extend({
   data() {
     return {
       GAS_FREE_DEPOSIT_REBATE_ENABLED,
+      REFERRALS_ENABLED,
       status: new Status(StatusType.Loading)
     }
   },
@@ -75,6 +79,10 @@ export default Vue.extend({
     checkForReferralCode() {
       const { $route } = this
       const { code } = $route.query
+
+      if (!REFERRALS_ENABLED) {
+        return
+      }
 
       if ($route.name === 'register' && code && code.toString().trim() !== '') {
         this.$accessor.modal.openModal(Modal.RefereeOnboarding)

@@ -19,7 +19,7 @@ jobs:
       DEST_DIR: www
 
       ## Flags
-      MAINTENANCE_ENABLED: true
+      MAINTENANCE_ENABLED: false
       GAS_FREE_DEPOSIT_REBATE_ENABLED: true
       META_TAGS_ENABLED: true
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
@@ -27,6 +27,7 @@ jobs:
       GEO_IP_RESTRICTIONS_ENABLED: true
       TRANSFER_RESTRICTIONS_ENABLED: false
       SHOW_AUCTION_COUNTDOWN: false
+      REFERRALS_ENABLED: false
 
       ## Endpoints
       APP_EXCHANGE_API_ENDPOINT: ''
@@ -101,6 +102,7 @@ jobs:
       TRANSFER_RESTRICTIONS_ENABLED: false
       SHOW_AUCTION_COUNTDOWN: false
       PRICE_BAND_ENABLED: false
+      REFERRALS_ENABLED: false
 
       ## Endpoints
       APP_EXCHANGE_API_ENDPOINT: ''
@@ -173,6 +175,7 @@ jobs:
       GEO_IP_RESTRICTIONS_ENABLED: false
       TRANSFER_RESTRICTIONS_ENABLED: false
       SHOW_AUCTION_COUNTDOWN: false
+      REFERRALS_ENABLED: false
 
       ## Endpoints
       APP_EXCHANGE_API_ENDPOINT: ''
