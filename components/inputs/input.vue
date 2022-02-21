@@ -74,7 +74,14 @@
       <span
         v-if="error && errorBelow"
         class="text-red-400 absolute"
-        :class="[xl ? 'text-sm mt-2' : 'text-2xs mt-1 font-semibold']"
+        :class="[
+          errorClasses,
+          {
+            'text-xs mt-2': lg,
+            'text-sm mt-2': xl,
+            'text-2xs mt-1 font-semibold': !xl && !lg
+          }
+        ]"
       >
         {{ error }}
       </span>
@@ -153,6 +160,11 @@ export default Vue.extend({
     errorBelow: {
       type: Boolean,
       default: false
+    },
+
+    errorClasses: {
+      type: String,
+      default: ''
     }
   },
 

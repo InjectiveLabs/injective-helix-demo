@@ -1,17 +1,25 @@
 <template>
   <div class="flex justify-between items-center">
-    <v-network-card-base class="w-1/2" :network-meta="originNetworkMeta" />
+    <v-network-card-base
+      class="w-1/2"
+      hide-icon
+      :network-meta="originNetworkMeta"
+    />
 
     <div
-      class="bg-primary-500 min-w-6 h-6 mx-6 flex items-center justify-center rounded-full"
+      class="bg-primary-500 min-w-6 h-6 mx-6 flex items-center justify-center rounded-full cursor-pointer"
     >
       <v-icon-arrow-swap
-        class="text-gray-1000 w-4 h-4 rotate-180 select-none"
+        class="text-gray-1000 w-6 h-6 rotate-180 select-none"
         @click.native="handleDirectionSwitch"
       />
     </div>
 
-    <v-network-card-base class="w-1/2" :network-meta="destinationNetworkMeta" />
+    <v-network-card-base
+      class="w-1/2"
+      hide-icon
+      :network-meta="destinationNetworkMeta"
+    />
   </div>
 </template>
 

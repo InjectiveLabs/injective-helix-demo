@@ -1,5 +1,5 @@
 <template>
-  <v-modal :is-open="isModalOpen" md @modal-closed="handleModalClose">
+  <v-modal :is-open="isModalOpen" sm @modal-closed="handleModalClose">
     <div slot="title">
       <h3>{{ bridgeTitle }}</h3>
     </div>
@@ -39,6 +39,7 @@
           >
             <v-network-card-base
               class="w-1/2"
+              :hide-icon="originNetworkMeta.value === destinationNetworkMeta.value"
               :network-meta="originNetworkMeta"
             />
 
@@ -50,6 +51,7 @@
 
             <v-network-card-base
               class="w-1/2"
+              :hide-icon="originNetworkMeta.value === destinationNetworkMeta.value"
               :network-meta="destinationNetworkMeta"
             />
           </div>

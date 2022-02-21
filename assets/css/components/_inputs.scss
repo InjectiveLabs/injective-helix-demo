@@ -184,8 +184,21 @@
 .v-select.input-token.input-select {
   @apply rounded-lg h-20 shadow-none p-0;
 
+  .input-lg {
+    @apply bg-transparent;
+
+    max-width: 80%;
+  }
+
   .input {
     @apply shadow-none text-gray-100;
+  }
+
+  .is-valid,
+  .is-invalid {
+    input {
+      @apply border-none;
+    }
   }
 
   .vs__selected {

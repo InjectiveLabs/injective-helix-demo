@@ -67,7 +67,7 @@
         class="cursor-pointer"
         :to="{ name: 'spot-spot', params: { spot: spotMarketRoute } }"
       >
-        <span class="mr-6">
+        <span>
           {{ $t('common.trade') }}
         </span>
       </nuxt-link>

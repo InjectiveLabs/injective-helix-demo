@@ -39,13 +39,14 @@
               <v-input
                 id="bridge-input"
                 dense
-                xl
+                lg
                 transparent-bg
                 error-below
                 type="number"
                 step="0.01"
                 min="0"
                 placeholder="0.00"
+                error-classes="mt-4"
                 :errors="errors"
                 :valid="valid"
                 :max="balanceToFixed"
@@ -195,6 +196,7 @@ export default Vue.extend({
 
   methods: {
     resetInputFields() {
+      console.log('www')
       if (this.$inputForm) {
         this.$inputForm.reset()
       }

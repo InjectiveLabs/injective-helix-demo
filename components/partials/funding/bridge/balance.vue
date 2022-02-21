@@ -1,6 +1,6 @@
 <template>
   <div class="mt-2 text-right">
-    <div class="text-primary-400 font-semibold tracking-1 text-sm">
+    <div class="text-primary-400 tracking-1 text-sm">
       {{ $t('bridge.available') }}
       {{ balanceToString }}
     </div>

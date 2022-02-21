@@ -1,5 +1,5 @@
 <template>
-  <v-modal :is-open="isModalOpen" md @modal-closed="handleCloseModal">
+  <v-modal :is-open="isModalOpen" sm @modal-closed="handleCloseModal">
     <div slot="title">
       <h3>{{ bridgeTitle }}</h3>
     </div>
@@ -20,11 +20,8 @@
       </div>
       <div v-if="isUserWalletConnected">
         <div v-if="!isIbcTransfer">
-          <h3 class="text-xl font-semibold mt-6">
-            {{ bridgeNote }}
-          </h3>
+          <v-balance :balance="balance" :token="form.token" class="mt-6 mb-2" />
           <v-token-selector
-            class="mt-6"
             :amount="form.amount"
             :value="form.token"
             :origin="origin"
@@ -35,8 +32,7 @@
             @input:token="handleTokenChange"
           >
           </v-token-selector>
-          <v-balance :balance="balance" :token="form.token" />
-          <div class="mt-6 text-center">
+          <div class="mt-8 text-center">
             <v-button
               lg
               primary
@@ -177,21 +173,6 @@ export default Vue.extend({
 
       // Withdraw
       return this.$t('bridge.selectDestinationNetwork')
-    },
-
-    bridgeNote(): string {
-      const { bridgeType } = this
-
-      if (bridgeType === BridgeType.Transfer) {
-        return this.$t('bridge.selectTokenAndAmount')
-      }
-
-      if (bridgeType === BridgeType.Deposit) {
-        return this.$t('bridge.selectTokenAndAmount')
-      }
-
-      // Withdraw
-      return this.$t('bridge.selectTokenAndAmount')
     },
 
     onTransferBalance(): BigNumberInBase {
