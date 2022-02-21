@@ -196,7 +196,6 @@ export default Vue.extend({
 
   methods: {
     resetInputFields() {
-      console.log('www')
       if (this.$inputForm) {
         this.$inputForm.reset()
       }

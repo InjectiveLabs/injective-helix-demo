@@ -6,7 +6,7 @@
 .table-orders {
   @apply h-full min-h-orders max-h-2xs;
 
-@screen lg {
+  @screen lg {
     @apply max-h-xs;
   }
 
@@ -219,12 +219,6 @@
   }
   100% {
     background-color: unset;
-  }
-}
-
-nav {
-  a.is-active {
-    @apply bg-gray-950 font-semibold;
   }
 }
 

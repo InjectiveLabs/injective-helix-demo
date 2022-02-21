@@ -1,8 +1,11 @@
 <template>
   <div>
-    <h4 class="text-sm uppercase text-gray-400">
-      {{ $t('funding.accountSummary') }}
-    </h4>
+    <div class="flex items-center cursor-pointer" @click="toggleHideBalance">
+      <h4 class="text-sm uppercase text-gray-400">
+        {{ $t('funding.accountSummary') }}
+      </h4>
+      <v-icon-show class="w-4 h-4 ml-4 text-gray-400 hover:text-primary-500" />
+    </div>
     <div
       class="flex flex-wrap items-center justify-center lg:justify-between mt-4"
     >
@@ -10,10 +13,11 @@
         class="flex font-mono items-end flex-wrap justify-center lg:justify-start"
       >
         <h2 class="text-white text-2xl sm:text-3xl xl:text-4xl mr-4">
-          {{ totalBalanceToString }} USD
+          <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }} </span>
+          <span v-else>{{ totalBalanceToString }} USD </span>
         </h2>
-        <span class="text-2xl text-gray-400 mt-4 lg:mt-0">
-          {{ totalBalanceInBtcToString }} BTC
+        <span v-if="!hideBalance" class="text-2xl text-gray-400 mt-4 lg:mt-0">
+          ≈ {{ totalBalanceInBtcToString }} BTC
         </span>
       </div>
       <div class="flex items-center mt-6 lg:mt-0">
@@ -36,15 +40,27 @@ import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/ui-common'
 import {
+  HIDDEN_BALANCE_DISPLAY,
   UI_MINIMAL_AMOUNT,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
 
 export default Vue.extend({
   props: {
+    hideBalance: {
+      type: Boolean,
+      default: false
+    },
+
     totalBalance: {
       type: Object as PropType<BigNumberInBase>,
       required: true
+    }
+  },
+
+  data() {
+    return {
+      HIDDEN_BALANCE_DISPLAY
     }
   },
 
@@ -113,6 +129,12 @@ export default Vue.extend({
 
     handleTransferClick() {
       this.$root.$emit('bridge:transfer')
+    },
+
+    toggleHideBalance() {
+      const { hideBalance } = this
+
+      this.$emit('update:hide-balance', !hideBalance)
     }
   }
 })

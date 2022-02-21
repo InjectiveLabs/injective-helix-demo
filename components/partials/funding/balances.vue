@@ -22,7 +22,10 @@
           <p class="text-gray-500 text-xs uppercase mb-3">
             {{ $t('funding.walletValue') }}
           </p>
-          <p class="text-2xl">{{ totalBankBalanceToString }} USD</p>
+          <p class="text-2xl">
+            <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+            <span v-else>{{ totalBankBalanceToString }} USD</span>
+          </p>
         </div>
       </v-card-select>
 
@@ -47,7 +50,10 @@
           <p class="text-gray-500 text-xs uppercase mb-3">
             {{ $t('funding.portfolioValue') }}
           </p>
-          <p class="text-2xl">{{ tradingAccountBalancesToString }} USD</p>
+          <p class="text-2xl">
+            <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+            <span v-else>{{ tradingAccountBalancesToString }} USD</span>
+          </p>
         </div>
       </v-card-select>
     </div>
@@ -57,45 +63,24 @@
         <div v-if="status.isLoading()" class="h-16 w-full xl:w-1/4 relative">
           <v-loading />
         </div>
-        <v-account-summary v-else :total-balance="totalBalance" />
+        <v-account-summary
+          v-else
+          :total-balance="totalBalance"
+          :hide-balance.sync="hideBalance"
+        />
       </portal>
 
       <v-panel :title="panelTitle">
-        <div
-          v-if="component === components.tradingAccount"
-          slot="context"
-          class="w-full mx-auto mb-4 -mt-3"
-        >
-          <div class="flex flex-wrap items-center justify-center">
-            <v-button-select
-              v-model="tradingAccountComponent"
-              :option="tradingAccountComponents.balances"
-              text
-            >
-              {{ $t('activities.funds') }}
-            </v-button-select>
-            <div class="mx-2 w-px h-4 bg-gray-500"></div>
-            <v-button-select
-              v-model="tradingAccountComponent"
-              :option="tradingAccountComponents.positions"
-              text
-            >
-              {{ $t('activities.positions') }}
-            </v-button-select>
-          </div>
-        </div>
-        <div>
-          <VHocLoading :status="status">
-            <component
-              :is="`v-${component}`"
-              v-bind="{
-                bankBalancesWithUsdBalance,
-                subaccountBalancesWithUsdBalance,
-                tradingAccountComponent
-              }"
-            ></component>
-          </VHocLoading>
-        </div>
+        <VHocLoading :status="status">
+          <component
+            :is="`v-${component}`"
+            v-bind="{
+              hideBalance,
+              bankBalancesWithUsdBalance,
+              subaccountBalancesWithUsdBalance
+            }"
+          ></component>
+        </VHocLoading>
       </v-panel>
     </div>
   </div>
@@ -126,6 +111,7 @@ import VBankBalances from '~/components/partials/funding/bank-balances/index.vue
 import VTradingAccountBalances from '~/components/partials/funding/trading-account-balances/index.vue'
 import VAccountSummary from '~/components/partials/funding/account-summary.vue'
 import {
+  HIDDEN_BALANCE_DISPLAY,
   UI_MINIMAL_AMOUNT,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_DISPLAY_DECIMALS
@@ -138,11 +124,6 @@ const components = {
   tradingAccount: 'trading-account-balances'
 }
 
-const tradingAccountComponents = {
-  balances: 'balances',
-  positions: 'positions'
-}
-
 export default Vue.extend({
   components: {
     VAccountSummary,
@@ -153,14 +134,13 @@ export default Vue.extend({
 
   data() {
     return {
+      HIDDEN_BALANCE_DISPLAY,
       balancesPoll: undefined as any,
       status: new Status(StatusType.Loading),
+      hideBalance: false,
 
       components,
-      component: components.bankAccount,
-
-      tradingAccountComponent: tradingAccountComponents.balances,
-      tradingAccountComponents
+      component: components.bankAccount
     }
   },
 

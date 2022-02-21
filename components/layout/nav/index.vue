@@ -7,8 +7,13 @@
       <v-nav-item-dummy @click.stop="handleOpenMarketsSlideout">
         {{ $t('trade.markets') }}
       </v-nav-item-dummy>
-      <v-nav-item :to="{ name: 'activities' }">
-        {{ $t('activities.activities') }}
+      <v-nav-item
+        :to="{
+          name: 'derivatives-derivative',
+          params: { derivative: 'btc-usdt-perp' }
+        }"
+      >
+        {{ $t('navigation.trade') }}
       </v-nav-item>
       <v-nav-item :to="{ name: 'trade-and-earn' }">
         {{ $t('navigation.rewards') }}

@@ -25,7 +25,8 @@
     <span
       class="md:col-span-2 font-mono text-right md:text-left whitespace-nowrap"
     >
-      {{ bankBalanceToString }}
+      <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+      <span v-else>{{ bankBalanceToString }}</span>
     </span>
     <span class="font-mono text-left md:hidden">
       {{ $t('common.value') }}
@@ -34,12 +35,15 @@
       <span
         class="flex xs:items-center items-end justify-end md:justify-start flex-col xs:flex-row"
       >
-        <span>{{ totalInUsdToString }} USD</span>
-        <span
-          v-if="totalInBtc.gt(0)"
-          class="text-opacity-50 text-gray-200 text-2xs xs:ml-3"
-        >
-          {{ totalInBtcToString }} BTC
+        <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+        <span v-else>
+          <span>{{ totalInUsdToString }} USD</span>
+          <span
+            v-if="totalInBtc.gt(0)"
+            class="text-opacity-50 text-gray-200 text-2xs xs:ml-1"
+          >
+            ≈ {{ totalInBtcToString }} BTC
+          </span>
         </span>
       </span>
     </span>
@@ -69,6 +73,7 @@ import {
 } from '@injectivelabs/ui-common'
 import TableRow from '~/components/elements/table-row.vue'
 import {
+  HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
@@ -82,11 +87,17 @@ export default Vue.extend({
     balance: {
       required: true,
       type: Object as PropType<BankBalanceWithTokenAndBalanceWithUsdBalance>
+    },
+
+    hideBalance: {
+      type: Boolean,
+      default: false
     }
   },
 
   data() {
     return {
+      HIDDEN_BALANCE_DISPLAY,
       INJECTIVE_DENOM
     }
   },

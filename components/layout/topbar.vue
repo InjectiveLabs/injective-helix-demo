@@ -28,9 +28,39 @@
         <v-nav class="ml-2" />
       </div>
       <div class="flex py-2">
-        <v-nav-item :to="{ name: 'funding' }">
-          {{ $t('navigation.funding') }}
-        </v-nav-item>
+        <v-nav-item-dummy
+          id="dashboard"
+          @mouseenter.native="handleShowDropdown"
+          @mouseleave.native="handleHideDropdown"
+          @focus.native="handleShowDropdown"
+          @blur.native="handleHideDropdown"
+        >
+          {{ $t('navigation.dashboard') }}
+        </v-nav-item-dummy>
+
+        <VPopperBox
+          ref="popper-dashboard"
+          class="popper px-4 pt-4 bg-gray-800 rounded-lg flex flex-col flex-wrap text-xs absolute w-32"
+          binding-element="#dashboard"
+        >
+          <div>
+            <v-nav-item
+              :to="{ name: 'funding' }"
+              class="hover:text-primary-500 inline-block"
+              dense
+            >
+              {{ $t('navigation.funding') }}
+            </v-nav-item>
+            <v-nav-item
+              :to="{ name: 'activities' }"
+              class="hover:text-primary-500 inline-block"
+              dense
+            >
+              {{ $t('navigation.activities') }}
+            </v-nav-item>
+          </div>
+        </VPopperBox>
+
         <v-user-wallet
           v-if="isUserWalletConnected && isUserConnectedProcessCompleted"
         />
@@ -48,17 +78,21 @@ import Vue from 'vue'
 import VUserWallet from './wallet/wallet.vue'
 import VUserWalletConnect from './wallet/connect.vue'
 import VNavItem from './nav/item.vue'
+import VNavItemDummy from './nav/item-dummy.vue'
 import VNav from '~/components/layout/nav/index.vue'
 import VLogo from '~/components/elements/logo.vue'
 import VLogoText from '~/components/elements/logo-text.vue'
+import VPopperBox from '~/components/elements/popper-box.vue'
 
 export default Vue.extend({
   components: {
     VNav,
     VNavItem,
+    VNavItemDummy,
     VUserWallet,
     VLogo,
     VLogoText,
+    VPopperBox,
     VUserWalletConnect
   },
 
@@ -71,6 +105,10 @@ export default Vue.extend({
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
+    },
+
+    $popper(): any {
+      return this.$refs['popper-dashboard']
     }
   },
 
@@ -95,6 +133,14 @@ export default Vue.extend({
 
     handleConnectedWallet() {
       this.isUserConnectedProcessCompleted = true
+    },
+
+    handleShowDropdown() {
+      this.$popper.showDropdown()
+    },
+
+    handleHideDropdown() {
+      this.$popper.hideDropdown()
     }
   }
 })

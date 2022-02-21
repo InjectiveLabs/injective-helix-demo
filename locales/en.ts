@@ -293,6 +293,9 @@ export default {
     connectedWallets: 'Connected Wallets',
     connected: 'Connected',
     referrals: 'Referrals',
-    rewards: 'Rewards'
+    rewards: 'Rewards',
+    dashboard: 'Dashboard',
+    trade: 'Trade',
+    activities: 'Activities'
   }
 }

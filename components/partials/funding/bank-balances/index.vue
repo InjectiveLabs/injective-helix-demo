@@ -48,6 +48,7 @@
           :key="`balance-${index}`"
           class="col-span-1"
           :balance="balance"
+          :hide-balance="hideBalance"
         />
         <template slot="empty">
           <span class="col-span-1 md:col-span-5">
@@ -87,6 +88,11 @@ export default Vue.extend({
     bankBalancesWithUsdBalance: {
       required: true,
       type: Array as PropType<BankBalanceWithTokenAndBalanceWithUsdBalance[]>
+    },
+
+    hideBalance: {
+      type: Boolean,
+      default: false
     }
   },
 

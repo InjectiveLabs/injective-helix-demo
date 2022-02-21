@@ -71,3 +71,4 @@ export const VPN_PROXY_VALIDATION_PERIOD = 2 /* 2 days */
 // to be added to ui-common
 export const BTC_COIN_GECKO_ID = 'bitcoin'
 export const INJ_TO_IBC_TRANSFER_FEE = 0.002
+export const HIDDEN_BALANCE_DISPLAY = '********'
