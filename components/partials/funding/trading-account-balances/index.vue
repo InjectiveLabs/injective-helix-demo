@@ -40,7 +40,8 @@ export default Vue.extend({
     Promise.all([
       this.$accessor.derivatives.fetchSubaccountOrders(),
       this.$accessor.positions.fetchOrderbook(),
-      this.$accessor.positions.fetchSubaccountPositions()
+      this.$accessor.positions.fetchSubaccountPositions(),
+      this.$accessor.account.fetchSubaccountsBalancesWithPrices()
     ])
       .then(() => {
         //

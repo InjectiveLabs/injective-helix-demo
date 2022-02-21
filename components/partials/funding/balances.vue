@@ -432,9 +432,7 @@ export default Vue.extend({
     fetchBalances(): Promise<void[]> {
       return Promise.all([
         this.$accessor.bank.fetchBankBalancesWithToken(),
-        this.$accessor.account.fetchSubaccountsBalancesWithPrices({
-          refresh: true
-        })
+        this.$accessor.account.fetchSubaccountsBalancesWithPrices()
       ])
     },
 

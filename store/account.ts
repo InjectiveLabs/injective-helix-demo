@@ -164,16 +164,20 @@ export const actions = actionTree(
       }
     },
 
-    async fetchSubaccountsBalances({ commit, state }) {
+    async fetchSubaccountsBalances({ state }) {
       const { subaccount } = state
 
       if (!subaccount) {
-        await this.app.$accessor.account.fetchSubaccounts()
+        await this.app.$accessor.account.refreshSubaccountBalances()
       }
 
       if (subaccount && !subaccount.balances) {
-        await this.app.$accessor.account.fetchSubaccounts()
+        await this.app.$accessor.account.refreshSubaccountBalances()
       }
+    },
+
+    async refreshSubaccountBalances({ commit, state }) {
+      await this.app.$accessor.account.fetchSubaccounts()
 
       const { subaccount: newSubaccount } = state
 
@@ -189,15 +193,8 @@ export const actions = actionTree(
       commit('setSubaccountBalancesWithToken', subaccountBalancesWithToken)
     },
 
-    async fetchSubaccountsBalancesWithPrices(
-      { commit, state },
-      { refresh }: { refresh: boolean } = { refresh: false }
-    ) {
-      const { subaccountBalancesWithToken } = state
-
-      if (subaccountBalancesWithToken.length === 0 || refresh) {
-        await this.app.$accessor.account.fetchSubaccountsBalances()
-      }
+    async fetchSubaccountsBalancesWithPrices({ commit, state }) {
+      await this.app.$accessor.account.refreshSubaccountBalances()
 
       const {
         subaccountBalancesWithToken: newSubaccountBalancesWithToken
