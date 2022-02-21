@@ -1,7 +1,7 @@
 <template>
   <v-card-table-wrap>
     <template #actions>
-      <div class="col-span-12 flex items-center justify-center my-4">
+      <div class="col-span-12 flex items-center justify-between my-4 mx-1">
         <div class="flex items-center">
           <v-button-filter v-model="component" :option="components.openOrders">
             <span class="uppercase text-xs font-semibold">
@@ -22,8 +22,9 @@
 
         <v-button
           v-if="component === components.openOrders && orders.length > 0"
+          class="mr-2"
           red-outline
-          md
+          sm
           @click.stop="handleCancelAllClick"
         >
           {{ $t('trade.cancelAllOrders') }}
