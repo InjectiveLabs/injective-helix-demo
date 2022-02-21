@@ -12,7 +12,7 @@
   }
 
   &::placeholder {
-    @apply text-xs opacity-75;
+    @apply opacity-75;
   }
 
   &[disabled] {
@@ -68,10 +68,6 @@
 
   &:focus {
     @apply border-gray-700;
-  }
-
-  &::placeholder {
-    @apply text-xl opacity-75;
   }
 
   &[disabled] {
@@ -163,10 +159,10 @@
   &[disabled] {
     @apply bg-gray-700;
   }
+}
 
-  input::placeholder {
-    @apply text-xs opacity-75;
-  }
+.v-select.input-error {
+  @apply border-red-500;
 }
 
 .v-select.input-select.vs--open {
@@ -185,12 +181,6 @@
   @apply w-full h-20 relative border-none p-0 m-0 z-1000;
 }
 
-#bridge-input.input.input-large {
-  &::placeholder {
-    @apply text-3xl  opacity-75;
-  }
-}
-
 .v-select.input-token.input-select {
   @apply rounded-lg h-20 shadow-none p-0;
 
@@ -200,10 +190,6 @@
 
   .vs__selected {
     @apply opacity-100 text-gray-100;
-  }
-
-  &::placeholder {
-    @apply text-xl opacity-75;
   }
 
   .vs__dropdown-toggle {

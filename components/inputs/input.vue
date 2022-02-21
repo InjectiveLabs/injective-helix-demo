@@ -73,9 +73,10 @@
       </div>
       <span
         v-if="error && errorBelow"
-        class="text-red-400 italic font-semibold absolute mt-1 text-2xs"
+        class="text-red-400 absolute"
+        :class="[xl ? 'text-sm mt-2' : 'text-2xs mt-1 font-semibold']"
       >
-        * {{ error }}
+        {{ error }}
       </span>
     </div>
   </div>
@@ -160,7 +161,7 @@ export default Vue.extend({
       const { lg } = this
 
       if (lg) {
-        return ['text-base', 'pr-2']
+        return ['text-base', 'mr-2', 'p-0.5']
       }
 
       return ['px-2', 'py-1', 'mr-2', 'border', 'text-xs']

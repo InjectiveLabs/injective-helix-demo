@@ -189,10 +189,13 @@ export const actions = actionTree(
       commit('setSubaccountBalancesWithToken', subaccountBalancesWithToken)
     },
 
-    async fetchSubaccountsBalancesWithPrices({ commit, state }) {
+    async fetchSubaccountsBalancesWithPrices(
+      { commit, state },
+      { refresh }: { refresh: boolean } = { refresh: false }
+    ) {
       const { subaccountBalancesWithToken } = state
 
-      if (subaccountBalancesWithToken.length === 0) {
+      if (subaccountBalancesWithToken.length === 0 || refresh) {
         await this.app.$accessor.account.fetchSubaccountsBalances()
       }
 

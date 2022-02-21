@@ -550,6 +550,7 @@ export default Vue.extend({
           this.$toast.success(this.$t('bridge.depositToTradingAccountSuccess'))
           this.$emit('bridge:reset')
           this.$emit('bridge:confirmed')
+          this.$root.$emit('funding:refresh')
         })
         .catch(this.$onRejected)
         .finally(() => {
@@ -576,6 +577,7 @@ export default Vue.extend({
           this.$toast.success(this.$t('bridge.withdrawFromInjectiveSuccess'))
           this.$emit('bridge:reset')
           this.$emit('bridge:confirmed')
+          this.$root.$emit('funding:refresh')
         })
         .catch(this.$onRejected)
         .finally(() => {
@@ -597,6 +599,7 @@ export default Vue.extend({
           this.$toast.success(this.$t('bridge.depositToInjectiveSuccess'))
           this.$emit('bridge:reset')
           this.$emit('bridge:confirmed')
+          this.$root.$emit('funding:refresh')
         })
         .catch(this.$onRejected)
         .finally(() => {
@@ -620,6 +623,7 @@ export default Vue.extend({
           )
           this.$emit('bridge:reset')
           this.$emit('bridge:confirmed')
+          this.$root.$emit('funding:refresh')
         })
         .catch(this.$onRejected)
         .finally(() => {

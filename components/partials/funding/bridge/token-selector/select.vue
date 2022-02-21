@@ -39,7 +39,7 @@
               <v-input
                 id="bridge-input"
                 dense
-                lg
+                xl
                 transparent-bg
                 error-below
                 type="number"

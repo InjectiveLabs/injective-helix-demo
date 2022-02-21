@@ -153,6 +153,7 @@ export default Vue.extend({
 
   data() {
     return {
+      balancesPoll: undefined as any,
       status: new Status(StatusType.Loading),
 
       components,
@@ -417,6 +418,44 @@ export default Vue.extend({
       .finally(() => {
         //
       })
+
+    this.$root.$on('funding:refresh', this.refreshBalances)
+    this.pollBalances()
+  },
+
+  beforeDestroy() {
+    this.$root.$off('funding:refresh', this.refreshBalances)
+    clearInterval(this.balancesPoll)
+  },
+
+  methods: {
+    fetchBalances(): Promise<void[]> {
+      return Promise.all([
+        this.$accessor.bank.fetchBankBalancesWithToken(),
+        this.$accessor.account.fetchSubaccountsBalancesWithPrices({
+          refresh: true
+        })
+      ])
+    },
+
+    refreshBalances() {
+      this.status.setLoading()
+
+      this.fetchBalances()
+        .then(() => {
+          //
+        })
+        .catch(this.$onError)
+        .finally(() => {
+          this.status.setIdle()
+        })
+    },
+
+    pollBalances() {
+      this.balancesPoll = setInterval(() => {
+        this.fetchBalances()
+      }, 30 * 1000)
+    }
   }
 })
 </script>
