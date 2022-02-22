@@ -121,17 +121,28 @@ export default Vue.extend({
   },
 
   mounted() {
-    Promise.all([this.$accessor.activities.fetchSubaccountDerivativeOrders()])
-      .then(() => {
-        //
-      })
-      .catch(this.$onError)
-      .finally(() => {
-        this.status.setIdle()
-      })
+    this.fetchOrders()
+    this.$root.$on('wallet-connected', this.fetchOrders)
+  },
+
+  beforeDestroy() {
+    this.$root.$off('wallet-connected', this.fetchOrders)
   },
 
   methods: {
+    fetchOrders() {
+      this.status.setLoading()
+
+      Promise.all([this.$accessor.activities.fetchSubaccountDerivativeOrders()])
+        .then(() => {
+          //
+        })
+        .catch(this.$onError)
+        .finally(() => {
+          this.status.setIdle()
+        })
+    },
+
     handleCancelOrders() {
       const { orders } = this
 

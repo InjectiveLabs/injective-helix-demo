@@ -19,13 +19,13 @@
       <div v-if="isUserWalletConnected && currentMarket" class="mt-4 relative">
         <VHocLoading :status="status">
           <div>
-            <div v-if="!hasAnyBankBalances">
+            <div v-if="!hasAnyBankBalances && !hasTradingAccountBalances">
               <p class="text-xs text-gray-500">
                 {{ $t('marketPage.noChainBalance') }}
               </p>
             </div>
             <v-subaccount-balance
-              v-if="hasAnyBankBalances"
+              v-else
               v-bind="{
                 baseTradingBalance,
                 quoteTradingBalance,
@@ -33,7 +33,7 @@
               }"
             />
             <v-onboard
-              v-if="!hasMadeAnyTransfers || !hasAnyBankBalances"
+              v-if="!hasMadeAnyTransfers || !hasTradingAccountBalances"
               class="mt-6"
             ></v-onboard>
           </div>
@@ -86,10 +86,6 @@ export default Vue.extend({
 
     hasMadeAnyTransfers(): boolean {
       return this.$accessor.onboard.hasMadeAnyTransfers
-    },
-
-    hasMadeAnyTrades(): boolean {
-      return this.$accessor.onboard.hasMadeAnyTrades
     },
 
     hasAnyBankBalances(): boolean {

@@ -290,6 +290,7 @@ export const actions = actionTree(
       await this.app.$accessor.bank.reset()
       await this.app.$accessor.referral.reset()
       await this.app.$accessor.positions.reset()
+      await this.app.$accessor.activities.reset()
 
       commit('reset')
       commit('resetPage')

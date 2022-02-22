@@ -30,14 +30,6 @@ export default Vue.extend({
       return this.$accessor.bank.hasAnyBankBalance
     },
 
-    hasMadeAnyTransfers(): boolean {
-      return this.$accessor.onboard.hasMadeAnyTransfers
-    },
-
-    hasMadeAnyTrades(): boolean {
-      return this.$accessor.onboard.hasMadeAnyTrades
-    },
-
     activeStep(): number {
       if (!this.hasAnyBankBalances) {
         return 1

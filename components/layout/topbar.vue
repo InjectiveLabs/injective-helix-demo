@@ -29,6 +29,7 @@
       </div>
       <div class="flex py-2">
         <v-nav-item-dummy
+          v-if="isUserWalletConnected"
           id="dashboard"
           @mouseenter.native="handleShowDropdown"
           @mouseleave.native="handleHideDropdown"
@@ -40,20 +41,21 @@
 
         <VPopperBox
           ref="popper-dashboard"
-          class="popper px-4 pt-4 bg-gray-800 rounded-lg flex flex-col flex-wrap text-xs absolute w-32"
+          class="popper px-4 pt-4 rounded-lg flex flex-col flex-wrap text-xs absolute w-32"
+          :class="[isMarketPage ? 'bg-gray-900' : 'bg-gray-800']"
           binding-element="#dashboard"
         >
           <div>
             <v-nav-item
               :to="{ name: 'funding' }"
-              class="hover:text-primary-500 inline-block"
+              class="hover:text-primary-500 inline-block hover:bg-transparent"
               dense
             >
               {{ $t('navigation.funding') }}
             </v-nav-item>
             <v-nav-item
               :to="{ name: 'activities' }"
-              class="hover:text-primary-500 inline-block"
+              class="hover:text-primary-500 inline-block hover:bg-transparent"
               dense
             >
               {{ $t('navigation.activities') }}
@@ -107,6 +109,14 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
+    isMarketPage(): boolean {
+      const { $route } = this
+
+      return ['spot-spot', 'derivatives-derivative'].includes(
+        $route.name as string
+      )
+    },
+
     $popper(): any {
       return this.$refs['popper-dashboard']
     }
@@ -136,11 +146,15 @@ export default Vue.extend({
     },
 
     handleShowDropdown() {
-      this.$popper.showDropdown()
+      if (this.$popper) {
+        this.$popper.showDropdown()
+      }
     },
 
     handleHideDropdown() {
-      this.$popper.hideDropdown()
+      if (this.$popper) {
+        this.$popper.hideDropdown()
+      }
     }
   }
 })

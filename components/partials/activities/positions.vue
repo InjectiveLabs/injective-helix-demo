@@ -122,21 +122,32 @@ export default Vue.extend({
   },
 
   mounted() {
-    Promise.all([
-      this.$accessor.derivatives.fetchSubaccountOrders(),
-      this.$accessor.positions.fetchOrderbook(),
-      this.$accessor.positions.fetchSubaccountPositions()
-    ])
-      .then(() => {
-        //
-      })
-      .catch(this.$onError)
-      .finally(() => {
-        this.status.setIdle()
-      })
+    this.fetchPositions()
+    this.$root.$on('wallet-connected', this.fetchPositions)
+  },
+
+  beforeDestroy() {
+    this.$root.$off('wallet-connected', this.fetchPositions)
   },
 
   methods: {
+    fetchPositions() {
+      this.status.setLoading()
+
+      Promise.all([
+        this.$accessor.derivatives.fetchSubaccountOrders(),
+        this.$accessor.positions.fetchOrderbook(),
+        this.$accessor.positions.fetchSubaccountPositions()
+      ])
+        .then(() => {
+          //
+        })
+        .catch(this.$onError)
+        .finally(() => {
+          this.status.setIdle()
+        })
+    },
+
     handleClosePositions() {
       const { positions } = this
 

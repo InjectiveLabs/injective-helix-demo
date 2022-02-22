@@ -238,6 +238,14 @@ export const mutations = {
     const initialState = initialStateFactory()
 
     state.subaccountSpotOrders = initialState.subaccountSpotOrders
+  },
+
+  reset(state: ActivitiesStoreState) {
+    state.subaccountSpotOrders = initialState.subaccountSpotOrders
+    state.subaccountDerivativeOrders = initialState.subaccountDerivativeOrders
+    state.subaccountSpotTrades = initialState.subaccountSpotTrades
+    state.subaccountPositions = initialState.subaccountPositions
+    state.tradingRewardsHistory = initialState.tradingRewardsHistory
   }
 }
 

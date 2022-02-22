@@ -190,12 +190,16 @@ export default Vue.extend({
     },
 
     handleShowDropdown() {
-      this.$popper.showDropdown()
+      if (this.$popper) {
+        this.$popper.showDropdown()
+      }
       this.isWalletDropdownOpen = true
     },
 
     handleHideDropdown() {
-      this.$popper.hideDropdown()
+      if (this.$popper) {
+        this.$popper.hideDropdown()
+      }
       this.isWalletDropdownOpen = false
     }
   }

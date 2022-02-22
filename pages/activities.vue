@@ -85,7 +85,7 @@ export default Vue.extend({
   data() {
     return {
       components,
-      component: components.spot
+      component: components.positions
     }
   }
 })

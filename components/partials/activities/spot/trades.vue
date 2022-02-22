@@ -124,17 +124,28 @@ export default Vue.extend({
   },
 
   mounted() {
-    Promise.all([this.$accessor.activities.fetchSubaccountSpotTrades()])
-      .then(() => {
-        //
-      })
-      .catch(this.$onError)
-      .finally(() => {
-        this.status.setIdle()
-      })
+    this.fetchTrades()
+    this.$root.$on('wallet-connected', this.fetchTrades)
+  },
+
+  beforeDestroy() {
+    this.$root.$off('wallet-connected', this.fetchTrades)
   },
 
   methods: {
+    fetchTrades() {
+      this.status.setLoading()
+
+      Promise.all([this.$accessor.activities.fetchSubaccountSpotTrades()])
+        .then(() => {
+          //
+        })
+        .catch(this.$onError)
+        .finally(() => {
+          this.status.setIdle()
+        })
+    },
+
     handleInputOnSearch(search: string) {
       this.search = search
     },

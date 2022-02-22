@@ -125,7 +125,7 @@ export default Vue.extend({
         const isNotSmallBalance =
           !hideSmallBalance ||
           isINJ ||
-          new BigNumberInBase(balanceInUsd).gt('1')
+          new BigNumberInBase(balanceInUsd).gte('10')
 
         return isPartOfSearchFilter && isNotSmallBalance
       })
