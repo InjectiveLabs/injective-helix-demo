@@ -164,7 +164,7 @@ export default Vue.extend({
       const { balance } = this
 
       return new BigNumberInBase(balance.balanceInUsd).toFormat(
-        UI_DEFAULT_DISPLAY_DECIMALS
+        UI_DEFAULT_MIN_DISPLAY_DECIMALS
       )
     }
   },

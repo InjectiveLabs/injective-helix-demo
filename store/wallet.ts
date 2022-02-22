@@ -289,6 +289,7 @@ export const actions = actionTree(
       await this.app.$accessor.derivatives.resetSubaccount()
       await this.app.$accessor.bank.reset()
       await this.app.$accessor.referral.reset()
+      await this.app.$accessor.positions.reset()
 
       commit('reset')
       commit('resetPage')

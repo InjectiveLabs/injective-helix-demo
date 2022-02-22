@@ -24,30 +24,45 @@
               v-if="isUserWalletConnected && sortedBalances.length > 0"
               class="md:hidden xl:grid"
             >
-              <span class="col-span-2">
-                {{ $t('funding.asset') }}
-              </span>
-              <span class="col-span-2 flex items-center">
-                <div>
-                  {{ $t('funding.total') }}
-                </div>
-                <v-icon-info-tooltip
-                  class="ml-2"
-                  color="text-gray-200"
-                  :tooltip="$t('funding.totalTooltip')"
-                  lg
-                />
-              </span>
-              <span class="col-span-2">
-                {{ $t('funding.available') }}
-              </span>
-              <span class="col-span-2">
-                {{ $t('funding.inOrder') }}
-              </span>
-              <span class="col-span-2">
-                {{ $t('common.value') }}
-              </span>
-              <span class="col-span-2"> </span>
+              <div class="col-span-5 grid grid-cols-5 gap-4">
+                <span>
+                  {{ $t('funding.asset') }}
+                </span>
+                <span class="col-span-2 flex items-center">
+                  <div>
+                    {{ $t('funding.total') }}
+                  </div>
+                  <v-icon-info-tooltip
+                    class="ml-2"
+                    color="text-gray-200"
+                    :tooltip="$t('funding.totalTooltip')"
+                    lg
+                  />
+                </span>
+                <span class="col-span-2">
+                  {{ $t('funding.available') }}
+                </span>
+              </div>
+              <div class="col-span-7 grid grid-cols-9 gap-4">
+                <span class="col-span-2">
+                  {{ $t('funding.marginHold') }}
+                </span>
+                <span class="col-span-2 flex items-center">
+                  <div>
+                    {{ $t('trade.unrealized_pnl') }}
+                  </div>
+                  <v-icon-info-tooltip
+                    class="ml-2"
+                    color="text-gray-200"
+                    :tooltip="$t('trade.unrealized_pnl_tooltip')"
+                    lg
+                  />
+                </span>
+                <span class="col-span-2">
+                  {{ $t('common.value') }}
+                </span>
+                <span class="col-span-3"></span>
+              </div>
             </TableHeader>
 
             <TableBody
@@ -60,6 +75,8 @@
                 class="col-span-1"
                 :balance="balance"
                 :hide-balance="hideBalance"
+                :total-positions-margin="totalPositionsMargin"
+                :total-positions-pnl="totalPositionsPnl"
               />
               <template slot="empty">
                 <span class="col-span-1 md:col-span-5">
@@ -103,6 +120,16 @@ export default Vue.extend({
     subaccountBalancesWithUsdBalance: {
       required: true,
       type: Array as PropType<SubaccountBalanceWithTokenWithUsdBalance[]>
+    },
+
+    totalPositionsMargin: {
+      type: Object as PropType<BigNumberInBase>,
+      required: true
+    },
+
+    totalPositionsPnl: {
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     },
 
     hideBalance: {

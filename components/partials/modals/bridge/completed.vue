@@ -18,7 +18,7 @@
               v-if="bridgeType === BridgeType.Transfer"
               lg
               primary
-              class="w-full xs:w-1/2 font-bold"
+              class="font-bold"
             >
               <a
                 :href="explorerUrl"
@@ -29,7 +29,7 @@
                 <v-icon-external-link class="w-3 h-3" />
               </a>
             </v-button>
-            <v-button v-else lg primary class="w-full xs:w-1/2 font-bold">
+            <v-button v-else lg primary class="font-bold">
               <a
                 :href="hubUrl"
                 target="_blank"

@@ -1,86 +1,103 @@
 <template>
   <TableRow md class="text-sm md:grid-cols-2 xl:grid-cols-12">
-    <span class="font-mono text-left md:hidden">
-      {{ $t('funding.asset') }}
-    </span>
-    <span class="md:col-span-2 text-right md:text-left">
-      <div class="flex items-center justify-end md:justify-start">
-        <div v-if="balance.token.logo" class="w-6 h-6">
-          <img
-            :src="balance.token.logo"
-            :alt="balance.token.name"
-            class="min-w-full h-auto rounded-full"
-          />
+    <div class="col-span-5 grid grid-cols-2 md:grid-cols-5 gap-4">
+      <span class="font-mono text-left md:hidden">
+        {{ $t('funding.asset') }}
+      </span>
+      <span class="text-right md:text-left">
+        <div class="flex items-center justify-end md:justify-start">
+          <div v-if="balance.token.logo" class="w-6 h-6">
+            <img
+              :src="balance.token.logo"
+              :alt="balance.token.name"
+              class="min-w-full h-auto rounded-full"
+            />
+          </div>
+          <div class="ml-3">
+            <span class="text-gray-200 font-bold">
+              {{ balance.token.symbol }}
+            </span>
+          </div>
         </div>
-        <div class="ml-3">
-          <span class="text-gray-200 font-bold">
-            {{ balance.token.symbol }}
-          </span>
-        </div>
-      </div>
-    </span>
-    <span class="font-mono text-left md:hidden">
-      {{ $t('funding.total') }}
-    </span>
-    <span
-      class="md:col-span-2 font-mono text-right md:text-left whitespace-nowrap"
-    >
-      <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-      <span v-else>{{ totalBalanceInString }}</span>
-    </span>
-    <span class="font-mono text-left md:hidden">
-      {{ $t('funding.available') }}
-    </span>
-    <span
-      class="md:col-span-2 font-mono text-right md:text-left whitespace-nowrap"
-    >
-      <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-      <span v-else>{{ availableBalanceToString }}</span>
-    </span>
-    <span class="font-mono text-left md:hidden">
-      {{ $t('funding.inOrder') }}
-    </span>
-    <span
-      class="md:col-span-2 font-mono text-right md:text-left whitespace-nowrap"
-    >
-      <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-      <span v-else>{{ inOrderToString }}</span>
-    </span>
-    <span class="font-mono text-left md:hidden">
-      {{ $t('common.value') }}
-    </span>
-    <span class="md:col-span-2 font-mono whitespace-nowrap">
+      </span>
+      <span class="font-mono text-left md:hidden">
+        {{ $t('funding.total') }}
+      </span>
       <span
-        class="flex xs:items-center items-end justify-end md:justify-start flex-col xs:flex-row"
+        class="md:col-span-2 font-mono text-right md:text-left md:flex items-center"
       >
         <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-        <span v-else>
-          <span>{{ totalInUsdToString }} USD</span>
-          <span
-            v-if="totalInBtc.gt(0)"
-            class="text-opacity-50 text-gray-200 text-2xs xs:ml-1"
-          >
-            ≈ {{ totalInBtcToString }} BTC
+        <span v-else>{{ totalBalanceInString }}</span>
+      </span>
+      <span class="font-mono text-left md:hidden">
+        {{ $t('funding.available') }}
+      </span>
+      <span
+        class="md:col-span-2 font-mono text-right md:text-left md:flex items-center"
+      >
+        <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+        <span v-else>{{ availableBalanceToString }}</span>
+      </span>
+    </div>
+
+    <div class="col-span-7 grid grid-cols-2 md:grid-cols-9 gap-4">
+      <span class="font-mono text-left md:hidden">
+        {{ $t('funding.marginHold') }}
+      </span>
+      <span
+        class="md:col-span-2 font-mono text-right md:text-left md:flex items-center"
+      >
+        <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+        <span v-else>{{ marginHoldToString }}</span>
+      </span>
+
+      <span class="font-mono text-left md:hidden">
+        {{ $t('trade.unrealized_pnl') }}
+      </span>
+      <span
+        class="md:col-span-2 font-mono text-right md:text-left md:flex items-center"
+      >
+        <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+        <span v-else-if="unrealizedPnl">{{ unrealizedPnl }}</span>
+        <span v-else>&mdash;</span>
+      </span>
+
+      <span class="font-mono text-left md:hidden">
+        {{ $t('common.value') }}
+      </span>
+      <span class="md:col-span-2 font-mono whitespace-nowrap">
+        <span
+          class="flex xs:items-center items-end justify-end md:justify-start flex-col xs:flex-row"
+        >
+          <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+          <span v-else>
+            <span>{{ totalInUsdToString }} USD</span>
+            <span
+              v-if="totalInBtc.gt(0)"
+              class="text-opacity-50 text-gray-200 text-2xs xs:ml-1"
+            >
+              ≈ {{ totalInBtcToString }} BTC
+            </span>
           </span>
         </span>
       </span>
-    </span>
-    <div
-      class="col-span-2 text-right text-primary-500 text-sm flex justify-around sm:justify-end"
-    >
-      <nuxt-link
-        v-if="spotMarketRoute"
-        class="cursor-pointer"
-        :to="{ name: 'spot-spot', params: { spot: spotMarketRoute } }"
+      <div
+        class="col-span-3 text-right text-primary-500 text-sm flex justify-around sm:justify-end"
       >
-        <span>
-          {{ $t('common.trade') }}
-        </span>
-      </nuxt-link>
+        <nuxt-link
+          v-if="spotMarketRoute"
+          class="cursor-pointer"
+          :to="{ name: 'spot-spot', params: { spot: spotMarketRoute } }"
+        >
+          <span>
+            {{ $t('common.trade') }}
+          </span>
+        </nuxt-link>
 
-      <span class="cursor-pointer ml-6" @click="handleTransferClick">
-        {{ $t('common.transfer') }}
-      </span>
+        <span class="cursor-pointer ml-6" @click="handleTransferClick">
+          {{ $t('common.transfer') }}
+        </span>
+      </div>
     </div>
   </TableRow>
 </template>
@@ -115,6 +132,16 @@ export default Vue.extend({
     hideBalance: {
       type: Boolean,
       default: false
+    },
+
+    totalPositionsMargin: {
+      type: Object as PropType<BigNumberInBase>,
+      required: true
+    },
+
+    totalPositionsPnl: {
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     }
   },
 
@@ -129,6 +156,16 @@ export default Vue.extend({
   computed: {
     btcUsdPrice(): number {
       return this.$accessor.token.btcUsdPrice
+    },
+
+    isUsdt(): Boolean {
+      const { balance } = this
+
+      if (!balance || !balance.token || !balance.token.symbol) {
+        return false
+      }
+
+      return balance.token.symbol.toUpperCase() === 'USDT'
     },
 
     availableBalance(): BigNumberInBase {
@@ -161,6 +198,29 @@ export default Vue.extend({
       return totalBalance.minus(availableBalance)
     },
 
+    marginHold(): BigNumberInBase {
+      const { inOrderBalance, isUsdt, totalPositionsMargin } = this
+
+      if (!isUsdt) {
+        return inOrderBalance
+      }
+
+      return inOrderBalance.plus(totalPositionsMargin)
+    },
+
+    unrealizedPnl(): string | undefined {
+      const { isUsdt, totalPositionsPnl } = this
+
+      if (!isUsdt) {
+        return undefined
+      }
+
+      return totalPositionsPnl.toFormat(
+        UI_DEFAULT_DISPLAY_DECIMALS,
+        BigNumberInBase.ROUND_DOWN
+      )
+    },
+
     availableBalanceToString(): string {
       const { availableBalance } = this
 
@@ -182,10 +242,10 @@ export default Vue.extend({
       )
     },
 
-    inOrderToString(): string {
-      const { inOrderBalance } = this
+    marginHoldToString(): string {
+      const { marginHold } = this
 
-      return inOrderBalance.toFormat(
+      return marginHold.toFormat(
         UI_DEFAULT_DISPLAY_DECIMALS,
         BigNumberInBase.ROUND_DOWN
       )
@@ -226,7 +286,7 @@ export default Vue.extend({
       const { balance } = this
 
       return new BigNumberInBase(balance.balanceInUsd).toFormat(
-        UI_DEFAULT_DISPLAY_DECIMALS
+        UI_DEFAULT_MIN_DISPLAY_DECIMALS
       )
     },
 

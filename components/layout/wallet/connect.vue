@@ -6,6 +6,7 @@
 
     <v-modal
       :is-open="isOpenConnectModal"
+      md
       @modal-closed="isOpenConnectModal = false"
     >
       <h3 slot="title">

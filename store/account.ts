@@ -114,6 +114,8 @@ export const mutations = {
     state.subaccount = initialState.subaccount
     state.subaccountIds = initialState.subaccountIds
     state.subaccountBalancesWithToken = initialState.subaccountBalancesWithToken
+    state.subaccountBalancesWithTokenAndPrice =
+      initialState.subaccountBalancesWithTokenAndPrice
   }
 }
 

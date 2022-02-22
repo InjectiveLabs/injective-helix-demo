@@ -21,6 +21,7 @@ export default {
     funds: 'Funds',
     positions: 'Positions',
     hideSmallBalances: 'Hide small balances',
+    marginHold: 'Margin hold',
     empty: 'No token balances found'
   }
 }

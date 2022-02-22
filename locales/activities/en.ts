@@ -45,7 +45,7 @@ export default {
     fee: 'Fee',
     fees_tooltip:
       'Trading fees associated with the trade. Trading fees on Injective can be lowered using rebates.',
-    buy: 'buy',
+    buy: 'Buy',
     sell: 'Sell',
     unfilled: 'Unfilled',
     filter: 'Filter by asset',
@@ -69,6 +69,7 @@ export default {
       'The unrealized PnL is an approximation of the realized profit or loss if the position was to be closed.',
     long: 'Long',
     short: 'Short',
+    available_asset: 'Available {asset}',
     buy_asset: 'Buy {asset}',
     sell_asset: 'Sell {asset}',
     not_enough_fillable_orders:

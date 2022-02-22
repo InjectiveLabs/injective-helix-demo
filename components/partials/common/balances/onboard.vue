@@ -9,17 +9,12 @@
     </v-button>
     <div class="mt-6">
       <v-progress-steps
-        :steps="3"
+        :steps="2"
         :active-step="activeStep"
-        :steps-labels="[
-          $t('common.deposit'),
-          $t('common.transfer'),
-          $t('common.trade')
-        ]"
+        :steps-labels="[$t('common.deposit'), $t('common.transfer')]"
         :steps-notes="[
           $t('marketPage.noChainBalanceNote'),
-          $t('marketPage.noTradingAccountBalance'),
-          $t('marketPage.startTrading')
+          $t('marketPage.noTradingAccountBalance')
         ]"
       />
     </div>
@@ -48,11 +43,7 @@ export default Vue.extend({
         return 1
       }
 
-      if (!this.hasMadeAnyTransfers) {
-        return 2
-      }
-
-      return 3
+      return 2
     }
   },
 

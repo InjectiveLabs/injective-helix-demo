@@ -53,7 +53,7 @@
         <v-empty-list
           v-else
           :message="$t('trade.emptyPositions')"
-          class="mt-6"
+          class="mt-6 min-h-orders"
         />
       </v-card-table-wrap>
     </VHocLoading>

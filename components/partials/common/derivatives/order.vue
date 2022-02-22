@@ -76,8 +76,13 @@
     </td>
 
     <td class="h-8 text-left font-mono">
-      <span v-if="leverage.isNaN()">0.00</span>
-      <span v-else>{{ leverage.toFormat(2) }}</span>
+      <span v-if="leverage.gte(0)" class="flex items-center justify-end">
+        {{ leverage.toFormat(2) }}
+        <span class="text-gray-300">&times;</span>
+      </span>
+      <span v-else class="text-gray-400">
+        {{ $t('trade.not_available_n_a') }}
+      </span>
     </td>
 
     <td class="h-8 font-left text-left">

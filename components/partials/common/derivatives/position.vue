@@ -126,17 +126,23 @@
         {{ effectiveLeverage.toFormat(2) }}
         <span class="text-gray-300">&times;</span>
       </span>
-      <span v-else class="text-gray-400">{{
-        $t('trade.not_available_n_a')
-      }}</span>
+      <span v-else class="text-gray-400">
+        {{ $t('trade.not_available_n_a') }}
+      </span>
     </td>
 
     <td class="text-center relative">
       <v-button :status="status" @click="onClosePositionClick">
         <div
-          class="flex items-center justify-center rounded-full bg-red-550 bg-opacity-10 w-8 h-8 hover:bg-red-600 text-red-550 hover:text-red-600 hover:bg-opacity-10"
+          class="flex items-center justify-center rounded-full bg-opacity-10 w-8 h-8 hover:bg-opacity-10"
+          :class="{
+            'bg-aqua-500 text-aqua-500 hover:bg-aqua-600 hover:text-aqua-600':
+              position.direction === TradeDirection.Long,
+            'bg-red-550 hover:bg-red-600 text-red-550 hover:text-red-600':
+              position.direction === TradeDirection.Short
+          }"
         >
-          <v-icon-bin />
+          <v-icon-close class="h-4 w-4" />
         </div>
       </v-button>
     </td>

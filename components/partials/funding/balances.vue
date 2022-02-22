@@ -18,11 +18,11 @@
             />
           </div>
         </template>
-        <div class="text-right tracking-wider">
-          <p class="text-gray-500 text-xs uppercase mb-3">
+        <div class="text-right">
+          <p class="text-gray-500 text-xs uppercase mb-3 tracking-wider">
             {{ $t('funding.walletValue') }}
           </p>
-          <p class="text-2xl">
+          <p class="text-2xl font-mono">
             <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
             <span v-else>{{ totalBankBalanceToString }} USD</span>
           </p>
@@ -46,11 +46,11 @@
             />
           </div>
         </template>
-        <div class="text-right tracking-wider">
-          <p class="text-gray-500 text-xs uppercase mb-3">
+        <div class="text-right">
+          <p class="text-gray-500 text-xs uppercase mb-3 tracking-wider">
             {{ $t('funding.portfolioValue') }}
           </p>
-          <p class="text-2xl">
+          <p class="text-2xl font-mono">
             <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
             <span v-else>{{ tradingAccountBalancesToString }} USD</span>
           </p>
@@ -77,7 +77,9 @@
             v-bind="{
               hideBalance,
               bankBalancesWithUsdBalance,
-              subaccountBalancesWithUsdBalance
+              subaccountBalancesWithUsdBalance,
+              totalPositionsPnl,
+              totalPositionsMargin
             }"
           ></component>
         </VHocLoading>
@@ -431,7 +433,7 @@ export default Vue.extend({
 
     pollBalances() {
       this.balancesPoll = setInterval(() => {
-        this.fetchBalances()
+        // this.fetchBalances()
       }, 30 * 1000)
     }
   }

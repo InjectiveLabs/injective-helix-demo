@@ -2,7 +2,7 @@
   <v-panel class="w-full">
     <div>
       <div class="flex items-center justify-between">
-        <p class="text-xs text-gray-300 flex items-center">
+        <p class="text-xs text-gray-500 flex items-center uppercase">
           {{ $t('marketPage.assets') }}
           <v-icon-info-tooltip
             class="ml-2"
@@ -32,7 +32,10 @@
                 market: currentMarket
               }"
             />
-            <v-onboard v-if="!hasMadeAnyTrades" class="mt-6"></v-onboard>
+            <v-onboard
+              v-if="!hasMadeAnyTransfers || !hasAnyBankBalances"
+              class="mt-6"
+            ></v-onboard>
           </div>
         </VHocLoading>
       </div>

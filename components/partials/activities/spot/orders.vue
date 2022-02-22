@@ -50,7 +50,11 @@
             </tbody>
           </table>
         </div>
-        <v-empty-list v-else :message="$t('trade.emptyOrders')" class="mt-6" />
+        <v-empty-list
+          v-else
+          :message="$t('trade.emptyOrders')"
+          class="mt-6 min-h-orders"
+        />
       </v-card-table-wrap>
     </VHocLoading>
   </v-card>
