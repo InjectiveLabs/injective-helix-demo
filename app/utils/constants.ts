@@ -6,6 +6,8 @@ export const IS_DEVELOPMENT: boolean = process.env.NODE_ENV === 'development'
 export const IS_PRODUCTION: boolean = process.env.NODE_ENV === 'production'
 export const IS_MAINNET_STAGING: boolean = process.env.APP_ENV === 'staging'
 export const METRICS_ENABLED: boolean = process.env.METRICS_ENABLED === 'true'
+export const REFERRALS_ENABLED: boolean =
+  process.env.REFERRALS_ENABLED === 'true'
 export const PRICE_BAND_ENABLED: boolean =
   process.env.PRICE_BAND_ENABLED !== 'false' // Enabled by default
 export const GAS_FREE_DEPOSIT_REBATE_ENABLED: boolean =
@@ -52,6 +54,7 @@ export const CHAIN_ID: ChainId = process.env.APP_CHAIN_ID
 
 // 6 gwei for Kovan, fetched from gasStation for Mainnet
 export const DEFAULT_PRICE_WARNING_DEVIATION = new BigNumber(5) // 5%
+export const BIGGER_PRICE_WARNING_DEVIATION = new BigNumber(30) // 30%
 export const DEFAULT_MARKET_PRICE_WARNING_DEVIATION = new BigNumber(10) // 10%
 export const DEFAULT_MAX_SLIPPAGE = new BigNumber(5) // +1% slippage
 export const DEFAULT_MAX_SLIPPAGE_FOR_CLOSING_POSITIONS = new BigNumber(100) // +100% slippage

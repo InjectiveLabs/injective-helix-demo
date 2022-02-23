@@ -23,3 +23,5 @@ export const marketBaseFromTicker = (
 }
 
 export const betaMarketSlugs = [] as string[]
+
+export const excludedPriceDeviationSlugs = ['bayc-weth-perp'] as string[]

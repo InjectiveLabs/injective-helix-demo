@@ -216,7 +216,8 @@ import {
   DEFAULT_MARKET_PRICE_WARNING_DEVIATION,
   DEFAULT_MAX_PRICE_BAND_DIFFERENCE,
   DEFAULT_MIN_PRICE_BAND_DIFFERENCE,
-  PRICE_BAND_ENABLED
+  PRICE_BAND_ENABLED,
+  BIGGER_PRICE_WARNING_DEVIATION
 } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
@@ -236,6 +237,8 @@ import {
   isDotKeycode,
   isNumericKeycode
 } from '~/app/utils/helpers'
+import { excludedPriceDeviationSlugs } from '~/app/data/market'
+
 interface TradeForm {
   reduceOnly: boolean
   amount: string
@@ -659,6 +662,7 @@ export default Vue.extend({
       }
 
       const leverage = new BigNumberInBase(form.leverage)
+
       const divisor = orderTypeBuy
         ? new BigNumberInBase(marketMarkPrice)
             .times(market.initialMarginRatio)
@@ -670,7 +674,7 @@ export default Vue.extend({
             .minus(executionPrice)
       const maxLeverage = executionPrice.dividedBy(divisor)
 
-      if (maxLeverage.gte(0) && leverage.gt(maxLeverage)) {
+      if (maxLeverage.gte(1) && leverage.gt(maxLeverage)) {
         return {
           price: leverage.eq(1)
             ? orderTypeBuy
@@ -789,6 +793,10 @@ export default Vue.extend({
         return undefined
       }
 
+      if (excludedPriceDeviationSlugs.includes(market.ticker)) {
+        return undefined
+      }
+
       const markPrice = new BigNumberInBase(marketMarkPrice)
 
       if (markPrice.lte(0)) {
@@ -837,6 +845,10 @@ export default Vue.extend({
         return undefined
       }
 
+      if (excludedPriceDeviationSlugs.includes(market.ticker)) {
+        return undefined
+      }
+
       const condition = executionPrice
         .times(amount)
         .times(market.initialMarginRatio)
@@ -872,8 +884,13 @@ export default Vue.extend({
         orderTypeBuy,
         tradingTypeMarket,
         orderTypeReduceOnly,
-        lastTradedPrice
+        lastTradedPrice,
+        market
       } = this
+
+      if (!market) {
+        return false
+      }
 
       if (orderTypeReduceOnly) {
         return false
@@ -887,6 +904,12 @@ export default Vue.extend({
         return false
       }
 
+      const defaultPriceWarningDeviation = excludedPriceDeviationSlugs.includes(
+        market.ticker
+      )
+        ? BIGGER_PRICE_WARNING_DEVIATION
+        : DEFAULT_PRICE_WARNING_DEVIATION
+
       const deviation = new BigNumberInBase(1)
         .minus(
           orderTypeBuy
@@ -895,7 +918,7 @@ export default Vue.extend({
         )
         .times(100)
 
-      return deviation.gt(DEFAULT_PRICE_WARNING_DEVIATION)
+      return deviation.gt(defaultPriceWarningDeviation)
     },
 
     executionPriceHasHighDeviationWarning(): boolean {
