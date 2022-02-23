@@ -1,5 +1,10 @@
 <template>
-  <v-modal :is-open="isModalOpen" sm @modal-closed="handleCloseModal">
+  <v-modal
+    :is-open="isModalOpen"
+    sm
+    :modal-closed:animation="handleResetBridge"
+    @modal-closed="handleCloseModal"
+  >
     <div slot="title">
       <h3>{{ bridgeTitle }}</h3>
     </div>
@@ -306,8 +311,11 @@ export default Vue.extend({
     },
 
     handleCloseModal() {
-      this.$emit('bridge:reset')
       this.$accessor.modal.closeModal(Modal.Bridge)
+    },
+
+    handleResetBridge() {
+      this.$emit('bridge:reset')
     },
 
     handleTransferDirectionSwitch() {

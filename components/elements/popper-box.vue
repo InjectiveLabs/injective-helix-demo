@@ -73,10 +73,12 @@ export default Vue.extend({
       const { $popperElement } = this
 
       clearTimeout(this.delayHide)
+
       this.$nextTick(() => {
         if (this.popper) {
           this.popper.update()
         }
+
         $popperElement.setAttribute('data-show', '')
       })
     },

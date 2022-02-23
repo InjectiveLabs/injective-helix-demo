@@ -172,6 +172,7 @@ export default Vue.extend({
       document.body.classList.remove('overflow-hidden')
       setTimeout(() => {
         this.isVisibleOnViewport = false
+        this.$emit('modal-closed:animation')
       }, 300)
     },
 

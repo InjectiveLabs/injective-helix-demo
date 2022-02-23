@@ -41,7 +41,7 @@
           </v-card-select>
           <v-card-select
             v-model="component"
-            :option="components.fundingHistory"
+            :option="components.funding"
             class="col-span-1"
           >
             <span class="text-sm">
@@ -62,7 +62,7 @@ import Vue from 'vue'
 import VPositions from '~/components/partials/activities/positions/index.vue'
 import VSpot from '~/components/partials/activities/spot/index.vue'
 import VDerivatives from '~/components/partials/activities/derivatives/index.vue'
-import VFundingHistory from '~/components/partials/activities/funding-history/index.vue'
+import VFunding from '~/components/partials/activities/funding/index.vue'
 import VRewardHistory from '~/components/partials/activities/reward-history/index.vue'
 
 const components = {
@@ -70,7 +70,7 @@ const components = {
   spot: 'spot',
   derivatives: 'derivatives',
   rewardHistory: 'reward-history',
-  fundingHistory: 'funding-history'
+  funding: 'funding'
 }
 
 export default Vue.extend({
@@ -78,7 +78,7 @@ export default Vue.extend({
     VPositions,
     VSpot,
     VDerivatives,
-    VFundingHistory,
+    VFunding,
     VRewardHistory
   },
 
