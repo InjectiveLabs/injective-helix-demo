@@ -50,7 +50,7 @@ export enum Modal {
   Bridge = 'bridge',
   BridgeConfirm = 'bridge-confirm',
   BridgeCompleted = 'bridge-completed',
-  RefereeOnboarding = 'referee-onboarding',
+  RefereeOnboarding = 'referee-onboarding'
 }
 
 export enum Breakpoint {

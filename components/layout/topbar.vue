@@ -29,7 +29,7 @@
       </div>
       <div class="flex py-2">
         <v-nav-item-dummy
-          v-if="isUserWalletConnected"
+          v-show="isUserWalletConnected"
           id="dashboard"
           @mouseenter.native="handleShowDropdown"
           @mouseleave.native="handleHideDropdown"

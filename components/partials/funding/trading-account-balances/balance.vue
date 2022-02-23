@@ -319,7 +319,7 @@ export default Vue.extend({
     handleTransferClick() {
       const { balance } = this
 
-      this.$root.$emit('bridge:transfer', balance.token)
+      this.$root.$emit('bridge:transfer-to-bank', balance.token)
     }
   }
 })

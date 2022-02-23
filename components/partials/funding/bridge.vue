@@ -120,14 +120,18 @@ export default Vue.extend({
 
   mounted() {
     this.$root.$on('bridge:transfer', this.handleTransfer)
+    this.$root.$on('bridge:transfer-to-bank', this.handleTransferToBank)
     this.$root.$on('bridge:deposit', this.handleDeposit)
     this.$root.$on('bridge:withdraw', this.handleWithdraw)
+    this.$root.$on('bridge:reset', this.handleResetForm)
   },
 
   beforeDestroy() {
     this.$root.$off('bridge:transfer', this.handleTransfer)
+    this.$root.$off('bridge:transfer-to-bank', this.handleTransferToBank)
     this.$root.$off('bridge:deposit', this.handleDeposit)
     this.$root.$off('bridge:withdraw', this.handleWithdraw)
+    this.$root.$off('bridge:reset', this.handleResetForm)
   },
 
   methods: {
@@ -170,18 +174,32 @@ export default Vue.extend({
     },
 
     handleTransfer(token: Token) {
+      this.form.amount = ''
       this.form.token = token || injToken
       this.bridgeType = BridgeType.Transfer
+      this.transferDirection = TransferDirection.bankToTradingAccount
+      this.$accessor.modal.openModal(Modal.Bridge)
+    },
+
+    handleTransferToBank(token: Token) {
+      this.form.amount = ''
+      this.form.token = token || injToken
+      this.bridgeType = BridgeType.Transfer
+      this.transferDirection = TransferDirection.tradingAccountToBank
       this.$accessor.modal.openModal(Modal.Bridge)
     },
 
     handleDeposit(token: Token) {
+      this.bridgingNetwork = BridgingNetwork.Ethereum
+      this.form.amount = ''
       this.form.token = token || injToken
       this.bridgeType = BridgeType.Deposit
       this.$accessor.modal.openModal(Modal.Bridge)
     },
 
     handleWithdraw(token: Token) {
+      this.bridgingNetwork = BridgingNetwork.Ethereum
+      this.form.amount = ''
       this.form.token = token || injToken
       this.bridgeType = BridgeType.Withdraw
       this.$accessor.modal.openModal(Modal.Bridge)

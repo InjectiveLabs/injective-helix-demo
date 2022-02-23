@@ -39,7 +39,9 @@
           >
             <v-network-card-base
               class="w-1/2"
-              :hide-icon="originNetworkMeta.value === destinationNetworkMeta.value"
+              :hide-icon="
+                originNetworkMeta.value === destinationNetworkMeta.value
+              "
               :network-meta="originNetworkMeta"
             />
 
@@ -51,7 +53,9 @@
 
             <v-network-card-base
               class="w-1/2"
-              :hide-icon="originNetworkMeta.value === destinationNetworkMeta.value"
+              :hide-icon="
+                originNetworkMeta.value === destinationNetworkMeta.value
+              "
               :network-meta="destinationNetworkMeta"
             />
           </div>
@@ -550,8 +554,8 @@ export default Vue.extend({
         })
         .then(() => {
           this.$toast.success(this.$t('bridge.depositToTradingAccountSuccess'))
-          this.$emit('bridge:reset')
           this.$emit('bridge:confirmed')
+          this.$root.$emit('bridge:reset')
           this.$root.$emit('funding:refresh')
         })
         .catch(this.$onRejected)
@@ -577,8 +581,8 @@ export default Vue.extend({
         })
         .then(() => {
           this.$toast.success(this.$t('bridge.withdrawFromInjectiveSuccess'))
-          this.$emit('bridge:reset')
           this.$emit('bridge:confirmed')
+          this.$root.$emit('bridge:reset')
           this.$root.$emit('funding:refresh')
         })
         .catch(this.$onRejected)
@@ -599,8 +603,8 @@ export default Vue.extend({
         })
         .then(() => {
           this.$toast.success(this.$t('bridge.depositToInjectiveSuccess'))
-          this.$emit('bridge:reset')
           this.$emit('bridge:confirmed')
+          this.$root.$emit('bridge:reset')
           this.$root.$emit('funding:refresh')
         })
         .catch(this.$onRejected)
@@ -623,8 +627,8 @@ export default Vue.extend({
           this.$toast.success(
             this.$t('bridge.withdrawFromTradingAccountSuccess')
           )
-          this.$emit('bridge:reset')
           this.$emit('bridge:confirmed')
+          this.$root.$emit('bridge:reset')
           this.$root.$emit('funding:refresh')
         })
         .catch(this.$onRejected)
