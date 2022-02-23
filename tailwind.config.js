@@ -167,7 +167,8 @@ module.exports = {
 
       lineHeight: {
         3.5: '0.875rem',
-        5.5: '1.375rem'
+        5.5: '1.375rem',
+        14: '3.5rem'
       },
 
       maxHeight: {
@@ -177,7 +178,8 @@ module.exports = {
       },
 
       maxWidth: {
-        ...extraSizings
+        ...extraSizings,
+        'max-w-full': '100%'
       },
 
       width: {

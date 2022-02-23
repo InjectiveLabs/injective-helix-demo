@@ -1,9 +1,10 @@
-import faq from './faq/en'
-import banners from './banners/en'
 import activities from './activities/en'
-import funding from './funding/en'
-import market from './market/en'
+import banners from './banners/en'
 import bridge from './bridge/en'
+import faq from './faq/en'
+import funding from './funding/en'
+import home from './home/en'
+import market from './market/en'
 import wallet from './wallet/en'
 
 export default {
@@ -12,6 +13,7 @@ export default {
   ...faq,
   ...funding,
   ...activities,
+  ...home,
   ...market,
   ...bridge,
   ...wallet,
@@ -99,7 +101,6 @@ export default {
   'Connect using Ledger': 'Connect using Ledger',
   'Connect using Ledger instructions':
     'Note: To ensure smooth process while connecting your Ledger Hardware Wallet, please ensure you are running the on latest Chrome version, have your Ledger device connected, unlocked and your Ethereum app open. ',
-  home: 'Home',
   open: 'Open',
   close: 'Close',
   'Please follow the instructions on your device':
@@ -296,6 +297,7 @@ export default {
     rewards: 'Rewards',
     dashboard: 'Dashboard',
     trade: 'Trade',
-    activities: 'Activities'
+    activities: 'Activities',
+    home: 'Home'
   }
 }

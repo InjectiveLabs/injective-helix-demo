@@ -230,16 +230,32 @@ export default Vue.extend({
       )
     },
 
+    totalInUsd(): BigNumberInBase {
+      const { isUsdt, balance, totalPositionsMargin, totalPositionsPnl } = this
+
+      const balanceInBigNumber = new BigNumberInBase(balance.balanceInUsd)
+
+      if (!balance.balanceInUsd) {
+        return ZERO_IN_BASE
+      }
+
+      if (!isUsdt) {
+        return balanceInBigNumber
+      }
+
+      return balanceInBigNumber
+        .plus(totalPositionsMargin)
+        .plus(totalPositionsPnl)
+    },
+
     totalInBtc(): BigNumberInBase {
-      const { balance, btcUsdPrice } = this
+      const { totalInUsd, btcUsdPrice } = this
 
       if (!btcUsdPrice) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(balance.balanceInUsd).dividedBy(
-        new BigNumberInBase(btcUsdPrice)
-      )
+      return totalInUsd.dividedBy(new BigNumberInBase(btcUsdPrice))
     },
 
     marginHoldToString(): string {
@@ -283,11 +299,9 @@ export default Vue.extend({
     },
 
     totalInUsdToString(): string {
-      const { balance } = this
+      const { totalInUsd } = this
 
-      return new BigNumberInBase(balance.balanceInUsd).toFormat(
-        UI_DEFAULT_MIN_DISPLAY_DECIMALS
-      )
+      return totalInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
     spotMarketRoute(): string | undefined {

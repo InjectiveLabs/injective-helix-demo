@@ -2,7 +2,7 @@
   <div>
     <nav class="block flex-1 lg:flex">
       <v-nav-item :to="{ name: 'index' }" class="block lg:hidden">
-        {{ $t('home') }}
+        {{ $t('navigation.home') }}
       </v-nav-item>
       <v-nav-item-dummy @click.stop="handleOpenMarketsSlideout">
         {{ $t('trade.markets') }}

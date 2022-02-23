@@ -1,5 +1,9 @@
 <template>
-  <TableRow dense @click.native.stop="handleClickOnMarket">
+  <TableRow
+    :dense="simple"
+    :lg="!simple"
+    @click.native.stop="handleClickOnMarket"
+  >
     <span
       class="text-base md:text-sm"
       :class="{

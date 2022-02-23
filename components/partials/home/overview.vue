@@ -1,9 +1,6 @@
 <template>
   <div>
-    <h3 class="text-xl font-bold text-gray-200">
-      {{ $t('overview') }}
-    </h3>
-    <div class="grid grid-cols-4 md:grid-cols-12 gap-4 lg:gap-6 mt-6">
+    <div class="grid grid-cols-4 md:grid-cols-12 gap-4 lg:gap-6">
       <v-resource-card
         v-for="(card, index) in cards"
         :key="`resource-card-${index}`"

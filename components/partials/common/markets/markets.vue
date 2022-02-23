@@ -1,8 +1,67 @@
 <template>
-  <div class="relative">
-    <VHocLoading :status="status">
-      <v-table :markets="markets" :summaries="marketsSummary" />
-    </VHocLoading>
+  <div>
+    <v-panel :title="$t('trade.markets')">
+      <div slot="context">
+        <div>
+          <div class="sm:flex items-center justify-center mb-8">
+            <div class="text-center mb-6 sm:mb-0 min-w-2xs">
+              <p class="text-gray-500 uppercase text-xs tracking-wider mb-3">
+                {{ $t('home.totalTradingVolume') }}
+              </p>
+              <span class="font-mono text-2xl">${{ totalVolumeToString }}</span>
+            </div>
+            <div class="mx-8 w-px h-20 bg-gray-700 hidden sm:block"></div>
+            <div class="text-center min-w-2xs">
+              <p class="text-gray-500 uppercase text-xs tracking-wider mb-3">
+                {{ $t('home.totalTrades') }}
+              </p>
+              <span class="font-mono text-2xl">{{ totalTradesToString }}</span>
+            </div>
+          </div>
+
+          <div class="flex items-center mb-6">
+            <v-button
+              :class="{
+                'text-gray-500': filterType !== FilterTypes.Volume
+              }"
+              text-sm
+              class="font-normal"
+              @click.stop="updateFilterType(FilterTypes.Volume)"
+            >
+              <span class="uppercase text-xs">{{ $t('home.topVolume') }}</span>
+            </v-button>
+            <div class="mx-2 w-px h-4 bg-gray-700"></div>
+            <v-button
+              :class="{
+                'text-gray-500': filterType !== FilterTypes.New
+              }"
+              text-sm
+              class="font-normal"
+              @click.stop="updateFilterType(FilterTypes.New)"
+            >
+              <span class="uppercase text-xs">{{ $t('home.whatsNew') }}</span>
+            </v-button>
+          </div>
+        </div>
+      </div>
+
+      <div class="relative">
+        <VHocLoading :status="status">
+          <v-table
+            :markets="markets"
+            :summaries="marketsSummary"
+            :show-all="showAll"
+            :show-promoted="filterType === FilterTypes.New"
+          />
+        </VHocLoading>
+      </div>
+    </v-panel>
+
+    <div v-if="!showAll && filterType !== FilterTypes.New" class="text-center">
+      <v-button lg primary class="w-60 mt-6" @click="showAllMarkets">
+        {{ $t('home.viewAllMarkets') }}
+      </v-button>
+    </div>
   </div>
 </template>
 
@@ -12,14 +71,28 @@ import {
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiSpotMarketSummary,
-  UiSpotMarketWithToken
+  UiSpotMarketWithToken,
+  ZERO_IN_BASE
 } from '@injectivelabs/ui-common'
-import { Status, StatusType } from '@injectivelabs/utils'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import VTable from './table.vue'
+
+enum FilterTypes {
+  Volume = 'volume',
+  New = 'new'
+}
 
 export default Vue.extend({
   components: {
     VTable
+  },
+
+  data() {
+    return {
+      FilterTypes,
+      filterType: FilterTypes.Volume,
+      showAll: false
+    }
   },
 
   computed: {
@@ -59,6 +132,42 @@ export default Vue.extend({
       const { spotMarketsSummary, derivativeMarketsSummary } = this
 
       return [...derivativeMarketsSummary, ...spotMarketsSummary]
+    },
+
+    totalVolume(): BigNumberInBase {
+      const { marketsSummary } = this
+
+      return marketsSummary.reduce((total, summary) => {
+        return total.plus(new BigNumberInBase(summary.volume || '0'))
+      }, ZERO_IN_BASE)
+    },
+
+    totalVolumeToString(): string {
+      const { totalVolume } = this
+
+      return totalVolume.toFormat(0, BigNumberInBase.ROUND_DOWN)
+    },
+
+    totalTrades(): BigNumberInBase {
+      // todo: need support from BE for total trades
+
+      return ZERO_IN_BASE
+    },
+
+    totalTradesToString(): string {
+      const { totalTrades } = this
+
+      return totalTrades.toFormat(0, BigNumberInBase.ROUND_DOWN)
+    }
+  },
+
+  methods: {
+    showAllMarkets() {
+      this.showAll = true
+    },
+
+    updateFilterType(type: FilterTypes) {
+      this.filterType = type
     }
   }
 })

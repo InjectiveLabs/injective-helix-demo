@@ -43,6 +43,9 @@ if (NETWORK === Network.Devnet) {
   derivatives.push('bayc-weth-perp')
 }
 
+// @ts-ignore
+const promotedMarkets = ['inj-spot', 'inj-usdt-perp']
+
 module.exports = [
   '/',
   '/funding',
@@ -58,3 +61,4 @@ module.exports = [
 
 module.exports.spot = spot
 module.exports.derivatives = derivatives
+module.exports.promotedMarkets = promotedMarkets
