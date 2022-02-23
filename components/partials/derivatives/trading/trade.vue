@@ -204,7 +204,8 @@ import {
   DEFAULT_MARKET_PRICE_WARNING_DEVIATION,
   DEFAULT_MAX_PRICE_BAND_DIFFERENCE,
   DEFAULT_MIN_PRICE_BAND_DIFFERENCE,
-  PRICE_BAND_ENABLED
+  PRICE_BAND_ENABLED,
+  BIGGER_PRICE_WARNING_DEVIATION
 } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
@@ -238,6 +239,7 @@ import {
   isDotKeycode,
   isNumericKeycode
 } from '~/app/utils/helpers'
+import { excludedPriceDeviationSlugs } from '~/app/data/market'
 
 interface TradeForm {
   reduceOnly: boolean
@@ -875,8 +877,13 @@ export default Vue.extend({
         orderTypeBuy,
         tradingTypeMarket,
         orderTypeReduceOnly,
-        lastTradedPrice
+        lastTradedPrice,
+        market
       } = this
+
+      if (!market) {
+        return false
+      }
 
       if (orderTypeReduceOnly) {
         return false
@@ -890,6 +897,12 @@ export default Vue.extend({
         return false
       }
 
+      const defaultPriceWarningDeviation = excludedPriceDeviationSlugs.includes(
+        market.ticker
+      )
+        ? BIGGER_PRICE_WARNING_DEVIATION
+        : DEFAULT_PRICE_WARNING_DEVIATION
+
       const deviation = new BigNumberInBase(1)
         .minus(
           orderTypeBuy
@@ -898,7 +911,7 @@ export default Vue.extend({
         )
         .times(100)
 
-      return deviation.gt(DEFAULT_PRICE_WARNING_DEVIATION)
+      return deviation.gt(defaultPriceWarningDeviation)
     },
 
     executionPriceHasHighDeviationWarning(): boolean {
