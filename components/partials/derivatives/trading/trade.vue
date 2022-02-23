@@ -664,6 +664,7 @@ export default Vue.extend({
       }
 
       const leverage = new BigNumberInBase(form.leverage)
+
       const divisor = orderTypeBuy
         ? new BigNumberInBase(marketMarkPrice)
             .times(market.initialMarginRatio)
@@ -675,7 +676,7 @@ export default Vue.extend({
             .minus(executionPrice)
       const maxLeverage = executionPrice.dividedBy(divisor)
 
-      if (maxLeverage.gte(0) && leverage.gt(maxLeverage)) {
+      if (maxLeverage.gte(1) && leverage.gt(maxLeverage)) {
         return {
           price: leverage.eq(1)
             ? orderTypeBuy
@@ -794,6 +795,10 @@ export default Vue.extend({
         return undefined
       }
 
+      if (excludedPriceDeviationSlugs.includes(market.ticker)) {
+        return undefined
+      }
+
       const markPrice = new BigNumberInBase(marketMarkPrice)
 
       if (markPrice.lte(0)) {
@@ -839,6 +844,10 @@ export default Vue.extend({
       } = this
 
       if (!market || !hasPrice || !hasAmount) {
+        return undefined
+      }
+
+      if (excludedPriceDeviationSlugs.includes(market.ticker)) {
         return undefined
       }
 
