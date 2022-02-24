@@ -31,6 +31,7 @@
             </span>
           </v-card-select>
           <v-card-select
+            v-if="false"
             v-model="component"
             :option="components.rewardHistory"
             class="col-span-1"
