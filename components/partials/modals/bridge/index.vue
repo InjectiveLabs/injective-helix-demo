@@ -8,7 +8,11 @@
     <div slot="title">
       <h3>{{ bridgeTitle }}</h3>
     </div>
-    <ValidationObserver v-slot="{ invalid }" ref="form">
+    <ValidationObserver
+      v-if="isUserWalletConnected"
+      v-slot="{ invalid }"
+      ref="form"
+    >
       <div>
         <v-transfer-direction-switch
           v-if="bridgeType === BridgeType.Transfer"
@@ -17,48 +21,63 @@
         />
         <v-network-select
           v-else
-          v-bind="{ value: bridgingNetwork }"
+          v-bind="{ value: bridgingNetwork, bridgeType }"
           @bridging-network:change="handleBridgingNetworkSwitch"
         >
           <template slot="title">{{ networkSelectorTitle }}</template>
         </v-network-select>
       </div>
-      <div v-if="isUserWalletConnected">
-        <div v-if="!isIbcTransfer">
-          <v-balance :balance="balance" :token="form.token" class="mt-6 mb-2" />
-          <v-token-selector
-            :amount="form.amount"
-            :value="form.token"
-            :origin="origin"
-            :destination="destination"
-            :is-ibc-transfer="isIbcTransfer"
-            :balance="balance"
-            @input:amount="handleAmountChange"
-            @input:token="handleTokenChange"
+      <div v-if="isWithdrawToInjectiveAddress" class="mt-6">
+        <ValidationProvider
+          v-slot="{ errors, valid }"
+          name="form.destination"
+          :rules="`required|injaddress`"
+        >
+          <v-input
+            :value="form.destinationAddress"
+            :errors="errors"
+            :valid="valid"
+            placeholder="inj"
+            :label="$t('bridge.injAddress')"
+            @input="handleDestinationAddressChange"
           >
-          </v-token-selector>
-          <div class="mt-8 text-center">
-            <v-button
-              lg
-              primary
-              class="w-full xs:w-1/2 font-bold"
-              :disabled="invalid"
-              @click="handleTransferNowClick"
-            >
-              {{ $t('bridge.transferNow') }}
-            </v-button>
-          </div>
-        </div>
-        <v-ibc-transfer-note v-else />
+          </v-input>
+        </ValidationProvider>
       </div>
-      <v-user-wallet-connect-warning v-else />
+      <div v-if="!isIbcTransfer" class="mt-6">
+        <v-balance :balance="balance" :token="form.token" class="mb-2" />
+        <v-token-selector
+          :amount="form.amount"
+          :value="form.token"
+          :origin="origin"
+          :destination="destination"
+          :is-ibc-transfer="isIbcTransfer"
+          :balance="balance"
+          @input:amount="handleAmountChange"
+          @input:token="handleTokenChange"
+        >
+        </v-token-selector>
+        <div class="mt-8 text-center">
+          <v-button
+            lg
+            primary
+            class="w-full xs:w-1/2 font-bold"
+            :disabled="invalid"
+            @click="handleTransferNowClick"
+          >
+            {{ $t('bridge.transferNow') }}
+          </v-button>
+        </div>
+      </div>
+      <v-ibc-transfer-note v-else />
     </ValidationObserver>
+    <v-user-wallet-connect-warning v-else />
   </v-modal>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { ValidationObserver } from 'vee-validate'
+import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import {
   BankBalanceWithToken,
   BridgingNetwork,
@@ -82,6 +101,7 @@ export default Vue.extend({
     VNetworkSelect,
     VIbcTransferNote,
     VTransferDirectionSwitch,
+    ValidationProvider,
     VBalance
   },
 
@@ -120,6 +140,7 @@ export default Vue.extend({
       required: true,
       type: Object as PropType<{
         token: Token
+        destinationAddress: string
         amount: string
       }>
     }
@@ -152,6 +173,19 @@ export default Vue.extend({
 
     ibcBankBalancesWithToken(): BankBalanceWithToken[] {
       return this.$accessor.bank.bankIbcBalancesWithToken
+    },
+
+    isWithdrawToInjectiveAddress(): boolean {
+      const { bridgeType, destination } = this
+
+      if (
+        bridgeType === BridgeType.Withdraw &&
+        destination === BridgingNetwork.Injective
+      ) {
+        return true
+      }
+
+      return false
     },
 
     bridgeTitle(): string {
@@ -308,6 +342,10 @@ export default Vue.extend({
 
     handleTokenChange(token: Token) {
       this.$emit('input-token:update', token)
+    },
+
+    handleDestinationAddressChange(address: string) {
+      this.$emit('input-destinationAddress:update', address)
     },
 
     handleCloseModal() {

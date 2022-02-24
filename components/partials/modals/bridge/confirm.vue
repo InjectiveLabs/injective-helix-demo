@@ -61,6 +61,7 @@
           </div>
 
           <div v-if="origin === BridgingNetwork.Injective" class="mt-6">
+            <!-- Amount -->
             <v-confirm-amount-row class="mb-2">
               <template slot="title">
                 {{ $t('bridge.amount') }}
@@ -75,35 +76,31 @@
               </template>
             </v-confirm-amount-row>
 
-            <v-confirm-amount-row class="mb-2">
+            <!-- Bridge Fee -->
+            <v-confirm-amount-row
+              v-if="destination === BridgingNetwork.Ethereum"
+              class="mb-2"
+            >
               <template slot="title">
                 {{ $t('bridge.bridgeFee') }}
               </template>
 
               <template slot="amount">
                 <span>
-                  {{
-                    destination === BridgingNetwork.Ethereum
-                      ? ethBridgeFeeToString
-                      : 0
-                  }}
+                  {{ ethBridgeFeeToString }}
                   {{ form.token.symbol }}
                 </span>
               </template>
 
               <template slot="amountInUsd">
-                ${{
-                  destination === BridgingNetwork.Ethereum
-                    ? ethBridgeFeeInUsdToString
-                    : '0'
-                }}
+                ${{ ethBridgeFeeInUsdToString }}
               </template>
             </v-confirm-amount-row>
           </div>
 
           <div class="border-t border-gray-700 mt-4 pt-4" />
 
-          <div v-if="originOrDestinationAreTransferDirection">
+          <div v-if="origin === BridgingNetwork.Injective">
             <v-confirm-amount-row class="mb-2" bold>
               <template slot="title">
                 {{ $t('bridge.transferAmount') }}
@@ -115,6 +112,20 @@
 
               <template slot="amountInUsd">
                 ${{ transferAmountInUsdToString }}
+              </template>
+            </v-confirm-amount-row>
+
+            <v-confirm-amount-row bold class="mb-10">
+              <template slot="title">
+                {{ $t('bridge.gasFee') }}
+              </template>
+
+              <template slot="amount">
+                {{ gasFeeToString }} {{ injToken.symbol }}
+              </template>
+
+              <template slot="amountInUsd">
+                ${{ gasFeeInUsdToString }}
               </template>
             </v-confirm-amount-row>
           </div>
@@ -162,7 +173,8 @@ import { TransferSide } from '~/types'
 import { injToken } from '~/app/data/token'
 import {
   INJ_TO_IBC_TRANSFER_FEE,
-  UI_DEFAULT_DISPLAY_DECIMALS
+  UI_DEFAULT_DISPLAY_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
 
 export default Vue.extend({
@@ -207,6 +219,7 @@ export default Vue.extend({
       required: true,
       type: Object as PropType<{
         token: Token
+        destinationAddress: string
         amount: string
       }>
     }
@@ -377,7 +390,7 @@ export default Vue.extend({
     amountInUsdToString(): string {
       const { amountInUsd } = this
 
-      return amountInUsd.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+      return amountInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
     ethBridgeFee(): BigNumberInBase {
@@ -411,7 +424,7 @@ export default Vue.extend({
     ethBridgeFeeInUsdToString(): string {
       const { ethBridgeFeeInUsd } = this
 
-      return ethBridgeFeeInUsd.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+      return ethBridgeFeeInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
     gasFee(): BigNumberInBase {
@@ -433,7 +446,7 @@ export default Vue.extend({
     gasFeeInUsdToString(): string {
       const { gasFeeInUsd } = this
 
-      return gasFeeInUsd.toFormat(UI_DEFAULT_DISPLAY_DECIMALS * 2)
+      return gasFeeInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
     transferAmount(): BigNumberInBase {
@@ -461,7 +474,7 @@ export default Vue.extend({
     transferAmountInUsdToString(): string {
       const { transferAmountInUsd } = this
 
-      return transferAmountInUsd.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+      return transferAmountInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
     amountLargerThanBridgeFee(): boolean {
@@ -511,7 +524,7 @@ export default Vue.extend({
     },
 
     handlerFunction(): Function {
-      const { bridgeType, transferDirection } = this
+      const { bridgeType, transferDirection, destination } = this
 
       if (bridgeType === BridgeType.Transfer) {
         return transferDirection === TransferDirection.bankToTradingAccount
@@ -521,6 +534,13 @@ export default Vue.extend({
 
       if (bridgeType === BridgeType.Deposit) {
         return this.handleDeposit
+      }
+
+      if (
+        bridgeType === BridgeType.Withdraw &&
+        destination === BridgingNetwork.Injective
+      ) {
+        return this.handleWithdrawToInjective
       }
 
       // Withdraw to Ethereum
@@ -540,6 +560,32 @@ export default Vue.extend({
 
     handleConfirmClick() {
       this.$emit('bridge:confirmed')
+    },
+
+    handleWithdrawToInjective() {
+      const { form } = this
+
+      this.status.setLoading()
+
+      this.$accessor.bank
+        .transfer({
+          destination: form.destinationAddress,
+          amount: new BigNumberInBase(form.amount),
+          denom: form.token.denom,
+          token: form.token
+        })
+        .then(() => {
+          this.$toast.success(
+            this.$t('bridge.withdrawToInjectiveAddressSuccess')
+          )
+          this.$emit('bridge:confirmed')
+          this.$root.$emit('bridge:reset')
+          this.$root.$emit('funding:refresh')
+        })
+        .catch(this.$onRejected)
+        .finally(() => {
+          this.status.setIdle()
+        })
     },
 
     handleTransferToTradingAccount() {

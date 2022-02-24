@@ -48,10 +48,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import vSelect from 'vue-select'
 import { BridgingNetwork, NetworkMeta } from '@injectivelabs/ui-common'
 import { networksMeta } from '~/app/data/bridge'
+import { BridgeType } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -61,6 +62,11 @@ export default Vue.extend({
   props: {
     value: {
       type: String,
+      required: true
+    },
+
+    bridgeType: {
+      type: String as PropType<BridgeType>,
       required: true
     }
   },
@@ -77,15 +83,13 @@ export default Vue.extend({
     },
 
     filteredOptions(): Record<string, any>[] {
-      const { options, value } = this
+      const { bridgeType, options } = this
 
-      // remove injective option from options
+      // remove injective option from options when depositing
       return options.filter((option) => {
-        if (value !== BridgingNetwork.Injective) {
-          return option.value !== BridgingNetwork.Injective
-        }
-
-        return option.value !== BridgingNetwork.Injective
+        return bridgeType !== BridgeType.Withdraw
+          ? option.value !== BridgingNetwork.Injective
+          : true
       })
     }
   },

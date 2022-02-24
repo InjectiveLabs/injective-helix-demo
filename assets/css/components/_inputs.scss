@@ -289,7 +289,7 @@
   }
 
   &.vs--open {
-    @apply border-b-0 rounded-b-none bg-gray-1000 pl-4;
+    @apply border-b-0 rounded-b-none bg-gray-1000;
 
     .vs__dropdown-menu {
       @apply -mt-1 bg-gray-1000 rounded-t-none;

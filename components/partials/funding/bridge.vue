@@ -12,6 +12,7 @@
       }"
       @input-amount:update="handleAmountUpdate"
       @input-token:update="handleTokenUpdate"
+      @input-destinationAddress:update="handleDestinationAddressUpdate"
       @transfer-direction:update="handleTransferDirectionUpdate"
       @bridge-type:update="handleBridgeTypeUpdate"
       @bridging-network:update="handleBridgingNetworkUpdate"
@@ -33,6 +34,8 @@
     <v-modal-bridge-completed
       v-bind="{
         bridgeType,
+        destination,
+        origin,
         isIbcTransfer
       }"
     />
@@ -68,7 +71,8 @@ export default Vue.extend({
 
       form: {
         token: injToken,
-        amount: ''
+        amount: '',
+        destinationAddress: ''
       }
     }
   },
@@ -155,6 +159,10 @@ export default Vue.extend({
       this.form.token = token
     },
 
+    handleDestinationAddressUpdate(address: string) {
+      this.form.destinationAddress = address
+    },
+
     handleBridgeTypeUpdate(bridgeType: BridgeType) {
       this.bridgeType = bridgeType
     },
@@ -170,11 +178,13 @@ export default Vue.extend({
     handleResetForm() {
       this.form.token = injToken
       this.form.amount = ''
+      this.form.destinationAddress = ''
       this.bridgeType = BridgeType.Transfer
     },
 
     handleTransfer(token: Token) {
       this.form.amount = ''
+      this.form.destinationAddress = ''
       this.form.token = token || injToken
       this.bridgeType = BridgeType.Transfer
       this.transferDirection = TransferDirection.bankToTradingAccount
@@ -183,6 +193,7 @@ export default Vue.extend({
 
     handleTransferToBank(token: Token) {
       this.form.amount = ''
+      this.form.destinationAddress = ''
       this.form.token = token || injToken
       this.bridgeType = BridgeType.Transfer
       this.transferDirection = TransferDirection.tradingAccountToBank
@@ -192,6 +203,7 @@ export default Vue.extend({
     handleDeposit(token: Token) {
       this.bridgingNetwork = BridgingNetwork.Ethereum
       this.form.amount = ''
+      this.form.destinationAddress = ''
       this.form.token = token || injToken
       this.bridgeType = BridgeType.Deposit
       this.$accessor.modal.openModal(Modal.Bridge)
@@ -200,6 +212,7 @@ export default Vue.extend({
     handleWithdraw(token: Token) {
       this.bridgingNetwork = BridgingNetwork.Ethereum
       this.form.amount = ''
+      this.form.destinationAddress = ''
       this.form.token = token || injToken
       this.bridgeType = BridgeType.Withdraw
       this.$accessor.modal.openModal(Modal.Bridge)

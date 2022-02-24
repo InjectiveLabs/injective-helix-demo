@@ -14,12 +14,7 @@
             {{ bridgeNote }}
           </p>
           <div class="text-center mt-6">
-            <v-button
-              v-if="bridgeType === BridgeType.Transfer"
-              lg
-              primary
-              class="font-bold"
-            >
+            <v-button v-if="isOnChainTransaction" lg primary class="font-bold">
               <a
                 :href="explorerUrl"
                 target="_blank"
@@ -50,7 +45,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { getExplorerUrl } from '@injectivelabs/ui-common'
+import { BridgingNetwork, getExplorerUrl } from '@injectivelabs/ui-common'
 import { Modal, BridgeType } from '~/types/enums'
 import VIbcTransferNote from '~/components/partials/funding/bridge/ibc-transfer-note.vue'
 import { injToken } from '~/app/data/token'
@@ -66,6 +61,16 @@ export default Vue.extend({
     bridgeType: {
       required: true,
       type: String as PropType<BridgeType>
+    },
+
+    origin: {
+      required: true,
+      type: String as PropType<BridgingNetwork>
+    },
+
+    destination: {
+      required: true,
+      type: String as PropType<BridgingNetwork>
     },
 
     isIbcTransfer: {
@@ -87,6 +92,23 @@ export default Vue.extend({
 
     injectiveAddress(): string {
       return this.$accessor.wallet.injectiveAddress
+    },
+
+    isOnChainTransaction(): boolean {
+      const { bridgeType, destination } = this
+
+      if (bridgeType === BridgeType.Transfer) {
+        return true
+      }
+
+      if (
+        bridgeType === BridgeType.Withdraw &&
+        destination === BridgingNetwork.Injective
+      ) {
+        return true
+      }
+
+      return false
     },
 
     bridgeTitle(): string {

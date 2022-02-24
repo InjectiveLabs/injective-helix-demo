@@ -15,8 +15,9 @@ export default {
     confirmTransaction: 'Confirm your transaction',
     reviewTransaction: 'Please review your transaction details',
     amount: 'Amount',
+    injAddress: 'Destination Address',
     bridgeFee: 'Bridge Fee',
-    transferAmount: 'Amount',
+    transferAmount: 'Transfer Amount',
     confirm: 'Confirm',
     waived: 'Waived',
     gasFee: 'Gas fee',
@@ -25,6 +26,8 @@ export default {
     trackTransaction: 'Track Transaction',
     transactionConfirmed: 'Transaction Confirmed',
     depositToTradingAccountSuccess: 'Deposit to trading account successful',
+    withdrawToInjectiveAddressSuccess:
+      'Withdraw to Injective account successful',
     withdrawFromTradingAccountSuccess:
       'Withdraw from trading account successful',
     depositToInjectiveSuccess: 'Your transaction is successfully submitted!',

@@ -27,7 +27,7 @@ localize({
 
 extend('injaddress', {
   validate: (value: string) => {
-    return value.startsWith('inj')
+    return value.startsWith('inj') || value.length !== 42
   }
 })
 extend('required', required)
