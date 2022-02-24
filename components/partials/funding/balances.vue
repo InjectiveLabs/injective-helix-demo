@@ -1,12 +1,7 @@
 <template>
   <div>
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <v-card-select
-        v-model="component"
-        lg
-        :option="components.bankAccount"
-        :status="status"
-      >
+      <v-card-select v-model="component" lg :option="components.bankAccount">
         <template slot="subtitle">
           <div class="font-semibold text-lg flex items-center mb-4">
             <span>{{ $t('funding.bankAccount') }}</span>
@@ -22,19 +17,15 @@
           <p class="text-gray-500 text-xs uppercase mb-3 tracking-wider">
             {{ $t('funding.walletValue') }}
           </p>
-          <p class="text-2xl font-mono">
-            <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+          <p class="text-2xl">
+            <span v-if="status.isLoading()">&mdash; USD</span>
+            <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
             <span v-else>{{ totalBankBalanceToString }} USD</span>
           </p>
         </div>
       </v-card-select>
 
-      <v-card-select
-        v-model="component"
-        lg
-        :option="components.tradingAccount"
-        :status="status"
-      >
+      <v-card-select v-model="component" lg :option="components.tradingAccount">
         <template slot="subtitle">
           <div class="font-semibold text-lg flex items-center mb-4">
             <span>{{ $t('funding.tradingAccount') }}</span>
@@ -50,8 +41,9 @@
           <p class="text-gray-500 text-xs uppercase mb-3 tracking-wider">
             {{ $t('funding.portfolioValue') }}
           </p>
-          <p class="text-2xl font-mono">
-            <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+          <p class="text-2xl">
+            <span v-if="status.isLoading()">&mdash; USD</span>
+            <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
             <span v-else>{{ tradingAccountBalancesToString }} USD</span>
           </p>
         </div>
@@ -60,11 +52,8 @@
 
     <div class="w-full mt-6 relative">
       <portal to="account-summary">
-        <div v-if="status.isLoading()" class="h-16 w-full xl:w-1/4 relative">
-          <v-loading />
-        </div>
         <v-account-summary
-          v-else
+          :status="status"
           :total-balance="totalBalance"
           :hide-balance.sync="hideBalance"
         />

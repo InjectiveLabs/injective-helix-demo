@@ -10,14 +10,16 @@
       class="flex flex-wrap items-center justify-center lg:justify-between mt-4"
     >
       <div
-        class="flex font-mono items-end flex-wrap justify-center lg:justify-start"
+        class="flex tracking-wide items-end flex-wrap justify-center lg:justify-start"
       >
         <h2 class="text-white text-2xl sm:text-3xl xl:text-4xl mr-4">
           <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }} </span>
-          <span v-else>{{ totalBalanceToString }} USD </span>
+          <span v-else-if="status.isLoading()">&mdash; USD </span>
+          <span v-else>{{ totalBalanceToString }} USD</span>
         </h2>
         <span v-if="!hideBalance" class="text-2xl text-gray-400 mt-4 lg:mt-0">
-          ≈ {{ totalBalanceInBtcToString }} BTC
+          <span v-if="status.isLoading()">≈ &mdash; BTC </span>
+          <span v-else>{{ totalBalanceInBtcToString }} BTC</span>
         </span>
       </div>
       <div class="flex items-center mt-6 lg:mt-0">
@@ -37,7 +39,8 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { Status, BigNumberInBase } from '@injectivelabs/utils'
+
 import { ZERO_IN_BASE } from '@injectivelabs/ui-common'
 import {
   HIDDEN_BALANCE_DISPLAY,
@@ -55,6 +58,12 @@ export default Vue.extend({
     totalBalance: {
       type: Object as PropType<BigNumberInBase>,
       required: true
+    },
+
+    status: {
+      required: false,
+      type: Object as PropType<Status>,
+      default: () => new Status()
     }
   },
 

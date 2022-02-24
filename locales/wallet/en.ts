@@ -1,7 +1,7 @@
 export default {
   connect: {
     wallet: 'Wallet',
-    address: 'address',
+    address: 'Address',
     close: 'Close',
     connect: 'Connect',
     connectToWallet: 'Connect to Wallet',
@@ -40,7 +40,7 @@ export default {
     header: 'Welcome to Injective Pro!',
     connectTheWallet: 'Connect the wallet',
     confirm: 'Confirm',
-    usingReferCode: 'You\'re using refer code',
+    usingReferCode: "You're using refer code",
     enterCode: 'Enter code'
   }
 }

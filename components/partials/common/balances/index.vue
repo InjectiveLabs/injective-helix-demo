@@ -53,7 +53,12 @@ import {
   UiSubaccount,
   UiSubaccountBalanceWithToken
 } from '@injectivelabs/ui-common'
-import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  Status,
+  StatusType
+} from '@injectivelabs/utils'
 import VSubaccountBalance from './subaccount.vue'
 import VOnboard from './onboard.vue'
 import { getHubUrl } from '~/app/utils/helpers'
@@ -156,19 +161,25 @@ export default Vue.extend({
         return false
       }
 
+      const minOrderPrice = new BigNumberInBase(1).shiftedBy(
+        -currentMarket.priceDecimals
+      )
+
+      const quoteTradingBalanceInBase = new BigNumberInWei(
+        baseTradingBalance ? baseTradingBalance.availableBalance : 0
+      ).toBase(currentMarket.baseToken.decimals)
+
+      const baseTradingBalanceInBase = new BigNumberInWei(
+        quoteTradingBalance ? quoteTradingBalance.availableBalance : 0
+      ).toBase(currentMarket.quoteToken.decimals)
+
       if (currentMarket.type === MarketType.Derivative) {
-        return new BigNumberInBase(
-          quoteTradingBalance ? quoteTradingBalance.availableBalance : 0
-        ).gt(0)
+        return quoteTradingBalanceInBase.gt(minOrderPrice)
       }
 
       return (
-        new BigNumberInBase(
-          quoteTradingBalance ? quoteTradingBalance.availableBalance : 0
-        ).gt(0) ||
-        new BigNumberInBase(
-          baseTradingBalance ? baseTradingBalance.availableBalance : 0
-        ).gt(0)
+        quoteTradingBalanceInBase.gt(minOrderPrice) ||
+        baseTradingBalanceInBase.gt(minOrderPrice)
       )
     },
 

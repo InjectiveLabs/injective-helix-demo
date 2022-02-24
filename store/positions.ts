@@ -84,15 +84,23 @@ export const actions = actionTree(
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
-      if (!isUserWalletConnected || !subaccount) {
+      if (!isUserWalletConnected) {
         return
       }
 
-      const positions = await derivativeService.fetchPositions({
-        subaccountId: subaccount.subaccountId
-      })
+      if (!subaccount) {
+        await this.app.$accessor.account.fetchSubaccounts()
+      }
 
-      commit('setSubaccountPositions', positions)
+      const { subaccount: newSubaccount } = this.app.$accessor.account
+
+      if (newSubaccount) {
+        const positions = await derivativeService.fetchPositions({
+          subaccountId: newSubaccount.subaccountId
+        })
+
+        commit('setSubaccountPositions', positions)
+      }
     },
 
     async closeAllPosition(_, positions: UiPosition[]) {
