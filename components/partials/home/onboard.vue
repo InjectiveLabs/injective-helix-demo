@@ -4,15 +4,17 @@
       <div
         class="grid grid-cols-3 md:grid-cols-11 2xl:grid-cols-12 font-bold md:gap-8 2xl:gap-20"
       >
-        <p class="md:col-span-2 text-2xl 3md:text-4xl tracking-wide">
+        <p
+          class="md:col-span-2 text-2xl 3md:text-3xl 3xl:text-4xl tracking-wide"
+        >
           {{ $t('home.iAm') }}
         </p>
 
         <div
-          class="col-span-2 md:col-span-4 font-bold text-2xl 3md:text-4xl tracking-wide mb-6 md:mb-0"
+          class="col-span-2 md:col-span-4 font-bold text-2xl 3md:text-3xl 3xl:text-4xl tracking-wide mb-6 md:mb-0"
         >
           <p
-            class="cursor-pointer mb-4 md:mb-8 max-w-2xs"
+            class="cursor-pointer mb-4 md:mb-8 md:max-w-4xs 3xl:max-w-2xs"
             :class="{ 'text-gray-500': type !== FilterTypes.NewToCrypto }"
             @click.stop="updateFilterType(FilterTypes.NewToCrypto)"
           >

@@ -22,27 +22,25 @@
 
     <VPopperBox
       ref="popper-wallet"
-      class="popper bg-gray-800 rounded flex flex-col flex-wrap absolute min-w-xs z-10 shadow"
+      class="popper bg-gray-800 rounded flex flex-col flex-wrap absolute min-w-[356px] z-10 shadow"
       binding-element="#wallet-address"
       :options="popperOption"
     >
       <div>
         <div class="flex items-center justify-between px-6 py-4">
-          <h3 class="text-xs tracking-wide uppercase">
+          <h3 class="text-sm tracking-wider uppercase">
             {{ $t('navigation.myAccount') }}
           </h3>
           <span
-            class="text-xs text-primary-500 cursor-pointer"
+            class="text-sm text-primary-500 cursor-pointer"
             @click="handleClickOnLogout"
             >{{ $t('navigation.disconnect') }}
           </span>
         </div>
         <div class="mt-2 flex items-center justify-between px-6">
           <div class="flex items-center">
-            <v-logo-mini class="w-8 h-8 mr-4" />
-            <span class="font-mono text-sm">{{
-              formattedInjectiveAddress
-            }}</span>
+            <v-logo-mini class="w-12 h-12 mr-4" />
+            <span class="font-mono">{{ formattedInjectiveAddress }}</span>
           </div>
           <div class="flex">
             <button
@@ -83,11 +81,11 @@
             {{ $t('navigation.connectedWallets') }}
           </h3>
           <ul class="pt-4 pb-6">
-            <v-connected-wallet v-if="wallet === Wallet.Metamask">
-              <v-icon-metamask class="ml-1 w-6 h-6" />
+            <v-connected-wallet v-if="wallet === Wallet.Metamask" lg>
+              <v-icon-metamask class="w-8 h-8 mx-auto" />
             </v-connected-wallet>
-            <v-connected-wallet v-if="wallet === Wallet.Ledger">
-              <v-icon-ledger class="ml-1 w-6 h-6" />
+            <v-connected-wallet v-if="wallet === Wallet.Ledger" lg>
+              <v-icon-ledger class="w-8 h-8 mx-auto" />
             </v-connected-wallet>
           </ul>
         </div>

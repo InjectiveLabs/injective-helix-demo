@@ -1,6 +1,9 @@
 <template>
   <VHocLoading :key="$route.fullPath" :status="status">
-    <div v-if="market" class="min-h-screen flex flex-col flex-wrap">
+    <div
+      v-if="market"
+      class="flex flex-col flex-wrap min-h-screen-excluding-header"
+    >
       <div class="w-full px-1">
         <v-market />
       </div>

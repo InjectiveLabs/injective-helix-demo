@@ -10,13 +10,13 @@
           <client-only>
             <div class="relative bg-gray-1050">
               <v-topbar @sidebar-opened="isOpenSidebar = true" />
-              <main class="w-full h-full min-h-screen">
+              <main class="w-full h-full min-h-screen-excluding-header">
                 <portal-target name="backLink" />
                 <div class="relative">
                   <nuxt />
                 </div>
               </main>
-              <v-footer />
+              <v-footer v-if="showFooter" />
               <v-market-slideout />
               <v-modal-auction-countdown v-if="SHOW_AUCTION_COUNTDOWN" />
             </div>
@@ -52,6 +52,14 @@ export default Vue.extend({
       isOpenSidebar: false,
       status: new Status(StatusType.Loading),
       interval: 0 as any
+    }
+  },
+
+  computed: {
+    showFooter() {
+      const { $route } = this
+
+      return ['index', 'funding'].includes($route.name as string)
     }
   },
 

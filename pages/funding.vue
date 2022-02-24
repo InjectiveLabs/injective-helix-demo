@@ -2,14 +2,14 @@
   <div class="h-full w-full flex flex-wrap">
     <div class="w-full">
       <VHocLoading :status="status">
-        <div class="container py-4">
+        <div class="container pt-6 pb-8">
           <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12">
-            <v-welcome-banner />
+            <v-welcome-banner v-if="!hasMadeAnyTrades" class="mb-12" />
             <!--
               A clever solution here to apply loading state to account
               summary based on the bank/trading account balances loading
             -->
-            <div class="mt-6 py-6 relative">
+            <div class="pb-6 relative">
               <portal-target name="account-summary"></portal-target>
             </div>
             <v-gas-rebate class="mt-6" />
@@ -46,6 +46,12 @@ export default Vue.extend({
   data() {
     return {
       status: new Status(StatusType.Loading)
+    }
+  },
+
+  computed: {
+    hasMadeAnyTrades(): boolean {
+      return this.$accessor.onboard.hasMadeAnyTrades
     }
   },
 

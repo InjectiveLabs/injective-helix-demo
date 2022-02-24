@@ -1,6 +1,6 @@
 <template>
   <header
-    class="relative z-1100 flex-shrink-0 flex h-12 bg-black shadow-top-bar-dark"
+    class="relative z-1100 flex-shrink-0 flex h-14 bg-black shadow-top-bar-dark"
   >
     <button
       class="px-4 border-r border-gray-600 text-gray-200 xl:hidden"
@@ -10,20 +10,12 @@
       <v-icon-menu class="w-6 h-6" />
     </button>
     <div class="flex-1 px-2 xl:px-8 flex justify-end xl:justify-between">
-      <div class="hidden xl:flex items-center">
+      <div class="w-0 opacity-0 xl:w-full xl:opacity-100 flex items-center">
         <div
-          class="flex items-center py-2 pr-2 xl:pr-8 border-r cursor-pointer"
+          class="py-px pr-6 border-r cursor-pointer"
           @click="$router.push({ name: 'index' })"
         >
-          <v-logo class="h-6 w-auto mr-2" alt="Injective" />
-          <div class="text-white flex items-end">
-            <v-logo-text class="w-24 mr-2" />
-            <p class="text-xs uppercase flex">
-              <span>p</span>
-              <span class="mx-1">r</span>
-              <span>o</span>
-            </p>
-          </div>
+          <v-logo class="w-auto h-[30px]" alt="Injective1111" />
         </div>
         <v-nav class="ml-2" />
       </div>
@@ -83,7 +75,6 @@ import VNavItem from './nav/item.vue'
 import VNavItemDummy from './nav/item-dummy.vue'
 import VNav from '~/components/layout/nav/index.vue'
 import VLogo from '~/components/elements/logo.vue'
-import VLogoText from '~/components/elements/logo-text.vue'
 import VPopperBox from '~/components/elements/popper-box.vue'
 
 export default Vue.extend({
@@ -93,7 +84,6 @@ export default Vue.extend({
     VNavItemDummy,
     VUserWallet,
     VLogo,
-    VLogoText,
     VPopperBox,
     VUserWalletConnect
   },

@@ -80,7 +80,7 @@
               />
               <template slot="empty">
                 <span class="col-span-1 md:col-span-5">
-                  <div class="grow m-auto text-center">
+                  <div class="grow m-auto text-center py-8">
                     <img src="/svg/empty-list.svg" class="mx-auto mb-2" />
                     <p>{{ $t('funding.empty') }}</p>
                   </div>

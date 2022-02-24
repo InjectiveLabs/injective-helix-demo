@@ -47,5 +47,21 @@ export default {
       featureThreeDescription:
         'Tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam. Ncididunt ut labore et dolore'
     }
+  },
+
+  footer: {
+    aboutUs: 'About us',
+    about: 'About',
+    career: 'Career',
+    businessContacts: 'Business Contacts',
+    analytics: 'Analytics',
+    termsAndConditions: 'Terms & Conditions',
+    privacyPolicy: 'Privacy Policy',
+    learn: 'Learn',
+    faq: 'F.A.Q',
+    blog: 'Blog',
+    feeDiscounts: 'Fee Discounts',
+    apiDocumentation: 'API Documentation',
+    community: 'Community'
   }
 }

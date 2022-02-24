@@ -183,10 +183,6 @@ export default {
   'My Fee Paid Amount': 'Total Fees Paid',
   'My Fee Paid Amount Tooltip':
     'The total fees you have paid on Injective during the current epoch. You pay fees during trades and traders on the protocol. The amount of fees paid helps determine your fee tier.',
-  faq: 'FAQ',
-  fee_discounts_footer: 'Fee Discounts',
-  'Privacy Policy': 'Privacy Policy',
-  'Terms & Conditions': 'Terms & Conditions',
   'Frequently Asked Questions': 'Frequently Asked Questions',
   'Search for FAQs': 'Search for FAQs',
   'faq-category-All': 'All',
@@ -258,10 +254,6 @@ export default {
     'The default maximum rewards you can receive is capped at {maxRewards} INJ. You may increase this cap by staking more than {maxRewards} INJ and it will be the same level as your staked amount.',
   stake_more: 'Stake More',
   stake_now: 'Stake Now',
-
-  // 15.01.2022
-  analytics: 'Analytics',
-
   tradeAndEarn: {
     pendingRewards: 'Pending Rewards',
     campaignEndingOn: 'Ending on {date}',

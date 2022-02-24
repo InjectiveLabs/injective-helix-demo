@@ -165,11 +165,11 @@ export default Vue.extend({
         -currentMarket.priceDecimals
       )
 
-      const quoteTradingBalanceInBase = new BigNumberInWei(
+      const baseTradingBalanceInBase = new BigNumberInWei(
         baseTradingBalance ? baseTradingBalance.availableBalance : 0
       ).toBase(currentMarket.baseToken.decimals)
 
-      const baseTradingBalanceInBase = new BigNumberInWei(
+      const quoteTradingBalanceInBase = new BigNumberInWei(
         quoteTradingBalance ? quoteTradingBalance.availableBalance : 0
       ).toBase(currentMarket.quoteToken.decimals)
 

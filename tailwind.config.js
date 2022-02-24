@@ -64,6 +64,7 @@ module.exports = {
       aqua: {
         100: '#cffced',
         200: '#9af9d9',
+        250: '#99FAFF',
         300: '#65f5c5',
         400: '#35f2b3',
         500: '#0ee29b',
@@ -107,6 +108,19 @@ module.exports = {
       }
     },
 
+    screens: {
+      xs: '480px',
+      sm: '640px',
+      md: '768px',
+      '2md': '800px',
+      '3md': '840px',
+      lg: '1024px',
+      xl: '1280px',
+      '2xl': '1366px',
+      '3xl': '1440px',
+      '4xl': '1681px'
+    },
+
     extend: {
       flex: {
         '0-auto': '0 0 auto',
@@ -122,18 +136,6 @@ module.exports = {
 
       scale: {
         '-100': '-1'
-      },
-
-      screens: {
-        xs: '480px',
-        sm: '640px',
-        md: '768px',
-        '2md': '800px',
-        '3md': '840px',
-        ...defaultTheme.screens,
-        '2xl': '1366px',
-        '3xl': '1440px',
-        '4xl': '1681px'
       },
 
       fontSize: {

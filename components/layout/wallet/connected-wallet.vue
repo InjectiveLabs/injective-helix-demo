@@ -1,18 +1,25 @@
 <template>
   <li class="flex items-center">
-    <div class="w-8 h-8 flex items-center rounded-full bg-gray-800 mr-4">
+    <div
+      class="flex items-center rounded-full bg-gray-800 mr-4"
+      :class="[lg ? 'w-12 h-12' : 'w-8 h-8']"
+    >
       <slot></slot>
     </div>
     <div class="font-mono text-sm">
-      <span class="text-gray-400 text-xs">{{ formattedAddress }}</span>
-      <span
-        class="flex items-center bg-primary-500-faded w-auto px-1 rounded-md"
-      >
-        <span class="rounded-full w-1 h-1 mx-2 bg-primary-500"></span>
-        <span class="text-primary-500 text-2xs">{{
-          $t('navigation.connected')
-        }}</span>
-      </span>
+      <p :class="[lg ? 'text-base mb-2' : 'text-xs']">
+        {{ formattedAddress }}
+      </p>
+      <div class="inline-block">
+        <div
+          class="flex items-center bg-primary-500-faded w-auto px-1 rounded-sm"
+        >
+          <span class="rounded-full w-1 h-1 mr-1 bg-primary-500"></span>
+          <span class="text-primary-500 text-2xs">
+            {{ $t('navigation.connected') }}
+          </span>
+        </div>
+      </div>
     </div>
     <div class="ml-auto">
       <button
@@ -32,6 +39,13 @@ import Vue from 'vue'
 import { formatWalletAddress } from '@injectivelabs/utils'
 
 export default Vue.extend({
+  props: {
+    lg: {
+      type: Boolean,
+      default: false
+    }
+  },
+
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
