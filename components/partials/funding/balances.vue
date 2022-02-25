@@ -422,7 +422,7 @@ export default Vue.extend({
 
     pollBalances() {
       this.balancesPoll = setInterval(() => {
-        // this.fetchBalances()
+        this.fetchBalances()
       }, 30 * 1000)
     }
   }

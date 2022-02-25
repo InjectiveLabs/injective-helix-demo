@@ -59,21 +59,25 @@
         </div>
         <div v-if="referralCode" class="px-6 mt-6 pb-6">
           <div class="border-t"></div>
-          <div class="flex items-center justify-between mt-6">
+          <div class="flex items-center justify-between mt-6 text-sm">
             <h3 class="text-sm font-semibold tracking-wider uppercase">
-              {{ $t('navigation.referrals') }}
+              {{ $t('navigation.referral') }}
             </h3>
 
             <a
+              v-if="referralCode"
               :href="referralDashboardLink"
               target="_blank"
-              class="cursor-pointer text-primary-500 text-sm font-semibold tracking-wide"
+              class="cursor-pointer text-primary-500 font-semibold tracking-wide"
             >
-              <span v-if="referralCode">
-                {{ referralCode }}
-              </span>
-              <span v-else>&mdash;</span>
+              <div class="flex items-center">
+                <span class="mr-2">
+                  {{ referralCode }}
+                </span>
+                <v-icon-arrow class="h-4 w-4 transform rotate-135" />
+              </div>
             </a>
+            <span v-else class="text-gray-500">&mdash;</span>
           </div>
         </div>
         <div class="pt-4 px-6 bg-gray-900" :class="{ 'mt-6': !referralCode }">

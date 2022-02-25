@@ -280,12 +280,13 @@ export default {
   },
 
   navigation: {
+    balances: 'Balances',
     funding: 'Funding',
     disconnect: 'Disconnect',
     myAccount: 'My Account',
     connectedWallets: 'Connected Wallets',
     connected: 'Connected',
-    referrals: 'Referrals',
+    referral: 'Referral',
     rewards: 'Rewards',
     dashboard: 'Dashboard',
     trade: 'Trade',

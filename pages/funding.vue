@@ -2,7 +2,7 @@
   <div class="h-full w-full flex flex-wrap">
     <div class="w-full">
       <VHocLoading :status="status">
-        <div class="container pt-6 pb-8">
+        <div class="container pt-6 pb-12">
           <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12">
             <v-welcome-banner v-if="!hasMadeAnyTrades" class="mb-12" />
             <!--

@@ -130,6 +130,10 @@ module.exports = {
         5: '5 5 0%'
       },
 
+      rotate: {
+        135: '135deg'
+      },
+
       borderColor: {
         DEFAULT: '#2A2F41'
       },

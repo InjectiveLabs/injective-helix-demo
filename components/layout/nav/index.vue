@@ -8,6 +8,7 @@
         {{ $t('trade.markets') }}
       </v-nav-item-dummy>
       <v-nav-item
+        class="block"
         :to="{
           name: 'derivatives-derivative',
           params: { derivative: 'btc-usdt-perp' }
@@ -15,7 +16,7 @@
       >
         {{ $t('navigation.trade') }}
       </v-nav-item>
-      <v-nav-item :to="{ name: 'trade-and-earn' }">
+      <v-nav-item class="block" :to="{ name: 'trade-and-earn' }">
         {{ $t('navigation.rewards') }}
       </v-nav-item>
     </nav>

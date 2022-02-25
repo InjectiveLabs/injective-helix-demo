@@ -10,7 +10,9 @@
           <client-only>
             <div class="relative bg-gray-1050">
               <v-topbar @sidebar-opened="isOpenSidebar = true" />
-              <main class="w-full h-full min-h-screen-excluding-header flex flex-col">
+              <main
+                class="w-full h-full min-h-screen-excluding-header flex flex-col"
+              >
                 <portal-target name="backLink" />
                 <div class="relative flex-grow">
                   <nuxt />
