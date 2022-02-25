@@ -50,16 +50,13 @@ export default {
   },
 
   footer: {
-    aboutUs: 'About us',
-    about: 'About',
-    career: 'Career',
-    businessContacts: 'Business Contacts',
+    resources: 'Resources',
     analytics: 'Analytics',
     termsAndConditions: 'Terms & Conditions',
     privacyPolicy: 'Privacy Policy',
-    learn: 'Learn',
-    faq: 'F.A.Q',
-    blog: 'Blog',
+    support: 'Support',
+    faq: 'FAQ',
+    submitRequest: 'Submit a request',
     feeDiscounts: 'Fee Discounts',
     apiDocumentation: 'API Documentation',
     community: 'Community'
