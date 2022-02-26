@@ -7,7 +7,9 @@ import {
   UiSpotTrade,
   UiDerivativeLimitOrder,
   UiDerivativeTrade,
-  UiPosition
+  UiPosition,
+  UiSubaccountTransfer,
+  UiBridgeTransactionWithToken
 } from '@injectivelabs/ui-common'
 import {
   DerivativeOrderState,
@@ -38,7 +40,10 @@ const initialStateFactory = () => ({
   subaccountDerivativeTrades: [] as Array<UiDerivativeTrade>,
   subaccountPositions: [] as Array<UiPosition>,
   subaccountFundingPayments: [] as Array<FundingPayment>,
-  tradingRewardsHistory: [] as Array<TradingReward>
+  tradingRewardsHistory: [] as Array<TradingReward>,
+
+  subaccountTransfers: [] as Array<UiSubaccountTransfer>,
+  transactions: [] as UiBridgeTransactionWithToken[]
 })
 
 const initialState = initialStateFactory()
@@ -50,7 +55,10 @@ export const state = () => ({
   subaccountDerivativeTrades: initialState.subaccountDerivativeTrades as Array<UiDerivativeTrade>,
   subaccountPositions: initialState.subaccountPositions as Array<UiPosition>,
   subaccountFundingPayments: initialState.subaccountFundingPayments as Array<FundingPayment>,
-  tradingRewardsHistory: initialState.tradingRewardsHistory as Array<TradingReward>
+  tradingRewardsHistory: initialState.tradingRewardsHistory as Array<TradingReward>,
+
+  transactions: initialState.transactions as Array<UiBridgeTransactionWithToken>,
+  subaccountTransfers: initialState.subaccountTransfers as Array<UiSubaccountTransfer>
 })
 
 export type ActivitiesStoreState = ReturnType<typeof state>
@@ -234,18 +242,30 @@ export const mutations = {
     state.subaccountDerivativeOrders = subaccountOrders
   },
 
-  resetSpotSubaccount(state: ActivitiesStoreState) {
-    const initialState = initialStateFactory()
+  setSubaccountTransfers(
+    state: ActivitiesStoreState,
+    transfers: Array<UiSubaccountTransfer>
+  ) {
+    state.subaccountTransfers = transfers
+  },
 
-    state.subaccountSpotOrders = initialState.subaccountSpotOrders
+  setTransactions(
+    state: ActivitiesStoreState,
+    transactions: Array<UiBridgeTransactionWithToken>
+  ) {
+    state.transactions = transactions
   },
 
   reset(state: ActivitiesStoreState) {
+    const initialState = initialStateFactory()
+
     state.subaccountSpotOrders = initialState.subaccountSpotOrders
     state.subaccountDerivativeOrders = initialState.subaccountDerivativeOrders
     state.subaccountSpotTrades = initialState.subaccountSpotTrades
     state.subaccountPositions = initialState.subaccountPositions
     state.tradingRewardsHistory = initialState.tradingRewardsHistory
+    state.transactions = initialState.transactions
+    state.subaccountTransfers = initialState.subaccountTransfers
   }
 }
 
@@ -492,11 +512,27 @@ export const actions = actionTree(
         return
       }
 
-      const positions = await derivativeService.fetchFundingPayments({
+      const fundingPayments = await derivativeService.fetchFundingPayments({
         subaccountId: subaccount.subaccountId
       })
 
-      commit('setSubaccountFundingPayments', positions)
+      commit('setSubaccountFundingPayments', fundingPayments)
+    },
+
+    async fetchTransfers({ commit }) {
+      const { subaccount } = this.app.$accessor.account
+      const { isUserWalletConnected } = this.app.$accessor.wallet
+
+      if (!isUserWalletConnected || !subaccount) {
+        return
+      }
+
+      commit(
+        'setSubaccountTransfers',
+        await subaccountService.fetchSubaccountTransfers(
+          subaccount.subaccountId
+        )
+      )
     },
 
     async batchCancelSpotOrders(_, orders: UiSpotLimitOrder[]) {

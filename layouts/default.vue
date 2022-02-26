@@ -9,7 +9,7 @@
           />
           <client-only>
             <div class="relative bg-gray-1050">
-              <v-topbar @sidebar-opened="isOpenSidebar = true" />
+              <v-top-bar @sidebar-opened="isOpenSidebar = true" />
               <main class="w-full h-full min-h-screen-excluding-header">
                 <portal-target name="backLink" />
                 <div class="relative">
@@ -31,7 +31,7 @@
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import Footer from '~/components/layout/footer/index.vue'
-import Topbar from '~/components/layout/topbar.vue'
+import TopBar from '~/components/layout/topbar.vue'
 import MarketSlideout from '~/components/partials/common/markets/slideout.vue'
 import SidebarMobile from '~/components/layout/sidebar-mobile.vue'
 import VModalAuctionCountdown from '~/components/partials/modals/auction-countdown.vue'
@@ -41,7 +41,7 @@ export default Vue.extend({
   components: {
     VModalAuctionCountdown,
     'v-market-slideout': MarketSlideout,
-    'v-topbar': Topbar,
+    'v-top-bar': TopBar,
     'v-footer': Footer,
     'v-sidebar-mobile': SidebarMobile
   },
@@ -50,13 +50,12 @@ export default Vue.extend({
     return {
       SHOW_AUCTION_COUNTDOWN,
       isOpenSidebar: false,
-      status: new Status(StatusType.Loading),
-      interval: 0 as any
+      status: new Status(StatusType.Loading)
     }
   },
 
   computed: {
-    showFooter() {
+    showFooter(): boolean {
       const { $route } = this
 
       return ['index', 'funding'].includes($route.name as string)
@@ -66,9 +65,7 @@ export default Vue.extend({
   mounted() {
     Promise.all([this.$accessor.wallet.init()])
       .then(() => {
-        this.interval = setInterval(async () => {
-          await this.$accessor.app.poll()
-        }, 2000)
+        //
       })
       .catch(this.$onRejected)
       .finally(() => {
@@ -98,7 +95,6 @@ export default Vue.extend({
 
   beforeDestroy() {
     this.$root.$off('wallet-connected', this.handleWalletConnected)
-    clearInterval(this.interval)
   },
 
   methods: {
@@ -110,9 +106,7 @@ export default Vue.extend({
         this.$accessor.derivatives.init()
       ])
         .then(() => {
-          this.interval = setInterval(async () => {
-            await this.$accessor.app.poll()
-          }, 2000)
+          //
         })
         .catch(this.$onRejected)
         .finally(() => {

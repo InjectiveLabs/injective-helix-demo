@@ -1,10 +1,6 @@
 <template>
   <tr v-if="market">
-    <td
-      v-if="!isOnMarketPage"
-      class="h-8 text-left cursor-pointer"
-      @click="handleClickOnMarket"
-    >
+    <td class="h-8 text-left cursor-pointer" @click="handleClickOnMarket">
       <div class="flex items-center justify-end md:justify-start">
         <div v-if="market.baseToken.logo" class="w-6 h-6">
           <img
@@ -101,7 +97,7 @@
     <td class="h-8 relative text-right">
       <div class="flex items-center justify-end">
         <span
-          v-if="!isOnMarketPage"
+          v-if="false"
           class="cursor-pointer text-primary-500 mr-6"
           @click="handleClickOnMarket"
         >
@@ -156,26 +152,12 @@ export default Vue.extend({
       return this.$accessor.derivatives.market
     },
 
-    isOnMarketPage(): boolean {
-      return this.$route.name === 'derivatives-derivative'
-    },
-
     markets(): UiDerivativeMarketWithToken[] {
-      const { isOnMarketPage } = this
-
-      if (isOnMarketPage) {
-        return []
-      }
-
       return this.$accessor.derivatives.markets
     },
 
     market(): UiDerivativeMarketWithToken | undefined {
-      const { markets, currentMarket, isOnMarketPage, order } = this
-
-      if (isOnMarketPage) {
-        return currentMarket
-      }
+      const { markets, order } = this
 
       return markets.find((m) => m.marketId === order.marketId)
     },

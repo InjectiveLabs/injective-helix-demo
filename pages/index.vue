@@ -11,7 +11,7 @@
     </div>
     <div class="relative">
       <div
-        class="absolute inset-0 h-full w-full bg-gray-900 bg-opacity-70"
+        class="absolute inset-0 h-full w-full bg-gray-900 bg-opacity-30"
       ></div>
       <img class="w-screen" src="/svg/lighting.svg" />
     </div>

@@ -3,7 +3,7 @@
     <div class="w-full mx-auto">
       <div class="flex flex-wrap items-center justify-center">
         <v-button-select v-model="component" :option="components.deposits" text>
-          {{ $t('activities.deposits') }}
+          {{ $t('fundingHistory.deposits') }}
         </v-button-select>
         <div class="mx-2 w-px h-4 bg-gray-500"></div>
         <v-button-select
@@ -11,7 +11,7 @@
           :option="components.withdrawals"
           text
         >
-          {{ $t('activities.withdrawals') }}
+          {{ $t('fundingHistory.withdrawals') }}
         </v-button-select>
         <div class="mx-2 w-px h-4 bg-gray-500"></div>
         <v-button-select
@@ -19,7 +19,7 @@
           :option="components.transfers"
           text
         >
-          {{ $t('activities.transfers') }}
+          {{ $t('fundingHistory.transfers') }}
         </v-button-select>
       </div>
       <div class="mt-6 relative">
@@ -31,7 +31,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import VFundingPayments from './funding-payments.vue'
+import VDeposits from './deposits/index.vue'
+import VWithdrawals from './withdrawals/index.vue'
+import VTransfers from './transfers/index.vue'
 
 const components = {
   deposits: 'deposits',
@@ -41,7 +43,9 @@ const components = {
 
 export default Vue.extend({
   components: {
-    VFundingPayments
+    VDeposits,
+    VWithdrawals,
+    VTransfers
   },
 
   data() {

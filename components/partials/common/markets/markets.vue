@@ -91,7 +91,9 @@ export default Vue.extend({
     return {
       FilterTypes,
       filterType: FilterTypes.Volume,
-      showAll: false
+      showAll: false,
+
+      interval: 0 as any
     }
   },
 
@@ -161,7 +163,30 @@ export default Vue.extend({
     }
   },
 
+  mounted() {
+    this.setMarketSummariesPolling()
+  },
+
+  beforeDestroy() {
+    clearInterval(this.interval)
+  },
+
   methods: {
+    setMarketSummariesPolling() {
+      this.$accessor.app.setMarketsLoadingState(StatusType.Loading)
+
+      Promise.all([this.$accessor.app.pollMarkets()])
+        .then(() => {
+          this.interval = setInterval(async () => {
+            await this.$accessor.app.pollMarkets()
+          }, 5000)
+        })
+        .catch(this.$onRejected)
+        .finally(() => {
+          this.$accessor.app.setMarketsLoadingState(StatusType.Idle)
+        })
+    },
+
     showAllMarkets() {
       this.showAll = true
     },

@@ -11,7 +11,7 @@
         </div>
       </th>
 
-      <th v-if="marketColumnEnabled" class="text-left">
+      <th class="text-left">
         {{ $t('trade.pair') }}
       </th>
 
@@ -73,11 +73,7 @@ import Vue from 'vue'
 
 export default Vue.extend({
   props: {
-    marketColumnEnabled: {
-      required: false,
-      default: false,
-      type: Boolean
-    }
+    //
   }
 })
 </script>

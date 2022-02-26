@@ -484,7 +484,6 @@ export const actions = actionTree(
       }
 
       streamSubaccountOrders({
-        marketId: market.marketId,
         subaccountId: subaccount.subaccountId,
         callback: ({ order }) => {
           if (!order) {
@@ -526,7 +525,6 @@ export const actions = actionTree(
       }
 
       streamSubaccountTrades({
-        marketId: market.marketId,
         subaccountId: subaccount.subaccountId,
         callback: ({ trade, operation }) => {
           if (!trade) {
@@ -630,7 +628,6 @@ export const actions = actionTree(
       commit(
         'setSubaccountOrders',
         await derivativeService.fetchOrders({
-          marketId: market.marketId,
           subaccountId: subaccount.subaccountId
         })
       )
@@ -737,7 +734,6 @@ export const actions = actionTree(
       }
 
       const trades = await derivativeService.fetchTrades({
-        marketId: market.marketId,
         subaccountId: subaccount.subaccountId
       })
 

@@ -162,7 +162,7 @@ export const actions = actionTree(
       }
     },
 
-    async poll(_) {
+    async pollMarkets(_) {
       await this.app.$accessor.derivatives.fetchMarketsSummary()
       await this.app.$accessor.spot.fetchMarketsSummary()
     }

@@ -473,7 +473,6 @@ export const actions = actionTree(
       commit(
         'setSubaccountOrders',
         await spotService.fetchOrders({
-          marketId: market.marketId,
           subaccountId: subaccount.subaccountId
         })
       )
@@ -528,7 +527,6 @@ export const actions = actionTree(
       }
 
       const trades = await spotService.fetchTrades({
-        marketId: market.marketId,
         subaccountId: subaccount.subaccountId
       })
 

@@ -12,7 +12,7 @@
     <div class="flex-1 px-2 xl:px-8 flex justify-end xl:justify-between">
       <div class="w-0 opacity-0 xl:w-full xl:opacity-100 flex items-center">
         <div
-          class="py-px pr-6 border-r cursor-pointer"
+          class="py-px pr-8 border-r cursor-pointer"
           @click="$router.push({ name: 'index' })"
         >
           <v-logo class="w-auto h-[30px]" alt="Injective1111" />

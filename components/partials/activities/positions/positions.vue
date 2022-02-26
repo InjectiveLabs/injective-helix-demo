@@ -39,7 +39,7 @@
           class="table-responsive min-h-orders max-h-lg mt-6"
         >
           <table class="table">
-            <position-table-header market-column-enabled />
+            <position-table-header />
             <tbody v-if="isUserWalletConnected">
               <tr
                 is="v-position"

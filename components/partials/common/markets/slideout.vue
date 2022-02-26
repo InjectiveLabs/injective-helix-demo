@@ -38,7 +38,9 @@ export default Vue.extend({
   data() {
     return {
       showHeader: true,
-      isSlideoutOpen: false
+      isSlideoutOpen: false,
+
+      interval: 0 as any
     }
   },
 
@@ -82,6 +84,16 @@ export default Vue.extend({
     }
   },
 
+  watch: {
+    isSlideoutOpen(isSlideoutOpen: boolean) {
+      if (isSlideoutOpen && this.$route.name === 'index') {
+        this.setMarketSummariesPolling()
+      } else {
+        clearInterval(this.interval)
+      }
+    }
+  },
+
   mounted() {
     this.$root.$on('toggle-market-slideout', this.toggleSlideout)
     this.$root.$on(
@@ -92,6 +104,21 @@ export default Vue.extend({
   },
 
   methods: {
+    setMarketSummariesPolling() {
+      this.$accessor.app.setMarketsLoadingState(StatusType.Loading)
+
+      Promise.all([this.$accessor.app.pollMarkets()])
+        .then(() => {
+          this.interval = setInterval(async () => {
+            await this.$accessor.app.pollMarkets()
+          }, 5000)
+        })
+        .catch(this.$onRejected)
+        .finally(() => {
+          this.$accessor.app.setMarketsLoadingState(StatusType.Idle)
+        })
+    },
+
     toggleSlideout() {
       this.isSlideoutOpen = !this.isSlideoutOpen
       this.showHeader = true
