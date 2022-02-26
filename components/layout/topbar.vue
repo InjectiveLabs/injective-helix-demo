@@ -3,14 +3,14 @@
     class="relative z-1100 flex-shrink-0 flex h-14 bg-black shadow-top-bar-dark"
   >
     <button
-      class="px-4 border-r border-gray-600 text-gray-200 xl:hidden"
+      class="px-4 border-r border-gray-600 text-gray-200 lg:hidden"
       @click.stop="handleClickOnSidebarToggle"
     >
       <span class="sr-only">{{ $t('open') }}</span>
       <v-icon-menu class="w-6 h-6" />
     </button>
-    <div class="flex-1 px-2 xl:px-8 flex justify-end xl:justify-between">
-      <div class="w-0 opacity-0 xl:w-full xl:opacity-100 flex items-center">
+    <div class="flex-1 px-2 lg:px-8 flex justify-end lg:justify-between">
+      <div class="w-0 opacity-0 lg:w-full lg:opacity-100 flex items-center">
         <div
           class="py-px pr-8 border-r cursor-pointer"
           @click="$router.push({ name: 'index' })"
@@ -43,7 +43,7 @@
               class="hover:text-primary-500 inline-block hover:bg-transparent"
               dense
             >
-              {{ $t('navigation.funding') }}
+              {{ $t('navigation.balances') }}
             </v-nav-item>
             <v-nav-item
               :to="{ name: 'activities' }"

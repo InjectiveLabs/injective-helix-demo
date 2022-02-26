@@ -20,12 +20,12 @@
         </div>
 
         <span class="text-gray-500 text-xs">
-          &copy; {{ new Date().getFullYear() }} Open DeFi Foundation
+          &copy; {{ new Date().getFullYear() }} Injective Labs Inc.
         </span>
       </div>
 
       <div class="3md:col-span-2">
-        <h3 class="font-bold text-lg mb-2">{{ $t('footer.aboutUs') }}</h3>
+        <h3 class="font-bold text-lg mb-2">{{ $t('footer.resources') }}</h3>
 
         <div
           v-for="(item, index) in aboutUsList"
@@ -51,7 +51,7 @@
       </div>
 
       <div class="3md:col-span-2">
-        <h3 class="font-bold text-lg mb-2">{{ $t('footer.learn') }}</h3>
+        <h3 class="font-bold text-lg mb-2">{{ $t('footer.support') }}</h3>
 
         <div
           v-for="(item, index) in learnList"
@@ -77,7 +77,7 @@
       </div>
 
       <div class="md:col-span-3">
-        <h3 class="font-bold text-lg mb-2">{{ $t('footer.community') }}</h3>
+        <h3 class="font-bold text-lg mb-6">{{ $t('footer.community') }}</h3>
 
         <div class="flex items-center">
           <a
@@ -140,28 +140,24 @@ export default Vue.extend({
     return {
       aboutUsList: [
         {
-          text: this.$t('footer.about'),
-          link: 'https://injective.com/'
+          text: this.$t('footer.feeDiscounts'),
+          link: 'fee-discounts'
         },
         {
-          text: this.$t('footer.career'),
-          link: 'https://injectivelabs.org/'
-        },
-        {
-          text: this.$t('footer.businessContacts'),
-          link: 'https://injectivelabs.org/'
+          text: this.$t('footer.apiDocumentation'),
+          link: 'https://api.injective.exchange/'
         },
         {
           text: this.$t('footer.analytics'),
           link: 'https://info.injective.exchange/'
         },
         {
-          text: this.$t('footer.termsAndConditions'),
-          link: 'https://injectivelabs.org/terms-and-conditions'
-        },
-        {
           text: this.$t('footer.privacyPolicy'),
           link: 'https://injectivelabs.org/privacy-policy'
+        },
+        {
+          text: this.$t('footer.termsAndConditions'),
+          link: 'https://injectivelabs.org/terms-and-conditions'
         }
       ],
       learnList: [
@@ -170,16 +166,8 @@ export default Vue.extend({
           link: 'faq'
         },
         {
-          text: this.$t('footer.blog'),
-          link: 'https://blog.injectiveprotocol.com/'
-        },
-        {
-          text: this.$t('footer.feeDiscounts'),
-          link: 'fee-discounts'
-        },
-        {
-          text: this.$t('footer.apiDocumentation'),
-          link: 'https://docs.injective.network/'
+          text: this.$t('footer.submitRequest'),
+          link: 'https://injectivepro.zendesk.com/hc/en-us/requests/new'
         }
       ]
     }

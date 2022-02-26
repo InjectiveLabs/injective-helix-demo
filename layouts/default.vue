@@ -10,13 +10,15 @@
           <client-only>
             <div class="relative bg-gray-1050">
               <v-top-bar @sidebar-opened="isOpenSidebar = true" />
-              <main class="w-full h-full min-h-screen-excluding-header">
+              <main
+                class="w-full h-full min-h-screen-excluding-header flex flex-col"
+              >
                 <portal-target name="backLink" />
-                <div class="relative">
+                <div class="relative flex-grow">
                   <nuxt />
                 </div>
+                <v-footer v-if="showFooter" />
               </main>
-              <v-footer v-if="showFooter" />
               <v-market-slideout />
               <v-modal-auction-countdown v-if="SHOW_AUCTION_COUNTDOWN" />
             </div>

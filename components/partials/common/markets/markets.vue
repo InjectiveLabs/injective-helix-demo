@@ -188,7 +188,7 @@ export default Vue.extend({
     },
 
     showAllMarkets() {
-      this.showAll = true
+      this.$root.$emit('toggle-market-slideout-from-content')
     },
 
     updateFilterType(type: FilterTypes) {
