@@ -100,6 +100,7 @@ import Vue, { PropType } from 'vue'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
   SubaccountBalanceWithTokenWithUsdBalance,
+  TokenWithBalanceAndPrice,
   INJECTIVE_DENOM
 } from '@injectivelabs/ui-common'
 
@@ -151,14 +152,46 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    filteredBalances(): SubaccountBalanceWithTokenWithUsdBalance[] {
+    tradableSymbolsWithTokenMeta(): TokenWithBalanceAndPrice[] {
+      return this.$accessor.token.tradableSymbolsWithTokenMeta
+    },
+
+    tradableSymbolsWithTokenWithUsdBalance(): SubaccountBalanceWithTokenWithUsdBalance[] {
+      const { tradableSymbolsWithTokenMeta } = this
+
+      return tradableSymbolsWithTokenMeta.map((token) => ({
+        token,
+        denom: token.denom,
+        availableBalance: '0',
+        balanceInUsd: '0',
+        totalBalance: '0'
+      }))
+    },
+
+    balancesList(): SubaccountBalanceWithTokenWithUsdBalance[] {
       const {
         subaccountBalancesWithUsdBalance,
+        tradableSymbolsWithTokenWithUsdBalance
+      } = this
+
+      return [
+        ...new Map(
+          [
+            ...tradableSymbolsWithTokenWithUsdBalance,
+            ...subaccountBalancesWithUsdBalance
+          ].map((balance) => [balance.token.symbol, balance])
+        ).values()
+      ]
+    },
+
+    filteredBalances(): SubaccountBalanceWithTokenWithUsdBalance[] {
+      const {
+        balancesList,
         search,
         hideSmallBalance
       } = this
 
-      return subaccountBalancesWithUsdBalance.filter(
+      return balancesList.filter(
         ({ token, balanceInUsd }) => {
           if ((!search || search.trim() === '') && !hideSmallBalance) {
             return true

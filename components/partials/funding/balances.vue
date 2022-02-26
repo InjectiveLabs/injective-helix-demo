@@ -160,6 +160,10 @@ export default Vue.extend({
       return this.$accessor.token.ibcTokensWithBalanceAndPriceFromBank
     },
 
+    tradableSymbolsWithTokenMeta(): TokenWithBalanceAndPrice[] {
+      return this.$accessor.token.tradableSymbolsWithTokenMeta
+    },
+
     subaccountBalancesWithTokenAndPrice(): SubaccountBalanceWithTokenAndPrice[] {
       return this.$accessor.account.subaccountBalancesWithTokenAndPrice
     },
@@ -168,18 +172,30 @@ export default Vue.extend({
       return this.$accessor.positions.orderbooks
     },
 
-    // calculate and append total USD balances
-    bankBalancesWithUsdBalance(): BankBalanceWithTokenAndBalanceWithUsdBalance[] {
+    // populate list with missing tradable symbols
+    bankBalancesList(): TokenWithBalanceAndPrice[] {
       const {
-        bankBalances,
         erc20TokensWithBalanceAndPriceFromBank,
-        ibcTokensWithBalanceAndPriceFromBank
+        ibcTokensWithBalanceAndPriceFromBank,
+        tradableSymbolsWithTokenMeta
       } = this
 
       return [
-        ...erc20TokensWithBalanceAndPriceFromBank,
-        ...ibcTokensWithBalanceAndPriceFromBank
-      ].map((tokenWithBalance) => {
+        ...new Map(
+          [
+            ...tradableSymbolsWithTokenMeta,
+            ...erc20TokensWithBalanceAndPriceFromBank,
+            ...ibcTokensWithBalanceAndPriceFromBank
+          ].map((token) => [token.symbol, token])
+        ).values()
+      ]
+    },
+
+    // calculate and append total USD balances
+    bankBalancesWithUsdBalance(): BankBalanceWithTokenAndBalanceWithUsdBalance[] {
+      const { bankBalancesList, bankBalances } = this
+
+      return bankBalancesList.map((tokenWithBalance) => {
         const balance =
           bankBalances.find(({ denom }) => denom === tokenWithBalance.denom)
             ?.balance || ZERO_TO_STRING
@@ -411,9 +427,7 @@ export default Vue.extend({
       this.status.setLoading()
 
       this.fetchBalances()
-        .then(() => {
-          //
-        })
+        .then(() => {})
         .catch(this.$onError)
         .finally(() => {
           this.status.setIdle()

@@ -16,10 +16,12 @@ import {
 } from '~/app/Services'
 import { BTC_COIN_GECKO_ID } from '~/app/utils/constants'
 import { backupPromiseCall } from '~/app/utils/async'
+import { getTradableTokenMetaWithBalanceAndPrice } from '~/app/utils/token'
 
 const initialStateFactory = () => ({
   erc20TokensWithBalanceAndPriceFromBank: [] as TokenWithBalanceAndPrice[],
   ibcTokensWithBalanceAndPriceFromBank: [] as TokenWithBalanceAndPrice[],
+  tradableSymbolsWithTokenMeta: getTradableTokenMetaWithBalanceAndPrice() as TokenWithBalanceAndPrice[],
   btcUsdPrice: 0 as number,
   injUsdPrice: 0 as number
 })
@@ -29,6 +31,7 @@ const initialState = initialStateFactory()
 export const state = () => ({
   erc20TokensWithBalanceAndPriceFromBank: initialState.erc20TokensWithBalanceAndPriceFromBank as TokenWithBalanceAndPrice[],
   ibcTokensWithBalanceAndPriceFromBank: initialState.ibcTokensWithBalanceAndPriceFromBank as TokenWithBalanceAndPrice[],
+  tradableSymbolsWithTokenMeta: initialState.tradableSymbolsWithTokenMeta as TokenWithBalanceAndPrice[],
   btcUsdPrice: initialState.btcUsdPrice as number,
   injUsdPrice: initialState.injUsdPrice as number
 })
