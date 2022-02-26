@@ -370,7 +370,7 @@ export default Vue.extend({
       this.$accessor.token.getErc20TokensWithBalanceAndPriceFromBank(),
       this.$accessor.account.fetchSubaccountsBalancesWithPrices(),
       this.$accessor.derivatives.fetchSubaccountOrders(),
-      this.$accessor.positions.fetchOrderbook(),
+      this.$accessor.positions.fetchMarketsOrderbook(),
       this.$accessor.positions.fetchSubaccountPositions()
     ])
       .then(() => {

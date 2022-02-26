@@ -10,7 +10,7 @@
         'card-table-wrap-content-lighter': bgLighter
       }"
     >
-      <div class="h-full">
+      <div class="h-full relative">
         <slot></slot>
       </div>
     </div>

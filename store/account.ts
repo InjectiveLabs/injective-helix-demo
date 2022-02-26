@@ -159,10 +159,10 @@ export const actions = actionTree(
       if (this.app.context.route.name === 'derivatives-derivative') {
         await this.app.$accessor.derivatives.fetchSubaccountOrders()
         await this.app.$accessor.derivatives.fetchSubaccountTrades()
-        await this.app.$accessor.derivatives.fetchSubaccountPosition()
         await this.app.$accessor.derivatives.streamSubaccountOrders()
-        await this.app.$accessor.derivatives.streamSubaccountPositions()
         await this.app.$accessor.derivatives.streamSubaccountTrades()
+        await this.app.$accessor.positions.fetchSubaccountPositions()
+        await this.app.$accessor.positions.streamSubaccountPositions()
       }
     },
 

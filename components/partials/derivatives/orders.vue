@@ -9,7 +9,7 @@
           >
             <span class="uppercase text-xs font-semibold">
               {{ $t('activities.openPositions') }}
-              <span v-if="position">(1)</span>
+              {{ `(${positions.length})` }}
             </span>
           </v-button-filter>
           <v-separator />
@@ -38,6 +38,15 @@
           @click.stop="handleCancelAllClick"
         >
           {{ $t('trade.cancelAllOrders') }}
+        </v-button>
+        <v-button
+          v-if="component === components.openPositions && positions.length > 0"
+          class="mr-2"
+          red-outline
+          sm
+          @click.stop="handleCloseAllPositionsClick"
+        >
+          {{ $t('trade.closeAllPositions') }}
         </v-button>
       </div>
     </template>
@@ -86,17 +95,14 @@ export default Vue.extend({
       return this.$accessor.derivatives.subaccountOrders
     },
 
-    position(): UiPosition | undefined {
-      return this.$accessor.derivatives.subaccountPosition
+    positions(): UiPosition[] {
+      return this.$accessor.positions.subaccountPositions
     }
   },
 
   watch: {
-    position(
-      newPosition: UiPosition | undefined,
-      oldPosition: UiPosition | undefined
-    ) {
-      if (newPosition && !oldPosition) {
+    positions(newPositions: UiPosition[], oldPositions: UiPosition[]) {
+      if (newPositions.length !== oldPositions.length) {
         this.component = components.openPositions
       }
     }
@@ -105,8 +111,8 @@ export default Vue.extend({
   mounted() {
     Promise.all([
       this.$accessor.derivatives.fetchSubaccountOrders(),
-      this.$accessor.derivatives.fetchSubaccountPosition(),
-      this.$accessor.derivatives.fetchSubaccountTrades()
+      this.$accessor.derivatives.fetchSubaccountTrades(),
+      this.$accessor.positions.fetchSubaccountPositions()
     ])
       .then(() => {
         //
@@ -120,7 +126,7 @@ export default Vue.extend({
 
   methods: {
     onInit() {
-      if (this.position) {
+      if (this.positions.length > 0) {
         this.component = components.openPositions
       } else if (this.orders.length > 0) {
         this.component = components.openOrders
@@ -136,6 +142,20 @@ export default Vue.extend({
 
       this.$accessor.derivatives
         .batchCancelOrder(orders)
+        .then(() => {
+          this.$toast.success(this.$t('orders_cancelled'))
+        })
+        .catch(this.$onRejected)
+        .finally(() => {
+          //
+        })
+    },
+
+    handleCloseAllPositionsClick() {
+      const { positions } = this
+
+      this.$accessor.positions
+        .closeAllPosition(positions)
         .then(() => {
           this.$toast.success(this.$t('orders_cancelled'))
         })

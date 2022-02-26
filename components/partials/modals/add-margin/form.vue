@@ -134,7 +134,7 @@ export default Vue.extend({
 
       this.status.setLoading()
 
-      this.$accessor.derivatives
+      this.$accessor.positions
         .addMarginToPosition({
           market,
           amount: new BigNumberInBase(form.amount)

@@ -1,10 +1,6 @@
 <template>
   <tr v-if="market">
-    <td
-      v-if="!isOnMarketPage"
-      class="text-left cursor-pointer"
-      @click="handleClickOnMarket"
-    >
+    <td class="text-left cursor-pointer" @click="handleClickOnMarket">
       <div class="flex items-center justify-end md:justify-start">
         <div v-if="market.baseToken.logo" class="w-6 h-6">
           <img
@@ -197,6 +193,14 @@ export default Vue.extend({
       return this.$accessor.derivatives.subaccountOrders
     },
 
+    orderbooks(): Record<string, UiDerivativeOrderbook> {
+      return this.$accessor.positions.orderbooks
+    },
+
+    markets(): UiDerivativeMarketWithToken[] {
+      return this.$accessor.derivatives.markets
+    },
+
     reduceOnlyCurrentOrders(): UiDerivativeLimitOrder[] {
       const { currentOrders } = this
 
@@ -213,41 +217,21 @@ export default Vue.extend({
       return this.$route.name === 'derivatives-derivative'
     },
 
-    markets(): UiDerivativeMarketWithToken[] {
-      const { isOnMarketPage } = this
-
-      if (isOnMarketPage) {
-        return []
-      }
-
-      return this.$accessor.derivatives.markets
-    },
-
     market(): UiDerivativeMarketWithToken | undefined {
-      const { markets, currentMarket, isOnMarketPage, position } = this
-
-      if (isOnMarketPage) {
-        return currentMarket
-      }
+      const { markets, position } = this
 
       return markets.find((m) => m.marketId === position.marketId)
     },
 
-    orderbooks(): Record<string, UiDerivativeOrderbook> {
-      const { isOnMarketPage } = this
-
-      if (isOnMarketPage) {
-        return {}
-      }
-
-      return this.$accessor.positions.orderbooks
-    },
-
     orderbook(): UiDerivativeOrderbook | undefined {
-      const { isOnMarketPage, currentOrderbook } = this
+      const { isOnMarketPage, currentMarket, currentOrderbook } = this
       const { orderbooks, position } = this
 
-      if (isOnMarketPage) {
+      if (
+        isOnMarketPage &&
+        currentMarket &&
+        currentMarket.marketId === position.marketId
+      ) {
         return currentOrderbook
       }
 
@@ -578,7 +562,7 @@ export default Vue.extend({
 
       this.status.setLoading()
 
-      this.$accessor.derivatives
+      this.$accessor.positions
         .closePosition({
           position,
           market
@@ -600,7 +584,7 @@ export default Vue.extend({
       }
       this.status.setLoading()
 
-      this.$accessor.derivatives
+      this.$accessor.positions
         .closePositionAndReduceOnlyOrders({
           market,
           position,

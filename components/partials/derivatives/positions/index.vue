@@ -1,13 +1,18 @@
 <template>
   <div v-if="market" class="h-full">
     <div
-      v-if="position && isUserWalletConnected"
+      v-if="positions.length > 0 && isUserWalletConnected"
       class="table-responsive table-orders"
     >
       <table class="table">
         <position-table-header />
         <tbody>
-          <tr is="v-position" :position="position"></tr>
+          <tr
+            is="v-position"
+            v-for="(position, index) in positions"
+            :key="`positions-${index}-${position.marketId}`"
+            :position="position"
+          ></tr>
         </tbody>
       </table>
     </div>
@@ -37,7 +42,8 @@ export default Vue.extend({
 
   data() {
     return {
-      status: new Status()
+      status: new Status(),
+      interval: 0 as any
     }
   },
 
@@ -50,9 +56,21 @@ export default Vue.extend({
       return this.$accessor.derivatives.market
     },
 
-    position(): UiPosition | undefined {
-      return this.$accessor.derivatives.subaccountPosition
+    positions(): UiPosition[] {
+      return this.$accessor.positions.subaccountPositions
     }
+  },
+
+  mounted() {
+    this.$accessor.positions.fetchOpenPositionsMarketsOrderbook()
+
+    this.interval = setInterval(() => {
+      this.$accessor.positions.fetchOpenPositionsMarketsOrderbook()
+    }, 10000)
+  },
+
+  beforeDestroy() {
+    clearInterval(this.interval)
   }
 })
 </script>
