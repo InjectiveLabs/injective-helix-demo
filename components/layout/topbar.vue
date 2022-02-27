@@ -39,7 +39,7 @@
         >
           <div>
             <v-nav-item
-              :to="{ name: 'funding' }"
+              :to="{ name: 'balances' }"
               class="hover:text-primary-500 inline-block hover:bg-transparent"
               dense
             >

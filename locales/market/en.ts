@@ -2,7 +2,7 @@ export default {
   marketPage: {
     assets: 'Assets',
     assetsNote: '',
-    funding: 'Funding',
+    balances: 'Balances',
     noChainBalance: 'We cannot find any token balances for your address.',
     noChainBalanceNote:
       'Use Injective Bridge to transfer assets in the Injective chain.',

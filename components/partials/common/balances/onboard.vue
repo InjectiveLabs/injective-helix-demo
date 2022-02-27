@@ -41,7 +41,7 @@ export default Vue.extend({
 
   methods: {
     handleClickOnButton() {
-      this.$router.push({ name: 'funding' })
+      this.$router.push({ name: 'balances' })
     }
   }
 })
