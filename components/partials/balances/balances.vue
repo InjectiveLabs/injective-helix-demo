@@ -356,7 +356,7 @@ export default Vue.extend({
       const { component } = this
 
       return this.$t(
-        `funding.${
+        `balances.${
           component === components.bankAccount
             ? 'bankBalances'
             : 'tradingAccountBalances'

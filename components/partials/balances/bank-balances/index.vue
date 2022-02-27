@@ -31,12 +31,6 @@
                 <div>
                   {{ $t('balances.total') }}
                 </div>
-                <v-icon-info-tooltip
-                  class="ml-2"
-                  color="text-gray-200"
-                  :tooltip="$t('balances.totalTooltip')"
-                  lg
-                />
               </span>
               <span class="col-span-3">
                 {{ $t('common.value') }}

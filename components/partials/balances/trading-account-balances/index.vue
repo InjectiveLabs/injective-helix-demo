@@ -29,9 +29,9 @@
                   {{ $t('balances.asset') }}
                 </span>
                 <span class="col-span-2 flex items-center">
-                  <div>
+                  <span>
                     {{ $t('balances.total') }}
-                  </div>
+                  </span>
                   <v-icon-info-tooltip
                     class="ml-2"
                     color="text-gray-200"
@@ -39,22 +39,34 @@
                     lg
                   />
                 </span>
-                <span class="col-span-2">
-                  {{ $t('balances.available') }}
-                </span>
-              </div>
-              <div class="col-span-7 grid grid-cols-9 gap-4">
-                <span class="col-span-2">
-                  {{ $t('balances.marginHold') }}
-                </span>
                 <span class="col-span-2 flex items-center">
-                  <div>
-                    {{ $t('trade.unrealized_pnl') }}
-                  </div>
+                  {{ $t('balances.available') }}
                   <v-icon-info-tooltip
                     class="ml-2"
                     color="text-gray-200"
-                    :tooltip="$t('trade.unrealized_pnl_tooltip')"
+                    :tooltip="$t('balances.availableTooltip')"
+                    lg
+                  />
+                </span>
+              </div>
+              <div class="col-span-7 grid grid-cols-9 gap-4">
+                <span class="col-span-2 flex items-center">
+                  {{ $t('balances.marginHold') }}
+                  <v-icon-info-tooltip
+                    class="ml-2"
+                    color="text-gray-200"
+                    :tooltip="$t('balances.marginHoldTooltip')"
+                    lg
+                  />
+                </span>
+                <span class="col-span-2 flex items-center">
+                  <span>
+                    {{ $t('trade.unrealized_pnl') }}
+                  </span>
+                  <v-icon-info-tooltip
+                    class="ml-2"
+                    color="text-gray-200"
+                    :tooltip="$t('balances.unrealizedPnlTooltip')"
                     lg
                   />
                 </span>
