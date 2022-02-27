@@ -8,13 +8,13 @@
               dense
               name="search"
               class="sm:max-w-xs"
-              :placeholder="$t('funding.filter')"
+              :placeholder="$t('balances.filter')"
               :search="search"
               @searched="handleInputOnSearch"
             />
 
             <v-checkbox v-model="hideSmallBalance" class="mt-4 sm:mt-0 ml-auto">
-              {{ $t('funding.hideSmallBalances') }}
+              {{ $t('balances.hideSmallBalances') }}
             </v-checkbox>
           </div>
           <div
@@ -26,26 +26,26 @@
             >
               <div class="col-span-5 grid grid-cols-5 gap-4">
                 <span>
-                  {{ $t('funding.asset') }}
+                  {{ $t('balances.asset') }}
                 </span>
                 <span class="col-span-2 flex items-center">
                   <div>
-                    {{ $t('funding.total') }}
+                    {{ $t('balances.total') }}
                   </div>
                   <v-icon-info-tooltip
                     class="ml-2"
                     color="text-gray-200"
-                    :tooltip="$t('funding.totalTooltip')"
+                    :tooltip="$t('balances.totalTooltip')"
                     lg
                   />
                 </span>
                 <span class="col-span-2">
-                  {{ $t('funding.available') }}
+                  {{ $t('balances.available') }}
                 </span>
               </div>
               <div class="col-span-7 grid grid-cols-9 gap-4">
                 <span class="col-span-2">
-                  {{ $t('funding.marginHold') }}
+                  {{ $t('balances.marginHold') }}
                 </span>
                 <span class="col-span-2 flex items-center">
                   <div>
@@ -82,7 +82,7 @@
                 <span class="col-span-1 md:col-span-5">
                   <div class="grow m-auto text-center py-8">
                     <img src="/svg/empty-list.svg" class="mx-auto mb-2" />
-                    <p>{{ $t('funding.empty') }}</p>
+                    <p>{{ $t('balances.empty') }}</p>
                   </div>
                 </span>
               </template>
@@ -208,8 +208,6 @@ export default Vue.extend({
   mounted() {
     Promise.all([
       this.$accessor.derivatives.fetchSubaccountOrders(),
-      this.$accessor.positions.fetchMarketsOrderbook(),
-      this.$accessor.positions.fetchSubaccountPositions(),
       this.$accessor.account.fetchSubaccountsBalancesWithPrices()
     ])
       .then(() => {
@@ -218,6 +216,18 @@ export default Vue.extend({
       .catch(this.$onError)
       .finally(() => {
         this.status.setIdle()
+      })
+
+    Promise.all([
+      this.$accessor.positions.fetchMarketsOrderbook(),
+      this.$accessor.positions.fetchSubaccountPositions()
+    ])
+      .then(() => {
+        //
+      })
+      .catch(this.$onError)
+      .finally(() => {
+        //
       })
   },
 

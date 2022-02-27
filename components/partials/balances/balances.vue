@@ -4,18 +4,18 @@
       <v-card-select v-model="component" lg :option="components.bankAccount">
         <template slot="subtitle">
           <div class="font-semibold text-lg flex items-center mb-4">
-            <span>{{ $t('funding.bankAccount') }}</span>
+            <span>{{ $t('balances.bankAccount') }}</span>
             <v-icon-info-tooltip
               class="ml-3"
               color="text-gray-200"
-              :tooltip="$t('funding.bankAccountTooltip')"
+              :tooltip="$t('balances.bankAccountTooltip')"
               lg
             />
           </div>
         </template>
         <div class="text-right">
           <p class="text-gray-500 text-xs uppercase mb-3 tracking-wider">
-            {{ $t('funding.walletValue') }}
+            {{ $t('balances.walletValue') }}
           </p>
           <p class="text-2xl">
             <span v-if="status.isLoading()">&mdash; USD</span>
@@ -28,18 +28,18 @@
       <v-card-select v-model="component" lg :option="components.tradingAccount">
         <template slot="subtitle">
           <div class="font-semibold text-lg flex items-center mb-4">
-            <span>{{ $t('funding.tradingAccount') }}</span>
+            <span>{{ $t('balances.tradingAccount') }}</span>
             <v-icon-info-tooltip
               class="ml-3"
               color="text-gray-200"
-              :tooltip="$t('funding.tradingAccountTooltip')"
+              :tooltip="$t('balances.tradingAccountTooltip')"
               lg
             />
           </div>
         </template>
         <div class="text-right">
           <p class="text-gray-500 text-xs uppercase mb-3 tracking-wider">
-            {{ $t('funding.portfolioValue') }}
+            {{ $t('balances.portfolioValue') }}
           </p>
           <p class="text-2xl">
             <span v-if="status.isLoading()">&mdash; USD</span>
@@ -98,9 +98,9 @@ import {
   ZERO_IN_BASE,
   ZERO_TO_STRING
 } from '@injectivelabs/ui-common'
-import VBankBalances from '~/components/partials/funding/bank-balances/index.vue'
-import VTradingAccountBalances from '~/components/partials/funding/trading-account-balances/index.vue'
-import VAccountSummary from '~/components/partials/funding/account-summary.vue'
+import VBankBalances from '~/components/partials/balances/bank-balances/index.vue'
+import VTradingAccountBalances from '~/components/partials/balances/trading-account-balances/index.vue'
+import VAccountSummary from '~/components/partials/balances/account-summary.vue'
 import {
   HIDDEN_BALANCE_DISPLAY,
   UI_MINIMAL_AMOUNT,
@@ -368,10 +368,7 @@ export default Vue.extend({
   mounted() {
     Promise.all([
       this.$accessor.token.getErc20TokensWithBalanceAndPriceFromBank(),
-      this.$accessor.account.fetchSubaccountsBalancesWithPrices(),
-      this.$accessor.derivatives.fetchSubaccountOrders(),
-      this.$accessor.positions.fetchMarketsOrderbook(),
-      this.$accessor.positions.fetchSubaccountPositions()
+      this.$accessor.account.fetchSubaccountsBalancesWithPrices()
     ])
       .then(() => {
         //
@@ -382,6 +379,19 @@ export default Vue.extend({
       })
 
     Promise.all([this.$accessor.token.getBitcoinUsdPrice()])
+      .then(() => {
+        //
+      })
+      .catch(this.$onError)
+      .finally(() => {
+        //
+      })
+
+    Promise.all([
+      this.$accessor.derivatives.fetchSubaccountOrders(),
+      this.$accessor.positions.fetchMarketsOrderbook(),
+      this.$accessor.positions.fetchSubaccountPositions()
+    ])
       .then(() => {
         //
       })

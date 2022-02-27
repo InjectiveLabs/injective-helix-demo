@@ -2,7 +2,7 @@
   <TableRow md class="text-sm md:grid-cols-2 xl:grid-cols-12">
     <div class="col-span-5 grid grid-cols-2 md:grid-cols-5 gap-4">
       <span class="font-mono text-left md:hidden">
-        {{ $t('funding.asset') }}
+        {{ $t('balances.asset') }}
       </span>
       <span class="text-right md:text-left">
         <div class="flex items-center justify-end md:justify-start">
@@ -21,7 +21,7 @@
         </div>
       </span>
       <span class="font-mono text-left md:hidden">
-        {{ $t('funding.total') }}
+        {{ $t('balances.total') }}
       </span>
       <span
         class="md:col-span-2 font-mono text-right md:text-left md:flex items-center"
@@ -30,7 +30,7 @@
         <span v-else>{{ totalBalanceInString }}</span>
       </span>
       <span class="font-mono text-left md:hidden">
-        {{ $t('funding.available') }}
+        {{ $t('balances.available') }}
       </span>
       <span
         class="md:col-span-2 font-mono text-right md:text-left md:flex items-center"
@@ -42,7 +42,7 @@
 
     <div class="col-span-7 grid grid-cols-2 md:grid-cols-9 gap-4">
       <span class="font-mono text-left md:hidden">
-        {{ $t('funding.marginHold') }}
+        {{ $t('balances.marginHold') }}
       </span>
       <span
         class="md:col-span-2 font-mono text-right md:text-left md:flex items-center"

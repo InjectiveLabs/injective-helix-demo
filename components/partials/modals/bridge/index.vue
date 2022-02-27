@@ -88,11 +88,11 @@ import {
 } from '@injectivelabs/ui-common'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { BridgeType, Modal, TransferDirection } from '~/types'
-import VTokenSelector from '~/components/partials/funding/bridge/token-selector/index.vue'
-import VBalance from '~/components/partials/funding/bridge/balance.vue'
-import VNetworkSelect from '~/components/partials/funding/bridge/network-select.vue'
-import VIbcTransferNote from '~/components/partials/funding/bridge/ibc-transfer-note.vue'
-import VTransferDirectionSwitch from '~/components/partials/funding/bridge/transfer-direction-switch.vue'
+import VTokenSelector from '~/components/partials/balances/bridge/token-selector/index.vue'
+import VBalance from '~/components/partials/balances/bridge/balance.vue'
+import VNetworkSelect from '~/components/partials/balances/bridge/network-select.vue'
+import VIbcTransferNote from '~/components/partials/balances/bridge/ibc-transfer-note.vue'
+import VTransferDirectionSwitch from '~/components/partials/balances/bridge/transfer-direction-switch.vue'
 
 export default Vue.extend({
   components: {

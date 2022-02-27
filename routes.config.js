@@ -48,7 +48,7 @@ const promotedMarkets = ['inj-spot', 'inj-usdt-perp']
 
 module.exports = [
   '/',
-  '/funding',
+  '/balances',
   '/activities',
   '/fee-discounts',
   '/trade-and-earn',

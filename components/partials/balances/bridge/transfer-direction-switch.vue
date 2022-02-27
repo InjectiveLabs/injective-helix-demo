@@ -27,7 +27,7 @@
 import Vue, { PropType } from 'vue'
 import { NetworkMeta } from '@injectivelabs/ui-common'
 import { TransferDirection, TransferSide } from '~/types'
-import VNetworkCardBase from '~/components/partials/funding/bridge/network-card/index.vue'
+import VNetworkCardBase from '~/components/partials/balances/bridge/network-card/index.vue'
 import { transferSideMeta } from '~/app/data/bridge'
 
 export default Vue.extend({

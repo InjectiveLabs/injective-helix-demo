@@ -47,7 +47,7 @@
 import Vue, { PropType } from 'vue'
 import { BridgingNetwork, getExplorerUrl } from '@injectivelabs/ui-common'
 import { Modal, BridgeType } from '~/types/enums'
-import VIbcTransferNote from '~/components/partials/funding/bridge/ibc-transfer-note.vue'
+import VIbcTransferNote from '~/components/partials/balances/bridge/ibc-transfer-note.vue'
 import { injToken } from '~/app/data/token'
 import { NETWORK } from '~/app/utils/constants'
 import { getHubUrl } from '~/app/utils/helpers'

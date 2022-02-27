@@ -8,13 +8,13 @@
               dense
               name="search"
               class="sm:max-w-xs"
-              :placeholder="$t('funding.filter')"
+              :placeholder="$t('balances.filter')"
               :search="search"
               @searched="handleInputOnSearch"
             />
 
             <v-checkbox v-model="hideSmallBalance" class="mt-4 sm:mt-0 ml-auto">
-              {{ $t('funding.hideSmallBalances') }}
+              {{ $t('balances.hideSmallBalances') }}
             </v-checkbox>
           </div>
           <div
@@ -25,16 +25,16 @@
               class="md:hidden xl:grid"
             >
               <span class="col-span-2">
-                {{ $t('funding.asset') }}
+                {{ $t('balances.asset') }}
               </span>
               <span class="col-span-2 flex items-center">
                 <div>
-                  {{ $t('funding.total') }}
+                  {{ $t('balances.total') }}
                 </div>
                 <v-icon-info-tooltip
                   class="ml-2"
                   color="text-gray-200"
-                  :tooltip="$t('funding.totalTooltip')"
+                  :tooltip="$t('balances.totalTooltip')"
                   lg
                 />
               </span>
@@ -59,7 +59,7 @@
                 <span class="col-span-1 md:col-span-5">
                   <div class="grow m-auto text-center py-8">
                     <img src="/svg/empty-list.svg" class="mx-auto mb-2" />
-                    <p>{{ $t('funding.empty') }}</p>
+                    <p>{{ $t('balances.empty') }}</p>
                   </div>
                 </span>
               </template>

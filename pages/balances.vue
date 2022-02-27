@@ -27,10 +27,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import VBalances from '~/components/partials/funding/balances.vue'
+import VBalances from '~/components/partials/balances/balances.vue'
 import VWelcomeBanner from '~/components/partials/banners/welcome.vue'
 import VGasRebate from '~/components/partials/banners/gas-rebate.vue'
-import VBridge from '~/components/partials/funding/bridge.vue'
+import VBridge from '~/components/partials/balances/bridge.vue'
 import { Modal } from '~/types'
 import VRefereeOnboardingModal from '~/components/partials/modals/referee-onboarding.vue'
 

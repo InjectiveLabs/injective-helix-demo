@@ -2,7 +2,7 @@
   <div>
     <div class="flex items-center cursor-pointer" @click="toggleHideBalance">
       <h4 class="text-sm uppercase text-gray-400">
-        {{ $t('funding.accountSummary') }}
+        {{ $t('balances.accountSummary') }}
       </h4>
       <v-icon-show class="w-4 h-4 ml-4 text-gray-400 hover:text-primary-500" />
     </div>

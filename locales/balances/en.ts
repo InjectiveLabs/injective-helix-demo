@@ -1,5 +1,5 @@
 export default {
-  funding: {
+  balances: {
     asset: 'Asset',
     total: 'Total',
     walletValue: 'Wallet Value',

@@ -1,7 +1,7 @@
 <template>
   <TableRow md class="text-sm md:grid-cols-2 xl:grid-cols-12">
     <span class="font-mono text-left md:hidden">
-      {{ $t('funding.asset') }}
+      {{ $t('balances.asset') }}
     </span>
     <span class="md:col-span-2 text-right md:text-left">
       <div class="flex items-center justify-end md:justify-start">
@@ -20,7 +20,7 @@
       </div>
     </span>
     <span class="font-mono text-left md:hidden">
-      {{ $t('funding.total') }}
+      {{ $t('balances.total') }}
     </span>
     <span
       class="md:col-span-2 font-mono text-right md:text-left whitespace-nowrap"
