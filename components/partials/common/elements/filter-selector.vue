@@ -22,6 +22,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { TradeDirection } from '@injectivelabs/ts-types'
+import { TransferType } from '@injectivelabs/subaccount-consumer'
 import VDropdown from '~/components/elements/dropdown.vue'
 import SelectorItem from '~/components/layout/selectors/selector-item.vue'
 import { TradeSelectorType, TradeTypes } from '~/types/enums'
@@ -80,6 +81,24 @@ export default Vue.extend({
         {
           text: this.$t('trade.limit'),
           value: TradeTypes.Limit
+        }
+      ]
+      this.placeholder = this.$t('trade.type')
+    }
+
+    if (this.type === TradeSelectorType.TransferType) {
+      this.list = [
+        {
+          text: this.$t('trade.all'),
+          value: undefined
+        },
+        {
+          text: this.$t('fundingHistory.transfers.deposit'),
+          value: TransferType.Deposit
+        },
+        {
+          text: this.$t('fundingHistory.transfers.deposit'),
+          value: TransferType.Withdraw
         }
       ]
       this.placeholder = this.$t('trade.type')

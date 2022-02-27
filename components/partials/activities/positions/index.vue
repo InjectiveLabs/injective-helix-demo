@@ -29,7 +29,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import VPositions from '~/components/partials/activities/positions/positions.vue'
-import VFundingPayments from '~/components/partials/activities/positions/funding-payments/index.vue'
+import VFundingPayments from '~/components/partials/activities/positions/funding-payments.vue'
 import VModalAddMargin from '~/components/partials/modals/add-margin/index.vue'
 
 const components = {

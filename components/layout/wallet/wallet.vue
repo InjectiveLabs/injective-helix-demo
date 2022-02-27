@@ -189,12 +189,17 @@ export default Vue.extend({
   methods: {
     handleClickOnLogout() {
       this.$accessor.wallet.logout()
+
+      if (['activities', 'balances'].includes(this.$route.name as string)) {
+        this.$router.push({ name: 'index' })
+      }
     },
 
     handleShowDropdown() {
       if (this.$popper) {
         this.$popper.showDropdown()
       }
+
       this.isWalletDropdownOpen = true
     },
 
@@ -202,6 +207,7 @@ export default Vue.extend({
       if (this.$popper) {
         this.$popper.hideDropdown()
       }
+
       this.isWalletDropdownOpen = false
     }
   }

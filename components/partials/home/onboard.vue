@@ -65,12 +65,6 @@
                   {{ $t(`home.${type}Features.featureThreeDescription`) }}
                 </p>
               </div>
-
-              <v-button lg outline class="min-w-4xs mt-10">
-                <span class="text-primary-500">
-                  {{ $t('home.getStarted') }}
-                </span>
-              </v-button>
             </div>
           </transition>
         </div>

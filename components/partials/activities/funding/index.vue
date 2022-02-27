@@ -2,6 +2,14 @@
   <div class="h-full w-full flex flex-wrap py-4">
     <div class="w-full mx-auto">
       <div class="flex flex-wrap items-center justify-center">
+        <v-button-select
+          v-model="component"
+          :option="components.transfers"
+          text
+        >
+          {{ $t('fundingHistory.transfers.transfers') }}
+        </v-button-select>
+        <div class="mx-2 w-px h-4 bg-gray-500"></div>
         <v-button-select v-model="component" :option="components.deposits" text>
           {{ $t('fundingHistory.deposits') }}
         </v-button-select>
@@ -12,14 +20,6 @@
           text
         >
           {{ $t('fundingHistory.withdrawals') }}
-        </v-button-select>
-        <div class="mx-2 w-px h-4 bg-gray-500"></div>
-        <v-button-select
-          v-model="component"
-          :option="components.transfers"
-          text
-        >
-          {{ $t('fundingHistory.transfers') }}
         </v-button-select>
       </div>
       <div class="mt-6 relative">
@@ -51,7 +51,7 @@ export default Vue.extend({
   data() {
     return {
       components,
-      component: components.deposits
+      component: components.transfers
     }
   }
 })

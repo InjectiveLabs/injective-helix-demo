@@ -18,7 +18,8 @@ export default {
   },
 
   fundingPayments: {
-    emptyFundingPayments: 'No funding payments found'
+    emptyFundingPayments: 'No funding payments found',
+    totalTooltip: 'Total margin paid'
   },
 
   rewardsHistory: {
@@ -28,7 +29,19 @@ export default {
   fundingHistory: {
     deposits: 'Deposits',
     withdrawals: 'Withdrawals',
-    transfers: 'Transfers'
+
+    transfers: {
+      transfers: 'Transfers',
+      type: 'Type of Transfer',
+      deposit: 'Deposit',
+      withdrawal: 'Withdrawal',
+      amount: 'Amount',
+      in: 'In',
+      out: 'Out',
+      destination: 'Destination',
+      amountTooltip: 'The amount that was transferred',
+      emptySubaccountTransfers: 'No subaccount transfers found'
+    }
   },
 
   trade: {

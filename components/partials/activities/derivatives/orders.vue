@@ -68,7 +68,7 @@ import {
 } from '@injectivelabs/ui-common'
 import Order from '~/components/partials/common/derivatives/order.vue'
 import OrdersTableHeader from '~/components/partials/common/derivatives/orders-table-header.vue'
-import FilterSelector from '~/components/partials/common/trades/trade-dropdown-filter.vue'
+import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import { TradeSelectorType } from '~/types/enums'
 
 export default Vue.extend({
@@ -121,28 +121,19 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.fetchOrders()
-    this.$root.$on('wallet-connected', this.fetchOrders)
-  },
+    this.status.setLoading()
 
-  beforeDestroy() {
-    this.$root.$off('wallet-connected', this.fetchOrders)
+    Promise.all([this.$accessor.activities.fetchSubaccountDerivativeOrders()])
+      .then(() => {
+        //
+      })
+      .catch(this.$onError)
+      .finally(() => {
+        this.status.setIdle()
+      })
   },
 
   methods: {
-    fetchOrders() {
-      this.status.setLoading()
-
-      Promise.all([this.$accessor.activities.fetchSubaccountDerivativeOrders()])
-        .then(() => {
-          //
-        })
-        .catch(this.$onError)
-        .finally(() => {
-          this.status.setIdle()
-        })
-    },
-
     handleCancelOrders() {
       const { orders } = this
 

@@ -63,7 +63,7 @@ import { UiSpotTrade, UiSpotMarketWithToken } from '@injectivelabs/ui-common'
 import { TradeExecutionType } from '@injectivelabs/ts-types'
 import Trade from '~/components/partials/common/spot/trade.vue'
 import TradesTableHeader from '~/components/partials/common/spot/trades-table-header.vue'
-import FilterSelector from '~/components/partials/common/trades/trade-dropdown-filter.vue'
+import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import { TradeSelectorType } from '~/types/enums'
 
 export default Vue.extend({
@@ -124,28 +124,19 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.fetchTrades()
-    this.$root.$on('wallet-connected', this.fetchTrades)
-  },
+    this.status.setLoading()
 
-  beforeDestroy() {
-    this.$root.$off('wallet-connected', this.fetchTrades)
+    Promise.all([this.$accessor.activities.fetchSubaccountSpotTrades()])
+      .then(() => {
+        //
+      })
+      .catch(this.$onError)
+      .finally(() => {
+        this.status.setIdle()
+      })
   },
 
   methods: {
-    fetchTrades() {
-      this.status.setLoading()
-
-      Promise.all([this.$accessor.activities.fetchSubaccountSpotTrades()])
-        .then(() => {
-          //
-        })
-        .catch(this.$onError)
-        .finally(() => {
-          this.status.setIdle()
-        })
-    },
-
     handleInputOnSearch(search: string) {
       this.search = search
     },

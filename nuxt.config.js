@@ -114,7 +114,7 @@ export default {
 
   router: {
     linkActiveClass: 'is-active',
-    middleware: ['maintenance'],
+    middleware: ['maintenance', 'connected'],
     extendRoutes(routes) {
       return [
         ...routes,

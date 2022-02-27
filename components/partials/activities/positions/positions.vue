@@ -69,7 +69,7 @@ import {
 } from '@injectivelabs/ui-common'
 import Position from '~/components/partials/common/derivatives/position.vue'
 import PositionTableHeader from '~/components/partials/common/derivatives/position-table.header.vue'
-import FilterSelector from '~/components/partials/common/trades/trade-dropdown-filter.vue'
+import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import { TradeSelectorType } from '~/types/enums'
 
 export default Vue.extend({
@@ -122,32 +122,23 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.fetchPositions()
-    this.$root.$on('wallet-connected', this.fetchPositions)
-  },
+    this.status.setLoading()
 
-  beforeDestroy() {
-    this.$root.$off('wallet-connected', this.fetchPositions)
+    Promise.all([
+      this.$accessor.derivatives.fetchSubaccountOrders(),
+      this.$accessor.positions.fetchMarketsOrderbook(),
+      this.$accessor.positions.fetchSubaccountPositions()
+    ])
+      .then(() => {
+        //
+      })
+      .catch(this.$onError)
+      .finally(() => {
+        this.status.setIdle()
+      })
   },
 
   methods: {
-    fetchPositions() {
-      this.status.setLoading()
-
-      Promise.all([
-        this.$accessor.derivatives.fetchSubaccountOrders(),
-        this.$accessor.positions.fetchMarketsOrderbook(),
-        this.$accessor.positions.fetchSubaccountPositions()
-      ])
-        .then(() => {
-          //
-        })
-        .catch(this.$onError)
-        .finally(() => {
-          this.status.setIdle()
-        })
-    },
-
     handleClosePositions() {
       const { positions } = this
 

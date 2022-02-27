@@ -1,0 +1,43 @@
+<template>
+  <thead>
+    <tr>
+      <th class="text-left">
+        <div class="flex items-center">
+          {{ $t('trade.timestamp') }}
+          <v-icon-info-tooltip
+            class="ml-2"
+            :tooltip="$t('trade.timestamp_tooltip')"
+          />
+        </div>
+      </th>
+
+      <th class="text-left">
+        {{ $t('fundingHistory.transfers.destination') }}
+      </th>
+
+      <th class="text-center">
+        {{ $t('fundingHistory.transfers.type') }}
+      </th>
+
+      <th>
+        <div class="flex items-center justify-end">
+          <span>{{ $t('fundingHistory.transfers.amount') }}</span>
+          <v-icon-info-tooltip
+            class="ml-2"
+            :tooltip="$t('fundingHistory.transfers.amountTooltip')"
+          />
+        </div>
+      </th>
+    </tr>
+  </thead>
+</template>
+
+<script lang="ts">
+import Vue from 'vue'
+
+export default Vue.extend({
+  props: {
+    //
+  }
+})
+</script>

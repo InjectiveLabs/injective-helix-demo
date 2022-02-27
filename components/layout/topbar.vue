@@ -27,6 +27,7 @@
           @mouseleave.native="handleHideDropdown"
           @focus.native="handleShowDropdown"
           @blur.native="handleHideDropdown"
+          @click.native="handleClickOnDashboard"
         >
           {{ $t('navigation.dashboard') }}
         </v-nav-item-dummy>
@@ -129,6 +130,12 @@ export default Vue.extend({
   methods: {
     handleClickOnSidebarToggle() {
       this.$emit('sidebar-opened')
+    },
+
+    handleClickOnDashboard() {
+      if (this.isUserWalletConnected) {
+        this.$router.push({ name: 'balances' })
+      }
     },
 
     handleConnectedWallet() {

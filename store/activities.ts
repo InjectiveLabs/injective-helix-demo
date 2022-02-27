@@ -8,8 +8,8 @@ import {
   UiDerivativeLimitOrder,
   UiDerivativeTrade,
   UiPosition,
-  UiSubaccountTransfer,
-  UiBridgeTransactionWithToken
+  UiBridgeTransactionWithToken,
+  UiSubaccountTransferWithToken
 } from '@injectivelabs/ui-common'
 import {
   DerivativeOrderState,
@@ -30,7 +30,8 @@ import {
   derivativeService,
   spotActionServiceFactory,
   spotService,
-  subaccountService
+  subaccountService,
+  tokenService
 } from '~/app/Services'
 
 const initialStateFactory = () => ({
@@ -42,7 +43,7 @@ const initialStateFactory = () => ({
   subaccountFundingPayments: [] as Array<FundingPayment>,
   tradingRewardsHistory: [] as Array<TradingReward>,
 
-  subaccountTransfers: [] as Array<UiSubaccountTransfer>,
+  subaccountTransfers: [] as Array<UiSubaccountTransferWithToken>,
   transactions: [] as UiBridgeTransactionWithToken[]
 })
 
@@ -58,7 +59,7 @@ export const state = () => ({
   tradingRewardsHistory: initialState.tradingRewardsHistory as Array<TradingReward>,
 
   transactions: initialState.transactions as Array<UiBridgeTransactionWithToken>,
-  subaccountTransfers: initialState.subaccountTransfers as Array<UiSubaccountTransfer>
+  subaccountTransfers: initialState.subaccountTransfers as Array<UiSubaccountTransferWithToken>
 })
 
 export type ActivitiesStoreState = ReturnType<typeof state>
@@ -244,7 +245,7 @@ export const mutations = {
 
   setSubaccountTransfers(
     state: ActivitiesStoreState,
-    transfers: Array<UiSubaccountTransfer>
+    transfers: Array<UiSubaccountTransferWithToken>
   ) {
     state.subaccountTransfers = transfers
   },
@@ -519,7 +520,7 @@ export const actions = actionTree(
       commit('setSubaccountFundingPayments', fundingPayments)
     },
 
-    async fetchTransfers({ commit }) {
+    async fetchSubaccountTransfers({ commit }) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -527,12 +528,19 @@ export const actions = actionTree(
         return
       }
 
-      commit(
-        'setSubaccountTransfers',
-        await subaccountService.fetchSubaccountTransfers(
-          subaccount.subaccountId
-        )
+      const transfers = await subaccountService.fetchSubaccountTransfers(
+        subaccount.subaccountId
       )
+      const transfersWithToken = await Promise.all(
+        transfers.map(async (transfer) => {
+          return {
+            ...transfer,
+            token: await tokenService.getDenomToken(transfer.denom)
+          } as UiSubaccountTransferWithToken
+        })
+      )
+
+      commit('setSubaccountTransfers', transfersWithToken)
     },
 
     async batchCancelSpotOrders(_, orders: UiSpotLimitOrder[]) {
