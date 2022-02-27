@@ -1,8 +1,8 @@
 export default {
   home: {
-    title: 'Trade Cryptocurrencies cross-chain',
+    title: 'Buy & Sell Crypto In Fully Decentralized Exchange',
     subtitle:
-      'Trade cryptocurrencies on Injective’s fast, cross-chain, low fee, secure, and fully decentralized exchange protocol.',
+      'Powered by the Injective Protocol, you can trade all sorts of crypto across different chains in a fast, low fee, secure and fully decentralized way.',
     getStarted: 'Get started',
     viewAllMarkets: 'View all markets',
     topVolume: 'Top Volume',
@@ -13,39 +13,38 @@ export default {
     newToCrypto: 'New to Crypto',
     experienceTrader: 'An Experienced Trader',
     institutionalTrader: 'An Institutional Trader',
-    startTradingNote: 'Start trading unlimited markets for zero gas fees',
+    startTradingNote: 'Start trading unlimited markets with zero gas fees',
     newToCryptoFeatures: {
-      featureOne: 'Feature 1',
+      featureOne: 'Fast and Simple',
       featureOneDescription:
-        'Tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam. Ncididunt ut labore et dolore',
-      featureTwo: 'Feature 2',
+        'Effortlessly bring assets from Ethereum or Cosmos Network and buy crypto in minutes',
+      featureTwo: 'Your Key, Your Coins',
       featureTwoDescription:
-        'Tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam. Ncididunt ut labore et dolore',
-      featureThree: 'Feature 3',
+        'Trading in a decentralized manner means you have full control of your assets',
+      featureThree: 'Discover New Markets',
       featureThreeDescription:
-        'Tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam. Ncididunt ut labore et dolore'
+        'Markets that typically do not appear in centralized exchanges can be found here'
     },
     experienceTraderFeatures: {
-      featureOne: 'Feature 1',
+      featureOne: 'Decentralized Orderbook',
       featureOneDescription:
-        'Tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam. Ncididunt ut labore et dolore',
-      featureTwo: 'Feature 2',
+        'The traditional trading model in an decentralized environment',
+      featureTwo: 'Trade & Earn',
       featureTwoDescription:
-        'Tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam. Ncididunt ut labore et dolore',
-      featureThree: 'Feature 3',
+        'Record breaking incentive program catered for retail traders',
+      featureThree: 'Zero Gas Fee',
       featureThreeDescription:
-        'Tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam. Ncididunt ut labore et dolore'
+        'Injective Pro traders do not have to pay gas fees when placing orders'
     },
     institutionalTraderFeatures: {
-      featureOne: 'Feature 1',
+      featureOne: 'Dedicated Market Maker Rewards',
       featureOneDescription:
-        'Tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam. Ncididunt ut labore et dolore',
-      featureTwo: 'Feature 2',
+        'Best in class liquidity incentive program catered for marker makers',
+      featureTwo: 'Be a VIP',
       featureTwoDescription:
-        'Tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam. Ncididunt ut labore et dolore',
-      featureThree: 'Feature 3',
-      featureThreeDescription:
-        'Tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam. Ncididunt ut labore et dolore'
+        'Receive VIP treatment such as trading fee discounts',
+      featureThree: 'Intuitive API',
+      featureThreeDescription: 'Easy to integrate with world-class support'
     }
   },
 
@@ -56,7 +55,7 @@ export default {
     privacyPolicy: 'Privacy Policy',
     support: 'Support',
     faq: 'FAQ',
-    submitRequest: 'Submit a request',
+    submitRequest: 'Submit A request',
     feeDiscounts: 'Fee Discounts',
     apiDocumentation: 'API Documentation',
     community: 'Community'

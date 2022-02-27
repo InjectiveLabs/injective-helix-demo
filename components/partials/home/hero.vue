@@ -14,7 +14,12 @@
           <p class="text-gray-500 mt-4 text-lg leading-6 tracking-wide">
             {{ $t('home.subtitle') }}
           </p>
-          <v-button lg primary class="min-w-4xs mt-6">
+          <v-button
+            lg
+            primary
+            class="min-w-4xs mt-6"
+            @click="handleGetStartedClick"
+          >
             {{ $t('home.getStarted') }}
           </v-button>
         </div>
@@ -23,3 +28,28 @@
     </div>
   </div>
 </template>
+
+<script lang="ts">
+import Vue from 'vue'
+
+export default Vue.extend({
+  computed: {
+    isUserWalletConnected() {
+      return this.$accessor.wallet.isUserWalletConnected
+    }
+  },
+
+  methods: {
+    handleGetStartedClick() {
+      if (this.isUserWalletConnected) {
+        this.$router.push({
+          name: 'derivatives-derivative',
+          params: { derivative: 'btc-usdt-perp' }
+        })
+      } else {
+        this.$root.$emit('wallet-clicked')
+      }
+    }
+  }
+})
+</script>
