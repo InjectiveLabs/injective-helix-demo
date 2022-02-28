@@ -15,7 +15,7 @@
         {{ $t('fundingHistory.transfers.asset') }}
       </th>
 
-      <th class="text-center">
+      <th class="text-left">
         {{ $t('fundingHistory.transfers.type') }}
       </th>
 

@@ -17,7 +17,7 @@
         </template>
 
         <div
-          v-if="transactions.length > 0"
+          v-if="filteredTransactions.length > 0"
           class="table-responsive min-h-orders max-h-lg mt-6"
         >
           <table class="table">
@@ -25,7 +25,7 @@
             <tbody v-if="isUserWalletConnected">
               <tr
                 is="v-deposit"
-                v-for="(transaction, index) in filteredTransactions"
+                v-for="(transaction, index) in sortedTransactions"
                 :key="`deposit-${index}-${transaction.timestamp}`"
                 :transaction="transaction"
               ></tr>
@@ -45,7 +45,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { UiBridgeTransactionWithToken } from '@injectivelabs/ui-common'
+import {
+  BridgeTransactionState,
+  UiBridgeTransactionWithToken
+} from '@injectivelabs/ui-common'
 import VDeposit from './deposit.vue'
 import TableHeader from '~/components/partials/activities/funding/common/table-header.vue'
 
@@ -75,7 +78,10 @@ export default Vue.extend({
       const { transactions, search } = this
 
       return transactions.filter((transaction) => {
-        if (!search) {
+        const isCompletedTransaction =
+          transaction.state === BridgeTransactionState.Completed
+
+        if (!search && isCompletedTransaction) {
           return true
         }
 
@@ -85,7 +91,7 @@ export default Vue.extend({
             .toLowerCase()
             .includes(search.trim().toLowerCase())
 
-        return isPartOfSearchFilter
+        return isPartOfSearchFilter && isCompletedTransaction
       })
     },
 

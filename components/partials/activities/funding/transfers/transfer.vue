@@ -21,7 +21,7 @@
       </div>
     </td>
 
-    <td class="h-8 text-center">
+    <td class="h-8 text-left">
       <span>{{
         $t(
           `fundingHistory.${
