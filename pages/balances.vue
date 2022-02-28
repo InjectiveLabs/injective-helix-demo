@@ -27,6 +27,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { RefereeInfo } from '@injectivelabs/referral-consumer'
 import VBalances from '~/components/partials/balances/balances.vue'
 import VWelcomeBanner from '~/components/partials/banners/welcome.vue'
 import VGasRebate from '~/components/partials/banners/gas-rebate.vue'
@@ -52,6 +53,10 @@ export default Vue.extend({
   computed: {
     hasMadeAnyTrades(): boolean {
       return this.$accessor.onboard.hasMadeAnyTrades
+    },
+
+    refereeInfo(): RefereeInfo | undefined {
+      return this.$accessor.referral.refereeInfo
     }
   },
 
@@ -83,11 +88,15 @@ export default Vue.extend({
 
   methods: {
     checkForReferralCode() {
-      const { $route } = this
+      const { $route, refereeInfo } = this
       const { code } = $route.query
 
       if ($route.name === 'register' && code && code.toString().trim() !== '') {
-        this.$accessor.modal.openModal(Modal.RefereeOnboarding)
+        if (refereeInfo === undefined) {
+          this.$accessor.modal.openModal(Modal.RefereeOnboarding)
+        } else {
+          this.$toast.error(this.$t('referralModal.alreadyReferredToast'))
+        }
       }
     }
   }

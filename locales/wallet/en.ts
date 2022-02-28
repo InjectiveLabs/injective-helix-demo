@@ -42,6 +42,7 @@ export default {
     connectTheWallet: 'Connect the wallet',
     confirm: 'Confirm',
     usingReferCode: "You're using refer code",
-    enterCode: 'Enter code'
+    enterCode: 'Enter code',
+    alreadyReferredToast: 'This address has already been referred'
   }
 }
