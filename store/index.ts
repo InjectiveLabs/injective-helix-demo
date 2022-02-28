@@ -3,6 +3,7 @@ import * as account from '~/store/account'
 import * as app from '~/store/app'
 import * as auction from '~/store/auction'
 import * as bank from '~/store/bank'
+import * as bridge from '~/store/bridge'
 import * as derivatives from '~/store/derivatives'
 import * as exchange from '~/store/exchange'
 import * as activities from '~/store/activities'
@@ -21,6 +22,7 @@ export const accessorType = getAccessorType({
     auction,
     account,
     bank,
+    bridge,
     derivatives,
     onboard,
     exchange,

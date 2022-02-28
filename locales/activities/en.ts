@@ -29,18 +29,26 @@ export default {
   fundingHistory: {
     deposits: 'Deposits',
     withdrawals: 'Withdrawals',
+    emptySubaccountTransfers: 'No subaccount transfers found',
+    emptyDepositTransactions: 'No deposits found',
+    emptyWithdrawalTransactions: 'No withdrawals found',
+    subaccountDepositType: 'INJ Chain to Trading Account',
+    subaccountWithdrawalType: 'Trading Account to INJ Chain',
+    ethDepositType: 'ETH to INJ Chain',
+    ethWithdrawalType: 'INJ Chain to ETH',
 
     transfers: {
+      origin: 'Origin',
+      destination: 'Destination',
+      asset: 'Asset',
       transfers: 'Transfers',
-      type: 'Type of Transfer',
+      type: 'Type',
       deposit: 'Deposit',
       withdrawal: 'Withdrawal',
       amount: 'Amount',
       in: 'In',
       out: 'Out',
-      destination: 'Destination',
-      amountTooltip: 'The amount that was transferred',
-      emptySubaccountTransfers: 'No subaccount transfers found'
+      amountTooltip: 'The amount that was transferred'
     }
   },
 

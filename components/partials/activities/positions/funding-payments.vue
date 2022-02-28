@@ -1,5 +1,5 @@
 <template>
-  <v-card lg>
+  <v-card md>
     <VHocLoading :status="status">
       <v-card-table-wrap>
         <template #actions>

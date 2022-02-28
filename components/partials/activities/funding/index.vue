@@ -9,7 +9,6 @@
         >
           {{ $t('fundingHistory.transfers.transfers') }}
         </v-button-select>
-        <!--
         <div class="mx-2 w-px h-4 bg-gray-500"></div>
         <v-button-select v-model="component" :option="components.deposits" text>
           {{ $t('fundingHistory.deposits') }}
@@ -22,7 +21,6 @@
         >
           {{ $t('fundingHistory.withdrawals') }}
         </v-button-select>
-        -->
       </div>
       <div class="mt-6 relative">
         <component :is="`v-${component}`"></component>

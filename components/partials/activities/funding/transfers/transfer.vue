@@ -4,33 +4,59 @@
       <span class="text-gray-400 text-xs">{{ time }}</span>
     </td>
 
-    <td class="h-8 text-left font-mono">
-      {{ subaccountId }}
+    <td class="h-8 text-left cursor-pointer">
+      <div class="flex items-center justify-end md:justify-start">
+        <div v-if="transfer.token" class="w-6 h-6">
+          <img
+            :src="transfer.token.logo"
+            :alt="transfer.token.name"
+            class="min-w-full h-auto rounded-full"
+          />
+        </div>
+        <div class="ml-3">
+          <span class="text-gray-200 font-semibold">
+            {{ transfer.token.symbol }}
+          </span>
+        </div>
+      </div>
     </td>
 
     <td class="h-8 text-center">
-      <v-badge
-        :aqua="transfer.transferType === TransferType.Deposit"
-        :red="transfer.transferType === TransferType.Withdraw"
-        sm
-      >
-        {{ transferType }}
-      </v-badge>
+      <span>{{
+        $t(
+          `fundingHistory.${
+            transfer.transferType === TransferType.Deposit
+              ? 'subaccountDepositType'
+              : 'subaccountWithdrawalType'
+          }`
+        )
+      }}</span>
     </td>
 
     <td class="h-8 text-right font-mono">
-      <v-number
-        :class="{
-          'text-aqua-500': transfer.transferType === TransferType.Deposit,
-          'text-red-500': transfer.transferType === TransferType.Withdraw
-        }"
-        :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
-        :number="amount"
-      >
+      <v-number :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS" :number="amount">
         <span slot="addon" class="text-2xs text-gray-500">
           {{ transfer.token.symbol }}
         </span>
       </v-number>
+    </td>
+
+    <td class="h-8 text-left font-mono">
+      <v-address :address="origin"> {{ formattedOrigin }}</v-address>
+    </td>
+
+    <td class="h-8 text-left font-mono">
+      <v-address :address="destination">{{ formattedDestination }}</v-address>
+    </td>
+
+    <td class="text-right">
+      <a
+        :href="explorerUrl"
+        target="_blank"
+        class="text-primary-500 cursor-pointer"
+      >
+        {{ $t('common.view') }}
+      </a>
     </td>
   </tr>
 </template>
@@ -47,15 +73,22 @@ import { TransferType } from '@injectivelabs/subaccount-consumer'
 import {
   UiDerivativeMarketWithToken,
   UiSubaccountTransferWithToken,
-  ZERO_IN_BASE
+  ZERO_IN_BASE,
+  getExplorerUrl
 } from '@injectivelabs/ui-common'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  NETWORK
 } from '~/app/utils/constants'
+import VAddress from '~/components/partials/activities/funding/common/address.vue'
 
 export default Vue.extend({
+  components: {
+    VAddress
+  },
+
   props: {
     transfer: {
       required: true,
@@ -81,18 +114,36 @@ export default Vue.extend({
       return this.$accessor.derivatives.markets
     },
 
-    subaccountId(): string {
+    origin(): string {
       const { transfer } = this
 
       if (transfer.transferType === TransferType.Deposit) {
-        return formatWalletAddress(transfer.dstSubaccountId)
+        return transfer.srcSubaccountAddress
       }
 
-      if (transfer.transferType === TransferType.Withdraw) {
-        return formatWalletAddress(transfer.dstSubaccountAddress)
+      return transfer.srcSubaccountId
+    },
+
+    formattedOrigin(): string {
+      const { origin } = this
+
+      return formatWalletAddress(origin)
+    },
+
+    destination(): string {
+      const { transfer } = this
+
+      if (transfer.transferType === TransferType.Deposit) {
+        return transfer.dstSubaccountId
       }
 
-      return formatWalletAddress(transfer.dstSubaccountId)
+      return transfer.dstSubaccountAddress
+    },
+
+    formattedDestination(): string {
+      const { destination } = this
+
+      return formatWalletAddress(destination)
     },
 
     amount(): BigNumberInBase {
@@ -105,6 +156,17 @@ export default Vue.extend({
       return new BigNumberInWei(transfer.amount).toBase(transfer.token.decimals)
     },
 
+    explorerUrl(): string {
+      const { transfer } = this
+
+      const injectiveAddress =
+        transfer.transferType === TransferType.Deposit
+          ? transfer.srcSubaccountAddress
+          : transfer.dstSubaccountAddress
+
+      return `${getExplorerUrl(NETWORK)}/account/${injectiveAddress}`
+    },
+
     time(): string {
       const { transfer } = this
 
@@ -113,19 +175,7 @@ export default Vue.extend({
       }
 
       return format(transfer.executedAt, 'dd MMM HH:mm:ss')
-    },
-
-    transferType(): string {
-      const { transfer } = this
-
-      return transfer.transferType === TransferType.Deposit
-        ? this.$t('fundingHistory.transfers.in')
-        : this.$t('fundingHistory.transfers.out')
     }
-  },
-
-  methods: {
-    //
   }
 })
 </script>

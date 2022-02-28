@@ -12,6 +12,7 @@ import CheckCircle from '~/components/icons/check-circle.vue'
 import Chevron from '~/components/icons/chevron.vue'
 import Close from '~/components/icons/close.vue'
 import Copy from '~/components/icons/copy.vue'
+import CopyPlain from '~/components/icons/copy-plain.vue'
 import Dashboard from '~/components/icons/dashboard.vue'
 import Discord from '~/components/icons/discord.vue'
 import DiscordCircle from '~/components/icons/discord-circle.vue'
@@ -62,6 +63,7 @@ Vue.component('VIconCheckCircle', CheckCircle)
 Vue.component('VIconChevron', Chevron)
 Vue.component('VIconClose', Close)
 Vue.component('VIconCopy', Copy)
+Vue.component('VIconCopyPlain', CopyPlain)
 Vue.component('VIconDashboard', Dashboard)
 Vue.component('VIconDiscord', Discord)
 Vue.component('VIconDiscordCircle', DiscordCircle)

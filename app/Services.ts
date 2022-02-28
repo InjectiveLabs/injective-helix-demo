@@ -13,6 +13,7 @@ import {
   DerivativeActionService,
   SpotActionService,
   SubaccountActionService,
+  BridgeTransformer,
   ServiceOptions
 } from '@injectivelabs/ui-common'
 import { AlchemyApi } from '@injectivelabs/alchemy-api'
@@ -67,7 +68,7 @@ export const tokenCoinGeckoService = new TokenCoinGeckoService(
 )
 
 export const bridgeService = new BridgeService(commonServiceOptions)
-
+export const bridgeTransformer = new BridgeTransformer(NETWORK)
 export const bankService = new BankService(commonServiceOptions)
 export const derivativeService = new DerivativeService(commonServiceOptions)
 export const spotService = new SpotService(commonServiceOptions)

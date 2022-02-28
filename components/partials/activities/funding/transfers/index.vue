@@ -1,22 +1,23 @@
 <template>
-  <v-card lg>
+  <v-card md>
     <VHocLoading :status="status">
       <v-card-table-wrap>
         <template #actions>
           <div
             class="col-span-12 sm:col-span-6 lg:col-span-4 grid grid-cols-5 gap-4"
           >
-            <filter-selector
-              class="self-start min-w-4xs"
-              :type="TradeSelectorType.Side"
-              :value="side"
-              @click="handleSideClick"
+            <v-search
+              dense
+              class="col-span-3"
+              :placeholder="$t('trade.filter')"
+              :search="search"
+              @searched="handleInputOnSearch"
             />
           </div>
         </template>
 
         <div
-          v-if="filteredTransfers.length > 0"
+          v-if="sortedTransfers.length > 0"
           class="table-responsive min-h-orders max-h-lg mt-6"
         >
           <table class="table">
@@ -24,7 +25,7 @@
             <tbody v-if="isUserWalletConnected">
               <tr
                 is="v-transfer"
-                v-for="(transfer, index) in filteredTransfers"
+                v-for="(transfer, index) in sortedTransfers"
                 :key="`transfers-${index}-${transfer.executedAt}`"
                 :transfer="transfer"
               ></tr>
@@ -44,23 +45,19 @@
 <script lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import Vue from 'vue'
-import { UiSubaccountTransfer } from '@injectivelabs/ui-common'
-import TransfersTableHeader from '~/components/partials/activities/funding/transfers/table-header.vue'
+import { UiSubaccountTransferWithToken } from '@injectivelabs/ui-common'
+import TransfersTableHeader from '~/components/partials/activities/funding/common/table-header.vue'
 import VTransfer from '~/components/partials/activities/funding/transfers/transfer.vue'
-import { TradeSelectorType } from '~/types/enums'
-import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 
 export default Vue.extend({
   components: {
     'v-transfer': VTransfer,
-    TransfersTableHeader,
-    FilterSelector
+    TransfersTableHeader
   },
 
   data() {
     return {
-      TradeSelectorType,
-      side: undefined as string | undefined,
+      search: '',
       status: new Status(StatusType.Loading)
     }
   },
@@ -70,21 +67,33 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    transfers(): UiSubaccountTransfer[] {
+    transfers(): UiSubaccountTransferWithToken[] {
       return this.$accessor.activities.subaccountTransfers
     },
 
-    filteredTransfers(): UiSubaccountTransfer[] {
-      const { transfers, side } = this
+    filteredTransfers(): UiSubaccountTransferWithToken[] {
+      const { transfers, search } = this
 
       return transfers.filter((transfer) => {
-        if (!side) {
+        if (!search) {
           return true
         }
 
-        const isPartOfSideFilter = !side || transfer.transferType === side
+        const isPartOfSearchFilter =
+          !search ||
+          transfer.token.symbol
+            .toLowerCase()
+            .includes(search.trim().toLowerCase())
 
-        return isPartOfSideFilter
+        return isPartOfSearchFilter
+      })
+    },
+
+    sortedTransfers(): UiSubaccountTransferWithToken[] {
+      const { filteredTransfers } = this
+
+      return filteredTransfers.sort((a, b) => {
+        return b.executedAt - a.executedAt
       })
     }
   },
@@ -103,8 +112,8 @@ export default Vue.extend({
   },
 
   methods: {
-    handleSideClick(side: string | undefined) {
-      this.side = side
+    handleInputOnSearch(search: string) {
+      this.search = search
     }
   }
 })

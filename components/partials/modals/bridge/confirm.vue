@@ -270,6 +270,7 @@ export default Vue.extend({
         (token) => token.denom === form.token.denom
       )
     },
+
     injBalance(): BigNumberInBase {
       const { injToken, bankBalances } = this
 

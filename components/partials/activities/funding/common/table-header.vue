@@ -12,7 +12,7 @@
       </th>
 
       <th class="text-left">
-        {{ $t('fundingHistory.transfers.destination') }}
+        {{ $t('fundingHistory.transfers.asset') }}
       </th>
 
       <th class="text-center">
@@ -28,6 +28,16 @@
           />
         </div>
       </th>
+
+      <th class="text-left">
+        {{ $t('fundingHistory.transfers.origin') }}
+      </th>
+
+      <th class="text-left">
+        {{ $t('fundingHistory.transfers.destination') }}
+      </th>
+
+      <th></th>
     </tr>
   </thead>
 </template>

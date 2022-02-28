@@ -1,11 +1,120 @@
 <template>
-  <div></div>
+  <v-card md>
+    <VHocLoading :status="status">
+      <v-card-table-wrap>
+        <template #actions>
+          <div
+            class="col-span-12 sm:col-span-6 lg:col-span-4 grid grid-cols-5 gap-4"
+          >
+            <v-search
+              dense
+              class="col-span-3"
+              :placeholder="$t('trade.filter')"
+              :search="search"
+              @searched="handleInputOnSearch"
+            />
+          </div>
+        </template>
+
+        <div
+          v-if="transactions.length > 0"
+          class="table-responsive min-h-orders max-h-lg mt-6"
+        >
+          <table class="table">
+            <table-header />
+            <tbody v-if="isUserWalletConnected">
+              <tr
+                is="v-withdrawal"
+                v-for="(transaction, index) in filteredTransactions"
+                :key="`withdrawal-${index}-${transaction.timestamp}`"
+                :transaction="transaction"
+              ></tr>
+            </tbody>
+          </table>
+        </div>
+        <v-empty-list
+          v-else
+          :message="$t('fundingHistory.emptyWithdrawalTransactions')"
+          class="mt-6 min-h-orders"
+        />
+      </v-card-table-wrap>
+    </VHocLoading>
+  </v-card>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import { Status, StatusType } from '@injectivelabs/utils'
+import { UiBridgeTransactionWithToken } from '@injectivelabs/ui-common'
+import VWithdrawal from './withdrawal.vue'
+import TableHeader from '~/components/partials/activities/funding/common/table-header.vue'
 
 export default Vue.extend({
-  //
+  components: {
+    TableHeader,
+    VWithdrawal
+  },
+
+  data() {
+    return {
+      search: '',
+      status: new Status(StatusType.Loading)
+    }
+  },
+
+  computed: {
+    isUserWalletConnected(): boolean {
+      return this.$accessor.wallet.isUserWalletConnected
+    },
+
+    transactions(): UiBridgeTransactionWithToken[] {
+      return this.$accessor.bridge.peggyWithdrawalBridgeTransactions
+    },
+
+    filteredTransactions(): UiBridgeTransactionWithToken[] {
+      const { transactions, search } = this
+
+      return transactions.filter((transaction) => {
+        if (!search) {
+          return true
+        }
+
+        const isPartOfSearchFilter =
+          !search ||
+          transaction.token.symbol
+            .toLowerCase()
+            .includes(search.trim().toLowerCase())
+
+        return isPartOfSearchFilter
+      })
+    },
+
+    sortedTransactions(): UiBridgeTransactionWithToken[] {
+      const { filteredTransactions } = this
+
+      return filteredTransactions.sort((a, b) => {
+        return b.timestamp - a.timestamp
+      })
+    }
+  },
+
+  mounted() {
+    this.status.setLoading()
+
+    Promise.all([this.$accessor.bridge.fetchPeggyWithdrawalTransactions()])
+      .then(() => {
+        //
+      })
+      .catch(this.$onError)
+      .finally(() => {
+        this.status.setIdle()
+      })
+  },
+
+  methods: {
+    handleInputOnSearch(search: string) {
+      this.search = search
+    }
+  }
 })
 </script>
