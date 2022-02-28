@@ -308,8 +308,18 @@ export default Vue.extend({
       return this.$accessor.derivatives.subaccountOrders
     },
 
+    positions(): UiPosition[] {
+      return this.$accessor.positions.subaccountPositions
+    },
+
     position(): UiPosition | undefined {
-      return this.$accessor.derivatives.subaccountPosition
+      const { positions, market } = this
+
+      if (positions.length === 0 || !market) {
+        return
+      }
+
+      return positions.find((position) => position.marketId === market.marketId)
     },
 
     feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {

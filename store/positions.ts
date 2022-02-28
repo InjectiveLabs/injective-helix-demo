@@ -242,6 +242,8 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
+
       const derivativeActionService = derivativeActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount || positions.length === 0) {
@@ -291,8 +293,9 @@ export const actions = actionTree(
       await derivativeActionService.closeAllPosition({
         address,
         injectiveAddress,
+        triggerPrice: '0', // TODO
         positions: formattedPositions,
-        feeRecipient: FEE_RECIPIENT,
+        feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
       })
     },
