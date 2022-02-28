@@ -45,6 +45,8 @@ export default {
   },
 
   trade: {
+    assetTransfer: 'Asset Transfer',
+    assetTransferTooltip: 'The asset you want to transfer',
     all: 'All',
     timestamp: 'Time stamp',
     timestamp_tooltip:
@@ -209,6 +211,8 @@ export default {
       'The reward rate for taker and maker orders in each market. For example: 3x maker pts means that trading fees paid by maker orders in this market will receive reward points equal to 3 times the value of trading fees.',
     disqualified_markets: 'Disqualified Markets',
     disqualified_markets_tooltip:
-      'Markets that are disqualified from Trade & Earn. Trading activity in these markets will not earn any reward points.'
+      'Markets that are disqualified from Trade & Earn. Trading activity in these markets will not earn any reward points.',
+    orders_cancelled: 'Orders Cancelled',
+    not_valid_number: 'Not a valid number'
   }
 }

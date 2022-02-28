@@ -716,7 +716,7 @@ export default Vue.extend({
       }
 
       return {
-        price: this.$t('not_valid_number')
+        price: this.$t('trade.not_valid_number')
       }
     },
 
@@ -732,7 +732,7 @@ export default Vue.extend({
       }
 
       return {
-        amount: this.$t('not_valid_number')
+        amount: this.$t('trade.not_valid_number')
       }
     },
 

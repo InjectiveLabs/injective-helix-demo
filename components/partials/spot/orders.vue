@@ -99,7 +99,7 @@ export default Vue.extend({
       this.$accessor.spot
         .batchCancelOrder(orders)
         .then(() => {
-          this.$toast.success(this.$t('orders_cancelled'))
+          this.$toast.success(this.$t('trade.orders_cancelled'))
         })
         .catch(this.$onRejected)
         .finally(() => {

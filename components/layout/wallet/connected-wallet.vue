@@ -24,7 +24,7 @@
     <div class="ml-auto">
       <button
         v-clipboard="() => address"
-        v-clipboard:success="() => $toast.success($t('address_copied'))"
+        v-clipboard:success="() => $toast.success($t('connect.addressCopied'))"
         role="button"
         type="button"
       >

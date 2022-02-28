@@ -64,7 +64,7 @@
                       class="bg-transparent rounded-md text-gray-300 hover:text-primary-500"
                       @click="handleClickOnCloseButton"
                     >
-                      <span class="sr-only">{{ $t('close') }}</span>
+                      <span class="sr-only">{{ $t('common.close') }}</span>
                       <v-icon-close class="w-4 h-4" />
                     </button>
                   </div>

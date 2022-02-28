@@ -14,8 +14,18 @@
             {{ bridgeNote }}
           </p>
           <div class="text-center mt-6">
-            <v-button v-if="isOnChainTransaction" lg primary class="font-bold">
+            <v-button
+              lg
+              primary
+              class="font-bold w-4xs"
+              @click="handleModalClose"
+            >
+              {{ $t('common.ok') }}
+            </v-button>
+
+            <div class="mt-4 text-primary-500 cursor-pointer">
               <a
+                v-if="isOnChainTransaction"
                 :href="explorerUrl"
                 target="_blank"
                 class="flex items-center justify-center"
@@ -23,9 +33,9 @@
                 <span class="mr-2">{{ $t('bridge.seeOnExplorer') }}</span>
                 <v-icon-external-link class="w-3 h-3" />
               </a>
-            </v-button>
-            <v-button v-else lg primary class="font-bold">
+
               <a
+                v-else
                 :href="hubUrl"
                 target="_blank"
                 class="flex items-center justify-center"
@@ -33,7 +43,7 @@
                 <span class="mr-2">{{ $t('bridge.trackTransaction') }}</span>
                 <v-icon-external-link class="w-3 h-3" />
               </a>
-            </v-button>
+            </div>
           </div>
         </div>
         <v-ibc-transfer-note v-else />

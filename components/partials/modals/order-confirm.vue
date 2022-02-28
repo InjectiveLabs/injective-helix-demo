@@ -14,10 +14,10 @@
       </p>
       <div class="mt-6 flex items-center justify-center">
         <v-button lg class="mr-4" primary @click.stop="handleConfirm">
-          {{ $t('confirm') }}
+          {{ $t('common.confirm') }}
         </v-button>
         <v-button lg class="mr-4" red @click.stop="handleCancel">
-          {{ $t('cancel') }}
+          {{ $t('common.cancel') }}
         </v-button>
       </div>
     </div>

@@ -24,16 +24,13 @@ export default {
     value: 'Value',
     search: 'Search',
     withdraw: 'Withdraw',
-    view: 'View'
+    view: 'View',
+    cancel: 'Cancel',
+    confirm: 'Confirm',
+    ok: 'OK',
+    open: 'Open',
+    close: 'Close'
   },
-  address_copied: 'Address Copied',
-  copy_address: 'Copy Address',
-  cancel: 'Cancel',
-  confirm: 'Confirm',
-  injective: 'Injective',
-  not_connected: 'Not Connected',
-  connected: 'Connected',
-  metamask: 'Metamask',
   welcome_to_ip:
     'Access, create and trade unlimited decentralized finance markets',
   welcome_to_ip_sub:
@@ -44,82 +41,10 @@ export default {
   maintenance_button: 'Relayers',
   maintenance_body: '',
   token_allowance_successful: 'Token allowance set successful',
-  logout: 'Logout',
-  success_connect: 'Successfully Connected',
-  trading: 'Trading',
-  please_connect_to_your_wallet:
-    'Please connect to your wallet to see more details',
-  please_connect_to_your_wallet_cta:
-    'Please connect to your wallet to start trading on Injective!',
-  amount_to_transfer: 'Amount to transfer',
-  available_balance: 'Available Balance',
-  transfer_modal_title: 'Deposit to Injective Chain',
-  transfer_modal_note:
-    "Trading on our Layer-2 Injective Chain requires you to transfer your balance to our Injective Chain. First, set allowance to the asset you want to transfer (if you haven't already), enter desired amount and complete your transfer",
-  deposit_modal_title: 'Deposit to Subaccount',
-  deposit_modal_note:
-    'Your trading experience starts once you deposit your funds from the Injective Chain to your trading account.',
-  take_out_modal_title: 'Withdraw from Injective Chain',
-  take_out_modal_note:
-    'You can choose to withdraw your assets from the Injective Chain by filling up the form below',
-  withdraw_modal_title: 'Withdraw from Subaccount',
-  withdraw_modal_note:
-    'You can always withdraw your funds back to the Injective Chain, so you can interact with the rest of the functionalities on the Injective Chain',
-  transfer_asset: 'Deposit {asset}',
-  deposit_asset: 'Deposit {asset}',
-  withdraw_asset: 'Withdraw {asset}',
-  take_out_asset: 'Withdraw {asset}',
-  allowance_set: 'Allowance Set',
-  set_allowance: 'Set Allowance',
-  set_allowance_asset: 'Set Allowance for {asset}',
-  success_transfer: 'Successfully Deposited',
-  success_transfer_assets: 'Successfully Transferred',
-  success_deposit: 'Successfully Deposited',
-  success_withdraw: 'Successfully Withdrawn',
-  injective_chain_balance: 'Injective Chain Balances',
-  select_ledger_address: 'Select Ledger Address',
-  follow_instructions: 'Please follow the instructions on your device',
-  address: 'Address',
-  cancel_all: 'Cancel All',
-  close_all: 'Close All',
-  orders_cancelled: 'Orders Cancelled',
-  yes: 'Yes',
-  no: 'No',
-  not_valid_number: 'Not a valid number',
-  date: 'Date',
-  small_bridge_fee_note: 'Bridge fee: {fee} {asset}',
-  small_gas_fee_note: 'Gas: {fee} {asset}',
-  transfer_on_chain_title: 'Transfer on Injective Chain',
-  transfer_on_chain_note:
-    'Transfer your assets to an address on the Injective Chain',
-  select_asset: 'Select Asset',
-  destination: 'Destination',
   disclaimer_note:
     'By connecting a wallet, you agree to the Injective Labs <a href="https://injectivelabs.org/terms-and-conditions" class="text-primary-500" target="_blank" />Terms and Conditions</a>, have read the <a href="https://injectivelabs.org/privacy-policy" class="text-primary-500" target="_blank" />Privacy Policy</a> and acknowledge that you have read and understand the Injective Protocol <a href="https://injectiveprotocol.com/disclaimer" class="text-primary-500" target="_blank">disclaimer</a>.',
-  transfer_wait_time_note:
-    'Note: It should take around 4 minutes for your transfer to appear after your transaction has been confirmed on Ethereum.',
-  'Connect using Ledger': 'Connect using Ledger',
-  'Connect using Ledger instructions':
-    'Note: To ensure smooth process while connecting your Ledger Hardware Wallet, please ensure you are running the on latest Chrome version, have your Ledger device connected, unlocked and your Ethereum app open. ',
-  open: 'Open',
-  close: 'Close',
-  'Please follow the instructions on your device':
-    'Please follow the instructions on your device',
-  'Ledger Live': 'Ledger Live',
-  'Ledger Legacy': 'Ledger Legacy',
-  'Get addresses': 'Get addresses',
-  'Get more addresses': 'Get more addresses',
-  'We are getting your addresses, please wait ...':
-    'We are getting your addresses, please wait ...',
-  'Select Derivation Path': 'Select Derivation Path',
-  'Derivation Path': 'Derivation Path',
-  'Select Address': 'Select Address',
-  'Select Ledger Address': 'Select Ledger Address',
   'There are no results found - Markets':
     'There are no markets found. You can go ahead and propose some!',
-  Cancel: 'Cancel',
-  Close: 'Close',
-  'Deposit to Subaccount': 'Deposit to your Trading Account',
   getting_started: 'Getting Started',
   'Transfer Assets Now': 'Transfer Assets Now',
   Restrictions: 'Restrictions',
@@ -140,24 +65,8 @@ export default {
     'Injective is governed entirely by the community.  Early adopters are encouraged to learn more about Injective products, connect with other community members, and have your say in shaping the future of the protocol.',
   gas_fees: 'Gas Fees',
   Total: 'Total',
-  Twitter: 'Twitter',
-  Reddit: 'Reddit',
-  Discord: 'Discord',
-  Youtube: 'Youtube',
-  Telegram: 'Telegram',
-  transfer_on_chain: 'Transfer on Injective',
   'Successfully Transferred': 'Successfully Transferred',
   'Enter amount': 'Enter amount',
-  'Available to Transfer On Chain': 'Available to Transfer On Injective',
-  'Available to Transfer On Chain Tooltip':
-    'The available amount you can transfer to another address on the Injective Chain',
-  'Asset Transfer': 'Asset Transfer',
-  'Asset Transfer Tooltip': 'The asset you want to transfer',
-  'Injective Address Destination': 'Destination',
-  'Injective Address Destination Tooltip':
-    'The destination injective address you want to sent the assets to',
-  'Buffer for gas note':
-    'Note: You have to leave a small amount of INJ in your Injective Chain balance to pay for the gas fees when required.',
   'Acknowledge Terms': 'Acknowledge Terms',
   acknowledge_title:
     'In addition, you hereby represent, warrant, and agree that: ',
@@ -246,9 +155,6 @@ export default {
 
   terra: 'Terra',
   overview: 'Overview',
-  subaccount_deposit_modal_note:
-    'To get started with trading you need to deposit your funds from the Injective Chain balance to a dedicated trading account. Select the asset you want to transfer, enter the amount, deposit and start trading!',
-
   trade_and_earn_my_staked_amount: 'My Staked Amount',
   trade_and_earn_my_staked_amount_tooltip:
     'The default maximum rewards you can receive is capped at {maxRewards} INJ. You may increase this cap by staking more than {maxRewards} INJ and it will be the same level as your staked amount.',
