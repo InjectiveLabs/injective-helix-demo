@@ -32,8 +32,12 @@ export default function ({
     container_id: 'tv_chart_container',
     allow_symbol_change: false,
     datafeed: new Datafeed(datafeedEndpoint, 2000),
-    library_path: `${BASE_URL}/chart/charting_library/`,
-    custom_css_url: `${BASE_URL}/chart/charting_library/custom.css?v5`,
+    library_path: `${
+      window.location ? window.location.origin : BASE_URL
+    }/chart/charting_library/`,
+    custom_css_url: `${
+      window.location ? window.location.origin : BASE_URL
+    }/chart/charting_library/custom.css?v5`,
     locale: 'en',
     theme: 'dark',
     drawings_access: {
