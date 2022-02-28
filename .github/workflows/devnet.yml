@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - dev
+      - f/dex-v-x-overhaul
 jobs:
   devnet:
     name: 'Deploy to devnet'

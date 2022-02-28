@@ -1,6 +1,6 @@
 export default {
   home: {
-    title: 'Buy & Sell Crypto In Fully Decentralized Exchange',
+    title: 'Buy & Sell Crypto In The Best Decentralized Exchange',
     subtitle:
       'Powered by the Injective Protocol, you can trade all sorts of crypto across different chains in a fast, low fee, secure and fully decentralized way.',
     getStarted: 'Get started',
