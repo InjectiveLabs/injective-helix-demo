@@ -161,16 +161,17 @@ export default Vue.extend({
         })
         .filter(({ market, summary }) => {
           const { ticker, quoteDenom } = market
+
           const satisfiesSearchCondition =
             quoteDenom.toLowerCase().startsWith(query) ||
             ticker.toLowerCase().startsWith(query)
           const marketTypeCondition = marketType
-            ? marketType === market.subType
+            ? marketType === market.type
             : true
           const marketBaseCondition = !marketBase
             ? true
-            : marketBase && market.marketBase
-            ? marketBase === market.marketBase
+            : marketBase && market.subType
+            ? marketBase === market.subType
             : false
 
           return (

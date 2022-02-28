@@ -1,11 +1,11 @@
 export default {
   home: {
-    title: 'Buy & Sell Crypto In The Best Decentralized Exchange',
+    title: 'Buy & Sell Crypto on the Premier Cross-Chain Exchange',
     subtitle:
-      'Powered by the Injective Protocol, you can trade all sorts of crypto across different chains in a fast, low fee, secure and fully decentralized way.',
+      'Trade unlimited crypto markets on the fast, gasless, low fee, secure, and fully decentralized exchange protocol.',
     getStarted: 'Get started',
     viewAllMarkets: 'View all markets',
-    topVolume: 'Top Volume',
+    trending: 'Trending',
     whatsNew: "What's new",
     totalTradingVolume: 'Total trading volume',
     totalTrades: 'Total trades',
@@ -17,24 +17,23 @@ export default {
     newToCryptoFeatures: {
       featureOne: 'Fast and Simple',
       featureOneDescription:
-        'Effortlessly bring assets from Ethereum or Cosmos Network and buy crypto in minutes',
+        'Effortlessly bring assets from Ethereum, Cosmos or Terra to buy crypto in minutes',
       featureTwo: 'Your Key, Your Coins',
       featureTwoDescription:
         'Trading in a decentralized manner means you have full control of your assets',
       featureThree: 'Discover New Markets',
       featureThreeDescription:
-        'Markets that typically do not appear in centralized exchanges can be found here'
+        'Trade inter-chain markets that you cannot find anywhere else'
     },
     experienceTraderFeatures: {
       featureOne: 'Decentralized Orderbook',
       featureOneDescription:
-        'The traditional trading model in an decentralized environment',
+        'The traditional CEX trading model in a fully decentralized environment',
       featureTwo: 'Trade & Earn',
-      featureTwoDescription:
-        'Record breaking incentive program catered for retail traders',
+      featureTwoDescription: 'Earn record breaking rewards with every trade',
       featureThree: 'Zero Gas Fee',
       featureThreeDescription:
-        'Injective Pro traders do not have to pay gas fees when placing orders'
+        'Enjoy trading spot and perpetual markets with zero gas fees'
     },
     institutionalTraderFeatures: {
       featureOne: 'Dedicated Market Maker Rewards',

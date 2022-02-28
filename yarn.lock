@@ -1971,21 +1971,21 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/referral-api@^1.0.19":
-  version "1.0.19"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/referral-api/-/referral-api-1.0.19.tgz#a24b47863313cf50a693172c9051d0f0fec91946"
-  integrity sha512-8o+hVsm2+lmULtlq2CGA8u9FKp8qqB6+yYSRroRfeyk/D/lKogg49jPYeYp1I9n6bECGeVJv9G5YCRMO+AIsvA==
+"@injectivelabs/referral-api@^1.0.20":
+  version "1.0.20"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/referral-api/-/referral-api-1.0.20.tgz#cd405deb7c62346b112f9dfd0ab0ccda78fbd107"
+  integrity sha512-+c+wuA6gUQFgtB8zKQ0lppoHwEiG/JOeulQdwM7LBgkr4F42nVh11MjHh9C3Q7O2G1NpkMrBKJmlfLDyRLm83w==
 
-"@injectivelabs/referral-consumer@^0.0.16":
-  version "0.0.16"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/referral-consumer/-/referral-consumer-0.0.16.tgz#ecc2f15979519192fcf89dd8f1cb88cd02d42d70"
-  integrity sha512-tOGuknZbW6bUVlJJ9v2g7IkuI4ZJRL8YRkeSmTPllyE6TEh93gHlI50aiVyxyWLUJcXAkpHg3p1k1YlWd4gJ2Q==
+"@injectivelabs/referral-consumer@^0.0.17":
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/referral-consumer/-/referral-consumer-0.0.17.tgz#5ad1aed83ff3e96e05a185deda0f3acc3dac4917"
+  integrity sha512-R/DFDQ9AXCm4iTlxQfAz1fotCBO/Vu3kmxzbEtJa4/oKyk+j0UC9nnLOfEuVZtES29s0TiA3YZwsAAsL8/Kqaw==
   dependencies:
     "@improbable-eng/grpc-web" "^0.15.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.15.0"
     "@injectivelabs/common-rpc" "^1.0.2"
     "@injectivelabs/exceptions" "^0.0.42"
-    "@injectivelabs/referral-api" "^1.0.19"
+    "@injectivelabs/referral-api" "^1.0.20"
     "@injectivelabs/ts-types" "^0.0.38"
     "@injectivelabs/utils" "^0.0.60"
     link-module-alias "^1.2.0"

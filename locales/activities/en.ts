@@ -114,6 +114,7 @@ export default {
     high: '24h High',
     low: '24h Low',
     perpetuals: 'Perpetuals',
+    perpetual: 'Perpetual',
     spots: 'Spot',
     futures: 'Futures',
     trading: 'Trading',

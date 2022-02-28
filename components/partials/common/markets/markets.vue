@@ -28,7 +28,7 @@
               class="font-normal"
               @click.stop="updateFilterType(FilterTypes.Volume)"
             >
-              <span class="uppercase text-xs">{{ $t('home.topVolume') }}</span>
+              <span class="uppercase text-xs">{{ $t('home.trending') }}</span>
             </v-button>
             <div class="mx-2 w-px h-4 bg-gray-700"></div>
             <v-button

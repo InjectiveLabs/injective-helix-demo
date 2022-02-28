@@ -21,7 +21,7 @@
           class="font-normal"
           @click.stop="onSelectMarketType(MarketType.Perpetual)"
         >
-          <span>{{ $t('trade.perpetuals') }}</span>
+          <span>{{ $t('trade.perpetual') }}</span>
         </v-button>
         <div class="mx-2 w-px h-4 bg-gray-700"></div>
         <v-button
@@ -108,15 +108,15 @@ export default Vue.extend({
 
   methods: {
     onSelectMarketType(type: MarketType | string) {
-      this.$emit('input:market-type', this.marketType === type ? '' : type)
+      this.$emit('update:market-type', this.marketType === type ? '' : type)
     },
 
     onSelectMarketBase(type: MarketBase | string) {
-      this.$emit('input:market-base', this.marketType === type ? '' : type)
+      this.$emit('update:market-base', this.marketType === type ? '' : type)
     },
 
     handleSearchedEvent(search: string) {
-      this.$emit('input:search', search)
+      this.$emit('update:search', search)
     }
   }
 })
