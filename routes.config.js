@@ -44,7 +44,13 @@ if (NETWORK === Network.Devnet) {
 }
 
 // @ts-ignore
-const promotedMarkets = ['inj-spot', 'inj-usdt-perp']
+const promotedMarkets = [
+  'huahua-usdt',
+  'luna-usdt',
+  'luna-ust-perp',
+  'ust-usdt',
+  'atom-usdt'
+]
 
 module.exports = [
   '/',

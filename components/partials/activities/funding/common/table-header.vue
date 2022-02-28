@@ -3,7 +3,7 @@
     <tr>
       <th class="text-left">
         <div class="flex items-center">
-          {{ $t('trade.timestamp') }}
+          {{ $t('trade.time') }}
           <v-icon-info-tooltip
             class="ml-2"
             :tooltip="$t('trade.timestamp_tooltip')"

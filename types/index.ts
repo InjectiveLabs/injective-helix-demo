@@ -17,11 +17,6 @@ export interface GeoLocation {
   country: string
 }
 
-export interface SubaccountBalanceWithTokenAndPrice
-  extends SubaccountBalanceWithToken {
-  token: TokenWithBalanceAndPrice
-}
-
 export * from './enums'
 export * from './env'
 export * from './errors'

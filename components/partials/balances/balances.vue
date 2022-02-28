@@ -90,7 +90,7 @@ import {
   BankBalanceWithToken,
   IbcBankBalanceWithToken,
   BankBalanceWithTokenAndBalanceWithUsdBalance,
-  SubaccountBalanceWithTokenWithUsdBalance,
+  SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance,
   TokenWithBalanceAndPrice,
   UiDerivativeMarketWithToken,
   UiDerivativeOrderbook,
@@ -107,7 +107,6 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
-import { SubaccountBalanceWithTokenAndPrice } from '~/types'
 import VLoading from '~/components/elements/loading.vue'
 
 const components = {
@@ -160,7 +159,7 @@ export default Vue.extend({
       return this.$accessor.token.ibcTokensWithBalanceAndPriceFromBank
     },
 
-    subaccountBalancesWithTokenAndPrice(): SubaccountBalanceWithTokenAndPrice[] {
+    subaccountBalancesWithTokenAndPrice(): SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance[] {
       return this.$accessor.account.subaccountBalancesWithTokenAndPrice
     },
 
@@ -198,7 +197,7 @@ export default Vue.extend({
       })
     },
 
-    subaccountBalancesWithUsdBalance(): SubaccountBalanceWithTokenWithUsdBalance[] {
+    subaccountBalancesWithUsdBalance(): SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance[] {
       const { subaccountBalancesWithTokenAndPrice } = this
 
       return subaccountBalancesWithTokenAndPrice.map((balance) => {

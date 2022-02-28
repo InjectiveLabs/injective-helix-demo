@@ -55,7 +55,7 @@ export default {
     privacyPolicy: 'Privacy Policy',
     support: 'Support',
     faq: 'FAQ',
-    submitRequest: 'Submit A request',
+    submitRequest: 'Submit A Request',
     feeDiscounts: 'Fee Discounts',
     apiDocumentation: 'API Documentation',
     community: 'Community'

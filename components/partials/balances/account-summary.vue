@@ -45,6 +45,7 @@ import { ZERO_IN_BASE } from '@injectivelabs/ui-common'
 import {
   HIDDEN_BALANCE_DISPLAY,
   UI_MINIMAL_AMOUNT,
+  UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
 
@@ -123,7 +124,7 @@ export default Vue.extend({
         return '< 0.01'
       }
 
-      return totalBalanceInBtc.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      return totalBalanceInBtc.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
     }
   },
 

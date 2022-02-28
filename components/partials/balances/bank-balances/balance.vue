@@ -29,24 +29,22 @@
     <span class="font-mono text-left xl:hidden">
       {{ $t('common.value') }}
     </span>
-    <span class="xl:col-span-4 font-mono whitespace-nowrap">
-      <span
-        class="flex xs:items-center items-end justify-end flex-col xs:flex-row"
-      >
-        <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-        <span v-else>
-          <span>{{ totalInUsdToString }} USD</span>
-          <span
-            v-if="totalInBtc.gt(0)"
-            class="text-opacity-50 text-gray-200 text-2xs xs:ml-1"
-          >
-            ≈ {{ totalInBtcToString }} BTC
-          </span>
+    <span class="xl:col-span-4 font-mono whitespace-nowrap text-right">
+      <span v-if="hideBalance">
+        {{ HIDDEN_BALANCE_DISPLAY }}
+      </span>
+      <span v-else class="flex items-end justify-end flex-col">
+        <span class="leading-4">{{ totalInUsdToString }} USD</span>
+        <span
+          v-if="totalInBtc.gt(0)"
+          class="text-opacity-50 text-gray-200 text-2xs xs:ml-1 leading-4"
+        >
+          ≈ {{ totalInBtcToString }} BTC
         </span>
       </span>
     </span>
     <div
-      class="col-span-2 xl:col-span-4 text-right text-primary-500 text-sm flex justify-around sm:justify-end"
+      class="col-span-2 xl:col-span-4 text-right text-primary-500 text-sm flex justify-around sm:justify-end items-center"
     >
       <span class="cursor-pointer" @click="handleDepositClick">
         {{ $t('common.deposit') }}
@@ -155,7 +153,7 @@ export default Vue.extend({
         return '< 0.01'
       }
 
-      return totalInBtc.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      return totalInBtc.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
     },
 
     totalInUsdToString(): string {

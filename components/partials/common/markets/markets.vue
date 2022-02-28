@@ -3,7 +3,7 @@
     <v-panel :title="$t('trade.markets')">
       <div slot="context">
         <div>
-          <div class="sm:flex items-center justify-center mb-8">
+          <div v-if="false" class="sm:flex items-center justify-center mb-8">
             <div class="text-center mb-6 sm:mb-0 min-w-2xs">
               <p class="text-gray-500 uppercase text-xs tracking-wider mb-3">
                 {{ $t('home.totalTradingVolume') }}

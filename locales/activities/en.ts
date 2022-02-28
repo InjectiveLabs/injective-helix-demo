@@ -19,7 +19,12 @@ export default {
 
   fundingPayments: {
     emptyFundingPayments: 'No funding payments found',
-    totalTooltip: 'Total margin paid'
+    payment: 'Payment',
+    paymentTooltip:
+      'A positive payment means you paid funding, while a negative payment means you received funding. Funding is automatically reflected in your open position margin.',
+    rate: 'Rate',
+    rateTooltip:
+      'The interest rate paid is determined by the difference between the perpetual swap price and the underlying spot price. If the funding rate is positive, traders with long positions will pay traders with short positions. If the funding rate is negative, traders with short positions will pay those in long positions.'
   },
 
   rewardsHistory: {
@@ -57,8 +62,7 @@ export default {
     assetTransferTooltip: 'The asset you want to transfer',
     all: 'All',
     timestamp: 'Time stamp',
-    timestamp_tooltip:
-      "The time at which the trade was executed (times are shown in your browser's timezone).",
+    timestamp_tooltip: 'Based on your browser time zone',
     pair: 'Pair',
     type: 'Type',
     type_tooltip: 'The type of your order: limit or market.',

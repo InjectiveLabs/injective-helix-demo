@@ -4,14 +4,8 @@
       <th class="text-left">
         {{ $t('trade.pair') }}
       </th>
-      <th>
-        <div class="flex items-center">
-          <span>{{ $t('trade.side') }}</span>
-          <v-icon-info-tooltip
-            class="ml-2"
-            :tooltip="$t('trade.side_tooltip')"
-          />
-        </div>
+      <th class="text-left">
+        <span>{{ $t('trade.side') }}</span>
       </th>
       <th class="text-right">
         {{ $t('trade.price') }}

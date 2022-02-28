@@ -3,7 +3,7 @@
     <tr>
       <th class="text-left w-1/5">
         <div class="flex items-center">
-          {{ $t('trade.timestamp') }}
+          {{ $t('trade.time') }}
           <v-icon-info-tooltip
             class="ml-2"
             :tooltip="$t('trade.timestamp_tooltip')"
@@ -17,10 +17,10 @@
 
       <th class="w-1/5">
         <div class="flex items-center justify-end">
-          <span>{{ $t('trade.total') }}</span>
+          <span>{{ $t('fundingPayments.payment') }}</span>
           <v-icon-info-tooltip
             class="ml-2"
-            :tooltip="$t('fundingPayments.totalTooltip')"
+            :tooltip="$t('fundingPayments.paymentTooltip')"
           />
         </div>
       </th>

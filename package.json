@@ -42,7 +42,7 @@
     "@injectivelabs/subaccount-consumer": "^0.0.84",
     "@injectivelabs/token-metadata": "^0.0.68",
     "@injectivelabs/token-utils": "^0.0.23",
-    "@injectivelabs/ui-common": "^0.0.52",
+    "@injectivelabs/ui-common": "^0.0.53",
     "@injectivelabs/utils": "^0.0.60",
     "@injectivelabs/web3-strategy": "^0.0.99",
     "@metamask/detect-provider": "^1.2.0",

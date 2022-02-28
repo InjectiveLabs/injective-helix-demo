@@ -3,6 +3,7 @@ import {
   SubaccountTransformer,
   ZERO_TO_STRING,
   SubaccountBalanceWithToken,
+  SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance,
   Token,
   UiSubaccount,
   UiSubaccountBalance
@@ -23,13 +24,12 @@ import {
   cancelSubaccountStreams
 } from '~/app/streams/account'
 import { backupPromiseCall } from '~/app/utils/async'
-import { SubaccountBalanceWithTokenAndPrice } from '~/types'
 
 const initialStateFactory = () => ({
   subaccountIds: [] as string[],
   subaccount: undefined as UiSubaccount | undefined,
   subaccountBalancesWithToken: [] as SubaccountBalanceWithToken[],
-  subaccountBalancesWithTokenAndPrice: [] as SubaccountBalanceWithTokenAndPrice[],
+  subaccountBalancesWithTokenAndPrice: [] as SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance[],
   accountPortfolio: undefined as AccountPortfolio | undefined
 })
 
@@ -39,7 +39,7 @@ export const state = () => ({
   subaccountIds: initialState.subaccountIds as string[],
   subaccount: initialState.subaccount as UiSubaccount | undefined,
   subaccountBalancesWithToken: initialState.subaccountBalancesWithToken as SubaccountBalanceWithToken[],
-  subaccountBalancesWithTokenAndPrice: initialState.subaccountBalancesWithTokenAndPrice as SubaccountBalanceWithTokenAndPrice[],
+  subaccountBalancesWithTokenAndPrice: initialState.subaccountBalancesWithTokenAndPrice as SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance[],
   accountPortfolio: initialState.accountPortfolio as
     | AccountPortfolio
     | undefined
@@ -103,7 +103,7 @@ export const mutations = {
 
   setSubaccountBalancesWithTokenAndPrice(
     state: AccountStoreState,
-    subaccountBalancesWithTokenAndPrice: SubaccountBalanceWithTokenAndPrice[]
+    subaccountBalancesWithTokenAndPrice: SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance[]
   ) {
     state.subaccountBalancesWithTokenAndPrice = subaccountBalancesWithTokenAndPrice
   },
@@ -212,7 +212,7 @@ export const actions = actionTree(
                 balance.token.coinGeckoId
               )
             }
-          } as SubaccountBalanceWithTokenAndPrice
+          } as SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance
         })
       )
 

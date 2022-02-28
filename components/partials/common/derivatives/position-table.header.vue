@@ -7,10 +7,6 @@
       <th>
         <div class="flex items-center">
           {{ $t('trade.side') }}
-          <v-icon-info-tooltip
-            class="ml-2"
-            :tooltip="$t('trade.side_tooltip')"
-          />
         </div>
       </th>
       <th class="text-right">

@@ -65,24 +65,22 @@
       <span class="font-mono text-left xl:hidden">
         {{ $t('common.value') }}
       </span>
-      <span class="xl:col-span-3 font-mono whitespace-nowrap">
-        <span
-          class="flex xs:items-center items-end justify-end flex-col xs:flex-row"
-        >
-          <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-          <span v-else>
-            <span>{{ totalInUsdToString }} USD</span>
-            <span
-              v-if="totalInBtc.gt(0)"
-              class="text-opacity-50 text-gray-200 text-2xs xs:ml-1"
-            >
-              ≈ {{ totalInBtcToString }} BTC
-            </span>
+      <span class="xl:col-span-3 font-mono whitespace-nowrap text-right">
+        <span v-if="hideBalance">
+          {{ HIDDEN_BALANCE_DISPLAY }}
+        </span>
+        <span v-else class="flex items-end justify-end flex-col">
+          <span class="leading-4">{{ totalInUsdToString }} USD</span>
+          <span
+            v-if="totalInBtc.gt(0)"
+            class="text-opacity-50 text-gray-200 text-2xs xs:ml-1 leading-4"
+          >
+            ≈ {{ totalInBtcToString }} BTC
           </span>
         </span>
       </span>
       <div
-        class="col-span-2 text-right text-primary-500 text-sm flex justify-around sm:justify-end"
+        class="col-span-2 text-right text-primary-500 text-sm flex justify-around sm:justify-end items-center"
       >
         <nuxt-link
           v-if="spotMarketRoute"
@@ -108,7 +106,7 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   INJECTIVE_DENOM,
   ZERO_IN_BASE,
-  SubaccountBalanceWithTokenWithUsdBalance
+  SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance
 } from '@injectivelabs/ui-common'
 import TableRow from '~/components/elements/table-row.vue'
 import {
@@ -126,7 +124,7 @@ export default Vue.extend({
   props: {
     balance: {
       required: true,
-      type: Object as PropType<SubaccountBalanceWithTokenWithUsdBalance>
+      type: Object as PropType<SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance>
     },
 
     hideBalance: {
@@ -233,19 +231,21 @@ export default Vue.extend({
     totalInUsd(): BigNumberInBase {
       const { isUsdt, balance, totalPositionsMargin, totalPositionsPnl } = this
 
-      const balanceInBigNumber = new BigNumberInBase(balance.balanceInUsd)
+      const balanceInUsdInBigNumber = new BigNumberInBase(balance.balanceInUsd)
 
       if (!balance.balanceInUsd) {
         return ZERO_IN_BASE
       }
 
       if (!isUsdt) {
-        return balanceInBigNumber
+        return balanceInUsdInBigNumber
       }
 
-      return balanceInBigNumber
-        .plus(totalPositionsMargin)
+      const marginAndPnl = totalPositionsMargin
         .plus(totalPositionsPnl)
+        .multipliedBy(balance.token.usdPrice)
+
+      return balanceInUsdInBigNumber.plus(marginAndPnl)
     },
 
     totalInBtc(): BigNumberInBase {
@@ -295,7 +295,7 @@ export default Vue.extend({
         return '< 0.01'
       }
 
-      return totalInBtc.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      return totalInBtc.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
     },
 
     totalInUsdToString(): string {

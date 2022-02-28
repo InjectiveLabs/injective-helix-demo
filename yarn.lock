@@ -2085,10 +2085,10 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@injectivelabs/ui-common@^0.0.52":
-  version "0.0.52"
-  resolved "https://registry.npmjs.org/@injectivelabs/ui-common/-/ui-common-0.0.52.tgz#16c44d23f8f266d19a40bd55738743e89fe896e4"
-  integrity sha512-uTdMSl3fxFcFStbu0NZEkPPraiooKVHDiFNCls9yJf+bz1ZkYC8S+RUbPohh3+0dc8Xa03gDTVqKKzo9XanS/Q==
+"@injectivelabs/ui-common@^0.0.53":
+  version "0.0.53"
+  resolved "https://registry.npmjs.org/@injectivelabs/ui-common/-/ui-common-0.0.53.tgz#24e5f45ac5af1148aea736b49cbfa7c76b011f97"
+  integrity sha512-JxymEsEBj4bu/fpoUqLUk+f8JrSsCPTS2OlOpUE1x+lWEDObCPKy480XXt/gXjlu3Mw8AVotmLDcV89Y186kmw==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@improbable-eng/grpc-web" "^0.15.0"

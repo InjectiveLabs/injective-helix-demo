@@ -111,7 +111,7 @@
 import Vue, { PropType } from 'vue'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
-  SubaccountBalanceWithTokenWithUsdBalance,
+  SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance,
   INJECTIVE_DENOM
 } from '@injectivelabs/ui-common'
 
@@ -131,7 +131,9 @@ export default Vue.extend({
   props: {
     subaccountBalancesWithUsdBalance: {
       required: true,
-      type: Array as PropType<SubaccountBalanceWithTokenWithUsdBalance[]>
+      type: Array as PropType<
+        SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance[]
+      >
     },
 
     totalPositionsMargin: {
@@ -163,7 +165,7 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    filteredBalances(): SubaccountBalanceWithTokenWithUsdBalance[] {
+    filteredBalances(): SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance[] {
       const {
         subaccountBalancesWithUsdBalance,
         search,
@@ -193,13 +195,13 @@ export default Vue.extend({
     },
 
     // sort INJ to the top
-    sortedBalances(): SubaccountBalanceWithTokenWithUsdBalance[] {
+    sortedBalances(): SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance[] {
       const { filteredBalances } = this
 
       return [...filteredBalances].sort(
         (
-          v1: SubaccountBalanceWithTokenWithUsdBalance,
-          v2: SubaccountBalanceWithTokenWithUsdBalance
+          v1: SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance,
+          v2: SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance
         ) => {
           if (v1.denom === INJECTIVE_DENOM) {
             return -1
