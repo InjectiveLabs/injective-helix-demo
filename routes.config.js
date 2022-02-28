@@ -46,7 +46,7 @@ if (NETWORK === Network.Devnet) {
 // @ts-ignore
 const promotedMarkets = [
   'huahua-usdt',
-  'luna-usdt',
+  'luna-ust',
   'luna-ust-perp',
   'ust-usdt',
   'atom-usdt'

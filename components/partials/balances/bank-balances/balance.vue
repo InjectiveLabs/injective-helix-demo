@@ -145,14 +145,6 @@ export default Vue.extend({
         return '< 0.0001'
       }
 
-      if (totalInBtc.lte('0.001')) {
-        return '< 0.001'
-      }
-
-      if (totalInBtc.lte('0.01')) {
-        return '< 0.01'
-      }
-
       return totalInBtc.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
     },
 

@@ -1,8 +1,3 @@
-import {
-  SubaccountBalanceWithToken,
-  TokenWithBalanceAndPrice
-} from '@injectivelabs/ui-common'
-
 export interface DOMEvent<T extends EventTarget> extends Event {
   target: T
   keyCode?: number
