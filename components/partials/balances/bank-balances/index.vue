@@ -27,15 +27,15 @@
               <span class="col-span-2">
                 {{ $t('balances.asset') }}
               </span>
-              <span class="col-span-2 flex items-center">
+              <span class="col-span-2 flex items-center justify-end">
                 <div>
                   {{ $t('balances.total') }}
                 </div>
               </span>
-              <span class="col-span-3">
+              <span class="col-span-4 text-right">
                 {{ $t('common.value') }}
               </span>
-              <span class="col-span-5"> </span>
+              <span class="col-span-4"> </span>
             </TableHeader>
 
             <TableBody

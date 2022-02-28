@@ -28,7 +28,7 @@
                 <span>
                   {{ $t('balances.asset') }}
                 </span>
-                <span class="col-span-2 flex items-center">
+                <span class="col-span-2 flex items-center justify-end">
                   <span>
                     {{ $t('balances.total') }}
                   </span>
@@ -39,7 +39,7 @@
                     lg
                   />
                 </span>
-                <span class="col-span-2 flex items-center">
+                <span class="col-span-2 flex items-center justify-end">
                   {{ $t('balances.available') }}
                   <v-icon-info-tooltip
                     class="ml-2"
@@ -50,7 +50,7 @@
                 </span>
               </div>
               <div class="col-span-7 grid grid-cols-9 gap-4">
-                <span class="col-span-2 flex items-center">
+                <span class="col-span-2 flex items-center justify-end">
                   {{ $t('balances.marginHold') }}
                   <v-icon-info-tooltip
                     class="ml-2"
@@ -59,7 +59,7 @@
                     lg
                   />
                 </span>
-                <span class="col-span-2 flex items-center">
+                <span class="col-span-2 flex items-center justify-end">
                   <span>
                     {{ $t('trade.unrealized_pnl') }}
                   </span>
@@ -70,10 +70,10 @@
                     lg
                   />
                 </span>
-                <span class="col-span-2">
+                <span class="col-span-3 text-right">
                   {{ $t('common.value') }}
                 </span>
-                <span class="col-span-3"></span>
+                <span class="col-span-2"></span>
               </div>
             </TableHeader>
 
