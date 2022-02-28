@@ -143,7 +143,7 @@ export default Vue.extend({
       this.$accessor.derivatives
         .batchCancelOrder(orders)
         .then(() => {
-          this.$toast.success(this.$t('orders_cancelled'))
+          this.$toast.success(this.$t('trade.orders_cancelled'))
         })
         .catch(this.$onRejected)
         .finally(() => {
@@ -157,7 +157,7 @@ export default Vue.extend({
       this.$accessor.positions
         .closeAllPosition(positions)
         .then(() => {
-          this.$toast.success(this.$t('orders_cancelled'))
+          this.$toast.success(this.$t('trade.orders_cancelled'))
         })
         .catch(this.$onRejected)
         .finally(() => {

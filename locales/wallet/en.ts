@@ -10,6 +10,7 @@ export default {
     connectUsingLedger: 'Connect using Ledger',
     connectUsingLedgerNote:
       'Note: To ensure smooth process while connecting your Ledger Hardware Wallet, please ensure you are running the on latest Chrome version, have your Ledger device connected, unlocked and your Ethereum app open.',
+    addressCopied: 'Address Copied',
     copiedAddress: 'Address copied to your clipboard',
     getAddresses: 'Get addresses',
     getMoreAddresses: 'Get more addresses',
@@ -41,6 +42,7 @@ export default {
     connectTheWallet: 'Connect the wallet',
     confirm: 'Confirm',
     usingReferCode: "You're using refer code",
-    enterCode: 'Enter code'
+    enterCode: 'Enter code',
+    alreadyReferredToast: 'This address has already been referred'
   }
 }

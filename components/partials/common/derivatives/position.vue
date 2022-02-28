@@ -28,7 +28,7 @@
       </span>
     </td>
 
-    <td class="text-left font-mono">
+    <td class="text-right font-mono">
       <v-number
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -37,7 +37,7 @@
       />
     </td>
 
-    <td class="text-left font-mono">
+    <td class="text-right font-mono">
       <v-number
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
@@ -45,7 +45,7 @@
         :number="quantity"
       />
     </td>
-    <td class="text-left font-mono">
+    <td class="text-right font-mono">
       <v-number
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -53,7 +53,7 @@
         :number="liquidationPrice"
       />
     </td>
-    <td class="text-left">
+    <td class="text-right">
       <div
         v-if="!pnl.isNaN()"
         class="flex items-center justify-end text-xs"

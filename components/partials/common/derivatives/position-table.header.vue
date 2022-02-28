@@ -13,7 +13,7 @@
           />
         </div>
       </th>
-      <th class="text-left">
+      <th class="text-right">
         <span>{{ $t('trade.entry_price') }}</span>
       </th>
       <th>
@@ -26,7 +26,7 @@
         </div>
       </th>
       <th>
-        <div class="flex items-center">
+        <div class="flex items-center justify-end">
           <span>{{ $t('trade.liquidation_price') }}</span>
           <v-icon-info-tooltip
             class="ml-2"
@@ -35,7 +35,7 @@
         </div>
       </th>
       <th>
-        <div class="flex items-center">
+        <div class="flex items-center justify-end">
           <span>{{ $t('trade.unrealized_pnl') }}</span>
           <v-icon-info-tooltip
             class="ml-2"

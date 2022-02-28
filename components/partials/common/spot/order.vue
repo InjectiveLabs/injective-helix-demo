@@ -29,7 +29,7 @@
       </span>
     </td>
 
-    <td class="h-8 font-mono text-left">
+    <td class="h-8 font-mono text-right">
       <v-number
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -37,7 +37,7 @@
         :number="price"
       />
     </td>
-    <td class="h-8 text-left font-mono">
+    <td class="h-8 text-right font-mono">
       <v-number
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
@@ -45,7 +45,7 @@
         :number="quantity"
       />
     </td>
-    <td class="h-8 text-left font-mono">
+    <td class="h-8 text-right font-mono">
       <v-number
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
@@ -53,7 +53,7 @@
         :number="unfilledQuantity"
       />
     </td>
-    <td class="h-8 text-left">
+    <td class="h-8 text-right">
       <v-number
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
@@ -61,7 +61,7 @@
         :number="filledQuantity"
       />
     </td>
-    <td class="h-8 font-mono text-left">
+    <td class="h-8 font-mono text-right">
       <v-number
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -73,7 +73,7 @@
         </span>
       </v-number>
     </td>
-    <td class="h-8 relative text-right">
+    <td class="h-8 relative">
       <div class="flex items-center justify-end">
         <span
           v-if="false"

@@ -1,10 +1,10 @@
 <template>
   <TableRow md class="text-sm md:grid-cols-2 xl:grid-cols-12">
-    <span class="font-mono text-left md:hidden">
-      {{ $t('funding.asset') }}
+    <span class="font-mono text-left xl:hidden">
+      {{ $t('balances.asset') }}
     </span>
-    <span class="md:col-span-2 text-right md:text-left">
-      <div class="flex items-center justify-end md:justify-start">
+    <span class="xl:col-span-2">
+      <div class="flex items-center justify-end xl:justify-start">
         <div v-if="balance.token.logo" class="w-6 h-6">
           <img
             :src="balance.token.logo"
@@ -19,21 +19,19 @@
         </div>
       </div>
     </span>
-    <span class="font-mono text-left md:hidden">
-      {{ $t('funding.total') }}
+    <span class="font-mono text-left xl:hidden">
+      {{ $t('balances.total') }}
     </span>
-    <span
-      class="md:col-span-2 font-mono text-right md:text-left whitespace-nowrap"
-    >
+    <span class="xl:col-span-2 font-mono text-right whitespace-nowrap">
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <span v-else>{{ bankBalanceToString }}</span>
     </span>
-    <span class="font-mono text-left md:hidden">
+    <span class="font-mono text-left xl:hidden">
       {{ $t('common.value') }}
     </span>
-    <span class="md:col-span-3 font-mono whitespace-nowrap">
+    <span class="xl:col-span-4 font-mono whitespace-nowrap">
       <span
-        class="flex xs:items-center items-end justify-end md:justify-start flex-col xs:flex-row"
+        class="flex xs:items-center items-end justify-end flex-col xs:flex-row"
       >
         <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
         <span v-else>
@@ -48,7 +46,7 @@
       </span>
     </span>
     <div
-      class="col-span-2 md:col-span-5 text-right text-primary-500 text-sm flex justify-around sm:justify-end"
+      class="col-span-2 xl:col-span-4 text-right text-primary-500 text-sm flex justify-around sm:justify-end"
     >
       <span class="cursor-pointer" @click="handleDepositClick">
         {{ $t('common.deposit') }}

@@ -85,5 +85,9 @@ export const getHubUrl = (): string => {
 }
 
 export const getReferralUrl = (): string => {
-  return 'https://devnet.referral.injective.dev/'
+  if ([Network.Devnet, Network.Testnet, Network.TestnetK8s].includes(NETWORK)) {
+    return 'https://devnet.referral.injective.dev/'
+  }
+
+  return 'https://referrals.injective.exchange/'
 }

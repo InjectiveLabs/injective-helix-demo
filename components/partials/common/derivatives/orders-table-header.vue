@@ -13,11 +13,11 @@
           />
         </div>
       </th>
-      <th class="text-left">
+      <th class="text-right">
         {{ $t('trade.price') }}
       </th>
       <th>
-        <div class="flex items-center">
+        <div class="flex items-center justify-end">
           <span>{{ $t('trade.amount') }}</span>
           <v-icon-info-tooltip
             class="ml-2"
@@ -25,16 +25,16 @@
           />
         </div>
       </th>
-      <th class="text-left">
+      <th class="text-right">
         {{ $t('trade.unfilled') }}
       </th>
-      <th class="text-left">
+      <th class="text-right">
         {{ $t('trade.filled') }}
       </th>
-      <th class="text-left">
+      <th class="text-right">
         {{ $t('trade.leverage') }}
       </th>
-      <th class="text-left">
+      <th class="text-right">
         {{ $t('trade.total') }}
       </th>
       <th></th>

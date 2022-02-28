@@ -1,7 +1,6 @@
 import { actionTree, mutationTree } from 'typed-vuex'
 import { AccountAddress } from '@injectivelabs/ts-types'
 import { RefereeInfo } from '@injectivelabs/referral-consumer'
-import { backupPromiseCall } from '~/app/utils/async'
 import { referralService } from '~/app/Services'
 
 const initialStateFactory = () => ({
@@ -76,9 +75,8 @@ export const actions = actionTree(
 
       await referralService.refer({ address: injectiveAddress, code })
 
-      backupPromiseCall(() =>
-        this.app.$accessor.referral.getFeeRecipient(injectiveAddress)
-      )
+      await this.app.$accessor.referral.getFeeRecipient(injectiveAddress)
+      await this.app.$accessor.referral.getRefereeInfo(injectiveAddress)
     }
   }
 )

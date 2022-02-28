@@ -6,7 +6,7 @@
       class="px-4 border-r border-gray-600 text-gray-200 lg:hidden"
       @click.stop="handleClickOnSidebarToggle"
     >
-      <span class="sr-only">{{ $t('open') }}</span>
+      <span class="sr-only">{{ $t('common.open') }}</span>
       <v-icon-menu class="w-6 h-6" />
     </button>
     <div class="flex-1 px-2 lg:px-8 flex justify-end lg:justify-between">

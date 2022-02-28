@@ -44,7 +44,6 @@ export enum Modal {
   GasFeeRebate = 'gas-fee-rebate',
   MarketRewardFactors = 'market-reward-factors',
   OrderConfirm = 'order-confirm',
-  SubaccountDepositWithSelect = 'subaccount-deposit-with-select',
   Terms = 'terms',
   MarketBeta = 'market-beta',
   Bridge = 'bridge',

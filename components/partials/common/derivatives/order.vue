@@ -31,7 +31,7 @@
       </span>
     </td>
 
-    <td class="h-8 font-mono text-left">
+    <td class="h-8 font-mono text-right">
       <v-number
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -40,7 +40,7 @@
       />
     </td>
 
-    <td class="h-8 text-left font-mono">
+    <td class="h-8 text-right font-mono">
       <v-number
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
@@ -49,8 +49,8 @@
       />
     </td>
 
-    <td class="h-8 text-left font-mono">
-      <div class="flex items-center">
+    <td class="h-8 font-mono">
+      <div class="flex items-center justify-end">
         <v-number
           :decimals="
             market
@@ -62,7 +62,7 @@
       </div>
     </td>
 
-    <td class="h-8 text-left font-mono">
+    <td class="h-8 text-right font-mono">
       <v-number
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
@@ -71,7 +71,7 @@
       />
     </td>
 
-    <td class="h-8 text-left font-mono">
+    <td class="h-8 text-right font-mono">
       <span v-if="leverage.gte(0)" class="flex items-center justify-end">
         {{ leverage.toFormat(2) }}
         <span class="text-gray-300">&times;</span>
@@ -81,7 +81,7 @@
       </span>
     </td>
 
-    <td class="h-8 font-left text-left">
+    <td class="h-8 font-right text-right">
       <v-number
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS

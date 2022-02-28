@@ -1,11 +1,11 @@
 <template>
   <TableRow md class="text-sm md:grid-cols-2 xl:grid-cols-12">
-    <div class="col-span-5 grid grid-cols-2 md:grid-cols-5 gap-4">
-      <span class="font-mono text-left md:hidden">
-        {{ $t('funding.asset') }}
+    <div class="col-span-2 xl:col-span-5 grid grid-cols-2 xl:grid-cols-5 gap-4">
+      <span class="font-mono text-left xl:hidden">
+        {{ $t('balances.asset') }}
       </span>
-      <span class="text-right md:text-left">
-        <div class="flex items-center justify-end md:justify-start">
+      <span class="text-right xl:text-left">
+        <div class="flex items-center justify-end xl:justify-start">
           <div v-if="balance.token.logo" class="w-6 h-6">
             <img
               :src="balance.token.logo"
@@ -20,54 +20,54 @@
           </div>
         </div>
       </span>
-      <span class="font-mono text-left md:hidden">
-        {{ $t('funding.total') }}
+      <span class="font-mono text-left xl:hidden">
+        {{ $t('balances.total') }}
       </span>
       <span
-        class="md:col-span-2 font-mono text-right md:text-left md:flex items-center"
+        class="xl:col-span-2 font-mono text-right justify-end xl:flex items-center"
       >
         <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
         <span v-else>{{ totalBalanceInString }}</span>
       </span>
-      <span class="font-mono text-left md:hidden">
-        {{ $t('funding.available') }}
+      <span class="font-mono text-left xl:hidden">
+        {{ $t('balances.available') }}
       </span>
       <span
-        class="md:col-span-2 font-mono text-right md:text-left md:flex items-center"
+        class="xl:col-span-2 font-mono text-right xl:flex items-center justify-end"
       >
         <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
         <span v-else>{{ availableBalanceToString }}</span>
       </span>
     </div>
 
-    <div class="col-span-7 grid grid-cols-2 md:grid-cols-9 gap-4">
-      <span class="font-mono text-left md:hidden">
-        {{ $t('funding.marginHold') }}
+    <div class="col-span-2 xl:col-span-7 grid grid-cols-2 xl:grid-cols-9 gap-4">
+      <span class="font-mono text-left xl:hidden">
+        {{ $t('balances.marginHold') }}
       </span>
       <span
-        class="md:col-span-2 font-mono text-right md:text-left md:flex items-center"
+        class="xl:col-span-2 font-mono text-right xl:flex items-center justify-end"
       >
         <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
         <span v-else>{{ marginHoldToString }}</span>
       </span>
 
-      <span class="font-mono text-left md:hidden">
+      <span class="font-mono text-left xl:hidden">
         {{ $t('trade.unrealized_pnl') }}
       </span>
       <span
-        class="md:col-span-2 font-mono text-right md:text-left md:flex items-center"
+        class="xl:col-span-2 font-mono text-right xl:flex items-center justify-end"
       >
         <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
         <span v-else-if="unrealizedPnl">{{ unrealizedPnl }}</span>
         <span v-else>&mdash;</span>
       </span>
 
-      <span class="font-mono text-left md:hidden">
+      <span class="font-mono text-left xl:hidden">
         {{ $t('common.value') }}
       </span>
-      <span class="md:col-span-2 font-mono whitespace-nowrap">
+      <span class="xl:col-span-3 font-mono whitespace-nowrap">
         <span
-          class="flex xs:items-center items-end justify-end md:justify-start flex-col xs:flex-row"
+          class="flex xs:items-center items-end justify-end flex-col xs:flex-row"
         >
           <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
           <span v-else>
@@ -82,7 +82,7 @@
         </span>
       </span>
       <div
-        class="col-span-3 text-right text-primary-500 text-sm flex justify-around sm:justify-end"
+        class="col-span-2 text-right text-primary-500 text-sm flex justify-around sm:justify-end"
       >
         <nuxt-link
           v-if="spotMarketRoute"
