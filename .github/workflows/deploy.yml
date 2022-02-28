@@ -4,10 +4,11 @@ on:
   push:
     branches:
       - master
+      - f/dex-v-x-overhaul
 
 jobs:
   deploy:
-    if: true
+    if: false
     env:
       ## Public
       APP_NAME: 'Injective Pro: Decentralized Cryptocurrency Derivatives, Ethereum and Altcoin Exchange'
