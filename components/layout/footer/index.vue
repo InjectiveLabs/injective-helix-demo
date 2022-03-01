@@ -8,7 +8,7 @@
           class="flex items-center cursor-pointer mb-8"
           @click="$router.push({ name: 'index' })"
         >
-          <v-logo class="h-8 w-8 mr-2" />
+          <v-logo id="bbb" key="bbb" class="h-8 w-8 mr-2" alt="InjectivePro" />
           <div class="text-white flex items-center">
             <v-logo-text class="w-24 mr-4" />
             <p class="uppercase flex">

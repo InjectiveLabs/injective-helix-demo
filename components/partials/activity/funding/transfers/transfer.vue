@@ -5,7 +5,7 @@
     </td>
 
     <td class="h-8 text-left cursor-pointer">
-      <div class="flex items-center justify-end md:justify-start">
+      <div class="flex items-center justify-start">
         <div v-if="transfer.token" class="w-6 h-6">
           <img
             :src="transfer.token.logo"

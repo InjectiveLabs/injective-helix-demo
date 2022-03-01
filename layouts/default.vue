@@ -93,10 +93,12 @@ export default Vue.extend({
     }
 
     this.$root.$on('wallet-connected', this.handleWalletConnected)
+    this.$root.$on('nav-link-clicked', this.onCloseSideBar)
   },
 
   beforeDestroy() {
     this.$root.$off('wallet-connected', this.handleWalletConnected)
+    this.$root.$off('nav-link-clicked', this.onCloseSideBar)
   },
 
   methods: {

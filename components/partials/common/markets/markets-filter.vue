@@ -59,6 +59,10 @@
           <span>{{ $t('trade.futures') }}</span>
         </v-button>
       </div>
+
+      <div class="p-1 lg:hidden" @click.stop="handleClickOnClose">
+        <v-icon-close class="h-5 w-5" />
+      </div>
     </div>
     <div class="w-full mt-2">
       <v-search
@@ -117,6 +121,10 @@ export default Vue.extend({
 
     handleSearchedEvent(search: string) {
       this.$emit('update:search', search)
+    },
+
+    handleClickOnClose() {
+      this.$root.$emit('close-market-slideout')
     }
   }
 })
