@@ -1,7 +1,7 @@
 <template>
   <div class="h-full w-full flex flex-wrap py-4">
     <div class="container">
-      <div class="w-full mx-auto 3xl:w-10/12 4xl:w-4/5">
+      <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <v-card-select
             v-model="component"
