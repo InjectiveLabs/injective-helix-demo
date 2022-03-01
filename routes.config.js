@@ -54,8 +54,8 @@ const promotedMarkets = [
 
 module.exports = [
   '/',
-  '/balances',
-  '/activities',
+  '/portfolio',
+  '/activity',
   '/fee-discounts',
   '/trade-and-earn',
   '/faq',

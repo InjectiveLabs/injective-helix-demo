@@ -121,7 +121,7 @@ export default {
         {
           name: 'register',
           path: '/register',
-          component: './pages/balances.vue'
+          component: './pages/portfolio.vue'
         }
       ]
     }

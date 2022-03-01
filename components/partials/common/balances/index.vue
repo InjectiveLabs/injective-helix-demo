@@ -10,10 +10,10 @@
           />
         </p>
         <nuxt-link
-          :to="{ name: 'balances' }"
+          :to="{ name: 'portfolio' }"
           class="text-primary-500 text-2xs font-semibold"
         >
-          {{ $t('marketPage.balances') }}
+          {{ $t('marketPage.portfolio') }}
         </nuxt-link>
       </div>
       <div v-if="isUserWalletConnected && currentMarket" class="mt-4 relative">

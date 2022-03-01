@@ -1,0 +1,43 @@
+<template>
+  <div class="h-full w-full flex flex-wrap py-4">
+    <div class="w-full mx-auto">
+      <div class="flex flex-wrap items-center justify-center">
+        <v-button-select v-model="component" :option="components.orders" text>
+          {{ $t('activity.openOrders') }}
+        </v-button-select>
+        <div class="mx-2 w-px h-4 bg-gray-500"></div>
+        <v-button-select v-model="component" :option="components.trades" text>
+          {{ $t('activity.tradeHistory') }}
+        </v-button-select>
+      </div>
+      <div class="mt-6 relative">
+        <component :is="`v-${component}`"></component>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import Vue from 'vue'
+import VOrders from '~/components/partials/activity/derivatives/orders.vue'
+import VTrades from '~/components/partials/activity/derivatives/trades.vue'
+
+const components = {
+  orders: 'orders',
+  trades: 'trades'
+}
+
+export default Vue.extend({
+  components: {
+    VOrders,
+    VTrades
+  },
+
+  data() {
+    return {
+      components,
+      component: components.orders
+    }
+  }
+})
+</script>

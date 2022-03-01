@@ -15,7 +15,7 @@
           class="py-px pr-8 border-r cursor-pointer"
           @click="$router.push({ name: 'index' })"
         >
-          <v-logo class="w-auto h-[30px]" alt="Injective1111" />
+          <v-logo class="w-auto h-[30px]" alt="InjectivePro" />
         </div>
         <v-nav class="ml-2" />
       </div>
@@ -34,24 +34,38 @@
 
         <VPopperBox
           ref="popper-dashboard"
-          class="popper px-4 pt-4 rounded-lg flex flex-col flex-wrap text-xs absolute w-32"
+          class="popper px-4 py-4 rounded-lg flex flex-col flex-wrap text-xs absolute w-3xs"
           :class="[isMarketPage ? 'bg-gray-900' : 'bg-gray-800']"
           binding-element="#dashboard"
         >
           <div>
             <v-nav-item
-              :to="{ name: 'balances' }"
-              class="hover:text-primary-500 inline-block hover:bg-transparent"
+              :to="{ name: 'portfolio' }"
+              class="hover:text-primary-500 inline-block hover:bg-transparent w-full mb-2"
               dense
             >
-              {{ $t('navigation.balances') }}
+              <span class="flex items-center">
+                <span
+                  class="w-8 h-8 rounded-full bg-gray-1000 flex items-center justify-center mr-2"
+                >
+                  <v-icon-wallet class="w-4 h-4" />
+                </span>
+                {{ $t('navigation.portfolio') }}
+              </span>
             </v-nav-item>
             <v-nav-item
-              :to="{ name: 'activities' }"
-              class="hover:text-primary-500 inline-block hover:bg-transparent"
+              :to="{ name: 'activity' }"
+              class="hover:text-primary-500 inline-block hover:bg-transparent w-full"
               dense
             >
-              {{ $t('navigation.activities') }}
+              <span class="flex items-center">
+                <span
+                  class="w-8 h-8 rounded-full bg-gray-1000 flex items-center justify-center mr-2"
+                >
+                  <v-icon-menu-alt class="w-4 h-4" />
+                </span>
+                {{ $t('navigation.activity') }}
+              </span>
             </v-nav-item>
           </div>
         </VPopperBox>
@@ -134,7 +148,7 @@ export default Vue.extend({
 
     handleClickOnDashboard() {
       if (this.isUserWalletConnected) {
-        this.$router.push({ name: 'balances' })
+        this.$router.push({ name: 'portfolio' })
       }
     },
 

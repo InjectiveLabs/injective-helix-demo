@@ -1,8 +1,8 @@
-import activities from './activities/en'
+import activities from './activity/en'
 import banners from './banners/en'
 import bridge from './bridge/en'
 import faq from './faq/en'
-import funding from './balances/en'
+import funding from './portfolio/en'
 import home from './home/en'
 import market from './market/en'
 import wallet from './wallet/en'
@@ -197,6 +197,8 @@ export default {
     dashboard: 'Dashboard',
     trade: 'Trade',
     activities: 'Activities',
+    activity: 'Activity',
+    portfolio: 'Portfolio',
     home: 'Home'
   }
 }

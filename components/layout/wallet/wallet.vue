@@ -190,7 +190,7 @@ export default Vue.extend({
     handleClickOnLogout() {
       this.$accessor.wallet.logout()
 
-      if (['activities', 'balances'].includes(this.$route.name as string)) {
+      if (['activity', 'portfolio'].includes(this.$route.name as string)) {
         this.$router.push({ name: 'index' })
       }
     },

@@ -201,14 +201,6 @@ export const actions = actionTree(
       await this.app.$accessor.account.fetchSubaccounts()
 
       if (this.app.context.route.name === 'portfolio') {
-        await this.app.$accessor.portfolio.init()
-      }
-
-      if (this.app.context.route.name === 'history') {
-        await this.app.$accessor.history.init()
-      }
-
-      if (this.app.context.route.name === 'balances') {
         await this.app.$accessor.wallet.initPage()
       }
 
@@ -251,14 +243,6 @@ export const actions = actionTree(
       await this.app.$accessor.account.fetchSubaccounts()
       await this.app.$accessor.bank.fetchBalances()
 
-      if (this.app.context.route.name === 'portfolio') {
-        await this.app.$accessor.portfolio.init()
-      }
-
-      if (this.app.context.route.name === 'history') {
-        await this.app.$accessor.history.init()
-      }
-
       if (this.app.context.route.name === 'funding') {
         await this.app.$accessor.wallet.initPage()
       }
@@ -290,7 +274,7 @@ export const actions = actionTree(
       await this.app.$accessor.bank.reset()
       await this.app.$accessor.referral.reset()
       await this.app.$accessor.positions.reset()
-      await this.app.$accessor.activities.reset()
+      await this.app.$accessor.activity.reset()
 
       commit('reset')
       commit('resetPage')

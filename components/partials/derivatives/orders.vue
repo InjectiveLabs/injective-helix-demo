@@ -8,7 +8,7 @@
             :option="components.openPositions"
           >
             <span class="uppercase text-xs font-semibold">
-              {{ $t('activities.openPositions') }}
+              {{ $t('activity.openPositions') }}
               {{
                 `(${
                   currentMarketOnly
@@ -21,7 +21,7 @@
           <v-separator />
           <v-button-filter v-model="component" :option="components.openOrders">
             <span class="uppercase text-xs font-semibold">
-              {{ $t('activities.openOrders') }}
+              {{ $t('activity.openOrders') }}
               {{
                 `(${
                   currentMarketOnly ? currentMarketOrders.length : orders.length
@@ -35,7 +35,7 @@
             :option="components.tradeHistory"
           >
             <span class="uppercase text-xs font-semibold">
-              {{ $t('activities.tradeHistory') }}
+              {{ $t('activity.tradeHistory') }}
             </span>
           </v-button-filter>
         </div>

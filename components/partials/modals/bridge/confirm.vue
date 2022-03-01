@@ -165,9 +165,9 @@ import {
   TokenWithBalanceAndPrice
 } from '@injectivelabs/ui-common'
 import { Modal, TransferDirection, BridgeType } from '~/types/enums'
-import VNetworkCardBase from '~/components/partials/balances/bridge/network-card/index.vue'
-import VIbcTransferNote from '~/components/partials/balances/bridge/ibc-transfer-note.vue'
-import VConfirmAmountRow from '~/components/partials/balances/bridge/confirm-amount-row.vue'
+import VNetworkCardBase from '~/components/partials/portfolio/bridge/network-card/index.vue'
+import VIbcTransferNote from '~/components/partials/portfolio/bridge/ibc-transfer-note.vue'
+import VConfirmAmountRow from '~/components/partials/portfolio/bridge/confirm-amount-row.vue'
 import { networksMeta, transferSideMeta } from '~/app/data/bridge'
 import { TransferSide } from '~/types'
 import { injToken } from '~/app/data/token'

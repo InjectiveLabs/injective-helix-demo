@@ -50,6 +50,7 @@ import User from '~/components/icons/user.vue'
 import Wallet from '~/components/icons/wallet.vue'
 import Youtube from '~/components/icons/youtube.vue'
 import YoutubeCircle from '~/components/icons/youtube-circle.vue'
+import MenuAlt from '~/components/icons/menu-alt.vue'
 
 Vue.component('VIconArrow', Arrow)
 Vue.component('VIconArrowSwap', ArrowSwap)
@@ -80,6 +81,7 @@ Vue.component('VIconMetamask', Metamask)
 Vue.component('VIconMoon', Moon)
 Vue.component('VIconNetwork', Network)
 Vue.component('VIconNews', News)
+Vue.component('VIconMenuAlt', MenuAlt)
 Vue.component('VIconPencil', Pencil)
 Vue.component('VIconPlus', Plus)
 Vue.component('VIconProfile', Profile)

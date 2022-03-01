@@ -19,6 +19,12 @@
       <v-nav-item class="block" :to="{ name: 'trade-and-earn' }">
         {{ $t('navigation.rewards') }}
       </v-nav-item>
+      <v-nav-item class="block lg:hidden" :to="{ name: 'portfolio' }">
+        {{ $t('navigation.portfolio') }}
+      </v-nav-item>
+      <v-nav-item class="block lg:hidden" :to="{ name: 'activity' }">
+        {{ $t('navigation.activity') }}
+      </v-nav-item>
     </nav>
   </div>
 </template>
