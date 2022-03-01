@@ -179,22 +179,18 @@ export default Vue.extend({
           }
 
           const symbol = token.symbol.toLowerCase().trim()
-          const isINJ = symbol === INJECTIVE_DENOM
 
           const isPartOfSearchFilter = symbol.includes(
             search.toLowerCase().trim()
           )
           const isNotSmallBalance =
-            !hideSmallBalance ||
-            isINJ ||
-            new BigNumberInBase(balanceInUsd).gte('10')
+            !hideSmallBalance || new BigNumberInBase(balanceInUsd).gte('10')
 
           return isPartOfSearchFilter && isNotSmallBalance
         }
       )
     },
 
-    // sort INJ to the top
     sortedBalances(): SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance[] {
       const { filteredBalances } = this
 
@@ -203,17 +199,24 @@ export default Vue.extend({
           v1: SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance,
           v2: SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance
         ) => {
-          if (v1.denom === INJECTIVE_DENOM) {
+          const v1balance = new BigNumberInBase(v1.balanceInUsd)
+          const v2balance = new BigNumberInBase(v2.balanceInUsd)
+
+          // sort by balanceInUsd
+          if (v1balance.gt(0) || v2balance.gt(0)) {
+            return v2balance.minus(v1balance).toNumber()
+          }
+
+          // sort alphabetically - sort INJ to the top
+          if (v1.denom === INJECTIVE_DENOM && v1balance.eq(0)) {
             return -1
           }
 
-          if (v2.denom === INJECTIVE_DENOM) {
+          if (v2.denom === INJECTIVE_DENOM && v2balance.eq(0)) {
             return 1
           }
 
-          return new BigNumberInBase(v2.balanceInUsd)
-            .minus(v1.balanceInUsd)
-            .toNumber()
+          return v1.token.symbol.localeCompare(v2.token.symbol)
         }
       )
     }
