@@ -1,8 +1,9 @@
 <template>
   <v-card
+    v-if="!hasMadeAnyTransfers && status.isIdle()"
     md
     :style="{ backgroundImage: `url('/svg/bg-dark.svg')` }"
-    class="bg-cover"
+    class="bg-cover mb-12"
   >
     <div class="grid grid-cols-1 3md:grid-cols-3 lg:grid-cols-2 3md:gap-4">
       <div class="3md:col-span-2 lg:col-span-1">
@@ -97,8 +98,15 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Status, StatusType } from '@injectivelabs/utils'
 
 export default Vue.extend({
+  data() {
+    return {
+      status: new Status(StatusType.Loading)
+    }
+  },
+
   computed: {
     hasAnyBankBalances(): boolean {
       return this.$accessor.bank.hasAnyBankBalance
@@ -123,6 +131,15 @@ export default Vue.extend({
 
       return 3
     }
+  },
+
+  mounted() {
+    Promise.all([this.$accessor.onboard.init()])
+      .then(() => {})
+      .catch(this.$onError)
+      .finally(() => {
+        this.status.setIdle()
+      })
   },
 
   methods: {

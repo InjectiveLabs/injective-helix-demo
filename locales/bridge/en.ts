@@ -25,11 +25,11 @@ export default {
     insufficientAmount: 'Insufficient Amount',
     trackTransaction: 'Track Transaction',
     transactionConfirmed: 'Transaction Confirmed',
-    depositToTradingAccountSuccess: 'Deposit to trading account successful',
+    depositToTradingAccountSuccess: 'Deposit to trading account successfully',
     withdrawToInjectiveAddressSuccess:
-      'Withdraw to Injective account successful',
+      'Withdraw to Injective account successfully',
     withdrawFromTradingAccountSuccess:
-      'Withdraw from trading account successful',
+      'Withdraw from trading account successfully',
     depositToInjectiveSuccess: 'Your transaction is successfully submitted!',
     withdrawFromInjectiveSuccess: 'Your transaction is successfully submitted!',
     seeOnExplorer: 'View on explorer',

@@ -4,7 +4,7 @@
       <VHocLoading :status="status">
         <div class="container pt-6 pb-12">
           <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12">
-            <v-welcome-banner v-if="!hasMadeAnyTrades" class="mb-12" />
+            <v-welcome-banner />
             <!--
               A clever solution here to apply loading state to account
               summary based on the bank/trading account balances loading
@@ -51,10 +51,6 @@ export default Vue.extend({
   },
 
   computed: {
-    hasMadeAnyTrades(): boolean {
-      return this.$accessor.onboard.hasMadeAnyTrades
-    },
-
     refereeInfo(): RefereeInfo | undefined {
       return this.$accessor.referral.refereeInfo
     }
@@ -62,7 +58,6 @@ export default Vue.extend({
 
   mounted() {
     Promise.all([
-      this.$accessor.onboard.init(),
       this.$accessor.bank.fetchBankBalancesWithToken(),
       this.$accessor.account.fetchSubaccounts()
     ])
