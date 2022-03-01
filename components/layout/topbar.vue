@@ -22,6 +22,14 @@
         <v-nav class="ml-2" />
       </div>
       <div class="py-2 flex">
+        <v-nav-item class="hidden lg:flex" :to="{ name: 'activity' }">
+          {{ $t('navigation.activity') }}
+        </v-nav-item>
+        <v-nav-item class="hidden lg:flex" :to="{ name: 'portfolio' }">
+          {{ $t('navigation.portfolio') }}
+        </v-nav-item>
+
+        <!--
         <div class="hidden xs:flex">
           <v-nav-item-dummy
             v-show="isUserWalletConnected"
@@ -73,6 +81,7 @@
             </v-nav-item>
           </div>
         </VPopperBox>
+        -->
 
         <v-user-wallet
           v-if="isUserWalletConnected && isUserConnectedProcessCompleted"
@@ -91,19 +100,19 @@ import Vue from 'vue'
 import VUserWallet from './wallet/wallet.vue'
 import VUserWalletConnect from './wallet/connect.vue'
 import VNavItem from './nav/item.vue'
-import VNavItemDummy from './nav/item-dummy.vue'
 import VNav from '~/components/layout/nav/index.vue'
 import VLogo from '~/components/elements/logo.vue'
-import VPopperBox from '~/components/elements/popper-box.vue'
+// import VNavItemDummy from './nav/item-dummy.vue'
+// import VPopperBox from '~/components/elements/popper-box.vue'
 
 export default Vue.extend({
   components: {
     VNav,
     VNavItem,
-    VNavItemDummy,
     VUserWallet,
     VLogo,
-    VPopperBox,
+    // VNavItemDummy,
+    // VPopperBox,
     VUserWalletConnect
   },
 
