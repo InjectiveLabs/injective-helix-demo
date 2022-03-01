@@ -40,7 +40,7 @@
       >
         <div
           v-show="isOpen"
-          class="fixed inset-y-0 left-0 pr-10 max-w-full flex transition-transform"
+          class="fixed inset-y-0 left-0 max-w-full flex transition-transform"
           :class="{ 'mt-12': showHeader }"
           role="dialog"
           :aria-modal="isOpen"

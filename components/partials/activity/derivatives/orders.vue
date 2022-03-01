@@ -21,7 +21,9 @@
             />
           </div>
 
-          <div class="col-span-12 sm:col-span-6 lg:col-span-8 sm:text-right">
+          <div
+            class="col-span-12 sm:col-span-6 lg:col-span-8 sm:text-right mt-4 sm:mt-0"
+          >
             <v-button
               v-if="orders.length > 0 && isUserWalletConnected"
               red-outline
@@ -35,7 +37,7 @@
 
         <div
           v-if="filteredOrders.length > 0"
-          class="table-responsive min-h-orders max-h-lg mt-6"
+          class="table-responsive min-h-orders max-h-lg mt-4 sm:mt-6"
         >
           <table class="table">
             <orders-table-header />

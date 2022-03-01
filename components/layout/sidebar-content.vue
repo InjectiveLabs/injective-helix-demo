@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col h-0 flex-1">
     <div class="flex items-center py-6 px-6 -mt-6 md:mt-0">
-      <v-logo class="h-8 w-auto mr-4" alt="Injective" />
+      <v-logo class="h-8 w-auto mr-4" alt="InjectivePro" />
       <div class="text-white">
         <v-logo-text class="w-24" />
         <p class="text-xs justify-center uppercase flex mx-px">

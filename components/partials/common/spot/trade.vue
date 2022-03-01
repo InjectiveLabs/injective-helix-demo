@@ -4,7 +4,7 @@
       <span class="text-gray-400 text-xs">{{ time }}</span>
     </td>
     <td class="h-8 text-left cursor-pointer" @click="handleClickOnMarket">
-      <div class="flex items-center justify-end md:justify-start">
+      <div class="flex items-center justify-start">
         <div v-if="market.baseToken.logo" class="w-6 h-6">
           <img
             :src="market.baseToken.logo"

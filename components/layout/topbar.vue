@@ -10,7 +10,9 @@
       <v-icon-menu class="w-6 h-6" />
     </button>
     <div class="flex-1 px-2 lg:px-8 flex justify-end lg:justify-between">
-      <div class="w-0 opacity-0 lg:w-full lg:opacity-100 flex items-center">
+      <div
+        class="relative h-0 -z-10 w-0 opacity-0 lg:h-full lg:z-0 lg:w-full lg:opacity-100 flex items-center"
+      >
         <div
           class="py-px pr-8 border-r cursor-pointer"
           @click="$router.push({ name: 'index' })"
@@ -19,18 +21,20 @@
         </div>
         <v-nav class="ml-2" />
       </div>
-      <div class="flex py-2">
-        <v-nav-item-dummy
-          v-show="isUserWalletConnected"
-          id="dashboard"
-          @mouseenter.native="handleShowDropdown"
-          @mouseleave.native="handleHideDropdown"
-          @focus.native="handleShowDropdown"
-          @blur.native="handleHideDropdown"
-          @click.native="handleClickOnDashboard"
-        >
-          {{ $t('navigation.dashboard') }}
-        </v-nav-item-dummy>
+      <div class="py-2 flex">
+        <div class="hidden xs:flex">
+          <v-nav-item-dummy
+            v-show="isUserWalletConnected"
+            id="dashboard"
+            @mouseenter.native="handleShowDropdown"
+            @mouseleave.native="handleHideDropdown"
+            @focus.native="handleShowDropdown"
+            @blur.native="handleHideDropdown"
+            @click.native="handleClickOnDashboard"
+          >
+            {{ $t('navigation.dashboard') }}
+          </v-nav-item-dummy>
+        </div>
 
         <VPopperBox
           ref="popper-dashboard"
@@ -144,6 +148,7 @@ export default Vue.extend({
   methods: {
     handleClickOnSidebarToggle() {
       this.$emit('sidebar-opened')
+      this.$root.$emit('close-market-slideout')
     },
 
     handleClickOnDashboard() {
