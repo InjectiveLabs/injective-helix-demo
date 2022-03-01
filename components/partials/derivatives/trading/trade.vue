@@ -496,6 +496,7 @@ export default Vue.extend({
       const {
         tradingTypeMarket,
         orderTypeBuy,
+        slippage,
         sells,
         buys,
         hasAmount,
@@ -521,7 +522,9 @@ export default Vue.extend({
           market
         })
 
-        return new BigNumberInBase(worstPrice.toFixed(market.priceDecimals))
+        return new BigNumberInBase(
+          worstPrice.times(slippage).toFixed(market.priceDecimals)
+        )
       }
 
       if (price.isNaN()) {
@@ -530,22 +533,6 @@ export default Vue.extend({
 
       return new BigNumberInBase(
         new BigNumberInBase(price).toFixed(market.priceDecimals)
-      )
-    },
-
-    executionPriceWithSlippage(): BigNumberInBase {
-      const { tradingTypeMarket, executionPrice, market, slippage } = this
-
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      if (!tradingTypeMarket) {
-        return executionPrice
-      }
-
-      return new BigNumberInBase(
-        executionPrice.times(slippage).toFixed(market.priceDecimals)
       )
     },
 
@@ -795,7 +782,7 @@ export default Vue.extend({
         margin,
         hasPrice,
         hasAmount,
-        executionPriceWithSlippage,
+        executionPrice,
         amount
       } = this
 
@@ -815,7 +802,7 @@ export default Vue.extend({
         }
       }
 
-      const notional = executionPriceWithSlippage.times(amount)
+      const notional = executionPrice.times(amount)
       const dividend = orderTypeBuy
         ? margin.minus(notional)
         : margin.plus(notional)
@@ -1644,7 +1631,7 @@ export default Vue.extend({
         orderTypeReduceOnly,
         market,
         margin,
-        executionPriceWithSlippage,
+        executionPrice,
         amount
       } = this
 
@@ -1659,7 +1646,7 @@ export default Vue.extend({
           orderType,
           margin,
           reduceOnly: orderTypeReduceOnly,
-          price: executionPriceWithSlippage,
+          price: executionPrice,
           quantity: amount
         })
         .then(() => {

@@ -178,7 +178,6 @@ import { SpotOrderSide } from '@injectivelabs/spot-consumer'
 import OrderDetails from './order-details.vue'
 import OrderDetailsMarket from './order-details-market.vue'
 import {
-  DEFAULT_MAX_SLIPPAGE,
   DEFAULT_PRICE_WARNING_DEVIATION,
   DEFAULT_MARKET_PRICE_WARNING_DEVIATION,
   DEFAULT_MAX_PRICE_BAND_DIFFERENCE,
@@ -347,16 +346,6 @@ export default Vue.extend({
       return orderType === SpotOrderSide.Buy
     },
 
-    slippage(): BigNumberInBase {
-      const { orderTypeBuy } = this
-
-      return new BigNumberInBase(
-        orderTypeBuy
-          ? DEFAULT_MAX_SLIPPAGE.div(100).plus(1)
-          : DEFAULT_MAX_SLIPPAGE.div(100).minus(1).times(-1)
-      )
-    },
-
     makerFeeRateDiscount(): BigNumberInBase {
       const { feeDiscountAccountInfo } = this
 
@@ -472,22 +461,6 @@ export default Vue.extend({
 
       return new BigNumberInBase(
         new BigNumberInBase(price).toFixed(market.priceDecimals)
-      )
-    },
-
-    executionPriceWithSlippage(): BigNumberInBase {
-      const { tradingTypeMarket, executionPrice, market, slippage } = this
-
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      if (!tradingTypeMarket) {
-        return executionPrice
-      }
-
-      return new BigNumberInBase(
-        executionPrice.times(slippage).toFixed(market.priceDecimals)
       )
     },
 
@@ -1181,7 +1154,7 @@ export default Vue.extend({
       price: BigNumberInBase
       type: SpotOrderSide
     }) {
-      const { market, slippage } = this
+      const { market } = this
 
       if (!market) {
         return
@@ -1192,7 +1165,7 @@ export default Vue.extend({
         type === SpotOrderSide.Buy ? SpotOrderSide.Sell : SpotOrderSide.Buy
 
       const amount = total
-        .dividedBy(price.times(slippage).toFixed(market.priceDecimals))
+        .dividedBy(price.toFixed(market.priceDecimals))
         .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
 
       this.$nextTick(() => {
@@ -1298,7 +1271,7 @@ export default Vue.extend({
     },
 
     submitMarketOrder() {
-      const { orderType, market, executionPriceWithSlippage, amount } = this
+      const { orderType, market, executionPrice, amount } = this
 
       if (!market) {
         return
@@ -1309,7 +1282,7 @@ export default Vue.extend({
       this.$accessor.spot
         .submitMarketOrder({
           quantity: amount,
-          price: executionPriceWithSlippage,
+          price: executionPrice,
           orderType
         })
         .then(() => {
