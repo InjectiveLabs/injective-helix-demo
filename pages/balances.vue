@@ -62,6 +62,7 @@ export default Vue.extend({
 
   mounted() {
     Promise.all([
+      this.$accessor.onboard.init(),
       this.$accessor.bank.fetchBankBalancesWithToken(),
       this.$accessor.account.fetchSubaccounts()
     ])
@@ -73,10 +74,7 @@ export default Vue.extend({
         this.status.setIdle()
       })
 
-    Promise.all([
-      this.$accessor.onboard.init(),
-      this.$accessor.gasRebate.init()
-    ])
+    Promise.all([this.$accessor.gasRebate.init()])
       .then(() => {
         //
       })

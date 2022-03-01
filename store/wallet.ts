@@ -208,7 +208,7 @@ export const actions = actionTree(
         await this.app.$accessor.history.init()
       }
 
-      if (this.app.context.route.name === 'funding') {
+      if (this.app.context.route.name === 'balances') {
         await this.app.$accessor.wallet.initPage()
       }
 
