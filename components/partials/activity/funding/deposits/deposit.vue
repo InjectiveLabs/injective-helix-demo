@@ -22,7 +22,7 @@
     </td>
 
     <td class="h-8 text-left">
-      <span>{{ $t('fundingHistory.ethDepositType') }}</span>
+      <span>{{ transferType }}</span>
     </td>
 
     <td class="h-8 text-right font-mono">
@@ -119,6 +119,36 @@ export default Vue.extend({
       return new BigNumberInWei(transaction.amount).toBase(
         transaction.token.decimals
       )
+    },
+
+    transferType(): string {
+      const { transaction } = this
+
+      if (transaction.sender.startsWith('axelar')) {
+        return this.$t('fundingHistory.axelarDepositType')
+      }
+
+      if (transaction.sender.startsWith('huahua')) {
+        return this.$t('fundingHistory.chihuahuaDepositType')
+      }
+
+      if (transaction.sender.startsWith('cosmos')) {
+        return this.$t('fundingHistory.cosmosDepositType')
+      }
+
+      if (transaction.sender.startsWith('juno')) {
+        return this.$t('fundingHistory.junoDepositType')
+      }
+
+      if (transaction.sender.startsWith('osmo')) {
+        return this.$t('fundingHistory.osmosisDepositType')
+      }
+
+      if (transaction.sender.startsWith('terra')) {
+        return this.$t('fundingHistory.terraDepositType')
+      }
+
+      return this.$t('fundingHistory.ethDepositType')
     },
 
     time(): string {

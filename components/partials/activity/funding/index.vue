@@ -51,7 +51,7 @@ export default Vue.extend({
   data() {
     return {
       components,
-      component: components.transfers
+      component: components.withdrawals
     }
   }
 })

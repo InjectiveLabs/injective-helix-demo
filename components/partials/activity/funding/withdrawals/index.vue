@@ -71,7 +71,7 @@ export default Vue.extend({
     },
 
     transactions(): UiBridgeTransactionWithToken[] {
-      return this.$accessor.bridge.peggyWithdrawalBridgeTransactions
+      return this.$accessor.bridge.withdrawalTransactions
     },
 
     filteredTransactions(): UiBridgeTransactionWithToken[] {
@@ -107,7 +107,10 @@ export default Vue.extend({
   mounted() {
     this.status.setLoading()
 
-    Promise.all([this.$accessor.bridge.fetchPeggyWithdrawalTransactions()])
+    Promise.all([
+      this.$accessor.bridge.fetchPeggyWithdrawalTransactions(),
+      this.$accessor.bridge.fetchIBCTransferTransactions()
+    ])
       .then(() => {
         //
       })

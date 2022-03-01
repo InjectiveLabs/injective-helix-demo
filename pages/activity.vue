@@ -86,7 +86,7 @@ export default Vue.extend({
   data() {
     return {
       components,
-      component: components.positions
+      component: components.funding
     }
   }
 })
