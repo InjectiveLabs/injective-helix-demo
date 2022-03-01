@@ -521,14 +521,8 @@ export const actions = actionTree(
 
     async fetchOrderbook({ state, commit }) {
       const { market } = state
-      const { subaccount } = this.app.$accessor.account
-      const { isUserWalletConnected } = this.app.$accessor.wallet
 
       if (!market) {
-        return
-      }
-
-      if (!isUserWalletConnected || !subaccount) {
         return
       }
 
@@ -540,14 +534,8 @@ export const actions = actionTree(
 
     async fetchTrades({ state, commit }) {
       const { market } = state
-      const { subaccount } = this.app.$accessor.account
-      const { isUserWalletConnected } = this.app.$accessor.wallet
 
       if (!market) {
-        return
-      }
-
-      if (!isUserWalletConnected || !subaccount) {
         return
       }
 

@@ -47,6 +47,7 @@ export default Vue.extend({
 
     quoteTradingBalance: {
       required: true,
+      default: undefined,
       type: Object as PropType<UiSubaccountBalanceWithToken>
     }
   },

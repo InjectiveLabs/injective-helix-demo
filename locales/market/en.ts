@@ -3,6 +3,7 @@ export default {
     assets: 'Assets',
     assetsNote: '',
     balances: 'Balances',
+    portfolio: 'Portfolio',
     noChainBalance: 'We cannot find any token balances for your address.',
     noChainBalanceNote:
       'Use Injective Bridge to transfer assets in the Injective chain.',
