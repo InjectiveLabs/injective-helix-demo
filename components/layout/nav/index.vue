@@ -19,10 +19,18 @@
       <v-nav-item class="block" :to="{ name: 'trade-and-earn' }">
         {{ $t('navigation.rewards') }}
       </v-nav-item>
-      <v-nav-item class="block lg:hidden" :to="{ name: 'portfolio' }">
+      <v-nav-item
+        v-if="isUserWalletConnected"
+        class="block lg:hidden"
+        :to="{ name: 'portfolio' }"
+      >
         {{ $t('navigation.portfolio') }}
       </v-nav-item>
-      <v-nav-item class="block lg:hidden" :to="{ name: 'activity' }">
+      <v-nav-item
+        v-if="isUserWalletConnected"
+        class="block lg:hidden"
+        :to="{ name: 'activity' }"
+      >
         {{ $t('navigation.activity') }}
       </v-nav-item>
     </nav>
@@ -43,6 +51,12 @@ export default Vue.extend({
   data() {
     return {
       //
+    }
+  },
+
+  computed: {
+    isUserWalletConnected(): boolean {
+      return this.$accessor.wallet.isUserWalletConnected
     }
   },
 
