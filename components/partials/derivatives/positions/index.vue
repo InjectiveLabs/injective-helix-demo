@@ -1,7 +1,7 @@
 <template>
   <div v-if="market" class="h-full">
     <div
-      v-if="positions.length > 0 && isUserWalletConnected"
+      v-if="filteredPositions.length > 0 && isUserWalletConnected"
       class="table-responsive table-orders"
     >
       <table class="table">
@@ -9,7 +9,7 @@
         <tbody>
           <tr
             is="v-position"
-            v-for="(position, index) in positions"
+            v-for="(position, index) in filteredPositions"
             :key="`positions-${index}-${position.marketId}`"
             :position="position"
           ></tr>
@@ -40,6 +40,13 @@ export default Vue.extend({
     PositionTableHeader
   },
 
+  props: {
+    currentMarketOnly: {
+      type: Boolean,
+      default: false
+    }
+  },
+
   data() {
     return {
       status: new Status(),
@@ -58,6 +65,18 @@ export default Vue.extend({
 
     positions(): UiPosition[] {
       return this.$accessor.positions.subaccountPositions
+    },
+
+    filteredPositions(): UiPosition[] {
+      const { currentMarketOnly, market, positions } = this
+
+      if (!currentMarketOnly) {
+        return positions
+      }
+
+      return positions.filter(
+        (position) => position.marketId === market?.marketId
+      )
     }
   },
 

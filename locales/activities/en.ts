@@ -58,6 +58,7 @@ export default {
   },
 
   trade: {
+    asset_only: '{asset} only',
     assetTransfer: 'Asset Transfer',
     assetTransferTooltip: 'The asset you want to transfer',
     all: 'All',

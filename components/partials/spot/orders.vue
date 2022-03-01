@@ -1,12 +1,16 @@
 <template>
   <v-card-table-wrap>
     <template #actions>
-      <div class="col-span-12 flex items-center justify-between my-4 mx-1">
-        <div class="flex items-center">
+      <div class="col-span-12 sm:col-span-6 m-4 lg:mx-0">
+        <div class="flex items-center justify-between sm:justify-start">
           <v-button-filter v-model="component" :option="components.openOrders">
             <span class="uppercase text-xs font-semibold">
               {{ $t('trade.open_orders') }}
-              {{ `(${orders.length})` }}
+              {{
+                `(${
+                  currentMarketOnly ? currentMarketOrders.length : orders.length
+                })`
+              }}
             </span>
           </v-button-filter>
           <v-separator />
@@ -19,7 +23,14 @@
             </span>
           </v-button-filter>
         </div>
+      </div>
 
+      <div
+        class="col-span-12 sm:col-span-6 mb-4 mx-4 sm:mt-4 flex items-center justify-between sm:justify-end"
+      >
+        <v-checkbox v-model="currentMarketOnly" class="mr-4">
+          {{ $t('trade.asset_only', { asset: market.ticker }) }}
+        </v-checkbox>
         <v-button
           v-if="component === components.openOrders && orders.length > 0"
           class="mr-2"
@@ -34,7 +45,11 @@
 
     <VHocLoading :status="status">
       <v-card class="h-full">
-        <component :is="component" v-if="component"></component>
+        <component
+          :is="component"
+          v-if="component"
+          v-bind="{ currentMarketOnly }"
+        ></component>
       </v-card>
     </VHocLoading>
   </v-card-table-wrap>
@@ -42,7 +57,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { UiSpotLimitOrder } from '@injectivelabs/ui-common'
+import {
+  UiSpotLimitOrder,
+  UiSpotMarketWithToken
+} from '@injectivelabs/ui-common'
 import { Status, StatusType } from '@injectivelabs/utils'
 import OpenOrders from './orders/index.vue'
 import TradeHistory from './trade-history/index.vue'
@@ -61,6 +79,7 @@ export default Vue.extend({
 
   data() {
     return {
+      currentMarketOnly: false,
       status: new Status(StatusType.Loading),
 
       components,
@@ -69,8 +88,18 @@ export default Vue.extend({
   },
 
   computed: {
+    market(): UiSpotMarketWithToken | undefined {
+      return this.$accessor.spot.market
+    },
+
     orders(): UiSpotLimitOrder[] {
       return this.$accessor.spot.subaccountOrders
+    },
+
+    currentMarketOrders(): UiSpotLimitOrder[] {
+      const { market, orders } = this
+
+      return orders.filter((order) => order.marketId === market?.marketId)
     }
   },
 

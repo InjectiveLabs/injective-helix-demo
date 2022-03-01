@@ -1,7 +1,7 @@
 <template>
   <div v-if="market" class="h-full">
     <div
-      v-if="orders.length > 0 && isUserWalletConnected"
+      v-if="filteredOrders.length > 0 && isUserWalletConnected"
       class="table-responsive min-h-orders max-h-lg"
     >
       <table class="table">
@@ -9,7 +9,7 @@
         <tbody v-if="isUserWalletConnected">
           <tr
             is="v-order"
-            v-for="(order, index) in orders"
+            v-for="(order, index) in filteredOrders"
             :key="`orders-${index}-${order.orderHash}`"
             :order="order"
           ></tr>
@@ -39,6 +39,13 @@ export default Vue.extend({
     OrdersTableHeader
   },
 
+  props: {
+    currentMarketOnly: {
+      type: Boolean,
+      default: false
+    }
+  },
+
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
@@ -56,6 +63,16 @@ export default Vue.extend({
       }
 
       return this.$accessor.spot.subaccountOrders
+    },
+
+    filteredOrders(): UiSpotLimitOrder[] {
+      const { currentMarketOnly, market, orders } = this
+
+      if (!currentMarketOnly) {
+        return orders
+      }
+
+      return orders.filter((order) => order.marketId === market?.marketId)
     }
   }
 })

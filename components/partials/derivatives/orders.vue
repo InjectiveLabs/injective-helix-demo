@@ -1,22 +1,32 @@
 <template>
   <v-card-table-wrap>
     <template #actions>
-      <div class="col-span-12 flex items-center justify-between my-4 mx-1">
-        <div class="flex items-center">
+      <div class="col-span-12 lg:col-span-7 xl:col-span-8 m-4 lg:mx-0">
+        <div class="flex items-center justify-between lg:justify-start">
           <v-button-filter
             v-model="component"
             :option="components.openPositions"
           >
             <span class="uppercase text-xs font-semibold">
               {{ $t('activities.openPositions') }}
-              {{ `(${positions.length})` }}
+              {{
+                `(${
+                  currentMarketOnly
+                    ? currentMarketPositions.length
+                    : positions.length
+                })`
+              }}
             </span>
           </v-button-filter>
           <v-separator />
           <v-button-filter v-model="component" :option="components.openOrders">
             <span class="uppercase text-xs font-semibold">
               {{ $t('activities.openOrders') }}
-              {{ `(${orders.length})` }}
+              {{
+                `(${
+                  currentMarketOnly ? currentMarketOrders.length : orders.length
+                })`
+              }}
             </span>
           </v-button-filter>
           <v-separator />
@@ -29,10 +39,16 @@
             </span>
           </v-button-filter>
         </div>
+      </div>
 
+      <div
+        class="col-span-12 lg:col-span-5 xl:col-span-4 mx-4 mb-4 flex items-center justify-between lg:justify-end lg:ml-0 lg:mr-2 lg:mt-4"
+      >
+        <v-checkbox v-model="currentMarketOnly" class="lg:mr-4">
+          {{ $t('trade.asset_only', { asset: market.ticker }) }}
+        </v-checkbox>
         <v-button
           v-if="component === components.openOrders && orders.length > 0"
-          class="mr-2"
           red-outline
           sm
           @click.stop="handleCancelAllClick"
@@ -41,7 +57,6 @@
         </v-button>
         <v-button
           v-if="component === components.openPositions && positions.length > 0"
-          class="mr-2"
           red-outline
           sm
           @click.stop="handleCloseAllPositionsClick"
@@ -53,7 +68,11 @@
 
     <VHocLoading :status="status">
       <v-card class="h-full">
-        <component :is="component" v-if="component"></component>
+        <component
+          :is="component"
+          v-if="component"
+          v-bind="{ currentMarketOnly }"
+        ></component>
       </v-card>
     </VHocLoading>
   </v-card-table-wrap>
@@ -62,7 +81,11 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { UiDerivativeLimitOrder, UiPosition } from '@injectivelabs/ui-common'
+import {
+  UiDerivativeMarketWithToken,
+  UiDerivativeLimitOrder,
+  UiPosition
+} from '@injectivelabs/ui-common'
 import OpenOrders from './orders/index.vue'
 import OpenPositions from './positions/index.vue'
 import TradeHistory from './trade-history/index.vue'
@@ -83,6 +106,7 @@ export default Vue.extend({
 
   data() {
     return {
+      currentMarketOnly: false,
       status: new Status(StatusType.Loading),
 
       components,
@@ -91,12 +115,30 @@ export default Vue.extend({
   },
 
   computed: {
+    market(): UiDerivativeMarketWithToken | undefined {
+      return this.$accessor.derivatives.market
+    },
+
     orders(): UiDerivativeLimitOrder[] {
       return this.$accessor.derivatives.subaccountOrders
     },
 
     positions(): UiPosition[] {
       return this.$accessor.positions.subaccountPositions
+    },
+
+    currentMarketOrders(): UiDerivativeLimitOrder[] {
+      const { market, orders } = this
+
+      return orders.filter((order) => order.marketId === market?.marketId)
+    },
+
+    currentMarketPositions(): UiPosition[] {
+      const { market, positions } = this
+
+      return positions.filter(
+        (position) => position.marketId === market?.marketId
+      )
     }
   },
 

@@ -59,7 +59,7 @@ export default Vue.extend({
     &::before {
       content: '';
 
-      @apply mr-3 inline-block align-top w-4 h-4 bg-transparent border border-gray-200;
+      @apply mr-2 inline-block align-top w-4 h-4 bg-transparent border border-gray-200;
     }
   }
 

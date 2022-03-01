@@ -1,7 +1,7 @@
 <template>
   <div v-if="market" class="h-full">
     <div
-      v-if="trades.length > 0 && isUserWalletConnected"
+      v-if="filteredTrades.length > 0 && isUserWalletConnected"
       class="table-responsive table-orders"
     >
       <table class="table">
@@ -9,7 +9,7 @@
         <tbody v-if="isUserWalletConnected">
           <tr
             is="v-trade"
-            v-for="(trade, index) in trades"
+            v-for="(trade, index) in filteredTrades"
             :key="`trades-history-${index}-`"
             :trade="trade"
           ></tr>
@@ -40,7 +40,18 @@ export default Vue.extend({
     TradesTableHeader
   },
 
+  props: {
+    currentMarketOnly: {
+      type: Boolean,
+      default: false
+    }
+  },
+
   computed: {
+    isUserWalletConnected(): boolean {
+      return this.$accessor.wallet.isUserWalletConnected
+    },
+
     market(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
@@ -53,8 +64,14 @@ export default Vue.extend({
       return this.$accessor.account.subaccount
     },
 
-    isUserWalletConnected(): boolean {
-      return this.$accessor.wallet.isUserWalletConnected
+    filteredTrades(): UiDerivativeTrade[] {
+      const { currentMarketOnly, market, trades } = this
+
+      if (!currentMarketOnly) {
+        return trades
+      }
+
+      return trades.filter((trade) => trade.marketId === market?.marketId)
     }
   }
 })
