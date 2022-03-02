@@ -1,8 +1,8 @@
 <template>
-  <VHocLoading :status="status">
-    <div class="h-full w-full flex flex-wrap py-4">
-      <div class="w-full mx-auto">
-        <div class="flex flex-wrap items-center justify-center">
+  <div class="h-full">
+    <VHocLoading :status="status">
+      <div class="h-full flex flex-col">
+        <div class="flex items-center justify-center">
           <v-button-select
             v-model="component"
             :option="components.positions"
@@ -19,13 +19,14 @@
             {{ $t('activity.fundingPayments') }}
           </v-button-select>
         </div>
-        <div class="mt-6 relative">
+
+        <v-card md class="h-full mt-6">
           <component :is="`v-${component}`"></component>
-        </div>
+        </v-card>
       </div>
-      <v-modal-add-margin />
-    </div>
-  </VHocLoading>
+    </VHocLoading>
+    <v-modal-add-margin />
+  </div>
 </template>
 
 <script lang="ts">

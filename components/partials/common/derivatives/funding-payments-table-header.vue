@@ -1,5 +1,5 @@
 <template>
-  <thead>
+  <thead class="bg-gray-800">
     <tr>
       <th class="text-left w-1/5">
         <div class="flex items-center">

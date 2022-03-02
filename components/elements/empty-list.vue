@@ -1,12 +1,12 @@
 <template>
-  <div class="w-full bg-gray-900 flex py-2 rounded-sm h-full">
-    <div class="grow text-center m-auto">
-      <img src="/svg/empty-list.svg" class="mx-auto mb-2" />
-      <p>
-        <slot></slot>
-        {{ message }}
-      </p>
-    </div>
+  <div
+    class="bg-gray-900 h-full w-full flex flex-col items-center justify-center"
+  >
+    <img src="/svg/empty-list.svg" class="mx-auto mb-2" />
+    <p>
+      <slot></slot>
+      {{ message }}
+    </p>
   </div>
 </template>
 

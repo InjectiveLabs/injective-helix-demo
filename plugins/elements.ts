@@ -17,6 +17,7 @@ import ProgressSteps from '~/components/elements/progress-steps'
 import ResourceCard from '~/components/elements/resource-card.vue'
 import Separator from '~/components/elements/separator.vue'
 import Search from '~/components/elements/search.vue'
+import TableWrapper from '~/components/elements/table-wrapper.vue'
 import TextInfo from '~/components/elements/text-info.vue'
 import VUserWalletConnectWarning from '~/components/elements/user-wallet-connect-warning.vue'
 import VEmptyList from '~/components/elements/empty-list.vue'
@@ -47,6 +48,7 @@ Vue.component('VResourceCard', ResourceCard)
 Vue.component('VSeparator', Separator)
 Vue.component('VHocLoading', VHOCLoading)
 Vue.component('VSearch', Search)
+Vue.component('VTableWrapper', TableWrapper)
 Vue.component('VTextInfo', TextInfo)
 Vue.component('VUserWalletConnectWarning', VUserWalletConnectWarning)
 Vue.component('VEmptyList', VEmptyList)

@@ -19,10 +19,14 @@
         >
           <v-logo class="w-auto h-[30px]" alt="InjectivePro" />
         </div>
-        <v-nav class="ml-2" />
+        <v-nav class="hidden lg:block ml-2" />
       </div>
-      <div class="py-2 flex">
-        <v-nav-item p class="hidden lg:flex" :to="{ name: 'activity' }">
+      <div class="py-3 flex">
+        <v-nav-item
+          v-if="isUserWalletConnected"
+          class="hidden lg:flex"
+          :to="{ name: 'activity' }"
+        >
           {{ $t('navigation.activity') }}
         </v-nav-item>
         <v-nav-item

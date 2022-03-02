@@ -1,27 +1,18 @@
 <template>
-  <div v-if="market" class="h-full">
-    <div
-      v-if="filteredTrades.length > 0 && isUserWalletConnected"
-      class="table-responsive min-h-orders max-h-lg"
-    >
-      <table class="table">
-        <trades-table-header />
-        <tbody>
-          <tr
-            is="v-trade"
-            v-for="(trade, index) in filteredTrades"
-            :key="`trades-history-${index}-`"
-            :trade="trade"
-          ></tr>
-        </tbody>
-      </table>
-    </div>
-    <v-user-wallet-connect-warning
-      v-else-if="!isUserWalletConnected"
-      class="bg-gray-900 mt-2"
-    />
+  <v-table-wrapper v-if="market">
+    <table v-if="filteredTrades.length > 0" class="table">
+      <trades-table-header />
+      <tbody>
+        <tr
+          is="v-trade"
+          v-for="(trade, index) in filteredTrades"
+          :key="`trades-history-${index}`"
+          :trade="trade"
+        />
+      </tbody>
+    </table>
     <v-empty-list v-else :message="$t('trade.emptyTrades')" />
-  </div>
+  </v-table-wrapper>
 </template>
 
 <script lang="ts">
@@ -47,17 +38,7 @@ export default Vue.extend({
     }
   },
 
-  data() {
-    return {
-      limit: 9
-    }
-  },
-
   computed: {
-    isUserWalletConnected(): boolean {
-      return this.$accessor.wallet.isUserWalletConnected
-    },
-
     market(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
     },
@@ -78,12 +59,6 @@ export default Vue.extend({
       }
 
       return trades.filter((trade) => trade.marketId === market?.marketId)
-    },
-
-    emptyTrades(): any[] {
-      const { trades, limit } = this
-
-      return trades.length < limit ? new Array(limit - trades.length) : []
     }
   },
 

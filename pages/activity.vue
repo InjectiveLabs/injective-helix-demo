@@ -1,7 +1,9 @@
 <template>
-  <div class="h-full w-full flex flex-wrap py-4">
-    <div class="container">
-      <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12">
+  <div class="h-full w-full absolute pt-6 pb-8">
+    <div class="h-full">
+      <div
+        class="h-full w-full mx-auto px-6 3xl:px-0 3xl:w-11/12 4xl:w-10/12 flex flex-col"
+      >
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <v-card-select
             v-model="component"
@@ -50,7 +52,7 @@
             </span>
           </v-card-select>
         </div>
-        <div class="mt-6 pt-6 border-t">
+        <div class="mt-6 pt-6 border-t grow">
           <component :is="`v-${component}`"></component>
         </div>
       </div>
