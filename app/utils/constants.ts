@@ -42,6 +42,7 @@ export const UI_MINIMAL_AMOUNT = new BigNumber(1).shiftedBy(
 )
 
 export const NETWORK: Network = process.env.APP_NETWORK || Network.Testnet
+export const IS_DEVNET = NETWORK === Network.Devnet
 export const IS_TESTNET = [
   Network.Testnet,
   Network.TestnetK8s,

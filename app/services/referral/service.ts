@@ -5,6 +5,7 @@ import {
   ReferralTransformer
 } from '@injectivelabs/referral-consumer'
 import { BaseService } from '@injectivelabs/ui-common/dist/BaseService'
+import { IS_DEVNET } from '~/app/utils/constants'
 
 export enum ReferralMetrics {
   Refer = 'Refer',
@@ -18,7 +19,9 @@ export class ReferralService extends BaseService {
   constructor(options: ServiceOptions) {
     super(options)
     this.consumer = new ReferralConsumer(
-      'https://devnet.referral.grpc.injective.dev'
+      IS_DEVNET
+        ? 'https://devnet.referral.grpc.injective.dev'
+        : 'https://referral.grpc.injective.network'
     )
   }
 
