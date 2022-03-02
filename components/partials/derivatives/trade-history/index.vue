@@ -8,7 +8,7 @@
           v-for="(trade, index) in filteredTrades"
           :key="`trades-history-${index}-`"
           :trade="trade"
-        ></tr>
+        />
       </tbody>
     </table>
     <v-empty-list v-else :message="$t('trade.emptyTrades')" />
