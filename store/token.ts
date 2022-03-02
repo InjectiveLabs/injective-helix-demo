@@ -12,7 +12,8 @@ import {
   peggyActionServiceFactory,
   tokenCoinGeckoService,
   tokenErc20ActionServiceFactory,
-  tokenErc20Service
+  tokenErc20Service,
+  tokenService
 } from '~/app/Services'
 import { BTC_COIN_GECKO_ID } from '~/app/utils/constants'
 import { backupPromiseCall } from '~/app/utils/async'
@@ -20,6 +21,7 @@ import { backupPromiseCall } from '~/app/utils/async'
 const initialStateFactory = () => ({
   erc20TokensWithBalanceAndPriceFromBank: [] as TokenWithBalanceAndPrice[],
   ibcTokensWithBalanceAndPriceFromBank: [] as TokenWithBalanceAndPrice[],
+  tradeableTokensWithBalanceAndPrice: [] as TokenWithBalanceAndPrice[],
   btcUsdPrice: 0 as number,
   injUsdPrice: 0 as number
 })
@@ -29,6 +31,7 @@ const initialState = initialStateFactory()
 export const state = () => ({
   erc20TokensWithBalanceAndPriceFromBank: initialState.erc20TokensWithBalanceAndPriceFromBank as TokenWithBalanceAndPrice[],
   ibcTokensWithBalanceAndPriceFromBank: initialState.ibcTokensWithBalanceAndPriceFromBank as TokenWithBalanceAndPrice[],
+  tradeableTokensWithBalanceAndPrice: initialState.tradeableTokensWithBalanceAndPrice as TokenWithBalanceAndPrice[],
   btcUsdPrice: initialState.btcUsdPrice as number,
   injUsdPrice: initialState.injUsdPrice as number
 })
@@ -54,6 +57,13 @@ export const mutations = {
     state.ibcTokensWithBalanceAndPriceFromBank = ibcTokensWithBalanceAndPriceFromBank
   },
 
+  setTradeableTokensWithBalanceAndPrice(
+    state: TokenStoreState,
+    tradeableTokensWithBalanceAndPrice: TokenWithBalanceAndPrice[]
+  ) {
+    state.tradeableTokensWithBalanceAndPrice = tradeableTokensWithBalanceAndPrice
+  },
+
   setBtcUsdPrice(state: TokenStoreState, btcUsdPrice: number) {
     state.btcUsdPrice = btcUsdPrice
   },
@@ -77,7 +87,9 @@ export const mutations = {
 export const actions = actionTree(
   { state },
   {
-    async getErc20TokensWithBalanceAndPriceFromBank({ commit }) {
+    async getErc20TokensWithBalanceAndPriceFromBankAndMarkets({ commit }) {
+      const { markets: derivativeMarkets } = this.app.$accessor.derivatives
+      const { markets: spotMarkets } = this.app.$accessor.spot
       const { address, isUserWalletConnected } = this.app.$accessor.wallet
 
       if (!address || !isUserWalletConnected) {
@@ -115,6 +127,49 @@ export const actions = actionTree(
         bankIbcBalancesWithToken.map(tokenToTokenWithBalanceAndAllowance)
       )
 
+      const denomsInBankBalances = [
+        ...ercTokensWithBalanceAndAllowance,
+        ...ibcTokensWithBalanceAndPriceFromBank
+      ].map((balance) => balance.denom)
+      const spotBaseDenomsNotInBankBalances = spotMarkets
+        .filter((market) => {
+          return !denomsInBankBalances.includes(market.baseDenom)
+        })
+        .map((market) => market.baseDenom)
+      const spotQuoteDenomsNotInBankBalances = spotMarkets
+        .filter((market) => {
+          return !denomsInBankBalances.includes(market.quoteDenom)
+        })
+        .map((market) => market.quoteDenom)
+      const derivativeQuoteDenomsNotInBankBalances = derivativeMarkets
+        .filter((market) => {
+          return !denomsInBankBalances.includes(market.quoteDenom)
+        })
+        .map((market) => market.quoteDenom)
+      const denomsNotInBankBalances = [
+        ...spotBaseDenomsNotInBankBalances,
+        ...spotQuoteDenomsNotInBankBalances,
+        ...derivativeQuoteDenomsNotInBankBalances
+      ]
+      const uniqueDenomsNotInBankBalances = [
+        ...new Set(denomsNotInBankBalances)
+      ]
+      const tradeableTokensWithBalanceAndPrice = await Promise.all(
+        uniqueDenomsNotInBankBalances.map(async (denom) => {
+          const token = await tokenService.getDenomToken(denom)
+          const tokenWithBalance = await tokenErc20Service.fetchTokenBalanceAndAllowance(
+            { address, token }
+          )
+
+          return {
+            ...tokenWithBalance,
+            usdPrice: await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
+              token.coinGeckoId
+            )
+          } as TokenWithBalanceAndPrice
+        })
+      )
+
       commit(
         'setErc20TokensWithBalanceAndPriceFromBank',
         ercTokensWithBalanceAndAllowance
@@ -122,6 +177,10 @@ export const actions = actionTree(
       commit(
         'setIbcTokensWithBalanceAndPriceFromBank',
         ibcTokensWithBalanceAndPriceFromBank
+      )
+      commit(
+        'setTradeableTokensWithBalanceAndPrice',
+        tradeableTokensWithBalanceAndPrice
       )
     },
 

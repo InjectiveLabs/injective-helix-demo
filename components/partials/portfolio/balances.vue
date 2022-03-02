@@ -163,6 +163,10 @@ export default Vue.extend({
       return this.$accessor.token.erc20TokensWithBalanceAndPriceFromBank
     },
 
+    tradeableTokensWithBalanceAndPrice(): TokenWithBalanceAndPrice[] {
+      return this.$accessor.token.tradeableTokensWithBalanceAndPrice
+    },
+
     ibcTokensWithBalanceAndPriceFromBank(): TokenWithBalanceAndPrice[] {
       return this.$accessor.token.ibcTokensWithBalanceAndPriceFromBank
     },
@@ -180,12 +184,14 @@ export default Vue.extend({
       const {
         bankBalances,
         erc20TokensWithBalanceAndPriceFromBank,
-        ibcTokensWithBalanceAndPriceFromBank
+        ibcTokensWithBalanceAndPriceFromBank,
+        tradeableTokensWithBalanceAndPrice
       } = this
 
       return [
         ...erc20TokensWithBalanceAndPriceFromBank,
-        ...ibcTokensWithBalanceAndPriceFromBank
+        ...ibcTokensWithBalanceAndPriceFromBank,
+        ...tradeableTokensWithBalanceAndPrice
       ].map((tokenWithBalance) => {
         const balance =
           bankBalances.find(({ denom }) => denom === tokenWithBalance.denom)
@@ -374,7 +380,7 @@ export default Vue.extend({
 
   mounted() {
     Promise.all([
-      this.$accessor.token.getErc20TokensWithBalanceAndPriceFromBank(),
+      this.$accessor.token.getErc20TokensWithBalanceAndPriceFromBankAndMarkets(),
       this.$accessor.account.fetchSubaccountsBalancesWithPrices()
     ])
       .then(() => {

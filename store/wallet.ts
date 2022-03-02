@@ -123,7 +123,7 @@ export const actions = actionTree(
       await this.app.$accessor.account.fetchSubaccountsBalances()
       await this.app.$accessor.account.fetchSubaccountsBalancesWithPrices()
       await this.app.$accessor.onboard.init()
-      await this.app.$accessor.token.getErc20TokensWithBalanceAndPriceFromBank()
+      await this.app.$accessor.token.getErc20TokensWithBalanceAndPriceFromBankAndMarkets()
 
       if (GAS_FREE_DEPOSIT_REBATE_ENABLED) {
         await this.app.$accessor.gasRebate.init()
