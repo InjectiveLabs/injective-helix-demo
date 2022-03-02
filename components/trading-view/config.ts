@@ -25,7 +25,7 @@ export default function ({
     symbol,
     interval,
     timezone,
-    timeframe: '1D',
+    timeframe: '1W',
     toolbar_bg: theme.colors.gray[900],
     height: '100%',
     width: '100%',

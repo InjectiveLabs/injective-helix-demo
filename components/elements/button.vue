@@ -206,6 +206,8 @@ export default Vue.extend({
             'text-red-550',
             'font-semibold',
             'border',
+            'border-red-550',
+            'border-opacity-30',
             'hover:text-red-500'
           )
         }
