@@ -46,7 +46,7 @@
             class="col-span-1"
           >
             <span class="text-sm">
-              {{ $t('activity.fundingHistory') }}
+              {{ $t('activity.walletHistory') }}
             </span>
           </v-card-select>
         </div>
@@ -63,7 +63,7 @@ import Vue from 'vue'
 import VPositions from '~/components/partials/activity/positions/index.vue'
 import VSpot from '~/components/partials/activity/spot/index.vue'
 import VDerivatives from '~/components/partials/activity/derivatives/index.vue'
-import VFunding from '~/components/partials/activity/funding/index.vue'
+import VFunding from '~/components/partials/activity/wallet-history/index.vue'
 import VRewardHistory from '~/components/partials/activity/reward-history/index.vue'
 
 const components = {

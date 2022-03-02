@@ -34,7 +34,7 @@
         </div>
         <v-empty-list
           v-else
-          :message="$t('fundingHistory.emptySubaccountTransfers')"
+          :message="$t('walletHistory.emptySubaccountTransfers')"
           class="mt-6 min-h-orders"
         />
       </v-card-table-wrap>
@@ -46,8 +46,8 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import Vue from 'vue'
 import { UiSubaccountTransferWithToken } from '@injectivelabs/ui-common'
-import TransfersTableHeader from '~/components/partials/activity/funding/common/table-header.vue'
-import VTransfer from '~/components/partials/activity/funding/transfers/transfer.vue'
+import TransfersTableHeader from '~/components/partials/activity/wallet-history/common/table-header.vue'
+import VTransfer from '~/components/partials/activity/wallet-history/transfers/transfer.vue'
 
 export default Vue.extend({
   components: {

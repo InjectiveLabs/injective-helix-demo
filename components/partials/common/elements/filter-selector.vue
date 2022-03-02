@@ -93,11 +93,11 @@ export default Vue.extend({
           value: undefined
         },
         {
-          text: this.$t('fundingHistory.transfers.deposit'),
+          text: this.$t('walletHistory.transfers.deposit'),
           value: TransferType.Deposit
         },
         {
-          text: this.$t('fundingHistory.transfers.deposit'),
+          text: this.$t('walletHistory.transfers.deposit'),
           value: TransferType.Withdraw
         }
       ]

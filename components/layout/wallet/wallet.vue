@@ -37,24 +37,48 @@
             >{{ $t('navigation.disconnect') }}
           </span>
         </div>
-        <div class="mt-2 flex items-center justify-between px-6">
-          <div class="flex items-center">
-            <v-logo-mini class="w-12 h-12 mr-4" />
-            <span class="font-mono">{{ formattedInjectiveAddress }}</span>
-          </div>
-          <div class="flex">
-            <button
-              v-clipboard="() => injectiveAddress"
-              v-clipboard:success="
-                () => $toast.success($t('connect.copiedAddress'))
-              "
-              role="button"
-              type="button"
+        <div class="mt-2 flex items-center px-6">
+          <v-logo-mini class="w-12 h-12 mr-4" />
+          <div class="flex-1 flex-wrap">
+            <div class="flex items-center justify-between w-full">
+              <div>
+                <span class="font-mono w-full block">{{
+                  formattedInjectiveAddress
+                }}</span>
+              </div>
+              <div class="flex">
+                <button
+                  v-clipboard="() => injectiveAddress"
+                  v-clipboard:success="
+                    () => $toast.success($t('connect.copiedAddress'))
+                  "
+                  role="button"
+                  type="button"
+                >
+                  <v-icon-copy
+                    class="w-5 h-5 text-gray-500 hover:text-primary-500"
+                  />
+                </button>
+              </div>
+            </div>
+            <span
+              class="w-full flex items-center justify-between mt-2 cursor-pointer"
+              @click.stop="handleClickOnFeeDiscounts"
             >
-              <v-icon-copy
-                class="w-5 h-5 text-gray-500 hover:text-primary-500"
-              />
-            </button>
+              <v-icon-crown class="w-6 h-6 -mt-1" />
+              <span
+                class="text-primary-500 text-sm px-1 py-0.4 bg-primary-500 bg-opacity-10 rounded align-top"
+              >
+                {{
+                  tierLevel > 0
+                    ? $t('navigation.makerTakerFee', {
+                        maker: makerFeeDiscount,
+                        taker: makerFeeDiscount
+                      })
+                    : $t('navigation.noTierLevel')
+                }}
+              </span>
+            </span>
           </div>
         </div>
         <div v-if="referralCode" class="px-6 mt-6 pb-6">
@@ -100,13 +124,19 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { formatWalletAddress } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  formatWalletAddress
+} from '@injectivelabs/utils'
 import { RefereeInfo } from '@injectivelabs/referral-consumer'
 import { Wallet } from '@injectivelabs/web3-strategy'
+import { FeeDiscountAccountInfo } from '@injectivelabs/chain-consumer'
 import VConnectedWallet from './connected-wallet.vue'
 import VLogoMini from '~/components/elements/logo-mini.vue'
 import VPopperBox from '~/components/elements/popper-box.vue'
 import { getReferralUrl } from '~/app/utils/helpers'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -155,6 +185,58 @@ export default Vue.extend({
       return this.$accessor.referral.refereeInfo
     },
 
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
+    },
+
+    tierLevel(): number {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return 0
+      }
+
+      return new BigNumberInBase(
+        feeDiscountAccountInfo.tierLevel || 0
+      ).toNumber()
+    },
+
+    makerFeeDiscount(): string {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return ''
+      }
+
+      if (!feeDiscountAccountInfo.accountInfo) {
+        return ''
+      }
+
+      return new BigNumberInWei(
+        feeDiscountAccountInfo.accountInfo.makerDiscountRate
+      )
+        .toBase()
+        .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+    },
+
+    takerFeeDiscount(): string {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return ''
+      }
+
+      if (!feeDiscountAccountInfo.accountInfo) {
+        return ''
+      }
+
+      return new BigNumberInWei(
+        feeDiscountAccountInfo.accountInfo.takerDiscountRate
+      )
+        .toBase()
+        .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+    },
+
     referralCode(): string | undefined {
       const { refereeInfo } = this
 
@@ -193,6 +275,10 @@ export default Vue.extend({
       if (['activity', 'portfolio'].includes(this.$route.name as string)) {
         this.$router.push({ name: 'index' })
       }
+    },
+
+    handleClickOnFeeDiscounts() {
+      this.$router.push({ name: 'fee-discounts' })
     },
 
     handleShowDropdown() {

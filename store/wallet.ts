@@ -199,6 +199,7 @@ export const actions = actionTree(
 
       await this.app.$accessor.bank.fetchBalances()
       await this.app.$accessor.account.fetchSubaccounts()
+      await this.app.$accessor.exchange.initFeeDiscounts()
 
       if (this.app.context.route.name === 'portfolio') {
         await this.app.$accessor.wallet.initPage()
@@ -206,10 +207,6 @@ export const actions = actionTree(
 
       if (this.app.context.route.name === 'trade-and-earn') {
         await this.app.$accessor.exchange.initTradeAndEarn()
-      }
-
-      if (this.app.context.route.name === 'fee-discounts') {
-        await this.app.$accessor.exchange.initFeeDiscounts()
       }
 
       commit('setWalletConnectStatus', WalletConnectStatus.connected)
@@ -242,6 +239,7 @@ export const actions = actionTree(
 
       await this.app.$accessor.account.fetchSubaccounts()
       await this.app.$accessor.bank.fetchBalances()
+      await this.app.$accessor.exchange.initFeeDiscounts()
 
       if (this.app.context.route.name === 'funding') {
         await this.app.$accessor.wallet.initPage()
@@ -249,10 +247,6 @@ export const actions = actionTree(
 
       if (this.app.context.route.name === 'trade-and-earn') {
         await this.app.$accessor.exchange.initTradeAndEarn()
-      }
-
-      if (this.app.context.route.name === 'fee-discounts') {
-        await this.app.$accessor.exchange.initFeeDiscounts()
       }
 
       commit('setWalletConnectStatus', WalletConnectStatus.connected)

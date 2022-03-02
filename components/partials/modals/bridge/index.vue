@@ -6,7 +6,14 @@
     @modal-closed="handleCloseModal"
   >
     <div slot="title">
-      <h3>{{ bridgeTitle }}</h3>
+      <h3 class="flex items-center">
+        {{ bridgeTitle }}
+        <v-icon-info-tooltip
+          v-if="bridgeType === BridgeType.Transfer"
+          class="ml-2"
+          :tooltip="$t('bridge.transferTitleTooltip')"
+        />
+      </h3>
     </div>
     <ValidationObserver
       v-if="isUserWalletConnected"

@@ -5,7 +5,7 @@ export default {
     spotOrders: 'Spot Orders',
     derivativeOrders: 'Derivative Orders',
     rewardHistory: 'Reward History',
-    fundingHistory: 'Funding History',
+    walletHistory: 'Wallet History',
     fundingPayments: 'Funding Payments',
     openOrders: 'Open Orders',
     tradeHistory: 'Trade History',
@@ -32,7 +32,7 @@ export default {
     emptyTradingRewards: 'No distributed trading rewards found'
   },
 
-  fundingHistory: {
+  walletHistory: {
     deposits: 'Deposits',
     withdrawals: 'Withdrawals',
     emptySubaccountTransfers: 'No subaccount transfers found',

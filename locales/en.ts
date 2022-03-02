@@ -18,6 +18,7 @@ export default {
   ...bridge,
   ...wallet,
   common: {
+    available: 'Available',
     deposit: 'Deposit',
     trade: 'Trade',
     transfer: 'Transfer',
@@ -199,6 +200,8 @@ export default {
     activities: 'Activities',
     activity: 'Activity',
     portfolio: 'Portfolio',
-    home: 'Home'
+    home: 'Home',
+    makerTakerFee: '-{maker}% maker / -{taker}% taker',
+    noTierLevel: 'No VIP Tier'
   }
 }

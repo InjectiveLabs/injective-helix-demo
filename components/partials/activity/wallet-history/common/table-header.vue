@@ -12,29 +12,29 @@
       </th>
 
       <th class="text-left">
-        {{ $t('fundingHistory.transfers.asset') }}
+        {{ $t('walletHistory.transfers.asset') }}
       </th>
 
       <th class="text-left">
-        {{ $t('fundingHistory.transfers.type') }}
+        {{ $t('walletHistory.transfers.type') }}
       </th>
 
       <th>
         <div class="flex items-center justify-end">
-          <span>{{ $t('fundingHistory.transfers.amount') }}</span>
+          <span>{{ $t('walletHistory.transfers.amount') }}</span>
           <v-icon-info-tooltip
             class="ml-2"
-            :tooltip="$t('fundingHistory.transfers.amountTooltip')"
+            :tooltip="$t('walletHistory.transfers.amountTooltip')"
           />
         </div>
       </th>
 
       <th class="text-left">
-        {{ $t('fundingHistory.transfers.origin') }}
+        {{ $t('walletHistory.transfers.origin') }}
       </th>
 
       <th class="text-left">
-        {{ $t('fundingHistory.transfers.destination') }}
+        {{ $t('walletHistory.transfers.destination') }}
       </th>
 
       <th></th>

@@ -48,6 +48,7 @@ import Twitter from '~/components/icons/twitter.vue'
 import TwitterCircle from '~/components/icons/twitter-circle.vue'
 import User from '~/components/icons/user.vue'
 import Wallet from '~/components/icons/wallet.vue'
+import Crown from '~/components/icons/crown.vue'
 import Youtube from '~/components/icons/youtube.vue'
 import YoutubeCircle from '~/components/icons/youtube-circle.vue'
 import MenuAlt from '~/components/icons/menu-alt.vue'
@@ -77,6 +78,7 @@ Vue.component('VIconHistory', History)
 Vue.component('VIconInfo', Info)
 Vue.component('VIconLedger', Ledger)
 Vue.component('VIconMenu', Menu)
+Vue.component('VIconCrown', Crown)
 Vue.component('VIconMetamask', Metamask)
 Vue.component('VIconMoon', Moon)
 Vue.component('VIconNetwork', Network)

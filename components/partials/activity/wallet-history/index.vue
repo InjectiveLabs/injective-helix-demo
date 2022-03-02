@@ -7,11 +7,11 @@
           :option="components.transfers"
           text
         >
-          {{ $t('fundingHistory.transfers.transfers') }}
+          {{ $t('walletHistory.transfers.transfers') }}
         </v-button-select>
         <div class="mx-2 w-px h-4 bg-gray-500"></div>
         <v-button-select v-model="component" :option="components.deposits" text>
-          {{ $t('fundingHistory.deposits') }}
+          {{ $t('walletHistory.deposits') }}
         </v-button-select>
         <div class="mx-2 w-px h-4 bg-gray-500"></div>
         <v-button-select
@@ -19,7 +19,7 @@
           :option="components.withdrawals"
           text
         >
-          {{ $t('fundingHistory.withdrawals') }}
+          {{ $t('walletHistory.withdrawals') }}
         </v-button-select>
       </div>
       <div class="mt-6 relative">

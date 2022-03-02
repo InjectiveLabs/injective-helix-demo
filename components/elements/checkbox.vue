@@ -8,7 +8,7 @@
       type="checkbox"
       @change="handleChange"
     />
-    <label :for="uid"><slot /></label>
+    <label :for="uid" class="flex"><slot /></label>
   </div>
 </template>
 

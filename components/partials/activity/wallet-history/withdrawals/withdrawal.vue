@@ -74,7 +74,7 @@ import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
-import VAddress from '~/components/partials/activity/funding/common/address.vue'
+import VAddress from '~/components/partials/activity/wallet-history/common/address.vue'
 
 export default Vue.extend({
   components: {
@@ -124,31 +124,31 @@ export default Vue.extend({
     transferType(): string {
       const { transaction } = this
 
-      if (transaction.sender.startsWith('axelar')) {
-        return this.$t('fundingHistory.axelarDepositType')
+      if (transaction.receiver.startsWith('axelar')) {
+        return this.$t('walletHistory.axelarWithdrawalType')
       }
 
-      if (transaction.sender.startsWith('huahua')) {
-        return this.$t('fundingHistory.chihuahuaDepositType')
+      if (transaction.receiver.startsWith('huahua')) {
+        return this.$t('walletHistory.chihuahuaWithdrawalType')
       }
 
-      if (transaction.sender.startsWith('cosmos')) {
-        return this.$t('fundingHistory.cosmosDepositType')
+      if (transaction.receiver.startsWith('cosmos')) {
+        return this.$t('walletHistory.cosmosWithdrawalType')
       }
 
-      if (transaction.sender.startsWith('juno')) {
-        return this.$t('fundingHistory.junoDepositType')
+      if (transaction.receiver.startsWith('juno')) {
+        return this.$t('walletHistory.junoWithdrawalType')
       }
 
-      if (transaction.sender.startsWith('osmo')) {
-        return this.$t('fundingHistory.osmosisDepositType')
+      if (transaction.receiver.startsWith('osmo')) {
+        return this.$t('walletHistory.osmosisWithdrawalType')
       }
 
-      if (transaction.sender.startsWith('terra')) {
-        return this.$t('fundingHistory.terraDepositType')
+      if (transaction.receiver.startsWith('terra')) {
+        return this.$t('walletHistory.terraWithdrawalType')
       }
 
-      return this.$t('fundingHistory.ethDepositType')
+      return this.$t('walletHistory.ethWithdrawalType')
     },
 
     time(): string {

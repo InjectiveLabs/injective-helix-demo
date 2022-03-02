@@ -23,6 +23,8 @@ export default {
     funds: 'Funds',
     positions: 'Positions',
     hideSmallBalances: 'Hide small balances',
+    hideSmallBalancesTooltip:
+      'Assets valued below 10 USD are classified as small balances',
     availableTooltip: 'The assets available to be traded',
     marginHold: 'Margin hold',
     marginHoldTooltip: 'The margin held in open orders and open positions ',

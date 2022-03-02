@@ -79,7 +79,8 @@ export default Vue.extend({
       this.$accessor.app.fetchGasPrice(),
       this.$accessor.bank.init(),
       this.$accessor.account.init(),
-      this.$accessor.referral.init()
+      this.$accessor.referral.init(),
+      this.$accessor.exchange.initFeeDiscounts()
     ])
       .then(() => {
         //

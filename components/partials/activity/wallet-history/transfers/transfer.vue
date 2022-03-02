@@ -24,7 +24,7 @@
     <td class="h-8 text-left">
       <span>{{
         $t(
-          `fundingHistory.${
+          `walletHistory.${
             transfer.transferType === TransferType.Deposit
               ? 'subaccountDepositType'
               : 'subaccountWithdrawalType'
@@ -82,7 +82,7 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   NETWORK
 } from '~/app/utils/constants'
-import VAddress from '~/components/partials/activity/funding/common/address.vue'
+import VAddress from '~/components/partials/activity/wallet-history/common/address.vue'
 
 export default Vue.extend({
   components: {

@@ -14,7 +14,13 @@
             />
 
             <v-checkbox v-model="hideSmallBalance" class="mt-4 sm:mt-0 ml-auto">
-              {{ $t('portfolio.hideSmallBalances') }}
+              <span class="flex items-center">
+                {{ $t('portfolio.hideSmallBalances') }}
+                <v-icon-info-tooltip
+                  class="ml-2"
+                  :tooltip="$t('portfolio.hideSmallBalancesTooltip')"
+                />
+              </span>
             </v-checkbox>
           </div>
           <div

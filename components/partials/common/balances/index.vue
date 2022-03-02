@@ -4,10 +4,6 @@
       <div class="flex items-center justify-between">
         <p class="text-xs text-gray-500 flex items-center uppercase">
           {{ $t('marketPage.assets') }}
-          <v-icon-info-tooltip
-            class="ml-2"
-            :tooltip="$t('marketPage.assetsNote')"
-          />
         </p>
         <nuxt-link
           :to="{ name: 'portfolio' }"

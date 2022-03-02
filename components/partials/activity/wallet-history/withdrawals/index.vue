@@ -24,9 +24,9 @@
             <table-header />
             <tbody v-if="isUserWalletConnected">
               <tr
-                is="v-deposit"
+                is="v-withdrawal"
                 v-for="(transaction, index) in sortedTransactions"
-                :key="`deposit-${index}-${transaction.timestamp}`"
+                :key="`withdrawal-${index}-${transaction.timestamp}`"
                 :transaction="transaction"
               ></tr>
             </tbody>
@@ -34,7 +34,7 @@
         </div>
         <v-empty-list
           v-else
-          :message="$t('fundingHistory.emptyDepositTransactions')"
+          :message="$t('walletHistory.emptyWithdrawalTransactions')"
           class="mt-6 min-h-orders"
         />
       </v-card-table-wrap>
@@ -49,13 +49,13 @@ import {
   BridgeTransactionState,
   UiBridgeTransactionWithToken
 } from '@injectivelabs/ui-common'
-import VDeposit from './deposit.vue'
-import TableHeader from '~/components/partials/activity/funding/common/table-header.vue'
+import VWithdrawal from './withdrawal.vue'
+import TableHeader from '~/components/partials/activity/wallet-history/common/table-header.vue'
 
 export default Vue.extend({
   components: {
     TableHeader,
-    VDeposit
+    VWithdrawal
   },
 
   data() {
@@ -71,7 +71,7 @@ export default Vue.extend({
     },
 
     transactions(): UiBridgeTransactionWithToken[] {
-      return this.$accessor.bridge.depositTransactions
+      return this.$accessor.bridge.withdrawalTransactions
     },
 
     filteredTransactions(): UiBridgeTransactionWithToken[] {
@@ -108,7 +108,7 @@ export default Vue.extend({
     this.status.setLoading()
 
     Promise.all([
-      this.$accessor.bridge.fetchPeggyDepositTransactions(),
+      this.$accessor.bridge.fetchPeggyWithdrawalTransactions(),
       this.$accessor.bridge.fetchIBCTransferTransactions()
     ])
       .then(() => {
