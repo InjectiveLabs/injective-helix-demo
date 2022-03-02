@@ -153,10 +153,7 @@
       </v-button>
     </div>
 
-    <v-modal-order-confirm
-      @confirmed="submitLimitOrder"
-      @disabled="handleDisableAcceptHighPriceDeviations"
-    />
+    <v-modal-order-confirm @confirmed="submitLimitOrder" />
   </div>
 </template>
 
@@ -178,6 +175,7 @@ import { SpotOrderSide } from '@injectivelabs/spot-consumer'
 import OrderDetails from './order-details.vue'
 import OrderDetailsMarket from './order-details-market.vue'
 import {
+  DEFAULT_MAX_SLIPPAGE,
   DEFAULT_PRICE_WARNING_DEVIATION,
   DEFAULT_MARKET_PRICE_WARNING_DEVIATION,
   DEFAULT_MAX_PRICE_BAND_DIFFERENCE,
@@ -346,6 +344,16 @@ export default Vue.extend({
       return orderType === SpotOrderSide.Buy
     },
 
+    slippage(): BigNumberInBase {
+      const { orderTypeBuy } = this
+
+      return new BigNumberInBase(
+        orderTypeBuy
+          ? DEFAULT_MAX_SLIPPAGE.div(100).plus(1)
+          : DEFAULT_MAX_SLIPPAGE.div(100).minus(1).times(-1)
+      )
+    },
+
     makerFeeRateDiscount(): BigNumberInBase {
       const { feeDiscountAccountInfo } = this
 
@@ -431,6 +439,7 @@ export default Vue.extend({
         buys,
         hasAmount,
         market,
+        slippage,
         amount,
         price
       } = this
@@ -452,7 +461,9 @@ export default Vue.extend({
           market
         })
 
-        return new BigNumberInBase(worstPrice.toFixed(market.priceDecimals))
+        return new BigNumberInBase(
+          worstPrice.times(slippage).toFixed(market.priceDecimals)
+        )
       }
 
       if (price.isNaN()) {
@@ -1073,6 +1084,7 @@ export default Vue.extend({
         market,
         buys,
         sells,
+        slippage,
         takerFeeRate,
         tradingTypeMarket,
         orderTypeBuy,
@@ -1115,7 +1127,7 @@ export default Vue.extend({
         return getApproxAmountForMarketOrder({
           market,
           balance,
-          slippage: 1,
+          slippage: slippage.toNumber(),
           percent: percentageToNumber.toNumber(),
           records: orderTypeBuy ? sells : buys
         }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
@@ -1154,7 +1166,7 @@ export default Vue.extend({
       price: BigNumberInBase
       type: SpotOrderSide
     }) {
-      const { market } = this
+      const { market, slippage } = this
 
       if (!market) {
         return
@@ -1165,7 +1177,7 @@ export default Vue.extend({
         type === SpotOrderSide.Buy ? SpotOrderSide.Sell : SpotOrderSide.Buy
 
       const amount = total
-        .dividedBy(price.toFixed(market.priceDecimals))
+        .dividedBy(price.times(slippage).toFixed(market.priceDecimals))
         .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
 
       this.$nextTick(() => {
@@ -1235,14 +1247,6 @@ export default Vue.extend({
 
     onTradingTypeToggle(selectedTradingType: TradeExecutionType) {
       this.tradingType = selectedTradingType
-    },
-
-    handleEnableAcceptHighPriceDeviations() {
-      this.$accessor.app.setAcceptHighPriceDeviations(true)
-    },
-
-    handleDisableAcceptHighPriceDeviations() {
-      this.$accessor.app.setAcceptHighPriceDeviations(false)
     },
 
     submitLimitOrder() {

@@ -54,11 +54,6 @@ export default Vue.extend({
 
     handleCancel() {
       this.closeModal()
-    },
-
-    handleCancelAndSavePreference() {
-      this.$emit('disabled')
-      this.closeModal()
     }
   }
 })

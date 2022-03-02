@@ -183,7 +183,6 @@
 
     <v-modal-order-confirm
       @confirmed="submitLimitOrder"
-      @disabled="handleDisableAcceptHighPriceDeviations"
     />
   </div>
 </template>
@@ -1420,6 +1419,7 @@ export default Vue.extend({
         takerFeeRate,
         sells,
         form,
+        slippage,
         tradingTypeMarket,
         orderTypeBuy,
         position,
@@ -1445,7 +1445,7 @@ export default Vue.extend({
           market,
           margin: availableMargin,
           leverage: form.leverage,
-          slippage: 1,
+          slippage: slippage.toNumber(),
           percent: percentageToNumber.toNumber(),
           records: orderTypeBuy ? sells : buys
         }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
@@ -1568,14 +1568,6 @@ export default Vue.extend({
 
     onTradingTypeToggle(selectedTradingType: TradeExecutionType) {
       this.tradingType = selectedTradingType
-    },
-
-    handleEnableAcceptHighPriceDeviations() {
-      this.$accessor.app.setAcceptHighPriceDeviations(true)
-    },
-
-    handleDisableAcceptHighPriceDeviations() {
-      this.$accessor.app.setAcceptHighPriceDeviations(false)
     },
 
     onLeverageChange(leverage: string) {
