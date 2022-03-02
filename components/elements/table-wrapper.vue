@@ -1,7 +1,7 @@
 <template>
   <div class="h-full grow relative">
     <div
-      class="min-h-orders max-h-lg flex-col inset-0 h-full overflow-y-auto"
+      class="min-h-orders max-h-lg flex-col inset-0 h-full overflow-y-auto bg-gray-900"
       :class="{
         'md:min-h-0 md:max-h-full md:flex md:absolute': breakMd,
         'lg:min-h-0 lg:max-h-full lg:flex lg:absolute': !breakMd

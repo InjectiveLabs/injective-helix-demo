@@ -16,10 +16,18 @@
 
   tbody {
     tr {
-      @apply bg-gray-1000;
+      @apply bg-gray-900;
+
+      &:first-of-type {
+        @apply rounded-t;
+      }
+
+      &:last-of-type {
+        @apply rounded-b;
+      }
 
       &:nth-child(even) {
-        @apply bg-opacity-50;
+        @apply bg-gray-1000;
       }
 
       &:hover {
@@ -38,11 +46,21 @@
 }
 
 .v-table-row {
+  background-color: theme('colors.gray.900');
+
+  &:first-of-type {
+    @apply rounded-t;
+  }
+
+  &:last-of-type {
+    @apply rounded-b;
+  }
+
   &:nth-child(even) {
-    background-color: theme('colors.gray.850');
+    background-color: theme('colors.gray.1000');
   }
 
   &:hover {
-    background-color: theme('colors.gray.1000') !important;
+    background-color: theme('colors.gray.850') !important;
   }
 }

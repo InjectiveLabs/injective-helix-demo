@@ -1,5 +1,5 @@
 <template>
-  <thead>
+  <thead class="bg-gray-800">
     <tr>
       <th class="text-left">
         <span>{{ $t('trade.pair') }}</span>
@@ -54,6 +54,7 @@
       <th class="text-right">
         <span>{{ $t('trade.leverage') }}</span>
       </th>
+      <th></th>
     </tr>
   </thead>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <thead>
+  <thead class="bg-gray-800">
     <tr>
       <th class="text-left">
         {{ $t('trade.pair') }}

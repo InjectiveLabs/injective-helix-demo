@@ -8,7 +8,7 @@
       :search.sync="search"
     />
     <div
-      class="overflow-x-auto md:overflow-x-visible w-full"
+      class="overflow-x-auto md:overflow-x-visible w-full bg-gray-900 rounded"
       :class="{
         'h-full overflow-y-auto ': simple
       }"
@@ -17,7 +17,7 @@
         v-if="markets.length !== 0"
         :sm="simple"
         :lg="!simple"
-        class="pt-0"
+        class="pt-0 bg-gray-800"
         :class="{ 'pb-5': !simple }"
       >
         <span
