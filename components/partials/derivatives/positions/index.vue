@@ -1,32 +1,22 @@
 <template>
-  <div v-if="market" class="h-full">
-    <div
-      v-if="filteredPositions.length > 0 && isUserWalletConnected"
-      class="table-responsive table-orders"
-    >
-      <table class="table">
-        <position-table-header />
-        <tbody>
-          <tr
-            is="v-position"
-            v-for="(position, index) in filteredPositions"
-            :key="`positions-${index}-${position.marketId}`"
-            :position="position"
-          ></tr>
-        </tbody>
-      </table>
-    </div>
-    <v-user-wallet-connect-warning
-      v-else-if="!isUserWalletConnected"
-      class="bg-gray-900 mt-2"
-    />
+  <v-table-wrapper v-if="market">
+    <table v-if="filteredPositions.length > 0" class="table">
+      <position-table-header />
+      <tbody>
+        <tr
+          is="v-position"
+          v-for="(position, index) in filteredPositions"
+          :key="`positions-${index}-${position.marketId}`"
+          :position="position"
+        ></tr>
+      </tbody>
+    </table>
     <v-empty-list v-else :message="$t('trade.emptyPositions')" />
-  </div>
+  </v-table-wrapper>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { Status } from '@injectivelabs/utils'
 import {
   UiDerivativeMarketWithToken,
   UiPosition
@@ -49,16 +39,11 @@ export default Vue.extend({
 
   data() {
     return {
-      status: new Status(),
       interval: 0 as any
     }
   },
 
   computed: {
-    isUserWalletConnected(): boolean {
-      return this.$accessor.wallet.isUserWalletConnected
-    },
-
     market(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },

@@ -1,59 +1,50 @@
 <template>
-  <v-card md>
-    <VHocLoading :status="status">
-      <v-card-table-wrap>
-        <template #actions>
-          <div
-            class="col-span-12 lg:col-span-6 grid grid-cols-2 sm:grid-cols-3 gap-4 w-full"
-          >
-            <v-search
-              dense
-              class="col-span-2 sm:col-span-1"
-              :placeholder="$t('trade.filter')"
-              :search="search"
-              @searched="handleInputOnSearch"
-            />
-
-            <filter-selector
-              class="self-start"
-              :type="TradeSelectorType.Type"
-              :value="type"
-              @click="handleTypeClick"
-            />
-
-            <filter-selector
-              class="self-start"
-              :type="TradeSelectorType.Side"
-              :value="side"
-              @click="handleSideClick"
-            />
-          </div>
-        </template>
-
+  <VHocLoading :status="status">
+    <v-card-table-wrap>
+      <template #actions>
         <div
-          v-if="filteredTrades.length > 0"
-          class="table-responsive min-h-orders max-h-lg mt-6"
+          class="col-span-12 lg:col-span-6 grid grid-cols-2 sm:grid-cols-3 gap-4 w-full"
         >
-          <table class="table">
-            <trades-table-header />
-            <tbody v-if="isUserWalletConnected">
-              <tr
-                is="v-trade"
-                v-for="(trade, index) in filteredTrades"
-                :key="`trades-${index}-${trade.marketId}`"
-                :trade="trade"
-              ></tr>
-            </tbody>
-          </table>
+          <v-search
+            dense
+            class="col-span-2 sm:col-span-1"
+            :placeholder="$t('trade.filter')"
+            :search="search"
+            @searched="handleInputOnSearch"
+          />
+
+          <filter-selector
+            class="self-start"
+            :type="TradeSelectorType.Type"
+            :value="type"
+            @click="handleTypeClick"
+          />
+
+          <filter-selector
+            class="self-start"
+            :type="TradeSelectorType.Side"
+            :value="side"
+            @click="handleSideClick"
+          />
         </div>
-        <v-empty-list
-          v-else
-          :message="$t('trade.emptyTrades')"
-          class="mt-6 min-h-orders"
-        />
-      </v-card-table-wrap>
-    </VHocLoading>
-  </v-card>
+      </template>
+
+      <v-table-wrapper break-md class="mt-4">
+        <table v-if="filteredTrades.length > 0" class="table">
+          <trades-table-header />
+          <tbody>
+            <tr
+              is="v-trade"
+              v-for="(trade, index) in filteredTrades"
+              :key="`trades-${index}-${trade.marketId}`"
+              :trade="trade"
+            ></tr>
+          </tbody>
+        </table>
+        <v-empty-list v-else :message="$t('trade.emptyTrades')" />
+      </v-table-wrapper>
+    </v-card-table-wrap>
+  </VHocLoading>
 </template>
 
 <script lang="ts">
@@ -84,10 +75,6 @@ export default Vue.extend({
   },
 
   computed: {
-    isUserWalletConnected(): boolean {
-      return this.$accessor.wallet.isUserWalletConnected
-    },
-
     trades(): UiSpotTrade[] {
       return this.$accessor.activity.subaccountSpotTrades
     },
