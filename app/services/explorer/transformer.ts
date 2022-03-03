@@ -1,7 +1,7 @@
 import {
   BankMsgSendTransaction,
   GrpcBankMsgSendMessage
-} from '@injectiveLabs/explorer-consumer'
+} from '@injectivelabs/explorer-consumer'
 import { TransactionFromExplorerApiResponse } from './types'
 
 export const transactionMessageToBankMsgSendTransaction = (
