@@ -6,52 +6,48 @@
 
     <td class="h-8 text-left cursor-pointer">
       <div class="flex items-center justify-start">
-        <div v-if="transfer.token" class="w-6 h-6">
+        <div v-if="transaction.token" class="w-6 h-6">
           <img
-            :src="transfer.token.logo"
-            :alt="transfer.token.name"
+            :src="transaction.token.logo"
+            :alt="transaction.token.name"
             class="min-w-full h-auto rounded-full"
           />
         </div>
         <div class="ml-3">
           <span class="text-gray-200 font-semibold">
-            {{ transfer.token.symbol }}
+            {{ transaction.token.symbol }}
           </span>
         </div>
       </div>
     </td>
 
     <td class="h-8 text-left">
-      <span>{{
-        $t(
-          `walletHistory.${
-            transfer.transferType === TransferType.Deposit
-              ? 'subaccountDepositType'
-              : 'subaccountWithdrawalType'
-          }`
-        )
-      }}</span>
+      <span>{{ transferType }}</span>
     </td>
 
     <td class="h-8 text-right font-mono">
       <v-number :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS" :number="amount">
         <span slot="addon" class="text-2xs text-gray-500">
-          {{ transfer.token.symbol }}
+          {{ transaction.token.symbol }}
         </span>
       </v-number>
     </td>
 
     <td class="h-8 text-left font-mono">
-      <v-address :address="origin"> {{ formattedOrigin }}</v-address>
+      <v-address :address="transaction.sender">
+        {{ formattedOrigin }}
+      </v-address>
     </td>
 
     <td class="h-8 text-left font-mono">
-      <v-address :address="destination">{{ formattedDestination }}</v-address>
+      <v-address :address="transaction.receiver">
+        {{ formattedDestination }}
+      </v-address>
     </td>
 
     <td class="text-right">
       <a
-        :href="explorerUrl"
+        :href="transaction.explorerLink"
         target="_blank"
         class="text-primary-500 cursor-pointer"
       >
@@ -71,16 +67,13 @@ import {
 import { format } from 'date-fns'
 import { TransferType } from '@injectivelabs/subaccount-consumer'
 import {
-  UiDerivativeMarketWithToken,
-  UiSubaccountTransferWithToken,
-  ZERO_IN_BASE,
-  getExplorerUrl
+  UiBridgeTransactionWithToken,
+  ZERO_IN_BASE
 } from '@injectivelabs/ui-common'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  NETWORK
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
 import VAddress from '~/components/partials/activity/wallet-history/common/address.vue'
 
@@ -90,9 +83,9 @@ export default Vue.extend({
   },
 
   props: {
-    transfer: {
+    transaction: {
       required: true,
-      type: Object as PropType<UiSubaccountTransferWithToken>
+      type: Object as PropType<UiBridgeTransactionWithToken>
     }
   },
 
@@ -106,75 +99,48 @@ export default Vue.extend({
   },
 
   computed: {
-    currentMarket(): UiDerivativeMarketWithToken | undefined {
-      return this.$accessor.derivatives.market
-    },
-
-    markets(): UiDerivativeMarketWithToken[] {
-      return this.$accessor.derivatives.markets
-    },
-
-    origin(): string {
-      const { transfer } = this
-
-      if (transfer.transferType === TransferType.Deposit) {
-        return transfer.srcSubaccountAddress
-      }
-
-      return transfer.srcSubaccountId
-    },
-
     formattedOrigin(): string {
-      const { origin } = this
+      const { transaction } = this
 
-      return formatWalletAddress(origin)
-    },
-
-    destination(): string {
-      const { transfer } = this
-
-      if (transfer.transferType === TransferType.Deposit) {
-        return transfer.dstSubaccountId
-      }
-
-      return transfer.dstSubaccountAddress
+      return formatWalletAddress(transaction.sender)
     },
 
     formattedDestination(): string {
-      const { destination } = this
+      const { transaction } = this
 
-      return formatWalletAddress(destination)
+      return formatWalletAddress(transaction.receiver)
     },
 
     amount(): BigNumberInBase {
-      const { transfer } = this
+      const { transaction } = this
 
-      if (!transfer.amount) {
+      if (!transaction.amount) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(transfer.amount).toBase(transfer.token.decimals)
+      return new BigNumberInWei(transaction.amount).toBase(
+        transaction.token.decimals
+      )
     },
 
-    explorerUrl(): string {
-      const { transfer } = this
+    transferType(): string {
+      const { transaction } = this
 
-      const injectiveAddress =
-        transfer.transferType === TransferType.Deposit
-          ? transfer.srcSubaccountAddress
-          : transfer.dstSubaccountAddress
+      if (transaction.sender.startsWith('0x')) {
+        return this.$t('walletHistory.subaccountWithdrawalType')
+      }
 
-      return `${getExplorerUrl(NETWORK)}/account/${injectiveAddress}`
+      return this.$t('walletHistory.subaccountDepositType')
     },
 
     time(): string {
-      const { transfer } = this
+      const { transaction } = this
 
-      if (!transfer.executedAt) {
+      if (!transaction.timestamp) {
         return ''
       }
 
-      return format(transfer.executedAt, 'dd MMM HH:mm:ss')
+      return format(transaction.timestamp, 'dd MMM HH:mm:ss')
     }
   }
 })

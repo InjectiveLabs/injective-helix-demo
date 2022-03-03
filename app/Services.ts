@@ -31,6 +31,7 @@ import { SubaccountService } from './services/account'
 import { ExchangeService } from './services/exchange'
 import { AuctionService } from './services/auction'
 import { DerivativeService } from './services/derivatives'
+import { ExplorerService } from './services/explorer'
 import { ReferralService } from './services/referral'
 import { app } from '~/app/singletons/App'
 
@@ -71,6 +72,7 @@ export const bridgeService = new BridgeService(commonServiceOptions)
 export const bridgeTransformer = new BridgeTransformer(NETWORK)
 export const bankService = new BankService(commonServiceOptions)
 export const derivativeService = new DerivativeService(commonServiceOptions)
+export const explorerService = new ExplorerService(commonServiceOptions)
 export const spotService = new SpotService(commonServiceOptions)
 export const tokenService = new TokenService(commonServiceOptions)
 export const gasService = new GasService(commonServiceOptions)

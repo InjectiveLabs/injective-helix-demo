@@ -100,7 +100,8 @@ export default Vue.extend({
 
     Promise.all([
       this.$accessor.bridge.fetchPeggyWithdrawalTransactions(),
-      this.$accessor.bridge.fetchIBCTransferTransactions()
+      this.$accessor.bridge.fetchIBCTransferTransactions(),
+      this.$accessor.bridge.fetchInjectiveTransactions()
     ])
       .then(() => {
         //
