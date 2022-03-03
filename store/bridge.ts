@@ -8,7 +8,7 @@ import {
   UiSubaccountTransfer
 } from '@injectivelabs/ui-common'
 import { ExplorerTransformer } from '~/app/services/explorer'
-import { BridgeTransformer as dexBridgeTransformer } from '~/app/services/bridge'
+import { BridgeTransformer } from '~/app/services/bridge'
 import {
   explorerService,
   bridgeTransformer,
@@ -205,7 +205,7 @@ export const actions = actionTree(
       const transactions = transfers
         .map(ExplorerTransformer.transactionMessageToBankMsgSendTransaction)
         .map(
-          dexBridgeTransformer.convertBankMsgSendTransactionToUiBridgeTransaction
+          BridgeTransformer.convertBankMsgSendTransactionToUiBridgeTransaction
         )
 
       const uiBridgeTransactionsWithToken = await tokenService.getBridgeTransactionsWithToken(
@@ -231,7 +231,7 @@ export const actions = actionTree(
         subaccount.subaccountId
       )
       const transactions = transfers.map(
-        dexBridgeTransformer.convertSubaccountTransfersToUiBridgeTransaction
+        BridgeTransformer.convertSubaccountTransfersToUiBridgeTransaction
       )
 
       const uiBridgeTransactionsWithToken = await tokenService.getBridgeTransactionsWithToken(

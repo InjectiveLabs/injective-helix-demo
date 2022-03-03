@@ -1971,7 +1971,7 @@
 
 "@injectivelabs/explorer-consumer@^0.0.47":
   version "0.0.47"
-  resolved "https://registry.npmjs.org/@injectivelabs/explorer-consumer/-/explorer-consumer-0.0.47.tgz#e2a05e3c7d0f27428376240a8a0f35ebea48ca11"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/explorer-consumer/-/explorer-consumer-0.0.47.tgz#e2a05e3c7d0f27428376240a8a0f35ebea48ca11"
   integrity sha512-lwhfMEGC9ByppX0IQGA+tAp+SzskacKeGN4UGOI99oBqu1WhQ7TyFLLg5E3cooY2ufyv9YVA30xb+Tp6sdUzVg==
   dependencies:
     "@improbable-eng/grpc-web" "^0.15.0"
