@@ -2,7 +2,7 @@ import {
   BankMsgSendTransaction,
   GrpcBankMsgSendMessage
 } from '@injectiveLabs/explorer-consumer'
-import { TransactionFromExplorerApiResponse } from '~/types/explorer'
+import { TransactionFromExplorerApiResponse } from './types'
 
 export const transactionMessageToBankMsgSendTransaction = (
   tx: TransactionFromExplorerApiResponse

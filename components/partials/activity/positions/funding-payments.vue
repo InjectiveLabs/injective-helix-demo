@@ -76,9 +76,9 @@ export default Vue.extend({
           return true
         }
 
-        const isPartOfSearchFilter =
-          !search ||
-          market.ticker.toLowerCase().includes(search.trim().toLowerCase())
+        const isPartOfSearchFilter = market.ticker
+          .toLowerCase()
+          .includes(search.trim().toLowerCase())
 
         return isPartOfSearchFilter
       })

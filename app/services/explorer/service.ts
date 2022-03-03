@@ -1,7 +1,7 @@
 import { ServiceOptions } from '@injectivelabs/ui-common'
 import { BaseService } from '@injectivelabs/ui-common/dist/BaseService'
+import { ExplorerConsumer } from './consumer'
 import { app } from '~/app/singletons/App'
-import { ExplorerConsumer } from '~/app/singletons/ExplorerConsumer'
 
 export enum ExplorerMetrics {
   FetchAccountTxs = 'FetchAccountTxs'

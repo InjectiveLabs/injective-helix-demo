@@ -3,7 +3,7 @@ import { HttpClient } from '@injectivelabs/utils'
 import {
   ExplorerApiResponse,
   TransactionFromExplorerApiResponse
-} from '~/types/explorer'
+} from './types'
 
 export class ExplorerConsumer {
   private client: HttpClient
