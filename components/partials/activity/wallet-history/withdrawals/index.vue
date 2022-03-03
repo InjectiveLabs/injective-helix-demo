@@ -76,11 +76,9 @@ export default Vue.extend({
           return true
         }
 
-        const isPartOfSearchFilter =
-          !search ||
-          transaction.token.symbol
-            .toLowerCase()
-            .includes(search.trim().toLowerCase())
+        const isPartOfSearchFilter = transaction.token.symbol
+          .toLowerCase()
+          .includes(search.trim().toLowerCase())
 
         return isPartOfSearchFilter && isCompletedTransaction
       })
