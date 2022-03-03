@@ -4,7 +4,7 @@ import {
 } from '@injectiveLabs/explorer-consumer'
 import { TransactionFromExplorerApiResponse } from '~/types/explorer'
 
-export const TransactionMessageToBankMsgSendTransaction = (
+export const transactionMessageToBankMsgSendTransaction = (
   tx: TransactionFromExplorerApiResponse
 ): BankMsgSendTransaction => {
   const [message] = tx.messages as GrpcBankMsgSendMessage[]
@@ -18,4 +18,8 @@ export const TransactionMessageToBankMsgSendTransaction = (
     sender: message.value.from_address,
     receiver: message.value.to_address
   }
+}
+
+export class ExplorerTransformer {
+  static transactionMessageToBankMsgSendTransaction = transactionMessageToBankMsgSendTransaction
 }

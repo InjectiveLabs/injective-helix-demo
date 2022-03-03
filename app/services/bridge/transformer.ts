@@ -6,9 +6,10 @@ import {
 } from '@injectivelabs/ui-common'
 import { BankMsgSendTransaction } from '@injectivelabs/explorer-consumer'
 import { TransferType } from '@injectivelabs/subaccount-consumer'
+// import { Network } from '@injectivelabs/networks'
 import { NETWORK } from '~/app/utils/constants'
 
-export const convertBankMsgSendTransactionToUiBridgeTransaction = (
+const convertBankMsgSendTransactionToUiBridgeTransaction = (
   transaction: BankMsgSendTransaction
 ): UiBridgeTransaction => {
   return {
@@ -24,7 +25,7 @@ export const convertBankMsgSendTransactionToUiBridgeTransaction = (
   }
 }
 
-export const convertSubaccountTransfersToUiBridgeTransaction = (
+const convertSubaccountTransfersToUiBridgeTransaction = (
   transaction: UiSubaccountTransfer
 ): UiBridgeTransaction => {
   const isDeposit = transaction.transferType === TransferType.Deposit
@@ -46,4 +47,10 @@ export const convertSubaccountTransfersToUiBridgeTransaction = (
     timestamp: transaction.executedAt,
     state: BridgeTransactionState.Completed
   }
+}
+
+export class BridgeTransformer {
+  static convertBankMsgSendTransactionToUiBridgeTransaction = convertBankMsgSendTransactionToUiBridgeTransaction
+
+  static convertSubaccountTransfersToUiBridgeTransaction = convertSubaccountTransfersToUiBridgeTransaction
 }

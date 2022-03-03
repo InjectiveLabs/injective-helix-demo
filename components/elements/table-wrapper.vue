@@ -3,7 +3,7 @@
     <div
       class="min-h-orders max-h-md flex-col inset-0 h-full overflow-y-auto bg-gray-900"
       :class="{
-        'md:min-h-0 md:max-h-full md:flex md:absolute': breakMd,
+        'md:min-h-0 md:max-h-full md:flex md:absolute md:pb-4': breakMd,
         'break-lg': !breakMd
       }"
     >
@@ -38,7 +38,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .break-lg {
   @media (min-width: 1024px) and (min-height: 960px) {
-    @apply min-h-0 max-h-full flex absolute;
+    @apply min-h-0 max-h-full flex absolute pb-4;
   }
 }
 </style>
