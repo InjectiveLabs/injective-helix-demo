@@ -128,7 +128,7 @@ export default Vue.extend({
         return this.$t('walletHistory.axelarWithdrawalType')
       }
 
-      if (transaction.receiver.startsWith('huahua')) {
+      if (transaction.receiver.startsWith('chihuahua')) {
         return this.$t('walletHistory.chihuahuaWithdrawalType')
       }
 
@@ -146,6 +146,13 @@ export default Vue.extend({
 
       if (transaction.receiver.startsWith('terra')) {
         return this.$t('walletHistory.terraWithdrawalType')
+      }
+
+      if (
+        transaction.sender.startsWith('inj') &&
+        transaction.receiver.startsWith('inj')
+      ) {
+        return this.$t('walletHistory.INJTransferType')
       }
 
       return this.$t('walletHistory.ethWithdrawalType')

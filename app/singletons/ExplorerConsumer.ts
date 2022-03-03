@@ -1,12 +1,11 @@
 import { HttpException } from '@injectivelabs/exceptions'
 import { HttpClient } from '@injectivelabs/utils'
-import { app } from '~/app/singletons/App'
 import {
   ExplorerApiResponse,
   TransactionFromExplorerApiResponse
 } from '~/types/explorer'
 
-class ExplorerConsumer {
+export class ExplorerConsumer {
   private client: HttpClient
 
   constructor(baseUrl: string) {
@@ -14,21 +13,24 @@ class ExplorerConsumer {
   }
 
   async fetchAccountTransactions({
-    account,
+    address,
     before,
     limit,
-    skip
+    skip,
+    type
   }: {
-    account: string
+    address: string
     before?: number | undefined
     skip?: number | undefined
     limit: number
+    type?: string
   }) {
     try {
-      const response = (await this.client.get(`accountTxs/${account}`, {
+      const response = (await this.client.get(`accountTxs/${address}`, {
         before,
         limit,
-        skip
+        skip,
+        type
       })) as ExplorerApiResponse<TransactionFromExplorerApiResponse[]>
 
       return response.data
@@ -57,7 +59,3 @@ class ExplorerConsumer {
     }
   }
 }
-
-export const explorerConsumer = new ExplorerConsumer(
-  `${app.endpoints.exchangeApi}/api/explorer/v1`
-)

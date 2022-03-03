@@ -1,29 +1,5 @@
 import { HttpClient } from '@injectivelabs/utils'
 import { APP_GAS_REBATE_API } from '../utils/constants'
-import { explorerConsumer } from '~/app/singletons/ExplorerConsumer'
-
-export const fetchUserTransactionMessages = async (address: string) => {
-  const transactions = await explorerConsumer.fetchAccountTransactions({
-    account: address,
-    limit: 10
-  })
-
-  if (!transactions) {
-    return []
-  }
-
-  if (!transactions.data) {
-    return []
-  }
-
-  return transactions.data
-    .map((transaction) => {
-      return transaction.messages
-    })
-    .reduce((allMessages, messages) => {
-      return [...allMessages, ...messages]
-    }, [])
-}
 
 export const redeem = async ({
   address,

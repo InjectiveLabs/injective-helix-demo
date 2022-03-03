@@ -16,14 +16,14 @@
       </template>
 
       <v-table-wrapper break-md class="mt-4">
-        <table v-if="sortedTransfers.length > 0" class="table">
+        <table v-if="sortedTransactions.length > 0" class="table">
           <transfers-table-header />
           <tbody>
             <tr
               is="v-transfer"
-              v-for="(transfer, index) in sortedTransfers"
-              :key="`transfers-${index}-${transfer.executedAt}`"
-              :transfer="transfer"
+              v-for="(transaction, index) in sortedTransactions"
+              :key="`transfers-${index}-${transaction.executedAt}`"
+              :transaction="transaction"
             />
           </tbody>
         </table>
@@ -40,7 +40,7 @@
 <script lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import Vue from 'vue'
-import { UiSubaccountTransferWithToken } from '@injectivelabs/ui-common'
+import { UiBridgeTransactionWithToken } from '@injectivelabs/ui-common'
 import TransfersTableHeader from '~/components/partials/activity/wallet-history/common/table-header.vue'
 import VTransfer from '~/components/partials/activity/wallet-history/transfers/transfer.vue'
 
@@ -58,21 +58,21 @@ export default Vue.extend({
   },
 
   computed: {
-    transfers(): UiSubaccountTransferWithToken[] {
-      return this.$accessor.activity.subaccountTransfers
+    transactions(): UiBridgeTransactionWithToken[] {
+      return this.$accessor.bridge.subaccountTransferBridgeTransactions
     },
 
-    filteredTransfers(): UiSubaccountTransferWithToken[] {
-      const { transfers, search } = this
+    filteredTransactions(): UiBridgeTransactionWithToken[] {
+      const { transactions, search } = this
 
-      return transfers.filter((transfer) => {
+      return transactions.filter((transaction) => {
         if (!search) {
           return true
         }
 
         const isPartOfSearchFilter =
           !search ||
-          transfer.token.symbol
+          transaction.token.symbol
             .toLowerCase()
             .includes(search.trim().toLowerCase())
 
@@ -80,11 +80,11 @@ export default Vue.extend({
       })
     },
 
-    sortedTransfers(): UiSubaccountTransferWithToken[] {
-      const { filteredTransfers } = this
+    sortedTransactions(): UiBridgeTransactionWithToken[] {
+      const { filteredTransactions } = this
 
-      return filteredTransfers.sort((a, b) => {
-        return b.executedAt - a.executedAt
+      return filteredTransactions.sort((a, b) => {
+        return b.timestamp - a.timestamp
       })
     }
   },
@@ -92,7 +92,7 @@ export default Vue.extend({
   mounted() {
     this.status.setLoading()
 
-    Promise.all([this.$accessor.activity.fetchSubaccountTransfers()])
+    Promise.all([this.$accessor.bridge.fetchSubaccountTransfers()])
       .then(() => {
         //
       })
