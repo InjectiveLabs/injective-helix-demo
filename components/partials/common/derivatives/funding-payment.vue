@@ -27,9 +27,8 @@
           'text-aqua-500': total.gte(0),
           'text-red-500': total.lt(0)
         }"
-        :decimals="
-          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-        "
+        :decimals="UI_DEFAULT_MAX_DISPLAY_DECIMALS"
+        :prefix="total.lt(0) ? '-' : ''"
         :number="total"
       >
         <span slot="addon" class="text-2xs text-gray-500">
@@ -42,7 +41,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 import {
@@ -52,7 +51,8 @@ import {
 import { FundingPayment } from '@injectivelabs/derivatives-consumer'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+  UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
 
 export default Vue.extend({
@@ -67,6 +67,7 @@ export default Vue.extend({
     return {
       UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
       UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+      UI_DEFAULT_MAX_DISPLAY_DECIMALS,
       TradeDirection,
       TradeExecutionType
     }
@@ -94,9 +95,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(fundingPayment.amount).toBase(
-        market.quoteToken.decimals
-      )
+      return new BigNumberInBase(fundingPayment.amount)
     },
 
     time(): string {
