@@ -56,12 +56,16 @@ export const isNumericKeycode = (keyCode?: number) =>
 export const isDotKeycode = (keyCode?: number) =>
   keyCode && (keyCode === 190 || keyCode === 110)
 
-export const getDecimalsFromNumber = (number: number | string): number => {
+export const getExactDecimalsFromNumber = (number: number | string): number => {
   const numberToBn = new BigNumber(number).toNumber()
   const numberParts = numberToBn.toString().split('.')
   const [, decimals] = numberParts
 
-  const actualDecimals = decimals ? decimals.length : 0
+  return decimals ? decimals.length : 0
+}
+
+export const getDecimalsFromNumber = (number: number | string): number => {
+  const actualDecimals = getExactDecimalsFromNumber(number)
 
   return actualDecimals > UI_DEFAULT_MAX_DISPLAY_DECIMALS
     ? UI_DEFAULT_MAX_DISPLAY_DECIMALS

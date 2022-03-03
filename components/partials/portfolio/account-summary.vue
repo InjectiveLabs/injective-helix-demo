@@ -18,8 +18,9 @@
           <span v-else>{{ totalBalanceToString }} USD</span>
         </h2>
         <span v-if="!hideBalance" class="text-2xl text-gray-400 mt-4 lg:mt-0">
-          <span v-if="status.isLoading()">≈ &mdash; BTC </span>
-          <span v-else>{{ totalBalanceInBtcToString }} BTC</span>
+          <span v-if="status.isIdle()">
+            ≈ {{ totalBalanceInBtcToString }} BTC
+          </span>
         </span>
       </div>
       <div class="flex items-center mt-6 lg:mt-0">

@@ -1,5 +1,5 @@
 <template>
-  <table-wrapper v-if="market">
+  <v-table-wrapper v-if="market">
     <table v-if="filteredOrders.length > 0" class="table">
       <orders-table-header />
       <tbody>
@@ -12,7 +12,7 @@
       </tbody>
     </table>
     <v-empty-list v-else :message="$t('trade.emptyOrders')" />
-  </table-wrapper>
+  </v-table-wrapper>
 </template>
 
 <script lang="ts">

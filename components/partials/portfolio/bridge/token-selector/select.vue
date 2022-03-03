@@ -54,6 +54,7 @@
                 :value="amount"
                 @input="handleAmountChange"
                 @blur="resetIsSearching"
+                @keydown="onAmountKeydown"
                 @click.native.stop="focusInput"
               />
               <img
@@ -106,6 +107,11 @@ import {
   BIG_NUMBER_ROUND_DOWN_MODE
 } from '@injectivelabs/ui-common'
 import VTokenSelectorItem from './item.vue'
+import { DOMEvent } from '~/types'
+import {
+  getExactDecimalsFromNumber,
+  isNumericKeycode
+} from '~/app/utils/helpers'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
@@ -248,6 +254,19 @@ export default Vue.extend({
       if (element) {
         this.isSearching = true
         element.focus()
+      }
+    },
+
+    onAmountKeydown(event: DOMEvent<HTMLInputElement>) {
+      const { amount, value } = this
+
+      const allowedDecimalPlaces = value.decimals === 18 ? 17 : value.decimals
+      const amountDecimalExceedTokenDecimal =
+        getExactDecimalsFromNumber(amount) === allowedDecimalPlaces &&
+        isNumericKeycode(event.keyCode)
+
+      if (amountDecimalExceedTokenDecimal) {
+        event.preventDefault()
       }
     },
 

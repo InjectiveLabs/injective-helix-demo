@@ -1,3 +1,8 @@
+// firefox input hide up and down arrows
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
 .input {
   @apply border border-transparent bg-gray-900 shadow-sm text-gray-200 rounded w-full h-12 text-sm outline-none appearance-none max-w-full px-4;
 

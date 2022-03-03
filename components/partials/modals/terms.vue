@@ -7,7 +7,7 @@
 
     <div class="relative -mt-6">
       <p
-        class="text-center text-sm text-gray-100"
+        class="text-left text-sm text-gray-100 pt-6"
         v-html="$t('disclaimer_note')"
       ></p>
       <ul class="p-4 bg-gray-900 mt-6 text-xs text-gray-300 rounded-lg">

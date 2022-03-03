@@ -46,7 +46,7 @@
             <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
             <span v-else>{{ tradingAccountBalancesToString }} USD</span>
           </p>
-          <p class="text-sm mt-2 text-primary-500">
+          <p class="text-sm mt-2 text-gray-500">
             <span v-if="status.isLoading()">&mdash; USD</span>
             <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
             <span v-else>
