@@ -57,11 +57,12 @@ export const isDotKeycode = (keyCode?: number) =>
   keyCode && (keyCode === 190 || keyCode === 110)
 
 export const getExactDecimalsFromNumber = (number: number | string): number => {
-  const numberToBn = new BigNumber(number).toNumber()
-  const numberParts = numberToBn.toString().split('.')
-  const [, decimals] = numberParts
+  if (Number(number) % 1 !== 0) {
+    const [, decimals] = number.toString().split('.')
 
-  return decimals ? decimals.length : 0
+    return decimals.length
+  }
+  return 0
 }
 
 export const getDecimalsFromNumber = (number: number | string): number => {

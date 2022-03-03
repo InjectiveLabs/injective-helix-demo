@@ -260,7 +260,7 @@ export default Vue.extend({
     onAmountKeydown(event: DOMEvent<HTMLInputElement>) {
       const { amount, value } = this
 
-      const allowedDecimalPlaces = value.decimals === 18 ? 17 : value.decimals
+      const allowedDecimalPlaces = value.decimals
       const amountDecimalExceedTokenDecimal =
         getExactDecimalsFromNumber(amount) === allowedDecimalPlaces &&
         isNumericKeycode(event.keyCode)
