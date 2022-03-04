@@ -92,22 +92,13 @@ export default Vue.extend({
       FilterTypes,
       filterType: FilterTypes.Volume,
       showAll: false,
+      status: new Status(StatusType.Loading),
 
       interval: 0 as any
     }
   },
 
   computed: {
-    marketsLoadingState(): StatusType {
-      return this.$accessor.app.marketsLoadingState
-    },
-
-    status(): Status {
-      const { marketsLoadingState } = this
-
-      return new Status(marketsLoadingState)
-    },
-
     derivativeMarkets(): UiDerivativeMarketWithToken[] {
       return this.$accessor.derivatives.markets
     },
@@ -163,6 +154,12 @@ export default Vue.extend({
     }
   },
 
+  watch: {
+    markets() {
+      this.status.setIdle()
+    }
+  },
+
   mounted() {
     this.setMarketSummariesPolling()
   },
@@ -173,8 +170,6 @@ export default Vue.extend({
 
   methods: {
     setMarketSummariesPolling() {
-      this.$accessor.app.setMarketsLoadingState(StatusType.Loading)
-
       Promise.all([this.$accessor.app.pollMarkets()])
         .then(() => {
           this.interval = setInterval(async () => {
@@ -182,9 +177,7 @@ export default Vue.extend({
           }, 5000)
         })
         .catch(this.$onRejected)
-        .finally(() => {
-          this.$accessor.app.setMarketsLoadingState(StatusType.Idle)
-        })
+        .finally(() => {})
     },
 
     showAllMarkets() {
