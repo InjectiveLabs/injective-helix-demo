@@ -37,7 +37,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .break-lg {
-  @media (min-width: 1024px) and (min-height: 960px) {
+  @media (min-width: 1024px) and (min-height: 1024px) {
     @apply min-h-0 max-h-full flex absolute pb-4;
   }
 }

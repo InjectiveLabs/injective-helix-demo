@@ -41,7 +41,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 import {
@@ -74,10 +74,6 @@ export default Vue.extend({
   },
 
   computed: {
-    currentMarket(): UiDerivativeMarketWithToken | undefined {
-      return this.$accessor.derivatives.market
-    },
-
     markets(): UiDerivativeMarketWithToken[] {
       return this.$accessor.derivatives.markets
     },
@@ -95,7 +91,9 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(fundingPayment.amount)
+      return new BigNumberInWei(fundingPayment.amount).toBase(
+        market.quoteToken.decimals
+      )
     },
 
     time(): string {
