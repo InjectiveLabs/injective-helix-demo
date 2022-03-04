@@ -163,10 +163,6 @@ export default Vue.extend({
       return this.$accessor.token.erc20TokensWithBalanceAndPriceFromBank
     },
 
-    tradeableTokensWithBalanceAndPrice(): TokenWithBalanceAndPrice[] {
-      return this.$accessor.token.tradeableTokensWithBalanceAndPrice
-    },
-
     ibcTokensWithBalanceAndPriceFromBank(): TokenWithBalanceAndPrice[] {
       return this.$accessor.token.ibcTokensWithBalanceAndPriceFromBank
     },
@@ -184,14 +180,12 @@ export default Vue.extend({
       const {
         bankBalances,
         erc20TokensWithBalanceAndPriceFromBank,
-        ibcTokensWithBalanceAndPriceFromBank,
-        tradeableTokensWithBalanceAndPrice
+        ibcTokensWithBalanceAndPriceFromBank
       } = this
 
       return [
         ...erc20TokensWithBalanceAndPriceFromBank,
-        ...ibcTokensWithBalanceAndPriceFromBank,
-        ...tradeableTokensWithBalanceAndPrice
+        ...ibcTokensWithBalanceAndPriceFromBank
       ].map((tokenWithBalance) => {
         const balance =
           bankBalances.find(({ denom }) => denom === tokenWithBalance.denom)

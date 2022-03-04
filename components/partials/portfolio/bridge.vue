@@ -50,6 +50,7 @@ import { BridgeType, Modal, TransferDirection } from '~/types'
 import VModalBridge from '~/components/partials/modals/bridge/index.vue'
 import VModalBridgeConfirm from '~/components/partials/modals/bridge/confirm.vue'
 import VModalBridgeCompleted from '~/components/partials/modals/bridge/completed.vue'
+import { getBridgingNetworkBySymbol } from '~/app/data/bridge'
 
 export default Vue.extend({
   components: {
@@ -201,19 +202,23 @@ export default Vue.extend({
     },
 
     handleDeposit(token: Token) {
-      this.bridgingNetwork = BridgingNetwork.Ethereum
+      const formToken = token || injToken
+
       this.form.amount = ''
       this.form.destinationAddress = ''
-      this.form.token = token || injToken
+      this.form.token = formToken
+      this.bridgingNetwork = getBridgingNetworkBySymbol(formToken.symbol)
       this.bridgeType = BridgeType.Deposit
       this.$accessor.modal.openModal(Modal.Bridge)
     },
 
     handleWithdraw(token: Token) {
-      this.bridgingNetwork = BridgingNetwork.Ethereum
+      const formToken = token || injToken
+
       this.form.amount = ''
       this.form.destinationAddress = ''
-      this.form.token = token || injToken
+      this.form.token = formToken
+      this.bridgingNetwork = getBridgingNetworkBySymbol(formToken.symbol)
       this.bridgeType = BridgeType.Withdraw
       this.$accessor.modal.openModal(Modal.Bridge)
     }

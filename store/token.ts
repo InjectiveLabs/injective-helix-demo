@@ -21,7 +21,6 @@ import { backupPromiseCall } from '~/app/utils/async'
 const initialStateFactory = () => ({
   erc20TokensWithBalanceAndPriceFromBank: [] as TokenWithBalanceAndPrice[],
   ibcTokensWithBalanceAndPriceFromBank: [] as TokenWithBalanceAndPrice[],
-  tradeableTokensWithBalanceAndPrice: [] as TokenWithBalanceAndPrice[],
   btcUsdPrice: 0 as number,
   injUsdPrice: 0 as number
 })
@@ -31,7 +30,6 @@ const initialState = initialStateFactory()
 export const state = () => ({
   erc20TokensWithBalanceAndPriceFromBank: initialState.erc20TokensWithBalanceAndPriceFromBank as TokenWithBalanceAndPrice[],
   ibcTokensWithBalanceAndPriceFromBank: initialState.ibcTokensWithBalanceAndPriceFromBank as TokenWithBalanceAndPrice[],
-  tradeableTokensWithBalanceAndPrice: initialState.tradeableTokensWithBalanceAndPrice as TokenWithBalanceAndPrice[],
   btcUsdPrice: initialState.btcUsdPrice as number,
   injUsdPrice: initialState.injUsdPrice as number
 })
@@ -55,13 +53,6 @@ export const mutations = {
     ibcTokensWithBalanceAndPriceFromBank: TokenWithBalanceAndPrice[]
   ) {
     state.ibcTokensWithBalanceAndPriceFromBank = ibcTokensWithBalanceAndPriceFromBank
-  },
-
-  setTradeableTokensWithBalanceAndPrice(
-    state: TokenStoreState,
-    tradeableTokensWithBalanceAndPrice: TokenWithBalanceAndPrice[]
-  ) {
-    state.tradeableTokensWithBalanceAndPrice = tradeableTokensWithBalanceAndPrice
   },
 
   setBtcUsdPrice(state: TokenStoreState, btcUsdPrice: number) {
@@ -170,17 +161,22 @@ export const actions = actionTree(
         })
       )
 
+      const ercTokensWithBalanceAndAllowanceWithTradeableTokens = [
+        ...new Map(
+          [
+            ...tradeableTokensWithBalanceAndPrice,
+            ...ercTokensWithBalanceAndAllowance
+          ].map((token) => [token.denom, token])
+        ).values()
+      ]
+
       commit(
         'setErc20TokensWithBalanceAndPriceFromBank',
-        ercTokensWithBalanceAndAllowance
+        ercTokensWithBalanceAndAllowanceWithTradeableTokens
       )
       commit(
         'setIbcTokensWithBalanceAndPriceFromBank',
         ibcTokensWithBalanceAndPriceFromBank
-      )
-      commit(
-        'setTradeableTokensWithBalanceAndPrice',
-        tradeableTokensWithBalanceAndPrice
       )
     },
 
@@ -231,12 +227,17 @@ export const actions = actionTree(
         return
       }
 
+      const erc20TokensWithBalanceAndPriceFromBankWithUpdatedAllowance = [
+        ...erc20TokensWithBalanceAndPriceFromBank
+      ]
+      erc20TokensWithBalanceAndPriceFromBankWithUpdatedAllowance[index] = {
+        ...token,
+        allowance: UNLIMITED_ALLOWANCE.toString()
+      }
+
       commit(
         'setErc20TokensWithBalanceAndPriceFromBank',
-        erc20TokensWithBalanceAndPriceFromBank.splice(index, 1, {
-          ...token,
-          allowance: UNLIMITED_ALLOWANCE.toString()
-        })
+        erc20TokensWithBalanceAndPriceFromBankWithUpdatedAllowance
       )
     },
 
