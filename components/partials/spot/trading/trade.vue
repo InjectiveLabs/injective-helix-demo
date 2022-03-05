@@ -100,6 +100,7 @@
           min="0"
           @blur="onPriceBlur"
           @input="onPriceChange"
+          @keydown="onPriceKeyDown"
         >
           <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
         </v-input>
@@ -195,10 +196,9 @@ import {
   TradingRewardsCampaign
 } from '~/app/services/exchange'
 import {
-  getDecimalsFromNumber,
-  isDotKeycode,
-  isNumericKeycode
-} from '~/app/utils/helpers'
+  hasLessThenDpAndKeyCodeIsNumeric,
+  passNumericInputValidation
+} from '~/app/utils/input'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
 
 interface TradeForm {
@@ -1225,18 +1225,38 @@ export default Vue.extend({
     onAmountKeydown(event: DOMEvent<HTMLInputElement>) {
       const { market, form } = this
 
-      if (!market) {
+      if (!market || !event.keyCode || !event.key) {
         return
       }
 
-      const inputIsDotQuantityDecimalZero =
-        market.quantityDecimals === 0 && isDotKeycode(event.keyCode)
-      const inputDecimalExceedQuantityDecimal =
-        getDecimalsFromNumber(form.amount) === market.quantityDecimals &&
-        isNumericKeycode(event.keyCode) &&
-        market.quantityDecimals !== 0
+      const disableDot = market.quantityDecimals === 0
 
-      if (inputIsDotQuantityDecimalZero || inputDecimalExceedQuantityDecimal) {
+      if (
+        !passNumericInputValidation(event.key, disableDot ? ['.'] : []) ||
+        hasLessThenDpAndKeyCodeIsNumeric({
+          value: form.amount,
+          decimalPlaces: market.quantityDecimals,
+          keyCode: event.keyCode
+        })
+      ) {
+        event.preventDefault()
+      }
+    },
+
+    onPriceKeyDown(event: DOMEvent<HTMLInputElement>) {
+      const { market, form } = this
+
+      if (!market || !event.keyCode) {
+        return
+      }
+
+      if (
+        hasLessThenDpAndKeyCodeIsNumeric({
+          value: form.price,
+          decimalPlaces: market.quoteToken.decimals,
+          keyCode: event.keyCode
+        })
+      ) {
         event.preventDefault()
       }
     },

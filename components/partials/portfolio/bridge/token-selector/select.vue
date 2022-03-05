@@ -108,10 +108,7 @@ import {
 } from '@injectivelabs/ui-common'
 import VTokenSelectorItem from './item.vue'
 import { DOMEvent } from '~/types'
-import {
-  getExactDecimalsFromNumber,
-  isNumericKeycode
-} from '~/app/utils/helpers'
+import { hasLessThenDpAndKeyCodeIsNumeric } from '~/app/utils/input'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
@@ -260,12 +257,17 @@ export default Vue.extend({
     onAmountKeydown(event: DOMEvent<HTMLInputElement>) {
       const { amount, value } = this
 
-      const allowedDecimalPlaces = value.decimals
-      const amountDecimalExceedTokenDecimal =
-        getExactDecimalsFromNumber(amount) === allowedDecimalPlaces &&
-        isNumericKeycode(event.keyCode)
+      if (!value.decimals || !event.keyCode) {
+        return false
+      }
 
-      if (amountDecimalExceedTokenDecimal) {
+      if (
+        hasLessThenDpAndKeyCodeIsNumeric({
+          value: amount,
+          decimalPlaces: value.decimals,
+          keyCode: event.keyCode
+        })
+      ) {
         event.preventDefault()
       }
     },

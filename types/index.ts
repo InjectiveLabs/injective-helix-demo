@@ -1,6 +1,7 @@
 export interface DOMEvent<T extends EventTarget> extends Event {
   target: T
   keyCode?: number
+  key?: string
 }
 
 export interface Constructable<T> {

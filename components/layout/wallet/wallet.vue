@@ -22,7 +22,7 @@
 
     <VPopperBox
       ref="popper-wallet"
-      class="popper bg-gray-800 rounded flex flex-col flex-wrap absolute min-w-[356px] z-10 shadow"
+      class="popper bg-gray-800 rounded flex flex-col flex-wrap absolute min-w-[356px] z-10 shadow-md"
       binding-element="#wallet-address"
       :options="popperOption"
     >
