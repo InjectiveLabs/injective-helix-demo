@@ -4,6 +4,10 @@
       <span class="text-gray-400 text-xs">{{ time }}</span>
     </td>
 
+    <td class="h-8 text-left">
+      <span>{{ transferType }}</span>
+    </td>
+
     <td class="h-8 text-left cursor-pointer">
       <div class="flex items-center justify-start">
         <div v-if="transaction.token" class="w-6 h-6">
@@ -19,10 +23,6 @@
           </span>
         </div>
       </div>
-    </td>
-
-    <td class="h-8 text-left">
-      <span>{{ transferType }}</span>
     </td>
 
     <td class="h-8 text-right font-mono">
@@ -49,7 +49,7 @@
       <a
         :href="transaction.explorerLink"
         target="_blank"
-        class="text-primary-500 cursor-pointer"
+        class="text-primary-500 cursor-pointer pr-2"
       >
         {{ $t('common.view') }}
       </a>

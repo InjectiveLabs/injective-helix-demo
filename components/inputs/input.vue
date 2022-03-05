@@ -20,7 +20,10 @@
           <slot name="context" />
         </div>
       </div>
-      <div class="relative" :class="{ 'mt-2': !dense }">
+      <div
+        class="relative"
+        :class="{ 'mt-2': !dense, 'input-wrapper': !lg && !xl }"
+      >
         <textarea
           v-if="multiLine"
           v-bind="$attrs"
@@ -28,47 +31,45 @@
           :value="value"
           class="input textarea"
           @input="handleChangeOnInput"
-        ></textarea>
-        <input
-          v-else
-          v-bind="$attrs"
-          class="input"
-          autocomplete="off"
-          :value="value"
-          :class="{
-            'input-lg': lg,
-            'input-xl': xl,
-            'input-round': round,
-            'input-small': small
-          }"
-          @blur="handleBlur"
-          @keydown="handleKeydown"
-          @input="handleChangeOnInput"
-          @wheel="$event.target.blur()"
         />
-        <div
-          class="addon absolute inset-y-0 right-0 flex items-center"
-          :class="{ 'pr-3': !lg && !xl }"
-        >
-          <span v-if="showClose" @click="handleCloseEvent">
-            <v-icon-close
-              class="cursor-pointer h-4 w-4 text-gray-200 hover:text-primary-500"
-            />
-          </span>
-
-          <span
-            v-if="!isMaxValue && maxSelector"
-            class="cursor-pointer"
-            @click.stop="handleMaxSelector"
-          >
-            <span
-              class="bg-gray-700 rounded uppercase tracking-1"
-              :class="maxClasses"
-            >
-              {{ $t('trade.max') }}
+        <div v-else class="flex justify-between">
+          <input
+            v-bind="$attrs"
+            class="input"
+            autocomplete="off"
+            :value="value"
+            :class="{
+              'input-lg': lg,
+              'input-xl': xl,
+              'input-round': round,
+              'input-small': small
+            }"
+            @blur="handleBlur"
+            @keydown="handleKeydown"
+            @input="handleChangeOnInput"
+            @wheel="$event.target.blur()"
+          />
+          <div class="addon flex items-center" :class="{ 'pr-3': !lg && !xl }">
+            <span v-if="showClose" @click="handleCloseEvent">
+              <v-icon-close
+                class="cursor-pointer h-4 w-4 text-gray-200 hover:text-primary-500"
+              />
             </span>
-          </span>
-          <slot name="addon" />
+
+            <span
+              v-if="!isMaxValue && maxSelector"
+              class="cursor-pointer"
+              @click.stop="handleMaxSelector"
+            >
+              <span
+                class="bg-gray-700 rounded uppercase tracking-1"
+                :class="maxClasses"
+              >
+                {{ $t('trade.max') }}
+              </span>
+            </span>
+            <slot name="addon" />
+          </div>
         </div>
       </div>
       <span

@@ -5,7 +5,7 @@
       <tbody>
         <tr
           is="v-position"
-          v-for="(position, index) in filteredPositions"
+          v-for="(position, index) in sortedPositions"
           :key="`positions-${index}-${position.marketId}`"
           :position="position"
         ></tr>
@@ -62,6 +62,14 @@ export default Vue.extend({
       return positions.filter(
         (position) => position.marketId === market?.marketId
       )
+    },
+
+    sortedPositions(): UiPosition[] {
+      const { filteredPositions } = this
+
+      return [...filteredPositions].sort((p1: UiPosition, p2: UiPosition) => {
+        return p1.ticker.localeCompare(p2.ticker)
+      })
     }
   },
 

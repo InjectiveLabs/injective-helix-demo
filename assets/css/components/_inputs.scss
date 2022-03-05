@@ -3,6 +3,10 @@ input[type='number'] {
   -moz-appearance: textfield;
 }
 
+.input-wrapper {
+  @apply shadow-sm bg-gray-900 rounded;
+}
+
 .input {
   @apply border border-transparent bg-gray-900 shadow-sm text-gray-200 rounded w-full h-12 text-sm outline-none appearance-none max-w-full px-4;
 
@@ -10,10 +14,6 @@ input[type='number'] {
   &[type='number']::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
-  }
-
-  &:focus {
-    @apply border-gray-600;
   }
 
   &::placeholder {

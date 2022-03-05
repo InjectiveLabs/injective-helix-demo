@@ -68,15 +68,6 @@ export default Vue.extend({
       .finally(() => {
         this.status.setIdle()
       })
-
-    Promise.all([this.$accessor.gasRebate.init()])
-      .then(() => {
-        //
-      })
-      .catch(this.$onError)
-      .finally(() => {
-        //
-      })
   },
 
   methods: {

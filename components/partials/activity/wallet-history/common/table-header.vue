@@ -12,11 +12,11 @@
       </th>
 
       <th class="text-left">
-        {{ $t('walletHistory.transfers.asset') }}
+        {{ $t('walletHistory.transfers.type') }}
       </th>
 
       <th class="text-left">
-        {{ $t('walletHistory.transfers.type') }}
+        {{ $t('walletHistory.transfers.asset') }}
       </th>
 
       <th>

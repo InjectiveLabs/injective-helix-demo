@@ -1,5 +1,5 @@
 <template>
-  <v-card md>
+  <v-card v-if="!hasTrades && status.isIdle()" md>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
       <div class="flex justify-between">
         <div>
@@ -125,7 +125,13 @@ import {
   ZERO_IN_BASE
 } from '@injectivelabs/ui-common'
 import { UserDeposit } from '@injectivelabs/ui-common/dist/bridge/gql/types'
-import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
+
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  Status,
+  StatusType
+} from '@injectivelabs/utils'
 import Vue from 'vue'
 import {
   MIN_AMOUNT_REQUIRED_FOR_GAS_REBATE,
@@ -135,7 +141,7 @@ import {
 export default Vue.extend({
   data() {
     return {
-      status: new Status(),
+      status: new Status(StatusType.Loading),
 
       mobileStep: 1,
       slideLeft: false
@@ -306,6 +312,15 @@ export default Vue.extend({
 
       return 3
     }
+  },
+
+  mounted() {
+    Promise.all([this.$accessor.gasRebate.init()])
+      .then(() => {})
+      .catch(this.$onError)
+      .finally(() => {
+        this.status.setIdle()
+      })
   },
 
   methods: {

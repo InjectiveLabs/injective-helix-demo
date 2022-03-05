@@ -12,10 +12,10 @@
             class="ml-2"
             :tooltip="$t('trade.market_total_tooltip')"
           />
-          <span class="font-mono flex items-center">
+          <span class="font-mono flex items-start break-all">
             <span class="mr-1">≈</span>
             {{ totalWithFeesToFormat }}
-            <span class="text-gray-500 ml-1">
+            <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
             </span>
           </span>
@@ -24,9 +24,12 @@
 
       <div class="mt-4">
         <v-text-info :title="$t('trade.amount')">
-          <span v-if="!amount.isNaN()" class="font-mono flex items-center">
+          <span
+            v-if="!amount.isNaN()"
+            class="font-mono flex items-start break-all"
+          >
             {{ amountToFormat }}
-            <span class="text-gray-500 ml-1">
+            <span class="text-gray-500 ml-1 break-normal">
               {{ market.baseToken.symbol }}
             </span>
           </span>
@@ -45,10 +48,10 @@
           />
           <span
             v-if="liquidationPrice.gt(0)"
-            class="font-mono flex items-center"
+            class="font-mono flex items-start break-all"
           >
             {{ liquidationPriceToFormat }}
-            <span class="text-gray-500 ml-1">
+            <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
             </span>
           </span>
@@ -65,9 +68,12 @@
             class="ml-2"
             :tooltip="$t('trade.margin_tooltip')"
           />
-          <span v-if="margin.gt(0)" class="font-mono flex items-center">
+          <span
+            v-if="margin.gt(0)"
+            class="font-mono flex items-start break-all"
+          >
             {{ marginToFormat }}
-            <span class="text-gray-500 ml-1">
+            <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
             </span>
           </span>
@@ -108,10 +114,10 @@
               />
             </div>
           </div>
-          <span v-if="fees.gt(0)" class="font-mono flex items-center">
+          <span v-if="fees.gt(0)" class="font-mono flex items-start break-all">
             <span class="mr-1">≈</span>
             {{ feesToFormat }}
-            <span class="text-gray-500 ml-1">
+            <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
             </span>
           </span>
@@ -128,9 +134,9 @@
             class="ml-2"
             :tooltip="$t('trade.expected_points_note')"
           />
-          <span class="font-mono flex items-center">
+          <span class="font-mono flex items-start break-all">
             {{ `${takerExpectedPtsToFormat}` }}
-            <span class="text-gray-500 ml-1">
+            <span class="text-gray-500 ml-1 break-normal">
               {{ $t('pts') }}
             </span>
           </span>

@@ -22,7 +22,7 @@ export default {
     emptyFundingPayments: 'No funding payments found',
     payment: 'Payment',
     paymentTooltip:
-      'A positive payment means you paid funding, while a negative payment means you received funding. Funding is automatically reflected in your open position margin.',
+      'A positive payment means you received funding, while a negative payment means you paid funding. Funding is automatically reflected in your open position margin.',
     rate: 'Rate',
     rateTooltip:
       'The interest rate paid is determined by the difference between the perpetual swap price and the underlying spot price. If the funding rate is positive, traders with long positions will pay traders with short positions. If the funding rate is negative, traders with short positions will pay those in long positions.'
