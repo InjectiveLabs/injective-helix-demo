@@ -54,21 +54,27 @@ export const mutations = {
     state: PositionStoreState,
     subaccountPosition: UiPosition
   ) {
-    const index = state.subaccountPositions.findIndex(
-      (position) => position.marketId === subaccountPosition.marketId
-    )
+    const subaccountPositionIsInvalid =
+      subaccountPosition.entryPrice === '' ||
+      subaccountPosition.liquidationPrice === ''
 
-    if (index !== -1) {
-      state.subaccountPositions = [...state.subaccountPositions].splice(
-        index,
-        1,
-        subaccountPosition
+    if (!subaccountPositionIsInvalid) {
+      const index = state.subaccountPositions.findIndex(
+        (position) => position.marketId === subaccountPosition.marketId
       )
-    } else {
-      state.subaccountPositions = [
-        subaccountPosition,
-        ...state.subaccountPositions
-      ]
+
+      if (index !== -1) {
+        state.subaccountPositions = [...state.subaccountPositions].splice(
+          index,
+          1,
+          subaccountPosition
+        )
+      } else {
+        state.subaccountPositions = [
+          subaccountPosition,
+          ...state.subaccountPositions
+        ]
+      }
     }
   },
 
