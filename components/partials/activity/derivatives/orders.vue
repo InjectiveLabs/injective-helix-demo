@@ -131,7 +131,7 @@ export default Vue.extend({
       this.$accessor.activity
         .batchCancelDerivativeOrders(orders)
         .then(() => {
-          this.$toast.success(this.$t('activity.cancelOrdersSuccess'))
+          this.$toast.success(this.$t('trade.orders_cancelled'))
         })
         .catch(this.$onRejected)
         .finally(() => {

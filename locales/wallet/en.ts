@@ -23,6 +23,8 @@ export default {
     logout: 'Logout',
     metamask: 'Metamask',
     open: 'open',
+    keplr: 'Keplr',
+    connectUsingKeplr: 'Connect using Keplr',
     selectAddressToConnect: 'Select address to connect',
     selectDerivationPath: 'Select Derivation Path',
     successfullyConnected: 'Successfully Connected',

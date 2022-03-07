@@ -36,7 +36,8 @@
                 :max="availableMarginToString"
                 :max-selector="availableMargin.gt(0.01)"
                 :label="$t('trade.amount')"
-                :placeholder="$t('Enter your amount')"
+                :placeholder="$t('trade.enter_your_amount')"
+                class="no-shadow"
                 type="number"
                 step="0.001"
                 min="0"
@@ -142,6 +143,7 @@ export default Vue.extend({
         .then(() => {
           this.$toast.success(this.$t('trade.success_added_margin'))
           this.form.amount = ''
+          this.$emit('close-modal')
 
           if (this.$form) {
             this.$form.reset()

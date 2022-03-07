@@ -1,6 +1,9 @@
 import { actionTree, getterTree } from 'typed-vuex'
 import { ConcreteStrategyOptions, Wallet } from '@injectivelabs/web3-strategy'
-import { getInjectiveAddress } from '@injectivelabs/ui-common'
+import {
+  getAddressFromInjectiveAddress,
+  getInjectiveAddress
+} from '@injectivelabs/ui-common'
 import { confirm, connect, getAddresses } from '~/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '~/app/services/metamask'
 import { WalletConnectStatus } from '~/types'
@@ -114,6 +117,10 @@ export const actions = actionTree(
 
       if (wallet === Wallet.Ledger) {
         await connect({ wallet: Wallet.Ledger, options: walletOptions })
+      }
+
+      if (wallet === Wallet.Keplr) {
+        await connect({ wallet: Wallet.Keplr, options: walletOptions })
       }
     },
 
@@ -240,6 +247,43 @@ export const actions = actionTree(
       await this.app.$accessor.account.fetchSubaccounts()
       await this.app.$accessor.bank.fetchBalances()
       await this.app.$accessor.exchange.initFeeDiscounts()
+
+      if (this.app.context.route.name === 'funding') {
+        await this.app.$accessor.wallet.initPage()
+      }
+
+      if (this.app.context.route.name === 'trade-and-earn') {
+        await this.app.$accessor.exchange.initTradeAndEarn()
+      }
+
+      commit('setWalletConnectStatus', WalletConnectStatus.connected)
+    },
+
+    async connectKeplr({ commit }) {
+      await this.app.$accessor.app.validate()
+
+      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
+      commit('setWallet', Wallet.Keplr)
+
+      await connect({
+        wallet: Wallet.Keplr
+        /*
+        onAccountChangeCallback: async (_address: string) => {
+          await this.app.$accessor.wallet.connectMetamask()
+        } */
+      })
+
+      const injectiveAddresses = await getAddresses()
+      const [injectiveAddress] = injectiveAddresses
+      const addressConfirmation = await confirm(injectiveAddress)
+      const ethereumAddress = getAddressFromInjectiveAddress(injectiveAddress)
+
+      commit('setInjectiveAddress', injectiveAddress)
+      commit('setAddress', ethereumAddress)
+      commit('setAddresses', injectiveAddresses)
+      commit('setAddressConfirmation', addressConfirmation)
+
+      await this.app.$accessor.bank.fetchBalances()
 
       if (this.app.context.route.name === 'funding') {
         await this.app.$accessor.wallet.initPage()

@@ -13,8 +13,6 @@ export default {
     ordersHistory: 'Orders History',
     openPositions: 'Open positions',
     cancelOrders: 'Cancel Orders',
-    cancelOrdersSuccess: 'Your orders have been cancelled',
-    closePositionsSuccess: 'Your positions have been closed',
     funds: 'Funds'
   },
 
@@ -240,7 +238,9 @@ export default {
     disqualified_markets: 'Disqualified Markets',
     disqualified_markets_tooltip:
       'Markets that are disqualified from Trade & Earn. Trading activity in these markets will not earn any reward points.',
-    orders_cancelled: 'Orders Cancelled',
-    not_valid_number: 'Not a valid number'
+    orders_cancelled: 'Your orders have been cancelled',
+    positions_closed: 'Your positions have been closed',
+    not_valid_number: 'Not a valid number',
+    enter_your_amount: 'Enter your amount'
   }
 }

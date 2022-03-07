@@ -199,7 +199,7 @@ export default Vue.extend({
       this.$accessor.positions
         .closeAllPosition(positions)
         .then(() => {
-          this.$toast.success(this.$t('trade.orders_cancelled'))
+          this.$toast.success(this.$t('trade.positions_closed'))
         })
         .catch(this.$onRejected)
         .finally(() => {

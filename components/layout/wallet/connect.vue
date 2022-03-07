@@ -16,6 +16,7 @@
         <VHocLoading :status="status">
           <ul class="divide-y divide-gray-800 border-gray-700 rounded-lg">
             <v-metamask />
+            <v-keplr />
             <v-ledger
               @wallet-ledger-connecting="handleLedgerConnectingWallet"
             />
@@ -37,6 +38,7 @@
 import Vue from 'vue'
 import { Status } from '@injectivelabs/utils'
 import VMetamask from './wallets/metamask.vue'
+import VKeplr from './wallets/keplr.vue'
 import VLedger from './wallets/ledger.vue'
 import VModalLedger from './wallets/ledger/index.vue'
 import { Modal, WalletConnectStatus } from '~/types'
@@ -47,6 +49,7 @@ export default Vue.extend({
   components: {
     VModalTerms,
     VMetamask,
+    VKeplr,
     VLedger,
     VModalLedger
   },

@@ -15,6 +15,8 @@ const mutationsToPersist = [
 ]
 
 const actionsThatSetAppStateToBusy = [
+  'activity/batchCancelDerivativeOrders',
+  'activity/batchCancelSpotOrders',
   'account/deposit',
   'account/withdraw',
   'derivatives/cancelOrder',
