@@ -79,11 +79,13 @@ export default Vue.extend({
     erc20TokensWithBalanceAndPriceFromBankAsBankBalanceWithToken(): BankBalanceWithToken[] {
       const { erc20TokensWithBalanceAndPriceFromBank } = this
 
-      return erc20TokensWithBalanceAndPriceFromBank.map((token) => ({
-        token,
-        denom: token.denom,
-        balance: token.balance
-      }))
+      return erc20TokensWithBalanceAndPriceFromBank
+        .map((token) => ({
+          token,
+          denom: token.denom,
+          balance: token.balance
+        }))
+        .filter(({ denom }) => !denom.startsWith('ibc'))
     },
 
     supply(): BankBalanceWithToken[] {
@@ -111,7 +113,7 @@ export default Vue.extend({
         origin === BridgingNetwork.Injective &&
         destination === BridgingNetwork.Ethereum
       ) {
-        return bankBalancesWithToken
+        return erc20TokensWithBalanceAndPriceFromBankAsBankBalanceWithToken
       }
 
       if (origin === TransferSide.Bank) {

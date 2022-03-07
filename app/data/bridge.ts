@@ -58,3 +58,33 @@ export const transferSideMeta = {
     icon: '/bridgingNetworks/injective.png'
   }
 }
+
+export const getBridgingNetworkBySymbol = (symbol: string): BridgingNetwork => {
+  const symbolToUpperCase = symbol.toUpperCase()
+
+  if (['ATOM', 'UPHOTON'].includes(symbolToUpperCase)) {
+    return BridgingNetwork.CosmosHub
+  }
+
+  if (['LUNA', 'ULUNA', 'UST', 'UUSD'].includes(symbolToUpperCase)) {
+    return BridgingNetwork.Terra
+  }
+
+  if (['OSMO', 'UOSMO'].includes(symbolToUpperCase)) {
+    return BridgingNetwork.Osmosis
+  }
+
+  if (['HUAHUA', 'UHUAHUA'].includes(symbolToUpperCase)) {
+    return BridgingNetwork.Chihuahua
+  }
+
+  if (['JUNO', 'UJUNO'].includes(symbolToUpperCase)) {
+    return BridgingNetwork.Chihuahua
+  }
+
+  if (['AXL', 'UAXL'].includes(symbolToUpperCase)) {
+    return BridgingNetwork.Axelar
+  }
+
+  return BridgingNetwork.Ethereum
+}

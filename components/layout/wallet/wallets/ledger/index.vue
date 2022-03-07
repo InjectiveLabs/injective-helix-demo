@@ -1,5 +1,5 @@
 <template>
-  <v-modal :is-open="isOpen" @modal-closed="onClose">
+  <v-modal :is-open="isOpen" md @modal-closed="onClose">
     <h3 slot="title">
       {{ $t('connect.connectUsingLedger') }}
     </h3>

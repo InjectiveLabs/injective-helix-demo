@@ -65,7 +65,10 @@
         >
         </v-token-selector>
         <div class="mt-8 text-center">
+          <v-allowance v-if="!hasAllowance" :token-with-balance="form.token" />
+
           <v-button
+            v-else
             lg
             primary
             class="w-full xs:w-1/2 font-bold"
@@ -96,6 +99,7 @@ import {
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { BridgeType, Modal, TransferDirection } from '~/types'
 import VTokenSelector from '~/components/partials/portfolio/bridge/token-selector/index.vue'
+import VAllowance from '~/components/elements/allowance.vue'
 import VBalance from '~/components/partials/portfolio/bridge/balance.vue'
 import VNetworkSelect from '~/components/partials/portfolio/bridge/network-select.vue'
 import VIbcTransferNote from '~/components/partials/portfolio/bridge/ibc-transfer-note.vue'
@@ -109,6 +113,7 @@ export default Vue.extend({
     VIbcTransferNote,
     VTransferDirectionSwitch,
     ValidationProvider,
+    VAllowance,
     VBalance
   },
 
@@ -219,6 +224,20 @@ export default Vue.extend({
 
       // Withdraw
       return this.$t('bridge.selectDestinationNetwork')
+    },
+
+    hasAllowance(): boolean {
+      const { erc20TokensWithBalanceAndPriceFromBank, form } = this
+
+      const token = erc20TokensWithBalanceAndPriceFromBank.find(
+        ({ denom }) => denom === form.token.denom
+      )
+
+      if (!token) {
+        return false
+      }
+
+      return new BigNumberInBase(token.allowance).gt('0')
     },
 
     onTransferBalance(): BigNumberInBase {

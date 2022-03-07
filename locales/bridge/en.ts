@@ -41,6 +41,9 @@ export default {
     withdrawFromEthereumNote:
       'Note: It should take around 4 minutes for your transfer to appear after your transaction has been confirmed on Ethereum.',
     defaultNote:
-      'Note: It should take up to 10 seconds for your transfer to appear after your transaction has been confirmed on Injective'
+      'Note: It should take up to 10 seconds for your transfer to appear after your transaction has been confirmed on Injective',
+
+    setAllowance: 'Set Allowance',
+    successfullySetAllowance: 'Token allowance set successfully'
   }
 }
