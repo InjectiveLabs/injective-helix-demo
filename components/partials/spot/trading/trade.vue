@@ -196,7 +196,7 @@ import {
   TradingRewardsCampaign
 } from '~/app/services/exchange'
 import {
-  hasLessThenDpAndKeyCodeIsNumeric,
+  hasMoreThenDpAndKeyCodeIsNumeric,
   passNumericInputValidation
 } from '~/app/utils/input'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
@@ -1225,18 +1225,18 @@ export default Vue.extend({
     onAmountKeydown(event: DOMEvent<HTMLInputElement>) {
       const { market, form } = this
 
-      if (!market || !event.keyCode || !event.key) {
+      if (!market) {
         return
       }
 
       const disableDot = market.quantityDecimals === 0
 
       if (
-        !passNumericInputValidation(event.key, disableDot ? ['.'] : []) ||
-        hasLessThenDpAndKeyCodeIsNumeric({
+        !passNumericInputValidation(event, disableDot ? ['.'] : []) ||
+        hasMoreThenDpAndKeyCodeIsNumeric({
+          event,
           value: form.amount,
-          decimalPlaces: market.quantityDecimals,
-          keyCode: event.keyCode
+          decimalPlaces: market.quantityDecimals
         })
       ) {
         event.preventDefault()
@@ -1246,15 +1246,15 @@ export default Vue.extend({
     onPriceKeyDown(event: DOMEvent<HTMLInputElement>) {
       const { market, form } = this
 
-      if (!market || !event.keyCode) {
+      if (!market) {
         return
       }
 
       if (
-        hasLessThenDpAndKeyCodeIsNumeric({
+        hasMoreThenDpAndKeyCodeIsNumeric({
+          event,
           value: form.price,
-          decimalPlaces: market.quoteToken.decimals,
-          keyCode: event.keyCode
+          decimalPlaces: market.quoteToken.decimals
         })
       ) {
         event.preventDefault()

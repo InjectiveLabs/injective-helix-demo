@@ -236,8 +236,7 @@ export default Vue.extend({
 
     handleKeydown(event: DOMEvent<HTMLInputElement>) {
       if (
-        event.key &&
-        !passNumericInputValidation(event.key) &&
+        !passNumericInputValidation(event) &&
         event.target.type === 'number'
       ) {
         event.preventDefault()
