@@ -134,7 +134,7 @@
             <v-button
               lg
               primary
-              class="w-full xs:w-1/2 font-bold"
+              class="w-full xs:w-2/3 font-bold"
               :disabled="buttonConfirmationDisabled"
               :status="status"
               @click="handlerFunction"

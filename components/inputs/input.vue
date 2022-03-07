@@ -93,6 +93,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { DOMEvent } from '~/types'
+import { passNumericInputValidation } from '~/app/utils/input'
 
 export default Vue.extend({
   inheritAttrs: false,
@@ -234,7 +235,14 @@ export default Vue.extend({
     },
 
     handleKeydown(event: DOMEvent<HTMLInputElement>) {
-      this.$emit('keydown', event)
+      if (
+        !passNumericInputValidation(event) &&
+        event.target.type === 'number'
+      ) {
+        event.preventDefault()
+      } else {
+        this.$emit('keydown', event)
+      }
     },
 
     handleMaxSelector() {

@@ -100,6 +100,7 @@
           min="0"
           @blur="onPriceBlur"
           @input="onPriceChange"
+          @keydown="onPriceKeyDown"
         >
           <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
         </v-input>
@@ -195,10 +196,9 @@ import {
   TradingRewardsCampaign
 } from '~/app/services/exchange'
 import {
-  getDecimalsFromNumber,
-  isDotKeycode,
-  isNumericKeycode
-} from '~/app/utils/helpers'
+  hasMoreThenDpAndKeyCodeIsNumeric,
+  passNumericInputValidation
+} from '~/app/utils/input'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
 
 interface TradeForm {
@@ -1229,14 +1229,34 @@ export default Vue.extend({
         return
       }
 
-      const inputIsDotQuantityDecimalZero =
-        market.quantityDecimals === 0 && isDotKeycode(event.keyCode)
-      const inputDecimalExceedQuantityDecimal =
-        getDecimalsFromNumber(form.amount) === market.quantityDecimals &&
-        isNumericKeycode(event.keyCode) &&
-        market.quantityDecimals !== 0
+      const disableDot = market.quantityDecimals === 0
 
-      if (inputIsDotQuantityDecimalZero || inputDecimalExceedQuantityDecimal) {
+      if (
+        !passNumericInputValidation(event, disableDot ? ['.'] : []) ||
+        hasMoreThenDpAndKeyCodeIsNumeric({
+          event,
+          value: form.amount,
+          decimalPlaces: market.quantityDecimals
+        })
+      ) {
+        event.preventDefault()
+      }
+    },
+
+    onPriceKeyDown(event: DOMEvent<HTMLInputElement>) {
+      const { market, form } = this
+
+      if (!market) {
+        return
+      }
+
+      if (
+        hasMoreThenDpAndKeyCodeIsNumeric({
+          event,
+          value: form.price,
+          decimalPlaces: market.quoteToken.decimals
+        })
+      ) {
         event.preventDefault()
       }
     },

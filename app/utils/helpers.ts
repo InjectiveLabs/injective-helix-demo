@@ -49,13 +49,6 @@ export const getDecimalsBasedOnNumber = (
   }
 }
 
-export const isNumericKeycode = (keyCode?: number) =>
-  keyCode &&
-  ((keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105))
-
-export const isDotKeycode = (keyCode?: number) =>
-  keyCode && (keyCode === 190 || keyCode === 110)
-
 export const getExactDecimalsFromNumber = (number: number | string): number => {
   if (Number(number) % 1 !== 0) {
     const [, decimals] = number.toString().split('.')

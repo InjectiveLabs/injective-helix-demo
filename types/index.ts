@@ -1,6 +1,10 @@
 export interface DOMEvent<T extends EventTarget> extends Event {
   target: T
   keyCode?: number
+  key?: string
+  view?: {
+    getSelection: Function
+  }
 }
 
 export interface Constructable<T> {
