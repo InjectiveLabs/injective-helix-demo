@@ -237,7 +237,7 @@ export default Vue.extend({
         return false
       }
 
-      return token.allowance !== '0'
+      return new BigNumberInBase(token.allowance).gt('0')
     },
 
     onTransferBalance(): BigNumberInBase {
