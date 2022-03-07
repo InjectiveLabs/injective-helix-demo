@@ -102,7 +102,11 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  BigNumber,
+  BigNumberInBase,
+  BigNumberInWei
+} from '@injectivelabs/utils'
 import {
   INJECTIVE_DENOM,
   ZERO_IN_BASE,
@@ -190,6 +194,12 @@ export default Vue.extend({
       )
     },
 
+    totalBalanceWithMarginAndPnL(): BigNumberInBase {
+      const { totalBalance, marginHold, totalPositionsPnl } = this
+
+      return totalBalance.plus(marginHold).plus(totalPositionsPnl)
+    },
+
     inOrderBalance(): BigNumberInBase {
       const { availableBalance, totalBalance } = this
 
@@ -229,23 +239,13 @@ export default Vue.extend({
     },
 
     totalInUsd(): BigNumberInBase {
-      const { isUsdt, balance, totalPositionsMargin, totalPositionsPnl } = this
-
-      const balanceInUsdInBigNumber = new BigNumberInBase(balance.balanceInUsd)
-
-      if (!balance.balanceInUsd) {
-        return ZERO_IN_BASE
-      }
+      const { isUsdt, balance, totalBalanceWithMarginAndPnL } = this
 
       if (!isUsdt) {
-        return balanceInUsdInBigNumber
+        return new BigNumberInBase(balance.balanceInUsd)
       }
 
-      const marginAndPnl = totalPositionsMargin
-        .plus(totalPositionsPnl)
-        .multipliedBy(balance.token.usdPrice)
-
-      return balanceInUsdInBigNumber.plus(marginAndPnl)
+      return totalBalanceWithMarginAndPnL.multipliedBy(balance.token.usdPrice)
     },
 
     totalInBtc(): BigNumberInBase {
@@ -268,9 +268,11 @@ export default Vue.extend({
     },
 
     totalBalanceInString(): string {
-      const { totalBalance } = this
+      const { isUsdt, totalBalance, totalBalanceWithMarginAndPnL } = this
 
-      return totalBalance.toFormat(
+      const total = isUsdt ? totalBalanceWithMarginAndPnL : totalBalance
+
+      return total.toFormat(
         UI_DEFAULT_DISPLAY_DECIMALS,
         BigNumberInBase.ROUND_DOWN
       )
