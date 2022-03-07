@@ -104,6 +104,7 @@ import VBalance from '~/components/partials/portfolio/bridge/balance.vue'
 import VNetworkSelect from '~/components/partials/portfolio/bridge/network-select.vue'
 import VIbcTransferNote from '~/components/partials/portfolio/bridge/ibc-transfer-note.vue'
 import VTransferDirectionSwitch from '~/components/partials/portfolio/bridge/transfer-direction-switch.vue'
+import { IS_DEVNET } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -237,7 +238,8 @@ export default Vue.extend({
         return false
       }
 
-      return new BigNumberInBase(token.allowance).gt('0')
+      // TODO: remove IS_DEVNET check
+      return IS_DEVNET || new BigNumberInBase(token.allowance).gt('0')
     },
 
     onTransferBalance(): BigNumberInBase {

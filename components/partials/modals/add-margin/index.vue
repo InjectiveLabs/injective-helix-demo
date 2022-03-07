@@ -7,7 +7,11 @@
     <div v-if="market && quoteBalance" class="relative">
       <div class="flex flex-wrap">
         <div class="px-4 w-full">
-          <v-form :balance="quoteBalance" :market="market" />
+          <v-form
+            :balance="quoteBalance"
+            :market="market"
+            @close-modal="closeModal"
+          />
         </div>
       </div>
     </div>

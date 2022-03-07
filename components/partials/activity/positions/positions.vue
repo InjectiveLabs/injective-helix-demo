@@ -149,7 +149,7 @@ export default Vue.extend({
       this.$accessor.positions
         .closeAllPosition(positions)
         .then(() => {
-          this.$toast.success(this.$t('activity.closePositionsSuccess'))
+          this.$toast.success(this.$t('trade.positions_closed'))
         })
         .catch(this.$onRejected)
         .finally(() => {

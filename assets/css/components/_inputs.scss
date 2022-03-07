@@ -92,6 +92,12 @@ input[type='number'] {
   }
 }
 
+.no-shadow {
+  .input {
+    @apply border-transparent shadow-none;
+  }
+}
+
 .leverage-input {
   @apply font-mono ml-2 w-16 py-1 text-sm text-right rounded-lg appearance-none bg-gray-900 text-gray-300;
 

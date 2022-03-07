@@ -8,7 +8,7 @@ export default {
       transferDescription:
         'Transfer to your Injective Trading Account to start trading.',
       tradeDescription:
-        'You are ready to all set. Choose a market to get started!',
+        'You are ready to Trade. Choose a market to get started!',
       showAddress: 'Show address',
       howItWorks: 'How it works',
       faq: 'F.A.Q'

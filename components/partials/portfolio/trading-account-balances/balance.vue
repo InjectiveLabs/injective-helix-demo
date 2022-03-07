@@ -102,11 +102,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import {
-  BigNumber,
-  BigNumberInBase,
-  BigNumberInWei
-} from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   INJECTIVE_DENOM,
   ZERO_IN_BASE,
