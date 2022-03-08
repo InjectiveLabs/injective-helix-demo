@@ -35,7 +35,8 @@ export default {
     pleaseConnectToYourWallet:
       'Please connect to your wallet to see more details',
     pleaseConnectToYourWalletCta:
-      'Please connect to your wallet to start trading on Injective!'
+      'Please connect to your wallet to start trading on Injective!',
+    highlyExperimental: 'Highly Experimental!'
   },
 
   referralModal: {

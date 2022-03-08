@@ -15,6 +15,9 @@
             <div>
               <p class="text-xl font-semibold text-gray-200 truncate">
                 {{ $t('connect.keplr') }}
+                <span class="text-red-500 text-xs inline-flex font-semibold">
+                  {{ $t('connect.highlyExperimental') }}
+                </span>
               </p>
               <p class="flex items-center text-sm text-gray-200">
                 <span class="truncate">{{
