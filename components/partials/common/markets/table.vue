@@ -90,7 +90,7 @@ import VMarketsFilter from './markets-filter.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import TableHeader from '~/components/elements/table-header.vue'
 import VMarket from '~/components/partials/common/markets/market.vue'
-import { promotedMarkets } from '~/routes.config'
+import { promotedMarketSlugs } from '~/app/data/market'
 
 export interface UiMarketAndSummary {
   market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
@@ -199,7 +199,7 @@ export default Vue.extend({
       const { filteredMarkets } = this
 
       return filteredMarkets.filter(({ market: { slug } }) => {
-        return promotedMarkets.includes(slug.toLowerCase())
+        return promotedMarketSlugs.includes(slug.toLowerCase())
       })
     },
 

@@ -53,13 +53,15 @@ const parseMessage = (error: any): string => {
 }
 
 export default ({ app }: Context, inject: any) => {
+  const bugsnag = app.$bugsnag
+
   inject('onRejected', (error: Error) => {
     if (!isErrorExcludedFromToast(error)) {
       app.$toast.error(parseMessage(error))
     }
 
-    if (IS_PRODUCTION && !isErrorExcludedFromReporting(error)) {
-      app.$bugsnag.notify(error)
+    if (bugsnag && IS_PRODUCTION && !isErrorExcludedFromReporting(error)) {
+      bugsnag.notify(error)
     }
 
     if (IS_DEVELOPMENT || IS_TESTNET) {
@@ -72,8 +74,8 @@ export default ({ app }: Context, inject: any) => {
       app.$toast.error(parseMessage(error))
     }
 
-    if (IS_PRODUCTION && !isErrorExcludedFromReporting(error)) {
-      app.$bugsnag.notify(error)
+    if (bugsnag && IS_PRODUCTION && !isErrorExcludedFromReporting(error)) {
+      bugsnag.notify(error)
     }
 
     if (IS_DEVELOPMENT || IS_TESTNET) {

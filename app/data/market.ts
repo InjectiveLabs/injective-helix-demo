@@ -24,4 +24,12 @@ export const marketBaseFromTicker = (
 
 export const betaMarketSlugs = [] as string[]
 
+export const promotedMarketSlugs = [
+  'huahua-usdt',
+  'luna-ust',
+  'luna-ust-perp',
+  'ust-usdt',
+  'atom-usdt'
+]
+
 export const excludedPriceDeviationSlugs = ['bayc-weth-perp'] as string[]

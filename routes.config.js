@@ -44,14 +44,8 @@ if (NETWORK === Network.Devnet) {
   derivatives.push('bayc-weth-perp')
 }
 
-// @ts-ignore
-const promotedMarkets = [
-  'huahua-usdt',
-  'luna-ust',
-  'luna-ust-perp',
-  'ust-usdt',
-  'atom-usdt'
-]
+const spotRoutes = spot.map((s) => `/spot/${s}`) || []
+const derivativesRoutes = derivatives.map((s) => `/spot/${s}`) || []
 
 module.exports = [
   '/',
@@ -62,10 +56,9 @@ module.exports = [
   '/faq',
   '/register',
   '/trade-and-earn',
-  ...spot.map((s) => `/spot/${s}`),
-  ...derivatives.map((d) => `/derivatives/${d}`)
+  ...spotRoutes,
+  ...derivativesRoutes
 ]
 
 module.exports.spot = spot
 module.exports.derivatives = derivatives
-module.exports.promotedMarkets = promotedMarkets
