@@ -4,12 +4,16 @@
     class="p-4 bg-gray-700 rounded-xl flex flex-col flex-wrap text-xs min-w-2xs"
   >
     <div class="flex justify-between items-center mb-2">
-      <span class="font-bold">{{ $t('average_price') }}:</span>
+      <span class="font-bold">{{ $t('trade.average_price') }}:</span>
       <span>≈ {{ averagePrice }}</span>
     </div>
     <div class="flex justify-between items-center mb-2">
       <span class="font-bold">
-        {{ $t('total_volume_in_quote', { symbol: market.baseToken.symbol }) }}:
+        {{
+          $t('trade.total_volume_in_quote', {
+            symbol: market.baseToken.symbol
+          })
+        }}:
       </span>
       <span>
         <v-number
@@ -25,7 +29,11 @@
     </div>
     <div class="flex justify-between items-center">
       <span class="font-bold">
-        {{ $t('total_volume_in_base', { symbol: market.quoteToken.symbol }) }}:
+        {{
+          $t('trade.total_volume_in_base', {
+            symbol: market.quoteToken.symbol
+          })
+        }}:
       </span>
       <span class="flex items-center">
         <v-number
@@ -42,7 +50,11 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiDerivativeMarket, UiSpotMarket, UiOrderbookSummary } from '~/types'
+import {
+  UiDerivativeMarketWithToken,
+  UiSpotMarketWithToken,
+  UiOrderbookSummary
+} from '@injectivelabs/ui-common'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
@@ -57,7 +69,9 @@ export default Vue.extend({
     },
 
     market: {
-      type: Object as PropType<UiDerivativeMarket | UiSpotMarket>,
+      type: Object as PropType<
+        UiDerivativeMarketWithToken | UiSpotMarketWithToken
+      >,
       default: null
     }
   },

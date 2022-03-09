@@ -1,23 +1,23 @@
 <template>
   <v-modal :is-open="isModalOpen" @modal-closed="closeModal">
     <h3 slot="title">
-      {{ $t('Confirm order execution') }}
+      {{ $t('trade.confirmOrderExecution') }}
     </h3>
 
     <div class="relative">
       <p>
         {{
-          $t('high_execution_price_deviation_warning_note', {
+          $t('trade.high_execution_price_deviation_warning_note', {
             percentage: DEFAULT_PRICE_WARNING_DEVIATION
           })
         }}
       </p>
       <div class="mt-6 flex items-center justify-center">
         <v-button lg class="mr-4" primary @click.stop="handleConfirm">
-          {{ $t('confirm') }}
+          {{ $t('common.confirm') }}
         </v-button>
         <v-button lg class="mr-4" red @click.stop="handleCancel">
-          {{ $t('cancel') }}
+          {{ $t('common.cancel') }}
         </v-button>
       </div>
     </div>
@@ -53,11 +53,6 @@ export default Vue.extend({
     },
 
     handleCancel() {
-      this.closeModal()
-    },
-
-    handleCancelAndSavePreference() {
-      this.$emit('disabled')
       this.closeModal()
     }
   }

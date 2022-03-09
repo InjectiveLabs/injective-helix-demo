@@ -40,17 +40,16 @@ export const initWeb3Strategy = ({
   wallet: Wallet
   options?: Partial<ConcreteStrategyOptions>
 }) => {
-  const RPC_POLING_INTERVAL = 4000
+  const rpcUrls = getRpcUrlsForChainIds()
+  const wsRpcUrls = getRpcWsUrlsForChainIds()
 
   web3Strategy = new Web3Strategy({
     wallet,
     chainId: parseInt(CHAIN_ID.toString()),
     options: {
       ...options,
-      wsRpcUrls: getRpcWsUrlsForChainIds(),
-      rpcUrls: getRpcUrlsForChainIds(),
-      pollingInterval: RPC_POLING_INTERVAL,
-      blockTracker: false
+      wsRpcUrl: wsRpcUrls[CHAIN_ID],
+      rpcUrl: rpcUrls[CHAIN_ID]
     }
   })
 

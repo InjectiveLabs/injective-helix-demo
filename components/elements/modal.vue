@@ -37,10 +37,7 @@
         <div
           v-show="isOpen"
           class="inline-block align-bottom bg-gray-850 shadow-card rounded-xl text-left transform transition-all w-full max-w-lg"
-          :class="[
-            dense ? 'p-6' : 'p-8',
-            { 'lg:max-w-2xl': !sm && !xs, 'lg:max-w-md': xs }
-          ]"
+          :class="classes"
           role="dialog"
           :aria-modal="isOpen"
           aria-labelledby="modal-headline"
@@ -59,13 +56,13 @@
                   class="bg-transparent rounded-md text-gray-200 hover:text-primary-500"
                   @click="handleClickOnCloseButton"
                 >
-                  <span class="sr-only">{{ $t('close') }}</span>
+                  <span class="sr-only">{{ $t('common.close') }}</span>
                   <v-icon-close class="w-4 h-4" />
                 </button>
               </div>
             </div>
             <slot name="header" />
-            <div :class="{ 'mt-12': !dense }">
+            <div :class="{ 'mt-6': !dense }">
               <slot />
             </div>
             <slot name="footer" />
@@ -103,7 +100,12 @@ export default Vue.extend({
       default: false
     },
 
-    xs: {
+    md: {
+      type: Boolean,
+      default: false
+    },
+
+    lg: {
       type: Boolean,
       default: false
     }
@@ -112,6 +114,31 @@ export default Vue.extend({
   data() {
     return {
       isVisibleOnViewport: false
+    }
+  },
+
+  computed: {
+    classes(): string {
+      const { dense, sm, md, lg } = this
+      const classes = []
+
+      if (dense) {
+        classes.push('p-8')
+      } else {
+        classes.push('p-6')
+      }
+
+      if (sm) {
+        classes.push('max-w-md')
+      } else if (md) {
+        classes.push('max-w-lg', 'lg:max-w-2xl')
+      } else if (lg) {
+        classes.push('max-w-lg', 'lg:max-w-3xl')
+      } else {
+        classes.push('max-w-lg', 'lg:max-w-4xl')
+      }
+
+      return classes.join(' ')
     }
   },
 
@@ -145,6 +172,7 @@ export default Vue.extend({
       document.body.classList.remove('overflow-hidden')
       setTimeout(() => {
         this.isVisibleOnViewport = false
+        this.$emit('modal-closed:animation')
       }, 300)
     },
 

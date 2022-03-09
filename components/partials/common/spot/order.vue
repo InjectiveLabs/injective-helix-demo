@@ -1,26 +1,41 @@
 <template>
   <tr v-if="market">
-    <td
-      v-if="!isOnMarketPage"
-      class="h-8 text-left cursor-pointer"
-      @click="handleClickOnMarket"
-    >
-      {{ market.ticker }}
+    <td class="h-8 text-left cursor-pointer" @click="handleClickOnMarket">
+      <div class="flex items-center justify-start">
+        <div v-if="market.baseToken.logo" class="w-6 h-6">
+          <img
+            :src="market.baseToken.logo"
+            :alt="market.baseToken.name"
+            class="min-w-full h-auto rounded-full"
+          />
+        </div>
+        <div class="ml-3">
+          <span class="text-gray-200 font-semibold">
+            {{ market.ticker }}
+          </span>
+        </div>
+      </div>
     </td>
-    <td class="h-8 font-mono text-right">
+
+    <td class="h-8 text-left">
       <span
+        class="pl-1"
         :class="{
           'text-aqua-500': orderTypeBuy,
           'text-red-500': !orderTypeBuy
         }"
       >
-        <v-number
-          :decimals="
-            market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-          "
-          :number="price"
-        />
+        {{ orderSideLocalized }}
       </span>
+    </td>
+
+    <td class="h-8 font-mono text-right">
+      <v-number
+        :decimals="
+          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+        "
+        :number="price"
+      />
     </td>
     <td class="h-8 text-right font-mono">
       <v-number
@@ -28,6 +43,22 @@
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
         :number="quantity"
+      />
+    </td>
+    <td class="h-8 text-right font-mono">
+      <v-number
+        :decimals="
+          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+        "
+        :number="unfilledQuantity"
+      />
+    </td>
+    <td class="h-8 text-right">
+      <v-number
+        :decimals="
+          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+        "
+        :number="filledQuantity"
       />
     </td>
     <td class="h-8 font-mono text-right">
@@ -42,55 +73,46 @@
         </span>
       </v-number>
     </td>
-    <td class="h-8 text-center">
-      <v-badge :aqua="orderTypeBuy" :red="!orderTypeBuy" xs>
-        <div class="w-8">
-          {{ orderSideLocalized }}
-        </div>
-      </v-badge>
-    </td>
-    <td class="h-8 text-right font-mono">
-      <v-number
-        :decimals="
-          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-        "
-        :number="unfilledQuantity"
-      />
-    </td>
-    <td class="h-8 text-center">
-      <v-badge v-if="orderFullyFilled" primary xs>
-        {{ $t('filled') }}
-      </v-badge>
-      <v-badge v-else-if="orderFillable" gray xs>
-        <div class="w-12 font-mono">
-          {{ `${filledQuantityPercentage.times(100).toFixed(2)}%` }}
-        </div>
-      </v-badge>
-    </td>
-    <td class="h-8 relative text-center">
-      <v-button
-        v-if="orderFillable"
-        :status="status"
-        text-xs
-        red
-        @click="onCancelOrder"
-      >
-        {{ $t('cancel') }}
-      </v-button>
-      <span v-else class="inline-block">&mdash;</span>
+    <td class="h-8 relative">
+      <div class="flex items-center justify-end">
+        <span
+          v-if="false"
+          class="cursor-pointer text-primary-500 mr-6"
+          @click="handleClickOnMarket"
+        >
+          {{ $t('common.view') }}
+        </span>
+        <v-button v-if="orderFillable" :status="status" @click="onCancelOrder">
+          <div
+            class="flex items-center justify-center rounded-full bg-red-550 bg-opacity-10 w-8 h-8 hover:bg-red-600 text-red-550 hover:text-red-600 hover:bg-opacity-10"
+          >
+            <v-icon-bin />
+          </div>
+        </v-button>
+        <span v-else class="inline-block">&mdash;</span>
+      </div>
     </td>
   </tr>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  Status,
+  StatusType
+} from '@injectivelabs/utils'
+import {
+  SpotOrderSide,
+  UiSpotLimitOrder,
+  UiSpotMarketWithToken,
+  ZERO_IN_BASE
+} from '@injectivelabs/ui-common'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  ZERO_IN_BASE
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
-import { UiSpotMarket, SpotOrderSide, UiSpotLimitOrder } from '~/types'
 
 export default Vue.extend({
   props: {
@@ -105,35 +127,22 @@ export default Vue.extend({
       UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
       UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
       SpotOrderSide,
-      status: new Status()
+      status: new Status(),
+      statusTest: new Status(StatusType.Loading)
     }
   },
 
   computed: {
-    currentMarket(): UiSpotMarket | undefined {
+    currentMarket(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
     },
 
-    isOnMarketPage(): boolean {
-      return this.$route.name === 'spot-spot'
-    },
-
-    markets(): UiSpotMarket[] {
-      const { isOnMarketPage } = this
-
-      if (isOnMarketPage) {
-        return []
-      }
-
+    markets(): UiSpotMarketWithToken[] {
       return this.$accessor.spot.markets
     },
 
-    market(): UiSpotMarket | undefined {
-      const { markets, currentMarket, isOnMarketPage, order } = this
-
-      if (isOnMarketPage) {
-        return currentMarket
-      }
+    market(): UiSpotMarketWithToken | undefined {
+      const { markets, order } = this
 
       return markets.find((m) => m.marketId === order.marketId)
     },
@@ -224,8 +233,8 @@ export default Vue.extend({
       const { order } = this
 
       return order.orderSide === SpotOrderSide.Buy
-        ? this.$t('buy')
-        : this.$t('sell')
+        ? this.$t('trade.buy')
+        : this.$t('trade.sell')
     }
   },
 
@@ -236,7 +245,7 @@ export default Vue.extend({
       this.$accessor.spot
         .cancelOrder(this.order)
         .then(() => {
-          this.$toast.success(this.$t('order_success_canceling'))
+          this.$toast.success(this.$t('trade.order_success_canceling'))
         })
         .catch(this.$onRejected)
         .finally(() => {

@@ -3,7 +3,7 @@
     <div class="flex flex-wrap items-center mt-1 py-2 lg:py-1">
       <div class="flex items-center pr-4 w-autojustify-start border-r">
         <img
-          :src="market.baseToken.icon"
+          :src="market.baseToken.logo"
           :alt="market.baseToken.name"
           class="w-6 h-6 mr-4"
         />
@@ -25,13 +25,13 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import MarketStats from './stats.vue'
 import {
-  UiDerivativeMarket,
   UiDerivativeMarketSummary,
-  UiSpotMarket,
-  UiSpotMarketSummary
-} from '~/types'
+  UiDerivativeMarketWithToken,
+  UiSpotMarketSummary,
+  UiSpotMarketWithToken
+} from '@injectivelabs/ui-common'
+import MarketStats from './stats.vue'
 
 export default Vue.extend({
   components: {
@@ -40,7 +40,9 @@ export default Vue.extend({
 
   props: {
     market: {
-      type: Object as PropType<UiSpotMarket | UiDerivativeMarket>,
+      type: Object as PropType<
+        UiSpotMarketWithToken | UiDerivativeMarketWithToken
+      >,
       required: true
     },
 

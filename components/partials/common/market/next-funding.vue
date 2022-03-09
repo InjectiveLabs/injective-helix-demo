@@ -1,8 +1,8 @@
 <template>
   <v-market-info
     v-if="market"
-    :title="$t('next_funding')"
-    :tooltip="$t('next_funding_tooltip')"
+    :title="$t('trade.next_funding')"
+    :tooltip="$t('trade.next_funding_tooltip')"
   >
     <span class="text-sm text-right font-mono block">
       <v-countdown v-if="msUntilFunding > 0" :time="msUntilFunding">
@@ -22,8 +22,8 @@ import Vue from 'vue'
 // @ts-ignore
 import VCountdown from '@chenfengyuan/vue-countdown'
 import moment from 'moment'
+import { UiDerivativeMarketWithToken } from '@injectivelabs/ui-common'
 import MarketInfo from '~/components/elements/market-info.vue'
-import { UiDerivativeMarket } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -39,7 +39,7 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiDerivativeMarket | undefined {
+    market(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 

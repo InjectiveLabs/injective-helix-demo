@@ -30,9 +30,11 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '~/app/utils/constants'
-import { FeeDiscountAccountInfo, FeeDiscountTierInfo } from '~/types/exchange'
-import { cosmosSdkDecToBigNumber } from '~/app/transformers'
+import { cosmosSdkDecToBigNumber, ZERO_IN_BASE } from '@injectivelabs/ui-common'
+import {
+  FeeDiscountAccountInfo,
+  FeeDiscountTierInfo
+} from '~/app/services/exchange'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
 
 export default Vue.extend({
@@ -114,7 +116,9 @@ export default Vue.extend({
     makerFeeDiscountToFormat(): string {
       const { makerFeeDiscount } = this
 
-      return makerFeeDiscount.toFormat(getDecimalsFromNumber(makerFeeDiscount.toNumber()))
+      return makerFeeDiscount.toFormat(
+        getDecimalsFromNumber(makerFeeDiscount.toNumber())
+      )
     },
 
     takerFeeDiscount(): BigNumberInBase {
@@ -130,7 +134,9 @@ export default Vue.extend({
     takerFeeDiscountToFormat(): string {
       const { takerFeeDiscount } = this
 
-      return takerFeeDiscount.toFormat(getDecimalsFromNumber(takerFeeDiscount.toNumber()))
+      return takerFeeDiscount.toFormat(
+        getDecimalsFromNumber(takerFeeDiscount.toNumber())
+      )
     }
   }
 })

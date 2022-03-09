@@ -1,27 +1,45 @@
 <template>
   <tr v-if="market">
-    <td
-      v-if="!isOnMarketPage"
-      class="h-8 text-left cursor-pointer"
-      @click="handleClickOnMarket"
-    >
-      {{ market.ticker }}
+    <td class="h-8 text-left cursor-pointer" @click="handleClickOnMarket">
+      <div class="flex items-center justify-start">
+        <div v-if="market.baseToken.logo" class="w-6 h-6">
+          <img
+            :src="market.baseToken.logo"
+            :alt="market.baseToken.name"
+            class="min-w-full h-auto rounded-full"
+          />
+        </div>
+        <div class="ml-3">
+          <span class="text-gray-200 font-semibold">
+            {{ market.ticker }}
+          </span>
+        </div>
+      </div>
     </td>
-    <td class="h-8 font-mono text-right">
+
+    <td class="h-8 text-left">
       <span
         :class="{
           'text-aqua-500': order.orderSide === DerivativeOrderSide.Buy,
           'text-red-500': order.orderSide === DerivativeOrderSide.Sell
         }"
       >
-        <v-number
-          :decimals="
-            market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-          "
-          :number="price"
-        />
+        {{ orderSideLocalized }}
+      </span>
+      <span v-if="isReduceOnly" class="ml-0.5 text-xs text-gray-500">
+        {{ $t('trade.reduce_only') }}
       </span>
     </td>
+
+    <td class="h-8 font-mono text-right">
+      <v-number
+        :decimals="
+          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+        "
+        :number="price"
+      />
+    </td>
+
     <td class="h-8 text-right font-mono">
       <v-number
         :decimals="
@@ -30,7 +48,40 @@
         :number="quantity"
       />
     </td>
-    <td class="h-8 font-mono text-right">
+
+    <td class="h-8 font-mono">
+      <div class="flex items-center justify-end">
+        <v-number
+          :decimals="
+            market
+              ? market.quantityDecimals
+              : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+          "
+          :number="unfilledQuantity"
+        />
+      </div>
+    </td>
+
+    <td class="h-8 text-right font-mono">
+      <v-number
+        :decimals="
+          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+        "
+        :number="filledQuantity"
+      />
+    </td>
+
+    <td class="h-8 text-right font-mono">
+      <span v-if="leverage.gte(0)" class="flex items-center justify-end">
+        {{ leverage.toFormat(2) }}
+        <span class="text-gray-300">&times;</span>
+      </span>
+      <span v-else class="text-gray-400">
+        {{ $t('trade.not_available_n_a') }}
+      </span>
+    </td>
+
+    <td class="h-8 font-right text-right">
       <v-number
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -42,53 +93,25 @@
         </span>
       </v-number>
     </td>
-    <td class="h-8 text-right font-mono">
-      <span v-if="leverage.isNaN()">&mdash;</span>
-      <span v-else>{{ leverage.toFormat(2) }}</span>
-    </td>
-    <td class="h-8 text-center">
-      <v-badge
-        :aqua="order.orderSide === DerivativeOrderSide.Buy"
-        :red="order.orderSide === DerivativeOrderSide.Sell"
-        xs
-      >
-        <div class="w-8">
-          {{ orderSideLocalized }}
-        </div>
-      </v-badge>
-      <v-badge v-if="isReduceOnly" dark xs class="ml-2">
-        {{ $t('reduce_only') }}
-      </v-badge>
-    </td>
-    <td class="h-8 text-right font-mono">
-      <v-number
-        :decimals="
-          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-        "
-        :number="unfilledQuantity"
-      />
-    </td>
-    <td class="h-8 text-center">
-      <v-badge v-if="orderFullyFilled" primary xs>
-        {{ $t('filled') }}
-      </v-badge>
-      <v-badge v-else-if="orderFillable" gray xs>
-        <div class="w-12 font-mono">
-          {{ `${filledQuantityPercentage.times(100).toFixed(2)}%` }}
-        </div>
-      </v-badge>
-    </td>
-    <td class="h-8 relative text-center">
-      <v-button
-        v-if="orderFillable"
-        :status="status"
-        text-xs
-        red
-        @click="onCancelOrder"
-      >
-        {{ $t('cancel') }}
-      </v-button>
-      <span v-else class="inline-block">&mdash;</span>
+
+    <td class="h-8 relative text-right">
+      <div class="flex items-center justify-end">
+        <span
+          v-if="false"
+          class="cursor-pointer text-primary-500 mr-6"
+          @click="handleClickOnMarket"
+        >
+          {{ $t('common.view') }}
+        </span>
+        <v-button v-if="orderFillable" :status="status" @click="onCancelOrder">
+          <div
+            class="flex items-center justify-center rounded-full bg-red-550 bg-opacity-10 w-8 h-8 hover:bg-red-600 text-red-550 hover:text-red-600 hover:bg-opacity-10"
+          >
+            <v-icon-bin />
+          </div>
+        </v-button>
+        <span v-else class="inline-block">&mdash;</span>
+      </div>
     </td>
   </tr>
 </template>
@@ -97,15 +120,15 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
 import {
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  ZERO_IN_BASE
-} from '~/app/utils/constants'
-import {
-  UiDerivativeMarket,
+  UiDerivativeLimitOrder,
+  UiDerivativeMarketWithToken,
   DerivativeOrderSide,
-  UiDerivativeLimitOrder
-} from '~/types'
+  ZERO_IN_BASE
+} from '@injectivelabs/ui-common'
+import {
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+} from '~/app/utils/constants'
 
 export default Vue.extend({
   props: {
@@ -125,30 +148,16 @@ export default Vue.extend({
   },
 
   computed: {
-    currentMarket(): UiDerivativeMarket | undefined {
+    currentMarket(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 
-    isOnMarketPage(): boolean {
-      return this.$route.name === 'derivatives-derivative'
-    },
-
-    markets(): UiDerivativeMarket[] {
-      const { isOnMarketPage } = this
-
-      if (isOnMarketPage) {
-        return []
-      }
-
+    markets(): UiDerivativeMarketWithToken[] {
       return this.$accessor.derivatives.markets
     },
 
-    market(): UiDerivativeMarket | undefined {
-      const { markets, currentMarket, isOnMarketPage, order } = this
-
-      if (isOnMarketPage) {
-        return currentMarket
-      }
+    market(): UiDerivativeMarketWithToken | undefined {
+      const { markets, order } = this
 
       return markets.find((m) => m.marketId === order.marketId)
     },
@@ -265,8 +274,8 @@ export default Vue.extend({
       const { order } = this
 
       return order.orderSide === DerivativeOrderSide.Buy
-        ? this.$t('buy')
-        : this.$t('sell')
+        ? this.$t('trade.buy')
+        : this.$t('trade.sell')
     }
   },
 
@@ -277,7 +286,7 @@ export default Vue.extend({
       this.$accessor.derivatives
         .cancelOrder(this.order)
         .then(() => {
-          this.$toast.success(this.$t('order_success_canceling'))
+          this.$toast.success(this.$t('trade.order_success_canceling'))
         })
         .catch(this.$onRejected)
         .finally(() => {

@@ -1,45 +1,94 @@
 <template>
   <v-card-table-wrap>
-    <template #filters>
-      <v-button-filter v-model="component" :option="components.openPositions">
-        <span>
-          {{ $t('open_positions') }}
-          <span v-if="position">(1)</span>
-        </span>
-      </v-button-filter>
-      <v-separator />
-      <v-button-filter v-model="component" :option="components.openOrders">
-        <span>
-          {{ $t('open_orders') }}
-          {{ `(${orders.length})` }}
-        </span>
-      </v-button-filter>
-      <v-separator />
-      <v-button-filter v-model="component" :option="components.tradeHistory">
-        <span>
-          {{ $t('trade_history') }}
-        </span>
-      </v-button-filter>
-    </template>
-    <template #context>
-      <v-button
-        v-if="component === components.openOrders && orders.length > 0"
-        text-xs
-        @click.stop="handleCancelAllClick"
+    <template #actions>
+      <div class="col-span-12 lg:col-span-7 xl:col-span-8 m-4 lg:mx-0">
+        <div class="flex items-center justify-between lg:justify-start">
+          <v-button-filter
+            v-model="component"
+            :option="components.openPositions"
+          >
+            <span class="uppercase text-xs font-semibold">
+              {{ $t('activity.openPositions') }}
+              {{
+                `(${
+                  currentMarketOnly
+                    ? currentMarketPositions.length
+                    : positions.length
+                })`
+              }}
+            </span>
+          </v-button-filter>
+          <v-separator />
+          <v-button-filter v-model="component" :option="components.openOrders">
+            <span class="uppercase text-xs font-semibold">
+              {{ $t('activity.openOrders') }}
+              {{
+                `(${
+                  currentMarketOnly ? currentMarketOrders.length : orders.length
+                })`
+              }}
+            </span>
+          </v-button-filter>
+          <v-separator />
+          <v-button-filter
+            v-model="component"
+            :option="components.tradeHistory"
+          >
+            <span class="uppercase text-xs font-semibold">
+              {{ $t('activity.tradeHistory') }}
+            </span>
+          </v-button-filter>
+        </div>
+      </div>
+
+      <div
+        class="col-span-12 lg:col-span-5 xl:col-span-4 mx-4 mb-4 flex items-center justify-between lg:justify-end lg:ml-0 lg:mr-2 lg:mt-4"
       >
-        {{ $t('cancel_all') }}
-      </v-button>
+        <v-checkbox v-model="currentMarketOnly" class="lg:mr-4">
+          {{ $t('trade.asset_only', { asset: market.ticker }) }}
+        </v-checkbox>
+        <v-button
+          v-if="component === components.openOrders && orders.length > 0"
+          red-outline
+          sm
+          @click.stop="handleCancelAllClick"
+        >
+          {{ $t('trade.cancelAllOrders') }}
+        </v-button>
+        <v-button
+          v-if="component === components.openPositions && positions.length > 0"
+          red-outline
+          sm
+          @click.stop="handleCloseAllPositionsClick"
+        >
+          {{ $t('trade.closeAllPositions') }}
+        </v-button>
+      </div>
     </template>
-    <component :is="component" v-if="component"></component>
+
+    <VHocLoading :status="status">
+      <v-card class="h-full">
+        <component
+          :is="component"
+          v-if="component"
+          v-bind="{ currentMarketOnly }"
+        ></component>
+      </v-card>
+    </VHocLoading>
   </v-card-table-wrap>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import { Status, StatusType } from '@injectivelabs/utils'
+import {
+  UiDerivativeMarketWithToken,
+  UiDerivativeLimitOrder,
+  UiPosition
+} from '@injectivelabs/ui-common'
 import OpenOrders from './orders/index.vue'
 import OpenPositions from './positions/index.vue'
 import TradeHistory from './trade-history/index.vue'
-import { UiDerivativeLimitOrder, UiPosition } from '~/types'
 
 const components = {
   orderHistory: '',
@@ -57,41 +106,75 @@ export default Vue.extend({
 
   data() {
     return {
+      currentMarketOnly: false,
+      status: new Status(StatusType.Loading),
+
       components,
       component: components.openOrders
     }
   },
 
   computed: {
+    market(): UiDerivativeMarketWithToken | undefined {
+      return this.$accessor.derivatives.market
+    },
+
     orders(): UiDerivativeLimitOrder[] {
       return this.$accessor.derivatives.subaccountOrders
     },
 
-    position(): UiPosition | undefined {
-      return this.$accessor.derivatives.subaccountPosition
+    positions(): UiPosition[] {
+      return this.$accessor.positions.subaccountPositions
+    },
+
+    currentMarketOrders(): UiDerivativeLimitOrder[] {
+      const { market, orders } = this
+
+      return orders.filter((order) => order.marketId === market?.marketId)
+    },
+
+    currentMarketPositions(): UiPosition[] {
+      const { market, positions } = this
+
+      return positions.filter(
+        (position) => position.marketId === market?.marketId
+      )
     }
   },
 
   watch: {
-    position(
-      newPosition: UiPosition | undefined,
-      oldPosition: UiPosition | undefined
-    ) {
-      if (newPosition && !oldPosition) {
+    positions(newPositions: UiPosition[], oldPositions: UiPosition[]) {
+      if (newPositions.length !== oldPositions.length) {
         this.component = components.openPositions
       }
     }
   },
 
   mounted() {
-    if (this.position) {
-      this.component = components.openPositions
-    } else if (this.orders.length > 0) {
-      this.component = components.openOrders
-    }
+    Promise.all([
+      this.$accessor.derivatives.fetchSubaccountOrders(),
+      this.$accessor.derivatives.fetchSubaccountTrades(),
+      this.$accessor.positions.fetchSubaccountPositions()
+    ])
+      .then(() => {
+        //
+      })
+      .catch(this.$onError)
+      .finally(() => {
+        this.status.setIdle()
+        this.onInit()
+      })
   },
 
   methods: {
+    onInit() {
+      if (this.positions.length > 0) {
+        this.component = components.openPositions
+      } else if (this.orders.length > 0) {
+        this.component = components.openOrders
+      }
+    },
+
     onSelect(component: string) {
       this.component = component
     },
@@ -102,7 +185,21 @@ export default Vue.extend({
       this.$accessor.derivatives
         .batchCancelOrder(orders)
         .then(() => {
-          this.$toast.success(this.$t('orders_cancelled'))
+          this.$toast.success(this.$t('trade.orders_cancelled'))
+        })
+        .catch(this.$onRejected)
+        .finally(() => {
+          //
+        })
+    },
+
+    handleCloseAllPositionsClick() {
+      const { positions } = this
+
+      this.$accessor.positions
+        .closeAllPosition(positions)
+        .then(() => {
+          this.$toast.success(this.$t('trade.positions_closed'))
         })
         .catch(this.$onRejected)
         .finally(() => {

@@ -4,16 +4,16 @@ import * as account from '~/store/account'
 import * as app from '~/store/app'
 import * as auction from '~/store/auction'
 import * as bank from '~/store/bank'
+import * as bridge from '~/store/bridge'
 import * as derivatives from '~/store/derivatives'
-import * as dmm from '~/store/dmm'
 import * as exchange from '~/store/exchange'
+import * as activity from '~/store/activity'
 import * as gasRebate from '~/store/gasRebate'
-import * as history from '~/store/history'
+import * as onboard from '~/store/onboard'
 import * as modal from '~/store/modal'
-import * as portfolio from '~/store/portfolio'
-import * as referral from '~/store/referral'
 import * as spot from '~/store/spot'
-import * as staking from '~/store/staking'
+import * as referral from '~/store/referral'
+import * as positions from '~/store/positions'
 import * as token from '~/store/token'
 import * as wallet from '~/store/wallet'
 
@@ -23,15 +23,15 @@ export const accessorType = getAccessorType({
     auction,
     account,
     bank,
+    bridge,
     derivatives,
-    dmm,
+    onboard,
     exchange,
     gasRebate,
-    history,
     modal,
-    portfolio,
+    activity,
     referral,
-    staking,
+    positions,
     spot,
     token,
     wallet

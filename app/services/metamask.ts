@@ -1,4 +1,4 @@
-import { ChainId, AccountAddress } from '@injectivelabs/ts-types'
+import { ChainId } from '@injectivelabs/ts-types'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import detectEthereumProvider from '@metamask/detect-provider'
 import { CHAIN_ID } from '../utils/constants'
@@ -11,7 +11,7 @@ export const isMetamaskInstalled = async (): Promise<boolean> => {
 }
 
 export const validateMetamask = async (
-  address: AccountAddress,
+  address: string,
   chainId: ChainId = CHAIN_ID
 ) => {
   const web3Strategy = getWeb3Strategy()

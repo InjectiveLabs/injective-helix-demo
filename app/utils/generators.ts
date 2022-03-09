@@ -1,5 +1,3 @@
-import { BASE_URL } from './constants'
-
 export const mapKeys = <T, V, U>(
   m: Map<T, V>,
   fn: (this: void, v: V) => U

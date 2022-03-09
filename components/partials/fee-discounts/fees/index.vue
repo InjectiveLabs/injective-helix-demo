@@ -21,7 +21,7 @@
           <th class="text-right">
             <div class="flex items-end justify-end">
               <span>
-                {{ $t('fees_paid') }}
+                {{ $t('trade.fees_paid') }}
               </span>
               <v-icon-info-tooltip
                 class="ml-2"
@@ -71,7 +71,10 @@
 import Vue from 'vue'
 import { Status } from '@injectivelabs/utils'
 import Tier from '~/components/partials/fee-discounts/fees/tier.vue'
-import { FeeDiscountSchedule, FeeDiscountTierInfo } from '~/types/exchange'
+import {
+  FeeDiscountSchedule,
+  FeeDiscountTierInfo
+} from '~/app/services/exchange'
 
 export default Vue.extend({
   components: {

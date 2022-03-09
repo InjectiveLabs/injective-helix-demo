@@ -1,29 +1,29 @@
 <template>
-  <div
-    v-if="market"
-    class="table-responsive min-h-orders max-h-xs 4xl:max-h-lg"
-  >
-    <table class="table">
+  <v-table-wrapper v-if="market">
+    <table v-if="filteredTrades.length > 0" class="table">
       <trades-table-header />
-      <tbody v-if="isUserWalletConnected">
+      <tbody>
         <tr
           is="v-trade"
-          v-for="(trade, index) in trades"
-          :key="`trades-history-${index}-`"
+          v-for="(trade, index) in filteredTrades"
+          :key="`trades-history-${index}`"
           :trade="trade"
-        ></tr>
+        />
       </tbody>
     </table>
-    <v-user-wallet-connect-warning v-if="!isUserWalletConnected" />
-  </div>
+    <v-empty-list v-else :message="$t('trade.emptyTrades')" />
+  </v-table-wrapper>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import {
+  UiSpotMarketWithToken,
+  UiSpotTrade,
+  UiSubaccount
+} from '@injectivelabs/ui-common'
 import Trade from '~/components/partials/common/spot/trade.vue'
 import TradesTableHeader from '~/components/partials/common/spot/trades-table-header.vue'
-import { UiSpotMarket, UiSpotTrade } from '~/types'
-import { UiSubaccount } from '~/types/subaccount'
 
 export default Vue.extend({
   components: {
@@ -31,18 +31,15 @@ export default Vue.extend({
     TradesTableHeader
   },
 
-  data() {
-    return {
-      limit: 9
+  props: {
+    currentMarketOnly: {
+      type: Boolean,
+      default: false
     }
   },
 
   computed: {
-    isUserWalletConnected(): boolean {
-      return this.$accessor.wallet.isUserWalletConnected
-    },
-
-    market(): UiSpotMarket | undefined {
+    market(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
     },
 
@@ -54,16 +51,20 @@ export default Vue.extend({
       return this.$accessor.account.subaccount
     },
 
-    emptyTrades(): any[] {
-      const { trades, limit } = this
+    filteredTrades(): UiSpotTrade[] {
+      const { currentMarketOnly, market, trades } = this
 
-      return trades.length < limit ? new Array(limit - trades.length) : []
+      if (!currentMarketOnly) {
+        return trades
+      }
+
+      return trades.filter((trade) => trade.marketId === market?.marketId)
     }
   },
 
   watch: {
     subAccount() {
-      this.$accessor.spot.fetchSubaccountMarketTrades()
+      this.$accessor.spot.fetchSubaccountTrades()
     }
   }
 })

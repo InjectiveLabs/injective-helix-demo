@@ -1,13 +1,17 @@
 <template>
-  <v-modal :is-open="isModalOpen" @modal-closed="closeModal">
+  <v-modal :is-open="isModalOpen" sm @modal-closed="closeModal">
     <h3 slot="title">
-      {{ $t('add_margin_to_position_title') }}
+      {{ $t('trade.add_margin_to_position_title') }}
     </h3>
 
     <div v-if="market && quoteBalance" class="relative">
       <div class="flex flex-wrap">
         <div class="px-4 w-full">
-          <v-form :balance="quoteBalance" :market="market" />
+          <v-form
+            :balance="quoteBalance"
+            :market="market"
+            @close-modal="closeModal"
+          />
         </div>
       </div>
     </div>
@@ -17,9 +21,13 @@
 <script lang="ts">
 import Vue from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  UiDerivativeMarketWithToken,
+  UiPosition,
+  UiSubaccount,
+  ZERO_IN_BASE
+} from '@injectivelabs/ui-common'
 import Form from './form.vue'
-import { UiDerivativeMarket, UiPosition, UiSubaccount } from '~/types'
-import { ZERO_IN_BASE } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -33,11 +41,11 @@ export default Vue.extend({
   },
 
   computed: {
-    markets(): UiDerivativeMarket[] {
+    markets(): UiDerivativeMarketWithToken[] {
       return this.$accessor.derivatives.markets
     },
 
-    market(): UiDerivativeMarket | undefined {
+    market(): UiDerivativeMarketWithToken | undefined {
       const { markets, position } = this
 
       if (!position) {

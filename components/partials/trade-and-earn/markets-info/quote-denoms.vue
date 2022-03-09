@@ -8,10 +8,10 @@
     </template>
     <template slot="title">
       <div class="flex items-center justify-center">
-        {{ $t('quote_denoms') }}
+        {{ $t('trade.quote_denoms') }}
         <v-icon-info-tooltip
           class="ml-2"
-          :tooltip="$t('quote_denoms_tooltip')"
+          :tooltip="$t('trade.quote_denoms_tooltip')"
         />
       </div>
     </template>
@@ -21,7 +21,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import VItem from '~/components/partials/common/stats/item.vue'
-import { TradingRewardsCampaign } from '~/types/exchange'
+import { TradingRewardsCampaign } from '~/app/services/exchange'
 
 export default Vue.extend({
   components: {

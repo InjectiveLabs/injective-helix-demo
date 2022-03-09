@@ -1,6 +1,9 @@
 <template>
-  <HOCLoading :key="$route.fullPath" :status="status">
-    <div v-if="market" class="min-h-screen flex flex-col flex-wrap">
+  <VHocLoading :key="$route.fullPath" :status="status">
+    <div
+      v-if="market"
+      class="flex flex-col flex-wrap min-h-screen-excluding-header"
+    >
       <div class="w-full px-1">
         <v-market />
       </div>
@@ -26,31 +29,22 @@
               </v-card>
             </div>
             <div class="w-full flex-1 mt-1">
-              <v-card class="h-full">
-                <v-orders />
-              </v-card>
+              <v-orders />
             </div>
           </div>
         </div>
       </div>
-      <v-modal-bridge-deposit />
-      <v-modal-bridge-withdraw />
-      <v-modal-subaccount-deposit />
-      <v-modal-subaccount-withdraw />
       <v-modal-add-margin />
       <v-modal-market-beta v-if="marketIsBeta" />
     </div>
-  </HOCLoading>
+  </VHocLoading>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { UiDerivativeMarketWithToken } from '@injectivelabs/ui-common'
 import VModalAddMargin from '~/components/partials/modals/add-margin/index.vue'
-import VModalBridgeDeposit from '~/components/partials/modals/bridge-deposit/index.vue'
-import VModalBridgeWithdraw from '~/components/partials/modals/bridge-withdraw/index.vue'
-import VModalSubaccountDeposit from '~/components/partials/modals/subaccount-deposit/index.vue'
-import VModalSubaccountWithdraw from '~/components/partials/modals/subaccount-withdraw/index.vue'
 import VModalMarketBeta from '~/components/partials/modals/market-beta.vue'
 import VBalances from '~/components/partials/common/balances/index.vue'
 import VTrading from '~/components/partials/derivatives/trading/index.vue'
@@ -58,19 +52,13 @@ import VMarketChart from '~/components/partials/common/market/chart.vue'
 import VMarket from '~/components/partials/derivatives/market.vue'
 import VOrders from '~/components/partials/derivatives/orders.vue'
 import VOrderbook from '~/components/partials/derivatives/orderbook.vue'
-import HOCLoading from '~/components/hoc/loading.vue'
-import { Modal, UiDerivativeMarket } from '~/types'
+import { Modal } from '~/types'
 import { ORDERBOOK_POLLING_ENABLED } from '~/app/utils/constants'
 import { betaMarketSlugs } from '~/app/data/market'
 
 export default Vue.extend({
   components: {
-    HOCLoading,
     VModalAddMargin,
-    VModalBridgeDeposit,
-    VModalBridgeWithdraw,
-    VModalSubaccountDeposit,
-    VModalSubaccountWithdraw,
     VModalMarketBeta,
     VTrading,
     VBalances,
@@ -88,7 +76,7 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiDerivativeMarket | undefined {
+    market(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 
@@ -107,7 +95,7 @@ export default Vue.extend({
 
   mounted() {
     this.$accessor.derivatives
-      .changeMarket(this.slugFromRoute)
+      .initMarket(this.slugFromRoute)
       .then(() => {
         this.setOrderbookPolling()
       })
@@ -118,6 +106,19 @@ export default Vue.extend({
         if (this.marketIsBeta) {
           this.$accessor.modal.openModal(Modal.MarketBeta)
         }
+      })
+
+    Promise.all([
+      this.$accessor.derivatives.initMarketStreams(),
+      this.$accessor.exchange.fetchTradingRewardsCampaign(),
+      this.$accessor.exchange.fetchFeeDiscountAccountInfo()
+    ])
+      .then(() => {
+        //
+      })
+      .catch(this.$onRejected)
+      .finally(() => {
+        //
       })
   },
 

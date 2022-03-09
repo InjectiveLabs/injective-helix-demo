@@ -7,7 +7,7 @@
 
     <div class="relative -mt-6">
       <p
-        class="text-center text-sm text-gray-100"
+        class="text-left text-sm text-gray-100 pt-6"
         v-html="$t('disclaimer_note')"
       ></p>
       <ul class="p-4 bg-gray-900 mt-6 text-xs text-gray-300 rounded-lg">
@@ -32,10 +32,10 @@
       </ul>
       <div class="mt-6 flex items-center justify-center">
         <v-button lg class="mr-4" primary @click.stop="handleConfirm">
-          {{ $t('confirm') }}
+          {{ $t('common.confirm') }}
         </v-button>
         <v-button lg class="mr-4" text-red @click.stop="handleCancel">
-          {{ $t('cancel') }}
+          {{ $t('common.cancel') }}
         </v-button>
       </div>
     </div>

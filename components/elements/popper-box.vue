@@ -1,5 +1,5 @@
 <template>
-  <div ref="popper" @mouseleave="hideDropdown" @mouseenter="showDropdown">
+  <div :ref="uid" @mouseleave="hideDropdown" @mouseenter="showDropdown">
     <div v-if="!hideArrow" class="arrow" data-popper-arrow />
     <slot></slot>
   </div>
@@ -17,7 +17,18 @@ export default Vue.extend({
 
     options: {
       type: Object,
-      required: true
+      required: false,
+      default: () => ({
+        placement: 'bottom',
+        modifiers: [
+          {
+            name: 'offset',
+            options: {
+              offset: [0, 8]
+            }
+          }
+        ]
+      })
     },
 
     hideArrow: {
@@ -34,18 +45,26 @@ export default Vue.extend({
   },
 
   computed: {
+    uid(): string {
+      return window.crypto.getRandomValues(new Uint32Array(1))[0].toString()
+    },
+
     $popperElement(): InstanceType<typeof HTMLElement> {
-      return this.$refs.popper as InstanceType<typeof HTMLElement>
+      const { uid } = this
+
+      return this.$refs[uid] as InstanceType<typeof HTMLElement>
     }
   },
 
   mounted() {
-    if (this.$parent.$refs[this.bindingElement]) {
-      const { $el } = this.$parent.$refs[this.bindingElement] as {
-        $el: InstanceType<typeof Element>
-      }
+    const bindingElement = document.querySelector(this.bindingElement)
 
-      this.popper = createPopper($el, this.$popperElement, this.options)
+    if (bindingElement) {
+      this.popper = createPopper(
+        bindingElement,
+        this.$popperElement,
+        this.options
+      )
     }
   },
 
@@ -54,8 +73,12 @@ export default Vue.extend({
       const { $popperElement } = this
 
       clearTimeout(this.delayHide)
+
       this.$nextTick(() => {
-        this.popper.update()
+        if (this.popper) {
+          this.popper.update()
+        }
+
         $popperElement.setAttribute('data-show', '')
       })
     },

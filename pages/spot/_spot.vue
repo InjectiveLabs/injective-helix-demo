@@ -1,6 +1,9 @@
 <template>
-  <HOCLoading :key="$route.fullPath" :status="status">
-    <div v-if="market" class="min-h-screen flex flex-col flex-wrap">
+  <VHocLoading :key="$route.fullPath" :status="status">
+    <div
+      v-if="market"
+      class="flex flex-col flex-wrap min-h-screen-excluding-header"
+    >
       <div class="w-full px-1">
         <v-market />
       </div>
@@ -26,29 +29,20 @@
               </v-card>
             </div>
             <div class="w-full flex-1 mt-1">
-              <v-card class="h-full">
-                <v-orders />
-              </v-card>
+              <v-orders />
             </div>
           </div>
         </div>
       </div>
-      <v-modal-bridge-deposit />
-      <v-modal-bridge-withdraw />
-      <v-modal-subaccount-deposit />
-      <v-modal-subaccount-withdraw />
       <v-modal-market-beta v-if="marketIsBeta" />
     </div>
-  </HOCLoading>
+  </VHocLoading>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import VModalBridgeDeposit from '~/components/partials/modals/bridge-deposit/index.vue'
-import VModalBridgeWithdraw from '~/components/partials/modals/bridge-withdraw/index.vue'
-import VModalSubaccountDeposit from '~/components/partials/modals/subaccount-deposit/index.vue'
-import VModalSubaccountWithdraw from '~/components/partials/modals/subaccount-withdraw/index.vue'
+import { UiSpotMarketWithToken } from '@injectivelabs/ui-common'
 import VModalMarketBeta from '~/components/partials/modals/market-beta.vue'
 import VBalances from '~/components/partials/common/balances/index.vue'
 import VTrading from '~/components/partials/spot/trading/index.vue'
@@ -56,18 +50,12 @@ import VMarketChart from '~/components/partials/common/market/chart.vue'
 import VMarket from '~/components/partials/spot/market.vue'
 import VOrders from '~/components/partials/spot/orders.vue'
 import VOrderbook from '~/components/partials/spot/orderbook.vue'
-import HOCLoading from '~/components/hoc/loading.vue'
-import { Modal, UiSpotMarket } from '~/types'
+import { Modal } from '~/types'
 import { ORDERBOOK_POLLING_ENABLED } from '~/app/utils/constants'
 import { betaMarketSlugs } from '~/app/data/market'
 
 export default Vue.extend({
   components: {
-    HOCLoading,
-    VModalBridgeDeposit,
-    VModalBridgeWithdraw,
-    VModalSubaccountDeposit,
-    VModalSubaccountWithdraw,
     VModalMarketBeta,
     VTrading,
     VBalances,
@@ -85,7 +73,7 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiSpotMarket | undefined {
+    market(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
     },
 
@@ -104,7 +92,7 @@ export default Vue.extend({
 
   mounted() {
     this.$accessor.spot
-      .changeMarket(this.slugFromRoute)
+      .initMarket(this.slugFromRoute)
       .then(() => {
         this.setOrderbookPolling()
       })
@@ -115,6 +103,19 @@ export default Vue.extend({
         if (this.marketIsBeta) {
           this.$accessor.modal.openModal(Modal.MarketBeta)
         }
+      })
+
+    Promise.all([
+      this.$accessor.spot.initMarketStreams(),
+      this.$accessor.exchange.fetchTradingRewardsCampaign(),
+      this.$accessor.exchange.fetchFeeDiscountAccountInfo()
+    ])
+      .then(() => {
+        //
+      })
+      .catch(this.$onRejected)
+      .finally(() => {
+        //
       })
   },
 

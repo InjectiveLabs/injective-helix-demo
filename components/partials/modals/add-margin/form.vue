@@ -3,11 +3,11 @@
     <div class="text-center">
       <div class="flex items-center justify-center">
         <p class="uppercase text-xs font-semibold text-gray-200">
-          {{ $t('Available Margin') }}
+          {{ $t('trade.availableMargin') }}
         </p>
         <v-icon-info-tooltip
           class="ml-2 text-gray-200"
-          :tooltip="$t('Available Margin Tooltip')"
+          :tooltip="$t('trade.availableMarginTooltip')"
         />
       </div>
       <div class="mt-4 text-center">
@@ -35,8 +35,9 @@
                 :valid="valid"
                 :max="availableMarginToString"
                 :max-selector="availableMargin.gt(0.01)"
-                :label="$t('amount')"
-                :placeholder="$t('Enter your amount')"
+                :label="$t('trade.amount')"
+                :placeholder="$t('trade.enter_your_amount')"
+                class="no-shadow"
                 type="number"
                 step="0.001"
                 min="0"
@@ -54,7 +55,7 @@
               :disabled="!form.amount || invalid"
               @click.stop="handleClickOnWithdraw"
             >
-              {{ $t('add_margin') }}
+              {{ $t('trade.add_margin') }}
             </v-button>
           </div>
         </div>
@@ -67,7 +68,7 @@
 import Vue, { PropType } from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
-import { Token, UiDerivativeMarket } from '~/types'
+import { UiDerivativeMarketWithToken } from '@injectivelabs/ui-common'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
@@ -84,7 +85,7 @@ export default Vue.extend({
 
     market: {
       required: true,
-      type: Object as PropType<UiDerivativeMarket>
+      type: Object as PropType<UiDerivativeMarketWithToken>
     }
   },
 
@@ -134,14 +135,15 @@ export default Vue.extend({
 
       this.status.setLoading()
 
-      this.$accessor.derivatives
+      this.$accessor.positions
         .addMarginToPosition({
           market,
           amount: new BigNumberInBase(form.amount)
         })
         .then(() => {
-          this.$toast.success(this.$t('success_added_margin'))
+          this.$toast.success(this.$t('trade.success_added_margin'))
           this.form.amount = ''
+          this.$emit('close-modal')
 
           if (this.$form) {
             this.$form.reset()

@@ -15,28 +15,25 @@ const mutationsToPersist = [
 ]
 
 const actionsThatSetAppStateToBusy = [
+  'activity/batchCancelDerivativeOrders',
+  'activity/batchCancelSpotOrders',
   'account/deposit',
   'account/withdraw',
   'derivatives/cancelOrder',
   'derivatives/batchCancelOrder',
   'derivatives/submitLimitOrder',
   'derivatives/submitMarketOrder',
-  'derivatives/closePosition',
-  'derivatives/closePositionAndReduceOnlyOrders',
-  'derivatives/closeAllPosition',
-  'derivatives/addMarginToPosition',
+  'positions/closePosition',
+  'positions/closePositionAndReduceOnlyOrders',
+  'positions/closeAllPosition',
+  'positions/addMarginToPosition',
   'spot/cancelOrder',
   'spot/batchCancelOrder',
   'spot/submitLimitOrder',
-  'spot/submitMarketOrder',
-  'portfolio/closePosition',
-  'portfolio/cancelOrder',
-  'portfolio/batchCancelSpotOrders',
-  'portfolio/batchCancelDerivativeOrders',
-  'staking/delegateToValidator'
+  'spot/submitMarketOrder'
 ]
 
-const store: Plugin = ({ store, app }, inject) => {
+const store: Plugin = ({ store, app }) => {
   const localState = localStorage.get('state') as any
 
   // Replace Local State

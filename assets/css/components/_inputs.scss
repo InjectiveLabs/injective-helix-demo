@@ -1,3 +1,12 @@
+// firefox input hide up and down arrows
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.input-wrapper {
+  @apply shadow-sm bg-gray-900 rounded;
+}
+
 .input {
   @apply border border-transparent bg-gray-900 shadow-sm text-gray-200 rounded w-full h-12 text-sm outline-none appearance-none max-w-full px-4;
 
@@ -7,12 +16,8 @@
     margin: 0;
   }
 
-  &:focus {
-    @apply border-gray-600;
-  }
-
   &::placeholder {
-    @apply text-xs opacity-75;
+    @apply opacity-75;
   }
 
   &[disabled] {
@@ -50,6 +55,10 @@
   @apply text-xl h-14;
 }
 
+.input-large {
+  @apply bg-transparent text-gray-400 rounded-lg px-6 pr-2 w-full h-20 outline-none appearance-none max-w-full text-3xl border-none font-medium;
+}
+
 .input-xl {
   @apply bg-transparent text-gray-400 rounded-lg px-6 w-full h-20 outline-none appearance-none max-w-full text-3xl border-none font-medium;
 }
@@ -66,10 +75,6 @@
     @apply border-gray-700;
   }
 
-  &::placeholder {
-    @apply text-xl opacity-75;
-  }
-
   &[disabled] {
     @apply pointer-events-none cursor-not-allowed bg-gray-700;
   }
@@ -84,6 +89,12 @@
 .is-invalid {
   .input {
     @apply border-red-400;
+  }
+}
+
+.no-shadow {
+  .input {
+    @apply border-transparent shadow-none;
   }
 }
 
@@ -159,10 +170,10 @@
   &[disabled] {
     @apply bg-gray-700;
   }
+}
 
-  input::placeholder {
-    @apply text-xs opacity-75;
-  }
+.v-select.input-error {
+  @apply border-red-500;
 }
 
 .v-select.input-select.vs--open {
@@ -176,3 +187,146 @@
     @apply opacity-100 text-gray-200;
   }
 }
+
+.input-select.input-token.input-select .vs__selected {
+  @apply w-full h-20 relative border-none p-0 m-0 z-1000;
+}
+
+.v-select.input-token.input-select {
+  @apply rounded-lg h-20 shadow-none p-0;
+
+  .input-lg {
+    @apply bg-transparent;
+
+    max-width: 80%;
+  }
+
+  .input {
+    @apply shadow-none text-gray-100;
+  }
+
+  .is-valid,
+  .is-invalid {
+    input {
+      @apply border-none;
+    }
+  }
+
+  .vs__selected {
+    @apply opacity-100 text-gray-100;
+  }
+
+  .vs__dropdown-toggle {
+    @apply border-none p-0;
+  }
+
+  .vs__actions {
+    @apply pt-0 pr-5;
+  }
+
+  .vs__selected-options {
+    @apply p-0;
+  }
+
+  .vs__selected .input {
+    @apply pr-0;
+
+    &:focus {
+      @apply border-none;
+    }
+  }
+
+  &.vs--disabled {
+    .vs__dropdown-toggle,
+    .vs__search,
+    .vs__open-indicator {
+      @apply bg-transparent;
+    }
+
+    .vs__open-indicator {
+      @apply hidden;
+    }
+
+    .vs__selected,
+    .vs__search {
+      @apply cursor-default;
+    }
+  }
+}
+
+/* stylelint-disable */
+.input-bridge-selector.vs--single.input-select.v-select {
+  @apply rounded-lg bg-gray-900 pl-0 h-16 py-2;
+
+  .selected-icon {
+    @apply w-10 h-10;
+  }
+
+  .vs__dropdown-menu {
+    @apply z-1110 rounded-lg p-0 max-h-[286px];
+
+    &::-webkit-scrollbar {
+      display: initial !important;
+      width: 2px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: theme('colors.transparent');
+    }
+
+    &::-webkit-scrollbar-thumb {
+      @apply border border-gray-200 rounded-none bg-gray-200;
+    }
+  }
+
+  .vs__dropdown-option {
+    @apply rounded-none px-4;
+
+    p {
+      @apply font-thin;
+    }
+
+    &.vs__dropdown-option--highlight {
+      @apply bg-gray-800 text-gray-200;
+    }
+  }
+
+  .vs__selected-options {
+    @apply px-0;
+
+    .vs__selected {
+      @apply text-gray-200;
+    }
+  }
+
+  &.vs--open {
+    @apply border-b-0 rounded-b-none bg-gray-1000;
+
+    .vs__dropdown-menu {
+      @apply -mt-1 bg-gray-1000 rounded-t-none;
+    }
+
+    .vs__actions {
+      svg {
+        @apply text-primary-500;
+      }
+    }
+  }
+
+  &.vs--disabled {
+    .vs__dropdown-toggle,
+    .vs__search {
+      @apply bg-transparent cursor-default;
+    }
+
+    .vs__actions {
+      @apply hidden cursor-default;
+    }
+
+    .vs__selected {
+      @apply cursor-default;
+    }
+  }
+}
+
+/* stylelint-enable */

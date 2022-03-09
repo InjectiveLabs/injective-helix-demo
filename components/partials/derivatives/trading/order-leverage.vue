@@ -4,7 +4,7 @@
     <div>
       <h3
         class="text-xs text-gray-400"
-        v-html="$t('max_leverage', { max: maxLeverage })"
+        v-html="$t('trade.max_leverage', { max: maxLeverage })"
       ></h3>
     </div>
     <v-input-slider

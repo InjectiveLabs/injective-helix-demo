@@ -87,28 +87,26 @@
 import Vue from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { createPopper, Instance } from '@popperjs/core'
+import { TradeDirection } from '@injectivelabs/ts-types'
+import {
+  SpotOrderSide,
+  UiSpotLimitOrder,
+  UiSpotMarketWithToken,
+  UiSpotOrderbook,
+  UiSpotTrade,
+  Change,
+  UiOrderbookPriceLevel,
+  UiPriceLevel,
+  UiOrderbookSummary,
+  ZERO_IN_BASE
+} from '@injectivelabs/ui-common'
 import Record from './record.vue'
 import SummaryPopup from '~/components/partials/common/orderbook/summary-popup.vue'
 import {
   computeOrderbookSummary,
   getAggregationPrice
 } from '~/app/services/spot'
-import {
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  ZERO_IN_BASE
-} from '~/app/utils/constants'
-import {
-  UiSpotTrade,
-  UiSpotMarket,
-  UiSpotLimitOrder,
-  UiPriceLevel,
-  UiSpotOrderbook,
-  TradeDirection,
-  SpotOrderSide,
-  UiOrderbookPriceLevel,
-  UiOrderbookSummary,
-  Change
-} from '~/types'
+import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -156,7 +154,7 @@ export default Vue.extend({
       return this.$accessor.spot.subaccountOrders
     },
 
-    market(): UiSpotMarket | undefined {
+    market(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
     },
 
@@ -362,7 +360,7 @@ export default Vue.extend({
       }
 
       const orders = {} as Record<string, any>
-      sells.forEach((record: UiPriceLevel, index: number) => {
+      sells.forEach((record: UiPriceLevel) => {
         const price = new BigNumberInBase(
           new BigNumberInBase(record.price).toWei(
             market.baseToken.decimals - market.quoteToken.decimals

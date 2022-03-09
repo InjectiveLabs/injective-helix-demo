@@ -56,47 +56,47 @@ export class Datafeed {
   }
 
   getQuotes(
-    symbols: string,
-    onDataCallback: Function,
-    onErrorCallback: Function
+    _symbols: string,
+    _onDataCallback: Function,
+    _onErrorCallback: Function
   ) {
     throw new Error('Quotes not supported')
   }
 
   subscribeQuotes(
-    symbols: any,
-    fastSymbols: any,
-    onRealtimeCallback: any,
-    listenerGuid: string
+    _symbols: any,
+    _fastSymbols: any,
+    _onRealtimeCallback: any,
+    _listenerGuid: string
   ) {
     throw new Error('Quotes not supported')
   }
 
-  unsubscribeQuotes(listenerGuid: string) {
+  unsubscribeQuotes(_listenerGuid: string) {
     throw new Error('Quotes not supported')
   }
 
   getMarks(
-    symbolInfo: any,
-    from: string,
-    to: string,
-    onDataCallback: Function,
-    resolution: any
+    _symbolInfo: any,
+    _from: string,
+    _to: string,
+    _onDataCallback: Function,
+    _resolution: any
   ) {
     throw new Error('Marks not supported')
   }
 
   getTimescaleMarks(
-    symbolInfo: any,
-    from: string,
-    to: string,
-    onDataCallback: Function,
-    resolution: any
+    _symbolInfo: any,
+    _from: string,
+    _to: string,
+    _onDataCallback: Function,
+    _resolution: any
   ) {
     throw new Error('Marks not supported')
   }
 
-  getServerTime(callback: Function) {
+  getServerTime(_callback: Function) {
     if (!this.configuration.supports_time) {
       return
     }
@@ -105,10 +105,10 @@ export class Datafeed {
   }
 
   searchSymbols(
-    userInput: string,
-    exchange: string,
-    symbolType: string,
-    onResult: Function
+    _userInput: string,
+    _exchange: string,
+    _symbolType: string,
+    _onResult: Function
   ) {
     throw new Error('Symbol search not supported')
   }

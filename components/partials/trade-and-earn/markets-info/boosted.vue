@@ -3,7 +3,7 @@
     <div class="flex justify-between text-xs w-full mx-auto">
       <div class="flex-1 px-4 lg:px-6">
         <p class="text-gray-200 text-center font-semibold">
-          {{ $t('derivatives') }}
+          {{ $t('trade.derivatives') }}
         </p>
         <v-text-info
           v-for="derivative in boostedMarkets.derivatives"
@@ -29,7 +29,7 @@
 
       <div class="flex-1 px-4 lg:px-12">
         <p class="text-gray-200 text-center font-semibold">
-          {{ $t('spot') }}
+          {{ $t('trade.spot') }}
         </p>
         <v-text-info
           v-for="spot in boostedMarkets.spot"
@@ -55,10 +55,10 @@
     </div>
     <template slot="title">
       <div class="flex items-center justify-center">
-        {{ $t('boosted_markets') }}
+        {{ $t('trade.boosted_markets') }}
         <v-icon-info-tooltip
           class="ml-2"
-          :tooltip="$t('boosted_markets_tooltip')"
+          :tooltip="$t('trade.boosted_markets_tooltip')"
         />
       </div>
     </template>
@@ -67,15 +67,20 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { cosmosSdkDecToBigNumber } from '~/app/transformers'
+import {
+  UiSpotMarketWithToken,
+  UiDerivativeMarketWithToken,
+  cosmosSdkDecToBigNumber
+} from '@injectivelabs/ui-common'
 import VItem from '~/components/partials/common/stats/item.vue'
-import { UiDerivativeMarket, UiSpotMarket } from '~/types'
-import { PointsMultiplier, TradingRewardsCampaign } from '~/types/exchange'
+import {
+  PointsMultiplier,
+  TradingRewardsCampaign
+} from '~/app/services/exchange'
 import {
   derivatives as sortPerpetualMarkets,
   spot as sortSpotMarkets
 } from '~/routes.config'
-
 interface PointsMultiplierWithMarketTicker extends PointsMultiplier {
   ticker: string
   slug: string
@@ -95,11 +100,11 @@ export default Vue.extend({
       return this.$accessor.exchange.tradingRewardsCampaign
     },
 
-    spotMarkets(): UiSpotMarket[] {
+    spotMarkets(): UiSpotMarketWithToken[] {
       return this.$accessor.spot.markets
     },
 
-    derivativeMarkets(): UiDerivativeMarket[] {
+    derivativeMarkets(): UiDerivativeMarketWithToken[] {
       return this.$accessor.derivatives.markets
     },
 

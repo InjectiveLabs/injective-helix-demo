@@ -1,18 +1,12 @@
 import { actionTree, getterTree } from 'typed-vuex'
-import {
-  fetchFeeDiscountSchedule,
-  fetchFeeDiscountAccountInfo,
-  fetchTradingRewardsCampaign,
-  fetchTradeRewardPoints,
-  fetchPendingTradeRewardPoints,
-  fetchParams
-} from '~/app/services/exchange'
+import { Token } from '@injectivelabs/ui-common'
+import { exchangeService, tokenService } from '~/app/Services'
 import {
   FeeDiscountAccountInfo,
   TradingRewardsCampaign,
   FeeDiscountSchedule,
   ExchangeParams
-} from '~/types/exchange'
+} from '~/app/services/exchange'
 
 const initialStateFactory = () => ({
   params: undefined as ExchangeParams | undefined,
@@ -100,28 +94,35 @@ export const mutations = {
 export const actions = actionTree(
   { state, mutations },
   {
-    async initFees(_) {
-      await this.app.$accessor.exchange.fetchFeeDiscountSchedule()
+    async initFeeDiscounts(_) {
       await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
     },
 
     async initTradeAndEarn(_) {
-      await this.app.$accessor.exchange.fetchParams()
-      await this.app.$accessor.exchange.fetchTradingRewardsCampaign()
       await this.app.$accessor.exchange.fetchTradeRewardPoints()
       await this.app.$accessor.exchange.fetchPendingTradeRewardPoints()
-      await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
     },
 
     async fetchParams({ commit }) {
-      commit('setParams', await fetchParams())
+      commit('setParams', await exchangeService.fetchParams())
     },
 
     async fetchFeeDiscountSchedule({ commit }) {
-      const feeDiscountSchedule = await fetchFeeDiscountSchedule()
+      const feeDiscountSchedule = await exchangeService.fetchFeeDiscountSchedule()
 
       if (feeDiscountSchedule) {
-        commit('setFeeDiscountSchedule', feeDiscountSchedule)
+        const quoteTokenMeta = (await Promise.all(
+          feeDiscountSchedule.quoteDenomsList.map(
+            async (denom) => await tokenService.getDenomToken(denom)
+          )
+        )) as Token[]
+
+        const feeDiscountScheduleWithToken = {
+          ...feeDiscountSchedule,
+          quoteTokenMeta
+        } as FeeDiscountSchedule
+
+        commit('setFeeDiscountSchedule', feeDiscountScheduleWithToken)
       }
     },
 
@@ -135,7 +136,7 @@ export const actions = actionTree(
         return
       }
 
-      const feeDiscountAccountInfo = await fetchFeeDiscountAccountInfo(
+      const feeDiscountAccountInfo = await exchangeService.fetchFeeDiscountAccountInfo(
         injectiveAddress
       )
 
@@ -145,10 +146,30 @@ export const actions = actionTree(
     },
 
     async fetchTradingRewardsCampaign({ commit }) {
-      const tradingRewardsCampaign = await fetchTradingRewardsCampaign()
+      const tradingRewardsCampaign = await exchangeService.fetchTradingRewardsCampaign()
 
       if (tradingRewardsCampaign) {
-        commit('setTradingRewardsCampaign', tradingRewardsCampaign)
+        const quoteDenomsList = tradingRewardsCampaign.tradingRewardCampaignInfo
+          ? tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList
+          : []
+        const quoteSymbolsList = ((
+          await Promise.all(
+            quoteDenomsList.map(
+              async (denom) => await tokenService.getDenomToken(denom)
+            )
+          )
+        ).filter((token) => token) as Token[]).map((token) => token.symbol)
+
+        const tradingRewardCampaignInfo = {
+          ...tradingRewardsCampaign.tradingRewardCampaignInfo,
+          quoteSymbolsList
+        }
+        const tradingRewardsCampaignWithToken = {
+          ...tradingRewardsCampaign,
+          tradingRewardCampaignInfo
+        } as TradingRewardsCampaign
+
+        commit('setTradingRewardsCampaign', tradingRewardsCampaignWithToken)
       }
     },
 
@@ -164,7 +185,7 @@ export const actions = actionTree(
 
       commit(
         'setTradeRewardPoints',
-        await fetchTradeRewardPoints([injectiveAddress])
+        await exchangeService.fetchTradeRewardPoints([injectiveAddress])
       )
     },
 
@@ -197,7 +218,7 @@ export const actions = actionTree(
 
       commit(
         'setPendingTradeRewardPoints',
-        await fetchPendingTradeRewardPoints(
+        await exchangeService.fetchPendingTradeRewardPoints(
           [injectiveAddress],
           pendingPoolTimestamp
         )

@@ -1,9 +1,9 @@
 import { actionTree, getterTree } from 'typed-vuex'
-import { UiSpotTrade, UiDerivativeTrade } from '~/types'
-import { fetchSubaccountTrades } from '~/app/services/history'
-import { fetchUserDeposits, redeem } from '~/app/services/gasRebate'
-import { UserDeposit } from '~/types/gql'
+import { UiDerivativeTrade, UiSpotTrade } from '@injectivelabs/ui-common'
+import { UserDeposit } from '@injectivelabs/ui-common/dist/bridge/gql/types'
+import { redeem } from '~/app/services/gasRebate'
 import { backupPromiseCall } from '~/app/utils/async'
+import { bridgeService, derivativeService, spotService } from '~/app/Services'
 
 const initialStateFactory = () => ({
   trades: [] as Array<UiSpotTrade | UiDerivativeTrade>,
@@ -61,12 +61,14 @@ export const actions = actionTree(
         return
       }
 
-      commit(
-        'setTrades',
-        await fetchSubaccountTrades({
-          subaccountId: subaccount.subaccountId
-        })
-      )
+      const spotTrades = await spotService.fetchTrades({
+        subaccountId: subaccount.subaccountId
+      })
+      const derivativeTrades = await derivativeService.fetchTrades({
+        subaccountId: subaccount.subaccountId
+      })
+
+      commit('setTrades', [...spotTrades, ...derivativeTrades])
     },
 
     async fetchDeposits({ commit }) {
@@ -76,7 +78,7 @@ export const actions = actionTree(
         return
       }
 
-      commit('setDeposits', await fetchUserDeposits(address))
+      commit('setDeposits', await bridgeService.fetchPeggoUserDeposits(address))
     },
 
     async redeem(_) {

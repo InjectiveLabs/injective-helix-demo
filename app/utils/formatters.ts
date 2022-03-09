@@ -1,5 +1,4 @@
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
-import { AccountAddress } from '~/types'
 
 BigNumber.config({
   FORMAT: {
@@ -12,7 +11,7 @@ BigNumber.config({
   }
 })
 
-export const formatWalletAddress = (address: AccountAddress): string => {
+export const formatWalletAddress = (address: string): string => {
   if (address.length <= 10) {
     return address
   }
