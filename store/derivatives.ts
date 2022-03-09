@@ -195,16 +195,12 @@ export const mutations = {
     state: DerivativeStoreState,
     subaccountOrder: UiDerivativeLimitOrder
   ) {
-    const index = state.subaccountOrders.findIndex(
-      (order) => order.orderHash === subaccountOrder.orderHash
-    )
-
-    if (index > 0) {
-      state.subaccountOrders = [...state.subaccountOrders].splice(
-        index,
-        1,
-        subaccountOrder
-      )
+    if (subaccountOrder.orderHash) {
+      state.subaccountOrders = state.subaccountOrders.map((order) => {
+        return order.orderHash === subaccountOrder.orderHash
+          ? subaccountOrder
+          : order
+      })
     }
   },
 
@@ -241,16 +237,12 @@ export const mutations = {
     state: DerivativeStoreState,
     subaccountTrade: UiDerivativeTrade
   ) {
-    const index = state.subaccountTrades.findIndex(
-      (order) => order.orderHash === subaccountTrade.orderHash
-    )
-
-    if (index > 0) {
-      state.subaccountTrades = [...state.subaccountTrades].splice(
-        index,
-        1,
-        subaccountTrade
-      )
+    if (subaccountTrade.orderHash) {
+      state.subaccountTrades = state.subaccountTrades.map((order) => {
+        return order.orderHash === subaccountTrade.orderHash
+          ? subaccountTrade
+          : order
+      })
     }
   },
 

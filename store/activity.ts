@@ -144,16 +144,12 @@ export const mutations = {
     state: ActivityStoreState,
     subaccountOrder: UiSpotLimitOrder
   ) {
-    const index = state.subaccountSpotOrders.findIndex(
-      (order) => order.orderHash === subaccountOrder.orderHash
-    )
-
-    if (index > 0) {
-      state.subaccountSpotOrders = [...state.subaccountSpotOrders].splice(
-        index,
-        1,
-        subaccountOrder
-      )
+    if (subaccountOrder.orderHash) {
+      state.subaccountSpotOrders = state.subaccountSpotOrders.map((order) => {
+        return order.orderHash === subaccountOrder.orderHash
+          ? subaccountOrder
+          : order
+      })
     }
   },
 
@@ -161,14 +157,14 @@ export const mutations = {
     state: ActivityStoreState,
     subaccountOrder: UiDerivativeLimitOrder
   ) {
-    const index = state.subaccountDerivativeOrders.findIndex(
-      (order) => order.orderHash === subaccountOrder.orderHash
-    )
-
-    if (index > 0) {
-      state.subaccountDerivativeOrders = [
-        ...state.subaccountDerivativeOrders
-      ].splice(index, 1, subaccountOrder)
+    if (subaccountOrder.orderHash) {
+      state.subaccountDerivativeOrders = state.subaccountDerivativeOrders.map(
+        (order) => {
+          return order.orderHash === subaccountOrder.orderHash
+            ? subaccountOrder
+            : order
+        }
+      )
     }
   },
 

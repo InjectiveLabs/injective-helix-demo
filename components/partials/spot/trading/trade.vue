@@ -1216,10 +1216,12 @@ export default Vue.extend({
         return
       }
 
-      this.form.amount = new BigNumberInBase(form.amount || 0).toFixed(
-        market.quantityDecimals,
-        BigNumberInBase.ROUND_DOWN
-      )
+      if (form.amount.trim() !== '') {
+        this.form.amount = new BigNumberInBase(form.amount).toFixed(
+          market.quantityDecimals,
+          BigNumberInBase.ROUND_DOWN
+        )
+      }
     },
 
     onAmountKeydown(event: DOMEvent<HTMLInputElement>) {
