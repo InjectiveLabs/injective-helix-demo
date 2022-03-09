@@ -1,9 +1,7 @@
 import { actionTree } from 'typed-vuex'
 import {
   BigNumberInBase,
-  BigNumberInWei,
   derivativeMarginToChainMarginToFixed,
-  derivativePriceToChainPrice,
   derivativeQuantityToChainQuantityToFixed
 } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
@@ -20,6 +18,7 @@ import {
   derivativeService
 } from '~/app/Services'
 import { streamSubaccountPositions } from '~/app/streams/derivatives'
+import { getRoundedLiquidationPrice } from '~/app/services/derivatives'
 
 const initialStateFactory = () => ({
   orderbooks: {} as Record<string, UiDerivativeOrderbook>,
@@ -54,27 +53,28 @@ export const mutations = {
     state: PositionStoreState,
     subaccountPosition: UiPosition
   ) {
-    const subaccountPositionIsInvalid =
-      subaccountPosition.entryPrice === '' ||
-      subaccountPosition.liquidationPrice === ''
+    const positionQuantity = new BigNumberInBase(subaccountPosition.quantity)
+    const index = state.subaccountPositions.findIndex(
+      (position) => position.marketId === subaccountPosition.marketId
+    )
 
-    if (!subaccountPositionIsInvalid) {
-      const index = state.subaccountPositions.findIndex(
-        (position) => position.marketId === subaccountPosition.marketId
-      )
-
-      if (index !== -1) {
+    if (index !== -1) {
+      // Position has been closed
+      if (positionQuantity.lte(0)) {
+        state.subaccountPositions.splice(index, 1)
+      } else {
+        // Existing position has been updated
         state.subaccountPositions = [...state.subaccountPositions].splice(
           index,
           1,
           subaccountPosition
         )
-      } else {
-        state.subaccountPositions = [
-          subaccountPosition,
-          ...state.subaccountPositions
-        ]
       }
+    } else if (positionQuantity.gt(0)) {
+      state.subaccountPositions = [
+        subaccountPosition,
+        ...state.subaccountPositions
+      ]
     }
   },
 
@@ -217,20 +217,13 @@ export const actions = actionTree(
         position.direction === TradeDirection.Long
           ? DerivativeOrderSide.Sell
           : DerivativeOrderSide.Buy
-      const liquidationPrice = new BigNumberInWei(position.liquidationPrice)
-      const minTickPrice = derivativePriceToChainPrice({
-        value: new BigNumberInBase(1).shiftedBy(-market.priceDecimals),
-        quoteDecimals: market.quoteToken.decimals
-      })
-      const actualLiquidationPrice = liquidationPrice.lte(0)
-        ? minTickPrice
-        : liquidationPrice
+      const liquidationPrice = getRoundedLiquidationPrice(position, market)
 
       await derivativeActionService.closePosition({
         address,
         orderType,
         injectiveAddress,
-        price: actualLiquidationPrice.toFixed(),
+        price: liquidationPrice.toFixed(),
         quantity: derivativeQuantityToChainQuantityToFixed({
           value: position.quantity
         }),
@@ -271,19 +264,12 @@ export const actions = actionTree(
             position.direction === TradeDirection.Long
               ? DerivativeOrderSide.Sell
               : DerivativeOrderSide.Buy
-          const liquidationPrice = new BigNumberInWei(position.liquidationPrice)
-          const minTickPrice = derivativePriceToChainPrice({
-            value: new BigNumberInBase(1).shiftedBy(-market.priceDecimals),
-            quoteDecimals: market.quoteToken.decimals
-          })
-          const actualLiquidationPrice = liquidationPrice.lte(0)
-            ? minTickPrice
-            : liquidationPrice
+          const liquidationPrice = getRoundedLiquidationPrice(position, market)
 
           return {
             orderType,
             marketId: market.marketId,
-            price: actualLiquidationPrice.toFixed(),
+            price: liquidationPrice.toFixed(),
             quantity: derivativeQuantityToChainQuantityToFixed({
               value: position.quantity
             })
@@ -304,6 +290,8 @@ export const actions = actionTree(
         feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
       })
+
+      await this.app.$accessor.positions.fetchSubaccountPositions()
     },
 
     async closePositionAndReduceOnlyOrders(
@@ -345,20 +333,16 @@ export const actions = actionTree(
         position.direction === TradeDirection.Long
           ? DerivativeOrderSide.Sell
           : DerivativeOrderSide.Buy
-      const liquidationPrice = new BigNumberInWei(position.liquidationPrice)
-      const minTickPrice = derivativePriceToChainPrice({
-        value: new BigNumberInBase(1).shiftedBy(-actualMarket.priceDecimals),
-        quoteDecimals: actualMarket.quoteToken.decimals
-      })
-      const actualLiquidationPrice = liquidationPrice.lte(0)
-        ? minTickPrice
-        : liquidationPrice
+      const liquidationPrice = getRoundedLiquidationPrice(
+        position,
+        actualMarket
+      )
 
       await derivativeActionService.closePosition({
         address,
         orderType,
         injectiveAddress,
-        price: actualLiquidationPrice.toFixed(),
+        price: liquidationPrice.toFixed(),
         quantity: derivativeQuantityToChainQuantityToFixed({
           value: position.quantity
         }),
@@ -366,6 +350,8 @@ export const actions = actionTree(
         marketId: actualMarket.marketId,
         subaccountId: subaccount.subaccountId
       })
+
+      await this.app.$accessor.positions.fetchSubaccountPositions()
     },
 
     async addMarginToPosition(
