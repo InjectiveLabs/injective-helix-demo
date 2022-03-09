@@ -44,7 +44,7 @@
           'text-red-500': total.lt(0)
         }"
       >
-        {{ `< ${UI_MINIMAL_AMOUNT.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)}` }}
+        {{ `< ${UI_MINIMAL_AMOUNT.toFormat(6)}` }}
       </span>
     </td>
   </tr>
