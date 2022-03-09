@@ -61,13 +61,18 @@ export const mutations = {
     if (index !== -1) {
       // Position has been closed
       if (positionQuantity.lte(0)) {
-        state.subaccountPositions.splice(index, 1)
+        state.subaccountPositions = [...state.subaccountPositions].filter(
+          (position) => position.marketId !== subaccountPosition.marketId
+        )
       } else {
         // Existing position has been updated
-        const newSubaccountPositions = [...state.subaccountPositions]
-        newSubaccountPositions.splice(index, 1, subaccountPosition)
-
-        state.subaccountPositions = newSubaccountPositions
+        state.subaccountPositions = state.subaccountPositions.map(
+          (position) => {
+            return position.marketId === subaccountPosition.marketId
+              ? subaccountPosition
+              : position
+          }
+        )
       }
     } else if (positionQuantity.gt(0)) {
       state.subaccountPositions = [

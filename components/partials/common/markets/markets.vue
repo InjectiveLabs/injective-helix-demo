@@ -154,12 +154,6 @@ export default Vue.extend({
     }
   },
 
-  watch: {
-    markets() {
-      this.status.setIdle()
-    }
-  },
-
   mounted() {
     this.setMarketSummariesPolling()
   },
@@ -177,7 +171,9 @@ export default Vue.extend({
           }, 5000)
         })
         .catch(this.$onRejected)
-        .finally(() => {})
+        .finally(() => {
+          this.status.setIdle()
+        })
     },
 
     showAllMarkets() {
