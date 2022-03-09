@@ -142,12 +142,12 @@ export default Vue.extend({
 
   methods: {
     handleClosePositions() {
-      const { positions } = this
+      const { filteredPositions } = this
 
       this.status.setLoading()
 
       this.$accessor.positions
-        .closeAllPosition(positions)
+        .closeAllPosition(filteredPositions)
         .then(() => {
           this.$toast.success(this.$t('trade.positions_closed'))
         })

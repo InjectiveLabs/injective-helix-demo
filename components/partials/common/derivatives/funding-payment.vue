@@ -1,4 +1,5 @@
 <template>
+  <!-- eslint-disable vue/no-parsing-error -->
   <tr v-if="market">
     <td class="h-8 font-mono">
       <span class="text-gray-400 text-xs">{{ time }}</span>
@@ -23,6 +24,7 @@
 
     <td class="h-8 text-right font-mono">
       <v-number
+        v-if="total.gt(UI_MINIMAL_AMOUNT)"
         :class="{
           'text-aqua-500': total.gte(0),
           'text-red-500': total.lt(0)
@@ -35,6 +37,15 @@
           {{ market.quoteToken.symbol }}
         </span>
       </v-number>
+      <span
+        v-else
+        :class="{
+          'text-aqua-500': total.gte(0),
+          'text-red-500': total.lt(0)
+        }"
+      >
+        {{ `< ${UI_MINIMAL_AMOUNT.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)}` }}
+      </span>
     </td>
   </tr>
 </template>
@@ -52,7 +63,9 @@ import { FundingPayment } from '@injectivelabs/derivatives-consumer'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  UI_DEFAULT_MAX_DISPLAY_DECIMALS
+  UI_DEFAULT_MAX_DISPLAY_DECIMALS,
+  UI_MINIMAL_AMOUNT,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
 
 export default Vue.extend({
@@ -65,6 +78,8 @@ export default Vue.extend({
 
   data() {
     return {
+      UI_MINIMAL_AMOUNT,
+      UI_DEFAULT_MIN_DISPLAY_DECIMALS,
       UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
       UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
       UI_DEFAULT_MAX_DISPLAY_DECIMALS,

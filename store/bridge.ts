@@ -202,7 +202,7 @@ export const actions = actionTree(
         type: 'cosmos.bank.v1beta1.MsgSend'
       })
 
-      const transactions = transfers
+      const transactions = (transfers || [])
         .map(ExplorerTransformer.transactionMessageToBankMsgSendTransaction)
         .map(
           BridgeTransformer.convertBankMsgSendTransactionToUiBridgeTransaction

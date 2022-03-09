@@ -124,12 +124,12 @@ export default Vue.extend({
 
   methods: {
     handleCancelOrders() {
-      const { orders } = this
+      const { filteredOrders } = this
 
       this.status.setLoading()
 
       this.$accessor.activity
-        .batchCancelSpotOrders(orders)
+        .batchCancelSpotOrders(filteredOrders)
         .then(() => {
           this.$toast.success(this.$t('trade.orders_cancelled'))
         })
