@@ -64,11 +64,10 @@ export const mutations = {
         state.subaccountPositions.splice(index, 1)
       } else {
         // Existing position has been updated
-        state.subaccountPositions = [...state.subaccountPositions].splice(
-          index,
-          1,
-          subaccountPosition
-        )
+        const newSubaccountPositions = [...state.subaccountPositions]
+        newSubaccountPositions.splice(index, 1, subaccountPosition)
+
+        state.subaccountPositions = newSubaccountPositions
       }
     } else if (positionQuantity.gt(0)) {
       state.subaccountPositions = [
