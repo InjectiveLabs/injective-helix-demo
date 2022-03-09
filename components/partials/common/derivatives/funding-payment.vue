@@ -52,7 +52,11 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  BigNumber,
+  BigNumberInBase,
+  BigNumberInWei
+} from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 import {
@@ -64,7 +68,6 @@ import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
-  UI_MINIMAL_AMOUNT,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
 
@@ -78,7 +81,7 @@ export default Vue.extend({
 
   data() {
     return {
-      UI_MINIMAL_AMOUNT,
+      UI_MINIMAL_AMOUNT: new BigNumber(1).shiftedBy(-6),
       UI_DEFAULT_MIN_DISPLAY_DECIMALS,
       UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
       UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
