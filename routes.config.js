@@ -29,7 +29,8 @@ const mainnetDerivatives = [
   'eth-usdt-perp',
   'luna-ust-perp',
   'bnb-usdt-perp',
-  'atom-usdt-perp'
+  'atom-usdt-perp',
+  'osmo-usdt-perp'
 ]
 const testnetDerivatives = [...mainnetDerivatives]
 const mainnetStagingDerivatives = [...mainnetDerivatives]
