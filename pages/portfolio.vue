@@ -19,7 +19,7 @@
           </div>
         </div>
       </VHocLoading>
-      <v-referee-onboarding-modal />
+      <v-referee-onboarding-modal v-if="REFERRALS_ENABLED" />
     </div>
   </div>
 </template>
@@ -34,6 +34,7 @@ import VGasRebate from '~/components/partials/banners/gas-rebate.vue'
 import VBridge from '~/components/partials/portfolio/bridge.vue'
 import { Modal } from '~/types'
 import VRefereeOnboardingModal from '~/components/partials/modals/referee-onboarding.vue'
+import { REFERRALS_ENABLED } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -46,6 +47,7 @@ export default Vue.extend({
 
   data() {
     return {
+      REFERRALS_ENABLED,
       status: new Status(StatusType.Loading)
     }
   },

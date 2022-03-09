@@ -81,7 +81,7 @@
             </span>
           </div>
         </div>
-        <div v-if="referralCode" class="px-6 mt-6 pb-6">
+        <div v-if="referralsEnabled" class="px-6 mt-6 pb-6">
           <div class="border-t"></div>
           <div class="flex items-center justify-between mt-6 text-sm">
             <h3 class="text-sm font-semibold tracking-wider uppercase">
@@ -104,13 +104,23 @@
             <span v-else class="text-gray-500">&mdash;</span>
           </div>
         </div>
-        <div class="pt-4 px-6 bg-gray-900" :class="{ 'mt-6': !referralCode }">
+        <div
+          class="pt-4 px-6 bg-gray-900"
+          :class="{ 'mt-6': !referralsEnabled }"
+        >
           <h3 class="text-xs tracking-wide uppercase">
             {{ $t('navigation.connectedWallets') }}
           </h3>
           <ul class="pt-4 pb-6">
             <v-connected-wallet v-if="wallet === Wallet.Metamask" lg>
               <v-icon-metamask class="w-8 h-8 mx-auto" />
+            </v-connected-wallet>
+            <v-connected-wallet v-if="wallet === Wallet.Keplr" lg>
+              <img
+                src="/keplr-icon.png"
+                class="w-8 h-8 mx-auto"
+                alt="Keplr Icon"
+              />
             </v-connected-wallet>
             <v-connected-wallet v-if="wallet === Wallet.Ledger" lg>
               <v-icon-ledger class="w-8 h-8 mx-auto" />
@@ -136,7 +146,10 @@ import VConnectedWallet from './connected-wallet.vue'
 import VLogoMini from '~/components/elements/logo-mini.vue'
 import VPopperBox from '~/components/elements/popper-box.vue'
 import { getReferralUrl } from '~/app/utils/helpers'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import {
+  REFERRALS_ENABLED,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -148,6 +161,7 @@ export default Vue.extend({
   data() {
     return {
       Wallet,
+      REFERRALS_ENABLED,
       isInjectiveAddress: true,
       isWalletDropdownOpen: false,
       popperOption: {
@@ -245,6 +259,12 @@ export default Vue.extend({
       }
 
       return refereeInfo.referralCode
+    },
+
+    referralsEnabled(): boolean {
+      const { referralCode } = this
+
+      return !!(REFERRALS_ENABLED && referralCode)
     },
 
     referralDashboardLink(): string {

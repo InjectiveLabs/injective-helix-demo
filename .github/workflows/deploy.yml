@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    if: false
+    if: true
     env:
       ## Public
       APP_NAME: 'Injective Pro: Decentralized Cryptocurrency Derivatives, Ethereum and Altcoin Exchange'
@@ -27,7 +27,7 @@ jobs:
       METRICS_ENABLED: true
       GEO_IP_RESTRICTIONS_ENABLED: true
       SHOW_AUCTION_COUNTDOWN: false
-      REFERRALS_ENABLED: false
+      REFERRALS_ENABLED: true
 
       ## Endpoints
       APP_EXCHANGE_API_ENDPOINT: ''
@@ -101,7 +101,7 @@ jobs:
       GEO_IP_RESTRICTIONS_ENABLED: true
       SHOW_AUCTION_COUNTDOWN: false
       PRICE_BAND_ENABLED: false
-      REFERRALS_ENABLED: false
+      REFERRALS_ENABLED: true
 
       ## Endpoints
       APP_EXCHANGE_API_ENDPOINT: ''

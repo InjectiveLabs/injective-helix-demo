@@ -16,7 +16,7 @@
         <VHocLoading :status="status">
           <ul class="divide-y divide-gray-800 border-gray-700 rounded-lg">
             <v-metamask />
-            <v-keplr />
+            <v-keplr v-if="false" />
             <v-ledger
               @wallet-ledger-connecting="handleLedgerConnectingWallet"
             />
