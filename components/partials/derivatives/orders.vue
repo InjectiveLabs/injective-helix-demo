@@ -44,7 +44,7 @@
       <div
         class="col-span-12 lg:col-span-5 xl:col-span-4 mx-4 mb-4 flex items-center justify-between lg:justify-end lg:ml-0 lg:mr-2 lg:mt-4"
       >
-        <v-checkbox v-model="currentMarketOnly" class="lg:mr-4">
+        <v-checkbox v-if="market" v-model="currentMarketOnly" class="lg:mr-4">
           {{ $t('trade.asset_only', { asset: market.ticker }) }}
         </v-checkbox>
         <v-button
@@ -180,10 +180,10 @@ export default Vue.extend({
     },
 
     handleCancelAllClick() {
-      const { orders } = this
+      const { orders, currentMarketOrders, currentMarketOnly } = this
 
       this.$accessor.derivatives
-        .batchCancelOrder(orders)
+        .batchCancelOrder(currentMarketOnly ? currentMarketOrders : orders)
         .then(() => {
           this.$toast.success(this.$t('trade.orders_cancelled'))
         })
@@ -194,10 +194,12 @@ export default Vue.extend({
     },
 
     handleCloseAllPositionsClick() {
-      const { positions } = this
+      const { positions, currentMarketPositions, currentMarketOnly } = this
 
       this.$accessor.positions
-        .closeAllPosition(positions)
+        .closeAllPosition(
+          currentMarketOnly ? currentMarketPositions : positions
+        )
         .then(() => {
           this.$toast.success(this.$t('trade.positions_closed'))
         })

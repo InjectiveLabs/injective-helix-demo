@@ -28,7 +28,7 @@
       <div
         class="col-span-12 sm:col-span-6 mb-4 mx-4 sm:mt-4 flex items-center justify-between sm:justify-end"
       >
-        <v-checkbox v-model="currentMarketOnly" class="mr-4">
+        <v-checkbox v-if="market" v-model="currentMarketOnly" class="mr-4">
           {{ $t('trade.asset_only', { asset: market.ticker }) }}
         </v-checkbox>
         <v-button
@@ -123,10 +123,10 @@ export default Vue.extend({
     },
 
     handleCancelAllClick() {
-      const { orders } = this
+      const { orders, currentMarketOnly, currentMarketOrders } = this
 
       this.$accessor.spot
-        .batchCancelOrder(orders)
+        .batchCancelOrder(currentMarketOnly ? currentMarketOrders : orders)
         .then(() => {
           this.$toast.success(this.$t('trade.orders_cancelled'))
         })
