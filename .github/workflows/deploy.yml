@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - f/dex-v-x-overhaul
 
 jobs:
   deploy:
