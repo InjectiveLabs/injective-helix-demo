@@ -2,16 +2,7 @@
   <button
     type="button"
     role="button"
-    class="uppercase rounded-2xl text-xs tracking-wide outline-none bg-gray-900 focus:outline-none"
-    :class="{
-      'px-5 py-2 text-xs': !xs,
-      'px-2 py-2 text-2xs': xs,
-      'text-gray-100  shadow-sm': isSelected && !primary && !red && !aqua,
-      'text-gray-300': !isSelected,
-      'border border-aqua-500 text-aqua-500': isSelected && aqua,
-      'border border-primary-500 text-primary-500': isSelected && primary,
-      'border border-red-500 text-red-500': isSelected && red
-    }"
+    :class="classes"
     @click="$emit('selected', option)"
   >
     <slot></slot>
@@ -36,6 +27,12 @@ export default Vue.extend({
     option: {
       required: true,
       type: [String, Number]
+    },
+
+    text: {
+      type: Boolean,
+      required: false,
+      default: false
     },
 
     primary: {
@@ -66,6 +63,47 @@ export default Vue.extend({
   computed: {
     isSelected(): boolean {
       return this.option === this.value
+    },
+
+    classes(): string {
+      const classes = [
+        'uppercase',
+        'rounded-2xl',
+        'text-xs',
+        'tracking-wide',
+        'outline-none',
+        'focus:outline-none'
+      ]
+
+      if (!this.text) {
+        classes.push('bg-gray-900')
+      } else {
+        classes.push('font-semibold')
+      }
+
+      if (!this.xs) {
+        classes.push('px-5', 'py-2', 'text-xs')
+      } else {
+        classes.push('px-2', 'py-2', 'text-2xs')
+      }
+
+      if (this.isSelected) {
+        if (this.primary) {
+          classes.push('text-primary-500', 'border', 'border-primary-500')
+        } else if (this.aqua) {
+          classes.push('text-aqua-500', 'border', 'border-aqua-500')
+        } else if (this.red) {
+          classes.push('text-red-500', 'border', 'border-red-500')
+        } else if (this.text) {
+          classes.push('text-primary-500')
+        } else {
+          classes.push('text-gray-100')
+        }
+      } else {
+        classes.push('text-gray-300')
+      }
+
+      return classes.join(' ')
     }
   }
 })

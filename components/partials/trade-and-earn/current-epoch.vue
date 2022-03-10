@@ -3,116 +3,122 @@
     <div v-if="currentEpochStartTimestamp > 0" slot="title-context">
       {{ $t('tradeAndEarn.campaignEndingOn', { date: epochCountdown }) }}
     </div>
-    <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
-      <v-item class="col-span-2 lg:col-span-4">
-        <template slot="value">
-          <v-emp-number
-            :number="injMaxCampaignRewards"
-            :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
-          >
-            <span>INJ</span>
-          </v-emp-number>
+    <VHocLoading :status="status">
+      <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
+        <v-item class="col-span-2 lg:col-span-4">
+          <template slot="value">
+            <v-emp-number
+              :number="injMaxCampaignRewards"
+              :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
+            >
+              <span>INJ</span>
+            </v-emp-number>
 
-          <v-emp-number
-            sm
-            class="text-gray-400"
-            prefix="≈"
-            :number="injMaxCampaignRewardsInUsd"
-            :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
-          >
-            <span class="text-3xs">USD</span>
-          </v-emp-number>
-        </template>
-        <template slot="title">
-          <div class="flex items-center justify-center">
-            {{ $t('max_campaign_rewards') }}
-            <v-icon-info-tooltip
-              class="ml-2"
-              :tooltip="$t('max_campaign_rewards_tooltip')"
-            />
-          </div>
-        </template>
-      </v-item>
-      <v-item class="col-span-2 lg:col-span-4">
-        <template slot="value">
-          <div
-            v-if="isUserWalletConnected"
-            class="flex flex-wrap justify-center"
-          >
-            <v-emp-number :number="tradeRewardPointsFactored">
-              <span>{{ $t('pts') }}</span>
+            <v-emp-number
+              sm
+              class="text-gray-400"
+              prefix="≈"
+              :number="injMaxCampaignRewardsInUsd"
+              :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
+            >
+              <span class="text-3xs">USD</span>
             </v-emp-number>
-            <span class="px-2">/</span>
-            <v-emp-number :number="totalTradeRewardPointsFactored">
-              <span>{{ $t('pts') }}</span>
+          </template>
+          <template slot="title">
+            <div class="flex items-center justify-center">
+              {{ $t('max_campaign_rewards') }}
+              <v-icon-info-tooltip
+                class="ml-2"
+                :tooltip="$t('max_campaign_rewards_tooltip')"
+              />
+            </div>
+          </template>
+        </v-item>
+        <v-item class="col-span-2 lg:col-span-4">
+          <template slot="value">
+            <div
+              v-if="isUserWalletConnected"
+              class="flex flex-wrap justify-center"
+            >
+              <v-emp-number :number="tradeRewardPointsFactored">
+                <span>{{ $t('pts') }}</span>
+              </v-emp-number>
+              <span class="px-2">/</span>
+              <v-emp-number :number="totalTradeRewardPointsFactored">
+                <span>{{ $t('pts') }}</span>
+              </v-emp-number>
+            </div>
+            <span v-else>&mdash;</span>
+          </template>
+          <template slot="title">
+            <div class="flex items-center justify-center">
+              {{ $t('tradeAndEarn.myRewardPoints') }}
+              <v-icon-info-tooltip
+                class="ml-2"
+                :tooltip="$t('tradeAndEarn.myRewardPoints_tooltip')"
+              />
+            </div>
+          </template>
+        </v-item>
+        <v-item class="col-span-2 lg:col-span-4">
+          <template slot="value">
+            <v-emp-number
+              v-if="isUserWalletConnected"
+              :number="estimatedRewards"
+              :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
+            >
+              <span>INJ</span>
             </v-emp-number>
-          </div>
-          <span v-else>&mdash;</span>
-        </template>
-        <template slot="title">
-          <div class="flex items-center justify-center">
-            {{ $t('tradeAndEarn.myRewardPoints') }}
-            <v-icon-info-tooltip
-              class="ml-2"
-              :tooltip="$t('tradeAndEarn.myRewardPoints_tooltip')"
-            />
-          </div>
-        </template>
-      </v-item>
-      <v-item class="col-span-2 lg:col-span-4">
-        <template slot="value">
-          <v-emp-number
-            v-if="isUserWalletConnected"
-            :number="estimatedRewards"
-            :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
-          >
-            <span>INJ</span>
-          </v-emp-number>
-          <span v-else>&mdash;</span>
-          <v-emp-number
-            v-if="isUserWalletConnected"
-            sm
-            class="text-gray-400"
-            prefix="≈"
-            :number="estimatedRewardsInUsd"
-            :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
-          >
-            <span class="text-3xs">USD</span>
-          </v-emp-number>
-        </template>
-        <template slot="title">
-          <div class="flex items-center justify-center">
-            {{ $t('est_rewards') }}
-            <v-icon-info-tooltip
-              class="ml-2"
-              :tooltip="
-                $t('est_rewards_tooltip', {
-                  maxRewards: DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
-                })
-              "
-            />
-          </div>
-        </template>
-      </v-item>
-    </div>
+            <span v-else>&mdash;</span>
+            <v-emp-number
+              v-if="isUserWalletConnected"
+              sm
+              class="text-gray-400"
+              prefix="≈"
+              :number="estimatedRewardsInUsd"
+              :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
+            >
+              <span class="text-3xs">USD</span>
+            </v-emp-number>
+          </template>
+          <template slot="title">
+            <div class="flex items-center justify-center">
+              {{ $t('est_rewards') }}
+              <v-icon-info-tooltip
+                class="ml-2"
+                :tooltip="
+                  $t('est_rewards_tooltip', {
+                    maxRewards: DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
+                  })
+                "
+              />
+            </div>
+          </template>
+        </v-item>
+      </div>
+    </VHocLoading>
   </v-panel>
 </template>
 
 <script lang="ts">
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  Status,
+  StatusType
+} from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import Vue from 'vue'
-import { cosmosSdkDecToBigNumber } from '~/app/transformers'
+import { ZERO_IN_BASE, cosmosSdkDecToBigNumber } from '@injectivelabs/ui-common'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS,
-  ZERO_IN_BASE
+  DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
 } from '~/app/utils/constants'
 import VItem from '~/components/partials/common/stats/item.vue'
 import {
   FeeDiscountAccountInfo,
   TradingRewardsCampaign
-} from '~/types/exchange'
+} from '~/app/services/exchange'
 
 export default Vue.extend({
   components: {
@@ -121,6 +127,8 @@ export default Vue.extend({
 
   data() {
     return {
+      status: new Status(StatusType.Loading),
+
       DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS,
       UI_DEFAULT_MIN_DISPLAY_DECIMALS,
       now: Math.floor(Date.now() / 1000)
@@ -145,7 +153,7 @@ export default Vue.extend({
     },
 
     injUsdPrice(): number {
-      return this.$accessor.token.injUsdtPrice
+      return this.$accessor.token.injUsdPrice
     },
 
     tradeRewardPoints(): BigNumberInBase {
@@ -322,6 +330,17 @@ export default Vue.extend({
 
       return estimatedRewards.multipliedBy(new BigNumberInBase(injUsdPrice))
     }
+  },
+
+  mounted() {
+    Promise.all([this.$accessor.exchange.fetchTradeRewardPoints()])
+      .then(() => {
+        //
+      })
+      .catch(this.$onError)
+      .finally(() => {
+        this.status.setIdle()
+      })
   }
 })
 </script>

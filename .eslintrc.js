@@ -4,7 +4,7 @@ module.exports = {
     indent: 'off',
     'import/named': 'off',
     'arrow-parens': 'off',
-    '@typescript-eslint/no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': 'warn',
     'space-before-function-paren': 'off',
     'vue/singleline-html-element-content-newline': 'off',
     'vue/html-self-closing': 'off',

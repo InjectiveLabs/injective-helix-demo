@@ -53,6 +53,7 @@ module.exports = {
         300: '#75f8ff',
         400: '#3df5ff',
         500: '#00f2ff',
+        '500-faded': 'rgba(0, 242, 254, 0.1)',
         600: '#00c2cc',
         700: '#009199',
         800: '#006166',
@@ -63,6 +64,7 @@ module.exports = {
       aqua: {
         100: '#cffced',
         200: '#9af9d9',
+        250: '#99FAFF',
         300: '#65f5c5',
         400: '#35f2b3',
         500: '#0ee29b',
@@ -78,6 +80,7 @@ module.exports = {
         300: '#f87294',
         400: '#f64772',
         500: '#f3164d',
+        550: '#F3610F',
         600: '#cc0a3b',
         700: '#96082b',
         800: '#66051d',
@@ -105,6 +108,19 @@ module.exports = {
       }
     },
 
+    screens: {
+      xs: '480px',
+      sm: '640px',
+      md: '768px',
+      '2md': '800px',
+      '3md': '840px',
+      lg: '1024px',
+      xl: '1280px',
+      '2xl': '1366px',
+      '3xl': '1440px',
+      '4xl': '1681px'
+    },
+
     extend: {
       flex: {
         '0-auto': '0 0 auto',
@@ -114,24 +130,16 @@ module.exports = {
         5: '5 5 0%'
       },
 
+      rotate: {
+        135: '135deg'
+      },
+
       borderColor: {
         DEFAULT: '#2A2F41'
       },
 
       scale: {
         '-100': '-1'
-      },
-
-      screens: {
-        xs: '480px',
-        sm: '640px',
-        md: '768px',
-        '2md': '800px',
-        '3md': '840px',
-        ...defaultTheme.screens,
-        '2xl': '1366px',
-        '3xl': '1440px',
-        '4xl': '1681px'
       },
 
       fontSize: {
@@ -145,7 +153,8 @@ module.exports = {
         1000: '1000',
         1100: '1100',
         1110: '1110',
-        1120: '1120'
+        1120: '1120',
+        '-10': '-10'
       },
 
       fontFamily: {
@@ -165,7 +174,8 @@ module.exports = {
 
       lineHeight: {
         3.5: '0.875rem',
-        5.5: '1.375rem'
+        5.5: '1.375rem',
+        14: '3.5rem'
       },
 
       maxHeight: {
@@ -175,7 +185,8 @@ module.exports = {
       },
 
       maxWidth: {
-        ...extraSizings
+        ...extraSizings,
+        'max-w-full': '100%'
       },
 
       width: {
@@ -199,6 +210,7 @@ module.exports = {
 
       minWidth: {
         4: '1rem',
+        6: '1.5rem',
         ...extraSizings
       }
     }

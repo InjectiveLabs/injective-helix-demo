@@ -80,16 +80,16 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumber } from '@injectivelabs/utils'
 import {
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  ZERO_IN_BASE
-} from '~/app/utils/constants'
-import {
   Change,
-  DerivativeOrderSide,
-  UiDerivativeMarket,
-  UiOrderbookPriceLevel
-} from '~/types'
+  UiOrderbookPriceLevel,
+  UiDerivativeMarketWithToken,
+  ZERO_IN_BASE
+} from '@injectivelabs/ui-common'
+import { DerivativeOrderSide } from '@injectivelabs/derivatives-consumer'
+import {
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+} from '~/app/utils/constants'
 
 export default Vue.extend({
   props: {
@@ -134,7 +134,7 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiDerivativeMarket | undefined {
+    market(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 

@@ -1,37 +1,69 @@
 <template>
   <v-card-table-wrap>
-    <template #filters>
-      <v-button-filter v-model="component" :option="components.openOrders">
-        <span>
-          {{ $t('open_orders') }}
-          {{ `(${orders.length})` }}
-        </span>
-      </v-button-filter>
-      <v-separator />
-      <v-button-filter v-model="component" :option="components.tradeHistory">
-        <span>
-          {{ $t('trade_history') }}
-        </span>
-      </v-button-filter>
-    </template>
-    <template #context>
-      <v-button
-        v-if="component === components.openOrders && orders.length > 0"
-        text-xs
-        @click.stop="handleCancelAllClick"
+    <template #actions>
+      <div class="col-span-12 sm:col-span-6 m-4 lg:mx-0">
+        <div class="flex items-center justify-between sm:justify-start">
+          <v-button-filter v-model="component" :option="components.openOrders">
+            <span class="uppercase text-xs font-semibold">
+              {{ $t('trade.open_orders') }}
+              {{
+                `(${
+                  currentMarketOnly ? currentMarketOrders.length : orders.length
+                })`
+              }}
+            </span>
+          </v-button-filter>
+          <v-separator />
+          <v-button-filter
+            v-model="component"
+            :option="components.tradeHistory"
+          >
+            <span class="uppercase text-xs font-semibold">
+              {{ $t('trade.trade_history') }}
+            </span>
+          </v-button-filter>
+        </div>
+      </div>
+
+      <div
+        class="col-span-12 sm:col-span-6 mb-4 mx-4 sm:mt-4 flex items-center justify-between sm:justify-end"
       >
-        {{ $t('cancel_all') }}
-      </v-button>
+        <v-checkbox v-if="market" v-model="currentMarketOnly" class="mr-4">
+          {{ $t('trade.asset_only', { asset: market.ticker }) }}
+        </v-checkbox>
+        <v-button
+          v-if="component === components.openOrders && orders.length > 0"
+          class="mr-2"
+          red-outline
+          sm
+          @click.stop="handleCancelAllClick"
+        >
+          {{ $t('trade.cancelAllOrders') }}
+        </v-button>
+      </div>
     </template>
-    <component :is="component" v-if="component"></component>
+
+    <VHocLoading :status="status">
+      <v-card class="h-full">
+        <component
+          :is="component"
+          v-if="component"
+          v-bind="{ currentMarketOnly }"
+        ></component>
+      </v-card>
+    </VHocLoading>
   </v-card-table-wrap>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import {
+  UiSpotLimitOrder,
+  UiSpotMarketWithToken
+} from '@injectivelabs/ui-common'
+import { Status, StatusType } from '@injectivelabs/utils'
 import OpenOrders from './orders/index.vue'
 import TradeHistory from './trade-history/index.vue'
-import { UiSpotLimitOrder } from '~/types'
 
 const components = {
   orderHistory: '',
@@ -47,15 +79,42 @@ export default Vue.extend({
 
   data() {
     return {
+      currentMarketOnly: false,
+      status: new Status(StatusType.Loading),
+
       components,
       component: components.openOrders
     }
   },
 
   computed: {
+    market(): UiSpotMarketWithToken | undefined {
+      return this.$accessor.spot.market
+    },
+
     orders(): UiSpotLimitOrder[] {
       return this.$accessor.spot.subaccountOrders
+    },
+
+    currentMarketOrders(): UiSpotLimitOrder[] {
+      const { market, orders } = this
+
+      return orders.filter((order) => order.marketId === market?.marketId)
     }
+  },
+
+  mounted() {
+    Promise.all([
+      this.$accessor.spot.fetchSubaccountOrders(),
+      this.$accessor.spot.fetchSubaccountTrades()
+    ])
+      .then(() => {
+        //
+      })
+      .catch(this.$onError)
+      .finally(() => {
+        this.status.setIdle()
+      })
   },
 
   methods: {
@@ -64,12 +123,12 @@ export default Vue.extend({
     },
 
     handleCancelAllClick() {
-      const { orders } = this
+      const { orders, currentMarketOnly, currentMarketOrders } = this
 
       this.$accessor.spot
-        .batchCancelOrder(orders)
+        .batchCancelOrder(currentMarketOnly ? currentMarketOrders : orders)
         .then(() => {
-          this.$toast.success(this.$t('orders_cancelled'))
+          this.$toast.success(this.$t('trade.orders_cancelled'))
         })
         .catch(this.$onRejected)
         .finally(() => {

@@ -1,61 +1,55 @@
 import { actionTree, getterTree } from 'typed-vuex'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  derivativeMarginToChainMarginToFixed,
+  derivativePriceToChainPriceToFixed,
+  derivativeQuantityToChainQuantityToFixed
+} from '@injectivelabs/utils'
 import { StreamOperation } from '@injectivelabs/ts-types'
-import { DerivativeOrderState } from '@injectivelabs/derivatives-consumer'
 import {
-  UiDerivativeOrderbook,
   UiDerivativeLimitOrder,
-  UiDerivativeTrade,
-  UiDerivativeMarket,
-  DerivativeOrderSide,
-  UiPosition,
   UiDerivativeMarketSummary,
-  Change,
-  Token
-} from '~/types'
+  UiDerivativeMarketWithToken,
+  UiDerivativeOrderbook,
+  UiDerivativeTrade,
+  DerivativeTransformer,
+  zeroDerivativeMarketSummary,
+  ZERO_IN_BASE,
+  ZERO_TO_STRING,
+  Change
+} from '@injectivelabs/ui-common'
 import {
-  fetchMarketOrderbook,
-  fetchMarketOrders,
-  fetchMarkets,
-  fetchMarket,
-  fetchMarketsSummary,
-  fetchMarketTrades,
-  submitLimitOrder,
-  submitMarketOrder,
-  cancelOrder,
+  DerivativeOrderSide,
+  DerivativeOrderState
+} from '@injectivelabs/derivatives-consumer'
+import {
   streamOrderbook,
   cancelMarketStreams,
   streamTrades,
-  fetchMarketSummary,
   streamSubaccountOrders,
   streamSubaccountTrades,
-  fetchMarketPositions,
-  streamSubaccountPositions,
-  closeAllPosition,
-  closePosition,
-  fetchMarketMarkPrice,
-  streamMarketMarkPrice,
-  batchCancelOrders,
-  addMarginToPosition,
-  validateNotionalRestrictions,
-  closePositionAndReduceOnlyOrders
-} from '~/app/services/derivatives'
+  streamMarketMarkPrice
+} from '~/app/streams/derivatives'
 import {
-  ORDERBOOK_STREAMING_ENABLED,
-  ZERO_IN_BASE,
-  ZERO_TO_STRING
+  FEE_RECIPIENT,
+  ORDERBOOK_STREAMING_ENABLED
 } from '~/app/utils/constants'
-import { zeroDerivativeMarketSummary } from '~/app/utils/helpers'
+import {
+  derivativeActionServiceFactory,
+  derivativeService,
+  tokenService
+} from '~/app/Services'
+import { derivatives as allowedPerpetualMarkets } from '~/routes.config'
 
 const initialStateFactory = () => ({
-  markets: [] as UiDerivativeMarket[],
+  markets: [] as UiDerivativeMarketWithToken[],
   marketsSummary: [] as UiDerivativeMarketSummary[],
-  market: undefined as UiDerivativeMarket | undefined,
+  market: undefined as UiDerivativeMarketWithToken | undefined,
   marketMarkPrice: ZERO_TO_STRING as string,
   marketSummary: undefined as UiDerivativeMarketSummary | undefined,
   orderbook: undefined as UiDerivativeOrderbook | undefined,
   trades: [] as UiDerivativeTrade[],
-  subaccountPosition: undefined as UiPosition | undefined,
   subaccountTrades: [] as UiDerivativeTrade[],
   subaccountOrders: [] as UiDerivativeLimitOrder[]
 })
@@ -63,16 +57,15 @@ const initialStateFactory = () => ({
 const initialState = initialStateFactory()
 
 export const state = () => ({
-  markets: initialState.markets as UiDerivativeMarket[],
+  markets: initialState.markets as UiDerivativeMarketWithToken[],
   marketsSummary: initialState.marketsSummary as UiDerivativeMarketSummary[],
-  market: initialState.market as UiDerivativeMarket | undefined,
+  market: initialState.market as UiDerivativeMarketWithToken | undefined,
   marketSummary: initialState.marketSummary as
     | UiDerivativeMarketSummary
     | undefined,
   marketMarkPrice: initialState.marketMarkPrice as string,
   trades: initialState.trades as UiDerivativeTrade[],
   subaccountTrades: initialState.subaccountTrades as UiDerivativeTrade[],
-  subaccountPosition: initialState.subaccountPosition as UiPosition | undefined,
   subaccountOrders: initialState.subaccountOrders as UiDerivativeLimitOrder[],
   orderbook: initialState.orderbook as UiDerivativeOrderbook | undefined
 })
@@ -128,7 +121,7 @@ export const getters = getterTree(state, {
 })
 
 export const mutations = {
-  setMarket(state: DerivativeStoreState, market: UiDerivativeMarket) {
+  setMarket(state: DerivativeStoreState, market: UiDerivativeMarketWithToken) {
     state.market = market
   },
 
@@ -155,7 +148,10 @@ export const mutations = {
     state.subaccountTrades = initialState.subaccountTrades
   },
 
-  setMarkets(state: DerivativeStoreState, markets: UiDerivativeMarket[]) {
+  setMarkets(
+    state: DerivativeStoreState,
+    markets: UiDerivativeMarketWithToken[]
+  ) {
     state.markets = markets
   },
 
@@ -172,17 +168,6 @@ export const mutations = {
 
   pushTrade(state: DerivativeStoreState, trade: UiDerivativeTrade) {
     state.trades = [trade, ...state.trades]
-  },
-
-  setSubaccountPosition(
-    state: DerivativeStoreState,
-    subaccountPosition: UiPosition
-  ) {
-    state.subaccountPosition = subaccountPosition
-  },
-
-  deleteSubaccountPosition(state: DerivativeStoreState) {
-    state.subaccountPosition = undefined
   },
 
   setSubaccountTrades(
@@ -210,16 +195,12 @@ export const mutations = {
     state: DerivativeStoreState,
     subaccountOrder: UiDerivativeLimitOrder
   ) {
-    const index = state.subaccountOrders.findIndex(
-      (order) => order.orderHash === subaccountOrder.orderHash
-    )
-
-    if (index > 0) {
-      state.subaccountOrders = [...state.subaccountOrders].splice(
-        index,
-        1,
-        subaccountOrder
-      )
+    if (subaccountOrder.orderHash) {
+      state.subaccountOrders = state.subaccountOrders.map((order) => {
+        return order.orderHash === subaccountOrder.orderHash
+          ? subaccountOrder
+          : order
+      })
     }
   },
 
@@ -256,16 +237,12 @@ export const mutations = {
     state: DerivativeStoreState,
     subaccountTrade: UiDerivativeTrade
   ) {
-    const index = state.subaccountTrades.findIndex(
-      (order) => order.orderHash === subaccountTrade.orderHash
-    )
-
-    if (index > 0) {
-      state.subaccountTrades = [...state.subaccountTrades].splice(
-        index,
-        1,
-        subaccountTrade
-      )
+    if (subaccountTrade.orderHash) {
+      state.subaccountTrades = state.subaccountTrades.map((order) => {
+        return order.orderHash === subaccountTrade.orderHash
+          ? subaccountTrade
+          : order
+      })
     }
   },
 
@@ -289,7 +266,6 @@ export const mutations = {
 
     state.subaccountTrades = initialState.subaccountTrades
     state.subaccountOrders = initialState.subaccountOrders
-    state.subaccountPosition = initialState.subaccountPosition
   }
 }
 
@@ -302,11 +278,29 @@ export const actions = actionTree(
     },
 
     async init({ commit }) {
-      const markets = await fetchMarkets()
+      const markets = await derivativeService.fetchMarkets()
+      const marketsWithToken = await tokenService.getDerivativeMarketsWithToken(
+        markets
+      )
+      const uiMarkets = DerivativeTransformer.derivativeMarketsToUiSpotMarkets(
+        marketsWithToken
+      )
 
-      commit('setMarkets', markets)
+      // Only include markets that we pre-defined to generate static routes for
+      const uiMarketsWithToken = uiMarkets
+        .filter((market) => {
+          return allowedPerpetualMarkets.includes(market.slug)
+        })
+        .sort((a, b) => {
+          return (
+            allowedPerpetualMarkets.indexOf(a.slug) -
+            allowedPerpetualMarkets.indexOf(b.slug)
+          )
+        })
 
-      const marketsSummary = await fetchMarketsSummary()
+      commit('setMarkets', uiMarketsWithToken)
+
+      const marketsSummary = await derivativeService.fetchMarketsSummary()
       const marketSummaryNotExists =
         !marketsSummary || (marketsSummary && marketsSummary.length === 0)
       const actualMarketsSummary = marketSummaryNotExists
@@ -319,7 +313,7 @@ export const actions = actionTree(
       )
     },
 
-    async changeMarket({ commit, state }, marketSlug: string) {
+    async initMarket({ commit, state }, marketSlug: string) {
       const { markets } = state
 
       if (!markets.length) {
@@ -336,32 +330,33 @@ export const actions = actionTree(
       }
 
       commit('setMarket', market)
-      commit('setOrderbook', await fetchMarketOrderbook(market.marketId))
-      commit('setMarketSummary', await fetchMarketSummary(market.marketId))
-      commit('setMarketMarkPrice', await fetchMarketMarkPrice(market))
       commit(
-        'setTrades',
-        await fetchMarketTrades({
-          marketId: market.marketId
-        })
+        'setMarketSummary',
+        await derivativeService.fetchMarketSummary(market.marketId)
+      )
+      commit(
+        'setMarketMarkPrice',
+        await derivativeService.fetchMarketMarkPrice(market)
       )
 
       if (ORDERBOOK_STREAMING_ENABLED) {
         await this.app.$accessor.derivatives.streamOrderbook()
       }
+    },
+
+    async initMarketStreams({ state }) {
+      const { market } = state
+
+      if (!market) {
+        return
+      }
 
       await this.app.$accessor.derivatives.streamTrades()
       await this.app.$accessor.derivatives.streamMarketMarkPrices()
       await this.app.$accessor.derivatives.streamSubaccountOrders()
-      await this.app.$accessor.derivatives.streamSubaccountPositions()
       await this.app.$accessor.derivatives.streamSubaccountTrades()
-      await this.app.$accessor.derivatives.fetchSubaccountOrders()
-      await this.app.$accessor.derivatives.fetchSubaccountTrades()
-      await this.app.$accessor.derivatives.fetchSubaccountPosition()
+      await this.app.$accessor.positions.streamSubaccountPositions()
       await this.app.$accessor.account.streamSubaccountBalances()
-      await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
-      await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
-      await this.app.$accessor.exchange.fetchTradingRewardsCampaign()
     },
 
     async pollOrderbook({ commit, state }) {
@@ -371,7 +366,10 @@ export const actions = actionTree(
         return
       }
 
-      commit('setOrderbook', await fetchMarketOrderbook(market.marketId))
+      commit(
+        'setOrderbook',
+        await derivativeService.fetchOrderbook(market.marketId)
+      )
     },
 
     streamOrderbook({ commit, state }) {
@@ -451,7 +449,6 @@ export const actions = actionTree(
       }
 
       streamSubaccountOrders({
-        marketId: market.marketId,
         subaccountId: subaccount.subaccountId,
         callback: ({ order }) => {
           if (!order) {
@@ -493,7 +490,6 @@ export const actions = actionTree(
       }
 
       streamSubaccountTrades({
-        marketId: market.marketId,
         subaccountId: subaccount.subaccountId,
         callback: ({ trade, operation }) => {
           if (!trade) {
@@ -515,32 +511,30 @@ export const actions = actionTree(
       })
     },
 
-    streamSubaccountPositions({ state, commit }) {
+    async fetchOrderbook({ state, commit }) {
       const { market } = state
-      const { subaccount } = this.app.$accessor.account
-      const { isUserWalletConnected } = this.app.$accessor.wallet
 
       if (!market) {
         return
       }
 
-      if (!isUserWalletConnected || !subaccount) {
+      commit(
+        'setOrderbook',
+        await derivativeService.fetchOrderbook(market.marketId)
+      )
+    },
+
+    async fetchTrades({ state, commit }) {
+      const { market } = state
+
+      if (!market) {
         return
       }
 
-      streamSubaccountPositions({
-        marketId: market.marketId,
-        subaccountId: subaccount.subaccountId,
-        callback: ({ position }) => {
-          const quantity = new BigNumberInBase(position ? position.quantity : 0)
-
-          if (!position || quantity.lte(0)) {
-            commit('deleteSubaccountPosition')
-          } else {
-            commit('setSubaccountPosition', position)
-          }
-        }
-      })
+      commit(
+        'setTrades',
+        await derivativeService.fetchTrades({ marketId: market.marketId })
+      )
     },
 
     async fetchSubaccountOrders({ state, commit }) {
@@ -558,32 +552,61 @@ export const actions = actionTree(
 
       commit(
         'setSubaccountOrders',
-        await fetchMarketOrders({
-          marketId: market.marketId,
+        await derivativeService.fetchOrders({
           subaccountId: subaccount.subaccountId
         })
       )
     },
 
-    async fetchSubaccountPosition({ state, commit }) {
+    async fetchMarketsSummary({ state, commit }) {
+      const { marketsSummary, markets, market } = state
+
+      if (marketsSummary.length === 0) {
+        return
+      }
+
+      const updatedMarketsSummary = await derivativeService.fetchMarketsSummary()
+      const combinedMarketsSummary = DerivativeTransformer.marketsSummaryComparisons(
+        updatedMarketsSummary,
+        state.marketsSummary
+      )
+
+      if (
+        !combinedMarketsSummary ||
+        (combinedMarketsSummary && combinedMarketsSummary.length === 0)
+      ) {
+        commit(
+          'setMarketsSummary',
+          markets.map((market) => zeroDerivativeMarketSummary(market.marketId))
+        )
+      } else {
+        if (market) {
+          const updatedMarketSummary = combinedMarketsSummary.find(
+            (m) => m.marketId === market.marketId
+          )
+
+          if (updatedMarketSummary) {
+            commit('setMarketSummary', updatedMarketSummary)
+          }
+        }
+
+        commit('setMarketsSummary', combinedMarketsSummary)
+      }
+    },
+
+    async fetchMarket({ state, commit }) {
       const { market } = state
-      const { subaccount } = this.app.$accessor.account
-      const { isUserWalletConnected } = this.app.$accessor.wallet
 
       if (!market) {
         return
       }
 
-      if (!isUserWalletConnected || !subaccount) {
-        return
-      }
+      const updatedMarket = await derivativeService.fetchMarket(market.marketId)
 
-      const [position] = await fetchMarketPositions({
-        marketId: market.marketId,
-        subaccountId: subaccount.subaccountId
+      commit('setMarket', {
+        ...updatedMarket,
+        ...market
       })
-
-      commit('setSubaccountPosition', position)
     },
 
     async fetchSubaccountTrades({ state, commit }) {
@@ -599,83 +622,11 @@ export const actions = actionTree(
         return
       }
 
-      const trades = await fetchMarketTrades({
-        marketId: market.marketId,
+      const trades = await derivativeService.fetchTrades({
         subaccountId: subaccount.subaccountId
       })
 
       commit('setSubaccountTrades', trades)
-    },
-
-    async fetchMarketsSummary({ state, commit }) {
-      const { marketsSummary, markets, market } = state
-
-      if (marketsSummary.length === 0) {
-        return
-      }
-
-      const updatedMarketsSummary = await fetchMarketsSummary(marketsSummary)
-
-      if (
-        !updatedMarketsSummary ||
-        (updatedMarketsSummary && updatedMarketsSummary.length === 0)
-      ) {
-        commit(
-          'setMarketsSummary',
-          markets.map((market) => zeroDerivativeMarketSummary(market.marketId))
-        )
-      } else {
-        if (market) {
-          const updatedMarketSummary = updatedMarketsSummary.find(
-            (m) => m.marketId === market.marketId
-          )
-
-          if (updatedMarketSummary) {
-            commit('setMarketSummary', updatedMarketSummary)
-          }
-        }
-
-        commit('setMarketsSummary', updatedMarketsSummary)
-      }
-    },
-
-    async fetchMarket({ state, commit }) {
-      const { market } = state
-
-      if (!market) {
-        return
-      }
-
-      commit('setMarket', await fetchMarket(market.marketId))
-    },
-
-    async fetchSubaccountMarketTrades({ state, commit }) {
-      const { market } = state
-      const { subaccount } = this.app.$accessor.account
-      const { isUserWalletConnected } = this.app.$accessor.wallet
-
-      if (!isUserWalletConnected || !subaccount || !market) {
-        return
-      }
-
-      commit(
-        'setSubaccountTrades',
-        await fetchMarketTrades({
-          marketId: market.marketId,
-          subaccountId: subaccount.subaccountId
-        })
-      )
-    },
-
-    async validateNotionalRestrictions(
-      _,
-      {
-        amount,
-        price,
-        token
-      }: { amount: BigNumberInBase; price: BigNumberInBase; token: Token }
-    ) {
-      await validateNotionalRestrictions({ amount, price, token })
     },
 
     async cancelOrder(_, order: UiDerivativeLimitOrder) {
@@ -685,6 +636,7 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const derivativeActionService = derivativeActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount) {
         return
@@ -693,7 +645,7 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await cancelOrder({
+      await derivativeActionService.cancelOrder({
         injectiveAddress,
         address,
         orderHash: order.orderHash,
@@ -710,6 +662,7 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const derivativeActionService = derivativeActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount || !market) {
         return
@@ -718,7 +671,7 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await batchCancelOrders({
+      await derivativeActionService.batchCancelOrders({
         injectiveAddress,
         address,
         orders: orders.map((o) => ({
@@ -747,11 +700,13 @@ export const actions = actionTree(
     ) {
       const { subaccount } = this.app.$accessor.account
       const { market } = this.app.$accessor.derivatives
+      const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
       const {
         address,
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const derivativeActionService = derivativeActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount || !market) {
         return
@@ -759,24 +714,23 @@ export const actions = actionTree(
 
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
-      await this.app.$accessor.derivatives.validateNotionalRestrictions({
-        price,
-        amount: quantity,
-        token: market.quoteToken
-      })
 
-      const { feeRecipient } = this.app.$accessor.referral
-
-      await submitLimitOrder({
-        feeRecipient,
-        price,
+      await derivativeActionService.submitLimitOrder({
         reduceOnly,
-        quantity,
-        margin,
         orderType,
         injectiveAddress,
         address,
-        market,
+        price: derivativePriceToChainPriceToFixed({
+          value: price,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        quantity: derivativeQuantityToChainQuantityToFixed({ value: quantity }),
+        margin: derivativeMarginToChainMarginToFixed({
+          value: margin,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        marketId: market.marketId,
+        feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
       })
     },
@@ -799,11 +753,13 @@ export const actions = actionTree(
     ) {
       const { subaccount } = this.app.$accessor.account
       const { market } = this.app.$accessor.derivatives
+      const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
       const {
         address,
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const derivativeActionService = derivativeActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount || !market) {
         return
@@ -811,192 +767,24 @@ export const actions = actionTree(
 
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
-      await this.app.$accessor.derivatives.validateNotionalRestrictions({
-        price,
-        amount: quantity,
-        token: market.quoteToken
-      })
 
-      const { feeRecipient } = this.app.$accessor.referral
-
-      await submitMarketOrder({
-        feeRecipient,
-        quantity,
+      await derivativeActionService.submitMarketOrder({
         reduceOnly,
-        margin,
         orderType,
-        price,
         injectiveAddress,
         address,
-        market,
+        price: derivativePriceToChainPriceToFixed({
+          value: price,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        quantity: derivativeQuantityToChainQuantityToFixed({ value: quantity }),
+        margin: derivativeMarginToChainMarginToFixed({
+          value: margin,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        marketId: market.marketId,
+        feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
-      })
-    },
-
-    async closePosition(
-      _,
-      {
-        market,
-        quantity,
-        price,
-        orderType
-      }: {
-        market?: UiDerivativeMarket
-        price: BigNumberInBase
-        quantity: BigNumberInBase
-        orderType: DerivativeOrderSide
-      }
-    ) {
-      const { subaccount } = this.app.$accessor.account
-      const { market: currentMarket } = this.app.$accessor.derivatives
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
-
-      if (
-        !isUserWalletConnected ||
-        !subaccount ||
-        (!market && !currentMarket)
-      ) {
-        return
-      }
-
-      await this.app.$accessor.app.queue()
-      await this.app.$accessor.wallet.validate()
-
-      const { feeRecipient } = this.app.$accessor.referral
-
-      await closePosition({
-        feeRecipient,
-        quantity,
-        price,
-        injectiveAddress,
-        address,
-        orderType,
-        market: (currentMarket || market) as UiDerivativeMarket,
-        subaccountId: subaccount.subaccountId
-      })
-    },
-
-    async closePositionAndReduceOnlyOrders(
-      _,
-      {
-        market,
-        quantity,
-        price,
-        orderType
-      }: {
-        market?: UiDerivativeMarket
-        price: BigNumberInBase
-        quantity: BigNumberInBase
-        orderType: DerivativeOrderSide
-        reduceOnlyOrders: UiDerivativeLimitOrder[]
-      }
-    ) {
-      const { subaccount } = this.app.$accessor.account
-      const { market: currentMarket } = this.app.$accessor.derivatives
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
-
-      if (
-        !isUserWalletConnected ||
-        !subaccount ||
-        (!market && !currentMarket)
-      ) {
-        return
-      }
-
-      await this.app.$accessor.app.queue()
-      await this.app.$accessor.wallet.validate()
-
-      const { feeRecipient } = this.app.$accessor.referral
-
-      await closePosition({
-        feeRecipient,
-        quantity,
-        price,
-        injectiveAddress,
-        address,
-        orderType,
-        market: (currentMarket || market) as UiDerivativeMarket,
-        subaccountId: subaccount.subaccountId
-      })
-    },
-
-    async closeAllPosition(
-      _,
-      {
-        positions
-      }: {
-        positions: {
-          market: UiDerivativeMarket
-          orderType: DerivativeOrderSide
-          price: BigNumberInBase
-          quantity: BigNumberInBase
-        }[]
-      }
-    ) {
-      const { subaccount } = this.app.$accessor.account
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
-
-      if (!isUserWalletConnected || !subaccount || positions.length === 0) {
-        return
-      }
-
-      await this.app.$accessor.app.queue()
-      await this.app.$accessor.wallet.validate()
-
-      const { feeRecipient } = this.app.$accessor.referral
-
-      await closeAllPosition({
-        feeRecipient,
-        positions,
-        injectiveAddress,
-        address,
-        subaccountId: subaccount.subaccountId
-      })
-    },
-
-    async addMarginToPosition(
-      _,
-      {
-        market,
-        amount
-      }: {
-        market: UiDerivativeMarket
-        amount: BigNumberInBase
-      }
-    ) {
-      const { subaccount } = this.app.$accessor.account
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
-
-      if (!isUserWalletConnected || !subaccount || !market) {
-        return
-      }
-
-      await this.app.$accessor.app.queue()
-      await this.app.$accessor.wallet.validate()
-
-      await addMarginToPosition({
-        injectiveAddress,
-        address,
-        market,
-        amount: amount.toWei(market.quoteToken.decimals),
-        srcSubaccountId: subaccount.subaccountId,
-        dstSubaccountId: subaccount.subaccountId
       })
     }
   }

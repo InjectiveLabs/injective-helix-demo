@@ -39,24 +39,17 @@ export enum Icon {
 
 export enum Modal {
   AuctionCountdown = 'auction-countdown',
-  BridgeDeposit = 'bridge-deposit',
-  BridgeWithdraw = 'bridge-withdraw',
   Connect = 'connect',
-  Deposit = 'deposit',
+  DelegateToValidator = 'delegate-to-validator',
   GasFeeRebate = 'gas-fee-rebate',
   MarketRewardFactors = 'market-reward-factors',
   OrderConfirm = 'order-confirm',
-  RefereeOnboarding = 'referee-onboarding',
-  SubaccountDeposit = 'subaccount-deposit',
-  SubaccountDepositWithSelect = 'subaccount-deposit-with-select',
-  SubaccountWithdraw = 'subaccount-withdraw',
-  TakeOut = 'take-out',
   Terms = 'terms',
-  Transfer = 'transfer',
-  TransferOnChain = 'transfer-on-chain',
-  Withdraw = 'withdraw',
-  DelegateToValidator = 'delegate-to-validator',
-  MarketBeta = 'market-beta'
+  MarketBeta = 'market-beta',
+  Bridge = 'bridge',
+  BridgeConfirm = 'bridge-confirm',
+  BridgeCompleted = 'bridge-completed',
+  RefereeOnboarding = 'referee-onboarding'
 }
 
 export enum Breakpoint {
@@ -67,17 +60,6 @@ export enum Breakpoint {
   Xxs = 'xxs'
 }
 
-export enum MarketType {
-  Spot = 'Spot',
-  Derivative = 'Derivative',
-  Perpetual = 'Perpetual',
-  Futures = 'Futures'
-}
-
-export enum MarketBase {
-  Terra = 'terra'
-}
-
 export enum AppState {
   Busy = 'Busy',
   Loading = 'Loading',
@@ -86,7 +68,30 @@ export enum AppState {
   Success = 'Success'
 }
 
-export enum DMMType {
-  Ranking = 'Ranking',
-  History = 'History'
+export enum TransferSide {
+  Bank = 'Bank',
+  TradingAccount = 'TradingAccount'
+}
+
+export enum TransferDirection {
+  bankToTradingAccount = 'bank-to-trading-account',
+  tradingAccountToBank = 'trading-account-to-bank'
+}
+
+export enum BridgeType {
+  Deposit = 'Deposit',
+  Withdraw = 'Withdraw',
+  Transfer = 'Transfer'
+}
+
+export enum TradeTypes {
+  Limit = 'limit',
+  Market = 'market'
+}
+
+export enum TradeSelectorType {
+  Type = 'type',
+  Side = 'side',
+  PositionSide = 'position-side',
+  TransferType = 'transfer-type'
 }

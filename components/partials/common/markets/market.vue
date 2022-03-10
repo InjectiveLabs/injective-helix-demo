@@ -1,21 +1,23 @@
 <template>
-  <TableRow @click.native.stop="handleClickOnMarket">
+  <TableRow
+    :dense="simple"
+    :lg="!simple"
+    @click.native.stop="handleClickOnMarket"
+  >
     <span
       class="text-base md:text-sm"
       :class="{
         'col-span-2 md:col-span-3': !simple,
-        'col-span-2 md:col-span-4': simple
+        'col-span-2 md:col-span-5': simple
       }"
     >
-      <div
-        class="flex items-center cursor-pointer justify-center md:justify-start"
-      >
+      <div class="flex items-center cursor-pointer justify-start">
         <img
-          :src="market.baseToken.icon"
+          :src="market.baseToken.logo"
           :alt="market.baseToken.name"
           class="w-4 h-4 md:w-6 md:h-6 mr-4"
         />
-        <div class="w-32 mr-4 text-left">
+        <div class="mr-4 text-left">
           <div class="flex">
             {{ market.ticker }}
             <span
@@ -36,7 +38,7 @@
     <span
       class="col-span-1 text-2xs md:text-sm text-gray-300 text-left md:hidden"
     >
-      {{ $t('last_traded_price') }}
+      {{ $t('trade.last_traded_price') }}
     </span>
     <span
       class="font-mono text-right text-2xs md:text-sm flex items-center justify-end"
@@ -70,14 +72,10 @@
     <span
       class="col-span-1 text-2xs md:text-sm text-gray-300 text-left md:hidden"
     >
-      {{ $t('market_change_24h') }}
+      {{ $t('trade.market_change_24h') }}
     </span>
     <span
-      class="font-mono text-right text-2xs md:text-sm"
-      :class="{
-        'col-span-1 md:col-span-3': !simple,
-        'col-span-1 md:col-span-4': simple
-      }"
+      class="font-mono text-right text-2xs md:text-sm col-span-1 md:col-span-3"
     >
       <span
         v-if="!change.isNaN()"
@@ -91,7 +89,7 @@
       v-if="!simple"
       class="col-span-1 text-2xs md:text-sm text-gray-300 text-left md:hidden"
     >
-      {{ $t('market_volume_24h') }}
+      {{ $t('trade.market_volume_24h') }}
     </span>
     <span
       v-if="!simple"
@@ -112,19 +110,17 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import TableRow from '~/components/elements/table-row.vue'
 import {
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  ZERO_IN_BASE
-} from '~/app/utils/constants'
-import {
-  Change,
-  MarketType,
-  UiDerivativeMarket,
   UiDerivativeMarketSummary,
-  UiSpotMarket,
-  UiSpotMarketSummary
-} from '~/types'
+  UiDerivativeMarketWithToken,
+  MarketType,
+  ZERO_IN_BASE,
+  UiSpotMarketSummary,
+  UiSpotMarketWithToken
+} from '@injectivelabs/ui-common'
+import TableRow from '~/components/elements/table-row.vue'
+import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { Change } from '~/types'
 import { betaMarketSlugs } from '~/app/data/market'
 
 export default Vue.extend({
@@ -141,7 +137,9 @@ export default Vue.extend({
 
     market: {
       required: true,
-      type: Object as PropType<UiDerivativeMarket | UiSpotMarket>
+      type: Object as PropType<
+        UiDerivativeMarketWithToken | UiSpotMarketWithToken
+      >
     },
 
     summary: {
@@ -157,11 +155,11 @@ export default Vue.extend({
   },
 
   computed: {
-    currentSpotMarket(): UiSpotMarket | undefined {
+    currentSpotMarket(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
     },
 
-    currentDerivativeMarket(): UiDerivativeMarket | undefined {
+    currentDerivativeMarket(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 
@@ -174,7 +172,10 @@ export default Vue.extend({
     },
 
     /* Current market is the market that we are currently trading on */
-    currentMarket(): UiSpotMarket | UiDerivativeMarket | undefined {
+    currentMarket():
+      | UiSpotMarketWithToken
+      | UiDerivativeMarketWithToken
+      | undefined {
       const { currentSpotMarket, currentDerivativeMarket, market } = this
 
       return market.type === MarketType.Spot

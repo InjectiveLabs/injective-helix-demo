@@ -1,30 +1,21 @@
 <template>
-  <div class="w-full text-center">
-    <p class="text-sm text-gray-200">
-      {{
-        $t(`Set allowance for ${tokenWithBalance.symbol}`, {
-          asset: tokenWithBalance.symbol
-        })
-      }}
-    </p>
-    <div class="w-full mt-6 md:w-2/3 md:mx-auto lg:w-full 2xl:w-2/3">
-      <v-button
-        lg
-        primary
-        :status="status"
-        class="w-full"
-        @click.stop="handleClickOnSetAllowance"
-      >
-        {{ $t('Set Allowance') }}
-      </v-button>
-    </div>
+  <div class="w-full xs:w-1/2 font-bold mx-auto">
+    <v-button
+      lg
+      primary
+      :status="status"
+      class="w-full"
+      @click.stop="handleClickOnSetAllowance"
+    >
+      {{ $t('bridge.setAllowance') }}
+    </v-button>
   </div>
 </template>
 
 <script lang="ts">
 import { Status } from '@injectivelabs/utils'
 import Vue, { PropType } from 'vue'
-import { TokenWithBalance } from '~/types/token'
+import { TokenWithBalance } from '@injectivelabs/ui-common'
 
 export default Vue.extend({
   props: {
@@ -50,7 +41,7 @@ export default Vue.extend({
         .setTokenAllowance(tokenWithBalance)
         .then(() => {
           this.$emit('unlocked')
-          this.$toast.success(this.$t('Token allowance set successfully'))
+          this.$toast.success(this.$t('bridge.successfullySetAllowance'))
         })
         .catch(this.$onError)
         .finally(() => {

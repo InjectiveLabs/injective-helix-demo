@@ -10,7 +10,7 @@
       <slot name="title-context" />
     </div>
     <slot name="context" class="flex justify-between items-center w-full" />
-    <v-card class="relative flex-1">
+    <v-card class="relative flex-1" :lg="!dense">
       <div class="v-panel-content">
         <slot ref="content" />
       </div>
@@ -23,6 +23,11 @@ import Vue from 'vue'
 
 export default Vue.extend({
   props: {
+    dense: {
+      type: Boolean,
+      default: false
+    },
+
     title: {
       required: false,
       default: '',

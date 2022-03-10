@@ -36,7 +36,7 @@
               class="ml-1 flex items-center justify-center h-10 w-10 rounded-full"
               @click="onSidebarClose"
             >
-              <span class="sr-only">{{ $t('close') }}</span>
+              <span class="sr-only">{{ $t('common.close') }}</span>
               <v-icon-close class="w-6 h-6 text-gray-200" />
             </button>
           </div>

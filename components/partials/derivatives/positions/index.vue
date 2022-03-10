@@ -1,20 +1,27 @@
 <template>
-  <div v-if="market" class="table-responsive table-orders">
-    <table class="table">
+  <v-table-wrapper v-if="market">
+    <table v-if="filteredPositions.length > 0" class="table">
       <position-table-header />
-      <tbody v-if="isUserWalletConnected">
-        <tr is="v-position" v-if="position" :position="position"></tr>
+      <tbody>
+        <tr
+          is="v-position"
+          v-for="(position, index) in sortedPositions"
+          :key="`positions-${index}-${position.marketId}`"
+          :position="position"
+        ></tr>
       </tbody>
     </table>
-    <v-user-wallet-connect-warning v-if="!isUserWalletConnected" />
-  </div>
+    <v-empty-list v-else :message="$t('trade.emptyPositions')" />
+  </v-table-wrapper>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { Status } from '@injectivelabs/utils'
+import {
+  UiDerivativeMarketWithToken,
+  UiPosition
+} from '@injectivelabs/ui-common'
 import Position from '~/components/partials/common/derivatives/position.vue'
-import { UiDerivativeMarket, UiPosition } from '~/types'
 import PositionTableHeader from '~/components/partials/common/derivatives/position-table.header.vue'
 
 export default Vue.extend({
@@ -23,24 +30,59 @@ export default Vue.extend({
     PositionTableHeader
   },
 
+  props: {
+    currentMarketOnly: {
+      type: Boolean,
+      default: false
+    }
+  },
+
   data() {
     return {
-      status: new Status()
+      interval: 0 as any
     }
   },
 
   computed: {
-    isUserWalletConnected(): boolean {
-      return this.$accessor.wallet.isUserWalletConnected
-    },
-
-    market(): UiDerivativeMarket | undefined {
+    market(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 
-    position(): UiPosition | undefined {
-      return this.$accessor.derivatives.subaccountPosition
+    positions(): UiPosition[] {
+      return this.$accessor.positions.subaccountPositions
+    },
+
+    filteredPositions(): UiPosition[] {
+      const { currentMarketOnly, market, positions } = this
+
+      if (!currentMarketOnly) {
+        return positions
+      }
+
+      return positions.filter(
+        (position) => position.marketId === market?.marketId
+      )
+    },
+
+    sortedPositions(): UiPosition[] {
+      const { filteredPositions } = this
+
+      return [...filteredPositions].sort((p1: UiPosition, p2: UiPosition) => {
+        return p1.ticker.localeCompare(p2.ticker)
+      })
     }
+  },
+
+  mounted() {
+    this.$accessor.positions.fetchOpenPositionsMarketsOrderbook()
+
+    this.interval = setInterval(() => {
+      this.$accessor.positions.fetchOpenPositionsMarketsOrderbook()
+    }, 10000)
+  },
+
+  beforeDestroy() {
+    clearInterval(this.interval)
   }
 })
 </script>

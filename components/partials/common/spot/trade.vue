@@ -1,27 +1,49 @@
 <template>
   <tr v-if="market">
-    <td
-      v-if="!isOnMarketPage"
-      class="h-8 text-left cursor-pointer"
-      @click="handleClickOnMarket"
-    >
-      {{ market.ticker }}
+    <td class="h-8 text-left font-mono">
+      <span class="text-gray-400 text-xs">{{ time }}</span>
     </td>
-    <td class="h-8 text-right font-mono">
+    <td class="h-8 text-left cursor-pointer" @click="handleClickOnMarket">
+      <div class="flex items-center justify-start">
+        <div v-if="market.baseToken.logo" class="w-6 h-6">
+          <img
+            :src="market.baseToken.logo"
+            :alt="market.baseToken.name"
+            class="min-w-full h-auto rounded-full"
+          />
+        </div>
+        <div class="ml-3">
+          <span class="text-gray-200 font-semibold">
+            {{ market.ticker }}
+          </span>
+        </div>
+      </div>
+    </td>
+
+    <td class="h-8 text-left">
+      {{ tradeExecutionType }}
+    </td>
+
+    <td class="h-8 text-left">
       <span
         :class="{
           'text-aqua-500': tradeTypeBuy,
           'text-red-500': !tradeTypeBuy
         }"
       >
-        <v-number
-          :decimals="
-            market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-          "
-          :number="price"
-        />
+        {{ tradeDirection }}
       </span>
     </td>
+
+    <td class="h-8 text-right font-mono">
+      <v-number
+        :decimals="
+          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+        "
+        :number="price"
+      />
+    </td>
+
     <td class="h-8 text-right font-mono">
       <v-number
         :decimals="
@@ -30,6 +52,14 @@
         :number="quantity"
       />
     </td>
+    <td class="h-8 text-right font-mono">
+      <v-number use-number-decimals :number="fee">
+        <span slot="addon" class="text-2xs text-gray-500">
+          {{ market.quoteToken.symbol }}
+        </span>
+      </v-number>
+    </td>
+
     <td class="h-8 text-right font-mono">
       <v-number
         :decimals="
@@ -42,44 +72,23 @@
         </span>
       </v-number>
     </td>
-    <td class="h-8 text-right font-mono">
-      <v-number use-number-decimals :number="fee">
-        <span slot="addon" class="text-2xs text-gray-500">
-          {{ market.quoteToken.symbol }}
-        </span>
-      </v-number>
-    </td>
-    <td class="h-8 text-center">
-      <v-badge :aqua="tradeTypeBuy" :red="!tradeTypeBuy" sm>
-        {{ tradeDirection }}
-      </v-badge>
-    </td>
-    <td class="h-8 text-center">
-      <v-badge gray sm>
-        {{ tradeExecutionType }}
-      </v-badge>
-    </td>
-    <td class="h-8 text-right font-mono">
-      <span class="text-gray-400 text-xs">{{ time }}</span>
-    </td>
   </tr>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { format } from 'date-fns'
+import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
+import {
+  UiSpotMarketWithToken,
+  UiSpotTrade,
+  ZERO_IN_BASE
+} from '@injectivelabs/ui-common'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  ZERO_IN_BASE
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
-import {
-  UiSpotMarket,
-  UiSpotTrade,
-  TradeDirection,
-  TradeExecutionType
-} from '~/types'
 
 export default Vue.extend({
   props: {
@@ -99,30 +108,16 @@ export default Vue.extend({
   },
 
   computed: {
-    currentMarket(): UiSpotMarket | undefined {
+    currentMarket(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
     },
 
-    isOnMarketPage(): boolean {
-      return this.$route.name === 'spot-spot'
-    },
-
-    markets(): UiSpotMarket[] {
-      const { isOnMarketPage } = this
-
-      if (isOnMarketPage) {
-        return []
-      }
-
+    markets(): UiSpotMarketWithToken[] {
       return this.$accessor.spot.markets
     },
 
-    market(): UiSpotMarket | undefined {
-      const { markets, currentMarket, isOnMarketPage, trade } = this
-
-      if (isOnMarketPage) {
-        return currentMarket
-      }
+    market(): UiSpotMarketWithToken | undefined {
+      const { markets, trade } = this
 
       return markets.find((m) => m.marketId === trade.marketId)
     },
@@ -189,8 +184,8 @@ export default Vue.extend({
       const { trade } = this
 
       return trade.tradeDirection === TradeDirection.Buy
-        ? this.$t('buy')
-        : this.$t('sell')
+        ? this.$t('trade.buy')
+        : this.$t('trade.sell')
     },
 
     tradeExecutionType(): string {
@@ -198,15 +193,15 @@ export default Vue.extend({
 
       switch (trade.tradeExecutionType) {
         case TradeExecutionType.LimitFill:
-          return this.$t('limit')
+          return this.$t('trade.limit')
         case TradeExecutionType.Market:
-          return this.$t('market')
+          return this.$t('trade.market')
         case TradeExecutionType.LimitMatchRestingOrder:
-          return this.$t('limit')
+          return this.$t('trade.limit')
         case TradeExecutionType.LimitMatchNewOrder:
-          return this.$t('limit')
+          return this.$t('trade.limit')
         default:
-          return this.$t('limit')
+          return this.$t('trade.limit')
       }
     }
   },

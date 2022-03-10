@@ -1,5 +1,5 @@
 <template>
-  <v-panel :title="$t('Markets Information')">
+  <v-panel :title="$t('trade.marketsInformation')">
     <div class="flex items-center">
       <v-button-filter
         v-if="false"
@@ -7,13 +7,13 @@
         :option="components.quoteDenoms"
       >
         <span>
-          {{ $t('quote_denoms') }}
+          {{ $t('trade.quote_denoms') }}
         </span>
       </v-button-filter>
       <v-separator v-if="false" />
       <v-button-filter v-model="component" :option="components.boostedMarkets">
         <span>
-          {{ $t('boosted_markets') }}
+          {{ $t('trade.boosted_markets') }}
         </span>
       </v-button-filter>
       <v-separator />
@@ -22,7 +22,7 @@
         :option="components.disqualifiedMarkets"
       >
         <span>
-          {{ $t('disqualified_markets') }}
+          {{ $t('trade.disqualified_markets') }}
         </span>
       </v-button-filter>
     </div>

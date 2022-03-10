@@ -1,6 +1,6 @@
 <template>
   <div class="h-full w-full flex flex-wrap py-4">
-    <HOCLoading :status="status">
+    <VHocLoading :status="status">
       <div class="container">
         <div class="w-full mx-auto xl:w-4/5">
           <v-overview class="mt-6" />
@@ -9,7 +9,7 @@
           </v-panel>
         </div>
       </div>
-    </HOCLoading>
+    </VHocLoading>
   </div>
 </template>
 
@@ -18,11 +18,9 @@ import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import VOverview from '~/components/partials/fee-discounts/overview.vue'
 import VFees from '~/components/partials/fee-discounts/index.vue'
-import HOCLoading from '~/components/hoc/loading.vue'
 
 export default Vue.extend({
   components: {
-    HOCLoading,
     VOverview,
     VFees
   },
@@ -34,7 +32,10 @@ export default Vue.extend({
   },
 
   mounted() {
-    Promise.all([this.$accessor.exchange.initFees()])
+    Promise.all([
+      this.$accessor.exchange.fetchParams(),
+      this.$accessor.exchange.fetchFeeDiscountSchedule()
+    ])
       .then(() => {
         //
       })

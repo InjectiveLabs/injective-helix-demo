@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - dev
+
 jobs:
   devnet:
     name: 'Deploy to devnet'

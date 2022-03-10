@@ -1,4 +1,4 @@
-name: DEX deployment to the mainnet env
+name: DEX production deployment
 
 on:
   push:
@@ -25,9 +25,8 @@ jobs:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       METRICS_ENABLED: true
       GEO_IP_RESTRICTIONS_ENABLED: true
-      TRANSFER_RESTRICTIONS_ENABLED: false
       SHOW_AUCTION_COUNTDOWN: false
-      REFERRALS_ENABLED: false
+      REFERRALS_ENABLED: true
 
       ## Endpoints
       APP_EXCHANGE_API_ENDPOINT: ''
@@ -84,7 +83,7 @@ jobs:
     if: true
     env:
       ## Public
-      APP_NAME: 'STAGING - Injective Pro: Decentralized Cryptocurrency Derivatives, Ethereum and Altcoin Exchange'
+      APP_NAME: 'BETA - Injective Pro: Decentralized Cryptocurrency Derivatives, Ethereum and Altcoin Exchange'
       APP_BASE_URL: https://staging.injective.exchange
       APP_NETWORK: mainnet
       APP_ENV: staging
@@ -99,10 +98,9 @@ jobs:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       METRICS_ENABLED: false
       GEO_IP_RESTRICTIONS_ENABLED: true
-      TRANSFER_RESTRICTIONS_ENABLED: false
       SHOW_AUCTION_COUNTDOWN: false
       PRICE_BAND_ENABLED: false
-      REFERRALS_ENABLED: false
+      REFERRALS_ENABLED: true
 
       ## Endpoints
       APP_EXCHANGE_API_ENDPOINT: ''
@@ -173,7 +171,6 @@ jobs:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       METRICS_ENABLED: false
       GEO_IP_RESTRICTIONS_ENABLED: false
-      TRANSFER_RESTRICTIONS_ENABLED: false
       SHOW_AUCTION_COUNTDOWN: false
       REFERRALS_ENABLED: false
 

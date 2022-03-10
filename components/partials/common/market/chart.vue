@@ -4,7 +4,7 @@
       ref="trading-view-wrap"
       class="min-h-sm lg:min-h-full h-full w-full relative flex"
     >
-      <HOCLoading :status="status">
+      <VHocLoading :status="status">
         <v-trading-chart
           ref="trading-view"
           :interval="interval"
@@ -12,7 +12,7 @@
           :datafeed-endpoint="datafeedEndpoint"
           @ready="onReady"
         />
-      </HOCLoading>
+      </VHocLoading>
     </div>
   </div>
 </template>
@@ -20,10 +20,12 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import HOCLoading from '~/components/hoc/loading.vue'
+import {
+  UiSpotMarketWithToken,
+  UiDerivativeMarketWithToken,
+  MarketType
+} from '@injectivelabs/ui-common'
 import TradingChart from '~/components/trading-view/chart.vue'
-import { MarketType, UiDerivativeMarket, UiSpotMarket } from '~/types'
-import { app } from '~/app/singletons/App'
 import { getChronosDatafeedEndpoint } from '~/app/utils/helpers'
 
 interface TradingChartInterface {
@@ -32,13 +34,14 @@ interface TradingChartInterface {
 
 export default Vue.extend({
   components: {
-    'v-trading-chart': TradingChart,
-    HOCLoading
+    'v-trading-chart': TradingChart
   },
 
   props: {
     market: {
-      type: Object as PropType<UiSpotMarket | UiDerivativeMarket>,
+      type: Object as PropType<
+        UiSpotMarketWithToken | UiDerivativeMarketWithToken
+      >,
       required: true
     }
   },
@@ -46,7 +49,7 @@ export default Vue.extend({
   data() {
     return {
       status: new Status(StatusType.Loading),
-      interval: '120'
+      interval: '60'
     }
   },
 
@@ -66,8 +69,8 @@ export default Vue.extend({
         return market.ticker
       }
 
-      const spotTicker = `${(market as UiSpotMarket).baseDenom}/${
-        (market as UiSpotMarket).quoteDenom
+      const spotTicker = `${(market as UiSpotMarketWithToken).baseDenom}/${
+        (market as UiSpotMarketWithToken).quoteDenom
       }`
 
       return spotTicker.replaceAll('ibc/', 'ibc@')

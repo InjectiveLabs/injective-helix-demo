@@ -1,28 +1,28 @@
 <template>
-  <div
-    v-if="market"
-    class="table-responsive min-h-orders max-h-xs lg:max-h-md 4xl:max-h-lg"
-  >
-    <table class="table">
+  <v-table-wrapper v-if="market">
+    <table v-if="filteredOrders.length > 0" class="table">
       <orders-table-header />
-      <tbody v-if="isUserWalletConnected">
+      <tbody>
         <tr
           is="v-order"
-          v-for="(order, index) in orders"
+          v-for="(order, index) in filteredOrders"
           :key="`orders-${index}-${order.orderHash}`"
           :order="order"
         ></tr>
       </tbody>
     </table>
-    <v-user-wallet-connect-warning v-if="!isUserWalletConnected" />
-  </div>
+    <v-empty-list v-else :message="$t('trade.emptyOrders')" />
+  </v-table-wrapper>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import {
+  UiSpotLimitOrder,
+  UiSpotMarketWithToken
+} from '@injectivelabs/ui-common'
 import Order from '~/components/partials/common/spot/order.vue'
 import OrdersTableHeader from '~/components/partials/common/spot/orders-table-header.vue'
-import { UiSpotMarket, UiSpotLimitOrder } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -30,12 +30,15 @@ export default Vue.extend({
     OrdersTableHeader
   },
 
-  computed: {
-    isUserWalletConnected(): boolean {
-      return this.$accessor.wallet.isUserWalletConnected
-    },
+  props: {
+    currentMarketOnly: {
+      type: Boolean,
+      default: false
+    }
+  },
 
-    market(): UiSpotMarket | undefined {
+  computed: {
+    market(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
     },
 
@@ -47,6 +50,16 @@ export default Vue.extend({
       }
 
       return this.$accessor.spot.subaccountOrders
+    },
+
+    filteredOrders(): UiSpotLimitOrder[] {
+      const { currentMarketOnly, market, orders } = this
+
+      if (!currentMarketOnly) {
+        return orders
+      }
+
+      return orders.filter((order) => order.marketId === market?.marketId)
     }
   }
 })

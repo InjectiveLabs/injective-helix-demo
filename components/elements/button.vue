@@ -66,6 +66,12 @@ export default Vue.extend({
       type: Boolean
     },
 
+    redOutline: {
+      required: false,
+      default: false,
+      type: Boolean
+    },
+
     textLg: {
       required: false,
       default: false,
@@ -192,6 +198,17 @@ export default Vue.extend({
             'border',
             'hover:text-primary-500',
             'border-primary-500'
+          )
+        } else if (this.redOutline) {
+          classes.push(
+            'bg-red-550',
+            'bg-opacity-10',
+            'text-red-550',
+            'font-semibold',
+            'border',
+            'border-red-550',
+            'border-opacity-30',
+            'hover:text-red-500'
           )
         }
       }

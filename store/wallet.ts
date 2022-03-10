@@ -1,8 +1,10 @@
 import { actionTree, getterTree } from 'typed-vuex'
-import { AccountAddress } from '@injectivelabs/ts-types'
 import { ConcreteStrategyOptions, Wallet } from '@injectivelabs/web3-strategy'
+import {
+  getAddressFromInjectiveAddress,
+  getInjectiveAddress
+} from '@injectivelabs/ui-common'
 import { confirm, connect, getAddresses } from '~/app/services/wallet'
-import { getInjectiveAddress } from '~/app/services/account'
 import { validateMetamask, isMetamaskInstalled } from '~/app/services/metamask'
 import { WalletConnectStatus } from '~/types'
 import { cancelEventsOnWeb3Strategy } from '~/app/web3'
@@ -10,10 +12,10 @@ import { GAS_FREE_DEPOSIT_REBATE_ENABLED } from '~/app/utils/constants'
 
 const initialStateFactory = () => ({
   walletConnectStatus: WalletConnectStatus.idle as WalletConnectStatus,
-  address: '' as AccountAddress,
-  injectiveAddress: '' as AccountAddress,
+  address: '' as string,
+  injectiveAddress: '' as string,
   addressConfirmation: '' as string,
-  addresses: [] as AccountAddress[],
+  addresses: [] as string[],
   metamaskInstalled: false as boolean,
   wallet: Wallet.Metamask,
   walletOptions: {} as Partial<ConcreteStrategyOptions>
@@ -23,9 +25,9 @@ const initialState = initialStateFactory()
 
 export const state = () => ({
   walletConnectStatus: initialState.walletConnectStatus as WalletConnectStatus,
-  addresses: initialState.addresses as AccountAddress[],
-  address: initialState.address as AccountAddress,
-  injectiveAddress: initialState.injectiveAddress as AccountAddress,
+  addresses: initialState.addresses as string[],
+  address: initialState.address as string,
+  injectiveAddress: initialState.injectiveAddress as string,
   addressConfirmation: initialState.addressConfirmation as string,
   metamaskInstalled: initialState.metamaskInstalled as boolean,
   wallet: initialState.wallet as Wallet,
@@ -51,7 +53,7 @@ export const mutations = {
     state.wallet = wallet
   },
 
-  setAddress(state: WalletStoreState, address: AccountAddress) {
+  setAddress(state: WalletStoreState, address: string) {
     state.address = address
   },
 
@@ -67,7 +69,7 @@ export const mutations = {
     state.metamaskInstalled = metamaskInstalled
   },
 
-  setAddresses(state: WalletStoreState, addresses: AccountAddress[]) {
+  setAddresses(state: WalletStoreState, addresses: string[]) {
     state.addresses = addresses
   },
 
@@ -116,10 +118,19 @@ export const actions = actionTree(
       if (wallet === Wallet.Ledger) {
         await connect({ wallet: Wallet.Ledger, options: walletOptions })
       }
+
+      if (wallet === Wallet.Keplr) {
+        await connect({ wallet: Wallet.Keplr, options: walletOptions })
+      }
     },
 
     async initPage(_) {
-      await this.app.$accessor.token.getAllTokenWithBalanceAndAllowance()
+      await this.app.$accessor.bank.fetchBankBalancesWithToken()
+      await this.app.$accessor.account.fetchSubaccounts()
+      await this.app.$accessor.account.fetchSubaccountsBalances()
+      await this.app.$accessor.account.fetchSubaccountsBalancesWithPrices()
+      await this.app.$accessor.onboard.init()
+      await this.app.$accessor.token.getErc20TokensWithBalanceAndPriceFromBankAndMarkets()
 
       if (GAS_FREE_DEPOSIT_REBATE_ENABLED) {
         await this.app.$accessor.gasRebate.init()
@@ -130,10 +141,20 @@ export const actions = actionTree(
       commit('setMetamaskInstalled', await isMetamaskInstalled())
     },
 
+    /* Only init new Web3 strategy
+     ** if we don't have any addresses in the store,
+     ** otherwise fetch more addresses
+     */
     async getLedgerAddresses({ state, commit }) {
-      await connect({ wallet: Wallet.Ledger, options: state.walletOptions })
+      if (state.addresses.length === 0) {
+        await connect({ wallet: Wallet.Ledger, options: state.walletOptions })
 
-      commit('setAddresses', await getAddresses())
+        commit('setAddresses', await getAddresses())
+      } else {
+        const newAddresses = await getAddresses()
+
+        commit('setAddresses', [...state.addresses, ...newAddresses])
+      }
     },
 
     async connect({ commit }, wallet: Wallet) {
@@ -169,7 +190,7 @@ export const actions = actionTree(
       commit('setWalletConnectStatus', WalletConnectStatus.connected)
     },
 
-    async confirm({ commit }, addresses: AccountAddress[]) {
+    async confirm({ commit }, addresses: string[]) {
       commit('setWalletConnectStatus', WalletConnectStatus.connecting)
 
       await this.app.$accessor.app.validate()
@@ -183,30 +204,16 @@ export const actions = actionTree(
       commit('setAddresses', addresses)
       commit('setAddress', address)
 
-      await this.app.$accessor.account.fetchSubaccounts()
       await this.app.$accessor.bank.fetchBalances()
-
-      await this.app.$accessor.token.getTokenBalanceAndAllowanceForDerivativeMarket()
-      await this.app.$accessor.token.getTokenBalanceAndAllowanceForMarket()
+      await this.app.$accessor.account.fetchSubaccounts()
+      await this.app.$accessor.exchange.initFeeDiscounts()
 
       if (this.app.context.route.name === 'portfolio') {
-        await this.app.$accessor.portfolio.init()
-      }
-
-      if (this.app.context.route.name === 'history') {
-        await this.app.$accessor.history.init()
-      }
-
-      if (this.app.context.route.name === 'wallet') {
         await this.app.$accessor.wallet.initPage()
       }
 
       if (this.app.context.route.name === 'trade-and-earn') {
         await this.app.$accessor.exchange.initTradeAndEarn()
-      }
-
-      if (this.app.context.route.name === 'fee-discounts') {
-        await this.app.$accessor.exchange.initFees()
       }
 
       commit('setWalletConnectStatus', WalletConnectStatus.connected)
@@ -239,19 +246,9 @@ export const actions = actionTree(
 
       await this.app.$accessor.account.fetchSubaccounts()
       await this.app.$accessor.bank.fetchBalances()
+      await this.app.$accessor.exchange.initFeeDiscounts()
 
-      await this.app.$accessor.token.getTokenBalanceAndAllowanceForDerivativeMarket()
-      await this.app.$accessor.token.getTokenBalanceAndAllowanceForMarket()
-
-      if (this.app.context.route.name === 'portfolio') {
-        await this.app.$accessor.portfolio.init()
-      }
-
-      if (this.app.context.route.name === 'history') {
-        await this.app.$accessor.history.init()
-      }
-
-      if (this.app.context.route.name === 'wallet') {
+      if (this.app.context.route.name === 'funding') {
         await this.app.$accessor.wallet.initPage()
       }
 
@@ -259,8 +256,41 @@ export const actions = actionTree(
         await this.app.$accessor.exchange.initTradeAndEarn()
       }
 
-      if (this.app.context.route.name === 'fee-discounts') {
-        await this.app.$accessor.exchange.initFees()
+      commit('setWalletConnectStatus', WalletConnectStatus.connected)
+    },
+
+    async connectKeplr({ commit }) {
+      await this.app.$accessor.app.validate()
+
+      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
+      commit('setWallet', Wallet.Keplr)
+
+      await connect({
+        wallet: Wallet.Keplr
+        /*
+        onAccountChangeCallback: async (_address: string) => {
+          await this.app.$accessor.wallet.connectMetamask()
+        } */
+      })
+
+      const injectiveAddresses = await getAddresses()
+      const [injectiveAddress] = injectiveAddresses
+      const addressConfirmation = await confirm(injectiveAddress)
+      const ethereumAddress = getAddressFromInjectiveAddress(injectiveAddress)
+
+      commit('setInjectiveAddress', injectiveAddress)
+      commit('setAddress', ethereumAddress)
+      commit('setAddresses', injectiveAddresses)
+      commit('setAddressConfirmation', addressConfirmation)
+
+      await this.app.$accessor.bank.fetchBalances()
+
+      if (this.app.context.route.name === 'funding') {
+        await this.app.$accessor.wallet.initPage()
+      }
+
+      if (this.app.context.route.name === 'trade-and-earn') {
+        await this.app.$accessor.exchange.initTradeAndEarn()
       }
 
       commit('setWalletConnectStatus', WalletConnectStatus.connected)
@@ -276,13 +306,13 @@ export const actions = actionTree(
 
     async logout({ commit }) {
       await this.app.$accessor.account.reset()
-      await this.app.$accessor.account.reset()
       await this.app.$accessor.token.reset()
       await this.app.$accessor.spot.resetSubaccount()
       await this.app.$accessor.derivatives.resetSubaccount()
       await this.app.$accessor.bank.reset()
-      await this.app.$accessor.portfolio.reset()
-      await this.app.$accessor.history.reset()
+      await this.app.$accessor.referral.reset()
+      await this.app.$accessor.positions.reset()
+      await this.app.$accessor.activity.reset()
 
       commit('reset')
       commit('resetPage')
@@ -293,6 +323,8 @@ export const actions = actionTree(
 
     async resetPage({ commit }) {
       await this.app.$accessor.token.reset()
+      await this.app.$accessor.onboard.reset()
+      await this.app.$accessor.gasRebate.reset()
 
       commit('resetPage')
     }

@@ -1,26 +1,28 @@
 <template>
-  <div v-if="market" class="table-responsive table-orders">
-    <table class="table">
+  <v-table-wrapper v-if="market">
+    <table v-if="filteredTrades.length > 0" class="table">
       <trades-table-header />
-      <tbody v-if="isUserWalletConnected">
+      <tbody>
         <tr
           is="v-trade"
-          v-for="(trade, index) in trades"
+          v-for="(trade, index) in filteredTrades"
           :key="`trades-history-${index}-`"
           :trade="trade"
-        ></tr>
+        />
       </tbody>
     </table>
-    <v-user-wallet-connect-warning v-if="!isUserWalletConnected" />
-  </div>
+    <v-empty-list v-else :message="$t('trade.emptyTrades')" />
+  </v-table-wrapper>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import {
+  UiDerivativeMarketWithToken,
+  UiDerivativeTrade
+} from '@injectivelabs/ui-common'
 import Trade from '~/components/partials/common/derivatives/trade.vue'
 import TradesTableHeader from '~/components/partials/common/derivatives/trades-table-header.vue'
-import { UiDerivativeMarket, UiDerivativeTrade } from '~/types'
-import { UiSubaccount } from '~/types/subaccount'
 
 export default Vue.extend({
   components: {
@@ -28,8 +30,15 @@ export default Vue.extend({
     TradesTableHeader
   },
 
+  props: {
+    currentMarketOnly: {
+      type: Boolean,
+      default: false
+    }
+  },
+
   computed: {
-    market(): UiDerivativeMarket | undefined {
+    market(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 
@@ -37,18 +46,14 @@ export default Vue.extend({
       return this.$accessor.derivatives.subaccountTrades
     },
 
-    subAccount(): UiSubaccount | undefined {
-      return this.$accessor.account.subaccount
-    },
+    filteredTrades(): UiDerivativeTrade[] {
+      const { currentMarketOnly, market, trades } = this
 
-    isUserWalletConnected(): boolean {
-      return this.$accessor.wallet.isUserWalletConnected
-    }
-  },
+      if (!currentMarketOnly) {
+        return trades
+      }
 
-  watch: {
-    subAccount() {
-      this.$accessor.derivatives.fetchSubaccountMarketTrades()
+      return trades.filter((trade) => trade.marketId === market?.marketId)
     }
   }
 })

@@ -1,44 +1,37 @@
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { actionTree, getterTree } from 'typed-vuex'
-import {
-  withdraw,
-  getTokenBalanceAndAllowance,
-  getIbcTokenBalanceAndAllowance,
-  setTokenAllowance,
-  transfer,
-  getUsdtTokenPriceFromCoinGecko,
-  validateTransferRestrictions
-} from '~/app/services/tokens'
-import { backupPromiseCall } from '~/app/utils/async'
-import { UNLIMITED_ALLOWANCE, INJ_COIN_GECKO_ID } from '~/app/utils/constants'
 import {
   Token,
   TokenWithBalance,
-  UiDerivativeMarket,
-  UiSpotMarket
-} from '~/types'
+  TokenWithBalanceAndPrice,
+  UNLIMITED_ALLOWANCE,
+  INJ_COIN_GECKO_ID,
+  BankBalanceWithToken
+} from '@injectivelabs/ui-common'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { actionTree, getterTree } from 'typed-vuex'
+import {
+  peggyActionServiceFactory,
+  tokenCoinGeckoService,
+  tokenErc20ActionServiceFactory,
+  tokenErc20Service,
+  tokenService
+} from '~/app/Services'
+import { BTC_COIN_GECKO_ID } from '~/app/utils/constants'
+import { backupPromiseCall } from '~/app/utils/async'
 
 const initialStateFactory = () => ({
-  erc20TokensWithBalanceFromBank: [] as TokenWithBalance[],
-  ibcTokensWithBalanceFromBank: [] as TokenWithBalance[],
-  tokensWithPriceInUsd: {} as Record<string, string>,
-  baseTokenWithBalance: (undefined as unknown) as TokenWithBalance,
-  quoteTokenWithBalance: (undefined as unknown) as TokenWithBalance,
-  injUsdtPrice: 0 as number
+  erc20TokensWithBalanceAndPriceFromBank: [] as TokenWithBalanceAndPrice[],
+  ibcTokensWithBalanceAndPriceFromBank: [] as TokenWithBalanceAndPrice[],
+  btcUsdPrice: 0 as number,
+  injUsdPrice: 0 as number
 })
 
 const initialState = initialStateFactory()
 
 export const state = () => ({
-  erc20TokensWithBalanceFromBank: initialState.erc20TokensWithBalanceFromBank as TokenWithBalance[],
-  ibcTokensWithBalanceFromBank: initialState.ibcTokensWithBalanceFromBank as TokenWithBalance[],
-  tokensWithPriceInUsd: initialState.tokensWithPriceInUsd as Record<
-    string,
-    string
-  >,
-  baseTokenWithBalance: initialState.baseTokenWithBalance as TokenWithBalance,
-  quoteTokenWithBalance: initialState.quoteTokenWithBalance as TokenWithBalance,
-  injUsdtPrice: initialState.injUsdtPrice as number
+  erc20TokensWithBalanceAndPriceFromBank: initialState.erc20TokensWithBalanceAndPriceFromBank as TokenWithBalanceAndPrice[],
+  ibcTokensWithBalanceAndPriceFromBank: initialState.ibcTokensWithBalanceAndPriceFromBank as TokenWithBalanceAndPrice[],
+  btcUsdPrice: initialState.btcUsdPrice as number,
+  injUsdPrice: initialState.injUsdPrice as number
 })
 
 export type TokenStoreState = ReturnType<typeof state>
@@ -48,76 +41,46 @@ export const getters = getterTree(state, {
 })
 
 export const mutations = {
-  setTokensWithBalance(
+  setErc20TokensWithBalanceAndPriceFromBank(
     state: TokenStoreState,
-    {
-      baseTokenWithBalance,
-      quoteTokenWithBalance
-    }: {
-      baseTokenWithBalance: TokenWithBalance
-      quoteTokenWithBalance: TokenWithBalance
-    }
+    erc20TokensWithBalanceAndPriceFromBank: TokenWithBalanceAndPrice[]
   ) {
-    state.baseTokenWithBalance = baseTokenWithBalance
-    state.quoteTokenWithBalance = quoteTokenWithBalance
+    state.erc20TokensWithBalanceAndPriceFromBank = erc20TokensWithBalanceAndPriceFromBank
   },
 
-  setQuoteTokenWithBalance(
+  setIbcTokensWithBalanceAndPriceFromBank(
     state: TokenStoreState,
-    tokenWithBalance: TokenWithBalance
+    ibcTokensWithBalanceAndPriceFromBank: TokenWithBalanceAndPrice[]
   ) {
-    state.quoteTokenWithBalance = tokenWithBalance
+    state.ibcTokensWithBalanceAndPriceFromBank = ibcTokensWithBalanceAndPriceFromBank
   },
 
-  setBaseTokenWithBalance(
-    state: TokenStoreState,
-    tokenWithBalance: TokenWithBalance
-  ) {
-    state.baseTokenWithBalance = tokenWithBalance
+  setBtcUsdPrice(state: TokenStoreState, btcUsdPrice: number) {
+    state.btcUsdPrice = btcUsdPrice
   },
 
-  setErc20TokensWithBalanceFromBank(
-    state: TokenStoreState,
-    erc20TokensWithBalanceFromBank: TokenWithBalance[]
-  ) {
-    state.erc20TokensWithBalanceFromBank = erc20TokensWithBalanceFromBank
-  },
-
-  setIbcTokensWithBalanceFromBank(
-    state: TokenStoreState,
-    ibcTokensWithBalanceFromBank: TokenWithBalance[]
-  ) {
-    state.ibcTokensWithBalanceFromBank = ibcTokensWithBalanceFromBank
-  },
-
-  setTokensWithPriceInUsd(
-    state: TokenStoreState,
-    tokensWithPriceInUsd: Record<string, string>
-  ) {
-    state.tokensWithPriceInUsd = tokensWithPriceInUsd
-  },
-
-  setInjUsdPrice(state: TokenStoreState, injUsdtPrice: number) {
-    state.injUsdtPrice = injUsdtPrice
+  setInjUsdPrice(state: TokenStoreState, injUsdPrice: number) {
+    state.injUsdPrice = injUsdPrice
   },
 
   reset(state: TokenStoreState) {
     const initialState = initialStateFactory()
 
-    state.erc20TokensWithBalanceFromBank =
-      initialState.erc20TokensWithBalanceFromBank
-    state.ibcTokensWithBalanceFromBank =
-      initialState.ibcTokensWithBalanceFromBank
-    state.baseTokenWithBalance = initialState.baseTokenWithBalance
-    state.quoteTokenWithBalance = initialState.quoteTokenWithBalance
-    state.injUsdtPrice = initialState.injUsdtPrice
+    state.erc20TokensWithBalanceAndPriceFromBank =
+      initialState.erc20TokensWithBalanceAndPriceFromBank
+    state.ibcTokensWithBalanceAndPriceFromBank =
+      initialState.ibcTokensWithBalanceAndPriceFromBank
+    state.injUsdPrice = initialState.injUsdPrice
+    state.btcUsdPrice = initialState.btcUsdPrice
   }
 }
 
 export const actions = actionTree(
   { state },
   {
-    async getAllTokenWithBalanceAndAllowance({ commit }) {
+    async getErc20TokensWithBalanceAndPriceFromBankAndMarkets({ commit }) {
+      const { markets: derivativeMarkets } = this.app.$accessor.derivatives
+      const { markets: spotMarkets } = this.app.$accessor.spot
       const { address, isUserWalletConnected } = this.app.$accessor.wallet
 
       if (!address || !isUserWalletConnected) {
@@ -125,169 +88,113 @@ export const actions = actionTree(
       }
 
       const {
-        balancesWithTokenMetaData,
-        ibcBalancesWithTokenMetaData
+        bankErc20BalancesWithToken,
+        bankIbcBalancesWithToken
       } = this.app.$accessor.bank
 
-      if (balancesWithTokenMetaData.length === 0) {
-        await this.app.$accessor.bank.fetchBalancesWithTokenMetaData()
-      }
-
-      if (ibcBalancesWithTokenMetaData.length === 0) {
-        await this.app.$accessor.bank.fetchIbcBalancesWithTokenMetaData()
-      }
-
-      const {
-        balancesWithTokenMetaData: newBalancesWithTokenMetaData,
-        ibcBalancesWithTokenMetaData: newIbcBalancesWithTokenMetaData
-      } = this.app.$accessor.bank
-
-      const ercTokensWithBalanceAndAllowance = await Promise.all(
-        newBalancesWithTokenMetaData.map(async ({ token }) => {
-          return (await getTokenBalanceAndAllowance({
+      const tokenToTokenWithBalanceAndAllowance = async ({
+        token
+      }: BankBalanceWithToken) => {
+        const tokenWithBalance = await tokenErc20Service.fetchTokenBalanceAndAllowance(
+          {
             address,
             token
-          })) as TokenWithBalance
+          }
+        )
+
+        return {
+          ...tokenWithBalance,
+          usdPrice: await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
+            token.coinGeckoId
+          )
+        } as TokenWithBalanceAndPrice
+      }
+
+      const ercTokensWithBalanceAndAllowance = await Promise.all(
+        bankErc20BalancesWithToken.map(tokenToTokenWithBalanceAndAllowance)
+      )
+
+      const ibcTokensWithBalanceAndPriceFromBank = await Promise.all(
+        bankIbcBalancesWithToken.map(tokenToTokenWithBalanceAndAllowance)
+      )
+
+      const denomsInBankBalances = [
+        ...ercTokensWithBalanceAndAllowance,
+        ...ibcTokensWithBalanceAndPriceFromBank
+      ].map((balance) => balance.denom)
+      const spotBaseDenomsNotInBankBalances = spotMarkets
+        .filter((market) => {
+          return !denomsInBankBalances.includes(market.baseDenom)
+        })
+        .map((market) => market.baseDenom)
+      const spotQuoteDenomsNotInBankBalances = spotMarkets
+        .filter((market) => {
+          return !denomsInBankBalances.includes(market.quoteDenom)
+        })
+        .map((market) => market.quoteDenom)
+      const derivativeQuoteDenomsNotInBankBalances = derivativeMarkets
+        .filter((market) => {
+          return !denomsInBankBalances.includes(market.quoteDenom)
+        })
+        .map((market) => market.quoteDenom)
+      const denomsNotInBankBalances = [
+        ...spotBaseDenomsNotInBankBalances,
+        ...spotQuoteDenomsNotInBankBalances,
+        ...derivativeQuoteDenomsNotInBankBalances
+      ]
+      const uniqueDenomsNotInBankBalances = [
+        ...new Set(denomsNotInBankBalances)
+      ]
+      const tradeableTokensWithBalanceAndPrice = await Promise.all(
+        uniqueDenomsNotInBankBalances.map(async (denom) => {
+          const token = await tokenService.getDenomToken(denom)
+          const tokenWithBalance = await tokenErc20Service.fetchTokenBalanceAndAllowance(
+            { address, token }
+          )
+
+          return {
+            ...tokenWithBalance,
+            usdPrice: await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
+              token.coinGeckoId
+            )
+          } as TokenWithBalanceAndPrice
         })
       )
 
-      const ibcTokensWithBalanceFromBank = await Promise.all(
-        newIbcBalancesWithTokenMetaData.map(async ({ token }) => {
-          return (await getIbcTokenBalanceAndAllowance(
-            token
-          )) as TokenWithBalance
-        })
-      )
+      const ercTokensWithBalanceAndAllowanceWithTradeableTokens = [
+        ...new Map(
+          [
+            ...tradeableTokensWithBalanceAndPrice,
+            ...ercTokensWithBalanceAndAllowance
+          ].map((token) => [token.denom, token])
+        ).values()
+      ]
 
       commit(
-        'setErc20TokensWithBalanceFromBank',
-        ercTokensWithBalanceAndAllowance
+        'setErc20TokensWithBalanceAndPriceFromBank',
+        ercTokensWithBalanceAndAllowanceWithTradeableTokens
       )
-      commit('setIbcTokensWithBalanceFromBank', ibcTokensWithBalanceFromBank)
-    },
-
-    async getAllTokenWithPriceInUsd({ commit }) {
-      const { address, isUserWalletConnected } = this.app.$accessor.wallet
-
-      if (!address || !isUserWalletConnected) {
-        return
-      }
-
-      const { balancesWithTokenMetaData } = this.app.$accessor.bank
-
-      if (balancesWithTokenMetaData.length === 0) {
-        await this.app.$accessor.bank.fetchBalancesWithTokenMetaData()
-      }
-
-      const {
-        balancesWithTokenMetaData: newBalancesWithTokenMetaData
-      } = this.app.$accessor.bank
-
-      const tokensPriceInUsd = await Promise.all(
-        newBalancesWithTokenMetaData.map(async ({ token }) => {
-          return await getUsdtTokenPriceFromCoinGecko(token.coinGeckoId)
-        })
+      commit(
+        'setIbcTokensWithBalanceAndPriceFromBank',
+        ibcTokensWithBalanceAndPriceFromBank
       )
-
-      const tokensWithPriceInUsd = tokensPriceInUsd.reduce(
-        (tokens, price, index) => {
-          return {
-            ...tokens,
-            [newBalancesWithTokenMetaData[index].denom]: price
-          }
-        },
-        {}
-      )
-
-      commit('setTokensWithPriceInUsd', tokensWithPriceInUsd)
-    },
-
-    async getTokenBalanceAndAllowance({ commit }) {
-      const { address, isUserWalletConnected } = this.app.$accessor.wallet
-      const { market: spotMarket } = this.app.$accessor.spot
-      const { market: derivativeMarket } = this.app.$accessor.derivatives
-
-      if (!address || !isUserWalletConnected) {
-        return
-      }
-
-      if (!spotMarket && !derivativeMarket) {
-        return
-      }
-
-      const market =
-        spotMarket || (derivativeMarket as UiSpotMarket | UiDerivativeMarket)
-      const { baseToken, quoteToken } = market
-
-      if (
-        baseToken.denom.startsWith('ibc') ||
-        quoteToken.denom.startsWith('ibc')
-      ) {
-        return
-      }
-
-      const baseTokenWithBalance = (await getTokenBalanceAndAllowance({
-        address,
-        token: baseToken
-      })) as TokenWithBalance
-      const quoteTokenWithBalance = (await getTokenBalanceAndAllowance({
-        address,
-        token: quoteToken
-      })) as TokenWithBalance
-
-      commit('setTokensWithBalance', {
-        baseTokenWithBalance,
-        quoteTokenWithBalance
-      })
-    },
-
-    async getTokenBalanceAndAllowanceForMarket({ commit }) {
-      const { address } = this.app.$accessor.wallet
-      const { market } = this.app.$accessor.spot
-
-      if (!market) {
-        return
-      }
-
-      const { baseToken, quoteToken } = market
-
-      const baseTokenWithBalance = (await getTokenBalanceAndAllowance({
-        address,
-        token: baseToken
-      })) as TokenWithBalance
-      const quoteTokenWithBalance = (await getTokenBalanceAndAllowance({
-        address,
-        token: quoteToken
-      })) as TokenWithBalance
-
-      commit('setTokensWithBalance', {
-        baseTokenWithBalance,
-        quoteTokenWithBalance
-      })
-    },
-
-    async getTokenBalanceAndAllowanceForDerivativeMarket({ commit }) {
-      const { address } = this.app.$accessor.wallet
-      const { market } = this.app.$accessor.derivatives
-
-      if (!market) {
-        return
-      }
-
-      const { quoteToken } = market
-
-      const quoteTokenWithBalance = (await getTokenBalanceAndAllowance({
-        address,
-        token: quoteToken
-      })) as TokenWithBalance
-
-      commit('setQuoteTokenWithBalance', quoteTokenWithBalance)
     },
 
     async getInjUsdPrice({ commit }) {
       commit(
         'setInjUsdPrice',
-        await getUsdtTokenPriceFromCoinGecko(INJ_COIN_GECKO_ID)
+        await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
+          INJ_COIN_GECKO_ID
+        )
+      )
+    },
+
+    async getBitcoinUsdPrice({ commit }) {
+      commit(
+        'setBtcUsdPrice',
+        await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
+          BTC_COIN_GECKO_ID
+        )
       )
     },
 
@@ -297,58 +204,65 @@ export const actions = actionTree(
     ) {
       const { address } = this.app.$accessor.wallet
       const { gasPrice } = this.app.$accessor.app
-      const amount = UNLIMITED_ALLOWANCE
+      const tokenErc20ActionService = tokenErc20ActionServiceFactory()
 
       await this.app.$accessor.wallet.validate()
 
-      await setTokenAllowance({
+      await tokenErc20ActionService.setTokenAllowance({
         address,
         tokenAddress,
         gasPrice,
-        amount: (amount as BigNumberInWei).toFixed()
+        amount: UNLIMITED_ALLOWANCE.toFixed()
       })
 
-      const { baseTokenWithBalance, quoteTokenWithBalance } = state
+      const { erc20TokensWithBalanceAndPriceFromBank } = state
+      const token = erc20TokensWithBalanceAndPriceFromBank.find(
+        (token) => token.address.toLowerCase() === tokenAddress.toLowerCase()
+      )
+      const index = erc20TokensWithBalanceAndPriceFromBank.findIndex(
+        (token) => token.address.toLowerCase() === tokenAddress.toLowerCase()
+      )
 
-      if (baseTokenWithBalance.address === tokenAddress) {
-        commit('setBaseTokenWithBalance', {
-          ...baseTokenWithBalance,
-          allowance: UNLIMITED_ALLOWANCE
-        })
+      if (!token || index < 0) {
+        return
       }
 
-      if (quoteTokenWithBalance.address === tokenAddress) {
-        commit('setQuoteTokenWithBalance', {
-          ...quoteTokenWithBalance,
-          allowance: UNLIMITED_ALLOWANCE
-        })
+      const erc20TokensWithBalanceAndPriceFromBankWithUpdatedAllowance = [
+        ...erc20TokensWithBalanceAndPriceFromBank
+      ]
+      erc20TokensWithBalanceAndPriceFromBankWithUpdatedAllowance[index] = {
+        ...token,
+        allowance: UNLIMITED_ALLOWANCE.toString()
       }
-    },
 
-    async validateTransferRestrictions(_, { amount, token }) {
-      await validateTransferRestrictions(amount, token)
+      commit(
+        'setErc20TokensWithBalanceAndPriceFromBank',
+        erc20TokensWithBalanceAndPriceFromBankWithUpdatedAllowance
+      )
     },
 
     async transfer(
       _,
-      { amount, token }: { amount: BigNumberInBase; token: TokenWithBalance }
+      { amount, token }: { amount: BigNumberInBase; token: Token }
     ) {
-      const { address, isUserWalletConnected } = this.app.$accessor.wallet
+      const {
+        address,
+        injectiveAddress,
+        isUserWalletConnected
+      } = this.app.$accessor.wallet
       const { gasPrice } = this.app.$accessor.app
+      const peggyActionService = peggyActionServiceFactory()
 
       if (!address || !isUserWalletConnected) {
         return
       }
 
       await this.app.$accessor.wallet.validate()
-      await this.app.$accessor.token.validateTransferRestrictions({
-        amount,
-        token
-      })
 
-      await transfer({
+      await peggyActionService.transfer({
         address,
         gasPrice,
+        destinationAddress: injectiveAddress,
         denom: token.denom,
         amount: new BigNumberInBase(
           amount.toFixed(3, BigNumberInBase.ROUND_DOWN)
@@ -358,8 +272,6 @@ export const actions = actionTree(
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
-      await this.app.$accessor.token.getTokenBalanceAndAllowanceForMarket()
-      await this.app.$accessor.token.getTokenBalanceAndAllowanceForDerivativeMarket()
     },
 
     async withdraw(
@@ -379,6 +291,7 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const peggyActionService = peggyActionServiceFactory()
 
       if (!address || !isUserWalletConnected) {
         return
@@ -386,20 +299,18 @@ export const actions = actionTree(
 
       await this.app.$accessor.wallet.validate()
 
-      await withdraw({
+      await peggyActionService.withdraw({
         address,
         injectiveAddress,
         denom: token.denom,
         destinationAddress: address,
-        amount: amount.toWei(token.decimals),
+        amount: amount.toWei(token.decimals).toFixed(0),
         bridgeFee: new BigNumberInWei(
           bridgeFee.toWei(token.decimals).toFixed(0)
-        )
+        ).toFixed(0)
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
-      await this.app.$accessor.token.getTokenBalanceAndAllowanceForMarket()
-      await this.app.$accessor.token.getTokenBalanceAndAllowanceForDerivativeMarket()
     }
   }
 )

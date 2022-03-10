@@ -1,6 +1,6 @@
 <template>
   <div
-    v-show="isVisibleOnViewport"
+    v-show="isOpen"
     class="fixed inset-0 overflow-y-auto py-4"
     :class="{
       'mt-12 z-1000': showHeader,
@@ -10,37 +10,21 @@
     <div
       class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:p-0"
     >
-      <transition
-        enter-active-class="ease-in-out duration-200"
-        enter-class="opacity-0"
-        enter-to-class="opacity-100"
-        leave-active-class="ease-in-out duration-200"
-        leave-class="opacity-100"
-        leave-to-class="opacity-0"
+      <div
+        v-show="isOpen"
+        class="fixed inset-0 transition-opacity"
+        :aria-hidden="isOpen"
+        @click="handleCloseSlideout"
       >
         <div
-          v-show="isOpen"
-          class="fixed inset-0 transition-opacity"
-          :aria-hidden="isOpen"
-          @click="handleCloseSlideout"
-        >
-          <div
-            class="absolute inset-0 bg-gray-900 opacity-90 backdrop-filter backdrop-blur-sm"
-          />
-        </div>
-      </transition>
+          class="absolute inset-0 bg-gray-900 opacity-90 backdrop-filter backdrop-blur-sm"
+        />
+      </div>
 
-      <transition
-        enter-active-class="transform transition ease-in-out duration-300"
-        enter-class="-translate-x-full"
-        enter-to-class="translate-x-0"
-        leave-active-class="transform transition ease-in-out duration-300"
-        leave-class="translate-x-0"
-        leave-to-class="-translate-x-full"
-      >
+      <transition name="fade-right-left">
         <div
           v-show="isOpen"
-          class="fixed inset-y-0 left-0 pr-10 max-w-full flex transition-transform"
+          class="fixed inset-y-0 left-0 max-w-full flex transition-transform"
           :class="{ 'mt-12': showHeader }"
           role="dialog"
           :aria-modal="isOpen"
@@ -58,16 +42,16 @@
                   <h2 class="text-lg font-medium text-gray-300">
                     <slot name="title" />
                   </h2>
-                  <div class="ml-3 h-4 flex items-center">
+                  <!-- <div class="ml-3 h-4 flex items-center">
                     <button
                       type="button"
                       class="bg-transparent rounded-md text-gray-300 hover:text-primary-500"
                       @click="handleClickOnCloseButton"
                     >
-                      <span class="sr-only">{{ $t('close') }}</span>
+                      <span class="sr-only">{{ $t('common.close') }}</span>
                       <v-icon-close class="w-4 h-4" />
                     </button>
-                  </div>
+                  </div> -->
                 </div>
               </div>
               <div
@@ -111,19 +95,17 @@ export default Vue.extend({
   watch: {
     isOpen(newIsOpen: boolean) {
       if (newIsOpen) {
-        this.isVisibleOnViewport = true
         this.$nextTick(() => {
           document.body.classList.add('overflow-hidden')
         })
       } else {
-        document.body.classList.remove('overflow-hidden')
-        setTimeout(() => {
-          this.isVisibleOnViewport = false
-        }, 300)
+        this.$nextTick(() => {
+          document.body.classList.remove('overflow-hidden')
+        })
       }
     },
 
-    $route(to, from) {
+    $route(_to, _from) {
       this.handleCloseSlideout()
     }
   },

@@ -1,5 +1,4 @@
 <template>
-  <!-- eslint-disable vue/no-v-html -->
   <v-modal :is-open="isModalOpen" is-always-open @modal-closed="closeModal">
     <h3 slot="title">
       {{ $t('marketBeta.title') }}

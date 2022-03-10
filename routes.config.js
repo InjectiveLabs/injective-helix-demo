@@ -29,7 +29,8 @@ const mainnetDerivatives = [
   'eth-usdt-perp',
   'luna-ust-perp',
   'bnb-usdt-perp',
-  'atom-usdt-perp'
+  'atom-usdt-perp',
+  'osmo-usdt-perp'
 ]
 const testnetDerivatives = [...mainnetDerivatives]
 const mainnetStagingDerivatives = [...mainnetDerivatives]
@@ -43,18 +44,20 @@ if (NETWORK === Network.Devnet) {
   derivatives.push('bayc-weth-perp')
 }
 
+const spotRoutes = spot.map((s) => `/spot/${s}`) || []
+const derivativesRoutes = derivatives.map((s) => `/spot/${s}`) || []
+
 module.exports = [
   '/',
-  '/dmm',
-  '/faq',
-  '/fee-discounts',
-  '/history',
   '/portfolio',
+  '/activity',
+  '/fee-discounts',
+  '/trade-and-earn',
+  '/faq',
   '/register',
   '/trade-and-earn',
-  '/wallet',
-  ...spot.map((s) => `/spot/${s}`),
-  ...derivatives.map((d) => `/derivatives/${d}`)
+  ...spotRoutes,
+  ...derivativesRoutes
 ]
 
 module.exports.spot = spot

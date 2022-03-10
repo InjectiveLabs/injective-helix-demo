@@ -1,43 +1,44 @@
 import { actionTree, getterTree } from 'typed-vuex'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  spotPriceToChainPriceToFixed,
+  spotQuantityToChainQuantityToFixed
+} from '@injectivelabs/utils'
 import { StreamOperation } from '@injectivelabs/ts-types'
-import { SpotOrderState } from '@injectivelabs/spot-consumer'
 import {
-  UiSpotOrderbook,
+  Change,
+  SpotTransformer,
+  zeroSpotMarketSummary,
+  ZERO_IN_BASE,
   UiSpotLimitOrder,
-  UiSpotTrade,
-  UiSpotMarket,
-  SpotOrderSide,
   UiSpotMarketSummary,
-  Change
-} from '~/types'
+  UiSpotMarketWithToken,
+  UiSpotOrderbook,
+  UiSpotTrade
+} from '@injectivelabs/ui-common'
+import { SpotOrderSide, SpotOrderState } from '@injectivelabs/spot-consumer'
 import {
-  fetchMarketOrderbook,
-  fetchMarketOrders,
-  fetchMarkets,
-  fetchMarketsSummary,
-  fetchMarketSummary,
-  fetchMarketTrades,
-  submitLimitOrder,
-  submitMarketOrder,
-  cancelOrder,
   streamOrderbook,
   cancelMarketStreams,
   streamTrades,
   streamSubaccountOrders,
-  streamSubaccountTrades,
-  batchCancelOrders
-} from '~/app/services/spot'
+  streamSubaccountTrades
+} from '~/app/streams/spot'
 import {
-  ORDERBOOK_STREAMING_ENABLED,
-  ZERO_IN_BASE
+  FEE_RECIPIENT,
+  ORDERBOOK_STREAMING_ENABLED
 } from '~/app/utils/constants'
-import { zeroSpotMarketSummary } from '~/app/utils/helpers'
+import {
+  spotActionServiceFactory,
+  spotService,
+  tokenService
+} from '~/app/Services'
+import { spot as allowedSpotMarkets } from '~/routes.config'
 
 const initialStateFactory = () => ({
-  markets: [] as UiSpotMarket[],
+  markets: [] as UiSpotMarketWithToken[],
   marketsSummary: [] as UiSpotMarketSummary[],
-  market: undefined as UiSpotMarket | undefined,
+  market: undefined as UiSpotMarketWithToken | undefined,
   marketSummary: undefined as UiSpotMarketSummary | undefined,
   orderbook: undefined as UiSpotOrderbook | undefined,
   trades: [] as UiSpotTrade[],
@@ -48,9 +49,9 @@ const initialStateFactory = () => ({
 const initialState = initialStateFactory()
 
 export const state = () => ({
-  markets: initialState.markets as UiSpotMarket[],
+  markets: initialState.markets as UiSpotMarketWithToken[],
   marketsSummary: initialState.marketsSummary as UiSpotMarketSummary[],
-  market: initialState.market as UiSpotMarket | undefined,
+  market: initialState.market as UiSpotMarketWithToken | undefined,
   marketSummary: initialState.marketSummary as UiSpotMarketSummary | undefined,
   trades: initialState.trades as UiSpotTrade[],
   subaccountTrades: initialState.subaccountTrades as UiSpotTrade[],
@@ -109,7 +110,7 @@ export const getters = getterTree(state, {
 })
 
 export const mutations = {
-  setMarket(state: SpotStoreState, market: UiSpotMarket) {
+  setMarket(state: SpotStoreState, market: UiSpotMarketWithToken) {
     state.market = market
   },
 
@@ -128,7 +129,7 @@ export const mutations = {
     state.subaccountTrades = initialState.subaccountTrades
   },
 
-  setMarkets(state: SpotStoreState, markets: UiSpotMarket[]) {
+  setMarkets(state: SpotStoreState, markets: UiSpotMarketWithToken[]) {
     state.markets = markets
   },
 
@@ -169,16 +170,12 @@ export const mutations = {
     state: SpotStoreState,
     subaccountOrder: UiSpotLimitOrder
   ) {
-    const index = state.subaccountOrders.findIndex(
-      (order) => order.orderHash === subaccountOrder.orderHash
-    )
-
-    if (index > 0) {
-      state.subaccountOrders = [...state.subaccountOrders].splice(
-        index,
-        1,
-        subaccountOrder
-      )
+    if (subaccountOrder.orderHash) {
+      state.subaccountOrders = state.subaccountOrders.map((order) => {
+        return order.orderHash === subaccountOrder.orderHash
+          ? subaccountOrder
+          : order
+      })
     }
   },
 
@@ -209,16 +206,12 @@ export const mutations = {
   },
 
   updateSubaccountTrade(state: SpotStoreState, subaccountTrade: UiSpotTrade) {
-    const index = state.subaccountTrades.findIndex(
-      (order) => order.orderHash === subaccountTrade.orderHash
-    )
-
-    if (index > 0) {
-      state.subaccountTrades = [...state.subaccountTrades].splice(
-        index,
-        1,
-        subaccountTrade
-      )
+    if (subaccountTrade.orderHash) {
+      state.subaccountTrades = state.subaccountTrades.map((order) => {
+        return order.orderHash === subaccountTrade.orderHash
+          ? subaccountTrade
+          : order
+      })
     }
   },
 
@@ -251,11 +244,29 @@ export const actions = actionTree(
     },
 
     async init({ commit }) {
-      const markets = await fetchMarkets()
+      const markets = await spotService.fetchMarkets()
+      const marketsWithToken = await tokenService.getSpotMarketsWithToken(
+        markets
+      )
+      const uiMarkets = SpotTransformer.spotMarketsToUiSpotMarkets(
+        marketsWithToken
+      )
 
-      commit('setMarkets', markets)
+      // Only include markets that we pre-defined to generate static routes for
+      const uiMarketsWithToken = uiMarkets
+        .filter((market) => {
+          return allowedSpotMarkets.includes(market.slug)
+        })
+        .sort((a, b) => {
+          return (
+            allowedSpotMarkets.indexOf(a.slug) -
+            allowedSpotMarkets.indexOf(b.slug)
+          )
+        })
 
-      const marketsSummary = await fetchMarketsSummary()
+      commit('setMarkets', uiMarketsWithToken)
+
+      const marketsSummary = await spotService.fetchMarketsSummary()
       const marketSummaryNotExists =
         !marketsSummary || (marketsSummary && marketsSummary.length === 0)
       const actualMarketsSummary = marketSummaryNotExists
@@ -265,7 +276,7 @@ export const actions = actionTree(
       commit('setMarketsSummary', actualMarketsSummary as UiSpotMarketSummary[])
     },
 
-    async changeMarket({ commit, state }, marketSlug: string) {
+    async initMarket({ commit, state }, marketSlug: string) {
       const { markets } = state
 
       if (!markets.length) {
@@ -282,27 +293,31 @@ export const actions = actionTree(
       }
 
       commit('setMarket', market)
-      commit('setOrderbook', await fetchMarketOrderbook(market.marketId))
-      commit('setMarketSummary', await fetchMarketSummary(market.marketId))
       commit(
-        'setTrades',
-        await fetchMarketTrades({
-          marketId: market.marketId
-        })
+        'setMarketSummary',
+        await spotService.fetchMarketSummary(market.marketId)
       )
 
       if (ORDERBOOK_STREAMING_ENABLED) {
         await this.app.$accessor.spot.streamOrderbook()
       }
 
+      // TODO
+      await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
+      await this.app.$accessor.exchange.fetchTradingRewardsCampaign()
+    },
+
+    async initMarketStreams({ state }) {
+      const { market } = state
+
+      if (!market) {
+        return
+      }
+
       await this.app.$accessor.spot.streamTrades()
       await this.app.$accessor.spot.streamSubaccountTrades()
       await this.app.$accessor.spot.streamSubaccountOrders()
-      await this.app.$accessor.spot.fetchSubaccountOrders()
-      await this.app.$accessor.spot.fetchSubaccountTrades()
       await this.app.$accessor.account.streamSubaccountBalances()
-      await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
-      await this.app.$accessor.exchange.fetchTradingRewardsCampaign()
     },
 
     async pollOrderbook({ commit, state }) {
@@ -312,7 +327,7 @@ export const actions = actionTree(
         return
       }
 
-      commit('setOrderbook', await fetchMarketOrderbook(market.marketId))
+      commit('setOrderbook', await spotService.fetchOrderbook(market.marketId))
     },
 
     streamOrderbook({ commit, state }) {
@@ -449,10 +464,32 @@ export const actions = actionTree(
 
       commit(
         'setSubaccountOrders',
-        await fetchMarketOrders({
-          marketId: market.marketId,
+        await spotService.fetchOrders({
           subaccountId: subaccount.subaccountId
         })
+      )
+    },
+
+    async fetchOrderbook({ state, commit }) {
+      const { market } = state
+
+      if (!market) {
+        return
+      }
+
+      commit('setOrderbook', await spotService.fetchOrderbook(market.marketId))
+    },
+
+    async fetchTrades({ state, commit }) {
+      const { market } = state
+
+      if (!market) {
+        return
+      }
+
+      commit(
+        'setTrades',
+        await spotService.fetchTrades({ marketId: market.marketId })
       )
     },
 
@@ -469,8 +506,7 @@ export const actions = actionTree(
         return
       }
 
-      const trades = await fetchMarketTrades({
-        marketId: market.marketId,
+      const trades = await spotService.fetchTrades({
         subaccountId: subaccount.subaccountId
       })
 
@@ -484,11 +520,15 @@ export const actions = actionTree(
         return
       }
 
-      const updatedMarketsSummary = await fetchMarketsSummary(marketsSummary)
+      const updatedMarketsSummary = await spotService.fetchMarketsSummary()
+      const combinedMarketsSummary = SpotTransformer.marketsSummaryComparisons(
+        updatedMarketsSummary,
+        state.marketsSummary
+      )
 
       if (
-        !updatedMarketsSummary ||
-        (updatedMarketsSummary && updatedMarketsSummary.length === 0)
+        !combinedMarketsSummary ||
+        (combinedMarketsSummary && combinedMarketsSummary.length === 0)
       ) {
         commit(
           'setMarketsSummary',
@@ -496,7 +536,7 @@ export const actions = actionTree(
         )
       } else {
         if (market) {
-          const updatedMarketSummary = updatedMarketsSummary.find(
+          const updatedMarketSummary = combinedMarketsSummary.find(
             (m) => m.marketId === market.marketId
           )
 
@@ -505,26 +545,8 @@ export const actions = actionTree(
           }
         }
 
-        commit('setMarketsSummary', updatedMarketsSummary)
+        commit('setMarketsSummary', combinedMarketsSummary)
       }
-    },
-
-    async fetchSubaccountMarketTrades({ state, commit }) {
-      const { market } = state
-      const { subaccount } = this.app.$accessor.account
-      const { isUserWalletConnected } = this.app.$accessor.wallet
-
-      if (!isUserWalletConnected || !subaccount || !market) {
-        return
-      }
-
-      commit(
-        'setSubaccountTrades',
-        await fetchMarketTrades({
-          marketId: market.marketId,
-          subaccountId: subaccount.subaccountId
-        })
-      )
     },
 
     async cancelOrder(_, order: UiSpotLimitOrder) {
@@ -534,6 +556,7 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const spotActionService = spotActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount) {
         return
@@ -542,7 +565,7 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await cancelOrder({
+      await spotActionService.cancelOrder({
         injectiveAddress,
         address,
         orderHash: order.orderHash,
@@ -559,6 +582,7 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const spotActionService = spotActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount || !market) {
         return
@@ -567,7 +591,7 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await batchCancelOrders({
+      await spotActionService.batchCancelOrders({
         injectiveAddress,
         address,
         orders: orders.map((o) => ({
@@ -597,6 +621,8 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
+      const spotActionService = spotActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount || !market) {
         return
@@ -605,16 +631,21 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      const { feeRecipient } = this.app.$accessor.referral
-
-      await submitLimitOrder({
-        feeRecipient,
-        price,
-        quantity,
+      await spotActionService.submitLimitOrder({
+        address,
         orderType,
         injectiveAddress,
-        address,
-        market,
+        price: spotPriceToChainPriceToFixed({
+          value: price,
+          baseDecimals: market.baseToken.decimals,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        quantity: spotQuantityToChainQuantityToFixed({
+          value: quantity,
+          baseDecimals: market.baseToken.decimals
+        }),
+        marketId: market.marketId,
+        feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
       })
     },
@@ -638,6 +669,8 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
+      const spotActionService = spotActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount || !market) {
         return
@@ -646,16 +679,21 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      const { feeRecipient } = this.app.$accessor.referral
-
-      await submitMarketOrder({
-        feeRecipient,
-        quantity,
-        orderType,
-        price,
-        injectiveAddress,
+      await spotActionService.submitMarketOrder({
         address,
-        market,
+        orderType,
+        injectiveAddress,
+        price: spotPriceToChainPriceToFixed({
+          value: price,
+          baseDecimals: market.baseToken.decimals,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        quantity: spotQuantityToChainQuantityToFixed({
+          value: quantity,
+          baseDecimals: market.baseToken.decimals
+        }),
+        marketId: market.marketId,
+        feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
       })
     }

@@ -1,4 +1,4 @@
-import { MarketBase } from '~/types'
+import { MarketBase } from '@injectivelabs/ui-common'
 
 export const marketBase = {
   [MarketBase.Terra]: ['UST', 'LUNA']
@@ -23,3 +23,13 @@ export const marketBaseFromTicker = (
 }
 
 export const betaMarketSlugs = [] as string[]
+
+export const promotedMarketSlugs = [
+  'huahua-usdt',
+  'luna-ust',
+  'luna-ust-perp',
+  'ust-usdt',
+  'atom-usdt'
+]
+
+export const excludedPriceDeviationSlugs = ['bayc-weth-perp'] as string[]

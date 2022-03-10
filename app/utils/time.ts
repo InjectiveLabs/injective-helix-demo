@@ -1,6 +1,5 @@
-import { BigNumber } from '@injectivelabs/utils'
+import { BigNumber, SECONDS_IN_A_DAY } from '@injectivelabs/utils'
 import { formatDuration, intervalToDuration } from 'date-fns'
-import { SECONDS_IN_A_DAY } from '~/app/utils/constants'
 
 export const tomorrow = (): BigNumber => {
   return new BigNumber(Math.floor(new Date().valueOf() / 1000) + 3600 * 24)

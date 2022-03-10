@@ -1,135 +1,65 @@
 <template>
   <div>
-    <div class="flex items-center justify-between">
-      <div class="flex items-center">
-        <v-button
-          :class="{
-            'text-gray-500': marketType !== ''
-          }"
-          text-sm
-          class="font-normal"
-          @click.stop="onSelectMarketType('')"
-        >
-          <span>{{ $t('all') }}</span>
-        </v-button>
-        <div class="mx-2 w-px h-4 bg-gray-700"></div>
-        <v-button
-          :class="{
-            'text-gray-500': marketType !== MarketType.Perpetual
-          }"
-          text-sm
-          class="font-normal"
-          @click.stop="onSelectMarketType(MarketType.Perpetual)"
-        >
-          <span>{{ $t('perpetuals') }}</span>
-        </v-button>
-        <div class="mx-2 w-px h-4 bg-gray-700"></div>
-        <v-button
-          :class="{
-            'text-gray-500': marketType !== MarketType.Spot
-          }"
-          text-sm
-          class="font-normal"
-          @click.stop="onSelectMarketType(MarketType.Spot)"
-        >
-          <span>{{ $t('spots') }}</span>
-        </v-button>
-        <template v-if="false">
-          <div class="mx-2 w-px h-4 bg-gray-700"></div>
-          <v-button
-            :class="{
-              'text-gray-500': marketBase !== MarketBase.Terra
-            }"
-            text-sm
-            class="font-normal"
-            @click.stop="onSelectMarketBase(MarketBase.Terra)"
-          >
-            <span>{{ $t('terra') }}</span>
-          </v-button>
-        </template>
-        <div class="hidden md:block mx-2 w-px h-4 bg-gray-700"></div>
-        <v-button
-          :class="{
-            'text-gray-500': marketType !== MarketType.Futures
-          }"
-          text-sm
-          class="hidden md:block font-normal opacity-50"
-          @click.stop="() => {}"
-        >
-          <span>{{ $t('futures') }}</span>
-        </v-button>
-      </div>
-
-      <span
-        v-if="totalVolume.gt(0) && !simple && false"
-        class="text-sm text-primary-500 mr-2 hidden sm:block"
-      >
-        {{ $t('total_market_volume_24h') }}: {{ totalVolumeToFormat }} USDT
-      </span>
-    </div>
-    <div>
-      <span
-        v-if="totalVolume.gt(0) && !simple && false"
-        class="text-sm text-primary-500 ml-2 mt-4 sm:hidden"
-      >
-        {{ $t('total_market_volume_24h') }}: {{ totalVolumeToFormat }} USDT
-      </span>
-    </div>
-    <div class="w-full mt-2">
-      <v-search
-        name="search"
-        class="w-full"
-        :placeholder="$t('filter_markets')"
-        :search="filterMarkets"
-        @searched="filterMarkets = $event"
-      />
-    </div>
+    <v-markets-filter
+      v-if="simple"
+      class="mb-6"
+      :market-base.sync="marketBase"
+      :market-type.sync="marketBase"
+      :search.sync="search"
+    />
     <div
-      class="overflow-y-auto overflow-x-auto md:overflow-x-visible w-full mt-6"
+      class="overflow-x-auto md:overflow-x-visible w-full bg-gray-900 rounded"
       :class="{
-        'max-h-lg lg:max-h-xl': !simple,
-        'h-full': simple
+        'h-full overflow-y-auto ': simple
       }"
     >
-      <TableHeader v-if="markets.length !== 0" sm>
+      <TableHeader
+        v-if="markets.length !== 0"
+        :sm="simple"
+        :lg="!simple"
+        class="pt-0 bg-gray-800"
+        :class="{ 'pb-5': !simple }"
+      >
         <span
           class="text-left"
-          :class="{ 'col-span-4': simple, 'col-span-3': !simple }"
+          :class="{ 'col-span-5': simple, 'col-span-3': !simple }"
         >
-          {{ $t('market') }}
+          {{ $t('trade.market') }}
         </span>
         <span :class="{ 'col-span-4': simple, 'col-span-3': !simple }">
           <div class="flex items-center relative justify-end">
-            <span class="flex-1 text-right">{{ $t('last_traded_price') }}</span>
+            <span class="flex-1 text-right">{{
+              $t('trade.last_traded_price')
+            }}</span>
             <v-icon-info-tooltip
               class="ml-2"
-              :tooltip="$t('last_traded_price_tooltip')"
+              :tooltip="$t('trade.last_traded_price_tooltip')"
             />
           </div>
         </span>
-        <span :class="{ 'col-span-4': simple, 'col-span-3': !simple }">
+        <span class="col-span-3">
           <div class="flex items-center relative justify-end">
-            {{ $t('market_change_24h') }}
+            {{ $t('trade.market_change_24h') }}
             <v-icon-info-tooltip
               class="ml-2"
-              :tooltip="$t('market_change_24h_tooltip')"
+              :tooltip="$t('trade.market_change_24h_tooltip')"
             />
           </div>
         </span>
         <span v-if="!simple" class="col-span-3">
           <div class="flex items-center relative justify-end">
-            {{ $t('market_volume_24h') }}
+            {{ $t('trade.market_volume_24h') }}
             <v-icon-info-tooltip
               class="ml-2"
-              :tooltip="$t('market_volume_24h_tooltip')"
+              :tooltip="$t('trade.market_volume_24h_tooltip')"
             />
           </div>
         </span>
       </TableHeader>
 
-      <TableBody :show-empty="markets.length === 0">
+      <TableBody :show-empty="markets.length === 0" :round="simple">
         <v-market
-          v-for="({ market, summary }, index) in filteredMarkets"
+          v-for="({ market, summary }, index) in marketsList"
           :key="`market-${index}`"
           class="col-span-1"
           :market="market"
@@ -149,22 +79,21 @@
 <script lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
 import Vue, { PropType } from 'vue'
+import {
+  ZERO_IN_BASE,
+  UiDerivativeMarketSummary,
+  UiDerivativeMarketWithToken,
+  UiSpotMarketSummary,
+  UiSpotMarketWithToken
+} from '@injectivelabs/ui-common'
+import VMarketsFilter from './markets-filter.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import TableHeader from '~/components/elements/table-header.vue'
-import VSearch from '~/components/inputs/search.vue'
 import VMarket from '~/components/partials/common/markets/market.vue'
-import {
-  MarketBase,
-  MarketType,
-  UiDerivativeMarket,
-  UiDerivativeMarketSummary,
-  UiSpotMarket,
-  UiSpotMarketSummary
-} from '~/types'
-import { ZERO_IN_BASE } from '~/app/utils/constants'
+import { promotedMarketSlugs } from '~/app/data/market'
 
 export interface UiMarketAndSummary {
-  market: UiDerivativeMarket | UiSpotMarket
+  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
   summary: UiDerivativeMarketSummary | UiSpotMarketSummary
 }
 
@@ -172,19 +101,30 @@ export default Vue.extend({
   components: {
     TableBody,
     TableHeader,
-    VSearch,
-    VMarket
+    VMarket,
+    VMarketsFilter
   },
 
   props: {
     simple: {
-      required: false,
       default: false,
       type: Boolean
     },
 
+    showPromoted: {
+      type: Boolean,
+      default: false
+    },
+
+    showAll: {
+      type: Boolean,
+      default: false
+    },
+
     markets: {
-      type: Array as PropType<Array<UiDerivativeMarket | UiSpotMarket>>,
+      type: Array as PropType<
+        Array<UiDerivativeMarketWithToken | UiSpotMarketWithToken>
+      >,
       required: true
     },
 
@@ -198,19 +138,17 @@ export default Vue.extend({
 
   data() {
     return {
-      MarketBase,
-      MarketType,
       marketType: '' as string,
       marketBase: '' as string,
-      filterMarkets: ''
+      search: ''
     }
   },
 
   computed: {
     filteredMarkets(): UiMarketAndSummary[] {
-      const { filterMarkets, marketType, marketBase, markets, summaries } = this
+      const { search, marketType, marketBase, markets, summaries } = this
 
-      const query = filterMarkets.toLowerCase()
+      const query = search.toLowerCase()
 
       return markets
         .map((market) => {
@@ -223,16 +161,17 @@ export default Vue.extend({
         })
         .filter(({ market, summary }) => {
           const { ticker, quoteDenom } = market
+
           const satisfiesSearchCondition =
             quoteDenom.toLowerCase().startsWith(query) ||
             ticker.toLowerCase().startsWith(query)
           const marketTypeCondition = marketType
-            ? marketType === market.subType
+            ? marketType === market.type
             : true
           const marketBaseCondition = !marketBase
             ? true
-            : marketBase && market.marketBase
-            ? marketBase === market.marketBase
+            : marketBase && market.subType
+            ? marketBase === market.subType
             : false
 
           return (
@@ -243,6 +182,48 @@ export default Vue.extend({
             summary !== undefined
           )
         }) as UiMarketAndSummary[]
+    },
+
+    marketsSortedByVolume(): UiMarketAndSummary[] {
+      const { filteredMarkets } = this
+
+      return filteredMarkets.sort((marketA, marketB) => {
+        const aVolume = marketA.summary.volume
+        const bVolume = marketB.summary.volume
+
+        return new BigNumberInBase(bVolume).minus(aVolume).toNumber()
+      })
+    },
+
+    promotedMarketsList(): UiMarketAndSummary[] {
+      const { filteredMarkets } = this
+
+      return filteredMarkets.filter(({ market: { slug } }) => {
+        return promotedMarketSlugs.includes(slug.toLowerCase())
+      })
+    },
+
+    marketsList(): UiMarketAndSummary[] {
+      const {
+        filteredMarkets,
+        marketsSortedByVolume,
+        promotedMarketsList,
+        simple,
+        showAll,
+        showPromoted
+      } = this
+
+      const marketsList = simple ? filteredMarkets : marketsSortedByVolume
+
+      if (showPromoted) {
+        return promotedMarketsList
+      }
+
+      if (showAll) {
+        return marketsList
+      }
+
+      return marketsList.slice(0, 5)
     },
 
     totalVolume(): BigNumberInBase {
@@ -261,16 +242,6 @@ export default Vue.extend({
       const { totalVolume } = this
 
       return totalVolume.toFormat(0, BigNumberInBase.ROUND_DOWN)
-    }
-  },
-
-  methods: {
-    onSelectMarketType(type: MarketType | string) {
-      this.marketType = this.marketType === type ? '' : type
-    },
-
-    onSelectMarketBase(type: MarketBase | string) {
-      this.marketBase = this.marketBase === type ? '' : type
     }
   }
 })

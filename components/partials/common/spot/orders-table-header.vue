@@ -1,36 +1,34 @@
 <template>
-  <thead>
+  <thead class="bg-gray-800">
     <tr>
-      <th v-if="marketColumnEnabled" class="text-left">
-        {{ $t('market') }}
+      <th class="text-left">
+        {{ $t('trade.pair') }}
+      </th>
+      <th class="text-left">
+        {{ $t('trade.side') }}
       </th>
       <th class="text-right">
-        {{ $t('price') }}
+        {{ $t('trade.price') }}
       </th>
       <th>
         <div class="flex items-center justify-end">
-          <span>{{ $t('amount') }}</span>
-          <v-icon-info-tooltip class="ml-2" :tooltip="$t('amount_tooltip')" />
+          <span>{{ $t('trade.amount') }}</span>
+          <v-icon-info-tooltip
+            class="ml-2"
+            :tooltip="$t('trade.amount_tooltip')"
+          />
         </div>
       </th>
       <th class="text-right">
-        {{ $t('total') }}
-      </th>
-      <th>
-        <div class="flex items-center justify-center">
-          <span>{{ $t('side') }}</span>
-          <v-icon-info-tooltip class="ml-2" :tooltip="$t('side_tooltip')" />
-        </div>
+        {{ $t('trade.unfilled') }}
       </th>
       <th class="text-right">
-        {{ $t('unfilled') }}
+        {{ $t('trade.filled') }}
       </th>
-      <th class="text-center">
-        {{ $t('filled') }}
+      <th class="text-right">
+        {{ $t('trade.total') }}
       </th>
-      <th class="text-center">
-        {{ $t('actions') }}
-      </th>
+      <th></th>
     </tr>
   </thead>
 </template>
@@ -40,11 +38,7 @@ import Vue from 'vue'
 
 export default Vue.extend({
   props: {
-    marketColumnEnabled: {
-      required: false,
-      default: false,
-      type: Boolean
-    }
+    //
   }
 })
 </script>

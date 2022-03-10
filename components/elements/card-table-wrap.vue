@@ -1,15 +1,7 @@
 <template>
-  <div class="flex flex-col h-full">
-    <div class="flex items-center justify-between">
-      <div class="flex items-center justify-center">
-        <slot name="filters" />
-      </div>
-
-      <slot name="context" />
-    </div>
-
-    <div>
-      <slot name="mobile-context" />
+  <div class="flex flex-col h-full overflow-hidden">
+    <div class="grid grid-cols-12">
+      <slot name="actions" />
     </div>
 
     <div
@@ -18,7 +10,7 @@
         'card-table-wrap-content-lighter': bgLighter
       }"
     >
-      <div>
+      <div class="h-full relative">
         <slot></slot>
       </div>
     </div>

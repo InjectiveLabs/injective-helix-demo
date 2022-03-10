@@ -2,8 +2,8 @@
   <div v-if="market">
     <div class="flex overflow-x-auto overflow-y-none">
       <v-market-info
-        :title="$t('last_traded_price')"
-        :tooltip="$t('last_traded_price_tooltip')"
+        :title="$t('trade.last_traded_price')"
+        :tooltip="$t('trade.last_traded_price_tooltip')"
       >
         <span
           v-if="!currentLastTrade.isNaN()"
@@ -22,8 +22,8 @@
       </v-market-info>
       <v-market-info
         v-if="market.type === MarketType.Derivative"
-        :title="$t('mark_price')"
-        :tooltip="$t('mark_price_tooltip')"
+        :title="$t('trade.mark_price')"
+        :tooltip="$t('trade.mark_price_tooltip')"
       >
         <span
           v-if="!markPrice.isNaN()"
@@ -41,8 +41,8 @@
         <span v-else class="text-gray-400">&mdash;</span>
       </v-market-info>
       <v-market-info
-        :title="$t('market_change_24h')"
-        :tooltip="$t('market_change_24h_tooltip')"
+        :title="$t('trade.market_change_24h')"
+        :tooltip="$t('trade.market_change_24h_tooltip')"
       >
         <span v-if="!change.isNaN()" class="text-sm text-right font-mono block">
           <span
@@ -57,8 +57,8 @@
         <span v-else class="text-gray-400">&mdash;</span>
       </v-market-info>
       <v-market-info
-        :title="$t('volume_asset', { asset: market.quoteToken.symbol })"
-        :tooltip="$t('market_volume_24h_tooltip')"
+        :title="$t('trade.volume_asset', { asset: market.quoteToken.symbol })"
+        :tooltip="$t('trade.market_volume_24h_tooltip')"
       >
         <span
           v-if="volume.gt(0) && !volume.isNaN()"
@@ -68,13 +68,13 @@
         </span>
         <span v-else class="text-gray-400">&mdash;</span>
       </v-market-info>
-      <v-market-info :title="$t('high')">
+      <v-market-info :title="$t('trade.high')">
         <span class="text-sm text-right font-mono block">
           <span v-if="high.gt(0) && !high.isNaN()">{{ highToFormat }}</span>
           <span v-else class="text-gray-400">&mdash;</span>
         </span>
       </v-market-info>
-      <v-market-info :title="$t('low')">
+      <v-market-info :title="$t('trade.low')">
         <span class="text-sm text-right font-mono block">
           <span v-if="low.gt(0) && !low.isNaN()">{{ lowToFormat }}</span>
           <span v-else class="text-gray-400">&mdash;</span>
@@ -82,8 +82,8 @@
       </v-market-info>
       <v-market-info
         v-if="market.type === MarketType.Derivative"
-        :title="$t('est_funding_rate')"
-        :tooltip="$t('funding_rate_tooltip')"
+        :title="$t('trade.est_funding_rate')"
+        :tooltip="$t('trade.funding_rate_tooltip')"
       >
         <span
           v-if="!fundingRate.isNaN()"
@@ -103,7 +103,7 @@
       <v-market-next-funding v-if="market.type === MarketType.Derivative" />
       <v-market-info
         v-if="market.type === MarketType.Derivative && expiryAt"
-        :title="$t('expiry_date')"
+        :title="$t('trade.expiry_date')"
       >
         <span class="text-sm text-right font-mono block">
           {{ expiryAt }}
@@ -117,21 +117,20 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { fromUnixTime, formatDistanceToNow } from 'date-fns'
-import MarketNextFunding from './next-funding.vue'
 import {
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  ZERO_IN_BASE
-} from '~/app/utils/constants'
-import MarketInfo from '~/components/elements/market-info.vue'
-import {
-  Change,
-  UiSpotMarket,
-  SpotOrderSide,
   UiSpotMarketSummary,
-  UiDerivativeMarket,
+  UiSpotMarketWithToken,
   UiDerivativeMarketSummary,
-  MarketType
-} from '~/types'
+  UiDerivativeMarketWithToken,
+  Change,
+  MarketType,
+  ZERO_IN_BASE
+} from '@injectivelabs/ui-common'
+import { SpotOrderSide } from '@injectivelabs/spot-consumer'
+import MarketNextFunding from './next-funding.vue'
+import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import MarketInfo from '~/components/elements/market-info.vue'
+
 const { metaTags } = require('~/meta.config')
 
 export default Vue.extend({
@@ -142,7 +141,9 @@ export default Vue.extend({
 
   props: {
     market: {
-      type: Object as PropType<UiSpotMarket | UiDerivativeMarket>,
+      type: Object as PropType<
+        UiSpotMarketWithToken | UiDerivativeMarketWithToken
+      >,
       required: true
     },
 
@@ -161,11 +162,11 @@ export default Vue.extend({
   },
 
   computed: {
-    currentSpotMarket(): UiSpotMarket | undefined {
+    currentSpotMarket(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
     },
 
-    currentDerivativeMarket(): UiDerivativeMarket | undefined {
+    currentDerivativeMarket(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 
@@ -189,7 +190,10 @@ export default Vue.extend({
       return this.$accessor.derivatives.marketMarkPrice
     },
 
-    currentMarket(): UiSpotMarket | UiDerivativeMarket | undefined {
+    currentMarket():
+      | UiSpotMarketWithToken
+      | UiDerivativeMarketWithToken
+      | undefined {
       const { currentSpotMarket, currentDerivativeMarket, market } = this
 
       return market.type === MarketType.Spot
@@ -286,7 +290,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const derivativeMarket = market as UiDerivativeMarket
+      const derivativeMarket = market as UiDerivativeMarketWithToken
 
       if (
         !derivativeMarket.perpetualMarketFunding ||
@@ -318,7 +322,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const derivativeMarket = market as UiDerivativeMarket
+      const derivativeMarket = market as UiDerivativeMarketWithToken
 
       if (
         !derivativeMarket.perpetualMarketFunding ||
@@ -405,7 +409,7 @@ export default Vue.extend({
         return ''
       }
 
-      const expiryFuturesMarketInfo = (market as UiDerivativeMarket)
+      const expiryFuturesMarketInfo = (market as UiDerivativeMarketWithToken)
         .expiryFuturesMarketInfo
 
       if (!expiryFuturesMarketInfo) {

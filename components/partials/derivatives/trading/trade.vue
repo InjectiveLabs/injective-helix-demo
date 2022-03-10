@@ -8,7 +8,7 @@
         text-xs
         @click.stop="onTradingTypeToggle(TradeExecutionType.Market)"
       >
-        {{ $t('market') }}
+        {{ $t('trade.market') }}
       </v-button>
       <div class="mx-2 w-px h-4 bg-gray-500"></div>
       <v-button
@@ -19,7 +19,7 @@
         text-xs
         @click.stop="onTradingTypeToggle(TradeExecutionType.LimitFill)"
       >
-        {{ $t('limit') }}
+        {{ $t('trade.limit') }}
       </v-button>
     </div>
     <div class="mt-4">
@@ -30,7 +30,7 @@
           aqua
           class="w-1/2"
         >
-          {{ $t('buy_asset', { asset: market.baseToken.symbol }) }}
+          {{ $t('trade.buy_asset', { asset: market.baseToken.symbol }) }}
         </v-button-select>
         <v-button-select
           v-model="orderType"
@@ -38,7 +38,7 @@
           red
           class="w-1/2"
         >
-          {{ $t('sell_asset', { asset: market.baseToken.symbol }) }}
+          {{ $t('trade.sell_asset', { asset: market.baseToken.symbol }) }}
         </v-button-select>
       </div>
     </div>
@@ -47,10 +47,10 @@
         <v-input
           ref="input-amount"
           :value="form.amount"
-          :label="$t('amount')"
+          :label="$t('trade.amount')"
           :custom-handler="true"
           :max-selector="true"
-          :placeholder="$t('amount')"
+          :placeholder="amountStep"
           type="number"
           :step="amountStep"
           min="0"
@@ -92,14 +92,15 @@
         <v-input
           ref="input-price"
           :value="form.price"
-          :placeholder="$t('price')"
-          :label="$t('price')"
+          :placeholder="priceStep"
+          :label="$t('trade.price')"
           :disabled="tradingTypeMarket"
           type="number"
           :step="priceStep"
           min="0"
           @blur="onPriceBlur"
           @input="onPriceChange"
+          @keydown="onPriceKeyDown"
         >
           <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
         </v-input>
@@ -131,7 +132,7 @@
         v-if="showReduceOnly"
         v-model="form.reduceOnly"
         class="mt-2"
-        :title="$t('reduce_only')"
+        :title="$t('trade.reduce_only')"
       />
     </div>
     <component
@@ -164,7 +165,7 @@
         v-if="executionPriceHasHighDeviationWarning && !hasErrors"
         class="text-2xs text-red-200 mb-4"
       >
-        {{ $t('execution_price_far_away_from_last_traded_price') }}
+        {{ $t('trade.execution_price_far_away_from_last_traded_price') }}
       </p>
 
       <v-button
@@ -177,14 +178,11 @@
         class="w-full"
         @click.stop="onSubmit"
       >
-        {{ $t(orderTypeBuy ? 'buy_long' : 'sell_short') }}
+        {{ $t(orderTypeBuy ? 'trade.buy_long' : 'trade.sell_short') }}
       </v-button>
     </div>
 
-    <v-modal-order-confirm
-      @confirmed="submitLimitOrder"
-      @disabled="handleDisableAcceptHighPriceDeviations"
-    />
+    <v-modal-order-confirm @confirmed="submitLimitOrder" />
   </div>
 </template>
 
@@ -192,36 +190,36 @@
 import Vue from 'vue'
 import { TradeError } from 'types/errors'
 import { Status, BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
+import {
+  DerivativeOrderSide,
+  UiDerivativeLimitOrder,
+  UiDerivativeMarketSummary,
+  UiDerivativeMarketWithToken,
+  UiDerivativeOrderbook,
+  UiPosition,
+  UiPriceLevel,
+  cosmosSdkDecToBigNumber,
+  NUMBER_REGEX,
+  ZERO_IN_BASE,
+  UiSubaccount
+} from '@injectivelabs/ui-common'
 import OrderDetails from './order-details.vue'
 import OrderLeverage from './order-leverage.vue'
 import OrderLeverageSelect from './order-leverage-select.vue'
 import OrderDetailsMarket from './order-details-market.vue'
 import {
   DEFAULT_MAX_SLIPPAGE,
-  ZERO_IN_BASE,
-  NUMBER_REGEX,
   DEFAULT_PRICE_WARNING_DEVIATION,
   DEFAULT_MARKET_PRICE_WARNING_DEVIATION,
   DEFAULT_MAX_PRICE_BAND_DIFFERENCE,
   DEFAULT_MIN_PRICE_BAND_DIFFERENCE,
-  PRICE_BAND_ENABLED
+  PRICE_BAND_ENABLED,
+  BIGGER_PRICE_WARNING_DEVIATION
 } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
-import {
-  DerivativeOrderSide,
-  DOMEvent,
-  TradeExecutionType,
-  UiDerivativeOrderbook,
-  UiPriceLevel,
-  UiDerivativeMarket,
-  UiSubaccount,
-  UiPosition,
-  TradeDirection,
-  UiDerivativeMarketSummary,
-  UiDerivativeLimitOrder,
-  Modal
-} from '~/types'
+import { DOMEvent, Modal } from '~/types'
 import {
   calculateWorstExecutionPriceFromOrderbook,
   calculateLiquidationPrice,
@@ -231,13 +229,12 @@ import {
 import {
   TradingRewardsCampaign,
   FeeDiscountAccountInfo
-} from '~/types/exchange'
-import { cosmosSdkDecToBigNumber } from '~/app/transformers'
+} from '~/app/services/exchange'
 import {
-  getDecimalsFromNumber,
-  isDotKeycode,
-  isNumericKeycode
-} from '~/app/utils/helpers'
+  hasMoreThenDpAndKeyCodeIsNumeric,
+  passNumericInputValidation
+} from '~/app/utils/input'
+import { excludedPriceDeviationSlugs } from '~/app/data/market'
 
 interface TradeForm {
   reduceOnly: boolean
@@ -280,7 +277,7 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    market(): UiDerivativeMarket | undefined {
+    market(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
 
@@ -308,8 +305,18 @@ export default Vue.extend({
       return this.$accessor.derivatives.subaccountOrders
     },
 
+    positions(): UiPosition[] {
+      return this.$accessor.positions.subaccountPositions
+    },
+
     position(): UiPosition | undefined {
-      return this.$accessor.derivatives.subaccountPosition
+      const { positions, market } = this
+
+      if (positions.length === 0 || !market) {
+        return
+      }
+
+      return positions.find((position) => position.marketId === market.marketId)
     },
 
     feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
@@ -486,6 +493,7 @@ export default Vue.extend({
       const {
         tradingTypeMarket,
         orderTypeBuy,
+        slippage,
         sells,
         buys,
         hasAmount,
@@ -511,7 +519,9 @@ export default Vue.extend({
           market
         })
 
-        return new BigNumberInBase(worstPrice.toFixed(market.priceDecimals))
+        return new BigNumberInBase(
+          worstPrice.times(slippage).toFixed(market.priceDecimals)
+        )
       }
 
       if (price.isNaN()) {
@@ -520,22 +530,6 @@ export default Vue.extend({
 
       return new BigNumberInBase(
         new BigNumberInBase(price).toFixed(market.priceDecimals)
-      )
-    },
-
-    executionPriceWithSlippage(): BigNumberInBase {
-      const { tradingTypeMarket, executionPrice, market, slippage } = this
-
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      if (!tradingTypeMarket) {
-        return executionPrice
-      }
-
-      return new BigNumberInBase(
-        executionPrice.times(slippage).toFixed(market.priceDecimals)
       )
     },
 
@@ -640,7 +634,7 @@ export default Vue.extend({
 
       if (availableMargin.lt(totalWithFees)) {
         return {
-          amount: this.$t('not_enough_balance')
+          amount: this.$t('trade.not_enough_balance')
         }
       }
 
@@ -662,6 +656,7 @@ export default Vue.extend({
       }
 
       const leverage = new BigNumberInBase(form.leverage)
+
       const divisor = orderTypeBuy
         ? new BigNumberInBase(marketMarkPrice)
             .times(market.initialMarginRatio)
@@ -673,13 +668,13 @@ export default Vue.extend({
             .minus(executionPrice)
       const maxLeverage = executionPrice.dividedBy(divisor)
 
-      if (maxLeverage.gte(0) && leverage.gt(maxLeverage)) {
+      if (maxLeverage.gte(1) && leverage.gt(maxLeverage)) {
         return {
           price: leverage.eq(1)
             ? orderTypeBuy
-              ? this.$t('order_price_high_warn')
-              : this.$t('order_price_low_warn')
-            : this.$t('max_leverage_warn')
+              ? this.$t('trade.order_price_high_warn')
+              : this.$t('trade.order_price_low_warn')
+            : this.$t('trade.max_leverage_warn')
         }
       }
 
@@ -694,7 +689,7 @@ export default Vue.extend({
         new BigNumberInBase(form.amount).gt(maxReduceOnly)
       ) {
         return {
-          amount: this.$t('reduce_only_in_excess')
+          amount: this.$t('trade.reduce_only_in_excess')
         }
       }
 
@@ -713,7 +708,7 @@ export default Vue.extend({
       }
 
       if (filteredOrders.length >= MAX_NUMBER_OF_ORDERS) {
-        return this.$t('you_can_only_have_max_orders', {
+        return this.$t('trade.you_can_only_have_max_orders', {
           number: MAX_NUMBER_OF_ORDERS
         })
       }
@@ -739,7 +734,7 @@ export default Vue.extend({
 
       if (orders.length <= 0 && amount.gt(0)) {
         return {
-          amount: this.$t('not_enough_fillable_orders')
+          amount: this.$t('trade.not_enough_fillable_orders')
         }
       }
 
@@ -769,7 +764,7 @@ export default Vue.extend({
 
       if (totalAmount.lt(amount)) {
         return {
-          amount: this.$t('not_enough_fillable_orders')
+          amount: this.$t('trade.not_enough_fillable_orders')
         }
       }
 
@@ -784,7 +779,7 @@ export default Vue.extend({
         margin,
         hasPrice,
         hasAmount,
-        executionPriceWithSlippage,
+        executionPrice,
         amount
       } = this
 
@@ -792,15 +787,19 @@ export default Vue.extend({
         return undefined
       }
 
+      if (excludedPriceDeviationSlugs.includes(market.ticker)) {
+        return undefined
+      }
+
       const markPrice = new BigNumberInBase(marketMarkPrice)
 
       if (markPrice.lte(0)) {
         return {
-          amount: this.$t('mark_price_invalid')
+          amount: this.$t('trade.mark_price_invalid')
         }
       }
 
-      const notional = executionPriceWithSlippage.times(amount)
+      const notional = executionPrice.times(amount)
       const dividend = orderTypeBuy
         ? margin.minus(notional)
         : margin.plus(notional)
@@ -813,13 +812,13 @@ export default Vue.extend({
 
       if (orderTypeBuy && markPrice.lt(condition)) {
         return {
-          amount: this.$t('order_insufficient_margin')
+          amount: this.$t('trade.order_insufficient_margin')
         }
       }
 
       if (!orderTypeBuy && markPrice.gt(condition)) {
         return {
-          amount: this.$t('order_insufficient_margin')
+          amount: this.$t('trade.order_insufficient_margin')
         }
       }
 
@@ -840,13 +839,17 @@ export default Vue.extend({
         return undefined
       }
 
+      if (excludedPriceDeviationSlugs.includes(market.ticker)) {
+        return undefined
+      }
+
       const condition = executionPrice
         .times(amount)
         .times(market.initialMarginRatio)
 
       if (margin.lte(condition)) {
         return {
-          amount: this.$t('order_insufficient_margin')
+          amount: this.$t('trade.order_insufficient_margin')
         }
       }
 
@@ -865,7 +868,7 @@ export default Vue.extend({
       }
 
       return {
-        price: this.$t('not_valid_number')
+        price: this.$t('trade.not_valid_number')
       }
     },
 
@@ -875,8 +878,13 @@ export default Vue.extend({
         orderTypeBuy,
         tradingTypeMarket,
         orderTypeReduceOnly,
-        lastTradedPrice
+        lastTradedPrice,
+        market
       } = this
+
+      if (!market) {
+        return false
+      }
 
       if (orderTypeReduceOnly) {
         return false
@@ -890,6 +898,12 @@ export default Vue.extend({
         return false
       }
 
+      const defaultPriceWarningDeviation = excludedPriceDeviationSlugs.includes(
+        market.ticker
+      )
+        ? BIGGER_PRICE_WARNING_DEVIATION
+        : DEFAULT_PRICE_WARNING_DEVIATION
+
       const deviation = new BigNumberInBase(1)
         .minus(
           orderTypeBuy
@@ -898,7 +912,7 @@ export default Vue.extend({
         )
         .times(100)
 
-      return deviation.gt(DEFAULT_PRICE_WARNING_DEVIATION)
+      return deviation.gt(defaultPriceWarningDeviation)
     },
 
     executionPriceHasHighDeviationWarning(): boolean {
@@ -940,7 +954,7 @@ export default Vue.extend({
       }
 
       return {
-        amount: this.$t('not_valid_number')
+        amount: this.$t('trade.not_valid_number')
       }
     },
 
@@ -995,7 +1009,7 @@ export default Vue.extend({
         executionPrice.gt(acceptableMax)
       ) {
         return {
-          price: this.$t('your_order_has_high_price_deviation')
+          price: this.$t('trade.your_order_has_high_price_deviation')
         }
       }
 
@@ -1123,14 +1137,7 @@ export default Vue.extend({
     },
 
     margin(): BigNumberInBase {
-      const {
-        executionPrice,
-        orderTypeReduceOnly,
-        hasPrice,
-        hasAmount,
-        form,
-        market
-      } = this
+      const { executionPrice, hasPrice, hasAmount, form, market } = this
 
       if (!hasPrice || !hasAmount || !market) {
         return ZERO_IN_BASE
@@ -1393,7 +1400,7 @@ export default Vue.extend({
     /**
      * We need to first update the form amount
      * in order to get the new fees that apply to this order
-     * and then we update the amount again to acount the fees
+     * and then we update the amount again to account the fees
      * into consideration
      */
     onMaxInput(percent = 100) {
@@ -1410,6 +1417,7 @@ export default Vue.extend({
         takerFeeRate,
         sells,
         form,
+        slippage,
         tradingTypeMarket,
         orderTypeBuy,
         position,
@@ -1435,7 +1443,7 @@ export default Vue.extend({
           market,
           margin: availableMargin,
           leverage: form.leverage,
-          slippage: 1,
+          slippage: slippage.toNumber(),
           percent: percentageToNumber.toNumber(),
           records: orderTypeBuy ? sells : buys
         }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
@@ -1527,10 +1535,12 @@ export default Vue.extend({
         return
       }
 
-      this.form.amount = new BigNumberInBase(form.amount || 0).toFixed(
-        market.quantityDecimals,
-        BigNumberInBase.ROUND_DOWN
-      )
+      if (form.amount.trim() !== '') {
+        this.form.amount = new BigNumberInBase(form.amount).toFixed(
+          market.quantityDecimals,
+          BigNumberInBase.ROUND_DOWN
+        )
+      }
     },
 
     onAmountKeydown(event: DOMEvent<HTMLInputElement>) {
@@ -1540,14 +1550,34 @@ export default Vue.extend({
         return
       }
 
-      const inputIsDotQuantityDecimalZero =
-        market.quantityDecimals === 0 && isDotKeycode(event.keyCode)
-      const inputDecimalExceedQuantityDecimal =
-        getDecimalsFromNumber(form.amount) === market.quantityDecimals &&
-        isNumericKeycode(event.keyCode) &&
-        market.quantityDecimals !== 0
+      const disableDot = market.quantityDecimals === 0
 
-      if (inputIsDotQuantityDecimalZero || inputDecimalExceedQuantityDecimal) {
+      if (
+        !passNumericInputValidation(event, disableDot ? ['.'] : []) ||
+        hasMoreThenDpAndKeyCodeIsNumeric({
+          event,
+          value: form.amount,
+          decimalPlaces: market.quantityDecimals
+        })
+      ) {
+        event.preventDefault()
+      }
+    },
+
+    onPriceKeyDown(event: DOMEvent<HTMLInputElement>) {
+      const { market, form } = this
+
+      if (!market || !event.keyCode) {
+        return
+      }
+
+      if (
+        hasMoreThenDpAndKeyCodeIsNumeric({
+          event,
+          value: form.price,
+          decimalPlaces: market.quoteToken.decimals
+        })
+      ) {
         event.preventDefault()
       }
     },
@@ -1558,14 +1588,6 @@ export default Vue.extend({
 
     onTradingTypeToggle(selectedTradingType: TradeExecutionType) {
       this.tradingType = selectedTradingType
-    },
-
-    handleEnableAcceptHighPriceDeviations() {
-      this.$accessor.app.setAcceptHighPriceDeviations(true)
-    },
-
-    handleDisableAcceptHighPriceDeviations() {
-      this.$accessor.app.setAcceptHighPriceDeviations(false)
     },
 
     onLeverageChange(leverage: string) {
@@ -1606,7 +1628,7 @@ export default Vue.extend({
           quantity: amount
         })
         .then(() => {
-          this.$toast.success(this.$t('order_placed'))
+          this.$toast.success(this.$t('trade.order_placed'))
           this.$set(this, 'form', initialForm())
         })
         .catch(this.$onRejected)
@@ -1621,7 +1643,7 @@ export default Vue.extend({
         orderTypeReduceOnly,
         market,
         margin,
-        executionPriceWithSlippage,
+        executionPrice,
         amount
       } = this
 
@@ -1636,11 +1658,11 @@ export default Vue.extend({
           orderType,
           margin,
           reduceOnly: orderTypeReduceOnly,
-          price: executionPriceWithSlippage,
+          price: executionPrice,
           quantity: amount
         })
         .then(() => {
-          this.$toast.success(this.$t('trade_placed'))
+          this.$toast.success(this.$t('trade.trade_placed'))
           this.$set(this, 'form', initialForm())
         })
         .catch(this.$onRejected)
@@ -1663,7 +1685,7 @@ export default Vue.extend({
       }
 
       if (hasErrors) {
-        return this.$toast.error(this.$t('error_in_form'))
+        return this.$toast.error(this.$t('trade.error_in_form'))
       }
 
       if (maxOrdersError) {

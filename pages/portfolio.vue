@@ -1,82 +1,88 @@
 <template>
-  <div class="h-full w-full flex flex-wrap py-4">
-    <HOCLoading :status="status">
-      <div class="container">
-        <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12">
-          <v-panel :title="$t('Portfolio')" class="mt-6">
-            <v-portfolio />
-          </v-panel>
-          <v-panel :title="$t('open_positions')" class="mt-12">
-            <v-open-positions />
-          </v-panel>
-          <v-panel :title="$t('open_orders')" class="mt-12">
-            <v-open-orders />
-          </v-panel>
+  <div class="h-full w-full flex flex-wrap">
+    <div class="w-full">
+      <VHocLoading :status="status">
+        <div class="container pt-6 pb-12">
+          <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12">
+            <v-welcome-banner />
+            <!--
+              A clever solution here to apply loading state to account
+              summary based on the bank/trading account balances loading
+            -->
+            <div class="pb-6 relative">
+              <portal-target name="account-summary"></portal-target>
+            </div>
+            <v-gas-rebate class="mt-6" />
+            <div class="border-b border-gray-600 w-full my-6"></div>
+            <v-balances class="mt-4" />
+            <v-bridge />
+          </div>
         </div>
-        <v-modal-add-margin />
-      </div>
-    </HOCLoading>
+      </VHocLoading>
+      <v-referee-onboarding-modal v-if="REFERRALS_ENABLED" />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import VPortfolio from '~/components/partials/portfolio/portfolio.vue'
-import VOpenPositions from '~/components/partials/portfolio/open-positions.vue'
-import VOpenOrders from '~/components/partials/portfolio/open-orders.vue'
-import HOCLoading from '~/components/hoc/loading.vue'
-import VModalAddMargin from '~/components/partials/modals/add-margin/index.vue'
-import { ORDERBOOK_POLLING_ENABLED } from '~/app/utils/constants'
+import { RefereeInfo } from '@injectivelabs/referral-consumer'
+import VBalances from '~/components/partials/portfolio/balances.vue'
+import VWelcomeBanner from '~/components/partials/banners/welcome.vue'
+import VGasRebate from '~/components/partials/banners/gas-rebate.vue'
+import VBridge from '~/components/partials/portfolio/bridge.vue'
+import { Modal } from '~/types'
+import VRefereeOnboardingModal from '~/components/partials/modals/referee-onboarding.vue'
+import { REFERRALS_ENABLED } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
-    VOpenPositions,
-    VPortfolio,
-    VOpenOrders,
-    HOCLoading,
-    VModalAddMargin
+    VBridge,
+    VBalances,
+    VWelcomeBanner,
+    VGasRebate,
+    VRefereeOnboardingModal
   },
 
   data() {
     return {
-      status: new Status(StatusType.Loading),
-      interval: 0 as any,
-      orderbookInterval: 0 as any
+      REFERRALS_ENABLED,
+      status: new Status(StatusType.Loading)
+    }
+  },
+
+  computed: {
+    refereeInfo(): RefereeInfo | undefined {
+      return this.$accessor.referral.refereeInfo
     }
   },
 
   mounted() {
-    this.$accessor.portfolio
-      .init()
+    Promise.all([
+      this.$accessor.bank.fetchBankBalancesWithToken(),
+      this.$accessor.account.fetchSubaccounts()
+    ])
       .then(() => {
-        this.setPortfolioPolling()
-        this.setOrderbookPolling()
+        this.checkForReferralCode()
       })
-      .catch(this.$onRejected)
+      .catch(this.$onError)
       .finally(() => {
         this.status.setIdle()
       })
   },
 
-  beforeDestroy() {
-    this.$accessor.portfolio.reset()
-    clearInterval(this.interval)
-    clearInterval(this.orderbookInterval)
-  },
-
   methods: {
-    setPortfolioPolling() {
-      this.interval = setInterval(async () => {
-        await this.$accessor.portfolio.poll()
-      }, 10000)
-    },
+    checkForReferralCode() {
+      const { $route, refereeInfo } = this
+      const { code } = $route.query
 
-    setOrderbookPolling() {
-      if (ORDERBOOK_POLLING_ENABLED) {
-        this.orderbookInterval = setInterval(async () => {
-          await this.$accessor.portfolio.fetchDerivativeOrderbooks()
-        }, 2000)
+      if ($route.name === 'register' && code && code.toString().trim() !== '') {
+        if (refereeInfo === undefined) {
+          this.$accessor.modal.openModal(Modal.RefereeOnboarding)
+        } else {
+          this.$toast.error(this.$t('referralModal.alreadyReferredToast'))
+        }
       }
     }
   }

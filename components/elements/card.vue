@@ -1,9 +1,10 @@
 <template>
   <div
-    class="bg-gray-800 rounded-xl"
+    class="bg-gray-800 rounded-xl relative"
     :class="{
       'p-4 lg:p-6': lg && !tight,
-      'p-2 lg:p-3': !lg && !tight
+      'p-4': md && !tight,
+      'p-2 lg:p-3': !md && !lg && !tight
     }"
   >
     <slot />
@@ -16,13 +17,16 @@ import Vue from 'vue'
 export default Vue.extend({
   props: {
     lg: {
-      required: false,
+      type: Boolean,
+      default: false
+    },
+
+    md: {
       type: Boolean,
       default: false
     },
 
     tight: {
-      required: false,
       type: Boolean,
       default: false
     }

@@ -1,24 +1,23 @@
+import {
+  BankBalances,
+  BankBalanceWithToken,
+  IbcBankBalanceWithToken,
+  Token
+} from '@injectivelabs/ui-common'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
 import {
-  fetchBalances,
-  fetchBalancesWithTokenMetaData,
-  fetchIbcSupplyWithTokenMeta,
-  transfer
-} from '~/app/services/bank'
+  bankActionServiceFactory,
+  bankService,
+  tokenService
+} from '~/app/Services'
 import { backupPromiseCall } from '~/app/utils/async'
-import {
-  BankBalances,
-  BankBalanceWithTokenMetaData,
-  IbcBankBalanceWithTokenMetaData,
-  Token
-} from '~/types'
 
 const initialStateFactory = () => ({
   balances: {} as BankBalances,
   ibcBalances: {} as BankBalances,
-  balancesWithTokenMetaData: [] as BankBalanceWithTokenMetaData[],
-  ibcBalancesWithTokenMetaData: [] as IbcBankBalanceWithTokenMetaData[]
+  bankErc20BalancesWithToken: [] as BankBalanceWithToken[],
+  bankIbcBalancesWithToken: [] as IbcBankBalanceWithToken[]
 })
 
 const initialState = initialStateFactory()
@@ -26,14 +25,26 @@ const initialState = initialStateFactory()
 export const state = () => ({
   balances: initialState.balances,
   ibcBalances: initialState.balances,
-  balancesWithTokenMetaData: initialState.balancesWithTokenMetaData,
-  ibcBalancesWithTokenMetaData: initialState.ibcBalancesWithTokenMetaData
+  bankErc20BalancesWithToken: initialState.bankErc20BalancesWithToken,
+  bankIbcBalancesWithToken: initialState.bankIbcBalancesWithToken
 })
 
 export type BankStoreState = ReturnType<typeof state>
 
 export const getters = getterTree(state, {
-  //
+  hasAnyBankBalance: (state: BankStoreState) => {
+    return (
+      Object.keys(state.balances).length > 0 ||
+      Object.keys(state.ibcBalances).length > 0
+    )
+  },
+
+  bankBalancesWithToken: (state: BankStoreState) => {
+    return [
+      ...state.bankErc20BalancesWithToken,
+      ...state.bankIbcBalancesWithToken
+    ]
+  }
 })
 
 export const mutations = {
@@ -41,31 +52,30 @@ export const mutations = {
     state.balances = balances
   },
 
-  setBalancesWithTokenMetaData(
+  setBankErc20BalancesWithToken(
     state: BankStoreState,
-    balancesWithTokenMetaData: BankBalanceWithTokenMetaData[]
+    bankErc20BalancesWithToken: BankBalanceWithToken[]
   ) {
-    state.balancesWithTokenMetaData = balancesWithTokenMetaData
+    state.bankErc20BalancesWithToken = bankErc20BalancesWithToken
   },
 
   setIbcBalances(state: BankStoreState, ibcBalances: BankBalances) {
     state.ibcBalances = ibcBalances
   },
 
-  setIbcBalancesWithTokenMetaData(
+  setIbcBalancesWithToken(
     state: BankStoreState,
-    ibcBalancesWithTokenMetaData: IbcBankBalanceWithTokenMetaData[]
+    bankIbcBalancesWithToken: IbcBankBalanceWithToken[]
   ) {
-    state.ibcBalancesWithTokenMetaData = ibcBalancesWithTokenMetaData
+    state.bankIbcBalancesWithToken = bankIbcBalancesWithToken
   },
 
   reset(state: BankStoreState) {
     const initialState = initialStateFactory()
 
     state.balances = initialState.balances
-    state.balancesWithTokenMetaData = initialState.balancesWithTokenMetaData
-    state.ibcBalancesWithTokenMetaData =
-      initialState.ibcBalancesWithTokenMetaData
+    state.bankErc20BalancesWithToken = initialState.bankErc20BalancesWithToken
+    state.bankIbcBalancesWithToken = initialState.bankIbcBalancesWithToken
   }
 }
 
@@ -83,7 +93,7 @@ export const actions = actionTree(
         return
       }
 
-      const { bankBalances, ibcBankBalances } = await fetchBalances(
+      const { bankBalances, ibcBankBalances } = await bankService.fetchBalances(
         injectiveAddress
       )
 
@@ -91,32 +101,27 @@ export const actions = actionTree(
       commit('setIbcBalances', ibcBankBalances)
     },
 
-    async fetchBalancesWithTokenMetaData({ state, commit }) {
-      const { balances } = state
+    async fetchBankBalancesWithToken({ commit }) {
       const { injectiveAddress } = this.app.$accessor.wallet
 
       if (!injectiveAddress) {
         return
       }
 
-      commit(
-        'setBalancesWithTokenMetaData',
-        await fetchBalancesWithTokenMetaData(balances)
+      const { bankBalances, ibcBankBalances } = await bankService.fetchBalances(
+        injectiveAddress
       )
-    },
 
-    async fetchIbcBalancesWithTokenMetaData({ state, commit }) {
-      const { ibcBalances } = state
-      const { injectiveAddress } = this.app.$accessor.wallet
+      commit('setBalances', bankBalances)
+      commit('setIbcBalances', ibcBankBalances)
 
-      if (!injectiveAddress) {
-        return
-      }
+      const {
+        bankBalancesWithToken,
+        ibcBankBalancesWithToken
+      } = await tokenService.getBalancesWithToken(bankBalances, ibcBankBalances)
 
-      commit(
-        'setIbcBalancesWithTokenMetaData',
-        await fetchIbcSupplyWithTokenMeta(ibcBalances)
-      )
+      commit('setBankErc20BalancesWithToken', bankBalancesWithToken)
+      commit('setIbcBalancesWithToken', ibcBankBalancesWithToken)
     },
 
     async transfer(
@@ -138,6 +143,7 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
+      const bankActionService = bankActionServiceFactory()
 
       if (!address || !isUserWalletConnected) {
         return
@@ -145,12 +151,12 @@ export const actions = actionTree(
 
       await this.app.$accessor.wallet.validate()
 
-      await transfer({
+      await bankActionService.transfer({
         address,
         injectiveAddress,
         destination,
         denom,
-        amount: amount.toWei(token.decimals)
+        amount: amount.toWei(token.decimals).toFixed()
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())

@@ -1,7 +1,7 @@
 <template>
   <nuxt-link
     v-bind="$attrs"
-    class="text-gray-200 flex items-center tracking-widest uppercase text-xs rounded mx-px"
+    class="text-gray-200 hover:bg-gray-800 items-center tracking-widest uppercase text-xs rounded cursor-pointer mx-px"
     :class="classes"
     exact
     @click.native="handleClickEvent"
@@ -28,7 +28,7 @@ export default Vue.extend({
       const { dense } = this
 
       if (dense) {
-        return ['mb-4', 'hover:text-primary-500']
+        return ['hover:text-primary-500']
       }
 
       return ['px-6', 'py-2', 'hover:bg-gray-800', 'hover:text-white']

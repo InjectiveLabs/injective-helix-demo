@@ -96,11 +96,9 @@ export default {
     ORDERBOOK_POLLING_ENABLED: process.env.ORDERBOOK_POLLING_ENABLED,
     GEO_IP_RESTRICTIONS_ENABLED: process.env.GEO_IP_RESTRICTIONS_ENABLED,
     SHOW_AUCTION_COUNTDOWN: process.env.SHOW_AUCTION_COUNTDOWN,
-    TRANSFER_RESTRICTIONS_ENABLED: process.env.TRANSFER_RESTRICTIONS_ENABLED,
     MAINTENANCE_ENABLED: process.env.MAINTENANCE_ENABLED,
     REFERRALS_ENABLED: process.env.REFERRALS_ENABLED,
     APP_FEE_RECIPIENT: process.env.APP_FEE_RECIPIENT,
-    APP_VALIDATOR_ADDRESS: process.env.APP_VALIDATOR_ADDRESS,
     APP_ELEVIO_ID: process.env.APP_ELEVIO_ID,
     APP_NETWORK: process.env.APP_NETWORK,
     APP_CHAIN_ID: process.env.APP_CHAIN_ID,
@@ -116,14 +114,14 @@ export default {
 
   router: {
     linkActiveClass: 'is-active',
-    middleware: ['maintenance'],
+    middleware: ['maintenance', 'connected'],
     extendRoutes(routes) {
       return [
         ...routes,
         {
           name: 'register',
           path: '/register',
-          component: './pages/wallet.vue'
+          component: './pages/portfolio.vue'
         }
       ]
     }
