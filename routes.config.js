@@ -45,7 +45,7 @@ if (NETWORK === Network.Devnet) {
 }
 
 const spotRoutes = spot.map((s) => `/spot/${s}`) || []
-const derivativesRoutes = derivatives.map((s) => `/spot/${s}`) || []
+const derivativesRoutes = derivatives.map((s) => `/derivatives/${s}`) || []
 
 module.exports = [
   '/',
