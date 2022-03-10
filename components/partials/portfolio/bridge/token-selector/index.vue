@@ -21,7 +21,7 @@ import {
   TokenWithBalanceAndPrice
 } from '@injectivelabs/ui-common'
 import VTokenSelector from './select.vue'
-import { TransferSide } from '~/types'
+import { TransferSide, TransferDirection } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -30,12 +30,16 @@ export default Vue.extend({
 
   props: {
     origin: {
-      type: String as PropType<BridgingNetwork | TransferSide>,
+      type: String as PropType<
+        BridgingNetwork | TransferSide | TransferDirection
+      >,
       required: true
     },
 
     destination: {
-      type: String as PropType<BridgingNetwork | TransferSide>,
+      type: String as PropType<
+        BridgingNetwork | TransferSide | TransferDirection
+      >,
       required: true
     },
 
@@ -116,11 +120,11 @@ export default Vue.extend({
         return erc20TokensWithBalanceAndPriceFromBankAsBankBalanceWithToken
       }
 
-      if (origin === TransferSide.Bank) {
+      if (origin === TransferDirection.bankToTradingAccount) {
         return bankBalancesWithToken
       }
 
-      if (origin === TransferSide.TradingAccount) {
+      if (origin === TransferDirection.tradingAccountToBank) {
         return subaccountBalancesWithTokenAsBankBalanceWithToken
       }
 
