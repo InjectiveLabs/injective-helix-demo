@@ -1,5 +1,8 @@
 <template>
   <div class="w-full xs:w-1/2 font-bold mx-auto">
+    <p class="mb-4">
+      {{ $t('bridge.setAllowanceFor', { asset: tokenWithBalance.symbol }) }}
+    </p>
     <v-button
       lg
       primary
