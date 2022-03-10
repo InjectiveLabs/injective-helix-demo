@@ -52,18 +52,20 @@
         </ValidationProvider>
       </div>
       <div v-if="!isIbcTransfer" class="mt-6">
-        <v-balance :balance="balance" :token="form.token" class="mb-2" />
-        <v-token-selector
-          :amount="form.amount"
-          :value="form.token"
-          :origin="origin"
-          :destination="destination"
-          :is-ibc-transfer="isIbcTransfer"
-          :balance="balance"
-          @input:amount="handleAmountChange"
-          @input:token="handleTokenChange"
-        >
-        </v-token-selector>
+        <div v-if="hasAllowance">
+          <v-balance :balance="balance" :token="form.token" class="mb-2" />
+          <v-token-selector
+            :amount="form.amount"
+            :value="form.token"
+            :origin="origin"
+            :destination="destination"
+            :is-ibc-transfer="isIbcTransfer"
+            :balance="balance"
+            @input:amount="handleAmountChange"
+            @input:token="handleTokenChange"
+          >
+          </v-token-selector>
+        </div>
         <div class="mt-8 text-center">
           <v-allowance v-if="!hasAllowance" :token-with-balance="form.token" />
 
@@ -104,7 +106,6 @@ import VBalance from '~/components/partials/portfolio/bridge/balance.vue'
 import VNetworkSelect from '~/components/partials/portfolio/bridge/network-select.vue'
 import VIbcTransferNote from '~/components/partials/portfolio/bridge/ibc-transfer-note.vue'
 import VTransferDirectionSwitch from '~/components/partials/portfolio/bridge/transfer-direction-switch.vue'
-import { IS_DEVNET } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -228,18 +229,21 @@ export default Vue.extend({
     },
 
     hasAllowance(): boolean {
-      const { erc20TokensWithBalanceAndPriceFromBank, form } = this
+      const { bridgeType, erc20TokensWithBalanceAndPriceFromBank, form } = this
 
       const token = erc20TokensWithBalanceAndPriceFromBank.find(
         ({ denom }) => denom === form.token.denom
       )
 
+      if (bridgeType === BridgeType.Transfer) {
+        return true
+      }
+
       if (!token) {
         return false
       }
 
-      // TODO: remove IS_DEVNET check
-      return IS_DEVNET || new BigNumberInBase(token.allowance).gt('0')
+      return new BigNumberInBase(token.allowance).gt('0')
     },
 
     onTransferBalance(): BigNumberInBase {

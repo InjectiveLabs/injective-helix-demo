@@ -44,6 +44,7 @@ export default {
       'Note: It should take up to 10 seconds for your transfer to appear after your transaction has been confirmed on Injective',
 
     setAllowance: 'Set Allowance',
+    setAllowanceFor: 'Set allowance for {asset}',
     successfullySetAllowance: 'Token allowance set successfully'
   }
 }
