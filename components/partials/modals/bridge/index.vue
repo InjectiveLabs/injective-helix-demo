@@ -235,7 +235,7 @@ export default Vue.extend({
         ({ denom }) => denom === form.token.denom
       )
 
-      if (bridgeType === BridgeType.Transfer) {
+      if ([BridgeType.Transfer, BridgeType.Withdraw].includes(bridgeType)) {
         return true
       }
 
