@@ -32,7 +32,7 @@
           class="input textarea"
           @input="handleChangeOnInput"
         />
-        <div v-else class="flex justify-between">
+        <div v-else class="flex justify-between no-shadow">
           <input
             v-bind="$attrs"
             class="input"
