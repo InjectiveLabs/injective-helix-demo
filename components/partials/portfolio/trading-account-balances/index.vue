@@ -93,8 +93,7 @@
                 class="col-span-1"
                 :balance="balance"
                 :hide-balance="hideBalance"
-                :total-positions-margin="totalPositionsMargin"
-                :total-positions-pnl="totalPositionsPnl"
+                v-bind="$attrs"
               />
               <template slot="empty">
                 <span class="col-span-1 md:col-span-5">
@@ -140,16 +139,6 @@ export default Vue.extend({
       type: Array as PropType<
         SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance[]
       >
-    },
-
-    totalPositionsMargin: {
-      type: Object as PropType<BigNumberInBase>,
-      required: true
-    },
-
-    totalPositionsPnl: {
-      type: Object as PropType<BigNumberInBase>,
-      required: true
     },
 
     hideBalance: {

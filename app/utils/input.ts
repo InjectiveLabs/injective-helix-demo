@@ -24,7 +24,7 @@ export const hasLessThenLimitedDecimalPlaces = (
 ): boolean => {
   const valueDecimalPlaces = getExactDecimalsFromNumber(value)
 
-  return valueDecimalPlaces < limitedDecimalPlaces
+  return valueDecimalPlaces < limitedDecimalPlaces || limitedDecimalPlaces === 0
 }
 
 export const inputTextIsHighlighted = (

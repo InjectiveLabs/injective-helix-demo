@@ -51,7 +51,7 @@
             <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
             <span v-else>
               {{ $t('common.available') }}
-              {{ totalSubaccountBalancesToString }} USD
+              {{ totalSubaccountAvailableBalancesToString }} USD
             </span>
           </p>
         </div>
@@ -75,8 +75,8 @@
               hideBalance,
               bankBalancesWithUsdBalance,
               subaccountBalancesWithUsdBalance,
-              totalPositionsPnl,
-              totalPositionsMargin
+              totalPositionsMarginByQuoteDenom,
+              totalPositionsPnlByQuoteDenom
             }"
           ></component>
         </VHocLoading>
@@ -209,7 +209,7 @@ export default Vue.extend({
       const { subaccountBalancesWithTokenAndPrice } = this
 
       return subaccountBalancesWithTokenAndPrice.map((balance) => {
-        const balanceInUsd = new BigNumberInWei(balance.availableBalance)
+        const balanceInUsd = new BigNumberInWei(balance.totalBalance)
           .toBase(balance.token.decimals)
           .times(balance.token.usdPrice)
           .toFixed(UI_DEFAULT_DISPLAY_DECIMALS)
@@ -257,6 +257,21 @@ export default Vue.extend({
       )
     },
 
+    totalSubaccountAvailableBalances(): BigNumberInBase {
+      const { subaccountBalancesWithUsdBalance } = this
+
+      return subaccountBalancesWithUsdBalance.reduce((total, balance) => {
+        const availableBalanceInUsd = new BigNumberInWei(
+          balance.availableBalance
+        )
+          .toBase(balance.token.decimals)
+          .times(balance.token.usdPrice)
+          .toFixed(UI_DEFAULT_DISPLAY_DECIMALS)
+
+        return total.plus(availableBalanceInUsd)
+      }, ZERO_IN_BASE)
+    },
+
     totalSubaccountBalancesToString(): string {
       const { totalSubaccountBalances } = this
 
@@ -273,15 +288,21 @@ export default Vue.extend({
       return totalSubaccountBalances.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
-    totalPositionsPnl(): BigNumberInBase {
+    totalPositionsPnlByQuoteDenom(): Record<string, BigNumberInBase> {
       const { markets, orderbooks, positions } = this
 
-      return positions.reduce((total, p) => {
+      return positions.reduce((list, p) => {
         const market = markets.find((m) => m.marketId === p.marketId)
         const orderbook = orderbooks[p.marketId]
 
         if (!market || !orderbook) {
-          return total.plus(new BigNumberInBase(ZERO_IN_BASE))
+          return list
+        }
+
+        const quoteDenom = market.quoteDenom.toLowerCase()
+
+        if (!list[quoteDenom]) {
+          list[quoteDenom] = ZERO_IN_BASE
         }
 
         const price = new BigNumberInWei(p.entryPrice).toBase(
@@ -303,36 +324,76 @@ export default Vue.extend({
               .times(executionPrice.minus(price))
               .times(p.direction === TradeDirection.Long ? 1 : -1)
 
-        return total.plus(pnl)
-      }, ZERO_IN_BASE)
+        list[quoteDenom] = list[quoteDenom].plus(pnl)
+
+        return list
+      }, {} as Record<string, BigNumberInBase>)
     },
 
-    totalPositionsPnlInString(): string {
-      const { totalPositionsPnl } = this
+    totalPositionsPnl(): BigNumberInBase {
+      const {
+        totalPositionsPnlByQuoteDenom,
+        subaccountBalancesWithTokenAndPrice
+      } = this
 
-      return totalPositionsPnl.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+      return Object.entries(totalPositionsPnlByQuoteDenom).reduce(
+        (total, [denom, balance]) => {
+          const symbolFromSubaccount = subaccountBalancesWithTokenAndPrice.find(
+            (b) => b.token.denom === denom
+          )
+          const usdPrice = symbolFromSubaccount
+            ? symbolFromSubaccount.token.usdPrice
+            : 1
+
+          return total.plus(balance.times(usdPrice))
+        },
+        ZERO_IN_BASE
+      )
     },
 
-    totalPositionsMargin(): BigNumberInBase {
+    totalPositionsMarginByQuoteDenom(): Record<string, BigNumberInBase> {
       const { markets, positions } = this
 
-      return positions.reduce((total, p) => {
+      return positions.reduce((list, p) => {
         const market = markets.find((m) => m.marketId === p.marketId)
 
         if (!market) {
-          return total.plus(new BigNumberInBase(ZERO_IN_BASE))
+          return list
         }
 
-        return total.plus(
+        const quoteDenom = market.quoteDenom.toLowerCase()
+
+        if (!list[quoteDenom]) {
+          list[quoteDenom] = ZERO_IN_BASE
+        }
+
+        list[quoteDenom] = list[quoteDenom].plus(
           new BigNumberInWei(p.margin).toBase(market.quoteToken.decimals)
         )
-      }, ZERO_IN_BASE)
+
+        return list
+      }, {} as Record<string, BigNumberInBase>)
     },
 
-    totalPositionMarginsToString(): string {
-      const { totalPositionsMargin } = this
+    totalPositionsMargin(): BigNumberInBase {
+      const {
+        totalPositionsMarginByQuoteDenom,
+        subaccountBalancesWithTokenAndPrice
+      } = this
 
-      return totalPositionsMargin.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+      return Object.entries(totalPositionsMarginByQuoteDenom).reduce(
+        (total, [denom, balance]) => {
+          const symbolFromSubaccount = subaccountBalancesWithTokenAndPrice.find(
+            (b) => b.token.denom === denom
+          )
+          const usdPrice = symbolFromSubaccount
+            ? symbolFromSubaccount.token.usdPrice
+            : 1
+
+          return total.plus(balance.times(usdPrice))
+        },
+        ZERO_IN_BASE
+      )
     },
 
     tradingAccountBalances(): BigNumberInBase {
@@ -345,6 +406,12 @@ export default Vue.extend({
       return totalSubaccountBalances
         .plus(totalPositionsMargin)
         .plus(totalPositionsPnl)
+    },
+
+    totalSubaccountAvailableBalancesToString(): string {
+      const { totalSubaccountAvailableBalances } = this
+
+      return totalSubaccountAvailableBalances.toFormat(2)
     },
 
     tradingAccountBalancesToString(): string {

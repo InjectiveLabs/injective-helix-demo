@@ -52,11 +52,11 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import Orderbook from './orderbook/index.vue'
 import Trades from './trades/index.vue'
 import AggregationSelector from '~/components/partials/common/orderbook/aggregation-selector.vue'
+import { UI_DEFAULT_AGGREGATION_DECIMALS_STRING } from '~/app/utils/constants'
 import {
-  UI_DEFAULT_AGGREGATION_DECIMALS,
-  UI_DEFAULT_AGGREGATION_DECIMALS_STRING
-} from '~/app/utils/constants'
-import { customAggregations } from '~/app/data/aggregation'
+  customAggregations,
+  getDecimalPlaceFromValue
+} from '~/app/data/aggregation'
 
 const components = {
   orderbook: 'v-orderbook',
@@ -76,7 +76,7 @@ export default Vue.extend({
 
       components,
       aggregation: UI_DEFAULT_AGGREGATION_DECIMALS_STRING,
-      minTick: UI_DEFAULT_AGGREGATION_DECIMALS,
+      minTick: UI_DEFAULT_AGGREGATION_DECIMALS_STRING,
       component: components.orderbook,
       maxTick: null as string | null
     }
@@ -101,8 +101,12 @@ export default Vue.extend({
     onInit() {
       const market = this.$accessor.derivatives.market
 
-      if (market && market.priceDecimals) {
-        this.minTick = market.priceDecimals
+      if (market && market.minQuantityTickSize) {
+        const minTickSize =
+          getDecimalPlaceFromValue(market.minQuantityTickSize.toString()) ||
+          UI_DEFAULT_AGGREGATION_DECIMALS_STRING
+
+        this.minTick = minTickSize
 
         const customAggregation = customAggregations[market.ticker]
 
@@ -111,9 +115,11 @@ export default Vue.extend({
         }
 
         // applies custom aggregation base on pre configured settings
+        if (customAggregation.minTick) {
+          this.minTick = customAggregation.minTick
+        }
         this.maxTick = customAggregation.maxTick || null
-        this.aggregation =
-          customAggregation.default || market.priceDecimals.toString()
+        this.aggregation = customAggregation.default || minTickSize
       }
     },
 

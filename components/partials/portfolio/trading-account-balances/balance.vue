@@ -27,7 +27,7 @@
         class="xl:col-span-2 font-mono text-right justify-end xl:flex items-center"
       >
         <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-        <span v-else>{{ totalBalanceInString }}</span>
+        <span v-else>{{ totalBalanceWithPnlAndMarginInString }}</span>
       </span>
       <span class="font-mono text-left xl:hidden">
         {{ $t('portfolio.available') }}
@@ -48,7 +48,8 @@
         class="xl:col-span-2 font-mono text-right xl:flex items-center justify-end"
       >
         <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-        <span v-else>{{ marginHoldToString }}</span>
+        <span v-else-if="!marginHold.eq(0)">{{ marginHoldToString }}</span>
+        <span v-else>&mdash;</span>
       </span>
 
       <span class="font-mono text-left xl:hidden">
@@ -58,7 +59,9 @@
         class="xl:col-span-2 font-mono text-right xl:flex items-center justify-end"
       >
         <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-        <span v-else-if="unrealizedPnl">{{ unrealizedPnl }}</span>
+        <span v-else-if="!unrealizedPnl.eq(0)">{{
+          unrealizedPnlToString
+        }}</span>
         <span v-else>&mdash;</span>
       </span>
 
@@ -70,12 +73,14 @@
           {{ HIDDEN_BALANCE_DISPLAY }}
         </span>
         <span v-else class="flex items-end justify-end flex-col">
-          <span class="leading-4">{{ totalInUsdToString }} USD</span>
+          <span class="leading-4">
+            {{ totalBalanceWithPnlAndMarginInUsdToString }} USD
+          </span>
           <span
-            v-if="totalInBtc.gt(0)"
+            v-if="totalBalanceWithPnlAndMarginInBtc.gt(0)"
             class="text-opacity-50 text-gray-200 text-2xs xs:ml-1 leading-4"
           >
-            ≈ {{ totalInBtcToString }} BTC
+            ≈ {{ totalBalanceWithPnlAndMarginInBtcToString }} BTC
           </span>
         </span>
       </span>
@@ -132,13 +137,13 @@ export default Vue.extend({
       default: false
     },
 
-    totalPositionsMargin: {
-      type: Object as PropType<BigNumberInBase>,
+    totalPositionsMarginByQuoteDenom: {
+      type: Object as PropType<Record<string, BigNumberInBase>>,
       required: true
     },
 
-    totalPositionsPnl: {
-      type: Object as PropType<BigNumberInBase>,
+    totalPositionsPnlByQuoteDenom: {
+      type: Object as PropType<Record<string, BigNumberInBase>>,
       required: true
     }
   },
@@ -156,14 +161,30 @@ export default Vue.extend({
       return this.$accessor.token.btcUsdPrice
     },
 
-    isUsdt(): Boolean {
-      const { balance } = this
+    positionMargin(): BigNumberInBase {
+      const { balance, totalPositionsMarginByQuoteDenom } = this
 
       if (!balance || !balance.token || !balance.token.symbol) {
-        return false
+        return ZERO_IN_BASE
       }
 
-      return balance.token.symbol.toUpperCase() === 'USDT'
+      return (
+        totalPositionsMarginByQuoteDenom[balance.token.denom.toLowerCase()] ||
+        ZERO_IN_BASE
+      )
+    },
+
+    unrealizedPnl(): BigNumberInBase {
+      const { balance, totalPositionsPnlByQuoteDenom } = this
+
+      if (!balance || !balance.token || !balance.token.symbol) {
+        return ZERO_IN_BASE
+      }
+
+      return (
+        totalPositionsPnlByQuoteDenom[balance.token.denom.toLowerCase()] ||
+        ZERO_IN_BASE
+      )
     },
 
     availableBalance(): BigNumberInBase {
@@ -190,12 +211,6 @@ export default Vue.extend({
       )
     },
 
-    totalBalanceWithMarginAndPnL(): BigNumberInBase {
-      const { totalBalance, marginHold, totalPositionsPnl } = this
-
-      return totalBalance.plus(marginHold).plus(totalPositionsPnl)
-    },
-
     inOrderBalance(): BigNumberInBase {
       const { availableBalance, totalBalance } = this
 
@@ -203,23 +218,39 @@ export default Vue.extend({
     },
 
     marginHold(): BigNumberInBase {
-      const { inOrderBalance, isUsdt, totalPositionsMargin } = this
+      const { inOrderBalance, positionMargin } = this
 
-      if (!isUsdt) {
-        return inOrderBalance
-      }
-
-      return inOrderBalance.plus(totalPositionsMargin)
+      return inOrderBalance.plus(positionMargin)
     },
 
-    unrealizedPnl(): string | undefined {
-      const { isUsdt, totalPositionsPnl } = this
+    totalBalanceWithPnlAndMargin(): BigNumberInBase {
+      const { totalBalance, positionMargin, unrealizedPnl } = this
 
-      if (!isUsdt) {
-        return undefined
+      return totalBalance.plus(positionMargin).plus(unrealizedPnl)
+    },
+
+    totalBalanceWithPnlAndMarginInUsd(): BigNumberInBase {
+      const { balance, totalBalanceWithPnlAndMargin } = this
+
+      return totalBalanceWithPnlAndMargin.multipliedBy(balance.token.usdPrice)
+    },
+
+    totalBalanceWithPnlAndMarginInBtc(): BigNumberInBase {
+      const { totalBalanceWithPnlAndMarginInUsd, btcUsdPrice } = this
+
+      if (!btcUsdPrice) {
+        return ZERO_IN_BASE
       }
 
-      return totalPositionsPnl.toFormat(
+      return totalBalanceWithPnlAndMarginInUsd.dividedBy(
+        new BigNumberInBase(btcUsdPrice)
+      )
+    },
+
+    unrealizedPnlToString(): string | undefined {
+      const { unrealizedPnl } = this
+
+      return unrealizedPnl.toFormat(
         UI_DEFAULT_DISPLAY_DECIMALS,
         BigNumberInBase.ROUND_DOWN
       )
@@ -234,26 +265,6 @@ export default Vue.extend({
       )
     },
 
-    totalInUsd(): BigNumberInBase {
-      const { isUsdt, balance, totalBalanceWithMarginAndPnL } = this
-
-      if (!isUsdt) {
-        return new BigNumberInBase(balance.balanceInUsd)
-      }
-
-      return totalBalanceWithMarginAndPnL.multipliedBy(balance.token.usdPrice)
-    },
-
-    totalInBtc(): BigNumberInBase {
-      const { totalInUsd, btcUsdPrice } = this
-
-      if (!btcUsdPrice) {
-        return ZERO_IN_BASE
-      }
-
-      return totalInUsd.dividedBy(new BigNumberInBase(btcUsdPrice))
-    },
-
     marginHoldToString(): string {
       const { marginHold } = this
 
@@ -263,35 +274,37 @@ export default Vue.extend({
       )
     },
 
-    totalBalanceInString(): string {
-      const { isUsdt, totalBalance, totalBalanceWithMarginAndPnL } = this
+    totalBalanceWithPnlAndMarginInString(): string {
+      const { totalBalanceWithPnlAndMargin } = this
 
-      const total = isUsdt ? totalBalanceWithMarginAndPnL : totalBalance
-
-      return total.toFormat(
+      return totalBalanceWithPnlAndMargin.toFormat(
         UI_DEFAULT_DISPLAY_DECIMALS,
         BigNumberInBase.ROUND_DOWN
       )
     },
 
-    totalInBtcToString(): string {
-      const { totalInBtc } = this
+    totalBalanceWithPnlAndMarginInBtcToString(): string {
+      const { totalBalanceWithPnlAndMarginInBtc } = this
 
-      if (totalInBtc.eq('0')) {
+      if (totalBalanceWithPnlAndMarginInBtc.eq('0')) {
         return '0.00'
       }
 
-      if (totalInBtc.lte('0.0001')) {
+      if (totalBalanceWithPnlAndMarginInBtc.lte('0.0001')) {
         return '<0.0001'
       }
 
-      return totalInBtc.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+      return totalBalanceWithPnlAndMarginInBtc.toFormat(
+        UI_DEFAULT_DISPLAY_DECIMALS
+      )
     },
 
-    totalInUsdToString(): string {
-      const { totalInUsd } = this
+    totalBalanceWithPnlAndMarginInUsdToString(): string {
+      const { totalBalanceWithPnlAndMarginInUsd } = this
 
-      return totalInUsd.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      return totalBalanceWithPnlAndMarginInUsd.toFormat(
+        UI_DEFAULT_MIN_DISPLAY_DECIMALS
+      )
     },
 
     spotMarketRoute(): string | undefined {

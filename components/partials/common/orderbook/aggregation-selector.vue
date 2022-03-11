@@ -1,7 +1,7 @@
 <template>
   <v-dropdown hide-bottom-border>
     <template slot="title">
-      <div class="w-12 flex items-center justify-end">
+      <div class="flex items-center justify-end w-[80px]">
         <span class="text-xs ml-2">{{ display }}</span>
       </div>
     </template>
@@ -38,7 +38,7 @@ export default Vue.extend({
     },
 
     minTick: {
-      type: Number,
+      type: String,
       required: true
     },
 
@@ -66,12 +66,12 @@ export default Vue.extend({
 
       if (maxTick) {
         const startIndex = list.findIndex(({ value }) => value === maxTick)
-        const endIndex = list.findIndex(({ value }) => value === minTick.toString())
+        const endIndex = list.findIndex(({ value }) => value === minTick)
 
         return list.slice(startIndex, endIndex + 1)
       }
 
-      const index = list.findIndex(({ value }) => value === minTick.toString())
+      const index = list.findIndex(({ value }) => value === minTick)
 
       return list.slice(Math.max(index - 2, 0), index + 1)
     }
