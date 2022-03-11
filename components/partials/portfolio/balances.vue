@@ -75,8 +75,6 @@
               hideBalance,
               bankBalancesWithUsdBalance,
               subaccountBalancesWithUsdBalance,
-              totalPositionsPnl,
-              totalPositionsMargin,
               totalPositionsMarginByQuoteToken,
               totalPositionsPnlByQuoteToken
             }"
@@ -293,14 +291,12 @@ export default Vue.extend({
     totalPositionsPnlByQuoteToken(): Record<string, BigNumberInBase> {
       const { markets, orderbooks, positions } = this
 
-      const list = {} as Record<string, BigNumberInBase>
-
-      positions.forEach((p) => {
+      return positions.reduce((list, p) => {
         const market = markets.find((m) => m.marketId === p.marketId)
         const orderbook = orderbooks[p.marketId]
 
         if (!market || !orderbook) {
-          return
+          return list
         }
 
         const quoteToken = market.oracleQuote.toLowerCase()
@@ -329,9 +325,9 @@ export default Vue.extend({
               .times(p.direction === TradeDirection.Long ? 1 : -1)
 
         list[quoteToken] = list[quoteToken].plus(pnl)
-      })
 
-      return list
+        return list
+      }, {} as Record<string, BigNumberInBase>)
     },
 
     totalPositionsPnl(): BigNumberInBase {
@@ -358,13 +354,11 @@ export default Vue.extend({
     totalPositionsMarginByQuoteToken(): Record<string, BigNumberInBase> {
       const { markets, positions } = this
 
-      const list = {} as Record<string, BigNumberInBase>
-
-      positions.forEach((p) => {
+      return positions.reduce((list, p) => {
         const market = markets.find((m) => m.marketId === p.marketId)
 
         if (!market) {
-          return
+          return list
         }
 
         const quoteToken = market.oracleQuote.toLowerCase()
@@ -376,9 +370,9 @@ export default Vue.extend({
         list[quoteToken] = list[quoteToken].plus(
           new BigNumberInWei(p.margin).toBase(market.quoteToken.decimals)
         )
-      })
 
-      return list
+        return list
+      }, {} as Record<string, BigNumberInBase>)
     },
 
     totalPositionsMargin(): BigNumberInBase {
