@@ -93,6 +93,12 @@
                 class="col-span-1"
                 :balance="balance"
                 :hide-balance="hideBalance"
+                :total-positions-margin-by-quote-token="
+                  totalPositionsMarginByQuoteToken
+                "
+                :total-positions-pnl-by-quote-token="
+                  totalPositionsPnlByQuoteToken
+                "
                 :total-positions-margin="totalPositionsMargin"
                 :total-positions-pnl="totalPositionsPnl"
               />
@@ -149,6 +155,16 @@ export default Vue.extend({
 
     totalPositionsPnl: {
       type: Object as PropType<BigNumberInBase>,
+      required: true
+    },
+
+    totalPositionsMarginByQuoteToken: {
+      type: Object as PropType<Record<string, BigNumberInBase>>,
+      required: true
+    },
+
+    totalPositionsPnlByQuoteToken: {
+      type: Object as PropType<Record<string, BigNumberInBase>>,
       required: true
     },
 

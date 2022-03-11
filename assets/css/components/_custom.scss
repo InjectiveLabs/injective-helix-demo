@@ -124,15 +124,15 @@
 }
 
 [class*='bg-red-'] .spinner {
-  border-top-color: theme('colors.red.300');
+  border-top-color: theme('colors.gray.200');
 }
 
 [class*='bg-primary-'] .spinner {
-  border-top-color: theme('colors.primary.300');
+  border-top-color: theme('colors.gray.200');
 }
 
 [class*='bg-aqua-'] .spinner {
-  border-top-color: theme('colors.aqua.300');
+  border-top-color: theme('colors.gray.200');
 }
 
 [class*='bg-gray-200'] .spinner {
