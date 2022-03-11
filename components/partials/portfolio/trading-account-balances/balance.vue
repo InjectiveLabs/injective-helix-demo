@@ -137,12 +137,12 @@ export default Vue.extend({
       default: false
     },
 
-    totalPositionsMarginByQuoteToken: {
+    totalPositionsMarginByQuoteDenom: {
       type: Object as PropType<Record<string, BigNumberInBase>>,
       required: true
     },
 
-    totalPositionsPnlByQuoteToken: {
+    totalPositionsPnlByQuoteDenom: {
       type: Object as PropType<Record<string, BigNumberInBase>>,
       required: true
     }
@@ -162,27 +162,27 @@ export default Vue.extend({
     },
 
     positionMargin(): BigNumberInBase {
-      const { balance, totalPositionsMarginByQuoteToken } = this
+      const { balance, totalPositionsMarginByQuoteDenom } = this
 
       if (!balance || !balance.token || !balance.token.symbol) {
         return ZERO_IN_BASE
       }
 
       return (
-        totalPositionsMarginByQuoteToken[balance.token.symbol.toLowerCase()] ||
+        totalPositionsMarginByQuoteDenom[balance.token.denom.toLowerCase()] ||
         ZERO_IN_BASE
       )
     },
 
     unrealizedPnl(): BigNumberInBase {
-      const { balance, totalPositionsPnlByQuoteToken } = this
+      const { balance, totalPositionsPnlByQuoteDenom } = this
 
       if (!balance || !balance.token || !balance.token.symbol) {
         return ZERO_IN_BASE
       }
 
       return (
-        totalPositionsPnlByQuoteToken[balance.token.symbol.toLowerCase()] ||
+        totalPositionsPnlByQuoteDenom[balance.token.denom.toLowerCase()] ||
         ZERO_IN_BASE
       )
     },

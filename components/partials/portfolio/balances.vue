@@ -75,8 +75,8 @@
               hideBalance,
               bankBalancesWithUsdBalance,
               subaccountBalancesWithUsdBalance,
-              totalPositionsMarginByQuoteToken,
-              totalPositionsPnlByQuoteToken
+              totalPositionsMarginByQuoteDenom,
+              totalPositionsPnlByQuoteDenom
             }"
           ></component>
         </VHocLoading>
@@ -288,7 +288,7 @@ export default Vue.extend({
       return totalSubaccountBalances.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
-    totalPositionsPnlByQuoteToken(): Record<string, BigNumberInBase> {
+    totalPositionsPnlByQuoteDenom(): Record<string, BigNumberInBase> {
       const { markets, orderbooks, positions } = this
 
       return positions.reduce((list, p) => {
@@ -299,10 +299,10 @@ export default Vue.extend({
           return list
         }
 
-        const quoteToken = market.oracleQuote.toLowerCase()
+        const quoteDenom = market.quoteDenom.toLowerCase()
 
-        if (!list[quoteToken]) {
-          list[quoteToken] = ZERO_IN_BASE
+        if (!list[quoteDenom]) {
+          list[quoteDenom] = ZERO_IN_BASE
         }
 
         const price = new BigNumberInWei(p.entryPrice).toBase(
@@ -324,7 +324,7 @@ export default Vue.extend({
               .times(executionPrice.minus(price))
               .times(p.direction === TradeDirection.Long ? 1 : -1)
 
-        list[quoteToken] = list[quoteToken].plus(pnl)
+        list[quoteDenom] = list[quoteDenom].plus(pnl)
 
         return list
       }, {} as Record<string, BigNumberInBase>)
@@ -332,14 +332,14 @@ export default Vue.extend({
 
     totalPositionsPnl(): BigNumberInBase {
       const {
-        totalPositionsPnlByQuoteToken,
+        totalPositionsPnlByQuoteDenom,
         subaccountBalancesWithTokenAndPrice
       } = this
 
-      return Object.entries(totalPositionsPnlByQuoteToken).reduce(
-        (total, [symbol, balance]) => {
+      return Object.entries(totalPositionsPnlByQuoteDenom).reduce(
+        (total, [denom, balance]) => {
           const symbolFromSubaccount = subaccountBalancesWithTokenAndPrice.find(
-            (b) => b.token.symbol === symbol
+            (b) => b.token.denom === denom
           )
           const usdPrice = symbolFromSubaccount
             ? symbolFromSubaccount.token.usdPrice
@@ -351,7 +351,7 @@ export default Vue.extend({
       )
     },
 
-    totalPositionsMarginByQuoteToken(): Record<string, BigNumberInBase> {
+    totalPositionsMarginByQuoteDenom(): Record<string, BigNumberInBase> {
       const { markets, positions } = this
 
       return positions.reduce((list, p) => {
@@ -361,13 +361,13 @@ export default Vue.extend({
           return list
         }
 
-        const quoteToken = market.oracleQuote.toLowerCase()
+        const quoteDenom = market.quoteDenom.toLowerCase()
 
-        if (!list[quoteToken]) {
-          list[quoteToken] = ZERO_IN_BASE
+        if (!list[quoteDenom]) {
+          list[quoteDenom] = ZERO_IN_BASE
         }
 
-        list[quoteToken] = list[quoteToken].plus(
+        list[quoteDenom] = list[quoteDenom].plus(
           new BigNumberInWei(p.margin).toBase(market.quoteToken.decimals)
         )
 
@@ -377,14 +377,14 @@ export default Vue.extend({
 
     totalPositionsMargin(): BigNumberInBase {
       const {
-        totalPositionsMarginByQuoteToken,
+        totalPositionsMarginByQuoteDenom,
         subaccountBalancesWithTokenAndPrice
       } = this
 
-      return Object.entries(totalPositionsMarginByQuoteToken).reduce(
-        (total, [symbol, balance]) => {
+      return Object.entries(totalPositionsMarginByQuoteDenom).reduce(
+        (total, [denom, balance]) => {
           const symbolFromSubaccount = subaccountBalancesWithTokenAndPrice.find(
-            (b) => b.token.symbol === symbol
+            (b) => b.token.denom === denom
           )
           const usdPrice = symbolFromSubaccount
             ? symbolFromSubaccount.token.usdPrice
