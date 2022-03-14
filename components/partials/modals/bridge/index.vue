@@ -374,6 +374,7 @@ export default Vue.extend({
 
     handleTokenChange(token: Token) {
       this.$emit('input-token:update', token)
+      this.resetForm()
     },
 
     handleDestinationAddressChange(address: string) {
@@ -395,10 +396,19 @@ export default Vue.extend({
           ? TransferDirection.tradingAccountToBank
           : TransferDirection.bankToTradingAccount
       )
+      this.resetForm()
     },
 
     handleBridgingNetworkSwitch(bridgingNetwork: BridgingNetwork) {
       this.$emit('bridging-network:update', bridgingNetwork)
+    },
+
+    resetForm() {
+      const { $form } = this
+
+      if ($form) {
+        $form.reset()
+      }
     }
   }
 })
