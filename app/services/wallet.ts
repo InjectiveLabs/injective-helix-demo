@@ -1,32 +1,17 @@
-import { ConcreteStrategyOptions, Wallet } from '@injectivelabs/web3-strategy'
+import { Wallet } from '@injectivelabs/web3-strategy'
 import { Web3Exception } from '@injectivelabs/exceptions'
-import {
-  getWeb3Strategy,
-  initWeb3Strategy,
-  setupEventsOnWeb3Strategy
-} from '~/app/web3'
+import { web3Strategy } from '~/app/web3'
 
 export const connect = ({
-  wallet,
-  options = {},
-  onAccountChangeCallback = () => {}
+  wallet
 }: {
   wallet: Wallet
-  options?: Partial<ConcreteStrategyOptions>
   onAccountChangeCallback?: (account: string) => void
 }) => {
-  initWeb3Strategy({
-    wallet,
-    options
-  })
-
-  if (wallet === Wallet.Metamask && onAccountChangeCallback) {
-    setupEventsOnWeb3Strategy(onAccountChangeCallback)
-  }
+  web3Strategy.setWallet(wallet)
 }
 
 export const getAddresses = async (): Promise<string[]> => {
-  const web3Strategy = getWeb3Strategy()
   const addresses = await web3Strategy.getAddresses()
 
   if (addresses.length === 0) {
@@ -37,7 +22,5 @@ export const getAddresses = async (): Promise<string[]> => {
 }
 
 export const confirm = async (address: string) => {
-  const web3Strategy = getWeb3Strategy()
-
   return await web3Strategy.confirm(address)
 }

@@ -49,7 +49,6 @@ const store: Plugin = ({ store, app }) => {
 
         wallet: {
           wallet: app.$accessor.wallet.wallet,
-          walletOptions: app.$accessor.wallet.walletOptions,
           addresses: app.$accessor.wallet.addresses,
           address: app.$accessor.wallet.address,
           injectiveAddress: app.$accessor.wallet.injectiveAddress,

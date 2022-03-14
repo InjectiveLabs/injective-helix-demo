@@ -41,7 +41,7 @@ const derivatives = IS_TESTNET
   : mainnetDerivatives
 
 if (NETWORK === Network.Devnet) {
-  derivatives.push('bayc-weth-perp')
+  derivatives.push('bayc-weth-perp', 'stx-usdt-perp')
 }
 
 const spotRoutes = spot.map((s) => `/spot/${s}`) || []

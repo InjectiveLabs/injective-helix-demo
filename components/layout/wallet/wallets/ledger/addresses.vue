@@ -41,7 +41,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status } from '@injectivelabs/utils'
-import { LedgerDerivationPathType } from '@injectivelabs/web3-strategy'
+import { LedgerDerivationPathType, Wallet } from '@injectivelabs/web3-strategy'
 import VSelectCustom from '~/components/inputs/select-custom.vue'
 
 export default Vue.extend({
@@ -73,6 +73,14 @@ export default Vue.extend({
   computed: {
     addresses(): string[] {
       return this.$accessor.wallet.addresses
+    },
+
+    wallet(): Wallet {
+      const { form } = this
+
+      return form.path === LedgerDerivationPathType.LedgerLive
+        ? Wallet.Ledger
+        : Wallet.LedgerLegacy
     }
   },
 
@@ -86,11 +94,8 @@ export default Vue.extend({
     handleClickOnFetchAddresses() {
       this.status.setLoading()
 
-      this.$accessor.wallet.setWalletOptions({
-        derivationPathType: this.form.path
-      })
       this.$accessor.wallet
-        .getLedgerAddresses()
+        .getHWAddresses(this.wallet)
         .then(() => {
           //
         })

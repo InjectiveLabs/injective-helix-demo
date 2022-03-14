@@ -157,6 +157,7 @@ export default Vue.extend({
     },
 
     handleTokenUpdate(token: Token) {
+      this.form.amount = ''
       this.form.token = token
     },
 
@@ -173,6 +174,7 @@ export default Vue.extend({
     },
 
     handleTransferDirectionUpdate(transferDirection: TransferDirection) {
+      this.form.amount = ''
       this.transferDirection = transferDirection
     },
 
