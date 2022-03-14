@@ -93,7 +93,6 @@
                 class="col-span-1"
                 :balance="balance"
                 :hide-balance="hideBalance"
-                v-bind="$attrs"
               />
               <template slot="empty">
                 <span class="col-span-1 md:col-span-5">
@@ -115,12 +114,9 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import {
-  SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance,
-  INJECTIVE_DENOM
-} from '@injectivelabs/ui-common'
-
+import { INJECTIVE_DENOM } from '@injectivelabs/ui-common'
 import VBalance from './balance.vue'
+import { SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd } from '~/types'
 import VSearch from '~/components/elements/search.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import TableHeader from '~/components/elements/table-header.vue'
@@ -134,16 +130,16 @@ export default Vue.extend({
   },
 
   props: {
-    subaccountBalancesWithUsdBalance: {
-      required: true,
-      type: Array as PropType<
-        SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance[]
-      >
-    },
-
     hideBalance: {
       type: Boolean,
       default: false
+    },
+
+    subaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd: {
+      required: true,
+      type: Array as PropType<
+        SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd[]
+      >
     }
   },
 
@@ -160,15 +156,15 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    filteredBalances(): SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance[] {
+    filteredBalances(): SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd[] {
       const {
-        subaccountBalancesWithUsdBalance,
+        subaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd,
         search,
         hideSmallBalance
       } = this
 
-      return subaccountBalancesWithUsdBalance.filter(
-        ({ token, balanceInUsd }) => {
+      return subaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd.filter(
+        ({ token, totalBalanceInUsd }) => {
           if ((!search || search.trim() === '') && !hideSmallBalance) {
             return true
           }
@@ -179,23 +175,24 @@ export default Vue.extend({
             search.toLowerCase().trim()
           )
           const isNotSmallBalance =
-            !hideSmallBalance || new BigNumberInBase(balanceInUsd).gte('10')
+            !hideSmallBalance ||
+            new BigNumberInBase(totalBalanceInUsd).gte('10')
 
           return isPartOfSearchFilter && isNotSmallBalance
         }
       )
     },
 
-    sortedBalances(): SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance[] {
+    sortedBalances(): SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd[] {
       const { filteredBalances } = this
 
       return [...filteredBalances].sort(
         (
-          v1: SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance,
-          v2: SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance
+          v1: SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd,
+          v2: SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd
         ) => {
-          const v1balance = new BigNumberInBase(v1.balanceInUsd)
-          const v2balance = new BigNumberInBase(v2.balanceInUsd)
+          const v1balance = new BigNumberInBase(v1.totalBalanceInUsd)
+          const v2balance = new BigNumberInBase(v2.totalBalanceInUsd)
 
           // sort by balanceInUsd
           if (v1balance.gt(0) || v2balance.gt(0)) {

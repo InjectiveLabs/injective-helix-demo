@@ -95,6 +95,7 @@ export default Vue.extend({
       .initMarket(this.slugFromRoute)
       .then(() => {
         this.setOrderbookPolling()
+        this.$accessor.spot.initMarketStreams()
       })
       .catch(this.$onRejected)
       .finally(() => {
@@ -106,7 +107,6 @@ export default Vue.extend({
       })
 
     Promise.all([
-      this.$accessor.spot.initMarketStreams(),
       this.$accessor.exchange.fetchTradingRewardsCampaign(),
       this.$accessor.exchange.fetchFeeDiscountAccountInfo()
     ])
