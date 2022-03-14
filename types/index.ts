@@ -1,5 +1,5 @@
-import { SubaccountBalanceWithToken } from '@injectivelabs/ui-common'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { SubaccountBalanceWithToken } from '~/app/services/account'
 
 export interface DOMEvent<T extends EventTarget> extends Event {
   target: T
