@@ -51,7 +51,7 @@
             <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
             <span v-else>
               {{ $t('common.available') }}
-              {{ totalSubaccountAvailableBalancesToString }} USD
+              {{ totalTradingAccountAvailableBalancesToString }} USD
             </span>
           </p>
         </div>
@@ -74,9 +74,7 @@
             v-bind="{
               hideBalance,
               bankBalancesWithUsdBalance,
-              subaccountBalancesWithUsdBalance,
-              totalPositionsMarginByQuoteDenom,
-              totalPositionsPnlByQuoteDenom
+              subaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd
             }"
           ></component>
         </VHocLoading>
@@ -109,6 +107,7 @@ import {
 import VBankBalances from '~/components/partials/portfolio/bank-balances/index.vue'
 import VTradingAccountBalances from '~/components/partials/portfolio/trading-account-balances/index.vue'
 import VAccountSummary from '~/components/partials/portfolio/account-summary.vue'
+import { SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd } from '~/types'
 import {
   HIDDEN_BALANCE_DISPLAY,
   UI_MINIMAL_AMOUNT,
@@ -175,119 +174,6 @@ export default Vue.extend({
       return this.$accessor.positions.orderbooks
     },
 
-    // calculate and append total USD balances
-    bankBalancesWithUsdBalance(): BankBalanceWithTokenAndBalanceWithUsdBalance[] {
-      const {
-        bankBalances,
-        erc20TokensWithBalanceAndPriceFromBank,
-        ibcTokensWithBalanceAndPriceFromBank
-      } = this
-
-      return [
-        ...erc20TokensWithBalanceAndPriceFromBank,
-        ...ibcTokensWithBalanceAndPriceFromBank
-      ].map((tokenWithBalance) => {
-        const balance =
-          bankBalances.find(({ denom }) => denom === tokenWithBalance.denom)
-            ?.balance || ZERO_TO_STRING
-
-        const balanceInUsd = new BigNumberInWei(balance)
-          .toBase(tokenWithBalance.decimals)
-          .times(tokenWithBalance.usdPrice)
-          .toFixed(UI_DEFAULT_DISPLAY_DECIMALS)
-
-        return {
-          balance,
-          balanceInUsd,
-          denom: tokenWithBalance.denom,
-          token: tokenWithBalance
-        }
-      })
-    },
-
-    subaccountBalancesWithUsdBalance(): SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance[] {
-      const { subaccountBalancesWithTokenAndPrice } = this
-
-      return subaccountBalancesWithTokenAndPrice.map((balance) => {
-        const balanceInUsd = new BigNumberInWei(balance.totalBalance)
-          .toBase(balance.token.decimals)
-          .times(balance.token.usdPrice)
-          .toFixed(UI_DEFAULT_DISPLAY_DECIMALS)
-
-        return {
-          ...balance,
-          balanceInUsd
-        }
-      })
-    },
-
-    totalBankBalance(): BigNumberInBase {
-      const { bankBalancesWithUsdBalance } = this
-
-      return bankBalancesWithUsdBalance.reduce(
-        (total, balance) =>
-          total.plus(new BigNumberInBase(balance.balanceInUsd)),
-        ZERO_IN_BASE
-      )
-    },
-
-    totalBankBalanceToString(): string {
-      const { totalBankBalance } = this
-
-      if (totalBankBalance.eq(0)) {
-        return '0.00'
-      }
-
-      if (totalBankBalance.lte(UI_MINIMAL_AMOUNT)) {
-        return `< ${UI_MINIMAL_AMOUNT.toFormat(
-          UI_DEFAULT_MIN_DISPLAY_DECIMALS
-        )}`
-      }
-
-      return totalBankBalance.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
-    },
-
-    totalSubaccountBalances(): BigNumberInBase {
-      const { subaccountBalancesWithUsdBalance } = this
-
-      return subaccountBalancesWithUsdBalance.reduce(
-        (total, balance) =>
-          total.plus(new BigNumberInBase(balance.balanceInUsd)),
-        ZERO_IN_BASE
-      )
-    },
-
-    totalSubaccountAvailableBalances(): BigNumberInBase {
-      const { subaccountBalancesWithUsdBalance } = this
-
-      return subaccountBalancesWithUsdBalance.reduce((total, balance) => {
-        const availableBalanceInUsd = new BigNumberInWei(
-          balance.availableBalance
-        )
-          .toBase(balance.token.decimals)
-          .times(balance.token.usdPrice)
-          .toFixed(UI_DEFAULT_DISPLAY_DECIMALS)
-
-        return total.plus(availableBalanceInUsd)
-      }, ZERO_IN_BASE)
-    },
-
-    totalSubaccountBalancesToString(): string {
-      const { totalSubaccountBalances } = this
-
-      if (totalSubaccountBalances.eq(0)) {
-        return '0.00'
-      }
-
-      if (totalSubaccountBalances.lte(UI_MINIMAL_AMOUNT)) {
-        return `< ${UI_MINIMAL_AMOUNT.toFormat(
-          UI_DEFAULT_MIN_DISPLAY_DECIMALS
-        )}`
-      }
-
-      return totalSubaccountBalances.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
-    },
-
     totalPositionsPnlByQuoteDenom(): Record<string, BigNumberInBase> {
       const { markets, orderbooks, positions } = this
 
@@ -330,27 +216,6 @@ export default Vue.extend({
       }, {} as Record<string, BigNumberInBase>)
     },
 
-    totalPositionsPnl(): BigNumberInBase {
-      const {
-        totalPositionsPnlByQuoteDenom,
-        subaccountBalancesWithTokenAndPrice
-      } = this
-
-      return Object.entries(totalPositionsPnlByQuoteDenom).reduce(
-        (total, [denom, balance]) => {
-          const symbolFromSubaccount = subaccountBalancesWithTokenAndPrice.find(
-            (b) => b.token.denom === denom
-          )
-          const usdPrice = symbolFromSubaccount
-            ? symbolFromSubaccount.token.usdPrice
-            : 1
-
-          return total.plus(balance.times(usdPrice))
-        },
-        ZERO_IN_BASE
-      )
-    },
-
     totalPositionsMarginByQuoteDenom(): Record<string, BigNumberInBase> {
       const { markets, positions } = this
 
@@ -375,49 +240,136 @@ export default Vue.extend({
       }, {} as Record<string, BigNumberInBase>)
     },
 
-    totalPositionsMargin(): BigNumberInBase {
+    bankBalancesWithUsdBalance(): BankBalanceWithTokenAndBalanceWithUsdBalance[] {
       const {
-        totalPositionsMarginByQuoteDenom,
-        subaccountBalancesWithTokenAndPrice
+        bankBalances,
+        erc20TokensWithBalanceAndPriceFromBank,
+        ibcTokensWithBalanceAndPriceFromBank
       } = this
 
-      return Object.entries(totalPositionsMarginByQuoteDenom).reduce(
-        (total, [denom, balance]) => {
-          const symbolFromSubaccount = subaccountBalancesWithTokenAndPrice.find(
-            (b) => b.token.denom === denom
-          )
-          const usdPrice = symbolFromSubaccount
-            ? symbolFromSubaccount.token.usdPrice
-            : 1
+      return [
+        ...erc20TokensWithBalanceAndPriceFromBank,
+        ...ibcTokensWithBalanceAndPriceFromBank
+      ].map((tokenWithBalance) => {
+        const balance =
+          bankBalances.find(({ denom }) => denom === tokenWithBalance.denom)
+            ?.balance || ZERO_TO_STRING
 
-          return total.plus(balance.times(usdPrice))
-        },
+        const balanceInUsd = new BigNumberInWei(balance)
+          .toBase(tokenWithBalance.decimals)
+          .times(tokenWithBalance.usdPrice)
+          .toFixed(UI_DEFAULT_DISPLAY_DECIMALS)
+
+        return {
+          balance,
+          balanceInUsd,
+          denom: tokenWithBalance.denom,
+          token: tokenWithBalance
+        }
+      })
+    },
+
+    subaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd(): SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd[] {
+      const {
+        subaccountBalancesWithTokenAndPrice,
+        totalPositionsMarginByQuoteDenom,
+        totalPositionsPnlByQuoteDenom
+      } = this
+
+      return subaccountBalancesWithTokenAndPrice.map((balance) => {
+        const denom = balance.token.denom.toLowerCase()
+        const usdPrice = balance.token.usdPrice
+
+        const margin = totalPositionsMarginByQuoteDenom[denom] || ZERO_IN_BASE
+        const pnl = totalPositionsPnlByQuoteDenom[denom] || ZERO_IN_BASE
+
+        const balanceInBigNumber = new BigNumberInWei(
+          balance.totalBalance
+        ).toBase(balance.token.decimals)
+        const availableBalanceInBigNumber = new BigNumberInWei(
+          balance.availableBalance
+        ).toBase(balance.token.decimals)
+
+        const pnlInAssetCount = pnl.dividedBy(usdPrice)
+        const totalBalance = balanceInBigNumber
+          .plus(margin)
+          .plus(pnlInAssetCount)
+
+        return {
+          ...balance,
+          margin,
+          totalBalance,
+          inOrderBalance: balanceInBigNumber.minus(availableBalanceInBigNumber),
+          pnlInUsd: pnl,
+          totalBalanceInUsd: balanceInBigNumber
+            .plus(margin)
+            .times(usdPrice)
+            .plus(pnl)
+        }
+      })
+    },
+
+    totalBankBalance(): BigNumberInBase {
+      const { bankBalancesWithUsdBalance } = this
+
+      return bankBalancesWithUsdBalance.reduce(
+        (total, balance) =>
+          total.plus(new BigNumberInBase(balance.balanceInUsd)),
         ZERO_IN_BASE
       )
     },
 
-    tradingAccountBalances(): BigNumberInBase {
-      const {
-        totalSubaccountBalances,
-        totalPositionsMargin,
-        totalPositionsPnl
-      } = this
+    totalBankBalanceToString(): string {
+      const { totalBankBalance } = this
 
-      return totalSubaccountBalances
-        .plus(totalPositionsMargin)
-        .plus(totalPositionsPnl)
+      if (totalBankBalance.eq(0)) {
+        return '0.00'
+      }
+
+      if (totalBankBalance.lte(UI_MINIMAL_AMOUNT)) {
+        return `< ${UI_MINIMAL_AMOUNT.toFormat(
+          UI_DEFAULT_MIN_DISPLAY_DECIMALS
+        )}`
+      }
+
+      return totalBankBalance.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
-    totalSubaccountAvailableBalancesToString(): string {
-      const { totalSubaccountAvailableBalances } = this
+    totalTradingAccountAvailableBalances(): BigNumberInBase {
+      const { subaccountBalancesWithTokenAndPrice } = this
 
-      return totalSubaccountAvailableBalances.toFormat(2)
+      return subaccountBalancesWithTokenAndPrice.reduce((total, balance) => {
+        const availableBalanceInUsd = new BigNumberInWei(
+          balance.availableBalance
+        )
+          .toBase(balance.token.decimals)
+          .times(balance.token.usdPrice)
+          .toFixed(UI_DEFAULT_DISPLAY_DECIMALS)
+
+        return total.plus(availableBalanceInUsd)
+      }, ZERO_IN_BASE)
+    },
+
+    tradingAccountBalances(): BigNumberInBase {
+      const { subaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd } = this
+
+      return subaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd.reduce(
+        (total, balance) =>
+          total.plus(new BigNumberInBase(balance.totalBalanceInUsd)),
+        ZERO_IN_BASE
+      )
     },
 
     tradingAccountBalancesToString(): string {
       const { tradingAccountBalances } = this
 
       return tradingAccountBalances.toFormat(2)
+    },
+
+    totalTradingAccountAvailableBalancesToString(): string {
+      const { totalTradingAccountAvailableBalances } = this
+
+      return totalTradingAccountAvailableBalances.toFormat(2)
     },
 
     totalBalance(): BigNumberInBase {

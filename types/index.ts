@@ -1,3 +1,6 @@
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { SubaccountBalanceWithToken } from '~/app/services/account'
+
 export interface DOMEvent<T extends EventTarget> extends Event {
   target: T
   keyCode?: number
@@ -14,6 +17,15 @@ export interface Constructable<T> {
 export interface GeoLocation {
   continent: string
   country: string
+}
+
+export interface SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd
+  extends Omit<SubaccountBalanceWithToken, 'totalBalance'> {
+  inOrderBalance: BigNumberInBase
+  margin: BigNumberInBase
+  pnlInUsd: BigNumberInBase
+  totalBalance: BigNumberInBase
+  totalBalanceInUsd: BigNumberInBase
 }
 
 export * from './enums'
