@@ -10,9 +10,13 @@ export default Vue.extend({
 
   props: {
     status: {
-      required: false,
       default: () => new Status(),
       type: Object as PropType<Status>
+    },
+
+    showLoading: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -23,7 +27,7 @@ export default Vue.extend({
     }
 
     if (this.$slots.default !== undefined) {
-      if (this.status.isIdle()) {
+      if (this.status.isIdle() && !this.showLoading) {
         return this.$slots.default[0]
       }
 
