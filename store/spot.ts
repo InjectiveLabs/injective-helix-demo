@@ -28,11 +28,7 @@ import {
   FEE_RECIPIENT,
   ORDERBOOK_STREAMING_ENABLED
 } from '~/app/utils/constants'
-import {
-  spotActionServiceFactory,
-  spotService,
-  tokenService
-} from '~/app/Services'
+import { spotActionService, spotService, tokenService } from '~/app/Services'
 import { spot as allowedSpotMarkets } from '~/routes.config'
 
 const initialStateFactory = () => ({
@@ -556,7 +552,6 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
-      const spotActionService = spotActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount) {
         return
@@ -582,7 +577,6 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
-      const spotActionService = spotActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount || !market) {
         return
@@ -622,7 +616,6 @@ export const actions = actionTree(
         isUserWalletConnected
       } = this.app.$accessor.wallet
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
-      const spotActionService = spotActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount || !market) {
         return
@@ -670,7 +663,6 @@ export const actions = actionTree(
         isUserWalletConnected
       } = this.app.$accessor.wallet
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
-      const spotActionService = spotActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount || !market) {
         return

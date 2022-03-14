@@ -1,13 +1,6 @@
-import {
-  Web3Strategy,
-  Wallet,
-  ConcreteStrategyOptions
-} from '@injectivelabs/web3-strategy'
+import { Web3Strategy } from '@injectivelabs/web3-strategy'
 import { ChainId } from '@injectivelabs/ts-types'
-import { app } from '~/app/singletons/App'
 import { CHAIN_ID } from '~/app/utils/constants'
-
-let web3Strategy: Web3Strategy
 
 export const getRpcUrlsForChainIds = (): Record<ChainId, string> => {
   return {
@@ -33,51 +26,13 @@ export const getRpcWsUrlsForChainIds = (): Record<ChainId, string> => {
   }
 }
 
-export const initWeb3Strategy = ({
-  wallet,
-  options = {}
-}: {
-  wallet: Wallet
-  options?: Partial<ConcreteStrategyOptions>
-}) => {
-  const rpcUrls = getRpcUrlsForChainIds()
-  const wsRpcUrls = getRpcWsUrlsForChainIds()
+const rpcUrls = getRpcUrlsForChainIds()
+const wsRpcUrls = getRpcWsUrlsForChainIds()
 
-  web3Strategy = new Web3Strategy({
-    wallet,
-    chainId: parseInt(CHAIN_ID.toString()),
-    options: {
-      ...options,
-      wsRpcUrl: wsRpcUrls[CHAIN_ID],
-      rpcUrl: rpcUrls[CHAIN_ID]
-    }
-  })
-
-  return web3Strategy
-}
-
-export const getWeb3Strategy = (wallet?: Wallet) => {
-  if (!web3Strategy) {
-    initWeb3Strategy({ wallet: wallet || app.wallet })
+export const web3Strategy = new Web3Strategy({
+  chainId: parseInt(CHAIN_ID.toString()),
+  options: {
+    wsRpcUrl: wsRpcUrls[CHAIN_ID],
+    rpcUrl: rpcUrls[CHAIN_ID]
   }
-
-  return web3Strategy
-}
-
-export const setupEventsOnWeb3Strategy = (
-  onAccountChangeCallback: (account: string) => void
-) => {
-  if (web3Strategy) {
-    web3Strategy.onAccountChange(onAccountChangeCallback)
-  }
-}
-
-export const cancelEventsOnWeb3Strategy = () => {
-  if (web3Strategy) {
-    web3Strategy.cancelAllEvents()
-  }
-}
-
-export const transactionReceiptAsync = async (txHash: string): Promise<any> => {
-  return await getWeb3Strategy().getTransactionReceipt(txHash)
-}
+})

@@ -24,9 +24,9 @@ import {
   streamSubaccountTrades as streamSubaccountSpotTrades
 } from '~/app/streams/spot'
 import {
-  derivativeActionServiceFactory,
+  derivativeActionService,
   derivativeService,
-  spotActionServiceFactory,
+  spotActionService,
   spotService,
   subaccountService
 } from '~/app/Services'
@@ -498,7 +498,6 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
-      const spotActionService = spotActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount) {
         return
@@ -525,7 +524,6 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
-      const derivativeActionService = derivativeActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount) {
         return

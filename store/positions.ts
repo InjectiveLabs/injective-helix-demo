@@ -13,10 +13,7 @@ import {
 } from '@injectivelabs/ui-common'
 import { DerivativeOrderSide } from '@injectivelabs/derivatives-consumer'
 import { FEE_RECIPIENT } from '~/app/utils/constants'
-import {
-  derivativeActionServiceFactory,
-  derivativeService
-} from '~/app/Services'
+import { derivativeActionService, derivativeService } from '~/app/Services'
 import { streamSubaccountPositions } from '~/app/streams/derivatives'
 import { getRoundedLiquidationPrice } from '~/app/services/derivatives'
 
@@ -208,8 +205,6 @@ export const actions = actionTree(
       } = this.app.$accessor.wallet
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
 
-      const derivativeActionService = derivativeActionServiceFactory()
-
       if (!isUserWalletConnected || !subaccount || !market) {
         return
       }
@@ -246,8 +241,6 @@ export const actions = actionTree(
         isUserWalletConnected
       } = this.app.$accessor.wallet
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
-
-      const derivativeActionService = derivativeActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount || positions.length === 0) {
         return
@@ -320,7 +313,6 @@ export const actions = actionTree(
 
       const actualMarket = (currentMarket ||
         market) as UiDerivativeMarketWithToken
-      const derivativeActionService = derivativeActionServiceFactory()
 
       if (
         !isUserWalletConnected ||
@@ -375,8 +367,6 @@ export const actions = actionTree(
         isUserWalletConnected
       } = this.app.$accessor.wallet
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
-
-      const derivativeActionService = derivativeActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount || !market) {
         return

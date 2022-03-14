@@ -14,7 +14,7 @@ import {
 } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
 import {
-  subaccountActionServiceFactory,
+  subaccountActionService,
   subaccountService,
   tokenCoinGeckoService,
   tokenService
@@ -290,7 +290,6 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
-      const subaccountActionService = subaccountActionServiceFactory()
 
       if (!subaccount || !isUserWalletConnected) {
         return
@@ -326,7 +325,6 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
-      const subaccountActionService = subaccountActionServiceFactory()
 
       if (!subaccount || !isUserWalletConnected) {
         return

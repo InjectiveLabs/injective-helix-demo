@@ -6,11 +6,7 @@ import {
 } from '@injectivelabs/ui-common'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
-import {
-  bankActionServiceFactory,
-  bankService,
-  tokenService
-} from '~/app/Services'
+import { bankActionService, bankService, tokenService } from '~/app/Services'
 import { backupPromiseCall } from '~/app/utils/async'
 
 const initialStateFactory = () => ({
@@ -143,7 +139,6 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
-      const bankActionService = bankActionServiceFactory()
 
       if (!address || !isUserWalletConnected) {
         return

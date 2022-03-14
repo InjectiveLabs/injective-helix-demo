@@ -26,13 +26,13 @@ import {
   APP_EXCHANGE_API_ENDPOINT,
   APP_SENTRY_GRPC_ENDPOINT
 } from './utils/constants'
-import { getWeb3Strategy } from './web3'
 import { SubaccountService } from './services/account'
 import { ExchangeService } from './services/exchange'
 import { AuctionService } from './services/auction'
 import { DerivativeService } from './services/derivatives'
 import { ExplorerService } from './services/explorer'
 import { ReferralService } from './services/referral'
+import { web3Strategy } from './web3'
 import { app } from '~/app/singletons/App'
 
 const alchemyRpcEndpoint = IS_TESTNET
@@ -83,26 +83,27 @@ export const coinGeckoApi = new CoinGeckoApi(coinGeckoOptions)
 export const subaccountService = new SubaccountService(commonServiceOptions)
 export const referralService = new ReferralService(commonServiceOptions)
 
-export const bankActionServiceFactory = () => {
-  return new BankActionService(commonServiceOptions, getWeb3Strategy())
-}
-
-export const derivativeActionServiceFactory = () => {
-  return new DerivativeActionService(commonServiceOptions, getWeb3Strategy())
-}
-
-export const spotActionServiceFactory = () => {
-  return new SpotActionService(commonServiceOptions, getWeb3Strategy())
-}
-
-export const subaccountActionServiceFactory = () => {
-  return new SubaccountActionService(commonServiceOptions, getWeb3Strategy())
-}
-
-export const peggyActionServiceFactory = () => {
-  return new PeggyActionService(commonServiceOptions, getWeb3Strategy())
-}
-
-export const tokenErc20ActionServiceFactory = () => {
-  return new TokenErc20ServiceAction(commonServiceOptions, getWeb3Strategy())
-}
+export const bankActionService = new BankActionService(
+  commonServiceOptions,
+  web3Strategy
+)
+export const derivativeActionService = new DerivativeActionService(
+  commonServiceOptions,
+  web3Strategy
+)
+export const spotActionService = new SpotActionService(
+  commonServiceOptions,
+  web3Strategy
+)
+export const subaccountActionService = new SubaccountActionService(
+  commonServiceOptions,
+  web3Strategy
+)
+export const peggyActionService = new PeggyActionService(
+  commonServiceOptions,
+  web3Strategy
+)
+export const tokenErc20ActionService = new TokenErc20ServiceAction(
+  commonServiceOptions,
+  web3Strategy
+)

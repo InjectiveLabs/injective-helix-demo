@@ -36,7 +36,7 @@ import {
   ORDERBOOK_STREAMING_ENABLED
 } from '~/app/utils/constants'
 import {
-  derivativeActionServiceFactory,
+  derivativeActionService,
   derivativeService,
   tokenService
 } from '~/app/Services'
@@ -636,7 +636,6 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
-      const derivativeActionService = derivativeActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount) {
         return
@@ -662,7 +661,6 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
-      const derivativeActionService = derivativeActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount || !market) {
         return
@@ -706,7 +704,6 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
-      const derivativeActionService = derivativeActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount || !market) {
         return
@@ -759,7 +756,6 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
-      const derivativeActionService = derivativeActionServiceFactory()
 
       if (!isUserWalletConnected || !subaccount || !market) {
         return

@@ -9,9 +9,9 @@ import {
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
 import {
-  peggyActionServiceFactory,
+  peggyActionService,
   tokenCoinGeckoService,
-  tokenErc20ActionServiceFactory,
+  tokenErc20ActionService,
   tokenErc20Service,
   tokenService
 } from '~/app/Services'
@@ -204,7 +204,6 @@ export const actions = actionTree(
     ) {
       const { address } = this.app.$accessor.wallet
       const { gasPrice } = this.app.$accessor.app
-      const tokenErc20ActionService = tokenErc20ActionServiceFactory()
 
       await this.app.$accessor.wallet.validate()
 
@@ -251,7 +250,6 @@ export const actions = actionTree(
         isUserWalletConnected
       } = this.app.$accessor.wallet
       const { gasPrice } = this.app.$accessor.app
-      const peggyActionService = peggyActionServiceFactory()
 
       if (!address || !isUserWalletConnected) {
         return
@@ -291,7 +289,6 @@ export const actions = actionTree(
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
-      const peggyActionService = peggyActionServiceFactory()
 
       if (!address || !isUserWalletConnected) {
         return
