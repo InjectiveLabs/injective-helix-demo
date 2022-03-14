@@ -2069,7 +2069,7 @@
     "@improbable-eng/grpc-web" "^0.13.0"
     google-protobuf "^3.13.0"
 
-"@injectivelabs/chain-consumer@^0.1.11", "@injectivelabs/chain-consumer@^0.1.12":
+"@injectivelabs/chain-consumer@^0.1.12":
   version "0.1.12"
   resolved "https://registry.yarnpkg.com/@injectivelabs/chain-consumer/-/chain-consumer-0.1.12.tgz#33427ea7bd41dab34c910b6fa7477a74f7fd0cee"
   integrity sha512-G1s+WDDm7APCIL3SY+E4bslji+t4kMrZtagZ+cBjQ1RRXMz3emishZS7ed152iGe67uuL6HJbAxoYNld+sulNA==
@@ -2372,14 +2372,6 @@
   version "0.0.22"
   resolved "https://registry.yarnpkg.com/@injectivelabs/ts-types/-/ts-types-0.0.22.tgz#4303f4dc4486c4c0994bc5d3b94b3792b4307e2d"
   integrity sha512-56gmuo2nNDKAohx2g+pW+k0Qy/YTLTjLs35r/sYxlauGxJJcmQ10Vp1S0pvd4t3lhHJzerIVndU5kVTWnU/FHQ==
-  dependencies:
-    link-module-alias "^1.2.0"
-    shx "^0.3.2"
-
-"@injectivelabs/ts-types@^0.0.40":
-  version "0.0.40"
-  resolved "https://registry.npmjs.org/@injectivelabs/ts-types/-/ts-types-0.0.40.tgz#0086c40b66ebdef3bcbc6489b1c80abc05bcf66e"
-  integrity sha512-1ZCuUEcY6lgcXK9tpaCsTym7SX6a+aQvsmAEdlJnW7TPtfT3h4bUmROjvqB2DulZCZaqI33IA7qUJcuJ/UapHw==
   dependencies:
     link-module-alias "^1.2.0"
     shx "^0.3.2"

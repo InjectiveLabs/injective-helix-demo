@@ -104,7 +104,7 @@ export const actions = actionTree(
 
         return {
           ...tokenWithBalance,
-          usdPrice: await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
+          usdPrice: await tokenCoinGeckoService.fetchUsdTokenPrice(
             token.coinGeckoId
           )
         } as TokenWithBalanceAndPrice
@@ -154,7 +154,7 @@ export const actions = actionTree(
 
           return {
             ...tokenWithBalance,
-            usdPrice: await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
+            usdPrice: await tokenCoinGeckoService.fetchUsdTokenPrice(
               token.coinGeckoId
             )
           } as TokenWithBalanceAndPrice
@@ -183,18 +183,14 @@ export const actions = actionTree(
     async getInjUsdPrice({ commit }) {
       commit(
         'setInjUsdPrice',
-        await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
-          INJ_COIN_GECKO_ID
-        )
+        await tokenCoinGeckoService.fetchUsdTokenPrice(INJ_COIN_GECKO_ID)
       )
     },
 
     async getBitcoinUsdPrice({ commit }) {
       commit(
         'setBtcUsdPrice',
-        await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
-          BTC_COIN_GECKO_ID
-        )
+        await tokenCoinGeckoService.fetchUsdTokenPrice(BTC_COIN_GECKO_ID)
       )
     },
 

@@ -208,7 +208,7 @@ export const actions = actionTree(
             ...balance,
             token: {
               ...balance.token,
-              usdPrice: await tokenCoinGeckoService.fetchUsdTokenPriceFromCoinGecko(
+              usdPrice: await tokenCoinGeckoService.fetchUsdTokenPrice(
                 balance.token.coinGeckoId
               )
             }
