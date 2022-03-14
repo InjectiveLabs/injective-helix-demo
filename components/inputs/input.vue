@@ -49,7 +49,10 @@
             @input="handleChangeOnInput"
             @wheel="$event.target.blur()"
           />
-          <div class="addon flex items-center" :class="{ 'pr-3': !lg && !xl }">
+          <div
+            class="addon flex items-center flex-shrink-0"
+            :class="{ 'pr-3': !lg && !xl }"
+          >
             <span v-if="showClose" @click="handleCloseEvent">
               <v-icon-close
                 class="cursor-pointer h-4 w-4 text-gray-200 hover:text-primary-500"
