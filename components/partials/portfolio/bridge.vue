@@ -153,7 +153,7 @@ export default Vue.extend({
     },
 
     handleAmountUpdate(amount: string) {
-      this.form.amount = amount
+      this.form.amount = amount.toString()
     },
 
     handleTokenUpdate(token: Token) {

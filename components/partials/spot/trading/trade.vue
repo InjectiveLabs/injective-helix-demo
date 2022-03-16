@@ -46,9 +46,10 @@
       <div>
         <v-input
           ref="input-amount"
-          :value="form.amount"
+          v-model="form.amount"
           :label="$t('trade.amount')"
           :custom-handler="true"
+          :max-decimals="market ? market.quantityDecimals : 6"
           :max-selector="true"
           :placeholder="amountStep"
           type="number"
@@ -56,7 +57,6 @@
           min="0"
           @blur="onAmountBlur"
           @input="onAmountChange"
-          @keydown="onAmountKeydown"
           @input-max="() => onMaxInput(100)"
         >
           <span slot="addon">{{ market.baseToken.symbol.toUpperCase() }}</span>
@@ -91,16 +91,16 @@
       <div v-if="!tradingTypeMarket" class="mt-6">
         <v-input
           ref="input-price"
-          :value="form.price"
+          v-model="form.price"
           :placeholder="priceStep"
           :label="$t('trade.price')"
           :disabled="tradingTypeMarket"
           type="number"
           :step="priceStep"
+          :max-decimals="market ? market.quoteToken.decimals : 6"
           min="0"
           @blur="onPriceBlur"
           @input="onPriceChange"
-          @keydown="onPriceKeyDown"
         >
           <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
         </v-input>
@@ -186,7 +186,7 @@ import {
 } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
-import { DOMEvent, Modal } from '~/types'
+import { Modal } from '~/types'
 import {
   calculateWorstExecutionPriceFromOrderbook,
   getApproxAmountForMarketOrder
@@ -195,10 +195,6 @@ import {
   FeeDiscountAccountInfo,
   TradingRewardsCampaign
 } from '~/app/services/exchange'
-import {
-  hasMoreThenDpAndKeyCodeIsNumeric,
-  passNumericInputValidation
-} from '~/app/utils/input'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
 
 interface TradeForm {
@@ -1194,7 +1190,7 @@ export default Vue.extend({
     },
 
     onPriceChange(price: string = '') {
-      this.form.price = price
+      this.form.price = price.toString()
     },
 
     onPriceBlur() {
@@ -1224,47 +1220,8 @@ export default Vue.extend({
       }
     },
 
-    onAmountKeydown(event: DOMEvent<HTMLInputElement>) {
-      const { market, form } = this
-
-      if (!market) {
-        return
-      }
-
-      const disableDot = market.quantityDecimals === 0
-
-      if (
-        !passNumericInputValidation(event, disableDot ? ['.'] : []) ||
-        hasMoreThenDpAndKeyCodeIsNumeric({
-          event,
-          value: form.amount,
-          decimalPlaces: market.quantityDecimals
-        })
-      ) {
-        event.preventDefault()
-      }
-    },
-
-    onPriceKeyDown(event: DOMEvent<HTMLInputElement>) {
-      const { market, form } = this
-
-      if (!market) {
-        return
-      }
-
-      if (
-        hasMoreThenDpAndKeyCodeIsNumeric({
-          event,
-          value: form.price,
-          decimalPlaces: market.quoteToken.decimals
-        })
-      ) {
-        event.preventDefault()
-      }
-    },
-
     onAmountChange(amount: string = '') {
-      this.form.amount = amount
+      this.form.amount = amount.toString()
     },
 
     onTradingTypeToggle(selectedTradingType: TradeExecutionType) {

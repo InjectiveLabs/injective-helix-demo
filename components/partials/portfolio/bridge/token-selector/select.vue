@@ -50,11 +50,11 @@
                 :errors="errors"
                 :valid="valid"
                 :max="balanceToFixed"
+                :max-decimals="value.decimals"
                 :max-selector="balance.gt(0.01)"
                 :value="amount"
                 @input="handleAmountChange"
                 @blur="resetIsSearching"
-                @keydown="onAmountKeydown"
                 @click.native.stop="focusInput"
               />
               <img
@@ -107,8 +107,6 @@ import {
   BIG_NUMBER_ROUND_DOWN_MODE
 } from '@injectivelabs/ui-common'
 import VTokenSelectorItem from './item.vue'
-import { DOMEvent } from '~/types'
-import { hasMoreThenDpAndKeyCodeIsNumeric } from '~/app/utils/input'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
@@ -251,24 +249,6 @@ export default Vue.extend({
       if (element) {
         this.isSearching = true
         element.focus()
-      }
-    },
-
-    onAmountKeydown(event: DOMEvent<HTMLInputElement>) {
-      const { amount, value } = this
-
-      if (!value.decimals) {
-        return false
-      }
-
-      if (
-        hasMoreThenDpAndKeyCodeIsNumeric({
-          event,
-          value: amount,
-          decimalPlaces: value.decimals
-        })
-      ) {
-        event.preventDefault()
       }
     },
 
