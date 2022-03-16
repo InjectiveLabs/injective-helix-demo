@@ -568,7 +568,6 @@ export default Vue.extend({
           market
         })
         .then(() => {
-          this.$emit('closed')
           this.$toast.success(this.$t('trade.position_closed'))
         })
         .catch(this.$onRejected)

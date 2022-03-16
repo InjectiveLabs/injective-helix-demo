@@ -44,7 +44,6 @@
               v-for="(position, index) in sortedPositions"
               :key="`positions-${index}-${position.marketId}`"
               :position="position"
-              @closed="fetchSubaccountPositions(3000)"
             />
           </tbody>
         </table>
@@ -70,7 +69,6 @@ import Position from '~/components/partials/common/derivatives/position.vue'
 import PositionTableHeader from '~/components/partials/common/derivatives/position-table.header.vue'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import { TradeSelectorType } from '~/types/enums'
-import { delayPromiseCall } from '~/app/utils/async'
 
 export default Vue.extend({
   components: {
@@ -127,8 +125,19 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.fetchSubaccountPositions()
-    this.pollPositions()
+    this.status.setLoading()
+
+    Promise.all([
+      this.$accessor.derivatives.fetchSubaccountOrders(),
+      this.$accessor.positions.fetchMarketsOrderbook(),
+      this.$accessor.positions.fetchSubaccountPositions()
+    ])
+      .catch(this.$onError)
+      .finally(() => {
+        this.status.setIdle()
+      })
+
+    this.pollOrderbooks()
   },
 
   beforeDestroy() {
@@ -136,28 +145,6 @@ export default Vue.extend({
   },
 
   methods: {
-    fetchSubaccountPositions(delay = 0) {
-      this.status.setLoading()
-
-      delayPromiseCall(
-        () =>
-          this.refreshSubaccountPositions()
-            .catch(this.$onError)
-            .finally(() => {
-              this.status.setIdle()
-            }),
-        delay
-      )
-    },
-
-    refreshSubaccountPositions(): Promise<void[]> {
-      return Promise.all([
-        this.$accessor.derivatives.fetchSubaccountOrders(),
-        this.$accessor.positions.fetchMarketsOrderbook(),
-        this.$accessor.positions.fetchSubaccountPositions()
-      ])
-    },
-
     closeAllPositions(): Promise<void> {
       const { filteredPositions } = this
 
@@ -197,8 +184,7 @@ export default Vue.extend({
           : this.closeAllPositions
 
       action()
-        .then(async () => {
-          await delayPromiseCall(() => this.refreshSubaccountPositions(), 3000)
+        .then(() => {
           this.$toast.success(this.$t('trade.positions_closed'))
         })
         .catch(this.$onRejected)
@@ -215,9 +201,9 @@ export default Vue.extend({
       this.side = side
     },
 
-    pollPositions() {
+    pollOrderbooks() {
       this.poll = setInterval(() => {
-        this.refreshSubaccountPositions()
+        this.$accessor.positions.fetchMarketsOrderbook()
       }, 30 * 1000)
     }
   }

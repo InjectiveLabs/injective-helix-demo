@@ -435,14 +435,9 @@ export const actions = actionTree(
       })
     },
 
-    streamSubaccountOrders({ state, commit }) {
-      const { market } = state
+    streamSubaccountOrders({ commit }) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
-
-      if (!market) {
-        return
-      }
 
       if (!isUserWalletConnected || !subaccount) {
         return

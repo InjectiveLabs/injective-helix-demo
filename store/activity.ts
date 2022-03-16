@@ -1,13 +1,11 @@
 import { actionTree, getterTree } from 'typed-vuex'
 import { SpotOrderState } from '@injectivelabs/spot-consumer'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import { StreamOperation } from '@injectivelabs/ts-types'
 import {
   UiSpotLimitOrder,
   UiSpotTrade,
   UiDerivativeLimitOrder,
-  UiDerivativeTrade,
-  UiPosition
+  UiDerivativeTrade
 } from '@injectivelabs/ui-common'
 import {
   DerivativeOrderState,
@@ -16,8 +14,7 @@ import {
 import { TradingReward } from '@injectivelabs/subaccount-consumer'
 import {
   streamSubaccountOrders as streamSubaccountDerivativeOrders,
-  streamSubaccountTrades as streamSubaccountDerivativeTrades,
-  streamSubaccountPositions
+  streamSubaccountTrades as streamSubaccountDerivativeTrades
 } from '~/app/streams/derivatives'
 import {
   streamSubaccountOrders as streamSubaccountSpotOrders,
@@ -34,7 +31,6 @@ const initialStateFactory = () => ({
   subaccountDerivativeOrders: [] as Array<UiDerivativeLimitOrder>,
   subaccountSpotTrades: [] as Array<UiSpotTrade>,
   subaccountDerivativeTrades: [] as Array<UiDerivativeTrade>,
-  subaccountPositions: [] as Array<UiPosition>,
   subaccountFundingPayments: [] as Array<FundingPayment>,
   tradingRewardsHistory: [] as Array<TradingReward>
 })
@@ -46,7 +42,6 @@ export const state = () => ({
   subaccountDerivativeOrders: initialState.subaccountDerivativeOrders as Array<UiDerivativeLimitOrder>,
   subaccountSpotTrades: initialState.subaccountSpotTrades as Array<UiSpotTrade>,
   subaccountDerivativeTrades: initialState.subaccountDerivativeTrades as Array<UiDerivativeTrade>,
-  subaccountPositions: initialState.subaccountPositions as Array<UiPosition>,
   subaccountFundingPayments: initialState.subaccountFundingPayments as Array<FundingPayment>,
   tradingRewardsHistory: initialState.tradingRewardsHistory as Array<TradingReward>
 })
@@ -58,13 +53,6 @@ export const getters = getterTree(state, {
 })
 
 export const mutations = {
-  setSubaccountPositions(
-    state: ActivityStoreState,
-    subaccountPositions: Array<UiPosition>
-  ) {
-    state.subaccountPositions = subaccountPositions
-  },
-
   setSubaccountFundingPayments(
     state: ActivityStoreState,
     subaccountFundingPayments: Array<FundingPayment>
@@ -188,24 +176,6 @@ export const mutations = {
     state.subaccountDerivativeOrders = [subaccountOrder, ...subaccountOrders]
   },
 
-  pushOrUpdateSubaccountPosition(
-    state: ActivityStoreState,
-    subaccountPosition: UiPosition
-  ) {
-    const subaccountPositions = [...state.subaccountPositions].filter(
-      (position) => position.marketId !== subaccountPosition.marketId
-    )
-
-    const updatedSubaccountPositions = [
-      subaccountPosition,
-      ...subaccountPositions
-    ]
-    const filteredNonZeroQuantityPositions = updatedSubaccountPositions.filter(
-      (position) => new BigNumberInBase(position.quantity).gt(0)
-    )
-    state.subaccountPositions = filteredNonZeroQuantityPositions
-  },
-
   deleteSubaccountSpotOrder(
     state: ActivityStoreState,
     subaccountOrder: UiSpotLimitOrder
@@ -234,7 +204,6 @@ export const mutations = {
     state.subaccountSpotOrders = initialState.subaccountSpotOrders
     state.subaccountDerivativeOrders = initialState.subaccountDerivativeOrders
     state.subaccountSpotTrades = initialState.subaccountSpotTrades
-    state.subaccountPositions = initialState.subaccountPositions
     state.tradingRewardsHistory = initialState.tradingRewardsHistory
   }
 }
@@ -360,24 +329,6 @@ export const actions = actionTree(
       })
     },
 
-    streamSubaccountPositions({ commit }) {
-      const { subaccount } = this.app.$accessor.account
-      const { isUserWalletConnected } = this.app.$accessor.wallet
-
-      if (!isUserWalletConnected || !subaccount) {
-        return
-      }
-
-      streamSubaccountPositions({
-        subaccountId: subaccount.subaccountId,
-        callback: ({ position }) => {
-          if (position) {
-            commit('pushOrUpdateSubaccountPosition', position)
-          }
-        }
-      })
-    },
-
     async fetchSubaccountSpotTrades({ commit }) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
@@ -457,21 +408,6 @@ export const actions = actionTree(
         'setTradingRewardHistory',
         await subaccountService.fetchTradingRewardHistory(injectiveAddress)
       )
-    },
-
-    async fetchSubaccountPositions({ commit }) {
-      const { subaccount } = this.app.$accessor.account
-      const { isUserWalletConnected } = this.app.$accessor.wallet
-
-      if (!isUserWalletConnected || !subaccount) {
-        return
-      }
-
-      const positions = await derivativeService.fetchPositions({
-        subaccountId: subaccount.subaccountId
-      })
-
-      commit('setSubaccountPositions', positions)
     },
 
     async fetchSubaccountFundingPayments({ commit }) {
