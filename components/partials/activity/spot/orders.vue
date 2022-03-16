@@ -24,7 +24,7 @@
           class="col-span-12 sm:col-span-6 lg:col-span-8 sm:text-right mt-4 sm:mt-0"
         >
           <v-button
-            v-if="orders.length > 0"
+            v-if="filteredOrders.length > 0"
             red-outline
             md
             @click.stop="handleCancelOrders"
@@ -123,20 +123,31 @@ export default Vue.extend({
   },
 
   methods: {
+    cancelOrder(): Promise<void> {
+      const { filteredOrders } = this
+
+      const [order] = filteredOrders
+
+      return this.$accessor.spot.cancelOrder(order)
+    },
+
+    cancelAllOrders(): Promise<void> {
+      const { filteredOrders } = this
+
+      return this.$accessor.spot.batchCancelOrder(filteredOrders)
+    },
+
     handleCancelOrders() {
       const { filteredOrders } = this
 
-      this.status.setLoading()
+      const action =
+        filteredOrders.length === 1 ? this.cancelOrder : this.cancelAllOrders
 
-      this.$accessor.activity
-        .batchCancelSpotOrders(filteredOrders)
+      action()
         .then(() => {
           this.$toast.success(this.$t('trade.orders_cancelled'))
         })
         .catch(this.$onRejected)
-        .finally(() => {
-          this.status.setIdle()
-        })
     },
 
     handleInputOnSearch(search: string) {

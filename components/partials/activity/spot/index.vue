@@ -37,6 +37,15 @@ export default Vue.extend({
       components,
       component: components.orders
     }
+  },
+
+  mounted() {
+    this.$accessor.activity.streamSubaccountSpotOrders()
+    this.$accessor.activity.streamSubaccountSpotTrades()
+  },
+
+  beforeDestroy() {
+    this.$accessor.app.cancelAllStreams()
   }
 })
 </script>

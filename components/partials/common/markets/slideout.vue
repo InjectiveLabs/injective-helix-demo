@@ -5,7 +5,7 @@
     @slideout-closed="closeSlideout"
   >
     <div class="relative">
-      <VHocLoading :status="status">
+      <VHocLoading :status="status" :show-loading="markets.length === 0">
         <v-table
           :markets="markets"
           :summaries="marketsSummary"

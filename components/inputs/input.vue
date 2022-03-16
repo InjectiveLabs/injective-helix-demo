@@ -45,8 +45,9 @@
               'input-small': small
             }"
             @blur="handleBlur"
-            @keydown="handleKeydown"
             @input="handleChangeOnInput"
+            @keydown="handleKeydown"
+            @paste="handlePaste"
             @wheel="$event.target.blur()"
           />
           <div
@@ -96,7 +97,11 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { DOMEvent } from '~/types'
-import { passNumericInputValidation } from '~/app/utils/input'
+import {
+  convertToNumericValue,
+  passDecimalPlaceValidation,
+  passNumericInputValidation
+} from '~/app/utils/input'
 
 export default Vue.extend({
   inheritAttrs: false,
@@ -155,6 +160,11 @@ export default Vue.extend({
     value: {
       required: true,
       type: [Object, String, Number]
+    },
+
+    maxDecimals: {
+      type: Number,
+      default: 6
     },
 
     multiLine: {
@@ -221,8 +231,30 @@ export default Vue.extend({
   },
 
   methods: {
+    handlePaste(event: DOMEvent<HTMLInputElement>) {
+      if (event.target.type === 'number') {
+        event.preventDefault()
+      }
+    },
+
     handleChangeOnInput(event: DOMEvent<HTMLInputElement>) {
-      this.$emit('input', event.target.value)
+      const { value, type } = event.target
+      const formattedValue =
+        type === 'number' ? convertToNumericValue(value) : value
+
+      this.$emit('input', formattedValue)
+    },
+
+    handleKeydown(event: DOMEvent<HTMLInputElement>) {
+      if (
+        event.target.type === 'number' &&
+        (!passNumericInputValidation(event) ||
+          !passDecimalPlaceValidation(event, this.maxDecimals))
+      ) {
+        event.preventDefault()
+      } else {
+        this.$emit('keydown', event)
+      }
     },
 
     handleChangeFromString(value: string) {
@@ -235,17 +267,6 @@ export default Vue.extend({
 
     handleBlur() {
       this.$emit('blur')
-    },
-
-    handleKeydown(event: DOMEvent<HTMLInputElement>) {
-      if (
-        !passNumericInputValidation(event) &&
-        event.target.type === 'number'
-      ) {
-        event.preventDefault()
-      } else {
-        this.$emit('keydown', event)
-      }
     },
 
     handleMaxSelector() {

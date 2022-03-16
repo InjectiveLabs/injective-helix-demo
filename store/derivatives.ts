@@ -435,14 +435,9 @@ export const actions = actionTree(
       })
     },
 
-    streamSubaccountOrders({ state, commit }) {
-      const { market } = state
+    streamSubaccountOrders({ commit }) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
-
-      if (!market) {
-        return
-      }
 
       if (!isUserWalletConnected || !subaccount) {
         return
@@ -655,14 +650,13 @@ export const actions = actionTree(
 
     async batchCancelOrder(_, orders: UiDerivativeLimitOrder[]) {
       const { subaccount } = this.app.$accessor.account
-      const { market } = this.app.$accessor.derivatives
       const {
         address,
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
 
-      if (!isUserWalletConnected || !subaccount || !market) {
+      if (!isUserWalletConnected || !subaccount) {
         return
       }
 

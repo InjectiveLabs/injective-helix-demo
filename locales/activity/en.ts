@@ -241,6 +241,7 @@ export default {
     orders_cancelled: 'Your orders have been cancelled',
     positions_closed: 'Your positions have been closed',
     not_valid_number: 'Not a valid number',
-    enter_your_amount: 'Enter your amount'
+    enter_your_amount: 'Enter your amount',
+    position_market_not_found: 'Market for position {marketId} cannot be found'
   }
 }

@@ -9,24 +9,14 @@
           >
             <span class="uppercase text-xs font-semibold">
               {{ $t('activity.openPositions') }}
-              {{
-                `(${
-                  currentMarketOnly
-                    ? currentMarketPositions.length
-                    : positions.length
-                })`
-              }}
+              {{ `(${filteredPositions.length})` }}
             </span>
           </v-button-filter>
           <v-separator />
           <v-button-filter v-model="component" :option="components.openOrders">
             <span class="uppercase text-xs font-semibold">
               {{ $t('activity.openOrders') }}
-              {{
-                `(${
-                  currentMarketOnly ? currentMarketOrders.length : orders.length
-                })`
-              }}
+              {{ `(${filteredOrders.length})` }}
             </span>
           </v-button-filter>
           <v-separator />
@@ -48,7 +38,9 @@
           {{ $t('trade.asset_only', { asset: market.ticker }) }}
         </v-checkbox>
         <v-button
-          v-if="component === components.openOrders && orders.length > 0"
+          v-if="
+            component === components.openOrders && filteredOrders.length > 0
+          "
           red-outline
           sm
           @click.stop="handleCancelAllClick"
@@ -56,7 +48,10 @@
           {{ $t('trade.cancelAllOrders') }}
         </v-button>
         <v-button
-          v-if="component === components.openPositions && positions.length > 0"
+          v-if="
+            component === components.openPositions &&
+            filteredPositions.length > 0
+          "
           red-outline
           sm
           @click.stop="handleCloseAllPositionsClick"
@@ -115,6 +110,10 @@ export default Vue.extend({
   },
 
   computed: {
+    markets(): UiDerivativeMarketWithToken[] {
+      return this.$accessor.derivatives.markets
+    },
+
     market(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
@@ -139,6 +138,18 @@ export default Vue.extend({
       return positions.filter(
         (position) => position.marketId === market?.marketId
       )
+    },
+
+    filteredOrders(): UiDerivativeLimitOrder[] {
+      const { currentMarketOnly, orders, currentMarketOrders } = this
+
+      return currentMarketOnly ? currentMarketOrders : orders
+    },
+
+    filteredPositions(): UiPosition[] {
+      const { currentMarketOnly, positions, currentMarketPositions } = this
+
+      return currentMarketOnly ? currentMarketPositions : positions
     }
   },
 
@@ -179,11 +190,27 @@ export default Vue.extend({
       this.component = component
     },
 
-    handleCancelAllClick() {
-      const { orders, currentMarketOrders, currentMarketOnly } = this
+    cancelAllOrder(): Promise<void> {
+      const { filteredOrders } = this
 
-      this.$accessor.derivatives
-        .batchCancelOrder(currentMarketOnly ? currentMarketOrders : orders)
+      return this.$accessor.derivatives.batchCancelOrder(filteredOrders)
+    },
+
+    cancelOrder(): Promise<void> {
+      const { filteredOrders } = this
+
+      const [order] = filteredOrders
+
+      return this.$accessor.derivatives.cancelOrder(order)
+    },
+
+    handleCancelAllClick() {
+      const { filteredOrders } = this
+
+      const action =
+        filteredOrders.length === 1 ? this.cancelOrder : this.cancelAllOrder
+
+      action()
         .then(() => {
           this.$toast.success(this.$t('trade.orders_cancelled'))
         })
@@ -193,13 +220,43 @@ export default Vue.extend({
         })
     },
 
-    handleCloseAllPositionsClick() {
-      const { positions, currentMarketPositions, currentMarketOnly } = this
+    closeAllPositions(): Promise<void> {
+      const { filteredPositions } = this
 
-      this.$accessor.positions
-        .closeAllPosition(
-          currentMarketOnly ? currentMarketPositions : positions
+      return this.$accessor.positions.closeAllPosition(filteredPositions)
+    },
+
+    closePosition(): Promise<void> {
+      const { filteredPositions, markets } = this
+
+      const [position] = filteredPositions
+      const market = markets.find((m) => m.marketId === position.marketId)
+
+      if (!market) {
+        return Promise.reject(
+          new Error(
+            this.$t('trade.position_market_not_found', {
+              marketId: position.marketId
+            })
+          )
         )
+      }
+
+      return this.$accessor.positions.closePosition({
+        position,
+        market
+      })
+    },
+
+    handleCloseAllPositionsClick() {
+      const { filteredPositions } = this
+
+      const action =
+        filteredPositions.length === 1
+          ? this.closePosition
+          : this.closeAllPositions
+
+      action()
         .then(() => {
           this.$toast.success(this.$t('trade.positions_closed'))
         })
