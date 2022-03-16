@@ -55,7 +55,7 @@ export const customAggregations = {
 
   'INJ/USDC': {
     minTick: getDecimalPlaceFromValue('0.001'),
-    default: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.01'),
     maxTick: getDecimalPlaceFromValue('1')
   },
 
@@ -127,7 +127,7 @@ export const customAggregations = {
 
   'WETH/USDT': {
     minTick: getDecimalPlaceFromValue('0.001'),
-    default: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.01'),
     maxTick: getDecimalPlaceFromValue('10')
   },
 
@@ -199,7 +199,7 @@ export const customAggregations = {
 
   'INJ/UST': {
     minTick: getDecimalPlaceFromValue('0.001'),
-    default: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.01'),
     maxTick: getDecimalPlaceFromValue('1')
   },
 
@@ -210,26 +210,26 @@ export const customAggregations = {
   },
 
   'BTC/USDT PERP': {
-    minTick: getDecimalPlaceFromValue('1'),
+    minTick: getDecimalPlaceFromValue('0.1'),
     default: getDecimalPlaceFromValue('1'),
     maxTick: getDecimalPlaceFromValue('100')
   },
 
   'ETH/USDT PERP': {
     minTick: getDecimalPlaceFromValue('0.01'),
-    default: getDecimalPlaceFromValue('0.01'),
+    default: getDecimalPlaceFromValue('0.1'),
     maxTick: getDecimalPlaceFromValue('10')
   },
 
   'BNB/USDT PERP': {
     minTick: getDecimalPlaceFromValue('0.01'),
-    default: getDecimalPlaceFromValue('0.01'),
+    default: getDecimalPlaceFromValue('0.1'),
     maxTick: getDecimalPlaceFromValue('10')
   },
 
   'INJ/USDT PERP': {
     minTick: getDecimalPlaceFromValue('0.001'),
-    default: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.01'),
     maxTick: getDecimalPlaceFromValue('1')
   },
 
@@ -240,8 +240,8 @@ export const customAggregations = {
   },
 
   'ATOM/USDT PERP': {
-    minTick: getDecimalPlaceFromValue('0.001'),
-    default: getDecimalPlaceFromValue('0.001'),
+    minTick: getDecimalPlaceFromValue('0.01'),
+    default: getDecimalPlaceFromValue('0.01'),
     maxTick: getDecimalPlaceFromValue('10')
   }
 } as Record<string, CustomAggregation>
