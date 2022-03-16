@@ -44,6 +44,7 @@
               v-for="(position, index) in sortedPositions"
               :key="`positions-${index}-${position.marketId}`"
               :position="position"
+              @closed="fetchSubaccountPositions(3000)"
             />
           </tbody>
         </table>
@@ -69,6 +70,7 @@ import Position from '~/components/partials/common/derivatives/position.vue'
 import PositionTableHeader from '~/components/partials/common/derivatives/position-table.header.vue'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import { TradeSelectorType } from '~/types/enums'
+import { delayPromiseCall } from '~/app/utils/async'
 
 export default Vue.extend({
   components: {
@@ -82,7 +84,8 @@ export default Vue.extend({
       TradeSelectorType,
       search: '',
       side: undefined as string | undefined,
-      status: new Status(StatusType.Loading)
+      status: new Status(StatusType.Loading),
+      poll: undefined as any
     }
   },
 
@@ -124,31 +127,78 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.status.setLoading()
+    this.fetchSubaccountPositions()
+    this.pollPositions()
+  },
 
-    Promise.all([
-      this.$accessor.derivatives.fetchSubaccountOrders(),
-      this.$accessor.positions.fetchMarketsOrderbook(),
-      this.$accessor.positions.fetchSubaccountPositions()
-    ])
-      .then(() => {
-        //
-      })
-      .catch(this.$onError)
-      .finally(() => {
-        this.status.setIdle()
-      })
+  beforeDestroy() {
+    clearInterval(this.poll)
   },
 
   methods: {
+    fetchSubaccountPositions(delay = 0) {
+      this.status.setLoading()
+
+      delayPromiseCall(
+        () =>
+          this.refreshSubaccountPositions()
+            .catch(this.$onError)
+            .finally(() => {
+              this.status.setIdle()
+            }),
+        delay
+      )
+    },
+
+    refreshSubaccountPositions(): Promise<void[]> {
+      return Promise.all([
+        this.$accessor.derivatives.fetchSubaccountOrders(),
+        this.$accessor.positions.fetchMarketsOrderbook(),
+        this.$accessor.positions.fetchSubaccountPositions()
+      ])
+    },
+
+    closeAllPositions(): Promise<void> {
+      const { filteredPositions } = this
+
+      return this.$accessor.positions.closeAllPosition(filteredPositions)
+    },
+
+    closePosition(): Promise<void> {
+      const { filteredPositions, markets } = this
+
+      const [position] = filteredPositions
+      const market = markets.find((m) => m.marketId === position.marketId)
+
+      if (!market) {
+        return Promise.reject(
+          new Error(
+            this.$t('trade.position_market_not_found', {
+              marketId: position.marketId
+            })
+          )
+        )
+      }
+
+      return this.$accessor.positions.closePosition({
+        position,
+        market
+      })
+    },
+
     handleClosePositions() {
       const { filteredPositions } = this
 
       this.status.setLoading()
 
-      this.$accessor.positions
-        .closeAllPosition(filteredPositions)
-        .then(() => {
+      const action =
+        filteredPositions.length === 1
+          ? this.closePosition
+          : this.closeAllPositions
+
+      action()
+        .then(async () => {
+          await delayPromiseCall(() => this.refreshSubaccountPositions(), 3000)
           this.$toast.success(this.$t('trade.positions_closed'))
         })
         .catch(this.$onRejected)
@@ -163,6 +213,12 @@ export default Vue.extend({
 
     handleSideClick(side: string | undefined) {
       this.side = side
+    },
+
+    pollPositions() {
+      this.poll = setInterval(() => {
+        this.refreshSubaccountPositions()
+      }, 30 * 1000)
     }
   }
 })

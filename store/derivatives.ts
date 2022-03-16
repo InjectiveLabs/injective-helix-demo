@@ -655,14 +655,13 @@ export const actions = actionTree(
 
     async batchCancelOrder(_, orders: UiDerivativeLimitOrder[]) {
       const { subaccount } = this.app.$accessor.account
-      const { market } = this.app.$accessor.derivatives
       const {
         address,
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
 
-      if (!isUserWalletConnected || !subaccount || !market) {
+      if (!isUserWalletConnected || !subaccount) {
         return
       }
 

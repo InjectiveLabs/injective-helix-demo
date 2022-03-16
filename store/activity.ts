@@ -24,9 +24,7 @@ import {
   streamSubaccountTrades as streamSubaccountSpotTrades
 } from '~/app/streams/spot'
 import {
-  derivativeActionService,
   derivativeService,
-  spotActionService,
   spotService,
   subaccountService
 } from '~/app/Services'
@@ -489,58 +487,6 @@ export const actions = actionTree(
       })
 
       commit('setSubaccountFundingPayments', fundingPayments)
-    },
-
-    async batchCancelSpotOrders(_, orders: UiSpotLimitOrder[]) {
-      const { subaccount } = this.app.$accessor.account
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
-
-      if (!isUserWalletConnected || !subaccount) {
-        return
-      }
-
-      await this.app.$accessor.app.queue()
-      await this.app.$accessor.wallet.validate()
-
-      await spotActionService.batchCancelOrders({
-        injectiveAddress,
-        address,
-        orders: orders.map((o) => ({
-          orderHash: o.orderHash,
-          subaccountId: o.subaccountId,
-          marketId: o.marketId
-        }))
-      })
-    },
-
-    async batchCancelDerivativeOrders(_, orders: UiDerivativeLimitOrder[]) {
-      const { subaccount } = this.app.$accessor.account
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
-
-      if (!isUserWalletConnected || !subaccount) {
-        return
-      }
-
-      await this.app.$accessor.app.queue()
-      await this.app.$accessor.wallet.validate()
-
-      await derivativeActionService.batchCancelOrders({
-        injectiveAddress,
-        address,
-        orders: orders.map((o) => ({
-          orderHash: o.orderHash,
-          subaccountId: o.subaccountId,
-          marketId: o.marketId
-        }))
-      })
     }
   }
 )

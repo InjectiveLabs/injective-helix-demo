@@ -110,6 +110,10 @@ export default Vue.extend({
   },
 
   computed: {
+    markets(): UiDerivativeMarketWithToken[] {
+      return this.$accessor.derivatives.markets
+    },
+
     market(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },
@@ -186,11 +190,27 @@ export default Vue.extend({
       this.component = component
     },
 
+    cancelAllOrder(): Promise<void> {
+      const { filteredOrders } = this
+
+      return this.$accessor.derivatives.batchCancelOrder(filteredOrders)
+    },
+
+    cancelOrder(): Promise<void> {
+      const { filteredOrders } = this
+
+      const [order] = filteredOrders
+
+      return this.$accessor.derivatives.cancelOrder(order)
+    },
+
     handleCancelAllClick() {
       const { filteredOrders } = this
 
-      this.$accessor.derivatives
-        .batchCancelOrder(filteredOrders)
+      const action =
+        filteredOrders.length === 1 ? this.cancelOrder : this.cancelAllOrder
+
+      action()
         .then(() => {
           this.$toast.success(this.$t('trade.orders_cancelled'))
         })
@@ -200,11 +220,43 @@ export default Vue.extend({
         })
     },
 
+    closeAllPositions(): Promise<void> {
+      const { filteredPositions } = this
+
+      return this.$accessor.positions.closeAllPosition(filteredPositions)
+    },
+
+    closePosition(): Promise<void> {
+      const { filteredPositions, markets } = this
+
+      const [position] = filteredPositions
+      const market = markets.find((m) => m.marketId === position.marketId)
+
+      if (!market) {
+        return Promise.reject(
+          new Error(
+            this.$t('trade.position_market_not_found', {
+              marketId: position.marketId
+            })
+          )
+        )
+      }
+
+      return this.$accessor.positions.closePosition({
+        position,
+        market
+      })
+    },
+
     handleCloseAllPositionsClick() {
       const { filteredPositions } = this
 
-      this.$accessor.positions
-        .closeAllPosition(filteredPositions)
+      const action =
+        filteredPositions.length === 1
+          ? this.closePosition
+          : this.closeAllPositions
+
+      action()
         .then(() => {
           this.$toast.success(this.$t('trade.positions_closed'))
         })
