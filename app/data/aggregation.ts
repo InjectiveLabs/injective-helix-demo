@@ -47,39 +47,201 @@ export const getDecimalPlaceFromValue = (value: string) =>
   aggregationList.find(({ text }) => text === value)?.value
 
 export const customAggregations = {
-  'BNB/USDT': {
+  'WETH/USDC': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
     maxTick: getDecimalPlaceFromValue('10')
   },
-  'BNB/USDT PERP': {
+
+  'INJ/USDC': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
+    maxTick: getDecimalPlaceFromValue('1')
+  },
+
+  'USDT/USDC': {
+    minTick: getDecimalPlaceFromValue('0.0001'),
+    default: getDecimalPlaceFromValue('0.0001'),
+    maxTick: getDecimalPlaceFromValue('0.01')
+  },
+
+  'LINK/USDC': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
+    maxTick: getDecimalPlaceFromValue('1')
+  },
+
+  'AAVE/USDC': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
     maxTick: getDecimalPlaceFromValue('10')
   },
-  'LUNA/UST': {
-    maxTick: getDecimalPlaceFromValue('10')
+
+  'MATIC/USDC': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
+    maxTick: getDecimalPlaceFromValue('1')
   },
-  'LUNA/UST PERP': {
-    maxTick: getDecimalPlaceFromValue('10')
+
+  'UNI/USDT': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
+    maxTick: getDecimalPlaceFromValue('1')
   },
-  'BTC/USDT': {
-    maxTick: getDecimalPlaceFromValue('100')
+
+  'SUSHI/USDC': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
+    maxTick: getDecimalPlaceFromValue('1')
   },
-  'BTC/USDT PERP': {
-    maxTick: getDecimalPlaceFromValue('100')
+
+  'GRT/USDC': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
+    maxTick: getDecimalPlaceFromValue('1')
   },
-  'ETH/USDT': {
-    maxTick: getDecimalPlaceFromValue('10')
+
+  'INJ/USDT': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
+    maxTick: getDecimalPlaceFromValue('1')
   },
-  'ETH/USDT PERP': {
-    maxTick: getDecimalPlaceFromValue('10')
+
+  'MATIC/USDT': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
+    maxTick: getDecimalPlaceFromValue('1')
   },
+
+  'UNI/USDC': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
+    maxTick: getDecimalPlaceFromValue('1')
+  },
+
+  'LINK/USDT': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
+    maxTick: getDecimalPlaceFromValue('1')
+  },
+
   'WETH/USDT': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
     maxTick: getDecimalPlaceFromValue('10')
   },
-  'WETH/USDT PERP': {
+
+  'AAVE/USDT': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
     maxTick: getDecimalPlaceFromValue('10')
   },
+
+  'GRT/USDT': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
+    maxTick: getDecimalPlaceFromValue('1')
+  },
+
+  'SUSHI/USDT': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
+    maxTick: getDecimalPlaceFromValue('1')
+  },
+
+  'SNX/USDT': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
+    maxTick: getDecimalPlaceFromValue('1')
+  },
+
+  'QNT/USDT': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
+    maxTick: getDecimalPlaceFromValue('10')
+  },
+
+  'WBTC/USDC': {
+    minTick: getDecimalPlaceFromValue('1'),
+    default: getDecimalPlaceFromValue('1'),
+    maxTick: getDecimalPlaceFromValue('100')
+  },
+
+  'AXS/USDT': {
+    minTick: getDecimalPlaceFromValue('0.01'),
+    default: getDecimalPlaceFromValue('0.01'),
+    maxTick: getDecimalPlaceFromValue('10')
+  },
+
+  'ATOM/USDT': {
+    minTick: getDecimalPlaceFromValue('0.01'),
+    default: getDecimalPlaceFromValue('0.01'),
+    maxTick: getDecimalPlaceFromValue('10')
+  },
+
+  'GF/USDT': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
+    maxTick: getDecimalPlaceFromValue('1')
+  },
+
+  'UST/USDT': {
+    minTick: getDecimalPlaceFromValue('0.0001'),
+    default: getDecimalPlaceFromValue('0.0001'),
+    maxTick: getDecimalPlaceFromValue('0.01')
+  },
+
+  'LUNA/UST': {
+    minTick: getDecimalPlaceFromValue('0.01'),
+    default: getDecimalPlaceFromValue('0.01'),
+    maxTick: getDecimalPlaceFromValue('10')
+  },
+
+  'INJ/UST': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
+    maxTick: getDecimalPlaceFromValue('1')
+  },
+
   'HUAHUA/USDT': {
     minTick: getDecimalPlaceFromValue('0.000001'),
-    maxTick: getDecimalPlaceFromValue('0.0001'),
-    default: getDecimalPlaceFromValue('0.000001')
+    default: getDecimalPlaceFromValue('0.000001'),
+    maxTick: getDecimalPlaceFromValue('0.0001')
+  },
+
+  'BTC/USDT PERP': {
+    minTick: getDecimalPlaceFromValue('1'),
+    default: getDecimalPlaceFromValue('1'),
+    maxTick: getDecimalPlaceFromValue('100')
+  },
+
+  'ETH/USDT PERP': {
+    minTick: getDecimalPlaceFromValue('0.01'),
+    default: getDecimalPlaceFromValue('0.01'),
+    maxTick: getDecimalPlaceFromValue('10')
+  },
+
+  'BNB/USDT PERP': {
+    minTick: getDecimalPlaceFromValue('0.01'),
+    default: getDecimalPlaceFromValue('0.01'),
+    maxTick: getDecimalPlaceFromValue('10')
+  },
+
+  'INJ/USDT PERP': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
+    maxTick: getDecimalPlaceFromValue('1')
+  },
+
+  'LUNA/UST PERP': {
+    minTick: getDecimalPlaceFromValue('0.01'),
+    default: getDecimalPlaceFromValue('0.01'),
+    maxTick: getDecimalPlaceFromValue('10')
+  },
+
+  'ATOM/USDT PERP': {
+    minTick: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.001'),
+    maxTick: getDecimalPlaceFromValue('10')
   }
 } as Record<string, CustomAggregation>
