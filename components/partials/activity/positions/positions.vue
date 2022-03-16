@@ -24,7 +24,7 @@
           class="col-span-12 sm:col-span-6 lg:col-span-8 sm:text-right mt-4 sm:mt-0"
         >
           <v-button
-            v-if="positions.length > 0"
+            v-if="filteredPositions.length > 0"
             red-outline
             md
             :status="status"

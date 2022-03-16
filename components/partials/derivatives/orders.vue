@@ -9,24 +9,14 @@
           >
             <span class="uppercase text-xs font-semibold">
               {{ $t('activity.openPositions') }}
-              {{
-                `(${
-                  currentMarketOnly
-                    ? currentMarketPositions.length
-                    : positions.length
-                })`
-              }}
+              {{ `(${filteredPositions.length})` }}
             </span>
           </v-button-filter>
           <v-separator />
           <v-button-filter v-model="component" :option="components.openOrders">
             <span class="uppercase text-xs font-semibold">
               {{ $t('activity.openOrders') }}
-              {{
-                `(${
-                  currentMarketOnly ? currentMarketOrders.length : orders.length
-                })`
-              }}
+              {{ `(${filteredOrders.length})` }}
             </span>
           </v-button-filter>
           <v-separator />
@@ -48,7 +38,9 @@
           {{ $t('trade.asset_only', { asset: market.ticker }) }}
         </v-checkbox>
         <v-button
-          v-if="component === components.openOrders && orders.length > 0"
+          v-if="
+            component === components.openOrders && filteredOrders.length > 0
+          "
           red-outline
           sm
           @click.stop="handleCancelAllClick"
@@ -56,7 +48,10 @@
           {{ $t('trade.cancelAllOrders') }}
         </v-button>
         <v-button
-          v-if="component === components.openPositions && positions.length > 0"
+          v-if="
+            component === components.openPositions &&
+            filteredPositions.length > 0
+          "
           red-outline
           sm
           @click.stop="handleCloseAllPositionsClick"
@@ -139,6 +134,18 @@ export default Vue.extend({
       return positions.filter(
         (position) => position.marketId === market?.marketId
       )
+    },
+
+    filteredOrders(): UiDerivativeLimitOrder[] {
+      const { currentMarketOnly, orders, currentMarketOrders } = this
+
+      return currentMarketOnly ? currentMarketOrders : orders
+    },
+
+    filteredPositions(): UiPosition[] {
+      const { currentMarketOnly, positions, currentMarketPositions } = this
+
+      return currentMarketOnly ? currentMarketPositions : positions
     }
   },
 
@@ -180,10 +187,10 @@ export default Vue.extend({
     },
 
     handleCancelAllClick() {
-      const { orders, currentMarketOrders, currentMarketOnly } = this
+      const { filteredOrders } = this
 
       this.$accessor.derivatives
-        .batchCancelOrder(currentMarketOnly ? currentMarketOrders : orders)
+        .batchCancelOrder(filteredOrders)
         .then(() => {
           this.$toast.success(this.$t('trade.orders_cancelled'))
         })
@@ -194,12 +201,10 @@ export default Vue.extend({
     },
 
     handleCloseAllPositionsClick() {
-      const { positions, currentMarketPositions, currentMarketOnly } = this
+      const { filteredPositions } = this
 
       this.$accessor.positions
-        .closeAllPosition(
-          currentMarketOnly ? currentMarketPositions : positions
-        )
+        .closeAllPosition(filteredPositions)
         .then(() => {
           this.$toast.success(this.$t('trade.positions_closed'))
         })

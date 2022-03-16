@@ -24,7 +24,7 @@
           class="col-span-12 sm:col-span-6 lg:col-span-8 sm:text-right mt-4 sm:mt-0"
         >
           <v-button
-            v-if="orders.length > 0"
+            v-if="filteredOrders.length > 0"
             red-outline
             md
             @click.stop="handleCancelOrders"

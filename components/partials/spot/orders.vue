@@ -6,11 +6,7 @@
           <v-button-filter v-model="component" :option="components.openOrders">
             <span class="uppercase text-xs font-semibold">
               {{ $t('trade.open_orders') }}
-              {{
-                `(${
-                  currentMarketOnly ? currentMarketOrders.length : orders.length
-                })`
-              }}
+              {{ `(${filteredOrders.length})` }}
             </span>
           </v-button-filter>
           <v-separator />
@@ -32,7 +28,9 @@
           {{ $t('trade.asset_only', { asset: market.ticker }) }}
         </v-checkbox>
         <v-button
-          v-if="component === components.openOrders && orders.length > 0"
+          v-if="
+            component === components.openOrders && filteredOrders.length > 0
+          "
           class="mr-2"
           red-outline
           sm
@@ -100,6 +98,12 @@ export default Vue.extend({
       const { market, orders } = this
 
       return orders.filter((order) => order.marketId === market?.marketId)
+    },
+
+    filteredOrders(): UiSpotLimitOrder[] {
+      const { currentMarketOnly, orders, currentMarketOrders } = this
+
+      return currentMarketOnly ? currentMarketOrders : orders
     }
   },
 
@@ -123,10 +127,10 @@ export default Vue.extend({
     },
 
     handleCancelAllClick() {
-      const { orders, currentMarketOnly, currentMarketOrders } = this
+      const { filteredOrders } = this
 
       this.$accessor.spot
-        .batchCancelOrder(currentMarketOnly ? currentMarketOrders : orders)
+        .batchCancelOrder(filteredOrders)
         .then(() => {
           this.$toast.success(this.$t('trade.orders_cancelled'))
         })
