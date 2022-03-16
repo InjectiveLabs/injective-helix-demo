@@ -571,14 +571,13 @@ export const actions = actionTree(
 
     async batchCancelOrder(_, orders: UiSpotLimitOrder[]) {
       const { subaccount } = this.app.$accessor.account
-      const { market } = this.app.$accessor.spot
       const {
         address,
         injectiveAddress,
         isUserWalletConnected
       } = this.app.$accessor.wallet
 
-      if (!isUserWalletConnected || !subaccount || !market) {
+      if (!isUserWalletConnected || !subaccount) {
         return
       }
 

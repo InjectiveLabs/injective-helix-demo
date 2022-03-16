@@ -126,11 +126,27 @@ export default Vue.extend({
       this.component = component
     },
 
+    cancelOrder(): Promise<void> {
+      const { filteredOrders } = this
+
+      const [order] = filteredOrders
+
+      return this.$accessor.spot.cancelOrder(order)
+    },
+
+    cancelAllOrders(): Promise<void> {
+      const { filteredOrders } = this
+
+      return this.$accessor.spot.batchCancelOrder(filteredOrders)
+    },
+
     handleCancelAllClick() {
       const { filteredOrders } = this
 
-      this.$accessor.spot
-        .batchCancelOrder(filteredOrders)
+      const action =
+        filteredOrders.length === 1 ? this.cancelOrder : this.cancelAllOrders
+
+      action()
         .then(() => {
           this.$toast.success(this.$t('trade.orders_cancelled'))
         })

@@ -123,20 +123,31 @@ export default Vue.extend({
   },
 
   methods: {
+    cancelOrder(): Promise<void> {
+      const { filteredOrders } = this
+
+      const [order] = filteredOrders
+
+      return this.$accessor.spot.cancelOrder(order)
+    },
+
+    cancelAllOrders(): Promise<void> {
+      const { filteredOrders } = this
+
+      return this.$accessor.spot.batchCancelOrder(filteredOrders)
+    },
+
     handleCancelOrders() {
       const { filteredOrders } = this
 
-      this.status.setLoading()
+      const action =
+        filteredOrders.length === 1 ? this.cancelOrder : this.cancelAllOrders
 
-      this.$accessor.activity
-        .batchCancelSpotOrders(filteredOrders)
+      action()
         .then(() => {
           this.$toast.success(this.$t('trade.orders_cancelled'))
         })
         .catch(this.$onRejected)
-        .finally(() => {
-          this.status.setIdle()
-        })
     },
 
     handleInputOnSearch(search: string) {

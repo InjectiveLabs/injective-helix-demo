@@ -60,13 +60,24 @@ export default Vue.extend({
     this.status.setLoading()
 
     Promise.all([this.$accessor.derivatives.init()])
-      .then(() => {
-        //
-      })
+      .then(() => {})
       .catch(this.$onError)
       .finally(() => {
         this.status.setIdle()
       })
+
+    Promise.all([
+      this.$accessor.positions.streamSubaccountPositions(),
+      this.$accessor.derivatives.streamSubaccountOrders()
+    ])
+      .then(() => {
+        //
+      })
+      .catch(this.$onRejected)
+  },
+
+  beforeDestroy() {
+    this.$accessor.app.cancelAllStreams()
   }
 })
 </script>

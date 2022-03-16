@@ -82,7 +82,8 @@ export default Vue.extend({
       TradeSelectorType,
       search: '',
       side: undefined as string | undefined,
-      status: new Status(StatusType.Loading)
+      status: new Status(StatusType.Loading),
+      poll: undefined as any
     }
   },
 
@@ -131,23 +132,58 @@ export default Vue.extend({
       this.$accessor.positions.fetchMarketsOrderbook(),
       this.$accessor.positions.fetchSubaccountPositions()
     ])
-      .then(() => {
-        //
-      })
       .catch(this.$onError)
       .finally(() => {
         this.status.setIdle()
       })
+
+    this.pollOrderbooks()
+  },
+
+  beforeDestroy() {
+    clearInterval(this.poll)
   },
 
   methods: {
+    closeAllPositions(): Promise<void> {
+      const { filteredPositions } = this
+
+      return this.$accessor.positions.closeAllPosition(filteredPositions)
+    },
+
+    closePosition(): Promise<void> {
+      const { filteredPositions, markets } = this
+
+      const [position] = filteredPositions
+      const market = markets.find((m) => m.marketId === position.marketId)
+
+      if (!market) {
+        return Promise.reject(
+          new Error(
+            this.$t('trade.position_market_not_found', {
+              marketId: position.marketId
+            })
+          )
+        )
+      }
+
+      return this.$accessor.positions.closePosition({
+        position,
+        market
+      })
+    },
+
     handleClosePositions() {
       const { filteredPositions } = this
 
       this.status.setLoading()
 
-      this.$accessor.positions
-        .closeAllPosition(filteredPositions)
+      const action =
+        filteredPositions.length === 1
+          ? this.closePosition
+          : this.closeAllPositions
+
+      action()
         .then(() => {
           this.$toast.success(this.$t('trade.positions_closed'))
         })
@@ -163,6 +199,12 @@ export default Vue.extend({
 
     handleSideClick(side: string | undefined) {
       this.side = side
+    },
+
+    pollOrderbooks() {
+      this.poll = setInterval(() => {
+        this.$accessor.positions.fetchMarketsOrderbook()
+      }, 30 * 1000)
     }
   }
 })

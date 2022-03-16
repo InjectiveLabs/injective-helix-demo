@@ -18,6 +18,7 @@ import {
 import { app } from '~/app/singletons/App'
 import { todayInSeconds } from '~/app/utils/time'
 import { gasService } from '~/app/Services'
+import { streamProvider } from '~/app/providers/StreamProvider'
 
 export interface UserBasedState {
   vpnOrProxyUsageValidationTimestamp: number
@@ -165,6 +166,10 @@ export const actions = actionTree(
     async pollMarkets(_) {
       await this.app.$accessor.derivatives.fetchMarketsSummary()
       await this.app.$accessor.spot.fetchMarketsSummary()
+    },
+
+    cancelAllStreams() {
+      streamProvider.cancelAll()
     }
   }
 )
