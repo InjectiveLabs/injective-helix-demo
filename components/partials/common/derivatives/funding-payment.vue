@@ -24,7 +24,7 @@
 
     <td class="h-8 text-right font-mono">
       <v-number
-        v-if="total.gt(UI_MINIMAL_AMOUNT)"
+        v-if="total.abs().gt(UI_MINIMAL_AMOUNT)"
         :class="{
           'text-aqua-500': total.gte(0),
           'text-red-500': total.lt(0)
