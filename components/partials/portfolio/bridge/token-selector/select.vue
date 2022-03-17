@@ -55,7 +55,7 @@
                 :value="amount"
                 @input="handleAmountChange"
                 @blur="resetIsSearching"
-                @click.native.stop="focusInput"
+                @mousedown.native.stop="focusInput"
               />
               <img
                 v-if="logo"
