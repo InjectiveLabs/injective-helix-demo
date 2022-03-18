@@ -1,5 +1,5 @@
 <template>
-  <tr v-if="market" :data-cy="'order-row-'+market.ticker">
+  <tr v-if="market" :data-cy="'order-row-'+market.ticker" :data-cy-hash="order.orderHash">
     <td class="h-8 text-left cursor-pointer" @click="handleClickOnMarket">
       <div class="flex items-center justify-start">
         <div v-if="market.baseToken.logo" class="w-6 h-6">

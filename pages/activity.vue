@@ -7,6 +7,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <v-card-select
             v-model="component"
+            data-cy="positions-panel"
             :option="components.positions"
             class="col-span-1"
           >
@@ -16,6 +17,7 @@
           </v-card-select>
           <v-card-select
             v-model="component"
+            data-cy="spot-panel"
             :option="components.spot"
             class="col-span-1"
           >
@@ -25,6 +27,7 @@
           </v-card-select>
           <v-card-select
             v-model="component"
+            data-cy="derivatives-panel"
             :option="components.derivatives"
             class="col-span-1"
           >
@@ -44,6 +47,7 @@
           </v-card-select>
           <v-card-select
             v-model="component"
+            data-cy="wallet-panel"
             :option="components.funding"
             class="col-span-1"
           >

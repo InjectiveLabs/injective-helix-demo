@@ -1,5 +1,5 @@
 <template>
-  <div class="loading-spinner">
+  <div class="loading-spinner" data-cy="loading-spinner">
     <div />
     <div />
     <div />

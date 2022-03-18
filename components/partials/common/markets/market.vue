@@ -18,7 +18,7 @@
           class="w-4 h-4 md:w-6 md:h-6 mr-4"
         />
         <div class="mr-4 text-left">
-          <div class="flex">
+          <div class="flex" :data-cy="'slideout-ticker-' + market.ticker">
             {{ market.ticker }}
             <span
               v-if="isMarketBeta"
