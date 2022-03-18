@@ -2,7 +2,7 @@
   <v-dropdown round hide-bottom-border>
     <template slot="title">
       <div class="flex items-center justify-between bg-gray-900 rounded-full">
-        <span class="text-xs ml-2">{{ selectedValue }}</span>
+        <span class="text-xs ml-2" data-cy="selected-value">{{ selectedValue }}</span>
       </div>
     </template>
 
@@ -11,6 +11,7 @@
         v-for="(item, index) in list"
         :key="`type-selector-${index}`"
         :item="item"
+        :data-cy="'selector-item-'+item.text"
         @click="handleClick"
       >
         {{ item.text }}

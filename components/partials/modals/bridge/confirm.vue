@@ -22,12 +22,13 @@
               v-else
               class="text-gray-200 rounded-full w-10 h-10 mx-auto"
             />
-            <p class="text-gray-200 text-2xl font-bold tracking-0.4 mt-4">
+            <p class="text-gray-200 text-2xl font-bold tracking-0.4 mt-4" data-cy="bridge-confirm-value">
               {{ amountToString }} {{ form.token.symbol }}
             </p>
             <p
               v-if="amountInUsd.gt(0)"
               class="text-gray-500 text-sm tracking-0.4 mt-2"
+              data-cy="bridge-confirm-value-usd"
             >
               ${{ amountInUsdToString }}
             </p>
@@ -39,6 +40,7 @@
           >
             <v-network-card-base
               class="w-1/2"
+              data-cy="bridge-confirm-from"
               :hide-icon="
                 originNetworkMeta.value === destinationNetworkMeta.value
               "
@@ -53,6 +55,7 @@
 
             <v-network-card-base
               class="w-1/2"
+              data-cy="bridge-confirm-to"
               :hide-icon="
                 originNetworkMeta.value === destinationNetworkMeta.value
               "
@@ -67,11 +70,11 @@
                 {{ $t('bridge.amount') }}
               </template>
 
-              <template slot="amount">
+              <template slot="amount" data-cy="bridge-confirm-amount">
                 {{ amountToString }} {{ form.token.symbol }}
               </template>
 
-              <template slot="amountInUsd">
+              <template slot="amountInUsd" data-cy="bridge-confirm-amount-usd">
                 ${{ amountInUsdToString }}
               </template>
             </v-confirm-amount-row>
@@ -85,14 +88,14 @@
                 {{ $t('bridge.bridgeFee') }}
               </template>
 
-              <template slot="amount">
+              <template slot="amount" data-cy="bridge-confirm-bridge-fee">
                 <span>
                   {{ ethBridgeFeeToString }}
                   {{ form.token.symbol }}
                 </span>
               </template>
 
-              <template slot="amountInUsd">
+              <template slot="amountInUsd" data-cy="bridge-confirm-bridge-fee-usd">
                 ${{ ethBridgeFeeInUsdToString }}
               </template>
             </v-confirm-amount-row>
@@ -106,11 +109,11 @@
                 {{ $t('bridge.transferAmount') }}
               </template>
 
-              <template slot="amount">
+              <template slot="amount" data-cy="bridge-confirm-amount">
                 {{ transferAmountToString }} {{ form.token.symbol }}
               </template>
 
-              <template slot="amountInUsd">
+              <template slot="amountInUsd" data-cy="bridge-confirm-amount-usd">
                 ${{ transferAmountInUsdToString }}
               </template>
             </v-confirm-amount-row>
@@ -120,11 +123,11 @@
                 {{ $t('bridge.gasFee') }}
               </template>
 
-              <template slot="amount">
+              <template slot="amount" data-cy="bridge-confirm-gas-fee">
                 {{ gasFeeToString }} {{ injToken.symbol }}
               </template>
 
-              <template slot="amountInUsd">
+              <template slot="amountInUsd" data-cy="bridge-confirm-gas-fee-usd">
                 ${{ gasFeeInUsdToString }}
               </template>
             </v-confirm-amount-row>
@@ -137,6 +140,7 @@
               class="w-full xs:w-2/3 font-bold"
               :disabled="buttonConfirmationDisabled"
               :status="status"
+              data-cy="bridge-confirm-button"
               @click="handlerFunction"
             >
               {{ buttonConfirmationText }}

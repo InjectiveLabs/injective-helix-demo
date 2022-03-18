@@ -8,6 +8,7 @@
           <v-search
             dense
             class="col-span-2 sm:col-span-1"
+            data-cy="filter-by-assets"
             :placeholder="$t('trade.filter')"
             :search="search"
             @searched="handleInputOnSearch"
@@ -15,6 +16,7 @@
 
           <filter-selector
             class="self-start"
+            data-cy="filter-by-type"
             :type="TradeSelectorType.Type"
             :value="type"
             @click="handleTypeClick"
@@ -22,6 +24,7 @@
 
           <filter-selector
             class="self-start"
+            data-cy="filter-by-side"
             :type="TradeSelectorType.Side"
             :value="side"
             @click="handleSideClick"
@@ -41,7 +44,7 @@
             ></tr>
           </tbody>
         </table>
-        <v-empty-list v-else :message="$t('trade.emptyTrades')" />
+        <v-empty-list v-else :message="$t('trade.emptyTrades')" data-cy="table-nothing-found" />
       </v-table-wrapper>
     </v-card-table-wrap>
   </VHocLoading>

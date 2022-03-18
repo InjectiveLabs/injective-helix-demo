@@ -1,5 +1,5 @@
 <template>
-  <tr v-if="market">
+  <tr v-if="market" :data-cy="'order-row-'+market.ticker">
     <td class="h-8 text-left cursor-pointer" @click="handleClickOnMarket">
       <div class="flex items-center justify-start">
         <div v-if="market.baseToken.logo" class="w-6 h-6">
@@ -10,7 +10,7 @@
           />
         </div>
         <div class="ml-3">
-          <span class="text-gray-200 font-semibold">
+          <span class="text-gray-200 font-semibold" data-cy="order-entry-ticker">
             {{ market.ticker }}
           </span>
         </div>
@@ -19,6 +19,7 @@
 
     <td class="h-8 text-left">
       <span
+        data-cy="order-entry-side"
         :class="{
           'text-aqua-500': order.orderSide === DerivativeOrderSide.Buy,
           'text-red-500': order.orderSide === DerivativeOrderSide.Sell
@@ -26,13 +27,14 @@
       >
         {{ orderSideLocalized }}
       </span>
-      <span v-if="isReduceOnly" class="ml-0.5 text-xs text-gray-500">
+      <span v-if="isReduceOnly" class="ml-0.5 text-xs text-gray-500" data-cy="order-entry-reduce-only">
         {{ $t('trade.reduce_only') }}
       </span>
     </td>
 
     <td class="h-8 font-mono text-right">
       <v-number
+        data-cy="order-entry-price"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
@@ -42,6 +44,7 @@
 
     <td class="h-8 text-right font-mono">
       <v-number
+        data-cy="order-entry-quantity"
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
@@ -52,6 +55,7 @@
     <td class="h-8 font-mono">
       <div class="flex items-center justify-end">
         <v-number
+          data-cy="order-entry-unfilled"
           :decimals="
             market
               ? market.quantityDecimals
@@ -64,6 +68,7 @@
 
     <td class="h-8 text-right font-mono">
       <v-number
+        data-cy="order-entry-filled"
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
@@ -72,23 +77,24 @@
     </td>
 
     <td class="h-8 text-right font-mono">
-      <span v-if="leverage.gte(0)" class="flex items-center justify-end">
+      <span v-if="leverage.gte(0)" class="flex items-center justify-end" data-cy="order-entry-leverage">
         {{ leverage.toFormat(2) }}
         <span class="text-gray-300">&times;</span>
       </span>
-      <span v-else class="text-gray-400">
+      <span v-else class="text-gray-400" data-cy="order-entry-no-leverage">
         {{ $t('trade.not_available_n_a') }}
       </span>
     </td>
 
     <td class="h-8 font-right text-right">
       <v-number
+        data-cy="order-entry-total"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
         :number="total"
       >
-        <span slot="addon" class="text-2xs text-gray-500">
+        <span slot="addon" class="text-2xs text-gray-500" data-cy="order-entry-quote-token">
           {{ market.quoteToken.symbol }}
         </span>
       </v-number>
@@ -99,11 +105,12 @@
         <span
           v-if="false"
           class="cursor-pointer text-primary-500 mr-6"
+          data-cy="order-entry-view-link"
           @click="handleClickOnMarket"
         >
           {{ $t('common.view') }}
         </span>
-        <v-button v-if="orderFillable" :status="status" @click="onCancelOrder">
+        <v-button v-if="orderFillable" :status="status" data-cy="order-entry-cancel-link" @click="onCancelOrder">
           <div
             class="flex items-center justify-center rounded-full bg-red-550 bg-opacity-10 w-8 h-8 hover:bg-red-600 text-red-550 hover:text-red-600 hover:bg-opacity-10"
           >

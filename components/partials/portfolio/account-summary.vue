@@ -4,7 +4,7 @@
       <h4 class="text-sm uppercase text-gray-400">
         {{ $t('portfolio.accountSummary') }}
       </h4>
-      <v-icon-show class="w-4 h-4 ml-4 text-gray-400 hover:text-primary-500" />
+      <v-icon-show class="w-4 h-4 ml-4 text-gray-400 hover:text-primary-500" data-cy="toggle-balances-visibility" />
     </div>
     <div
       class="flex flex-wrap items-center justify-center lg:justify-between mt-4"
@@ -12,25 +12,25 @@
       <div
         class="flex tracking-wide items-end flex-wrap justify-center lg:justify-start"
       >
-        <h2 class="text-white text-2xl sm:text-3xl xl:text-4xl mr-4">
-          <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }} </span>
-          <span v-else-if="status.isLoading()">&mdash; USD </span>
-          <span v-else>{{ totalBalanceToString }} USD</span>
+        <h2 class="text-white text-2xl sm:text-3xl xl:text-4xl mr-4" data-cy="account-summary-usd">
+          <span v-if="hideBalance" data-cy="account-summary-usd-hidden">{{ HIDDEN_BALANCE_DISPLAY }} </span>
+          <span v-else-if="status.isLoading()" data-cy="account-summary-usd-loading">&mdash; USD </span>
+          <span v-else data-cy="account-summary-usd-shown">{{ totalBalanceToString }} USD</span>
         </h2>
-        <span v-if="!hideBalance" class="text-2xl text-gray-400 mt-4 lg:mt-0">
+        <span v-if="!hideBalance" class="text-2xl text-gray-400 mt-4 lg:mt-0" data-cy="account-summary-btc">
           <span v-if="status.isIdle()">
             ≈ {{ totalBalanceInBtcToString }} BTC
           </span>
         </span>
       </div>
       <div class="flex items-center mt-6 lg:mt-0">
-        <v-button outline md class="mr-6" @click="handleDepositClick">
+        <v-button outline md class="mr-6" data-cy="account-summary-deposit" @click="handleDepositClick">
           <span class="text-primary-500">{{ $t('common.deposit') }}</span>
         </v-button>
-        <v-button outline md class="mr-4" @click="handleWithdrawClick">
+        <v-button outline md class="mr-4" data-cy="account-summary-withdraw" @click="handleWithdrawClick">
           <span class="text-primary-500">{{ $t('common.withdraw') }}</span>
         </v-button>
-        <v-button outline md @click="handleTransferClick">
+        <v-button outline md data-cy="account-summary-transfer" @click="handleTransferClick">
           <span class="text-primary-500">{{ $t('common.transfer') }}</span>
         </v-button>
       </div>

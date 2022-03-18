@@ -1,7 +1,7 @@
 <template>
-  <tr>
+  <tr data-cy="history-row">
     <td class="h-8 font-mono">
-      <span class="text-gray-400 text-xs">{{ time }}</span>
+      <span class="text-gray-400 text-xs" data-cy="history-row-time">{{ time }}</span>
     </td>
 
     <td class="h-8 text-left">
@@ -18,7 +18,7 @@
           />
         </div>
         <div class="ml-3">
-          <span class="text-gray-200 font-semibold">
+          <span class="text-gray-200 font-semibold" data-cy="history-row-asset">
             {{ transaction.token.symbol }}
           </span>
         </div>
@@ -26,7 +26,7 @@
     </td>
 
     <td class="h-8 text-right font-mono">
-      <v-number :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS" :number="amount">
+      <v-number :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS" :number="amount" data-cy="history-row-amount">
         <span slot="addon" class="text-2xs text-gray-500">
           {{ transaction.token.symbol }}
         </span>
@@ -34,13 +34,13 @@
     </td>
 
     <td class="h-8 text-left font-mono">
-      <v-address :address="transaction.sender">
+      <v-address :address="transaction.sender" data-cy="history-row-sender">
         {{ formattedOrigin }}
       </v-address>
     </td>
 
     <td class="h-8 text-left font-mono">
-      <v-address :address="transaction.receiver">
+      <v-address :address="transaction.receiver" data-cy="history-row-receiver">
         {{ formattedDestination }}
       </v-address>
     </td>
@@ -48,6 +48,7 @@
     <td class="text-right">
       <a
         :href="transaction.explorerLink"
+        data-cy="history-row-explorer-link"
         target="_blank"
         class="text-primary-500 cursor-pointer pr-2"
       >

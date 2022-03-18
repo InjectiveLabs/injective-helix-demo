@@ -25,6 +25,7 @@
         <v-nav-item
           v-if="isUserWalletConnected"
           class="hidden lg:flex"
+          data-cy="header-activity-link"
           :to="{ name: 'activity' }"
         >
           {{ $t('navigation.activity') }}
@@ -32,6 +33,7 @@
         <v-nav-item
           v-if="isUserWalletConnected"
           class="hidden lg:flex"
+          data-cy="header-portfolio-link"
           :to="{ name: 'portfolio' }"
         >
           {{ $t('navigation.portfolio') }}

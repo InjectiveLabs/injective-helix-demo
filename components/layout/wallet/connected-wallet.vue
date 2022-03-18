@@ -7,7 +7,7 @@
       <slot></slot>
     </div>
     <div class="font-mono text-sm">
-      <p :class="[lg ? 'text-base mb-2' : 'text-xs']">
+      <p :class="[lg ? 'text-base mb-2' : 'text-xs']" data-cy="wallet-connected-popper-wallet-address">
         {{ formattedAddress }}
       </p>
       <div class="inline-block">

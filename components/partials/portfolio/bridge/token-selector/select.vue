@@ -18,12 +18,13 @@
         :dropdown-should-open="dropdownShouldOpen"
         :options="filteredOptions"
         :value="value"
+        data-cy="token-selector"
         @input="handleChange"
         @close="setForceClose"
         @click.native="handleDropdownToggle"
       >
         <template #open-indicator="{ attributes }">
-          <span v-bind="attributes" class="cursor-pointer">
+          <span v-bind="attributes" class="cursor-pointer" data-cy="token-selector-open">
             <v-icon-caret-down-slim />
           </span>
         </template>
@@ -53,6 +54,7 @@
                 :max-decimals="value.decimals"
                 :max-selector="balance.gt(0.01)"
                 :value="amount"
+                data-cy="token-selector-amount"
                 @input="handleAmountChange"
                 @blur="resetIsSearching"
                 @click.native.stop="focusInput"
@@ -66,6 +68,7 @@
               <v-icon-category-alt v-else class="rounded-full w-6 h-6" />
               <span
                 class="font-bold text-lg pl-2 pr-3 text-gray-200 tracking-wide break-normal"
+                 data-cy="token-selector-selected"
               >
                 {{ symbol }}
               </span>
@@ -81,6 +84,7 @@
               dense
               round
               :placeholder="$t('common.search')"
+              data-cy="token-selector-search"
               @blur="resetIsSearching"
               @click.native.stop="focusSearchInput"
             >

@@ -68,6 +68,7 @@
               <span
                 class="bg-gray-700 rounded uppercase tracking-1"
                 :class="maxClasses"
+                data-cy="max-button"
               >
                 {{ $t('trade.max') }}
               </span>

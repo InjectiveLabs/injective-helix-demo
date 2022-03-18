@@ -5,6 +5,7 @@
         <div class="flex items-center justify-center">
           <v-button-select
             v-model="component"
+            data-cy="activity-positions-positions-link"
             :option="components.positions"
             text
           >
@@ -13,6 +14,7 @@
           <div class="mx-2 w-px h-4 bg-gray-500"></div>
           <v-button-select
             v-model="component"
+            data-cy="activity-positions-fundingPayments-link"
             :option="components.fundingPayments"
             text
           >

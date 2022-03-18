@@ -1,10 +1,10 @@
 <template>
-  <div class="flex h-full w-full items-center justify-center text-center">
+  <div class="flex h-full w-full items-center justify-center text-center" data-cy="wallet-not-connected-warning">
     <div v-if="cta" class="text-center py-4">
       <p class="text-xs text-gray-300 w-full">
         {{ $t('connect.pleaseConnectToYourWallet') }}
       </p>
-      <v-button md primary class="mt-2" @click.stop="handleClickOnConnect">
+      <v-button md primary class="mt-2" data-cy="wallet-not-connected-warning-button" @click.stop="handleClickOnConnect">
         {{ $t('connect.connect') }}
       </v-button>
     </div>

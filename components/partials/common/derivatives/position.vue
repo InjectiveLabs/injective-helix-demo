@@ -1,5 +1,5 @@
 <template>
-  <tr v-if="market">
+  <tr v-if="market" :data-cy="'postion-row-'+position.ticker">
     <td class="text-left cursor-pointer" @click="handleClickOnMarket">
       <div class="flex items-center justify-start">
         <div v-if="market.baseToken.logo" class="w-6 h-6">
@@ -19,6 +19,7 @@
 
     <td class="text-left pl-1">
       <span
+        data-cy="'postion-entry-side"
         :class="{
           'text-aqua-500': position.direction === TradeDirection.Long,
           'text-red-500': position.direction === TradeDirection.Short
@@ -30,6 +31,7 @@
 
     <td class="text-right font-mono">
       <v-number
+        data-cy="'postion-entry-price"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
@@ -39,6 +41,7 @@
 
     <td class="text-right font-mono">
       <v-number
+        data-cy="'postion-entry-quantity"
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
@@ -47,6 +50,7 @@
     </td>
     <td class="text-right font-mono">
       <v-number
+        data-cy="'postion-entry-liquidationPrice"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
@@ -64,6 +68,7 @@
           <span class="mr-1 flex items-center">
             <span>{{ pnl.gte(0) ? '+' : '' }}</span>
             <span
+              data-cy="'postion-entry-pnl"
               :class="{
                 'text-aqua-500': pnl.gte(0),
                 'text-red-500': pnl.lt(0)
@@ -80,12 +85,13 @@
           </span>
         </div>
       </div>
-      <span v-else class="text-gray-400">{{
+      <span v-else class="text-gray-400" data-cy="'postion-entry-no-pnl">{{
         $t('trade.not_available_n_a')
       }}</span>
     </td>
     <td class="text-right font-mono">
       <v-number
+        data-cy="'postion-entry-total"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
@@ -99,6 +105,7 @@
     <td class="text-right">
       <div class="flex items-center justify-end h-8">
         <v-number
+          data-cy="'postion-entry-margin"
           :decimals="
             market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
           "
@@ -108,6 +115,7 @@
           role="button"
           type="button"
           class="border border-primary-500 text-primary-500 hover:text-primary-300 ml-2 px-1"
+          data-cy="'postion-entry-add-margin-button"
           @click.stop.prevent="onAddMarginButtonClick"
         >
           &plus;
@@ -118,17 +126,18 @@
       <span
         v-if="effectiveLeverage.gte(0)"
         class="flex items-center justify-end"
+        data-cy="'postion-entry-leverage"
       >
         {{ effectiveLeverage.toFormat(2) }}
         <span class="text-gray-300">&times;</span>
       </span>
-      <span v-else class="text-gray-400">
+      <span v-else class="text-gray-400" data-cy="'postion-entry-no-leverage">
         {{ $t('trade.not_available_n_a') }}
       </span>
     </td>
 
     <td class="text-center relative">
-      <v-button :status="status" @click="onClosePositionClick">
+      <v-button :status="status" data-cy="position-entry-cancel-link" @click="onClosePositionClick">
         <div
           class="flex items-center justify-center rounded-full bg-opacity-10 w-8 h-8 hover:bg-opacity-10"
           :class="{

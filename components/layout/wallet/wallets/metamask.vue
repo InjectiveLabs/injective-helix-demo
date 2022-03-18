@@ -2,6 +2,7 @@
   <li>
     <div
       class="block hover:bg-gray-800 border-gray-600 rounded-lg cursor-pointer"
+      data-cy="wallet-connect-metamask"
       @click="handleClickOnMetamaskConnect"
     >
       <div class="flex items-center px-4 py-4 sm:px-6">
@@ -33,7 +34,7 @@
                 </v-button>
               </p>
               <p class="flex items-center text-sm text-gray-200">
-                <span class="truncate">{{
+                <span class="truncate" data-cy="wallet-connect-metamask-button">{{
                   $t('connect.connectUsingBrowser')
                 }}</span>
               </p>

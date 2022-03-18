@@ -46,6 +46,7 @@
             :valid="valid"
             placeholder="inj"
             :label="$t('bridge.injAddress')"
+            data-cy="bridge-inj-address"
             @input="handleDestinationAddressChange"
           >
           </v-input>
@@ -75,6 +76,7 @@
             primary
             class="w-full xs:w-1/2 font-bold"
             :disabled="invalid"
+            data-cy="bridge-transfer-now-button"
             @click="handleTransferNowClick"
           >
             {{ $t('bridge.transferNow') }}

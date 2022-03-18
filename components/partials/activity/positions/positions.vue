@@ -10,12 +10,14 @@
             class="col-span-3"
             :placeholder="$t('trade.filter')"
             :search="search"
+            data-cy="filter-by-assets"
             @searched="handleInputOnSearch"
           />
           <filter-selector
             class="col-span-2"
             :type="TradeSelectorType.PositionSide"
             :value="side"
+            data-cy="filter-by-side"
             @click="handleSideClick"
           />
         </div>
@@ -28,6 +30,7 @@
             red-outline
             md
             :status="status"
+            data-cy="cancel-all-button"
             @click.stop="handleClosePositions"
           >
             {{ $t('trade.closeAllPositions') }}
@@ -50,6 +53,7 @@
 
         <v-empty-list
           v-else
+          data-cy="table-nothing-found"
           :message="$t('trade.emptyPositions')"
           class="mt-6 min-h-orders"
         />

@@ -4,6 +4,7 @@
       <div
         id="wallet-address"
         class="font-mono text-sm cursor-pointer flex items-center p-2 rounded-lg"
+        data-cy="wallet-connected"
         :class="{
           'text-primary-500 bg-gray-800': isWalletDropdownOpen,
           'text-gray-300': !isWalletDropdownOpen
@@ -24,6 +25,7 @@
       ref="popper-wallet"
       class="popper bg-gray-800 rounded flex flex-col flex-wrap absolute min-w-[356px] z-10 shadow-md"
       binding-element="#wallet-address"
+      data-cy="wallet-connected-popper"
       :options="popperOption"
     >
       <div>
@@ -33,6 +35,7 @@
           </h3>
           <span
             class="text-sm text-primary-500 cursor-pointer"
+            data-cy="wallet-connected-popper-disconnect-button"
             @click="handleClickOnLogout"
             >{{ $t('navigation.disconnect') }}
           </span>
@@ -42,7 +45,7 @@
           <div class="flex-1 flex-wrap">
             <div class="flex items-center justify-between w-full">
               <div>
-                <span class="font-mono w-full block">{{
+                <span class="font-mono w-full block" data-cy="wallet-connected-popper-inj-address">{{
                   formattedInjectiveAddress
                 }}</span>
               </div>

@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-6">
+  <div class="mt-6" data-cy="bridge-transfer-note-ibc">
     <p
       class="text-xs w-full p-2 mr-6 bg-primary-500 bg-opacity-10 text-primary-500 rounded"
     >
@@ -11,6 +11,7 @@
         md
         primary
         class="whitespace-nowrap"
+        data-cy="bridge-transfer-note-ibc-hub-button"
         @click.stop="() => {}"
       >
         <a :href="hubUrl" target="_blank" class="flex items-center">

@@ -1,6 +1,6 @@
 <template>
   <!-- eslint-disable vue/no-parsing-error -->
-  <tr v-if="market">
+  <tr v-if="market" :data-cy="'funding-row-'+market.ticker">
     <td class="h-8 font-mono">
       <span class="text-gray-400 text-xs">{{ time }}</span>
     </td>
@@ -15,7 +15,7 @@
           />
         </div>
         <div class="ml-3">
-          <span class="text-gray-200 font-semibold">
+          <span class="text-gray-200 font-semibold" data-cy="funding-entry-ticker">
             {{ market.ticker }}
           </span>
         </div>
@@ -25,6 +25,7 @@
     <td class="h-8 text-right font-mono">
       <v-number
         v-if="total.abs().gt(UI_MINIMAL_AMOUNT)"
+        data-cy="funding-entry-total"
         :class="{
           'text-aqua-500': total.gte(0),
           'text-red-500': total.lt(0)
