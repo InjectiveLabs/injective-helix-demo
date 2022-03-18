@@ -2376,10 +2376,10 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@injectivelabs/ui-common@^0.5.2":
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-common/-/ui-common-0.5.2.tgz#b2d9a103d80fbb0139b70c06aa0e76332021e4fd"
-  integrity sha512-Gbnqbu+HFsgmM2mMmFPkSYCv8xrIyRHKuXuV7vXxzZYfIir6fPnDM6BjljB5pNSYSQ22D80lpefDK35V2044UQ==
+"@injectivelabs/ui-common@^0.5.4":
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-common/-/ui-common-0.5.4.tgz#d95a26cac8579cb927b102190eb669d931d256b9"
+  integrity sha512-b9SnZfGWes1J/hzUeSuAwa41i5P75Fg35CVJ46EaZQkxadzeuF2J2u1VGToRRlgK+B5SAuJELNLzX0fOLXzeKQ==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@improbable-eng/grpc-web" "^0.15.0"
