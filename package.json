@@ -41,7 +41,7 @@
     "@injectivelabs/referral-consumer": "^0.5.0",
     "@injectivelabs/spot-consumer": "^0.5.0",
     "@injectivelabs/subaccount-consumer": "^0.5.0",
-    "@injectivelabs/token-metadata": "^0.5.0y",
+    "@injectivelabs/token-metadata": "^0.5.1",
     "@injectivelabs/token-utils": "^0.5.0",
     "@injectivelabs/ui-common": "^0.5.2",
     "@injectivelabs/utils": "^0.5.0",
