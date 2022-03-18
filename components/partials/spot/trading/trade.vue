@@ -6,6 +6,7 @@
           'text-gray-500': tradingType === TradeExecutionType.LimitFill
         }"
         text-xs
+        data-cy="trade-switch-to-market-button"
         @click.stop="onTradingTypeToggle(TradeExecutionType.Market)"
       >
         {{ $t('trade.market') }}
@@ -17,6 +18,7 @@
           'text-gray-500': tradingType === TradeExecutionType.Market
         }"
         text-xs
+        data-cy="trade-switch-to-limit-button"
         @click.stop="onTradingTypeToggle(TradeExecutionType.LimitFill)"
       >
         {{ $t('trade.limit') }}
@@ -29,6 +31,7 @@
           :option="SpotOrderSide.Buy"
           aqua
           class="w-1/2"
+          data-cy="trade-side-buy-asset"
         >
           {{ $t('trade.buy_asset', { asset: market.baseToken.symbol }) }}
         </v-button-select>
@@ -37,6 +40,7 @@
           :option="SpotOrderSide.Sell"
           red
           class="w-1/2"
+          data-cy="trade-side-sell-asset"
         >
           {{ $t('trade.sell_asset', { asset: market.baseToken.symbol }) }}
         </v-button-select>
@@ -55,6 +59,7 @@
           type="number"
           :step="amountStep"
           min="0"
+          data-cy="trade-amount-input"
           @blur="onAmountBlur"
           @input="onAmountChange"
           @input-max="() => onMaxInput(100)"
@@ -78,11 +83,12 @@
             </span>
           </div>
         </v-input>
-        <span v-if="amountError" class="text-2xs font-semibold text-red-500">
+        <span v-if="amountError" class="text-2xs font-semibold text-red-500" data-cy="trade-amount-error">
           {{ amountError }}
         </span>
         <span
           v-if="priceError && tradingTypeMarket"
+          data-cy="trade-price-error"
           class="text-2xs font-semibold text-red-500"
         >
           {{ priceError }}
@@ -99,12 +105,13 @@
           :step="priceStep"
           :max-decimals="market ? market.quoteToken.decimals : 6"
           min="0"
+          data-cy="trade-price-input"
           @blur="onPriceBlur"
           @input="onPriceChange"
         >
           <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
         </v-input>
-        <span v-if="priceError" class="text-red-500 font-semibold text-2xs">
+        <span v-if="priceError" class="text-red-500 font-semibold text-2xs" data-cy="trade-price-error">
           {{ priceError }}
         </span>
       </div>
@@ -148,6 +155,7 @@
         :aqua="!hasErrors && orderType === SpotOrderSide.Buy"
         :red="!hasErrors && orderType === SpotOrderSide.Sell"
         class="w-full"
+        data-cy="trade-execute-button"
         @click.stop="onSubmit"
       >
         {{ $t(orderTypeBuy ? 'trade.buy' : 'trade.sell') }}

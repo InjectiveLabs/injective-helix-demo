@@ -8,7 +8,7 @@
           class="w-6 h-6 mr-4"
         />
         <div class="leading-none">
-          <p class="text-gray-100 font-semibold text-sm">{{ market.ticker }}</p>
+          <p class="text-gray-100 font-semibold text-sm" data-cy="trade-market-ticker">{{ market.ticker }}</p>
           <p class="text-gray-500 text-xs">
             {{ market.baseToken.name }}
           </p>

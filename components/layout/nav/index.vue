@@ -4,11 +4,12 @@
       <v-nav-item :to="{ name: 'index' }" class="block lg:hidden">
         {{ $t('navigation.home') }}
       </v-nav-item>
-      <v-nav-item-dummy @click.stop="handleOpenMarketsSlideout">
+      <v-nav-item-dummy data-cy="header-markets-link" @click.stop="handleOpenMarketsSlideout">
         {{ $t('trade.markets') }}
       </v-nav-item-dummy>
       <v-nav-item
         class="block"
+        data-cy="header-trade-link"
         :to="{
           name: 'derivatives-derivative',
           params: { derivative: 'btc-usdt-perp' }

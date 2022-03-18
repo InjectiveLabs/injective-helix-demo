@@ -21,6 +21,7 @@
               </p>
             </div>
             <v-subaccount-balance
+              data-cy="trade-trading-account-balances"
               v-else
               v-bind="{
                 baseTradingBalance,

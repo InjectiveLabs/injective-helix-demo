@@ -23,6 +23,7 @@
           step="0.01"
           :max="maxLeverage.toString()"
           class="leverage-input pr-4"
+          data-cy="trade-leverage-input"
           @input="(e) => onLeverageChange(e.target.value)"
         />
         <span class="absolute top-0 right-0 text-xs text-gray-400 mt-1.5 mr-1.5">

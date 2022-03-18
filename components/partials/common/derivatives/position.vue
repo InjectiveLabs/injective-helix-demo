@@ -1,5 +1,5 @@
 <template>
-  <tr v-if="market" :data-cy="'postion-row-'+position.ticker">
+  <tr v-if="market" :data-cy="'position-row-'+position.ticker">
     <td class="text-left cursor-pointer" @click="handleClickOnMarket">
       <div class="flex items-center justify-start">
         <div v-if="market.baseToken.logo" class="w-6 h-6">
@@ -10,7 +10,7 @@
           />
         </div>
         <div class="ml-3">
-          <span class="text-gray-200 font-semibold">
+          <span class="text-gray-200 font-semibold" data-cy="position-entry-ticker">
             {{ position.ticker }}
           </span>
         </div>
@@ -19,7 +19,7 @@
 
     <td class="text-left pl-1">
       <span
-        data-cy="'postion-entry-side"
+        data-cy="position-entry-side"
         :class="{
           'text-aqua-500': position.direction === TradeDirection.Long,
           'text-red-500': position.direction === TradeDirection.Short
@@ -31,7 +31,7 @@
 
     <td class="text-right font-mono">
       <v-number
-        data-cy="'postion-entry-price"
+        data-cy="position-entry-price"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
@@ -41,7 +41,7 @@
 
     <td class="text-right font-mono">
       <v-number
-        data-cy="'postion-entry-quantity"
+        data-cy="position-entry-quantity"
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
@@ -50,7 +50,7 @@
     </td>
     <td class="text-right font-mono">
       <v-number
-        data-cy="'postion-entry-liquidationPrice"
+        data-cy="position-entry-liquidationPrice"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
@@ -68,7 +68,7 @@
           <span class="mr-1 flex items-center">
             <span>{{ pnl.gte(0) ? '+' : '' }}</span>
             <span
-              data-cy="'postion-entry-pnl"
+              data-cy="postion-entry-pnl"
               :class="{
                 'text-aqua-500': pnl.gte(0),
                 'text-red-500': pnl.lt(0)
@@ -85,13 +85,13 @@
           </span>
         </div>
       </div>
-      <span v-else class="text-gray-400" data-cy="'postion-entry-no-pnl">{{
+      <span v-else class="text-gray-400" data-cy="position-entry-no-pnl">{{
         $t('trade.not_available_n_a')
       }}</span>
     </td>
     <td class="text-right font-mono">
       <v-number
-        data-cy="'postion-entry-total"
+        data-cy="position-entry-total"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
@@ -105,7 +105,7 @@
     <td class="text-right">
       <div class="flex items-center justify-end h-8">
         <v-number
-          data-cy="'postion-entry-margin"
+          data-cy="position-entry-margin"
           :decimals="
             market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
           "
@@ -115,7 +115,7 @@
           role="button"
           type="button"
           class="border border-primary-500 text-primary-500 hover:text-primary-300 ml-2 px-1"
-          data-cy="'postion-entry-add-margin-button"
+          data-cy="position-entry-add-margin-button"
           @click.stop.prevent="onAddMarginButtonClick"
         >
           &plus;
@@ -126,12 +126,12 @@
       <span
         v-if="effectiveLeverage.gte(0)"
         class="flex items-center justify-end"
-        data-cy="'postion-entry-leverage"
+        data-cy="position-entry-leverage"
       >
         {{ effectiveLeverage.toFormat(2) }}
         <span class="text-gray-300">&times;</span>
       </span>
-      <span v-else class="text-gray-400" data-cy="'postion-entry-no-leverage">
+      <span v-else class="text-gray-400" data-cy="position-entry-no-leverage">
         {{ $t('trade.not_available_n_a') }}
       </span>
     </td>
