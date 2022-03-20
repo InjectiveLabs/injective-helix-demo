@@ -6,7 +6,7 @@
       </h3>
     </div>
 
-    <div class="relative -mt-6 text-center">
+    <div class="relative text-center">
       <div class="text-gradient text-4xl mb-8">
         {{ countDownTimer }}
       </div>

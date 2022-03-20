@@ -5,7 +5,7 @@
       {{ $t('Acknowledge Terms') }}
     </h3>
 
-    <div class="relative -mt-6">
+    <div class="relative">
       <p
         class="text-left text-sm text-gray-100 pt-6"
         v-html="$t('disclaimer_note')"
