@@ -1,18 +1,24 @@
 <template>
-  <v-modal :is-open="isModalOpen" is-always-open sm @modal-closed="closeModal">
+  <v-modal
+    :is-open="isModalOpen"
+    is-always-open
+    has-blur-bg
+    sm
+    @modal-closed="closeModal"
+  >
     <h3 slot="title">
-      {{ $t('marketBeta.title') }}
+      {{ $t('marketNew.title') }}
     </h3>
 
     <div class="relative">
       <p
         class="text-center text-sm text-gray-100"
-        v-text="$t('marketBeta.description')"
+        v-text="$t('marketNew.description')"
       ></p>
 
       <div class="mt-6 flex items-center justify-center">
         <v-button lg primary @click.stop="handleConfirm">
-          {{ $t('marketBeta.I Understand') }}
+          {{ $t('marketNew.depositNow') }}
         </v-button>
       </div>
     </div>
@@ -26,18 +32,17 @@ import { Modal } from '~/types'
 export default Vue.extend({
   computed: {
     isModalOpen(): boolean {
-      return this.$accessor.modal.modals[Modal.MarketBeta]
+      return this.$accessor.modal.modals[Modal.MarketNew]
     }
   },
 
   methods: {
     closeModal() {
-      this.$accessor.modal.closeModal(Modal.MarketBeta)
+      this.$accessor.modal.closeModal(Modal.MarketNew)
     },
 
     handleConfirm() {
-      this.closeModal()
-      this.$emit('confirmed')
+      this.$router.push({ name: 'portfolio' })
     },
 
     handleCancel() {

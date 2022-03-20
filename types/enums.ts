@@ -46,6 +46,7 @@ export enum Modal {
   OrderConfirm = 'order-confirm',
   Terms = 'terms',
   MarketBeta = 'market-beta',
+  MarketNew = 'market-new',
   Bridge = 'bridge',
   BridgeConfirm = 'bridge-confirm',
   BridgeCompleted = 'bridge-completed',

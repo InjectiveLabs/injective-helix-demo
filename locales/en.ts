@@ -186,6 +186,13 @@ export default {
       'This market is in the Beta phase. During this phase, typically there is no great depth in the order book. This means slippage may be applied when you make a trade.'
   },
 
+  marketNew: {
+    title: 'Upcoming market launch',
+    description:
+      'This market going to be launched soon. During this phase, you can deposit the assets to your wallet using the Bridge or transfer them to your trading account.',
+    depositNow: 'Deposit Now'
+  },
+
   navigation: {
     balances: 'Balances',
     funding: 'Funding',
