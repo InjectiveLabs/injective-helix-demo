@@ -1,6 +1,6 @@
 import { ChronosApiProvider } from './chronos-provider'
 import { getErrorMessage } from './helpers'
-import { marketTradingViewFilters } from '~/app/data/trading-view'
+import { mapBarsToProperValues } from '~/app/data/trading-view'
 
 export class HistoryProvider {
   private chronosApiProvider: ChronosApiProvider
@@ -70,49 +70,7 @@ export class HistoryProvider {
             }
           }
 
-          const { totalHigh, totalLow } = bars.reduce(
-            (result: any, bar: any) => {
-              return {
-                totalHigh: result.totalHigh + bar.high,
-                totalLow: result.totalLow + bar.low
-              }
-            },
-            { totalLow: 0, totalHigh: 0 }
-          )
-          const avgHigh = bars.length === 0 ? 0 : totalHigh / bars.length
-          const avgLow = bars.length === 0 ? 0 : totalLow / bars.length
-          const upperMax = 0.7 // 70%
-          const lowerMin = 0.3 // 30%
-          const highLowDeviation = 0.2 // 20%
-
-          const barIsInBond = (bar: any) =>
-            bar.high >= avgHigh * upperMax && bar.low >= avgLow * lowerMin
-          const barDoesNotHaveHighHighLowDeviation = (bar: any) =>
-            bar.high && bar.low
-              ? bar.high / bar.low <= 1 + highLowDeviation
-              : true
-          const barDoesNotHaveExcludedBars = (bar: any) => {
-            const marketBarsFilter =
-              // @ts-ignore
-              marketTradingViewFilters[symbolInfo.ticker]
-
-            if (!marketBarsFilter) {
-              return true
-            }
-
-            const barExistsInExcludedList = marketBarsFilter.find(
-              (high: number, low: number) => {
-                return bar.high === high && bar.low === low
-              }
-            )
-
-            return !barExistsInExcludedList
-          }
-
-          const barsInBounds = bars
-            .filter(barIsInBond)
-            .filter(barDoesNotHaveHighHighLowDeviation)
-            .filter(barDoesNotHaveExcludedBars)
+          const barsInBounds = mapBarsToProperValues(bars, symbolInfo.ticker)
 
           resolve({
             bars: barsInBounds,
