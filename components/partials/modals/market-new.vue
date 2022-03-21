@@ -11,10 +11,7 @@
     </h3>
 
     <div class="relative">
-      <p
-        class="text-center text-sm text-gray-100"
-        v-text="$t('marketNew.description', { asset: token, description })"
-      ></p>
+      <p class="text-center text-sm text-gray-100" v-text="description"></p>
 
       <div class="mt-6 flex items-center justify-center">
         <v-button
