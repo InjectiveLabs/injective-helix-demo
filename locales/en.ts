@@ -188,10 +188,9 @@ export default {
 
   marketNew: {
     title: 'Upcoming market launch',
-    description: 'The spot market for {asset} will launch soon. {description}',
     depositNow: 'Deposit Now',
     connectAndDepositNow: 'Connect and Deposit now',
-    soonToBeReleased: 'This market is going to be released soon!'
+    soonToBeReleased: 'Coming soon!'
   },
 
   navigation: {
