@@ -27,5 +27,6 @@ export const restrictedCountries = [
   'VE',
   'BD',
   'ML',
-  'NP'
+  'NP',
+  'RU'
 ] as string[]
