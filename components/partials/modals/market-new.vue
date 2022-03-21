@@ -17,8 +17,16 @@
       ></p>
 
       <div class="mt-6 flex items-center justify-center">
-        <v-button lg primary @click.stop="handleConfirm">
+        <v-button
+          v-if="isUserWalletConnected"
+          lg
+          primary
+          @click.stop="handleConfirm"
+        >
           {{ $t('marketNew.depositNow') }}
+        </v-button>
+        <v-button v-else lg primary @click.stop="() => {}">
+          {{ $t('marketNew.connectAndDepositNow') }}
         </v-button>
       </div>
     </div>
@@ -37,11 +45,15 @@ export default Vue.extend({
     return {
       token: upcomingMarket.baseToken.symbol,
       denom: upcomingMarket.baseDenom,
-      description: `The spot market for $${upcomingMarket.baseToken.symbol}/${upcomingMarket.quoteToken.symbol} will launch soon! Meanwhile, deposit at least 1 $${upcomingMarket.baseToken.symbol} to get a chance to win an original Bored Ape Kennel Club NFT.`
+      description: `The ${upcomingMarket.baseToken.symbol}/${upcomingMarket.quoteToken.symbol} spot market will launch soon. Meanwhile, deposit at least 1 $${upcomingMarket.baseToken.symbol} to get a chance to win an original Bored Ape Kennel Club NFT.`
     }
   },
 
   computed: {
+    isUserWalletConnected(): boolean {
+      return this.$accessor.wallet.isUserWalletConnected
+    },
+
     isModalOpen(): boolean {
       return this.$accessor.modal.modals[Modal.MarketNew]
     }
