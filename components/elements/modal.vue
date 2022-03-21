@@ -24,8 +24,8 @@
             class="absolute inset-0 backdrop-filter"
             :class="
               hasBlurBg
-                ? 'backdrop-blur bg-gray-900 bg-opacity-30'
-                : 'backdrop-blur-sm bg-gray-900 bg-opacity-70'
+                ? 'backdrop-blur bg-gray-900 bg-opacity-60'
+                : 'backdrop-blur-sm bg-gray-900 bg-opacity-80'
             "
           />
         </div>
@@ -41,7 +41,7 @@
       >
         <div
           v-show="isOpen"
-          class="inline-block align-bottom bg-gray-850 shadow-card rounded-xl text-left transform transition-all w-full max-w-lg"
+          class="inline-block align-bottom bg-gray-800 shadow-sm rounded-xl text-left transform transition-all w-full max-w-lg"
           :class="classes"
           role="dialog"
           :aria-modal="isOpen"

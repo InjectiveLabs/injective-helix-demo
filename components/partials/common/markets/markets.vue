@@ -111,20 +111,40 @@ export default Vue.extend({
       return this.$accessor.spot.markets
     },
 
+    upcomingMarkets(): Array<
+      UiSpotMarketWithToken | UiDerivativeMarketWithToken
+    > {
+      return this.$accessor.exchange.upcomingMarkets
+    },
+
+    upcomingMarketSummaries(): Array<
+      UiSpotMarketSummary | UiDerivativeMarketSummary
+    > {
+      return this.$accessor.exchange.upcomingMarketsSummaries
+    },
+
     spotMarketsSummary(): UiSpotMarketSummary[] {
       return this.$accessor.spot.marketsSummary
     },
 
     markets(): Array<UiSpotMarketWithToken | UiDerivativeMarketWithToken> {
-      const { spotMarkets, derivativeMarkets } = this
+      const { spotMarkets, derivativeMarkets, upcomingMarkets } = this
 
-      return [...derivativeMarkets, ...spotMarkets]
+      return [...derivativeMarkets, ...spotMarkets, ...upcomingMarkets]
     },
 
     marketsSummary(): Array<UiSpotMarketSummary | UiDerivativeMarketSummary> {
-      const { spotMarketsSummary, derivativeMarketsSummary } = this
+      const {
+        spotMarketsSummary,
+        derivativeMarketsSummary,
+        upcomingMarketSummaries
+      } = this
 
-      return [...derivativeMarketsSummary, ...spotMarketsSummary]
+      return [
+        ...derivativeMarketsSummary,
+        ...spotMarketsSummary,
+        ...upcomingMarketSummaries
+      ]
     },
 
     totalVolume(): BigNumberInBase {

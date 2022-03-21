@@ -2092,10 +2092,10 @@
   resolved "https://registry.yarnpkg.com/@injectivelabs/common-rpc/-/common-rpc-1.0.3.tgz#2c447c21a0efa0b1e174e1efc53afd5643ac3bef"
   integrity sha512-CCGwSgTAJDiXWjCngrrg9cNLTx4LGQjxWwWH0A6ZGuEcZLtHc9Y7/AIikoeKrJO80aC8ZBYlSyfVkFZjEy6Z2Q==
 
-"@injectivelabs/contracts@^0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/contracts/-/contracts-0.5.1.tgz#8b00723f1f9bcbbc0fc5ea1d3b84bddc6710cc56"
-  integrity sha512-Jk2lbk9FPfapDEn78E/wo3SVntYC0OaW9eGCvJGjhIgKd740ix1+bsqvMNU9Dl6RTHmVS+sbjFSdxG1zvgwXAA==
+"@injectivelabs/contracts@^0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/contracts/-/contracts-0.5.2.tgz#f24a92603d810ec8a9169851c1eb6e833c8d654c"
+  integrity sha512-Ay4nkz93auBLoFWgyg9yrp3/h1HQkPG3NCKmEzmttmJwzRGUlsBgbdm928BlIAvkfrzeK++Z68otLzsxaku6nQ==
   dependencies:
     "@commitlint/cli" "^13.1.0"
     "@commitlint/config-conventional" "^13.1.0"
@@ -2103,7 +2103,7 @@
     "@injectivelabs/ts-types" "^0.5.0"
     "@injectivelabs/utils" "^0.5.0"
     "@injectivelabs/web3-contract-typings" "^0.1.13"
-    "@injectivelabs/web3-strategy" "^0.5.1"
+    "@injectivelabs/web3-strategy" "^0.5.2"
     "@types/ethereumjs-util" "^6.1.0"
     "@types/jest" "^27.0.1"
     "@types/node" "^16.9.2"
@@ -2376,10 +2376,10 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@injectivelabs/ui-common@^0.5.4":
-  version "0.5.4"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-common/-/ui-common-0.5.4.tgz#d95a26cac8579cb927b102190eb669d931d256b9"
-  integrity sha512-b9SnZfGWes1J/hzUeSuAwa41i5P75Fg35CVJ46EaZQkxadzeuF2J2u1VGToRRlgK+B5SAuJELNLzX0fOLXzeKQ==
+"@injectivelabs/ui-common@^0.5.6":
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-common/-/ui-common-0.5.6.tgz#3d6d0c49c6c09086980e57a86789e5fe88ce1fa5"
+  integrity sha512-pSGLLKUR1cbnsxHFpXAj7557HjOMTa/IDlp8VJHRF6n5Mzt6NVUNnOrB+a4UwHm52wOBwuwBzRhVJ9oJfN9eLQ==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@improbable-eng/grpc-web" "^0.15.0"
@@ -2387,7 +2387,7 @@
     "@injectivelabs/alchemy-api" "^0.5.0"
     "@injectivelabs/chain-api" "^1.7.1"
     "@injectivelabs/chain-consumer" "^0.5.0"
-    "@injectivelabs/contracts" "^0.5.1"
+    "@injectivelabs/contracts" "^0.5.2"
     "@injectivelabs/derivatives-consumer" "^0.5.0"
     "@injectivelabs/exceptions" "^0.5.0"
     "@injectivelabs/exchange-consumer" "^0.5.0"
@@ -2399,7 +2399,7 @@
     "@injectivelabs/token-utils" "^0.5.0"
     "@injectivelabs/ts-types" "^0.5.0"
     "@injectivelabs/utils" "^0.5.0"
-    "@injectivelabs/web3-strategy" "^0.5.1"
+    "@injectivelabs/web3-strategy" "^0.5.2"
     bech32 "^2.0.0"
     date-fns "^2.28.0"
     ethereumjs-util "^7.1.4"
@@ -2428,10 +2428,10 @@
   dependencies:
     typescript "^4.0.5"
 
-"@injectivelabs/web3-strategy@^0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/web3-strategy/-/web3-strategy-0.5.1.tgz#6a5dabe383aa43dedb12bfc304052fceb8ba58d5"
-  integrity sha512-7uX6HjzbuUKDvYR8LZn7v5+7Mo5XRSUwB3MDMFZTjb4E5iog0N+UCngjgQ39Ivij0wbb0eyhZjHc5n8jxk9ZFw==
+"@injectivelabs/web3-strategy@^0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/web3-strategy/-/web3-strategy-0.5.2.tgz#efd2c93e2e91707ffb6150be9ef206b279d2f869"
+  integrity sha512-IDeIwfMJJSBHj0dMayM7C9jl3Wi/oKg0z5E3RyY/z7SJvc0HaXK5zXDi2fTFeKDCmYHs25x3HUBGbLBDBRQbkQ==
   dependencies:
     "@alch/alchemy-web3" "^1.2.3"
     "@ethereumjs/common" "^2.6.2"
@@ -2447,7 +2447,7 @@
     "@ledgerhq/hw-transport-webhid" "^6.24.1"
     "@ledgerhq/hw-transport-webusb" "^6.24.1"
     "@metamask/eth-sig-util" "^4.0.0"
-    "@toruslabs/torus-embed" "^1.21.0"
+    "@toruslabs/torus-embed" "^1.20.0"
     "@types/eth-sig-util" "^2.1.1"
     "@types/ethereumjs-util" "^6.1.0"
     "@types/hdkey" "^2.0.0"
@@ -3666,7 +3666,7 @@
     keccak "^3.0.2"
     randombytes "^2.1.0"
 
-"@toruslabs/torus-embed@^1.21.0":
+"@toruslabs/torus-embed@^1.20.0":
   version "1.21.0"
   resolved "https://registry.yarnpkg.com/@toruslabs/torus-embed/-/torus-embed-1.21.0.tgz#6b0e78b2b5247c161734f3570642a594f3fd3c45"
   integrity sha512-INvHYal3dvCZk1WCR3BI2015D/TDPqlH5ysAYKmovT7qIl2AKfW44ZeQxpCaMHlADvTk0reN8b+JqY6Ys6PzbA==
