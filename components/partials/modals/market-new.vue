@@ -3,7 +3,7 @@
     :is-open="isModalOpen"
     is-always-open
     has-blur-bg
-    sm
+    md
     @modal-closed="closeModal"
   >
     <h3 slot="title">
@@ -13,7 +13,7 @@
     <div class="relative">
       <p
         class="text-center text-sm text-gray-100"
-        v-text="$t('marketNew.description')"
+        v-text="$t('marketNew.description', { asset: token, description })"
       ></p>
 
       <div class="mt-6 flex items-center justify-center">
@@ -27,9 +27,20 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Modal } from '~/types'
+import { upcomingMarkets } from '~/app/data/market'
+import { BridgeType, Modal } from '~/types'
 
 export default Vue.extend({
+  data() {
+    const [upcomingMarket] = upcomingMarkets
+
+    return {
+      token: upcomingMarket.baseToken.symbol,
+      denom: upcomingMarket.baseDenom,
+      description: `The spot market for $${upcomingMarket.baseToken.symbol}/${upcomingMarket.quoteToken.symbol} will launch soon! Meanwhile, deposit at least 1 $${upcomingMarket.baseToken.symbol} to get a chance to win an original Bored Ape Kennel Club NFT.`
+    }
+  },
+
   computed: {
     isModalOpen(): boolean {
       return this.$accessor.modal.modals[Modal.MarketNew]
@@ -42,7 +53,14 @@ export default Vue.extend({
     },
 
     handleConfirm() {
-      this.$router.push({ name: 'portfolio' })
+      this.$router.push({
+        name: 'portfolio',
+        query: {
+          token: this.token,
+          denom: this.denom,
+          bridgeType: BridgeType.Deposit
+        }
+      })
     },
 
     handleCancel() {

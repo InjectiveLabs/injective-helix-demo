@@ -1,4 +1,5 @@
 const { Network } = require('@injectivelabs/networks')
+const { upcomingMarkets } = require('./app/data/market')
 const {
   IS_TESTNET,
   IS_MAINNET_STAGING,
@@ -46,6 +47,10 @@ if (NETWORK === Network.Devnet) {
 
 const spotRoutes = spot.map((s) => `/spot/${s}`) || []
 const derivativesRoutes = derivatives.map((s) => `/derivatives/${s}`) || []
+const upcomingMarketsRoutes = [
+  '/market',
+  upcomingMarkets.map((m) => `/market/${m.slug}`)
+]
 
 module.exports = [
   '/',
@@ -56,6 +61,7 @@ module.exports = [
   '/faq',
   '/register',
   '/trade-and-earn',
+  ...upcomingMarketsRoutes,
   ...spotRoutes,
   ...derivativesRoutes
 ]

@@ -188,9 +188,9 @@ export default {
 
   marketNew: {
     title: 'Upcoming market launch',
-    description:
-      'This market going to be launched soon. During this phase, you can deposit the assets to your wallet using the Bridge or transfer them to your trading account.',
-    depositNow: 'Deposit Now'
+    description: 'The spot market for {asset} will launch soon. {description}',
+    depositNow: 'Deposit Now',
+    soonToBeReleased: 'This market is going to be released soon!'
   },
 
   navigation: {
