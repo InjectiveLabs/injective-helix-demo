@@ -22,7 +22,13 @@
         >
           {{ $t('marketNew.depositNow') }}
         </v-button>
-        <v-button v-else lg primary @click.stop="() => {}">
+        <v-button
+          v-else
+          lg
+          primary
+          primary-outline
+          @click="handleConnectAndDeposit"
+        >
           {{ $t('marketNew.connectAndDepositNow') }}
         </v-button>
       </div>
@@ -62,18 +68,17 @@ export default Vue.extend({
     },
 
     handleConfirm() {
-      this.$router.push({
-        name: 'portfolio',
-        query: {
-          token: this.token,
-          denom: this.denom,
-          bridgeType: BridgeType.Deposit
-        }
-      })
+      this.$router.push(
+        `/portfolio/?token=${this.token}&denom=${this.denom}&bridgeType=${BridgeType.Deposit}`
+      )
     },
 
-    handleCancel() {
-      //
+    handleConnectAndDeposit() {
+      new Promise((resolve) => {
+        return resolve(this.$router.push({ name: 'index' }))
+      }).then(() => {
+        this.$root.$emit('wallet-clicked')
+      })
     }
   }
 })
