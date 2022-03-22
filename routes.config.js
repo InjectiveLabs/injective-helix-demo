@@ -1,5 +1,4 @@
 const { Network } = require('@injectivelabs/networks')
-const { upcomingMarkets } = require('./app/data/market')
 const {
   IS_TESTNET,
   IS_MAINNET_STAGING,
