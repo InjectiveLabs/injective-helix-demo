@@ -3,11 +3,11 @@ name: DEX staging deployment
 on:
   push:
     branches:
-      - dev
+      - staging
 
 jobs:
   deploy-stag:
-    if: true
+    if: false
     env:
       ## Public
       APP_NAME: 'BETA - Injective Pro: Decentralized Cryptocurrency Derivatives, Ethereum and Altcoin Exchange'
@@ -80,7 +80,7 @@ jobs:
         run: aws cloudfront create-invalidation --distribution-id=$CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
 
   deploy-testnet:
-    if: true
+    if: false
     env:
       ## Public
       APP_NAME: 'TESTNET - Injective Pro: Decentralized Cryptocurrency Derivatives, Ethereum and Altcoin Exchange'

@@ -98,7 +98,6 @@ export default Vue.extend({
 
   beforeDestroy() {
     this.$accessor.derivatives.reset()
-    this.$accessor.modal.reset()
     clearInterval(this.interval)
   }
 })
