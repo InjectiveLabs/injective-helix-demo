@@ -47,10 +47,7 @@ if (NETWORK === Network.Devnet) {
 
 const spotRoutes = spot.map((s) => `/spot/${s}`) || []
 const derivativesRoutes = derivatives.map((s) => `/derivatives/${s}`) || []
-const upcomingMarketsRoutes = [
-  '/market',
-  upcomingMarkets.map((m) => `/market/${m.slug}`)
-]
+const upcomingMarketsRoutes = ['/market', '/market/ape-usdt']
 
 module.exports = [
   '/',
@@ -68,3 +65,4 @@ module.exports = [
 
 module.exports.spot = spot
 module.exports.derivatives = derivatives
+module.exports.upcomingMarketsRoutes = upcomingMarketsRoutes
