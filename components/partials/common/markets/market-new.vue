@@ -2,6 +2,7 @@
   <TableRow
     :dense="simple"
     :lg="!simple"
+    class="cursor-pointer"
     @click.native.stop="handleClickOnMarket"
   >
     <span
