@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+      "baseUrl": "./node_modules",
+      "target": "es5",
+      "lib": ["es5", "dom"],
+      "types": ["cypress", "cypress-xpath", "node", "@testing-library/cypress", "cypress-real-events", "cypress-wait-until"]
+    },
+    "include": ["**/*.ts"]
+  }
