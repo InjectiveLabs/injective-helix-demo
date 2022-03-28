@@ -22,22 +22,22 @@
           <div class="flex items-center mb-6">
             <v-button
               :class="{
-                'text-gray-500': filterType !== FilterTypes.Volume
+                'text-gray-500': filterType !== MarketFilterType.Volume
               }"
               text-sm
               class="font-normal"
-              @click.stop="updateFilterType(FilterTypes.Volume)"
+              @click.stop="updateFilterType(MarketFilterType.Volume)"
             >
               <span class="uppercase text-xs">{{ $t('home.trending') }}</span>
             </v-button>
             <div class="mx-2 w-px h-4 bg-gray-700"></div>
             <v-button
               :class="{
-                'text-gray-500': filterType !== FilterTypes.New
+                'text-gray-500': filterType !== MarketFilterType.New
               }"
               text-sm
               class="font-normal"
-              @click.stop="updateFilterType(FilterTypes.New)"
+              @click.stop="updateFilterType(MarketFilterType.New)"
             >
               <span class="uppercase text-xs">{{ $t('home.whatsNew') }}</span>
             </v-button>
@@ -50,14 +50,14 @@
           <v-table
             :markets="markets"
             :summaries="marketsSummary"
-            :show-all="showAll"
-            :show-promoted="filterType === FilterTypes.New"
+            :filter-type="filterType"
+            reduced
           />
         </VHocLoading>
       </div>
     </v-panel>
 
-    <div v-if="!showAll && filterType !== FilterTypes.New" class="text-center">
+    <div v-if="filterType !== MarketFilterType.All" class="text-center">
       <v-button lg primary class="w-60 mt-6" @click="showAllMarkets">
         {{ $t('home.viewAllMarkets') }}
       </v-button>
@@ -76,11 +76,7 @@ import {
 } from '@injectivelabs/ui-common'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import VTable from './table.vue'
-
-enum FilterTypes {
-  Volume = 'volume',
-  New = 'new'
-}
+import { MarketFilterType } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -89,9 +85,8 @@ export default Vue.extend({
 
   data() {
     return {
-      FilterTypes,
-      filterType: FilterTypes.Volume,
-      showAll: false,
+      MarketFilterType,
+      filterType: MarketFilterType.Volume,
       status: new Status(StatusType.Loading),
 
       interval: 0 as any
@@ -161,9 +156,8 @@ export default Vue.extend({
       return totalVolume.toFormat(0, BigNumberInBase.ROUND_DOWN)
     },
 
+    // todo: need support from BE for total trades
     totalTrades(): BigNumberInBase {
-      // todo: need support from BE for total trades
-
       return ZERO_IN_BASE
     },
 
@@ -200,7 +194,7 @@ export default Vue.extend({
       this.$root.$emit('toggle-market-slideout-from-content')
     },
 
-    updateFilterType(type: FilterTypes) {
+    updateFilterType(type: MarketFilterType) {
       this.filterType = type
     }
   }

@@ -96,3 +96,10 @@ export enum TradeSelectorType {
   PositionSide = 'position-side',
   TransferType = 'transfer-type'
 }
+
+export enum MarketFilterType {
+  All = 'all',
+  Volume = 'volume',
+  New = 'new',
+  Upcoming = 'upcoming'
+}

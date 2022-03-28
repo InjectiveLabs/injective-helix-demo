@@ -1,15 +1,15 @@
 <template>
   <TableRow
-    :dense="simple"
-    :lg="!simple"
+    :dense="condensed"
+    :lg="!condensed"
     class="cursor-pointer"
     @click.native.stop="handleClickOnMarket"
   >
     <span
       class="text-base md:text-sm"
       :class="{
-        'col-span-3': !simple,
-        'col-span-5': simple
+        'col-span-3': !condensed,
+        'col-span-5': condensed
       }"
     >
       <div class="flex items-center cursor-pointer justify-start">
@@ -30,7 +30,7 @@
               {{ $t('marketBeta.beta') }}
             </span>
           </div>
-          <span v-if="!simple" class="text-gray-500 text-xs hidden md:block">
+          <span v-if="!condensed" class="text-gray-500 text-xs hidden md:block">
             {{ market.baseToken.name }}
           </span>
         </div>
@@ -39,8 +39,8 @@
     <span
       class="text-center text-sm"
       :class="{
-        'col-span-9': !simple,
-        'col-span-7': simple
+        'col-span-9': !condensed,
+        'col-span-7': condensed
       }"
     >
       {{ $t('marketNew.soonToBeReleased') }}
@@ -70,7 +70,7 @@ export default Vue.extend({
   },
 
   props: {
-    simple: {
+    condensed: {
       required: false,
       default: false,
       type: Boolean

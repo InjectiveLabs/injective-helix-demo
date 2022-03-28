@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-markets-filter
-      v-if="simple"
+      v-if="condensed"
       class="mb-6"
       :market-base.sync="marketBase"
       :market-type.sync="marketBase"
@@ -10,23 +10,23 @@
     <div
       class="overflow-x-auto md:overflow-x-visible w-full bg-gray-900 rounded"
       :class="{
-        'h-full overflow-y-auto ': simple
+        'h-full overflow-y-auto ': condensed
       }"
     >
       <TableHeader
         v-if="markets.length !== 0"
-        :sm="simple"
-        :lg="!simple"
+        :sm="condensed"
+        :lg="!condensed"
         class="pt-0 bg-gray-800"
-        :class="{ 'pb-5': !simple }"
+        :class="{ 'pb-5': !condensed }"
       >
         <span
           class="text-left"
-          :class="{ 'col-span-5': simple, 'col-span-3': !simple }"
+          :class="{ 'col-span-5': condensed, 'col-span-3': !condensed }"
         >
           {{ $t('trade.market') }}
         </span>
-        <span :class="{ 'col-span-4': simple, 'col-span-3': !simple }">
+        <span :class="{ 'col-span-4': condensed, 'col-span-3': !condensed }">
           <div class="flex items-center relative justify-end">
             <span class="flex-1 text-right">{{
               $t('trade.last_traded_price')
@@ -46,7 +46,7 @@
             />
           </div>
         </span>
-        <span v-if="!simple" class="col-span-3">
+        <span v-if="!condensed" class="col-span-3">
           <div class="flex items-center relative justify-end">
             {{ $t('trade.market_volume_24h') }}
             <v-icon-info-tooltip
@@ -57,14 +57,14 @@
         </span>
       </TableHeader>
 
-      <TableBody :show-empty="filteredMarkets.length === 0" :round="simple">
+      <TableBody :show-empty="filteredMarkets.length === 0" :round="condensed">
         <v-market
           v-for="({ market, summary }, index) in marketsList"
           :key="`market-${index}`"
           class="col-span-1"
           :market="market"
           :summary="summary"
-          :simple="simple"
+          :condensed="condensed"
         />
         <v-market-new
           v-for="({ market, summary }, index) in filteredUpcomingMarkets"
@@ -72,7 +72,7 @@
           class="col-span-1"
           :market="market"
           :summary="summary"
-          :simple="simple"
+          :condensed="condensed"
         />
         <template slot="empty">
           <span class="col-span-1 md:col-span-3 text-center xl:text-left">{{
@@ -99,7 +99,8 @@ import TableBody from '~/components/elements/table-body.vue'
 import TableHeader from '~/components/elements/table-header.vue'
 import VMarket from '~/components/partials/common/markets/market.vue'
 import VMarketNew from '~/components/partials/common/markets/market-new.vue'
-import { promotedMarketSlugs } from '~/app/data/market'
+import { newMarketsSlug } from '~/app/data/market'
+import { MarketFilterType } from '~/types'
 
 export interface UiMarketAndSummary {
   market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
@@ -116,14 +117,19 @@ export default Vue.extend({
   },
 
   props: {
-    simple: {
+    condensed: {
       default: false,
       type: Boolean
     },
 
-    showPromoted: {
-      type: Boolean,
-      default: false
+    reduced: {
+      default: false,
+      type: Boolean
+    },
+
+    filterType: {
+      type: String as PropType<MarketFilterType>,
+      default: MarketFilterType.All
     },
 
     showAll: {
@@ -150,7 +156,8 @@ export default Vue.extend({
     return {
       marketType: '' as string,
       marketBase: '' as string,
-      search: ''
+      search: '',
+      limit: 5
     }
   },
 
@@ -221,35 +228,48 @@ export default Vue.extend({
       })
     },
 
-    promotedMarketsList(): UiMarketAndSummary[] {
+    newMarketsList(): UiMarketAndSummary[] {
       const { filteredMarkets } = this
 
-      return filteredMarkets.filter(({ market: { slug } }) => {
-        return promotedMarketSlugs.includes(slug.toLowerCase())
-      })
+      return filteredMarkets
+        .filter(({ market: { slug } }) => {
+          return newMarketsSlug.includes(slug.toLowerCase())
+        })
+        .sort(
+          (a, b) =>
+            newMarketsSlug.indexOf(a.market.slug) -
+            newMarketsSlug.indexOf(b.market.slug)
+        )
     },
 
-    marketsList(): UiMarketAndSummary[] {
+    filteredMarketsList(): UiMarketAndSummary[] {
       const {
         filteredMarkets,
         marketsSortedByVolume,
-        promotedMarketsList,
-        simple,
-        showAll,
-        showPromoted
+        newMarketsList,
+        filteredUpcomingMarkets,
+        filterType
       } = this
 
-      const marketsList = simple ? filteredMarkets : marketsSortedByVolume
-
-      if (showPromoted) {
-        return promotedMarketsList
+      if (filterType === MarketFilterType.New) {
+        return newMarketsList
       }
 
-      if (showAll) {
-        return marketsList
+      if (filterType === MarketFilterType.Volume) {
+        return marketsSortedByVolume
       }
 
-      return marketsList.slice(0, 5)
+      if (filterType === MarketFilterType.Upcoming) {
+        return filteredUpcomingMarkets
+      }
+
+      return filteredMarkets
+    },
+
+    marketsList(): UiMarketAndSummary[] {
+      const { filteredMarketsList, reduced, limit } = this
+
+      return reduced ? filteredMarketsList.slice(0, limit) : filteredMarketsList
     },
 
     totalVolume(): BigNumberInBase {

@@ -1,14 +1,14 @@
 <template>
   <TableRow
-    :dense="simple"
-    :lg="!simple"
+    :dense="condensed"
+    :lg="!condensed"
     @click.native.stop="handleClickOnMarket"
   >
     <span
       class="text-base md:text-sm"
       :class="{
-        'col-span-2 md:col-span-3': !simple,
-        'col-span-2 md:col-span-5': simple
+        'col-span-2 md:col-span-3': !condensed,
+        'col-span-2 md:col-span-5': condensed
       }"
     >
       <div class="flex items-center cursor-pointer justify-start">
@@ -29,7 +29,7 @@
               {{ $t('marketBeta.beta') }}
             </span>
           </div>
-          <span v-if="!simple" class="text-gray-500 text-xs hidden md:block">
+          <span v-if="!condensed" class="text-gray-500 text-xs hidden md:block">
             {{ market.baseToken.name }}
           </span>
         </div>
@@ -43,8 +43,8 @@
     <span
       class="font-mono text-right text-2xs md:text-sm flex items-center justify-end"
       :class="{
-        'col-span-1 md:col-span-3': !simple,
-        'col-span-1 md:col-span-4': simple
+        'col-span-1 md:col-span-3': !condensed,
+        'col-span-1 md:col-span-4': condensed
       }"
     >
       <v-icon-arrow
@@ -86,15 +86,18 @@
       <span v-else class="text-gray-400">&mdash;</span>
     </span>
     <span
-      v-if="!simple"
+      v-if="!condensed"
       class="col-span-1 text-2xs md:text-sm text-gray-300 text-left md:hidden"
     >
       {{ $t('trade.market_volume_24h') }}
     </span>
     <span
-      v-if="!simple"
+      v-if="!condensed"
       class="text-2xs md:text-sm font-mono text-right"
-      :class="{ 'col-span-1 md:col-span-3': !simple, 'col-span-4': simple }"
+      :class="{
+        'col-span-1 md:col-span-3': !condensed,
+        'col-span-4': condensed
+      }"
     >
       <span v-if="!volume.isNaN()">
         {{ volumeToFormat }}
@@ -129,7 +132,7 @@ export default Vue.extend({
   },
 
   props: {
-    simple: {
+    condensed: {
       required: false,
       default: false,
       type: Boolean
