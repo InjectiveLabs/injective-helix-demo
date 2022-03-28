@@ -24,6 +24,7 @@
 </template>
 
 <script lang="ts">
+import { UiSpotMarketWithToken } from '@injectivelabs/ui-common'
 import Vue from 'vue'
 import { upcomingMarkets } from '~/app/data/market'
 import { Modal } from '~/types'
@@ -34,7 +35,7 @@ export default Vue.extend({
 
     return {
       token: upcomingMarket.baseToken.symbol,
-      denom: upcomingMarket.baseDenom,
+      denom: (upcomingMarket as UiSpotMarketWithToken).baseDenom,
       description: `The ${upcomingMarket.baseToken.symbol}/${upcomingMarket.quoteToken.symbol} spot market will launch soon. Meanwhile, deposit at least 1 $${upcomingMarket.baseToken.symbol} to get a chance to win an original Bored Ape Kennel Club NFT.`
     }
   },

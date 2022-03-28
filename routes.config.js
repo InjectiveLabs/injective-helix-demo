@@ -8,6 +8,7 @@ const {
 const mainnetSpot = [
   'inj-usdt',
   'huahua-usdt',
+  'ape-usdt',
   'atom-usdt',
   'weth-usdt',
   'link-usdt',
