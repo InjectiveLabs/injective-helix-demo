@@ -5,7 +5,6 @@ import {
   OrderStreamCallback as SpotMarketOrderStreamCallback
 } from '@injectivelabs/spot-consumer'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
-import { SubaccountStreamType } from '@injectivelabs/subaccount-consumer'
 import { streamProvider } from '../providers/StreamProvider'
 import { spotMarketStream } from '~/app/singletons/SpotMarketStream'
 
@@ -100,12 +99,4 @@ export const streamSubaccountOrders = ({
     args: streamFnArgs,
     key: SpotMarketStreamType.SubaccountOrders
   })
-}
-
-export const cancelMarketStreams = () => {
-  streamProvider.cancel(SpotMarketStreamType.Orderbook)
-  streamProvider.cancel(SpotMarketStreamType.SubaccountOrders)
-  streamProvider.cancel(SpotMarketStreamType.SubaccountTrades)
-  streamProvider.cancel(SpotMarketStreamType.Trades)
-  streamProvider.cancel(SubaccountStreamType.Balances)
 }
