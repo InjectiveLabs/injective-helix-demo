@@ -57,7 +57,10 @@
         </span>
       </TableHeader>
 
-      <TableBody :show-empty="filteredMarkets.length === 0" :round="condensed">
+      <TableBody
+        :show-empty="filteredMarkets.length === 0 && condensed"
+        :round="condensed"
+      >
         <v-market
           v-for="({ market, summary }, index) in marketsList"
           :key="`market-${index}`"
@@ -178,7 +181,7 @@ export default Vue.extend({
     filteredAllMarkets(): UiMarketAndSummary[] {
       const { search, marketType, marketBase, mappedMarkets } = this
 
-      const query = search.toLowerCase()
+      const query = search.toLowerCase().trim()
 
       return mappedMarkets.filter(({ market, summary }) => {
         const { ticker, quoteDenom } = market
