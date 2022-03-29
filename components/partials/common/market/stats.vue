@@ -95,7 +95,7 @@
               'text-red-500': fundingRate.lt(0)
             }"
           >
-            {{ (fundingRate.gt(0) ? '+' : '') + fundingRate.toFormat(4) }}%
+            {{ (fundingRate.gt(0) ? '+' : '') + fundingRate.toFormat(5, BIG_NUMBER_ROUND_DOWN_MODE) }}%
           </span>
         </span>
         <span v-else class="text-sm text-right font-mono block">&mdash;</span>
@@ -115,7 +115,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumber } from '@injectivelabs/utils'
 import { fromUnixTime, formatDistanceToNow } from 'date-fns'
 import {
   UiSpotMarketSummary,
@@ -124,7 +124,8 @@ import {
   UiDerivativeMarketWithToken,
   Change,
   MarketType,
-  ZERO_IN_BASE
+  ZERO_IN_BASE,
+  BIG_NUMBER_ROUND_DOWN_MODE
 } from '@injectivelabs/ui-common'
 import { SpotOrderSide } from '@injectivelabs/spot-consumer'
 import MarketNextFunding from './next-funding.vue'
@@ -155,6 +156,7 @@ export default Vue.extend({
 
   data() {
     return {
+      BIG_NUMBER_ROUND_DOWN_MODE,
       Change,
       MarketType,
       SpotOrderSide
