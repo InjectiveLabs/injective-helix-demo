@@ -95,7 +95,10 @@
               'text-red-500': fundingRate.lt(0)
             }"
           >
-            {{ (fundingRate.gt(0) ? '+' : '') + fundingRate.toFormat(5, BIG_NUMBER_ROUND_DOWN_MODE) }}%
+            {{
+              (fundingRate.gt(0) ? '+' : '') +
+              fundingRate.toFormat(5, BIG_NUMBER_ROUND_DOWN_MODE)
+            }}%
           </span>
         </span>
         <span v-else class="text-sm text-right font-mono block">&mdash;</span>
@@ -115,7 +118,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { BigNumberInBase, BigNumber } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { fromUnixTime, formatDistanceToNow } from 'date-fns'
 import {
   UiSpotMarketSummary,
