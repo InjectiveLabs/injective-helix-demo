@@ -25,7 +25,6 @@ import {
 } from '@injectivelabs/derivatives-consumer'
 import {
   streamOrderbook,
-  cancelMarketStreams,
   streamTrades,
   streamSubaccountOrders,
   streamSubaccountTrades,
@@ -272,9 +271,9 @@ export const mutations = {
 export const actions = actionTree(
   { state, mutations },
   {
-    reset({ commit }) {
+    async reset({ commit }) {
       commit('resetMarket')
-      cancelMarketStreams()
+      await this.app.$accessor.app.cancelAllStreams()
     },
 
     async init({ commit }) {

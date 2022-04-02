@@ -1,6 +1,8 @@
 <template>
   <v-card
-    v-if="!hasMadeAnyTransfers && status.isIdle()"
+    v-if="
+      !hasMadeAnyTransfers && !hasAnyTradingAccountBalances && status.isIdle()
+    "
     md
     :style="{ backgroundImage: `url('/svg/bg-dark.svg')` }"
     class="bg-cover mb-12"
@@ -110,6 +112,10 @@ export default Vue.extend({
   computed: {
     hasAnyBankBalances(): boolean {
       return this.$accessor.bank.hasAnyBankBalance
+    },
+
+    hasAnyTradingAccountBalances(): any {
+      return this.$accessor.account.hasAnyTradingAccountBalances
     },
 
     hasMadeAnyTransfers(): boolean {
