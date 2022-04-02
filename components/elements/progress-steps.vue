@@ -64,7 +64,7 @@
       class="w-full mt-4 text-xs text-gray-400"
       :class="{
         'mx-auto': activeStep > 1 && activeStep <= stepsNotes.length - 1,
-        'ml-auto text-right': activeStep === stepsNotes.length
+        'text-left': activeStep === stepsNotes.length
       }"
     >
       <p>
