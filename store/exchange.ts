@@ -5,7 +5,8 @@ import {
   UiDerivativeMarketWithToken,
   UiSpotMarketSummary,
   UiSpotMarketWithToken,
-  zeroSpotMarketSummary
+  zeroSpotMarketSummary,
+  ZERO_IN_BASE
 } from '@injectivelabs/ui-common'
 import { exchangeService, tokenService } from '~/app/Services'
 import {
@@ -227,24 +228,29 @@ export const actions = actionTree(
         return
       }
 
-      const [
-        currentCampaignSchedule
-      ] = tradingRewardsCampaign.tradingRewardPoolCampaignScheduleList
+      const pendingRewardsList =
+        tradingRewardsCampaign.pendingTradingRewardPoolCampaignScheduleList
 
-      if (!currentCampaignSchedule) {
+      if (pendingRewardsList.length === 0) {
         return
       }
 
-      const campaignStartTimestamp = currentCampaignSchedule.startTimestamp
-      const pendingPoolTimestamp = campaignStartTimestamp
+      const rewards = await Promise.all(
+        pendingRewardsList.map(async (pendingReward) => {
+          const rewards = await exchangeService.fetchPendingTradeRewardPoints(
+            [injectiveAddress],
+            pendingReward.startTimestamp
+          )
 
-      commit(
-        'setPendingTradeRewardPoints',
-        await exchangeService.fetchPendingTradeRewardPoints(
-          [injectiveAddress],
-          pendingPoolTimestamp
-        )
+          return rewards
+            .reduce((total, reward) => {
+              return total.plus(reward)
+            }, ZERO_IN_BASE)
+            .toFixed()
+        })
       )
+
+      commit('setPendingTradeRewardPoints', rewards)
     },
 
     async reset({ commit }) {
