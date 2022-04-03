@@ -283,7 +283,9 @@ export default Vue.extend({
           return total
         }
 
-        return new BigNumberInBase(cosmosSdkDecToBigNumber(inj.amount || 0))
+        return total.plus(
+          new BigNumberInBase(cosmosSdkDecToBigNumber(inj.amount || 0))
+        )
       }, ZERO_IN_BASE)
     },
 
@@ -306,20 +308,13 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return pendingTradeRewardsPoints.reduce(
-        (total, pendingTradeRewardsPoints) => {
-          const [points] = pendingTradeRewardsPoints
+      return pendingTradeRewardsPoints.reduce((total, points) => {
+        if (!points) {
+          return total
+        }
 
-          if (!points) {
-            return total
-          }
-
-          return total.plus(
-            new BigNumberInBase(cosmosSdkDecToBigNumber(points))
-          )
-        },
-        ZERO_IN_BASE
-      )
+        return total.plus(new BigNumberInBase(cosmosSdkDecToBigNumber(points)))
+      }, ZERO_IN_BASE)
     },
 
     pendingTradeRewardPointsFactored(): BigNumberInBase {
