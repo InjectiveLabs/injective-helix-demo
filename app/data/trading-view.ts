@@ -200,6 +200,10 @@ const hardcodedExcludedTradesByMarket = {
         high: 36.394,
         low: 60.06,
         barMap: (bar: any) => ({ ...bar, high: 7 })
+      },
+      {
+        high: 13.05,
+        barMap: (bar: any) => ({ ...bar, high: 6.1 })
       }
     ]
   },
@@ -218,6 +222,10 @@ const hardcodedExcludedTradesByMarket = {
       {
         high: 68871.7,
         barMap: (bar: any) => ({ ...bar, high: 47500.0 })
+      },
+      {
+        high: 65142.1,
+        barMap: (bar: any) => ({ ...bar, high: 45860.0 })
       },
       {
         high: 68871.7,
@@ -244,6 +252,10 @@ const hardcodedExcludedTradesByMarket = {
       {
         high: 16.938,
         barMap: (bar: any) => ({ ...bar, high: 5.2 })
+      },
+      {
+        high: 13.054,
+        barMap: (bar: any) => ({ ...bar, high: 6.07, close: 6.06 })
       }
     ]
   },
@@ -258,6 +270,10 @@ const hardcodedExcludedTradesByMarket = {
       {
         low: 0.01,
         barMap: (bar: any) => ({ ...bar, low: 3870 })
+      },
+      {
+        high: 10830.3,
+        barMap: (bar: any) => ({ ...bar, high: 3485 })
       },
       {
         low: 1000,
