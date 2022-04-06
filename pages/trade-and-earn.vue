@@ -4,7 +4,8 @@
       <div class="container">
         <div class="w-full mx-auto xl:w-4/5">
           <v-current-epoch class="mt-6" />
-          <v-previous-rewards class="mt-12" />
+          <v-previous-rewards v-if="false" class="mt-12" />
+          <v-pending-rewards class="mt-12" />
           <v-markets-info class="mt-12" />
         </div>
       </div>
@@ -16,12 +17,14 @@
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import VPreviousRewards from '~/components/partials/trade-and-earn/previous-rewards.vue'
+import VPendingRewards from '~/components/partials/trade-and-earn/pending-rewards/index.vue'
 import VCurrentEpoch from '~/components/partials/trade-and-earn/current-epoch.vue'
 import VMarketsInfo from '~/components/partials/trade-and-earn/markets-info.vue'
 
 export default Vue.extend({
   components: {
     VPreviousRewards,
+    VPendingRewards,
     VMarketsInfo,
     VCurrentEpoch
   },
