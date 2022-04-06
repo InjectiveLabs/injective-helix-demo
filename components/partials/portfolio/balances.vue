@@ -451,8 +451,6 @@ export default Vue.extend({
     },
 
     refreshBalances() {
-      this.status.setLoading()
-
       this.fetchBalances()
         .then(() => {
           //
