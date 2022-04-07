@@ -1,7 +1,7 @@
 <template>
   <div
     :style="{ backgroundImage: `url('/svg/bg-darker.svg')` }"
-    class="py-16 bg-cover"
+    class="pt-16 pb-24 bg-cover"
   >
     <div class="container pb-12">
       <div class="flex w-full mx-auto xl:w-4/5 justify-between">
