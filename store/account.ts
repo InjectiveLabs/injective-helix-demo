@@ -48,7 +48,13 @@ export const state = () => ({
 export type AccountStoreState = ReturnType<typeof state>
 
 export const getters = getterTree(state, {
-  //
+  hasAnyTradingAccountBalances: (state: AccountStoreState) => {
+    if (!state.subaccount) {
+      return false
+    }
+
+    return state.subaccount.balances.length > 0
+  }
 })
 
 export const mutations = {

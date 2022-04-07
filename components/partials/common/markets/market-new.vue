@@ -2,13 +2,14 @@
   <TableRow
     :dense="condensed"
     :lg="!condensed"
+    class="cursor-pointer"
     @click.native.stop="handleClickOnMarket"
   >
     <span
       class="text-base md:text-sm"
       :class="{
-        'col-span-2 md:col-span-3': !condensed,
-        'col-span-2 md:col-span-5': condensed
+        'col-span-3': !condensed,
+        'col-span-5': condensed
       }"
     >
       <div class="flex items-center cursor-pointer justify-start">
@@ -18,7 +19,7 @@
           class="w-4 h-4 md:w-6 md:h-6 mr-4"
         />
         <div class="mr-4 text-left">
-          <div class="flex" :data-cy="'slideout-ticker-' + market.ticker">
+          <div class="flex">
             {{ market.ticker }}
             <span
               v-if="isMarketBeta"
@@ -36,76 +37,13 @@
       </div>
     </span>
     <span
-      class="col-span-1 text-2xs md:text-sm text-gray-300 text-left md:hidden"
-    >
-      {{ $t('trade.last_traded_price') }}
-    </span>
-    <span
-      class="font-mono text-right text-2xs md:text-sm flex items-center justify-end"
+      class="text-center text-sm"
       :class="{
-        'col-span-1 md:col-span-3': !condensed,
-        'col-span-1 md:col-span-4': condensed
+        'col-span-9': !condensed,
+        'col-span-7': condensed
       }"
     >
-      <v-icon-arrow
-        v-if="!lastTradedPrice.isNaN()"
-        class="transform w-3 h-3 mr-1"
-        :class="{
-          'text-aqua-500 rotate-90': lastPriceChange !== Change.Decrease,
-          'text-red-500 -rotate-90': lastPriceChange === Change.Decrease
-        }"
-      />
-      <span
-        v-if="!lastTradedPrice.isNaN()"
-        :class="{
-          'text-aqua-500': lastPriceChange !== Change.Decrease,
-          'text-red-500': lastPriceChange === Change.Decrease
-        }"
-      >
-        {{ lastTradedPriceToFormat }}
-        <span class="text-xs text-gray-500 ml-1">
-          {{ market.quoteToken.symbol }}
-        </span>
-      </span>
-      <span v-else class="text-gray-400">&mdash;</span>
-    </span>
-    <span
-      class="col-span-1 text-2xs md:text-sm text-gray-300 text-left md:hidden"
-    >
-      {{ $t('trade.market_change_24h') }}
-    </span>
-    <span
-      class="font-mono text-right text-2xs md:text-sm col-span-1 md:col-span-3"
-    >
-      <span
-        v-if="!change.isNaN()"
-        :class="change.gte(0) ? 'text-aqua-500' : 'text-red-500'"
-      >
-        {{ changeToFormat }}%
-      </span>
-      <span v-else class="text-gray-400">&mdash;</span>
-    </span>
-    <span
-      v-if="!condensed"
-      class="col-span-1 text-2xs md:text-sm text-gray-300 text-left md:hidden"
-    >
-      {{ $t('trade.market_volume_24h') }}
-    </span>
-    <span
-      v-if="!condensed"
-      class="text-2xs md:text-sm font-mono text-right"
-      :class="{
-        'col-span-1 md:col-span-3': !condensed,
-        'col-span-4': condensed
-      }"
-    >
-      <span v-if="!volume.isNaN()">
-        {{ volumeToFormat }}
-        <span class="text-xs text-gray-500 ml-1">
-          {{ market.quoteToken.symbol }}
-        </span>
-      </span>
-      <span v-else class="text-gray-400">&mdash;</span>
+      {{ $t('marketNew.soonToBeReleased') }}
     </span>
   </TableRow>
 </template>
@@ -295,25 +233,13 @@ export default Vue.extend({
 
       this.$root.$emit('close-market-slideout')
 
-      if (market.type === MarketType.Derivative) {
-        return this.$router.push({
-          name: 'derivatives-derivative',
-          params: {
-            marketId: market.marketId,
-            derivative: market.slug
-          }
-        })
-      }
-
-      if (market.type === MarketType.Spot) {
-        return this.$router.push({
-          name: 'spot-spot',
-          params: {
-            marketId: market.marketId,
-            spot: market.slug
-          }
-        })
-      }
+      return this.$router.push({
+        name: 'market-market',
+        params: {
+          marketId: market.marketId,
+          market: market.slug
+        }
+      })
     }
   }
 })

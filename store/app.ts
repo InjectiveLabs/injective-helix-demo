@@ -12,7 +12,6 @@ import { AppState, GeoLocation } from '~/types'
 import {
   fetchGeoLocation,
   validateGeoLocation,
-  detectVPNOrProxyUsage,
   detectVPNOrProxyUsageNoThrow
 } from '~/app/services/region'
 import { app } from '~/app/singletons/App'
@@ -154,7 +153,7 @@ export const actions = actionTree(
           await validateGeoLocation(state.userState.geoLocation)
         }
 
-        await detectVPNOrProxyUsage()
+        await detectVPNOrProxyUsageNoThrow()
 
         commit('setUserState', {
           ...state.userState,

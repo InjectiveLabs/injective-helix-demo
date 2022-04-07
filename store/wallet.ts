@@ -117,6 +117,28 @@ export const actions = actionTree(
       }
     },
 
+    async onConnect(_) {
+      await this.app.$accessor.account.fetchSubaccounts()
+      await this.app.$accessor.bank.fetchBalances()
+      await this.app.$accessor.exchange.initFeeDiscounts()
+
+      if (this.app.context.route.name === 'funding') {
+        await this.app.$accessor.wallet.initPage()
+      }
+
+      if (this.app.context.route.name === 'trade-and-earn') {
+        await this.app.$accessor.exchange.initTradeAndEarn()
+      }
+
+      if (
+        ['spot-spot', 'derivatives-derivative'].includes(
+          this.app.context.route.name
+        )
+      ) {
+        await this.app.$accessor.account.streamSubaccountBalances()
+      }
+    },
+
     async isMetamaskInstalled({ commit }) {
       commit('setMetamaskInstalled', await isMetamaskInstalled())
     },
@@ -151,17 +173,7 @@ export const actions = actionTree(
       commit('setAddresses', addresses)
       commit('setAddress', address)
 
-      await this.app.$accessor.account.fetchSubaccounts()
-      await this.app.$accessor.bank.fetchBalances()
-      await this.app.$accessor.exchange.initFeeDiscounts()
-
-      if (this.app.context.route.name === 'funding') {
-        await this.app.$accessor.wallet.initPage()
-      }
-
-      if (this.app.context.route.name === 'trade-and-earn') {
-        await this.app.$accessor.exchange.initTradeAndEarn()
-      }
+      await this.app.$accessor.wallet.onConnect()
 
       commit('setWalletConnectStatus', WalletConnectStatus.connected)
     },
@@ -187,17 +199,7 @@ export const actions = actionTree(
       commit('setAddresses', addresses)
       commit('setAddressConfirmation', addressConfirmation)
 
-      await this.app.$accessor.account.fetchSubaccounts()
-      await this.app.$accessor.bank.fetchBalances()
-      await this.app.$accessor.exchange.initFeeDiscounts()
-
-      if (this.app.context.route.name === 'funding') {
-        await this.app.$accessor.wallet.initPage()
-      }
-
-      if (this.app.context.route.name === 'trade-and-earn') {
-        await this.app.$accessor.exchange.initTradeAndEarn()
-      }
+      await this.app.$accessor.wallet.onConnect()
 
       commit('setWalletConnectStatus', WalletConnectStatus.connected)
     },
@@ -222,17 +224,7 @@ export const actions = actionTree(
       commit('setAddresses', injectiveAddresses)
       commit('setAddressConfirmation', addressConfirmation)
 
-      await this.app.$accessor.account.fetchSubaccounts()
-      await this.app.$accessor.bank.fetchBalances()
-      await this.app.$accessor.exchange.initFeeDiscounts()
-
-      if (this.app.context.route.name === 'funding') {
-        await this.app.$accessor.wallet.initPage()
-      }
-
-      if (this.app.context.route.name === 'trade-and-earn') {
-        await this.app.$accessor.exchange.initTradeAndEarn()
-      }
+      await this.app.$accessor.wallet.onConnect()
 
       commit('setWalletConnectStatus', WalletConnectStatus.connected)
     },

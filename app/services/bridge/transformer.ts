@@ -2,7 +2,8 @@ import {
   BridgeTransactionState,
   getExplorerUrl,
   UiBridgeTransaction,
-  UiSubaccountTransfer
+  UiSubaccountTransfer,
+  getInjectiveAddress
 } from '@injectivelabs/ui-common'
 import { BankMsgSendTransaction } from '@injectivelabs/explorer-consumer'
 import { TransferType } from '@injectivelabs/subaccount-consumer'
@@ -37,13 +38,17 @@ const convertSubaccountTransfersToUiBridgeTransaction = (
     ? transaction.dstSubaccountId
     : transaction.dstSubaccountAddress
 
+  const explorerAccount = isDeposit
+    ? getInjectiveAddress(receiver.slice(0, -24))
+    : receiver
+
   return {
     sender,
     receiver,
     amount: transaction.amount,
     denom: transaction.denom,
     txHash: '',
-    explorerLink: `${getExplorerUrl(NETWORK)}/account/${receiver}`,
+    explorerLink: `${getExplorerUrl(NETWORK)}/account/${explorerAccount}`,
     timestamp: transaction.executedAt,
     state: BridgeTransactionState.Completed
   }

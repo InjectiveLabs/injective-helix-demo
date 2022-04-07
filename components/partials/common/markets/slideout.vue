@@ -6,12 +6,7 @@
   >
     <div class="relative">
       <VHocLoading :status="status" :show-loading="markets.length === 0">
-        <v-table
-          :markets="markets"
-          :summaries="marketsSummary"
-          simple
-          show-all
-        />
+        <v-table :markets="markets" :summaries="marketsSummary" condensed />
       </VHocLoading>
     </div>
   </v-slideout>

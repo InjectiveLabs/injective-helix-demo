@@ -16,12 +16,17 @@
       >
         <div
           v-show="isOpen"
-          class="fixed inset-0 transition-opacity"
+          class="fixed inset-0 transition-all"
           :aria-hidden="isOpen"
           @click="handleCloseModal"
         >
           <div
-            class="absolute inset-0 bg-gray-900 opacity-90 backdrop-filter backdrop-blur-sm"
+            class="absolute inset-0 backdrop-filter"
+            :class="
+              hasBlurBg
+                ? 'backdrop-blur bg-gray-900 bg-opacity-60'
+                : 'backdrop-blur-sm bg-gray-900 bg-opacity-80'
+            "
           />
         </div>
       </transition>
@@ -36,7 +41,7 @@
       >
         <div
           v-show="isOpen"
-          class="inline-block align-bottom bg-gray-850 shadow-card rounded-xl text-left transform transition-all w-full max-w-lg"
+          class="inline-block align-bottom bg-gray-800 shadow-sm rounded-xl text-left transform transition-all w-full max-w-lg"
           :class="classes"
           role="dialog"
           :aria-modal="isOpen"
@@ -80,6 +85,12 @@ import Vue from 'vue'
 export default Vue.extend({
   props: {
     isAlwaysOpen: {
+      required: false,
+      default: false,
+      type: Boolean
+    },
+
+    hasBlurBg: {
       required: false,
       default: false,
       type: Boolean

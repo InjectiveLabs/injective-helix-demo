@@ -26,7 +26,12 @@
     </td>
 
     <td class="h-8 text-right font-mono">
-      <v-number :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS" :number="amount" data-cy="history-entry-amount">
+      <v-number
+        :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
+        :number="amount"
+        :rounding-mode="BIG_NUMBER_ROUND_HALF_UP_MODE"
+        data-cy="history-entry-amount"
+      >
         <span slot="addon" class="text-2xs text-gray-500">
           {{ transaction.token.symbol }}
         </span>
@@ -71,6 +76,7 @@ import {
   ZERO_IN_BASE
 } from '@injectivelabs/ui-common'
 import {
+  BIG_NUMBER_ROUND_HALF_UP_MODE,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
@@ -91,6 +97,7 @@ export default Vue.extend({
 
   data() {
     return {
+      BIG_NUMBER_ROUND_HALF_UP_MODE,
       UI_DEFAULT_MIN_DISPLAY_DECIMALS,
       UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
       UI_DEFAULT_PRICE_DISPLAY_DECIMALS

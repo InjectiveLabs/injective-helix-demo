@@ -1,5 +1,13 @@
 import { actionTree, getterTree } from 'typed-vuex'
-import { Token } from '@injectivelabs/ui-common'
+import {
+  Token,
+  UiDerivativeMarketSummary,
+  UiDerivativeMarketWithToken,
+  UiSpotMarketSummary,
+  UiSpotMarketWithToken,
+  zeroSpotMarketSummary,
+  ZERO_IN_BASE
+} from '@injectivelabs/ui-common'
 import { exchangeService, tokenService } from '~/app/Services'
 import {
   FeeDiscountAccountInfo,
@@ -7,6 +15,7 @@ import {
   FeeDiscountSchedule,
   ExchangeParams
 } from '~/app/services/exchange'
+import { upcomingMarkets } from '~/app/data/market'
 
 const initialStateFactory = () => ({
   params: undefined as ExchangeParams | undefined,
@@ -14,7 +23,14 @@ const initialStateFactory = () => ({
   feeDiscountAccountInfo: undefined as FeeDiscountAccountInfo | undefined,
   tradingRewardsCampaign: undefined as TradingRewardsCampaign | undefined,
   tradeRewardsPoints: [] as string[],
-  pendingTradeRewardsPoints: [] as string[]
+  pendingTradeRewardsPoints: [] as string[],
+
+  upcomingMarkets: upcomingMarkets as Array<
+    UiSpotMarketWithToken | UiDerivativeMarketWithToken
+  >,
+  upcomingMarketsSummaries: upcomingMarkets.map((m) =>
+    zeroSpotMarketSummary(m.marketId)
+  ) as Array<UiSpotMarketSummary | UiDerivativeMarketSummary>
 })
 
 const initialState = initialStateFactory()
@@ -31,7 +47,14 @@ export const state = () => ({
     | TradingRewardsCampaign
     | undefined,
   tradeRewardsPoints: initialState.tradeRewardsPoints as string[],
-  pendingTradeRewardsPoints: initialState.pendingTradeRewardsPoints as string[]
+  pendingTradeRewardsPoints: initialState.pendingTradeRewardsPoints as string[],
+
+  upcomingMarkets: initialState.upcomingMarkets as Array<
+    UiSpotMarketWithToken | UiDerivativeMarketWithToken
+  >,
+  upcomingMarketsSummaries: initialState.upcomingMarketsSummaries as Array<
+    UiSpotMarketSummary | UiDerivativeMarketSummary
+  >
 })
 
 export type ExchangeStoreState = ReturnType<typeof state>
@@ -205,24 +228,29 @@ export const actions = actionTree(
         return
       }
 
-      const [
-        currentCampaignSchedule
-      ] = tradingRewardsCampaign.tradingRewardPoolCampaignScheduleList
+      const pendingRewardsList =
+        tradingRewardsCampaign.pendingTradingRewardPoolCampaignScheduleList
 
-      if (!currentCampaignSchedule) {
+      if (pendingRewardsList.length === 0) {
         return
       }
 
-      const campaignStartTimestamp = currentCampaignSchedule.startTimestamp
-      const pendingPoolTimestamp = campaignStartTimestamp
+      const rewards = await Promise.all(
+        pendingRewardsList.map(async (pendingReward) => {
+          const rewards = await exchangeService.fetchPendingTradeRewardPoints(
+            [injectiveAddress],
+            pendingReward.startTimestamp
+          )
 
-      commit(
-        'setPendingTradeRewardPoints',
-        await exchangeService.fetchPendingTradeRewardPoints(
-          [injectiveAddress],
-          pendingPoolTimestamp
-        )
+          return rewards
+            .reduce((total, reward) => {
+              return total.plus(reward)
+            }, ZERO_IN_BASE)
+            .toFixed()
+        })
       )
+
+      commit('setPendingTradeRewardPoints', rewards)
     },
 
     async reset({ commit }) {

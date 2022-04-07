@@ -195,10 +195,6 @@ export default Vue.extend({
       )
     },
 
-    tradeRewardsPoints(): string[] {
-      return this.$accessor.exchange.tradeRewardsPoints
-    },
-
     pendingTradeRewardsPoints(): string[] {
       return this.$accessor.exchange.pendingTradeRewardsPoints
     },
@@ -207,20 +203,19 @@ export default Vue.extend({
       return this.$accessor.token.injUsdPrice
     },
 
-    campaignDurationInSeconds(): number {
-      const { tradingRewardsCampaign } = this
+    vestingDurationInSeconds(): number {
+      const { exchangeParams } = this
 
-      if (!tradingRewardsCampaign) {
+      if (!exchangeParams) {
         return 0
       }
 
-      if (!tradingRewardsCampaign.tradingRewardCampaignInfo) {
+      if (!exchangeParams.tradingRewardsVestingDuration) {
         return 0
       }
 
       return new BigNumberInBase(
-        tradingRewardsCampaign.tradingRewardCampaignInfo
-          .campaignDurationSeconds || 0
+        exchangeParams.tradingRewardsVestingDuration || 0
       ).toNumber()
     },
 
@@ -237,7 +232,7 @@ export default Vue.extend({
 
       const [
         schedule
-      ] = tradingRewardsCampaign.tradingRewardPoolCampaignScheduleList
+      ] = tradingRewardsCampaign.pendingTradingRewardPoolCampaignScheduleList
 
       if (!schedule) {
         return 0
@@ -247,22 +242,22 @@ export default Vue.extend({
     },
 
     pendingRewardsStartTimestamp(): number {
-      const { currentEpochStartTimestamp, campaignDurationInSeconds } = this
+      const { currentEpochStartTimestamp, vestingDurationInSeconds } = this
 
       if (currentEpochStartTimestamp === 0) {
         return 0
       }
 
       return new BigNumberInBase(currentEpochStartTimestamp)
-        .minus(campaignDurationInSeconds)
+        .minus(vestingDurationInSeconds)
         .toNumber()
     },
 
     pendingRewardsCountdown(): string {
-      const { pendingRewardsStartTimestamp, campaignDurationInSeconds } = this
+      const { pendingRewardsStartTimestamp, vestingDurationInSeconds } = this
 
       return format(
-        (pendingRewardsStartTimestamp + campaignDurationInSeconds) * 1000,
+        (pendingRewardsStartTimestamp + vestingDurationInSeconds) * 1000,
         'dd MMM HH:mm:ss'
       )
     },
@@ -274,21 +269,24 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const [
-        schedule
-      ] = tradingRewardsCampaign.pendingTradingRewardPoolCampaignScheduleList
+      const schedules =
+        tradingRewardsCampaign.pendingTradingRewardPoolCampaignScheduleList
 
-      if (!schedule) {
+      if (schedules.length === 0) {
         return ZERO_IN_BASE
       }
 
-      const [inj] = schedule.maxCampaignRewardsList
+      return schedules.reduce((total, schedule) => {
+        const [inj] = schedule.maxCampaignRewardsList
 
-      if (!inj) {
-        return ZERO_IN_BASE
-      }
+        if (!inj) {
+          return total
+        }
 
-      return new BigNumberInBase(cosmosSdkDecToBigNumber(inj.amount || 0))
+        return total.plus(
+          new BigNumberInBase(cosmosSdkDecToBigNumber(inj.amount || 0))
+        )
+      }, ZERO_IN_BASE)
     },
 
     injMaxPendingCampaignRewardsInUsd(): BigNumberInBase {
@@ -306,13 +304,17 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const [points] = pendingTradeRewardsPoints
-
-      if (!points) {
+      if (pendingTradeRewardsPoints.length === 0) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(cosmosSdkDecToBigNumber(points))
+      return pendingTradeRewardsPoints.reduce((total, points) => {
+        if (!points) {
+          return total
+        }
+
+        return total.plus(new BigNumberInBase(cosmosSdkDecToBigNumber(points)))
+      }, ZERO_IN_BASE)
     },
 
     pendingTradeRewardPointsFactored(): BigNumberInBase {
@@ -330,13 +332,24 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const [
-        pendingTotalTradeRewardPoints
-      ] = tradingRewardsCampaign.pendingTotalTradeRewardPointsList
+      const pointsList =
+        tradingRewardsCampaign.pendingTotalTradeRewardPointsList
 
-      return new BigNumberInBase(
-        cosmosSdkDecToBigNumber(pendingTotalTradeRewardPoints || 0)
-      )
+      if (pointsList.length === 0) {
+        return ZERO_IN_BASE
+      }
+
+      return pointsList.reduce((total, pendingTotalTradeRewardPoints) => {
+        if (!pendingTotalTradeRewardPoints) {
+          return total
+        }
+
+        return total.plus(
+          new BigNumberInBase(
+            cosmosSdkDecToBigNumber(pendingTotalTradeRewardPoints || 0)
+          )
+        )
+      }, ZERO_IN_BASE)
     },
 
     totalPendingTradeRewardPointsFactored(): BigNumberInBase {

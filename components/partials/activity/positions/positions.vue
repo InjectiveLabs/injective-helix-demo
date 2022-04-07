@@ -207,6 +207,7 @@ export default Vue.extend({
 
     pollOrderbooks() {
       this.poll = setInterval(() => {
+        this.$accessor.positions.fetchSubaccountPositions() // refresh mark price
         this.$accessor.positions.fetchMarketsOrderbook()
       }, 30 * 1000)
     }

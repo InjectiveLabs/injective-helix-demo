@@ -49,7 +49,7 @@ export default Vue.extend({
   data() {
     return {
       status: new Status(StatusType.Loading),
-      interval: '60'
+      interval: '120'
     }
   },
 

@@ -416,7 +416,11 @@ export default Vue.extend({
     Promise.all([
       this.$accessor.derivatives.fetchSubaccountOrders(),
       this.$accessor.positions.fetchMarketsOrderbook(),
-      this.$accessor.positions.fetchSubaccountPositions()
+      this.$accessor.positions.fetchSubaccountPositions(),
+      // set up streaming
+      this.$accessor.account.streamSubaccountBalances(),
+      this.$accessor.positions.streamSubaccountPositions(),
+      this.$accessor.derivatives.streamSubaccountOrders()
     ])
       .then(() => {
         //
@@ -432,6 +436,7 @@ export default Vue.extend({
 
   beforeDestroy() {
     this.$root.$off('funding:refresh', this.refreshBalances)
+    this.$accessor.app.cancelAllStreams()
     clearInterval(this.balancesPoll)
   },
 
@@ -439,13 +444,13 @@ export default Vue.extend({
     fetchBalances(): Promise<void[]> {
       return Promise.all([
         this.$accessor.bank.fetchBankBalancesWithToken(),
-        this.$accessor.account.fetchSubaccountsBalancesWithPrices()
+        this.$accessor.account.fetchSubaccountsBalancesWithPrices(),
+        this.$accessor.positions.fetchSubaccountPositions(), // refresh mark price
+        this.$accessor.positions.fetchMarketsOrderbook()
       ])
     },
 
     refreshBalances() {
-      this.status.setLoading()
-
       this.fetchBalances()
         .then(() => {
           //

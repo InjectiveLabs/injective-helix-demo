@@ -51,6 +51,7 @@ import VModalBridge from '~/components/partials/modals/bridge/index.vue'
 import VModalBridgeConfirm from '~/components/partials/modals/bridge/confirm.vue'
 import VModalBridgeCompleted from '~/components/partials/modals/bridge/completed.vue'
 import { getBridgingNetworkBySymbol } from '~/app/data/bridge'
+import { tokenService } from '~/app/Services'
 
 export default Vue.extend({
   components: {
@@ -129,6 +130,8 @@ export default Vue.extend({
     this.$root.$on('bridge:deposit', this.handleDeposit)
     this.$root.$on('bridge:withdraw', this.handleWithdraw)
     this.$root.$on('bridge:reset', this.handleResetForm)
+
+    this.handleQueryParams()
   },
 
   beforeDestroy() {
@@ -140,6 +143,29 @@ export default Vue.extend({
   },
 
   methods: {
+    async handleQueryParams() {
+      const { denom, bridgeType } = this.$route.query as {
+        denom: string
+        bridgeType: BridgeType
+      }
+
+      if (!denom || !bridgeType) {
+        return
+      }
+
+      const token = await tokenService.getDenomToken(denom)
+
+      if (!token) {
+        return
+      }
+
+      this.form.token = token
+      this.form.amount = ''
+      this.form.destinationAddress = ''
+      this.bridgeType = bridgeType
+      this.$accessor.modal.openModal(Modal.Bridge)
+    },
+
     handleModalBridgeOpen() {
       this.$accessor.modal.openModal(Modal.Bridge)
     },

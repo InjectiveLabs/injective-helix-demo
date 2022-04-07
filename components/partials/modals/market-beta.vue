@@ -1,10 +1,10 @@
 <template>
-  <v-modal :is-open="isModalOpen" is-always-open @modal-closed="closeModal">
+  <v-modal :is-open="isModalOpen" is-always-open sm @modal-closed="closeModal">
     <h3 slot="title">
       {{ $t('marketBeta.title') }}
     </h3>
 
-    <div class="relative -mt-6">
+    <div class="relative">
       <p
         class="text-center text-sm text-gray-100"
         v-text="$t('marketBeta.description')"

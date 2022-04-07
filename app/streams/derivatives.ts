@@ -6,7 +6,6 @@ import {
   PositionStreamCallback as DerivativeMarketPositionStreamCallback
 } from '@injectivelabs/derivatives-consumer'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
-import { SubaccountStreamType } from '@injectivelabs/subaccount-consumer'
 import {
   OracleStreamType,
   PricesStreamCallback
@@ -156,14 +155,4 @@ export const streamMarketMarkPrice = ({
     args: streamFnArgs,
     key: OracleStreamType.Prices
   })
-}
-
-export const cancelMarketStreams = () => {
-  streamProvider.cancel(DerivativeMarketStreamType.Orderbook)
-  streamProvider.cancel(DerivativeMarketStreamType.SubaccountOrders)
-  streamProvider.cancel(DerivativeMarketStreamType.SubaccountTrades)
-  streamProvider.cancel(DerivativeMarketStreamType.SubaccountPositions)
-  streamProvider.cancel(DerivativeMarketStreamType.Trades)
-  streamProvider.cancel(SubaccountStreamType.Balances)
-  streamProvider.cancel(OracleStreamType.Prices)
 }
