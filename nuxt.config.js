@@ -7,7 +7,7 @@ const pwa = require('./pwa.config')
 export default {
   ssr: false,
   target: 'static',
-  ignore: ['tests/*.*', '**/*.test.*'],
+  ignore: ['tests/*.*', '**/*.test.*', 'tests/**/*.*', 'tests/**/*.ts'],
 
   /*
    ** Headers of the page
