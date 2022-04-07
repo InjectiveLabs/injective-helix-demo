@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import Vue, { PropType } from 'vue'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
@@ -54,12 +54,23 @@ export default Vue.extend({
       required: false,
       default: false,
       type: Boolean
+    },
+
+    roundingMode: {
+      type: Number as PropType<BigNumber.RoundingMode>,
+      default: BigNumberInBase.ROUND_DOWN
     }
   },
 
   computed: {
     formattedNumber(): string[] {
-      const { dontGroupValues, number, useNumberDecimals, decimals } = this
+      const {
+        dontGroupValues,
+        number,
+        useNumberDecimals,
+        decimals,
+        roundingMode
+      } = this
 
       if (number.eq(0)) {
         return [number.toFixed(0)]
@@ -68,10 +79,7 @@ export default Vue.extend({
       const actualDecimals = useNumberDecimals
         ? getDecimalsFromNumber(number.toNumber())
         : decimals
-      const formattedNumber = number.toFormat(
-        actualDecimals,
-        BigNumberInBase.ROUND_DOWN
-      )
+      const formattedNumber = number.toFormat(actualDecimals, roundingMode)
 
       if (dontGroupValues) {
         return [formattedNumber]
