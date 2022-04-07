@@ -36,3 +36,4 @@ sw.*
 *.swp
 .build
 static
+tests
