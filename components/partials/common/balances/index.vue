@@ -21,13 +21,13 @@
               </p>
             </div>
             <v-subaccount-balance
-              data-cy="trade-trading-account-balances"
               v-else
               v-bind="{
                 baseTradingBalance,
                 quoteTradingBalance,
                 market: currentMarket
               }"
+              data-cy="trade-trading-account-balances"
             />
             <v-onboard
               v-if="!hasTradingAccountBalances"
