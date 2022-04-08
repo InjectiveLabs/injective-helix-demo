@@ -2092,10 +2092,10 @@
   resolved "https://registry.yarnpkg.com/@injectivelabs/common-rpc/-/common-rpc-1.0.3.tgz#2c447c21a0efa0b1e174e1efc53afd5643ac3bef"
   integrity sha512-CCGwSgTAJDiXWjCngrrg9cNLTx4LGQjxWwWH0A6ZGuEcZLtHc9Y7/AIikoeKrJO80aC8ZBYlSyfVkFZjEy6Z2Q==
 
-"@injectivelabs/contracts@^0.5.4":
-  version "0.5.4"
-  resolved "https://registry.npmjs.org/@injectivelabs/contracts/-/contracts-0.5.4.tgz#034d6ef7cd2a7486ff4958a84e2a826924610703"
-  integrity sha512-7zHc3bO37Bv2sHNEvmw9B1eltjhCZzchTZ+eCyIvN6mvD7bvkbUM7zWblNUXRDsIeMmvetVtvk/7h0benYNoyg==
+"@injectivelabs/contracts@^0.5.6":
+  version "0.5.6"
+  resolved "https://registry.npmjs.org/@injectivelabs/contracts/-/contracts-0.5.6.tgz#bf5f41dcef07168a4d637200a2044f42d434fd9b"
+  integrity sha512-4Gy1VUziT8Cg91w8ReUEFQO13XanBBwNrWrFyf7r4RNdSpIRSUp9cnt8A6T8L0eLJhVe+oQVYos4tYlilpGjdg==
   dependencies:
     "@commitlint/cli" "^13.1.0"
     "@commitlint/config-conventional" "^13.1.0"
@@ -2369,10 +2369,10 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@injectivelabs/ui-common@^0.5.13":
-  version "0.5.13"
-  resolved "https://registry.npmjs.org/@injectivelabs/ui-common/-/ui-common-0.5.13.tgz#c3a0f864a57c254e6f4d6036472dd031e846e3b4"
-  integrity sha512-xPwhfN1N1NN06Njxsp6kWRT+I/me+QE4Qp9A/jLyR8rl3CSZiVSsCaj/SC61pXniJy8nM1vl351yBvv4RSHNRg==
+"@injectivelabs/ui-common@^0.5.15":
+  version "0.5.15"
+  resolved "https://registry.npmjs.org/@injectivelabs/ui-common/-/ui-common-0.5.15.tgz#4afc04b625654e272a10ccd76433731f460e9d77"
+  integrity sha512-oN+D+pOzxREaCCbQb1ea3+MXO3+dqNgzbyxJGOuhoVF/xs8ikjKfd7FQU2nhpW+MaPJY2Dje29xUZtnrMwWLsw==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@improbable-eng/grpc-web" "^0.15.0"
@@ -2380,7 +2380,7 @@
     "@injectivelabs/alchemy-api" "^0.5.0"
     "@injectivelabs/chain-api" "^1.7.1"
     "@injectivelabs/chain-consumer" "^0.5.3"
-    "@injectivelabs/contracts" "^0.5.4"
+    "@injectivelabs/contracts" "^0.5.6"
     "@injectivelabs/derivatives-consumer" "^0.5.0"
     "@injectivelabs/exceptions" "^0.5.0"
     "@injectivelabs/exchange-consumer" "^0.5.0"
