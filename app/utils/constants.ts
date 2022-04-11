@@ -47,6 +47,7 @@ export const IS_TESTNET = [
   Network.Testnet,
   Network.TestnetK8s,
   Network.Devnet,
+  Network.Devnet1,
   Network.Local
 ].includes(NETWORK)
 
