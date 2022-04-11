@@ -3,7 +3,7 @@ import {
   ExchangeTransformer as BaseExchangeTransformer,
   ExchangeConsumer
 } from '@injectivelabs/chain-consumer'
-import { BaseService } from '@injectivelabs/ui-common/dist/BaseService'
+import { BaseService } from '@injectivelabs/ui-common/dist/services/BaseService'
 
 export class ExchangeService extends BaseService {
   protected consumer: ExchangeConsumer

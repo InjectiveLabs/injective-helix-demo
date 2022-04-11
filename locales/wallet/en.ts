@@ -39,6 +39,13 @@ export default {
     highlyExperimental: 'Highly Experimental!'
   },
 
+  memo: {
+    memo: 'Memo',
+    memoTooltip:
+      'Please check if the destination address requires a memo. If memo is required, incorrect input will result in loss of your funds.',
+    memoPlaceholder: 'Your memo'
+  },
+
   referralModal: {
     title: 'New user onboarding',
     header: 'Welcome to Injective Pro!',

@@ -1,5 +1,5 @@
 import { ServiceOptions } from '@injectivelabs/ui-common'
-import { BaseService } from '@injectivelabs/ui-common/dist/BaseService'
+import { BaseService } from '@injectivelabs/ui-common/dist/services/BaseService'
 import { ExplorerConsumer } from './consumer'
 import { app } from '~/app/singletons/App'
 
