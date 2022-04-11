@@ -10,6 +10,7 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
 import {
   peggyActionService,
+  peggyContractActionService,
   tokenCoinGeckoService,
   tokenErc20ActionService,
   tokenErc20Service,
@@ -253,7 +254,7 @@ export const actions = actionTree(
 
       await this.app.$accessor.wallet.validate()
 
-      await peggyActionService.transfer({
+      await peggyContractActionService.transfer({
         address,
         gasPrice,
         destinationAddress: injectiveAddress,
