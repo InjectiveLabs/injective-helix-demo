@@ -85,7 +85,13 @@
           <div class="border-t"></div>
           <div class="flex items-center justify-between mt-6 text-sm">
             <h3 class="text-sm font-semibold tracking-wider uppercase">
-              {{ $t('navigation.referral') }}
+              {{
+                $t(
+                  refereeInfo
+                    ? 'navigation.referral'
+                    : 'navigation.referralCode'
+                )
+              }}
             </h3>
 
             <a
@@ -139,7 +145,7 @@ import {
   BigNumberInWei,
   formatWalletAddress
 } from '@injectivelabs/utils'
-import { RefereeInfo } from '@injectivelabs/referral-consumer'
+import { RefereeInfo, ReferrerInfo } from '@injectivelabs/referral-consumer'
 import { Wallet } from '@injectivelabs/web3-strategy'
 import { FeeDiscountAccountInfo } from '@injectivelabs/chain-consumer'
 import VConnectedWallet from './connected-wallet.vue'
@@ -199,6 +205,10 @@ export default Vue.extend({
       return this.$accessor.referral.refereeInfo
     },
 
+    referrerInfo(): ReferrerInfo | undefined {
+      return this.$accessor.referral.referrerInfo
+    },
+
     feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
       return this.$accessor.exchange.feeDiscountAccountInfo
     },
@@ -252,13 +262,13 @@ export default Vue.extend({
     },
 
     referralCode(): string | undefined {
-      const { refereeInfo } = this
+      const { refereeInfo, referrerInfo } = this
 
-      if (!refereeInfo) {
+      if (!refereeInfo && !referrerInfo) {
         return undefined
       }
 
-      return refereeInfo.referralCode
+      return refereeInfo?.referralCode || referrerInfo?.referralCode
     },
 
     referralsEnabled(): boolean {

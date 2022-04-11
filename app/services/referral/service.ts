@@ -4,7 +4,7 @@ import {
   ReferralInfo,
   ReferralTransformer
 } from '@injectivelabs/referral-consumer'
-import { BaseService } from '@injectivelabs/ui-common/dist/BaseService'
+import { BaseService } from '@injectivelabs/ui-common/dist/services/BaseService'
 import { IS_DEVNET } from '~/app/utils/constants'
 
 export enum ReferralMetrics {

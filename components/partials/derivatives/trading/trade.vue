@@ -1553,10 +1553,10 @@ export default Vue.extend({
 
       if (leverageToBigNumber.gte(maxLeverageAvailable)) {
         this.form.leverage = maxLeverageAvailable.toFixed()
-      } else if (leverageToBigNumber.lte(1)) {
+      } else if (leverageToBigNumber.lt(1)) {
         this.form.leverage = '1'
       } else {
-        this.form.leverage = leverageToBigNumber.toFixed()
+        this.form.leverage = leverage
       }
     },
 

@@ -125,11 +125,13 @@ export const actions = actionTree(
       {
         amount,
         denom,
+        memo,
         destination,
         token
       }: {
         amount: BigNumberInBase
         denom: string
+        memo?: string
         destination: string
         token: Token
       }
@@ -151,6 +153,7 @@ export const actions = actionTree(
         injectiveAddress,
         destination,
         denom,
+        memo,
         amount: amount.toWei(token.decimals).toFixed()
       })
 

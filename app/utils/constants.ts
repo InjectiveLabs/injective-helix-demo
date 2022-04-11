@@ -47,12 +47,15 @@ export const IS_TESTNET = [
   Network.Testnet,
   Network.TestnetK8s,
   Network.Devnet,
+  Network.Devnet1,
   Network.Local
 ].includes(NETWORK)
 
 export const CHAIN_ID: ChainId = process.env.APP_CHAIN_ID
   ? parseInt(process.env.APP_CHAIN_ID.toString())
   : parseInt((IS_TESTNET ? ChainId.Kovan : ChainId.Mainnet).toString())
+
+export const BIG_NUMBER_ROUND_HALF_UP_MODE = BigNumber.ROUND_HALF_UP
 
 // 6 gwei for Kovan, fetched from gasStation for Mainnet
 export const DEFAULT_PRICE_WARNING_DEVIATION = new BigNumber(5) // 5%

@@ -11,6 +11,7 @@
         bridgingNetwork
       }"
       @input-amount:update="handleAmountUpdate"
+      @input-memo:update="handleMemoUpdate"
       @input-token:update="handleTokenUpdate"
       @input-destinationAddress:update="handleDestinationAddressUpdate"
       @transfer-direction:update="handleTransferDirectionUpdate"
@@ -74,6 +75,7 @@ export default Vue.extend({
       form: {
         token: injToken,
         amount: '',
+        memo: '',
         destinationAddress: ''
       }
     }
@@ -161,6 +163,7 @@ export default Vue.extend({
 
       this.form.token = token
       this.form.amount = ''
+      this.form.memo = ''
       this.form.destinationAddress = ''
       this.bridgeType = bridgeType
       this.$accessor.modal.openModal(Modal.Bridge)
@@ -180,6 +183,10 @@ export default Vue.extend({
 
     handleAmountUpdate(amount: string) {
       this.form.amount = amount.toString()
+    },
+
+    handleMemoUpdate(memo: string) {
+      this.form.memo = memo || ''
     },
 
     handleTokenUpdate(token: Token) {
@@ -207,12 +214,14 @@ export default Vue.extend({
     handleResetForm() {
       this.form.token = injToken
       this.form.amount = ''
+      this.form.memo = ''
       this.form.destinationAddress = ''
       this.bridgeType = BridgeType.Transfer
     },
 
     handleTransfer(token: Token) {
       this.form.amount = ''
+      this.form.memo = ''
       this.form.destinationAddress = ''
       this.form.token = token || injToken
       this.bridgeType = BridgeType.Transfer
@@ -222,6 +231,7 @@ export default Vue.extend({
 
     handleTransferToBank(token: Token) {
       this.form.amount = ''
+      this.form.memo = ''
       this.form.destinationAddress = ''
       this.form.token = token || injToken
       this.bridgeType = BridgeType.Transfer
@@ -233,6 +243,7 @@ export default Vue.extend({
       const formToken = token || injToken
 
       this.form.amount = ''
+      this.form.memo = ''
       this.form.destinationAddress = ''
       this.form.token = formToken
       this.bridgingNetwork = getBridgingNetworkBySymbol(formToken.symbol)
@@ -244,6 +255,7 @@ export default Vue.extend({
       const formToken = token || injToken
 
       this.form.amount = ''
+      this.form.memo = ''
       this.form.destinationAddress = ''
       this.form.token = formToken
       this.bridgingNetwork = getBridgingNetworkBySymbol(formToken.symbol)

@@ -30,7 +30,8 @@ export default {
     confirm: 'Confirm',
     ok: 'OK',
     open: 'Open',
-    close: 'Close'
+    close: 'Close',
+    required: 'Required'
   },
   welcome_to_ip:
     'Access, create and trade unlimited decentralized finance markets',
@@ -201,6 +202,7 @@ export default {
     connectedWallets: 'Connected Wallets',
     connected: 'Connected',
     referral: 'Referral',
+    referralCode: 'Referral Code',
     rewards: 'Rewards',
     dashboard: 'Dashboard',
     trade: 'Trade',

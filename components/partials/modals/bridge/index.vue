@@ -51,6 +51,24 @@
           </v-input>
         </ValidationProvider>
       </div>
+      <div v-if="isWithdrawToInjectiveAddress" class="mt-6 w-full">
+        <div class="flex items-center justify-between text-gray-200">
+          <span v-tooltip="{ content: $t('memo.memoTooltip') }" class="text-xs">
+            {{ $t('memo.memo') }}
+          </span>
+          <v-checkbox v-model="memoRequired" @input="handleMemoChange('')">
+            {{ $t('common.required') }}
+          </v-checkbox>
+        </div>
+        <div v-if="memoRequired" class="mt-2">
+          <v-input
+            :value="form.memo"
+            :placeholder="$t('memo.memoPlaceholder')"
+            @input="handleMemoChange"
+          >
+          </v-input>
+        </div>
+      </div>
       <div v-if="!isIbcTransfer" class="mt-6">
         <div v-if="hasAllowance">
           <v-balance :balance="balance" :token="form.token" class="mb-2" />
@@ -154,6 +172,7 @@ export default Vue.extend({
       required: true,
       type: Object as PropType<{
         token: Token
+        memo: string
         destinationAddress: string
         amount: string
       }>
@@ -162,6 +181,7 @@ export default Vue.extend({
 
   data() {
     return {
+      memoRequired: false,
       BridgeType,
       TransferDirection,
       BridgingNetwork
@@ -370,6 +390,10 @@ export default Vue.extend({
 
     handleAmountChange(amount: string) {
       this.$emit('input-amount:update', amount)
+    },
+
+    handleMemoChange(memo: string) {
+      this.$emit('input-memo:update', memo || '')
     },
 
     handleTokenChange(token: Token) {
