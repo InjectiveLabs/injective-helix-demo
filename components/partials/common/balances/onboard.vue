@@ -1,14 +1,15 @@
 <template>
   <div>
     <v-button md primary class="w-full" @click="handleClickOnButton">
-      <span v-if="activeStep === 1">{{ $t('common.deposit') }}</span>
-      <span v-else-if="activeStep === 2">
+      <span data-cy="onboarding-banner-deposit-button" v-if="activeStep === 1">{{ $t('common.deposit') }}</span>
+      <span data-cy="onboarding-banner-transfer-button" v-else-if="activeStep === 2">
         {{ $t('marketPage.transferToTrade') }}
       </span>
-      <span v-else>{{ $t('common.trade') }}</span>
+      <span data-cy="onboarding-banner-trade-button" v-else>{{ $t('common.trade') }}</span>
     </v-button>
     <div class="mt-6">
       <v-progress-steps
+        data-cy="onboarding-banner-progress-steps"
         :steps="2"
         :active-step="activeStep"
         :steps-labels="[$t('common.deposit'), $t('common.transfer')]"

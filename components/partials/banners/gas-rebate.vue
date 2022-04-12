@@ -24,7 +24,7 @@
       </div>
 
       <div class="hidden lg:block col-span-2">
-        <v-progress-steps :steps="3" :active-step="activeStep" />
+        <v-progress-steps data-cy="new-user-banner-progress-steps" :steps="3" :active-step="activeStep" />
         <div class="grid grid-cols-3 mt-3 gap-8 xl:gap-12 2xl:gap-16">
           <div>
             <span class="tracking-wider uppercase text-xs">
@@ -54,7 +54,7 @@
               class="block w-56 mt-3"
               @click.native="handleClickOnRedeem"
             >
-              <span class="font-bold">
+              <span class="font-bold" data-cy="new-user-banner-claim-button">
                 {{ $t('banners.newUser.claimRebate') }}
               </span>
             </v-button>
