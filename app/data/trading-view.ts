@@ -154,6 +154,10 @@ const hardcodedExcludedTradesByMarket = {
         barMap: (bar: any) => ({ ...bar, high: 1 })
       },
       {
+        high: 1.0502,
+        barMap: (bar: any) => ({ ...bar, high: 1 })
+      },
+      {
         low: 0.7496,
         barMap: (bar: any) => ({ ...bar, low: 0.99 })
       },
@@ -192,6 +196,10 @@ const hardcodedExcludedTradesByMarket = {
         barMap: (bar: any) => ({ ...bar, high: 4 })
       },
       {
+        high: 16.34,
+        barMap: (bar: any) => ({ ...bar, high: 6.43 })
+      },
+      {
         high: 1006.24,
         low: 60.06,
         barMap: (bar: any) => ({ ...bar, high: 12.4, close: 12.4 })
@@ -207,7 +215,6 @@ const hardcodedExcludedTradesByMarket = {
       }
     ]
   },
-
   'BTC/USDT PERP': {
     excludeBefore: null,
     bars: [
