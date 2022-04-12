@@ -30,7 +30,8 @@ export default {
     confirm: 'Confirm',
     ok: 'OK',
     open: 'Open',
-    close: 'Close'
+    close: 'Close',
+    required: 'Required'
   },
   welcome_to_ip:
     'Access, create and trade unlimited decentralized finance markets',
