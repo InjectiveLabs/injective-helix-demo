@@ -1,7 +1,7 @@
 <template>
   <div
     :style="{ backgroundImage: `url('/svg/bg-darker.svg')` }"
-    class="py-6 md:pt-12 md:pb-16 bg-cover"
+    class="py-6 md:pt-12 md:pb-16 bg-cover bg-center"
   >
     <div class="container">
       <h3 class="text-xl tracking-wider leading-6 font-bold hidden md:block">

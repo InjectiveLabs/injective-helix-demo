@@ -22,7 +22,10 @@
       </div>
       <div
         class="relative"
-        :class="{ 'mt-2': !dense, 'input-wrapper': !lg && !xl }"
+        :class="[
+          wrapperClasses,
+          { 'mt-2': !dense, 'input-wrapper': !lg && !xl && !transparentBg }
+        ]"
       >
         <textarea
           v-if="multiLine"
@@ -42,7 +45,8 @@
               'input-lg': lg,
               'input-xl': xl,
               'input-round': round,
-              'input-small': small
+              'input-small': small,
+              'input-bg-transparent': transparentBg
             }"
             @blur="handleBlur"
             @input="handleChangeOnInput"
@@ -180,6 +184,16 @@ export default Vue.extend({
     errorClasses: {
       type: String,
       default: ''
+    },
+
+    wrapperClasses: {
+      type: String,
+      default: ''
+    },
+
+    transparentBg: {
+      type: Boolean,
+      default: false
     }
   },
 
