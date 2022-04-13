@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="p-2 lg:p-3">
     <div class="flex items-center justify-between">
       <div class="flex items-center justify-center">
         <v-button

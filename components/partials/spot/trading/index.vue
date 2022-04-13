@@ -1,5 +1,5 @@
 <template>
-  <v-card class="w-full">
+  <v-card class="w-full h-full">
     <v-trade />
   </v-card>
 </template>

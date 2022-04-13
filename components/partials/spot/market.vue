@@ -1,6 +1,6 @@
 <template>
   <div v-if="market">
-    <v-market :market="market" :summary="marketSummary" />
+    <v-market :market="market" :summary="marketSummary" v-bind="$attrs" />
   </div>
 </template>
 
