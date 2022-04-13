@@ -1,7 +1,8 @@
 <template>
   <VHocLoading :status="status" :show-loading="mappedMarkets.length === 0">
-    <div class="bg-gray-900 bg-opacity-80">
+    <div>
       <v-overview v-if="mappedMarkets.length > 0" :markets="mappedMarkets" />
+      <v-markets :markets="mappedMarkets" />
     </div>
   </VHocLoading>
 </template>
@@ -15,11 +16,13 @@ import {
   UiSpotMarketWithToken
 } from '@injectivelabs/ui-common'
 import { Status, StatusType } from '@injectivelabs/utils'
+import VMarkets from '~/components/partials/markets/index.vue'
 import VOverview from '~/components/partials/markets/overview.vue'
 import { MarketFilterType, UiMarketAndSummary } from '~/types'
 
 export default Vue.extend({
   components: {
+    VMarkets,
     VOverview
   },
 

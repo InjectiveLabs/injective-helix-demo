@@ -51,7 +51,7 @@
       >
         {{ market.summary.change }}%
       </span>
-      <span class="text-gray-500">VOL {{ market.summary.volume }}USD</span>
+      <span class="text-gray-500">VOL {{ market.summary.volume }} USD</span>
     </div>
   </div>
 </template>
