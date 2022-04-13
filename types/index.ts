@@ -1,3 +1,9 @@
+import {
+  UiDerivativeMarketSummary,
+  UiDerivativeMarketWithToken,
+  UiSpotMarketSummary,
+  UiSpotMarketWithToken
+} from '@injectivelabs/ui-common'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { SubaccountBalanceWithToken } from '~/app/services/account'
 
@@ -26,6 +32,11 @@ export interface SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd
   pnlInUsd: BigNumberInBase
   totalBalance: BigNumberInBase
   totalBalanceInUsd: BigNumberInBase
+}
+
+export interface UiMarketAndSummary {
+  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
+  summary: UiDerivativeMarketSummary | UiSpotMarketSummary
 }
 
 export * from './enums'
