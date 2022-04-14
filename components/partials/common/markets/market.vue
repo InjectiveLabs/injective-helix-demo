@@ -125,6 +125,7 @@ import TableRow from '~/components/elements/table-row.vue'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import { Change } from '~/types'
 import { betaMarketSlugs } from '~/app/data/market'
+import { getMarketRoute } from '~/app/utils/market'
 
 export default Vue.extend({
   components: {
@@ -295,24 +296,10 @@ export default Vue.extend({
 
       this.$root.$emit('close-market-slideout')
 
-      if (market.type === MarketType.Derivative) {
-        return this.$router.push({
-          name: 'derivatives-derivative',
-          params: {
-            marketId: market.marketId,
-            derivative: market.slug
-          }
-        })
-      }
+      const marketRoute = getMarketRoute(market)
 
-      if (market.type === MarketType.Spot) {
-        return this.$router.push({
-          name: 'spot-spot',
-          params: {
-            marketId: market.marketId,
-            spot: market.slug
-          }
-        })
+      if (marketRoute) {
+        return this.$router.push(marketRoute)
       }
     }
   }

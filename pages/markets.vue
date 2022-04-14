@@ -15,10 +15,19 @@ import {
   UiSpotMarketSummary,
   UiSpotMarketWithToken
 } from '@injectivelabs/ui-common'
-import { Status, StatusType } from '@injectivelabs/utils'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import VMarkets from '~/components/partials/markets/index.vue'
 import VOverview from '~/components/partials/markets/overview.vue'
-import { MarketFilterType, UiMarketAndSummary } from '~/types'
+import {
+  MarketFilterType,
+  UiMarketAndSummaryWithVolumeInUsd,
+  TokenUsdPriceMap
+} from '~/types'
+import {
+  ETH_COIN_GECKO_ID,
+  USDT_COIN_GECKO_ID,
+  UST_COIN_GECKO_ID
+} from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -56,6 +65,10 @@ export default Vue.extend({
       return this.$accessor.spot.marketsSummary
     },
 
+    tokenUsdPriceMap(): TokenUsdPriceMap {
+      return this.$accessor.token.tokenUsdPriceMap
+    },
+
     markets(): Array<UiSpotMarketWithToken | UiDerivativeMarketWithToken> {
       const { spotMarkets, derivativeMarkets } = this
 
@@ -68,49 +81,33 @@ export default Vue.extend({
       return [...derivativeMarketsSummary, ...spotMarketsSummary]
     },
 
-    mappedMarkets(): UiMarketAndSummary[] {
-      const { markets, marketsSummary } = this
+    mappedMarkets(): UiMarketAndSummaryWithVolumeInUsd[] {
+      const { markets, marketsSummary, tokenUsdPriceMap } = this
 
       return markets
         .map((market) => {
+          const summary = marketsSummary.find(
+            (summary) => summary.marketId === market.marketId
+          )
+          const quoteTokenUsdPrice = new BigNumberInBase(
+            tokenUsdPriceMap[market.quoteToken.coinGeckoId]
+          )
+          const volumeInUsd = quoteTokenUsdPrice.multipliedBy(
+            summary?.volume || '0'
+          )
+
           return {
             market,
-            summary: marketsSummary.find(
-              (summary) => summary.marketId === market.marketId
-            )
+            volumeInUsd,
+            summary
           }
         })
-        .filter(({ summary }) => summary !== undefined) as UiMarketAndSummary[]
-    },
-
-    filteredAllMarkets(): UiMarketAndSummary[] {
-      const { search, marketType, marketBase, mappedMarkets } = this
-
-      const query = search.toLowerCase().trim()
-
-      return mappedMarkets.filter(({ market, summary }) => {
-        const { ticker, quoteDenom } = market
-
-        const satisfiesSearchCondition =
-          quoteDenom.toLowerCase().startsWith(query) ||
-          ticker.toLowerCase().startsWith(query)
-        const marketTypeCondition = marketType
-          ? marketType === market.type
-          : true
-        const marketBaseCondition = !marketBase
-          ? true
-          : marketBase && market.subType
-          ? marketBase === market.subType
-          : false
-
-        return (
-          marketTypeCondition &&
-          marketBaseCondition &&
-          satisfiesSearchCondition &&
-          market &&
-          summary !== undefined
-        )
-      }) as UiMarketAndSummary[]
+        .filter(
+          ({ summary, volumeInUsd }) =>
+            summary !== undefined &&
+            !volumeInUsd.isNaN() &&
+            volumeInUsd.isFinite()
+        ) as UiMarketAndSummaryWithVolumeInUsd[]
     }
   },
 
@@ -123,12 +120,23 @@ export default Vue.extend({
   },
 
   methods: {
+    getMarketSummariesAndQuoteTokenPrice(): Promise<void[]> {
+      return Promise.all([
+        this.$accessor.token.getTokenUsdPriceMap([
+          ETH_COIN_GECKO_ID,
+          USDT_COIN_GECKO_ID,
+          UST_COIN_GECKO_ID
+        ]),
+        this.$accessor.app.pollMarkets()
+      ])
+    },
+
     setMarketSummariesPolling() {
-      Promise.all([this.$accessor.app.pollMarkets()])
+      this.getMarketSummariesAndQuoteTokenPrice()
         .then(() => {
           this.interval = setInterval(async () => {
-            await this.$accessor.app.pollMarkets()
-          }, 5000)
+            await this.getMarketSummariesAndQuoteTokenPrice()
+          }, 1000 * 10)
         })
         .catch(this.$onRejected)
         .finally(() => {

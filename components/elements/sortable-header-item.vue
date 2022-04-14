@@ -1,13 +1,22 @@
 <template>
-  <div class="flex items-center cursor-pointer" @click="$emit('sort', value)">
+  <div class="flex items-center cursor-pointer" @click="handleSort">
+    <div class="mr-1">
+      <div
+        :class="{
+          'text-gray-600': sortBy !== value || !ascending
+        }"
+      >
+        <v-icon-triangle class="transform rotate-180 mb-1" />
+      </div>
+      <div
+        :class="{
+          'text-gray-600': sortBy !== value || ascending
+        }"
+      >
+        <v-icon-triangle />
+      </div>
+    </div>
     <slot></slot>
-    <div
-      class="sorting-arrow ml-3"
-      :class="{
-        'sorting-arrow-up': sortBy === value && ascending,
-        active: sortBy === value
-      }"
-    ></div>
   </div>
 </template>
 
@@ -29,6 +38,14 @@ export default Vue.extend({
     ascending: {
       type: Boolean,
       required: true
+    }
+  },
+
+  methods: {
+    handleSort() {
+      const { value } = this
+
+      this.$emit('sort', value)
     }
   }
 })
