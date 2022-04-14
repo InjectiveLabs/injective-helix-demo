@@ -44,6 +44,7 @@ import Sun from '~/components/icons/sun.vue'
 import Swap from '~/components/icons/swap.vue'
 import Telegram from '~/components/icons/telegram.vue'
 import TelegramCircle from '~/components/icons/telegram-circle.vue'
+import Torus from '~/components/icons/torus.vue'
 import Twitter from '~/components/icons/twitter.vue'
 import TwitterCircle from '~/components/icons/twitter-circle.vue'
 import User from '~/components/icons/user.vue'
@@ -65,6 +66,7 @@ Vue.component('VIconCheckCircle', CheckCircle)
 Vue.component('VIconChevron', Chevron)
 Vue.component('VIconClose', Close)
 Vue.component('VIconCopy', Copy)
+Vue.component('VIconTorus', Torus)
 Vue.component('VIconCopyPlain', CopyPlain)
 Vue.component('VIconDashboard', Dashboard)
 Vue.component('VIconDiscord', Discord)

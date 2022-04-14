@@ -32,7 +32,7 @@
     },
     "types": [
       "@types/node",
-      "@types/jest",
+      // "@types/jest",
       "@nuxt/types",
       "@nuxtjs/toast",
       "vue-toasted",

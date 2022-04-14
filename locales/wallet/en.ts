@@ -36,7 +36,10 @@ export default {
       'Please connect to your wallet to see more details',
     pleaseConnectToYourWalletCta:
       'Please connect to your wallet to start trading on Injective!',
-    highlyExperimental: 'Highly Experimental!'
+    highlyExperimental: 'Highly Experimental!',
+
+    connectUsingTorus: 'Connect using Torus',
+    torus: 'Torus'
   },
 
   memo: {
