@@ -1,0 +1,224 @@
+<template>
+  <div
+    class="grid grid-cols-12 text-gray-200 gap-4 text-sm px-4 py-5 mb-1 bg-gray-800 bg-opacity-50 items-center rounded"
+  >
+    <span class="text-base md:text-sm col-span-2">
+      <nuxt-link
+        class="flex items-center cursor-pointer justify-start"
+        :to="marketRoute"
+      >
+        <img
+          :src="market.baseToken.logo"
+          :alt="market.baseToken.name"
+          class="w-6 h-6 mr-3"
+        />
+        <div class="flex flex-col">
+          <span>{{ market.ticker }}</span>
+          <span class="text-gray-500 text-xs hidden md:block">
+            {{ market.baseToken.name }}
+          </span>
+        </div>
+      </nuxt-link>
+    </span>
+
+    <span class="font-mono flex items-center justify-end col-span-3">
+      <v-icon-arrow
+        v-if="!lastTradedPrice.isNaN() && lastTradedPrice.gt(0)"
+        class="transform w-3 h-3 mr-1"
+        :class="{
+          'text-aqua-500 rotate-90': lastPriceChange !== Change.Decrease,
+          'text-red-500 -rotate-90': lastPriceChange === Change.Decrease
+        }"
+      />
+      <span
+        v-if="!lastTradedPrice.isNaN()"
+        :class="{
+          'text-aqua-500': lastPriceChange !== Change.Decrease,
+          'text-red-500': lastPriceChange === Change.Decrease
+        }"
+      >
+        {{ lastTradedPriceToFormat }}
+        <span class="text-xs text-gray-500 ml-1">
+          {{ market.quoteToken.symbol }}
+        </span>
+      </span>
+      <span v-else class="text-gray-400">&mdash;</span>
+    </span>
+
+    <span class="font-mono text-right col-span-2">
+      <span
+        v-if="!change.isNaN()"
+        :class="change.gte(0) ? 'text-aqua-500' : 'text-red-500'"
+      >
+        {{ changeToFormat }}%
+      </span>
+      <span v-else class="text-gray-400">&mdash;</span>
+    </span>
+
+    <span class="font-mono col-span-3">
+      <div v-if="!baseVolume.isNaN()" class="flex flex-col items-end">
+        <span>{{ volumeInUsdToFormat }} USD</span>
+        <span class="text-xs text-gray-500">
+          {{ baseVolumeToFormat }}
+          <span>
+            {{ market.baseToken.symbol }}
+          </span>
+        </span>
+      </div>
+      <span v-else class="text-gray-400">&mdash;</span>
+    </span>
+
+    <span class="col-span-2 text-right">
+      <nuxt-link
+        class="text-primary-500 hover:text-primary-600"
+        :to="marketRoute"
+      >
+        {{ $t('trade.trade') }}
+      </nuxt-link>
+    </span>
+  </div>
+</template>
+
+<script lang="ts">
+import Vue, { PropType } from 'vue'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import {
+  UiDerivativeMarketSummary,
+  UiDerivativeMarketWithToken,
+  ZERO_IN_BASE,
+  UiSpotMarketSummary,
+  UiSpotMarketWithToken
+} from '@injectivelabs/ui-common'
+import {
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+  UI_DEFAULT_DISPLAY_DECIMALS
+} from '~/app/utils/constants'
+import { Change, MarketRoute } from '~/types'
+import { betaMarketSlugs } from '~/app/data/market'
+import { getMarketRoute } from '~/app/utils/market'
+
+export default Vue.extend({
+  props: {
+    market: {
+      type: Object as PropType<
+        UiDerivativeMarketWithToken | UiSpotMarketWithToken
+      >,
+      required: true
+    },
+
+    summary: {
+      type: Object as PropType<UiDerivativeMarketSummary | UiSpotMarketSummary>,
+      required: true
+    },
+
+    volumeInUsd: {
+      type: Object as PropType<BigNumberInBase>,
+      required: true
+    }
+  },
+
+  data() {
+    return {
+      Change
+    }
+  },
+
+  computed: {
+    lastTradedPrice(): BigNumberInBase {
+      const { summary } = this
+
+      if (!summary || !summary.price) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(summary.lastPrice || summary.price)
+    },
+
+    lastTradedPriceToFormat(): string {
+      const { lastTradedPrice } = this
+
+      return lastTradedPrice.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+    },
+
+    isMarketBeta(): boolean {
+      const { market } = this
+
+      if (!market || !market.slug) {
+        return false
+      }
+
+      return betaMarketSlugs.includes(market.slug)
+    },
+
+    quoteVolume(): BigNumberInBase {
+      const { summary } = this
+
+      if (!summary || !summary.volume) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(summary.volume)
+    },
+
+    baseVolume(): BigNumberInBase {
+      const { quoteVolume, lastTradedPrice } = this
+
+      if (quoteVolume.eq('0')) {
+        return ZERO_IN_BASE
+      }
+
+      return quoteVolume.dividedBy(lastTradedPrice)
+    },
+
+    baseVolumeToFormat(): string {
+      const { baseVolume } = this
+
+      return baseVolume.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+    },
+
+    volumeInUsdToFormat(): string {
+      const { volumeInUsd } = this
+
+      return volumeInUsd.toFormat(2)
+    },
+
+    change(): BigNumberInBase {
+      const { summary } = this
+
+      if (!summary || !summary.change) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(summary.change)
+    },
+
+    changeToFormat(): string {
+      const { change } = this
+
+      return change.toFormat(2)
+    },
+
+    lastPriceChange(): Change {
+      const { summary } = this
+
+      if (!summary) {
+        return Change.NoChange
+      }
+
+      if (!summary.lastPriceChange) {
+        return Change.NoChange
+      }
+
+      return summary.lastPriceChange
+    },
+
+    marketRoute(): MarketRoute {
+      const { market } = this
+
+      const marketRoute = getMarketRoute(market)
+
+      return marketRoute || { name: 'index' }
+    }
+  }
+})
+</script>

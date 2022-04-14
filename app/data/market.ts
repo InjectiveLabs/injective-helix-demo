@@ -29,6 +29,7 @@ export const marketBaseFromTicker = (
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'bayc-weth-perp',
   'ape-usdt',
   'luna-ust',
   'luna-ust-perp',

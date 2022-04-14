@@ -39,6 +39,21 @@ export interface UiMarketAndSummary {
   summary: UiDerivativeMarketSummary | UiSpotMarketSummary
 }
 
+export interface UiMarketAndSummaryWithVolumeInUsd extends UiMarketAndSummary {
+  volumeInUsd: BigNumberInBase
+}
+
+export interface MarketRoute {
+  name: string
+  params?: {
+    marketId: string
+    derivative?: string
+    spot?: string
+  }
+}
+
+export declare type TokenUsdPriceMap = Record<string, number>
+
 export * from './enums'
 export * from './env'
 export * from './errors'

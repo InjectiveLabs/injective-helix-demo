@@ -3,7 +3,7 @@
     :style="{ backgroundImage: `url('/svg/bg-darker.svg')` }"
     class="py-6 md:pt-12 md:pb-16 bg-cover bg-center"
   >
-    <div class="container">
+    <div class="container xl:max-w-6xl mx-auto">
       <h3 class="text-xl tracking-wider leading-6 font-bold hidden md:block">
         {{ $t('markets.title') }}
       </h3>
@@ -18,7 +18,9 @@
           <v-market-card
             v-if="newMarket && activeIndex === 1"
             key="market-card-1"
-            :market="newMarket"
+            :market="newMarket.market"
+            :summary="newMarket.summary"
+            :volume-in-usd="newMarket.volumeInUsd"
           >
             {{ $t('markets.whatsNew') }}
           </v-market-card>
@@ -26,7 +28,9 @@
           <v-market-card
             v-if="activeIndex === 2"
             key="market-card-2"
-            :market="topVolume"
+            :market="topVolume.market"
+            :summary="topVolume.summary"
+            :volume-in-usd="topVolume.volumeInUsd"
           >
             {{ $t('markets.topVolume') }}
           </v-market-card>
@@ -34,7 +38,9 @@
           <v-market-card
             v-if="activeIndex === 3"
             key="market-card-3"
-            :market="topGainer"
+            :market="topGainer.market"
+            :summary="topGainer.summary"
+            :volume-in-usd="topGainer.volumeInUsd"
           >
             {{ $t('markets.topGainer') }}
           </v-market-card>
@@ -45,15 +51,28 @@
         v-if="markets.length > 0"
         class="hidden md:grid grid-cols-2 xl:grid-cols-3 gap-6 mt-6"
       >
-        <v-market-card v-if="newMarket" :market="newMarket">
+        <v-market-card
+          v-if="newMarket"
+          :market="newMarket.market"
+          :summary="newMarket.summary"
+          :volume-in-usd="newMarket.volumeInUsd"
+        >
           {{ $t('markets.whatsNew') }}
         </v-market-card>
 
-        <v-market-card :market="topVolume">
+        <v-market-card
+          :market="topVolume.market"
+          :summary="topVolume.summary"
+          :volume-in-usd="topVolume.volumeInUsd"
+        >
           {{ $t('markets.topVolume') }}
         </v-market-card>
 
-        <v-market-card :market="topGainer">
+        <v-market-card
+          :market="topGainer.market"
+          :summary="topGainer.summary"
+          :volume-in-usd="topGainer.volumeInUsd"
+        >
           {{ $t('markets.topGainer') }}
         </v-market-card>
       </div>
@@ -76,7 +95,7 @@ import Vue, { PropType } from 'vue'
 import VMarketCard from '~/components/partials/markets/market-card.vue'
 import VMarketDot from '~/components/partials/markets/market-dot.vue'
 import { newMarketsSlug } from '~/app/data/market'
-import { UiMarketAndSummary } from '~/types'
+import { UiMarketAndSummaryWithVolumeInUsd } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -86,7 +105,7 @@ export default Vue.extend({
 
   props: {
     markets: {
-      type: Array as PropType<UiMarketAndSummary[]>,
+      type: Array as PropType<UiMarketAndSummaryWithVolumeInUsd[]>,
       required: true
     }
   },
@@ -100,7 +119,7 @@ export default Vue.extend({
   },
 
   computed: {
-    newMarket(): UiMarketAndSummary | undefined {
+    newMarket(): UiMarketAndSummaryWithVolumeInUsd | undefined {
       const { markets } = this
 
       const firstExistingNewMarket = newMarketsSlug.find((newMarketSlug) => {
@@ -118,22 +137,28 @@ export default Vue.extend({
       })
     },
 
-    topVolume(): UiMarketAndSummary {
+    topVolume(): UiMarketAndSummaryWithVolumeInUsd {
       const { markets } = this
 
       return markets.reduce(
-        (initialMarket: UiMarketAndSummary, market: UiMarketAndSummary) =>
-          initialMarket.summary.volume > market.summary.volume
+        (
+          initialMarket: UiMarketAndSummaryWithVolumeInUsd,
+          market: UiMarketAndSummaryWithVolumeInUsd
+        ) =>
+          initialMarket.volumeInUsd.gt(market.volumeInUsd)
             ? initialMarket
             : market
       )
     },
 
-    topGainer(): UiMarketAndSummary {
+    topGainer(): UiMarketAndSummaryWithVolumeInUsd {
       const { markets } = this
 
       return markets.reduce(
-        (initialMarket: UiMarketAndSummary, market: UiMarketAndSummary) =>
+        (
+          initialMarket: UiMarketAndSummaryWithVolumeInUsd,
+          market: UiMarketAndSummaryWithVolumeInUsd
+        ) =>
           initialMarket.summary.change > market.summary.change
             ? initialMarket
             : market
