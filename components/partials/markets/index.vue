@@ -57,26 +57,36 @@
       <span class="text-left col-span-2" />
     </TableHeader>
 
-    <TableBody>
+    <TableBody light :show-empty="sortedMarkets.length === 0">
       <v-market-row
-        v-for="({ market, summary, volumeInUsd }, index) in markets"
+        v-for="({ market, summary, volumeInUsd }, index) in sortedMarkets"
         :key="`market-row-${index}`"
         :market="market"
         :summary="summary"
         :volume-in-usd="volumeInUsd"
       />
 
-      <template slot="empty">
-        <span class="col-span-1 md:col-span-3 text-center xl:text-left">
-          {{ $t('There are no results found - Markets') }}
-        </span>
-      </template>
+      <v-empty-list
+        slot="empty"
+        wrapper-class="bg-gray-850 min-h-3xs"
+        :message="$t('markets.emptyHeader')"
+      >
+        <span class="mt-2 text-xs text-gray-500">{{
+          $t('markets.emptyDescription')
+        }}</span>
+      </v-empty-list>
     </TableBody>
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import {
+  UiDerivativeMarketWithToken,
+  UiSpotMarketWithToken,
+  MarketType
+} from '@injectivelabs/ui-common'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import VMarketFilter from '~/components/partials/markets/filters/index.vue'
 import VMarketRow from '~/components/partials/markets/market-row.vue'
 import SortableHeaderItem from '~/components/elements/sortable-header-item.vue'
@@ -87,11 +97,95 @@ import {
   MarketQuoteType,
   UiMarketAndSummaryWithVolumeInUsd
 } from '~/types'
+import { USDT_COIN_GECKO_ID, UST_COIN_GECKO_ID } from '~/app/utils/constants'
+import { innovationMarketsSlug } from '~/app/data/market'
 
 enum MarketHeaderType {
   Market = 'market',
   Change = 'change',
   Volume = 'volume'
+}
+
+const marketIsPartOfCategory = (
+  activeCategory: MarketCategoryType,
+  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
+): boolean => {
+  if (activeCategory === MarketCategoryType.All) {
+    return true
+  }
+
+  if (activeCategory === MarketCategoryType.Cosmos) {
+    return (
+      market.baseToken.denom.startsWith('ibc') ||
+      market.quoteToken.denom.startsWith('ibc')
+    )
+  }
+
+  if (activeCategory === MarketCategoryType.Ethereum) {
+    return (
+      !market.baseToken.denom.startsWith('ibc') &&
+      !market.quoteToken.denom.startsWith('ibc')
+    )
+  }
+
+  if (activeCategory === MarketCategoryType.Innovation) {
+    return innovationMarketsSlug.includes(market.slug)
+  }
+
+  return true
+}
+
+const marketIsQuotePair = (
+  activeQuote: MarketQuoteType,
+  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
+): boolean => {
+  if (activeQuote === MarketQuoteType.All) {
+    return true
+  }
+
+  if (activeQuote === MarketQuoteType.USDT) {
+    return [
+      market.quoteToken.coinGeckoId,
+      market.baseToken.coinGeckoId
+    ].includes(USDT_COIN_GECKO_ID)
+  }
+
+  if (activeQuote === MarketQuoteType.UST) {
+    return [
+      market.quoteToken.coinGeckoId,
+      market.baseToken.coinGeckoId
+    ].includes(UST_COIN_GECKO_ID)
+  }
+
+  return true
+}
+
+const marketIsPartOfType = (
+  activeType: string,
+  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
+): boolean => {
+  if (activeType.trim() === '') {
+    return true
+  }
+
+  return [market.type, market.subType].includes(activeType as MarketType)
+}
+
+const marketIsPartOfSearch = (
+  search: string,
+  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
+): boolean => {
+  const query = search.trim()
+
+  if (query === '') {
+    return true
+  }
+
+  return (
+    market.quoteToken.symbol.toLowerCase().startsWith(query) ||
+    market.baseToken.symbol.toLowerCase().startsWith(query) ||
+    market.ticker.toLowerCase().startsWith(query)
+  )
 }
 
 export default Vue.extend({
@@ -119,6 +213,51 @@ export default Vue.extend({
       search: '',
       sortBy: MarketHeaderType.Volume,
       ascending: false
+    }
+  },
+
+  computed: {
+    filteredMarkets(): UiMarketAndSummaryWithVolumeInUsd[] {
+      const { activeCategory, activeQuote, activeType, markets, search } = this
+
+      return markets.filter(({ market }) => {
+        const isPartOfCategory = marketIsPartOfCategory(activeCategory, market)
+        const isPartOfSearch = marketIsPartOfSearch(search, market)
+        const isPartOfType = marketIsPartOfType(activeType, market)
+        const isQuotePair = marketIsQuotePair(activeQuote, market)
+
+        return isPartOfCategory && isPartOfType && isPartOfSearch && isQuotePair
+      })
+    },
+
+    sortedMarkets(): UiMarketAndSummaryWithVolumeInUsd[] {
+      const { filteredMarkets, ascending, sortBy } = this
+
+      if (sortBy.trim() === '') {
+        return filteredMarkets
+      }
+
+      const list = [...filteredMarkets].sort(
+        (
+          m1: UiMarketAndSummaryWithVolumeInUsd,
+          m2: UiMarketAndSummaryWithVolumeInUsd
+        ) => {
+          if (sortBy === MarketHeaderType.Market) {
+            return m2.market.ticker.localeCompare(m1.market.ticker)
+          }
+
+          if (sortBy === MarketHeaderType.Change) {
+            return new BigNumberInBase(m2.summary.change)
+              .minus(m1.summary.change)
+              .toNumber()
+          }
+
+          // default: sort by volume
+          return m2.volumeInUsd.minus(m1.volumeInUsd).toNumber()
+        }
+      )
+
+      return ascending ? list.reverse() : list
     }
   },
 

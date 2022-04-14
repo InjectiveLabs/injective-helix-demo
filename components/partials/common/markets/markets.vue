@@ -58,9 +58,11 @@
     </v-panel>
 
     <div v-if="filterType !== MarketFilterType.All" class="text-center">
-      <v-button lg primary class="w-60 mt-6" @click="showAllMarkets">
-        {{ $t('home.viewAllMarkets') }}
-      </v-button>
+      <nuxt-link :to="{ name: 'markets' }">
+        <v-button lg primary class="w-60 mt-6">
+          {{ $t('home.viewAllMarkets') }}
+        </v-button>
+      </nuxt-link>
     </div>
   </div>
 </template>
@@ -188,10 +190,6 @@ export default Vue.extend({
         .finally(() => {
           this.status.setIdle()
         })
-    },
-
-    showAllMarkets() {
-      this.$root.$emit('toggle-market-slideout-from-content')
     },
 
     updateFilterType(type: MarketFilterType) {
