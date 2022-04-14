@@ -12,7 +12,37 @@
     />
     <div class="border-b border-gray-600 w-full h-px pb-4 mb-4 md:hidden" />
 
-    <TableHeader>
+    <!-- mobile header -->
+    <TableHeader classes="grid grid-cols-3 md:hidden">
+      <SortableHeaderItem
+        :value="MarketHeaderType.Market"
+        :sort-by="sortBy"
+        :ascending="ascending"
+        @sort="handleSort"
+      >
+        <span class="text-gray-200 text-xs">
+          {{ $t('trade.market') }}
+        </span>
+      </SortableHeaderItem>
+
+      <SortableHeaderItem
+        class="justify-end col-span-2"
+        :value="MarketHeaderType.Change"
+        :sort-by="sortBy"
+        :ascending="ascending"
+        @sort="handleSort"
+      >
+        <span slot="prefix" class="text-gray-200 text-xs mr-1">
+          {{ $t('trade.last_price') }} /
+        </span>
+
+        <span class="text-gray-200 text-xs">
+          {{ $t('trade.market_change_24h') }}
+        </span>
+      </SortableHeaderItem>
+    </TableHeader>
+
+    <TableHeader class="grid-cols-10 3md:grid-cols-12">
       <SortableHeaderItem
         class="col-span-3"
         :value="MarketHeaderType.Market"
@@ -54,7 +84,7 @@
           {{ $t('trade.volume_24h') }}
         </span>
       </SortableHeaderItem>
-      <span class="text-left col-span-2" />
+      <span class="hidden 3md:block text-left col-span-2" />
     </TableHeader>
 
     <TableBody light :show-empty="sortedMarkets.length === 0">
@@ -68,7 +98,7 @@
 
       <v-empty-list
         slot="empty"
-        wrapper-class="bg-gray-850 min-h-3xs"
+        classes="bg-gray-850 min-h-3xs"
         :message="$t('markets.emptyHeader')"
       >
         <span class="mt-2 text-xs text-gray-500">{{

@@ -1,5 +1,6 @@
 <template>
   <div class="flex items-center cursor-pointer" @click="handleSort">
+    <slot name="prefix" />
     <div class="mr-1">
       <div
         :class="{
@@ -16,7 +17,7 @@
         <v-icon-triangle />
       </div>
     </div>
-    <slot></slot>
+    <slot />
   </div>
 </template>
 

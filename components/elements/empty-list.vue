@@ -1,7 +1,7 @@
 <template>
   <div
     class="h-full w-full flex flex-col items-center justify-center"
-    :class="wrapperClass"
+    :class="classes"
   >
     <img src="/svg/empty-list.svg" class="mx-auto mb-3" />
     <p class="text-sm">
@@ -22,7 +22,7 @@ export default Vue.extend({
       default: ''
     },
 
-    wrapperClass: {
+    classes: {
       type: String,
       default: 'bg-gray-900'
     }
