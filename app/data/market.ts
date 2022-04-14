@@ -37,6 +37,8 @@ export const newMarketsSlug = [
   'ust-usdt'
 ]
 
+export const innovationMarketsSlug = ['ape-usdt', 'huahua-usdt', 'gf-usdt']
+
 export const excludedPriceDeviationSlugs = ['bayc-weth-perp'] as string[]
 
 export const upcomingMarkets = [

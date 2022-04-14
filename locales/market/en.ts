@@ -6,9 +6,8 @@ export default {
     topVolume: 'Top Volume',
     category: 'Category',
     market: 'Market',
-    lastPrice: 'Last Price',
-    change: 'Change (24H)',
-    volume: 'Volume (24H)'
+    emptyHeader: 'No markets found',
+    emptyDescription: 'Try another search term or you can propose some!'
   },
 
   marketPage: {
