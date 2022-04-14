@@ -229,6 +229,31 @@ export const actions = actionTree(
       commit('setWalletConnectStatus', WalletConnectStatus.connected)
     },
 
+    async connectTorus({ commit }) {
+      await this.app.$accessor.app.validate()
+
+      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
+      commit('setWallet', Wallet.Torus)
+
+      await connect({
+        wallet: Wallet.Torus
+      })
+
+      const addresses = await getAddresses()
+      const [address] = addresses
+      const addressConfirmation = await confirm(address)
+      const injectiveAddress = getInjectiveAddress(address)
+
+      commit('setInjectiveAddress', injectiveAddress)
+      commit('setAddress', address)
+      commit('setAddresses', addresses)
+      commit('setAddressConfirmation', addressConfirmation)
+
+      await this.app.$accessor.wallet.onConnect()
+
+      commit('setWalletConnectStatus', WalletConnectStatus.connected)
+    },
+
     async validate({ state }) {
       const { chainId } = this.app.$accessor.app
 

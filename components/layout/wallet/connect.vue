@@ -16,7 +16,8 @@
         <VHocLoading :status="status">
           <ul class="divide-y divide-gray-800 border-gray-700 rounded-lg">
             <v-metamask />
-            <v-keplr v-if="false" />
+            <v-keplr v-if="isStagingOrTestnetOrDevnet" />
+            <v-torus v-if="isStagingOrTestnetOrDevnet" />
             <v-ledger
               @wallet-ledger-connecting="handleLedgerConnectingWallet"
             />
@@ -40,9 +41,15 @@ import { Status } from '@injectivelabs/utils'
 import VMetamask from './wallets/metamask.vue'
 import VKeplr from './wallets/keplr.vue'
 import VLedger from './wallets/ledger.vue'
+import VTorus from './wallets/torus.vue'
 import VModalLedger from './wallets/ledger/index.vue'
 import { Modal, WalletConnectStatus } from '~/types'
-import { GEO_IP_RESTRICTIONS_ENABLED } from '~/app/utils/constants'
+import {
+  GEO_IP_RESTRICTIONS_ENABLED,
+  IS_DEVNET,
+  IS_STAGING,
+  IS_TESTNET
+} from '~/app/utils/constants'
 import VModalTerms from '~/components/partials/modals/terms.vue'
 
 export default Vue.extend({
@@ -50,6 +57,7 @@ export default Vue.extend({
     VModalTerms,
     VMetamask,
     VKeplr,
+    VTorus,
     VLedger,
     VModalLedger
   },
@@ -65,6 +73,10 @@ export default Vue.extend({
   computed: {
     walletConnectStatus(): WalletConnectStatus {
       return this.$accessor.wallet.walletConnectStatus
+    },
+
+    isStagingOrTestnetOrDevnet(): boolean {
+      return IS_TESTNET || IS_DEVNET || IS_STAGING
     }
   },
 
