@@ -1,8 +1,20 @@
 <template>
   <div class="rounded-2xl bg-transparent shadow-card p-4 bg-white bg-opacity-5">
-    <p class="tracking-widest uppercase text-gray-500 text-xs">
-      <slot />
-    </p>
+    <div class="flex items-center justify-between text-gray-500">
+      <p class="tracking-widest uppercase text-xs">
+        <slot />
+      </p>
+
+      <div v-if="isBaycWeth" class="flex items-center gap-1">
+        <p class="text-2xs">{{ $t('markets.poweredBy') }}</p>
+        <img
+          src="/svg/burnt-finance.svg"
+          class="h-3 w-auto"
+          alt="Burnt Finance"
+        />
+        <img src="/svg/nft-bank.svg" class="h-3 w-auto" alt="NFT Bank" />
+      </div>
+    </div>
     <div class="flex justify-between mt-4">
       <nuxt-link class="flex items-center" :to="marketRoute">
         <div v-if="market.baseToken.logo" class="w-8 h-8 mr-3">
@@ -142,6 +154,16 @@ export default Vue.extend({
       const marketRoute = getMarketRoute(market)
 
       return marketRoute || { name: 'index' }
+    },
+
+    isBaycWeth(): boolean {
+      const { market } = this
+
+      if (!market || !market.slug) {
+        return false
+      }
+
+      return market.baseToken.symbol === 'BAYC'
     }
   }
 })
