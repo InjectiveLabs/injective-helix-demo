@@ -20,6 +20,19 @@
           <span class="text-gray-500 text-xs sm:hidden tracking-wide mt-1">
             Vol {{ abbreviatedVolumeInUsdToFormat }} USD
           </span>
+
+          <div
+            v-if="isBaycWeth"
+            class="flex items-center gap-1 mt-1.5 text-gray-500"
+          >
+            <p class="text-2xs">{{ $t('markets.poweredBy') }}</p>
+            <img
+              src="/svg/burnt-finance.svg"
+              class="h-3 w-auto"
+              alt="Burnt Finance"
+            />
+            <img src="/svg/nft-bank.svg" class="h-3 w-auto" alt="NFT Bank" />
+          </div>
         </div>
       </nuxt-link>
     </span>
@@ -255,6 +268,16 @@ export default Vue.extend({
       const marketRoute = getMarketRoute(market)
 
       return marketRoute || { name: 'index' }
+    },
+
+    isBaycWeth(): boolean {
+      const { market } = this
+
+      if (!market || !market.slug) {
+        return false
+      }
+
+      return market.baseToken.symbol === 'BAYC'
     }
   }
 })
