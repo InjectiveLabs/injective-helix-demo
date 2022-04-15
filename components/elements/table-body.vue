@@ -7,7 +7,7 @@
     <div
       v-if="showEmpty"
       class="col-span-1 px-6 text-sm py-4 text-gray-200 items-center rounded-sm"
-      :class="[light ? 'bg-gray-850 rounded' : 'bg-gray-900']"
+      :class="{ 'bg-gray-850 rounded': light, 'bg-gray-900': !light }"
     >
       <slot name="empty" />
     </div>
