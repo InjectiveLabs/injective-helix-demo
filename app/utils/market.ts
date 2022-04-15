@@ -3,6 +3,7 @@ import {
   MarketType,
   UiSpotMarketWithToken
 } from '@injectivelabs/ui-common'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { MarketRoute } from '~/types'
 
 export const getMarketRoute = (
@@ -27,4 +28,24 @@ export const getMarketRoute = (
       }
     }
   }
+}
+
+export const getAbbreviatedVolume = (value: BigNumberInBase): string => {
+  const thousand = 1000
+  const million = 1000000
+  const billion = 1000000000
+
+  if (value.gt(billion)) {
+    return `${value.dividedBy(billion).toFormat(2)}B`
+  }
+
+  if (value.gt(million)) {
+    return `${value.dividedBy(million).toFormat(2)}M`
+  }
+
+  if (value.gt(thousand)) {
+    return `${value.dividedBy(million).toFormat(2)}K`
+  }
+
+  return value.toFormat(2)
 }

@@ -126,7 +126,7 @@ import {
 } from '~/app/utils/constants'
 import { Change, MarketRoute } from '~/types'
 import { betaMarketSlugs } from '~/app/data/market'
-import { getMarketRoute } from '~/app/utils/market'
+import { getAbbreviatedVolume, getMarketRoute } from '~/app/utils/market'
 
 export default Vue.extend({
   props: {
@@ -216,23 +216,7 @@ export default Vue.extend({
     abbreviatedVolumeInUsdToFormat(): string {
       const { volumeInUsd } = this
 
-      const thousand = 1000
-      const million = 1000000
-      const billion = 1000000000
-
-      if (volumeInUsd.gt(billion)) {
-        return `${volumeInUsd.dividedBy(billion).toFormat(2)}B`
-      }
-
-      if (volumeInUsd.gt(million)) {
-        return `${volumeInUsd.dividedBy(million).toFormat(2)}M`
-      }
-
-      if (volumeInUsd.gt(thousand)) {
-        return `${volumeInUsd.dividedBy(million).toFormat(2)}K`
-      }
-
-      return volumeInUsd.toFormat(2)
+      return getAbbreviatedVolume(volumeInUsd)
     },
 
     change(): BigNumberInBase {
