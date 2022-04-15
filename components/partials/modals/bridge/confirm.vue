@@ -414,7 +414,7 @@ export default Vue.extend({
     ethBridgeFeeToString(): string {
       const { ethBridgeFee } = this
 
-      return ethBridgeFee.toFormat(UI_DEFAULT_DISPLAY_DECIMALS * 2)
+      return ethBridgeFee.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
     },
 
     ethBridgeFeeInUsd(): BigNumberInBase {
