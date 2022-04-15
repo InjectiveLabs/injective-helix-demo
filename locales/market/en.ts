@@ -8,7 +8,8 @@ export default {
     market: 'Market',
     emptyHeader: 'No markets found',
     emptyDescription: 'Try another search term or you can propose some!',
-    poweredBy: 'Powered by'
+    poweredBy: 'Powered by',
+    vol: 'Vol'
   },
 
   marketPage: {

@@ -18,21 +18,10 @@
             {{ market.baseToken.name }}
           </span>
           <span class="text-gray-500 text-xs sm:hidden tracking-wide mt-1">
-            Vol {{ abbreviatedVolumeInUsdToFormat }} USD
+            {{ $t('markets.vol') }} {{ abbreviatedVolumeInUsdToFormat }} USD
           </span>
 
-          <div
-            v-if="isBaycWeth"
-            class="flex items-center gap-1 mt-1.5 text-gray-500"
-          >
-            <p class="text-2xs">{{ $t('markets.poweredBy') }}</p>
-            <img
-              src="/svg/burnt-finance.svg"
-              class="h-3 w-auto"
-              alt="Burnt Finance"
-            />
-            <img src="/svg/nft-bank.svg" class="h-3 w-auto" alt="NFT Bank" />
-          </div>
+          <v-powered-by v-if="isBaycWeth" class="mt-1.5" />
         </div>
       </nuxt-link>
     </span>
@@ -134,14 +123,20 @@ import {
   UiSpotMarketWithToken
 } from '@injectivelabs/ui-common'
 import {
+  BAYC_WETH_PERP_SLUG,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
+import VPoweredBy from '~/components/partials/markets/powered-by.vue'
 import { Change, MarketRoute } from '~/types'
 import { betaMarketSlugs } from '~/app/data/market'
 import { getAbbreviatedVolume, getMarketRoute } from '~/app/utils/market'
 
 export default Vue.extend({
+  components: {
+    VPoweredBy
+  },
+
   props: {
     market: {
       type: Object as PropType<
@@ -277,7 +272,7 @@ export default Vue.extend({
         return false
       }
 
-      return market.baseToken.symbol === 'BAYC'
+      return market.slug === BAYC_WETH_PERP_SLUG
     }
   }
 })

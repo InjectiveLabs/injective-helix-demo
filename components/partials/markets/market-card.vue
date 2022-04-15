@@ -5,15 +5,7 @@
         <slot />
       </p>
 
-      <div v-if="isBaycWeth" class="flex items-center gap-1">
-        <p class="text-2xs">{{ $t('markets.poweredBy') }}</p>
-        <img
-          src="/svg/burnt-finance.svg"
-          class="h-3 w-auto"
-          alt="Burnt Finance"
-        />
-        <img src="/svg/nft-bank.svg" class="h-3 w-auto" alt="NFT Bank" />
-      </div>
+      <v-powered-by v-if="isBaycWeth" />
     </div>
     <div class="flex justify-between mt-4">
       <nuxt-link class="flex items-center" :to="marketRoute">
@@ -64,7 +56,9 @@
       >
         {{ changeToFormat }}%
       </span>
-      <span class="text-gray-500">VOL {{ volumeInUsdToFormat }} USD</span>
+      <span class="text-gray-500 uppercase">
+        {{ $t('markets.vol') }} {{ volumeInUsdToFormat }} USD
+      </span>
     </div>
   </div>
 </template>
@@ -79,11 +73,19 @@ import {
   ZERO_IN_BASE
 } from '@injectivelabs/ui-common'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import VPoweredBy from '~/components/partials/markets/powered-by.vue'
 import { Change, MarketRoute } from '~/types'
-import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import {
+  BAYC_WETH_PERP_SLUG,
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+} from '~/app/utils/constants'
 import { getMarketRoute } from '~/app/utils/market'
 
 export default Vue.extend({
+  components: {
+    VPoweredBy
+  },
+
   props: {
     market: {
       type: Object as PropType<
@@ -163,7 +165,7 @@ export default Vue.extend({
         return false
       }
 
-      return market.baseToken.symbol === 'BAYC'
+      return market.slug === BAYC_WETH_PERP_SLUG
     }
   }
 })
