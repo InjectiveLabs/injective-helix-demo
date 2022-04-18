@@ -73,7 +73,7 @@ export default Vue.extend({
   },
 
   props: {
-    overwriteSlug: {
+    hardcodedSlug: {
       type: String,
       default: undefined
     }
@@ -82,7 +82,6 @@ export default Vue.extend({
   data() {
     return {
       status: new Status(StatusType.Loading),
-      isSpotMarket: false,
       showMarketList: false,
       interval: 0 as any
     }
@@ -97,6 +96,16 @@ export default Vue.extend({
       return this.$accessor.spot.market
     },
 
+    isSpotMarket(): boolean {
+      const { $route } = this
+
+      if (!$route || !$route.name) {
+        return false
+      }
+
+      return $route.name === 'spot-spot'
+    },
+
     market(): UiSpotMarketWithToken | UiDerivativeMarketWithToken | undefined {
       const { derivativeMarket, isSpotMarket, spotMarket } = this
 
@@ -104,11 +113,11 @@ export default Vue.extend({
     },
 
     slug(): string {
-      const { isSpotMarket, overwriteSlug } = this
+      const { isSpotMarket, hardcodedSlug } = this
       const { params } = this.$route
 
-      if (overwriteSlug) {
-        return overwriteSlug
+      if (hardcodedSlug) {
+        return hardcodedSlug
       }
 
       return isSpotMarket ? params.spot : params.derivative
@@ -122,7 +131,6 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.isSpotMarket = this.$route.name === 'spot-spot'
     this.$root.$on('toggle-market-list', this.toggleMarketList)
 
     Promise.all([this.initMarket(), this.getMarketsQuoteTokenUsdPrices()])

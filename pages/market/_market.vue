@@ -1,5 +1,5 @@
 <template>
-  <v-market-layout overwrite-slug="btc-usdt-perp">
+  <v-market-layout hardcoded-slug="btc-usdt-perp">
     <template slot="trading-panel">
       <v-balances />
       <v-trading class="mt-1 flex-1" />
