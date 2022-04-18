@@ -165,7 +165,6 @@ export default Vue.extend({
   methods: {
     handleClickOnSidebarToggle() {
       this.$emit('sidebar-opened')
-      this.$root.$emit('close-market-slideout')
     },
 
     handleClickOnDashboard() {

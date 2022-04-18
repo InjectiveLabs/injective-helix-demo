@@ -12,12 +12,19 @@
       </div>
       <div class="flex-1 grid grid-cols-6 lg:grid-cols-12 gap-1 p-1">
         <div class="col-span-6 lg:col-span-3 4xl:col-span-3 overflow-y-hidden">
-          <transition name="fade-up" mode="out-in">
-            <v-market-selection v-if="showMarketList" />
-            <div v-else class="flex flex-col flex-wrap h-full w-full">
+          <transition-group name="fade-up" mode="out-in">
+            <v-market-selection
+              v-show="showMarketList"
+              key="market-selection"
+            />
+            <div
+              v-show="!showMarketList"
+              key="trading-panel"
+              class="flex flex-col flex-wrap h-full w-full"
+            >
               <slot name="trading-panel" />
             </div>
-          </transition>
+          </transition-group>
         </div>
         <div class="col-span-6 lg:col-span-9 4xl:col-span-9">
           <div class="flex flex-wrap flex-col w-full h-full">
@@ -54,13 +61,8 @@ import {
 } from '@injectivelabs/ui-common'
 import VSpotMarket from '~/components/partials/spot/market.vue'
 import VDerivativeMarket from '~/components/partials/derivatives/market.vue'
-import VMarketSelection from '~/components/partials/common/markets/markets-selection.vue'
+import VMarketSelection from '~/components/partials/common/market-selection/index.vue'
 import VModalMarketBeta from '~/components/partials/modals/market-beta.vue'
-import {
-  ETH_COIN_GECKO_ID,
-  USDT_COIN_GECKO_ID,
-  UST_COIN_GECKO_ID
-} from '~/app/utils/constants'
 import { betaMarketSlugs } from '~/app/data/market'
 import { Modal } from '~/types'
 
@@ -82,8 +84,7 @@ export default Vue.extend({
   data() {
     return {
       status: new Status(StatusType.Loading),
-      showMarketList: false,
-      interval: 0 as any
+      showMarketList: false
     }
   },
 
@@ -98,10 +99,6 @@ export default Vue.extend({
 
     isSpotMarket(): boolean {
       const { $route } = this
-
-      if (!$route || !$route.name) {
-        return false
-      }
 
       return $route.name === 'spot-spot'
     },
@@ -133,10 +130,8 @@ export default Vue.extend({
   mounted() {
     this.$root.$on('toggle-market-list', this.toggleMarketList)
 
-    Promise.all([this.initMarket(), this.getMarketsQuoteTokenUsdPrices()])
-      .then(() => {
-        this.setMarketQuoteTokenUsdPricesPolling()
-      })
+    Promise.all([this.initMarket()])
+      .then(() => {})
       .catch(this.$onRejected)
       .finally(() => {
         if (this.marketIsBeta) {
@@ -159,7 +154,6 @@ export default Vue.extend({
     this.$accessor.derivatives.reset()
     this.$accessor.spot.reset()
     this.$accessor.modal.reset()
-    clearInterval(this.interval)
   },
 
   methods: {
@@ -169,20 +163,6 @@ export default Vue.extend({
       return isSpotMarket
         ? this.$accessor.spot.initMarket(slug)
         : this.$accessor.derivatives.initMarket(slug)
-    },
-
-    getMarketsQuoteTokenUsdPrices(): Promise<void> {
-      return this.$accessor.token.getTokenUsdPriceMap([
-        ETH_COIN_GECKO_ID,
-        USDT_COIN_GECKO_ID,
-        UST_COIN_GECKO_ID
-      ])
-    },
-
-    setMarketQuoteTokenUsdPricesPolling() {
-      this.interval = setInterval(() => {
-        this.getMarketsQuoteTokenUsdPrices()
-      }, 10 * 1000)
     },
 
     toggleMarketList() {

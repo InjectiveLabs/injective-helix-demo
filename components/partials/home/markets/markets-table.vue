@@ -1,32 +1,13 @@
 <template>
   <div>
-    <v-markets-filter
-      v-if="condensed"
-      class="mb-6"
-      :market-base.sync="marketBase"
-      :market-type.sync="marketBase"
-      :search.sync="search"
-    />
     <div
       class="overflow-x-auto md:overflow-x-visible w-full bg-gray-900 rounded"
-      :class="{
-        'h-full overflow-y-auto ': condensed
-      }"
     >
-      <TableHeader
-        v-if="markets.length !== 0"
-        :sm="condensed"
-        :lg="!condensed"
-        class="pt-0 bg-gray-800"
-        :class="{ 'pb-5': !condensed }"
-      >
-        <span
-          class="text-left"
-          :class="{ 'col-span-5': condensed, 'col-span-3': !condensed }"
-        >
+      <TableHeader v-if="markets.length !== 0" lg class="pt-0 bg-gray-800 pb-5">
+        <span class="text-left col-span-3">
           {{ $t('trade.market') }}
         </span>
-        <span :class="{ 'col-span-4': condensed, 'col-span-3': !condensed }">
+        <span class="col-span-3">
           <div class="flex items-center relative justify-end">
             <span class="flex-1 text-right">{{
               $t('trade.last_traded_price')
@@ -46,7 +27,7 @@
             />
           </div>
         </span>
-        <span v-if="!condensed" class="col-span-3">
+        <span class="col-span-3">
           <div class="flex items-center relative justify-end">
             {{ $t('trade.market_volume_24h') }}
             <v-icon-info-tooltip
@@ -57,17 +38,13 @@
         </span>
       </TableHeader>
 
-      <TableBody
-        :show-empty="filteredMarkets.length === 0 && condensed"
-        :round="condensed"
-      >
+      <TableBody>
         <v-market
           v-for="({ market, summary }, index) in marketsList"
           :key="`market-${index}`"
           class="col-span-1"
           :market="market"
           :summary="summary"
-          :condensed="condensed"
         />
         <v-market-new
           v-for="({ market, summary }, index) in filteredUpcomingMarkets"
@@ -75,13 +52,7 @@
           class="col-span-1"
           :market="market"
           :summary="summary"
-          :condensed="condensed"
         />
-        <template slot="empty">
-          <span class="col-span-1 md:col-span-3 text-center xl:text-left">{{
-            $t('There are no results found - Markets')
-          }}</span>
-        </template>
       </TableBody>
     </div>
   </div>
@@ -97,11 +68,10 @@ import {
   UiSpotMarketSummary,
   UiSpotMarketWithToken
 } from '@injectivelabs/ui-common'
-import VMarketsFilter from './markets-filter.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import TableHeader from '~/components/elements/table-header.vue'
-import VMarket from '~/components/partials/common/markets/market.vue'
-import VMarketNew from '~/components/partials/common/markets/market-new.vue'
+import VMarket from '~/components/partials/home/markets/market.vue'
+import VMarketNew from '~/components/partials/home/markets/market-new.vue'
 import { newMarketsSlug } from '~/app/data/market'
 import { MarketFilterType, UiMarketAndSummary } from '~/types'
 
@@ -110,21 +80,10 @@ export default Vue.extend({
     TableBody,
     TableHeader,
     VMarket,
-    VMarketNew,
-    VMarketsFilter
+    VMarketNew
   },
 
   props: {
-    condensed: {
-      default: false,
-      type: Boolean
-    },
-
-    reduced: {
-      default: false,
-      type: Boolean
-    },
-
     filterType: {
       type: String as PropType<MarketFilterType>,
       default: MarketFilterType.All
@@ -152,9 +111,6 @@ export default Vue.extend({
 
   data() {
     return {
-      marketType: '' as string,
-      marketBase: '' as string,
-      search: '',
       limit: 5
     }
   },
@@ -163,56 +119,28 @@ export default Vue.extend({
     mappedMarkets(): UiMarketAndSummary[] {
       const { markets, summaries } = this
 
-      return markets.map((market) => {
-        return {
-          market,
-          summary: summaries.find(
-            (summary) => summary.marketId === market.marketId
-          )
-        }
-      }) as UiMarketAndSummary[]
-    },
-
-    filteredAllMarkets(): UiMarketAndSummary[] {
-      const { search, marketType, marketBase, mappedMarkets } = this
-
-      const query = search.toLowerCase().trim()
-
-      return mappedMarkets.filter(({ market, summary }) => {
-        const { ticker, quoteDenom } = market
-
-        const satisfiesSearchCondition =
-          quoteDenom.toLowerCase().startsWith(query) ||
-          ticker.toLowerCase().startsWith(query)
-        const marketTypeCondition = marketType
-          ? marketType === market.type
-          : true
-        const marketBaseCondition = !marketBase
-          ? true
-          : marketBase && market.subType
-          ? marketBase === market.subType
-          : false
-
-        return (
-          marketTypeCondition &&
-          marketBaseCondition &&
-          satisfiesSearchCondition &&
-          market &&
-          summary !== undefined
-        )
-      }) as UiMarketAndSummary[]
+      return markets
+        .map((market) => {
+          return {
+            market,
+            summary: summaries.find(
+              (summary) => summary.marketId === market.marketId
+            )
+          }
+        })
+        .filter(({ summary }) => summary !== undefined) as UiMarketAndSummary[]
     },
 
     filteredMarkets(): UiMarketAndSummary[] {
-      const { filteredAllMarkets } = this
+      const { mappedMarkets } = this
 
-      return filteredAllMarkets.filter((m) => !m.market.upcoming)
+      return mappedMarkets.filter((m) => !m.market.upcoming)
     },
 
     filteredUpcomingMarkets(): UiMarketAndSummary[] {
-      const { filteredAllMarkets } = this
+      const { mappedMarkets } = this
 
-      return filteredAllMarkets.filter((m) => !!m.market.upcoming)
+      return mappedMarkets.filter((m) => !!m.market.upcoming)
     },
 
     marketsSortedByVolume(): UiMarketAndSummary[] {
@@ -227,9 +155,9 @@ export default Vue.extend({
     },
 
     newMarketsList(): UiMarketAndSummary[] {
-      const { filteredMarkets } = this
+      const { mappedMarkets } = this
 
-      return filteredMarkets
+      return mappedMarkets
         .filter(({ market: { slug } }) => {
           return newMarketsSlug.includes(slug.toLowerCase())
         })
@@ -265,9 +193,9 @@ export default Vue.extend({
     },
 
     marketsList(): UiMarketAndSummary[] {
-      const { filteredMarketsList, reduced, limit } = this
+      const { filteredMarketsList, limit } = this
 
-      return reduced ? filteredMarketsList.slice(0, limit) : filteredMarketsList
+      return filteredMarketsList.slice(0, limit)
     },
 
     totalVolume(): BigNumberInBase {

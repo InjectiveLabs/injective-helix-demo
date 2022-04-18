@@ -51,7 +51,6 @@
             :markets="markets"
             :summaries="marketsSummary"
             :filter-type="filterType"
-            reduced
           />
         </VHocLoading>
       </div>
@@ -77,7 +76,7 @@ import {
   ZERO_IN_BASE
 } from '@injectivelabs/ui-common'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-import VTable from './table.vue'
+import VTable from '~/components/partials/home/markets/markets-table.vue'
 import { MarketFilterType } from '~/types'
 
 export default Vue.extend({
