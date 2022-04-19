@@ -103,12 +103,7 @@ import TableHeader from '~/components/elements/table-header.vue'
 import VMarket from '~/components/partials/common/markets/market.vue'
 import VMarketNew from '~/components/partials/common/markets/market-new.vue'
 import { newMarketsSlug } from '~/app/data/market'
-import { MarketFilterType } from '~/types'
-
-export interface UiMarketAndSummary {
-  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
-  summary: UiDerivativeMarketSummary | UiSpotMarketSummary
-}
+import { MarketFilterType, UiMarketAndSummary } from '~/types'
 
 export default Vue.extend({
   components: {

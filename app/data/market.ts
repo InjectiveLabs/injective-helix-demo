@@ -3,6 +3,7 @@ import {
   UiDerivativeMarketWithToken,
   UiSpotMarketWithToken
 } from '@injectivelabs/ui-common'
+import { BAYC_WETH_PERP_SLUG } from '~/app/utils/constants'
 
 export const marketBase = {
   [MarketBase.Terra]: ['UST', 'LUNA']
@@ -29,12 +30,15 @@ export const marketBaseFromTicker = (
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  BAYC_WETH_PERP_SLUG,
   'ape-usdt',
   'luna-ust',
   'luna-ust-perp',
   'huahua-usdt',
   'ust-usdt'
 ]
+
+export const innovationMarketsSlug = ['ape-usdt', 'huahua-usdt', 'gf-usdt']
 
 export const excludedPriceDeviationSlugs = ['bayc-weth-perp'] as string[]
 

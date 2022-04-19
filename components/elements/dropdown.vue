@@ -15,7 +15,13 @@
           @click="onDropdownToggle"
         >
           <slot name="title" />
-          <v-icon-caret-down class="-mr-1 ml-3 h-4 w-4 text-gray-200" />
+          <v-icon-caret-down
+            class="h-4 w-4"
+            :class="[
+              dark ? 'text-gray-500' : 'text-gray-200',
+              tight ? 'ml-1' : '-mr-1 ml-3 '
+            ]"
+          />
         </button>
       </div>
 
@@ -79,6 +85,16 @@ export default Vue.extend({
     },
 
     round: {
+      type: Boolean,
+      default: false
+    },
+
+    dark: {
+      type: Boolean,
+      default: false
+    },
+
+    tight: {
       type: Boolean,
       default: false
     }

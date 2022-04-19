@@ -15,7 +15,7 @@ export default Vue.extend({
     },
 
     item: {
-      type: Object,
+      type: [Object, String],
       required: true
     }
   },
