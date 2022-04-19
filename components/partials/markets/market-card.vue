@@ -1,5 +1,8 @@
 <template>
-  <div class="rounded-2xl bg-transparent shadow-card p-4 bg-white bg-opacity-5">
+  <nuxt-link
+    class="rounded-2xl bg-transparent shadow-card p-4 bg-white bg-opacity-5 block"
+    :to="marketRoute"
+  >
     <div class="flex items-center justify-between text-gray-500">
       <p class="tracking-widest uppercase text-xs">
         <slot />
@@ -8,7 +11,7 @@
       <v-powered-by v-if="isBaycWeth" />
     </div>
     <div class="flex justify-between mt-4">
-      <nuxt-link class="flex items-center" :to="marketRoute">
+      <div class="flex items-center">
         <div v-if="market.baseToken.logo" class="w-8 h-8 mr-3">
           <img
             :src="market.baseToken.logo"
@@ -24,7 +27,7 @@
             {{ market.baseToken.name }}
           </span>
         </div>
-      </nuxt-link>
+      </div>
       <!-- V2: spark line chart -->
     </div>
 
@@ -57,7 +60,7 @@
         {{ $t('markets.vol') }} {{ volumeInUsdToFormat }} USD
       </span>
     </div>
-  </div>
+  </nuxt-link>
 </template>
 
 <script lang="ts">

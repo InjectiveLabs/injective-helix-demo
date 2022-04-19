@@ -14,8 +14,8 @@
             <p class="text-gray-100 font-semibold text-sm flex items-center">
               <span>{{ market.ticker }}</span>
               <v-icon-chevron
-                class="w-auto h-3 text-gray-500 ml-2 transform transition ease-in-out duration-300 delay-100"
-                :class="[expanded ? '-rotate-90' : 'rotate-90']"
+                class="w-auto h-3 text-gray-500 ml-2 transform transition ease-in-out duration-300"
+                :class="[expanded ? 'rotate-90' : '-rotate-90']"
               />
             </p>
             <p class="text-gray-500 text-xs">
@@ -36,18 +36,8 @@
       <v-market-stats
         :market="market"
         :summary="summary"
-        class="hidden lg:block flex-1 overflow-x-auto col-span-2 2xl:col-span-3"
+        class="mt-4 lg:mt-0 flex-1 overflow-x-auto col-span-2 2xl:col-span-3"
       />
-
-      <!-- mobile stats -->
-      <transition name="fade-up">
-        <v-market-stats
-          v-if="expanded"
-          :market="market"
-          :summary="summary"
-          class="lg:hidden mt-4"
-        />
-      </transition>
     </div>
   </div>
 </template>

@@ -10,8 +10,8 @@
 
       <div
         v-if="markets.length > 0"
-        v-touch:swipe.left="handleSwipeLeft"
-        v-touch:swipe.right="handleSwipeRight"
+        v-touch:swipe.left="handleSwipeRight"
+        v-touch:swipe.right="handleSwipeLeft"
         class="md:hidden"
       >
         <transition mode="out-in" :name="animation">

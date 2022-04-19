@@ -1,32 +1,30 @@
 <template>
-  <div>
-    <div class="flex flex-col items-end">
-      <div class="flex items-center tracking-wide" :class="{ 'text-xs': !lg }">
-        <v-icon-arrow
-          v-if="!lastTradedPrice.isNaN() && lastTradedPrice.gt(0)"
-          class="transform w-3 h-3 mr-1"
-          :class="{
-            'text-aqua-500 rotate-90': lastPriceChange !== Change.Decrease,
-            'text-red-500 -rotate-90': lastPriceChange === Change.Decrease
-          }"
-        />
-        <span
-          v-if="!lastTradedPrice.isNaN()"
-          :class="{
-            'text-aqua-500': lastPriceChange !== Change.Decrease,
-            'text-red-500': lastPriceChange === Change.Decrease
-          }"
-        >
-          {{ lastTradedPriceToFormat }}
-        </span>
-        <span v-else class="text-gray-400">&mdash;</span>
-      </div>
+  <div class="flex flex-col items-end">
+    <div class="flex items-center tracking-wide" :class="{ 'text-xs': !lg }">
+      <v-icon-arrow
+        v-if="!lastTradedPrice.isNaN() && lastTradedPrice.gt(0)"
+        class="transform w-3 h-3 mr-1"
+        :class="{
+          'text-aqua-500 rotate-90': lastPriceChange !== Change.Decrease,
+          'text-red-500 -rotate-90': lastPriceChange === Change.Decrease
+        }"
+      />
+      <span
+        v-if="!lastTradedPrice.isNaN()"
+        :class="{
+          'text-aqua-500': lastPriceChange !== Change.Decrease,
+          'text-red-500': lastPriceChange === Change.Decrease
+        }"
+      >
+        {{ lastTradedPriceToFormat }}
+      </span>
+      <span v-else class="text-gray-400">&mdash;</span>
+    </div>
 
-      <div v-if="!change.isNaN()" class="mt-1 text-xs">
-        <span :class="change.gte(0) ? 'text-aqua-500' : 'text-red-500'">
-          {{ changeToFormat }}%
-        </span>
-      </div>
+    <div v-if="!change.isNaN()" class="mt-1 text-xs">
+      <span :class="change.gte(0) ? 'text-aqua-500' : 'text-red-500'">
+        {{ changeToFormat }}%
+      </span>
     </div>
   </div>
 </template>
