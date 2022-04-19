@@ -1,7 +1,7 @@
 <template>
-  <div class="px-4 w-auto md:px-2 lg:px-3 2xl:px-4">
+  <div class="w-auto lg:px-3 2xl:px-4">
     <span
-      class="text-gray-500 mb-1 w-full text-right text-xs flex items-center justify-between whitespace-nowrap"
+      class="text-gray-500 mb-1 w-full lg:text-right text-xs flex items-center lg:justify-between whitespace-nowrap"
     >
       {{ title }}
       <v-icon-info-tooltip v-if="tooltip" class="ml-2" :tooltip="tooltip" />

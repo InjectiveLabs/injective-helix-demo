@@ -12,7 +12,12 @@
       </div>
       <div class="flex-1 grid grid-cols-6 lg:grid-cols-12 gap-1 p-1">
         <div class="col-span-6 lg:col-span-3 4xl:col-span-3 overflow-y-hidden">
-          <transition-group name="fade-up" mode="out-in">
+          <transition-group
+            enter-active-class="duration-700"
+            leave-active-class="duration-300"
+            name="fade-up"
+            mode="out-in"
+          >
             <v-market-selection
               v-show="showMarketList"
               key="market-selection"

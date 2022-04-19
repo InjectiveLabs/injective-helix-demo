@@ -4,7 +4,7 @@
     :title="$t('trade.next_funding')"
     :tooltip="$t('trade.next_funding_tooltip')"
   >
-    <span class="text-sm text-right font-mono block">
+    <span class="text-xs lg:text-right font-mono block">
       <v-countdown v-if="msUntilFunding > 0" :time="msUntilFunding">
         <template slot-scope="{ hours, minutes, seconds }">
           {{ hours >= 10 ? hours : '0' + hours }}:{{

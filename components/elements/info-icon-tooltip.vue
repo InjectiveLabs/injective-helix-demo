@@ -32,7 +32,7 @@ export default Vue.extend({
 
   computed: {
     classes(): string[] {
-      return this.lg ? ['w-4', 'w-4'] : ['w-3', 'w-3']
+      return this.lg ? ['min-w-4', 'w-4', 'w-4'] : ['min-w-3', 'w-3', 'w-3']
     }
   }
 })

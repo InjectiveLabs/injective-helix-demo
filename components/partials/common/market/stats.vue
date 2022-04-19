@@ -1,34 +1,14 @@
 <template>
   <div v-if="market">
-    <div class="flex overflow-x-auto overflow-y-none">
-      <v-market-info
-        :title="$t('trade.last_traded_price')"
-        :tooltip="$t('trade.last_traded_price_tooltip')"
-      >
-        <span
-          v-if="!currentLastTrade.isNaN()"
-          class="text-sm text-right font-mono block"
-        >
-          <span
-            :class="{
-              'text-aqua-500': currentLastTradeChange === Change.Increase,
-              'text-red-500': currentLastTradeChange === Change.Decrease
-            }"
-          >
-            {{ currentLastTradePriceToFormat }}
-          </span>
-        </span>
-        <span v-else class="text-gray-400">&mdash;</span>
-      </v-market-info>
+    <div
+      class="grid grid-cols-2 md:grid-cols-3 gap-2.5 lg:gap-0 lg:flex overflow-x-auto overflow-y-none text-xs"
+    >
       <v-market-info
         v-if="market.type === MarketType.Derivative"
         :title="$t('trade.mark_price')"
         :tooltip="$t('trade.mark_price_tooltip')"
       >
-        <span
-          v-if="!markPrice.isNaN()"
-          class="text-sm text-right font-mono block"
-        >
+        <span v-if="!markPrice.isNaN()" class="lg:text-right font-mono block">
           <span
             :class="{
               'text-aqua-500': currentLastTradeChange === Change.Increase,
@@ -41,41 +21,25 @@
         <span v-else class="text-gray-400">&mdash;</span>
       </v-market-info>
       <v-market-info
-        :title="$t('trade.market_change_24h')"
-        :tooltip="$t('trade.market_change_24h_tooltip')"
-      >
-        <span v-if="!change.isNaN()" class="text-sm text-right font-mono block">
-          <span
-            :class="{
-              'text-aqua-500': change.gte(0),
-              'text-red-500': change.lt(0)
-            }"
-          >
-            {{ (change.gt(0) ? '+' : '') + change.toFormat(2) }}%
-          </span>
-        </span>
-        <span v-else class="text-gray-400">&mdash;</span>
-      </v-market-info>
-      <v-market-info
         :title="$t('trade.volume_asset', { asset: market.quoteToken.symbol })"
         :tooltip="$t('trade.market_volume_24h_tooltip')"
       >
         <span
           v-if="volume.gt(0) && !volume.isNaN()"
-          class="text-sm text-right font-mono block"
+          class="lg:text-right font-mono block"
         >
           {{ volumeToFormat }}
         </span>
         <span v-else class="text-gray-400">&mdash;</span>
       </v-market-info>
       <v-market-info :title="$t('trade.high')">
-        <span class="text-sm text-right font-mono block">
+        <span class="lg:text-right font-mono block">
           <span v-if="high.gt(0) && !high.isNaN()">{{ highToFormat }}</span>
           <span v-else class="text-gray-400">&mdash;</span>
         </span>
       </v-market-info>
       <v-market-info :title="$t('trade.low')">
-        <span class="text-sm text-right font-mono block">
+        <span class="lg:text-right font-mono block">
           <span v-if="low.gt(0) && !low.isNaN()">{{ lowToFormat }}</span>
           <span v-else class="text-gray-400">&mdash;</span>
         </span>
@@ -85,10 +49,7 @@
         :title="$t('trade.est_funding_rate')"
         :tooltip="$t('trade.funding_rate_tooltip')"
       >
-        <span
-          v-if="!fundingRate.isNaN()"
-          class="text-sm text-right font-mono block"
-        >
+        <span v-if="!fundingRate.isNaN()" class="lg:text-right font-mono block">
           <span
             :class="{
               'text-aqua-500': fundingRate.gte(0),
@@ -101,14 +62,14 @@
             }}%
           </span>
         </span>
-        <span v-else class="text-sm text-right font-mono block">&mdash;</span>
+        <span v-else class="lg:text-right font-mono block">&mdash;</span>
       </v-market-info>
       <v-market-next-funding v-if="market.type === MarketType.Derivative" />
       <v-market-info
         v-if="market.type === MarketType.Derivative && expiryAt"
         :title="$t('trade.expiry_date')"
       >
-        <span class="text-sm text-right font-mono block">
+        <span class="lg:text-right font-mono block">
           {{ expiryAt }}
         </span>
       </v-market-info>
@@ -134,8 +95,6 @@ import { SpotOrderSide } from '@injectivelabs/spot-consumer'
 import MarketNextFunding from './next-funding.vue'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import MarketInfo from '~/components/elements/market-info.vue'
-
-const { metaTags } = require('~/meta.config')
 
 export default Vue.extend({
   components: {
@@ -167,14 +126,6 @@ export default Vue.extend({
   },
 
   computed: {
-    currentSpotMarket(): UiSpotMarketWithToken | undefined {
-      return this.$accessor.spot.market
-    },
-
-    currentDerivativeMarket(): UiDerivativeMarketWithToken | undefined {
-      return this.$accessor.derivatives.market
-    },
-
     currentLastSpotTradedPrice(): BigNumberInBase {
       return this.$accessor.spot.lastTradedPrice
     },
@@ -193,29 +144,6 @@ export default Vue.extend({
 
     derivativeMarkPrice(): string {
       return this.$accessor.derivatives.marketMarkPrice
-    },
-
-    currentMarket():
-      | UiSpotMarketWithToken
-      | UiDerivativeMarketWithToken
-      | undefined {
-      const { currentSpotMarket, currentDerivativeMarket, market } = this
-
-      return market.type === MarketType.Spot
-        ? currentSpotMarket
-        : currentDerivativeMarket
-    },
-
-    currentLastTrade(): BigNumberInBase {
-      const {
-        currentLastSpotTradedPrice,
-        currentLastDerivativeTradedPrice,
-        market
-      } = this
-
-      return market.type === MarketType.Spot
-        ? currentLastSpotTradedPrice
-        : currentLastDerivativeTradedPrice
     },
 
     markPrice(): BigNumberInBase {
@@ -240,16 +168,6 @@ export default Vue.extend({
       }
 
       return markPrice.toFormat(market.priceDecimals)
-    },
-
-    currentLastTradePriceToFormat(): string {
-      const { market, currentLastTrade } = this
-
-      if (!market) {
-        return currentLastTrade.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return currentLastTrade.toFormat(market.priceDecimals)
     },
 
     currentLastTradeChange(): Change {
@@ -357,16 +275,6 @@ export default Vue.extend({
       return new BigNumberInBase(estFundingRate).multipliedBy(100)
     },
 
-    change(): BigNumberInBase {
-      const { market, summary } = this
-
-      if (!market || !summary) {
-        return ZERO_IN_BASE
-      }
-
-      return new BigNumberInBase(summary.change)
-    },
-
     low(): BigNumberInBase {
       const { market, summary } = this
 
@@ -431,31 +339,7 @@ export default Vue.extend({
           addSuffix: true
         }
       )
-    },
-
-    lastTradedPriceToString(): string {
-      const { currentLastTrade } = this
-
-      if (currentLastTrade.isNaN() || currentLastTrade.lte(0)) {
-        return '0.00'
-      }
-
-      return `${currentLastTrade.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)}`
     }
-  },
-
-  watch: {
-    lastTradedPriceToString(newPrice: string) {
-      const { market } = this
-
-      if (market) {
-        document.title = `${newPrice} - ${market.ticker} | ${metaTags.title}`
-      }
-    }
-  },
-
-  beforeDestroy() {
-    document.title = metaTags.title
   }
 })
 </script>
