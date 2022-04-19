@@ -111,11 +111,6 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import {
-  UiDerivativeMarketWithToken,
-  UiSpotMarketWithToken,
-  MarketType
-} from '@injectivelabs/ui-common'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import VMarketFilter from '~/components/partials/markets/filters/index.vue'
 import VMarketRow from '~/components/partials/markets/market-row.vue'
@@ -127,95 +122,17 @@ import {
   MarketQuoteType,
   UiMarketAndSummaryWithVolumeInUsd
 } from '~/types'
-import { USDT_COIN_GECKO_ID, UST_COIN_GECKO_ID } from '~/app/utils/constants'
-import { innovationMarketsSlug } from '~/app/data/market'
+import {
+  marketIsPartOfCategory,
+  marketIsQuotePair,
+  marketIsPartOfType,
+  marketIsPartOfSearch
+} from '~/app/utils/market'
 
 enum MarketHeaderType {
   Market = 'market',
   Change = 'change',
   Volume = 'volume'
-}
-
-const marketIsPartOfCategory = (
-  activeCategory: MarketCategoryType,
-  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
-): boolean => {
-  if (activeCategory === MarketCategoryType.All) {
-    return true
-  }
-
-  if (activeCategory === MarketCategoryType.Cosmos) {
-    return (
-      market.baseToken.denom.startsWith('ibc') ||
-      market.quoteToken.denom.startsWith('ibc')
-    )
-  }
-
-  if (activeCategory === MarketCategoryType.Ethereum) {
-    return (
-      !market.baseToken.denom.startsWith('ibc') &&
-      !market.quoteToken.denom.startsWith('ibc')
-    )
-  }
-
-  if (activeCategory === MarketCategoryType.Innovation) {
-    return innovationMarketsSlug.includes(market.slug)
-  }
-
-  return true
-}
-
-const marketIsQuotePair = (
-  activeQuote: MarketQuoteType,
-  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
-): boolean => {
-  if (activeQuote === MarketQuoteType.All) {
-    return true
-  }
-
-  if (activeQuote === MarketQuoteType.USDT) {
-    return [
-      market.quoteToken.coinGeckoId,
-      market.baseToken.coinGeckoId
-    ].includes(USDT_COIN_GECKO_ID)
-  }
-
-  if (activeQuote === MarketQuoteType.UST) {
-    return [
-      market.quoteToken.coinGeckoId,
-      market.baseToken.coinGeckoId
-    ].includes(UST_COIN_GECKO_ID)
-  }
-
-  return true
-}
-
-const marketIsPartOfType = (
-  activeType: string,
-  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
-): boolean => {
-  if (activeType.trim() === '') {
-    return true
-  }
-
-  return [market.type, market.subType].includes(activeType as MarketType)
-}
-
-const marketIsPartOfSearch = (
-  search: string,
-  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
-): boolean => {
-  const query = search.trim()
-
-  if (query === '') {
-    return true
-  }
-
-  return (
-    market.quoteToken.symbol.toLowerCase().startsWith(query) ||
-    market.baseToken.symbol.toLowerCase().startsWith(query) ||
-    market.ticker.toLowerCase().startsWith(query)
-  )
 }
 
 export default Vue.extend({

@@ -1,38 +1,37 @@
 <template>
-  <VHocLoading :status="status" :show-loading="mappedMarkets.length === 0">
-    <div>
-      <v-overview v-if="mappedMarkets.length > 0" :markets="mappedMarkets" />
-      <v-markets :markets="mappedMarkets" />
-    </div>
-  </VHocLoading>
+  <v-card class="relative h-full" md>
+    <VHocLoading :status="status" :show-loading="mappedMarkets.length === 0">
+      <v-markets-table :markets="mappedMarkets" />
+    </VHocLoading>
+  </v-card>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiSpotMarketSummary,
   UiSpotMarketWithToken
 } from '@injectivelabs/ui-common'
-import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-import VMarkets from '~/components/partials/markets/index.vue'
-import VOverview from '~/components/partials/markets/overview.vue'
 import { UiMarketAndSummaryWithVolumeInUsd, TokenUsdPriceMap } from '~/types'
 import {
   ETH_COIN_GECKO_ID,
   USDT_COIN_GECKO_ID,
   UST_COIN_GECKO_ID
 } from '~/app/utils/constants'
+import VMarketsTable from '~/components/partials/common/market-selection/markets-table.vue'
 
 export default Vue.extend({
   components: {
-    VMarkets,
-    VOverview
+    VMarketsTable
   },
 
   data() {
     return {
+      activeType: '',
+      search: '',
       status: new Status(StatusType.Loading),
       interval: 0 as any
     }
@@ -103,10 +102,6 @@ export default Vue.extend({
 
   mounted() {
     this.setMarketSummariesPolling()
-  },
-
-  beforeDestroy() {
-    clearInterval(this.interval)
   },
 
   methods: {

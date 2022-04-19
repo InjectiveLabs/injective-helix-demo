@@ -1,14 +1,23 @@
 <template>
   <div class="bg-gray-800 shadow-sm px-4 py-1 rounded-xl">
-    <div class="flex flex-wrap items-center mt-1 py-2 lg:py-1">
-      <div class="flex items-center pr-4 w-autojustify-start border-r">
+    <div
+      class="flex flex-wrap items-center mt-1 py-2 lg:py-1 cursor-pointer"
+      @click="handleTokenClick"
+    >
+      <div class="flex items-center pr-4 w-auto justify-start border-r">
         <img
           :src="market.baseToken.logo"
           :alt="market.baseToken.name"
           class="w-6 h-6 mr-4"
         />
         <div class="leading-none">
-          <p class="text-gray-100 font-semibold text-sm">{{ market.ticker }}</p>
+          <p class="text-gray-100 font-semibold text-sm flex items-center">
+            <span>{{ market.ticker }}</span>
+            <v-icon-chevron
+              class="w-auto h-3 text-gray-500 ml-1.5 transform transition ease-in-out duration-300 delay-100"
+              :class="[expanded ? '-rotate-90' : 'rotate-90']"
+            />
+          </p>
           <p class="text-gray-500 text-xs">
             {{ market.baseToken.name }}
           </p>
@@ -49,6 +58,17 @@ export default Vue.extend({
     summary: {
       type: Object as PropType<UiSpotMarketSummary | UiDerivativeMarketSummary>,
       required: true
+    },
+
+    expanded: {
+      type: Boolean,
+      default: false
+    }
+  },
+
+  methods: {
+    handleTokenClick() {
+      this.$root.$emit('toggle-market-list')
     }
   }
 })
