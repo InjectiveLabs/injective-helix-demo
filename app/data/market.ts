@@ -38,7 +38,21 @@ export const newMarketsSlug = [
   'ust-usdt'
 ]
 
-export const innovationMarketsSlug = ['ape-usdt', 'huahua-usdt', 'gf-usdt']
+export const experimentalMarketsSlug = [
+  BAYC_WETH_PERP_SLUG,
+  'ape-usdt',
+  'huahua-usdt',
+  'gf-usdt'
+]
+
+export const slugsToIncludeInCosmosCategory = ['inj-usdt', 'inj-usdt-perp']
+export const slugsToExcludeFromEthereumCategory = [
+  ...slugsToIncludeInCosmosCategory,
+  'btc-usdt',
+  'btc-usdt-perp',
+  'link-usdt',
+  'link-usdt-perp'
+]
 
 export const excludedPriceDeviationSlugs = ['bayc-weth-perp'] as string[]
 

@@ -108,7 +108,7 @@ export enum MarketCategoryType {
   All = 'all',
   Cosmos = 'cosmos',
   Ethereum = 'ethereum',
-  Innovation = 'innovation'
+  Experimental = 'experimental'
 }
 
 export enum MarketQuoteType {

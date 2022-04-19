@@ -36,7 +36,7 @@
       }"
     >
       <v-icon-arrow
-        v-if="volumeInUsd.gt(0)"
+        v-if="lastTradedPrice.gt(0)"
         class="transform w-5 h-5 mr-1"
         :class="{
           'rotate-90': summary.lastPriceChange !== Change.Decrease,
@@ -49,10 +49,7 @@
     <div class="flex items-center font-mono text-sm tracking-wide mt-2">
       <span
         class="mr-2"
-        :class="{
-          'text-aqua-500 ': summary.lastPriceChange !== Change.Decrease,
-          'text-red-500': summary.lastPriceChange === Change.Decrease
-        }"
+        :class="change.gte(0) ? 'text-aqua-500' : 'text-red-500'"
       >
         {{ changeToFormat }}%
       </span>

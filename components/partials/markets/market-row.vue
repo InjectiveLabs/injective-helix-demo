@@ -89,12 +89,12 @@
     </span>
 
     <span class="hidden sm:block font-mono col-span-3">
-      <div v-if="!baseVolume.isNaN()" class="flex flex-col items-end">
+      <div v-if="!quoteVolume.isNaN()" class="flex flex-col items-end">
         <span>{{ volumeInUsdToFormat }} USD</span>
         <span class="text-xs text-gray-500">
-          {{ baseVolumeToFormat }}
+          {{ quoteVolumeToFormat }}
           <span>
-            {{ market.baseToken.symbol }}
+            {{ market.quoteToken.symbol }}
           </span>
         </span>
       </div>
@@ -199,20 +199,10 @@ export default Vue.extend({
       return new BigNumberInBase(summary.volume)
     },
 
-    baseVolume(): BigNumberInBase {
-      const { quoteVolume, lastTradedPrice } = this
+    quoteVolumeToFormat(): string {
+      const { quoteVolume } = this
 
-      if (quoteVolume.eq('0')) {
-        return ZERO_IN_BASE
-      }
-
-      return quoteVolume.dividedBy(lastTradedPrice)
-    },
-
-    baseVolumeToFormat(): string {
-      const { baseVolume } = this
-
-      return baseVolume.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+      return quoteVolume.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
     },
 
     volumeInUsdToFormat(): string {

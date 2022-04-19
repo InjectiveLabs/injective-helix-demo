@@ -5,7 +5,11 @@ import {
 } from '@injectivelabs/ui-common'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { MarketCategoryType, MarketQuoteType, MarketRoute } from '~/types'
-import { innovationMarketsSlug } from '~/app/data/market'
+import {
+  experimentalMarketsSlug,
+  slugsToIncludeInCosmosCategory,
+  slugsToExcludeFromEthereumCategory
+} from '~/app/data/market'
 import { USDT_COIN_GECKO_ID, UST_COIN_GECKO_ID } from '~/app/utils/constants'
 
 export const getMarketRoute = (
@@ -63,19 +67,21 @@ export const marketIsPartOfCategory = (
   if (activeCategory === MarketCategoryType.Cosmos) {
     return (
       market.baseToken.denom.startsWith('ibc') ||
-      market.quoteToken.denom.startsWith('ibc')
+      market.quoteToken.denom.startsWith('ibc') ||
+      slugsToIncludeInCosmosCategory.includes(market.slug)
     )
   }
 
   if (activeCategory === MarketCategoryType.Ethereum) {
     return (
       !market.baseToken.denom.startsWith('ibc') &&
-      !market.quoteToken.denom.startsWith('ibc')
+      !market.quoteToken.denom.startsWith('ibc') &&
+      !slugsToExcludeFromEthereumCategory.includes(market.slug)
     )
   }
 
-  if (activeCategory === MarketCategoryType.Innovation) {
-    return innovationMarketsSlug.includes(market.slug)
+  if (activeCategory === MarketCategoryType.Experimental) {
+    return experimentalMarketsSlug.includes(market.slug)
   }
 
   return true
