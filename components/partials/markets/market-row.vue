@@ -176,6 +176,10 @@ export default Vue.extend({
   },
 
   computed: {
+    accountFavouriteMarkets(): string[] {
+      return this.$accessor.account.accountFavouriteMarkets
+    },
+
     lastTradedPrice(): BigNumberInBase {
       const { summary } = this
 
@@ -279,9 +283,9 @@ export default Vue.extend({
     },
 
     isFavourite(): boolean {
-      // - todo implement business logic
+      const { accountFavouriteMarkets, market } = this
 
-      return false
+      return accountFavouriteMarkets.includes(market.marketId)
     }
   },
 
@@ -289,8 +293,7 @@ export default Vue.extend({
     updateWatchList() {
       const { market } = this
 
-      // - todo implement business logic
-      console.log(market.marketId)
+      this.$accessor.account.updateAccountFavouriteMarkets(market.marketId)
     }
   }
 })
