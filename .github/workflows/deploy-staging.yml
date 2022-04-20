@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy-stag:
-    if: false
+    if: true
     env:
       ## Public
       APP_NAME: 'BETA - Injective Pro: Decentralized Cryptocurrency Derivatives, Ethereum and Altcoin Exchange'
@@ -80,7 +80,7 @@ jobs:
         run: aws cloudfront create-invalidation --distribution-id=$CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
 
   deploy-testnet:
-    if: false
+    if: true
     env:
       ## Public
       APP_NAME: 'TESTNET - Injective Pro: Decentralized Cryptocurrency Derivatives, Ethereum and Altcoin Exchange'
