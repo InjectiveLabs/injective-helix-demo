@@ -32,6 +32,7 @@ jobs:
       ## Endpoints
       APP_EXCHANGE_API_ENDPOINT: ''
       APP_SENTRY_GRPC_ENDPOINT: ''
+      APP_SENTRY_HTTP_ENDPOINT: ''
 
       ## Secret
       APP_GAS_REBATE_API: ${{ secrets.APP_GAS_REBATE_API }}
@@ -104,6 +105,7 @@ jobs:
       ## Endpoints
       APP_EXCHANGE_API_ENDPOINT: ''
       APP_SENTRY_GRPC_ENDPOINT: ''
+      APP_SENTRY_HTTP_ENDPOINT: ''
 
       ## Secret
       APP_GAS_REBATE_API: ${{ secrets.APP_GAS_REBATE_API }}

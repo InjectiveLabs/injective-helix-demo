@@ -27,6 +27,8 @@ export const APP_EXCHANGE_API_ENDPOINT: string =
   process.env.APP_EXCHANGE_API_ENDPOINT || ''
 export const APP_SENTRY_GRPC_ENDPOINT: string =
   process.env.APP_SENTRY_GRPC_ENDPOINT || ''
+export const APP_SENTRY_HTTP_ENDPOINT: string =
+  process.env.APP_SENTRY_HTTP_ENDPOINT || ''
 
 export const UI_DEFAULT_MIN_DISPLAY_DECIMALS = 2
 export const UI_DEFAULT_DISPLAY_DECIMALS = 4
