@@ -120,6 +120,12 @@ export const marketIsPartOfType = (
     return true
   }
 
+  if (activeType === MarketType.Favourite) {
+    // todo - implement business logic
+
+    return false
+  }
+
   return [market.type, market.subType].includes(activeType as MarketType)
 }
 

@@ -1,7 +1,18 @@
 <template>
   <div>
     <div class="flex items-center justify-between flex-wrap">
-      <div class="flex items-centers flex-wrap gap-4">
+      <div class="flex items-centers flex-wrap gap-2 sm:gap-4">
+        <v-market-type-selector
+          :type="MarketType.Favourite"
+          :active="activeType === MarketType.Favourite"
+          @click="handleTypeClick"
+        >
+          <span class="flex items-center">
+            <v-icon-star class="mr-1" />
+            <span>{{ $t('trade.favourite') }}</span>
+          </span>
+        </v-market-type-selector>
+
         <v-market-type-selector
           :type="''"
           :active="activeType === ''"
@@ -29,7 +40,7 @@
 
       <v-search
         name="search"
-        class="mt-3 sm:mt-0 sm:w-auto md:w-xs"
+        class="mt-3 sm:mt-2 3md:mt-0 sm:w-auto md:w-xs"
         wrapper-classes="bg-gray-800 rounded-3xl pl-2"
         dense
         transparent-bg

@@ -211,6 +211,7 @@ module.exports = {
       minWidth: {
         3: '0.75rem',
         4: '1rem',
+        5: '1.25rem',
         6: '1.5rem',
         ...extraSizings
       }

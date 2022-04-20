@@ -40,6 +40,8 @@ import Share from '~/components/icons/share.vue'
 import Show from '~/components/icons/show.vue'
 import Square from '~/components/icons/square.vue'
 import Staking from '~/components/icons/staking.vue'
+import Star from '~/components/icons/star.vue'
+import StarBorder from '~/components/icons/star-border.vue'
 import Sun from '~/components/icons/sun.vue'
 import Swap from '~/components/icons/swap.vue'
 import Telegram from '~/components/icons/telegram.vue'
@@ -98,6 +100,8 @@ Vue.component('VIconShare', Share)
 Vue.component('VIconShow', Show)
 Vue.component('VIconSquare', Square)
 Vue.component('VIconStaking', Staking)
+Vue.component('VIconStar', Star)
+Vue.component('VIconStarBorder', StarBorder)
 Vue.component('VIconSun', Sun)
 Vue.component('VIconSwap', Swap)
 Vue.component('VIconTelegram', Telegram)
