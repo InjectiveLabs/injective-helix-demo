@@ -127,7 +127,7 @@ export const marketIsPartOfSearch = (
   search: string,
   market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
 ): boolean => {
-  const query = search.trim()
+  const query = search.trim().toLowerCase()
 
   if (query === '') {
     return true
