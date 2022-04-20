@@ -164,13 +164,28 @@ export default Vue.extend({
   },
 
   computed: {
+    accountFavouriteMarkets(): string[] {
+      return this.$accessor.app.accountFavouriteMarkets
+    },
+
     filteredMarkets(): UiMarketAndSummaryWithVolumeInUsd[] {
-      const { activeCategory, activeQuote, activeType, markets, search } = this
+      const {
+        activeCategory,
+        activeQuote,
+        activeType,
+        accountFavouriteMarkets,
+        markets,
+        search
+      } = this
 
       return markets.filter(({ market }) => {
         const isPartOfCategory = marketIsPartOfCategory(activeCategory, market)
         const isPartOfSearch = marketIsPartOfSearch(search, market)
-        const isPartOfType = marketIsPartOfType(activeType, market)
+        const isPartOfType = marketIsPartOfType({
+          activeType,
+          market,
+          favouriteMarkets: accountFavouriteMarkets
+        })
         const isQuotePair = marketIsQuotePair(activeQuote, market)
 
         return isPartOfCategory && isPartOfType && isPartOfSearch && isQuotePair

@@ -112,18 +112,21 @@ export const marketIsQuotePair = (
   return true
 }
 
-export const marketIsPartOfType = (
-  activeType: string,
+export const marketIsPartOfType = ({
+  activeType,
+  market,
+  favouriteMarkets
+}: {
+  activeType: string
   market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
-): boolean => {
+  favouriteMarkets: string[]
+}): boolean => {
   if (activeType.trim() === '') {
     return true
   }
 
   if (activeType === MarketType.Favourite) {
-    // todo - implement business logic
-
-    return false
+    return favouriteMarkets.includes(market.marketId)
   }
 
   return [market.type, market.subType].includes(activeType as MarketType)

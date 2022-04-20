@@ -176,6 +176,10 @@ export default Vue.extend({
   },
 
   computed: {
+    accountFavouriteMarkets(): string[] {
+      return this.$accessor.app.accountFavouriteMarkets
+    },
+
     lastTradedPrice(): BigNumberInBase {
       const { summary } = this
 
@@ -187,9 +191,11 @@ export default Vue.extend({
     },
 
     lastTradedPriceToFormat(): string {
-      const { lastTradedPrice } = this
+      const { lastTradedPrice, market } = this
 
-      return lastTradedPrice.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      return lastTradedPrice.toFormat(
+        market?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+      )
     },
 
     isMarketBeta(): boolean {
@@ -279,9 +285,9 @@ export default Vue.extend({
     },
 
     isFavourite(): boolean {
-      // - todo implement business logic
+      const { accountFavouriteMarkets, market } = this
 
-      return false
+      return accountFavouriteMarkets.includes(market.marketId)
     }
   },
 
@@ -289,8 +295,7 @@ export default Vue.extend({
     updateWatchList() {
       const { market } = this
 
-      // - todo implement business logic
-      console.log(market.marketId)
+      this.$accessor.app.updateAccountFavouriteMarkets(market.marketId)
     }
   }
 })

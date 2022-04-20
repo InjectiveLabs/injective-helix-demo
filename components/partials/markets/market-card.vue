@@ -123,9 +123,11 @@ export default Vue.extend({
     },
 
     lastTradedPriceToFormat(): string {
-      const { lastTradedPrice } = this
+      const { lastTradedPrice, market } = this
 
-      return lastTradedPrice.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      return lastTradedPrice.toFormat(
+        market?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+      )
     },
 
     change(): BigNumberInBase {

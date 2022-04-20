@@ -1,7 +1,7 @@
 <template>
   <v-dropdown dark hide-bottom-border tight>
     <template slot="title">
-      <div class="uppercase text-xs tracking-wide leading-5">
+      <div class="uppercase text-xs tracking-wide leading-5 select-none">
         <span class="text-gray-500 mr-3">{{ $t('markets.category') }}:</span>
         <span class="text-primary-500">{{ type }}</span>
       </div>

@@ -4,6 +4,7 @@ import { localStorage } from '~/app/singletons/Storage'
 import { AppState } from '~/types'
 
 const mutationsToPersist = [
+  'app/setFavouriteMarkets',
   'app/setUserState',
   'wallet/reset',
   'wallet/setAddress',
