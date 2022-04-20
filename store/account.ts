@@ -23,11 +23,9 @@ import {
   streamSubaccountBalances,
   cancelSubaccountStreams
 } from '~/app/streams/account'
-import { AccountFavouriteMarketMap } from '~/types'
 import { backupPromiseCall } from '~/app/utils/async'
 
 const initialStateFactory = () => ({
-  favouriteMarkets: {} as AccountFavouriteMarketMap,
   subaccountIds: [] as string[],
   subaccount: undefined as UiSubaccount | undefined,
   subaccountBalancesWithToken: [] as SubaccountBalanceWithToken[],
@@ -38,7 +36,6 @@ const initialStateFactory = () => ({
 const initialState = initialStateFactory()
 
 export const state = () => ({
-  favouriteMarkets: initialState.favouriteMarkets as AccountFavouriteMarketMap,
   subaccountIds: initialState.subaccountIds as string[],
   subaccount: initialState.subaccount as UiSubaccount | undefined,
   subaccountBalancesWithToken: initialState.subaccountBalancesWithToken as SubaccountBalanceWithToken[],
@@ -57,23 +54,10 @@ export const getters = getterTree(state, {
     }
 
     return state.subaccount.balances.length > 0
-  },
-
-  accountFavouriteMarkets: (state: AccountStoreState, _, { wallet }) => {
-    const { injectiveAddress } = wallet
-
-    return state.favouriteMarkets[injectiveAddress] || []
   }
 })
 
 export const mutations = {
-  setFavouriteMarkets(
-    state: AccountStoreState,
-    favouriteMarkets: AccountFavouriteMarketMap
-  ) {
-    state.favouriteMarkets = favouriteMarkets
-  },
-
   setSubacccountIds(state: AccountStoreState, subaccountIds: string[]) {
     state.subaccountIds = subaccountIds
   },
@@ -146,30 +130,6 @@ export const actions = actionTree(
   {
     async init(_) {
       await this.app.$accessor.account.fetchSubaccounts()
-    },
-
-    updateAccountFavouriteMarkets({ state, commit }, marketId: string) {
-      const { injectiveAddress } = this.app.$accessor.wallet
-      const { favouriteMarkets } = state
-
-      let accountFavouriteMarkets = favouriteMarkets[injectiveAddress] || []
-
-      if (!injectiveAddress) {
-        return
-      }
-
-      if (!accountFavouriteMarkets.includes(marketId)) {
-        accountFavouriteMarkets = [marketId, ...accountFavouriteMarkets]
-      } else {
-        accountFavouriteMarkets = accountFavouriteMarkets.filter(
-          (m) => m !== marketId
-        )
-      }
-
-      commit('setFavouriteMarkets', {
-        ...favouriteMarkets,
-        [injectiveAddress]: accountFavouriteMarkets
-      })
     },
 
     async fetchSubaccounts({ commit }) {

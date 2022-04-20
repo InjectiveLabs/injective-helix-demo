@@ -112,11 +112,15 @@ export const marketIsQuotePair = (
   return true
 }
 
-export const marketIsPartOfType = (
-  activeType: string,
-  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken,
+export const marketIsPartOfType = ({
+  activeType,
+  market,
+  favouriteMarkets
+}: {
+  activeType: string
+  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
   favouriteMarkets: string[]
-): boolean => {
+}): boolean => {
   if (activeType.trim() === '') {
     return true
   }

@@ -4,7 +4,7 @@ import { localStorage } from '~/app/singletons/Storage'
 import { AppState } from '~/types'
 
 const mutationsToPersist = [
-  'account/setFavouriteMarkets',
+  'app/setFavouriteMarkets',
   'app/setUserState',
   'wallet/reset',
   'wallet/setAddress',
@@ -57,7 +57,6 @@ const store: Plugin = ({ store, app }) => {
         },
 
         account: {
-          favouriteMarkets: app.$accessor.account.favouriteMarkets,
           subaccountIds: app.$accessor.account.subaccountIds,
           subaccount: app.$accessor.account.subaccount
         }

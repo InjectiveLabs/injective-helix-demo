@@ -64,7 +64,7 @@ export default Vue.extend({
 
   computed: {
     accountFavouriteMarkets(): string[] {
-      return this.$accessor.account.accountFavouriteMarkets
+      return this.$accessor.app.accountFavouriteMarkets
     },
 
     volumeInUsdToFormat(): string {
@@ -98,7 +98,7 @@ export default Vue.extend({
     updateWatchList() {
       const { market } = this
 
-      this.$accessor.account.updateAccountFavouriteMarkets(market.marketId)
+      this.$accessor.app.updateAccountFavouriteMarkets(market.marketId)
     }
   }
 })
