@@ -41,7 +41,7 @@ const derivatives = IS_TESTNET
   ? mainnetStagingDerivatives
   : mainnetDerivatives
 
-if (NETWORK === Network.Devnet) {
+if (NETWORK === Network.Devnet || IS_MAINNET_STAGING) {
   derivatives.push('bayc-weth-perp', 'stx-usdt-perp')
 }
 
