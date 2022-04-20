@@ -14,7 +14,7 @@
       <nuxt-link class="cursor-pointer justify-start" :to="marketRoute">
         <div class="flex flex-col">
           <span class="font-semibold text-gray-200">{{ market.ticker }}</span>
-          <span class="text-gray-500 tracking-wide mt-1">
+          <span class="text-gray-500 tracking-wide mt-1 font-mono">
             {{ abbreviatedVolumeInUsdToFormat }} USD
           </span>
         </div>

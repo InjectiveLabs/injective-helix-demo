@@ -1,7 +1,7 @@
 <template>
   <div class="p-2 lg:p-3">
-    <div class="flex items-center justify-between">
-      <div class="flex items-center justify-center">
+    <div class="flex items-center justify-between flex-wrap">
+      <div class="flex items-center">
         <v-button
           :class="{
             'text-gray-500': component !== components.orderbook
@@ -26,7 +26,7 @@
       </div>
       <v-aggregation-selector
         v-if="component === components.orderbook"
-        class="pr-2"
+        class="pr-2 ml-auto"
         :min-tick="minTick"
         :value="aggregation"
         :max-tick="maxTick"

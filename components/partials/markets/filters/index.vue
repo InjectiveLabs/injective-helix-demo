@@ -2,7 +2,7 @@
   <div>
     <div class="flex items-center justify-between flex-wrap">
       <div
-        class="flex items-centers gap-2 3md:gap-4 overflow-x-auto pb-2 sm:pb-0 mb-2 2md:mb-0 justify-between xs:justify-start w-full xs:w-auto"
+        class="flex items-centers gap-2 3md:gap-4 overflow-x-auto mb-4 2md:mb-0 justify-between xs:justify-start w-full xs:w-auto hide-scrollbar"
       >
         <v-market-type-selector
           :type="MarketType.Favourite"
