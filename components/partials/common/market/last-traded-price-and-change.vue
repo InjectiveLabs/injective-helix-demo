@@ -1,6 +1,9 @@
 <template>
   <div class="flex flex-col items-end">
-    <div class="flex items-center tracking-wide" :class="{ 'text-xs': !lg }">
+    <div
+      class="flex items-center tracking-wide leading-none"
+      :class="{ 'text-xs': !lg }"
+    >
       <v-icon-arrow
         v-if="!lastTradedPrice.isNaN() && lastTradedPrice.gt(0)"
         class="transform w-3 h-3 mr-1"

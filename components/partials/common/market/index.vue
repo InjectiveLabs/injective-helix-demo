@@ -10,7 +10,7 @@
             :alt="market.baseToken.name"
             class="w-6 h-6 mr-4"
           />
-          <div class="leading-none">
+          <div class="leading-none select-none">
             <p class="text-gray-100 font-semibold text-sm flex items-center">
               <span>{{ market.ticker }}</span>
               <v-icon-chevron

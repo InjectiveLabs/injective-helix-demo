@@ -86,7 +86,7 @@ jobs:
       APP_NAME: 'TESTNET - Injective Pro: Decentralized Cryptocurrency Derivatives, Ethereum and Altcoin Exchange'
       APP_BASE_URL: https://testnet.injective.exchange
       APP_NETWORK: testnetK8s
-      APP_ENV: testnet
+      APP_ENV: testnetg
       APP_CHAIN_ID: 42
       SOURCE_DIR: dist
       DEST_DIR: www
