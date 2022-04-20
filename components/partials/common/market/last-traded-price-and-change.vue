@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-end">
+  <div class="flex flex-col items-end font-mono">
     <div
       class="flex items-center tracking-wide leading-none"
       :class="{ 'text-xs': !lg }"
