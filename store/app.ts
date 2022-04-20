@@ -8,7 +8,7 @@ import {
   VPN_PROXY_VALIDATION_PERIOD
 } from '~/app/utils/constants'
 import { Locale, english } from '~/locales'
-import { AppState, GeoLocation, AccountFavouriteMarketMap } from '~/types'
+import { AppState, GeoLocation } from '~/types'
 import {
   fetchGeoLocation,
   validateGeoLocation,
@@ -21,7 +21,7 @@ import { streamProvider } from '~/app/providers/StreamProvider'
 
 export interface UserBasedState {
   vpnOrProxyUsageValidationTimestamp: number
-  accountFavouriteMarketsMap: AccountFavouriteMarketMap
+  favoriteMarkets: string[]
   auctionsViewed: number[]
   geoLocation: GeoLocation
 }
@@ -40,7 +40,7 @@ const initialState = {
   userState: {
     vpnOrProxyUsageValidationTimestamp: 0,
     auctionsViewed: [],
-    accountFavouriteMarketsMap: {},
+    favoriteMarkets: [],
     geoLocation: {
       continent: '',
       country: ''
@@ -60,10 +60,8 @@ export const state = () => ({
 export type AppStoreState = ReturnType<typeof state>
 
 export const getters = getterTree(state, {
-  accountFavouriteMarkets: (state: AppStoreState, _, { wallet }) => {
-    const { injectiveAddress } = wallet
-
-    return state.userState.accountFavouriteMarketsMap[injectiveAddress] || []
+  favoriteMarkets: (state: AppStoreState) => {
+    return state.userState.favoriteMarkets
   }
 })
 
@@ -98,13 +96,10 @@ export const mutations = {
     }
   },
 
-  setFavouriteMarkets(
-    state: AppStoreState,
-    accountFavouriteMarketsMap: AccountFavouriteMarketMap
-  ) {
+  setFavoriteMarkets(state: AppStoreState, favoriteMarkets: string[]) {
     state.userState = {
       ...state.userState,
-      accountFavouriteMarketsMap
+      favoriteMarkets
     }
   }
 }
@@ -119,29 +114,19 @@ export const actions = actionTree(
       app.setGeoLocation(state.userState.geoLocation)
     },
 
-    updateAccountFavouriteMarkets({ state, commit }, marketId: string) {
-      const { injectiveAddress } = this.app.$accessor.wallet
+    updateFavoriteMarkets({ state, commit }, marketId: string) {
       const { userState } = state
 
-      let accountFavouriteMarkets =
-        userState.accountFavouriteMarketsMap[injectiveAddress] || []
+      const favoriteMarkets = userState.favoriteMarkets
 
-      if (!injectiveAddress) {
-        return
-      }
-
-      if (!accountFavouriteMarkets.includes(marketId)) {
-        accountFavouriteMarkets = [marketId, ...accountFavouriteMarkets]
+      if (!favoriteMarkets.includes(marketId)) {
+        commit('setFavoriteMarkets', [marketId, ...favoriteMarkets])
       } else {
-        accountFavouriteMarkets = accountFavouriteMarkets.filter(
-          (m) => m !== marketId
+        commit(
+          'setFavoriteMarkets',
+          favoriteMarkets.filter((m) => m !== marketId)
         )
       }
-
-      commit('setFavouriteMarkets', {
-        ...userState.accountFavouriteMarketsMap,
-        [injectiveAddress]: accountFavouriteMarkets
-      })
     },
 
     async detectVPNOrProxyUsage({ state, commit }) {

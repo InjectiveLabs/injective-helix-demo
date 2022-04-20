@@ -52,7 +52,6 @@ export interface MarketRoute {
   }
 }
 
-export declare type AccountFavouriteMarketMap = Record<string, string[]>
 export declare type TokenUsdPriceMap = Record<string, number>
 
 export * from './enums'

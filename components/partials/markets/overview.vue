@@ -1,6 +1,6 @@
 <template>
   <div
-    :style="{ backgroundImage: `url('/svg/bg-darker.svg')` }"
+    :style="{ backgroundImage: `url('/svg/bg-blue-glow.svg')` }"
     class="py-6 md:pt-12 md:pb-16 bg-cover bg-center"
   >
     <div class="container xl:max-w-6xl mx-auto">

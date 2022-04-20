@@ -120,19 +120,19 @@ export default Vue.extend({
   },
 
   computed: {
-    accountFavouriteMarkets(): string[] {
-      return this.$accessor.app.accountFavouriteMarkets
+    favoriteMarkets(): string[] {
+      return this.$accessor.app.favoriteMarkets
     },
 
     filteredMarkets(): UiMarketAndSummaryWithVolumeInUsd[] {
-      const { activeType, accountFavouriteMarkets, markets, search } = this
+      const { activeType, favoriteMarkets, markets, search } = this
 
       return markets.filter(({ market }) => {
         const isPartOfSearch = marketIsPartOfSearch(search, market)
         const isPartOfType = marketIsPartOfType({
           activeType,
           market,
-          favouriteMarkets: accountFavouriteMarkets
+          favoriteMarkets
         })
 
         return isPartOfType && isPartOfSearch

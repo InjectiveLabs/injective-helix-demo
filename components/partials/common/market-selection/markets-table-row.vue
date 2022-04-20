@@ -7,7 +7,7 @@
         class="text-gray-500 w-6 h-6 flex items-center justify-center rounded-full mr-3 hover:bg-gray-400 hover:text-gray-400 hover:bg-opacity-10 cursor-pointer"
         @click="updateWatchList"
       >
-        <v-icon-star v-if="isFavourite" class="min-w-5 w-5 h-5" />
+        <v-icon-star v-if="isFavorite" class="min-w-5 w-5 h-5" />
         <v-icon-star-border v-else class="min-w-5 w-5 h-5" />
       </div>
 
@@ -63,8 +63,8 @@ export default Vue.extend({
   },
 
   computed: {
-    accountFavouriteMarkets(): string[] {
-      return this.$accessor.app.accountFavouriteMarkets
+    favoriteMarkets(): string[] {
+      return this.$accessor.app.favoriteMarkets
     },
 
     volumeInUsdToFormat(): string {
@@ -87,10 +87,10 @@ export default Vue.extend({
       return marketRoute || { name: 'markets' }
     },
 
-    isFavourite(): boolean {
-      const { accountFavouriteMarkets, market } = this
+    isFavorite(): boolean {
+      const { favoriteMarkets, market } = this
 
-      return accountFavouriteMarkets.includes(market.marketId)
+      return favoriteMarkets.includes(market.marketId)
     }
   },
 
@@ -98,7 +98,7 @@ export default Vue.extend({
     updateWatchList() {
       const { market } = this
 
-      this.$accessor.app.updateAccountFavouriteMarkets(market.marketId)
+      this.$accessor.app.updateFavoriteMarkets(market.marketId)
     }
   }
 })
