@@ -8,7 +8,7 @@
     ]"
     @click="handleTypeClick"
   >
-    <p class="text-sm capitalize"><slot /></p>
+    <p class="text-sm capitalize select-none"><slot /></p>
   </div>
 </template>
 

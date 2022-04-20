@@ -17,7 +17,7 @@
             {{ $t('trade.market') }}
           </span>
         </SortableHeaderItem>
-        <span class="mx-1">/</span>
+        <span class="mx-1 select-none">/</span>
         <SortableHeaderItem
           :value="MarketHeaderType.Volume"
           :sort-by="sortBy"
@@ -120,12 +120,20 @@ export default Vue.extend({
   },
 
   computed: {
+    accountFavouriteMarkets(): string[] {
+      return this.$accessor.app.accountFavouriteMarkets
+    },
+
     filteredMarkets(): UiMarketAndSummaryWithVolumeInUsd[] {
-      const { activeType, markets, search } = this
+      const { activeType, accountFavouriteMarkets, markets, search } = this
 
       return markets.filter(({ market }) => {
         const isPartOfSearch = marketIsPartOfSearch(search, market)
-        const isPartOfType = marketIsPartOfType(activeType, market)
+        const isPartOfType = marketIsPartOfType({
+          activeType,
+          market,
+          favouriteMarkets: accountFavouriteMarkets
+        })
 
         return isPartOfType && isPartOfSearch
       })

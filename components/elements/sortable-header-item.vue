@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center cursor-pointer" @click="handleSort">
+  <div class="flex items-center cursor-pointer select-none" @click="handleSort">
     <slot name="prefix" />
     <div class="mr-1">
       <div

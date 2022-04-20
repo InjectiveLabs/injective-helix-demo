@@ -2,15 +2,20 @@
   <div
     class="grid grid-cols-3 sm:grid-cols-10 3md:grid-cols-12 text-gray-200 gap-4 text-sm px-4 py-5 mb-1 bg-gray-800 bg-opacity-50 items-center rounded"
   >
-    <span class="text-sm col-span-2 sm:col-span-3">
-      <nuxt-link
-        class="flex items-center cursor-pointer justify-start"
-        :to="marketRoute"
+    <span class="text-sm col-span-2 sm:col-span-3 flex items-center">
+      <div
+        class="3md:hidden text-primary-500 mr-3 cursor-pointer"
+        @click="updateWatchList"
       >
+        <v-icon-star v-if="isFavourite" class="min-w-6 w-6 h-6" />
+        <v-icon-star-border v-else class="min-w-6 w-6 h-6" />
+      </div>
+
+      <nuxt-link class="cursor-pointer flex items-center" :to="marketRoute">
         <img
           :src="market.baseToken.logo"
           :alt="market.baseToken.name"
-          class="w-6 h-6 mr-3"
+          class="w-6 h-6 mr-3 hidden 3md:block"
         />
         <div class="flex flex-col">
           <span class="tracking-widest font-bold">{{ market.ticker }}</span>
@@ -101,13 +106,21 @@
       <span v-else class="text-gray-400">&mdash;</span>
     </span>
 
-    <span class="hidden 3md:block col-span-2 text-right">
+    <span class="hidden 3md:flex col-span-2 items-center justify-end">
       <nuxt-link
         class="text-primary-500 hover:text-primary-600"
         :to="marketRoute"
       >
         {{ $t('trade.trade') }}
       </nuxt-link>
+
+      <div
+        class="text-primary-500 w-6 h-6 flex items-center justify-center rounded-full ml-6 cursor-pointer hover:bg-primary-500 hover:bg-opacity-10"
+        @click="updateWatchList"
+      >
+        <v-icon-star v-if="isFavourite" class="min-w-5 w-5 h-5" />
+        <v-icon-star-border v-else class="min-w-5 w-5 h-5" />
+      </div>
     </span>
   </div>
 </template>
@@ -163,6 +176,10 @@ export default Vue.extend({
   },
 
   computed: {
+    accountFavouriteMarkets(): string[] {
+      return this.$accessor.app.accountFavouriteMarkets
+    },
+
     lastTradedPrice(): BigNumberInBase {
       const { summary } = this
 
@@ -174,9 +191,11 @@ export default Vue.extend({
     },
 
     lastTradedPriceToFormat(): string {
-      const { lastTradedPrice } = this
+      const { lastTradedPrice, market } = this
 
-      return lastTradedPrice.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      return lastTradedPrice.toFormat(
+        market?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+      )
     },
 
     isMarketBeta(): boolean {
@@ -263,6 +282,20 @@ export default Vue.extend({
       }
 
       return market.slug === BAYC_WETH_PERP_SLUG
+    },
+
+    isFavourite(): boolean {
+      const { accountFavouriteMarkets, market } = this
+
+      return accountFavouriteMarkets.includes(market.marketId)
+    }
+  },
+
+  methods: {
+    updateWatchList() {
+      const { market } = this
+
+      this.$accessor.app.updateAccountFavouriteMarkets(market.marketId)
     }
   }
 })

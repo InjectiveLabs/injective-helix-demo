@@ -196,6 +196,7 @@ export default {
     market_volume_24h_tooltip: 'The total trade volume over the past 24 hours.',
     search_markets: 'Search Markets',
     filter_markets: 'Filter Markets',
+    favourite: 'Favourite',
     spot: 'Spot',
     asset: 'Asset',
     average_price: 'Average price',

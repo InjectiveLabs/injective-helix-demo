@@ -1,6 +1,6 @@
 <template>
   <div
-    class="tracking-widest text-xs uppercase cursor-pointer"
+    class="tracking-widest text-xs uppercase cursor-pointer select-none"
     :class="[active ? 'font-bold text-gray-200' : 'text-gray-500']"
     @click="handleTypeClick"
   >

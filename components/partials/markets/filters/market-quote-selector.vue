@@ -1,6 +1,6 @@
 <template>
   <span
-    class="leading-5 tracking-wide text-xs cursor-pointer uppercase"
+    class="leading-5 tracking-wide text-xs cursor-pointer uppercase select-none"
     :class="[
       active
         ? 'text-primary-500  hover:text-primary-600'

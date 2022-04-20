@@ -2,18 +2,18 @@
   <div
     class="grid grid-cols-3 text-gray-200 gap-4 text-xs px-3 py-2 bg-gray-900 items-center hover:bg-gray-850"
   >
-    <span class="col-span-2">
-      <nuxt-link
-        class="flex items-center cursor-pointer justify-start"
-        :to="marketRoute"
+    <span class="col-span-2 text-gray-500 flex items-center">
+      <div
+        class="text-gray-500 w-6 h-6 flex items-center justify-center rounded-full mr-3 hover:bg-gray-400 hover:text-gray-400 hover:bg-opacity-10 cursor-pointer"
+        @click="updateWatchList"
       >
-        <img
-          :src="market.baseToken.logo"
-          :alt="market.baseToken.name"
-          class="w-6 h-6 mr-3"
-        />
+        <v-icon-star v-if="isFavourite" class="min-w-5 w-5 h-5" />
+        <v-icon-star-border v-else class="min-w-5 w-5 h-5" />
+      </div>
+
+      <nuxt-link class="cursor-pointer justify-start" :to="marketRoute">
         <div class="flex flex-col">
-          <span class="font-semibold">{{ market.ticker }}</span>
+          <span class="font-semibold text-gray-200">{{ market.ticker }}</span>
           <span class="text-gray-500 tracking-wide mt-1">
             {{ abbreviatedVolumeInUsdToFormat }} USD
           </span>
@@ -63,6 +63,10 @@ export default Vue.extend({
   },
 
   computed: {
+    accountFavouriteMarkets(): string[] {
+      return this.$accessor.app.accountFavouriteMarkets
+    },
+
     volumeInUsdToFormat(): string {
       const { volumeInUsd } = this
 
@@ -81,6 +85,20 @@ export default Vue.extend({
       const marketRoute = getMarketRoute(market)
 
       return marketRoute || { name: 'markets' }
+    },
+
+    isFavourite(): boolean {
+      const { accountFavouriteMarkets, market } = this
+
+      return accountFavouriteMarkets.includes(market.marketId)
+    }
+  },
+
+  methods: {
+    updateWatchList() {
+      const { market } = this
+
+      this.$accessor.app.updateAccountFavouriteMarkets(market.marketId)
     }
   }
 })
