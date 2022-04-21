@@ -5,6 +5,7 @@
       v-tooltip="{ content: 'Burnt Finance' }"
       href="https://www.burnt.com/"
       target="_blank"
+      @click.stop
       @mouseenter="onBurntHover = true"
       @mouseleave="onBurntHover = false"
     >
@@ -22,6 +23,7 @@
       v-tooltip="{ content: 'NFT Bank' }"
       href="https://nftbank.ai/"
       target="_blank"
+      @click.stop
       @mouseenter="onNFTHover = true"
       @mouseleave="onNFTHover = false"
     >
