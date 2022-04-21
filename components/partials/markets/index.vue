@@ -268,8 +268,8 @@ export default Vue.extend({
         this.activeType = MarketType.Spot
       }
 
-      if (type && MarketType.Derivative.toLowerCase() === type) {
-        this.activeType = MarketType.Derivative
+      if (type && [MarketType.Perpetual.toLowerCase(), 'perp'].includes(type)) {
+        this.activeType = MarketType.Perpetual
       }
     }
   }
