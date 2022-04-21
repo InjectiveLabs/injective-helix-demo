@@ -1,7 +1,7 @@
 <template>
   <div
-    class="grid-cols-12 gap-4 text-gray-200 uppercase md:grid hidden items-center"
-    :class="classes"
+    class="grid-cols-12 gap-4 text-gray-200 uppercase items-center"
+    :class="[classes, sizeClasses]"
   >
     <slot></slot>
   </div>
@@ -20,11 +20,16 @@ export default Vue.extend({
     lg: {
       type: Boolean,
       default: false
+    },
+
+    classes: {
+      type: String,
+      default: 'md:grid hidden'
     }
   },
 
   computed: {
-    classes(): string {
+    sizeClasses(): string {
       const { lg } = this
       const classes = []
 

@@ -27,6 +27,8 @@ export const APP_EXCHANGE_API_ENDPOINT: string =
   process.env.APP_EXCHANGE_API_ENDPOINT || ''
 export const APP_SENTRY_GRPC_ENDPOINT: string =
   process.env.APP_SENTRY_GRPC_ENDPOINT || ''
+export const APP_SENTRY_HTTP_ENDPOINT: string =
+  process.env.APP_SENTRY_HTTP_ENDPOINT || ''
 
 export const UI_DEFAULT_MIN_DISPLAY_DECIMALS = 2
 export const UI_DEFAULT_DISPLAY_DECIMALS = 4
@@ -78,6 +80,10 @@ export const DMM_TIME_STAMP_FORMAT: string = "MMM-dd-yyyy HH:mm:ss 'UTC'xxx"
 export const VPN_PROXY_VALIDATION_PERIOD = 2 /* 2 days */
 
 // to be added to ui-common
+export const BAYC_WETH_PERP_SLUG = 'bayc-weth-perp'
+export const ETH_COIN_GECKO_ID = 'ethereum'
+export const USDT_COIN_GECKO_ID = 'tether'
+export const UST_COIN_GECKO_ID = 'terrausd'
 export const BTC_COIN_GECKO_ID = 'bitcoin'
 export const INJ_TO_IBC_TRANSFER_FEE = 0.002
 export const HIDDEN_BALANCE_DISPLAY = '********'

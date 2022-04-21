@@ -7,6 +7,7 @@ import { Wallet } from '@injectivelabs/web3-strategy'
 import {
   APP_EXCHANGE_API_ENDPOINT,
   APP_SENTRY_GRPC_ENDPOINT,
+  APP_SENTRY_HTTP_ENDPOINT,
   NETWORK
 } from '../utils/constants'
 import { localStorage } from './Storage'
@@ -27,11 +28,14 @@ class App {
       APP_EXCHANGE_API_ENDPOINT || endpoints.exchangeApi
     const sentryGrpcApiEndpoint =
       APP_SENTRY_GRPC_ENDPOINT || endpoints.sentryGrpcApi
+    const sentryHttpApiEndpoint =
+      APP_SENTRY_HTTP_ENDPOINT || endpoints.sentryHttpApi
 
     return {
       ...endpoints,
       exchangeApi: exchangeApiEndpoint,
-      sentryGrpcApi: sentryGrpcApiEndpoint
+      sentryGrpcApi: sentryGrpcApiEndpoint,
+      sentryHttpApi: sentryHttpApiEndpoint
     }
   }
 

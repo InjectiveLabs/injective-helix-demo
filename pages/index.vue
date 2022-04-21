@@ -24,7 +24,7 @@
 import Vue from 'vue'
 import VHero from '~/components/partials/home/hero.vue'
 import VOverview from '~/components/partials/home/overview.vue'
-import VMarkets from '~/components/partials/common/markets/markets.vue'
+import VMarkets from '~/components/partials/home/markets/index.vue'
 import VOnboard from '~/components/partials/home/onboard.vue'
 import VFooterCta from '~/components/partials/home/footer-cta.vue'
 

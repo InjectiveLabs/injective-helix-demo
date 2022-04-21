@@ -19,7 +19,6 @@
                 </div>
                 <v-footer v-if="showFooter" />
               </main>
-              <v-market-slideout />
               <v-modal-auction-countdown v-if="SHOW_AUCTION_COUNTDOWN" />
             </div>
           </client-only>
@@ -34,7 +33,6 @@ import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import Footer from '~/components/layout/footer/index.vue'
 import TopBar from '~/components/layout/topbar.vue'
-import MarketSlideout from '~/components/partials/common/markets/slideout.vue'
 import SidebarMobile from '~/components/layout/sidebar-mobile.vue'
 import VModalAuctionCountdown from '~/components/partials/modals/auction-countdown.vue'
 import { SHOW_AUCTION_COUNTDOWN } from '~/app/utils/constants'
@@ -42,7 +40,6 @@ import { SHOW_AUCTION_COUNTDOWN } from '~/app/utils/constants'
 export default Vue.extend({
   components: {
     VModalAuctionCountdown,
-    'v-market-slideout': MarketSlideout,
     'v-top-bar': TopBar,
     'v-footer': Footer,
     'v-sidebar-mobile': SidebarMobile
@@ -60,7 +57,7 @@ export default Vue.extend({
     showFooter(): boolean {
       const { $route } = this
 
-      return ['index', 'portfolio'].includes($route.name as string)
+      return ['index', 'portfolio', 'markets'].includes($route.name as string)
     }
   },
 

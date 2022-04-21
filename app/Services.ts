@@ -28,7 +28,8 @@ import {
   NETWORK,
   METRICS_ENABLED,
   APP_EXCHANGE_API_ENDPOINT,
-  APP_SENTRY_GRPC_ENDPOINT
+  APP_SENTRY_GRPC_ENDPOINT,
+  APP_SENTRY_HTTP_ENDPOINT
 } from './utils/constants'
 import { SubaccountService } from './services/account'
 import { ExchangeService } from './services/exchange'
@@ -61,7 +62,8 @@ const commonServiceOptions = {
   endpoints: {
     ...endpoints,
     exchangeApiEndpoint: APP_EXCHANGE_API_ENDPOINT || endpoints.exchangeApi,
-    sentryGrpcApiEndpoint: APP_SENTRY_GRPC_ENDPOINT || endpoints.sentryGrpcApi
+    sentryGrpcApiEndpoint: APP_SENTRY_GRPC_ENDPOINT || endpoints.sentryGrpcApi,
+    sentryHttpApi: APP_SENTRY_HTTP_ENDPOINT || endpoints.sentryHttpApi
   },
   metricsProvider: METRICS_ENABLED ? metricsProvider : undefined
 } as ServiceOptions

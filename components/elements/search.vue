@@ -9,6 +9,7 @@
     <v-icon-search slot="addon" class="w-6 h-6" />
   </v-input>
 </template>
+
 <script lang="ts">
 import Vue from 'vue'
 
