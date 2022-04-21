@@ -112,6 +112,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { MarketType } from '@injectivelabs/ui-common'
 import VMarketFilter from '~/components/partials/markets/filters/index.vue'
 import VMarketRow from '~/components/partials/markets/market-row.vue'
 import SortableHeaderItem from '~/components/elements/sortable-header-item.vue'
@@ -223,6 +224,10 @@ export default Vue.extend({
     }
   },
 
+  mounted() {
+    this.preFillFromQueryParams()
+  },
+
   methods: {
     handleSort(type: MarketHeaderType) {
       if (type !== this.sortBy) {
@@ -232,6 +237,39 @@ export default Vue.extend({
         this.ascending = false
       } else {
         this.ascending = true
+      }
+    },
+
+    preFillFromQueryParams() {
+      const {
+        $route: { query }
+      } = this
+      const category = (typeof query.category === 'string'
+        ? query.category.trim().toLowerCase()
+        : query.category) as MarketCategoryType
+
+      const quote = (typeof query.quote === 'string'
+        ? query.quote.trim().toLowerCase()
+        : query.quote) as MarketQuoteType
+
+      const type = (typeof query.type === 'string'
+        ? query.type.trim().toLowerCase()
+        : query.type) as MarketType
+
+      if (quote && Object.values(MarketQuoteType).includes(quote)) {
+        this.activeQuote = quote
+      }
+
+      if (category && Object.values(MarketCategoryType).includes(category)) {
+        this.activeCategory = category
+      }
+
+      if (type && MarketType.Spot.toLowerCase() === type) {
+        this.activeType = MarketType.Spot
+      }
+
+      if (type && [MarketType.Perpetual.toLowerCase(), 'perp'].includes(type)) {
+        this.activeType = MarketType.Perpetual
       }
     }
   }
