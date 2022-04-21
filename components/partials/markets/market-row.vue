@@ -32,7 +32,7 @@
     </span>
 
     <!-- Mobile column -->
-    <div class="sm:hidden flex flex-col items-end">
+    <div class="sm:hidden flex flex-col items-end font-mono">
       <div class="flex items-center">
         <v-icon-arrow
           v-if="!lastTradedPrice.isNaN() && lastTradedPrice.gt(0)"
