@@ -57,6 +57,7 @@ module.exports = [
   '/fee-discounts',
   '/trade-and-earn',
   '/faq',
+  '/markets',
   '/register',
   '/trade-and-earn',
   ...upcomingMarketsRoutes,

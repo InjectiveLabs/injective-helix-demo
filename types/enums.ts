@@ -116,3 +116,11 @@ export enum MarketQuoteType {
   USDT = 'usdt',
   UST = 'ust'
 }
+
+export enum MarketType {
+  Spot = 'Spot',
+  Derivative = 'Derivative',
+  Perpetual = 'Perpetual',
+  Futures = 'Futures',
+  Favorite = 'Favorite'
+}
