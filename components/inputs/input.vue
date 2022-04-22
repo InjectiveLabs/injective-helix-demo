@@ -13,6 +13,7 @@
         <span
           v-if="error && !errorBelow"
           class="text-red-400 italic font-semibold text-2xs"
+          data-cy="input-error"
         >
           * {{ error }}
         </span>
@@ -80,6 +81,7 @@
       <span
         v-if="error && errorBelow"
         class="text-red-400 absolute"
+        data-cy="input-error-below"
         :class="[
           errorClasses,
           {

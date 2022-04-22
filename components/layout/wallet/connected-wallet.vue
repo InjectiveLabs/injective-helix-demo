@@ -27,6 +27,7 @@
         v-clipboard:success="() => $toast.success($t('connect.addressCopied'))"
         role="button"
         type="button"
+        data-cy="wallet-connected-popper-wallet-address-copy-button"
       >
         <v-icon-copy class="w-5 h-5 text-gray-500 hover:text-primary-500" />
       </button>
