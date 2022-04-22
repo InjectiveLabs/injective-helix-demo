@@ -51,16 +51,17 @@
             :markets="markets"
             :summaries="marketsSummary"
             :filter-type="filterType"
-            reduced
           />
         </VHocLoading>
       </div>
     </v-panel>
 
     <div v-if="filterType !== MarketFilterType.All" class="text-center">
-      <v-button lg primary class="w-60 mt-6" @click="showAllMarkets">
-        {{ $t('home.viewAllMarkets') }}
-      </v-button>
+      <nuxt-link :to="{ name: 'markets' }">
+        <v-button lg primary class="w-60 mt-6">
+          {{ $t('home.viewAllMarkets') }}
+        </v-button>
+      </nuxt-link>
     </div>
   </div>
 </template>
@@ -75,7 +76,7 @@ import {
   ZERO_IN_BASE
 } from '@injectivelabs/ui-common'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-import VTable from './table.vue'
+import VTable from '~/components/partials/home/markets/markets-table.vue'
 import { MarketFilterType } from '~/types'
 
 export default Vue.extend({
@@ -188,10 +189,6 @@ export default Vue.extend({
         .finally(() => {
           this.status.setIdle()
         })
-    },
-
-    showAllMarkets() {
-      this.$root.$emit('toggle-market-slideout-from-content')
     },
 
     updateFilterType(type: MarketFilterType) {

@@ -18,10 +18,12 @@ import {
 } from '~/app/Services'
 import { BTC_COIN_GECKO_ID } from '~/app/utils/constants'
 import { backupPromiseCall } from '~/app/utils/async'
+import { TokenUsdPriceMap } from '~/types'
 
 const initialStateFactory = () => ({
   erc20TokensWithBalanceAndPriceFromBank: [] as TokenWithBalanceAndPrice[],
   ibcTokensWithBalanceAndPriceFromBank: [] as TokenWithBalanceAndPrice[],
+  tokenUsdPriceMap: {} as TokenUsdPriceMap,
   btcUsdPrice: 0 as number,
   injUsdPrice: 0 as number
 })
@@ -31,6 +33,7 @@ const initialState = initialStateFactory()
 export const state = () => ({
   erc20TokensWithBalanceAndPriceFromBank: initialState.erc20TokensWithBalanceAndPriceFromBank as TokenWithBalanceAndPrice[],
   ibcTokensWithBalanceAndPriceFromBank: initialState.ibcTokensWithBalanceAndPriceFromBank as TokenWithBalanceAndPrice[],
+  tokenUsdPriceMap: initialState.tokenUsdPriceMap as TokenUsdPriceMap,
   btcUsdPrice: initialState.btcUsdPrice as number,
   injUsdPrice: initialState.injUsdPrice as number
 })
@@ -56,6 +59,13 @@ export const mutations = {
     state.ibcTokensWithBalanceAndPriceFromBank = ibcTokensWithBalanceAndPriceFromBank
   },
 
+  setTokenUsdPriceMap(
+    state: TokenStoreState,
+    tokenUsdPriceMap: TokenUsdPriceMap
+  ) {
+    state.tokenUsdPriceMap = tokenUsdPriceMap
+  },
+
   setBtcUsdPrice(state: TokenStoreState, btcUsdPrice: number) {
     state.btcUsdPrice = btcUsdPrice
   },
@@ -71,6 +81,7 @@ export const mutations = {
       initialState.erc20TokensWithBalanceAndPriceFromBank
     state.ibcTokensWithBalanceAndPriceFromBank =
       initialState.ibcTokensWithBalanceAndPriceFromBank
+    state.tokenUsdPriceMap = initialState.tokenUsdPriceMap
     state.injUsdPrice = initialState.injUsdPrice
     state.btcUsdPrice = initialState.btcUsdPrice
   }
@@ -179,6 +190,23 @@ export const actions = actionTree(
         'setIbcTokensWithBalanceAndPriceFromBank',
         ibcTokensWithBalanceAndPriceFromBank
       )
+    },
+
+    async getTokenUsdPriceMap({ commit }, coinGeckoIdList: string[]) {
+      const tokenUsdPriceList = await Promise.all(
+        coinGeckoIdList.map(async (coinGeckoId) => ({
+          [coinGeckoId]: await tokenCoinGeckoService.fetchUsdTokenPrice(
+            coinGeckoId
+          )
+        }))
+      )
+
+      const tokenUsdPriceMap = tokenUsdPriceList.reduce(
+        (list, tokenUsdPriceMap) => Object.assign(list, tokenUsdPriceMap),
+        {}
+      )
+
+      commit('setTokenUsdPriceMap', tokenUsdPriceMap)
     },
 
     async getInjUsdPrice({ commit }) {

@@ -103,3 +103,16 @@ export enum MarketFilterType {
   New = 'new',
   Upcoming = 'upcoming'
 }
+
+export enum MarketCategoryType {
+  All = 'all',
+  Cosmos = 'cosmos',
+  Ethereum = 'ethereum',
+  Experimental = 'experimental'
+}
+
+export enum MarketQuoteType {
+  All = 'all',
+  USDT = 'usdt',
+  UST = 'ust'
+}

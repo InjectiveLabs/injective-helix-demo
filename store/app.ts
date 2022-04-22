@@ -1,4 +1,4 @@
-import { actionTree } from 'typed-vuex'
+import { actionTree, getterTree } from 'typed-vuex'
 import { ChainId } from '@injectivelabs/ts-types'
 import { DEFAULT_GAS_PRICE, SECONDS_IN_A_DAY } from '@injectivelabs/ui-common'
 import { StatusType } from '@injectivelabs/utils'
@@ -21,6 +21,7 @@ import { streamProvider } from '~/app/providers/StreamProvider'
 
 export interface UserBasedState {
   vpnOrProxyUsageValidationTimestamp: number
+  favoriteMarkets: string[]
   auctionsViewed: number[]
   geoLocation: GeoLocation
 }
@@ -39,6 +40,7 @@ const initialState = {
   userState: {
     vpnOrProxyUsageValidationTimestamp: 0,
     auctionsViewed: [],
+    favoriteMarkets: [],
     geoLocation: {
       continent: '',
       country: ''
@@ -56,6 +58,12 @@ export const state = () => ({
 })
 
 export type AppStoreState = ReturnType<typeof state>
+
+export const getters = getterTree(state, {
+  favoriteMarkets: (state: AppStoreState) => {
+    return state.userState.favoriteMarkets
+  }
+})
 
 export const mutations = {
   setAppState(state: AppStoreState, appState: AppState) {
@@ -86,6 +94,13 @@ export const mutations = {
       ...state.userState,
       auctionsViewed: [...state.userState.auctionsViewed, auctionRound]
     }
+  },
+
+  setFavoriteMarkets(state: AppStoreState, favoriteMarkets: string[]) {
+    state.userState = {
+      ...state.userState,
+      favoriteMarkets
+    }
   }
 }
 
@@ -97,6 +112,21 @@ export const actions = actionTree(
       await this.app.$accessor.app.detectVPNOrProxyUsage()
 
       app.setGeoLocation(state.userState.geoLocation)
+    },
+
+    updateFavoriteMarkets({ state, commit }, marketId: string) {
+      const { userState } = state
+
+      const favoriteMarkets = userState.favoriteMarkets
+
+      if (!favoriteMarkets.includes(marketId)) {
+        commit('setFavoriteMarkets', [marketId, ...favoriteMarkets])
+      } else {
+        commit(
+          'setFavoriteMarkets',
+          favoriteMarkets.filter((m) => m !== marketId)
+        )
+      }
     },
 
     async detectVPNOrProxyUsage({ state, commit }) {

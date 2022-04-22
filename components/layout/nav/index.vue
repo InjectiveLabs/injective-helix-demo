@@ -4,9 +4,13 @@
       <v-nav-item :to="{ name: 'index' }" class="block lg:hidden">
         {{ $t('navigation.home') }}
       </v-nav-item>
-      <v-nav-item-dummy data-cy="header-markets-link" @click.stop="handleOpenMarketsSlideout">
+      <v-nav-item
+        :to="{ name: 'markets' }"
+        class="block"
+        data-cy="header-markets-link"
+      >
         {{ $t('trade.markets') }}
-      </v-nav-item-dummy>
+      </v-nav-item>
       <v-nav-item
         class="block"
         data-cy="header-trade-link"
@@ -43,30 +47,15 @@
 <script lang="ts">
 import Vue from 'vue'
 import VNavItem from './item.vue'
-import VNavItemDummy from './item-dummy.vue'
 
 export default Vue.extend({
   components: {
-    VNavItem,
-    VNavItemDummy
-  },
-
-  data() {
-    return {
-      //
-    }
+    VNavItem
   },
 
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
-    }
-  },
-
-  methods: {
-    handleOpenMarketsSlideout() {
-      this.$root.$emit('toggle-market-slideout')
-      this.$root.$emit('close-sidebar')
     }
   }
 })
