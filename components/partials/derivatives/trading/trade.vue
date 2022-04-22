@@ -1185,11 +1185,12 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      if (!tradingRewardsCampaign) {
-        return ZERO_IN_BASE
-      }
-
-      if (!tradingRewardsCampaign.tradingRewardCampaignInfo) {
+      if (
+        !tradingRewardsCampaign ||
+        !tradingRewardsCampaign.tradingRewardCampaignInfo ||
+        !tradingRewardsCampaign.tradingRewardCampaignInfo
+          .disqualifiedMarketIdsList
+      ) {
         return ZERO_IN_BASE
       }
 
@@ -1243,11 +1244,12 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      if (!tradingRewardsCampaign) {
-        return ZERO_IN_BASE
-      }
-
-      if (!tradingRewardsCampaign.tradingRewardCampaignInfo) {
+      if (
+        !tradingRewardsCampaign ||
+        !tradingRewardsCampaign.tradingRewardCampaignInfo ||
+        !tradingRewardsCampaign.tradingRewardCampaignInfo
+          .disqualifiedMarketIdsList
+      ) {
         return ZERO_IN_BASE
       }
 
