@@ -2,11 +2,25 @@
   <div>
     <div class="flex items-center justify-between flex-wrap">
       <div
-        class="flex items-centers gap-2 3md:gap-4 overflow-x-auto mb-4 2md:mb-0 justify-between xs:justify-start w-full xs:w-auto hide-scrollbar"
+        class="
+          flex
+          items-centers
+          gap-2
+          3md:gap-4
+          overflow-x-auto
+          mb-4
+          2md:mb-0
+          justify-between
+          xs:justify-start
+          w-full
+          xs:w-auto
+          hide-scrollbar
+        "
       >
         <v-market-type-selector
           :type="MarketType.Favourite"
           :active="activeType === MarketType.Favourite"
+          data-cy="market-filter-favourites"
           @click="handleTypeClick"
         >
           <span class="flex items-center">
@@ -18,6 +32,7 @@
         <v-market-type-selector
           :type="''"
           :active="activeType === ''"
+          data-cy="market-filter-all-markets"
           @click="handleTypeClick"
         >
           {{ $t('trade.allMarkets') }}
@@ -26,6 +41,7 @@
         <v-market-type-selector
           :type="MarketType.Spot"
           :active="activeType === MarketType.Spot"
+          data-cy="market-filter-spot"
           @click="handleTypeClick"
         >
           {{ $t('trade.spots') }}
@@ -34,6 +50,7 @@
         <v-market-type-selector
           :type="MarketType.Perpetual"
           :active="activeType === MarketType.Perpetual"
+          data-cy="market-filter-perpetual"
           @click="handleTypeClick"
         >
           {{ $t('trade.perpetual') }}
@@ -46,6 +63,7 @@
         wrapper-classes="bg-gray-800 rounded-3xl pl-2"
         dense
         transparent-bg
+        data-cy="market-filter-search-input"
         :placeholder="$t('trade.search_markets')"
         :search="search"
         @searched="handleSearchedEvent"
@@ -57,6 +75,7 @@
         <v-market-quote-selector
           :active="activeQuote === MarketQuoteType.All"
           :type="MarketQuoteType.All"
+          data-cy="market-filter-quote-all-button"
           @click="handleQuoteClick"
         >
           {{ $t('trade.all') }}
@@ -65,6 +84,7 @@
         <v-market-quote-selector
           :active="activeQuote === MarketQuoteType.USDT"
           :type="MarketQuoteType.USDT"
+          data-cy="market-filter-quote-usdt-button"
           @click="handleQuoteClick"
         >
           USDT
@@ -73,6 +93,7 @@
         <v-market-quote-selector
           :active="activeQuote === MarketQuoteType.UST"
           :type="MarketQuoteType.UST"
+          data-cy="market-filter-quote-ust-button"
           @click="handleQuoteClick"
         >
           UST

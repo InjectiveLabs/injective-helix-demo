@@ -1,6 +1,13 @@
 <template>
   <nuxt-link
-    class="rounded-2xl bg-transparent shadow-card p-4 bg-white bg-opacity-5 block"
+    class="
+      rounded-2xl
+      bg-transparent
+      shadow-card
+      p-4
+      bg-white bg-opacity-5
+      block
+    "
     :to="marketRoute"
   >
     <div class="flex items-center justify-between text-gray-500">
@@ -20,7 +27,10 @@
           />
         </div>
         <div class="flex flex-col">
-          <p class="uppercase tracking-widest text-sm font-bold leading-4">
+          <p
+            :data-cy="'market-card-ticker-' + market.ticker"
+            class="uppercase tracking-widest text-sm font-bold leading-4"
+          >
             {{ market.ticker }}
           </p>
           <span class="text-xs text-gray-500 capitalize">

@@ -1,6 +1,19 @@
 <template>
   <div
-    class="grid grid-cols-3 sm:grid-cols-10 3md:grid-cols-12 text-gray-200 gap-4 text-sm px-4 py-5 mb-1 bg-gray-800 bg-opacity-50 items-center rounded"
+    class="
+      grid grid-cols-3
+      sm:grid-cols-10
+      3md:grid-cols-12
+      text-gray-200
+      gap-4
+      text-sm
+      px-4
+      py-5
+      mb-1
+      bg-gray-800 bg-opacity-50
+      items-center
+      rounded
+    "
   >
     <span class="text-sm col-span-2 sm:col-span-3 flex items-center">
       <div
@@ -18,7 +31,10 @@
           class="w-6 h-6 mr-3 hidden 3md:block"
         />
         <div class="flex flex-col">
-          <span class="tracking-widest font-bold">{{ market.ticker }}</span>
+          <span
+            class="tracking-widest font-bold"
+            :data-cy="'market-row-ticker-' + market.ticker"
+            >{{ market.ticker }}</span>
           <span class="text-gray-500 text-xs hidden md:block">
             {{ market.baseToken.name }}
           </span>
@@ -115,7 +131,18 @@
       </nuxt-link>
 
       <div
-        class="text-primary-500 w-6 h-6 flex items-center justify-center rounded-full ml-6 cursor-pointer hover:bg-primary-500 hover:bg-opacity-10"
+        class="
+          text-primary-500
+          w-6
+          h-6
+          flex
+          items-center
+          justify-center
+          rounded-full
+          ml-6
+          cursor-pointer
+          hover:bg-primary-500 hover:bg-opacity-10
+        "
         @click="updateWatchList"
       >
         <v-icon-star v-if="isFavorite" class="min-w-5 w-5 h-5" />
