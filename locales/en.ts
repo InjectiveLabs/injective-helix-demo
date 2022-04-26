@@ -211,6 +211,12 @@ export default {
     portfolio: 'Portfolio',
     home: 'Home',
     makerTakerFee: '-{maker}% maker / -{taker}% taker',
-    noTierLevel: 'No VIP Tier'
+    noTierLevel: 'No VIP Tier',
+    tradeAndEarn: 'Trade and Earn',
+    tradeAndEarnDescription:
+      'Each trade on Injective can earn you some rewards.',
+    dmmProgram: 'Dmm program',
+    dmmProgramDescription:
+      'Flagship liquidity mining program designed for Dedicated Market Makers.'
   }
 }
