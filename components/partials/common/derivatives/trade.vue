@@ -1,5 +1,5 @@
 <template>
-  <tr v-if="market" :data-cy="'trade-row-'+market.ticker">
+  <tr v-if="market" :data-cy="'trade-row-' + market.ticker">
     <td class="h-8 font-mono">
       <span class="text-gray-400 text-xs">{{ time }}</span>
     </td>
@@ -14,7 +14,10 @@
           />
         </div>
         <div class="ml-3">
-          <span class="text-gray-200 font-semibold" data-cy="trade-entry-ticker">
+          <span
+            class="text-gray-200 font-semibold"
+            data-cy="trade-entry-ticker"
+          >
             {{ market.ticker }}
           </span>
         </div>
@@ -56,7 +59,7 @@
       />
     </td>
     <td class="h-8 text-right font-mono">
-      <v-number use-number-decimals :number="fee" data-cy="trade-row-fee">
+      <v-number use-number-decimals :number="fee" data-cy="trade-entry-fee">
         <span slot="addon" class="text-2xs text-gray-500">
           {{ market.quoteToken.symbol }}
         </span>
@@ -64,7 +67,7 @@
     </td>
     <td class="h-8 text-right font-mono">
       <v-number
-        data-cy="trade-row-total"
+        data-cy="trade-entry-total"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
