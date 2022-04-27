@@ -1434,9 +1434,9 @@
     "@ethersproject/strings" "^5.0.4"
 
 "@ethersproject/abi@^5.5.0":
-  version "5.6.0"
-  resolved "https://registry.npmjs.org/@ethersproject/abi/-/abi-5.6.0.tgz"
-  integrity sha512-AhVByTwdXCc2YQ20v300w6KVHle9g2OFc28ZAFCPnJyEpkv1xKXjZcSTgWOlv1i+0dqlgF8RCF2Rn2KC1t+1Vg==
+  version "5.6.1"
+  resolved "https://registry.npmjs.org/@ethersproject/abi/-/abi-5.6.1.tgz"
+  integrity sha512-0cqssYh6FXjlwKWBmLm3+zH2BNARoS5u/hxbz+LpQmcDB3w0W553h2btWui1/uZp2GBM/SI3KniTuMcYyHpA5w==
   dependencies:
     "@ethersproject/address" "^5.6.0"
     "@ethersproject/bignumber" "^5.6.0"
@@ -1692,10 +1692,10 @@
     "@improbable-eng/grpc-web" "^0.13.0"
     google-protobuf "^3.13.0"
 
-"@injectivelabs/chain-consumer@^0.5.4":
-  version "0.5.4"
-  resolved "https://registry.npmjs.org/@injectivelabs/chain-consumer/-/chain-consumer-0.5.4.tgz"
-  integrity sha512-TrLTM8xKSQcJwa1QKSbeQiLge8gysAeCvh/l6J/YvR50+T7u4aumcwgDLAHCyBBE1WJVV0ewfff7OOoDHcFf+Q==
+"@injectivelabs/chain-consumer@^0.5.5":
+  version "0.5.5"
+  resolved "https://registry.npmjs.org/@injectivelabs/chain-consumer/-/chain-consumer-0.5.5.tgz"
+  integrity sha512-H/QJFoWk4S1aur2PfoT2P699wwLmy+xzipSUbD5RWkZYacb+WCp9GWbEE9B62TnytC6sx0e0AS6zd0Xl4YWMyA==
   dependencies:
     "@improbable-eng/grpc-web" "^0.15.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.15.0"
@@ -1715,13 +1715,13 @@
   resolved "https://registry.npmjs.org/@injectivelabs/common-rpc/-/common-rpc-1.0.3.tgz"
   integrity sha512-CCGwSgTAJDiXWjCngrrg9cNLTx4LGQjxWwWH0A6ZGuEcZLtHc9Y7/AIikoeKrJO80aC8ZBYlSyfVkFZjEy6Z2Q==
 
-"@injectivelabs/contracts@^0.5.12":
-  version "0.5.12"
-  resolved "https://registry.npmjs.org/@injectivelabs/contracts/-/contracts-0.5.12.tgz"
-  integrity sha512-0kiuSU5gUlEANe6+gBw95lHG55TR6ABe3UhnF6JPBf4FfjbrCL9HhrVVU5Bq3/m+qrOWerRLlIvLO4xnYvuyaw==
+"@injectivelabs/contracts@^0.5.14":
+  version "0.5.14"
+  resolved "https://registry.npmjs.org/@injectivelabs/contracts/-/contracts-0.5.14.tgz"
+  integrity sha512-eQNIAub8Bnm0ZgDPpTXZQNiREfZPz5WJsqU+x5/FNnfxGoFSv6nIJ2u37WPS7eBz6FQvZCXb7lOc9zih4LoJQw==
   dependencies:
     "@injectivelabs/exceptions" "^0.5.1"
-    "@injectivelabs/networks" "^0.5.2"
+    "@injectivelabs/networks" "^0.5.3"
     "@injectivelabs/ts-types" "^0.5.1"
     "@injectivelabs/utils" "^0.5.1"
     link-module-alias "^1.2.0"
@@ -1729,17 +1729,17 @@
     web3 "^1.7.2"
     web3-utils "^1.7.2"
 
-"@injectivelabs/cosmos-ts@^0.5.8":
-  version "0.5.8"
-  resolved "https://registry.npmjs.org/@injectivelabs/cosmos-ts/-/cosmos-ts-0.5.8.tgz#b083aad29c563690e85f4c08eff52135c7637eee"
-  integrity sha512-6g6heQLpQCFFN/AHJpeGBXNNWM7XbtVOJ9olxlLrqJvWpYKkbqHZ4MVZ9bNEJeOBiUcLqMLptFnL6f3yQRe4FQ==
+"@injectivelabs/cosmos-ts@^0.5.10":
+  version "0.5.10"
+  resolved "https://registry.npmjs.org/@injectivelabs/cosmos-ts/-/cosmos-ts-0.5.10.tgz"
+  integrity sha512-BcT5K+VudOFP4wvUGa/lQTgPQ9Vs7KzcRnQOh2B0aSofUscl2vGCm4cb1tN50yD+pH7eGSLUTa4N0saSa+78Lw==
   dependencies:
     "@cosmjs/amino" "^0.27.1"
     "@cosmjs/launchpad" "^0.27.1"
     "@cosmjs/proto-signing" "^0.27.1"
     "@cosmjs/stargate" "^0.27.1"
     "@injectivelabs/chain-api" "^1.7.1"
-    "@injectivelabs/token-metadata" "^0.5.6"
+    "@injectivelabs/token-metadata" "^0.5.8"
     "@injectivelabs/ts-types" "^0.5.1"
     "@injectivelabs/utils" "^0.5.1"
     "@keplr-wallet/cosmos" "^0.9.12"
@@ -1753,10 +1753,10 @@
     sha3 "^2.1.4"
     shx "^0.3.2"
 
-"@injectivelabs/derivatives-consumer@^0.5.1":
-  version "0.5.1"
-  resolved "https://registry.npmjs.org/@injectivelabs/derivatives-consumer/-/derivatives-consumer-0.5.1.tgz"
-  integrity sha512-D8qm9/rGDsoMpBNppFz5FRm8wWyTG5W3z4aYu1L5BLoFUhg3qjKj9N01lNbCfTucQgq1/r1wnqj9LSv9zx9mOg==
+"@injectivelabs/derivatives-consumer@^0.5.2":
+  version "0.5.2"
+  resolved "https://registry.npmjs.org/@injectivelabs/derivatives-consumer/-/derivatives-consumer-0.5.2.tgz"
+  integrity sha512-nfB1xrj1EoMPAR9tYOuQ0of0wBhghJN3RfMXdirkXBlzyMU5CVTO0eR89KlS/8u8NFes+t9M0djxZd7WdW7+3w==
   dependencies:
     "@improbable-eng/grpc-web" "^0.15.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.15.0"
@@ -1795,10 +1795,10 @@
     "@improbable-eng/grpc-web" "^0.14.0"
     google-protobuf "^3.14.0"
 
-"@injectivelabs/exchange-consumer@^0.5.2":
-  version "0.5.2"
-  resolved "https://registry.npmjs.org/@injectivelabs/exchange-consumer/-/exchange-consumer-0.5.2.tgz"
-  integrity sha512-h1Ee76y9y1ctWAgm+UH5LNABlFngNr0NtZyWz9ZFeNSIsmMF/wvGobls7iVwKjvYPYFp2/LomrXUKi7z0q9PGQ==
+"@injectivelabs/exchange-consumer@^0.5.4":
+  version "0.5.4"
+  resolved "https://registry.npmjs.org/@injectivelabs/exchange-consumer/-/exchange-consumer-0.5.4.tgz"
+  integrity sha512-mBitPYbhWcVyXR9k+wQ6Accgh8O3v8uSex/ZF/pLAzFHM75n9o74Z1HhgcxMTMa6rp/+41qy1dbQ0fYO963Odw==
   dependencies:
     "@improbable-eng/grpc-web" "^0.15.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.15.0"
@@ -1813,10 +1813,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/explorer-consumer@^0.5.2":
-  version "0.5.2"
-  resolved "https://registry.npmjs.org/@injectivelabs/explorer-consumer/-/explorer-consumer-0.5.2.tgz"
-  integrity sha512-JbWkouxfaOr79qSBojIuvoKgB/qJfFN8DgVNLrNlcVbkwKrPnsR1+qUPjY/HbogFMnFKOxe3Xh+HVMwbzXM2Gw==
+"@injectivelabs/explorer-consumer@^0.5.3":
+  version "0.5.3"
+  resolved "https://registry.npmjs.org/@injectivelabs/explorer-consumer/-/explorer-consumer-0.5.3.tgz"
+  integrity sha512-4aEzz3ZMn51KvQfvzsVDK63Gdo39w1BG/3whg2a0E5qHIlnYQxZvWhrIjPMmga/dccVyoFY7fpVMc7OBtee9cA==
   dependencies:
     "@improbable-eng/grpc-web" "^0.15.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.15.0"
@@ -1828,10 +1828,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/networks@^0.5.2":
-  version "0.5.2"
-  resolved "https://registry.npmjs.org/@injectivelabs/networks/-/networks-0.5.2.tgz"
-  integrity sha512-/BnkAy+/WPh3LqVaBdjOvf7mkcNTOk+f8Jerb1Sk7smhMbyHxM0IyxNGOOxrZW3PR32Vrsncfr5ZBhU2wCuF8g==
+"@injectivelabs/networks@^0.5.2", "@injectivelabs/networks@^0.5.3":
+  version "0.5.3"
+  resolved "https://registry.npmjs.org/@injectivelabs/networks/-/networks-0.5.3.tgz"
+  integrity sha512-BUqJsuHAAH+yAD45LtU/qaoiQ6lY0Pop9A5B50Elub+4H0N9D+/VAQVn0IUL147KxV4B1OcGeCV2x2IMhLj0EQ==
   dependencies:
     "@injectivelabs/exceptions" "^0.5.1"
     "@injectivelabs/utils" "^0.5.1"
@@ -1859,10 +1859,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/spot-consumer@^0.5.1":
-  version "0.5.1"
-  resolved "https://registry.npmjs.org/@injectivelabs/spot-consumer/-/spot-consumer-0.5.1.tgz"
-  integrity sha512-w0D/M1rB0ZgBLQ72F7FnPOsoCZyS+uG/jgiYVng1FKnD8GYMhUu25MZxq6qw33xk1fGDVZzZF8fCDLx4cKnzQQ==
+"@injectivelabs/spot-consumer@^0.5.2":
+  version "0.5.2"
+  resolved "https://registry.npmjs.org/@injectivelabs/spot-consumer/-/spot-consumer-0.5.2.tgz"
+  integrity sha512-wiQiDjFiUENNnxp8xbIDHIQGYZQTKf6/Drj5+iJ7hgzJi8o+Beu9XuFrg39euziTF6IBtotWzojgM2Vs6PYdhA==
   dependencies:
     "@improbable-eng/grpc-web" "^0.15.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.15.0"
@@ -1875,10 +1875,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/subaccount-consumer@^0.5.1":
-  version "0.5.1"
-  resolved "https://registry.npmjs.org/@injectivelabs/subaccount-consumer/-/subaccount-consumer-0.5.1.tgz"
-  integrity sha512-mFBeFS7k/6vSJBWEXCt2kuhAec5bn8FLnFzjZalH8pDWTaRU2QO/fh7Ktv9mQSd+f8VcfBdyT36NEDkEFiRS+A==
+"@injectivelabs/subaccount-consumer@^0.5.2":
+  version "0.5.2"
+  resolved "https://registry.npmjs.org/@injectivelabs/subaccount-consumer/-/subaccount-consumer-0.5.2.tgz"
+  integrity sha512-BEHH9io7YaF9Fwg2bfxRU7bQtmiSp5RXnOxW81zXnBN6u/8JGz+T9s1DnMEKoyVAYM9rndFtwP0h8c9OZfkwFQ==
   dependencies:
     "@improbable-eng/grpc-web" "^0.15.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.15.0"
@@ -1891,12 +1891,12 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/token-metadata@^0.5.6":
-  version "0.5.6"
-  resolved "https://registry.npmjs.org/@injectivelabs/token-metadata/-/token-metadata-0.5.6.tgz#b0e7af43ad22dbc19ac4013df7d18835549c30c3"
-  integrity sha512-FiIww+YyKDg78VpmrEDE8BjqtyMMelTTqfeGgVthLH1Y8e+mNFp5B/eTVhz9qNbXgqW6TEQn8ulTX1ShUH2SDg==
+"@injectivelabs/token-metadata@^0.5.7", "@injectivelabs/token-metadata@^0.5.8":
+  version "0.5.8"
+  resolved "https://registry.npmjs.org/@injectivelabs/token-metadata/-/token-metadata-0.5.8.tgz"
+  integrity sha512-WiJJWCcmCbdXxvjBjrC1Anp2siVxAdTqNhzWaYZIHnTsfdnK6QpdNUW+Nsa9Pswtw27Fia2hXj8CXmzEvIUnLg==
   dependencies:
-    "@injectivelabs/networks" "^0.5.2"
+    "@injectivelabs/networks" "^0.5.3"
     "@injectivelabs/ts-types" "^0.5.1"
     "@types/lodash.values" "^4.3.6"
     copyfiles "^2.4.1"
@@ -1952,26 +1952,26 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@injectivelabs/ui-common@^0.5.28":
-  version "0.5.28"
-  resolved "https://registry.npmjs.org/@injectivelabs/ui-common/-/ui-common-0.5.28.tgz#6a653e2a9113eb534cd48d98ddd23bfc4c40080e"
-  integrity sha512-8K4dR6/r+FjRCgeeZRrNTCQ2OoOMBIon0O59Z0muaYFWKtvWarOpsdmK9igpq/1Orv8/4fuJsyekjRRcHW8Z1A==
+"@injectivelabs/ui-common@^0.5.32":
+  version "0.5.32"
+  resolved "https://registry.npmjs.org/@injectivelabs/ui-common/-/ui-common-0.5.32.tgz"
+  integrity sha512-vxYtcbJbLizfOzM6kQjWZ4s74NJQIl9Mld7DtAD32SAnU78R4u/YSHpQPVvY4aF1p5VvKme9xoNvtJ9IyuJ7/g==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@improbable-eng/grpc-web" "^0.15.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.15.0"
     "@injectivelabs/alchemy-api" "^0.5.1"
     "@injectivelabs/chain-api" "^1.7.1"
-    "@injectivelabs/chain-consumer" "^0.5.4"
-    "@injectivelabs/contracts" "^0.5.12"
-    "@injectivelabs/derivatives-consumer" "^0.5.1"
+    "@injectivelabs/chain-consumer" "^0.5.5"
+    "@injectivelabs/contracts" "^0.5.14"
+    "@injectivelabs/derivatives-consumer" "^0.5.2"
     "@injectivelabs/exceptions" "^0.5.1"
-    "@injectivelabs/exchange-consumer" "^0.5.2"
-    "@injectivelabs/explorer-consumer" "^0.5.2"
-    "@injectivelabs/networks" "^0.5.2"
-    "@injectivelabs/spot-consumer" "^0.5.1"
-    "@injectivelabs/subaccount-consumer" "^0.5.1"
-    "@injectivelabs/token-metadata" "^0.5.6"
+    "@injectivelabs/exchange-consumer" "^0.5.4"
+    "@injectivelabs/explorer-consumer" "^0.5.3"
+    "@injectivelabs/networks" "^0.5.3"
+    "@injectivelabs/spot-consumer" "^0.5.2"
+    "@injectivelabs/subaccount-consumer" "^0.5.2"
+    "@injectivelabs/token-metadata" "^0.5.8"
     "@injectivelabs/token-utils" "^0.5.1"
     "@injectivelabs/ts-types" "^0.5.1"
     "@injectivelabs/utils" "^0.5.1"
@@ -2003,16 +2003,16 @@
   dependencies:
     typescript "^4.0.5"
 
-"@injectivelabs/web3-strategy@^0.5.10":
-  version "0.5.10"
-  resolved "https://registry.npmjs.org/@injectivelabs/web3-strategy/-/web3-strategy-0.5.10.tgz#a6c8a2c179bea1240a2de9624ea278c24182207f"
-  integrity sha512-WmTVsjr3YzicpjDVam2KnhpN8+dBdP4LmJ2PhPZ7os6xPBE4SzW1E4rKisW6PjUnaFQaRMtpzr8id+LVlEgEEA==
+"@injectivelabs/web3-strategy@^0.5.11":
+  version "0.5.12"
+  resolved "https://registry.npmjs.org/@injectivelabs/web3-strategy/-/web3-strategy-0.5.12.tgz"
+  integrity sha512-iv2NEkwymQsbPlUOdQ0bEflGh9chMxWzYiJhmkR+1UuquAz9SOhpDrY6Yo6HK6zbveg/RuvwpnfhmSZCebbjbg==
   dependencies:
     "@alch/alchemy-web3" "^1.3.0"
     "@ethereumjs/common" "^2.6.3"
     "@ethereumjs/tx" "^3.5.1"
     "@injectivelabs/assert" "^0.5.1"
-    "@injectivelabs/cosmos-ts" "^0.5.8"
+    "@injectivelabs/cosmos-ts" "^0.5.10"
     "@injectivelabs/exceptions" "^0.5.1"
     "@injectivelabs/ts-types" "^0.5.1"
     "@injectivelabs/utils" "^0.5.1"
@@ -2356,10 +2356,10 @@
     methods "^1.1.2"
     path-to-regexp "^6.1.0"
 
-"@ledgerhq/cryptoassets@^6.27.1":
-  version "6.27.1"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/cryptoassets/-/cryptoassets-6.27.1.tgz#870d665013c3ba36db4272888f427590f441ec31"
-  integrity sha512-kUsCATnxurYuAQ4dGBgaw+eUOGlX9IZvDPQlElrvb8/Kd2p6U5scpl5RX/YFnjkjGNmE4BhQioUslQGpNa3sZQ==
+"@ledgerhq/cryptoassets@^6.28.1":
+  version "6.28.1"
+  resolved "https://registry.npmjs.org/@ledgerhq/cryptoassets/-/cryptoassets-6.28.1.tgz"
+  integrity sha512-FMbgurSw2YUIL7Ypdf/t6VSlt0gNYS9W3LTB3CQeneo7ZLtryJaPo093tu+afbDPXpZcR4W5D5sTRMBJHr9jKA==
   dependencies:
     invariant "2"
 
@@ -2375,7 +2375,7 @@
 
 "@ledgerhq/devices@^6.27.1":
   version "6.27.1"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/devices/-/devices-6.27.1.tgz#3b13ab1d1ba8201e9e74a08f390560483978c962"
+  resolved "https://registry.npmjs.org/@ledgerhq/devices/-/devices-6.27.1.tgz"
   integrity sha512-jX++oy89jtv7Dp2X6gwt3MMkoajel80JFWcdc0HCouwDsV1mVJ3SQdwl/bQU0zd8HI6KebvUP95QTwbQLLK/RQ==
   dependencies:
     "@ledgerhq/errors" "^6.10.0"
@@ -2394,13 +2394,13 @@
   integrity sha512-fQFnl2VIXh9Yd41lGjReCeK+Q2hwxQJvLZfqHnKqWapTz68NHOv5QcI0OHuZVNEbv0xhgdLhi5b65kgYeQSUVg==
 
 "@ledgerhq/hw-app-eth@^6.27.1":
-  version "6.27.1"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-app-eth/-/hw-app-eth-6.27.1.tgz#886fa82591e9266520a22a88000eaa1ff2114758"
-  integrity sha512-5v9D00syMWMDM0k7xGOWTx3LFHNCfoKF+MysHVvWOdo9JEZj1ZAVKdmSW9sbegtIf3lQUfbXTK63BDKmE3xu6Q==
+  version "6.28.1"
+  resolved "https://registry.npmjs.org/@ledgerhq/hw-app-eth/-/hw-app-eth-6.28.1.tgz"
+  integrity sha512-GEB9TPCaJsObotRe5ADKrSxdFftwT97tJ4fZGXw1eoi1TZQyyki+v95cb//EsWyw3CxqqJVpYvGmL/AHEMdDrw==
   dependencies:
     "@ethersproject/abi" "^5.5.0"
     "@ethersproject/rlp" "^5.5.0"
-    "@ledgerhq/cryptoassets" "^6.27.1"
+    "@ledgerhq/cryptoassets" "^6.28.1"
     "@ledgerhq/errors" "^6.10.0"
     "@ledgerhq/hw-transport" "^6.27.1"
     "@ledgerhq/logs" "^6.10.0"
@@ -2419,7 +2419,7 @@
 
 "@ledgerhq/hw-transport-webhid@^6.27.1":
   version "6.27.1"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport-webhid/-/hw-transport-webhid-6.27.1.tgz#8fd1710d23b6bd7cbe2382dd02054dfabe788447"
+  resolved "https://registry.npmjs.org/@ledgerhq/hw-transport-webhid/-/hw-transport-webhid-6.27.1.tgz"
   integrity sha512-u74rBYlibpbyGblSn74fRs2pMM19gEAkYhfVibq0RE1GNFjxDMFC1n7Sb+93Jqmz8flyfB4UFJsxs8/l1tm2Kw==
   dependencies:
     "@ledgerhq/devices" "^6.27.1"
@@ -2429,7 +2429,7 @@
 
 "@ledgerhq/hw-transport-webusb@^6.27.1":
   version "6.27.1"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport-webusb/-/hw-transport-webusb-6.27.1.tgz#62be3b2e5f0d54ae06d066571e4408a807d0f01f"
+  resolved "https://registry.npmjs.org/@ledgerhq/hw-transport-webusb/-/hw-transport-webusb-6.27.1.tgz"
   integrity sha512-n0ygJSeRpznrUfwtbDCLQOM5mA23YT/ngYY8HU46dzsVJHrHQ4jwBNJU48iKB+a9GhHyPAUpPNlWGTogvoVUxg==
   dependencies:
     "@ledgerhq/devices" "^6.27.1"
@@ -2448,7 +2448,7 @@
 
 "@ledgerhq/hw-transport@^6.27.1":
   version "6.27.1"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport/-/hw-transport-6.27.1.tgz#88072278f69c279cb6569352acd4ae2fec33ace3"
+  resolved "https://registry.npmjs.org/@ledgerhq/hw-transport/-/hw-transport-6.27.1.tgz"
   integrity sha512-hnE4/Fq1YzQI4PA1W0H8tCkI99R3UWDb3pJeZd6/Xs4Qw/q1uiQO+vNLC6KIPPhK0IajUfuI/P2jk0qWcMsuAQ==
   dependencies:
     "@ledgerhq/devices" "^6.27.1"
@@ -3154,12 +3154,12 @@
     protobufjs "~6.11.2"
 
 "@terra-money/wallet-controller@^3.8.0":
-  version "3.8.0"
-  resolved "https://registry.npmjs.org/@terra-money/wallet-controller/-/wallet-controller-3.8.0.tgz"
-  integrity sha512-ofnmDN6ml94UfCIXQJID8kPskQMSI+e7greg9Fo5fNlI3hOs/XcFgIZeloW7xs5l1dbm1F5LGSszuZ2wsQPy7w==
+  version "3.8.1"
+  resolved "https://registry.npmjs.org/@terra-money/wallet-controller/-/wallet-controller-3.8.1.tgz"
+  integrity sha512-AkELhiFIWNhEHQY8O1cUPmJJkNTLwUZ79UFd0eHWKW2rj/MrmTylyy+tikwD3BWMEBWH/RqnILXgbju3TgFs0g==
   dependencies:
-    "@terra-money/wallet-types" "^3.8.0"
-    "@terra-money/web-extension-interface" "^3.8.0"
+    "@terra-money/wallet-types" "^3.8.1"
+    "@terra-money/web-extension-interface" "^3.8.1"
     "@walletconnect/core" "^1.6.6"
     "@walletconnect/iso-crypto" "^1.6.6"
     "@walletconnect/types" "^1.6.6"
@@ -3173,15 +3173,15 @@
     secp256k1 "^4.0.0"
     ws "^7.5.5"
 
-"@terra-money/wallet-types@^3.8.0":
-  version "3.8.0"
-  resolved "https://registry.npmjs.org/@terra-money/wallet-types/-/wallet-types-3.8.0.tgz"
-  integrity sha512-ed4AfkiPawfRVZGJW3bb3PuBUUIiNZpAmuQACjPpHTZhHw8CmIdhpMk4zfN13YWyfNpRY7XmzTTWyAyapD8jnw==
+"@terra-money/wallet-types@^3.8.1":
+  version "3.8.1"
+  resolved "https://registry.npmjs.org/@terra-money/wallet-types/-/wallet-types-3.8.1.tgz"
+  integrity sha512-4dNYGkiPWgwltoA1YpZlw57lP+xl3bAdf1UxHGKwVwnYmzmvuJvWT9UPfgo8ie0Heh2pjDEvpRDFEWqtIFExlw==
 
-"@terra-money/web-extension-interface@^3.8.0":
-  version "3.8.0"
-  resolved "https://registry.npmjs.org/@terra-money/web-extension-interface/-/web-extension-interface-3.8.0.tgz"
-  integrity sha512-JgIjXnlCUJVEjSLCry+fd81OE7k0dXlNjGdWkQUSn3bbL2/ZwXMVybGEpZRYuWIW8FIaLLGZBOT/FQO37pln7Q==
+"@terra-money/web-extension-interface@^3.8.1":
+  version "3.8.1"
+  resolved "https://registry.npmjs.org/@terra-money/web-extension-interface/-/web-extension-interface-3.8.1.tgz"
+  integrity sha512-rUnG4GxLrbA3YmNqZSnciY1xfNh8ZloCCHkIibaBeGW5W5BkNCjHjFQmqB+iTBAE9hY1WlrR1q7UBmLqx/PP8Q==
   dependencies:
     rxjs "^7.0.0"
 
@@ -3220,7 +3220,7 @@
 
 "@toruslabs/openlogin-jrpc@^1.7.3":
   version "1.7.3"
-  resolved "https://registry.yarnpkg.com/@toruslabs/openlogin-jrpc/-/openlogin-jrpc-1.7.3.tgz#0bbdc2f7989b4a1f19b8a54d3e66721d424d185f"
+  resolved "https://registry.npmjs.org/@toruslabs/openlogin-jrpc/-/openlogin-jrpc-1.7.3.tgz"
   integrity sha512-xjixDKPLZN7T5hCjwmGTU58NttdZiHn3YlK6II2z4v8IifPUwoquYP08XfaE79ksxamgDYkGERf7bQGkV5Wf5w==
   dependencies:
     "@toruslabs/openlogin-utils" "^1.7.0"
@@ -3234,7 +3234,7 @@
 
 "@toruslabs/openlogin-utils@^1.7.0":
   version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@toruslabs/openlogin-utils/-/openlogin-utils-1.7.0.tgz#1762e2f1f67590d0c6cb8e4c4ade82d59ba13a18"
+  resolved "https://registry.npmjs.org/@toruslabs/openlogin-utils/-/openlogin-utils-1.7.0.tgz"
   integrity sha512-y+j22v+h6EfzN4sfFnmtmMrcxEdkScdJOAgbtvX42BpUYOuFa1Tv0SZjdtsGGDE4g5szmL3rb9NGMHdBF1rZtg==
   dependencies:
     base64url "^3.0.1"
@@ -3243,7 +3243,7 @@
 
 "@toruslabs/torus-embed@^1.22.0":
   version "1.22.0"
-  resolved "https://registry.yarnpkg.com/@toruslabs/torus-embed/-/torus-embed-1.22.0.tgz#1096e0c85b37c2623d948150745e2c78a8b88969"
+  resolved "https://registry.npmjs.org/@toruslabs/torus-embed/-/torus-embed-1.22.0.tgz"
   integrity sha512-SvEZ7Rx8lf/d93PjD96uq1nRf7AWkD986ETr67UAIoo6RDj//awTHADziMzS1xB9N7ye3LPqKje7+kC9Qc4aIw==
   dependencies:
     "@metamask/obs-store" "^7.0.0"
@@ -3264,7 +3264,7 @@
 
 "@toruslabs/torus.js@^5.1.0":
   version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@toruslabs/torus.js/-/torus.js-5.1.0.tgz#f021383b0a0cc6a5a29806f0f6333a4ab437544e"
+  resolved "https://registry.npmjs.org/@toruslabs/torus.js/-/torus.js-5.1.0.tgz"
   integrity sha512-5R9mz6ULwlW8rS+ocjq+2P4BYB/+2cSeHwTyDwA31ZTbreB3ugcUzX5+r+zlx9BTgJC2LdBkCNBJVfDMmzA4iA==
   dependencies:
     "@toruslabs/eccrypto" "^1.1.8"
@@ -3441,7 +3441,7 @@
 
 "@types/hdkey@^2.0.1":
   version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@types/hdkey/-/hdkey-2.0.1.tgz#ab46597562d977b229704c7f19949953b936b6a3"
+  resolved "https://registry.npmjs.org/@types/hdkey/-/hdkey-2.0.1.tgz"
   integrity sha512-4s6jhP0BT3sWBaRo0BfA3BpFllQvuRlXUzIqnuvSNmPhmMCZYjhrDe31nJb8kJLc0ZVdqj9Ep9eH2RGBNCK9Sw==
   dependencies:
     "@types/node" "*"
@@ -3522,9 +3522,9 @@
   integrity sha512-oVfRvqHV/V6D1yifJbVRU3TMp8OT6o6BG+U9MkwuJ3U8/CsDHvalRpsxBqivn71ztOFZBTfJMvETbqHiaNSj7Q==
 
 "@types/long@^4.0.1":
-  version "4.0.1"
-  resolved "https://registry.npmjs.org/@types/long/-/long-4.0.1.tgz"
-  integrity sha512-5tXH6Bx/kNGd3MgffdmP4dy2Z+G4eaXw0SE81Tq3BNadtnMR5/ySMzX4SLEzHJzSmPNn4HIdpQsBvXMUykr58w==
+  version "4.0.2"
+  resolved "https://registry.npmjs.org/@types/long/-/long-4.0.2.tgz"
+  integrity sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA==
 
 "@types/mdast@^3.0.0":
   version "3.0.3"
@@ -3963,25 +3963,25 @@
     lodash "^4.17.15"
     pretty "^2.0.0"
 
-"@walletconnect/browser-utils@^1.7.7":
-  version "1.7.7"
-  resolved "https://registry.npmjs.org/@walletconnect/browser-utils/-/browser-utils-1.7.7.tgz"
-  integrity sha512-6Mt7DSPaG0FKnHhuVzkU1hgtsCpGvl2nfbfRytLpyDY05iWMzMg5uK1DzV+0k4hCt9pVli0JVNt6dh9a6Xm94w==
+"@walletconnect/browser-utils@^1.7.8":
+  version "1.7.8"
+  resolved "https://registry.npmjs.org/@walletconnect/browser-utils/-/browser-utils-1.7.8.tgz"
+  integrity sha512-iCL0XCWOZaABIc0lqA79Vyaybr3z26nt8mxiwvfrG8oaKUf5Y21Of4dj+wIXQ4Hhblre6SgDlU0Ffb39+1THOw==
   dependencies:
     "@walletconnect/safe-json" "1.0.0"
-    "@walletconnect/types" "^1.7.7"
+    "@walletconnect/types" "^1.7.8"
     "@walletconnect/window-getters" "1.0.0"
     "@walletconnect/window-metadata" "1.0.0"
     detect-browser "5.2.0"
 
 "@walletconnect/core@^1.6.6":
-  version "1.7.7"
-  resolved "https://registry.npmjs.org/@walletconnect/core/-/core-1.7.7.tgz"
-  integrity sha512-XsF2x4JcBS1V2Nk/Uh38dU7ZlLmW/R5oxHp4+tVgCwTID6nZlo3vUSHBOqM7jgDRblKOHixANollm0r94bM8Cg==
+  version "1.7.8"
+  resolved "https://registry.npmjs.org/@walletconnect/core/-/core-1.7.8.tgz"
+  integrity sha512-9xcQ0YNf9JUFb0YOX1Mpy4Yojt+6w2yQz/0aIEyj2X/s9D71NW0fTYsMcdhkLOI7mn2cqVbx2t1lRvdgqsbrSQ==
   dependencies:
-    "@walletconnect/socket-transport" "^1.7.7"
-    "@walletconnect/types" "^1.7.7"
-    "@walletconnect/utils" "^1.7.7"
+    "@walletconnect/socket-transport" "^1.7.8"
+    "@walletconnect/types" "^1.7.8"
+    "@walletconnect/utils" "^1.7.8"
 
 "@walletconnect/crypto@^1.0.2":
   version "1.0.2"
@@ -4008,13 +4008,13 @@
   integrity sha512-4BwqyWy6KpSvkocSaV7WR3BlZfrxLbJSLkg+j7Gl6pTDE+U55lLhJvQaMuDVazXYxcjBsG09k7UlH7cGiUI5vQ==
 
 "@walletconnect/iso-crypto@^1.6.6":
-  version "1.7.7"
-  resolved "https://registry.npmjs.org/@walletconnect/iso-crypto/-/iso-crypto-1.7.7.tgz"
-  integrity sha512-t8RKJZkFtFyWMFrl0jPz/3RAGhM5yext+MLFq3L/KTPxLgMZuT1yFHRUiV7cAN3+LcCmk6Sy/rV1yQPTiB158Q==
+  version "1.7.8"
+  resolved "https://registry.npmjs.org/@walletconnect/iso-crypto/-/iso-crypto-1.7.8.tgz"
+  integrity sha512-Qo6qDcMG0Ac+9fpWE0h/oE55NHLk6eM2vlXpWlQDN/me7RZGrkvk+LXsAkQ3UiYPEiPfq4eswcyRWC9AcrAscg==
   dependencies:
     "@walletconnect/crypto" "^1.0.2"
-    "@walletconnect/types" "^1.7.7"
-    "@walletconnect/utils" "^1.7.7"
+    "@walletconnect/types" "^1.7.8"
+    "@walletconnect/utils" "^1.7.8"
 
 "@walletconnect/jsonrpc-types@^1.0.0":
   version "1.0.0"
@@ -4045,29 +4045,29 @@
   resolved "https://registry.npmjs.org/@walletconnect/safe-json/-/safe-json-1.0.0.tgz"
   integrity sha512-QJzp/S/86sUAgWY6eh5MKYmSfZaRpIlmCJdi5uG4DJlKkZrHEF7ye7gA+VtbVzvTtpM/gRwO2plQuiooIeXjfg==
 
-"@walletconnect/socket-transport@^1.7.7":
-  version "1.7.7"
-  resolved "https://registry.npmjs.org/@walletconnect/socket-transport/-/socket-transport-1.7.7.tgz"
-  integrity sha512-RxeFkT+5BqdaZzPtPYIw6+KSVh6Q1NaYqTiAzWWh9RPuvuTajIEsi+fUXizfkpmyi9UTYBvdFXnKcB+eSImpDg==
+"@walletconnect/socket-transport@^1.7.8":
+  version "1.7.8"
+  resolved "https://registry.npmjs.org/@walletconnect/socket-transport/-/socket-transport-1.7.8.tgz"
+  integrity sha512-bqEjLxfSzG79v2OT7XVOZoyUkg6g3yng0fURrdLusWs42fYHWnrSrIZDejFn8N5PiZk5R2edrggkQ7w0VUUAfw==
   dependencies:
-    "@walletconnect/types" "^1.7.7"
-    "@walletconnect/utils" "^1.7.7"
+    "@walletconnect/types" "^1.7.8"
+    "@walletconnect/utils" "^1.7.8"
     ws "7.5.3"
 
-"@walletconnect/types@^1.6.6", "@walletconnect/types@^1.7.7":
-  version "1.7.7"
-  resolved "https://registry.npmjs.org/@walletconnect/types/-/types-1.7.7.tgz"
-  integrity sha512-yXJrLxwLLCXtWgd/e8FjfY9v5DKds12Z7EEPzUrPSq6v7WtXpqate577KwlFQ6UYzioQzIEDE8+98j+0aiZbsw==
+"@walletconnect/types@^1.6.6", "@walletconnect/types@^1.7.8":
+  version "1.7.8"
+  resolved "https://registry.npmjs.org/@walletconnect/types/-/types-1.7.8.tgz"
+  integrity sha512-0oSZhKIrtXRJVP1jQ0EDTRtotQY6kggGjDcmm/LLQBKnOZXdPeo0sPkV/7DjT5plT3O7Cjc6JvuXt9WOY0hlCA==
 
-"@walletconnect/utils@^1.6.6", "@walletconnect/utils@^1.7.7":
-  version "1.7.7"
-  resolved "https://registry.npmjs.org/@walletconnect/utils/-/utils-1.7.7.tgz"
-  integrity sha512-slNlnROS4DEusGFx53hshIBylYhzd5JtGF+AJpza+Tc616+u8ozjQ9aKKUaV85bucnv5Q42bTwLYrYrXiydmuw==
+"@walletconnect/utils@^1.6.6", "@walletconnect/utils@^1.7.8":
+  version "1.7.8"
+  resolved "https://registry.npmjs.org/@walletconnect/utils/-/utils-1.7.8.tgz"
+  integrity sha512-DSpfH6Do0TQmdrgzu+SyjVhupVjN0WEMvNWGK9K4VlSmLFpCWfme7qxzrvuxBZ47gDqs1kGWvjyJmviWqvOnAg==
   dependencies:
-    "@walletconnect/browser-utils" "^1.7.7"
+    "@walletconnect/browser-utils" "^1.7.8"
     "@walletconnect/encoding" "^1.0.1"
     "@walletconnect/jsonrpc-utils" "^1.0.0"
-    "@walletconnect/types" "^1.7.7"
+    "@walletconnect/types" "^1.7.8"
     bn.js "4.11.8"
     js-sha3 "0.8.0"
     query-string "6.13.5"
@@ -11035,11 +11035,6 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
-lru-cache@^7.4.0:
-  version "7.8.1"
-  resolved "https://registry.npmjs.org/lru-cache/-/lru-cache-7.8.1.tgz"
-  integrity sha512-E1v547OCgJvbvevfjgK9sNKIVXO96NnsTsFPBlg4ZxjhsJSODoH9lk8Bm0OxvHNm6Vm5Yqkl/1fErDxhYL8Skg==
-
 make-dir@^1.0.0:
   version "1.3.0"
   resolved "https://registry.npmjs.org/make-dir/-/make-dir-1.3.0.tgz"
@@ -14659,11 +14654,11 @@ semver@^6.0.0, semver@^6.1.0, semver@^6.1.1, semver@^6.1.2, semver@^6.3.0:
   integrity sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw==
 
 semver@^7.3.5:
-  version "7.3.6"
-  resolved "https://registry.npmjs.org/semver/-/semver-7.3.6.tgz"
-  integrity sha512-HZWqcgwLsjaX1HBD31msI/rXktuIhS+lWvdE4kN9z+8IVT4Itc7vqU2WvYsyD6/sjYCt4dEKH/m1M3dwI9CC5w==
+  version "7.3.7"
+  resolved "https://registry.npmjs.org/semver/-/semver-7.3.7.tgz"
+  integrity sha512-QlYTucUYOews+WeEujDoEGziz4K6c47V/Bd+LjSSYcA94p+DmINdf7ncaUinThfvZyu13lN9OY1XDxt8C0Tw0g==
   dependencies:
-    lru-cache "^7.4.0"
+    lru-cache "^6.0.0"
 
 send@0.17.1:
   version "0.17.1"
@@ -16018,7 +16013,7 @@ tr46@~0.0.3:
 
 trezor-connect@^8.2.8:
   version "8.2.8"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.2.8.tgz#184381a671e61c8d7242696199587b790a303aa0"
+  resolved "https://registry.npmjs.org/trezor-connect/-/trezor-connect-8.2.8.tgz"
   integrity sha512-JNef83eTzd/7E5z1bmCsCS6RD2RsvDmjc/H3U6IMDHyxA2LJ+kvhIa/bABa9zznQyL5UX5XgtGX66cjfxL9REA==
   dependencies:
     "@babel/runtime" "^7.15.4"

@@ -31,7 +31,7 @@
           :option="SpotOrderSide.Buy"
           aqua
           class="w-1/2"
-          data-cy="trade-side-buy-asset"
+          data-cy="trade-switch-to-side-buy-button"
         >
           {{ $t('trade.buy_asset', { asset: market.baseToken.symbol }) }}
         </v-button-select>
@@ -40,7 +40,7 @@
           :option="SpotOrderSide.Sell"
           red
           class="w-1/2"
-          data-cy="trade-side-sell-asset"
+          data-cy="trade-switch-to-side-sell-button"
         >
           {{ $t('trade.sell_asset', { asset: market.baseToken.symbol }) }}
         </v-button-select>
@@ -83,7 +83,11 @@
             </span>
           </div>
         </v-input>
-        <span v-if="amountError" class="text-2xs font-semibold text-red-500" data-cy="trade-amount-error">
+        <span
+          v-if="amountError"
+          class="text-2xs font-semibold text-red-500"
+          data-cy="trade-amount-error"
+        >
           {{ amountError }}
         </span>
         <span
@@ -111,7 +115,11 @@
         >
           <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
         </v-input>
-        <span v-if="priceError" class="text-red-500 font-semibold text-2xs" data-cy="trade-price-error">
+        <span
+          v-if="priceError"
+          class="text-red-500 font-semibold text-2xs"
+          data-cy="trade-price-error"
+        >
           {{ priceError }}
         </span>
       </div>
@@ -901,17 +909,19 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const disqualified = tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-        (marketId) => marketId === market.marketId
-      )
+      const disqualified =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
+          (marketId) => marketId === market.marketId
+        )
 
       if (disqualified) {
         return ZERO_IN_BASE
       }
 
-      const denomIncluded = tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-        (denom) => denom === market.quoteDenom
-      )
+      const denomIncluded =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
+          (denom) => denom === market.quoteDenom
+        )
 
       if (!denomIncluded) {
         return ZERO_IN_BASE
@@ -958,17 +968,19 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const disqualified = tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-        (marketId) => marketId === market.marketId
-      )
+      const disqualified =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
+          (marketId) => marketId === market.marketId
+        )
 
       if (disqualified) {
         return ZERO_IN_BASE
       }
 
-      const denomIncluded = tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-        (denom) => denom === market.quoteDenom
-      )
+      const denomIncluded =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
+          (denom) => denom === market.quoteDenom
+        )
 
       if (!denomIncluded) {
         return ZERO_IN_BASE
