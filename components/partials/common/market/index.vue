@@ -47,6 +47,7 @@
           :market="market"
           :summary="summary"
           lg
+          update-tab
         />
       </div>
 

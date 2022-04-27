@@ -1924,7 +1924,7 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/ts-types@^0.5.0", "@injectivelabs/ts-types@^0.5.1":
+"@injectivelabs/ts-types@^0.5.1":
   version "0.5.1"
   resolved "https://registry.npmjs.org/@injectivelabs/ts-types/-/ts-types-0.5.1.tgz"
   integrity sha512-pfDOMISPL/4cWDOaXB72BWGZrF04sCt3e1r3nRVAn9sG4wEyAxYqecijSjOs0ZN7FSAXgpeltWeeYdxENocstw==
