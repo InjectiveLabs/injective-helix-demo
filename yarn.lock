@@ -1925,13 +1925,13 @@
   resolved "https://registry.yarnpkg.com/@injectivelabs/common-rpc/-/common-rpc-1.0.3.tgz#2c447c21a0efa0b1e174e1efc53afd5643ac3bef"
   integrity sha512-CCGwSgTAJDiXWjCngrrg9cNLTx4LGQjxWwWH0A6ZGuEcZLtHc9Y7/AIikoeKrJO80aC8ZBYlSyfVkFZjEy6Z2Q==
 
-"@injectivelabs/contracts@^0.5.12":
-  version "0.5.12"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/contracts/-/contracts-0.5.12.tgz#9397516eb6f866d642c7680039886b68579bd87b"
-  integrity sha512-0kiuSU5gUlEANe6+gBw95lHG55TR6ABe3UhnF6JPBf4FfjbrCL9HhrVVU5Bq3/m+qrOWerRLlIvLO4xnYvuyaw==
+"@injectivelabs/contracts@^0.5.14":
+  version "0.5.14"
+  resolved "https://registry.npmjs.org/@injectivelabs/contracts/-/contracts-0.5.14.tgz#bf34a964328f6e069b936670e058dbd78d382f96"
+  integrity sha512-eQNIAub8Bnm0ZgDPpTXZQNiREfZPz5WJsqU+x5/FNnfxGoFSv6nIJ2u37WPS7eBz6FQvZCXb7lOc9zih4LoJQw==
   dependencies:
     "@injectivelabs/exceptions" "^0.5.1"
-    "@injectivelabs/networks" "^0.5.2"
+    "@injectivelabs/networks" "^0.5.3"
     "@injectivelabs/ts-types" "^0.5.1"
     "@injectivelabs/utils" "^0.5.1"
     link-module-alias "^1.2.0"
@@ -2056,6 +2056,16 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
+"@injectivelabs/networks@^0.5.3":
+  version "0.5.3"
+  resolved "https://registry.npmjs.org/@injectivelabs/networks/-/networks-0.5.3.tgz#85c94958374d6fbf2b2c2eea9140ee7535529837"
+  integrity sha512-BUqJsuHAAH+yAD45LtU/qaoiQ6lY0Pop9A5B50Elub+4H0N9D+/VAQVn0IUL147KxV4B1OcGeCV2x2IMhLj0EQ==
+  dependencies:
+    "@injectivelabs/exceptions" "^0.5.1"
+    "@injectivelabs/utils" "^0.5.1"
+    link-module-alias "^1.2.0"
+    shx "^0.3.2"
+
 "@injectivelabs/referral-api@^1.0.20":
   version "1.0.20"
   resolved "https://registry.yarnpkg.com/@injectivelabs/referral-api/-/referral-api-1.0.20.tgz#cd405deb7c62346b112f9dfd0ab0ccda78fbd107"
@@ -2124,6 +2134,21 @@
     lodash.values "^4.3.0"
     shx "^0.3.2"
 
+"@injectivelabs/token-metadata@^0.5.8":
+  version "0.5.8"
+  resolved "https://registry.npmjs.org/@injectivelabs/token-metadata/-/token-metadata-0.5.8.tgz#796b0c877290ac993472caea40ccc23cbee1cfe0"
+  integrity sha512-WiJJWCcmCbdXxvjBjrC1Anp2siVxAdTqNhzWaYZIHnTsfdnK6QpdNUW+Nsa9Pswtw27Fia2hXj8CXmzEvIUnLg==
+  dependencies:
+    "@injectivelabs/networks" "^0.5.3"
+    "@injectivelabs/ts-types" "^0.5.1"
+    "@types/lodash.values" "^4.3.6"
+    copyfiles "^2.4.1"
+    jsonschema "^1.4.0"
+    link-module-alias "^1.2.0"
+    lodash "^4.17.21"
+    lodash.values "^4.3.0"
+    shx "^0.3.2"
+
 "@injectivelabs/token-utils@^0.5.1":
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/@injectivelabs/token-utils/-/token-utils-0.5.1.tgz#dc473d5a07884db2cbe3c048a74ab1b727446d2d"
@@ -2170,10 +2195,10 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@injectivelabs/ui-common@^0.5.30":
-  version "0.5.30"
-  resolved "https://registry.npmjs.org/@injectivelabs/ui-common/-/ui-common-0.5.30.tgz#f0f10663e8dd935786e61c994c90701915065704"
-  integrity sha512-qzWvccb/SNidCG7nfQ5N052BkN2ezICLjvNMhBEuR0WJ8EcnfEHKYNIew8QyaVtJ00J2apTFSoBJH4+2e8dDtA==
+"@injectivelabs/ui-common@^0.5.32":
+  version "0.5.32"
+  resolved "https://registry.npmjs.org/@injectivelabs/ui-common/-/ui-common-0.5.32.tgz#e07a0e2ad7a168748336e0ab1eb2b79c46f51766"
+  integrity sha512-vxYtcbJbLizfOzM6kQjWZ4s74NJQIl9Mld7DtAD32SAnU78R4u/YSHpQPVvY4aF1p5VvKme9xoNvtJ9IyuJ7/g==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@improbable-eng/grpc-web" "^0.15.0"
@@ -2181,15 +2206,15 @@
     "@injectivelabs/alchemy-api" "^0.5.1"
     "@injectivelabs/chain-api" "^1.7.1"
     "@injectivelabs/chain-consumer" "^0.5.5"
-    "@injectivelabs/contracts" "^0.5.12"
+    "@injectivelabs/contracts" "^0.5.14"
     "@injectivelabs/derivatives-consumer" "^0.5.2"
     "@injectivelabs/exceptions" "^0.5.1"
     "@injectivelabs/exchange-consumer" "^0.5.4"
     "@injectivelabs/explorer-consumer" "^0.5.3"
-    "@injectivelabs/networks" "^0.5.2"
+    "@injectivelabs/networks" "^0.5.3"
     "@injectivelabs/spot-consumer" "^0.5.2"
     "@injectivelabs/subaccount-consumer" "^0.5.2"
-    "@injectivelabs/token-metadata" "^0.5.7"
+    "@injectivelabs/token-metadata" "^0.5.8"
     "@injectivelabs/token-utils" "^0.5.1"
     "@injectivelabs/ts-types" "^0.5.1"
     "@injectivelabs/utils" "^0.5.1"
