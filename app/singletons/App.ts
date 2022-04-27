@@ -1,7 +1,7 @@
 import {
   Network,
   getUrlEndpointForNetwork,
-  UrlEndpoint
+  UrlEndpoints
 } from '@injectivelabs/networks'
 import { Wallet } from '@injectivelabs/web3-strategy'
 import {
@@ -22,7 +22,7 @@ class App {
     this.network = NETWORK || Network.Local
   }
 
-  get endpoints(): UrlEndpoint {
+  get endpoints(): UrlEndpoints {
     const endpoints = getUrlEndpointForNetwork(this.network)
     const exchangeApiEndpoint =
       APP_EXCHANGE_API_ENDPOINT || endpoints.exchangeApi
