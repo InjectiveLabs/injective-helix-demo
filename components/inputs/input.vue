@@ -100,6 +100,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { debounce } from 'lodash'
 import { DOMEvent } from '~/types'
 import {
   convertToNumericValue,
@@ -244,6 +245,8 @@ export default Vue.extend({
   },
 
   methods: {
+    debounce,
+
     handlePaste(event: DOMEvent<HTMLInputElement>) {
       if (event.target.type === 'number') {
         event.preventDefault()
@@ -253,30 +256,36 @@ export default Vue.extend({
     handleChangeOnInput(event: DOMEvent<HTMLInputElement>) {
       const { maxDecimals } = this
       const {
-        data: eventKey,
-        inputType,
         target: { value, type }
       } = event
 
       if (type !== 'number') {
         this.$emit('input', value)
       } else {
+        const formattedValueWithExtraDecimals = convertToNumericValue(
+          value,
+          Math.min(maxDecimals * 2, 18)
+        ).toString()
+
+        this.$emit('input', formattedValueWithExtraDecimals)
+        this.$forceUpdate()
+
         const formattedValue = convertToNumericValue(
           value,
           maxDecimals
         ).toString()
 
-        this.$emit('input', formattedValue)
-
-        if (
-          eventKey !== ',' &&
-          eventKey !== '.' &&
-          inputType !== 'deleteContentBackward'
-        ) {
-          event.target.value = formattedValue
-        }
+        this.delayUpdateInput(formattedValue)
       }
     },
+
+    delayUpdateInput: debounce(function (value) {
+      // @ts-ignore
+      const self = this
+
+      self.$emit('input', value)
+      self.$forceUpdate()
+    }, 500),
 
     handleKeydown(event: DOMEvent<HTMLInputElement>) {
       if (
