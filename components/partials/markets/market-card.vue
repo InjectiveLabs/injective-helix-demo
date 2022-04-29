@@ -126,7 +126,8 @@ export default Vue.extend({
       const { lastTradedPrice, market } = this
 
       return lastTradedPrice.toFormat(
-        market?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+        market?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+        BigNumberInBase.ROUND_DOWN
       )
     },
 
@@ -149,7 +150,7 @@ export default Vue.extend({
     volumeInUsdToFormat(): string {
       const { volumeInUsd } = this
 
-      return volumeInUsd.toFormat(2)
+      return volumeInUsd.toFormat(2, BigNumberInBase.ROUND_DOWN)
     },
 
     marketRoute(): MarketRoute {

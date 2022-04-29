@@ -65,6 +65,11 @@ export default Vue.extend({
     summary: {
       type: Object as PropType<UiDerivativeMarketSummary | UiSpotMarketSummary>,
       required: true
+    },
+
+    updateTab: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -184,9 +189,9 @@ export default Vue.extend({
 
   watch: {
     lastTradedPriceToFormat(newPrice: string) {
-      const { market } = this
+      const { market, updateTab } = this
 
-      if (market) {
+      if (market && updateTab) {
         document.title = `${newPrice} - ${market.ticker} | ${metaTags.title}`
       }
     }
