@@ -12,6 +12,7 @@ const mainnetSpot = [
   'ape-usdt',
   'atom-usdt',
   'weth-usdt',
+  'huahua-usdt',
   'link-usdt',
   'ust-usdt',
   'luna-ust',
