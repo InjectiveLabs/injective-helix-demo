@@ -3,8 +3,8 @@
     <div class="flex items-center justify-between">
       <div class="flex items-center flex-wrap gap-5">
         <v-market-type-selector
-          :type="MarketType.Favourite"
-          :active="activeType === MarketType.Favourite"
+          :type="MarketType.Favorite"
+          :active="activeType === MarketType.Favorite"
           @click="handleTypeClick"
         >
           <v-icon-star class="min-w-4 h-4 w-4" />
@@ -50,7 +50,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { MarketType } from '@injectivelabs/ui-common'
+import { MarketType } from '~/types/enums'
 import VMarketTypeSelector from '~/components/partials/common/market-selection/market-type-selector.vue'
 import VSearch from '~/components/inputs/search.vue'
 

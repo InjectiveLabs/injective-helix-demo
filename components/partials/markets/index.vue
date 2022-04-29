@@ -194,9 +194,9 @@ export default Vue.extend({
         const isPartOfCategory = marketIsPartOfCategory(activeCategory, market)
         const isPartOfSearch = marketIsPartOfSearch(search, market)
         const isPartOfType = marketIsPartOfType({
-          activeType,
           market,
-          favoriteMarkets
+          favoriteMarkets,
+          activeType: activeType as MarketType
         })
         const isQuotePair = marketIsQuotePair(activeQuote, market)
 
@@ -221,11 +221,18 @@ export default Vue.extend({
           }
 
           if (sortBy === MarketHeaderType.Change) {
+            if (new BigNumberInBase(m2.summary.change).eq(m1.summary.change)) {
+              return m1.market.ticker.localeCompare(m2.market.ticker)
+            }
+
             return new BigNumberInBase(m2.summary.change)
               .minus(m1.summary.change)
               .toNumber()
           }
 
+          if (new BigNumberInBase(m2.volumeInUsd).eq(m1.volumeInUsd)) {
+            return m1.market.ticker.localeCompare(m2.market.ticker)
+          }
           // default: sort by volume
           return m2.volumeInUsd.minus(m1.volumeInUsd).toNumber()
         }
