@@ -14,6 +14,7 @@
       items-center
       rounded
     "
+    :data-cy="'market-row-' + market.ticker"
   >
     <span class="text-sm col-span-2 sm:col-span-3 flex items-center">
       <div
@@ -33,8 +34,9 @@
         <div class="flex flex-col">
           <span
             class="tracking-widest font-bold"
-            :data-cy="'market-row-ticker-' + market.ticker"
-            >{{ market.ticker }}</span>
+            data-cy="market-entry-ticker"
+            >{{ market.ticker }}
+          </span>
           <span class="text-gray-500 text-xs hidden md:block">
             {{ market.baseToken.name }}
           </span>
@@ -78,7 +80,10 @@
       </div>
     </div>
 
-    <span class="hidden font-mono sm:flex items-center justify-end col-span-2">
+    <span
+      class="hidden font-mono sm:flex items-center justify-end col-span-2"
+      data-cy="market-entry-last-traded-price"
+    >
       <v-icon-arrow
         v-if="!lastTradedPrice.isNaN() && lastTradedPrice.gt(0)"
         class="transform w-3 h-3 mr-1"
@@ -102,6 +107,7 @@
     <span class="hidden sm:block font-mono text-right col-span-2">
       <span
         v-if="!change.isNaN()"
+        data-cy="market-entry-change_24h"
         :class="change.gte(0) ? 'text-aqua-500' : 'text-red-500'"
       >
         {{ changeToFormat }}%
@@ -111,8 +117,14 @@
 
     <span class="hidden sm:block font-mono col-span-3">
       <div v-if="!quoteVolume.isNaN()" class="flex flex-col items-end">
-        <span>{{ volumeInUsdToFormat }} USD</span>
-        <span class="text-xs text-gray-500">
+        <span
+          data-cy="market-entry-volume-usd"
+          >{{ volumeInUsdToFormat }} USD
+        </span>
+        <span
+          class="text-xs text-gray-500"
+          data-cy="market-entry-volume-quote-asset"
+        >
           {{ quoteVolumeToFormat }}
           <span>
             {{ market.quoteToken.symbol }}
@@ -125,6 +137,7 @@
     <span class="hidden 3md:flex col-span-2 items-center justify-end">
       <nuxt-link
         class="text-primary-500 hover:text-primary-600"
+        data-cy="market-entry-trade-link"
         :to="marketRoute"
       >
         {{ $t('trade.trade') }}
@@ -143,10 +156,19 @@
           cursor-pointer
           hover:bg-primary-500 hover:bg-opacity-10
         "
+        data-cy="market-is-favourite"
         @click="updateWatchList"
       >
-        <v-icon-star v-if="isFavorite" class="min-w-5 w-5 h-5" />
-        <v-icon-star-border v-else class="min-w-5 w-5 h-5" />
+        <v-icon-star
+          v-if="isFavorite"
+          class="min-w-5 w-5 h-5"
+          data-cy="market-is-favorite-icon"
+        />
+        <v-icon-star-border
+          v-else
+          class="min-w-5 w-5 h-5"
+          data-cy="market-is-not-favorite-icon"
+        />
       </div>
     </span>
   </div>

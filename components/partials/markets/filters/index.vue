@@ -20,7 +20,7 @@
         <v-market-type-selector
           :type="MarketType.Favourite"
           :active="activeType === MarketType.Favourite"
-          data-cy="market-filter-favourites"
+          data-cy="market-filter-favorites"
           @click="handleTypeClick"
         >
           <span class="flex items-center">

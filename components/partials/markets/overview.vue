@@ -15,7 +15,7 @@
         class="md:hidden"
       >
         <transition mode="out-in" :name="animation">
-          <v-market-card
+            <v-market-card
             v-if="newMarket && activeIndex === 1"
             key="market-card-1"
             :market="newMarket.market"
@@ -53,6 +53,7 @@
       >
         <v-market-card
           v-if="newMarket"
+          data-cy="market-card-whats-new"
           :market="newMarket.market"
           :summary="newMarket.summary"
           :volume-in-usd="newMarket.volumeInUsd"
@@ -61,6 +62,7 @@
         </v-market-card>
 
         <v-market-card
+          data-cy="market-card-top-volume"
           :market="topVolume.market"
           :summary="topVolume.summary"
           :volume-in-usd="topVolume.volumeInUsd"
@@ -69,6 +71,7 @@
         </v-market-card>
 
         <v-market-card
+          data-cy="market-card-top-gainer"
           :market="topGainer.market"
           :summary="topGainer.summary"
           :volume-in-usd="topGainer.volumeInUsd"

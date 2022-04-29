@@ -59,9 +59,19 @@
             class="addon flex items-center flex-shrink-0"
             :class="{ 'pr-3': !lg && !xl }"
           >
-            <span v-if="showClose" @click="handleCloseEvent">
+            <span
+              v-if="showClose"
+              data-cy="select-clear-button"
+              @click="handleCloseEvent"
+            >
               <v-icon-close
-                class="cursor-pointer h-4 w-4 text-gray-200 hover:text-primary-500"
+                class="
+                  cursor-pointer
+                  h-4
+                  w-4
+                  text-gray-200
+                  hover:text-primary-500
+                "
               />
             </span>
 

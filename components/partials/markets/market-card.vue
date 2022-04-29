@@ -28,7 +28,7 @@
         </div>
         <div class="flex flex-col">
           <p
-            :data-cy="'market-card-ticker-' + market.ticker"
+            data-cy="market-card-ticker"
             class="uppercase tracking-widest text-sm font-bold leading-4"
           >
             {{ market.ticker }}
@@ -43,6 +43,7 @@
 
     <p
       class="text-2xl tracking-wide font-mono font-light flex items-center mt-4"
+      data-cy="market-card-last-traded-price"
       :class="{
         'text-aqua-500 ': summary.lastPriceChange !== Change.Decrease,
         'text-red-500': summary.lastPriceChange === Change.Decrease
@@ -62,11 +63,12 @@
     <div class="flex items-center font-mono text-sm tracking-wide mt-2">
       <span
         class="mr-2"
+        data-cy="market-card-change_24h"
         :class="change.gte(0) ? 'text-aqua-500' : 'text-red-500'"
       >
         {{ changeToFormat }}%
       </span>
-      <span class="text-gray-500 uppercase">
+      <span class="text-gray-500 uppercase" data-cy="market-card-volume-usd">
         {{ $t('markets.vol') }} {{ volumeInUsdToFormat }} USD
       </span>
     </div>
