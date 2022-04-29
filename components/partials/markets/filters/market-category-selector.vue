@@ -19,7 +19,6 @@
       </SelectorItem>
     </div>
   </v-dropdown>
-  </v-dropdown>
 </template>
 
 <script lang="ts">

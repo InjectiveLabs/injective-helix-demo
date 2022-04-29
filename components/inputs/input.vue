@@ -273,21 +273,21 @@ export default Vue.extend({
 
       if (type !== 'number') {
         this.$emit('input', value)
-      }
+      } else {
+        const formattedValue = convertToNumericValue(
+          value,
+          maxDecimals
+        ).toString()
 
-      const formattedValue = convertToNumericValue(
-        value,
-        maxDecimals
-      ).toString()
+        this.$emit('input', formattedValue)
 
-      this.$emit('input', formattedValue)
-
-      if (
-        eventKey !== ',' &&
-        eventKey !== '.' &&
-        inputType !== 'deleteContentBackward'
-      ) {
-        event.target.value = formattedValue
+        if (
+          eventKey !== ',' &&
+          eventKey !== '.' &&
+          inputType !== 'deleteContentBackward'
+        ) {
+          event.target.value = formattedValue
+        }
       }
     },
 
