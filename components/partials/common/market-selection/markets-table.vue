@@ -78,6 +78,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { MarketType } from '@injectivelabs/ui-common'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import VMarketFilter from '~/components/partials/common/market-selection/markets-filter.vue'
 import SortableHeaderItem from '~/components/elements/sortable-header-item.vue'
@@ -130,9 +131,9 @@ export default Vue.extend({
       return markets.filter(({ market }) => {
         const isPartOfSearch = marketIsPartOfSearch(search, market)
         const isPartOfType = marketIsPartOfType({
-          activeType,
           market,
-          favoriteMarkets
+          favoriteMarkets,
+          activeType: activeType as MarketType
         })
 
         return isPartOfType && isPartOfSearch

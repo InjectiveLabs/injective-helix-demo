@@ -34,7 +34,7 @@ export const newMarketsSlug = [
   'ape-usdt',
   'luna-ust',
   'luna-ust-perp',
-  'huahua-usdt',
+  'evmos-usdt',
   'ust-usdt'
 ]
 

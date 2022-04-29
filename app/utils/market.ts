@@ -1,7 +1,7 @@
 import {
   UiDerivativeMarketWithToken,
-  MarketType,
-  UiSpotMarketWithToken
+  UiSpotMarketWithToken,
+  MarketType
 } from '@injectivelabs/ui-common'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { MarketCategoryType, MarketQuoteType, MarketRoute } from '~/types'
@@ -117,7 +117,7 @@ export const marketIsPartOfType = ({
   market,
   favoriteMarkets
 }: {
-  activeType: string
+  activeType: MarketType
   market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
   favoriteMarkets: string[]
 }): boolean => {
