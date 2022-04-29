@@ -14,7 +14,7 @@
       items-center
       rounded
     "
-    :data-cy="'market-row-' + market.ticker"
+    :data-cy="`market-row-${market.ticker}`"
   >
     <span class="text-sm col-span-2 sm:col-span-3 flex items-center">
       <div

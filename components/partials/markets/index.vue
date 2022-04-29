@@ -109,9 +109,10 @@
       <v-empty-list
         slot="empty"
         classes="bg-gray-850 min-h-3xs"
+        data-cy="markets-no-data"
         :message="$t('markets.emptyHeader')"
       >
-        <span class="mt-2 text-xs text-gray-500" data-cy="market-row-empty">{{
+        <span class="mt-2 text-xs text-gray-500">{{
           $t('markets.emptyDescription')
         }}</span>
       </v-empty-list>
