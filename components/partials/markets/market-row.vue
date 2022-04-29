@@ -194,7 +194,8 @@ export default Vue.extend({
       const { lastTradedPrice, market } = this
 
       return lastTradedPrice.toFormat(
-        market?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+        market?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+        BigNumberInBase.ROUND_DOWN
       )
     },
 
@@ -221,13 +222,16 @@ export default Vue.extend({
     quoteVolumeToFormat(): string {
       const { quoteVolume } = this
 
-      return quoteVolume.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+      return quoteVolume.toFormat(
+        UI_DEFAULT_DISPLAY_DECIMALS,
+        BigNumberInBase.ROUND_DOWN
+      )
     },
 
     volumeInUsdToFormat(): string {
       const { volumeInUsd } = this
 
-      return volumeInUsd.toFormat(2)
+      return volumeInUsd.toFormat(2, BigNumberInBase.ROUND_DOWN)
     },
 
     abbreviatedVolumeInUsdToFormat(): string {
