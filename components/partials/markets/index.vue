@@ -183,9 +183,9 @@ export default Vue.extend({
         const isPartOfCategory = marketIsPartOfCategory(activeCategory, market)
         const isPartOfSearch = marketIsPartOfSearch(search, market)
         const isPartOfType = marketIsPartOfType({
-          activeType,
           market,
-          favoriteMarkets
+          favoriteMarkets,
+          activeType: activeType as MarketType
         })
         const isQuotePair = marketIsQuotePair(activeQuote, market)
 

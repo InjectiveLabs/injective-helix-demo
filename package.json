@@ -32,7 +32,7 @@
     "@chenfengyuan/vue-countdown": "^1.1.5",
     "@injectivelabs/alchemy-api": "^0.5.1",
     "@injectivelabs/chain-consumer": "^0.5.5",
-    "@injectivelabs/contracts": "^0.5.14",
+    "@injectivelabs/contracts": "^0.5.18",
     "@injectivelabs/derivatives-consumer": "^0.5.2",
     "@injectivelabs/exceptions": "^0.5.1",
     "@injectivelabs/exchange-consumer": "^0.5.4",

@@ -1,3 +1,5 @@
+import { MarketType } from '@injectivelabs/ui-common'
+
 export enum Change {
   New = 'new',
   NoChange = 'no-change',
@@ -117,10 +119,8 @@ export enum MarketQuoteType {
   UST = 'ust'
 }
 
-export enum MarketType {
-  Spot = 'Spot',
-  Derivative = 'Derivative',
-  Perpetual = 'Perpetual',
-  Futures = 'Futures',
+export enum MarketTypeFavorite {
   Favorite = 'Favorite'
 }
+
+export { MarketType }

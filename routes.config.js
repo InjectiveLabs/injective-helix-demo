@@ -17,7 +17,7 @@ const mainnetSpot = [
   'gf-usdt'
 ]
 const testnetSpot = [...mainnetSpot]
-const mainnetStagingSpot = [...mainnetSpot]
+const mainnetStagingSpot = [...mainnetSpot, 'evmos-usdt']
 const spot = IS_TESTNET
   ? testnetSpot
   : IS_MAINNET_STAGING

@@ -1925,20 +1925,6 @@
   resolved "https://registry.yarnpkg.com/@injectivelabs/common-rpc/-/common-rpc-1.0.3.tgz#2c447c21a0efa0b1e174e1efc53afd5643ac3bef"
   integrity sha512-CCGwSgTAJDiXWjCngrrg9cNLTx4LGQjxWwWH0A6ZGuEcZLtHc9Y7/AIikoeKrJO80aC8ZBYlSyfVkFZjEy6Z2Q==
 
-"@injectivelabs/contracts@^0.5.14":
-  version "0.5.14"
-  resolved "https://registry.npmjs.org/@injectivelabs/contracts/-/contracts-0.5.14.tgz#bf34a964328f6e069b936670e058dbd78d382f96"
-  integrity sha512-eQNIAub8Bnm0ZgDPpTXZQNiREfZPz5WJsqU+x5/FNnfxGoFSv6nIJ2u37WPS7eBz6FQvZCXb7lOc9zih4LoJQw==
-  dependencies:
-    "@injectivelabs/exceptions" "^0.5.1"
-    "@injectivelabs/networks" "^0.5.3"
-    "@injectivelabs/ts-types" "^0.5.1"
-    "@injectivelabs/utils" "^0.5.1"
-    link-module-alias "^1.2.0"
-    shx "^0.3.3"
-    web3 "^1.7.2"
-    web3-utils "^1.7.2"
-
 "@injectivelabs/contracts@^0.5.18":
   version "0.5.18"
   resolved "https://registry.npmjs.org/@injectivelabs/contracts/-/contracts-0.5.18.tgz#439c73f76a473ee2bd057df0bdcdf25f731efeb7"
