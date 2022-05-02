@@ -70,7 +70,7 @@ export default Vue.extend({
     volumeInUsdToFormat(): string {
       const { volumeInUsd } = this
 
-      return volumeInUsd.toFormat(2)
+      return volumeInUsd.toFormat(2, BigNumberInBase.ROUND_DOWN)
     },
 
     abbreviatedVolumeInUsdToFormat(): string {

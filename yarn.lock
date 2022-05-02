@@ -1939,17 +1939,17 @@
     web3 "^1.7.2"
     web3-utils "^1.7.2"
 
-"@injectivelabs/cosmos-ts@^0.5.15":
-  version "0.5.15"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/cosmos-ts/-/cosmos-ts-0.5.15.tgz#765472ba1f7a19d1c32fbfabdb215ac828e4d372"
-  integrity sha512-IMJWWcVFEPwQ3VBz+Rq6qpon5yh0SgJ55K0J04vZI9xqYOrBSndDk9+MMxQWbyOIdjbW/hPLVlK0rdS0GwbPdQ==
+"@injectivelabs/cosmos-ts@^0.5.19":
+  version "0.5.19"
+  resolved "https://registry.npmjs.org/@injectivelabs/cosmos-ts/-/cosmos-ts-0.5.19.tgz#3174532e62d863a3ab8e3e9ca9a9c27feedbd7c8"
+  integrity sha512-i/FnK5qvG+0hhqS2cK9gbgx/1kKbQ8+TcC/zJv2uYb0N45AXQuAHP0SeCVLgPti+5n+6/LhCeDE/2BxyN2Bm7g==
   dependencies:
     "@cosmjs/amino" "^0.27.1"
     "@cosmjs/launchpad" "^0.27.1"
     "@cosmjs/proto-signing" "^0.27.1"
     "@cosmjs/stargate" "^0.27.1"
     "@injectivelabs/chain-api" "^1.7.1"
-    "@injectivelabs/token-metadata" "^0.5.12"
+    "@injectivelabs/token-metadata" "^0.5.13"
     "@injectivelabs/ts-types" "^0.5.1"
     "@injectivelabs/utils" "^0.5.1"
     "@keplr-wallet/cosmos" "^0.9.12"
@@ -2109,10 +2109,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/token-metadata@^0.5.12":
-  version "0.5.12"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-0.5.12.tgz#c765b380d798bd973b3e6ec9565c5e6fc9bf6e65"
-  integrity sha512-908P2bM2J4L+oTKkOvQ+/0v9wV25oHnVVl/rYXNx6pzgTSLRovCEKJlkOLxd6PElx2ShJcw3fZ9vc4tiNeokqg==
+"@injectivelabs/token-metadata@^0.5.13":
+  version "0.5.13"
+  resolved "https://registry.npmjs.org/@injectivelabs/token-metadata/-/token-metadata-0.5.13.tgz#73854d11313672f9cc58260b78589403b680c297"
+  integrity sha512-2y7MVfm3wH3mlwxaGKPQoALpT9iGeAzHPsHPwnpgcKqRWgjsbcX3cdh9RxxezqL6bnYdAWu+bfnYXACb1pxE3g==
   dependencies:
     "@injectivelabs/networks" "^0.5.3"
     "@injectivelabs/ts-types" "^0.5.1"
@@ -2170,10 +2170,10 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@injectivelabs/ui-common@^0.5.42":
-  version "0.5.42"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-common/-/ui-common-0.5.42.tgz#ccb2fa3e03b5ac96b3c8f81ac3f8dea18a7aae84"
-  integrity sha512-mWEQxrMTeEbL9gst8pCvRU7ZSnans9Wlo2JkmnpJz5Sw279OeSlKuWrdqH/nivoy+ZMlcapAetYT52bT+wMrug==
+"@injectivelabs/ui-common@^0.5.46":
+  version "0.5.46"
+  resolved "https://registry.npmjs.org/@injectivelabs/ui-common/-/ui-common-0.5.46.tgz#203e45f3f221a4ce0a20c0d46aa41a839a14fdc8"
+  integrity sha512-jovqgR3iUZuLCkmuO7T+8x2EOwfP7cuixv+DhixZ7M3tPF5VOG1EFzyxQlh43nRm/kNiK7cTMp+HnY4LXH2/vA==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@improbable-eng/grpc-web" "^0.15.0"
@@ -2189,7 +2189,7 @@
     "@injectivelabs/networks" "^0.5.3"
     "@injectivelabs/spot-consumer" "^0.5.2"
     "@injectivelabs/subaccount-consumer" "^0.5.2"
-    "@injectivelabs/token-metadata" "^0.5.12"
+    "@injectivelabs/token-metadata" "^0.5.13"
     "@injectivelabs/token-utils" "^0.5.1"
     "@injectivelabs/ts-types" "^0.5.1"
     "@injectivelabs/utils" "^0.5.1"
@@ -2221,16 +2221,16 @@
   dependencies:
     typescript "^4.0.5"
 
-"@injectivelabs/web3-strategy@^0.5.22":
-  version "0.5.22"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/web3-strategy/-/web3-strategy-0.5.22.tgz#8433d810715592bc293ffb415a1d4155c3317f1a"
-  integrity sha512-1VN3ZelfM/5m/a1IoaejnRbXx10NzOdr66wSNg1NCq1xNUdCcp1bgPNSZzO3tEg3vRO0K0P5eNSJsril5qrWgg==
+"@injectivelabs/web3-strategy@^0.5.26":
+  version "0.5.26"
+  resolved "https://registry.npmjs.org/@injectivelabs/web3-strategy/-/web3-strategy-0.5.26.tgz#ff7d656b54fc7444bb76dc9f24f45941448646cc"
+  integrity sha512-NF9KyfsC3tVO6Z2QjmtkAbD4hV1LaEjJ7xg4qPFAiS6IjfU+DDnK4ALdLlNqiDfWOL5+KySf22l07xd2x8jdXg==
   dependencies:
     "@alch/alchemy-web3" "^1.3.0"
     "@ethereumjs/common" "^2.6.3"
     "@ethereumjs/tx" "^3.5.1"
     "@injectivelabs/assert" "^0.5.1"
-    "@injectivelabs/cosmos-ts" "^0.5.15"
+    "@injectivelabs/cosmos-ts" "^0.5.19"
     "@injectivelabs/exceptions" "^0.5.1"
     "@injectivelabs/ts-types" "^0.5.1"
     "@injectivelabs/utils" "^0.5.1"
