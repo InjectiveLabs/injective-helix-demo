@@ -62,6 +62,8 @@ import { betaMarketSlugs } from '~/app/data/market'
 import { Modal } from '~/types'
 
 export default Vue.extend({
+  name: 'MarketsLayout',
+
   components: {
     VDerivativeMarket,
     VMarketSelection,

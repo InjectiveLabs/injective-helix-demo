@@ -42,18 +42,24 @@ export const getAbbreviatedVolume = (value: BigNumberInBase): string => {
   const billion = 1000000000
 
   if (value.gt(billion)) {
-    return `${value.dividedBy(billion).toFormat(2)}B`
+    return `${value
+      .dividedBy(billion)
+      .toFormat(2, BigNumberInBase.ROUND_DOWN)}B`
   }
 
   if (value.gt(million)) {
-    return `${value.dividedBy(million).toFormat(2)}M`
+    return `${value
+      .dividedBy(million)
+      .toFormat(2, BigNumberInBase.ROUND_DOWN)}M`
   }
 
   if (value.gt(thousand)) {
-    return `${value.dividedBy(million).toFormat(2)}K`
+    return `${value
+      .dividedBy(million)
+      .toFormat(2, BigNumberInBase.ROUND_DOWN)}K`
   }
 
-  return value.toFormat(2)
+  return value.toFormat(2, BigNumberInBase.ROUND_DOWN)
 }
 
 export const marketIsPartOfCategory = (
