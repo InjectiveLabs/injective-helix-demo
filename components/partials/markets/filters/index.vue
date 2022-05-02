@@ -20,7 +20,7 @@
         <v-market-type-selector
           :type="MarketType.Favourite"
           :active="activeType === MarketType.Favourite"
-          data-cy="market-filter-favorites"
+          data-cy="markets-type-favorites"
           @click="handleTypeClick"
         >
           <span class="flex items-center">
@@ -32,7 +32,7 @@
         <v-market-type-selector
           :type="''"
           :active="activeType === ''"
-          data-cy="market-filter-all-markets"
+          data-cy="markets-type-all-markets"
           @click="handleTypeClick"
         >
           {{ $t('trade.allMarkets') }}
@@ -41,7 +41,7 @@
         <v-market-type-selector
           :type="MarketType.Spot"
           :active="activeType === MarketType.Spot"
-          data-cy="market-filter-spot"
+          data-cy="markets-type-spot"
           @click="handleTypeClick"
         >
           {{ $t('trade.spots') }}
@@ -50,7 +50,7 @@
         <v-market-type-selector
           :type="MarketType.Perpetual"
           :active="activeType === MarketType.Perpetual"
-          data-cy="market-filter-perpetual"
+          data-cy="markets-type-perpetual"
           @click="handleTypeClick"
         >
           {{ $t('trade.perpetual') }}
@@ -63,7 +63,7 @@
         wrapper-classes="bg-gray-800 rounded-3xl pl-2"
         dense
         transparent-bg
-        data-cy="market-filter-search-input"
+        data-cy="markets-search-input"
         :placeholder="$t('trade.search_markets')"
         :search="search"
         @searched="handleSearchedEvent"

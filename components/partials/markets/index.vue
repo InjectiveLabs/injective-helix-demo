@@ -52,7 +52,7 @@
       >
         <span
           class="text-gray-200 text-xs"
-          data-cy="markets-filter-market-switch"
+          data-cy="markets-filter-market"
         >
           {{ $t('trade.market') }}
         </span>
@@ -73,7 +73,7 @@
       >
         <span
           class="text-gray-200 text-xs"
-          data-cy="markets-filter-change_24h-switch"
+          data-cy="markets-filter-change_24h"
         >
           {{ $t('trade.market_change_24h') }}
         </span>
@@ -88,7 +88,7 @@
       >
         <span
           class="text-gray-200 text-xs"
-          data-cy="markets-filter-volume_24h-switch"
+          data-cy="markets-filter-volume_24h"
         >
           {{ $t('trade.volume_24h') }}
         </span>
@@ -103,7 +103,7 @@
         :market="market"
         :summary="summary"
         :volume-in-usd="volumeInUsd"
-        :data-cy="'market-row-' + market"
+        :data-cy="'market-row-' + market.ticker"
       />
 
       <v-empty-list
