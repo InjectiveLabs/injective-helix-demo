@@ -141,7 +141,7 @@
       </p>
 
       <p
-        v-if="!hasEnoughInjForGasAndIsUsingKeplr"
+        v-if="!hasEnoughInjForGasOrNotKeplr"
         class="text-2xs text-red-400 mb-4"
       >
         {{ $t('insufficientGas.tradingFormNote') }}
@@ -159,9 +159,7 @@
         lg
         :status="status"
         :disabled="
-          hasErrors ||
-          !isUserWalletConnected ||
-          !hasEnoughInjForGasAndIsUsingKeplr
+          hasErrors || !isUserWalletConnected || !hasEnoughInjForGasOrNotKeplr
         "
         :ghost="hasErrors"
         :aqua="!hasErrors && orderType === SpotOrderSide.Buy"
@@ -801,11 +799,11 @@ export default Vue.extend({
       return undefined
     },
 
-    hasEnoughInjForGasAndIsUsingKeplr(): boolean {
+    hasEnoughInjForGasOrNotKeplr(): boolean {
       const { wallet, hasEnoughInjForGas } = this
 
       if (wallet !== Wallet.Keplr) {
-        return false
+        return true
       }
 
       return hasEnoughInjForGas
