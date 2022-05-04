@@ -169,7 +169,7 @@
       </p>
 
       <p
-        v-if="!hasEnoughInjForGasAndIsUsingKeplr"
+        v-if="!hasEnoughInjForGasOrNotKeplr"
         class="text-2xs text-red-400 mb-4"
       >
         {{ $t('insufficientGas.tradingFormNote') }}
@@ -189,7 +189,7 @@
         :disabled="
           hasErrors ||
           !isUserWalletConnected ||
-          !hasEnoughInjForGasAndIsUsingKeplr
+          !hasEnoughInjForGasOrNotKeplr
         "
         :ghost="hasErrors"
         :aqua="!hasErrors && orderType === DerivativeOrderSide.Buy"
@@ -1043,10 +1043,14 @@ export default Vue.extend({
       return undefined
     },
 
-    hasEnoughInjForGasAndIsUsingKeplr(): boolean {
+    hasEnoughInjForGasOrNotKeplr(): boolean {
       const { wallet, hasEnoughInjForGas } = this
 
-      return wallet === Wallet.Keplr && hasEnoughInjForGas
+      if (wallet !== Wallet.Keplr) {
+        return true
+      }
+
+      return hasEnoughInjForGas
     },
 
     priceError(): string | null {
