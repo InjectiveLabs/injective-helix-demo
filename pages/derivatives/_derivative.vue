@@ -1,5 +1,5 @@
 <template>
-  <v-market-layout>
+  <v-market-layout @loaded="onLoad">
     <template slot="trading-panel">
       <v-balances />
       <v-trading class="mt-1 flex-1" />
@@ -50,20 +50,20 @@ export default Vue.extend({
     }
   },
 
-  mounted() {
-    Promise.all([
-      this.setOrderbookPolling(),
-      this.$accessor.derivatives.initMarketStreams()
-    ])
-      .then(() => {})
-      .catch(this.$onRejected)
-  },
-
   beforeDestroy() {
     clearInterval(this.interval)
   },
 
   methods: {
+    onLoad() {
+      Promise.all([
+        this.setOrderbookPolling(),
+        this.$accessor.derivatives.initMarketStreams()
+      ])
+        .then(() => {})
+        .catch(this.$onRejected)
+    },
+
     setOrderbookPolling() {
       if (ORDERBOOK_POLLING_ENABLED) {
         this.interval = setInterval(async () => {
