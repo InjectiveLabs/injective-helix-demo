@@ -20,6 +20,7 @@
                 <v-footer v-if="showFooter" />
               </main>
               <v-modal-auction-countdown v-if="SHOW_AUCTION_COUNTDOWN" />
+              <v-modal-insufficient-inj-for-gas />
             </div>
           </client-only>
         </div>
@@ -35,11 +36,13 @@ import Footer from '~/components/layout/footer/index.vue'
 import TopBar from '~/components/layout/topbar.vue'
 import SidebarMobile from '~/components/layout/sidebar-mobile.vue'
 import VModalAuctionCountdown from '~/components/partials/modals/auction-countdown.vue'
+import VModalInsufficientInjForGas from '~/components/partials/modals/insufficient-inj-for-gas.vue'
 import { SHOW_AUCTION_COUNTDOWN } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
     VModalAuctionCountdown,
+    VModalInsufficientInjForGas,
     'v-top-bar': TopBar,
     'v-footer': Footer,
     'v-sidebar-mobile': SidebarMobile

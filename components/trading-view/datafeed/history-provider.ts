@@ -1,5 +1,5 @@
 import { ChronosApiProvider } from './chronos-provider'
-import { getErrorMessage } from './helpers'
+import { getErrorMessage, roundTimestampByResolution } from './helpers'
 import { mapBarsToProperValues } from '~/app/data/trading-view'
 
 export class HistoryProvider {
@@ -49,7 +49,12 @@ export class HistoryProvider {
 
             for (let i = 0; i < response.t.length; ++i) {
               const barValue = {
-                time: response.t[i] * 1000,
+                time: Number(
+                  roundTimestampByResolution(
+                    resolution.toString(),
+                    response.t[i] * 1000
+                  )
+                ),
                 close: parseFloat(response.c[i]),
                 open: parseFloat(response.c[i]),
                 high: parseFloat(response.c[i]),

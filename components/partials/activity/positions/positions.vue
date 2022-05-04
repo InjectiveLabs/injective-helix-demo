@@ -24,7 +24,7 @@
           class="col-span-12 sm:col-span-6 lg:col-span-8 sm:text-right mt-4 sm:mt-0"
         >
           <v-button
-            v-if="filteredPositions.length > 0"
+            v-if="filteredPositions.length > 0 && walletIsNotKeplr"
             red-outline
             md
             :status="status"
@@ -65,6 +65,7 @@ import {
   UiPosition,
   UiDerivativeMarketWithToken
 } from '@injectivelabs/ui-common'
+import { Wallet } from '@injectivelabs/ts-types'
 import Position from '~/components/partials/common/derivatives/position.vue'
 import PositionTableHeader from '~/components/partials/common/derivatives/position-table.header.vue'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
@@ -88,6 +89,10 @@ export default Vue.extend({
   },
 
   computed: {
+    wallet(): Wallet {
+      return this.$accessor.wallet.wallet
+    },
+
     positions(): UiPosition[] {
       return this.$accessor.positions.subaccountPositions
     },
@@ -121,6 +126,12 @@ export default Vue.extend({
       return [...filteredPositions].sort((p1: UiPosition, p2: UiPosition) => {
         return p1.ticker.localeCompare(p2.ticker)
       })
+    },
+
+    walletIsNotKeplr(): boolean {
+      const { wallet } = this
+
+      return wallet !== Wallet.Keplr
     }
   },
 
