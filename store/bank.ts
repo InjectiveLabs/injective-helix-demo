@@ -2,12 +2,14 @@ import {
   BankBalances,
   BankBalanceWithToken,
   IbcBankBalanceWithToken,
+  INJ_DENOM,
   Token
 } from '@injectivelabs/ui-common'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
 import { bankActionService, bankService, tokenService } from '~/app/Services'
 import { backupPromiseCall } from '~/app/utils/async'
+import { MIN_INJ_REQUIRED_FOR_GAS } from '~/app/utils/constants'
 
 const initialStateFactory = () => ({
   balances: {} as BankBalances,
@@ -33,6 +35,16 @@ export const getters = getterTree(state, {
       Object.keys(state.balances).length > 0 ||
       Object.keys(state.ibcBalances).length > 0
     )
+  },
+
+  hasEnoughInjForGas: (state: BankStoreState) => {
+    if (!state.balances[INJ_DENOM]) {
+      return false
+    }
+
+    return new BigNumberInWei(state.balances[INJ_DENOM])
+      .toBase()
+      .gte(MIN_INJ_REQUIRED_FOR_GAS)
   },
 
   bankBalancesWithToken: (state: BankStoreState) => {

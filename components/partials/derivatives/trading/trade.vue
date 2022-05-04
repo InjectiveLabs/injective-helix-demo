@@ -168,10 +168,29 @@
         {{ $t('trade.execution_price_far_away_from_last_traded_price') }}
       </p>
 
+      <p
+        v-if="!hasEnoughInjForGasAndIsUsingKeplr"
+        class="text-2xs text-red-400 mb-4"
+      >
+        {{ $t('insufficientGas.tradingFormNote') }}
+        <a
+          :href="hubUrl"
+          target="_blank"
+          class="flex items-center text-primary-500"
+        >
+          <span class="mr-1">Injective Hub</span>
+          <v-icon-external-link class="w-2 h-2" />
+        </a>
+      </p>
+
       <v-button
         lg
         :status="status"
-        :disabled="hasErrors || !isUserWalletConnected"
+        :disabled="
+          hasErrors ||
+          !isUserWalletConnected ||
+          !hasEnoughInjForGasAndIsUsingKeplr
+        "
         :ghost="hasErrors"
         :aqua="!hasErrors && orderType === DerivativeOrderSide.Buy"
         :red="!hasErrors && orderType === DerivativeOrderSide.Sell"
@@ -190,7 +209,11 @@
 import Vue from 'vue'
 import { TradeError } from 'types/errors'
 import { Status, BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
+import {
+  TradeDirection,
+  TradeExecutionType,
+  Wallet
+} from '@injectivelabs/ts-types'
 import {
   DerivativeOrderSide,
   UiDerivativeLimitOrder,
@@ -275,6 +298,14 @@ export default Vue.extend({
 
     market(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
+    },
+
+    hasEnoughInjForGas(): boolean {
+      return this.$accessor.bank.hasEnoughInjForGas
+    },
+
+    wallet(): Wallet {
+      return this.$accessor.wallet.wallet
     },
 
     marketMarkPrice(): string {
@@ -1012,6 +1043,12 @@ export default Vue.extend({
       return undefined
     },
 
+    hasEnoughInjForGasAndIsUsingKeplr(): boolean {
+      const { wallet, hasEnoughInjForGas } = this
+
+      return wallet === Wallet.Keplr && hasEnoughInjForGas
+    },
+
     priceError(): string | null {
       const { price } = this.errors
 
@@ -1361,6 +1398,10 @@ export default Vue.extend({
         price: executionPrice.toFixed(),
         quantity: form.amount
       })
+    },
+
+    hubUrl(): string {
+      return 'https://hub.injective.network/bridge'
     }
   },
 
