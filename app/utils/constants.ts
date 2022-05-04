@@ -79,6 +79,8 @@ export const DMM_TIME_STAMP_FORMAT: string = "MMM-dd-yyyy HH:mm:ss 'UTC'xxx"
 
 export const VPN_PROXY_VALIDATION_PERIOD = 2 /* 2 days */
 
+export const MIN_INJ_REQUIRED_FOR_GAS = 1
+
 // to be added to ui-common
 export const BAYC_WETH_PERP_SLUG = 'bayc-weth-perp'
 export const ETH_COIN_GECKO_ID = 'ethereum'

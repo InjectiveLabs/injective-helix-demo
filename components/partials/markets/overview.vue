@@ -97,6 +97,15 @@ import VMarketDot from '~/components/partials/markets/market-dot.vue'
 import { newMarketsSlug } from '~/app/data/market'
 import { UiMarketAndSummaryWithVolumeInUsd } from '~/types'
 
+const sortMarketsAlphabetically = (
+  market: UiMarketAndSummaryWithVolumeInUsd,
+  initialMarket: UiMarketAndSummaryWithVolumeInUsd
+): UiMarketAndSummaryWithVolumeInUsd => {
+  return initialMarket.market.slug.localeCompare(market.market.slug) > 0
+    ? market
+    : initialMarket
+}
+
 export default Vue.extend({
   components: {
     VMarketCard,
@@ -144,10 +153,15 @@ export default Vue.extend({
         (
           initialMarket: UiMarketAndSummaryWithVolumeInUsd,
           market: UiMarketAndSummaryWithVolumeInUsd
-        ) =>
-          initialMarket.volumeInUsd.gt(market.volumeInUsd)
+        ) => {
+          if (initialMarket.volumeInUsd.eq(market.volumeInUsd)) {
+            return sortMarketsAlphabetically(market, initialMarket)
+          }
+
+          return initialMarket.volumeInUsd.gt(market.volumeInUsd)
             ? initialMarket
             : market
+        }
       )
     },
 
@@ -158,10 +172,15 @@ export default Vue.extend({
         (
           initialMarket: UiMarketAndSummaryWithVolumeInUsd,
           market: UiMarketAndSummaryWithVolumeInUsd
-        ) =>
-          initialMarket.summary.change > market.summary.change
+        ) => {
+          if (initialMarket.summary.change === market.summary.change) {
+            return sortMarketsAlphabetically(market, initialMarket)
+          }
+
+          return initialMarket.summary.change > market.summary.change
             ? initialMarket
             : market
+        }
       )
     }
   },

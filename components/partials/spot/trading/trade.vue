@@ -140,10 +140,27 @@
         {{ $t('trade.execution_price_far_away_from_last_traded_price') }}
       </p>
 
+      <p
+        v-if="!hasEnoughInjForGasOrNotKeplr"
+        class="text-2xs text-red-400 mb-4"
+      >
+        {{ $t('insufficientGas.tradingFormNote') }}
+        <a
+          :href="hubUrl"
+          target="_blank"
+          class="flex items-center text-primary-500"
+        >
+          <span class="mr-1">Injective Hub</span>
+          <v-icon-external-link class="w-2 h-2" />
+        </a>
+      </p>
+
       <v-button
         lg
         :status="status"
-        :disabled="hasErrors || !isUserWalletConnected"
+        :disabled="
+          hasErrors || !isUserWalletConnected || !hasEnoughInjForGasOrNotKeplr
+        "
         :ghost="hasErrors"
         :aqua="!hasErrors && orderType === SpotOrderSide.Buy"
         :red="!hasErrors && orderType === SpotOrderSide.Sell"
@@ -162,7 +179,7 @@
 import Vue from 'vue'
 import { TradeError } from 'types/errors'
 import { BigNumberInWei, Status, BigNumberInBase } from '@injectivelabs/utils'
-import { TradeExecutionType } from '@injectivelabs/ts-types'
+import { TradeExecutionType, Wallet } from '@injectivelabs/ts-types'
 import {
   cosmosSdkDecToBigNumber,
   NUMBER_REGEX,
@@ -230,6 +247,14 @@ export default Vue.extend({
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
+    },
+
+    hasEnoughInjForGas(): boolean {
+      return this.$accessor.bank.hasEnoughInjForGas
+    },
+
+    wallet(): Wallet {
+      return this.$accessor.wallet.wallet
     },
 
     market(): UiSpotMarketWithToken | undefined {
@@ -774,6 +799,16 @@ export default Vue.extend({
       return undefined
     },
 
+    hasEnoughInjForGasOrNotKeplr(): boolean {
+      const { wallet, hasEnoughInjForGas } = this
+
+      if (wallet !== Wallet.Keplr) {
+        return true
+      }
+
+      return hasEnoughInjForGas
+    },
+
     priceError(): string | null {
       const { price } = this.errors
 
@@ -1034,6 +1069,10 @@ export default Vue.extend({
       return new BigNumberInBase(total.times(makerFeeRate).abs()).times(
         0.6 /* Only 60% of the fees are getting returned */
       )
+    },
+
+    hubUrl(): string {
+      return 'https://hub.injective.network/bridge'
     }
   },
 

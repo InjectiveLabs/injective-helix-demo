@@ -131,6 +131,9 @@
             <v-connected-wallet v-if="wallet === Wallet.Ledger" lg>
               <v-icon-ledger class="w-8 h-8 mx-auto" />
             </v-connected-wallet>
+            <v-connected-wallet v-if="wallet === Wallet.Torus" lg>
+              <v-icon-torus class="w-8 h-8 mx-auto" />
+            </v-connected-wallet>
           </ul>
         </div>
       </div>
