@@ -154,7 +154,7 @@ export default Vue.extend({
           initialMarket: UiMarketAndSummaryWithVolumeInUsd,
           market: UiMarketAndSummaryWithVolumeInUsd
         ) => {
-          if (initialMarket.volumeInUsd === market.volumeInUsd) {
+          if (initialMarket.volumeInUsd.eq(market.volumeInUsd)) {
             return sortMarketsAlphabetically(market, initialMarket)
           }
 
