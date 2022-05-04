@@ -6,6 +6,7 @@
     <span class="col-span-2 text-gray-500 flex items-center">
       <div
         class="text-gray-500 w-6 h-6 flex items-center justify-center rounded-full mr-3 hover:bg-gray-400 hover:text-gray-400 hover:bg-opacity-10 cursor-pointer"
+        data-cy="markets-sidebar-entry-favorite-button"
         @click="updateWatchList"
       >
         <v-icon-star v-if="isFavorite" class="min-w-5 w-5 h-5" data-cy="markets-sidebar-entry-is-favorite-icon" />
