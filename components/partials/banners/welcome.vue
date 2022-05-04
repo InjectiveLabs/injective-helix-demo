@@ -1,7 +1,9 @@
 <template>
   <v-card
     v-if="
-      !hasMadeAnyTransfers && !hasAnyTradingAccountBalances && status.isIdle()
+      ((!hasMadeAnyTransfers && !hasAnyTradingAccountBalances) ||
+        !hasMadeAnyTrades) &&
+      status.isIdle()
     "
     md
     :style="{ backgroundImage: `url('/svg/bg-dark.svg')` }"
