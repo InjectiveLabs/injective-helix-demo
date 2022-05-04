@@ -1,9 +1,10 @@
 import {
-  addHours,
   getHours,
+  getMinutes,
   getTime,
-  roundToNearestMinutes,
-  set
+  set,
+  subHours,
+  subMinutes
 } from 'date-fns'
 
 export function getErrorMessage(error: any) {
@@ -23,11 +24,24 @@ const roundToNearestHour = (timestamp: number, resolution: string) => {
 
   const hour = Number(resolution) / 60
   const hours = getHours(timestamp)
-  const hoursToAdd = hour - (hours % hour)
+  const hoursToSubtract = hours % hour
 
   return getTime(
-    set(addHours(timestamp, hoursToAdd), {
+    set(subHours(timestamp, hoursToSubtract), {
       minutes: 0,
+      seconds: 0,
+      milliseconds: 0
+    })
+  )
+}
+
+const roundToNearestMinute = (timestamp: number, resolution: string) => {
+  const minute = Number(resolution)
+  const minutes = getMinutes(timestamp)
+  const minsToSubtract = minutes % minute
+
+  return getTime(
+    set(subMinutes(timestamp, minsToSubtract), {
       seconds: 0,
       milliseconds: 0
     })
@@ -44,7 +58,5 @@ export const roundTimestampByResolution = (
     return roundToNearestHour(timestamp, resolution).toString()
   }
 
-  return roundToNearestMinutes(timestamp, { nearestTo: interval })
-    .valueOf()
-    .toString()
+  return roundToNearestMinute(timestamp, resolution).toString()
 }
