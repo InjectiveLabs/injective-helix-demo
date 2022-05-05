@@ -10,7 +10,7 @@
               summary based on the bank/trading account balances loading
             -->
             <div class="pb-6 relative">
-              <portal-target name="account-summary"></portal-target>
+              <portal-target name="account-summary" />
             </div>
             <v-gas-rebate class="mt-6" />
             <div class="border-b border-gray-600 w-full my-6"></div>
