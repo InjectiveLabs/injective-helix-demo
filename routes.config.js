@@ -7,15 +7,16 @@ const {
 
 const mainnetSpot = [
   'inj-usdt',
-  'huahua-usdt',
-  'evmos-usdt',
-  'ape-usdt',
   'atom-usdt',
+  'xprt-usdt',
   'weth-usdt',
+  'luna-ust',
+  'evmos-usdt',
+  'huahua-usdt',
+  'ape-usdt',
   'huahua-usdt',
   'link-usdt',
   'ust-usdt',
-  'luna-ust',
   'gf-usdt'
 ]
 const testnetSpot = [...mainnetSpot]
@@ -46,7 +47,6 @@ const derivatives = IS_TESTNET
 
 if (NETWORK === Network.Devnet || IS_MAINNET_STAGING) {
   derivatives.push('stx-usdt-perp')
-  spot.push('xprt-usdt')
 }
 
 const spotRoutes = spot.map((s) => `/spot/${s}`) || []
