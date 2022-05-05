@@ -127,8 +127,8 @@ export default Vue.extend({
   mounted() {
     this.$root.$on('toggle-market-list', this.toggleMarketList)
 
-    Promise.all([this.initMarket()])
-      .then(() => {})
+    Promise.all([this.$accessor.spot.init(), this.$accessor.derivatives.init()])
+      .then(async () => await this.initMarket())
       .catch(this.$onRejected)
       .finally(() => {
         if (this.marketIsBeta) {
@@ -136,6 +136,7 @@ export default Vue.extend({
         }
 
         this.status.setIdle()
+        this.$emit('loaded')
       })
 
     Promise.all([
