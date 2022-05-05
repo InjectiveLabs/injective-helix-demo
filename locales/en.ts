@@ -39,7 +39,7 @@ export default {
     'The Canary Chain has a $5,000 trading limit which will be uplifted upon the canonical release over the coming weeks.',
   maintenance_header: 'Ongoing Scheduled Maintenance',
   maintenance_subheader:
-    'While this relayer is down for maintenance, the <strong class="text-primary-500">Injective Chain</strong> is never down! You can find other relayers in the Injective Ecosystem on the button below!',
+    'While this relayer is down for maintenance,<strong class="text-primary-500">Injective</strong> is never down! You can find other relayers in the Injective Ecosystem on the button below!',
   maintenance_button: 'Relayers',
   maintenance_body: '',
   token_allowance_successful: 'Token allowance set successful',
@@ -52,7 +52,7 @@ export default {
   Restrictions: 'Restrictions',
   Languages: 'Languages',
   download: 'Download',
-  'Injective Chain Balance': 'Injective Chain Balance',
+  'Injective Chain Balance': 'Injective Balance',
   'ERC20 Balance': 'ERC20 Balance',
   'Join our Ecosystem now': 'Join the Injective Ecosystem!',
   'Ready to get started?': 'Injective Bridge',

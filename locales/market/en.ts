@@ -18,8 +18,7 @@ export default {
     balances: 'Balances',
     portfolio: 'Portfolio',
     noChainBalance: 'We cannot find any token balances for your address.',
-    noChainBalanceNote:
-      'Use Injective Bridge to transfer assets in the Injective chain.',
+    noChainBalanceNote: 'Use Injective Bridge to transfer assets to Injective.',
     noTradingAccountBalance:
       'Transfer to your Injective Trading Account to start trading on Injective Exchange.',
     startTrading: 'Start Trading!',

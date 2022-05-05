@@ -3,7 +3,7 @@ import { TransferSide } from '~/types'
 
 export const networksMeta = [
   {
-    text: 'Injective Chain',
+    text: 'Injective',
     value: BridgingNetwork.Injective,
     icon: '/bridgingNetworks/injective.png'
   },
