@@ -46,6 +46,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { BridgingNetwork, KeplrNetworks, Token } from '@injectivelabs/ui-common'
+import { Wallet } from '@injectivelabs/ts-types'
 import { injToken } from '~/app/data/token'
 import { BridgeType, Modal, TransferDirection } from '~/types'
 import VModalBridge from '~/components/partials/modals/bridge/index.vue'
@@ -82,6 +83,10 @@ export default Vue.extend({
   },
 
   computed: {
+    wallet(): Wallet {
+      return this.$accessor.wallet.wallet
+    },
+
     origin(): BridgingNetwork | TransferDirection {
       const { bridgeType, bridgingNetwork } = this
 
@@ -134,6 +139,7 @@ export default Vue.extend({
     this.$root.$on('bridge:reset', this.handleResetForm)
 
     this.handleQueryParams()
+    this.handlePreFillKeplrWallet()
   },
 
   beforeDestroy() {
@@ -145,7 +151,7 @@ export default Vue.extend({
   },
 
   methods: {
-    async handleQueryParams() {
+    handleQueryParams() {
       const { denom, bridgeType } = this.$route.query as {
         denom: string
         bridgeType: BridgeType
@@ -155,18 +161,26 @@ export default Vue.extend({
         return
       }
 
-      const token = await tokenService.getDenomToken(denom)
+      tokenService.getDenomToken(denom).then((token) => {
+        if (!token) {
+          return
+        }
 
-      if (!token) {
-        return
+        this.form.token = token
+        this.form.amount = ''
+        this.form.memo = ''
+        this.form.destinationAddress = ''
+        this.bridgeType = bridgeType
+        this.$accessor.modal.openModal(Modal.Bridge)
+      })
+    },
+
+    handlePreFillKeplrWallet() {
+      const { wallet } = this
+
+      if (wallet === Wallet.Keplr) {
+        this.bridgingNetwork = BridgingNetwork.CosmosHub
       }
-
-      this.form.token = token
-      this.form.amount = ''
-      this.form.memo = ''
-      this.form.destinationAddress = ''
-      this.bridgeType = bridgeType
-      this.$accessor.modal.openModal(Modal.Bridge)
     },
 
     handleModalBridgeOpen() {
@@ -240,25 +254,33 @@ export default Vue.extend({
     },
 
     handleDeposit(token: Token) {
+      const { wallet } = this
       const formToken = token || injToken
 
       this.form.amount = ''
       this.form.memo = ''
       this.form.destinationAddress = ''
       this.form.token = formToken
-      this.bridgingNetwork = getBridgingNetworkBySymbol(formToken.symbol)
+      this.bridgingNetwork =
+        wallet === Wallet.Keplr
+          ? BridgingNetwork.CosmosHub
+          : getBridgingNetworkBySymbol(formToken.symbol)
       this.bridgeType = BridgeType.Deposit
       this.$accessor.modal.openModal(Modal.Bridge)
     },
 
     handleWithdraw(token: Token) {
+      const { wallet } = this
       const formToken = token || injToken
 
       this.form.amount = ''
       this.form.memo = ''
       this.form.destinationAddress = ''
       this.form.token = formToken
-      this.bridgingNetwork = getBridgingNetworkBySymbol(formToken.symbol)
+      this.bridgingNetwork =
+        wallet === Wallet.Keplr
+          ? BridgingNetwork.Injective
+          : getBridgingNetworkBySymbol(formToken.symbol)
       this.bridgeType = BridgeType.Withdraw
       this.$accessor.modal.openModal(Modal.Bridge)
     }

@@ -6,7 +6,7 @@ import {
 } from '@injectivelabs/ui-common'
 import { confirm, connect, getAddresses } from '~/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '~/app/services/metamask'
-import { WalletConnectStatus } from '~/types'
+import { Modal, WalletConnectStatus } from '~/types'
 import { GAS_FREE_DEPOSIT_REBATE_ENABLED } from '~/app/utils/constants'
 
 const initialStateFactory = () => ({
@@ -259,6 +259,19 @@ export const actions = actionTree(
 
       if (state.wallet === Wallet.Metamask) {
         await validateMetamask(state.address, chainId)
+      }
+
+      // Validate whether the user has enough gas to pay for the transaction
+      if (state.wallet === Wallet.Keplr) {
+        const { hasEnoughInjForGas } = this.app.$accessor.bank
+
+        if (!hasEnoughInjForGas) {
+          this.app.$accessor.modal.openModal(Modal.InsufficientInjForGas)
+
+          throw new Error(
+            'There is no sufficient INJ to cover the gas for this transaction'
+          )
+        }
       }
     },
 

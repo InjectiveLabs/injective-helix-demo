@@ -86,19 +86,34 @@
           </v-token-selector>
         </div>
         <div class="mt-8 text-center">
-          <v-allowance v-if="!hasAllowance" :token-with-balance="form.token" />
-
           <v-button
-            v-else
+            v-if="shouldConnectMetamask"
             lg
             primary
-            class="w-full xs:w-1/2 font-bold"
-            :disabled="invalid"
+            class="w-full font-bold"
             data-cy="bridge-transfer-now-button"
-            @click="handleTransferNowClick"
+            :disabled="true"
+            @click="() => {}"
           >
-            {{ $t('bridge.transferNow') }}
+            {{ $t('bridge.keplrConnectedForEthereum') }}
           </v-button>
+          <template v-else>
+            <v-allowance
+              v-if="!hasAllowance"
+              :token-with-balance="form.token"
+            />
+
+            <v-button
+              v-else
+              lg
+              primary
+              class="w-full xs:w-1/2 font-bold"
+              :disabled="invalid"
+              @click="handleTransferNowClick"
+            >
+              {{ $t('bridge.transferNow') }}
+            </v-button>
+          </template>
         </div>
       </div>
       <v-ibc-transfer-note v-else />
@@ -119,6 +134,7 @@ import {
   ZERO_IN_BASE
 } from '@injectivelabs/ui-common'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { Wallet } from '@injectivelabs/ts-types'
 import { BridgeType, Modal, TransferDirection } from '~/types'
 import VTokenSelector from '~/components/partials/portfolio/bridge/token-selector/index.vue'
 import VAllowance from '~/components/elements/allowance.vue'
@@ -195,6 +211,10 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
+    wallet(): Wallet {
+      return this.$accessor.wallet.wallet
+    },
+
     erc20TokensWithBalanceAndPriceFromBank(): TokenWithBalanceAndPrice[] {
       return this.$accessor.token.erc20TokensWithBalanceAndPriceFromBank
     },
@@ -253,19 +273,25 @@ export default Vue.extend({
     hasAllowance(): boolean {
       const { bridgeType, erc20TokensWithBalanceAndPriceFromBank, form } = this
 
-      const token = erc20TokensWithBalanceAndPriceFromBank.find(
-        ({ denom }) => denom === form.token.denom
-      )
-
       if ([BridgeType.Transfer, BridgeType.Withdraw].includes(bridgeType)) {
         return true
       }
+
+      const token = erc20TokensWithBalanceAndPriceFromBank.find(
+        ({ denom }) => denom === form.token.denom
+      )
 
       if (!token) {
         return false
       }
 
-      return new BigNumberInBase(token.allowance).gt('0')
+      return new BigNumberInBase(token.allowance).gt(0)
+    },
+
+    shouldConnectMetamask(): boolean {
+      const { wallet, bridgeType } = this
+
+      return wallet === Wallet.Keplr && bridgeType === BridgeType.Deposit
     },
 
     onTransferBalance(): BigNumberInBase {

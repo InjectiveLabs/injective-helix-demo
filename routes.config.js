@@ -46,6 +46,7 @@ const derivatives = IS_TESTNET
 
 if (NETWORK === Network.Devnet || IS_MAINNET_STAGING) {
   derivatives.push('stx-usdt-perp')
+  spot.push('xprt-usdt')
 }
 
 const spotRoutes = spot.map((s) => `/spot/${s}`) || []
