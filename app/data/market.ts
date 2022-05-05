@@ -30,6 +30,7 @@ export const marketBaseFromTicker = (
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'xprt-usdt',
   'evmos-usdt',
   BAYC_WETH_PERP_SLUG,
   'ape-usdt',
