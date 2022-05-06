@@ -257,6 +257,7 @@ export const actions = actionTree(
 
       streamSubaccountDerivativeOrders({
         subaccountId: subaccount.subaccountId,
+        key: 'activity',
         callback: ({ order }) => {
           if (!order) {
             return

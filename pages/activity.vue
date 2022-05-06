@@ -51,12 +51,14 @@
             </span>
           </v-card-select>
         </div>
-        <div class="mt-6 pt-6 border-t grow">
-          <v-positions v-show="component === components.positions" />
-          <v-spot v-show="component === components.spot" />
-          <v-derivatives v-show="component === components.derivatives" />
-          <v-funding v-if="component === components.funding" />
-        </div>
+        <VHocLoading :status="status">
+          <div class="mt-6 pt-6 border-t grow">
+            <v-positions v-show="component === components.positions" />
+            <v-spot v-show="component === components.spot" />
+            <v-derivatives v-show="component === components.derivatives" />
+            <v-funding v-if="component === components.funding" />
+          </div>
+        </VHocLoading>
       </div>
     </div>
   </div>
@@ -93,7 +95,8 @@ export default Vue.extend({
       component: components.positions,
       derivativeLoadingStatus: new Status(StatusType.Loading),
       positionLoadingStatus: new Status(StatusType.Loading),
-      spotLoadingStatus: new Status(StatusType.Loading)
+      spotLoadingStatus: new Status(StatusType.Loading),
+      status: new Status(StatusType.Loading)
     }
   },
 
@@ -101,6 +104,15 @@ export default Vue.extend({
     this.$root.$on('derivative-tab-loaded', this.derivativeTabLoaded)
     this.$root.$on('position-tab-loaded', this.positionTabLoaded)
     this.$root.$on('spot-tab-loaded', this.spotTabLoaded)
+
+    Promise.all([this.$accessor.account.init()])
+      .then(() => {
+        //
+      })
+      .catch(this.$onRejected)
+      .finally(() => {
+        this.status.setIdle()
+      })
   },
 
   beforeDestroy() {
