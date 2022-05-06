@@ -77,7 +77,7 @@ export default {
     allMarkets: 'All Markets',
     timestamp: 'Time stamp',
     timestamp_tooltip: 'Based on your browser time zone',
-    charts: 'Charts',
+    chart: 'Chart',
     pair: 'Pair',
     type: 'Type',
     type_tooltip: 'The type of your order: limit or market.',

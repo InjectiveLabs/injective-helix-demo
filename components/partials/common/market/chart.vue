@@ -2,7 +2,7 @@
   <div class="bg-gray-800 lg:rounded-l-xl lg:shadow-sm h-full overflow-hidden">
     <div
       ref="trading-view-wrap"
-      class="min-h-[30rem] lg:min-h-full h-full w-full relative flex"
+      class="orderbook-h lg:h-full lg:min-h-full h-full w-full relative flex"
     >
       <VHocLoading :status="status">
         <v-trading-chart

@@ -7,7 +7,7 @@
           :option="components.charts"
           class="lg:hidden"
         >
-          <span>{{ $t('trade.charts') }}</span>
+          <span>{{ $t('trade.chart') }}</span>
         </v-tab-selector-item>
 
         <v-tab-selector-item v-model="component" :option="components.orderbook">
@@ -34,7 +34,7 @@
       <VHocLoading :status="status">
         <div>
           <v-market-chart
-            v-if="component === components.charts"
+            v-show="component === components.charts"
             :market="market"
             class="lg:hidden"
           />
