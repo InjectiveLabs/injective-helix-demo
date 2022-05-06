@@ -5,8 +5,8 @@
       <v-trading class="mt-1 flex-1" />
     </template>
 
-    <v-market-chart slot="chart" :market="market" />
-    <v-orderbook slot="order-books" />
+    <v-market-chart slot="chart" :market="market" class="hidden lg:block" />
+    <v-orderbook slot="order-books" :market="market" />
     <v-orders slot="orders" />
   </v-market-layout>
 </template>
