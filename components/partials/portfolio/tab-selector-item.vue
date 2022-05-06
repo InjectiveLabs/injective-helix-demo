@@ -1,10 +1,10 @@
 <template>
   <span
-    class="text-xs leading-4 tracking-widest cursor-pointer uppercase"
+    class="text-xs leading-4 cursor-pointer uppercase"
     :class="[
       option === value
-        ? 'text-gray-200 hover:text-gray-100 font-semibold'
-        : 'text-gray-500 hover:text-gray-200'
+        ? 'text-primary-500 hover:text-primary-600 font-semibold'
+        : 'text-gray-500 hover:text-primary-500'
     ]"
     @click="$emit('selected', option)"
   >
