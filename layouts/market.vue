@@ -35,11 +35,11 @@
                 </div>
               </v-card>
 
-              <div class="w-full lg:hidden">
+              <div class="w-full lg:hidden mt-2">
                 <slot name="trading-panel" />
               </div>
             </div>
-            <div class="w-full flex-1 mt-1">
+            <div class="w-full flex-1">
               <slot name="orders" />
             </div>
           </div>
