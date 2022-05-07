@@ -16,7 +16,7 @@
           <div
             v-show="!showMarketList"
             key="market-trading-panel"
-            class="flex flex-col flex-wrap h-full w-full"
+            class="flex-col flex-wrap h-full w-full hidden lg:flex"
           >
             <slot name="trading-panel" />
           </div>
@@ -34,8 +34,12 @@
                   </div>
                 </div>
               </v-card>
+
+              <div class="w-full lg:hidden mt-2">
+                <slot name="trading-panel" />
+              </div>
             </div>
-            <div class="w-full flex-1 mt-1">
+            <div class="w-full flex-1">
               <slot name="orders" />
             </div>
           </div>

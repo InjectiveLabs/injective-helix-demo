@@ -1,57 +1,64 @@
 <template>
-  <div class="p-2 lg:p-3">
+  <div class="lg:p-3">
     <div class="flex items-center justify-between flex-wrap">
-      <div class="flex items-center">
-        <v-button
-          :class="{
-            'text-gray-500': component !== components.orderbook
-          }"
-          text-sm
-          class="font-normal"
-          @click.stop="onSelect(components.orderbook)"
+      <div class="flex items-center gap-4 px-4 py-3 lg:pt-0 lg:px-0">
+        <v-tab-selector-item
+          v-model="component"
+          :option="components.charts"
+          class="lg:hidden"
         >
+          <span>{{ $t('trade.chart') }}</span>
+        </v-tab-selector-item>
+
+        <v-tab-selector-item v-model="component" :option="components.orderbook">
           <span>{{ $t('trade.orderbook') }}</span>
-        </v-button>
-        <div class="mx-2 w-px h-4 bg-gray-700"></div>
-        <v-button
-          :class="{
-            'text-gray-500': component !== components.trades
-          }"
-          text-sm
-          class="font-normal"
-          @click.stop="onSelect(components.trades)"
-        >
+        </v-tab-selector-item>
+
+        <v-tab-selector-item v-model="component" :option="components.trades">
           <span>{{ $t('trade.trades') }}</span>
-        </v-button>
+        </v-tab-selector-item>
       </div>
-      <v-aggregation-selector
-        v-if="component === components.orderbook"
-        class="pr-2 ml-auto"
-        :min-tick="minTick"
-        :value="aggregation"
-        :max-tick="maxTick"
-        @click="handleAggregationChange"
-      />
     </div>
 
-    <div class="bg-gray-900 rounded-lg mt-2 orderbook-h relative">
+    <div class="bg-gray-900 rounded-lg orderbook-h relative">
+      <div class="flex px-4">
+        <v-aggregation-selector
+          v-if="component === components.orderbook"
+          class="ml-auto py-1"
+          :min-tick="minTick"
+          :value="aggregation"
+          :max-tick="maxTick"
+          @click="handleAggregationChange"
+        />
+      </div>
       <VHocLoading :status="status">
-        <component
-          :is="component"
-          v-if="component"
-          :aggregation="Number(aggregation)"
-        ></component>
+        <div>
+          <v-market-chart
+            v-show="component === components.charts"
+            :market="market"
+            class="lg:hidden"
+          />
+          <v-orderbook
+            v-if="component === components.orderbook"
+            :aggregation="Number(aggregation)"
+          />
+          <v-trades v-if="component === components.trades" />
+        </div>
       </VHocLoading>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import Orderbook from './orderbook/index.vue'
-import Trades from './trades/index.vue'
-import AggregationSelector from '~/components/partials/common/orderbook/aggregation-selector.vue'
+import { debounce } from 'lodash'
+import { UiDerivativeMarketWithToken } from '@injectivelabs/ui-common'
+import VOrderbook from './orderbook/index.vue'
+import VTrades from './trades/index.vue'
+import VAggregationSelector from '~/components/partials/common/orderbook/aggregation-selector.vue'
+import VMarketChart from '~/components/partials/common/market/chart.vue'
+import VTabSelectorItem from '~/components/partials/common/market/tab-selector-item.vue'
 import { UI_DEFAULT_AGGREGATION_DECIMALS_STRING } from '~/app/utils/constants'
 import {
   customAggregations,
@@ -59,19 +66,30 @@ import {
 } from '~/app/data/aggregation'
 
 const components = {
+  charts: 'v-market-chart',
   orderbook: 'v-orderbook',
   trades: 'v-trades'
 }
 
 export default Vue.extend({
   components: {
-    'v-aggregation-selector': AggregationSelector,
-    'v-trades': Trades,
-    'v-orderbook': Orderbook
+    VAggregationSelector,
+    VMarketChart,
+    VTabSelectorItem,
+    VTrades,
+    VOrderbook
+  },
+
+  props: {
+    market: {
+      type: Object as PropType<UiDerivativeMarketWithToken>,
+      required: true
+    }
   },
 
   data() {
     return {
+      viewport: 1024,
       status: new Status(StatusType.Loading),
 
       components,
@@ -83,6 +101,9 @@ export default Vue.extend({
   },
 
   mounted() {
+    this.$nextTick(() => this.onResize())
+    window.addEventListener('resize', debounce(this.onResize, 100))
+
     Promise.all([
       this.$accessor.derivatives.fetchOrderbook(),
       this.$accessor.derivatives.fetchTrades()
@@ -97,7 +118,25 @@ export default Vue.extend({
       })
   },
 
+  beforeDestroy() {
+    window.removeEventListener('resize', this.onResize)
+  },
+
   methods: {
+    onResize() {
+      const { viewport } = this
+
+      if (viewport >= 1024 && window.innerWidth < 1024) {
+        this.component = components.charts
+      }
+
+      if (viewport < 1024 && window.innerWidth >= 1024) {
+        this.component = components.orderbook
+      }
+
+      this.viewport = window.innerWidth
+    },
+
     onInit() {
       const market = this.$accessor.derivatives.market
 
@@ -121,10 +160,6 @@ export default Vue.extend({
         this.maxTick = customAggregation.maxTick || null
         this.aggregation = customAggregation.default || minTickSize
       }
-    },
-
-    onSelect(component: string) {
-      this.component = component
     },
 
     handleAggregationChange(aggregation: string) {

@@ -9,14 +9,7 @@
         :tooltip="$t('trade.mark_price_tooltip')"
       >
         <span v-if="!markPrice.isNaN()" class="lg:text-right font-mono block">
-          <span
-            :class="{
-              'text-aqua-500': currentLastTradeChange === Change.Increase,
-              'text-red-500': currentLastTradeChange === Change.Decrease
-            }"
-          >
-            {{ markPriceToFormat }}
-          </span>
+          {{ markPriceToFormat }}
         </span>
         <span v-else class="text-gray-400">&mdash;</span>
       </v-market-info>
@@ -126,22 +119,6 @@ export default Vue.extend({
   },
 
   computed: {
-    currentLastSpotTradedPrice(): BigNumberInBase {
-      return this.$accessor.spot.lastTradedPrice
-    },
-
-    currentLastDerivativeTradedPrice(): BigNumberInBase {
-      return this.$accessor.derivatives.lastTradedPrice
-    },
-
-    currentLastSpotTradedPriceChange(): Change {
-      return this.$accessor.spot.lastTradedPriceChange
-    },
-
-    currentLastDerivativeTradedPriceChange(): Change {
-      return this.$accessor.derivatives.lastTradedPriceChange
-    },
-
     derivativeMarkPrice(): string {
       return this.$accessor.derivatives.marketMarkPrice
     },
@@ -168,18 +145,6 @@ export default Vue.extend({
       }
 
       return markPrice.toFormat(market.priceDecimals)
-    },
-
-    currentLastTradeChange(): Change {
-      const {
-        currentLastSpotTradedPriceChange,
-        currentLastDerivativeTradedPriceChange,
-        market
-      } = this
-
-      return market.type === MarketType.Spot
-        ? currentLastSpotTradedPriceChange
-        : currentLastDerivativeTradedPriceChange
     },
 
     high(): BigNumberInBase {
