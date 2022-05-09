@@ -3,7 +3,14 @@
     <v-card-table-wrap>
       <template #actions>
         <div
-          class="col-span-12 lg:col-span-6 grid grid-cols-2 sm:grid-cols-3 gap-4 w-full"
+          class="
+            col-span-12
+            lg:col-span-6
+            grid grid-cols-2
+            sm:grid-cols-3
+            gap-4
+            w-full
+          "
         >
           <v-search
             dense
@@ -47,7 +54,7 @@
         <v-empty-list
           v-else
           :message="$t('trade.emptyTrades')"
-          data-cy="table-nothing-found"
+          data-cy="universal-table-nothing-found"
         />
       </v-table-wrapper>
     </v-card-table-wrap>

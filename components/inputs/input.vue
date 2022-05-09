@@ -13,7 +13,7 @@
         <span
           v-if="error && !errorBelow"
           class="text-red-400 italic font-semibold text-2xs"
-          data-cy="input-error"
+          data-cy="reusable-input-error"
         >
           * {{ error }}
         </span>
@@ -61,11 +61,17 @@
           >
             <span
               v-if="showClose"
-              data-cy="input-clear-button"
+              data-cy="reusable-input-clear-button"
               @click="handleCloseEvent"
             >
               <v-icon-close
-                class="cursor-pointer h-4 w-4 text-gray-200 hover:text-primary-500"
+                class="
+                  cursor-pointer
+                  h-4
+                  w-4
+                  text-gray-200
+                  hover:text-primary-500
+                "
               />
             </span>
 

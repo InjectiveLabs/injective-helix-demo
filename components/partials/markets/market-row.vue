@@ -1,7 +1,20 @@
 <template>
   <div
-    class="grid grid-cols-3 sm:grid-cols-10 3md:grid-cols-12 text-gray-200 gap-4 text-sm px-4 py-5 mb-1 bg-gray-800 bg-opacity-50 items-center rounded"
-    :data-cy="`market-row-${market.ticker}`"
+    class="
+      grid grid-cols-3
+      sm:grid-cols-10
+      3md:grid-cols-12
+      text-gray-200
+      gap-4
+      text-sm
+      px-4
+      py-5
+      mb-1
+      bg-gray-800 bg-opacity-50
+      items-center
+      rounded
+    "
+    :data-cy="`markets-page-table-row-${market.ticker}`"
   >
     <span class="text-sm col-span-2 sm:col-span-3 flex items-center">
       <div
@@ -132,7 +145,18 @@ data-cy="markets-page-volume-usd-table-data"
       </nuxt-link>
 
       <div
-        class="text-primary-500 w-6 h-6 flex items-center justify-center rounded-full ml-6 cursor-pointer hover:bg-primary-500 hover:bg-opacity-10"
+        class="
+          text-primary-500
+          w-6
+          h-6
+          flex
+          items-center
+          justify-center
+          rounded-full
+          ml-6
+          cursor-pointer
+          hover:bg-primary-500 hover:bg-opacity-10
+        "
         data-cy="markets-page-favorite-button"
         @click="updateWatchList"
       >

@@ -15,7 +15,7 @@
           />
           <filter-selector
             class="col-span-2"
-            data-cy="filter-by-side"
+            data-cy="universal-table-filter-by-side-drop-down"
             :type="TradeSelectorType.Side"
             :value="side"
             @click="handleSideClick"
@@ -23,7 +23,14 @@
         </div>
 
         <div
-          class="col-span-12 sm:col-span-6 lg:col-span-8 sm:text-right mt-4 sm:mt-0"
+          class="
+            col-span-12
+            sm:col-span-6
+            lg:col-span-8
+            sm:text-right
+            mt-4
+            sm:mt-0
+          "
         >
           <v-button
             v-if="filteredOrders.length > 0"
@@ -52,7 +59,7 @@
         <v-empty-list
           v-else
           :message="$t('trade.emptyOrders')"
-          data-cy="table-nothing-found"
+          data-cy="universal-table-nothing-found"
         />
       </v-table-wrapper>
     </v-card-table-wrap>

@@ -1,7 +1,7 @@
 <template>
   <div
     class="flex h-full w-full items-center justify-center text-center"
-    data-cy="wallet-not-connected-warning"
+    data-cy="wallet-not-connected-modal-warning"
   >
     <div v-if="cta" class="text-center py-4">
       <p class="text-xs text-gray-300 w-full">
@@ -11,7 +11,7 @@
         md
         primary
         class="mt-2"
-        data-cy="wallet-not-connected-warning-button"
+        data-cy="wallet-not-connected-warning-modal-connect-button"
         @click.stop="handleClickOnConnect"
       >
         {{ $t('connect.connect') }}

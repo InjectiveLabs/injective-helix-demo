@@ -6,30 +6,29 @@
       </h4>
       <v-icon-show
         class="w-4 h-4 ml-4 text-gray-400 hover:text-primary-500"
-        data-cy="toggle-balances-visibility"
+        data-cy="account-summary-visibility-toggle-button"
       />
     </div>
     <div
       class="flex flex-wrap items-center justify-center lg:justify-between mt-4"
     >
       <div
-        class="flex tracking-wide items-end flex-wrap justify-center lg:justify-start"
+        class="
+          flex
+          tracking-wide
+          items-end
+          flex-wrap
+          justify-center
+          lg:justify-start
+        "
       >
-        <h2 class="text-white text-2xl sm:text-3xl xl:text-4xl mr-4">
-          <span
-v-if="hideBalance"
-data-cy="account-summary-usd-hidden-icons"
->{{ HIDDEN_BALANCE_DISPLAY }}
-          </span>
-          <span
-            v-else-if="status.isLoading()"
-            data-cy="account-summary-usd-loading"
-            >&mdash; USD
-          </span>
-          <span
-v-else
-data-cy="account-summary-usd-text-content"
->{{ totalBalanceToString }} USD</span>
+        <h2
+          class="text-white text-2xl sm:text-3xl xl:text-4xl mr-4"
+          data-cy="account-summary-usd-text-content"
+        >
+          <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }} </span>
+          <span v-else-if="status.isLoading()">&mdash; USD </span>
+          <span v-else>{{ totalBalanceToString }} USD</span>
         </h2>
         <span
           v-if="!hideBalance"

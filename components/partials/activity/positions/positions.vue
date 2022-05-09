@@ -23,7 +23,14 @@
         </div>
 
         <div
-          class="col-span-12 sm:col-span-6 lg:col-span-8 sm:text-right mt-4 sm:mt-0"
+          class="
+            col-span-12
+            sm:col-span-6
+            lg:col-span-8
+            sm:text-right
+            mt-4
+            sm:mt-0
+          "
         >
           <v-button
             v-if="filteredPositions.length > 0 && walletIsNotKeplr"
@@ -53,7 +60,7 @@
 
         <v-empty-list
           v-else
-          data-cy="table-nothing-found"
+          data-cy="universal-table-nothing-found"
           :message="$t('trade.emptyPositions')"
           class="mt-6 min-h-orders"
         />

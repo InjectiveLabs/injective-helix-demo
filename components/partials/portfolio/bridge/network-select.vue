@@ -14,7 +14,7 @@
       :searchable="false"
       :options="filteredOptions"
       :value="value"
-      data-cy="network-selector"
+      data-cy="network-selector-component"
       @input="handleChange"
     >
       <template #open-indicator="{ attributes }">

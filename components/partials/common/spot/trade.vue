@@ -1,5 +1,5 @@
 <template>
-  <tr v-if="market" :data-cy="'trade-row-' + market.ticker">
+  <tr v-if="market" :data-cy="'trade-history-table-row-' + market.ticker">
     <td class="h-8 text-left font-mono">
       <span class="text-gray-400 text-xs" data-cy="trade-entry-time">{{
         time
@@ -17,7 +17,7 @@
         <div class="ml-3">
           <span
             class="text-gray-200 font-semibold"
-            data-cy="trade-entry-ticker"
+            data-cy="trade-history-ticker-name-table-data"
           >
             {{ market.ticker }}
           </span>
@@ -25,13 +25,13 @@
       </div>
     </td>
 
-    <td class="h-8 text-left" data-cy="trade-entry-type">
+    <td class="h-8 text-left" data-cy="trade-history-execution-type-table-data">
       {{ tradeExecutionType }}
     </td>
 
     <td class="h-8 text-left">
       <span
-        data-cy="trade-entry-side"
+        data-cy="trade-history-trade-directon-table-data"
         :class="{
           'text-aqua-500': tradeTypeBuy,
           'text-red-500': !tradeTypeBuy
@@ -43,7 +43,7 @@
 
     <td class="h-8 text-right font-mono">
       <v-number
-        data-cy="trade-entry-price"
+        data-cy="trade-history-price-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
@@ -53,7 +53,7 @@
 
     <td class="h-8 text-right font-mono">
       <v-number
-        data-cy="trade-entry-quantity"
+        data-cy="trade-history-quantity-table-data"
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
@@ -61,7 +61,11 @@
       />
     </td>
     <td class="h-8 text-right font-mono">
-      <v-number use-number-decimals :number="fee" data-cy="trade-entry-fee">
+      <v-number
+        use-number-decimals
+        :number="fee"
+        data-cy="trade-history-fee-table-data"
+      >
         <span slot="addon" class="text-2xs text-gray-500">
           {{ market.quoteToken.symbol }}
         </span>
@@ -70,7 +74,7 @@
 
     <td class="h-8 text-right font-mono">
       <v-number
-        data-cy="trade-entry-total"
+        data-cy="trade-history-total-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "

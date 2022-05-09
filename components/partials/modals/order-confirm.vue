@@ -1,7 +1,7 @@
 <template>
   <v-modal
     :is-open="isModalOpen"
-    data-cy="modal-price-deviation"
+    data-cy="price-deviation-modal"
     @modal-closed="closeModal"
   >
     <h3 slot="title">

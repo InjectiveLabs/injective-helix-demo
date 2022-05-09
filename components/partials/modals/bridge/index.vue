@@ -46,7 +46,7 @@
             :valid="valid"
             placeholder="inj"
             :label="$t('bridge.injAddress')"
-            data-cy="bridge-inj-address"
+            data-cy="transfer-modal-inj-address-input"
             @input="handleDestinationAddressChange"
           >
           </v-input>

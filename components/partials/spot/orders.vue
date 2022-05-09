@@ -6,7 +6,7 @@
           <v-button-filter
             v-model="component"
             :option="components.openOrders"
-            data-cy="trade-open-orders-tab-button"
+            data-cy="trading-page-open-orders-tab-button"
           >
             <span class="uppercase text-xs font-semibold">
               {{ $t('trade.open_orders') }}
@@ -17,7 +17,7 @@
           <v-button-filter
             v-model="component"
             :option="components.tradeHistory"
-            data-cy="trade-trade-history-tab-button"
+            data-cy="trading-page-trade-history-tab-button"
           >
             <span class="uppercase text-xs font-semibold">
               {{ $t('trade.trade_history') }}
@@ -27,7 +27,17 @@
       </div>
 
       <div
-        class="col-span-12 sm:col-span-6 mb-4 mx-4 sm:mt-4 flex items-center justify-between sm:justify-end"
+        class="
+          col-span-12
+          sm:col-span-6
+          mb-4
+          mx-4
+          sm:mt-4
+          flex
+          items-center
+          justify-between
+          sm:justify-end
+        "
       >
         <v-checkbox v-if="market" v-model="currentMarketOnly" class="mr-4">
           {{ $t('trade.asset_only', { asset: market.ticker }) }}

@@ -62,7 +62,7 @@
       <v-number
         use-number-decimals
         :number="fee"
-        data-cy="trade-entry-fee-table-data"
+        data-cy="trade-history-fee-table-data"
       >
         <span slot="addon" class="text-2xs text-gray-500">
           {{ market.quoteToken.symbol }}
@@ -71,7 +71,7 @@
     </td>
     <td class="h-8 text-right font-mono">
       <v-number
-        data-cy="trade-entry-total-table-data"
+        data-cy="trade-history-total-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "

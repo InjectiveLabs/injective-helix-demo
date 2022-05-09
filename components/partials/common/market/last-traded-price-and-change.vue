@@ -28,7 +28,7 @@
     <div v-if="!change.isNaN()" class="mt-1 text-xs">
       <span
         :class="change.gte(0) ? 'text-aqua-500' : 'text-red-500'"
-        data-cy="markets-sidebar-entry-change_24h-table-data"
+        data-cy="markets-sidebar-change_24h-table-data"
       >
         {{ changeToFormat }}%
       </span>

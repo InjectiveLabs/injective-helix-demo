@@ -1,6 +1,6 @@
 <template>
   <v-modal
-    data-cy="bridge-completed"
+    data-cy="transfer-completed-modal"
     :is-open="isModalOpen"
     sm
     @modal-closed="handleModalClose"

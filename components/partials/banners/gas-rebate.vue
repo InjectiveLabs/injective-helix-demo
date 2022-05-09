@@ -4,7 +4,14 @@
       <div class="flex justify-between">
         <div>
           <span
-            class="text-primary-500 text-2xs px-1 py-0.4 bg-primary-500 bg-opacity-10 rounded align-top"
+            class="
+              text-primary-500 text-2xs
+              px-1
+              py-0.4
+              bg-primary-500 bg-opacity-10
+              rounded
+              align-top
+            "
           >
             {{ $t('banners.newUser.subtitle') }}
           </span>
@@ -24,11 +31,7 @@
       </div>
 
       <div class="hidden lg:block col-span-2">
-        <v-progress-steps
-          data-cy="new-user-banner-progress-steps"
-          :steps="3"
-          :active-step="activeStep"
-        />
+        <v-progress-steps :steps="3" :active-step="activeStep" />
         <div class="grid grid-cols-3 mt-3 gap-8 xl:gap-12 2xl:gap-16">
           <div>
             <span class="tracking-wider uppercase text-xs">
@@ -270,8 +273,8 @@ export default Vue.extend({
         return false
       }
 
-      const tokenWithBalance = ((bankUsdtBalance ||
-        subaccountUsdtBalance) as unknown) as { token: Token }
+      const tokenWithBalance = (bankUsdtBalance ||
+        subaccountUsdtBalance) as unknown as { token: Token }
       const usdtToken = tokenWithBalance.token
       const usdtAddress = usdtToken.address.replace('peggy', '').toLowerCase()
 

@@ -6,7 +6,7 @@
           'text-gray-500': tradingType === TradeExecutionType.LimitFill
         }"
         text-xs
-        data-cy="trade-switch-to-market-button"
+        data-cy="trading-page-switch-to-market-button"
         @click.stop="onTradingTypeToggle(TradeExecutionType.Market)"
       >
         {{ $t('trade.market') }}
@@ -18,7 +18,7 @@
           'text-gray-500': tradingType === TradeExecutionType.Market
         }"
         text-xs
-        data-cy="trade-switch-to-limit-button"
+        data-cy="trading-page-switch-to-limit-button"
         @click.stop="onTradingTypeToggle(TradeExecutionType.LimitFill)"
       >
         {{ $t('trade.limit') }}
@@ -31,7 +31,7 @@
           :option="SpotOrderSide.Buy"
           aqua
           class="w-1/2"
-          data-cy="trade-switch-to-side-buy-button"
+          data-cy="trading-page-switch-to-side-buy-button"
         >
           {{ $t('trade.buy_asset', { asset: market.baseToken.symbol }) }}
         </v-button-select>
@@ -40,7 +40,7 @@
           :option="SpotOrderSide.Sell"
           red
           class="w-1/2"
-          data-cy="trade-switch-to-side-sell-button"
+          data-cy="trading-page-switch-to-side-sell-button"
         >
           {{ $t('trade.sell_asset', { asset: market.baseToken.symbol }) }}
         </v-button-select>
@@ -59,7 +59,7 @@
           type="number"
           :step="amountStep"
           min="0"
-          data-cy="trade-amount-input"
+          data-cy="trading-page-amount-input"
           @blur="onAmountBlur"
           @input="onAmountChange"
           @input-max="() => onMaxInput(100)"
@@ -86,13 +86,13 @@
         <span
           v-if="amountError"
           class="text-2xs font-semibold text-red-500"
-          data-cy="trade-amount-error"
+          data-cy="trading-page-amount-error-text-content"
         >
           {{ amountError }}
         </span>
         <span
           v-if="priceError && tradingTypeMarket"
-          data-cy="trade-price-error"
+          data-cy="trading-page-price-error-text-content"
           class="text-2xs font-semibold text-red-500"
         >
           {{ priceError }}
@@ -109,7 +109,7 @@
           :step="priceStep"
           :max-decimals="market ? market.quoteToken.decimals : 6"
           min="0"
-          data-cy="trade-price-input"
+          data-cy="trading-page-price-input"
           @blur="onPriceBlur"
           @input="onPriceChange"
         >
@@ -118,7 +118,7 @@
         <span
           v-if="priceError"
           class="text-red-500 font-semibold text-2xs"
-          data-cy="trade-price-error"
+          data-cy="trading-page-price-error-text-content"
         >
           {{ priceError }}
         </span>
@@ -944,17 +944,19 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const disqualified = tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-        (marketId) => marketId === market.marketId
-      )
+      const disqualified =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
+          (marketId) => marketId === market.marketId
+        )
 
       if (disqualified) {
         return ZERO_IN_BASE
       }
 
-      const denomIncluded = tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-        (denom) => denom === market.quoteDenom
-      )
+      const denomIncluded =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
+          (denom) => denom === market.quoteDenom
+        )
 
       if (!denomIncluded) {
         return ZERO_IN_BASE
@@ -1001,17 +1003,19 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const disqualified = tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-        (marketId) => marketId === market.marketId
-      )
+      const disqualified =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
+          (marketId) => marketId === market.marketId
+        )
 
       if (disqualified) {
         return ZERO_IN_BASE
       }
 
-      const denomIncluded = tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-        (denom) => denom === market.quoteDenom
-      )
+      const denomIncluded =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
+          (denom) => denom === market.quoteDenom
+        )
 
       if (!denomIncluded) {
         return ZERO_IN_BASE

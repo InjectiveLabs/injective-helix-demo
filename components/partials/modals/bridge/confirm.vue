@@ -56,14 +56,23 @@
             />
 
             <div
-              class="bg-primary-500 min-w-6 h-6 mx-6 flex items-center justify-center rounded-full"
+              class="
+                bg-primary-500
+                min-w-6
+                h-6
+                mx-6
+                flex
+                items-center
+                justify-center
+                rounded-full
+              "
             >
               <v-icon-arrow class="text-gray-1000 w-4 h-4 rotate-180" />
             </div>
 
             <v-network-card-base
               class="w-1/2"
-              data-cy="bridge-confirm-to"
+              data-cy="transfer-confirm-modal-to-content"
               :hide-icon="
                 originNetworkMeta.value === destinationNetworkMeta.value
               "
@@ -506,11 +515,8 @@ export default Vue.extend({
     },
 
     amountLargerThanBridgeFee(): boolean {
-      const {
-        ethBridgeFeeInUsd,
-        amountInUsd,
-        destinationIsEthereumNetwork
-      } = this
+      const { ethBridgeFeeInUsd, amountInUsd, destinationIsEthereumNetwork } =
+        this
 
       if (!destinationIsEthereumNetwork) {
         return true

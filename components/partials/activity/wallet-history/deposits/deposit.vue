@@ -25,7 +25,7 @@
         <div class="ml-3">
           <span
             class="text-gray-200 font-semibold"
-            data-cy="wallet-history-asset-table-datat"
+            data-cy="wallet-history-asset-table-data"
           >
             {{ transaction.token.symbol }}
           </span>
