@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="mb-6 flex justify-between items-center flex-wrap">
+    <div class="mb-6 flex justify-between items-center flex-wrap gap-4">
       <v-search
         dense
         name="search"
@@ -10,15 +10,22 @@
         @searched="handleInputOnSearch"
       />
 
-      <v-checkbox v-model="hideSmallBalance" class="mt-4 sm:mt-0 ml-auto">
-        <span class="flex items-center">
-          {{ $t('portfolio.hideSmallBalances') }}
-          <v-icon-info-tooltip
-            class="ml-2"
-            :tooltip="$t('portfolio.hideSmallBalancesTooltip')"
-          />
-        </span>
-      </v-checkbox>
+      <div class="ml-auto flex items-center gap-4">
+        <v-checkbox v-model="showMarginOnly">
+          <span class="flex items-center">
+            {{ $t('portfolio.showMarginCurrencyOnly') }}
+          </span>
+        </v-checkbox>
+        <v-checkbox v-model="hideSmallBalance">
+          <span class="flex items-center">
+            {{ $t('portfolio.hideSmallBalances') }}
+            <v-icon-info-tooltip
+              class="ml-2"
+              :tooltip="$t('portfolio.hideSmallBalancesTooltip')"
+            />
+          </span>
+        </v-checkbox>
+      </div>
     </div>
     <div class="overflow-y-auto overflow-x-auto md:overflow-x-visible w-full">
       <TableHeader
@@ -138,7 +145,8 @@ export default Vue.extend({
   data() {
     return {
       search: '',
-      hideSmallBalance: false
+      hideSmallBalance: false,
+      showMarginOnly: false
     }
   },
 
@@ -151,12 +159,17 @@ export default Vue.extend({
       const {
         subaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd,
         search,
-        hideSmallBalance
+        hideSmallBalance,
+        showMarginOnly
       } = this
 
       return subaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd.filter(
-        ({ token, totalBalanceInUsd }) => {
-          if ((!search || search.trim() === '') && !hideSmallBalance) {
+        ({ token, totalBalanceInUsd, margin }) => {
+          if (
+            (!search || search.trim() === '') &&
+            !hideSmallBalance &&
+            !showMarginOnly
+          ) {
             return true
           }
 
@@ -169,7 +182,9 @@ export default Vue.extend({
             !hideSmallBalance ||
             new BigNumberInBase(totalBalanceInUsd).gte('10')
 
-          return isPartOfSearchFilter && isNotSmallBalance
+          const fulfillMarginCheck = !showMarginOnly || margin.gt('0')
+
+          return isPartOfSearchFilter && isNotSmallBalance && fulfillMarginCheck
         }
       )
     },
