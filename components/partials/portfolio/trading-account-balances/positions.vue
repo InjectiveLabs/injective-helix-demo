@@ -1,61 +1,61 @@
 <template>
-  <VHocLoading :status="status">
-    <v-card-table-wrap>
-      <template #actions>
-        <div
-          class="col-span-12 sm:col-span-6 lg:col-span-4 grid grid-cols-5 gap-4"
-        >
-          <v-search
-            dense
-            class="col-span-3"
-            :placeholder="$t('trade.filter')"
-            :search="search"
-            @searched="handleInputOnSearch"
-          />
-          <filter-selector
-            class="col-span-2"
-            :type="TradeSelectorType.PositionSide"
-            :value="side"
-            @click="handleSideClick"
-          />
-        </div>
-
-        <div
-          class="col-span-12 sm:col-span-6 lg:col-span-8 sm:text-right mt-4 sm:mt-0"
-        >
-          <v-button
-            v-if="filteredPositions.length > 0 && walletIsNotKeplr"
-            red-outline
-            md
-            :status="status"
-            @click.stop="handleClosePositions"
-          >
-            {{ $t('trade.closeAllPositions') }}
-          </v-button>
-        </div>
-      </template>
-
-      <v-table-wrapper break-md class="mt-4">
-        <table v-if="filteredPositions.length > 0" class="table">
-          <position-table-header />
-          <tbody>
-            <tr
-              is="v-position"
-              v-for="(position, index) in sortedPositions"
-              :key="`positions-${index}-${position.marketId}`"
-              :position="position"
-            />
-          </tbody>
-        </table>
-
-        <v-empty-list
-          v-else
-          :message="$t('trade.emptyPositions')"
-          class="mt-6 min-h-orders"
+  <v-card-table-wrap>
+    <template #actions>
+      <div
+        class="col-span-12 sm:col-span-6 lg:col-span-4 grid grid-cols-5 gap-4"
+      >
+        <v-search
+          dense
+          class="col-span-3"
+          :placeholder="$t('trade.filter')"
+          :search="search"
+          @searched="handleInputOnSearch"
         />
-      </v-table-wrapper>
-    </v-card-table-wrap>
-  </VHocLoading>
+        <filter-selector
+          class="col-span-2"
+          :type="TradeSelectorType.PositionSide"
+          :value="side"
+          @click="handleSideClick"
+        />
+      </div>
+
+      <div
+        class="col-span-12 sm:col-span-6 lg:col-span-8 sm:text-right mt-4 sm:mt-0"
+      >
+        <v-button
+          v-if="
+            filteredPositions.length > 0 && walletIsNotKeplr && !hideBalance
+          "
+          red-outline
+          md
+          :status="status"
+          @click.stop="handleClosePositions"
+        >
+          {{ $t('trade.closeAllPositions') }}
+        </v-button>
+      </div>
+    </template>
+    <div class="overflow-y-auto mt-6">
+      <table v-if="filteredPositions.length > 0" class="table relative">
+        <position-table-header />
+        <tbody>
+          <tr
+            is="v-position"
+            v-for="(position, index) in sortedPositions"
+            :key="`positions-${index}-${position.marketId}`"
+            :position="position"
+            :hide-balance="hideBalance"
+          />
+        </tbody>
+      </table>
+
+      <v-empty-list
+        v-else
+        :message="$t('trade.emptyPositions')"
+        class="mt-6 min-h-orders"
+      />
+    </div>
+  </v-card-table-wrap>
 </template>
 
 <script lang="ts">
@@ -78,13 +78,19 @@ export default Vue.extend({
     PositionTableHeader
   },
 
+  props: {
+    hideBalance: {
+      type: Boolean,
+      default: false
+    }
+  },
+
   data() {
     return {
       TradeSelectorType,
       search: '',
       side: undefined as string | undefined,
-      status: new Status(StatusType.Loading),
-      poll: undefined as any
+      status: new Status(StatusType.Idle)
     }
   },
 
@@ -133,25 +139,6 @@ export default Vue.extend({
 
       return wallet !== Wallet.Keplr
     }
-  },
-
-  mounted() {
-    this.status.setLoading()
-
-    Promise.all([
-      this.$accessor.derivatives.fetchSubaccountOrders(),
-      this.$accessor.positions.fetchSubaccountPositions()
-    ])
-      .catch(this.$onError)
-      .finally(() => {
-        this.status.setIdle()
-      })
-
-    this.pollSubaccountPositions()
-  },
-
-  beforeDestroy() {
-    clearInterval(this.poll)
   },
 
   methods: {
@@ -209,12 +196,6 @@ export default Vue.extend({
 
     handleSideClick(side: string | undefined) {
       this.side = side
-    },
-
-    pollSubaccountPositions() {
-      this.poll = setInterval(() => {
-        this.$accessor.positions.fetchSubaccountPositions()
-      }, 30 * 1000)
     }
   }
 })
