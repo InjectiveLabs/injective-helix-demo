@@ -1,12 +1,13 @@
 import {
   Network,
   getUrlEndpointForNetwork,
-  UrlEndpoint
+  UrlEndpoints
 } from '@injectivelabs/networks'
 import { Wallet } from '@injectivelabs/web3-strategy'
 import {
   APP_EXCHANGE_API_ENDPOINT,
   APP_SENTRY_GRPC_ENDPOINT,
+  APP_SENTRY_HTTP_ENDPOINT,
   NETWORK
 } from '../utils/constants'
 import { localStorage } from './Storage'
@@ -21,17 +22,20 @@ class App {
     this.network = NETWORK || Network.Local
   }
 
-  get endpoints(): UrlEndpoint {
+  get endpoints(): UrlEndpoints {
     const endpoints = getUrlEndpointForNetwork(this.network)
     const exchangeApiEndpoint =
       APP_EXCHANGE_API_ENDPOINT || endpoints.exchangeApi
     const sentryGrpcApiEndpoint =
       APP_SENTRY_GRPC_ENDPOINT || endpoints.sentryGrpcApi
+    const sentryHttpApiEndpoint =
+      APP_SENTRY_HTTP_ENDPOINT || endpoints.sentryHttpApi
 
     return {
       ...endpoints,
       exchangeApi: exchangeApiEndpoint,
-      sentryGrpcApi: sentryGrpcApiEndpoint
+      sentryGrpcApi: sentryGrpcApiEndpoint,
+      sentryHttpApi: sentryHttpApiEndpoint
     }
   }
 

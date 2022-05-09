@@ -54,31 +54,38 @@
         </span>
       </div>
     </div>
-    <ul
-      ref="buyOrders"
-      class="list-order-book overflow-y-scroll overflow-x-hidden w-full orderbook-half-h rounded-b-lg"
-      @mouseenter="autoScrollBuysLocked = true"
-      @mouseleave="autoScrollBuysLocked = false"
-    >
-      <v-record
-        v-for="(buy, index) in buysWithDepth"
-        :key="`order-book-buy-${buy.aggregatedPrice || buy.price}`"
-        :ref="`order-book-buy-${index}`"
-        :class="{
-          active: buyHoverPosition !== null && index <= buyHoverPosition
-        }"
-        :position="index"
-        :aggregation="aggregation"
-        :type="DerivativeOrderSide.Buy"
-        :user-orders="buyUserOrderPrices"
-        :record="buy"
-        @update:active-position="handleBuyOrderHover"
-      ></v-record>
-    </ul>
 
-    <!-- orderbook summary popup -->
-    <div ref="orderbookSummary" class="orderbook-summary">
-      <SummaryPopup :market="market" :summary="orderBookSummary" />
+    <div
+      ref="buyOrders"
+      class="overflow-y-scroll overflow-x-hidden w-full orderbook-half-h"
+    >
+      <div class="flex h-full w-full">
+        <ul
+          class="list-order-book w-full mb-auto"
+          @mouseenter="autoScrollBuysLocked = true"
+          @mouseleave="autoScrollBuysLocked = false"
+        >
+          <v-record
+            v-for="(buy, index) in buysWithDepth"
+            :key="`order-book-buy-${buy.aggregatedPrice || buy.price}`"
+            :ref="`order-book-buy-${index}`"
+            :class="{
+              active: buyHoverPosition !== null && index <= buyHoverPosition
+            }"
+            :position="index"
+            :aggregation="aggregation"
+            :type="DerivativeOrderSide.Buy"
+            :user-orders="buyUserOrderPrices"
+            :record="buy"
+            @update:active-position="handleBuyOrderHover"
+          ></v-record>
+        </ul>
+      </div>
+
+      <!-- orderbook summary popup -->
+      <div ref="orderbookSummary" class="orderbook-summary">
+        <SummaryPopup :market="market" :summary="orderBookSummary" />
+      </div>
     </div>
   </div>
 </template>

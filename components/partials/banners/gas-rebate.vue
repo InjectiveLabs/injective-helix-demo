@@ -124,7 +124,7 @@ import {
   UiSpotTrade,
   ZERO_IN_BASE
 } from '@injectivelabs/ui-common'
-import { UserDeposit } from '@injectivelabs/ui-common/dist/bridge/gql/types'
+import { UserDeposit } from '@injectivelabs/ui-common/dist/services/bridge/gql/types'
 
 import {
   BigNumberInBase,

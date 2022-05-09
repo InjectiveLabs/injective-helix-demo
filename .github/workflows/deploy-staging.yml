@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy-stag:
-    if: false
+    if: true
     env:
       ## Public
       APP_NAME: 'BETA - Injective Pro: Decentralized Cryptocurrency Derivatives, Ethereum and Altcoin Exchange'
@@ -32,6 +32,7 @@ jobs:
       ## Endpoints
       APP_EXCHANGE_API_ENDPOINT: ''
       APP_SENTRY_GRPC_ENDPOINT: ''
+      APP_SENTRY_HTTP_ENDPOINT: ''
 
       ## Secret
       APP_GAS_REBATE_API: ${{ secrets.APP_GAS_REBATE_API }}
@@ -80,13 +81,13 @@ jobs:
         run: aws cloudfront create-invalidation --distribution-id=$CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
 
   deploy-testnet:
-    if: false
+    if: true
     env:
       ## Public
       APP_NAME: 'TESTNET - Injective Pro: Decentralized Cryptocurrency Derivatives, Ethereum and Altcoin Exchange'
       APP_BASE_URL: https://testnet.injective.exchange
       APP_NETWORK: testnetK8s
-      APP_ENV: testnet
+      APP_ENV: testnetg
       APP_CHAIN_ID: 42
       SOURCE_DIR: dist
       DEST_DIR: www
@@ -104,6 +105,7 @@ jobs:
       ## Endpoints
       APP_EXCHANGE_API_ENDPOINT: ''
       APP_SENTRY_GRPC_ENDPOINT: ''
+      APP_SENTRY_HTTP_ENDPOINT: ''
 
       ## Secret
       APP_GAS_REBATE_API: ${{ secrets.APP_GAS_REBATE_API }}

@@ -30,7 +30,8 @@ export default {
     confirm: 'Confirm',
     ok: 'OK',
     open: 'Open',
-    close: 'Close'
+    close: 'Close',
+    required: 'Required'
   },
   welcome_to_ip:
     'Access, create and trade unlimited decentralized finance markets',
@@ -38,7 +39,7 @@ export default {
     'The Canary Chain has a $5,000 trading limit which will be uplifted upon the canonical release over the coming weeks.',
   maintenance_header: 'Ongoing Scheduled Maintenance',
   maintenance_subheader:
-    'While this relayer is down for maintenance, the <strong class="text-primary-500">Injective Chain</strong> is never down! You can find other relayers in the Injective Ecosystem on the button below!',
+    'While this relayer is down for maintenance,<strong class="text-primary-500">Injective</strong> is never down! You can find other relayers in the Injective Ecosystem on the button below!',
   maintenance_button: 'Relayers',
   maintenance_body: '',
   token_allowance_successful: 'Token allowance set successful',
@@ -51,7 +52,7 @@ export default {
   Restrictions: 'Restrictions',
   Languages: 'Languages',
   download: 'Download',
-  'Injective Chain Balance': 'Injective Chain Balance',
+  'Injective Chain Balance': 'Injective Balance',
   'ERC20 Balance': 'ERC20 Balance',
   'Join our Ecosystem now': 'Join the Injective Ecosystem!',
   'Ready to get started?': 'Injective Bridge',
@@ -201,14 +202,25 @@ export default {
     connectedWallets: 'Connected Wallets',
     connected: 'Connected',
     referral: 'Referral',
+    referralCode: 'Referral Code',
     rewards: 'Rewards',
     dashboard: 'Dashboard',
     trade: 'Trade',
+    swap: 'Swap',
+    swapDescription: 'Tempor incididunt ut labore et dolore magna aliqua.',
+    pro: 'Pro',
+    proDescription: 'Tempor incididunt ut labore et dolore magna aliqua.',
     activities: 'Activities',
     activity: 'Activity',
     portfolio: 'Portfolio',
     home: 'Home',
     makerTakerFee: '-{maker}% maker / -{taker}% taker',
-    noTierLevel: 'No VIP Tier'
+    noTierLevel: 'No VIP Tier',
+    tradeAndEarn: 'Trade and Earn',
+    tradeAndEarnDescription:
+      'Each trade on Injective can earn you some rewards.',
+    dmmProgram: 'Dmm program',
+    dmmProgramDescription:
+      'Flagship liquidity mining program designed for Dedicated Market Makers.'
   }
 }

@@ -1,3 +1,5 @@
+import { MarketType } from '@injectivelabs/ui-common'
+
 export enum Change {
   New = 'new',
   NoChange = 'no-change',
@@ -50,7 +52,8 @@ export enum Modal {
   Bridge = 'bridge',
   BridgeConfirm = 'bridge-confirm',
   BridgeCompleted = 'bridge-completed',
-  RefereeOnboarding = 'referee-onboarding'
+  RefereeOnboarding = 'referee-onboarding',
+  InsufficientInjForGas = 'insufficient-inj-for-gas'
 }
 
 export enum Breakpoint {
@@ -103,3 +106,22 @@ export enum MarketFilterType {
   New = 'new',
   Upcoming = 'upcoming'
 }
+
+export enum MarketCategoryType {
+  All = 'all',
+  Cosmos = 'cosmos',
+  Ethereum = 'ethereum',
+  Experimental = 'experimental'
+}
+
+export enum MarketQuoteType {
+  All = 'all',
+  USDT = 'usdt',
+  UST = 'ust'
+}
+
+export enum MarketTypeFavorite {
+  Favorite = 'Favorite'
+}
+
+export { MarketType }

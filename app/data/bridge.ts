@@ -3,7 +3,7 @@ import { TransferSide } from '~/types'
 
 export const networksMeta = [
   {
-    text: 'Injective Chain',
+    text: 'Injective',
     value: BridgingNetwork.Injective,
     icon: '/bridgingNetworks/injective.png'
   },
@@ -31,6 +31,16 @@ export const networksMeta = [
     text: 'Chihuahua',
     value: BridgingNetwork.Chihuahua,
     icon: '/bridgingNetworks/chihuahua.jpeg'
+  },
+  {
+    text: 'Evmos',
+    value: BridgingNetwork.Evmos,
+    icon: '/bridgingNetworks/evmos.png'
+  },
+  {
+    text: 'Persistence',
+    value: BridgingNetwork.Persistence,
+    icon: '/bridgingNetworks/persistence.png'
   }
   /*
   {
@@ -79,7 +89,15 @@ export const getBridgingNetworkBySymbol = (symbol: string): BridgingNetwork => {
   }
 
   if (['JUNO', 'UJUNO'].includes(symbolToUpperCase)) {
-    return BridgingNetwork.Chihuahua
+    return BridgingNetwork.Juno
+  }
+
+  if (['EVMOS'].includes(symbolToUpperCase)) {
+    return BridgingNetwork.Evmos
+  }
+
+  if (['XRPT'].includes(symbolToUpperCase)) {
+    return BridgingNetwork.Persistence
   }
 
   if (['AXL', 'UAXL'].includes(symbolToUpperCase)) {

@@ -40,10 +40,14 @@ import Share from '~/components/icons/share.vue'
 import Show from '~/components/icons/show.vue'
 import Square from '~/components/icons/square.vue'
 import Staking from '~/components/icons/staking.vue'
+import Star from '~/components/icons/star.vue'
+import StarBorder from '~/components/icons/star-border.vue'
 import Sun from '~/components/icons/sun.vue'
 import Swap from '~/components/icons/swap.vue'
 import Telegram from '~/components/icons/telegram.vue'
 import TelegramCircle from '~/components/icons/telegram-circle.vue'
+import Torus from '~/components/icons/torus.vue'
+import Triangle from '~/components/icons/triangle.vue'
 import Twitter from '~/components/icons/twitter.vue'
 import TwitterCircle from '~/components/icons/twitter-circle.vue'
 import User from '~/components/icons/user.vue'
@@ -52,6 +56,7 @@ import Crown from '~/components/icons/crown.vue'
 import Youtube from '~/components/icons/youtube.vue'
 import YoutubeCircle from '~/components/icons/youtube-circle.vue'
 import MenuAlt from '~/components/icons/menu-alt.vue'
+import ArrowLeftRight from '~/components/icons/arrow-left-right.vue'
 
 Vue.component('VIconArrow', Arrow)
 Vue.component('VIconArrowSwap', ArrowSwap)
@@ -65,6 +70,7 @@ Vue.component('VIconCheckCircle', CheckCircle)
 Vue.component('VIconChevron', Chevron)
 Vue.component('VIconClose', Close)
 Vue.component('VIconCopy', Copy)
+Vue.component('VIconTorus', Torus)
 Vue.component('VIconCopyPlain', CopyPlain)
 Vue.component('VIconDashboard', Dashboard)
 Vue.component('VIconDiscord', Discord)
@@ -95,13 +101,17 @@ Vue.component('VIconShare', Share)
 Vue.component('VIconShow', Show)
 Vue.component('VIconSquare', Square)
 Vue.component('VIconStaking', Staking)
+Vue.component('VIconStar', Star)
+Vue.component('VIconStarBorder', StarBorder)
 Vue.component('VIconSun', Sun)
 Vue.component('VIconSwap', Swap)
 Vue.component('VIconTelegram', Telegram)
 Vue.component('VIconTelegramCircle', TelegramCircle)
+Vue.component('VIconTriangle', Triangle)
 Vue.component('VIconTwitter', Twitter)
 Vue.component('VIconTwitterCircle', TwitterCircle)
 Vue.component('VIconUser', User)
 Vue.component('VIconWallet', Wallet)
 Vue.component('VIconYoutube', Youtube)
 Vue.component('VIconYoutubeCircle', YoutubeCircle)
+Vue.component('VIconArrowLeftRight', ArrowLeftRight)

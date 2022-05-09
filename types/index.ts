@@ -1,8 +1,16 @@
+import {
+  UiDerivativeMarketSummary,
+  UiDerivativeMarketWithToken,
+  UiSpotMarketSummary,
+  UiSpotMarketWithToken
+} from '@injectivelabs/ui-common'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { SubaccountBalanceWithToken } from '~/app/services/account'
 
 export interface DOMEvent<T extends EventTarget> extends Event {
   target: T
+  inputType: string
+  data?: string
   keyCode?: number
   key?: string
   view?: {
@@ -27,6 +35,26 @@ export interface SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd
   totalBalance: BigNumberInBase
   totalBalanceInUsd: BigNumberInBase
 }
+
+export interface UiMarketAndSummary {
+  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
+  summary: UiDerivativeMarketSummary | UiSpotMarketSummary
+}
+
+export interface UiMarketAndSummaryWithVolumeInUsd extends UiMarketAndSummary {
+  volumeInUsd: BigNumberInBase
+}
+
+export interface MarketRoute {
+  name: string
+  params?: {
+    marketId: string
+    derivative?: string
+    spot?: string
+  }
+}
+
+export declare type TokenUsdPriceMap = Record<string, number>
 
 export * from './enums'
 export * from './env'

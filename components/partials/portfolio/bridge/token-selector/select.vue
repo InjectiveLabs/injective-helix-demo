@@ -33,7 +33,7 @@
             v-slot="{ errors, valid }"
             name="amount"
             class="w-full"
-            :rules="`required|positiveNumber|between:0.0001,${balanceToFixed}`"
+            :rules="validationRules || `required|positiveNumber|between:0.0001,${balanceToFixed}`"
           >
             <div class="flex items-center w-full">
               <v-input
@@ -45,17 +45,18 @@
                 type="number"
                 step="0.01"
                 min="0"
-                placeholder="0.00"
+                placeholder="0.0000"
                 error-classes="mt-4"
                 :errors="errors"
                 :valid="valid"
                 :max="balanceToFixed"
                 :max-decimals="value.decimals"
-                :max-selector="balance.gt(0.01)"
+                :max-selector="balance.gt(0.0001)"
                 :value="amount"
                 @input="handleAmountChange"
                 @blur="resetIsSearching"
                 @mousedown.native.stop="focusInput"
+                @input-max="onMaxInput"
               />
               <img
                 v-if="logo"
@@ -120,6 +121,11 @@ export default Vue.extend({
   inheritAttrs: false,
 
   props: {
+    validationRules: {
+      type: String,
+      default: null
+    },
+
     options: {
       type: Array as PropType<BankBalanceWithTokenAndBalanceInBase[]>,
       required: true
@@ -144,6 +150,11 @@ export default Vue.extend({
     value: {
       type: [Object, String, Number],
       default: ''
+    },
+
+    maxSelector: {
+      type: Boolean,
+      default: true
     }
   },
 
@@ -196,6 +207,10 @@ export default Vue.extend({
   },
 
   methods: {
+    onMaxInput() {
+      this.$emit('input:max')
+    },
+
     resetInputFields() {
       if (this.$inputForm) {
         this.$inputForm.reset()

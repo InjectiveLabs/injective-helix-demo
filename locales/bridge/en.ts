@@ -25,17 +25,17 @@ export default {
     insufficientAmount: 'Insufficient Amount',
     trackTransaction: 'Track Transaction',
     transactionConfirmed: 'Transaction Confirmed',
-    depositToTradingAccountSuccess: 'Deposit to trading account successfully',
+    depositToTradingAccountSuccess: 'Deposit to trading account successful',
     withdrawToInjectiveAddressSuccess:
       'Withdraw to Injective account successfully',
     withdrawFromTradingAccountSuccess:
-      'Withdraw from trading account successfully',
+      'Withdraw from trading account successful',
     depositToInjectiveSuccess: 'Your transaction is successfully submitted!',
     withdrawFromInjectiveSuccess: 'Your transaction is successfully submitted!',
     seeOnExplorer: 'View on explorer',
 
     transferTitleTooltip:
-      'To trade on Injective Chain, funds must be in the Trading Account.',
+      'To trade on Injective, funds must be in the Trading Account.',
     withdrawFromInjectiveNote:
       'Note: There is a Bridge fee of ≈{fee} {asset} included in the transaction',
     withdrawFromEthereumNote:
@@ -45,6 +45,7 @@ export default {
 
     setAllowance: 'Set Allowance',
     setAllowanceFor: 'Set allowance for {asset}',
-    successfullySetAllowance: 'Token allowance set successfully'
+    successfullySetAllowance: 'Token allowance set successfully',
+    keplrConnectedForEthereum: 'Please connect with Metamask'
   }
 }

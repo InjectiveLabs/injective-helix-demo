@@ -74,9 +74,7 @@ export const getters = getterTree(state, {
     )
 
     const injectiveDepositTransactions = state.injectiveTransferBridgeTransactions.filter(
-      (transaction) =>
-        transaction.receiver === injectiveAddress &&
-        transaction.receiver !== injectiveAddress
+      (transaction) => transaction.receiver === injectiveAddress
     )
 
     return [

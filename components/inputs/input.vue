@@ -22,7 +22,10 @@
       </div>
       <div
         class="relative"
-        :class="{ 'mt-2': !dense, 'input-wrapper': !lg && !xl }"
+        :class="[
+          wrapperClasses,
+          { 'mt-2': !dense, 'input-wrapper': !lg && !xl && !transparentBg }
+        ]"
       >
         <textarea
           v-if="multiLine"
@@ -42,7 +45,8 @@
               'input-lg': lg,
               'input-xl': xl,
               'input-round': round,
-              'input-small': small
+              'input-small': small,
+              'input-bg-transparent': transparentBg
             }"
             @blur="handleBlur"
             @input="handleChangeOnInput"
@@ -69,7 +73,7 @@
                 class="bg-gray-700 rounded uppercase tracking-1"
                 :class="maxClasses"
               >
-                {{ $t('trade.max') }}
+                {{ $t(maxLabel) }}
               </span>
             </span>
             <slot name="addon" />
@@ -99,7 +103,6 @@ import Vue, { PropType } from 'vue'
 import { DOMEvent } from '~/types'
 import {
   convertToNumericValue,
-  passDecimalPlaceValidation,
   passNumericInputValidation
 } from '~/app/utils/input'
 
@@ -142,6 +145,11 @@ export default Vue.extend({
       default: false
     },
 
+    maxLabel: {
+      type: String,
+      default: 'trade.max'
+    },
+
     showClose: {
       type: Boolean,
       default: false
@@ -180,6 +188,16 @@ export default Vue.extend({
     errorClasses: {
       type: String,
       default: ''
+    },
+
+    wrapperClasses: {
+      type: String,
+      default: ''
+    },
+
+    transparentBg: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -238,18 +256,37 @@ export default Vue.extend({
     },
 
     handleChangeOnInput(event: DOMEvent<HTMLInputElement>) {
-      const { value, type } = event.target
-      const formattedValue =
-        type === 'number' ? convertToNumericValue(value) : value
+      const { maxDecimals } = this
+      const {
+        data: eventKey,
+        inputType,
+        target: { value, type }
+      } = event
 
-      this.$emit('input', formattedValue)
+      if (type !== 'number') {
+        this.$emit('input', value)
+      } else {
+        const formattedValue = convertToNumericValue(
+          value,
+          maxDecimals
+        ).toString()
+
+        this.$emit('input', formattedValue)
+
+        if (
+          eventKey !== ',' &&
+          eventKey !== '.' &&
+          inputType !== 'deleteContentBackward'
+        ) {
+          event.target.value = formattedValue
+        }
+      }
     },
 
     handleKeydown(event: DOMEvent<HTMLInputElement>) {
       if (
         event.target.type === 'number' &&
-        (!passNumericInputValidation(event) ||
-          !passDecimalPlaceValidation(event, this.maxDecimals))
+        !passNumericInputValidation(event, this.maxDecimals === 0 ? ['.'] : [])
       ) {
         event.preventDefault()
       } else {

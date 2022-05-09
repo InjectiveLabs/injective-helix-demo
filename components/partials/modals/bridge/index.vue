@@ -51,6 +51,24 @@
           </v-input>
         </ValidationProvider>
       </div>
+      <div v-if="isWithdrawToInjectiveAddress" class="mt-6 w-full">
+        <div class="flex items-center justify-between text-gray-200">
+          <span v-tooltip="{ content: $t('memo.memoTooltip') }" class="text-xs">
+            {{ $t('memo.memo') }}
+          </span>
+          <v-checkbox v-model="memoRequired" @input="handleMemoChange('')">
+            {{ $t('common.required') }}
+          </v-checkbox>
+        </div>
+        <div v-if="memoRequired" class="mt-2">
+          <v-input
+            :value="form.memo"
+            :placeholder="$t('memo.memoPlaceholder')"
+            @input="handleMemoChange"
+          >
+          </v-input>
+        </div>
+      </div>
       <div v-if="!isIbcTransfer" class="mt-6">
         <div v-if="hasAllowance">
           <v-balance :balance="balance" :token="form.token" class="mb-2" />
@@ -67,18 +85,33 @@
           </v-token-selector>
         </div>
         <div class="mt-8 text-center">
-          <v-allowance v-if="!hasAllowance" :token-with-balance="form.token" />
-
           <v-button
-            v-else
+            v-if="shouldConnectMetamask"
             lg
             primary
-            class="w-full xs:w-1/2 font-bold"
-            :disabled="invalid"
-            @click="handleTransferNowClick"
+            class="w-full font-bold"
+            :disabled="true"
+            @click="() => {}"
           >
-            {{ $t('bridge.transferNow') }}
+            {{ $t('bridge.keplrConnectedForEthereum') }}
           </v-button>
+          <template v-else>
+            <v-allowance
+              v-if="!hasAllowance"
+              :token-with-balance="form.token"
+            />
+
+            <v-button
+              v-else
+              lg
+              primary
+              class="w-full xs:w-1/2 font-bold"
+              :disabled="invalid"
+              @click="handleTransferNowClick"
+            >
+              {{ $t('bridge.transferNow') }}
+            </v-button>
+          </template>
         </div>
       </div>
       <v-ibc-transfer-note v-else />
@@ -99,6 +132,7 @@ import {
   ZERO_IN_BASE
 } from '@injectivelabs/ui-common'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { Wallet } from '@injectivelabs/ts-types'
 import { BridgeType, Modal, TransferDirection } from '~/types'
 import VTokenSelector from '~/components/partials/portfolio/bridge/token-selector/index.vue'
 import VAllowance from '~/components/elements/allowance.vue'
@@ -154,6 +188,7 @@ export default Vue.extend({
       required: true,
       type: Object as PropType<{
         token: Token
+        memo: string
         destinationAddress: string
         amount: string
       }>
@@ -162,6 +197,7 @@ export default Vue.extend({
 
   data() {
     return {
+      memoRequired: false,
       BridgeType,
       TransferDirection,
       BridgingNetwork
@@ -171,6 +207,10 @@ export default Vue.extend({
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
+    },
+
+    wallet(): Wallet {
+      return this.$accessor.wallet.wallet
     },
 
     erc20TokensWithBalanceAndPriceFromBank(): TokenWithBalanceAndPrice[] {
@@ -231,19 +271,25 @@ export default Vue.extend({
     hasAllowance(): boolean {
       const { bridgeType, erc20TokensWithBalanceAndPriceFromBank, form } = this
 
-      const token = erc20TokensWithBalanceAndPriceFromBank.find(
-        ({ denom }) => denom === form.token.denom
-      )
-
       if ([BridgeType.Transfer, BridgeType.Withdraw].includes(bridgeType)) {
         return true
       }
+
+      const token = erc20TokensWithBalanceAndPriceFromBank.find(
+        ({ denom }) => denom === form.token.denom
+      )
 
       if (!token) {
         return false
       }
 
-      return new BigNumberInBase(token.allowance).gt('0')
+      return new BigNumberInBase(token.allowance).gt(0)
+    },
+
+    shouldConnectMetamask(): boolean {
+      const { wallet, bridgeType } = this
+
+      return wallet === Wallet.Keplr && bridgeType === BridgeType.Deposit
     },
 
     onTransferBalance(): BigNumberInBase {
@@ -370,6 +416,10 @@ export default Vue.extend({
 
     handleAmountChange(amount: string) {
       this.$emit('input-amount:update', amount)
+    },
+
+    handleMemoChange(memo: string) {
+      this.$emit('input-memo:update', memo || '')
     },
 
     handleTokenChange(token: Token) {

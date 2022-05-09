@@ -4,7 +4,7 @@ import {
   ExchangeTransformer,
   AuctionModuleState
 } from '@injectivelabs/chain-consumer'
-import { BaseService } from '@injectivelabs/ui-common/dist/BaseService'
+import { BaseService } from '@injectivelabs/ui-common/dist/services/BaseService'
 
 export class AuctionService extends BaseService {
   protected consumer: AuctionConsumer

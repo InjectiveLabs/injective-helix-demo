@@ -1,73 +1,39 @@
 <template>
-  <VHocLoading :key="$route.fullPath" :status="status">
-    <div
-      v-if="market"
-      class="flex flex-col flex-wrap min-h-screen-excluding-header"
-    >
-      <div class="w-full px-1">
-        <v-market />
-      </div>
-      <div class="flex-1 grid grid-cols-6 lg:grid-cols-12 gap-1 p-1">
-        <div class="col-span-6 lg:col-span-3 4xl:col-span-3">
-          <div class="flex flex-col flex-wrap h-full w-full">
-            <v-balances />
-            <v-trading class="mt-1 flex-1" />
-          </div>
-        </div>
-        <div class="col-span-6 lg:col-span-9 4xl:col-span-9">
-          <div class="flex flex-wrap flex-col w-full h-full">
-            <div class="w-full">
-              <v-card tight>
-                <div class="grid grid-cols-6 lg:grid-cols-12">
-                  <div class="col-span-6 lg:col-span-8 4xl:col-span-9">
-                    <v-market-chart :market="market" />
-                  </div>
-                  <div class="col-span-6 lg:col-span-4 4xl:col-span-3">
-                    <v-orderbook class="p-2 lg:p-3" />
-                  </div>
-                </div>
-              </v-card>
-            </div>
-            <div class="w-full flex-1 mt-1">
-              <v-orders />
-            </div>
-          </div>
-        </div>
-      </div>
-      <v-modal-market-beta v-if="marketIsBeta" />
-    </div>
-  </VHocLoading>
+  <v-market-layout @loaded="onLoad">
+    <template slot="trading-panel">
+      <v-balances />
+      <v-trading class="mt-1 flex-1" />
+    </template>
+
+    <v-market-chart slot="chart" :market="market" class="hidden lg:block" />
+    <v-orderbook slot="order-books" :market="market" />
+    <v-orders slot="orders" />
+  </v-market-layout>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { Status, StatusType } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken } from '@injectivelabs/ui-common'
-import VModalMarketBeta from '~/components/partials/modals/market-beta.vue'
+import VMarketLayout from '~/layouts/market.vue'
 import VBalances from '~/components/partials/common/balances/index.vue'
 import VTrading from '~/components/partials/spot/trading/index.vue'
 import VMarketChart from '~/components/partials/common/market/chart.vue'
-import VMarket from '~/components/partials/spot/market.vue'
 import VOrders from '~/components/partials/spot/orders.vue'
 import VOrderbook from '~/components/partials/spot/orderbook.vue'
-import { Modal } from '~/types'
 import { ORDERBOOK_POLLING_ENABLED } from '~/app/utils/constants'
-import { betaMarketSlugs } from '~/app/data/market'
 
 export default Vue.extend({
   components: {
-    VModalMarketBeta,
+    VMarketLayout,
     VTrading,
     VBalances,
     VOrders,
     VOrderbook,
-    VMarketChart,
-    VMarket
+    VMarketChart
   },
 
   data() {
     return {
-      status: new Status(StatusType.Loading),
       interval: 0 as any
     }
   },
@@ -75,61 +41,27 @@ export default Vue.extend({
   computed: {
     market(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
-    },
-
-    marketIsBeta(): boolean {
-      const { params } = this.$route
-
-      return betaMarketSlugs.includes(params.spot)
-    },
-
-    slugFromRoute(): string {
-      const { params } = this.$route
-
-      return params.spot
     }
   },
 
-  mounted() {
-    this.$accessor.spot
-      .initMarket(this.slugFromRoute)
-      .then(() => {
-        this.setOrderbookPolling()
-        this.$accessor.spot.initMarketStreams()
-      })
-      .catch(this.$onRejected)
-      .finally(() => {
-        this.status.setIdle()
-
-        if (this.marketIsBeta) {
-          this.$accessor.modal.openModal(Modal.MarketBeta)
-        }
-      })
-
-    Promise.all([
-      this.$accessor.exchange.fetchTradingRewardsCampaign(),
-      this.$accessor.exchange.fetchFeeDiscountAccountInfo()
-    ])
-      .then(() => {
-        //
-      })
-      .catch(this.$onRejected)
-      .finally(() => {
-        //
-      })
-  },
-
   beforeDestroy() {
-    this.$accessor.spot.reset()
-    this.$accessor.modal.reset()
     clearInterval(this.interval)
   },
 
   methods: {
+    onLoad() {
+      Promise.all([
+        this.setOrderbookPolling(),
+        this.$accessor.spot.initMarketStreams()
+      ])
+        .then(() => {})
+        .catch(this.$onRejected)
+    },
+
     setOrderbookPolling() {
       if (ORDERBOOK_POLLING_ENABLED) {
         this.interval = setInterval(async () => {
-          await this.$accessor.derivatives.pollOrderbook()
+          await this.$accessor.spot.pollOrderbook()
         }, 2000)
       }
     }

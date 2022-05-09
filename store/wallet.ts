@@ -6,7 +6,7 @@ import {
 } from '@injectivelabs/ui-common'
 import { confirm, connect, getAddresses } from '~/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '~/app/services/metamask'
-import { WalletConnectStatus } from '~/types'
+import { Modal, WalletConnectStatus } from '~/types'
 import { GAS_FREE_DEPOSIT_REBATE_ENABLED } from '~/app/utils/constants'
 
 const initialStateFactory = () => ({
@@ -229,11 +229,49 @@ export const actions = actionTree(
       commit('setWalletConnectStatus', WalletConnectStatus.connected)
     },
 
+    async connectTorus({ commit }) {
+      await this.app.$accessor.app.validate()
+
+      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
+      commit('setWallet', Wallet.Torus)
+
+      await connect({
+        wallet: Wallet.Torus
+      })
+
+      const addresses = await getAddresses()
+      const [address] = addresses
+      const addressConfirmation = await confirm(address)
+      const injectiveAddress = getInjectiveAddress(address)
+
+      commit('setInjectiveAddress', injectiveAddress)
+      commit('setAddress', address)
+      commit('setAddresses', addresses)
+      commit('setAddressConfirmation', addressConfirmation)
+
+      await this.app.$accessor.wallet.onConnect()
+
+      commit('setWalletConnectStatus', WalletConnectStatus.connected)
+    },
+
     async validate({ state }) {
       const { chainId } = this.app.$accessor.app
 
       if (state.wallet === Wallet.Metamask) {
         await validateMetamask(state.address, chainId)
+      }
+
+      // Validate whether the user has enough gas to pay for the transaction
+      if (state.wallet === Wallet.Keplr) {
+        const { hasEnoughInjForGas } = this.app.$accessor.bank
+
+        if (!hasEnoughInjForGas) {
+          this.app.$accessor.modal.openModal(Modal.InsufficientInjForGas)
+
+          throw new Error(
+            'There is no sufficient INJ to cover the gas for this transaction'
+          )
+        }
       }
     },
 

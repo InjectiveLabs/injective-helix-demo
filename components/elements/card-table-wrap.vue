@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col h-full overflow-hidden">
-    <div class="grid grid-cols-12">
+    <div class="grid grid-cols-12 z-10">
       <slot name="actions" />
     </div>
 

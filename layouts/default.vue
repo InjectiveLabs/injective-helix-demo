@@ -19,8 +19,8 @@
                 </div>
                 <v-footer v-if="showFooter" />
               </main>
-              <v-market-slideout />
               <v-modal-auction-countdown v-if="SHOW_AUCTION_COUNTDOWN" />
+              <v-modal-insufficient-inj-for-gas />
             </div>
           </client-only>
         </div>
@@ -34,15 +34,15 @@ import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import Footer from '~/components/layout/footer/index.vue'
 import TopBar from '~/components/layout/topbar.vue'
-import MarketSlideout from '~/components/partials/common/markets/slideout.vue'
 import SidebarMobile from '~/components/layout/sidebar-mobile.vue'
 import VModalAuctionCountdown from '~/components/partials/modals/auction-countdown.vue'
+import VModalInsufficientInjForGas from '~/components/partials/modals/insufficient-inj-for-gas.vue'
 import { SHOW_AUCTION_COUNTDOWN } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
     VModalAuctionCountdown,
-    'v-market-slideout': MarketSlideout,
+    VModalInsufficientInjForGas,
     'v-top-bar': TopBar,
     'v-footer': Footer,
     'v-sidebar-mobile': SidebarMobile
@@ -60,7 +60,7 @@ export default Vue.extend({
     showFooter(): boolean {
       const { $route } = this
 
-      return ['index', 'portfolio'].includes($route.name as string)
+      return ['index', 'portfolio', 'markets'].includes($route.name as string)
     }
   },
 

@@ -219,6 +219,7 @@ export default Vue.extend({
       required: true,
       type: Object as PropType<{
         token: Token
+        memo: string
         destinationAddress: string
         amount: string
       }>
@@ -413,7 +414,7 @@ export default Vue.extend({
     ethBridgeFeeToString(): string {
       const { ethBridgeFee } = this
 
-      return ethBridgeFee.toFormat(UI_DEFAULT_DISPLAY_DECIMALS * 2)
+      return ethBridgeFee.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
     },
 
     ethBridgeFeeInUsd(): BigNumberInBase {
@@ -573,6 +574,7 @@ export default Vue.extend({
           destination: form.destinationAddress,
           amount: new BigNumberInBase(form.amount),
           denom: form.token.denom,
+          memo: form.memo,
           token: form.token
         })
         .then(() => {

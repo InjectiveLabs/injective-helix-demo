@@ -7,13 +7,16 @@ const {
 
 const mainnetSpot = [
   'inj-usdt',
+  'atom-usdt',
+  'xprt-usdt',
+  'weth-usdt',
+  'luna-ust',
+  'evmos-usdt',
   'huahua-usdt',
   'ape-usdt',
-  'atom-usdt',
-  'weth-usdt',
+  'huahua-usdt',
   'link-usdt',
   'ust-usdt',
-  'luna-ust',
   'gf-usdt'
 ]
 const testnetSpot = [...mainnetSpot]
@@ -28,6 +31,7 @@ const mainnetDerivatives = [
   'btc-usdt-perp',
   'inj-usdt-perp',
   'eth-usdt-perp',
+  'bayc-weth-perp',
   'luna-ust-perp',
   'bnb-usdt-perp',
   'atom-usdt-perp',
@@ -41,8 +45,8 @@ const derivatives = IS_TESTNET
   ? mainnetStagingDerivatives
   : mainnetDerivatives
 
-if (NETWORK === Network.Devnet) {
-  derivatives.push('bayc-weth-perp', 'stx-usdt-perp')
+if (NETWORK === Network.Devnet || IS_MAINNET_STAGING) {
+  derivatives.push('stx-usdt-perp', 'osmo-ust-perp')
 }
 
 const spotRoutes = spot.map((s) => `/spot/${s}`) || []
@@ -56,6 +60,7 @@ module.exports = [
   '/fee-discounts',
   '/trade-and-earn',
   '/faq',
+  '/markets',
   '/register',
   '/trade-and-earn',
   ...upcomingMarketsRoutes,
