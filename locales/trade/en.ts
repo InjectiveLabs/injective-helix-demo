@@ -1,8 +1,4 @@
 export default {
-  position: {
-    entryMark: 'Entry / Mark',
-    estLiqPrice: 'EST Liq Price'
-  },
   trade: {
     asset_only: '{asset} only',
     assetTransfer: 'Asset Transfer',
@@ -185,6 +181,8 @@ export default {
     positions_closed: 'Your positions have been closed',
     not_valid_number: 'Not a valid number',
     enter_your_amount: 'Enter your amount',
-    position_market_not_found: 'Market for position {marketId} cannot be found'
+    position_market_not_found: 'Market for position {marketId} cannot be found',
+    entryMark: 'Entry / Mark',
+    estLiqPrice: 'EST Liq Price'
   }
 }

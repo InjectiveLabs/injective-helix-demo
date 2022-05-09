@@ -19,11 +19,11 @@
         </div>
       </th>
       <th class="text-right">
-        <span>{{ $t('position.entryMark') }}</span>
+        <span>{{ $t('trade.entryMark') }}</span>
       </th>
       <th>
         <div class="flex items-center justify-end">
-          <span>{{ $t('position.estLiqPrice') }}</span>
+          <span>{{ $t('trade.estLiqPrice') }}</span>
           <v-icon-info-tooltip
             class="ml-2"
             :tooltip="$t('trade.liquidation_price_tooltip')"
