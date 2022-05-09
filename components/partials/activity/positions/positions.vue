@@ -147,7 +147,7 @@ export default Vue.extend({
         this.status.setIdle()
       })
 
-    this.pollOrderbooks()
+    this.pollSubaccountPositions()
   },
 
   beforeDestroy() {
@@ -211,9 +211,9 @@ export default Vue.extend({
       this.side = side
     },
 
-    pollOrderbooks() {
+    pollSubaccountPositions() {
       this.poll = setInterval(() => {
-        this.$accessor.positions.fetchSubaccountPositions() // refresh mark price
+        this.$accessor.positions.fetchSubaccountPositions()
       }, 30 * 1000)
     }
   }
