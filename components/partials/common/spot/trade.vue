@@ -1,7 +1,9 @@
 <template>
   <tr v-if="market" :data-cy="'trade-row-' + market.ticker">
     <td class="h-8 text-left font-mono">
-      <span class="text-gray-400 text-xs" data-cy="trade-entry-time">{{ time }}</span>
+      <span class="text-gray-400 text-xs" data-cy="trade-entry-time">{{
+        time
+      }}</span>
     </td>
     <td class="h-8 text-left cursor-pointer" @click="handleClickOnMarket">
       <div class="flex items-center justify-start">
@@ -13,7 +15,10 @@
           />
         </div>
         <div class="ml-3">
-          <span class="text-gray-200 font-semibold" data-cy="trade-entry-ticker">
+          <span
+            class="text-gray-200 font-semibold"
+            data-cy="trade-entry-ticker"
+          >
             {{ market.ticker }}
           </span>
         </div>

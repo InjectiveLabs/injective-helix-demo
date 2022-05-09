@@ -1,6 +1,11 @@
 <template>
   <div class="ml-4 flex items-center md:ml-6" data-cy="wallet-connect">
-    <v-button md primary data-cy="wallet-connect-button" @click="handleWalletConnectClicked">
+    <v-button
+      md
+      primary
+      data-cy="header-wallet-connect-button"
+      @click="handleWalletConnectClicked"
+    >
       {{ $t('connect.connect') }}
     </v-button>
 

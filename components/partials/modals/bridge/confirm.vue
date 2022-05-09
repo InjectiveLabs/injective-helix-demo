@@ -1,5 +1,10 @@
 <template>
-  <v-modal :is-open="isModalOpen" sm data-cy="bridge-modal" @modal-closed="handleModalClose">
+  <v-modal
+    :is-open="isModalOpen"
+    sm
+    data-cy="transfer-confirm-modal"
+    @modal-closed="handleModalClose"
+  >
     <div slot="title">
       <h3>{{ bridgeTitle }}</h3>
     </div>
@@ -22,13 +27,16 @@
               v-else
               class="text-gray-200 rounded-full w-10 h-10 mx-auto"
             />
-            <p class="text-gray-200 text-2xl font-bold tracking-0.4 mt-4" data-cy="bridge-confirm-value">
+            <p
+              class="text-gray-200 text-2xl font-bold tracking-0.4 mt-4"
+              data-cy="transfer-confirm-modal-value-usd-text-content"
+            >
               {{ amountToString }} {{ form.token.symbol }}
             </p>
             <p
               v-if="amountInUsd.gt(0)"
               class="text-gray-500 text-sm tracking-0.4 mt-2"
-              data-cy="bridge-confirm-value-usd"
+              data-cy="transfer-confirm-modal-value-usd-text-content"
             >
               ${{ amountInUsdToString }}
             </p>
@@ -40,7 +48,7 @@
           >
             <v-network-card-base
               class="w-1/2"
-              data-cy="bridge-confirm-from"
+              data-cy="transfer-confirm-modal-from-text-content"
               :hide-icon="
                 originNetworkMeta.value === destinationNetworkMeta.value
               "
@@ -71,11 +79,15 @@
               </template>
 
               <template slot="amount">
-                <span data-cy="bridge-confirm-amount">{{ amountToString }} {{ form.token.symbol }}</span>
+                <span
+data-cy="transfer-confirm-modal-amount-text-content"
+>{{ amountToString }} {{ form.token.symbol }}</span>
               </template>
 
               <template slot="amountInUsd">
-                <span data-cy="bridge-confirm-amount-usd">${{ amountInUsdToString }}</span>
+                <span
+data-cy="transfer-confirm-modal-amount-usd-text-content"
+>${{ amountInUsdToString }}</span>
               </template>
             </v-confirm-amount-row>
 
@@ -89,14 +101,16 @@
               </template>
 
               <template slot="amount">
-                <span data-cy="bridge-confirm-bridge-fee">
+                <span data-cy="transfer-confirm-modal-bridge-fee-text-content">
                   {{ ethBridgeFeeToString }}
                   {{ form.token.symbol }}
                 </span>
               </template>
 
               <template slot="amountInUsd">
-                <span data-cy="bridge-confirm-bridge-fee-usd">${{ ethBridgeFeeInUsdToString }}</span>
+                <span
+                  data-cy="transfer-confirm-modal-bridge-fee-usd-text-content"
+                  >${{ ethBridgeFeeInUsdToString }}</span>
               </template>
             </v-confirm-amount-row>
           </div>
@@ -110,11 +124,15 @@
               </template>
 
               <template slot="amount">
-                <span data-cy="bridge-confirm-transfer-amount">{{ transferAmountToString }} {{ form.token.symbol }}</span>
+                <span
+                  data-cy="transfer-confirm-modal-transfer-amount-text-content"
+                  >{{ transferAmountToString }} {{ form.token.symbol }}</span>
               </template>
 
               <template slot="amountInUsd">
-                <span data-cy="bridge-confirm-transfer-amount-usd">${{ transferAmountInUsdToString }}</span>
+                <span
+                  data-cy="transfer-confirm-modal-transfer-amount-usd-text-content"
+                  >${{ transferAmountInUsdToString }}</span>
               </template>
             </v-confirm-amount-row>
 
@@ -124,11 +142,15 @@
               </template>
 
               <template slot="amount">
-                <span data-cy="bridge-confirm-gas-fee">{{ gasFeeToString }} {{ injToken.symbol }}</span>
+                <span
+data-cy="transfer-confirm-modal-gas-fee-text-content"
+>{{ gasFeeToString }} {{ injToken.symbol }}</span>
               </template>
 
               <template slot="amountInUsd">
-                <span data-cy="bridge-confirm-gas-fee-usd">${{ gasFeeInUsdToString }}</span>
+                <span
+data-cy="transfer-confirm-modal-gas-fee-usd-text-content"
+>${{ gasFeeInUsdToString }}</span>
               </template>
             </v-confirm-amount-row>
           </div>
@@ -140,7 +162,7 @@
               class="w-full xs:w-2/3 font-bold"
               :disabled="buttonConfirmationDisabled"
               :status="status"
-              data-cy="bridge-confirm-button"
+              data-cy="transfer-confirm-modal-confirm-button"
               @click="handlerFunction"
             >
               {{ buttonConfirmationText }}

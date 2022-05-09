@@ -15,7 +15,7 @@
         class="md:hidden"
       >
         <transition mode="out-in" :name="animation">
-            <v-market-card
+          <v-market-card
             v-if="newMarket && activeIndex === 1"
             key="market-card-1"
             :market="newMarket.market"

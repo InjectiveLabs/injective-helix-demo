@@ -1,15 +1,7 @@
 <template>
   <div class="bg-gray-800 shadow-sm px-4 py-1 rounded-xl">
     <div
-      class="
-        mt-1
-        py-2
-        lg:py-1
-        cursor-pointer
-        grid grid-cols-1
-        lg:grid-cols-3
-        2xl:grid-cols-4
-      "
+      class="mt-1 py-2 lg:py-1 cursor-pointer grid grid-cols-1 lg:grid-cols-3 2xl:grid-cols-4"
     >
       <div class="flex items-center w-auto justify-between lg:pr-5">
         <div class="flex items-center" @click="handleTokenClick">
@@ -20,18 +12,11 @@
           />
           <div class="leading-none select-none">
             <p class="text-gray-100 font-semibold text-sm flex items-center">
-              <span data-cy="trade-market-ticker">{{ market.ticker }}</span>
+              <span data-cy="trading-page-ticker-name-text-content">{{
+                market.ticker
+              }}</span>
               <v-icon-chevron
-                class="
-                  w-auto
-                  h-3
-                  text-gray-500
-                  ml-2
-                  transform
-                  transition
-                  ease-in-out
-                  duration-300
-                "
+                class="w-auto h-3 text-gray-500 ml-2 transform transition ease-in-out duration-300"
                 :class="[expanded ? 'rotate-90' : '-rotate-90']"
               />
             </p>

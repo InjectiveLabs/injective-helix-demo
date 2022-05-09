@@ -4,7 +4,7 @@
       <div
         id="wallet-address"
         class="font-mono text-sm cursor-pointer flex items-center p-2 rounded-lg"
-        data-cy="wallet-connected"
+        data-cy="wallet-connected-popover"
         :class="{
           'text-primary-500 bg-gray-800': isWalletDropdownOpen,
           'text-gray-300': !isWalletDropdownOpen
@@ -45,9 +45,10 @@
           <div class="flex-1 flex-wrap">
             <div class="flex items-center justify-between w-full">
               <div>
-                <span class="font-mono w-full block" data-cy="wallet-connected-popper-inj-address">{{
-                  formattedInjectiveAddress
-                }}</span>
+                <span
+                  class="font-mono w-full block"
+                  data-cy="wallet-connected-popper-inj-address-text-content"
+                  >{{ formattedInjectiveAddress }}</span>
               </div>
               <div class="flex">
                 <button

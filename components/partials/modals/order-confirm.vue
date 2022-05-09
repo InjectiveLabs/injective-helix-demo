@@ -1,5 +1,9 @@
 <template>
-  <v-modal :is-open="isModalOpen" data-cy="modal-price-deviation" @modal-closed="closeModal">
+  <v-modal
+    :is-open="isModalOpen"
+    data-cy="modal-price-deviation"
+    @modal-closed="closeModal"
+  >
     <h3 slot="title">
       {{ $t('trade.confirmOrderExecution') }}
     </h3>
@@ -13,7 +17,13 @@
         }}
       </p>
       <div class="mt-6 flex items-center justify-center">
-        <v-button lg class="mr-4" primary data-cy="modal-price-deviation-confirm-button" @click.stop="handleConfirm">
+        <v-button
+          lg
+          class="mr-4"
+          primary
+          data-cy="price-deviation-modal-confirm-button"
+          @click.stop="handleConfirm"
+        >
           {{ $t('common.confirm') }}
         </v-button>
         <v-button lg class="mr-4" red @click.stop="handleCancel">

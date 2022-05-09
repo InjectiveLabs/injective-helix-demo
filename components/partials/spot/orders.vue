@@ -27,17 +27,7 @@
       </div>
 
       <div
-        class="
-          col-span-12
-          sm:col-span-6
-          mb-4
-          mx-4
-          sm:mt-4
-          flex
-          items-center
-          justify-between
-          sm:justify-end
-        "
+        class="col-span-12 sm:col-span-6 mb-4 mx-4 sm:mt-4 flex items-center justify-between sm:justify-end"
       >
         <v-checkbox v-if="market" v-model="currentMarketOnly" class="mr-4">
           {{ $t('trade.asset_only', { asset: market.ticker }) }}

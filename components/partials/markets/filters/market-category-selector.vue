@@ -1,7 +1,10 @@
 <template>
   <v-dropdown dark hide-bottom-border tight>
     <template slot="title">
-      <div class="uppercase text-xs tracking-wide leading-5 select-none" data-cy="markets-category-selector">
+      <div
+        class="uppercase text-xs tracking-wide leading-5 select-none"
+        data-cy="markets-page-category-drop-down"
+      >
         <span class="text-gray-500 mr-3">{{ $t('markets.category') }}:</span>
         <span class="text-primary-500">{{ type }}</span>
       </div>
@@ -12,7 +15,7 @@
         v-for="item in marketCategoryTypes"
         :key="`list-${item}`"
         :item="item"
-        :data-cy="`markets-category-selector-option-${item}`"
+        :data-cy="`markets-page-${item}-option`"
         @click="handleTypeClick"
       >
         <span class="capitalize">{{ item }}</span>

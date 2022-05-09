@@ -10,11 +10,15 @@
               class="sm:max-w-xs"
               :placeholder="$t('portfolio.filter')"
               :search="search"
-              data-cy="filter-by-asset"
+              data-cy="universal-table-filter-by-asset-input"
               @searched="handleInputOnSearch"
             />
 
-            <v-checkbox v-model="hideSmallBalance" class="mt-4 sm:mt-0 ml-auto" data-cy="hide-small-balances">
+            <v-checkbox
+              v-model="hideSmallBalance"
+              class="mt-4 sm:mt-0 ml-auto"
+              data-cy="universal-table-hide-small-balances-button"
+            >
               <span class="flex items-center">
                 {{ $t('portfolio.hideSmallBalances') }}
                 <v-icon-info-tooltip
@@ -30,7 +34,6 @@
             <TableHeader
               v-if="isUserWalletConnected && sortedBalances.length > 0"
               class="md:hidden xl:grid"
-              data-cy="wallet-table-header"
             >
               <span class="col-span-2">
                 {{ $t('portfolio.asset') }}

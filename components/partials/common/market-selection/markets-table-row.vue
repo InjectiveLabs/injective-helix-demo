@@ -6,17 +6,31 @@
     <span class="col-span-2 text-gray-500 flex items-center">
       <div
         class="text-gray-500 w-6 h-6 flex items-center justify-center rounded-full mr-3 hover:bg-gray-400 hover:text-gray-400 hover:bg-opacity-10 cursor-pointer"
-        data-cy="markets-sidebar-entry-favorite-button"
+        data-cy="markets-sidebar-favorite-button"
         @click="updateWatchList"
       >
-        <v-icon-star v-if="isFavorite" class="min-w-5 w-5 h-5" data-cy="markets-sidebar-entry-is-favorite-icon" />
+        <v-icon-star
+          v-if="isFavorite"
+          class="min-w-5 w-5 h-5"
+          data-cy="markets-sidebar-is-favorite-icon"
+        />
         <v-icon-star-border v-else class="min-w-5 w-5 h-5" />
       </div>
 
-      <nuxt-link class="cursor-pointer justify-start" :to="marketRoute" data-cy="markets-sidebar-entry-trade-link">
+      <nuxt-link
+        class="cursor-pointer justify-start"
+        :to="marketRoute"
+        data-cy="markets-sidebar-trade-link"
+      >
         <div class="flex flex-col">
-          <span class="font-semibold text-gray-200" data-cy="markets-sidebar-entry-ticker">{{ market.ticker }}</span>
-          <span class="text-gray-500 tracking-wide mt-1 font-mono" data-cy="markets-sidebar-entry-volume_24h">
+          <span
+            class="font-semibold text-gray-200"
+            data-cy="markets-sidebar-ticker-table-data"
+            >{{ market.ticker }}</span>
+          <span
+            class="text-gray-500 tracking-wide mt-1 font-mono"
+            data-cy="markets-sidebar-volume_24h-table-data"
+          >
             {{ abbreviatedVolumeInUsdToFormat }} USD
           </span>
         </div>

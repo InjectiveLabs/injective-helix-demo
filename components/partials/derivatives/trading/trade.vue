@@ -6,7 +6,7 @@
           'text-gray-500': tradingType === TradeExecutionType.LimitFill
         }"
         text-xs
-        data-cy="trade-switch-to-market-button"
+        data-cy="trading-page-switch-to-market-button"
         @click.stop="onTradingTypeToggle(TradeExecutionType.Market)"
       >
         {{ $t('trade.market') }}
@@ -18,7 +18,7 @@
           'text-gray-500': tradingType === TradeExecutionType.Market
         }"
         text-xs
-        data-cy="trade-switch-to-limit-button"
+        data-cy="trading-page-switch-to-limit-button"
         @click.stop="onTradingTypeToggle(TradeExecutionType.LimitFill)"
       >
         {{ $t('trade.limit') }}
@@ -29,7 +29,7 @@
         <v-button-select
           v-model="orderType"
           :option="DerivativeOrderSide.Buy"
-          data-cy="trade-switch-to-side-buy-button"
+          data-cy="trading-page-switch-to-side-buy-button"
           aqua
           class="w-1/2"
         >
@@ -38,7 +38,7 @@
         <v-button-select
           v-model="orderType"
           :option="DerivativeOrderSide.Sell"
-          data-cy="trade-switch-to-side-sell-button"
+          data-cy="trading-page-switch-to-side-sell-button"
           red
           class="w-1/2"
         >
@@ -59,7 +59,7 @@
           type="number"
           :step="amountStep"
           min="0"
-          data-cy="trade-amount-input"
+          data-cy="trading-page-amount-input"
           @blur="onAmountBlur"
           @input="onAmountChange"
           @input-max="() => onMaxInput(100)"
@@ -82,7 +82,7 @@
         </v-input>
         <span
           v-if="amountError"
-          data-cy="trade-amount-error"
+          data-cy="trading-page-amount-error-text-content"
           class="text-2xs font-semibold text-red-500 leading-1"
         >
           {{ amountError }}
@@ -104,7 +104,7 @@
           type="number"
           :step="priceStep"
           min="0"
-          data-cy="trade-price-input"
+          data-cy="trading-page-price-input"
           :max-decimals="market ? market.quoteToken.decimals : 6"
           @blur="onPriceBlur"
           @input="onPriceChange"
@@ -113,7 +113,7 @@
         </v-input>
         <span
           v-if="priceError"
-          data-cy="trade-price-error"
+          data-cy="trading-page-price-error-text-content"
           class="text-red-500 font-semibold text-2xs leading-1"
         >
           {{ priceError }}
@@ -195,14 +195,12 @@
         lg
         :status="status"
         :disabled="
-          hasErrors ||
-          !isUserWalletConnected ||
-          !hasEnoughInjForGasOrNotKeplr
+          hasErrors || !isUserWalletConnected || !hasEnoughInjForGasOrNotKeplr
         "
         :ghost="hasErrors"
         :aqua="!hasErrors && orderType === DerivativeOrderSide.Buy"
         :red="!hasErrors && orderType === DerivativeOrderSide.Sell"
-        data-cy="trade-execute-button"
+        data-cy="trading-page-execute-button"
         class="w-full"
         @click.stop="onSubmit"
       >

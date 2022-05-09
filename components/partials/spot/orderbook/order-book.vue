@@ -49,7 +49,7 @@
             'text-aqua-500': lastTradedPriceChange !== Change.Decrease
           }"
           class="font-bold font-mono text-base lg:text-lg 4xl:text-xl"
-          data-cy="orderbook-last-traded-price"
+          data-cy="orderbook-last-traded-price-text-content"
         >
           {{ lastTradedPriceToFormat }}
         </span>

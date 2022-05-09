@@ -10,11 +10,15 @@
               class="sm:max-w-xs"
               :placeholder="$t('portfolio.filter')"
               :search="search"
-              data-cy="filter-by-asset"
+              data-cy="universal-table-filter-by-asset-input"
               @searched="handleInputOnSearch"
             />
 
-            <v-checkbox v-model="hideSmallBalance" class="mt-4 sm:mt-0 ml-auto" data-cy="hide-small-balances">
+            <v-checkbox
+              v-model="hideSmallBalance"
+              class="mt-4 sm:mt-0 ml-auto"
+              data-cy="universal-table-hide-small-balances-check-box"
+            >
               <span class="flex items-center">
                 {{ $t('portfolio.hideSmallBalances') }}
                 <v-icon-info-tooltip

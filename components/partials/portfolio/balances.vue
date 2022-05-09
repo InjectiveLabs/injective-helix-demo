@@ -1,7 +1,12 @@
 <template>
   <div>
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <v-card-select v-model="component" lg :option="components.bankAccount" data-cy="wallet-panel">
+      <v-card-select
+        v-model="component"
+        lg
+        :option="components.bankAccount"
+        data-cy="wallet-panel"
+      >
         <template slot="subtitle">
           <div class="font-semibold text-lg flex items-center mb-4">
             <span>{{ $t('portfolio.bankAccount') }}</span>
@@ -18,14 +23,28 @@
             {{ $t('portfolio.walletValue') }}
           </p>
           <p class="text-2xl" data-cy="wallet-value-usd">
-            <span v-if="status.isLoading()" data-cy="wallet-value-usd-loading">&mdash; USD</span>
-            <span v-else-if="hideBalance" data-cy="wallet-value-usd-hidden">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-            <span v-else data-cy="wallet-value-usd-shown">{{ totalBankBalanceToString }} USD</span>
+            <span
+              v-if="status.isLoading()"
+              data-cy="wallet-value-usd-loading-spinner"
+              >&mdash; USD</span>
+            <span
+              v-else-if="hideBalance"
+              data-cy="wallet-value-usd-hidden-icons"
+              >{{ HIDDEN_BALANCE_DISPLAY }}</span>
+            <span
+v-else
+data-cy="wallet-value-usd-text-content"
+>{{ totalBankBalanceToString }} USD</span>
           </p>
         </div>
       </v-card-select>
 
-      <v-card-select v-model="component" lg :option="components.tradingAccount" data-cy="trading-panel">
+      <v-card-select
+        v-model="component"
+        lg
+        :option="components.tradingAccount"
+        data-cy="trading-account-panel"
+      >
         <template slot="subtitle">
           <div class="font-semibold text-lg flex items-center mb-4">
             <span>{{ $t('portfolio.tradingAccount') }}</span>
@@ -41,15 +60,18 @@
           <p class="text-gray-500 text-xs uppercase mb-3 tracking-wider">
             {{ $t('portfolio.portfolioValue') }}
           </p>
-          <p class="text-2xl" data-cy="trading-value-usd">
-            <span v-if="status.isLoading()" data-cy="trading-value-usd-loading">&mdash; USD</span>
-            <span v-else-if="hideBalance" data-cy="trading-value-usd-hidden">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-            <span v-else data-cy="trading-value-usd-shown">{{ tradingAccountBalancesToString }} USD</span>
+          <p class="text-2xl" data-cy="trading-account-total-usd-text-content">
+            <span v-if="status.isLoading()">&mdash; USD</span>
+            <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+            <span v-else>{{ tradingAccountBalancesToString }} USD</span>
           </p>
-          <p class="text-sm mt-2 text-gray-500" data-cy="trading-available-usd">
-            <span v-if="status.isLoading()" data-cy="trading-available-usd-loading">&mdash; USD</span>
-            <span v-else-if="hideBalance" data-cy="trading-available-hidden">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-            <span v-else data-cy="trading-available-usd-shown">
+          <p
+            class="text-sm mt-2 text-gray-500"
+            data-cy="trading-account-available-usd-text-content"
+          >
+            <span v-if="status.isLoading()">&mdash; USD</span>
+            <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+            <span v-else>
               {{ $t('common.available') }}
               {{ totalTradingAccountAvailableBalancesToString }} USD
             </span>

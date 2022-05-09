@@ -8,7 +8,7 @@
           <v-search
             dense
             class="col-span-3"
-            data-cy="filter-by-assets"
+            data-cy="universal-table-filter-by-asset-input"
             :placeholder="$t('trade.filter')"
             :search="search"
             @searched="handleInputOnSearch"

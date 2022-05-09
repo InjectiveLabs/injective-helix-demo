@@ -1,19 +1,6 @@
 <template>
   <div
-    class="
-      grid grid-cols-3
-      sm:grid-cols-10
-      3md:grid-cols-12
-      text-gray-200
-      gap-4
-      text-sm
-      px-4
-      py-5
-      mb-1
-      bg-gray-800 bg-opacity-50
-      items-center
-      rounded
-    "
+    class="grid grid-cols-3 sm:grid-cols-10 3md:grid-cols-12 text-gray-200 gap-4 text-sm px-4 py-5 mb-1 bg-gray-800 bg-opacity-50 items-center rounded"
     :data-cy="`market-row-${market.ticker}`"
   >
     <span class="text-sm col-span-2 sm:col-span-3 flex items-center">
@@ -35,7 +22,7 @@
         <div class="flex flex-col">
           <span
             class="tracking-widest font-bold"
-            data-cy="market-entry-ticker"
+            data-cy="markets-page-ticker-name-table-data"
             >{{ market.ticker }}
           </span>
           <span class="text-gray-500 text-xs hidden md:block">
@@ -83,7 +70,7 @@
 
     <span
       class="hidden font-mono sm:flex items-center justify-end col-span-2"
-      data-cy="market-entry-last-traded-price"
+      data-cy="markets-page-last-traded-price-table-data"
     >
       <v-icon-arrow
         v-if="!lastTradedPrice.isNaN() && lastTradedPrice.gt(0)"
@@ -108,7 +95,7 @@
     <span class="hidden sm:block font-mono text-right col-span-2">
       <span
         v-if="!change.isNaN()"
-        data-cy="market-entry-change_24h"
+        data-cy="markets-page-change_24h-table-data"
         :class="change.gte(0) ? 'text-aqua-500' : 'text-red-500'"
       >
         {{ changeToFormat }}%
@@ -119,12 +106,12 @@
     <span class="hidden sm:block font-mono col-span-3">
       <div v-if="!quoteVolume.isNaN()" class="flex flex-col items-end">
         <span
-          data-cy="market-entry-volume-usd"
-          >{{ volumeInUsdToFormat }} USD
+data-cy="markets-page-volume-usd-table-data"
+>{{ volumeInUsdToFormat }} USD
         </span>
         <span
           class="text-xs text-gray-500"
-          data-cy="market-entry-volume-quote-asset"
+          data-cy="markets-page-volume-quote-asset-table-data"
         >
           {{ quoteVolumeToFormat }}
           <span>
@@ -138,37 +125,26 @@
     <span class="hidden 3md:flex col-span-2 items-center justify-end">
       <nuxt-link
         class="text-primary-500 hover:text-primary-600"
-        data-cy="market-entry-trade-link"
+        data-cy="markets-page-trade-link"
         :to="marketRoute"
       >
         {{ $t('trade.trade') }}
       </nuxt-link>
 
       <div
-        class="
-          text-primary-500
-          w-6
-          h-6
-          flex
-          items-center
-          justify-center
-          rounded-full
-          ml-6
-          cursor-pointer
-          hover:bg-primary-500 hover:bg-opacity-10
-        "
-        data-cy="market-favourite-button"
+        class="text-primary-500 w-6 h-6 flex items-center justify-center rounded-full ml-6 cursor-pointer hover:bg-primary-500 hover:bg-opacity-10"
+        data-cy="markets-page-favorite-button"
         @click="updateWatchList"
       >
         <v-icon-star
           v-if="isFavorite"
           class="min-w-5 w-5 h-5"
-          data-cy="market-is-favorite-icon"
+          data-cy="markets-page-is-favorite-icon"
         />
         <v-icon-star-border
           v-else
           class="min-w-5 w-5 h-5"
-          data-cy="market-is-not-favorite-icon"
+          data-cy="markets-page-is-not-favorite-icon"
         />
       </div>
     </span>

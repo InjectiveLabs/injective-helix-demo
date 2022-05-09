@@ -944,19 +944,17 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const disqualified =
-        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-          (marketId) => marketId === market.marketId
-        )
+      const disqualified = tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
+        (marketId) => marketId === market.marketId
+      )
 
       if (disqualified) {
         return ZERO_IN_BASE
       }
 
-      const denomIncluded =
-        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-          (denom) => denom === market.quoteDenom
-        )
+      const denomIncluded = tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
+        (denom) => denom === market.quoteDenom
+      )
 
       if (!denomIncluded) {
         return ZERO_IN_BASE
@@ -1003,19 +1001,17 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const disqualified =
-        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-          (marketId) => marketId === market.marketId
-        )
+      const disqualified = tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
+        (marketId) => marketId === market.marketId
+      )
 
       if (disqualified) {
         return ZERO_IN_BASE
       }
 
-      const denomIncluded =
-        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-          (denom) => denom === market.quoteDenom
-        )
+      const denomIncluded = tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
+        (denom) => denom === market.quoteDenom
+      )
 
       if (!denomIncluded) {
         return ZERO_IN_BASE

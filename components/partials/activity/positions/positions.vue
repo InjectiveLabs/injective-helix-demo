@@ -10,14 +10,14 @@
             class="col-span-3"
             :placeholder="$t('trade.filter')"
             :search="search"
-            data-cy="filter-by-assets"
+            data-cy="universal-table-filter-by-asset-input"
             @searched="handleInputOnSearch"
           />
           <filter-selector
             class="col-span-2"
             :type="TradeSelectorType.PositionSide"
             :value="side"
-            data-cy="filter-by-side"
+            data-cy="universal-table-filter-by-side-drop-down"
             @click="handleSideClick"
           />
         </div>
@@ -30,7 +30,7 @@
             red-outline
             md
             :status="status"
-            data-cy="cancel-all-button"
+            data-cy="activity-cancel-all-button"
             @click.stop="handleClosePositions"
           >
             {{ $t('trade.closeAllPositions') }}

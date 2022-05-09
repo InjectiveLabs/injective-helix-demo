@@ -52,7 +52,7 @@
       >
         <span
           class="text-gray-200 text-xs"
-          data-cy="markets-filter-market"
+          data-cy="markets-sidebar-market-table-header"
         >
           {{ $t('trade.market') }}
         </span>
@@ -73,7 +73,7 @@
       >
         <span
           class="text-gray-200 text-xs"
-          data-cy="markets-filter-change_24h"
+          data-cy="markets-sidebar-change_24h-table-header"
         >
           {{ $t('trade.market_change_24h') }}
         </span>
@@ -88,7 +88,7 @@
       >
         <span
           class="text-gray-200 text-xs"
-          data-cy="markets-filter-volume_24h"
+          data-cy="markets-sidebar-volume_24h-table-header"
         >
           {{ $t('trade.volume_24h') }}
         </span>
@@ -103,13 +103,13 @@
         :market="market"
         :summary="summary"
         :volume-in-usd="volumeInUsd"
-        :data-cy="'market-row-' + market.ticker"
+        :data-cy="'markets-sidebar-table-row-' + market.ticker"
       />
 
       <v-empty-list
         slot="empty"
         classes="bg-gray-850 min-h-3xs"
-        data-cy="markets-no-data"
+        data-cy="markets-sidebar-no-data"
         :message="$t('markets.emptyHeader')"
       >
         <span class="mt-2 text-xs text-gray-500">{{
@@ -262,23 +262,17 @@ export default Vue.extend({
       const {
         $route: { query }
       } = this
-      const category = (
-        typeof query.category === 'string'
-          ? query.category.trim().toLowerCase()
-          : query.category
-      ) as MarketCategoryType
+      const category = (typeof query.category === 'string'
+        ? query.category.trim().toLowerCase()
+        : query.category) as MarketCategoryType
 
-      const quote = (
-        typeof query.quote === 'string'
-          ? query.quote.trim().toLowerCase()
-          : query.quote
-      ) as MarketQuoteType
+      const quote = (typeof query.quote === 'string'
+        ? query.quote.trim().toLowerCase()
+        : query.quote) as MarketQuoteType
 
-      const type = (
-        typeof query.type === 'string'
-          ? query.type.trim().toLowerCase()
-          : query.type
-      ) as MarketType
+      const type = (typeof query.type === 'string'
+        ? query.type.trim().toLowerCase()
+        : query.type) as MarketType
 
       if (quote && Object.values(MarketQuoteType).includes(quote)) {
         this.activeQuote = quote

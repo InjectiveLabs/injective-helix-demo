@@ -1,5 +1,5 @@
 <template>
-  <tr v-if="market" :data-cy="'position-row-'+position.ticker">
+  <tr v-if="market" :data-cy="'open-position-table-row-' + position.ticker">
     <td class="text-left cursor-pointer" @click="handleClickOnMarket">
       <div class="flex items-center justify-start">
         <div v-if="market.baseToken.logo" class="w-6 h-6">
@@ -10,7 +10,10 @@
           />
         </div>
         <div class="ml-3">
-          <span class="text-gray-200 font-semibold" data-cy="position-entry-ticker">
+          <span
+            class="text-gray-200 font-semibold"
+            data-cy="open-position-ticker-name-table-data"
+          >
             {{ position.ticker }}
           </span>
         </div>
@@ -19,7 +22,7 @@
 
     <td class="text-left pl-1">
       <span
-        data-cy="position-entry-side"
+        data-cy="open-position-trade-direction-table-data"
         :class="{
           'text-aqua-500': position.direction === TradeDirection.Long,
           'text-red-500': position.direction === TradeDirection.Short
@@ -31,7 +34,7 @@
 
     <td class="text-right font-mono">
       <v-number
-        data-cy="position-entry-price"
+        data-cy="open-position-price-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
@@ -41,7 +44,7 @@
 
     <td class="text-right font-mono">
       <v-number
-        data-cy="position-entry-quantity"
+        data-cy="open-position-quantity-table-data"
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
@@ -50,7 +53,7 @@
     </td>
     <td class="text-right font-mono">
       <v-number
-        data-cy="position-entry-liquidationPrice"
+        data-cy="open-position-liquidation-price-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
@@ -85,13 +88,15 @@
           </span>
         </div>
       </div>
-      <span v-else class="text-gray-400" data-cy="position-entry-no-pnl">{{
-        $t('trade.not_available_n_a')
-      }}</span>
+      <span
+        v-else
+        class="text-gray-400"
+        data-cy="open-position-no-pnl-table-data"
+        >{{ $t('trade.not_available_n_a') }}</span>
     </td>
     <td class="text-right font-mono">
       <v-number
-        data-cy="position-entry-total"
+        data-cy="open-position-total-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
@@ -105,7 +110,7 @@
     <td class="text-right">
       <div class="flex items-center justify-end h-8">
         <v-number
-          data-cy="position-entry-margin"
+          data-cy="open-position-margin-table-data"
           :decimals="
             market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
           "
@@ -115,7 +120,7 @@
           role="button"
           type="button"
           class="border border-primary-500 text-primary-500 hover:text-primary-300 ml-2 px-1"
-          data-cy="position-entry-add-margin-button"
+          data-cy="open-position-add-margin-button"
           @click.stop.prevent="onAddMarginButtonClick"
         >
           &plus;
@@ -126,18 +131,26 @@
       <span
         v-if="effectiveLeverage.gte(0)"
         class="flex items-center justify-end"
-        data-cy="position-entry-leverage"
+        data-cy="open-position-leverage-table-data"
       >
         {{ effectiveLeverage.toFormat(2) }}
         <span class="text-gray-300">&times;</span>
       </span>
-      <span v-else class="text-gray-400" data-cy="position-entry-no-leverage">
+      <span
+        v-else
+        class="text-gray-400"
+        data-cy="open-position-no-leverage-table-data"
+      >
         {{ $t('trade.not_available_n_a') }}
       </span>
     </td>
 
     <td class="text-center relative">
-      <v-button :status="status" data-cy="position-entry-cancel-link" @click="onClosePositionClick">
+      <v-button
+        :status="status"
+        data-cy="open-position-cancel-link"
+        @click="onClosePositionClick"
+      >
         <div
           class="flex items-center justify-center rounded-full bg-opacity-10 w-8 h-8 hover:bg-opacity-10"
           :class="{

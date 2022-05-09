@@ -4,11 +4,7 @@
     "module": "ESNext",
     "moduleResolution": "Node",
     "resolveJsonModule": true,
-    "lib": [
-      "ESNext",
-      "ESNext.AsyncIterable",
-      "DOM"
-    ],
+    "lib": ["ESNext", "ESNext.AsyncIterable", "DOM"],
     "esModuleInterop": true,
     "allowJs": true,
     "sourceMap": true,
@@ -17,18 +13,10 @@
     "experimentalDecorators": true,
     "baseUrl": ".",
     "paths": {
-      "~/*": [
-        "./*"
-      ],
-      "@/*": [
-        "./*"
-      ],
-      "~~/*": [
-        "./*"
-      ],
-      "@@/*": [
-        "./*"
-      ]
+      "~/*": ["./*"],
+      "@/*": ["./*"],
+      "~~/*": ["./*"],
+      "@@/*": ["./*"]
     },
     "types": [
       "@types/node",
@@ -39,10 +27,5 @@
       "vue-clickaway"
     ]
   },
-  "exclude": [
-    "node_modules",
-    ".nuxt",
-    "dist",
-    "static",
-  ]
+  "exclude": ["node_modules", ".nuxt", "dist", "static"]
 }

@@ -1,11 +1,19 @@
 <template>
   <div>
     <v-button md primary class="w-full" @click="handleClickOnButton">
-      <span v-if="activeStep === 1" data-cy="onboarding-banner-deposit-button">{{ $t('common.deposit') }}</span>
-      <span v-else-if="activeStep === 2" data-cy="onboarding-banner-transfer-button">
+      <span
+        v-if="activeStep === 1"
+        data-cy="onboarding-banner-deposit-button"
+        >{{ $t('common.deposit') }}</span>
+      <span
+        v-else-if="activeStep === 2"
+        data-cy="onboarding-banner-transfer-button"
+      >
         {{ $t('marketPage.transferToTrade') }}
       </span>
-      <span v-else data-cy="onboarding-banner-trade-button">{{ $t('common.trade') }}</span>
+      <span v-else data-cy="onboarding-banner-trade-button">{{
+        $t('common.trade')
+      }}</span>
     </v-button>
     <div class="mt-6">
       <v-progress-steps

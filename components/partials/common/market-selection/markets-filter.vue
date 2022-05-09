@@ -5,7 +5,7 @@
         <v-market-type-selector
           :type="MarketType.Favourite"
           :active="activeType === MarketType.Favourite"
-          data-cy="markets-sidebar-type-favorites"
+          data-cy="markets-sidebar-favorites-selector"
           @click="handleTypeClick"
         >
           <v-icon-star class="min-w-4 h-4 w-4" />
@@ -14,7 +14,7 @@
         <v-market-type-selector
           :type="''"
           :active="activeType === ''"
-          data-cy="markets-sidebar-type-all-markets"
+          data-cy="markets-sidebar-all-markets-selector"
           @click="handleTypeClick"
         >
           {{ $t('trade.all') }}
@@ -23,7 +23,7 @@
         <v-market-type-selector
           :type="MarketType.Perpetual"
           :active="activeType === MarketType.Perpetual"
-          data-cy="markets-sidebar-type-perpetual"
+          data-cy="markets-sidebar-perpetual-selector"
           @click="handleTypeClick"
         >
           {{ $t('trade.perpetual') }}
@@ -32,7 +32,7 @@
         <v-market-type-selector
           :type="MarketType.Spot"
           :active="activeType === MarketType.Spot"
-          data-cy="markets-sidebar-type-spot"
+          data-cy="markets-sidebar-spot-selector"
           @click="handleTypeClick"
         >
           {{ $t('trade.spots') }}

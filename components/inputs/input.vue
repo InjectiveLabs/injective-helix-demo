@@ -61,17 +61,11 @@
           >
             <span
               v-if="showClose"
-              data-cy="select-clear-button"
+              data-cy="input-clear-button"
               @click="handleCloseEvent"
             >
               <v-icon-close
-                class="
-                  cursor-pointer
-                  h-4
-                  w-4
-                  text-gray-200
-                  hover:text-primary-500
-                "
+                class="cursor-pointer h-4 w-4 text-gray-200 hover:text-primary-500"
               />
             </span>
 
@@ -83,7 +77,7 @@
               <span
                 class="bg-gray-700 rounded uppercase tracking-1"
                 :class="maxClasses"
-                data-cy="max-button"
+                data-cy="reusable-max-button"
               >
                 {{ $t('trade.max') }}
               </span>
@@ -95,7 +89,7 @@
       <span
         v-if="error && errorBelow"
         class="text-red-400 absolute"
-        data-cy="input-error-below"
+        data-cy="reusable-input-bellow-error-text-content"
         :class="[
           errorClasses,
           {

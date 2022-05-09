@@ -1,17 +1,27 @@
 <template>
   <div class="h-full flex flex-col">
     <div class="flex items-center justify-center">
-      <v-button-select v-model="component" data-cy="activity-history-transfers-link" :option="components.transfers" text>
+      <v-button-select
+        v-model="component"
+        data-cy="wallet-history-transfers-link"
+        :option="components.transfers"
+        text
+      >
         {{ $t('walletHistory.transfers.transfers') }}
       </v-button-select>
       <div class="mx-2 w-px h-4 bg-gray-500"></div>
-      <v-button-select v-model="component" data-cy="activity-history-deposits-link" :option="components.deposits" text>
+      <v-button-select
+        v-model="component"
+        data-cy="wallet-history-deposits-link"
+        :option="components.deposits"
+        text
+      >
         {{ $t('walletHistory.deposits') }}
       </v-button-select>
       <div class="mx-2 w-px h-4 bg-gray-500"></div>
       <v-button-select
         v-model="component"
-        data-cy="activity-history-withdrawals-link"
+        data-cy="wallet-history-withdrawals-link"
         :option="components.withdrawals"
         text
       >

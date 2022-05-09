@@ -8,7 +8,7 @@
           <v-search
             dense
             class="col-span-3"
-            data-cy="filter-by-assets"
+            data-cy="universal-table-filter-by-asset-input"
             :placeholder="$t('trade.filter')"
             :search="search"
             @searched="handleInputOnSearch"
@@ -29,7 +29,7 @@
             v-if="filteredOrders.length > 0"
             red-outline
             md
-            data-cy="cancel-all-button"
+            data-cy="activity-cancel-all-button"
             @click.stop="handleCancelOrders"
           >
             {{ $t('trade.cancelAllOrders') }}
@@ -49,7 +49,11 @@
             />
           </tbody>
         </table>
-        <v-empty-list v-else :message="$t('trade.emptyOrders')" data-cy="table-nothing-found" />
+        <v-empty-list
+          v-else
+          :message="$t('trade.emptyOrders')"
+          data-cy="table-nothing-found"
+        />
       </v-table-wrapper>
     </v-card-table-wrap>
   </VHocLoading>
