@@ -1,132 +1,55 @@
 <template>
   <div>
     <div class="relative max-w-full">
-      <VHocLoading :status="status">
-        <div class="relative">
-          <div class="mb-6 flex justify-between items-center flex-wrap">
-            <v-search
-              dense
-              name="search"
-              class="sm:max-w-xs"
-              :placeholder="$t('portfolio.filter')"
-              :search="search"
-              @searched="handleInputOnSearch"
-            />
-
-            <v-checkbox v-model="hideSmallBalance" class="mt-4 sm:mt-0 ml-auto">
-              <span class="flex items-center">
-                {{ $t('portfolio.hideSmallBalances') }}
-                <v-icon-info-tooltip
-                  class="ml-2"
-                  :tooltip="$t('portfolio.hideSmallBalancesTooltip')"
-                />
-              </span>
-            </v-checkbox>
-          </div>
-          <div
-            class="overflow-y-auto overflow-x-auto md:overflow-x-visible w-full"
-          >
-            <TableHeader
-              v-if="isUserWalletConnected && sortedBalances.length > 0"
-              class="md:hidden xl:grid"
-            >
-              <div class="col-span-5 grid grid-cols-5 gap-4">
-                <span>
-                  {{ $t('portfolio.asset') }}
-                </span>
-                <span class="col-span-2 flex items-center justify-end">
-                  <span>
-                    {{ $t('portfolio.total') }}
-                  </span>
-                  <v-icon-info-tooltip
-                    class="ml-2"
-                    color="text-gray-200"
-                    :tooltip="$t('portfolio.totalTooltip')"
-                    lg
-                  />
-                </span>
-                <span class="col-span-2 flex items-center justify-end">
-                  {{ $t('portfolio.available') }}
-                  <v-icon-info-tooltip
-                    class="ml-2"
-                    color="text-gray-200"
-                    :tooltip="$t('portfolio.availableTooltip')"
-                    lg
-                  />
-                </span>
-              </div>
-              <div class="col-span-7 grid grid-cols-9 gap-4">
-                <span class="col-span-2 flex items-center justify-end">
-                  {{ $t('portfolio.marginHold') }}
-                  <v-icon-info-tooltip
-                    class="ml-2"
-                    color="text-gray-200"
-                    :tooltip="$t('portfolio.marginHoldTooltip')"
-                    lg
-                  />
-                </span>
-                <span class="col-span-2 flex items-center justify-end">
-                  <span>
-                    {{ $t('trade.unrealized_pnl') }}
-                  </span>
-                  <v-icon-info-tooltip
-                    class="ml-2"
-                    color="text-gray-200"
-                    :tooltip="$t('portfolio.unrealizedPnlTooltip')"
-                    lg
-                  />
-                </span>
-                <span class="col-span-3 text-right">
-                  {{ $t('common.value') }}
-                </span>
-                <span class="col-span-2"></span>
-              </div>
-            </TableHeader>
-
-            <TableBody
-              v-if="isUserWalletConnected"
-              :show-empty="sortedBalances.length === 0"
-            >
-              <v-balance
-                v-for="(balance, index) in sortedBalances"
-                :key="`balance-${index}`"
-                class="col-span-1"
-                :balance="balance"
-                :hide-balance="hideBalance"
-              />
-              <template slot="empty">
-                <span class="col-span-1 md:col-span-5">
-                  <div class="grow m-auto text-center py-8">
-                    <img src="/svg/empty-list.svg" class="mx-auto mb-2" />
-                    <p>{{ $t('portfolio.empty') }}</p>
-                  </div>
-                </span>
-              </template>
-            </TableBody>
-            <v-user-wallet-connect-warning v-else cta />
-          </div>
-        </div>
-      </VHocLoading>
+      <v-positions
+        v-if="component === components.positions"
+        class="relative"
+        v-bind="{ hideBalance }"
+      />
+      <v-balances
+        v-if="component === components.balances"
+        class="relative"
+        v-bind="{
+          subaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd,
+          hideBalance
+        }"
+      />
     </div>
+
+    <v-modal-add-margin />
+    <portal to="portfolio-balance-sub-tabs">
+      <div class="mt-3 flex items-center gap-6">
+        <v-tab-selector-item v-model="component" :option="components.balances">
+          <span>{{ $t('portfolio.bankBalances') }}</span>
+        </v-tab-selector-item>
+        <div class="w-px h-4 bg-gray-500" />
+        <v-tab-selector-item v-model="component" :option="components.positions">
+          <span>{{ $t('portfolio.positions') }}</span>
+        </v-tab-selector-item>
+      </div>
+    </portal>
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { INJECTIVE_DENOM } from '@injectivelabs/ui-common'
-import VBalance from './balance.vue'
+import VBalances from './balances.vue'
+import VPositions from './positions.vue'
+import VModalAddMargin from '~/components/partials/modals/add-margin/index.vue'
+import VTabSelectorItem from '~/components/partials/portfolio/tab-selector-item.vue'
 import { SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd } from '~/types'
-import VSearch from '~/components/elements/search.vue'
-import TableBody from '~/components/elements/table-body.vue'
-import TableHeader from '~/components/elements/table-header.vue'
+
+const components = {
+  balances: 'balances',
+  positions: 'positions'
+}
 
 export default Vue.extend({
   components: {
-    TableBody,
-    TableHeader,
-    VBalance,
-    VSearch
+    VBalances,
+    VPositions,
+    VModalAddMargin,
+    VTabSelectorItem
   },
 
   props: {
@@ -145,104 +68,8 @@ export default Vue.extend({
 
   data() {
     return {
-      search: '',
-      hideSmallBalance: false,
-      status: new Status(StatusType.Loading)
-    }
-  },
-
-  computed: {
-    isUserWalletConnected(): boolean {
-      return this.$accessor.wallet.isUserWalletConnected
-    },
-
-    filteredBalances(): SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd[] {
-      const {
-        subaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd,
-        search,
-        hideSmallBalance
-      } = this
-
-      return subaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd.filter(
-        ({ token, totalBalanceInUsd }) => {
-          if ((!search || search.trim() === '') && !hideSmallBalance) {
-            return true
-          }
-
-          const symbol = token.symbol.toLowerCase().trim()
-
-          const isPartOfSearchFilter = symbol.includes(
-            search.toLowerCase().trim()
-          )
-          const isNotSmallBalance =
-            !hideSmallBalance ||
-            new BigNumberInBase(totalBalanceInUsd).gte('10')
-
-          return isPartOfSearchFilter && isNotSmallBalance
-        }
-      )
-    },
-
-    sortedBalances(): SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd[] {
-      const { filteredBalances } = this
-
-      return [...filteredBalances].sort(
-        (
-          v1: SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd,
-          v2: SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd
-        ) => {
-          const v1balance = new BigNumberInBase(v1.totalBalanceInUsd)
-          const v2balance = new BigNumberInBase(v2.totalBalanceInUsd)
-
-          // sort by balanceInUsd
-          if (v1balance.gt(0) || v2balance.gt(0)) {
-            return v2balance.minus(v1balance).toNumber()
-          }
-
-          // sort alphabetically - sort INJ to the top
-          if (v1.denom === INJECTIVE_DENOM && v1balance.eq(0)) {
-            return -1
-          }
-
-          if (v2.denom === INJECTIVE_DENOM && v2balance.eq(0)) {
-            return 1
-          }
-
-          return v1.token.symbol.localeCompare(v2.token.symbol)
-        }
-      )
-    }
-  },
-
-  mounted() {
-    Promise.all([
-      this.$accessor.derivatives.fetchSubaccountOrders(),
-      this.$accessor.account.fetchSubaccountsBalancesWithPrices()
-    ])
-      .then(() => {
-        //
-      })
-      .catch(this.$onError)
-      .finally(() => {
-        this.status.setIdle()
-      })
-
-    Promise.all([
-      this.$accessor.positions.fetchMarketsOrderbook(),
-      this.$accessor.positions.fetchSubaccountPositions()
-    ])
-      .then(() => {
-        //
-      })
-      .catch(this.$onError)
-      .finally(() => {
-        //
-      })
-  },
-
-  methods: {
-    handleInputOnSearch(search: string) {
-      this.search = search
+      components,
+      component: components.balances
     }
   }
 })

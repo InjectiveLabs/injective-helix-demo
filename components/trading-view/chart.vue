@@ -1,6 +1,6 @@
 <template>
   <div
-    id="tv_chart_container"
+    :id="containerId"
     ref="tradingView"
     class="tv_chart_container w-full"
   ></div>
@@ -36,11 +36,20 @@ export default Vue.extend({
   },
 
   computed: {
-    //
+    uid(): string {
+      return window.crypto.getRandomValues(new Uint32Array(1))[0].toString()
+    },
+
+    containerId(): string {
+      const { uid } = this
+
+      return `tv_chart_container-${uid}`
+    }
   },
 
   mounted() {
     const widgetOptions = config({
+      containerId: this.containerId,
       symbol: this.symbol,
       interval: this.interval,
       datafeedEndpoint: this.datafeedEndpoint

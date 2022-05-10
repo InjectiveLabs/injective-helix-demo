@@ -1,73 +1,71 @@
 <template>
   <div>
     <div class="relative max-w-full">
-      <VHocLoading :status="status">
-        <div class="relative">
-          <div class="mb-6 flex justify-between items-center flex-wrap">
-            <v-search
-              dense
-              name="search"
-              class="sm:max-w-xs"
-              :placeholder="$t('portfolio.filter')"
-              :search="search"
-              @searched="handleInputOnSearch"
-            />
+      <div class="relative">
+        <div class="mb-6 flex justify-between items-center flex-wrap">
+          <v-search
+            dense
+            name="search"
+            class="sm:max-w-xs"
+            :placeholder="$t('portfolio.filter')"
+            :search="search"
+            @searched="handleInputOnSearch"
+          />
 
-            <v-checkbox v-model="hideSmallBalance" class="mt-4 sm:mt-0 ml-auto">
-              <span class="flex items-center">
-                {{ $t('portfolio.hideSmallBalances') }}
-                <v-icon-info-tooltip
-                  class="ml-2"
-                  :tooltip="$t('portfolio.hideSmallBalancesTooltip')"
-                />
-              </span>
-            </v-checkbox>
-          </div>
-          <div
-            class="overflow-y-auto overflow-x-auto md:overflow-x-visible w-full"
+          <v-checkbox v-model="hideSmallBalance" class="mt-4 sm:mt-0 ml-auto">
+            <span class="flex items-center">
+              {{ $t('portfolio.hideSmallBalances') }}
+              <v-icon-info-tooltip
+                class="ml-2"
+                :tooltip="$t('portfolio.hideSmallBalancesTooltip')"
+              />
+            </span>
+          </v-checkbox>
+        </div>
+        <div
+          class="overflow-y-auto overflow-x-auto md:overflow-x-visible w-full"
+        >
+          <TableHeader
+            v-if="isUserWalletConnected && sortedBalances.length > 0"
+            class="md:hidden xl:grid"
           >
-            <TableHeader
-              v-if="isUserWalletConnected && sortedBalances.length > 0"
-              class="md:hidden xl:grid"
-            >
-              <span class="col-span-2">
-                {{ $t('portfolio.asset') }}
-              </span>
-              <span class="col-span-2 flex items-center justify-end">
-                <div>
-                  {{ $t('portfolio.total') }}
+            <span class="col-span-2">
+              {{ $t('portfolio.asset') }}
+            </span>
+            <span class="col-span-2 flex items-center justify-end">
+              <div>
+                {{ $t('portfolio.total') }}
+              </div>
+            </span>
+            <span class="col-span-4 text-right">
+              {{ $t('common.value') }}
+            </span>
+            <span class="col-span-4"> </span>
+          </TableHeader>
+
+          <TableBody
+            v-if="isUserWalletConnected"
+            :show-empty="sortedBalances.length === 0"
+          >
+            <v-balance
+              v-for="(balance, index) in sortedBalances"
+              :key="`balance-${index}`"
+              class="col-span-1"
+              :balance="balance"
+              :hide-balance="hideBalance"
+            />
+            <template slot="empty">
+              <span class="col-span-1 md:col-span-5">
+                <div class="grow m-auto text-center py-8">
+                  <img src="/svg/empty-list.svg" class="mx-auto mb-2" />
+                  <p>{{ $t('portfolio.empty') }}</p>
                 </div>
               </span>
-              <span class="col-span-4 text-right">
-                {{ $t('common.value') }}
-              </span>
-              <span class="col-span-4"> </span>
-            </TableHeader>
-
-            <TableBody
-              v-if="isUserWalletConnected"
-              :show-empty="sortedBalances.length === 0"
-            >
-              <v-balance
-                v-for="(balance, index) in sortedBalances"
-                :key="`balance-${index}`"
-                class="col-span-1"
-                :balance="balance"
-                :hide-balance="hideBalance"
-              />
-              <template slot="empty">
-                <span class="col-span-1 md:col-span-5">
-                  <div class="grow m-auto text-center py-8">
-                    <img src="/svg/empty-list.svg" class="mx-auto mb-2" />
-                    <p>{{ $t('portfolio.empty') }}</p>
-                  </div>
-                </span>
-              </template>
-            </TableBody>
-            <v-user-wallet-connect-warning v-else cta />
-          </div>
+            </template>
+          </TableBody>
+          <v-user-wallet-connect-warning v-else cta />
         </div>
-      </VHocLoading>
+      </div>
     </div>
   </div>
 </template>
@@ -78,7 +76,7 @@ import {
   BankBalanceWithTokenAndBalanceWithUsdBalance,
   INJECTIVE_DENOM
 } from '@injectivelabs/ui-common'
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import VBalance from './balance.vue'
 import VSearch from '~/components/elements/search.vue'
 import TableBody from '~/components/elements/table-body.vue'
@@ -107,8 +105,7 @@ export default Vue.extend({
   data() {
     return {
       search: '',
-      hideSmallBalance: false,
-      status: new Status(StatusType.Loading)
+      hideSmallBalance: false
     }
   },
 
@@ -166,17 +163,6 @@ export default Vue.extend({
         }
       )
     }
-  },
-
-  mounted() {
-    Promise.all([this.$accessor.bank.fetchBankBalancesWithToken()])
-      .then(() => {
-        //
-      })
-      .catch(this.$onError)
-      .finally(() => {
-        this.status.setIdle()
-      })
   },
 
   methods: {

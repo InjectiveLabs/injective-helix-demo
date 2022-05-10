@@ -16,14 +16,14 @@
 }
 
 .orderbook-h {
-  @apply h-md;
+  height: 30rem;
 
   @screen lg {
-    @apply h-xl;
+    height: 38rem;
   }
 
   @screen 4xl {
-    height: 38rem;
+    height: 40rem;
   }
 }
 

@@ -6,6 +6,7 @@ import funding from './portfolio/en'
 import home from './home/en'
 import market from './market/en'
 import wallet from './wallet/en'
+import trade from './trade/en'
 
 export default {
   ...activities,
@@ -17,6 +18,7 @@ export default {
   ...market,
   ...bridge,
   ...wallet,
+  ...trade,
   common: {
     available: 'Available',
     deposit: 'Deposit',

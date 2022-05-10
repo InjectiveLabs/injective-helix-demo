@@ -7,10 +7,12 @@ const { theme } = require('../../tailwind.config')
 const STYLE_CANDLES = 1
 
 export default function ({
+  containerId,
   symbol,
   interval,
   datafeedEndpoint
 }: {
+  containerId: string
   symbol: string
   interval: string
   datafeedEndpoint: string
@@ -25,11 +27,11 @@ export default function ({
     symbol,
     interval,
     timezone,
+    container_id: containerId,
     timeframe: '1W',
     toolbar_bg: theme.colors.gray[900],
     height: '100%',
     width: '100%',
-    container_id: 'tv_chart_container',
     allow_symbol_change: false,
     datafeed: new Datafeed(datafeedEndpoint, 2000),
     library_path: `${

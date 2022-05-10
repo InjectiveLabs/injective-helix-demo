@@ -32,17 +32,6 @@
       class="orderbook-middle-h bg-gray-900 flex flex-col items-center justify-center border-t border-b"
     >
       <div class="w-full flex items-center justify-center">
-        <v-icon-arrow
-          v-if="
-            [Change.Increase, Change.Decrease].includes(lastTradedPriceChange)
-          "
-          class="transform w-3 h-3 lg:w-4 lg:h-4 4xl:w-5 4xl:h-5"
-          :class="{
-            'text-red-500 -rotate-90':
-              lastTradedPriceChange === Change.Decrease,
-            'text-aqua-500 rotate-90': lastTradedPriceChange === Change.Increase
-          }"
-        />
         <span
           :class="{
             'text-red-500': lastTradedPriceChange === Change.Decrease,
@@ -51,6 +40,23 @@
           class="font-bold font-mono text-base lg:text-lg 4xl:text-xl"
         >
           {{ lastTradedPriceToFormat }}
+        </span>
+        <v-icon-arrow
+          v-if="
+            [Change.Increase, Change.Decrease].includes(lastTradedPriceChange)
+          "
+          class="transform w-3 h-3 lg:w-4 lg:h-4 4xl:w-5 4xl:h-5 ml-2 mr-4"
+          :class="{
+            'text-red-500 -rotate-90':
+              lastTradedPriceChange === Change.Decrease,
+            'text-aqua-500 rotate-90': lastTradedPriceChange === Change.Increase
+          }"
+        />
+        <span
+          v-tooltip="{ content: $t('trade.mark_price_tooltip_verbose') }"
+          class="text-gray-500 underline font-mono text-base lg:text-sm 4xl:text-md cursor-pointer"
+        >
+          {{ markPriceToFormat }}
         </span>
       </div>
     </div>
@@ -185,6 +191,30 @@ export default Vue.extend({
       }
 
       return lastTradedPrice.toFormat(market.priceDecimals)
+    },
+
+    derivativeMarkPrice(): string {
+      return this.$accessor.derivatives.marketMarkPrice
+    },
+
+    markPrice(): BigNumberInBase {
+      const { derivativeMarkPrice } = this
+
+      if (!derivativeMarkPrice) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(derivativeMarkPrice)
+    },
+
+    markPriceToFormat(): string {
+      const { market, markPrice } = this
+
+      if (!market) {
+        return markPrice.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return markPrice.toFormat(market.priceDecimals)
     },
 
     buys(): UiPriceLevel[] {

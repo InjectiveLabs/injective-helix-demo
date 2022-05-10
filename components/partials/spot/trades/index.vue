@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col flex-wrap h-full">
+  <div class="flex flex-col flex-wrap orderbook-h">
     <v-table-head :market="market" />
     <div class="flex-1 w-full overflow-y-auto overflow-x-hidden rounded-b-lg">
       <ul class="list-trades w-full">
