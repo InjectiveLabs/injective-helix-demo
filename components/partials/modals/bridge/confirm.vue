@@ -29,7 +29,7 @@
             />
             <p
               class="text-gray-200 text-2xl font-bold tracking-0.4 mt-4"
-              data-cy="transfer-confirm-modal-value-usd-text-content"
+              data-cy="transfer-confirm-modal-value-text-content"
             >
               {{ amountToString }} {{ form.token.symbol }}
             </p>
@@ -72,7 +72,7 @@
 
             <v-network-card-base
               class="w-1/2"
-              data-cy="transfer-confirm-modal-to-content"
+              data-cy="transfer-confirm-modal-to-text-content"
               :hide-icon="
                 originNetworkMeta.value === destinationNetworkMeta.value
               "

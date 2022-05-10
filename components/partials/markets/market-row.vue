@@ -19,7 +19,7 @@
     <span class="text-sm col-span-2 sm:col-span-3 flex items-center">
       <div
         class="3md:hidden text-primary-500 mr-3 cursor-pointer"
-        data-cy="markets-sidebar-favourite-button"
+        data-cy="markets-page-favourite-button"
         @click="updateWatchList"
       >
         <v-icon-star v-if="isFavorite" class="min-w-6 w-6 h-6" />
