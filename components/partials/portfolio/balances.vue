@@ -22,14 +22,12 @@
           <p class="text-gray-500 text-xs uppercase mb-3 tracking-wider">
             {{ $t('portfolio.walletValue') }}
           </p>
-          <p class="text-2xl" data-cy="wallet-value-usd">
+          <p class="text-2xl" data-cy="wallet-value-usd-text-content">
             <span
               v-if="status.isLoading()"
-              data-cy="wallet-value-usd-loading-spinner"
               >&mdash; USD</span>
             <span
               v-else-if="hideBalance"
-              data-cy="wallet-value-usd-hidden-icons"
               >{{ HIDDEN_BALANCE_DISPLAY }}</span>
             <span
 v-else
