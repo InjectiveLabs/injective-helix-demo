@@ -10,7 +10,7 @@
     <div class="-mt-1">
       <slot name="subtitle"></slot>
 
-      <div class="flex items-center" :class="{ 'justify-between': lg }">
+      <div class="flex" :class="{ 'justify-between': lg }">
         <div v-if="status.isLoading()" class="mr-4">
           <span class="spinner text-primary-500" />
         </div>

@@ -92,7 +92,7 @@ export default Vue.extend({
 
   computed: {
     orders(): UiDerivativeLimitOrder[] {
-      return this.$accessor.activity.subaccountDerivativeOrders
+      return this.$accessor.derivatives.subaccountOrders
     },
 
     markets(): UiDerivativeMarketWithToken[] {
@@ -122,7 +122,7 @@ export default Vue.extend({
   mounted() {
     this.status.setLoading()
 
-    Promise.all([this.$accessor.activity.fetchSubaccountDerivativeOrders()])
+    Promise.all([this.$accessor.derivatives.fetchSubaccountOrders()])
       .then(() => {
         //
       })

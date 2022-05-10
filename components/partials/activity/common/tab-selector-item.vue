@@ -6,7 +6,7 @@
         ? 'text-primary-500 hover:text-primary-600 font-bold'
         : 'text-gray-500 hover:text-primary-500'
     ]"
-    @click="$emit('selected', option)"
+    @click="handleClickEvent"
   >
     <slot />
   </span>
@@ -30,6 +30,14 @@ export default Vue.extend({
     option: {
       type: String,
       required: true
+    }
+  },
+
+  methods: {
+    handleClickEvent() {
+      const { option } = this
+
+      this.$emit('selected', option)
     }
   }
 })

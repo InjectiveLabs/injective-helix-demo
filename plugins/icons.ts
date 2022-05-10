@@ -32,6 +32,7 @@ import News from '~/components/icons/news.vue'
 import Pencil from '~/components/icons/pencil.vue'
 import Plus from '~/components/icons/plus.vue'
 import Profile from '~/components/icons/profile.vue'
+import RectangleChart from '~/components/icons/rectangle-chart.vue'
 import Reddit from '~/components/icons/reddit.vue'
 import RedditCircle from '~/components/icons/reddit-circle.vue'
 import Refresh from '~/components/icons/refresh.vue'
@@ -92,6 +93,7 @@ Vue.component('VIconMenuAlt', MenuAlt)
 Vue.component('VIconPencil', Pencil)
 Vue.component('VIconPlus', Plus)
 Vue.component('VIconProfile', Profile)
+Vue.component('VIconRectangleChart', RectangleChart)
 Vue.component('VIconReddit', Reddit)
 Vue.component('VIconRedditCircle', RedditCircle)
 Vue.component('VIconRefresh', Refresh)

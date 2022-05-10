@@ -92,7 +92,7 @@ export default Vue.extend({
 
   computed: {
     orders(): UiSpotLimitOrder[] {
-      return this.$accessor.activity.subaccountSpotOrders
+      return this.$accessor.spot.subaccountOrders
     },
 
     markets(): UiSpotMarketWithToken[] {
@@ -122,7 +122,7 @@ export default Vue.extend({
   mounted() {
     this.status.setLoading()
 
-    Promise.all([this.$accessor.activity.fetchSubaccountSpotOrders()])
+    Promise.all([this.$accessor.spot.fetchSubaccountOrders()])
       .then(() => {
         //
       })

@@ -49,8 +49,8 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.$accessor.activity.streamSubaccountDerivativeOrders()
-    this.$accessor.activity.streamSubaccountDerivativeTrades()
+    this.$accessor.derivatives.streamSubaccountOrders()
+    this.$accessor.derivatives.streamTrades()
   }
 })
 </script>

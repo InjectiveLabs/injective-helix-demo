@@ -50,8 +50,8 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.$accessor.activity.streamSubaccountSpotOrders()
-    this.$accessor.activity.streamSubaccountSpotTrades()
+    this.$accessor.spot.streamSubaccountOrders()
+    this.$accessor.spot.streamSubaccountTrades()
   }
 })
 </script>
