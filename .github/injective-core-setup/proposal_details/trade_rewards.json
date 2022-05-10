@@ -1,0 +1,32 @@
+{
+    "title": "Injective Astro Program Restructure",
+    "description": "Liquy liquidity",
+    "campaign_info": {
+        "campaign_duration_seconds": 600,
+        "quote_denoms": [
+            "peggy0xdAC17F958D2ee523a2206206994597C13D831ec7",
+            "peggy0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "ibc/B448C0CA358B958301D328CCDC5D5AD642FC30A6D3AE106FF721DB315F3DDE5C"
+        ],
+        "trading_reward_boost_info": {
+            "boosted_spot_market_ids": [],
+            "spot_market_multipliers": [],
+            "boosted_derivative_market_ids": [],
+            "derivative_market_multipliers": []
+        },
+        "disqualified_market_ids": []
+    },
+    "campaign_reward_pools": [
+        {
+            "start_timestamp": 1746651498,
+            "max_campaign_rewards": [
+                {
+                    "denom": "inj",
+                    "amount": "25173000000000000000000"
+                }
+            ]
+        }
+    ],
+    "campaign_reward_pools_additions": [],
+    "campaign_reward_pools_updates": []
+}

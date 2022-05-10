@@ -1,0 +1,27 @@
+[
+	{
+		"name": "rich_one",
+		"key": "stamp depend ahead still note spring media smile hockey candy middle picture",
+		"coins": "10000$SCALE_FACTOR$DENOM,1000000$TEST_ERC20_DECIMALS$TEST_ERC20_DENOM,10000$TEST_ERC20_DECIMALS$TEST_USDC_DENOM,1000$SCALE_FACTOR$TEST_LINK_DENOM"
+	},
+	{
+		"name": "ugly_one",
+		"key": "aunt robot faint acquire wet client slice kid alley sea public gate",
+		"coins": "10000$SCALE_FACTOR$DENOM,1000000$TEST_ERC20_DECIMALS$TEST_ERC20_DENOM"
+	},
+	{
+		"name": "dirty_one",
+		"key": "ranch energy rich maid elephant oxygen disagree ignore define usual garment hybrid",
+		"coins": "10000$SCALE_FACTOR$DENOM,1000000$TEST_ERC20_DECIMALS$TEST_ERC20_DENOM,10000$TEST_ERC20_DECIMALS$TEST_USDC_DENOM"
+	},
+	{
+		"name": "good_one",
+		"key": "into empower bottom catalog fortune virtual dinner hurt equip pretty pact arena",
+		"coins": "10000$SCALE_FACTOR$DENOM,1000000$TEST_ERC20_DECIMALS$TEST_ERC20_DENOM"
+	},
+	{
+		"name": "evil_one",
+		"key": "bleak velvet stand prison south laundry this wage valve fog twist loyal",
+		"coins": "10000$SCALE_FACTOR$DENOM,1000000$TEST_ERC20_DECIMALS$TEST_ERC20_DENOM"
+	}				
+]

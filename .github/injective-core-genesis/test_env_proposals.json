@@ -1,0 +1,38 @@
+[
+    {
+        "type": "fee-discount",
+        "file": "proposal_details/discount.json"
+    },
+    {
+        "type": "launch-trade-rewards",
+        "file": "proposal_details/trade_rewards.json"
+    },
+    {
+        "type": "launch-spot-market",
+        "ticker": "INJ/USDT",
+        "base_denom": "inj",
+        "quote_denom": "peggy0xdAC17F958D2ee523a2206206994597C13D831ec7"
+    },
+    {
+        "type": "launch-perp-market",
+        "ticker": "INJ/USDT PERP",
+        "base_denom": "inj",
+        "quote_denom": "peggy0xdAC17F958D2ee523a2206206994597C13D831ec7",
+        "oracle_base": "INJ",
+        "oracle_quote": "USDT",
+        "oracle_type": "pricefeed",
+        "relayer_address": "inj1hkhdaj2a2clmq5jq6mspsggqs32vynpk228q3r",
+        "oracle_scale_factor": 18
+    },
+    {
+        "type": "launch-perp-market",
+        "ticker": "ETH/USDT PERP",
+        "quote_denom": "peggy0xdAC17F958D2ee523a2206206994597C13D831ec7",
+        "oracle_base": "ETH",
+        "oracle_quote": "USD",
+        "oracle_type": "pricefeed",
+        "oracle_scale_factor": 18,
+        "relayer_address": "inj1hkhdaj2a2clmq5jq6mspsggqs32vynpk228q3r",
+        "starting_price": 2500.12
+    }
+]

@@ -1,0 +1,10 @@
+provider = "binance_v3"
+ticker = "INJ/USDT"
+pullInterval = "1m"
+observationSource = """
+   ticker [type=http method=GET url="https://api.binance.com/api/v3/ticker/price?symbol=INJUSDT"];
+   parsePrice [type="jsonparse" path="price"]
+   multiplyDecimals [type="multiply" times=1000000]
+
+   ticker -> parsePrice -> multiplyDecimals
+"""

@@ -1,0 +1,90 @@
+[
+    {
+        "directive": "fee-discount",
+        "file": "proposal_details/discount.json"
+    },
+    {
+        "directive": "launch-trade-rewards",
+        "file": "proposal_details/trade_rewards.json"
+    },
+    {
+        "directive": "launch-spot-market",
+        "ticker": "INJ/USDT",
+        "base_denom": "inj",
+        "quote_denom": "peggy0xdAC17F958D2ee523a2206206994597C13D831ec7",
+        "min_price_tick_size": "0.000000000000001000",
+        "min_quantity_tick_size": "1000000000000000.000000000000000000"
+    },
+    {
+        "directive": "launch-spot-market",
+        "ticker": "LINK/USDT",
+        "base_denom": "peggy0x514910771AF9Ca656af840dff83E8264EcF986CA",
+        "quote_denom": "peggy0xdAC17F958D2ee523a2206206994597C13D831ec7",
+        "min_price_tick_size": "0.000000000000001000",
+        "min_quantity_tick_size": "1000000000000000.000000000000000000"
+    },
+    {
+        "directive": "launch-spot-market",
+        "ticker": "ATOM/USDT",
+        "base_denom": "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9",
+        "quote_denom": "peggy0xdAC17F958D2ee523a2206206994597C13D831ec7",
+        "min_price_tick_size": "0.001000000000000000",
+        "min_quantity_tick_size": "1000.000000000000000000"
+    },
+    {
+        "directive": "launch-spot-market",
+        "ticker": "GF/USDT",
+        "base_denom": "peggy0xAaEf88cEa01475125522e117BFe45cF32044E238",
+        "quote_denom": "peggy0xdAC17F958D2ee523a2206206994597C13D831ec7",
+        "min_price_tick_size": "0.000000000000001000",
+        "min_quantity_tick_size": "100000.000000000000000000"
+    },
+    {
+        "directive": "launch-spot-market",
+        "ticker": "LUNA/UST",
+        "base_denom": "ibc/B8AF5D92165F35AB31F3FC7C7B444B9D240760FA5D406C49D24862BD0284E395",
+        "quote_denom": "ibc/B448C0CA358B958301D328CCDC5D5AD642FC30A6D3AE106FF721DB315F3DDE5C",
+        "min_price_tick_size": "0.001000000000000000",
+        "min_quantity_tick_size": "1000.000000000000000000"
+    },
+    {
+        "directive": "launch-perp-market",
+        "ticker": "INJ/USDT PERP",
+        "base_denom": "inj",
+        "quote_denom": "peggy0xdAC17F958D2ee523a2206206994597C13D831ec7",
+        "oracle_base": "INJ",
+        "oracle_quote": "USDT",
+        "oracle_type": "pricefeed",
+        "relayer_address": "inj1ycyfjxxk8wl3yv6xj3q7yd0zsjt88a8m2pfpsc",
+        "oracle_scale_factor": 6,
+        "starting_price": "4.56",
+        "min_price_tick_size": "1000.000000000000000000",
+        "min_quantity_tick_size": "0.001000000000000000"
+    },
+    {
+        "directive": "launch-perp-market",
+        "ticker": "ETH/USDT PERP",
+        "quote_denom": "peggy0xdAC17F958D2ee523a2206206994597C13D831ec7",
+        "oracle_base": "ETH",
+        "oracle_quote": "USD",
+        "oracle_type": "pricefeed",
+        "oracle_scale_factor": 6,
+        "relayer_address": "inj1ycyfjxxk8wl3yv6xj3q7yd0zsjt88a8m2pfpsc",
+        "starting_price": "2500.12",
+        "min_price_tick_size": "1000.000000000000000000",
+        "min_quantity_tick_size": "0.001000000000000000"
+    },
+    {
+        "directive": "launch-perp-market",
+        "ticker": "BTC/USDT PERP",
+        "quote_denom": "peggy0xdAC17F958D2ee523a2206206994597C13D831ec7",
+        "oracle_base": "BTC",
+        "oracle_quote": "USD",
+        "oracle_type": "pricefeed",
+        "oracle_scale_factor": 6,
+        "relayer_address": "inj1ycyfjxxk8wl3yv6xj3q7yd0zsjt88a8m2pfpsc",
+        "starting_price": "35500.79",
+        "min_price_tick_size": "1000.000000000000000000",
+        "min_quantity_tick_size": "0.001000000000000000"
+    }
+]

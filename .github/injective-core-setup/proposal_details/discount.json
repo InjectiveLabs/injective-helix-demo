@@ -1,0 +1,75 @@
+{
+    "title": "Fee discounts",
+    "description": "This proposal adds fee discounts",
+    "schedule": {
+        "bucket_count": 30,
+        "bucket_duration": 86400,
+        "quote_denoms": [
+            "peggy0xdAC17F958D2ee523a2206206994597C13D831ec7",
+            "peggy0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "ibc/B448C0CA358B958301D328CCDC5D5AD642FC30A6D3AE106FF721DB315F3DDE5C"
+        ],
+        "tier_infos": [
+            {
+                "maker_discount_rate": "0.075000000000000000",
+                "taker_discount_rate": "0.075000000000000000",
+                "staked_amount": "25000000000000000000",
+                "fee_paid_amount": "50000000.000000000000000000"
+            },
+            {
+                "maker_discount_rate": "0.125000000000000000",
+                "taker_discount_rate": "0.125000000000000000",
+                "staked_amount": "100000000000000000000",
+                "fee_paid_amount": "100000000.000000000000000000"
+            },
+            {
+                "maker_discount_rate": "0.200000000000000000",
+                "taker_discount_rate": "0.200000000000000000",
+                "staked_amount": "250000000000000000000",
+                "fee_paid_amount": "200000000.000000000000000000"
+            },
+            {
+                "maker_discount_rate": "0.300000000000000000",
+                "taker_discount_rate": "0.300000000000000000",
+                "staked_amount": "750000000000000000000",
+                "fee_paid_amount": "500000000.000000000000000000"
+            },
+            {
+                "maker_discount_rate": "0.400000000000000000",
+                "taker_discount_rate": "0.400000000000000000",
+                "staked_amount": "2000000000000000000000",
+                "fee_paid_amount": "1500000000.000000000000000000"
+            },
+            {
+                "maker_discount_rate": "0.500000000000000000",
+                "taker_discount_rate": "0.500000000000000000",
+                "staked_amount": "5000000000000000000000",
+                "fee_paid_amount": "3500000000.000000000000000000"
+            },
+            {
+                "maker_discount_rate": "0.600000000000000000",
+                "taker_discount_rate": "0.600000000000000000",
+                "staked_amount": "12500000000000000000000",
+                "fee_paid_amount": "8000000000.000000000000000000"
+            },
+            {
+                "maker_discount_rate": "0.700000000000000000",
+                "taker_discount_rate": "0.700000000000000000",
+                "staked_amount": "30000000000000000000000",
+                "fee_paid_amount": "20000000000.000000000000000000"
+            },
+            {
+                "maker_discount_rate": "0.800000000000000000",
+                "taker_discount_rate": "0.800000000000000000",
+                "staked_amount": "750000000000000000000000",
+                "fee_paid_amount": "30000000000.000000000000000000"
+            }
+        ],
+        "disqualified_market_ids": [
+            "0x8b1a4d3e8f6b559e30e40922ee3662dd78edf7042330d4d620d188699d1a9715",
+            "0xabc20971099f5df5d1de138f8ea871e7e9832e3b0b54b61056eae15b09fed678",
+            "0x7471d361b90fc8541267bd088f498c2a461a2c0c57ff2b9a08279480e803b470",
+            "0x0f1a11df46d748c2b20681273d9528021522c6a0db00de4684503bbd53bef16e"
+        ]
+    }
+}

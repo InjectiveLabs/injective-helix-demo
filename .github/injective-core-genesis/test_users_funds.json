@@ -1,0 +1,67 @@
+[
+	{
+		"name": "rich_one",
+		"description": "Move 100000 ERC-20 tokens to trading account",
+		"command": "$NODE_BIN $home0 tx exchange deposit 100000$TEST_ERC20_DECIMALS$TEST_ERC20_DENOM --from $from $kbt $cid --yes --gas=200000000"		
+	},
+	{
+		"name": "rich_one",
+		"description": "Move 1000 INJ tokens to trading account",
+		"command": "$NODE_BIN $home0 tx exchange deposit 5000$SCALE_FACTOR$DENOM --from $from $kbt $cid --yes --gas=200000000"		
+	},
+	{
+		"name": "rich_one",
+		"description": "Move 1000 USDC tokens to trading account",
+		"command": "$NODE_BIN $home0 tx exchange deposit 1000$TEST_ERC20_DECIMALS$TEST_USDC_DENOM --from $from $kbt $cid --yes --gas=200000000"		
+	},
+	{
+		"name": "rich_one",
+		"description": "Move 1000 LINK tokens to trading account",
+		"command": "$NODE_BIN $home0 tx exchange deposit 1000$SCALE_FACTOR$TEST_LINK_DENOM --from $from $kbt $cid --yes --gas=200000000"		
+	},
+	{
+		"name": "ugly_one",
+		"description": "Move 100000 ERC-20 tokens to trading account",
+		"command": "$NODE_BIN $home0 tx exchange deposit 100000$TEST_ERC20_DECIMALS$TEST_ERC20_DENOM --from $from $kbt $cid --yes --gas=200000000"		
+	},
+	{
+		"name": "ugly_one",
+		"description": "Move 1000 INJ tokens to trading account",
+		"command": "$NODE_BIN $home0 tx exchange deposit 5000$SCALE_FACTOR$DENOM --from $from $kbt $cid --yes --gas=200000000"		
+	},	
+	{
+		"name": "dirty_one",
+		"description": "Move 100000 ERC-20 tokens to trading account",
+		"command": "$NODE_BIN $home0 tx exchange deposit 100000$TEST_ERC20_DECIMALS$TEST_ERC20_DENOM --from $from $kbt $cid --yes --gas=200000000"		
+	},
+	{
+		"name": "dirty_one",
+		"description": "Move 1000 INJ tokens to trading account",
+		"command": "$NODE_BIN $home0 tx exchange deposit 5000$SCALE_FACTOR$DENOM --from $from $kbt $cid --yes --gas=200000000"		
+	},	
+	{
+		"name": "dirty_one",
+		"description": "Move 1000 USDC tokens to trading account",
+		"command": "$NODE_BIN $home0 tx exchange deposit 1000$TEST_ERC20_DECIMALS$TEST_USDC_DENOM --from $from $kbt $cid --yes --gas=200000000"		
+	},	
+	{
+		"name": "good_one",
+		"description": "Move 100000 ERC-20 tokens to trading account",
+		"command": "$NODE_BIN $home0 tx exchange deposit 100000$TEST_ERC20_DECIMALS$TEST_ERC20_DENOM --from $from $kbt $cid --yes --gas=200000000"		
+	},
+	{
+		"name": "good_one",
+		"description": "Move 1000 INJ tokens to trading account",
+		"command": "$NODE_BIN $home0 tx exchange deposit 5000$SCALE_FACTOR$DENOM --from $from $kbt $cid --yes --gas=200000000"		
+	},
+	{
+		"name": "evil_one",
+		"description": "Move 100000 ERC-20 tokens to trading account",
+		"command": "$NODE_BIN $home0 tx exchange deposit 100000$TEST_ERC20_DECIMALS$TEST_ERC20_DENOM --from $from $kbt $cid --yes --gas=200000000"		
+	},
+	{
+		"name": "evil_one",
+		"description": "Move 1000 INJ tokens to trading account",
+		"command": "$NODE_BIN $home0 tx exchange deposit 5000$SCALE_FACTOR$DENOM --from $from $kbt $cid --yes --gas=200000000"		
+	}			
+]

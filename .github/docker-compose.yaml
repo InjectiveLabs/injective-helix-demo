@@ -1,0 +1,376 @@
+version: "3.9"
+
+networks:
+  injective:
+    name: injective
+
+x-common-exchange-env:
+  &common_exchange_env
+  EXCHANGE_ENV: "local"
+  EXCHANGE_LOG_LEVEL: "debug"
+  EXCHANGE_SERVICE_WAIT_TIMEOUT: "1m"
+  EXCHANGE_COSMOS_CHAIN_ID: "injective-777"
+  EXCHANGE_COSMOS_GRPC: "tcp://injective-core:9900"
+  EXCHANGE_TENDERMINT_RPC: "http://injective-core:26657"
+  EXCHANGE_FEE_PAYER_PK: ${EXCHANGE_FEE_PAYER_PK}
+  EXCHANGE_ALCHEMY_ENDPOINT: "https://eth-kovan.alchemyapi.io/v2/${ALCHEMY_API_KEY}"
+  EXCHANGE_DB_MONGO_CONNECTION: "mongodb://mongo:27017"
+  EXCHANGE_DB_MONGO_DBNAME: "exchange"
+  EXCHANGE_DB_ARCHIVE_EVENTS: "false"
+  EXCHANGE_GRPC_LISTEN_ADDR: "0.0.0.0:9910"
+  EXCHANGE_HTTP_LISTEN_ADDR: "0.0.0.0:4444"
+  EXCHANGE_CHRONOS_DATA_PATH: "var/data/chronos"
+  EXCHANGE_CHRONOS_BLOCK_OFFSET: 0
+  EXCHANGE_CHAIN_START_HEIGHT: 0
+  EXCHANGE_STATSD_PREFIX: "exchange"
+  EXCHANGE_STATSD_ADDR: "localhost:8125"
+  EXCHANGE_STATSD_STUCK_DUR: "5m"
+  EXCHANGE_STATSD_MOCKING: "false"
+  EXCHANGE_STATSD_DISABLED: "true"
+  EXCHANGE_PPROF_ENABLED: "true"
+  EXCHANGE_PPROF_ADDR: "0.0.0.0:6060"
+
+x-common-core-env:
+  &common_core_env
+  APP_ENV: test
+  APP_VERSION: doesnt_matter
+  LOG_BUGSNAG_KEY: something
+  LOG_BUGSNAG_ENABLED: "false"
+
+x-common-trading-bot-env:
+  &common_trading_bot_env
+  TRADING_ENV: "local"
+  TRADING_LOG_LEVEL: "debug"
+  TRADING_SERVICE_WAIT_TIMEOUT: "1m"
+  TRADING_COSMOS_CHAIN_ID: "injective-777"
+  TRADING_COSMOS_GRPC: "tcp://injective-core:9900"
+  TRADING_TENDERMINT_RPC: "http://injective-core:26657"
+  TRADING_COSMOS_GAS_PRICES: "500000000inj"
+  TRADING_COSMOS_KEYRING: "test"
+  TRADING_COSMOS_KEYRING_DIR: "/root/injective-777/n0"
+  TRADING_COSMOS_KEYRING_APP: "injectived"
+  TRADING_COSMOS_USE_LEDGER: "false"
+  TRADING_EXCHANGE_GRPC: "tcp://exchange-api:9910"
+  TRADING_STATSD_DISABLED: "true"
+
+services:
+  mongo:
+    container_name: injective-mongo
+    image: mongo
+    restart: always
+    command: mongod --quiet --dbpath /data/db --port 27017 --bind_ip 0.0.0.0 -replSet rs0
+    ports:
+      - 27017:27017
+    networks:
+      - injective
+    volumes:
+      - mongodb_33:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 10s
+
+  mongo-setup:
+    image: "mongo-setup"
+    build: "./mongo-setup"
+    container_name: "mongosetup"
+    depends_on:
+      mongo:
+        condition: service_healthy
+    volumes:
+      - mongostatus_33:/data/
+    networks:
+      - injective
+
+  exchange-process:
+    container_name: injective-exchange-process
+    image: public.ecr.aws/l9h3g6c6/injective-exchange:prod
+    restart: always
+    ports:
+      - 5500:5500
+      - 6060:6060
+    environment:
+      <<: *common_exchange_env
+      EXCHANGE_CHRONOS_RPC_ADDR: tcp://0.0.0.0:5500
+    depends_on:
+      mongo:
+        condition: service_healthy
+      injective-core:
+        condition: service_healthy
+    command: injective-exchange process --explorer-enabled=true
+    # command: tail -F dfdfs
+    healthcheck:
+      test: nc -z exchange-process 5500 || exit 1
+      interval: 10s
+      timeout: 10s
+      retries: 50
+      start_period: 20s
+    volumes:
+      - chronos_33:/apps/data/var/data
+    networks:
+      - injective
+
+  exchange-api:
+    container_name: injective-exchange-api
+    image: public.ecr.aws/l9h3g6c6/injective-exchange:prod
+    restart: always
+    ports:
+      - 9910:9910 #exchange grpc port?
+      - 4444:4444 #exchange api port
+      - 6061:6060
+    environment:
+      <<: *common_exchange_env
+      EXCHANGE_CHRONOS_RPC_ADDR: "tcp://exchange-process:5500"
+      EXCHANGE_HTTP_TLS_CERT: /apps/data/public.crt
+      EXCHANGE_HTTP_TLS_KEY: /apps/data/private.key
+    depends_on:
+      mongo:
+        condition: service_healthy
+      injective-core:
+        condition: service_healthy
+      exchange-process:
+        condition: service_healthy
+    command: injective-exchange api
+    volumes:
+      - chronos_33:/apps/data/var/data
+    networks:
+      - injective
+
+  injective-core:
+    container_name: injective-core
+    image: public.ecr.aws/l9h3g6c6/injective-core:prod
+    restart: always
+    environment:
+      <<: *common_core_env
+      APP_LOG_LEVEL: "debug"
+    command:
+      - /bin/sh
+      - -c
+      - |
+        while [ ! -f /root/var/data/chain-initialised.flag ]; do
+          echo "Waiting for chain initalisation"
+          sleep 5
+        done
+        echo "Chain initialized. Starting node"
+        touch /root/var/data/chain-started.flag
+        ulimit -n 120000
+        yes 12345678 | injectived \
+        --log-level=debug \
+        --home /root/var/data/injective-777/n0 \
+        start
+    ports:
+      - 26657:26657 #tendermint RPC interface
+      - 26656:26656 #p2p incomming connections
+      - 10337:10337 #api server port
+      - 9900:9900 #gRPC server port
+      - 9091:9091 #gRPC web server port
+    volumes:
+      - injectived_home_33:/root/var/data/
+      - ./injective-core-setup:/var/tmp/scripts
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "test -f /root/var/data/chain-started.flag"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 10s
+    networks:
+      - injective
+
+  injective-core-genesis:
+    container_name: "injective-core-genesis"
+    build: "./injective-core-genesis"
+    environment:
+      <<: *common_core_env
+    command:
+      - /bin/sh
+      - -c
+      - |
+        /root/scripts/start_node.sh
+    volumes:
+      - injectived_home_33:/root/var/data/
+    networks:
+      - injective
+
+  injective-core-setup:
+    container_name: "injective-core-setup"
+    build: "./injective-core-setup"
+    environment:
+      <<: *common_core_env
+      NODE_PORT: 26657
+      NODE_ADDRESS: "injective-core"
+    command:
+      - /bin/sh
+      - -c
+      - |
+        /root/scripts/setup_markets.sh
+    volumes:
+      - injectived_home_33:/root/var/data/
+      - ./injective-core-setup:/root/scripts
+    depends_on:
+      injective-core:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "test -f /root/var/data/markets_setup.flag"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 10s
+    networks:
+      - injective
+
+  injective-dex:
+    container_name: "injective-dex"
+    image: dex:test
+    restart: always
+    environment:
+      APP_NETWORK: local
+      APP_CHAIN_ID: 42
+      META_TAGS_ENABLED: "false"
+      MAINTENANCE_ENABLED: "false"
+      METRICS_ENABLED: "false"
+      GEO_IP_RESTRICTIONS_ENABLED: "false"
+      TRANSFER_RESTRICTIONS_ENABLED: "false"
+      SHOW_AUCTION_COUNTDOWN: "false"
+      REFERRALS_ENABLED: "false"
+    command: caddy run --config /root/var/data/Caddyfile
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      injective-core:
+        condition: service_healthy
+    networks:
+      - injective
+    volumes:
+      - ./:/root/var/data/
+
+  trading-bot-0:
+    container_name: "injective-trading-bot-0"
+    build:
+      context: "./trading-bot"
+      args:
+        ACCESS_USER: Tofel
+        ACCESS_TOKEN: "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"
+    restart: always
+    environment:
+      <<: *common_trading_bot_env
+      TRADING_COSMOS_FROM: user0
+    depends_on:
+      injective-core:
+        condition: service_healthy
+    volumes:
+      - injectived_home_33/:/root
+    networks:
+      - injective
+
+  trading-bot-1:
+    container_name: "injective-trading-bot-1"
+    build:
+      context: "./trading-bot"
+      args:
+        ACCESS_USER: Tofel
+        ACCESS_TOKEN: "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"
+    restart: always
+    command:
+      - /bin/sh
+      - -c
+      - |
+        while [ ! -f /root/chain-started.flag ]; do
+          echo "Waiting for chain start up"
+          sleep 5
+        done
+        echo "Chain started. Starting trading bot"
+        injective-trading-bot start
+    environment:
+      <<: *common_trading_bot_env
+      TRADING_COSMOS_FROM: user1
+    depends_on:
+      injective-core:
+        condition: service_healthy
+    volumes:
+      - injectived_home_33/:/root
+    networks:
+      - injective
+
+  trading-bot-2:
+    container_name: "injective-trading-bot-2"
+    build:
+      context: "./trading-bot"
+      args:
+        ACCESS_USER: Tofel
+        ACCESS_TOKEN: "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"
+    restart: always
+    environment:
+      <<: *common_trading_bot_env
+      TRADING_COSMOS_FROM: user2
+    depends_on:
+      injective-core:
+        condition: service_healthy
+    volumes:
+      - injectived_home_33/:/root
+    networks:
+      - injective
+
+  trading-bot-3:
+    container_name: "injective-trading-bot-3"
+    build:
+      context: "./trading-bot"
+      args:
+        ACCESS_USER: Tofel
+        ACCESS_TOKEN: "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"
+    restart: always
+    environment:
+      <<: *common_trading_bot_env
+      TRADING_COSMOS_FROM: user3
+    depends_on:
+      injective-core:
+        condition: service_healthy
+    volumes:
+      - injectived_home_33/:/root
+    networks:
+      - injective
+
+volumes:
+  mongostatus_33:
+  injectived_home_33:
+  chronos_33:
+  mongodb_33:
+
+    # injective-price-oracle:
+    #   container_name: injective-price-oracle
+    #   image: public.ecr.aws/l9h3g6c6/injective-price-oracle:prod
+    #   command: tail -F asdsd
+    #   environment:
+    #     # log config
+    #     ORACLE_ENV: local
+    #     ORACLE_LOG_LEVEL: debug
+    #     # chain config
+    #     ORACLE_SERVICE_WAIT_TIMEOUT: "1m"
+    #     ORACLE_COSMOS_CHAIN_ID: injective-777
+    #     ORACLE_COSMOS_GRPC: "tcp://injective-core:9900"
+    #     ORACLE_TENDERMINT_RPC: "http://injective-core:26657"
+    #     ORACLE_COSMOS_GAS_PRICES: 500000000inj
+    #     # keyring config
+    #     ORACLE_COSMOS_KEYRING: test
+    #     ORACLE_COSMOS_KEYRING_DIR: /root/keyring-oracle/injective-777/n0
+    #     ORACLE_COSMOS_KEYRING_APP: injectived
+    #     ORACLE_COSMOS_FROM: user0
+    #     ORACLE_COSMOS_FROM_PASSPHRASE: 12345678
+    #     ORACLE_COSMOS_PK:
+    #     ORACLE_COSMOS_USE_LEDGER: "false"
+    #     ORACLE_STATSD_DISABLED: "true"
+    #   networks:
+    #     - injective
+    #   volumes:
+    #     - injectived_home/:/root/keyring-oracle
+    #     - ./price-oracle/dynamic-feeds:/root/oracle-feeds

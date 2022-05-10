@@ -1,0 +1,62 @@
+{
+  servers {
+    protocol {
+      allow_h2c
+    }
+  }
+}
+
+https://localhost {
+  root * /root/dist
+  file_server
+  handle_errors {
+    file_server
+    try_files {path}.html {path} / =404
+    rewrite * {http.error.status_code}.html
+  }
+}
+
+http://localhost:4444 {
+  reverse_proxy exchange-api:4444 {
+    transport http {
+      tls
+      tls_insecure_skip_verify
+    }
+  }
+}
+
+http://localhost:4445 {
+  reverse_proxy exchange-gateway:4444 {
+    transport http {
+      tls
+      tls_insecure_skip_verify
+    }
+  }
+}
+
+http://localhost:9091 {
+  reverse_proxy injective-core:9091 {
+    transport http {
+      tls
+      tls_insecure_skip_verify
+    }
+  }
+}
+
+http://localhost:10337 {
+  reverse_proxy injective-core:10337 {
+    transport http {
+      tls
+      tls_insecure_skip_verify
+    }
+  }
+}
+
+http://localhost:26657 {
+  reverse_proxy injective-core:26657 {
+    transport http {
+      tls
+      tls_insecure_skip_verify
+    }
+  }
+}

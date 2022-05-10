@@ -1,0 +1,117 @@
+{
+    "title": "Injective Astro Program Restructure",
+    "description": "Liquy liquidity",
+    "campaign_info": {
+        "campaign_duration_seconds": 600,
+        "quote_denoms": [
+            "peggy0xdAC17F958D2ee523a2206206994597C13D831ec7",
+            "peggy0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "ibc/B448C0CA358B958301D328CCDC5D5AD642FC30A6D3AE106FF721DB315F3DDE5C"
+        ],
+        "trading_reward_boost_info": {
+            "boosted_spot_market_ids": [
+                "0x0511ddc4e6586f3bfe1acb2dd905f8b8a82c97e1edaef654b12ca7e6031ca0fa",
+                "0x7f71c4fba375c964be8db7fc7a5275d974f8c6cdc4d758f2ac4997f106bb052b",
+                "0xd1956e20d74eeb1febe31cd37060781ff1cb266f49e0512b446a5fafa9a16034",
+                "0x26413a70c9b78a495023e5ab8003c9cf963ef963f6755f8b57255feb5744bf31",
+                "0xa508cb32923323679f29a032c70342c147c17d0145625922b0ef22e955c844c0",
+                "0xdce84d5e9c4560b549256f34583fb4ed07c82026987451d5da361e6e238287b3"
+            ],
+            "spot_market_multipliers": [
+                {
+                    "maker_points_multiplier": "1.500000000000000000",
+                    "taker_points_multiplier": "0.500000000000000000"
+                },
+                {
+                    "maker_points_multiplier": "1.500000000000000000",
+                    "taker_points_multiplier": "0.500000000000000000"
+                },
+                {
+                    "maker_points_multiplier": "1.500000000000000000",
+                    "taker_points_multiplier": "0.500000000000000000"
+                },
+                {
+                    "maker_points_multiplier": "1.500000000000000000",
+                    "taker_points_multiplier": "0.500000000000000000"
+                },
+                {
+                    "maker_points_multiplier": "2.500000000000000000",
+                    "taker_points_multiplier": "1.000000000000000000"
+                },
+                {
+                    "maker_points_multiplier": "1.500000000000000000",
+                    "taker_points_multiplier": "0.500000000000000000"
+                }
+            ],
+            "boosted_derivative_market_ids": [
+                "0x4ca0f92fc28be0c9761326016b5a1a2177dd6375558365116b5bdda9abc229ce",
+                "0x54d4505adef6a5cef26bc403a33d595620ded4e15b9e2bc3dd489b714813366a",
+                "0x1c79dac019f73e4060494ab1b4fcba734350656d6fc4d474f6a238c13c6f9ced",
+                "0x8158e603fb80c4e417696b0e98765b4ca89dcf886d3b9b2b90dc15bfb1aebd51",
+                "0x9b9980167ecc3645ff1a5517886652d94a0825e54a77d2057cbbe3ebee015963",
+                "0xc559df216747fc11540e638646c384ad977617d6d8f0ea5ffdfc18d52e58ab01"
+            ],
+            "derivative_market_multipliers": [
+                {
+                    "maker_points_multiplier": "2.200000000000000000",
+                    "taker_points_multiplier": "1.000000000000000000"
+                },
+                {
+                    "maker_points_multiplier": "2.200000000000000000",
+                    "taker_points_multiplier": "1.000000000000000000"
+                },
+                {
+                    "maker_points_multiplier": "2.200000000000000000",
+                    "taker_points_multiplier": "1.000000000000000000"
+                },
+                {
+                    "maker_points_multiplier": "2.200000000000000000",
+                    "taker_points_multiplier": "1.000000000000000000"
+                },
+                {
+                    "maker_points_multiplier": "2.500000000000000000",
+                    "taker_points_multiplier": "1.000000000000000000"
+                },
+                {
+                    "maker_points_multiplier": "2.200000000000000000",
+                    "taker_points_multiplier": "1.000000000000000000"
+                }
+            ]
+        },
+        "disqualified_market_ids": [
+            "0x8b1a4d3e8f6b559e30e40922ee3662dd78edf7042330d4d620d188699d1a9715",
+            "0xabc20971099f5df5d1de138f8ea871e7e9832e3b0b54b61056eae15b09fed678",
+            "0x01e920e081b6f3b2e5183399d5b6733bb6f80319e6be3805b95cb7236910ff0e",
+            "0x01edfab47f124748dc89998eb33144af734484ba07099014594321729a0ca16b",
+            "0x09cc2c28fbedbdd677e07924653f8f583d0ee5886e74046e7f114210d990784b",
+            "0x0c9f98c99b23e89dbf6a60bec05372790b39e03da0f86dd0208fc8e28751bd8c",
+            "0x170a06eb653548f67e94b0fcb82c5258c83b0a2b62ed24c55749d5ac77bc7621",
+            "0x28f3c9897e23750bf653889224f93390c467b83c86d736af79431958fff833d1",
+            "0x51092ddec80dfd0d41fee1a7d93c8465de47cd33966c8af8ee66c14fe341a545",
+            "0x29255e99290ff967bc8b351ce5b1cb08bc76a9a9d012133fb242bdf92cd28d89",
+            "0x5abfffe9079d53e0bf8ee9b3064b427acc3d71d6ba58a44235abe38f60115678",
+            "0x9a629b947b6f946af4f6076cfda67f3535d73ee3cef6176cf6d9c8d6b0a03f37",
+            "0xa43d2be9861efb0d188b136cef0ae2150f80e08ec318392df654520dd359fcd7",
+            "0xbe9d4a0a768c7e8efb6740be76af955928f93c247e0b3a1a106184c6cf3216a7",
+            "0xcdfbfaf1f24055e89b3c7cc763b8cb46ffff08cdc38c999d01f58d64af75dca9",
+            "0xe0dc13205fb8b23111d8555a6402681965223135d368eeeb964681f9ff12eb2a",
+            "0xe8bf0467208c24209c1cf0fd64833fa43eb6e8035869f9d043dbff815ab76d01",
+            "0xfe93c19c0a072c8dd208b96694e024305a7dff01bbf12cac2bfa81b246c69040",
+            "0x7471d361b90fc8541267bd088f498c2a461a2c0c57ff2b9a08279480e803b470",
+            "0x0f1a11df46d748c2b20681273d9528021522c6a0db00de4684503bbd53bef16e"
+        ]
+    },
+    "campaign_reward_pools": [
+        {
+            "start_timestamp": 1746651498,
+            "max_campaign_rewards": [
+                {
+                    "denom": "inj",
+                    "amount": "25173000000000000000000"
+                }
+            ]
+        }
+    ],
+    "campaign_reward_pools_additions": [],
+    "campaign_reward_pools_updates": []
+}
