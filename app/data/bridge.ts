@@ -3,7 +3,7 @@ import { TransferSide } from '~/types'
 
 export const networksMeta = [
   {
-    text: 'Injective Chain',
+    text: 'Injective',
     value: BridgingNetwork.Injective,
     icon: '/bridgingNetworks/injective.png'
   },
@@ -36,12 +36,12 @@ export const networksMeta = [
     text: 'Evmos',
     value: BridgingNetwork.Evmos,
     icon: '/bridgingNetworks/evmos.png'
+  },
+  {
+    text: 'Persistence',
+    value: BridgingNetwork.Persistence,
+    icon: '/bridgingNetworks/persistence.png'
   }
-  // {
-  //   text: 'Persistence',
-  //   value: BridgingNetwork.Persistence,
-  //   icon: '/bridgingNetworks/persistence.png'
-  // }
   /*
   {
     text: 'Juno',

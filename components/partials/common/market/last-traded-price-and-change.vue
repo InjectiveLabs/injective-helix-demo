@@ -5,18 +5,18 @@
       :class="{ 'text-xs': !lg }"
     >
       <v-icon-arrow
-        v-if="!lastTradedPrice.isNaN() && lastTradedPrice.gt(0)"
+        v-if="[Change.Increase, Change.Decrease].includes(lastTradePriceChange)"
         class="transform w-3 h-3 mr-1"
         :class="{
-          'text-aqua-500 rotate-90': lastPriceChange !== Change.Decrease,
-          'text-red-500 -rotate-90': lastPriceChange === Change.Decrease
+          'text-aqua-500 rotate-90': lastTradePriceChange === Change.Increase,
+          'text-red-500 -rotate-90': lastTradePriceChange === Change.Decrease
         }"
       />
       <span
         v-if="!lastTradedPrice.isNaN()"
         :class="{
-          'text-aqua-500': lastPriceChange !== Change.Decrease,
-          'text-red-500': lastPriceChange === Change.Decrease
+          'text-aqua-500': lastTradePriceChange !== Change.Decrease,
+          'text-red-500': lastTradePriceChange === Change.Decrease
         }"
       >
         {{ lastTradedPriceToFormat }}
@@ -96,6 +96,13 @@ export default Vue.extend({
       return this.$accessor.derivatives.lastTradedPrice
     },
 
+    currentLastSpotTradedPriceChange(): Change {
+      return this.$accessor.spot.lastTradedPriceChange
+    },
+    currentLastDerivativeTradedPriceChange(): Change {
+      return this.$accessor.derivatives.lastTradedPriceChange
+    },
+
     /* Current market is the market that we are currently trading on */
     currentMarket():
       | UiSpotMarketWithToken
@@ -118,6 +125,17 @@ export default Vue.extend({
       return market.type === MarketType.Spot
         ? currentLastSpotTradedPrice
         : currentLastDerivativeTradedPrice
+    },
+
+    lastTradePriceChange(): Change {
+      const {
+        currentLastSpotTradedPriceChange,
+        currentLastDerivativeTradedPriceChange,
+        market
+      } = this
+      return market.type === MarketType.Spot
+        ? currentLastSpotTradedPriceChange
+        : currentLastDerivativeTradedPriceChange
     },
 
     lastTradedPrice(): BigNumberInBase {
