@@ -9,7 +9,7 @@
     }"
     @click="$emit('selected', option)"
   >
-    <div class="">
+    <div :class="{ 'min-w-2xs sm:min-w-full': lg }">
       <slot name="subtitle"></slot>
 
       <div class="flex" :class="{ 'justify-between': lg }">
@@ -21,7 +21,7 @@
           v-else
           class="rounded-full mr-4 flex items-center justify-center"
           :class="[
-            lg ? 'w-12 h-12' : 'w-4 h-4 md:w-6 md:h-6',
+            lg ? 'min-w-12 w-12 h-12' : 'w-4 h-4 md:w-6 md:h-6',
             {
               'bg-primary-850': isSelected,
               'bg-gray-600  group-hover:bg-primary-850': !isSelected

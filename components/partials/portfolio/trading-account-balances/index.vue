@@ -69,7 +69,7 @@ export default Vue.extend({
   data() {
     return {
       components,
-      component: components.balances
+      component: components.positions
     }
   }
 })

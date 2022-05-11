@@ -2,6 +2,7 @@ const defaultTheme = require('tailwindcss/defaultTheme')
 
 const extraSizings = {
   btn: '6rem',
+  12: '3rem',
   14: '3.5rem',
   '4xs': '10rem',
   '3xs': '12rem',
@@ -28,7 +29,11 @@ module.exports = {
   theme: {
     container: {
       center: true,
-      padding: '1rem'
+      padding: {
+        DEFAULT: '1rem',
+        xs: '0.5rem',
+        sm: '1rem'
+      }
     },
 
     boxShadow: {
