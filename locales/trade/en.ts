@@ -29,6 +29,7 @@ export default {
     unfilled: 'Unfilled',
     filter: 'Filter by asset',
     cancelAllOrders: 'Cancel all orders',
+    closeAll: 'Close All',
     closeAllPositions: 'Close all positions',
     reduce_only: 'Reduce Only',
     leverage: 'Leverage',
@@ -87,7 +88,8 @@ export default {
     sell_short: 'Sell/Short',
     mark_price: 'Mark Price',
     mark_price_tooltip: 'The oracle price for the base asset.',
-    mark_price_tooltip_verbose: 'Mark Price: The oracle price for the base asset.',
+    mark_price_tooltip_verbose:
+      'Mark Price: The oracle price for the base asset.',
     funding_rate_tooltip:
       'The interest rate paid is determined by the difference between the perpetual swap price and the underlying spot price. If the funding rate is positive, traders with long positions will pay traders with short positions. If the funding rate is negative, traders with short positions will pay those in long positions.',
     est_receiving_amount: 'Est. Receiving Amount (Worst Case)',

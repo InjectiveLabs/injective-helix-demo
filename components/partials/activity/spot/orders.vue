@@ -50,7 +50,7 @@
       </v-table-wrapper>
 
       <portal to="activity-card-spot-count">
-        <span class="font-semibold text-lg">
+        <span class="font-semibold text-sm md:text-lg">
           {{ orders.length }}
         </span>
       </portal>

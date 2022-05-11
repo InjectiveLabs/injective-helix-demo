@@ -66,8 +66,8 @@ import {
   UiDerivativeMarketWithToken
 } from '@injectivelabs/ui-common'
 import { Wallet } from '@injectivelabs/ts-types'
-import Position from '~/components/partials/common/derivatives/position.vue'
-import PositionTableHeader from '~/components/partials/common/derivatives/position-table.header.vue'
+import Position from '~/components/partials/common/position/position.vue'
+import PositionTableHeader from '~/components/partials/common/position/position-table.header.vue'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import { TradeSelectorType } from '~/types/enums'
 
