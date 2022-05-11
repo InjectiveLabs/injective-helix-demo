@@ -8,6 +8,9 @@
     <v-market-chart slot="chart" :market="market" class="hidden lg:block" />
     <v-orderbook slot="order-books" :market="market" />
     <v-orders slot="orders" />
+    <div slot="modals">
+      <v-market-untradable :market="market" />
+    </div>
   </v-market-layout>
 </template>
 
@@ -20,7 +23,10 @@ import VTrading from '~/components/partials/spot/trading/index.vue'
 import VMarketChart from '~/components/partials/common/market/chart.vue'
 import VOrders from '~/components/partials/spot/orders.vue'
 import VOrderbook from '~/components/partials/spot/orderbook.vue'
+import VMarketUntradable from '~/components/partials/modals/market-untradable.vue'
+import { Modal } from '~/types'
 import { ORDERBOOK_POLLING_ENABLED } from '~/app/utils/constants'
+import { unTradableMarketSlugs } from '~/app/data/market'
 
 export default Vue.extend({
   components: {
@@ -29,7 +35,8 @@ export default Vue.extend({
     VBalances,
     VOrders,
     VOrderbook,
-    VMarketChart
+    VMarketChart,
+    VMarketUntradable
   },
 
   data() {
@@ -54,8 +61,16 @@ export default Vue.extend({
         this.setOrderbookPolling(),
         this.$accessor.spot.initMarketStreams()
       ])
-        .then(() => {})
+        .then(() => {
+          this.checkUnTradableMarket()
+        })
         .catch(this.$onRejected)
+    },
+
+    checkUnTradableMarket() {
+      if (unTradableMarketSlugs.includes(this.$route.params.spot)) {
+        this.$accessor.modal.openModal(Modal.MarketUnTradable)
+      }
     },
 
     setOrderbookPolling() {

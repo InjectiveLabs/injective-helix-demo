@@ -5,6 +5,10 @@ import {
 } from '@injectivelabs/ui-common'
 import { BAYC_WETH_PERP_SLUG } from '~/app/utils/constants'
 
+export interface UnTradableMarket {
+  slug: string
+}
+
 export const marketBase = {
   [MarketBase.Terra]: ['UST', 'LUNA']
 }
@@ -56,6 +60,7 @@ export const slugsToExcludeFromEthereumCategory = [
 ]
 
 export const excludedPriceDeviationSlugs = ['bayc-weth-perp'] as string[]
+export const unTradableMarketSlugs = ['huahua-usdt']
 
 export const upcomingMarkets = [
   //
