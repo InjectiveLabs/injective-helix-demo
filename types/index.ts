@@ -49,6 +49,7 @@ export interface MarketRoute {
   name: string
   params?: {
     marketId: string
+    market?: string
     derivative?: string
     spot?: string
   }

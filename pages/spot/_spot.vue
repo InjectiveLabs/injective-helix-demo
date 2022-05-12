@@ -5,9 +5,11 @@
       <v-trading class="mt-1 flex-1" />
     </template>
 
-    <v-market-chart slot="chart" :market="market" class="hidden lg:block" />
-    <v-orderbook slot="order-books" :market="market" />
-    <v-orders slot="orders" />
+    <template v-if="market">
+      <v-market-chart slot="chart" :market="market" class="hidden lg:block" />
+      <v-orderbook slot="order-books" :market="market" />
+      <v-orders slot="orders" />
+    </template>
   </v-market-layout>
 </template>
 
@@ -54,7 +56,9 @@ export default Vue.extend({
         this.setOrderbookPolling(),
         this.$accessor.spot.initMarketStreams()
       ])
-        .then(() => {})
+        .then(() => {
+          //
+        })
         .catch(this.$onRejected)
     },
 

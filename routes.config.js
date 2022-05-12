@@ -12,9 +12,7 @@ const mainnetSpot = [
   'weth-usdt',
   'luna-ust',
   'evmos-usdt',
-  'huahua-usdt',
   'ape-usdt',
-  'huahua-usdt',
   'link-usdt',
   'ust-usdt',
   'gf-usdt'
@@ -50,7 +48,9 @@ if (NETWORK === Network.Devnet || IS_MAINNET_STAGING) {
 
 const spotRoutes = spot.map((s) => `/spot/${s}`) || []
 const derivativesRoutes = derivatives.map((s) => `/derivatives/${s}`) || []
-const upcomingMarketsRoutes = ['/market', '/market/ape-usdt']
+
+const upcomingMarketsRoutes = ['/market/ape-usdt']
+const deprecatedMarketsRoutes = ['/market/huahua-usdt']
 
 module.exports = [
   '/',
@@ -60,9 +60,11 @@ module.exports = [
   '/trade-and-earn',
   '/faq',
   '/markets',
+  '/market',
   '/register',
   '/trade-and-earn',
   ...upcomingMarketsRoutes,
+  ...deprecatedMarketsRoutes,
   ...spotRoutes,
   ...derivativesRoutes
 ]

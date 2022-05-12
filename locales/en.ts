@@ -196,6 +196,18 @@ export default {
     soonToBeReleased: 'Coming soon!'
   },
 
+  marketDeprecated: {
+    title: 'No longer tradable',
+    description:
+      'Unfortunately {ticker} is no longer tradable on Injective Pro.',
+    subDescriptionOne:
+      'If you would like to continue trading {ticker}, you could still do so with other exchanges in the Injective ecosystem.',
+    subDescriptionTwo:
+      'If you would like to withdraw your {symbol} balances, you could do so via our {network} bridge on the Injective Hub.',
+    exploreOtherMarkets: 'Explore Other Markets',
+    injectiveBridge: 'Injective Bridge'
+  },
+
   navigation: {
     balances: 'Balances',
     funding: 'Funding',

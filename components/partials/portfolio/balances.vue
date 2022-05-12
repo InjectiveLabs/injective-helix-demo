@@ -67,7 +67,7 @@
         />
       </portal>
 
-      <v-panel :title="panelTitle">
+      <v-panel :title="panelTitle" card-wrapper-class="mt-6">
         <portal-target slot="context" name="portfolio-balance-sub-tabs" />
 
         <VHocLoading :status="status">
@@ -78,7 +78,7 @@
               bankBalancesWithUsdBalance,
               subaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd
             }"
-          ></component>
+          />
         </VHocLoading>
       </v-panel>
     </div>
