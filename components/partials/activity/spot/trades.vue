@@ -76,7 +76,7 @@ export default Vue.extend({
 
   computed: {
     trades(): UiSpotTrade[] {
-      return this.$accessor.activity.subaccountSpotTrades
+      return this.$accessor.spot.subaccountTrades
     },
 
     markets(): UiSpotMarketWithToken[] {
@@ -113,7 +113,7 @@ export default Vue.extend({
   mounted() {
     this.status.setLoading()
 
-    Promise.all([this.$accessor.activity.fetchSubaccountSpotTrades()])
+    Promise.all([this.$accessor.spot.fetchSubaccountTrades()])
       .then(() => {
         //
       })

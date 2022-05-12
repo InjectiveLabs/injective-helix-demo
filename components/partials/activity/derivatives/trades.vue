@@ -83,7 +83,7 @@ export default Vue.extend({
     },
 
     trades(): UiDerivativeTrade[] {
-      return this.$accessor.activity.subaccountDerivativeTrades
+      return this.$accessor.derivatives.trades
     },
 
     filteredTrades(): UiDerivativeTrade[] {
@@ -116,7 +116,7 @@ export default Vue.extend({
   mounted() {
     this.status.setLoading()
 
-    Promise.all([this.$accessor.activity.fetchSubaccountDerivativeTrades()])
+    Promise.all([this.$accessor.derivatives.fetchSubaccountTrades()])
       .then(() => {
         //
       })

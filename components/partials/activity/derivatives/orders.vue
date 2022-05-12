@@ -48,6 +48,16 @@
         </table>
         <v-empty-list v-else :message="$t('trade.emptyOrders')" />
       </v-table-wrapper>
+
+      <portal to="activity-card-derivative-count">
+        <span class="font-semibold text-lg">
+          {{ orders.length }}
+        </span>
+      </portal>
+
+      <portal to="activity-tab-derivative-count">
+        <span v-if="status.isNotLoading()"> ({{ orders.length }}) </span>
+      </portal>
     </v-card-table-wrap>
   </VHocLoading>
 </template>
@@ -82,7 +92,7 @@ export default Vue.extend({
 
   computed: {
     orders(): UiDerivativeLimitOrder[] {
-      return this.$accessor.activity.subaccountDerivativeOrders
+      return this.$accessor.derivatives.subaccountOrders
     },
 
     markets(): UiDerivativeMarketWithToken[] {
@@ -112,13 +122,14 @@ export default Vue.extend({
   mounted() {
     this.status.setLoading()
 
-    Promise.all([this.$accessor.activity.fetchSubaccountDerivativeOrders()])
+    Promise.all([this.$accessor.derivatives.fetchSubaccountOrders()])
       .then(() => {
         //
       })
       .catch(this.$onError)
       .finally(() => {
         this.status.setIdle()
+        this.$root.$emit('derivative-tab-loaded')
       })
   },
 
