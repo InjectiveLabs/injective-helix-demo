@@ -8,7 +8,7 @@
     <TableHeader classes="grid grid-cols-2 md:grid">
       <div class="flex items-center">
         <SortableHeaderItem
-          data-cy="markets-page-market-table-header"
+          data-cy="markets-market-table-header"
           :value="MarketHeaderType.Market"
           :sort-by="sortBy"
           :ascending="ascending"
@@ -20,7 +20,7 @@
         </SortableHeaderItem>
         <span class="mx-1 select-none">/</span>
         <SortableHeaderItem
-          data-cy="markets-page-volume_24h-table-header"
+          data-cy="markets-volume_24h-table-header"
           :value="MarketHeaderType.Volume"
           :sort-by="sortBy"
           :ascending="ascending"
@@ -34,7 +34,7 @@
 
       <SortableHeaderItem
         class="justify-end"
-        data-cy="markets-page-change_24h-table-header"
+        data-cy="markets-change_24h-table-header"
         :value="MarketHeaderType.Change"
         :sort-by="sortBy"
         :ascending="ascending"
@@ -69,7 +69,7 @@
       <v-empty-list
         slot="empty"
         classes="min-h-3xs"
-        data-cy="markets-page-no-data-table"
+        data-cy="markets-no-data-table"
         :message="$t('markets.emptyHeader')"
       >
         <span class="mt-1 text-2xs text-gray-500">

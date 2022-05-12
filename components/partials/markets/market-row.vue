@@ -14,12 +14,12 @@
       items-center
       rounded
     "
-    :data-cy="`markets-page-table-row-${market.ticker}`"
+    :data-cy="`markets-table-row-${market.ticker}`"
   >
     <span class="text-sm col-span-2 sm:col-span-3 flex items-center">
       <div
         class="3md:hidden text-primary-500 mr-3 cursor-pointer"
-        data-cy="markets-page-favourite-button"
+        data-cy="markets-favourite-button"
         @click="updateWatchList"
       >
         <v-icon-star v-if="isFavorite" class="min-w-6 w-6 h-6" />
@@ -35,7 +35,7 @@
         <div class="flex flex-col">
           <span
             class="tracking-widest font-bold"
-            data-cy="markets-page-ticker-name-table-data"
+            data-cy="markets-ticker-name-table-data"
             >{{ market.ticker }}
           </span>
           <span class="text-gray-500 text-xs hidden md:block">
@@ -83,7 +83,7 @@
 
     <span
       class="hidden font-mono sm:flex items-center justify-end col-span-2"
-      data-cy="markets-page-last-traded-price-table-data"
+      data-cy="markets-last-traded-price-table-data"
     >
       <v-icon-arrow
         v-if="!lastTradedPrice.isNaN() && lastTradedPrice.gt(0)"
@@ -108,7 +108,7 @@
     <span class="hidden sm:block font-mono text-right col-span-2">
       <span
         v-if="!change.isNaN()"
-        data-cy="markets-page-change_24h-table-data"
+        data-cy="markets-change_24h-table-data"
         :class="change.gte(0) ? 'text-aqua-500' : 'text-red-500'"
       >
         {{ changeToFormat }}%
@@ -119,12 +119,12 @@
     <span class="hidden sm:block font-mono col-span-3">
       <div v-if="!quoteVolume.isNaN()" class="flex flex-col items-end">
         <span
-data-cy="markets-page-volume-usd-table-data"
+data-cy="markets-volume-usd-table-data"
 >{{ volumeInUsdToFormat }} USD
         </span>
         <span
           class="text-xs text-gray-500"
-          data-cy="markets-page-volume-quote-asset-table-data"
+          data-cy="markets-volume-quote-asset-table-data"
         >
           {{ quoteVolumeToFormat }}
           <span>
@@ -138,7 +138,7 @@ data-cy="markets-page-volume-usd-table-data"
     <span class="hidden 3md:flex col-span-2 items-center justify-end">
       <nuxt-link
         class="text-primary-500 hover:text-primary-600"
-        data-cy="markets-page-trade-link"
+        data-cy="markets-trade-link"
         :to="marketRoute"
       >
         {{ $t('trade.trade') }}
@@ -157,18 +157,18 @@ data-cy="markets-page-volume-usd-table-data"
           cursor-pointer
           hover:bg-primary-500 hover:bg-opacity-10
         "
-        data-cy="markets-page-favorite-button"
+        data-cy="markets-favorite-button"
         @click="updateWatchList"
       >
         <v-icon-star
           v-if="isFavorite"
           class="min-w-5 w-5 h-5"
-          data-cy="markets-page-is-favorite-icon"
+          data-cy="markets-is-favorite-icon"
         />
         <v-icon-star-border
           v-else
           class="min-w-5 w-5 h-5"
-          data-cy="markets-page-is-not-favorite-icon"
+          data-cy="markets-is-not-favorite-icon"
         />
       </div>
     </span>

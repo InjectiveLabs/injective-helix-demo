@@ -14,7 +14,7 @@
       />
       <span
         v-if="!lastTradedPrice.isNaN()"
-        data-cy="markets-sidebar-last-traded-price-table-data"
+        data-cy="markets-last-traded-price-table-data"
         :class="{
           'text-aqua-500': lastTradePriceChange !== Change.Decrease,
           'text-red-500': lastTradePriceChange === Change.Decrease
@@ -28,7 +28,7 @@
     <div v-if="!change.isNaN()" class="mt-1 text-xs">
       <span
         :class="change.gte(0) ? 'text-aqua-500' : 'text-red-500'"
-        data-cy="markets-sidebar-change_24h-table-data"
+        data-cy="markets-change_24h-table-data"
       >
         {{ changeToFormat }}%
       </span>

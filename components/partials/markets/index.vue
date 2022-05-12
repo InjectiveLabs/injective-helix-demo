@@ -52,7 +52,7 @@
       >
         <span
           class="text-gray-200 text-xs"
-          data-cy="markets-sidebar-market-table-header"
+          data-cy="markets-market-table-header"
         >
           {{ $t('trade.market') }}
         </span>
@@ -73,7 +73,7 @@
       >
         <span
           class="text-gray-200 text-xs"
-          data-cy="markets-sidebar-change_24h-table-header"
+          data-cy="markets-change_24h-table-header"
         >
           {{ $t('trade.market_change_24h') }}
         </span>
@@ -88,7 +88,7 @@
       >
         <span
           class="text-gray-200 text-xs"
-          data-cy="markets-sidebar-volume_24h-table-header"
+          data-cy="markets-volume_24h-table-header"
         >
           {{ $t('trade.volume_24h') }}
         </span>
@@ -103,13 +103,12 @@
         :market="market"
         :summary="summary"
         :volume-in-usd="volumeInUsd"
-        :data-cy="'markets-sidebar-table-row-' + market.ticker"
       />
 
       <v-empty-list
         slot="empty"
         classes="bg-gray-850 min-h-3xs"
-        data-cy="markets-sidebar-no-data"
+        data-cy="markets-no-data-table"
         :message="$t('markets.emptyHeader')"
       >
         <span class="mt-2 text-xs text-gray-500">{{
