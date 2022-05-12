@@ -49,7 +49,7 @@ export enum Modal {
   Terms = 'terms',
   MarketBeta = 'market-beta',
   MarketNew = 'market-new',
-  MarketUnTradable = 'market-un-tradable',
+  MarketDeprecated = 'market-deprecated',
   Bridge = 'bridge',
   BridgeConfirm = 'bridge-confirm',
   BridgeCompleted = 'bridge-completed',

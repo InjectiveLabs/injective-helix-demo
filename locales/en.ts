@@ -196,9 +196,10 @@ export default {
     soonToBeReleased: 'Coming soon!'
   },
 
-  marketUnTradable: {
+  marketDeprecated: {
     title: 'No longer tradable',
-    description: 'Unfortunately {ticker} is no longer tradable on Injective Pro.',
+    description:
+      'Unfortunately {ticker} is no longer tradable on Injective Pro.',
     subDescriptionOne:
       'If you would like to continue trading {ticker}, you could still do so with other exchanges in the Injective ecosystem.',
     subDescriptionTwo:

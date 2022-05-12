@@ -1,17 +1,17 @@
 <template>
   <v-modal :is-open="isModalOpen" has-blur-bg sm @modal-closed="closeModal">
     <h3 slot="title" class="text-base">
-      {{ $t('marketUnTradable.title') }}
+      {{ $t('marketDeprecated.title') }}
     </h3>
 
     <div class="relative">
-      <i18n path="marketUnTradable.description" tag="p" class="text-sm">
+      <i18n path="marketDeprecated.description" tag="p" class="text-sm">
         <span slot="ticker" class="font-bold">{{ ticker }}</span>
       </i18n>
 
       <ul class="list-disc ml-4 mt-3 text-xs">
-        <li>{{ $t('marketUnTradable.subDescriptionOne', { ticker }) }}</li>
-        <i18n path="marketUnTradable.subDescriptionTwo" tag="p" class="mt-2">
+        <li>{{ $t('marketDeprecated.subDescriptionOne', { ticker }) }}</li>
+        <i18n path="marketDeprecated.subDescriptionTwo" tag="li" class="mt-2">
           <span slot="symbol" class="uppercase">{{ symbol }}</span>
           <span slot="network" class="capitalize">{{ network }}</span>
         </i18n>
@@ -21,7 +21,7 @@
         <nuxt-link :to="{ name: 'markets' }" class="">
           <v-button lg primary class="w-full" @click.stop="() => {}">
             <span class="font-semibold">
-              {{ $t('marketUnTradable.exploreOtherMarkets') }}
+              {{ $t('marketDeprecated.exploreOtherMarkets') }}
             </span>
           </v-button>
         </nuxt-link>
@@ -33,7 +33,7 @@
             class="flex items-center justify-center text-primary-500 hover:text-primary-600"
           >
             <span class="mr-2 font-semibold">
-              {{ $t('marketUnTradable.injectiveBridge') }}
+              {{ $t('marketDeprecated.injectiveBridge') }}
             </span>
             <v-icon-external-link class="w-4 h-4" />
           </a>
@@ -44,18 +44,17 @@
 </template>
 
 <script lang="ts">
-import {
-  UiSpotMarketWithToken,
-  BridgingNetwork
-} from '@injectivelabs/ui-common'
-import Vue, { PropType } from 'vue'
+import { BridgingNetwork } from '@injectivelabs/ui-common'
+import Vue from 'vue'
+import { deprecatedMarkets } from '~/app/data/market'
 import { Modal } from '~/types'
 
 export default Vue.extend({
-  props: {
-    market: {
-      type: Object as PropType<UiSpotMarketWithToken>,
-      required: true
+  data() {
+    const [deprecatedMarket] = deprecatedMarkets
+
+    return {
+      market: deprecatedMarket
     }
   },
 
@@ -96,17 +95,17 @@ export default Vue.extend({
     },
 
     isModalOpen(): boolean {
-      return this.$accessor.modal.modals[Modal.MarketUnTradable]
+      return this.$accessor.modal.modals[Modal.MarketDeprecated]
     }
   },
 
   beforeDestroy() {
-    this.$accessor.modal.closeModal(Modal.MarketUnTradable)
+    this.$accessor.modal.closeModal(Modal.MarketDeprecated)
   },
 
   methods: {
     closeModal() {
-      this.$router.push({ name: 'markets' })
+      this.$router.push({ name: 'index' })
     }
   }
 })
