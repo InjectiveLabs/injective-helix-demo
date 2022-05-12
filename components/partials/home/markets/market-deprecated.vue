@@ -27,7 +27,7 @@
         </div>
       </span>
       <span class="text-center text-sm col-span-7">
-        {{ $t('marketNew.soonToBeReleased') }}
+        {{ $t('marketDeprecated.title') }}
       </span>
     </TableRow>
   </nuxt-link>

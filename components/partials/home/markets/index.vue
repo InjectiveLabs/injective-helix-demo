@@ -19,7 +19,7 @@
             </div>
           </div>
 
-          <div class="flex items-center mb-6">
+          <div class="flex items-center my-2 -mx-2">
             <v-button
               :class="{
                 'text-gray-500': filterType !== MarketFilterType.Volume
@@ -107,6 +107,10 @@ export default Vue.extend({
       return this.$accessor.spot.markets
     },
 
+    spotMarketsSummary(): UiSpotMarketSummary[] {
+      return this.$accessor.spot.marketsSummary
+    },
+
     upcomingMarkets(): Array<
       UiSpotMarketWithToken | UiDerivativeMarketWithToken
     > {
@@ -117,10 +121,6 @@ export default Vue.extend({
       UiSpotMarketSummary | UiDerivativeMarketSummary
     > {
       return this.$accessor.exchange.upcomingMarketsSummaries
-    },
-
-    spotMarketsSummary(): UiSpotMarketSummary[] {
-      return this.$accessor.spot.marketsSummary
     },
 
     markets(): Array<UiSpotMarketWithToken | UiDerivativeMarketWithToken> {
