@@ -35,7 +35,7 @@ export default {
     seeOnExplorer: 'View on explorer',
 
     transferTitleTooltip:
-      'To trade on Injective Chain, funds must be in the Trading Account.',
+      'To trade on Injective, funds must be in the Trading Account.',
     withdrawFromInjectiveNote:
       'Note: There is a Bridge fee of ≈{fee} {asset} included in the transaction',
     withdrawFromEthereumNote:

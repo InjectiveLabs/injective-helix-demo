@@ -85,6 +85,8 @@
       </portal>
 
       <v-panel :title="panelTitle">
+        <portal-target slot="context" name="portfolio-balance-sub-tabs" />
+
         <VHocLoading :status="status">
           <component
             :is="`v-${component}`"
@@ -116,7 +118,6 @@ import {
   SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance,
   TokenWithBalanceAndPrice,
   UiDerivativeMarketWithToken,
-  UiDerivativeOrderbook,
   UiPosition,
   ZERO_IN_BASE,
   ZERO_TO_STRING
@@ -187,18 +188,13 @@ export default Vue.extend({
       return this.$accessor.account.subaccountBalancesWithTokenAndPrice
     },
 
-    orderbooks(): Record<string, UiDerivativeOrderbook> {
-      return this.$accessor.positions.orderbooks
-    },
-
     totalPositionsPnlByQuoteDenom(): Record<string, BigNumberInBase> {
-      const { markets, orderbooks, positions } = this
+      const { markets, positions } = this
 
       return positions.reduce((list, p) => {
         const market = markets.find((m) => m.marketId === p.marketId)
-        const orderbook = orderbooks[p.marketId]
 
-        if (!market || !orderbook) {
+        if (!market) {
           return list
         }
 
@@ -211,21 +207,13 @@ export default Vue.extend({
         const price = new BigNumberInWei(p.entryPrice).toBase(
           market.quoteToken.decimals
         )
+        const markPrice = new BigNumberInWei(p.markPrice).toBase(
+          market.quoteToken.decimals
+        )
 
-        const [sell] = orderbook.sells
-        const [buy] = orderbook.buys
-
-        const highestBuy = new BigNumberInBase(buy ? buy.price : 0)
-        const lowestSell = new BigNumberInBase(sell ? sell.price : 0)
-        const executionPrice = new BigNumberInWei(
-          highestBuy.plus(lowestSell).div(2)
-        ).toBase(market.quoteToken.decimals)
-
-        const pnl = executionPrice.isZero()
-          ? ZERO_IN_BASE
-          : new BigNumberInBase(p.quantity)
-              .times(executionPrice.minus(price))
-              .times(p.direction === TradeDirection.Long ? 1 : -1)
+        const pnl = new BigNumberInBase(p.quantity)
+          .times(markPrice.minus(price))
+          .times(p.direction === TradeDirection.Long ? 1 : -1)
 
         list[quoteDenom] = list[quoteDenom].plus(pnl)
 
@@ -432,7 +420,6 @@ export default Vue.extend({
 
     Promise.all([
       this.$accessor.derivatives.fetchSubaccountOrders(),
-      this.$accessor.positions.fetchMarketsOrderbook(),
       this.$accessor.positions.fetchSubaccountPositions(),
       // set up streaming
       this.$accessor.account.streamSubaccountBalances(),
@@ -460,10 +447,10 @@ export default Vue.extend({
   methods: {
     fetchBalances(): Promise<void[]> {
       return Promise.all([
-        this.$accessor.bank.fetchBankBalancesWithToken(),
         this.$accessor.account.fetchSubaccountsBalancesWithPrices(),
-        this.$accessor.positions.fetchSubaccountPositions(), // refresh mark price
-        this.$accessor.positions.fetchMarketsOrderbook()
+        this.$accessor.bank.fetchBankBalancesWithToken(),
+        this.$accessor.derivatives.fetchSubaccountOrders(),
+        this.$accessor.positions.fetchSubaccountPositions() // refresh mark price
       ])
     },
 

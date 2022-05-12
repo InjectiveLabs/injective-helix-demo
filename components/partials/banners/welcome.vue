@@ -1,10 +1,6 @@
 <template>
   <v-card
-    v-if="
-      ((!hasMadeAnyTransfers && !hasAnyTradingAccountBalances) ||
-        !hasMadeAnyTrades) &&
-      status.isIdle()
-    "
+    v-if="showWelcomeBanner && status.isNotLoading()"
     md
     :style="{ backgroundImage: `url('/svg/bg-dark.svg')` }"
     class="bg-cover mb-12"
@@ -148,6 +144,19 @@ export default Vue.extend({
       }
 
       return 3
+    },
+
+    showWelcomeBanner(): boolean {
+      const {
+        hasMadeAnyTransfers,
+        hasAnyTradingAccountBalances,
+        hasMadeAnyTrades
+      } = this
+
+      return (
+        (!hasMadeAnyTransfers && !hasAnyTradingAccountBalances) ||
+        !hasMadeAnyTrades
+      )
     }
   },
 

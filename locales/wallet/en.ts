@@ -31,7 +31,7 @@ export default {
     switchToEthereumAddress: 'Switch to Ethereum Address',
     switchToInjectiveAddress: 'Switch to Injective Address',
     trezorConnectionNote:
-      "Note: At this point there is no support for Trezor - please don't use Trezor (including Metamask's Trezor integration) as it might cause your funds being stuck on the Injective Chain.",
+      "Note: At this point there is no support for Trezor - please don't use Trezor (including Metamask's Trezor integration) as it might cause your funds being stuck on Injective.",
     pleaseConnectToYourWallet:
       'Please connect to your wallet to see more details',
     pleaseConnectToYourWalletCta:
