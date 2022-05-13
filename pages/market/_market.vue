@@ -13,14 +13,20 @@
 
     <div slot="modals">
       <v-modal-market-new v-if="marketIsNew" />
-      <v-modal-market-deprecated v-if="marketIsDeprecated" />
+      <v-modal-market-deprecated
+        v-if="deprecatedMarket"
+        :market="deprecatedMarket"
+      />
     </div>
   </v-market-layout>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { UiDerivativeMarketWithToken } from '@injectivelabs/ui-common'
+import {
+  UiDerivativeMarketWithToken,
+  UiSpotMarketWithToken
+} from '@injectivelabs/ui-common'
 import VMarketLayout from '~/layouts/market.vue'
 import VModalMarketNew from '~/components/partials/modals/market-new.vue'
 import VModalMarketDeprecated from '~/components/partials/modals/market-deprecated.vue'
@@ -65,14 +71,17 @@ export default Vue.extend({
       return upcomingMarkets.map((m) => m.slug).includes(market)
     },
 
-    marketIsDeprecated(): boolean {
-      const { market } = this.$route.params
+    deprecatedMarket():
+      | UiSpotMarketWithToken
+      | UiDerivativeMarketWithToken
+      | undefined {
+      const {
+        $route: {
+          params: { market: slug }
+        }
+      } = this
 
-      if (!market) {
-        return false
-      }
-
-      return deprecatedMarkets.map((m) => m.slug).includes(market)
+      return deprecatedMarkets.find((m) => m.slug === slug)
     }
   },
 
@@ -86,7 +95,7 @@ export default Vue.extend({
         this.$accessor.modal.openModal(Modal.MarketNew)
       }
 
-      if (this.marketIsDeprecated) {
+      if (this.deprecatedMarket) {
         this.$accessor.modal.openModal(Modal.MarketDeprecated)
       }
     }

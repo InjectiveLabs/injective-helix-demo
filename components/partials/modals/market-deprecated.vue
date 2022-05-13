@@ -5,11 +5,15 @@
     </h3>
 
     <div class="relative">
-      <i18n path="marketDeprecated.description" tag="p" class="text-sm">
+      <i18n path="marketDeprecated.description" tag="p" class="text-sm mb-3">
         <span slot="ticker" class="font-bold">{{ ticker }}</span>
       </i18n>
 
-      <ul class="list-disc ml-4 mt-3 text-xs">
+      <p v-if="isTerraNetwork" class="text-sm">
+        {{ $t('marketDeprecated.terraDescription') }}
+      </p>
+
+      <ul v-else class="list-disc ml-4 text-xs">
         <li>{{ $t('marketDeprecated.subDescriptionOne', { ticker }) }}</li>
         <i18n path="marketDeprecated.subDescriptionTwo" tag="li" class="mt-2">
           <span slot="symbol" class="uppercase">{{ symbol }}</span>
@@ -26,7 +30,7 @@
           </v-button>
         </nuxt-link>
 
-        <v-button lg outline @click.stop="() => {}">
+        <v-button v-if="!isTerraNetwork" lg outline @click.stop="() => {}">
           <a
             :href="`https://hub.injective.network/bridge/?token=${symbol}`"
             target="_blank"
@@ -44,21 +48,31 @@
 </template>
 
 <script lang="ts">
-import { BridgingNetwork } from '@injectivelabs/ui-common'
-import Vue from 'vue'
-import { deprecatedMarkets } from '~/app/data/market'
+import {
+  BridgingNetwork,
+  UiDerivativeMarketWithToken,
+  UiSpotMarketWithToken
+} from '@injectivelabs/ui-common'
+import Vue, { PropType } from 'vue'
 import { Modal } from '~/types'
 
 export default Vue.extend({
-  data() {
-    const [deprecatedMarket] = deprecatedMarkets
-
-    return {
-      market: deprecatedMarket
+  props: {
+    market: {
+      type: Object as PropType<
+        UiDerivativeMarketWithToken | UiSpotMarketWithToken
+      >,
+      required: true
     }
   },
 
   computed: {
+    isTerraNetwork(): boolean {
+      const { market } = this
+
+      return ['luna-ust', 'luna-ust-perp'].includes(market.slug)
+    },
+
     ticker(): string {
       const { market } = this
 

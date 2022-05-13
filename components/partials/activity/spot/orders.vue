@@ -48,6 +48,16 @@
         </table>
         <v-empty-list v-else :message="$t('trade.emptyOrders')" />
       </v-table-wrapper>
+
+      <portal to="activity-card-spot-count">
+        <span class="font-semibold text-lg">
+          {{ orders.length }}
+        </span>
+      </portal>
+
+      <portal to="activity-tab-spot-count">
+        <span v-if="status.isNotLoading()"> ({{ orders.length }}) </span>
+      </portal>
     </v-card-table-wrap>
   </VHocLoading>
 </template>
@@ -82,7 +92,7 @@ export default Vue.extend({
 
   computed: {
     orders(): UiSpotLimitOrder[] {
-      return this.$accessor.activity.subaccountSpotOrders
+      return this.$accessor.spot.subaccountOrders
     },
 
     markets(): UiSpotMarketWithToken[] {
@@ -112,13 +122,14 @@ export default Vue.extend({
   mounted() {
     this.status.setLoading()
 
-    Promise.all([this.$accessor.activity.fetchSubaccountSpotOrders()])
+    Promise.all([this.$accessor.spot.fetchSubaccountOrders()])
       .then(() => {
         //
       })
       .catch(this.$onError)
       .finally(() => {
         this.status.setIdle()
+        this.$root.$emit('spot-tab-loaded')
       })
   },
 

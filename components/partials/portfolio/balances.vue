@@ -13,6 +13,9 @@
             />
           </div>
         </template>
+
+        <v-icon-wallet slot="icon" class="w-6 h-auto" />
+
         <div class="text-right">
           <p class="text-gray-500 text-xs uppercase mb-3 tracking-wider">
             {{ $t('portfolio.walletValue') }}
@@ -37,6 +40,9 @@
             />
           </div>
         </template>
+
+        <v-icon-rectangle-chart slot="icon" class="w-6 h-auto" />
+
         <div class="text-right">
           <p class="text-gray-500 text-xs uppercase mb-3 tracking-wider">
             {{ $t('portfolio.portfolioValue') }}
