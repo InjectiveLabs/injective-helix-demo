@@ -10,7 +10,6 @@ const mainnetSpot = [
   'atom-usdt',
   'xprt-usdt',
   'weth-usdt',
-  'luna-ust',
   'evmos-usdt',
   'ape-usdt',
   'link-usdt',
@@ -30,7 +29,6 @@ const mainnetDerivatives = [
   'inj-usdt-perp',
   'eth-usdt-perp',
   'bayc-weth-perp',
-  'luna-ust-perp',
   'bnb-usdt-perp',
   'atom-usdt-perp'
 ]
@@ -50,7 +48,11 @@ const spotRoutes = spot.map((s) => `/spot/${s}`) || []
 const derivativesRoutes = derivatives.map((s) => `/derivatives/${s}`) || []
 
 const upcomingMarketsRoutes = ['/market/ape-usdt']
-const deprecatedMarketsRoutes = ['/market/huahua-usdt']
+const deprecatedMarketsRoutes = [
+  '/market/huahua-usdt',
+  '/market/luna-ust',
+  '/market/luna-ust-perp'
+]
 
 module.exports = [
   '/',
