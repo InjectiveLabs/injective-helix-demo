@@ -1,0 +1,29 @@
+name: Build test image and run tests
+
+on:
+  push:
+
+jobs:
+  build_image:
+    name: 'Build test image'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout injective-dex
+        uses: actions/checkout@master
+        with:
+          repository: InjectiveLabs/injective-dex
+          ref: ${{ github.ref }}
+          token: ${{ secrets.GH_TOKEN }}
+          path: ./injective-dex
+      - name: Build image
+        run: |
+          cd injective-dex
+          docker build -t public.ecr.aws/l9h3g6c6/injective-dex:${GITHUB_REF##*/} -f .github/Dockerfile .
+      - name: Push image
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_KEY }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET }}
+          aws configure set region us-east-1
+          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/l9h3g6c6
+          docker push public.ecr.aws/l9h3g6c6/injective-exchange:${GITHUB_REF##*/}
