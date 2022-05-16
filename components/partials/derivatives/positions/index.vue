@@ -1,10 +1,7 @@
 <template>
-  <div v-if="market">
+  <div v-if="market" class="h-full">
     <!-- mobile table -->
-    <TableBody
-      :show-empty="filteredPositions.length === 0"
-      class="sm:hidden pt-0 bg-gray-1050"
-    >
+    <TableBody :show-empty="filteredPositions.length === 0" class="sm:hidden">
       <mobile-position
         v-for="(position, index) in sortedPositions"
         :key="`mobile-positions-${index}-${position.marketId}`"

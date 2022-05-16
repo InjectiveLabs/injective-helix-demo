@@ -24,6 +24,7 @@
         </div>
 
         <v-button
+          v-if="orderFillable"
           class="cursor-pointer"
           :status="status"
           @click.stop="onCancelOrder"
@@ -193,6 +194,12 @@ export default Vue.extend({
       const { unfilledQuantity, quantity } = this
 
       return quantity.minus(unfilledQuantity)
+    },
+
+    orderFillable(): boolean {
+      const { unfilledQuantity, quantity } = this
+
+      return unfilledQuantity.lte(quantity)
     },
 
     total(): BigNumberInBase {

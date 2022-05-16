@@ -21,6 +21,7 @@
         </div>
 
         <div
+          v-if="filteredPositions.length > 0"
           class="col-span-12 flex justify-between items-center sm:hidden my-3 text-xs px-3"
         >
           <span class="tracking-widest uppercase tracking-3">
@@ -65,7 +66,7 @@
         />
       </TableBody>
 
-      <v-table-wrapper class="mt-4 hidden sm:block">
+      <v-table-wrapper break-md class="mt-4 hidden sm:block">
         <table v-if="filteredPositions.length > 0" class="table">
           <position-table-header />
           <tbody>

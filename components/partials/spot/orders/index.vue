@@ -1,5 +1,5 @@
 <template>
-  <div v-if="market">
+  <div v-if="market" class="h-full">
     <!-- mobile table -->
     <TableBody
       :show-empty="filteredOrders.length === 0"
@@ -42,9 +42,9 @@ import {
   UiSpotLimitOrder,
   UiSpotMarketWithToken
 } from '@injectivelabs/ui-common'
+import MobileOrder from '~/components/partials/common/spot/mobile-order.vue'
 import Order from '~/components/partials/common/spot/order.vue'
 import OrdersTableHeader from '~/components/partials/common/spot/orders-table-header.vue'
-import MobileOrder from '~/components/partials/common/spot/mobile-order.vue'
 import TableBody from '~/components/elements/table-body.vue'
 
 export default Vue.extend({

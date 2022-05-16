@@ -21,6 +21,7 @@
         </div>
 
         <div
+          v-if="filteredOrders.length > 0"
           class="col-span-12 flex justify-between items-center sm:hidden my-3 text-xs px-3"
         >
           <span class="tracking-widest uppercase tracking-3">
