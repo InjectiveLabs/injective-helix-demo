@@ -27,7 +27,7 @@
             {{ $t('trade.side') }} / {{ $t('trade.market') }}
           </span>
           <span
-            class="text-red-550 leading-5"
+            class="text-red-550 leading-5 cursor-pointer"
             @click.stop="handleClosePositions"
           >
             {{ $t('trade.closeAll') }}

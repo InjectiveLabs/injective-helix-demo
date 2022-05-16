@@ -26,7 +26,7 @@
           </v-market-card>
 
           <v-market-card
-            v-if="activeIndex === 2"
+            v-if="topVolume && activeIndex === 2"
             key="market-card-2"
             :market="topVolume.market"
             :summary="topVolume.summary"
@@ -36,7 +36,7 @@
           </v-market-card>
 
           <v-market-card
-            v-if="activeIndex === 3"
+            v-if="topGainer && activeIndex === 3"
             key="market-card-3"
             :market="topGainer.market"
             :summary="topGainer.summary"
@@ -157,8 +157,12 @@ export default Vue.extend({
       })
     },
 
-    topVolume(): UiMarketAndSummaryWithVolumeInUsd {
+    topVolume(): UiMarketAndSummaryWithVolumeInUsd | undefined {
       const { markets } = this
+
+      if (markets.length === 0) {
+        return undefined
+      }
 
       return markets.reduce(
         (
@@ -176,8 +180,12 @@ export default Vue.extend({
       )
     },
 
-    topGainer(): UiMarketAndSummaryWithVolumeInUsd {
+    topGainer(): UiMarketAndSummaryWithVolumeInUsd | undefined {
       const { marketsWithLastTradedPriceGreaterThanZero } = this
+
+      if (marketsWithLastTradedPriceGreaterThanZero.length === 0) {
+        return undefined
+      }
 
       return marketsWithLastTradedPriceGreaterThanZero.reduce(
         (

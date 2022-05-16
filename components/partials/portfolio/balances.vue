@@ -146,7 +146,7 @@ export default Vue.extend({
       hideBalance: false,
 
       components,
-      component: components.tradingAccount
+      component: components.bankAccount
     }
   },
 
