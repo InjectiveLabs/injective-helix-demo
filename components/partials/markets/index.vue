@@ -139,6 +139,7 @@ import {
   marketIsPartOfType,
   marketIsPartOfSearch
 } from '~/app/utils/market'
+import { deprecatedMarkets, upcomingMarkets } from '~/app/data/market'
 
 enum MarketHeaderType {
   Market = 'market',
@@ -205,6 +206,8 @@ export default Vue.extend({
 
     sortedMarkets(): UiMarketAndSummaryWithVolumeInUsd[] {
       const { filteredMarkets, ascending, sortBy } = this
+      const upcomingMarketsSlugs = upcomingMarkets.map(({ slug }) => slug)
+      const deprecatedMarketsSlugs = deprecatedMarkets.map(({ slug }) => slug)
 
       if (sortBy.trim() === '') {
         return filteredMarkets
@@ -215,6 +218,13 @@ export default Vue.extend({
           m1: UiMarketAndSummaryWithVolumeInUsd,
           m2: UiMarketAndSummaryWithVolumeInUsd
         ) => {
+          if (
+            upcomingMarketsSlugs.includes(m1.market.slug) ||
+            deprecatedMarketsSlugs.includes(m1.market.slug)
+          ) {
+            return 1
+          }
+
           if (sortBy === MarketHeaderType.Market) {
             return m2.market.ticker.localeCompare(m1.market.ticker)
           }
@@ -232,6 +242,7 @@ export default Vue.extend({
           if (new BigNumberInBase(m2.volumeInUsd).eq(m1.volumeInUsd)) {
             return m1.market.ticker.localeCompare(m2.market.ticker)
           }
+
           // default: sort by volume
           return m2.volumeInUsd.minus(m1.volumeInUsd).toNumber()
         }
@@ -279,6 +290,10 @@ export default Vue.extend({
 
       if (category && Object.values(MarketCategoryType).includes(category)) {
         this.activeCategory = category
+      }
+
+      if (type && MarketType.Favourite.toLowerCase() === type) {
+        this.activeType = MarketType.Favourite
       }
 
       if (type && MarketType.Spot.toLowerCase() === type) {

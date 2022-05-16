@@ -95,6 +95,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import VMarketCard from '~/components/partials/markets/market-card.vue'
 import VMarketDot from '~/components/partials/markets/market-dot.vue'
 import { newMarketsSlug } from '~/app/data/market'
@@ -131,6 +132,16 @@ export default Vue.extend({
   },
 
   computed: {
+    marketsWithLastTradedPriceGreaterThanZero(): UiMarketAndSummaryWithVolumeInUsd[] {
+      const { markets } = this
+
+      return markets.filter(({ summary: { lastPrice, price } }) => {
+        const lastTradedPrice = new BigNumberInBase(lastPrice || price)
+
+        return lastTradedPrice.gt('0')
+      })
+    },
+
     newMarket(): UiMarketAndSummaryWithVolumeInUsd | undefined {
       const { markets } = this
 
@@ -169,9 +180,9 @@ export default Vue.extend({
     },
 
     topGainer(): UiMarketAndSummaryWithVolumeInUsd {
-      const { markets } = this
+      const { marketsWithLastTradedPriceGreaterThanZero } = this
 
-      return markets.reduce(
+      return marketsWithLastTradedPriceGreaterThanZero.reduce(
         (
           initialMarket: UiMarketAndSummaryWithVolumeInUsd,
           market: UiMarketAndSummaryWithVolumeInUsd

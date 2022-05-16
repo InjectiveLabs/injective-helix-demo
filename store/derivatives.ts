@@ -470,14 +470,9 @@ export const actions = actionTree(
       })
     },
 
-    streamSubaccountTrades({ state, commit }) {
-      const { market } = state
+    streamSubaccountTrades({ commit }) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
-
-      if (!market) {
-        return
-      }
 
       if (!isUserWalletConnected || !subaccount) {
         return
@@ -531,14 +526,9 @@ export const actions = actionTree(
       )
     },
 
-    async fetchSubaccountOrders({ state, commit }) {
-      const { market } = state
+    async fetchSubaccountOrders({ commit }) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
-
-      if (!market) {
-        return
-      }
 
       if (!isUserWalletConnected || !subaccount) {
         return
@@ -603,14 +593,9 @@ export const actions = actionTree(
       })
     },
 
-    async fetchSubaccountTrades({ state, commit }) {
-      const { market } = state
+    async fetchSubaccountTrades({ commit }) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
-
-      if (!market) {
-        return
-      }
 
       if (!isUserWalletConnected || !subaccount) {
         return

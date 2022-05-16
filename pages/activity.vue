@@ -9,8 +9,9 @@
             v-model="component"
             data-cy="activity-open-positions-panel"
             :option="components.positions"
-            class="col-span-1"
+            :status="positionLoadingStatus"
           >
+            <portal-target slot="icon" name="activity-card-position-count" />
             <span class="text-sm">
               {{ $t('activity.positions') }}
             </span>
@@ -19,8 +20,9 @@
             v-model="component"
             data-cy="activity-spot-orders-panel"
             :option="components.spot"
-            class="col-span-1"
+            :status="spotLoadingStatus"
           >
+            <portal-target slot="icon" name="activity-card-spot-count" />
             <span class="text-sm">
               {{ $t('activity.spotOrders') }}
             </span>
@@ -29,8 +31,9 @@
             v-model="component"
             data-cy="activity-derivatives-orders-panel"
             :option="components.derivatives"
-            class="col-span-1"
+            :status="derivativeLoadingStatus"
           >
+            <portal-target slot="icon" name="activity-card-derivative-count" />
             <span class="text-sm">
               {{ $t('activity.derivativeOrders') }}
             </span>
@@ -39,26 +42,26 @@
             v-if="false"
             v-model="component"
             :option="components.rewardHistory"
-            class="col-span-1"
           >
             <span class="text-sm">
               {{ $t('activity.rewardHistory') }}
             </span>
           </v-card-select>
-          <v-card-select
-            v-model="component"
-            data-cy="activity-wallet-history-panel"
-            :option="components.funding"
-            class="col-span-1"
-          >
+          <v-card-select v-model="component" data-cy="activity-wallet-history-panel" :option="components.funding">
+            <v-icon-wallet slot="icon" class="w-3.5 h-auto" />
             <span class="text-sm">
               {{ $t('activity.walletHistory') }}
             </span>
           </v-card-select>
         </div>
-        <div class="mt-6 pt-6 border-t grow">
-          <component :is="`v-${component}`"></component>
-        </div>
+        <VHocLoading :status="status">
+          <div class="mt-6 pt-6 border-t grow">
+            <v-positions v-show="component === components.positions" />
+            <v-spot v-show="component === components.spot" />
+            <v-derivatives v-show="component === components.derivatives" />
+            <v-funding v-if="component === components.funding" />
+          </div>
+        </VHocLoading>
       </div>
     </div>
   </div>
@@ -66,11 +69,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Status, StatusType } from '@injectivelabs/utils'
 import VPositions from '~/components/partials/activity/positions/index.vue'
 import VSpot from '~/components/partials/activity/spot/index.vue'
 import VDerivatives from '~/components/partials/activity/derivatives/index.vue'
 import VFunding from '~/components/partials/activity/wallet-history/index.vue'
-import VRewardHistory from '~/components/partials/activity/reward-history/index.vue'
+// import VRewardHistory from '~/components/partials/activity/reward-history/index.vue'
 
 const components = {
   positions: 'positions',
@@ -85,14 +89,54 @@ export default Vue.extend({
     VPositions,
     VSpot,
     VDerivatives,
-    VFunding,
-    VRewardHistory
+    VFunding
   },
 
   data() {
     return {
       components,
-      component: components.positions
+      component: components.positions,
+      derivativeLoadingStatus: new Status(StatusType.Loading),
+      positionLoadingStatus: new Status(StatusType.Loading),
+      spotLoadingStatus: new Status(StatusType.Loading),
+      status: new Status(StatusType.Loading)
+    }
+  },
+
+  mounted() {
+    this.$root.$on('derivative-tab-loaded', this.derivativeTabLoaded)
+    this.$root.$on('position-tab-loaded', this.positionTabLoaded)
+    this.$root.$on('spot-tab-loaded', this.spotTabLoaded)
+
+    Promise.all([this.$accessor.account.init()])
+      .then(() => {
+        //
+      })
+      .catch(this.$onRejected)
+      .finally(() => {
+        this.status.setIdle()
+      })
+  },
+
+  beforeDestroy() {
+    this.$root.$off('derivative-tab-loaded', this.derivativeTabLoaded)
+    this.$root.$off('position-tab-loaded', this.positionTabLoaded)
+    this.$root.$off('spot-tab-loaded', this.spotTabLoaded)
+
+    this.$accessor.app.cancelAllStreams()
+  },
+
+  methods: {
+    derivativeTabLoaded() {
+      this.derivativeLoadingStatus.setIdle()
+    },
+
+    positionTabLoaded() {
+      this.positionLoadingStatus.setIdle()
+    },
+
+    spotTabLoaded() {
+      this.spotLoadingStatus.setIdle()
     }
   }
 })

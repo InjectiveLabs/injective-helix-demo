@@ -53,6 +53,13 @@
           :market="market"
           :summary="summary"
         />
+        <v-market-deprecated
+          v-for="({ market, summary }, index) in filteredDeprecatedMarkets"
+          :key="`market-deprecated-${index}`"
+          class="col-span-1"
+          :market="market"
+          :summary="summary"
+        />
       </TableBody>
     </div>
   </div>
@@ -72,7 +79,12 @@ import TableBody from '~/components/elements/table-body.vue'
 import TableHeader from '~/components/elements/table-header.vue'
 import VMarket from '~/components/partials/home/markets/market.vue'
 import VMarketNew from '~/components/partials/home/markets/market-new.vue'
-import { newMarketsSlug } from '~/app/data/market'
+import VMarketDeprecated from '~/components/partials/home/markets/market-deprecated.vue'
+import {
+  deprecatedMarkets,
+  newMarketsSlug,
+  upcomingMarkets
+} from '~/app/data/market'
 import { MarketFilterType, UiMarketAndSummary } from '~/types'
 
 export default Vue.extend({
@@ -80,6 +92,7 @@ export default Vue.extend({
     TableBody,
     TableHeader,
     VMarket,
+    VMarketDeprecated,
     VMarketNew
   },
 
@@ -131,16 +144,42 @@ export default Vue.extend({
         .filter(({ summary }) => summary !== undefined) as UiMarketAndSummary[]
     },
 
-    filteredMarkets(): UiMarketAndSummary[] {
-      const { mappedMarkets } = this
+    upcomingMarketsSlugs(): string[] {
+      return upcomingMarkets.map((market) => market.slug)
+    },
 
-      return mappedMarkets.filter((m) => !m.market.upcoming)
+    deprecatedMarketsSlugs(): string[] {
+      return deprecatedMarkets.map((market) => market.slug)
+    },
+
+    filteredMarkets(): UiMarketAndSummary[] {
+      const {
+        mappedMarkets,
+        upcomingMarketsSlugs,
+        deprecatedMarketsSlugs
+      } = this
+
+      return mappedMarkets.filter(
+        (m) =>
+          !upcomingMarketsSlugs.includes(m.market.slug) &&
+          !deprecatedMarketsSlugs.includes(m.market.slug)
+      )
     },
 
     filteredUpcomingMarkets(): UiMarketAndSummary[] {
-      const { mappedMarkets } = this
+      const { mappedMarkets, upcomingMarketsSlugs } = this
 
-      return mappedMarkets.filter((m) => !!m.market.upcoming)
+      return mappedMarkets.filter((m) =>
+        upcomingMarketsSlugs.includes(m.market.slug)
+      )
+    },
+
+    filteredDeprecatedMarkets(): UiMarketAndSummary[] {
+      const { mappedMarkets, deprecatedMarketsSlugs } = this
+
+      return mappedMarkets.filter((m) =>
+        deprecatedMarketsSlugs.includes(m.market.slug)
+      )
     },
 
     marketsSortedByVolume(): UiMarketAndSummary[] {

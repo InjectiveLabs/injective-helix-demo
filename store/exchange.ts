@@ -15,7 +15,7 @@ import {
   FeeDiscountSchedule,
   ExchangeParams
 } from '~/app/services/exchange'
-import { upcomingMarkets } from '~/app/data/market'
+import { upcomingMarkets, deprecatedMarkets } from '~/app/data/market'
 
 const initialStateFactory = () => ({
   params: undefined as ExchangeParams | undefined,
@@ -29,6 +29,13 @@ const initialStateFactory = () => ({
     UiSpotMarketWithToken | UiDerivativeMarketWithToken
   >,
   upcomingMarketsSummaries: upcomingMarkets.map((m) =>
+    zeroSpotMarketSummary(m.marketId)
+  ) as Array<UiSpotMarketSummary | UiDerivativeMarketSummary>,
+
+  deprecatedMarkets: deprecatedMarkets as Array<
+    UiSpotMarketWithToken | UiDerivativeMarketWithToken
+  >,
+  deprecatedMarketsSummaries: deprecatedMarkets.map((m) =>
     zeroSpotMarketSummary(m.marketId)
   ) as Array<UiSpotMarketSummary | UiDerivativeMarketSummary>
 })
@@ -53,6 +60,13 @@ export const state = () => ({
     UiSpotMarketWithToken | UiDerivativeMarketWithToken
   >,
   upcomingMarketsSummaries: initialState.upcomingMarketsSummaries as Array<
+    UiSpotMarketSummary | UiDerivativeMarketSummary
+  >,
+
+  deprecatedMarkets: initialState.deprecatedMarkets as Array<
+    UiSpotMarketWithToken | UiDerivativeMarketWithToken
+  >,
+  deprecatedMarketsSummaries: initialState.deprecatedMarketsSummaries as Array<
     UiSpotMarketSummary | UiDerivativeMarketSummary
   >
 })

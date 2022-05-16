@@ -2,28 +2,34 @@
   <div class="h-full">
     <VHocLoading :status="status">
       <div class="h-full flex flex-col">
-        <div class="flex items-center justify-center">
-          <v-button-select
+        <div class="flex items-center gap-4">
+          <v-tab-selector-item
             v-model="component"
             data-cy="activity-open-positions-link"
             :option="components.positions"
-            text
           >
-            {{ $t('activity.openPositions') }}
-          </v-button-select>
-          <div class="mx-2 w-px h-4 bg-gray-500"></div>
-          <v-button-select
+            <div class="flex items-center gap-1">
+              <span>{{ $t('activity.openPositions') }}</span>
+              <portal-target name="activity-tab-position-count" />
+            </div>
+          </v-tab-selector-item>
+
+          <div class="w-px h-4 bg-gray-500" />
+
+          <v-tab-selector-item
             v-model="component"
             data-cy="activity-funding-payments-link"
             :option="components.fundingPayments"
-            text
           >
-            {{ $t('activity.fundingPayments') }}
-          </v-button-select>
+            <div class="flex items-center gap-1">
+              <span>{{ $t('activity.fundingPayments') }}</span>
+            </div>
+          </v-tab-selector-item>
         </div>
 
         <v-card md class="h-full mt-6">
-          <component :is="`v-${component}`"></component>
+          <v-positions v-show="component === components.positions" />
+          <v-funding-payments v-if="component === components.fundingPayments" />
         </v-card>
       </div>
     </VHocLoading>
@@ -37,6 +43,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import VPositions from '~/components/partials/activity/positions/positions.vue'
 import VFundingPayments from '~/components/partials/activity/positions/funding-payments.vue'
 import VModalAddMargin from '~/components/partials/modals/add-margin/index.vue'
+import VTabSelectorItem from '~/components/partials/activity/common/tab-selector-item.vue'
 
 const components = {
   positions: 'positions',
@@ -47,7 +54,8 @@ export default Vue.extend({
   components: {
     VModalAddMargin,
     VPositions,
-    VFundingPayments
+    VFundingPayments,
+    VTabSelectorItem
   },
 
   data() {
@@ -76,10 +84,6 @@ export default Vue.extend({
         //
       })
       .catch(this.$onRejected)
-  },
-
-  beforeDestroy() {
-    this.$accessor.app.cancelAllStreams()
   }
 })
 </script>

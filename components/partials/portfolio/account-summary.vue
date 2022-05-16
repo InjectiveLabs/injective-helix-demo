@@ -24,11 +24,10 @@
       >
         <h2
           class="text-white text-2xl sm:text-3xl xl:text-4xl mr-4"
-          data-cy="account-summary-usd-text-content"
         >
           <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }} </span>
           <span v-else-if="status.isLoading()">&mdash; USD </span>
-          <span v-else>{{ totalBalanceToString }} USD</span>
+          <span v-else data-cy="account-summary-usd-text-content">{{ totalBalanceToString }} USD</span>
         </h2>
         <span
           v-if="!hideBalance"

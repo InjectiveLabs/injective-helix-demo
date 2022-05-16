@@ -10,7 +10,7 @@
       <slot name="title-context" />
     </div>
     <slot name="context" />
-    <v-card class="relative flex-1 mt-6" :lg="!dense">
+    <v-card class="relative flex-1" :lg="!dense" :class="[cardWrapperClass]">
       <div class="v-panel-content">
         <slot ref="content" />
       </div>
@@ -29,13 +29,16 @@ export default Vue.extend({
     },
 
     title: {
-      required: false,
       default: '',
       type: String
     },
 
     portalName: {
-      required: false,
+      default: '',
+      type: String
+    },
+
+    cardWrapperClass: {
       default: '',
       type: String
     }

@@ -45,9 +45,11 @@
       </span>
       <span v-else class="flex items-end justify-end flex-col">
         <span
-class="leading-4"
-data-cy="wallet-balance-value-usd-table-data"
->{{ totalInUsdToString }} USD</span>
+          class="leading-4"
+          data-cy="wallet-balance-value-usd-table-data"
+        >
+          {{ totalInUsdToString }} USD
+        </span>
         <span
           v-if="totalInBtc.gt(0)"
           class="text-opacity-50 text-gray-200 text-2xs xs:ml-1 leading-4"

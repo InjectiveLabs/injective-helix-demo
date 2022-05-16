@@ -143,8 +143,31 @@ export default Vue.extend({
   },
 
   methods: {
+    clearRouteQueryParam(key: string) {
+      const query = { ...this.$route.query }
+      delete query[key]
+
+      this.$router.replace({ query })
+    },
+
+    fillRouteQueryParams(params: Record<string, string>) {
+      this.$router.push({
+        path: this.$route.path,
+        query: {
+          ...this.$route.query,
+          ...params
+        }
+      })
+    },
+
     handleCategoryChange(category: MarketCategoryType) {
       this.$emit('update:activeCategory', category)
+
+      if (!category || category === MarketCategoryType.All) {
+        this.clearRouteQueryParam('category')
+      } else {
+        this.fillRouteQueryParams({ category })
+      }
     },
 
     handleSearchedEvent(search: string) {
@@ -153,10 +176,22 @@ export default Vue.extend({
 
     handleQuoteClick(quote: MarketQuoteType) {
       this.$emit('update:activeQuote', quote)
+
+      if (!quote || quote === MarketQuoteType.All) {
+        this.clearRouteQueryParam('quote')
+      } else {
+        this.fillRouteQueryParams({ quote })
+      }
     },
 
     handleTypeClick(type: string) {
       this.$emit('update:activeType', type)
+
+      if (!type || type === '') {
+        this.clearRouteQueryParam('type')
+      } else {
+        this.fillRouteQueryParams({ type: type.toLowerCase() })
+      }
     }
   }
 })
