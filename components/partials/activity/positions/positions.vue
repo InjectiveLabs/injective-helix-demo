@@ -35,7 +35,7 @@
         </div>
 
         <div
-          class="col-span-6 lg:col-span-8 sm:text-right mt-4 sm:mt-0 hidden sm:block"
+          class="col-span-6 lg:col-span-8 sm:text-right mt-0 hidden sm:block"
         >
           <v-button
             v-if="filteredPositions.length > 0 && walletIsNotKeplr"
