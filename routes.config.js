@@ -10,11 +10,8 @@ const mainnetSpot = [
   'atom-usdt',
   'xprt-usdt',
   'weth-usdt',
-  'luna-ust',
   'evmos-usdt',
-  'huahua-usdt',
   'ape-usdt',
-  'huahua-usdt',
   'link-usdt',
   'ust-usdt',
   'gf-usdt'
@@ -32,10 +29,8 @@ const mainnetDerivatives = [
   'inj-usdt-perp',
   'eth-usdt-perp',
   'bayc-weth-perp',
-  'luna-ust-perp',
   'bnb-usdt-perp',
-  'atom-usdt-perp',
-  'osmo-usdt-perp'
+  'atom-usdt-perp'
 ]
 const testnetDerivatives = [...mainnetDerivatives]
 const mainnetStagingDerivatives = [...mainnetDerivatives]
@@ -46,12 +41,18 @@ const derivatives = IS_TESTNET
   : mainnetDerivatives
 
 if (NETWORK === Network.Devnet || IS_MAINNET_STAGING) {
-  derivatives.push('stx-usdt-perp', 'osmo-ust-perp')
+  derivatives.push('stx-usdt-perp', 'osmo-usdt-perp')
 }
 
 const spotRoutes = spot.map((s) => `/spot/${s}`) || []
 const derivativesRoutes = derivatives.map((s) => `/derivatives/${s}`) || []
-const upcomingMarketsRoutes = ['/market', '/market/ape-usdt']
+
+const upcomingMarketsRoutes = ['/market/ape-usdt']
+const deprecatedMarketsRoutes = [
+  '/market/huahua-usdt',
+  '/market/luna-ust',
+  '/market/luna-ust-perp'
+]
 
 module.exports = [
   '/',
@@ -61,9 +62,11 @@ module.exports = [
   '/trade-and-earn',
   '/faq',
   '/markets',
+  '/market',
   '/register',
   '/trade-and-earn',
   ...upcomingMarketsRoutes,
+  ...deprecatedMarketsRoutes,
   ...spotRoutes,
   ...derivativesRoutes
 ]

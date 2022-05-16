@@ -11,7 +11,7 @@
       />
 
       <div class="ml-auto flex items-center gap-4">
-        <v-checkbox v-model="showMarginOnly">
+        <v-checkbox v-model="showMarginCurrencyOnly">
           <span class="flex items-center">
             {{ $t('portfolio.showMarginCurrencyOnly') }}
           </span>
@@ -119,6 +119,11 @@ import { SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd } from '~/types
 import VSearch from '~/components/elements/search.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import TableHeader from '~/components/elements/table-header.vue'
+import {
+  USDT_COIN_GECKO_ID,
+  UST_COIN_GECKO_ID,
+  ETH_COIN_GECKO_ID
+} from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -146,7 +151,7 @@ export default Vue.extend({
     return {
       search: '',
       hideSmallBalance: false,
-      showMarginOnly: false
+      showMarginCurrencyOnly: false
     }
   },
 
@@ -160,15 +165,15 @@ export default Vue.extend({
         subaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd,
         search,
         hideSmallBalance,
-        showMarginOnly
+        showMarginCurrencyOnly
       } = this
 
       return subaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd.filter(
-        ({ token, totalBalanceInUsd, margin }) => {
+        ({ token, totalBalanceInUsd }) => {
           if (
             (!search || search.trim() === '') &&
             !hideSmallBalance &&
-            !showMarginOnly
+            !showMarginCurrencyOnly
           ) {
             return true
           }
@@ -182,9 +187,13 @@ export default Vue.extend({
             !hideSmallBalance ||
             new BigNumberInBase(totalBalanceInUsd).gte('10')
 
-          const fulfillMarginCheck = !showMarginOnly || margin.gt('0')
+          const isMarginCurrency =
+            !showMarginCurrencyOnly ||
+            [ETH_COIN_GECKO_ID, UST_COIN_GECKO_ID, USDT_COIN_GECKO_ID].includes(
+              token.coinGeckoId
+            )
 
-          return isPartOfSearchFilter && isNotSmallBalance && fulfillMarginCheck
+          return isPartOfSearchFilter && isNotSmallBalance && isMarginCurrency
         }
       )
     },

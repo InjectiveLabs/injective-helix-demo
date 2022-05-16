@@ -5,9 +5,11 @@
       <v-trading class="mt-1 flex-1" />
     </template>
 
-    <v-market-chart slot="chart" :market="market" class="hidden lg:block" />
-    <v-orderbook slot="order-books" :market="market" />
-    <v-orders slot="orders" />
+    <template v-if="market">
+      <v-market-chart slot="chart" :market="market" class="hidden lg:block" />
+      <v-orderbook slot="order-books" :market="market" />
+      <v-orders slot="orders" />
+    </template>
 
     <div slot="modals">
       <v-modal-add-margin />

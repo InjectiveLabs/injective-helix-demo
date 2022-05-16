@@ -123,6 +123,24 @@
   margin-top: -385px;
 }
 
+.spinner {
+  @apply block mx-auto w-6 h-6 bg-transparent border-4 rounded-full top-0 left-0 border-transparent;
+  border-top-color: theme('colors.white');
+  animation: spin 0.6s ease-out infinite;
+
+  &-sm {
+    @apply w-4 h-4;
+  }
+
+  &-md {
+    @apply w-5 h-5;
+  }
+
+  &-lg {
+    @apply w-10 h-10;
+  }
+}
+
 [class*='bg-red-'] .spinner {
   border-top-color: theme('colors.gray.200');
 }
@@ -139,10 +157,8 @@
   border-top-color: theme('colors.primary.850');
 }
 
-.spinner {
-  @apply block mx-auto w-6 h-6 bg-transparent border-4 rounded-full top-0 left-0 border-transparent;
-  border-top-color: theme('colors.white');
-  animation: spin 0.6s ease-out infinite;
+[class*='text-primary-'].spinner {
+  border-top-color: theme('colors.primary.500');
 }
 
 @keyframes spin {

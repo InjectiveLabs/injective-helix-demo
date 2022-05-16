@@ -28,10 +28,7 @@
                 market: currentMarket
               }"
             />
-            <v-onboard
-              v-if="!hasTradingAccountBalances"
-              class="mt-6"
-            ></v-onboard>
+            <v-onboard v-if="!hasTradingAccountBalances" class="mt-6" />
           </div>
         </VHocLoading>
       </div>

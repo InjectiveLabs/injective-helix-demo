@@ -54,6 +54,16 @@
           class="mt-6 min-h-orders"
         />
       </v-table-wrapper>
+
+      <portal to="activity-card-position-count">
+        <span class="font-semibold text-lg">
+          {{ positions.length }}
+        </span>
+      </portal>
+
+      <portal to="activity-tab-position-count">
+        <span v-if="status.isNotLoading()"> ({{ positions.length }}) </span>
+      </portal>
     </v-card-table-wrap>
   </VHocLoading>
 </template>
@@ -145,6 +155,7 @@ export default Vue.extend({
       .catch(this.$onError)
       .finally(() => {
         this.status.setIdle()
+        this.$root.$emit('position-tab-loaded')
       })
 
     this.pollSubaccountPositions()

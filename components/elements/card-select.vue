@@ -9,22 +9,27 @@
   >
     <div class="-mt-1">
       <slot name="subtitle"></slot>
-      <div v-if="status.isLoading()" class="h-16 w-full relative mr-auto">
-        <v-loading left />
-      </div>
-      <div v-else class="flex items-center" :class="{ 'justify-between': lg }">
-        <span
-          class="rounded-full block mr-4"
+
+      <div class="flex" :class="{ 'justify-between': lg }">
+        <div v-if="status.isLoading()" class="mr-4">
+          <span class="spinner text-primary-500" />
+        </div>
+
+        <div
+          v-else
+          class="rounded-full mr-4 flex items-center justify-center"
           :class="[
             lg ? 'w-12 h-12' : 'w-6 h-6',
             {
-              'bg-primary-500': isSelected,
-              'bg-gray-600  group-hover:bg-primary-500': !isSelected
+              'bg-primary-850': isSelected,
+              'bg-gray-600  group-hover:bg-primary-850': !isSelected
             }
           ]"
-        ></span>
+        >
+          <slot name="icon" />
+        </div>
 
-        <slot></slot>
+        <slot />
       </div>
     </div>
   </div>
@@ -33,13 +38,8 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Status } from '@injectivelabs/utils'
-import VLoading from '~/components/elements/loading.vue'
 
 export default Vue.extend({
-  components: {
-    VLoading
-  },
-
   model: {
     prop: 'value',
     event: 'selected'

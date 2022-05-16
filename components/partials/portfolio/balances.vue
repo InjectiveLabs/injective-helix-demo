@@ -13,6 +13,9 @@
             />
           </div>
         </template>
+
+        <v-icon-wallet slot="icon" class="w-6 h-auto" />
+
         <div class="text-right">
           <p class="text-gray-500 text-xs uppercase mb-3 tracking-wider">
             {{ $t('portfolio.walletValue') }}
@@ -37,6 +40,9 @@
             />
           </div>
         </template>
+
+        <v-icon-rectangle-chart slot="icon" class="w-6 h-auto" />
+
         <div class="text-right">
           <p class="text-gray-500 text-xs uppercase mb-3 tracking-wider">
             {{ $t('portfolio.portfolioValue') }}
@@ -67,7 +73,7 @@
         />
       </portal>
 
-      <v-panel :title="panelTitle">
+      <v-panel :title="panelTitle" card-wrapper-class="mt-6">
         <portal-target slot="context" name="portfolio-balance-sub-tabs" />
 
         <VHocLoading :status="status">
@@ -78,7 +84,7 @@
               bankBalancesWithUsdBalance,
               subaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd
             }"
-          ></component>
+          />
         </VHocLoading>
       </v-panel>
     </div>
