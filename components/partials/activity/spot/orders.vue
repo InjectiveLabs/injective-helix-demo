@@ -8,12 +8,14 @@
           <v-search
             dense
             class="col-span-3"
+            data-cy="universal-table-filter-by-asset-input"
             :placeholder="$t('trade.filter')"
             :search="search"
             @searched="handleInputOnSearch"
           />
           <filter-selector
             class="col-span-2"
+            data-cy="universal-table-filter-by-side-drop-down"
             :type="TradeSelectorType.Side"
             :value="side"
             @click="handleSideClick"
@@ -42,6 +44,7 @@
             v-if="filteredOrders.length > 0"
             red-outline
             md
+            data-cy="activity-cancel-all-button"
             @click.stop="handleCancelOrders"
           >
             {{ $t('trade.cancelAllOrders') }}
@@ -76,7 +79,11 @@
             />
           </tbody>
         </table>
-        <v-empty-list v-else :message="$t('trade.emptyOrders')" />
+        <v-empty-list
+          v-else
+          :message="$t('trade.emptyOrders')"
+          data-cy="universal-table-nothing-found"
+        />
       </v-table-wrapper>
 
       <portal to="activity-card-spot-count">

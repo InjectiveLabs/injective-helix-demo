@@ -27,6 +27,7 @@
                 quoteTradingBalance,
                 market: currentMarket
               }"
+              data-cy="trading-page-account-balances-component"
             />
             <v-onboard v-if="!hasTradingAccountBalances" class="mt-6" />
           </div>

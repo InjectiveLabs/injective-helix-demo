@@ -54,6 +54,7 @@
         />
         <span
           v-tooltip="{ content: $t('trade.mark_price_tooltip_verbose') }"
+          data-cy="orderbook-last-traded-price-text-content"
           class="text-gray-500 underline font-mono text-base lg:text-sm 4xl:text-md cursor-pointer"
         >
           {{ markPriceToFormat }}

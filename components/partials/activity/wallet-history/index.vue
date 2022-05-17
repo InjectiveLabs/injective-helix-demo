@@ -1,7 +1,7 @@
 <template>
   <div class="h-full flex flex-col">
     <div class="flex items-center gap-4">
-      <v-tab-selector-item v-model="component" :option="components.transfers">
+      <v-tab-selector-item v-model="component" data-cy="wallet-history-transfers-link" :option="components.transfers">
         <div class="flex items-center gap-1">
           <span>{{ $t('walletHistory.transfers.transfers') }}</span>
         </div>
@@ -9,7 +9,7 @@
 
       <div class="w-px h-4 bg-gray-500" />
 
-      <v-tab-selector-item v-model="component" :option="components.deposits">
+      <v-tab-selector-item v-model="component" data-cy="wallet-history-deposits-link" :option="components.deposits">
         <div class="flex items-center gap-1">
           <span>{{ $t('walletHistory.deposits') }}</span>
         </div>
@@ -17,7 +17,7 @@
 
       <div class="w-px h-4 bg-gray-500" />
 
-      <v-tab-selector-item v-model="component" :option="components.withdrawals">
+      <v-tab-selector-item v-model="component" data-cy="wallet-history-withdrawals-link" :option="components.withdrawals">
         <div class="flex items-center gap-1">
           <span>{{ $t('walletHistory.withdrawals') }}</span>
         </div>

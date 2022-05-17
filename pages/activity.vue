@@ -8,6 +8,7 @@
           <div class="flex lg:grid grid-cols-4 gap-4">
             <v-card-select
               v-model="component"
+              data-cy="activity-open-positions-panel"
               :option="components.positions"
               :status="positionLoadingStatus"
             >
@@ -18,6 +19,7 @@
             </v-card-select>
             <v-card-select
               v-model="component"
+              data-cy="activity-spot-orders-panel"
               :option="components.spot"
               :status="spotLoadingStatus"
             >
@@ -28,6 +30,7 @@
             </v-card-select>
             <v-card-select
               v-model="component"
+              data-cy="activity-derivatives-orders-panel"
               :option="components.derivatives"
               :status="derivativeLoadingStatus"
             >
@@ -48,7 +51,11 @@
                 {{ $t('activity.rewardHistory') }}
               </span>
             </v-card-select>
-            <v-card-select v-model="component" :option="components.funding">
+            <v-card-select
+              v-model="component"
+              :option="components.funding"
+              data-cy="activity-wallet-history-panel"
+            >
               <v-icon-wallet slot="icon" class="w-3 md:w-3.5 h-auto" />
               <span class="text-sm whitespace-nowrap">
                 {{ $t('activity.walletHistory') }}

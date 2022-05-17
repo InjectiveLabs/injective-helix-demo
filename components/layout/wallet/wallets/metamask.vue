@@ -33,9 +33,10 @@
                 </v-button>
               </p>
               <p class="flex items-center text-sm text-gray-200">
-                <span class="truncate">{{
-                  $t('connect.connectUsingBrowser')
-                }}</span>
+                <span
+                  class="truncate"
+                  data-cy="connect-wallet-popup-metamask-button"
+                  >{{ $t('connect.connectUsingBrowser') }}</span>
               </p>
             </div>
           </div>

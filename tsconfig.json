@@ -11,6 +11,7 @@
     ],
     "esModuleInterop": true,
     "allowJs": true,
+    "jsx": "preserve",
     "sourceMap": true,
     "strict": true,
     "noEmit": true,
@@ -31,6 +32,8 @@
       ]
     },
     "types": [
+      "node",
+      "jest",
       "@types/node",
       // "@types/jest",
       "@nuxt/types",
@@ -39,10 +42,18 @@
       "vue-clickaway"
     ]
   },
+  "vueCompilerOptions": {
+    "experimentalCompatMode": 2,
+    "experimentalTemplateCompilerOptions": {
+      "compatConfig": {
+        "MODE": 2
+      }
+    }
+  },
   "exclude": [
     "node_modules",
     ".nuxt",
     "dist",
-    "static",
+    "static"
   ]
 }

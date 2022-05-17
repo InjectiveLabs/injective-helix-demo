@@ -1,5 +1,5 @@
 <template>
-  <tr v-if="market">
+  <tr v-if="market" :data-cy="'open-position-table-row-' + position.ticker">
     <td class="text-left cursor-pointer" @click="handleClickOnMarket">
       <div class="flex items-center justify-start">
         <div v-if="market.baseToken.logo" class="w-6 h-6">
@@ -10,7 +10,10 @@
           />
         </div>
         <div class="ml-3">
-          <span class="text-gray-200 font-semibold">
+          <span
+            class="text-gray-200 font-semibold"
+            data-cy="open-position-ticker-name-table-data"
+          >
             {{ position.ticker }}
           </span>
         </div>
@@ -19,6 +22,7 @@
 
     <td class="text-left pl-1">
       <span
+        data-cy="open-position-trade-direction-table-data"
         :class="{
           'text-aqua-500': position.direction === TradeDirection.Long,
           'text-red-500': position.direction === TradeDirection.Short
@@ -36,6 +40,7 @@
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
         :number="quantity"
+        data-cy="open-position-quantity-table-data"
       />
     </td>
 
@@ -47,6 +52,7 @@
             market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
           "
           :number="price"
+          data-cy="open-position-price-table-data"
         />
         <span class="text-gray-500 text-xs">{{ markPriceToFormat }}</span>
       </div>
@@ -60,6 +66,7 @@
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
         :number="liquidationPrice"
+        data-cy="open-position-liquidation-price-table-data"
       />
     </td>
     <td class="text-right">
@@ -76,6 +83,7 @@
             <span class="mr-1">≈</span>
             <span>{{ pnl.gte(0) ? '+' : '' }}</span>
             <span
+              data-cy="postion-entry-pnl"
               :class="{
                 'text-aqua-500': pnl.gte(0),
                 'text-red-500': pnl.lt(0)
@@ -90,9 +98,11 @@
           </span>
         </div>
       </div>
-      <span v-else class="text-gray-400">{{
-        $t('trade.not_available_n_a')
-      }}</span>
+      <span
+        v-else
+        class="text-gray-400"
+        data-cy="open-position-no-pnl-table-data"
+        >{{ $t('trade.not_available_n_a') }}</span>
     </td>
     <td class="text-right font-mono">
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
@@ -102,6 +112,7 @@
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
         :number="notionalValue"
+        data-cy="open-position-total-table-data"
       >
         <span slot="addon" class="text-2xs text-gray-500">
           {{ market.quoteToken.symbol }}
@@ -114,6 +125,7 @@
       </span>
       <div v-else class="flex items-center justify-end h-8">
         <v-number
+          data-cy="open-position-margin-table-data"
           :decimals="
             market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
           "
@@ -123,6 +135,7 @@
           role="button"
           type="button"
           class="border border-gray-500 text-gray-500 hover:text-primary-500 hover:border-primary-500 ml-2 px-1"
+          data-cy="open-position-add-margin-button"
           @click.stop.prevent="onAddMarginButtonClick"
         >
           &plus;
@@ -134,11 +147,16 @@
       <span
         v-else-if="effectiveLeverage.gte(0)"
         class="flex items-center justify-end"
+        data-cy="open-position-leverage-table-data"
       >
         {{ effectiveLeverage.toFormat(2) }}
         <span class="text-gray-300">&times;</span>
       </span>
-      <span v-else class="text-gray-400">
+      <span
+        v-else
+        class="text-gray-400"
+        data-cy="open-position-no-leverage-table-data"
+      >
         {{ $t('trade.not_available_n_a') }}
       </span>
     </td>
@@ -146,6 +164,7 @@
     <td class="text-center relative">
       <v-button
         v-if="!hideBalance"
+        data-cy="open-position-cancel-link"
         :status="status"
         @click="onClosePositionClick"
       >

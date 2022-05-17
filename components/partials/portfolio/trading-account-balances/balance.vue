@@ -1,5 +1,9 @@
 <template>
-  <TableRow md class="text-sm md:grid-cols-2 xl:grid-cols-12">
+  <TableRow
+    md
+    class="text-sm md:grid-cols-2 xl:grid-cols-12"
+    :data-cy="'trading-account-table-row-' + balance.token.symbol"
+  >
     <div class="col-span-2 xl:col-span-5 grid grid-cols-2 xl:grid-cols-5 gap-4">
       <span class="font-mono text-left xl:hidden">
         {{ $t('portfolio.asset') }}
@@ -14,7 +18,10 @@
             />
           </div>
           <div class="ml-3">
-            <span class="text-gray-200 font-bold">
+            <span
+              class="text-gray-200 font-bold"
+              data-cy="trading-account-token-symbol-table-data"
+            >
               {{ balance.token.symbol }}
             </span>
           </div>
@@ -25,6 +32,7 @@
       </span>
       <span
         class="xl:col-span-2 font-mono text-right justify-end xl:flex items-center"
+        data-cy="trading-account-total-table-data"
       >
         <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
         <span v-else>{{ totalBalanceToString }}</span>
@@ -34,6 +42,7 @@
       </span>
       <span
         class="xl:col-span-2 font-mono text-right xl:flex items-center justify-end"
+        data-cy="trading-account-available-table-data"
       >
         <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
         <span v-else>{{ availableBalanceToString }}</span>
@@ -46,6 +55,7 @@
       </span>
       <span
         class="xl:col-span-2 font-mono text-right xl:flex items-center justify-end"
+        data-cy="trading-account-margin-hold-table-data"
       >
         <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
         <span v-else-if="!marginHold.eq(0)">{{ marginHoldToString }}</span>
@@ -57,6 +67,7 @@
       </span>
       <span
         class="xl:col-span-2 font-mono text-right xl:flex items-center justify-end"
+        data-cy="trading-account-pnl-table-data"
       >
         <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
         <span v-else-if="!balance.pnlInUsd.eq(0)">
@@ -73,10 +84,16 @@
           {{ HIDDEN_BALANCE_DISPLAY }}
         </span>
         <span v-else class="flex items-end justify-end flex-col">
-          <span class="leading-4"> {{ totalBalanceInUsdToString }} USD </span>
+          <span
+            class="leading-4"
+            data-cy="trading-account-value-usd-table-data"
+          >
+            {{ totalBalanceInUsdToString }} USD
+          </span>
           <span
             v-if="totalBalanceInBtc.gt(0)"
             class="text-opacity-50 text-gray-200 text-2xs xs:ml-1 leading-4"
+            data-cy="trading-account-value-btc-table-data"
           >
             ≈ {{ totalBalanceInBtcToString }} BTC
           </span>
@@ -88,6 +105,7 @@
         <nuxt-link
           v-if="spotMarketRoute"
           class="cursor-pointer"
+          data-cy="trading-account-trade-link"
           :to="{ name: 'spot-spot', params: { spot: spotMarketRoute } }"
         >
           <span>
@@ -95,7 +113,11 @@
           </span>
         </nuxt-link>
 
-        <span class="cursor-pointer ml-6" @click="handleTransferClick">
+        <span
+          class="cursor-pointer ml-6"
+          data-cy="trading-account-transfer-link"
+          @click="handleTransferClick"
+        >
           {{ $t('common.transfer') }}
         </span>
       </div>

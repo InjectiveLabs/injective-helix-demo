@@ -1,7 +1,15 @@
 <template>
-  <div class="mt-6">
+  <div class="mt-6" data-cy="ibc-transfer-modal-note-text-content">
     <p
-      class="text-xs w-full p-2 mr-6 bg-primary-500 bg-opacity-10 text-primary-500 rounded"
+      class="
+        text-xs
+        w-full
+        p-2
+        mr-6
+        bg-primary-500 bg-opacity-10
+        text-primary-500
+        rounded
+      "
     >
       {{ $t('bridge.ibcTransfersNote') }}
     </p>
@@ -11,6 +19,7 @@
         md
         primary
         class="whitespace-nowrap"
+        data-cy="ibc-transfer-modal-hub-button"
         @click.stop="() => {}"
       >
         <a :href="hubUrl" target="_blank" class="flex items-center">

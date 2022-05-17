@@ -5,6 +5,7 @@
         dense
         name="search"
         class="sm:max-w-xs"
+        data-cy="universal-table-filter-by-asset-input"
         :placeholder="$t('portfolio.filter')"
         :search="search"
         @searched="handleInputOnSearch"
@@ -16,7 +17,7 @@
             {{ $t('portfolio.showMarginCurrencyOnly') }}
           </span>
         </v-checkbox>
-        <v-checkbox v-model="hideSmallBalance">
+        <v-checkbox v-model="hideSmallBalance" data-cy="universal-table-hide-small-balances-check-box">
           <span class="flex items-center">
             {{ $t('portfolio.hideSmallBalances') }}
             <v-icon-info-tooltip

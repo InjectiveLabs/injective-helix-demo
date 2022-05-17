@@ -4,7 +4,10 @@
       <h4 class="text-sm uppercase text-gray-400">
         {{ $t('portfolio.accountSummary') }}
       </h4>
-      <v-icon-show class="w-4 h-4 ml-4 text-gray-400 hover:text-primary-500" />
+      <v-icon-show
+        class="w-4 h-4 ml-4 text-gray-400 hover:text-primary-500"
+        data-cy="account-summary-visibility-toggle-button"
+      />
     </div>
     <div
       class="flex flex-wrap items-center justify-center sm:justify-start lg:justify-between mt-3 sm:mt-4"
@@ -15,11 +18,14 @@
         <h2 class="text-white text-2xl sm:text-3xl xl:text-4xl mr-4">
           <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }} </span>
           <span v-else-if="status.isLoading()">&mdash; USD </span>
-          <span v-else>{{ totalBalanceToString }} USD</span>
+          <span v-else data-cy="account-summary-usd-text-content">
+            {{ totalBalanceToString }} USD
+          </span>
         </h2>
         <span
           v-if="!hideBalance"
           class="text-2xl text-gray-400 sm:mt-4 lg:mt-0"
+          data-cy="account-summary-btc-text-content"
         >
           <span v-if="status.isNotLoading()">
             ≈ {{ totalBalanceInBtcToString }} BTC
@@ -27,13 +33,30 @@
         </span>
       </div>
       <div v-if="status.isNotLoading()" class="flex items-center mt-4 lg:mt-0">
-        <v-button outline md class="mr-6" @click="handleDepositClick">
+        <v-button
+          outline
+          md
+          class="mr-6"
+          data-cy="account-summary-deposit-button"
+          @click="handleDepositClick"
+        >
           <span class="text-primary-500">{{ $t('common.deposit') }}</span>
         </v-button>
-        <v-button outline md class="mr-4" @click="handleWithdrawClick">
+        <v-button
+          outline
+          md
+          class="mr-4"
+          data-cy="account-summary-withdraw-button"
+          @click="handleWithdrawClick"
+        >
           <span class="text-primary-500">{{ $t('common.withdraw') }}</span>
         </v-button>
-        <v-button outline md @click="handleTransferClick">
+        <v-button
+          outline
+          md
+          data-cy="account-summary-transfer-button"
+          @click="handleTransferClick"
+        >
           <span class="text-primary-500">{{ $t('common.transfer') }}</span>
         </v-button>
       </div>

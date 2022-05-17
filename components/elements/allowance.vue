@@ -8,6 +8,7 @@
       primary
       :status="status"
       class="w-full"
+      data-cy="allowance-modal-set-button"
       @click.stop="handleClickOnSetAllowance"
     >
       {{ $t('bridge.setAllowance') }}

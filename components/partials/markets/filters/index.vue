@@ -7,6 +7,7 @@
         <v-market-type-selector
           :type="MarketType.Favorite"
           :active="activeType === MarketType.Favorite"
+          data-cy="markets-favorites-selector"
           @click="handleTypeClick"
         >
           <span class="flex items-center">
@@ -18,6 +19,7 @@
         <v-market-type-selector
           :type="''"
           :active="activeType === ''"
+          data-cy="markets-all-markets-selector"
           @click="handleTypeClick"
         >
           {{ $t('trade.allMarkets') }}
@@ -26,6 +28,7 @@
         <v-market-type-selector
           :type="MarketType.Spot"
           :active="activeType === MarketType.Spot"
+          data-cy="markets-spot-selector"
           @click="handleTypeClick"
         >
           {{ $t('trade.spots') }}
@@ -34,6 +37,7 @@
         <v-market-type-selector
           :type="MarketType.Perpetual"
           :active="activeType === MarketType.Perpetual"
+          data-cy="markets-perpetual-selector"
           @click="handleTypeClick"
         >
           {{ $t('trade.perpetual') }}
@@ -46,6 +50,7 @@
         wrapper-classes="bg-gray-800 rounded-3xl pl-2"
         dense
         transparent-bg
+        data-cy="markets-search-input"
         :placeholder="$t('trade.search_markets')"
         :search="search"
         @searched="handleSearchedEvent"
@@ -57,6 +62,7 @@
         <v-market-quote-selector
           :active="activeQuote === MarketQuoteType.All"
           :type="MarketQuoteType.All"
+          data-cy="markets-quote-all-button"
           @click="handleQuoteClick"
         >
           {{ $t('trade.all') }}
@@ -65,6 +71,7 @@
         <v-market-quote-selector
           :active="activeQuote === MarketQuoteType.USDT"
           :type="MarketQuoteType.USDT"
+          data-cy="markets-quote-usdt-button"
           @click="handleQuoteClick"
         >
           USDT
@@ -73,6 +80,7 @@
         <v-market-quote-selector
           :active="activeQuote === MarketQuoteType.UST"
           :type="MarketQuoteType.UST"
+          data-cy="markets-quote-ust-button"
           @click="handleQuoteClick"
         >
           UST

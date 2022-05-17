@@ -1,10 +1,16 @@
 <template>
-  <tr>
+  <tr data-cy="wallet-history-table-row">
     <td class="h-8 font-mono">
-      <span class="text-gray-400 text-xs">{{ time }}</span>
+      <span
+        class="text-gray-400 text-xs"
+        data-cy="wallet-history-time-table-data"
+        >{{ time }}</span>
     </td>
 
-    <td class="h-8 text-left">
+    <td
+      class="h-8 text-left"
+      data-cy="wallet-history-operation-type-table-data"
+    >
       <span>{{ transferType }}</span>
     </td>
 
@@ -18,7 +24,10 @@
           />
         </div>
         <div class="ml-3">
-          <span class="text-gray-200 font-semibold">
+          <span
+            class="text-gray-200 font-semibold"
+            data-cy="wallet-history-asset-table-data"
+          >
             {{ transaction.token.symbol }}
           </span>
         </div>
@@ -30,6 +39,7 @@
         :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
         :number="amount"
         :rounding-mode="BIG_NUMBER_ROUND_HALF_UP_MODE"
+        data-cy="wallet-history-amount-table-data"
       >
         <span slot="addon" class="text-2xs text-gray-500">
           {{ transaction.token.symbol }}
@@ -38,13 +48,19 @@
     </td>
 
     <td class="h-8 text-left font-mono">
-      <v-address :address="transaction.sender">
+      <v-address
+        :address="transaction.sender"
+        data-cy="wallet-history-sender-table-data"
+      >
         {{ formattedOrigin }}
       </v-address>
     </td>
 
     <td class="h-8 text-left font-mono">
-      <v-address :address="transaction.receiver">
+      <v-address
+        :address="transaction.receiver"
+        data-cy="wallet-history-receiver-table-data"
+      >
         {{ formattedDestination }}
       </v-address>
     </td>
@@ -52,6 +68,7 @@
     <td class="text-right">
       <a
         :href="transaction.explorerLink"
+        data-cy="wallet-history-explorer-link"
         target="_blank"
         class="text-primary-500 cursor-pointer pr-2"
       >

@@ -4,6 +4,7 @@
     md
     :style="{ backgroundImage: `url('/svg/bg-dark.svg')` }"
     class="bg-cover mb-12"
+    data-cy="welcome-banner-component"
   >
     <div class="grid grid-cols-1 3md:grid-cols-3 lg:grid-cols-2 3md:gap-4">
       <div class="3md:col-span-2 lg:col-span-1">
@@ -17,7 +18,15 @@
         />
         <v-progress-steps :steps="3" :active-step="activeStep" />
         <div
-          class="flex w-full justify-between tracking-wide uppercase mt-2.5 text-xs text-gray-500"
+          class="
+            flex
+            w-full
+            justify-between
+            tracking-wide
+            uppercase
+            mt-2.5
+            text-xs text-gray-500
+          "
         >
           <span class="text-primary-500">01 {{ $t('common.deposit') }}</span>
           <span :class="{ 'text-primary-500': activeStep > 1 }">
@@ -50,6 +59,7 @@
               lg
               primary
               class="mt-4 w-40"
+              data-cy="welcome-banner-action-button"
               @click.native="handleClickOnButton"
             >
               <span v-if="activeStep === 1">{{ $t('common.deposit') }}</span>

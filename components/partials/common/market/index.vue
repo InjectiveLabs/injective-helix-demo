@@ -12,7 +12,9 @@
           />
           <div class="leading-none select-none">
             <p class="text-gray-100 font-semibold text-sm flex items-center">
-              <span>{{ market.ticker }}</span>
+              <span data-cy="trading-page-ticker-name-text-content">{{
+                market.ticker
+              }}</span>
               <v-icon-chevron
                 class="w-auto h-3 text-gray-500 ml-2 transform transition ease-in-out duration-300"
                 :class="[expanded ? 'rotate-90' : '-rotate-90']"

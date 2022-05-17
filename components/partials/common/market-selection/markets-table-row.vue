@@ -1,20 +1,36 @@
 <template>
   <div
     class="grid grid-cols-3 text-gray-200 gap-4 text-xs px-3 py-2 bg-gray-900 items-center hover:bg-gray-850"
+    :data-cy="`markets-table-row-${market.ticker}`"
   >
     <span class="col-span-2 text-gray-500 flex items-center">
       <div
         class="text-gray-500 w-6 h-6 flex items-center justify-center rounded-full mr-3 hover:bg-gray-400 hover:text-gray-400 hover:bg-opacity-10 cursor-pointer"
+        data-cy="markets-favorite-button"
         @click="updateWatchList"
       >
-        <v-icon-star v-if="isFavorite" class="min-w-5 w-5 h-5" />
+        <v-icon-star
+          v-if="isFavorite"
+          class="min-w-5 w-5 h-5"
+          data-cy="markets-is-favorite-icon"
+        />
         <v-icon-star-border v-else class="min-w-5 w-5 h-5" />
       </div>
 
-      <nuxt-link class="cursor-pointer justify-start" :to="marketRoute">
+      <nuxt-link
+        class="cursor-pointer justify-start"
+        :to="marketRoute"
+        data-cy="markets-trade-link"
+      >
         <div class="flex flex-col">
-          <span class="font-semibold text-gray-200">{{ market.ticker }}</span>
-          <span class="text-gray-500 tracking-wide mt-1 font-mono">
+          <span
+            class="font-semibold text-gray-200"
+            data-cy="markets-ticker-table-data"
+            >{{ market.ticker }}</span>
+          <span
+            class="text-gray-500 tracking-wide mt-1 font-mono"
+            data-cy="markets-volume_24h-table-data"
+          >
             {{ abbreviatedVolumeInUsdToFormat }} USD
           </span>
         </div>

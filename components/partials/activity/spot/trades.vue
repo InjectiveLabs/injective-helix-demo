@@ -3,11 +3,19 @@
     <v-card-table-wrap>
       <template #actions>
         <div
-          class="col-span-12 lg:col-span-6 grid grid-cols-2 sm:grid-cols-3 gap-4 w-full"
+          class="
+            col-span-12
+            lg:col-span-6
+            grid grid-cols-2
+            sm:grid-cols-3
+            gap-4
+            w-full
+          "
         >
           <v-search
             dense
             class="col-span-2 sm:col-span-1"
+            data-cy="universal-table-filter-by-asset-input"
             :placeholder="$t('trade.filter')"
             :search="search"
             @searched="handleInputOnSearch"
@@ -15,6 +23,7 @@
 
           <filter-selector
             class="self-start"
+            data-cy="universal-table-filter-by-type-drop-down"
             :type="TradeSelectorType.Type"
             :value="type"
             @click="handleTypeClick"
@@ -22,6 +31,7 @@
 
           <filter-selector
             class="self-start"
+            data-cy="universal-table-filter-by-side-drop-down"
             :type="TradeSelectorType.Side"
             :value="side"
             @click="handleSideClick"
@@ -41,7 +51,11 @@
             ></tr>
           </tbody>
         </table>
-        <v-empty-list v-else :message="$t('trade.emptyTrades')" />
+        <v-empty-list
+          v-else
+          :message="$t('trade.emptyTrades')"
+          data-cy="universal-table-nothing-found"
+        />
       </v-table-wrapper>
     </v-card-table-wrap>
   </VHocLoading>

@@ -1,5 +1,5 @@
 <template>
-  <tr v-if="market">
+  <tr v-if="market" :data-cy="'trade-history-table-row-' + market.ticker">
     <td class="h-8 font-mono">
       <span class="text-gray-400 text-xs">{{ time }}</span>
     </td>
@@ -14,19 +14,23 @@
           />
         </div>
         <div class="ml-3">
-          <span class="text-gray-200 font-semibold">
+          <span
+            class="text-gray-200 font-semibold"
+            data-cy="trade-history-ticker-name-table-data"
+          >
             {{ market.ticker }}
           </span>
         </div>
       </div>
     </td>
 
-    <td class="h-8 text-left">
+    <td class="h-8 text-left" data-cy="trade-history-execution-type-table-data">
       {{ tradeExecutionType }}
     </td>
 
     <td class="h-8 text-left">
       <span
+        data-cy="trade-history-trade-directon-table-data"
         :class="{
           'text-aqua-500': trade.tradeDirection === TradeDirection.Buy,
           'text-red-500': trade.tradeDirection === TradeDirection.Sell
@@ -38,6 +42,7 @@
 
     <td class="h-8 text-right font-mono">
       <v-number
+        data-cy="trade-history-price-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
@@ -46,6 +51,7 @@
     </td>
     <td class="h-8 text-right font-mono">
       <v-number
+        data-cy="trade-history-quantity-table-data"
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
@@ -53,7 +59,11 @@
       />
     </td>
     <td class="h-8 text-right font-mono">
-      <v-number use-number-decimals :number="fee">
+      <v-number
+        use-number-decimals
+        :number="fee"
+        data-cy="trade-history-fee-table-data"
+      >
         <span slot="addon" class="text-2xs text-gray-500">
           {{ market.quoteToken.symbol }}
         </span>
@@ -61,6 +71,7 @@
     </td>
     <td class="h-8 text-right font-mono">
       <v-number
+        data-cy="trade-history-total-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "

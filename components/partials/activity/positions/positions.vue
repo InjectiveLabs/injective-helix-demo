@@ -10,12 +10,14 @@
             class="col-span-3"
             :placeholder="$t('trade.filter')"
             :search="search"
+            data-cy="universal-table-filter-by-asset-input"
             @searched="handleInputOnSearch"
           />
           <filter-selector
             class="col-span-2"
             :type="TradeSelectorType.PositionSide"
             :value="side"
+            data-cy="universal-table-filter-by-side-drop-down"
             @click="handleSideClick"
           />
         </div>
@@ -43,6 +45,7 @@
             red-outline
             md
             :status="status"
+            data-cy="activity-cancel-all-button"
             @click.stop="handleClosePositions"
           >
             {{ $t('trade.closeAllPositions') }}
@@ -80,6 +83,7 @@
 
         <v-empty-list
           v-else
+          data-cy="universal-table-nothing-found"
           :message="$t('trade.emptyPositions')"
           class="mt-6 min-h-orders"
         />

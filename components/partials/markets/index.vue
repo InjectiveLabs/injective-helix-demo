@@ -50,7 +50,10 @@
         :ascending="ascending"
         @sort="handleSort"
       >
-        <span class="text-gray-200 text-xs">
+        <span
+          class="text-gray-200 text-xs"
+          data-cy="markets-market-table-header"
+        >
           {{ $t('trade.market') }}
         </span>
       </SortableHeaderItem>
@@ -68,7 +71,10 @@
         :ascending="ascending"
         @sort="handleSort"
       >
-        <span class="text-gray-200 text-xs">
+        <span
+          class="text-gray-200 text-xs"
+          data-cy="markets-change_24h-table-header"
+        >
           {{ $t('trade.market_change_24h') }}
         </span>
       </SortableHeaderItem>
@@ -80,7 +86,10 @@
         :ascending="ascending"
         @sort="handleSort"
       >
-        <span class="text-gray-200 text-xs">
+        <span
+          class="text-gray-200 text-xs"
+          data-cy="markets-volume_24h-table-header"
+        >
           {{ $t('trade.volume_24h') }}
         </span>
       </SortableHeaderItem>
@@ -99,6 +108,7 @@
       <v-empty-list
         slot="empty"
         classes="bg-gray-850 min-h-3xs"
+        data-cy="markets-no-data-table"
         :message="$t('markets.emptyHeader')"
       >
         <span class="mt-2 text-xs text-gray-500">{{
