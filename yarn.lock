@@ -3248,7 +3248,7 @@
     defer-to-connect "^1.0.1"
 
 "@terra-money/terra.js@^3.0.8":
-  version "3.0.8"
+  version "3.0.12"
   resolved "https://registry.yarnpkg.com/@terra-money/terra.js/-/terra.js-3.0.12.tgz#71cc73aa085d89029bf16d61d8793e3f158b46ef"
   integrity sha512-wy2po8Oxk7CO+nXJ57zo2NYGajPzTqhACMC9Z4JhG4TRxr6P8rV7K5871ofg2IxBCWN4sKHseHFdMfo1W0MIhQ==
   dependencies:
