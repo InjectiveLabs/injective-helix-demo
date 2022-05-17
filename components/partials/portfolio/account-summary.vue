@@ -7,23 +7,26 @@
       <v-icon-show class="w-4 h-4 ml-4 text-gray-400 hover:text-primary-500" />
     </div>
     <div
-      class="flex flex-wrap items-center justify-center lg:justify-between mt-4"
+      class="flex flex-wrap items-center justify-center sm:justify-start lg:justify-between mt-3 sm:mt-4"
     >
       <div
-        class="flex tracking-wide items-end flex-wrap justify-center lg:justify-start"
+        class="flex tracking-wide items-end flex-wrap justify-center sm:justify-start"
       >
         <h2 class="text-white text-2xl sm:text-3xl xl:text-4xl mr-4">
           <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }} </span>
           <span v-else-if="status.isLoading()">&mdash; USD </span>
           <span v-else>{{ totalBalanceToString }} USD</span>
         </h2>
-        <span v-if="!hideBalance" class="text-2xl text-gray-400 mt-4 lg:mt-0">
-          <span v-if="status.isIdle()">
+        <span
+          v-if="!hideBalance"
+          class="text-2xl text-gray-400 sm:mt-4 lg:mt-0"
+        >
+          <span v-if="status.isNotLoading()">
             ≈ {{ totalBalanceInBtcToString }} BTC
           </span>
         </span>
       </div>
-      <div class="flex items-center mt-6 lg:mt-0">
+      <div v-if="status.isNotLoading()" class="flex items-center mt-4 lg:mt-0">
         <v-button outline md class="mr-6" @click="handleDepositClick">
           <span class="text-primary-500">{{ $t('common.deposit') }}</span>
         </v-button>

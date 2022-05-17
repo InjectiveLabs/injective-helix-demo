@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="mb-6 flex justify-between items-center flex-wrap gap-4">
+    <div class="mb-4 flex justify-between items-center flex-wrap gap-4">
       <v-search
         dense
         name="search"

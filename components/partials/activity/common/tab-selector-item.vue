@@ -1,6 +1,6 @@
 <template>
   <span
-    class="text-sm leading-5 tracking-wide cursor-pointer uppercase"
+    class="text-xs xs:text-sm leading-5 tracking-wide cursor-pointer uppercase"
     :class="[
       option === value
         ? 'text-primary-500 hover:text-primary-600 font-bold'
