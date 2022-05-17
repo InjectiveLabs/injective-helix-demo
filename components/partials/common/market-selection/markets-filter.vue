@@ -3,8 +3,8 @@
     <div class="flex items-center justify-between">
       <div class="flex items-center flex-wrap gap-5">
         <v-market-type-selector
-          :type="MarketType.Favourite"
-          :active="activeType === MarketType.Favourite"
+          :type="MarketType.Favorite"
+          :active="activeType === MarketType.Favorite"
           @click="handleTypeClick"
         >
           <v-icon-star class="min-w-4 h-4 w-4" />

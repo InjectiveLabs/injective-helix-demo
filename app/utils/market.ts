@@ -153,7 +153,7 @@ export const marketIsPartOfType = ({
     return true
   }
 
-  if (activeType === MarketType.Favourite) {
+  if (activeType === MarketType.Favorite) {
     return favoriteMarkets.includes(market.marketId)
   }
 
