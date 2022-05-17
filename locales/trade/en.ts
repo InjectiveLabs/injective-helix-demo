@@ -15,6 +15,7 @@ export default {
     side_tooltip: 'The side of your trade: long or short',
     price: 'Price',
     amount: 'Amount',
+    averagePrice: 'Average Price',
     amount_tooltip:
       'The total value of the base asset at the time which the trade was executed (i.e. for BTC/USDT, BTC is the base asset and USDT is the quote asset).',
     filled: 'Filled',

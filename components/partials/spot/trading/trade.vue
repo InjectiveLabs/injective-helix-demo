@@ -112,6 +112,7 @@
     <component
       :is="tradingTypeMarket ? `v-order-details-market` : 'v-order-details'"
       v-bind="{
+        averagePrice,
         price: executionPrice,
         orderType,
         makerFeeRate,
@@ -205,6 +206,7 @@ import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
 import { Modal } from '~/types'
 import {
+  calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook,
   getApproxAmountForMarketOrder
 } from '~/app/services/spot'
@@ -450,6 +452,50 @@ export default Vue.extend({
 
     price(): BigNumberInBase {
       return new BigNumberInBase(this.form.price)
+    },
+
+    averagePrice(): BigNumberInBase {
+      const {
+        tradingTypeMarket,
+        orderTypeBuy,
+        sells,
+        buys,
+        hasAmount,
+        market,
+        slippage,
+        amount,
+        price
+      } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      if (tradingTypeMarket) {
+        if (!hasAmount) {
+          return ZERO_IN_BASE
+        }
+
+        const records = orderTypeBuy ? sells : buys
+
+        const averagePrice = calculateAverageExecutionPriceFromOrderbook({
+          records,
+          amount,
+          market
+        })
+
+        return new BigNumberInBase(
+          averagePrice.times(slippage).toFixed(market.priceDecimals)
+        )
+      }
+
+      if (price.isNaN()) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(
+        new BigNumberInBase(price).toFixed(market.priceDecimals)
+      )
     },
 
     executionPrice(): BigNumberInBase {
@@ -890,13 +936,23 @@ export default Vue.extend({
     },
 
     total(): BigNumberInBase {
-      const { amount, hasPrice, hasAmount, executionPrice, market } = this
+      const {
+        amount,
+        hasPrice,
+        hasAmount,
+        averagePrice,
+        executionPrice,
+        market,
+        tradingTypeMarket
+      } = this
 
       if (!hasPrice || !hasAmount || !market) {
         return ZERO_IN_BASE
       }
 
-      return executionPrice.times(amount)
+      return tradingTypeMarket
+        ? averagePrice.times(amount)
+        : executionPrice.times(amount)
     },
 
     fees(): BigNumberInBase {

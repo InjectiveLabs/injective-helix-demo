@@ -36,6 +36,19 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </v-text-info>
 
+        <v-text-info :title="$t('trade.averagePrice')" class="mt-2">
+          <span
+            v-if="!price.isNaN()"
+            class="font-mono flex items-start break-all"
+          >
+            {{ priceToFormat }}
+            <span class="text-gray-500 ml-1 break-normal">
+              {{ market.quoteToken.symbol }}
+            </span>
+          </span>
+          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
+        </v-text-info>
+
         <v-text-info
           v-if="!orderTypeReduceOnly"
           :title="$t('trade.liquidation_price')"
@@ -345,6 +358,16 @@ export default Vue.extend({
       return takerExpectedPts.toFormat(
         getDecimalsFromNumber(takerExpectedPts.toNumber())
       )
+    },
+
+    priceToFormat(): string {
+      const { price, market } = this
+
+      if (!market) {
+        return price.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
+      }
+
+      return price.toFormat(market.quantityDecimals)
     },
 
     amountToFormat(): string {
