@@ -61,6 +61,7 @@
         </v-market-card>
 
         <v-market-card
+          v-if="topVolume"
           :market="topVolume.market"
           :summary="topVolume.summary"
           :volume-in-usd="topVolume.volumeInUsd"
@@ -69,6 +70,7 @@
         </v-market-card>
 
         <v-market-card
+          v-if="topGainer"
           :market="topGainer.market"
           :summary="topGainer.summary"
           :volume-in-usd="topGainer.volumeInUsd"

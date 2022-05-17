@@ -21,7 +21,8 @@
         </div>
 
         <div
-          class="col-span-12 flex justify-between items-center sm:hidden my-3 text-xs px-3"
+          v-if="filteredPositions.length > 0"
+          class="col-span-12 flex justify-between items-center sm:hidden mt-3 text-xs px-3"
         >
           <span class="tracking-widest uppercase tracking-3">
             {{ $t('trade.side') }} / {{ $t('trade.market') }}
@@ -35,7 +36,7 @@
         </div>
 
         <div
-          class="col-span-6 lg:col-span-8 sm:text-right mt-4 sm:mt-0 hidden sm:block"
+          class="col-span-6 lg:col-span-8 sm:text-right mt-0 hidden sm:block"
         >
           <v-button
             v-if="filteredPositions.length > 0 && walletIsNotKeplr"
@@ -50,7 +51,10 @@
       </template>
 
       <!-- mobile table -->
-      <TableBody :show-empty="filteredPositions.length === 0" class="sm:hidden">
+      <TableBody
+        :show-empty="filteredPositions.length === 0"
+        class="sm:hidden mt-3"
+      >
         <mobile-position
           v-for="(position, index) in sortedPositions"
           :key="`mobile-positions-${index}-${position.marketId}`"
@@ -58,14 +62,10 @@
           :position="position"
         />
 
-        <v-empty-list
-          slot="empty"
-          :message="$t('trade.emptyPositions')"
-          class="mt-6 min-h-orders"
-        />
+        <v-empty-list slot="empty" :message="$t('trade.emptyPositions')" />
       </TableBody>
 
-      <v-table-wrapper class="mt-4 hidden sm:block">
+      <v-table-wrapper break-md class="mt-4 hidden sm:block">
         <table v-if="filteredPositions.length > 0" class="table">
           <position-table-header />
           <tbody>
