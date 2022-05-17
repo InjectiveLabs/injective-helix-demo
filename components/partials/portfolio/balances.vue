@@ -1,9 +1,11 @@
 <template>
   <div>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div
+      class="flex sm:grid grid-cols-2 lg:grid-cols-3 gap-4 overflow-x-auto hide-scrollbar"
+    >
       <v-card-select v-model="component" lg :option="components.bankAccount">
         <template slot="subtitle">
-          <div class="font-semibold text-lg flex items-center mb-4">
+          <div class="font-semibold text-lg flex items-center mb-2">
             <span>{{ $t('portfolio.bankAccount') }}</span>
             <v-icon-info-tooltip
               class="ml-3"
@@ -17,10 +19,10 @@
         <v-icon-wallet slot="icon" class="w-6 h-auto" />
 
         <div class="text-right">
-          <p class="text-gray-500 text-xs uppercase mb-3 tracking-wider">
+          <p class="text-gray-500 text-xs uppercase mb-2 tracking-wider">
             {{ $t('portfolio.walletValue') }}
           </p>
-          <p class="text-2xl">
+          <p class="text-lg 3md:text-2xl">
             <span v-if="status.isLoading()">&mdash; USD</span>
             <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
             <span v-else>{{ totalBankBalanceToString }} USD</span>
@@ -30,7 +32,7 @@
 
       <v-card-select v-model="component" lg :option="components.tradingAccount">
         <template slot="subtitle">
-          <div class="font-semibold text-lg flex items-center mb-4">
+          <div class="font-semibold text-lg flex items-center mb-2">
             <span>{{ $t('portfolio.tradingAccount') }}</span>
             <v-icon-info-tooltip
               class="ml-3"
@@ -44,10 +46,10 @@
         <v-icon-rectangle-chart slot="icon" class="w-6 h-auto" />
 
         <div class="text-right">
-          <p class="text-gray-500 text-xs uppercase mb-3 tracking-wider">
+          <p class="text-gray-500 text-xs uppercase mb-2 tracking-wider">
             {{ $t('portfolio.portfolioValue') }}
           </p>
-          <p class="text-2xl">
+          <p class="text-lg 3md:text-2xl">
             <span v-if="status.isLoading()">&mdash; USD</span>
             <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
             <span v-else>{{ tradingAccountBalancesToString }} USD</span>

@@ -21,7 +21,22 @@
         </div>
 
         <div
-          class="col-span-12 sm:col-span-6 lg:col-span-8 sm:text-right mt-4 sm:mt-0"
+          v-if="filteredPositions.length > 0"
+          class="col-span-12 flex justify-between items-center sm:hidden mt-3 text-xs px-3"
+        >
+          <span class="tracking-widest uppercase tracking-3">
+            {{ $t('trade.side') }} / {{ $t('trade.market') }}
+          </span>
+          <span
+            class="text-red-550 leading-5 cursor-pointer"
+            @click.stop="handleClosePositions"
+          >
+            {{ $t('trade.closeAll') }}
+          </span>
+        </div>
+
+        <div
+          class="col-span-6 lg:col-span-8 sm:text-right mt-0 hidden sm:block"
         >
           <v-button
             v-if="filteredPositions.length > 0 && walletIsNotKeplr"
@@ -35,7 +50,22 @@
         </div>
       </template>
 
-      <v-table-wrapper break-md class="mt-4">
+      <!-- mobile table -->
+      <TableBody
+        :show-empty="filteredPositions.length === 0"
+        class="sm:hidden mt-3"
+      >
+        <mobile-position
+          v-for="(position, index) in sortedPositions"
+          :key="`mobile-positions-${index}-${position.marketId}`"
+          class="col-span-1"
+          :position="position"
+        />
+
+        <v-empty-list slot="empty" :message="$t('trade.emptyPositions')" />
+      </TableBody>
+
+      <v-table-wrapper break-md class="mt-4 hidden sm:block">
         <table v-if="filteredPositions.length > 0" class="table">
           <position-table-header />
           <tbody>
@@ -56,7 +86,7 @@
       </v-table-wrapper>
 
       <portal to="activity-card-position-count">
-        <span class="font-semibold text-lg">
+        <span class="font-semibold text-sm md:text-lg">
           {{ positions.length }}
         </span>
       </portal>
@@ -76,16 +106,20 @@ import {
   UiDerivativeMarketWithToken
 } from '@injectivelabs/ui-common'
 import { Wallet } from '@injectivelabs/ts-types'
-import Position from '~/components/partials/common/derivatives/position.vue'
-import PositionTableHeader from '~/components/partials/common/derivatives/position-table.header.vue'
+import Position from '~/components/partials/common/position/position.vue'
+import PositionTableHeader from '~/components/partials/common/position/position-table.header.vue'
+import MobilePosition from '~/components/partials/common/position/mobile-position.vue'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
+import TableBody from '~/components/elements/table-body.vue'
 import { TradeSelectorType } from '~/types/enums'
 
 export default Vue.extend({
   components: {
     'v-position': Position,
     FilterSelector,
-    PositionTableHeader
+    MobilePosition,
+    PositionTableHeader,
+    TableBody
   },
 
   data() {
