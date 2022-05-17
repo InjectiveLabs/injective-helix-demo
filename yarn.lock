@@ -3252,7 +3252,7 @@
   resolved "https://registry.yarnpkg.com/@terra-money/terra.js/-/terra.js-3.0.10.tgz#cb9cd0f95abd958429a2a508af0d4fa1fd0dcf43"
   integrity sha512-d4pa+GZjGeDaj1xy2KS0nw8nMTMqHHib9dVdIMyuyhjG+TezueY+04ROGzkmzpTFOrv5ruROF/0T+hzUTp5jPQ==
   dependencies:
-    "@terra-money/terra.progto" "^0.1.7"
+    "@terra-money/terra.proto" "^0.1.7"
     axios "^0.26.1"
     bech32 "^2.0.0"
     bip32 "^3.0.1"
