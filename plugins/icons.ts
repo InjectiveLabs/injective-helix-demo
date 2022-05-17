@@ -56,6 +56,7 @@ import Crown from '~/components/icons/crown.vue'
 import Youtube from '~/components/icons/youtube.vue'
 import YoutubeCircle from '~/components/icons/youtube-circle.vue'
 import MenuAlt from '~/components/icons/menu-alt.vue'
+import WalletConnect from '~/components/icons/wallet-connect.vue'
 
 Vue.component('VIconArrow', Arrow)
 Vue.component('VIconArrowSwap', ArrowSwap)
@@ -111,5 +112,6 @@ Vue.component('VIconTwitter', Twitter)
 Vue.component('VIconTwitterCircle', TwitterCircle)
 Vue.component('VIconUser', User)
 Vue.component('VIconWallet', Wallet)
+Vue.component('VIconWalletConnect', WalletConnect)
 Vue.component('VIconYoutube', Youtube)
 Vue.component('VIconYoutubeCircle', YoutubeCircle)
