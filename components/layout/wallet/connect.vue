@@ -1,11 +1,6 @@
 <template>
-  <div class="ml-4 flex items-center md:ml-6" data-cy="wallet-connect">
-    <v-button
-      md
-      primary
-      data-cy="header-wallet-connect-button"
-      @click="handleWalletConnectClicked"
-    >
+  <div class="ml-4 flex items-center md:ml-6">
+    <v-button md primary @click="handleWalletConnectClicked">
       {{ $t('connect.connect') }}
     </v-button>
 
@@ -21,6 +16,7 @@
         <VHocLoading :status="status">
           <ul class="divide-y divide-gray-800 border-gray-700 rounded-lg">
             <v-metamask />
+            <v-wallet-connect v-if="isStagingOrTestnetOrDevnet" />
             <v-keplr />
             <v-torus v-if="isStagingOrTestnetOrDevnet" />
             <v-ledger
@@ -44,6 +40,7 @@
 import Vue from 'vue'
 import { Status } from '@injectivelabs/utils'
 import VMetamask from './wallets/metamask.vue'
+import VWalletConnect from './wallets/wallet-connect.vue'
 import VKeplr from './wallets/keplr.vue'
 import VLedger from './wallets/ledger.vue'
 import VTorus from './wallets/torus.vue'
@@ -61,6 +58,7 @@ export default Vue.extend({
   components: {
     VModalTerms,
     VMetamask,
+    VWalletConnect,
     VKeplr,
     VTorus,
     VLedger,
@@ -87,20 +85,17 @@ export default Vue.extend({
 
   watch: {
     walletConnectStatus(newWalletConnectStatus: WalletConnectStatus) {
-      if (newWalletConnectStatus === WalletConnectStatus.connecting) {
-        this.handleConnectingWallet()
-      }
-
-      if (newWalletConnectStatus === WalletConnectStatus.disconnected) {
-        this.handleDisconnectedWallet()
-      }
-
-      if (
-        [WalletConnectStatus.connected, WalletConnectStatus.idle].includes(
-          newWalletConnectStatus
-        )
-      ) {
-        this.handleConnectedWallet()
+      switch (newWalletConnectStatus) {
+        case WalletConnectStatus.connecting:
+          this.handleConnectingWallet()
+          break
+        case WalletConnectStatus.disconnected:
+          this.handleDisconnectedWallet()
+          break
+        case WalletConnectStatus.idle:
+        case WalletConnectStatus.connected:
+          this.handleConnectedWallet()
+          break
       }
     }
   },

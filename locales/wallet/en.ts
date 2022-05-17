@@ -10,6 +10,7 @@ export default {
     connectUsingLedger: 'Connect using Ledger',
     connectUsingLedgerNote:
       'Note: To ensure smooth process while connecting your Ledger Hardware Wallet, please ensure you are running the on latest Chrome version, have your Ledger device connected, unlocked and your Ethereum app open.',
+    connectUsingWalletConnect: 'Connect using WalletConnect (mobile and desktop wallets)',
     addressCopied: 'Address Copied',
     copiedAddress: 'Address copied to your clipboard',
     getAddresses: 'Get addresses',
@@ -22,6 +23,7 @@ export default {
     ledgerLegacy: 'Ledger Legacy',
     logout: 'Logout',
     metamask: 'Metamask',
+    walletConnect: 'WalletConnect',
     open: 'open',
     keplr: 'Keplr',
     connectUsingKeplr: 'Connect using Keplr',
