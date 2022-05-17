@@ -6,7 +6,7 @@
   }
 }
 
-https://localhost {
+http://localhost {
   root * /root/dist
   file_server
   handle_errors {
