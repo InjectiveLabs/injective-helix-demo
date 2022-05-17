@@ -282,8 +282,8 @@ export default Vue.extend({
         this.activeCategory = category
       }
 
-      if (type && MarketType.Favourite.toLowerCase() === type) {
-        this.activeType = MarketType.Favourite
+      if (type && MarketType.Favorite.toLowerCase() === type) {
+        this.activeType = MarketType.Favorite
       }
 
       if (type && MarketType.Spot.toLowerCase() === type) {
