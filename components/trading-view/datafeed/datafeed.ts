@@ -10,9 +10,22 @@ export const extractField = (data: any, field: string, arrayIndex: number) => {
 
 export const defaultConfiguration = () => {
   return {
-    supports_search: false,
-    supports_group_request: true,
-    supported_resolutions: ['1', '5', '15', '30', '60', '1D', '1W', '1M'],
+    exchanges: [],
+    supports_search: true,
+    supports_group_request: false,
+    supported_resolutions: [
+      '1',
+      '3',
+      '5',
+      '15',
+      '30',
+      '60',
+      '120',
+      '240',
+      '360',
+      '1D',
+      '1W'
+    ],
     supports_marks: false,
     supports_timescale_marks: false
   }
@@ -42,11 +55,9 @@ export class Datafeed {
       updateFrequency
     )
 
-    this.configurationReadyPromise = this.requestConfiguration().then(
-      (configuration: any) => {
-        this.setupWithConfiguration(configuration || defaultConfiguration())
-      }
-    )
+    this.configurationReadyPromise = this.requestConfiguration().then(() => {
+      this.setupWithConfiguration(defaultConfiguration())
+    })
   }
 
   onReady(callback: Function) {
