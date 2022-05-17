@@ -27,7 +27,7 @@
           </v-tab-selector-item>
         </div>
 
-        <v-card md class="h-full mt-6">
+        <v-card md class="h-full mt-4 xs:mt-6">
           <v-positions v-show="component === components.positions" />
           <v-funding-payments v-if="component === components.fundingPayments" />
         </v-card>

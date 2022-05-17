@@ -5,8 +5,8 @@
         class="flex items-centers gap-2 3md:gap-4 overflow-x-auto mb-4 2md:mb-0 justify-between xs:justify-start w-full xs:w-auto hide-scrollbar"
       >
         <v-market-type-selector
-          :type="MarketType.Favourite"
-          :active="activeType === MarketType.Favourite"
+          :type="MarketType.Favorite"
+          :active="activeType === MarketType.Favorite"
           data-cy="markets-favorites-selector"
           @click="handleTypeClick"
         >

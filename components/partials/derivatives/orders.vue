@@ -73,7 +73,7 @@
           :is="component"
           v-if="component"
           v-bind="{ currentMarketOnly }"
-        ></component>
+        />
       </v-card>
     </VHocLoading>
   </v-card-table-wrap>

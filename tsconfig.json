@@ -4,21 +4,36 @@
     "module": "ESNext",
     "moduleResolution": "Node",
     "resolveJsonModule": true,
-    "lib": ["ESNext", "ESNext.AsyncIterable", "DOM"],
+    "lib": [
+      "ESNext",
+      "ESNext.AsyncIterable",
+      "DOM"
+    ],
     "esModuleInterop": true,
     "allowJs": true,
+    "jsx": "preserve",
     "sourceMap": true,
     "strict": true,
     "noEmit": true,
     "experimentalDecorators": true,
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./*"],
-      "@/*": ["./*"],
-      "~~/*": ["./*"],
-      "@@/*": ["./*"]
+      "~/*": [
+        "./*"
+      ],
+      "@/*": [
+        "./*"
+      ],
+      "~~/*": [
+        "./*"
+      ],
+      "@@/*": [
+        "./*"
+      ]
     },
     "types": [
+      "node",
+      "jest",
       "@types/node",
       // "@types/jest",
       "@nuxt/types",
@@ -27,5 +42,18 @@
       "vue-clickaway"
     ]
   },
-  "exclude": ["node_modules", ".nuxt", "dist", "static"]
+  "vueCompilerOptions": {
+    "experimentalCompatMode": 2,
+    "experimentalTemplateCompilerOptions": {
+      "compatConfig": {
+        "MODE": 2
+      }
+    }
+  },
+  "exclude": [
+    "node_modules",
+    ".nuxt",
+    "dist",
+    "static"
+  ]
 }
