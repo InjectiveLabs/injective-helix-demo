@@ -30,6 +30,7 @@ const mainnetDerivatives = [
   'eth-usdt-perp',
   'bayc-weth-perp',
   'bnb-usdt-perp',
+  'stx-usdt-perp',
   'atom-usdt-perp'
 ]
 const testnetDerivatives = [...mainnetDerivatives]
@@ -41,7 +42,7 @@ const derivatives = IS_TESTNET
   : mainnetDerivatives
 
 if (NETWORK === Network.Devnet || IS_MAINNET_STAGING) {
-  derivatives.push('stx-usdt-perp', 'osmo-usdt-perp')
+  derivatives.push('osmo-usdt-perp')
 }
 
 const spotRoutes = spot.map((s) => `/spot/${s}`) || []
