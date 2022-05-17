@@ -1,7 +1,7 @@
 <template>
   <div
     class="grid grid-cols-1"
-    :class="{ 'rounded-lg overflow-hidden': round }"
+    :class="{ 'rounded-lg overflow-hidden': round, 'h-full': showEmpty }"
   >
     <slot></slot>
     <div

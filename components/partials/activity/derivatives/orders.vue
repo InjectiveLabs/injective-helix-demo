@@ -22,7 +22,7 @@
 
         <div
           v-if="filteredOrders.length > 0"
-          class="col-span-12 flex justify-between items-center sm:hidden my-3 text-xs px-3"
+          class="col-span-12 flex justify-between items-center sm:hidden mt-3 text-xs px-3"
         >
           <span class="tracking-widest uppercase tracking-3">
             {{ $t('trade.side') }} / {{ $t('trade.market') }}
@@ -50,7 +50,10 @@
       </template>
 
       <!-- mobile table -->
-      <TableBody :show-empty="filteredOrders.length === 0" class="sm:hidden">
+      <TableBody
+        :show-empty="filteredOrders.length === 0"
+        class="sm:hidden mt-3"
+      >
         <mobile-order
           v-for="(order, index) in filteredOrders"
           :key="`mobile-derivative-orders-${index}-${order.orderHash}`"
@@ -58,11 +61,7 @@
           :order="order"
         />
 
-        <v-empty-list
-          slot="empty"
-          :message="$t('trade.emptyOrders')"
-          class="mt-6 min-h-orders"
-        />
+        <v-empty-list slot="empty" :message="$t('trade.emptyOrders')" />
       </TableBody>
 
       <v-table-wrapper break-md class="mt-4 hidden sm:block">
