@@ -9,6 +9,7 @@ declare global {
       MAINTENANCE_ENABLED: string
       APP_BASE_URL: string
       APP_EXCHANGE_API_ENDPOINT: string
+      APP_CHRONOS_API_ENDPOINT: string
       APP_SENTRY_GRPC_ENDPOINT: string
       APP_SENTRY_HTTP_ENDPOINT: string
       APP_GAS_REBATE_API: string

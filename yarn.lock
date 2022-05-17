@@ -1925,13 +1925,13 @@
   resolved "https://registry.yarnpkg.com/@injectivelabs/common-rpc/-/common-rpc-1.0.3.tgz#2c447c21a0efa0b1e174e1efc53afd5643ac3bef"
   integrity sha512-CCGwSgTAJDiXWjCngrrg9cNLTx4LGQjxWwWH0A6ZGuEcZLtHc9Y7/AIikoeKrJO80aC8ZBYlSyfVkFZjEy6Z2Q==
 
-"@injectivelabs/contracts@^0.5.19":
-  version "0.5.19"
-  resolved "https://registry.npmjs.org/@injectivelabs/contracts/-/contracts-0.5.19.tgz#331e01e637e44be4ef7356743961f53af9b8606e"
-  integrity sha512-1jp8qRT4GqFAhUlft1z36c00X/AkKkfDYU+f9fzGCs+pyr7l+/jfPGYdsa8TOMAjh42W+wlrNfELET6Kos69ag==
+"@injectivelabs/contracts@^0.5.20":
+  version "0.5.20"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/contracts/-/contracts-0.5.20.tgz#e232dfd031e5e7c680b5df279afe02a062cbe958"
+  integrity sha512-/c8ov7lJqsTMdtF6WfwlMYRWvfcUBN9porf6aMX8Hf+No7+H9qdMZbwvSQ//5P0gBO/5PF2EqDUbg3Buof/FUA==
   dependencies:
     "@injectivelabs/exceptions" "^0.5.1"
-    "@injectivelabs/networks" "^0.5.3"
+    "@injectivelabs/networks" "^0.5.4"
     "@injectivelabs/ts-types" "^0.5.1"
     "@injectivelabs/utils" "^0.5.1"
     link-module-alias "^1.2.0"
@@ -1939,17 +1939,17 @@
     web3 "^1.7.2"
     web3-utils "^1.7.2"
 
-"@injectivelabs/cosmos-ts@^0.5.23":
-  version "0.5.23"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/cosmos-ts/-/cosmos-ts-0.5.23.tgz#31cdd1b843380f5cdfa3e04e32e29838643ce5de"
-  integrity sha512-7rJfujcP2/rO3Xc7RUij82XtDbu+qeP3FuMIPV1jcXWsm+1Up7DZEv6erO6N/2m589wrX1bWRCyWZIittViiqg==
+"@injectivelabs/cosmos-ts@^0.5.24":
+  version "0.5.24"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/cosmos-ts/-/cosmos-ts-0.5.24.tgz#48d4ffa6d9996b7954ed24ce5c9ffd3bb79c1216"
+  integrity sha512-W4L+7zksp2fie+n1Cfk0Uzx6HZRwNfNYnb7Jkceuhx9PiUJSGUZfTbcHimaYa3ZcVvDTCMUH9Rmt/ZnwtVxvEQ==
   dependencies:
     "@cosmjs/amino" "^0.27.1"
     "@cosmjs/launchpad" "^0.27.1"
     "@cosmjs/proto-signing" "^0.27.1"
     "@cosmjs/stargate" "^0.27.1"
     "@injectivelabs/chain-api" "^1.7.1"
-    "@injectivelabs/token-metadata" "^0.5.17"
+    "@injectivelabs/token-metadata" "^0.5.18"
     "@injectivelabs/ts-types" "^0.5.1"
     "@injectivelabs/utils" "^0.5.1"
     "@keplr-wallet/cosmos" "^0.9.12"
@@ -1963,10 +1963,10 @@
     sha3 "^2.1.4"
     shx "^0.3.2"
 
-"@injectivelabs/derivatives-consumer@^0.5.3":
-  version "0.5.3"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/derivatives-consumer/-/derivatives-consumer-0.5.3.tgz#03fa65b0bb59d3944a09359395d513a12aadf126"
-  integrity sha512-70Q88ndziSwX9vNs3/4iIf2ztN4giWm44K6YuaWNlSWXMgEZy6Wf4ccIH9utm+QUORpONsWYLo9kJZJVhTiGuA==
+"@injectivelabs/derivatives-consumer@^0.5.4":
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/derivatives-consumer/-/derivatives-consumer-0.5.4.tgz#646e2fafff6c0d0dda6de048ea67311f1bf0e830"
+  integrity sha512-OhomFjSby+qniWBrwkbAm34soMLgRGOaIokLV/9YzsaO82GKpSjB1VjyZHe/Wh1tTRdabN48JguOjcc8c1VZDQ==
   dependencies:
     "@improbable-eng/grpc-web" "^0.15.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.15.0"
@@ -2046,10 +2046,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/networks@^0.5.3":
-  version "0.5.3"
-  resolved "https://registry.npmjs.org/@injectivelabs/networks/-/networks-0.5.3.tgz#85c94958374d6fbf2b2c2eea9140ee7535529837"
-  integrity sha512-BUqJsuHAAH+yAD45LtU/qaoiQ6lY0Pop9A5B50Elub+4H0N9D+/VAQVn0IUL147KxV4B1OcGeCV2x2IMhLj0EQ==
+"@injectivelabs/networks@^0.5.4":
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/networks/-/networks-0.5.4.tgz#094597c4a5dd803095c4945f36390d010bb6d412"
+  integrity sha512-sjfgDBai1Skj+Nl7y2R4Pz30wbGPJLidg5ifko6aYsy11VPyWHfIA/oCZSh1kUN3bLVjyhPuiN582fNityvsCQ==
   dependencies:
     "@injectivelabs/exceptions" "^0.5.1"
     "@injectivelabs/utils" "^0.5.1"
@@ -2077,10 +2077,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/spot-consumer@^0.5.5":
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/spot-consumer/-/spot-consumer-0.5.5.tgz#e6215a7710d9ac3842325b8c8caee749e63f1183"
-  integrity sha512-YS64VT1hnhDuziwf2l4oxUulUUR9ozs6Dvrq2DSetwoAMGKyRbI5rIVmYfqgbv89g1R2YGQ/PxDLNZJmfk14rA==
+"@injectivelabs/spot-consumer@^0.5.6":
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/spot-consumer/-/spot-consumer-0.5.6.tgz#49d347b09370dd06b1ecf0a28dc7583b6f4d1fff"
+  integrity sha512-FetX2VYySYRLmoUzaEdkgntNTjU6bONPLvuMd+D1+3A35kUda4l0Nw1t/4SzdD3Blt6GVwsSF1thxXHjv1pKgg==
   dependencies:
     "@improbable-eng/grpc-web" "^0.15.0"
     "@improbable-eng/grpc-web-node-http-transport" "^0.15.0"
@@ -2109,12 +2109,12 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/token-metadata@^0.5.17":
-  version "0.5.17"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-0.5.17.tgz#dcb2ae2944f54cf003499176d43c76c5ab1b5f65"
-  integrity sha512-fvrSSSAlOtRz4PTbJrtDPmrkcN33/m8mc5q1QpyMyy3lXLoEbMNFd/hnwfC+GtW0ktIKcPPT9LY3jDYYCaczKw==
+"@injectivelabs/token-metadata@^0.5.18":
+  version "0.5.18"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-0.5.18.tgz#b58a993101977a6379f05c7ee30bf382a9637452"
+  integrity sha512-VKadlJ/kwCaoFKefVJIwSwS48XTraXVq60uZt/G+uTs4N/PdlKIckuE8cDhCXs38s4uXFfeMawaj4az9FsC5EA==
   dependencies:
-    "@injectivelabs/networks" "^0.5.3"
+    "@injectivelabs/networks" "^0.5.4"
     "@injectivelabs/ts-types" "^0.5.1"
     "@types/lodash.values" "^4.3.6"
     copyfiles "^2.4.1"
@@ -2170,10 +2170,10 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@injectivelabs/ui-common@^0.5.53":
-  version "0.5.53"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-common/-/ui-common-0.5.53.tgz#1949ce105b0532c910aad37e876f7452e8133008"
-  integrity sha512-o3k8pGmQ+DTDQcJv8RDBsl9+7PHzCcIjflH/AYVv5pewLhHDtPKNOur0w1R8nGJyz6EQlGOIBAv7FZ0sKSYRdQ==
+"@injectivelabs/ui-common@^0.5.54":
+  version "0.5.54"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-common/-/ui-common-0.5.54.tgz#7969e51e0975eee5da4e7d986e3254ad4e35a144"
+  integrity sha512-/HCdrlQhWCnmwB5IPu0JrSqcAyC6IjhlLwCTA7BXrK0SX8zKGYIbsanIcus8Mv6A6eZHSx0tM74s7ML0RpWVtA==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@improbable-eng/grpc-web" "^0.15.0"
@@ -2181,15 +2181,15 @@
     "@injectivelabs/alchemy-api" "^0.5.1"
     "@injectivelabs/chain-api" "^1.7.1"
     "@injectivelabs/chain-consumer" "^0.5.5"
-    "@injectivelabs/contracts" "^0.5.19"
-    "@injectivelabs/derivatives-consumer" "^0.5.3"
+    "@injectivelabs/contracts" "^0.5.20"
+    "@injectivelabs/derivatives-consumer" "^0.5.4"
     "@injectivelabs/exceptions" "^0.5.1"
     "@injectivelabs/exchange-consumer" "^0.5.4"
     "@injectivelabs/explorer-consumer" "^0.5.5"
-    "@injectivelabs/networks" "^0.5.3"
-    "@injectivelabs/spot-consumer" "^0.5.5"
+    "@injectivelabs/networks" "^0.5.4"
+    "@injectivelabs/spot-consumer" "^0.5.6"
     "@injectivelabs/subaccount-consumer" "^0.5.3"
-    "@injectivelabs/token-metadata" "^0.5.17"
+    "@injectivelabs/token-metadata" "^0.5.18"
     "@injectivelabs/token-utils" "^0.5.1"
     "@injectivelabs/ts-types" "^0.5.1"
     "@injectivelabs/utils" "^0.5.1"
@@ -2221,16 +2221,16 @@
   dependencies:
     typescript "^4.0.5"
 
-"@injectivelabs/web3-strategy@^0.5.30":
-  version "0.5.30"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/web3-strategy/-/web3-strategy-0.5.30.tgz#2744850a54f9fcce2ce18b1eadd6830d54775565"
-  integrity sha512-oUflfAB1NKTpAeyIuIZdX98WxlHh83JY/LkTph2F2OvWoYiSP4igZOi7dPmQmQ4IJUiBXOIijo5tCq+i+Zys5Q==
+"@injectivelabs/web3-strategy@^0.5.31":
+  version "0.5.31"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/web3-strategy/-/web3-strategy-0.5.31.tgz#9eee16f3a5bc2ddaeb7f854d541ff2dfb9826b99"
+  integrity sha512-v+NX90FCxSPm7maYogFyvkhiCR9C7A3JOv2TNtCBsCS3k4NlG521F6oIYr4jV69fFUyXVkEcBmZVt9ee5fGv3A==
   dependencies:
     "@alch/alchemy-web3" "^1.3.0"
     "@ethereumjs/common" "^2.6.3"
     "@ethereumjs/tx" "^3.5.1"
     "@injectivelabs/assert" "^0.5.1"
-    "@injectivelabs/cosmos-ts" "^0.5.23"
+    "@injectivelabs/cosmos-ts" "^0.5.24"
     "@injectivelabs/exceptions" "^0.5.1"
     "@injectivelabs/ts-types" "^0.5.1"
     "@injectivelabs/utils" "^0.5.1"
