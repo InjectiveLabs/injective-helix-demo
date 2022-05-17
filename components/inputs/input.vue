@@ -261,22 +261,24 @@ export default Vue.extend({
 
       if (type !== 'number') {
         this.$emit('input', value)
-      } else {
-        const formattedValueWithExtraDecimals = convertToNumericValue(
-          value,
-          Math.min(maxDecimals * 2, 18)
-        ).toString()
 
-        this.$emit('input', formattedValueWithExtraDecimals)
-        this.$forceUpdate()
-
-        const formattedValue = convertToNumericValue(
-          value,
-          maxDecimals
-        ).toString()
-
-        this.delayUpdateInput(formattedValue)
+        return
       }
+
+      const formattedValueWithExtraDecimals = convertToNumericValue(
+        value,
+        Math.min(maxDecimals * 2, 18)
+      ).toString()
+
+      this.$emit('input', formattedValueWithExtraDecimals)
+      this.$forceUpdate()
+
+      const formattedValue = convertToNumericValue(
+        value,
+        maxDecimals
+      ).toString()
+
+      this.delayUpdateInput(formattedValue)
     },
 
     delayUpdateInput: debounce(function (value) {
