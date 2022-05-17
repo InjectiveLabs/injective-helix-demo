@@ -32,8 +32,6 @@
       ]
     },
     "types": [
-      "node",
-      "jest",
       "@types/node",
       // "@types/jest",
       "@nuxt/types",

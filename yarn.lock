@@ -1809,10 +1809,10 @@
     web3 "^1.7.2"
     web3-utils "^1.7.2"
 
-"@injectivelabs/cosmos-ts@^0.5.25":
-  version "0.5.25"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/cosmos-ts/-/cosmos-ts-0.5.25.tgz#56dcb98a71ccce46c5b1a4bc2711d3c88e181cd8"
-  integrity sha512-lC+p7dAd/7UhpzIAoTWGAkwI2ejAYu9ytPgjt/pyEXEl0Q0sMVKg3CGoK0wp4BwWwNBOGc+z6NwPrL+XH/eEgA==
+"@injectivelabs/cosmos-ts@^0.5.26":
+  version "0.5.26"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/cosmos-ts/-/cosmos-ts-0.5.26.tgz#c44efbfaa698eb995bd5ef2ab8f4107e759c668b"
+  integrity sha512-TLiciU/4LvZ5Lxb6O8K6txrckwmXcFEET8WejCA77FI+wgCFQweSJKaGdqFOSAMqHpeyFRjexXZeVWonKOss9g==
   dependencies:
     "@cosmjs/amino" "^0.27.1"
     "@cosmjs/launchpad" "^0.27.1"
@@ -1823,7 +1823,7 @@
     "@injectivelabs/ts-types" "^0.5.1"
     "@injectivelabs/utils" "^0.5.2"
     "@keplr-wallet/cosmos" "^0.9.12"
-    "@terra-money/terra.js" "3.0.10"
+    "@terra-money/terra.js" "3.0.8"
     "@terra-money/wallet-controller" "^3.8.0"
     cosmjs-types "^0.3.0"
     google-protobuf "^3.19.4"
@@ -2032,10 +2032,10 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@injectivelabs/ui-common@^0.5.55":
-  version "0.5.55"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-common/-/ui-common-0.5.55.tgz#8adaad4cf9bba8080a086a309ac5af281e75cbd4"
-  integrity sha512-sVsRsBd24kZwWpXA5PKZMkSgGlJvrEYaqtOLFNl/qaSAmaOpIeBrcraYtWMmTcIvpHwqMgszBr1ZRCBUMKeFJA==
+"@injectivelabs/ui-common@^0.5.56":
+  version "0.5.56"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-common/-/ui-common-0.5.56.tgz#6d02694e3ab214381b6552b7849066cc58080a23"
+  integrity sha512-LqlqLi9ohnrLlEwdXybFM8lldcp4nkfJGFhSwwcTm5o8Bk5Zl/hi5NOvcQTzT2fv0Cd64SzNNc/BwUpxBkRunA==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@improbable-eng/grpc-web" "^0.15.0"
@@ -2083,16 +2083,16 @@
   dependencies:
     typescript "^4.0.5"
 
-"@injectivelabs/web3-strategy@^0.5.32":
-  version "0.5.32"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/web3-strategy/-/web3-strategy-0.5.32.tgz#724a4d5a4658ff2b95b221b9a77323dced3b0bac"
-  integrity sha512-xS1KKPXfGJmbmCzRUK+OYlNlJ2SGXR9AA5hE3BPqdsTtP8fTpwSrI2BnbyVWmNsXvG7ykF0/X6dNJ8baRMi7eQ==
+"@injectivelabs/web3-strategy@^0.5.33":
+  version "0.5.33"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/web3-strategy/-/web3-strategy-0.5.33.tgz#497d0b3f63e76b1d2bfe31a9d4ce9b26baca5aa1"
+  integrity sha512-g6qEEVShYUQ6HBbtDRntICW2QpNSgluYkodAB30RB8Mc3R9aMOovT/AJC+RIZ7GEh00+ZsuA7aZ2eczgeb+k2w==
   dependencies:
     "@alch/alchemy-web3" "^1.3.0"
     "@ethereumjs/common" "^2.6.3"
     "@ethereumjs/tx" "^3.5.1"
     "@injectivelabs/assert" "^0.5.2"
-    "@injectivelabs/cosmos-ts" "^0.5.25"
+    "@injectivelabs/cosmos-ts" "^0.5.26"
     "@injectivelabs/exceptions" "^0.5.2"
     "@injectivelabs/ts-types" "^0.5.1"
     "@injectivelabs/utils" "^0.5.2"
@@ -3247,22 +3247,21 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
-"@terra-money/terra.js@3.0.10":
-  version "3.0.10"
-  resolved "https://registry.yarnpkg.com/@terra-money/terra.js/-/terra.js-3.0.10.tgz#cb9cd0f95abd958429a2a508af0d4fa1fd0dcf43"
-  integrity sha512-d4pa+GZjGeDaj1xy2KS0nw8nMTMqHHib9dVdIMyuyhjG+TezueY+04ROGzkmzpTFOrv5ruROF/0T+hzUTp5jPQ==
+"@terra-money/terra.js@3.0.8":
+  version "3.0.8"
+  resolved "https://registry.yarnpkg.com/@terra-money/terra.js/-/terra.js-3.0.8.tgz#056b88b0a14d17a28a91f61196687bbbd5feb9db"
+  integrity sha512-TSosUWw1OeZmgliHwgydDBgEEl+dGnAoFeaYmYYv+dzcYFnyUwY4NXpvg2cU0rjPBLGQHQdV/zRRfSyNQlGDBQ==
   dependencies:
     "@terra-money/terra.proto" "^0.1.7"
-    axios "^0.26.1"
+    axios "^0.24.0"
     bech32 "^2.0.0"
-    bip32 "^3.0.1"
+    bip32 "^2.0.6"
     bip39 "^3.0.3"
     bufferutil "^4.0.3"
     decimal.js "^10.2.1"
     jscrypto "^1.0.1"
     readable-stream "^3.6.0"
     secp256k1 "^4.0.2"
-    tiny-secp256k1 "^2.2.1"
     tmp "^0.2.1"
     utf-8-validate "^5.0.5"
     ws "^7.5.5"
@@ -4909,6 +4908,13 @@ axios@^0.21.0, axios@^0.21.1, axios@^0.21.2, axios@^0.21.4:
   dependencies:
     follow-redirects "^1.14.0"
 
+axios@^0.24.0:
+  version "0.24.0"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.24.0.tgz#804e6fa1e4b9c5288501dd9dff56a7a0940d20d6"
+  integrity sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==
+  dependencies:
+    follow-redirects "^1.14.4"
+
 axios@^0.26.1:
   version "0.26.1"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.26.1.tgz#1ede41c51fcf51bbbd6fd43669caaa4f0495aaa9"
@@ -5134,18 +5140,6 @@ bip32@^2.0.6:
     create-hash "^1.2.0"
     create-hmac "^1.1.7"
     tiny-secp256k1 "^1.1.3"
-    typeforce "^1.11.5"
-    wif "^2.0.6"
-
-bip32@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/bip32/-/bip32-3.0.1.tgz#1d1121469cce6e910e0ec3a5a1990dd62687e2a3"
-  integrity sha512-Uhpp9aEx3iyiO7CpbNGFxv9WcMIVdGoHG04doQ5Ln0u60uwDah7jUSc3QMV/fSZGm/Oo01/OeAmYevXV+Gz5jQ==
-  dependencies:
-    "@types/node" "10.12.18"
-    bs58check "^2.1.1"
-    create-hash "^1.2.0"
-    create-hmac "^1.1.7"
     typeforce "^1.11.5"
     wif "^2.0.6"
 
@@ -8382,7 +8376,7 @@ flush-write-stream@^1.0.0:
     inherits "^2.0.3"
     readable-stream "^2.3.6"
 
-follow-redirects@^1.10.0, follow-redirects@^1.14.0, follow-redirects@^1.14.8:
+follow-redirects@^1.10.0, follow-redirects@^1.14.0, follow-redirects@^1.14.4, follow-redirects@^1.14.8:
   version "1.15.0"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.0.tgz#06441868281c86d0dda4ad8bdaead2d02dca89d4"
   integrity sha512-aExlJShTV4qOUOL7yF1U5tvLCB0xQuudbf6toyYA0E/acBNw71mvjFTnLaRp50aQaYocMR0a/RMMBIHeZnGyjQ==
@@ -15893,13 +15887,6 @@ tiny-secp256k1@^1.1.3:
     elliptic "^6.4.0"
     nan "^2.13.2"
 
-tiny-secp256k1@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/tiny-secp256k1/-/tiny-secp256k1-2.2.1.tgz#a61d4791b7031aa08a9453178a131349c3e10f9b"
-  integrity sha512-/U4xfVqnVxJXN4YVsru0E6t5wVncu2uunB8+RVR40fYUxkKYUPS10f+ePQZgFBoE/Jbf9H1NBveupF2VmB58Ng==
-  dependencies:
-    uint8array-tools "0.0.7"
-
 tmp@^0.0.33:
   version "0.0.33"
   resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.0.33.tgz#6d34335889768d21b2bcda0aa277ced3b1bfadf9"
@@ -16305,11 +16292,6 @@ uglify-js@^3.5.1:
   version "3.15.5"
   resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.15.5.tgz#2b10f9e0bfb3f5c15a8e8404393b6361eaeb33b3"
   integrity sha512-hNM5q5GbBRB5xB+PMqVRcgYe4c8jbyZ1pzZhS6jbq54/4F2gFK869ZheiE5A8/t+W5jtTNpWef/5Q9zk639FNQ==
-
-uint8array-tools@0.0.7:
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/uint8array-tools/-/uint8array-tools-0.0.7.tgz#a7a2bb5d8836eae2fade68c771454e6a438b390d"
-  integrity sha512-vrrNZJiusLWoFWBqz5Y5KMCgP9W9hnjZHzZiZRT8oNAkq3d5Z5Oe76jAvVVSRh4U8GGR90N2X1dWtrhvx6L8UQ==
 
 ultron@~1.1.0:
   version "1.1.1"
