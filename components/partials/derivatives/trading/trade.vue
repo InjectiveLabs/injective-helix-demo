@@ -6,6 +6,7 @@
           'text-gray-500': tradingType === TradeExecutionType.LimitFill
         }"
         text-xs
+        data-cy="trading-page-switch-to-market-button"
         @click.stop="onTradingTypeToggle(TradeExecutionType.Market)"
       >
         {{ $t('trade.market') }}
@@ -17,6 +18,7 @@
           'text-gray-500': tradingType === TradeExecutionType.Market
         }"
         text-xs
+        data-cy="trading-page-switch-to-limit-button"
         @click.stop="onTradingTypeToggle(TradeExecutionType.LimitFill)"
       >
         {{ $t('trade.limit') }}
@@ -27,6 +29,7 @@
         <v-button-select
           v-model="orderType"
           :option="DerivativeOrderSide.Buy"
+          data-cy="trading-page-switch-to-side-buy-button"
           aqua
           class="w-1/2"
         >
@@ -35,6 +38,7 @@
         <v-button-select
           v-model="orderType"
           :option="DerivativeOrderSide.Sell"
+          data-cy="trading-page-switch-to-side-sell-button"
           red
           class="w-1/2"
         >
@@ -55,6 +59,7 @@
           type="number"
           :step="amountStep"
           min="0"
+          data-cy="trading-page-amount-input"
           @blur="onAmountBlur"
           @input="onAmountChange"
           @input-max="() => onMaxInput(100)"
@@ -77,6 +82,7 @@
         </v-input>
         <span
           v-if="amountError"
+          data-cy="trading-page-amount-error-text-content"
           class="text-2xs font-semibold text-red-500 leading-1"
         >
           {{ amountError }}
@@ -98,6 +104,7 @@
           type="number"
           :step="priceStep"
           min="0"
+          data-cy="trading-page-price-input"
           :max-decimals="market ? market.quoteToken.decimals : 6"
           @blur="onPriceBlur"
           @input="onPriceChange"
@@ -106,6 +113,7 @@
         </v-input>
         <span
           v-if="priceError"
+          data-cy="trading-page-price-error-text-content"
           class="text-red-500 font-semibold text-2xs leading-1"
         >
           {{ priceError }}
@@ -187,13 +195,12 @@
         lg
         :status="status"
         :disabled="
-          hasErrors ||
-          !isUserWalletConnected ||
-          !hasEnoughInjForGasOrNotKeplr
+          hasErrors || !isUserWalletConnected || !hasEnoughInjForGasOrNotKeplr
         "
         :ghost="hasErrors"
         :aqua="!hasErrors && orderType === DerivativeOrderSide.Buy"
         :red="!hasErrors && orderType === DerivativeOrderSide.Sell"
+        data-cy="trading-page-execute-button"
         class="w-full"
         @click.stop="onSubmit"
       >
@@ -244,6 +251,7 @@ import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
 import { Modal } from '~/types'
 import {
+  calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook,
   calculateLiquidationPrice,
   calculateMargin,
@@ -516,7 +524,57 @@ export default Vue.extend({
       return true
     },
 
-    executionPrice(): BigNumberInBase {
+    tradingTypeMarket(): boolean {
+      const { tradingType } = this
+
+      return tradingType === TradeExecutionType.Market
+    },
+
+    averagePrice(): BigNumberInBase {
+      const {
+        tradingTypeMarket,
+        orderTypeBuy,
+        sells,
+        buys,
+        hasAmount,
+        market,
+        slippage,
+        amount,
+        price
+      } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      if (tradingTypeMarket) {
+        if (!hasAmount) {
+          return ZERO_IN_BASE
+        }
+
+        const records = orderTypeBuy ? sells : buys
+
+        const averagePrice = calculateAverageExecutionPriceFromOrderbook({
+          records,
+          amount,
+          market
+        })
+
+        return new BigNumberInBase(
+          averagePrice.times(slippage).toFixed(market.priceDecimals)
+        )
+      }
+
+      if (price.isNaN()) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(
+        new BigNumberInBase(price).toFixed(market.priceDecimals)
+      )
+    },
+
+    worstPrice(): BigNumberInBase {
       const {
         tradingTypeMarket,
         orderTypeBuy,
@@ -560,6 +618,12 @@ export default Vue.extend({
       )
     },
 
+    executionPrice(): BigNumberInBase {
+      const { averagePrice, worstPrice, tradingTypeMarket } = this
+
+      return tradingTypeMarket ? averagePrice : worstPrice
+    },
+
     hasPrice(): boolean {
       const { executionPrice, priceStep } = this
 
@@ -568,12 +632,6 @@ export default Vue.extend({
         executionPrice.gt(0) &&
         executionPrice.gte(priceStep)
       )
-    },
-
-    tradingTypeMarket(): boolean {
-      const { tradingType } = this
-
-      return tradingType === TradeExecutionType.Market
     },
 
     orderTypeBuy(): boolean {
@@ -1647,7 +1705,7 @@ export default Vue.extend({
         orderTypeReduceOnly,
         market,
         margin,
-        executionPrice,
+        worstPrice,
         amount
       } = this
 
@@ -1662,7 +1720,7 @@ export default Vue.extend({
           orderType,
           margin,
           reduceOnly: orderTypeReduceOnly,
-          price: executionPrice,
+          price: worstPrice,
           quantity: amount
         })
         .then(() => {

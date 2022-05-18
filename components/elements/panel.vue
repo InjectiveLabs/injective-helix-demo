@@ -2,15 +2,15 @@
   <div class="flex flex-col">
     <div
       v-if="title || $slots['title'] || $slots['title-context']"
-      class="flex justify-between items-center mb-6"
+      class="flex justify-between items-center"
     >
       <h3 class="text-xl font-bold text-gray-200">
         <slot name="title">{{ title }}</slot>
       </h3>
       <slot name="title-context" />
     </div>
-    <slot name="context" class="flex justify-between items-center w-full" />
-    <v-card class="relative flex-1" :lg="!dense">
+    <slot name="context" />
+    <v-card class="relative flex-1" :lg="!dense" :class="[cardWrapperClass]">
       <div class="v-panel-content">
         <slot ref="content" />
       </div>
@@ -29,13 +29,16 @@ export default Vue.extend({
     },
 
     title: {
-      required: false,
       default: '',
       type: String
     },
 
     portalName: {
-      required: false,
+      default: '',
+      type: String
+    },
+
+    cardWrapperClass: {
       default: '',
       type: String
     }

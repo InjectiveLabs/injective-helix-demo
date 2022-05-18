@@ -9,13 +9,19 @@
       />
       <v-icon-category-alt v-else class="rounded-full w-6 h-6 mr-3" />
       <div>
-        <p class="text-lg tracking-0.5">
+        <p
+          class="text-lg tracking-0.5"
+          :data-cy="'token-selector-option-' + item.token.symbol"
+        >
           {{ item.token.symbol }}
         </p>
       </div>
     </div>
 
-    <div class="">
+    <div
+      class=""
+      :data-cy="'token-selector-option-balance-' + item.token.symbol"
+    >
       {{ balanceToString }}
     </div>
   </div>

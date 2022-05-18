@@ -26,7 +26,7 @@
           </v-market-card>
 
           <v-market-card
-            v-if="activeIndex === 2"
+            v-if="topVolume && activeIndex === 2"
             key="market-card-2"
             :market="topVolume.market"
             :summary="topVolume.summary"
@@ -36,7 +36,7 @@
           </v-market-card>
 
           <v-market-card
-            v-if="activeIndex === 3"
+            v-if="topGainer && activeIndex === 3"
             key="market-card-3"
             :market="topGainer.market"
             :summary="topGainer.summary"
@@ -53,6 +53,7 @@
       >
         <v-market-card
           v-if="newMarket"
+          data-cy="market-card-whats-new"
           :market="newMarket.market"
           :summary="newMarket.summary"
           :volume-in-usd="newMarket.volumeInUsd"
@@ -61,6 +62,8 @@
         </v-market-card>
 
         <v-market-card
+          v-if="topVolume"
+          data-cy="market-card-top-volume"
           :market="topVolume.market"
           :summary="topVolume.summary"
           :volume-in-usd="topVolume.volumeInUsd"
@@ -69,6 +72,8 @@
         </v-market-card>
 
         <v-market-card
+          v-if="topGainer"
+          data-cy="market-card-top-gainer"
           :market="topGainer.market"
           :summary="topGainer.summary"
           :volume-in-usd="topGainer.volumeInUsd"
@@ -92,6 +97,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import VMarketCard from '~/components/partials/markets/market-card.vue'
 import VMarketDot from '~/components/partials/markets/market-dot.vue'
 import { newMarketsSlug } from '~/app/data/market'
@@ -128,6 +134,16 @@ export default Vue.extend({
   },
 
   computed: {
+    marketsWithLastTradedPriceGreaterThanZero(): UiMarketAndSummaryWithVolumeInUsd[] {
+      const { markets } = this
+
+      return markets.filter(({ summary: { lastPrice, price } }) => {
+        const lastTradedPrice = new BigNumberInBase(lastPrice || price)
+
+        return lastTradedPrice.gt('0')
+      })
+    },
+
     newMarket(): UiMarketAndSummaryWithVolumeInUsd | undefined {
       const { markets } = this
 
@@ -146,8 +162,12 @@ export default Vue.extend({
       })
     },
 
-    topVolume(): UiMarketAndSummaryWithVolumeInUsd {
+    topVolume(): UiMarketAndSummaryWithVolumeInUsd | undefined {
       const { markets } = this
+
+      if (markets.length === 0) {
+        return undefined
+      }
 
       return markets.reduce(
         (
@@ -165,10 +185,14 @@ export default Vue.extend({
       )
     },
 
-    topGainer(): UiMarketAndSummaryWithVolumeInUsd {
-      const { markets } = this
+    topGainer(): UiMarketAndSummaryWithVolumeInUsd | undefined {
+      const { marketsWithLastTradedPriceGreaterThanZero } = this
 
-      return markets.reduce(
+      if (marketsWithLastTradedPriceGreaterThanZero.length === 0) {
+        return undefined
+      }
+
+      return marketsWithLastTradedPriceGreaterThanZero.reduce(
         (
           initialMarket: UiMarketAndSummaryWithVolumeInUsd,
           market: UiMarketAndSummaryWithVolumeInUsd

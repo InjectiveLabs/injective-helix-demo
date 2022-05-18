@@ -8,13 +8,35 @@ import { MarketCategoryType, MarketQuoteType, MarketRoute } from '~/types'
 import {
   experimentalMarketsSlug,
   slugsToIncludeInCosmosCategory,
-  slugsToExcludeFromEthereumCategory
+  slugsToExcludeFromEthereumCategory,
+  upcomingMarkets,
+  deprecatedMarkets
 } from '~/app/data/market'
 import { USDT_COIN_GECKO_ID, UST_COIN_GECKO_ID } from '~/app/utils/constants'
 
 export const getMarketRoute = (
   market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
 ): MarketRoute | undefined => {
+  if (upcomingMarkets.map((m) => m.slug).includes(market.slug)) {
+    return {
+      name: 'market-market',
+      params: {
+        marketId: market.marketId,
+        market: market.slug
+      }
+    }
+  }
+
+  if (deprecatedMarkets.map((m) => m.slug).includes(market.slug)) {
+    return {
+      name: 'market-market',
+      params: {
+        marketId: market.marketId,
+        market: market.slug
+      }
+    }
+  }
+
   if (market.type === MarketType.Derivative) {
     return {
       name: 'derivatives-derivative',
@@ -131,7 +153,7 @@ export const marketIsPartOfType = ({
     return true
   }
 
-  if (activeType === MarketType.Favourite) {
+  if (activeType === MarketType.Favorite) {
     return favoriteMarkets.includes(market.marketId)
   }
 

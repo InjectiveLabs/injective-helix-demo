@@ -26,7 +26,7 @@
           </div>
         </div>
       </span>
-      <span class="text-center text-sm col-span-9">
+      <span class="text-center text-sm col-span-7">
         {{ $t('marketNew.soonToBeReleased') }}
       </span>
     </TableRow>

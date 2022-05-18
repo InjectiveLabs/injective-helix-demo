@@ -3,8 +3,9 @@
     <div class="flex items-center justify-between">
       <div class="flex items-center flex-wrap gap-5">
         <v-market-type-selector
-          :type="MarketType.Favourite"
-          :active="activeType === MarketType.Favourite"
+          :type="MarketType.Favorite"
+          :active="activeType === MarketType.Favorite"
+          data-cy="markets-favorites-selector"
           @click="handleTypeClick"
         >
           <v-icon-star class="min-w-4 h-4 w-4" />
@@ -13,6 +14,7 @@
         <v-market-type-selector
           :type="''"
           :active="activeType === ''"
+          data-cy="markets-all-markets-selector"
           @click="handleTypeClick"
         >
           {{ $t('trade.all') }}
@@ -21,6 +23,7 @@
         <v-market-type-selector
           :type="MarketType.Perpetual"
           :active="activeType === MarketType.Perpetual"
+          data-cy="markets-perpetual-selector"
           @click="handleTypeClick"
         >
           {{ $t('trade.perpetual') }}
@@ -29,6 +32,7 @@
         <v-market-type-selector
           :type="MarketType.Spot"
           :active="activeType === MarketType.Spot"
+          data-cy="markets-spot-selector"
           @click="handleTypeClick"
         >
           {{ $t('trade.spots') }}
@@ -40,6 +44,7 @@
         dense
         name="search"
         class="w-full"
+        data-cy="markets-search-input"
         :placeholder="$t('trade.filter_markets')"
         :search="search"
         @searched="handleSearchedEvent"

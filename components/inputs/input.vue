@@ -13,6 +13,7 @@
         <span
           v-if="error && !errorBelow"
           class="text-red-400 italic font-semibold text-2xs"
+          data-cy="reusable-input-error"
         >
           * {{ error }}
         </span>
@@ -58,9 +59,19 @@
             class="addon flex items-center flex-shrink-0"
             :class="{ 'pr-3': !lg && !xl }"
           >
-            <span v-if="showClose" @click="handleCloseEvent">
+            <span
+              v-if="showClose"
+              data-cy="reusable-input-clear-button"
+              @click="handleCloseEvent"
+            >
               <v-icon-close
-                class="cursor-pointer h-4 w-4 text-gray-200 hover:text-primary-500"
+                class="
+                  cursor-pointer
+                  h-4
+                  w-4
+                  text-gray-200
+                  hover:text-primary-500
+                "
               />
             </span>
 
@@ -72,6 +83,7 @@
               <span
                 class="bg-gray-700 rounded uppercase tracking-1"
                 :class="maxClasses"
+                data-cy="reusable-max-button"
               >
                 {{ $t('trade.max') }}
               </span>
@@ -83,6 +95,7 @@
       <span
         v-if="error && errorBelow"
         class="text-red-400 absolute"
+        data-cy="reusable-input-bellow-error-text-content"
         :class="[
           errorClasses,
           {
@@ -100,6 +113,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { debounce } from 'lodash'
 import { DOMEvent } from '~/types'
 import {
   convertToNumericValue,
@@ -244,6 +258,8 @@ export default Vue.extend({
   },
 
   methods: {
+    debounce,
+
     handlePaste(event: DOMEvent<HTMLInputElement>) {
       if (event.target.type === 'number') {
         event.preventDefault()
@@ -253,30 +269,38 @@ export default Vue.extend({
     handleChangeOnInput(event: DOMEvent<HTMLInputElement>) {
       const { maxDecimals } = this
       const {
-        data: eventKey,
-        inputType,
         target: { value, type }
       } = event
 
       if (type !== 'number') {
         this.$emit('input', value)
-      } else {
-        const formattedValue = convertToNumericValue(
-          value,
-          maxDecimals
-        ).toString()
 
-        this.$emit('input', formattedValue)
-
-        if (
-          eventKey !== ',' &&
-          eventKey !== '.' &&
-          inputType !== 'deleteContentBackward'
-        ) {
-          event.target.value = formattedValue
-        }
+        return
       }
+
+      const formattedValueWithExtraDecimals = convertToNumericValue(
+        value,
+        Math.min(maxDecimals * 2, 18)
+      ).toString()
+
+      this.$emit('input', formattedValueWithExtraDecimals)
+      this.$forceUpdate()
+
+      const formattedValue = convertToNumericValue(
+        value,
+        maxDecimals
+      ).toString()
+
+      this.delayUpdateInput(formattedValue)
     },
+
+    delayUpdateInput: debounce(function (value) {
+      // @ts-ignore
+      const self = this
+
+      self.$emit('input', value)
+      self.$forceUpdate()
+    }, 500),
 
     handleKeydown(event: DOMEvent<HTMLInputElement>) {
       if (

@@ -9,8 +9,6 @@ import { SubaccountBalanceWithToken } from '~/app/services/account'
 
 export interface DOMEvent<T extends EventTarget> extends Event {
   target: T
-  inputType: string
-  data?: string
   keyCode?: number
   key?: string
   view?: {
@@ -49,6 +47,7 @@ export interface MarketRoute {
   name: string
   params?: {
     marketId: string
+    market?: string
     derivative?: string
     spot?: string
   }

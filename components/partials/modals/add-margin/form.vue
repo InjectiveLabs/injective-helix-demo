@@ -13,6 +13,7 @@
       <div class="mt-4 text-center">
         <span
           class="font-mono flex items-center justify-center text-gray-200 text-base lg:text-xl"
+          data-cy="add-margin-modal-available-text-content"
         >
           {{ availableMarginToFormat }}
           <span class="text-gray-500 ml-2">{{ market.quoteToken.symbol }}</span>
@@ -41,6 +42,7 @@
                 type="number"
                 step="0.001"
                 min="0"
+                data-cy="add-margin-modal-amount-input"
               >
                 <span slot="addon">{{ market.quoteToken.symbol }}</span>
               </v-input>
@@ -53,6 +55,7 @@
               :status="status"
               :primary="!invalid"
               :disabled="!form.amount || invalid"
+              data-cy="add-margin-modal-execute-button"
               @click.stop="handleClickOnWithdraw"
             >
               {{ $t('trade.add_margin') }}

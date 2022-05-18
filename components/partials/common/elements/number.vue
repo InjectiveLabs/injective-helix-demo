@@ -1,6 +1,9 @@
 <template>
   <div>
-    <span class="font-mono leading-5 inline-block">
+    <span
+      class="font-mono inline-block"
+      :class="[dense ? 'leading-3' : 'leading-5']"
+    >
       <div class="flex">
         <span class="">{{ prefix || '' }}{{ formattedNumber[0] }}</span>
         <span v-if="formattedNumber[1]" class="opacity-25">{{
@@ -59,6 +62,11 @@ export default Vue.extend({
     roundingMode: {
       type: Number as PropType<BigNumber.RoundingMode>,
       default: BigNumberInBase.ROUND_DOWN
+    },
+
+    dense: {
+      type: Boolean,
+      default: false
     }
   },
 

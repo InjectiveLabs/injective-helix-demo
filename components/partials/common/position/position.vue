@@ -1,5 +1,5 @@
 <template>
-  <tr v-if="market">
+  <tr v-if="market" :data-cy="'open-position-table-row-' + position.ticker">
     <td class="text-left cursor-pointer" @click="handleClickOnMarket">
       <div class="flex items-center justify-start">
         <div v-if="market.baseToken.logo" class="w-6 h-6">
@@ -10,7 +10,10 @@
           />
         </div>
         <div class="ml-3">
-          <span class="text-gray-200 font-semibold">
+          <span
+            class="text-gray-200 font-semibold"
+            data-cy="open-position-ticker-name-table-data"
+          >
             {{ position.ticker }}
           </span>
         </div>
@@ -19,6 +22,7 @@
 
     <td class="text-left pl-1">
       <span
+        data-cy="open-position-trade-direction-table-data"
         :class="{
           'text-aqua-500': position.direction === TradeDirection.Long,
           'text-red-500': position.direction === TradeDirection.Short
@@ -29,41 +33,57 @@
     </td>
 
     <td class="text-right font-mono">
+      <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <v-number
-        :decimals="
-          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-        "
-        :number="price"
-      />
-    </td>
-
-    <td class="text-right font-mono">
-      <v-number
+        v-else
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
         :number="quantity"
+        data-cy="open-position-quantity-table-data"
       />
     </td>
+
     <td class="text-right font-mono">
+      <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+      <div v-else>
+        <v-number
+          :decimals="
+            market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+          "
+          :number="price"
+          data-cy="open-position-price-table-data"
+        />
+        <span class="text-gray-500 text-xs">{{ markPriceToFormat }}</span>
+      </div>
+    </td>
+
+    <td class="text-right font-mono">
+      <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <v-number
+        v-else
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
         :number="liquidationPrice"
+        data-cy="open-position-liquidation-price-table-data"
       />
     </td>
     <td class="text-right">
+      <span v-if="hideBalance" class="font-mono">{{
+        HIDDEN_BALANCE_DISPLAY
+      }}</span>
       <div
-        v-if="!pnl.isNaN()"
+        v-else-if="!pnl.isNaN()"
         class="flex items-center justify-end text-xs"
         :class="pnlClass"
       >
-        <span class="mr-1">≈</span>
-        <div class="flex items-center">
-          <span class="mr-1 flex items-center">
+        <div class="flex items-end flex-col">
+          <span class="flex items-center">
+            <span class="mr-1">≈</span>
             <span>{{ pnl.gte(0) ? '+' : '' }}</span>
             <span
+              data-cy="postion-entry-pnl"
               :class="{
                 'text-aqua-500': pnl.gte(0),
                 'text-red-500': pnl.lt(0)
@@ -71,25 +91,28 @@
             >
               {{ pnlToFormat }}
             </span>
-            <span class="ml-1">{{ market.quoteToken.symbol }}</span>
+            <span class="ml-1 text-2xs">{{ market.quoteToken.symbol }}</span>
           </span>
-          <span class="flex" style="margin-top: -2px">
-            ({{
-              (percentagePnl.gte(0) ? '+' : '') + percentagePnl.toFormat(2)
-            }}%)
+          <span class="flex">
+            {{ (percentagePnl.gte(0) ? '+' : '') + percentagePnl.toFormat(2) }}%
           </span>
         </div>
       </div>
-      <span v-else class="text-gray-400">{{
-        $t('trade.not_available_n_a')
-      }}</span>
+      <span
+        v-else
+        class="text-gray-400"
+        data-cy="open-position-no-pnl-table-data"
+        >{{ $t('trade.not_available_n_a') }}</span>
     </td>
     <td class="text-right font-mono">
+      <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <v-number
+        v-else
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
         :number="notionalValue"
+        data-cy="open-position-total-table-data"
       >
         <span slot="addon" class="text-2xs text-gray-500">
           {{ market.quoteToken.symbol }}
@@ -97,8 +120,12 @@
       </v-number>
     </td>
     <td class="text-right">
-      <div class="flex items-center justify-end h-8">
+      <span v-if="hideBalance" class="font-mono">
+        {{ HIDDEN_BALANCE_DISPLAY }}
+      </span>
+      <div v-else class="flex items-center justify-end h-8">
         <v-number
+          data-cy="open-position-margin-table-data"
           :decimals="
             market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
           "
@@ -107,7 +134,8 @@
         <button
           role="button"
           type="button"
-          class="border border-primary-500 text-primary-500 hover:text-primary-300 ml-2 px-1"
+          class="border border-gray-500 text-gray-500 hover:text-primary-500 hover:border-primary-500 ml-2 px-1"
+          data-cy="open-position-add-margin-button"
           @click.stop.prevent="onAddMarginButtonClick"
         >
           &plus;
@@ -115,28 +143,33 @@
       </div>
     </td>
     <td class="text-right font-mono">
+      <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <span
-        v-if="effectiveLeverage.gte(0)"
+        v-else-if="effectiveLeverage.gte(0)"
         class="flex items-center justify-end"
+        data-cy="open-position-leverage-table-data"
       >
         {{ effectiveLeverage.toFormat(2) }}
         <span class="text-gray-300">&times;</span>
       </span>
-      <span v-else class="text-gray-400">
+      <span
+        v-else
+        class="text-gray-400"
+        data-cy="open-position-no-leverage-table-data"
+      >
         {{ $t('trade.not_available_n_a') }}
       </span>
     </td>
 
     <td class="text-center relative">
-      <v-button :status="status" @click="onClosePositionClick">
+      <v-button
+        v-if="!hideBalance"
+        data-cy="open-position-cancel-link"
+        :status="status"
+        @click="onClosePositionClick"
+      >
         <div
-          class="flex items-center justify-center rounded-full bg-opacity-10 w-8 h-8 hover:bg-opacity-10"
-          :class="{
-            'bg-aqua-500 text-aqua-500 hover:bg-aqua-600 hover:text-aqua-600':
-              position.direction === TradeDirection.Long,
-            'bg-red-550 hover:bg-red-600 text-red-550 hover:text-red-600':
-              position.direction === TradeDirection.Short
-          }"
+          class="flex items-center justify-center rounded-full bg-opacity-10 w-8 h-8 hover:bg-opacity-10 bg-red-550 hover:bg-red-600 text-red-550 hover:text-red-600"
         >
           <v-icon-close class="h-4 w-4" />
         </div>
@@ -152,13 +185,12 @@ import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   UiDerivativeLimitOrder,
   UiDerivativeMarketWithToken,
-  UiDerivativeOrderbook,
   UiPosition,
   UiSpotLimitOrder,
-  ZERO_IN_BASE,
-  UiPriceLevel
+  ZERO_IN_BASE
 } from '@injectivelabs/ui-common'
 import {
+  HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
@@ -168,11 +200,17 @@ export default Vue.extend({
     position: {
       required: true,
       type: Object as PropType<UiPosition>
+    },
+
+    hideBalance: {
+      type: Boolean,
+      default: false
     }
   },
 
   data() {
     return {
+      HIDDEN_BALANCE_DISPLAY,
       UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
       UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
       TradeDirection,
@@ -185,16 +223,8 @@ export default Vue.extend({
       return this.$accessor.derivatives.market
     },
 
-    currentOrderbook(): UiDerivativeOrderbook | undefined {
-      return this.$accessor.derivatives.orderbook
-    },
-
     currentOrders(): UiDerivativeLimitOrder[] {
       return this.$accessor.derivatives.subaccountOrders
-    },
-
-    orderbooks(): Record<string, UiDerivativeOrderbook> {
-      return this.$accessor.positions.orderbooks
     },
 
     markets(): UiDerivativeMarketWithToken[] {
@@ -221,21 +251,6 @@ export default Vue.extend({
       const { markets, position } = this
 
       return markets.find((m) => m.marketId === position.marketId)
-    },
-
-    orderbook(): UiDerivativeOrderbook | undefined {
-      const { isOnMarketPage, currentMarket, currentOrderbook } = this
-      const { orderbooks, position } = this
-
-      if (
-        isOnMarketPage &&
-        currentMarket &&
-        currentMarket.marketId === position.marketId
-      ) {
-        return currentOrderbook
-      }
-
-      return orderbooks[position.marketId]
     },
 
     orders(): Array<UiDerivativeLimitOrder | UiSpotLimitOrder> {
@@ -270,26 +285,6 @@ export default Vue.extend({
       return new BigNumberInWei(position.margin).toBase(
         market.quoteToken.decimals
       )
-    },
-
-    buys(): UiPriceLevel[] {
-      const { orderbook } = this
-
-      if (!orderbook) {
-        return []
-      }
-
-      return orderbook.buys
-    },
-
-    sells(): UiPriceLevel[] {
-      const { orderbook } = this
-
-      if (!orderbook) {
-        return []
-      }
-
-      return orderbook.sells
     },
 
     quantity(): BigNumberInBase {
@@ -393,26 +388,14 @@ export default Vue.extend({
     },
 
     pnl(): BigNumberInBase {
-      const { market, sells, position, price, buys } = this
+      const { markPrice, market, position, price } = this
 
       if (!market) {
         return ZERO_IN_BASE
       }
 
-      const [sell] = sells
-      const [buy] = buys
-      const highestBuy = new BigNumberInBase(buy ? buy.price : 0)
-      const lowestSell = new BigNumberInBase(sell ? sell.price : 0)
-      const executionPrice = new BigNumberInWei(
-        highestBuy.plus(lowestSell).div(2)
-      ).toBase(market.quoteToken.decimals)
-
-      if (executionPrice.isZero()) {
-        return new BigNumberInBase('')
-      }
-
       return new BigNumberInBase(position.quantity)
-        .times(executionPrice.minus(price))
+        .times(markPrice.minus(price))
         .times(position.direction === TradeDirection.Long ? 1 : -1)
     },
 
@@ -424,6 +407,16 @@ export default Vue.extend({
       }
 
       return pnl.toFormat(market.priceDecimals)
+    },
+
+    markPriceToFormat(): string {
+      const { market, markPrice } = this
+
+      if (!market) {
+        return markPrice.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return markPrice.toFormat(market.priceDecimals)
     },
 
     percentagePnl(): BigNumberInBase {

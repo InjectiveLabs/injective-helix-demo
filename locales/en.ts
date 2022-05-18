@@ -6,6 +6,7 @@ import funding from './portfolio/en'
 import home from './home/en'
 import market from './market/en'
 import wallet from './wallet/en'
+import trade from './trade/en'
 
 export default {
   ...activities,
@@ -17,6 +18,7 @@ export default {
   ...market,
   ...bridge,
   ...wallet,
+  ...trade,
   common: {
     available: 'Available',
     deposit: 'Deposit',
@@ -192,6 +194,19 @@ export default {
     depositNow: 'Deposit Now',
     connectAndDepositNow: 'Connect and Deposit now',
     soonToBeReleased: 'Coming soon!'
+  },
+
+  marketDeprecated: {
+    title: 'No longer tradable',
+    description: '{ticker} is no longer tradable on Injective Pro.',
+    subDescriptionOne:
+      'If you would like to continue trading {ticker}, you could still do so with other exchanges in the Injective ecosystem.',
+    subDescriptionTwo:
+      'If you would like to withdraw your {symbol} balances, you could do so via our {network} bridge on the Injective Hub.',
+    terraDescription:
+      'Please note that Terra bridge on the Injective Hub is currently disabled due to the Terra chain halting.',
+    exploreOtherMarkets: 'Explore Other Markets',
+    injectiveBridge: 'Injective Bridge'
   },
 
   navigation: {

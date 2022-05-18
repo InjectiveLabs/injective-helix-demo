@@ -1,30 +1,37 @@
 <template>
   <div
-    class="group px-4 py-5 w-full border-t-4 cursor-pointer shadow-card text-gray-200 bg-gray-800"
+    class="group w-full border-t-4 cursor-pointer shadow-card text-gray-200 bg-gray-800"
     :class="{
       'border-primary-500 rounded-b-md': isSelected,
-      'border-transparent rounded-b-md opacity-50 rounded-t-md hover:border-primary-500 hover:rounded-b-md hover:rounded-t-none hover:opacity-100': !isSelected
+      'border-transparent rounded-b-md opacity-50 rounded-t-md hover:border-primary-500 hover:rounded-b-md hover:rounded-t-none hover:opacity-100': !isSelected,
+      'px-4 py-5': lg,
+      'p-3 lg:px-4 lg:py-5': !lg
     }"
     @click="$emit('selected', option)"
   >
-    <div class="-mt-1">
+    <div :class="{ 'min-w-2xs sm:min-w-full': lg }">
       <slot name="subtitle"></slot>
-      <div v-if="status.isLoading()" class="h-16 w-full relative mr-auto">
-        <v-loading left />
-      </div>
-      <div v-else class="flex items-center" :class="{ 'justify-between': lg }">
-        <span
-          class="rounded-full block mr-4"
+
+      <div class="flex" :class="{ 'justify-between': lg }">
+        <div v-if="status.isLoading()" class="mr-4">
+          <span class="spinner text-primary-500" />
+        </div>
+
+        <div
+          v-else
+          class="rounded-full mr-4 flex items-center justify-center"
           :class="[
-            lg ? 'w-12 h-12' : 'w-6 h-6',
+            lg ? 'min-w-12 w-12 h-12' : 'w-4 h-4 md:w-6 md:h-6',
             {
-              'bg-primary-500': isSelected,
-              'bg-gray-600  group-hover:bg-primary-500': !isSelected
+              'bg-primary-850': isSelected,
+              'bg-gray-600  group-hover:bg-primary-850': !isSelected
             }
           ]"
-        ></span>
+        >
+          <slot name="icon" />
+        </div>
 
-        <slot></slot>
+        <slot />
       </div>
     </div>
   </div>
@@ -33,13 +40,8 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Status } from '@injectivelabs/utils'
-import VLoading from '~/components/elements/loading.vue'
 
 export default Vue.extend({
-  components: {
-    VLoading
-  },
-
   model: {
     prop: 'value',
     event: 'selected'

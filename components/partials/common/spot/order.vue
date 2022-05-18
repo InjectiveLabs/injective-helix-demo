@@ -1,5 +1,5 @@
 <template>
-  <tr v-if="market">
+  <tr v-if="market" :data-cy="'spot-order-table-row-' + market.ticker">
     <td class="h-8 text-left cursor-pointer" @click="handleClickOnMarket">
       <div class="flex items-center justify-start">
         <div v-if="market.baseToken.logo" class="w-6 h-6">
@@ -10,7 +10,10 @@
           />
         </div>
         <div class="ml-3">
-          <span class="text-gray-200 font-semibold">
+          <span
+            class="text-gray-200 font-semibold"
+            data-cy="spot-order-ticker-name-table-data"
+          >
             {{ market.ticker }}
           </span>
         </div>
@@ -20,6 +23,7 @@
     <td class="h-8 text-left">
       <span
         class="pl-1"
+        data-cy="spot-order-order-side-table-data"
         :class="{
           'text-aqua-500': orderTypeBuy,
           'text-red-500': !orderTypeBuy
@@ -31,6 +35,7 @@
 
     <td class="h-8 font-mono text-right">
       <v-number
+        data-cy="spot-order-price-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
@@ -39,6 +44,7 @@
     </td>
     <td class="h-8 text-right font-mono">
       <v-number
+        data-cy="spot-order-quantity-table-data"
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
@@ -47,22 +53,32 @@
     </td>
     <td class="h-8 text-right font-mono">
       <v-number
+        data-cy="spot-order-unfilled-quantity-table-data"
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
         :number="unfilledQuantity"
       />
     </td>
-    <td class="h-8 text-right">
-      <v-number
-        :decimals="
-          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-        "
-        :number="filledQuantity"
-      />
+    <td class="h-8">
+      <div class="flex items-center justify-end">
+        <v-number
+          data-cy="spot-order-filled-quantity-table-data"
+          :decimals="
+            market
+              ? market.quantityDecimals
+              : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+          "
+          :number="filledQuantity"
+        />
+        <span v-if="filledQuantity.gt('0')" class="ml-1">
+          ({{ filledQuantityPercentageToFormat }}%)
+        </span>
+      </div>
     </td>
     <td class="h-8 font-mono text-right">
       <v-number
+        data-cy="spot-order-total-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
@@ -82,7 +98,12 @@
         >
           {{ $t('common.view') }}
         </span>
-        <v-button v-if="orderFillable" :status="status" @click="onCancelOrder">
+        <v-button
+          v-if="orderFillable"
+          :status="status"
+          data-cy="spot-order-cancel-link"
+          @click="onCancelOrder"
+        >
           <div
             class="flex items-center justify-center rounded-full bg-red-550 bg-opacity-10 w-8 h-8 hover:bg-red-600 text-red-550 hover:text-red-600 hover:bg-opacity-10"
           >
@@ -209,6 +230,12 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(filledQuantity.dividedBy(quantity))
+    },
+
+    filledQuantityPercentageToFormat(): string {
+      const { filledQuantityPercentage } = this
+
+      return filledQuantityPercentage.toFormat(2)
     },
 
     orderFullyFilled(): boolean {

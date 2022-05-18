@@ -1,18 +1,36 @@
 <template>
-  <v-table-wrapper v-if="market">
-    <table v-if="filteredPositions.length > 0" class="table">
-      <position-table-header />
-      <tbody>
-        <tr
-          is="v-position"
-          v-for="(position, index) in sortedPositions"
-          :key="`positions-${index}-${position.marketId}`"
-          :position="position"
-        ></tr>
-      </tbody>
-    </table>
-    <v-empty-list v-else :message="$t('trade.emptyPositions')" />
-  </v-table-wrapper>
+  <div v-if="market" class="h-full">
+    <!-- mobile table -->
+    <TableBody :show-empty="filteredPositions.length === 0" class="sm:hidden">
+      <mobile-position
+        v-for="(position, index) in sortedPositions"
+        :key="`mobile-positions-${index}-${position.marketId}`"
+        class="col-span-1"
+        :position="position"
+      />
+
+      <v-empty-list
+        slot="empty"
+        :message="$t('trade.emptyPositions')"
+        class="mt-6 min-h-orders"
+      />
+    </TableBody>
+
+    <v-table-wrapper class="hidden sm:block">
+      <table v-if="filteredPositions.length > 0" class="table">
+        <position-table-header />
+        <tbody>
+          <tr
+            is="v-position"
+            v-for="(position, index) in sortedPositions"
+            :key="`positions-${index}-${position.marketId}`"
+            :position="position"
+          ></tr>
+        </tbody>
+      </table>
+      <v-empty-list v-else :message="$t('trade.emptyPositions')" />
+    </v-table-wrapper>
+  </div>
 </template>
 
 <script lang="ts">
@@ -21,13 +39,17 @@ import {
   UiDerivativeMarketWithToken,
   UiPosition
 } from '@injectivelabs/ui-common'
-import Position from '~/components/partials/common/derivatives/position.vue'
-import PositionTableHeader from '~/components/partials/common/derivatives/position-table.header.vue'
+import MobilePosition from '~/components/partials/common/position/mobile-position.vue'
+import Position from '~/components/partials/common/position/position.vue'
+import PositionTableHeader from '~/components/partials/common/position/position-table.header.vue'
+import TableBody from '~/components/elements/table-body.vue'
 
 export default Vue.extend({
   components: {
     'v-position': Position,
-    PositionTableHeader
+    MobilePosition,
+    PositionTableHeader,
+    TableBody
   },
 
   props: {

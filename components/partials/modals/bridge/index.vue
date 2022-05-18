@@ -46,6 +46,7 @@
             :valid="valid"
             placeholder="inj"
             :label="$t('bridge.injAddress')"
+            data-cy="transfer-modal-inj-address-input"
             @input="handleDestinationAddressChange"
           >
           </v-input>
@@ -90,6 +91,7 @@
             lg
             primary
             class="w-full font-bold"
+            data-cy="transfer-modal-transfer-now-button"
             :disabled="true"
             @click="() => {}"
           >
@@ -106,6 +108,7 @@
               lg
               primary
               class="w-full xs:w-1/2 font-bold"
+              data-cy="transfer-modal-transfer-now-button"
               :disabled="invalid"
               @click="handleTransferNowClick"
             >

@@ -4,11 +4,16 @@
       <v-nav-item :to="{ name: 'index' }" class="block lg:hidden">
         {{ $t('navigation.home') }}
       </v-nav-item>
-      <v-nav-item :to="{ name: 'markets' }" class="block">
+      <v-nav-item
+        :to="{ name: 'markets' }"
+        class="block"
+        data-cy="header-markets-link"
+      >
         {{ $t('trade.markets') }}
       </v-nav-item>
       <v-nav-item
         class="block"
+        data-cy="header-trade-link"
         :to="{
           name: 'derivatives-derivative',
           params: { derivative: 'btc-usdt-perp' }
@@ -39,6 +44,7 @@
       <v-nav-item
         v-if="isUserWalletConnected"
         class="block lg:hidden"
+        data-cy="nav-portfolio-link"
         :to="{ name: 'portfolio' }"
       >
         {{ $t('navigation.portfolio') }}
@@ -46,6 +52,7 @@
       <v-nav-item
         v-if="isUserWalletConnected"
         class="block lg:hidden"
+        data-cy="nav-activity-link"
         :to="{ name: 'activity' }"
       >
         {{ $t('navigation.activity') }}

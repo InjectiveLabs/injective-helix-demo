@@ -8,12 +8,14 @@
           <v-search
             dense
             class="col-span-3"
+            data-cy="universal-table-filter-by-asset-input"
             :placeholder="$t('trade.filter')"
             :search="search"
             @searched="handleInputOnSearch"
           />
           <filter-selector
             class="col-span-2"
+            data-cy="universal-table-filter-by-side-drop-down"
             :type="TradeSelectorType.Side"
             :value="side"
             @click="handleSideClick"
@@ -21,12 +23,28 @@
         </div>
 
         <div
-          class="col-span-12 sm:col-span-6 lg:col-span-8 sm:text-right mt-4 sm:mt-0"
+          v-if="filteredOrders.length > 0"
+          class="col-span-12 flex justify-between items-center sm:hidden mt-3 text-xs px-3"
+        >
+          <span class="tracking-widest uppercase tracking-3">
+            {{ $t('trade.side') }} / {{ $t('trade.market') }}
+          </span>
+          <span
+            class="text-red-550 leading-5 cursor-pointer"
+            @click.stop="handleCancelOrders"
+          >
+            {{ $t('trade.cancelAll') }}
+          </span>
+        </div>
+
+        <div
+          class="col-span-6 lg:col-span-8 sm:text-right mt-0 hidden sm:block"
         >
           <v-button
             v-if="filteredOrders.length > 0"
             red-outline
             md
+            data-cy="activity-cancel-all-button"
             @click.stop="handleCancelOrders"
           >
             {{ $t('trade.cancelAllOrders') }}
@@ -34,7 +52,22 @@
         </div>
       </template>
 
-      <v-table-wrapper break-md class="mt-4">
+      <!-- mobile table -->
+      <TableBody
+        :show-empty="filteredOrders.length === 0"
+        class="sm:hidden mt-3"
+      >
+        <mobile-order
+          v-for="(order, index) in filteredOrders"
+          :key="`mobile-derivative-orders-${index}-${order.orderHash}`"
+          class="col-span-1"
+          :order="order"
+        />
+
+        <v-empty-list slot="empty" :message="$t('trade.emptyOrders')" />
+      </TableBody>
+
+      <v-table-wrapper break-md class="mt-4 hidden sm:block">
         <table v-if="filteredOrders.length > 0" class="table">
           <orders-table-header />
           <tbody>
@@ -46,8 +79,22 @@
             />
           </tbody>
         </table>
-        <v-empty-list v-else :message="$t('trade.emptyOrders')" />
+        <v-empty-list
+          v-else
+          :message="$t('trade.emptyOrders')"
+          data-cy="universal-table-nothing-found"
+        />
       </v-table-wrapper>
+
+      <portal to="activity-card-derivative-count">
+        <span class="font-semibold text-sm md:text-lg">
+          {{ orders.length }}
+        </span>
+      </portal>
+
+      <portal to="activity-tab-derivative-count">
+        <span v-if="status.isNotLoading()"> ({{ orders.length }}) </span>
+      </portal>
     </v-card-table-wrap>
   </VHocLoading>
 </template>
@@ -59,16 +106,20 @@ import {
   UiDerivativeLimitOrder,
   UiDerivativeMarketWithToken
 } from '@injectivelabs/ui-common'
+import MobileOrder from '~/components/partials/common/derivatives/mobile-order.vue'
 import Order from '~/components/partials/common/derivatives/order.vue'
 import OrdersTableHeader from '~/components/partials/common/derivatives/orders-table-header.vue'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
+import TableBody from '~/components/elements/table-body.vue'
 import { TradeSelectorType } from '~/types/enums'
 
 export default Vue.extend({
   components: {
     'v-order': Order,
     FilterSelector,
-    OrdersTableHeader
+    MobileOrder,
+    OrdersTableHeader,
+    TableBody
   },
 
   data() {
@@ -82,7 +133,7 @@ export default Vue.extend({
 
   computed: {
     orders(): UiDerivativeLimitOrder[] {
-      return this.$accessor.activity.subaccountDerivativeOrders
+      return this.$accessor.derivatives.subaccountOrders
     },
 
     markets(): UiDerivativeMarketWithToken[] {
@@ -112,13 +163,14 @@ export default Vue.extend({
   mounted() {
     this.status.setLoading()
 
-    Promise.all([this.$accessor.activity.fetchSubaccountDerivativeOrders()])
+    Promise.all([this.$accessor.derivatives.fetchSubaccountOrders()])
       .then(() => {
         //
       })
       .catch(this.$onError)
       .finally(() => {
         this.status.setIdle()
+        this.$root.$emit('derivative-tab-loaded')
       })
   },
 

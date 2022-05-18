@@ -55,20 +55,64 @@ export default Vue.extend({
       return this.$accessor.spot.marketsSummary
     },
 
+    upcomingMarkets(): Array<
+      UiSpotMarketWithToken | UiDerivativeMarketWithToken
+    > {
+      return this.$accessor.exchange.upcomingMarkets
+    },
+
+    upcomingMarketSummaries(): Array<
+      UiSpotMarketSummary | UiDerivativeMarketSummary
+    > {
+      return this.$accessor.exchange.upcomingMarketsSummaries
+    },
+
+    deprecatedMarkets(): Array<
+      UiSpotMarketWithToken | UiDerivativeMarketWithToken
+    > {
+      return this.$accessor.exchange.deprecatedMarkets
+    },
+
+    deprecatedMarketSummaries(): Array<
+      UiSpotMarketSummary | UiDerivativeMarketSummary
+    > {
+      return this.$accessor.exchange.deprecatedMarketsSummaries
+    },
+
     tokenUsdPriceMap(): TokenUsdPriceMap {
       return this.$accessor.token.tokenUsdPriceMap
     },
 
     markets(): Array<UiSpotMarketWithToken | UiDerivativeMarketWithToken> {
-      const { spotMarkets, derivativeMarkets } = this
+      const {
+        spotMarkets,
+        derivativeMarkets,
+        upcomingMarkets,
+        deprecatedMarkets
+      } = this
 
-      return [...derivativeMarkets, ...spotMarkets]
+      return [
+        ...derivativeMarkets,
+        ...spotMarkets,
+        ...upcomingMarkets,
+        ...deprecatedMarkets
+      ]
     },
 
     marketsSummary(): Array<UiSpotMarketSummary | UiDerivativeMarketSummary> {
-      const { spotMarketsSummary, derivativeMarketsSummary } = this
+      const {
+        spotMarketsSummary,
+        derivativeMarketsSummary,
+        upcomingMarketSummaries,
+        deprecatedMarketSummaries
+      } = this
 
-      return [...derivativeMarketsSummary, ...spotMarketsSummary]
+      return [
+        ...derivativeMarketsSummary,
+        ...spotMarketsSummary,
+        ...upcomingMarketSummaries,
+        ...deprecatedMarketSummaries
+      ]
     },
 
     mappedMarkets(): UiMarketAndSummaryWithVolumeInUsd[] {

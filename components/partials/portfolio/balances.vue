@@ -1,9 +1,16 @@
 <template>
   <div>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <v-card-select v-model="component" lg :option="components.bankAccount">
+    <div
+      class="flex sm:grid grid-cols-2 lg:grid-cols-3 gap-4 overflow-x-auto hide-scrollbar"
+    >
+      <v-card-select
+        v-model="component"
+        lg
+        :option="components.bankAccount"
+        data-cy="wallet-panel"
+      >
         <template slot="subtitle">
-          <div class="font-semibold text-lg flex items-center mb-4">
+          <div class="font-semibold text-lg flex items-center mb-2">
             <span>{{ $t('portfolio.bankAccount') }}</span>
             <v-icon-info-tooltip
               class="ml-3"
@@ -13,21 +20,31 @@
             />
           </div>
         </template>
+
+        <v-icon-wallet slot="icon" class="w-6 h-auto" />
+
         <div class="text-right">
-          <p class="text-gray-500 text-xs uppercase mb-3 tracking-wider">
+          <p class="text-gray-500 text-xs uppercase mb-2 tracking-wider">
             {{ $t('portfolio.walletValue') }}
           </p>
-          <p class="text-2xl">
+          <p class="text-lg 3md:text-2xl">
             <span v-if="status.isLoading()">&mdash; USD</span>
             <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-            <span v-else>{{ totalBankBalanceToString }} USD</span>
+            <span v-else data-cy="wallet-value-usd-text-content">
+              {{ totalBankBalanceToString }} USD
+            </span>
           </p>
         </div>
       </v-card-select>
 
-      <v-card-select v-model="component" lg :option="components.tradingAccount">
+      <v-card-select
+        v-model="component"
+        lg
+        :option="components.tradingAccount"
+        data-cy="trading-account-panel"
+      >
         <template slot="subtitle">
-          <div class="font-semibold text-lg flex items-center mb-4">
+          <div class="font-semibold text-lg flex items-center mb-2">
             <span>{{ $t('portfolio.tradingAccount') }}</span>
             <v-icon-info-tooltip
               class="ml-3"
@@ -37,16 +54,25 @@
             />
           </div>
         </template>
+
+        <v-icon-rectangle-chart slot="icon" class="w-6 h-auto" />
+
         <div class="text-right">
-          <p class="text-gray-500 text-xs uppercase mb-3 tracking-wider">
+          <p class="text-gray-500 text-xs uppercase mb-2 tracking-wider">
             {{ $t('portfolio.portfolioValue') }}
           </p>
-          <p class="text-2xl">
+          <p
+            class="text-lg 3md:text-2xl"
+            data-cy="trading-account-total-usd-text-content"
+          >
             <span v-if="status.isLoading()">&mdash; USD</span>
             <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
             <span v-else>{{ tradingAccountBalancesToString }} USD</span>
           </p>
-          <p class="text-sm mt-2 text-gray-500">
+          <p
+            class="text-sm mt-2 text-gray-500"
+            data-cy="trading-account-available-usd-text-content"
+          >
             <span v-if="status.isLoading()">&mdash; USD</span>
             <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
             <span v-else>
@@ -67,7 +93,9 @@
         />
       </portal>
 
-      <v-panel :title="panelTitle">
+      <v-panel :title="panelTitle" card-wrapper-class="mt-6">
+        <portal-target slot="context" name="portfolio-balance-sub-tabs" />
+
         <VHocLoading :status="status">
           <component
             :is="`v-${component}`"
@@ -76,7 +104,7 @@
               bankBalancesWithUsdBalance,
               subaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd
             }"
-          ></component>
+          />
         </VHocLoading>
       </v-panel>
     </div>
@@ -99,7 +127,6 @@ import {
   SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance,
   TokenWithBalanceAndPrice,
   UiDerivativeMarketWithToken,
-  UiDerivativeOrderbook,
   UiPosition,
   ZERO_IN_BASE,
   ZERO_TO_STRING
@@ -170,18 +197,13 @@ export default Vue.extend({
       return this.$accessor.account.subaccountBalancesWithTokenAndPrice
     },
 
-    orderbooks(): Record<string, UiDerivativeOrderbook> {
-      return this.$accessor.positions.orderbooks
-    },
-
     totalPositionsPnlByQuoteDenom(): Record<string, BigNumberInBase> {
-      const { markets, orderbooks, positions } = this
+      const { markets, positions } = this
 
       return positions.reduce((list, p) => {
         const market = markets.find((m) => m.marketId === p.marketId)
-        const orderbook = orderbooks[p.marketId]
 
-        if (!market || !orderbook) {
+        if (!market) {
           return list
         }
 
@@ -194,21 +216,13 @@ export default Vue.extend({
         const price = new BigNumberInWei(p.entryPrice).toBase(
           market.quoteToken.decimals
         )
+        const markPrice = new BigNumberInWei(p.markPrice).toBase(
+          market.quoteToken.decimals
+        )
 
-        const [sell] = orderbook.sells
-        const [buy] = orderbook.buys
-
-        const highestBuy = new BigNumberInBase(buy ? buy.price : 0)
-        const lowestSell = new BigNumberInBase(sell ? sell.price : 0)
-        const executionPrice = new BigNumberInWei(
-          highestBuy.plus(lowestSell).div(2)
-        ).toBase(market.quoteToken.decimals)
-
-        const pnl = executionPrice.isZero()
-          ? ZERO_IN_BASE
-          : new BigNumberInBase(p.quantity)
-              .times(executionPrice.minus(price))
-              .times(p.direction === TradeDirection.Long ? 1 : -1)
+        const pnl = new BigNumberInBase(p.quantity)
+          .times(markPrice.minus(price))
+          .times(p.direction === TradeDirection.Long ? 1 : -1)
 
         list[quoteDenom] = list[quoteDenom].plus(pnl)
 
@@ -415,7 +429,6 @@ export default Vue.extend({
 
     Promise.all([
       this.$accessor.derivatives.fetchSubaccountOrders(),
-      this.$accessor.positions.fetchMarketsOrderbook(),
       this.$accessor.positions.fetchSubaccountPositions(),
       // set up streaming
       this.$accessor.account.streamSubaccountBalances(),
@@ -443,10 +456,10 @@ export default Vue.extend({
   methods: {
     fetchBalances(): Promise<void[]> {
       return Promise.all([
-        this.$accessor.bank.fetchBankBalancesWithToken(),
         this.$accessor.account.fetchSubaccountsBalancesWithPrices(),
-        this.$accessor.positions.fetchSubaccountPositions(), // refresh mark price
-        this.$accessor.positions.fetchMarketsOrderbook()
+        this.$accessor.bank.fetchBankBalancesWithToken(),
+        this.$accessor.derivatives.fetchSubaccountOrders(),
+        this.$accessor.positions.fetchSubaccountPositions() // refresh mark price
       ])
     },
 

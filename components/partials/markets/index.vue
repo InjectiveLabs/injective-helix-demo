@@ -50,7 +50,10 @@
         :ascending="ascending"
         @sort="handleSort"
       >
-        <span class="text-gray-200 text-xs">
+        <span
+          class="text-gray-200 text-xs"
+          data-cy="markets-market-table-header"
+        >
           {{ $t('trade.market') }}
         </span>
       </SortableHeaderItem>
@@ -68,7 +71,10 @@
         :ascending="ascending"
         @sort="handleSort"
       >
-        <span class="text-gray-200 text-xs">
+        <span
+          class="text-gray-200 text-xs"
+          data-cy="markets-change_24h-table-header"
+        >
           {{ $t('trade.market_change_24h') }}
         </span>
       </SortableHeaderItem>
@@ -80,7 +86,10 @@
         :ascending="ascending"
         @sort="handleSort"
       >
-        <span class="text-gray-200 text-xs">
+        <span
+          class="text-gray-200 text-xs"
+          data-cy="markets-volume_24h-table-header"
+        >
           {{ $t('trade.volume_24h') }}
         </span>
       </SortableHeaderItem>
@@ -99,6 +108,7 @@
       <v-empty-list
         slot="empty"
         classes="bg-gray-850 min-h-3xs"
+        data-cy="markets-no-data-table"
         :message="$t('markets.emptyHeader')"
       >
         <span class="mt-2 text-xs text-gray-500">{{
@@ -129,6 +139,7 @@ import {
   marketIsPartOfType,
   marketIsPartOfSearch
 } from '~/app/utils/market'
+import { deprecatedMarkets, upcomingMarkets } from '~/app/data/market'
 
 enum MarketHeaderType {
   Market = 'market',
@@ -195,6 +206,8 @@ export default Vue.extend({
 
     sortedMarkets(): UiMarketAndSummaryWithVolumeInUsd[] {
       const { filteredMarkets, ascending, sortBy } = this
+      const upcomingMarketsSlugs = upcomingMarkets.map(({ slug }) => slug)
+      const deprecatedMarketsSlugs = deprecatedMarkets.map(({ slug }) => slug)
 
       if (sortBy.trim() === '') {
         return filteredMarkets
@@ -205,6 +218,13 @@ export default Vue.extend({
           m1: UiMarketAndSummaryWithVolumeInUsd,
           m2: UiMarketAndSummaryWithVolumeInUsd
         ) => {
+          if (
+            upcomingMarketsSlugs.includes(m1.market.slug) ||
+            deprecatedMarketsSlugs.includes(m1.market.slug)
+          ) {
+            return 1
+          }
+
           if (sortBy === MarketHeaderType.Market) {
             return m2.market.ticker.localeCompare(m1.market.ticker)
           }
@@ -222,6 +242,7 @@ export default Vue.extend({
           if (new BigNumberInBase(m2.volumeInUsd).eq(m1.volumeInUsd)) {
             return m1.market.ticker.localeCompare(m2.market.ticker)
           }
+
           // default: sort by volume
           return m2.volumeInUsd.minus(m1.volumeInUsd).toNumber()
         }
@@ -269,6 +290,10 @@ export default Vue.extend({
 
       if (category && Object.values(MarketCategoryType).includes(category)) {
         this.activeCategory = category
+      }
+
+      if (type && MarketType.Favorite.toLowerCase() === type) {
+        this.activeType = MarketType.Favorite
       }
 
       if (type && MarketType.Spot.toLowerCase() === type) {
