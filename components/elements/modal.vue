@@ -1,10 +1,11 @@
 <template>
   <div
     v-show="isVisibleOnViewport"
-    class="fixed z-1100 inset-0 overflow-y-auto py-4"
+    class="fixed z-1100 inset-0 overflow-y-auto"
   >
     <div
-      class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:p-0"
+      class="flex items-center justify-center min-h-screen pb-20 text-center sm:p-0"
+      :class="[mobileOnly ? 'min-h-screen' : 'pt-4 px-4']"
     >
       <transition
         enter-active-class="ease-out duration-300"
@@ -41,13 +42,13 @@
       >
         <div
           v-show="isOpen"
-          class="inline-block align-bottom bg-gray-800 shadow-sm rounded-xl text-left transform transition-all w-full max-w-lg"
+          class="inline-block align-bottom bg-gray-800 shadow-sm rounded-xl text-left transform transition-all w-full max-w-lg h-full"
           :class="classes"
           role="dialog"
           :aria-modal="isOpen"
           aria-labelledby="modal-headline"
         >
-          <div>
+          <slot name="header">
             <div class="block w-full">
               <div class="flex items-center justify-between">
                 <div
@@ -67,12 +68,11 @@
                 </button>
               </div>
             </div>
-            <slot name="header" />
-            <div :class="{ 'mt-6': !dense }">
-              <slot />
-            </div>
-            <slot name="footer" />
+          </slot>
+          <div :class="{ 'mt-6': !dense }">
+            <slot />
           </div>
+          <slot name="footer" />
         </div>
       </transition>
     </div>
@@ -107,6 +107,11 @@ export default Vue.extend({
       default: false
     },
 
+    mobileOnly: {
+      type: Boolean,
+      default: false
+    },
+
     sm: {
       type: Boolean,
       default: false
@@ -131,10 +136,12 @@ export default Vue.extend({
 
   computed: {
     classes(): string {
-      const { dense, sm, md, lg } = this
+      const { dense, sm, md, lg, mobileOnly } = this
       const classes = []
 
-      if (dense) {
+      if (mobileOnly) {
+        classes.push('py-6 px-4')
+      } else if (dense) {
         classes.push('p-8')
       } else {
         classes.push('p-6')
