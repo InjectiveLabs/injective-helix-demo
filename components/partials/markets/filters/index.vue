@@ -151,7 +151,7 @@ export default Vue.extend({
     },
 
     fillRouteQueryParams(params: Record<string, string>) {
-      this.$router.push({
+      this.$router.replace({
         path: this.$route.path,
         query: {
           ...this.$route.query,
@@ -162,6 +162,10 @@ export default Vue.extend({
 
     handleCategoryChange(category: MarketCategoryType) {
       this.$emit('update:activeCategory', category)
+
+      if (category === this.activeCategory) {
+        return
+      }
 
       if (!category || category === MarketCategoryType.All) {
         this.clearRouteQueryParam('category')
@@ -177,6 +181,10 @@ export default Vue.extend({
     handleQuoteClick(quote: MarketQuoteType) {
       this.$emit('update:activeQuote', quote)
 
+      if (quote === this.activeQuote) {
+        return
+      }
+
       if (!quote || quote === MarketQuoteType.All) {
         this.clearRouteQueryParam('quote')
       } else {
@@ -186,6 +194,10 @@ export default Vue.extend({
 
     handleTypeClick(type: string) {
       this.$emit('update:activeType', type)
+
+      if (type === this.activeType) {
+        return
+      }
 
       if (!type || type === '') {
         this.clearRouteQueryParam('type')
