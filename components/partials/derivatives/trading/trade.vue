@@ -251,6 +251,7 @@ import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
 import { Modal } from '~/types'
 import {
+  calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook,
   calculateLiquidationPrice,
   calculateMargin,
@@ -523,7 +524,57 @@ export default Vue.extend({
       return true
     },
 
-    executionPrice(): BigNumberInBase {
+    tradingTypeMarket(): boolean {
+      const { tradingType } = this
+
+      return tradingType === TradeExecutionType.Market
+    },
+
+    averagePrice(): BigNumberInBase {
+      const {
+        tradingTypeMarket,
+        orderTypeBuy,
+        sells,
+        buys,
+        hasAmount,
+        market,
+        slippage,
+        amount,
+        price
+      } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      if (tradingTypeMarket) {
+        if (!hasAmount) {
+          return ZERO_IN_BASE
+        }
+
+        const records = orderTypeBuy ? sells : buys
+
+        const averagePrice = calculateAverageExecutionPriceFromOrderbook({
+          records,
+          amount,
+          market
+        })
+
+        return new BigNumberInBase(
+          averagePrice.times(slippage).toFixed(market.priceDecimals)
+        )
+      }
+
+      if (price.isNaN()) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(
+        new BigNumberInBase(price).toFixed(market.priceDecimals)
+      )
+    },
+
+    worstPrice(): BigNumberInBase {
       const {
         tradingTypeMarket,
         orderTypeBuy,
@@ -567,6 +618,12 @@ export default Vue.extend({
       )
     },
 
+    executionPrice(): BigNumberInBase {
+      const { averagePrice, worstPrice, tradingTypeMarket } = this
+
+      return tradingTypeMarket ? averagePrice : worstPrice
+    },
+
     hasPrice(): boolean {
       const { executionPrice, priceStep } = this
 
@@ -575,12 +632,6 @@ export default Vue.extend({
         executionPrice.gt(0) &&
         executionPrice.gte(priceStep)
       )
-    },
-
-    tradingTypeMarket(): boolean {
-      const { tradingType } = this
-
-      return tradingType === TradeExecutionType.Market
     },
 
     orderTypeBuy(): boolean {
@@ -1654,7 +1705,7 @@ export default Vue.extend({
         orderTypeReduceOnly,
         market,
         margin,
-        executionPrice,
+        worstPrice,
         amount
       } = this
 
@@ -1669,7 +1720,7 @@ export default Vue.extend({
           orderType,
           margin,
           reduceOnly: orderTypeReduceOnly,
-          price: executionPrice,
+          price: worstPrice,
           quantity: amount
         })
         .then(() => {

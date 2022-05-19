@@ -37,6 +37,19 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </v-text-info>
 
+        <v-text-info :title="$t('trade.averagePrice')" class="mt-2">
+          <span
+            v-if="!averagePrice.isNaN()"
+            class="font-mono flex items-start break-all"
+          >
+            {{ averagePriceToFormat }}
+            <span class="text-gray-500 ml-1 break-normal">
+              {{ market.quoteToken.symbol }}
+            </span>
+          </span>
+          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
+        </v-text-info>
+
         <v-text-info
           v-if="!orderTypeBuy"
           :title="$t('trade.est_receiving_amount')"
@@ -146,6 +159,11 @@ export default Vue.extend({
   },
 
   props: {
+    averagePrice: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
     orderTypeBuy: {
       required: true,
       type: Boolean
@@ -270,6 +288,16 @@ export default Vue.extend({
       }
 
       return extractedTotal.toFormat(market.priceDecimals)
+    },
+
+    averagePriceToFormat(): string {
+      const { averagePrice, market } = this
+
+      if (!market) {
+        return averagePrice.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return averagePrice.toFormat(market.priceDecimals)
     },
 
     totalToFormat(): string {
