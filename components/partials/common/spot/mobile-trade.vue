@@ -1,91 +1,63 @@
 <template>
-  <tr v-if="market" :data-cy="'trade-history-table-row-' + market.ticker">
-    <td class="h-8 text-left font-mono">
-      <span class="text-gray-400 text-xs" data-cy="trade-entry-time">
-        {{ time }}
-      </span>
-    </td>
-    <td class="h-8 text-left cursor-pointer" @click="handleClickOnMarket">
-      <div class="flex items-center justify-start">
-        <div v-if="market.baseToken.logo" class="w-6 h-6">
+  <TableRow v-if="market" dense @click.native="handleShowTradeDetails">
+    <div
+      class="flex items-center justify-between col-span-2 text-xs leading-5 pb-1"
+    >
+      <div class="flex items-center gap-1" @click.stop="handleClickOnMarket">
+        <span
+          :class="{
+            'text-aqua-500': trade.tradeDirection === TradeDirection.Buy,
+            'text-red-500': trade.tradeDirection === TradeDirection.Sell
+          }"
+        >
+          {{ tradeDirection }}
+        </span>
+        <div v-if="market.baseToken.logo" class="w-4 h-4">
           <img
             :src="market.baseToken.logo"
             :alt="market.baseToken.name"
             class="min-w-full h-auto rounded-full"
           />
         </div>
-        <div class="ml-3">
-          <span
-            class="text-gray-200 font-semibold"
-            data-cy="trade-history-ticker-name-table-data"
-          >
-            {{ market.ticker }}
-          </span>
-        </div>
+        <span class="text-gray-200 font-semibold">
+          {{ market.ticker }}
+        </span>
       </div>
-    </td>
 
-    <td class="h-8 text-left" data-cy="trade-history-execution-type-table-data">
-      {{ tradeExecutionType }}
-    </td>
+      <span>{{ tradeExecutionType }}</span>
+    </div>
 
-    <td class="h-8 text-left">
-      <span
-        data-cy="trade-history-trade-directon-table-data"
-        :class="{
-          'text-aqua-500': tradeTypeBuy,
-          'text-red-500': !tradeTypeBuy
-        }"
-      >
-        {{ tradeDirection }}
-      </span>
-    </td>
-
-    <td class="h-8 text-right font-mono">
+    <span class="text-gray-500 uppercase tracking-widest text-3xs">
+      {{ $t('trade.price') }}
+    </span>
+    <div class="text-right">
       <v-number
-        data-cy="trade-history-price-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
         :number="price"
       />
-    </td>
+    </div>
 
-    <td class="h-8 text-right font-mono">
+    <span class="text-gray-500 uppercase tracking-widest text-3xs">
+      {{ $t('trade.amount') }}
+    </span>
+    <div class="text-right">
       <v-number
-        data-cy="trade-history-quantity-table-data"
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
         :number="quantity"
       />
-    </td>
-    <td class="h-8 text-right font-mono">
-      <v-number
-        use-number-decimals
-        :number="fee"
-        data-cy="trade-history-fee-table-data"
-      >
-        <span slot="addon" class="text-2xs text-gray-500">
-          {{ market.quoteToken.symbol }}
-        </span>
-      </v-number>
-    </td>
+    </div>
 
-    <td class="h-8 text-right font-mono">
-      <v-number
-        data-cy="trade-history-total-table-data"
-        :decimals="
-          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-        "
-        :number="total"
-      >
-        <span slot="addon" class="text-2xs text-gray-500">
-          {{ market.quoteToken.symbol }}
-        </span>
-      </v-number>
-    </td>
-  </tr>
+    <span class="text-gray-500 uppercase tracking-widest text-3xs">
+      {{ $t('trade.time') }}
+    </span>
+    <span class="text-right text-xs font-mono tracking-wide">
+      {{ time }}
+    </span>
+  </TableRow>
 </template>
 
 <script lang="ts">
@@ -98,12 +70,17 @@ import {
   UiSpotTrade,
   ZERO_IN_BASE
 } from '@injectivelabs/ui-common'
+import TableRow from '~/components/elements/table-row.vue'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
 
 export default Vue.extend({
+  components: {
+    TableRow
+  },
+
   props: {
     trade: {
       required: true,
@@ -129,12 +106,6 @@ export default Vue.extend({
       const { markets, trade } = this
 
       return markets.find((m) => m.marketId === trade.marketId)
-    },
-
-    tradeTypeBuy(): boolean {
-      const { trade } = this
-
-      return trade.tradeDirection === TradeDirection.Buy
     },
 
     price(): BigNumberInBase {
@@ -163,12 +134,6 @@ export default Vue.extend({
       )
     },
 
-    total(): BigNumberInBase {
-      const { quantity, price } = this
-
-      return quantity.times(price)
-    },
-
     time(): string {
       const { market, trade } = this
 
@@ -177,16 +142,6 @@ export default Vue.extend({
       }
 
       return format(trade.executedAt, 'dd MMM HH:mm:ss')
-    },
-
-    fee(): BigNumberInBase {
-      const { market, trade } = this
-
-      if (!market || !trade.fee) {
-        return ZERO_IN_BASE
-      }
-
-      return new BigNumberInWei(trade.fee).toBase(market.quoteToken.decimals)
     },
 
     tradeDirection(): string {
@@ -216,6 +171,12 @@ export default Vue.extend({
   },
 
   methods: {
+    handleShowTradeDetails() {
+      const { trade } = this
+
+      this.$emit('showTradeDetails', trade)
+    },
+
     handleClickOnMarket() {
       const { market } = this
 

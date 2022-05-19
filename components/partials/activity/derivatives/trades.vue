@@ -40,14 +40,30 @@
         </div>
       </template>
 
-      <v-table-wrapper break-md class="mt-4">
+      <!-- mobile table -->
+      <TableBody
+        :show-empty="filteredTrades.length === 0"
+        class="sm:hidden mt-3 max-h-lg overflow-y-auto"
+      >
+        <MobileTrade
+          v-for="(trade, index) in filteredTrades"
+          :key="`mobile-derivative-trade-${index}`"
+          class="col-span-1"
+          :trade="trade"
+          @showTradeDetails="handleShowTradeDetails"
+        />
+
+        <v-empty-list slot="empty" :message="$t('trade.emptyTrades')" />
+      </TableBody>
+
+      <v-table-wrapper break-md class="mt-4 hidden sm:block">
         <table v-if="filteredTrades.length > 0" class="table">
           <trades-table-header />
           <tbody>
             <tr
               is="v-trade"
               v-for="(trade, index) in filteredTrades"
-              :key="`trades-${index}-${trade.marketId}`"
+              :key="`trade-${index}`"
               :trade="trade"
             ></tr>
           </tbody>
@@ -78,18 +94,22 @@ import {
 } from '@injectivelabs/ui-common'
 import { TradeExecutionType } from '@injectivelabs/ts-types'
 import Trade from '~/components/partials/common/derivatives/trade.vue'
+import MobileTrade from '~/components/partials/common/derivatives/mobile-trade.vue'
 import TradesTableHeader from '~/components/partials/common/derivatives/trades-table-header.vue'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import ModalMobileTradeFilter from '~/components/partials/modals/mobile-trade-filter.vue'
+import TableBody from '~/components/elements/table-body.vue'
 import { TradeSelectorType } from '~/types/enums'
 import { Modal } from '~/types'
 
 export default Vue.extend({
   components: {
     'v-trade': Trade,
-    TradesTableHeader,
     FilterSelector,
-    ModalMobileTradeFilter
+    MobileTrade,
+    ModalMobileTradeFilter,
+    TableBody,
+    TradesTableHeader
   },
 
   data() {
@@ -117,7 +137,11 @@ export default Vue.extend({
       return trades.filter((t) => {
         const market = markets.find((m) => m.marketId === t.marketId)
 
-        if (!market || (!search && !type && !side)) {
+        if (!market) {
+          return false
+        }
+
+        if (!search && !type && !side) {
           return true
         }
 
@@ -162,6 +186,10 @@ export default Vue.extend({
 
     handleTypeClick(type: string | undefined) {
       this.type = type
+    },
+
+    handleShowTradeDetails(trade: UiDerivativeTrade) {
+      console.log(trade)
     },
 
     openMobileFilterModal() {

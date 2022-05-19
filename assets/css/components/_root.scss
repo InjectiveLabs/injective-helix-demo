@@ -17,10 +17,10 @@ body {
   }
 }
 
-.grow {
-  flex-grow: 1;
-}
-
 .min-h-screen-excluding-header {
   min-height: calc(100vh - 56px);
+}
+
+.h-full-grow {
+  @apply flex flex-col flex-grow h-full;
 }

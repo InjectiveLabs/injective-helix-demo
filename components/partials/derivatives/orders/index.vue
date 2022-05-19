@@ -1,7 +1,10 @@
 <template>
   <div v-if="market" class="h-full">
     <!-- mobile table -->
-    <TableBody :show-empty="filteredOrders.length === 0" class="sm:hidden">
+    <TableBody
+      :show-empty="filteredOrders.length === 0"
+      class="sm:hidden max-h-lg overflow-y-auto"
+    >
       <mobile-order
         v-for="(order, index) in filteredOrders"
         :key="`mobile-order-${index}-${order.orderHash}`"

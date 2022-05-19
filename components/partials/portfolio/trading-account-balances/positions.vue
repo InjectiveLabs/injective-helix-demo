@@ -52,7 +52,10 @@
     </template>
 
     <!-- mobile table -->
-    <TableBody :show-empty="filteredPositions.length === 0" class="sm:hidden">
+    <TableBody
+      :show-empty="filteredPositions.length === 0"
+      class="sm:hidden max-h-lg overflow-y-auto"
+    >
       <mobile-position
         v-for="(position, index) in sortedPositions"
         :key="`mobile-positions-${index}-${position.marketId}`"
@@ -149,7 +152,11 @@ export default Vue.extend({
       return positions.filter((p) => {
         const market = markets.find((m) => m.marketId === p.marketId)
 
-        if (!market || (!search && !side)) {
+        if (!market) {
+          return false
+        }
+
+        if (!search && !side) {
           return true
         }
 
