@@ -3,14 +3,7 @@
     <v-card-table-wrap>
       <template #actions>
         <div
-          class="
-            col-span-12
-            lg:col-span-6
-            grid grid-cols-2
-            sm:grid-cols-3
-            gap-4
-            w-full
-          "
+          class="col-span-12 lg:col-span-6 grid grid-cols-2 sm:grid-cols-3 gap-4 w-full"
         >
           <v-search
             dense
@@ -97,7 +90,7 @@ export default Vue.extend({
     },
 
     trades(): UiDerivativeTrade[] {
-      return this.$accessor.derivatives.trades
+      return this.$accessor.derivatives.subaccountTrades
     },
 
     filteredTrades(): UiDerivativeTrade[] {
