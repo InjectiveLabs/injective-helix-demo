@@ -180,7 +180,7 @@
         :aqua="!hasErrors && orderType === SpotOrderSide.Buy"
         :red="!hasErrors && orderType === SpotOrderSide.Sell"
         class="w-full"
-        data-cy="trade-execute-button"
+        data-cy="trading-page-execute-button"
         @click.stop="onSubmit"
       >
         {{ $t(orderTypeBuy ? 'trade.buy' : 'trade.sell') }}
