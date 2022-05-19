@@ -15,11 +15,11 @@
           />
 
           <div
-            class="col-span-2 flex items-center bg-gray-900 rounded-full text-gray-200 py-3 px-6 text-xs cursor-pointer"
+            class="col-span-2 flex items-center bg-gray-900 rounded-full text-gray-200 py-3 px-6 text-xs cursor-pointer sm:hidden shadow-sm"
             @click="openMobileFilterModal"
           >
-            <VIconFilter class="mr-2" />
-            <span>Filters</span>
+            <VIconFilter class="min-w-4 mr-2" />
+            <span>{{ $t('common.filters') }}</span>
           </div>
 
           <filter-selector
@@ -59,7 +59,12 @@
         />
       </v-table-wrapper>
 
-      <ModalMobileTradeFilter />
+      <ModalMobileTradeFilter
+        :type="type"
+        :side="side"
+        @type:update="handleTypeClick"
+        @side:update="handleSideClick"
+      />
     </v-card-table-wrap>
   </VHocLoading>
 </template>
@@ -72,9 +77,9 @@ import { TradeExecutionType } from '@injectivelabs/ts-types'
 import Trade from '~/components/partials/common/spot/trade.vue'
 import TradesTableHeader from '~/components/partials/common/spot/trades-table-header.vue'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
+import ModalMobileTradeFilter from '~/components/partials/modals/mobile-trade-filter.vue'
 import { TradeSelectorType } from '~/types/enums'
 import { Modal } from '~/types'
-import ModalMobileTradeFilter from '~/components/partials/modals/mobile-trade-filter.vue'
 
 export default Vue.extend({
   components: {
@@ -157,7 +162,7 @@ export default Vue.extend({
     },
 
     openMobileFilterModal() {
-      this.$accessor.modal.openModal(Modal.MobileSpotTradeFilter)
+      this.$accessor.modal.openModal(Modal.MobileTradeFilter)
     }
   }
 })

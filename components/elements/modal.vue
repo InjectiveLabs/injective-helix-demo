@@ -4,8 +4,8 @@
     class="fixed z-1100 inset-0 overflow-y-auto"
   >
     <div
-      class="flex items-center justify-center min-h-screen pb-20 text-center sm:p-0"
-      :class="[mobileOnly ? 'min-h-screen' : 'pt-4 px-4']"
+      class="flex items-center justify-center min-h-screen text-center sm:p-0"
+      :class="{ 'pt-4 px-4 pb-20': !mobileOnly }"
     >
       <transition
         enter-active-class="ease-out duration-300"
@@ -42,19 +42,31 @@
       >
         <div
           v-show="isOpen"
-          class="inline-block align-bottom bg-gray-800 shadow-sm rounded-xl text-left transform transition-all w-full max-w-lg h-full"
+          class="inline-block align-bottom bg-gray-800 shadow-sm rounded-xl text-left transform transition-all w-full h-full"
           :class="classes"
           role="dialog"
           :aria-modal="isOpen"
           aria-labelledby="modal-headline"
         >
-          <slot name="header">
-            <div class="block w-full">
-              <div class="flex items-center justify-between">
-                <div
-                  class="text-xs uppercase text-gray-100 tracking-wider font-semibold grow"
-                >
-                  <slot name="title" />
+          <div class="mb-6">
+            <slot name="header">
+              <div class="block w-full">
+                <div class="flex items-center justify-between">
+                  <div
+                    class="text-xs uppercase text-gray-100 tracking-wider font-semibold grow"
+                  >
+                    <slot name="title" />
+                  </div>
+                  <button
+                    v-if="!isAlwaysOpen"
+                    type="button"
+                    class="bg-transparent rounded-md text-gray-200 hover:text-primary-500"
+                    data-cy="reusable-modal-close-button"
+                    @click="handleClickOnCloseButton"
+                  >
+                    <span class="sr-only">{{ $t('common.close') }}</span>
+                    <v-icon-close class="w-4 h-4" />
+                  </button>
                 </div>
                 <button
                   v-if="!isAlwaysOpen"
@@ -67,11 +79,11 @@
                   <IconClose class="w-4 h-4" />
                 </button>
               </div>
-            </div>
-          </slot>
-          <div :class="{ 'mt-6': !dense }">
-            <slot />
+            </slot>
           </div>
+
+          <slot />
+
           <slot name="footer" />
         </div>
       </transition>
@@ -81,6 +93,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { debounce } from 'lodash'
 
 export default Vue.extend({
   props: {
@@ -100,11 +113,6 @@ export default Vue.extend({
       required: true,
       default: false,
       type: Boolean
-    },
-
-    dense: {
-      type: Boolean,
-      default: false
     },
 
     mobileOnly: {
@@ -130,22 +138,21 @@ export default Vue.extend({
 
   data() {
     return {
+      viewport: 0,
       isVisibleOnViewport: false
     }
   },
 
   computed: {
     classes(): string {
-      const { dense, sm, md, lg, mobileOnly } = this
+      const { sm, md, lg, mobileOnly } = this
       const classes = []
 
       if (mobileOnly) {
-        classes.push('py-6 px-4')
-      } else if (dense) {
-        classes.push('p-8')
-      } else {
-        classes.push('p-6')
+        return 'py-6 px-4 min-h-screen flex-grow flex flex-col'
       }
+
+      classes.push('p-6')
 
       if (sm) {
         classes.push('max-w-md')
@@ -168,7 +175,9 @@ export default Vue.extend({
   },
 
   mounted() {
+    this.$nextTick(() => this.handleCloseOnResize())
     this.onEscKeyDown()
+    window.addEventListener('resize', debounce(this.handleCloseOnResize, 100))
 
     if (this.isOpen) {
       this.handleOnOpen()
@@ -176,6 +185,7 @@ export default Vue.extend({
   },
 
   beforeDestroy() {
+    window.removeEventListener('resize', this.handleCloseOnResize)
     document.body.classList.remove('overflow-hidden')
   },
 
@@ -198,6 +208,13 @@ export default Vue.extend({
     handleCloseModal() {
       if (this.isOpen && !this.isAlwaysOpen) {
         this.$emit('modal-closed')
+      }
+    },
+
+    handleCloseOnResize() {
+      this.viewport = window.innerWidth
+      if (this.viewport >= 640 && this.mobileOnly) {
+        this.handleCloseModal()
       }
     },
 

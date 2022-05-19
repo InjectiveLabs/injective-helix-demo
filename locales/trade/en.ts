@@ -31,6 +31,7 @@ export default {
     filter: 'Filter by asset',
     cancelAll: 'Cancel All',
     cancelAllOrders: 'Cancel all orders',
+    clearAll: 'Clear All',
     closeAll: 'Close All',
     closeAllPositions: 'Close all positions',
     reduce_only: 'Reduce Only',

@@ -3,19 +3,27 @@
     <v-card-table-wrap>
       <template #actions>
         <div
-          class="col-span-12 lg:col-span-6 grid grid-cols-2 sm:grid-cols-3 gap-4 w-full"
+          class="col-span-12 lg:col-span-6 grid grid-cols-5 sm:grid-cols-3 gap-4 w-full"
         >
           <v-search
             dense
-            class="col-span-2 sm:col-span-1"
+            class="col-span-3 sm:col-span-1"
             :placeholder="$t('trade.filter')"
             :search="search"
             data-cy="universal-table-filter-by-asset-input"
             @searched="handleInputOnSearch"
           />
 
+          <div
+            class="col-span-2 flex items-center bg-gray-900 rounded-full text-gray-200 py-3 px-6 text-xs cursor-pointer sm:hidden shadow-sm"
+            @click="openMobileFilterModal"
+          >
+            <VIconFilter class="min-w-4 mr-2" />
+            <span>{{ $t('common.filters') }}</span>
+          </div>
+
           <filter-selector
-            class="self-start"
+            class="self-start hidden sm:block"
             data-cy="universal-table-filter-by-type-drop-down"
             :type="TradeSelectorType.Type"
             :value="type"
@@ -23,7 +31,7 @@
           />
 
           <filter-selector
-            class="self-start"
+            class="self-start hidden sm:block"
             data-cy="universal-table-filter-by-side-drop-down"
             :type="TradeSelectorType.Side"
             :value="side"
@@ -50,6 +58,13 @@
           data-cy="universal-table-nothing-found"
         />
       </v-table-wrapper>
+
+      <ModalMobileTradeFilter
+        :type="type"
+        :side="side"
+        @type:update="handleTypeClick"
+        @side:update="handleSideClick"
+      />
     </v-card-table-wrap>
   </VHocLoading>
 </template>
@@ -65,13 +80,16 @@ import { TradeExecutionType } from '@injectivelabs/ts-types'
 import Trade from '~/components/partials/common/derivatives/trade.vue'
 import TradesTableHeader from '~/components/partials/common/derivatives/trades-table-header.vue'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
+import ModalMobileTradeFilter from '~/components/partials/modals/mobile-trade-filter.vue'
 import { TradeSelectorType } from '~/types/enums'
+import { Modal } from '~/types'
 
 export default Vue.extend({
   components: {
     'v-trade': Trade,
     TradesTableHeader,
-    FilterSelector
+    FilterSelector,
+    ModalMobileTradeFilter
   },
 
   data() {
@@ -144,6 +162,10 @@ export default Vue.extend({
 
     handleTypeClick(type: string | undefined) {
       this.type = type
+    },
+
+    openMobileFilterModal() {
+      this.$accessor.modal.openModal(Modal.MobileTradeFilter)
     }
   }
 })
