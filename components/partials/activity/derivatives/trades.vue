@@ -93,9 +93,9 @@ import {
   UiDerivativeMarketWithToken
 } from '@injectivelabs/ui-common'
 import { TradeExecutionType } from '@injectivelabs/ts-types'
-import Trade from '~/components/partials/common/derivatives/trade.vue'
-import MobileTrade from '~/components/partials/common/derivatives/mobile-trade.vue'
-import TradesTableHeader from '~/components/partials/common/derivatives/trades-table-header.vue'
+import Trade from '~/components/partials/common/trade/trade.vue'
+import MobileTrade from '~/components/partials/common/trade/mobile-trade.vue'
+import TradesTableHeader from '~/components/partials/common/trade/trades-table-header.vue'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import ModalMobileTradeFilter from '~/components/partials/modals/mobile-trade-filter.vue'
 import TableBody from '~/components/elements/table-body.vue'

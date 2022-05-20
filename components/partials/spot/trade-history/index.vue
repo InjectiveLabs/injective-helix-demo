@@ -10,6 +10,7 @@
         :key="`mobile-trade-history-${index}`"
         class="col-span-1"
         :trade="trade"
+        is-spot
       />
 
       <v-empty-list
@@ -28,6 +29,7 @@
             v-for="(trade, index) in filteredTrades"
             :key="`trades-history-${index}`"
             :trade="trade"
+            is-spot
           />
         </tbody>
       </table>
@@ -43,9 +45,9 @@ import {
   UiSpotTrade,
   UiSubaccount
 } from '@injectivelabs/ui-common'
-import MobileTrade from '~/components/partials/common/spot/mobile-trade.vue'
-import Trade from '~/components/partials/common/spot/trade.vue'
-import TradesTableHeader from '~/components/partials/common/spot/trades-table-header.vue'
+import MobileTrade from '~/components/partials/common/trade/mobile-trade.vue'
+import Trade from '~/components/partials/common/trade/trade.vue'
+import TradesTableHeader from '~/components/partials/common/trade/trades-table-header.vue'
 import TableBody from '~/components/elements/table-body.vue'
 
 export default Vue.extend({

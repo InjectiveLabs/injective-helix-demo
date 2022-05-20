@@ -50,6 +50,7 @@
           :key="`mobile-spot-trade-${index}`"
           class="col-span-1"
           :trade="trade"
+          is-spot
           @showTradeDetails="handleShowTradeDetails"
         />
 
@@ -65,7 +66,8 @@
               v-for="(trade, index) in filteredTrades"
               :key="`trade-${index}`"
               :trade="trade"
-            ></tr>
+              is-spot
+            />
           </tbody>
         </table>
         <v-empty-list
@@ -90,9 +92,9 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import Vue from 'vue'
 import { UiSpotTrade, UiSpotMarketWithToken } from '@injectivelabs/ui-common'
 import { TradeExecutionType } from '@injectivelabs/ts-types'
-import Trade from '~/components/partials/common/spot/trade.vue'
-import MobileTrade from '~/components/partials/common/spot/mobile-trade.vue'
-import TradesTableHeader from '~/components/partials/common/spot/trades-table-header.vue'
+import Trade from '~/components/partials/common/trade/trade.vue'
+import MobileTrade from '~/components/partials/common/trade/mobile-trade.vue'
+import TradesTableHeader from '~/components/partials/common/trade/trades-table-header.vue'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import ModalMobileTradeFilter from '~/components/partials/modals/mobile-trade-filter.vue'
 import TableBody from '~/components/elements/table-body.vue'

@@ -42,9 +42,9 @@ import {
   UiDerivativeMarketWithToken,
   UiDerivativeTrade
 } from '@injectivelabs/ui-common'
-import MobileTrade from '~/components/partials/common/derivatives/mobile-trade.vue'
-import Trade from '~/components/partials/common/derivatives/trade.vue'
-import TradesTableHeader from '~/components/partials/common/derivatives/trades-table-header.vue'
+import MobileTrade from '~/components/partials/common/trade/mobile-trade.vue'
+import Trade from '~/components/partials/common/trade/trade.vue'
+import TradesTableHeader from '~/components/partials/common/trade/trades-table-header.vue'
 import TableBody from '~/components/elements/table-body.vue'
 
 export default Vue.extend({
