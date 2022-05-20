@@ -55,8 +55,8 @@ export enum Modal {
   BridgeCompleted = 'bridge-completed',
   RefereeOnboarding = 'referee-onboarding',
   InsufficientInjForGas = 'insufficient-inj-for-gas',
-  MobileDerivativeTradeFilter = 'mobile-derivative-trade-filter',
-  MobileTradeFilter = 'mobile-trade-filter'
+  MobileTradeFilter = 'mobile-trade-filter',
+  MobileTradeDetails = 'mobile-trade-details'
 }
 
 export enum Breakpoint {

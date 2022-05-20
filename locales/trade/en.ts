@@ -143,6 +143,7 @@ export default {
     order_success_canceling: 'Order Cancelled',
     trade: 'Trade',
     trades: 'Trades',
+    tradeHistoryDetails: 'Trade History Details',
     time: 'Time',
     max: 'Max',
     orderbook: 'Orderbook',

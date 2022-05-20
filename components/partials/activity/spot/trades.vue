@@ -83,6 +83,8 @@
         @type:update="handleTypeClick"
         @side:update="handleSideClick"
       />
+
+      <ModalMobileTradeDetails is-spot :trade="tradeDetails" />
     </v-card-table-wrap>
   </VHocLoading>
 </template>
@@ -97,6 +99,7 @@ import MobileTrade from '~/components/partials/common/trade/mobile-trade.vue'
 import TradesTableHeader from '~/components/partials/common/trade/trades-table-header.vue'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import ModalMobileTradeFilter from '~/components/partials/modals/mobile-trade-filter.vue'
+import ModalMobileTradeDetails from '~/components/partials/modals/mobile-trade-details.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import { TradeSelectorType } from '~/types/enums'
 import { Modal } from '~/types'
@@ -106,6 +109,7 @@ export default Vue.extend({
     'v-trade': Trade,
     FilterSelector,
     MobileTrade,
+    ModalMobileTradeDetails,
     ModalMobileTradeFilter,
     TradesTableHeader,
     TableBody
@@ -117,6 +121,7 @@ export default Vue.extend({
       search: '',
       type: undefined as string | undefined,
       side: undefined as string | undefined,
+      tradeDetails: undefined as UiSpotTrade | undefined,
       status: new Status(StatusType.Loading)
     }
   },
@@ -188,7 +193,8 @@ export default Vue.extend({
     },
 
     handleShowTradeDetails(trade: UiSpotTrade) {
-      console.log(trade)
+      this.tradeDetails = trade
+      this.$accessor.modal.openModal(Modal.MobileTradeDetails)
     },
 
     openMobileFilterModal() {

@@ -10,6 +10,7 @@
         :key="`mobile-trade-history-${index}`"
         class="col-span-1"
         :trade="trade"
+        @showTradeDetails="handleShowTradeDetails"
       />
 
       <v-empty-list
@@ -33,6 +34,8 @@
       </table>
       <v-empty-list v-else :message="$t('trade.emptyTrades')" />
     </v-table-wrapper>
+
+    <ModalMobileTradeDetails :trade="tradeDetails" />
   </div>
 </template>
 
@@ -43,14 +46,17 @@ import {
   UiDerivativeTrade
 } from '@injectivelabs/ui-common'
 import MobileTrade from '~/components/partials/common/trade/mobile-trade.vue'
+import ModalMobileTradeDetails from '~/components/partials/modals/mobile-trade-details.vue'
 import Trade from '~/components/partials/common/trade/trade.vue'
 import TradesTableHeader from '~/components/partials/common/trade/trades-table-header.vue'
 import TableBody from '~/components/elements/table-body.vue'
+import { Modal } from '~/types'
 
 export default Vue.extend({
   components: {
     'v-trade': Trade,
     MobileTrade,
+    ModalMobileTradeDetails,
     TableBody,
     TradesTableHeader
   },
@@ -59,6 +65,12 @@ export default Vue.extend({
     currentMarketOnly: {
       type: Boolean,
       default: false
+    }
+  },
+
+  data() {
+    return {
+      tradeDetails: undefined as UiDerivativeTrade | undefined
     }
   },
 
@@ -79,6 +91,13 @@ export default Vue.extend({
       }
 
       return trades.filter((trade) => trade.marketId === market?.marketId)
+    }
+  },
+
+  methods: {
+    handleShowTradeDetails(trade: UiDerivativeTrade) {
+      this.tradeDetails = trade
+      this.$accessor.modal.openModal(Modal.MobileTradeDetails)
     }
   }
 })

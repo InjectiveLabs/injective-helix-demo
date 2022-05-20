@@ -6,9 +6,9 @@
         <span class="font-bold text-lg">{{ $t('common.filters') }}</span>
       </div>
 
-      <span class="text-sm cursor-pointer" @click="handleClearAll">{{
-        $t('trade.clearAll')
-      }}</span>
+      <span class="text-sm cursor-pointer" @click="handleClearAll">
+        {{ $t('trade.clearAll') }}
+      </span>
     </div>
 
     <div class="flex flex-col h-full flex-grow">

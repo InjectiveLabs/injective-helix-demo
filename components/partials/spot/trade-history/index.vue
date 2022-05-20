@@ -11,6 +11,7 @@
         class="col-span-1"
         :trade="trade"
         is-spot
+        @showTradeDetails="handleShowTradeDetails"
       />
 
       <v-empty-list
@@ -35,6 +36,8 @@
       </table>
       <v-empty-list v-else :message="$t('trade.emptyTrades')" />
     </v-table-wrapper>
+
+    <ModalMobileTradeDetails is-spot :trade="tradeDetails" />
   </div>
 </template>
 
@@ -46,14 +49,17 @@ import {
   UiSubaccount
 } from '@injectivelabs/ui-common'
 import MobileTrade from '~/components/partials/common/trade/mobile-trade.vue'
+import ModalMobileTradeDetails from '~/components/partials/modals/mobile-trade-details.vue'
 import Trade from '~/components/partials/common/trade/trade.vue'
 import TradesTableHeader from '~/components/partials/common/trade/trades-table-header.vue'
 import TableBody from '~/components/elements/table-body.vue'
+import { Modal } from '~/types'
 
 export default Vue.extend({
   components: {
     'v-trade': Trade,
     MobileTrade,
+    ModalMobileTradeDetails,
     TradesTableHeader,
     TableBody
   },
@@ -62,6 +68,12 @@ export default Vue.extend({
     currentMarketOnly: {
       type: Boolean,
       default: false
+    }
+  },
+
+  data() {
+    return {
+      tradeDetails: undefined as UiSpotTrade | undefined
     }
   },
 
@@ -92,6 +104,13 @@ export default Vue.extend({
   watch: {
     subAccount() {
       this.$accessor.spot.fetchSubaccountTrades()
+    }
+  },
+
+  methods: {
+    handleShowTradeDetails(trade: UiSpotTrade) {
+      this.tradeDetails = trade
+      this.$accessor.modal.openModal(Modal.MobileTradeDetails)
     }
   }
 })

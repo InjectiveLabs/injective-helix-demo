@@ -3,7 +3,7 @@
     <div
       class="flex items-center justify-between col-span-2 text-xs leading-5 pb-1"
     >
-      <div class="flex items-center gap-1" @click.stop="handleClickOnMarket">
+      <nuxt-link class="flex items-center gap-1" :to="marketRoute">
         <span
           :class="{
             'text-aqua-500': trade.tradeDirection === TradeDirection.Buy,
@@ -28,7 +28,7 @@
         <span class="text-gray-200 font-semibold">
           {{ market.ticker }}
         </span>
-      </div>
+      </nuxt-link>
 
       <span>{{ tradeExecutionType }}</span>
     </div>
@@ -83,6 +83,8 @@ import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
+import { MarketRoute } from '~/types'
+import { getMarketRoute } from '~/app/utils/market'
 
 export default Vue.extend({
   components: {
@@ -209,6 +211,18 @@ export default Vue.extend({
         default:
           return this.$t('trade.limit')
       }
+    },
+
+    marketRoute(): MarketRoute {
+      const { market } = this
+
+      if (!market) {
+        return { name: 'markets' }
+      }
+
+      const marketRoute = getMarketRoute(market)
+
+      return marketRoute || { name: 'markets' }
     }
   },
 
@@ -217,22 +231,6 @@ export default Vue.extend({
       const { trade } = this
 
       this.$emit('showTradeDetails', trade)
-    },
-
-    handleClickOnMarket() {
-      const { market, isSpot } = this
-
-      if (!market) {
-        return
-      }
-
-      return this.$router.push({
-        name: isSpot ? 'spot-spot' : 'derivatives-derivative',
-        params: {
-          marketId: market.marketId,
-          spot: market.slug
-        }
-      })
     }
   }
 })
