@@ -651,7 +651,9 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const reduceOnlyOrders = orders.filter((o) => o.isReduceOnly)
+      const reduceOnlyOrders = orders.filter(
+        (o) => o.isReduceOnly && o.marketId === market.marketId
+      )
       const aggregateReduceOnlyQuantity = reduceOnlyOrders.reduce(
         (total, order) => total.plus(order.quantity),
         ZERO_IN_BASE
