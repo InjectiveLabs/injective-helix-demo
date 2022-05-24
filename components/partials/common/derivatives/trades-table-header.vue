@@ -4,7 +4,7 @@
       <th class="text-left">
         <div class="flex items-center">
           {{ $t('trade.time') }}
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             class="ml-2"
             :tooltip="$t('trade.timestamp_tooltip')"
           />
@@ -28,7 +28,7 @@
       <th>
         <div class="flex items-center justify-end">
           <span>{{ $t('trade.amount') }}</span>
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             class="ml-2"
             :tooltip="$t('trade.amount_tooltip')"
           />
@@ -37,7 +37,7 @@
       <th>
         <div class="flex items-center justify-end">
           {{ $t('trade.fee') }}
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             class="ml-2"
             :tooltip="$t('trade.fees_tooltip')"
           />
@@ -46,7 +46,7 @@
       <th>
         <div class="flex items-center justify-end">
           <span>{{ $t('trade.total') }}</span>
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             class="ml-2"
             :tooltip="$t('trade.total_tooltip')"
           />

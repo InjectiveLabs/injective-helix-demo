@@ -11,7 +11,7 @@
           @click="handleTypeClick"
         >
           <span class="flex items-center">
-            <v-icon-star class="mr-1" />
+            <IconStar class="mr-1" />
             <span>{{ $t('trade.favorites') }}</span>
           </span>
         </v-market-type-selector>

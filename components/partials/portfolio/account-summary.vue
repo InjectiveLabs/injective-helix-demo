@@ -4,7 +4,7 @@
       <h4 class="text-sm uppercase text-gray-400">
         {{ $t('portfolio.accountSummary') }}
       </h4>
-      <v-icon-show
+      <IconShow
         class="w-4 h-4 ml-4 text-gray-400 hover:text-primary-500"
         data-cy="account-summary-visibility-toggle-button"
       />

@@ -171,7 +171,7 @@
         <div
           class="flex items-center justify-center rounded-full bg-opacity-10 w-8 h-8 hover:bg-opacity-10 bg-red-550 hover:bg-red-600 text-red-550 hover:text-red-600"
         >
-          <v-icon-close class="h-4 w-4" />
+          <IconClose class="h-4 w-4" />
         </div>
       </v-button>
     </td>

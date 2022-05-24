@@ -39,7 +39,7 @@
             :status="metamaskStatus"
             @click="connectMetamask"
           >
-            <v-icon-metamask class="w-6 h-6 mr-3" />
+            <IconMetamask class="w-6 h-6 mr-3" />
             <span class="font-bold tracking-widest">
               {{ $t('connect.metamask') }}
             </span>
@@ -52,7 +52,7 @@
             :disabled="metamaskStatus.isLoading()"
             @click="connectLedger"
           >
-            <v-icon-ledger class="w-6 h-6 mr-3" />
+            <IconLedger class="w-6 h-6 mr-3" />
             <span class="font-bold tracking-widest">
               {{ $t('connect.ledger') }}
             </span>
@@ -65,11 +65,11 @@
           <div
             class="bg-gray-200 mr-3 rounded-full h-10 w-10 flex items-center justify-center"
           >
-            <v-icon-metamask
+            <IconMetamask
               v-if="connectedWalletType === Wallet.Metamask"
               class="w-6 h-6"
             />
-            <v-icon-ledger
+            <IconLedger
               v-else-if="connectedWalletType === Wallet.Ledger"
               class="w-6 h-6 text-gray-700"
             />

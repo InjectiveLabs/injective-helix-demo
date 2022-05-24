@@ -12,7 +12,7 @@
         <template slot="subtitle">
           <div class="font-semibold text-lg flex items-center mb-2">
             <span>{{ $t('portfolio.bankAccount') }}</span>
-            <v-icon-info-tooltip
+            <IconInfoTooltip
               class="ml-3"
               color="text-gray-200"
               :tooltip="$t('portfolio.bankAccountTooltip')"
@@ -21,7 +21,7 @@
           </div>
         </template>
 
-        <v-icon-wallet slot="icon" class="w-6 h-auto" />
+        <IconWallet slot="icon" class="w-6 h-auto" />
 
         <div class="text-right">
           <p class="text-gray-500 text-xs uppercase mb-2 tracking-wider">
@@ -46,7 +46,7 @@
         <template slot="subtitle">
           <div class="font-semibold text-lg flex items-center mb-2">
             <span>{{ $t('portfolio.tradingAccount') }}</span>
-            <v-icon-info-tooltip
+            <IconInfoTooltip
               class="ml-3"
               color="text-gray-200"
               :tooltip="$t('portfolio.tradingAccountTooltip')"
@@ -55,7 +55,7 @@
           </div>
         </template>
 
-        <v-icon-rectangle-chart slot="icon" class="w-6 h-auto" />
+        <IconRectangleChart slot="icon" class="w-6 h-auto" />
 
         <div class="text-right">
           <p class="text-gray-500 text-xs uppercase mb-2 tracking-wider">

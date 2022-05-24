@@ -39,7 +39,7 @@
             <span class="mr-2 font-semibold">
               {{ $t('marketDeprecated.injectiveBridge') }}
             </span>
-            <v-icon-external-link class="w-4 h-4" />
+            <IconExternalLink class="w-4 h-4" />
           </a>
         </v-button>
       </div>

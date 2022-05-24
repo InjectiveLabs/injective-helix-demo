@@ -8,7 +8,7 @@
         <slot name="header" />
       </div>
       <div class="absolute right-0 top-0 mt-1">
-        <v-icon-caret-down
+        <IconCaretDown
           class="text-gray-500 group-hover:text-gray-200 w-4 h-4"
           :class="{ 'transform rotate-180': drawerIsOpen }"
         />

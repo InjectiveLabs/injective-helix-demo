@@ -8,7 +8,7 @@
           data-cy="markets-favorites-selector"
           @click="handleTypeClick"
         >
-          <v-icon-star class="min-w-4 h-4 w-4" />
+          <IconStar class="min-w-4 h-4 w-4" />
         </v-market-type-selector>
 
         <v-market-type-selector

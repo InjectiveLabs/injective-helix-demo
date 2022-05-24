@@ -4,7 +4,7 @@
       class="flex items-center tracking-wide leading-none"
       :class="{ 'text-xs': !lg }"
     >
-      <v-icon-arrow
+      <IconArrow
         v-if="[Change.Increase, Change.Decrease].includes(lastTradePriceChange)"
         class="transform w-3 h-3 mr-1"
         :class="{

@@ -46,7 +46,7 @@
           :title="$t('trade.liquidation_price')"
           class="mt-2"
         >
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             slot="context"
             class="ml-2"
             :tooltip="$t('trade.liquidation_price_tooltip')"
@@ -68,7 +68,7 @@
           :title="$t('trade.margin')"
           class="mt-2"
         >
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             slot="context"
             class="ml-2"
             :tooltip="$t('trade.margin_tooltip')"
@@ -86,7 +86,7 @@
         </v-text-info>
 
         <v-text-info :title="$t('trade.notional_value')" class="mt-2">
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             slot="context"
             class="ml-2"
             :tooltip="$t('trade.total_tooltip')"
@@ -104,7 +104,7 @@
         </v-text-info>
 
         <v-text-info :title="$t('trade.maker_taker_rate')" class="mt-2">
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             slot="context"
             class="ml-2"
             :tooltip="$t('trade.maker_taker_rate_note')"
@@ -117,7 +117,7 @@
         <v-text-info :title="$t('trade.fee')" class="mt-2">
           <div slot="context">
             <div class="flex items-center">
-              <v-icon-info-tooltip
+              <IconInfoTooltip
                 slot="context"
                 class="ml-2"
                 :tooltip="
@@ -128,7 +128,7 @@
                       })
                 "
               />
-              <v-icon-check-tooltip
+              <IconCheckTooltip
                 v-if="
                   !marketHasNegativeMakerFee &&
                   (makerFeeRateDiscount.gt(0) || takerFeeRateDiscount.gt(0))
@@ -157,7 +157,7 @@
           :title="$t('trade.est_fee_rebate')"
           class="mt-2"
         >
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             slot="context"
             class="ml-2"
             :tooltip="$t('trade.est_fee_rebate_note')"
@@ -179,7 +179,7 @@
           :title="$t('trade.expected_points')"
           class="mt-2"
         >
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             slot="context"
             class="ml-2"
             :tooltip="$t('trade.expected_points_note')"

@@ -38,7 +38,7 @@
                 data-cy="transfer-completed-modal-explorer-link"
               >
                 <span class="mr-2">{{ $t('bridge.seeOnExplorer') }}</span>
-                <v-icon-external-link class="w-3 h-3" />
+                <IconExternalLink class="w-3 h-3" />
               </a>
 
               <a
@@ -51,7 +51,7 @@
                   class="mr-2"
                   data-cy="transfer-completed-hub-track-link"
                   >{{ $t('bridge.trackTransaction') }}</span>
-                <v-icon-external-link class="w-3 h-3" />
+                <IconExternalLink class="w-3 h-3" />
               </a>
             </div>
           </div>

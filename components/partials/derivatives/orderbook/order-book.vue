@@ -41,7 +41,7 @@
         >
           {{ lastTradedPriceToFormat }}
         </span>
-        <v-icon-arrow
+        <IconArrow
           v-if="
             [Change.Increase, Change.Decrease].includes(lastTradedPriceChange)
           "

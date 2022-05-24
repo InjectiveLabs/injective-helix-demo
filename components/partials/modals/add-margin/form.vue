@@ -5,7 +5,7 @@
         <p class="uppercase text-xs font-semibold text-gray-200">
           {{ $t('trade.availableMargin') }}
         </p>
-        <v-icon-info-tooltip
+        <IconInfoTooltip
           class="ml-2 text-gray-200"
           :tooltip="$t('trade.availableMarginTooltip')"
         />

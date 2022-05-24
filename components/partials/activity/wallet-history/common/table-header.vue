@@ -4,7 +4,7 @@
       <th class="text-left">
         <div class="flex items-center">
           {{ $t('trade.time') }}
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             class="ml-2"
             :tooltip="$t('trade.timestamp_tooltip')"
           />
@@ -22,7 +22,7 @@
       <th>
         <div class="flex items-center justify-end">
           <span>{{ $t('walletHistory.transfers.amount') }}</span>
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             class="ml-2"
             :tooltip="$t('walletHistory.transfers.amountTooltip')"
           />
