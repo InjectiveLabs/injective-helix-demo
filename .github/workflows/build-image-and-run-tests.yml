@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-20.04
     timeout-minutes: 20
     steps:
+      - name: Get branch name
+        id: git-branch-name
+        uses: EthanSK/git-branch-name-action@v1
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Checkout injective-dex
@@ -23,7 +26,7 @@ jobs:
           context: ./injective-dex
           file: .github/Dockerfile
           push: false
-          tags: injective-dex:${{ github.ref }}
+          tags: injective-dex:$GIT_BRANCH_NAME
           outputs: type=docker,dest=/tmp/dex-image.tar
       - name: Upload DEX artifact
         uses: actions/upload-artifact@v2
@@ -37,7 +40,7 @@ jobs:
       #     context: ./injective-dex
       #     file: .github/cypress/Dockerfile
       #     push: false
-      #     tags: injective-cypress:${{ github.ref }}
+      #     tags: injective-cypress:$GIT_BRANCH_NAME
       #     outputs: type=docker,dest=/tmp/cypress-image.tar
       # - name: Upload Cypress artifact
       #   uses: actions/upload-artifact@v2
@@ -75,14 +78,13 @@ jobs:
       #     path: /tmp
       - name: Load Docker images
         run: |
-          # docker load --input /tmp/cypress-image.tar
+#          docker load --input /tmp/cypress-image.tar
           docker load --input /tmp/dex-image.tar
       - name: Checkout injective-devops
         uses: actions/checkout@master
         with:
           repository: InjectiveLabs/injective-devops
           ref: 'f/standalone_env'
-          token: ${{ secrets.GH_TOKEN }}
           path: ./injective-devops
       - name: Start standalone network
         run: cd injective-devops && make start-dex
