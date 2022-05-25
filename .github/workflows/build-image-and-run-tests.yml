@@ -34,6 +34,20 @@ jobs:
           name: dex-image
           path: /tmp/dex-image.tar
           retention-days: 1
+      - name: Build Cypress test image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./injective-dex
+          file: ./injective-dex/.github/cypress/Dockerfile
+          push: false
+          tags: injective-cypress:${{env.GIT_BRANCH_NAME}}
+          outputs: type=docker,dest=/tmp/cypress-image.tar
+      - name: Upload Cypress artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: cypress-image
+          path: /tmp/cypress-image.tar
+          retention-days: 1
   run_e2e_tests:
     name: 'Run e2e tests'
     runs-on: ubuntu-20.04
@@ -59,8 +73,15 @@ jobs:
         with:
           name: dex-image
           path: /tmp
+      - name: Download Cypress artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: cypress-image
+          path: /tmp
       - name: Load Docker images
-        run: docker load --input /tmp/dex-image.tar
+        run: |
+          docker load --input /tmp/cypress-image.tar
+          docker load --input /tmp/dex-image.tar
       - name: Checkout injective-devops
         uses: actions/checkout@master
         with:
