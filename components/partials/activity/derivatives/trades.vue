@@ -18,7 +18,7 @@
             class="col-span-2 flex items-center bg-gray-900 rounded-full text-gray-200 py-3 px-6 text-xs cursor-pointer sm:hidden shadow-sm"
             @click="openMobileFilterModal"
           >
-            <VIconFilter class="min-w-4 mr-2" />
+            <IconFilter class="min-w-4 mr-2" />
             <span>{{ $t('common.filters') }}</span>
           </div>
 

@@ -2,7 +2,7 @@
   <v-modal :is-open="isModalOpen" sm mobile-only @modal-closed="closeModal">
     <div slot="header" class="flex items-center justify-between">
       <div class="flex items-center gap-3 cursor-pointer" @click="handleBack">
-        <v-icon-arrow class="w-6 h-auto" />
+        <IconArrow class="w-6 h-auto" />
         <span class="font-bold text-lg">{{ $t('common.filters') }}</span>
       </div>
 

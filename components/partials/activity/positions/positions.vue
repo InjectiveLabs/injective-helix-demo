@@ -85,7 +85,7 @@
           v-else
           data-cy="universal-table-nothing-found"
           :message="$t('trade.emptyPositions')"
-          class="mt-6 min-h-orders"
+          class="min-h-orders"
         />
       </v-table-wrapper>
 

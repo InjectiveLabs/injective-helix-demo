@@ -65,19 +65,9 @@
                     @click="handleClickOnCloseButton"
                   >
                     <span class="sr-only">{{ $t('common.close') }}</span>
-                    <v-icon-close class="w-4 h-4" />
+                    <IconClose class="w-4 h-4" />
                   </button>
                 </div>
-                <button
-                  v-if="!isAlwaysOpen"
-                  type="button"
-                  class="bg-transparent rounded-md text-gray-200 hover:text-primary-500"
-                  data-cy="reusable-modal-close-button"
-                  @click="handleClickOnCloseButton"
-                >
-                  <span class="sr-only">{{ $t('common.close') }}</span>
-                  <IconClose class="w-4 h-4" />
-                </button>
               </div>
             </slot>
           </div>

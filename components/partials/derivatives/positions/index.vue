@@ -15,7 +15,7 @@
       <v-empty-list
         slot="empty"
         :message="$t('trade.emptyPositions')"
-        class="mt-6 min-h-orders"
+        class="min-h-orders"
       />
     </TableBody>
 

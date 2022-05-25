@@ -8,7 +8,7 @@
   >
     <div slot="header" class="flex items-center justify-between">
       <div class="flex items-center gap-3 cursor-pointer" @click="handleBack">
-        <v-icon-arrow class="w-6 h-auto" />
+        <IconArrow class="w-6 h-auto" />
         <span class="font-bold text-lg">
           {{ $t('trade.tradeHistoryDetails') }}
         </span>
@@ -20,7 +20,7 @@
         <span class="text-gray-500 uppercase tracking-widest text-2xs">
           {{ $t('trade.time') }}
         </span>
-        <v-icon-info-tooltip
+        <IconAnfo-tooltip
           class="ml-2"
           :tooltip="$t('trade.timestamp_tooltip')"
         />
@@ -85,10 +85,7 @@
         <span class="text-gray-500 uppercase tracking-widest text-2xs">
           {{ $t('trade.amount') }}
         </span>
-        <v-icon-info-tooltip
-          class="ml-2"
-          :tooltip="$t('trade.amount_tooltip')"
-        />
+        <IconInfoTooltip class="ml-2" :tooltip="$t('trade.amount_tooltip')" />
       </div>
       <span class="text-right">
         <v-number
@@ -105,7 +102,7 @@
         <span class="text-gray-500 uppercase tracking-widest text-2xs">
           {{ $t('trade.fee') }}
         </span>
-        <v-icon-info-tooltip class="ml-2" :tooltip="$t('trade.fees_tooltip')" />
+        <IconInfoTooltip class="ml-2" :tooltip="$t('trade.fees_tooltip')" />
       </div>
       <span class="text-right">
         <v-number use-number-decimals :number="fee">
@@ -119,7 +116,7 @@
         <span class="text-gray-500 uppercase tracking-widest text-2xs">
           {{ $t('trade.total') }}
         </span>
-        <v-icon-info-tooltip class="ml-2" :tooltip="$t('trade.fees_tooltip')" />
+        <IconInfoTooltip class="ml-2" :tooltip="$t('trade.fees_tooltip')" />
       </div>
       <span class="text-right">
         <v-number
