@@ -54,12 +54,12 @@ jobs:
       fail-fast: false
       matrix:
         containers: [activity-tests, markets-tests, portfolio-tests]
-      env:
-        CYPRESS_TEST_TAG: ${GITHUB_REF##*/}
-        CYPRESS_SPEC_FILE_NAME: /root/cypress/integration/website/${{ matrix.containers }}.ts
-        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-        #unique group id for each execution used to group tests in Cypress dashboard
-        CYPRESS_GROUP: "${{ github.ref_name }}-${{github.run_attempt}}"
+    env:
+      CYPRESS_TEST_TAG: ${GITHUB_REF##*/}
+      CYPRESS_SPEC_FILE_NAME: /root/cypress/integration/website/${{ matrix.containers }}.ts
+      CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+      #unique group id for each execution used to group tests in Cypress dashboard
+      CYPRESS_GROUP: "${{ github.ref_name }}-${{github.run_attempt}}"
     steps:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
