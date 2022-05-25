@@ -26,7 +26,7 @@ jobs:
           context: ./injective-dex
           file: .github/Dockerfile
           push: false
-          tags: injective-dex:$GIT_BRANCH_NAME
+          tags: injective-dex:${{env.GIT_BRANCH_NAME}}
           outputs: type=docker,dest=/tmp/dex-image.tar
       - name: Upload DEX artifact
         uses: actions/upload-artifact@v2
