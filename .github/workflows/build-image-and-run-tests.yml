@@ -23,8 +23,8 @@ jobs:
       - name: Build DEX image
         uses: docker/build-push-action@v2
         with:
-          context: ./injective-dex
-          file: .github/Dockerfile
+          context: ./injective-dex/
+          file: ./injective-dex/.github/Dockerfile
           push: false
           tags: injective-dex:${{env.GIT_BRANCH_NAME}}
           outputs: type=docker,dest=/tmp/dex-image.tar
@@ -44,7 +44,7 @@ jobs:
       matrix:
         containers: [activity-tests, markets-tests, portfolio-tests]
     env:
-      CYPRESS_TEST_TAG: ${GIT_BRANCH_NAME}
+      CYPRESS_TEST_TAG: ${{env.GIT_BRANCH_NAME}}
       CYPRESS_SPEC_FILE_NAME: /root/cypress/integration/website/${{ matrix.containers }}.ts
       CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
       CYPRESS_GROUP: "${{ github.ref_name }}-${{github.run_attempt}}"
