@@ -56,7 +56,7 @@
               :option="components.funding"
               data-cy="activity-wallet-history-panel"
             >
-              <v-icon-wallet slot="icon" class="w-3 md:w-3.5 h-auto" />
+              <IconWallet slot="icon" class="w-3 md:w-3.5 h-auto" />
               <span class="text-sm whitespace-nowrap">
                 {{ $t('activity.walletHistory') }}
               </span>

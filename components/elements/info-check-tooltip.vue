@@ -1,5 +1,5 @@
 <template>
-  <v-icon-check-circle
+  <IconCheckCircle
     v-tooltip="{ content: tooltip }"
     v-bind="$attrs"
     :class="classes"

@@ -85,7 +85,7 @@
             href="https://discord.com/invite/injective"
             target="_blank"
           >
-            <v-icon-discord-circle />
+            <IconDiscordCircle />
           </a>
 
           <a
@@ -93,7 +93,7 @@
             href="https://twitter.com/InjectiveLabs"
             target="_blank"
           >
-            <v-icon-twitter-circle />
+            <IconTwitterCircle />
           </a>
 
           <a
@@ -101,7 +101,7 @@
             href="https://t.me/joininjective"
             target="_blank"
           >
-            <v-icon-telegram-circle />
+            <IconTelegramCircle />
           </a>
 
           <a
@@ -109,7 +109,7 @@
             href="https://www.youtube.com/channel/UCN99m0dicoMjNmJV9mxioqQ"
             target="_blank"
           >
-            <v-icon-youtube-circle />
+            <IconYoutubeCircle />
           </a>
 
           <a
@@ -117,7 +117,7 @@
             href="https://www.reddit.com/r/injective/"
             target="_blank"
           >
-            <v-icon-reddit-circle />
+            <IconRedditCircle />
           </a>
         </div>
       </div>

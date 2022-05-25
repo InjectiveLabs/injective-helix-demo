@@ -32,7 +32,7 @@
       class="orderbook-middle-h bg-gray-900 flex flex-col items-center justify-center border-t border-b"
     >
       <div class="w-full flex items-center justify-center">
-        <v-icon-arrow
+        <IconArrow
           v-if="
             [Change.Increase, Change.Decrease].includes(lastTradedPriceChange)
           "

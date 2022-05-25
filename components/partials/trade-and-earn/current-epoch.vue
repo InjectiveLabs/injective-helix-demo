@@ -27,7 +27,7 @@
           <template slot="title">
             <div class="flex items-center justify-center">
               {{ $t('max_campaign_rewards') }}
-              <v-icon-info-tooltip
+              <IconInfoTooltip
                 class="ml-2"
                 :tooltip="$t('max_campaign_rewards_tooltip')"
               />
@@ -53,7 +53,7 @@
           <template slot="title">
             <div class="flex items-center justify-center">
               {{ $t('tradeAndEarn.myRewardPoints') }}
-              <v-icon-info-tooltip
+              <IconInfoTooltip
                 class="ml-2"
                 :tooltip="$t('tradeAndEarn.myRewardPoints_tooltip')"
               />
@@ -84,7 +84,7 @@
           <template slot="title">
             <div class="flex items-center justify-center">
               {{ $t('est_rewards') }}
-              <v-icon-info-tooltip
+              <IconInfoTooltip
                 class="ml-2"
                 :tooltip="
                   $t('est_rewards_tooltip', {

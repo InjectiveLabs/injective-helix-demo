@@ -63,7 +63,7 @@
                   @click="handleClickOnCloseButton"
                 >
                   <span class="sr-only">{{ $t('common.close') }}</span>
-                  <v-icon-close class="w-4 h-4" />
+                  <IconClose class="w-4 h-4" />
                 </button>
               </div>
             </div>

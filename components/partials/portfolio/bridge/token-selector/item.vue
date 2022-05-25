@@ -7,7 +7,7 @@
         :alt="item.token.name"
         class="rounded-full w-6 h-6 mr-3"
       />
-      <v-icon-category-alt v-else class="rounded-full w-6 h-6 mr-3" />
+      <IconCategoryAlt v-else class="rounded-full w-6 h-6 mr-3" />
       <div>
         <p
           class="text-lg tracking-0.5"

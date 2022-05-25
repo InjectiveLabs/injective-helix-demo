@@ -9,7 +9,7 @@
     @input="input"
     @close="clear"
   >
-    <v-icon-search
+    <IconSearch
       slot="addon"
       class="ml-1"
       :class="[small ? 'w-4 h-4' : 'w-5 h-5']"

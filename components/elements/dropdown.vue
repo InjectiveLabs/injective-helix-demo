@@ -15,7 +15,7 @@
           @click="onDropdownToggle"
         >
           <slot name="title" />
-          <v-icon-caret-down
+          <IconCaretDown
             class="h-4 w-4"
             :class="[
               dark ? 'text-gray-500' : 'text-gray-200',

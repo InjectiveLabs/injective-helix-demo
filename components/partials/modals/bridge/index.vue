@@ -8,7 +8,7 @@
     <div slot="title">
       <h3 class="flex items-center">
         {{ bridgeTitle }}
-        <v-icon-info-tooltip
+        <IconInfoTooltip
           v-if="bridgeType === BridgeType.Transfer"
           class="ml-2"
           :tooltip="$t('bridge.transferTitleTooltip')"

@@ -25,7 +25,7 @@
       >
         <template #open-indicator="{ attributes }">
           <span v-bind="attributes" class="cursor-pointer">
-            <v-icon-caret-down-slim />
+            <IconCaretDownSlim />
           </span>
         </template>
 
@@ -65,7 +65,7 @@
                 :alt="name"
                 class="rounded-full w-6 h-6"
               />
-              <v-icon-category-alt v-else class="rounded-full w-6 h-6" />
+              <IconCategoryAlt v-else class="rounded-full w-6 h-6" />
               <span
                 class="font-bold text-lg pl-2 pr-3 text-gray-200 tracking-wide break-normal"
                 data-cy="token-selector-selected-text-content"
@@ -88,7 +88,7 @@
               @blur="resetIsSearching"
               @click.native.stop="focusSearchInput"
             >
-              <v-icon-search slot="addon" class="w-6 h-6" />
+              <IconSearch slot="addon" class="w-6 h-6" />
             </v-input>
           </li>
         </template>

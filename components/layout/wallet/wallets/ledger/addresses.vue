@@ -26,7 +26,7 @@
                   ? $t('connect.getAddresses')
                   : $t('connect.getMoreAddresses')
               }}</span>
-              <v-icon-arrow class="transform rotate-180 w-3 h-3"></v-icon-arrow>
+              <IconArrow class="transform rotate-180 w-3 h-3" />
             </div>
           </v-button>
         </div>

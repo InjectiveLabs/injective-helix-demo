@@ -13,7 +13,7 @@
       <th>
         <div class="flex items-center justify-end">
           <span>{{ $t('trade.amount') }}</span>
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             class="ml-2"
             :tooltip="$t('trade.amount_tooltip')"
           />

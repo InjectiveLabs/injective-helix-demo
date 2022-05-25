@@ -90,7 +90,7 @@
           class="font-semibold tracking-widest uppercase text-sm text-gray-200 group-hover:text-gray-100 flex items-center"
         >
           <span>{{ $t('navigation.dmmProgram') }}</span>
-          <v-icon-external-link-arrow class="w-auto h-2 ml-2" />
+          <IconExternalLinkArrow class="w-auto h-2 ml-2" />
         </p>
         <p
           class="text-sm leading-6 text-gray-500 group-hover:text-gray-100 mt-3"

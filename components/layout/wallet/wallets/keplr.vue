@@ -28,7 +28,7 @@
           </div>
         </div>
         <div>
-          <v-icon-caret-down
+          <IconCaretDown
             class="transform -rotate-90 h-5 w-5 text-gray-200"
           />
         </div>

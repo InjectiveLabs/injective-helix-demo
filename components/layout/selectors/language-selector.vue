@@ -2,7 +2,7 @@
   <v-dropdown>
     <template slot="title">
       <div class="w-20 flex items-center">
-        <v-icon-globe class="w-4"></v-icon-globe>
+        <IconGlobe class="w-4" />
         <span class="text-xs ml-2">{{ activeLocale.locale }}</span>
       </div>
     </template>

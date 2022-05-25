@@ -42,7 +42,7 @@
         'text-red-500': summary.lastPriceChange === Change.Decrease
       }"
     >
-      <v-icon-arrow
+      <IconArrow
         v-if="lastTradedPrice.gt(0)"
         class="transform w-5 h-5 mr-1"
         :class="{

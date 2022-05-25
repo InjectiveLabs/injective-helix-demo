@@ -34,7 +34,7 @@
       <span
         class="font-mono text-right text-2xs md:text-sm flex items-center justify-end col-span-1 md:col-span-3"
       >
-        <v-icon-arrow
+        <IconArrow
           v-if="!lastTradedPrice.isNaN()"
           class="transform w-3 h-3 mr-1"
           :class="{

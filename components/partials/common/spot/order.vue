@@ -107,7 +107,7 @@
           <div
             class="flex items-center justify-center rounded-full bg-red-550 bg-opacity-10 w-8 h-8 hover:bg-red-600 text-red-550 hover:text-red-600 hover:bg-opacity-10"
           >
-            <v-icon-bin />
+            <IconBin />
           </div>
         </v-button>
         <span v-else class="inline-block">&mdash;</span>

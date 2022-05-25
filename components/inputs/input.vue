@@ -64,7 +64,7 @@
               data-cy="reusable-input-clear-button"
               @click="handleCloseEvent"
             >
-              <v-icon-close
+              <IconClose
                 class="
                   cursor-pointer
                   h-4

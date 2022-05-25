@@ -12,7 +12,7 @@
       <th>
         <div class="flex items-center">
           <span>{{ $t('trade.amount') }}</span>
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             class="ml-2"
             :tooltip="$t('trade.amount_tooltip')"
           />
@@ -24,7 +24,7 @@
       <th>
         <div class="flex items-center justify-end">
           <span>{{ $t('trade.estLiqPrice') }}</span>
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             class="ml-2"
             :tooltip="$t('trade.liquidation_price_tooltip')"
           />
@@ -33,7 +33,7 @@
       <th>
         <div class="flex items-center justify-end">
           <span>{{ $t('trade.unrealized_pnl') }}</span>
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             class="ml-2"
             :tooltip="$t('trade.unrealized_pnl_tooltip')"
           />
@@ -42,7 +42,7 @@
       <th>
         <div class="flex items-center justify-end">
           <span>{{ $t('trade.total') }}</span>
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             class="ml-2"
             :tooltip="$t('trade.total_tooltip')"
           />
