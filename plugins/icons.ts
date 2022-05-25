@@ -2,6 +2,7 @@
 import Vue from 'vue'
 import Arrow from '~/components/icons/arrow.vue'
 import ArrowSwap from '~/components/icons/arrow-swap.vue'
+import ArrowDown from '~/components/icons/arrow-down.vue'
 import Bin from '~/components/icons/bin.vue'
 import Box from '~/components/icons/box.vue'
 import CaretDown from '~/components/icons/caret-down.vue'
@@ -57,9 +58,12 @@ import Crown from '~/components/icons/crown.vue'
 import Youtube from '~/components/icons/youtube.vue'
 import YoutubeCircle from '~/components/icons/youtube-circle.vue'
 import MenuAlt from '~/components/icons/menu-alt.vue'
+import Cogwheel from '~/components/icons/cogwheel.vue'
+import Warn from '~/components/icons/warn.vue'
 
 Vue.component('IconArrow', Arrow)
 Vue.component('IconArrowSwap', ArrowSwap)
+Vue.component('IconArrowDown', ArrowDown)
 Vue.component('IconBin', Bin)
 Vue.component('IconBox', Box)
 Vue.component('IconCaretDown', CaretDown)
@@ -115,3 +119,5 @@ Vue.component('IconUser', User)
 Vue.component('IconWallet', Wallet)
 Vue.component('IconYoutube', Youtube)
 Vue.component('IconYoutubeCircle', YoutubeCircle)
+Vue.component('IconCogwheel', Cogwheel)
+Vue.component('IconWarn', Warn)

@@ -11,7 +11,7 @@
         >
         </label>
         <span
-          v-if="error && !errorBelow"
+          v-if="error && !errorBelow && !hideErrors"
           class="text-red-400 italic font-semibold text-2xs"
           data-cy="reusable-input-error"
         >
@@ -24,8 +24,8 @@
       <div
         class="relative"
         :class="[
-          wrapperClasses,
-          { 'mt-2': !dense, 'input-wrapper': !lg && !xl && !transparentBg }
+          { 'mt-2': !dense, 'input-wrapper': !lg && !xl && !transparentBg },
+          wrapperClasses
         ]"
       >
         <textarea
@@ -37,18 +37,29 @@
           @input="handleChangeOnInput"
         />
         <div v-else class="flex justify-between no-shadow">
+          <div v-if="prefix" class="flex items-center text-lg font-semibold pl-4 pr-1" v-html="prefix" />
+          <div
+            v-if="showPrefix"
+            class="prefix flex items-center flex-shrink-0"
+            :class="{ 'pl-3': !lg && !xl }"
+          >
+            <slot name="prefix" />
+          </div>
           <input
             v-bind="$attrs"
             class="input"
             autocomplete="off"
             :value="value"
-            :class="{
-              'input-lg': lg,
-              'input-xl': xl,
-              'input-round': round,
-              'input-small': small,
-              'input-bg-transparent': transparentBg
-            }"
+            :class="[
+              {
+                'input-lg': lg,
+                'input-xl': xl,
+                'input-round': round,
+                'input-small': small,
+                'input-bg-transparent': transparentBg
+              },
+              inputClasses
+            ]"
             @blur="handleBlur"
             @input="handleChangeOnInput"
             @keydown="handleKeydown"
@@ -56,6 +67,7 @@
             @wheel="$event.target.blur()"
           />
           <div
+            v-if="showClose || (!isMaxValue && maxSelector) || showAddon"
             class="addon flex items-center flex-shrink-0"
             :class="{ 'pr-3': !lg && !xl }"
           >
@@ -82,7 +94,7 @@
             >
               <span
                 class="bg-gray-700 rounded uppercase tracking-1"
-                :class="maxClasses"
+                :class="maxButtonClasses"
                 data-cy="reusable-max-button"
               >
                 {{ $t('trade.max') }}
@@ -93,7 +105,7 @@
         </div>
       </div>
       <span
-        v-if="error && errorBelow"
+        v-if="error && errorBelow && !hideErrors"
         class="text-red-400 absolute"
         data-cy="reusable-input-bellow-error-text-content"
         :class="[
@@ -154,6 +166,11 @@ export default Vue.extend({
       default: () => []
     },
 
+    hideErrors: {
+      type: Boolean,
+      default: false
+    },
+
     maxSelector: {
       type: Boolean,
       default: false
@@ -165,6 +182,16 @@ export default Vue.extend({
     },
 
     showCheck: {
+      type: Boolean,
+      default: false
+    },
+
+    showPrefix: {
+      type: Boolean,
+      default: false
+    },
+
+    showAddon: {
       type: Boolean,
       default: false
     },
@@ -204,21 +231,36 @@ export default Vue.extend({
       default: ''
     },
 
+    inputClasses: {
+      type: String,
+      default: ''
+    },
+
     transparentBg: {
       type: Boolean,
       default: false
+    },
+
+    prefix: {
+      type: [Object, String, Number],
+      default: null
+    },
+
+    maxClasses: {
+      type: String,
+      default: ''
     }
   },
 
   computed: {
-    maxClasses(): string[] {
-      const { lg } = this
+    maxButtonClasses(): string[] {
+      const { lg, maxClasses } = this
 
       if (lg) {
-        return ['text-base', 'mr-2', 'p-0.5']
+        return ['text-base', 'mr-2', 'p-0.5', maxClasses]
       }
 
-      return ['px-2', 'py-1', 'mr-2', 'border', 'text-xs']
+      return ['px-2', 'py-1', 'mr-2', 'border', 'text-xs', maxClasses]
     },
 
     classes(): string | null {
@@ -321,8 +363,9 @@ export default Vue.extend({
       this.$emit('close')
     },
 
-    handleBlur() {
-      this.$emit('blur')
+    handleBlur(e: Event) {
+      const target: HTMLInputElement = e.target as HTMLInputElement
+      this.$emit('blur', target.value)
     },
 
     handleMaxSelector() {
@@ -331,8 +374,10 @@ export default Vue.extend({
       if (max || maxSelector) {
         if (max) {
           this.handleChangeFromString(max)
+          this.$emit('input-max', max)
+        } else {
+          this.$emit('input-max')
         }
-        this.$emit('input-max')
       }
     }
   }

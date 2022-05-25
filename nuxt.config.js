@@ -29,6 +29,7 @@ export default {
     '~/plugins/i18n',
     '~/plugins/utils',
     '~/plugins/store',
+    '~/plugins/click-outside',
 
     { src: '~/plugins/touch-events', ssr: false },
     { src: '~/plugins/tooltip', ssr: false },

@@ -72,7 +72,7 @@
       </div>
       <div v-if="!isIbcTransfer" class="mt-6">
         <div v-if="hasAllowance">
-          <v-balance :balance="balance" :token="form.token" class="mb-2" />
+          <!-- <v-balance :balance="balance" :token="form.token" class="mb-2" /> -->
           <v-token-selector
             :amount="form.amount"
             :value="form.token"
@@ -80,6 +80,8 @@
             :destination="destination"
             :is-ibc-transfer="isIbcTransfer"
             :balance="balance"
+            show-balance
+            small
             @input:amount="handleAmountChange"
             @input:token="handleTokenChange"
           >
@@ -139,7 +141,7 @@ import { Wallet } from '@injectivelabs/ts-types'
 import { BridgeType, Modal, TransferDirection } from '~/types'
 import VTokenSelector from '~/components/partials/portfolio/bridge/token-selector/index.vue'
 import VAllowance from '~/components/elements/allowance.vue'
-import VBalance from '~/components/partials/portfolio/bridge/balance.vue'
+// import VBalance from '~/components/partials/portfolio/bridge/balance.vue'
 import VNetworkSelect from '~/components/partials/portfolio/bridge/network-select.vue'
 import VIbcTransferNote from '~/components/partials/portfolio/bridge/ibc-transfer-note.vue'
 import VTransferDirectionSwitch from '~/components/partials/portfolio/bridge/transfer-direction-switch.vue'
@@ -152,8 +154,8 @@ export default Vue.extend({
     VIbcTransferNote,
     VTransferDirectionSwitch,
     ValidationProvider,
-    VAllowance,
-    VBalance
+    VAllowance
+    // VBalance
   },
 
   props: {
