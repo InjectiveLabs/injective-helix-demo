@@ -1,0 +1,91 @@
+name: Build test image and run tests
+
+on:
+  push:
+
+jobs:
+  build:
+    name: 'Build images for tests'
+    runs-on: ubuntu-20.04
+    timeout-minutes: 20
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Checkout injective-dex
+        uses: actions/checkout@master
+        with:
+          repository: InjectiveLabs/injective-dex
+          ref: ${{ github.ref }}
+          path: ./injective-dex
+      - name: Build DEX image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./injective-dex
+          file: .github/Dockerfile
+          push: false
+          tags: injective-dex:${{ github.ref }}
+          outputs: type=docker,dest=/tmp/dex-image.tar
+      - name: Upload DEX artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: dex-image
+          path: /tmp/dex-image.tar
+          retention-days: 1
+      # - name: Build Cypress test image
+      #   uses: docker/build-push-action@v2
+      #   with:
+      #     context: ./injective-dex
+      #     file: .github/cypress/Dockerfile
+      #     push: false
+      #     tags: injective-cypress:${{ github.ref }}
+      #     outputs: type=docker,dest=/tmp/cypress-image.tar
+      # - name: Upload Cypress artifact
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: cypress-image
+      #     path: /tmp/cypress-image.tar
+      #     retention-days: 1
+  run_e2e_tests:
+    name: 'Run e2e tests'
+    runs-on: ubuntu-20.04
+    timeout-minutes: 60
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        containers: [activity-tests, markets-tests, portfolio-tests]
+      env:
+        CYPRESS_TEST_TAG: ${GITHUB_REF##*/}
+        CYPRESS_SPEC_FILE_NAME: /root/cypress/integration/website/${{ matrix.containers }}.ts
+        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+        #unique group id for each execution used to group tests in Cypress dashboard
+        CYPRESS_GROUP: "${{ github.ref_name }}-${{github.run_attempt}}"
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Download DEX artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: dex-image
+          path: /tmp
+      # - name: Download Cypress artifact
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: cypress-image
+      #     path: /tmp
+      - name: Load Docker images
+        run: |
+          # docker load --input /tmp/cypress-image.tar
+          docker load --input /tmp/dex-image.tar
+      - name: Checkout injective-devops
+        uses: actions/checkout@master
+        with:
+          repository: InjectiveLabs/injective-devops
+          ref: 'f/standalone_env'
+          token: ${{ secrets.GH_TOKEN }}
+          path: ./injective-devops
+      - name: Start standalone network
+        run: cd injective-devops && make start-dex
+      - name: "Run cypress test: ${{ matrix.containers }}"
+        #assumes we are already in ./injective-devops folder
+        run: make run-cypress-test
