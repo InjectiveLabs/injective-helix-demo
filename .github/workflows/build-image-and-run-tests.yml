@@ -34,20 +34,6 @@ jobs:
           name: dex-image
           path: /tmp/dex-image.tar
           retention-days: 1
-      # - name: Build Cypress test image
-      #   uses: docker/build-push-action@v2
-      #   with:
-      #     context: ./injective-dex
-      #     file: .github/cypress/Dockerfile
-      #     push: false
-      #     tags: injective-cypress:$GIT_BRANCH_NAME
-      #     outputs: type=docker,dest=/tmp/cypress-image.tar
-      # - name: Upload Cypress artifact
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: cypress-image
-      #     path: /tmp/cypress-image.tar
-      #     retention-days: 1
   run_e2e_tests:
     name: 'Run e2e tests'
     runs-on: ubuntu-20.04
@@ -58,12 +44,14 @@ jobs:
       matrix:
         containers: [activity-tests, markets-tests, portfolio-tests]
     env:
-      CYPRESS_TEST_TAG: ${GITHUB_REF##*/}
+      CYPRESS_TEST_TAG: ${GIT_BRANCH_NAME}
       CYPRESS_SPEC_FILE_NAME: /root/cypress/integration/website/${{ matrix.containers }}.ts
       CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-      #unique group id for each execution used to group tests in Cypress dashboard
       CYPRESS_GROUP: "${{ github.ref_name }}-${{github.run_attempt}}"
     steps:
+      - name: Get branch name
+        id: git-branch-name
+        uses: EthanSK/git-branch-name-action@v1
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Download DEX artifact
@@ -71,15 +59,8 @@ jobs:
         with:
           name: dex-image
           path: /tmp
-      # - name: Download Cypress artifact
-      #   uses: actions/download-artifact@v2
-      #   with:
-      #     name: cypress-image
-      #     path: /tmp
       - name: Load Docker images
-        run: |
-#          docker load --input /tmp/cypress-image.tar
-          docker load --input /tmp/dex-image.tar
+        run: docker load --input /tmp/dex-image.tar
       - name: Checkout injective-devops
         uses: actions/checkout@master
         with:
@@ -89,5 +70,4 @@ jobs:
       - name: Start standalone network
         run: cd injective-devops && make start-dex
       - name: "Run cypress test: ${{ matrix.containers }}"
-        #assumes we are already in ./injective-devops folder
         run: make run-cypress-test
