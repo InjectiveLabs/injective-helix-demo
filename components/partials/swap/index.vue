@@ -220,13 +220,6 @@ export default Vue.extend({
     PopperBox
   },
 
-  props: {
-    setMarket: {
-      type: Function,
-      required: true
-    }
-  },
-
   data() {
     return {
       TradeExecutionType,
@@ -1013,7 +1006,7 @@ export default Vue.extend({
       }
       const newMarket = this.findMarket(token, toToken)
       if (newMarket && market?.slug !== newMarket.slug) {
-        this.setMarket(newMarket.slug)
+        this.$emit('set-market', newMarket.slug)
       }
     },
 
@@ -1026,7 +1019,7 @@ export default Vue.extend({
       }
       const newMarket = this.findMarket(fromToken, token)
       if (newMarket && market?.slug !== newMarket.slug) {
-        this.setMarket(newMarket.slug)
+        this.$emit('set-market', newMarket.slug)
       }
     },
 

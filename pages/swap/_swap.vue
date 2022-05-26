@@ -4,7 +4,7 @@
       <div class="container">
         <div class="mx-auto w-full sm:w-md">
           <div class="flex flex-col mt-6">
-            <v-swap :set-market="setMarket" />
+            <Swap @set-market="setMarket" />
           </div>
         </div>
       </div>
@@ -16,14 +16,14 @@
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken } from '@injectivelabs/ui-common'
-import VSwap from '~/components/partials/swap/index.vue'
+import Swap from '~/components/partials/swap/index.vue'
 import { Modal } from '~/types'
 import { ORDERBOOK_POLLING_ENABLED } from '~/app/utils/constants'
 import { betaMarketSlugs } from '~/app/data/market'
 
 export default Vue.extend({
   components: {
-    VSwap
+    Swap
   },
 
   data() {
