@@ -97,6 +97,11 @@ jobs:
         with:
           name: dex-image
           path: /tmp
+      - name: Download Cypress artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: cypress-image
+          path: /tmp
       - name: Load Docker images
         run: |
           docker load --input /tmp/dex-image.tar
