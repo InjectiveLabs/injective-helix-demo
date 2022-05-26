@@ -26,7 +26,7 @@ jobs:
           context: ./injective-dex
           file: .github/Dockerfile
           push: false
-          tags: injective-dex:$GIT_BRANCH_NAME
+          tags: injective-dex:${{env.GIT_BRANCH_NAME}}
           outputs: type=docker,dest=/tmp/dex-image.tar
       - name: Upload DEX artifact
         uses: actions/upload-artifact@v2
@@ -51,6 +51,8 @@ jobs:
       - name: Get branch name
         id: git-branch-name
         uses: EthanSK/git-branch-name-action@v1
+      - name: Print dex image tag
+        run: echo ${{ env.DEX_IMAGE_TAG }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Download DEX artifact
@@ -67,7 +69,5 @@ jobs:
           ref: 'f/standalone_env'
           token: ${{ secrets.BARTEKS_PAT }}
           path: ./injective-devops
-      - name: Print DEX image tag
-        run: echo ${{ env.DEX_IMAGE_TAG }}
       - name: Start standalone network
         run: cd injective-devops/network/standalone && make start-dex
