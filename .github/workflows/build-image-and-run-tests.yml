@@ -30,4 +30,4 @@ jobs:
           token: ${{ secrets.BARTEKS_PAT }}
           path: ./injective-devops
       - name: Start standalone network
-        run: cd injective-devops && make start-dex
+        run: cd injective-devops/network/standalone && make start-dex
