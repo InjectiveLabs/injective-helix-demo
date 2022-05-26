@@ -198,11 +198,8 @@ export const actions = actionTree(
       }
     ) {
       const { subaccount } = this.app.$accessor.account
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
 
       if (!isUserWalletConnected || !subaccount || !market) {
@@ -235,11 +232,8 @@ export const actions = actionTree(
     async closeAllPosition(_, positions: UiPosition[]) {
       const { subaccount } = this.app.$accessor.account
       const { markets } = this.app.$accessor.derivatives
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
 
       if (!isUserWalletConnected || !subaccount || positions.length === 0) {
@@ -295,7 +289,8 @@ export const actions = actionTree(
       _,
       {
         market,
-        position
+        position,
+        reduceOnlyOrders
       }: {
         market?: UiDerivativeMarketWithToken
         position: UiPosition
@@ -304,11 +299,8 @@ export const actions = actionTree(
     ) {
       const { subaccount } = this.app.$accessor.account
       const { market: currentMarket } = this.app.$accessor.derivatives
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
 
       const actualMarket = (currentMarket ||
@@ -334,7 +326,7 @@ export const actions = actionTree(
         actualMarket
       )
 
-      await derivativeActionService.closePosition({
+      await derivativeActionService.closePositionAndReduceOnlyOrders({
         address,
         orderType,
         injectiveAddress,
@@ -344,7 +336,8 @@ export const actions = actionTree(
         }),
         feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
         marketId: actualMarket.marketId,
-        subaccountId: subaccount.subaccountId
+        subaccountId: subaccount.subaccountId,
+        reduceOnlyOrders
       })
 
       await this.app.$accessor.positions.fetchSubaccountPositions()
@@ -361,11 +354,8 @@ export const actions = actionTree(
       }
     ) {
       const { subaccount } = this.app.$accessor.account
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
 
       if (!isUserWalletConnected || !subaccount || !market) {
