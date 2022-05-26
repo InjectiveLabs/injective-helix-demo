@@ -132,4 +132,7 @@ jobs:
           docker-compose -f docker-compose-base.yaml -f docker-compose-dex.yaml build --build-arg IMAGE_TAG=${{ env.DEX_IMAGE_TAG }}
           docker-compose -f docker-compose-base.yaml -f docker-compose-dex.yaml up -d
       - name: Execute Cypress tests
-        run: docker-compose -f docker-compose-base.yaml -f docker-compose-dex.yaml -f docker-compose-cypress.yaml start injective-cypress
+        run: |
+          pwd
+          cd injective-devops/network/standalone
+          docker-compose -f docker-compose-base.yaml -f docker-compose-dex.yaml -f docker-compose-cypress.yaml start injective-cypress
