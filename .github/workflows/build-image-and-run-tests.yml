@@ -134,4 +134,4 @@ jobs:
       - name: Execute Cypress tests
         run: |
           cd injective-devops/network/standalone
-          docker-compose -f docker-compose-base.yaml -f docker-compose-dex.yaml -f docker-compose-cypress.yaml run injective-cypress -e CYPRESS_TEST_TAG=$GIT_BRANCH_NAME -e CYPRESS_SPEC_FILE='cypress/integration/website/markets-tests.ts' -e CYPRESS_RECORD_KEY=${{ secrets.CYPRESS_RECORD_KEY }}
+          docker-compose -f docker-compose-base.yaml -f docker-compose-dex.yaml -f docker-compose-cypress.yaml up
