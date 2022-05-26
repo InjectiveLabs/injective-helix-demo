@@ -81,9 +81,9 @@ jobs:
       DEX_ALCHEMY_API_KOVAN_KEY: ${{ secrets.APP_ALCHEMY_KOVAN_KEY }}
       EXCHANGE_ALCHEMY_API_KOVAN_KEY: ${{ secrets.APP_ALCHEMY_KOVAN_KEY }}
       CYPRESS_TEST_TAG: $GIT_BRANCH_NAME
-      CYPRESS_GROUP: '${{ github.ref_name }}-${{github.run_attempt}}'
+      CYPRESS_GROUP: '$GIT_BRANCH_NAME-${{github.run_attempt}}'
       CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-      CYPRESS_SPEC_FILE: markets-tests
+      CYPRESS_SPEC_FILE: 'cypress/integration/website/markets-tests.ts'
     steps:
       - name: Get branch name
         id: git-branch-name
@@ -122,8 +122,8 @@ jobs:
           do
             echo "Pulling image: $image"
             docker pull $image
-            echo "Cooling down for 5 seconds."
-            sleep 5
+            echo "Cooling down for 10 seconds."
+            sleep 10
           done
           echo "All images downloaded"
       - name: Start standalone network
@@ -135,4 +135,4 @@ jobs:
         run: |
           pwd
           cd injective-devops/network/standalone
-          docker-compose -f docker-compose-base.yaml -f docker-compose-dex.yaml -f docker-compose-cypress.yaml start injective-cypress
+          docker-compose -f docker-compose-base.yaml -f docker-compose-dex.yaml -f docker-compose-cypress.yaml run injective-cypress
