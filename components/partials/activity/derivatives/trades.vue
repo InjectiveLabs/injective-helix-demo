@@ -3,25 +3,36 @@
     <v-card-table-wrap>
       <template #actions>
         <div
-          class="col-span-12 lg:col-span-6 grid grid-cols-2 sm:grid-cols-3 gap-4 w-full"
+          class="col-span-12 lg:col-span-6 grid grid-cols-5 sm:grid-cols-3 gap-4 w-full"
         >
           <v-search
             dense
-            class="col-span-2 sm:col-span-1"
+            class="col-span-3 sm:col-span-1"
             :placeholder="$t('trade.filter')"
             :search="search"
+            data-cy="universal-table-filter-by-asset-input"
             @searched="handleInputOnSearch"
           />
 
+          <div
+            class="col-span-2 flex items-center bg-gray-900 rounded-full text-gray-200 py-3 px-6 text-xs cursor-pointer sm:hidden shadow-sm"
+            @click="openMobileFilterModal"
+          >
+            <IconFilter class="min-w-4 mr-2" />
+            <span>{{ $t('common.filters') }}</span>
+          </div>
+
           <filter-selector
-            class="self-start"
+            class="self-start hidden sm:block"
+            data-cy="universal-table-filter-by-type-drop-down"
             :type="TradeSelectorType.Type"
             :value="type"
             @click="handleTypeClick"
           />
 
           <filter-selector
-            class="self-start"
+            class="self-start hidden sm:block"
+            data-cy="universal-table-filter-by-side-drop-down"
             :type="TradeSelectorType.Side"
             :value="side"
             @click="handleSideClick"
@@ -29,20 +40,49 @@
         </div>
       </template>
 
-      <v-table-wrapper break-md class="mt-4">
+      <!-- mobile table -->
+      <TableBody
+        :show-empty="filteredTrades.length === 0"
+        class="sm:hidden mt-3 max-h-lg overflow-y-auto"
+      >
+        <MobileTrade
+          v-for="(trade, index) in filteredTrades"
+          :key="`mobile-derivative-trade-${index}`"
+          class="col-span-1"
+          :trade="trade"
+          @showTradeDetails="handleShowTradeDetails"
+        />
+
+        <v-empty-list slot="empty" :message="$t('trade.emptyTrades')" />
+      </TableBody>
+
+      <v-table-wrapper break-md class="mt-4 hidden sm:block">
         <table v-if="filteredTrades.length > 0" class="table">
           <trades-table-header />
           <tbody>
             <tr
               is="v-trade"
               v-for="(trade, index) in filteredTrades"
-              :key="`trades-${index}-${trade.marketId}`"
+              :key="`trade-${index}`"
               :trade="trade"
             ></tr>
           </tbody>
         </table>
-        <v-empty-list v-else :message="$t('trade.emptyTrades')" />
+        <v-empty-list
+          v-else
+          :message="$t('trade.emptyTrades')"
+          data-cy="universal-table-nothing-found"
+        />
       </v-table-wrapper>
+
+      <ModalMobileTradeFilter
+        :type="type"
+        :side="side"
+        @type:update="handleTypeClick"
+        @side:update="handleSideClick"
+      />
+
+      <ModalMobileTradeDetails :trade="tradeDetails" />
     </v-card-table-wrap>
   </VHocLoading>
 </template>
@@ -55,16 +95,25 @@ import {
   UiDerivativeMarketWithToken
 } from '@injectivelabs/ui-common'
 import { TradeExecutionType } from '@injectivelabs/ts-types'
-import Trade from '~/components/partials/common/derivatives/trade.vue'
-import TradesTableHeader from '~/components/partials/common/derivatives/trades-table-header.vue'
+import Trade from '~/components/partials/common/trade/trade.vue'
+import MobileTrade from '~/components/partials/common/trade/mobile-trade.vue'
+import TradesTableHeader from '~/components/partials/common/trade/trades-table-header.vue'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
+import ModalMobileTradeFilter from '~/components/partials/modals/mobile-trade-filter.vue'
+import ModalMobileTradeDetails from '~/components/partials/modals/mobile-trade-details.vue'
+import TableBody from '~/components/elements/table-body.vue'
 import { TradeSelectorType } from '~/types/enums'
+import { Modal } from '~/types'
 
 export default Vue.extend({
   components: {
     'v-trade': Trade,
-    TradesTableHeader,
-    FilterSelector
+    FilterSelector,
+    MobileTrade,
+    ModalMobileTradeDetails,
+    ModalMobileTradeFilter,
+    TableBody,
+    TradesTableHeader
   },
 
   data() {
@@ -73,6 +122,7 @@ export default Vue.extend({
       search: '',
       type: undefined as string | undefined,
       side: undefined as string | undefined,
+      tradeDetails: undefined as UiDerivativeTrade | undefined,
       status: new Status(StatusType.Loading)
     }
   },
@@ -83,7 +133,7 @@ export default Vue.extend({
     },
 
     trades(): UiDerivativeTrade[] {
-      return this.$accessor.derivatives.trades
+      return this.$accessor.derivatives.subaccountTrades
     },
 
     filteredTrades(): UiDerivativeTrade[] {
@@ -92,7 +142,11 @@ export default Vue.extend({
       return trades.filter((t) => {
         const market = markets.find((m) => m.marketId === t.marketId)
 
-        if (!market || (!search && !type && !side)) {
+        if (!market) {
+          return false
+        }
+
+        if (!search && !type && !side) {
           return true
         }
 
@@ -137,6 +191,15 @@ export default Vue.extend({
 
     handleTypeClick(type: string | undefined) {
       this.type = type
+    },
+
+    handleShowTradeDetails(trade: UiDerivativeTrade) {
+      this.tradeDetails = trade
+      this.$accessor.modal.openModal(Modal.MobileTradeDetails)
+    },
+
+    openMobileFilterModal() {
+      this.$accessor.modal.openModal(Modal.MobileTradeFilter)
     }
   }
 })

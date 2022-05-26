@@ -13,6 +13,7 @@
         <span
           v-if="error && !errorBelow"
           class="text-red-400 italic font-semibold text-2xs"
+          data-cy="reusable-input-error"
         >
           * {{ error }}
         </span>
@@ -58,9 +59,19 @@
             class="addon flex items-center flex-shrink-0"
             :class="{ 'pr-3': !lg && !xl }"
           >
-            <span v-if="showClose" @click="handleCloseEvent">
-              <v-icon-close
-                class="cursor-pointer h-4 w-4 text-gray-200 hover:text-primary-500"
+            <span
+              v-if="showClose"
+              data-cy="reusable-input-clear-button"
+              @click="handleCloseEvent"
+            >
+              <IconClose
+                class="
+                  cursor-pointer
+                  h-4
+                  w-4
+                  text-gray-200
+                  hover:text-primary-500
+                "
               />
             </span>
 
@@ -72,6 +83,7 @@
               <span
                 class="bg-gray-700 rounded uppercase tracking-1"
                 :class="maxClasses"
+                data-cy="reusable-max-button"
               >
                 {{ $t('trade.max') }}
               </span>
@@ -83,6 +95,7 @@
       <span
         v-if="error && errorBelow"
         class="text-red-400 absolute"
+        data-cy="reusable-input-bellow-error-text-content"
         :class="[
           errorClasses,
           {

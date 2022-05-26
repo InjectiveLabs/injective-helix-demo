@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full w-full absolute pt-6 pb-8">
+  <div class="h-full w-full absolute pt-6 sm:pb-8">
     <div class="h-full">
       <div
         class="h-full w-full mx-auto px-6 3xl:px-0 3xl:w-11/12 4xl:w-10/12 flex flex-col"
@@ -8,6 +8,7 @@
           <div class="flex lg:grid grid-cols-4 gap-4">
             <v-card-select
               v-model="component"
+              data-cy="activity-open-positions-panel"
               :option="components.positions"
               :status="positionLoadingStatus"
             >
@@ -18,6 +19,7 @@
             </v-card-select>
             <v-card-select
               v-model="component"
+              data-cy="activity-spot-orders-panel"
               :option="components.spot"
               :status="spotLoadingStatus"
             >
@@ -28,6 +30,7 @@
             </v-card-select>
             <v-card-select
               v-model="component"
+              data-cy="activity-derivatives-orders-panel"
               :option="components.derivatives"
               :status="derivativeLoadingStatus"
             >
@@ -48,8 +51,12 @@
                 {{ $t('activity.rewardHistory') }}
               </span>
             </v-card-select>
-            <v-card-select v-model="component" :option="components.funding">
-              <v-icon-wallet slot="icon" class="w-3 md:w-3.5 h-auto" />
+            <v-card-select
+              v-model="component"
+              :option="components.funding"
+              data-cy="activity-wallet-history-panel"
+            >
+              <IconWallet slot="icon" class="w-3 md:w-3.5 h-auto" />
               <span class="text-sm whitespace-nowrap">
                 {{ $t('activity.walletHistory') }}
               </span>
@@ -57,7 +64,9 @@
           </div>
         </div>
         <VHocLoading :status="status">
-          <div class="mt-4 pt-4 xs:mt-6 xs:pt-6 border-t grow">
+          <div
+            class="mt-4 pt-4 pb-8 sm:pb-0 xs:mt-6 xs:pt-6 border-t flex-grow"
+          >
             <v-positions v-show="component === components.positions" />
             <v-spot v-show="component === components.spot" />
             <v-derivatives v-show="component === components.derivatives" />

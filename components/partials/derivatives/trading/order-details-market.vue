@@ -7,7 +7,7 @@
     >
       <p slot="header" class="flex justify-between">
         <v-text-info :title="$t('trade.total')" lg>
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             slot="context"
             class="ml-2"
             :tooltip="$t('trade.market_total_tooltip')"
@@ -36,12 +36,25 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </v-text-info>
 
+        <v-text-info :title="$t('trade.averagePrice')" class="mt-2">
+          <span
+            v-if="!price.isNaN()"
+            class="font-mono flex items-start break-all"
+          >
+            {{ priceToFormat }}
+            <span class="text-gray-500 ml-1 break-normal">
+              {{ market.quoteToken.symbol }}
+            </span>
+          </span>
+          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
+        </v-text-info>
+
         <v-text-info
           v-if="!orderTypeReduceOnly"
           :title="$t('trade.liquidation_price')"
           class="mt-2"
         >
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             slot="context"
             class="ml-2"
             :tooltip="$t('trade.liquidation_price_tooltip')"
@@ -63,7 +76,7 @@
           :title="$t('trade.margin')"
           class="mt-2"
         >
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             slot="context"
             class="ml-2"
             :tooltip="$t('trade.margin_tooltip')"
@@ -81,7 +94,7 @@
         </v-text-info>
 
         <v-text-info :title="$t('trade.taker_rate')" class="mt-2">
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             slot="context"
             class="ml-2"
             :tooltip="$t('trade.taker_rate_note')"
@@ -94,12 +107,12 @@
         <v-text-info :title="$t('trade.fee')" class="mt-2">
           <div slot="context">
             <div class="flex items-center">
-              <v-icon-info-tooltip
+              <IconInfoTooltip
                 slot="context"
                 class="ml-2"
                 :tooltip="$t('trade.fees_tooltip')"
               />
-              <v-icon-check-tooltip
+              <IconCheckTooltip
                 v-if="
                   !marketHasNegativeMakerFee &&
                   (makerFeeRateDiscount.gt(0) || takerFeeRateDiscount.gt(0))
@@ -129,7 +142,7 @@
           :title="$t('trade.expected_points')"
           class="mt-2"
         >
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             slot="context"
             class="ml-2"
             :tooltip="$t('trade.expected_points_note')"
@@ -345,6 +358,16 @@ export default Vue.extend({
       return takerExpectedPts.toFormat(
         getDecimalsFromNumber(takerExpectedPts.toNumber())
       )
+    },
+
+    priceToFormat(): string {
+      const { price, market } = this
+
+      if (!market) {
+        return price.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
+      }
+
+      return price.toFormat(market.quantityDecimals)
     },
 
     amountToFormat(): string {

@@ -10,6 +10,7 @@
             class="col-span-3"
             :placeholder="$t('trade.filter')"
             :search="search"
+            data-cy="universal-table-filter-by-asset-input"
             @searched="handleInputOnSearch"
           />
         </div>
@@ -29,6 +30,7 @@
         </table>
         <v-empty-list
           v-else
+          data-cy="universal-table-nothing-found"
           :message="$t('fundingPayments.emptyFundingPayments')"
         />
       </v-table-wrapper>

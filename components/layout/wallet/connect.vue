@@ -1,6 +1,11 @@
 <template>
-  <div class="ml-4 flex items-center md:ml-6">
-    <v-button md primary @click="handleWalletConnectClicked">
+  <div class="ml-4 flex items-center md:ml-6" data-cy="wallet-connect">
+    <v-button
+      md
+      primary
+      data-cy="header-wallet-connect-button"
+      @click="handleWalletConnectClicked"
+    >
       {{ $t('connect.connect') }}
     </v-button>
 
@@ -16,7 +21,7 @@
         <VHocLoading :status="status">
           <ul class="divide-y divide-gray-800 border-gray-700 rounded-lg">
             <v-metamask />
-            <v-keplr v-if="isStagingOrTestnetOrDevnet" />
+            <v-keplr />
             <v-torus v-if="isStagingOrTestnetOrDevnet" />
             <v-ledger
               @wallet-ledger-connecting="handleLedgerConnectingWallet"

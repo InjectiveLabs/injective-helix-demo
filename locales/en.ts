@@ -21,7 +21,9 @@ export default {
   ...trade,
   common: {
     available: 'Available',
+    back: 'Back',
     deposit: 'Deposit',
+    filters: 'Filters',
     trade: 'Trade',
     transfer: 'Transfer',
     value: 'Value',

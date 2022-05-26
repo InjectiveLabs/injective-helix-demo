@@ -8,6 +8,7 @@
           <v-search
             dense
             class="col-span-3"
+            data-cy="universal-table-filter-by-asset-input"
             :placeholder="$t('trade.filter')"
             :search="search"
             @searched="handleInputOnSearch"
@@ -30,7 +31,7 @@
         <v-empty-list
           v-else
           :message="$t('walletHistory.emptyDepositTransactions')"
-          class="mt-6 min-h-orders"
+          class="min-h-orders"
         />
       </v-table-wrapper>
     </v-card-table-wrap>

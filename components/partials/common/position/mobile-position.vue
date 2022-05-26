@@ -37,7 +37,7 @@
         <div
           class="flex items-center justify-center rounded-full bg-opacity-10 w-5 h-5 hover:bg-opacity-10 bg-red-550 text-red-550"
         >
-          <v-icon-close class="h-3 w-3" />
+          <IconClose class="h-3 w-3" />
         </div>
       </v-button>
     </div>

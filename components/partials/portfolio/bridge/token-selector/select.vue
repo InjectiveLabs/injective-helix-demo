@@ -9,8 +9,9 @@
         v-bind="$attrs"
         ref="tokenSelector"
         class="input-select input-token"
-        :class="{ 'input-error': inputErrors && inputErrors.length > 0 }"
+        data-cy="token-selector-drop-down"
         label="denom"
+        :class="{ 'input-error': inputErrors && inputErrors.length > 0 }"
         :auto-scroll="false"
         :clearable="false"
         :searchable="false"
@@ -24,7 +25,7 @@
       >
         <template #open-indicator="{ attributes }">
           <span v-bind="attributes" class="cursor-pointer">
-            <v-icon-caret-down-slim />
+            <IconCaretDownSlim />
           </span>
         </template>
 
@@ -53,6 +54,7 @@
                 :max-decimals="value.decimals"
                 :max-selector="balance.gt(0.0001)"
                 :value="amount"
+                data-cy="token-selector-amount-input"
                 @input="handleAmountChange"
                 @blur="resetIsSearching"
                 @mousedown.native.stop="focusInput"
@@ -63,9 +65,10 @@
                 :alt="name"
                 class="rounded-full w-6 h-6"
               />
-              <v-icon-category-alt v-else class="rounded-full w-6 h-6" />
+              <IconCategoryAlt v-else class="rounded-full w-6 h-6" />
               <span
                 class="font-bold text-lg pl-2 pr-3 text-gray-200 tracking-wide break-normal"
+                data-cy="token-selector-selected-text-content"
               >
                 {{ symbol }}
               </span>
@@ -81,10 +84,11 @@
               dense
               round
               :placeholder="$t('common.search')"
+              data-cy="token-selector-search"
               @blur="resetIsSearching"
               @click.native.stop="focusSearchInput"
             >
-              <v-icon-search slot="addon" class="w-6 h-6" />
+              <IconSearch slot="addon" class="w-6 h-6" />
             </v-input>
           </li>
         </template>

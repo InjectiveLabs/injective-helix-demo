@@ -18,7 +18,7 @@
             <template slot="title">
               <div class="flex items-center justify-center">
                 {{ $t('My Tier') }}
-                <v-icon-info-tooltip
+                <IconInfoTooltip
                   class="ml-2"
                   :tooltip="$t('My Tier Tooltip')"
                 />
@@ -38,7 +38,7 @@
             <template slot="title">
               <div class="flex items-center justify-center">
                 {{ $t('My Staked Amount') }}
-                <v-icon-info-tooltip
+                <IconInfoTooltip
                   class="ml-2"
                   :tooltip="$t('My Staked Amount Tooltip')"
                 />
@@ -58,7 +58,7 @@
             <template slot="title">
               <div class="flex items-center justify-center">
                 {{ $t('My Fee Paid Amount') }}
-                <v-icon-info-tooltip
+                <IconInfoTooltip
                   class="ml-2"
                   :tooltip="$t('My Fee Paid Amount Tooltip')"
                 />
@@ -78,7 +78,7 @@
             <template slot="title">
               <div class="flex items-center justify-center">
                 {{ $t('trade.myMakerTakerDiscount') }}
-                <v-icon-info-tooltip
+                <IconInfoTooltip
                   class="ml-2"
                   :tooltip="$t('trade.myMakerTakerDiscountTooltip')"
                 />

@@ -1,5 +1,10 @@
 <template>
-  <v-modal :is-open="isModalOpen" sm @modal-closed="handleModalClose">
+  <v-modal
+    :is-open="isModalOpen"
+    sm
+    data-cy="transfer-confirm-modal"
+    @modal-closed="handleModalClose"
+  >
     <div slot="title">
       <h3>{{ bridgeTitle }}</h3>
     </div>
@@ -18,16 +23,20 @@
               :alt="form.token.name"
               class="rounded-full w-10 h-10 mx-auto"
             />
-            <v-icon-category-alt
+            <IconCategoryAlt
               v-else
               class="text-gray-200 rounded-full w-10 h-10 mx-auto"
             />
-            <p class="text-gray-200 text-2xl font-bold tracking-0.4 mt-4">
+            <p
+              class="text-gray-200 text-2xl font-bold tracking-0.4 mt-4"
+              data-cy="transfer-confirm-modal-value-text-content"
+            >
               {{ amountToString }} {{ form.token.symbol }}
             </p>
             <p
               v-if="amountInUsd.gt(0)"
               class="text-gray-500 text-sm tracking-0.4 mt-2"
+              data-cy="transfer-confirm-modal-value-usd-text-content"
             >
               ${{ amountInUsdToString }}
             </p>
@@ -39,6 +48,7 @@
           >
             <v-network-card-base
               class="w-1/2"
+              data-cy="transfer-confirm-modal-from-text-content"
               :hide-icon="
                 originNetworkMeta.value === destinationNetworkMeta.value
               "
@@ -46,13 +56,23 @@
             />
 
             <div
-              class="bg-primary-500 min-w-6 h-6 mx-6 flex items-center justify-center rounded-full"
+              class="
+                bg-primary-500
+                min-w-6
+                h-6
+                mx-6
+                flex
+                items-center
+                justify-center
+                rounded-full
+              "
             >
-              <v-icon-arrow class="text-gray-1000 w-4 h-4 rotate-180" />
+              <IconArrow class="text-gray-1000 w-4 h-4 rotate-180" />
             </div>
 
             <v-network-card-base
               class="w-1/2"
+              data-cy="transfer-confirm-modal-to-text-content"
               :hide-icon="
                 originNetworkMeta.value === destinationNetworkMeta.value
               "
@@ -68,11 +88,15 @@
               </template>
 
               <template slot="amount">
-                {{ amountToString }} {{ form.token.symbol }}
+                <span
+data-cy="transfer-confirm-modal-amount-text-content"
+>{{ amountToString }} {{ form.token.symbol }}</span>
               </template>
 
               <template slot="amountInUsd">
-                ${{ amountInUsdToString }}
+                <span
+data-cy="transfer-confirm-modal-amount-usd-text-content"
+>${{ amountInUsdToString }}</span>
               </template>
             </v-confirm-amount-row>
 
@@ -86,14 +110,16 @@
               </template>
 
               <template slot="amount">
-                <span>
+                <span data-cy="transfer-confirm-modal-bridge-fee-text-content">
                   {{ ethBridgeFeeToString }}
                   {{ form.token.symbol }}
                 </span>
               </template>
 
               <template slot="amountInUsd">
-                ${{ ethBridgeFeeInUsdToString }}
+                <span
+                  data-cy="transfer-confirm-modal-bridge-fee-usd-text-content"
+                  >${{ ethBridgeFeeInUsdToString }}</span>
               </template>
             </v-confirm-amount-row>
           </div>
@@ -107,11 +133,15 @@
               </template>
 
               <template slot="amount">
-                {{ transferAmountToString }} {{ form.token.symbol }}
+                <span
+                  data-cy="transfer-confirm-modal-transfer-amount-text-content"
+                  >{{ transferAmountToString }} {{ form.token.symbol }}</span>
               </template>
 
               <template slot="amountInUsd">
-                ${{ transferAmountInUsdToString }}
+                <span
+                  data-cy="transfer-confirm-modal-transfer-amount-usd-text-content"
+                  >${{ transferAmountInUsdToString }}</span>
               </template>
             </v-confirm-amount-row>
 
@@ -121,11 +151,15 @@
               </template>
 
               <template slot="amount">
-                {{ gasFeeToString }} {{ injToken.symbol }}
+                <span
+data-cy="transfer-confirm-modal-gas-fee-text-content"
+>{{ gasFeeToString }} {{ injToken.symbol }}</span>
               </template>
 
               <template slot="amountInUsd">
-                ${{ gasFeeInUsdToString }}
+                <span
+data-cy="transfer-confirm-modal-gas-fee-usd-text-content"
+>${{ gasFeeInUsdToString }}</span>
               </template>
             </v-confirm-amount-row>
           </div>
@@ -137,6 +171,7 @@
               class="w-full xs:w-2/3 font-bold"
               :disabled="buttonConfirmationDisabled"
               :status="status"
+              data-cy="transfer-confirm-modal-confirm-button"
               @click="handlerFunction"
             >
               {{ buttonConfirmationText }}
@@ -480,11 +515,8 @@ export default Vue.extend({
     },
 
     amountLargerThanBridgeFee(): boolean {
-      const {
-        ethBridgeFeeInUsd,
-        amountInUsd,
-        destinationIsEthereumNetwork
-      } = this
+      const { ethBridgeFeeInUsd, amountInUsd, destinationIsEthereumNetwork } =
+        this
 
       if (!destinationIsEthereumNetwork) {
         return true

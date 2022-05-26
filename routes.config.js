@@ -2,7 +2,8 @@ const { Network } = require('@injectivelabs/networks')
 const {
   IS_TESTNET,
   IS_MAINNET_STAGING,
-  NETWORK
+  NETWORK,
+  IS_DEVNET
 } = require('./app/utils/constants')
 
 const mainnetSpot = [
@@ -48,12 +49,11 @@ if (NETWORK === Network.Devnet || IS_MAINNET_STAGING) {
 const spotRoutes = spot.map((s) => `/spot/${s}`) || []
 const derivativesRoutes = derivatives.map((s) => `/derivatives/${s}`) || []
 
-const upcomingMarketsRoutes = ['/market/ape-usdt']
-const deprecatedMarketsRoutes = [
-  '/market/huahua-usdt',
-  '/market/luna-ust',
-  '/market/luna-ust-perp'
-]
+const upcomingMarketsRoutes = []
+const deprecatedMarketsRoutes =
+  IS_TESTNET || IS_DEVNET
+    ? []
+    : ['/market/huahua-usdt', '/market/luna-ust', '/market/luna-ust-perp']
 
 module.exports = [
   '/',

@@ -4,7 +4,7 @@
       class="flex items-center tracking-wide leading-none"
       :class="{ 'text-xs': !lg }"
     >
-      <v-icon-arrow
+      <IconArrow
         v-if="[Change.Increase, Change.Decrease].includes(lastTradePriceChange)"
         class="transform w-3 h-3 mr-1"
         :class="{
@@ -14,6 +14,7 @@
       />
       <span
         v-if="!lastTradedPrice.isNaN()"
+        data-cy="markets-last-traded-price-table-data"
         :class="{
           'text-aqua-500': lastTradePriceChange !== Change.Decrease,
           'text-red-500': lastTradePriceChange === Change.Decrease
@@ -25,7 +26,10 @@
     </div>
 
     <div v-if="!change.isNaN()" class="mt-1 text-xs">
-      <span :class="change.gte(0) ? 'text-aqua-500' : 'text-red-500'">
+      <span
+        :class="change.gte(0) ? 'text-aqua-500' : 'text-red-500'"
+        data-cy="markets-change_24h-table-data"
+      >
         {{ changeToFormat }}%
       </span>
     </div>

@@ -4,7 +4,7 @@
       class="flex items-center justify-center bg-black h-6 min-w-6 cursor-pointer"
       @click="handleClickPrev"
     >
-      <v-icon-chevron class="w-2 h-2" />
+      <IconChevron class="w-2 h-2" />
     </div>
 
     <div class="h-1 relative bg-gray-500 w-full mx-4">
@@ -17,7 +17,7 @@
       class="flex items-center justify-center bg-black h-6 min-w-6 cursor-pointer"
       @click="handleClickNext"
     >
-      <v-icon-chevron class="w-2 h-2 rotate-180" />
+      <IconChevron class="w-2 h-2 rotate-180" />
     </div>
   </div>
 </template>

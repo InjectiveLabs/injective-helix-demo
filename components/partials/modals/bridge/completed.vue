@@ -1,5 +1,10 @@
 <template>
-  <v-modal :is-open="isModalOpen" sm @modal-closed="handleModalClose">
+  <v-modal
+    data-cy="transfer-completed-modal"
+    :is-open="isModalOpen"
+    sm
+    @modal-closed="handleModalClose"
+  >
     <div slot="title">
       <h3>{{ bridgeTitle }}</h3>
     </div>
@@ -18,6 +23,7 @@
               lg
               primary
               class="font-bold w-4xs"
+              data-cy="transfer-completed-modal-ok-button"
               @click="handleModalClose"
             >
               {{ $t('common.ok') }}
@@ -29,9 +35,10 @@
                 :href="explorerUrl"
                 target="_blank"
                 class="flex items-center justify-center"
+                data-cy="transfer-completed-modal-explorer-link"
               >
                 <span class="mr-2">{{ $t('bridge.seeOnExplorer') }}</span>
-                <v-icon-external-link class="w-3 h-3" />
+                <IconExternalLink class="w-3 h-3" />
               </a>
 
               <a
@@ -40,8 +47,11 @@
                 target="_blank"
                 class="flex items-center justify-center"
               >
-                <span class="mr-2">{{ $t('bridge.trackTransaction') }}</span>
-                <v-icon-external-link class="w-3 h-3" />
+                <span
+                  class="mr-2"
+                  data-cy="transfer-completed-hub-track-link"
+                  >{{ $t('bridge.trackTransaction') }}</span>
+                <IconExternalLink class="w-3 h-3" />
               </a>
             </div>
           </div>

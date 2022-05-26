@@ -8,6 +8,7 @@ module.exports = {
     'space-before-function-paren': 'off',
     'vue/singleline-html-element-content-newline': 'off',
     'vue/html-self-closing': 'off',
-    'vue/html-indent': 'off'
+    'vue/html-indent': 'off',
+    'vue/script-setup-uses-vars': 'off'
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <v-icon-info
+  <IconInfo
     v-tooltip="{ content: tooltip }"
     v-bind="$attrs"
     :class="[classes, color]"

@@ -6,6 +6,7 @@
           'text-gray-500': tradingType === TradeExecutionType.LimitFill
         }"
         text-xs
+        data-cy="trading-page-switch-to-market-button"
         @click.stop="onTradingTypeToggle(TradeExecutionType.Market)"
       >
         {{ $t('trade.market') }}
@@ -17,6 +18,7 @@
           'text-gray-500': tradingType === TradeExecutionType.Market
         }"
         text-xs
+        data-cy="trading-page-switch-to-limit-button"
         @click.stop="onTradingTypeToggle(TradeExecutionType.LimitFill)"
       >
         {{ $t('trade.limit') }}
@@ -29,6 +31,7 @@
           :option="SpotOrderSide.Buy"
           aqua
           class="w-1/2"
+          data-cy="trading-page-switch-to-side-buy-button"
         >
           {{ $t('trade.buy_asset', { asset: market.baseToken.symbol }) }}
         </v-button-select>
@@ -37,6 +40,7 @@
           :option="SpotOrderSide.Sell"
           red
           class="w-1/2"
+          data-cy="trading-page-switch-to-side-sell-button"
         >
           {{ $t('trade.sell_asset', { asset: market.baseToken.symbol }) }}
         </v-button-select>
@@ -55,6 +59,7 @@
           type="number"
           :step="amountStep"
           min="0"
+          data-cy="trading-page-amount-input"
           @blur="onAmountBlur"
           @input="onAmountChange"
           @input-max="() => onMaxInput(100)"
@@ -78,11 +83,16 @@
             </span>
           </div>
         </v-input>
-        <span v-if="amountError" class="text-2xs font-semibold text-red-500">
+        <span
+          v-if="amountError"
+          class="text-2xs font-semibold text-red-500"
+          data-cy="trading-page-amount-error-text-content"
+        >
           {{ amountError }}
         </span>
         <span
           v-if="priceError && tradingTypeMarket"
+          data-cy="trading-page-price-error-text-content"
           class="text-2xs font-semibold text-red-500"
         >
           {{ priceError }}
@@ -99,12 +109,17 @@
           :step="priceStep"
           :max-decimals="market ? market.quoteToken.decimals : 6"
           min="0"
+          data-cy="trading-page-price-input"
           @blur="onPriceBlur"
           @input="onPriceChange"
         >
           <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
         </v-input>
-        <span v-if="priceError" class="text-red-500 font-semibold text-2xs">
+        <span
+          v-if="priceError"
+          class="text-red-500 font-semibold text-2xs"
+          data-cy="trading-page-price-error-text-content"
+        >
           {{ priceError }}
         </span>
       </div>
@@ -112,6 +127,7 @@
     <component
       :is="tradingTypeMarket ? `v-order-details-market` : 'v-order-details'"
       v-bind="{
+        averagePrice,
         price: executionPrice,
         orderType,
         makerFeeRate,
@@ -151,7 +167,7 @@
           class="flex items-center text-primary-500"
         >
           <span class="mr-1">Injective Hub</span>
-          <v-icon-external-link class="w-2 h-2" />
+          <IconExternalLink class="w-2 h-2" />
         </a>
       </p>
 
@@ -165,6 +181,7 @@
         :aqua="!hasErrors && orderType === SpotOrderSide.Buy"
         :red="!hasErrors && orderType === SpotOrderSide.Sell"
         class="w-full"
+        data-cy="trading-page-execute-button"
         @click.stop="onSubmit"
       >
         {{ $t(orderTypeBuy ? 'trade.buy' : 'trade.sell') }}
@@ -205,6 +222,7 @@ import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
 import { Modal } from '~/types'
 import {
+  calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook,
   getApproxAmountForMarketOrder
 } from '~/app/services/spot'
@@ -450,6 +468,50 @@ export default Vue.extend({
 
     price(): BigNumberInBase {
       return new BigNumberInBase(this.form.price)
+    },
+
+    averagePrice(): BigNumberInBase {
+      const {
+        tradingTypeMarket,
+        orderTypeBuy,
+        sells,
+        buys,
+        hasAmount,
+        market,
+        slippage,
+        amount,
+        price
+      } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      if (tradingTypeMarket) {
+        if (!hasAmount) {
+          return ZERO_IN_BASE
+        }
+
+        const records = orderTypeBuy ? sells : buys
+
+        const averagePrice = calculateAverageExecutionPriceFromOrderbook({
+          records,
+          amount,
+          market
+        })
+
+        return new BigNumberInBase(
+          averagePrice.times(slippage).toFixed(market.priceDecimals)
+        )
+      }
+
+      if (price.isNaN()) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(
+        new BigNumberInBase(price).toFixed(market.priceDecimals)
+      )
     },
 
     executionPrice(): BigNumberInBase {
@@ -890,13 +952,23 @@ export default Vue.extend({
     },
 
     total(): BigNumberInBase {
-      const { amount, hasPrice, hasAmount, executionPrice, market } = this
+      const {
+        amount,
+        hasPrice,
+        hasAmount,
+        averagePrice,
+        executionPrice,
+        market,
+        tradingTypeMarket
+      } = this
 
       if (!hasPrice || !hasAmount || !market) {
         return ZERO_IN_BASE
       }
 
-      return executionPrice.times(amount)
+      return tradingTypeMarket
+        ? averagePrice.times(amount)
+        : executionPrice.times(amount)
     },
 
     fees(): BigNumberInBase {
@@ -928,17 +1000,19 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const disqualified = tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-        (marketId) => marketId === market.marketId
-      )
+      const disqualified =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
+          (marketId) => marketId === market.marketId
+        )
 
       if (disqualified) {
         return ZERO_IN_BASE
       }
 
-      const denomIncluded = tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-        (denom) => denom === market.quoteDenom
-      )
+      const denomIncluded =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
+          (denom) => denom === market.quoteDenom
+        )
 
       if (!denomIncluded) {
         return ZERO_IN_BASE
@@ -985,17 +1059,19 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const disqualified = tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-        (marketId) => marketId === market.marketId
-      )
+      const disqualified =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
+          (marketId) => marketId === market.marketId
+        )
 
       if (disqualified) {
         return ZERO_IN_BASE
       }
 
-      const denomIncluded = tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-        (denom) => denom === market.quoteDenom
-      )
+      const denomIncluded =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
+          (denom) => denom === market.quoteDenom
+        )
 
       if (!denomIncluded) {
         return ZERO_IN_BASE

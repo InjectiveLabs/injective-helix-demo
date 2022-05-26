@@ -1,5 +1,9 @@
 <template>
-  <tr v-if="market">
+  <tr
+    v-if="market"
+    :data-cy="'derivative-order-table-row-' + market.ticker"
+    :data-cy-hash="order.orderHash"
+  >
     <td class="h-8 text-left cursor-pointer" @click="handleClickOnMarket">
       <div class="flex items-center justify-start">
         <div v-if="market.baseToken.logo" class="w-6 h-6">
@@ -10,7 +14,10 @@
           />
         </div>
         <div class="ml-3">
-          <span class="text-gray-200 font-semibold">
+          <span
+            class="text-gray-200 font-semibold"
+            data-cy="derivative-order-ticker-name-table-data"
+          >
             {{ market.ticker }}
           </span>
         </div>
@@ -19,6 +26,7 @@
 
     <td class="h-8 text-left">
       <span
+        data-cy="derivative-order-order-side-table-data"
         :class="{
           'text-aqua-500': order.orderSide === DerivativeOrderSide.Buy,
           'text-red-500': order.orderSide === DerivativeOrderSide.Sell
@@ -26,13 +34,18 @@
       >
         {{ orderSideLocalized }}
       </span>
-      <span v-if="isReduceOnly" class="ml-0.5 text-xs text-gray-500">
+      <span
+        v-if="isReduceOnly"
+        class="ml-0.5 text-xs text-gray-500"
+        data-cy="derivative-order-reduce-only-table-data"
+      >
         {{ $t('trade.reduce_only') }}
       </span>
     </td>
 
     <td class="h-8 font-mono text-right">
       <v-number
+        data-cy="derivative-order-price-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
@@ -42,6 +55,7 @@
 
     <td class="h-8 text-right font-mono">
       <v-number
+        data-cy="derivative-order-quantity-table-data"
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
@@ -52,6 +66,7 @@
     <td class="h-8 font-mono">
       <div class="flex items-center justify-end">
         <v-number
+          data-cy="derivative-order-unfilled-quantity-table-data"
           :decimals="
             market
               ? market.quantityDecimals
@@ -64,6 +79,7 @@
 
     <td class="h-8 text-right font-mono">
       <v-number
+        data-cy="derivative-order-filled-quantity-table-data"
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
@@ -72,17 +88,26 @@
     </td>
 
     <td class="h-8 text-right font-mono">
-      <span v-if="leverage.gte(0)" class="flex items-center justify-end">
+      <span
+        v-if="leverage.gte(0)"
+        class="flex items-center justify-end"
+        data-cy="derivative-order-leverage-table-data"
+      >
         {{ leverage.toFormat(2) }}
         <span class="text-gray-300">&times;</span>
       </span>
-      <span v-else class="text-gray-400">
+      <span
+        v-else
+        class="text-gray-400"
+        data-cy="derivative-order-no-leverage-table-data"
+      >
         {{ $t('trade.not_available_n_a') }}
       </span>
     </td>
 
     <td class="h-8 font-right text-right">
       <v-number
+        data-cy="derivative-order-total-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
@@ -99,15 +124,21 @@
         <span
           v-if="false"
           class="cursor-pointer text-primary-500 mr-6"
+          data-cy="derivative-order-view-link"
           @click="handleClickOnMarket"
         >
           {{ $t('common.view') }}
         </span>
-        <v-button v-if="orderFillable" :status="status" @click="onCancelOrder">
+        <v-button
+          v-if="orderFillable"
+          :status="status"
+          data-cy="derivative-order-cancel-link"
+          @click="onCancelOrder"
+        >
           <div
             class="flex items-center justify-center rounded-full bg-red-550 bg-opacity-10 w-8 h-8 hover:bg-red-600 text-red-550 hover:text-red-600 hover:bg-opacity-10"
           >
-            <v-icon-bin />
+            <IconBin />
           </div>
         </v-button>
         <span v-else class="inline-block">&mdash;</span>

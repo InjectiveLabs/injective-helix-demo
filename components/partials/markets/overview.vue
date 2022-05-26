@@ -53,6 +53,7 @@
       >
         <v-market-card
           v-if="newMarket"
+          data-cy="market-card-whats-new"
           :market="newMarket.market"
           :summary="newMarket.summary"
           :volume-in-usd="newMarket.volumeInUsd"
@@ -62,6 +63,7 @@
 
         <v-market-card
           v-if="topVolume"
+          data-cy="market-card-top-volume"
           :market="topVolume.market"
           :summary="topVolume.summary"
           :volume-in-usd="topVolume.volumeInUsd"
@@ -71,6 +73,7 @@
 
         <v-market-card
           v-if="topGainer"
+          data-cy="market-card-top-gainer"
           :market="topGainer.market"
           :summary="topGainer.summary"
           :volume-in-usd="topGainer.volumeInUsd"

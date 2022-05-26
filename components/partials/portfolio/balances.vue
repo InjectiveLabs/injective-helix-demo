@@ -3,11 +3,16 @@
     <div
       class="flex sm:grid grid-cols-2 lg:grid-cols-3 gap-4 overflow-x-auto hide-scrollbar"
     >
-      <v-card-select v-model="component" lg :option="components.bankAccount">
+      <v-card-select
+        v-model="component"
+        lg
+        :option="components.bankAccount"
+        data-cy="wallet-panel"
+      >
         <template slot="subtitle">
           <div class="font-semibold text-lg flex items-center mb-2">
             <span>{{ $t('portfolio.bankAccount') }}</span>
-            <v-icon-info-tooltip
+            <IconInfoTooltip
               class="ml-3"
               color="text-gray-200"
               :tooltip="$t('portfolio.bankAccountTooltip')"
@@ -16,7 +21,7 @@
           </div>
         </template>
 
-        <v-icon-wallet slot="icon" class="w-6 h-auto" />
+        <IconWallet slot="icon" class="w-6 h-auto" />
 
         <div class="text-right">
           <p class="text-gray-500 text-xs uppercase mb-2 tracking-wider">
@@ -25,16 +30,23 @@
           <p class="text-lg 3md:text-2xl">
             <span v-if="status.isLoading()">&mdash; USD</span>
             <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-            <span v-else>{{ totalBankBalanceToString }} USD</span>
+            <span v-else data-cy="wallet-value-usd-text-content">
+              {{ totalBankBalanceToString }} USD
+            </span>
           </p>
         </div>
       </v-card-select>
 
-      <v-card-select v-model="component" lg :option="components.tradingAccount">
+      <v-card-select
+        v-model="component"
+        lg
+        :option="components.tradingAccount"
+        data-cy="trading-account-panel"
+      >
         <template slot="subtitle">
           <div class="font-semibold text-lg flex items-center mb-2">
             <span>{{ $t('portfolio.tradingAccount') }}</span>
-            <v-icon-info-tooltip
+            <IconInfoTooltip
               class="ml-3"
               color="text-gray-200"
               :tooltip="$t('portfolio.tradingAccountTooltip')"
@@ -43,18 +55,24 @@
           </div>
         </template>
 
-        <v-icon-rectangle-chart slot="icon" class="w-6 h-auto" />
+        <IconRectangleChart slot="icon" class="w-6 h-auto" />
 
         <div class="text-right">
           <p class="text-gray-500 text-xs uppercase mb-2 tracking-wider">
             {{ $t('portfolio.portfolioValue') }}
           </p>
-          <p class="text-lg 3md:text-2xl">
+          <p
+            class="text-lg 3md:text-2xl"
+            data-cy="trading-account-total-usd-text-content"
+          >
             <span v-if="status.isLoading()">&mdash; USD</span>
             <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
             <span v-else>{{ tradingAccountBalancesToString }} USD</span>
           </p>
-          <p class="text-sm mt-2 text-gray-500">
+          <p
+            class="text-sm mt-2 text-gray-500"
+            data-cy="trading-account-available-usd-text-content"
+          >
             <span v-if="status.isLoading()">&mdash; USD</span>
             <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
             <span v-else>

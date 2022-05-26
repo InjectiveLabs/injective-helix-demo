@@ -15,7 +15,7 @@
             class="flex items-center justify-center"
           >
             <span class="mr-2">{{ $t('marketNew.depositNow') }}</span>
-            <v-icon-external-link class="w-3 h-3" />
+            <IconExternalLink class="w-3 h-3" />
           </a>
         </v-button>
       </div>

@@ -6,6 +6,7 @@
           <v-button-filter
             v-model="component"
             :option="components.openPositions"
+            data-cy="trading-page-open-positions-tab-button"
           >
             <span class="uppercase text-xs font-semibold">
               {{ $t('activity.openPositions') }}
@@ -13,7 +14,11 @@
             </span>
           </v-button-filter>
           <v-separator />
-          <v-button-filter v-model="component" :option="components.openOrders">
+          <v-button-filter
+            v-model="component"
+            :option="components.openOrders"
+            data-cy="trading-page-open-orders-tab-button"
+          >
             <span class="uppercase text-xs font-semibold">
               {{ $t('activity.openOrders') }}
               {{ `(${filteredOrders.length})` }}
@@ -23,6 +28,7 @@
           <v-button-filter
             v-model="component"
             :option="components.tradeHistory"
+            data-cy="trading-page-trade-history-tab-button"
           >
             <span class="uppercase text-xs font-semibold">
               {{ $t('activity.tradeHistory') }}

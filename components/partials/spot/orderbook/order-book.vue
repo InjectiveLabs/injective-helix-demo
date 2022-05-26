@@ -32,7 +32,7 @@
       class="orderbook-middle-h bg-gray-900 flex flex-col items-center justify-center border-t border-b"
     >
       <div class="w-full flex items-center justify-center">
-        <v-icon-arrow
+        <IconArrow
           v-if="
             [Change.Increase, Change.Decrease].includes(lastTradedPriceChange)
           "
@@ -49,6 +49,7 @@
             'text-aqua-500': lastTradedPriceChange !== Change.Decrease
           }"
           class="font-bold font-mono text-base lg:text-lg 4xl:text-xl"
+          data-cy="orderbook-last-traded-price-text-content"
         >
           {{ lastTradedPriceToFormat }}
         </span>

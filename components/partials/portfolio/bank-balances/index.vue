@@ -7,15 +7,16 @@
             dense
             name="search"
             class="sm:max-w-xs"
+            data-cy="universal-table-filter-by-asset-input"
             :placeholder="$t('portfolio.filter')"
             :search="search"
             @searched="handleInputOnSearch"
           />
 
-          <v-checkbox v-model="hideSmallBalance" class="mt-4 sm:mt-0 ml-auto">
+          <v-checkbox v-model="hideSmallBalance" class="mt-4 sm:mt-0 ml-auto" data-cy="universal-table-hide-small-balances-check-box">
             <span class="flex items-center">
               {{ $t('portfolio.hideSmallBalances') }}
-              <v-icon-info-tooltip
+              <IconInfoTooltip
                 class="ml-2"
                 :tooltip="$t('portfolio.hideSmallBalancesTooltip')"
               />

@@ -4,7 +4,14 @@
       <div class="flex justify-between">
         <div>
           <span
-            class="text-primary-500 text-2xs px-1 py-0.4 bg-primary-500 bg-opacity-10 rounded align-top"
+            class="
+              text-primary-500 text-2xs
+              px-1
+              py-0.4
+              bg-primary-500 bg-opacity-10
+              rounded
+              align-top
+            "
           >
             {{ $t('banners.newUser.subtitle') }}
           </span>
@@ -54,7 +61,7 @@
               class="block w-56 mt-3"
               @click.native="handleClickOnRedeem"
             >
-              <span class="font-bold">
+              <span class="font-bold" data-cy="new-user-banner-claim-button">
                 {{ $t('banners.newUser.claimRebate') }}
               </span>
             </v-button>
@@ -266,8 +273,8 @@ export default Vue.extend({
         return false
       }
 
-      const tokenWithBalance = ((bankUsdtBalance ||
-        subaccountUsdtBalance) as unknown) as { token: Token }
+      const tokenWithBalance = (bankUsdtBalance ||
+        subaccountUsdtBalance) as unknown as { token: Token }
       const usdtToken = tokenWithBalance.token
       const usdtAddress = usdtToken.address.replace('peggy', '').toLowerCase()
 

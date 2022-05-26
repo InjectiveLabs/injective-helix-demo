@@ -15,7 +15,7 @@
       class="w-1/3 text-xs px-2 flex items-center justify-end z-10"
       @click.stop="onPriceClick"
     >
-      <v-icon-arrow
+      <IconArrow
         v-if="existsInUserOrders"
         class="text-gray-300 transform rotate-180 mr-2 w-2 h-2"
       />

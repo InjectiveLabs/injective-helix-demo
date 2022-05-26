@@ -6,7 +6,7 @@
       v-clipboard:success="() => $toast.success($t('connect.addressCopied'))"
       class="cursor-pointer text-gray-500 pl-2 pt-1 hover:text-primary-500"
     >
-      <v-icon-copy-plain class="w-4 h-4" />
+      <IconCopyPlain class="w-4 h-4" />
     </div>
   </div>
 </template>

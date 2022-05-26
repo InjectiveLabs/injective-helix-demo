@@ -12,7 +12,7 @@
             <span class="flex-1 text-right">{{
               $t('trade.last_traded_price')
             }}</span>
-            <v-icon-info-tooltip
+            <IconInfoTooltip
               class="ml-2"
               :tooltip="$t('trade.last_traded_price_tooltip')"
             />
@@ -21,7 +21,7 @@
         <span class="col-span-3">
           <div class="flex items-center relative justify-end">
             {{ $t('trade.market_change_24h') }}
-            <v-icon-info-tooltip
+            <IconInfoTooltip
               class="ml-2"
               :tooltip="$t('trade.market_change_24h_tooltip')"
             />
@@ -30,7 +30,7 @@
         <span class="col-span-3">
           <div class="flex items-center relative justify-end">
             {{ $t('trade.market_volume_24h') }}
-            <v-icon-info-tooltip
+            <IconInfoTooltip
               class="ml-2"
               :tooltip="$t('trade.market_volume_24h_tooltip')"
             />

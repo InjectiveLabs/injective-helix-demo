@@ -7,7 +7,7 @@
       @click.stop="handleClickOnSidebarToggle"
     >
       <span class="sr-only">{{ $t('common.open') }}</span>
-      <v-icon-menu class="w-6 h-6" />
+      <IconMenu class="w-6 h-6" />
     </button>
     <div class="flex-1 px-2 lg:px-8 flex justify-end lg:justify-between">
       <div
@@ -25,6 +25,7 @@
         <v-nav-item
           v-if="isUserWalletConnected"
           class="hidden lg:flex"
+          data-cy="header-activity-link"
           :to="{ name: 'activity' }"
         >
           {{ $t('navigation.activity') }}
@@ -32,6 +33,7 @@
         <v-nav-item
           v-if="isUserWalletConnected"
           class="hidden lg:flex"
+          data-cy="header-portfolio-link"
           :to="{ name: 'portfolio' }"
         >
           {{ $t('navigation.portfolio') }}
@@ -68,7 +70,7 @@
                 <span
                   class="w-8 h-8 rounded-full bg-gray-1000 flex items-center justify-center mr-2"
                 >
-                  <v-icon-wallet class="w-4 h-4" />
+                  <IconWallet class="w-4 h-4" />
                 </span>
                 {{ $t('navigation.portfolio') }}
               </span>
@@ -82,7 +84,7 @@
                 <span
                   class="w-8 h-8 rounded-full bg-gray-1000 flex items-center justify-center mr-2"
                 >
-                  <v-icon-menu-alt class="w-4 h-4" />
+                  <IconMenuAlt class="w-4 h-4" />
                 </span>
                 {{ $t('navigation.activity') }}
               </span>

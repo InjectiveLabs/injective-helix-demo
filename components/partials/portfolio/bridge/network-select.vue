@@ -14,11 +14,12 @@
       :searchable="false"
       :options="filteredOptions"
       :value="value"
+      data-cy="network-selector-component"
       @input="handleChange"
     >
       <template #open-indicator="{ attributes }">
         <span v-bind="attributes" class="cursor-pointer">
-          <v-icon-caret-down-slim />
+          <IconCaretDownSlim />
         </span>
       </template>
 
@@ -30,7 +31,12 @@
             class="selected-icon rounded-full mr-3"
           />
           <div>
-            <p class="text-2xl tracking-1">{{ text }}</p>
+            <p
+              class="text-2xl tracking-1"
+              data-cy="network-selector-selected-option-text-content"
+            >
+              {{ text }}
+            </p>
           </div>
         </div>
       </template>
@@ -39,7 +45,12 @@
         <div class="flex items-center">
           <img :src="icon" :alt="text" class="rounded-full w-6 h-6 mr-3" />
           <div>
-            <p class="text-sm tracking-1">{{ text }}</p>
+            <p
+              class="text-sm tracking-1"
+              :data-cy="'network-selector-option-' + text + '-text-content'"
+            >
+              {{ text }}
+            </p>
           </div>
         </div>
       </template>

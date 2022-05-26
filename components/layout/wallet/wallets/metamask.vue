@@ -7,7 +7,7 @@
       <div class="flex items-center px-4 py-4 sm:px-6">
         <div class="min-w-0 flex-1 flex items-center">
           <div class="flex-shrink-0 mr-4">
-            <v-icon-metamask class="w-8 h-8" />
+            <IconMetamask class="w-8 h-8" />
           </div>
           <div
             class="min-w-0 flex-1 px-4 md:grid md:grid-cols-1 md:gap-4 text-left"
@@ -29,19 +29,20 @@
                   >
                     {{ $t('connect.download') }}
                   </a>
-                  <v-icon-arrow class="transform rotate-180 w-3 h-3 ml-1" />
+                  <IconArrow class="transform rotate-180 w-3 h-3 ml-1" />
                 </v-button>
               </p>
               <p class="flex items-center text-sm text-gray-200">
-                <span class="truncate">{{
-                  $t('connect.connectUsingBrowser')
-                }}</span>
+                <span
+                  class="truncate"
+                  data-cy="connect-wallet-popup-metamask-button"
+                  >{{ $t('connect.connectUsingBrowser') }}</span>
               </p>
             </div>
           </div>
         </div>
         <div>
-          <v-icon-caret-down
+          <IconCaretDown
             class="transform -rotate-90 h-5 w-5 text-gray-200"
           />
         </div>

@@ -5,6 +5,7 @@
         <div class="flex items-center gap-4">
           <v-tab-selector-item
             v-model="component"
+            data-cy="activity-open-positions-link"
             :option="components.positions"
           >
             <div class="flex items-center gap-1">
@@ -17,6 +18,7 @@
 
           <v-tab-selector-item
             v-model="component"
+            data-cy="activity-funding-payments-link"
             :option="components.fundingPayments"
           >
             <div class="flex items-center gap-1">

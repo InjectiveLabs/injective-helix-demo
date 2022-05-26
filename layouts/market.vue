@@ -11,7 +11,7 @@
         />
       </div>
       <div class="flex-1 grid grid-cols-6 lg:grid-cols-12 gap-1 p-1">
-        <div class="col-span-6 lg:col-span-3 4xl:col-span-3 overflow-y-hidden">
+        <div class="col-span-6 lg:col-span-3 4xl:col-span-3 overflow-y-hidden" data-cy="trading-side-component">
           <v-market-selection v-show="showMarketList" key="market-selection" />
           <div
             v-show="!showMarketList"

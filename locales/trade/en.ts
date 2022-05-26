@@ -15,6 +15,7 @@ export default {
     side_tooltip: 'The side of your trade: long or short',
     price: 'Price',
     amount: 'Amount',
+    averagePrice: 'Average Price',
     amount_tooltip:
       'The total value of the base asset at the time which the trade was executed (i.e. for BTC/USDT, BTC is the base asset and USDT is the quote asset).',
     filled: 'Filled',
@@ -30,6 +31,7 @@ export default {
     filter: 'Filter by asset',
     cancelAll: 'Cancel All',
     cancelAllOrders: 'Cancel all orders',
+    clearAll: 'Clear All',
     closeAll: 'Close All',
     closeAllPositions: 'Close all positions',
     reduce_only: 'Reduce Only',
@@ -141,6 +143,7 @@ export default {
     order_success_canceling: 'Order Cancelled',
     trade: 'Trade',
     trades: 'Trades',
+    tradeHistoryDetails: 'Trade History Details',
     time: 'Time',
     max: 'Max',
     orderbook: 'Orderbook',
