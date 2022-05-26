@@ -37,11 +37,6 @@ jobs:
           outputs: type=docker,dest=/tmp/dex-image.tar
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
-      - name: Upload DEX artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: dex-image
-          path: /tmp/dex-image.tar
       # Temp fix
       # https://github.com/docker/build-push-action/issues/252
       # https://github.com/moby/buildkit/issues/1896
@@ -49,6 +44,32 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+      - name: Upload DEX artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: dex-image
+          path: /tmp/dex-image.tar
+      - name: Checkout cypress-ts repo
+        uses: actions/checkout@master
+        with:
+          repository: Tofel/cypress-ts
+          ref: 'master'
+          token: ${{ secrets.BARTEKS_PAT }}
+          path: ./cypress-ts
+      - name: Build Cypress test image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./cypress-ts
+          file: ./cypress-ts/.github/Dockerfile
+          push: false
+          tags: injective-cypress:${{ env.GIT_BRANCH_NAME }}
+          outputs: type=docker,dest=/tmp/cypress-image.tar
+      - name: Upload Cypress artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: cypress-image
+          path: /tmp/cypress-image.tar
+          retention-days: 1
   run_e2e_tests:
     name: 'Run e2e tests'
     runs-on: ubuntu-20.04
@@ -62,6 +83,7 @@ jobs:
       CYPRESS_TEST_TAG: $GIT_BRANCH_NAME
       CYPRESS_GROUP: '${{ github.ref_name }}-${{github.run_attempt}}'
       CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+      CYPRESS_SPEC_FILE: markets-tests
     steps:
       - name: Get branch name
         id: git-branch-name
@@ -76,7 +98,9 @@ jobs:
           name: dex-image
           path: /tmp
       - name: Load Docker images
-        run: docker load --input /tmp/dex-image.tar
+        run: |
+          docker load --input /tmp/dex-image.tar
+          docker load --input /tmp/cypress-image.tar
       - name: Checkout injective-devops
         uses: actions/checkout@master
         with:
@@ -89,3 +113,5 @@ jobs:
           cd injective-devops/network/standalone
           docker-compose -f docker-compose-base.yaml -f docker-compose-dex.yaml build --build-arg IMAGE_TAG=${{ env.DEX_IMAGE_TAG }}
           docker-compose -f docker-compose-base.yaml -f docker-compose-dex.yaml up -d
+      - name: Execute Cypress tests
+        run: docker-compose -f docker-compose-base.yaml -f docker-compose-dex.yaml -f docker-compose-cypress.yaml start injective-cypress
