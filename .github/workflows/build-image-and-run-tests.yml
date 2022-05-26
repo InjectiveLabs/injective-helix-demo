@@ -134,4 +134,4 @@ jobs:
       - name: Execute Cypress tests
         run: |
           cd injective-devops/network/standalone
-          docker-compose -f docker-compose-base.yaml -f docker-compose-dex.yaml -f docker-compose-cypress.yaml up
+          docker-compose -f docker-compose-cypress.yaml -f docker-compose-base.yaml -f docker-compose-dex.yaml up
