@@ -113,6 +113,19 @@ jobs:
           ref: 'f/standalone_env'
           token: ${{ secrets.BARTEKS_PAT }}
           path: ./injective-devops
+      - name: Download Docker images
+        run: |
+          DOCKER_IMAGES=('public.ecr.aws/l9h3g6c6/injective-exchange:prod' 'public.ecr.aws/l9h3g6c6/injective-core:prod' 'public.ecr.aws/l9h3g6c6/injective-trading-bot:latest' 'public.ecr.aws/l9h3g6c6/injective-liquidator-bot:latest')
+          echo "Downloading all docker images required by standalone network"
+          echo "Using throttle to avoid Amazon ECR's rate limting."
+          for image in "${DOCKER_IMAGES[@]}"
+          do
+            echo "Pulling image: $image"
+            docker pull $image
+            echo "Cooling down for 5 seconds."
+            sleep 5
+          done
+          echo "All images downloaded"
       - name: Start standalone network
         run: |
           cd injective-devops/network/standalone
