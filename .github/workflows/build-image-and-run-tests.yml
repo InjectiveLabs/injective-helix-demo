@@ -4,10 +4,41 @@ on:
   push:
 
 jobs:
+  build:
+    name: 'Build images for tests'
+    runs-on: ubuntu-20.04
+    timeout-minutes: 20
+    steps:
+      - name: Get branch name
+        id: git-branch-name
+        uses: EthanSK/git-branch-name-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Checkout injective-dex
+        uses: actions/checkout@master
+        with:
+          repository: InjectiveLabs/injective-dex
+          ref: ${{ github.ref }}
+          path: ./injective-dex
+      - name: Build DEX image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./injective-dex
+          file: .github/Dockerfile
+          push: false
+          tags: injective-dex:$GIT_BRANCH_NAME
+          outputs: type=docker,dest=/tmp/dex-image.tar
+      - name: Upload DEX artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: dex-image
+          path: /tmp/dex-image.tar
+          retention-days: 1
   run_e2e_tests:
     name: 'Run e2e tests'
     runs-on: ubuntu-20.04
     timeout-minutes: 60
+    needs: build
     env:
       DEX_IMAGE_TAG: $GIT_BRANCH_NAME
       DEX_FEE_RECIPIENT: ${{ secrets.APP_FEE_RECIPIENT }}
@@ -22,6 +53,13 @@ jobs:
         uses: EthanSK/git-branch-name-action@v1
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
+      - name: Download DEX artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: dex-image
+          path: /tmp
+      - name: Load Docker images
+        run: docker load --input /tmp/dex-image.tar
       - name: Checkout injective-devops
         uses: actions/checkout@master
         with:
@@ -29,5 +67,7 @@ jobs:
           ref: 'f/standalone_env'
           token: ${{ secrets.BARTEKS_PAT }}
           path: ./injective-devops
+      - name: Print DEX image tag
+        run: echo ${{ env.DEX_IMAGE_TAG }}
       - name: Start standalone network
         run: cd injective-devops/network/standalone && make start-dex
