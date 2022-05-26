@@ -85,4 +85,7 @@ jobs:
           token: ${{ secrets.BARTEKS_PAT }}
           path: ./injective-devops
       - name: Start standalone network
-        run: cd injective-devops/network/standalone && docker-compose -f docker-compose-base.yaml -f docker-compose-dex.yaml up -d --build
+        run: |
+          cd injective-devops/network/standalone
+          docker-compose build -f docker-compose-base.yaml -f docker-compose-dex.yaml --build-arg IMAGE_TAG=${{ env.DEX_IMAGE_TAG }}
+          docker-compose -f docker-compose-base.yaml -f docker-compose-dex.yaml up
