@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full grow relative">
+  <div class="h-full flex-grow relative">
     <div
       class="min-h-orders max-h-md flex-col inset-0 h-full overflow-y-auto bg-gray-900"
       :class="{

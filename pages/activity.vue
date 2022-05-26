@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full w-full absolute pt-6 pb-8">
+  <div class="h-full w-full absolute pt-6 sm:pb-8">
     <div class="h-full">
       <div
         class="h-full w-full mx-auto px-6 3xl:px-0 3xl:w-11/12 4xl:w-10/12 flex flex-col"
@@ -64,7 +64,9 @@
           </div>
         </div>
         <VHocLoading :status="status">
-          <div class="mt-4 pt-4 xs:mt-6 xs:pt-6 border-t grow">
+          <div
+            class="mt-4 pt-4 pb-8 sm:pb-0 xs:mt-6 xs:pt-6 border-t flex-grow"
+          >
             <v-positions v-show="component === components.positions" />
             <v-spot v-show="component === components.spot" />
             <v-derivatives v-show="component === components.derivatives" />

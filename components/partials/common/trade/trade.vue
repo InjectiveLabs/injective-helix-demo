@@ -1,12 +1,12 @@
 <template>
   <tr v-if="market" :data-cy="'trade-history-table-row-' + market.ticker">
     <td class="h-8 text-left font-mono">
-      <span class="text-gray-400 text-xs" data-cy="trade-entry-time">{{
-        time
-      }}</span>
+      <span class="text-gray-400 text-xs" data-cy="trade-entry-time">
+        {{ time }}
+      </span>
     </td>
-    <td class="h-8 text-left cursor-pointer" @click="handleClickOnMarket">
-      <div class="flex items-center justify-start">
+    <td class="h-8 text-left cursor-pointer">
+      <nuxt-link class="flex items-center justify-start" :to="marketRoute">
         <div v-if="market.baseToken.logo" class="w-6 h-6">
           <img
             :src="market.baseToken.logo"
@@ -22,7 +22,7 @@
             {{ market.ticker }}
           </span>
         </div>
-      </div>
+      </nuxt-link>
     </td>
 
     <td class="h-8 text-left" data-cy="trade-history-execution-type-table-data">
@@ -33,11 +33,17 @@
       <span
         data-cy="trade-history-trade-directon-table-data"
         :class="{
-          'text-aqua-500': tradeTypeBuy,
-          'text-red-500': !tradeTypeBuy
+          'text-aqua-500': trade.tradeDirection === TradeDirection.Buy,
+          'text-red-500': trade.tradeDirection === TradeDirection.Sell
         }"
       >
-        {{ tradeDirection }}
+        {{
+          $t(
+            `trade.${
+              trade.tradeDirection === TradeDirection.Buy ? 'buy' : 'sell'
+            }`
+          )
+        }}
       </span>
     </td>
 
@@ -94,6 +100,8 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 import {
+  UiDerivativeTrade,
+  UiDerivativeMarketWithToken,
   UiSpotMarketWithToken,
   UiSpotTrade,
   ZERO_IN_BASE
@@ -102,12 +110,19 @@ import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
+import { MarketRoute } from '~/types'
+import { getMarketRoute } from '~/app/utils/market'
 
 export default Vue.extend({
   props: {
     trade: {
       required: true,
-      type: Object as PropType<UiSpotTrade>
+      type: Object as PropType<UiSpotTrade | UiDerivativeTrade>
+    },
+
+    isSpot: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -121,50 +136,71 @@ export default Vue.extend({
   },
 
   computed: {
-    currentMarket(): UiSpotMarketWithToken | undefined {
-      return this.$accessor.spot.market
+    derivativeMarkets(): UiDerivativeMarketWithToken[] {
+      return this.$accessor.derivatives.markets
     },
 
-    markets(): UiSpotMarketWithToken[] {
+    spotMarkets(): UiSpotMarketWithToken[] {
       return this.$accessor.spot.markets
     },
 
-    market(): UiSpotMarketWithToken | undefined {
-      const { markets, trade } = this
+    market(): UiSpotMarketWithToken | UiDerivativeMarketWithToken | undefined {
+      const { derivativeMarkets, spotMarkets, isSpot, trade } = this
 
-      return markets.find((m) => m.marketId === trade.marketId)
+      return isSpot
+        ? spotMarkets.find((m) => m.marketId === trade.marketId)
+        : derivativeMarkets.find((m) => m.marketId === trade.marketId)
     },
 
-    tradeTypeBuy(): boolean {
-      const { trade } = this
+    tradeWithType(): UiSpotTrade {
+      const { trade, isSpot } = this
 
-      return trade.tradeDirection === TradeDirection.Buy
+      if (isSpot) {
+        return trade as UiSpotTrade
+      }
+
+      const derivativeTrade = trade as UiDerivativeTrade
+
+      return {
+        ...derivativeTrade,
+        price: derivativeTrade.executionPrice,
+        quantity: derivativeTrade.executionQuantity,
+        timestamp: derivativeTrade.executedAt
+      } as UiSpotTrade
     },
 
     price(): BigNumberInBase {
-      const { market, trade } = this
+      const { tradeWithType, market, isSpot } = this
 
-      if (!market || !trade.price) {
+      if (!market || !tradeWithType.price) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(
-        new BigNumberInBase(trade.price).toWei(
-          market.baseToken.decimals - market.quoteToken.decimals
+      if (isSpot) {
+        return new BigNumberInBase(
+          new BigNumberInBase(tradeWithType.price).toWei(
+            market.baseToken.decimals - market.quoteToken.decimals
+          )
         )
+      }
+
+      return new BigNumberInWei(tradeWithType.price).toBase(
+        market.quoteToken.decimals
       )
     },
 
     quantity(): BigNumberInBase {
-      const { market, trade } = this
+      const { market, tradeWithType, isSpot } = this
 
-      if (!market || !trade.quantity) {
+      if (!market || !tradeWithType.quantity) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(trade.quantity).toBase(
-        market.baseToken.decimals
-      )
+      return isSpot
+        ? new BigNumberInWei(tradeWithType.quantity).toBase(
+            market.baseToken.decimals
+          )
+        : new BigNumberInBase(tradeWithType.quantity)
     },
 
     total(): BigNumberInBase {
@@ -193,16 +229,14 @@ export default Vue.extend({
       return new BigNumberInWei(trade.fee).toBase(market.quoteToken.decimals)
     },
 
-    tradeDirection(): string {
-      const { trade } = this
-
-      return trade.tradeDirection === TradeDirection.Buy
-        ? this.$t('trade.buy')
-        : this.$t('trade.sell')
-    },
-
     tradeExecutionType(): string {
-      const { trade } = this
+      const { trade, isSpot } = this
+
+      const derivativeTrade = trade as UiDerivativeTrade
+
+      if (!isSpot && derivativeTrade.isLiquidation) {
+        return this.$t('trade.liquidation')
+      }
 
       switch (trade.tradeExecutionType) {
         case TradeExecutionType.LimitFill:
@@ -216,24 +250,18 @@ export default Vue.extend({
         default:
           return this.$t('trade.limit')
       }
-    }
-  },
+    },
 
-  methods: {
-    handleClickOnMarket() {
+    marketRoute(): MarketRoute {
       const { market } = this
 
       if (!market) {
-        return
+        return { name: 'markets' }
       }
 
-      return this.$router.push({
-        name: 'spot-spot',
-        params: {
-          marketId: market.marketId,
-          spot: market.slug
-        }
-      })
+      const marketRoute = getMarketRoute(market)
+
+      return marketRoute || { name: 'markets' }
     }
   }
 })

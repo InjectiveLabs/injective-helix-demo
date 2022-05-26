@@ -31,7 +31,7 @@
         <v-empty-list
           v-else
           :message="$t('walletHistory.emptySubaccountTransfers')"
-          class="mt-6 min-h-orders"
+          class="min-h-orders"
         />
       </v-table-wrapper>
     </v-card-table-wrap>

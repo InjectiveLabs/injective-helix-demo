@@ -19,6 +19,7 @@ import DiscordCircle from '~/components/icons/discord-circle.vue'
 import Exit from '~/components/icons/exit.vue'
 import ExternalLink from '~/components/icons/external-link.vue'
 import ExternalLinkArrow from '~/components/icons/external-link-arrow.vue'
+import Filter from '~/components/icons/filter.vue'
 import Globe from '~/components/icons/globe.vue'
 import Governance from '~/components/icons/governance.vue'
 import History from '~/components/icons/history.vue'
@@ -78,6 +79,7 @@ Vue.component('IconDiscordCircle', DiscordCircle)
 Vue.component('IconExit', Exit)
 Vue.component('IconExternalLink', ExternalLink)
 Vue.component('IconExternalLinkArrow', ExternalLinkArrow)
+Vue.component('IconFilter', Filter)
 Vue.component('IconGlobe', Globe)
 Vue.component('IconGovernance', Governance)
 Vue.component('IconHistory', History)
