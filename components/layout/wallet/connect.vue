@@ -21,7 +21,7 @@
         <VHocLoading :status="status">
           <ul class="divide-y divide-gray-800 border-gray-700 rounded-lg">
             <v-metamask />
-            <v-keplr v-if="isStagingOrTestnetOrDevnet" />
+            <v-keplr />
             <v-torus v-if="isStagingOrTestnetOrDevnet" />
             <v-ledger
               @wallet-ledger-connecting="handleLedgerConnectingWallet"

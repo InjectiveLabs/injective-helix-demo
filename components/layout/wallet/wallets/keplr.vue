@@ -15,9 +15,6 @@
             <div>
               <p class="text-xl font-semibold text-gray-200 truncate">
                 {{ $t('connect.keplr') }}
-                <span class="text-red-500 text-xs inline-flex font-semibold">
-                  {{ $t('connect.highlyExperimental') }}
-                </span>
               </p>
               <p class="flex items-center text-sm text-gray-200">
                 <span class="truncate">{{
@@ -28,9 +25,7 @@
           </div>
         </div>
         <div>
-          <IconCaretDown
-            class="transform -rotate-90 h-5 w-5 text-gray-200"
-          />
+          <IconCaretDown class="transform -rotate-90 h-5 w-5 text-gray-200" />
         </div>
       </div>
     </div>
