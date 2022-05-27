@@ -187,10 +187,7 @@ import {
 } from '~/app/utils/constants'
 import ModalInsufficientInjForGas from '~/components/partials/modals/insufficient-inj-for-gas.vue'
 import { Modal } from '~/types'
-import {
-  calculateWorstExecutionPriceFromOrderbook,
-  getApproxAmountForMarketOrder
-} from '~/app/services/spot'
+import { calculateWorstExecutionPriceFromOrderbook } from '~/app/services/spot'
 import {
   FeeDiscountAccountInfo,
   TradingRewardsCampaign
@@ -1253,53 +1250,6 @@ export default Vue.extend({
       this.form.amount = max
       this.form.toAmount = toQuantity.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
       this.updatePrices()
-    },
-
-    getAmountByPercentage(percentage: number): string {
-      const {
-        market,
-        buys,
-        sells,
-        slippage,
-        orderTypeBuy,
-        baseAvailableBalance,
-        quoteAvailableBalance
-      } = this
-
-      const percentageToNumber = new BigNumberInBase(percentage).div(100)
-      const balance = orderTypeBuy
-        ? quoteAvailableBalance
-        : baseAvailableBalance
-
-      if (!market) {
-        return ''
-      }
-
-      if (!orderTypeBuy) {
-        const totalFillableAmount = buys.reduce((totalAmount, { quantity }) => {
-          return totalAmount.plus(
-            new BigNumberInWei(quantity).toBase(market.baseToken.decimals)
-          )
-        }, ZERO_IN_BASE)
-        const totalBalance = new BigNumberInBase(balance).times(
-          percentageToNumber
-        )
-        const amount = totalFillableAmount.gte(totalBalance)
-          ? totalBalance
-          : totalFillableAmount
-        return amount.toFixed(
-          market.quantityDecimals,
-          BigNumberInBase.ROUND_FLOOR
-        )
-      }
-
-      return getApproxAmountForMarketOrder({
-        market,
-        balance,
-        slippage: slippage.toNumber(),
-        percent: percentageToNumber.toNumber(),
-        records: orderTypeBuy ? sells : buys
-      }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
     },
 
     getBalance(token: Token): BigNumberInBase {
