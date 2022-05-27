@@ -48,7 +48,9 @@
                 <span
                   class="font-mono w-full block"
                   data-cy="wallet-connected-popper-inj-address-text-content"
-                  >{{ formattedInjectiveAddress }}</span>
+                >
+                  {{ formattedInjectiveAddress }}
+                </span>
               </div>
               <div class="flex">
                 <button
@@ -141,6 +143,9 @@
             </v-connected-wallet>
             <v-connected-wallet v-if="wallet === Wallet.Torus" lg>
               <IconTorus class="w-8 h-8 mx-auto" />
+            </v-connected-wallet>
+            <v-connected-wallet v-if="wallet === Wallet.WalletConnect" lg>
+              <v-icon-wallet-connect class="w-8 h-8 mx-auto" />
             </v-connected-wallet>
           </ul>
         </div>
