@@ -108,6 +108,7 @@ export default Vue.extend({
       if (value === '') {
         value = DEFAULT_MAX_SLIPPAGE.toFormat(1)
       }
+
       this.$emit('set-slippage-tolerance', value)
     },
 

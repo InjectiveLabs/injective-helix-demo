@@ -27,6 +27,7 @@ export default Vue.extend({
   computed: {
     formattedBalance(): string {
       const { balance, decimalPlaces } = this
+
       return balance.toFormat(decimalPlaces, BigNumberInBase.ROUND_DOWN)
     }
   }

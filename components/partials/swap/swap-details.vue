@@ -107,24 +107,31 @@ export default Vue.extend({
   computed: {
     amountStep(): string {
       const { market } = this
+
       if (!market) {
         return '1'
       }
+
       const decimalsAllowed = new BigNumberInBase(market.quantityDecimals)
+
       if (decimalsAllowed.eq(0)) {
         return '1'
       }
+
       if (decimalsAllowed.eq(1)) {
         return '0.1'
       }
+
       if (decimalsAllowed.gt(1)) {
         return '0.' + '0'.repeat(decimalsAllowed.toNumber() - 1) + '1'
       }
+
       return '1'
     },
 
     hasAmount(): boolean {
       const { amount, amountStep } = this
+
       return !amount.isNaN() && amount.gt(0) && amount.gte(amountStep)
     },
 
@@ -134,6 +141,7 @@ export default Vue.extend({
 
     rateToFormat(): string {
       const { rate } = this
+
       return rate.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
     },
 
@@ -145,13 +153,17 @@ export default Vue.extend({
         takerFeeRateDiscount,
         market
       } = this
+
       const decimalPlaces = market
         ? market.priceDecimals
         : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+
       if (amount.isNaN()) {
         return ZERO_IN_BASE.toFormat(decimalPlaces)
       }
+
       const discount = new BigNumberInBase(1).minus(takerFeeRateDiscount)
+
       return executionPrice
         .times(amount)
         .times(takerFeeRate)
@@ -169,18 +181,22 @@ export default Vue.extend({
         slippage,
         amount
       } = this
+
       if (!market) {
         return ZERO_IN_BASE
       }
+
       if (!hasAmount) {
         return ZERO_IN_BASE
       }
+
       const records = orderType === SpotOrderSide.Buy ? sells : buys
       const worstPrice = calculateWorstExecutionPriceFromOrderbook({
         records,
         amount,
         market
       })
+
       return new BigNumberInBase(
         worstPrice.times(slippage).toFixed(market.priceDecimals)
       )
@@ -192,30 +208,38 @@ export default Vue.extend({
 
     buys(): UiPriceLevel[] {
       const { orderbook } = this
+
       if (!orderbook) {
         return []
       }
+
       return orderbook.buys
     },
 
     sells(): UiPriceLevel[] {
       const { orderbook } = this
+
       if (!orderbook) {
         return []
       }
+
       return orderbook.sells
     },
 
     takerFeeRate(): BigNumberInBase {
       const { market, takerFeeRateDiscount } = this
+
       if (!market) {
         return ZERO_IN_BASE
       }
+
       const makerFeeRate = new BigNumberInBase(market.makerFeeRate)
       const takerFeeRate = new BigNumberInBase(market.takerFeeRate)
+
       if (makerFeeRate.lte(0)) {
         return takerFeeRate
       }
+
       return new BigNumberInBase(market.takerFeeRate).times(
         new BigNumberInBase(1).minus(takerFeeRateDiscount)
       )
@@ -223,15 +247,19 @@ export default Vue.extend({
 
     takerFeeRateDiscount(): BigNumberInBase {
       const { feeDiscountAccountInfo } = this
+
       if (!feeDiscountAccountInfo) {
         return ZERO_IN_BASE
       }
+
       if (!feeDiscountAccountInfo.accountInfo) {
         return ZERO_IN_BASE
       }
+
       const discount = cosmosSdkDecToBigNumber(
         feeDiscountAccountInfo.accountInfo.takerDiscountRate
       )
+
       return new BigNumberInBase(discount)
     },
 
@@ -252,6 +280,7 @@ export default Vue.extend({
 
     priceImpactToFormat(): string {
       const { priceImpact } = this
+
       return priceImpact.toFormat(2)
     },
 
@@ -265,15 +294,18 @@ export default Vue.extend({
         slippage,
         amount
       } = this
+
       if (!market || !hasAmount) {
         return ZERO_IN_BASE
       }
+
       const records = orderType === SpotOrderSide.Buy ? sells : buys
       const averagePrice = calculateAverageExecutionPriceFromOrderbook({
         records,
         amount,
         market
       })
+
       return new BigNumberInBase(
         averagePrice.times(slippage).toFixed(market.priceDecimals)
       )
@@ -289,15 +321,18 @@ export default Vue.extend({
         market,
         amount
       } = this
+
       if (!market || !hasAmount) {
         return ZERO_IN_BASE
       }
+
       const records = orderType === SpotOrderSide.Buy ? sells : buys
       const worstPrice = calculateWorstExecutionPriceFromOrderbook({
         records,
         amount,
         market
       })
+
       return new BigNumberInBase(
         worstPrice.times(slippage).toFixed(market.priceDecimals)
       )
@@ -337,6 +372,7 @@ export default Vue.extend({
 
     minimumReceivedToFormat(): string {
       const { minimumReceived } = this
+
       return minimumReceived.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
     }
   }

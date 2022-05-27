@@ -23,10 +23,7 @@
       </div>
       <div
         class="relative"
-        :class="[
-          { 'mt-2': !dense, 'input-wrapper': !lg && !xl && !transparentBg },
-          wrapperClasses
-        ]"
+        :class="wrapperClass"
       >
         <textarea
           v-if="multiLine"
@@ -67,7 +64,7 @@
             @wheel="$event.target.blur()"
           />
           <div
-            v-if="showClose || (!isMaxValue && maxSelector) || showAddon"
+            v-if="addonVisible"
             class="addon flex items-center flex-shrink-0"
             :class="{ 'pr-3': !lg && !xl }"
           >
@@ -253,6 +250,28 @@ export default Vue.extend({
   },
 
   computed: {
+    addonVisible(): boolean {
+      const { showClose, isMaxValue, maxSelector, showAddon } = this
+      return showClose || (!isMaxValue && maxSelector) || showAddon
+    },
+
+    wrapperClass(): string {
+      const { dense, lg, xl, transparentBg, wrapperClasses } = this
+      const classes = []
+
+      if (!dense) {
+        classes.push('mt-2')
+      }
+
+      if (!lg && !xl && !transparentBg) {
+        classes.push('input-wrapper')
+      }
+
+      classes.push(wrapperClasses)
+
+      return classes.join(' ')
+    },
+
     maxButtonClasses(): string[] {
       const { lg, maxClasses } = this
 
@@ -365,6 +384,7 @@ export default Vue.extend({
 
     handleBlur(e: Event) {
       const target: HTMLInputElement = e.target as HTMLInputElement
+
       this.$emit('blur', target.value)
     },
 
