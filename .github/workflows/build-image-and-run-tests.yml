@@ -135,5 +135,6 @@ jobs:
         run: |
           cd injective-devops/network/standalone
           touch .env
-          echo CYPRESS_TEST_TAG=${{ env.GIT_BRANCH_NAME }} >> .env
-          docker-compose -f docker-compose-cypress.yaml -f docker-compose-base.yaml -f docker-compose-dex.yaml up
+          export CYPRESS_TEST_TAG=${{ env.GIT_BRANCH_NAME }}
+          export TEST_TAG=${{ secret.CYPRESS_RECORD_KEY }}
+          docker-compose -f docker-compose-base.yaml -f docker-compose-dex.yaml -f docker-compose-cypress.yaml up
