@@ -30,9 +30,9 @@ const rpcUrls = getRpcUrlsForChainIds()
 const wsRpcUrls = getRpcWsUrlsForChainIds()
 
 export const web3Strategy = new Web3Strategy({
-  chainId: parseInt(CHAIN_ID.toString()),
+  chainId: CHAIN_ID,
   options: {
-    wsRpcUrl: wsRpcUrls[CHAIN_ID],
-    rpcUrl: rpcUrls[CHAIN_ID]
+    wsRpcUrls,
+    rpcUrls
   }
 })
