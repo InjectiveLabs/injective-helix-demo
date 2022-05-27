@@ -127,7 +127,7 @@
               <IconMetamask class="w-8 h-8 mx-auto" />
             </v-connected-wallet>
             <v-connected-wallet v-if="wallet === Wallet.WalletConnect" lg>
-              <v-icon-wallet-connect class="w-8 h-8 mx-auto" />
+              <IconWalletConnect class="w-8 h-8 mx-auto" />
             </v-connected-wallet>
             <v-connected-wallet v-if="wallet === Wallet.Keplr" lg>
               <img

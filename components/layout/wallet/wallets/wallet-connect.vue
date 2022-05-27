@@ -7,7 +7,7 @@
       <div class="flex items-center px-4 py-4 sm:px-6">
         <div class="min-w-0 flex-1 flex items-center">
           <div class="flex-shrink-0 mr-4">
-            <v-icon-wallet-connect class="w-8 h-8" />
+            <IconWalletConnect class="w-8 h-8" />
           </div>
           <div
             class="min-w-0 flex-1 px-4 md:grid md:grid-cols-1 md:gap-4 text-left"
@@ -25,7 +25,7 @@
           </div>
         </div>
         <div>
-          <v-icon-caret-down
+          <IconCaretDown
             class="transform -rotate-90 h-5 w-5 text-gray-200"
           />
         </div>
