@@ -147,7 +147,7 @@
         {{ $t('trade.execution_price_far_away_from_last_traded_price') }}
       </span>
       <SwapErrors
-        v-if="market && (amountError || priceError || !hasEnoughInjForGasOrNotKeplr)"
+        v-if="showErrors"
         :errors="errors"
         :show-portfolio-link="fromToken.symbol !== 'INJ'"
       />
@@ -261,6 +261,11 @@ export default Vue.extend({
           }
         ]
       }
+    },
+
+    showErrors(): boolean | undefined {
+      const { market, amountError, priceError, hasEnoughInjForGasOrNotKeplr } = this
+      return market && !!(amountError || priceError || !hasEnoughInjForGasOrNotKeplr)
     },
 
     slippage(): BigNumberInBase {

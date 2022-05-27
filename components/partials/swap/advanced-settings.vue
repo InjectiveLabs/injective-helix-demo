@@ -21,9 +21,7 @@
         :active="
           Number(slippageTolerancePreset.value) === Number(slippageTolerance)
         "
-        :class="
-          index === slippageTolerancePresets.length - 1 && 'hidden sm:block'
-        "
+        :class="{ 'hidden sm:block': index === slippageTolerancePresets.length - 1 }"
         @click="setSlippageTolerance"
       />
       <v-input
