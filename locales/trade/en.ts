@@ -191,6 +191,29 @@ export default {
     enter_your_amount: 'Enter your amount',
     position_market_not_found: 'Market for position {marketId} cannot be found',
     entryMark: 'Entry / Mark',
-    estLiqPrice: 'EST Liq Price'
+    estLiqPrice: 'EST Liq Price',
+    balance: 'Balance: {balance}',
+    swap: {
+      insufficient_balance: 'Insufficient Balance',
+      insufficient_balance_verbose: 'Insufficient {symbol} balance for this swap. Please top up your trading account.',
+      swap_success: 'Swapped Successfully',
+      swap_failed: 'Swap Failed',
+      swap: 'Swap Now',
+      to: 'To',
+      from: 'From',
+      rate: 'Rate',
+      fee: 'Fee',
+      current_rate: 'Current',
+      advanced_settings: 'Advanced Settings',
+      slippage_tolerance: 'Slippage Tolerance',
+      slippage_tolerance_tooltip: 'Lorem ipsum dolor amet',
+      high_slippage_warning: 'You may expect more price deviation due to high slippage tolerance',
+      slippage_auto: 'Auto',
+      go_to_portfolio: 'Go to Portfolio',
+      go_to_hub: 'Injective Hub',
+      price_impact: 'Price Impact',
+      minimum_received: 'Minimum Received',
+      fetching_price: 'Fetching price'
+    }
   }
 }

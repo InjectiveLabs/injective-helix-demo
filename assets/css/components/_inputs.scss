@@ -258,6 +258,12 @@ input[type='number'] {
   }
 }
 
+.v-select.input-token.input-error {
+  .input {
+    @apply text-red-400;
+  }
+}
+
 /* stylelint-disable */
 .input-bridge-selector.vs--single.input-select.v-select {
   @apply rounded-lg bg-gray-900 pl-0 h-16 py-2;
@@ -329,6 +335,38 @@ input[type='number'] {
 
     .vs__selected {
       @apply cursor-default;
+    }
+  }
+}
+
+.input-token {
+  .vs__actions {
+    padding: 0 !important;
+  }
+}
+
+.input-swap {
+  .vs__dropdown-menu {
+    @apply z-1110;
+  }
+
+  .input-token {
+    .vs__selected-options > input {
+      @apply pointer-events-none;
+    }
+
+    &.open {
+      .vs__selected-options > input{
+        @apply pointer-events-auto;
+      }
+    }
+
+    .input-max-button {
+      @apply bg-primary-600 px-1 py-0 h-[20px] flex items-center justify-center font-bold text-white mr-0;
+    }
+
+    .vs__dropdown-option {
+      @apply p-2;
     }
   }
 }
