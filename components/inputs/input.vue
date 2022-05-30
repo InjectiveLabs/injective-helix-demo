@@ -406,6 +406,7 @@ export default Vue.extend({
       const { max } = this.$attrs
 
       const target: HTMLInputElement = e.target as HTMLInputElement
+
       if (this.$attrs.type !== 'number') {
         this.$emit('blur', target.value)
         return
@@ -413,6 +414,7 @@ export default Vue.extend({
 
       // Make sure value is clamped to max if it exists.
       let value : String | Number = target.value
+
       if (max !== null && Number(value) > Number(max)) {
         value = max.toString()
       }
