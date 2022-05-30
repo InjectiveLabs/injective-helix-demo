@@ -132,6 +132,7 @@ jobs:
           docker-compose -f docker-compose-base.yaml -f docker-compose-dex.yaml build --build-arg IMAGE_TAG=${{ env.DEX_IMAGE_TAG }}
           docker-compose -f docker-compose-base.yaml -f docker-compose-dex.yaml up -d
       - name: Execute Cypress tests
+        continue-on-error: true
         run: |
           cd injective-devops/network/standalone
           touch .env
@@ -148,3 +149,8 @@ jobs:
           name: cypress-screenshots
           path: /tmp/screenshots/
           retention-days: 1
+      - name: Look for Cypress screesnhots
+        if: always()
+        run: |
+          ls /tmp
+          ls injective-devops/network/standalone
