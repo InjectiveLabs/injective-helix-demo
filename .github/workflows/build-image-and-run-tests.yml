@@ -139,4 +139,5 @@ jobs:
           export CYPRESS_RECORD_KEY=${{ secrets.CYPRESS_RECORD_KEY }}
           export CYPRESS_SPEC_FILE=${{ env.CYPRESS_SPEC_FILE }}
           export CYPRESS_GROUP=${{ env.CYPRESS_GROUP }}
+          export IS_CI_RUN=true
           docker-compose -f docker-compose-base.yaml -f docker-compose-dex.yaml -f docker-compose-cypress.yaml run injective-cypress
