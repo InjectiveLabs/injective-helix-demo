@@ -108,10 +108,6 @@ export default Vue.extend({
         value = DEFAULT_MAX_SLIPPAGE.toFormat(1)
       }
 
-      // if (Number(value) > this.maxSlippageTolerance) {
-      //   value = this.maxSlippageTolerance.toFixed(1)
-      // }
-
       this.setSlippageTolerance(value)
     },
 
