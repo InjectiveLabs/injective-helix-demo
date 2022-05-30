@@ -351,6 +351,8 @@ input[type='number'] {
   }
 
   .input-token {
+    @apply bg-gray-900;
+
     .vs__selected-options > input {
       @apply pointer-events-none;
     }
@@ -365,10 +367,18 @@ input[type='number'] {
       @apply bg-primary-600 px-1 py-0 h-[20px] flex items-center justify-center font-bold text-white mr-0;
     }
 
+    .vs__dropdown-menu {
+      @apply border border-primary-600 border-solid rounded-lg mt-2 bg-gray-900 p-4;
+    }
+
     .vs__dropdown-option {
       @apply p-2;
     }
   }
+}
+
+.v-select.input-select.input-token.vs--open {
+  @apply bg-gray-900;
 }
 
 /* stylelint-enable */

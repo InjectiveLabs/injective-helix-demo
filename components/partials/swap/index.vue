@@ -54,7 +54,7 @@
         <TokenSelector
           class="input-swap"
           :amount="form.amount"
-          :balance="orderTypeBuy ? quoteAvailableBalance : baseAvailableBalance"
+          :balance="fromBalance"
           :balance-decimal-places="market && market.quantityDecimals"
           :value="fromToken"
           :tokens="fromTokens"
@@ -88,7 +88,7 @@
           </div> -->
           <button
             type="button"
-            class="rounded-full z-10 flex items-center justify-center min-w-[32px] w-8 h-8 bg-primary-600 hover:bg-primary-500 relative mx-auto"
+            class="rounded-full z-1000 flex items-center justify-center min-w-[32px] w-8 h-8 bg-primary-600 hover:bg-primary-500 relative mx-auto"
             @click="switchTokens"
           >
             <IconArrowDown class="transform w-[10px] h-[10px]" />
@@ -97,7 +97,7 @@
         <TokenSelector
           class="input-swap"
           :amount="form.toAmount"
-          :balance="orderTypeBuy ? baseAvailableBalance : quoteAvailableBalance"
+          :balance="toBalance"
           :balance-decimal-places="market && market.quantityDecimals"
           :value="toToken"
           :tokens="toTokens"
@@ -123,21 +123,26 @@
       />
       <div class="mt-6">
         <v-button
+          v-if="isUserWalletConnected"
           lg
           :status="status"
-          :disabled="
-            hasErrors || !isUserWalletConnected || !hasEnoughInjForGasOrNotKeplr
-          "
+          :disabled="swapButtonDisabled"
           :ghost="hasErrors"
           :primary="!hasErrors"
           class="w-full"
           @click.stop="onSubmit"
         >
-          {{
-            amountError || priceError
-              ? $t('trade.swap.insufficient_balance')
-              : $t('trade.swap.swap')
-          }}
+          {{ swapButtonLabel }}
+        </v-button>
+        <v-button
+          v-else
+          lg
+          :status="status"
+          primary
+          class="w-full"
+          @click.stop="handleClickOrConnect"
+        >
+          {{ $t('trade.swap.connect_wallet') }}
         </v-button>
       </div>
       <span
@@ -149,7 +154,8 @@
       <SwapErrors
         v-if="showErrors"
         :errors="errors"
-        :show-portfolio-link="fromToken.symbol !== 'INJ'"
+        :show-portfolio-link="errors.linkType === SwapTradeErrorLinkType.Portfolio"
+        :show-hub-link="errors.linkType === SwapTradeErrorLinkType.Hub"
       />
     </div>
     <ModalInsufficientInjForGas />
@@ -200,6 +206,16 @@ interface TradeForm {
   slippageTolerance: string
 }
 
+enum SwapTradeErrorLinkType {
+  None = 0,
+  Portfolio = 1,
+  Hub = 2
+}
+
+interface SwapTradeError extends TradeError {
+  linkType: SwapTradeErrorLinkType
+}
+
 const initialForm = (): TradeForm => ({
   amount: '',
   toAmount: '',
@@ -219,6 +235,7 @@ export default Vue.extend({
 
   data() {
     return {
+      SwapTradeErrorLinkType,
       TradeExecutionType,
       SpotOrderSide,
       UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
@@ -242,6 +259,22 @@ export default Vue.extend({
   },
 
   computed: {
+    swapButtonLabel(): string {
+      const { availableBalanceError } = this
+
+      if (availableBalanceError) {
+        return this.$t('trade.swap.insufficient_balance')
+      }
+
+      return this.$t('trade.swap.swap')
+    },
+
+    swapButtonDisabled(): boolean {
+      const { hasErrors, hasEnoughInjForGasOrNotKeplr } = this
+
+      return hasErrors || !hasEnoughInjForGasOrNotKeplr
+    },
+
     $popper(): any {
       return this.$refs['swap-settings-dropdown']
     },
@@ -353,6 +386,48 @@ export default Vue.extend({
       }
       return new BigNumberInWei(balance.availableBalance || 0).toBase(
         market.quoteToken.decimals
+      )
+    },
+
+    fromBalance(): BigNumberInBase {
+      const { fromToken, subaccount } = this
+
+      if (!subaccount || !fromToken) {
+        return ZERO_IN_BASE
+      }
+
+      const balance = subaccount.balances.find(
+        (balance) =>
+          balance.denom.toLowerCase() === fromToken.denom.toLowerCase()
+      )
+
+      if (!balance) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInWei(balance.availableBalance || 0).toBase(
+        fromToken.decimals
+      )
+    },
+
+    toBalance(): BigNumberInBase {
+      const { toToken, subaccount } = this
+
+      if (!subaccount || !toToken) {
+        return ZERO_IN_BASE
+      }
+
+      const balance = subaccount.balances.find(
+        (balance) =>
+          balance.denom.toLowerCase() === toToken.denom.toLowerCase()
+      )
+
+      if (!balance) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInWei(balance.availableBalance || 0).toBase(
+        toToken.decimals
       )
     },
 
@@ -542,7 +617,7 @@ export default Vue.extend({
       return deviation.gt(DEFAULT_MARKET_PRICE_WARNING_DEVIATION)
     },
 
-    availableBalanceError(): TradeError | undefined {
+    availableBalanceError(): SwapTradeError | undefined {
       const {
         quoteAvailableBalance,
         baseAvailableBalance,
@@ -557,7 +632,8 @@ export default Vue.extend({
           return {
             price: this.$t('trade.swap.insufficient_balance_verbose', {
               symbol: fromToken ? fromToken.symbol : ''
-            })
+            }),
+            linkType: SwapTradeErrorLinkType.Portfolio
           }
         }
         return undefined
@@ -569,13 +645,14 @@ export default Vue.extend({
         return {
           amount: this.$t('trade.swap.insufficient_balance_verbose', {
             symbol: fromToken ? fromToken.symbol : ''
-          })
+          }),
+          linkType: SwapTradeErrorLinkType.Portfolio
         }
       }
       return undefined
     },
 
-    notEnoughOrdersToFillFromError(): TradeError | undefined {
+    notEnoughOrdersToFillFromError(): SwapTradeError | undefined {
       const {
         orderTypeBuy,
         sells,
@@ -589,13 +666,14 @@ export default Vue.extend({
       const orders = orderTypeBuy ? sells : buys
       if (orders.length <= 0 && amount.gt(0)) {
         return {
-          amount: this.$t('trade.not_enough_fillable_orders')
+          amount: this.$t('trade.not_enough_fillable_orders'),
+          linkType: SwapTradeErrorLinkType.None
         }
       }
       return undefined
     },
 
-    amountTooBigToFillError(): TradeError | undefined {
+    amountTooBigToFillError(): SwapTradeError | undefined {
       const {
         hasPrice,
         hasAmount,
@@ -616,13 +694,14 @@ export default Vue.extend({
       }, ZERO_IN_BASE)
       if (totalAmount.lt(amount)) {
         return {
-          amount: this.$t('trade.not_enough_fillable_orders')
+          amount: this.$t('trade.not_enough_fillable_orders'),
+          linkType: SwapTradeErrorLinkType.None
         }
       }
       return undefined
     },
 
-    priceNotValidError(): TradeError | undefined {
+    priceNotValidError(): SwapTradeError | undefined {
       const { form } = this
       if (!form.price) {
         return undefined
@@ -631,11 +710,12 @@ export default Vue.extend({
         return undefined
       }
       return {
-        price: this.$t('trade.not_valid_number')
+        price: this.$t('trade.not_valid_number'),
+        linkType: SwapTradeErrorLinkType.None
       }
     },
 
-    amountNotValidNumberError(): TradeError | undefined {
+    amountNotValidNumberError(): SwapTradeError | undefined {
       const { form } = this
       if (!form.amount) {
         return undefined
@@ -644,7 +724,8 @@ export default Vue.extend({
         return undefined
       }
       return {
-        amount: this.$t('trade.not_valid_number')
+        amount: this.$t('trade.not_valid_number'),
+        linkType: SwapTradeErrorLinkType.None
       }
     },
 
@@ -1397,6 +1478,10 @@ export default Vue.extend({
     hideSwapSettingsModal(): void {
       this.$popper.hideDropdown()
       this.swapSettingsModalActive = false
+    },
+
+    handleClickOrConnect(): void {
+      this.$root.$emit('wallet-clicked')
     }
   }
 })

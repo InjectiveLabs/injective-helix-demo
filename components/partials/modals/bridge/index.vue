@@ -72,20 +72,21 @@
       </div>
       <div v-if="!isIbcTransfer" class="mt-6">
         <div v-if="hasAllowance">
-          <!-- <v-balance :balance="balance" :token="form.token" class="mb-2" /> -->
-          <v-token-selector
+          <Balance :balance="balance" :token="form.token" class="mb-2" />
+          <TokenSelector
             :amount="form.amount"
             :value="form.token"
             :origin="origin"
             :destination="destination"
             :is-ibc-transfer="isIbcTransfer"
             :balance="balance"
-            show-balance
             small
+            show-errors-below
+            disable-max-selector
             @input:amount="handleAmountChange"
             @input:token="handleTokenChange"
           >
-          </v-token-selector>
+          </TokenSelector>
         </div>
         <div class="mt-8 text-center">
           <v-button
@@ -139,9 +140,9 @@ import {
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { Wallet } from '@injectivelabs/ts-types'
 import { BridgeType, Modal, TransferDirection } from '~/types'
-import VTokenSelector from '~/components/partials/portfolio/bridge/token-selector/index.vue'
+import TokenSelector from '~/components/partials/portfolio/bridge/token-selector/index.vue'
 import VAllowance from '~/components/elements/allowance.vue'
-// import VBalance from '~/components/partials/portfolio/bridge/balance.vue'
+import Balance from '~/components/partials/portfolio/bridge/balance.vue'
 import VNetworkSelect from '~/components/partials/portfolio/bridge/network-select.vue'
 import VIbcTransferNote from '~/components/partials/portfolio/bridge/ibc-transfer-note.vue'
 import VTransferDirectionSwitch from '~/components/partials/portfolio/bridge/transfer-direction-switch.vue'
@@ -149,13 +150,13 @@ import VTransferDirectionSwitch from '~/components/partials/portfolio/bridge/tra
 export default Vue.extend({
   components: {
     ValidationObserver,
-    VTokenSelector,
+    TokenSelector,
     VNetworkSelect,
     VIbcTransferNote,
     VTransferDirectionSwitch,
     ValidationProvider,
-    VAllowance
-    // VBalance
+    VAllowance,
+    Balance
   },
 
   props: {

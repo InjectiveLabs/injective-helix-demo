@@ -40,7 +40,7 @@
         :step="0.1"
         :max-decimals="1"
         :min="0.1"
-        :max="50"
+        :max="maxSlippageTolerance"
         dense
         small
         :show-prefix="hasWarnings"
@@ -87,6 +87,7 @@ export default Vue.extend({
 
   data() {
     return {
+      maxSlippageTolerance: 50,
       slippageTolerancePresets: [
         { label: '0.1', value: '0.1' },
         { label: '0.5', value: '0.5' },
@@ -107,7 +108,11 @@ export default Vue.extend({
         value = DEFAULT_MAX_SLIPPAGE.toFormat(1)
       }
 
-      this.$emit('set-slippage-tolerance', value)
+      // if (Number(value) > this.maxSlippageTolerance) {
+      //   value = this.maxSlippageTolerance.toFixed(1)
+      // }
+
+      this.setSlippageTolerance(value)
     },
 
     handleInput(value: string): void {

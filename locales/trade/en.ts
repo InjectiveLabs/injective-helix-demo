@@ -195,6 +195,7 @@ export default {
     estLiqPrice: 'EST Liq Price',
     balance: 'Balance: {balance}',
     swap: {
+      connect_wallet: 'Connect Wallet',
       insufficient_balance: 'Insufficient Balance',
       insufficient_balance_verbose: 'Insufficient {symbol} balance for this swap. Please top up your trading account.',
       swap_success: 'Swapped Successfully',
@@ -207,7 +208,7 @@ export default {
       current_rate: 'Current',
       advanced_settings: 'Advanced Settings',
       slippage_tolerance: 'Slippage Tolerance',
-      slippage_tolerance_tooltip: 'Lorem ipsum dolor amet',
+      slippage_tolerance_tooltip: 'Your transaction will be automatically cancelled if the price changes unfavorably by more than this percentage.',
       high_slippage_warning: 'You may expect more price deviation due to high slippage tolerance',
       slippage_auto: 'Auto',
       go_to_portfolio: 'Go to Portfolio',

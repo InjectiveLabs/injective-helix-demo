@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-token-selector
+    <TokenSelector
       v-bind="$attrs"
       :options="supplyWithSortedBalanceInBase"
       :disabled="isIbcTransfer"
@@ -20,12 +20,12 @@ import {
   SubaccountBalanceWithToken,
   TokenWithBalanceAndPrice
 } from '@injectivelabs/ui-common'
-import VTokenSelector from './select.vue'
+import TokenSelector from './select.vue'
 import { TransferSide, TransferDirection } from '~/types'
 
 export default Vue.extend({
   components: {
-    VTokenSelector
+    TokenSelector
   },
 
   props: {

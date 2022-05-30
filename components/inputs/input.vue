@@ -47,16 +47,7 @@
             class="input"
             autocomplete="off"
             :value="value"
-            :class="[
-              {
-                'input-lg': lg,
-                'input-xl': xl,
-                'input-round': round,
-                'input-small': small,
-                'input-bg-transparent': transparentBg
-              },
-              inputClasses
-            ]"
+            :class="inputClass"
             @blur="handleBlur"
             @input="handleChangeOnInput"
             @keydown="handleKeydown"
@@ -272,6 +263,35 @@ export default Vue.extend({
       return classes.join(' ')
     },
 
+    inputClass(): string {
+      const { lg, xl, round, small, transparentBg, inputClasses } = this
+      const classes = []
+
+      if (small) {
+        classes.push('input-small')
+      }
+
+      if (lg) {
+        classes.push('input-lg')
+      }
+
+      if (xl) {
+        classes.push('input-xl')
+      }
+
+      if (round) {
+        classes.push('input-round')
+      }
+
+      if (transparentBg) {
+        classes.push('input-bg-transparent')
+      }
+
+      classes.push(inputClasses)
+
+      return classes.join(' ')
+    },
+
     maxButtonClasses(): string[] {
       const { lg, maxClasses } = this
 
@@ -314,7 +334,7 @@ export default Vue.extend({
       const { max } = this.$attrs
       const { value } = this
 
-      return max === value
+      return Number(max) === Number(value)
     }
   },
 
@@ -383,14 +403,27 @@ export default Vue.extend({
     },
 
     handleBlur(e: Event) {
-      const target: HTMLInputElement = e.target as HTMLInputElement
+      const { max } = this.$attrs
 
-      this.$emit('blur', target.value)
+      const target: HTMLInputElement = e.target as HTMLInputElement
+      if (this.$attrs.type !== 'number') {
+        this.$emit('blur', target.value)
+        return
+      }
+
+      // Make sure value is clamped to max if it exists.
+      let value : String | Number = target.value
+      if (max !== null && Number(value) > Number(max)) {
+        value = max.toString()
+      }
+
+      this.$emit('blur', value)
     },
 
     handleMaxSelector() {
       const { maxSelector } = this
       const { max } = this.$attrs
+
       if (max || maxSelector) {
         if (max) {
           this.handleChangeFromString(max)

@@ -81,7 +81,9 @@
                 </div>
               </div>
               <div class="flex items-center justify-between w-full px-4 mt-1">
-              <span v-if="errors.length > 0" class="text-red-400 text-[12px]">{{ errors[0] }}</span>
+                <span v-if="!showErrorsBelow && errors.length > 0" class="text-red-400 text-[12px]">
+                  {{ errors[0] }}
+                </span>
                 <span v-else-if="usdPrice !== ''" class="text-gray-500 text-[12px]">
                   {{ usdPrice }} USD
                 </span>
@@ -98,11 +100,14 @@
                 </span>
               </div>
             </div>
+            <span v-if="showErrorsBelow && errors.length > 0" data-cy="reusable-input-bellow-error-text-content" class="text-red-400 absolute text-xs mt-6">
+              {{ errors[0] }}
+            </span>
           </ValidationProvider>
         </template>
 
         <template #list-header>
-          <li class="mb-4 mt-2">
+          <li class="mb-4">
             <v-input
               id="bridge-input-search"
               v-model="search"
@@ -110,6 +115,8 @@
               round
               :placeholder="$t('common.search')"
               data-cy="token-selector-search"
+              :wrapper-classes="'shadow-none'"
+              :input-classes="'bg-gray-800 rounded-lg'"
               @blur="resetIsSearching"
               @click.native.stop="focusSearchInput"
             >
@@ -214,6 +221,11 @@ export default Vue.extend({
     },
 
     lg: {
+      type: Boolean,
+      default: false
+    },
+
+    showErrorsBelow: {
       type: Boolean,
       default: false
     }

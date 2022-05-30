@@ -19,7 +19,7 @@
         {{ $t('trade.swap.go_to_portfolio') }} &rarr;
       </router-link>
       <a
-        v-else
+        v-if="showHubLink"
         href="https://hub.injective.network/"
         target="_blank"
         class="text-primary-600"
@@ -40,7 +40,7 @@
         {{ $t('trade.swap.go_to_portfolio') }} &rarr;
       </router-link>
       <a
-        v-else
+        v-if="showHubLink"
         href="https://hub.injective.network/"
         target="_blank"
         class="text-primary-600"
@@ -63,6 +63,11 @@ export default Vue.extend({
     },
 
     showPortfolioLink: {
+      type: Boolean,
+      default: false
+    },
+
+    showHubLink: {
       type: Boolean,
       default: false
     }
