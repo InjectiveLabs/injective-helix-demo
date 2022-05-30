@@ -142,6 +142,7 @@ jobs:
           export IS_CI_RUN=true
           docker-compose -f docker-compose-base.yaml -f docker-compose-dex.yaml -f docker-compose-cypress.yaml run injective-cypress
       - name: Upload Cypress screesnhots
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: cypress-screenshots
