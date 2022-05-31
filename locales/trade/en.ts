@@ -132,6 +132,7 @@ export default {
     market_change_24h_tooltip: 'The change in price over the past 24 hours.',
     market_volume_24h: 'Volume (24h)',
     market_volume_24h_tooltip: 'The total trade volume over the past 24 hours.',
+    search_market: 'Search Market',
     search_markets: 'Search Markets',
     filter_markets: 'Filter Markets',
     favorites: 'Favorites',
