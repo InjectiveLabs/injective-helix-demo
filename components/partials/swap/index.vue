@@ -303,7 +303,9 @@ export default Vue.extend({
       const { orderTypeBuy, form } = this
 
       const maxSlippage = DEFAULT_MAX_SLIPPAGE.times(100)
+
       const slippageToleranceAsNumber = Number(form.slippageTolerance)
+
       const slippageTolerance = slippageToleranceAsNumber <= maxSlippage.toNumber()
         ? new BigNumberInBase(slippageToleranceAsNumber)
         : maxSlippage
