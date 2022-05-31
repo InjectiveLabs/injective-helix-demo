@@ -1,57 +1,56 @@
 <template>
   <!-- eslint-disable vue/no-parsing-error -->
-  <tr v-if="market" :data-cy="'funding-payments-table-row-' + market.ticker">
-    <td class="h-8 font-mono">
-      <span class="text-gray-400 text-xs">{{ time }}</span>
-    </td>
+  <TableRow v-if="market" dense>
+    <div
+      class="flex items-center justify-between col-span-2 text-xs leading-5 pb-1"
+    >
+      <div class="flex flex-col">
+        <nuxt-link class="flex items-center justify-start" :to="marketRoute">
+          <div v-if="market.baseToken.logo" class="w-4 h-4">
+            <img
+              :src="market.baseToken.logo"
+              :alt="market.baseToken.name"
+              class="min-w-full h-auto rounded-full"
+            />
+          </div>
+          <div class="ml-1">
+            <span class="text-gray-200 font-semibold text-xs">
+              {{ market.ticker }}
+            </span>
+          </div>
+        </nuxt-link>
 
-    <td class="h-8 text-left cursor-pointer">
-      <nuxt-link class="flex items-center justify-start" :to="marketRoute">
-        <div v-if="market.baseToken.logo" class="w-6 h-6">
-          <img
-            :src="market.baseToken.logo"
-            :alt="market.baseToken.name"
-            class="min-w-full h-auto rounded-full"
-          />
-        </div>
-        <div class="ml-3">
-          <span
-            class="text-gray-200 font-semibold"
-            data-cy="funding-payments-ticker-name-table-data"
-          >
-            {{ market.ticker }}
+        <span class="text-gray-200 text-xs font-mono">{{ time }}</span>
+      </div>
+
+      <div>
+        <v-number
+          v-if="total.abs().gt(UI_MINIMAL_AMOUNT)"
+          data-cy="funding-payments-total-table-data"
+          :class="{
+            'text-aqua-500': total.gte(0),
+            'text-red-500': total.lt(0)
+          }"
+          :decimals="UI_DEFAULT_MAX_DISPLAY_DECIMALS"
+          :prefix="total.lt(0) ? '-' : ''"
+          :number="total"
+        >
+          <span slot="addon" class="text-2xs text-gray-500">
+            {{ market.quoteToken.symbol }}
           </span>
-        </div>
-      </nuxt-link>
-    </td>
-
-    <td class="h-8 text-right font-mono">
-      <v-number
-        v-if="total.abs().gt(UI_MINIMAL_AMOUNT)"
-        data-cy="funding-payments-total-table-data"
-        :class="{
-          'text-aqua-500': total.gte(0),
-          'text-red-500': total.lt(0)
-        }"
-        :decimals="UI_DEFAULT_MAX_DISPLAY_DECIMALS"
-        :prefix="total.lt(0) ? '-' : ''"
-        :number="total"
-      >
-        <span slot="addon" class="text-2xs text-gray-500">
-          {{ market.quoteToken.symbol }}
+        </v-number>
+        <span
+          v-else
+          :class="{
+            'text-aqua-500': total.gte(0),
+            'text-red-500': total.lt(0)
+          }"
+        >
+          {{ `< ${UI_MINIMAL_AMOUNT.toFormat(6)}` }}
         </span>
-      </v-number>
-      <span
-        v-else
-        :class="{
-          'text-aqua-500': total.gte(0),
-          'text-red-500': total.lt(0)
-        }"
-      >
-        {{ `< ${UI_MINIMAL_AMOUNT.toFormat(6)}` }}
-      </span>
-    </td>
-  </tr>
+      </div>
+    </div>
+  </TableRow>
 </template>
 
 <script lang="ts">
@@ -68,6 +67,7 @@ import {
   ZERO_IN_BASE
 } from '@injectivelabs/ui-common'
 import { FundingPayment } from '@injectivelabs/derivatives-consumer'
+import TableRow from '~/components/elements/table-row.vue'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
@@ -78,6 +78,10 @@ import { getMarketRoute } from '~/app/utils/market'
 import { MarketRoute } from '~/types'
 
 export default Vue.extend({
+  components: {
+    TableRow
+  },
+
   props: {
     fundingPayment: {
       required: true,
