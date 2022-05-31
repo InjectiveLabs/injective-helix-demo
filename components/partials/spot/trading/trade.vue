@@ -1329,15 +1329,15 @@ export default Vue.extend({
      */
     onProportionalQuantitySelected(percent = 100) {
       this.onAmountChange(
-        this.getAmountFromProportionalQuantityPercentage(percent),
+        this.updateBaseAmountForProportionalQuantityBuyOrSellOrder(percent),
         true
       )
       this.$nextTick(() => {
         this.onAmountChange(
-          this.getAmountFromProportionalQuantityPercentage(percent),
+          this.updateBaseAmountForProportionalQuantityBuyOrSellOrder(percent),
           true
         )
-        this.updateQuoteAmountForProportionalQuantityBuyOrSell(percent)
+        this.updateQuoteAmountForProportionalQuantityBuyOrSellOrder(percent)
       })
     },
 
@@ -1349,16 +1349,14 @@ export default Vue.extend({
         slippage,
         market,
         buys,
-        averagePrice
+        averagePrice,
+        executionPrice,
+        tradingTypeMarket
       } = this
 
       if (!market) {
         return
       }
-
-      const baseBalance = new BigNumberInBase(baseAvailableBalance).times(
-        percentToNumber
-      )
 
       const { totalFillableAmount, totalNotional } = buys.reduce(
         ({ totalFillableAmount, totalNotional }, { quantity, price }) => {
@@ -1378,7 +1376,16 @@ export default Vue.extend({
         { totalFillableAmount: ZERO_IN_BASE, totalNotional: ZERO_IN_BASE }
       )
 
-      const notionalBalance = baseBalance.times(averagePrice)
+      const baseBalance = new BigNumberInBase(baseAvailableBalance).times(
+        percentToNumber
+      )
+
+      const priceForTradingType = tradingTypeMarket
+        ? averagePrice
+        : executionPrice
+
+      const notionalBalance = baseBalance.times(priceForTradingType)
+
       if (baseBalance.gt(totalFillableAmount)) {
         return (this.form.quoteAmount = totalNotional.toString())
       }
@@ -1400,8 +1407,6 @@ export default Vue.extend({
         return
       }
 
-      const quoteBalance = quoteAvailableBalance.times(percentToNumber)
-
       let totalNotional = ZERO_IN_BASE
 
       for (const record of sells) {
@@ -1419,6 +1424,8 @@ export default Vue.extend({
       const totalFees = totalNotional.times(takerFeeRate)
       const total = totalNotional.plus(totalFees)
 
+      const quoteBalance = quoteAvailableBalance.times(percentToNumber)
+
       if (total.gt(quoteBalance)) {
         return (this.form.quoteAmount = formatToAllowableDecimals(
           quoteBalance.div(takerFeeRate.plus(1)).toString(),
@@ -1432,7 +1439,7 @@ export default Vue.extend({
       ))
     },
 
-    updateQuoteAmountForProportionalQuantityBuyOrSell(percent: number) {
+    updateQuoteAmountForProportionalQuantityBuyOrSellOrder(percent: number) {
       const { orderTypeBuy } = this
 
       const percentToNumber = new BigNumberInBase(percent).div(100)
@@ -1444,7 +1451,9 @@ export default Vue.extend({
       }
     },
 
-    getAmountFromProportionalQuantityPercentage(percentage: number): string {
+    updateBaseAmountForProportionalQuantityBuyOrSellOrder(
+      percentage: number
+    ): string {
       const {
         market,
         buys,
