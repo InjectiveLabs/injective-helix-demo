@@ -24,19 +24,6 @@
       </p>
 
       <div class="mt-4">
-        <v-text-info :title="$t('trade.amount')">
-          <span
-            v-if="!amount.isNaN()"
-            class="font-mono flex items-start break-all"
-          >
-            {{ amountToFormat }}
-            <span class="text-gray-500 ml-1 break-normal">
-              {{ market.baseToken.symbol }}
-            </span>
-          </span>
-          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </v-text-info>
-
         <v-text-info :title="$t('trade.averagePrice')" class="mt-2">
           <span
             v-if="!averagePrice.isNaN()"

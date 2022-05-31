@@ -3,18 +3,6 @@
     <div class="flex items-center justify-center">
       <v-button
         :class="{
-          'text-gray-500': tradingType === TradeExecutionType.LimitFill
-        }"
-        text-xs
-        data-cy="trading-page-switch-to-market-button"
-        @click.stop="onTradingTypeToggle(TradeExecutionType.Market)"
-      >
-        {{ $t('trade.market') }}
-      </v-button>
-      <div class="mx-2 w-px h-4 bg-gray-500"></div>
-      <v-button
-        sm
-        :class="{
           'text-gray-500': tradingType === TradeExecutionType.Market
         }"
         text-xs
@@ -22,6 +10,17 @@
         @click.stop="onTradingTypeToggle(TradeExecutionType.LimitFill)"
       >
         {{ $t('trade.limit') }}
+      </v-button>
+      <div class="mx-2 w-px h-4 bg-gray-500"></div>
+      <v-button
+        :class="{
+          'text-gray-500': tradingType === TradeExecutionType.LimitFill
+        }"
+        text-xs
+        data-cy="trading-page-switch-to-market-button"
+        @click.stop="onTradingTypeToggle(TradeExecutionType.Market)"
+      >
+        {{ $t('trade.market') }}
       </v-button>
     </div>
     <div class="mt-4">
@@ -48,41 +47,93 @@
     </div>
     <div class="mt-8">
       <div>
-        <v-input
-          ref="input-amount"
-          v-model="form.amount"
-          :label="$t('trade.amount')"
-          :custom-handler="true"
-          :max-decimals="market ? market.quantityDecimals : 6"
-          :max-selector="true"
-          :placeholder="amountStep"
-          type="number"
-          :step="amountStep"
-          min="0"
-          data-cy="trading-page-amount-input"
-          @blur="onAmountBlur"
-          @input="onAmountChange"
-          @input-max="() => onMaxInput(100)"
-        >
-          <span slot="addon">{{ market.baseToken.symbol.toUpperCase() }}</span>
-          <div
-            slot="context"
-            class="text-xs text-gray-400 flex items-center font-mono"
+        <div v-if="!tradingTypeMarket">
+          <v-input
+            ref="input-price"
+            v-model="form.price"
+            :placeholder="priceStep"
+            :label="$t('trade.price')"
+            :disabled="tradingTypeMarket"
+            type="number"
+            :step="priceStep"
+            :max-decimals="market ? market.quoteToken.decimals : 6"
+            min="0"
+            data-cy="trading-page-price-input"
+            @input="onPriceChange"
           >
-            <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(25)">
-              25%
-            </span>
-            <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(50)">
-              50%
-            </span>
-            <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(75)">
-              75%
-            </span>
-            <span class="cursor-pointer" @click.stop="onMaxInput(100)">
-              100%
-            </span>
-          </div>
-        </v-input>
+            <span slot="addon">{{
+              market.quoteToken.symbol.toUpperCase()
+            }}</span>
+          </v-input>
+          <span
+            v-if="priceError"
+            class="text-red-500 font-semibold text-2xs"
+            data-cy="trading-page-price-error-text-content"
+          >
+            {{ priceError }}
+          </span>
+        </div>
+        <div class="flex gap-3 mt-6">
+          <v-input
+            ref="input-amount"
+            v-model="form.amount"
+            :label="$t('trade.amount')"
+            :custom-handler="true"
+            :max-decimals="market ? market.quantityDecimals : 6"
+            :placeholder="amountStep"
+            type="number"
+            :step="amountStep"
+            min="0"
+            data-cy="trading-page-amount-input"
+            show-addon
+            @input="onAmountChange"
+          >
+            <span slot="addon">{{
+              market.baseToken.symbol.toUpperCase()
+            }}</span>
+            <div
+              slot="context"
+              class="text-xs text-gray-400 flex items-center font-mono"
+            ></div>
+          </v-input>
+          <v-input
+            ref="input-amount"
+            v-model="form.quoteAmount"
+            :custom-handler="true"
+            :max-decimals="market ? market.quantityDecimals : 6"
+            :placeholder="amountStep"
+            type="number"
+            :step="amountStep"
+            min="0"
+            data-cy="trading-page-amount-input"
+            show-prefix
+            show-addon
+            @input="onQuoteAmountChange"
+            @input-max="() => onMaxInput(100)"
+          >
+            <span slot="prefix">≈</span>
+            <span slot="addon">{{
+              market.quoteToken.symbol.toUpperCase()
+            }}</span>
+            <div
+              slot="context"
+              class="text-xs text-gray-400 flex items-center font-mono"
+            >
+              <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(25)">
+                25%
+              </span>
+              <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(50)">
+                50%
+              </span>
+              <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(75)">
+                75%
+              </span>
+              <span class="cursor-pointer" @click.stop="onMaxInput(100)">
+                100%
+              </span>
+            </div>
+          </v-input>
+        </div>
         <span
           v-if="amountError"
           class="text-2xs font-semibold text-red-500"
@@ -94,31 +145,6 @@
           v-if="priceError && tradingTypeMarket"
           data-cy="trading-page-price-error-text-content"
           class="text-2xs font-semibold text-red-500"
-        >
-          {{ priceError }}
-        </span>
-      </div>
-      <div v-if="!tradingTypeMarket" class="mt-6">
-        <v-input
-          ref="input-price"
-          v-model="form.price"
-          :placeholder="priceStep"
-          :label="$t('trade.price')"
-          :disabled="tradingTypeMarket"
-          type="number"
-          :step="priceStep"
-          :max-decimals="market ? market.quoteToken.decimals : 6"
-          min="0"
-          data-cy="trading-page-price-input"
-          @blur="onPriceBlur"
-          @input="onPriceChange"
-        >
-          <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
-        </v-input>
-        <span
-          v-if="priceError"
-          class="text-red-500 font-semibold text-2xs"
-          data-cy="trading-page-price-error-text-content"
         >
           {{ priceError }}
         </span>
@@ -222,6 +248,7 @@ import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
 import { Modal } from '~/types'
 import {
+  calculateAverageExecutionPriceFromFillableNotionalOnOrderBook,
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook,
   getApproxAmountForMarketOrder
@@ -231,14 +258,17 @@ import {
   TradingRewardsCampaign
 } from '~/app/services/exchange'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
+import { formatToAllowableDecimals } from '~/app/utils/formatters'
 
 interface TradeForm {
   amount: string
+  quoteAmount: string
   price: string
 }
 
 const initialForm = (): TradeForm => ({
   amount: '',
+  quoteAmount: '',
   price: ''
 })
 
@@ -254,7 +284,7 @@ export default Vue.extend({
     return {
       TradeExecutionType,
       SpotOrderSide,
-      tradingType: TradeExecutionType.Market,
+      tradingType: TradeExecutionType.LimitFill,
       orderType: SpotOrderSide.Buy,
       detailsDrawerOpen: true,
       status: new Status(),
@@ -365,10 +395,22 @@ export default Vue.extend({
       return new BigNumberInBase(this.form.amount)
     },
 
+    quoteAmount(): BigNumberInBase {
+      return new BigNumberInBase(this.form.quoteAmount)
+    },
+
     hasAmount(): boolean {
       const { amount, amountStep } = this
 
       return !amount.isNaN() && amount.gt(0) && amount.gte(amountStep)
+    },
+
+    hasQuoteAmount(): boolean {
+      const { quoteAmount, priceStep } = this
+
+      return (
+        !quoteAmount.isNaN() && quoteAmount.gt(0) && quoteAmount.gte(priceStep)
+      )
     },
 
     tradingTypeMarket(): boolean {
@@ -470,7 +512,13 @@ export default Vue.extend({
       return new BigNumberInBase(this.form.price)
     },
 
-    averagePrice(): BigNumberInBase {
+    hasPrice(): boolean {
+      const { price } = this
+
+      return price.gt(0)
+    },
+
+    averagePriceDerivedFromBaseAmount(): BigNumberInBase {
       const {
         tradingTypeMarket,
         orderTypeBuy,
@@ -493,7 +541,6 @@ export default Vue.extend({
         }
 
         const records = orderTypeBuy ? sells : buys
-
         const averagePrice = calculateAverageExecutionPriceFromOrderbook({
           records,
           amount,
@@ -501,7 +548,9 @@ export default Vue.extend({
         })
 
         return new BigNumberInBase(
-          averagePrice.times(slippage).toFixed(market.priceDecimals)
+          averagePrice
+            .times(slippage)
+            .toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
         )
       }
 
@@ -510,8 +559,70 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(
-        new BigNumberInBase(price).toFixed(market.priceDecimals)
+        new BigNumberInBase(price).toFixed(
+          market.priceDecimals,
+          BigNumberInBase.ROUND_DOWN
+        )
       )
+    },
+
+    averagePriceDerivedFromQuoteAmount(): BigNumberInBase {
+      const {
+        tradingTypeMarket,
+        orderTypeBuy,
+        sells,
+        buys,
+        market,
+        slippage,
+        quoteAmount,
+        price
+      } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      if (tradingTypeMarket) {
+        const records = orderTypeBuy ? sells : buys
+
+        const averagePrice = calculateAverageExecutionPriceFromFillableNotionalOnOrderBook(
+          {
+            records,
+            quoteAmount,
+            market
+          }
+        )
+
+        return new BigNumberInBase(
+          averagePrice
+            .times(slippage)
+            .toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
+        )
+      }
+
+      if (price.isNaN()) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(
+        new BigNumberInBase(price).toFixed(
+          market.priceDecimals,
+          BigNumberInBase.ROUND_DOWN
+        )
+      )
+    },
+
+    averagePrice(): BigNumberInBase {
+      const {
+        averagePriceDerivedFromBaseAmount,
+        averagePriceDerivedFromQuoteAmount
+      } = this
+
+      if (averagePriceDerivedFromBaseAmount.gt(0)) {
+        return averagePriceDerivedFromBaseAmount
+      }
+
+      return averagePriceDerivedFromQuoteAmount
     },
 
     executionPrice(): BigNumberInBase {
@@ -545,7 +656,9 @@ export default Vue.extend({
         })
 
         return new BigNumberInBase(
-          worstPrice.times(slippage).toFixed(market.priceDecimals)
+          worstPrice
+            .times(slippage)
+            .toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
         )
       }
 
@@ -554,11 +667,14 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(
-        new BigNumberInBase(price).toFixed(market.priceDecimals)
+        new BigNumberInBase(price).toFixed(
+          market.priceDecimals,
+          BigNumberInBase.ROUND_DOWN
+        )
       )
     },
 
-    hasPrice(): boolean {
+    hasExecutionPrice(): boolean {
       const { executionPrice, priceStep } = this
 
       return (
@@ -721,16 +837,18 @@ export default Vue.extend({
         sells,
         buys,
         amount,
-        hasAmount
+        quoteAmount,
+        hasAmount,
+        hasQuoteAmount
       } = this
 
-      if (!tradingTypeMarket || !hasAmount) {
+      if (!tradingTypeMarket || (!hasAmount && !hasQuoteAmount)) {
         return
       }
 
       const orders = orderTypeBuy ? sells : buys
 
-      if (orders.length <= 0 && amount.gt(0)) {
+      if (orders.length <= 0 && (amount.gt(0) || quoteAmount.gt(0))) {
         return {
           amount: this.$t('trade.not_enough_fillable_orders')
         }
@@ -742,7 +860,7 @@ export default Vue.extend({
     amountTooBigToFillError(): TradeError | undefined {
       const {
         tradingTypeMarket,
-        hasPrice,
+        hasExecutionPrice,
         hasAmount,
         orderTypeBuy,
         sells,
@@ -751,7 +869,7 @@ export default Vue.extend({
         market
       } = this
 
-      if (!tradingTypeMarket || !hasPrice || !hasAmount || !market) {
+      if (!tradingTypeMarket || !hasExecutionPrice || !hasAmount || !market) {
         return
       }
 
@@ -790,7 +908,7 @@ export default Vue.extend({
     amountNotValidNumberError(): TradeError | undefined {
       const { form } = this
 
-      if (!form.amount) {
+      if (!Number(form.amount)) {
         return undefined
       }
 
@@ -806,7 +924,7 @@ export default Vue.extend({
     priceHighDeviationFromMidOrderbookPrice(): TradeError | undefined {
       const {
         tradingTypeMarket,
-        hasPrice,
+        hasExecutionPrice,
         hasAmount,
         market,
         sells,
@@ -814,7 +932,7 @@ export default Vue.extend({
         executionPrice
       } = this
 
-      if (tradingTypeMarket || !hasPrice || !hasAmount || !market) {
+      if (tradingTypeMarket || !hasExecutionPrice || !hasAmount || !market) {
         return
       }
 
@@ -917,7 +1035,7 @@ export default Vue.extend({
         amountError,
         tradingTypeMarket,
         hasAmount,
-        hasPrice,
+        hasExecutionPrice,
         price,
         amount
       } = this
@@ -939,12 +1057,12 @@ export default Vue.extend({
       }
 
       if (!tradingTypeMarket) {
-        if (price.lte(0) || !hasPrice) {
+        if (price.lte(0) || !hasExecutionPrice) {
           return true
         }
       }
 
-      if (!tradingTypeMarket && hasPrice && price.lte(0)) {
+      if (!tradingTypeMarket && hasExecutionPrice && price.lte(0)) {
         return true
       }
 
@@ -954,7 +1072,7 @@ export default Vue.extend({
     total(): BigNumberInBase {
       const {
         amount,
-        hasPrice,
+        hasExecutionPrice,
         hasAmount,
         averagePrice,
         executionPrice,
@@ -962,7 +1080,7 @@ export default Vue.extend({
         tradingTypeMarket
       } = this
 
-      if (!hasPrice || !hasAmount || !market) {
+      if (!hasExecutionPrice || !hasAmount || !market) {
         return ZERO_IN_BASE
       }
 
@@ -1000,19 +1118,17 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const disqualified =
-        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-          (marketId) => marketId === market.marketId
-        )
+      const disqualified = tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
+        (marketId) => marketId === market.marketId
+      )
 
       if (disqualified) {
         return ZERO_IN_BASE
       }
 
-      const denomIncluded =
-        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-          (denom) => denom === market.quoteDenom
-        )
+      const denomIncluded = tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
+        (denom) => denom === market.quoteDenom
+      )
 
       if (!denomIncluded) {
         return ZERO_IN_BASE
@@ -1059,19 +1175,17 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const disqualified =
-        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-          (marketId) => marketId === market.marketId
-        )
+      const disqualified = tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
+        (marketId) => marketId === market.marketId
+      )
 
       if (disqualified) {
         return ZERO_IN_BASE
       }
 
-      const denomIncluded =
-        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-          (denom) => denom === market.quoteDenom
-        )
+      const denomIncluded = tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
+        (denom) => denom === market.quoteDenom
+      )
 
       if (!denomIncluded) {
         return ZERO_IN_BASE
@@ -1167,6 +1281,24 @@ export default Vue.extend({
       if (newTradingType === TradeExecutionType.LimitFill && market) {
         this.onPriceChange(form.price)
       }
+    },
+
+    lastTradedPrice(newPrice: BigNumberInBase) {
+      const {
+        form: { price },
+        market
+      } = this
+
+      if (!market) {
+        return
+      }
+
+      if (!price) {
+        this.form.price = new BigNumberInBase(newPrice).toFixed(
+          market.priceDecimals,
+          BigNumberInBase.ROUND_DOWN
+        )
+      }
     }
   },
 
@@ -1184,10 +1316,110 @@ export default Vue.extend({
      * into consideration
      */
     onMaxInput(percent = 100) {
-      this.onAmountChange(this.getMaxAmountValue(percent))
+      this.onAmountChange(this.getMaxAmountValue(percent), true)
       this.$nextTick(() => {
-        this.onAmountChange(this.getMaxAmountValue(percent))
+        this.onAmountChange(this.getMaxAmountValue(percent), true)
+        this.updateQuoteAmountForMaxInput(percent)
       })
+    },
+
+    updateQuoteForMarketOrderSell(percentToNumber: BigNumberInBase) {
+      const {
+        baseAvailableBalance,
+        slippage,
+        market,
+        buys,
+        averagePrice
+      } = this
+
+      if (!market) {
+        return
+      }
+
+      const baseBalance = new BigNumberInBase(baseAvailableBalance).times(
+        percentToNumber
+      )
+
+      const { totalFillableAmount, totalNotional } = buys.reduce(
+        ({ totalFillableAmount, totalNotional }, { quantity, price }) => {
+          const orderPrice = new BigNumberInBase(price)
+            .times(slippage)
+            .toWei(market.baseToken.decimals - market.quoteToken.decimals)
+
+          const orderQuantity = new BigNumberInWei(quantity).toBase(
+            market.baseToken.decimals
+          )
+
+          return {
+            totalFillableAmount: totalFillableAmount.plus(orderQuantity),
+            totalNotional: totalNotional.plus(orderQuantity.times(orderPrice))
+          }
+        },
+        { totalFillableAmount: ZERO_IN_BASE, totalNotional: ZERO_IN_BASE }
+      )
+
+      const notionalBalance = baseBalance.times(averagePrice)
+      if (baseBalance.gt(totalFillableAmount)) {
+        return (this.form.quoteAmount = totalNotional.toString())
+      }
+      return (this.form.quoteAmount = notionalBalance.toString())
+    },
+
+    updateQuoteForMarketOrderBuy(percentToNumber: BigNumberInBase) {
+      const {
+        quoteAvailableBalance,
+        sells,
+        slippage,
+        takerFeeRate,
+        market
+      } = this
+
+      if (!market) {
+        return
+      }
+
+      const quoteBalance = quoteAvailableBalance.times(percentToNumber)
+
+      let totalNotional = ZERO_IN_BASE
+
+      for (const record of sells) {
+        const price = new BigNumberInBase(record.price)
+          .times(slippage)
+          .toWei(market.baseToken.decimals - market.quoteToken.decimals)
+
+        const quantity = new BigNumberInWei(record.quantity).toBase(
+          market.baseToken.decimals
+        )
+
+        totalNotional = totalNotional.plus(price.times(quantity))
+      }
+
+      const totalFees = totalNotional.times(takerFeeRate)
+      const total = totalNotional.plus(totalFees)
+
+      if (total.gt(quoteBalance)) {
+        return (this.form.quoteAmount = formatToAllowableDecimals(
+          quoteBalance.div(takerFeeRate.plus(1)).toString(),
+          market.priceDecimals
+        ))
+      }
+
+      return (this.form.quoteAmount = formatToAllowableDecimals(
+        totalNotional.toString(),
+        BigNumberInBase.ROUND_DOWN
+      ))
+    },
+
+    updateQuoteAmountForMaxInput(percent: number) {
+      const { orderTypeBuy } = this
+
+      const percentToNumber = new BigNumberInBase(percent).div(100)
+
+      if (!orderTypeBuy) {
+        this.updateQuoteForMarketOrderSell(percentToNumber)
+      } else {
+        this.updateQuoteForMarketOrderBuy(percentToNumber)
+      }
     },
 
     getMaxAmountValue(percentage: number): string {
@@ -1268,6 +1500,19 @@ export default Vue.extend({
       this.onAmountChange(size)
     },
 
+    updatePriceFromLastTradedPrice() {
+      const { lastTradedPrice, market } = this
+
+      if (!market) {
+        return
+      }
+
+      this.form.price = lastTradedPrice.toFixed(
+        market.priceDecimals,
+        BigNumberInBase.ROUND_DOWN
+      )
+    },
+
     onOrderbookNotionalClick({
       total,
       price,
@@ -1305,42 +1550,133 @@ export default Vue.extend({
     },
 
     onPriceChange(price: string = '') {
-      this.form.price = price.toString()
-    },
-
-    onPriceBlur() {
-      const { market, form, hasPrice } = this
-
-      if (!market || !hasPrice) {
-        return
-      }
-
-      this.form.price = new BigNumberInBase(form.price || 0).toFixed(
-        market.priceDecimals
-      )
-    },
-
-    onAmountBlur() {
-      const { market, form } = this
+      const { hasAmount, market } = this
 
       if (!market) {
         return
       }
 
-      if (form.amount.trim() !== '') {
-        this.form.amount = new BigNumberInBase(form.amount).toFixed(
-          market.quantityDecimals,
-          BigNumberInBase.ROUND_DOWN
-        )
+      this.form.price = formatToAllowableDecimals(price, market.priceDecimals)
+
+      if (hasAmount) {
+        this.updateLimitQuoteAmount()
       }
     },
 
-    onAmountChange(amount: string = '') {
-      this.form.amount = amount.toString()
+    onAmountChange(amount: string = '', isMaxInput?: boolean) {
+      const { tradingTypeMarket, hasPrice, market } = this
+
+      if (!market) {
+        return
+      }
+
+      this.form.amount = formatToAllowableDecimals(
+        amount,
+        market.quantityDecimals
+      )
+
+      this.resetQuoteAmount()
+
+      if (!hasPrice) {
+        this.updatePriceFromLastTradedPrice()
+      }
+
+      if (isMaxInput) {
+        return
+      }
+
+      if (tradingTypeMarket) {
+        return this.updateMarketQuoteAmount()
+      }
+
+      this.updateLimitQuoteAmount()
+    },
+
+    onQuoteAmountChange(quoteAmount: string = '') {
+      const { tradingTypeMarket, hasPrice, market } = this
+
+      if (!market) {
+        return
+      }
+
+      this.form.quoteAmount = formatToAllowableDecimals(
+        quoteAmount,
+        market.priceDecimals
+      )
+
+      this.resetBaseAmount()
+
+      if (tradingTypeMarket) {
+        return this.updateMarketBaseAmount()
+      }
+
+      if (!hasPrice) {
+        this.updatePriceFromLastTradedPrice()
+      }
+
+      this.updateLimitBaseAmount()
+    },
+
+    resetBaseAmount() {
+      this.form.amount = ''
+    },
+
+    resetQuoteAmount() {
+      this.form.quoteAmount = ''
+    },
+
+    updateMarketBaseAmount() {
+      const { quoteAmount, averagePrice, market } = this
+
+      if (!market) {
+        return
+      }
+
+      this.form.amount = quoteAmount
+        .div(averagePrice)
+        .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
+    },
+
+    updateLimitBaseAmount() {
+      const { quoteAmount, price, market } = this
+
+      if (!market) {
+        return
+      }
+
+      this.form.amount = quoteAmount
+        .div(price)
+        .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
+    },
+
+    updateMarketQuoteAmount() {
+      const { amount, averagePrice, market } = this
+
+      if (!market) {
+        return
+      }
+
+      this.form.quoteAmount = amount
+        .times(averagePrice)
+        .toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
+    },
+
+    updateLimitQuoteAmount() {
+      const { amount, price, market } = this
+
+      if (!market) {
+        return
+      }
+
+      this.form.quoteAmount = amount
+        .times(price)
+        .toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
     },
 
     onTradingTypeToggle(selectedTradingType: TradeExecutionType) {
       this.tradingType = selectedTradingType
+      this.resetBaseAmount()
+      this.resetQuoteAmount()
     },
 
     submitLimitOrder() {
