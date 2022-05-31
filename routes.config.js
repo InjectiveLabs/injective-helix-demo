@@ -47,13 +47,10 @@ if (NETWORK === Network.Devnet || IS_MAINNET_STAGING) {
 }
 
 const spotRoutes = spot.map((s) => `/spot/${s}`) || []
-const derivativesRoutes = derivatives.map((s) => `/derivatives/${s}`) || []
+const derivativesRoutes = derivatives.map((s) => `/derivatives/${s}`) || [] // example: '/market/huahua-usdt'
 
 const upcomingMarketsRoutes = []
-const deprecatedMarketsRoutes =
-  IS_TESTNET || IS_DEVNET
-    ? []
-    : ['/market/huahua-usdt', '/market/luna-ust', '/market/luna-ust-perp']
+const deprecatedMarketsRoutes = IS_TESTNET || IS_DEVNET ? [] : []
 
 module.exports = [
   '/',
