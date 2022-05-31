@@ -39,7 +39,6 @@ export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
   'stx-usdt-perp',
-  'osmo-ust-perp',
   'xprt-usdt',
   'evmos-usdt',
   BAYC_WETH_PERP_SLUG,

@@ -14,7 +14,6 @@ const mainnetSpot = [
   'evmos-usdt',
   'ape-usdt',
   'link-usdt',
-  'ust-usdt',
   'gf-usdt'
 ]
 const testnetSpot = [...mainnetSpot]
