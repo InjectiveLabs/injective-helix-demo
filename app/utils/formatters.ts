@@ -80,3 +80,29 @@ export const reverseFormatMarketIdToComplyToZeroEx = (
 ): string => {
   return marketId.slice(0, marketId.length - 8)
 }
+
+export const formatToAllowableDecimals = (
+  value: string | number,
+  allowableDecimals: number
+): string => {
+  const valueAsString = typeof value === 'number' ? value.toString() : value
+
+  const hasFractional = valueAsString.includes('.')
+
+  if (hasFractional) {
+    const fractionalLength = valueAsString.split('.')[1].length
+
+    const fractionalGreaterThanAllowable = new BigNumberInBase(
+      fractionalLength
+    ).gte(allowableDecimals)
+
+    return fractionalGreaterThanAllowable
+      ? new BigNumberInBase(valueAsString).toFixed(
+          allowableDecimals,
+          BigNumberInBase.ROUND_DOWN
+        )
+      : valueAsString
+  }
+
+  return valueAsString
+}

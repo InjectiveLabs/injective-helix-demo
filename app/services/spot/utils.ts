@@ -121,6 +121,56 @@ export const calculateAverageExecutionPriceFromOrderbook = ({
   return sum.div(amount.minus(remainAmountToFill))
 }
 
+export const calculateAverageExecutionPriceFromFillableNotionalOnOrderBook = ({
+  records,
+  market,
+  quoteAmount
+}: {
+  records: UiPriceLevel[]
+  market: UiSpotMarketWithToken
+  quoteAmount: BigNumberInBase
+}) => {
+  const { amount, sum } = records.reduce(
+    ({ amount, sum, remainNotionalToFill }, order: UiPriceLevel) => {
+      const orderQuantity = new BigNumberInWei(order.quantity).toBase(
+        market.baseToken.decimals
+      )
+
+      const orderPrice = new BigNumberInBase(
+        new BigNumberInBase(order.price).toWei(
+          market.baseToken.decimals - market.quoteToken.decimals
+        )
+      )
+
+      const orderNotional = orderQuantity.times(orderPrice)
+
+      const minNotional = BigNumberInBase.min(
+        remainNotionalToFill,
+        orderNotional
+      )
+
+      const additionalQuantity = orderQuantity.times(
+        minNotional.div(orderNotional)
+      )
+
+      return {
+        sum: remainNotionalToFill
+          ? sum.plus(orderPrice.times(additionalQuantity))
+          : sum,
+        amount: amount.plus(additionalQuantity),
+        remainNotionalToFill: remainNotionalToFill.minus(minNotional)
+      }
+    },
+    {
+      sum: ZERO_IN_BASE,
+      amount: ZERO_IN_BASE,
+      remainNotionalToFill: quoteAmount
+    }
+  )
+
+  return sum.div(amount)
+}
+
 export const getAggregationPrice = ({
   price,
   aggregation,
