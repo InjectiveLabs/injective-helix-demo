@@ -109,7 +109,7 @@
             show-prefix
             show-addon
             @input="onQuoteAmountChange"
-            @input-max="() => onMaxInput(100)"
+            @input-max="() => onProportionalQuantitySelected(100)"
           >
             <span slot="prefix">≈</span>
             <span slot="addon">{{
@@ -119,16 +119,28 @@
               slot="context"
               class="text-xs text-gray-400 flex items-center font-mono"
             >
-              <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(25)">
+              <span
+                class="mr-1 cursor-pointer"
+                @click.stop="onProportionalQuantitySelected(25)"
+              >
                 25%
               </span>
-              <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(50)">
+              <span
+                class="mr-1 cursor-pointer"
+                @click.stop="onProportionalQuantitySelected(50)"
+              >
                 50%
               </span>
-              <span class="mr-1 cursor-pointer" @click.stop="onMaxInput(75)">
+              <span
+                class="mr-1 cursor-pointer"
+                @click.stop="onProportionalQuantitySelected(75)"
+              >
                 75%
               </span>
-              <span class="cursor-pointer" @click.stop="onMaxInput(100)">
+              <span
+                class="cursor-pointer"
+                @click.stop="onProportionalQuantitySelected(100)"
+              >
                 100%
               </span>
             </div>
@@ -1315,15 +1327,23 @@ export default Vue.extend({
      * and then we update the amount again to account the fees
      * into consideration
      */
-    onMaxInput(percent = 100) {
-      this.onAmountChange(this.getMaxAmountValue(percent), true)
+    onProportionalQuantitySelected(percent = 100) {
+      this.onAmountChange(
+        this.getAmountFromProportionalQuantityPercentage(percent),
+        true
+      )
       this.$nextTick(() => {
-        this.onAmountChange(this.getMaxAmountValue(percent), true)
-        this.updateQuoteAmountForMaxInput(percent)
+        this.onAmountChange(
+          this.getAmountFromProportionalQuantityPercentage(percent),
+          true
+        )
+        this.updateQuoteAmountForProportionalQuantityBuyOrSell(percent)
       })
     },
 
-    updateQuoteForMarketOrderSell(percentToNumber: BigNumberInBase) {
+    updateQuoteAmountForProportionalQuantitySell(
+      percentToNumber: BigNumberInBase
+    ) {
       const {
         baseAvailableBalance,
         slippage,
@@ -1365,7 +1385,9 @@ export default Vue.extend({
       return (this.form.quoteAmount = notionalBalance.toString())
     },
 
-    updateQuoteForMarketOrderBuy(percentToNumber: BigNumberInBase) {
+    updateQuoteAmountForProportionalQuantityBuy(
+      percentToNumber: BigNumberInBase
+    ) {
       const {
         quoteAvailableBalance,
         sells,
@@ -1410,19 +1432,19 @@ export default Vue.extend({
       ))
     },
 
-    updateQuoteAmountForMaxInput(percent: number) {
+    updateQuoteAmountForProportionalQuantityBuyOrSell(percent: number) {
       const { orderTypeBuy } = this
 
       const percentToNumber = new BigNumberInBase(percent).div(100)
 
       if (!orderTypeBuy) {
-        this.updateQuoteForMarketOrderSell(percentToNumber)
+        this.updateQuoteAmountForProportionalQuantitySell(percentToNumber)
       } else {
-        this.updateQuoteForMarketOrderBuy(percentToNumber)
+        this.updateQuoteAmountForProportionalQuantityBuy(percentToNumber)
       }
     },
 
-    getMaxAmountValue(percentage: number): string {
+    getAmountFromProportionalQuantityPercentage(percentage: number): string {
       const {
         market,
         buys,
