@@ -189,7 +189,8 @@ import {
   DEFAULT_MARKET_PRICE_WARNING_DEVIATION,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  DEFAULT_MAX_SLIPPAGE
 } from '~/app/utils/constants'
 import ModalInsufficientInjForGas from '~/components/partials/modals/insufficient-inj-for-gas.vue'
 import { Modal } from '~/types'
@@ -301,7 +302,12 @@ export default Vue.extend({
     slippage(): BigNumberInBase {
       const { orderTypeBuy, form } = this
 
-      const slippageTolerance = new BigNumberInBase(Number(form.slippageTolerance))
+      const maxSlippage = DEFAULT_MAX_SLIPPAGE.times(100)
+      const slippageToleranceAsNumber = Number(form.slippageTolerance)
+      const slippageTolerance = slippageToleranceAsNumber <= maxSlippage.toNumber()
+        ? new BigNumberInBase(slippageToleranceAsNumber)
+        : maxSlippage
+
       const slippage = new BigNumberInBase(
         orderTypeBuy
           ? slippageTolerance.div(100).plus(1)
