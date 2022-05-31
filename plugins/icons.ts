@@ -51,6 +51,7 @@ import Telegram from '~/components/icons/telegram.vue'
 import TelegramCircle from '~/components/icons/telegram-circle.vue'
 import Torus from '~/components/icons/torus.vue'
 import Triangle from '~/components/icons/triangle.vue'
+import Trezor from '~/components/icons/trezor.vue'
 import Twitter from '~/components/icons/twitter.vue'
 import TwitterCircle from '~/components/icons/twitter-circle.vue'
 import User from '~/components/icons/user.vue'
@@ -115,6 +116,7 @@ Vue.component('IconSwap', Swap)
 Vue.component('IconTelegram', Telegram)
 Vue.component('IconTelegramCircle', TelegramCircle)
 Vue.component('IconTriangle', Triangle)
+Vue.component('IconTrezor', Trezor)
 Vue.component('IconTwitter', Twitter)
 Vue.component('IconTwitterCircle', TwitterCircle)
 Vue.component('IconUser', User)

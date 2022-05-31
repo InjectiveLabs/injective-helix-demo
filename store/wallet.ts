@@ -178,6 +178,28 @@ export const actions = actionTree(
       commit('setWalletConnectStatus', WalletConnectStatus.connected)
     },
 
+    async connectTrezor({ state, commit }, addresses: string[]) {
+      await this.app.$accessor.app.validate()
+
+      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
+      commit('setWallet', state.wallet)
+
+      await connect({ wallet: state.wallet })
+
+      const [address] = addresses
+      const addressConfirmation = await confirm(address)
+      const injectiveAddress = getInjectiveAddress(address)
+
+      commit('setInjectiveAddress', injectiveAddress)
+      commit('setAddressConfirmation', addressConfirmation)
+      commit('setAddresses', addresses)
+      commit('setAddress', address)
+
+      await this.app.$accessor.wallet.onConnect()
+
+      commit('setWalletConnectStatus', WalletConnectStatus.connected)
+    },
+
     async connectMetamask({ commit }) {
       commit('setWalletConnectStatus', WalletConnectStatus.connecting)
 

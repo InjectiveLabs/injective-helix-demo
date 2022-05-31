@@ -39,7 +39,12 @@ export default {
     highlyExperimental: 'Highly Experimental!',
 
     connectUsingTorus: 'Connect using Torus',
-    torus: 'Torus'
+    torus: 'Torus',
+    trezor: 'Trezor',
+    Trezor: 'Trezor',
+    connectUsingTrezor: 'Connect using Trezor',
+    connectUsingTrezorNote:
+      'Note: To ensure smooth process while connecting your Trezor Hardware Wallet, please ensure you are running the on latest Chrome version, have your Trezor device connected and unlocked.'
   },
 
   memo: {

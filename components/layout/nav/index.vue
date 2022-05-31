@@ -13,7 +13,10 @@
       </NavItem>
 
       <NavItem
-        :to="{ name: 'derivatives-derivative', params: { derivative: 'btc-usdt-perp' } }"
+        :to="{
+          name: 'derivatives-derivative',
+          params: { derivative: 'btc-usdt-perp' }
+        }"
         class="block"
         data-cy="header-trade-link"
       >
@@ -121,26 +124,31 @@ export default Vue.extend({
     NavItemDummy,
     PopperBox
   },
+
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
     },
+
     isMarketPage(): boolean {
       const { $route } = this
       return ['spot-spot', 'derivatives-derivative'].includes(
         $route.name as string
       )
     },
+
     $popper(): any {
       return this.$refs['popper-rewards-dropdown']
     }
   },
+
   methods: {
     handleShowDropdown() {
       if (this.$popper) {
         this.$popper.showDropdown()
       }
     },
+
     handleHideDropdown() {
       if (this.$popper) {
         this.$popper.hideDropdown()
