@@ -217,7 +217,8 @@ export default {
       price_impact: 'Price Impact',
       minimum_received: 'Minimum Received',
       fetching_price: 'Fetching price',
-      reset_to_default_pair: 'Invalid pair {pair}, resetting to USDT/INJ'
+      reset_to_default_pair: 'Invalid pair {pair}, resetting to USDT/INJ',
+      invalid_token_symbol_warning: 'Invalid token {symbol}, defaulting to {defaultSymbol}.'
     }
   }
 }

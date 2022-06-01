@@ -1274,9 +1274,30 @@ export default Vue.extend({
       to = 'inj'
     }
 
+    if (!this.isTokenSymbolValid(from)) {
+      this.$toast.error(
+        this.$t('trade.swap.invalid_token_symbol_warning', {
+          symbol: from.toUpperCase(),
+          defaultSymbol: 'USDT'
+        })
+      )
+      from = 'usdt'
+    }
+
+    if (!this.isTokenSymbolValid(to)) {
+      this.$toast.error(
+        this.$t('trade.swap.invalid_token_symbol_warning', {
+          symbol: to.toUpperCase(),
+          defaultSymbol: 'INJ'
+        })
+      )
+      to = 'inj'
+    }
+
     const market = this.getMarketFromRoute()
     const fromToken = this.getTokenBySymbol(from)
     const toToken = this.getTokenBySymbol(to)
+
     let orderType = SpotOrderSide.Buy
 
     if (market) {
@@ -1309,7 +1330,7 @@ export default Vue.extend({
       return market
     },
 
-    getTokenBySymbol(symbol: any): Token | null {
+    getTokenBySymbol(symbol: string): Token | null {
       const market = this.$store.state.spot.markets.find(
         (m: UiSpotMarketWithToken) =>
           m.baseToken.symbol.toLowerCase() === symbol ||
@@ -1325,6 +1346,16 @@ export default Vue.extend({
       }
 
       return market.quoteToken
+    },
+
+    isTokenSymbolValid(symbol: any): boolean {
+      const market = this.$store.state.spot.markets.find(
+        (m: UiSpotMarketWithToken) =>
+          m.baseToken.symbol.toLowerCase() === symbol ||
+          m.quoteToken.symbol.toLowerCase() === symbol
+      )
+
+      return !!market
     },
 
     onDetailsDrawerToggle(): void {
