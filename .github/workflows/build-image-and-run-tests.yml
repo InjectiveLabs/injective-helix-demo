@@ -124,7 +124,7 @@ jobs:
             attempts=0
             until docker pull "$image"
             do
-	            [[ attempts -eq 5 ]] && echo "Reached maximum attempts of 5!" && exit 1
+              [[ attempts -eq 5 ]] && echo "Reached maximum attempts of 5!" && exit 1
               echo "Cooling down for 10 seconds."
               sleep 10
               ((attempts++))
