@@ -7,7 +7,7 @@ ARG APP_BASE_URL="http://localhost:80"
 ARG ALCHEMY_ENDPOINT
 ENV APP_BASE_URL=${APP_BASE_URL}
 RUN echo "APP_BASE_URL=$APP_BASE_URL" >> .env
-RUN echo "APP_NETWORK=devnet" >> .env
+RUN echo "APP_NETWORK=local" >> .env
 RUN echo "CHAIN_ID=42" >> .env
 RUN echo "ALCHEMY_ENDPOINT=$ALCHEMY_ENDPOINT" >> .env
 RUN yarn build
