@@ -88,7 +88,7 @@
           </div> -->
           <button
             type="button"
-            class="rounded-full z-1100 flex items-center justify-center min-w-[32px] w-8 h-8 bg-primary-600 hover:bg-primary-500 relative mx-auto"
+            class="rounded-full z-1000 flex items-center justify-center min-w-[32px] w-8 h-8 bg-primary-600 hover:bg-primary-500 relative mx-auto"
             @click="switchTokens"
           >
             <IconArrowDown class="transform w-[10px] h-[10px]" />
