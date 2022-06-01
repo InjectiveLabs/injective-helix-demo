@@ -27,7 +27,7 @@
       <div class="bg-gray-900 rounded-2xl flex">
         <v-button-select
           v-model="orderType"
-          :option="SpotOrderSide.Buy"
+          :option="postOnly ? SpotOrderSide.BuyPO : SpotOrderSide.Buy"
           aqua
           class="w-1/2"
           data-cy="trading-page-switch-to-side-buy-button"
@@ -36,7 +36,7 @@
         </v-button-select>
         <v-button-select
           v-model="orderType"
-          :option="SpotOrderSide.Sell"
+          :option="postOnly ? SpotOrderSide.SellPO : SpotOrderSide.Sell"
           red
           class="w-1/2"
           data-cy="trading-page-switch-to-side-sell-button"
@@ -47,35 +47,28 @@
     </div>
     <div class="mt-8">
       <div>
-        <div v-if="!tradingTypeMarket">
-          <v-input
-            ref="input-price"
-            v-model="form.price"
-            :placeholder="priceStep"
-            :label="$t('trade.price')"
-            :disabled="tradingTypeMarket"
-            type="number"
-            :step="priceStep"
-            :max-decimals="market ? market.quoteToken.decimals : 6"
-            min="0"
-            data-cy="trading-page-price-input"
-            @input="onPriceChange"
-          >
-            <span slot="addon">{{
-              market.quoteToken.symbol.toUpperCase()
-            }}</span>
-          </v-input>
-          <span
-            v-if="priceError"
-            class="text-red-500 font-semibold text-2xs"
-            data-cy="trading-page-price-error-text-content"
-          >
-            {{ priceError }}
-          </span>
-        </div>
+        <v-input
+          v-if="!tradingTypeMarket"
+          ref="input-price"
+          :key="`price-${priceKey}`"
+          v-model="form.price"
+          :placeholder="priceStep"
+          :label="$t('trade.price')"
+          :disabled="tradingTypeMarket"
+          type="number"
+          :step="priceStep"
+          :max-decimals="market ? market.quoteToken.decimals : 6"
+          min="0"
+          data-cy="trading-page-price-input"
+          @input="onPriceChange"
+          @blur="onPriceBlur"
+        >
+          <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
+        </v-input>
         <div class="flex gap-3 mt-6">
           <v-input
             ref="input-amount"
+            :key="`amount-${amountKey}`"
             v-model="form.amount"
             :label="$t('trade.amount')"
             :custom-handler="true"
@@ -87,6 +80,7 @@
             data-cy="trading-page-amount-input"
             show-addon
             @input="onAmountChange"
+            @blur="onAmountBlur"
           >
             <span slot="addon">{{
               market.baseToken.symbol.toUpperCase()
@@ -98,6 +92,7 @@
           </v-input>
           <v-input
             ref="input-amount"
+            :key="`quoteAmount-${quoteAmountKey}`"
             v-model="form.quoteAmount"
             :custom-handler="true"
             :max-decimals="market ? market.quantityDecimals : 6"
@@ -109,6 +104,7 @@
             show-prefix
             show-addon
             @input="onQuoteAmountChange"
+            @blur="onQuoteAmountBlur"
             @input-max="() => onProportionalQuantitySelected(100)"
           >
             <span slot="prefix">≈</span>
@@ -154,13 +150,23 @@
           {{ amountError }}
         </span>
         <span
-          v-if="priceError && tradingTypeMarket"
+          v-if="priceError"
           data-cy="trading-page-price-error-text-content"
           class="text-2xs font-semibold text-red-500"
         >
           {{ priceError }}
         </span>
       </div>
+    </div>
+    <div>
+      <AdvancedSettings
+        :slippage-tolerance="form.slippageTolerance"
+        :slippage-warning="slippageWarning"
+        :slippage-error="slippageError"
+        :trading-type-market="tradingTypeMarket"
+        @set-slippage-tolerance="setSlippageTolerance"
+        @set-post-only="setPostOnly"
+      />
     </div>
     <component
       :is="tradingTypeMarket ? `v-order-details-market` : 'v-order-details'"
@@ -225,7 +231,6 @@
         {{ $t(orderTypeBuy ? 'trade.buy' : 'trade.sell') }}
       </v-button>
     </div>
-
     <v-modal-order-confirm @confirmed="submitLimitOrder" />
   </div>
 </template>
@@ -247,8 +252,8 @@ import {
 import { SpotOrderSide } from '@injectivelabs/spot-consumer'
 import OrderDetails from './order-details.vue'
 import OrderDetailsMarket from './order-details-market.vue'
+import AdvancedSettings from './advanced-settings.vue'
 import {
-  DEFAULT_MAX_SLIPPAGE,
   DEFAULT_PRICE_WARNING_DEVIATION,
   DEFAULT_MARKET_PRICE_WARNING_DEVIATION,
   DEFAULT_MAX_PRICE_BAND_DIFFERENCE,
@@ -276,12 +281,16 @@ interface TradeForm {
   amount: string
   quoteAmount: string
   price: string
+  slippageTolerance: string
+  postOnly: boolean
 }
 
 const initialForm = (): TradeForm => ({
   amount: '',
   quoteAmount: '',
-  price: ''
+  price: '',
+  slippageTolerance: '0.5',
+  postOnly: false
 })
 
 export default Vue.extend({
@@ -289,7 +298,8 @@ export default Vue.extend({
     'v-button-checkbox': ButtonCheckbox,
     'v-order-details': OrderDetails,
     'v-order-details-market': OrderDetailsMarket,
-    VModalOrderConfirm
+    VModalOrderConfirm,
+    AdvancedSettings
   },
 
   data() {
@@ -300,7 +310,10 @@ export default Vue.extend({
       orderType: SpotOrderSide.Buy,
       detailsDrawerOpen: true,
       status: new Status(),
-      form: initialForm()
+      form: initialForm(),
+      amountKey: 0,
+      quoteAmountKey: 0,
+      priceKey: 0
     }
   },
 
@@ -417,6 +430,31 @@ export default Vue.extend({
       return !amount.isNaN() && amount.gt(0) && amount.gte(amountStep)
     },
 
+    slippageWarning(): string {
+      const {
+        form: { slippageTolerance }
+      } = this
+
+      if (
+        new BigNumberInBase(slippageTolerance).gt(new BigNumberInBase(5)) &&
+        new BigNumberInBase(slippageTolerance).isLessThan(
+          new BigNumberInBase(50)
+        )
+      ) {
+        return this.$t('trade.high_slippage_warning')
+      }
+
+      if (
+        new BigNumberInBase(slippageTolerance).isLessThan(
+          new BigNumberInBase(0.05)
+        )
+      ) {
+        return this.$t('trade.low_slippage_tolerance_warning')
+      }
+
+      return ''
+    },
+
     hasQuoteAmount(): boolean {
       const { quoteAmount, priceStep } = this
 
@@ -438,12 +476,17 @@ export default Vue.extend({
     },
 
     slippage(): BigNumberInBase {
-      const { orderTypeBuy } = this
+      const {
+        orderTypeBuy,
+        form: { slippageTolerance }
+      } = this
+
+      const slippageAsBigNumber = new BigNumberInBase(slippageTolerance)
 
       return new BigNumberInBase(
         orderTypeBuy
-          ? DEFAULT_MAX_SLIPPAGE.div(100).plus(1)
-          : DEFAULT_MAX_SLIPPAGE.div(100).minus(1).times(-1)
+          ? slippageAsBigNumber.div(100).plus(1)
+          : slippageAsBigNumber.div(100).minus(1).times(-1)
       )
     },
 
@@ -522,6 +565,10 @@ export default Vue.extend({
 
     price(): BigNumberInBase {
       return new BigNumberInBase(this.form.price)
+    },
+
+    postOnly(): boolean {
+      return this.form.postOnly
     },
 
     hasPrice(): boolean {
@@ -809,6 +856,18 @@ export default Vue.extend({
       return deviation.gt(DEFAULT_MARKET_PRICE_WARNING_DEVIATION)
     },
 
+    slippageTooHighError(): TradeError | undefined {
+      const {
+        form: { slippageTolerance }
+      } = this
+
+      if (new BigNumberInBase(slippageTolerance).gt(new BigNumberInBase(50))) {
+        return { slippage: this.$t('trade.invalid_slippage') }
+      }
+
+      return undefined
+    },
+
     availableBalanceError(): TradeError | undefined {
       const {
         quoteAvailableBalance,
@@ -1013,6 +1072,14 @@ export default Vue.extend({
       return amount || null
     },
 
+    slippageError(): string | null {
+      const {
+        errors: { slippage }
+      } = this
+
+      return slippage || null
+    },
+
     errors(): TradeError {
       if (this.availableBalanceError) {
         return this.availableBalanceError
@@ -1038,7 +1105,11 @@ export default Vue.extend({
         return this.priceHighDeviationFromMidOrderbookPrice
       }
 
-      return { price: '', amount: '' }
+      if (this.slippageTooHighError) {
+        return this.slippageTooHighError
+      }
+
+      return { price: '', amount: '', slippage: '' }
     },
 
     hasErrors(): boolean {
@@ -1049,7 +1120,8 @@ export default Vue.extend({
         hasAmount,
         hasExecutionPrice,
         price,
-        amount
+        amount,
+        slippageError
       } = this
 
       if (priceError) {
@@ -1057,6 +1129,10 @@ export default Vue.extend({
       }
 
       if (amountError) {
+        return true
+      }
+
+      if (slippageError) {
         return true
       }
 
@@ -1341,6 +1417,14 @@ export default Vue.extend({
       })
     },
 
+    setSlippageTolerance(slippage: string) {
+      this.form.slippageTolerance = formatToAllowableDecimals(slippage, 2)
+    },
+
+    setPostOnly(postOnly: boolean) {
+      this.form.postOnly = postOnly
+    },
+
     updateQuoteAmountForProportionalQuantitySell(
       percentToNumber: BigNumberInBase
     ) {
@@ -1621,6 +1705,60 @@ export default Vue.extend({
       }
 
       this.updateLimitQuoteAmount()
+    },
+
+    onAmountBlur() {
+      const { market, form } = this
+
+      if (!market) {
+        return
+      }
+
+      if (form.amount.trim() !== '' && !form.amount.includes('.')) {
+        // use key to refresh input field to eliminate potential trailing decimal point
+        this.amountKey++
+
+        this.form.amount = new BigNumberInBase(form.amount).toFixed(
+          0,
+          BigNumberInBase.ROUND_DOWN
+        )
+      }
+    },
+
+    onQuoteAmountBlur() {
+      const { market, form } = this
+
+      if (!market) {
+        return
+      }
+
+      if (form.quoteAmount.trim() !== '' && !form.quoteAmount.includes('.')) {
+        // use key to refresh input field to eliminate potential trailing decimal point
+        this.quoteAmountKey++
+
+        this.form.quoteAmount = new BigNumberInBase(form.quoteAmount).toFixed(
+          0,
+          BigNumberInBase.ROUND_DOWN
+        )
+      }
+    },
+
+    onPriceBlur() {
+      const { market, form } = this
+
+      if (!market) {
+        return
+      }
+
+      if (form.price.trim() !== '' && !form.price.includes('.')) {
+        // use key to refresh input field to eliminate potential trailing decimal point
+        this.priceKey++
+
+        this.form.price = new BigNumberInBase(form.price).toFixed(
+          0,
+          BigNumberInBase.ROUND_DOWN
+        )
+      }
     },
 
     onQuoteAmountChange(quoteAmount: string = '') {

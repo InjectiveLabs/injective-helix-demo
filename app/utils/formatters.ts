@@ -104,5 +104,8 @@ export const formatToAllowableDecimals = (
       : valueAsString
   }
 
-  return valueAsString
+  return new BigNumberInBase(valueAsString).toFixed(
+    0,
+    BigNumberInBase.ROUND_DOWN
+  )
 }
