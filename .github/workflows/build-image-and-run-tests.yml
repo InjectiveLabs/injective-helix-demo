@@ -121,9 +121,14 @@ jobs:
           for image in "${DOCKER_IMAGES[@]}"
           do
             echo "Pulling image: $image"
-            docker pull $image
-            echo "Cooling down for 10 seconds."
-            sleep 10
+            attempts=0
+            until docker pull "$image"
+            do
+	            [[ attempts -eq 5 ]] && echo "Reached maximum attempts of 5!" && exit 1
+              echo "Cooling down for 10 seconds."
+              sleep 10
+              ((attempts++))
+            done
           done
           echo "All images downloaded"
       - name: Start standalone network
@@ -132,7 +137,6 @@ jobs:
           docker-compose -f docker-compose-base.yaml -f docker-compose-dex.yaml build --build-arg IMAGE_TAG=${{ env.DEX_IMAGE_TAG }}  --build-arg ALCHEMY_ENDPOINT="https://eth-kovan.alchemyapi.io/v2/${{ secrets.APP_ALCHEMY_KOVAN_KEY }}"
           docker-compose -f docker-compose-base.yaml -f docker-compose-dex.yaml up -d
       - name: Execute Cypress tests
-        continue-on-error: true
         run: |
           cd injective-devops/network/standalone
           export CYPRESS_TEST_TAG=${{ env.GIT_BRANCH_NAME }}
