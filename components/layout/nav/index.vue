@@ -1,27 +1,38 @@
 <template>
   <div>
     <nav class="block flex-1 lg:flex">
-      <v-nav-item :to="{ name: 'index' }" class="block lg:hidden">
+      <NavItem :to="{ name: 'index' }" class="block lg:hidden">
         {{ $t('navigation.home') }}
-      </v-nav-item>
-      <v-nav-item
+      </NavItem>
+      <NavItem
         :to="{ name: 'markets' }"
         class="block"
         data-cy="header-markets-link"
       >
         {{ $t('trade.markets') }}
-      </v-nav-item>
-      <v-nav-item
-        class="block"
-        data-cy="header-trade-link"
+      </NavItem>
+
+      <NavItem
         :to="{
           name: 'derivatives-derivative',
           params: { derivative: 'btc-usdt-perp' }
         }"
+        class="block"
+        data-cy="header-trade-link"
       >
         {{ $t('navigation.trade') }}
-      </v-nav-item>
-      <v-nav-item-dummy
+      </NavItem>
+
+      <NavItem
+        v-if="isStagingOrTestnetOrDevnet"
+        :to="{ name: 'swap-swap', query: { from: 'inj', to: 'usdt' } }"
+        class="block"
+        data-cy="header-swaps-link"
+      >
+        {{ $t('navigation.swap') }}
+      </NavItem>
+
+      <NavItemDummy
         id="rewards-dropdown"
         class="hidden lg:block"
         @mouseenter.native="handleShowDropdown"
@@ -30,36 +41,36 @@
         @blur.native="handleHideDropdown"
       >
         {{ $t('navigation.rewards') }}
-      </v-nav-item-dummy>
-      <v-nav-item class="block lg:hidden" :to="{ name: 'trade-and-earn' }">
+      </NavItemDummy>
+      <NavItem class="block lg:hidden" :to="{ name: 'trade-and-earn' }">
         {{ $t('navigation.rewards') }}
-      </v-nav-item>
+      </NavItem>
       <a
         href="https://dmm.injective.network/"
         target="_blank"
         class="lg:hidden"
       >
-        <v-nav-item-dummy>{{ $t('navigation.dmmProgram') }}</v-nav-item-dummy>
+        <NavItemDummy>{{ $t('navigation.dmmProgram') }}</NavItemDummy>
       </a>
-      <v-nav-item
+      <NavItem
         v-if="isUserWalletConnected"
         class="block lg:hidden"
         data-cy="nav-portfolio-link"
         :to="{ name: 'portfolio' }"
       >
         {{ $t('navigation.portfolio') }}
-      </v-nav-item>
-      <v-nav-item
+      </NavItem>
+      <NavItem
         v-if="isUserWalletConnected"
         class="block lg:hidden"
         data-cy="nav-activity-link"
         :to="{ name: 'activity' }"
       >
         {{ $t('navigation.activity') }}
-      </v-nav-item>
+      </NavItem>
     </nav>
 
-    <VPopperBox
+    <PopperBox
       ref="popper-rewards-dropdown"
       class="popper rounded-lg flex flex-col flex-wrap text-xs absolute w-80 xs:w-96"
       :class="[isMarketPage ? 'bg-gray-900' : 'bg-gray-800']"
@@ -98,21 +109,22 @@
           {{ $t('navigation.dmmProgramDescription') }}
         </p>
       </a>
-    </VPopperBox>
+    </PopperBox>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import VNavItem from './item.vue'
-import VNavItemDummy from './item-dummy.vue'
-import VPopperBox from '~/components/elements/popper-box.vue'
+import NavItem from './item.vue'
+import NavItemDummy from './item-dummy.vue'
+import PopperBox from '~/components/elements/popper-box.vue'
+import { IS_DEVNET, IS_STAGING, IS_TESTNET } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
-    VNavItem,
-    VNavItemDummy,
-    VPopperBox
+    NavItem,
+    NavItemDummy,
+    PopperBox
   },
 
   computed: {
@@ -122,7 +134,6 @@ export default Vue.extend({
 
     isMarketPage(): boolean {
       const { $route } = this
-
       return ['spot-spot', 'derivatives-derivative'].includes(
         $route.name as string
       )
@@ -130,6 +141,10 @@ export default Vue.extend({
 
     $popper(): any {
       return this.$refs['popper-rewards-dropdown']
+    },
+
+    isStagingOrTestnetOrDevnet(): boolean {
+      return IS_TESTNET || IS_DEVNET || IS_STAGING
     }
   },
 

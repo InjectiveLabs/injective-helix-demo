@@ -119,8 +119,8 @@ export enum MarketCategoryType {
 
 export enum MarketQuoteType {
   All = 'all',
-  USDT = 'usdt',
-  UST = 'ust'
+  USDT = 'usdt'
+  // UST = 'ust'
 }
 
 export enum MarketTypeFavorite {

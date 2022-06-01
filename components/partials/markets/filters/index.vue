@@ -76,15 +76,6 @@
         >
           USDT
         </v-market-quote-selector>
-        <div class="border-r h-4 border-gray-600 w-px" />
-        <v-market-quote-selector
-          :active="activeQuote === MarketQuoteType.UST"
-          :type="MarketQuoteType.UST"
-          data-cy="markets-quote-ust-button"
-          @click="handleQuoteClick"
-        >
-          UST
-        </v-market-quote-selector>
       </div>
 
       <v-market-category-selector

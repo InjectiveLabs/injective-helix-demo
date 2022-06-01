@@ -8,10 +8,10 @@
         id="bridge-input-select"
         v-bind="$attrs"
         ref="tokenSelector"
-        class="input-select input-token"
+        class="input-select input-token flex"
         data-cy="token-selector-drop-down"
-        label="denom"
         :class="{ 'input-error': inputErrors && inputErrors.length > 0 }"
+        label="denom"
         :auto-scroll="false"
         :clearable="false"
         :searchable="false"
@@ -25,7 +25,6 @@
       >
         <template #open-indicator="{ attributes }">
           <span v-bind="attributes" class="cursor-pointer">
-            <IconCaretDownSlim />
           </span>
         </template>
 
@@ -34,44 +33,70 @@
             v-slot="{ errors, valid }"
             name="amount"
             class="w-full"
-            :rules="`required|positiveNumber|between:0.0001,${balanceToFixed}`"
+            :rules="validationRules || `required|positiveNumber|enoughBalance:0.0001,${balanceToFixed}`"
           >
-            <div class="flex items-center w-full">
-              <v-input
-                id="bridge-input"
-                dense
-                lg
-                transparent-bg
-                error-below
-                type="number"
-                step="0.01"
-                min="0"
-                placeholder="0.0000"
-                error-classes="mt-4"
-                :errors="errors"
-                :valid="valid"
-                :max="balanceToFixed"
-                :max-decimals="value.decimals"
-                :max-selector="balance.gt(0.0001)"
-                :value="amount"
-                data-cy="token-selector-amount-input"
-                @input="handleAmountChange"
-                @blur="resetIsSearching"
-                @mousedown.native.stop="focusInput"
-              />
-              <img
-                v-if="logo"
-                :src="logo"
-                :alt="name"
-                class="rounded-full w-6 h-6"
-              />
-              <IconCategoryAlt v-else class="rounded-full w-6 h-6" />
-              <span
-                class="font-bold text-lg pl-2 pr-3 text-gray-200 tracking-wide break-normal"
-                data-cy="token-selector-selected-text-content"
-              >
-                {{ symbol }}
-              </span>
+            <div class="flex flex-col">
+              <div class="flex items-center w-full">
+                <v-input
+                  id="bridge-input"
+                  dense
+                  :small="small"
+                  :lg="lg"
+                  transparent-bg
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  placeholder="0.0000"
+                  :errors="errors"
+                  hide-errors
+                  :valid="valid"
+                  :max="balanceToFixed"
+                  :max-decimals="value.decimals"
+                  :max-selector="!disableMaxSelector && balance.gt(0.0001)"
+                  :max-classes="'input-max-button'"
+                  :value="amount"
+                  :prefix="prefix"
+                  :input-classes="prefix ? 'pl-0' : ''"
+                  data-cy="token-selector-amount-input"
+                  @input="handleAmountChange"
+                  @input-max="handleMax"
+                  @blur="resetIsSearching"
+                  @mousedown.native.stop="focusInput"
+                />
+                <img
+                  v-if="logo"
+                  :src="logo"
+                  :alt="name"
+                  class="rounded-full w-4 h-4"
+                />
+                <IconCategoryAlt v-else class="rounded-full w-4 h-4" />
+                <span
+                  class="font-bold text-lg px-3 text-gray-200 tracking-wide break-normal"
+                  data-cy="token-selector-selected-text-content"
+                >
+                  {{ symbol }}
+                </span>
+                <div class="block pr-4 text-white">
+                  <IconCaretDownSlim />
+                </div>
+              </div>
+              <div class="flex items-center justify-between w-full px-4 mt-1">
+              <span v-if="errors.length > 0" class="text-red-400 text-[12px]">{{ errors[0] }}</span>
+                <span v-else-if="usdPrice !== ''" class="text-gray-500 text-[12px]">
+                  {{ usdPrice }} USD
+                </span>
+                <span v-else />
+                <span
+                  v-if="showBalance"
+                  class="text-[12px]"
+                  :class="{
+                    'text-red-400': errors.length > 0,
+                    'text-primary-600': errors.length === 0
+                  }"
+                >
+                  {{ $t('bridge.balance') }}: {{ balanceToFixed }}
+                </span>
+              </div>
             </div>
           </ValidationProvider>
         </template>
@@ -94,7 +119,10 @@
         </template>
 
         <template #option="item">
-          <v-token-selector-item :item="item" />
+          <v-token-selector-item
+            :item="item"
+            :dense="dense"
+          />
         </template>
       </v-select>
     </ValidationObserver>
@@ -134,6 +162,11 @@ export default Vue.extend({
       default: ''
     },
 
+    prefix: {
+      type: [Object, String, Number],
+      default: null
+    },
+
     disabled: {
       type: Boolean,
       required: false,
@@ -145,9 +178,44 @@ export default Vue.extend({
       required: true
     },
 
+    showBalance: {
+      type: Boolean,
+      default: false
+    },
+
+    usdPrice: {
+      type: String,
+      default: ''
+    },
+
     value: {
       type: [Object, String, Number],
       default: ''
+    },
+
+    disableMaxSelector: {
+      type: Boolean,
+      default: false
+    },
+
+    dense: {
+      type: Boolean,
+      default: false
+    },
+
+    validationRules: {
+      type: String,
+      default: ''
+    },
+
+    small: {
+      type: Boolean,
+      default: false
+    },
+
+    lg: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -264,6 +332,10 @@ export default Vue.extend({
       this.forceClose = true
       this.$emit('input', value.token)
       this.$emit('input:token', value.token)
+    },
+
+    handleMax(value: string) {
+      this.$emit('input:max', value)
     }
   }
 })

@@ -23,7 +23,8 @@ localize({
             : `This field should be between ${params.min} and ${params.max}`
         }`,
       max: 'This field should be less than {length}',
-      min: 'This field should be greater than {length}'
+      min: 'This field should be greater than {length}',
+      enoughBalance: 'Insufficient balance'
     }
   }
 })
@@ -49,4 +50,10 @@ extend('positiveNumber', (value: string) => {
 })
 extend('referralCode', (value: string) => {
   return REFER_CODE_REGEX.test(value)
+})
+extend('enoughBalance', {
+  validate: (value: string | number, { min, max }: Record<string, any>) => {
+    return Number(value) >= Number(min) && Number(value) <= Number(max)
+  },
+  params: ['min', 'max']
 })
