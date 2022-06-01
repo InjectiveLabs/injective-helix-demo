@@ -313,12 +313,13 @@ export default Vue.extend({
 
       const maxSlippage = DEFAULT_MAX_SLIPPAGE.times(100)
 
-      const slippageToleranceAsNumber = Number(form.slippageTolerance)
+      const slippageToleranceAsNumber = new BigNumberInBase(
+        form.slippageTolerance
+      )
 
-      const slippageTolerance =
-        slippageToleranceAsNumber <= maxSlippage.toNumber()
-          ? new BigNumberInBase(slippageToleranceAsNumber)
-          : maxSlippage
+      const slippageTolerance = slippageToleranceAsNumber.lte(maxSlippage)
+        ? slippageToleranceAsNumber
+        : maxSlippage
 
       const slippage = new BigNumberInBase(
         orderTypeBuy
@@ -334,15 +335,15 @@ export default Vue.extend({
     },
 
     slippageWarnings(): Array<string> {
-      const slippageTolerance = Number(this.form.slippageTolerance)
+      const slippageTolerance = new BigNumberInBase(this.form.slippageTolerance)
 
       const result = []
 
-      if (slippageTolerance > 5) {
+      if (slippageTolerance.gt(new BigNumberInBase(5))) {
         result.push(this.$t('trade.swap.high_slippage_warning'))
       }
 
-      if (slippageTolerance < 0.05) {
+      if (slippageTolerance.lt(new BigNumberInBase(0.05))) {
         result.push(this.$t('trade.swap.low_slippage_warning'))
       }
 
@@ -1274,8 +1275,8 @@ export default Vue.extend({
     }
 
     const market = this.getMarketFromRoute()
-    const fromToken = from ? this.getTokenBySymbol(from) : null
-    const toToken = to ? this.getTokenBySymbol(to) : null
+    const fromToken = this.getTokenBySymbol(from)
+    const toToken = this.getTokenBySymbol(to)
     let orderType = SpotOrderSide.Buy
 
     if (market) {
