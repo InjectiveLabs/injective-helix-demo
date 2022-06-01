@@ -24,8 +24,7 @@
         @click.native="handleDropdownToggle"
       >
         <template #open-indicator="{ attributes }">
-          <span v-bind="attributes" class="cursor-pointer">
-          </span>
+          <span v-bind="attributes" class="cursor-pointer"> </span>
         </template>
 
         <template #selected-option="{ symbol, logo, name }">
@@ -33,10 +32,13 @@
             v-slot="{ errors, valid }"
             name="amount"
             class="w-full"
-            :rules="validationRules || `required|positiveNumber|enoughBalance:0.0001,${balanceToFixed}`"
+            :rules="
+              validationRules ||
+              `required|positiveNumber|enoughBalance:0.0001,${balanceToFixed}`
+            "
           >
-            <div class="flex flex-col">
-              <div class="flex items-center w-full">
+            <div class="flex justify-between">
+              <div class="flex flex-col w-full justify-center">
                 <v-input
                   id="bridge-input"
                   dense
@@ -56,51 +58,66 @@
                   :max-classes="'input-max-button'"
                   :value="amount"
                   :prefix="prefix"
-                  :input-classes="prefix ? 'pl-0' : ''"
+                  :input-classes="inputClass"
                   data-cy="token-selector-amount-input"
                   @input="handleAmountChange"
                   @input-max="handleMax"
                   @blur="resetIsSearching"
                   @mousedown.native.stop="focusInput"
                 />
-                <img
-                  v-if="logo"
-                  :src="logo"
-                  :alt="name"
-                  class="rounded-full w-4 h-4"
-                />
-                <IconCategoryAlt v-else class="rounded-full w-4 h-4" />
-                <span
-                  class="font-bold text-lg px-3 text-gray-200 tracking-wide break-normal"
-                  data-cy="token-selector-selected-text-content"
-                >
-                  {{ symbol }}
-                </span>
-                <div class="block pr-4 text-white">
-                  <IconCaretDownSlim />
+                <div class="pl-4">
+                  <span
+                    v-if="!showErrorsBelow && errors.length > 0"
+                    class="text-red-400 text-[12px]"
+                  >
+                    {{ errors[0] }}
+                  </span>
+                  <span
+                    v-else-if="usdPrice !== ''"
+                    class="text-gray-500 text-[12px]"
+                  >
+                    {{ usdPrice }} USD
+                  </span>
                 </div>
               </div>
-              <div class="flex items-center justify-between w-full px-4 mt-1">
-                <span v-if="!showErrorsBelow && errors.length > 0" class="text-red-400 text-[12px]">
-                  {{ errors[0] }}
-                </span>
-                <span v-else-if="usdPrice !== ''" class="text-gray-500 text-[12px]">
-                  {{ usdPrice }} USD
-                </span>
-                <span v-else />
-                <span
-                  v-if="showBalance"
-                  class="text-[12px]"
-                  :class="{
-                    'text-red-400': errors.length > 0,
-                    'text-primary-600': errors.length === 0
-                  }"
-                >
-                  {{ $t('bridge.balance') }}: {{ balanceToFixed }}
-                </span>
+              <div class="flex flex-col">
+                <div class="flex justify-end items-center">
+                  <img
+                    v-if="logo"
+                    :src="logo"
+                    :alt="name"
+                    class="rounded-full w-4 h-4"
+                  />
+                  <IconCategoryAlt v-else class="rounded-full w-4 h-4" />
+                  <span
+                    class="font-bold text-lg px-3 text-gray-200 tracking-wide break-normal"
+                    data-cy="token-selector-selected-text-content"
+                  >
+                    {{ symbol }}
+                  </span>
+                  <div class="block pr-4 text-white">
+                    <IconCaretDownSlim />
+                  </div>
+                </div>
+                <div class="pr-4">
+                  <span
+                    v-if="showBalance"
+                    class="text-[12px] whitespace-nowrap"
+                    :class="{
+                      'text-red-400': errors.length > 0,
+                      'text-primary-600': errors.length === 0
+                    }"
+                  >
+                    {{ $t('bridge.balance') }}: {{ balanceToFixed }}
+                  </span>
+                </div>
               </div>
             </div>
-            <span v-if="showErrorsBelow && errors.length > 0" data-cy="reusable-input-bellow-error-text-content" class="text-red-400 absolute text-xs mt-6">
+            <span
+              v-if="showErrorsBelow && errors.length > 0"
+              data-cy="reusable-input-bellow-error-text-content"
+              class="text-red-400 absolute text-xs mt-[28px]"
+            >
               {{ errors[0] }}
             </span>
           </ValidationProvider>
@@ -126,10 +143,7 @@
         </template>
 
         <template #option="item">
-          <v-token-selector-item
-            :item="item"
-            :dense="dense"
-          />
+          <v-token-selector-item :item="item" :dense="dense" />
         </template>
       </v-select>
     </ValidationObserver>
@@ -241,6 +255,18 @@ export default Vue.extend({
   },
 
   computed: {
+    inputClass(): string {
+      const { prefix } = this
+
+      const classes = ['text-lg font-bold']
+
+      if (prefix) {
+        classes.push('pl-0')
+      }
+
+      return classes.join(' ')
+    },
+
     balanceToFixed(): string {
       const { balance } = this
 

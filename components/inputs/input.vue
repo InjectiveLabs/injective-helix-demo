@@ -21,10 +21,7 @@
           <slot name="context" />
         </div>
       </div>
-      <div
-        class="relative"
-        :class="wrapperClass"
-      >
+      <div class="relative" :class="wrapperClass">
         <textarea
           v-if="multiLine"
           v-bind="$attrs"
@@ -34,7 +31,11 @@
           @input="handleChangeOnInput"
         />
         <div v-else class="flex justify-between no-shadow">
-          <div v-if="prefix" class="flex items-center text-lg font-semibold pl-4 pr-1" v-html="prefix" />
+          <div
+            v-if="prefix"
+            class="flex items-center text-xl font-semibold pl-4 pr-1"
+            v-html="prefix"
+          />
           <div
             v-if="showPrefix"
             class="prefix flex items-center flex-shrink-0"
@@ -65,13 +66,7 @@
               @click="handleCloseEvent"
             >
               <IconClose
-                class="
-                  cursor-pointer
-                  h-4
-                  w-4
-                  text-gray-200
-                  hover:text-primary-500
-                "
+                class="cursor-pointer h-4 w-4 text-gray-200 hover:text-primary-500"
               />
             </span>
 
@@ -413,7 +408,7 @@ export default Vue.extend({
       }
 
       // Make sure value is clamped to max if it exists.
-      let value : String | Number = target.value
+      let value: String | Number = target.value
 
       if (max !== null && Number(value) > Number(max)) {
         value = max.toString()

@@ -1,11 +1,9 @@
 <template>
-  <div class="h-full w-full flex flex-wrap py-4">
+  <div class="swap-container min-h-screen-excluding-header">
     <VHocLoading :key="$route.fullPath" :status="status">
       <div class="container">
-        <div class="mx-auto w-full sm:w-md">
-          <div class="flex flex-col mt-6">
-            <Swap @set-market="setMarket" />
-          </div>
+        <div class="mx-auto h-full w-full sm:w-md flex flex-col justify-center">
+          <Swap class="mt-[-56px]" @set-market="setMarket" />
         </div>
       </div>
     </VHocLoading>
@@ -52,10 +50,9 @@ export default Vue.extend({
     Promise.all([
       this.$accessor.spot.init(),
       this.$accessor.token.getErc20TokensWithBalanceAndPriceFromBankAndMarkets()
-    ])
-      .then(() => {
-        this.status.setIdle()
-      })
+    ]).then(() => {
+      this.status.setIdle()
+    })
   },
 
   beforeDestroy() {

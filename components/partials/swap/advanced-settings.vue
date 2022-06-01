@@ -21,7 +21,9 @@
         :active="
           Number(slippageTolerancePreset.value) === Number(slippageTolerance)
         "
-        :class="{ 'hidden sm:block': index === slippageTolerancePresets.length - 1 }"
+        :class="{
+          'hidden sm:block': index === slippageTolerancePresets.length - 1
+        }"
         @click="setSlippageTolerance"
       />
       <v-input
@@ -37,9 +39,9 @@
         "
         :disabled="false"
         type="number"
-        :step="0.1"
-        :max-decimals="1"
-        :min="0.1"
+        :step="0.01"
+        :max-decimals="2"
+        :min="0"
         :max="maxSlippageTolerance"
         dense
         small
