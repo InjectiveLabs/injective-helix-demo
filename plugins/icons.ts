@@ -62,6 +62,7 @@ import YoutubeCircle from '~/components/icons/youtube-circle.vue'
 import MenuAlt from '~/components/icons/menu-alt.vue'
 import Cogwheel from '~/components/icons/cogwheel.vue'
 import Warn from '~/components/icons/warn.vue'
+import ExclamationCircleFill from '~/components/icons/exclamation-circle-fill.vue'
 
 Vue.component('IconArrow', Arrow)
 Vue.component('IconArrowSwap', ArrowSwap)
@@ -125,3 +126,4 @@ Vue.component('IconYoutube', Youtube)
 Vue.component('IconYoutubeCircle', YoutubeCircle)
 Vue.component('IconCogwheel', Cogwheel)
 Vue.component('IconWarn', Warn)
+Vue.component('IconExclamationCircleFill', ExclamationCircleFill)

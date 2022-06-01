@@ -113,7 +113,11 @@ module.exports = {
 
       orange: {
         500: '#F3610F'
-      }
+      },
+
+      warning: '#F7931A',
+
+      error: '#FF0000'
     },
 
     screens: {

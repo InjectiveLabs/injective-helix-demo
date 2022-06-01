@@ -40,6 +40,12 @@ export default Vue.extend({
     }
   },
 
+  mounted() {
+    if (this.value === true) {
+      this.checked = true
+    }
+  },
+
   methods: {
     handleChange() {
       this.checked = !this.checked
