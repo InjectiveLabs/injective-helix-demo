@@ -1281,6 +1281,7 @@ export default Vue.extend({
           defaultSymbol: 'USDT'
         })
       )
+
       from = 'usdt'
     }
 
@@ -1291,6 +1292,7 @@ export default Vue.extend({
           defaultSymbol: 'INJ'
         })
       )
+
       to = 'inj'
     }
 
