@@ -44,6 +44,7 @@
           @close="hideSwapSettingsModal"
         >
           <AdvancedSettings
+            :status="status"
             :warnings="slippageWarnings"
             :slippage-tolerance="form.slippageTolerance"
             @set-slippage-tolerance="setSlippageTolerance"
@@ -53,6 +54,7 @@
       <div>
         <TokenSelector
           class="input-swap"
+          :disabled="status && status.isLoading()"
           :amount="form.amount"
           :balance="fromBalance"
           :balance-decimal-places="market && market.quantityDecimals"
@@ -89,6 +91,7 @@
           <button
             type="button"
             class="rounded-full z-1000 flex items-center justify-center min-w-[32px] w-8 h-8 bg-primary-600 hover:bg-primary-500 relative mx-auto"
+            :class="{ 'opacity-50': status.isLoading() }"
             @click="switchTokens"
           >
             <IconArrowDown class="transform w-[10px] h-[10px]" />
@@ -96,6 +99,7 @@
         </div>
         <TokenSelector
           class="input-swap"
+          :disabled="status && status.isLoading()"
           :amount="form.toAmount"
           :balance="toBalance"
           :balance-decimal-places="market && market.quantityDecimals"
@@ -118,6 +122,7 @@
         :market="market"
         :order-type="orderType"
         :slippage="slippage"
+        :fee-rate="feeRate"
         :calculate-execution-price-for-amount="calculateExecutionPriceForAmount"
       />
       <div class="mt-6">
@@ -129,6 +134,7 @@
           :ghost="hasErrors"
           :primary="!hasErrors"
           class="w-full"
+          :class="{ 'bg-opacity-50': status.isLoading() }"
           @click.stop="onSubmit"
         >
           {{ swapButtonLabel }}
@@ -139,6 +145,7 @@
           :status="status"
           primary
           class="w-full"
+          :class="{ 'bg-opacity-50': status.isLoading() }"
           @click.stop="handleClickOrConnect"
         >
           {{ $t('trade.swap.connect_wallet') }}
@@ -486,7 +493,9 @@ export default Vue.extend({
     },
 
     amount(): BigNumberInBase {
-      return new BigNumberInBase(this.form.amount)
+      const amount = this.form.amount || 0
+
+      return new BigNumberInBase(amount)
     },
 
     hasAmount(): boolean {
@@ -572,6 +581,14 @@ export default Vue.extend({
       return new BigNumberInBase(market.takerFeeRate).times(
         new BigNumberInBase(1).minus(takerFeeRateDiscount)
       )
+    },
+
+    feeRate(): BigNumberInBase {
+      const { takerFeeRate, takerFeeRateDiscount } = this
+
+      const ONE_IN_BASE = new BigNumberInBase(1)
+
+      return takerFeeRate.times(ONE_IN_BASE.minus(takerFeeRateDiscount))
     },
 
     price(): BigNumberInBase {
@@ -876,13 +893,9 @@ export default Vue.extend({
     },
 
     fees(): BigNumberInBase {
-      const { total, takerFeeRate, market } = this
+      const { executionPrice, amount, feeRate } = this
 
-      if (total.isNaN() || !market) {
-        return ZERO_IN_BASE
-      }
-
-      return total.times(takerFeeRate)
+      return executionPrice.times(amount.times(feeRate))
     },
 
     makerExpectedPts(): BigNumberInBase {
@@ -1628,7 +1641,11 @@ export default Vue.extend({
     },
 
     switchTokens(): void {
-      const { fromToken, toToken } = this
+      const { fromToken, toToken, status } = this
+
+      if (status.isLoading()) {
+        return
+      }
 
       const from = fromToken
       this.fromToken = toToken
@@ -1720,7 +1737,7 @@ export default Vue.extend({
     },
 
     toggleSwapSettingsModal(): void {
-      if (!this.$popper) {
+      if (!this.$popper || this.status.isLoading()) {
         return
       }
 

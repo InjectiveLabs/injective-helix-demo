@@ -14,10 +14,10 @@
     </div>
     <div class="flex items-center justify-between my-1">
       <span class="text-gray-500 uppercase tracking-widest font-bold text-xs">
-        {{ $t('trade.swap.fee') }} 0.12%
+        {{ $t('trade.swap.fee') }} {{ feeRateToFormat }}%
       </span>
       <span v-if="hasAmount" class="text-sm">
-        ≈ {{ fee }} {{ toToken.symbol }}
+        ≈ {{ fee }} {{ market.quoteToken.symbol }}
       </span>
       <span v-else class="text-sm"> -- </span>
     </div>
@@ -98,6 +98,11 @@ export default Vue.extend({
       required: true
     },
 
+    feeRate: {
+      type: BigNumberInBase,
+      required: true
+    },
+
     pending: {
       type: Boolean,
       default: false
@@ -150,16 +155,11 @@ export default Vue.extend({
         amount,
         executionPrice,
         takerFeeRate,
-        takerFeeRateDiscount,
-        market
+        takerFeeRateDiscount
       } = this
 
-      const decimalPlaces = market
-        ? market.priceDecimals
-        : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-
       if (amount.isNaN()) {
-        return ZERO_IN_BASE.toFormat(decimalPlaces)
+        return ZERO_IN_BASE.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
       }
 
       const discount = new BigNumberInBase(1).minus(takerFeeRateDiscount)
@@ -168,7 +168,13 @@ export default Vue.extend({
         .times(amount)
         .times(takerFeeRate)
         .times(discount)
-        .toFormat(decimalPlaces)
+        .toFormat()
+    },
+
+    feeRateToFormat(): string {
+      const { feeRate } = this
+
+      return feeRate.times(100).toFormat()
     },
 
     executionPrice(): BigNumberInBase {

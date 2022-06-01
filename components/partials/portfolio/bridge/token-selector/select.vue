@@ -60,6 +60,7 @@
                   :prefix="prefix"
                   :input-classes="inputClass"
                   data-cy="token-selector-amount-input"
+                  :disabled="disabled"
                   @input="handleAmountChange"
                   @input-max="handleMax"
                   @blur="resetIsSearching"
