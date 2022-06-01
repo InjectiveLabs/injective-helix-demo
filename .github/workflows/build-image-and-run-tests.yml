@@ -129,7 +129,7 @@ jobs:
       - name: Start standalone network and run tests
         run: |
           cd injective-devops/network/standalone
-          docker-compose -f docker-compose-base.yaml -f docker-compose-dex.yaml build --build-arg IMAGE_TAG=${{ env.DEX_IMAGE_TAG }}
+          docker-compose -f docker-compose-base.yaml -f docker-compose-dex.yaml build --build-arg IMAGE_TAG=${{ env.DEX_IMAGE_TAG }} --build-arg ALCHEMY_ENDPOINT="https://eth-kovan.alchemyapi.io/v2/${{ secrets.APP_ALCHEMY_KOVAN_KEY }}"
           export CYPRESS_TEST_TAG=${{ env.GIT_BRANCH_NAME }}
           export CYPRESS_RECORD_KEY=${{ secrets.CYPRESS_RECORD_KEY }}
           export CYPRESS_SPEC_FILE=${{ env.CYPRESS_SPEC_FILE }}
