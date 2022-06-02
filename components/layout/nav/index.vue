@@ -25,7 +25,7 @@
 
       <NavItem
         v-if="isStagingOrTestnetOrDevnet"
-        :to="{ name: 'swap-swap', query: { from: 'inj', to: 'usdt' } }"
+        :to="{ name: 'swap-swap', query: { from: 'usdt', to: 'inj' } }"
         class="block"
         data-cy="header-swaps-link"
       >

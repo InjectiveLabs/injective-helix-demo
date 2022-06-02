@@ -21,10 +21,7 @@
           <slot name="context" />
         </div>
       </div>
-      <div
-        class="relative"
-        :class="wrapperClass"
-      >
+      <div class="relative" :class="wrapperClass">
         <textarea
           v-if="multiLine"
           v-bind="$attrs"
@@ -34,7 +31,11 @@
           @input="handleChangeOnInput"
         />
         <div v-else class="flex justify-between no-shadow">
-          <div v-if="prefix" class="flex items-center text-lg font-semibold pl-4 pr-1" v-html="prefix" />
+          <div
+            v-if="prefix"
+            class="flex items-center text-xl font-semibold pl-4 pr-1"
+            v-html="prefix"
+          />
           <div
             v-if="showPrefix"
             class="prefix flex items-center flex-shrink-0"
@@ -47,16 +48,7 @@
             class="input"
             autocomplete="off"
             :value="value"
-            :class="[
-              {
-                'input-lg': lg,
-                'input-xl': xl,
-                'input-round': round,
-                'input-small': small,
-                'input-bg-transparent': transparentBg
-              },
-              inputClasses
-            ]"
+            :class="inputClass"
             @blur="handleBlur"
             @input="handleChangeOnInput"
             @keydown="handleKeydown"
@@ -66,7 +58,7 @@
           <div
             v-if="addonVisible"
             class="addon flex items-center flex-shrink-0"
-            :class="{ 'pr-3': !lg && !xl }"
+            :class="{ 'pr-3': !lg && !xl && !disableAddonPadding }"
           >
             <span
               v-if="showClose"
@@ -74,13 +66,7 @@
               @click="handleCloseEvent"
             >
               <IconClose
-                class="
-                  cursor-pointer
-                  h-4
-                  w-4
-                  text-gray-200
-                  hover:text-primary-500
-                "
+                class="cursor-pointer h-4 w-4 text-gray-200 hover:text-primary-500"
               />
             </span>
 
@@ -246,6 +232,11 @@ export default Vue.extend({
     maxClasses: {
       type: String,
       default: ''
+    },
+
+    disableAddonPadding: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -268,6 +259,35 @@ export default Vue.extend({
       }
 
       classes.push(wrapperClasses)
+
+      return classes.join(' ')
+    },
+
+    inputClass(): string {
+      const { lg, xl, round, small, transparentBg, inputClasses } = this
+      const classes = []
+
+      if (small) {
+        classes.push('input-small')
+      }
+
+      if (lg) {
+        classes.push('input-lg')
+      }
+
+      if (xl) {
+        classes.push('input-xl')
+      }
+
+      if (round) {
+        classes.push('input-round')
+      }
+
+      if (transparentBg) {
+        classes.push('input-bg-transparent')
+      }
+
+      classes.push(inputClasses)
 
       return classes.join(' ')
     },
@@ -314,7 +334,7 @@ export default Vue.extend({
       const { max } = this.$attrs
       const { value } = this
 
-      return max === value
+      return Number(max) === Number(value)
     }
   },
 
@@ -383,14 +403,29 @@ export default Vue.extend({
     },
 
     handleBlur(e: Event) {
+      const { max } = this.$attrs
+
       const target: HTMLInputElement = e.target as HTMLInputElement
 
-      this.$emit('blur', target.value)
+      if (this.$attrs.type !== 'number') {
+        this.$emit('blur', target.value)
+        return
+      }
+
+      // Make sure value is clamped to max if it exists.
+      let value: String | Number = target.value
+
+      if (max !== null && Number(value) > Number(max)) {
+        value = max.toString()
+      }
+
+      this.$emit('blur', value)
     },
 
     handleMaxSelector() {
       const { maxSelector } = this
       const { max } = this.$attrs
+
       if (max || maxSelector) {
         if (max) {
           this.handleChangeFromString(max)

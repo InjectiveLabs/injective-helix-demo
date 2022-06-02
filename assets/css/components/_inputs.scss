@@ -132,9 +132,9 @@ input[type='number'] {
   }
 
   .vs__dropdown-menu {
-    @apply border-primary-500 bg-gray-800 text-gray-400 px-2;
+    @apply border border-primary-600 border-solid rounded-lg mt-2 bg-gray-900 p-4;
 
-    margin-top: 2px;
+    margin-top: 8px;
     left: -1px;
     width: calc(100% + 2px);
   }
@@ -193,7 +193,7 @@ input[type='number'] {
 }
 
 .input-select.input-token.input-select .vs__selected {
-  @apply w-full h-20 relative border-none p-0 m-0 z-1000;
+  @apply w-full h-20 relative border-none p-0 m-0 z-900;
 }
 
 .v-select.input-token.input-select {
@@ -351,12 +351,14 @@ input[type='number'] {
   }
 
   .input-token {
+    @apply bg-gray-900;
+
     .vs__selected-options > input {
       @apply pointer-events-none;
     }
 
     &.open {
-      .vs__selected-options > input{
+      .vs__selected-options > input {
         @apply pointer-events-auto;
       }
     }
@@ -369,6 +371,10 @@ input[type='number'] {
       @apply p-2;
     }
   }
+}
+
+.v-select.input-select.vs--open {
+  @apply bg-gray-900;
 }
 
 /* stylelint-enable */

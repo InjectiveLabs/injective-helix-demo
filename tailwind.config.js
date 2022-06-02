@@ -158,6 +158,7 @@ module.exports = {
 
       zIndex: {
         ...defaultTheme.zIndex,
+        900: '900',
         1000: '1000',
         1100: '1100',
         1110: '1110',

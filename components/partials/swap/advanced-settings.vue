@@ -21,7 +21,9 @@
         :active="
           Number(slippageTolerancePreset.value) === Number(slippageTolerance)
         "
-        :class="{ 'hidden sm:block': index === slippageTolerancePresets.length - 1 }"
+        :class="{
+          'hidden sm:block': index === slippageTolerancePresets.length - 1
+        }"
         @click="setSlippageTolerance"
       />
       <v-input
@@ -37,10 +39,10 @@
         "
         :disabled="false"
         type="number"
-        :step="0.1"
-        :max-decimals="1"
-        :min="0.1"
-        :max="50"
+        :step="0.01"
+        :max-decimals="2"
+        :min="0"
+        :max="maxSlippageTolerance"
         dense
         small
         :show-prefix="hasWarnings"
@@ -87,6 +89,7 @@ export default Vue.extend({
 
   data() {
     return {
+      maxSlippageTolerance: 50,
       slippageTolerancePresets: [
         { label: '0.1', value: '0.1' },
         { label: '0.5', value: '0.5' },
@@ -107,7 +110,7 @@ export default Vue.extend({
         value = DEFAULT_MAX_SLIPPAGE.toFormat(1)
       }
 
-      this.$emit('set-slippage-tolerance', value)
+      this.setSlippageTolerance(value)
     },
 
     handleInput(value: string): void {
