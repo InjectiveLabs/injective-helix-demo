@@ -146,7 +146,9 @@ export default Vue.extend({
     },
 
     rate(): BigNumberInBase {
-      return this.calculateExecutionPriceForAmount(ONE_IN_BASE)
+      const { executionPrice } = this
+
+      return executionPrice.times(ONE_IN_BASE)
     },
 
     rateToFormat(): string {
@@ -252,7 +254,7 @@ export default Vue.extend({
         buys,
         hasAmount,
         market,
-        slippage,
+        // slippage,
         amount
       } = this
 
@@ -271,9 +273,10 @@ export default Vue.extend({
         market
       })
 
-      return new BigNumberInBase(
-        averagePrice.times(slippage).toFixed(market.priceDecimals)
-      )
+      return new BigNumberInBase(averagePrice.toFixed(market.priceDecimals))
+      // return new BigNumberInBase(
+      //   averagePrice.times(slippage).toFixed(market.priceDecimals)
+      // )
     },
 
     averagePrice(): BigNumberInBase {
