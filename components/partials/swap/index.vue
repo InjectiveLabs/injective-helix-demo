@@ -52,7 +52,6 @@
         </PopperBox>
       </div>
       <div>
-        {{ orderTypeBuy }}
         <TokenSelector
           class="input-swap"
           :disabled="status && status.isLoading()"
