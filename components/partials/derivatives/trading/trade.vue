@@ -207,7 +207,14 @@
         {{ $t(orderTypeBuy ? 'trade.buy_long' : 'trade.sell_short') }}
       </v-button>
     </div>
-
+    <AdvancedSettings
+      :slippage-tolerance="form.slippageTolerance"
+      :slippage-warning="slippageWarning"
+      :slippage-error="slippageError"
+      :trading-type-market="tradingTypeMarket"
+      @set-slippage-tolerance="setSlippageTolerance"
+      @set-post-only="setPostOnly"
+    />
     <v-modal-order-confirm @confirmed="submitLimitOrder" />
   </div>
 </template>
@@ -238,6 +245,7 @@ import OrderDetails from './order-details.vue'
 import OrderLeverage from './order-leverage.vue'
 import OrderLeverageSelect from './order-leverage-select.vue'
 import OrderDetailsMarket from './order-details-market.vue'
+import AdvancedSettings from '~/components/partials/derivatives/trading/advanced-settings.vue'
 import {
   DEFAULT_MAX_SLIPPAGE,
   DEFAULT_PRICE_WARNING_DEVIATION,
@@ -247,6 +255,7 @@ import {
   PRICE_BAND_ENABLED,
   BIGGER_PRICE_WARNING_DEVIATION
 } from '~/app/utils/constants'
+import { formatToAllowableDecimals } from '~/app/utils/formatters'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
 import { Modal } from '~/types'
@@ -268,13 +277,17 @@ interface TradeForm {
   amount: string
   price: string
   leverage: string
+  slippageTolerance: string
+  postOnly: boolean
 }
 
 const initialForm = (): TradeForm => ({
   reduceOnly: false,
   amount: '',
   price: '',
-  leverage: '1'
+  leverage: '1',
+  slippageTolerance: '0.5',
+  postOnly: false
 })
 
 export default Vue.extend({
@@ -284,7 +297,8 @@ export default Vue.extend({
     'v-order-leverage': OrderLeverage,
     'v-order-leverage-select': OrderLeverageSelect,
     'v-order-details-market': OrderDetailsMarket,
-    VModalOrderConfirm
+    VModalOrderConfirm,
+    AdvancedSettings
   },
 
   data() {
@@ -322,6 +336,10 @@ export default Vue.extend({
 
     marketSummary(): UiDerivativeMarketSummary | undefined {
       return this.$accessor.derivatives.marketSummary
+    },
+
+    isPostOnly(): boolean {
+      return this.form.postOnly
     },
 
     lastTradedPrice(): BigNumberInBase {
@@ -496,6 +514,16 @@ export default Vue.extend({
       )
     },
 
+    feeRateForPostOnly(): BigNumberInBase {
+      const { isPostOnly } = this
+
+      if (!isPostOnly) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(market.takerFeeRate)
+    },
+
     price(): BigNumberInBase {
       return new BigNumberInBase(this.form.price)
     },
@@ -560,9 +588,7 @@ export default Vue.extend({
           market
         })
 
-        return new BigNumberInBase(
-          averagePrice.times(slippage).toFixed(market.priceDecimals)
-        )
+        return new BigNumberInBase(averagePrice.toFixed(market.priceDecimals))
       }
 
       if (price.isNaN()) {
@@ -913,14 +939,8 @@ export default Vue.extend({
     },
 
     initialMinMarginRequirementError(): TradeError | undefined {
-      const {
-        market,
-        margin,
-        hasPrice,
-        hasAmount,
-        executionPrice,
-        amount
-      } = this
+      const { market, margin, hasPrice, hasAmount, executionPrice, amount } =
+        this
 
       if (!market || !hasPrice || !hasAmount) {
         return undefined
@@ -1295,17 +1315,19 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const disqualified = tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-        (marketId) => marketId === market.marketId
-      )
+      const disqualified =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
+          (marketId) => marketId === market.marketId
+        )
 
       if (disqualified) {
         return ZERO_IN_BASE
       }
 
-      const denomIncluded = tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-        (denom) => denom === market.quoteDenom
-      )
+      const denomIncluded =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
+          (denom) => denom === market.quoteDenom
+        )
 
       if (!denomIncluded) {
         return ZERO_IN_BASE
@@ -1354,17 +1376,19 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const disqualified = tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-        (marketId) => marketId === market.marketId
-      )
+      const disqualified =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
+          (marketId) => marketId === market.marketId
+        )
 
       if (disqualified) {
         return ZERO_IN_BASE
       }
 
-      const denomIncluded = tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-        (denom) => denom === market.quoteDenom
-      )
+      const denomIncluded =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
+          (denom) => denom === market.quoteDenom
+        )
 
       if (!denomIncluded) {
         return ZERO_IN_BASE
@@ -1607,6 +1631,14 @@ export default Vue.extend({
       })
     },
 
+    setSlippageTolerance(slippage: string) {
+      this.form.slippageTolerance = formatToAllowableDecimals(slippage, 2)
+    },
+
+    setPostOnly(postOnly: boolean) {
+      this.form.postOnly = postOnly
+    },
+
     onOrderbookPriceClick(price: string) {
       this.tradingType = TradeExecutionType.LimitFill
 
@@ -1668,14 +1700,8 @@ export default Vue.extend({
     },
 
     submitLimitOrder() {
-      const {
-        orderType,
-        market,
-        margin,
-        price,
-        orderTypeReduceOnly,
-        amount
-      } = this
+      const { orderType, market, margin, price, orderTypeReduceOnly, amount } =
+        this
 
       if (!market) {
         return
