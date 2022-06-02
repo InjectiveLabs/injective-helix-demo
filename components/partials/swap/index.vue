@@ -275,7 +275,7 @@ export default Vue.extend({
         return this.$t('trade.swap.insufficient_balance')
       }
 
-      return this.$t('trade.swap.swap')
+      return this.$t('trade.swap.swap_now')
     },
 
     swapButtonDisabled(): boolean {
