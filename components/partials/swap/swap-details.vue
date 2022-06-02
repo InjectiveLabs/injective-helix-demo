@@ -58,7 +58,6 @@ import {
   calculateWorstExecutionPriceFromOrderbook
 } from '~/app/services/spot'
 import { FeeDiscountAccountInfo } from '~/app/services/exchange'
-import { getDecimalsFromNumber } from '~/app/utils/helpers'
 
 const ONE_IN_BASE = new BigNumberInBase(1)
 
@@ -75,6 +74,11 @@ export default Vue.extend({
     },
 
     amount: {
+      type: BigNumberInBase,
+      required: true
+    },
+
+    fee: {
       type: BigNumberInBase,
       required: true
     },
@@ -149,28 +153,6 @@ export default Vue.extend({
       const { rate } = this
 
       return rate.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-    },
-
-    fee(): string {
-      const {
-        amount,
-        executionPrice,
-        takerFeeRate,
-        takerFeeRateDiscount
-      } = this
-
-      if (amount.isNaN()) {
-        return ZERO_IN_BASE.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      const discount = new BigNumberInBase(1).minus(takerFeeRateDiscount)
-
-      const fee = executionPrice
-        .times(amount)
-        .times(takerFeeRate)
-        .times(discount)
-
-      return fee.toFormat(getDecimalsFromNumber(fee.toNumber()))
     },
 
     feeRateToFormat(): string {

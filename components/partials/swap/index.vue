@@ -119,6 +119,7 @@
         :from-token="fromToken"
         :to-token="toToken"
         :amount="amount"
+        :fee="fee"
         :market="market"
         :order-type="orderType"
         :slippage="slippage"
@@ -184,7 +185,8 @@ import {
   UiSpotOrderbook,
   UiSubaccount,
   BankBalanceWithTokenAndBalance,
-  Token
+  Token,
+  getDecimalsFromNumber
 } from '@injectivelabs/ui-common'
 
 import { SpotOrderSide } from '@injectivelabs/spot-consumer'
@@ -202,7 +204,10 @@ import {
 } from '~/app/utils/constants'
 import ModalInsufficientInjForGas from '~/components/partials/modals/insufficient-inj-for-gas.vue'
 import { Modal } from '~/types'
-import { calculateWorstExecutionPriceFromOrderbook } from '~/app/services/spot'
+import {
+  calculateAverageExecutionPriceFromOrderbook,
+  calculateWorstExecutionPriceFromOrderbook
+} from '~/app/services/spot'
 import {
   FeeDiscountAccountInfo,
   TradingRewardsCampaign
@@ -597,7 +602,7 @@ export default Vue.extend({
 
     executionPrice(): BigNumberInBase {
       const {
-        orderTypeBuy,
+        orderType,
         sells,
         buys,
         hasAmount,
@@ -606,20 +611,23 @@ export default Vue.extend({
         amount
       } = this
 
-      if (!market || !hasAmount) {
+      if (!market) {
         return ZERO_IN_BASE
       }
 
-      const records = orderTypeBuy ? sells : buys
+      if (!hasAmount) {
+        return ZERO_IN_BASE
+      }
 
-      const worstPrice = calculateWorstExecutionPriceFromOrderbook({
+      const records = orderType === SpotOrderSide.Buy ? sells : buys
+      const averagePrice = calculateAverageExecutionPriceFromOrderbook({
         records,
         amount,
         market
       })
 
       return new BigNumberInBase(
-        worstPrice.times(slippage).toFixed(market.priceDecimals)
+        averagePrice.times(slippage).toFixed(market.priceDecimals)
       )
     },
 
@@ -1168,30 +1176,32 @@ export default Vue.extend({
       return extractedTotal.toFormat(market.priceDecimals)
     },
 
-    fee(): string {
+    fee(): BigNumberInBase {
       const {
         amount,
         executionPrice,
         takerFeeRate,
-        takerFeeRateDiscount,
-        market
+        takerFeeRateDiscount
       } = this
 
-      const decimalPlaces = market
-        ? market.priceDecimals
-        : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-
       if (amount.isNaN()) {
-        return ZERO_IN_BASE.toFormat(decimalPlaces)
+        return ZERO_IN_BASE
       }
 
       const discount = new BigNumberInBase(1).minus(takerFeeRateDiscount)
 
-      return executionPrice
+      const fee = executionPrice
         .times(amount)
         .times(takerFeeRate)
         .times(discount)
-        .toFormat(decimalPlaces)
+
+      return fee
+    },
+
+    feeToFormat(): string {
+      const { fee } = this
+
+      return fee.toFormat(getDecimalsFromNumber(fee.toNumber()))
     },
 
     wallet(): Wallet {
