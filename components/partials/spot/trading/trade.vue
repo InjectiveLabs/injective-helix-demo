@@ -32,7 +32,11 @@
           class="w-1/2"
           data-cy="trading-page-switch-to-side-buy-button"
         >
-          {{ $t('trade.buy_asset', { asset: market.baseToken.symbol }) }}
+          {{
+            $t('trade.buy_asset', {
+              asset: market.baseToken.symbol
+            })
+          }}
         </v-button-select>
         <v-button-select
           v-model="orderType"
@@ -41,7 +45,11 @@
           class="w-1/2"
           data-cy="trading-page-switch-to-side-sell-button"
         >
-          {{ $t('trade.sell_asset', { asset: market.baseToken.symbol }) }}
+          {{
+            $t('trade.sell_asset', {
+              asset: market.baseToken.symbol
+            })
+          }}
         </v-button-select>
       </div>
     </div>
@@ -50,7 +58,6 @@
         <v-input
           v-if="!tradingTypeMarket"
           ref="input-price"
-          :key="`price-${priceKey}`"
           v-model="form.price"
           :placeholder="priceStep"
           :label="$t('trade.price')"
@@ -68,7 +75,6 @@
         <div class="flex gap-3 mt-6">
           <v-input
             ref="input-amount"
-            :key="`amount-${amountKey}`"
             v-model="form.amount"
             :label="$t('trade.amount')"
             :custom-handler="true"
@@ -92,7 +98,6 @@
           </v-input>
           <v-input
             ref="input-amount"
-            :key="`quoteAmount-${quoteAmountKey}`"
             v-model="form.quoteAmount"
             :custom-handler="true"
             :max-decimals="market ? market.quantityDecimals : 6"
@@ -310,10 +315,7 @@ export default Vue.extend({
       orderType: SpotOrderSide.Buy,
       detailsDrawerOpen: true,
       status: new Status(),
-      form: initialForm(),
-      amountKey: 0,
-      quoteAmountKey: 0,
-      priceKey: 0
+      form: initialForm()
     }
   },
 
@@ -644,13 +646,12 @@ export default Vue.extend({
       if (tradingTypeMarket) {
         const records = orderTypeBuy ? sells : buys
 
-        const averagePrice = calculateAverageExecutionPriceFromFillableNotionalOnOrderBook(
-          {
+        const averagePrice =
+          calculateAverageExecutionPriceFromFillableNotionalOnOrderBook({
             records,
             quoteAmount,
             market
-          }
-        )
+          })
 
         return new BigNumberInBase(
           averagePrice
@@ -862,7 +863,9 @@ export default Vue.extend({
       } = this
 
       if (new BigNumberInBase(slippageTolerance).gt(new BigNumberInBase(50))) {
-        return { slippage: this.$t('trade.invalid_slippage') }
+        return {
+          slippage: this.$t('trade.invalid_slippage')
+        }
       }
 
       return undefined
@@ -1206,17 +1209,19 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const disqualified = tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-        (marketId) => marketId === market.marketId
-      )
+      const disqualified =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
+          (marketId) => marketId === market.marketId
+        )
 
       if (disqualified) {
         return ZERO_IN_BASE
       }
 
-      const denomIncluded = tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-        (denom) => denom === market.quoteDenom
-      )
+      const denomIncluded =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
+          (denom) => denom === market.quoteDenom
+        )
 
       if (!denomIncluded) {
         return ZERO_IN_BASE
@@ -1263,17 +1268,19 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const disqualified = tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-        (marketId) => marketId === market.marketId
-      )
+      const disqualified =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
+          (marketId) => marketId === market.marketId
+        )
 
       if (disqualified) {
         return ZERO_IN_BASE
       }
 
-      const denomIncluded = tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-        (denom) => denom === market.quoteDenom
-      )
+      const denomIncluded =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
+          (denom) => denom === market.quoteDenom
+        )
 
       if (!denomIncluded) {
         return ZERO_IN_BASE
@@ -1457,7 +1464,10 @@ export default Vue.extend({
             totalNotional: totalNotional.plus(orderQuantity.times(orderPrice))
           }
         },
-        { totalFillableAmount: ZERO_IN_BASE, totalNotional: ZERO_IN_BASE }
+        {
+          totalFillableAmount: ZERO_IN_BASE,
+          totalNotional: ZERO_IN_BASE
+        }
       )
 
       const baseBalance = new BigNumberInBase(baseAvailableBalance).times(
@@ -1479,13 +1489,8 @@ export default Vue.extend({
     updateQuoteAmountForProportionalQuantityBuy(
       percentToNumber: BigNumberInBase
     ) {
-      const {
-        quoteAvailableBalance,
-        sells,
-        slippage,
-        takerFeeRate,
-        market
-      } = this
+      const { quoteAvailableBalance, sells, slippage, takerFeeRate, market } =
+        this
 
       if (!market) {
         return
@@ -1714,10 +1719,7 @@ export default Vue.extend({
         return
       }
 
-      if (form.amount.trim() !== '' && !form.amount.includes('.')) {
-        // use key to refresh input field to eliminate potential trailing decimal point
-        this.amountKey++
-
+      if (form.amount.trim() !== '') {
         this.form.amount = new BigNumberInBase(form.amount).toFixed(
           0,
           BigNumberInBase.ROUND_DOWN
@@ -1732,10 +1734,7 @@ export default Vue.extend({
         return
       }
 
-      if (form.quoteAmount.trim() !== '' && !form.quoteAmount.includes('.')) {
-        // use key to refresh input field to eliminate potential trailing decimal point
-        this.quoteAmountKey++
-
+      if (form.quoteAmount.trim() !== '') {
         this.form.quoteAmount = new BigNumberInBase(form.quoteAmount).toFixed(
           0,
           BigNumberInBase.ROUND_DOWN
@@ -1750,10 +1749,7 @@ export default Vue.extend({
         return
       }
 
-      if (form.price.trim() !== '' && !form.price.includes('.')) {
-        // use key to refresh input field to eliminate potential trailing decimal point
-        this.priceKey++
-
+      if (form.price.trim() !== '') {
         this.form.price = new BigNumberInBase(form.price).toFixed(
           0,
           BigNumberInBase.ROUND_DOWN

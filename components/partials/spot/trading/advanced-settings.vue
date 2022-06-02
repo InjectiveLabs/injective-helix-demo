@@ -29,6 +29,7 @@
         </div>
         <div v-else>
           <VCheckbox
+            v-if="isStagingOrTestnetOrDevnet"
             v-model="hasCheckedPostOnly"
             class="flex items-center"
             @input="handlePostOnlyCheckboxToggle"
@@ -55,7 +56,6 @@
       <div v-show="showSlippageInputFieldForMarket">
         <v-input
           id="focusOnInput"
-          :key="slippageKey"
           :value="slippageTolerance"
           :wrapper-classes="wrapperClasses"
           :input-classes="inputClasses"
@@ -96,7 +96,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { DEFAULT_MAX_SLIPPAGE } from '~/app/utils/constants'
+import {
+  DEFAULT_MAX_SLIPPAGE,
+  IS_TESTNET,
+  IS_DEVNET,
+  IS_STAGING
+} from '~/app/utils/constants'
 
 enum SlippageDisplayOptions {
   NonSelectableDefault = 'Zero',
@@ -130,7 +135,6 @@ export default Vue.extend({
   data() {
     return {
       drawerIsOpen: true,
-      slippageKey: 0,
       SlippageDisplayOptions,
       slippageSelection: SlippageDisplayOptions.Selectable,
       slippageIsToggleable: true,
@@ -183,6 +187,10 @@ export default Vue.extend({
       return 'text-right px-1'
     },
 
+    isStagingOrTestnetOrDevnet(): boolean {
+      return IS_TESTNET || IS_DEVNET || IS_STAGING
+    },
+
     showSlippageAsSelectableOrDefaultForMarket(): boolean {
       const { slippageSelection, tradingTypeMarket } = this
 
@@ -207,11 +215,6 @@ export default Vue.extend({
     handleBlur(value: string): void {
       if (value === '') {
         value = DEFAULT_MAX_SLIPPAGE.toFormat(1)
-      }
-
-      if (value.trim() !== '' && !value.includes('.')) {
-        // use key to refresh input field to eliminate potential trailing decimal point
-        this.slippageKey++
       }
 
       this.$emit('set-slippage-tolerance', value)

@@ -45,6 +45,7 @@
           </div>
           <input
             v-bind="$attrs"
+            :key="resetInputKey"
             class="input"
             autocomplete="off"
             :value="value"
@@ -240,6 +241,12 @@ export default Vue.extend({
     }
   },
 
+  data() {
+    return {
+      resetInputKey: 0
+    }
+  },
+
   computed: {
     addonVisible(): boolean {
       const { showClose, isMaxValue, maxSelector, showAddon } = this
@@ -414,6 +421,11 @@ export default Vue.extend({
 
       // Make sure value is clamped to max if it exists.
       let value: String | Number = target.value
+
+      // use key to refresh input field to eliminate potential trailing decimal point
+      if (value.trim() !== '' && !value.includes('.')) {
+        this.resetInputKey++
+      }
 
       if (max !== null && Number(value) > Number(max)) {
         value = max.toString()
