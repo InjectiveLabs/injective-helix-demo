@@ -2402,10 +2402,10 @@
     lodash.values "^4.3.0"
     shx "^0.3.2"
 
-"@injectivelabs/token-metadata@^0.5.23":
-  version "0.5.23"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-0.5.23.tgz#e7c048367df726507b50601420c724bc6c996a57"
-  integrity sha512-eMks7mCiqpGy33S6fliAQK8VuWOOTTp64GvM/lFxf5hzM9eSwspPV9BIJ/yajF+avb1Ppk4mvZMXTXALIX1Ljw==
+"@injectivelabs/token-metadata@^0.5.24":
+  version "0.5.24"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-0.5.24.tgz#7da1c90f36ff53766af6444fb76bd7173b61ff52"
+  integrity sha512-a3YjIo8zWNNQl+aKWKwZxu78dtolUb3OYspBctNmwME8DDMa/FZWmjf6ujzuXDp+itFeGsCFca4Fl8wZgYE+8g==
   dependencies:
     "@injectivelabs/networks" "^0.5.7"
     "@injectivelabs/ts-types" "^0.5.2"
