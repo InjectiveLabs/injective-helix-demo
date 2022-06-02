@@ -23,10 +23,10 @@
     </div>
     <div class="flex items-center justify-between my-1">
       <span class="text-gray-500 uppercase tracking-widest font-bold text-xs">
-        {{ $t('trade.swap.price_impact') }}
+        {{ $t('trade.swap.estimated_slippage') }}
       </span>
       <span v-if="hasAmount" class="text-sm">
-        ≈ {{ priceImpactToFormat }}%
+        ≈ {{ estimatedSlippageToFormat }}%
       </span>
       <span v-else class="text-sm"> -- </span>
     </div>
@@ -47,6 +47,7 @@ import Vue from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   cosmosSdkDecToBigNumber,
+  getDecimalsFromNumber,
   SpotOrderSide,
   UiPriceLevel,
   UiSpotOrderbook,
@@ -103,11 +104,6 @@ export default Vue.extend({
       required: true
     },
 
-    feeRate: {
-      type: BigNumberInBase,
-      required: true
-    },
-
     pending: {
       type: Boolean,
       default: false
@@ -146,15 +142,23 @@ export default Vue.extend({
     },
 
     rate(): BigNumberInBase {
-      const { executionPrice } = this
+      const { averagePriceWithoutSlippage } = this
 
-      return executionPrice.times(ONE_IN_BASE)
+      return averagePriceWithoutSlippage.times(ONE_IN_BASE)
     },
 
     rateToFormat(): string {
       const { rate } = this
 
-      return rate.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      return rate.toFormat(getDecimalsFromNumber(rate.toNumber()))
+    },
+
+    feeRate(): BigNumberInBase {
+      const { takerFeeRate, takerFeeRateDiscount } = this
+
+      const ONE_IN_BASE = new BigNumberInBase(1)
+
+      return takerFeeRate.times(ONE_IN_BASE.minus(takerFeeRateDiscount))
     },
 
     feeRateToFormat(): string {
@@ -228,7 +232,7 @@ export default Vue.extend({
       return this.$accessor.exchange.feeDiscountAccountInfo
     },
 
-    priceImpact(): BigNumberInBase {
+    estimatedSlippage(): BigNumberInBase {
       const { executionPrice, worstPrice } = this
 
       if (executionPrice.eq(worstPrice)) {
@@ -241,10 +245,10 @@ export default Vue.extend({
         .dividedBy(executionPrice)
     },
 
-    priceImpactToFormat(): string {
-      const { priceImpact } = this
+    estimatedSlippageToFormat(): string {
+      const { estimatedSlippage } = this
 
-      return priceImpact.toFormat(2)
+      return estimatedSlippage.toFormat(2)
     },
 
     executionPrice(): BigNumberInBase {
@@ -254,7 +258,6 @@ export default Vue.extend({
         buys,
         hasAmount,
         market,
-        // slippage,
         amount
       } = this
 
@@ -274,19 +277,15 @@ export default Vue.extend({
       })
 
       return new BigNumberInBase(averagePrice.toFixed(market.priceDecimals))
-      // return new BigNumberInBase(
-      //   averagePrice.times(slippage).toFixed(market.priceDecimals)
-      // )
     },
 
-    averagePrice(): BigNumberInBase {
+    averagePriceWithoutSlippage(): BigNumberInBase {
       const {
         orderType,
         sells,
         buys,
         hasAmount,
         market,
-        slippage,
         amount
       } = this
 
@@ -303,7 +302,7 @@ export default Vue.extend({
       })
 
       return new BigNumberInBase(
-        averagePrice.times(slippage).toFixed(market.priceDecimals)
+        averagePrice.toFixed(market.priceDecimals)
       )
     },
 

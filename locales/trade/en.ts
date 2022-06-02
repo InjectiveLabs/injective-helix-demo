@@ -215,7 +215,7 @@ export default {
       slippage_auto: 'Auto',
       go_to_portfolio: 'Go to Portfolio',
       go_to_hub: 'Injective Hub',
-      price_impact: 'Price Impact',
+      estimated_slippage: 'Estimated Slippage',
       minimum_received: 'Minimum Received',
       fetching_price: 'Fetching price',
       reset_to_default_pair: 'Invalid pair {pair}, resetting to USDT/INJ',

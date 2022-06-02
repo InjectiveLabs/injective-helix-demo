@@ -52,6 +52,7 @@
         </PopperBox>
       </div>
       <div>
+        {{ orderTypeBuy }}
         <TokenSelector
           class="input-swap"
           :disabled="status && status.isLoading()"
@@ -229,6 +230,8 @@ enum SwapTradeErrorLinkType {
 interface SwapTradeError extends TradeError {
   linkType: SwapTradeErrorLinkType
 }
+
+const ONE_IN_BASE = new BigNumberInBase(1)
 
 const initialForm = (): TradeForm => ({
   amount: '',
@@ -591,8 +594,6 @@ export default Vue.extend({
     feeRate(): BigNumberInBase {
       const { takerFeeRate, takerFeeRateDiscount } = this
 
-      const ONE_IN_BASE = new BigNumberInBase(1)
-
       return takerFeeRate.times(ONE_IN_BASE.minus(takerFeeRateDiscount))
     },
 
@@ -628,6 +629,55 @@ export default Vue.extend({
 
       return new BigNumberInBase(
         averagePrice.times(slippage).toFixed(market.priceDecimals)
+      )
+    },
+
+    executionPriceWithoutSlippage(): BigNumberInBase {
+      const { orderType, sells, buys, hasAmount, market, amount } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      if (!hasAmount) {
+        return ZERO_IN_BASE
+      }
+
+      const records = orderType === SpotOrderSide.Buy ? sells : buys
+      const averagePrice = calculateAverageExecutionPriceFromOrderbook({
+        records,
+        amount,
+        market
+      })
+
+      return new BigNumberInBase(averagePrice.toFixed(market.priceDecimals))
+    },
+
+    worstPrice(): BigNumberInBase {
+      const {
+        orderType,
+        slippage,
+        sells,
+        buys,
+        hasAmount,
+        market,
+        amount
+      } = this
+
+      if (!market || !hasAmount) {
+        return ZERO_IN_BASE
+      }
+
+      const records = orderType === SpotOrderSide.Buy ? sells : buys
+
+      const worstPrice = calculateWorstExecutionPriceFromOrderbook({
+        records,
+        amount,
+        market
+      })
+
+      return new BigNumberInBase(
+        worstPrice.times(slippage).toFixed(market.priceDecimals)
       )
     },
 
@@ -1179,7 +1229,7 @@ export default Vue.extend({
     fee(): BigNumberInBase {
       const {
         amount,
-        executionPrice,
+        executionPriceWithoutSlippage,
         takerFeeRate,
         takerFeeRateDiscount
       } = this
@@ -1190,7 +1240,7 @@ export default Vue.extend({
 
       const discount = new BigNumberInBase(1).minus(takerFeeRateDiscount)
 
-      const fee = executionPrice
+      const fee = executionPriceWithoutSlippage
         .times(amount)
         .times(takerFeeRate)
         .times(discount)
@@ -1444,7 +1494,7 @@ export default Vue.extend({
     },
 
     submitMarketOrder(): void {
-      const { orderType, market, executionPrice, amount } = this
+      const { orderType, market, worstPrice, amount } = this
 
       if (!market) {
         return
@@ -1455,7 +1505,7 @@ export default Vue.extend({
       this.$accessor.spot
         .submitMarketOrder({
           quantity: amount,
-          price: executionPrice,
+          price: worstPrice,
           orderType
         })
         .then(() => {
@@ -1483,46 +1533,67 @@ export default Vue.extend({
     },
 
     onSetAmount(quantity: string): void {
-      const { orderTypeBuy, market } = this
+      const {
+        orderTypeBuy,
+        market,
+        fromToken,
+        executionPriceWithoutSlippage,
+        feeRate
+      } = this
 
-      const quantityAsNumber = new BigNumberInBase(Number(quantity))
-
-      const executionPrice = this.calculateExecutionPriceForAmount(
-        quantityAsNumber
-      )
-
-      const toQuantity = orderTypeBuy
-        ? quantityAsNumber.dividedBy(executionPrice)
-        : executionPrice.times(quantityAsNumber)
-
+      const quantityAsNumber = new BigNumberInBase(quantity)
       this.form.amount = quantity
-
-      this.form.toAmount = toQuantity.toFormat(
-        orderTypeBuy ? market?.priceDecimals : market?.quantityDecimals
-      )
-
       this.updatePrices()
+
+      if (!fromToken) {
+        return
+      }
+
+      const decimalPlaces = orderTypeBuy
+        ? market?.priceDecimals
+        : market?.quantityDecimals
+
+      const toAmount = orderTypeBuy
+        ? quantityAsNumber.dividedBy(
+            executionPriceWithoutSlippage.times(ONE_IN_BASE.plus(feeRate))
+          )
+        : quantityAsNumber
+            .times(executionPriceWithoutSlippage)
+            .times(ONE_IN_BASE.minus(feeRate))
+
+      this.form.toAmount = toAmount.toFormat(decimalPlaces)
     },
 
     onSetToAmount(quantity: string) {
-      const { orderTypeBuy, market } = this
+      const {
+        orderTypeBuy,
+        market,
+        toToken,
+        executionPriceWithoutSlippage,
+        feeRate
+      } = this
 
       const quantityAsNumber = new BigNumberInBase(Number(quantity))
-
-      const executionPrice = this.calculateExecutionPriceForAmount(
-        quantityAsNumber
-      )
-
-      const fromQuantity = orderTypeBuy
-        ? executionPrice.times(quantityAsNumber)
-        : quantityAsNumber.dividedBy(executionPrice)
-
-      this.form.amount = fromQuantity.toFormat(
-        orderTypeBuy ? market?.quantityDecimals : market?.priceDecimals
-      )
-
       this.form.toAmount = quantity
       this.updatePrices()
+
+      if (!toToken) {
+        return
+      }
+
+      const decimalPlaces = orderTypeBuy
+        ? market?.priceDecimals
+        : market?.quantityDecimals
+
+      const fromAmount = orderTypeBuy
+        ? quantityAsNumber
+            .times(executionPriceWithoutSlippage)
+            .times(ONE_IN_BASE.plus(feeRate))
+        : quantityAsNumber.dividedBy(
+            executionPriceWithoutSlippage.times(ONE_IN_BASE.minus(feeRate))
+          )
+
+      this.form.amount = fromAmount.toFormat(decimalPlaces)
     },
 
     calculateExecutionPriceForAmount(amount: BigNumberInBase): BigNumberInBase {
@@ -1769,6 +1840,16 @@ export default Vue.extend({
 
     handleClickOrConnect(): void {
       this.$root.$emit('wallet-clicked')
+    },
+
+    isBaseToken(token: Token) {
+      const { market } = this
+
+      if (!market) {
+        return false
+      }
+
+      return market.baseToken.symbol === token.symbol
     }
   }
 })
