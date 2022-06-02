@@ -58,7 +58,7 @@
           <div
             v-if="addonVisible"
             class="addon flex items-center flex-shrink-0"
-            :class="{ 'pr-3': !lg && !xl }"
+            :class="{ 'pr-3': !lg && !xl && !disableAddonPadding }"
           >
             <span
               v-if="showClose"
@@ -232,6 +232,11 @@ export default Vue.extend({
     maxClasses: {
       type: String,
       default: ''
+    },
+
+    disableAddonPadding: {
+      type: Boolean,
+      default: false
     }
   },
 

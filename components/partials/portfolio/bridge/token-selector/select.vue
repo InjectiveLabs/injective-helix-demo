@@ -37,7 +37,7 @@
               `required|positiveNumber|enoughBalance:0.0001,${balanceToFixed}`
             "
           >
-            <div class="flex justify-between">
+            <div class="flex justify-between gap-4 items-center">
               <div class="flex flex-col w-full justify-center">
                 <v-input
                   id="bridge-input"
@@ -61,6 +61,7 @@
                   :input-classes="inputClass"
                   data-cy="token-selector-amount-input"
                   :disabled="disabled"
+                  disable-addon-padding
                   @input="handleAmountChange"
                   @input-max="handleMax"
                   @blur="resetIsSearching"
@@ -100,9 +101,8 @@
                     <IconCaretDownSlim />
                   </div>
                 </div>
-                <div class="pr-4">
+                <div v-if="showBalance" class="pr-4">
                   <span
-                    v-if="showBalance"
                     class="text-[12px] whitespace-nowrap"
                     :class="{
                       'text-red-400': errors.length > 0,
