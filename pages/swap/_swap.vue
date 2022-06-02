@@ -1,11 +1,9 @@
 <template>
-  <div class="h-full w-full flex flex-wrap py-4">
+  <div class="swap-container min-h-screen-excluding-header">
     <VHocLoading :key="$route.fullPath" :status="status">
       <div class="container">
-        <div class="mx-auto w-full sm:w-md">
-          <div class="flex flex-col mt-6">
-            <Swap @set-market="setMarket" />
-          </div>
+        <div class="mx-auto h-full w-full sm:w-md flex flex-col justify-center">
+          <Swap class="mt-[-56px]" @set-market="setMarket" />
         </div>
       </div>
     </VHocLoading>
@@ -52,10 +50,9 @@ export default Vue.extend({
     Promise.all([
       this.$accessor.spot.init(),
       this.$accessor.token.getErc20TokensWithBalanceAndPriceFromBankAndMarkets()
-    ])
-      .then(() => {
-        this.status.setIdle()
-      })
+    ]).then(() => {
+      this.status.setIdle()
+    })
   },
 
   beforeDestroy() {
@@ -107,3 +104,19 @@ export default Vue.extend({
   }
 })
 </script>
+
+<style lang="scss" scoped>
+.swap-container {
+  @apply h-full w-full flex flex-wrap py-4;
+  background: radial-gradient(
+      45.83% 49.94% at 100% 0%,
+      rgba(1, 184, 252, 0.15) 0%,
+      rgba(13, 191, 200, 0) 100%
+    ),
+    radial-gradient(
+      75.69% 42.3% at 0% 100%,
+      rgba(1, 184, 252, 0.15) 0%,
+      rgba(13, 191, 200, 0) 100%
+    );
+}
+</style>

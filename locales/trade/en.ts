@@ -195,11 +195,13 @@ export default {
     estLiqPrice: 'EST Liq Price',
     balance: 'Balance: {balance}',
     swap: {
+      connect_wallet: 'Connect Wallet',
       insufficient_balance: 'Insufficient Balance',
       insufficient_balance_verbose: 'Insufficient {symbol} balance for this swap. Please top up your trading account.',
       swap_success: 'Swapped Successfully',
       swap_failed: 'Swap Failed',
-      swap: 'Swap Now',
+      swap: 'Swap',
+      swap_now: 'Swap Now',
       to: 'To',
       from: 'From',
       rate: 'Rate',
@@ -207,14 +209,17 @@ export default {
       current_rate: 'Current',
       advanced_settings: 'Advanced Settings',
       slippage_tolerance: 'Slippage Tolerance',
-      slippage_tolerance_tooltip: 'Lorem ipsum dolor amet',
-      high_slippage_warning: 'You may expect more price deviation due to high slippage tolerance',
+      slippage_tolerance_tooltip: 'Your transaction will be automatically cancelled if the price changes unfavorably by more than this percentage.',
+      high_slippage_warning: 'Your transaction might be executed at a less desirable price if slippage % is set too high.',
+      low_slippage_warning: 'Your transaction might not be executed if slippage % is set too low.',
       slippage_auto: 'Auto',
       go_to_portfolio: 'Go to Portfolio',
       go_to_hub: 'Injective Hub',
       price_impact: 'Price Impact',
       minimum_received: 'Minimum Received',
-      fetching_price: 'Fetching price'
+      fetching_price: 'Fetching price',
+      reset_to_default_pair: 'Invalid pair {pair}, resetting to USDT/INJ',
+      invalid_token_symbol_warning: 'Invalid token {symbol}, defaulting to {defaultSymbol}.'
     }
   }
 }

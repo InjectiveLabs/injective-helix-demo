@@ -1,9 +1,9 @@
 <template>
-  <div class="relative rounded-lg">
+  <div class="relative rounded-lg" :class="{ 'opacity-50': disabled }">
     <Select
       v-bind="$attrs"
       :options="tokens"
-      :disabled="false"
+      :disabled="disabled"
       :balance="balance"
       show-balance
       dense
@@ -17,9 +17,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import {
-  Token
-} from '@injectivelabs/ui-common'
+import { Token } from '@injectivelabs/ui-common'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import Select from '@/components/partials/portfolio/bridge/token-selector/select.vue'
 import { UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS } from '~/app/utils/constants'
@@ -44,6 +42,11 @@ export default Vue.extend({
     tokens: {
       type: Array,
       default: () => []
+    },
+
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
 
