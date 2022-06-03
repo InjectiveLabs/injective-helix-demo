@@ -22,6 +22,7 @@
             :type="SpotOrderSide.Sell"
             :user-orders="sellUserOrderPrices"
             :record="sell"
+            data-cy="orderbook-sell-list-item"
             @update:active-position="handleSellOrderHover"
           ></v-record>
         </ul>
@@ -79,6 +80,7 @@
             :type="SpotOrderSide.Buy"
             :user-orders="buyUserOrderPrices"
             :record="buy"
+            data-cy="orderbook-buy-list-item"
             @update:active-position="handleBuyOrderHover"
           ></v-record>
         </ul>
