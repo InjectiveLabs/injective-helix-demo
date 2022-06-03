@@ -21,7 +21,9 @@ export default {
   ...trade,
   common: {
     available: 'Available',
+    back: 'Back',
     deposit: 'Deposit',
+    filters: 'Filters',
     trade: 'Trade',
     transfer: 'Transfer',
     value: 'Value',
@@ -221,6 +223,7 @@ export default {
     rewards: 'Rewards',
     dashboard: 'Dashboard',
     trade: 'Trade',
+    swap: 'Swap',
     activities: 'Activities',
     activity: 'Activity',
     portfolio: 'Portfolio',

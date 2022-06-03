@@ -2,6 +2,7 @@
 import Vue from 'vue'
 import Arrow from '~/components/icons/arrow.vue'
 import ArrowSwap from '~/components/icons/arrow-swap.vue'
+import ArrowDown from '~/components/icons/arrow-down.vue'
 import Bin from '~/components/icons/bin.vue'
 import Box from '~/components/icons/box.vue'
 import CaretDown from '~/components/icons/caret-down.vue'
@@ -19,6 +20,7 @@ import DiscordCircle from '~/components/icons/discord-circle.vue'
 import Exit from '~/components/icons/exit.vue'
 import ExternalLink from '~/components/icons/external-link.vue'
 import ExternalLinkArrow from '~/components/icons/external-link-arrow.vue'
+import Filter from '~/components/icons/filter.vue'
 import Globe from '~/components/icons/globe.vue'
 import Governance from '~/components/icons/governance.vue'
 import History from '~/components/icons/history.vue'
@@ -49,6 +51,7 @@ import Telegram from '~/components/icons/telegram.vue'
 import TelegramCircle from '~/components/icons/telegram-circle.vue'
 import Torus from '~/components/icons/torus.vue'
 import Triangle from '~/components/icons/triangle.vue'
+import Trezor from '~/components/icons/trezor.vue'
 import Twitter from '~/components/icons/twitter.vue'
 import TwitterCircle from '~/components/icons/twitter-circle.vue'
 import User from '~/components/icons/user.vue'
@@ -57,61 +60,68 @@ import Crown from '~/components/icons/crown.vue'
 import Youtube from '~/components/icons/youtube.vue'
 import YoutubeCircle from '~/components/icons/youtube-circle.vue'
 import MenuAlt from '~/components/icons/menu-alt.vue'
+import Cogwheel from '~/components/icons/cogwheel.vue'
+import Warn from '~/components/icons/warn.vue'
 
-Vue.component('VIconArrow', Arrow)
-Vue.component('VIconArrowSwap', ArrowSwap)
-Vue.component('VIconBin', Bin)
-Vue.component('VIconBox', Box)
-Vue.component('VIconCaretDown', CaretDown)
-Vue.component('VIconCaretDownSlim', CaretDownSlim)
-Vue.component('VIconCategoryAlt', CategoryAlt)
-Vue.component('VIconCheck', Check)
-Vue.component('VIconCheckCircle', CheckCircle)
-Vue.component('VIconChevron', Chevron)
-Vue.component('VIconClose', Close)
-Vue.component('VIconCopy', Copy)
-Vue.component('VIconTorus', Torus)
-Vue.component('VIconCopyPlain', CopyPlain)
-Vue.component('VIconDashboard', Dashboard)
-Vue.component('VIconDiscord', Discord)
-Vue.component('VIconDiscordCircle', DiscordCircle)
-Vue.component('VIconExit', Exit)
-Vue.component('VIconExternalLink', ExternalLink)
-Vue.component('VIconExternalLinkArrow', ExternalLinkArrow)
-Vue.component('VIconGlobe', Globe)
-Vue.component('VIconGovernance', Governance)
-Vue.component('VIconHistory', History)
-Vue.component('VIconInfo', Info)
-Vue.component('VIconLedger', Ledger)
-Vue.component('VIconMenu', Menu)
-Vue.component('VIconCrown', Crown)
-Vue.component('VIconMetamask', Metamask)
-Vue.component('VIconMoon', Moon)
-Vue.component('VIconNetwork', Network)
-Vue.component('VIconNews', News)
-Vue.component('VIconMenuAlt', MenuAlt)
-Vue.component('VIconPencil', Pencil)
-Vue.component('VIconPlus', Plus)
-Vue.component('VIconProfile', Profile)
-Vue.component('VIconRectangleChart', RectangleChart)
-Vue.component('VIconReddit', Reddit)
-Vue.component('VIconRedditCircle', RedditCircle)
-Vue.component('VIconRefresh', Refresh)
-Vue.component('VIconSearch', Search)
-Vue.component('VIconShare', Share)
-Vue.component('VIconShow', Show)
-Vue.component('VIconSquare', Square)
-Vue.component('VIconStaking', Staking)
-Vue.component('VIconStar', Star)
-Vue.component('VIconStarBorder', StarBorder)
-Vue.component('VIconSun', Sun)
-Vue.component('VIconSwap', Swap)
-Vue.component('VIconTelegram', Telegram)
-Vue.component('VIconTelegramCircle', TelegramCircle)
-Vue.component('VIconTriangle', Triangle)
-Vue.component('VIconTwitter', Twitter)
-Vue.component('VIconTwitterCircle', TwitterCircle)
-Vue.component('VIconUser', User)
-Vue.component('VIconWallet', Wallet)
-Vue.component('VIconYoutube', Youtube)
-Vue.component('VIconYoutubeCircle', YoutubeCircle)
+Vue.component('IconArrow', Arrow)
+Vue.component('IconArrowSwap', ArrowSwap)
+Vue.component('IconArrowDown', ArrowDown)
+Vue.component('IconBin', Bin)
+Vue.component('IconBox', Box)
+Vue.component('IconCaretDown', CaretDown)
+Vue.component('IconCaretDownSlim', CaretDownSlim)
+Vue.component('IconCategoryAlt', CategoryAlt)
+Vue.component('IconCheck', Check)
+Vue.component('IconCheckCircle', CheckCircle)
+Vue.component('IconChevron', Chevron)
+Vue.component('IconClose', Close)
+Vue.component('IconCopy', Copy)
+Vue.component('IconTorus', Torus)
+Vue.component('IconCopyPlain', CopyPlain)
+Vue.component('IconDashboard', Dashboard)
+Vue.component('IconDiscord', Discord)
+Vue.component('IconDiscordCircle', DiscordCircle)
+Vue.component('IconExit', Exit)
+Vue.component('IconExternalLink', ExternalLink)
+Vue.component('IconExternalLinkArrow', ExternalLinkArrow)
+Vue.component('IconFilter', Filter)
+Vue.component('IconGlobe', Globe)
+Vue.component('IconGovernance', Governance)
+Vue.component('IconHistory', History)
+Vue.component('IconInfo', Info)
+Vue.component('IconLedger', Ledger)
+Vue.component('IconMenu', Menu)
+Vue.component('IconCrown', Crown)
+Vue.component('IconMetamask', Metamask)
+Vue.component('IconMoon', Moon)
+Vue.component('IconNetwork', Network)
+Vue.component('IconNews', News)
+Vue.component('IconMenuAlt', MenuAlt)
+Vue.component('IconPencil', Pencil)
+Vue.component('IconPlus', Plus)
+Vue.component('IconProfile', Profile)
+Vue.component('IconRectangleChart', RectangleChart)
+Vue.component('IconReddit', Reddit)
+Vue.component('IconRedditCircle', RedditCircle)
+Vue.component('IconRefresh', Refresh)
+Vue.component('IconSearch', Search)
+Vue.component('IconShare', Share)
+Vue.component('IconShow', Show)
+Vue.component('IconSquare', Square)
+Vue.component('IconStaking', Staking)
+Vue.component('IconStar', Star)
+Vue.component('IconStarBorder', StarBorder)
+Vue.component('IconSun', Sun)
+Vue.component('IconSwap', Swap)
+Vue.component('IconTelegram', Telegram)
+Vue.component('IconTelegramCircle', TelegramCircle)
+Vue.component('IconTriangle', Triangle)
+Vue.component('IconTrezor', Trezor)
+Vue.component('IconTwitter', Twitter)
+Vue.component('IconTwitterCircle', TwitterCircle)
+Vue.component('IconUser', User)
+Vue.component('IconWallet', Wallet)
+Vue.component('IconYoutube', Youtube)
+Vue.component('IconYoutubeCircle', YoutubeCircle)
+Vue.component('IconCogwheel', Cogwheel)
+Vue.component('IconWarn', Warn)

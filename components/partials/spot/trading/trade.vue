@@ -167,7 +167,7 @@
           class="flex items-center text-primary-500"
         >
           <span class="mr-1">Injective Hub</span>
-          <v-icon-external-link class="w-2 h-2" />
+          <IconExternalLink class="w-2 h-2" />
         </a>
       </p>
 
@@ -181,7 +181,7 @@
         :aqua="!hasErrors && orderType === SpotOrderSide.Buy"
         :red="!hasErrors && orderType === SpotOrderSide.Sell"
         class="w-full"
-        data-cy="trade-execute-button"
+        data-cy="trading-page-execute-button"
         @click.stop="onSubmit"
       >
         {{ $t(orderTypeBuy ? 'trade.buy' : 'trade.sell') }}

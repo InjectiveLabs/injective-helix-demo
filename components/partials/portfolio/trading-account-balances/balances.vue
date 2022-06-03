@@ -13,14 +13,14 @@
 
       <div class="ml-auto flex items-center gap-4">
         <v-checkbox v-model="showMarginCurrencyOnly">
-          <span class="flex items-center">
+          <span class="flex items-center" data-cy="trading-account-show-margin-only-check-box">
             {{ $t('portfolio.showMarginCurrencyOnly') }}
           </span>
         </v-checkbox>
         <v-checkbox v-model="hideSmallBalance" data-cy="universal-table-hide-small-balances-check-box">
           <span class="flex items-center">
             {{ $t('portfolio.hideSmallBalances') }}
-            <v-icon-info-tooltip
+            <IconInfoTooltip
               class="ml-2"
               :tooltip="$t('portfolio.hideSmallBalancesTooltip')"
             />
@@ -41,7 +41,7 @@
             <span>
               {{ $t('portfolio.total') }}
             </span>
-            <v-icon-info-tooltip
+            <IconInfoTooltip
               class="ml-2"
               color="text-gray-200"
               :tooltip="$t('portfolio.totalTooltip')"
@@ -50,7 +50,7 @@
           </span>
           <span class="col-span-2 flex items-center justify-end">
             {{ $t('portfolio.available') }}
-            <v-icon-info-tooltip
+            <IconInfoTooltip
               class="ml-2"
               color="text-gray-200"
               :tooltip="$t('portfolio.availableTooltip')"
@@ -61,7 +61,7 @@
         <div class="col-span-7 grid grid-cols-9 gap-4">
           <span class="col-span-2 flex items-center justify-end">
             {{ $t('portfolio.marginHold') }}
-            <v-icon-info-tooltip
+            <IconInfoTooltip
               class="ml-2"
               color="text-gray-200"
               :tooltip="$t('portfolio.marginHoldTooltip')"
@@ -72,7 +72,7 @@
             <span>
               {{ $t('trade.unrealized_pnl') }}
             </span>
-            <v-icon-info-tooltip
+            <IconInfoTooltip
               class="ml-2"
               color="text-gray-200"
               :tooltip="$t('portfolio.unrealizedPnlTooltip')"

@@ -23,7 +23,7 @@
               :alt="form.token.name"
               class="rounded-full w-10 h-10 mx-auto"
             />
-            <v-icon-category-alt
+            <IconCategoryAlt
               v-else
               class="text-gray-200 rounded-full w-10 h-10 mx-auto"
             />
@@ -67,7 +67,7 @@
                 rounded-full
               "
             >
-              <v-icon-arrow class="text-gray-1000 w-4 h-4 rotate-180" />
+              <IconArrow class="text-gray-1000 w-4 h-4 rotate-180" />
             </div>
 
             <v-network-card-base

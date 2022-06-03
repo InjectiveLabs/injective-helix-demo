@@ -54,7 +54,9 @@ export enum Modal {
   BridgeConfirm = 'bridge-confirm',
   BridgeCompleted = 'bridge-completed',
   RefereeOnboarding = 'referee-onboarding',
-  InsufficientInjForGas = 'insufficient-inj-for-gas'
+  InsufficientInjForGas = 'insufficient-inj-for-gas',
+  MobileTradeFilter = 'mobile-trade-filter',
+  MobileTradeDetails = 'mobile-trade-details'
 }
 
 export enum Breakpoint {
@@ -117,8 +119,8 @@ export enum MarketCategoryType {
 
 export enum MarketQuoteType {
   All = 'all',
-  USDT = 'usdt',
-  UST = 'ust'
+  USDT = 'usdt'
+  // UST = 'ust'
 }
 
 export enum MarketTypeFavorite {

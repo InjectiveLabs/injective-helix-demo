@@ -37,7 +37,7 @@
               @click="onSidebarClose"
             >
               <span class="sr-only">{{ $t('common.close') }}</span>
-              <v-icon-close class="w-6 h-6 text-gray-200" />
+              <IconClose class="w-6 h-6 text-gray-200" />
             </button>
           </div>
 

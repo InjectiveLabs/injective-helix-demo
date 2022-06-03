@@ -7,7 +7,7 @@
     >
       <p slot="header" class="flex justify-between">
         <v-text-info :title="$t('trade.total')" lg>
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             slot="context"
             class="ml-2"
             :tooltip="$t('trade.market_total_tooltip')"
@@ -55,7 +55,7 @@
           :title="$t('trade.est_receiving_amount')"
           class="mt-2"
         >
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             slot="context"
             class="ml-2"
             :tooltip="$t('trade.est_receiving_amount_note')"
@@ -70,7 +70,7 @@
         </v-text-info>
 
         <v-text-info :title="$t('trade.taker_rate')" class="mt-2">
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             slot="context"
             class="ml-2"
             :tooltip="$t('trade.taker_rate_note')"
@@ -83,12 +83,12 @@
         <v-text-info :title="$t('trade.fee')" class="mt-2">
           <div slot="context">
             <div class="flex items-center">
-              <v-icon-info-tooltip
+              <IconInfoTooltip
                 slot="context"
                 class="ml-2"
                 :tooltip="$t('trade.fees_tooltip')"
               />
-              <v-icon-check-tooltip
+              <IconCheckTooltip
                 v-if="
                   !marketHasNegativeMakerFee &&
                   (makerFeeRateDiscount.gt(0) || takerFeeRateDiscount.gt(0))
@@ -118,7 +118,7 @@
           :title="$t('trade.expected_points')"
           class="mt-2"
         >
-          <v-icon-info-tooltip
+          <IconInfoTooltip
             slot="context"
             class="ml-2"
             :tooltip="$t('trade.expected_points_note')"

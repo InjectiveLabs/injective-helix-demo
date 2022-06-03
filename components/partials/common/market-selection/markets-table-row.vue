@@ -9,12 +9,12 @@
         data-cy="markets-favorite-button"
         @click="updateWatchList"
       >
-        <v-icon-star
+        <IconStar
           v-if="isFavorite"
           class="min-w-5 w-5 h-5"
           data-cy="markets-is-favorite-icon"
         />
-        <v-icon-star-border v-else class="min-w-5 w-5 h-5" />
+        <IconStarBorder v-else class="min-w-5 w-5 h-5" />
       </div>
 
       <nuxt-link

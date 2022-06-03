@@ -187,7 +187,7 @@
           class="flex items-center text-primary-500"
         >
           <span class="mr-1">Injective Hub</span>
-          <v-icon-external-link class="w-2 h-2" />
+          <IconExternalLink class="w-2 h-2" />
         </a>
       </p>
 
@@ -651,7 +651,9 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const reduceOnlyOrders = orders.filter((o) => o.isReduceOnly)
+      const reduceOnlyOrders = orders.filter(
+        (o) => o.isReduceOnly && o.marketId === market.marketId
+      )
       const aggregateReduceOnlyQuantity = reduceOnlyOrders.reduce(
         (total, order) => total.plus(order.quantity),
         ZERO_IN_BASE

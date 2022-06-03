@@ -56,7 +56,7 @@
     <template slot="title">
       <div class="flex items-center justify-center">
         {{ $t('trade.boosted_markets') }}
-        <v-icon-info-tooltip
+        <IconInfoTooltip
           class="ml-2"
           :tooltip="$t('trade.boosted_markets_tooltip')"
         />

@@ -16,6 +16,7 @@ import { FEE_RECIPIENT } from '~/app/utils/constants'
 import { derivativeActionService, derivativeService } from '~/app/Services'
 import { streamSubaccountPositions } from '~/app/streams/derivatives'
 import { getRoundedLiquidationPrice } from '~/app/services/derivatives'
+import { derivatives } from '~/routes.config'
 
 const initialStateFactory = () => ({
   orderbooks: {} as Record<string, UiDerivativeOrderbook>,
@@ -105,8 +106,16 @@ export const actions = actionTree(
       const positions = await derivativeService.fetchPositions({
         subaccountId: subaccount.subaccountId
       })
+      const positionWithActiveMarket = positions.filter((p) => {
+        const tickerFormattedToSlug = p.ticker
+          .replace('/', '-')
+          .replace(' ', '-')
+          .toLowerCase()
 
-      commit('setSubaccountPositions', positions)
+        return derivatives.includes(tickerFormattedToSlug)
+      })
+
+      commit('setSubaccountPositions', positionWithActiveMarket)
     },
 
     // Fetching multiple market orderbooks for unrealized PnL calculation within
@@ -198,11 +207,8 @@ export const actions = actionTree(
       }
     ) {
       const { subaccount } = this.app.$accessor.account
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
 
       if (!isUserWalletConnected || !subaccount || !market) {
@@ -235,11 +241,8 @@ export const actions = actionTree(
     async closeAllPosition(_, positions: UiPosition[]) {
       const { subaccount } = this.app.$accessor.account
       const { markets } = this.app.$accessor.derivatives
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
 
       if (!isUserWalletConnected || !subaccount || positions.length === 0) {
@@ -304,11 +307,8 @@ export const actions = actionTree(
     ) {
       const { subaccount } = this.app.$accessor.account
       const { market: currentMarket } = this.app.$accessor.derivatives
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
 
       const actualMarket = (currentMarket ||
@@ -361,11 +361,8 @@ export const actions = actionTree(
       }
     ) {
       const { subaccount } = this.app.$accessor.account
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
 
       if (!isUserWalletConnected || !subaccount || !market) {

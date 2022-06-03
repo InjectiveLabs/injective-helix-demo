@@ -7,14 +7,14 @@
           'text-gray-600': sortBy !== value || !ascending
         }"
       >
-        <v-icon-triangle class="transform rotate-180 mb-1" />
+        <IconTriangle class="transform rotate-180 mb-1" />
       </div>
       <div
         :class="{
           'text-gray-600': sortBy !== value || ascending
         }"
       >
-        <v-icon-triangle />
+        <IconTriangle />
       </div>
     </div>
     <slot />

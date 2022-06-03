@@ -22,6 +22,7 @@
             :type="DerivativeOrderSide.Sell"
             :user-orders="sellUserOrderPrices"
             :record="sell"
+            data-cy="orderbook-sell-list-item"
             @update:active-position="handleSellOrderHover"
           ></v-record>
         </ul>
@@ -37,11 +38,12 @@
             'text-red-500': lastTradedPriceChange === Change.Decrease,
             'text-aqua-500': lastTradedPriceChange !== Change.Decrease
           }"
+          data-cy="orderbook-last-traded-price-text-content"
           class="font-bold font-mono text-base lg:text-lg 4xl:text-xl"
         >
           {{ lastTradedPriceToFormat }}
         </span>
-        <v-icon-arrow
+        <IconArrow
           v-if="
             [Change.Increase, Change.Decrease].includes(lastTradedPriceChange)
           "
@@ -54,7 +56,7 @@
         />
         <span
           v-tooltip="{ content: $t('trade.mark_price_tooltip_verbose') }"
-          data-cy="orderbook-last-traded-price-text-content"
+          data-cy="orderbook-mark-price-text-content"
           class="text-gray-500 underline font-mono text-base lg:text-sm 4xl:text-md cursor-pointer"
         >
           {{ markPriceToFormat }}
@@ -84,6 +86,7 @@
             :type="DerivativeOrderSide.Buy"
             :user-orders="buyUserOrderPrices"
             :record="buy"
+            data-cy="orderbook-buy-list-item"
             @update:active-position="handleBuyOrderHover"
           ></v-record>
         </ul>

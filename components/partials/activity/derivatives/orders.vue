@@ -55,7 +55,7 @@
       <!-- mobile table -->
       <TableBody
         :show-empty="filteredOrders.length === 0"
-        class="sm:hidden mt-3"
+        class="sm:hidden mt-3 max-h-lg overflow-y-auto"
       >
         <mobile-order
           v-for="(order, index) in filteredOrders"
@@ -146,7 +146,11 @@ export default Vue.extend({
       return orders.filter((o) => {
         const market = markets.find((m) => m.marketId === o.marketId)
 
-        if (!market || (!search && !side)) {
+        if (!market) {
+          return false
+        }
+
+        if (!search && !side) {
           return true
         }
 

@@ -15,7 +15,7 @@
           @click="onDropdownToggle"
         >
           <slot name="title" />
-          <v-icon-caret-down
+          <IconCaretDown
             class="h-4 w-4"
             :class="[
               dark ? 'text-gray-500' : 'text-gray-200',
@@ -116,7 +116,7 @@ export default Vue.extend({
 
       // text-gray-500 border-gray-600
 
-      return 'bg-gray-900 rounded-full h-10 shadow-sm px-4 py-3' as string
+      return 'bg-gray-900 rounded-full h-10 px-4 py-3'
     }
   },
 

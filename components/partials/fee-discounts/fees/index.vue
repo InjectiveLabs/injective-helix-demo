@@ -11,7 +11,7 @@
               <span>
                 {{ $t('fee_discount_staked_amount') }}
               </span>
-              <v-icon-info-tooltip
+              <IconInfoTooltip
                 class="ml-2"
                 :tooltip="$t('fee_discount_staked_amount_tooltip')"
               />
@@ -23,7 +23,7 @@
               <span>
                 {{ $t('trade.fees_paid') }}
               </span>
-              <v-icon-info-tooltip
+              <IconInfoTooltip
                 class="ml-2"
                 :tooltip="$t('fee_discount_fees_paid_tooltip')"
               />
@@ -34,7 +34,7 @@
               <span>
                 {{ $t('fee_discount_maker') }}
               </span>
-              <v-icon-info-tooltip
+              <IconInfoTooltip
                 class="ml-2"
                 :tooltip="$t('fee_discount_maker_tooltip')"
               />
@@ -45,7 +45,7 @@
               <span>
                 {{ $t('fee_discount_taker') }}
               </span>
-              <v-icon-info-tooltip
+              <IconInfoTooltip
                 class="ml-2"
                 :tooltip="$t('fee_discount_taker_tooltip')"
               />

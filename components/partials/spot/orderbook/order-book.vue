@@ -22,6 +22,7 @@
             :type="SpotOrderSide.Sell"
             :user-orders="sellUserOrderPrices"
             :record="sell"
+            data-cy="orderbook-sell-list-item"
             @update:active-position="handleSellOrderHover"
           ></v-record>
         </ul>
@@ -32,7 +33,7 @@
       class="orderbook-middle-h bg-gray-900 flex flex-col items-center justify-center border-t border-b"
     >
       <div class="w-full flex items-center justify-center">
-        <v-icon-arrow
+        <IconArrow
           v-if="
             [Change.Increase, Change.Decrease].includes(lastTradedPriceChange)
           "
@@ -79,6 +80,7 @@
             :type="SpotOrderSide.Buy"
             :user-orders="buyUserOrderPrices"
             :record="buy"
+            data-cy="orderbook-buy-list-item"
             @update:active-position="handleBuyOrderHover"
           ></v-record>
         </ul>

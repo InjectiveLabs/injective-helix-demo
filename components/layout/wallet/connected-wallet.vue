@@ -15,7 +15,7 @@
       </p>
       <div class="inline-block">
         <div
-          class="flex items-center bg-primary-500-faded w-auto px-1 rounded-sm"
+          class="flex items-center bg-primary-500 bg-opacity-10 w-auto px-1 rounded-sm"
         >
           <span class="rounded-full w-1 h-1 mr-1 bg-primary-500"></span>
           <span class="text-primary-500" :class="[lg ? 'text-sm' : 'text-2xs']">
@@ -32,7 +32,7 @@
         type="button"
         data-cy="wallet-connected-popper-wallet-address-copy-button"
       >
-        <v-icon-copy class="w-5 h-5 text-gray-500 hover:text-primary-500" />
+        <IconCopy class="w-5 h-5 text-gray-500 hover:text-primary-500" />
       </button>
     </div>
   </li>

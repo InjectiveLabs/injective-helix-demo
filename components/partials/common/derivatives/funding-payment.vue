@@ -5,8 +5,8 @@
       <span class="text-gray-400 text-xs">{{ time }}</span>
     </td>
 
-    <td class="h-8 text-left cursor-pointer" @click="handleClickOnMarket">
-      <div class="flex items-center justify-start">
+    <td class="h-8 text-left cursor-pointer">
+      <nuxt-link class="flex items-center justify-start" :to="marketRoute">
         <div v-if="market.baseToken.logo" class="w-6 h-6">
           <img
             :src="market.baseToken.logo"
@@ -22,7 +22,7 @@
             {{ market.ticker }}
           </span>
         </div>
-      </div>
+      </nuxt-link>
     </td>
 
     <td class="h-8 text-right font-mono">
@@ -74,6 +74,8 @@ import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
+import { getMarketRoute } from '~/app/utils/market'
+import { MarketRoute } from '~/types'
 
 export default Vue.extend({
   props: {
@@ -126,24 +128,18 @@ export default Vue.extend({
       }
 
       return format(fundingPayment.timestamp, 'dd MMM HH:mm:ss')
-    }
-  },
+    },
 
-  methods: {
-    handleClickOnMarket() {
+    marketRoute(): MarketRoute {
       const { market } = this
 
       if (!market) {
-        return
+        return { name: 'markets' }
       }
 
-      return this.$router.push({
-        name: 'derivatives-derivative',
-        params: {
-          marketId: market.marketId,
-          derivative: market.slug
-        }
-      })
+      const marketRoute = getMarketRoute(market)
+
+      return marketRoute || { name: 'markets' }
     }
   }
 })

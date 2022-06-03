@@ -22,8 +22,8 @@
         data-cy="markets-favourite-button"
         @click="updateWatchList"
       >
-        <v-icon-star v-if="isFavorite" class="min-w-6 w-6 h-6" />
-        <v-icon-star-border v-else class="min-w-6 w-6 h-6" />
+        <IconStar v-if="isFavorite" class="min-w-6 w-6 h-6" />
+        <IconStarBorder v-else class="min-w-6 w-6 h-6" />
       </div>
 
       <nuxt-link class="cursor-pointer flex items-center" :to="marketRoute">
@@ -53,7 +53,7 @@
     <!-- Mobile column -->
     <div class="sm:hidden flex flex-col items-end font-mono">
       <div class="flex items-center">
-        <v-icon-arrow
+        <IconArrow
           v-if="!lastTradedPrice.isNaN() && lastTradedPrice.gt(0)"
           class="transform w-3 h-3 mr-1"
           :class="{
@@ -85,7 +85,7 @@
       class="hidden font-mono sm:flex items-center justify-end col-span-2"
       data-cy="markets-last-traded-price-table-data"
     >
-      <v-icon-arrow
+      <IconArrow
         v-if="!lastTradedPrice.isNaN() && lastTradedPrice.gt(0)"
         class="transform w-3 h-3 mr-1"
         :class="{
@@ -160,12 +160,12 @@ data-cy="markets-volume-usd-table-data"
         data-cy="markets-favorite-button"
         @click="updateWatchList"
       >
-        <v-icon-star
+        <IconStar
           v-if="isFavorite"
           class="min-w-5 w-5 h-5"
           data-cy="markets-is-favorite-icon"
         />
-        <v-icon-star-border
+        <IconStarBorder
           v-else
           class="min-w-5 w-5 h-5"
           data-cy="markets-is-not-favorite-icon"

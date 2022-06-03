@@ -81,7 +81,7 @@
           >
             <span class="bg-gray-900 py-2 px-4 flex items-center rounded-full">
               <span>{{ $t('banners.welcome.howItWorks') }}</span>
-              <v-icon-arrow class="w-3 h-3 rotate-[135deg] ml-2" />
+              <IconArrow class="w-3 h-3 rotate-[135deg] ml-2" />
             </span>
           </a>
 
@@ -92,7 +92,7 @@
           >
             <span class="bg-gray-900 py-2 px-4 flex items-center rounded-full">
               <span>{{ $t('banners.welcome.faq') }}</span>
-              <v-icon-arrow class="w-3 h-3 rotate-[135deg] ml-2" />
+              <IconArrow class="w-3 h-3 rotate-[135deg] ml-2" />
             </span>
           </a>
         </div>

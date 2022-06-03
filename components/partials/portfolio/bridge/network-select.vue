@@ -19,7 +19,7 @@
     >
       <template #open-indicator="{ attributes }">
         <span v-bind="attributes" class="cursor-pointer">
-          <v-icon-caret-down-slim />
+          <IconCaretDownSlim />
         </span>
       </template>
 

@@ -100,7 +100,7 @@ export const getBridgingNetworkBySymbol = (symbol: string): BridgingNetwork => {
     return BridgingNetwork.Persistence
   }
 
-  if (['AXL', 'UAXL'].includes(symbolToUpperCase)) {
+  if (['AXL', 'UAXL', 'DOT', 'DOT-PLANCK'].includes(symbolToUpperCase)) {
     return BridgingNetwork.Axelar
   }
 

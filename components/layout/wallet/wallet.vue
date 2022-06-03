@@ -14,7 +14,7 @@
         @focus="handleShowDropdown"
         @blur="handleHideDropdown"
       >
-        <v-icon-user class="w-4 h-4 mr-2" />
+        <IconUser class="w-4 h-4 mr-2" />
         <span class="">
           {{ formattedInjectiveAddress }}
         </span>
@@ -60,7 +60,7 @@
                   type="button"
                   data-cy="wallet-connected-popper-inj-address-copy-button"
                 >
-                  <v-icon-copy
+                  <IconCopy
                     class="w-5 h-5 text-gray-500 hover:text-primary-500"
                   />
                 </button>
@@ -70,7 +70,7 @@
               class="w-full flex items-center justify-between mt-2 cursor-pointer"
               @click.stop="handleClickOnFeeDiscounts"
             >
-              <v-icon-crown class="w-6 h-6 -mt-1" />
+              <IconCrown class="w-6 h-6 -mt-1" />
               <span
                 class="text-primary-500 text-sm px-1 py-0.4 bg-primary-500 bg-opacity-10 rounded align-top"
               >
@@ -109,7 +109,7 @@
                 <span class="mr-2">
                   {{ referralCode }}
                 </span>
-                <v-icon-arrow class="h-4 w-4 transform rotate-135" />
+                <IconArrow class="h-4 w-4 transform rotate-135" />
               </div>
             </a>
             <span v-else class="text-gray-500">&mdash;</span>
@@ -124,7 +124,7 @@
           </h3>
           <ul class="pt-4 pb-6">
             <v-connected-wallet v-if="wallet === Wallet.Metamask" lg>
-              <v-icon-metamask class="w-8 h-8 mx-auto" />
+              <IconMetamask class="w-8 h-8 mx-auto" />
             </v-connected-wallet>
             <v-connected-wallet v-if="wallet === Wallet.Keplr" lg>
               <img
@@ -134,10 +134,10 @@
               />
             </v-connected-wallet>
             <v-connected-wallet v-if="wallet === Wallet.Ledger" lg>
-              <v-icon-ledger class="w-8 h-8 mx-auto" />
+              <IconLedger class="w-8 h-8 mx-auto" />
             </v-connected-wallet>
             <v-connected-wallet v-if="wallet === Wallet.Torus" lg>
-              <v-icon-torus class="w-8 h-8 mx-auto" />
+              <IconTorus class="w-8 h-8 mx-auto" />
             </v-connected-wallet>
           </ul>
         </div>

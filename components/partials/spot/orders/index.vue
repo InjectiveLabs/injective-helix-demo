@@ -3,7 +3,7 @@
     <!-- mobile table -->
     <TableBody
       :show-empty="filteredOrders.length === 0"
-      class="sm:hidden pt-0 bg-gray-1050"
+      class="sm:hidden max-h-lg overflow-y-auto"
     >
       <mobile-order
         v-for="(order, index) in filteredOrders"
@@ -15,7 +15,7 @@
       <v-empty-list
         slot="empty"
         :message="$t('trade.emptyOrders')"
-        class="mt-6 min-h-orders"
+        class="min-h-orders"
       />
     </TableBody>
 

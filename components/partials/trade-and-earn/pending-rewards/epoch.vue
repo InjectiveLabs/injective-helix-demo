@@ -29,7 +29,7 @@
         <template slot="title">
           <div class="flex items-center justify-center">
             {{ $t('tradeAndEarn.pending_max_campaign_rewards') }}
-            <v-icon-info-tooltip
+            <IconInfoTooltip
               class="ml-2"
               :tooltip="$t('tradeAndEarn.pending_max_campaign_rewards_tooltip')"
             />
@@ -55,7 +55,7 @@
         <template slot="title">
           <div class="flex items-center justify-center">
             {{ $t('tradeAndEarn.myRewardPoints') }}
-            <v-icon-info-tooltip
+            <IconInfoTooltip
               class="ml-2"
               :tooltip="$t('tradeAndEarn.myRewardPoints_tooltip')"
             />
@@ -97,7 +97,7 @@
             target="_blank"
           >
             {{ $t('stake_more') }}
-            <v-icon-info-tooltip
+            <IconInfoTooltip
               class="ml-2"
               :tooltip="
                 $t('tradeAndEarn.stake_total_to_receive_full_amount', {
@@ -110,7 +110,7 @@
         <template slot="title">
           <div class="flex items-center justify-center">
             {{ $t('tradeAndEarn.est_rewards_stake') }}
-            <v-icon-info-tooltip
+            <IconInfoTooltip
               class="ml-2"
               :tooltip="
                 $t('tradeAndEarn.est_rewards_stake_tooltip', {

@@ -11,7 +11,7 @@
           @click="handleTypeClick"
         >
           <span class="flex items-center">
-            <v-icon-star class="mr-1" />
+            <IconStar class="mr-1" />
             <span>{{ $t('trade.favorites') }}</span>
           </span>
         </v-market-type-selector>
@@ -75,15 +75,6 @@
           @click="handleQuoteClick"
         >
           USDT
-        </v-market-quote-selector>
-        <div class="border-r h-4 border-gray-600 w-px" />
-        <v-market-quote-selector
-          :active="activeQuote === MarketQuoteType.UST"
-          :type="MarketQuoteType.UST"
-          data-cy="markets-quote-ust-button"
-          @click="handleQuoteClick"
-        >
-          UST
         </v-market-quote-selector>
       </div>
 

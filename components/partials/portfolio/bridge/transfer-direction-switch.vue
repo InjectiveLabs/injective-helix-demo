@@ -11,7 +11,7 @@
       class="bg-primary-500 min-w-6 h-6 mx-6 flex items-center justify-center rounded-full cursor-pointer"
       data-cy="transfer-modal-direction-toggle-button"
     >
-      <v-icon-arrow-swap
+      <IconArrowSwap
         class="text-gray-1000 w-6 h-6 rotate-180 select-none"
         @click.native="handleDirectionSwitch"
       />

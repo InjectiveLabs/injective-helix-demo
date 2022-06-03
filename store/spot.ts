@@ -27,7 +27,12 @@ import {
   FEE_RECIPIENT,
   ORDERBOOK_STREAMING_ENABLED
 } from '~/app/utils/constants'
-import { spotActionService, spotService, tokenService } from '~/app/Services'
+import {
+  spotActionService,
+  spotService,
+  tokenService,
+  tokenCoinGeckoService
+} from '~/app/Services'
 import { spot as allowedSpotMarkets } from '~/routes.config'
 
 const initialStateFactory = () => ({
@@ -670,6 +675,10 @@ export const actions = actionTree(
         feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
       })
+    },
+
+    async fetchUsdPrice(_, coinGeckoId: string) {
+      return await tokenCoinGeckoService.fetchUsdTokenPrice(coinGeckoId)
     }
   }
 )
