@@ -3,7 +3,7 @@
     <div class="flex items-center gap-4">
       <v-tab-selector-item v-model="component" data-cy="activity-derivative-orders-link" :option="components.orders">
         <div class="flex items-center gap-1">
-          <span>{{ $t('activity.openOrders') }}</span>
+          <span data-cy="activity-derivative-orders-link-count">{{ $t('activity.openOrders') }}</span>
           <portal-target name="activity-tab-derivative-count" />
         </div>
       </v-tab-selector-item>

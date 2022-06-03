@@ -9,7 +9,7 @@
             :option="components.positions"
           >
             <div class="flex items-center gap-1">
-              <span>{{ $t('activity.openPositions') }}</span>
+              <span data-cy="activity-open-positions-link-count">{{ $t('activity.openPositions') }}</span>
               <portal-target name="activity-tab-position-count" />
             </div>
           </v-tab-selector-item>
