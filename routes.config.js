@@ -43,6 +43,7 @@ const derivatives = IS_TESTNET
 
 if (NETWORK === Network.Devnet || IS_MAINNET_STAGING) {
   derivatives.push('osmo-usdt-perp')
+  spot.push('dot-usdt')
 }
 
 const spotRoutes = spot.map((s) => `/spot/${s}`) || []
