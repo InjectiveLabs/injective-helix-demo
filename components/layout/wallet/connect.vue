@@ -22,7 +22,7 @@
           <ul class="divide-y divide-gray-800 border-gray-700 rounded-lg">
             <Metamask />
             <Keplr />
-            <Torus v-if="isStagingOrTestnetOrDevnet" />
+            <Torus />
             <Ledger @wallet-ledger-connecting="handleLedgerConnectingWallet" />
             <Trezor
               v-if="isStagingOrTestnetOrDevnet"
