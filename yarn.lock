@@ -12300,7 +12300,7 @@ nano-json-stream-parser@^0.1.2:
   resolved "https://registry.yarnpkg.com/nano-json-stream-parser/-/nano-json-stream-parser-0.1.2.tgz#0cc8f6d0e2b622b479c40d499c46d64b755c6f5f"
   integrity sha1-DMj20OK2IrR5xA1JnEbWS3Vcb18=
 
-nanoid@^3.1.23, nanoid@^3.3.3:
+nanoid@^3.1.23, nanoid@^3.2.0:
   version "3.3.4"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.4.tgz#730b67e3cd09e2deacf03c027c81c9d9dbc5e8ab"
   integrity sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==
@@ -14104,11 +14104,11 @@ postcss@7.x.x, postcss@^7.0.0, postcss@^7.0.1, postcss@^7.0.14, postcss@^7.0.17,
     source-map "^0.6.1"
 
 postcss@^8.1.10, postcss@^8.1.6, postcss@^8.2.10, postcss@^8.2.15, postcss@^8.3.5:
-  version "8.4.13"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.13.tgz#7c87bc268e79f7f86524235821dfdf9f73e5d575"
-  integrity sha512-jtL6eTBrza5MPzy8oJLFuUscHDXTV5KcLlqAWHl5q5WYRfnNRGSmOZmOZ1T6Gy7A99mOZfqungmZMpMmCVJ8ZA==
+  version "8.4.6"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.6.tgz#c5ff3c3c457a23864f32cb45ac9b741498a09ae1"
+  integrity sha512-OovjwIzs9Te46vlEx7+uXB0PLijpwjXGKXjVGGPIGubGpq7uh5Xgf6D6FiJ/SzJMBosHDp6a2hiXOS97iBXcaA==
   dependencies:
-    nanoid "^3.3.3"
+    nanoid "^3.2.0"
     picocolors "^1.0.0"
     source-map-js "^1.0.2"
 
