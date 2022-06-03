@@ -82,7 +82,6 @@
             :balance="balance"
             small
             show-errors-below
-            disable-max-selector
             @input:amount="handleAmountChange"
             @input:token="handleTokenChange"
           >
