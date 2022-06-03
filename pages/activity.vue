@@ -12,7 +12,7 @@
               :option="components.positions"
               :status="positionLoadingStatus"
             >
-              <portal-target slot="icon" name="activity-card-position-count" />
+              <portal-target slot="icon" name="activity-card-position-count" data-cy="activity-open-positions-panel-count" />
               <span class="text-sm whitespace-nowrap">
                 {{ $t('activity.positions') }}
               </span>
@@ -23,7 +23,7 @@
               :option="components.spot"
               :status="spotLoadingStatus"
             >
-              <portal-target slot="icon" name="activity-card-spot-count" />
+              <portal-target slot="icon" name="activity-card-spot-count" data-cy="activity-spot-orders-panel-count" />
               <span class="text-sm whitespace-nowrap">
                 {{ $t('activity.spotOrders') }}
               </span>
@@ -37,6 +37,7 @@
               <portal-target
                 slot="icon"
                 name="activity-card-derivative-count"
+                data-cy="activity-derivatives-orders-panel-count"
               />
               <span class="text-sm whitespace-nowrap">
                 {{ $t('activity.derivativeOrders') }}
