@@ -53,7 +53,7 @@ jobs:
         uses: actions/checkout@master
         with:
           repository: Tofel/cypress-ts
-          ref: 'f/mock_web3_provider'
+          ref: 'master'
           token: ${{ secrets.BARTEKS_PAT }}
           path: ./cypress-ts
       - name: Build Cypress test image
