@@ -34,7 +34,7 @@ export default {
     clearAll: 'Clear All',
     closeAll: 'Close All',
     closeAllPositions: 'Close all positions',
-    reduce_only: 'Reduce Only',
+    reduce_only: 'Reduce-Only',
     post_only: 'Post-Only',
     leverage: 'Leverage',
     limit: 'Limit',

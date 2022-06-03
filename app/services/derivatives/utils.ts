@@ -201,31 +201,78 @@ export const calculateAverageExecutionPriceFromOrderbook = ({
   return sum.div(amount.minus(remainAmountToFill))
 }
 
+export const calculateAverageExecutionPriceFromFillableNotionalOnOrderBook = ({
+  records,
+  market,
+  quoteAmount
+}: {
+  records: UiPriceLevel[]
+  market: UiDerivativeMarketWithToken
+  quoteAmount: BigNumberInBase
+}) => {
+  const { amount, sum } = records.reduce(
+    ({ amount, sum, remainNotionalToFill }, order: UiPriceLevel) => {
+      const orderQuantity = new BigNumberInBase(order.quantity)
+
+      const orderPrice = new BigNumberInBase(
+        new BigNumberInWei(order.price).toBase(market.quoteToken.decimals)
+      )
+
+      const orderNotional = orderQuantity.times(orderPrice)
+
+      const minNotional = BigNumberInBase.min(
+        remainNotionalToFill,
+        orderNotional
+      )
+
+      const additionalQuantity = orderQuantity.times(
+        minNotional.div(orderNotional)
+      )
+
+      return {
+        sum: remainNotionalToFill
+          ? sum.plus(orderPrice.times(additionalQuantity))
+          : sum,
+        amount: amount.plus(additionalQuantity),
+        remainNotionalToFill: remainNotionalToFill.minus(minNotional)
+      }
+    },
+    {
+      sum: ZERO_IN_BASE,
+      amount: ZERO_IN_BASE,
+      remainNotionalToFill: quoteAmount
+    }
+  )
+
+  return sum.div(amount)
+}
+
 export const getApproxAmountForMarketOrder = ({
   records,
   margin,
   market,
-  slippage,
   leverage = '1',
-  percent = 1
+  percent = 1,
+  feeRate,
+  executionPrice
 }: {
   records: UiPriceLevel[]
   margin: BigNumberInBase
   percent?: number
-  slippage: number
   leverage: string
   market: UiDerivativeMarketWithToken
+  feeRate: BigNumberInBase
+  executionPrice: BigNumberInBase
 }) => {
-  const fee = new BigNumberInBase(market.takerFeeRate)
   const availableMargin = new BigNumberInBase(margin).times(percent)
+
   let totalQuantity = ZERO_IN_BASE
   let totalNotional = ZERO_IN_BASE
+  let total = ZERO_IN_BASE
 
   for (const record of records) {
     const price = new BigNumberInBase(
-      new BigNumberInWei(record.price)
-        .times(slippage)
-        .toBase(market.quoteToken.decimals)
+      new BigNumberInWei(record.price).toBase(market.quoteToken.decimals)
     )
     const quantity = new BigNumberInBase(
       new BigNumberInBase(record.quantity).dp(market.quantityDecimals)
@@ -234,19 +281,21 @@ export const getApproxAmountForMarketOrder = ({
     totalQuantity = totalQuantity.plus(quantity)
     totalNotional = totalQuantity.times(price)
 
-    const totalFees = new BigNumberInWei(totalNotional.times(fee))
+    const totalFees = new BigNumberInWei(totalNotional.times(feeRate))
+
     const totalMargin = calculateMargin({
       quantity: totalQuantity.toFixed(),
       price: price.toFixed(),
       leverage
     })
-    const total = totalMargin.plus(totalFees)
 
-    if (total.gt(availableMargin)) {
-      return availableMargin
-        .times(leverage)
-        .dividedBy(fee.times(leverage).plus(1).times(price))
-    }
+    total = totalMargin.plus(totalFees)
+  }
+
+  if (total.gt(availableMargin)) {
+    return availableMargin.div(
+      executionPrice.times(new BigNumberInBase(1).plus(feeRate)).times(leverage)
+    )
   }
 
   return totalQuantity

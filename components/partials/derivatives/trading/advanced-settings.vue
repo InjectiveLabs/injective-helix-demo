@@ -15,66 +15,75 @@
       </div>
     </div>
     <div v-show="drawerIsOpen" class="flex gap-1 my-auto">
-      <span class="flex flex-1 my-auto">
-        <div v-if="tradingTypeMarket">
+      <span class="flex flex-col flex-1 my-auto gap-1">
+        <VCheckbox
+          v-if="showReduceOnly"
+          :value="reduceOnly"
+          class="mt-2"
+          @input="handleReduceOnlyCheckboxToggle"
+        >
+          <slot class="text-xs"> {{ $t('trade.reduce_only') }}</slot>
+        </VCheckbox>
+        <div class="flex">
           <VCheckbox
+            v-if="tradingTypeMarket"
             v-model="slippageIsToggleable"
-            class="flex items-center"
+            class="flex items-center flex-1"
             @input="handleSlippageCheckboxToggle"
           >
             <slot class="text-xs">
               {{ `${$t('trade.slippage_tolerance')} :` }}
             </slot>
           </VCheckbox>
-        </div>
-        <div v-else>
-          <VCheckbox
-            v-model="hasCheckedPostOnly"
-            class="flex items-center"
-            @input="handlePostOnlyCheckboxToggle"
+          <div
+            v-show="showSlippageAsSelectableOrDefaultForMarket"
+            class="group flex items-center cursor-pointer gap-2"
+            @click="toggleToSlippageInput()"
           >
-            <slot class="text-xs">
-              {{ $t('trade.post_only') }}
-            </slot>
-          </VCheckbox>
+            <div>{{ slippageTolerance }}%</div>
+            <IconCaretDown
+              class="text-gray-500 group-hover:text-gray-200 w-4 h-4"
+              :class="{
+                visibility:
+                  slippageSelection === SlippageDisplayOptions.Selectable
+              }"
+            />
+          </div>
+          <div v-show="showSlippageInputFieldForMarket">
+            <v-input
+              id="focusOnInput"
+              :key="slippageKey"
+              :value="slippageTolerance"
+              :wrapper-classes="wrapperClasses"
+              :input-classes="inputClasses"
+              :disabled="false"
+              type="number"
+              :step="0.01"
+              :max-decimals="2"
+              :min="0"
+              :max="50"
+              dense
+              small
+              :show-prefix="hasWarning || hasError"
+              show-addon
+              @input="handleInput"
+              @blur="handleBlur"
+            >
+              <span slot="addon" class="lg:hidden"> % </span>
+            </v-input>
+          </div>
         </div>
-      </span>
-      <div
-        v-show="showSlippageAsSelectableOrDefaultForMarket"
-        class="group flex items-center cursor-pointer gap-2"
-        @click="toggleToSlippageInput()"
-      >
-        <div>{{ slippageTolerance }}%</div>
-        <IconCaretDown
-          class="text-gray-500 group-hover:text-gray-200 w-4 h-4"
-          :class="{
-            visibility: slippageSelection === SlippageDisplayOptions.Selectable
-          }"
-        />
-      </div>
-      <div v-show="showSlippageInputFieldForMarket">
-        <v-input
-          id="focusOnInput"
-          :key="slippageKey"
-          :value="slippageTolerance"
-          :wrapper-classes="wrapperClasses"
-          :input-classes="inputClasses"
-          :disabled="false"
-          type="number"
-          :step="0.01"
-          :max-decimals="2"
-          :min="0"
-          :max="50"
-          dense
-          small
-          :show-prefix="hasWarning || hasError"
-          show-addon
-          @input="handleInput"
-          @blur="handleBlur"
+        <VCheckbox
+          v-if="!tradingTypeMarket"
+          :value="postOnly"
+          class="flex items-center"
+          @input="handlePostOnlyCheckboxToggle"
         >
-          <span slot="addon" class="lg:hidden"> % </span>
-        </v-input>
-      </div>
+          <slot class="text-xs">
+            {{ $t('trade.post_only') }}
+          </slot>
+        </VCheckbox>
+      </span>
     </div>
     <div
       v-if="hasWarning || hasError"
@@ -108,29 +117,48 @@ export default Vue.extend({
       type: String,
       default: ''
     },
+
     slippageError: {
       type: String,
       default: ''
     },
+
     slippageTolerance: {
       type: String,
       required: true
     },
+
     tradingTypeMarket: {
+      type: Boolean,
+      required: true
+    },
+
+    showReduceOnly: {
+      type: Boolean,
+      required: true
+    },
+
+    reduceOnly: {
+      type: Boolean,
+      required: true
+    },
+
+    postOnly: {
       type: Boolean,
       required: true
     }
   },
+
   data() {
     return {
       drawerIsOpen: true,
       slippageKey: 0,
       SlippageDisplayOptions,
       slippageSelection: SlippageDisplayOptions.Selectable,
-      slippageIsToggleable: true,
-      hasCheckedPostOnly: false
+      slippageIsToggleable: true
     }
   },
+
   computed: {
     hasWarning(): boolean {
       const { slippageWarning } = this
@@ -179,18 +207,22 @@ export default Vue.extend({
       )
     }
   },
+
   methods: {
     handleBlur(value: string): void {
       if (value === '') {
         value = DEFAULT_MAX_SLIPPAGE.toFormat(1)
       }
+
       if (value.trim() !== '' && !value.includes('.')) {
         // use key to refresh input field to eliminate potential trailing decimal point
         this.slippageKey++
       }
+
       this.$emit('set-slippage-tolerance', value)
       this.toggleSlippageToSelectable()
     },
+
     handleSlippageCheckboxToggle(checked: boolean) {
       if (!checked) {
         this.defaultToZeroSlippage()
@@ -198,34 +230,49 @@ export default Vue.extend({
         this.toggleSlippageToSelectable()
       }
     },
+
+    handleReduceOnlyCheckboxToggle(checked: boolean) {
+      this.$emit('set-reduce-only', checked)
+    },
+
     handlePostOnlyCheckboxToggle(checked: boolean) {
       this.$emit('set-post-only', checked)
     },
+
     defaultToZeroSlippage() {
       this.slippageSelection = SlippageDisplayOptions.NonSelectableDefault
+
       this.$emit('set-slippage-tolerance', '0')
     },
+
     toggleSlippageToSelectable() {
       this.slippageSelection = SlippageDisplayOptions.Selectable
     },
+
     toggleToSlippageInput() {
       this.slippageSelection = SlippageDisplayOptions.SlippageInput
+
       window.requestAnimationFrame(this.focusOnSlippageInput)
     },
+
     focusOnSlippageInput() {
       const slippageInput = document.getElementById(
         'focusOnInput'
       ) as HTMLInputElement
+
       if (slippageInput) {
         slippageInput.focus()
       }
     },
+
     toggleDrawer() {
       this.drawerIsOpen = !this.drawerIsOpen
     },
+
     handleInput(value: string) {
       this.setSlippageTolerance(value)
     },
+
     setSlippageTolerance(value: string): void {
       this.$emit('set-slippage-tolerance', value)
     }
