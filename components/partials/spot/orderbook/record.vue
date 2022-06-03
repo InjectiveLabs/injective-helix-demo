@@ -39,6 +39,7 @@
               : record.aggregatedPrice
           "
           dont-group-values
+          data-cy="orderbook-record-price-text-content"
         />
       </span>
     </span>
@@ -58,6 +59,7 @@
           "
           :number="quantity"
           dont-group-values
+          data-cy="orderbook-record-quantity-text-content"
         />
       </span>
     </span>
@@ -71,6 +73,7 @@
         "
         :number="total"
         dont-group-values
+        data-cy="orderbook-record-total-text-content"
       />
     </span>
   </li>
