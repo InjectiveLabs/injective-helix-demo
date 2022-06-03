@@ -110,7 +110,7 @@ jobs:
         uses: actions/checkout@master
         with:
           repository: InjectiveLabs/injective-devops
-          ref: 'f/standalone_env_debug'
+          ref: 'f/standalone_tweak'
           token: ${{ secrets.BARTEKS_PAT }}
           path: ./injective-devops
       - name: Download Docker images
