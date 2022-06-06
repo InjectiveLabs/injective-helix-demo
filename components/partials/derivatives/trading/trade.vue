@@ -272,7 +272,6 @@ import OrderLeverageSelect from './order-leverage-select.vue'
 import OrderDetailsMarket from './order-details-market.vue'
 import AdvancedSettings from '~/components/partials/derivatives/trading/advanced-settings.vue'
 import {
-  DEFAULT_MAX_SLIPPAGE,
   DEFAULT_PRICE_WARNING_DEVIATION,
   DEFAULT_MARKET_PRICE_WARNING_DEVIATION,
   DEFAULT_MAX_PRICE_BAND_DIFFERENCE,
