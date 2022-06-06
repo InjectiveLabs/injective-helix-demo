@@ -193,7 +193,11 @@
         feeReturned,
         feeRebates,
         amount,
-        detailsDrawerOpen
+        quoteAmount,
+        detailsDrawerOpen,
+        postOnly,
+        feeRate,
+        executionPrice
       }"
       @drawer-toggle="onDetailsDrawerToggle"
     />
