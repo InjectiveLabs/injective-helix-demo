@@ -1770,7 +1770,7 @@ export default Vue.extend({
     },
 
     submitMarketOrder() {
-      const { orderType, market, executionPrice, amount } = this
+      const { orderType, market, worstPrice, amount } = this
 
       if (!market) {
         return
@@ -1781,7 +1781,7 @@ export default Vue.extend({
       this.$accessor.spot
         .submitMarketOrder({
           quantity: amount,
-          price: executionPrice,
+          price: worstPrice,
           orderType
         })
         .then(() => {
