@@ -53,7 +53,7 @@
                   hide-errors
                   :valid="valid"
                   :max="balanceToFixed"
-                  :max-decimals="value.decimals"
+                  :max-decimals="maxDecimals"
                   :max-selector="!disableMaxSelector && balance.gt(0.0001)"
                   :max-classes="'input-max-button'"
                   :value="amount"
@@ -64,7 +64,7 @@
                   disable-addon-padding
                   @input="handleAmountChange"
                   @input-max="handleMax"
-                  @blur="resetIsSearching"
+                  @blur="handleBlur"
                   @mousedown.native.stop="focusInput"
                 />
                 <div class="pl-4">
@@ -158,7 +158,8 @@ import vSelect from 'vue-select'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   BankBalanceWithTokenAndBalanceInBase,
-  BIG_NUMBER_ROUND_DOWN_MODE
+  BIG_NUMBER_ROUND_DOWN_MODE,
+  getDecimalsFromNumber
 } from '@injectivelabs/ui-common'
 import VTokenSelectorItem from './item.vue'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
@@ -261,6 +262,16 @@ export default Vue.extend({
   },
 
   computed: {
+    maxDecimals(): Number {
+      const { step, value } = this
+
+      if (step) {
+        return getDecimalsFromNumber(Number(step))
+      }
+
+      return value.decimals
+    },
+
     inputClass(): string {
       const { prefix } = this
 
@@ -320,6 +331,11 @@ export default Vue.extend({
 
     resetIsSearching() {
       this.isSearching = false
+    },
+
+    handleBlur() {
+      this.$emit('blur', this.amount)
+      this.resetIsSearching()
     },
 
     handleDropdownToggle() {

@@ -11,6 +11,7 @@
       @input:token="handleTokenChange"
       @input:amount="handleAmountChange"
       @input:max="handleMax"
+      @blur="handleBlur"
     />
   </div>
 </template>
@@ -61,6 +62,10 @@ export default Vue.extend({
 
     handleMax(percent: Number) {
       this.$emit('input:max', percent)
+    },
+
+    handleBlur(amount: string) {
+      this.$emit('blur', amount)
     }
   }
 })
