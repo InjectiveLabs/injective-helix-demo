@@ -83,7 +83,7 @@ jobs:
       CYPRESS_TEST_TAG: $GIT_BRANCH_NAME
       CYPRESS_GROUP: '$GIT_BRANCH_NAME-${{github.run_attempt}}'
       CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-      CYPRESS_SPEC_FILE: 'cypress/integration/website/markets-tests.ts'
+      CYPRESS_SPEC_FILE: 'cypress/integration/website/markets-tests.ts,cypress/integration/website/activity-tests.ts,cypress/integration/website/portfolio-tests.ts,cypress/integration/website/wallet-connections.ts'
     steps:
       - name: Get branch name
         id: git-branch-name
