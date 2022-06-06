@@ -13,7 +13,7 @@
 
       <div class="ml-auto flex items-center gap-4">
         <v-checkbox v-model="showMarginCurrencyOnly">
-          <span class="flex items-center">
+          <span class="flex items-center" data-cy="trading-account-show-margin-only-check-box">
             {{ $t('portfolio.showMarginCurrencyOnly') }}
           </span>
         </v-checkbox>

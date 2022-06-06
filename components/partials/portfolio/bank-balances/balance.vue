@@ -39,8 +39,11 @@
     <span class="font-mono text-left xl:hidden">
       {{ $t('common.value') }}
     </span>
-    <span class="xl:col-span-4 font-mono whitespace-nowrap text-right">
-      <span v-if="hideBalance" data-cy="wallet-entry-value-hidden">
+    <span
+      class="xl:col-span-4 font-mono whitespace-nowrap text-right"
+      data-cy="wallet-balance-value-table-data"
+    >
+      <span v-if="hideBalance">
         {{ HIDDEN_BALANCE_DISPLAY }}
       </span>
       <span v-else class="flex items-end justify-end flex-col">

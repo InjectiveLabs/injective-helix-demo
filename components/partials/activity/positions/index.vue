@@ -10,7 +10,7 @@
           >
             <div class="flex items-center gap-1">
               <span>{{ $t('activity.openPositions') }}</span>
-              <portal-target name="activity-tab-position-count" />
+              <portal-target name="activity-tab-position-count" data-cy="activity-open-positions-link-count" />
             </div>
           </v-tab-selector-item>
 

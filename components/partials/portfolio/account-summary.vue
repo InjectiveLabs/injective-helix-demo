@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex items-center cursor-pointer" @click="toggleHideBalance">
+    <div class="flex items-center cursor-pointer" data-cy="account-summary-toggle-icon" @click="toggleHideBalance">
       <h4 class="text-sm uppercase text-gray-400">
         {{ $t('portfolio.accountSummary') }}
       </h4>
@@ -15,7 +15,7 @@
       <div
         class="flex tracking-wide items-end flex-wrap justify-center sm:justify-start"
       >
-        <h2 class="text-white text-2xl sm:text-3xl xl:text-4xl mr-4">
+        <h2 class="text-white text-2xl sm:text-3xl xl:text-4xl mr-4" data-cy="account-summary-usd-text-content-parent">
           <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }} </span>
           <span v-else-if="status.isLoading()">&mdash; USD </span>
           <span v-else data-cy="account-summary-usd-text-content">

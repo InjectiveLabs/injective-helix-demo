@@ -79,7 +79,7 @@
       <span class="font-mono text-left xl:hidden">
         {{ $t('common.value') }}
       </span>
-      <span class="xl:col-span-3 font-mono whitespace-nowrap text-right">
+      <span class="xl:col-span-3 font-mono whitespace-nowrap text-right" data-cy="trading-account-value-table-data">
         <span v-if="hideBalance">
           {{ HIDDEN_BALANCE_DISPLAY }}
         </span>
