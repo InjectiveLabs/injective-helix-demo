@@ -257,7 +257,6 @@ export default Vue.extend({
       TradeExecutionType,
       SpotOrderSide,
       UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-      // buyAmount: '',
       tradingType: TradeExecutionType.Market,
       orderType: SpotOrderSide.Buy,
       detailsDrawerOpen: true,
@@ -581,6 +580,7 @@ export default Vue.extend({
       }
 
       const makerFeeRate = new BigNumberInBase(market.makerFeeRate)
+
       const takerFeeRate = new BigNumberInBase(market.takerFeeRate)
 
       if (makerFeeRate.lte(0)) {
@@ -622,6 +622,7 @@ export default Vue.extend({
       }
 
       const records = orderType === SpotOrderSide.Buy ? sells : buys
+
       const averagePrice = calculateAverageExecutionPriceFromOrderbook({
         records,
         amount,
@@ -645,6 +646,7 @@ export default Vue.extend({
       }
 
       const records = orderType === SpotOrderSide.Buy ? sells : buys
+
       const averagePrice = calculateAverageExecutionPriceFromOrderbook({
         records,
         amount,
@@ -1543,7 +1545,9 @@ export default Vue.extend({
       } = this
 
       const quantityAsNumber = new BigNumberInBase(quantity)
+
       this.form.amount = quantity
+
       this.updatePrices()
 
       if (!fromToken) {
@@ -1575,7 +1579,9 @@ export default Vue.extend({
       } = this
 
       const quantityAsNumber = new BigNumberInBase(Number(quantity))
+
       this.form.toAmount = quantity
+
       this.updatePrices()
 
       if (!toToken) {
@@ -1841,16 +1847,6 @@ export default Vue.extend({
 
     handleClickOrConnect(): void {
       this.$root.$emit('wallet-clicked')
-    },
-
-    isBaseToken(token: Token) {
-      const { market } = this
-
-      if (!market) {
-        return false
-      }
-
-      return market.baseToken.symbol === token.symbol
     }
   }
 })
