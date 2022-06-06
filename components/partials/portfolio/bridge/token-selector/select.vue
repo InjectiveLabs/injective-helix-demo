@@ -46,9 +46,9 @@
                   :lg="lg"
                   transparent-bg
                   type="number"
-                  step="0.01"
+                  :step="step"
                   min="0"
-                  placeholder="0.0000"
+                  :placeholder="step"
                   :errors="errors"
                   hide-errors
                   :valid="valid"
@@ -243,6 +243,11 @@ export default Vue.extend({
     showErrorsBelow: {
       type: Boolean,
       default: false
+    },
+
+    step: {
+      type: String,
+      default: '0.01'
     }
   },
 

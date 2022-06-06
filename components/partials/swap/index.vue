@@ -63,6 +63,7 @@
           :placeholder="'Select a token'"
           :prefix="orderTypeBuy ? '&asymp;' : null"
           :usd-price="fromUsdPrice"
+          :step="orderTypeBuy ? priceStep : amountStep"
           @input:amount="onSetAmount"
           @input:token="onSetFromToken"
           @input:max="onMaxInput"
@@ -108,6 +109,7 @@
           :placeholder="'Select a token'"
           :prefix="orderTypeBuy ? null : '≈'"
           :validation-rules="'positiveNumber'"
+          :step="orderTypeBuy ? amountStep : priceStep"
           disable-max-selector
           @input:amount="onSetToAmount"
           @input:token="onSetToToken"
