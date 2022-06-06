@@ -64,7 +64,7 @@
                   disable-addon-padding
                   @input="handleAmountChange"
                   @input-max="handleMax"
-                  @blur="handleBlur"
+                  @blur="resetIsSearching"
                   @mousedown.native.stop="focusInput"
                 />
                 <div class="pl-4">
@@ -331,11 +331,6 @@ export default Vue.extend({
 
     resetIsSearching() {
       this.isSearching = false
-    },
-
-    handleBlur() {
-      this.$emit('blur', this.amount)
-      this.resetIsSearching()
     },
 
     handleDropdownToggle() {

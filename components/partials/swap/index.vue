@@ -67,7 +67,6 @@
           @input:amount="onSetAmount"
           @input:token="onSetFromToken"
           @input:max="onMaxInput"
-          @blur="onBlurFromToken"
         />
         <div class="flex justify-between items-center -my-2">
           <!-- <div v-if="!tradingTypeMarket" class="w-full -mt-2">
@@ -114,7 +113,6 @@
           disable-max-selector
           @input:amount="onSetToAmount"
           @input:token="onSetToToken"
-          @blur="onBlurToToken"
         />
       </div>
       <SwapDetails
@@ -1713,14 +1711,6 @@ export default Vue.extend({
       this.toToken = token
       this.form.amount = ''
       this.form.toAmount = ''
-    },
-
-    onBlurFromToken(amount: string) {
-      this.form.amount = this.sanitizeAmount(amount)
-    },
-
-    onBlurToToken(amount: string) {
-      this.form.toAmount = this.sanitizeAmount(amount)
     },
 
     sanitizeAmount(amount: string): string {
