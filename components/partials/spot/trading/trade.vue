@@ -273,7 +273,7 @@ import {
   calculateAverageExecutionPriceFromFillableNotionalOnOrderBook,
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook,
-  getApproxAmountForMarketOrder
+  getApproxAmountForMarketOrLimitOrder
 } from '~/app/services/spot'
 import {
   FeeDiscountAccountInfo,
@@ -288,6 +288,7 @@ interface TradeForm {
   price: string
   slippageTolerance: string
   postOnly: boolean
+  proportionalPercentage: number
 }
 
 const initialForm = (): TradeForm => ({
@@ -295,7 +296,8 @@ const initialForm = (): TradeForm => ({
   quoteAmount: '',
   price: '',
   slippageTolerance: '0.5',
-  postOnly: false
+  postOnly: false,
+  proportionalPercentage: 100
 })
 
 export default Vue.extend({
@@ -348,6 +350,10 @@ export default Vue.extend({
       return this.$accessor.spot.lastTradedPrice
     },
 
+    proportionalPercentage(): number {
+      return this.form.proportionalPercentage
+    },
+
     feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
       return this.$accessor.exchange.feeDiscountAccountInfo
     },
@@ -396,6 +402,62 @@ export default Vue.extend({
       return new BigNumberInWei(balance.availableBalance || 0).toBase(
         market.quoteToken.decimals
       )
+    },
+
+    approxAmountForProportionalQuantityBuyOrSellOrder(): string {
+      const {
+        market,
+        buys,
+        sells,
+        orderTypeBuy,
+        baseAvailableBalance,
+        quoteAvailableBalance,
+        executionPrice,
+        proportionalPercentage,
+        feeRate
+      } = this
+
+      const percentageToNumber = new BigNumberInBase(
+        proportionalPercentage
+      ).div(100)
+
+      const balance = orderTypeBuy
+        ? quoteAvailableBalance
+        : baseAvailableBalance
+
+      if (!market) {
+        return ''
+      }
+
+      if (!orderTypeBuy) {
+        const totalFillableAmount = buys.reduce((totalAmount, { quantity }) => {
+          return totalAmount.plus(
+            new BigNumberInWei(quantity).toBase(market.baseToken.decimals)
+          )
+        }, ZERO_IN_BASE)
+
+        const totalBalance = new BigNumberInBase(balance).times(
+          percentageToNumber
+        )
+
+        const amount = totalFillableAmount.gte(totalBalance)
+          ? totalBalance
+          : totalFillableAmount
+
+        return amount.toFixed(
+          market.quantityDecimals,
+          BigNumberInBase.ROUND_FLOOR
+        )
+      }
+
+      return getApproxAmountForMarketOrLimitOrder({
+        market,
+        balance,
+        percent: percentageToNumber.toNumber(),
+        records: orderTypeBuy ? sells : buys,
+        feeRate,
+        executionPrice
+      }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
     },
 
     buys(): UiPriceLevel[] {
@@ -553,16 +615,19 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const makerFeeRate = new BigNumberInBase(market.makerFeeRate)
-      const takerFeeRate = new BigNumberInBase(market.takerFeeRate)
-
-      if (makerFeeRate.lte(0)) {
-        return takerFeeRate
-      }
-
       return new BigNumberInBase(market.takerFeeRate).times(
         new BigNumberInBase(1).minus(takerFeeRateDiscount)
       )
+    },
+
+    feeRate(): BigNumberInBase {
+      const { postOnly, takerFeeRate, makerFeeRate } = this
+
+      if (!postOnly) {
+        return takerFeeRate
+      }
+
+      return makerFeeRate
     },
 
     price(): BigNumberInBase {
@@ -580,95 +645,47 @@ export default Vue.extend({
     },
 
     averagePriceDerivedFromBaseAmount(): BigNumberInBase {
-      const {
-        tradingTypeMarket,
-        orderTypeBuy,
-        sells,
-        buys,
-        hasAmount,
-        market,
-        slippage,
-        amount,
-        price
-      } = this
+      const { orderTypeBuy, sells, buys, hasAmount, market, amount } = this
 
       if (!market) {
         return ZERO_IN_BASE
       }
 
-      if (tradingTypeMarket) {
-        if (!hasAmount) {
-          return ZERO_IN_BASE
-        }
-
-        const records = orderTypeBuy ? sells : buys
-        const averagePrice = calculateAverageExecutionPriceFromOrderbook({
-          records,
-          amount,
-          market
-        })
-
-        return new BigNumberInBase(
-          averagePrice
-            .times(slippage)
-            .toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
-        )
-      }
-
-      if (price.isNaN()) {
+      if (!hasAmount) {
         return ZERO_IN_BASE
       }
 
+      const records = orderTypeBuy ? sells : buys
+
+      const averagePrice = calculateAverageExecutionPriceFromOrderbook({
+        records,
+        amount,
+        market
+      })
+
       return new BigNumberInBase(
-        new BigNumberInBase(price).toFixed(
-          market.priceDecimals,
-          BigNumberInBase.ROUND_DOWN
-        )
+        averagePrice.toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
       )
     },
 
     averagePriceDerivedFromQuoteAmount(): BigNumberInBase {
-      const {
-        tradingTypeMarket,
-        orderTypeBuy,
-        sells,
-        buys,
-        market,
-        slippage,
-        quoteAmount,
-        price
-      } = this
+      const { orderTypeBuy, sells, buys, market, quoteAmount } = this
 
       if (!market) {
         return ZERO_IN_BASE
       }
 
-      if (tradingTypeMarket) {
-        const records = orderTypeBuy ? sells : buys
+      const records = orderTypeBuy ? sells : buys
 
-        const averagePrice =
-          calculateAverageExecutionPriceFromFillableNotionalOnOrderBook({
-            records,
-            quoteAmount,
-            market
-          })
-
-        return new BigNumberInBase(
-          averagePrice
-            .times(slippage)
-            .toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
-        )
-      }
-
-      if (price.isNaN()) {
-        return ZERO_IN_BASE
-      }
+      const averagePrice =
+        calculateAverageExecutionPriceFromFillableNotionalOnOrderBook({
+          records,
+          quoteAmount,
+          market
+        })
 
       return new BigNumberInBase(
-        new BigNumberInBase(price).toFixed(
-          market.priceDecimals,
-          BigNumberInBase.ROUND_DOWN
-        )
+        averagePrice.toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
       )
     },
 
@@ -686,61 +703,39 @@ export default Vue.extend({
     },
 
     executionPrice(): BigNumberInBase {
-      const {
-        tradingTypeMarket,
-        orderTypeBuy,
-        sells,
-        buys,
-        hasAmount,
-        market,
-        slippage,
-        amount,
-        price
-      } = this
+      const { tradingTypeMarket, averagePrice, price } = this
+
+      if (tradingTypeMarket) {
+        return averagePrice
+      }
+
+      return price
+    },
+
+    worstPrice(): BigNumberInBase {
+      const { orderTypeBuy, slippage, sells, buys, hasAmount, market, amount } =
+        this
 
       if (!market) {
         return ZERO_IN_BASE
       }
 
-      if (tradingTypeMarket) {
-        if (!hasAmount) {
-          return ZERO_IN_BASE
-        }
-
-        const records = orderTypeBuy ? sells : buys
-
-        const worstPrice = calculateWorstExecutionPriceFromOrderbook({
-          records,
-          amount,
-          market
-        })
-
-        return new BigNumberInBase(
-          worstPrice
-            .times(slippage)
-            .toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
-        )
-      }
-
-      if (price.isNaN()) {
+      if (!hasAmount) {
         return ZERO_IN_BASE
       }
 
+      const records = orderTypeBuy ? sells : buys
+
+      const worstPrice = calculateWorstExecutionPriceFromOrderbook({
+        records,
+        amount,
+        market
+      })
+
       return new BigNumberInBase(
-        new BigNumberInBase(price).toFixed(
-          market.priceDecimals,
-          BigNumberInBase.ROUND_DOWN
-        )
-      )
-    },
-
-    hasExecutionPrice(): boolean {
-      const { executionPrice, priceStep } = this
-
-      return (
-        !executionPrice.isNaN() &&
-        executionPrice.gt(0) &&
-        executionPrice.gte(priceStep)
+        worstPrice
+          .times(slippage)
+          .toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
       )
     },
 
@@ -934,7 +929,7 @@ export default Vue.extend({
     amountTooBigToFillError(): TradeError | undefined {
       const {
         tradingTypeMarket,
-        hasExecutionPrice,
+        hasPrice,
         hasAmount,
         orderTypeBuy,
         sells,
@@ -943,7 +938,7 @@ export default Vue.extend({
         market
       } = this
 
-      if (!tradingTypeMarket || !hasExecutionPrice || !hasAmount || !market) {
+      if (!tradingTypeMarket || !hasPrice || !hasAmount || !market) {
         return
       }
 
@@ -998,7 +993,7 @@ export default Vue.extend({
     priceHighDeviationFromMidOrderbookPrice(): TradeError | undefined {
       const {
         tradingTypeMarket,
-        hasExecutionPrice,
+        hasPrice,
         hasAmount,
         market,
         sells,
@@ -1006,7 +1001,7 @@ export default Vue.extend({
         executionPrice
       } = this
 
-      if (tradingTypeMarket || !hasExecutionPrice || !hasAmount || !market) {
+      if (tradingTypeMarket || !hasPrice || !hasAmount || !market) {
         return
       }
 
@@ -1121,7 +1116,7 @@ export default Vue.extend({
         amountError,
         tradingTypeMarket,
         hasAmount,
-        hasExecutionPrice,
+        hasPrice,
         price,
         amount,
         slippageError
@@ -1148,12 +1143,12 @@ export default Vue.extend({
       }
 
       if (!tradingTypeMarket) {
-        if (price.lte(0) || !hasExecutionPrice) {
+        if (price.lte(0) || !hasPrice) {
           return true
         }
       }
 
-      if (!tradingTypeMarket && hasExecutionPrice && price.lte(0)) {
+      if (!tradingTypeMarket && hasPrice && price.lte(0)) {
         return true
       }
 
@@ -1161,33 +1156,23 @@ export default Vue.extend({
     },
 
     total(): BigNumberInBase {
-      const {
-        amount,
-        hasExecutionPrice,
-        hasAmount,
-        averagePrice,
-        executionPrice,
-        market,
-        tradingTypeMarket
-      } = this
+      const { hasPrice, hasAmount, executionPrice, market } = this
 
-      if (!hasExecutionPrice || !hasAmount || !market) {
+      if (!hasPrice || !hasAmount || !market) {
         return ZERO_IN_BASE
       }
 
-      return tradingTypeMarket
-        ? averagePrice.times(amount)
-        : executionPrice.times(amount)
+      return executionPrice
     },
 
     fees(): BigNumberInBase {
-      const { total, takerFeeRate, market } = this
+      const { total, feeRate, market } = this
 
       if (total.isNaN() || !market) {
         return ZERO_IN_BASE
       }
 
-      return total.times(takerFeeRate)
+      return total.times(feeRate)
     },
 
     makerExpectedPts(): BigNumberInBase {
@@ -1394,6 +1379,9 @@ export default Vue.extend({
           BigNumberInBase.ROUND_DOWN
         )
       }
+    },
+    postOnly() {
+      this.updateBaseAndQuoteAmountForProportionalQuantityBuyOrSellOrder()
     }
   },
 
@@ -1411,16 +1399,26 @@ export default Vue.extend({
      * into consideration
      */
     onProportionalQuantitySelected(percent = 100) {
+      this.form.proportionalPercentage = percent
+
+      this.updateBaseAndQuoteAmountForProportionalQuantityBuyOrSellOrder()
+    },
+
+    updateBaseAndQuoteAmountForProportionalQuantityBuyOrSellOrder() {
+      const { approxAmountForProportionalQuantityBuyOrSellOrder } = this
+
       this.onAmountChange(
-        this.updateBaseAmountForProportionalQuantityBuyOrSellOrder(percent),
+        approxAmountForProportionalQuantityBuyOrSellOrder,
         true
       )
+
       this.$nextTick(() => {
         this.onAmountChange(
-          this.updateBaseAmountForProportionalQuantityBuyOrSellOrder(percent),
+          approxAmountForProportionalQuantityBuyOrSellOrder,
           true
         )
-        this.updateQuoteAmountForProportionalQuantityBuyOrSellOrder(percent)
+
+        this.updateQuoteAmountForProportionalQuantityBuyOrSellOrder()
       })
     },
 
@@ -1435,15 +1433,8 @@ export default Vue.extend({
     updateQuoteAmountForProportionalQuantitySell(
       percentToNumber: BigNumberInBase
     ) {
-      const {
-        baseAvailableBalance,
-        slippage,
-        market,
-        buys,
-        averagePrice,
-        executionPrice,
-        tradingTypeMarket
-      } = this
+      const { baseAvailableBalance, market, buys, executionPrice, feeRate } =
+        this
 
       if (!market) {
         return
@@ -1451,9 +1442,9 @@ export default Vue.extend({
 
       const { totalFillableAmount, totalNotional } = buys.reduce(
         ({ totalFillableAmount, totalNotional }, { quantity, price }) => {
-          const orderPrice = new BigNumberInBase(price)
-            .times(slippage)
-            .toWei(market.baseToken.decimals - market.quoteToken.decimals)
+          const orderPrice = new BigNumberInBase(price).toWei(
+            market.baseToken.decimals - market.quoteToken.decimals
+          )
 
           const orderQuantity = new BigNumberInWei(quantity).toBase(
             market.baseToken.decimals
@@ -1474,23 +1465,21 @@ export default Vue.extend({
         percentToNumber
       )
 
-      const priceForTradingType = tradingTypeMarket
-        ? averagePrice
-        : executionPrice
-
-      const notionalBalance = baseBalance.times(priceForTradingType)
+      const notionalBalance = baseBalance
+        .times(executionPrice)
+        .times(new BigNumberInBase(1).minus(feeRate))
 
       if (baseBalance.gt(totalFillableAmount)) {
-        return (this.form.quoteAmount = totalNotional.toString())
+        return (this.form.quoteAmount = totalNotional.toFixed())
       }
-      return (this.form.quoteAmount = notionalBalance.toString())
+
+      return (this.form.quoteAmount = notionalBalance.toFixed())
     },
 
     updateQuoteAmountForProportionalQuantityBuy(
       percentToNumber: BigNumberInBase
     ) {
-      const { quoteAvailableBalance, sells, slippage, takerFeeRate, market } =
-        this
+      const { quoteAvailableBalance, sells, takerFeeRate, market } = this
 
       if (!market) {
         return
@@ -1499,9 +1488,9 @@ export default Vue.extend({
       let totalNotional = ZERO_IN_BASE
 
       for (const record of sells) {
-        const price = new BigNumberInBase(record.price)
-          .times(slippage)
-          .toWei(market.baseToken.decimals - market.quoteToken.decimals)
+        const price = new BigNumberInBase(record.price).toWei(
+          market.baseToken.decimals - market.quoteToken.decimals
+        )
 
         const quantity = new BigNumberInWei(record.quantity).toBase(
           market.baseToken.decimals
@@ -1517,99 +1506,29 @@ export default Vue.extend({
 
       if (total.gt(quoteBalance)) {
         return (this.form.quoteAmount = formatToAllowableDecimals(
-          quoteBalance.div(takerFeeRate.plus(1)).toString(),
+          quoteBalance.toFixed(),
           market.priceDecimals
         ))
       }
 
       return (this.form.quoteAmount = formatToAllowableDecimals(
-        totalNotional.toString(),
+        totalNotional.toFixed(),
         BigNumberInBase.ROUND_DOWN
       ))
     },
 
-    updateQuoteAmountForProportionalQuantityBuyOrSellOrder(percent: number) {
-      const { orderTypeBuy } = this
+    updateQuoteAmountForProportionalQuantityBuyOrSellOrder() {
+      const { orderTypeBuy, proportionalPercentage } = this
 
-      const percentToNumber = new BigNumberInBase(percent).div(100)
+      const percentToNumber = new BigNumberInBase(proportionalPercentage).div(
+        100
+      )
 
       if (!orderTypeBuy) {
         this.updateQuoteAmountForProportionalQuantitySell(percentToNumber)
       } else {
         this.updateQuoteAmountForProportionalQuantityBuy(percentToNumber)
       }
-    },
-
-    updateBaseAmountForProportionalQuantityBuyOrSellOrder(
-      percentage: number
-    ): string {
-      const {
-        market,
-        buys,
-        sells,
-        slippage,
-        takerFeeRate,
-        tradingTypeMarket,
-        orderTypeBuy,
-        baseAvailableBalance,
-        quoteAvailableBalance,
-        executionPrice
-      } = this
-
-      const percentageToNumber = new BigNumberInBase(percentage).div(100)
-      const balance = orderTypeBuy
-        ? quoteAvailableBalance
-        : baseAvailableBalance
-
-      if (!market) {
-        return ''
-      }
-
-      if (!orderTypeBuy) {
-        const totalFillableAmount = buys.reduce((totalAmount, { quantity }) => {
-          return totalAmount.plus(
-            new BigNumberInWei(quantity).toBase(market.baseToken.decimals)
-          )
-        }, ZERO_IN_BASE)
-
-        const totalBalance = new BigNumberInBase(balance).times(
-          percentageToNumber
-        )
-
-        const amount = totalFillableAmount.gte(totalBalance)
-          ? totalBalance
-          : totalFillableAmount
-
-        return amount.toFixed(
-          market.quantityDecimals,
-          BigNumberInBase.ROUND_FLOOR
-        )
-      }
-
-      if (tradingTypeMarket) {
-        return getApproxAmountForMarketOrder({
-          market,
-          balance,
-          slippage: slippage.toNumber(),
-          percent: percentageToNumber.toNumber(),
-          records: orderTypeBuy ? sells : buys
-        }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
-      }
-
-      if (executionPrice.lte(0)) {
-        return ''
-      }
-
-      if (balance.lte(0)) {
-        return ''
-      }
-
-      const fee = new BigNumberInBase(takerFeeRate)
-
-      return new BigNumberInBase(balance)
-        .dividedBy(executionPrice.times(fee.plus(1)))
-        .times(percentageToNumber)
-        .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
     },
 
     onDetailsDrawerToggle() {
@@ -1679,12 +1598,15 @@ export default Vue.extend({
       this.form.price = formatToAllowableDecimals(price, market.priceDecimals)
 
       if (hasAmount) {
-        this.updateLimitQuoteAmount()
+        this.updateQuoteAmount()
       }
     },
 
-    onAmountChange(amount: string = '', isMaxInput?: boolean) {
-      const { tradingTypeMarket, hasPrice, market } = this
+    onAmountChange(
+      amount: string = '',
+      isProportionalQuantityUpdate?: boolean
+    ) {
+      const { hasPrice, market } = this
 
       if (!market) {
         return
@@ -1701,15 +1623,11 @@ export default Vue.extend({
         this.updatePriceFromLastTradedPrice()
       }
 
-      if (isMaxInput) {
+      if (isProportionalQuantityUpdate) {
         return
       }
 
-      if (tradingTypeMarket) {
-        return this.updateMarketQuoteAmount()
-      }
-
-      this.updateLimitQuoteAmount()
+      this.updateQuoteAmount()
     },
 
     onAmountBlur() {
@@ -1758,7 +1676,7 @@ export default Vue.extend({
     },
 
     onQuoteAmountChange(quoteAmount: string = '') {
-      const { tradingTypeMarket, hasPrice, market } = this
+      const { hasPrice, market } = this
 
       if (!market) {
         return
@@ -1771,15 +1689,11 @@ export default Vue.extend({
 
       this.resetBaseAmount()
 
-      if (tradingTypeMarket) {
-        return this.updateMarketBaseAmount()
-      }
-
       if (!hasPrice) {
         this.updatePriceFromLastTradedPrice()
       }
 
-      this.updateLimitBaseAmount()
+      this.updateBaseAmount()
     },
 
     resetBaseAmount() {
@@ -1790,51 +1704,37 @@ export default Vue.extend({
       this.form.quoteAmount = ''
     },
 
-    updateMarketBaseAmount() {
-      const { quoteAmount, averagePrice, market } = this
+    updateBaseAmount() {
+      const { quoteAmount, executionPrice, market, orderTypeBuy, feeRate } =
+        this
 
       if (!market) {
         return
       }
 
+      const feeMultiplier = orderTypeBuy
+        ? new BigNumberInBase(1).plus(feeRate)
+        : new BigNumberInBase(1).minus(feeRate)
+
       this.form.amount = quoteAmount
-        .div(averagePrice)
+        .div(executionPrice.times(feeMultiplier))
         .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
     },
 
-    updateLimitBaseAmount() {
-      const { quoteAmount, price, market } = this
+    updateQuoteAmount() {
+      const { amount, executionPrice, market, feeRate, orderTypeBuy } = this
 
       if (!market) {
         return
       }
 
-      this.form.amount = quoteAmount
-        .div(price)
-        .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
-    },
-
-    updateMarketQuoteAmount() {
-      const { amount, averagePrice, market } = this
-
-      if (!market) {
-        return
-      }
+      const feeMultiplier = orderTypeBuy
+        ? new BigNumberInBase(1).plus(feeRate)
+        : new BigNumberInBase(1).minus(feeRate)
 
       this.form.quoteAmount = amount
-        .times(averagePrice)
-        .toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
-    },
-
-    updateLimitQuoteAmount() {
-      const { amount, price, market } = this
-
-      if (!market) {
-        return
-      }
-
-      this.form.quoteAmount = amount
-        .times(price)
+        .times(executionPrice)
+        .times(feeMultiplier)
         .toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
     },
 

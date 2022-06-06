@@ -105,7 +105,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { DEFAULT_MAX_SLIPPAGE } from '~/app/utils/constants'
+
 enum SlippageDisplayOptions {
   NonSelectableDefault = 'Zero',
   SlippageInput = 'Selected',

@@ -247,7 +247,7 @@ export const calculateAverageExecutionPriceFromFillableNotionalOnOrderBook = ({
   return sum.div(amount)
 }
 
-export const getApproxAmountForMarketOrder = ({
+export const getApproxAmountForMarketOrLimitOrder = ({
   records,
   margin,
   market,
@@ -290,12 +290,15 @@ export const getApproxAmountForMarketOrder = ({
     })
 
     total = totalMargin.plus(totalFees)
-  }
 
-  if (total.gt(availableMargin)) {
-    return availableMargin.div(
-      executionPrice.times(new BigNumberInBase(1).plus(feeRate)).times(leverage)
-    )
+    if (total.gt(availableMargin)) {
+      return availableMargin.div(
+        executionPrice
+          .times(new BigNumberInBase(1).plus(feeRate))
+          .times(leverage)
+          .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
+      )
+    }
   }
 
   return totalQuantity
