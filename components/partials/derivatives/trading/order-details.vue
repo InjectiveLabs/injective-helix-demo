@@ -18,29 +18,6 @@
       </p>
 
       <div class="mt-4">
-        <v-text-info :title="$t('trade.amount')">
-          <span
-            v-if="!amount.isNaN()"
-            class="font-mono flex items-start break-all"
-          >
-            {{ amountToFormat }}
-            <span class="text-gray-500 ml-1 break-normal">
-              {{ market.baseToken.symbol }}
-            </span>
-          </span>
-          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </v-text-info>
-
-        <v-text-info :title="$t('trade.price')" class="mt-2">
-          <span v-if="price.gt(0)" class="font-mono flex items-start break-all">
-            {{ priceToFormat }}
-            <span class="text-gray-500 ml-1 break-normal">
-              {{ market.quoteToken.symbol }}
-            </span>
-          </span>
-          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </v-text-info>
-
         <v-text-info
           v-if="!orderTypeReduceOnly"
           :title="$t('trade.liquidation_price')"
@@ -85,32 +62,23 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </v-text-info>
 
-        <v-text-info :title="$t('trade.notional_value')" class="mt-2">
+        <v-text-info
+          :title="
+            postOnly ? $t('trade.maker_rate') : $t('trade.maker_taker_rate')
+          "
+          class="mt-2"
+        >
           <IconInfoTooltip
             slot="context"
             class="ml-2"
-            :tooltip="$t('trade.total_tooltip')"
-          />
-          <span
-            v-if="notionalValue.gt(0)"
-            class="font-mono flex items-start break-all"
-          >
-            {{ notionalValueToFormat }}
-            <span class="text-gray-500 ml-1 break-normal">
-              {{ market.quoteToken.symbol }}
-            </span>
-          </span>
-          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </v-text-info>
-
-        <v-text-info :title="$t('trade.maker_taker_rate')" class="mt-2">
-          <IconInfoTooltip
-            slot="context"
-            class="ml-2"
-            :tooltip="$t('trade.maker_taker_rate_note')"
+            :tooltip="
+              postOnly
+                ? $t('trade.maker_rate_note')
+                : $t('trade.maker_taker_rate_note')
+            "
           />
           <span class="font-mono flex items-center">
-            {{ `${makerFeeRateToFormat}%/${takerFeeRateToFormat}%` }}
+            {{ feeRateToDisplay }}
           </span>
         </v-text-info>
 
@@ -185,7 +153,7 @@
             :tooltip="$t('trade.expected_points_note')"
           />
           <span class="font-mono flex items-start break-all">
-            {{ `${makerExpectedPtsToFormat}/${takerExpectedPtsToFormat}` }}
+            {{ expectedPointsToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ $t('pts') }}
             </span>
@@ -311,6 +279,11 @@ export default Vue.extend({
     detailsDrawerOpen: {
       required: true,
       type: Boolean
+    },
+
+    postOnly: {
+      required: true,
+      type: Boolean
     }
   },
 
@@ -417,6 +390,16 @@ export default Vue.extend({
       return number.toFormat(getDecimalsFromNumber(number.toNumber()))
     },
 
+    feeRateToDisplay(): string {
+      const { postOnly, makerFeeRateToFormat, takerFeeRateToFormat } = this
+
+      if (postOnly) {
+        return `${makerFeeRateToFormat}%`
+      }
+
+      return `${makerFeeRateToFormat}%/${takerFeeRateToFormat}%`
+    },
+
     makerExpectedPtsToFormat(): string {
       const { makerExpectedPts } = this
 
@@ -431,6 +414,17 @@ export default Vue.extend({
       return takerExpectedPts.toFormat(
         getDecimalsFromNumber(takerExpectedPts.toNumber())
       )
+    },
+
+    expectedPointsToFormat(): string {
+      const { postOnly, makerExpectedPtsToFormat, takerExpectedPtsToFormat } =
+        this
+
+      if (postOnly) {
+        return makerExpectedPtsToFormat
+      }
+
+      return takerExpectedPtsToFormat
     },
 
     amountToFormat(): string {

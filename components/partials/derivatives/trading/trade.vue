@@ -199,7 +199,9 @@
         total,
         totalWithFees,
         amount,
-        detailsDrawerOpen
+        detailsDrawerOpen,
+        executionPrice,
+        postOnly
       }"
       @drawer-toggle="onDetailsDrawerToggle"
     />
@@ -334,7 +336,7 @@ export default Vue.extend({
     return {
       TradeExecutionType,
       DerivativeOrderSide,
-      tradingType: TradeExecutionType.Market,
+      tradingType: TradeExecutionType.LimitFill,
       orderType: DerivativeOrderSide.Buy,
       detailsDrawerOpen: true,
       status: new Status(),

@@ -23,14 +23,23 @@
       </p>
 
       <div class="mt-4">
-        <v-text-info :title="$t('trade.amount')">
+        <v-text-info
+          v-if="!orderTypeReduceOnly"
+          :title="$t('trade.margin')"
+          class="mt-2"
+        >
+          <IconInfoTooltip
+            slot="context"
+            class="ml-2"
+            :tooltip="$t('trade.margin_tooltip')"
+          />
           <span
-            v-if="!amount.isNaN()"
+            v-if="margin.gt(0)"
             class="font-mono flex items-start break-all"
           >
-            {{ amountToFormat }}
+            {{ marginToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
-              {{ market.baseToken.symbol }}
+              {{ market.quoteToken.symbol }}
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
@@ -64,28 +73,6 @@
             class="font-mono flex items-start break-all"
           >
             {{ liquidationPriceToFormat }}
-            <span class="text-gray-500 ml-1 break-normal">
-              {{ market.quoteToken.symbol }}
-            </span>
-          </span>
-          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </v-text-info>
-
-        <v-text-info
-          v-if="!orderTypeReduceOnly"
-          :title="$t('trade.margin')"
-          class="mt-2"
-        >
-          <IconInfoTooltip
-            slot="context"
-            class="ml-2"
-            :tooltip="$t('trade.margin_tooltip')"
-          />
-          <span
-            v-if="margin.gt(0)"
-            class="font-mono flex items-start break-all"
-          >
-            {{ marginToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
             </span>
@@ -257,6 +244,11 @@ export default Vue.extend({
       type: Object as PropType<BigNumberInBase>
     },
 
+    executionPrice: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
     amount: {
       required: true,
       type: Object as PropType<BigNumberInBase>
@@ -361,13 +353,13 @@ export default Vue.extend({
     },
 
     priceToFormat(): string {
-      const { price, market } = this
+      const { executionPrice, market } = this
 
       if (!market) {
-        return price.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
+        return executionPrice.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
       }
 
-      return price.toFormat(market.quantityDecimals)
+      return executionPrice.toFormat(market.quantityDecimals)
     },
 
     amountToFormat(): string {

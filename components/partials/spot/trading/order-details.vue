@@ -5,32 +5,7 @@
       :custom-is-open="detailsDrawerOpen"
       @drawer-toggle="onDrawerToggle"
     >
-      <p slot="header" class="flex justify-between text-sm">
-        <v-text-info :title="$t('trade.total')" lg>
-          <span class="font-mono flex items-start break-all">
-            <span class="mr-1">≈</span>
-            {{ extractedTotalToFormat }}
-            <span class="text-gray-500 ml-1 break-normal">
-              {{ market.quoteToken.symbol }}
-            </span>
-          </span>
-        </v-text-info>
-      </p>
-
       <div class="mt-4">
-        <v-text-info :title="$t('trade.amount')">
-          <span
-            v-if="!amount.isNaN()"
-            class="font-mono flex items-start break-all"
-          >
-            {{ amountToFormat }}
-            <span class="text-gray-500 ml-1 break-normal">
-              {{ market.baseToken.symbol }}
-            </span>
-          </span>
-          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </v-text-info>
-
         <v-text-info :title="$t('trade.price')" class="mt-2">
           <span v-if="price.gt(0)" class="font-mono flex items-start break-all">
             {{ priceToFormat }}
@@ -41,37 +16,37 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </v-text-info>
 
-        <v-text-info :title="$t('trade.maker_taker_rate')" class="mt-2">
-          <IconInfoTooltip
-            slot="context"
-            class="ml-2"
-            :tooltip="$t('trade.maker_taker_rate_note')"
-          />
-          <span class="font-mono flex items-center">
-            {{ `${makerFeeRateToFormat}%/${takerFeeRateToFormat}%` }}
+        <v-text-info class="mt-2" :title="$t('trade.min_received_amount')">
+          <span
+            v-if="!amount.isNaN()"
+            class="font-mono flex items-start break-all"
+          >
+            {{ minimumReceivedAmountToFormat }}
+            <span class="text-gray-500 ml-1 break-normal">
+              {{ market.baseToken.symbol }}
+            </span>
           </span>
+          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </v-text-info>
 
         <v-text-info
-          v-if="!orderTypeBuy"
-          :title="$t('trade.est_receiving_amount')"
+          :title="
+            postOnly ? $t('trade.maker_rate') : $t('trade.maker_taker_rate')
+          "
           class="mt-2"
         >
           <IconInfoTooltip
             slot="context"
             class="ml-2"
-            :tooltip="$t('trade.est_receiving_amount_note')"
+            :tooltip="
+              postOnly
+                ? $t('trade.maker_rate_note')
+                : $t('trade.maker_taker_rate_note')
+            "
           />
-          <span
-            v-if="totalWithoutFees.gt(0)"
-            class="font-mono flex items-center"
-          >
-            {{ totalWithoutFeesToFormat }}
-            <span class="text-gray-500 ml-1">
-              {{ market.quoteToken.symbol }}
-            </span>
+          <span class="font-mono flex items-center">
+            {{ feeRateToDisplay }}
           </span>
-          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </v-text-info>
 
         <v-text-info :title="$t('trade.fee')" class="mt-2">
@@ -114,7 +89,7 @@
           </div>
 
           <span v-if="fees.gt(0)" class="font-mono flex items-start break-all">
-            {{ feesToFormat }}
+            {{ totalEstimatedFees }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
             </span>
@@ -156,7 +131,7 @@
             :tooltip="$t('trade.expected_points_note')"
           />
           <span class="font-mono flex items-start break-all">
-            {{ `${makerExpectedPtsToFormat}/${takerExpectedPtsToFormat}` }}
+            {{ expectedPointsToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ $t('pts') }}
             </span>
@@ -199,11 +174,6 @@ export default Vue.extend({
     },
 
     totalWithFees: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
-    },
-
-    totalWithoutFees: {
       required: true,
       type: Object as PropType<BigNumberInBase>
     },
@@ -266,6 +236,26 @@ export default Vue.extend({
     detailsDrawerOpen: {
       required: true,
       type: Boolean
+    },
+
+    postOnly: {
+      required: true,
+      type: Boolean
+    },
+
+    quoteAmount: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    feeRate: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    executionPrice: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
     }
   },
 
@@ -300,14 +290,16 @@ export default Vue.extend({
       return extractedTotal.toFormat(market.priceDecimals)
     },
 
-    totalWithoutFeesToFormat(): string {
-      const { totalWithoutFees, market } = this
+    totalEstimatedFees(): string {
+      const { price, amount, feeRate, market } = this
+
+      const fees = price.times(amount).times(feeRate)
 
       if (!market) {
-        return totalWithoutFees.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+        return fees.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
       }
 
-      return totalWithoutFees.toFormat(market.priceDecimals)
+      return fees.toFormat(market.priceDecimals)
     },
 
     priceToFormat(): string {
@@ -342,6 +334,16 @@ export default Vue.extend({
       return number.toFormat(getDecimalsFromNumber(number.toNumber()))
     },
 
+    feeRateToDisplay(): string {
+      const { postOnly, makerFeeRateToFormat, takerFeeRateToFormat } = this
+
+      if (postOnly) {
+        return `${makerFeeRateToFormat}%`
+      }
+
+      return `${makerFeeRateToFormat}%/${takerFeeRateToFormat}%`
+    },
+
     makerExpectedPtsToFormat(): string {
       const { makerExpectedPts } = this
 
@@ -356,6 +358,17 @@ export default Vue.extend({
       return takerExpectedPts.toFormat(
         getDecimalsFromNumber(takerExpectedPts.toNumber())
       )
+    },
+
+    expectedPointsToFormat(): string {
+      const { takerExpectedPtsToFormat, makerExpectedPtsToFormat, postOnly } =
+        this
+
+      if (postOnly) {
+        return makerExpectedPtsToFormat
+      }
+
+      return takerExpectedPtsToFormat
     },
 
     marketHasNegativeMakerFee(): boolean {
@@ -378,10 +391,17 @@ export default Vue.extend({
       return feeRebates.toFormat(market.priceDecimals)
     },
 
-    amountToFormat(): string {
-      const { amount, market } = this
+    minimumReceivedAmountToFormat(): string {
+      const {
+        amount,
+        market,
+        orderTypeBuy,
+        quoteAmount,
+        feeRate,
+        executionPrice
+      } = this
 
-      if (amount.isNaN()) {
+      if (quoteAmount.isNaN()) {
         return ZERO_IN_BASE.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
       }
 
@@ -389,7 +409,22 @@ export default Vue.extend({
         return amount.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
       }
 
-      return amount.toFormat(market.priceDecimals)
+      const quantity = orderTypeBuy ? quoteAmount : amount
+
+      const feeMultiplier = orderTypeBuy
+        ? new BigNumberInBase(1).plus(feeRate)
+        : new BigNumberInBase(1).minus(feeRate)
+
+      if (orderTypeBuy) {
+        return quantity
+          .div(executionPrice.times(feeMultiplier))
+          .toFormat(market.priceDecimals)
+      }
+
+      return quantity
+        .times(executionPrice)
+        .times(feeMultiplier)
+        .toFormat(market.priceDecimals)
     }
   },
 

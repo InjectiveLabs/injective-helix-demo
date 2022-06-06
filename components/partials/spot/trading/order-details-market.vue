@@ -5,24 +5,6 @@
       :custom-is-open="detailsDrawerOpen"
       @drawer-toggle="onDrawerToggle"
     >
-      <p slot="header" class="flex justify-between">
-        <v-text-info :title="$t('trade.total')" lg>
-          <IconInfoTooltip
-            slot="context"
-            class="ml-2"
-            :tooltip="$t('trade.market_total_tooltip')"
-          />
-
-          <span class="font-mono flex items-start break-all">
-            <span class="mr-1">≈</span>
-            {{ extractedTotalToFormat }}
-            <span class="text-gray-500 ml-1 break-normal">
-              {{ market.quoteToken.symbol }}
-            </span>
-          </span>
-        </v-text-info>
-      </p>
-
       <div class="mt-4">
         <v-text-info :title="$t('trade.averagePrice')" class="mt-2">
           <span
@@ -32,6 +14,19 @@
             {{ averagePriceToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
+            </span>
+          </span>
+          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
+        </v-text-info>
+
+        <v-text-info class="mt-2" :title="$t('trade.min_received_amount')">
+          <span
+            v-if="!amount.isNaN()"
+            class="font-mono flex items-start break-all"
+          >
+            {{ minimumReceivedAmountToFormat }}
+            <span class="text-gray-500 ml-1 break-normal">
+              {{ market.baseToken.symbol }}
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
@@ -92,7 +87,7 @@
           </div>
           <span v-if="fees.gt(0)" class="font-mono flex items-start break-all">
             <span class="mr-1">≈</span>
-            {{ feesToFormat }}
+            {{ totalEstimatedFees }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
             </span>
@@ -229,6 +224,21 @@ export default Vue.extend({
     detailsDrawerOpen: {
       required: true,
       type: Boolean
+    },
+
+    quoteAmount: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    feeRate: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
+    },
+
+    executionPrice: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
     }
   },
 
@@ -297,10 +307,16 @@ export default Vue.extend({
       return total.toFormat(market.priceDecimals)
     },
 
-    feesToFormat(): string {
-      const { fees } = this
+    totalEstimatedFees(): string {
+      const { price, amount, feeRate, market } = this
 
-      return fees.toFormat(getDecimalsFromNumber(fees.toNumber()))
+      const fees = price.times(amount).times(feeRate)
+
+      if (!market) {
+        return fees.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      return fees.toFormat(market.priceDecimals)
     },
 
     makerFeeRateToFormat(): string {
@@ -333,6 +349,44 @@ export default Vue.extend({
       return takerExpectedPts.toFormat(
         getDecimalsFromNumber(takerExpectedPts.toNumber())
       )
+    },
+
+    minimumReceivedAmountToFormat(): string {
+      const {
+        amount,
+        market,
+        orderTypeBuy,
+        quoteAmount,
+        feeRate,
+        executionPrice,
+        slippage
+      } = this
+
+      if (quoteAmount.isNaN()) {
+        return ZERO_IN_BASE.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      if (!market) {
+        return amount.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      }
+
+      const quantity = orderTypeBuy ? quoteAmount : amount
+
+      const feeMultiplier = orderTypeBuy
+        ? new BigNumberInBase(1).plus(feeRate)
+        : new BigNumberInBase(1).minus(feeRate)
+
+      if (orderTypeBuy) {
+        return quantity
+          .div(executionPrice.times(feeMultiplier).times(slippage))
+          .toFormat(market.priceDecimals)
+      }
+
+      return quantity
+        .times(executionPrice)
+        .times(feeMultiplier)
+        .times(slippage)
+        .toFormat(market.priceDecimals)
     },
 
     amountToFormat(): string {
