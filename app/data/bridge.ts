@@ -41,18 +41,24 @@ export const networksMeta = [
     text: 'Persistence',
     value: BridgingNetwork.Persistence,
     icon: '/bridgingNetworks/persistence.png'
-  }
+  },
   /*
   {
     text: 'Juno',
     value: BridgingNetwork.Juno,
     icon: '/bridgingNetworks/juno.jpeg',
   },
+  */
   {
     text: 'Axelar',
     value: BridgingNetwork.Axelar,
     icon: '/bridgingNetworks/axelar.jpeg'
-  } */
+  },
+  {
+    text: 'Moonbeam',
+    value: BridgingNetwork.Moonbeam,
+    icon: '/bridgingNetworks/moonbeam.png'
+  }
 ] as NetworkMeta[]
 
 export const transferSideMeta = {
@@ -102,6 +108,10 @@ export const getBridgingNetworkBySymbol = (symbol: string): BridgingNetwork => {
 
   if (['AXL', 'UAXL', 'DOT', 'DOT-PLANCK'].includes(symbolToUpperCase)) {
     return BridgingNetwork.Axelar
+  }
+
+  if (['GLMR'].includes(symbolToUpperCase)) {
+    return BridgingNetwork.Moonbeam
   }
 
   return BridgingNetwork.Ethereum
