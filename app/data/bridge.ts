@@ -110,7 +110,7 @@ export const getBridgingNetworkBySymbol = (symbol: string): BridgingNetwork => {
     return BridgingNetwork.Axelar
   }
 
-  if (['GLMR'].includes(symbolToUpperCase)) {
+  if (['DOT'].includes(symbolToUpperCase)) {
     return BridgingNetwork.Moonbeam
   }
 
