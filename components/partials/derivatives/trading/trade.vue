@@ -289,7 +289,7 @@ import {
   calculateWorstExecutionPriceFromOrderbook,
   calculateLiquidationPrice,
   calculateMargin,
-  getApproxAmountForMarketOrder
+  getApproxAmountForMarketOrLimitOrder
 } from '~/app/services/derivatives'
 import {
   TradingRewardsCampaign,
@@ -306,6 +306,7 @@ interface TradeForm {
   price: string
   leverage: string
   slippageTolerance: string
+  proportionalPercentage: number
 }
 
 const initialForm = (): TradeForm => ({
@@ -315,7 +316,8 @@ const initialForm = (): TradeForm => ({
   postOnly: false,
   price: '',
   leverage: '1',
-  slippageTolerance: '0.5'
+  slippageTolerance: '0.5',
+  proportionalPercentage: 100
 })
 
 export default Vue.extend({
@@ -337,11 +339,7 @@ export default Vue.extend({
       orderType: DerivativeOrderSide.Buy,
       detailsDrawerOpen: true,
       status: new Status(),
-      form: initialForm(),
-      amountKey: 0,
-      quoteAmountKey: 0,
-      priceKey: 0,
-      proportionalPercentage: 100
+      form: initialForm()
     }
   },
 
@@ -372,6 +370,10 @@ export default Vue.extend({
 
     postOnly(): boolean {
       return this.form.postOnly
+    },
+
+    proportionalPercentage(): number {
+      return this.form.proportionalPercentage
     },
 
     slippageWarning(): string {
@@ -531,12 +533,17 @@ export default Vue.extend({
     },
 
     slippage(): BigNumberInBase {
-      const { orderTypeBuy } = this
+      const {
+        orderTypeBuy,
+        form: { slippageTolerance }
+      } = this
+
+      const slippageAsBigNumber = new BigNumberInBase(slippageTolerance)
 
       return new BigNumberInBase(
         orderTypeBuy
-          ? DEFAULT_MAX_SLIPPAGE.div(100).plus(1)
-          : DEFAULT_MAX_SLIPPAGE.div(100).minus(1).times(-1)
+          ? slippageAsBigNumber.div(100).plus(1)
+          : slippageAsBigNumber.div(100).minus(1).times(-1)
       )
     },
 
@@ -669,7 +676,9 @@ export default Vue.extend({
         market
       })
 
-      return new BigNumberInBase(averagePrice.toFixed(market.priceDecimals))
+      return new BigNumberInBase(
+        averagePrice.toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
+      )
     },
 
     averagePriceDerivedFromQuoteAmount(): BigNumberInBase {
@@ -1225,15 +1234,6 @@ export default Vue.extend({
       return hasEnoughInjForGas
     },
 
-    hasExecutionPrice(): boolean {
-      const { executionPrice, priceStep } = this
-      return (
-        !executionPrice.isNaN() &&
-        executionPrice.gt(0) &&
-        executionPrice.gte(priceStep)
-      )
-    },
-
     priceError(): string | null {
       const { price } = this.errors
 
@@ -1291,7 +1291,7 @@ export default Vue.extend({
         return this.slippageTooHighError
       }
 
-      return { price: '', amount: '' }
+      return { price: '', amount: '', slippage: '' }
     },
 
     hasErrors(): boolean {
@@ -1403,6 +1403,47 @@ export default Vue.extend({
       }
 
       return notionalValue.times(feeRate)
+    },
+
+    approxAmountForProportionalQuantityBuyOrSellOrder(): string {
+      const {
+        market,
+        buys,
+        feeRate,
+        sells,
+        form,
+        orderTypeBuy,
+        position,
+        maxReduceOnly,
+        orderTypeReduceOnly,
+        availableMargin,
+        executionPrice,
+        proportionalPercentage
+      } = this
+
+      const percentageToNumber = new BigNumberInBase(
+        proportionalPercentage
+      ).div(100)
+
+      if (!market) {
+        return ''
+      }
+
+      if (orderTypeReduceOnly && position) {
+        return maxReduceOnly
+          .times(percentageToNumber)
+          .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
+      }
+
+      return getApproxAmountForMarketOrLimitOrder({
+        market,
+        margin: availableMargin,
+        leverage: form.leverage,
+        percent: percentageToNumber.toNumber(),
+        records: orderTypeBuy ? sells : buys,
+        feeRate,
+        executionPrice
+      }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
     },
 
     makerExpectedPts(): BigNumberInBase {
@@ -1663,20 +1704,22 @@ export default Vue.extend({
      * into consideration
      */
     onProportionalQuantitySelected(percent = 100) {
-      this.proportionalPercentage = percent
+      this.form.proportionalPercentage = percent
 
       this.updateBaseAndQuoteAmountForProportionalQuantityBuyOrSellOrder()
     },
 
     updateBaseAndQuoteAmountForProportionalQuantityBuyOrSellOrder() {
+      const { approxAmountForProportionalQuantityBuyOrSellOrder } = this
+
       this.onAmountChange(
-        this.getApproxAmountForProportionalQuantityBuyOrSellOrder(),
+        approxAmountForProportionalQuantityBuyOrSellOrder,
         true
       )
 
       this.$nextTick(() => {
         this.onAmountChange(
-          this.getApproxAmountForProportionalQuantityBuyOrSellOrder(),
+          approxAmountForProportionalQuantityBuyOrSellOrder,
           true
         )
 
@@ -1686,47 +1729,6 @@ export default Vue.extend({
 
     setSlippageTolerance(slippage: string) {
       this.form.slippageTolerance = formatToAllowableDecimals(slippage, 2)
-    },
-
-    getApproxAmountForProportionalQuantityBuyOrSellOrder(): string {
-      const {
-        market,
-        buys,
-        feeRate,
-        sells,
-        form,
-        orderTypeBuy,
-        position,
-        maxReduceOnly,
-        orderTypeReduceOnly,
-        availableMargin,
-        executionPrice,
-        proportionalPercentage
-      } = this
-
-      const percentageToNumber = new BigNumberInBase(
-        proportionalPercentage
-      ).div(100)
-
-      if (!market) {
-        return ''
-      }
-
-      if (orderTypeReduceOnly && position) {
-        return maxReduceOnly
-          .times(percentageToNumber)
-          .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
-      }
-
-      return getApproxAmountForMarketOrder({
-        market,
-        margin: availableMargin,
-        leverage: form.leverage,
-        percent: percentageToNumber.toNumber(),
-        records: orderTypeBuy ? sells : buys,
-        feeRate,
-        executionPrice
-      }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
     },
 
     updateQuoteAmountForProportionalQuantityBuyOrSellOrder() {
@@ -1891,9 +1893,7 @@ export default Vue.extend({
       if (!market) {
         return
       }
-      if (form.amount.trim() !== '' && !form.amount.includes('.')) {
-        // use key to refresh input field to eliminate potential trailing decimal point
-        this.amountKey++
+      if (form.amount.trim() !== '') {
         this.form.amount = new BigNumberInBase(form.amount).toFixed(
           0,
           BigNumberInBase.ROUND_DOWN
@@ -1905,9 +1905,7 @@ export default Vue.extend({
       if (!market) {
         return
       }
-      if (form.quoteAmount.trim() !== '' && !form.quoteAmount.includes('.')) {
-        // use key to refresh input field to eliminate potential trailing decimal point
-        this.quoteAmountKey++
+      if (form.quoteAmount.trim() !== '') {
         this.form.quoteAmount = new BigNumberInBase(form.quoteAmount).toFixed(
           0,
           BigNumberInBase.ROUND_DOWN
@@ -1919,9 +1917,7 @@ export default Vue.extend({
       if (!market) {
         return
       }
-      if (form.price.trim() !== '' && !form.price.includes('.')) {
-        // use key to refresh input field to eliminate potential trailing decimal point
-        this.priceKey++
+      if (form.price.trim() !== '') {
         this.form.price = new BigNumberInBase(form.price).toFixed(
           0,
           BigNumberInBase.ROUND_DOWN
