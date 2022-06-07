@@ -55,7 +55,7 @@
         <TokenSelector
           class="input-swap"
           :disabled="status && status.isLoading()"
-          :amount="form.amount"
+          :amount="fromAmount"
           :balance="fromBalance"
           :balance-decimal-places="market && market.quantityDecimals"
           :value="fromToken"
@@ -101,7 +101,7 @@
         <TokenSelector
           class="input-swap"
           :disabled="status && status.isLoading()"
-          :amount="form.toAmount"
+          :amount="toAmount"
           :balance="toBalance"
           :balance-decimal-places="market && market.quantityDecimals"
           :value="toToken"
@@ -276,6 +276,18 @@ export default Vue.extend({
   },
 
   computed: {
+    fromAmount(): string {
+      const { amount } = this.form
+
+      return this.sanitizeAmount(amount)
+    },
+
+    toAmount(): string {
+      const { toAmount } = this.form
+
+      return this.sanitizeAmount(toAmount)
+    },
+
     swapButtonLabel(): string {
       const { availableBalanceError } = this
 
@@ -311,12 +323,8 @@ export default Vue.extend({
     },
 
     showErrors(): boolean | undefined {
-      const {
-        market,
-        amountError,
-        priceError,
-        hasEnoughInjForGasOrNotKeplr
-      } = this
+      const { market, amountError, priceError, hasEnoughInjForGasOrNotKeplr } =
+        this
 
       return (
         market && !!(amountError || priceError || !hasEnoughInjForGasOrNotKeplr)
@@ -501,7 +509,7 @@ export default Vue.extend({
     },
 
     amount(): BigNumberInBase {
-      const amount = this.form.amount || 0
+      const amount = this.sanitizeAmount(this.form.amount) || 0
 
       return new BigNumberInBase(amount)
     },
@@ -603,15 +611,8 @@ export default Vue.extend({
     },
 
     executionPrice(): BigNumberInBase {
-      const {
-        orderType,
-        sells,
-        buys,
-        hasAmount,
-        market,
-        slippage,
-        amount
-      } = this
+      const { orderType, sells, buys, hasAmount, market, slippage, amount } =
+        this
 
       if (!market) {
         return ZERO_IN_BASE
@@ -657,15 +658,8 @@ export default Vue.extend({
     },
 
     worstPrice(): BigNumberInBase {
-      const {
-        orderType,
-        slippage,
-        sells,
-        buys,
-        hasAmount,
-        market,
-        amount
-      } = this
+      const { orderType, slippage, sells, buys, hasAmount, market, amount } =
+        this
 
       if (!market || !hasAmount) {
         return ZERO_IN_BASE
@@ -819,15 +813,8 @@ export default Vue.extend({
     },
 
     amountTooBigToFillError(): SwapTradeError | undefined {
-      const {
-        hasPrice,
-        hasAmount,
-        orderTypeBuy,
-        sells,
-        buys,
-        amount,
-        market
-      } = this
+      const { hasPrice, hasAmount, orderTypeBuy, sells, buys, amount, market } =
+        this
 
       if (!hasPrice || !hasAmount || !market) {
         return
@@ -978,17 +965,19 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const disqualified = tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-        (marketId) => marketId === market.marketId
-      )
+      const disqualified =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
+          (marketId) => marketId === market.marketId
+        )
 
       if (disqualified) {
         return ZERO_IN_BASE
       }
 
-      const denomIncluded = tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-        (denom) => denom === market.quoteDenom
-      )
+      const denomIncluded =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
+          (denom) => denom === market.quoteDenom
+        )
 
       if (!denomIncluded) {
         return ZERO_IN_BASE
@@ -1037,17 +1026,19 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const disqualified = tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-        (marketId) => marketId === market.marketId
-      )
+      const disqualified =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
+          (marketId) => marketId === market.marketId
+        )
 
       if (disqualified) {
         return ZERO_IN_BASE
       }
 
-      const denomIncluded = tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-        (denom) => denom === market.quoteDenom
-      )
+      const denomIncluded =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
+          (denom) => denom === market.quoteDenom
+        )
 
       if (!denomIncluded) {
         return ZERO_IN_BASE
@@ -1391,6 +1382,30 @@ export default Vue.extend({
   },
 
   methods: {
+    calculateAverageExecutionPriceWithoutSlippage(
+      amount: BigNumberInBase
+    ): BigNumberInBase {
+      const { orderType, sells, buys, market } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      if (amount.eq(ZERO_IN_BASE)) {
+        return ZERO_IN_BASE
+      }
+
+      const records = orderType === SpotOrderSide.Buy ? sells : buys
+
+      const averagePrice = calculateAverageExecutionPriceFromOrderbook({
+        records,
+        amount,
+        market
+      })
+
+      return new BigNumberInBase(averagePrice.toFixed(market.priceDecimals))
+    },
+
     setSlippageTolerance(slippageTolerance: string): void {
       this.form.slippageTolerance = slippageTolerance
     },
@@ -1536,21 +1551,22 @@ export default Vue.extend({
     },
 
     onSetAmount(quantity: string): void {
-      const {
-        orderTypeBuy,
-        market,
-        fromToken,
-        executionPriceWithoutSlippage,
-        feeRate
-      } = this
+      const { orderTypeBuy, market, fromToken, feeRate } = this
+
+      this.updatePrices()
 
       const quantityAsNumber = new BigNumberInBase(quantity)
 
       this.form.amount = quantity
 
-      this.updatePrices()
+      const executionPriceWithoutSlippage =
+        this.calculateAverageExecutionPriceWithoutSlippage(quantityAsNumber)
 
-      if (!fromToken || !market) {
+      if (
+        !fromToken ||
+        !market ||
+        executionPriceWithoutSlippage.eq(ZERO_IN_BASE)
+      ) {
         return
       }
 
@@ -1570,21 +1586,22 @@ export default Vue.extend({
     },
 
     onSetToAmount(quantity: string) {
-      const {
-        orderTypeBuy,
-        market,
-        toToken,
-        executionPriceWithoutSlippage,
-        feeRate
-      } = this
-
-      const quantityAsNumber = new BigNumberInBase(Number(quantity))
-
-      this.form.toAmount = quantity
+      const { orderTypeBuy, market, toToken, feeRate } = this
 
       this.updatePrices()
 
-      if (!toToken || !market) {
+      const quantityAsNumber = new BigNumberInBase(quantity)
+
+      this.form.toAmount = quantity
+
+      const executionPriceWithoutSlippage =
+        this.calculateAverageExecutionPriceWithoutSlippage(quantityAsNumber)
+
+      if (
+        !toToken ||
+        !market ||
+        executionPriceWithoutSlippage.eq(ZERO_IN_BASE)
+      ) {
         return
       }
 
@@ -1714,15 +1731,17 @@ export default Vue.extend({
     },
 
     sanitizeAmount(amount: string): string {
-      const { market } = this
+      let result = amount
 
-      if (!market || amount.trim() === '') {
-        return amount
+      // Transforms 12,345.67 to 12345.67
+      result = result.replace(/,/gim, '')
+
+      // Transforms 12. to 12
+      if (result.endsWith('.')) {
+        return result.replace(/\./gim, '')
       }
 
-      return new BigNumberInBase(amount).toFixed(
-        market.quantityDecimals
-      )
+      return result
     },
 
     resetToDefaultMarket(): void {
@@ -1789,7 +1808,7 @@ export default Vue.extend({
 
         const priceAsBigNumber = new BigNumberInBase(price)
 
-        const amount = new BigNumberInBase(Number(this.form.amount) || 0)
+        const amount = new BigNumberInBase(this.form.amount || 0)
 
         this.fromUsdPrice = priceAsBigNumber
           .times(amount)
@@ -1803,7 +1822,7 @@ export default Vue.extend({
 
         const priceAsBigNumber = new BigNumberInBase(price)
 
-        const amount = new BigNumberInBase(Number(this.form.toAmount) || 0)
+        const amount = new BigNumberInBase(this.form.toAmount || 0)
 
         this.toUsdPrice = priceAsBigNumber
           .times(amount)

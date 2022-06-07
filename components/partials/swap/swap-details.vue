@@ -21,7 +21,7 @@
       </span>
       <span v-else class="text-sm"> -- </span>
     </div>
-    <div class="flex items-center justify-between my-1">
+    <!-- <div class="flex items-center justify-between my-1">
       <span class="text-gray-500 uppercase tracking-widest font-bold text-xs">
         {{ $t('trade.swap.estimated_slippage') }}
       </span>
@@ -29,7 +29,7 @@
         ≈ {{ estimatedSlippageToFormat }}%
       </span>
       <span v-else class="text-sm"> -- </span>
-    </div>
+    </div> -->
     <div class="flex items-center justify-between my-1">
       <span class="text-gray-500 uppercase tracking-widest font-bold text-xs">
         {{ $t('trade.swap.minimum_received') }}
