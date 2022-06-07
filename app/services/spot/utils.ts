@@ -47,6 +47,52 @@ export const calculateWorstExecutionPriceFromOrderbook = ({
   return worstPrice
 }
 
+export const calculateWorstPriceUsingQuoteAmountAndOrderBook = ({
+  records,
+  market,
+  quoteAmount,
+  orderTypeBuy,
+  feeRate
+}: {
+  records: UiPriceLevel[]
+  market: UiSpotMarketWithToken
+  quoteAmount: BigNumberInBase
+  orderTypeBuy: Boolean
+  feeRate: BigNumberInBase
+}): BigNumberInBase => {
+  let remainQuoteAmountToFill = quoteAmount
+  let worstPrice = ZERO_IN_BASE
+  const ONE_IN_BASE = new BigNumberInBase(1)
+  const fee = orderTypeBuy
+    ? ONE_IN_BASE.minus(feeRate)
+    : ONE_IN_BASE.plus(feeRate)
+
+  for (const record of records) {
+    const orderQuantity = new BigNumberInWei(record.quantity)
+    const orderPrice = new BigNumberInWei(record.price).toBase(
+      market.quoteToken.decimals
+    )
+
+    const orderNotional = orderQuantity.times(orderPrice)
+
+    const min = BigNumberInBase.min(remainQuoteAmountToFill, orderNotional)
+
+    remainQuoteAmountToFill = remainQuoteAmountToFill.minus(min)
+
+    if (remainQuoteAmountToFill.lte(0)) {
+      return new BigNumberInWei(record.price)
+        .toBase(market.quoteToken.decimals)
+        .times(fee)
+    } else {
+      worstPrice = new BigNumberInWei(record.price).toBase(
+        market.quoteToken.decimals
+      )
+    }
+  }
+
+  return worstPrice.times(fee)
+}
+
 export const calculateAverageExecutionPriceFromOrderbook = ({
   records,
   market,
