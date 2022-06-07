@@ -758,15 +758,23 @@ export default Vue.extend({
       const {
         quoteAvailableBalance,
         baseAvailableBalance,
-        totalWithFees,
-        amount,
-        hasAmount,
         orderTypeBuy,
-        fromToken
+        fromToken,
+        fromAmount
       } = this
 
+      if (fromAmount === '') {
+        return undefined
+      }
+
+      const amount = new BigNumberInBase(fromAmount)
+
+      if (amount.eq(ZERO_IN_BASE)) {
+        return undefined
+      }
+
       if (orderTypeBuy) {
-        if (quoteAvailableBalance.lt(totalWithFees)) {
+        if (quoteAvailableBalance.lt(amount)) {
           return {
             price: this.$t('trade.swap.insufficient_balance_verbose', {
               symbol: fromToken ? fromToken.symbol : ''
@@ -774,10 +782,6 @@ export default Vue.extend({
             linkType: SwapTradeErrorLinkType.Portfolio
           }
         }
-        return undefined
-      }
-
-      if (!hasAmount) {
         return undefined
       }
 
