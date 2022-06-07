@@ -47,17 +47,25 @@ export const calculateWorstExecutionPriceFromOrderbook = ({
   return worstPrice
 }
 
-export const calculateWorstExecutionPriceUsingQuoteAmountAndOrderbook = ({
+export const calculateWorstPriceUsingQuoteAmountAndOrderBook = ({
   records,
   market,
-  amount
+  quoteAmount,
+  orderTypeBuy,
+  feeRate
 }: {
   records: UiPriceLevel[]
   market: UiSpotMarketWithToken
-  amount: BigNumberInBase
+  quoteAmount: BigNumberInBase
+  orderTypeBuy: Boolean
+  feeRate: BigNumberInBase
 }): BigNumberInBase => {
-  let remainQuoteAmountToFill = amount
+  let remainQuoteAmountToFill = quoteAmount
   let worstPrice = ZERO_IN_BASE
+  const ONE_IN_BASE = new BigNumberInBase(1)
+  const fee = orderTypeBuy
+    ? ONE_IN_BASE.minus(feeRate)
+    : ONE_IN_BASE.plus(feeRate)
 
   for (const record of records) {
     const orderQuantity = new BigNumberInWei(record.quantity)
@@ -72,21 +80,17 @@ export const calculateWorstExecutionPriceUsingQuoteAmountAndOrderbook = ({
     remainQuoteAmountToFill = remainQuoteAmountToFill.minus(min)
 
     if (remainQuoteAmountToFill.lte(0)) {
-      return new BigNumberInBase(
-        new BigNumberInBase(record.price).toWei(
-          market.baseToken.decimals - market.quoteToken.decimals
-        )
-      )
+      return new BigNumberInWei(record.price)
+        .toBase(market.quoteToken.decimals)
+        .times(fee)
     } else {
-      worstPrice = new BigNumberInBase(
-        new BigNumberInBase(record.price).toWei(
-          market.baseToken.decimals - market.quoteToken.decimals
-        )
+      worstPrice = new BigNumberInWei(record.price).toBase(
+        market.quoteToken.decimals
       )
     }
   }
 
-  return worstPrice
+  return worstPrice.times(fee)
 }
 
 export const calculateAverageExecutionPriceFromOrderbook = ({

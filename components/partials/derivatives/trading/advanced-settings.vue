@@ -52,7 +52,6 @@
           <div v-show="showSlippageInputFieldForMarket">
             <v-input
               id="focusOnInput"
-              :key="slippageKey"
               :value="slippageTolerance"
               :wrapper-classes="wrapperClasses"
               :input-classes="inputClasses"
@@ -105,6 +104,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { DEFAULT_MAX_SLIPPAGE } from '~/app/utils/constants'
 
 enum SlippageDisplayOptions {
   NonSelectableDefault = 'Zero',
@@ -152,7 +152,6 @@ export default Vue.extend({
   data() {
     return {
       drawerIsOpen: true,
-      slippageKey: 0,
       SlippageDisplayOptions,
       slippageSelection: SlippageDisplayOptions.Selectable,
       slippageIsToggleable: true
@@ -214,12 +213,8 @@ export default Vue.extend({
         value = DEFAULT_MAX_SLIPPAGE.toFormat(1)
       }
 
-      if (value.trim() !== '' && !value.includes('.')) {
-        // use key to refresh input field to eliminate potential trailing decimal point
-        this.slippageKey++
-      }
-
       this.$emit('set-slippage-tolerance', value)
+
       this.toggleSlippageToSelectable()
     },
 

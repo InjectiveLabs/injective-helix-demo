@@ -64,7 +64,6 @@
           data-cy="trading-page-price-input"
           :max-decimals="market ? market.quoteToken.decimals : 6"
           show-addon
-          @blur="onPriceBlur"
           @input="onPriceChange"
         >
           <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
@@ -82,9 +81,8 @@
             min="0"
             data-cy="trading-page-amount-input"
             show-addon
-            @blur="onAmountBlur"
             @input="onAmountChange"
-            @input-max="() => onProportionalQuantitySelected(100)"
+            @input-max="() => onPercentAmountSelected(100)"
           >
             <span slot="addon">{{
               market.baseToken.symbol.toUpperCase()
@@ -101,9 +99,8 @@
             min="0"
             data-cy="trading-page-amount-input"
             show-addon
-            @blur="onAmountBlur"
             @input="onQuoteAmountChange"
-            @input-max="() => onProportionalQuantitySelected(100)"
+            @input-max="() => onPercentAmountSelected(100)"
           >
             <span slot="addon">{{
               market.quoteToken.symbol.toUpperCase()
@@ -111,25 +108,25 @@
             <div slot="context" class="text-xs text-gray-400 flex items-center">
               <span
                 class="mr-1 cursor-pointer"
-                @click.stop="onProportionalQuantitySelected(25)"
+                @click.stop="onPercentAmountSelected(25)"
               >
                 25%
               </span>
               <span
                 class="mr-1 cursor-pointer"
-                @click.stop="onProportionalQuantitySelected(50)"
+                @click.stop="onPercentAmountSelected(50)"
               >
                 50%
               </span>
               <span
                 class="mr-1 cursor-pointer"
-                @click.stop="onProportionalQuantitySelected(75)"
+                @click.stop="onPercentAmountSelected(75)"
               >
                 75%
               </span>
               <span
                 class="cursor-pointer"
-                @click.stop="onProportionalQuantitySelected(100)"
+                @click.stop="onPercentAmountSelected(100)"
               >
                 100%
               </span>
@@ -288,6 +285,7 @@ import { Modal } from '~/types'
 import {
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook,
+  calculateWorstPriceUsingQuoteAmountAndOrderBook,
   calculateLiquidationPrice,
   calculateMargin,
   getApproxAmountForMarketOrLimitOrder
@@ -340,7 +338,8 @@ export default Vue.extend({
       orderType: DerivativeOrderSide.Buy,
       detailsDrawerOpen: true,
       status: new Status(),
-      form: initialForm()
+      form: initialForm(),
+      worstPrice: ZERO_IN_BASE
     }
   },
 
@@ -382,12 +381,13 @@ export default Vue.extend({
         form: { slippageTolerance }
       } = this
 
-      if (
+      const isHighSlippageWarning =
         new BigNumberInBase(slippageTolerance).gt(new BigNumberInBase(5)) &&
         new BigNumberInBase(slippageTolerance).isLessThan(
           new BigNumberInBase(50)
         )
-      ) {
+
+      if (isHighSlippageWarning) {
         return this.$t('trade.high_slippage_warning')
       }
 
@@ -726,31 +726,6 @@ export default Vue.extend({
       return price
     },
 
-    worstPrice(): BigNumberInBase {
-      const { orderTypeBuy, slippage, sells, buys, hasAmount, market, amount } =
-        this
-
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      if (!hasAmount) {
-        return ZERO_IN_BASE
-      }
-
-      const records = orderTypeBuy ? sells : buys
-
-      const worstPrice = calculateWorstExecutionPriceFromOrderbook({
-        records,
-        amount,
-        market
-      })
-
-      return new BigNumberInBase(
-        worstPrice.times(slippage).toFixed(market.priceDecimals)
-      )
-    },
-
     hasPrice(): boolean {
       const { price } = this
 
@@ -877,6 +852,7 @@ export default Vue.extend({
             .times(market.initialMarginRatio)
             .plus(marketMarkPrice)
             .minus(executionPrice)
+
       const maxLeverage = executionPrice.dividedBy(divisor)
 
       if (maxLeverage.gte(1) && leverage.gt(maxLeverage)) {
@@ -1406,7 +1382,7 @@ export default Vue.extend({
       return notionalValue.times(feeRate)
     },
 
-    approxAmountForProportionalQuantityBuyOrSellOrder(): string {
+    approxAmountFromPercentage(): string {
       const {
         market,
         buys,
@@ -1687,7 +1663,7 @@ export default Vue.extend({
     },
 
     postOnly() {
-      this.updateBaseAndQuoteAmountForProportionalQuantityBuyOrSellOrder()
+      this.updateBaseAndQuoteFromPercentageAmount()
     }
   },
 
@@ -1698,41 +1674,84 @@ export default Vue.extend({
   },
 
   methods: {
+    onPercentAmountSelected(percent = 100) {
+      this.form.proportionalPercentage = percent
+
+      this.updateBaseAndQuoteFromPercentageAmount()
+    },
+
     /**
      * We need to first update the form amount
      * in order to get the new fees that apply to this order
      * and then we update the amount again to account the fees
      * into consideration
      */
-    onProportionalQuantitySelected(percent = 100) {
-      this.form.proportionalPercentage = percent
+    updateBaseAndQuoteFromPercentageAmount() {
+      const { approxAmountFromPercentage } = this
 
-      this.updateBaseAndQuoteAmountForProportionalQuantityBuyOrSellOrder()
-    },
-
-    updateBaseAndQuoteAmountForProportionalQuantityBuyOrSellOrder() {
-      const { approxAmountForProportionalQuantityBuyOrSellOrder } = this
-
-      this.onAmountChange(
-        approxAmountForProportionalQuantityBuyOrSellOrder,
-        true
-      )
+      this.onAmountChange(approxAmountFromPercentage, true)
 
       this.$nextTick(() => {
-        this.onAmountChange(
-          approxAmountForProportionalQuantityBuyOrSellOrder,
-          true
-        )
+        this.onAmountChange(approxAmountFromPercentage, true)
 
-        this.updateQuoteAmountForProportionalQuantityBuyOrSellOrder()
+        this.updateQuoteAmountFromPercentage()
       })
+    },
+
+    calculateWorstPriceFromBase() {
+      const { orderTypeBuy, slippage, sells, buys, hasAmount, market, amount } =
+        this
+
+      if (!market || !hasAmount) {
+        return ZERO_IN_BASE
+      }
+
+      const records = orderTypeBuy ? sells : buys
+
+      const worstPrice = calculateWorstExecutionPriceFromOrderbook({
+        records,
+        amount,
+        market
+      })
+
+      this.worstPrice = new BigNumberInBase(
+        worstPrice.times(slippage).toFixed(market.priceDecimals)
+      )
+    },
+
+    calculateWorstPriceFromQuote() {
+      const {
+        orderTypeBuy,
+        slippage,
+        sells,
+        buys,
+        hasQuoteAmount,
+        market,
+        quoteAmount
+      } = this
+
+      if (!market || !hasQuoteAmount) {
+        return ZERO_IN_BASE
+      }
+
+      const records = orderTypeBuy ? sells : buys
+
+      const worstPrice = calculateWorstPriceUsingQuoteAmountAndOrderBook({
+        records,
+        market,
+        quoteAmount
+      })
+
+      this.worstPrice = new BigNumberInBase(
+        worstPrice.times(slippage).toFixed(market.priceDecimals)
+      )
     },
 
     setSlippageTolerance(slippage: string) {
       this.form.slippageTolerance = formatToAllowableDecimals(slippage, 2)
     },
 
-    updateQuoteAmountForProportionalQuantityBuyOrSellOrder() {
+    updateQuoteAmountFromPercentage() {
       const {
         orderTypeReduceOnly,
         position,
@@ -1757,12 +1776,10 @@ export default Vue.extend({
           .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR))
       }
 
-      this.updateQuoteAmountForProportionalQuantityNonReduceOnly(
-        percentageToNumber
-      )
+      this.updateQuoteFromPercentageQuantityNonReduceOnly(percentageToNumber)
     },
 
-    updateQuoteAmountForProportionalQuantityNonReduceOnly(
+    updateQuoteFromPercentageQuantityNonReduceOnly(
       percentageToNumber: BigNumberInBase
     ) {
       const {
@@ -1889,45 +1906,9 @@ export default Vue.extend({
       }
     },
 
-    onAmountBlur() {
-      const { market, form } = this
-      if (!market) {
-        return
-      }
-      if (form.amount.trim() !== '') {
-        this.form.amount = new BigNumberInBase(form.amount).toFixed(
-          0,
-          BigNumberInBase.ROUND_DOWN
-        )
-      }
-    },
-    onQuoteAmountBlur() {
-      const { market, form } = this
-      if (!market) {
-        return
-      }
-      if (form.quoteAmount.trim() !== '') {
-        this.form.quoteAmount = new BigNumberInBase(form.quoteAmount).toFixed(
-          0,
-          BigNumberInBase.ROUND_DOWN
-        )
-      }
-    },
-    onPriceBlur() {
-      const { market, form } = this
-      if (!market) {
-        return
-      }
-      if (form.price.trim() !== '') {
-        this.form.price = new BigNumberInBase(form.price).toFixed(
-          0,
-          BigNumberInBase.ROUND_DOWN
-        )
-      }
-    },
-
     onAmountChange(amount: string = '', isMaxInput?: boolean) {
       const { tradingTypeMarket, hasPrice, market } = this
+
       if (!market) {
         return
       }
@@ -1942,6 +1923,8 @@ export default Vue.extend({
       if (!hasPrice) {
         this.updatePriceFromLastTradedPrice()
       }
+
+      this.calculateWorstPriceFromBase()
 
       if (isMaxInput) {
         return
@@ -1966,6 +1949,8 @@ export default Vue.extend({
       )
 
       this.resetBaseAmount()
+
+      this.calculateWorstPriceFromQuote()
 
       if (tradingTypeMarket) {
         return this.updateMarketBaseAmount()
@@ -2040,6 +2025,7 @@ export default Vue.extend({
       if (!market) {
         return
       }
+
       this.form.amount = quoteAmount
         .div(price)
         .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
