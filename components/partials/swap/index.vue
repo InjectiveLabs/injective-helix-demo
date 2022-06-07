@@ -1550,13 +1550,9 @@ export default Vue.extend({
 
       this.updatePrices()
 
-      if (!fromToken) {
+      if (!fromToken || !market) {
         return
       }
-
-      const decimalPlaces = orderTypeBuy
-        ? market?.priceDecimals
-        : market?.quantityDecimals
 
       const toAmount = orderTypeBuy
         ? quantityAsNumber.dividedBy(
@@ -1565,6 +1561,10 @@ export default Vue.extend({
         : quantityAsNumber
             .times(executionPriceWithoutSlippage)
             .times(ONE_IN_BASE.minus(feeRate))
+
+      const decimalPlaces = orderTypeBuy
+        ? market.priceDecimals
+        : market.quantityDecimals
 
       this.form.toAmount = toAmount.toFormat(decimalPlaces)
     },
@@ -1584,13 +1584,9 @@ export default Vue.extend({
 
       this.updatePrices()
 
-      if (!toToken) {
+      if (!toToken || !market) {
         return
       }
-
-      const decimalPlaces = orderTypeBuy
-        ? market?.priceDecimals
-        : market?.quantityDecimals
 
       const fromAmount = orderTypeBuy
         ? quantityAsNumber
@@ -1599,6 +1595,10 @@ export default Vue.extend({
         : quantityAsNumber.dividedBy(
             executionPriceWithoutSlippage.times(ONE_IN_BASE.minus(feeRate))
           )
+
+      const decimalPlaces = orderTypeBuy
+        ? market.priceDecimals
+        : market.quantityDecimals
 
       this.form.amount = fromAmount.toFormat(decimalPlaces)
     },
