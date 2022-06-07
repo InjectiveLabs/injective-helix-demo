@@ -348,7 +348,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const slippageTolerance = ONE_IN_BASE.minus(slippage)
+      const slippageTolerance = ONE_IN_BASE.minus(slippage).abs()
       const orderTypeBuy = orderType === SpotOrderSide.Buy
 
       const slippageFactor = orderTypeBuy
