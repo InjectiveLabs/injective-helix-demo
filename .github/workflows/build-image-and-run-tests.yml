@@ -73,7 +73,7 @@ jobs:
   run_cypress_tests:
     name: 'Run Cypress intergration tests'
     runs-on: ubuntu-20.04
-    timeout-minutes: 60
+    timeout-minutes: 80
     needs: build
     env:
       DEX_IMAGE_TAG: $GIT_BRANCH_NAME
