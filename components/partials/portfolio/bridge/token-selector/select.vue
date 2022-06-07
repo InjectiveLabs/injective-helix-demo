@@ -83,7 +83,7 @@
                 </div>
               </div>
               <div class="flex flex-col">
-                <div class="flex justify-end items-center">
+                <div class="flex justify-end items-center h-[32px] ml-4">
                   <img
                     v-if="logo"
                     :src="logo"
@@ -101,9 +101,9 @@
                     <IconCaretDownSlim />
                   </div>
                 </div>
-                <div v-if="showBalance" class="pr-4">
+                <div v-if="showBalance" class="pr-4 h-5 relative">
                   <span
-                    class="text-[12px] whitespace-nowrap"
+                    class="text-[12px] whitespace-nowrap absolute right-4 top-0"
                     :class="{
                       'text-red-400': errors.length > 0,
                       'text-primary-600': errors.length === 0
