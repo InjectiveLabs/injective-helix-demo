@@ -1,4 +1,3 @@
-import { DerivativeOrderSide } from '@injectivelabs/derivatives-consumer'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   BigNumber,
@@ -12,7 +11,8 @@ import {
   UiPosition,
   UiOrderbookPriceLevel,
   UiPriceLevel,
-  ZERO_IN_BASE
+  ZERO_IN_BASE,
+  DerivativeOrderSide
 } from '@injectivelabs/ui-common'
 
 export const calculateMargin = ({

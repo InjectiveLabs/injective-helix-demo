@@ -14,9 +14,10 @@ import {
   UiSpotMarketSummary,
   UiSpotMarketWithToken,
   UiSpotOrderbook,
-  UiSpotTrade
+  UiSpotTrade,
+  SpotOrderSide
 } from '@injectivelabs/ui-common'
-import { SpotOrderSide, SpotOrderState } from '@injectivelabs/spot-consumer'
+import { SpotOrderState } from '@injectivelabs/spot-consumer'
 import {
   streamOrderbook,
   streamTrades,
@@ -248,9 +249,8 @@ export const actions = actionTree(
       const marketsWithToken = await tokenService.getSpotMarketsWithToken(
         markets
       )
-      const uiMarkets = SpotTransformer.spotMarketsToUiSpotMarkets(
-        marketsWithToken
-      )
+      const uiMarkets =
+        SpotTransformer.spotMarketsToUiSpotMarkets(marketsWithToken)
 
       // Only include markets that we pre-defined to generate static routes for
       const uiMarketsWithToken = uiMarkets
@@ -535,11 +535,8 @@ export const actions = actionTree(
 
     async cancelOrder(_, order: UiSpotLimitOrder) {
       const { subaccount } = this.app.$accessor.account
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
 
       if (!isUserWalletConnected || !subaccount) {
         return
@@ -559,11 +556,8 @@ export const actions = actionTree(
 
     async batchCancelOrder(_, orders: UiSpotLimitOrder[]) {
       const { subaccount } = this.app.$accessor.account
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
 
       if (!isUserWalletConnected || !subaccount) {
         return
@@ -597,11 +591,8 @@ export const actions = actionTree(
     ) {
       const { subaccount } = this.app.$accessor.account
       const { market } = this.app.$accessor.spot
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
 
       if (!isUserWalletConnected || !subaccount || !market) {
@@ -644,11 +635,8 @@ export const actions = actionTree(
     ) {
       const { subaccount } = this.app.$accessor.account
       const { market } = this.app.$accessor.spot
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
 
       if (!isUserWalletConnected || !subaccount || !market) {
