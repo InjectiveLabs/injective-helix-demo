@@ -198,6 +198,7 @@ export default {
       connect_wallet: 'Connect Wallet',
       insufficient_balance: 'Insufficient Balance',
       insufficient_balance_verbose: 'Insufficient {symbol} balance for this conversion. Please top up your trading account.',
+      insufficient_liquidity: 'Insufficient Liquidity',
       convert_success: 'Converted Successfully',
       convert_failed: 'Conversion Failed',
       convert: 'Convert',

@@ -263,15 +263,12 @@ export default Vue.extend({
         amount
       } = this
 
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      if (!hasAmount) {
-        return ZERO_IN_BASE
-      }
-
       const records = orderType === SpotOrderSide.Buy ? sells : buys
+
+      if (!market || !hasAmount || records.length === 0) {
+        return ZERO_IN_BASE
+      }
+
       const averagePrice = calculateAverageExecutionPriceFromOrderbook({
         records,
         amount,
@@ -291,11 +288,11 @@ export default Vue.extend({
         amount
       } = this
 
-      if (!market || !hasAmount) {
+      const records = orderType === SpotOrderSide.Buy ? sells : buys
+
+      if (!market || !hasAmount || records.length === 0) {
         return ZERO_IN_BASE
       }
-
-      const records = orderType === SpotOrderSide.Buy ? sells : buys
 
       const averagePrice = calculateAverageExecutionPriceFromOrderbook({
         records,
@@ -346,11 +343,12 @@ export default Vue.extend({
         amount
       } = this
 
-      if (!hasAmount) {
+      if (!hasAmount || executionPrice.eq(ZERO_IN_BASE)) {
         return ZERO_IN_BASE
       }
 
       const slippageTolerance = ONE_IN_BASE.minus(slippage).abs()
+
       const orderTypeBuy = orderType === SpotOrderSide.Buy
 
       const slippageFactor = orderTypeBuy

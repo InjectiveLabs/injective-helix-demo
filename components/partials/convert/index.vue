@@ -291,7 +291,11 @@ export default Vue.extend({
     },
 
     ctaButtonLabel(): string {
-      const { availableBalanceError } = this
+      const { availableBalanceError, amountTooBigToFillError, notEnoughOrdersToFillFromError } = this
+
+      if (amountTooBigToFillError || notEnoughOrdersToFillFromError) {
+        return this.$t('trade.convert.insufficient_liquidity')
+      }
 
       if (availableBalanceError) {
         return this.$t('trade.convert.insufficient_balance')
@@ -652,15 +656,11 @@ export default Vue.extend({
     executionPriceWithoutSlippage(): BigNumberInBase {
       const { orderType, sells, buys, hasAmount, market, amount } = this
 
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      if (!hasAmount) {
-        return ZERO_IN_BASE
-      }
-
       const records = orderType === SpotOrderSide.Buy ? sells : buys
+
+      if (!market || !hasAmount || records.length === 0) {
+        return ZERO_IN_BASE
+      }
 
       const averagePrice = calculateAverageExecutionPriceFromOrderbook({
         records,
@@ -1426,15 +1426,11 @@ export default Vue.extend({
     ): BigNumberInBase {
       const { orderType, sells, buys, market } = this
 
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      if (amount.eq(ZERO_IN_BASE)) {
-        return ZERO_IN_BASE
-      }
-
       const records = orderType === SpotOrderSide.Buy ? sells : buys
+
+      if (!market || amount.eq(ZERO_IN_BASE) || records.length === 0) {
+        return ZERO_IN_BASE
+      }
 
       const averagePrice = calculateAverageExecutionPriceFromOrderbook({
         records,
@@ -1598,9 +1594,13 @@ export default Vue.extend({
 
       this.updatePrices()
 
-      const quantityAsNumber = new BigNumberInBase(quantity)
-
       this.form.amount = quantity
+
+      if (quantity === '') {
+        return
+      }
+
+      const quantityAsNumber = new BigNumberInBase(quantity)
 
       const executionPriceWithoutSlippage =
         this.calculateAverageExecutionPriceWithoutSlippage(quantityAsNumber)
@@ -1633,9 +1633,13 @@ export default Vue.extend({
 
       this.updatePrices()
 
-      const quantityAsNumber = new BigNumberInBase(quantity)
-
       this.form.toAmount = quantity
+
+      if (quantity === '') {
+        return
+      }
+
+      const quantityAsNumber = new BigNumberInBase(quantity)
 
       const executionPriceWithoutSlippage =
         this.calculateAverageExecutionPriceWithoutSlippage(quantityAsNumber)
