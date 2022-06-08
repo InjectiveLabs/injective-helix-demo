@@ -277,10 +277,10 @@ export const actions = actionTree(
     },
 
     async validate({ state }) {
-      const { chainId } = this.app.$accessor.app
+      const { ethereumChainId } = this.app.$accessor.app
 
       if (state.wallet === Wallet.Metamask) {
-        await validateMetamask(state.address, chainId)
+        await validateMetamask(state.address, ethereumChainId)
       }
 
       // Validate whether the user has enough gas to pay for the transaction

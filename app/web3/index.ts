@@ -1,6 +1,6 @@
 import { Web3Strategy } from '@injectivelabs/web3-strategy'
 import { EthereumChainId } from '@injectivelabs/ts-types'
-import { CHAIN_ID, ETHEREUM_CHAIN_ID } from '~/app/utils/constants'
+import { ETHEREUM_CHAIN_ID } from '~/app/utils/constants'
 
 export const getRpcUrlsForChainIds = (): Record<EthereumChainId, string> => {
   return {
@@ -30,7 +30,7 @@ const rpcUrls = getRpcUrlsForChainIds()
 const wsRpcUrls = getRpcWsUrlsForChainIds()
 
 export const web3Strategy = new Web3Strategy({
-  chainId: parseInt(CHAIN_ID.toString()),
+  chainId: parseInt(ETHEREUM_CHAIN_ID.toString()) /** TODO  */,
   // ethereumChainId: parseInt(ETHEREUM_CHAIN_ID.toString()),
   options: {
     wsRpcUrl: wsRpcUrls[ETHEREUM_CHAIN_ID],

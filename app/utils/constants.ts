@@ -63,8 +63,9 @@ export const CHAIN_ID: ChainId = (
     ? ChainId.Devnet
     : ChainId.Mainnet
 ) as ChainId
-export const ETHEREUM_CHAIN_ID: EthereumChainId = process.env.APP_CHAIN_ID
-  ? parseInt(process.env.APP_CHAIN_ID.toString())
+export const ETHEREUM_CHAIN_ID: EthereumChainId = process.env
+  .APP_ETHEREUM_CHAIN_ID
+  ? parseInt(process.env.APP_ETHEREUM_CHAIN_ID.toString())
   : parseInt(
       (IS_TESTNET ? EthereumChainId.Kovan : EthereumChainId.Mainnet).toString()
     )

@@ -14,7 +14,8 @@ jobs:
       APP_BASE_URL: https://injective.exchange
       APP_NETWORK: mainnet
       APP_ENV: mainnet
-      APP_CHAIN_ID: 1
+      APP_CHAIN_ID: injective-1
+      APP_ETHEREUM_CHAIN_ID: 1
       SOURCE_DIR: dist
       DEST_DIR: www
 
@@ -86,9 +87,10 @@ jobs:
       ## Public
       APP_NAME: 'BETA - Injective Pro: Decentralized Cryptocurrency Derivatives, Ethereum and Altcoin Exchange'
       APP_BASE_URL: https://staging.injective.exchange
-      APP_NETWORK: mainnet
+      APP_NETWORK: staging
       APP_ENV: staging
-      APP_CHAIN_ID: 1
+      APP_CHAIN_ID: injective-1
+      APP_ETHEREUM_CHAIN_ID: 1
       SOURCE_DIR: dist
       DEST_DIR: www
 
@@ -162,7 +164,8 @@ jobs:
       APP_BASE_URL: https://testnet.injective.exchange
       APP_NETWORK: testnetK8s
       APP_ENV: testnet
-      APP_CHAIN_ID: 42
+      APP_CHAIN_ID: injective-888
+      APP_ETHEREUM_CHAIN_ID: 42
       SOURCE_DIR: dist
       DEST_DIR: www
 
