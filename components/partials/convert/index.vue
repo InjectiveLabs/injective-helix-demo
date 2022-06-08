@@ -636,15 +636,11 @@ export default Vue.extend({
       const { orderType, sells, buys, hasAmount, market, slippage, amount } =
         this
 
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      if (!hasAmount) {
-        return ZERO_IN_BASE
-      }
-
       const records = orderType === SpotOrderSide.Buy ? sells : buys
+
+      if (!market || !hasAmount || records.length === 0) {
+        return ZERO_IN_BASE
+      }
 
       const averagePrice = calculateAverageExecutionPriceFromOrderbook({
         records,
@@ -1552,23 +1548,28 @@ export default Vue.extend({
     },
 
     submitMarketOrder(): void {
-      const { orderType, market, amount } = this
+      const { orderType, market, form } = this
 
       if (!market) {
         return
       }
 
-      const worstPrice =
+      this.status.setLoading()
+
+      const price =
         orderType === SpotOrderSide.Buy
           ? this.worstPriceFromQuote
           : this.worstPrice
 
-      this.status.setLoading()
+      const quantity: BigNumberInBase =
+        orderType === SpotOrderSide.Buy
+          ? new BigNumberInBase(form.toAmount)
+          : new BigNumberInBase(form.amount)
 
       this.$accessor.spot
         .submitMarketOrder({
-          quantity: amount,
-          price: worstPrice,
+          quantity,
+          price,
           orderType
         })
         .then(() => {
@@ -1694,20 +1695,29 @@ export default Vue.extend({
     },
 
     onMaxInput(max: string): void {
-      const { orderTypeBuy, executionPrice } = this
+      const { orderTypeBuy, executionPrice, feeRate } = this
+
+      this.updatePrices()
+
+      this.form.amount = max
+
+      if (executionPrice.eq(ZERO_IN_BASE)) {
+        return
+      }
 
       const quantityAsNumber = new BigNumberInBase(max)
 
       const toQuantity = orderTypeBuy
-        ? quantityAsNumber.dividedBy(executionPrice)
-        : executionPrice.times(quantityAsNumber)
+        ? quantityAsNumber.dividedBy(
+            executionPrice.times(ONE_IN_BASE.plus(feeRate))
+          )
+        : quantityAsNumber.times(
+            executionPrice.times(ONE_IN_BASE.minus(feeRate))
+          )
 
-      this.form.amount = max
       this.form.toAmount = toQuantity.toFormat(
         UI_DEFAULT_PRICE_DISPLAY_DECIMALS
       )
-
-      this.updatePrices()
     },
 
     getBalance(token: Token): BigNumberInBase {
