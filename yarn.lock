@@ -2210,6 +2210,15 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
+"@injectivelabs/exceptions@^0.5.4":
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/exceptions/-/exceptions-0.5.4.tgz#ec9411222c0bad953a085d7bafd426345480dbcd"
+  integrity sha512-2eOhs7tXU2ga+Eez+SFp+A3JkIZb1tWjGvAU2R1bTP0fs92liKD8KZqz89Sw67mI0gWOufQ/PGCxU9ZKRuJM3A==
+  dependencies:
+    "@injectivelabs/ts-types" "^0.5.3"
+    link-module-alias "^1.2.0"
+    shx "^0.3.2"
+
 "@injectivelabs/exchange-api@^2.2.58", "@injectivelabs/exchange-api@^2.2.70":
   version "2.2.70"
   resolved "https://registry.yarnpkg.com/@injectivelabs/exchange-api/-/exchange-api-2.2.70.tgz#acebf715010d87ace2eda1e9bb86ee1919b10b4a"
@@ -2285,6 +2294,16 @@
   dependencies:
     "@injectivelabs/exceptions" "^0.5.3"
     "@injectivelabs/utils" "^0.5.4"
+    link-module-alias "^1.2.0"
+    shx "^0.3.2"
+
+"@injectivelabs/networks@^0.5.9":
+  version "0.5.9"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/networks/-/networks-0.5.9.tgz#0f56710625b1f7fca3fe9630f55f2b2ee8115a99"
+  integrity sha512-Z+NSpif7/OL+vvHlN0cgm4xq+Yc73pfXOQEVyg+CzuTL+tgSOlEU9S2MM6k8xpfHc9klCLQsUTeT/7FtmDcpwA==
+  dependencies:
+    "@injectivelabs/exceptions" "^0.5.4"
+    "@injectivelabs/utils" "^0.5.6"
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
@@ -2388,21 +2407,6 @@
     lodash.values "^4.3.0"
     shx "^0.3.2"
 
-"@injectivelabs/token-metadata@^0.5.24":
-  version "0.5.24"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-0.5.24.tgz#7da1c90f36ff53766af6444fb76bd7173b61ff52"
-  integrity sha512-a3YjIo8zWNNQl+aKWKwZxu78dtolUb3OYspBctNmwME8DDMa/FZWmjf6ujzuXDp+itFeGsCFca4Fl8wZgYE+8g==
-  dependencies:
-    "@injectivelabs/networks" "^0.5.7"
-    "@injectivelabs/ts-types" "^0.5.2"
-    "@types/lodash.values" "^4.3.6"
-    copyfiles "^2.4.1"
-    jsonschema "^1.4.0"
-    link-module-alias "^1.2.0"
-    lodash "^4.17.21"
-    lodash.values "^4.3.0"
-    shx "^0.3.2"
-
 "@injectivelabs/token-metadata@^0.5.25":
   version "0.5.25"
   resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-0.5.25.tgz#ecd0fe50420affe25c3986ce0a3a9a78885d80e5"
@@ -2418,6 +2422,21 @@
     lodash.values "^4.3.0"
     shx "^0.3.2"
 
+"@injectivelabs/token-metadata@^0.5.27":
+  version "0.5.27"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-0.5.27.tgz#f66a921b336fa0eb0c78a9c49e91530f78738130"
+  integrity sha512-YolJDwUp3xC3k1ikOqjWEiUKdBdNdP+VT9YljAqA6AF15IZg0H2eYqj4VcaBwlSbZXZWungWJaNA1P7J77cEOw==
+  dependencies:
+    "@injectivelabs/networks" "^0.5.9"
+    "@injectivelabs/ts-types" "^0.5.3"
+    "@types/lodash.values" "^4.3.6"
+    copyfiles "^2.4.1"
+    jsonschema "^1.4.0"
+    link-module-alias "^1.2.0"
+    lodash "^4.17.21"
+    lodash.values "^4.3.0"
+    shx "^0.3.2"
+
 "@injectivelabs/token-utils@^0.5.4":
   version "0.5.4"
   resolved "https://registry.yarnpkg.com/@injectivelabs/token-utils/-/token-utils-0.5.4.tgz#452eacfced0c4c845c3f48dc90cbbcbe90a6cba4"
@@ -2425,6 +2444,16 @@
   dependencies:
     "@injectivelabs/exceptions" "^0.5.3"
     "@injectivelabs/utils" "^0.5.4"
+    link-module-alias "^1.2.0"
+    shx "^0.3.2"
+
+"@injectivelabs/token-utils@^0.5.6":
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/token-utils/-/token-utils-0.5.6.tgz#f2da21144dd0b74a5c8d7c4bc32c2b342a8e676f"
+  integrity sha512-ej7S072UZec16117KIDx+DF5OfYC++1qCrEAt7OxQ4TFDHXxkDHD/78NBzrtMsEFDztuLf6hhqrh5b5ylz8Ckg==
+  dependencies:
+    "@injectivelabs/exceptions" "^0.5.4"
+    "@injectivelabs/utils" "^0.5.6"
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
@@ -2448,6 +2477,14 @@
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/@injectivelabs/ts-types/-/ts-types-0.5.2.tgz#b3f5fa50846c641452b7372ec0f80fd2311ebbd8"
   integrity sha512-cfIaPTS7RUBohEM+LIu7sKUpoJf0KuG3DdaGNKSP15uUh1++7Jxc6QfrigqEIlElVCVXEl2w0BGfEKJ45ZEXMA==
+  dependencies:
+    link-module-alias "^1.2.0"
+    shx "^0.3.2"
+
+"@injectivelabs/ts-types@^0.5.3":
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/ts-types/-/ts-types-0.5.3.tgz#143bf7011dd9de5504b25b9a1a557433617bc4bc"
+  integrity sha512-3q2oV8By6dBBl1rvY4pYQU4f89v0MLZ5MkM75Yfz1+OvsQCxFUS9GV5z/A4d+GEh/jdM7BK5xaJAsXinGy5pAg==
   dependencies:
     link-module-alias "^1.2.0"
     shx "^0.3.2"
@@ -2523,6 +2560,20 @@
   dependencies:
     "@injectivelabs/exceptions" "^0.5.3"
     "@injectivelabs/ts-types" "^0.5.2"
+    axios "^0.21.1"
+    bignumber.js "^9.0.1"
+    link-module-alias "^1.2.0"
+    shx "^0.3.2"
+    snakecase-keys "^5.1.2"
+    store2 "^2.12.0"
+
+"@injectivelabs/utils@^0.5.6":
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/utils/-/utils-0.5.6.tgz#aa3e2a85130bcc146cf70fb8981e11838880e838"
+  integrity sha512-v2A1YrWUlyEraZ2lfX+xysQUls5RElJ9aX7ym4A5nMipfaszyUtfTqdsi/YgCeNANPoTorYopjKgPa8i2421NQ==
+  dependencies:
+    "@injectivelabs/exceptions" "^0.5.4"
+    "@injectivelabs/ts-types" "^0.5.3"
     axios "^0.21.1"
     bignumber.js "^9.0.1"
     link-module-alias "^1.2.0"
