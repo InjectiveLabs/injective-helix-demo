@@ -20,32 +20,33 @@
       </div> -->
       <div class="flex items-center justify-between mb-8">
         <span class="font-bold text-lg">
-          {{ $t('trade.swap.swap') }}
+          {{ $t('trade.convert.convert') }}
         </span>
         <button
-          id="swap-settings-dropdown-target"
+          id="convert-settings-dropdown-target"
           type="button"
-          @click="toggleSwapSettingsModal"
+          @click="toggleConvertSettingsModal"
         >
           <IconCogwheel
             class="cursor-pointer hover:text-primary-500"
             :class="
-              swapSettingsModalActive ? 'text-primary-500' : 'text-gray-500'
+              convertSettingsModalActive ? 'text-primary-500' : 'text-gray-500'
             "
           />
         </button>
         <PopperBox
-          ref="swap-settings-dropdown"
+          ref="convert-settings-dropdown"
           class="popper rounded-lg flex flex-col flex-wrap text-xs absolute bg-gray-800 p-4 z-1110 border border-primary-500 shadow-lg w-[calc(100%-6rem)] xs:w-96"
-          binding-element="#swap-settings-dropdown-target"
+          binding-element="#convert-settings-dropdown-target"
           :options="popperOptions"
           hide-arrow
           disable-auto-close
-          @close="hideSwapSettingsModal"
+          @close="hideConvertSettingsModal"
         >
           <AdvancedSettings
             :status="status"
             :warnings="slippageWarnings"
+            :errors="slippageErrors"
             :slippage-tolerance="form.slippageTolerance"
             @set-slippage-tolerance="setSlippageTolerance"
           />
@@ -53,7 +54,7 @@
       </div>
       <div>
         <TokenSelector
-          class="input-swap"
+          class="input-convert"
           :disabled="status && status.isLoading()"
           :amount="fromAmount"
           :balance="fromBalance"
@@ -78,14 +79,14 @@
               type="number"
               :step="priceStep"
               :max-decimals="market ? market.quoteToken.decimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS"
-              :max-label="'trade.swap.current_rate'"
+              :max-label="'trade.convert.current_rate'"
               min="0"
               @blur="onPriceBlur"
               @input="onPriceChange"
               @input-max="setRateToLastTradePrice"
             >
               <template slot="addon">
-                <span class="text-2xs md:text-xs font-semibold uppercase tracking-wider text-gray-500">{{ $t('trade.swap.rate') }}</span>
+                <span class="text-2xs md:text-xs font-semibold uppercase tracking-wider text-gray-500">{{ $t('trade.convert.rate') }}</span>
               </template>
             </v-input>
           </div> -->
@@ -99,7 +100,7 @@
           </button>
         </div>
         <TokenSelector
-          class="input-swap"
+          class="input-convert"
           :disabled="status && status.isLoading()"
           :amount="toAmount"
           :balance="toBalance"
@@ -115,7 +116,7 @@
           @input:token="onSetToToken"
         />
       </div>
-      <SwapDetails
+      <ConvertDetails
         v-if="fromToken && toToken"
         :pending="pricesPending"
         :from-token="fromToken"
@@ -133,14 +134,14 @@
           v-if="isUserWalletConnected"
           lg
           :status="status"
-          :disabled="swapButtonDisabled"
+          :disabled="ctaButtonDisabled"
           :ghost="hasErrors"
           :primary="!hasErrors"
           class="w-full"
           :class="{ 'bg-opacity-50': status.isLoading() }"
           @click.stop="onSubmit"
         >
-          {{ swapButtonLabel }}
+          {{ ctaButtonLabel }}
         </v-button>
         <v-button
           v-else
@@ -151,7 +152,7 @@
           :class="{ 'bg-opacity-50': status.isLoading() }"
           @click.stop="handleClickOrConnect"
         >
-          {{ $t('trade.swap.connect_wallet') }}
+          {{ $t('trade.convert.connect_wallet') }}
         </v-button>
       </div>
       <span
@@ -160,13 +161,13 @@
       >
         {{ $t('trade.execution_price_far_away_from_last_traded_price') }}
       </span>
-      <SwapErrors
+      <ConvertErrors
         v-if="showErrors"
         :errors="errors"
         :show-portfolio-link="
-          errors.linkType === SwapTradeErrorLinkType.Portfolio
+          errors.linkType === ConvertTradeErrorLinkType.Portfolio
         "
-        :show-hub-link="errors.linkType === SwapTradeErrorLinkType.Hub"
+        :show-hub-link="errors.linkType === ConvertTradeErrorLinkType.Hub"
       />
     </div>
     <ModalInsufficientInjForGas />
@@ -194,8 +195,8 @@ import {
 import { SpotOrderSide } from '@injectivelabs/spot-consumer'
 import TokenSelector from './token-selector.vue'
 import AdvancedSettings from './advanced-settings.vue'
-import SwapDetails from './swap-details.vue'
-import SwapErrors from './swap-errors.vue'
+import ConvertDetails from './convert-details.vue'
+import ConvertErrors from './convert-errors.vue'
 import PopperBox from '~/components/elements/popper-box.vue'
 import {
   DEFAULT_MARKET_PRICE_WARNING_DEVIATION,
@@ -222,14 +223,14 @@ interface TradeForm {
   slippageTolerance: string
 }
 
-enum SwapTradeErrorLinkType {
+enum ConvertTradeErrorLinkType {
   None = 0,
   Portfolio = 1,
   Hub = 2
 }
 
-interface SwapTradeError extends TradeError {
-  linkType: SwapTradeErrorLinkType
+interface ConvertTradeError extends TradeError {
+  linkType: ConvertTradeErrorLinkType
 }
 
 const ONE_IN_BASE = new BigNumberInBase(1)
@@ -246,14 +247,14 @@ export default Vue.extend({
     ModalInsufficientInjForGas,
     TokenSelector,
     AdvancedSettings,
-    SwapDetails,
-    SwapErrors,
+    ConvertDetails,
+    ConvertErrors,
     PopperBox
   },
 
   data() {
     return {
-      SwapTradeErrorLinkType,
+      ConvertTradeErrorLinkType,
       TradeExecutionType,
       SpotOrderSide,
       UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
@@ -264,7 +265,7 @@ export default Vue.extend({
       form: initialForm(),
       fromToken: null as Token | null,
       toToken: null as Token | null,
-      swapSettingsModalActive: false,
+      convertSettingsModalActive: false,
       fromUsdPrice: new BigNumberInBase(0).toFormat(
         UI_DEFAULT_MIN_DISPLAY_DECIMALS
       ),
@@ -288,24 +289,24 @@ export default Vue.extend({
       return this.sanitizeAmount(toAmount)
     },
 
-    swapButtonLabel(): string {
+    ctaButtonLabel(): string {
       const { availableBalanceError } = this
 
       if (availableBalanceError) {
-        return this.$t('trade.swap.insufficient_balance')
+        return this.$t('trade.convert.insufficient_balance')
       }
 
-      return this.$t('trade.swap.swap_now')
+      return this.$t('trade.convert.convert_now')
     },
 
-    swapButtonDisabled(): boolean {
+    ctaButtonDisabled(): boolean {
       const { hasErrors, hasEnoughInjForGasOrNotKeplr } = this
 
       return hasErrors || !hasEnoughInjForGasOrNotKeplr
     },
 
     $popper(): any {
-      return this.$refs['swap-settings-dropdown']
+      return this.$refs['convert-settings-dropdown']
     },
 
     popperOptions(): any {
@@ -363,11 +364,23 @@ export default Vue.extend({
       const result = []
 
       if (slippageTolerance.gt(new BigNumberInBase(5))) {
-        result.push(this.$t('trade.swap.high_slippage_warning'))
+        result.push(this.$t('trade.convert.high_slippage_warning'))
       }
 
       if (slippageTolerance.lt(new BigNumberInBase(0.05))) {
-        result.push(this.$t('trade.swap.low_slippage_warning'))
+        result.push(this.$t('trade.convert.low_slippage_warning'))
+      }
+
+      return result
+    },
+
+    slippageErrors(): Array<string> {
+      const slippageTolerance = new BigNumberInBase(this.form.slippageTolerance)
+
+      const result = []
+
+      if (slippageTolerance.gt(new BigNumberInBase(50))) {
+        result.push(this.$t('trade.convert.slippage_too_high'))
       }
 
       return result
@@ -754,7 +767,7 @@ export default Vue.extend({
       return deviation.gt(DEFAULT_MARKET_PRICE_WARNING_DEVIATION)
     },
 
-    availableBalanceError(): SwapTradeError | undefined {
+    availableBalanceError(): ConvertTradeError | undefined {
       const {
         quoteAvailableBalance,
         baseAvailableBalance,
@@ -776,10 +789,10 @@ export default Vue.extend({
       if (orderTypeBuy) {
         if (quoteAvailableBalance.lt(amount)) {
           return {
-            price: this.$t('trade.swap.insufficient_balance_verbose', {
+            price: this.$t('trade.convert.insufficient_balance_verbose', {
               symbol: fromToken ? fromToken.symbol : ''
             }),
-            linkType: SwapTradeErrorLinkType.Portfolio
+            linkType: ConvertTradeErrorLinkType.Portfolio
           }
         }
         return undefined
@@ -787,17 +800,17 @@ export default Vue.extend({
 
       if (baseAvailableBalance.lt(amount)) {
         return {
-          amount: this.$t('trade.swap.insufficient_balance_verbose', {
+          amount: this.$t('trade.convert.insufficient_balance_verbose', {
             symbol: fromToken ? fromToken.symbol : ''
           }),
-          linkType: SwapTradeErrorLinkType.Portfolio
+          linkType: ConvertTradeErrorLinkType.Portfolio
         }
       }
 
       return undefined
     },
 
-    notEnoughOrdersToFillFromError(): SwapTradeError | undefined {
+    notEnoughOrdersToFillFromError(): ConvertTradeError | undefined {
       const { orderTypeBuy, sells, buys, amount, hasAmount } = this
 
       if (!hasAmount) {
@@ -809,14 +822,14 @@ export default Vue.extend({
       if (orders.length <= 0 && amount.gt(0)) {
         return {
           amount: this.$t('trade.not_enough_fillable_orders'),
-          linkType: SwapTradeErrorLinkType.None
+          linkType: ConvertTradeErrorLinkType.None
         }
       }
 
       return undefined
     },
 
-    amountTooBigToFillError(): SwapTradeError | undefined {
+    amountTooBigToFillError(): ConvertTradeError | undefined {
       const { hasPrice, hasAmount, orderTypeBuy, sells, buys, amount, market } =
         this
 
@@ -835,14 +848,14 @@ export default Vue.extend({
       if (totalAmount.lt(amount)) {
         return {
           amount: this.$t('trade.not_enough_fillable_orders'),
-          linkType: SwapTradeErrorLinkType.None
+          linkType: ConvertTradeErrorLinkType.None
         }
       }
 
       return undefined
     },
 
-    priceNotValidError(): SwapTradeError | undefined {
+    priceNotValidError(): ConvertTradeError | undefined {
       const { form } = this
 
       if (!form.price) {
@@ -855,11 +868,11 @@ export default Vue.extend({
 
       return {
         price: this.$t('trade.not_valid_number'),
-        linkType: SwapTradeErrorLinkType.None
+        linkType: ConvertTradeErrorLinkType.None
       }
     },
 
-    amountNotValidNumberError(): SwapTradeError | undefined {
+    amountNotValidNumberError(): ConvertTradeError | undefined {
       const { form } = this
 
       if (!form.amount) {
@@ -872,7 +885,7 @@ export default Vue.extend({
 
       return {
         amount: this.$t('trade.not_valid_number'),
-        linkType: SwapTradeErrorLinkType.None
+        linkType: ConvertTradeErrorLinkType.None
       }
     },
 
@@ -1347,7 +1360,7 @@ export default Vue.extend({
 
     if (!this.isTokenSymbolValid(from)) {
       this.$toast.error(
-        this.$t('trade.swap.invalid_token_symbol_warning', {
+        this.$t('trade.convert.invalid_token_symbol_warning', {
           symbol: from.toUpperCase(),
           defaultSymbol: 'USDT'
         })
@@ -1358,7 +1371,7 @@ export default Vue.extend({
 
     if (!this.isTokenSymbolValid(to)) {
       this.$toast.error(
-        this.$t('trade.swap.invalid_token_symbol_warning', {
+        this.$t('trade.convert.invalid_token_symbol_warning', {
           symbol: to.toUpperCase(),
           defaultSymbol: 'INJ'
         })
@@ -1506,7 +1519,7 @@ export default Vue.extend({
           orderType
         })
         .then(() => {
-          this.$toast.success(this.$t('trade.swap.swap_success'))
+          this.$toast.success(this.$t('trade.convert.convert_success'))
           this.$set(this, 'form', initialForm())
         })
         .catch(this.$onRejected)
@@ -1531,7 +1544,7 @@ export default Vue.extend({
           orderType
         })
         .then(() => {
-          this.$toast.success(this.$t('trade.swap.swap_success'))
+          this.$toast.success(this.$t('trade.convert.convert_success'))
           this.$set(this, 'form', initialForm())
         })
         .catch(this.$onRejected)
@@ -1760,7 +1773,7 @@ export default Vue.extend({
       this.fromToken = this.getTokenBySymbol('usdt')
       this.toToken = this.getTokenBySymbol('inj')
 
-      this.$toast.info(this.$t('trade.swap.reset_to_default_pair', { pair }))
+      this.$toast.info(this.$t('trade.convert.reset_to_default_pair', { pair }))
     },
 
     switchTokens(): void {
@@ -1859,7 +1872,7 @@ export default Vue.extend({
       return !!this.findMarket(fromToken, toToken)
     },
 
-    toggleSwapSettingsModal(): void {
+    toggleConvertSettingsModal(): void {
       if (!this.$popper || this.status.isLoading()) {
         return
       }
@@ -1868,16 +1881,16 @@ export default Vue.extend({
 
       if (isActive) {
         this.$popper.hideDropdown()
-        this.swapSettingsModalActive = false
+        this.convertSettingsModalActive = false
       } else {
         this.$popper.showDropdown()
-        this.swapSettingsModalActive = true
+        this.convertSettingsModalActive = true
       }
     },
 
-    hideSwapSettingsModal(): void {
+    hideConvertSettingsModal(): void {
       this.$popper.hideDropdown()
-      this.swapSettingsModalActive = false
+      this.convertSettingsModalActive = false
     },
 
     handleClickOrConnect(): void {

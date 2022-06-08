@@ -1,9 +1,9 @@
 <template>
-  <div class="swap-container min-h-screen-excluding-header">
+  <div class="convert-container min-h-screen-excluding-header">
     <VHocLoading :key="$route.fullPath" :status="status">
       <div class="container">
         <div class="mx-auto h-full w-full sm:w-md flex flex-col justify-center">
-          <Swap class="mt-[-56px]" @set-market="setMarket" />
+          <Convert class="mt-[-56px]" @set-market="setMarket" />
         </div>
       </div>
     </VHocLoading>
@@ -14,14 +14,14 @@
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken } from '@injectivelabs/ui-common'
-import Swap from '~/components/partials/swap/index.vue'
+import Convert from '~/components/partials/convert/index.vue'
 import { Modal } from '~/types'
 import { ORDERBOOK_POLLING_ENABLED } from '~/app/utils/constants'
 import { betaMarketSlugs } from '~/app/data/market'
 
 export default Vue.extend({
   components: {
-    Swap
+    Convert
   },
 
   data() {
@@ -106,7 +106,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.swap-container {
+.convert-container {
   @apply h-full w-full flex flex-wrap py-4;
   background: radial-gradient(
       45.83% 49.94% at 100% 0%,

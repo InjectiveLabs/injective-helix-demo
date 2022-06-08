@@ -2,10 +2,10 @@
   <div class="mt-6 flex flex-col">
     <div class="flex items-start justify-between my-1">
       <span class="text-gray-500 uppercase tracking-widest font-bold text-xs">
-        {{ $t('trade.swap.rate') }}
+        {{ $t('trade.convert.rate') }}
       </span>
       <span v-if="pending" class="text-sm">
-        {{ $t('trade.swap.fetching_price') }}...
+        {{ $t('trade.convert.fetching_price') }}...
       </span>
       <span v-else-if="hasAmount" class="text-sm">
         1 {{ fromToken.symbol }} = {{ rateToFormat }} {{ toToken.symbol }}
@@ -14,7 +14,7 @@
     </div>
     <div class="flex items-center justify-between my-1">
       <span class="text-gray-500 uppercase tracking-widest font-bold text-xs">
-        {{ $t('trade.swap.fee') }} {{ feeRateToFormat }}%
+        {{ $t('trade.convert.fee') }} {{ feeRateToFormat }}%
       </span>
       <span v-if="hasAmount" class="text-sm">
         ≈ {{ fee }} {{ market.quoteToken.symbol }}
@@ -23,7 +23,7 @@
     </div>
     <!-- <div class="flex items-center justify-between my-1">
       <span class="text-gray-500 uppercase tracking-widest font-bold text-xs">
-        {{ $t('trade.swap.estimated_slippage') }}
+        {{ $t('trade.convert.estimated_slippage') }}
       </span>
       <span v-if="hasAmount" class="text-sm">
         ≈ {{ estimatedSlippageToFormat }}%
@@ -32,7 +32,7 @@
     </div> -->
     <div class="flex items-center justify-between my-1">
       <span class="text-gray-500 uppercase tracking-widest font-bold text-xs">
-        {{ $t('trade.swap.minimum_received') }}
+        {{ $t('trade.convert.minimum_received') }}
       </span>
       <span v-if="hasAmount" class="text-sm">
         {{ minimumReceivedToFormat }} {{ toToken.symbol }}
@@ -47,7 +47,7 @@ import Vue from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   cosmosSdkDecToBigNumber,
-  getDecimalsFromNumber,
+  // getDecimalsFromNumber,
   SpotOrderSide,
   UiPriceLevel,
   UiSpotOrderbook,
@@ -150,7 +150,9 @@ export default Vue.extend({
     rateToFormat(): string {
       const { rate } = this
 
-      return rate.toFormat(getDecimalsFromNumber(rate.toNumber()))
+      // return rate.toFormat(getDecimalsFromNumber(rate.toNumber()))
+
+      return rate.toFormat()
     },
 
     feeRate(): BigNumberInBase {
