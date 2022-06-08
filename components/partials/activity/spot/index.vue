@@ -1,16 +1,24 @@
 <template>
   <div class="h-full flex flex-col">
     <div class="flex items-center gap-4">
-      <v-tab-selector-item v-model="component" data-cy="activity-spot-orders-link" :option="components.orders">
+      <v-tab-selector-item
+        v-model="component"
+        data-cy="activity-spot-orders-link"
+        :option="components.orders"
+      >
         <div class="flex items-center gap-1">
           <span>{{ $t('activity.openOrders') }}</span>
-          <portal-target name="activity-tab-spot-count" />
+          <portal-target name="activity-tab-spot-count" data-cy="activity-spot-orders-link-count" />
         </div>
       </v-tab-selector-item>
 
       <div class="w-px h-4 bg-gray-500" />
 
-      <v-tab-selector-item v-model="component" data-cy="activity-spot-trades-link" :option="components.trades">
+      <v-tab-selector-item
+        v-model="component"
+        data-cy="activity-spot-trades-link"
+        :option="components.trades"
+      >
         <div class="flex items-center gap-1">
           <span>{{ $t('activity.tradeHistory') }}</span>
         </div>

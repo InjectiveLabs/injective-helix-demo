@@ -1,9 +1,10 @@
 import { actionTree, getterTree } from 'typed-vuex'
-import { ChainId } from '@injectivelabs/ts-types'
+import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 import { DEFAULT_GAS_PRICE, SECONDS_IN_A_DAY } from '@injectivelabs/ui-common'
 import { StatusType } from '@injectivelabs/utils'
 import {
   CHAIN_ID,
+  ETHEREUM_CHAIN_ID,
   GEO_IP_RESTRICTIONS_ENABLED,
   VPN_PROXY_VALIDATION_PERIOD
 } from '~/app/utils/constants'
@@ -30,6 +31,7 @@ const initialState = {
   // App Settings
   locale: english,
   chainId: CHAIN_ID,
+  ethereumChainId: ETHEREUM_CHAIN_ID,
   gasPrice: DEFAULT_GAS_PRICE.toString(),
 
   // Loading States
@@ -51,6 +53,7 @@ const initialState = {
 export const state = () => ({
   locale: initialState.locale as Locale,
   chainId: initialState.chainId as ChainId,
+  ethereumChainId: initialState.ethereumChainId as EthereumChainId,
   gasPrice: initialState.gasPrice as string,
   state: initialState.state as AppState,
   marketsLoadingState: initialState.marketsLoadingState as StatusType,

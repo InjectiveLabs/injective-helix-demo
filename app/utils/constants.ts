@@ -1,6 +1,6 @@
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import { Network } from '@injectivelabs/networks'
-import { ChainId } from '@injectivelabs/ts-types'
+import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 
 export const IS_DEVELOPMENT: boolean = process.env.NODE_ENV === 'development'
 export const IS_PRODUCTION: boolean = process.env.NODE_ENV === 'production'
@@ -56,9 +56,19 @@ export const IS_TESTNET = [
   Network.Local
 ].includes(NETWORK)
 
-export const CHAIN_ID: ChainId = process.env.APP_CHAIN_ID
-  ? parseInt(process.env.APP_CHAIN_ID.toString())
-  : parseInt((IS_TESTNET ? ChainId.Kovan : ChainId.Mainnet).toString())
+export const CHAIN_ID: ChainId = (
+  process.env.APP_CHAIN_ID
+    ? process.env.APP_CHAIN_ID
+    : IS_TESTNET
+    ? ChainId.Devnet
+    : ChainId.Mainnet
+) as ChainId
+export const ETHEREUM_CHAIN_ID: EthereumChainId = process.env
+  .APP_ETHEREUM_CHAIN_ID
+  ? parseInt(process.env.APP_ETHEREUM_CHAIN_ID.toString())
+  : parseInt(
+      (IS_TESTNET ? EthereumChainId.Kovan : EthereumChainId.Mainnet).toString()
+    )
 
 export const BIG_NUMBER_ROUND_HALF_UP_MODE = BigNumber.ROUND_HALF_UP
 

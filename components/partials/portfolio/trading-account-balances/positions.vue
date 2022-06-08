@@ -14,6 +14,7 @@
         />
         <filter-selector
           class="col-span-2"
+          data-cy="universal-table-filter-by-side-select"
           :type="TradeSelectorType.PositionSide"
           :value="side"
           @click="handleSideClick"
@@ -28,6 +29,7 @@
         </span>
         <span
           class="text-red-550 leading-5 cursor-pointer"
+          data-cy="trading-account-positions-table-cancel-all-button"
           @click.stop="handleClosePositions"
         >
           {{ $t('trade.closeAll') }}
@@ -41,6 +43,7 @@
           v-if="
             filteredPositions.length > 0 && walletIsNotKeplr && !hideBalance
           "
+          data-cy="trading-account-positions-table-cancel-all-button"
           red-outline
           md
           :status="status"

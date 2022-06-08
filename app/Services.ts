@@ -23,14 +23,14 @@ import { AlchemyApi } from '@injectivelabs/alchemy-api'
 import { CoinGeckoApi } from '@injectivelabs/token-utils'
 import { TxProviderBaseOptions } from '@injectivelabs/ui-common/dist/providers/TxProvider'
 import {
-  CHAIN_ID,
   IS_TESTNET,
   NETWORK,
   METRICS_ENABLED,
   APP_EXCHANGE_API_ENDPOINT,
   APP_SENTRY_GRPC_ENDPOINT,
   APP_SENTRY_HTTP_ENDPOINT,
-  APP_CHRONOS_API_ENDPOINT
+  APP_CHRONOS_API_ENDPOINT,
+  ETHEREUM_CHAIN_ID
 } from './utils/constants'
 import { SubaccountService } from './services/account'
 import { ExchangeService } from './services/exchange'
@@ -57,8 +57,9 @@ const metricsProvider = new MetricsProvider({
   appEnv: process.env.APP_ENV,
   nodeEnv: process.env.NODE_ENV
 })
+// @ts-ignore TODO
 const commonServiceOptions = {
-  chainId: CHAIN_ID,
+  chainId: ETHEREUM_CHAIN_ID,
   network: NETWORK,
   endpoints: {
     ...endpoints,

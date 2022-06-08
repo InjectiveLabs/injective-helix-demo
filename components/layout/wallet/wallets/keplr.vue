@@ -9,17 +9,15 @@
           <div class="flex-shrink-0 mr-4">
             <img src="/keplr-icon.png" class="w-8 h-8" alt="Keplr Icon" />
           </div>
-          <div
-            class="min-w-0 flex-1 px-4 md:grid md:grid-cols-1 md:gap-4 text-left"
-          >
+          <div class="min-w-0 flex-1 px-4 md:grid md:grid-cols-1 md:gap-4 text-left">
             <div>
               <p class="text-xl font-semibold text-gray-200 truncate">
                 {{ $t('connect.keplr') }}
               </p>
               <p class="flex items-center text-sm text-gray-200">
-                <span class="truncate">{{
+                <span class="truncate" data-cy="connect-wallet-popup-keplr-button">{{
                   $t('connect.connectUsingKeplr')
-                }}</span>
+                  }}</span>
               </p>
             </div>
           </div>
