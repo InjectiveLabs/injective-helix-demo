@@ -209,7 +209,8 @@ import ModalInsufficientInjForGas from '~/components/partials/modals/insufficien
 import { Modal } from '~/types'
 import {
   calculateAverageExecutionPriceFromOrderbook,
-  calculateWorstExecutionPriceFromOrderbook
+  calculateWorstExecutionPriceFromOrderbook,
+  calculateWorstExecutionPriceUsingQuoteAmountAndOrderbook
 } from '~/app/services/spot'
 import {
   FeeDiscountAccountInfo,
@@ -688,6 +689,27 @@ export default Vue.extend({
 
       return new BigNumberInBase(
         worstPrice.times(slippage).toFixed(market.priceDecimals)
+      )
+    },
+
+    worstPriceFromQuote(): BigNumberInBase {
+      const { orderType, slippage, sells, buys, hasAmount, market, amount } =
+        this
+
+      if (!market || !hasAmount) {
+        return ZERO_IN_BASE
+      }
+
+      const records = orderType === SpotOrderSide.Buy ? sells : buys
+
+      const worstPrice = calculateWorstExecutionPriceUsingQuoteAmountAndOrderbook({
+        records,
+        market,
+        amount
+      })
+
+      return new BigNumberInBase(
+        worstPrice.times(slippage).toFixed(market.quantityDecimals)
       )
     },
 
@@ -1529,11 +1551,15 @@ export default Vue.extend({
     },
 
     submitMarketOrder(): void {
-      const { orderType, market, worstPrice, amount } = this
+      const { orderType, market, amount } = this
 
       if (!market) {
         return
       }
+
+      const worstPrice = orderType === SpotOrderSide.Buy
+        ? this.worstPriceFromQuote
+        : this.worstPrice
 
       this.status.setLoading()
 
