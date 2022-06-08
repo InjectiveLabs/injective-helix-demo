@@ -25,11 +25,6 @@
             <Torus />
             <Ledger @wallet-ledger-connecting="handleLedgerConnectingWallet" />
             <Trezor @wallet-trezor-connecting="handleTrezorConnectingWallet" />
-            <li class="text-xs text-gray-300 px-4 py-2">
-              <p class="text-center leading-4">
-                * {{ $t('connect.trezorConnectionNote') }}
-              </p>
-            </li>
           </ul>
         </VHocLoading>
       </div>
