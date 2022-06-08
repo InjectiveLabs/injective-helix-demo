@@ -19,11 +19,11 @@
     <v-modal-add-margin />
     <portal to="portfolio-balance-sub-tabs">
       <div class="mt-3 flex items-center gap-6">
-        <v-tab-selector-item v-model="component" :option="components.balances">
+        <v-tab-selector-item v-model="component" :option="components.balances" data-cy="trading-account-balances-table-link">
           <span>{{ $t('portfolio.bankBalances') }}</span>
         </v-tab-selector-item>
         <div class="w-px h-4 bg-gray-500" />
-        <v-tab-selector-item v-model="component" :option="components.positions">
+        <v-tab-selector-item v-model="component" :option="components.positions" data-cy="trading-account-positions-table-link">
           <span>{{ $t('portfolio.positions') }}</span>
         </v-tab-selector-item>
       </div>

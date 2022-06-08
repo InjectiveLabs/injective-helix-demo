@@ -1,7 +1,7 @@
-import { ChainId } from '@injectivelabs/ts-types'
+import { EthereumChainId } from '@injectivelabs/ts-types'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import detectEthereumProvider from '@metamask/detect-provider'
-import { CHAIN_ID } from '../utils/constants'
+import { ETHEREUM_CHAIN_ID } from '../utils/constants'
 import { web3Strategy } from '../web3'
 
 export const isMetamaskInstalled = async (): Promise<boolean> => {
@@ -12,7 +12,7 @@ export const isMetamaskInstalled = async (): Promise<boolean> => {
 
 export const validateMetamask = async (
   address: string,
-  chainId: ChainId = CHAIN_ID
+  chainId: EthereumChainId = ETHEREUM_CHAIN_ID
 ) => {
   const addresses = await web3Strategy.getAddresses()
   const metamaskIsLocked = addresses.length === 0
@@ -39,7 +39,9 @@ export const validateMetamask = async (
   if (metamaskChainIdDoesntMatchTheActiveChainId) {
     throw new Web3Exception(
       `Please change your Metamask network to ${
-        chainId === ChainId.Kovan ? 'Kovan Test Network' : 'Ethereum Mainnet'
+        chainId === EthereumChainId.Kovan
+          ? 'Kovan Test Network'
+          : 'Ethereum Mainnet'
       }`
     )
   }

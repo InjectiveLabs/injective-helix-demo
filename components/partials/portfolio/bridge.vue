@@ -122,7 +122,12 @@ export default Vue.extend({
     isIbcTransfer(): boolean {
       const { origin, destination } = this
 
-      const cosmosNetworks = [...KeplrNetworks, BridgingNetwork.Terra]
+      const cosmosNetworks = [
+        ...KeplrNetworks,
+        BridgingNetwork.Terra,
+        BridgingNetwork.Axelar,
+        BridgingNetwork.Moonbeam
+      ]
 
       return (
         cosmosNetworks.includes(origin as BridgingNetwork) ||
