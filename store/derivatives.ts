@@ -17,12 +17,10 @@ import {
   zeroDerivativeMarketSummary,
   ZERO_IN_BASE,
   ZERO_TO_STRING,
-  Change
+  Change,
+  DerivativeOrderSide
 } from '@injectivelabs/ui-common'
-import {
-  DerivativeOrderSide,
-  DerivativeOrderState
-} from '@injectivelabs/derivatives-consumer'
+import { DerivativeOrderState } from '@injectivelabs/derivatives-consumer'
 import {
   streamOrderbook,
   streamTrades,
@@ -281,9 +279,8 @@ export const actions = actionTree(
       const marketsWithToken = await tokenService.getDerivativeMarketsWithToken(
         markets
       )
-      const uiMarkets = DerivativeTransformer.derivativeMarketsToUiSpotMarkets(
-        marketsWithToken
-      )
+      const uiMarkets =
+        DerivativeTransformer.derivativeMarketsToUiSpotMarkets(marketsWithToken)
 
       // Only include markets that we pre-defined to generate static routes for
       const uiMarketsWithToken = uiMarkets
@@ -549,11 +546,13 @@ export const actions = actionTree(
         return
       }
 
-      const updatedMarketsSummary = await derivativeService.fetchMarketsSummary()
-      const combinedMarketsSummary = DerivativeTransformer.marketsSummaryComparisons(
-        updatedMarketsSummary,
-        state.marketsSummary
-      )
+      const updatedMarketsSummary =
+        await derivativeService.fetchMarketsSummary()
+      const combinedMarketsSummary =
+        DerivativeTransformer.marketsSummaryComparisons(
+          updatedMarketsSummary,
+          state.marketsSummary
+        )
 
       if (
         !combinedMarketsSummary ||
@@ -610,11 +609,8 @@ export const actions = actionTree(
 
     async cancelOrder(_, order: UiDerivativeLimitOrder) {
       const { subaccount } = this.app.$accessor.account
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
 
       if (!isUserWalletConnected || !subaccount) {
         return
@@ -634,11 +630,8 @@ export const actions = actionTree(
 
     async batchCancelOrder(_, orders: UiDerivativeLimitOrder[]) {
       const { subaccount } = this.app.$accessor.account
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
 
       if (!isUserWalletConnected || !subaccount) {
         return
@@ -677,11 +670,8 @@ export const actions = actionTree(
       const { subaccount } = this.app.$accessor.account
       const { market } = this.app.$accessor.derivatives
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
 
       if (!isUserWalletConnected || !subaccount || !market) {
         return
@@ -729,11 +719,8 @@ export const actions = actionTree(
       const { subaccount } = this.app.$accessor.account
       const { market } = this.app.$accessor.derivatives
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
 
       if (!isUserWalletConnected || !subaccount || !market) {
         return

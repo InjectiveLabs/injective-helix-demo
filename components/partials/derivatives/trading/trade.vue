@@ -27,9 +27,7 @@
       <div class="bg-gray-900 rounded-2xl flex">
         <v-button-select
           v-model="orderType"
-          :option="
-            postOnly ? DerivativeOrderSide.BuyPO : DerivativeOrderSide.Buy
-          "
+          :option="DerivativeOrderSide.Buy"
           data-cy="trading-page-switch-to-side-buy-button"
           aqua
           class="w-1/2"
@@ -38,9 +36,7 @@
         </v-button-select>
         <v-button-select
           v-model="orderType"
-          :option="
-            postOnly ? DerivativeOrderSide.SellPO : DerivativeOrderSide.Sell
-          "
+          :option="DerivativeOrderSide.Sell"
           data-cy="trading-page-switch-to-side-sell-button"
           red
           class="w-1/2"
@@ -285,7 +281,6 @@ import { Modal } from '~/types'
 import {
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook,
-  calculateWorstPriceUsingQuoteAmountAndOrderBook,
   calculateLiquidationPrice,
   calculateMargin,
   getApproxAmountForMarketOrLimitOrder
@@ -338,8 +333,7 @@ export default Vue.extend({
       orderType: DerivativeOrderSide.Buy,
       detailsDrawerOpen: true,
       status: new Status(),
-      form: initialForm(),
-      worstPrice: ZERO_IN_BASE
+      form: initialForm()
     }
   },
 
@@ -368,8 +362,51 @@ export default Vue.extend({
       return this.$accessor.derivatives.marketSummary
     },
 
+    orderTypeToSubmit(): DerivativeOrderSide {
+      const { postOnly, orderTypeBuy } = this
+
+      switch (true) {
+        case postOnly && orderTypeBuy: {
+          return DerivativeOrderSide.BuyPO
+        }
+        case orderTypeBuy: {
+          return DerivativeOrderSide.Buy
+        }
+        case postOnly && !orderTypeBuy: {
+          return DerivativeOrderSide.SellPO
+        }
+        case !orderTypeBuy: {
+          return DerivativeOrderSide.Sell
+        }
+        default: {
+          return DerivativeOrderSide.Buy
+        }
+      }
+    },
+
     postOnly(): boolean {
       return this.form.postOnly
+    },
+
+    worstPrice(): BigNumberInBase {
+      const { orderTypeBuy, slippage, sells, buys, hasAmount, market, amount } =
+        this
+
+      if (!market || !hasAmount) {
+        return ZERO_IN_BASE
+      }
+
+      const records = orderTypeBuy ? sells : buys
+
+      const worstPrice = calculateWorstExecutionPriceFromOrderbook({
+        records,
+        amount,
+        market
+      })
+
+      return new BigNumberInBase(
+        worstPrice.times(slippage).toFixed(market.priceDecimals)
+      )
     },
 
     proportionalPercentage(): number {
@@ -1660,10 +1697,6 @@ export default Vue.extend({
           BigNumberInBase.ROUND_DOWN
         )
       }
-    },
-
-    postOnly() {
-      this.updateBaseAndQuoteFromPercentageAmount()
     }
   },
 
@@ -1696,55 +1729,6 @@ export default Vue.extend({
 
         this.updateQuoteAmountFromPercentage()
       })
-    },
-
-    calculateWorstPriceFromBase() {
-      const { orderTypeBuy, slippage, sells, buys, hasAmount, market, amount } =
-        this
-
-      if (!market || !hasAmount) {
-        return ZERO_IN_BASE
-      }
-
-      const records = orderTypeBuy ? sells : buys
-
-      const worstPrice = calculateWorstExecutionPriceFromOrderbook({
-        records,
-        amount,
-        market
-      })
-
-      this.worstPrice = new BigNumberInBase(
-        worstPrice.times(slippage).toFixed(market.priceDecimals)
-      )
-    },
-
-    calculateWorstPriceFromQuote() {
-      const {
-        orderTypeBuy,
-        slippage,
-        sells,
-        buys,
-        hasQuoteAmount,
-        market,
-        quoteAmount
-      } = this
-
-      if (!market || !hasQuoteAmount) {
-        return ZERO_IN_BASE
-      }
-
-      const records = orderTypeBuy ? sells : buys
-
-      const worstPrice = calculateWorstPriceUsingQuoteAmountAndOrderBook({
-        records,
-        market,
-        quoteAmount
-      })
-
-      this.worstPrice = new BigNumberInBase(
-        worstPrice.times(slippage).toFixed(market.priceDecimals)
-      )
     },
 
     setSlippageTolerance(slippage: string) {
@@ -1924,8 +1908,6 @@ export default Vue.extend({
         this.updatePriceFromLastTradedPrice()
       }
 
-      this.calculateWorstPriceFromBase()
-
       if (isMaxInput) {
         return
       }
@@ -1949,8 +1931,6 @@ export default Vue.extend({
       )
 
       this.resetBaseAmount()
-
-      this.calculateWorstPriceFromQuote()
 
       if (tradingTypeMarket) {
         return this.updateMarketBaseAmount()
@@ -2049,8 +2029,14 @@ export default Vue.extend({
     },
 
     submitLimitOrder() {
-      const { orderType, market, margin, price, orderTypeReduceOnly, amount } =
-        this
+      const {
+        orderTypeToSubmit,
+        market,
+        margin,
+        price,
+        orderTypeReduceOnly,
+        amount
+      } = this
 
       if (!market) {
         return
@@ -2062,7 +2048,7 @@ export default Vue.extend({
         .submitLimitOrder({
           price,
           margin,
-          orderType,
+          orderTypeToSubmit,
           reduceOnly: orderTypeReduceOnly,
           quantity: amount
         })

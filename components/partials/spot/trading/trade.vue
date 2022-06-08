@@ -27,7 +27,7 @@
       <div class="bg-gray-900 rounded-2xl flex">
         <v-button-select
           v-model="orderType"
-          :option="postOnly ? SpotOrderSide.BuyPO : SpotOrderSide.Buy"
+          :option="SpotOrderSide.Buy"
           aqua
           class="w-1/2"
           data-cy="trading-page-switch-to-side-buy-button"
@@ -40,7 +40,7 @@
         </v-button-select>
         <v-button-select
           v-model="orderType"
-          :option="postOnly ? SpotOrderSide.SellPO : SpotOrderSide.Sell"
+          :option="SpotOrderSide.Sell"
           red
           class="w-1/2"
           data-cy="trading-page-switch-to-side-sell-button"
@@ -253,9 +253,9 @@ import {
   UiPriceLevel,
   UiSpotMarketWithToken,
   UiSpotOrderbook,
-  UiSubaccount
+  UiSubaccount,
+  SpotOrderSide
 } from '@injectivelabs/ui-common'
-import { SpotOrderSide } from '@injectivelabs/spot-consumer'
 import OrderDetails from './order-details.vue'
 import OrderDetailsMarket from './order-details-market.vue'
 import AdvancedSettings from './advanced-settings.vue'
@@ -273,7 +273,6 @@ import { Modal } from '~/types'
 import {
   calculateAverageExecutionPriceFromFillableNotionalOnOrderBook,
   calculateAverageExecutionPriceFromOrderbook,
-  calculateWorstPriceUsingQuoteAmountAndOrderBook,
   calculateWorstExecutionPriceFromOrderbook,
   getApproxAmountForMarketOrLimitOrder
 } from '~/app/services/spot'
@@ -319,8 +318,7 @@ export default Vue.extend({
       orderType: SpotOrderSide.Buy,
       detailsDrawerOpen: true,
       status: new Status(),
-      form: initialForm(),
-      worstPrice: ZERO_IN_BASE
+      form: initialForm()
     }
   },
 
@@ -343,6 +341,49 @@ export default Vue.extend({
 
     orderbook(): UiSpotOrderbook | undefined {
       return this.$accessor.spot.orderbook
+    },
+
+    orderTypeToSubmit(): SpotOrderSide {
+      const { postOnly, orderTypeBuy } = this
+
+      switch (true) {
+        case postOnly && orderTypeBuy: {
+          return SpotOrderSide.BuyPO
+        }
+        case orderTypeBuy: {
+          return SpotOrderSide.Buy
+        }
+        case postOnly && !orderTypeBuy: {
+          return SpotOrderSide.SellPO
+        }
+        case !orderTypeBuy: {
+          return SpotOrderSide.Sell
+        }
+        default: {
+          return SpotOrderSide.Buy
+        }
+      }
+    },
+
+    worstPrice(): BigNumberInBase {
+      const { orderTypeBuy, slippage, sells, buys, hasAmount, market, amount } =
+        this
+
+      if (!market || !hasAmount) {
+        return ZERO_IN_BASE
+      }
+
+      const records = orderTypeBuy ? sells : buys
+
+      const worstPrice = calculateWorstExecutionPriceFromOrderbook({
+        records,
+        amount,
+        market
+      })
+
+      return new BigNumberInBase(
+        worstPrice.times(slippage).toFixed(market.priceDecimals)
+      )
     },
 
     subaccount(): UiSubaccount | undefined {
@@ -1392,58 +1433,6 @@ export default Vue.extend({
       })
     },
 
-    calculateWorstPriceFromBase() {
-      const { orderTypeBuy, slippage, sells, buys, hasAmount, market, amount } =
-        this
-
-      if (!market || !hasAmount) {
-        return ZERO_IN_BASE
-      }
-
-      const records = orderTypeBuy ? sells : buys
-
-      const worstPrice = calculateWorstExecutionPriceFromOrderbook({
-        records,
-        amount,
-        market
-      })
-
-      this.worstPrice = new BigNumberInBase(
-        worstPrice.times(slippage).toFixed(market.priceDecimals)
-      )
-    },
-
-    calculateWorstPriceFromQuote() {
-      const {
-        orderTypeBuy,
-        slippage,
-        sells,
-        buys,
-        hasQuoteAmount,
-        market,
-        feeRate,
-        quoteAmount
-      } = this
-
-      if (!market || !hasQuoteAmount) {
-        return ZERO_IN_BASE
-      }
-
-      const records = orderTypeBuy ? sells : buys
-
-      const worstPrice = calculateWorstPriceUsingQuoteAmountAndOrderBook({
-        records,
-        market,
-        quoteAmount,
-        feeRate,
-        orderTypeBuy
-      })
-
-      this.worstPrice = new BigNumberInBase(
-        worstPrice.times(slippage).toFixed(market.priceDecimals)
-      )
-    },
-
     setSlippageTolerance(slippage: string) {
       this.form.slippageTolerance = formatToAllowableDecimals(slippage, 2)
     },
@@ -1641,8 +1630,6 @@ export default Vue.extend({
         this.updatePriceFromLastTradedPrice()
       }
 
-      this.calculateWorstPriceFromBase()
-
       if (isProportionalQuantityUpdate) {
         return
       }
@@ -1667,8 +1654,6 @@ export default Vue.extend({
       if (!hasPrice) {
         this.updatePriceFromLastTradedPrice()
       }
-
-      this.calculateWorstPriceFromQuote()
 
       this.updateBaseAmount()
     },
@@ -1722,7 +1707,7 @@ export default Vue.extend({
     },
 
     submitLimitOrder() {
-      const { orderType, market, price, amount } = this
+      const { orderTypeToSubmit, market, price, amount } = this
 
       if (!market) {
         return
@@ -1734,7 +1719,7 @@ export default Vue.extend({
         .submitLimitOrder({
           price,
           quantity: amount,
-          orderType
+          orderTypeToSubmit
         })
         .then(() => {
           this.$toast.success(this.$t('trade.order_placed'))
