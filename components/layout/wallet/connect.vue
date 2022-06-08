@@ -24,10 +24,7 @@
             <Keplr />
             <Torus />
             <Ledger @wallet-ledger-connecting="handleLedgerConnectingWallet" />
-            <Trezor
-              v-if="isStagingOrTestnetOrDevnet"
-              @wallet-trezor-connecting="handleTrezorConnectingWallet"
-            />
+            <Trezor @wallet-trezor-connecting="handleTrezorConnectingWallet" />
             <li class="text-xs text-gray-300 px-4 py-2">
               <p class="text-center leading-4">
                 * {{ $t('connect.trezorConnectionNote') }}
