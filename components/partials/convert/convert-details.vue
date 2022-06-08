@@ -254,14 +254,7 @@ export default Vue.extend({
     },
 
     executionPrice(): BigNumberInBase {
-      const {
-        orderType,
-        sells,
-        buys,
-        hasAmount,
-        market,
-        amount
-      } = this
+      const { orderType, sells, buys, hasAmount, market, amount } = this
 
       const records = orderType === SpotOrderSide.Buy ? sells : buys
 
@@ -279,14 +272,7 @@ export default Vue.extend({
     },
 
     averagePriceWithoutSlippage(): BigNumberInBase {
-      const {
-        orderType,
-        sells,
-        buys,
-        hasAmount,
-        market,
-        amount
-      } = this
+      const { orderType, sells, buys, hasAmount, market, amount } = this
 
       const records = orderType === SpotOrderSide.Buy ? sells : buys
 
@@ -300,21 +286,12 @@ export default Vue.extend({
         market
       })
 
-      return new BigNumberInBase(
-        averagePrice.toFixed(market.priceDecimals)
-      )
+      return new BigNumberInBase(averagePrice.toFixed(market.priceDecimals))
     },
 
     worstPrice(): BigNumberInBase {
-      const {
-        orderType,
-        slippage,
-        sells,
-        buys,
-        hasAmount,
-        market,
-        amount
-      } = this
+      const { orderType, slippage, sells, buys, hasAmount, market, amount } =
+        this
 
       if (!market || !hasAmount) {
         return ZERO_IN_BASE
@@ -356,8 +333,16 @@ export default Vue.extend({
         : ONE_IN_BASE.minus(slippageTolerance)
 
       return orderTypeBuy
-        ? amount.dividedBy(executionPrice.times(slippageFactor).times(ONE_IN_BASE.plus(feeRate)))
-        : amount.times(executionPrice.times(slippageFactor).times(ONE_IN_BASE.minus(feeRate)))
+        ? amount.dividedBy(
+            executionPrice
+              .times(slippageFactor)
+              .times(ONE_IN_BASE.plus(feeRate))
+          )
+        : amount.times(
+            executionPrice
+              .times(slippageFactor)
+              .times(ONE_IN_BASE.minus(feeRate))
+          )
     },
 
     minimumReceivedToFormat(): string {

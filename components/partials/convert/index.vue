@@ -291,7 +291,11 @@ export default Vue.extend({
     },
 
     ctaButtonLabel(): string {
-      const { availableBalanceError, amountTooBigToFillError, notEnoughOrdersToFillFromError } = this
+      const {
+        availableBalanceError,
+        amountTooBigToFillError,
+        notEnoughOrdersToFillFromError
+      } = this
 
       if (amountTooBigToFillError || notEnoughOrdersToFillFromError) {
         return this.$t('trade.convert.insufficient_liquidity')
@@ -702,11 +706,12 @@ export default Vue.extend({
 
       const records = orderType === SpotOrderSide.Buy ? sells : buys
 
-      const worstPrice = calculateWorstExecutionPriceUsingQuoteAmountAndOrderbook({
-        records,
-        market,
-        amount
-      })
+      const worstPrice =
+        calculateWorstExecutionPriceUsingQuoteAmountAndOrderbook({
+          records,
+          market,
+          amount
+        })
 
       return new BigNumberInBase(
         worstPrice.times(slippage).toFixed(market.quantityDecimals)
@@ -1553,9 +1558,10 @@ export default Vue.extend({
         return
       }
 
-      const worstPrice = orderType === SpotOrderSide.Buy
-        ? this.worstPriceFromQuote
-        : this.worstPrice
+      const worstPrice =
+        orderType === SpotOrderSide.Buy
+          ? this.worstPriceFromQuote
+          : this.worstPrice
 
       this.status.setLoading()
 
