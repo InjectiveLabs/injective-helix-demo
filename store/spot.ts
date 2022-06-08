@@ -604,6 +604,7 @@ export const actions = actionTree(
 
       await spotActionService.submitLimitOrder({
         address,
+        // @ts-ignore
         orderType,
         injectiveAddress,
         price: spotPriceToChainPriceToFixed({
@@ -648,6 +649,7 @@ export const actions = actionTree(
 
       await spotActionService.submitMarketOrder({
         address,
+        // @ts-ignore
         orderType,
         injectiveAddress,
         price: spotPriceToChainPriceToFixed({

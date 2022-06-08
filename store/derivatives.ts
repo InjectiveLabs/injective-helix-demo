@@ -682,6 +682,7 @@ export const actions = actionTree(
 
       await derivativeActionService.submitLimitOrder({
         reduceOnly,
+        // @ts-ignore
         orderType,
         injectiveAddress,
         address,
@@ -731,6 +732,7 @@ export const actions = actionTree(
 
       await derivativeActionService.submitMarketOrder({
         reduceOnly,
+        // @ts-ignore
         orderType,
         injectiveAddress,
         address,
