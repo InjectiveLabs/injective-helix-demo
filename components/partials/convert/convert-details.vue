@@ -104,8 +104,13 @@ export default Vue.extend({
       required: true
     },
 
-    form: {
-      type: Object,
+    fromAmount: {
+      type: BigNumberInBase,
+      required: true
+    },
+
+    toAmount: {
+      type: BigNumberInBase,
       required: true
     },
 
@@ -281,7 +286,15 @@ export default Vue.extend({
     },
 
     averagePriceWithoutSlippage(): BigNumberInBase {
-      const { orderType, sells, buys, hasAmount, market, form } = this
+      const {
+        orderType,
+        sells,
+        buys,
+        hasAmount,
+        market,
+        fromAmount,
+        toAmount
+      } = this
 
       const records = orderType === SpotOrderSide.Buy ? sells : buys
 
@@ -291,8 +304,12 @@ export default Vue.extend({
 
       const amount =
         orderType === SpotOrderSide.Buy
-          ? new BigNumberInBase(form.toAmount)
-          : new BigNumberInBase(form.amount)
+          ? new BigNumberInBase(toAmount)
+          : new BigNumberInBase(fromAmount)
+
+      if (amount.eq(ZERO_IN_BASE)) {
+        return ZERO_IN_BASE
+      }
 
       const averagePrice = calculateAverageExecutionPriceFromOrderbook({
         records,
