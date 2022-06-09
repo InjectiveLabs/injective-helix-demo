@@ -922,7 +922,9 @@ export default Vue.extend({
         return undefined
       }
 
-      if (NUMBER_REGEX.test(form.amount)) {
+      const amount = this.sanitizeAmount(form.amount)
+
+      if (NUMBER_REGEX.test(amount)) {
         return undefined
       }
 

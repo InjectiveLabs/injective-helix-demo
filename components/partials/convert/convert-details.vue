@@ -149,7 +149,7 @@ export default Vue.extend({
     rate(): BigNumberInBase {
       const { averagePriceWithoutSlippage } = this
 
-      return averagePriceWithoutSlippage.times(ONE_IN_BASE)
+      return averagePriceWithoutSlippage
     },
 
     rateToFormat(): string {
@@ -162,8 +162,6 @@ export default Vue.extend({
 
     feeRate(): BigNumberInBase {
       const { takerFeeRate, takerFeeRateDiscount } = this
-
-      const ONE_IN_BASE = new BigNumberInBase(1)
 
       return takerFeeRate.times(ONE_IN_BASE.minus(takerFeeRateDiscount))
     },
@@ -283,13 +281,18 @@ export default Vue.extend({
     },
 
     averagePriceWithoutSlippage(): BigNumberInBase {
-      const { orderType, sells, buys, hasAmount, market, amount } = this
+      const { orderType, sells, buys, hasAmount, market, form } = this
 
       const records = orderType === SpotOrderSide.Buy ? sells : buys
 
       if (!market || !hasAmount || records.length === 0) {
         return ZERO_IN_BASE
       }
+
+      const amount =
+        orderType === SpotOrderSide.Buy
+          ? new BigNumberInBase(form.toAmount)
+          : new BigNumberInBase(form.amount)
 
       const averagePrice = calculateAverageExecutionPriceFromOrderbook({
         records,
