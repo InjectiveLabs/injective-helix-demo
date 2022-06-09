@@ -695,9 +695,7 @@ export default Vue.extend({
       })
 
       return new BigNumberInBase(
-        worstPrice
-          .times(slippage)
-          .toFixed(market.priceDecimals)
+        worstPrice.times(slippage).toFixed(market.priceDecimals)
       )
     },
 
@@ -719,9 +717,7 @@ export default Vue.extend({
         })
 
       return new BigNumberInBase(
-        worstPrice
-          .times(slippage)
-          .toFixed(market.quantityDecimals)
+        worstPrice.times(slippage).toFixed(market.quantityDecimals)
       )
     },
 
@@ -1567,9 +1563,10 @@ export default Vue.extend({
 
       this.status.setLoading()
 
-      const decimalPlaces = orderType === SpotOrderSide.Buy
-        ? market.priceDecimals
-        : market.quantityDecimals
+      const decimalPlaces =
+        orderType === SpotOrderSide.Buy
+          ? market.priceDecimals
+          : market.quantityDecimals
 
       const price =
         orderType === SpotOrderSide.Buy
@@ -1586,7 +1583,10 @@ export default Vue.extend({
         console.log('quantity:', quantity.toNumber())
         console.log('fee:', fee.toNumber())
         console.log('price:', price.toFixed(decimalPlaces))
-        console.log('price (without fee):', price.minus(fee).toFixed(decimalPlaces))
+        console.log(
+          'price (without fee):',
+          price.minus(fee).toFixed(decimalPlaces)
+        )
         /* eslint-enable */
       }
 
@@ -1893,10 +1893,12 @@ export default Vue.extend({
 
         const priceAsBigNumber = new BigNumberInBase(price)
 
-        const amount = new BigNumberInBase(this.form.amount || 0)
+        const amount = this.sanitizeAmount(this.form.amount)
+
+        const quantity = new BigNumberInBase(amount || 0)
 
         this.fromUsdPrice = priceAsBigNumber
-          .times(amount)
+          .times(quantity)
           .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
       }
 
@@ -1907,10 +1909,12 @@ export default Vue.extend({
 
         const priceAsBigNumber = new BigNumberInBase(price)
 
-        const amount = new BigNumberInBase(this.form.toAmount || 0)
+        const amount = this.sanitizeAmount(this.form.toAmount)
+
+        const quantity = new BigNumberInBase(amount || 0)
 
         this.toUsdPrice = priceAsBigNumber
-          .times(amount)
+          .times(quantity)
           .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
       }
 
