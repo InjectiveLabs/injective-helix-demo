@@ -166,6 +166,7 @@ export default Vue.extend({
       }
       return false
     },
+
     hasError(): boolean {
       const { slippageError } = this
       if (slippageError) {
@@ -173,6 +174,7 @@ export default Vue.extend({
       }
       return false
     },
+
     wrapperClasses(): string {
       const { hasWarning, hasError } = this
       if (hasWarning) {
@@ -183,6 +185,7 @@ export default Vue.extend({
       }
       return 'border-transparent border shadow-none'
     },
+
     inputClasses(): string {
       const { hasWarning, hasError } = this
       if (hasWarning || hasError) {
@@ -190,6 +193,7 @@ export default Vue.extend({
       }
       return 'text-right px-1'
     },
+
     showSlippageAsSelectableOrDefaultForMarket(): boolean {
       const { slippageSelection, tradingTypeMarket } = this
       return (
@@ -198,6 +202,7 @@ export default Vue.extend({
         tradingTypeMarket
       )
     },
+
     showSlippageInputFieldForMarket(): boolean {
       const { slippageSelection, tradingTypeMarket } = this
       return (

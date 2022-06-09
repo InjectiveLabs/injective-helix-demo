@@ -1,4 +1,5 @@
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
+import { getExactDecimalsFromNumber } from '~/app/utils/helpers'
 
 BigNumber.config({
   FORMAT: {
@@ -85,26 +86,23 @@ export const formatToAllowableDecimals = (
   value: string | number,
   allowableDecimals: number
 ): string => {
-  const valueAsString = typeof value === 'number' ? value.toString() : value
+  const decimalPlacesInValue = new BigNumberInBase(
+    getExactDecimalsFromNumber(value)
+  )
+  const valueToString = new BigNumberInBase(value).toFixed()
 
-  const hasFractional = valueAsString.includes('.')
+  if (decimalPlacesInValue.gt(0)) {
+    const decimalMoreThanAllowance = decimalPlacesInValue.gte(allowableDecimals)
 
-  if (hasFractional) {
-    const fractionalLength = valueAsString.split('.')[1].length
-
-    const fractionalGreaterThanAllowable = new BigNumberInBase(
-      fractionalLength
-    ).gte(allowableDecimals)
-
-    return fractionalGreaterThanAllowable
-      ? new BigNumberInBase(valueAsString).toFixed(
+    return decimalMoreThanAllowance
+      ? new BigNumberInBase(valueToString).toFixed(
           allowableDecimals,
           BigNumberInBase.ROUND_DOWN
         )
-      : valueAsString
+      : valueToString
   }
 
-  return new BigNumberInBase(valueAsString).toFixed(
+  return new BigNumberInBase(valueToString).toFixed(
     0,
     BigNumberInBase.ROUND_DOWN
   )

@@ -158,7 +158,7 @@ export const calculateAverageExecutionPriceFromFillableNotionalOnOrderBook = ({
       )
 
       return {
-        sum: remainNotionalToFill
+        sum: remainNotionalToFill.gt(0)
           ? sum.plus(orderPrice.times(additionalQuantity))
           : sum,
         amount: amount.plus(additionalQuantity),
@@ -214,6 +214,32 @@ export const computeOrderbookSummary = (
     quantity: summary.quantity.plus(new BigNumberInWei(record.quantity)),
     total: summary.total.plus(new BigNumberInBase(record.total || 0))
   }
+}
+
+export const getApproxAmountForSellOrder = ({
+  buys,
+  balance,
+  market,
+  percentageToNumber
+}: {
+  buys: UiPriceLevel[]
+  balance: BigNumberInBase
+  market: UiSpotMarketWithToken
+  percentageToNumber: BigNumberInBase
+}) => {
+  const totalFillableAmount = buys.reduce((totalAmount, { quantity }) => {
+    return totalAmount.plus(
+      new BigNumberInWei(quantity).toBase(market.baseToken.decimals)
+    )
+  }, ZERO_IN_BASE)
+
+  const totalBalance = new BigNumberInBase(balance).times(percentageToNumber)
+
+  const amount = totalFillableAmount.gte(totalBalance)
+    ? totalBalance
+    : totalFillableAmount
+
+  return amount.toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
 }
 
 export const getApproxAmountForMarketOrLimitOrder = ({
