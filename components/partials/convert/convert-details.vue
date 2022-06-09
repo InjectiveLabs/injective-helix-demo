@@ -302,7 +302,9 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const amount = orderType === SpotOrderSide.Buy ? toAmount : fromAmount
+      const amount = new BigNumberInBase(
+        orderType === SpotOrderSide.Buy ? toAmount : fromAmount
+      )
 
       if (amount.eq(ZERO_IN_BASE)) {
         return ZERO_IN_BASE
