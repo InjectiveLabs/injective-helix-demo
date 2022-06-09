@@ -229,7 +229,7 @@ export const getQuoteFromPercentageQuantityNonReduceOnly = ({
   return notionalBalanceWithFeesAndLeverage.toString()
 }
 
-export const calculateWorstPriceUsingQuoteAmountAndOrderBook = ({
+export const calculateWorstPriceUsingQuoteAmountAndOrderBookNonSwap = ({
   records,
   market,
   quoteAmount
