@@ -166,6 +166,7 @@
         :slippage-warning="slippageWarning"
         :slippage-error="slippageError"
         :trading-type-market="tradingTypeMarket"
+        :post-only="form.postOnly"
         @set-slippage-tolerance="setSlippageTolerance"
         @set-post-only="setPostOnly"
       />
@@ -192,7 +193,7 @@
         amount,
         quoteAmount,
         detailsDrawerOpen,
-        postOnly,
+        postOnly: form.postOnly,
         feeRate,
         executionPrice
       }"
@@ -258,7 +259,7 @@ import {
 } from '@injectivelabs/ui-common'
 import OrderDetails from './order-details.vue'
 import OrderDetailsMarket from './order-details-market.vue'
-import AdvancedSettings from './advanced-settings.vue'
+import AdvancedSettings from '~/components/partials/common/trade/advanced-settings.vue'
 import {
   DEFAULT_PRICE_WARNING_DEVIATION,
   DEFAULT_MARKET_PRICE_WARNING_DEVIATION,
@@ -274,7 +275,8 @@ import {
   calculateAverageExecutionPriceFromFillableNotionalOnOrderBook,
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook,
-  getApproxAmountForMarketOrLimitOrder
+  getApproxAmountForMarketOrLimitOrder,
+  getApproxAmountForSellOrder
 } from '~/app/services/spot'
 import {
   FeeDiscountAccountInfo,
@@ -344,7 +346,10 @@ export default Vue.extend({
     },
 
     orderTypeToSubmit(): SpotOrderSide {
-      const { postOnly, orderTypeBuy } = this
+      const {
+        form: { postOnly },
+        orderTypeBuy
+      } = this
 
       switch (true) {
         case postOnly && orderTypeBuy: {
@@ -392,10 +397,6 @@ export default Vue.extend({
 
     lastTradedPrice(): BigNumberInBase {
       return this.$accessor.spot.lastTradedPrice
-    },
-
-    proportionalPercentage(): number {
-      return this.form.proportionalPercentage
     },
 
     feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
@@ -457,7 +458,7 @@ export default Vue.extend({
         baseAvailableBalance,
         quoteAvailableBalance,
         executionPrice,
-        proportionalPercentage,
+        form: { proportionalPercentage },
         feeRate
       } = this
 
@@ -474,24 +475,12 @@ export default Vue.extend({
       }
 
       if (!orderTypeBuy) {
-        const totalFillableAmount = buys.reduce((totalAmount, { quantity }) => {
-          return totalAmount.plus(
-            new BigNumberInWei(quantity).toBase(market.baseToken.decimals)
-          )
-        }, ZERO_IN_BASE)
-
-        const totalBalance = new BigNumberInBase(balance).times(
+        return getApproxAmountForSellOrder({
+          buys,
+          balance,
+          market,
           percentageToNumber
-        )
-
-        const amount = totalFillableAmount.gte(totalBalance)
-          ? totalBalance
-          : totalFillableAmount
-
-        return amount.toFixed(
-          market.quantityDecimals,
-          BigNumberInBase.ROUND_FLOOR
-        )
+        })
       }
 
       return getApproxAmountForMarketOrLimitOrder({
@@ -665,7 +654,11 @@ export default Vue.extend({
     },
 
     feeRate(): BigNumberInBase {
-      const { postOnly, takerFeeRate, makerFeeRate } = this
+      const {
+        form: { postOnly },
+        takerFeeRate,
+        makerFeeRate
+      } = this
 
       if (!postOnly) {
         return takerFeeRate
@@ -676,10 +669,6 @@ export default Vue.extend({
 
     price(): BigNumberInBase {
       return new BigNumberInBase(this.form.price)
-    },
-
-    postOnly(): boolean {
-      return this.form.postOnly
     },
 
     hasPrice(): boolean {
@@ -1139,19 +1128,7 @@ export default Vue.extend({
         slippageError
       } = this
 
-      if (priceError) {
-        return true
-      }
-
-      if (amountError) {
-        return true
-      }
-
-      if (slippageError) {
-        return true
-      }
-
-      if (!hasAmount) {
+      if (priceError || amountError || slippageError || !hasAmount) {
         return true
       }
 
@@ -1525,7 +1502,10 @@ export default Vue.extend({
     },
 
     updateQuoteAmountFromPercentage() {
-      const { orderTypeBuy, proportionalPercentage } = this
+      const {
+        orderTypeBuy,
+        form: { proportionalPercentage }
+      } = this
 
       const percentToNumber = new BigNumberInBase(proportionalPercentage).div(
         100

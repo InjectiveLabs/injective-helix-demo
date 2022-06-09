@@ -164,8 +164,8 @@
         :slippage-error="slippageError"
         :trading-type-market="tradingTypeMarket"
         :show-reduce-only="showReduceOnly"
-        :reduce-only="reduceOnly"
-        :post-only="postOnly"
+        :reduce-only="form.reduceOnly"
+        :post-only="form.postOnly"
         @set-slippage-tolerance="setSlippageTolerance"
         @set-post-only="setPostOnly"
         @set-reduce-only="setReduceOnly"
@@ -194,7 +194,7 @@
         amount,
         detailsDrawerOpen,
         executionPrice,
-        postOnly
+        postOnly: form.postOnly
       }"
       @drawer-toggle="onDetailsDrawerToggle"
     />
@@ -265,7 +265,7 @@ import OrderDetails from './order-details.vue'
 import OrderLeverage from './order-leverage.vue'
 import OrderLeverageSelect from './order-leverage-select.vue'
 import OrderDetailsMarket from './order-details-market.vue'
-import AdvancedSettings from '~/components/partials/derivatives/trading/advanced-settings.vue'
+import AdvancedSettings from '~/components/partials/common/trade/advanced-settings.vue'
 import {
   DEFAULT_PRICE_WARNING_DEVIATION,
   DEFAULT_MARKET_PRICE_WARNING_DEVIATION,
@@ -290,7 +290,10 @@ import {
   FeeDiscountAccountInfo
 } from '~/app/services/exchange'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
-import { calculateAverageExecutionPriceFromFillableNotionalOnOrderBook } from '~/app/services/derivatives/utils'
+import {
+  calculateAverageExecutionPriceFromFillableNotionalOnOrderBook,
+  getQuoteFromPercentageQuantityNonReduceOnly
+} from '~/app/services/derivatives/utils'
 
 interface TradeForm {
   reduceOnly: boolean
@@ -363,7 +366,10 @@ export default Vue.extend({
     },
 
     orderTypeToSubmit(): DerivativeOrderSide {
-      const { postOnly, orderTypeBuy } = this
+      const {
+        form: { postOnly },
+        orderTypeBuy
+      } = this
 
       switch (true) {
         case postOnly && orderTypeBuy: {
@@ -382,10 +388,6 @@ export default Vue.extend({
           return DerivativeOrderSide.Buy
         }
       }
-    },
-
-    postOnly(): boolean {
-      return this.form.postOnly
     },
 
     worstPrice(): BigNumberInBase {
@@ -407,10 +409,6 @@ export default Vue.extend({
       return new BigNumberInBase(
         worstPrice.times(slippage).toFixed(market.priceDecimals)
       )
-    },
-
-    proportionalPercentage(): number {
-      return this.form.proportionalPercentage
     },
 
     slippageWarning(): string {
@@ -518,14 +516,6 @@ export default Vue.extend({
       return new BigNumberInWei(balance.availableBalance || 0).toBase(
         market.quoteToken.decimals
       )
-    },
-
-    reduceOnly(): boolean {
-      const {
-        form: { reduceOnly }
-      } = this
-
-      return reduceOnly
     },
 
     buys(): UiPriceLevel[] {
@@ -652,7 +642,11 @@ export default Vue.extend({
     },
 
     feeRate(): BigNumberInBase {
-      const { postOnly, takerFeeRate, makerFeeRate } = this
+      const {
+        form: { postOnly },
+        takerFeeRate,
+        makerFeeRate
+      } = this
 
       if (!postOnly) {
         return takerFeeRate
@@ -1320,19 +1314,7 @@ export default Vue.extend({
         slippageError
       } = this
 
-      if (priceError) {
-        return true
-      }
-
-      if (amountError) {
-        return true
-      }
-
-      if (slippageError) {
-        return true
-      }
-
-      if (!hasAmount) {
+      if (priceError || amountError || slippageError || !hasAmount) {
         return true
       }
 
@@ -1432,7 +1414,7 @@ export default Vue.extend({
         orderTypeReduceOnly,
         availableMargin,
         executionPrice,
-        proportionalPercentage
+        form: { proportionalPercentage }
       } = this
 
       const percentageToNumber = new BigNumberInBase(
@@ -1742,7 +1724,7 @@ export default Vue.extend({
         maxReduceOnly,
         market,
         executionPrice,
-        proportionalPercentage
+        form: { proportionalPercentage }
       } = this
 
       const percentageToNumber = new BigNumberInBase(
@@ -1781,45 +1763,17 @@ export default Vue.extend({
         return
       }
 
-      const orderType = orderTypeBuy ? buys : sells
+      const records = orderTypeBuy ? buys : sells
 
-      const { totalFillableAmount, totalNotional } = orderType.reduce(
-        ({ totalFillableAmount, totalNotional }, { quantity, price }) => {
-          const orderPrice = new BigNumberInBase(price).toWei(
-            market.baseToken.decimals - market.quoteToken.decimals
-          )
-
-          const orderQuantity = new BigNumberInWei(quantity).toBase(
-            market.baseToken.decimals
-          )
-
-          return {
-            totalFillableAmount: totalFillableAmount.plus(orderQuantity),
-            totalNotional: totalNotional.plus(orderQuantity.times(orderPrice))
-          }
-        },
-        {
-          totalFillableAmount: ZERO_IN_BASE,
-          totalNotional: ZERO_IN_BASE
-        }
-      )
-
-      const baseBalance = new BigNumberInBase(availableMargin).times(
-        percentageToNumber
-      )
-
-      const notionalBalance = baseBalance.times(executionPrice)
-
-      if (baseBalance.gt(totalFillableAmount)) {
-        return (this.form.quoteAmount = totalNotional.toString())
-      }
-
-      const notionalBalanceWithFeesAndLeverage = notionalBalance.div(
-        new BigNumberInBase(1).plus(feeRate).times(leverage)
-      )
-
-      return (this.form.quoteAmount =
-        notionalBalanceWithFeesAndLeverage.toString())
+      this.form.quoteAmount = getQuoteFromPercentageQuantityNonReduceOnly({
+        percentageToNumber,
+        availableMargin,
+        market,
+        records,
+        executionPrice,
+        leverage,
+        feeRate
+      })
     },
 
     onDetailsDrawerToggle() {
