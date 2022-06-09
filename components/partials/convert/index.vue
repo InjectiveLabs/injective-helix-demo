@@ -203,7 +203,10 @@ import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  DEFAULT_MAX_SLIPPAGE
+  DEFAULT_MAX_SLIPPAGE,
+  IS_TESTNET,
+  IS_DEVNET,
+  IS_STAGING
 } from '~/app/utils/constants'
 import ModalInsufficientInjForGas from '~/components/partials/modals/insufficient-inj-for-gas.vue'
 import { Modal } from '~/types'
@@ -278,6 +281,10 @@ export default Vue.extend({
   },
 
   computed: {
+    isStagingOrTestnetOrDevnet(): boolean {
+      return IS_TESTNET || IS_DEVNET || IS_STAGING
+    },
+
     fromAmount(): string {
       const { amount } = this.form
 
@@ -688,7 +695,9 @@ export default Vue.extend({
       })
 
       return new BigNumberInBase(
-        worstPrice.times(slippage).toFixed(market.priceDecimals)
+        worstPrice
+          .times(slippage)
+          .toFixed(market.priceDecimals)
       )
     },
 
@@ -710,7 +719,9 @@ export default Vue.extend({
         })
 
       return new BigNumberInBase(
-        worstPrice.times(slippage).toFixed(market.quantityDecimals)
+        worstPrice
+          .times(slippage)
+          .toFixed(market.quantityDecimals)
       )
     },
 
@@ -1548,7 +1559,7 @@ export default Vue.extend({
     },
 
     submitMarketOrder(): void {
-      const { orderType, market, form } = this
+      const { orderType, market, form, fee } = this
 
       if (!market) {
         return
@@ -1556,20 +1567,33 @@ export default Vue.extend({
 
       this.status.setLoading()
 
+      const decimalPlaces = orderType === SpotOrderSide.Buy
+        ? market.priceDecimals
+        : market.quantityDecimals
+
       const price =
         orderType === SpotOrderSide.Buy
           ? this.worstPriceFromQuote
           : this.worstPrice
 
-      const quantity: BigNumberInBase =
+      const quantity =
         orderType === SpotOrderSide.Buy
           ? new BigNumberInBase(form.toAmount)
           : new BigNumberInBase(form.amount)
 
+      if (this.isStagingOrTestnetOrDevnet) {
+        /* eslint-disable */
+        console.log('quantity:', quantity.toNumber())
+        console.log('fee:', fee.toNumber())
+        console.log('price:', price.toFixed(decimalPlaces))
+        console.log('price (without fee):', price.minus(fee).toFixed(decimalPlaces))
+        /* eslint-enable */
+      }
+
       this.$accessor.spot
         .submitMarketOrder({
           quantity,
-          price,
+          price: price.toFixed(decimalPlaces),
           orderType
         })
         .then(() => {
