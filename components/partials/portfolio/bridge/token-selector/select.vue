@@ -201,6 +201,11 @@ export default Vue.extend({
       required: true
     },
 
+    balanceDecimalPlaces: {
+      type: Number,
+      default: UI_DEFAULT_DISPLAY_DECIMALS
+    },
+
     showBalance: {
       type: Boolean,
       default: false
@@ -285,12 +290,9 @@ export default Vue.extend({
     },
 
     balanceToFixed(): string {
-      const { balance } = this
+      const { balance, balanceDecimalPlaces } = this
 
-      return balance.toFixed(
-        UI_DEFAULT_DISPLAY_DECIMALS,
-        BIG_NUMBER_ROUND_DOWN_MODE
-      )
+      return balance.toFixed(balanceDecimalPlaces, BIG_NUMBER_ROUND_DOWN_MODE)
     },
 
     filteredOptions(): BankBalanceWithTokenAndBalanceInBase[] {

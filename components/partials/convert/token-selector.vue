@@ -20,7 +20,6 @@ import Vue, { PropType } from 'vue'
 import { Token } from '@injectivelabs/ui-common'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import Select from '@/components/partials/portfolio/bridge/token-selector/select.vue'
-import { UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -31,12 +30,6 @@ export default Vue.extend({
     balance: {
       type: Object as PropType<BigNumberInBase>,
       required: true
-    },
-
-    balanceDecimalPlaces: {
-      type: Number,
-      required: true,
-      default: UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
     },
 
     tokens: {
