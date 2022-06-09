@@ -1642,7 +1642,7 @@ export default Vue.extend({
 
       this.form.toAmount = quantity
 
-      if (quantity === '') {
+      if (quantity === '' || !market) {
         return
       }
 
@@ -1651,11 +1651,7 @@ export default Vue.extend({
       const executionPriceWithoutSlippage =
         this.calculateAverageExecutionPriceWithoutSlippage(quantityAsNumber)
 
-      if (
-        !toToken ||
-        !market ||
-        executionPriceWithoutSlippage.eq(ZERO_IN_BASE)
-      ) {
+      if (!toToken || executionPriceWithoutSlippage.eq(ZERO_IN_BASE)) {
         return
       }
 
@@ -1695,13 +1691,13 @@ export default Vue.extend({
     },
 
     onMaxInput(max: string): void {
-      const { orderTypeBuy, executionPrice, feeRate } = this
+      const { orderTypeBuy, executionPrice, feeRate, market } = this
 
       this.updatePrices()
 
       this.form.amount = max
 
-      if (executionPrice.eq(ZERO_IN_BASE)) {
+      if (executionPrice.eq(ZERO_IN_BASE) || !market) {
         return
       }
 
@@ -1715,9 +1711,11 @@ export default Vue.extend({
             executionPrice.times(ONE_IN_BASE.minus(feeRate))
           )
 
-      this.form.toAmount = toQuantity.toFormat(
-        UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-      )
+      const decimalPlaces = orderTypeBuy
+        ? market.priceDecimals
+        : market.quantityDecimals
+
+      this.form.toAmount = toQuantity.toFormat(decimalPlaces)
     },
 
     getBalance(token: Token): BigNumberInBase {
