@@ -202,11 +202,12 @@ export default {
       connect_wallet: 'Connect Wallet',
       insufficient_balance: 'Insufficient Balance',
       insufficient_balance_verbose:
-        'Insufficient {symbol} balance for this swap. Please top up your trading account.',
-      swap_success: 'Swapped Successfully',
-      swap_failed: 'Swap Failed',
-      swap: 'Swap',
-      swap_now: 'Swap Now',
+        'Insufficient {symbol} balance for this conversion. Please top up your trading account.',
+      insufficient_liquidity: 'Insufficient Liquidity',
+      convert_success: 'Converted Successfully',
+      convert_failed: 'Conversion Failed',
+      convert: 'Convert',
+      convert_now: 'Convert Now',
       to: 'To',
       from: 'From',
       rate: 'Rate',
@@ -216,6 +217,7 @@ export default {
       slippage_tolerance: 'Slippage Tolerance',
       slippage_tolerance_tooltip:
         'Your transaction will be automatically cancelled if the price changes unfavorably by more than this percentage.',
+      slippage_too_high: 'Slippage % can not be higher than 50%.',
       high_slippage_warning:
         'Your transaction might be executed at a less desirable price if slippage % is set too high.',
       low_slippage_warning:
