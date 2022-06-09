@@ -17,7 +17,7 @@
         {{ $t('trade.convert.fee') }} {{ feeRateToFormat }}%
       </span>
       <span v-if="hasAmount" class="text-sm">
-        ≈ {{ fee }} {{ market.quoteToken.symbol }}
+        ≈ {{ feeToFormat }} {{ market.quoteToken.symbol }}
       </span>
       <span v-else class="text-sm"> -- </span>
     </div>
@@ -167,6 +167,12 @@ export default Vue.extend({
       const { feeRate } = this
 
       return feeRate.times(100).toFormat()
+    },
+
+    feeToFormat(): string {
+      const { fee, market } = this
+
+      return fee.toFormat(market.quoteToken.decimals)
     },
 
     orderbook(): UiSpotOrderbook | undefined {
