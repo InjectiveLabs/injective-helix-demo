@@ -122,6 +122,7 @@
         :from-token="fromToken"
         :to-token="toToken"
         :amount="amount"
+        :form="form"
         :fee="fee"
         :market="market"
         :order-type="orderType"
@@ -1640,6 +1641,11 @@ export default Vue.extend({
       this.form.amount = quantity
 
       if (quantity === '') {
+        this.form.toAmount = ''
+        return
+      }
+
+      if (!market) {
         return
       }
 
@@ -1648,11 +1654,7 @@ export default Vue.extend({
       const executionPriceWithoutSlippage =
         this.calculateAverageExecutionPriceWithoutSlippage(quantityAsNumber)
 
-      if (
-        !fromToken ||
-        !market ||
-        executionPriceWithoutSlippage.eq(ZERO_IN_BASE)
-      ) {
+      if (!fromToken || executionPriceWithoutSlippage.eq(ZERO_IN_BASE)) {
         return
       }
 
@@ -1678,7 +1680,12 @@ export default Vue.extend({
 
       this.form.toAmount = quantity
 
-      if (quantity === '' || !market) {
+      if (quantity === '') {
+        this.form.amount = ''
+        return
+      }
+
+      if (!market) {
         return
       }
 

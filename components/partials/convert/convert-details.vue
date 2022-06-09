@@ -104,6 +104,11 @@ export default Vue.extend({
       required: true
     },
 
+    form: {
+      type: Object,
+      required: true
+    },
+
     pending: {
       type: Boolean,
       default: false
