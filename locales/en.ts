@@ -223,7 +223,7 @@ export default {
     rewards: 'Rewards',
     dashboard: 'Dashboard',
     trade: 'Trade',
-    swap: 'Swap',
+    convert: 'Convert',
     activities: 'Activities',
     activity: 'Activity',
     portfolio: 'Portfolio',

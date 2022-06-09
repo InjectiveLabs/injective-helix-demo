@@ -109,6 +109,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { debounce } from 'lodash'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import { DOMEvent } from '~/types'
 import {
   convertToNumericValue,
@@ -423,13 +424,18 @@ export default Vue.extend({
     },
 
     handleMaxSelector() {
-      const { maxSelector } = this
+      const { maxSelector, maxDecimals } = this
       const { max } = this.$attrs
+
+      const value: string = new BigNumberInBase(max).toFixed(
+        maxDecimals,
+        BigNumber.ROUND_DOWN
+      )
 
       if (max || maxSelector) {
         if (max) {
-          this.handleChangeFromString(max)
-          this.$emit('input-max', max)
+          this.handleChangeFromString(value)
+          this.$emit('input-max', value)
         } else {
           this.$emit('input-max')
         }

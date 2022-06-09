@@ -16,7 +16,7 @@
         :to="{ name: 'portfolio' }"
         class="text-primary-600"
       >
-        {{ $t('trade.swap.go_to_portfolio') }} &rarr;
+        {{ $t('trade.convert.go_to_portfolio') }} &rarr;
       </router-link>
       <a
         v-if="showHubLink"
@@ -24,7 +24,7 @@
         target="_blank"
         class="text-primary-600"
       >
-        {{ $t('trade.swap.go_to_hub') }} &rarr;
+        {{ $t('trade.convert.go_to_hub') }} &rarr;
       </a>
     </span>
     <span
@@ -37,7 +37,7 @@
         :to="{ name: 'portfolio' }"
         class="text-primary-600"
       >
-        {{ $t('trade.swap.go_to_portfolio') }} &rarr;
+        {{ $t('trade.convert.go_to_portfolio') }} &rarr;
       </router-link>
       <a
         v-if="showHubLink"
@@ -45,7 +45,7 @@
         target="_blank"
         class="text-primary-600"
       >
-        {{ $t('trade.swap.go_to_hub') }} &rarr;
+        {{ $t('trade.convert.go_to_hub') }} &rarr;
       </a>
     </span>
   </div>

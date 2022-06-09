@@ -76,6 +76,7 @@
           <TokenSelector
             :amount="form.amount"
             :value="form.token"
+            :max-decimals="form.token.decimals"
             :origin="origin"
             :destination="destination"
             :is-ibc-transfer="isIbcTransfer"
