@@ -78,7 +78,11 @@
             "
           />
           <span class="font-mono flex items-center">
-            {{ feeRateToDisplay }}
+            {{
+              postOnly
+                ? `${makerFeeRateToFormat}%`
+                : `${makerFeeRateToFormat}%/${takerFeeRateToFormat}%`
+            }}
           </span>
         </v-text-info>
 
@@ -388,16 +392,6 @@ export default Vue.extend({
       const number = takerFeeRate.times(100)
 
       return number.toFormat(getDecimalsFromNumber(number.toNumber()))
-    },
-
-    feeRateToDisplay(): string {
-      const { postOnly, makerFeeRateToFormat, takerFeeRateToFormat } = this
-
-      if (postOnly) {
-        return `${makerFeeRateToFormat}%`
-      }
-
-      return `${makerFeeRateToFormat}%/${takerFeeRateToFormat}%`
     },
 
     makerExpectedPtsToFormat(): string {

@@ -174,6 +174,61 @@ export const calculateWorstExecutionPriceFromOrderbook = ({
   return worstPrice
 }
 
+export const getQuoteFromPercentageQuantityNonReduceOnly = ({
+  percentageToNumber,
+  availableMargin,
+  market,
+  records,
+  executionPrice,
+  leverage,
+  feeRate
+}: {
+  percentageToNumber: BigNumberInBase
+  availableMargin: BigNumberInBase
+  market: UiDerivativeMarketWithToken
+  records: UiPriceLevel[]
+  executionPrice: BigNumberInBase
+  leverage: string
+  feeRate: BigNumberInBase
+}) => {
+  const { totalFillableAmount, totalNotional } = records.reduce(
+    ({ totalFillableAmount, totalNotional }, { quantity, price }) => {
+      const orderPrice = new BigNumberInBase(price).toWei(
+        market.baseToken.decimals - market.quoteToken.decimals
+      )
+
+      const orderQuantity = new BigNumberInWei(quantity).toBase(
+        market.baseToken.decimals
+      )
+
+      return {
+        totalFillableAmount: totalFillableAmount.plus(orderQuantity),
+        totalNotional: totalNotional.plus(orderQuantity.times(orderPrice))
+      }
+    },
+    {
+      totalFillableAmount: ZERO_IN_BASE,
+      totalNotional: ZERO_IN_BASE
+    }
+  )
+
+  const baseBalance = new BigNumberInBase(availableMargin).times(
+    percentageToNumber
+  )
+
+  const notionalBalance = baseBalance.times(executionPrice)
+
+  if (baseBalance.gt(totalFillableAmount)) {
+    return totalNotional.toString()
+  }
+
+  const notionalBalanceWithFeesAndLeverage = notionalBalance.div(
+    new BigNumberInBase(1).plus(feeRate).times(leverage)
+  )
+
+  return notionalBalanceWithFeesAndLeverage.toString()
+}
+
 export const calculateWorstPriceUsingQuoteAmountAndOrderBook = ({
   records,
   market,
@@ -266,7 +321,7 @@ export const calculateAverageExecutionPriceFromFillableNotionalOnOrderBook = ({
       )
 
       return {
-        sum: remainNotionalToFill
+        sum: remainNotionalToFill.gt(0)
           ? sum.plus(orderPrice.times(additionalQuantity))
           : sum,
         amount: amount.plus(additionalQuantity),
@@ -304,7 +359,7 @@ export const getApproxAmountForMarketOrLimitOrder = ({
 
   let totalQuantity = ZERO_IN_BASE
   let totalNotional = ZERO_IN_BASE
-  let total = ZERO_IN_BASE
+  let total
 
   for (const record of records) {
     const price = new BigNumberInBase(
