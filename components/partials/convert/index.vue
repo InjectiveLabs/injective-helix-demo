@@ -860,12 +860,24 @@ export default Vue.extend({
     },
 
     amountTooBigToFillError(): ConvertTradeError | undefined {
-      const { hasPrice, hasAmount, orderTypeBuy, sells, buys, amount, market } =
-        this
+      const {
+        hasPrice,
+        hasAmount,
+        orderTypeBuy,
+        sells,
+        buys,
+        market,
+        fromAmount,
+        toAmount
+      } = this
 
       if (!hasPrice || !hasAmount || !market) {
         return
       }
+
+      const quantity = orderTypeBuy
+        ? new BigNumberInBase(toAmount)
+        : new BigNumberInBase(fromAmount)
 
       const orders = orderTypeBuy ? sells : buys
 
@@ -875,7 +887,7 @@ export default Vue.extend({
         )
       }, ZERO_IN_BASE)
 
-      if (totalAmount.lt(amount)) {
+      if (totalAmount.lt(quantity)) {
         return {
           amount: this.$t('trade.not_enough_fillable_orders'),
           linkType: ConvertTradeErrorLinkType.None
