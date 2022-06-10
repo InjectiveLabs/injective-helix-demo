@@ -8,7 +8,7 @@
         {{ $t('trade.convert.fetching_price') }}...
       </span>
       <span v-else-if="hasAmount" class="text-sm">
-        1 {{ fromToken.symbol }} = {{ rateToFormat }} {{ toToken.symbol }}
+        1 {{ fromToken.symbol }} = {{ averagePriceWithoutSlippageToFormat }} {{ toToken.symbol }}
       </span>
       <span v-else class="text-sm"> -- </span>
     </div>
@@ -149,20 +149,6 @@ export default Vue.extend({
       const { amount, amountStep } = this
 
       return !amount.isNaN() && amount.gt(0) && amount.gte(amountStep)
-    },
-
-    rate(): BigNumberInBase {
-      const { averagePriceWithoutSlippage } = this
-
-      return averagePriceWithoutSlippage
-    },
-
-    rateToFormat(): string {
-      const { rate } = this
-
-      // return rate.toFormat(getDecimalsFromNumber(rate.toNumber()))
-
-      return rate.toFormat()
     },
 
     feeRate(): BigNumberInBase {
@@ -317,6 +303,12 @@ export default Vue.extend({
       })
 
       return new BigNumberInBase(averagePrice.toFixed(market.priceDecimals))
+    },
+
+    averagePriceWithoutSlippageToFormat(): string {
+      const { averagePriceWithoutSlippage } = this
+
+      return averagePriceWithoutSlippage.toFormat()
     },
 
     worstPrice(): BigNumberInBase {
