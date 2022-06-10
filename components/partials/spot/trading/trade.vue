@@ -486,7 +486,7 @@ export default Vue.extend({
       return getApproxAmountForMarketOrLimitOrder({
         market,
         balance,
-        percent: percentageToNumber.toNumber(),
+        percentageToNumber: percentageToNumber.toNumber(),
         records: orderTypeBuy ? sells : buys,
         feeRate,
         executionPrice

@@ -1435,7 +1435,7 @@ export default Vue.extend({
         market,
         margin: availableMargin,
         leverage: form.leverage,
-        percent: percentageToNumber.toNumber(),
+        percentageToNumber: percentageToNumber.toNumber(),
         records: orderTypeBuy ? sells : buys,
         feeRate,
         executionPrice

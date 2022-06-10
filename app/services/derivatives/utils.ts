@@ -343,19 +343,19 @@ export const getApproxAmountForMarketOrLimitOrder = ({
   margin,
   market,
   leverage = '1',
-  percent = 1,
+  percentageToNumber = 1,
   feeRate,
   executionPrice
 }: {
   records: UiPriceLevel[]
   margin: BigNumberInBase
-  percent?: number
+  percentageToNumber?: number
   leverage: string
   market: UiDerivativeMarketWithToken
   feeRate: BigNumberInBase
   executionPrice: BigNumberInBase
 }) => {
-  const availableMargin = new BigNumberInBase(margin).times(percent)
+  const availableMargin = new BigNumberInBase(margin).times(percentageToNumber)
 
   let totalQuantity = ZERO_IN_BASE
   let totalNotional = ZERO_IN_BASE

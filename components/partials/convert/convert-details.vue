@@ -155,8 +155,6 @@ export default Vue.extend({
     rateToFormat(): string {
       const { rate } = this
 
-      // return rate.toFormat(getDecimalsFromNumber(rate.toNumber()))
-
       return rate.toFormat()
     },
 
