@@ -8,7 +8,7 @@
         {{ $t('trade.convert.fetching_price') }}...
       </span>
       <span v-else-if="hasAmount" class="text-sm">
-        1 {{ fromToken.symbol }} = {{ rateToFormat }} {{ toToken.symbol }}
+        1 {{ fromToken.symbol }} = {{ averagePriceWithoutSlippageToFormat }} {{ toToken.symbol }}
       </span>
       <span v-else class="text-sm"> -- </span>
     </div>
@@ -104,8 +104,13 @@ export default Vue.extend({
       required: true
     },
 
-    form: {
-      type: Object,
+    fromAmount: {
+      type: BigNumberInBase,
+      required: true
+    },
+
+    toAmount: {
+      type: BigNumberInBase,
       required: true
     },
 
@@ -146,24 +151,8 @@ export default Vue.extend({
       return !amount.isNaN() && amount.gt(0) && amount.gte(amountStep)
     },
 
-    rate(): BigNumberInBase {
-      const { averagePriceWithoutSlippage } = this
-
-      return averagePriceWithoutSlippage.times(ONE_IN_BASE)
-    },
-
-    rateToFormat(): string {
-      const { rate } = this
-
-      // return rate.toFormat(getDecimalsFromNumber(rate.toNumber()))
-
-      return rate.toFormat()
-    },
-
     feeRate(): BigNumberInBase {
       const { takerFeeRate, takerFeeRateDiscount } = this
-
-      const ONE_IN_BASE = new BigNumberInBase(1)
 
       return takerFeeRate.times(ONE_IN_BASE.minus(takerFeeRateDiscount))
     },
@@ -283,11 +272,27 @@ export default Vue.extend({
     },
 
     averagePriceWithoutSlippage(): BigNumberInBase {
-      const { orderType, sells, buys, hasAmount, market, amount } = this
+      const {
+        orderType,
+        sells,
+        buys,
+        hasAmount,
+        market,
+        fromAmount,
+        toAmount
+      } = this
 
       const records = orderType === SpotOrderSide.Buy ? sells : buys
 
       if (!market || !hasAmount || records.length === 0) {
+        return ZERO_IN_BASE
+      }
+
+      const amount = new BigNumberInBase(
+        orderType === SpotOrderSide.Buy ? toAmount : fromAmount
+      )
+
+      if (amount.eq(ZERO_IN_BASE)) {
         return ZERO_IN_BASE
       }
 
@@ -298,6 +303,12 @@ export default Vue.extend({
       })
 
       return new BigNumberInBase(averagePrice.toFixed(market.priceDecimals))
+    },
+
+    averagePriceWithoutSlippageToFormat(): string {
+      const { averagePriceWithoutSlippage } = this
+
+      return averagePriceWithoutSlippage.toFormat()
     },
 
     worstPrice(): BigNumberInBase {

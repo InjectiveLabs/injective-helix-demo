@@ -122,7 +122,8 @@
         :from-token="fromToken"
         :to-token="toToken"
         :amount="amount"
-        :form="form"
+        :from-amount="fromAmount"
+        :to-amount="toAmount"
         :fee="fee"
         :market="market"
         :order-type="orderType"
@@ -922,7 +923,9 @@ export default Vue.extend({
         return undefined
       }
 
-      if (NUMBER_REGEX.test(form.amount)) {
+      const amount = this.sanitizeAmount(form.amount)
+
+      if (NUMBER_REGEX.test(amount)) {
         return undefined
       }
 
