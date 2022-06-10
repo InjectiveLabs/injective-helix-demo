@@ -56,13 +56,12 @@ import {
   cosmosSdkDecToBigNumber,
   FeeDiscountAccountInfo
 } from '@injectivelabs/sdk-ts'
+import { ONE_IN_BASE } from './types'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import {
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook
 } from '~/app/client/utils/spot'
-
-const ONE_IN_BASE = new BigNumberInBase(1)
 
 export default Vue.extend({
   props: {
@@ -88,11 +87,6 @@ export default Vue.extend({
 
     market: {
       type: Object,
-      required: true
-    },
-
-    calculateExecutionPriceForAmount: {
-      type: Function,
       required: true
     },
 
