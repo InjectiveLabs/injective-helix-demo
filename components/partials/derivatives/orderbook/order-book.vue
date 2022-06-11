@@ -10,7 +10,7 @@
           @mouseenter="autoScrollSellsLocked = true"
           @mouseleave="autoScrollSellsLocked = false"
         >
-          <v-record
+          <VRecord
             v-for="(sell, index) in sellsWithDepth"
             :key="`order-book-sell-${sell.aggregatedPrice || sell.price}`"
             :ref="`order-book-sell-${index}`"
@@ -24,7 +24,7 @@
             :record="sell"
             data-cy="orderbook-sell-list-item"
             @update:active-position="handleSellOrderHover"
-          ></v-record>
+          ></VRecord>
         </ul>
       </div>
     </div>
@@ -74,7 +74,7 @@
           @mouseenter="autoScrollBuysLocked = true"
           @mouseleave="autoScrollBuysLocked = false"
         >
-          <v-record
+          <VRecord
             v-for="(buy, index) in buysWithDepth"
             :key="`order-book-buy-${buy.aggregatedPrice || buy.price}`"
             :ref="`order-book-buy-${index}`"
@@ -88,7 +88,7 @@
             :record="buy"
             data-cy="orderbook-buy-list-item"
             @update:active-position="handleBuyOrderHover"
-          ></v-record>
+          ></VRecord>
         </ul>
       </div>
 
@@ -114,7 +114,7 @@ import {
   UiDerivativeOrderbook,
   UiDerivativeTrade,
   ZERO_IN_BASE
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { DerivativeOrderSide } from '@injectivelabs/derivatives-consumer'
 import Record from './record.vue'
@@ -128,7 +128,7 @@ import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 export default Vue.extend({
   components: {
     SummaryPopup,
-    'v-record': Record
+    VRecord: Record
   },
 
   props: {

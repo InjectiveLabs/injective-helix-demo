@@ -4,9 +4,9 @@
       <div class="container">
         <div class="w-full mx-auto xl:w-4/5">
           <v-overview class="mt-6" />
-          <v-panel :title="$t('Fee Discounts')" class="mt-12">
+          <VPanel :title="$t('Fee Discounts')" class="mt-12">
             <v-fees />
-          </v-panel>
+          </VPanel>
         </div>
       </div>
     </VHocLoading>

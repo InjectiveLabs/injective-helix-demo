@@ -24,7 +24,7 @@
       </div>
 
       <div>
-        <v-number
+        <VNumber
           v-if="total.abs().gt(UI_MINIMAL_AMOUNT)"
           data-cy="funding-payments-total-table-data"
           :class="{
@@ -38,7 +38,7 @@
           <span slot="addon" class="text-2xs text-gray-500">
             {{ market.quoteToken.symbol }}
           </span>
-        </v-number>
+        </VNumber>
         <span
           v-else
           :class="{
@@ -65,7 +65,7 @@ import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 import {
   UiDerivativeMarketWithToken,
   ZERO_IN_BASE
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import { FundingPayment } from '@injectivelabs/derivatives-consumer'
 import TableRow from '~/components/elements/table-row.vue'
 import {

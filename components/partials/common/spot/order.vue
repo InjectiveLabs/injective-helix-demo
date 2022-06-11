@@ -34,7 +34,7 @@
     </td>
 
     <td class="h-8 font-mono text-right">
-      <v-number
+      <VNumber
         data-cy="spot-order-price-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -43,7 +43,7 @@
       />
     </td>
     <td class="h-8 text-right font-mono">
-      <v-number
+      <VNumber
         data-cy="spot-order-quantity-table-data"
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
@@ -52,7 +52,7 @@
       />
     </td>
     <td class="h-8 text-right font-mono">
-      <v-number
+      <VNumber
         data-cy="spot-order-unfilled-quantity-table-data"
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
@@ -62,7 +62,7 @@
     </td>
     <td class="h-8">
       <div class="flex items-center justify-end">
-        <v-number
+        <VNumber
           data-cy="spot-order-filled-quantity-table-data"
           :decimals="
             market
@@ -77,7 +77,7 @@
       </div>
     </td>
     <td class="h-8 font-mono text-right">
-      <v-number
+      <VNumber
         data-cy="spot-order-total-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -87,7 +87,7 @@
         <span slot="addon" class="text-2xs text-gray-500">
           {{ market.quoteToken.symbol }}
         </span>
-      </v-number>
+      </VNumber>
     </td>
     <td class="h-8 relative">
       <div class="flex items-center justify-end">
@@ -98,7 +98,7 @@
         >
           {{ $t('common.view') }}
         </span>
-        <v-button
+        <VButton
           v-if="orderFillable"
           :status="status"
           data-cy="spot-order-cancel-link"
@@ -109,7 +109,7 @@
           >
             <IconBin />
           </div>
-        </v-button>
+        </VButton>
         <span v-else class="inline-block">&mdash;</span>
       </div>
     </td>
@@ -129,7 +129,7 @@ import {
   UiSpotLimitOrder,
   UiSpotMarketWithToken,
   ZERO_IN_BASE
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS

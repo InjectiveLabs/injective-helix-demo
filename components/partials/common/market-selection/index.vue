@@ -1,9 +1,9 @@
 <template>
-  <v-card class="relative h-full" md>
-    <VHocLoading :status="status" :show-loading="mappedMarkets.length === 0">
-      <v-markets-table :markets="mappedMarkets" />
-    </VHocLoading>
-  </v-card>
+  <VCard class="relative h-full" md>
+    <HocLoading :status="status" :show-loading="mappedMarkets.length === 0">
+      <MarketsTable :markets="mappedMarkets" />
+    </HocLoading>
+  </VCard>
 </template>
 
 <script lang="ts">
@@ -14,18 +14,18 @@ import {
   UiDerivativeMarketWithToken,
   UiSpotMarketSummary,
   UiSpotMarketWithToken
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import { UiMarketAndSummaryWithVolumeInUsd, TokenUsdPriceMap } from '~/types'
 import {
   ETH_COIN_GECKO_ID,
   USDT_COIN_GECKO_ID,
   UST_COIN_GECKO_ID
 } from '~/app/utils/constants'
-import VMarketsTable from '~/components/partials/common/market-selection/markets-table.vue'
+import MarketsTable from '~/components/partials/common/market-selection/markets-table.vue'
 
 export default Vue.extend({
   components: {
-    VMarketsTable
+    MarketsTable
   },
 
   data() {

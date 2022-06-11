@@ -2,45 +2,45 @@
   <div>
     <div class="flex items-center justify-between">
       <div class="flex items-center flex-wrap gap-5">
-        <v-market-type-selector
+        <MarketTypeSelector
           :type="MarketType.Favorite"
           :active="activeType === MarketType.Favorite"
           data-cy="markets-favorites-selector"
           @click="handleTypeClick"
         >
           <IconStar class="min-w-4 h-4 w-4" />
-        </v-market-type-selector>
+        </MarketTypeSelector>
 
-        <v-market-type-selector
+        <MarketTypeSelector
           :type="''"
           :active="activeType === ''"
           data-cy="markets-all-markets-selector"
           @click="handleTypeClick"
         >
           {{ $t('trade.all') }}
-        </v-market-type-selector>
+        </MarketTypeSelector>
 
-        <v-market-type-selector
+        <MarketTypeSelector
           :type="MarketType.Perpetual"
           :active="activeType === MarketType.Perpetual"
           data-cy="markets-perpetual-selector"
           @click="handleTypeClick"
         >
           {{ $t('trade.perpetual') }}
-        </v-market-type-selector>
+        </MarketTypeSelector>
 
-        <v-market-type-selector
+        <MarketTypeSelector
           :type="MarketType.Spot"
           :active="activeType === MarketType.Spot"
           data-cy="markets-spot-selector"
           @click="handleTypeClick"
         >
           {{ $t('trade.spots') }}
-        </v-market-type-selector>
+        </MarketTypeSelector>
       </div>
     </div>
     <div class="w-full mt-4">
-      <v-search
+      <VSearch
         dense
         name="search"
         class="w-full"
@@ -56,12 +56,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { MarketType } from '~/types/enums'
-import VMarketTypeSelector from '~/components/partials/common/market-selection/market-type-selector.vue'
+import MarketTypeSelector from '~/components/partials/common/market-selection/market-type-selector.vue'
 import VSearch from '~/components/inputs/search.vue'
 
 export default Vue.extend({
   components: {
-    VMarketTypeSelector,
+    MarketTypeSelector,
     VSearch
   },
 

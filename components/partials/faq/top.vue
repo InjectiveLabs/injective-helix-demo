@@ -2,7 +2,7 @@
   <div class="">
     <div class="text-center">
       <div class="flex flex-wrap justify-center">
-        <v-button-filter
+        <VButtonFilter
           :component="category"
           :option="FaqCategory.All"
           @select="handleSelectCategoryItem"
@@ -10,9 +10,9 @@
           <span>
             {{ $t(`faq-category-${FaqCategory.All}`) }}
           </span>
-        </v-button-filter>
-        <v-separator />
-        <v-button-filter
+        </VButtonFilter>
+        <VSeparator />
+        <VButtonFilter
           :component="category"
           :option="FaqCategory.General"
           @select="handleSelectCategoryItem"
@@ -20,11 +20,11 @@
           <span>
             {{ $t(`faq-category-${FaqCategory.General}`) }}
           </span>
-        </v-button-filter>
+        </VButtonFilter>
       </div>
     </div>
     <div>
-      <v-search
+      <VSearch
         name="search"
         class="max-w-sm mx-auto lg:max-w-none"
         :placeholder="$t('Search for FAQs')"

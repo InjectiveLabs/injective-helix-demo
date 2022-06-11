@@ -1,5 +1,5 @@
 <template>
-  <v-dropdown round hide-bottom-border>
+  <VDropdown round hide-bottom-border>
     <template slot="title">
       <div class="flex items-center justify-between bg-gray-900 flex-grow">
         <slot name="label" />
@@ -14,7 +14,7 @@
     </template>
 
     <div class="text-center cursor-pointer">
-      <selector-item
+      <SelectorItem
         v-for="(item, index) in list"
         :key="`type-selector-${index}`"
         :item="item"
@@ -22,9 +22,9 @@
         @click="handleClick"
       >
         {{ item.text }}
-      </selector-item>
+      </SelectorItem>
     </div>
-  </v-dropdown>
+  </VDropdown>
 </template>
 
 <script lang="ts">

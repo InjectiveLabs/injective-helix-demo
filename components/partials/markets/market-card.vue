@@ -79,7 +79,7 @@ import {
   UiSpotMarketSummary,
   UiSpotMarketWithToken,
   ZERO_IN_BASE
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import VPoweredBy from '~/components/partials/markets/powered-by.vue'
 import { Change, MarketRoute } from '~/types'

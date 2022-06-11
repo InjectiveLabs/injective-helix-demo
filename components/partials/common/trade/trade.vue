@@ -48,7 +48,7 @@
     </td>
 
     <td class="h-8 text-right font-mono">
-      <v-number
+      <VNumber
         data-cy="trade-history-price-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -58,7 +58,7 @@
     </td>
 
     <td class="h-8 text-right font-mono">
-      <v-number
+      <VNumber
         data-cy="trade-history-quantity-table-data"
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
@@ -67,7 +67,7 @@
       />
     </td>
     <td class="h-8 text-right font-mono">
-      <v-number
+      <VNumber
         use-number-decimals
         :number="fee"
         data-cy="trade-history-fee-table-data"
@@ -75,11 +75,11 @@
         <span slot="addon" class="text-2xs text-gray-500">
           {{ market.quoteToken.symbol }}
         </span>
-      </v-number>
+      </VNumber>
     </td>
 
     <td class="h-8 text-right font-mono">
-      <v-number
+      <VNumber
         data-cy="trade-history-total-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -89,7 +89,7 @@
         <span slot="addon" class="text-2xs text-gray-500">
           {{ market.quoteToken.symbol }}
         </span>
-      </v-number>
+      </VNumber>
     </td>
   </tr>
 </template>
@@ -105,7 +105,7 @@ import {
   UiSpotMarketWithToken,
   UiSpotTrade,
   ZERO_IN_BASE
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS

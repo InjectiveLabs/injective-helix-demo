@@ -1,3 +1,5 @@
+import { MsgSend } from '@injectivelabs/sdk-ts'
+import { AccountMetrics, UiBankTransformer } from '@injectivelabs/sdk-ui-ts'
 import {
   BankBalances,
   BankBalanceWithToken,
@@ -7,7 +9,7 @@ import {
 } from '@injectivelabs/ui-common'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
-import { bankActionService, bankService, tokenService } from '~/app/Services'
+import { bankApi, msgBroadcastClient, tokenService } from '~/app/Services'
 import { backupPromiseCall } from '~/app/utils/async'
 import { MIN_INJ_REQUIRED_FOR_GAS } from '~/app/utils/constants'
 
@@ -101,9 +103,9 @@ export const actions = actionTree(
         return
       }
 
-      const { bankBalances, ibcBankBalances } = await bankService.fetchBalances(
-        injectiveAddress
-      )
+      const { balances } = await bankApi.fetchBalances(injectiveAddress)
+      const { bankBalances, ibcBankBalances } =
+        UiBankTransformer.bankBalancesToUiBankBalances(balances)
 
       commit('setBalances', bankBalances)
       commit('setIbcBalances', ibcBankBalances)
@@ -116,17 +118,15 @@ export const actions = actionTree(
         return
       }
 
-      const { bankBalances, ibcBankBalances } = await bankService.fetchBalances(
-        injectiveAddress
-      )
+      const { balances } = await bankApi.fetchBalances(injectiveAddress)
+      const { bankBalances, ibcBankBalances } =
+        UiBankTransformer.bankBalancesToUiBankBalances(balances)
 
       commit('setBalances', bankBalances)
       commit('setIbcBalances', ibcBankBalances)
 
-      const {
-        bankBalancesWithToken,
-        ibcBankBalancesWithToken
-      } = await tokenService.getBalancesWithToken(bankBalances, ibcBankBalances)
+      const { bankBalancesWithToken, ibcBankBalancesWithToken } =
+        await tokenService.getBalancesWithToken(bankBalances, ibcBankBalances)
 
       commit('setBankErc20BalancesWithToken', bankBalancesWithToken)
       commit('setIbcBalancesWithToken', ibcBankBalancesWithToken)
@@ -148,11 +148,8 @@ export const actions = actionTree(
         token: Token
       }
     ) {
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
 
       if (!address || !isUserWalletConnected) {
         return
@@ -160,13 +157,20 @@ export const actions = actionTree(
 
       await this.app.$accessor.wallet.validate()
 
-      await bankActionService.transfer({
-        address,
-        injectiveAddress,
-        destination,
-        denom,
+      const message = MsgSend.fromJSON({
+        srcInjectiveAddress: injectiveAddress,
+        dstInjectiveAddress: destination,
+        amount: {
+          denom,
+          amount: amount.toWei(token.decimals).toFixed()
+        }
+      })
+
+      await msgBroadcastClient.broadcast({
+        bucket: AccountMetrics.Send,
+        msgs: message,
         memo,
-        amount: amount.toWei(token.decimals).toFixed()
+        address
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())

@@ -5,33 +5,33 @@ import {
   spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/utils'
 import { StreamOperation } from '@injectivelabs/ts-types'
+import { SpotOrderSide, SpotOrderState } from '@injectivelabs/sdk-ts'
 import {
   Change,
-  SpotTransformer,
-  zeroSpotMarketSummary,
-  ZERO_IN_BASE,
   UiSpotLimitOrder,
   UiSpotMarketSummary,
   UiSpotMarketWithToken,
   UiSpotOrderbook,
-  UiSpotTrade
-} from '@injectivelabs/ui-common'
-import { SpotOrderSide, SpotOrderState } from '@injectivelabs/spot-consumer'
+  UiSpotTrade,
+  UiSpotTransformer,
+  zeroSpotMarketSummary,
+  ZERO_IN_BASE
+} from '@injectivelabs/sdk-ui-ts'
 import {
   streamOrderbook,
   streamTrades,
   streamSubaccountOrders,
   streamSubaccountTrades
-} from '~/app/streams/spot'
+} from '~/app/client/streams/spot'
 import {
   FEE_RECIPIENT,
   ORDERBOOK_STREAMING_ENABLED
 } from '~/app/utils/constants'
 import {
-  spotActionService,
-  spotService,
-  tokenService,
-  tokenCoinGeckoService
+  exchangeRestDerivativesChronosApi,
+  exchangeSpotApi,
+  tokenPrice,
+  tokenService
 } from '~/app/Services'
 import { spot as allowedSpotMarkets } from '~/routes.config'
 
@@ -244,13 +244,12 @@ export const actions = actionTree(
     },
 
     async init({ commit }) {
-      const markets = await spotService.fetchMarkets()
+      const markets = await exchangeSpotApi.fetchMarkets()
       const marketsWithToken = await tokenService.getSpotMarketsWithToken(
         markets
       )
-      const uiMarkets = SpotTransformer.spotMarketsToUiSpotMarkets(
-        marketsWithToken
-      )
+      const uiMarkets =
+        UiSpotTransformer.spotMarketsToUiSpotMarkets(marketsWithToken)
 
       // Only include markets that we pre-defined to generate static routes for
       const uiMarketsWithToken = uiMarkets
@@ -266,7 +265,8 @@ export const actions = actionTree(
 
       commit('setMarkets', uiMarketsWithToken)
 
-      const marketsSummary = await spotService.fetchMarketsSummary()
+      const marketsSummary =
+        await exchangeRestDerivativesChronosApi.fetchMarketsSummary()
       const marketSummaryNotExists =
         !marketsSummary || (marketsSummary && marketsSummary.length === 0)
       const actualMarketsSummary = marketSummaryNotExists
@@ -292,11 +292,13 @@ export const actions = actionTree(
         throw new Error('Market not found. Please refresh the page.')
       }
 
+      const summary =
+        await exchangeRestDerivativesChronosApi.fetchMarketSummary(
+          market.marketId
+        )
+
       commit('setMarket', market)
-      commit(
-        'setMarketSummary',
-        await spotService.fetchMarketSummary(market.marketId)
-      )
+      commit('setMarketSummary', { marketId: market.marketId, ...summary })
 
       if (ORDERBOOK_STREAMING_ENABLED) {
         await this.app.$accessor.spot.streamOrderbook()
@@ -327,7 +329,10 @@ export const actions = actionTree(
         return
       }
 
-      commit('setOrderbook', await spotService.fetchOrderbook(market.marketId))
+      commit(
+        'setOrderbook',
+        await exchangeSpotApi.fetchOrderbook(market.marketId)
+      )
     },
 
     streamOrderbook({ commit, state }) {
@@ -453,7 +458,7 @@ export const actions = actionTree(
 
       commit(
         'setSubaccountOrders',
-        await spotService.fetchOrders({
+        await exchangeSpotApi.fetchOrders({
           subaccountId: subaccount.subaccountId
         })
       )
@@ -466,7 +471,10 @@ export const actions = actionTree(
         return
       }
 
-      commit('setOrderbook', await spotService.fetchOrderbook(market.marketId))
+      commit(
+        'setOrderbook',
+        await exchangeSpotApi.fetchOrderbook(market.marketId)
+      )
     },
 
     async fetchTrades({ state, commit }) {
@@ -478,7 +486,7 @@ export const actions = actionTree(
 
       commit(
         'setTrades',
-        await spotService.fetchTrades({ marketId: market.marketId })
+        await exchangeSpotApi.fetchTrades({ marketId: market.marketId })
       )
     },
 
@@ -490,7 +498,7 @@ export const actions = actionTree(
         return
       }
 
-      const trades = await spotService.fetchTrades({
+      const trades = await exchangeSpotApi.fetchTrades({
         subaccountId: subaccount.subaccountId
       })
 
@@ -504,11 +512,13 @@ export const actions = actionTree(
         return
       }
 
-      const updatedMarketsSummary = await spotService.fetchMarketsSummary()
-      const combinedMarketsSummary = SpotTransformer.marketsSummaryComparisons(
-        updatedMarketsSummary,
-        state.marketsSummary
-      )
+      const updatedMarketsSummary =
+        await exchangeRestDerivativesChronosApi.fetchMarketsSummary()
+      const combinedMarketsSummary =
+        UiSpotTransformer.spotMarketsSummaryComparisons(
+          updatedMarketsSummary,
+          state.marketsSummary
+        )
 
       if (
         !combinedMarketsSummary ||
@@ -535,11 +545,8 @@ export const actions = actionTree(
 
     async cancelOrder(_, order: UiSpotLimitOrder) {
       const { subaccount } = this.app.$accessor.account
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
 
       if (!isUserWalletConnected || !subaccount) {
         return
@@ -559,11 +566,8 @@ export const actions = actionTree(
 
     async batchCancelOrder(_, orders: UiSpotLimitOrder[]) {
       const { subaccount } = this.app.$accessor.account
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
 
       if (!isUserWalletConnected || !subaccount) {
         return
@@ -597,11 +601,8 @@ export const actions = actionTree(
     ) {
       const { subaccount } = this.app.$accessor.account
       const { market } = this.app.$accessor.spot
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
 
       if (!isUserWalletConnected || !subaccount || !market) {
@@ -644,11 +645,8 @@ export const actions = actionTree(
     ) {
       const { subaccount } = this.app.$accessor.account
       const { market } = this.app.$accessor.spot
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
 
       if (!isUserWalletConnected || !subaccount || !market) {
@@ -678,7 +676,7 @@ export const actions = actionTree(
     },
 
     async fetchUsdPrice(_, coinGeckoId: string) {
-      return await tokenCoinGeckoService.fetchUsdTokenPrice(coinGeckoId)
+      return await tokenPrice.fetchUsdTokenPrice(coinGeckoId)
     }
   }
 )

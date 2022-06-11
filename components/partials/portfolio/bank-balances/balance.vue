@@ -47,10 +47,7 @@
         {{ HIDDEN_BALANCE_DISPLAY }}
       </span>
       <span v-else class="flex items-end justify-end flex-col">
-        <span
-          class="leading-4"
-          data-cy="wallet-balance-value-usd-table-data"
-        >
+        <span class="leading-4" data-cy="wallet-balance-value-usd-table-data">
           {{ totalInUsdToString }} USD
         </span>
         <span
@@ -76,7 +73,9 @@
         class="cursor-pointer ml-6"
         data-cy="wallet-balance-withdraw-link"
         @click="handleWithdrawClick"
-        >{{ $t('common.withdraw') }}</span>
+      >
+        {{ $t('common.withdraw') }}
+      </span>
       <span
         class="cursor-pointer ml-6"
         data-cy="wallet-balance-transfer-link"
@@ -95,7 +94,7 @@ import {
   INJECTIVE_DENOM,
   ZERO_IN_BASE,
   BankBalanceWithTokenAndBalanceWithUsdBalance
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import TableRow from '~/components/elements/table-row.vue'
 import {
   HIDDEN_BALANCE_DISPLAY,

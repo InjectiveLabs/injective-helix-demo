@@ -26,7 +26,9 @@
           <span
             class="font-semibold text-gray-200"
             data-cy="markets-ticker-table-data"
-            >{{ market.ticker }}</span>
+          >
+            {{ market.ticker }}
+          </span>
           <span
             class="text-gray-500 tracking-wide mt-1 font-mono"
             data-cy="markets-volume_24h-table-data"
@@ -49,7 +51,7 @@ import {
   UiDerivativeMarketWithToken,
   UiSpotMarketSummary,
   UiSpotMarketWithToken
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import VLastTradedPriceAndChange from '~/components/partials/common/market/last-traded-price-and-change.vue'
 import { MarketRoute } from '~/types'
 import { getAbbreviatedVolume, getMarketRoute } from '~/app/utils/market'

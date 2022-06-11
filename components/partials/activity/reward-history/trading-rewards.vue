@@ -1,7 +1,7 @@
 <template>
-  <v-card lg>
-    <VHocLoading :status="status">
-      <v-card-table-wrap>
+  <VCard lg>
+    <HocLoading :status="status">
+      <VCardTableWrap>
         <div
           v-if="tradingRewards.length > 0"
           class="table-responsive min-h-orders max-h-lg mt-6"
@@ -10,7 +10,7 @@
             <thead></thead>
             <tbody v-if="isUserWalletConnected">
               <tr
-                is="v-trading-reward"
+                is="TradingReward"
                 v-for="(tradingReward, index) in tradingRewards"
                 :key="`trading-reward-${index}`"
                 :trading-reward="tradingReward"
@@ -18,26 +18,26 @@
             </tbody>
           </table>
         </div>
-        <v-empty-list
+        <EmptyList
           v-else
           :message="$t('rewardsHistory.emptyTradingRewards')"
           class="mt-6"
         />
-      </v-card-table-wrap>
-    </VHocLoading>
-  </v-card>
+      </VCardTableWrap>
+    </HocLoading>
+  </VCard>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { TradingReward } from '@injectivelabs/subaccount-consumer'
+import { TradingReward } from '@injectivelabs/sdk-ts'
 import VTradingReward from './trading-reward.vue'
 import { TradeSelectorType } from '~/types/enums'
 
 export default Vue.extend({
   components: {
-    VTradingReward
+    TradingReward: VTradingReward
   },
 
   data() {

@@ -12,7 +12,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { BIG_NUMBER_ROUND_DOWN_MODE, Token } from '@injectivelabs/ui-common'
+import { BIG_NUMBER_ROUND_DOWN_MODE, Token } from '@injectivelabs/sdk-ui-ts'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({

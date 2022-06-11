@@ -7,7 +7,7 @@
         'break-lg': !breakMd
       }"
     >
-      <v-user-wallet-connect-warning
+      <UserWalletConnectWarning
         v-if="!isUserWalletConnected"
         class="bg-gray-900"
       />

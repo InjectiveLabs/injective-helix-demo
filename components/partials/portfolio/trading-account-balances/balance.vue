@@ -79,7 +79,10 @@
       <span class="font-mono text-left xl:hidden">
         {{ $t('common.value') }}
       </span>
-      <span class="xl:col-span-3 font-mono whitespace-nowrap text-right" data-cy="trading-account-value-table-data">
+      <span
+        class="xl:col-span-3 font-mono whitespace-nowrap text-right"
+        data-cy="trading-account-value-table-data"
+      >
         <span v-if="hideBalance">
           {{ HIDDEN_BALANCE_DISPLAY }}
         </span>
@@ -128,7 +131,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { INJECTIVE_DENOM, ZERO_IN_BASE } from '@injectivelabs/ui-common'
+import { INJECTIVE_DENOM, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd } from '~/types'
 import TableRow from '~/components/elements/table-row.vue'
 import {

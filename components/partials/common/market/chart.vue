@@ -4,15 +4,15 @@
       ref="trading-view-wrap"
       class="orderbook-h lg:h-full lg:min-h-full h-full w-full relative flex"
     >
-      <VHocLoading :status="status">
-        <v-trading-chart
+      <HocLoading :status="status">
+        <TradingChart
           ref="trading-view"
           :interval="interval"
           :symbol="symbol"
           :datafeed-endpoint="datafeedEndpoint"
           @ready="onReady"
         />
-      </VHocLoading>
+      </HocLoading>
     </div>
   </div>
 </template>
@@ -24,7 +24,7 @@ import {
   UiSpotMarketWithToken,
   UiDerivativeMarketWithToken,
   MarketType
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import TradingChart from '~/components/trading-view/chart.vue'
 import { getChronosDatafeedEndpoint } from '~/app/utils/helpers'
 
@@ -34,7 +34,7 @@ interface TradingChartInterface {
 
 export default Vue.extend({
   components: {
-    'v-trading-chart': TradingChart
+    TradingChart
   },
 
   props: {
@@ -55,7 +55,7 @@ export default Vue.extend({
 
   computed: {
     tradingView(): TradingChartInterface {
-      return (this.$refs['trading-view'] as unknown) as TradingChartInterface
+      return this.$refs['trading-view'] as unknown as TradingChartInterface
     },
 
     tradingViewWrap(): HTMLElement {

@@ -1,5 +1,5 @@
 <template>
-  <v-modal
+  <VModal
     v-if="trade && market"
     :is-open="isModalOpen"
     sm
@@ -20,7 +20,7 @@
         <span class="text-gray-500 uppercase tracking-widest text-2xs">
           {{ $t('trade.time') }}
         </span>
-        <IconAnfo-tooltip
+        <IconInfoTooltip
           class="ml-2"
           :tooltip="$t('trade.timestamp_tooltip')"
         />
@@ -73,7 +73,7 @@
         {{ $t('trade.price') }}
       </span>
       <span class="text-right">
-        <v-number
+        <VNumber
           :decimals="
             market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
           "
@@ -88,7 +88,7 @@
         <IconInfoTooltip class="ml-2" :tooltip="$t('trade.amount_tooltip')" />
       </div>
       <span class="text-right">
-        <v-number
+        <VNumber
           :decimals="
             market
               ? market.quantityDecimals
@@ -105,11 +105,11 @@
         <IconInfoTooltip class="ml-2" :tooltip="$t('trade.fees_tooltip')" />
       </div>
       <span class="text-right">
-        <v-number use-number-decimals :number="fee">
+        <VNumber use-number-decimals :number="fee">
           <span slot="addon" class="text-2xs text-gray-500">
             {{ market.quoteToken.symbol }}
           </span>
-        </v-number>
+        </VNumber>
       </span>
 
       <div class="flex items-center">
@@ -119,7 +119,7 @@
         <IconInfoTooltip class="ml-2" :tooltip="$t('trade.fees_tooltip')" />
       </div>
       <span class="text-right">
-        <v-number
+        <VNumber
           data-cy="trade-history-total-table-data"
           :decimals="
             market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -129,10 +129,10 @@
           <span slot="addon" class="text-2xs text-gray-500">
             {{ market.quoteToken.symbol }}
           </span>
-        </v-number>
+        </VNumber>
       </span>
     </div>
-  </v-modal>
+  </VModal>
 </template>
 
 <script lang="ts">
@@ -146,7 +146,7 @@ import {
   UiSpotMarketWithToken,
   UiSpotTrade,
   ZERO_IN_BASE
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS

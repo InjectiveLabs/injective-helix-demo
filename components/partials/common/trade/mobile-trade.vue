@@ -37,7 +37,7 @@
       {{ $t('trade.price') }}
     </span>
     <div class="text-right">
-      <v-number
+      <VNumber
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
@@ -49,7 +49,7 @@
       {{ $t('trade.amount') }}
     </span>
     <div class="text-right">
-      <v-number
+      <VNumber
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
@@ -77,7 +77,7 @@ import {
   UiSpotMarketWithToken,
   UiSpotTrade,
   ZERO_IN_BASE
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import TableRow from '~/components/elements/table-row.vue'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,

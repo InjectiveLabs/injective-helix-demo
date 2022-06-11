@@ -28,7 +28,7 @@
 
         <div class="w-px h-8 border-r hidden lg:block" />
 
-        <v-last-traded-price-and-change
+        <LastTradedPriceAndChange
           :market="market"
           :summary="summary"
           lg
@@ -36,7 +36,7 @@
         />
       </div>
 
-      <v-market-stats
+      <MarketStats
         :market="market"
         :summary="summary"
         class="mt-4 lg:mt-0 flex-1 overflow-x-auto col-span-2 2xl:col-span-3"
@@ -52,14 +52,14 @@ import {
   UiDerivativeMarketWithToken,
   UiSpotMarketSummary,
   UiSpotMarketWithToken
-} from '@injectivelabs/ui-common'
-import VMarketStats from './stats.vue'
-import VLastTradedPriceAndChange from './last-traded-price-and-change.vue'
+} from '@injectivelabs/sdk-ui-ts'
+import MarketStats from './stats.vue'
+import LastTradedPriceAndChange from './last-traded-price-and-change.vue'
 
 export default Vue.extend({
   components: {
-    VLastTradedPriceAndChange,
-    VMarketStats
+    LastTradedPriceAndChange,
+    MarketStats
   },
 
   props: {

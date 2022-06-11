@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-modal-bridge
+    <VModalBridge
       v-bind="{
         form,
         bridgeType,
@@ -20,7 +20,7 @@
       @bridge:confirm="handleModalConfirmOpen"
       @bridge:reset="handleResetForm"
     />
-    <v-modal-bridge-confirm
+    <VModalBridgeConfirm
       v-bind="{
         form,
         bridgeType,
@@ -32,7 +32,7 @@
       }"
       @bridge:confirmed="handleModalCompletedOpen"
     />
-    <v-modal-bridge-completed
+    <VModalBridgeCompleted
       v-bind="{
         bridgeType,
         destination,
@@ -45,7 +45,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BridgingNetwork, KeplrNetworks, Token } from '@injectivelabs/ui-common'
+import { BridgingNetwork, KeplrNetworks, Token } from '@injectivelabs/sdk-ui-ts'
 import { Wallet } from '@injectivelabs/ts-types'
 import { injToken } from '~/app/data/token'
 import { BridgeType, Modal, TransferDirection } from '~/types'

@@ -1,36 +1,24 @@
+import { StreamStatusResponse } from '@injectivelabs/ts-types'
+import { subaccountStream } from '../client/streams/account'
+import { spotMarketStream } from '../client/streams/spot'
 import {
-  DerivativeMarketStreamType,
-  StreamStatusResponse
-} from '@injectivelabs/derivatives-consumer'
-import { OracleStreamType } from '@injectivelabs/exchange-consumer'
-import { SpotMarketStreamType } from '@injectivelabs/spot-consumer'
-import { SubaccountStreamType } from '@injectivelabs/subaccount-consumer'
-import { oracleStream } from '../singletons/OracleStream'
-import { subaccountStream } from '../singletons/SubaccountStream'
-import { derivativeMarketStream } from '~/app/singletons/DerivativeMarketStream'
-import { spotMarketStream } from '~/app/singletons/SpotMarketStream'
-
-type StreamKey =
-  | SubaccountStreamType
-  | DerivativeMarketStreamType
-  | SpotMarketStreamType
-  | OracleStreamType
+  derivativesMarketStream,
+  oracleStream
+} from '../client/streams/derivatives'
+import { StreamType } from '~/types'
 
 type StreamFn =
-  | typeof derivativeMarketStream.orderbook.start
-  | typeof derivativeMarketStream.orders.start
-  | typeof derivativeMarketStream.orders.subaccount
-  | typeof derivativeMarketStream.positions.start
-  | typeof derivativeMarketStream.positions.subaccount
-  | typeof derivativeMarketStream.trades.start
-  | typeof derivativeMarketStream.trades.subaccount
-  | typeof spotMarketStream.orderbook.start
-  | typeof spotMarketStream.orders.start
-  | typeof spotMarketStream.orders.subaccount
-  | typeof spotMarketStream.trades.start
-  | typeof spotMarketStream.trades.subaccount
-  | typeof subaccountStream.balances.start
-  | typeof oracleStream.prices.start
+  | typeof derivativesMarketStream.streamDerivativeMarket
+  | typeof derivativesMarketStream.streamDerivativeOrderbook
+  | typeof derivativesMarketStream.streamDerivativeOrders
+  | typeof derivativesMarketStream.streamDerivativePositions
+  | typeof derivativesMarketStream.streamDerivativeTrades
+  | typeof spotMarketStream.streamSpotOrderbook
+  | typeof spotMarketStream.streamSpotMarket
+  | typeof spotMarketStream.streamSpotOrders
+  | typeof spotMarketStream.streamSpotTrades
+  | typeof oracleStream.streamOraclePrices
+  | typeof subaccountStream.streamSubaccountBalance
 
 type Stream = ReturnType<StreamFn>
 
@@ -44,7 +32,7 @@ type Stream = ReturnType<StreamFn>
  * */
 export class StreamProvider {
   private streamManager: Map<
-    StreamKey,
+    StreamType,
     { fn: Function; stream: Stream; args: any }
   >
 
@@ -52,7 +40,7 @@ export class StreamProvider {
     this.streamManager = new Map()
   }
 
-  subscribe({ fn, key, args }: { fn: StreamFn; key: StreamKey; args: any }) {
+  subscribe({ fn, key, args }: { fn: StreamFn; key: StreamType; args: any }) {
     if (this.streamManager.has(key)) {
       return
     }
@@ -75,7 +63,7 @@ export class StreamProvider {
     })
   }
 
-  cancel(key: StreamKey) {
+  cancel(key: StreamType) {
     if (!this.exists(key)) {
       return
     }
@@ -91,7 +79,7 @@ export class StreamProvider {
     this.streamManager = new Map()
   }
 
-  private reconnect(key: StreamKey) {
+  private reconnect(key: StreamType) {
     if (!this.exists(key)) {
       return
     }
@@ -106,7 +94,7 @@ export class StreamProvider {
     })
   }
 
-  private exists(key: StreamKey) {
+  private exists(key: StreamType) {
     return this.streamManager.has(key)
   }
 }

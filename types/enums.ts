@@ -127,4 +127,21 @@ export enum MarketTypeFavorite {
   Favorite = 'Favorite'
 }
 
+export enum StreamType {
+  SubaccountBalances = 'subaccount-balances',
+  SpotSubaccountOrders = 'spot-subaccount-orders',
+  SpotSubaccountTrades = 'spot-subaccount-trades',
+  DerivativesSubaccountOrders = 'derivatives-subaccount-orders',
+  DerivativesSubaccountTrades = 'derivatives-subaccount-trades',
+  DerivativesSubaccountPositions = 'derivatives-positions-trades',
+  DerivativesOrderbook = 'derivatives-orderbook',
+  DerivativesTrades = 'derivatives-trades',
+  DerivativesOrders = 'derivatives-orders',
+  SpotOrderbook = 'spot-orderbook',
+  SpotTrades = 'spot-trades',
+  SpotOrders = 'spot-orders',
+  DerivativesPositions = 'derivatives-positions',
+  OraclePrices = 'oracle-prices'
+}
+
 export { MarketType }

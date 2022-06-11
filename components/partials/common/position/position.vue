@@ -34,7 +34,7 @@
 
     <td class="text-right font-mono">
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-      <v-number
+      <VNumber
         v-else
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
@@ -47,7 +47,7 @@
     <td class="text-right font-mono">
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <div v-else>
-        <v-number
+        <VNumber
           :decimals="
             market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
           "
@@ -60,7 +60,7 @@
 
     <td class="text-right font-mono">
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-      <v-number
+      <VNumber
         v-else
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -102,11 +102,13 @@
         v-else
         class="text-gray-400"
         data-cy="open-position-no-pnl-table-data"
-        >{{ $t('trade.not_available_n_a') }}</span>
+      >
+        {{ $t('trade.not_available_n_a') }}
+      </span>
     </td>
     <td class="text-right font-mono">
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-      <v-number
+      <VNumber
         v-else
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -117,14 +119,14 @@
         <span slot="addon" class="text-2xs text-gray-500">
           {{ market.quoteToken.symbol }}
         </span>
-      </v-number>
+      </VNumber>
     </td>
     <td class="text-right">
       <span v-if="hideBalance" class="font-mono">
         {{ HIDDEN_BALANCE_DISPLAY }}
       </span>
       <div v-else class="flex items-center justify-end h-8">
-        <v-number
+        <VNumber
           data-cy="open-position-margin-table-data"
           :decimals="
             market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -162,7 +164,7 @@
     </td>
 
     <td class="text-center relative">
-      <v-button
+      <VButton
         v-if="!hideBalance"
         data-cy="open-position-cancel-link"
         :status="status"
@@ -173,7 +175,7 @@
         >
           <IconClose class="h-4 w-4" />
         </div>
-      </v-button>
+      </VButton>
     </td>
   </tr>
 </template>
@@ -188,7 +190,7 @@ import {
   UiPosition,
   UiSpotLimitOrder,
   ZERO_IN_BASE
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,

@@ -39,21 +39,21 @@
       </TableHeader>
 
       <TableBody>
-        <v-market
+        <Market
           v-for="({ market, summary }, index) in marketsList"
           :key="`market-${index}`"
           class="col-span-1"
           :market="market"
           :summary="summary"
         />
-        <v-market-new
+        <MarketNew
           v-for="({ market, summary }, index) in filteredUpcomingMarkets"
           :key="`market-new-${index}`"
           class="col-span-1"
           :market="market"
           :summary="summary"
         />
-        <v-market-deprecated
+        <MarketDeprecated
           v-for="({ market, summary }, index) in filteredDeprecatedMarkets"
           :key="`market-deprecated-${index}`"
           class="col-span-1"
@@ -74,12 +74,12 @@ import {
   UiDerivativeMarketWithToken,
   UiSpotMarketSummary,
   UiSpotMarketWithToken
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import TableBody from '~/components/elements/table-body.vue'
 import TableHeader from '~/components/elements/table-header.vue'
-import VMarket from '~/components/partials/home/markets/market.vue'
-import VMarketNew from '~/components/partials/home/markets/market-new.vue'
-import VMarketDeprecated from '~/components/partials/home/markets/market-deprecated.vue'
+import Market from '~/components/partials/home/markets/market.vue'
+import MarketNew from '~/components/partials/home/markets/market-new.vue'
+import MarketDeprecated from '~/components/partials/home/markets/market-deprecated.vue'
 import {
   deprecatedMarkets,
   newMarketsSlug,
@@ -91,9 +91,9 @@ export default Vue.extend({
   components: {
     TableBody,
     TableHeader,
-    VMarket,
-    VMarketDeprecated,
-    VMarketNew
+    Market,
+    MarketDeprecated,
+    MarketNew
   },
 
   props: {
@@ -153,11 +153,8 @@ export default Vue.extend({
     },
 
     filteredMarkets(): UiMarketAndSummary[] {
-      const {
-        mappedMarkets,
-        upcomingMarketsSlugs,
-        deprecatedMarketsSlugs
-      } = this
+      const { mappedMarkets, upcomingMarketsSlugs, deprecatedMarketsSlugs } =
+        this
 
       return mappedMarkets.filter(
         (m) =>

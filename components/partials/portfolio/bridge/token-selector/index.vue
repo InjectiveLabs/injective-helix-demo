@@ -19,7 +19,7 @@ import {
   Token,
   SubaccountBalanceWithToken,
   TokenWithBalanceAndPrice
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import TokenSelector from './select.vue'
 import { TransferSide, TransferDirection } from '~/types'
 

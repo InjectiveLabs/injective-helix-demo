@@ -1,5 +1,5 @@
 <template>
-  <v-card md>
+  <VCard md>
     <div class="relative h-full">
       <div class="flex flex-col flex-wrap h-full">
         <div v-if="false" class="w-full">
@@ -23,5 +23,5 @@
         <slot name="illustration"></slot>
       </div>
     </div>
-  </v-card>
+  </VCard>
 </template>

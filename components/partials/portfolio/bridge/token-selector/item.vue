@@ -35,7 +35,7 @@
 </template>
 <script lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { BankBalanceWithTokenAndBalance } from '@injectivelabs/ui-common'
+import { BankBalanceWithTokenAndBalance } from '@injectivelabs/sdk-ui-ts'
 import Vue, { PropType } from 'vue'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 

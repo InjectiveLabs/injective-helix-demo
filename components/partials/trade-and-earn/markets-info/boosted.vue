@@ -5,7 +5,7 @@
         <p class="text-gray-200 text-center font-semibold">
           {{ $t('trade.derivatives') }}
         </p>
-        <v-text-info
+        <TextInfo
           v-for="derivative in boostedMarkets.derivatives"
           :key="`derivative-${derivative.ticker}`"
           :title="derivative.ticker"
@@ -24,14 +24,14 @@
               </span>
             </span>
           </p>
-        </v-text-info>
+        </TextInfo>
       </div>
 
       <div class="flex-1 px-4 lg:px-12">
         <p class="text-gray-200 text-center font-semibold">
           {{ $t('trade.spot') }}
         </p>
-        <v-text-info
+        <TextInfo
           v-for="spot in boostedMarkets.spot"
           :key="`spot-${spot.ticker}`"
           :title="spot.ticker"
@@ -50,7 +50,7 @@
               </span>
             </span>
           </p>
-        </v-text-info>
+        </TextInfo>
       </div>
     </div>
     <template slot="title">
@@ -69,9 +69,9 @@
 import Vue from 'vue'
 import {
   UiSpotMarketWithToken,
-  UiDerivativeMarketWithToken,
-  cosmosSdkDecToBigNumber
-} from '@injectivelabs/ui-common'
+  UiDerivativeMarketWithToken
+} from '@injectivelabs/sdk-ui-ts'
+import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import VItem from '~/components/partials/common/stats/item.vue'
 import {
   PointsMultiplier,

@@ -1,19 +1,6 @@
 <template>
   <div
-    class="
-      grid grid-cols-3
-      sm:grid-cols-10
-      3md:grid-cols-12
-      text-gray-200
-      gap-4
-      text-sm
-      px-4
-      py-5
-      mb-1
-      bg-gray-800 bg-opacity-50
-      items-center
-      rounded
-    "
+    class="grid grid-cols-3 sm:grid-cols-10 3md:grid-cols-12 text-gray-200 gap-4 text-sm px-4 py-5 mb-1 bg-gray-800 bg-opacity-50 items-center rounded"
     :data-cy="`markets-table-row-${market.ticker}`"
   >
     <span class="text-sm col-span-2 sm:col-span-3 flex items-center">
@@ -118,9 +105,8 @@
 
     <span class="hidden sm:block font-mono col-span-3">
       <div v-if="!quoteVolume.isNaN()" class="flex flex-col items-end">
-        <span
-data-cy="markets-volume-usd-table-data"
->{{ volumeInUsdToFormat }} USD
+        <span data-cy="markets-volume-usd-table-data">
+          {{ volumeInUsdToFormat }} USD
         </span>
         <span
           class="text-xs text-gray-500"
@@ -145,18 +131,7 @@ data-cy="markets-volume-usd-table-data"
       </nuxt-link>
 
       <div
-        class="
-          text-primary-500
-          w-6
-          h-6
-          flex
-          items-center
-          justify-center
-          rounded-full
-          ml-6
-          cursor-pointer
-          hover:bg-primary-500 hover:bg-opacity-10
-        "
+        class="text-primary-500 w-6 h-6 flex items-center justify-center rounded-full ml-6 cursor-pointer hover:bg-primary-500 hover:bg-opacity-10"
         data-cy="markets-favorite-button"
         @click="updateWatchList"
       >
@@ -184,7 +159,7 @@ import {
   ZERO_IN_BASE,
   UiSpotMarketSummary,
   UiSpotMarketWithToken
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import {
   BAYC_WETH_PERP_SLUG,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,

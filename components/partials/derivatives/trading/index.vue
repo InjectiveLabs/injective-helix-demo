@@ -1,7 +1,7 @@
 <template>
-  <v-card class="w-full">
-    <v-trade />
-  </v-card>
+  <VCard class="w-full">
+    <Trade />
+  </VCard>
 </template>
 
 <script lang="ts">
@@ -10,7 +10,7 @@ import Trade from './trade.vue'
 
 export default Vue.extend({
   components: {
-    'v-trade': Trade
+    Trade
   }
 })
 </script>

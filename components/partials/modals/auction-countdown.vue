@@ -1,5 +1,5 @@
 <template>
-  <v-modal :is-open="isModalOpen" sm @modal-closed="closeModal">
+  <VModal :is-open="isModalOpen" sm @modal-closed="closeModal">
     <div slot="title" class="text-center">
       <h3 class="text-base">
         {{ $t('auction.countdown.title') }}
@@ -12,13 +12,13 @@
       </div>
       <div>
         <a :href="auctionUrl" target="_blank" @click="closeModal">
-          <v-button primary lg>
+          <VButton primary lg>
             <span>{{ $t('auction.countdown.button') }}</span>
-          </v-button>
+          </VButton>
         </a>
       </div>
     </div>
-  </v-modal>
+  </VModal>
 </template>
 
 <script lang="ts">

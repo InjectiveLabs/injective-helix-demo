@@ -30,7 +30,8 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { cosmosSdkDecToBigNumber, ZERO_IN_BASE } from '@injectivelabs/ui-common'
+import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import {
   FeeDiscountAccountInfo,
   FeeDiscountTierInfo

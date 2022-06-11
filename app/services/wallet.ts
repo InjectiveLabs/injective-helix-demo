@@ -1,6 +1,6 @@
 import { Wallet } from '@injectivelabs/web3-strategy'
 import { Web3Exception } from '@injectivelabs/exceptions'
-import { web3Strategy } from '~/app/web3'
+import { web3Strategy } from '~/app/wallet-strategy'
 import { blacklistedAddresses } from '~/app/data/wallet-address'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '~/app/utils/constants'
 

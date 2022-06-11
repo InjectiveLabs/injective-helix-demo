@@ -4,7 +4,7 @@
       {{ $t('markets.title') }}
     </h3>
 
-    <v-market-filter
+    <MarketFilter
       :active-category.sync="activeCategory"
       :active-quote.sync="activeQuote"
       :active-type.sync="activeType"
@@ -97,7 +97,7 @@
     </TableHeader>
 
     <TableBody light :show-empty="sortedMarkets.length === 0">
-      <v-market-row
+      <MarketRow
         v-for="({ market, summary, volumeInUsd }, index) in sortedMarkets"
         :key="`market-row-${index}`"
         :market="market"
@@ -105,7 +105,7 @@
         :volume-in-usd="volumeInUsd"
       />
 
-      <v-empty-list
+      <EmptyList
         slot="empty"
         classes="bg-gray-850 min-h-3xs"
         data-cy="markets-no-data-table"
@@ -114,7 +114,7 @@
         <span class="mt-2 text-xs text-gray-500">{{
           $t('markets.emptyDescription')
         }}</span>
-      </v-empty-list>
+      </EmptyList>
     </TableBody>
   </div>
 </template>
@@ -122,9 +122,9 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { MarketType } from '@injectivelabs/ui-common'
-import VMarketFilter from '~/components/partials/markets/filters/index.vue'
-import VMarketRow from '~/components/partials/markets/market-row.vue'
+import { MarketType } from '@injectivelabs/sdk-ui-ts'
+import MarketFilter from '~/components/partials/markets/filters/index.vue'
+import MarketRow from '~/components/partials/markets/market-row.vue'
 import SortableHeaderItem from '~/components/elements/sortable-header-item.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import TableHeader from '~/components/elements/table-header.vue'
@@ -152,8 +152,8 @@ export default Vue.extend({
     SortableHeaderItem,
     TableBody,
     TableHeader,
-    VMarketFilter,
-    VMarketRow
+    MarketFilter,
+    MarketRow
   },
 
   props: {
@@ -272,17 +272,23 @@ export default Vue.extend({
       const {
         $route: { query }
       } = this
-      const category = (typeof query.category === 'string'
-        ? query.category.trim().toLowerCase()
-        : query.category) as MarketCategoryType
+      const category = (
+        typeof query.category === 'string'
+          ? query.category.trim().toLowerCase()
+          : query.category
+      ) as MarketCategoryType
 
-      const quote = (typeof query.quote === 'string'
-        ? query.quote.trim().toLowerCase()
-        : query.quote) as MarketQuoteType
+      const quote = (
+        typeof query.quote === 'string'
+          ? query.quote.trim().toLowerCase()
+          : query.quote
+      ) as MarketQuoteType
 
-      const type = (typeof query.type === 'string'
-        ? query.type.trim().toLowerCase()
-        : query.type) as MarketType
+      const type = (
+        typeof query.type === 'string'
+          ? query.type.trim().toLowerCase()
+          : query.type
+      ) as MarketType
 
       if (quote && Object.values(MarketQuoteType).includes(quote)) {
         this.activeQuote = quote

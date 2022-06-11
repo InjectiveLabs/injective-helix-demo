@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="mb-4 flex justify-between items-center flex-wrap gap-4">
-      <v-search
+      <VSearch
         dense
         name="search"
         class="sm:max-w-xs"
@@ -12,12 +12,18 @@
       />
 
       <div class="ml-auto flex items-center gap-4">
-        <v-checkbox v-model="showMarginCurrencyOnly">
-          <span class="flex items-center" data-cy="trading-account-show-margin-only-check-box">
+        <VCheckbox v-model="showMarginCurrencyOnly">
+          <span
+            class="flex items-center"
+            data-cy="trading-account-show-margin-only-check-box"
+          >
             {{ $t('portfolio.showMarginCurrencyOnly') }}
           </span>
-        </v-checkbox>
-        <v-checkbox v-model="hideSmallBalance" data-cy="universal-table-hide-small-balances-check-box">
+        </VCheckbox>
+        <VCheckbox
+          v-model="hideSmallBalance"
+          data-cy="universal-table-hide-small-balances-check-box"
+        >
           <span class="flex items-center">
             {{ $t('portfolio.hideSmallBalances') }}
             <IconInfoTooltip
@@ -25,7 +31,7 @@
               :tooltip="$t('portfolio.hideSmallBalancesTooltip')"
             />
           </span>
-        </v-checkbox>
+        </VCheckbox>
       </div>
     </div>
     <div class="overflow-y-auto overflow-x-auto md:overflow-x-visible w-full">
@@ -90,7 +96,7 @@
         v-if="isUserWalletConnected"
         :show-empty="sortedBalances.length === 0"
       >
-        <v-balance
+        <Balance
           v-for="(balance, index) in sortedBalances"
           :key="`balance-${index}`"
           class="col-span-1"
@@ -106,7 +112,7 @@
           </span>
         </template>
       </TableBody>
-      <v-user-wallet-connect-warning v-else cta />
+      <UserWalletConnectWarning v-else cta />
     </div>
   </div>
 </template>
@@ -114,8 +120,8 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { INJECTIVE_DENOM } from '@injectivelabs/ui-common'
-import VBalance from './balance.vue'
+import { INJECTIVE_DENOM } from '@injectivelabs/sdk-ui-ts'
+import Balance from './balance.vue'
 import { SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd } from '~/types'
 import VSearch from '~/components/elements/search.vue'
 import TableBody from '~/components/elements/table-body.vue'
@@ -130,7 +136,7 @@ export default Vue.extend({
   components: {
     TableBody,
     TableHeader,
-    VBalance,
+    Balance,
     VSearch
   },
 

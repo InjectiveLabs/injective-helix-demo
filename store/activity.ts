@@ -1,7 +1,7 @@
 import { actionTree, getterTree } from 'typed-vuex'
 import { FundingPayment } from '@injectivelabs/derivatives-consumer'
 import { TradingReward } from '@injectivelabs/subaccount-consumer'
-import { derivativeService, subaccountService } from '~/app/Services'
+import { exchangeAccountApi, exchangeDerivativesApi } from '~/app/Services'
 
 const initialStateFactory = () => ({
   subaccountFundingPayments: [] as Array<FundingPayment>,
@@ -11,8 +11,10 @@ const initialStateFactory = () => ({
 const initialState = initialStateFactory()
 
 export const state = () => ({
-  subaccountFundingPayments: initialState.subaccountFundingPayments as Array<FundingPayment>,
-  tradingRewardsHistory: initialState.tradingRewardsHistory as Array<TradingReward>
+  subaccountFundingPayments:
+    initialState.subaccountFundingPayments as Array<FundingPayment>,
+  tradingRewardsHistory:
+    initialState.tradingRewardsHistory as Array<TradingReward>
 })
 
 export type ActivityStoreState = ReturnType<typeof state>
@@ -48,10 +50,8 @@ export const actions = actionTree(
   {
     async fetchTradingRewardsHistory({ commit }) {
       const { subaccount } = this.app.$accessor.account
-      const {
-        isUserWalletConnected,
-        injectiveAddress
-      } = this.app.$accessor.wallet
+      const { isUserWalletConnected, injectiveAddress } =
+        this.app.$accessor.wallet
 
       if (!isUserWalletConnected || !subaccount || !injectiveAddress) {
         return
@@ -59,7 +59,10 @@ export const actions = actionTree(
 
       commit(
         'setTradingRewardHistory',
-        await subaccountService.fetchTradingRewardHistory(injectiveAddress)
+        await exchangeAccountApi.fetchRewards({
+          address: injectiveAddress,
+          epoch: -1
+        })
       )
     },
 
@@ -71,9 +74,11 @@ export const actions = actionTree(
         return
       }
 
-      const fundingPayments = await derivativeService.fetchFundingPayments({
-        subaccountId: subaccount.subaccountId
-      })
+      const fundingPayments = await exchangeDerivativesApi.fetchFundingPayments(
+        {
+          subaccountId: subaccount.subaccountId
+        }
+      )
 
       commit('setSubaccountFundingPayments', fundingPayments)
     }

@@ -4,7 +4,7 @@
       <div
         class="flex items-centers gap-2 3md:gap-4 overflow-x-auto mb-4 2md:mb-0 justify-between xs:justify-start w-full xs:w-auto hide-scrollbar"
       >
-        <v-market-type-selector
+        <MarketTypeSelector
           :type="MarketType.Favorite"
           :active="activeType === MarketType.Favorite"
           data-cy="markets-favorites-selector"
@@ -14,37 +14,37 @@
             <IconStar class="mr-1" />
             <span>{{ $t('trade.favorites') }}</span>
           </span>
-        </v-market-type-selector>
+        </MarketTypeSelector>
 
-        <v-market-type-selector
+        <MarketTypeSelector
           :type="''"
           :active="activeType === ''"
           data-cy="markets-all-markets-selector"
           @click="handleTypeClick"
         >
           {{ $t('trade.allMarkets') }}
-        </v-market-type-selector>
+        </MarketTypeSelector>
 
-        <v-market-type-selector
+        <MarketTypeSelector
           :type="MarketType.Spot"
           :active="activeType === MarketType.Spot"
           data-cy="markets-spot-selector"
           @click="handleTypeClick"
         >
           {{ $t('trade.spots') }}
-        </v-market-type-selector>
+        </MarketTypeSelector>
 
-        <v-market-type-selector
+        <MarketTypeSelector
           :type="MarketType.Perpetual"
           :active="activeType === MarketType.Perpetual"
           data-cy="markets-perpetual-selector"
           @click="handleTypeClick"
         >
           {{ $t('trade.perpetual') }}
-        </v-market-type-selector>
+        </MarketTypeSelector>
       </div>
 
-      <v-search
+      <VSearch
         name="search"
         class="sm:w-auto md:w-xs"
         wrapper-classes="bg-gray-800 rounded-3xl pl-2"
@@ -59,26 +59,26 @@
 
     <div class="flex items-center justify-between mt-6">
       <div class="flex items-center gap-3 md:gap-6">
-        <v-market-quote-selector
+        <MarketQuoteSelector
           :active="activeQuote === MarketQuoteType.All"
           :type="MarketQuoteType.All"
           data-cy="markets-quote-all-button"
           @click="handleQuoteClick"
         >
           {{ $t('trade.all') }}
-        </v-market-quote-selector>
+        </MarketQuoteSelector>
         <div class="border-r h-4 border-gray-600 w-px" />
-        <v-market-quote-selector
+        <MarketQuoteSelector
           :active="activeQuote === MarketQuoteType.USDT"
           :type="MarketQuoteType.USDT"
           data-cy="markets-quote-usdt-button"
           @click="handleQuoteClick"
         >
           USDT
-        </v-market-quote-selector>
+        </MarketQuoteSelector>
       </div>
 
-      <v-market-category-selector
+      <MarketCategorySelector
         :type="activeCategory"
         @click="handleCategoryChange"
       />
@@ -88,18 +88,18 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { MarketType } from '@injectivelabs/ui-common'
-import VMarketCategorySelector from '~/components/partials/markets/filters/market-category-selector.vue'
-import VMarketTypeSelector from '~/components/partials/markets/filters/market-type-selector.vue'
-import VMarketQuoteSelector from '~/components/partials/markets/filters/market-quote-selector.vue'
+import { MarketType } from '@injectivelabs/sdk-ui-ts'
+import MarketCategorySelector from '~/components/partials/markets/filters/market-category-selector.vue'
+import MarketTypeSelector from '~/components/partials/markets/filters/market-type-selector.vue'
+import MarketQuoteSelector from '~/components/partials/markets/filters/market-quote-selector.vue'
 import VSearch from '~/components/inputs/search.vue'
 import { MarketCategoryType, MarketQuoteType } from '~/types'
 
 export default Vue.extend({
   components: {
-    VMarketCategorySelector,
-    VMarketQuoteSelector,
-    VMarketTypeSelector,
+    MarketCategorySelector,
+    MarketQuoteSelector,
+    MarketTypeSelector,
     VSearch
   },
 

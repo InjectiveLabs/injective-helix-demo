@@ -8,35 +8,36 @@ import {
 } from '@injectivelabs/utils'
 import { StreamOperation } from '@injectivelabs/ts-types'
 import {
+  Change,
   UiDerivativeLimitOrder,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiDerivativeOrderbook,
   UiDerivativeTrade,
-  DerivativeTransformer,
+  UiDerivativeTransformer,
   zeroDerivativeMarketSummary,
   ZERO_IN_BASE,
-  ZERO_TO_STRING,
-  Change
-} from '@injectivelabs/ui-common'
+  ZERO_TO_STRING
+} from '@injectivelabs/sdk-ui-ts'
 import {
   DerivativeOrderSide,
   DerivativeOrderState
-} from '@injectivelabs/derivatives-consumer'
+} from '@injectivelabs/sdk-ts'
 import {
   streamOrderbook,
   streamTrades,
   streamSubaccountOrders,
   streamSubaccountTrades,
   streamMarketMarkPrice
-} from '~/app/streams/derivatives'
+} from '~/app/client/streams/derivatives'
 import {
   FEE_RECIPIENT,
   ORDERBOOK_STREAMING_ENABLED
 } from '~/app/utils/constants'
 import {
-  derivativeActionService,
-  derivativeService,
+  exchangeDerivativesApi,
+  exchangeOracleApi,
+  exchangeRestDerivativesChronosApi,
   tokenService
 } from '~/app/Services'
 import { derivatives as allowedPerpetualMarkets } from '~/routes.config'
@@ -277,13 +278,14 @@ export const actions = actionTree(
     },
 
     async init({ commit }) {
-      const markets = await derivativeService.fetchMarkets()
+      const markets = await exchangeDerivativesApi.fetchMarkets()
       const marketsWithToken = await tokenService.getDerivativeMarketsWithToken(
         markets
       )
-      const uiMarkets = DerivativeTransformer.derivativeMarketsToUiSpotMarkets(
-        marketsWithToken
-      )
+      const uiMarkets =
+        UiDerivativeTransformer.derivativeMarketsToUiSpotMarkets(
+          marketsWithToken
+        )
 
       // Only include markets that we pre-defined to generate static routes for
       const uiMarketsWithToken = uiMarkets
@@ -299,7 +301,8 @@ export const actions = actionTree(
 
       commit('setMarkets', uiMarketsWithToken)
 
-      const marketsSummary = await derivativeService.fetchMarketsSummary()
+      const marketsSummary =
+        await exchangeRestDerivativesChronosApi.fetchMarketsSummary()
       const marketSummaryNotExists =
         !marketsSummary || (marketsSummary && marketsSummary.length === 0)
       const actualMarketsSummary = marketSummaryNotExists
@@ -328,15 +331,22 @@ export const actions = actionTree(
         throw new Error('Market not found. Please refresh the page.')
       }
 
+      const summary =
+        await exchangeRestDerivativesChronosApi.fetchMarketSummary(
+          market.marketId
+        )
+      const oraclePrice = await exchangeOracleApi.fetchOraclePrice({
+        baseSymbol: market.oracleBase,
+        quoteSymbol: market.oracleQuote,
+        oracleType: market.oracleType
+      })
+
       commit('setMarket', market)
-      commit(
-        'setMarketSummary',
-        await derivativeService.fetchMarketSummary(market.marketId)
-      )
-      commit(
-        'setMarketMarkPrice',
-        await derivativeService.fetchMarketMarkPrice(market)
-      )
+      commit('setMarketSummary', {
+        ...summary,
+        marketId: market.marketId
+      })
+      commit('setMarketMarkPrice', oraclePrice.price)
 
       if (ORDERBOOK_STREAMING_ENABLED) {
         await this.app.$accessor.derivatives.streamOrderbook()
@@ -367,7 +377,7 @@ export const actions = actionTree(
 
       commit(
         'setOrderbook',
-        await derivativeService.fetchOrderbook(market.marketId)
+        await exchangeDerivativesApi.fetchOrderbook(market.marketId)
       )
     },
 
@@ -509,7 +519,7 @@ export const actions = actionTree(
 
       commit(
         'setOrderbook',
-        await derivativeService.fetchOrderbook(market.marketId)
+        await exchangeDerivativesApi.fetchOrderbook(market.marketId)
       )
     },
 
@@ -522,7 +532,7 @@ export const actions = actionTree(
 
       commit(
         'setTrades',
-        await derivativeService.fetchTrades({ marketId: market.marketId })
+        await exchangeDerivativesApi.fetchTrades({ marketId: market.marketId })
       )
     },
 
@@ -536,7 +546,7 @@ export const actions = actionTree(
 
       commit(
         'setSubaccountOrders',
-        await derivativeService.fetchOrders({
+        await exchangeDerivativesApi.fetchOrders({
           subaccountId: subaccount.subaccountId
         })
       )
@@ -549,11 +559,13 @@ export const actions = actionTree(
         return
       }
 
-      const updatedMarketsSummary = await derivativeService.fetchMarketsSummary()
-      const combinedMarketsSummary = DerivativeTransformer.marketsSummaryComparisons(
-        updatedMarketsSummary,
-        state.marketsSummary
-      )
+      const updatedMarketsSummary =
+        await exchangeRestDerivativesChronosApi.fetchMarketsSummary()
+      const combinedMarketsSummary =
+        UiDerivativeTransformer.derivativeMarketsSummaryComparisons(
+          updatedMarketsSummary,
+          state.marketsSummary
+        )
 
       if (
         !combinedMarketsSummary ||
@@ -585,7 +597,9 @@ export const actions = actionTree(
         return
       }
 
-      const updatedMarket = await derivativeService.fetchMarket(market.marketId)
+      const updatedMarket = await exchangeDerivativesApi.fetchMarket(
+        market.marketId
+      )
 
       commit('setMarket', {
         ...updatedMarket,
@@ -601,7 +615,7 @@ export const actions = actionTree(
         return
       }
 
-      const trades = await derivativeService.fetchTrades({
+      const trades = await exchangeDerivativesApi.fetchTrades({
         subaccountId: subaccount.subaccountId
       })
 
@@ -610,11 +624,8 @@ export const actions = actionTree(
 
     async cancelOrder(_, order: UiDerivativeLimitOrder) {
       const { subaccount } = this.app.$accessor.account
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
 
       if (!isUserWalletConnected || !subaccount) {
         return
@@ -634,11 +645,8 @@ export const actions = actionTree(
 
     async batchCancelOrder(_, orders: UiDerivativeLimitOrder[]) {
       const { subaccount } = this.app.$accessor.account
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
 
       if (!isUserWalletConnected || !subaccount) {
         return
@@ -677,11 +685,8 @@ export const actions = actionTree(
       const { subaccount } = this.app.$accessor.account
       const { market } = this.app.$accessor.derivatives
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
 
       if (!isUserWalletConnected || !subaccount || !market) {
         return
@@ -729,11 +734,8 @@ export const actions = actionTree(
       const { subaccount } = this.app.$accessor.account
       const { market } = this.app.$accessor.derivatives
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
 
       if (!isUserWalletConnected || !subaccount || !market) {
         return

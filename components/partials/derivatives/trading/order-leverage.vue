@@ -7,7 +7,7 @@
         v-html="$t('trade.max_leverage', { max: maxLeverage })"
       ></h3>
     </div>
-    <v-input-slider
+    <InputSlider
       min="1"
       :max="maxLeverage.toString()"
       step="0.01"
@@ -32,17 +32,17 @@
           x
         </span>
       </div>
-    </v-input-slider>
+    </InputSlider>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import VInputSlider from '~/components/inputs/slider.vue'
+import InputSlider from '~/components/inputs/slider.vue'
 
 export default Vue.extend({
   components: {
-    VInputSlider
+    InputSlider
   },
 
   model: {

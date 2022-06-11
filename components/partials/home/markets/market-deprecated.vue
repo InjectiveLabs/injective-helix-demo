@@ -40,7 +40,7 @@ import {
   UiDerivativeMarketWithToken,
   UiSpotMarketSummary,
   UiSpotMarketWithToken
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import TableRow from '~/components/elements/table-row.vue'
 import { MarketRoute } from '~/types'
 import { betaMarketSlugs } from '~/app/data/market'

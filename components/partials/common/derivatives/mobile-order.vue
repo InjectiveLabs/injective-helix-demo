@@ -1,5 +1,5 @@
 <template>
-  <table-row dense>
+  <table-row v-if="market" dense>
     <div class="pb-1 col-span-2" @click="handleClickOnMarket">
       <div class="flex items-center justify-between text-xs leading-5">
         <div class="flex items-center gap-1">
@@ -27,7 +27,7 @@
           </span>
         </div>
 
-        <v-button
+        <VButton
           v-if="orderFillable"
           class="cursor-pointer"
           :status="status"
@@ -38,7 +38,7 @@
           >
             <IconBin class="h-3 w-3" />
           </div>
-        </v-button>
+        </VButton>
       </div>
       <div
         v-if="isReduceOnly"
@@ -52,7 +52,7 @@
       {{ $t('trade.price') }}
     </span>
     <div class="text-right">
-      <v-number
+      <VNumber
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
@@ -64,14 +64,14 @@
       {{ $t('trade.filled') }} / {{ $t('trade.amount') }}
     </span>
     <div class="flex items-center gap-1 justify-end">
-      <v-number
+      <VNumber
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
         :number="filledQuantity"
       />
       <span>/</span>
-      <v-number
+      <VNumber
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
@@ -83,7 +83,7 @@
       {{ $t('trade.total') }}
     </span>
     <div class="text-right">
-      <v-number
+      <VNumber
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
@@ -92,7 +92,7 @@
         <span slot="addon" class="text-2xs text-gray-500">
           {{ market.quoteToken.symbol }}
         </span>
-      </v-number>
+      </VNumber>
     </div>
   </table-row>
 </template>
@@ -105,7 +105,7 @@ import {
   UiDerivativeMarketWithToken,
   DerivativeOrderSide,
   ZERO_IN_BASE
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import TableRow from '~/components/elements/table-row.vue'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,

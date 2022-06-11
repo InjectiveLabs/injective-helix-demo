@@ -1,6 +1,6 @@
 <template>
   <!-- eslint-disable vue/no-v-html -->
-  <v-modal :is-open="isModalOpen" sm @modal-closed="closeModal">
+  <VModal :is-open="isModalOpen" sm @modal-closed="closeModal">
     <h3 slot="title">
       {{ $t('insufficientGas.insufficientGas') }}
     </h3>
@@ -16,7 +16,7 @@
       ></p>
 
       <div class="mt-6 flex items-center justify-center">
-        <v-button
+        <VButton
           type="button"
           md
           primary
@@ -27,10 +27,10 @@
             <span class="mr-2">Injective Hub</span>
             <IconExternalLink class="w-3 h-3" />
           </a>
-        </v-button>
+        </VButton>
       </div>
     </div>
-  </v-modal>
+  </VModal>
 </template>
 
 <script lang="ts">

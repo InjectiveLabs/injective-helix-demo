@@ -1,4 +1,4 @@
-import { INJ_COIN_GECKO_ID, INJ_DENOM, Token } from '@injectivelabs/ui-common'
+import { INJ_COIN_GECKO_ID, INJ_DENOM, Token } from '@injectivelabs/sdk-ui-ts'
 import { getContractAddressesForNetworkOrThrow } from '@injectivelabs/contracts'
 import { NETWORK } from '../utils/constants'
 

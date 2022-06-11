@@ -2,7 +2,7 @@ import { EthereumChainId } from '@injectivelabs/ts-types'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import detectEthereumProvider from '@metamask/detect-provider'
 import { ETHEREUM_CHAIN_ID } from '../utils/constants'
-import { web3Strategy } from '../web3'
+import { web3Strategy } from '../wallet-strategy'
 
 export const isMetamaskInstalled = async (): Promise<boolean> => {
   const provider = await detectEthereumProvider()

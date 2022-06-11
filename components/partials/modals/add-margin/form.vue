@@ -30,7 +30,7 @@
               name="form.amount"
               :rules="`required|positiveNumber|between:0.001,${availableMarginToString}`"
             >
-              <v-input
+              <VInput
                 v-model="form.amount"
                 :errors="status.isLoading() ? [] : errors"
                 :valid="valid"
@@ -45,11 +45,11 @@
                 data-cy="add-margin-modal-amount-input"
               >
                 <span slot="addon">{{ market.quoteToken.symbol }}</span>
-              </v-input>
+              </VInput>
             </ValidationProvider>
           </div>
           <div class="w-full mt-6 text-center">
-            <v-button
+            <VButton
               lg
               class="w-full"
               :status="status"
@@ -59,7 +59,7 @@
               @click.stop="handleClickOnWithdraw"
             >
               {{ $t('trade.add_margin') }}
-            </v-button>
+            </VButton>
           </div>
         </div>
       </ValidationObserver>
@@ -71,7 +71,7 @@
 import Vue, { PropType } from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
-import { UiDerivativeMarketWithToken } from '@injectivelabs/ui-common'
+import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({

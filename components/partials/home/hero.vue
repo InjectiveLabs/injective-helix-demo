@@ -14,14 +14,14 @@
           <p class="text-gray-500 mt-4 text-lg leading-6 tracking-wide">
             {{ $t('home.subtitle') }}
           </p>
-          <v-button
+          <VButton
             lg
             primary
             class="min-w-4xs mt-6"
             @click="handleGetStartedClick"
           >
             {{ $t('home.getStarted') }}
-          </v-button>
+          </VButton>
         </div>
         <img src="/images/sphere.png" class="hidden sm:block w-48 h-48" />
       </div>
