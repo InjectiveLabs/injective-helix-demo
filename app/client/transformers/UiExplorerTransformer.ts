@@ -9,17 +9,17 @@ export class UiExplorerTransformer {
     tx: Transaction
   ): BankMsgSendTransaction {
     const [message] = (tx.messages || []).map(
-      (m) => JSON.parse(m.value) as GrpcBankMsgSendMessage
+      (m) => m.value as unknown as GrpcBankMsgSendMessage['value']
     )
 
     return {
       blockNumber: tx.blockNumber,
       blockTimestamp: tx.blockTimestamp,
       hash: tx.hash,
-      amount: message.value.amount[0].amount,
-      denom: message.value.amount[0].denom,
-      sender: message.value.from_address,
-      receiver: message.value.to_address
+      amount: message.amount[0].amount,
+      denom: message.amount[0].denom,
+      sender: message.from_address,
+      receiver: message.to_address
     }
   }
 }
