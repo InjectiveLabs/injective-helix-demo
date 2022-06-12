@@ -46,15 +46,15 @@ export const UI_MINIMAL_AMOUNT = new BigNumber(1).shiftedBy(
 )
 
 export const NETWORK: Network = process.env.APP_NETWORK || Network.Testnet
-export const IS_DEVNET = NETWORK === Network.Devnet
 export const IS_STAGING = process.env.APP_ENV === 'staging'
-export const IS_TESTNET = [
-  Network.Testnet,
-  Network.TestnetK8s,
+export const IS_DEVNET = [
   Network.Devnet,
   Network.Devnet1,
   Network.Local
 ].includes(NETWORK)
+export const IS_TESTNET = [Network.Testnet, Network.TestnetK8s].includes(
+  NETWORK
+)
 
 export const CHAIN_ID: ChainId = (
   process.env.APP_CHAIN_ID

@@ -6,9 +6,9 @@
     >
       <div class="flex flex-col">
         <nuxt-link class="flex items-center justify-start" :to="marketRoute">
-          <div v-if="market.baseToken.logo" class="w-4 h-4">
+          <div v-if="baseTokenLogo" class="w-4 h-4">
             <img
-              :src="market.baseToken.logo"
+              :src="baseTokenLogo"
               :alt="market.baseToken.name"
               class="min-w-full h-auto rounded-full"
             />
@@ -63,6 +63,7 @@ import {
 import { format } from 'date-fns'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 import {
+  getTokenLogoWithVendorPathPrefix,
   UiDerivativeMarketWithToken,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
@@ -144,6 +145,20 @@ export default Vue.extend({
       const marketRoute = getMarketRoute(market)
 
       return marketRoute || { name: 'markets' }
+    },
+
+    baseTokenLogo(): string {
+      const { market } = this
+
+      if (!market) {
+        return ''
+      }
+
+      if (!market.baseToken) {
+        return ''
+      }
+
+      return getTokenLogoWithVendorPathPrefix(market.baseToken.logo)
     }
   }
 })

@@ -12,9 +12,9 @@
     </div>
     <div class="flex justify-between mt-4">
       <div class="flex items-center">
-        <div v-if="market.baseToken.logo" class="w-8 h-8 mr-3">
+        <div v-if="baseTokenLogo" class="w-8 h-8 mr-3">
           <img
-            :src="market.baseToken.logo"
+            :src="baseTokenLogo"
             :alt="market.baseToken.name"
             class="min-w-full h-auto rounded-full"
           />
@@ -74,6 +74,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import {
+  getTokenLogoWithVendorPathPrefix,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiSpotMarketSummary,
@@ -177,6 +178,20 @@ export default Vue.extend({
       }
 
       return market.slug === BAYC_WETH_PERP_SLUG
+    },
+
+    baseTokenLogo(): string {
+      const { market } = this
+
+      if (!market) {
+        return ''
+      }
+
+      if (!market.baseToken) {
+        return ''
+      }
+
+      return getTokenLogoWithVendorPathPrefix(market.baseToken.logo)
     }
   }
 })

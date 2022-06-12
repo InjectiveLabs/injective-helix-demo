@@ -18,8 +18,8 @@
 
           <div v-if="form.token" class="text-center mt-6 mb-10">
             <img
-              v-if="form.token.logo"
-              :src="form.token.logo"
+              v-if="tokenLogo"
+              :src="tokenLogo"
               :alt="form.token.name"
               class="rounded-full w-10 h-10 mx-auto"
             />
@@ -193,7 +193,8 @@ import {
   ZERO_IN_BASE,
   TokenWithUsdPrice,
   BankBalances,
-  TokenWithBalanceAndPrice
+  TokenWithBalanceAndPrice,
+  getTokenLogoWithVendorPathPrefix
 } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
 import { Modal, TransferDirection, BridgeType } from '~/types/enums'
@@ -580,6 +581,16 @@ export default Vue.extend({
 
     isModalOpen(): boolean {
       return this.$accessor.modal.modals[Modal.BridgeConfirm]
+    },
+
+    tokenLogo(): string {
+      const { form } = this
+
+      if (!form.token) {
+        return ''
+      }
+
+      return getTokenLogoWithVendorPathPrefix(form.token.logo)
     }
   },
 

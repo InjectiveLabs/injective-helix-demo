@@ -18,9 +18,9 @@
             )
           }}
         </span>
-        <div v-if="market.baseToken.logo" class="w-4 h-4">
+        <div v-if="baseTokenLogo" class="w-4 h-4">
           <img
-            :src="market.baseToken.logo"
+            :src="baseTokenLogo"
             :alt="market.baseToken.name"
             class="min-w-full h-auto rounded-full"
           />
@@ -76,7 +76,8 @@ import {
   UiDerivativeMarketWithToken,
   UiSpotMarketWithToken,
   UiSpotTrade,
-  ZERO_IN_BASE
+  ZERO_IN_BASE,
+  getTokenLogoWithVendorPathPrefix
 } from '@injectivelabs/sdk-ui-ts'
 import TableRow from '~/components/elements/table-row.vue'
 import {
@@ -223,6 +224,20 @@ export default Vue.extend({
       const marketRoute = getMarketRoute(market)
 
       return marketRoute || { name: 'markets' }
+    },
+
+    baseTokenLogo(): string {
+      const { market } = this
+
+      if (!market) {
+        return ''
+      }
+
+      if (!market.baseToken) {
+        return ''
+      }
+
+      return getTokenLogoWithVendorPathPrefix(market.baseToken.logo)
     }
   },
 

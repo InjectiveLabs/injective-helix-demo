@@ -11,9 +11,9 @@
           >
             {{ orderSideLocalized }}
           </span>
-          <div v-if="market.baseToken.logo" class="w-4 h-4">
+          <div v-if="baseTokenLogo" class="w-4 h-4">
             <img
-              :src="market.baseToken.logo"
+              :src="baseTokenLogo"
               :alt="market.baseToken.name"
               class="min-w-full h-auto rounded-full"
             />
@@ -102,6 +102,7 @@ import {
   StatusType
 } from '@injectivelabs/utils'
 import {
+  getTokenLogoWithVendorPathPrefix,
   SpotOrderSide,
   UiSpotLimitOrder,
   UiSpotMarketWithToken,
@@ -214,6 +215,20 @@ export default Vue.extend({
       return order.orderSide === SpotOrderSide.Buy
         ? this.$t('trade.buy')
         : this.$t('trade.sell')
+    },
+
+    baseTokenLogo(): string {
+      const { market } = this
+
+      if (!market) {
+        return ''
+      }
+
+      if (!market.baseToken) {
+        return ''
+      }
+
+      return getTokenLogoWithVendorPathPrefix(market.baseToken.logo)
     }
   },
 

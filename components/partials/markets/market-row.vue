@@ -15,7 +15,7 @@
 
       <nuxt-link class="cursor-pointer flex items-center" :to="marketRoute">
         <img
-          :src="market.baseToken.logo"
+          :src="baseTokenLogo"
           :alt="market.baseToken.name"
           class="w-6 h-6 mr-3 hidden 3md:block"
         />
@@ -158,7 +158,8 @@ import {
   UiDerivativeMarketWithToken,
   ZERO_IN_BASE,
   UiSpotMarketSummary,
-  UiSpotMarketWithToken
+  UiSpotMarketWithToken,
+  getTokenLogoWithVendorPathPrefix
 } from '@injectivelabs/sdk-ui-ts'
 import {
   BAYC_WETH_PERP_SLUG,
@@ -317,6 +318,20 @@ export default Vue.extend({
       const { favoriteMarkets, market } = this
 
       return favoriteMarkets.includes(market.marketId)
+    },
+
+    baseTokenLogo(): string {
+      const { market } = this
+
+      if (!market) {
+        return ''
+      }
+
+      if (!market.baseToken) {
+        return ''
+      }
+
+      return getTokenLogoWithVendorPathPrefix(market.baseToken.logo)
     }
   },
 

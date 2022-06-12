@@ -36,7 +36,7 @@ import {
   ORDERBOOK_STREAMING_ENABLED
 } from '~/app/utils/constants'
 import {
-  exchangeRestDerivativesChronosApi,
+  exchangeRestSpotChronosApi,
   exchangeSpotApi,
   msgBroadcastClient,
   tokenPrice,
@@ -275,7 +275,7 @@ export const actions = actionTree(
       commit('setMarkets', uiMarketsWithToken)
 
       const marketsSummary =
-        await exchangeRestDerivativesChronosApi.fetchMarketsSummary()
+        await exchangeRestSpotChronosApi.fetchMarketsSummary()
       const marketSummaryNotExists =
         !marketsSummary || (marketsSummary && marketsSummary.length === 0)
       const actualMarketsSummary = marketSummaryNotExists
@@ -301,10 +301,9 @@ export const actions = actionTree(
         throw new Error('Market not found. Please refresh the page.')
       }
 
-      const summary =
-        await exchangeRestDerivativesChronosApi.fetchMarketSummary(
-          market.marketId
-        )
+      const summary = await exchangeRestSpotChronosApi.fetchMarketSummary(
+        market.marketId
+      )
 
       commit('setMarket', market)
       commit('setMarketSummary', { marketId: market.marketId, ...summary })
@@ -522,7 +521,7 @@ export const actions = actionTree(
       }
 
       const updatedMarketsSummary =
-        await exchangeRestDerivativesChronosApi.fetchMarketsSummary()
+        await exchangeRestSpotChronosApi.fetchMarketsSummary()
       const combinedMarketsSummary =
         UiSpotTransformer.spotMarketsSummaryComparisons(
           updatedMarketsSummary,

@@ -24,7 +24,7 @@
       </div>
 
       <div class="hidden lg:block col-span-2">
-        <VProgressSteps :steps="3" :active-step="activeStep" />
+        <ProgressSteps :steps="3" :active-step="activeStep" />
         <div class="grid grid-cols-3 mt-3 gap-8 xl:gap-12 2xl:gap-16">
           <div>
             <span class="tracking-wider uppercase text-xs">

@@ -19,7 +19,7 @@
       <div class="flex items-center justify-start">
         <div v-if="transaction.token" class="w-6 h-6">
           <img
-            :src="transaction.token.logo"
+            :src="tokenLogo"
             :alt="transaction.token.name"
             class="min-w-full h-auto rounded-full"
           />
@@ -89,7 +89,8 @@ import {
 import { format } from 'date-fns'
 import {
   UiBridgeTransactionWithToken,
-  ZERO_IN_BASE
+  ZERO_IN_BASE,
+  getTokenLogoWithVendorPathPrefix
 } from '@injectivelabs/sdk-ui-ts'
 import {
   BIG_NUMBER_ROUND_HALF_UP_MODE,
@@ -190,6 +191,12 @@ export default Vue.extend({
       }
 
       return format(transaction.timestamp, 'dd MMM HH:mm:ss')
+    },
+
+    tokenLogo(): string {
+      const { transaction } = this
+
+      return getTokenLogoWithVendorPathPrefix(transaction.token.logo)
     }
   }
 })

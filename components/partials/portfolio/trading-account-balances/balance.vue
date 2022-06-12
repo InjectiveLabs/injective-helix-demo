@@ -10,9 +10,9 @@
       </span>
       <span class="text-right xl:text-left">
         <div class="flex items-center justify-end xl:justify-start">
-          <div v-if="balance.token.logo" class="w-6 h-6">
+          <div v-if="tokenLogo" class="w-6 h-6">
             <img
-              :src="balance.token.logo"
+              :src="tokenLogo"
               :alt="balance.token.name"
               class="min-w-full h-auto rounded-full"
             />
@@ -131,7 +131,11 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { INJECTIVE_DENOM, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import {
+  getTokenLogoWithVendorPathPrefix,
+  INJECTIVE_DENOM,
+  ZERO_IN_BASE
+} from '@injectivelabs/sdk-ui-ts'
 import { SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd } from '~/types'
 import TableRow from '~/components/elements/table-row.vue'
 import {
@@ -267,6 +271,16 @@ export default Vue.extend({
       })
 
       return route
+    },
+
+    tokenLogo(): string {
+      const { balance } = this
+
+      if (!balance.token) {
+        return ''
+      }
+
+      return getTokenLogoWithVendorPathPrefix(balance.token.logo)
     }
   },
 

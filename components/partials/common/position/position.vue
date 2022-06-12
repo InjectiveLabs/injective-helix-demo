@@ -2,9 +2,9 @@
   <tr v-if="market" :data-cy="'open-position-table-row-' + position.ticker">
     <td class="text-left cursor-pointer" @click="handleClickOnMarket">
       <div class="flex items-center justify-start">
-        <div v-if="market.baseToken.logo" class="w-6 h-6">
+        <div v-if="baseTokenLogo" class="w-6 h-6">
           <img
-            :src="market.baseToken.logo"
+            :src="baseTokenLogo"
             :alt="market.baseToken.name"
             class="min-w-full h-auto rounded-full"
           />
@@ -185,6 +185,7 @@ import Vue, { PropType } from 'vue'
 import { Status, BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {
+  getTokenLogoWithVendorPathPrefix,
   UiDerivativeLimitOrder,
   UiDerivativeMarketWithToken,
   UiPosition,
@@ -516,6 +517,20 @@ export default Vue.extend({
       return position.direction === TradeDirection.Long
         ? this.$t('trade.long')
         : this.$t('trade.short')
+    },
+
+    baseTokenLogo(): string {
+      const { market } = this
+
+      if (!market) {
+        return ''
+      }
+
+      if (!market.baseToken) {
+        return ''
+      }
+
+      return getTokenLogoWithVendorPathPrefix(market.baseToken.logo)
     }
   },
 

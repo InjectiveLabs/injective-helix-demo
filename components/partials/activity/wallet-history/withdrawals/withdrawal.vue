@@ -20,7 +20,7 @@
       <div class="flex items-center justify-start">
         <div v-if="transaction.token" class="w-6 h-6">
           <img
-            :src="transaction.token.logo"
+            :src="tokenLogo"
             :alt="transaction.token.name"
             class="min-w-full h-auto rounded-full"
           />
@@ -89,6 +89,7 @@ import {
 } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import {
+  getTokenLogoWithVendorPathPrefix,
   UiBridgeTransactionWithToken,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
@@ -191,6 +192,12 @@ export default Vue.extend({
       }
 
       return format(transaction.timestamp, 'dd MMM HH:mm:ss')
+    },
+
+    tokenLogo(): string {
+      const { transaction } = this
+
+      return getTokenLogoWithVendorPathPrefix(transaction.token.logo)
     }
   }
 })

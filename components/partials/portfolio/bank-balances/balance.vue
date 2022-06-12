@@ -9,9 +9,9 @@
     </span>
     <span class="xl:col-span-2">
       <div class="flex items-center justify-end xl:justify-start">
-        <div v-if="balance.token.logo" class="w-6 h-6">
+        <div v-if="tokenLogo" class="w-6 h-6">
           <img
-            :src="balance.token.logo"
+            :src="tokenLogo"
             :alt="balance.token.name"
             class="min-w-full h-auto rounded-full"
           />
@@ -93,7 +93,8 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   INJECTIVE_DENOM,
   ZERO_IN_BASE,
-  BankBalanceWithTokenAndBalanceWithUsdBalance
+  BankBalanceWithTokenAndBalanceWithUsdBalance,
+  getTokenLogoWithVendorPathPrefix
 } from '@injectivelabs/sdk-ui-ts'
 import TableRow from '~/components/elements/table-row.vue'
 import {
@@ -182,6 +183,16 @@ export default Vue.extend({
       return new BigNumberInBase(balance.balanceInUsd).toFormat(
         UI_DEFAULT_MIN_DISPLAY_DECIMALS
       )
+    },
+
+    tokenLogo(): string {
+      const { balance } = this
+
+      if (!balance.token) {
+        return ''
+      }
+
+      return getTokenLogoWithVendorPathPrefix(balance.token.logo)
     }
   },
 

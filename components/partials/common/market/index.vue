@@ -6,7 +6,7 @@
       <div class="flex items-center w-auto justify-between lg:pr-5">
         <div class="flex items-center" @click="handleTokenClick">
           <img
-            :src="market.baseToken.logo"
+            :src="baseTokenLogo"
             :alt="market.baseToken.name"
             class="w-6 h-6 mr-4"
           />
@@ -48,6 +48,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import {
+  getTokenLogoWithVendorPathPrefix,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiSpotMarketSummary,
@@ -78,6 +79,22 @@ export default Vue.extend({
     expanded: {
       type: Boolean,
       default: false
+    }
+  },
+
+  computed: {
+    baseTokenLogo(): string {
+      const { market } = this
+
+      if (!market) {
+        return ''
+      }
+
+      if (!market.baseToken) {
+        return ''
+      }
+
+      return getTokenLogoWithVendorPathPrefix(market.baseToken.logo)
     }
   },
 

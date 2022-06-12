@@ -16,7 +16,7 @@
           src="/images/sphere.png"
           class="3md:hidden w-40 sm:w-44 mb-6 mt-4 mx-auto"
         />
-        <VProgressSteps :steps="3" :active-step="activeStep" />
+        <ProgressSteps :steps="3" :active-step="activeStep" />
         <div
           class="flex w-full justify-between tracking-wide uppercase mt-2.5 text-xs text-gray-500"
         >

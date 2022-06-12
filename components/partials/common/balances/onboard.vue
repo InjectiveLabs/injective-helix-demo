@@ -15,7 +15,7 @@
       }}</span>
     </VButton>
     <div class="mt-6">
-      <VProgressSteps
+      <ProgressSteps
         data-cy="onboarding-banner-progress-steps"
         :steps="2"
         :active-step="activeStep"

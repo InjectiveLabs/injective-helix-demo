@@ -6,9 +6,9 @@
   >
     <td class="h-8 text-left cursor-pointer" @click="handleClickOnMarket">
       <div class="flex items-center justify-start">
-        <div v-if="market.baseToken.logo" class="w-6 h-6">
+        <div v-if="baseTokenLogo" class="w-6 h-6">
           <img
-            :src="market.baseToken.logo"
+            :src="baseTokenLogo"
             :alt="market.baseToken.name"
             class="min-w-full h-auto rounded-full"
           />
@@ -154,7 +154,8 @@ import {
   UiDerivativeLimitOrder,
   UiDerivativeMarketWithToken,
   DerivativeOrderSide,
-  ZERO_IN_BASE
+  ZERO_IN_BASE,
+  getTokenLogoWithVendorPathPrefix
 } from '@injectivelabs/sdk-ui-ts'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
@@ -303,6 +304,20 @@ export default Vue.extend({
       return order.orderSide === DerivativeOrderSide.Buy
         ? this.$t('trade.buy')
         : this.$t('trade.sell')
+    },
+
+    baseTokenLogo(): string {
+      const { market } = this
+
+      if (!market) {
+        return ''
+      }
+
+      if (!market.baseToken) {
+        return ''
+      }
+
+      return getTokenLogoWithVendorPathPrefix(market.baseToken.logo)
     }
   },
 
