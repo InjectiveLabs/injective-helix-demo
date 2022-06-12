@@ -5,9 +5,17 @@ import {
   spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/utils'
 import { StreamOperation } from '@injectivelabs/ts-types'
-import { SpotOrderSide, SpotOrderState } from '@injectivelabs/sdk-ts'
+import {
+  MsgBatchCancelSpotOrders,
+  MsgCreateSpotLimitOrder,
+  MsgCreateSpotMarketOrder,
+  SpotOrderSide,
+  SpotOrderState
+} from '@injectivelabs/sdk-ts'
 import {
   Change,
+  SpotMetrics,
+  spotOrderTypeToGrpcOrderType,
   UiSpotLimitOrder,
   UiSpotMarketSummary,
   UiSpotMarketWithToken,
@@ -30,6 +38,7 @@ import {
 import {
   exchangeRestDerivativesChronosApi,
   exchangeSpotApi,
+  msgBroadcastClient,
   tokenPrice,
   tokenService
 } from '~/app/Services'
@@ -555,12 +564,21 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await spotActionService.cancelOrder({
+      const message = MsgBatchCancelSpotOrders.fromJSON({
         injectiveAddress,
+        orders: [
+          {
+            marketId: order.marketId,
+            subaccountId: order.subaccountId,
+            orderHash: order.orderHash
+          }
+        ]
+      })
+
+      await msgBroadcastClient.broadcast({
         address,
-        orderHash: order.orderHash,
-        marketId: order.marketId,
-        subaccountId: subaccount.subaccountId
+        msgs: message,
+        bucket: SpotMetrics.BatchCancelLimitOrders
       })
     },
 
@@ -576,14 +594,23 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await spotActionService.batchCancelOrders({
-        injectiveAddress,
+      const messages = orders.map((order) =>
+        MsgBatchCancelSpotOrders.fromJSON({
+          injectiveAddress,
+          orders: [
+            {
+              marketId: order.marketId,
+              subaccountId: order.subaccountId,
+              orderHash: order.orderHash
+            }
+          ]
+        })
+      )
+
+      await msgBroadcastClient.broadcast({
         address,
-        orders: orders.map((o) => ({
-          orderHash: o.orderHash,
-          subaccountId: o.subaccountId,
-          marketId: o.marketId
-        }))
+        msgs: messages,
+        bucket: SpotMetrics.BatchCancelLimitOrders
       })
     },
 
@@ -612,10 +639,9 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await spotActionService.submitLimitOrder({
-        address,
-        orderType,
+      const message = MsgCreateSpotLimitOrder.fromJSON({
         injectiveAddress,
+        orderType: spotOrderTypeToGrpcOrderType(orderType),
         price: spotPriceToChainPriceToFixed({
           value: price,
           baseDecimals: market.baseToken.decimals,
@@ -628,6 +654,12 @@ export const actions = actionTree(
         marketId: market.marketId,
         feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
+      })
+
+      await msgBroadcastClient.broadcast({
+        address,
+        msgs: message,
+        bucket: SpotMetrics.CreateLimitOrder
       })
     },
 
@@ -656,10 +688,9 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await spotActionService.submitMarketOrder({
-        address,
-        orderType,
+      const message = MsgCreateSpotMarketOrder.fromJSON({
         injectiveAddress,
+        orderType: spotOrderTypeToGrpcOrderType(orderType),
         price: spotPriceToChainPriceToFixed({
           value: price,
           baseDecimals: market.baseToken.decimals,
@@ -672,6 +703,12 @@ export const actions = actionTree(
         marketId: market.marketId,
         feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
+      })
+
+      await msgBroadcastClient.broadcast({
+        address,
+        msgs: message,
+        bucket: SpotMetrics.CreateMarketOrder
       })
     },
 

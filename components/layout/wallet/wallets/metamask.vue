@@ -36,8 +36,9 @@
                 <span
                   class="truncate"
                   data-cy="connect-wallet-popup-metamask-button"
-                  >{{ $t('connect.connectUsingBrowser') }}</span
                 >
+                  {{ $t('connect.connectUsingBrowser') }}
+                </span>
               </p>
             </div>
           </div>

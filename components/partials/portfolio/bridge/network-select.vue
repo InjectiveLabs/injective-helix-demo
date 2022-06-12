@@ -60,14 +60,14 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import vSelect from 'vue-select'
+import VSelect from 'vue-select'
 import { BridgingNetwork, NetworkMeta } from '@injectivelabs/sdk-ui-ts'
 import { networksMeta } from '~/app/data/bridge'
 import { BridgeType } from '~/types'
 
 export default Vue.extend({
   components: {
-    vSelect
+    VSelect
   },
 
   props: {

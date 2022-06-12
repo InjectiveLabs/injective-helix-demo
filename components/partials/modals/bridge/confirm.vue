@@ -190,12 +190,12 @@ import {
   INJ_DENOM,
   BridgingNetwork,
   NetworkMeta,
-  Token,
   ZERO_IN_BASE,
   TokenWithUsdPrice,
   BankBalances,
   TokenWithBalanceAndPrice
 } from '@injectivelabs/sdk-ui-ts'
+import { Token } from '@injectivelabs/token-metadata'
 import { Modal, TransferDirection, BridgeType } from '~/types/enums'
 import NetworkCardBase from '~/components/partials/portfolio/bridge/network-card/index.vue'
 import IbcTransferNote from '~/components/partials/portfolio/bridge/ibc-transfer-note.vue'

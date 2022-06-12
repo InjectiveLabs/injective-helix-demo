@@ -67,7 +67,7 @@ import {
   UiDerivativeMarketWithToken,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
-import { FundingPayment } from '@injectivelabs/derivatives-consumer'
+import { FundingPayment } from '@injectivelabs/sdk-ts'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,

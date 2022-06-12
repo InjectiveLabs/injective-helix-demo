@@ -9,6 +9,8 @@ import {
 import { StreamOperation } from '@injectivelabs/ts-types'
 import {
   Change,
+  derivativeOrderTypeToGrpcOrderType,
+  DerivativesMetrics,
   UiDerivativeLimitOrder,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
@@ -21,7 +23,10 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import {
   DerivativeOrderSide,
-  DerivativeOrderState
+  DerivativeOrderState,
+  MsgBatchCancelDerivativeOrders,
+  MsgCreateDerivativeLimitOrder,
+  MsgCreateDerivativeMarketOrder
 } from '@injectivelabs/sdk-ts'
 import {
   streamOrderbook,
@@ -38,6 +43,7 @@ import {
   exchangeDerivativesApi,
   exchangeOracleApi,
   exchangeRestDerivativesChronosApi,
+  msgBroadcastClient,
   tokenService
 } from '~/app/Services'
 import { derivatives as allowedPerpetualMarkets } from '~/routes.config'
@@ -634,12 +640,21 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await derivativeActionService.cancelOrder({
+      const message = MsgBatchCancelDerivativeOrders.fromJSON({
         injectiveAddress,
+        orders: [
+          {
+            marketId: order.marketId,
+            subaccountId: order.subaccountId,
+            orderHash: order.orderHash
+          }
+        ]
+      })
+
+      await msgBroadcastClient.broadcast({
         address,
-        orderHash: order.orderHash,
-        marketId: order.marketId,
-        subaccountId: subaccount.subaccountId
+        msgs: message,
+        bucket: DerivativesMetrics.BatchCancelLimitOrders
       })
     },
 
@@ -655,14 +670,23 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await derivativeActionService.batchCancelOrders({
-        injectiveAddress,
+      const messages = orders.map((order) =>
+        MsgBatchCancelDerivativeOrders.fromJSON({
+          injectiveAddress,
+          orders: [
+            {
+              marketId: order.marketId,
+              subaccountId: order.subaccountId,
+              orderHash: order.orderHash
+            }
+          ]
+        })
+      )
+
+      await msgBroadcastClient.broadcast({
         address,
-        orders: orders.map((o) => ({
-          orderHash: o.orderHash,
-          subaccountId: o.subaccountId,
-          marketId: o.marketId
-        }))
+        msgs: messages,
+        bucket: DerivativesMetrics.BatchCancelLimitOrders
       })
     },
 
@@ -695,23 +719,29 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await derivativeActionService.submitLimitOrder({
-        reduceOnly,
-        orderType,
+      const message = MsgCreateDerivativeLimitOrder.fromJSON({
         injectiveAddress,
-        address,
+        orderType: derivativeOrderTypeToGrpcOrderType(orderType),
         price: derivativePriceToChainPriceToFixed({
           value: price,
           quoteDecimals: market.quoteToken.decimals
         }),
         quantity: derivativeQuantityToChainQuantityToFixed({ value: quantity }),
-        margin: derivativeMarginToChainMarginToFixed({
-          value: margin,
-          quoteDecimals: market.quoteToken.decimals
-        }),
+        margin: reduceOnly
+          ? ZERO_TO_STRING
+          : derivativeMarginToChainMarginToFixed({
+              value: margin,
+              quoteDecimals: market.quoteToken.decimals
+            }),
         marketId: market.marketId,
         feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
+      })
+
+      await msgBroadcastClient.broadcast({
+        address,
+        msgs: message,
+        bucket: DerivativesMetrics.CreateLimitOrder
       })
     },
 
@@ -744,23 +774,30 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await derivativeActionService.submitMarketOrder({
-        reduceOnly,
-        orderType,
+      const message = MsgCreateDerivativeMarketOrder.fromJSON({
         injectiveAddress,
-        address,
+        triggerPrice: '0',
+        orderType: derivativeOrderTypeToGrpcOrderType(orderType),
         price: derivativePriceToChainPriceToFixed({
           value: price,
           quoteDecimals: market.quoteToken.decimals
         }),
         quantity: derivativeQuantityToChainQuantityToFixed({ value: quantity }),
-        margin: derivativeMarginToChainMarginToFixed({
-          value: margin,
-          quoteDecimals: market.quoteToken.decimals
-        }),
+        margin: reduceOnly
+          ? ZERO_TO_STRING
+          : derivativeMarginToChainMarginToFixed({
+              value: margin,
+              quoteDecimals: market.quoteToken.decimals
+            }),
         marketId: market.marketId,
         feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
+      })
+
+      await msgBroadcastClient.broadcast({
+        address,
+        msgs: message,
+        bucket: DerivativesMetrics.CreateMarketOrder
       })
     }
   }

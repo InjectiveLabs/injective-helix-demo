@@ -116,13 +116,13 @@ import {
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 import { TradeDirection } from '@injectivelabs/ts-types'
-import { DerivativeOrderSide } from '@injectivelabs/derivatives-consumer'
+import { DerivativeOrderSide } from '@injectivelabs/sdk-ts'
 import Record from './record.vue'
 import SummaryPopup from '~/components/partials/common/orderbook/summary-popup.vue'
 import {
   getAggregationPrice,
   computeOrderbookSummary
-} from '~/app/services/derivatives'
+} from '~/app/client/utils/derivatives'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({

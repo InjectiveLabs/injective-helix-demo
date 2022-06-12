@@ -116,7 +116,7 @@ import SummaryPopup from '~/components/partials/common/orderbook/summary-popup.v
 import {
   computeOrderbookSummary,
   getAggregationPrice
-} from '~/app/services/spot'
+} from '~/app/client/utils/spot'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({

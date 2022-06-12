@@ -1,6 +1,6 @@
 <template>
   <div class="h-full w-full flex flex-wrap py-4">
-    <VHocLoading :status="status">
+    <HocLoading :status="status">
       <div class="container">
         <div class="w-full mx-auto xl:w-4/5">
           <CurrentEpoch class="mt-6" />
@@ -9,7 +9,7 @@
           <MarketsInfo class="mt-12" />
         </div>
       </div>
-    </VHocLoading>
+    </HocLoading>
   </div>
 </template>
 

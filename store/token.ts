@@ -1,18 +1,18 @@
 import {
-  Token,
   TokenWithBalance,
   TokenWithBalanceAndPrice,
   UNLIMITED_ALLOWANCE,
   INJ_COIN_GECKO_ID,
-  BankBalanceWithToken
-} from '@injectivelabs/ui-common'
+  BankBalanceWithToken,
+  AccountMetrics
+} from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
 import {
   getAddressFromInjectiveAddress,
   MsgSendToEth
 } from '@injectivelabs/sdk-ts'
-import { AccountMetrics } from '@injectivelabs/sdk-ui-ts'
+import { Token } from '@injectivelabs/token-metadata'
 import {
   msgBroadcastClient,
   tokenPrice,

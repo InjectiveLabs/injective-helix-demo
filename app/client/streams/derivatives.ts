@@ -8,7 +8,7 @@ import {
   OraclePriceStreamCallback,
   PositionsStreamCallback
 } from '@injectivelabs/sdk-ts'
-import { UiBaseDerivativeMarket } from '@injectivelabs/ui-common'
+import { UiBaseDerivativeMarket } from '@injectivelabs/sdk-ui-ts'
 import { streamProvider } from '../../providers/StreamProvider'
 import { ENDPOINTS } from '~/app/utils/constants'
 import { StreamType } from '~/types'
@@ -122,7 +122,7 @@ export const streamSubaccountPositions = ({
   callback: PositionsStreamCallback
 }) => {
   const streamFn = derivativesMarketStream.streamDerivativePositions.bind(
-    derivativesMarketStream.streamDerivativePositions
+    derivativesMarketStream
   )
   const streamFnArgs = {
     ...(subaccountId && { subaccountId }),

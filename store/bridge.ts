@@ -1,15 +1,16 @@
 import { actionTree, getterTree } from 'typed-vuex'
-import { BankMsgSendTransaction } from '@injectivelabs/explorer-consumer'
 import {
   IBCTransferTx,
   PeggyDepositTx,
   PeggyWithdrawalTx,
+  UiAccountTransformer,
   UiBridgeTransactionWithToken,
   UiSubaccountTransfer
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
+import { BankMsgSendTransaction } from '@injectivelabs/sdk-ts'
 import {
-  apolloConsumer,
   bridgeTransformer,
+  exchangeAccountApi,
   exchangeExplorerApi,
   tokenService
 } from '~/app/Services'
@@ -236,10 +237,13 @@ export const actions = actionTree(
         return
       }
 
-      const transfers = await subaccountService.fetchSubaccountTransfers(
-        subaccount.subaccountId
+      const transfers = await exchangeAccountApi.fetchSubaccountHistory({
+        subaccountId: subaccount.subaccountId
+      })
+      const uiTransfers = transfers.map(
+        UiAccountTransformer.grpcAccountTransferToUiAccountTransfer
       )
-      const transactions = transfers.map(
+      const transactions = uiTransfers.map(
         UiBridgeTransformer.convertSubaccountTransfersToUiBridgeTransaction
       )
 
@@ -262,7 +266,8 @@ export const actions = actionTree(
       }
 
       const transactions = await exchangeExplorerApi.fetchIBCTransferTxs({
-        reciver: injectiveAddress
+        sender: injectiveAddress,
+        receiver: injectiveAddress
       })
 
       const uiBridgeTransactions = await Promise.all(
@@ -288,7 +293,7 @@ export const actions = actionTree(
         return
       }
 
-      const transactions = await apolloConsumer.fetchPeggyDepositTransactions({
+      const transactions = await exchangeExplorerApi.fetchPeggyDepositTxs({
         sender: address,
         receiver: injectiveAddress
       })
@@ -316,7 +321,7 @@ export const actions = actionTree(
         return
       }
 
-      const transactions = await exchangeExplorerApi.fetchPeggyDepositTxs({
+      const transactions = await exchangeExplorerApi.fetchPeggyWithdrawalTxs({
         sender: injectiveAddress,
         receiver: address
       })

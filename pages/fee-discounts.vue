@@ -1,15 +1,15 @@
 <template>
   <div class="h-full w-full flex flex-wrap py-4">
-    <VHocLoading :status="status">
+    <HocLoading :status="status">
       <div class="container">
         <div class="w-full mx-auto xl:w-4/5">
-          <v-overview class="mt-6" />
+          <VOverview class="mt-6" />
           <VPanel :title="$t('Fee Discounts')" class="mt-12">
-            <v-fees />
+            <VFees />
           </VPanel>
         </div>
       </div>
-    </VHocLoading>
+    </HocLoading>
   </div>
 </template>
 

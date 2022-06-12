@@ -71,16 +71,16 @@ import {
   UiSpotMarketWithToken,
   UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
-import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
-import VItem from '~/components/partials/common/stats/item.vue'
 import {
-  PointsMultiplier,
-  TradingRewardsCampaign
-} from '~/app/services/exchange'
+  cosmosSdkDecToBigNumber,
+  PointsMultiplier
+} from '@injectivelabs/sdk-ts'
+import VItem from '~/components/partials/common/stats/item.vue'
 import {
   derivatives as sortPerpetualMarkets,
   spot as sortSpotMarkets
 } from '~/routes.config'
+import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 interface PointsMultiplierWithMarketTicker extends PointsMultiplier {
   ticker: string
   slug: string

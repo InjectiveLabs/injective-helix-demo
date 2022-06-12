@@ -203,7 +203,7 @@ import {
   UiDerivativeMarketWithToken,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
-import { DerivativeOrderSide } from '@injectivelabs/derivatives-consumer'
+import { DerivativeOrderSide } from '@injectivelabs/sdk-ts'
 import Drawer from '~/components/elements/drawer.vue'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,

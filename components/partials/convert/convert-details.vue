@@ -52,13 +52,15 @@ import {
   UiSpotOrderbook,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
-import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
+import {
+  cosmosSdkDecToBigNumber,
+  FeeDiscountAccountInfo
+} from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import {
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook
-} from '~/app/services/spot'
-import { FeeDiscountAccountInfo } from '~/app/services/exchange'
+} from '~/app/client/utils/spot'
 
 const ONE_IN_BASE = new BigNumberInBase(1)
 

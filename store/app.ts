@@ -1,8 +1,11 @@
 import { actionTree, getterTree } from 'typed-vuex'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
-import { DEFAULT_GAS_PRICE, SECONDS_IN_A_DAY } from '@injectivelabs/ui-common'
+import {
+  DEFAULT_GAS_PRICE,
+  SECONDS_IN_A_DAY,
+  fetchGasPrice
+} from '@injectivelabs/sdk-ui-ts'
 import { StatusType } from '@injectivelabs/utils'
-import { fetchGasPrice } from '@injectivelabs/sdk-ui-ts'
 import {
   CHAIN_ID,
   ETHEREUM_CHAIN_ID,

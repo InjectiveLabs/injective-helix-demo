@@ -30,7 +30,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { TradeDirection } from '@injectivelabs/ts-types'
-import { TransferType } from '@injectivelabs/subaccount-consumer'
+import { TransferType } from '@injectivelabs/sdk-ts'
 import VDropdown from '~/components/elements/dropdown.vue'
 import SelectorItem from '~/components/layout/selectors/selector-item.vue'
 import { TradeSelectorType, TradeTypes } from '~/types/enums'

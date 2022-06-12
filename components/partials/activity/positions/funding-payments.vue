@@ -84,7 +84,7 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import Vue from 'vue'
 import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { FundingPayment } from '@injectivelabs/derivatives-consumer'
+import { FundingPayment } from '@injectivelabs/sdk-ts'
 import FundingPaymentsTableHeader from '~/components/partials/common/derivatives/funding-payments-table-header.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import FundingPaymentRow from '~/components/partials/common/derivatives/funding-payment.vue'

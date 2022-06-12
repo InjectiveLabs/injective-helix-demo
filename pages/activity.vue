@@ -72,7 +72,7 @@
             </VCardSelect>
           </div>
         </div>
-        <VHocLoading :status="status">
+        <HocLoading :status="status">
           <div
             class="mt-4 pt-4 pb-8 sm:pb-0 xs:mt-6 xs:pt-6 border-t flex-grow"
           >
@@ -81,7 +81,7 @@
             <v-derivatives v-show="component === components.derivatives" />
             <v-funding v-if="component === components.funding" />
           </div>
-        </VHocLoading>
+        </HocLoading>
       </div>
     </div>
   </div>

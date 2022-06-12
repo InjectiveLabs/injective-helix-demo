@@ -1,5 +1,5 @@
 <template>
-  <VHocLoading :key="$route.fullPath" :status="status">
+  <HocLoading :key="$route.fullPath" :status="status">
     <div
       v-if="market"
       class="flex flex-col flex-wrap min-h-screen-excluding-header"
@@ -51,7 +51,7 @@
       <slot name="modals" />
       <ModalMarketBeta v-if="marketIsBeta" />
     </div>
-  </VHocLoading>
+  </HocLoading>
 </template>
 
 <script lang="ts">
@@ -60,7 +60,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import {
   UiDerivativeMarketWithToken,
   UiSpotMarketWithToken
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import SpotMarket from '~/components/partials/spot/market.vue'
 import DerivativeMarket from '~/components/partials/derivatives/market.vue'
 import MarketSelection from '~/components/partials/common/market-selection/index.vue'

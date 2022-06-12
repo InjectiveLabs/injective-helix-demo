@@ -2,9 +2,9 @@ import { actionTree, getterTree } from 'typed-vuex'
 import {
   UiDerivativeTrade,
   UiSpotTrade,
-  UiSubaccountTransfer
-} from '@injectivelabs/ui-common'
-import { UiAccountTransformer } from '@injectivelabs/sdk-ui-ts'
+  UiSubaccountTransfer,
+  UiAccountTransformer
+} from '@injectivelabs/sdk-ui-ts'
 import {
   exchangeDerivativesApi,
   exchangeSpotApi,
@@ -100,8 +100,8 @@ export const actions = actionTree(
       const transfers = await exchangeAccountApi.fetchSubaccountHistory({
         subaccountId: subaccount.subaccountId
       })
-      const uiTransfers = transfers.map((t) =>
-        UiAccountTransformer.grpcAccountTransferToUiAccountTransfer(t)
+      const uiTransfers = transfers.map(
+        UiAccountTransformer.grpcAccountTransferToUiAccountTransfer
       )
 
       commit('setSubaccountTransfers', uiTransfers)

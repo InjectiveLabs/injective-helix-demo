@@ -1,7 +1,7 @@
 <template>
   <div class="h-full w-full flex flex-wrap">
     <div class="w-full">
-      <VHocLoading :status="status">
+      <HocLoading :status="status">
         <div class="container pt-6 pb-12">
           <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12">
             <WelcomeBanner />
@@ -18,7 +18,7 @@
             <Bridge />
           </div>
         </div>
-      </VHocLoading>
+      </HocLoading>
       <modal-onboard-referee v-if="REFERRALS_ENABLED" />
     </div>
   </div>

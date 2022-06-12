@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { UiSpotMarketWithToken } from '@injectivelabs/ui-common'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import MarketLayout from '~/layouts/market.vue'
 import Balances from '~/components/partials/common/balances/index.vue'
 import Trading from '~/components/partials/spot/trading/index.vue'

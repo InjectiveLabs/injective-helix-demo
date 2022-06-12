@@ -1,18 +1,18 @@
 import { actionTree, getterTree } from 'typed-vuex'
 import {
-  Token,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiSpotMarketSummary,
   UiSpotMarketWithToken,
   zeroSpotMarketSummary,
   ZERO_IN_BASE
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import {
   ExchangeParams,
   FeeDiscountAccountInfo,
   FeeDiscountSchedule
 } from '@injectivelabs/sdk-ts'
+import { Token } from '@injectivelabs/token-metadata'
 import { exchangeApi, tokenService } from '~/app/Services'
 import { upcomingMarkets, deprecatedMarkets } from '~/app/data/market'
 import { TradingRewardsCampaign } from '~/app/client/types/exchange'

@@ -229,11 +229,14 @@ import {
   UiDerivativeOrderbook,
   UiPosition,
   UiPriceLevel,
-  cosmosSdkDecToBigNumber,
   NUMBER_REGEX,
   ZERO_IN_BASE,
   UiSubaccount
 } from '@injectivelabs/sdk-ui-ts'
+import {
+  cosmosSdkDecToBigNumber,
+  FeeDiscountAccountInfo
+} from '@injectivelabs/sdk-ts'
 import OrderDetails from './order-details.vue'
 import OrderLeverage from './order-leverage.vue'
 import OrderLeverageSelect from './order-leverage-select.vue'
@@ -256,12 +259,9 @@ import {
   calculateLiquidationPrice,
   calculateMargin,
   getApproxAmountForMarketOrder
-} from '~/app/services/derivatives'
-import {
-  TradingRewardsCampaign,
-  FeeDiscountAccountInfo
-} from '~/app/services/exchange'
+} from '~/app/client/utils/derivatives'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
+import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 
 interface TradeForm {
   reduceOnly: boolean

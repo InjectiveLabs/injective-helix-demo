@@ -27,7 +27,7 @@ import {
   UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import VItem from '~/components/partials/common/stats/item.vue'
-import { TradingRewardsCampaign } from '~/app/services/exchange'
+import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 
 export default Vue.extend({
   components: {

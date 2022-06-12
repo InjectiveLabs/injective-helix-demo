@@ -1,7 +1,7 @@
 <template>
   <div id="pro" class="w-full h-full min-h-screen bg-gray-1050 relative">
     <transition name="page" appear>
-      <VHocLoading :status="status">
+      <HocLoading :status="status">
         <div>
           <SidebarMobile
             :is-sidebar-open="isOpenSidebar"
@@ -24,7 +24,7 @@
             </div>
           </client-only>
         </div>
-      </VHocLoading>
+      </HocLoading>
     </transition>
   </div>
 </template>

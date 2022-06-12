@@ -3,7 +3,7 @@ import {
   TradeRewardCampaign as BaseTradeRewardCampaign,
   FeeDiscountSchedule as BaseFeeDiscountSchedule
 } from '@injectivelabs/sdk-ts/'
-import { Token } from '@injectivelabs/sdk-ui-ts'
+import { Token } from '@injectivelabs/token-metadata'
 
 export interface FeeDiscountSchedule extends BaseFeeDiscountSchedule {
   //

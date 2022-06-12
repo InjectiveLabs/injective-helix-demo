@@ -82,9 +82,9 @@ import {
   Change,
   MarketType,
   ZERO_IN_BASE,
-  BIG_NUMBER_ROUND_DOWN_MODE
+  BIG_NUMBER_ROUND_DOWN_MODE,
+  SpotOrderSide
 } from '@injectivelabs/sdk-ui-ts'
-import { SpotOrderSide } from '@injectivelabs/spot-consumer'
 import MarketNextFunding from './next-funding.vue'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import MarketInfo from '~/components/elements/market-info.vue'

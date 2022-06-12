@@ -20,11 +20,11 @@
 </template>
 
 <script lang="ts">
-import { CampaignRewardPool } from '@injectivelabs/chain-consumer'
+import { CampaignRewardPool } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import Vue from 'vue'
 import Epoch from './epoch.vue'
-import { TradingRewardsCampaign } from '~/app/services/exchange'
+import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 
 export default Vue.extend({
   components: {

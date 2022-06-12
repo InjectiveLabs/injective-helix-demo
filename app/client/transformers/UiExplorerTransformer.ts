@@ -1,18 +1,20 @@
 import {
   BankMsgSendTransaction,
   GrpcBankMsgSendMessage,
-  TransactionFromExplorerApiResponse
+  Transaction
 } from '@injectivelabs/sdk-ts'
 
 export class UiExplorerTransformer {
   static transactionMessageToBankMsgSendTransaction(
-    tx: TransactionFromExplorerApiResponse
+    tx: Transaction
   ): BankMsgSendTransaction {
-    const [message] = tx.messages as GrpcBankMsgSendMessage[]
+    const [message] = (tx.messages || []).map(
+      (m) => JSON.parse(m.value) as GrpcBankMsgSendMessage
+    )
 
     return {
-      blockNumber: tx.block_number,
-      blockTimestamp: tx.block_timestamp,
+      blockNumber: tx.blockNumber,
+      blockTimestamp: tx.blockTimestamp,
       hash: tx.hash,
       amount: message.value.amount[0].amount,
       denom: message.value.amount[0].denom,

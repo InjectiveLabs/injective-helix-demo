@@ -203,10 +203,13 @@ import {
   UiPriceLevel,
   UiSpotMarketWithToken,
   UiSpotOrderbook,
-  UiSubaccount
+  UiSubaccount,
+  SpotOrderSide
 } from '@injectivelabs/sdk-ui-ts'
-import { SpotOrderSide } from '@injectivelabs/spot-consumer'
-import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
+import {
+  cosmosSdkDecToBigNumber,
+  FeeDiscountAccountInfo
+} from '@injectivelabs/sdk-ts'
 import OrderDetails from './order-details.vue'
 import OrderDetailsMarket from './order-details-market.vue'
 import {
@@ -225,12 +228,9 @@ import {
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook,
   getApproxAmountForMarketOrder
-} from '~/app/services/spot'
-import {
-  FeeDiscountAccountInfo,
-  TradingRewardsCampaign
-} from '~/app/services/exchange'
+} from '~/app/client/utils/spot'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
+import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 
 interface TradeForm {
   amount: string

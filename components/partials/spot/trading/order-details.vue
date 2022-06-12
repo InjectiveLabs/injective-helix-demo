@@ -170,8 +170,11 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { SpotOrderSide } from '@injectivelabs/spot-consumer'
+import {
+  UiSpotMarketWithToken,
+  ZERO_IN_BASE,
+  SpotOrderSide
+} from '@injectivelabs/sdk-ui-ts'
 import Drawer from '~/components/elements/drawer.vue'
 import { Icon } from '~/types'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'

@@ -1,5 +1,5 @@
 import { actionTree } from 'typed-vuex'
-import { AuctionModuleState } from '@injectivelabs/chain-consumer'
+import { AuctionModuleState } from '@injectivelabs/sdk-ts'
 import { auctionApi } from '~/app/Services'
 import { UiAuctionTransformer } from '~/app/client/transformers/UiAuctionTransformer'
 

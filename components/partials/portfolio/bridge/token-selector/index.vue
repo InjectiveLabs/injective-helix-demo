@@ -16,10 +16,10 @@ import {
   BridgingNetwork,
   BankBalanceWithToken,
   BankBalanceWithTokenAndBalance,
-  Token,
   SubaccountBalanceWithToken,
   TokenWithBalanceAndPrice
 } from '@injectivelabs/sdk-ui-ts'
+import { Token } from '@injectivelabs/token-metadata'
 import TokenSelector from './select.vue'
 import { TransferSide, TransferDirection } from '~/types'
 

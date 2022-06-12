@@ -90,9 +90,9 @@ import {
   Change,
   UiOrderbookPriceLevel,
   ZERO_IN_BASE,
-  UiSpotMarketWithToken
+  UiSpotMarketWithToken,
+  SpotOrderSide
 } from '@injectivelabs/sdk-ui-ts'
-import { SpotOrderSide } from '@injectivelabs/spot-consumer'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS

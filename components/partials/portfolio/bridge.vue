@@ -45,8 +45,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BridgingNetwork, KeplrNetworks, Token } from '@injectivelabs/sdk-ui-ts'
+import { BridgingNetwork, KeplrNetworks } from '@injectivelabs/sdk-ui-ts'
 import { Wallet } from '@injectivelabs/ts-types'
+import { Token } from '@injectivelabs/token-metadata'
 import { injToken } from '~/app/data/token'
 import { BridgeType, Modal, TransferDirection } from '~/types'
 import VModalBridge from '~/components/partials/modals/bridge/index.vue'

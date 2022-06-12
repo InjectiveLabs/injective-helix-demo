@@ -167,7 +167,7 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { DerivativeOrderSide } from '@injectivelabs/derivatives-consumer'
+import { DerivativeOrderSide } from '@injectivelabs/sdk-ts'
 import Drawer from '~/components/elements/drawer.vue'
 import {
   DEFAULT_MAX_SLIPPAGE,

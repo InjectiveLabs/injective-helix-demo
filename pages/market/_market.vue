@@ -26,7 +26,7 @@ import Vue from 'vue'
 import {
   UiDerivativeMarketWithToken,
   UiSpotMarketWithToken
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import MarketLayout from '~/layouts/market.vue'
 import ModalMarketNew from '~/components/partials/modals/market-new.vue'
 import ModalMarketDeprecated from '~/components/partials/modals/market-deprecated.vue'

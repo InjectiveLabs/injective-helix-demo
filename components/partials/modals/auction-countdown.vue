@@ -24,8 +24,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Network } from '@injectivelabs/networks'
-import { AuctionModuleState } from '@injectivelabs/chain-consumer'
 import { differenceInSeconds, fromUnixTime } from 'date-fns'
+import { AuctionModuleState } from '@injectivelabs/sdk-ts'
 import { Modal } from '~/types'
 import { NETWORK } from '~/app/utils/constants'
 import { formatDurationFromSeconds } from '~/app/utils/time'

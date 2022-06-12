@@ -98,10 +98,12 @@ import {
 } from '@injectivelabs/utils'
 import Vue from 'vue'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
+import {
+  cosmosSdkDecToBigNumber,
+  FeeDiscountAccountInfo
+} from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import VItem from '~/components/partials/common/stats/item.vue'
-import { FeeDiscountAccountInfo } from '~/app/services/exchange'
 
 export default Vue.extend({
   components: {

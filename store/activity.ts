@@ -1,6 +1,5 @@
 import { actionTree, getterTree } from 'typed-vuex'
-import { FundingPayment } from '@injectivelabs/derivatives-consumer'
-import { TradingReward } from '@injectivelabs/subaccount-consumer'
+import { FundingPayment, TradingReward } from '@injectivelabs/sdk-ts'
 import { exchangeAccountApi, exchangeDerivativesApi } from '~/app/Services'
 
 const initialStateFactory = () => ({

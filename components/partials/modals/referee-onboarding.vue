@@ -98,8 +98,7 @@
 import Vue from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { Wallet } from '@injectivelabs/web3-strategy'
-import { AccountAddress } from '@injectivelabs/ts-types'
+import { Wallet, AccountAddress } from '@injectivelabs/ts-types'
 import { Modal, WalletConnectStatus } from '~/types'
 
 export default Vue.extend({

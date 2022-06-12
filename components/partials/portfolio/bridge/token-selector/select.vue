@@ -154,7 +154,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
-import vSelect from 'vue-select'
+import VSelect from 'vue-select'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   BankBalanceWithTokenAndBalanceInBase,
@@ -166,7 +166,7 @@ import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
-    vSelect,
+    VSelect,
     TokenSelectorItem,
     ValidationObserver,
     ValidationProvider

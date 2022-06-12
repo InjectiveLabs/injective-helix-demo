@@ -130,18 +130,18 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import Vue, { PropType } from 'vue'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { CampaignRewardPool } from '@injectivelabs/chain-consumer'
-import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
+import {
+  CampaignRewardPool,
+  cosmosSdkDecToBigNumber,
+  ExchangeParams,
+  FeeDiscountAccountInfo
+} from '@injectivelabs/sdk-ts'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
 } from '~/app/utils/constants'
 import VItem from '~/components/partials/common/stats/item.vue'
-import {
-  FeeDiscountAccountInfo,
-  TradingRewardsCampaign,
-  ExchangeParams
-} from '~/app/services/exchange'
+import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 
 export default Vue.extend({
   components: {

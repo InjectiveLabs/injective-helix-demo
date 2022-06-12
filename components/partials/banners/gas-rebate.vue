@@ -109,18 +109,17 @@
 </template>
 
 <script lang="ts">
+import { UserDeposit } from '@injectivelabs/sdk-ts'
 import {
   BankBalanceWithToken,
   SubaccountBalanceWithToken,
-  Token,
   UiDerivativeMarketWithToken,
   UiDerivativeTrade,
   UiSpotMarketWithToken,
   UiSpotTrade,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
-import { UserDeposit } from '@injectivelabs/sdk-ui-ts/dist/services/bridge/gql/types'
-
+import { Token } from '@injectivelabs/token-metadata'
 import {
   BigNumberInBase,
   BigNumberInWei,

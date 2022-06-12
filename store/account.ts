@@ -15,9 +15,9 @@ import {
 import {
   AccountPortfolio,
   MsgDeposit,
-  MsgWithdraw,
-  Token
+  MsgWithdraw
 } from '@injectivelabs/sdk-ts'
+import { Token } from '@injectivelabs/token-metadata'
 import {
   exchangeAccountApi,
   msgBroadcastClient,

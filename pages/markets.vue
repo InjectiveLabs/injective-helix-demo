@@ -1,10 +1,10 @@
 <template>
-  <VHocLoading :status="status" :show-loading="mappedMarkets.length === 0">
+  <HocLoading :status="status" :show-loading="mappedMarkets.length === 0">
     <div>
       <VOverview v-if="mappedMarkets.length > 0" :markets="mappedMarkets" />
       <Markets :markets="mappedMarkets" />
     </div>
-  </VHocLoading>
+  </HocLoading>
 </template>
 
 <script lang="ts">
@@ -14,7 +14,7 @@ import {
   UiDerivativeMarketWithToken,
   UiSpotMarketSummary,
   UiSpotMarketWithToken
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import Markets from '~/components/partials/markets/index.vue'
 import Overview from '~/components/partials/markets/overview.vue'

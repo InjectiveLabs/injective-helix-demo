@@ -189,13 +189,14 @@ import {
   UiSpotOrderbook,
   UiSubaccount,
   BankBalanceWithTokenAndBalance,
-  Token
+  SpotOrderSide
 } from '@injectivelabs/sdk-ui-ts'
-import { SpotOrderSide } from '@injectivelabs/spot-consumer'
 import {
   cosmosSdkDecToBigNumber,
-  getDecimalsFromNumber
+  getDecimalsFromNumber,
+  FeeDiscountAccountInfo
 } from '@injectivelabs/sdk-ts'
+import { Token } from '@injectivelabs/token-metadata'
 import TokenSelector from './token-selector.vue'
 import AdvancedSettings from './advanced-settings.vue'
 import ConvertDetails from './convert-details.vue'
@@ -217,11 +218,8 @@ import {
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceUsingQuoteAmountAndOrderbook
-} from '~/app/services/spot'
-import {
-  FeeDiscountAccountInfo,
-  TradingRewardsCampaign
-} from '~/app/services/exchange'
+} from '~/app/client/utils/spot'
+import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 
 interface TradeForm {
   amount: string

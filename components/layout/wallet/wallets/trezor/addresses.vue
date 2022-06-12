@@ -27,7 +27,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status } from '@injectivelabs/utils'
-import { Wallet } from '@injectivelabs/web3-strategy'
+import { Wallet } from '@injectivelabs/ts-types'
 
 export default Vue.extend({
   components: {

@@ -1,12 +1,13 @@
 import { MsgSend } from '@injectivelabs/sdk-ts'
-import { AccountMetrics, UiBankTransformer } from '@injectivelabs/sdk-ui-ts'
 import {
+  AccountMetrics,
+  UiBankTransformer,
   BankBalances,
   BankBalanceWithToken,
   IbcBankBalanceWithToken,
-  INJ_DENOM,
-  Token
-} from '@injectivelabs/ui-common'
+  INJ_DENOM
+} from '@injectivelabs/sdk-ui-ts'
+import { Token } from '@injectivelabs/token-metadata'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
 import { bankApi, msgBroadcastClient, tokenService } from '~/app/Services'

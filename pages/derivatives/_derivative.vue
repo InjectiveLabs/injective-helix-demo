@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { UiDerivativeMarketWithToken } from '@injectivelabs/ui-common'
+import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import MarketLayout from '~/layouts/market.vue'
 import ModalAddMargin from '~/components/partials/modals/add-margin/index.vue'
 import Balances from '~/components/partials/common/balances/index.vue'

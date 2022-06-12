@@ -1,4 +1,4 @@
-import { MarketType } from '@injectivelabs/ui-common'
+import { MarketType } from '@injectivelabs/sdk-ui-ts'
 
 export enum Change {
   New = 'new',
