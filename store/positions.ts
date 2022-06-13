@@ -9,6 +9,7 @@ import {
   DerivativeOrderSide,
   MsgCreateDerivativeMarketOrder,
   MsgIncreasePositionMargin
+  // MsgBatchUpdateOrders
 } from '@injectivelabs/sdk-ts'
 import {
   derivativeOrderTypeToGrpcOrderType,
@@ -362,6 +363,30 @@ export const actions = actionTree(
         position,
         actualMarket
       )
+
+      /*
+      const message = MsgBatchUpdateOrders.fromJSON({
+        injectiveAddress,
+        subaccountId: subaccount.subaccountId,
+        derivativeOrdersToCancel: reduceOnlyOrders.map((order) => ({
+          orderHash: order.orderHash,
+          marketId: order.marketId,
+          subaccountId: order.subaccountId
+        })),
+        derivativeOrdersToCreate: [
+          {
+            orderType: derivativeOrderTypeToGrpcOrderType(orderType),
+            feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
+            margin: '0',
+            triggerPrice: '0',
+            marketId: actualMarket.marketId,
+            price: liquidationPrice.toFixed(),
+            quantity: derivativeQuantityToChainQuantityToFixed({
+              value: position.quantity
+            })
+          }
+        ]
+      }) */
 
       const message = MsgCreateDerivativeMarketOrder.fromJSON({
         injectiveAddress,

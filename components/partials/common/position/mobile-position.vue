@@ -462,7 +462,7 @@ export default Vue.extend({
 
       if (
         totalReduceOnlyQuantity.gt(0) &&
-        totalReduceOnlyQuantity.lt(position.quantity)
+        totalReduceOnlyQuantity.gt(position.quantity)
       ) {
         return this.$t('trade.reduce_only_exceed_position')
       }
