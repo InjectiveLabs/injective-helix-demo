@@ -1,15 +1,15 @@
 <template>
   <div>
     <span class="block font-bold uppercase tracking-widest mb-4">
-      {{ $t('trade.swap.advanced_settings') }}
+      {{ $t('trade.convert.advanced_settings') }}
     </span>
     <div class="flex items-center justify-start mb-4">
       <span class="text-gray-500 text-md">
-        {{ $t('trade.swap.slippage_tolerance') }}
+        {{ $t('trade.convert.slippage_tolerance') }}
       </span>
       <IconInfoTooltip
         class="ml-1"
-        :tooltip="$t('trade.swap.slippage_tolerance_tooltip')"
+        :tooltip="$t('trade.convert.slippage_tolerance_tooltip')"
       />
     </div>
     <div class="grid grid-cols-7 sm:grid-cols-9 gap-2">
@@ -29,14 +29,8 @@
       <v-input
         class="col-span-3"
         :value="slippageTolerance"
-        :wrapper-classes="
-          hasWarnings
-            ? 'border-orange-500 bg-orange-500 bg-opacity-10 border shadow-none'
-            : 'border-transparent border shadow-none'
-        "
-        :input-classes="
-          hasWarnings ? 'bg-transparent text-right px-1' : 'text-right px-1'
-        "
+        :wrapper-classes="wrapperClass"
+        :input-classes="inputClass"
         :disabled="false"
         type="number"
         :step="0.01"
@@ -50,16 +44,24 @@
         @input="handleInput"
         @blur="handleBlur"
       >
-        <IconWarn slot="prefix" class="text-orange-500" />
+        <IconWarn slot="prefix" :class="warnIconColor" />
         <span slot="addon"> % </span>
       </v-input>
     </div>
-    <div v-if="hasWarnings" class="block mt-4 text-orange-500">
+    <div v-if="hasWarnings && !hasErrors" class="block mt-4 text-orange-500">
       <span
         v-for="(warning, index) in warnings"
         :key="`slippage-tolerance-warning-${index}`"
       >
         {{ warning }}
+      </span>
+    </div>
+    <div v-if="hasErrors" class="block mt-4 text-red-500">
+      <span
+        v-for="(error, index) in errors"
+        :key="`slippage-tolerance-error-${index}`"
+      >
+        {{ error }}
       </span>
     </div>
   </div>
@@ -77,6 +79,11 @@ export default Vue.extend({
 
   props: {
     warnings: {
+      type: Array,
+      default: null
+    },
+
+    errors: {
       type: Array,
       default: null
     },
@@ -99,8 +106,42 @@ export default Vue.extend({
   },
 
   computed: {
+    wrapperClass(): string {
+      const { hasWarnings, hasErrors } = this
+
+      if (hasErrors) {
+        return 'border-red-500 bg-red-500 bg-opacity-10 border shadow-none'
+      }
+
+      if (hasWarnings) {
+        return 'border-orange-500 bg-orange-500 bg-opacity-10 border shadow-none'
+      }
+
+      return 'border-transparent border shadow-none'
+    },
+
+    inputClass(): string {
+      const { hasWarnings, hasErrors } = this
+
+      if (hasWarnings || hasErrors) {
+        return 'bg-transparent text-right px-1'
+      }
+
+      return 'text-right px-1'
+    },
+
+    warnIconColor(): string {
+      const { hasErrors } = this
+
+      return hasErrors ? 'text-red-500' : 'text-orange-500'
+    },
+
     hasWarnings(): boolean {
       return this.warnings.length > 0
+    },
+
+    hasErrors(): boolean {
+      return this.errors.length > 0
     }
   },
 

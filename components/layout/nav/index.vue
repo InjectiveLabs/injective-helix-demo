@@ -25,11 +25,11 @@
 
       <NavItem
         v-if="isStagingOrTestnetOrDevnet"
-        :to="{ name: 'swap-swap', query: { from: 'usdt', to: 'inj' } }"
+        :to="{ name: 'convert-convert', query: { from: 'usdt', to: 'inj' } }"
         class="block"
-        data-cy="header-swaps-link"
+        data-cy="header-convert-link"
       >
-        {{ $t('navigation.swap') }}
+        {{ $t('navigation.convert') }}
       </NavItem>
 
       <NavItemDummy
