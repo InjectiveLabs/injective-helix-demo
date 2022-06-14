@@ -135,7 +135,8 @@ export default Vue.extend({
 
     showReduceOnly: {
       type: Boolean,
-      required: true
+      required: false,
+      default: false
     },
 
     reduceOnly: {
