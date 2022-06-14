@@ -141,7 +141,8 @@ export default Vue.extend({
 
     reduceOnly: {
       type: Boolean,
-      required: true
+      required: false,
+      default: false
     },
 
     postOnly: {
