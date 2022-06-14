@@ -1699,7 +1699,7 @@ export default Vue.extend({
         .submitLimitOrder({
           price,
           quantity: amount,
-          orderTypeToSubmit
+          orderType: orderTypeToSubmit
         })
         .then(() => {
           this.$toast.success(this.$t('trade.order_placed'))

@@ -2002,7 +2002,7 @@ export default Vue.extend({
         .submitLimitOrder({
           price,
           margin,
-          orderTypeToSubmit,
+          orderType: orderTypeToSubmit,
           reduceOnly: orderTypeReduceOnly,
           quantity: amount
         })
