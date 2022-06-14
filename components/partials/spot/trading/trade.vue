@@ -490,7 +490,7 @@ export default Vue.extend({
         records: orderTypeBuy ? sells : buys,
         feeRate,
         executionPrice
-      }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
+      }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
     },
 
     buys(): UiPriceLevel[] {
@@ -1560,7 +1560,7 @@ export default Vue.extend({
 
       const amount = total
         .dividedBy(price.times(slippage).toFixed(market.priceDecimals))
-        .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
+        .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
 
       this.$nextTick(() => {
         this.onAmountChange(amount)

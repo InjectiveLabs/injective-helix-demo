@@ -1428,7 +1428,7 @@ export default Vue.extend({
       if (orderTypeReduceOnly && position) {
         return maxReduceOnly
           .times(percentageToNumber)
-          .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
+          .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
       }
 
       return getApproxAmountForMarketOrLimitOrder({
@@ -1439,7 +1439,7 @@ export default Vue.extend({
         records: orderTypeBuy ? sells : buys,
         feeRate,
         executionPrice
-      }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
+      }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
     },
 
     makerExpectedPts(): BigNumberInBase {
@@ -1739,7 +1739,7 @@ export default Vue.extend({
         return (this.form.quoteAmount = maxReduceOnly
           .times(percentageToNumber)
           .times(executionPrice)
-          .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR))
+          .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN))
       }
 
       this.updateQuoteFromPercentageQuantityNonReduceOnly(percentageToNumber)
@@ -1807,7 +1807,7 @@ export default Vue.extend({
 
       const amount = total
         .dividedBy(price.times(slippage).toFixed(market.priceDecimals))
-        .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
+        .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
 
       this.$nextTick(() => {
         this.onAmountChange(amount)

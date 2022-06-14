@@ -89,21 +89,18 @@ export const formatToAllowableDecimals = (
   const decimalPlacesInValue = new BigNumberInBase(
     getExactDecimalsFromNumber(value)
   )
-  const valueToString = new BigNumberInBase(value).toFixed()
+  const valueToString = value.toString()
 
-  if (decimalPlacesInValue.gt(0)) {
-    const decimalMoreThanAllowance = decimalPlacesInValue.gte(allowableDecimals)
-
-    return decimalMoreThanAllowance
-      ? new BigNumberInBase(valueToString).toFixed(
-          allowableDecimals,
-          BigNumberInBase.ROUND_DOWN
-        )
-      : valueToString
+  if (decimalPlacesInValue.lte(0)) {
+    return valueToString
   }
 
-  return new BigNumberInBase(valueToString).toFixed(
-    0,
-    BigNumberInBase.ROUND_DOWN
-  )
+  const decimalMoreThanAllowance = decimalPlacesInValue.gte(allowableDecimals)
+
+  return decimalMoreThanAllowance
+    ? new BigNumberInBase(valueToString).toFixed(
+        allowableDecimals,
+        BigNumberInBase.ROUND_DOWN
+      )
+    : valueToString
 }
