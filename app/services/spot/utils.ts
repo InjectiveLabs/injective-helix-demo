@@ -281,7 +281,7 @@ export const getApproxAmountForSellOrder = ({
     ? totalBalance
     : totalFillableAmount
 
-  return amount.toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
+  return amount.toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
 }
 
 export const getApproxAmountForMarketOrLimitOrder = ({

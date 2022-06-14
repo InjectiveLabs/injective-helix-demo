@@ -274,7 +274,10 @@ import {
   PRICE_BAND_ENABLED,
   BIGGER_PRICE_WARNING_DEVIATION
 } from '~/app/utils/constants'
-import { formatToAllowableDecimals } from '~/app/utils/formatters'
+import {
+  formatAmountToAllowableDecimals,
+  formatPriceToAllowableDecimals
+} from '~/app/utils/formatters'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
 import { Modal } from '~/types'
@@ -708,9 +711,7 @@ export default Vue.extend({
         market
       })
 
-      return new BigNumberInBase(
-        averagePrice.toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
-      )
+      return new BigNumberInBase(averagePrice.toFixed(market.priceDecimals))
     },
 
     averagePriceDerivedFromQuoteAmount(): BigNumberInBase {
@@ -729,9 +730,7 @@ export default Vue.extend({
           market
         })
 
-      return new BigNumberInBase(
-        averagePrice.toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
-      )
+      return new BigNumberInBase(averagePrice.toFixed(market.priceDecimals))
     },
 
     averagePrice(): BigNumberInBase {
@@ -1675,8 +1674,7 @@ export default Vue.extend({
 
       if (!price) {
         this.form.price = new BigNumberInBase(newPrice).toFixed(
-          market.priceDecimals,
-          BigNumberInBase.ROUND_DOWN
+          market.priceDecimals
         )
       }
     }
@@ -1714,7 +1712,7 @@ export default Vue.extend({
     },
 
     setSlippageTolerance(slippage: string) {
-      this.form.slippageTolerance = formatToAllowableDecimals(slippage, 2)
+      this.form.slippageTolerance = formatAmountToAllowableDecimals(slippage, 2)
     },
 
     updateQuoteAmountFromPercentage() {
@@ -1837,7 +1835,10 @@ export default Vue.extend({
         return
       }
 
-      this.form.price = formatToAllowableDecimals(price, market.priceDecimals)
+      this.form.price = formatPriceToAllowableDecimals(
+        price,
+        market.priceDecimals
+      )
 
       if (hasAmount) {
         this.updateLimitQuoteAmount()
@@ -1851,7 +1852,7 @@ export default Vue.extend({
         return
       }
 
-      this.form.amount = formatToAllowableDecimals(
+      this.form.amount = formatAmountToAllowableDecimals(
         amount,
         market.quantityDecimals
       )
@@ -1879,7 +1880,7 @@ export default Vue.extend({
         return
       }
 
-      this.form.quoteAmount = formatToAllowableDecimals(
+      this.form.quoteAmount = formatAmountToAllowableDecimals(
         quoteAmount,
         market.priceDecimals
       )
@@ -1912,10 +1913,7 @@ export default Vue.extend({
         return
       }
 
-      this.form.price = lastTradedPrice.toFixed(
-        market.priceDecimals,
-        BigNumberInBase.ROUND_DOWN
-      )
+      this.form.price = lastTradedPrice.toFixed(market.priceDecimals)
     },
 
     updateMarketQuoteAmount() {

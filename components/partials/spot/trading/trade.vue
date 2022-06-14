@@ -283,7 +283,10 @@ import {
   TradingRewardsCampaign
 } from '~/app/services/exchange'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
-import { formatToAllowableDecimals } from '~/app/utils/formatters'
+import {
+  formatPriceToAllowableDecimals,
+  formatAmountToAllowableDecimals
+} from '~/app/utils/formatters'
 
 interface TradeForm {
   amount: string
@@ -696,9 +699,7 @@ export default Vue.extend({
         market
       })
 
-      return new BigNumberInBase(
-        averagePrice.toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
-      )
+      return new BigNumberInBase(averagePrice.toFixed(market.priceDecimals))
     },
 
     averagePriceDerivedFromQuoteAmount(): BigNumberInBase {
@@ -717,9 +718,7 @@ export default Vue.extend({
           market
         })
 
-      return new BigNumberInBase(
-        averagePrice.toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
-      )
+      return new BigNumberInBase(averagePrice.toFixed(market.priceDecimals))
     },
 
     averagePrice(): BigNumberInBase {
@@ -1369,8 +1368,7 @@ export default Vue.extend({
 
       if (!price) {
         this.form.price = new BigNumberInBase(newPrice).toFixed(
-          market.priceDecimals,
-          BigNumberInBase.ROUND_DOWN
+          market.priceDecimals
         )
       }
     },
@@ -1456,10 +1454,16 @@ export default Vue.extend({
         .times(new BigNumberInBase(1).minus(feeRate))
 
       if (baseBalance.gt(totalFillableAmount)) {
-        return (this.form.quoteAmount = totalNotional.toFixed())
+        return (this.form.quoteAmount = totalNotional.toFixed(
+          market.priceDecimals,
+          BigNumberInBase.ROUND_DOWN
+        ))
       }
 
-      return (this.form.quoteAmount = notionalBalance.toFixed())
+      return (this.form.quoteAmount = notionalBalance.toFixed(
+        market.priceDecimals,
+        BigNumberInBase.ROUND_DOWN
+      ))
     },
 
     updateQuoteForPercentageAmountBuy(percentToNumber: BigNumberInBase) {
@@ -1489,15 +1493,15 @@ export default Vue.extend({
       const quoteBalance = quoteAvailableBalance.times(percentToNumber)
 
       if (total.gt(quoteBalance)) {
-        return (this.form.quoteAmount = formatToAllowableDecimals(
+        return (this.form.quoteAmount = formatAmountToAllowableDecimals(
           quoteBalance.toFixed(),
           market.priceDecimals
         ))
       }
 
-      return (this.form.quoteAmount = formatToAllowableDecimals(
+      return (this.form.quoteAmount = formatAmountToAllowableDecimals(
         totalNotional.toFixed(),
-        BigNumberInBase.ROUND_DOWN
+        market.priceDecimals
       ))
     },
 
@@ -1533,10 +1537,7 @@ export default Vue.extend({
         return
       }
 
-      this.form.price = lastTradedPrice.toFixed(
-        market.priceDecimals,
-        BigNumberInBase.ROUND_DOWN
-      )
+      this.form.price = lastTradedPrice.toFixed(market.priceDecimals)
     },
 
     onOrderbookNotionalClick({
@@ -1582,7 +1583,10 @@ export default Vue.extend({
         return
       }
 
-      this.form.price = formatToAllowableDecimals(price, market.priceDecimals)
+      this.form.price = formatPriceToAllowableDecimals(
+        price,
+        market.priceDecimals
+      )
 
       if (hasAmount) {
         this.updateQuoteAmount()
@@ -1599,7 +1603,7 @@ export default Vue.extend({
         return
       }
 
-      this.form.amount = formatToAllowableDecimals(
+      this.form.amount = formatAmountToAllowableDecimals(
         amount,
         market.quantityDecimals
       )
