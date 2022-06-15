@@ -145,14 +145,14 @@ import ConvertErrors from './convert-errors.vue'
 import {
   ConvertTradeError,
   ConvertTradeErrorLinkType,
-  ConvertForm,
-  ONE_IN_BASE
+  ConvertForm
 } from './types'
 import {
   DEFAULT_MARKET_PRICE_WARNING_DEVIATION,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  DEFAULT_MAX_SLIPPAGE
+  DEFAULT_MAX_SLIPPAGE,
+  ONE_IN_BASE
 } from '~/app/utils/constants'
 import ModalInsufficientInjForGas from '~/components/partials/modals/insufficient-inj-for-gas.vue'
 import { Modal } from '~/types'

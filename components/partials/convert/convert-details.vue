@@ -56,8 +56,7 @@ import {
   cosmosSdkDecToBigNumber,
   FeeDiscountAccountInfo
 } from '@injectivelabs/sdk-ts'
-import { ONE_IN_BASE } from './types'
-import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { ONE_IN_BASE, UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import {
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook

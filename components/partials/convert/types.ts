@@ -1,4 +1,3 @@
-import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeError } from '~/types'
 
 export enum ConvertTradeErrorLinkType {
@@ -17,5 +16,3 @@ export interface ConvertForm {
 export interface ConvertTradeError extends TradeError {
   linkType: ConvertTradeErrorLinkType
 }
-
-export const ONE_IN_BASE = new BigNumberInBase(1)
