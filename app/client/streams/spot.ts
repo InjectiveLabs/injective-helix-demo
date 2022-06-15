@@ -1,23 +1,26 @@
 import {
-  SpotMarketStreamType,
-  OrderbookStreamCallback as SpotMarketOrderbookStreamCallback,
-  TradeStreamCallback as SpotMarketTradeStreamCallback,
-  OrderStreamCallback as SpotMarketOrderStreamCallback
-} from '@injectivelabs/spot-consumer'
+  ExchangeGrpcSpotStream,
+  SpotOrderbookStreamCallback,
+  SpotOrdersStreamCallback,
+  SpotTradesStreamCallback
+} from '@injectivelabs/sdk-ts'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
-import { streamProvider } from '../providers/StreamProvider'
-import { spotMarketStream } from '~/app/singletons/SpotMarketStream'
+import { streamProvider } from '../../providers/StreamProvider'
+import { ENDPOINTS } from '~/app/utils/constants'
+import { StreamType } from '~/types'
+
+export const spotMarketStream = new ExchangeGrpcSpotStream(
+  ENDPOINTS.exchangeApi
+)
 
 export const streamOrderbook = ({
   marketId,
   callback
 }: {
   marketId: string
-  callback: SpotMarketOrderbookStreamCallback
+  callback: SpotOrderbookStreamCallback
 }) => {
-  const streamFn = spotMarketStream.orderbook.start.bind(
-    spotMarketStream.orderbook
-  )
+  const streamFn = spotMarketStream.streamSpotOrderbook.bind(spotMarketStream)
   const streamFnArgs = {
     marketIds: [marketId],
     callback
@@ -26,7 +29,7 @@ export const streamOrderbook = ({
   streamProvider.subscribe({
     fn: streamFn,
     args: streamFnArgs,
-    key: SpotMarketStreamType.Orderbook
+    key: StreamType.SpotOrderbook
   })
 }
 
@@ -35,9 +38,9 @@ export const streamTrades = ({
   callback
 }: {
   marketId: string
-  callback: SpotMarketTradeStreamCallback
+  callback: SpotTradesStreamCallback
 }) => {
-  const streamFn = spotMarketStream.trades.start.bind(spotMarketStream.trades)
+  const streamFn = spotMarketStream.streamSpotTrades.bind(spotMarketStream)
   const streamFnArgs = {
     marketId,
     callback,
@@ -47,7 +50,7 @@ export const streamTrades = ({
   streamProvider.subscribe({
     fn: streamFn,
     args: streamFnArgs,
-    key: SpotMarketStreamType.Trades
+    key: StreamType.SpotTrades
   })
 }
 
@@ -58,11 +61,9 @@ export const streamSubaccountTrades = ({
 }: {
   marketId?: string
   subaccountId?: string
-  callback: SpotMarketTradeStreamCallback
+  callback: SpotTradesStreamCallback
 }) => {
-  const streamFn = spotMarketStream.trades.subaccount.bind(
-    spotMarketStream.trades
-  )
+  const streamFn = spotMarketStream.streamSpotTrades.bind(spotMarketStream)
   const streamFnArgs = {
     ...(subaccountId && { subaccountId }),
     ...(marketId && { marketId }),
@@ -72,7 +73,7 @@ export const streamSubaccountTrades = ({
   streamProvider.subscribe({
     fn: streamFn,
     args: streamFnArgs,
-    key: SpotMarketStreamType.SubaccountTrades
+    key: StreamType.SpotSubaccountTrades
   })
 }
 
@@ -83,11 +84,9 @@ export const streamSubaccountOrders = ({
 }: {
   marketId?: string
   subaccountId?: string
-  callback: SpotMarketOrderStreamCallback
+  callback: SpotOrdersStreamCallback
 }) => {
-  const streamFn = spotMarketStream.orders.subaccount.bind(
-    spotMarketStream.orders
-  )
+  const streamFn = spotMarketStream.streamSpotOrders.bind(spotMarketStream)
   const streamFnArgs = {
     ...(subaccountId && { subaccountId }),
     ...(marketId && { marketId }),
@@ -97,6 +96,6 @@ export const streamSubaccountOrders = ({
   streamProvider.subscribe({
     fn: streamFn,
     args: streamFnArgs,
-    key: SpotMarketStreamType.SubaccountOrders
+    key: StreamType.SpotSubaccountOrders
   })
 }

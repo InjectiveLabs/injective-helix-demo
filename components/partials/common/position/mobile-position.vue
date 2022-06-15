@@ -1,5 +1,5 @@
 <template>
-  <table-row dense>
+  <table-row v-if="market" dense>
     <div
       class="flex items-center justify-between col-span-2 text-xs leading-5 pb-1"
     >
@@ -12,9 +12,9 @@
         >
           {{ directionLocalized }}
         </span>
-        <div v-if="market.baseToken.logo" class="w-4 h-4">
+        <div v-if="baseTokenLogo" class="w-4 h-4">
           <img
-            :src="market.baseToken.logo"
+            :src="baseTokenLogo"
             :alt="market.baseToken.name"
             class="min-w-full h-auto rounded-full"
           />
@@ -28,7 +28,7 @@
         </div>
       </div>
 
-      <v-button
+      <VButton
         v-if="!hideBalance"
         class="cursor-pointer"
         :status="status"
@@ -39,7 +39,7 @@
         >
           <IconClose class="h-3 w-3" />
         </div>
-      </v-button>
+      </VButton>
     </div>
 
     <span class="text-gray-500 uppercase tracking-widest text-3xs">
@@ -47,7 +47,7 @@
     </span>
     <div class="text-right">
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-      <v-number
+      <VNumber
         v-else
         dense
         :decimals="
@@ -63,7 +63,7 @@
     <div class="text-right">
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <div v-else class="flex justify-end items-center whitespace-nowrap">
-        <v-number
+        <VNumber
           dense
           :decimals="
             market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -81,7 +81,7 @@
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <div v-else class="flex justify-end items-center">
         <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-        <v-number
+        <VNumber
           v-else
           :decimals="
             market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -118,7 +118,7 @@
     </span>
     <div class="text-right">
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-      <v-number
+      <VNumber
         v-else
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -128,7 +128,7 @@
         <span slot="addon" class="text-gray-500 text-3xs">
           {{ market.quoteToken.symbol }}
         </span>
-      </v-number>
+      </VNumber>
     </div>
 
     <span class="text-gray-500 uppercase tracking-widest text-3xs">
@@ -137,7 +137,7 @@
     <div class="text-right">
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <div v-else class="flex items-center justify-end h-4">
-        <v-number
+        <VNumber
           :decimals="
             market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
           "
@@ -161,12 +161,13 @@ import Vue, { PropType } from 'vue'
 import { Status, BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {
+  getTokenLogoWithVendorPathPrefix,
   UiDerivativeLimitOrder,
   UiDerivativeMarketWithToken,
   UiPosition,
   UiSpotLimitOrder,
   ZERO_IN_BASE
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import TableRow from '~/components/elements/table-row.vue'
 import {
   HIDDEN_BALANCE_DISPLAY,
@@ -461,7 +462,7 @@ export default Vue.extend({
 
       if (
         totalReduceOnlyQuantity.gt(0) &&
-        totalReduceOnlyQuantity.lt(position.quantity)
+        totalReduceOnlyQuantity.gt(position.quantity)
       ) {
         return this.$t('trade.reduce_only_exceed_position')
       }
@@ -497,6 +498,20 @@ export default Vue.extend({
       return position.direction === TradeDirection.Long
         ? this.$t('trade.long')
         : this.$t('trade.short')
+    },
+
+    baseTokenLogo(): string {
+      const { market } = this
+
+      if (!market) {
+        return ''
+      }
+
+      if (!market.baseToken) {
+        return ''
+      }
+
+      return getTokenLogoWithVendorPathPrefix(market.baseToken.logo)
     }
   },
 

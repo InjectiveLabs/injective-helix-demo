@@ -2,7 +2,7 @@ import {
   MarketBase,
   UiDerivativeMarketWithToken,
   UiSpotMarketWithToken
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import {
   BAYC_WETH_PERP_SLUG,
   IS_DEVNET,

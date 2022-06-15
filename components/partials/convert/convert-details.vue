@@ -8,7 +8,8 @@
         {{ $t('trade.convert.fetching_price') }}...
       </span>
       <span v-else-if="hasAmount" class="text-sm">
-        1 {{ fromToken.symbol }} = {{ averagePriceWithoutSlippageToFormat }} {{ toToken.symbol }}
+        1 {{ fromToken.symbol }} = {{ averagePriceWithoutSlippageToFormat }}
+        {{ toToken.symbol }}
       </span>
       <span v-else class="text-sm"> -- </span>
     </div>
@@ -46,19 +47,20 @@
 import Vue from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
-  cosmosSdkDecToBigNumber,
-  // getDecimalsFromNumber,
   SpotOrderSide,
   UiPriceLevel,
   UiSpotOrderbook,
   ZERO_IN_BASE
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
+import {
+  cosmosSdkDecToBigNumber,
+  FeeDiscountAccountInfo
+} from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import {
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook
-} from '~/app/services/spot'
-import { FeeDiscountAccountInfo } from '~/app/services/exchange'
+} from '~/app/client/utils/spot'
 
 const ONE_IN_BASE = new BigNumberInBase(1)
 

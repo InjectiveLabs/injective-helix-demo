@@ -4,7 +4,7 @@
       v-slot="{ errors: { amount: inputErrors } }"
       ref="bridge-token-input"
     >
-      <v-select
+      <VSelect
         id="bridge-input-select"
         v-bind="$attrs"
         ref="tokenSelector"
@@ -39,7 +39,7 @@
           >
             <div class="flex justify-between gap-4 items-center">
               <div class="flex flex-col w-full justify-center">
-                <v-input
+                <VInput
                   id="bridge-input"
                   dense
                   :small="small"
@@ -126,7 +126,7 @@
 
         <template #list-header>
           <li class="mb-4">
-            <v-input
+            <VInput
               id="bridge-input-search"
               v-model="search"
               dense
@@ -139,14 +139,14 @@
               @click.native.stop="focusSearchInput"
             >
               <IconSearch slot="addon" class="w-6 h-6" />
-            </v-input>
+            </VInput>
           </li>
         </template>
 
         <template #option="item">
-          <v-token-selector-item :item="item" :dense="dense" />
+          <TokenSelectorItem :item="item" :dense="dense" />
         </template>
-      </v-select>
+      </VSelect>
     </ValidationObserver>
   </div>
 </template>
@@ -154,20 +154,20 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
-import vSelect from 'vue-select'
+import VSelect from 'vue-select'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   BankBalanceWithTokenAndBalanceInBase,
-  BIG_NUMBER_ROUND_DOWN_MODE,
-  getDecimalsFromNumber
-} from '@injectivelabs/ui-common'
-import VTokenSelectorItem from './item.vue'
+  BIG_NUMBER_ROUND_DOWN_MODE
+} from '@injectivelabs/sdk-ui-ts'
+import { getDecimalsFromNumber } from '@injectivelabs/sdk-ts'
+import TokenSelectorItem from './item.vue'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
-    vSelect,
-    VTokenSelectorItem,
+    VSelect,
+    TokenSelectorItem,
     ValidationObserver,
     ValidationProvider
   },

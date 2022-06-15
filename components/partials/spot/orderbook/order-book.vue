@@ -10,7 +10,7 @@
           @mouseenter="autoScrollSellsLocked = true"
           @mouseleave="autoScrollSellsLocked = false"
         >
-          <v-record
+          <Record
             v-for="(sell, index) in sellsWithDepth"
             :key="`order-book-sell-${sell.aggregatedPrice || sell.price}`"
             :ref="`order-book-sell-${index}`"
@@ -24,7 +24,7 @@
             :record="sell"
             data-cy="orderbook-sell-list-item"
             @update:active-position="handleSellOrderHover"
-          ></v-record>
+          ></Record>
         </ul>
       </div>
     </div>
@@ -68,7 +68,7 @@
           @mouseenter="autoScrollBuysLocked = true"
           @mouseleave="autoScrollBuysLocked = false"
         >
-          <v-record
+          <Record
             v-for="(buy, index) in buysWithDepth"
             :key="`order-book-buy-${buy.aggregatedPrice || buy.price}`"
             :ref="`order-book-buy-${index}`"
@@ -82,7 +82,7 @@
             :record="buy"
             data-cy="orderbook-buy-list-item"
             @update:active-position="handleBuyOrderHover"
-          ></v-record>
+          ></Record>
         </ul>
       </div>
     </div>
@@ -110,19 +110,19 @@ import {
   UiPriceLevel,
   UiOrderbookSummary,
   ZERO_IN_BASE
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import Record from './record.vue'
 import SummaryPopup from '~/components/partials/common/orderbook/summary-popup.vue'
 import {
   computeOrderbookSummary,
   getAggregationPrice
-} from '~/app/services/spot'
+} from '~/app/client/utils/spot'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
     SummaryPopup,
-    'v-record': Record
+    Record
   },
 
   props: {

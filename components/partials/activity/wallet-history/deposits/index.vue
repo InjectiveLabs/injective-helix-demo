@@ -1,11 +1,11 @@
 <template>
-  <VHocLoading :status="status">
-    <v-card-table-wrap>
+  <HocLoading :status="status">
+    <VCardTableWrap>
       <template #actions>
         <div
           class="col-span-12 sm:col-span-6 lg:col-span-4 grid grid-cols-5 gap-4"
         >
-          <v-search
+          <VSearch
             dense
             class="col-span-3"
             data-cy="universal-table-filter-by-asset-input"
@@ -16,26 +16,26 @@
         </div>
       </template>
 
-      <v-table-wrapper break-md class="mt-4">
+      <TableWrapper break-md class="mt-4">
         <table v-if="filteredTransactions.length > 0" class="table">
-          <table-header />
+          <TableHeader />
           <tbody>
             <tr
-              is="v-deposit"
+              is="Deposit"
               v-for="(transaction, index) in sortedTransactions"
               :key="`deposit-${index}-${transaction.timestamp}`"
               :transaction="transaction"
             />
           </tbody>
         </table>
-        <v-empty-list
+        <EmptyList
           v-else
           :message="$t('walletHistory.emptyDepositTransactions')"
           class="min-h-orders"
         />
-      </v-table-wrapper>
-    </v-card-table-wrap>
-  </VHocLoading>
+      </TableWrapper>
+    </VCardTableWrap>
+  </HocLoading>
 </template>
 
 <script lang="ts">
@@ -44,14 +44,14 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import {
   BridgeTransactionState,
   UiBridgeTransactionWithToken
-} from '@injectivelabs/ui-common'
-import VDeposit from './deposit.vue'
+} from '@injectivelabs/sdk-ui-ts'
+import Deposit from './deposit.vue'
 import TableHeader from '~/components/partials/activity/wallet-history/common/table-header.vue'
 
 export default Vue.extend({
   components: {
     TableHeader,
-    VDeposit
+    Deposit
   },
 
   data() {

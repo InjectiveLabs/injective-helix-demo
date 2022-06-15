@@ -3,9 +3,9 @@ import { Network } from '@injectivelabs/networks'
 import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_DISPLAY_DECIMALS,
-  NETWORK
+  NETWORK,
+  ENDPOINTS
 } from './constants'
-import { app } from '~/app/singletons/App'
 
 export const getSignificantDecimalsFromNumber = (
   number: number | string
@@ -67,7 +67,7 @@ export const getDecimalsFromNumber = (number: number | string): number => {
 }
 
 export const getChronosDatafeedEndpoint = (marketType: string): string => {
-  return `${app.endpoints.exchangeApi}/api/chronos/v1/${marketType}`
+  return `${ENDPOINTS.exchangeApi}/api/chronos/v1/${marketType}`
 }
 
 export const getHubUrl = (): string => {

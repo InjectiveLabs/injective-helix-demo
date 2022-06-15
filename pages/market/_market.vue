@@ -1,24 +1,24 @@
 <template>
-  <v-market-layout hardcoded-slug="btc-usdt-perp">
+  <Market-layout hardcoded-slug="btc-usdt-perp">
     <template slot="trading-panel">
-      <v-balances />
-      <v-trading class="mt-1 flex-1" />
+      <Balances />
+      <Trading class="mt-1 flex-1" />
     </template>
 
     <template v-if="market">
-      <v-market-chart slot="chart" :market="market" />
-      <v-orderbook slot="order-books" :market="market" />
-      <v-orders slot="orders" />
+      <Market-chart slot="chart" :market="market" />
+      <Orderbook slot="order-books" :market="market" />
+      <Orders slot="orders" />
     </template>
 
     <div slot="modals">
-      <v-modal-market-new v-if="marketIsNew" />
-      <v-modal-market-deprecated
+      <ModalMarketNew v-if="marketIsNew" />
+      <ModalMarketDeprecated
         v-if="deprecatedMarket"
         :market="deprecatedMarket"
       />
     </div>
-  </v-market-layout>
+  </Market-layout>
 </template>
 
 <script lang="ts">
@@ -26,28 +26,28 @@ import Vue from 'vue'
 import {
   UiDerivativeMarketWithToken,
   UiSpotMarketWithToken
-} from '@injectivelabs/ui-common'
-import VMarketLayout from '~/layouts/market.vue'
-import VModalMarketNew from '~/components/partials/modals/market-new.vue'
-import VModalMarketDeprecated from '~/components/partials/modals/market-deprecated.vue'
-import VBalances from '~/components/partials/common/balances/index.vue'
-import VTrading from '~/components/partials/derivatives/trading/index.vue'
-import VMarketChart from '~/components/partials/common/market/chart.vue'
-import VOrders from '~/components/partials/derivatives/orders.vue'
-import VOrderbook from '~/components/partials/derivatives/orderbook.vue'
+} from '@injectivelabs/sdk-ui-ts'
+import MarketLayout from '~/layouts/market.vue'
+import ModalMarketNew from '~/components/partials/modals/market-new.vue'
+import ModalMarketDeprecated from '~/components/partials/modals/market-deprecated.vue'
+import Balances from '~/components/partials/common/balances/index.vue'
+import Trading from '~/components/partials/derivatives/trading/index.vue'
+import MarketChart from '~/components/partials/common/market/chart.vue'
+import Orders from '~/components/partials/derivatives/orders.vue'
+import Orderbook from '~/components/partials/derivatives/orderbook.vue'
 import { Modal } from '~/types'
 import { deprecatedMarkets, upcomingMarkets } from '~/app/data/market'
 
 export default Vue.extend({
   components: {
-    VMarketLayout,
-    VModalMarketNew,
-    VModalMarketDeprecated,
-    VTrading,
-    VBalances,
-    VOrders,
-    VOrderbook,
-    VMarketChart
+    MarketLayout,
+    ModalMarketNew,
+    ModalMarketDeprecated,
+    Trading,
+    Balances,
+    Orders,
+    Orderbook,
+    MarketChart
   },
 
   data() {

@@ -1,10 +1,10 @@
 <template>
-  <v-card-table-wrap>
+  <VCardTableWrap>
     <template #actions>
       <div
         class="col-span-12 sm:col-span-6 lg:col-span-4 grid grid-cols-5 gap-4"
       >
-        <v-search
+        <VSearch
           dense
           class="col-span-3"
           data-cy="universal-table-filter-by-asset-input"
@@ -12,7 +12,7 @@
           :search="search"
           @searched="handleInputOnSearch"
         />
-        <filter-selector
+        <FilterSelector
           class="col-span-2"
           data-cy="universal-table-filter-by-side-select"
           :type="TradeSelectorType.PositionSide"
@@ -39,7 +39,7 @@
       <div
         class="col-span-6 lg:col-span-8 sm:text-right mt-4 sm:mt-0 hidden sm:block"
       >
-        <v-button
+        <VButton
           v-if="
             filteredPositions.length > 0 && walletIsNotKeplr && !hideBalance
           "
@@ -50,7 +50,7 @@
           @click.stop="handleClosePositions"
         >
           {{ $t('trade.closeAllPositions') }}
-        </v-button>
+        </VButton>
       </div>
     </template>
 
@@ -59,14 +59,14 @@
       :show-empty="filteredPositions.length === 0"
       class="sm:hidden max-h-lg overflow-y-auto"
     >
-      <mobile-position
+      <MobilePosition
         v-for="(position, index) in sortedPositions"
         :key="`mobile-positions-${index}-${position.marketId}`"
         class="col-span-1"
         :position="position"
       />
 
-      <v-empty-list
+      <EmptyList
         slot="empty"
         :message="$t('trade.emptyPositions')"
         class="min-h-orders"
@@ -75,10 +75,10 @@
 
     <div class="overflow-y-auto mt-4 hidden sm:block">
       <table v-if="filteredPositions.length > 0" class="table relative">
-        <position-table-header />
+        <PositionTableHeader />
         <tbody>
           <tr
-            is="v-position"
+            is="Position"
             v-for="(position, index) in sortedPositions"
             :key="`positions-${index}-${position.marketId}`"
             :position="position"
@@ -87,13 +87,13 @@
         </tbody>
       </table>
 
-      <v-empty-list
+      <EmptyList
         v-else
         :message="$t('trade.emptyPositions')"
         class="min-h-orders"
       />
     </div>
-  </v-card-table-wrap>
+  </VCardTableWrap>
 </template>
 
 <script lang="ts">
@@ -102,7 +102,7 @@ import Vue from 'vue'
 import {
   UiPosition,
   UiDerivativeMarketWithToken
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import { Wallet } from '@injectivelabs/ts-types'
 import MobilePosition from '~/components/partials/common/position/mobile-position.vue'
 import Position from '~/components/partials/common/position/position.vue'
@@ -113,7 +113,7 @@ import { TradeSelectorType } from '~/types/enums'
 
 export default Vue.extend({
   components: {
-    'v-position': Position,
+    Position,
     FilterSelector,
     MobilePosition,
     PositionTableHeader,

@@ -1,7 +1,7 @@
 <template>
-  <v-panel :title="$t('trade.marketsInformation')">
+  <VPanel :title="$t('trade.marketsInformation')">
     <div class="flex items-center">
-      <v-button-filter
+      <VButtonFilter
         v-if="false"
         v-model="component"
         :option="components.quoteDenoms"
@@ -9,27 +9,27 @@
         <span>
           {{ $t('trade.quote_denoms') }}
         </span>
-      </v-button-filter>
-      <v-separator v-if="false" />
-      <v-button-filter v-model="component" :option="components.boostedMarkets">
+      </VButtonFilter>
+      <VSeparator v-if="false" />
+      <VButtonFilter v-model="component" :option="components.boostedMarkets">
         <span>
           {{ $t('trade.boosted_markets') }}
         </span>
-      </v-button-filter>
-      <v-separator />
-      <v-button-filter
+      </VButtonFilter>
+      <VSeparator />
+      <VButtonFilter
         v-model="component"
         :option="components.disqualifiedMarkets"
       >
         <span>
           {{ $t('trade.disqualified_markets') }}
         </span>
-      </v-button-filter>
+      </VButtonFilter>
     </div>
     <div class="mt-4">
       <component :is="component" v-if="component"></component>
     </div>
-  </v-panel>
+  </VPanel>
 </template>
 
 <script lang="ts">

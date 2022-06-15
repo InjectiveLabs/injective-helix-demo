@@ -3,7 +3,7 @@
     <div
       class="flex sm:grid grid-cols-2 lg:grid-cols-3 gap-4 overflow-x-auto hide-scrollbar"
     >
-      <v-card-select
+      <VCardSelect
         v-model="component"
         lg
         :option="components.bankAccount"
@@ -27,7 +27,10 @@
           <p class="text-gray-500 text-xs uppercase mb-2 tracking-wider">
             {{ $t('portfolio.walletValue') }}
           </p>
-          <p class="text-lg 3md:text-2xl" data-cy="wallet-value-usd-text-content-parent">
+          <p
+            class="text-lg 3md:text-2xl"
+            data-cy="wallet-value-usd-text-content-parent"
+          >
             <span v-if="status.isLoading()">&mdash; USD</span>
             <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
             <span v-else data-cy="wallet-value-usd-text-content">
@@ -35,9 +38,9 @@
             </span>
           </p>
         </div>
-      </v-card-select>
+      </VCardSelect>
 
-      <v-card-select
+      <VCardSelect
         v-model="component"
         lg
         :option="components.tradingAccount"
@@ -81,32 +84,32 @@
             </span>
           </p>
         </div>
-      </v-card-select>
+      </VCardSelect>
     </div>
 
     <div class="w-full mt-6 relative">
       <portal to="account-summary">
-        <v-account-summary
+        <AccountSummary
           :status="status"
           :total-balance="totalBalance"
           :hide-balance.sync="hideBalance"
         />
       </portal>
 
-      <v-panel :title="panelTitle" card-wrapper-class="mt-6">
+      <VPanel :title="panelTitle" card-wrapper-class="mt-6">
         <portal-target slot="context" name="portfolio-balance-sub-tabs" />
 
-        <VHocLoading :status="status">
+        <HocLoading :status="status">
           <component
-            :is="`v-${component}`"
+            :is="`${component}`"
             v-bind="{
               hideBalance,
               bankBalancesWithUsdBalance,
               subaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd
             }"
           />
-        </VHocLoading>
-      </v-panel>
+        </HocLoading>
+      </VPanel>
     </div>
   </div>
 </template>
@@ -130,10 +133,10 @@ import {
   UiPosition,
   ZERO_IN_BASE,
   ZERO_TO_STRING
-} from '@injectivelabs/ui-common'
-import VBankBalances from '~/components/partials/portfolio/bank-balances/index.vue'
-import VTradingAccountBalances from '~/components/partials/portfolio/trading-account-balances/index.vue'
-import VAccountSummary from '~/components/partials/portfolio/account-summary.vue'
+} from '@injectivelabs/sdk-ui-ts'
+import BankBalances from '~/components/partials/portfolio/bank-balances/index.vue'
+import TradingAccountBalances from '~/components/partials/portfolio/trading-account-balances/index.vue'
+import AccountSummary from '~/components/partials/portfolio/account-summary.vue'
 import { SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd } from '~/types'
 import {
   HIDDEN_BALANCE_DISPLAY,
@@ -144,16 +147,16 @@ import {
 import VLoading from '~/components/elements/loading.vue'
 
 const components = {
-  bankAccount: 'bank-balances',
-  tradingAccount: 'trading-account-balances'
+  bankAccount: 'BankBalances',
+  tradingAccount: 'TradingAccountBalances'
 }
 
 export default Vue.extend({
   components: {
-    VAccountSummary,
-    VBankBalances,
+    AccountSummary,
+    BankBalances,
     VLoading,
-    VTradingAccountBalances
+    TradingAccountBalances
   },
 
   data() {

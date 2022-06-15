@@ -6,9 +6,9 @@
   >
     <td class="h-8 text-left cursor-pointer" @click="handleClickOnMarket">
       <div class="flex items-center justify-start">
-        <div v-if="market.baseToken.logo" class="w-6 h-6">
+        <div v-if="baseTokenLogo" class="w-6 h-6">
           <img
-            :src="market.baseToken.logo"
+            :src="baseTokenLogo"
             :alt="market.baseToken.name"
             class="min-w-full h-auto rounded-full"
           />
@@ -44,7 +44,7 @@
     </td>
 
     <td class="h-8 font-mono text-right">
-      <v-number
+      <VNumber
         data-cy="derivative-order-price-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -54,7 +54,7 @@
     </td>
 
     <td class="h-8 text-right font-mono">
-      <v-number
+      <VNumber
         data-cy="derivative-order-quantity-table-data"
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
@@ -65,7 +65,7 @@
 
     <td class="h-8 font-mono">
       <div class="flex items-center justify-end">
-        <v-number
+        <VNumber
           data-cy="derivative-order-unfilled-quantity-table-data"
           :decimals="
             market
@@ -78,7 +78,7 @@
     </td>
 
     <td class="h-8 text-right font-mono">
-      <v-number
+      <VNumber
         data-cy="derivative-order-filled-quantity-table-data"
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
@@ -106,7 +106,7 @@
     </td>
 
     <td class="h-8 font-right text-right">
-      <v-number
+      <VNumber
         data-cy="derivative-order-total-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -116,7 +116,7 @@
         <span slot="addon" class="text-2xs text-gray-500">
           {{ market.quoteToken.symbol }}
         </span>
-      </v-number>
+      </VNumber>
     </td>
 
     <td class="h-8 relative text-right">
@@ -129,7 +129,7 @@
         >
           {{ $t('common.view') }}
         </span>
-        <v-button
+        <VButton
           v-if="orderFillable"
           :status="status"
           data-cy="derivative-order-cancel-link"
@@ -140,7 +140,7 @@
           >
             <IconBin />
           </div>
-        </v-button>
+        </VButton>
         <span v-else class="inline-block">&mdash;</span>
       </div>
     </td>
@@ -154,8 +154,9 @@ import {
   UiDerivativeLimitOrder,
   UiDerivativeMarketWithToken,
   DerivativeOrderSide,
-  ZERO_IN_BASE
-} from '@injectivelabs/ui-common'
+  ZERO_IN_BASE,
+  getTokenLogoWithVendorPathPrefix
+} from '@injectivelabs/sdk-ui-ts'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -303,6 +304,20 @@ export default Vue.extend({
       return order.orderSide === DerivativeOrderSide.Buy
         ? this.$t('trade.buy')
         : this.$t('trade.sell')
+    },
+
+    baseTokenLogo(): string {
+      const { market } = this
+
+      if (!market) {
+        return ''
+      }
+
+      if (!market.baseToken) {
+        return ''
+      }
+
+      return getTokenLogoWithVendorPathPrefix(market.baseToken.logo)
     }
   },
 

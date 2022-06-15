@@ -1,15 +1,15 @@
 <template>
   <div class="ml-4 flex items-center md:ml-6" data-cy="wallet-connect">
-    <v-button
+    <VButton
       md
       primary
       data-cy="header-wallet-connect-button"
       @click="handleWalletConnectClicked"
     >
       {{ $t('connect.connect') }}
-    </v-button>
+    </VButton>
 
-    <v-modal
+    <VModal
       :is-open="isOpenConnectModal"
       md
       @modal-closed="isOpenConnectModal = false"
@@ -18,7 +18,7 @@
         {{ $t('connect.connectToWallet') }}
       </h3>
       <div class="relative mt-6">
-        <VHocLoading :status="status">
+        <HocLoading :status="status">
           <ul class="divide-y divide-gray-800 border-gray-700 rounded-lg">
             <Metamask />
             <Keplr />
@@ -26,9 +26,9 @@
             <Ledger @wallet-ledger-connecting="handleLedgerConnectingWallet" />
             <Trezor @wallet-trezor-connecting="handleTrezorConnectingWallet" />
           </ul>
-        </VHocLoading>
+        </HocLoading>
       </div>
-    </v-modal>
+    </VModal>
     <ModalTerms />
     <ModalLedger :is-open="isLedgerModalOpen" @closed="handleLedgerClosed" />
     <ModalTrezor :is-open="isTrezorModalOpen" @closed="handleTrezorClosed" />

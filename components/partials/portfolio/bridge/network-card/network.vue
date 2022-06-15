@@ -1,10 +1,10 @@
 <template>
-  <v-network-card-base v-bind="{ networkMeta }" />
+  <NetworkCardBase v-bind="{ networkMeta }" />
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { NetworkMeta, BridgingNetwork } from '@injectivelabs/ui-common'
+import { NetworkMeta, BridgingNetwork } from '@injectivelabs/sdk-ui-ts'
 import { networksMeta } from '~/app/data/bridge'
 
 export default Vue.extend({

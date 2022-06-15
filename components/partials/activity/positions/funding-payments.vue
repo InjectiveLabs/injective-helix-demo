@@ -1,11 +1,11 @@
 <template>
-  <VHocLoading :status="status">
-    <v-card-table-wrap>
+  <HocLoading :status="status">
+    <VCardTableWrap>
       <template #actions>
         <div
           class="col-span-12 sm:col-span-6 lg:col-span-4 grid grid-cols-5 gap-4"
         >
-          <v-search
+          <VSearch
             dense
             class="col-span-5 sm:col-span-3"
             :placeholder="$t('trade.search_market')"
@@ -52,13 +52,13 @@
           :funding-payment="fundingPayment"
         />
 
-        <v-empty-list
+        <EmptyList
           slot="empty"
           :message="$t('fundingPayments.emptyFundingPayments')"
         />
       </TableBody>
 
-      <v-table-wrapper break-md class="mt-4 hidden sm:block">
+      <TableWrapper break-md class="mt-4 hidden sm:block">
         <table v-if="filteredFundingPayments.length > 0" class="table">
           <FundingPaymentsTableHeader />
           <tbody>
@@ -70,21 +70,21 @@
             />
           </tbody>
         </table>
-        <v-empty-list
+        <EmptyList
           v-else
           data-cy="universal-table-nothing-found"
           :message="$t('fundingPayments.emptyFundingPayments')"
         />
-      </v-table-wrapper>
-    </v-card-table-wrap>
-  </VHocLoading>
+      </TableWrapper>
+    </VCardTableWrap>
+  </HocLoading>
 </template>
 
 <script lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import Vue from 'vue'
-import { UiDerivativeMarketWithToken } from '@injectivelabs/ui-common'
-import { FundingPayment } from '@injectivelabs/derivatives-consumer'
+import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { FundingPayment } from '@injectivelabs/sdk-ts'
 import FundingPaymentsTableHeader from '~/components/partials/common/derivatives/funding-payments-table-header.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import FundingPaymentRow from '~/components/partials/common/derivatives/funding-payment.vue'

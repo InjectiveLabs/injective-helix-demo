@@ -1,5 +1,5 @@
 <template>
-  <v-modal
+  <VModal
     :is-open="isModalOpen"
     sm
     :modal-closed:animation="handleResetBridge"
@@ -21,18 +21,18 @@
       ref="form"
     >
       <div>
-        <v-transfer-direction-switch
+        <TransferDirectionSwitch
           v-if="bridgeType === BridgeType.Transfer"
           v-bind="{ transferDirection }"
           @transfer-direction:switch="handleTransferDirectionSwitch"
         />
-        <v-network-select
+        <NetworkSelect
           v-else
           v-bind="{ value: bridgingNetwork, bridgeType }"
           @bridging-network:change="handleBridgingNetworkSwitch"
         >
           <template slot="title">{{ networkSelectorTitle }}</template>
-        </v-network-select>
+        </NetworkSelect>
       </div>
       <div v-if="isWithdrawToInjectiveAddress" class="mt-6">
         <ValidationProvider
@@ -40,7 +40,7 @@
           name="form.destination"
           :rules="`required|injaddress`"
         >
-          <v-input
+          <VInput
             :value="form.destinationAddress"
             :errors="errors"
             :valid="valid"
@@ -49,7 +49,7 @@
             data-cy="transfer-modal-inj-address-input"
             @input="handleDestinationAddressChange"
           >
-          </v-input>
+          </VInput>
         </ValidationProvider>
       </div>
       <div v-if="isWithdrawToInjectiveAddress" class="mt-6 w-full">
@@ -57,17 +57,17 @@
           <span v-tooltip="{ content: $t('memo.memoTooltip') }" class="text-xs">
             {{ $t('memo.memo') }}
           </span>
-          <v-checkbox v-model="memoRequired" @input="handleMemoChange('')">
+          <VCheckbox v-model="memoRequired" @input="handleMemoChange('')">
             {{ $t('common.required') }}
-          </v-checkbox>
+          </VCheckbox>
         </div>
         <div v-if="memoRequired" class="mt-2">
-          <v-input
+          <VInput
             :value="form.memo"
             :placeholder="$t('memo.memoPlaceholder')"
             @input="handleMemoChange"
           >
-          </v-input>
+          </VInput>
         </div>
       </div>
       <div v-if="!isIbcTransfer" class="mt-6">
@@ -89,7 +89,7 @@
           </TokenSelector>
         </div>
         <div class="mt-8 text-center">
-          <v-button
+          <VButton
             v-if="shouldConnectMetamask"
             lg
             primary
@@ -99,14 +99,14 @@
             @click="() => {}"
           >
             {{ $t('bridge.keplrConnectedForEthereum') }}
-          </v-button>
+          </VButton>
           <template v-else>
             <v-allowance
               v-if="!hasAllowance"
               :token-with-balance="form.token"
             />
 
-            <v-button
+            <VButton
               v-else
               lg
               primary
@@ -116,14 +116,14 @@
               @click="handleTransferNowClick"
             >
               {{ $t('bridge.transferNow') }}
-            </v-button>
+            </VButton>
           </template>
         </div>
       </div>
-      <v-ibc-transfer-note v-else />
+      <IbcTransferNote v-else />
     </ValidationObserver>
-    <v-user-wallet-connect-warning v-else />
-  </v-modal>
+    <UserWalletConnectWarning v-else />
+  </VModal>
 </template>
 
 <script lang="ts">
@@ -133,27 +133,27 @@ import {
   BankBalanceWithToken,
   BridgingNetwork,
   SubaccountBalanceWithToken,
-  Token,
   TokenWithBalanceAndPrice,
   ZERO_IN_BASE
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { Wallet } from '@injectivelabs/ts-types'
+import { Token } from '@injectivelabs/token-metadata'
 import { BridgeType, Modal, TransferDirection } from '~/types'
 import TokenSelector from '~/components/partials/portfolio/bridge/token-selector/index.vue'
 import VAllowance from '~/components/elements/allowance.vue'
 import Balance from '~/components/partials/portfolio/bridge/balance.vue'
-import VNetworkSelect from '~/components/partials/portfolio/bridge/network-select.vue'
-import VIbcTransferNote from '~/components/partials/portfolio/bridge/ibc-transfer-note.vue'
-import VTransferDirectionSwitch from '~/components/partials/portfolio/bridge/transfer-direction-switch.vue'
+import NetworkSelect from '~/components/partials/portfolio/bridge/network-select.vue'
+import IbcTransferNote from '~/components/partials/portfolio/bridge/ibc-transfer-note.vue'
+import TransferDirectionSwitch from '~/components/partials/portfolio/bridge/transfer-direction-switch.vue'
 
 export default Vue.extend({
   components: {
     ValidationObserver,
     TokenSelector,
-    VNetworkSelect,
-    VIbcTransferNote,
-    VTransferDirectionSwitch,
+    NetworkSelect,
+    IbcTransferNote,
+    TransferDirectionSwitch,
     ValidationProvider,
     VAllowance,
     Balance

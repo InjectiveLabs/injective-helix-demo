@@ -1,22 +1,25 @@
 <template>
   <div class="h-full">
-    <VHocLoading :status="status">
+    <HocLoading :status="status">
       <div class="h-full flex flex-col">
         <div class="flex items-center gap-4">
-          <v-tab-selector-item
+          <TabSelectorItem
             v-model="component"
             data-cy="activity-open-positions-link"
             :option="components.positions"
           >
             <div class="flex items-center gap-1">
               <span>{{ $t('activity.openPositions') }}</span>
-              <portal-target name="activity-tab-position-count" data-cy="activity-open-positions-link-count" />
+              <portal-target
+                name="activity-tab-position-count"
+                data-cy="activity-open-positions-link-count"
+              />
             </div>
-          </v-tab-selector-item>
+          </TabSelectorItem>
 
           <div class="w-px h-4 bg-gray-500" />
 
-          <v-tab-selector-item
+          <TabSelectorItem
             v-model="component"
             data-cy="activity-funding-payments-link"
             :option="components.fundingPayments"
@@ -24,26 +27,26 @@
             <div class="flex items-center gap-1">
               <span>{{ $t('activity.fundingPayments') }}</span>
             </div>
-          </v-tab-selector-item>
+          </TabSelectorItem>
         </div>
 
-        <v-card md class="h-full mt-4 xs:mt-6">
-          <v-positions v-show="component === components.positions" />
-          <v-funding-payments v-if="component === components.fundingPayments" />
-        </v-card>
+        <VCard md class="h-full mt-4 xs:mt-6">
+          <Positions v-show="component === components.positions" />
+          <FundingPayments v-if="component === components.fundingPayments" />
+        </VCard>
       </div>
-    </VHocLoading>
-    <v-modal-add-margin />
+    </HocLoading>
+    <ModalAddMargin />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import VPositions from '~/components/partials/activity/positions/positions.vue'
-import VFundingPayments from '~/components/partials/activity/positions/funding-payments.vue'
-import VModalAddMargin from '~/components/partials/modals/add-margin/index.vue'
-import VTabSelectorItem from '~/components/partials/activity/common/tab-selector-item.vue'
+import Positions from '~/components/partials/activity/positions/positions.vue'
+import FundingPayments from '~/components/partials/activity/positions/funding-payments.vue'
+import ModalAddMargin from '~/components/partials/modals/add-margin/index.vue'
+import TabSelectorItem from '~/components/partials/activity/common/tab-selector-item.vue'
 
 const components = {
   positions: 'positions',
@@ -52,10 +55,10 @@ const components = {
 
 export default Vue.extend({
   components: {
-    VModalAddMargin,
-    VPositions,
-    VFundingPayments,
-    VTabSelectorItem
+    ModalAddMargin,
+    Positions,
+    FundingPayments,
+    TabSelectorItem
   },
 
   data() {

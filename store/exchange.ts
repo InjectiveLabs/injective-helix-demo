@@ -1,21 +1,21 @@
 import { actionTree, getterTree } from 'typed-vuex'
 import {
-  Token,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiSpotMarketSummary,
   UiSpotMarketWithToken,
   zeroSpotMarketSummary,
   ZERO_IN_BASE
-} from '@injectivelabs/ui-common'
-import { exchangeService, tokenService } from '~/app/Services'
+} from '@injectivelabs/sdk-ui-ts'
 import {
+  ExchangeParams,
   FeeDiscountAccountInfo,
-  TradingRewardsCampaign,
-  FeeDiscountSchedule,
-  ExchangeParams
-} from '~/app/services/exchange'
+  FeeDiscountSchedule
+} from '@injectivelabs/sdk-ts'
+import { Token } from '@injectivelabs/token-metadata'
+import { exchangeApi, tokenService } from '~/app/Services'
 import { upcomingMarkets, deprecatedMarkets } from '~/app/data/market'
+import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 
 const initialStateFactory = () => ({
   params: undefined as ExchangeParams | undefined,
@@ -141,11 +141,13 @@ export const actions = actionTree(
     },
 
     async fetchParams({ commit }) {
-      commit('setParams', await exchangeService.fetchParams())
+      const params = await exchangeApi.fetchModuleParams()
+
+      commit('setParams', params)
     },
 
     async fetchFeeDiscountSchedule({ commit }) {
-      const feeDiscountSchedule = await exchangeService.fetchFeeDiscountSchedule()
+      const feeDiscountSchedule = await exchangeApi.fetchFeeDiscountSchedule()
 
       if (feeDiscountSchedule) {
         const quoteTokenMeta = (await Promise.all(
@@ -164,18 +166,15 @@ export const actions = actionTree(
     },
 
     async fetchFeeDiscountAccountInfo({ commit }) {
-      const {
-        isUserWalletConnected,
-        injectiveAddress
-      } = this.app.$accessor.wallet
+      const { isUserWalletConnected, injectiveAddress } =
+        this.app.$accessor.wallet
 
       if (!isUserWalletConnected || !injectiveAddress) {
         return
       }
 
-      const feeDiscountAccountInfo = await exchangeService.fetchFeeDiscountAccountInfo(
-        injectiveAddress
-      )
+      const feeDiscountAccountInfo =
+        await exchangeApi.fetchFeeDiscountAccountInfo(injectiveAddress)
 
       if (feeDiscountAccountInfo) {
         commit('setFeeDiscountAccountInfo', feeDiscountAccountInfo)
@@ -183,19 +182,22 @@ export const actions = actionTree(
     },
 
     async fetchTradingRewardsCampaign({ commit }) {
-      const tradingRewardsCampaign = await exchangeService.fetchTradingRewardsCampaign()
+      const tradingRewardsCampaign =
+        await exchangeApi.fetchTradingRewardsCampaign()
 
       if (tradingRewardsCampaign) {
         const quoteDenomsList = tradingRewardsCampaign.tradingRewardCampaignInfo
           ? tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList
           : []
-        const quoteSymbolsList = ((
-          await Promise.all(
-            quoteDenomsList.map(
-              async (denom) => await tokenService.getDenomToken(denom)
+        const quoteSymbolsList = (
+          (
+            await Promise.all(
+              quoteDenomsList.map(
+                async (denom) => await tokenService.getDenomToken(denom)
+              )
             )
-          )
-        ).filter((token) => token) as Token[]).map((token) => token.symbol)
+          ).filter((token) => token) as Token[]
+        ).map((token) => token.symbol)
 
         const tradingRewardCampaignInfo = {
           ...tradingRewardsCampaign.tradingRewardCampaignInfo,
@@ -211,10 +213,8 @@ export const actions = actionTree(
     },
 
     async fetchTradeRewardPoints({ commit }) {
-      const {
-        isUserWalletConnected,
-        injectiveAddress
-      } = this.app.$accessor.wallet
+      const { isUserWalletConnected, injectiveAddress } =
+        this.app.$accessor.wallet
 
       if (!isUserWalletConnected || !injectiveAddress) {
         return
@@ -222,15 +222,13 @@ export const actions = actionTree(
 
       commit(
         'setTradeRewardPoints',
-        await exchangeService.fetchTradeRewardPoints([injectiveAddress])
+        await exchangeApi.fetchTradeRewardPoints([injectiveAddress])
       )
     },
 
     async fetchPendingTradeRewardPoints({ commit, state }) {
-      const {
-        isUserWalletConnected,
-        injectiveAddress
-      } = this.app.$accessor.wallet
+      const { isUserWalletConnected, injectiveAddress } =
+        this.app.$accessor.wallet
 
       if (!isUserWalletConnected || !injectiveAddress) {
         return
@@ -251,7 +249,7 @@ export const actions = actionTree(
 
       const rewards = await Promise.all(
         pendingRewardsList.map(async (pendingReward) => {
-          const rewards = await exchangeService.fetchPendingTradeRewardPoints(
+          const rewards = await exchangeApi.fetchPendingTradeRewardPoints(
             [injectiveAddress],
             pendingReward.startTimestamp
           )

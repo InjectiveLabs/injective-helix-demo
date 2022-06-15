@@ -25,7 +25,7 @@
           </ValidationProvider>
         </div>
         <div class="w-full px-4 mt-6">
-          <v-button
+          <VButton
             md
             :status="status"
             class="w-full"
@@ -34,7 +34,7 @@
             @click.stop="onConnect"
           >
             {{ $t('connect.connect') }}
-          </v-button>
+          </VButton>
         </div>
       </div>
     </ValidationObserver>

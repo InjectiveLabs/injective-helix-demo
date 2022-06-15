@@ -1,18 +1,21 @@
 <template>
-  <VHocLoading :key="$route.fullPath" :status="status">
+  <HocLoading :key="$route.fullPath" :status="status">
     <div
       v-if="market"
       class="flex flex-col flex-wrap min-h-screen-excluding-header"
     >
       <div class="w-full px-1">
         <v-component
-          :is="isSpotMarket ? 'v-spot-market' : 'v-derivative-market'"
+          :is="isSpotMarket ? 'SpotMarket' : 'DerivativeMarket'"
           :expanded="showMarketList"
         />
       </div>
       <div class="flex-1 grid grid-cols-6 lg:grid-cols-12 gap-1 p-1">
-        <div class="col-span-6 lg:col-span-3 4xl:col-span-3 overflow-y-hidden" data-cy="trading-side-component">
-          <v-market-selection v-show="showMarketList" key="market-selection" />
+        <div
+          class="col-span-6 lg:col-span-3 4xl:col-span-3 overflow-y-hidden"
+          data-cy="trading-side-component"
+        >
+          <MarketSelection v-show="showMarketList" key="market-selection" />
           <div
             v-show="!showMarketList"
             key="market-trading-panel"
@@ -24,7 +27,7 @@
         <div class="col-span-6 lg:col-span-9 4xl:col-span-9">
           <div class="flex flex-wrap flex-col w-full h-full">
             <div class="w-full">
-              <v-card tight>
+              <VCard tight>
                 <div class="grid grid-cols-6 lg:grid-cols-12">
                   <div class="col-span-6 lg:col-span-8 4xl:col-span-9">
                     <slot name="chart" />
@@ -33,7 +36,7 @@
                     <slot name="order-books" />
                   </div>
                 </div>
-              </v-card>
+              </VCard>
 
               <div class="w-full lg:hidden mt-2">
                 <slot name="trading-panel" />
@@ -46,9 +49,9 @@
         </div>
       </div>
       <slot name="modals" />
-      <v-modal-market-beta v-if="marketIsBeta" />
+      <ModalMarketBeta v-if="marketIsBeta" />
     </div>
-  </VHocLoading>
+  </HocLoading>
 </template>
 
 <script lang="ts">
@@ -57,11 +60,11 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import {
   UiDerivativeMarketWithToken,
   UiSpotMarketWithToken
-} from '@injectivelabs/ui-common'
-import VSpotMarket from '~/components/partials/spot/market.vue'
-import VDerivativeMarket from '~/components/partials/derivatives/market.vue'
-import VMarketSelection from '~/components/partials/common/market-selection/index.vue'
-import VModalMarketBeta from '~/components/partials/modals/market-beta.vue'
+} from '@injectivelabs/sdk-ui-ts'
+import SpotMarket from '~/components/partials/spot/market.vue'
+import DerivativeMarket from '~/components/partials/derivatives/market.vue'
+import MarketSelection from '~/components/partials/common/market-selection/index.vue'
+import ModalMarketBeta from '~/components/partials/modals/market-beta.vue'
 import { betaMarketSlugs } from '~/app/data/market'
 import { Modal } from '~/types'
 
@@ -69,10 +72,10 @@ export default Vue.extend({
   name: 'MarketsLayout',
 
   components: {
-    VDerivativeMarket,
-    VMarketSelection,
-    VModalMarketBeta,
-    VSpotMarket
+    DerivativeMarket,
+    MarketSelection,
+    ModalMarketBeta,
+    SpotMarket
   },
 
   props: {

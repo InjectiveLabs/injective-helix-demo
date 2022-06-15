@@ -2,7 +2,7 @@ import {
   UiDerivativeMarketWithToken,
   UiSpotMarketWithToken,
   MarketType
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { MarketCategoryType, MarketQuoteType, MarketRoute } from '~/types'
 import {

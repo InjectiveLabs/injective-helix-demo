@@ -15,7 +15,7 @@
         class="md:hidden"
       >
         <transition mode="out-in" :name="animation">
-          <v-market-card
+          <MarketCard
             v-if="newMarket && activeIndex === 1"
             key="market-card-1"
             :market="newMarket.market"
@@ -23,9 +23,9 @@
             :volume-in-usd="newMarket.volumeInUsd"
           >
             {{ $t('markets.whatsNew') }}
-          </v-market-card>
+          </MarketCard>
 
-          <v-market-card
+          <MarketCard
             v-if="topVolume && activeIndex === 2"
             key="market-card-2"
             :market="topVolume.market"
@@ -33,9 +33,9 @@
             :volume-in-usd="topVolume.volumeInUsd"
           >
             {{ $t('markets.topVolume') }}
-          </v-market-card>
+          </MarketCard>
 
-          <v-market-card
+          <MarketCard
             v-if="topGainer && activeIndex === 3"
             key="market-card-3"
             :market="topGainer.market"
@@ -43,7 +43,7 @@
             :volume-in-usd="topGainer.volumeInUsd"
           >
             {{ $t('markets.topGainer') }}
-          </v-market-card>
+          </MarketCard>
         </transition>
       </div>
 
@@ -51,7 +51,7 @@
         v-if="markets.length > 0"
         class="hidden md:grid grid-cols-2 xl:grid-cols-3 gap-6 mt-6"
       >
-        <v-market-card
+        <MarketCard
           v-if="newMarket"
           data-cy="market-card-whats-new"
           :market="newMarket.market"
@@ -59,9 +59,9 @@
           :volume-in-usd="newMarket.volumeInUsd"
         >
           {{ $t('markets.whatsNew') }}
-        </v-market-card>
+        </MarketCard>
 
-        <v-market-card
+        <MarketCard
           v-if="topVolume"
           data-cy="market-card-top-volume"
           :market="topVolume.market"
@@ -69,9 +69,9 @@
           :volume-in-usd="topVolume.volumeInUsd"
         >
           {{ $t('markets.topVolume') }}
-        </v-market-card>
+        </MarketCard>
 
-        <v-market-card
+        <MarketCard
           v-if="topGainer"
           data-cy="market-card-top-gainer"
           :market="topGainer.market"
@@ -79,11 +79,11 @@
           :volume-in-usd="topGainer.volumeInUsd"
         >
           {{ $t('markets.topGainer') }}
-        </v-market-card>
+        </MarketCard>
       </div>
 
       <div class="flex justify-center gap-2 mt-6 md:hidden">
-        <v-market-dot
+        <MarketDot
           v-for="dot in dotCount"
           :key="`market-dot-${dot}`"
           :index="dot"
@@ -98,8 +98,8 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import VMarketCard from '~/components/partials/markets/market-card.vue'
-import VMarketDot from '~/components/partials/markets/market-dot.vue'
+import MarketCard from '~/components/partials/markets/market-card.vue'
+import MarketDot from '~/components/partials/markets/market-dot.vue'
 import { newMarketsSlug } from '~/app/data/market'
 import { UiMarketAndSummaryWithVolumeInUsd } from '~/types'
 
@@ -114,8 +114,8 @@ const sortMarketsAlphabetically = (
 
 export default Vue.extend({
   components: {
-    VMarketCard,
-    VMarketDot
+    MarketCard,
+    MarketDot
   },
 
   props: {

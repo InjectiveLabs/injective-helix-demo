@@ -1,29 +1,31 @@
-import {
-  DerivativeMarketStreamType,
-  OrderbookStreamCallback as DerivativeMarketOrderbookStreamCallback,
-  TradeStreamCallback as DerivativeMarketTradeStreamCallback,
-  OrderStreamCallback as DerivativeMarketOrderStreamCallback,
-  PositionStreamCallback as DerivativeMarketPositionStreamCallback
-} from '@injectivelabs/derivatives-consumer'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import {
-  OracleStreamType,
-  PricesStreamCallback
-} from '@injectivelabs/exchange-consumer'
-import { UiBaseDerivativeMarket } from '@injectivelabs/ui-common'
-import { oracleStream } from '../singletons/OracleStream'
-import { streamProvider } from '../providers/StreamProvider'
-import { derivativeMarketStream } from '~/app/singletons/DerivativeMarketStream'
+  DerivativeOrderbookStreamCallback,
+  DerivativeOrdersStreamCallback,
+  DerivativeTradesStreamCallback,
+  ExchangeGrpcDerivativesStream,
+  ExchangeGrpcOracleStream,
+  OraclePriceStreamCallback,
+  PositionsStreamCallback
+} from '@injectivelabs/sdk-ts'
+import { UiBaseDerivativeMarket } from '@injectivelabs/sdk-ui-ts'
+import { streamProvider } from '../../providers/StreamProvider'
+import { ENDPOINTS } from '~/app/utils/constants'
+import { StreamType } from '~/types'
 
+export const derivativesMarketStream = new ExchangeGrpcDerivativesStream(
+  ENDPOINTS.exchangeApi
+)
+export const oracleStream = new ExchangeGrpcOracleStream(ENDPOINTS.exchangeApi)
 export const streamOrderbook = ({
   marketId,
   callback
 }: {
   marketId: string
-  callback: DerivativeMarketOrderbookStreamCallback
+  callback: DerivativeOrderbookStreamCallback
 }) => {
-  const streamFn = derivativeMarketStream.orderbook.start.bind(
-    derivativeMarketStream.orderbook
+  const streamFn = derivativesMarketStream.streamDerivativeOrderbook.bind(
+    derivativesMarketStream
   )
   const streamFnArgs = {
     marketIds: [marketId],
@@ -33,7 +35,7 @@ export const streamOrderbook = ({
   streamProvider.subscribe({
     fn: streamFn,
     args: streamFnArgs,
-    key: DerivativeMarketStreamType.Orderbook
+    key: StreamType.DerivativesOrderbook
   })
 }
 
@@ -42,10 +44,10 @@ export const streamTrades = ({
   callback
 }: {
   marketId: string
-  callback: DerivativeMarketTradeStreamCallback
+  callback: DerivativeTradesStreamCallback
 }) => {
-  const streamFn = derivativeMarketStream.trades.start.bind(
-    derivativeMarketStream.trades
+  const streamFn = derivativesMarketStream.streamDerivativeTrades.bind(
+    derivativesMarketStream
   )
   const streamFnArgs = {
     marketId,
@@ -56,7 +58,7 @@ export const streamTrades = ({
   streamProvider.subscribe({
     fn: streamFn,
     args: streamFnArgs,
-    key: DerivativeMarketStreamType.Trades
+    key: StreamType.DerivativesTrades
   })
 }
 
@@ -67,10 +69,10 @@ export const streamSubaccountTrades = ({
 }: {
   marketId?: string
   subaccountId?: string
-  callback: DerivativeMarketTradeStreamCallback
+  callback: DerivativeTradesStreamCallback
 }) => {
-  const streamFn = derivativeMarketStream.trades.subaccount.bind(
-    derivativeMarketStream.trades
+  const streamFn = derivativesMarketStream.streamDerivativeTrades.bind(
+    derivativesMarketStream
   )
   const streamFnArgs = {
     ...(subaccountId && { subaccountId }),
@@ -81,7 +83,7 @@ export const streamSubaccountTrades = ({
   streamProvider.subscribe({
     fn: streamFn,
     args: streamFnArgs,
-    key: DerivativeMarketStreamType.SubaccountTrades
+    key: StreamType.DerivativesSubaccountTrades
   })
 }
 
@@ -92,10 +94,10 @@ export const streamSubaccountOrders = ({
 }: {
   marketId?: string
   subaccountId?: string
-  callback: DerivativeMarketOrderStreamCallback
+  callback: DerivativeOrdersStreamCallback
 }) => {
-  const streamFn = derivativeMarketStream.orders.subaccount.bind(
-    derivativeMarketStream.orders
+  const streamFn = derivativesMarketStream.streamDerivativeOrders.bind(
+    derivativesMarketStream
   )
   const streamFnArgs = {
     ...(subaccountId && { subaccountId }),
@@ -106,7 +108,7 @@ export const streamSubaccountOrders = ({
   streamProvider.subscribe({
     fn: streamFn,
     args: streamFnArgs,
-    key: DerivativeMarketStreamType.SubaccountOrders
+    key: StreamType.DerivativesSubaccountOrders
   })
 }
 
@@ -117,10 +119,10 @@ export const streamSubaccountPositions = ({
 }: {
   subaccountId?: string
   marketId?: string
-  callback: DerivativeMarketPositionStreamCallback
+  callback: PositionsStreamCallback
 }) => {
-  const streamFn = derivativeMarketStream.positions.subaccount.bind(
-    derivativeMarketStream.positions
+  const streamFn = derivativesMarketStream.streamDerivativePositions.bind(
+    derivativesMarketStream
   )
   const streamFnArgs = {
     ...(subaccountId && { subaccountId }),
@@ -131,7 +133,7 @@ export const streamSubaccountPositions = ({
   streamProvider.subscribe({
     fn: streamFn,
     args: streamFnArgs,
-    key: DerivativeMarketStreamType.SubaccountPositions
+    key: StreamType.DerivativesSubaccountPositions
   })
 }
 
@@ -140,9 +142,9 @@ export const streamMarketMarkPrice = ({
   callback
 }: {
   market: UiBaseDerivativeMarket
-  callback: PricesStreamCallback
+  callback: OraclePriceStreamCallback
 }) => {
-  const streamFn = oracleStream.prices.start.bind(oracleStream.prices)
+  const streamFn = oracleStream.streamOraclePrices.bind(oracleStream)
   const streamFnArgs = {
     oracleType: market.oracleType,
     baseSymbol: market.oracleBase,
@@ -153,6 +155,6 @@ export const streamMarketMarkPrice = ({
   streamProvider.subscribe({
     fn: streamFn,
     args: streamFnArgs,
-    key: OracleStreamType.Prices
+    key: StreamType.OraclePrices
   })
 }

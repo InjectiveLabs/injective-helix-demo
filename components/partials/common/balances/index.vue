@@ -1,5 +1,5 @@
 <template>
-  <v-panel class="w-full">
+  <VPanel class="w-full">
     <div>
       <div class="flex items-center justify-between">
         <p class="text-xs text-gray-500 flex items-center uppercase">
@@ -13,14 +13,14 @@
         </nuxt-link>
       </div>
       <div v-if="isUserWalletConnected && currentMarket" class="mt-4 relative">
-        <VHocLoading :status="status">
+        <HocLoading :status="status">
           <div>
             <div v-if="!hasAnyBankBalances && !hasTradingAccountBalances">
               <p class="text-xs text-gray-500">
                 {{ $t('marketPage.noChainBalance') }}
               </p>
             </div>
-            <v-subaccount-balance
+            <SubaccountBalance
               v-else
               v-bind="{
                 baseTradingBalance,
@@ -29,13 +29,13 @@
               }"
               data-cy="trading-page-account-balances-component"
             />
-            <v-onboard v-if="!hasTradingAccountBalances" class="mt-6" />
+            <VOnboard v-if="!hasTradingAccountBalances" class="mt-6" />
           </div>
-        </VHocLoading>
+        </HocLoading>
       </div>
-      <v-user-wallet-connect-warning v-else />
+      <UserWalletConnectWarning v-else />
     </div>
-  </v-panel>
+  </VPanel>
 </template>
 
 <script lang="ts">
@@ -46,14 +46,14 @@ import {
   MarketType,
   UiSubaccount,
   UiSubaccountBalanceWithToken
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import {
   BigNumberInBase,
   BigNumberInWei,
   Status,
   StatusType
 } from '@injectivelabs/utils'
-import VSubaccountBalance from './subaccount.vue'
+import SubaccountBalance from './subaccount.vue'
 import VOnboard from './onboard.vue'
 import { getHubUrl } from '~/app/utils/helpers'
 
@@ -64,7 +64,7 @@ type CurrentMarket =
 
 export default Vue.extend({
   components: {
-    VSubaccountBalance,
+    SubaccountBalance,
     VOnboard
   },
 

@@ -12,27 +12,27 @@
         :order="order"
       />
 
-      <v-empty-list
+      <EmptyList
         slot="empty"
         :message="$t('trade.emptyOrders')"
         class="min-h-orders"
       />
     </TableBody>
 
-    <v-table-wrapper class="hidden sm:block">
+    <TableWrapper class="hidden sm:block">
       <table v-if="filteredOrders.length > 0" class="table">
-        <orders-table-header />
+        <OrdersTableHeader />
         <tbody>
           <tr
-            is="v-order"
+            is="Order"
             v-for="(order, index) in filteredOrders"
             :key="`orders-${index}-${order.orderHash}`"
             :order="order"
           ></tr>
         </tbody>
       </table>
-      <v-empty-list v-else :message="$t('trade.emptyOrders')" />
-    </v-table-wrapper>
+      <EmptyList v-else :message="$t('trade.emptyOrders')" />
+    </TableWrapper>
   </div>
 </template>
 
@@ -41,7 +41,7 @@ import Vue from 'vue'
 import {
   UiDerivativeLimitOrder,
   UiDerivativeMarketWithToken
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import MobileOrder from '~/components/partials/common/derivatives/mobile-order.vue'
 import Order from '~/components/partials/common/derivatives/order.vue'
 import OrdersTableHeader from '~/components/partials/common/derivatives/orders-table-header.vue'
@@ -49,7 +49,7 @@ import TableBody from '~/components/elements/table-body.vue'
 
 export default Vue.extend({
   components: {
-    'v-order': Order,
+    Order,
     MobileOrder,
     OrdersTableHeader,
     TableBody

@@ -1,6 +1,6 @@
-import { Web3Strategy } from '@injectivelabs/web3-strategy'
+import { WalletStrategy } from '@injectivelabs/wallet-ts'
 import { EthereumChainId } from '@injectivelabs/ts-types'
-import { ETHEREUM_CHAIN_ID } from '~/app/utils/constants'
+import { CHAIN_ID, ETHEREUM_CHAIN_ID, IS_TESTNET } from '~/app/utils/constants'
 
 export const getRpcUrlsForChainIds = (): Record<EthereumChainId, string> => {
   return {
@@ -26,14 +26,18 @@ export const getRpcWsUrlsForChainIds = (): Record<EthereumChainId, string> => {
   }
 }
 
+export const alchemyRpcEndpoint = IS_TESTNET
+  ? `https://eth-kovan.alchemyapi.io/v2/${process.env.APP_ALCHEMY_KOVAN_KEY}`
+  : `https://eth-mainnet.alchemyapi.io/v2/${process.env.APP_ALCHEMY_KEY}`
+
 const rpcUrls = getRpcUrlsForChainIds()
 const wsRpcUrls = getRpcWsUrlsForChainIds()
 
-export const web3Strategy = new Web3Strategy({
-  chainId: parseInt(ETHEREUM_CHAIN_ID.toString()) /** TODO  */,
-  // ethereumChainId: parseInt(ETHEREUM_CHAIN_ID.toString()),
+export const walletStrategy = new WalletStrategy({
+  chainId: CHAIN_ID,
+  ethereumChainId: ETHEREUM_CHAIN_ID,
   options: {
-    wsRpcUrl: wsRpcUrls[ETHEREUM_CHAIN_ID],
-    rpcUrl: rpcUrls[ETHEREUM_CHAIN_ID]
+    wsRpcUrls,
+    rpcUrls
   }
 })
