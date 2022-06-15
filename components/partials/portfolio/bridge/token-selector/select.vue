@@ -160,7 +160,6 @@ import {
   BankBalanceWithTokenAndBalanceInBase,
   BIG_NUMBER_ROUND_DOWN_MODE
 } from '@injectivelabs/sdk-ui-ts'
-import { getDecimalsFromNumber } from '@injectivelabs/sdk-ts'
 import TokenSelectorItem from './item.vue'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
@@ -254,6 +253,11 @@ export default Vue.extend({
     step: {
       type: String,
       default: '0.01'
+    },
+
+    maxDecimals: {
+      type: Number,
+      default: UI_DEFAULT_DISPLAY_DECIMALS
     }
   },
 
@@ -267,16 +271,6 @@ export default Vue.extend({
   },
 
   computed: {
-    maxDecimals(): Number {
-      const { step, value } = this
-
-      if (step) {
-        return getDecimalsFromNumber(Number(step))
-      }
-
-      return value.decimals
-    },
-
     inputClass(): string {
       const { prefix } = this
 

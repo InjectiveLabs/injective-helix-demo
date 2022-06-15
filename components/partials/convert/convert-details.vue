@@ -8,7 +8,7 @@
         {{ $t('trade.convert.fetching_price') }}...
       </span>
       <span v-else-if="hasAmount" class="text-sm">
-        1 {{ fromToken.symbol }} = {{ averagePriceWithoutSlippageToFormat }}
+        1 {{ fromToken.symbol }} ≈ {{ averagePriceWithoutSlippageToFormat }}
         {{ toToken.symbol }}
       </span>
       <span v-else class="text-sm"> -- </span>
@@ -304,7 +304,11 @@ export default Vue.extend({
         market
       })
 
-      return new BigNumberInBase(averagePrice.toFixed(market.priceDecimals))
+      return orderType === SpotOrderSide.Buy
+        ? new BigNumberInBase(
+            ONE_IN_BASE.dividedBy(averagePrice).toFixed(market.priceDecimals)
+          )
+        : new BigNumberInBase(averagePrice.toFixed(market.quantityDecimals))
     },
 
     averagePriceWithoutSlippageToFormat(): string {
