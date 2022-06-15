@@ -1,6 +1,6 @@
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
-import { Network } from '@injectivelabs/networks'
-import { ChainId } from '@injectivelabs/ts-types'
+import { getEndpointsForNetwork, Network } from '@injectivelabs/networks'
+import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 
 export const IS_DEVELOPMENT: boolean = process.env.NODE_ENV === 'development'
 export const IS_PRODUCTION: boolean = process.env.NODE_ENV === 'production'
@@ -46,19 +46,34 @@ export const UI_MINIMAL_AMOUNT = new BigNumber(1).shiftedBy(
 )
 
 export const NETWORK: Network = process.env.APP_NETWORK || Network.Testnet
-export const IS_DEVNET = NETWORK === Network.Devnet
 export const IS_STAGING = process.env.APP_ENV === 'staging'
-export const IS_TESTNET = [
-  Network.Testnet,
-  Network.TestnetK8s,
+export const IS_DEVNET = [
   Network.Devnet,
   Network.Devnet1,
   Network.Local
 ].includes(NETWORK)
+export const IS_TESTNET = [Network.Testnet, Network.TestnetK8s].includes(
+  NETWORK
+)
 
-export const CHAIN_ID: ChainId = process.env.APP_CHAIN_ID
-  ? parseInt(process.env.APP_CHAIN_ID.toString())
-  : parseInt((IS_TESTNET ? ChainId.Kovan : ChainId.Mainnet).toString())
+export const CHAIN_ID: ChainId = (
+  process.env.APP_CHAIN_ID
+    ? process.env.APP_CHAIN_ID
+    : IS_TESTNET
+    ? ChainId.Testnet
+    : IS_DEVNET
+    ? ChainId.Devnet
+    : ChainId.Mainnet
+) as ChainId
+export const ETHEREUM_CHAIN_ID: EthereumChainId = process.env
+  .APP_ETHEREUM_CHAIN_ID
+  ? parseInt(process.env.APP_ETHEREUM_CHAIN_ID.toString())
+  : parseInt(
+      (IS_TESTNET || IS_DEVNET
+        ? EthereumChainId.Kovan
+        : EthereumChainId.Mainnet
+      ).toString()
+    )
 
 export const BIG_NUMBER_ROUND_HALF_UP_MODE = BigNumber.ROUND_HALF_UP
 
@@ -91,3 +106,19 @@ export const UST_COIN_GECKO_ID = 'terrausd'
 export const BTC_COIN_GECKO_ID = 'bitcoin'
 export const INJ_TO_IBC_TRANSFER_FEE = 0.002
 export const HIDDEN_BALANCE_DISPLAY = '********'
+
+const endpoints = getEndpointsForNetwork(NETWORK)
+export const ENDPOINTS = {
+  ...endpoints,
+  chronosApi: APP_CHRONOS_API_ENDPOINT || undefined,
+  exchangeApiEndpoint: APP_EXCHANGE_API_ENDPOINT || endpoints.exchangeApi,
+  sentryGrpcApiEndpoint: APP_SENTRY_GRPC_ENDPOINT || endpoints.sentryGrpcApi,
+  sentryHttpApi: APP_SENTRY_HTTP_ENDPOINT || endpoints.sentryHttpApi
+}
+
+export const COIN_GECKO_OPTIONS = {
+  apiKey: process.env.APP_COINGECKO_KEY as string,
+  baseUrl: process.env.APP_COINGECKO_KEY
+    ? 'https://pro-api.coingecko.com/api/v3'
+    : 'https://api.coingecko.com/api/v3'
+}

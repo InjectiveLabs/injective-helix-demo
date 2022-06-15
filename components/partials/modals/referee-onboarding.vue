@@ -1,5 +1,5 @@
 <template>
-  <v-modal :is-open="isModalOpen" sm @modal-closed="closeModal">
+  <VModal :is-open="isModalOpen" sm @modal-closed="closeModal">
     <h3 slot="title">
       {{ $t('referralModal.title') }}
     </h3>
@@ -16,7 +16,7 @@
         name="form.code"
         rules="required|referralCode"
       >
-        <v-input
+        <VInput
           v-model="form.code"
           :errors="metamaskStatus.isLoading() ? [] : errors"
           :valid="valid"
@@ -32,7 +32,7 @@
           {{ $t('referralModal.connectTheWallet') }}
         </p>
         <div class="grid grid-cols-1 xs:grid-cols-2 gap-4">
-          <v-button
+          <VButton
             xl
             class="inline-flex items-center justify-center"
             light
@@ -43,9 +43,9 @@
             <span class="font-bold tracking-widest">
               {{ $t('connect.metamask') }}
             </span>
-          </v-button>
+          </VButton>
 
-          <v-button
+          <VButton
             xl
             class="inline-flex items-center justify-center"
             light
@@ -56,7 +56,7 @@
             <span class="font-bold tracking-widest">
               {{ $t('connect.ledger') }}
             </span>
-          </v-button>
+          </VButton>
         </div>
       </div>
 
@@ -77,7 +77,7 @@
           <span class="text-xs tracking-wide">{{ injectiveAddress }}</span>
         </div>
 
-        <v-button
+        <VButton
           primary
           xl
           class="w-full"
@@ -88,18 +88,17 @@
           <span class="font-bold">
             {{ $t('referralModal.confirm') }}
           </span>
-        </v-button>
+        </VButton>
       </div>
     </ValidationObserver>
-  </v-modal>
+  </VModal>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { Wallet } from '@injectivelabs/web3-strategy'
-import { AccountAddress } from '@injectivelabs/ts-types'
+import { Wallet, AccountAddress } from '@injectivelabs/ts-types'
 import { Modal, WalletConnectStatus } from '~/types'
 
 export default Vue.extend({

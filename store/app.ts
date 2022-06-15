@@ -1,10 +1,16 @@
 import { actionTree, getterTree } from 'typed-vuex'
-import { ChainId } from '@injectivelabs/ts-types'
-import { DEFAULT_GAS_PRICE, SECONDS_IN_A_DAY } from '@injectivelabs/ui-common'
+import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
+import {
+  DEFAULT_GAS_PRICE,
+  SECONDS_IN_A_DAY,
+  fetchGasPrice
+} from '@injectivelabs/sdk-ui-ts'
 import { StatusType } from '@injectivelabs/utils'
 import {
   CHAIN_ID,
+  ETHEREUM_CHAIN_ID,
   GEO_IP_RESTRICTIONS_ENABLED,
+  NETWORK,
   VPN_PROXY_VALIDATION_PERIOD
 } from '~/app/utils/constants'
 import { Locale, english } from '~/locales'
@@ -14,9 +20,7 @@ import {
   validateGeoLocation,
   detectVPNOrProxyUsageNoThrow
 } from '~/app/services/region'
-import { app } from '~/app/singletons/App'
 import { todayInSeconds } from '~/app/utils/time'
-import { gasService } from '~/app/Services'
 import { streamProvider } from '~/app/providers/StreamProvider'
 
 export interface UserBasedState {
@@ -30,6 +34,7 @@ const initialState = {
   // App Settings
   locale: english,
   chainId: CHAIN_ID,
+  ethereumChainId: ETHEREUM_CHAIN_ID,
   gasPrice: DEFAULT_GAS_PRICE.toString(),
 
   // Loading States
@@ -51,6 +56,7 @@ const initialState = {
 export const state = () => ({
   locale: initialState.locale as Locale,
   chainId: initialState.chainId as ChainId,
+  ethereumChainId: initialState.ethereumChainId as EthereumChainId,
   gasPrice: initialState.gasPrice as string,
   state: initialState.state as AppState,
   marketsLoadingState: initialState.marketsLoadingState as StatusType,
@@ -107,11 +113,9 @@ export const mutations = {
 export const actions = actionTree(
   { state },
   {
-    async init({ state }) {
+    async init(_) {
       await this.app.$accessor.app.fetchGeoLocation()
       await this.app.$accessor.app.detectVPNOrProxyUsage()
-
-      app.setGeoLocation(state.userState.geoLocation)
     },
 
     updateFavoriteMarkets({ state, commit }, marketId: string) {
@@ -167,7 +171,7 @@ export const actions = actionTree(
     },
 
     async fetchGasPrice({ commit }) {
-      commit('setGasPrice', await gasService.fetchGasPrice())
+      commit('setGasPrice', await fetchGasPrice(NETWORK))
     },
 
     async fetchGeoLocation({ state, commit }) {

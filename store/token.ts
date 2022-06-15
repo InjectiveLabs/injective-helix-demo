@@ -1,20 +1,23 @@
 import {
-  Token,
   TokenWithBalance,
   TokenWithBalanceAndPrice,
   UNLIMITED_ALLOWANCE,
   INJ_COIN_GECKO_ID,
-  BankBalanceWithToken
-} from '@injectivelabs/ui-common'
+  BankBalanceWithToken,
+  AccountMetrics
+} from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
 import {
-  peggyActionService,
-  peggyContractActionService,
-  tokenCoinGeckoService,
-  tokenErc20ActionService,
-  tokenErc20Service,
-  tokenService
+  getAddressFromInjectiveAddress,
+  MsgSendToEth
+} from '@injectivelabs/sdk-ts'
+import { Token } from '@injectivelabs/token-metadata'
+import {
+  msgBroadcastClient,
+  tokenPrice,
+  tokenService,
+  web3Client
 } from '~/app/Services'
 import { BTC_COIN_GECKO_ID } from '~/app/utils/constants'
 import { backupPromiseCall } from '~/app/utils/async'
@@ -31,8 +34,10 @@ const initialStateFactory = () => ({
 const initialState = initialStateFactory()
 
 export const state = () => ({
-  erc20TokensWithBalanceAndPriceFromBank: initialState.erc20TokensWithBalanceAndPriceFromBank as TokenWithBalanceAndPrice[],
-  ibcTokensWithBalanceAndPriceFromBank: initialState.ibcTokensWithBalanceAndPriceFromBank as TokenWithBalanceAndPrice[],
+  erc20TokensWithBalanceAndPriceFromBank:
+    initialState.erc20TokensWithBalanceAndPriceFromBank as TokenWithBalanceAndPrice[],
+  ibcTokensWithBalanceAndPriceFromBank:
+    initialState.ibcTokensWithBalanceAndPriceFromBank as TokenWithBalanceAndPrice[],
   tokenUsdPriceMap: initialState.tokenUsdPriceMap as TokenUsdPriceMap,
   btcUsdPrice: initialState.btcUsdPrice as number,
   injUsdPrice: initialState.injUsdPrice as number
@@ -49,14 +54,16 @@ export const mutations = {
     state: TokenStoreState,
     erc20TokensWithBalanceAndPriceFromBank: TokenWithBalanceAndPrice[]
   ) {
-    state.erc20TokensWithBalanceAndPriceFromBank = erc20TokensWithBalanceAndPriceFromBank
+    state.erc20TokensWithBalanceAndPriceFromBank =
+      erc20TokensWithBalanceAndPriceFromBank
   },
 
   setIbcTokensWithBalanceAndPriceFromBank(
     state: TokenStoreState,
     ibcTokensWithBalanceAndPriceFromBank: TokenWithBalanceAndPrice[]
   ) {
-    state.ibcTokensWithBalanceAndPriceFromBank = ibcTokensWithBalanceAndPriceFromBank
+    state.ibcTokensWithBalanceAndPriceFromBank =
+      ibcTokensWithBalanceAndPriceFromBank
   },
 
   setTokenUsdPriceMap(
@@ -99,26 +106,21 @@ export const actions = actionTree(
         return
       }
 
-      const {
-        bankErc20BalancesWithToken,
-        bankIbcBalancesWithToken
-      } = this.app.$accessor.bank
+      const { bankErc20BalancesWithToken, bankIbcBalancesWithToken } =
+        this.app.$accessor.bank
 
       const tokenToTokenWithBalanceAndAllowance = async ({
         token
       }: BankBalanceWithToken) => {
-        const tokenWithBalance = await tokenErc20Service.fetchTokenBalanceAndAllowance(
-          {
-            address,
-            token
-          }
-        )
+        const balance = await web3Client.fetchTokenBalanceAndAllowance({
+          address,
+          contractAddress: token.address
+        })
 
         return {
-          ...tokenWithBalance,
-          usdPrice: await tokenCoinGeckoService.fetchUsdTokenPrice(
-            token.coinGeckoId
-          )
+          ...token,
+          ...balance,
+          usdPrice: await tokenPrice.fetchUsdTokenPrice(token.coinGeckoId)
         } as TokenWithBalanceAndPrice
       }
 
@@ -160,15 +162,15 @@ export const actions = actionTree(
       const tradeableTokensWithBalanceAndPrice = await Promise.all(
         uniqueDenomsNotInBankBalances.map(async (denom) => {
           const token = await tokenService.getDenomToken(denom)
-          const tokenWithBalance = await tokenErc20Service.fetchTokenBalanceAndAllowance(
-            { address, token }
-          )
+          const tokenBalance = await web3Client.fetchTokenBalanceAndAllowance({
+            address,
+            contractAddress: token.address
+          })
 
           return {
-            ...tokenWithBalance,
-            usdPrice: await tokenCoinGeckoService.fetchUsdTokenPrice(
-              token.coinGeckoId
-            )
+            ...token,
+            ...tokenBalance,
+            usdPrice: await tokenPrice.fetchUsdTokenPrice(token.coinGeckoId)
           } as TokenWithBalanceAndPrice
         })
       )
@@ -195,9 +197,7 @@ export const actions = actionTree(
     async getTokenUsdPriceMap({ commit }, coinGeckoIdList: string[]) {
       const tokenUsdPriceList = await Promise.all(
         coinGeckoIdList.map(async (coinGeckoId) => ({
-          [coinGeckoId]: await tokenCoinGeckoService.fetchUsdTokenPrice(
-            coinGeckoId
-          )
+          [coinGeckoId]: await tokenPrice.fetchUsdTokenPrice(coinGeckoId)
         }))
       )
 
@@ -212,14 +212,14 @@ export const actions = actionTree(
     async getInjUsdPrice({ commit }) {
       commit(
         'setInjUsdPrice',
-        await tokenCoinGeckoService.fetchUsdTokenPrice(INJ_COIN_GECKO_ID)
+        await tokenPrice.fetchUsdTokenPrice(INJ_COIN_GECKO_ID)
       )
     },
 
     async getBitcoinUsdPrice({ commit }) {
       commit(
         'setBtcUsdPrice',
-        await tokenCoinGeckoService.fetchUsdTokenPrice(BTC_COIN_GECKO_ID)
+        await tokenPrice.fetchUsdTokenPrice(BTC_COIN_GECKO_ID)
       )
     },
 
@@ -232,11 +232,16 @@ export const actions = actionTree(
 
       await this.app.$accessor.wallet.validate()
 
-      await tokenErc20ActionService.setTokenAllowance({
+      const tx = await web3Client.getSetTokenAllowanceTx({
         address,
-        tokenAddress,
         gasPrice,
+        tokenAddress,
         amount: UNLIMITED_ALLOWANCE.toFixed()
+      })
+
+      await web3Client.sendTransaction({
+        tx,
+        address
       })
 
       const { erc20TokensWithBalanceAndPriceFromBank } = state
@@ -269,11 +274,8 @@ export const actions = actionTree(
       _,
       { amount, token }: { amount: BigNumberInBase; token: Token }
     ) {
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
       const { gasPrice } = this.app.$accessor.app
 
       if (!address || !isUserWalletConnected) {
@@ -282,16 +284,25 @@ export const actions = actionTree(
 
       await this.app.$accessor.wallet.validate()
 
-      await peggyContractActionService.transfer({
+      const ethDestinationAddress =
+        getAddressFromInjectiveAddress(injectiveAddress)
+      const actualAmount = new BigNumberInBase(
+        amount.toFixed(3, BigNumberInBase.ROUND_DOWN)
+      )
+        .toWei(token.decimals)
+        .toFixed()
+
+      const tx = await web3Client.getPeggyTransferTx({
         address,
         gasPrice,
-        destinationAddress: injectiveAddress,
         denom: token.denom,
-        amount: new BigNumberInBase(
-          amount.toFixed(3, BigNumberInBase.ROUND_DOWN)
-        )
-          .toWei(token.decimals)
-          .toFixed()
+        amount: actualAmount,
+        destinationAddress: ethDestinationAddress
+      })
+
+      await web3Client.sendTransaction({
+        tx,
+        address
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
@@ -309,11 +320,8 @@ export const actions = actionTree(
         token: Token
       }
     ) {
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
 
       if (!address || !isUserWalletConnected) {
         return
@@ -321,15 +329,28 @@ export const actions = actionTree(
 
       await this.app.$accessor.wallet.validate()
 
-      await peggyActionService.withdraw({
+      const actualAmount = amount.toWei(token.decimals).toFixed(0)
+      const actualBridgeFee = new BigNumberInWei(
+        bridgeFee.toWei(token.decimals).toFixed(0)
+      ).toFixed()
+
+      const message = MsgSendToEth.fromJSON({
         address,
         injectiveAddress,
-        denom: token.denom,
-        destinationAddress: address,
-        amount: amount.toWei(token.decimals).toFixed(0),
-        bridgeFee: new BigNumberInWei(
-          bridgeFee.toWei(token.decimals).toFixed(0)
-        ).toFixed(0)
+        amount: {
+          denom: token.denom,
+          amount: actualAmount
+        },
+        bridgeFee: {
+          denom: token.denom,
+          amount: actualBridgeFee
+        }
+      })
+
+      await msgBroadcastClient.broadcast({
+        address,
+        msgs: message,
+        bucket: AccountMetrics.SendToEth
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())

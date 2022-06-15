@@ -1,12 +1,12 @@
 <template>
   <div v-if="market" class="mt-6 py-6 border-t relative">
-    <v-drawer
+    <VDrawer
       :custom-handler="true"
       :custom-is-open="detailsDrawerOpen"
       @drawer-toggle="onDrawerToggle"
     >
       <p slot="header" class="flex justify-between">
-        <v-text-info :title="$t('trade.total')" lg>
+        <TextInfo :title="$t('trade.total')" lg>
           <IconInfoTooltip
             slot="context"
             class="ml-2"
@@ -20,11 +20,11 @@
               {{ market.quoteToken.symbol }}
             </span>
           </span>
-        </v-text-info>
+        </TextInfo>
       </p>
 
       <div class="mt-4">
-        <v-text-info :title="$t('trade.amount')">
+        <TextInfo :title="$t('trade.amount')">
           <span
             v-if="!amount.isNaN()"
             class="font-mono flex items-start break-all"
@@ -35,9 +35,9 @@
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </v-text-info>
+        </TextInfo>
 
-        <v-text-info :title="$t('trade.averagePrice')" class="mt-2">
+        <TextInfo :title="$t('trade.averagePrice')" class="mt-2">
           <span
             v-if="!averagePrice.isNaN()"
             class="font-mono flex items-start break-all"
@@ -48,9 +48,9 @@
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </v-text-info>
+        </TextInfo>
 
-        <v-text-info
+        <TextInfo
           v-if="!orderTypeBuy"
           :title="$t('trade.est_receiving_amount')"
           class="mt-2"
@@ -67,9 +67,9 @@
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </v-text-info>
+        </TextInfo>
 
-        <v-text-info :title="$t('trade.taker_rate')" class="mt-2">
+        <TextInfo :title="$t('trade.taker_rate')" class="mt-2">
           <IconInfoTooltip
             slot="context"
             class="ml-2"
@@ -78,9 +78,9 @@
           <span class="font-mono flex items-center">
             {{ `${takerFeeRateToFormat}%` }}
           </span>
-        </v-text-info>
+        </TextInfo>
 
-        <v-text-info :title="$t('trade.fee')" class="mt-2">
+        <TextInfo :title="$t('trade.fee')" class="mt-2">
           <div slot="context">
             <div class="flex items-center">
               <IconInfoTooltip
@@ -111,9 +111,9 @@
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </v-text-info>
+        </TextInfo>
 
-        <v-text-info
+        <TextInfo
           v-if="takerExpectedPts.gte(0)"
           :title="$t('trade.expected_points')"
           class="mt-2"
@@ -129,21 +129,24 @@
               {{ $t('pts') }}
             </span>
           </span>
-        </v-text-info>
+        </TextInfo>
 
         <p class="mt-4 text-gray-500 text-xs">
           {{ $t('trade.worst_price_note', { slippage: slippage.toFixed() }) }}
         </p>
       </div>
-    </v-drawer>
+    </VDrawer>
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { ZERO_IN_BASE, UiSpotMarketWithToken } from '@injectivelabs/ui-common'
-import { SpotOrderSide } from '@injectivelabs/spot-consumer'
+import {
+  ZERO_IN_BASE,
+  UiSpotMarketWithToken,
+  SpotOrderSide
+} from '@injectivelabs/sdk-ui-ts'
 import Drawer from '~/components/elements/drawer.vue'
 import { Icon } from '~/types'
 import {
@@ -155,7 +158,7 @@ import { getDecimalsFromNumber } from '~/app/utils/helpers'
 
 export default Vue.extend({
   components: {
-    'v-drawer': Drawer
+    VDrawer: Drawer
   },
 
   props: {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-modal-bridge
+    <VModalBridge
       v-bind="{
         form,
         bridgeType,
@@ -20,7 +20,7 @@
       @bridge:confirm="handleModalConfirmOpen"
       @bridge:reset="handleResetForm"
     />
-    <v-modal-bridge-confirm
+    <VModalBridgeConfirm
       v-bind="{
         form,
         bridgeType,
@@ -32,7 +32,7 @@
       }"
       @bridge:confirmed="handleModalCompletedOpen"
     />
-    <v-modal-bridge-completed
+    <VModalBridgeCompleted
       v-bind="{
         bridgeType,
         destination,
@@ -45,8 +45,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BridgingNetwork, KeplrNetworks, Token } from '@injectivelabs/ui-common'
+import { BridgingNetwork, KeplrNetworks } from '@injectivelabs/sdk-ui-ts'
 import { Wallet } from '@injectivelabs/ts-types'
+import { Token } from '@injectivelabs/token-metadata'
 import { injToken } from '~/app/data/token'
 import { BridgeType, Modal, TransferDirection } from '~/types'
 import VModalBridge from '~/components/partials/modals/bridge/index.vue'
@@ -122,7 +123,12 @@ export default Vue.extend({
     isIbcTransfer(): boolean {
       const { origin, destination } = this
 
-      const cosmosNetworks = [...KeplrNetworks, BridgingNetwork.Terra]
+      const cosmosNetworks = [
+        ...KeplrNetworks,
+        BridgingNetwork.Terra,
+        BridgingNetwork.Axelar,
+        BridgingNetwork.Moonbeam
+      ]
 
       return (
         cosmosNetworks.includes(origin as BridgingNetwork) ||

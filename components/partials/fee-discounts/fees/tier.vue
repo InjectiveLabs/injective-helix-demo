@@ -30,11 +30,12 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { cosmosSdkDecToBigNumber, ZERO_IN_BASE } from '@injectivelabs/ui-common'
+import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
+  cosmosSdkDecToBigNumber,
   FeeDiscountAccountInfo,
   FeeDiscountTierInfo
-} from '~/app/services/exchange'
+} from '@injectivelabs/sdk-ts'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
 
 export default Vue.extend({

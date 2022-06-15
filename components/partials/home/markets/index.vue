@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-panel :title="$t('trade.markets')">
+    <VPanel :title="$t('trade.markets')">
       <div slot="context">
         <div>
           <div v-if="false" class="sm:flex items-center justify-center mb-8">
@@ -20,7 +20,7 @@
           </div>
 
           <div class="flex items-center my-2 -mx-2">
-            <v-button
+            <VButton
               :class="{
                 'text-gray-500': filterType !== MarketFilterType.Volume
               }"
@@ -29,9 +29,9 @@
               @click.stop="updateFilterType(MarketFilterType.Volume)"
             >
               <span class="uppercase text-xs">{{ $t('home.trending') }}</span>
-            </v-button>
+            </VButton>
             <div class="mx-2 w-px h-4 bg-gray-700"></div>
-            <v-button
+            <VButton
               :class="{
                 'text-gray-500': filterType !== MarketFilterType.New
               }"
@@ -40,27 +40,27 @@
               @click.stop="updateFilterType(MarketFilterType.New)"
             >
               <span class="uppercase text-xs">{{ $t('home.whatsNew') }}</span>
-            </v-button>
+            </VButton>
           </div>
         </div>
       </div>
 
       <div class="relative">
-        <VHocLoading :status="status" :show-loading="markets.length === 0">
+        <HocLoading :status="status" :show-loading="markets.length === 0">
           <v-table
             :markets="markets"
             :summaries="marketsSummary"
             :filter-type="filterType"
           />
-        </VHocLoading>
+        </HocLoading>
       </div>
-    </v-panel>
+    </VPanel>
 
     <div v-if="filterType !== MarketFilterType.All" class="text-center">
       <nuxt-link :to="{ name: 'markets' }">
-        <v-button lg primary class="w-60 mt-6">
+        <VButton lg primary class="w-60 mt-6">
           {{ $t('home.viewAllMarkets') }}
-        </v-button>
+        </VButton>
       </nuxt-link>
     </div>
   </div>
@@ -74,7 +74,7 @@ import {
   UiSpotMarketSummary,
   UiSpotMarketWithToken,
   ZERO_IN_BASE
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import VTable from '~/components/partials/home/markets/markets-table.vue'
 import { MarketFilterType } from '~/types'

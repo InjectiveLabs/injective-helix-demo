@@ -1,11 +1,11 @@
 <template>
-  <VHocLoading :status="status">
-    <v-card-table-wrap>
+  <HocLoading :status="status">
+    <VCardTableWrap>
       <template #actions>
         <div
           class="col-span-12 lg:col-span-6 grid grid-cols-5 sm:grid-cols-3 gap-4 w-full"
         >
-          <v-search
+          <VSearch
             dense
             class="col-span-3 sm:col-span-1"
             data-cy="universal-table-filter-by-asset-input"
@@ -22,7 +22,7 @@
             <span>{{ $t('common.filters') }}</span>
           </div>
 
-          <filter-selector
+          <FilterSelector
             class="self-start hidden sm:block"
             data-cy="universal-table-filter-by-type-drop-down"
             :type="TradeSelectorType.Type"
@@ -30,7 +30,7 @@
             @click="handleTypeClick"
           />
 
-          <filter-selector
+          <FilterSelector
             class="self-start hidden sm:block"
             data-cy="universal-table-filter-by-side-drop-down"
             :type="TradeSelectorType.Side"
@@ -54,15 +54,15 @@
           @showTradeDetails="handleShowTradeDetails"
         />
 
-        <v-empty-list slot="empty" :message="$t('trade.emptyTrades')" />
+        <EmptyList slot="empty" :message="$t('trade.emptyTrades')" />
       </TableBody>
 
-      <v-table-wrapper break-md class="mt-4 hidden sm:block">
+      <TableWrapper break-md class="mt-4 hidden sm:block">
         <table v-if="filteredTrades.length > 0" class="table">
-          <trades-table-header />
+          <TradesTableHeader />
           <tbody>
             <tr
-              is="v-trade"
+              is="Trade"
               v-for="(trade, index) in filteredTrades"
               :key="`trade-${index}`"
               :trade="trade"
@@ -70,12 +70,12 @@
             />
           </tbody>
         </table>
-        <v-empty-list
+        <EmptyList
           v-else
           :message="$t('trade.emptyTrades')"
           data-cy="universal-table-nothing-found"
         />
-      </v-table-wrapper>
+      </TableWrapper>
 
       <ModalMobileTradeFilter
         :type="type"
@@ -85,14 +85,14 @@
       />
 
       <ModalMobileTradeDetails is-spot :trade="tradeDetails" />
-    </v-card-table-wrap>
-  </VHocLoading>
+    </VCardTableWrap>
+  </HocLoading>
 </template>
 
 <script lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import Vue from 'vue'
-import { UiSpotTrade, UiSpotMarketWithToken } from '@injectivelabs/ui-common'
+import { UiSpotTrade, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { TradeExecutionType } from '@injectivelabs/ts-types'
 import Trade from '~/components/partials/common/trade/trade.vue'
 import MobileTrade from '~/components/partials/common/trade/mobile-trade.vue'
@@ -106,7 +106,7 @@ import { Modal } from '~/types'
 
 export default Vue.extend({
   components: {
-    'v-trade': Trade,
+    Trade,
     FilterSelector,
     MobileTrade,
     ModalMobileTradeDetails,

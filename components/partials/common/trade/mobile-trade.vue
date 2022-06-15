@@ -18,9 +18,9 @@
             )
           }}
         </span>
-        <div v-if="market.baseToken.logo" class="w-4 h-4">
+        <div v-if="baseTokenLogo" class="w-4 h-4">
           <img
-            :src="market.baseToken.logo"
+            :src="baseTokenLogo"
             :alt="market.baseToken.name"
             class="min-w-full h-auto rounded-full"
           />
@@ -37,7 +37,7 @@
       {{ $t('trade.price') }}
     </span>
     <div class="text-right">
-      <v-number
+      <VNumber
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
@@ -49,7 +49,7 @@
       {{ $t('trade.amount') }}
     </span>
     <div class="text-right">
-      <v-number
+      <VNumber
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
@@ -76,8 +76,9 @@ import {
   UiDerivativeMarketWithToken,
   UiSpotMarketWithToken,
   UiSpotTrade,
-  ZERO_IN_BASE
-} from '@injectivelabs/ui-common'
+  ZERO_IN_BASE,
+  getTokenLogoWithVendorPathPrefix
+} from '@injectivelabs/sdk-ui-ts'
 import TableRow from '~/components/elements/table-row.vue'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
@@ -223,6 +224,20 @@ export default Vue.extend({
       const marketRoute = getMarketRoute(market)
 
       return marketRoute || { name: 'markets' }
+    },
+
+    baseTokenLogo(): string {
+      const { market } = this
+
+      if (!market) {
+        return ''
+      }
+
+      if (!market.baseToken) {
+        return ''
+      }
+
+      return getTokenLogoWithVendorPathPrefix(market.baseToken.logo)
     }
   },
 

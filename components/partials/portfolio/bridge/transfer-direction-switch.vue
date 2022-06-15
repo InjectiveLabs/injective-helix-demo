@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-between items-center">
-    <v-network-card-base
+    <NetworkCardBase
       class="w-1/2"
       hide-icon
       data-cy="transfer-modal-from-text-content"
@@ -17,7 +17,7 @@
       />
     </div>
 
-    <v-network-card-base
+    <NetworkCardBase
       class="w-1/2"
       hide-icon
       data-cy="transfer-modal-to-text-content"
@@ -28,14 +28,14 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { NetworkMeta } from '@injectivelabs/ui-common'
+import { NetworkMeta } from '@injectivelabs/sdk-ui-ts'
 import { TransferDirection, TransferSide } from '~/types'
-import VNetworkCardBase from '~/components/partials/portfolio/bridge/network-card/index.vue'
+import NetworkCardBase from '~/components/partials/portfolio/bridge/network-card/index.vue'
 import { transferSideMeta } from '~/app/data/bridge'
 
 export default Vue.extend({
   components: {
-    VNetworkCardBase
+    NetworkCardBase
   },
 
   props: {

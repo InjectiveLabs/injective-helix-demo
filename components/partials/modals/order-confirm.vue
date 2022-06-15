@@ -1,5 +1,5 @@
 <template>
-  <v-modal
+  <VModal
     :is-open="isModalOpen"
     data-cy="price-deviation-modal"
     @modal-closed="closeModal"
@@ -17,7 +17,7 @@
         }}
       </p>
       <div class="mt-6 flex items-center justify-center">
-        <v-button
+        <VButton
           lg
           class="mr-4"
           primary
@@ -25,13 +25,13 @@
           @click.stop="handleConfirm"
         >
           {{ $t('common.confirm') }}
-        </v-button>
-        <v-button lg class="mr-4" red @click.stop="handleCancel">
+        </VButton>
+        <VButton lg class="mr-4" red @click.stop="handleCancel">
           {{ $t('common.cancel') }}
-        </v-button>
+        </VButton>
       </div>
     </div>
-  </v-modal>
+  </VModal>
 </template>
 
 <script lang="ts">

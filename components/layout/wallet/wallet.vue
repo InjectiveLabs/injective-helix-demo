@@ -162,8 +162,8 @@ import {
   formatWalletAddress
 } from '@injectivelabs/utils'
 import { RefereeInfo, ReferrerInfo } from '@injectivelabs/referral-consumer'
-import { Wallet } from '@injectivelabs/web3-strategy'
-import { FeeDiscountAccountInfo } from '@injectivelabs/chain-consumer'
+import { Wallet } from '@injectivelabs/ts-types'
+import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
 import VConnectedWallet from './connected-wallet.vue'
 import VLogoMini from '~/components/elements/logo-mini.vue'
 import VPopperBox from '~/components/elements/popper-box.vue'

@@ -4,7 +4,7 @@
       <span class="text-base md:text-sm col-span-5">
         <div class="flex items-center cursor-pointer justify-start">
           <img
-            :src="market.baseToken.logo"
+            :src="baseTokenLogo"
             :alt="market.baseToken.name"
             class="w-4 h-4 md:w-6 md:h-6 mr-4"
           />
@@ -36,11 +36,12 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import {
+  getTokenLogoWithVendorPathPrefix,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiSpotMarketSummary,
   UiSpotMarketWithToken
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import TableRow from '~/components/elements/table-row.vue'
 import { MarketRoute } from '~/types'
 import { betaMarketSlugs } from '~/app/data/market'
@@ -88,6 +89,20 @@ export default Vue.extend({
       const marketRoute = getMarketRoute(market)
 
       return marketRoute || { name: 'markets' }
+    },
+
+    baseTokenLogo(): string {
+      const { market } = this
+
+      if (!market) {
+        return ''
+      }
+
+      if (!market.baseToken) {
+        return ''
+      }
+
+      return getTokenLogoWithVendorPathPrefix(market.baseToken.logo)
     }
   }
 })

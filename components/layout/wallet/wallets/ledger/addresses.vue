@@ -17,7 +17,7 @@
       </div>
       <div class="w-full px-4 mb-2 text-left">
         <div v-if="status.isNotLoading()">
-          <v-button sm @click.stop.prevent="handleClickOnFetchAddresses">
+          <VButton sm @click.stop.prevent="handleClickOnFetchAddresses">
             <div
               class="-mx-2 mt-2 flex items-center font-semibold text-primary-500 hover:text-primary-400"
             >
@@ -28,7 +28,7 @@
               }}</span>
               <IconArrow class="transform rotate-180 w-3 h-3" />
             </div>
-          </v-button>
+          </VButton>
         </div>
         <p v-else class="text-gray-400 text-xs my-2">
           {{ $t('connect.getAddressNote') }}
@@ -41,7 +41,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status } from '@injectivelabs/utils'
-import { LedgerDerivationPathType, Wallet } from '@injectivelabs/web3-strategy'
+import { LedgerDerivationPathType } from '@injectivelabs/wallet-ts'
+import { Wallet } from '@injectivelabs/ts-types'
 import VSelectCustom from '~/components/inputs/select-custom.vue'
 
 export default Vue.extend({

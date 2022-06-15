@@ -1,5 +1,10 @@
 <template>
-  <div :ref="uid" @mouseleave="hideDropdown" @mouseenter="showDropdown">
+  <div
+    :ref="uid"
+    v-click-outside="onClickOutside"
+    @mouseleave="onMouseLeave"
+    @mouseenter="showDropdown"
+  >
     <div v-if="!hideArrow" class="arrow" data-popper-arrow />
     <slot></slot>
   </div>
@@ -34,13 +39,19 @@ export default Vue.extend({
     hideArrow: {
       type: Boolean,
       default: false
+    },
+
+    disableAutoClose: {
+      type: Boolean,
+      default: false
     }
   },
 
   data() {
     return {
       popper: {} as Instance,
-      delayHide: null as any
+      delayHide: null as any,
+      active: false
     }
   },
 
@@ -69,6 +80,13 @@ export default Vue.extend({
   },
 
   methods: {
+    onClickOutside() {
+      if (!this.$popperElement || !this.active) {
+        return
+      }
+      this.$emit('close')
+    },
+
     showDropdown() {
       const { $popperElement } = this
 
@@ -79,17 +97,27 @@ export default Vue.extend({
           this.popper.update()
         }
 
+        this.active = true
         $popperElement.setAttribute('data-show', '')
       })
     },
 
     hideDropdown() {
-      const { $popperElement } = this
-
       // prevents hiding popper when moving from binding element to popper element
-      this.delayHide = setTimeout(() => {
-        $popperElement.removeAttribute('data-show')
-      }, 100)
+      this.delayHide = setTimeout(this.hide, 100)
+    },
+
+    onMouseLeave() {
+      if (this.$listeners && this.$listeners.close) {
+        return
+      }
+
+      this.hideDropdown()
+    },
+
+    hide() {
+      this.active = false
+      this.$popperElement.removeAttribute('data-show')
     }
   }
 })

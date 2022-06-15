@@ -2,6 +2,7 @@
 import Vue from 'vue'
 import Arrow from '~/components/icons/arrow.vue'
 import ArrowSwap from '~/components/icons/arrow-swap.vue'
+import ArrowDown from '~/components/icons/arrow-down.vue'
 import Bin from '~/components/icons/bin.vue'
 import Box from '~/components/icons/box.vue'
 import CaretDown from '~/components/icons/caret-down.vue'
@@ -50,6 +51,7 @@ import Telegram from '~/components/icons/telegram.vue'
 import TelegramCircle from '~/components/icons/telegram-circle.vue'
 import Torus from '~/components/icons/torus.vue'
 import Triangle from '~/components/icons/triangle.vue'
+import Trezor from '~/components/icons/trezor.vue'
 import Twitter from '~/components/icons/twitter.vue'
 import TwitterCircle from '~/components/icons/twitter-circle.vue'
 import User from '~/components/icons/user.vue'
@@ -59,9 +61,12 @@ import Youtube from '~/components/icons/youtube.vue'
 import YoutubeCircle from '~/components/icons/youtube-circle.vue'
 import MenuAlt from '~/components/icons/menu-alt.vue'
 import WalletConnect from '~/components/icons/wallet-connect.vue'
+import Cogwheel from '~/components/icons/cogwheel.vue'
+import Warn from '~/components/icons/warn.vue'
 
 Vue.component('IconArrow', Arrow)
 Vue.component('IconArrowSwap', ArrowSwap)
+Vue.component('IconArrowDown', ArrowDown)
 Vue.component('IconBin', Bin)
 Vue.component('IconBox', Box)
 Vue.component('IconCaretDown', CaretDown)
@@ -112,6 +117,7 @@ Vue.component('IconSwap', Swap)
 Vue.component('IconTelegram', Telegram)
 Vue.component('IconTelegramCircle', TelegramCircle)
 Vue.component('IconTriangle', Triangle)
+Vue.component('IconTrezor', Trezor)
 Vue.component('IconTwitter', Twitter)
 Vue.component('IconTwitterCircle', TwitterCircle)
 Vue.component('IconUser', User)
@@ -119,3 +125,5 @@ Vue.component('IconWallet', Wallet)
 Vue.component('IconWalletConnect', WalletConnect)
 Vue.component('IconYoutube', Youtube)
 Vue.component('IconYoutubeCircle', YoutubeCircle)
+Vue.component('IconCogwheel', Cogwheel)
+Vue.component('IconWarn', Warn)

@@ -1,129 +1,116 @@
-import { getUrlEndpointForNetwork } from '@injectivelabs/networks'
-import {
-  BridgeService,
-  BankService,
-  TokenService,
-  TokenErc20Service,
-  TokenCoinGeckoService,
-  GasService,
-  BankActionService,
-  TokenErc20ServiceAction,
-  PeggyActionService,
-  SpotService,
-  DerivativeActionService,
-  SpotActionService,
-  SubaccountActionService,
-  BridgeTransformer,
-  ServiceOptions,
-  MetricsProvider,
-  TxProvider,
-  PeggyContractActionService
-} from '@injectivelabs/ui-common'
-import { AlchemyApi } from '@injectivelabs/alchemy-api'
 import { CoinGeckoApi } from '@injectivelabs/token-utils'
-import { TxProviderBaseOptions } from '@injectivelabs/ui-common/dist/providers/TxProvider'
+import { LocalStorage } from '@injectivelabs/utils'
+import { Web3Client } from '@injectivelabs/sdk-ui-ts/dist/web3'
 import {
-  CHAIN_ID,
-  IS_TESTNET,
+  MsgBroadcastClient,
+  TokenService,
+  TokenPrice,
+  MetricsProvider,
+  peggyGraphQlEndpointForNetwork,
+  UiBridgeTransformer
+} from '@injectivelabs/sdk-ui-ts'
+import {
+  ChainGrpcAuctionApi,
+  ChainGrpcBankApi,
+  ExchangeRestExplorerApi,
+  ExchangeGrpcExplorerApi,
+  ApolloConsumer,
+  ChainGrpcExchangeApi,
+  ChainGrpcOracleApi,
+  ExchangeGrpcDerivativesApi,
+  ExchangeGrpcSpotApi,
+  ExchangeGrpcAccountApi,
+  ExchangeRestDerivativesChronosApi,
+  ExchangeRestSpotChronosApi,
+  ExchangeGrpcOracleApi
+} from '@injectivelabs/sdk-ts/dist/client'
+import {
   NETWORK,
   METRICS_ENABLED,
-  APP_EXCHANGE_API_ENDPOINT,
-  APP_SENTRY_GRPC_ENDPOINT,
-  APP_SENTRY_HTTP_ENDPOINT,
-  APP_CHRONOS_API_ENDPOINT
+  ETHEREUM_CHAIN_ID,
+  COIN_GECKO_OPTIONS,
+  CHAIN_ID,
+  ENDPOINTS
 } from './utils/constants'
-import { SubaccountService } from './services/account'
-import { ExchangeService } from './services/exchange'
-import { AuctionService } from './services/auction'
-import { DerivativeService } from './services/derivatives'
-import { ExplorerService } from './services/explorer'
-import { ReferralService } from './services/referral'
-import { web3Strategy } from './web3'
-import { app } from '~/app/singletons/App'
+import { walletStrategy } from './wallet-strategy'
 
-const alchemyRpcEndpoint = IS_TESTNET
-  ? `https://eth-kovan.alchemyapi.io/v2/${process.env.APP_ALCHEMY_KOVAN_KEY}`
-  : `https://eth-mainnet.alchemyapi.io/v2/${process.env.APP_ALCHEMY_KEY}`
-const coinGeckoOptions = {
-  apiKey: process.env.APP_COINGECKO_KEY as string,
-  baseUrl: process.env.APP_COINGECKO_KEY
-    ? 'https://pro-api.coingecko.com/api/v3'
-    : 'https://api.coingecko.com/api/v3'
-}
-
-const endpoints = getUrlEndpointForNetwork(NETWORK)
 const metricsProvider = new MetricsProvider({
-  region: app.regionForMetrics,
+  region: 'en' /* TODO */,
   appEnv: process.env.APP_ENV,
   nodeEnv: process.env.NODE_ENV
 })
-const commonServiceOptions = {
+const apiOptions = {
   chainId: CHAIN_ID,
+  ethereumChainId: ETHEREUM_CHAIN_ID,
   network: NETWORK,
-  endpoints: {
-    ...endpoints,
-    chronosApi: APP_CHRONOS_API_ENDPOINT || undefined,
-    exchangeApiEndpoint: APP_EXCHANGE_API_ENDPOINT || endpoints.exchangeApi,
-    sentryGrpcApiEndpoint: APP_SENTRY_GRPC_ENDPOINT || endpoints.sentryGrpcApi,
-    sentryHttpApi: APP_SENTRY_HTTP_ENDPOINT || endpoints.sentryHttpApi
-  },
+  endpoints: ENDPOINTS,
   metricsProvider: METRICS_ENABLED ? metricsProvider : undefined
-} as ServiceOptions
-const txProvider = new TxProvider({
-  ...commonServiceOptions,
-  web3Strategy
-} as TxProviderBaseOptions)
+}
 
-/* Services */
-export const tokenErc20Service = new TokenErc20Service(
-  commonServiceOptions,
-  alchemyRpcEndpoint
+// Services
+export const bankApi = new ChainGrpcBankApi(ENDPOINTS.sentryGrpcApi)
+export const auctionApi = new ChainGrpcAuctionApi(ENDPOINTS.sentryGrpcApi)
+export const exchangeApi = new ChainGrpcExchangeApi(ENDPOINTS.sentryGrpcApi)
+export const oracleApi = new ChainGrpcOracleApi(ENDPOINTS.sentryGrpcApi)
+export const exchangeExplorerApi = new ExchangeGrpcExplorerApi(
+  ENDPOINTS.exchangeApi
 )
-export const tokenCoinGeckoService = new TokenCoinGeckoService(
-  commonServiceOptions,
-  coinGeckoOptions
+export const exchangeAccountApi = new ExchangeGrpcAccountApi(
+  ENDPOINTS.exchangeApi
 )
-export const bridgeService = new BridgeService(commonServiceOptions)
-export const bridgeTransformer = new BridgeTransformer(NETWORK)
-export const bankService = new BankService(commonServiceOptions)
-export const derivativeService = new DerivativeService(commonServiceOptions)
-export const explorerService = new ExplorerService(commonServiceOptions)
-export const spotService = new SpotService(commonServiceOptions)
-export const tokenService = new TokenService(commonServiceOptions)
-export const gasService = new GasService(commonServiceOptions)
-export const exchangeService = new ExchangeService(commonServiceOptions)
-export const auctionService = new AuctionService(commonServiceOptions)
-export const alchemyApiService = new AlchemyApi(alchemyRpcEndpoint)
-export const coinGeckoApi = new CoinGeckoApi(coinGeckoOptions)
-export const subaccountService = new SubaccountService(commonServiceOptions)
-export const referralService = new ReferralService(commonServiceOptions)
+export const exchangeOracleApi = new ExchangeGrpcOracleApi(
+  ENDPOINTS.exchangeApi
+)
+export const exchangeRestExplorerApi = new ExchangeRestExplorerApi(
+  `${ENDPOINTS.exchangeApi}/api/explorer/v1`
+)
+export const exchangeRestDerivativesChronosApi =
+  new ExchangeRestDerivativesChronosApi(
+    `${
+      ENDPOINTS.chronosApi
+        ? `${ENDPOINTS.chronosApi}/api/v1/derivative`
+        : `${ENDPOINTS.exchangeApi}/api/chronos/v1/derivative`
+    }`
+  )
+export const exchangeRestSpotChronosApi = new ExchangeRestSpotChronosApi(
+  `${
+    ENDPOINTS.chronosApi
+      ? `${ENDPOINTS.chronosApi}/api/v1/spot`
+      : `${ENDPOINTS.exchangeApi}/api/chronos/v1/spot`
+  }`
+)
+export const exchangeDerivativesApi = new ExchangeGrpcDerivativesApi(
+  ENDPOINTS.exchangeApi
+)
+export const exchangeSpotApi = new ExchangeGrpcSpotApi(ENDPOINTS.exchangeApi)
 
-/** Actions */
-export const bankActionService = new BankActionService({
-  options: commonServiceOptions,
-  txProvider
+export const apolloConsumer = new ApolloConsumer(
+  peggyGraphQlEndpointForNetwork(NETWORK)
+)
+export const coinGeckoApi = new CoinGeckoApi(COIN_GECKO_OPTIONS)
+
+// Transaction broadcaster
+export const msgBroadcastClient = new MsgBroadcastClient({
+  ...apiOptions,
+  walletStrategy
 })
-export const derivativeActionService = new DerivativeActionService({
-  options: commonServiceOptions,
-  txProvider
+export const web3Client = new Web3Client({
+  walletStrategy,
+  network: NETWORK,
+  ethereumChainId: ETHEREUM_CHAIN_ID
 })
-export const spotActionService = new SpotActionService({
-  options: commonServiceOptions,
-  txProvider
+
+// Token Services
+export const tokenService = new TokenService({
+  chainId: CHAIN_ID,
+  network: NETWORK
 })
-export const subaccountActionService = new SubaccountActionService({
-  options: commonServiceOptions,
-  txProvider
-})
-export const peggyActionService = new PeggyActionService({
-  options: commonServiceOptions,
-  txProvider
-})
-export const peggyContractActionService = new PeggyContractActionService({
-  options: commonServiceOptions,
-  web3Strategy
-})
-export const tokenErc20ActionService = new TokenErc20ServiceAction({
-  options: commonServiceOptions,
-  web3Strategy
-})
+export const tokenPrice = new TokenPrice(COIN_GECKO_OPTIONS)
+
+// UI Services
+export const bridgeTransformer = new UiBridgeTransformer(NETWORK)
+
+// Singletons
+export const localStorage: LocalStorage = new LocalStorage(
+  `inj-dex-v8-${NETWORK}-${process.env.APP_ENV || 'mainnet'}`
+)

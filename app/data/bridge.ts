@@ -1,4 +1,4 @@
-import { BridgingNetwork, NetworkMeta } from '@injectivelabs/ui-common'
+import { BridgingNetwork, NetworkMeta } from '@injectivelabs/sdk-ui-ts'
 import { TransferSide } from '~/types'
 
 export const networksMeta = [
@@ -41,18 +41,24 @@ export const networksMeta = [
     text: 'Persistence',
     value: BridgingNetwork.Persistence,
     icon: '/bridgingNetworks/persistence.png'
-  }
+  },
   /*
   {
     text: 'Juno',
     value: BridgingNetwork.Juno,
     icon: '/bridgingNetworks/juno.jpeg',
   },
+  */
   {
     text: 'Axelar',
     value: BridgingNetwork.Axelar,
     icon: '/bridgingNetworks/axelar.jpeg'
-  } */
+  },
+  {
+    text: 'Moonbeam',
+    value: BridgingNetwork.Moonbeam,
+    icon: '/bridgingNetworks/moonbeam.png'
+  }
 ] as NetworkMeta[]
 
 export const transferSideMeta = {
@@ -100,8 +106,12 @@ export const getBridgingNetworkBySymbol = (symbol: string): BridgingNetwork => {
     return BridgingNetwork.Persistence
   }
 
-  if (['AXL', 'UAXL'].includes(symbolToUpperCase)) {
+  if (['AXL', 'UAXL', 'DOT', 'DOT-PLANCK'].includes(symbolToUpperCase)) {
     return BridgingNetwork.Axelar
+  }
+
+  if (['DOT'].includes(symbolToUpperCase)) {
+    return BridgingNetwork.Moonbeam
   }
 
   return BridgingNetwork.Ethereum

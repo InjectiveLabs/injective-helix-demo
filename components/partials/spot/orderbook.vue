@@ -2,27 +2,27 @@
   <div class="lg:p-3">
     <div class="flex items-center justify-between flex-wrap">
       <div class="flex items-center gap-4 px-4 py-3 lg:pt-0 lg:px-0">
-        <v-tab-selector-item
+        <TabSelectorItem
           v-model="component"
           :option="components.charts"
           class="lg:hidden"
         >
           <span>{{ $t('trade.chart') }}</span>
-        </v-tab-selector-item>
+        </TabSelectorItem>
 
-        <v-tab-selector-item v-model="component" :option="components.orderbook">
+        <TabSelectorItem v-model="component" :option="components.orderbook">
           <span>{{ $t('trade.orderbook') }}</span>
-        </v-tab-selector-item>
+        </TabSelectorItem>
 
-        <v-tab-selector-item v-model="component" :option="components.trades">
+        <TabSelectorItem v-model="component" :option="components.trades">
           <span>{{ $t('trade.trades') }}</span>
-        </v-tab-selector-item>
+        </TabSelectorItem>
       </div>
     </div>
 
     <div class="bg-gray-900 rounded-lg orderbook-h relative">
       <div class="flex px-4">
-        <v-aggregation-selector
+        <AggregationSelector
           v-if="component === components.orderbook"
           class="ml-auto py-1"
           :min-tick="minTick"
@@ -31,20 +31,20 @@
           @click="handleAggregationChange"
         />
       </div>
-      <VHocLoading :status="status">
+      <HocLoading :status="status">
         <div>
-          <v-market-chart
+          <MarketChart
             v-show="component === components.charts"
             :market="market"
             class="lg:hidden"
           />
-          <v-orderbook
+          <Orderbook
             v-if="component === components.orderbook"
             :aggregation="Number(aggregation)"
           />
-          <v-trades v-if="component === components.trades" />
+          <Trades v-if="component === components.trades" />
         </div>
-      </VHocLoading>
+      </HocLoading>
     </div>
   </div>
 </template>
@@ -52,13 +52,13 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken } from '@injectivelabs/ui-common'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { debounce } from 'lodash'
-import VOrderbook from './orderbook/index.vue'
-import VTrades from './trades/index.vue'
-import VAggregationSelector from '~/components/partials/common/orderbook/aggregation-selector.vue'
-import VMarketChart from '~/components/partials/common/market/chart.vue'
-import VTabSelectorItem from '~/components/partials/common/market/tab-selector-item.vue'
+import Orderbook from './orderbook/index.vue'
+import Trades from './trades/index.vue'
+import AggregationSelector from '~/components/partials/common/orderbook/aggregation-selector.vue'
+import MarketChart from '~/components/partials/common/market/chart.vue'
+import TabSelectorItem from '~/components/partials/common/market/tab-selector-item.vue'
 import { UI_DEFAULT_AGGREGATION_DECIMALS_STRING } from '~/app/utils/constants'
 import {
   customAggregations,
@@ -73,11 +73,11 @@ const components = {
 
 export default Vue.extend({
   components: {
-    VAggregationSelector,
-    VMarketChart,
-    VTabSelectorItem,
-    VTrades,
-    VOrderbook
+    AggregationSelector,
+    MarketChart,
+    TabSelectorItem,
+    Trades,
+    Orderbook
   },
 
   props: {

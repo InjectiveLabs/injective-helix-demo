@@ -1,6 +1,6 @@
 import type { Plugin } from '@nuxt/types'
 import merge from 'deepmerge'
-import { localStorage } from '~/app/singletons/Storage'
+import { localStorage } from '~/app/Services'
 import { AppState } from '~/types'
 
 const mutationsToPersist = [

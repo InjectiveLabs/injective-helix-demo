@@ -1,5 +1,5 @@
 <template>
-  <v-input
+  <VInput
     v-bind="$attrs"
     ref="search-input"
     round
@@ -7,7 +7,7 @@
     @input="input"
   >
     <IconSearch slot="addon" class="w-6 h-6" />
-  </v-input>
+  </VInput>
 </template>
 
 <script lang="ts">
