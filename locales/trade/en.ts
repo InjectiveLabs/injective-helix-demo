@@ -113,8 +113,6 @@ export default {
     not_enough_balance: 'Not enough balance',
     reduce_only_exceed_position:
       'Total size of reduce-only orders exceed the size of your position',
-    worst_price_note:
-      'Note: If the execution price exceeds the {slippage}% slippage protection, your order will be automatically cancelled',
     next_funding: 'Next Funding',
     next_funding_tooltip:
       'The time remaining for the end of the funding interval.',

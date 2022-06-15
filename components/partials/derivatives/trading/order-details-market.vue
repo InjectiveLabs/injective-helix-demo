@@ -141,10 +141,6 @@
             </span>
           </span>
         </TextInfo>
-
-        <p class="mt-4 text-gray-500 text-xs">
-          {{ $t('trade.worst_price_note', { slippage: slippage.toFixed() }) }}
-        </p>
       </div>
     </VDrawer>
   </div>
