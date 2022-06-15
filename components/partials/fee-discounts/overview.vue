@@ -92,10 +92,10 @@ import {
   StatusType
 } from '@injectivelabs/utils'
 import Vue from 'vue'
-import { cosmosSdkDecToBigNumber, ZERO_IN_BASE } from '@injectivelabs/ui-common'
 import { format } from 'date-fns'
+import { cosmosSdkDecToBigNumber, FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
+import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
-import { FeeDiscountAccountInfo } from '~/app/services/exchange'
 
 export default Vue.extend({
   data() {

@@ -24,7 +24,7 @@
           </div>
         </div>
       </div>
-    </HocLoading>
+    </VHocLoading>
   </div>
 </template>
 
