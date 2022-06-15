@@ -3,7 +3,7 @@
     <div
       class="grid grid-cols-2 md:grid-cols-3 gap-2.5 lg:gap-0 lg:flex overflow-x-auto overflow-y-none text-xs"
     >
-      <v-market-info
+      <MarketInfo
         v-if="market.type === MarketType.Derivative"
         :title="$t('trade.mark_price')"
         :tooltip="$t('trade.mark_price_tooltip')"
@@ -12,8 +12,8 @@
           {{ markPriceToFormat }}
         </span>
         <span v-else class="text-gray-400">&mdash;</span>
-      </v-market-info>
-      <v-market-info
+      </MarketInfo>
+      <MarketInfo
         :title="$t('trade.volume_asset', { asset: market.quoteToken.symbol })"
         :tooltip="$t('trade.market_volume_24h_tooltip')"
       >
@@ -24,20 +24,20 @@
           {{ volumeToFormat }}
         </span>
         <span v-else class="text-gray-400">&mdash;</span>
-      </v-market-info>
-      <v-market-info :title="$t('trade.high')">
+      </MarketInfo>
+      <MarketInfo :title="$t('trade.high')">
         <span class="lg:text-right font-mono block">
           <span v-if="high.gt(0) && !high.isNaN()">{{ highToFormat }}</span>
           <span v-else class="text-gray-400">&mdash;</span>
         </span>
-      </v-market-info>
-      <v-market-info :title="$t('trade.low')">
+      </MarketInfo>
+      <MarketInfo :title="$t('trade.low')">
         <span class="lg:text-right font-mono block">
           <span v-if="low.gt(0) && !low.isNaN()">{{ lowToFormat }}</span>
           <span v-else class="text-gray-400">&mdash;</span>
         </span>
-      </v-market-info>
-      <v-market-info
+      </MarketInfo>
+      <MarketInfo
         v-if="market.type === MarketType.Derivative"
         :title="$t('trade.est_funding_rate')"
         :tooltip="$t('trade.funding_rate_tooltip')"
@@ -56,16 +56,16 @@
           </span>
         </span>
         <span v-else class="lg:text-right font-mono block">&mdash;</span>
-      </v-market-info>
-      <v-market-next-funding v-if="market.type === MarketType.Derivative" />
-      <v-market-info
+      </MarketInfo>
+      <MarketNextFunding v-if="market.type === MarketType.Derivative" />
+      <MarketInfo
         v-if="market.type === MarketType.Derivative && expiryAt"
         :title="$t('trade.expiry_date')"
       >
         <span class="lg:text-right font-mono block">
           {{ expiryAt }}
         </span>
-      </v-market-info>
+      </MarketInfo>
     </div>
   </div>
 </template>
@@ -82,17 +82,17 @@ import {
   Change,
   MarketType,
   ZERO_IN_BASE,
-  BIG_NUMBER_ROUND_DOWN_MODE
-} from '@injectivelabs/ui-common'
-import { SpotOrderSide } from '@injectivelabs/spot-consumer'
+  BIG_NUMBER_ROUND_DOWN_MODE,
+  SpotOrderSide
+} from '@injectivelabs/sdk-ui-ts'
 import MarketNextFunding from './next-funding.vue'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import MarketInfo from '~/components/elements/market-info.vue'
 
 export default Vue.extend({
   components: {
-    'v-market-info': MarketInfo,
-    'v-market-next-funding': MarketNextFunding
+    MarketInfo,
+    MarketNextFunding
   },
 
   props: {

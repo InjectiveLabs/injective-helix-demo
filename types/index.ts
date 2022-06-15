@@ -1,11 +1,11 @@
 import {
+  SubaccountBalanceWithToken,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiSpotMarketSummary,
   UiSpotMarketWithToken
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { SubaccountBalanceWithToken } from '~/app/services/account'
 
 export interface DOMEvent<T extends EventTarget> extends Event {
   target: T

@@ -1,6 +1,6 @@
-import { Wallet } from '@injectivelabs/web3-strategy'
+import { Wallet } from '@injectivelabs/ts-types'
 import { Web3Exception } from '@injectivelabs/exceptions'
-import { web3Strategy } from '~/app/web3'
+import { walletStrategy } from '~/app/wallet-strategy'
 import { blacklistedAddresses } from '~/app/data/wallet-address'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '~/app/utils/constants'
 
@@ -10,11 +10,11 @@ export const connect = ({
   wallet: Wallet
   onAccountChangeCallback?: (account: string) => void
 }) => {
-  web3Strategy.setWallet(wallet)
+  walletStrategy.setWallet(wallet)
 }
 
 export const getAddresses = async (): Promise<string[]> => {
-  const addresses = await web3Strategy.getAddresses()
+  const addresses = await walletStrategy.getAddresses()
 
   if (addresses.length === 0) {
     throw new Web3Exception('There are no addresses linked in this wallet.')
@@ -37,5 +37,5 @@ export const getAddresses = async (): Promise<string[]> => {
 }
 
 export const confirm = async (address: string) => {
-  return await web3Strategy.confirm(address)
+  return await walletStrategy.confirm(address)
 }

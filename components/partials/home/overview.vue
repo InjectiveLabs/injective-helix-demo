@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="grid grid-cols-4 md:grid-cols-8 xl:grid-cols-12 gap-4 lg:gap-6">
-      <v-resource-card
+      <ResourceCard
         v-for="(card, index) in cards"
         :key="`resource-card-${index}`"
         class="col-span-4"
@@ -24,7 +24,7 @@
           {{ card.linkText }}
         </a>
         {{ card.description }}
-      </v-resource-card>
+      </ResourceCard>
     </div>
   </div>
 </template>

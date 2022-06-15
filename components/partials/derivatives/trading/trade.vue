@@ -1,7 +1,7 @@
 <template>
   <div v-if="market" class="px-4 w-full">
     <div class="flex items-center justify-center">
-      <v-button
+      <VButton
         :class="{
           'text-gray-500': tradingType === TradeExecutionType.LimitFill
         }"
@@ -10,9 +10,9 @@
         @click.stop="onTradingTypeToggle(TradeExecutionType.Market)"
       >
         {{ $t('trade.market') }}
-      </v-button>
+      </VButton>
       <div class="mx-2 w-px h-4 bg-gray-500"></div>
-      <v-button
+      <VButton
         sm
         :class="{
           'text-gray-500': tradingType === TradeExecutionType.Market
@@ -22,11 +22,11 @@
         @click.stop="onTradingTypeToggle(TradeExecutionType.LimitFill)"
       >
         {{ $t('trade.limit') }}
-      </v-button>
+      </VButton>
     </div>
     <div class="mt-4">
       <div class="bg-gray-900 rounded-2xl flex">
-        <v-button-select
+        <VButtonSelect
           v-model="orderType"
           :option="DerivativeOrderSide.Buy"
           data-cy="trading-page-switch-to-side-buy-button"
@@ -34,8 +34,8 @@
           class="w-1/2"
         >
           {{ $t('trade.buy_asset', { asset: market.baseToken.symbol }) }}
-        </v-button-select>
-        <v-button-select
+        </VButtonSelect>
+        <VButtonSelect
           v-model="orderType"
           :option="DerivativeOrderSide.Sell"
           data-cy="trading-page-switch-to-side-sell-button"
@@ -43,12 +43,12 @@
           class="w-1/2"
         >
           {{ $t('trade.sell_asset', { asset: market.baseToken.symbol }) }}
-        </v-button-select>
+        </VButtonSelect>
       </div>
     </div>
     <div class="mt-8">
       <div>
-        <v-input
+        <VInput
           ref="input-amount"
           v-model="form.amount"
           :label="$t('trade.amount')"
@@ -79,7 +79,7 @@
               100%
             </span>
           </div>
-        </v-input>
+        </VInput>
         <span
           v-if="amountError"
           data-cy="trading-page-amount-error-text-content"
@@ -95,7 +95,7 @@
         </span>
       </div>
       <div v-if="!tradingTypeMarket" class="mt-6">
-        <v-input
+        <VInput
           ref="input-price"
           v-model="form.price"
           :placeholder="priceStep"
@@ -110,7 +110,7 @@
           @input="onPriceChange"
         >
           <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
-        </v-input>
+        </VInput>
         <span
           v-if="priceError"
           data-cy="trading-page-price-error-text-content"
@@ -136,7 +136,7 @@
         @change="onLeverageChange"
       />
 
-      <v-button-checkbox
+      <VButton-checkbox
         v-if="showReduceOnly"
         v-model="form.reduceOnly"
         class="mt-2"
@@ -191,7 +191,7 @@
         </a>
       </p>
 
-      <v-button
+      <VButton
         lg
         :status="status"
         :disabled="
@@ -205,10 +205,10 @@
         @click.stop="onSubmit"
       >
         {{ $t(orderTypeBuy ? 'trade.buy_long' : 'trade.sell_short') }}
-      </v-button>
+      </VButton>
     </div>
 
-    <v-modal-order-confirm @confirmed="submitLimitOrder" />
+    <VModal-order-confirm @confirmed="submitLimitOrder" />
   </div>
 </template>
 
@@ -229,11 +229,14 @@ import {
   UiDerivativeOrderbook,
   UiPosition,
   UiPriceLevel,
-  cosmosSdkDecToBigNumber,
   NUMBER_REGEX,
   ZERO_IN_BASE,
   UiSubaccount
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
+import {
+  cosmosSdkDecToBigNumber,
+  FeeDiscountAccountInfo
+} from '@injectivelabs/sdk-ts'
 import OrderDetails from './order-details.vue'
 import OrderLeverage from './order-leverage.vue'
 import OrderLeverageSelect from './order-leverage-select.vue'
@@ -256,12 +259,9 @@ import {
   calculateLiquidationPrice,
   calculateMargin,
   getApproxAmountForMarketOrder
-} from '~/app/services/derivatives'
-import {
-  TradingRewardsCampaign,
-  FeeDiscountAccountInfo
-} from '~/app/services/exchange'
+} from '~/app/client/utils/derivatives'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
+import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 
 interface TradeForm {
   reduceOnly: boolean
@@ -279,7 +279,7 @@ const initialForm = (): TradeForm => ({
 
 export default Vue.extend({
   components: {
-    'v-button-checkbox': ButtonCheckbox,
+    'VButton-checkbox': ButtonCheckbox,
     'v-order-details': OrderDetails,
     'v-order-leverage': OrderLeverage,
     'v-order-leverage-select': OrderLeverageSelect,
@@ -913,14 +913,8 @@ export default Vue.extend({
     },
 
     initialMinMarginRequirementError(): TradeError | undefined {
-      const {
-        market,
-        margin,
-        hasPrice,
-        hasAmount,
-        executionPrice,
-        amount
-      } = this
+      const { market, margin, hasPrice, hasAmount, executionPrice, amount } =
+        this
 
       if (!market || !hasPrice || !hasAmount) {
         return undefined
@@ -1295,17 +1289,19 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const disqualified = tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-        (marketId) => marketId === market.marketId
-      )
+      const disqualified =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
+          (marketId) => marketId === market.marketId
+        )
 
       if (disqualified) {
         return ZERO_IN_BASE
       }
 
-      const denomIncluded = tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-        (denom) => denom === market.quoteDenom
-      )
+      const denomIncluded =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
+          (denom) => denom === market.quoteDenom
+        )
 
       if (!denomIncluded) {
         return ZERO_IN_BASE
@@ -1354,17 +1350,19 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const disqualified = tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-        (marketId) => marketId === market.marketId
-      )
+      const disqualified =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
+          (marketId) => marketId === market.marketId
+        )
 
       if (disqualified) {
         return ZERO_IN_BASE
       }
 
-      const denomIncluded = tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-        (denom) => denom === market.quoteDenom
-      )
+      const denomIncluded =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
+          (denom) => denom === market.quoteDenom
+        )
 
       if (!denomIncluded) {
         return ZERO_IN_BASE
@@ -1668,14 +1666,8 @@ export default Vue.extend({
     },
 
     submitLimitOrder() {
-      const {
-        orderType,
-        market,
-        margin,
-        price,
-        orderTypeReduceOnly,
-        amount
-      } = this
+      const { orderType, market, margin, price, orderTypeReduceOnly, amount } =
+        this
 
       if (!market) {
         return

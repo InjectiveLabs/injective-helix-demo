@@ -1,15 +1,15 @@
 <template>
   <div class="ml-4 flex items-center md:ml-6" data-cy="wallet-connect">
-    <v-button
+    <VButton
       md
       primary
       data-cy="header-wallet-connect-button"
       @click="handleWalletConnectClicked"
     >
       {{ $t('connect.connect') }}
-    </v-button>
+    </VButton>
 
-    <v-modal
+    <VModal
       :is-open="isOpenConnectModal"
       md
       @modal-closed="isOpenConnectModal = false"
@@ -18,36 +18,33 @@
         {{ $t('connect.connectToWallet') }}
       </h3>
       <div class="relative mt-6">
-        <VHocLoading :status="status">
+        <HocLoading :status="status">
           <ul class="divide-y divide-gray-800 border-gray-700 rounded-lg">
-            <v-metamask />
-            <v-keplr v-if="isStagingOrTestnetOrDevnet" />
-            <v-torus v-if="isStagingOrTestnetOrDevnet" />
-            <v-ledger
-              @wallet-ledger-connecting="handleLedgerConnectingWallet"
-            />
-            <li class="text-xs text-gray-300 px-4 py-2">
-              <p class="text-center leading-4">
-                * {{ $t('connect.trezorConnectionNote') }}
-              </p>
-            </li>
+            <Metamask />
+            <Keplr />
+            <Torus />
+            <Ledger @wallet-ledger-connecting="handleLedgerConnectingWallet" />
+            <Trezor @wallet-trezor-connecting="handleTrezorConnectingWallet" />
           </ul>
-        </VHocLoading>
+        </HocLoading>
       </div>
-    </v-modal>
-    <v-modal-terms />
-    <v-modal-ledger :is-open="isLedgerModalOpen" @closed="handleLedgerClosed" />
+    </VModal>
+    <ModalTerms />
+    <ModalLedger :is-open="isLedgerModalOpen" @closed="handleLedgerClosed" />
+    <ModalTrezor :is-open="isTrezorModalOpen" @closed="handleTrezorClosed" />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { Status } from '@injectivelabs/utils'
-import VMetamask from './wallets/metamask.vue'
-import VKeplr from './wallets/keplr.vue'
-import VLedger from './wallets/ledger.vue'
-import VTorus from './wallets/torus.vue'
-import VModalLedger from './wallets/ledger/index.vue'
+import Metamask from './wallets/metamask.vue'
+import Keplr from './wallets/keplr.vue'
+import Ledger from './wallets/ledger.vue'
+import Torus from './wallets/torus.vue'
+import Trezor from './wallets/trezor.vue'
+import ModalLedger from './wallets/ledger/index.vue'
+import ModalTrezor from './wallets/trezor/index.vue'
 import { Modal, WalletConnectStatus } from '~/types'
 import {
   GEO_IP_RESTRICTIONS_ENABLED,
@@ -55,23 +52,26 @@ import {
   IS_STAGING,
   IS_TESTNET
 } from '~/app/utils/constants'
-import VModalTerms from '~/components/partials/modals/terms.vue'
+import ModalTerms from '~/components/partials/modals/terms.vue'
 
 export default Vue.extend({
   components: {
-    VModalTerms,
-    VMetamask,
-    VKeplr,
-    VTorus,
-    VLedger,
-    VModalLedger
+    ModalTerms,
+    Metamask,
+    Keplr,
+    Torus,
+    Ledger,
+    Trezor,
+    ModalLedger,
+    ModalTrezor
   },
 
   data() {
     return {
       status: new Status(),
       isOpenConnectModal: false,
-      isLedgerModalOpen: false
+      isLedgerModalOpen: false,
+      isTrezorModalOpen: false
     }
   },
 
@@ -158,6 +158,16 @@ export default Vue.extend({
 
     handleLedgerClosed() {
       this.isLedgerModalOpen = false
+      this.$accessor.modal.openPersistedModalIfExist()
+    },
+
+    handleTrezorConnectingWallet() {
+      this.isOpenConnectModal = false
+      this.isTrezorModalOpen = true
+    },
+
+    handleTrezorClosed() {
+      this.isTrezorModalOpen = false
       this.$accessor.modal.openPersistedModalIfExist()
     },
 

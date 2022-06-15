@@ -46,6 +46,7 @@ export default {
     setAllowance: 'Set Allowance',
     setAllowanceFor: 'Set allowance for {asset}',
     successfullySetAllowance: 'Token allowance set successfully',
-    keplrConnectedForEthereum: 'Please connect with Metamask'
+    keplrConnectedForEthereum: 'Please connect with Metamask',
+    balance: 'Balance'
   }
 }

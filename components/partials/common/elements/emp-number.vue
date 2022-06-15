@@ -1,5 +1,5 @@
 <template>
-  <v-number
+  <VNumber
     :prefix="prefix"
     :number="formattedNumberWithDecimals.number"
     :decimals="formattedNumberWithDecimals.decimals"
@@ -8,7 +8,7 @@
     <span slot="addon" class="text-xs text-gray-400 ml-1">
       <slot></slot>
     </span>
-  </v-number>
+  </VNumber>
 </template>
 
 <script lang="ts">

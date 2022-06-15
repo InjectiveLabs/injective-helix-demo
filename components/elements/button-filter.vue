@@ -1,12 +1,12 @@
 <template>
-  <v-button
+  <VButton
     text-sm
     :gray="component !== option"
     class="font-normal"
     @click.stop="onSelect"
   >
     <slot></slot>
-  </v-button>
+  </VButton>
 </template>
 
 <script lang="ts">

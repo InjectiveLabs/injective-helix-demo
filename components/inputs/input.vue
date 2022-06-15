@@ -11,7 +11,7 @@
         >
         </label>
         <span
-          v-if="error && !errorBelow"
+          v-if="error && !errorBelow && !hideErrors"
           class="text-red-400 italic font-semibold text-2xs"
           data-cy="reusable-input-error"
         >
@@ -21,13 +21,7 @@
           <slot name="context" />
         </div>
       </div>
-      <div
-        class="relative"
-        :class="[
-          wrapperClasses,
-          { 'mt-2': !dense, 'input-wrapper': !lg && !xl && !transparentBg }
-        ]"
-      >
+      <div class="relative" :class="wrapperClass">
         <textarea
           v-if="multiLine"
           v-bind="$attrs"
@@ -37,18 +31,24 @@
           @input="handleChangeOnInput"
         />
         <div v-else class="flex justify-between no-shadow">
+          <div
+            v-if="prefix"
+            class="flex items-center text-xl font-semibold pl-4 pr-1"
+            v-html="prefix"
+          />
+          <div
+            v-if="showPrefix"
+            class="prefix flex items-center flex-shrink-0"
+            :class="{ 'pl-3': !lg && !xl }"
+          >
+            <slot name="prefix" />
+          </div>
           <input
             v-bind="$attrs"
             class="input"
             autocomplete="off"
             :value="value"
-            :class="{
-              'input-lg': lg,
-              'input-xl': xl,
-              'input-round': round,
-              'input-small': small,
-              'input-bg-transparent': transparentBg
-            }"
+            :class="inputClass"
             @blur="handleBlur"
             @input="handleChangeOnInput"
             @keydown="handleKeydown"
@@ -56,8 +56,9 @@
             @wheel="$event.target.blur()"
           />
           <div
+            v-if="addonVisible"
             class="addon flex items-center flex-shrink-0"
-            :class="{ 'pr-3': !lg && !xl }"
+            :class="{ 'pr-3': !lg && !xl && !disableAddonPadding }"
           >
             <span
               v-if="showClose"
@@ -65,13 +66,7 @@
               @click="handleCloseEvent"
             >
               <IconClose
-                class="
-                  cursor-pointer
-                  h-4
-                  w-4
-                  text-gray-200
-                  hover:text-primary-500
-                "
+                class="cursor-pointer h-4 w-4 text-gray-200 hover:text-primary-500"
               />
             </span>
 
@@ -82,7 +77,7 @@
             >
               <span
                 class="bg-gray-700 rounded uppercase tracking-1"
-                :class="maxClasses"
+                :class="maxButtonClasses"
                 data-cy="reusable-max-button"
               >
                 {{ $t('trade.max') }}
@@ -93,7 +88,7 @@
         </div>
       </div>
       <span
-        v-if="error && errorBelow"
+        v-if="error && errorBelow && !hideErrors"
         class="text-red-400 absolute"
         data-cy="reusable-input-bellow-error-text-content"
         :class="[
@@ -114,6 +109,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { debounce } from 'lodash'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import { DOMEvent } from '~/types'
 import {
   convertToNumericValue,
@@ -154,6 +150,11 @@ export default Vue.extend({
       default: () => []
     },
 
+    hideErrors: {
+      type: Boolean,
+      default: false
+    },
+
     maxSelector: {
       type: Boolean,
       default: false
@@ -165,6 +166,16 @@ export default Vue.extend({
     },
 
     showCheck: {
+      type: Boolean,
+      default: false
+    },
+
+    showPrefix: {
+      type: Boolean,
+      default: false
+    },
+
+    showAddon: {
       type: Boolean,
       default: false
     },
@@ -204,21 +215,92 @@ export default Vue.extend({
       default: ''
     },
 
+    inputClasses: {
+      type: String,
+      default: ''
+    },
+
     transparentBg: {
+      type: Boolean,
+      default: false
+    },
+
+    prefix: {
+      type: [Object, String, Number],
+      default: null
+    },
+
+    maxClasses: {
+      type: String,
+      default: ''
+    },
+
+    disableAddonPadding: {
       type: Boolean,
       default: false
     }
   },
 
   computed: {
-    maxClasses(): string[] {
-      const { lg } = this
+    addonVisible(): boolean {
+      const { showClose, isMaxValue, maxSelector, showAddon } = this
+      return showClose || (!isMaxValue && maxSelector) || showAddon
+    },
 
-      if (lg) {
-        return ['text-base', 'mr-2', 'p-0.5']
+    wrapperClass(): string {
+      const { dense, lg, xl, transparentBg, wrapperClasses } = this
+      const classes = []
+
+      if (!dense) {
+        classes.push('mt-2')
       }
 
-      return ['px-2', 'py-1', 'mr-2', 'border', 'text-xs']
+      if (!lg && !xl && !transparentBg) {
+        classes.push('input-wrapper')
+      }
+
+      classes.push(wrapperClasses)
+
+      return classes.join(' ')
+    },
+
+    inputClass(): string {
+      const { lg, xl, round, small, transparentBg, inputClasses } = this
+      const classes = []
+
+      if (small) {
+        classes.push('input-small')
+      }
+
+      if (lg) {
+        classes.push('input-lg')
+      }
+
+      if (xl) {
+        classes.push('input-xl')
+      }
+
+      if (round) {
+        classes.push('input-round')
+      }
+
+      if (transparentBg) {
+        classes.push('input-bg-transparent')
+      }
+
+      classes.push(inputClasses)
+
+      return classes.join(' ')
+    },
+
+    maxButtonClasses(): string[] {
+      const { lg, maxClasses } = this
+
+      if (lg) {
+        return ['text-base', 'mr-2', 'p-0.5', maxClasses]
+      }
+
+      return ['px-2', 'py-1', 'mr-2', 'border', 'text-xs', maxClasses]
     },
 
     classes(): string | null {
@@ -253,7 +335,7 @@ export default Vue.extend({
       const { max } = this.$attrs
       const { value } = this
 
-      return max === value
+      return Number(max) === Number(value)
     }
   },
 
@@ -321,18 +403,42 @@ export default Vue.extend({
       this.$emit('close')
     },
 
-    handleBlur() {
-      this.$emit('blur')
+    handleBlur(e: Event) {
+      const { max } = this.$attrs
+
+      const target: HTMLInputElement = e.target as HTMLInputElement
+
+      if (this.$attrs.type !== 'number') {
+        this.$emit('blur', target.value)
+        return
+      }
+
+      // Make sure value is clamped to max if it exists.
+      let value: String | Number = target.value
+
+      if (max !== null && Number(value) > Number(max)) {
+        value = max.toString()
+      }
+
+      this.$emit('blur', value)
     },
 
     handleMaxSelector() {
-      const { maxSelector } = this
+      const { maxSelector, maxDecimals } = this
       const { max } = this.$attrs
+
+      const value: string = new BigNumberInBase(max).toFixed(
+        maxDecimals,
+        BigNumber.ROUND_DOWN
+      )
+
       if (max || maxSelector) {
         if (max) {
-          this.handleChangeFromString(max)
+          this.handleChangeFromString(value)
+          this.$emit('input-max', value)
+        } else {
+          this.$emit('input-max')
         }
-        this.$emit('input-max')
       }
     }
   }

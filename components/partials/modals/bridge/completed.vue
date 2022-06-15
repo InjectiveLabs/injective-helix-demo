@@ -1,5 +1,5 @@
 <template>
-  <v-modal
+  <VModal
     data-cy="transfer-completed-modal"
     :is-open="isModalOpen"
     sm
@@ -19,7 +19,7 @@
             {{ bridgeNote }}
           </p>
           <div class="text-center mt-6">
-            <v-button
+            <VButton
               lg
               primary
               class="font-bold w-4xs"
@@ -27,7 +27,7 @@
               @click="handleModalClose"
             >
               {{ $t('common.ok') }}
-            </v-button>
+            </VButton>
 
             <div class="mt-4 text-primary-500 cursor-pointer">
               <a
@@ -47,10 +47,9 @@
                 target="_blank"
                 class="flex items-center justify-center"
               >
-                <span
-                  class="mr-2"
-                  data-cy="transfer-completed-hub-track-link"
-                  >{{ $t('bridge.trackTransaction') }}</span>
+                <span class="mr-2" data-cy="transfer-completed-hub-track-link">
+                  {{ $t('bridge.trackTransaction') }}
+                </span>
                 <IconExternalLink class="w-3 h-3" />
               </a>
             </div>
@@ -58,14 +57,14 @@
         </div>
         <v-ibc-transfer-note v-else />
       </div>
-      <v-user-wallet-connect-warning v-else />
+      <UserWalletConnectWarning v-else />
     </div>
-  </v-modal>
+  </VModal>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { BridgingNetwork, getExplorerUrl } from '@injectivelabs/ui-common'
+import { BridgingNetwork, getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
 import { Modal, BridgeType } from '~/types/enums'
 import VIbcTransferNote from '~/components/partials/portfolio/bridge/ibc-transfer-note.vue'
 import { injToken } from '~/app/data/token'

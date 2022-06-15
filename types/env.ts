@@ -30,6 +30,7 @@ declare global {
       APP_ALCHEMY_KEY: string
       APP_ALCHEMY_KOVAN_KEY: string
       APP_CHAIN_ID: string
+      APP_ETHEREUM_CHAIN_ID: string
     }
   }
 }

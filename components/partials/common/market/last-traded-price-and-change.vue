@@ -46,7 +46,7 @@ import {
   UiSpotMarketSummary,
   UiSpotMarketWithToken,
   ZERO_IN_BASE
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import { Change } from '~/types'
 

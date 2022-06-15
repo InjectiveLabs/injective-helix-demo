@@ -12,27 +12,27 @@
         :position="position"
       />
 
-      <v-empty-list
+      <EmptyList
         slot="empty"
         :message="$t('trade.emptyPositions')"
         class="min-h-orders"
       />
     </TableBody>
 
-    <v-table-wrapper class="hidden sm:block">
+    <TableWrapper class="hidden sm:block">
       <table v-if="filteredPositions.length > 0" class="table">
-        <position-table-header />
+        <PositionTableHeader />
         <tbody>
           <tr
-            is="v-position"
+            is="Position"
             v-for="(position, index) in sortedPositions"
             :key="`positions-${index}-${position.marketId}`"
             :position="position"
           ></tr>
         </tbody>
       </table>
-      <v-empty-list v-else :message="$t('trade.emptyPositions')" />
-    </v-table-wrapper>
+      <EmptyList v-else :message="$t('trade.emptyPositions')" />
+    </TableWrapper>
   </div>
 </template>
 
@@ -41,7 +41,7 @@ import Vue from 'vue'
 import {
   UiDerivativeMarketWithToken,
   UiPosition
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import MobilePosition from '~/components/partials/common/position/mobile-position.vue'
 import Position from '~/components/partials/common/position/position.vue'
 import PositionTableHeader from '~/components/partials/common/position/position-table.header.vue'
@@ -49,7 +49,7 @@ import TableBody from '~/components/elements/table-body.vue'
 
 export default Vue.extend({
   components: {
-    'v-position': Position,
+    Position,
     MobilePosition,
     PositionTableHeader,
     TableBody

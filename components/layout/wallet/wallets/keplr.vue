@@ -9,28 +9,21 @@
           <div class="flex-shrink-0 mr-4">
             <img src="/keplr-icon.png" class="w-8 h-8" alt="Keplr Icon" />
           </div>
-          <div
-            class="min-w-0 flex-1 px-4 md:grid md:grid-cols-1 md:gap-4 text-left"
-          >
+          <div class="min-w-0 flex-1 px-4 md:grid md:grid-cols-1 md:gap-4 text-left">
             <div>
               <p class="text-xl font-semibold text-gray-200 truncate">
                 {{ $t('connect.keplr') }}
-                <span class="text-red-500 text-xs inline-flex font-semibold">
-                  {{ $t('connect.highlyExperimental') }}
-                </span>
               </p>
               <p class="flex items-center text-sm text-gray-200">
-                <span class="truncate">{{
+                <span class="truncate" data-cy="connect-wallet-popup-keplr-button">{{
                   $t('connect.connectUsingKeplr')
-                }}</span>
+                  }}</span>
               </p>
             </div>
           </div>
         </div>
         <div>
-          <IconCaretDown
-            class="transform -rotate-90 h-5 w-5 text-gray-200"
-          />
+          <IconCaretDown class="transform -rotate-90 h-5 w-5 text-gray-200" />
         </div>
       </div>
     </div>

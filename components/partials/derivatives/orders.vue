@@ -1,9 +1,9 @@
 <template>
-  <v-card-table-wrap>
+  <VCardTableWrap>
     <template #actions>
       <div class="col-span-12 lg:col-span-7 xl:col-span-8 m-4 lg:mx-0">
         <div class="flex items-center justify-between lg:justify-start">
-          <v-button-filter
+          <VButtonFilter
             v-model="component"
             :option="components.openPositions"
             data-cy="trading-page-open-positions-tab-button"
@@ -12,9 +12,9 @@
               {{ $t('activity.openPositions') }}
               {{ `(${filteredPositions.length})` }}
             </span>
-          </v-button-filter>
-          <v-separator />
-          <v-button-filter
+          </VButtonFilter>
+          <VSeparator />
+          <VButtonFilter
             v-model="component"
             :option="components.openOrders"
             data-cy="trading-page-open-orders-tab-button"
@@ -23,9 +23,9 @@
               {{ $t('activity.openOrders') }}
               {{ `(${filteredOrders.length})` }}
             </span>
-          </v-button-filter>
-          <v-separator />
-          <v-button-filter
+          </VButtonFilter>
+          <VSeparator />
+          <VButtonFilter
             v-model="component"
             :option="components.tradeHistory"
             data-cy="trading-page-trade-history-tab-button"
@@ -33,17 +33,17 @@
             <span class="uppercase text-xs font-semibold">
               {{ $t('activity.tradeHistory') }}
             </span>
-          </v-button-filter>
+          </VButtonFilter>
         </div>
       </div>
 
       <div
         class="col-span-12 lg:col-span-5 xl:col-span-4 mx-4 mb-4 flex items-center justify-between lg:justify-end lg:ml-0 lg:mr-2 lg:mt-4"
       >
-        <v-checkbox v-if="market" v-model="currentMarketOnly" class="lg:mr-4">
+        <VCheckbox v-if="market" v-model="currentMarketOnly" class="lg:mr-4">
           {{ $t('trade.asset_only', { asset: market.ticker }) }}
-        </v-checkbox>
-        <v-button
+        </VCheckbox>
+        <VButton
           v-if="
             component === components.openOrders && filteredOrders.length > 0
           "
@@ -52,8 +52,8 @@
           @click.stop="handleCancelAllClick"
         >
           {{ $t('trade.cancelAllOrders') }}
-        </v-button>
-        <v-button
+        </VButton>
+        <VButton
           v-if="
             component === components.openPositions &&
             filteredPositions.length > 0
@@ -63,20 +63,20 @@
           @click.stop="handleCloseAllPositionsClick"
         >
           {{ $t('trade.closeAllPositions') }}
-        </v-button>
+        </VButton>
       </div>
     </template>
 
-    <VHocLoading :status="status">
-      <v-card class="h-full">
+    <HocLoading :status="status">
+      <VCard class="h-full">
         <component
           :is="component"
           v-if="component"
           v-bind="{ currentMarketOnly }"
         />
-      </v-card>
-    </VHocLoading>
-  </v-card-table-wrap>
+      </VCard>
+    </HocLoading>
+  </VCardTableWrap>
 </template>
 
 <script lang="ts">
@@ -86,23 +86,23 @@ import {
   UiDerivativeMarketWithToken,
   UiDerivativeLimitOrder,
   UiPosition
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import OpenOrders from './orders/index.vue'
 import OpenPositions from './positions/index.vue'
 import TradeHistory from './trade-history/index.vue'
 
 const components = {
   orderHistory: '',
-  openOrders: 'v-open-orders',
-  openPositions: 'v-open-positions',
-  tradeHistory: 'v-trade-history'
+  openOrders: 'OpenOrders',
+  openPositions: 'OpenPositions',
+  tradeHistory: 'TradeHistory'
 }
 
 export default Vue.extend({
   components: {
-    'v-trade-history': TradeHistory,
-    'v-open-orders': OpenOrders,
-    'v-open-positions': OpenPositions
+    TradeHistory,
+    OpenOrders,
+    OpenPositions
   },
 
   data() {

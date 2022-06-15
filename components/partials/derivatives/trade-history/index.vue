@@ -13,27 +13,27 @@
         @showTradeDetails="handleShowTradeDetails"
       />
 
-      <v-empty-list
+      <EmptyList
         slot="empty"
         :message="$t('trade.emptyTrades')"
         class="min-h-orders"
       />
     </TableBody>
 
-    <v-table-wrapper class="hidden sm:block">
+    <TableWrapper class="hidden sm:block">
       <table v-if="filteredTrades.length > 0" class="table">
-        <trades-table-header />
+        <TradesTableHeader />
         <tbody>
           <tr
-            is="v-trade"
+            is="Trade"
             v-for="(trade, index) in filteredTrades"
             :key="`trades-history-${index}`"
             :trade="trade"
           />
         </tbody>
       </table>
-      <v-empty-list v-else :message="$t('trade.emptyTrades')" />
-    </v-table-wrapper>
+      <EmptyList v-else :message="$t('trade.emptyTrades')" />
+    </TableWrapper>
 
     <ModalMobileTradeDetails :trade="tradeDetails" />
   </div>
@@ -44,7 +44,7 @@ import Vue from 'vue'
 import {
   UiDerivativeMarketWithToken,
   UiDerivativeTrade
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import MobileTrade from '~/components/partials/common/trade/mobile-trade.vue'
 import ModalMobileTradeDetails from '~/components/partials/modals/mobile-trade-details.vue'
 import Trade from '~/components/partials/common/trade/trade.vue'
@@ -54,7 +54,7 @@ import { Modal } from '~/types'
 
 export default Vue.extend({
   components: {
-    'v-trade': Trade,
+    Trade,
     MobileTrade,
     ModalMobileTradeDetails,
     TableBody,

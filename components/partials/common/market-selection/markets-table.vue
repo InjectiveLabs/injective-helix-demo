@@ -54,7 +54,7 @@
       :show-empty="sortedMarkets.length === 0"
       class="rounded overflow-hidden"
     >
-      <v-market-row
+      <MarketRow
         v-for="({ market, summary, volumeInUsd }, index) in sortedMarkets"
         :key="`market-row-${index}`"
         :class="{
@@ -66,7 +66,7 @@
         :volume-in-usd="volumeInUsd"
       />
 
-      <v-empty-list
+      <EmptyList
         slot="empty"
         classes="min-h-3xs"
         data-cy="markets-no-data-table"
@@ -75,19 +75,19 @@
         <span class="mt-1 text-2xs text-gray-500">
           {{ $t('markets.emptyDescription') }}
         </span>
-      </v-empty-list>
+      </EmptyList>
     </TableBody>
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { MarketType } from '@injectivelabs/ui-common'
+import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import VMarketFilter from '~/components/partials/common/market-selection/markets-filter.vue'
 import SortableHeaderItem from '~/components/elements/sortable-header-item.vue'
 import TableBody from '~/components/elements/table-body.vue'
-import VMarketRow from '~/components/partials/common/market-selection/markets-table-row.vue'
+import MarketRow from '~/components/partials/common/market-selection/markets-table-row.vue'
 import TableHeader from '~/components/elements/table-header.vue'
 import { UiMarketAndSummaryWithVolumeInUsd } from '~/types'
 import { marketIsPartOfType, marketIsPartOfSearch } from '~/app/utils/market'
@@ -103,7 +103,7 @@ export default Vue.extend({
     SortableHeaderItem,
     TableHeader,
     VMarketFilter,
-    VMarketRow,
+    MarketRow,
     TableBody
   },
 

@@ -1,9 +1,9 @@
 import { actionTree, getterTree } from 'typed-vuex'
-import { Wallet } from '@injectivelabs/web3-strategy'
+import { Wallet } from '@injectivelabs/ts-types'
 import {
   getAddressFromInjectiveAddress,
   getInjectiveAddress
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ts'
 import { confirm, connect, getAddresses } from '~/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '~/app/services/metamask'
 import { Modal, WalletConnectStatus } from '~/types'
@@ -178,6 +178,28 @@ export const actions = actionTree(
       commit('setWalletConnectStatus', WalletConnectStatus.connected)
     },
 
+    async connectTrezor({ state, commit }, addresses: string[]) {
+      await this.app.$accessor.app.validate()
+
+      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
+      commit('setWallet', state.wallet)
+
+      await connect({ wallet: state.wallet })
+
+      const [address] = addresses
+      const addressConfirmation = await confirm(address)
+      const injectiveAddress = getInjectiveAddress(address)
+
+      commit('setInjectiveAddress', injectiveAddress)
+      commit('setAddressConfirmation', addressConfirmation)
+      commit('setAddresses', addresses)
+      commit('setAddress', address)
+
+      await this.app.$accessor.wallet.onConnect()
+
+      commit('setWalletConnectStatus', WalletConnectStatus.connected)
+    },
+
     async connectMetamask({ commit }) {
       commit('setWalletConnectStatus', WalletConnectStatus.connecting)
 
@@ -255,10 +277,10 @@ export const actions = actionTree(
     },
 
     async validate({ state }) {
-      const { chainId } = this.app.$accessor.app
+      const { ethereumChainId } = this.app.$accessor.app
 
       if (state.wallet === Wallet.Metamask) {
-        await validateMetamask(state.address, chainId)
+        await validateMetamask(state.address, ethereumChainId)
       }
 
       // Validate whether the user has enough gas to pay for the transaction

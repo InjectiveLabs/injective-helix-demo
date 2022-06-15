@@ -3,7 +3,7 @@
     <h3 class="text-lg text-gray-200 font-semibold mb-4">
       <slot name="title"></slot>
     </h3>
-    <v-select
+    <VSelect
       :id="`network-selector-${uid}`"
       v-bind="$attrs"
       label="text"
@@ -54,20 +54,20 @@
           </div>
         </div>
       </template>
-    </v-select>
+    </VSelect>
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import vSelect from 'vue-select'
-import { BridgingNetwork, NetworkMeta } from '@injectivelabs/ui-common'
+import VSelect from 'vue-select'
+import { BridgingNetwork, NetworkMeta } from '@injectivelabs/sdk-ui-ts'
 import { networksMeta } from '~/app/data/bridge'
 import { BridgeType } from '~/types'
 
 export default Vue.extend({
   components: {
-    vSelect
+    VSelect
   },
 
   props: {
