@@ -215,8 +215,10 @@ export default Vue.extend({
     maxDecimals(): number {
       const { form } = this
 
-      // This check makes sure that the max amount of decimals is never greater than the amount of decimal places being shown in the balance.
-      if (UI_DEFAULT_DISPLAY_DECIMALS < form.token.decimals) {
+      const defaultDecimalsLessThanTokenDecimals =
+        UI_DEFAULT_DISPLAY_DECIMALS < form.token.decimals
+
+      if (defaultDecimalsLessThanTokenDecimals) {
         return UI_DEFAULT_DISPLAY_DECIMALS
       }
 
