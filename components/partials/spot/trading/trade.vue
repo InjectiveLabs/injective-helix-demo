@@ -532,8 +532,13 @@ export default Vue.extend({
 
     slippageWarning(): string {
       const {
-        form: { slippageTolerance }
+        form: { slippageTolerance },
+        tradingTypeMarket
       } = this
+
+      if (!tradingTypeMarket) {
+        return ''
+      }
 
       if (
         new BigNumberInBase(slippageTolerance).gt(new BigNumberInBase(5)) &&
