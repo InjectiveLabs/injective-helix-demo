@@ -65,6 +65,7 @@ export default Vue.extend({
     Ledger,
     Trezor,
     ModalLedger,
+    WalletConnect,
     ModalTrezor
   },
 
