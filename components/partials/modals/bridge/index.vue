@@ -418,12 +418,6 @@ export default Vue.extend({
       return onWithdrawBalance
     },
 
-    step(): string {
-      const { form } = this
-
-      return form.amount
-    },
-
     isModalOpen(): boolean {
       return this.$accessor.modal.modals[Modal.Bridge]
     },
