@@ -8,7 +8,7 @@ export const connect = ({
   wallet
 }: {
   wallet: Wallet
-  onAccountChangeCallback?: (account: string) => void
+  // onAccountChangeCallback?: (account: string) => void,
 }) => {
   walletStrategy.setWallet(wallet)
 }

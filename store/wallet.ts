@@ -8,6 +8,7 @@ import { confirm, connect, getAddresses } from '~/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '~/app/services/metamask'
 import { Modal, WalletConnectStatus } from '~/types'
 import { GAS_FREE_DEPOSIT_REBATE_ENABLED } from '~/app/utils/constants'
+import { walletStrategy } from '~/app/wallet-strategy'
 
 const initialStateFactory = () => ({
   walletConnectStatus: WalletConnectStatus.idle as WalletConnectStatus,
@@ -92,7 +93,10 @@ export const mutations = {
 }
 
 export const actions = actionTree(
-  { state, mutations },
+  {
+    state,
+    mutations
+  },
   {
     async init({ state }) {
       const { wallet } = state
@@ -201,14 +205,38 @@ export const actions = actionTree(
     },
 
     async connectMetamask({ commit }) {
-      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
-
       await this.app.$accessor.app.validate()
 
+      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
       commit('setWallet', Wallet.Metamask)
 
       await connect({
         wallet: Wallet.Metamask
+      })
+
+      const addresses = await getAddresses()
+      const [address] = addresses
+      const addressConfirmation = await confirm(address)
+      const injectiveAddress = getInjectiveAddress(address)
+
+      commit('setInjectiveAddress', injectiveAddress)
+      commit('setAddress', address)
+      commit('setAddresses', addresses)
+      commit('setAddressConfirmation', addressConfirmation)
+
+      await this.app.$accessor.wallet.onConnect()
+
+      commit('setWalletConnectStatus', WalletConnectStatus.connected)
+    },
+
+    async connectWalletConnect({ commit }) {
+      await this.app.$accessor.app.validate()
+
+      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
+      commit('setWallet', Wallet.WalletConnect)
+
+      await connect({
+        wallet: Wallet.WalletConnect
       })
 
       const addresses = await getAddresses()
@@ -298,6 +326,7 @@ export const actions = actionTree(
     },
 
     async logout({ commit }) {
+      await walletStrategy.disconnectWallet()
       await this.app.$accessor.account.reset()
       await this.app.$accessor.token.reset()
       await this.app.$accessor.spot.resetSubaccount()

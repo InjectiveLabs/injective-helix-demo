@@ -41,7 +41,7 @@
           </span>
         </div>
         <div class="mt-2 flex items-center px-6">
-          <v-logo-mini class="w-12 h-12 mr-4" />
+          <LogoMini class="w-12 h-12 mr-4" />
           <div class="flex-1 flex-wrap">
             <div class="flex items-center justify-between w-full">
               <div>
@@ -125,22 +125,28 @@
             {{ $t('navigation.connectedWallets') }}
           </h3>
           <ul class="pt-4 pb-6">
-            <v-connected-wallet v-if="wallet === Wallet.Metamask" lg>
+            <ConnectedWallet v-if="wallet === Wallet.Metamask" lg>
               <IconMetamask class="w-8 h-8 mx-auto" />
-            </v-connected-wallet>
-            <v-connected-wallet v-if="wallet === Wallet.Keplr" lg>
+            </ConnectedWallet>
+            <ConnectedWallet v-if="wallet === Wallet.WalletConnect" lg>
+              <IconWalletConnect class="w-8 h-8 mx-auto" />
+            </ConnectedWallet>
+            <ConnectedWallet v-if="wallet === Wallet.Keplr" lg>
               <img
                 src="/keplr-icon.png"
                 class="w-8 h-8 mx-auto"
                 alt="Keplr Icon"
               />
-            </v-connected-wallet>
-            <v-connected-wallet v-if="wallet === Wallet.Ledger" lg>
+            </ConnectedWallet>
+            <ConnectedWallet v-if="wallet === Wallet.Ledger" lg>
               <IconLedger class="w-8 h-8 mx-auto" />
-            </v-connected-wallet>
-            <v-connected-wallet v-if="wallet === Wallet.Torus" lg>
+            </ConnectedWallet>
+            <ConnectedWallet v-if="wallet === Wallet.Torus" lg>
               <IconTorus class="w-8 h-8 mx-auto" />
-            </v-connected-wallet>
+            </ConnectedWallet>
+            <ConnectedWallet v-if="wallet === Wallet.Trezor" lg>
+              <IconTrezor class="w-8 h-8 mx-auto" />
+            </ConnectedWallet>
           </ul>
         </div>
       </div>
@@ -158,8 +164,8 @@ import {
 import { RefereeInfo, ReferrerInfo } from '@injectivelabs/referral-consumer'
 import { Wallet } from '@injectivelabs/ts-types'
 import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
-import VConnectedWallet from './connected-wallet.vue'
-import VLogoMini from '~/components/elements/logo-mini.vue'
+import ConnectedWallet from './connected-wallet.vue'
+import LogoMini from '~/components/elements/logo-mini.vue'
 import VPopperBox from '~/components/elements/popper-box.vue'
 import { getReferralUrl } from '~/app/utils/helpers'
 import {
@@ -170,8 +176,8 @@ import {
 export default Vue.extend({
   components: {
     VPopperBox,
-    VLogoMini,
-    VConnectedWallet
+    LogoMini,
+    ConnectedWallet
   },
 
   data() {

@@ -23,6 +23,7 @@
             <Metamask />
             <Keplr />
             <Torus />
+            <WalletConnect v-if="isStagingOrTestnetOrDevnet" />
             <Ledger @wallet-ledger-connecting="handleLedgerConnectingWallet" />
             <Trezor @wallet-trezor-connecting="handleTrezorConnectingWallet" />
           </ul>
@@ -42,6 +43,7 @@ import Metamask from './wallets/metamask.vue'
 import Keplr from './wallets/keplr.vue'
 import Ledger from './wallets/ledger.vue'
 import Torus from './wallets/torus.vue'
+import WalletConnect from './wallets/wallet-connect.vue'
 import Trezor from './wallets/trezor.vue'
 import ModalLedger from './wallets/ledger/index.vue'
 import ModalTrezor from './wallets/trezor/index.vue'
@@ -63,6 +65,7 @@ export default Vue.extend({
     Ledger,
     Trezor,
     ModalLedger,
+    WalletConnect,
     ModalTrezor
   },
 
@@ -87,20 +90,17 @@ export default Vue.extend({
 
   watch: {
     walletConnectStatus(newWalletConnectStatus: WalletConnectStatus) {
-      if (newWalletConnectStatus === WalletConnectStatus.connecting) {
-        this.handleConnectingWallet()
-      }
-
-      if (newWalletConnectStatus === WalletConnectStatus.disconnected) {
-        this.handleDisconnectedWallet()
-      }
-
-      if (
-        [WalletConnectStatus.connected, WalletConnectStatus.idle].includes(
-          newWalletConnectStatus
-        )
-      ) {
-        this.handleConnectedWallet()
+      switch (newWalletConnectStatus) {
+        case WalletConnectStatus.connecting:
+          this.handleConnectingWallet()
+          break
+        case WalletConnectStatus.disconnected:
+          this.handleDisconnectedWallet()
+          break
+        case WalletConnectStatus.idle:
+        case WalletConnectStatus.connected:
+          this.handleConnectedWallet()
+          break
       }
     }
   },
