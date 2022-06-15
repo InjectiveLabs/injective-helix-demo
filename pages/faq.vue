@@ -2,17 +2,17 @@
   <div class="h-full w-full flex flex-wrap py-4">
     <div class="container">
       <div class="w-full mx-auto xl:w-4/5">
-        <v-panel :title="$t('Frequently Asked Questions')">
+        <VPanel :title="$t('Frequently Asked Questions')">
           <div>
-            <v-top
+            <VTop
               :category="category"
               :search="search"
               @category-selected="handleCategorySelected"
               @searched="handleSearched"
             />
-            <v-faq :category="category" :search="search" />
+            <VFaq :category="category" :search="search" />
           </div>
-        </v-panel>
+        </VPanel>
       </div>
     </div>
   </div>

@@ -1,7 +1,7 @@
 <template>
-  <v-card-table-wrap>
+  <VCardTableWrap>
     <component :is="component" v-if="component"></component>
-  </v-card-table-wrap>
+  </VCardTableWrap>
 </template>
 
 <script lang="ts">
@@ -9,12 +9,12 @@ import Vue from 'vue'
 import Fees from './fees/index.vue'
 
 const components = {
-  fees: 'v-fees'
+  fees: 'Fees'
 }
 
 export default Vue.extend({
   components: {
-    'v-fees': Fees
+    Fees
   },
 
   data() {

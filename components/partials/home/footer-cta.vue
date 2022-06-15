@@ -9,9 +9,9 @@
       </h1>
 
       <div class="text-center">
-        <v-button lg primary class="w-60 mt-10" @click="handleGetStartedClick">
+        <VButton lg primary class="w-60 mt-10" @click="handleGetStartedClick">
           {{ $t('home.getStarted') }}
-        </v-button>
+        </VButton>
       </div>
     </div>
   </div>

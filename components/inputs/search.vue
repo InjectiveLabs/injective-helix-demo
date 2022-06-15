@@ -1,5 +1,5 @@
 <template>
-  <v-input
+  <VInput
     v-bind="$attrs"
     ref="search-input"
     round
@@ -14,7 +14,7 @@
       class="ml-1"
       :class="[small ? 'w-4 h-4' : 'w-5 h-5']"
     />
-  </v-input>
+  </VInput>
 </template>
 <script lang="ts">
 import Vue from 'vue'

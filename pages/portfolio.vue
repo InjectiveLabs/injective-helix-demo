@@ -1,10 +1,10 @@
 <template>
   <div class="h-full w-full flex flex-wrap">
     <div class="w-full">
-      <VHocLoading :status="status">
+      <HocLoading :status="status">
         <div class="container pt-6 pb-12">
           <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12">
-            <v-welcome-banner />
+            <WelcomeBanner />
             <!--
               A clever solution here to apply loading state to account
               summary based on the bank/trading account balances loading
@@ -12,14 +12,14 @@
             <div class="lg:pb-4 relative">
               <portal-target name="account-summary" />
             </div>
-            <v-gas-rebate class="mt-6" />
+            <GasRebate class="mt-6" />
             <div class="border-b border-gray-600 w-full my-6"></div>
-            <v-balances class="mt-4" />
-            <v-bridge />
+            <Balances class="mt-4" />
+            <Bridge />
           </div>
         </div>
-      </VHocLoading>
-      <v-referee-onboarding-modal v-if="REFERRALS_ENABLED" />
+      </HocLoading>
+      <modal-onboard-referee v-if="REFERRALS_ENABLED" />
     </div>
   </div>
 </template>
@@ -28,21 +28,21 @@
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { RefereeInfo } from '@injectivelabs/referral-consumer'
-import VBalances from '~/components/partials/portfolio/balances.vue'
-import VWelcomeBanner from '~/components/partials/banners/welcome.vue'
-import VGasRebate from '~/components/partials/banners/gas-rebate.vue'
-import VBridge from '~/components/partials/portfolio/bridge.vue'
+import Balances from '~/components/partials/portfolio/balances.vue'
+import WelcomeBanner from '~/components/partials/banners/welcome.vue'
+import GasRebate from '~/components/partials/banners/gas-rebate.vue'
+import Bridge from '~/components/partials/portfolio/bridge.vue'
 import { Modal } from '~/types'
-import VRefereeOnboardingModal from '~/components/partials/modals/referee-onboarding.vue'
+import ModalOnboardReferee from '~/components/partials/modals/referee-onboarding.vue'
 import { REFERRALS_ENABLED } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
-    VBridge,
-    VBalances,
-    VWelcomeBanner,
-    VGasRebate,
-    VRefereeOnboardingModal
+    Bridge,
+    Balances,
+    WelcomeBanner,
+    GasRebate,
+    ModalOnboardReferee
   },
 
   data() {

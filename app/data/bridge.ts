@@ -1,4 +1,4 @@
-import { BridgingNetwork, NetworkMeta } from '@injectivelabs/ui-common'
+import { BridgingNetwork, NetworkMeta } from '@injectivelabs/sdk-ui-ts'
 import { TransferSide } from '~/types'
 
 export const networksMeta = [

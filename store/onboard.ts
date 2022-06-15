@@ -2,12 +2,13 @@ import { actionTree, getterTree } from 'typed-vuex'
 import {
   UiDerivativeTrade,
   UiSpotTrade,
-  UiSubaccountTransfer
-} from '@injectivelabs/ui-common'
+  UiSubaccountTransfer,
+  UiAccountTransformer
+} from '@injectivelabs/sdk-ui-ts'
 import {
-  derivativeService,
-  spotService,
-  subaccountService
+  exchangeDerivativesApi,
+  exchangeSpotApi,
+  exchangeAccountApi
 } from '~/app/Services'
 
 const initialStateFactory = () => ({
@@ -19,7 +20,8 @@ const initialState = initialStateFactory()
 
 export const state = () => ({
   trades: initialState.trades as Array<UiSpotTrade | UiDerivativeTrade>,
-  subaccountTransfers: initialState.subaccountTransfers as UiSubaccountTransfer[]
+  subaccountTransfers:
+    initialState.subaccountTransfers as UiSubaccountTransfer[]
 })
 
 export type OnboardStoreState = ReturnType<typeof state>
@@ -77,10 +79,10 @@ export const actions = actionTree(
         return
       }
 
-      const spotTrades = await spotService.fetchTrades({
+      const spotTrades = await exchangeSpotApi.fetchTrades({
         subaccountId: subaccount.subaccountId
       })
-      const derivativeTrades = await derivativeService.fetchTrades({
+      const derivativeTrades = await exchangeDerivativesApi.fetchTrades({
         subaccountId: subaccount.subaccountId
       })
 
@@ -95,12 +97,14 @@ export const actions = actionTree(
         return
       }
 
-      commit(
-        'setSubaccountTransfers',
-        await subaccountService.fetchSubaccountTransfers(
-          subaccount.subaccountId
-        )
+      const transfers = await exchangeAccountApi.fetchSubaccountHistory({
+        subaccountId: subaccount.subaccountId
+      })
+      const uiTransfers = transfers.map(
+        UiAccountTransformer.grpcAccountTransferToUiAccountTransfer
       )
+
+      commit('setSubaccountTransfers', uiTransfers)
     }
   }
 )

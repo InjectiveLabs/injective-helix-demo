@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center w-full">
-    <v-button-select
+    <VButtonSelect
       v-for="l in leverages"
       :key="`leverage-${l}`"
       :value="leverage"
@@ -11,7 +11,7 @@
       @selected="handleOnSelect(l)"
     >
       {{ `${l}x` }}
-    </v-button-select>
+    </VButtonSelect>
   </div>
 </template>
 

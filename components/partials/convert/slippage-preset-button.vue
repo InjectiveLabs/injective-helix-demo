@@ -1,5 +1,5 @@
 <template>
-  <v-button
+  <VButton
     :disabled="false"
     :ghost="false"
     primary
@@ -8,7 +8,7 @@
     @click.stop="handleClick"
   >
     {{ label }}%
-  </v-button>
+  </VButton>
 </template>
 
 <script lang="ts">

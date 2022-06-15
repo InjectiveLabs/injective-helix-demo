@@ -1,9 +1,9 @@
 <template>
-  <v-card-table-wrap>
+  <VCardTableWrap>
     <template #actions>
       <div class="col-span-12 sm:col-span-6 m-4 lg:mx-0">
         <div class="flex items-center justify-between sm:justify-start">
-          <v-button-filter
+          <VButtonFilter
             v-model="component"
             :option="components.openOrders"
             data-cy="trading-page-open-orders-tab-button"
@@ -12,9 +12,9 @@
               {{ $t('trade.open_orders') }}
               {{ `(${filteredOrders.length})` }}
             </span>
-          </v-button-filter>
-          <v-separator />
-          <v-button-filter
+          </VButtonFilter>
+          <VSeparator />
+          <VButtonFilter
             v-model="component"
             :option="components.tradeHistory"
             data-cy="trading-page-trade-history-tab-button"
@@ -22,27 +22,17 @@
             <span class="uppercase text-xs font-semibold">
               {{ $t('trade.trade_history') }}
             </span>
-          </v-button-filter>
+          </VButtonFilter>
         </div>
       </div>
 
       <div
-        class="
-          col-span-12
-          sm:col-span-6
-          mb-4
-          mx-4
-          sm:mt-4
-          flex
-          items-center
-          justify-between
-          sm:justify-end
-        "
+        class="col-span-12 sm:col-span-6 mb-4 mx-4 sm:mt-4 flex items-center justify-between sm:justify-end"
       >
-        <v-checkbox v-if="market" v-model="currentMarketOnly" class="mr-4">
+        <VCheckbox v-if="market" v-model="currentMarketOnly" class="mr-4">
           {{ $t('trade.asset_only', { asset: market.ticker }) }}
-        </v-checkbox>
-        <v-button
+        </VCheckbox>
+        <VButton
           v-if="
             component === components.openOrders && filteredOrders.length > 0
           "
@@ -52,20 +42,20 @@
           @click.stop="handleCancelAllClick"
         >
           {{ $t('trade.cancelAllOrders') }}
-        </v-button>
+        </VButton>
       </div>
     </template>
 
-    <VHocLoading :status="status">
-      <v-card class="h-full">
+    <HocLoading :status="status">
+      <VCard class="h-full">
         <component
           :is="component"
           v-if="component"
           v-bind="{ currentMarketOnly }"
         ></component>
-      </v-card>
-    </VHocLoading>
-  </v-card-table-wrap>
+      </VCard>
+    </HocLoading>
+  </VCardTableWrap>
 </template>
 
 <script lang="ts">
@@ -73,21 +63,21 @@ import Vue from 'vue'
 import {
   UiSpotLimitOrder,
   UiSpotMarketWithToken
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import OpenOrders from './orders/index.vue'
 import TradeHistory from './trade-history/index.vue'
 
 const components = {
   orderHistory: '',
-  openOrders: 'v-open-orders',
-  tradeHistory: 'v-trade-history'
+  openOrders: 'openOrders',
+  tradeHistory: 'TradeHistory'
 }
 
 export default Vue.extend({
   components: {
-    'v-trade-history': TradeHistory,
-    'v-open-orders': OpenOrders
+    TradeHistory,
+    OpenOrders
   },
 
   data() {

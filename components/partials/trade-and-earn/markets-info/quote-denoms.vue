@@ -20,8 +20,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 import VItem from '~/components/partials/common/stats/item.vue'
-import { TradingRewardsCampaign } from '~/app/services/exchange'
 
 export default Vue.extend({
   components: {

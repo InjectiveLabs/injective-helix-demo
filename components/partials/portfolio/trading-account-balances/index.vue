@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="relative max-w-full">
-      <v-positions
+      <Positions
         v-if="component === components.positions"
         class="relative"
         v-bind="{ hideBalance }"
       />
-      <v-balances
+      <Balances
         v-if="component === components.balances"
         class="relative"
         v-bind="{
@@ -16,16 +16,24 @@
       />
     </div>
 
-    <v-modal-add-margin />
+    <VModalAddMargin />
     <portal to="portfolio-balance-sub-tabs">
       <div class="mt-3 flex items-center gap-6">
-        <v-tab-selector-item v-model="component" :option="components.balances" data-cy="trading-account-balances-table-link">
+        <TabSelectorItem
+          v-model="component"
+          :option="components.balances"
+          data-cy="trading-account-balances-table-link"
+        >
           <span>{{ $t('portfolio.bankBalances') }}</span>
-        </v-tab-selector-item>
+        </TabSelectorItem>
         <div class="w-px h-4 bg-gray-500" />
-        <v-tab-selector-item v-model="component" :option="components.positions" data-cy="trading-account-positions-table-link">
+        <TabSelectorItem
+          v-model="component"
+          :option="components.positions"
+          data-cy="trading-account-positions-table-link"
+        >
           <span>{{ $t('portfolio.positions') }}</span>
-        </v-tab-selector-item>
+        </TabSelectorItem>
       </div>
     </portal>
   </div>
@@ -33,10 +41,10 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import VBalances from './balances.vue'
-import VPositions from './positions.vue'
+import Balances from './balances.vue'
+import Positions from './positions.vue'
 import VModalAddMargin from '~/components/partials/modals/add-margin/index.vue'
-import VTabSelectorItem from '~/components/partials/portfolio/tab-selector-item.vue'
+import TabSelectorItem from '~/components/partials/portfolio/tab-selector-item.vue'
 import { SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd } from '~/types'
 
 const components = {
@@ -46,10 +54,10 @@ const components = {
 
 export default Vue.extend({
   components: {
-    VBalances,
-    VPositions,
+    Balances,
+    Positions,
     VModalAddMargin,
-    VTabSelectorItem
+    TabSelectorItem
   },
 
   props: {

@@ -7,7 +7,7 @@
       <p class="text-xs text-gray-300 w-full">
         {{ $t('connect.pleaseConnectToYourWallet') }}
       </p>
-      <v-button
+      <VButton
         md
         primary
         class="mt-2"
@@ -15,7 +15,7 @@
         @click.stop="handleClickOnConnect"
       >
         {{ $t('connect.connect') }}
-      </v-button>
+      </VButton>
     </div>
     <p v-else class="text-xs text-gray-400 py-4">
       {{ $t('connect.pleaseConnectToYourWalletCta') }}

@@ -1,20 +1,23 @@
 <template>
   <div class="h-full flex flex-col">
     <div class="flex items-center gap-4">
-      <v-tab-selector-item
+      <TabSelectorItem
         v-model="component"
         data-cy="activity-spot-orders-link"
         :option="components.orders"
       >
         <div class="flex items-center gap-1">
           <span>{{ $t('activity.openOrders') }}</span>
-          <portal-target name="activity-tab-spot-count" data-cy="activity-spot-orders-link-count" />
+          <portal-target
+            name="activity-tab-spot-count"
+            data-cy="activity-spot-orders-link-count"
+          />
         </div>
-      </v-tab-selector-item>
+      </TabSelectorItem>
 
       <div class="w-px h-4 bg-gray-500" />
 
-      <v-tab-selector-item
+      <TabSelectorItem
         v-model="component"
         data-cy="activity-spot-trades-link"
         :option="components.trades"
@@ -22,20 +25,20 @@
         <div class="flex items-center gap-1">
           <span>{{ $t('activity.tradeHistory') }}</span>
         </div>
-      </v-tab-selector-item>
+      </TabSelectorItem>
     </div>
-    <v-card md class="h-full mt-6">
-      <v-orders v-show="component === components.orders" />
-      <v-trades v-if="component === components.trades" />
-    </v-card>
+    <VCard md class="h-full mt-6">
+      <Orders v-show="component === components.orders" />
+      <Trades v-if="component === components.trades" />
+    </VCard>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import VOrders from '~/components/partials/activity/spot/orders.vue'
-import VTrades from '~/components/partials/activity/spot/trades.vue'
-import VTabSelectorItem from '~/components/partials/activity/common/tab-selector-item.vue'
+import Orders from '~/components/partials/activity/spot/orders.vue'
+import Trades from '~/components/partials/activity/spot/trades.vue'
+import TabSelectorItem from '~/components/partials/activity/common/tab-selector-item.vue'
 
 const components = {
   orders: 'orders',
@@ -45,9 +48,9 @@ const components = {
 
 export default Vue.extend({
   components: {
-    VOrders,
-    VTrades,
-    VTabSelectorItem
+    Orders,
+    Trades,
+    TabSelectorItem
   },
 
   data() {

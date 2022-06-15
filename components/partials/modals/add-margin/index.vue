@@ -1,5 +1,5 @@
 <template>
-  <v-modal :is-open="isModalOpen" sm @modal-closed="closeModal">
+  <VModal :is-open="isModalOpen" sm @modal-closed="closeModal">
     <h3 slot="title">
       {{ $t('trade.add_margin_to_position_title') }}
     </h3>
@@ -7,7 +7,7 @@
     <div v-if="market && quoteBalance" class="relative">
       <div class="flex flex-wrap">
         <div class="px-4 w-full">
-          <v-form
+          <VForm
             :balance="quoteBalance"
             :market="market"
             @close-modal="closeModal"
@@ -15,7 +15,7 @@
         </div>
       </div>
     </div>
-  </v-modal>
+  </VModal>
 </template>
 
 <script lang="ts">
@@ -26,12 +26,12 @@ import {
   UiPosition,
   UiSubaccount,
   ZERO_IN_BASE
-} from '@injectivelabs/ui-common'
-import Form from './form.vue'
+} from '@injectivelabs/sdk-ui-ts'
+import VForm from './form.vue'
 
 export default Vue.extend({
   components: {
-    'v-form': Form
+    VForm
   },
 
   data() {

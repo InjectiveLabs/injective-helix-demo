@@ -1,15 +1,15 @@
 <template>
   <div class="ml-4 flex items-center md:ml-6" data-cy="wallet-connect">
-    <v-button
+    <VButton
       md
       primary
       data-cy="header-wallet-connect-button"
       @click="handleWalletConnectClicked"
     >
       {{ $t('connect.connect') }}
-    </v-button>
+    </VButton>
 
-    <v-modal
+    <VModal
       :is-open="isOpenConnectModal"
       md
       @modal-closed="isOpenConnectModal = false"
@@ -18,17 +18,18 @@
         {{ $t('connect.connectToWallet') }}
       </h3>
       <div class="relative mt-6">
-        <VHocLoading :status="status">
+        <HocLoading :status="status">
           <ul class="divide-y divide-gray-800 border-gray-700 rounded-lg">
             <Metamask />
             <Keplr />
             <Torus />
+            <WalletConnect v-if="isStagingOrTestnetOrDevnet" />
             <Ledger @wallet-ledger-connecting="handleLedgerConnectingWallet" />
             <Trezor @wallet-trezor-connecting="handleTrezorConnectingWallet" />
           </ul>
-        </VHocLoading>
+        </HocLoading>
       </div>
-    </v-modal>
+    </VModal>
     <ModalTerms />
     <ModalLedger :is-open="isLedgerModalOpen" @closed="handleLedgerClosed" />
     <ModalTrezor :is-open="isTrezorModalOpen" @closed="handleTrezorClosed" />
@@ -42,6 +43,7 @@ import Metamask from './wallets/metamask.vue'
 import Keplr from './wallets/keplr.vue'
 import Ledger from './wallets/ledger.vue'
 import Torus from './wallets/torus.vue'
+import WalletConnect from './wallets/wallet-connect.vue'
 import Trezor from './wallets/trezor.vue'
 import ModalLedger from './wallets/ledger/index.vue'
 import ModalTrezor from './wallets/trezor/index.vue'
@@ -63,6 +65,7 @@ export default Vue.extend({
     Ledger,
     Trezor,
     ModalLedger,
+    WalletConnect,
     ModalTrezor
   },
 
@@ -87,20 +90,17 @@ export default Vue.extend({
 
   watch: {
     walletConnectStatus(newWalletConnectStatus: WalletConnectStatus) {
-      if (newWalletConnectStatus === WalletConnectStatus.connecting) {
-        this.handleConnectingWallet()
-      }
-
-      if (newWalletConnectStatus === WalletConnectStatus.disconnected) {
-        this.handleDisconnectedWallet()
-      }
-
-      if (
-        [WalletConnectStatus.connected, WalletConnectStatus.idle].includes(
-          newWalletConnectStatus
-        )
-      ) {
-        this.handleConnectedWallet()
+      switch (newWalletConnectStatus) {
+        case WalletConnectStatus.connecting:
+          this.handleConnectingWallet()
+          break
+        case WalletConnectStatus.disconnected:
+          this.handleDisconnectedWallet()
+          break
+        case WalletConnectStatus.idle:
+        case WalletConnectStatus.connected:
+          this.handleConnectedWallet()
+          break
       }
     }
   },

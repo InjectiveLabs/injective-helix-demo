@@ -5,8 +5,8 @@
 </template>
 
 <script lang="ts">
+import { FundingPayment } from '@injectivelabs/sdk-ts'
 import Vue, { PropType } from 'vue'
-import { FundingPayment } from '@injectivelabs/derivatives-consumer'
 
 export default Vue.extend({
   props: {

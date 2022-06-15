@@ -6,33 +6,41 @@ import {
 } from '@injectivelabs/utils'
 import { StreamOperation } from '@injectivelabs/ts-types'
 import {
+  MsgBatchCancelSpotOrders,
+  MsgCreateSpotLimitOrder,
+  MsgCreateSpotMarketOrder,
+  SpotOrderSide,
+  SpotOrderState
+} from '@injectivelabs/sdk-ts'
+import {
   Change,
-  SpotTransformer,
-  zeroSpotMarketSummary,
-  ZERO_IN_BASE,
+  SpotMetrics,
+  spotOrderTypeToGrpcOrderType,
   UiSpotLimitOrder,
   UiSpotMarketSummary,
   UiSpotMarketWithToken,
   UiSpotOrderbook,
   UiSpotTrade,
-  SpotOrderSide
-} from '@injectivelabs/ui-common'
-import { SpotOrderState } from '@injectivelabs/spot-consumer'
+  UiSpotTransformer,
+  zeroSpotMarketSummary,
+  ZERO_IN_BASE
+} from '@injectivelabs/sdk-ui-ts'
 import {
   streamOrderbook,
   streamTrades,
   streamSubaccountOrders,
   streamSubaccountTrades
-} from '~/app/streams/spot'
+} from '~/app/client/streams/spot'
 import {
   FEE_RECIPIENT,
   ORDERBOOK_STREAMING_ENABLED
 } from '~/app/utils/constants'
 import {
-  spotActionService,
-  spotService,
-  tokenService,
-  tokenCoinGeckoService
+  exchangeRestSpotChronosApi,
+  exchangeSpotApi,
+  msgBroadcastClient,
+  tokenPrice,
+  tokenService
 } from '~/app/Services'
 import { spot as allowedSpotMarkets } from '~/routes.config'
 
@@ -245,12 +253,12 @@ export const actions = actionTree(
     },
 
     async init({ commit }) {
-      const markets = await spotService.fetchMarkets()
+      const markets = await exchangeSpotApi.fetchMarkets()
       const marketsWithToken = await tokenService.getSpotMarketsWithToken(
         markets
       )
       const uiMarkets =
-        SpotTransformer.spotMarketsToUiSpotMarkets(marketsWithToken)
+        UiSpotTransformer.spotMarketsToUiSpotMarkets(marketsWithToken)
 
       // Only include markets that we pre-defined to generate static routes for
       const uiMarketsWithToken = uiMarkets
@@ -266,7 +274,8 @@ export const actions = actionTree(
 
       commit('setMarkets', uiMarketsWithToken)
 
-      const marketsSummary = await spotService.fetchMarketsSummary()
+      const marketsSummary =
+        await exchangeRestSpotChronosApi.fetchMarketsSummary()
       const marketSummaryNotExists =
         !marketsSummary || (marketsSummary && marketsSummary.length === 0)
       const actualMarketsSummary = marketSummaryNotExists
@@ -292,11 +301,12 @@ export const actions = actionTree(
         throw new Error('Market not found. Please refresh the page.')
       }
 
-      commit('setMarket', market)
-      commit(
-        'setMarketSummary',
-        await spotService.fetchMarketSummary(market.marketId)
+      const summary = await exchangeRestSpotChronosApi.fetchMarketSummary(
+        market.marketId
       )
+
+      commit('setMarket', market)
+      commit('setMarketSummary', { marketId: market.marketId, ...summary })
 
       if (ORDERBOOK_STREAMING_ENABLED) {
         await this.app.$accessor.spot.streamOrderbook()
@@ -327,7 +337,10 @@ export const actions = actionTree(
         return
       }
 
-      commit('setOrderbook', await spotService.fetchOrderbook(market.marketId))
+      commit(
+        'setOrderbook',
+        await exchangeSpotApi.fetchOrderbook(market.marketId)
+      )
     },
 
     streamOrderbook({ commit, state }) {
@@ -453,7 +466,7 @@ export const actions = actionTree(
 
       commit(
         'setSubaccountOrders',
-        await spotService.fetchOrders({
+        await exchangeSpotApi.fetchOrders({
           subaccountId: subaccount.subaccountId
         })
       )
@@ -466,7 +479,10 @@ export const actions = actionTree(
         return
       }
 
-      commit('setOrderbook', await spotService.fetchOrderbook(market.marketId))
+      commit(
+        'setOrderbook',
+        await exchangeSpotApi.fetchOrderbook(market.marketId)
+      )
     },
 
     async fetchTrades({ state, commit }) {
@@ -478,7 +494,7 @@ export const actions = actionTree(
 
       commit(
         'setTrades',
-        await spotService.fetchTrades({ marketId: market.marketId })
+        await exchangeSpotApi.fetchTrades({ marketId: market.marketId })
       )
     },
 
@@ -490,7 +506,7 @@ export const actions = actionTree(
         return
       }
 
-      const trades = await spotService.fetchTrades({
+      const trades = await exchangeSpotApi.fetchTrades({
         subaccountId: subaccount.subaccountId
       })
 
@@ -504,11 +520,13 @@ export const actions = actionTree(
         return
       }
 
-      const updatedMarketsSummary = await spotService.fetchMarketsSummary()
-      const combinedMarketsSummary = SpotTransformer.marketsSummaryComparisons(
-        updatedMarketsSummary,
-        state.marketsSummary
-      )
+      const updatedMarketsSummary =
+        await exchangeRestSpotChronosApi.fetchMarketsSummary()
+      const combinedMarketsSummary =
+        UiSpotTransformer.spotMarketsSummaryComparisons(
+          updatedMarketsSummary,
+          state.marketsSummary
+        )
 
       if (
         !combinedMarketsSummary ||
@@ -545,12 +563,21 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await spotActionService.cancelOrder({
+      const message = MsgBatchCancelSpotOrders.fromJSON({
         injectiveAddress,
+        orders: [
+          {
+            marketId: order.marketId,
+            subaccountId: order.subaccountId,
+            orderHash: order.orderHash
+          }
+        ]
+      })
+
+      await msgBroadcastClient.broadcast({
         address,
-        orderHash: order.orderHash,
-        marketId: order.marketId,
-        subaccountId: subaccount.subaccountId
+        msgs: message,
+        bucket: SpotMetrics.BatchCancelLimitOrders
       })
     },
 
@@ -566,14 +593,23 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await spotActionService.batchCancelOrders({
-        injectiveAddress,
+      const messages = orders.map((order) =>
+        MsgBatchCancelSpotOrders.fromJSON({
+          injectiveAddress,
+          orders: [
+            {
+              marketId: order.marketId,
+              subaccountId: order.subaccountId,
+              orderHash: order.orderHash
+            }
+          ]
+        })
+      )
+
+      await msgBroadcastClient.broadcast({
         address,
-        orders: orders.map((o) => ({
-          orderHash: o.orderHash,
-          subaccountId: o.subaccountId,
-          marketId: o.marketId
-        }))
+        msgs: messages,
+        bucket: SpotMetrics.BatchCancelLimitOrders
       })
     },
 
@@ -602,11 +638,9 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await spotActionService.submitLimitOrder({
-        address,
-        // @ts-ignore
-        orderType,
+      const message = MsgCreateSpotLimitOrder.fromJSON({
         injectiveAddress,
+        orderType: spotOrderTypeToGrpcOrderType(orderType),
         price: spotPriceToChainPriceToFixed({
           value: price,
           baseDecimals: market.baseToken.decimals,
@@ -619,6 +653,12 @@ export const actions = actionTree(
         marketId: market.marketId,
         feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
+      })
+
+      await msgBroadcastClient.broadcast({
+        address,
+        msgs: message,
+        bucket: SpotMetrics.CreateLimitOrder
       })
     },
 
@@ -647,11 +687,9 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      await spotActionService.submitMarketOrder({
-        address,
-        // @ts-ignore
-        orderType,
+      const message = MsgCreateSpotMarketOrder.fromJSON({
         injectiveAddress,
+        orderType: spotOrderTypeToGrpcOrderType(orderType),
         price: spotPriceToChainPriceToFixed({
           value: price,
           baseDecimals: market.baseToken.decimals,
@@ -665,10 +703,16 @@ export const actions = actionTree(
         feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
       })
+
+      await msgBroadcastClient.broadcast({
+        address,
+        msgs: message,
+        bucket: SpotMetrics.CreateMarketOrder
+      })
     },
 
     async fetchUsdPrice(_, coinGeckoId: string) {
-      return await tokenCoinGeckoService.fetchUsdTokenPrice(coinGeckoId)
+      return await tokenPrice.fetchUsdTokenPrice(coinGeckoId)
     }
   }
 )

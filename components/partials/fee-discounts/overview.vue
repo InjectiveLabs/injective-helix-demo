@@ -1,9 +1,9 @@
 <template>
-  <v-card>
-    <VHocLoading :status="status">
+  <VCard>
+    <HocLoading :status="status">
       <div v-if="isUserWalletConnected">
         <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6 mt-4">
-          <v-item class="col-span-2 lg:col-span-3">
+          <VItem class="col-span-2 lg:col-span-3">
             <template slot="value">
               <span
                 v-if="feeDiscountAccountInfo"
@@ -24,16 +24,16 @@
                 />
               </div>
             </template>
-          </v-item>
-          <v-item class="col-span-2 lg:col-span-3">
+          </VItem>
+          <VItem class="col-span-2 lg:col-span-3">
             <template slot="value">
-              <v-emp-number
+              <VEmpNumber
                 v-if="feeDiscountAccountInfo"
                 :number="stakedAmount"
                 :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
               >
                 <span>INJ</span>
-              </v-emp-number>
+              </VEmpNumber>
             </template>
             <template slot="title">
               <div class="flex items-center justify-center">
@@ -44,15 +44,12 @@
                 />
               </div>
             </template>
-          </v-item>
-          <v-item class="col-span-2 lg:col-span-3">
+          </VItem>
+          <VItem class="col-span-2 lg:col-span-3">
             <template slot="value">
-              <v-emp-number
-                v-if="feeDiscountAccountInfo"
-                :number="feePaidAmount"
-              >
+              <VEmpNumber v-if="feeDiscountAccountInfo" :number="feePaidAmount">
                 <span>USD</span>
-              </v-emp-number>
+              </VEmpNumber>
               <span v-else>&mdash;</span>
             </template>
             <template slot="title">
@@ -64,8 +61,8 @@
                 />
               </div>
             </template>
-          </v-item>
-          <v-item class="col-span-2 lg:col-span-3">
+          </VItem>
+          <VItem class="col-span-2 lg:col-span-3">
             <template slot="value">
               <span
                 v-if="feeDiscountAccountInfo"
@@ -84,12 +81,12 @@
                 />
               </div>
             </template>
-          </v-item>
+          </VItem>
         </div>
       </div>
-      <v-user-wallet-connect-warning v-else cta />
-    </VHocLoading>
-  </v-card>
+      <UserWalletConnectWarning v-else cta />
+    </HocLoading>
+  </VCard>
 </template>
 
 <script lang="ts">
@@ -100,10 +97,13 @@ import {
   StatusType
 } from '@injectivelabs/utils'
 import Vue from 'vue'
-import { cosmosSdkDecToBigNumber, ZERO_IN_BASE } from '@injectivelabs/ui-common'
+import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import {
+  cosmosSdkDecToBigNumber,
+  FeeDiscountAccountInfo
+} from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import VItem from '~/components/partials/common/stats/item.vue'
-import { FeeDiscountAccountInfo } from '~/app/services/exchange'
 
 export default Vue.extend({
   components: {

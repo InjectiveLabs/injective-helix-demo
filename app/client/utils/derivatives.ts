@@ -13,7 +13,7 @@ import {
   UiPriceLevel,
   ZERO_IN_BASE,
   DerivativeOrderSide
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 
 export const calculateMargin = ({
   quantity,

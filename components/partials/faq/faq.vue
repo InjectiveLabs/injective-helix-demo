@@ -1,7 +1,7 @@
 <template>
   <div>
     <dl class="mt-6 space-y-6 divide-y divide-gray-700">
-      <v-accordion
+      <VAccordion
         v-for="(panel, index) in filteredFaqs"
         :key="`faq-${index}`"
         :is-open="openPanelIndex === index"
@@ -27,7 +27,7 @@
             </a>
           </template>
         </i18n>
-      </v-accordion>
+      </VAccordion>
     </dl>
   </div>
 </template>

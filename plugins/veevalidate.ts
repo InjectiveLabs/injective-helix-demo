@@ -1,9 +1,7 @@
 import { extend, localize } from 'vee-validate'
 import { required, email, min, max, between } from 'vee-validate/dist/rules'
-import {
-  getAddressFromInjectiveAddress,
-  NUMBER_REGEX
-} from '@injectivelabs/ui-common'
+import { NUMBER_REGEX } from '@injectivelabs/sdk-ui-ts'
+import { getAddressFromInjectiveAddress } from '@injectivelabs/sdk-ts'
 
 // eslint-disable-next-line prefer-regex-literals
 const REFER_CODE_REGEX = new RegExp(/^[A-Z]([A-Z0-9]{7})$/)

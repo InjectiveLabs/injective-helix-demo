@@ -8,7 +8,7 @@ import {
   UiPriceLevel,
   ZERO_IN_BASE,
   UiSpotMarketWithToken
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 
 export const calculateWorstExecutionPriceFromOrderbook = ({
   records,

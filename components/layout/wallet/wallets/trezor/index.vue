@@ -1,5 +1,5 @@
 <template>
-  <v-modal :is-open="isOpen" md @modal-closed="onClose">
+  <VModal :is-open="isOpen" md @modal-closed="onClose">
     <h3 slot="title">
       {{ $t('connect.connectUsingTrezor') }}
     </h3>
@@ -10,7 +10,7 @@
         {{ $t('connect.connectUsingTrezorNote') }}
       </p>
     </div>
-  </v-modal>
+  </VModal>
 </template>
 
 <script lang="ts">

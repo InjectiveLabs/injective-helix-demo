@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { NetworkMeta } from '@injectivelabs/ui-common'
+import { NetworkMeta } from '@injectivelabs/sdk-ui-ts'
 
 export default Vue.extend({
   props: {

@@ -1,7 +1,7 @@
 <template>
   <div v-if="market" class="px-4 w-full">
     <div class="flex items-center justify-center">
-      <v-button
+      <VButton
         :class="{
           'text-gray-500': tradingType === TradeExecutionType.Market
         }"
@@ -10,9 +10,9 @@
         @click.stop="onTradingTypeToggle(TradeExecutionType.LimitFill)"
       >
         {{ $t('trade.limit') }}
-      </v-button>
+      </VButton>
       <div class="mx-2 w-px h-4 bg-gray-500"></div>
-      <v-button
+      <VButton
         :class="{
           'text-gray-500': tradingType === TradeExecutionType.LimitFill
         }"
@@ -21,11 +21,11 @@
         @click.stop="onTradingTypeToggle(TradeExecutionType.Market)"
       >
         {{ $t('trade.market') }}
-      </v-button>
+      </VButton>
     </div>
     <div class="mt-4">
       <div class="bg-gray-900 rounded-2xl flex">
-        <v-button-select
+        <VButtonSelect
           v-model="orderType"
           :option="DerivativeOrderSide.Buy"
           data-cy="trading-page-switch-to-side-buy-button"
@@ -33,8 +33,8 @@
           class="w-1/2"
         >
           {{ $t('trade.buy_asset', { asset: market.baseToken.symbol }) }}
-        </v-button-select>
-        <v-button-select
+        </VButtonSelect>
+        <VButtonSelect
           v-model="orderType"
           :option="DerivativeOrderSide.Sell"
           data-cy="trading-page-switch-to-side-sell-button"
@@ -42,12 +42,12 @@
           class="w-1/2"
         >
           {{ $t('trade.sell_asset', { asset: market.baseToken.symbol }) }}
-        </v-button-select>
+        </VButtonSelect>
       </div>
     </div>
     <div class="mt-8 flex flex-col gap-y-2">
       <div class="flex flex-col gap-3">
-        <v-input
+        <VInput
           v-if="!tradingTypeMarket"
           ref="input-price"
           v-model="form.price"
@@ -63,9 +63,9 @@
           @input="onPriceChange"
         >
           <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
-        </v-input>
+        </VInput>
         <div class="flex gap-2" :class="{ 'mt-4': !tradingTypeMarket }">
-          <v-input
+          <VInput
             ref="input-amount"
             v-model="form.amount"
             :label="$t('trade.amount')"
@@ -83,8 +83,8 @@
             <span slot="addon">{{
               market.baseToken.symbol.toUpperCase()
             }}</span>
-          </v-input>
-          <v-input
+          </VInput>
+          <VInput
             ref="input-quoteAmount"
             v-model="form.quoteAmount"
             :custom-handler="true"
@@ -127,7 +127,7 @@
                 100%
               </span>
             </div>
-          </v-input>
+          </VInput>
         </div>
         <span
           v-if="amountError"
@@ -143,7 +143,7 @@
           {{ priceError }}
         </span>
       </div>
-      <v-order-leverage
+      <OrderLeverage
         v-if="!orderTypeReduceOnly"
         class="mt-6"
         :leverage="form.leverage"
@@ -151,7 +151,7 @@
         @change="onLeverageChange"
       />
 
-      <v-order-leverage-select
+      <OrderLeverageSelect
         v-if="false"
         class="mt-4"
         :max-leverage="maxLeverageAvailable.toFixed()"
@@ -172,7 +172,7 @@
       />
     </div>
     <component
-      :is="tradingTypeMarket ? `v-order-details-market` : 'v-order-details'"
+      :is="tradingTypeMarket ? `OrderDetailsMarket` : 'OrderDetails'"
       v-bind="{
         price: executionPrice,
         notionalValue,
@@ -219,7 +219,7 @@
           <IconExternalLink class="w-2 h-2" />
         </a>
       </p>
-      <v-button
+      <VButton
         lg
         :status="status"
         :disabled="
@@ -233,9 +233,9 @@
         @click.stop="onSubmit"
       >
         {{ $t(orderTypeBuy ? 'trade.buy_long' : 'trade.sell_short') }}
-      </v-button>
+      </VButton>
     </div>
-    <v-modal-order-confirm @confirmed="submitLimitOrder" />
+    <VModalOrderConfirm @confirmed="submitLimitOrder" />
   </div>
 </template>
 
@@ -256,11 +256,14 @@ import {
   UiDerivativeOrderbook,
   UiPosition,
   UiPriceLevel,
-  cosmosSdkDecToBigNumber,
   NUMBER_REGEX,
   ZERO_IN_BASE,
   UiSubaccount
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
+import {
+  cosmosSdkDecToBigNumber,
+  FeeDiscountAccountInfo
+} from '@injectivelabs/sdk-ts'
 import OrderDetails from './order-details.vue'
 import OrderLeverage from './order-leverage.vue'
 import OrderLeverageSelect from './order-leverage-select.vue'
@@ -286,17 +289,12 @@ import {
   calculateWorstExecutionPriceFromOrderbook,
   calculateLiquidationPrice,
   calculateMargin,
-  getApproxAmountForMarketOrLimitOrder
-} from '~/app/services/derivatives'
-import {
-  TradingRewardsCampaign,
-  FeeDiscountAccountInfo
-} from '~/app/services/exchange'
-import { excludedPriceDeviationSlugs } from '~/app/data/market'
-import {
+  getApproxAmountForMarketOrLimitOrder,
   calculateAverageExecutionPriceFromFillableNotionalOnOrderBook,
   getQuoteFromPercentageQuantityNonReduceOnly
-} from '~/app/services/derivatives/utils'
+} from '~/app/client/utils/derivatives'
+import { excludedPriceDeviationSlugs } from '~/app/data/market'
+import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 
 interface TradeForm {
   reduceOnly: boolean
@@ -322,11 +320,11 @@ const initialForm = (): TradeForm => ({
 
 export default Vue.extend({
   components: {
-    'v-button-checkbox': ButtonCheckbox,
-    'v-order-details': OrderDetails,
-    'v-order-leverage': OrderLeverage,
-    'v-order-leverage-select': OrderLeverageSelect,
-    'v-order-details-market': OrderDetailsMarket,
+    VButtonCheckbox: ButtonCheckbox,
+    OrderDetails,
+    OrderLeverage,
+    OrderLeverageSelect,
+    OrderDetailsMarket,
     VModalOrderConfirm,
     AdvancedSettings
   },

@@ -2,7 +2,7 @@ import { EthereumChainId } from '@injectivelabs/ts-types'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import detectEthereumProvider from '@metamask/detect-provider'
 import { ETHEREUM_CHAIN_ID } from '../utils/constants'
-import { web3Strategy } from '../web3'
+import { walletStrategy } from '../wallet-strategy'
 
 export const isMetamaskInstalled = async (): Promise<boolean> => {
   const provider = await detectEthereumProvider()
@@ -14,7 +14,7 @@ export const validateMetamask = async (
   address: string,
   chainId: EthereumChainId = ETHEREUM_CHAIN_ID
 ) => {
-  const addresses = await web3Strategy.getAddresses()
+  const addresses = await walletStrategy.getAddresses()
   const metamaskIsLocked = addresses.length === 0
 
   if (metamaskIsLocked) {
@@ -33,7 +33,7 @@ export const validateMetamask = async (
     )
   }
 
-  const metamaskChainId = parseInt(await web3Strategy.getChainId(), 16)
+  const metamaskChainId = parseInt(await walletStrategy.getChainId(), 16)
   const metamaskChainIdDoesntMatchTheActiveChainId = chainId !== metamaskChainId
 
   if (metamaskChainIdDoesntMatchTheActiveChainId) {

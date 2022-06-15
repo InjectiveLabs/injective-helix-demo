@@ -3,7 +3,7 @@
     <div class="relative max-w-full">
       <div class="relative">
         <div class="mb-6 flex justify-between items-center flex-wrap">
-          <v-search
+          <VSearch
             dense
             name="search"
             class="sm:max-w-xs"
@@ -13,7 +13,11 @@
             @searched="handleInputOnSearch"
           />
 
-          <v-checkbox v-model="hideSmallBalance" class="mt-4 sm:mt-0 ml-auto" data-cy="universal-table-hide-small-balances-check-box">
+          <VCheckbox
+            v-model="hideSmallBalance"
+            class="mt-4 sm:mt-0 ml-auto"
+            data-cy="universal-table-hide-small-balances-check-box"
+          >
             <span class="flex items-center">
               {{ $t('portfolio.hideSmallBalances') }}
               <IconInfoTooltip
@@ -21,7 +25,7 @@
                 :tooltip="$t('portfolio.hideSmallBalancesTooltip')"
               />
             </span>
-          </v-checkbox>
+          </VCheckbox>
         </div>
         <div
           class="overflow-y-auto overflow-x-auto md:overflow-x-visible w-full"
@@ -48,7 +52,7 @@
             v-if="isUserWalletConnected"
             :show-empty="sortedBalances.length === 0"
           >
-            <v-balance
+            <Balance
               v-for="(balance, index) in sortedBalances"
               :key="`balance-${index}`"
               class="col-span-1"
@@ -64,7 +68,7 @@
               </span>
             </template>
           </TableBody>
-          <v-user-wallet-connect-warning v-else cta />
+          <UserWalletConnectWarning v-else cta />
         </div>
       </div>
     </div>
@@ -76,9 +80,9 @@ import Vue, { PropType } from 'vue'
 import {
   BankBalanceWithTokenAndBalanceWithUsdBalance,
   INJECTIVE_DENOM
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import VBalance from './balance.vue'
+import Balance from './balance.vue'
 import VSearch from '~/components/elements/search.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import TableHeader from '~/components/elements/table-header.vue'
@@ -87,7 +91,7 @@ export default Vue.extend({
   components: {
     TableBody,
     TableHeader,
-    VBalance,
+    Balance,
     VSearch
   },
 

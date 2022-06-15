@@ -1,7 +1,7 @@
 <template>
   <div v-if="market" class="px-4 w-full">
     <div class="flex items-center justify-center">
-      <v-button
+      <VButton
         :class="{
           'text-gray-500': tradingType === TradeExecutionType.Market
         }"
@@ -10,9 +10,9 @@
         @click.stop="onTradingTypeToggle(TradeExecutionType.LimitFill)"
       >
         {{ $t('trade.limit') }}
-      </v-button>
+      </VButton>
       <div class="mx-2 w-px h-4 bg-gray-500"></div>
-      <v-button
+      <VButton
         :class="{
           'text-gray-500': tradingType === TradeExecutionType.LimitFill
         }"
@@ -21,11 +21,11 @@
         @click.stop="onTradingTypeToggle(TradeExecutionType.Market)"
       >
         {{ $t('trade.market') }}
-      </v-button>
+      </VButton>
     </div>
     <div class="mt-4">
       <div class="bg-gray-900 rounded-2xl flex">
-        <v-button-select
+        <VButtonSelect
           v-model="orderType"
           :option="SpotOrderSide.Buy"
           aqua
@@ -37,8 +37,8 @@
               asset: market.baseToken.symbol
             })
           }}
-        </v-button-select>
-        <v-button-select
+        </VButtonSelect>
+        <VButtonSelect
           v-model="orderType"
           :option="SpotOrderSide.Sell"
           red
@@ -50,12 +50,12 @@
               asset: market.baseToken.symbol
             })
           }}
-        </v-button-select>
+        </VButtonSelect>
       </div>
     </div>
     <div class="mt-8">
       <div>
-        <v-input
+        <VInput
           v-if="!tradingTypeMarket"
           ref="input-price"
           v-model="form.price"
@@ -70,9 +70,9 @@
           @input="onPriceChange"
         >
           <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
-        </v-input>
+        </VInput>
         <div class="flex gap-3 mt-6">
-          <v-input
+          <VInput
             ref="input-amount"
             v-model="form.amount"
             :label="$t('trade.amount')"
@@ -93,8 +93,8 @@
               slot="context"
               class="text-xs text-gray-400 flex items-center font-mono"
             ></div>
-          </v-input>
-          <v-input
+          </VInput>
+          <VInput
             ref="input-amount"
             v-model="form.quoteAmount"
             :custom-handler="true"
@@ -142,7 +142,7 @@
                 100%
               </span>
             </div>
-          </v-input>
+          </VInput>
         </div>
         <span
           v-if="amountError"
@@ -172,7 +172,7 @@
       />
     </div>
     <component
-      :is="tradingTypeMarket ? `v-order-details-market` : 'v-order-details'"
+      :is="tradingTypeMarket ? `OrderDetailsMarket` : 'OrderDetails'"
       v-bind="{
         averagePrice,
         price: executionPrice,
@@ -222,7 +222,7 @@
         </a>
       </p>
 
-      <v-button
+      <VButton
         lg
         :status="status"
         :disabled="
@@ -236,9 +236,9 @@
         @click.stop="onSubmit"
       >
         {{ $t(orderTypeBuy ? 'trade.buy' : 'trade.sell') }}
-      </v-button>
+      </VButton>
     </div>
-    <v-modal-order-confirm @confirmed="submitLimitOrder" />
+    <VModalOrderConfirm @confirmed="submitLimitOrder" />
   </div>
 </template>
 
@@ -248,7 +248,6 @@ import { TradeError } from 'types/errors'
 import { BigNumberInWei, Status, BigNumberInBase } from '@injectivelabs/utils'
 import { TradeExecutionType, Wallet } from '@injectivelabs/ts-types'
 import {
-  cosmosSdkDecToBigNumber,
   NUMBER_REGEX,
   ZERO_IN_BASE,
   UiPriceLevel,
@@ -256,7 +255,11 @@ import {
   UiSpotOrderbook,
   UiSubaccount,
   SpotOrderSide
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
+import {
+  cosmosSdkDecToBigNumber,
+  FeeDiscountAccountInfo
+} from '@injectivelabs/sdk-ts'
 import OrderDetails from './order-details.vue'
 import OrderDetailsMarket from './order-details-market.vue'
 import AdvancedSettings from '~/components/partials/common/trade/advanced-settings.vue'
@@ -277,11 +280,8 @@ import {
   calculateWorstExecutionPriceFromOrderbook,
   getApproxAmountForMarketOrLimitOrder,
   getApproxAmountForSellOrder
-} from '~/app/services/spot'
-import {
-  FeeDiscountAccountInfo,
-  TradingRewardsCampaign
-} from '~/app/services/exchange'
+} from '~/app/client/utils/spot'
+import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
 import {
   formatPriceToAllowableDecimals,
@@ -308,9 +308,9 @@ const initialForm = (): TradeForm => ({
 
 export default Vue.extend({
   components: {
-    'v-button-checkbox': ButtonCheckbox,
-    'v-order-details': OrderDetails,
-    'v-order-details-market': OrderDetailsMarket,
+    ButtonCheckbox,
+    OrderDetails,
+    OrderDetailsMarket,
     VModalOrderConfirm,
     AdvancedSettings
   },

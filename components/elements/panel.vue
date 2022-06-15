@@ -10,11 +10,11 @@
       <slot name="title-context" />
     </div>
     <slot name="context" />
-    <v-card class="relative flex-1" :lg="!dense" :class="[cardWrapperClass]">
+    <VCard class="relative flex-1" :lg="!dense" :class="[cardWrapperClass]">
       <div class="v-panel-content">
         <slot ref="content" />
       </div>
-    </v-card>
+    </VCard>
   </div>
 </template>
 

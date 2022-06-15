@@ -38,7 +38,7 @@ import Vue, { PropType } from 'vue'
 import {
   UiDerivativeMarketWithToken,
   UiSpotMarketWithToken
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 
 export default Vue.extend({
   props: {

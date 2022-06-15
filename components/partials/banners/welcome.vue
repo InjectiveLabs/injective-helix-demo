@@ -1,5 +1,5 @@
 <template>
-  <v-card
+  <VCard
     v-if="showWelcomeBanner && status.isNotLoading()"
     md
     :style="{ backgroundImage: `url('/svg/bg-dark.svg')` }"
@@ -16,17 +16,9 @@
           src="/images/sphere.png"
           class="3md:hidden w-40 sm:w-44 mb-6 mt-4 mx-auto"
         />
-        <v-progress-steps :steps="3" :active-step="activeStep" />
+        <ProgressSteps :steps="3" :active-step="activeStep" />
         <div
-          class="
-            flex
-            w-full
-            justify-between
-            tracking-wide
-            uppercase
-            mt-2.5
-            text-xs text-gray-500
-          "
+          class="flex w-full justify-between tracking-wide uppercase mt-2.5 text-xs text-gray-500"
         >
           <span class="text-primary-500">01 {{ $t('common.deposit') }}</span>
           <span :class="{ 'text-primary-500': activeStep > 1 }">
@@ -54,7 +46,7 @@
           </p>
 
           <p :class="{ 'text-center': activeStep === 2 }">
-            <v-button
+            <VButton
               type="button"
               lg
               primary
@@ -67,7 +59,7 @@
                 {{ $t('common.transfer') }}
               </span>
               <span v-else>{{ $t('common.trade') }}</span>
-            </v-button>
+            </VButton>
           </p>
         </div>
       </div>
@@ -103,7 +95,7 @@
         />
       </div>
     </div>
-  </v-card>
+  </VCard>
 </template>
 
 <script lang="ts">
