@@ -236,5 +236,18 @@ export default {
     dmmProgram: 'Dmm program',
     dmmProgramDescription:
       'Flagship liquidity mining program designed for Dedicated Market Makers.'
-  }
+  },
+
+  my_tier: 'My Tier',
+  my_staked_amount: 'Staked Amount',
+  my_staked_amount_tooltip: 'The amount of INJ that you have staked. Staking INJ secures the protocol, earns you rewards and can help you obtain a more preferable fee tier.',
+  my_trading_volume: 'My Trading Volume',
+  trading_volume: 'Trading Volume',
+  trading_volume_tooltip: 'The total volume traded on a 28-day rolling basis. Only markets in USD quote denoms are included at this moment.',
+  current_apy: 'Current APY',
+  maker: 'Maker',
+  taker: 'Taker',
+  off: 'Off',
+  last_updated_at: 'Last updated at',
+  update_daily: 'Update daily'
 }

@@ -1,12 +1,10 @@
 <template>
   <tr>
     <td class="h-8 text-left font-mono">
-      <div class="flex items-center">
+      <div class="flex items-center gap-4">
+        <div v-if="isUserTierLevel" class="bg-primary-500 w-2 h-2 ml-2 rounded-full" />
+        <div v-else class="w-2 h-2 ml-2" />
         <span>#{{ index }}</span>
-        <IconCheckCircle
-          v-if="isUserTierLevel"
-          class="w-4 h-4 ml-2 text-primary-500"
-        />
       </div>
     </td>
     <td class="h-8 text-right font-mono">

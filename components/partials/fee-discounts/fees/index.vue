@@ -21,11 +21,11 @@
           <th class="text-right">
             <div class="flex items-end justify-end">
               <span>
-                {{ $t('trade.fees_paid') }}
+                {{ $t('trading_volume') }}
               </span>
               <IconInfoTooltip
                 class="ml-2"
-                :tooltip="$t('fee_discount_fees_paid_tooltip')"
+                :tooltip="$t('trading_volume_tooltip')"
               />
             </div>
           </th>

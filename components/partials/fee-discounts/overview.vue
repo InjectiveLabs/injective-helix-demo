@@ -1,92 +1,87 @@
 <template>
-  <VCard>
-    <HocLoading :status="status">
-      <div v-if="isUserWalletConnected">
-        <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6 mt-4">
-          <VItem class="col-span-2 lg:col-span-3">
-            <template slot="value">
-              <span
-                v-if="feeDiscountAccountInfo"
-                class="font-mono text-lg leading-5"
-              >
-                {{ tierLevel }}
+  <VHocLoading :status="status">
+    <div v-if="isUserWalletConnected">
+      <div class="flex md:grid grid-cols-12 gap-6 overflow-x-auto hide-scrollbar" @scroll="handleScroll">
+        <div class="fee-discounts-statistic bg-gray-800 rounded-lg md:col-span-6 p-6">
+          <div class="flex flex-col">
+            <div class="flex justify-start gap-8">
+              <div class="flex flex-col border-r border-gray-500 pr-8">
+                <span class="text-gray-500 uppercase tracking-wide text-sm mb-2 font-semibold">
+                  {{ $t('my_tier') }}
+                </span>
+                <span class="uppercase text-md text-2xl font-bold tracking-normal text-primary-500">
+                  #{{ tierLevel }}
+                </span>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-gray-500 uppercase tracking-wide text-sm mb-2 font-semibold">
+                  {{ $t('maker') }}
+                </span>
+                <span class="uppercase text-md text-gray-500 font-bold tracking-widest">
+                  <b class="text-2xl font-bold text-white tracking-normal font-mono">{{ makerFeeDiscount }}%</b> {{ $t('off') }}
+                </span>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-gray-500 uppercase tracking-wide text-sm mb-2 font-semibold">
+                  {{ $t('taker') }}
+                </span>
+                <span class="uppercase text-md text-gray-500 font-bold tracking-widest">
+                  <b class="text-2xl font-bold text-white tracking-normal font-mono">{{ takerFeeDiscount }}%</b> {{ $t('off') }}
+                </span>
+              </div>
+            </div>
+            <div class="mt-4">
+              <span class="text-xs text-gray-400">{{ $t('update_daily') }}. {{ $t('last_updated_at') }} {{ lastUpdateTimestamp }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="fee-discounts-statistic bg-gray-800 rounded-lg md:col-span-3 p-6">
+            <div class="flex flex-col">
+            <div class="flex justify-start gap-8">
+              <div class="flex flex-col">
+                <span class="text-gray-500 uppercase tracking-wide text-sm mb-2 font-semibold">
+                  {{ $t('my_staked_amount') }}
+                </span>
+                <span class="uppercase text-md text-gray-500 font-bold tracking-widest">
+                  <b class="text-2xl font-bold text-white tracking-normal font-mono">{{ stakedAmount }}</b> INJ
+                </span>
+              </div>
+            </div>
+            <div class="mt-4">
+              <span class="text-xs text-gray-400">
+                {{ $t('current_apy') }}: 14.0%
               </span>
-              <span v-else class="text-xs text-gray-400 font-mono">
-                &mdash;
-              </span>
-            </template>
-            <template slot="title">
-              <div class="flex items-center justify-center">
-                {{ $t('My Tier') }}
-                <IconInfoTooltip
-                  class="ml-2"
-                  :tooltip="$t('My Tier Tooltip')"
-                />
+            </div>
+          </div>
+        </div>
+        <div class="fee-discounts-statistic bg-gray-800 rounded-lg md:col-span-3 p-6">
+            <div class="flex flex-col">
+            <div class="flex justify-start gap-8">
+              <div class="flex flex-col">
+                <span class="text-gray-500 uppercase tracking-wide text-sm mb-2 font-semibold">
+                  {{ $t('my_trading_volume') }}
+                </span>
+                <span class="uppercase text-md text-gray-500 font-bold tracking-widest">
+                  <b class="text-2xl font-bold text-white tracking-normal font-mono">{{ volume }}</b> USD
+                </span>
               </div>
-            </template>
-          </VItem>
-          <VItem class="col-span-2 lg:col-span-3">
-            <template slot="value">
-              <VEmpNumber
-                v-if="feeDiscountAccountInfo"
-                :number="stakedAmount"
-                :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
-              >
-                <span>INJ</span>
-              </VEmpNumber>
-            </template>
-            <template slot="title">
-              <div class="flex items-center justify-center">
-                {{ $t('My Staked Amount') }}
-                <IconInfoTooltip
-                  class="ml-2"
-                  :tooltip="$t('My Staked Amount Tooltip')"
-                />
-              </div>
-            </template>
-          </VItem>
-          <VItem class="col-span-2 lg:col-span-3">
-            <template slot="value">
-              <VEmpNumber v-if="feeDiscountAccountInfo" :number="feePaidAmount">
-                <span>USD</span>
-              </VEmpNumber>
-              <span v-else>&mdash;</span>
-            </template>
-            <template slot="title">
-              <div class="flex items-center justify-center">
-                {{ $t('My Fee Paid Amount') }}
-                <IconInfoTooltip
-                  class="ml-2"
-                  :tooltip="$t('My Fee Paid Amount Tooltip')"
-                />
-              </div>
-            </template>
-          </VItem>
-          <VItem class="col-span-2 lg:col-span-3">
-            <template slot="value">
-              <span
-                v-if="feeDiscountAccountInfo"
-                class="font-mono text-lg leading-5"
-              >
-                % {{ makerFeeDiscount }} / {{ takerFeeDiscount }}
-              </span>
-              <span v-else class="text-xs text-gray-400 font-mono"></span>
-            </template>
-            <template slot="title">
-              <div class="flex items-center justify-center">
-                {{ $t('trade.myMakerTakerDiscount') }}
-                <IconInfoTooltip
-                  class="ml-2"
-                  :tooltip="$t('trade.myMakerTakerDiscountTooltip')"
-                />
-              </div>
-            </template>
-          </VItem>
+            </div>
+            <div class="mt-4">
+              <span class="text-xs text-gray-400">In past 20 days</span>
+            </div>
+          </div>
         </div>
       </div>
-      <UserWalletConnectWarning v-else cta />
-    </HocLoading>
-  </VCard>
+      <div class="flex gap-2 justify-center mt-4 md:hidden">
+        <div
+          v-for="i in 3"
+          :key="`fee-discount-statistic-slide-${i}`"
+          class="w-2 h-2 rounded-full bg-white"
+          :class="slideIndex === i - 1 ? 'bg-opacity-50' : 'bg-opacity-10'"
+        />
+      </div>
+    </div>
+  </VHocLoading>
 </template>
 
 <script lang="ts">
@@ -97,23 +92,16 @@ import {
   StatusType
 } from '@injectivelabs/utils'
 import Vue from 'vue'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import {
-  cosmosSdkDecToBigNumber,
-  FeeDiscountAccountInfo
-} from '@injectivelabs/sdk-ts'
+import { cosmosSdkDecToBigNumber, ZERO_IN_BASE } from '@injectivelabs/ui-common'
+import { format } from 'date-fns'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
-import VItem from '~/components/partials/common/stats/item.vue'
+import { FeeDiscountAccountInfo } from '~/app/services/exchange'
 
 export default Vue.extend({
-  components: {
-    VItem
-  },
-
   data() {
     return {
       status: new Status(StatusType.Loading),
-
+      slideIndex: 0,
       UI_DEFAULT_MIN_DISPLAY_DECIMALS
     }
   },
@@ -121,6 +109,16 @@ export default Vue.extend({
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
+    },
+
+    lastUpdateTimestamp(): string {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo || !feeDiscountAccountInfo.accountTtl) {
+        return '-'
+      }
+
+      return format(Number(feeDiscountAccountInfo.accountTtl.ttlTimestamp) * 1000, 'yyyy-MM-dd HH:mm:ss (zzz)')
     },
 
     feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
@@ -155,22 +153,16 @@ export default Vue.extend({
       )
     },
 
-    feePaidAmount(): BigNumberInBase {
+    volume(): string {
       const { feeDiscountAccountInfo } = this
 
-      if (!feeDiscountAccountInfo) {
-        return ZERO_IN_BASE
+      if (!feeDiscountAccountInfo || !feeDiscountAccountInfo.accountInfo || !feeDiscountAccountInfo.accountInfo.volume) {
+        return '-'
       }
 
-      if (!feeDiscountAccountInfo.accountInfo) {
-        return ZERO_IN_BASE
-      }
+      const volume = new BigNumberInBase(feeDiscountAccountInfo.accountInfo.volume)
 
-      return new BigNumberInWei(
-        cosmosSdkDecToBigNumber(
-          feeDiscountAccountInfo.accountInfo.feePaidAmount
-        )
-      ).toBase(6 /* USDT */)
+      return volume.toFormat(2)
     },
 
     makerFeeDiscount(): string {
@@ -219,6 +211,22 @@ export default Vue.extend({
       .finally(() => {
         this.status.setIdle()
       })
+  },
+
+  methods: {
+    handleScroll(e: Event) {
+      const target = e.target as HTMLElement
+      const offset = target.scrollLeft
+      const viewWidth = target.clientWidth
+      const total = target.scrollWidth - viewWidth
+      this.slideIndex = Math.round(offset / total * 2)
+    }
   }
 })
 </script>
+
+<style lang="scss" scoped>
+.fee-discounts-statistic {
+  flex: 0 0 100%;
+}
+</style>
