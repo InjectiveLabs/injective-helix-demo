@@ -841,8 +841,7 @@ export default Vue.extend({
         market,
         records,
         leverage,
-        feeRate,
-        tradingTypeMarket
+        feeRate
       }).toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
     },
 
@@ -1491,8 +1490,7 @@ export default Vue.extend({
         percentageToNumber: percentageToNumber.toNumber(),
         records: orderTypeBuy ? sells : buys,
         feeRate,
-        executionPrice,
-        tradingTypeMarket
+        executionPrice
       }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
     },
 

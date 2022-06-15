@@ -180,8 +180,7 @@ export const getQuoteFromPercentageQuantityNonReduceOnly = ({
   market,
   records,
   leverage,
-  feeRate,
-  tradingTypeMarket
+  feeRate
 }: {
   percentageToNumber: BigNumberInBase
   availableMargin: BigNumberInBase
@@ -189,7 +188,6 @@ export const getQuoteFromPercentageQuantityNonReduceOnly = ({
   records: UiPriceLevel[]
   leverage: string
   feeRate: BigNumberInBase
-  tradingTypeMarket: boolean
 }) => {
   const { totalNotional } = records.reduce(
     ({ totalNotional }, { quantity, price }) => {
@@ -214,7 +212,7 @@ export const getQuoteFromPercentageQuantityNonReduceOnly = ({
     percentageToNumber
   )
 
-  if (totalNotional.lte(quoteBalance) && tradingTypeMarket) {
+  if (totalNotional.lte(quoteBalance)) {
     return totalNotional
   }
 
@@ -341,8 +339,7 @@ export const getApproxAmountForMarketOrLimitOrder = ({
   leverage = '1',
   percentageToNumber = 1,
   feeRate,
-  executionPrice,
-  tradingTypeMarket
+  executionPrice
 }: {
   records: UiPriceLevel[]
   margin: BigNumberInBase
@@ -351,7 +348,6 @@ export const getApproxAmountForMarketOrLimitOrder = ({
   market: UiDerivativeMarketWithToken
   feeRate: BigNumberInBase
   executionPrice: BigNumberInBase
-  tradingTypeMarket: boolean
 }) => {
   const availableMargin = new BigNumberInBase(margin).times(percentageToNumber)
 
@@ -381,7 +377,7 @@ export const getApproxAmountForMarketOrLimitOrder = ({
     total = totalMargin.plus(totalFees)
   }
 
-  if (total.lt(availableMargin) && tradingTypeMarket) {
+  if (total.lt(availableMargin)) {
     return totalQuantity
   }
 
