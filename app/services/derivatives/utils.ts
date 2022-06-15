@@ -387,7 +387,7 @@ export const getApproxAmountForMarketOrLimitOrder = ({
         executionPrice
           .times(new BigNumberInBase(1).plus(feeRate))
           .times(leverage)
-          .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOwN)
+          .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
       )
     }
   }

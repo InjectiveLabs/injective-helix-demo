@@ -1409,7 +1409,7 @@ export default Vue.extend({
     },
 
     setSlippageTolerance(slippage: string) {
-      this.form.slippageTolerance = formatToAllowableDecimals(slippage, 2)
+      this.form.slippageTolerance = formatAmountToAllowableDecimals(slippage, 2)
     },
 
     setPostOnly(postOnly: boolean) {
@@ -1628,7 +1628,7 @@ export default Vue.extend({
         return
       }
 
-      this.form.quoteAmount = formatToAllowableDecimals(
+      this.form.quoteAmount = formatAmountToAllowableDecimals(
         quoteAmount,
         market.priceDecimals
       )
