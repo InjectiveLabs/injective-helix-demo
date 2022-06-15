@@ -16,19 +16,6 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </TextInfo>
 
-        <TextInfo class="mt-2" :title="$t('trade.min_received_amount')">
-          <span
-            v-if="!amount.isNaN()"
-            class="font-mono flex items-start break-all"
-          >
-            {{ minimumReceivedAmountToFormat }}
-            <span class="text-gray-500 ml-1 break-normal">
-              {{ market.baseToken.symbol }}
-            </span>
-          </span>
-          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </TextInfo>
-
         <TextInfo
           :title="
             postOnly ? $t('trade.maker_rate') : $t('trade.maker_taker_rate')
