@@ -791,6 +791,61 @@ export default Vue.extend({
       )
     },
 
+    quoteAmountFromPercentageReduceOnly(): string {
+      const {
+        maxReduceOnly,
+        form: { proportionalPercentage },
+        executionPrice,
+        market
+      } = this
+
+      if (!market) {
+        return ''
+      }
+
+      const percentageToNumber = new BigNumberInBase(
+        proportionalPercentage
+      ).div(100)
+
+      return maxReduceOnly
+        .times(percentageToNumber)
+        .times(executionPrice)
+        .toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
+    },
+
+    quoteAmountFromPercentageNonReduceOnly(): string {
+      const {
+        availableMargin,
+        market,
+        buys,
+        sells,
+        orderTypeBuy,
+        feeRate,
+        tradingTypeMarket,
+        form: { leverage, proportionalPercentage }
+      } = this
+
+      if (!market) {
+        return ''
+      }
+
+      const percentageToNumber = new BigNumberInBase(
+        proportionalPercentage
+      ).div(100)
+
+      const records = orderTypeBuy ? sells : buys
+
+      return getQuoteFromPercentageQuantityNonReduceOnly({
+        percentageToNumber,
+        availableMargin,
+        market,
+        records,
+        leverage,
+        feeRate,
+        tradingTypeMarket
+      }).toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
+    },
+
     amountStep(): string {
       const { market } = this
 
@@ -1411,6 +1466,7 @@ export default Vue.extend({
         orderTypeReduceOnly,
         availableMargin,
         executionPrice,
+        tradingTypeMarket,
         form: { proportionalPercentage }
       } = this
 
@@ -1435,7 +1491,8 @@ export default Vue.extend({
         percentageToNumber: percentageToNumber.toNumber(),
         records: orderTypeBuy ? sells : buys,
         feeRate,
-        executionPrice
+        executionPrice,
+        tradingTypeMarket
       }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
     },
 
@@ -1698,12 +1755,10 @@ export default Vue.extend({
      * into consideration
      */
     updateBaseAndQuoteFromPercentageAmount() {
-      const { approxAmountFromPercentage } = this
-
-      this.onAmountChange(approxAmountFromPercentage, true)
+      this.onAmountChangePercentage()
 
       this.$nextTick(() => {
-        this.onAmountChange(approxAmountFromPercentage, true)
+        this.onAmountChangePercentage()
 
         this.updateQuoteAmountFromPercentage()
       })
@@ -1717,59 +1772,15 @@ export default Vue.extend({
       const {
         orderTypeReduceOnly,
         position,
-        maxReduceOnly,
-        market,
-        executionPrice,
-        form: { proportionalPercentage }
+        quoteAmountFromPercentageReduceOnly,
+        quoteAmountFromPercentageNonReduceOnly
       } = this
-
-      const percentageToNumber = new BigNumberInBase(
-        proportionalPercentage
-      ).div(100)
-
-      if (!market) {
-        return
-      }
 
       if (orderTypeReduceOnly && position) {
-        return (this.form.quoteAmount = maxReduceOnly
-          .times(percentageToNumber)
-          .times(executionPrice)
-          .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN))
+        return (this.form.quoteAmount = quoteAmountFromPercentageReduceOnly)
       }
 
-      this.updateQuoteFromPercentageQuantityNonReduceOnly(percentageToNumber)
-    },
-
-    updateQuoteFromPercentageQuantityNonReduceOnly(
-      percentageToNumber: BigNumberInBase
-    ) {
-      const {
-        availableMargin,
-        market,
-        buys,
-        sells,
-        orderTypeBuy,
-        executionPrice,
-        feeRate,
-        form: { leverage }
-      } = this
-
-      if (!market) {
-        return
-      }
-
-      const records = orderTypeBuy ? buys : sells
-
-      this.form.quoteAmount = getQuoteFromPercentageQuantityNonReduceOnly({
-        percentageToNumber,
-        availableMargin,
-        market,
-        records,
-        executionPrice,
-        leverage,
-        feeRate
-      })
+      this.form.quoteAmount = quoteAmountFromPercentageNonReduceOnly
     },
 
     onDetailsDrawerToggle() {
@@ -1843,7 +1854,7 @@ export default Vue.extend({
       }
     },
 
-    onAmountChange(amount: string = '', isMaxInput?: boolean) {
+    onAmountChange(amount: string = '') {
       const { tradingTypeMarket, hasPrice, market } = this
 
       if (!market) {
@@ -1861,15 +1872,30 @@ export default Vue.extend({
         this.updatePriceFromLastTradedPrice()
       }
 
-      if (isMaxInput) {
-        return
-      }
-
       if (tradingTypeMarket) {
         return this.updateMarketQuoteAmount()
       }
 
       this.updateLimitQuoteAmount()
+    },
+
+    onAmountChangePercentage() {
+      const { hasPrice, market, approxAmountFromPercentage } = this
+
+      if (!market) {
+        return
+      }
+
+      this.form.amount = formatAmountToAllowableDecimals(
+        approxAmountFromPercentage,
+        market.quantityDecimals
+      )
+
+      this.resetQuoteAmount()
+
+      if (!hasPrice) {
+        this.updatePriceFromLastTradedPrice()
+      }
     },
 
     onQuoteAmountChange(quoteAmount: string = '') {

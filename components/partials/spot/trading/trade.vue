@@ -1399,10 +1399,10 @@ export default Vue.extend({
     updateBaseAndQuoteFromPercentageAmount() {
       const { approxAmountFromPercentage } = this
 
-      this.onAmountChange(approxAmountFromPercentage, true)
+      this.onAmountChangePercentage(approxAmountFromPercentage)
 
       this.$nextTick(() => {
-        this.onAmountChange(approxAmountFromPercentage, true)
+        this.onAmountChangePercentage(approxAmountFromPercentage)
 
         this.updateQuoteAmountFromPercentage()
       })
@@ -1593,10 +1593,7 @@ export default Vue.extend({
       }
     },
 
-    onAmountChange(
-      amount: string = '',
-      isProportionalQuantityUpdate?: boolean
-    ) {
+    onAmountChange(amount: string = '') {
       const { hasPrice, market } = this
 
       if (!market) {
@@ -1614,11 +1611,26 @@ export default Vue.extend({
         this.updatePriceFromLastTradedPrice()
       }
 
-      if (isProportionalQuantityUpdate) {
+      this.updateQuoteAmount()
+    },
+
+    onAmountChangePercentage(amount: string = '') {
+      const { hasPrice, market } = this
+
+      if (!market) {
         return
       }
 
-      this.updateQuoteAmount()
+      this.form.amount = formatAmountToAllowableDecimals(
+        amount,
+        market.quantityDecimals
+      )
+
+      this.resetQuoteAmount()
+
+      if (!hasPrice) {
+        this.updatePriceFromLastTradedPrice()
+      }
     },
 
     onQuoteAmountChange(quoteAmount: string = '') {
