@@ -19,7 +19,7 @@ jobs:
       SOURCE_DIR: dist
       DEST_DIR: www
 
-      ## Flagsg
+      ## Flags
       MAINTENANCE_ENABLED: false
       GAS_FREE_DEPOSIT_REBATE_ENABLED: true
       META_TAGS_ENABLED: true
