@@ -76,7 +76,7 @@
           <TokenSelector
             :amount="form.amount"
             :value="form.token"
-            :max-decimals="form.token.decimals"
+            :max-decimals="maxDecimals"
             :origin="origin"
             :destination="destination"
             :is-ibc-transfer="isIbcTransfer"
@@ -146,6 +146,7 @@ import Balance from '~/components/partials/portfolio/bridge/balance.vue'
 import NetworkSelect from '~/components/partials/portfolio/bridge/network-select.vue'
 import IbcTransferNote from '~/components/partials/portfolio/bridge/ibc-transfer-note.vue'
 import TransferDirectionSwitch from '~/components/partials/portfolio/bridge/transfer-direction-switch.vue'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -211,6 +212,17 @@ export default Vue.extend({
   },
 
   computed: {
+    maxDecimals(): number {
+      const { form } = this
+
+      // This check makes sure that the max amount of decimals is never greater than the amount of decimal places being shown in the balance.
+      if (UI_DEFAULT_DISPLAY_DECIMALS < form.token.decimals) {
+        return UI_DEFAULT_DISPLAY_DECIMALS
+      }
+
+      return form.token.decimals
+    },
+
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
     },
@@ -404,6 +416,12 @@ export default Vue.extend({
 
       // Withdraw
       return onWithdrawBalance
+    },
+
+    step(): string {
+      const { form } = this
+
+      return form.amount
     },
 
     isModalOpen(): boolean {

@@ -65,6 +65,7 @@
           :prefix="orderTypeBuy ? '&asymp;' : null"
           :usd-price="fromUsdPrice"
           :step="orderTypeBuy ? priceStep : amountStep"
+          :max-decimals="maxDecimalsFrom"
           @input:amount="onSetAmount"
           @input:token="onSetFromToken"
           @input:max="onMaxInput"
@@ -111,6 +112,7 @@
           :prefix="orderTypeBuy ? null : '≈'"
           :validation-rules="'positiveNumber'"
           :step="orderTypeBuy ? amountStep : priceStep"
+          :max-decimals="maxDecimalsTo"
           disable-max-selector
           @input:amount="onSetToAmount"
           @input:token="onSetToToken"
@@ -778,6 +780,18 @@ export default Vue.extend({
       }
 
       return '1'
+    },
+
+    maxDecimalsFrom(): number {
+      const { orderTypeBuy, priceStep, amountStep } = this
+
+      return getDecimalsFromNumber(Number(orderTypeBuy ? priceStep : amountStep))
+    },
+
+    maxDecimalsTo(): number {
+      const { orderTypeBuy, priceStep, amountStep } = this
+
+      return getDecimalsFromNumber(Number(orderTypeBuy ? amountStep : priceStep))
     },
 
     executionPriceHasHighDeviationWarning(): boolean {
