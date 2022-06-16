@@ -315,7 +315,7 @@ const initialForm = (): TradeForm => ({
   price: '',
   leverage: '1',
   slippageTolerance: '0.5',
-  proportionalPercentage: 100
+  proportionalPercentage: 0
 })
 
 export default Vue.extend({
@@ -718,7 +718,15 @@ export default Vue.extend({
     },
 
     averagePriceDerivedFromQuoteAmount(): BigNumberInBase {
-      const { orderTypeBuy, sells, buys, market, quoteAmount } = this
+      const {
+        orderTypeBuy,
+        sells,
+        buys,
+        market,
+        quoteAmount,
+        availableMargin,
+        form: { proportionalPercentage }
+      } = this
 
       if (!market) {
         return ZERO_IN_BASE
@@ -726,10 +734,13 @@ export default Vue.extend({
 
       const records = orderTypeBuy ? sells : buys
 
+      const quoteAmountForAveragePrice =
+        proportionalPercentage > 0 ? availableMargin : quoteAmount
+
       const averagePrice =
         calculateAverageExecutionPriceFromFillableNotionalOnOrderBook({
           records,
-          quoteAmount,
+          quoteAmount: quoteAmountForAveragePrice,
           market
         })
 
@@ -1868,6 +1879,7 @@ export default Vue.extend({
       )
 
       this.resetQuoteAmount()
+      this.resetProportionalPercentage()
 
       if (!hasPrice) {
         this.updatePriceFromLastTradedPrice()
@@ -1878,6 +1890,47 @@ export default Vue.extend({
       }
 
       this.updateLimitQuoteAmount()
+    },
+
+    getApproxAmountPercentage() {
+      const {
+        market,
+        buys,
+        feeRate,
+        sells,
+        form,
+        orderTypeBuy,
+        position,
+        maxReduceOnly,
+        orderTypeReduceOnly,
+        availableMargin,
+        executionPrice,
+        form: { proportionalPercentage }
+      } = this
+
+      const percentageToNumber = new BigNumberInBase(
+        proportionalPercentage
+      ).div(100)
+
+      if (!market) {
+        return ''
+      }
+
+      if (orderTypeReduceOnly && position) {
+        return maxReduceOnly
+          .times(percentageToNumber)
+          .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
+      }
+
+      return getApproxAmountForMarketOrLimitOrder({
+        market,
+        margin: availableMargin,
+        leverage: form.leverage,
+        percentageToNumber: percentageToNumber.toNumber(),
+        records: orderTypeBuy ? sells : buys,
+        feeRate,
+        executionPrice
+      }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
     },
 
     onAmountChangePercentage() {
@@ -1911,6 +1964,7 @@ export default Vue.extend({
       )
 
       this.resetBaseAmount()
+      this.resetProportionalPercentage()
 
       if (tradingTypeMarket) {
         return this.updateMarketBaseAmount()
@@ -1929,6 +1983,10 @@ export default Vue.extend({
 
     resetBaseAmount() {
       this.form.amount = ''
+    },
+
+    resetProportionalPercentage() {
+      this.form.proportionalPercentage = 0
     },
 
     updatePriceFromLastTradedPrice() {
