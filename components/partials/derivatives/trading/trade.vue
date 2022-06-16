@@ -826,7 +826,6 @@ export default Vue.extend({
         sells,
         orderTypeBuy,
         feeRate,
-        tradingTypeMarket,
         form: { leverage, proportionalPercentage }
       } = this
 
@@ -1470,7 +1469,6 @@ export default Vue.extend({
         orderTypeReduceOnly,
         availableMargin,
         executionPrice,
-        tradingTypeMarket,
         form: { proportionalPercentage }
       } = this
 
