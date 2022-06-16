@@ -1,5 +1,5 @@
 <template>
-  <VHocLoading :status="status">
+  <HocLoading :status="status">
     <div v-if="isUserWalletConnected">
       <div class="flex md:grid grid-cols-12 gap-6 overflow-x-auto hide-scrollbar" @scroll="handleScroll">
         <div class="fee-discounts-statistic bg-gray-800 rounded-lg md:col-span-6 p-6">
@@ -81,7 +81,7 @@
         />
       </div>
     </div>
-  </VHocLoading>
+  </HocLoading>
 </template>
 
 <script lang="ts">

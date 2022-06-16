@@ -1,6 +1,6 @@
 <template>
   <div class="h-full w-full flex flex-wrap py-4 fee-discounts">
-    <VHocLoading :status="status">
+    <HocLoading :status="status">
       <div class="container">
         <div class="w-full mx-auto xl:w-4/5">
           <div class="my-12">
@@ -24,7 +24,7 @@
           </div>
         </div>
       </div>
-    </VHocLoading>
+    </HocLoading>
   </div>
 </template>
 

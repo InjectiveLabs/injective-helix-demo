@@ -101,7 +101,7 @@ export default Vue.extend({
           makerDiscountRate: '0',
           takerDiscountRate: '0',
           stakedAmount: '0',
-          feePaidAmount: '0'
+          volume: '0'
         },
         ...feeDiscountSchedule.tierInfosList
       ]

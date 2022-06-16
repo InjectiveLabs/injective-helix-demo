@@ -17,7 +17,7 @@
       </span>
     </td>
     <td class="h-8 text-right font-mono">
-      &#8805; {{ feePaidAmountToFormat }}
+      &#8805; {{ volumeToFormat }}
       <span class="text-2xs text-gray-500"> USD </span>
     </td>
     <td class="h-8 text-right font-mono">{{ makerFeeDiscountToFormat }}%</td>
@@ -84,22 +84,22 @@ export default Vue.extend({
       return stakedAmount.toFormat(0)
     },
 
-    feePaidAmount(): BigNumberInBase {
+    volume(): BigNumberInBase {
       const { tier } = this
 
-      if (!tier.feePaidAmount) {
+      if (!tier.volume) {
         return ZERO_IN_BASE
       }
 
       return new BigNumberInWei(
-        cosmosSdkDecToBigNumber(tier.feePaidAmount)
+        cosmosSdkDecToBigNumber(tier.volume)
       ).toBase(6 /* USDT */)
     },
 
-    feePaidAmountToFormat(): string {
-      const { feePaidAmount } = this
+    volumeToFormat(): string {
+      const { volume } = this
 
-      return feePaidAmount.toFormat(0)
+      return volume.toFormat(0)
     },
 
     makerFeeDiscount(): BigNumberInBase {
