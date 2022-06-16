@@ -135,7 +135,8 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import {
   cosmosSdkDecToBigNumber,
-  FeeDiscountAccountInfo
+  FeeDiscountAccountInfo,
+  getDecimalsFromNumber
 } from '@injectivelabs/sdk-ts'
 import { Token } from '@injectivelabs/token-metadata'
 import TokenSelector from './token-selector.vue'
