@@ -426,9 +426,15 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(balance.availableBalance || 0).toBase(
-        market.baseToken.decimals
-      )
+      const baseAvailableBalance = new BigNumberInWei(
+        balance.availableBalance || 0
+      ).toBase(market.baseToken.decimals)
+
+      if (baseAvailableBalance.isNaN()) {
+        return ZERO_IN_BASE
+      }
+
+      return baseAvailableBalance
     },
 
     quoteAvailableBalance(): BigNumberInBase {
@@ -447,9 +453,15 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(balance.availableBalance || 0).toBase(
-        market.quoteToken.decimals
-      )
+      const quoteAvailableBalance = new BigNumberInWei(
+        balance.availableBalance || 0
+      ).toBase(market.quoteToken.decimals)
+
+      if (quoteAvailableBalance.isNaN()) {
+        return ZERO_IN_BASE
+      }
+
+      return quoteAvailableBalance
     },
 
     approxAmountFromPercentage(): string {
@@ -723,6 +735,10 @@ export default Vue.extend({
           market
         })
 
+      if (averagePrice.isNaN()) {
+        return ZERO_IN_BASE
+      }
+
       return new BigNumberInBase(averagePrice.toFixed(market.priceDecimals))
     },
 
@@ -743,6 +759,10 @@ export default Vue.extend({
       const { tradingTypeMarket, averagePrice, price } = this
 
       if (tradingTypeMarket) {
+        if (averagePrice.isNaN()) {
+          return ZERO_IN_BASE
+        }
+
         return averagePrice
       }
 
@@ -1422,8 +1442,13 @@ export default Vue.extend({
     },
 
     updateQuoteForPercentageAmountSell(percentToNumber: BigNumberInBase) {
-      const { baseAvailableBalance, market, buys, executionPrice, feeRate } =
-        this
+      const {
+        baseAvailableBalance = ZERO_IN_BASE,
+        market,
+        buys,
+        executionPrice = ZERO_IN_BASE,
+        feeRate
+      } = this
 
       if (!market) {
         return
@@ -1472,7 +1497,12 @@ export default Vue.extend({
     },
 
     updateQuoteForPercentageAmountBuy(percentToNumber: BigNumberInBase) {
-      const { quoteAvailableBalance, sells, takerFeeRate, market } = this
+      const {
+        quoteAvailableBalance = ZERO_IN_BASE,
+        sells,
+        takerFeeRate,
+        market
+      } = this
 
       if (!market) {
         return
