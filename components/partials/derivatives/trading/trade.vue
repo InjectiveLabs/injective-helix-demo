@@ -1835,12 +1835,12 @@ export default Vue.extend({
 
     setPostOnly(postOnly: boolean) {
       const {
-        form: { reduceOnly }
+        form: { reduceOnly, proportionalPercentage }
       } = this
 
       this.form.postOnly = postOnly
 
-      if (!reduceOnly) {
+      if (!reduceOnly && proportionalPercentage > 0) {
         this.updateBaseAndQuoteFromPercentage()
       }
     },
