@@ -9,6 +9,10 @@ import {
   ZERO_IN_BASE,
   UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
+import {
+  formatPriceToAllowableDecimals,
+  formatAmountToAllowableDecimals
+} from '~/app/utils/formatters'
 
 export const calculateWorstExecutionPriceFromOrderbook = ({
   records,
@@ -164,7 +168,14 @@ export const calculateAverageExecutionPriceFromOrderbook = ({
     { sum: ZERO_IN_BASE, remainAmountToFill: amount }
   )
 
-  return sum.div(amount.minus(remainAmountToFill))
+  const averagePrice = sum.div(amount.minus(remainAmountToFill))
+
+  return new BigNumberInBase(
+    formatPriceToAllowableDecimals(
+      averagePrice.toNumber(),
+      market.priceDecimals
+    )
+  )
 }
 
 export const calculateAverageExecutionPriceFromFillableNotionalOnOrderBook = ({
@@ -214,7 +225,11 @@ export const calculateAverageExecutionPriceFromFillableNotionalOnOrderBook = ({
     }
   )
 
-  return sum.div(amount)
+  const averagePrice = sum.div(amount)
+
+  return new BigNumberInBase(
+    formatPriceToAllowableDecimals(averagePrice.toFixed(), market.priceDecimals)
+  )
 }
 
 export const getAggregationPrice = ({
@@ -281,18 +296,21 @@ export const getApproxAmountForSellOrder = ({
     ? totalBalance
     : totalFillableAmount
 
-  return amount.toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
+  return formatAmountToAllowableDecimals(
+    amount.toNumber(),
+    market.quantityDecimals
+  )
 }
 
-export const getApproxAmountForMarketOrLimitOrder = ({
-  records,
+export const getApproxAmountForBuyOrder = ({
+  sells,
   balance,
   market,
   percentageToNumber = 1,
   feeRate,
   executionPrice
 }: {
-  records: UiPriceLevel[]
+  sells: UiPriceLevel[]
   balance: BigNumberInBase
   percentageToNumber?: number
   market: UiSpotMarketWithToken
@@ -303,7 +321,7 @@ export const getApproxAmountForMarketOrLimitOrder = ({
   let totalQuantity = ZERO_IN_BASE
   let totalNotional = ZERO_IN_BASE
 
-  for (const record of records) {
+  for (const record of sells) {
     const price = new BigNumberInBase(record.price).toWei(
       market.baseToken.decimals - market.quoteToken.decimals
     )
@@ -319,11 +337,121 @@ export const getApproxAmountForMarketOrLimitOrder = ({
     const total = totalNotional.plus(totalFees)
 
     if (total.gt(availableBalance)) {
-      return new BigNumberInBase(balance)
+      const amount = new BigNumberInBase(balance)
         .dividedBy(executionPrice.times(feeRate.plus(1)))
         .times(percentageToNumber)
+
+      return formatAmountToAllowableDecimals(
+        amount.toNumber(),
+        market.quantityDecimals
+      )
     }
   }
 
-  return totalQuantity
+  return formatAmountToAllowableDecimals(
+    totalQuantity.toNumber(),
+    market.quantityDecimals
+  )
+}
+
+export const getQuoteForPercentageSell = ({
+  buys,
+  market,
+  baseAvailableBalance,
+  percentToNumber,
+  executionPrice,
+  feeRate
+}: {
+  buys: UiPriceLevel[]
+  market: UiSpotMarketWithToken
+  baseAvailableBalance: BigNumberInBase
+  percentToNumber: BigNumberInBase
+  executionPrice: BigNumberInBase
+  feeRate: BigNumberInBase
+}) => {
+  const { totalFillableAmount, totalNotional } = buys.reduce(
+    ({ totalFillableAmount, totalNotional }, { quantity, price }) => {
+      const orderPrice = new BigNumberInBase(price).toWei(
+        market.baseToken.decimals - market.quoteToken.decimals
+      )
+
+      const orderQuantity = new BigNumberInWei(quantity).toBase(
+        market.baseToken.decimals
+      )
+
+      return {
+        totalFillableAmount: totalFillableAmount.plus(orderQuantity),
+        totalNotional: totalNotional.plus(orderQuantity.times(orderPrice))
+      }
+    },
+    {
+      totalFillableAmount: ZERO_IN_BASE,
+      totalNotional: ZERO_IN_BASE
+    }
+  )
+
+  const baseBalance = new BigNumberInBase(baseAvailableBalance).times(
+    percentToNumber
+  )
+
+  const notionalBalance = baseBalance
+    .times(executionPrice)
+    .times(new BigNumberInBase(1).minus(feeRate))
+
+  if (baseBalance.gt(totalFillableAmount)) {
+    return formatAmountToAllowableDecimals(
+      totalNotional.toNumber(),
+      market.priceDecimals
+    )
+  }
+
+  return formatAmountToAllowableDecimals(
+    notionalBalance.toNumber(),
+    market.priceDecimals
+  )
+}
+
+export const getQuoteForPercentageBuy = ({
+  sells,
+  market,
+  quoteAvailableBalance,
+  percentToNumber,
+  takerFeeRate
+}: {
+  sells: UiPriceLevel[]
+  market: UiSpotMarketWithToken
+  quoteAvailableBalance: BigNumberInBase
+  percentToNumber: BigNumberInBase
+  takerFeeRate: BigNumberInBase
+}) => {
+  let totalNotional = ZERO_IN_BASE
+
+  for (const record of sells) {
+    const price = new BigNumberInBase(record.price).toWei(
+      market.baseToken.decimals - market.quoteToken.decimals
+    )
+
+    const quantity = new BigNumberInWei(record.quantity).toBase(
+      market.baseToken.decimals
+    )
+
+    totalNotional = totalNotional.plus(price.times(quantity))
+  }
+
+  const totalFees = totalNotional.times(takerFeeRate)
+  const total = totalNotional.plus(totalFees)
+
+  const quoteBalance = quoteAvailableBalance.times(percentToNumber)
+
+  if (total.gt(quoteBalance)) {
+    return formatAmountToAllowableDecimals(
+      quoteBalance.toNumber(),
+      market.priceDecimals
+    )
+  }
+
+  return formatAmountToAllowableDecimals(
+    totalNotional.toNumber(),
+    market.priceDecimals
+  )
 }

@@ -289,7 +289,7 @@ import {
   calculateWorstExecutionPriceFromOrderbook,
   calculateLiquidationPrice,
   calculateMargin,
-  getApproxAmountForMarketOrLimitOrder,
+  getApproxAmountFromPercentage,
   calculateAverageExecutionPriceFromFillableNotionalOnOrderBook,
   getQuoteFromPercentageQuantityNonReduceOnly
 } from '~/app/client/utils/derivatives'
@@ -1497,7 +1497,7 @@ export default Vue.extend({
           .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
       }
 
-      return getApproxAmountForMarketOrLimitOrder({
+      return getApproxAmountFromPercentage({
         market,
         margin: availableMargin,
         leverage: form.leverage,
@@ -1922,7 +1922,7 @@ export default Vue.extend({
           .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
       }
 
-      return getApproxAmountForMarketOrLimitOrder({
+      return getApproxAmountFromPercentage({
         market,
         margin: availableMargin,
         leverage: form.leverage,

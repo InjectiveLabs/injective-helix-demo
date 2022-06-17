@@ -332,7 +332,7 @@ export const calculateAverageExecutionPriceFromFillableNotionalOnOrderBook = ({
   return sum.div(amount)
 }
 
-export const getApproxAmountForMarketOrLimitOrder = ({
+export const getApproxAmountFromPercentage = ({
   records,
   margin,
   market,
@@ -351,33 +351,24 @@ export const getApproxAmountForMarketOrLimitOrder = ({
 }) => {
   const availableMargin = new BigNumberInBase(margin).times(percentageToNumber)
 
-  let totalQuantity = ZERO_IN_BASE
-  let totalNotional = ZERO_IN_BASE
-  let total = ZERO_IN_BASE
+  const { totalNotional, totalQuantity } = records.reduce(
+    ({ totalNotional, totalQuantity }, { quantity, price }) => {
+      const orderPrice = new BigNumberInBase(
+        new BigNumberInWei(price).toBase(market.quoteToken.decimals)
+      )
+      const orderQuantity = new BigNumberInBase(
+        new BigNumberInBase(quantity).dp(market.quantityDecimals)
+      )
 
-  for (const record of records) {
-    const price = new BigNumberInBase(
-      new BigNumberInWei(record.price).toBase(market.quoteToken.decimals)
-    )
-    const quantity = new BigNumberInBase(
-      new BigNumberInBase(record.quantity).dp(market.quantityDecimals)
-    )
+      return {
+        totalQuantity: totalQuantity.plus(orderQuantity),
+        totalNotional: totalNotional.plus(orderQuantity.times(orderPrice))
+      }
+    },
+    { totalNotional: ZERO_IN_BASE, totalQuantity: ZERO_IN_BASE }
+  )
 
-    totalQuantity = totalQuantity.plus(quantity)
-    totalNotional = totalQuantity.times(price)
-
-    const totalFees = new BigNumberInWei(totalNotional.times(feeRate))
-
-    const totalMargin = calculateMargin({
-      quantity: totalQuantity.toFixed(),
-      price: price.toFixed(),
-      leverage
-    })
-
-    total = totalMargin.plus(totalFees)
-  }
-
-  if (total.lt(availableMargin)) {
+  if (totalNotional.lte(availableMargin)) {
     return totalQuantity
   }
 

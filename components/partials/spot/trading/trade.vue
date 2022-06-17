@@ -278,8 +278,10 @@ import {
   calculateAverageExecutionPriceFromFillableNotionalOnOrderBook,
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook,
-  getApproxAmountForMarketOrLimitOrder,
-  getApproxAmountForSellOrder
+  getApproxAmountForBuyOrder,
+  getApproxAmountForSellOrder,
+  getQuoteForPercentageSell,
+  getQuoteForPercentageBuy
 } from '~/app/client/utils/spot'
 import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
@@ -303,7 +305,7 @@ const initialForm = (): TradeForm => ({
   price: '',
   slippageTolerance: '0.5',
   postOnly: false,
-  proportionalPercentage: 100
+  proportionalPercentage: 0
 })
 
 export default Vue.extend({
@@ -498,14 +500,14 @@ export default Vue.extend({
         })
       }
 
-      return getApproxAmountForMarketOrLimitOrder({
+      return getApproxAmountForBuyOrder({
         market,
         balance,
         percentageToNumber: percentageToNumber.toNumber(),
-        records: orderTypeBuy ? sells : buys,
+        sells,
         feeRate,
         executionPrice
-      }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
+      })
     },
 
     buys(): UiPriceLevel[] {
@@ -710,17 +712,23 @@ export default Vue.extend({
 
       const records = orderTypeBuy ? sells : buys
 
-      const averagePrice = calculateAverageExecutionPriceFromOrderbook({
+      return calculateAverageExecutionPriceFromOrderbook({
         records,
         amount,
         market
       })
-
-      return new BigNumberInBase(averagePrice.toFixed(market.priceDecimals))
     },
 
     averagePriceDerivedFromQuoteAmount(): BigNumberInBase {
-      const { orderTypeBuy, sells, buys, market, quoteAmount } = this
+      const {
+        orderTypeBuy,
+        sells,
+        buys,
+        market,
+        quoteAmount,
+        form: { proportionalPercentage },
+        quoteAvailableBalance
+      } = this
 
       if (!market) {
         return ZERO_IN_BASE
@@ -728,10 +736,13 @@ export default Vue.extend({
 
       const records = orderTypeBuy ? sells : buys
 
+      const quoteAmountForAveragePrice =
+        proportionalPercentage > 0 ? quoteAvailableBalance : quoteAmount
+
       const averagePrice =
         calculateAverageExecutionPriceFromFillableNotionalOnOrderBook({
           records,
-          quoteAmount,
+          quoteAmount: quoteAmountForAveragePrice,
           market
         })
 
@@ -739,7 +750,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(averagePrice.toFixed(market.priceDecimals))
+      return averagePrice
     },
 
     averagePrice(): BigNumberInBase {
@@ -1396,9 +1407,6 @@ export default Vue.extend({
           market.priceDecimals
         )
       }
-    },
-    postOnly() {
-      this.updateBaseAndQuoteFromPercentageAmount()
     }
   },
 
@@ -1418,16 +1426,14 @@ export default Vue.extend({
     onPercentAmountSelected(percent = 100) {
       this.form.proportionalPercentage = percent
 
-      this.updateBaseAndQuoteFromPercentageAmount()
+      this.updateBaseAndQuoteFromPercentage()
     },
 
-    updateBaseAndQuoteFromPercentageAmount() {
-      const { approxAmountFromPercentage } = this
-
-      this.onAmountChangePercentage(approxAmountFromPercentage)
+    updateBaseAndQuoteFromPercentage() {
+      this.onAmountChangePercentage()
 
       this.$nextTick(() => {
-        this.onAmountChangePercentage(approxAmountFromPercentage)
+        this.onAmountChangePercentage()
 
         this.updateQuoteAmountFromPercentage()
       })
@@ -1438,10 +1444,20 @@ export default Vue.extend({
     },
 
     setPostOnly(postOnly: boolean) {
+      const {
+        form: { proportionalPercentage }
+      } = this
+
       this.form.postOnly = postOnly
+
+      if (new BigNumberInBase(proportionalPercentage).isZero()) {
+        this.updateBaseAmount()
+      } else {
+        this.updateBaseAndQuoteFromPercentage()
+      }
     },
 
-    updateQuoteForPercentageAmountSell(percentToNumber: BigNumberInBase) {
+    updateQuoteForPercentageSell(percentToNumber: BigNumberInBase) {
       const {
         baseAvailableBalance = ZERO_IN_BASE,
         market,
@@ -1454,49 +1470,17 @@ export default Vue.extend({
         return
       }
 
-      const { totalFillableAmount, totalNotional } = buys.reduce(
-        ({ totalFillableAmount, totalNotional }, { quantity, price }) => {
-          const orderPrice = new BigNumberInBase(price).toWei(
-            market.baseToken.decimals - market.quoteToken.decimals
-          )
-
-          const orderQuantity = new BigNumberInWei(quantity).toBase(
-            market.baseToken.decimals
-          )
-
-          return {
-            totalFillableAmount: totalFillableAmount.plus(orderQuantity),
-            totalNotional: totalNotional.plus(orderQuantity.times(orderPrice))
-          }
-        },
-        {
-          totalFillableAmount: ZERO_IN_BASE,
-          totalNotional: ZERO_IN_BASE
-        }
-      )
-
-      const baseBalance = new BigNumberInBase(baseAvailableBalance).times(
-        percentToNumber
-      )
-
-      const notionalBalance = baseBalance
-        .times(executionPrice)
-        .times(new BigNumberInBase(1).minus(feeRate))
-
-      if (baseBalance.gt(totalFillableAmount)) {
-        return (this.form.quoteAmount = totalNotional.toFixed(
-          market.priceDecimals,
-          BigNumberInBase.ROUND_DOWN
-        ))
-      }
-
-      return (this.form.quoteAmount = notionalBalance.toFixed(
-        market.priceDecimals,
-        BigNumberInBase.ROUND_DOWN
-      ))
+      this.form.quoteAmount = getQuoteForPercentageSell({
+        buys,
+        market,
+        baseAvailableBalance,
+        percentToNumber,
+        executionPrice,
+        feeRate
+      })
     },
 
-    updateQuoteForPercentageAmountBuy(percentToNumber: BigNumberInBase) {
+    updateQuoteForPercentageBuy(percentToNumber: BigNumberInBase) {
       const {
         quoteAvailableBalance = ZERO_IN_BASE,
         sells,
@@ -1508,36 +1492,13 @@ export default Vue.extend({
         return
       }
 
-      let totalNotional = ZERO_IN_BASE
-
-      for (const record of sells) {
-        const price = new BigNumberInBase(record.price).toWei(
-          market.baseToken.decimals - market.quoteToken.decimals
-        )
-
-        const quantity = new BigNumberInWei(record.quantity).toBase(
-          market.baseToken.decimals
-        )
-
-        totalNotional = totalNotional.plus(price.times(quantity))
-      }
-
-      const totalFees = totalNotional.times(takerFeeRate)
-      const total = totalNotional.plus(totalFees)
-
-      const quoteBalance = quoteAvailableBalance.times(percentToNumber)
-
-      if (total.gt(quoteBalance)) {
-        return (this.form.quoteAmount = formatAmountToAllowableDecimals(
-          quoteBalance.toFixed(),
-          market.priceDecimals
-        ))
-      }
-
-      return (this.form.quoteAmount = formatAmountToAllowableDecimals(
-        totalNotional.toFixed(),
-        market.priceDecimals
-      ))
+      this.form.quoteAmount = getQuoteForPercentageBuy({
+        sells,
+        market,
+        quoteAvailableBalance,
+        percentToNumber,
+        takerFeeRate
+      })
     },
 
     updateQuoteAmountFromPercentage() {
@@ -1551,9 +1512,9 @@ export default Vue.extend({
       )
 
       if (!orderTypeBuy) {
-        this.updateQuoteForPercentageAmountSell(percentToNumber)
+        this.updateQuoteForPercentageSell(percentToNumber)
       } else {
-        this.updateQuoteForPercentageAmountBuy(percentToNumber)
+        this.updateQuoteForPercentageBuy(percentToNumber)
       }
     },
 
@@ -1641,6 +1602,7 @@ export default Vue.extend({
       )
 
       this.resetQuoteAmount()
+      this.resetProportionalPercentage()
 
       if (!hasPrice) {
         this.updatePriceFromLastTradedPrice()
@@ -1649,15 +1611,15 @@ export default Vue.extend({
       this.updateQuoteAmount()
     },
 
-    onAmountChangePercentage(amount: string = '') {
-      const { hasPrice, market } = this
+    onAmountChangePercentage() {
+      const { hasPrice, market, approxAmountFromPercentage = '' } = this
 
       if (!market) {
         return
       }
 
       this.form.amount = formatAmountToAllowableDecimals(
-        amount,
+        approxAmountFromPercentage,
         market.quantityDecimals
       )
 
@@ -1681,6 +1643,7 @@ export default Vue.extend({
       )
 
       this.resetBaseAmount()
+      this.resetProportionalPercentage()
 
       if (!hasPrice) {
         this.updatePriceFromLastTradedPrice()
@@ -1695,6 +1658,10 @@ export default Vue.extend({
 
     resetQuoteAmount() {
       this.form.quoteAmount = ''
+    },
+
+    resetProportionalPercentage() {
+      this.form.proportionalPercentage = 0
     },
 
     updateBaseAmount() {
@@ -1725,16 +1692,19 @@ export default Vue.extend({
         ? new BigNumberInBase(1).plus(feeRate)
         : new BigNumberInBase(1).minus(feeRate)
 
-      this.form.quoteAmount = amount
-        .times(executionPrice)
-        .times(feeMultiplier)
-        .toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
+      const quoteAmount = amount.times(executionPrice).times(feeMultiplier)
+
+      this.form.quoteAmount = formatAmountToAllowableDecimals(
+        quoteAmount.toNumber(),
+        market.priceDecimals
+      )
     },
 
     onTradingTypeToggle(selectedTradingType: TradeExecutionType) {
       this.tradingType = selectedTradingType
       this.resetBaseAmount()
       this.resetQuoteAmount()
+      this.resetProportionalPercentage()
     },
 
     submitLimitOrder() {
