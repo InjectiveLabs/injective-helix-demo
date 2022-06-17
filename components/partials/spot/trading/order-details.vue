@@ -112,7 +112,10 @@
         </TextInfo>
 
         <TextInfo
-          v-if="makerExpectedPts.gte(0) || takerExpectedPts.gte(0)"
+          v-if="
+            !hideExpectedPoints &&
+            (makerExpectedPts.gte(0) || takerExpectedPts.gte(0))
+          "
           :title="$t('trade.expected_points')"
           class="mt-2"
         >
@@ -255,7 +258,8 @@ export default Vue.extend({
 
   data() {
     return {
-      Icon
+      Icon,
+      hideExpectedPoints: true
     }
   },
 
