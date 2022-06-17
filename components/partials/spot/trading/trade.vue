@@ -98,7 +98,7 @@
             ref="input-amount"
             v-model="form.quoteAmount"
             :custom-handler="true"
-            :max-decimals="market ? market.quantityDecimals : 6"
+            :max-decimals="market ? market.priceDecimals : 6"
             :placeholder="amountStep"
             type="number"
             :step="amountStep"
@@ -1642,6 +1642,8 @@ export default Vue.extend({
         quoteAmount,
         market.priceDecimals
       )
+
+      console.log(this.form.quoteAmount)
 
       this.resetBaseAmount()
       this.resetProportionalPercentage()

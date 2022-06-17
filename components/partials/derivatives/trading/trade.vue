@@ -88,7 +88,7 @@
             ref="input-quoteAmount"
             v-model="form.quoteAmount"
             :custom-handler="true"
-            :max-decimals="market ? market.quantityDecimals : 6"
+            :max-decimals="market ? market.priceDecimals : 6"
             :placeholder="amountStep"
             type="number"
             :step="amountStep"
