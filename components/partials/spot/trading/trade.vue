@@ -1185,13 +1185,13 @@ export default Vue.extend({
     },
 
     total(): BigNumberInBase {
-      const { hasPrice, hasAmount, executionPrice, market } = this
+      const { hasPrice, hasAmount, executionPrice, market, amount } = this
 
       if (!hasPrice || !hasAmount || !market) {
         return ZERO_IN_BASE
       }
 
-      return executionPrice
+      return executionPrice.times(amount)
     },
 
     fees(): BigNumberInBase {
