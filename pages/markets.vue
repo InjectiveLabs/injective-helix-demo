@@ -1,10 +1,10 @@
 <template>
-  <VHocLoading :status="status" :show-loading="mappedMarkets.length === 0">
+  <HocLoading :status="status" :show-loading="mappedMarkets.length === 0">
     <div>
-      <v-overview v-if="mappedMarkets.length > 0" :markets="mappedMarkets" />
-      <v-markets :markets="mappedMarkets" />
+      <VOverview v-if="mappedMarkets.length > 0" :markets="mappedMarkets" />
+      <Markets :markets="mappedMarkets" />
     </div>
-  </VHocLoading>
+  </HocLoading>
 </template>
 
 <script lang="ts">
@@ -14,10 +14,10 @@ import {
   UiDerivativeMarketWithToken,
   UiSpotMarketSummary,
   UiSpotMarketWithToken
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-import VMarkets from '~/components/partials/markets/index.vue'
-import VOverview from '~/components/partials/markets/overview.vue'
+import Markets from '~/components/partials/markets/index.vue'
+import Overview from '~/components/partials/markets/overview.vue'
 import { UiMarketAndSummaryWithVolumeInUsd, TokenUsdPriceMap } from '~/types'
 import {
   ETH_COIN_GECKO_ID,
@@ -27,8 +27,8 @@ import {
 
 export default Vue.extend({
   components: {
-    VMarkets,
-    VOverview
+    Markets,
+    VOverview: Overview
   },
 
   data() {

@@ -26,7 +26,7 @@
         }"
         @click="setSlippageTolerance"
       />
-      <v-input
+      <VInput
         class="col-span-3"
         :value="slippageTolerance"
         :wrapper-classes="wrapperClass"
@@ -46,7 +46,7 @@
       >
         <IconWarn slot="prefix" :class="warnIconColor" />
         <span slot="addon"> % </span>
-      </v-input>
+      </VInput>
     </div>
     <div v-if="hasWarnings && !hasErrors" class="block mt-4 text-orange-500">
       <span

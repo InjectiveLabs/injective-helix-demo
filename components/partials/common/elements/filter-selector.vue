@@ -1,5 +1,5 @@
 <template>
-  <v-dropdown round hide-bottom-border>
+  <VDropdown round hide-bottom-border>
     <template slot="title">
       <div class="flex items-center justify-between bg-gray-900 flex-grow">
         <slot name="label" />
@@ -14,7 +14,7 @@
     </template>
 
     <div class="text-center cursor-pointer">
-      <selector-item
+      <SelectorItem
         v-for="(item, index) in list"
         :key="`type-selector-${index}`"
         :item="item"
@@ -22,15 +22,15 @@
         @click="handleClick"
       >
         {{ item.text }}
-      </selector-item>
+      </SelectorItem>
     </div>
-  </v-dropdown>
+  </VDropdown>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { TradeDirection } from '@injectivelabs/ts-types'
-import { TransferType } from '@injectivelabs/subaccount-consumer'
+import { TransferType } from '@injectivelabs/sdk-ts'
 import VDropdown from '~/components/elements/dropdown.vue'
 import SelectorItem from '~/components/layout/selectors/selector-item.vue'
 import { TradeSelectorType, TradeTypes } from '~/types/enums'

@@ -1,5 +1,5 @@
 <template>
-  <v-modal :is-open="isModalOpen" is-always-open sm @modal-closed="closeModal">
+  <VModal :is-open="isModalOpen" is-always-open sm @modal-closed="closeModal">
     <h3 slot="title">
       {{ $t('marketBeta.title') }}
     </h3>
@@ -11,12 +11,12 @@
       ></p>
 
       <div class="mt-6 flex items-center justify-center">
-        <v-button lg primary @click.stop="handleConfirm">
+        <VButton lg primary @click.stop="handleConfirm">
           {{ $t('marketBeta.I Understand') }}
-        </v-button>
+        </VButton>
       </div>
     </div>
-  </v-modal>
+  </VModal>
 </template>
 
 <script lang="ts">

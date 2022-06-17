@@ -1,5 +1,5 @@
 <template>
-  <v-modal :is-open="isModalOpen" sm mobile-only @modal-closed="closeModal">
+  <VModal :is-open="isModalOpen" sm mobile-only @modal-closed="closeModal">
     <div slot="header" class="flex items-center justify-between">
       <div class="flex items-center gap-3 cursor-pointer" @click="handleBack">
         <IconArrow class="w-6 h-auto" />
@@ -14,7 +14,7 @@
     <div class="flex flex-col h-full flex-grow">
       <div class="flex-grow">
         <div class="bg-gray-900 mb-2">
-          <filter-selector
+          <FilterSelector
             :type="TradeSelectorType.Type"
             :value="type"
             @click="handleTypeClick"
@@ -22,11 +22,11 @@
             <span slot="label" class="text-gray-200 capitalize">
               {{ $t('trade.type') }}
             </span>
-          </filter-selector>
+          </FilterSelector>
         </div>
 
         <div class="bg-gray-900">
-          <filter-selector
+          <FilterSelector
             :type="TradeSelectorType.Side"
             :value="side"
             @click="handleSideClick"
@@ -34,11 +34,11 @@
             <span slot="label" class="text-gray-200 capitalize">
               {{ $t('trade.side') }}
             </span>
-          </filter-selector>
+          </FilterSelector>
         </div>
       </div>
       <div class="mt-6">
-        <v-button
+        <VButton
           type="button"
           md
           text
@@ -46,10 +46,10 @@
           @click.stop="handleBack"
         >
           Back
-        </v-button>
+        </VButton>
       </div>
     </div>
-  </v-modal>
+  </VModal>
 </template>
 
 <script lang="ts">

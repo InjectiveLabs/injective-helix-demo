@@ -1,13 +1,13 @@
 <template>
   <div class="flex flex-col flex-wrap orderbook-h">
-    <v-table-head :market="market" />
+    <TableHead :market="market" />
     <div class="flex-1 w-full overflow-y-auto overflow-x-hidden rounded-b-lg">
       <ul class="list-trades w-full">
-        <v-trade
+        <Trade
           v-for="(trade, index) in trades"
           :key="`trade-${index}`"
           :trade="trade"
-        ></v-trade>
+        ></Trade>
       </ul>
     </div>
   </div>
@@ -18,14 +18,14 @@ import Vue from 'vue'
 import {
   UiDerivativeMarketWithToken,
   UiDerivativeTrade
-} from '@injectivelabs/ui-common'
-import VTrade from './trade.vue'
-import VTableHead from '~/components/partials/common/trades/table-head.vue'
+} from '@injectivelabs/sdk-ui-ts'
+import Trade from './trade.vue'
+import TableHead from '~/components/partials/common/trades/table-head.vue'
 
 export default Vue.extend({
   components: {
-    VTableHead,
-    VTrade
+    TableHead,
+    Trade
   },
 
   computed: {

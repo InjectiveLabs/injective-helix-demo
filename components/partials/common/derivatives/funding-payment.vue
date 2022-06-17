@@ -7,9 +7,9 @@
 
     <td class="h-8 text-left cursor-pointer">
       <nuxt-link class="flex items-center justify-start" :to="marketRoute">
-        <div v-if="market.baseToken.logo" class="w-6 h-6">
+        <div v-if="baseTokenLogo" class="w-6 h-6">
           <img
-            :src="market.baseToken.logo"
+            :src="baseTokenLogo"
             :alt="market.baseToken.name"
             class="min-w-full h-auto rounded-full"
           />
@@ -26,7 +26,7 @@
     </td>
 
     <td class="h-8 text-right font-mono">
-      <v-number
+      <VNumber
         v-if="total.abs().gt(UI_MINIMAL_AMOUNT)"
         data-cy="funding-payments-total-table-data"
         :class="{
@@ -40,7 +40,7 @@
         <span slot="addon" class="text-2xs text-gray-500">
           {{ market.quoteToken.symbol }}
         </span>
-      </v-number>
+      </VNumber>
       <span
         v-else
         :class="{
@@ -64,10 +64,11 @@ import {
 import { format } from 'date-fns'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 import {
+  getTokenLogoWithVendorPathPrefix,
   UiDerivativeMarketWithToken,
   ZERO_IN_BASE
-} from '@injectivelabs/ui-common'
-import { FundingPayment } from '@injectivelabs/derivatives-consumer'
+} from '@injectivelabs/sdk-ui-ts'
+import { FundingPayment } from '@injectivelabs/sdk-ts'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
@@ -140,6 +141,20 @@ export default Vue.extend({
       const marketRoute = getMarketRoute(market)
 
       return marketRoute || { name: 'markets' }
+    },
+
+    baseTokenLogo(): string {
+      const { market } = this
+
+      if (!market) {
+        return ''
+      }
+
+      if (!market.baseToken) {
+        return ''
+      }
+
+      return getTokenLogoWithVendorPathPrefix(market.baseToken.logo)
     }
   }
 })

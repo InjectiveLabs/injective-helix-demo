@@ -6,29 +6,37 @@
       >
         <div class="overflow-x-auto hide-scrollbar min-h-[48px]">
           <div class="flex lg:grid grid-cols-4 gap-4">
-            <v-card-select
+            <VCardSelect
               v-model="component"
               data-cy="activity-open-positions-panel"
               :option="components.positions"
               :status="positionLoadingStatus"
             >
-              <portal-target slot="icon" name="activity-card-position-count" data-cy="activity-open-positions-panel-count" />
+              <portal-target
+                slot="icon"
+                name="activity-card-position-count"
+                data-cy="activity-open-positions-panel-count"
+              />
               <span class="text-sm whitespace-nowrap">
                 {{ $t('activity.positions') }}
               </span>
-            </v-card-select>
-            <v-card-select
+            </VCardSelect>
+            <VCardSelect
               v-model="component"
               data-cy="activity-spot-orders-panel"
               :option="components.spot"
               :status="spotLoadingStatus"
             >
-              <portal-target slot="icon" name="activity-card-spot-count" data-cy="activity-spot-orders-panel-count" />
+              <portal-target
+                slot="icon"
+                name="activity-card-spot-count"
+                data-cy="activity-spot-orders-panel-count"
+              />
               <span class="text-sm whitespace-nowrap">
                 {{ $t('activity.spotOrders') }}
               </span>
-            </v-card-select>
-            <v-card-select
+            </VCardSelect>
+            <VCardSelect
               v-model="component"
               data-cy="activity-derivatives-orders-panel"
               :option="components.derivatives"
@@ -42,8 +50,8 @@
               <span class="text-sm whitespace-nowrap">
                 {{ $t('activity.derivativeOrders') }}
               </span>
-            </v-card-select>
-            <v-card-select
+            </VCardSelect>
+            <VCardSelect
               v-if="false"
               v-model="component"
               :option="components.rewardHistory"
@@ -51,8 +59,8 @@
               <span class="text-sm whitespace-nowrap">
                 {{ $t('activity.rewardHistory') }}
               </span>
-            </v-card-select>
-            <v-card-select
+            </VCardSelect>
+            <VCardSelect
               v-model="component"
               :option="components.funding"
               data-cy="activity-wallet-history-panel"
@@ -61,10 +69,10 @@
               <span class="text-sm whitespace-nowrap">
                 {{ $t('activity.walletHistory') }}
               </span>
-            </v-card-select>
+            </VCardSelect>
           </div>
         </div>
-        <VHocLoading :status="status">
+        <HocLoading :status="status">
           <div
             class="mt-4 pt-4 pb-8 sm:pb-0 xs:mt-6 xs:pt-6 border-t flex-grow"
           >
@@ -73,7 +81,7 @@
             <v-derivatives v-show="component === components.derivatives" />
             <v-funding v-if="component === components.funding" />
           </div>
-        </VHocLoading>
+        </HocLoading>
       </div>
     </div>
   </div>

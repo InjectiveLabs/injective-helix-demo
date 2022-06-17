@@ -12,11 +12,11 @@
         v-html="$t('maintenance_subheader')"
       ></h2>
       <div class="text-center mt-6">
-        <v-button primary lg>
+        <VButton primary lg>
           <a href="https://hub.injective.network/trade" target="_blank">{{
             $t('maintenance_button')
           }}</a>
-        </v-button>
+        </VButton>
       </div>
       <h3
         class="text-gray-500 text-md text-center"

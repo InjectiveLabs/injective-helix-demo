@@ -21,7 +21,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInWei, Status } from '@injectivelabs/utils'
-import { TokenWithBalance } from '@injectivelabs/ui-common'
+import { TokenWithBalance } from '@injectivelabs/sdk-ui-ts'
 import { Icon } from '~/types'
 
 export default Vue.extend({
@@ -124,11 +124,11 @@ export default Vue.extend({
       return new BigNumberInWei(this.allowance).gt(0) ? Unlocked : Locked
     },
 
-    indicatorStyles(): { transform: string; marginTop: string | null } {
+    indicatorStyles(): { transform: string; marginTop: string } {
       const distance = this.sm ? '1.75rem' : '2rem'
 
       return {
-        marginTop: this.sm ? '2px' : null,
+        marginTop: this.sm ? '2px' : '',
         transform: new BigNumberInWei(this.allowance).gt(0)
           ? `translateX(${distance})`
           : 'translateX(0)'

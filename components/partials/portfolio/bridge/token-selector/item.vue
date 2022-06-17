@@ -2,8 +2,8 @@
   <div class="flex items-center justify-between">
     <div class="flex items-center">
       <img
-        v-if="item.token.logo"
-        :src="item.token.logo"
+        v-if="tokenLogo"
+        :src="tokenLogo"
         :alt="item.token.name"
         class="rounded-full w-6 h-6 mr-3"
         :class="dense ? 'w-4 h-4 mr-3' : 'w-6 h-6 mr-3'"
@@ -35,7 +35,10 @@
 </template>
 <script lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { BankBalanceWithTokenAndBalance } from '@injectivelabs/ui-common'
+import {
+  BankBalanceWithTokenAndBalance,
+  getTokenLogoWithVendorPathPrefix
+} from '@injectivelabs/sdk-ui-ts'
 import Vue, { PropType } from 'vue'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
@@ -58,6 +61,16 @@ export default Vue.extend({
       return new BigNumberInBase(item.balance).toFormat(
         UI_DEFAULT_DISPLAY_DECIMALS
       )
+    },
+
+    tokenLogo(): string {
+      const { item } = this
+
+      if (!item.token) {
+        return ''
+      }
+
+      return getTokenLogoWithVendorPathPrefix(item.token.logo)
     }
   }
 })

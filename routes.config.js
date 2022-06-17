@@ -29,6 +29,7 @@ const mainnetDerivatives = [
   'btc-usdt-perp',
   'inj-usdt-perp',
   'eth-usdt-perp',
+  'osmo-usdt-perp',
   'bayc-weth-perp',
   'bnb-usdt-perp',
   'stx-usdt-perp',
@@ -43,7 +44,7 @@ const derivatives = IS_TESTNET
   : mainnetDerivatives
 
 if (NETWORK === Network.Devnet || IS_MAINNET_STAGING) {
-  derivatives.push('osmo-usdt-perp')
+  // derivatives.push()
   // spot.push('dot-usdt')
 }
 

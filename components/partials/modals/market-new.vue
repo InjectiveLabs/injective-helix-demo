@@ -1,5 +1,5 @@
 <template>
-  <v-modal :is-open="isModalOpen" has-blur-bg md @modal-closed="closeModal">
+  <VModal :is-open="isModalOpen" has-blur-bg md @modal-closed="closeModal">
     <h3 slot="title">
       {{ $t('marketNew.title') }}
     </h3>
@@ -8,7 +8,7 @@
       <p class="text-center text-sm text-gray-100" v-text="description"></p>
 
       <div class="mt-6 flex items-center justify-center">
-        <v-button lg primary @click.stop="() => {}">
+        <VButton lg primary @click.stop="() => {}">
           <a
             :href="`https://hub.injective.network/bridge/?token=${token}`"
             target="_blank"
@@ -17,14 +17,14 @@
             <span class="mr-2">{{ $t('marketNew.depositNow') }}</span>
             <IconExternalLink class="w-3 h-3" />
           </a>
-        </v-button>
+        </VButton>
       </div>
     </div>
-  </v-modal>
+  </VModal>
 </template>
 
 <script lang="ts">
-import { UiSpotMarketWithToken } from '@injectivelabs/ui-common'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import Vue from 'vue'
 import { upcomingMarkets } from '~/app/data/market'
 import { Modal } from '~/types'

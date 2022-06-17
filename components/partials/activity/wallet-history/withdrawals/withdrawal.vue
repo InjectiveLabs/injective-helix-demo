@@ -4,7 +4,9 @@
       <span
         class="text-gray-400 text-xs"
         data-cy="wallet-history-time-table-data"
-        >{{ time }}</span>
+      >
+        {{ time }}
+      </span>
     </td>
 
     <td
@@ -18,7 +20,7 @@
       <div class="flex items-center justify-start">
         <div v-if="transaction.token" class="w-6 h-6">
           <img
-            :src="transaction.token.logo"
+            :src="tokenLogo"
             :alt="transaction.token.name"
             class="min-w-full h-auto rounded-full"
           />
@@ -35,7 +37,7 @@
     </td>
 
     <td class="h-8 text-right font-mono">
-      <v-number
+      <VNumber
         :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
         :number="amount"
         :rounding-mode="BIG_NUMBER_ROUND_HALF_UP_MODE"
@@ -44,25 +46,25 @@
         <span slot="addon" class="text-2xs text-gray-500">
           {{ transaction.token.symbol }}
         </span>
-      </v-number>
+      </VNumber>
     </td>
 
     <td class="h-8 text-left font-mono">
-      <v-address
+      <VAddress
         :address="transaction.sender"
         data-cy="wallet-history-sender-table-data"
       >
         {{ formattedOrigin }}
-      </v-address>
+      </VAddress>
     </td>
 
     <td class="h-8 text-left font-mono">
-      <v-address
+      <VAddress
         :address="transaction.receiver"
         data-cy="wallet-history-receiver-table-data"
       >
         {{ formattedDestination }}
-      </v-address>
+      </VAddress>
     </td>
 
     <td class="text-right">
@@ -87,9 +89,10 @@ import {
 } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import {
+  getTokenLogoWithVendorPathPrefix,
   UiBridgeTransactionWithToken,
   ZERO_IN_BASE
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import {
   BIG_NUMBER_ROUND_HALF_UP_MODE,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
@@ -189,6 +192,12 @@ export default Vue.extend({
       }
 
       return format(transaction.timestamp, 'dd MMM HH:mm:ss')
+    },
+
+    tokenLogo(): string {
+      const { transaction } = this
+
+      return getTokenLogoWithVendorPathPrefix(transaction.token.logo)
     }
   }
 })

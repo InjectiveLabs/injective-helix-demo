@@ -1,9 +1,13 @@
 import { actionTree, getterTree } from 'typed-vuex'
-import { UiDerivativeTrade, UiSpotTrade } from '@injectivelabs/ui-common'
-import { UserDeposit } from '@injectivelabs/ui-common/dist/services/bridge/gql/types'
+import { UiDerivativeTrade, UiSpotTrade } from '@injectivelabs/sdk-ui-ts'
+import { UserDeposit } from '@injectivelabs/sdk-ts'
 import { redeem } from '~/app/services/gasRebate'
 import { backupPromiseCall } from '~/app/utils/async'
-import { bridgeService, derivativeService, spotService } from '~/app/Services'
+import {
+  apolloConsumer,
+  exchangeDerivativesApi,
+  exchangeSpotApi
+} from '~/app/Services'
 
 const initialStateFactory = () => ({
   trades: [] as Array<UiSpotTrade | UiDerivativeTrade>,
@@ -61,10 +65,10 @@ export const actions = actionTree(
         return
       }
 
-      const spotTrades = await spotService.fetchTrades({
+      const spotTrades = await exchangeSpotApi.fetchTrades({
         subaccountId: subaccount.subaccountId
       })
-      const derivativeTrades = await derivativeService.fetchTrades({
+      const derivativeTrades = await exchangeDerivativesApi.fetchTrades({
         subaccountId: subaccount.subaccountId
       })
 
@@ -78,15 +82,12 @@ export const actions = actionTree(
         return
       }
 
-      commit('setDeposits', await bridgeService.fetchPeggoUserDeposits(address))
+      commit('setDeposits', await apolloConsumer.fetchUserDeposits(address))
     },
 
     async redeem(_) {
-      const {
-        address,
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
 
       if (!address || !isUserWalletConnected) {
         return

@@ -1,5 +1,5 @@
 <template>
-  <v-modal :is-open="isModalOpen" has-blur-bg sm @modal-closed="closeModal">
+  <VModal :is-open="isModalOpen" has-blur-bg sm @modal-closed="closeModal">
     <h3 slot="title" class="text-base">
       {{ $t('marketDeprecated.title') }}
     </h3>
@@ -23,14 +23,14 @@
 
       <div class="mt-6 flex flex-col gap-4">
         <nuxt-link :to="{ name: 'markets' }" class="">
-          <v-button lg primary class="w-full" @click.stop="() => {}">
+          <VButton lg primary class="w-full" @click.stop="() => {}">
             <span class="font-semibold">
               {{ $t('marketDeprecated.exploreOtherMarkets') }}
             </span>
-          </v-button>
+          </VButton>
         </nuxt-link>
 
-        <v-button v-if="!isTerraNetwork" lg outline @click.stop="() => {}">
+        <VButton v-if="!isTerraNetwork" lg outline @click.stop="() => {}">
           <a
             :href="`https://hub.injective.network/bridge/?token=${symbol}`"
             target="_blank"
@@ -41,10 +41,10 @@
             </span>
             <IconExternalLink class="w-4 h-4" />
           </a>
-        </v-button>
+        </VButton>
       </div>
     </div>
-  </v-modal>
+  </VModal>
 </template>
 
 <script lang="ts">
@@ -52,7 +52,7 @@ import {
   BridgingNetwork,
   UiDerivativeMarketWithToken,
   UiSpotMarketWithToken
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import Vue, { PropType } from 'vue'
 import { Modal } from '~/types'
 

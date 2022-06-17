@@ -28,7 +28,7 @@ import {
   UiSpotMarketWithToken,
   UiSubaccount,
   UiSubaccountBalanceWithToken
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 
 export default Vue.extend({
   props: {

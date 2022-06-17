@@ -1,19 +1,19 @@
 <template>
   <div class="convert-container min-h-screen-excluding-header">
-    <VHocLoading :key="$route.fullPath" :status="status">
+    <HocLoading :key="$route.fullPath" :status="status">
       <div class="container">
         <div class="mx-auto h-full w-full sm:w-md flex flex-col justify-center">
           <Convert class="mt-[-56px]" @set-market="setMarket" />
         </div>
       </div>
-    </VHocLoading>
+    </HocLoading>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken } from '@injectivelabs/ui-common'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import Convert from '~/components/partials/convert/index.vue'
 import { Modal } from '~/types'
 import { ORDERBOOK_POLLING_ENABLED } from '~/app/utils/constants'

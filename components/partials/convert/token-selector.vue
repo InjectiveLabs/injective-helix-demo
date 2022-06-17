@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { Token } from '@injectivelabs/ui-common'
+import { Token } from '@injectivelabs/token-metadata'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import Select from '@/components/partials/portfolio/bridge/token-selector/select.vue'
 

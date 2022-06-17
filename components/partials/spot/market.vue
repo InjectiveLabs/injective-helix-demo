@@ -1,6 +1,6 @@
 <template>
   <div v-if="market">
-    <v-market :market="market" :summary="marketSummary" v-bind="$attrs" />
+    <Market :market="market" :summary="marketSummary" v-bind="$attrs" />
   </div>
 </template>
 
@@ -9,12 +9,12 @@ import Vue from 'vue'
 import {
   UiSpotMarketSummary,
   UiSpotMarketWithToken
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import Market from '~/components/partials/common/market/index.vue'
 
 export default Vue.extend({
   components: {
-    'v-market': Market
+    Market
   },
 
   computed: {

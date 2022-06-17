@@ -6,7 +6,7 @@
       <div class="flex items-center w-auto justify-between lg:pr-5">
         <div class="flex items-center" @click="handleTokenClick">
           <img
-            :src="market.baseToken.logo"
+            :src="baseTokenLogo"
             :alt="market.baseToken.name"
             class="w-6 h-6 mr-4"
           />
@@ -28,7 +28,7 @@
 
         <div class="w-px h-8 border-r hidden lg:block" />
 
-        <v-last-traded-price-and-change
+        <LastTradedPriceAndChange
           :market="market"
           :summary="summary"
           lg
@@ -36,7 +36,7 @@
         />
       </div>
 
-      <v-market-stats
+      <MarketStats
         :market="market"
         :summary="summary"
         class="mt-4 lg:mt-0 flex-1 overflow-x-auto col-span-2 2xl:col-span-3"
@@ -48,18 +48,19 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import {
+  getTokenLogoWithVendorPathPrefix,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiSpotMarketSummary,
   UiSpotMarketWithToken
-} from '@injectivelabs/ui-common'
-import VMarketStats from './stats.vue'
-import VLastTradedPriceAndChange from './last-traded-price-and-change.vue'
+} from '@injectivelabs/sdk-ui-ts'
+import MarketStats from './stats.vue'
+import LastTradedPriceAndChange from './last-traded-price-and-change.vue'
 
 export default Vue.extend({
   components: {
-    VLastTradedPriceAndChange,
-    VMarketStats
+    LastTradedPriceAndChange,
+    MarketStats
   },
 
   props: {
@@ -78,6 +79,22 @@ export default Vue.extend({
     expanded: {
       type: Boolean,
       default: false
+    }
+  },
+
+  computed: {
+    baseTokenLogo(): string {
+      const { market } = this
+
+      if (!market) {
+        return ''
+      }
+
+      if (!market.baseToken) {
+        return ''
+      }
+
+      return getTokenLogoWithVendorPathPrefix(market.baseToken.logo)
     }
   },
 

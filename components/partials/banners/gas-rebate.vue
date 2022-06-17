@@ -1,17 +1,10 @@
 <template>
-  <v-card v-if="!hasTrades && status.isIdle()" md>
+  <VCard v-if="!hasTrades && status.isIdle()" md>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
       <div class="flex justify-between">
         <div>
           <span
-            class="
-              text-primary-500 text-2xs
-              px-1
-              py-0.4
-              bg-primary-500 bg-opacity-10
-              rounded
-              align-top
-            "
+            class="text-primary-500 text-2xs px-1 py-0.4 bg-primary-500 bg-opacity-10 rounded align-top"
           >
             {{ $t('banners.newUser.subtitle') }}
           </span>
@@ -31,7 +24,7 @@
       </div>
 
       <div class="hidden lg:block col-span-2">
-        <v-progress-steps :steps="3" :active-step="activeStep" />
+        <ProgressSteps :steps="3" :active-step="activeStep" />
         <div class="grid grid-cols-3 mt-3 gap-8 xl:gap-12 2xl:gap-16">
           <div>
             <span class="tracking-wider uppercase text-xs">
@@ -53,7 +46,7 @@
             <span class="tracking-wider uppercase text-xs">
               {{ $t('banners.newUser.stepThree') }}
             </span>
-            <v-button
+            <VButton
               lg
               primary
               :status="status"
@@ -64,7 +57,7 @@
               <span class="font-bold" data-cy="new-user-banner-claim-button">
                 {{ $t('banners.newUser.claimRebate') }}
               </span>
-            </v-button>
+            </VButton>
           </div>
         </div>
       </div>
@@ -96,16 +89,11 @@
             key="newUserMobileThree"
             class="text-sm font-semibold max-w-xs"
           >
-            <v-button
-              lg
-              primary
-              class="block w-80"
-              :disabled="activeStep !== 3"
-            >
+            <VButton lg primary class="block w-80" :disabled="activeStep !== 3">
               <span class="font-bold">
                 {{ $t('banners.newUser.claimRebate') }}
               </span>
-            </v-button>
+            </VButton>
           </p>
         </transition>
 
@@ -117,22 +105,21 @@
         />
       </div>
     </div>
-  </v-card>
+  </VCard>
 </template>
 
 <script lang="ts">
+import { UserDeposit } from '@injectivelabs/sdk-ts'
 import {
   BankBalanceWithToken,
   SubaccountBalanceWithToken,
-  Token,
   UiDerivativeMarketWithToken,
   UiDerivativeTrade,
   UiSpotMarketWithToken,
   UiSpotTrade,
   ZERO_IN_BASE
-} from '@injectivelabs/ui-common'
-import { UserDeposit } from '@injectivelabs/ui-common/dist/services/bridge/gql/types'
-
+} from '@injectivelabs/sdk-ui-ts'
+import { Token } from '@injectivelabs/token-metadata'
 import {
   BigNumberInBase,
   BigNumberInWei,

@@ -1,20 +1,20 @@
 <template>
   <div>
-    <v-table-head :market="market" />
-    <v-orderbook :aggregation="$attrs.aggregation" />
+    <TableHead :market="market" />
+    <Orderbook :aggregation="$attrs.aggregation" />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { UiSpotMarketWithToken } from '@injectivelabs/ui-common'
-import OrderBook from './order-book.vue'
-import VTableHead from '~/components/partials/common/orderbook/table-head.vue'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import Orderbook from './order-book.vue'
+import TableHead from '~/components/partials/common/orderbook/table-head.vue'
 
 export default Vue.extend({
   components: {
-    'v-orderbook': OrderBook,
-    VTableHead
+    Orderbook,
+    TableHead
   },
 
   computed: {

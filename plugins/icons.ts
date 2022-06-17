@@ -60,6 +60,7 @@ import Crown from '~/components/icons/crown.vue'
 import Youtube from '~/components/icons/youtube.vue'
 import YoutubeCircle from '~/components/icons/youtube-circle.vue'
 import MenuAlt from '~/components/icons/menu-alt.vue'
+import WalletConnect from '~/components/icons/wallet-connect.vue'
 import Cogwheel from '~/components/icons/cogwheel.vue'
 import Warn from '~/components/icons/warn.vue'
 
@@ -121,6 +122,7 @@ Vue.component('IconTwitter', Twitter)
 Vue.component('IconTwitterCircle', TwitterCircle)
 Vue.component('IconUser', User)
 Vue.component('IconWallet', Wallet)
+Vue.component('IconWalletConnect', WalletConnect)
 Vue.component('IconYoutube', Youtube)
 Vue.component('IconYoutubeCircle', YoutubeCircle)
 Vue.component('IconCogwheel', Cogwheel)

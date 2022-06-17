@@ -26,7 +26,7 @@
           'text-red-500': !recordTypeBuy
         }"
       >
-        <v-number
+        <VNumber
           :prefix="
             aggregatedValue.gt(record.aggregatedPrice || 0) && recordTypeBuy
               ? '<'
@@ -51,7 +51,7 @@
           'text-aqua-500': quantityChange === Change.Increase
         }"
       >
-        <v-number
+        <VNumber
           :decimals="
             market
               ? market.quantityDecimals
@@ -67,7 +67,7 @@
       class="w-1/3 text-xs px-2 z-10 font-mono text-right"
       @click.stop="onTotalNotionalClick"
     >
-      <v-number
+      <VNumber
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
@@ -90,9 +90,9 @@ import {
   Change,
   UiOrderbookPriceLevel,
   ZERO_IN_BASE,
-  UiSpotMarketWithToken
-} from '@injectivelabs/ui-common'
-import { SpotOrderSide } from '@injectivelabs/spot-consumer'
+  UiSpotMarketWithToken,
+  SpotOrderSide
+} from '@injectivelabs/sdk-ui-ts'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS

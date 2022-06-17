@@ -1,5 +1,5 @@
 <template>
-  <v-panel>
+  <VPanel>
     <div
       v-if="pendingRewardsStartTimestamp > 0"
       class="text-right text-sm mb-4"
@@ -7,16 +7,16 @@
       {{ $t('tradeAndEarn.campaignAsOf', { date: pendingRewardsCountdown }) }}
     </div>
     <div class="grid grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
-      <v-item class="col-span-2 lg:col-span-4">
+      <VItem class="col-span-2 lg:col-span-4">
         <template slot="value">
-          <v-emp-number
+          <VEmpNumber
             :number="injMaxPendingCampaignRewards"
             :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
           >
             <span>INJ</span>
-          </v-emp-number>
+          </VEmpNumber>
 
-          <v-emp-number
+          <VEmpNumber
             sm
             class="text-gray-400"
             prefix="≈"
@@ -24,7 +24,7 @@
             :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
           >
             <span class="text-3xs">USD</span>
-          </v-emp-number>
+          </VEmpNumber>
         </template>
         <template slot="title">
           <div class="flex items-center justify-center">
@@ -35,20 +35,20 @@
             />
           </div>
         </template>
-      </v-item>
-      <v-item class="col-span-2 lg:col-span-4">
+      </VItem>
+      <VItem class="col-span-2 lg:col-span-4">
         <template slot="value">
           <div
             v-if="isUserWalletConnected"
             class="flex flex-wrap justify-center"
           >
-            <v-emp-number :number="pendingTradeRewardPointsFactored">
+            <VEmpNumber :number="pendingTradeRewardPointsFactored">
               <span>{{ $t('pts') }}</span>
-            </v-emp-number>
+            </VEmpNumber>
             <span class="px-2">/</span>
-            <v-emp-number :number="totalPendingTradeRewardPointsFactored">
+            <VEmpNumber :number="totalPendingTradeRewardPointsFactored">
               <span>{{ $t('pts') }}</span>
-            </v-emp-number>
+            </VEmpNumber>
           </div>
           <span v-else>&mdash;</span>
         </template>
@@ -61,18 +61,18 @@
             />
           </div>
         </template>
-      </v-item>
-      <v-item class="col-span-2 lg:col-span-4">
+      </VItem>
+      <VItem class="col-span-2 lg:col-span-4">
         <template slot="value">
-          <v-emp-number
+          <VEmpNumber
             v-if="isUserWalletConnected"
             :number="pendingEstimatedRewardsCapped"
             :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
           >
             <span>INJ</span>
-          </v-emp-number>
+          </VEmpNumber>
           <span v-else>&mdash;</span>
-          <v-emp-number
+          <VEmpNumber
             v-if="isUserWalletConnected"
             sm
             class="text-gray-400"
@@ -81,7 +81,7 @@
             :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
           >
             <span class="text-3xs">USD</span>
-          </v-emp-number>
+          </VEmpNumber>
         </template>
         <template
           v-if="
@@ -120,27 +120,28 @@
             />
           </div>
         </template>
-      </v-item>
+      </VItem>
     </div>
-  </v-panel>
+  </VPanel>
 </template>
 
 <script lang="ts">
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import Vue, { PropType } from 'vue'
-import { ZERO_IN_BASE, cosmosSdkDecToBigNumber } from '@injectivelabs/ui-common'
-import { CampaignRewardPool } from '@injectivelabs/chain-consumer'
+import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import {
+  CampaignRewardPool,
+  cosmosSdkDecToBigNumber,
+  ExchangeParams,
+  FeeDiscountAccountInfo
+} from '@injectivelabs/sdk-ts'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
 } from '~/app/utils/constants'
 import VItem from '~/components/partials/common/stats/item.vue'
-import {
-  FeeDiscountAccountInfo,
-  TradingRewardsCampaign,
-  ExchangeParams
-} from '~/app/services/exchange'
+import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 
 export default Vue.extend({
   components: {

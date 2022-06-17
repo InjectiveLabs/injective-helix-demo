@@ -1,7 +1,11 @@
 import { actionTree, mutationTree } from 'typed-vuex'
 import { AccountAddress } from '@injectivelabs/ts-types'
 import { RefereeInfo, ReferrerInfo } from '@injectivelabs/referral-consumer'
-import { referralService } from '~/app/Services'
+import {
+  getFeeRecipient,
+  getReferralInfo,
+  refer
+} from '~/app/services/referrals'
 
 const initialStateFactory = () => ({
   feeRecipient: undefined as AccountAddress | undefined,
@@ -44,10 +48,8 @@ export const actions = actionTree(
   { state, mutations },
   {
     async init(_) {
-      const {
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
 
       if (!isUserWalletConnected || !injectiveAddress) {
         return
@@ -58,10 +60,7 @@ export const actions = actionTree(
     },
 
     async getRefereeInfo({ commit }, address: AccountAddress) {
-      const {
-        refereeInfo,
-        referrerInfo
-      } = await referralService.getReferralInfo(address)
+      const { refereeInfo, referrerInfo } = await getReferralInfo(address)
 
       if (refereeInfo) {
         commit('setRefereeInfo', refereeInfo)
@@ -73,20 +72,18 @@ export const actions = actionTree(
     },
 
     async getFeeRecipient({ commit }, address: AccountAddress) {
-      commit('setFeeRecipient', await referralService.getFeeRecipient(address))
+      commit('setFeeRecipient', await getFeeRecipient(address))
     },
 
     async refer(_, code: string) {
-      const {
-        injectiveAddress,
-        isUserWalletConnected
-      } = this.app.$accessor.wallet
+      const { injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
 
       if (!isUserWalletConnected || !injectiveAddress) {
         return
       }
 
-      await referralService.refer({ address: injectiveAddress, code })
+      await refer({ address: injectiveAddress, code })
 
       await this.app.$accessor.referral.getFeeRecipient(injectiveAddress)
       await this.app.$accessor.referral.getRefereeInfo(injectiveAddress)

@@ -1,5 +1,5 @@
 <template>
-  <v-modal
+  <VModal
     :is-open="isModalOpen"
     sm
     data-cy="transfer-confirm-modal"
@@ -18,8 +18,8 @@
 
           <div v-if="form.token" class="text-center mt-6 mb-10">
             <img
-              v-if="form.token.logo"
-              :src="form.token.logo"
+              v-if="tokenLogo"
+              :src="tokenLogo"
               :alt="form.token.name"
               class="rounded-full w-10 h-10 mx-auto"
             />
@@ -46,7 +46,7 @@
             v-if="originNetworkMeta && destinationNetworkMeta"
             class="flex justify-between items-center mt-6"
           >
-            <v-network-card-base
+            <NetworkCardBase
               class="w-1/2"
               data-cy="transfer-confirm-modal-from-text-content"
               :hide-icon="
@@ -56,21 +56,12 @@
             />
 
             <div
-              class="
-                bg-primary-500
-                min-w-6
-                h-6
-                mx-6
-                flex
-                items-center
-                justify-center
-                rounded-full
-              "
+              class="bg-primary-500 min-w-6 h-6 mx-6 flex items-center justify-center rounded-full"
             >
               <IconArrow class="text-gray-1000 w-4 h-4 rotate-180" />
             </div>
 
-            <v-network-card-base
+            <NetworkCardBase
               class="w-1/2"
               data-cy="transfer-confirm-modal-to-text-content"
               :hide-icon="
@@ -82,26 +73,26 @@
 
           <div v-if="origin === BridgingNetwork.Injective" class="mt-6">
             <!-- Amount -->
-            <v-confirm-amount-row class="mb-2">
+            <ConfirmAmountRow class="mb-2">
               <template slot="title">
                 {{ $t('bridge.amount') }}
               </template>
 
               <template slot="amount">
-                <span
-data-cy="transfer-confirm-modal-amount-text-content"
->{{ amountToString }} {{ form.token.symbol }}</span>
+                <span data-cy="transfer-confirm-modal-amount-text-content">
+                  {{ amountToString }} {{ form.token.symbol }}
+                </span>
               </template>
 
               <template slot="amountInUsd">
-                <span
-data-cy="transfer-confirm-modal-amount-usd-text-content"
->${{ amountInUsdToString }}</span>
+                <span data-cy="transfer-confirm-modal-amount-usd-text-content">
+                  ${{ amountInUsdToString }}
+                </span>
               </template>
-            </v-confirm-amount-row>
+            </ConfirmAmountRow>
 
             <!-- Bridge Fee -->
-            <v-confirm-amount-row
+            <ConfirmAmountRow
               v-if="destination === BridgingNetwork.Ethereum"
               class="mb-2"
             >
@@ -119,15 +110,17 @@ data-cy="transfer-confirm-modal-amount-usd-text-content"
               <template slot="amountInUsd">
                 <span
                   data-cy="transfer-confirm-modal-bridge-fee-usd-text-content"
-                  >${{ ethBridgeFeeInUsdToString }}</span>
+                >
+                  ${{ ethBridgeFeeInUsdToString }}
+                </span>
               </template>
-            </v-confirm-amount-row>
+            </ConfirmAmountRow>
           </div>
 
           <div class="border-t border-gray-700 mt-4 pt-4" />
 
           <div v-if="origin === BridgingNetwork.Injective">
-            <v-confirm-amount-row class="mb-2" bold>
+            <ConfirmAmountRow class="mb-2" bold>
               <template slot="title">
                 {{ $t('bridge.transferAmount') }}
               </template>
@@ -135,37 +128,41 @@ data-cy="transfer-confirm-modal-amount-usd-text-content"
               <template slot="amount">
                 <span
                   data-cy="transfer-confirm-modal-transfer-amount-text-content"
-                  >{{ transferAmountToString }} {{ form.token.symbol }}</span>
+                >
+                  {{ transferAmountToString }} {{ form.token.symbol }}
+                </span>
               </template>
 
               <template slot="amountInUsd">
                 <span
                   data-cy="transfer-confirm-modal-transfer-amount-usd-text-content"
-                  >${{ transferAmountInUsdToString }}</span>
+                >
+                  ${{ transferAmountInUsdToString }}
+                </span>
               </template>
-            </v-confirm-amount-row>
+            </ConfirmAmountRow>
 
-            <v-confirm-amount-row bold class="mb-10">
+            <ConfirmAmountRow bold class="mb-10">
               <template slot="title">
                 {{ $t('bridge.gasFee') }}
               </template>
 
               <template slot="amount">
-                <span
-data-cy="transfer-confirm-modal-gas-fee-text-content"
->{{ gasFeeToString }} {{ injToken.symbol }}</span>
+                <span data-cy="transfer-confirm-modal-gas-fee-text-content">
+                  {{ gasFeeToString }} {{ injToken.symbol }}
+                </span>
               </template>
 
               <template slot="amountInUsd">
-                <span
-data-cy="transfer-confirm-modal-gas-fee-usd-text-content"
->${{ gasFeeInUsdToString }}</span>
+                <span data-cy="transfer-confirm-modal-gas-fee-usd-text-content">
+                  ${{ gasFeeInUsdToString }}
+                </span>
               </template>
-            </v-confirm-amount-row>
+            </ConfirmAmountRow>
           </div>
 
           <div class="text-center mt-6">
-            <v-button
+            <VButton
               lg
               primary
               class="w-full xs:w-2/3 font-bold"
@@ -175,14 +172,14 @@ data-cy="transfer-confirm-modal-gas-fee-usd-text-content"
               @click="handlerFunction"
             >
               {{ buttonConfirmationText }}
-            </v-button>
+            </VButton>
           </div>
         </div>
-        <v-ibc-transfer-note v-else />
+        <IbcTransferNote v-else />
       </div>
-      <v-user-wallet-connect-warning v-else />
+      <UserWalletConnectWarning v-else />
     </div>
-  </v-modal>
+  </VModal>
 </template>
 
 <script lang="ts">
@@ -193,16 +190,17 @@ import {
   INJ_DENOM,
   BridgingNetwork,
   NetworkMeta,
-  Token,
   ZERO_IN_BASE,
   TokenWithUsdPrice,
   BankBalances,
-  TokenWithBalanceAndPrice
-} from '@injectivelabs/ui-common'
+  TokenWithBalanceAndPrice,
+  getTokenLogoWithVendorPathPrefix
+} from '@injectivelabs/sdk-ui-ts'
+import { Token } from '@injectivelabs/token-metadata'
 import { Modal, TransferDirection, BridgeType } from '~/types/enums'
-import VNetworkCardBase from '~/components/partials/portfolio/bridge/network-card/index.vue'
-import VIbcTransferNote from '~/components/partials/portfolio/bridge/ibc-transfer-note.vue'
-import VConfirmAmountRow from '~/components/partials/portfolio/bridge/confirm-amount-row.vue'
+import NetworkCardBase from '~/components/partials/portfolio/bridge/network-card/index.vue'
+import IbcTransferNote from '~/components/partials/portfolio/bridge/ibc-transfer-note.vue'
+import ConfirmAmountRow from '~/components/partials/portfolio/bridge/confirm-amount-row.vue'
 import { networksMeta, transferSideMeta } from '~/app/data/bridge'
 import { TransferSide } from '~/types'
 import { injToken } from '~/app/data/token'
@@ -214,9 +212,9 @@ import {
 
 export default Vue.extend({
   components: {
-    VIbcTransferNote,
-    VNetworkCardBase,
-    VConfirmAmountRow
+    IbcTransferNote,
+    NetworkCardBase,
+    ConfirmAmountRow
   },
 
   props: {
@@ -583,6 +581,16 @@ export default Vue.extend({
 
     isModalOpen(): boolean {
       return this.$accessor.modal.modals[Modal.BridgeConfirm]
+    },
+
+    tokenLogo(): string {
+      const { form } = this
+
+      if (!form.token) {
+        return ''
+      }
+
+      return getTokenLogoWithVendorPathPrefix(form.token.logo)
     }
   },
 

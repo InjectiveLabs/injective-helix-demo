@@ -3,7 +3,7 @@
     <p class="mb-4">
       {{ $t('bridge.setAllowanceFor', { asset: tokenWithBalance.symbol }) }}
     </p>
-    <v-button
+    <VButton
       lg
       primary
       :status="status"
@@ -12,14 +12,14 @@
       @click.stop="handleClickOnSetAllowance"
     >
       {{ $t('bridge.setAllowance') }}
-    </v-button>
+    </VButton>
   </div>
 </template>
 
 <script lang="ts">
 import { Status } from '@injectivelabs/utils'
 import Vue, { PropType } from 'vue'
-import { TokenWithBalance } from '@injectivelabs/ui-common'
+import { TokenWithBalance } from '@injectivelabs/sdk-ui-ts'
 
 export default Vue.extend({
   props: {

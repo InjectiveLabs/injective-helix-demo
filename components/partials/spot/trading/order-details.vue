@@ -1,12 +1,12 @@
 <template>
   <div v-if="market" class="mt-6 py-6 border-t relative">
-    <v-drawer
+    <VDrawer
       :custom-handler="true"
       :custom-is-open="detailsDrawerOpen"
       @drawer-toggle="onDrawerToggle"
     >
       <p slot="header" class="flex justify-between text-sm">
-        <v-text-info :title="$t('trade.total')" lg>
+        <TextInfo :title="$t('trade.total')" lg>
           <span class="font-mono flex items-start break-all">
             <span class="mr-1">≈</span>
             {{ extractedTotalToFormat }}
@@ -14,11 +14,11 @@
               {{ market.quoteToken.symbol }}
             </span>
           </span>
-        </v-text-info>
+        </TextInfo>
       </p>
 
       <div class="mt-4">
-        <v-text-info :title="$t('trade.amount')">
+        <TextInfo :title="$t('trade.amount')">
           <span
             v-if="!amount.isNaN()"
             class="font-mono flex items-start break-all"
@@ -29,9 +29,9 @@
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </v-text-info>
+        </TextInfo>
 
-        <v-text-info :title="$t('trade.price')" class="mt-2">
+        <TextInfo :title="$t('trade.price')" class="mt-2">
           <span v-if="price.gt(0)" class="font-mono flex items-start break-all">
             {{ priceToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
@@ -39,9 +39,9 @@
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </v-text-info>
+        </TextInfo>
 
-        <v-text-info :title="$t('trade.maker_taker_rate')" class="mt-2">
+        <TextInfo :title="$t('trade.maker_taker_rate')" class="mt-2">
           <IconInfoTooltip
             slot="context"
             class="ml-2"
@@ -50,9 +50,9 @@
           <span class="font-mono flex items-center">
             {{ `${makerFeeRateToFormat}%/${takerFeeRateToFormat}%` }}
           </span>
-        </v-text-info>
+        </TextInfo>
 
-        <v-text-info
+        <TextInfo
           v-if="!orderTypeBuy"
           :title="$t('trade.est_receiving_amount')"
           class="mt-2"
@@ -72,9 +72,9 @@
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </v-text-info>
+        </TextInfo>
 
-        <v-text-info :title="$t('trade.fee')" class="mt-2">
+        <TextInfo :title="$t('trade.fee')" class="mt-2">
           <div slot="context">
             <div class="flex items-start">
               <IconInfoTooltip
@@ -120,9 +120,9 @@
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </v-text-info>
+        </TextInfo>
 
-        <v-text-info
+        <TextInfo
           v-if="marketHasNegativeMakerFee"
           :title="$t('trade.est_fee_rebate')"
           class="mt-2"
@@ -143,9 +143,9 @@
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </v-text-info>
+        </TextInfo>
 
-        <v-text-info
+        <!-- <TextInfo
           v-if="makerExpectedPts.gte(0) || takerExpectedPts.gte(0)"
           :title="$t('trade.expected_points')"
           class="mt-2"
@@ -161,17 +161,20 @@
               {{ $t('pts') }}
             </span>
           </span>
-        </v-text-info>
+        </TextInfo> -->
       </div>
-    </v-drawer>
+    </VDrawer>
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/ui-common'
-import { SpotOrderSide } from '@injectivelabs/spot-consumer'
+import {
+  UiSpotMarketWithToken,
+  ZERO_IN_BASE,
+  SpotOrderSide
+} from '@injectivelabs/sdk-ui-ts'
 import Drawer from '~/components/elements/drawer.vue'
 import { Icon } from '~/types'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
@@ -179,7 +182,7 @@ import { getDecimalsFromNumber } from '~/app/utils/helpers'
 
 export default Vue.extend({
   components: {
-    'v-drawer': Drawer
+    VDrawer: Drawer
   },
 
   props: {

@@ -2,21 +2,21 @@
   <div class="bg-gray-800 rounded-xl py-8">
     <div class="px-8 w-full">
       <!-- <div class="flex items-center justify-center">
-        <v-button
+        <VButton
           class="text-center rounded-3xl focus:outline-none px-2 py-1 text-xs font-bold tracking-wide text-primary-500 hover:text-primary-600"
           :class="{ 'text-gray-500': !tradingTypeMarket }"
           @click.stop="onTradingTypeToggle(TradeExecutionType.Market)"
         >
           {{ $t('trade.market') }}
-        </v-button>
+        </VButton>
         <div class="mx-2 w-px h-4 bg-gray-500"></div>
-        <v-button
+        <VButton
           class="text-center rounded-3xl focus:outline-none px-2 py-1 text-xs font-bold tracking-wide text-primary-500 hover:text-primary-600"
           :class="{ 'text-gray-500': tradingTypeMarket }"
           @click.stop="onTradingTypeToggle(TradeExecutionType.LimitFill)"
         >
           {{ $t('trade.limit') }}
-        </v-button>
+        </VButton>
       </div> -->
       <div class="flex items-center justify-between mb-8">
         <span class="font-bold text-lg">
@@ -65,13 +65,14 @@
           :prefix="orderTypeBuy ? '&asymp;' : null"
           :usd-price="fromUsdPrice"
           :step="orderTypeBuy ? priceStep : amountStep"
+          :max-decimals="maxDecimalsFrom"
           @input:amount="onSetAmount"
           @input:token="onSetFromToken"
           @input:max="onMaxInput"
         />
         <div class="flex justify-between items-center -my-2">
           <!-- <div v-if="!tradingTypeMarket" class="w-full -mt-2">
-            <v-input
+            <VInput
               ref="input-price"
               v-model="form.price"
               :placeholder="priceStep"
@@ -88,7 +89,7 @@
               <template slot="addon">
                 <span class="text-2xs md:text-xs font-semibold uppercase tracking-wider text-gray-500">{{ $t('trade.convert.rate') }}</span>
               </template>
-            </v-input>
+            </VInput>
           </div> -->
           <button
             type="button"
@@ -111,6 +112,7 @@
           :prefix="orderTypeBuy ? null : '≈'"
           :validation-rules="'positiveNumber'"
           :step="orderTypeBuy ? amountStep : priceStep"
+          :max-decimals="maxDecimalsTo"
           disable-max-selector
           @input:amount="onSetToAmount"
           @input:token="onSetToToken"
@@ -132,7 +134,7 @@
         :calculate-execution-price-for-amount="calculateExecutionPriceForAmount"
       />
       <div class="mt-6">
-        <v-button
+        <VButton
           v-if="isUserWalletConnected"
           lg
           :status="status"
@@ -144,8 +146,8 @@
           @click.stop="onSubmit"
         >
           {{ ctaButtonLabel }}
-        </v-button>
-        <v-button
+        </VButton>
+        <VButton
           v-else
           lg
           :status="status"
@@ -155,7 +157,7 @@
           @click.stop="handleClickOrConnect"
         >
           {{ $t('trade.convert.connect_wallet') }}
-        </v-button>
+        </VButton>
       </div>
       <span
         v-if="executionPriceHasHighDeviationWarning"
@@ -182,7 +184,6 @@ import { TradeError } from 'types/errors'
 import { BigNumberInWei, Status, BigNumberInBase } from '@injectivelabs/utils'
 import { TradeExecutionType, Wallet } from '@injectivelabs/ts-types'
 import {
-  cosmosSdkDecToBigNumber,
   NUMBER_REGEX,
   ZERO_IN_BASE,
   UiPriceLevel,
@@ -190,11 +191,14 @@ import {
   UiSpotOrderbook,
   UiSubaccount,
   BankBalanceWithTokenAndBalance,
-  Token,
-  getDecimalsFromNumber
-} from '@injectivelabs/ui-common'
-
-import { SpotOrderSide } from '@injectivelabs/spot-consumer'
+  SpotOrderSide
+} from '@injectivelabs/sdk-ui-ts'
+import {
+  cosmosSdkDecToBigNumber,
+  getDecimalsFromNumber,
+  FeeDiscountAccountInfo
+} from '@injectivelabs/sdk-ts'
+import { Token } from '@injectivelabs/token-metadata'
 import TokenSelector from './token-selector.vue'
 import AdvancedSettings from './advanced-settings.vue'
 import ConvertDetails from './convert-details.vue'
@@ -216,11 +220,8 @@ import {
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceUsingQuoteAmountAndOrderbook
-} from '~/app/services/spot'
-import {
-  FeeDiscountAccountInfo,
-  TradingRewardsCampaign
-} from '~/app/services/exchange'
+} from '~/app/client/utils/spot'
+import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 
 interface TradeForm {
   amount: string
@@ -779,6 +780,18 @@ export default Vue.extend({
       }
 
       return '1'
+    },
+
+    maxDecimalsFrom(): number {
+      const { orderTypeBuy, priceStep, amountStep } = this
+
+      return getDecimalsFromNumber(Number(orderTypeBuy ? priceStep : amountStep))
+    },
+
+    maxDecimalsTo(): number {
+      const { orderTypeBuy, priceStep, amountStep } = this
+
+      return getDecimalsFromNumber(Number(orderTypeBuy ? amountStep : priceStep))
     },
 
     executionPriceHasHighDeviationWarning(): boolean {

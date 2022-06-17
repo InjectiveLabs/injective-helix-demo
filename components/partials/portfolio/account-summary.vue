@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div class="flex items-center cursor-pointer" data-cy="account-summary-toggle-icon" @click="toggleHideBalance">
+    <div
+      class="flex items-center cursor-pointer"
+      data-cy="account-summary-toggle-icon"
+      @click="toggleHideBalance"
+    >
       <h4 class="text-sm uppercase text-gray-400">
         {{ $t('portfolio.accountSummary') }}
       </h4>
@@ -15,7 +19,10 @@
       <div
         class="flex tracking-wide items-end flex-wrap justify-center sm:justify-start"
       >
-        <h2 class="text-white text-2xl sm:text-3xl xl:text-4xl mr-4" data-cy="account-summary-usd-text-content-parent">
+        <h2
+          class="text-white text-2xl sm:text-3xl xl:text-4xl mr-4"
+          data-cy="account-summary-usd-text-content-parent"
+        >
           <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }} </span>
           <span v-else-if="status.isLoading()">&mdash; USD </span>
           <span v-else data-cy="account-summary-usd-text-content">
@@ -33,7 +40,7 @@
         </span>
       </div>
       <div v-if="status.isNotLoading()" class="flex items-center mt-4 lg:mt-0">
-        <v-button
+        <VButton
           outline
           md
           class="mr-6"
@@ -41,8 +48,8 @@
           @click="handleDepositClick"
         >
           <span class="text-primary-500">{{ $t('common.deposit') }}</span>
-        </v-button>
-        <v-button
+        </VButton>
+        <VButton
           outline
           md
           class="mr-4"
@@ -50,15 +57,15 @@
           @click="handleWithdrawClick"
         >
           <span class="text-primary-500">{{ $t('common.withdraw') }}</span>
-        </v-button>
-        <v-button
+        </VButton>
+        <VButton
           outline
           md
           data-cy="account-summary-transfer-button"
           @click="handleTransferClick"
         >
           <span class="text-primary-500">{{ $t('common.transfer') }}</span>
-        </v-button>
+        </VButton>
       </div>
     </div>
   </div>
@@ -67,8 +74,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Status, BigNumberInBase } from '@injectivelabs/utils'
-
-import { ZERO_IN_BASE } from '@injectivelabs/ui-common'
+import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
   HIDDEN_BALANCE_DISPLAY,
   UI_MINIMAL_AMOUNT,

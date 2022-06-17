@@ -5,23 +5,23 @@
       :show-empty="filteredOrders.length === 0"
       class="sm:hidden max-h-lg overflow-y-auto"
     >
-      <mobile-order
+      <MobileOrder
         v-for="(order, index) in filteredOrders"
         :key="`mobile-order-${index}-${order.orderHash}`"
         class="col-span-1"
         :order="order"
       />
 
-      <v-empty-list
+      <EmptyList
         slot="empty"
         :message="$t('trade.emptyOrders')"
         class="min-h-orders"
       />
     </TableBody>
 
-    <v-table-wrapper class="hidden sm:block">
+    <TableWrapper class="hidden sm:block">
       <table v-if="filteredOrders.length > 0" class="table">
-        <orders-table-header />
+        <OrdersTableHeader />
         <tbody>
           <tr
             is="v-order"
@@ -31,8 +31,8 @@
           ></tr>
         </tbody>
       </table>
-      <v-empty-list v-else :message="$t('trade.emptyOrders')" />
-    </v-table-wrapper>
+      <EmptyList v-else :message="$t('trade.emptyOrders')" />
+    </TableWrapper>
   </div>
 </template>
 
@@ -41,7 +41,7 @@ import Vue from 'vue'
 import {
   UiSpotLimitOrder,
   UiSpotMarketWithToken
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import MobileOrder from '~/components/partials/common/spot/mobile-order.vue'
 import Order from '~/components/partials/common/spot/order.vue'
 import OrdersTableHeader from '~/components/partials/common/spot/orders-table-header.vue'

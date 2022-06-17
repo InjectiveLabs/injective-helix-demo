@@ -9,9 +9,9 @@
     </span>
     <span class="xl:col-span-2">
       <div class="flex items-center justify-end xl:justify-start">
-        <div v-if="balance.token.logo" class="w-6 h-6">
+        <div v-if="tokenLogo" class="w-6 h-6">
           <img
-            :src="balance.token.logo"
+            :src="tokenLogo"
             :alt="balance.token.name"
             class="min-w-full h-auto rounded-full"
           />
@@ -47,10 +47,7 @@
         {{ HIDDEN_BALANCE_DISPLAY }}
       </span>
       <span v-else class="flex items-end justify-end flex-col">
-        <span
-          class="leading-4"
-          data-cy="wallet-balance-value-usd-table-data"
-        >
+        <span class="leading-4" data-cy="wallet-balance-value-usd-table-data">
           {{ totalInUsdToString }} USD
         </span>
         <span
@@ -76,7 +73,9 @@
         class="cursor-pointer ml-6"
         data-cy="wallet-balance-withdraw-link"
         @click="handleWithdrawClick"
-        >{{ $t('common.withdraw') }}</span>
+      >
+        {{ $t('common.withdraw') }}
+      </span>
       <span
         class="cursor-pointer ml-6"
         data-cy="wallet-balance-transfer-link"
@@ -94,8 +93,9 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   INJECTIVE_DENOM,
   ZERO_IN_BASE,
-  BankBalanceWithTokenAndBalanceWithUsdBalance
-} from '@injectivelabs/ui-common'
+  BankBalanceWithTokenAndBalanceWithUsdBalance,
+  getTokenLogoWithVendorPathPrefix
+} from '@injectivelabs/sdk-ui-ts'
 import TableRow from '~/components/elements/table-row.vue'
 import {
   HIDDEN_BALANCE_DISPLAY,
@@ -183,6 +183,16 @@ export default Vue.extend({
       return new BigNumberInBase(balance.balanceInUsd).toFormat(
         UI_DEFAULT_MIN_DISPLAY_DECIMALS
       )
+    },
+
+    tokenLogo(): string {
+      const { balance } = this
+
+      if (!balance.token) {
+        return ''
+      }
+
+      return getTokenLogoWithVendorPathPrefix(balance.token.logo)
     }
   },
 

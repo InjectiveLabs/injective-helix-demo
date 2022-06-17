@@ -1,11 +1,11 @@
 <template>
-  <VHocLoading :status="status">
-    <v-card-table-wrap>
+  <HocLoading :status="status">
+    <VCardTableWrap>
       <template #actions>
         <div
           class="col-span-12 sm:col-span-6 lg:col-span-4 grid grid-cols-5 gap-4"
         >
-          <v-search
+          <VSearch
             dense
             class="col-span-3"
             data-cy="universal-table-filter-by-asset-input"
@@ -13,7 +13,7 @@
             :search="search"
             @searched="handleInputOnSearch"
           />
-          <filter-selector
+          <FilterSelector
             class="col-span-2"
             data-cy="universal-table-filter-by-side-drop-down"
             :type="TradeSelectorType.Side"
@@ -40,7 +40,7 @@
         <div
           class="col-span-6 lg:col-span-8 sm:text-right mt-0 hidden sm:block"
         >
-          <v-button
+          <VButton
             v-if="filteredOrders.length > 0"
             red-outline
             md
@@ -48,43 +48,43 @@
             @click.stop="handleCancelOrders"
           >
             {{ $t('trade.cancelAllOrders') }}
-          </v-button>
+          </VButton>
         </div>
       </template>
 
       <!-- mobile table -->
       <TableBody
         :show-empty="filteredOrders.length === 0"
-        class="sm:hidden mt-3 max-h-lg max-h-lg overflow-y-auto"
+        class="sm:hidden mt-3 max-h-lg overflow-y-auto"
       >
-        <mobile-order
+        <MobileOrder
           v-for="(order, index) in filteredOrders"
           :key="`mobile-spot-orders-${index}-${order.orderHash}`"
           class="col-span-1"
           :order="order"
         />
 
-        <v-empty-list slot="empty" :message="$t('trade.emptyOrders')" />
+        <EmptyList slot="empty" :message="$t('trade.emptyOrders')" />
       </TableBody>
 
-      <v-table-wrapper break-md class="mt-4 hidden sm:block">
+      <TableWrapper break-md class="mt-4 hidden sm:block">
         <table v-if="filteredOrders.length > 0" class="table">
-          <orders-table-header />
+          <OrdersTableHeader />
           <tbody>
             <tr
-              is="v-order"
+              is="Order"
               v-for="(order, index) in filteredOrders"
               :key="`orders-${index}-${order.orderHash}`"
               :order="order"
             />
           </tbody>
         </table>
-        <v-empty-list
+        <EmptyList
           v-else
           :message="$t('trade.emptyOrders')"
           data-cy="universal-table-nothing-found"
         />
-      </v-table-wrapper>
+      </TableWrapper>
 
       <portal to="activity-card-spot-count">
         <span class="font-semibold text-sm md:text-lg">
@@ -95,8 +95,8 @@
       <portal to="activity-tab-spot-count">
         <span v-if="status.isNotLoading()"> ({{ orders.length }}) </span>
       </portal>
-    </v-card-table-wrap>
-  </VHocLoading>
+    </VCardTableWrap>
+  </HocLoading>
 </template>
 
 <script lang="ts">
@@ -105,7 +105,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import {
   UiSpotLimitOrder,
   UiSpotMarketWithToken
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import Order from '~/components/partials/common/spot/order.vue'
 import OrdersTableHeader from '~/components/partials/common/spot/orders-table-header.vue'
 import MobileOrder from '~/components/partials/common/spot/mobile-order.vue'
@@ -115,7 +115,7 @@ import { TradeSelectorType } from '~/types/enums'
 
 export default Vue.extend({
   components: {
-    'v-order': Order,
+    Order,
     FilterSelector,
     MobileOrder,
     OrdersTableHeader,

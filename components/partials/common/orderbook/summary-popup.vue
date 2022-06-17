@@ -16,7 +16,7 @@
         }}:
       </span>
       <span>
-        <v-number
+        <VNumber
           :decimals="
             market
               ? market.quantityDecimals
@@ -36,7 +36,7 @@
         }}:
       </span>
       <span class="flex items-center">
-        <v-number
+        <VNumber
           :decimals="
             market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
           "
@@ -54,7 +54,7 @@ import {
   UiDerivativeMarketWithToken,
   UiSpotMarketWithToken,
   UiOrderbookSummary
-} from '@injectivelabs/ui-common'
+} from '@injectivelabs/sdk-ui-ts'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,

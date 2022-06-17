@@ -21,7 +21,7 @@ import TableWrapper from '~/components/elements/table-wrapper.vue'
 import TextInfo from '~/components/elements/text-info.vue'
 import VUserWalletConnectWarning from '~/components/elements/user-wallet-connect-warning.vue'
 import VEmptyList from '~/components/elements/empty-list.vue'
-import VHOCLoading from '~/components/hoc/loading.vue'
+import HocLoading from '~/components/hoc/loading.vue'
 import IconInfoTooltip from '~/components/elements/info-icon-tooltip.vue'
 import IconCheckTooltip from '~/components/elements/info-check-tooltip.vue'
 
@@ -43,14 +43,14 @@ Vue.component('VInput', Input)
 Vue.component('VModal', Modal)
 Vue.component('VNumber', VNumber)
 Vue.component('VPanel', Panel)
-Vue.component('VProgressSteps', ProgressSteps)
-Vue.component('VResourceCard', ResourceCard)
+Vue.component('ProgressSteps', ProgressSteps)
+Vue.component('ResourceCard', ResourceCard)
 Vue.component('VSeparator', Separator)
-Vue.component('VHocLoading', VHOCLoading)
+Vue.component('HocLoading', HocLoading)
 Vue.component('VSearch', Search)
-Vue.component('VTableWrapper', TableWrapper)
-Vue.component('VTextInfo', TextInfo)
-Vue.component('VUserWalletConnectWarning', VUserWalletConnectWarning)
-Vue.component('VEmptyList', VEmptyList)
+Vue.component('TableWrapper', TableWrapper)
+Vue.component('TextInfo', TextInfo)
+Vue.component('UserWalletConnectWarning', VUserWalletConnectWarning)
+Vue.component('EmptyList', VEmptyList)
 Vue.component('IconInfoTooltip', IconInfoTooltip)
 Vue.component('IconCheckTooltip', IconCheckTooltip)

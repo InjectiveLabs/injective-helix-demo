@@ -1,5 +1,5 @@
 import { TransactionOptions } from '@injectivelabs/ts-types'
-import { DEFAULT_GAS_PRICE } from '@injectivelabs/ui-common'
+import { DEFAULT_GAS_PRICE } from '@injectivelabs/sdk-ui-ts'
 
 const TX_DEFAULTS_GAS = 80_000_000
 

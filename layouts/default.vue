@@ -1,15 +1,15 @@
 <template>
   <div id="pro" class="w-full h-full min-h-screen bg-gray-1050 relative">
     <transition name="page" appear>
-      <VHocLoading :status="status">
+      <HocLoading :status="status">
         <div>
-          <v-sidebar-mobile
+          <SidebarMobile
             :is-sidebar-open="isOpenSidebar"
             @sidebar-closed="onCloseSideBar"
           />
           <client-only>
             <div class="relative bg-gray-1050">
-              <v-top-bar @sidebar-opened="isOpenSidebar = true" />
+              <TopBar @sidebar-opened="isOpenSidebar = true" />
               <main
                 class="w-full h-full min-h-screen-excluding-header flex flex-col"
               >
@@ -17,14 +17,14 @@
                 <div class="relative flex-grow">
                   <nuxt />
                 </div>
-                <v-footer v-if="showFooter" />
+                <VFooter v-if="showFooter" />
               </main>
-              <v-modal-auction-countdown v-if="SHOW_AUCTION_COUNTDOWN" />
-              <v-modal-insufficient-inj-for-gas />
+              <ModalAuctionCountdown v-if="SHOW_AUCTION_COUNTDOWN" />
+              <ModalInsufficientInjForGas />
             </div>
           </client-only>
         </div>
-      </VHocLoading>
+      </HocLoading>
     </transition>
   </div>
 </template>
@@ -35,17 +35,17 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import Footer from '~/components/layout/footer/index.vue'
 import TopBar from '~/components/layout/topbar.vue'
 import SidebarMobile from '~/components/layout/sidebar-mobile.vue'
-import VModalAuctionCountdown from '~/components/partials/modals/auction-countdown.vue'
-import VModalInsufficientInjForGas from '~/components/partials/modals/insufficient-inj-for-gas.vue'
+import ModalAuctionCountdown from '~/components/partials/modals/auction-countdown.vue'
+import ModalInsufficientInjForGas from '~/components/partials/modals/insufficient-inj-for-gas.vue'
 import { SHOW_AUCTION_COUNTDOWN } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
-    VModalAuctionCountdown,
-    VModalInsufficientInjForGas,
-    'v-top-bar': TopBar,
-    'v-footer': Footer,
-    'v-sidebar-mobile': SidebarMobile
+    ModalAuctionCountdown,
+    ModalInsufficientInjForGas,
+    TopBar,
+    VFooter: Footer,
+    SidebarMobile
   },
 
   data() {
