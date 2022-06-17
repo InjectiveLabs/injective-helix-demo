@@ -14,6 +14,7 @@ import {
   ZERO_IN_BASE,
   DerivativeOrderSide
 } from '@injectivelabs/sdk-ui-ts'
+import { formatAmountToAllowableDecimals } from '~/app/utils/formatters'
 
 export const calculateMargin = ({
   quantity,
@@ -369,11 +370,19 @@ export const getApproxAmountFromPercentage = ({
   )
 
   if (totalNotional.lte(availableMargin)) {
-    return totalQuantity
+    return formatAmountToAllowableDecimals(
+      totalQuantity.toNumber(),
+      market.quantityDecimals
+    )
   }
 
-  return availableMargin.div(
+  const amountFromAvailableMargin = availableMargin.div(
     executionPrice.times(new BigNumberInBase(1).plus(feeRate)).times(leverage)
+  )
+
+  return formatAmountToAllowableDecimals(
+    amountFromAvailableMargin.toNumber(),
+    market.quantityDecimals
   )
 }
 

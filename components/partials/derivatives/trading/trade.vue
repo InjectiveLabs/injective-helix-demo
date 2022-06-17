@@ -1505,7 +1505,7 @@ export default Vue.extend({
         records: orderTypeBuy ? sells : buys,
         feeRate,
         executionPrice
-      }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
+      })
     },
 
     makerExpectedPts(): BigNumberInBase {
@@ -1757,7 +1757,7 @@ export default Vue.extend({
     onPercentAmountSelected(percent = 100) {
       this.form.proportionalPercentage = percent
 
-      this.updateBaseAndQuoteFromPercentageAmount()
+      this.updateBaseAndQuoteFromPercentage()
     },
 
     /**
@@ -1766,7 +1766,7 @@ export default Vue.extend({
      * and then we update the amount again to account the fees
      * into consideration
      */
-    updateBaseAndQuoteFromPercentageAmount() {
+    updateBaseAndQuoteFromPercentage() {
       this.onAmountChangePercentage()
 
       this.$nextTick(() => {
@@ -1834,7 +1834,15 @@ export default Vue.extend({
     },
 
     setPostOnly(postOnly: boolean) {
+      const {
+        form: { reduceOnly }
+      } = this
+
       this.form.postOnly = postOnly
+
+      if (!reduceOnly) {
+        this.updateBaseAndQuoteFromPercentage()
+      }
     },
 
     setReduceOnly(reduceOnly: boolean) {
@@ -1930,7 +1938,7 @@ export default Vue.extend({
         records: orderTypeBuy ? sells : buys,
         feeRate,
         executionPrice
-      }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
+      })
     },
 
     onAmountChangePercentage() {
