@@ -195,7 +195,8 @@
         detailsDrawerOpen,
         postOnly: form.postOnly,
         feeRate,
-        executionPrice
+        executionPrice,
+        slippage
       }"
       @drawer-toggle="onDetailsDrawerToggle"
     />

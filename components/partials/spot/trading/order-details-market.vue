@@ -238,6 +238,11 @@ export default Vue.extend({
     executionPrice: {
       required: true,
       type: Object as PropType<BigNumberInBase>
+    },
+
+    slippage: {
+      required: true,
+      type: Object as PropType<BigNumberInBase>
     }
   },
 
@@ -250,10 +255,6 @@ export default Vue.extend({
   computed: {
     market(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
-    },
-
-    slippage(): BigNumberInBase {
-      return new BigNumberInBase(DEFAULT_MAX_SLIPPAGE)
     },
 
     marketHasNegativeMakerFee(): boolean {
@@ -361,12 +362,12 @@ export default Vue.extend({
         slippage
       } = this
 
-      if (quoteAmount.isNaN()) {
-        return ZERO_IN_BASE.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      if (!market) {
+        return amount.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
       }
 
-      if (!market) {
-        return amount.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      if (quoteAmount.isNaN()) {
+        return ZERO_IN_BASE.toFormat(market.quantityDecimals)
       }
 
       const quantity = orderTypeBuy ? quoteAmount : amount
@@ -376,9 +377,9 @@ export default Vue.extend({
         : new BigNumberInBase(1).minus(feeRate)
 
       if (orderTypeBuy) {
-        return quantity
+        return quoteAmount
           .div(executionPrice.times(feeMultiplier).times(slippage))
-          .toFormat(market.priceDecimals)
+          .toFormat(market.quantityDecimals)
       }
 
       return quantity

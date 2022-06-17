@@ -153,7 +153,6 @@ import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { DerivativeOrderSide } from '@injectivelabs/sdk-ts'
 import Drawer from '~/components/elements/drawer.vue'
 import {
-  DEFAULT_MAX_SLIPPAGE,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
@@ -264,10 +263,6 @@ export default Vue.extend({
   computed: {
     market(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
-    },
-
-    slippage(): BigNumberInBase {
-      return new BigNumberInBase(DEFAULT_MAX_SLIPPAGE)
     },
 
     marketHasNegativeMakerFee(): boolean {
