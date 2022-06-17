@@ -124,8 +124,8 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </TextInfo>
 
-        <TextInfo
-          v-if="!hideExpectedPoints && takerExpectedPts.gte(0)"
+        <!-- <TextInfo
+          v-if="takerExpectedPts.gte(0)"
           :title="$t('trade.expected_points')"
           class="mt-2"
         >
@@ -140,7 +140,7 @@
               {{ $t('pts') }}
             </span>
           </span>
-        </TextInfo>
+        </TextInfo> -->
       </div>
     </VDrawer>
   </div>
@@ -258,12 +258,6 @@ export default Vue.extend({
     detailsDrawerOpen: {
       required: true,
       type: Boolean
-    }
-  },
-
-  data() {
-    return {
-      hideExpectedPoints: true
     }
   },
 

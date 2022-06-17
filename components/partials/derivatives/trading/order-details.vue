@@ -86,7 +86,7 @@
           </span>
         </TextInfo>
 
-        <TextInfo :title="$t('trade.fee')" class="mt-2">
+        <TextInfo v-if="!postOnly" :title="$t('trade.fee')" class="mt-2">
           <div slot="context">
             <div class="flex items-center">
               <IconInfoTooltip
@@ -146,11 +146,8 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </TextInfo>
 
-        <TextInfo
-          v-if="
-            !hideExpectedPoints &&
-            (makerExpectedPts.gte(0) || takerExpectedPts.gte(0))
-          "
+        <!-- <TextInfo
+          v-if="makerExpectedPts.gte(0) || takerExpectedPts.gte(0)"
           :title="$t('trade.expected_points')"
           class="mt-2"
         >
@@ -165,7 +162,7 @@
               {{ $t('pts') }}
             </span>
           </span>
-        </TextInfo>
+        </TextInfo> -->
       </div>
     </VDrawer>
   </div>
@@ -296,8 +293,7 @@ export default Vue.extend({
 
   data() {
     return {
-      Icon,
-      hideExpectedPoints: true
+      Icon
     }
   },
 
