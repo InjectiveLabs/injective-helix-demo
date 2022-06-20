@@ -56,7 +56,10 @@ import {
   cosmosSdkDecToBigNumber,
   FeeDiscountAccountInfo
 } from '@injectivelabs/sdk-ts'
-import { ONE_IN_BASE, UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import {
+  ONE_IN_BASE,
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+} from '~/app/utils/constants'
 import {
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook
@@ -100,12 +103,12 @@ export default Vue.extend({
     },
 
     fromAmount: {
-      type: BigNumberInBase,
+      type: String,
       required: true
     },
 
     toAmount: {
-      type: BigNumberInBase,
+      type: String,
       required: true
     },
 
@@ -267,29 +270,27 @@ export default Vue.extend({
     },
 
     averagePriceWithoutSlippage(): BigNumberInBase {
-      const {
-        orderType,
-        sells,
-        buys,
-        hasAmount,
-        market,
-        fromAmount,
-        toAmount
-      } = this
+      const { orderType, sells, buys, market, fromAmount, toAmount } = this
+
+      const fromAmountAsNumber =
+        fromAmount !== '' ? new BigNumberInBase(fromAmount) : ZERO_IN_BASE
+
+      const toAmountAsNumber =
+        toAmount !== '' ? new BigNumberInBase(toAmount) : ZERO_IN_BASE
 
       const records = orderType === SpotOrderSide.Buy ? sells : buys
 
-      if (!market || !hasAmount || records.length === 0) {
+      if (
+        !market ||
+        fromAmountAsNumber.eq(ZERO_IN_BASE) ||
+        toAmountAsNumber.eq(ZERO_IN_BASE) ||
+        records.length === 0
+      ) {
         return ZERO_IN_BASE
       }
 
-      const amount = new BigNumberInBase(
-        orderType === SpotOrderSide.Buy ? toAmount : fromAmount
-      )
-
-      if (amount.eq(ZERO_IN_BASE)) {
-        return ZERO_IN_BASE
-      }
+      const amount =
+        orderType === SpotOrderSide.Buy ? toAmountAsNumber : fromAmountAsNumber
 
       const averagePrice = calculateAverageExecutionPriceFromOrderbook({
         records,
