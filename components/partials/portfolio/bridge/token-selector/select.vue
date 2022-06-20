@@ -86,7 +86,7 @@
                 <div class="flex justify-end items-center h-[32px] ml-4">
                   <img
                     v-if="logo"
-                    :src="logo"
+                    :src="getTokenLogoWithVendorPathPrefix(logo)"
                     :alt="name"
                     class="rounded-full w-6 h-6"
                   />
@@ -158,7 +158,8 @@ import VSelect from 'vue-select'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   BankBalanceWithTokenAndBalanceInBase,
-  BIG_NUMBER_ROUND_DOWN_MODE
+  BIG_NUMBER_ROUND_DOWN_MODE,
+  getTokenLogoWithVendorPathPrefix
 } from '@injectivelabs/sdk-ui-ts'
 import TokenSelectorItem from './item.vue'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
@@ -266,7 +267,8 @@ export default Vue.extend({
       search: '',
       isDropdownOpen: false,
       isSearching: false,
-      forceClose: true
+      forceClose: true,
+      getTokenLogoWithVendorPathPrefix
     }
   },
 

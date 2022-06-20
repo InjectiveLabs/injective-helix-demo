@@ -60,7 +60,7 @@
         />
       </div>
       <ConvertDetails
-        v-if="fromToken && toToken"
+        v-if="market && fromToken && toToken"
         :pending="pricesPending"
         :from-token="fromToken"
         :to-token="toToken"
@@ -741,15 +741,19 @@ export default Vue.extend({
     },
 
     notEnoughOrdersToFillFromError(): ConvertTradeError | undefined {
-      const { orderTypeBuy, sells, buys, amount, hasAmount } = this
+      const { orderTypeBuy, sells, buys, hasAmount, fromAmount, toAmount } = this
 
       if (!hasAmount) {
         return
       }
 
+      const quantity = orderTypeBuy
+        ? new BigNumberInBase(toAmount)
+        : new BigNumberInBase(fromAmount)
+
       const orders = orderTypeBuy ? sells : buys
 
-      if (orders.length <= 0 && amount.gt(0)) {
+      if (orders.length <= 0 && quantity.gt(0)) {
         return {
           amount: this.$t('trade.not_enough_fillable_orders'),
           linkType: ConvertTradeErrorLinkType.None
