@@ -55,7 +55,7 @@ export default Vue.extend({
     ])
       .catch(this.$onRejected)
       .then(() => {
-        this.status.setIdle()
+        this.setMarket('inj-usdt')
         this.startPollingOrderbook()
       })
   },
@@ -68,8 +68,6 @@ export default Vue.extend({
 
   methods: {
     async setMarket(slug: string) {
-      this.status.setLoading()
-
       await this.$accessor.spot.reset()
       await this.$accessor.spot.initMarket(slug)
       await this.$accessor.spot.initMarketStreams()
