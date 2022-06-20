@@ -44,7 +44,8 @@ const apiOptions = {
   ethereumChainId: ETHEREUM_CHAIN_ID,
   network: NETWORK,
   endpoints: ENDPOINTS,
-  metricsProvider: METRICS_ENABLED ? metricsProvider : undefined
+  metricsProvider: METRICS_ENABLED ? metricsProvider : undefined,
+  useCorrectEIP712Hash: true
 }
 
 // Services
