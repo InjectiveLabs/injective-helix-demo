@@ -252,7 +252,15 @@ export default Vue.extend({
     },
 
     executionPrice(): BigNumberInBase {
-      const { orderType, sells, buys, hasAmount, market, fromAmount, toAmount } = this
+      const {
+        orderType,
+        sells,
+        buys,
+        hasAmount,
+        market,
+        fromAmount,
+        toAmount
+      } = this
 
       const records = orderType === SpotOrderSide.Buy ? sells : buys
 
@@ -266,9 +274,8 @@ export default Vue.extend({
       const toAmountAsNumber =
         toAmount !== '' ? new BigNumberInBase(toAmount) : ZERO_IN_BASE
 
-      const quantity = orderType === SpotOrderSide.Buy
-        ? toAmountAsNumber
-        : fromAmountAsNumber
+      const quantity =
+        orderType === SpotOrderSide.Buy ? toAmountAsNumber : fromAmountAsNumber
 
       const averagePrice = calculateAverageExecutionPriceFromOrderbook({
         records,
