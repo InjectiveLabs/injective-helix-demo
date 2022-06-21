@@ -27,8 +27,10 @@
         totalWithFees,
         hasAmount,
         slippageTolerance: form.slippageTolerance,
-        tradingType
+        tradingType,
+        averagePriceOption
       }"
+      :average-price-option.sync="averagePriceOption"
       :amount.sync="form.amount"
       :quote-amount.sync="form.quoteAmount"
       :price.sync="form.price"
@@ -133,7 +135,7 @@ import {
 } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
-import { Modal } from '~/types'
+import { Modal, AveragePriceOptions } from '~/types'
 import {
   calculateAverageExecutionPriceFromFillableNotionalOnOrderBook,
   calculateAverageExecutionPriceFromOrderbook,
@@ -187,7 +189,8 @@ export default Vue.extend({
       form: initialForm(),
       hasInputErrors: false,
       hasAdvancedSettingsErrors: false,
-      hasEnoughInjForGasOrNotKeplr: true
+      hasEnoughInjForGasOrNotKeplr: true,
+      averagePriceOption: AveragePriceOptions.None
     }
   },
 
@@ -450,108 +453,6 @@ export default Vue.extend({
       return price.gt(0)
     },
 
-    worstPrice(): BigNumberInBase {
-      const { orderTypeBuy, slippage, sells, buys, hasAmount, market, amount } =
-        this
-
-      if (!market || !hasAmount) {
-        return ZERO_IN_BASE
-      }
-
-      const records = orderTypeBuy ? sells : buys
-
-      const worstPrice = calculateWorstExecutionPriceFromOrderbook({
-        records,
-        amount,
-        market
-      })
-
-      return new BigNumberInBase(
-        worstPrice.times(slippage).toFixed(market.priceDecimals)
-      )
-    },
-
-    averagePriceDerivedFromBaseAmount(): BigNumberInBase {
-      const { orderTypeBuy, sells, buys, hasAmount, market, amount } = this
-
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      if (!hasAmount) {
-        return ZERO_IN_BASE
-      }
-
-      const records = orderTypeBuy ? sells : buys
-
-      return calculateAverageExecutionPriceFromOrderbook({
-        records,
-        amount,
-        market
-      })
-    },
-
-    averagePriceDerivedFromQuoteAmount(): BigNumberInBase {
-      const {
-        orderTypeBuy,
-        sells,
-        buys,
-        market,
-        quoteAmount,
-        form: { proportionalPercentage },
-        quoteAvailableBalance
-      } = this
-
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      const records = orderTypeBuy ? sells : buys
-
-      const quoteAmountForAveragePrice =
-        proportionalPercentage > 0 ? quoteAvailableBalance : quoteAmount
-
-      const averagePrice =
-        calculateAverageExecutionPriceFromFillableNotionalOnOrderBook({
-          records,
-          quoteAmount: quoteAmountForAveragePrice,
-          market
-        })
-
-      if (averagePrice.isNaN()) {
-        return ZERO_IN_BASE
-      }
-
-      return averagePrice
-    },
-
-    averagePrice(): BigNumberInBase {
-      const {
-        averagePriceDerivedFromBaseAmount,
-        averagePriceDerivedFromQuoteAmount
-      } = this
-
-      if (averagePriceDerivedFromBaseAmount.gt(0)) {
-        return averagePriceDerivedFromBaseAmount
-      }
-
-      return averagePriceDerivedFromQuoteAmount
-    },
-
-    executionPrice(): BigNumberInBase {
-      const { tradingTypeMarket, averagePrice, price } = this
-
-      if (tradingTypeMarket) {
-        if (averagePrice.isNaN()) {
-          return ZERO_IN_BASE
-        }
-
-        return averagePrice
-      }
-
-      return price
-    },
-
     amountStep(): string {
       const { market } = this
 
@@ -574,6 +475,144 @@ export default Vue.extend({
       }
 
       return '1'
+    },
+
+    averagePriceDerivedFromBaseAmount(): BigNumberInBase {
+      const {
+        orderTypeBuy,
+        sells,
+        buys,
+        hasAmount,
+        market,
+        amount,
+        averagePriceOption,
+        baseAvailableBalance,
+        form: { proportionalPercentage }
+      } = this
+
+      if (!market || !hasAmount) {
+        return ZERO_IN_BASE
+      }
+
+      const records = orderTypeBuy ? sells : buys
+
+      const percentBaseBalance = baseAvailableBalance.times(
+        proportionalPercentage
+      )
+
+      const baseAmountForAveragePrice =
+        averagePriceOption === AveragePriceOptions.BaseAmount
+          ? amount
+          : percentBaseBalance
+
+      return calculateAverageExecutionPriceFromOrderbook({
+        records,
+        amount: baseAmountForAveragePrice,
+        market
+      })
+    },
+
+    averagePriceDerivedFromQuoteAmount(): BigNumberInBase {
+      const {
+        orderTypeBuy,
+        sells,
+        buys,
+        market,
+        quoteAmount,
+        averagePriceOption,
+        quoteAvailableBalance,
+        form: { proportionalPercentage }
+      } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      const records = orderTypeBuy ? sells : buys
+
+      const percentQuoteBalance = quoteAvailableBalance.times(
+        proportionalPercentage
+      )
+
+      const quoteAmountForAveragePrice =
+        averagePriceOption === AveragePriceOptions.QuoteAmount
+          ? quoteAmount
+          : percentQuoteBalance
+
+      const averagePrice =
+        calculateAverageExecutionPriceFromFillableNotionalOnOrderBook({
+          records,
+          quoteAmount: quoteAmountForAveragePrice,
+          market
+        })
+
+      if (averagePrice.isNaN()) {
+        return ZERO_IN_BASE
+      }
+
+      return averagePrice
+    },
+
+    averagePrice(): BigNumberInBase {
+      const {
+        averagePriceDerivedFromBaseAmount,
+        averagePriceDerivedFromQuoteAmount,
+        averagePriceOption,
+        orderTypeBuy
+      } = this
+
+      if (averagePriceOption === AveragePriceOptions.BaseAmount) {
+        return averagePriceDerivedFromBaseAmount
+      }
+
+      if (averagePriceOption === AveragePriceOptions.QuoteAmount) {
+        return averagePriceDerivedFromQuoteAmount
+      }
+
+      if (averagePriceOption === AveragePriceOptions.Percentage) {
+        if (orderTypeBuy) {
+          return averagePriceDerivedFromQuoteAmount
+        }
+
+        return averagePriceDerivedFromBaseAmount
+      }
+
+      return ZERO_IN_BASE
+    },
+
+    executionPrice(): BigNumberInBase {
+      const { tradingTypeMarket, averagePrice, price } = this
+
+      if (tradingTypeMarket) {
+        if (averagePrice.isNaN()) {
+          return ZERO_IN_BASE
+        }
+
+        return averagePrice
+      }
+
+      return price
+    },
+
+    worstPrice(): BigNumberInBase {
+      const { orderTypeBuy, slippage, sells, buys, hasAmount, market, amount } =
+        this
+
+      if (!market || !hasAmount) {
+        return ZERO_IN_BASE
+      }
+
+      const records = orderTypeBuy ? sells : buys
+
+      const worstPrice = calculateWorstExecutionPriceFromOrderbook({
+        records,
+        amount,
+        market
+      })
+
+      return new BigNumberInBase(
+        worstPrice.times(slippage).toFixed(market.priceDecimals)
+      )
     },
 
     priceHasHighDeviationWarning(): boolean {

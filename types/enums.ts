@@ -145,3 +145,10 @@ export enum StreamType {
 }
 
 export { MarketType }
+
+export enum AveragePriceOptions {
+  None = 0,
+  BaseAmount = 1,
+  QuoteAmount = 2,
+  Percentage = 3
+}

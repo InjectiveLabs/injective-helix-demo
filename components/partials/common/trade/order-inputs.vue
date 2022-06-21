@@ -3,7 +3,7 @@
     <VInput
       v-if="!tradingTypeMarket"
       ref="input-price"
-      :value="localPrice"
+      :value="inputPrice"
       :placeholder="priceStep"
       :label="$t('trade.price')"
       :disabled="tradingTypeMarket"
@@ -20,7 +20,7 @@
     <div class="flex gap-3 mt-6">
       <VInput
         ref="input-amount"
-        v-model="localBaseAmount"
+        v-model="inputBaseAmount"
         :label="$t('trade.amount')"
         :custom-handler="true"
         :max-decimals="market ? market.quantityDecimals : 6"
@@ -41,7 +41,7 @@
 
       <VInput
         ref="input-quote-amount"
-        v-model="localQuoteAmount"
+        v-model="inputQuoteAmount"
         :custom-handler="true"
         :max-decimals="market ? market.priceDecimals : 6"
         :placeholder="amountStep"
@@ -72,7 +72,7 @@
             feeRate
           }"
           ref="percentageOptions"
-          :proportional-percentage="localProportionalPercentage"
+          :proportional-percentage="inputProportionalPercentage"
           @update-proportional-percentage="updateProportionalPercentage"
           @update-quote-amount-from-percentage="updateQuoteAmountFromPercentage"
           @update-base-amount-from-percentage="updateBaseAmountFromPercentage"
@@ -88,12 +88,12 @@
         price: priceToBigNumber,
         executionPrice,
         lastTradedPrice,
-        quoteAmount: localQuoteAmountToBigNumber,
+        quoteAmount: inputQuoteAmountToBigNumber,
         hasQuoteAmount,
         quoteAvailableBalance,
         baseAvailableBalance,
         totalWithFees,
-        amount: localAmountToBigNumber,
+        amount: inputAmountToBigNumber,
         hasAmount,
         orderTypeBuy,
         tradingTypeMarket,
@@ -106,8 +106,8 @@
 
     <AdvancedSettings
       :trading-type-market="tradingTypeMarket"
-      :slippage-tolerance="localSlippageTolerance"
-      :post-only="localPostOnly"
+      :slippage-tolerance="inputSlippageTolerance"
+      :post-only="inputPostOnly"
       :has-advanced-settings-errors="hasAdvancedSettingsErrors"
       @set-slippage-tolerance="setSlippageTolerance"
       @set-post-only="setPostOnly"
@@ -118,8 +118,17 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken, UiPriceLevel } from '@injectivelabs/sdk-ui-ts'
+import {
+  UiSpotMarketWithToken,
+  UiPriceLevel,
+  ZERO_IN_BASE
+} from '@injectivelabs/sdk-ui-ts'
 import { TradeExecutionType } from '@injectivelabs/ts-types'
+import {
+  calculateAverageExecutionPriceFromFillableNotionalOnOrderBook,
+  calculateAverageExecutionPriceFromOrderbook
+} from '~/app/client/utils/spot'
+import { AveragePriceOptions } from '~/types'
 import PercentAmountOptions from '~/components/partials/common/trade/percent-amount-options.vue'
 import InputError from '~/components/partials/common/trade/input-error.vue'
 import AdvancedSettings from '~/components/partials/common/trade/advanced-settings/index.vue'
@@ -127,10 +136,6 @@ import {
   formatPriceToAllowableDecimals,
   formatAmountToAllowableDecimals
 } from '~/app/utils/formatters'
-
-interface PercentageOptionsRef extends Vue {
-  updateBaseAndQuoteAmountFromPercentage(): void
-}
 
 export default Vue.extend({
   components: {
@@ -225,10 +230,10 @@ export default Vue.extend({
       required: true
     },
 
-    executionPrice: {
-      type: Object as PropType<BigNumberInBase>,
-      required: true
-    },
+    // executionPrice: {
+    //   type: Object as PropType<BigNumberInBase>,
+    //   required: true
+    // },
 
     hasInputErrors: {
       type: Boolean,
@@ -248,35 +253,40 @@ export default Vue.extend({
     hasAdvancedSettingsErrors: {
       type: Boolean,
       required: true
+    },
+
+    averagePriceOption: {
+      type: Object as PropType<AveragePriceOptions>,
+      required: true
     }
   },
 
   data() {
     return {
-      localBaseAmount: '',
-      localQuoteAmount: '',
-      localPrice: '',
-      localPostOnly: false,
-      localProportionalPercentage: 0,
-      localSlippageTolerance: '0.5'
+      inputBaseAmount: '',
+      inputQuoteAmount: '',
+      inputPrice: '',
+      inputPostOnly: false,
+      inputProportionalPercentage: 0,
+      inputSlippageTolerance: '0.5'
     }
   },
 
   computed: {
-    $percentageOptions(): PercentageOptionsRef {
+    $percentageOptions(): any {
       return this.$refs.percentageOptions
     },
 
-    localQuoteAmountToBigNumber(): BigNumberInBase {
-      const { localQuoteAmount } = this
+    inputQuoteAmountToBigNumber(): BigNumberInBase {
+      const { inputQuoteAmount } = this
 
-      return new BigNumberInBase(localQuoteAmount)
+      return new BigNumberInBase(inputQuoteAmount)
     },
 
-    localAmountToBigNumber(): BigNumberInBase {
-      const { localBaseAmount } = this
+    inputAmountToBigNumber(): BigNumberInBase {
+      const { inputBaseAmount } = this
 
-      return new BigNumberInBase(localBaseAmount)
+      return new BigNumberInBase(inputBaseAmount)
     },
 
     priceToBigNumber(): BigNumberInBase {
@@ -286,12 +296,12 @@ export default Vue.extend({
     },
 
     hasQuoteAmount(): boolean {
-      const { localQuoteAmountToBigNumber, priceStep } = this
+      const { inputQuoteAmountToBigNumber, priceStep } = this
 
       return (
-        !localQuoteAmountToBigNumber.isNaN() &&
-        localQuoteAmountToBigNumber.gt(0) &&
-        localQuoteAmountToBigNumber.gte(priceStep)
+        !inputQuoteAmountToBigNumber.isNaN() &&
+        inputQuoteAmountToBigNumber.gt(0) &&
+        inputQuoteAmountToBigNumber.gte(priceStep)
       )
     },
 
@@ -317,6 +327,126 @@ export default Vue.extend({
       }
 
       return '1'
+    },
+
+    averagePriceDerivedFromBaseAmount(): BigNumberInBase {
+      const {
+        orderTypeBuy,
+        sells,
+        buys,
+        hasAmount,
+        market,
+        amount,
+        averagePriceOption,
+        baseAvailableBalance,
+        proportionalPercentage
+      } = this
+
+      if (!market || !hasAmount) {
+        return ZERO_IN_BASE
+      }
+
+      const records = orderTypeBuy ? sells : buys
+
+      const percentBaseBalance = baseAvailableBalance.times(
+        proportionalPercentage
+      )
+
+      const baseAmountForAveragePrice =
+        averagePriceOption === AveragePriceOptions.BaseAmount
+          ? new BigNumberInBase(amount)
+          : percentBaseBalance
+      console.log('bout to run legit calc')
+
+      return calculateAverageExecutionPriceFromOrderbook({
+        records,
+        amount: baseAmountForAveragePrice,
+        market
+      })
+    },
+
+    averagePriceDerivedFromQuoteAmount(): BigNumberInBase {
+      const {
+        orderTypeBuy,
+        sells,
+        buys,
+        market,
+        quoteAmount,
+        averagePriceOption,
+        quoteAvailableBalance,
+        proportionalPercentage
+      } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      const records = orderTypeBuy ? sells : buys
+
+      const percentQuoteBalance = quoteAvailableBalance.times(
+        proportionalPercentage
+      )
+
+      const quoteAmountForAveragePrice =
+        averagePriceOption === AveragePriceOptions.QuoteAmount
+          ? new BigNumberInBase(quoteAmount)
+          : percentQuoteBalance
+
+      const averagePrice =
+        calculateAverageExecutionPriceFromFillableNotionalOnOrderBook({
+          records,
+          quoteAmount: quoteAmountForAveragePrice,
+          market
+        })
+
+      if (averagePrice.isNaN()) {
+        return ZERO_IN_BASE
+      }
+
+      return averagePrice
+    },
+
+    averagePrice(): BigNumberInBase {
+      const {
+        averagePriceDerivedFromBaseAmount,
+        averagePriceDerivedFromQuoteAmount,
+        averagePriceOption,
+        orderTypeBuy
+      } = this
+      console.log('trying avg price')
+
+      if (averagePriceOption === AveragePriceOptions.BaseAmount) {
+        console.log('doing avg price base amoutn calc')
+        return averagePriceDerivedFromBaseAmount
+      }
+
+      if (averagePriceOption === AveragePriceOptions.QuoteAmount) {
+        return averagePriceDerivedFromQuoteAmount
+      }
+
+      if (averagePriceOption === AveragePriceOptions.Percentage) {
+        if (orderTypeBuy) {
+          return averagePriceDerivedFromQuoteAmount
+        }
+
+        return averagePriceDerivedFromBaseAmount
+      }
+
+      return ZERO_IN_BASE
+    },
+
+    executionPrice(): BigNumberInBase {
+      const { tradingTypeMarket, averagePrice, price } = this
+      console.log('calculating')
+      if (tradingTypeMarket) {
+        if (averagePrice.isNaN()) {
+          return ZERO_IN_BASE
+        }
+
+        return averagePrice
+      }
+
+      return new BigNumberInBase(price)
     }
   },
 
@@ -328,36 +458,72 @@ export default Vue.extend({
       }
       if (!price) {
         const formattedPrice = newPrice.toFixed(market.priceDecimals)
-        this.localPrice = formattedPrice
+        this.inputPrice = formattedPrice
         this.$emit('update:price', formattedPrice)
       }
     },
 
     orderType() {
-      const { tradingType, localPrice, market } = this
+      const { tradingType, inputPrice, market } = this
 
       if (tradingType === TradeExecutionType.LimitFill && market) {
-        this.onPriceChange(localPrice)
+        this.onPriceChange(inputPrice)
       }
     },
 
     tradingType(newTradingType: TradeExecutionType) {
-      const { localPrice, market } = this
+      const { inputPrice, market } = this
 
       if (newTradingType === TradeExecutionType.LimitFill && market) {
-        this.onPriceChange(localPrice)
+        this.onPriceChange(inputPrice)
       }
     }
   },
 
   methods: {
+    getAveragePriceForBase() {
+      const {
+        orderTypeBuy,
+        sells,
+        buys,
+        hasAmount,
+        market,
+        amount,
+        averagePriceOption,
+        baseAvailableBalance,
+        proportionalPercentage
+      } = this
+
+      if (!market || !hasAmount) {
+        return ZERO_IN_BASE
+      }
+
+      const records = orderTypeBuy ? sells : buys
+
+      const percentBaseBalance = baseAvailableBalance.times(
+        proportionalPercentage
+      )
+
+      const baseAmountForAveragePrice =
+        averagePriceOption === AveragePriceOptions.BaseAmount
+          ? new BigNumberInBase(amount)
+          : percentBaseBalance
+      console.log('bout to run legit calc')
+
+      return calculateAverageExecutionPriceFromOrderbook({
+        records,
+        amount: baseAmountForAveragePrice,
+        market
+      })
+    },
+
     updateBaseAmountFromPercentage(amount: string) {
-      this.localBaseAmount = amount
+      this.inputBaseAmount = amount
       this.$emit('update:amount', amount)
     },
 
     updateQuoteAmountFromPercentage(quoteAmount: string) {
-      this.localQuoteAmount = quoteAmount
+      this.inputQuoteAmount = quoteAmount
       this.$emit('update:quote-amount', quoteAmount)
     },
 
@@ -369,17 +535,19 @@ export default Vue.extend({
     },
 
     updateProportionalPercentage(proportionalPercentage: number) {
-      this.localProportionalPercentage = proportionalPercentage
+      this.inputProportionalPercentage = proportionalPercentage
       this.$emit('update:proportional-percentage', proportionalPercentage)
+
+      this.$emit('update:average-price-option', AveragePriceOptions.Percentage)
     },
 
     setPostOnly(postOnly: boolean) {
-      const { localProportionalPercentage } = this
+      const { inputProportionalPercentage } = this
 
-      this.localPostOnly = postOnly
+      this.inputPostOnly = postOnly
       this.$emit('update:post-only', postOnly)
 
-      if (new BigNumberInBase(localProportionalPercentage).isZero()) {
+      if (new BigNumberInBase(inputProportionalPercentage).isZero()) {
         this.updateBaseAmountFromQuote()
       } else {
         this.$percentageOptions.updateBaseAndQuoteAmountFromPercentage()
@@ -387,8 +555,8 @@ export default Vue.extend({
     },
 
     setSlippageTolerance(slippage: string) {
-      this.localSlippageTolerance = formatAmountToAllowableDecimals(slippage, 2)
-      this.$emit('update:slippage-tolerance', slippage)
+      this.inputSlippageTolerance = formatAmountToAllowableDecimals(slippage, 2)
+      this.$emit('upinputPostOnly-tolerance', slippage)
     },
 
     onPriceChange(price: string = '') {
@@ -403,7 +571,7 @@ export default Vue.extend({
         market.priceDecimals
       )
 
-      this.localPrice = formattedPrice
+      this.inputPrice = formattedPrice
       this.$emit('update:price', formattedPrice)
 
       if (hasAmount) {
@@ -414,21 +582,22 @@ export default Vue.extend({
     onAmountChange(amount: string = '') {
       const { hasPrice, market } = this
 
+      console.log('just clicked')
+
       if (!market) {
         return
       }
+
+      this.$emit('update:average-price-option', AveragePriceOptions.BaseAmount)
 
       const formattedBaseAmount = formatAmountToAllowableDecimals(
         amount,
         market.quantityDecimals
       )
-
-      this.localBaseAmount = formattedBaseAmount
+      console.log('about to set local base amount', formattedBaseAmount)
+      this.inputBaseAmount = formattedBaseAmount
       this.$emit('update:amount', formattedBaseAmount)
-
-      // todo: validate reset quote amount is necessary
-      // this.resetQuoteAmount()
-
+      console.log('just set baseAmount', formattedBaseAmount)
       this.$emit('update:proportionalPercentage', 0)
 
       if (!hasPrice) {
@@ -445,12 +614,14 @@ export default Vue.extend({
         return
       }
 
+      this.$emit('update:average-price-option', AveragePriceOptions.QuoteAmount)
+
       const formattedQuoteAmount = formatAmountToAllowableDecimals(
         quoteAmount,
         market.priceDecimals
       )
 
-      this.localQuoteAmount = formattedQuoteAmount
+      this.inputQuoteAmount = formattedQuoteAmount
       this.$emit('update:quoteAmount', formattedQuoteAmount)
 
       // todo: see if htis is necesary
@@ -467,7 +638,7 @@ export default Vue.extend({
 
     updateBaseAmountFromQuote() {
       const {
-        localQuoteAmount,
+        inputQuoteAmount,
         executionPrice,
         market,
         orderTypeBuy,
@@ -482,17 +653,17 @@ export default Vue.extend({
         ? new BigNumberInBase(1).plus(feeRate)
         : new BigNumberInBase(1).minus(feeRate)
 
-      const baseAmount = new BigNumberInBase(localQuoteAmount)
+      const baseAmount = new BigNumberInBase(inputQuoteAmount)
         .div(executionPrice.times(feeMultiplier))
         .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
 
-      this.localBaseAmount = baseAmount
+      this.inputBaseAmount = baseAmount
       this.$emit('update:amount', baseAmount)
     },
 
     updateQuoteAmountFromBase() {
       const {
-        localAmountToBigNumber,
+        inputAmountToBigNumber,
         executionPrice,
         market,
         feeRate,
@@ -502,21 +673,32 @@ export default Vue.extend({
       if (!market) {
         return
       }
-
+      console.log('about to calculate quote amount')
       const feeMultiplier = orderTypeBuy
         ? new BigNumberInBase(1).plus(feeRate)
         : new BigNumberInBase(1).minus(feeRate)
-
-      const quoteAmount = localAmountToBigNumber
-        .times(executionPrice)
+      // console.log(
+      //   inputAmountToBigNumber.toFixed(),
+      //   executionPrice.toFixed(),
+      //   feeMultiplier.toFixed()
+      // )
+      console.log('average price', this.getAveragePriceForBase())
+      const quoteAmount = inputAmountToBigNumber
+        .times(this.getAveragePriceForBase())
         .times(feeMultiplier)
+      console.log('badazz quote amount', quoteAmount)
 
       const formattedQuoteAmount = formatAmountToAllowableDecimals(
         quoteAmount.toNumber(),
         market.priceDecimals
       )
 
-      this.localQuoteAmount = formattedQuoteAmount
+      console.log('badazz formattedQuoteAmoutn', formattedQuoteAmount)
+
+      console.log('about to set quoteAmount', formattedQuoteAmount)
+
+      this.inputQuoteAmount = formattedQuoteAmount
+      console.log('setting inputQuoteAmoutn', this.inputQuoteAmount)
       this.$emit('update:quote-amount', formattedQuoteAmount)
     },
 
