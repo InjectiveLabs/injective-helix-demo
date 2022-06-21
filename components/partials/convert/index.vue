@@ -561,7 +561,15 @@ export default Vue.extend({
     },
 
     executionPriceWithoutSlippage(): BigNumberInBase {
-      const { orderTypeBuy, sells, buys, hasAmount, market, amount } = this
+      const {
+        orderTypeBuy,
+        sells,
+        buys,
+        hasAmount,
+        market,
+        fromAmount,
+        toAmount
+      } = this
 
       const records = orderTypeBuy ? sells : buys
 
@@ -569,9 +577,17 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
+      const fromAmountAsNumber =
+        fromAmount !== '' ? new BigNumberInBase(fromAmount) : ZERO_IN_BASE
+
+      const toAmountAsNumber =
+        toAmount !== '' ? new BigNumberInBase(toAmount) : ZERO_IN_BASE
+
+      const quantity = orderTypeBuy ? toAmountAsNumber : fromAmountAsNumber
+
       const averagePrice = calculateAverageExecutionPriceFromOrderbook({
         records,
-        amount,
+        amount: quantity,
         market
       })
 
@@ -670,13 +686,17 @@ export default Vue.extend({
     maxDecimalsFrom(): number {
       const { orderTypeBuy, priceStep, amountStep } = this
 
-      return getDecimalsFromNumber(Number(orderTypeBuy ? priceStep : amountStep))
+      return getDecimalsFromNumber(
+        Number(orderTypeBuy ? priceStep : amountStep)
+      )
     },
 
     maxDecimalsTo(): number {
       const { orderTypeBuy, priceStep, amountStep } = this
 
-      return getDecimalsFromNumber(Number(orderTypeBuy ? amountStep : priceStep))
+      return getDecimalsFromNumber(
+        Number(orderTypeBuy ? amountStep : priceStep)
+      )
     },
 
     executionPriceHasHighDeviationWarning(): boolean {
@@ -741,7 +761,8 @@ export default Vue.extend({
     },
 
     notEnoughOrdersToFillFromError(): ConvertTradeError | undefined {
-      const { orderTypeBuy, sells, buys, hasAmount, fromAmount, toAmount } = this
+      const { orderTypeBuy, sells, buys, hasAmount, fromAmount, toAmount } =
+        this
 
       if (!hasAmount) {
         return
@@ -874,7 +895,14 @@ export default Vue.extend({
     },
 
     hasErrors(): boolean {
-      const { priceError, amountError, hasAmount, amount, fromAmount, toAmount } = this
+      const {
+        priceError,
+        amountError,
+        hasAmount,
+        amount,
+        fromAmount,
+        toAmount
+      } = this
 
       if (priceError) {
         return true
