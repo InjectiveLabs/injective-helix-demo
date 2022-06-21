@@ -84,27 +84,19 @@
         </VCheckbox>
       </span>
     </div>
-    <div
-      v-if="hasWarning || hasError"
-      class="flex mt-4 gap-2 text-xs font-semibold"
-      :class="hasWarning ? 'text-warning' : 'text-error'"
-      font-semibold
-      text-2xs
-    >
-      <IconExclamationCircleFill />
-      <span v-if="hasWarning">
-        {{ slippageWarning }}
-      </span>
-      <span v-if="hasError">
-        {{ slippageError }}
-      </span>
-    </div>
+    <Error
+      :has-error.sync="hasError"
+      :has-warning.sync="hasWarning"
+      v-bind="{ slippageTolerance, tradingTypeMarket }"
+      @update:has-error="handleHasErrorUpdateEvent"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { DEFAULT_MAX_SLIPPAGE } from '~/app/utils/constants'
+import Error from '~/components/partials/common/trade/advanced-settings/error.vue'
 
 enum SlippageDisplayOptions {
   NonSelectableDefault = 'Zero',
@@ -112,15 +104,14 @@ enum SlippageDisplayOptions {
   Selectable = 'Selectable'
 }
 export default Vue.extend({
-  props: {
-    slippageWarning: {
-      type: String,
-      default: ''
-    },
+  components: {
+    Error
+  },
 
-    slippageError: {
-      type: String,
-      default: ''
+  props: {
+    hasAdvancedSettingsErrors: {
+      type: Boolean,
+      required: true
     },
 
     slippageTolerance: {
@@ -156,29 +147,13 @@ export default Vue.extend({
       drawerIsOpen: true,
       SlippageDisplayOptions,
       slippageSelection: SlippageDisplayOptions.Selectable,
-      slippageIsToggleable: true
+      slippageIsToggleable: true,
+      hasWarning: false,
+      hasError: false
     }
   },
 
   computed: {
-    hasWarning(): boolean {
-      const { slippageWarning } = this
-      if (slippageWarning) {
-        return true
-      }
-
-      return false
-    },
-
-    hasError(): boolean {
-      const { slippageError } = this
-      if (slippageError) {
-        return true
-      }
-
-      return false
-    },
-
     wrapperClasses(): string {
       const { hasWarning, hasError } = this
       if (hasWarning) {
@@ -239,6 +214,10 @@ export default Vue.extend({
       } else {
         this.toggleSlippageToSelectable()
       }
+    },
+
+    handleHasErrorUpdateEvent(hasError: boolean): void {
+      this.$emit('update:has-advanced-settings-errors', hasError)
     },
 
     handleReduceOnlyCheckboxToggle(checked: boolean) {

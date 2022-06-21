@@ -1,255 +1,112 @@
 <template>
   <div v-if="market" class="px-4 w-full">
-    <div class="flex items-center justify-center">
-      <VButton
-        :class="{
-          'text-gray-500': tradingType === TradeExecutionType.Market
-        }"
-        text-xs
-        data-cy="trading-page-switch-to-limit-button"
-        @click.stop="onTradingTypeToggle(TradeExecutionType.LimitFill)"
-      >
-        {{ $t('trade.limit') }}
-      </VButton>
-      <div class="mx-2 w-px h-4 bg-gray-500"></div>
-      <VButton
-        :class="{
-          'text-gray-500': tradingType === TradeExecutionType.LimitFill
-        }"
-        text-xs
-        data-cy="trading-page-switch-to-market-button"
-        @click.stop="onTradingTypeToggle(TradeExecutionType.Market)"
-      >
-        {{ $t('trade.market') }}
-      </VButton>
-    </div>
-    <div class="mt-4">
-      <div class="bg-gray-900 rounded-2xl flex">
-        <VButtonSelect
-          v-model="orderType"
-          :option="SpotOrderSide.Buy"
-          aqua
-          class="w-1/2"
-          data-cy="trading-page-switch-to-side-buy-button"
-        >
-          {{
-            $t('trade.buy_asset', {
-              asset: market.baseToken.symbol
-            })
-          }}
-        </VButtonSelect>
-        <VButtonSelect
-          v-model="orderType"
-          :option="SpotOrderSide.Sell"
-          red
-          class="w-1/2"
-          data-cy="trading-page-switch-to-side-sell-button"
-        >
-          {{
-            $t('trade.sell_asset', {
-              asset: market.baseToken.symbol
-            })
-          }}
-        </VButtonSelect>
-      </div>
-    </div>
-    <div class="mt-8">
-      <div>
-        <VInput
-          v-if="!tradingTypeMarket"
-          ref="input-price"
-          v-model="form.price"
-          :placeholder="priceStep"
-          :label="$t('trade.price')"
-          :disabled="tradingTypeMarket"
-          type="number"
-          :step="priceStep"
-          :max-decimals="market ? market.quoteToken.decimals : 6"
-          min="0"
-          data-cy="trading-page-price-input"
-          @input="onPriceChange"
-        >
-          <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
-        </VInput>
-        <div class="flex gap-3 mt-6">
-          <VInput
-            ref="input-amount"
-            v-model="form.amount"
-            :label="$t('trade.amount')"
-            :custom-handler="true"
-            :max-decimals="market ? market.quantityDecimals : 6"
-            :placeholder="amountStep"
-            type="number"
-            :step="amountStep"
-            min="0"
-            data-cy="trading-page-amount-input"
-            show-addon
-            @input="onAmountChange"
-          >
-            <span slot="addon">{{
-              market.baseToken.symbol.toUpperCase()
-            }}</span>
-            <div
-              slot="context"
-              class="text-xs text-gray-400 flex items-center font-mono"
-            ></div>
-          </VInput>
-          <VInput
-            ref="input-amount"
-            v-model="form.quoteAmount"
-            :custom-handler="true"
-            :max-decimals="market ? market.priceDecimals : 6"
-            :placeholder="amountStep"
-            type="number"
-            :step="amountStep"
-            min="0"
-            data-cy="trading-page-amount-input"
-            show-prefix
-            show-addon
-            @input="onQuoteAmountChange"
-            @input-max="() => onPercentAmountSelected(100)"
-          >
-            <span slot="prefix">≈</span>
-            <span slot="addon">{{
-              market.quoteToken.symbol.toUpperCase()
-            }}</span>
-            <div
-              slot="context"
-              class="text-xs text-gray-400 flex items-center font-mono"
-            >
-              <span
-                class="mr-1 cursor-pointer"
-                @click.stop="onPercentAmountSelected(25)"
-              >
-                25%
-              </span>
-              <span
-                class="mr-1 cursor-pointer"
-                @click.stop="onPercentAmountSelected(50)"
-              >
-                50%
-              </span>
-              <span
-                class="mr-1 cursor-pointer"
-                @click.stop="onPercentAmountSelected(75)"
-              >
-                75%
-              </span>
-              <span
-                class="cursor-pointer"
-                @click.stop="onPercentAmountSelected(100)"
-              >
-                100%
-              </span>
-            </div>
-          </VInput>
-        </div>
-        <span
-          v-if="amountError"
-          class="text-2xs font-semibold text-red-500"
-          data-cy="trading-page-amount-error-text-content"
-        >
-          {{ amountError }}
-        </span>
-        <span
-          v-if="priceError"
-          data-cy="trading-page-price-error-text-content"
-          class="text-2xs font-semibold text-red-500"
-        >
-          {{ priceError }}
-        </span>
-      </div>
-    </div>
-    <div>
-      <AdvancedSettings
-        :slippage-tolerance="form.slippageTolerance"
-        :slippage-warning="slippageWarning"
-        :slippage-error="slippageError"
-        :trading-type-market="tradingTypeMarket"
-        :post-only="form.postOnly"
-        @set-slippage-tolerance="setSlippageTolerance"
-        @set-post-only="setPostOnly"
-      />
-    </div>
+    <TradingTypeButtons
+      :trading-type.sync="tradingType"
+      @update:trading-type="resetForm"
+    />
+
+    <OrderTypeSelect :order-type.sync="orderType" v-bind="{ market }" />
+
+    <OrderInputs
+      ref="orderInputs"
+      class="mt-8"
+      v-bind="{
+        tradingTypeMarket,
+        market,
+        quoteAvailableBalance,
+        sells,
+        takerFeeRate,
+        hasPrice,
+        buys,
+        orderTypeBuy,
+        baseAvailableBalance,
+        executionPrice,
+        feeRate,
+        amountStep,
+        lastTradedPrice,
+        totalWithFees,
+        hasAmount,
+        slippageTolerance: form.slippageTolerance,
+        postOnly: form.postOnly,
+        hasAdvancedSettingsErrors
+      }"
+      :amount.sync="form.amount"
+      :quote-amount.sync="form.quoteAmount"
+      :price.sync="form.price"
+      :proportional-percentage.sync="form.proportionalPercentage"
+      :has-input-errors.sync="hasInputErrors"
+      @update-price-from-last-traded-price="updatePriceFromLastTradedPrice"
+    />
+
     <component
       :is="tradingTypeMarket ? `OrderDetailsMarket` : 'OrderDetails'"
       v-bind="{
-        averagePrice,
-        price: executionPrice,
+        executionPrice,
         orderType,
         makerFeeRate,
         takerFeeRate,
-        makerExpectedPts,
-        takerExpectedPts,
         makerFeeRateDiscount,
         takerFeeRateDiscount,
         orderTypeBuy,
         fees,
         total,
         totalWithFees,
-        totalWithoutFees,
-        feeReturned,
-        feeRebates,
         amount,
         quoteAmount,
         detailsDrawerOpen,
         postOnly: form.postOnly,
         feeRate,
-        executionPrice,
         slippage
       }"
       @drawer-toggle="onDetailsDrawerToggle"
     />
-    <div>
-      <p
-        v-if="executionPriceHasHighDeviationWarning && !hasErrors"
-        class="text-2xs text-red-200 mb-4"
-      >
-        {{ $t('trade.execution_price_far_away_from_last_traded_price') }}
-      </p>
 
-      <p
-        v-if="!hasEnoughInjForGasOrNotKeplr"
-        class="text-2xs text-red-400 mb-4"
-      >
-        {{ $t('insufficientGas.tradingFormNote') }}
-        <a
-          :href="hubUrl"
-          target="_blank"
-          class="flex items-center text-primary-500"
-        >
-          <span class="mr-1">Injective Hub</span>
-          <IconExternalLink class="w-2 h-2" />
-        </a>
-      </p>
+    <OrderError
+      :has-enough-inj-for-gas-or-not-keplr.sync="hasEnoughInjForGasOrNotKeplr"
+      v-bind="{
+        executionPrice,
+        lastTradedPrice,
+        orderTypeBuy,
+        tradingTypeMarket,
+        wallet,
+        hasInputErrors,
+        hasAdvancedSettingsErrors
+      }"
+    />
 
-      <VButton
-        lg
-        :status="status"
-        :disabled="
-          hasErrors || !isUserWalletConnected || !hasEnoughInjForGasOrNotKeplr
-        "
-        :ghost="hasErrors"
-        :aqua="!hasErrors && orderType === SpotOrderSide.Buy"
-        :red="!hasErrors && orderType === SpotOrderSide.Sell"
-        class="w-full"
-        data-cy="trading-page-execute-button"
-        @click.stop="onSubmit"
-      >
-        {{ $t(orderTypeBuy ? 'trade.buy' : 'trade.sell') }}
-      </VButton>
-    </div>
+    <VButton
+      lg
+      :status="status"
+      :disabled="
+        hasInputErrors ||
+        hasAdvancedSettingsErrors ||
+        !isUserWalletConnected ||
+        !hasEnoughInjForGasOrNotKeplr
+      "
+      :ghost="hasInputErrors || hasAdvancedSettingsErrors"
+      :aqua="
+        (!hasInputErrors || hasAdvancedSettingsErrors) &&
+        orderType === SpotOrderSide.Buy
+      "
+      :red="
+        (!hasInputErrors || hasAdvancedSettingsErrors) &&
+        orderType === SpotOrderSide.Sell
+      "
+      class="w-full"
+      data-cy="trading-page-execute-button"
+      @click.stop="onSubmit"
+    >
+      {{ $t(orderTypeBuy ? 'trade.buy' : 'trade.sell') }}
+    </VButton>
     <VModalOrderConfirm @confirmed="submitLimitOrder" />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { TradeError } from 'types/errors'
 import { BigNumberInWei, Status, BigNumberInBase } from '@injectivelabs/utils'
 import { TradeExecutionType, Wallet } from '@injectivelabs/ts-types'
 import {
-  NUMBER_REGEX,
   ZERO_IN_BASE,
   UiPriceLevel,
   UiSpotMarketWithToken,
@@ -263,13 +120,13 @@ import {
 } from '@injectivelabs/sdk-ts'
 import OrderDetails from './order-details.vue'
 import OrderDetailsMarket from './order-details-market.vue'
-import AdvancedSettings from '~/components/partials/common/trade/advanced-settings.vue'
+import OrderInputs from '~/components/partials/common/trade/order-inputs.vue'
+import OrderTypeSelect from '~/components/partials/common/trade/order-type-select.vue'
+import AdvancedSettings from '~/components/partials/common/trade/advanced-settings/index.vue'
+import InputError from '~/components/partials/common/trade/input-error.vue'
+import OrderError from '~/components/partials/common/trade/order-error.vue'
 import {
   DEFAULT_PRICE_WARNING_DEVIATION,
-  DEFAULT_MARKET_PRICE_WARNING_DEVIATION,
-  DEFAULT_MAX_PRICE_BAND_DIFFERENCE,
-  DEFAULT_MIN_PRICE_BAND_DIFFERENCE,
-  PRICE_BAND_ENABLED,
   BIGGER_PRICE_WARNING_DEVIATION
 } from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
@@ -278,18 +135,12 @@ import { Modal } from '~/types'
 import {
   calculateAverageExecutionPriceFromFillableNotionalOnOrderBook,
   calculateAverageExecutionPriceFromOrderbook,
-  calculateWorstExecutionPriceFromOrderbook,
-  getApproxAmountForBuyOrder,
-  getApproxAmountForSellOrder,
-  getQuoteForPercentageSell,
-  getQuoteForPercentageBuy
+  calculateWorstExecutionPriceFromOrderbook
 } from '~/app/client/utils/spot'
-import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
-import {
-  formatPriceToAllowableDecimals,
-  formatAmountToAllowableDecimals
-} from '~/app/utils/formatters'
+import { formatAmountToAllowableDecimals } from '~/app/utils/formatters'
+import TradingTypeButtons from '~/components/partials/common/trade/trading-type-buttons.vue'
+import PercentAmountOptions from '~/components/partials/common/trade/percent-amount-options.vue'
 
 interface TradeForm {
   amount: string
@@ -298,6 +149,12 @@ interface TradeForm {
   slippageTolerance: string
   postOnly: boolean
   proportionalPercentage: number
+}
+
+interface OrderInputsRef extends Vue {
+  onPriceChange(price: string): void
+  onAmountChange(amount: string): void
+  updateBaseAmountFromQuote(): void
 }
 
 const initialForm = (): TradeForm => ({
@@ -311,11 +168,17 @@ const initialForm = (): TradeForm => ({
 
 export default Vue.extend({
   components: {
+    TradingTypeButtons,
+    OrderTypeSelect,
+    OrderInputs,
     ButtonCheckbox,
     OrderDetails,
     OrderDetailsMarket,
     VModalOrderConfirm,
-    AdvancedSettings
+    AdvancedSettings,
+    InputError,
+    OrderError,
+    PercentAmountOptions
   },
 
   data() {
@@ -326,17 +189,16 @@ export default Vue.extend({
       orderType: SpotOrderSide.Buy,
       detailsDrawerOpen: true,
       status: new Status(),
-      form: initialForm()
+      form: initialForm(),
+      hasInputErrors: false,
+      hasAdvancedSettingsErrors: false,
+      hasEnoughInjForGasOrNotKeplr: true
     }
   },
 
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
-    },
-
-    hasEnoughInjForGas(): boolean {
-      return this.$accessor.bank.hasEnoughInjForGas
     },
 
     wallet(): Wallet {
@@ -349,6 +211,18 @@ export default Vue.extend({
 
     orderbook(): UiSpotOrderbook | undefined {
       return this.$accessor.spot.orderbook
+    },
+
+    subaccount(): UiSubaccount | undefined {
+      return this.$accessor.account.subaccount
+    },
+
+    lastTradedPrice(): BigNumberInBase {
+      return this.$accessor.spot.lastTradedPrice
+    },
+
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
     },
 
     orderTypeToSubmit(): SpotOrderSide {
@@ -395,22 +269,6 @@ export default Vue.extend({
       return new BigNumberInBase(
         worstPrice.times(slippage).toFixed(market.priceDecimals)
       )
-    },
-
-    subaccount(): UiSubaccount | undefined {
-      return this.$accessor.account.subaccount
-    },
-
-    lastTradedPrice(): BigNumberInBase {
-      return this.$accessor.spot.lastTradedPrice
-    },
-
-    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
-      return this.$accessor.exchange.feeDiscountAccountInfo
-    },
-
-    tradingRewardsCampaign(): TradingRewardsCampaign | undefined {
-      return this.$accessor.exchange.tradingRewardsCampaign
     },
 
     baseAvailableBalance(): BigNumberInBase {
@@ -467,50 +325,6 @@ export default Vue.extend({
       return quoteAvailableBalance
     },
 
-    approxAmountFromPercentage(): string {
-      const {
-        market,
-        buys,
-        sells,
-        orderTypeBuy,
-        baseAvailableBalance,
-        quoteAvailableBalance,
-        executionPrice,
-        form: { proportionalPercentage },
-        feeRate
-      } = this
-
-      const percentageToNumber = new BigNumberInBase(
-        proportionalPercentage
-      ).div(100)
-
-      const balance = orderTypeBuy
-        ? quoteAvailableBalance
-        : baseAvailableBalance
-
-      if (!market) {
-        return ''
-      }
-
-      if (!orderTypeBuy) {
-        return getApproxAmountForSellOrder({
-          buys,
-          balance,
-          market,
-          percentageToNumber
-        })
-      }
-
-      return getApproxAmountForBuyOrder({
-        market,
-        balance,
-        percentageToNumber: percentageToNumber.toNumber(),
-        sells,
-        feeRate,
-        executionPrice
-      })
-    },
-
     buys(): UiPriceLevel[] {
       const { orderbook } = this
 
@@ -543,44 +357,6 @@ export default Vue.extend({
       const { amount, amountStep } = this
 
       return !amount.isNaN() && amount.gt(0) && amount.gte(amountStep)
-    },
-
-    slippageWarning(): string {
-      const {
-        form: { slippageTolerance },
-        tradingTypeMarket
-      } = this
-
-      if (!tradingTypeMarket) {
-        return ''
-      }
-
-      if (
-        new BigNumberInBase(slippageTolerance).gt(new BigNumberInBase(5)) &&
-        new BigNumberInBase(slippageTolerance).isLessThan(
-          new BigNumberInBase(50)
-        )
-      ) {
-        return this.$t('trade.high_slippage_warning')
-      }
-
-      if (
-        new BigNumberInBase(slippageTolerance).isLessThan(
-          new BigNumberInBase(0.05)
-        )
-      ) {
-        return this.$t('trade.low_slippage_tolerance_warning')
-      }
-
-      return ''
-    },
-
-    hasQuoteAmount(): boolean {
-      const { quoteAmount, priceStep } = this
-
-      return (
-        !quoteAmount.isNaN() && quoteAmount.gt(0) && quoteAmount.gte(priceStep)
-      )
     },
 
     tradingTypeMarket(): boolean {
@@ -805,30 +581,6 @@ export default Vue.extend({
       return '1'
     },
 
-    priceStep(): string {
-      const { market } = this
-
-      if (!market) {
-        return '1'
-      }
-
-      const decimalsAllowed = new BigNumberInBase(market.priceDecimals)
-
-      if (decimalsAllowed.eq(0)) {
-        return '1'
-      }
-
-      if (decimalsAllowed.eq(1)) {
-        return '0.1'
-      }
-
-      if (decimalsAllowed.gt(1)) {
-        return '0.' + '0'.repeat(decimalsAllowed.toNumber() - 1) + '1'
-      }
-
-      return '1'
-    },
-
     priceHasHighDeviationWarning(): boolean {
       const {
         price,
@@ -867,324 +619,6 @@ export default Vue.extend({
       return deviation.gt(defaultPriceWarningDeviation)
     },
 
-    executionPriceHasHighDeviationWarning(): boolean {
-      const {
-        executionPrice,
-        orderTypeBuy,
-        tradingTypeMarket,
-        lastTradedPrice
-      } = this
-
-      if (!tradingTypeMarket) {
-        return false
-      }
-
-      if (executionPrice.lte(0)) {
-        return false
-      }
-
-      const deviation = new BigNumberInBase(1)
-        .minus(
-          orderTypeBuy
-            ? lastTradedPrice.dividedBy(executionPrice)
-            : executionPrice.dividedBy(lastTradedPrice)
-        )
-        .times(100)
-
-      return deviation.gt(DEFAULT_MARKET_PRICE_WARNING_DEVIATION)
-    },
-
-    slippageTooHighError(): TradeError | undefined {
-      const {
-        form: { slippageTolerance }
-      } = this
-
-      if (new BigNumberInBase(slippageTolerance).gt(new BigNumberInBase(50))) {
-        return {
-          slippage: this.$t('trade.invalid_slippage')
-        }
-      }
-
-      return undefined
-    },
-
-    availableBalanceError(): TradeError | undefined {
-      const {
-        quoteAvailableBalance,
-        baseAvailableBalance,
-        totalWithFees,
-        amount,
-        hasAmount,
-        orderTypeBuy
-      } = this
-
-      if (orderTypeBuy) {
-        if (quoteAvailableBalance.lt(totalWithFees)) {
-          return {
-            price: this.$t('trade.not_enough_balance')
-          }
-        }
-
-        return undefined
-      }
-
-      if (!hasAmount) {
-        return undefined
-      }
-
-      if (baseAvailableBalance.lt(amount)) {
-        return {
-          amount: this.$t('trade.not_enough_balance')
-        }
-      }
-
-      return undefined
-    },
-
-    notEnoughOrdersToFillFromError(): TradeError | undefined {
-      const {
-        tradingTypeMarket,
-        orderTypeBuy,
-        sells,
-        buys,
-        amount,
-        quoteAmount,
-        hasAmount,
-        hasQuoteAmount
-      } = this
-
-      if (!tradingTypeMarket || (!hasAmount && !hasQuoteAmount)) {
-        return
-      }
-
-      const orders = orderTypeBuy ? sells : buys
-
-      if (orders.length <= 0 && (amount.gt(0) || quoteAmount.gt(0))) {
-        return {
-          amount: this.$t('trade.not_enough_fillable_orders')
-        }
-      }
-
-      return undefined
-    },
-
-    amountTooBigToFillError(): TradeError | undefined {
-      const {
-        tradingTypeMarket,
-        hasPrice,
-        hasAmount,
-        orderTypeBuy,
-        sells,
-        buys,
-        amount,
-        market
-      } = this
-
-      if (!tradingTypeMarket || !hasPrice || !hasAmount || !market) {
-        return
-      }
-
-      const orders = orderTypeBuy ? sells : buys
-      const totalAmount = orders.reduce((totalAmount, { quantity }) => {
-        return totalAmount.plus(
-          new BigNumberInWei(quantity).toBase(market.baseToken.decimals)
-        )
-      }, ZERO_IN_BASE)
-
-      if (totalAmount.lt(amount)) {
-        return {
-          amount: this.$t('trade.not_enough_fillable_orders')
-        }
-      }
-
-      return undefined
-    },
-
-    priceNotValidError(): TradeError | undefined {
-      const { form } = this
-
-      if (!form.price) {
-        return undefined
-      }
-
-      if (NUMBER_REGEX.test(form.price)) {
-        return undefined
-      }
-
-      return {
-        price: this.$t('trade.not_valid_number')
-      }
-    },
-
-    amountNotValidNumberError(): TradeError | undefined {
-      const { form } = this
-
-      if (!Number(form.amount)) {
-        return undefined
-      }
-
-      if (NUMBER_REGEX.test(form.amount)) {
-        return undefined
-      }
-
-      return {
-        amount: this.$t('trade.not_valid_number')
-      }
-    },
-
-    priceHighDeviationFromMidOrderbookPrice(): TradeError | undefined {
-      const {
-        tradingTypeMarket,
-        hasPrice,
-        hasAmount,
-        market,
-        sells,
-        buys,
-        executionPrice
-      } = this
-
-      if (tradingTypeMarket || !hasPrice || !hasAmount || !market) {
-        return
-      }
-
-      const [sell] = sells
-      const [buy] = buys
-      const highestBuy = new BigNumberInWei(buy ? buy.price : 0).toBase(
-        market.quoteToken.decimals - market.baseToken.decimals
-      )
-      const lowestSell = new BigNumberInWei(sell ? sell.price : 0).toBase(
-        market.quoteToken.decimals - market.baseToken.decimals
-      )
-      const middlePrice = highestBuy.plus(lowestSell).dividedBy(2)
-
-      if (middlePrice.lte(0)) {
-        return undefined
-      }
-
-      if (!PRICE_BAND_ENABLED) {
-        return undefined
-      }
-
-      const minTickPrice = new BigNumberInBase(
-        new BigNumberInBase(1).shiftedBy(-market.priceDecimals)
-      )
-      const acceptableMax = middlePrice.times(
-        DEFAULT_MAX_PRICE_BAND_DIFFERENCE.div(100)
-      )
-      const acceptableMin = middlePrice.times(
-        new BigNumberInBase(1).minus(DEFAULT_MIN_PRICE_BAND_DIFFERENCE.div(100))
-      )
-      const cappedAcceptableMin = acceptableMin.gt(0)
-        ? acceptableMin
-        : minTickPrice
-
-      if (
-        executionPrice.lt(cappedAcceptableMin) ||
-        executionPrice.gt(acceptableMax)
-      ) {
-        return {
-          price: this.$t('trade.your_order_has_high_price_deviation')
-        }
-      }
-
-      return undefined
-    },
-
-    hasEnoughInjForGasOrNotKeplr(): boolean {
-      const { wallet, hasEnoughInjForGas } = this
-
-      if (wallet !== Wallet.Keplr) {
-        return true
-      }
-
-      return hasEnoughInjForGas
-    },
-
-    priceError(): string | null {
-      const { price } = this.errors
-
-      return price || null
-    },
-
-    amountError(): string | null {
-      const { amount } = this.errors
-
-      return amount || null
-    },
-
-    slippageError(): string | null {
-      const {
-        errors: { slippage }
-      } = this
-
-      return slippage || null
-    },
-
-    errors(): TradeError {
-      if (this.availableBalanceError) {
-        return this.availableBalanceError
-      }
-
-      if (this.amountTooBigToFillError) {
-        return this.amountTooBigToFillError
-      }
-
-      if (this.notEnoughOrdersToFillFromError) {
-        return this.notEnoughOrdersToFillFromError
-      }
-
-      if (this.amountNotValidNumberError) {
-        return this.amountNotValidNumberError
-      }
-
-      if (this.priceNotValidError) {
-        return this.priceNotValidError
-      }
-
-      if (this.priceHighDeviationFromMidOrderbookPrice) {
-        return this.priceHighDeviationFromMidOrderbookPrice
-      }
-
-      if (this.slippageTooHighError) {
-        return this.slippageTooHighError
-      }
-
-      return { price: '', amount: '', slippage: '' }
-    },
-
-    hasErrors(): boolean {
-      const {
-        priceError,
-        amountError,
-        tradingTypeMarket,
-        hasAmount,
-        hasPrice,
-        price,
-        amount,
-        slippageError
-      } = this
-
-      if (priceError || amountError || slippageError || !hasAmount) {
-        return true
-      }
-
-      if (amount.lte(0)) {
-        return true
-      }
-
-      if (!tradingTypeMarket) {
-        if (price.lte(0) || !hasPrice) {
-          return true
-        }
-      }
-
-      if (!tradingTypeMarket && hasPrice && price.lte(0)) {
-        return true
-      }
-
-      return false
-    },
-
     total(): BigNumberInBase {
       const { hasPrice, hasAmount, executionPrice, market, amount } = this
 
@@ -1205,128 +639,6 @@ export default Vue.extend({
       return total.times(feeRate)
     },
 
-    makerExpectedPts(): BigNumberInBase {
-      const { market, makerFeeRate, tradingRewardsCampaign, fees } = this
-
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      if (makerFeeRate.lte(0)) {
-        return ZERO_IN_BASE
-      }
-
-      if (!tradingRewardsCampaign) {
-        return ZERO_IN_BASE
-      }
-
-      if (!tradingRewardsCampaign.tradingRewardCampaignInfo) {
-        return ZERO_IN_BASE
-      }
-
-      const disqualified =
-        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-          (marketId) => marketId === market.marketId
-        )
-
-      if (disqualified) {
-        return ZERO_IN_BASE
-      }
-
-      const denomIncluded =
-        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-          (denom) => denom === market.quoteDenom
-        )
-
-      if (!denomIncluded) {
-        return ZERO_IN_BASE
-      }
-
-      const boostedList = tradingRewardsCampaign.tradingRewardCampaignInfo
-        .tradingRewardBoostInfo
-        ? tradingRewardsCampaign.tradingRewardCampaignInfo
-            .tradingRewardBoostInfo.boostedSpotMarketIdsList
-        : []
-      const multipliersList = tradingRewardsCampaign.tradingRewardCampaignInfo
-        .tradingRewardBoostInfo
-        ? tradingRewardsCampaign.tradingRewardCampaignInfo
-            .tradingRewardBoostInfo.spotMarketMultipliersList
-        : []
-
-      const boosted = boostedList.findIndex(
-        (spotMarketId) => spotMarketId === market.marketId
-      )
-      const boostedMultiplier =
-        boosted >= 0
-          ? cosmosSdkDecToBigNumber(
-              multipliersList[boosted]
-                ? multipliersList[boosted].makerPointsMultiplier
-                : 1
-            )
-          : 1
-
-      return new BigNumberInBase(fees).times(boostedMultiplier)
-    },
-
-    takerExpectedPts(): BigNumberInBase {
-      const { market, tradingRewardsCampaign, fees } = this
-
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      if (!tradingRewardsCampaign) {
-        return ZERO_IN_BASE
-      }
-
-      if (!tradingRewardsCampaign.tradingRewardCampaignInfo) {
-        return ZERO_IN_BASE
-      }
-
-      const disqualified =
-        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-          (marketId) => marketId === market.marketId
-        )
-
-      if (disqualified) {
-        return ZERO_IN_BASE
-      }
-
-      const denomIncluded =
-        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-          (denom) => denom === market.quoteDenom
-        )
-
-      if (!denomIncluded) {
-        return ZERO_IN_BASE
-      }
-
-      const boostedList = tradingRewardsCampaign.tradingRewardCampaignInfo
-        .tradingRewardBoostInfo
-        ? tradingRewardsCampaign.tradingRewardCampaignInfo
-            .tradingRewardBoostInfo.boostedSpotMarketIdsList
-        : []
-      const multipliersList = tradingRewardsCampaign.tradingRewardCampaignInfo
-        .tradingRewardBoostInfo
-        ? tradingRewardsCampaign.tradingRewardCampaignInfo
-            .tradingRewardBoostInfo.spotMarketMultipliersList
-        : []
-
-      const boosted = boostedList.findIndex(
-        (spotMarketId) => spotMarketId === market.marketId
-      )
-      const boostedMultiplier =
-        boosted >= 0
-          ? cosmosSdkDecToBigNumber(
-              multipliersList[boosted]
-                ? multipliersList[boosted].takerPointsMultiplier
-                : 1
-            )
-          : 1
-
-      return new BigNumberInBase(fees).times(boostedMultiplier)
-    },
-
     totalWithFees(): BigNumberInBase {
       const { fees, total, market } = this
 
@@ -1337,42 +649,8 @@ export default Vue.extend({
       return fees.plus(total)
     },
 
-    totalWithoutFees(): BigNumberInBase {
-      const { fees, total, market } = this
-
-      if (total.isNaN() || total.lte(0) || !market) {
-        return ZERO_IN_BASE
-      }
-
-      return total.minus(fees)
-    },
-
-    feeReturned(): BigNumberInBase {
-      const { total, takerFeeRate, makerFeeRate, market } = this
-
-      if (total.isNaN() || total.lte(0) || !market) {
-        return ZERO_IN_BASE
-      }
-
-      return total.times(
-        new BigNumberInBase(takerFeeRate).minus(makerFeeRate.abs())
-      )
-    },
-
-    feeRebates(): BigNumberInBase {
-      const { total, makerFeeRate, market } = this
-
-      if (total.isNaN() || !market) {
-        return ZERO_IN_BASE
-      }
-
-      return new BigNumberInBase(total.times(makerFeeRate).abs()).times(
-        0.6 /* Only 60% of the fees are getting returned */
-      )
-    },
-
-    hubUrl(): string {
-      return 'https://hub.injective.network/bridge'
+    $orderInputs(): OrderInputsRef {
+      return this.$refs.orderInputs
     }
   },
 
@@ -1381,7 +659,7 @@ export default Vue.extend({
       const { tradingType, form, market } = this
 
       if (tradingType === TradeExecutionType.LimitFill && market) {
-        this.onPriceChange(form.price)
+        this.$orderInputs.onPriceChange(form.price)
       }
     },
 
@@ -1389,7 +667,7 @@ export default Vue.extend({
       const { form, market } = this
 
       if (newTradingType === TradeExecutionType.LimitFill && market) {
-        this.onPriceChange(form.price)
+        this.$orderInputs.onPriceChange(form.price)
       }
     },
 
@@ -1418,28 +696,6 @@ export default Vue.extend({
   },
 
   methods: {
-    /**
-     * We need to first update the form amount
-     * in order to get the new fees that apply to this order
-     * and then we update the amount again to account the fees
-     * into consideration
-     */
-    onPercentAmountSelected(percent = 100) {
-      this.form.proportionalPercentage = percent
-
-      this.updateBaseAndQuoteFromPercentage()
-    },
-
-    updateBaseAndQuoteFromPercentage() {
-      this.onAmountChangePercentage()
-
-      this.$nextTick(() => {
-        this.onAmountChangePercentage()
-
-        this.updateQuoteAmountFromPercentage()
-      })
-    },
-
     setSlippageTolerance(slippage: string) {
       this.form.slippageTolerance = formatAmountToAllowableDecimals(slippage, 2)
     },
@@ -1452,79 +708,10 @@ export default Vue.extend({
       this.form.postOnly = postOnly
 
       if (new BigNumberInBase(proportionalPercentage).isZero()) {
-        this.updateBaseAmount()
+        this.$orderInputs.updateBaseAmountFromQuote()
       } else {
-        this.updateBaseAndQuoteFromPercentage()
+        this.$percentageOptions.updateBaseAndQuoteAmountFromPercentage()
       }
-    },
-
-    updateQuoteForPercentageSell(percentToNumber: BigNumberInBase) {
-      const {
-        baseAvailableBalance = ZERO_IN_BASE,
-        market,
-        buys,
-        executionPrice = ZERO_IN_BASE,
-        feeRate
-      } = this
-
-      if (!market) {
-        return
-      }
-
-      this.form.quoteAmount = getQuoteForPercentageSell({
-        buys,
-        market,
-        baseAvailableBalance,
-        percentToNumber,
-        executionPrice,
-        feeRate
-      })
-    },
-
-    updateQuoteForPercentageBuy(percentToNumber: BigNumberInBase) {
-      const {
-        quoteAvailableBalance = ZERO_IN_BASE,
-        sells,
-        takerFeeRate,
-        market
-      } = this
-
-      if (!market) {
-        return
-      }
-
-      this.form.quoteAmount = getQuoteForPercentageBuy({
-        sells,
-        market,
-        quoteAvailableBalance,
-        percentToNumber,
-        takerFeeRate
-      })
-    },
-
-    updateQuoteAmountFromPercentage() {
-      const {
-        orderTypeBuy,
-        form: { proportionalPercentage }
-      } = this
-
-      const percentToNumber = new BigNumberInBase(proportionalPercentage).div(
-        100
-      )
-
-      if (!orderTypeBuy) {
-        this.updateQuoteForPercentageSell(percentToNumber)
-      } else {
-        this.updateQuoteForPercentageBuy(percentToNumber)
-      }
-    },
-
-    onDetailsDrawerToggle() {
-      this.detailsDrawerOpen = !this.detailsDrawerOpen
-    },
-
-    onOrderbookSizeClick(size: string) {
-      this.onAmountChange(size)
     },
 
     updatePriceFromLastTradedPrice() {
@@ -1561,153 +748,32 @@ export default Vue.extend({
         .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
 
       this.$nextTick(() => {
-        this.onAmountChange(amount)
+        this.$orderInputs.onAmountChange(amount)
       })
+    },
+
+    onDetailsDrawerToggle() {
+      this.detailsDrawerOpen = !this.detailsDrawerOpen
+    },
+
+    onOrderbookSizeClick(size: string) {
+      this.$orderInputs.onAmountChange(size)
     },
 
     onOrderbookPriceClick(price: string) {
       this.tradingType = TradeExecutionType.LimitFill
 
       this.$nextTick(() => {
-        this.onPriceChange(price)
+        this.$orderInputs.onPriceChange(price)
       })
     },
 
-    onPriceChange(price: string = '') {
-      const { hasAmount, market } = this
-
-      if (!market) {
-        return
-      }
-
-      this.form.price = formatPriceToAllowableDecimals(
-        price,
-        market.priceDecimals
-      )
-
-      if (hasAmount) {
-        this.updateQuoteAmount()
-      }
-    },
-
-    onAmountChange(amount: string = '') {
-      const { hasPrice, market } = this
-
-      if (!market) {
-        return
-      }
-
-      this.form.amount = formatAmountToAllowableDecimals(
-        amount,
-        market.quantityDecimals
-      )
-
-      this.resetQuoteAmount()
-      this.resetProportionalPercentage()
-
-      if (!hasPrice) {
-        this.updatePriceFromLastTradedPrice()
-      }
-
-      this.updateQuoteAmount()
-    },
-
-    onAmountChangePercentage() {
-      const { hasPrice, market, approxAmountFromPercentage = '' } = this
-
-      if (!market) {
-        return
-      }
-
-      this.form.amount = formatAmountToAllowableDecimals(
-        approxAmountFromPercentage,
-        market.quantityDecimals
-      )
-
-      this.resetQuoteAmount()
-
-      if (!hasPrice) {
-        this.updatePriceFromLastTradedPrice()
-      }
-    },
-
-    onQuoteAmountChange(quoteAmount: string = '') {
-      const { hasPrice, market } = this
-
-      if (!market) {
-        return
-      }
-
-      this.form.quoteAmount = formatAmountToAllowableDecimals(
-        quoteAmount,
-        market.priceDecimals
-      )
-
-      console.log(this.form.quoteAmount)
-
-      this.resetBaseAmount()
-      this.resetProportionalPercentage()
-
-      if (!hasPrice) {
-        this.updatePriceFromLastTradedPrice()
-      }
-
-      this.updateBaseAmount()
-    },
-
-    resetBaseAmount() {
+    resetForm() {
       this.form.amount = ''
-    },
-
-    resetQuoteAmount() {
       this.form.quoteAmount = ''
-    },
-
-    resetProportionalPercentage() {
+      this.form.price = ''
+      this.form.quoteAmount = ''
       this.form.proportionalPercentage = 0
-    },
-
-    updateBaseAmount() {
-      const { quoteAmount, executionPrice, market, orderTypeBuy, feeRate } =
-        this
-
-      if (!market) {
-        return
-      }
-
-      const feeMultiplier = orderTypeBuy
-        ? new BigNumberInBase(1).plus(feeRate)
-        : new BigNumberInBase(1).minus(feeRate)
-
-      this.form.amount = quoteAmount
-        .div(executionPrice.times(feeMultiplier))
-        .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
-    },
-
-    updateQuoteAmount() {
-      const { amount, executionPrice, market, feeRate, orderTypeBuy } = this
-
-      if (!market) {
-        return
-      }
-
-      const feeMultiplier = orderTypeBuy
-        ? new BigNumberInBase(1).plus(feeRate)
-        : new BigNumberInBase(1).minus(feeRate)
-
-      const quoteAmount = amount.times(executionPrice).times(feeMultiplier)
-
-      this.form.quoteAmount = formatAmountToAllowableDecimals(
-        quoteAmount.toNumber(),
-        market.priceDecimals
-      )
-    },
-
-    onTradingTypeToggle(selectedTradingType: TradeExecutionType) {
-      this.tradingType = selectedTradingType
-      this.resetBaseAmount()
-      this.resetQuoteAmount()
-      this.resetProportionalPercentage()
     },
 
     submitLimitOrder() {
@@ -1762,7 +828,8 @@ export default Vue.extend({
 
     onSubmit() {
       const {
-        hasErrors,
+        hasInputErrors,
+        hasAdvancedSettingsErrors,
         tradingTypeMarket,
         priceHasHighDeviationWarning,
         isUserWalletConnected
@@ -1772,7 +839,7 @@ export default Vue.extend({
         return this.$toast.error(this.$t('please_connect_your_wallet'))
       }
 
-      if (hasErrors) {
+      if (hasInputErrors || hasAdvancedSettingsErrors) {
         return this.$toast.error(this.$t('trade.error_in_form'))
       }
 

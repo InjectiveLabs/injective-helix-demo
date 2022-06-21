@@ -379,7 +379,7 @@ export default Vue.extend({
         value,
         maxDecimals
       ).toString()
-
+      console.log(formattedValue)
       this.delayUpdateInput(formattedValue)
     },
 

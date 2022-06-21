@@ -268,7 +268,7 @@ import OrderDetails from './order-details.vue'
 import OrderLeverage from './order-leverage.vue'
 import OrderLeverageSelect from './order-leverage-select.vue'
 import OrderDetailsMarket from './order-details-market.vue'
-import AdvancedSettings from '~/components/partials/common/trade/advanced-settings.vue'
+import AdvancedSettings from '~/components/partials/common/trade/advanced-settings/index.vue'
 import {
   DEFAULT_PRICE_WARNING_DEVIATION,
   DEFAULT_MARKET_PRICE_WARNING_DEVIATION,
