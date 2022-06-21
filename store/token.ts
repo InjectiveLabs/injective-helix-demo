@@ -182,7 +182,7 @@ export const actions = actionTree(
             ...ercTokensWithBalanceAndAllowance
           ].map((token) => [token.denom, token])
         ).values()
-      ]
+      ].filter(({ address }) => address)
 
       commit(
         'setErc20TokensWithBalanceAndPriceFromBank',
