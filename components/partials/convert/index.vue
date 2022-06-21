@@ -420,6 +420,7 @@ export default Vue.extend({
     buys(): UiPriceLevel[] {
       const { orderbook } = this
 
+      console.log(orderbook)
       if (!orderbook) {
         return []
       }
@@ -430,6 +431,7 @@ export default Vue.extend({
     sells(): UiPriceLevel[] {
       const { orderbook } = this
 
+      console.log(orderbook)
       if (!orderbook) {
         return []
       }
@@ -874,7 +876,7 @@ export default Vue.extend({
     },
 
     hasErrors(): boolean {
-      const { priceError, amountError, hasAmount, amount } = this
+      const { priceError, amountError, hasAmount, amount, fromAmount, toAmount } = this
 
       if (priceError) {
         return true
@@ -889,6 +891,10 @@ export default Vue.extend({
       }
 
       if (amount.lte(0)) {
+        return true
+      }
+
+      if (fromAmount === '' || toAmount === '') {
         return true
       }
 
@@ -973,20 +979,26 @@ export default Vue.extend({
 
     fee(): BigNumberInBase {
       const {
-        amount,
+        orderTypeBuy,
+        fromAmount,
+        toAmount,
         executionPriceWithoutSlippage,
         takerFeeRate,
         takerFeeRateDiscount
       } = this
 
-      if (amount.isNaN()) {
+      const quantity = orderTypeBuy
+        ? new BigNumberInBase(toAmount)
+        : new BigNumberInBase(fromAmount)
+
+      if (quantity.isNaN() || quantity.eq(ZERO_IN_BASE)) {
         return ZERO_IN_BASE
       }
 
       const discount = new BigNumberInBase(1).minus(takerFeeRateDiscount)
 
       const fee = executionPriceWithoutSlippage
-        .times(amount)
+        .times(quantity)
         .times(takerFeeRate)
         .times(discount)
 

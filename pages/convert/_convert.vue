@@ -87,7 +87,7 @@ export default Vue.extend({
       this.$accessor.spot.pollOrderbook()
       this.interval = setInterval(() => {
         this.$accessor.spot.pollOrderbook()
-      }, 2000)
+      }, 5000)
     }
   }
 })
