@@ -420,7 +420,6 @@ export default Vue.extend({
     buys(): UiPriceLevel[] {
       const { orderbook } = this
 
-      console.log(orderbook)
       if (!orderbook) {
         return []
       }
@@ -431,7 +430,6 @@ export default Vue.extend({
     sells(): UiPriceLevel[] {
       const { orderbook } = this
 
-      console.log(orderbook)
       if (!orderbook) {
         return []
       }
