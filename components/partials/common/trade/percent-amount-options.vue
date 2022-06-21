@@ -39,11 +39,6 @@ export default Vue.extend({
       required: true
     },
 
-    amount: {
-      type: String,
-      required: true
-    },
-
     market: {
       type: Object as PropType<UiSpotMarketWithToken>,
       required: true
@@ -144,7 +139,7 @@ export default Vue.extend({
 
   methods: {
     onPercentAmountSelected(percent = 100) {
-      this.$emit('update:proportional-percentage', percent)
+      this.$emit('update-proportional-percentage', percent)
 
       this.updateBaseAndQuoteAmountFromPercentage()
     },
@@ -173,7 +168,7 @@ export default Vue.extend({
       }
 
       this.$emit(
-        'update:amount',
+        'update-base-amount-from-percentage',
         formatAmountToAllowableDecimals(
           approxAmountFromPercentage,
           market.quantityDecimals
@@ -181,7 +176,7 @@ export default Vue.extend({
       )
 
       // todo: check if this is ok
-      this.$emit('update:quote-amount', '')
+      this.$emit('update:quote-amount-from-percentage', '')
 
       if (!hasPrice) {
         this.$emit('update-price-from-last-traded-price')
@@ -227,7 +222,7 @@ export default Vue.extend({
             feeRate
           })
 
-      this.$emit('update:quote-amount', quoteAmount)
+      this.$emit('update-quote-amount-from-percentage', quoteAmount)
     }
   }
 })

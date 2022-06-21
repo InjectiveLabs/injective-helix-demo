@@ -27,14 +27,16 @@
         totalWithFees,
         hasAmount,
         slippageTolerance: form.slippageTolerance,
-        postOnly: form.postOnly,
-        hasAdvancedSettingsErrors
+        tradingType
       }"
       :amount.sync="form.amount"
       :quote-amount.sync="form.quoteAmount"
       :price.sync="form.price"
+      :post-only.sync="form.postOnly"
+      :slippage-tolerance.sync="form.slippageTolerance"
       :proportional-percentage.sync="form.proportionalPercentage"
       :has-input-errors.sync="hasInputErrors"
+      :has-advanced-settings-errors.sync="hasAdvancedSettingsErrors"
       @update-price-from-last-traded-price="updatePriceFromLastTradedPrice"
     />
 
@@ -138,7 +140,6 @@ import {
   calculateWorstExecutionPriceFromOrderbook
 } from '~/app/client/utils/spot'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
-import { formatAmountToAllowableDecimals } from '~/app/utils/formatters'
 import TradingTypeButtons from '~/components/partials/common/trade/trading-type-buttons.vue'
 import PercentAmountOptions from '~/components/partials/common/trade/percent-amount-options.vue'
 
@@ -149,12 +150,6 @@ interface TradeForm {
   slippageTolerance: string
   postOnly: boolean
   proportionalPercentage: number
-}
-
-interface OrderInputsRef extends Vue {
-  onPriceChange(price: string): void
-  onAmountChange(amount: string): void
-  updateBaseAmountFromQuote(): void
 }
 
 const initialForm = (): TradeForm => ({
@@ -225,6 +220,38 @@ export default Vue.extend({
       return this.$accessor.exchange.feeDiscountAccountInfo
     },
 
+    buys(): UiPriceLevel[] {
+      const { orderbook } = this
+
+      if (!orderbook) {
+        return []
+      }
+
+      return orderbook.buys
+    },
+
+    sells(): UiPriceLevel[] {
+      const { orderbook } = this
+
+      if (!orderbook) {
+        return []
+      }
+
+      return orderbook.sells
+    },
+
+    tradingTypeMarket(): boolean {
+      const { tradingType } = this
+
+      return tradingType === TradeExecutionType.Market
+    },
+
+    orderTypeBuy(): boolean {
+      const { orderType } = this
+
+      return orderType === SpotOrderSide.Buy
+    },
+
     orderTypeToSubmit(): SpotOrderSide {
       const {
         form: { postOnly },
@@ -250,25 +277,18 @@ export default Vue.extend({
       }
     },
 
-    worstPrice(): BigNumberInBase {
-      const { orderTypeBuy, slippage, sells, buys, hasAmount, market, amount } =
-        this
+    amount(): BigNumberInBase {
+      return new BigNumberInBase(this.form.amount)
+    },
 
-      if (!market || !hasAmount) {
-        return ZERO_IN_BASE
-      }
+    quoteAmount(): BigNumberInBase {
+      return new BigNumberInBase(this.form.quoteAmount)
+    },
 
-      const records = orderTypeBuy ? sells : buys
+    hasAmount(): boolean {
+      const { amount, amountStep } = this
 
-      const worstPrice = calculateWorstExecutionPriceFromOrderbook({
-        records,
-        amount,
-        market
-      })
-
-      return new BigNumberInBase(
-        worstPrice.times(slippage).toFixed(market.priceDecimals)
-      )
+      return !amount.isNaN() && amount.gt(0) && amount.gte(amountStep)
     },
 
     baseAvailableBalance(): BigNumberInBase {
@@ -323,52 +343,6 @@ export default Vue.extend({
       }
 
       return quoteAvailableBalance
-    },
-
-    buys(): UiPriceLevel[] {
-      const { orderbook } = this
-
-      if (!orderbook) {
-        return []
-      }
-
-      return orderbook.buys
-    },
-
-    sells(): UiPriceLevel[] {
-      const { orderbook } = this
-
-      if (!orderbook) {
-        return []
-      }
-
-      return orderbook.sells
-    },
-
-    amount(): BigNumberInBase {
-      return new BigNumberInBase(this.form.amount)
-    },
-
-    quoteAmount(): BigNumberInBase {
-      return new BigNumberInBase(this.form.quoteAmount)
-    },
-
-    hasAmount(): boolean {
-      const { amount, amountStep } = this
-
-      return !amount.isNaN() && amount.gt(0) && amount.gte(amountStep)
-    },
-
-    tradingTypeMarket(): boolean {
-      const { tradingType } = this
-
-      return tradingType === TradeExecutionType.Market
-    },
-
-    orderTypeBuy(): boolean {
-      const { orderType } = this
-
-      return orderType === SpotOrderSide.Buy
     },
 
     slippage(): BigNumberInBase {
@@ -474,6 +448,27 @@ export default Vue.extend({
       const { price } = this
 
       return price.gt(0)
+    },
+
+    worstPrice(): BigNumberInBase {
+      const { orderTypeBuy, slippage, sells, buys, hasAmount, market, amount } =
+        this
+
+      if (!market || !hasAmount) {
+        return ZERO_IN_BASE
+      }
+
+      const records = orderTypeBuy ? sells : buys
+
+      const worstPrice = calculateWorstExecutionPriceFromOrderbook({
+        records,
+        amount,
+        market
+      })
+
+      return new BigNumberInBase(
+        worstPrice.times(slippage).toFixed(market.priceDecimals)
+      )
     },
 
     averagePriceDerivedFromBaseAmount(): BigNumberInBase {
@@ -649,43 +644,8 @@ export default Vue.extend({
       return fees.plus(total)
     },
 
-    $orderInputs(): OrderInputsRef {
+    $orderInputs(): any {
       return this.$refs.orderInputs
-    }
-  },
-
-  watch: {
-    orderType() {
-      const { tradingType, form, market } = this
-
-      if (tradingType === TradeExecutionType.LimitFill && market) {
-        this.$orderInputs.onPriceChange(form.price)
-      }
-    },
-
-    tradingType(newTradingType: TradeExecutionType) {
-      const { form, market } = this
-
-      if (newTradingType === TradeExecutionType.LimitFill && market) {
-        this.$orderInputs.onPriceChange(form.price)
-      }
-    },
-
-    lastTradedPrice(newPrice: BigNumberInBase) {
-      const {
-        form: { price },
-        market
-      } = this
-
-      if (!market) {
-        return
-      }
-
-      if (!price) {
-        this.form.price = new BigNumberInBase(newPrice).toFixed(
-          market.priceDecimals
-        )
-      }
     }
   },
 
@@ -696,24 +656,6 @@ export default Vue.extend({
   },
 
   methods: {
-    setSlippageTolerance(slippage: string) {
-      this.form.slippageTolerance = formatAmountToAllowableDecimals(slippage, 2)
-    },
-
-    setPostOnly(postOnly: boolean) {
-      const {
-        form: { proportionalPercentage }
-      } = this
-
-      this.form.postOnly = postOnly
-
-      if (new BigNumberInBase(proportionalPercentage).isZero()) {
-        this.$orderInputs.updateBaseAmountFromQuote()
-      } else {
-        this.$percentageOptions.updateBaseAndQuoteAmountFromPercentage()
-      }
-    },
-
     updatePriceFromLastTradedPrice() {
       const { lastTradedPrice, market } = this
 

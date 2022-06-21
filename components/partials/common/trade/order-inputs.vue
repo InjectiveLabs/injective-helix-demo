@@ -3,7 +3,7 @@
     <VInput
       v-if="!tradingTypeMarket"
       ref="input-price"
-      :value="price"
+      :value="localPrice"
       :placeholder="priceStep"
       :label="$t('trade.price')"
       :disabled="tradingTypeMarket"
@@ -72,9 +72,10 @@
             feeRate
           }"
           ref="percentageOptions"
-          :quote-amount.sync="quoteAmount"
-          :proportional-percentage.sync="proportionalPercentage"
-          :amount.sync="amount"
+          :proportional-percentage="localProportionalPercentage"
+          @update-proportional-percentage="updateProportionalPercentage"
+          @update-quote-amount-from-percentage="updateQuoteAmountFromPercentage"
+          @update-base-amount-from-percentage="updateBaseAmountFromPercentage"
           @update-price-from-last-traded-price="updatePriceFromLastTradedPrice"
         />
       </VInput>
@@ -104,12 +105,13 @@
     />
 
     <AdvancedSettings
-      :slippage-tolerance="form.slippageTolerance"
       :trading-type-market="tradingTypeMarket"
-      :post-only="form.postOnly"
-      :has-advanced-settings-errors.sync="hasAdvancedSettingsErrors"
+      :slippage-tolerance="localSlippageTolerance"
+      :post-only="localPostOnly"
+      :has-advanced-settings-errors="hasAdvancedSettingsErrors"
       @set-slippage-tolerance="setSlippageTolerance"
       @set-post-only="setPostOnly"
+      @update-has-advanced-settings-errors="updateHasAdvancedSettingsErrors"
     />
   </div>
 </template>
@@ -117,6 +119,7 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken, UiPriceLevel } from '@injectivelabs/sdk-ui-ts'
+import { TradeExecutionType } from '@injectivelabs/ts-types'
 import PercentAmountOptions from '~/components/partials/common/trade/percent-amount-options.vue'
 import InputError from '~/components/partials/common/trade/input-error.vue'
 import AdvancedSettings from '~/components/partials/common/trade/advanced-settings/index.vue'
@@ -139,6 +142,11 @@ export default Vue.extend({
   props: {
     tradingTypeMarket: {
       type: Boolean,
+      required: true
+    },
+
+    tradingType: {
+      type: String as PropType<TradeExecutionType>,
       required: true
     },
 
@@ -235,13 +243,22 @@ export default Vue.extend({
     hasAmount: {
       type: Boolean,
       required: true
+    },
+
+    hasAdvancedSettingsErrors: {
+      type: Boolean,
+      required: true
     }
   },
 
   data() {
     return {
       localBaseAmount: '',
-      localQuoteAmount: ''
+      localQuoteAmount: '',
+      localPrice: '',
+      localPostOnly: false,
+      localProportionalPercentage: 0,
+      localSlippageTolerance: '0.5'
     }
   },
 
@@ -303,19 +320,75 @@ export default Vue.extend({
     }
   },
 
+  watch: {
+    lastTradedPrice(newPrice: BigNumberInBase) {
+      const { price, market } = this
+      if (!market) {
+        return
+      }
+      if (!price) {
+        const formattedPrice = newPrice.toFixed(market.priceDecimals)
+        this.localPrice = formattedPrice
+        this.$emit('update:price', formattedPrice)
+      }
+    },
+
+    orderType() {
+      const { tradingType, localPrice, market } = this
+
+      if (tradingType === TradeExecutionType.LimitFill && market) {
+        this.onPriceChange(localPrice)
+      }
+    },
+
+    tradingType(newTradingType: TradeExecutionType) {
+      const { localPrice, market } = this
+
+      if (newTradingType === TradeExecutionType.LimitFill && market) {
+        this.onPriceChange(localPrice)
+      }
+    }
+  },
+
   methods: {
+    updateBaseAmountFromPercentage(amount: string) {
+      this.localBaseAmount = amount
+      this.$emit('update:amount', amount)
+    },
+
+    updateQuoteAmountFromPercentage(quoteAmount: string) {
+      this.localQuoteAmount = quoteAmount
+      this.$emit('update:quote-amount', quoteAmount)
+    },
+
+    updateHasAdvancedSettingsErrors(hasAdvancedSettingsErrors: boolean) {
+      this.$emit(
+        'update:has-advanced-settings-errors',
+        hasAdvancedSettingsErrors
+      )
+    },
+
+    updateProportionalPercentage(proportionalPercentage: number) {
+      this.localProportionalPercentage = proportionalPercentage
+      this.$emit('update:proportional-percentage', proportionalPercentage)
+    },
+
     setPostOnly(postOnly: boolean) {
-      const {
-        form: { proportionalPercentage }
-      } = this
+      const { localProportionalPercentage } = this
 
       this.localPostOnly = postOnly
+      this.$emit('update:post-only', postOnly)
 
-      if (new BigNumberInBase(proportionalPercentage).isZero()) {
+      if (new BigNumberInBase(localProportionalPercentage).isZero()) {
         this.updateBaseAmountFromQuote()
       } else {
-        this.updateBaseAndQuoteAmountFromPercentage()
+        this.$percentageOptions.updateBaseAndQuoteAmountFromPercentage()
       }
+    },
+
+    setSlippageTolerance(slippage: string) {
+      this.localSlippageTolerance = formatAmountToAllowableDecimals(slippage, 2)
+      this.$emit('update:slippage-tolerance', slippage)
     },
 
     onPriceChange(price: string = '') {
@@ -325,10 +398,13 @@ export default Vue.extend({
         return
       }
 
-      this.$emit(
-        'update:price',
-        formatPriceToAllowableDecimals(price, market.priceDecimals)
+      const formattedPrice = formatPriceToAllowableDecimals(
+        price,
+        market.priceDecimals
       )
+
+      this.localPrice = formattedPrice
+      this.$emit('update:price', formattedPrice)
 
       if (hasAmount) {
         this.updateQuoteAmountFromBase()

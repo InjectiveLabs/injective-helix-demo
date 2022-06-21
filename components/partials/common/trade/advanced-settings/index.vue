@@ -109,11 +109,6 @@ export default Vue.extend({
   },
 
   props: {
-    hasAdvancedSettingsErrors: {
-      type: Boolean,
-      required: true
-    },
-
     slippageTolerance: {
       type: String,
       required: true
@@ -217,7 +212,7 @@ export default Vue.extend({
     },
 
     handleHasErrorUpdateEvent(hasError: boolean): void {
-      this.$emit('update:has-advanced-settings-errors', hasError)
+      this.$emit('update-has-advanced-settings-errors', hasError)
     },
 
     handleReduceOnlyCheckboxToggle(checked: boolean) {
