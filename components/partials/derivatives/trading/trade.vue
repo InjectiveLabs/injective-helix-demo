@@ -225,13 +225,14 @@ import {
   DerivativeOrderSide,
   UiDerivativeLimitOrder,
   UiDerivativeMarketSummary,
-  UiDerivativeMarketWithToken,
   UiDerivativeOrderbook,
   UiPosition,
   UiPriceLevel,
   NUMBER_REGEX,
   ZERO_IN_BASE,
-  UiSubaccount
+  UiSubaccount,
+  UiPerpetualMarketWithToken,
+  UiExpiryFuturesMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import {
   cosmosSdkDecToBigNumber,
@@ -304,8 +305,14 @@ export default Vue.extend({
       return this.$accessor.wallet.isUserWalletConnected
     },
 
-    market(): UiDerivativeMarketWithToken | undefined {
-      return this.$accessor.derivatives.market
+    market():
+      | UiPerpetualMarketWithToken
+      | UiExpiryFuturesMarketWithToken
+      | undefined {
+      return this.$accessor.derivatives.market as
+        | UiPerpetualMarketWithToken
+        | UiExpiryFuturesMarketWithToken
+        | undefined
     },
 
     hasEnoughInjForGas(): boolean {
@@ -1210,8 +1217,13 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
+      const derivativeMarket = market as
+        | UiPerpetualMarketWithToken
+        | UiExpiryFuturesMarketWithToken
       const maxLeverage = new BigNumberInBase(
-        new BigNumberInBase(1).dividedBy(market.initialMarginRatio).dp(0)
+        new BigNumberInBase(1)
+          .dividedBy(derivativeMarket.initialMarginRatio)
+          .dp(0)
       )
 
       const steps = [1, 2, 5, 10, 20, 50, 100, 150, 200]

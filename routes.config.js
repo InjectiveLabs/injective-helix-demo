@@ -25,7 +25,7 @@ const spot = IS_TESTNET
   ? mainnetStagingSpot
   : mainnetSpot
 
-const mainnetDerivatives = [
+const mainnetPerpetuals = [
   'btc-usdt-perp',
   'inj-usdt-perp',
   'eth-usdt-perp',
@@ -35,21 +35,27 @@ const mainnetDerivatives = [
   'stx-usdt-perp',
   'atom-usdt-perp'
 ]
-const testnetDerivatives = [...mainnetDerivatives]
-const mainnetStagingDerivatives = [...mainnetDerivatives]
-const derivatives = IS_TESTNET
-  ? testnetDerivatives
+const testnetPerpetuals = [...mainnetPerpetuals]
+const mainnetStagingPerpetuals = [...mainnetPerpetuals]
+const perpetuals = IS_TESTNET
+  ? testnetPerpetuals
   : IS_MAINNET_STAGING
-  ? mainnetStagingDerivatives
-  : mainnetDerivatives
+  ? mainnetStagingPerpetuals
+  : mainnetPerpetuals
+
+const binaryOptions = ['']
+const expiryFutures = ['']
 
 if (NETWORK === Network.Devnet || IS_MAINNET_STAGING) {
-  // derivatives.push()
+  // perpetuals.push()
   // spot.push('dot-usdt')
+  binaryOptions.push('hhabib-tko-05-30/2023')
 }
 
 const spotRoutes = spot.map((s) => `/spot/${s}`) || []
-const derivativesRoutes = derivatives.map((s) => `/derivatives/${s}`) || [] // example: '/market/huahua-usdt'
+const perpetualsRoutes = perpetuals.map((s) => `/perpetuals/${s}`) || []
+const derivativesRoutes = perpetuals.map((s) => `/derivatives/${s}`) || [] // Legacy support
+const binaryOptionsRoutes = spot.map((s) => `/binary-options/${s}`) || []
 
 const upcomingMarketsRoutes = []
 const deprecatedMarketsRoutes = IS_TESTNET || IS_DEVNET ? [] : []
@@ -68,9 +74,14 @@ module.exports = [
   ...upcomingMarketsRoutes,
   ...deprecatedMarketsRoutes,
   ...spotRoutes,
-  ...derivativesRoutes
+  ...perpetualsRoutes,
+  ...derivativesRoutes,
+  ...binaryOptionsRoutes
 ]
 
 module.exports.spot = spot
-module.exports.derivatives = derivatives
+module.exports.binaryOptions = binaryOptions
+module.exports.derivatives = perpetuals /* Legacy support */
+module.exports.perpetuals = perpetuals
+module.exports.expiryFutures = expiryFutures
 module.exports.upcomingMarketsRoutes = upcomingMarketsRoutes

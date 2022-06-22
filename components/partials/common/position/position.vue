@@ -197,6 +197,8 @@ import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
+import { getMarketRoute } from '~/app/utils/market'
+import { derivativeMarketRouteNames } from '~/app/data/market'
 
 export default Vue.extend({
   props: {
@@ -247,7 +249,7 @@ export default Vue.extend({
     },
 
     isOnMarketPage(): boolean {
-      return this.$route.name === 'derivatives-derivative'
+      return derivativeMarketRouteNames.includes(this.$route.name as string)
     },
 
     market(): UiDerivativeMarketWithToken | undefined {
@@ -616,13 +618,7 @@ export default Vue.extend({
         return
       }
 
-      return this.$router.push({
-        name: 'derivatives-derivative',
-        params: {
-          marketId: market.marketId,
-          derivative: market.slug
-        }
-      })
+      return this.$router.push({ ...getMarketRoute(market) })
     }
   }
 })
