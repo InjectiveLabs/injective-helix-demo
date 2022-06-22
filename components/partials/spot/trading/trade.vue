@@ -65,51 +65,27 @@
       @drawer-toggle="onDetailsDrawerToggle"
     />
 
-    <OrderError
-      :has-enough-inj-for-gas-or-not-keplr.sync="hasEnoughInjForGasOrNotKeplr"
+    <OrderSubmit
       v-bind="{
         executionPrice,
-        lastTradedPrice,
-        orderTypeBuy,
-        tradingTypeMarket,
-        wallet,
         hasInputErrors,
-        hasAdvancedSettingsErrors
+        hasAdvancedSettingsErrors,
+        lastTradedPrice,
+        market,
+        orderType,
+        orderTypeBuy,
+        status,
+        tradingTypeMarket
       }"
+      @submit="onSubmit"
     />
-
-    <VButton
-      lg
-      :status="status"
-      :disabled="
-        hasInputErrors ||
-        hasAdvancedSettingsErrors ||
-        !isUserWalletConnected ||
-        !hasEnoughInjForGasOrNotKeplr
-      "
-      :ghost="hasInputErrors || hasAdvancedSettingsErrors"
-      :aqua="
-        (!hasInputErrors || hasAdvancedSettingsErrors) &&
-        orderType === SpotOrderSide.Buy
-      "
-      :red="
-        (!hasInputErrors || hasAdvancedSettingsErrors) &&
-        orderType === SpotOrderSide.Sell
-      "
-      class="w-full"
-      data-cy="trading-page-execute-button"
-      @click.stop="onSubmit"
-    >
-      {{ $t(orderTypeBuy ? 'trade.buy' : 'trade.sell') }}
-    </VButton>
-    <VModalOrderConfirm @confirmed="submitLimitOrder" />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { BigNumberInWei, Status, BigNumberInBase } from '@injectivelabs/utils'
-import { TradeExecutionType, Wallet } from '@injectivelabs/ts-types'
+import { TradeExecutionType } from '@injectivelabs/ts-types'
 import {
   ZERO_IN_BASE,
   UiPriceLevel,
@@ -124,24 +100,19 @@ import {
 } from '@injectivelabs/sdk-ts'
 import OrderDetails from './order-details.vue'
 import OrderDetailsMarket from './order-details-market.vue'
+import OrderSubmit from '~/components/partials/common/trade/order-submit.vue'
 import OrderInputs from '~/components/partials/common/trade/order-inputs.vue'
 import OrderTypeSelect from '~/components/partials/common/trade/order-type-select.vue'
 import AdvancedSettings from '~/components/partials/common/trade/advanced-settings/index.vue'
 import InputError from '~/components/partials/common/trade/input-error.vue'
-import OrderError from '~/components/partials/common/trade/order-error.vue'
-import {
-  DEFAULT_PRICE_WARNING_DEVIATION,
-  BIGGER_PRICE_WARNING_DEVIATION
-} from '~/app/utils/constants'
 import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
-import { Modal, AveragePriceOptions } from '~/types'
+import { AveragePriceOptions } from '~/types'
 import {
   calculateAverageExecutionPriceFromFillableNotionalOnOrderBook,
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook
 } from '~/app/client/utils/spot'
-import { excludedPriceDeviationSlugs } from '~/app/data/market'
 import TradingTypeButtons from '~/components/partials/common/trade/trading-type-buttons.vue'
 import PercentAmountOptions from '~/components/partials/common/trade/percent-amount-options.vue'
 
@@ -168,13 +139,13 @@ export default Vue.extend({
     TradingTypeButtons,
     OrderTypeSelect,
     OrderInputs,
+    OrderSubmit,
     ButtonCheckbox,
     OrderDetails,
     OrderDetailsMarket,
     VModalOrderConfirm,
     AdvancedSettings,
     InputError,
-    OrderError,
     PercentAmountOptions
   },
 
@@ -189,20 +160,11 @@ export default Vue.extend({
       form: initialForm(),
       hasInputErrors: false,
       hasAdvancedSettingsErrors: false,
-      hasEnoughInjForGasOrNotKeplr: true,
       averagePriceOption: AveragePriceOptions.None
     }
   },
 
   computed: {
-    isUserWalletConnected(): boolean {
-      return this.$accessor.wallet.isUserWalletConnected
-    },
-
-    wallet(): Wallet {
-      return this.$accessor.wallet.wallet
-    },
-
     market(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
     },
@@ -615,44 +577,6 @@ export default Vue.extend({
       )
     },
 
-    priceHasHighDeviationWarning(): boolean {
-      const {
-        price,
-        orderTypeBuy,
-        tradingTypeMarket,
-        market,
-        lastTradedPrice
-      } = this
-
-      if (!market) {
-        return false
-      }
-
-      if (tradingTypeMarket) {
-        return false
-      }
-
-      if (price.lte(0)) {
-        return false
-      }
-
-      const defaultPriceWarningDeviation = excludedPriceDeviationSlugs.includes(
-        market.ticker
-      )
-        ? BIGGER_PRICE_WARNING_DEVIATION
-        : DEFAULT_PRICE_WARNING_DEVIATION
-
-      const deviation = new BigNumberInBase(1)
-        .minus(
-          orderTypeBuy
-            ? lastTradedPrice.dividedBy(price)
-            : price.dividedBy(lastTradedPrice)
-        )
-        .times(100)
-
-      return deviation.gt(defaultPriceWarningDeviation)
-    },
-
     total(): BigNumberInBase {
       const { hasPrice, hasAmount, executionPrice, market, amount } = this
 
@@ -808,32 +732,11 @@ export default Vue.extend({
     },
 
     onSubmit() {
-      const {
-        hasInputErrors,
-        hasAdvancedSettingsErrors,
-        tradingTypeMarket,
-        priceHasHighDeviationWarning,
-        isUserWalletConnected
-      } = this
+      const { tradingTypeMarket } = this
 
-      if (!isUserWalletConnected) {
-        return this.$toast.error(this.$t('please_connect_your_wallet'))
-      }
-
-      if (hasInputErrors || hasAdvancedSettingsErrors) {
-        return this.$toast.error(this.$t('trade.error_in_form'))
-      }
-
-      if (tradingTypeMarket) {
-        return this.submitMarketOrder()
-      }
-
-      if (!priceHasHighDeviationWarning) {
-        return this.submitLimitOrder()
-      }
-
-      // If price has high deviation, we open a confirm modal
-      return this.$accessor.modal.openModal(Modal.OrderConfirm)
+      return tradingTypeMarket
+        ? this.submitMarketOrder()
+        : this.submitLimitOrder()
     }
   }
 })

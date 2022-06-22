@@ -44,11 +44,6 @@ export default Vue.extend({
       required: true
     },
 
-    price: {
-      type: Object as PropType<BigNumberInBase>,
-      required: true
-    },
-
     executionPrice: {
       type: Object as PropType<BigNumberInBase>,
       required: true
@@ -344,9 +339,9 @@ export default Vue.extend({
     },
 
     priceNotValidError(): TradeError | undefined {
-      const { price } = this
+      const { executionPrice } = this
 
-      const priceToString = price.toFixed()
+      const priceToString = executionPrice.toFixed()
 
       if (priceToString) {
         return undefined
@@ -386,7 +381,7 @@ export default Vue.extend({
         tradingTypeMarket,
         hasAmount,
         hasPrice,
-        price,
+        executionPrice,
         amount
       } = this
 
@@ -399,12 +394,12 @@ export default Vue.extend({
       }
 
       if (!tradingTypeMarket) {
-        if (price.lte(0) || !hasPrice) {
+        if (executionPrice.lte(0) || !hasPrice) {
           return true
         }
       }
 
-      if (!tradingTypeMarket && hasPrice && price.lte(0)) {
+      if (!tradingTypeMarket && hasPrice && executionPrice.lte(0)) {
         return true
       }
 

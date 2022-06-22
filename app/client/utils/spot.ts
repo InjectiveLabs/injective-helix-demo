@@ -169,7 +169,6 @@ export const calculateAverageExecutionPriceFromOrderbook = ({
   )
 
   const averagePrice = sum.div(amount.minus(remainAmountToFill))
-  console.log('got avg price value', averagePrice.toFixed())
 
   return new BigNumberInBase(
     formatPriceToAllowableDecimals(
