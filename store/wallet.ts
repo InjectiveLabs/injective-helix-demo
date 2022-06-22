@@ -9,6 +9,10 @@ import { validateMetamask, isMetamaskInstalled } from '~/app/services/metamask'
 import { Modal, WalletConnectStatus } from '~/types'
 import { GAS_FREE_DEPOSIT_REBATE_ENABLED } from '~/app/utils/constants'
 import { walletStrategy } from '~/app/wallet-strategy'
+import {
+  derivativeMarketRouteNames,
+  spotMarketRouteNames
+} from '~/app/data/market'
 
 const initialStateFactory = () => ({
   walletConnectStatus: WalletConnectStatus.idle as WalletConnectStatus,
@@ -135,7 +139,7 @@ export const actions = actionTree(
       }
 
       if (
-        ['spot-spot', 'derivatives-derivative'].includes(
+        [...derivativeMarketRouteNames, ...spotMarketRouteNames].includes(
           this.app.context.route.name
         )
       ) {

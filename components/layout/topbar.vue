@@ -112,6 +112,10 @@ import VUserWalletConnect from './wallet/connect.vue'
 import VNavItem from './nav/item.vue'
 import VNav from '~/components/layout/nav/index.vue'
 import VLogo from '~/components/elements/logo.vue'
+import {
+  derivativeMarketRouteNames,
+  spotMarketRouteNames
+} from '~/app/data/market'
 // import VNavItemDummy from './nav/item-dummy.vue'
 // import VPopperBox from '~/components/elements/popper-box.vue'
 
@@ -140,7 +144,7 @@ export default Vue.extend({
     isMarketPage(): boolean {
       const { $route } = this
 
-      return ['spot-spot', 'derivatives-derivative'].includes(
+      return [...derivativeMarketRouteNames, ...spotMarketRouteNames].includes(
         $route.name as string
       )
     },

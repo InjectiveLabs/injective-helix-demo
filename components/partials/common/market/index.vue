@@ -51,6 +51,7 @@ import {
   getTokenLogoWithVendorPathPrefix,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
+  UiBinaryOptionsMarketWithToken,
   UiSpotMarketSummary,
   UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
@@ -66,7 +67,9 @@ export default Vue.extend({
   props: {
     market: {
       type: Object as PropType<
-        UiSpotMarketWithToken | UiDerivativeMarketWithToken
+        | UiSpotMarketWithToken
+        | UiDerivativeMarketWithToken
+        | UiBinaryOptionsMarketWithToken
       >,
       required: true
     },

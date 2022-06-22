@@ -78,12 +78,15 @@ import {
   UiSpotMarketSummary,
   UiSpotMarketWithToken,
   UiDerivativeMarketSummary,
+  UiBinaryOptionsMarketWithToken,
   UiDerivativeMarketWithToken,
   Change,
   MarketType,
   ZERO_IN_BASE,
   BIG_NUMBER_ROUND_DOWN_MODE,
-  SpotOrderSide
+  SpotOrderSide,
+  UiPerpetualMarketWithToken,
+  UiExpiryFuturesMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import MarketNextFunding from './next-funding.vue'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
@@ -98,7 +101,9 @@ export default Vue.extend({
   props: {
     market: {
       type: Object as PropType<
-        UiSpotMarketWithToken | UiDerivativeMarketWithToken
+        | UiSpotMarketWithToken
+        | UiDerivativeMarketWithToken
+        | UiBinaryOptionsMarketWithToken
       >,
       required: true
     },
@@ -178,7 +183,15 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const derivativeMarket = market as UiDerivativeMarketWithToken
+      if (market.subType === MarketType.BinaryOptions) {
+        return ZERO_IN_BASE
+      }
+
+      if (market.subType === MarketType.Futures) {
+        return ZERO_IN_BASE
+      }
+
+      const derivativeMarket = market as UiPerpetualMarketWithToken
 
       if (
         !derivativeMarket.perpetualMarketFunding ||
@@ -210,7 +223,15 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const derivativeMarket = market as UiDerivativeMarketWithToken
+      if (market.subType === MarketType.BinaryOptions) {
+        return ZERO_IN_BASE
+      }
+
+      if (market.subType === MarketType.Futures) {
+        return ZERO_IN_BASE
+      }
+
+      const derivativeMarket = market as UiPerpetualMarketWithToken
 
       if (
         !derivativeMarket.perpetualMarketFunding ||
@@ -283,12 +304,24 @@ export default Vue.extend({
     expiryAt(): string {
       const { market } = this
 
-      if (!market || market.type === MarketType.Spot) {
+      if (!market) {
         return ''
       }
 
-      const expiryFuturesMarketInfo = (market as UiDerivativeMarketWithToken)
-        .expiryFuturesMarketInfo
+      if (market.type === MarketType.Spot) {
+        return ''
+      }
+
+      if (market.subType === MarketType.BinaryOptions) {
+        return ''
+      }
+
+      if (market.subType === MarketType.Perpetual) {
+        return ''
+      }
+
+      const derivativeMarket = market as UiExpiryFuturesMarketWithToken
+      const expiryFuturesMarketInfo = derivativeMarket.expiryFuturesMarketInfo
 
       if (!expiryFuturesMarketInfo) {
         return ''

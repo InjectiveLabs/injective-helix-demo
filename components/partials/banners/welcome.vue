@@ -169,8 +169,8 @@ export default Vue.extend({
         this.$root.$emit('bridge:transfer')
       } else {
         this.$router.push({
-          name: 'derivatives-derivative',
-          params: { derivative: 'btc-usdt-perp' }
+          name: 'perpetuals-perpetual',
+          params: { perpetual: 'btc-usdt-perp' }
         })
       }
     }

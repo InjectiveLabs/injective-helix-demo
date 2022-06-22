@@ -161,6 +161,7 @@ import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
+import { getMarketRoute } from '~/app/utils/market'
 
 export default Vue.extend({
   props: {
@@ -343,13 +344,7 @@ export default Vue.extend({
         return
       }
 
-      return this.$router.push({
-        name: 'derivatives-derivative',
-        params: {
-          marketId: market.marketId,
-          derivative: market.slug
-        }
-      })
+      return this.$router.push({ ...getMarketRoute(market) })
     }
   }
 })
