@@ -5,16 +5,14 @@
         <div class="w-full mx-auto xl:w-4/5">
           <div class="my-12">
             <h3 class="text-xl font-bold text-gray-200">
-              {{ $t('Fee Discounts') }}
+              {{ $t('fee_discounts.page_title') }}
             </h3>
             <div class="mt-6 mb-8">
               <p class="text-sm font-normal mb-2">
-                Trading fees are based on a user's staked amount of INJ and the
-                total trading volume in the past 28 days.
+                {{ $t('fee_discounts.page_description') }}
               </p>
               <p class="text-sm text-primary-500 font-normal">
-                Please note that the maker fee discounts are only applicable to
-                markets with a non-negative maker fee.
+                {{ $t('fee_discounts.page_description_warning') }}
               </p>
             </div>
             <Overview class="my-8" />

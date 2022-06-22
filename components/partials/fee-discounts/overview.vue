@@ -7,7 +7,7 @@
             <div class="flex justify-start gap-6 lg:gap-8">
               <div class="flex flex-col border-r border-gray-500 pr-6 lg:pr-8">
                 <span class="text-gray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap">
-                  {{ $t('my_tier') }}
+                  {{ $t('fee_discounts.my_tier') }}
                 </span>
                 <span class="uppercase text-xl lg:text-2xl font-bold tracking-normal text-primary-500">
                   #{{ tierLevel }}
@@ -15,23 +15,23 @@
               </div>
               <div class="flex flex-col">
                 <span class="text-gray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap">
-                  {{ $t('maker') }}
+                  {{ $t('fee_discounts.maker') }}
                 </span>
                 <span class="uppercase text-xs lg:text-base text-gray-500 font-bold tracking-widest whitespace-nowrap">
-                  <b class="text-xl lg:text-2xl font-bold text-white tracking-normal font-mono">{{ makerFeeDiscount }}%</b> {{ $t('off') }}
+                  <b class="text-xl lg:text-2xl font-bold text-white tracking-normal font-mono">{{ makerFeeDiscount }}%</b> {{ $t('fee_discounts.off') }}
                 </span>
               </div>
               <div class="flex flex-col">
                 <span class="text-gray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap">
-                  {{ $t('taker') }}
+                  {{ $t('fee_discounts.taker') }}
                 </span>
                 <span class="uppercase text-xs lg:text-base text-gray-500 font-bold tracking-widest whitespace-nowrap">
-                  <b class="text-xl lg:text-2xl font-bold text-white tracking-normal font-mono">{{ takerFeeDiscount }}%</b> {{ $t('off') }}
+                  <b class="text-xl lg:text-2xl font-bold text-white tracking-normal font-mono">{{ takerFeeDiscount }}%</b> {{ $t('fee_discounts.off') }}
                 </span>
               </div>
             </div>
             <div class="mt-4">
-              <span class="text-xs text-gray-400">{{ $t('update_daily') }}. {{ $t('last_updated_at') }} {{ lastUpdateTimestamp }}</span>
+              <span class="text-xs text-gray-400">{{ $t('fee_discounts.update_daily') }}. {{ $t('fee_discounts.last_updated_at') }} {{ lastUpdateTimestamp }}</span>
             </div>
           </div>
         </div>
@@ -40,7 +40,7 @@
             <div class="flex justify-start gap-6 lg:gap-8">
               <div class="flex flex-col">
                 <span class="text-gray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap">
-                  {{ $t('my_staked_amount') }}
+                  {{ $t('fee_discounts.my_staked_amount') }}
                 </span>
                 <span class="uppercase text-xs lg:text-base text-gray-500 font-bold tracking-widest whitespace-nowrap">
                   <b class="text-xl lg:text-2xl font-bold text-white tracking-normal font-mono">{{ stakedAmount }}</b> INJ
@@ -49,7 +49,7 @@
             </div>
             <div class="mt-4">
               <span class="text-xs text-gray-400">
-                {{ $t('current_apy') }}: {{ aprToFormat }}%
+                {{ $t('fee_discounts.current_apy') }}: {{ aprToFormat }}%
               </span>
             </div>
           </div>
@@ -59,7 +59,7 @@
             <div class="flex justify-start gap-6 lg:gap-8">
               <div class="flex flex-col">
                 <span class="text-gray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap">
-                  {{ $t('my_trading_volume') }}
+                  {{ $t('fee_discounts.my_trading_volume') }}
                 </span>
                 <span class="uppercase text-xs lg:text-base text-gray-500 font-bold tracking-widest whitespace-nowrap">
                   <b class="text-xl lg:text-2xl font-bold text-white tracking-normal font-mono">{{ volume }}</b> USD
@@ -67,7 +67,7 @@
               </div>
             </div>
             <div class="mt-4">
-              <span class="text-xs text-gray-400">In past 20 days</span>
+              <span class="text-xs text-gray-400">{{ $t('fee_discounts.in_past_days', { days: daysPassed }) }}</span>
             </div>
           </div>
         </div>
@@ -92,8 +92,8 @@ import {
   StatusType
 } from '@injectivelabs/utils'
 import Vue from 'vue'
-import { format } from 'date-fns'
-import { cosmosSdkDecToBigNumber, FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
+import { format, intervalToDuration } from 'date-fns'
+import { cosmosSdkDecToBigNumber, FeeDiscountAccountInfo, FeeDiscountSchedule } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
@@ -135,6 +135,10 @@ export default Vue.extend({
       return this.$accessor.exchange.feeDiscountAccountInfo
     },
 
+    feeDiscountSchedule(): FeeDiscountSchedule | undefined {
+      return this.$accessor.exchange.feeDiscountSchedule
+    },
+
     tierLevel(): number {
       const { feeDiscountAccountInfo } = this
 
@@ -173,6 +177,24 @@ export default Vue.extend({
       const volume = new BigNumberInBase(feeDiscountAccountInfo.accountInfo.volume)
 
       return volume.toFormat(2)
+    },
+
+    daysPassed(): string {
+      const { feeDiscountSchedule } = this
+
+      if (!feeDiscountSchedule) {
+        return '0'
+      }
+
+      const totalinSeconds = feeDiscountSchedule.bucketDuration * feeDiscountSchedule.bucketCount
+
+      const { days } = intervalToDuration({ start: 0, end: totalinSeconds * 1000 })
+
+      if (!days) {
+        return '0'
+      }
+
+      return days.toString()
     },
 
     makerFeeDiscount(): string {
