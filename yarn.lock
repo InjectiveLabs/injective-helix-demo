@@ -1964,7 +1964,7 @@
   resolved "https://registry.yarnpkg.com/@injectivelabs/common-rpc/-/common-rpc-1.0.10.tgz#19f4b16cf1b333c5f3f3b8edfb47b0c332ae5b9e"
   integrity sha512-l6y0cgebkpEtv0LIszU5nOuzI3uXg9ky+g4smLBCoQN3dKGEsaIOKqtO5vGqPGoFqnAQ8arL7hVHF2K/Shs0jg==
 
-"@injectivelabs/contracts@^1.0.12":
+"@injectivelabs/contracts@1.0.12", "@injectivelabs/contracts@^1.0.12":
   version "1.0.12"
   resolved "https://registry.yarnpkg.com/@injectivelabs/contracts/-/contracts-1.0.12.tgz#5e311859641e598b77b1f89839be2f4a8969c61c"
   integrity sha512-7mmabS5K4j5R0NQYVo0e6lC1EYRWH1nOk8PifVRqyWpWStU0WA6MLzfLEcWgcG2LKw4YkzFdLA3Kyxd76Uhyug==
@@ -1978,21 +1978,21 @@
     web3 "^1.7.2"
     web3-utils "^1.7.2"
 
+"@injectivelabs/exceptions@1.0.5", "@injectivelabs/exceptions@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/exceptions/-/exceptions-1.0.5.tgz#fd9a7972f9c92dc880c88510e81e74c15e948784"
+  integrity sha512-UwMsMDhnvMov9HYS73KPJZdKXxlybAGMa7YrkeSpY0gvDQa9dua4pY/9d1ex1rxPJGjug2cwhvtTsvkM94ueoQ==
+  dependencies:
+    "@injectivelabs/ts-types" "^1.0.4"
+    link-module-alias "^1.2.0"
+    shx "^0.3.2"
+
 "@injectivelabs/exceptions@^0.5.5":
   version "0.5.5"
   resolved "https://registry.yarnpkg.com/@injectivelabs/exceptions/-/exceptions-0.5.5.tgz#f47e42f7e00b07236e95d1a8963a4a528b0b29f6"
   integrity sha512-xINDf/rNa8WBZpFLcOCORykBb/gaHNOFuv4Gyv4A7xDqKfA9H9UIsPn5fPmy6yIesl9dy9gmd13B4NE7zrIQ1Q==
   dependencies:
     "@injectivelabs/ts-types" "^0.5.4"
-    link-module-alias "^1.2.0"
-    shx "^0.3.2"
-
-"@injectivelabs/exceptions@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/exceptions/-/exceptions-1.0.5.tgz#fd9a7972f9c92dc880c88510e81e74c15e948784"
-  integrity sha512-UwMsMDhnvMov9HYS73KPJZdKXxlybAGMa7YrkeSpY0gvDQa9dua4pY/9d1ex1rxPJGjug2cwhvtTsvkM94ueoQ==
-  dependencies:
-    "@injectivelabs/ts-types" "^1.0.4"
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
@@ -2004,7 +2004,7 @@
     "@improbable-eng/grpc-web" "^0.14.0"
     google-protobuf "^3.14.0"
 
-"@injectivelabs/networks@^1.0.5":
+"@injectivelabs/networks@1.0.5", "@injectivelabs/networks@^1.0.5":
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/@injectivelabs/networks/-/networks-1.0.5.tgz#7417de2280fd93a925cb06aeedb8b3540642846c"
   integrity sha512-ro31t6JiBdTelzHB6pMPCi68GjOg5hGgGCXrE3PceGKGkJwGpoQcHWGULzi1NoxxCCbi1dwbHv2hVWaP3ARvrQ==
@@ -2019,7 +2019,7 @@
   resolved "https://registry.yarnpkg.com/@injectivelabs/referral-api/-/referral-api-1.0.26.tgz#4fe1e0c9ddd447e64c60ce4000e8ecf31ecf6f27"
   integrity sha512-sO5AvlOgZTAs6nGU9DLd8OLLy2KxGQc37WGsmFGOHf9hV02xt6AyBEANPUAwesV4TRdiWZM4AIf7ANxtIc094Q==
 
-"@injectivelabs/referral-consumer@^0.5.7":
+"@injectivelabs/referral-consumer@0.5.7":
   version "0.5.7"
   resolved "https://registry.npmjs.org/@injectivelabs/referral-consumer/-/referral-consumer-0.5.7.tgz#60bae46ad0955e09b910fddd37306846a6cccf2a"
   integrity sha512-XFYImbWTPIKxDHQ9H7r2H1sNMLW6OMPAnLDvETPWmb/HhJupoOVvGEkjRFAVRPIWDDIsOYPFHrFV80Vg/AXPBQ==
@@ -2035,7 +2035,7 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/sdk-ts@^1.0.26":
+"@injectivelabs/sdk-ts@1.0.26", "@injectivelabs/sdk-ts@^1.0.26":
   version "1.0.26"
   resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.0.26.tgz#4b114b6ea4e2878324c21eed1cf764284c244163"
   integrity sha512-Xv7ArVKIe5xsoKckNZAidzcYo27Luxb36TRSQP8vjJS4SuND4bjc9dZBDD4gpEIWhqa/sTSD12cjX+XDPXTVKw==
@@ -2063,10 +2063,10 @@
     shx "^0.3.2"
     snakecase-keys "^5.4.1"
 
-"@injectivelabs/sdk-ui-ts@^1.0.43":
-  version "1.0.43"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.0.43.tgz#b2ba8f0d289a3b69a81b90c090301f3a3d30b19a"
-  integrity sha512-nc7eFWIWpoKIshPzjYn6MXDUm3pYds5Q0Jo/3IvyWDmbPYDoV6vS2x21Cms4uBPlNVk2vP+JbDxNKH1POv6U5Q==
+"@injectivelabs/sdk-ui-ts@1.0.44":
+  version "1.0.44"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.0.44.tgz#ddd43e37b0bf6bc4db69185684f4bf4c2c411832"
+  integrity sha512-90GmOU25Osohm7KjoDd8jv1einZcCMGF/Aw0s8vG5ZvpWrAfP42NgE2RxiI1MvEdyr5T3AWqSGXZl0vq1sNmmw==
   dependencies:
     "@injectivelabs/exceptions" "^1.0.5"
     "@injectivelabs/networks" "^1.0.5"
@@ -2079,7 +2079,7 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/token-metadata@^1.0.5":
+"@injectivelabs/token-metadata@1.0.5", "@injectivelabs/token-metadata@^1.0.5":
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/@injectivelabs/token-metadata/-/token-metadata-1.0.5.tgz#c4ebf17b2f4a187832d12a60bb7def1e04fa4659"
   integrity sha512-3yHgrL/E/YEm6ZrcoPvK6duBvh8bmMY6wbqtiXEhZj6CR+KDFNCSuFXqKrhTQ99XQ+ueClJlQafTD4jSL1nC0g==
@@ -2094,7 +2094,7 @@
     lodash.values "^4.3.0"
     shx "^0.3.2"
 
-"@injectivelabs/token-utils@^1.0.6":
+"@injectivelabs/token-utils@1.0.6", "@injectivelabs/token-utils@^1.0.6":
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/@injectivelabs/token-utils/-/token-utils-1.0.6.tgz#65b71d07d8bf377b9df270162c823f2e614faa6d"
   integrity sha512-NBPXe0CkxBCWQT61JVtotrRvnPbkyNSyUJez9Dur2z3RvZm/fme+lxGU8UnAWgymkDE5LhzPnIRdMn6gM4mk0A==
@@ -2104,18 +2104,18 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/ts-types@^0.5.4":
-  version "0.5.4"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/ts-types/-/ts-types-0.5.4.tgz#d322dd8f8ad9b291e1c447f9d1c631c982491d92"
-  integrity sha512-ocBdRFB7nHf9ja+uTzle2m3NLntQ1j9fJWt0TuW/tXuDzvlVIARSB/ycRVgUQBTDxh1HY1r66ARFwaof6rCoLg==
+"@injectivelabs/ts-types@1.0.4", "@injectivelabs/ts-types@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/ts-types/-/ts-types-1.0.4.tgz#8e3a33bec9aa404759d8b3228e8680287fa63542"
+  integrity sha512-eXYShLug4WhofeK/kLwPd2Ip1vpcfx7vMXxpRKp+Bxg4aKRUH/Axtridf5GctwQLDkjjM5ZKw5HWvphaigoUpw==
   dependencies:
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/ts-types@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/ts-types/-/ts-types-1.0.4.tgz#8e3a33bec9aa404759d8b3228e8680287fa63542"
-  integrity sha512-eXYShLug4WhofeK/kLwPd2Ip1vpcfx7vMXxpRKp+Bxg4aKRUH/Axtridf5GctwQLDkjjM5ZKw5HWvphaigoUpw==
+"@injectivelabs/ts-types@^0.5.4":
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/ts-types/-/ts-types-0.5.4.tgz#d322dd8f8ad9b291e1c447f9d1c631c982491d92"
+  integrity sha512-ocBdRFB7nHf9ja+uTzle2m3NLntQ1j9fJWt0TuW/tXuDzvlVIARSB/ycRVgUQBTDxh1HY1r66ARFwaof6rCoLg==
   dependencies:
     link-module-alias "^1.2.0"
     shx "^0.3.2"
@@ -2136,6 +2136,20 @@
     sha3 "^2.1.4"
     shx "^0.3.2"
 
+"@injectivelabs/utils@1.0.5", "@injectivelabs/utils@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/utils/-/utils-1.0.5.tgz#b9ab184d1656400f327ee215ffcbac95d956bfca"
+  integrity sha512-g2KHr6sLFxx65WKDD8P3IVpaWyESusr+wG8lSEsvY9uubP38iEeuCHcBVAAUc/5IXnamRGpEsmg4cBWfGbqptw==
+  dependencies:
+    "@injectivelabs/exceptions" "^1.0.5"
+    "@injectivelabs/ts-types" "^1.0.4"
+    axios "^0.21.1"
+    bignumber.js "^9.0.1"
+    link-module-alias "^1.2.0"
+    shx "^0.3.2"
+    snakecase-keys "^5.1.2"
+    store2 "^2.12.0"
+
 "@injectivelabs/utils@^0.5.7":
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/@injectivelabs/utils/-/utils-0.5.7.tgz#6408956f6624a0bd80260cdda85405b9b251e9db"
@@ -2150,21 +2164,7 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/utils@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/utils/-/utils-1.0.5.tgz#b9ab184d1656400f327ee215ffcbac95d956bfca"
-  integrity sha512-g2KHr6sLFxx65WKDD8P3IVpaWyESusr+wG8lSEsvY9uubP38iEeuCHcBVAAUc/5IXnamRGpEsmg4cBWfGbqptw==
-  dependencies:
-    "@injectivelabs/exceptions" "^1.0.5"
-    "@injectivelabs/ts-types" "^1.0.4"
-    axios "^0.21.1"
-    bignumber.js "^9.0.1"
-    link-module-alias "^1.2.0"
-    shx "^0.3.2"
-    snakecase-keys "^5.1.2"
-    store2 "^2.12.0"
-
-"@injectivelabs/wallet-ts@^1.0.22":
+"@injectivelabs/wallet-ts@1.0.22", "@injectivelabs/wallet-ts@^1.0.22":
   version "1.0.22"
   resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.0.22.tgz#c8920592e72ab02cb93e0d37d838ee88b432820f"
   integrity sha512-LsneNpEW/MEgp8DIh1HbKNSFZT3zDomjbqGTDHhF0L0AF1mERIv4DGIEgYnTbp0agLUDUX2Ikw1sHnCdTyUMjQ==
@@ -3002,7 +3002,7 @@
     rc9 "^1.2.0"
     std-env "^2.3.0"
 
-"@nuxt/types@^2.15.6":
+"@nuxt/types@^2.15.8":
   version "2.15.8"
   resolved "https://registry.yarnpkg.com/@nuxt/types/-/types-2.15.8.tgz#1249de448f68169fe17e9379ee7b5caa0eb336b0"
   integrity sha512-zBAG5Fy+SIaZIerOVF1vxy1zz16ZK07QSbsuQAjdtEFlvr+vKK+0AqCv8r8DBY5IVqdMIaw5FgNUz5py0xWdPg==

@@ -16,3 +16,11 @@
     <path d="M127.96 154.159L0 212.32l127.96 75.637z" />
   </svg>
 </template>
+
+<script lang="ts">
+import Vue from 'vue'
+
+export default Vue.extend({
+  //
+})
+</script>

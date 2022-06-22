@@ -22,7 +22,8 @@ import {
   ZERO_IN_BASE,
   ZERO_TO_STRING,
   UiExpiryFuturesMarketWithToken,
-  UiPerpetualMarketWithToken
+  UiPerpetualMarketWithToken,
+  MarketType
 } from '@injectivelabs/sdk-ui-ts'
 import {
   DerivativeOrderSide,
@@ -31,7 +32,10 @@ import {
   MsgCreateDerivativeLimitOrder,
   MsgCreateDerivativeMarketOrder,
   PerpetualMarket,
-  ExpiryFuturesMarket
+  ExpiryFuturesMarket,
+  MsgBatchCancelBinaryOptionsOrders,
+  MsgCreateBinaryOptionsLimitOrder,
+  MsgCreateBinaryOptionsMarketOrder
 } from '@injectivelabs/sdk-ts'
 import {
   streamOrderbook,
@@ -431,11 +435,14 @@ export const actions = actionTree(
           market.marketId
         )
 
-      const oraclePrice = await exchangeOracleApi.fetchOraclePrice({
-        baseSymbol: market.oracleBase,
-        quoteSymbol: market.oracleQuote,
-        oracleType: market.oracleType
-      })
+      const oraclePrice =
+        market.subType !== MarketType.BinaryOptions
+          ? await exchangeOracleApi.fetchOraclePrice({
+              baseSymbol: (market as UiPerpetualMarketWithToken).oracleBase,
+              quoteSymbol: (market as UiPerpetualMarketWithToken).oracleQuote,
+              oracleType: market.oracleType
+            })
+          : { price: '0' } /* TODO */
 
       commit('setMarket', market)
       commit('setMarketSummary', {
@@ -525,8 +532,16 @@ export const actions = actionTree(
         return
       }
 
+      if (market.subType === MarketType.BinaryOptions) {
+        return
+      }
+
+      const derivativeMarket = market as
+        | UiPerpetualMarketWithToken
+        | UiExpiryFuturesMarketWithToken
+
       streamMarketMarkPrice({
-        market,
+        market: derivativeMarket,
         callback: ({ price, operation }) => {
           if (!price) {
             return
@@ -718,7 +733,8 @@ export const actions = actionTree(
       commit('setSubaccountTrades', trades)
     },
 
-    async cancelOrder(_, order: UiDerivativeLimitOrder) {
+    async cancelOrder({ state }, order: UiDerivativeLimitOrder) {
+      const { markets } = state
       const { subaccount } = this.app.$accessor.account
       const { address, injectiveAddress, isUserWalletConnected } =
         this.app.$accessor.wallet
@@ -730,7 +746,13 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      const message = MsgBatchCancelDerivativeOrders.fromJSON({
+      const market = markets.find((m) => m.marketId === order.marketId)!
+      const messageType =
+        market.subType === MarketType.BinaryOptions
+          ? MsgBatchCancelBinaryOptionsOrders
+          : MsgBatchCancelDerivativeOrders
+
+      const message = messageType.fromJSON({
         injectiveAddress,
         orders: [
           {
@@ -748,7 +770,8 @@ export const actions = actionTree(
       })
     },
 
-    async batchCancelOrder(_, orders: UiDerivativeLimitOrder[]) {
+    async batchCancelOrder({ state }, orders: UiDerivativeLimitOrder[]) {
+      const { markets } = state
       const { subaccount } = this.app.$accessor.account
       const { address, injectiveAddress, isUserWalletConnected } =
         this.app.$accessor.wallet
@@ -760,8 +783,14 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      const messages = orders.map((order) =>
-        MsgBatchCancelDerivativeOrders.fromJSON({
+      const messages = orders.map((order) => {
+        const market = markets.find((m) => m.marketId === order.marketId)!
+        const messageType =
+          market.subType === MarketType.BinaryOptions
+            ? MsgBatchCancelBinaryOptionsOrders
+            : MsgBatchCancelDerivativeOrders
+
+        return messageType.fromJSON({
           injectiveAddress,
           orders: [
             {
@@ -771,7 +800,7 @@ export const actions = actionTree(
             }
           ]
         })
-      )
+      })
 
       await msgBroadcastClient.broadcast({
         address,
@@ -781,7 +810,7 @@ export const actions = actionTree(
     },
 
     async submitLimitOrder(
-      _,
+      { state },
       {
         price,
         reduceOnly,
@@ -796,8 +825,8 @@ export const actions = actionTree(
         orderType: DerivativeOrderSide
       }
     ) {
+      const { market } = state
       const { subaccount } = this.app.$accessor.account
-      const { market } = this.app.$accessor.derivatives
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
       const { address, injectiveAddress, isUserWalletConnected } =
         this.app.$accessor.wallet
@@ -809,7 +838,12 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      const message = MsgCreateDerivativeLimitOrder.fromJSON({
+      const messageType =
+        market.subType === MarketType.BinaryOptions
+          ? MsgCreateBinaryOptionsLimitOrder
+          : MsgCreateDerivativeLimitOrder
+
+      const message = messageType.fromJSON({
         injectiveAddress,
         orderType: derivativeOrderTypeToGrpcOrderType(orderType),
         price: derivativePriceToChainPriceToFixed({
@@ -836,7 +870,7 @@ export const actions = actionTree(
     },
 
     async submitMarketOrder(
-      _,
+      { state },
       {
         quantity,
         price,
@@ -851,8 +885,8 @@ export const actions = actionTree(
         orderType: DerivativeOrderSide
       }
     ) {
+      const { market } = state
       const { subaccount } = this.app.$accessor.account
-      const { market } = this.app.$accessor.derivatives
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
       const { address, injectiveAddress, isUserWalletConnected } =
         this.app.$accessor.wallet
@@ -864,7 +898,12 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      const message = MsgCreateDerivativeMarketOrder.fromJSON({
+      const messageType =
+        market.subType === MarketType.BinaryOptions
+          ? MsgCreateBinaryOptionsMarketOrder
+          : MsgCreateDerivativeMarketOrder
+
+      const message = messageType.fromJSON({
         injectiveAddress,
         triggerPrice: '0',
         orderType: derivativeOrderTypeToGrpcOrderType(orderType),
