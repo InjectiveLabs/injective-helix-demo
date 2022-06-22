@@ -39,11 +39,6 @@ export default Vue.extend({
     hideArrow: {
       type: Boolean,
       default: false
-    },
-
-    disableAutoClose: {
-      type: Boolean,
-      default: false
     }
   },
 
