@@ -129,10 +129,7 @@
                 "
               />
               <IconCheckTooltip
-                v-if="
-                  !marketHasNegativeMakerFee &&
-                  (makerFeeRateDiscount.gt(0) || takerFeeRateDiscount.gt(0))
-                "
+                v-if="makerFeeRateDiscount.gt(0) || takerFeeRateDiscount.gt(0)"
                 class="ml-2 text-primary-500"
                 :tooltip="
                   $t('trade.fees_tooltip_discount', {
