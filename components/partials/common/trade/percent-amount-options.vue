@@ -175,9 +175,6 @@ export default Vue.extend({
         )
       )
 
-      // todo: check if this is ok
-      this.$emit('update:quote-amount-from-percentage', '')
-
       if (!hasPrice) {
         this.$emit('update-price-from-last-traded-price')
       }

@@ -25,7 +25,6 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { DEFAULT_MARKET_PRICE_WARNING_DEVIATION } from '~/app/utils/constants'
 
 export default Vue.extend({
   props: {
@@ -54,6 +53,11 @@ export default Vue.extend({
       required: true
     },
 
+    priceHasHighDeviationWarning: {
+      type: Boolean,
+      required: true
+    },
+
     tradingTypeMarket: {
       type: Boolean,
       required: true
@@ -61,33 +65,6 @@ export default Vue.extend({
   },
 
   computed: {
-    executionPriceHasHighDeviationWarning(): boolean {
-      const {
-        executionPrice,
-        orderTypeBuy,
-        tradingTypeMarket,
-        lastTradedPrice
-      } = this
-
-      if (!tradingTypeMarket) {
-        return false
-      }
-
-      if (executionPrice.lte(0)) {
-        return false
-      }
-
-      const deviation = new BigNumberInBase(1)
-        .minus(
-          orderTypeBuy
-            ? lastTradedPrice.dividedBy(executionPrice)
-            : executionPrice.dividedBy(lastTradedPrice)
-        )
-        .times(100)
-
-      return deviation.gt(DEFAULT_MARKET_PRICE_WARNING_DEVIATION)
-    },
-
     hubUrl(): string {
       return 'https://hub.injective.network/bridge'
     }

@@ -7,7 +7,8 @@
         orderTypeBuy,
         tradingTypeMarket,
         hasError,
-        hasInjForGasOrNotKeplr
+        hasInjForGasOrNotKeplr,
+        priceHasHighDeviationWarning
       }"
     />
 
@@ -145,15 +146,7 @@ export default Vue.extend({
         lastTradedPrice
       } = this
 
-      if (!market) {
-        return false
-      }
-
-      if (tradingTypeMarket) {
-        return false
-      }
-
-      if (executionPrice.lte(0)) {
+      if (!market || !tradingTypeMarket || executionPrice.lte(0)) {
         return false
       }
 
