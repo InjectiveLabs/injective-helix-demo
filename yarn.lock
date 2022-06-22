@@ -2165,7 +2165,7 @@
     store2 "^2.12.0"
 
 "@injectivelabs/wallet-ts@1.0.15", "@injectivelabs/wallet-ts@^1.0.15":
-  version "1.0.22"
+  version "1.0.15"
   resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.0.22.tgz#c8920592e72ab02cb93e0d37d838ee88b432820f"
   integrity sha512-LsneNpEW/MEgp8DIh1HbKNSFZT3zDomjbqGTDHhF0L0AF1mERIv4DGIEgYnTbp0agLUDUX2Ikw1sHnCdTyUMjQ==
   dependencies:
