@@ -171,7 +171,7 @@ export default Vue.extend({
       const { feeDiscountAccountInfo } = this
 
       if (!feeDiscountAccountInfo || !feeDiscountAccountInfo.accountInfo || !feeDiscountAccountInfo.accountInfo.volume) {
-        return '-'
+        return ZERO_IN_BASE.toFormat(2)
       }
 
       const volume = new BigNumberInBase(feeDiscountAccountInfo.accountInfo.volume)
