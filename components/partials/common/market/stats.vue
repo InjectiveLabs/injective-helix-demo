@@ -57,9 +57,10 @@
         </span>
         <span v-else class="lg:text-right font-mono block">&mdash;</span>
       </MarketInfo>
-      <MarketNextFunding v-if="market.type === MarketType.Derivative" />
+      <MarketNextFunding v-if="market.subType === MarketType.Perpetual" />
+      <MarketSettlement v-if="market.subType === MarketType.BinaryOptions" />
       <MarketInfo
-        v-if="market.type === MarketType.Derivative && expiryAt"
+        v-if="market.subType === MarketType.Futures && expiryAt"
         :title="$t('trade.expiry_date')"
       >
         <span class="lg:text-right font-mono block">
@@ -89,13 +90,15 @@ import {
   UiExpiryFuturesMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import MarketNextFunding from './next-funding.vue'
+import MarketSettlement from './settlement.vue'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import MarketInfo from '~/components/elements/market-info.vue'
 
 export default Vue.extend({
   components: {
     MarketInfo,
-    MarketNextFunding
+    MarketNextFunding,
+    MarketSettlement
   },
 
   props: {
