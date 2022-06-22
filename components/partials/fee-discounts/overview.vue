@@ -4,29 +4,29 @@
       <div class="flex md:grid grid-cols-12 gap-6 overflow-x-auto hide-scrollbar" @scroll="handleScroll">
         <div class="fee-discounts-statistic bg-gray-800 rounded-lg md:col-span-6 p-6">
           <div class="flex flex-col">
-            <div class="flex justify-start gap-8">
-              <div class="flex flex-col border-r border-gray-500 pr-8">
-                <span class="text-gray-500 uppercase tracking-wide text-sm mb-2 font-semibold">
+            <div class="flex justify-start gap-6 lg:gap-8">
+              <div class="flex flex-col border-r border-gray-500 pr-6 lg:pr-8">
+                <span class="text-gray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap">
                   {{ $t('my_tier') }}
                 </span>
-                <span class="uppercase text-md text-2xl font-bold tracking-normal text-primary-500">
+                <span class="uppercase text-xl lg:text-2xl font-bold tracking-normal text-primary-500">
                   #{{ tierLevel }}
                 </span>
               </div>
               <div class="flex flex-col">
-                <span class="text-gray-500 uppercase tracking-wide text-sm mb-2 font-semibold">
+                <span class="text-gray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap">
                   {{ $t('maker') }}
                 </span>
-                <span class="uppercase text-md text-gray-500 font-bold tracking-widest">
-                  <b class="text-2xl font-bold text-white tracking-normal font-mono">{{ makerFeeDiscount }}%</b> {{ $t('off') }}
+                <span class="uppercase text-xs lg:text-base text-gray-500 font-bold tracking-widest whitespace-nowrap">
+                  <b class="text-xl lg:text-2xl font-bold text-white tracking-normal font-mono">{{ makerFeeDiscount }}%</b> {{ $t('off') }}
                 </span>
               </div>
               <div class="flex flex-col">
-                <span class="text-gray-500 uppercase tracking-wide text-sm mb-2 font-semibold">
+                <span class="text-gray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap">
                   {{ $t('taker') }}
                 </span>
-                <span class="uppercase text-md text-gray-500 font-bold tracking-widest">
-                  <b class="text-2xl font-bold text-white tracking-normal font-mono">{{ takerFeeDiscount }}%</b> {{ $t('off') }}
+                <span class="uppercase text-xs lg:text-base text-gray-500 font-bold tracking-widest whitespace-nowrap">
+                  <b class="text-xl lg:text-2xl font-bold text-white tracking-normal font-mono">{{ takerFeeDiscount }}%</b> {{ $t('off') }}
                 </span>
               </div>
             </div>
@@ -37,13 +37,13 @@
         </div>
         <div class="fee-discounts-statistic bg-gray-800 rounded-lg md:col-span-3 p-6">
             <div class="flex flex-col">
-            <div class="flex justify-start gap-8">
+            <div class="flex justify-start gap-6 lg:gap-8">
               <div class="flex flex-col">
-                <span class="text-gray-500 uppercase tracking-wide text-sm mb-2 font-semibold">
+                <span class="text-gray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap">
                   {{ $t('my_staked_amount') }}
                 </span>
-                <span class="uppercase text-md text-gray-500 font-bold tracking-widest">
-                  <b class="text-2xl font-bold text-white tracking-normal font-mono">{{ stakedAmount }}</b> INJ
+                <span class="uppercase text-xs lg:text-base text-gray-500 font-bold tracking-widest whitespace-nowrap">
+                  <b class="text-xl lg:text-2xl font-bold text-white tracking-normal font-mono">{{ stakedAmount }}</b> INJ
                 </span>
               </div>
             </div>
@@ -56,13 +56,13 @@
         </div>
         <div class="fee-discounts-statistic bg-gray-800 rounded-lg md:col-span-3 p-6">
             <div class="flex flex-col">
-            <div class="flex justify-start gap-8">
+            <div class="flex justify-start gap-6 lg:gap-8">
               <div class="flex flex-col">
-                <span class="text-gray-500 uppercase tracking-wide text-sm mb-2 font-semibold">
+                <span class="text-gray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap">
                   {{ $t('my_trading_volume') }}
                 </span>
-                <span class="uppercase text-md text-gray-500 font-bold tracking-widest">
-                  <b class="text-2xl font-bold text-white tracking-normal font-mono">{{ volume }}</b> USD
+                <span class="uppercase text-xs lg:text-base text-gray-500 font-bold tracking-widest whitespace-nowrap">
+                  <b class="text-xl lg:text-2xl font-bold text-white tracking-normal font-mono">{{ volume }}</b> USD
                 </span>
               </div>
             </div>
@@ -190,6 +190,7 @@ export default Vue.extend({
         feeDiscountAccountInfo.accountInfo.makerDiscountRate
       )
         .toBase()
+        .times(100)
         .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     },
 
@@ -208,6 +209,7 @@ export default Vue.extend({
         feeDiscountAccountInfo.accountInfo.takerDiscountRate
       )
         .toBase()
+        .times(100)
         .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     }
   },
