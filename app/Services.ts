@@ -12,6 +12,12 @@ import {
 import {
   ChainGrpcAuctionApi,
   ChainGrpcBankApi,
+  ChainGrpcMintApi,
+  ChainGrpcStakingApi,
+  ChainGrpcDistributionApi,
+  ChainGrpcGovApi,
+  ChainGrpcInsuranceFundApi,
+  ChainGrpcPeggyApi,
   ExchangeRestExplorerApi,
   ExchangeGrpcExplorerApi,
   ApolloConsumer,
@@ -49,6 +55,16 @@ const apiOptions = {
 
 // Services
 export const bankApi = new ChainGrpcBankApi(ENDPOINTS.sentryGrpcApi)
+export const mintApi = new ChainGrpcMintApi(ENDPOINTS.sentryGrpcApi)
+export const stakingApi = new ChainGrpcStakingApi(ENDPOINTS.sentryGrpcApi)
+export const distributionApi = new ChainGrpcDistributionApi(
+  ENDPOINTS.sentryGrpcApi
+)
+export const governanceApi = new ChainGrpcGovApi(ENDPOINTS.sentryGrpcApi)
+export const insuranceApi = new ChainGrpcInsuranceFundApi(
+  ENDPOINTS.sentryGrpcApi
+)
+export const peggyApi = new ChainGrpcPeggyApi(ENDPOINTS.sentryGrpcApi)
 export const auctionApi = new ChainGrpcAuctionApi(ENDPOINTS.sentryGrpcApi)
 export const exchangeApi = new ChainGrpcExchangeApi(ENDPOINTS.sentryGrpcApi)
 export const oracleApi = new ChainGrpcOracleApi(ENDPOINTS.sentryGrpcApi)

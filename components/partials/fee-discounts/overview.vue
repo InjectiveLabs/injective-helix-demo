@@ -49,7 +49,7 @@
             </div>
             <div class="mt-4">
               <span class="text-xs text-gray-400">
-                {{ $t('current_apy') }}: 14.0%
+                {{ $t('current_apy') }}: {{ aprToFormat }}%
               </span>
             </div>
           </div>
@@ -107,6 +107,16 @@ export default Vue.extend({
   },
 
   computed: {
+    apr(): BigNumberInBase {
+      return this.$accessor.params.apr
+    },
+
+    aprToFormat(): string {
+      const { apr } = this
+
+      return apr.times(100).toFormat(2)
+    },
+
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
     },
