@@ -77,11 +77,6 @@ export default Vue.extend({
       required: true
     },
 
-    amount: {
-      type: BigNumberInBase,
-      required: true
-    },
-
     fee: {
       type: BigNumberInBase,
       required: true
@@ -141,6 +136,20 @@ export default Vue.extend({
       }
 
       return '1'
+    },
+
+    amount(): BigNumberInBase {
+      const { orderType, fromAmount, toAmount } = this
+
+      const fromAmountAsNumber =
+        fromAmount === '' ? ZERO_IN_BASE : new BigNumberInBase(fromAmount)
+
+      const toAmountAsNumber =
+        toAmount === '' ? ZERO_IN_BASE : new BigNumberInBase(toAmount)
+
+      return orderType === SpotOrderSide.Buy
+        ? toAmountAsNumber
+        : fromAmountAsNumber
     },
 
     hasAmount(): boolean {
@@ -252,15 +261,7 @@ export default Vue.extend({
     },
 
     executionPrice(): BigNumberInBase {
-      const {
-        orderType,
-        sells,
-        buys,
-        hasAmount,
-        market,
-        fromAmount,
-        toAmount
-      } = this
+      const { orderType, sells, buys, hasAmount, market, amount } = this
 
       const records = orderType === SpotOrderSide.Buy ? sells : buys
 
@@ -268,18 +269,9 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const fromAmountAsNumber =
-        fromAmount !== '' ? new BigNumberInBase(fromAmount) : ZERO_IN_BASE
-
-      const toAmountAsNumber =
-        toAmount !== '' ? new BigNumberInBase(toAmount) : ZERO_IN_BASE
-
-      const quantity =
-        orderType === SpotOrderSide.Buy ? toAmountAsNumber : fromAmountAsNumber
-
       const averagePrice = calculateAverageExecutionPriceFromOrderbook({
         records,
-        amount: quantity,
+        amount,
         market
       })
 
@@ -287,27 +279,13 @@ export default Vue.extend({
     },
 
     averagePriceWithoutSlippage(): BigNumberInBase {
-      const { orderType, sells, buys, market, fromAmount, toAmount } = this
-
-      const fromAmountAsNumber =
-        fromAmount !== '' ? new BigNumberInBase(fromAmount) : ZERO_IN_BASE
-
-      const toAmountAsNumber =
-        toAmount !== '' ? new BigNumberInBase(toAmount) : ZERO_IN_BASE
+      const { orderType, sells, buys, market, hasAmount, amount } = this
 
       const records = orderType === SpotOrderSide.Buy ? sells : buys
 
-      if (
-        !market ||
-        fromAmountAsNumber.eq(ZERO_IN_BASE) ||
-        toAmountAsNumber.eq(ZERO_IN_BASE) ||
-        records.length === 0
-      ) {
+      if (!market || !hasAmount || records.length === 0) {
         return ZERO_IN_BASE
       }
-
-      const amount =
-        orderType === SpotOrderSide.Buy ? toAmountAsNumber : fromAmountAsNumber
 
       const averagePrice = calculateAverageExecutionPriceFromOrderbook({
         records,
