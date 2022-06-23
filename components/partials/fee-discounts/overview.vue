@@ -175,7 +175,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(feeDiscountAccountInfo.accountInfo.volume)
+      return new BigNumberInWei(feeDiscountAccountInfo.accountInfo.volume).toBase()
     },
 
     volumeToFormat(): string {
