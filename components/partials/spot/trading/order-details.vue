@@ -76,7 +76,7 @@
 
         <TextInfo :title="$t('trade.fee')" class="mt-2">
           <div slot="context">
-            <div class="flex items-start">
+            <div class="flex items-center">
               <IconInfoTooltip
                 v-if="!orderTypeBuy"
                 class="ml-2"
