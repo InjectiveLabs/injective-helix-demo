@@ -62,7 +62,7 @@
                   {{ $t('fee_discounts.my_trading_volume') }}
                 </span>
                 <span class="uppercase text-xs lg:text-base text-gray-500 font-bold tracking-widest whitespace-nowrap">
-                  <b class="text-xl lg:text-2xl font-bold text-white tracking-normal font-mono">{{ volume }}</b> USD
+                  <b class="text-xl lg:text-2xl font-bold text-white tracking-normal font-mono">{{ volumeToFormat }}</b> USD
                 </span>
               </div>
             </div>
@@ -96,6 +96,7 @@ import { format, intervalToDuration } from 'date-fns'
 import { cosmosSdkDecToBigNumber, FeeDiscountAccountInfo, FeeDiscountSchedule } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { getAbbreviatedVolume } from '~/app/utils/market'
 
 export default Vue.extend({
   data() {
@@ -167,16 +168,20 @@ export default Vue.extend({
       )
     },
 
-    volume(): string {
+    volume(): BigNumberInBase {
       const { feeDiscountAccountInfo } = this
 
       if (!feeDiscountAccountInfo || !feeDiscountAccountInfo.accountInfo || !feeDiscountAccountInfo.accountInfo.volume) {
-        return ZERO_IN_BASE.toFormat(2)
+        return ZERO_IN_BASE
       }
 
-      const volume = new BigNumberInBase(feeDiscountAccountInfo.accountInfo.volume)
+      return new BigNumberInBase(feeDiscountAccountInfo.accountInfo.volume)
+    },
 
-      return volume.toFormat(2)
+    volumeToFormat(): string {
+      const { volume } = this
+
+      return getAbbreviatedVolume(volume)
     },
 
     daysPassed(): string {
