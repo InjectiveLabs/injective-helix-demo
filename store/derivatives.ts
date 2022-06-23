@@ -288,10 +288,9 @@ export const actions = actionTree(
       const marketsWithToken = await tokenService.getDerivativeMarketsWithToken(
         markets
       )
-      const uiMarkets =
-        UiDerivativeTransformer.derivativeMarketsToUiSpotMarkets(
-          marketsWithToken
-        )
+      const uiMarkets = marketsWithToken.map(
+        UiDerivativeTransformer.derivativeMarketToUiDerivativeMarket
+      )
 
       // Only include markets that we pre-defined to generate static routes for
       const uiMarketsWithToken = uiMarkets

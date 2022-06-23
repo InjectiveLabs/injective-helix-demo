@@ -56,13 +56,14 @@ import {
   cosmosSdkDecToBigNumber,
   FeeDiscountAccountInfo
 } from '@injectivelabs/sdk-ts'
-import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import {
+  ONE_IN_BASE,
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+} from '~/app/utils/constants'
 import {
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook
 } from '~/app/client/utils/spot'
-
-const ONE_IN_BASE = new BigNumberInBase(1)
 
 export default Vue.extend({
   props: {
@@ -76,11 +77,6 @@ export default Vue.extend({
       required: true
     },
 
-    amount: {
-      type: BigNumberInBase,
-      required: true
-    },
-
     fee: {
       type: BigNumberInBase,
       required: true
@@ -88,11 +84,6 @@ export default Vue.extend({
 
     market: {
       type: Object,
-      required: true
-    },
-
-    calculateExecutionPriceForAmount: {
-      type: Function,
       required: true
     },
 
@@ -107,12 +98,12 @@ export default Vue.extend({
     },
 
     fromAmount: {
-      type: BigNumberInBase,
+      type: String,
       required: true
     },
 
     toAmount: {
-      type: BigNumberInBase,
+      type: String,
       required: true
     },
 
@@ -145,6 +136,20 @@ export default Vue.extend({
       }
 
       return '1'
+    },
+
+    amount(): BigNumberInBase {
+      const { orderType, fromAmount, toAmount } = this
+
+      const fromAmountAsNumber =
+        fromAmount === '' ? ZERO_IN_BASE : new BigNumberInBase(fromAmount)
+
+      const toAmountAsNumber =
+        toAmount === '' ? ZERO_IN_BASE : new BigNumberInBase(toAmount)
+
+      return orderType === SpotOrderSide.Buy
+        ? toAmountAsNumber
+        : fromAmountAsNumber
     },
 
     hasAmount(): boolean {
@@ -274,27 +279,11 @@ export default Vue.extend({
     },
 
     averagePriceWithoutSlippage(): BigNumberInBase {
-      const {
-        orderType,
-        sells,
-        buys,
-        hasAmount,
-        market,
-        fromAmount,
-        toAmount
-      } = this
+      const { orderType, sells, buys, market, hasAmount, amount } = this
 
       const records = orderType === SpotOrderSide.Buy ? sells : buys
 
       if (!market || !hasAmount || records.length === 0) {
-        return ZERO_IN_BASE
-      }
-
-      const amount = new BigNumberInBase(
-        orderType === SpotOrderSide.Buy ? toAmount : fromAmount
-      )
-
-      if (amount.eq(ZERO_IN_BASE)) {
         return ZERO_IN_BASE
       }
 
