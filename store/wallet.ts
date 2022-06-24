@@ -322,9 +322,7 @@ export const actions = actionTree(
         if (!hasEnoughInjForGas) {
           this.app.$accessor.modal.openModal(Modal.InsufficientInjForGas)
 
-          throw new Error(
-            'There is no sufficient INJ to cover the gas for this transaction'
-          )
+          throw new Error('Insufficient INJ to pay for gas/transaction fees.')
         }
       }
     },

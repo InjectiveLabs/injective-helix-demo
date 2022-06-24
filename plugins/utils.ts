@@ -1,10 +1,12 @@
 /* eslint-disable no-console */
+import { Wallet } from '@injectivelabs/ts-types'
 import { Context } from '@nuxt/types'
 import {
   IS_DEVELOPMENT,
   IS_PRODUCTION,
   IS_TESTNET
 } from '~/app/utils/constants'
+import { Modal } from '~/types/enums'
 
 const isErrorExcludedFromToast = (error: any): boolean => {
   const disabledPatterns = [
@@ -15,6 +17,13 @@ const isErrorExcludedFromToast = (error: any): boolean => {
     typeof error === 'object' && error !== null ? error.message : error || ''
 
   return disabledPatterns.some((pattern) => pattern.test(errorMessage))
+}
+
+const isInsufficientGasError = (error: any): boolean => {
+  const errorMessage =
+    typeof error === 'object' && error !== null ? error.message : error || ''
+
+  return errorMessage.includes('insufficient funds')
 }
 
 const isErrorExcludedFromReporting = (error: any): boolean => {
@@ -45,6 +54,10 @@ const parseMessage = (error: any): string => {
     return ''
   }
 
+  if (isInsufficientGasError(error.message)) {
+    return 'Insufficient INJ to pay for gas/transaction fees.'
+  }
+
   if (error.message.toLowerCase().includes('response closed')) {
     return 'Something happened. Please refresh the page.'
   }
@@ -56,6 +69,13 @@ export default ({ app }: Context, inject: any) => {
   const bugsnag = app.$bugsnag
 
   inject('onRejected', (error: Error) => {
+    if (
+      isInsufficientGasError(error) &&
+      app.$accessor.wallet.wallet !== Wallet.Metamask
+    ) {
+      app.$accessor.modal.openModal(Modal.InsufficientInjForGas)
+    }
+
     if (!isErrorExcludedFromToast(error)) {
       app.$toast.error(parseMessage(error))
     }
@@ -70,6 +90,13 @@ export default ({ app }: Context, inject: any) => {
   })
 
   inject('onError', (error: Error) => {
+    if (
+      isInsufficientGasError(error) &&
+      app.$accessor.wallet.wallet !== Wallet.Metamask
+    ) {
+      app.$accessor.modal.openModal(Modal.InsufficientInjForGas)
+    }
+
     if (!isErrorExcludedFromToast(error)) {
       app.$toast.error(parseMessage(error))
     }
