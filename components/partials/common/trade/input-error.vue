@@ -409,7 +409,7 @@ export default Vue.extend({
 
   watch: {
     hasErrors(hasErrors: boolean) {
-      this.$emit('update-has-input-errors', hasErrors)
+      this.$emit('update:hasInputErrors', hasErrors)
     }
   }
 })

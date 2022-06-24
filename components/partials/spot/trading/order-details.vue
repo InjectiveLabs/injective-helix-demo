@@ -3,7 +3,7 @@
     <VDrawer
       :custom-handler="true"
       :custom-is-open="detailsDrawerOpen"
-      @drawer-toggle="onDrawerToggle"
+      @set:drawerToggle="onDrawerToggle"
     >
       <div class="mt-4">
         <TextInfo :title="$t('trade.price')" class="mt-2">

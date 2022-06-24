@@ -139,7 +139,7 @@ export default Vue.extend({
 
   methods: {
     onPercentAmountSelected(percent = 100) {
-      this.$emit('update-proportional-percentage', percent)
+      this.$emit('update:proportionalPercentage', percent)
 
       this.updateBaseAndQuoteAmountFromPercentage()
     },
@@ -168,7 +168,7 @@ export default Vue.extend({
       }
 
       this.$emit(
-        'update-base-amount-from-percentage',
+        'update:baseAmountFromPercentage',
         formatAmountToAllowableDecimals(
           approxAmountFromPercentage,
           market.quantityDecimals
@@ -176,7 +176,7 @@ export default Vue.extend({
       )
 
       if (!hasPrice) {
-        this.$emit('update-price-from-last-traded-price')
+        this.$emit('update:priceFromLastTradedPrice')
       }
     },
 
@@ -219,7 +219,7 @@ export default Vue.extend({
             feeRate
           })
 
-      this.$emit('update-quote-amount-from-percentage', quoteAmount)
+      this.$emit('update:quoteAmountFromPercentage', quoteAmount)
     }
   }
 })

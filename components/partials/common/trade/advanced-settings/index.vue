@@ -198,7 +198,7 @@ export default Vue.extend({
         value = DEFAULT_MAX_SLIPPAGE.toFormat(1)
       }
 
-      this.$emit('set-slippage-tolerance', value)
+      this.$emit('set:slippageTolerance', value)
 
       this.toggleSlippageToSelectable()
     },
@@ -212,21 +212,21 @@ export default Vue.extend({
     },
 
     handleHasErrorUpdateEvent(hasError: boolean): void {
-      this.$emit('update-has-advanced-settings-errors', hasError)
+      this.$emit('update:hasAdvancedSettingsErrors', hasError)
     },
 
     handleReduceOnlyCheckboxToggle(checked: boolean) {
-      this.$emit('set-reduce-only', checked)
+      this.$emit('update:reduceOnly', checked)
     },
 
     handlePostOnlyCheckboxToggle(checked: boolean) {
-      this.$emit('set-post-only', checked)
+      this.$emit('set:postOnly', checked)
     },
 
     defaultToZeroSlippage() {
       this.slippageSelection = SlippageDisplayOptions.NonSelectableDefault
 
-      this.$emit('set-slippage-tolerance', '0')
+      this.$emit('set:slippageTolerance', '0')
     },
 
     toggleSlippageToSelectable() {
@@ -258,7 +258,7 @@ export default Vue.extend({
     },
 
     setSlippageTolerance(value: string): void {
-      this.$emit('set-slippage-tolerance', value)
+      this.$emit('set:slippageTolerance', value)
     }
   }
 })

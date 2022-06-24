@@ -159,7 +159,7 @@ export default Vue.extend({
     },
 
     setSlippageTolerance(value: string): void {
-      this.$emit('set-slippage-tolerance', value)
+      this.$emit('set:slippageTolerance', value)
     }
   }
 })

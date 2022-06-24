@@ -2,7 +2,7 @@
   <div v-if="market" class="px-4 w-full">
     <TradingTypeButtons
       :trading-type.sync="tradingType"
-      @update:trading-type="resetForm"
+      @update:tradingType="resetForm"
     />
 
     <OrderTypeSelect :order-type.sync="orderType" v-bind="{ market }" />
@@ -11,35 +11,34 @@
       ref="orderInputs"
       class="mt-8"
       v-bind="{
-        tradingTypeMarket,
-        market,
-        quoteAvailableBalance,
-        sells,
-        takerFeeRate,
-        hasPrice,
-        buys,
-        orderTypeBuy,
+        averagePriceOption,
         baseAvailableBalance,
+        buys,
         executionPrice,
         feeRate,
-        amountStep,
-        lastTradedPrice,
-        totalWithFees,
         hasAmount,
+        hasPrice,
+        lastTradedPrice,
+        market,
+        orderTypeBuy,
+        quoteAvailableBalance,
+        sells,
         slippageTolerance: form.slippageTolerance,
+        takerFeeRate,
+        totalWithFees,
         tradingType,
-        averagePriceOption
+        tradingTypeMarket
       }"
-      :average-price-option.sync="averagePriceOption"
       :amount.sync="form.amount"
-      :quote-amount.sync="form.quoteAmount"
-      :price.sync="form.price"
-      :post-only.sync="form.postOnly"
-      :slippage-tolerance.sync="form.slippageTolerance"
-      :proportional-percentage.sync="form.proportionalPercentage"
-      :has-input-errors.sync="hasInputErrors"
+      :average-price-option.sync="averagePriceOption"
       :has-advanced-settings-errors.sync="hasAdvancedSettingsErrors"
-      @update-price-from-last-traded-price="updatePriceFromLastTradedPrice"
+      :has-input-errors.sync="hasInputErrors"
+      :post-only.sync="form.postOnly"
+      :price.sync="form.price"
+      :proportional-percentage.sync="form.proportionalPercentage"
+      :quote-amount.sync="form.quoteAmount"
+      :slippage-tolerance.sync="form.slippageTolerance"
+      @update:priceFromLastTradedPrice="updatePriceFromLastTradedPrice"
     />
 
     <component
@@ -62,7 +61,7 @@
         feeRate,
         slippage
       }"
-      @drawer-toggle="onDetailsDrawerToggle"
+      @set:drawer-toggle="onDetailsDrawerToggle"
     />
 
     <OrderSubmit
@@ -251,9 +250,9 @@ export default Vue.extend({
     },
 
     hasAmount(): boolean {
-      const { amount, amountStep } = this
+      const { amount } = this
 
-      return !amount.isNaN() && amount.gt(0) && amount.gte(amountStep)
+      return !amount.isNaN() && amount.gt(0)
     },
 
     baseAvailableBalance(): BigNumberInBase {
@@ -413,30 +412,6 @@ export default Vue.extend({
       const { price } = this
 
       return price.gt(0)
-    },
-
-    amountStep(): string {
-      const { market } = this
-
-      if (!market) {
-        return '1'
-      }
-
-      const decimalsAllowed = new BigNumberInBase(market.quantityDecimals)
-
-      if (decimalsAllowed.eq(0)) {
-        return '1'
-      }
-
-      if (decimalsAllowed.eq(1)) {
-        return '0.1'
-      }
-
-      if (decimalsAllowed.gt(1)) {
-        return '0.' + '0'.repeat(decimalsAllowed.toNumber() - 1) + '1'
-      }
-
-      return '1'
     },
 
     averagePriceDerivedFromBaseAmount(): BigNumberInBase {

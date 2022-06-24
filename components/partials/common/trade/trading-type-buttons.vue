@@ -43,7 +43,7 @@ export default Vue.extend({
 
   methods: {
     onTradingTypeToggle(tradingType: TradeExecutionType) {
-      this.$emit('update:trading-type', tradingType)
+      this.$emit('update:tradingType', tradingType)
     }
   }
 })

@@ -30,6 +30,24 @@ export function formatAmount(
   return amount.toFormat(displayDecimals || 1, BigNumber.ROUND_DOWN)
 }
 
+export function formatPlaceholderDecimals(decimals: number) {
+  const decimalsAllowed = new BigNumberInBase(decimals)
+
+  if (decimalsAllowed.eq(0)) {
+    return '1'
+  }
+
+  if (decimalsAllowed.eq(1)) {
+    return '0.1'
+  }
+
+  if (decimalsAllowed.gt(1)) {
+    return '0.' + '0'.repeat(decimalsAllowed.toNumber() - 1) + '1'
+  }
+
+  return '1'
+}
+
 export function formatPrice(
   amount: BigNumberInBase,
   displayDecimals: number

@@ -73,10 +73,10 @@
           }"
           ref="percentageOptions"
           :proportional-percentage="inputProportionalPercentage"
-          @update-proportional-percentage="updateProportionalPercentage"
-          @update-quote-amount-from-percentage="updateQuoteAmountFromPercentage"
-          @update-base-amount-from-percentage="updateBaseAmountFromPercentage"
-          @update-price-from-last-traded-price="updatePriceFromLastTradedPrice"
+          @update:proportionalPercentage="updateProportionalPercentage"
+          @update:quoteAmountFromPercentage="updateQuoteAmountFromPercentage"
+          @update:baseAmountFromPercentage="updateBaseAmountFromPercentage"
+          @update:priceFromLastTradedPrice="updatePriceFromLastTradedPrice"
         />
       </VInput>
     </div>
@@ -100,7 +100,7 @@
         buys,
         hasPrice
       }"
-      @update-has-input-errors="updateHasInputErrors"
+      @update:hasInputErrors="updateHasInputErrors"
     />
 
     <AdvancedSettings
@@ -108,9 +108,9 @@
       :slippage-tolerance="inputSlippageTolerance"
       :post-only="inputPostOnly"
       :has-advanced-settings-errors="hasAdvancedSettingsErrors"
-      @set-slippage-tolerance="setSlippageTolerance"
-      @set-post-only="setPostOnly"
-      @update-has-advanced-settings-errors="updateHasAdvancedSettingsErrors"
+      @set:postOnly="setPostOnly"
+      @set:slippageTolerance="setSlippageTolerance"
+      @update:hasAdvancedSettingsErrors="updateHasAdvancedSettingsErrors"
     />
   </div>
 </template>
@@ -125,7 +125,8 @@ import InputError from '~/components/partials/common/trade/input-error.vue'
 import AdvancedSettings from '~/components/partials/common/trade/advanced-settings/index.vue'
 import {
   formatPriceToAllowableDecimals,
-  formatAmountToAllowableDecimals
+  formatAmountToAllowableDecimals,
+  formatPlaceholderDecimals
 } from '~/app/utils/formatters'
 
 export default Vue.extend({
@@ -163,11 +164,6 @@ export default Vue.extend({
 
     proportionalPercentage: {
       type: Number,
-      required: true
-    },
-
-    amountStep: {
-      type: String,
       required: true
     },
 
@@ -290,6 +286,16 @@ export default Vue.extend({
       )
     },
 
+    amountStep(): string {
+      const { market } = this
+
+      if (!market) {
+        return '1'
+      }
+
+      return formatPlaceholderDecimals(market.quantityDecimals)
+    },
+
     priceStep(): string {
       const { market } = this
 
@@ -297,21 +303,7 @@ export default Vue.extend({
         return '1'
       }
 
-      const decimalsAllowed = new BigNumberInBase(market.priceDecimals)
-
-      if (decimalsAllowed.eq(0)) {
-        return '1'
-      }
-
-      if (decimalsAllowed.eq(1)) {
-        return '0.1'
-      }
-
-      if (decimalsAllowed.gt(1)) {
-        return '0.' + '0'.repeat(decimalsAllowed.toNumber() - 1) + '1'
-      }
-
-      return '1'
+      return formatPlaceholderDecimals(market.priceDecimals)
     }
   },
 
@@ -348,33 +340,33 @@ export default Vue.extend({
   methods: {
     updateBaseAmountFromPercentage(amount: string) {
       this.inputBaseAmount = amount
+
       this.$emit('update:amount', amount)
     },
 
     updateQuoteAmountFromPercentage(quoteAmount: string) {
       this.inputQuoteAmount = quoteAmount
-      this.$emit('update:quote-amount', quoteAmount)
+
+      this.$emit('update:quoteAmount', quoteAmount)
     },
 
     updateHasAdvancedSettingsErrors(hasAdvancedSettingsErrors: boolean) {
-      this.$emit(
-        'update:has-advanced-settings-errors',
-        hasAdvancedSettingsErrors
-      )
+      this.$emit('update:hasAdvancedSettingsErrors', hasAdvancedSettingsErrors)
     },
 
     updateProportionalPercentage(proportionalPercentage: number) {
       this.inputProportionalPercentage = proportionalPercentage
-      this.$emit('update:proportional-percentage', proportionalPercentage)
 
-      this.$emit('update:average-price-option', AveragePriceOptions.Percentage)
+      this.$emit('update:proportionalPercentage', proportionalPercentage)
+      this.$emit('update:averagePriceOption', AveragePriceOptions.Percentage)
     },
 
     setPostOnly(postOnly: boolean) {
       const { inputProportionalPercentage } = this
 
       this.inputPostOnly = postOnly
-      this.$emit('update:post-only', postOnly)
+
+      this.$emit('update:postOnly', postOnly)
 
       if (new BigNumberInBase(inputProportionalPercentage).isZero()) {
         this.updateBaseAmountFromQuote()
@@ -385,7 +377,8 @@ export default Vue.extend({
 
     setSlippageTolerance(slippage: string) {
       this.inputSlippageTolerance = formatAmountToAllowableDecimals(slippage, 2)
-      this.$emit('upinputPostOnly-tolerance', slippage)
+
+      this.$emit('update:slippageTolerance', slippage)
     },
 
     onPriceChange(price: string = '') {
@@ -401,6 +394,7 @@ export default Vue.extend({
       )
 
       this.inputPrice = formattedPrice
+
       this.$emit('update:price', formattedPrice)
 
       if (hasAmount) {
@@ -415,7 +409,7 @@ export default Vue.extend({
         return
       }
 
-      this.$emit('update:average-price-option', AveragePriceOptions.BaseAmount)
+      this.$emit('update:averagePriceOption', AveragePriceOptions.BaseAmount)
 
       const formattedBaseAmount = formatAmountToAllowableDecimals(
         amount,
@@ -423,8 +417,8 @@ export default Vue.extend({
       )
 
       this.inputBaseAmount = formattedBaseAmount
-      this.$emit('update:amount', formattedBaseAmount)
 
+      this.$emit('update:amount', formattedBaseAmount)
       this.$emit('update:proportionalPercentage', 0)
 
       if (!hasPrice) {
@@ -441,7 +435,7 @@ export default Vue.extend({
         return
       }
 
-      this.$emit('update:average-price-option', AveragePriceOptions.QuoteAmount)
+      this.$emit('update:averagePriceOption', AveragePriceOptions.QuoteAmount)
 
       const formattedQuoteAmount = formatAmountToAllowableDecimals(
         quoteAmount,
@@ -449,11 +443,8 @@ export default Vue.extend({
       )
 
       this.inputQuoteAmount = formattedQuoteAmount
+
       this.$emit('update:quoteAmount', formattedQuoteAmount)
-
-      // todo: see if htis is necesary
-      // this.resetBaseAmount()
-
       this.$emit('update:proportionalPercentage', 0)
 
       if (!hasPrice) {
@@ -485,6 +476,7 @@ export default Vue.extend({
         .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
 
       this.inputBaseAmount = baseAmount
+
       this.$emit('update:amount', baseAmount)
     },
 
@@ -516,19 +508,21 @@ export default Vue.extend({
         )
 
         this.inputQuoteAmount = formattedQuoteAmount
-        this.$emit('update:quote-amount', formattedQuoteAmount)
+
+        this.$emit('update:quoteAmount', formattedQuoteAmount)
       } else {
         this.inputQuoteAmount = ''
-        this.$emit('update:quote-amount', '')
+
+        this.$emit('update:quoteAmount', '')
       }
     },
 
     updatePriceFromLastTradedPrice() {
-      this.$emit('update-price-from-last-traded-price')
+      this.$emit('update:priceFromLastTradedPrice')
     },
 
     updateHasInputErrors(hasInputErrors: boolean) {
-      this.$emit('update:has-input-errors', hasInputErrors)
+      this.$emit('update:hasInputErrors', hasInputErrors)
     }
   }
 })
