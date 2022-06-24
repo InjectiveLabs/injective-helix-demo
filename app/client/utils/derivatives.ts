@@ -12,7 +12,8 @@ import {
   UiOrderbookPriceLevel,
   UiPriceLevel,
   ZERO_IN_BASE,
-  DerivativeOrderSide
+  DerivativeOrderSide,
+  UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { formatAmountToAllowableDecimals } from '~/app/utils/formatters'
 
@@ -177,15 +178,15 @@ export const calculateWorstExecutionPriceFromOrderbook = ({
 
 export const getQuoteFromPercentageQuantityNonReduceOnly = ({
   percentageToNumber,
-  availableMargin,
+  quoteAvailableBalance,
   market,
   records,
   leverage,
   feeRate
 }: {
   percentageToNumber: BigNumberInBase
-  availableMargin: BigNumberInBase
-  market: UiDerivativeMarketWithToken
+  quoteAvailableBalance: BigNumberInBase
+  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
   records: UiPriceLevel[]
   leverage: string
   feeRate: BigNumberInBase
@@ -209,7 +210,7 @@ export const getQuoteFromPercentageQuantityNonReduceOnly = ({
     }
   )
 
-  const quoteBalance = new BigNumberInBase(availableMargin).times(
+  const quoteBalance = new BigNumberInBase(quoteAvailableBalance).times(
     percentageToNumber
   )
 
@@ -346,7 +347,7 @@ export const getApproxAmountFromPercentage = ({
   margin: BigNumberInBase
   percentageToNumber?: number
   leverage: string
-  market: UiDerivativeMarketWithToken
+  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
   feeRate: BigNumberInBase
   executionPrice: BigNumberInBase
 }) => {

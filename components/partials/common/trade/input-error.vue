@@ -28,8 +28,8 @@ import {
   ZERO_IN_BASE,
   NUMBER_REGEX
 } from '@injectivelabs/sdk-ui-ts'
+import { excludedPriceDeviationSlugs } from '~/app/data/market'
 import {
-  DEFAULT_MARKET_PRICE_WARNING_DEVIATION,
   DEFAULT_MAX_PRICE_BAND_DIFFERENCE,
   DEFAULT_MIN_PRICE_BAND_DIFFERENCE,
   PRICE_BAND_ENABLED
@@ -37,6 +37,11 @@ import {
 
 export default Vue.extend({
   props: {
+    quoteAvailableBalance: {
+      type: Object as PropType<BigNumberInBase> | undefined,
+      default: undefined
+    },
+
     market: {
       type: Object as PropType<
         UiDerivativeMarketWithToken | UiSpotMarketWithToken
@@ -54,6 +59,16 @@ export default Vue.extend({
       required: true
     },
 
+    margin: {
+      type: Object as PropType<BigNumberInBase> | undefined,
+      default: undefined
+    },
+
+    maxReduceOnly: {
+      type: Object as PropType<BigNumberInBase> | undefined,
+      default: undefined
+    },
+
     quoteAmount: {
       type: Object as PropType<BigNumberInBase>,
       required: true
@@ -64,14 +79,9 @@ export default Vue.extend({
       required: true
     },
 
-    quoteAvailableBalance: {
-      type: Object as PropType<BigNumberInBase>,
-      required: true
-    },
-
     baseAvailableBalance: {
-      type: Object as PropType<BigNumberInBase>,
-      required: true
+      type: Object as PropType<BigNumberInBase> | undefined,
+      default: undefined
     },
 
     totalWithFees: {
@@ -89,9 +99,19 @@ export default Vue.extend({
       required: true
     },
 
+    leverage: {
+      type: String,
+      default: ''
+    },
+
     orderTypeBuy: {
       type: Boolean,
       required: true
+    },
+
+    orderTypeReduceOnly: {
+      type: Boolean,
+      default: false
     },
 
     tradingTypeMarket: {
@@ -121,7 +141,18 @@ export default Vue.extend({
   },
 
   computed: {
+    isSpot(): boolean {
+      return this.$route.name === 'spot-spot'
+    },
+    marketMarkPrice(): string {
+      return this.$accessor.derivatives.marketMarkPrice
+    },
+
     errors(): TradeError {
+      if (this.availableMarginError) {
+        return this.availableMarginError
+      }
+
       if (this.availableBalanceError) {
         return this.availableBalanceError
       }
@@ -138,6 +169,22 @@ export default Vue.extend({
         return this.amountNotValidNumberError
       }
 
+      if (this.maxLeverageError) {
+        return this.maxLeverageError
+      }
+
+      if (this.markPriceThresholdError) {
+        return this.markPriceThresholdError
+      }
+
+      if (this.initialMinMarginRequirementError) {
+        return this.initialMinMarginRequirementError
+      }
+
+      if (this.reduceOnlyExcessError) {
+        return this.reduceOnlyExcessError
+      }
+
       if (this.priceNotValidError) {
         return this.priceNotValidError
       }
@@ -149,35 +196,9 @@ export default Vue.extend({
       return { price: '', amount: '' }
     },
 
-    executionPriceHasHighDeviationWarning(): boolean {
-      const {
-        executionPrice,
-        orderTypeBuy,
-        tradingTypeMarket,
-        lastTradedPrice
-      } = this
-
-      if (!tradingTypeMarket) {
-        return false
-      }
-
-      if (executionPrice.lte(0)) {
-        return false
-      }
-
-      const deviation = new BigNumberInBase(1)
-        .minus(
-          orderTypeBuy
-            ? lastTradedPrice.dividedBy(executionPrice)
-            : executionPrice.dividedBy(lastTradedPrice)
-        )
-        .times(100)
-
-      return deviation.gt(DEFAULT_MARKET_PRICE_WARNING_DEVIATION)
-    },
-
     priceHighDeviationFromMidOrderbookPrice(): TradeError | undefined {
       const {
+        isSpot,
         tradingTypeMarket,
         hasPrice,
         hasAmount,
@@ -194,10 +215,14 @@ export default Vue.extend({
       const [sell] = sells
       const [buy] = buys
       const highestBuy = new BigNumberInWei(buy ? buy.price : 0).toBase(
-        market.quoteToken.decimals - market.baseToken.decimals
+        isSpot
+          ? market.quoteToken.decimals - market.baseToken.decimals
+          : market.quoteToken.decimals
       )
       const lowestSell = new BigNumberInWei(sell ? sell.price : 0).toBase(
-        market.quoteToken.decimals - market.baseToken.decimals
+        isSpot
+          ? market.quoteToken.decimals - market.baseToken.decimals
+          : market.quoteToken.decimals
       )
       const middlePrice = highestBuy.plus(lowestSell).dividedBy(2)
 
@@ -270,7 +295,23 @@ export default Vue.extend({
         return undefined
       }
 
-      if (baseAvailableBalance.lt(amount)) {
+      if (baseAvailableBalance && baseAvailableBalance.lt(amount)) {
+        return {
+          amount: this.$t('trade.not_enough_balance')
+        }
+      }
+
+      return undefined
+    },
+
+    availableMarginError(): TradeError | undefined {
+      const { quoteAvailableBalance, orderTypeReduceOnly, totalWithFees } = this
+
+      if (orderTypeReduceOnly) {
+        return undefined
+      }
+
+      if (quoteAvailableBalance.lt(totalWithFees)) {
         return {
           amount: this.$t('trade.not_enough_balance')
         }
@@ -306,6 +347,42 @@ export default Vue.extend({
       return undefined
     },
 
+    initialMinMarginRequirementError(): TradeError | undefined {
+      const {
+        market,
+        margin,
+        hasPrice,
+        hasAmount,
+        executionPrice,
+        amount,
+        isSpot
+      } = this
+
+      if (isSpot) {
+        return
+      }
+
+      if (!market || !hasPrice || !hasAmount) {
+        return undefined
+      }
+
+      if (excludedPriceDeviationSlugs.includes(market.ticker)) {
+        return undefined
+      }
+
+      const condition = executionPrice
+        .times(amount)
+        .times((market as UiDerivativeMarketWithToken).initialMarginRatio)
+
+      if (margin.lte(condition)) {
+        return {
+          amount: this.$t('trade.order_insufficient_margin')
+        }
+      }
+
+      return undefined
+    },
+
     amountTooBigToFillError(): TradeError | undefined {
       const {
         tradingTypeMarket,
@@ -315,7 +392,8 @@ export default Vue.extend({
         sells,
         buys,
         amount,
-        market
+        market,
+        isSpot
       } = this
 
       if (!tradingTypeMarket || !hasPrice || !hasAmount || !market) {
@@ -325,7 +403,9 @@ export default Vue.extend({
       const orders = orderTypeBuy ? sells : buys
       const totalAmount = orders.reduce((totalAmount, { quantity }) => {
         return totalAmount.plus(
-          new BigNumberInWei(quantity).toBase(market.baseToken.decimals)
+          isSpot
+            ? new BigNumberInWei(quantity).toBase(market.baseToken.decimals)
+            : new BigNumberInBase(quantity)
         )
       }, ZERO_IN_BASE)
 
@@ -372,6 +452,130 @@ export default Vue.extend({
       return {
         amount: this.$t('trade.not_valid_number')
       }
+    },
+
+    maxLeverageError(): TradeError | undefined {
+      const {
+        executionPrice,
+        orderTypeBuy,
+        hasPrice,
+        market,
+        marketMarkPrice,
+        leverage,
+        isSpot
+      } = this
+
+      if (!hasPrice || !market || isSpot) {
+        return
+      }
+
+      const leverageToBigNumber = new BigNumberInBase(leverage)
+
+      const divisor = orderTypeBuy
+        ? new BigNumberInBase(marketMarkPrice)
+            .times((market as UiDerivativeMarketWithToken).initialMarginRatio)
+            .minus(marketMarkPrice)
+            .plus(executionPrice)
+        : new BigNumberInBase(marketMarkPrice)
+            .times((market as UiDerivativeMarketWithToken).initialMarginRatio)
+            .plus(marketMarkPrice)
+            .minus(executionPrice)
+
+      const maxLeverage = executionPrice.dividedBy(divisor)
+
+      if (maxLeverage.gte(1) && leverageToBigNumber.gt(maxLeverage)) {
+        return {
+          price: leverageToBigNumber.eq(1)
+            ? orderTypeBuy
+              ? this.$t('trade.order_price_high_warn')
+              : this.$t('trade.order_price_low_warn')
+            : this.$t('trade.max_leverage_warn')
+        }
+      }
+
+      return undefined
+    },
+
+    markPriceThresholdError(): TradeError | undefined {
+      const {
+        market,
+        marketMarkPrice,
+        orderTypeBuy,
+        margin,
+        hasPrice,
+        hasAmount,
+        executionPrice,
+        amount,
+        isSpot
+      } = this
+
+      if (isSpot) {
+        return
+      }
+
+      if (!marketMarkPrice || !market || !hasPrice || !hasAmount) {
+        return undefined
+      }
+
+      if (excludedPriceDeviationSlugs.includes(market.ticker)) {
+        return undefined
+      }
+
+      const markPrice = new BigNumberInBase(marketMarkPrice)
+
+      if (markPrice.lte(0)) {
+        return {
+          amount: this.$t('trade.mark_price_invalid')
+        }
+      }
+
+      const notional = executionPrice.times(amount)
+      const dividend = orderTypeBuy
+        ? margin.minus(notional)
+        : margin.plus(notional)
+      const divisor = amount.times(
+        orderTypeBuy
+          ? new BigNumberInBase(
+              (market as UiDerivativeMarketWithToken).initialMarginRatio
+            ).minus(1)
+          : new BigNumberInBase(1).plus(
+              (market as UiDerivativeMarketWithToken).initialMarginRatio
+            )
+      )
+      const condition = dividend.div(divisor)
+
+      if (orderTypeBuy && markPrice.lt(condition)) {
+        return {
+          amount: this.$t('trade.order_insufficient_margin')
+        }
+      }
+
+      if (!orderTypeBuy && markPrice.gt(condition)) {
+        return {
+          amount: this.$t('trade.order_insufficient_margin')
+        }
+      }
+
+      return undefined
+    },
+
+    reduceOnlyExcessError(): TradeError | undefined {
+      const { maxReduceOnly, orderTypeReduceOnly, amount, isSpot } = this
+
+      if (isSpot) {
+        return
+      }
+
+      if (
+        orderTypeReduceOnly &&
+        new BigNumberInBase(amount).gt(maxReduceOnly)
+      ) {
+        return {
+          amount: this.$t('trade.reduce_only_in_excess')
+        }
+      }
+
+      return undefined
     },
 
     hasErrors(): boolean {

@@ -64,12 +64,17 @@
             takerFeeRate,
             market,
             hasPrice,
+            maxReduceOnly,
             buys,
             sells,
             orderTypeBuy,
             baseAvailableBalance,
             executionPrice,
-            feeRate
+            feeRate,
+            orderTypeReduceOnly,
+            position,
+            quoteAvailableBalance,
+            leverage
           }"
           ref="percentageOptions"
           :proportional-percentage="inputProportionalPercentage"
@@ -86,13 +91,16 @@
         hasInputErrors,
         market,
         executionPrice,
+        leverage: inputLeverage,
         lastTradedPrice,
+        margin,
+        maxReduceOnly,
         quoteAmount: inputQuoteAmountToBigNumber,
         hasQuoteAmount,
         quoteAvailableBalance,
         baseAvailableBalance,
         totalWithFees,
-        amount: inputAmountToBigNumber,
+        amount: inputBaseAmountToBigNumber,
         hasAmount,
         orderTypeBuy,
         tradingTypeMarket,
@@ -103,12 +111,32 @@
       @update:hasInputErrors="updateHasInputErrors"
     />
 
+    <OrderLeverage
+      v-if="!orderTypeReduceOnly"
+      class="mt-6"
+      :leverage="leverage"
+      :max-leverage="maxLeverageAvailable.toFixed()"
+      @change="onLeverageChange"
+    />
+
+    <OrderLeverageSelect
+      v-if="false"
+      class="mt-4"
+      :max-leverage="maxLeverageAvailable.toFixed()"
+      :leverage="leverage"
+      @change="onLeverageChange"
+    />
+
     <AdvancedSettings
       :trading-type-market="tradingTypeMarket"
       :slippage-tolerance="inputSlippageTolerance"
       :post-only="inputPostOnly"
+      :reduce-only="inputReduceOnly"
+      :show-reduce-only="showReduceOnly"
+      :leverage="inputLeverage"
       :has-advanced-settings-errors="hasAdvancedSettingsErrors"
       @set:postOnly="setPostOnly"
+      @set:reduceOnly="setReduceOnly"
       @set:slippageTolerance="setSlippageTolerance"
       @update:hasAdvancedSettingsErrors="updateHasAdvancedSettingsErrors"
     />
@@ -117,8 +145,18 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken, UiPriceLevel } from '@injectivelabs/sdk-ui-ts'
-import { TradeExecutionType } from '@injectivelabs/ts-types'
+import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
+import {
+  UiSpotMarketWithToken,
+  UiDerivativeMarketWithToken,
+  UiDerivativeLimitOrder,
+  UiPriceLevel,
+  UiPosition,
+  ZERO_IN_BASE,
+  DerivativeOrderSide
+} from '@injectivelabs/sdk-ui-ts'
+import OrderLeverage from '~/components/partials/derivatives/trading/order-leverage.vue'
+import OrderLeverageSelect from '~/components/partials/derivatives/trading/order-leverage-select.vue'
 import { AveragePriceOptions } from '~/types'
 import PercentAmountOptions from '~/components/partials/common/trade/percent-amount-options.vue'
 import InputError from '~/components/partials/common/trade/input-error.vue'
@@ -133,10 +171,19 @@ export default Vue.extend({
   components: {
     PercentAmountOptions,
     InputError,
-    AdvancedSettings
+    AdvancedSettings,
+    OrderLeverage,
+    OrderLeverageSelect
   },
 
   props: {
+    market: {
+      type: Object as PropType<
+        UiSpotMarketWithToken | UiDerivativeMarketWithToken
+      >,
+      required: true
+    },
+
     tradingTypeMarket: {
       type: Boolean,
       required: true
@@ -149,6 +196,11 @@ export default Vue.extend({
 
     price: {
       type: String,
+      required: true
+    },
+
+    orderType: {
+      type: String as PropType<DerivativeOrderSide>,
       required: true
     },
 
@@ -172,14 +224,9 @@ export default Vue.extend({
       required: true
     },
 
-    market: {
-      type: Object as PropType<UiSpotMarketWithToken>,
-      required: true
-    },
-
     baseAvailableBalance: {
-      type: Object as PropType<BigNumberInBase>,
-      required: true
+      type: Object as PropType<BigNumberInBase> | undefined,
+      default: undefined
     },
 
     quoteAvailableBalance: {
@@ -245,6 +292,31 @@ export default Vue.extend({
     averagePriceOption: {
       type: Number as PropType<AveragePriceOptions>,
       required: true
+    },
+
+    reduceOnly: {
+      type: Boolean,
+      default: false
+    },
+
+    orderTypeReduceOnly: {
+      type: Boolean,
+      default: false
+    },
+
+    position: {
+      type: Object as PropType<UiPosition> | undefined,
+      default: undefined
+    },
+
+    margin: {
+      type: Object as PropType<BigNumberInBase> | undefined,
+      default: undefined
+    },
+
+    leverage: {
+      type: String,
+      default: ''
     }
   },
 
@@ -255,13 +327,51 @@ export default Vue.extend({
       inputPrice: '',
       inputPostOnly: false,
       inputProportionalPercentage: 0,
-      inputSlippageTolerance: '0.5'
+      inputSlippageTolerance: '0.5',
+      inputReduceOnly: false,
+      inputLeverage: '1'
     }
   },
 
   computed: {
+    derivativeMarkets(): UiDerivativeMarketWithToken[] {
+      return this.$accessor.derivatives.markets
+    },
+
+    spotMarkets(): UiSpotMarketWithToken[] {
+      return this.$accessor.spot.markets
+    },
+
     $percentageOptions(): any {
       return this.$refs.percentageOptions
+    },
+
+    orders(): UiDerivativeLimitOrder[] {
+      return this.$accessor.derivatives.subaccountOrders
+    },
+
+    isSpot(): boolean {
+      return this.$route.name === 'spot-spot'
+    },
+
+    showReduceOnly(): boolean {
+      const { orderType, position } = this
+      if (!position) {
+        return false
+      }
+      if (
+        position.direction === TradeDirection.Long &&
+        orderType === DerivativeOrderSide.Buy
+      ) {
+        return false
+      }
+      if (
+        position.direction === TradeDirection.Short &&
+        orderType === DerivativeOrderSide.Sell
+      ) {
+        return false
+      }
+      return true
     },
 
     inputQuoteAmountToBigNumber(): BigNumberInBase {
@@ -270,7 +380,7 @@ export default Vue.extend({
       return new BigNumberInBase(inputQuoteAmount)
     },
 
-    inputAmountToBigNumber(): BigNumberInBase {
+    inputBaseAmountToBigNumber(): BigNumberInBase {
       const { inputBaseAmount } = this
 
       return new BigNumberInBase(inputBaseAmount)
@@ -283,6 +393,53 @@ export default Vue.extend({
         !inputQuoteAmountToBigNumber.isNaN() &&
         inputQuoteAmountToBigNumber.gt(0) &&
         inputQuoteAmountToBigNumber.gte(priceStep)
+      )
+    },
+
+    maxLeverageAvailable(): BigNumberInBase {
+      const { market } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      const maxLeverage = new BigNumberInBase(
+        new BigNumberInBase(1)
+          .dividedBy((market as UiDerivativeMarketWithToken).initialMarginRatio)
+          .dp(0)
+      )
+
+      const steps = [1, 2, 5, 10, 20, 50, 100, 150, 200]
+
+      const stepsLessThanMaxLeverage = steps.filter(
+        (step) => step <= maxLeverage.toNumber()
+      )
+
+      return stepsLessThanMaxLeverage.length > 0
+        ? new BigNumberInBase(
+            stepsLessThanMaxLeverage[stepsLessThanMaxLeverage.length - 1]
+          )
+        : new BigNumberInBase(20)
+    },
+
+    maxReduceOnly(): BigNumberInBase {
+      const { market, position, orders, orderTypeReduceOnly } = this
+
+      if (!orderTypeReduceOnly || !position || !market) {
+        return ZERO_IN_BASE
+      }
+
+      const reduceOnlyOrders = orders.filter(
+        (o) => o.isReduceOnly && o.marketId === market.marketId
+      )
+
+      const aggregateReduceOnlyQuantity = reduceOnlyOrders.reduce(
+        (total, order) => total.plus(order.quantity),
+        ZERO_IN_BASE
+      )
+
+      return new BigNumberInBase(position.quantity).minus(
+        aggregateReduceOnlyQuantity
       )
     },
 
@@ -310,9 +467,11 @@ export default Vue.extend({
   watch: {
     lastTradedPrice(newPrice: BigNumberInBase) {
       const { price, market } = this
+
       if (!market) {
         return
       }
+
       if (!price) {
         const formattedPrice = newPrice.toFixed(market.priceDecimals)
         this.inputPrice = formattedPrice
@@ -333,6 +492,12 @@ export default Vue.extend({
 
       if (newTradingType === TradeExecutionType.LimitFill && market) {
         this.onPriceChange(inputPrice)
+      }
+    },
+
+    orderTypeReduceOnly(newReduceOnly: boolean) {
+      if (newReduceOnly) {
+        this.onLeverageChange('1') // set the leverage to 1 if the reduce only is set
       }
     }
   },
@@ -362,16 +527,35 @@ export default Vue.extend({
     },
 
     setPostOnly(postOnly: boolean) {
-      const { inputProportionalPercentage } = this
+      const { averagePriceOption, reduceOnly } = this
 
       this.inputPostOnly = postOnly
 
       this.$emit('update:postOnly', postOnly)
 
-      if (new BigNumberInBase(inputProportionalPercentage).isZero()) {
-        this.updateBaseAmountFromQuote()
-      } else {
+      if (averagePriceOption !== AveragePriceOptions.Percentage) {
+        this.updateSpotBaseAmountFromQuote()
+      } else if (
+        !reduceOnly &&
+        averagePriceOption === AveragePriceOptions.Percentage
+      ) {
         this.$percentageOptions.updateBaseAndQuoteAmountFromPercentage()
+      }
+    },
+
+    onLeverageChange(leverage: string) {
+      const { maxLeverageAvailable } = this
+      const leverageToBigNumber = new BigNumberInBase(leverage)
+
+      if (leverageToBigNumber.gte(maxLeverageAvailable)) {
+        this.inputLeverage = maxLeverageAvailable.toFixed()
+        this.$emit('update:leverage', maxLeverageAvailable.toFixed())
+      } else if (leverageToBigNumber.lt(1)) {
+        this.inputLeverage = '1'
+        this.$emit('update:leverage', '1')
+      } else {
+        this.inputLeverage = leverage
+        this.$emit('update:leverage', leverage)
       }
     },
 
@@ -381,8 +565,13 @@ export default Vue.extend({
       this.$emit('update:slippageTolerance', slippage)
     },
 
+    setReduceOnly(reduceOnly: boolean) {
+      this.inputReduceOnly = reduceOnly
+      this.$emit('update:reduceOnly', reduceOnly)
+    },
+
     onPriceChange(price: string = '') {
-      const { hasAmount, market } = this
+      const { hasAmount, market, isSpot } = this
 
       if (!market) {
         return
@@ -398,12 +587,14 @@ export default Vue.extend({
       this.$emit('update:price', formattedPrice)
 
       if (hasAmount) {
-        this.updateQuoteAmountFromBase()
+        isSpot
+          ? this.updateSpotQuoteAmountFromBase()
+          : this.updateDerivativesQuoteAmountFromBase()
       }
     },
 
     onAmountChange(amount: string = '') {
-      const { hasPrice, market } = this
+      const { hasPrice, market, isSpot, tradingTypeMarket } = this
 
       if (!market) {
         return
@@ -421,15 +612,19 @@ export default Vue.extend({
       this.$emit('update:amount', formattedBaseAmount)
       this.$emit('update:proportionalPercentage', 0)
 
-      if (!hasPrice) {
+      if (!hasPrice && !tradingTypeMarket) {
         this.updatePriceFromLastTradedPrice()
       }
 
-      this.updateQuoteAmountFromBase()
+      if (isSpot) {
+        this.updateSpotQuoteAmountFromBase()
+      } else {
+        this.updateDerivativesQuoteAmountFromBase()
+      }
     },
 
     onQuoteAmountChange(quoteAmount: string = '') {
-      const { hasPrice, market } = this
+      const { hasPrice, market, tradingTypeMarket, isSpot } = this
 
       if (!market) {
         return
@@ -447,16 +642,20 @@ export default Vue.extend({
       this.$emit('update:quoteAmount', formattedQuoteAmount)
       this.$emit('update:proportionalPercentage', 0)
 
-      if (!hasPrice) {
+      if (!hasPrice && !tradingTypeMarket) {
         this.updatePriceFromLastTradedPrice()
       }
 
-      this.updateBaseAmountFromQuote()
+      if (isSpot) {
+        this.updateSpotBaseAmountFromQuote()
+      } else {
+        return this.updateDerivativesBaseAmountFromQuote()
+      }
     },
 
-    updateBaseAmountFromQuote() {
+    updateSpotBaseAmountFromQuote() {
       const {
-        inputQuoteAmount,
+        inputQuoteAmountToBigNumber,
         executionPrice,
         market,
         orderTypeBuy,
@@ -471,18 +670,50 @@ export default Vue.extend({
         ? new BigNumberInBase(1).plus(feeRate)
         : new BigNumberInBase(1).minus(feeRate)
 
-      const baseAmount = new BigNumberInBase(inputQuoteAmount)
-        .div(executionPrice.times(feeMultiplier))
-        .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
+      const baseAmount = inputQuoteAmountToBigNumber.div(
+        executionPrice.times(feeMultiplier)
+      )
 
-      this.inputBaseAmount = baseAmount
+      if (baseAmount.gt('0')) {
+        const formattedBaseAmount = baseAmount.toFixed(
+          market.quantityDecimals,
+          BigNumberInBase.ROUND_DOWN
+        )
 
-      this.$emit('update:amount', baseAmount)
+        this.inputBaseAmount = formattedBaseAmount
+        this.$emit('update:amount', formattedBaseAmount)
+      } else {
+        this.inputBaseAmount = ''
+        this.$emit('update:amount', '')
+      }
     },
 
-    updateQuoteAmountFromBase() {
+    updateDerivativesBaseAmountFromQuote() {
+      const { inputQuoteAmountToBigNumber, executionPrice, market } = this
+
+      if (!market) {
+        return
+      }
+
+      const baseAmount = inputQuoteAmountToBigNumber.div(executionPrice)
+
+      if (baseAmount.gt('0')) {
+        const formattedBaseAmount = baseAmount.toFixed(
+          market.quantityDecimals,
+          BigNumberInBase.ROUND_DOWN
+        )
+
+        this.inputBaseAmount = formattedBaseAmount
+        this.$emit('update:amount', formattedBaseAmount)
+      } else {
+        this.inputBaseAmount = ''
+        this.$emit('update:amount', '')
+      }
+    },
+
+    updateSpotQuoteAmountFromBase() {
       const {
-        inputAmountToBigNumber,
+        inputBaseAmountToBigNumber,
         executionPrice,
         market,
         feeRate,
@@ -497,7 +728,7 @@ export default Vue.extend({
         ? new BigNumberInBase(1).plus(feeRate)
         : new BigNumberInBase(1).minus(feeRate)
 
-      const quoteAmount = inputAmountToBigNumber
+      const quoteAmount = inputBaseAmountToBigNumber
         .times(executionPrice)
         .times(feeMultiplier)
 
@@ -514,6 +745,29 @@ export default Vue.extend({
         this.inputQuoteAmount = ''
 
         this.$emit('update:quoteAmount', '')
+      }
+    },
+
+    updateDerivativesQuoteAmountFromBase() {
+      const { inputBaseAmountToBigNumber, executionPrice, market } = this
+
+      if (!market) {
+        return
+      }
+
+      const quoteAmount = inputBaseAmountToBigNumber.times(executionPrice)
+
+      if (quoteAmount.gt('0')) {
+        const formattedQuoteAmount = quoteAmount.toFixed(
+          market.priceDecimals,
+          BigNumberInBase.ROUND_DOWN
+        )
+
+        this.inputQuoteAmount = formattedQuoteAmount
+        this.$emit('update:quote-amount', formattedQuoteAmount)
+      } else {
+        this.inputQuoteAmount = ''
+        this.$emit('update:quote-amount', '')
       }
     },
 

@@ -7,7 +7,8 @@ import {
   UiOrderbookPriceLevel,
   UiPriceLevel,
   ZERO_IN_BASE,
-  UiSpotMarketWithToken
+  UiSpotMarketWithToken,
+  UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import {
   formatPriceToAllowableDecimals,
@@ -281,7 +282,7 @@ export const getApproxAmountForSellOrder = ({
 }: {
   buys: UiPriceLevel[]
   balance: BigNumberInBase
-  market: UiSpotMarketWithToken
+  market: UiSpotMarketWithToken | UiDerivativeMarketWithToken
   percentageToNumber: BigNumberInBase
 }) => {
   const totalFillableAmount = buys.reduce((totalAmount, { quantity }) => {
@@ -313,7 +314,7 @@ export const getApproxAmountForBuyOrder = ({
   sells: UiPriceLevel[]
   balance: BigNumberInBase
   percentageToNumber?: number
-  market: UiSpotMarketWithToken
+  market: UiSpotMarketWithToken | UiDerivativeMarketWithToken
   feeRate: BigNumberInBase
   executionPrice: BigNumberInBase
 }) => {
@@ -363,7 +364,7 @@ export const getQuoteForPercentageSell = ({
   feeRate
 }: {
   buys: UiPriceLevel[]
-  market: UiSpotMarketWithToken
+  market: UiSpotMarketWithToken | UiDerivativeMarketWithToken
   baseAvailableBalance: BigNumberInBase
   percentToNumber: BigNumberInBase
   executionPrice: BigNumberInBase
@@ -419,7 +420,7 @@ export const getQuoteForPercentageBuy = ({
   takerFeeRate
 }: {
   sells: UiPriceLevel[]
-  market: UiSpotMarketWithToken
+  market: UiSpotMarketWithToken | UiDerivativeMarketWithToken
   quoteAvailableBalance: BigNumberInBase
   percentToNumber: BigNumberInBase
   takerFeeRate: BigNumberInBase

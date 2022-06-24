@@ -420,16 +420,17 @@ export default Vue.extend({
         return
       }
 
-      // Make sure value is clamped to max if it exists.
       let value: String | Number = target.value
+
+      const valueExceedsMax = max !== null && Number(value) > Number(max)
+
+      if (valueExceedsMax) {
+        value = max.toString()
+      }
 
       // use key to refresh input field to eliminate potential trailing decimal point
       if (value.trim() !== '' && !value.includes('.')) {
         this.resetInputKey++
-      }
-
-      if (max !== null && Number(value) > Number(max)) {
-        value = max.toString()
       }
 
       this.$emit('blur', value)

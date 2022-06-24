@@ -216,7 +216,7 @@ export default Vue.extend({
     },
 
     handleReduceOnlyCheckboxToggle(checked: boolean) {
-      this.$emit('update:reduceOnly', checked)
+      this.$emit('set:reduceOnly', checked)
     },
 
     handlePostOnlyCheckboxToggle(checked: boolean) {

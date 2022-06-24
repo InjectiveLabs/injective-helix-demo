@@ -17,7 +17,10 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   UiSpotMarketWithToken,
   ZERO_IN_BASE,
-  UiPriceLevel
+  UiPriceLevel,
+  UiPosition,
+  UiDerivativeMarketWithToken,
+  UiDerivativeLimitOrder
 } from '@injectivelabs/sdk-ui-ts'
 import { formatAmountToAllowableDecimals } from '~/app/utils/formatters'
 import {
@@ -26,9 +29,20 @@ import {
   getQuoteForPercentageSell,
   getQuoteForPercentageBuy
 } from '~/app/client/utils/spot'
+import {
+  getApproxAmountFromPercentage,
+  getQuoteFromPercentageQuantityNonReduceOnly
+} from '~/app/client/utils/derivatives'
 
 export default Vue.extend({
   props: {
+    market: {
+      type: Object as PropType<
+        UiSpotMarketWithToken | UiDerivativeMarketWithToken | undefined
+      >,
+      required: true
+    },
+
     proportionalPercentage: {
       type: Number,
       required: true
@@ -39,9 +53,9 @@ export default Vue.extend({
       required: true
     },
 
-    market: {
-      type: Object as PropType<UiSpotMarketWithToken>,
-      required: true
+    maxReduceOnly: {
+      type: Object as PropType<BigNumberInBase> | undefined,
+      default: undefined
     },
 
     quoteAvailableBalance: {
@@ -65,8 +79,8 @@ export default Vue.extend({
     },
 
     baseAvailableBalance: {
-      type: Object as PropType<BigNumberInBase>,
-      required: true
+      type: Object as PropType<BigNumberInBase> | undefined,
+      default: undefined
     },
 
     executionPrice: {
@@ -82,6 +96,21 @@ export default Vue.extend({
     takerFeeRate: {
       type: Object as PropType<BigNumberInBase>,
       required: true
+    },
+
+    orderTypeReduceOnly: {
+      type: Boolean,
+      default: false
+    },
+
+    position: {
+      type: Object as PropType<UiPosition> | undefined,
+      default: undefined
+    },
+
+    leverage: {
+      type: String,
+      default: ''
     }
   },
 
@@ -92,6 +121,14 @@ export default Vue.extend({
   },
 
   computed: {
+    orders(): UiDerivativeLimitOrder[] {
+      return this.$accessor.derivatives.subaccountOrders
+    },
+
+    isSpot(): boolean {
+      return this.$route.name === 'spot-spot'
+    },
+
     approxAmountFromPercentage(): string {
       const {
         market,
@@ -102,7 +139,12 @@ export default Vue.extend({
         quoteAvailableBalance,
         executionPrice,
         proportionalPercentage,
-        feeRate
+        feeRate,
+        orderTypeReduceOnly,
+        position,
+        maxReduceOnly,
+        leverage,
+        isSpot
       } = this
 
       const percentageToNumber = new BigNumberInBase(
@@ -115,6 +157,24 @@ export default Vue.extend({
 
       if (!market) {
         return ''
+      }
+
+      if (orderTypeReduceOnly && position) {
+        return maxReduceOnly
+          .times(percentageToNumber)
+          .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
+      }
+
+      if (!isSpot) {
+        return getApproxAmountFromPercentage({
+          market,
+          margin: quoteAvailableBalance,
+          leverage,
+          percentageToNumber: percentageToNumber.toNumber(),
+          records: orderTypeBuy ? sells : buys,
+          feeRate,
+          executionPrice
+        })
       }
 
       if (!orderTypeBuy) {
@@ -134,6 +194,47 @@ export default Vue.extend({
         feeRate,
         executionPrice
       })
+    },
+
+    quoteAmountFromPercentage(): string {
+      const {
+        maxReduceOnly,
+        orderTypeReduceOnly,
+        proportionalPercentage,
+        executionPrice,
+        feeRate,
+        leverage,
+        market,
+        position,
+        quoteAvailableBalance,
+        orderTypeBuy,
+        sells,
+        buys
+      } = this
+
+      if (!market) {
+        return ''
+      }
+
+      const percentageToNumber = new BigNumberInBase(
+        proportionalPercentage
+      ).div(100)
+
+      if (orderTypeReduceOnly && position) {
+        return maxReduceOnly
+          .times(percentageToNumber)
+          .times(executionPrice)
+          .toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
+      }
+
+      return getQuoteFromPercentageQuantityNonReduceOnly({
+        percentageToNumber,
+        quoteAvailableBalance,
+        market,
+        records: orderTypeBuy ? sells : buys,
+        leverage,
+        feeRate
+      }).toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
     }
   },
 
@@ -181,6 +282,23 @@ export default Vue.extend({
     },
 
     updateQuoteAmountBasedOnPercentage() {
+      const { isSpot, quoteAmountFromPercentage, market } = this
+
+      if (!market) {
+        return
+      }
+
+      if (isSpot) {
+        this.updateSpotQuoteAmount()
+      } else {
+        this.$emit(
+          'update-quote-amount-from-percentage',
+          quoteAmountFromPercentage
+        )
+      }
+    },
+
+    updateSpotQuoteAmount() {
       const {
         quoteAvailableBalance = ZERO_IN_BASE,
         sells,
