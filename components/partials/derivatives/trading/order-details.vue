@@ -51,10 +51,10 @@
             :tooltip="$t('trade.margin_tooltip')"
           />
           <span
-            v-if="margin.gt(0)"
+            v-if="notionalWithLeverage.gt(0)"
             class="font-mono flex items-start break-all"
           >
-            {{ marginToFormat }}
+            {{ notionalWithLeverageToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
             </span>
@@ -240,7 +240,7 @@ export default Vue.extend({
       type: Object as PropType<BigNumberInBase>
     },
 
-    margin: {
+    notionalWithLeverage: {
       required: true,
       type: Object as PropType<BigNumberInBase>
     },
@@ -342,14 +342,14 @@ export default Vue.extend({
       return liquidationPrice.toFormat(market.priceDecimals)
     },
 
-    marginToFormat(): string {
-      const { margin, market } = this
+    notionalWithLeverageToFormat(): string {
+      const { notionalWithLeverage, market } = this
 
       if (!market) {
-        return margin.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+        return notionalWithLeverage.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
       }
 
-      return margin.toFormat(market.priceDecimals)
+      return notionalWithLeverage.toFormat(market.priceDecimals)
     },
 
     feesToFormat(): string {

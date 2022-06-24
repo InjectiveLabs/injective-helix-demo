@@ -167,8 +167,8 @@ export default Vue.extend({
 
       if (!isSpot) {
         return getApproxAmountFromPercentage({
-          market,
-          margin: quoteAvailableBalance,
+          market: market as UiDerivativeMarketWithToken,
+          notionalWithLeverage: quoteAvailableBalance,
           leverage,
           percentageToNumber: percentageToNumber.toNumber(),
           records: orderTypeBuy ? sells : buys,
@@ -181,13 +181,13 @@ export default Vue.extend({
         return getApproxAmountForSellOrder({
           buys,
           balance,
-          market,
+          market: market as UiSpotMarketWithToken,
           percentageToNumber
         })
       }
 
       return getApproxAmountForBuyOrder({
-        market,
+        market: market as UiSpotMarketWithToken,
         balance,
         percentageToNumber: percentageToNumber.toNumber(),
         sells,
@@ -230,7 +230,7 @@ export default Vue.extend({
       return getQuoteFromPercentageQuantityNonReduceOnly({
         percentageToNumber,
         quoteAvailableBalance,
-        market,
+        market: market as UiDerivativeMarketWithToken,
         records: orderTypeBuy ? sells : buys,
         leverage,
         feeRate
@@ -268,6 +268,10 @@ export default Vue.extend({
         return
       }
 
+      if (!hasPrice) {
+        this.$emit('update:priceFromLastTradedPrice')
+      }
+
       this.$emit(
         'update:baseAmountFromPercentage',
         formatAmountToAllowableDecimals(
@@ -275,10 +279,6 @@ export default Vue.extend({
           market.quantityDecimals
         )
       )
-
-      if (!hasPrice) {
-        this.$emit('update:priceFromLastTradedPrice')
-      }
     },
 
     updateQuoteAmountBasedOnPercentage() {
@@ -288,14 +288,12 @@ export default Vue.extend({
         return
       }
 
-      if (isSpot) {
-        this.updateSpotQuoteAmount()
-      } else {
-        this.$emit(
-          'update-quote-amount-from-percentage',
-          quoteAmountFromPercentage
-        )
-      }
+      isSpot
+        ? this.updateSpotQuoteAmount()
+        : this.$emit(
+            'update-quote-amount-from-percentage',
+            quoteAmountFromPercentage
+          )
     },
 
     updateSpotQuoteAmount() {
@@ -323,14 +321,14 @@ export default Vue.extend({
       const quoteAmount = orderTypeBuy
         ? getQuoteForPercentageBuy({
             sells,
-            market,
+            market: market as UiSpotMarketWithToken,
             quoteAvailableBalance,
             percentToNumber,
             takerFeeRate
           })
         : getQuoteForPercentageSell({
             buys,
-            market,
+            market: market as UiSpotMarketWithToken,
             baseAvailableBalance,
             percentToNumber,
             executionPrice,

@@ -48,7 +48,7 @@
             :warnings="slippageWarnings"
             :errors="slippageErrors"
             :slippage-tolerance="form.slippageTolerance"
-            @set-slippage-tolerance="setSlippageTolerance"
+            @set:slippageTolerance="setSlippageTolerance"
           />
         </PopperBox>
       </div>

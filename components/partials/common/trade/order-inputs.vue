@@ -93,7 +93,7 @@
         executionPrice,
         leverage: inputLeverage,
         lastTradedPrice,
-        margin,
+        notionalWithLeverage,
         maxReduceOnly,
         quoteAmount: inputQuoteAmountToBigNumber,
         hasQuoteAmount,
@@ -112,7 +112,7 @@
     />
 
     <OrderLeverage
-      v-if="!orderTypeReduceOnly"
+      v-if="!orderTypeReduceOnly && !isSpot"
       class="mt-6"
       :leverage="leverage"
       :max-leverage="maxLeverageAvailable.toFixed()"
@@ -145,7 +145,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
+import { TradeExecutionType } from '@injectivelabs/ts-types'
 import {
   UiSpotMarketWithToken,
   UiDerivativeMarketWithToken,
@@ -153,6 +153,7 @@ import {
   UiPriceLevel,
   UiPosition,
   ZERO_IN_BASE,
+  SpotOrderSide,
   DerivativeOrderSide
 } from '@injectivelabs/sdk-ui-ts'
 import OrderLeverage from '~/components/partials/derivatives/trading/order-leverage.vue'
@@ -163,8 +164,7 @@ import InputError from '~/components/partials/common/trade/input-error.vue'
 import AdvancedSettings from '~/components/partials/common/trade/advanced-settings/index.vue'
 import {
   formatPriceToAllowableDecimals,
-  formatAmountToAllowableDecimals,
-  formatPlaceholderDecimals
+  formatAmountToAllowableDecimals
 } from '~/app/utils/formatters'
 
 export default Vue.extend({
@@ -199,8 +199,13 @@ export default Vue.extend({
       required: true
     },
 
+    showReduceOnly: {
+      type: Boolean,
+      default: false
+    },
+
     orderType: {
-      type: String as PropType<DerivativeOrderSide>,
+      type: String as PropType<SpotOrderSide | DerivativeOrderSide>,
       required: true
     },
 
@@ -309,14 +314,14 @@ export default Vue.extend({
       default: undefined
     },
 
-    margin: {
+    notionalWithLeverage: {
       type: Object as PropType<BigNumberInBase> | undefined,
       default: undefined
     },
 
     leverage: {
       type: String,
-      default: ''
+      default: undefined
     }
   },
 
@@ -354,26 +359,6 @@ export default Vue.extend({
       return this.$route.name === 'spot-spot'
     },
 
-    showReduceOnly(): boolean {
-      const { orderType, position } = this
-      if (!position) {
-        return false
-      }
-      if (
-        position.direction === TradeDirection.Long &&
-        orderType === DerivativeOrderSide.Buy
-      ) {
-        return false
-      }
-      if (
-        position.direction === TradeDirection.Short &&
-        orderType === DerivativeOrderSide.Sell
-      ) {
-        return false
-      }
-      return true
-    },
-
     inputQuoteAmountToBigNumber(): BigNumberInBase {
       const { inputQuoteAmount } = this
 
@@ -397,9 +382,9 @@ export default Vue.extend({
     },
 
     maxLeverageAvailable(): BigNumberInBase {
-      const { market } = this
+      const { market, isSpot } = this
 
-      if (!market) {
+      if (isSpot || !market) {
         return ZERO_IN_BASE
       }
 
@@ -423,9 +408,9 @@ export default Vue.extend({
     },
 
     maxReduceOnly(): BigNumberInBase {
-      const { market, position, orders, orderTypeReduceOnly } = this
+      const { isSpot, market, position, orders, orderTypeReduceOnly } = this
 
-      if (!orderTypeReduceOnly || !position || !market) {
+      if (isSpot || !orderTypeReduceOnly || !position || !market) {
         return ZERO_IN_BASE
       }
 
@@ -450,7 +435,9 @@ export default Vue.extend({
         return '1'
       }
 
-      return formatPlaceholderDecimals(market.quantityDecimals)
+      return new BigNumberInBase(1)
+        .shiftedBy(-market.quantityDecimals)
+        .toFixed()
     },
 
     priceStep(): string {
@@ -460,7 +447,7 @@ export default Vue.extend({
         return '1'
       }
 
-      return formatPlaceholderDecimals(market.priceDecimals)
+      return new BigNumberInBase(1).shiftedBy(-market.priceDecimals).toFixed()
     }
   },
 
@@ -534,12 +521,11 @@ export default Vue.extend({
       this.$emit('update:postOnly', postOnly)
 
       if (averagePriceOption !== AveragePriceOptions.Percentage) {
-        this.updateSpotBaseAmountFromQuote()
-      } else if (
-        !reduceOnly &&
-        averagePriceOption === AveragePriceOptions.Percentage
-      ) {
-        this.$percentageOptions.updateBaseAndQuoteAmountFromPercentage()
+        return this.updateSpotBaseAmountFromQuote()
+      }
+
+      if (!reduceOnly) {
+        return this.$percentageOptions.updateBaseAndQuoteAmountFromPercentage()
       }
     },
 
@@ -549,14 +535,19 @@ export default Vue.extend({
 
       if (leverageToBigNumber.gte(maxLeverageAvailable)) {
         this.inputLeverage = maxLeverageAvailable.toFixed()
-        this.$emit('update:leverage', maxLeverageAvailable.toFixed())
-      } else if (leverageToBigNumber.lt(1)) {
-        this.inputLeverage = '1'
-        this.$emit('update:leverage', '1')
-      } else {
-        this.inputLeverage = leverage
-        this.$emit('update:leverage', leverage)
+
+        return this.$emit('update:leverage', maxLeverageAvailable.toFixed())
       }
+
+      if (leverageToBigNumber.lt(1)) {
+        this.inputLeverage = '1'
+
+        return this.$emit('update:leverage', '1')
+      }
+
+      this.inputLeverage = leverage
+
+      return this.$emit('update:leverage', leverage)
     },
 
     setSlippageTolerance(slippage: string) {
@@ -567,6 +558,7 @@ export default Vue.extend({
 
     setReduceOnly(reduceOnly: boolean) {
       this.inputReduceOnly = reduceOnly
+
       this.$emit('update:reduceOnly', reduceOnly)
     },
 
@@ -610,6 +602,7 @@ export default Vue.extend({
       this.inputBaseAmount = formattedBaseAmount
 
       this.$emit('update:amount', formattedBaseAmount)
+
       this.$emit('update:proportionalPercentage', 0)
 
       if (!hasPrice && !tradingTypeMarket) {
@@ -681,9 +674,11 @@ export default Vue.extend({
         )
 
         this.inputBaseAmount = formattedBaseAmount
+
         this.$emit('update:amount', formattedBaseAmount)
       } else {
         this.inputBaseAmount = ''
+
         this.$emit('update:amount', '')
       }
     },
@@ -704,9 +699,11 @@ export default Vue.extend({
         )
 
         this.inputBaseAmount = formattedBaseAmount
+
         this.$emit('update:amount', formattedBaseAmount)
       } else {
         this.inputBaseAmount = ''
+
         this.$emit('update:amount', '')
       }
     },
@@ -764,9 +761,11 @@ export default Vue.extend({
         )
 
         this.inputQuoteAmount = formattedQuoteAmount
+
         this.$emit('update:quote-amount', formattedQuoteAmount)
       } else {
         this.inputQuoteAmount = ''
+
         this.$emit('update:quote-amount', '')
       }
     },

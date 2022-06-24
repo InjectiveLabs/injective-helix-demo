@@ -28,7 +28,7 @@
         slippageTolerance: form.slippageTolerance,
         tradingType,
         averagePriceOption,
-        margin,
+        notionalWithLeverage,
         position,
         orderTypeReduceOnly,
         quoteAvailableBalance
@@ -59,7 +59,7 @@
         takerFeeRate,
         makerFeeRateDiscount,
         takerFeeRateDiscount,
-        margin,
+        notionalWithLeverage,
         feeReturned,
         feeRebates,
         orderTypeReduceOnly,
@@ -84,8 +84,7 @@
         market,
         orderType,
         orderTypeBuy,
-        reduceOnly: form.reduceOnly,
-        showReduceOnly,
+        orderTypeReduceOnly,
         status,
         tradingTypeMarket
       }"
@@ -449,22 +448,19 @@ export default Vue.extend({
 
     showReduceOnly(): boolean {
       const { orderType, position } = this
-
       if (!position) {
         return false
       }
 
-      if (
+      const longAndBuy =
         position.direction === TradeDirection.Long &&
         orderType === DerivativeOrderSide.Buy
-      ) {
-        return false
-      }
 
-      if (
+      const shortAndSell =
         position.direction === TradeDirection.Short &&
         orderType === DerivativeOrderSide.Sell
-      ) {
+
+      if (longAndBuy || shortAndSell) {
         return false
       }
 
@@ -592,7 +588,7 @@ export default Vue.extend({
       return '1'
     },
 
-    margin(): BigNumberInBase {
+    notionalWithLeverage(): BigNumberInBase {
       const { executionPrice, hasPrice, hasAmount, form, market } = this
 
       if (!hasPrice || !hasAmount || !market) {
@@ -784,13 +780,13 @@ export default Vue.extend({
     },
 
     total(): BigNumberInBase {
-      const { hasPrice, hasAmount, margin, market } = this
+      const { hasPrice, hasAmount, notionalWithLeverage, market } = this
 
       if (!hasPrice || !hasAmount || !market) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(margin)
+      return new BigNumberInBase(notionalWithLeverage)
     },
 
     totalWithFees(): BigNumberInBase {
@@ -806,7 +802,7 @@ export default Vue.extend({
     liquidationPrice(): BigNumberInBase {
       const {
         executionPrice,
-        margin,
+        notionalWithLeverage,
         hasAmount,
         hasPrice,
         orderType,
@@ -821,7 +817,7 @@ export default Vue.extend({
       return calculateLiquidationPrice({
         market,
         orderType,
-        margin: margin.toFixed(),
+        notionalWithLeverage: notionalWithLeverage.toFixed(),
         price: executionPrice.toFixed(),
         quantity: form.amount
       })
@@ -913,7 +909,7 @@ export default Vue.extend({
       const {
         orderTypeToSubmit,
         market,
-        margin,
+        notionalWithLeverage,
         price,
         orderTypeReduceOnly,
         amount
@@ -928,7 +924,7 @@ export default Vue.extend({
       this.$accessor.derivatives
         .submitLimitOrder({
           price,
-          margin,
+          notionalWithLeverage,
           orderType: orderTypeToSubmit,
           reduceOnly: orderTypeReduceOnly,
           quantity: amount
@@ -948,7 +944,7 @@ export default Vue.extend({
         orderType,
         orderTypeReduceOnly,
         market,
-        margin,
+        notionalWithLeverage,
         worstPrice,
         amount
       } = this
@@ -962,7 +958,7 @@ export default Vue.extend({
       this.$accessor.derivatives
         .submitMarketOrder({
           orderType,
-          margin,
+          notionalWithLeverage,
           reduceOnly: orderTypeReduceOnly,
           price: worstPrice,
           quantity: amount

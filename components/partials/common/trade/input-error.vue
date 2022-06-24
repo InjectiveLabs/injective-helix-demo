@@ -59,7 +59,7 @@ export default Vue.extend({
       required: true
     },
 
-    margin: {
+    notionalWithLeverage: {
       type: Object as PropType<BigNumberInBase> | undefined,
       default: undefined
     },
@@ -101,7 +101,7 @@ export default Vue.extend({
 
     leverage: {
       type: String,
-      default: ''
+      default: undefined
     },
 
     orderTypeBuy: {
@@ -144,6 +144,7 @@ export default Vue.extend({
     isSpot(): boolean {
       return this.$route.name === 'spot-spot'
     },
+
     marketMarkPrice(): string {
       return this.$accessor.derivatives.marketMarkPrice
     },
@@ -226,11 +227,7 @@ export default Vue.extend({
       )
       const middlePrice = highestBuy.plus(lowestSell).dividedBy(2)
 
-      if (middlePrice.lte(0)) {
-        return undefined
-      }
-
-      if (!PRICE_BAND_ENABLED) {
+      if (middlePrice.lte(0) || !PRICE_BAND_ENABLED) {
         return undefined
       }
 
@@ -281,6 +278,10 @@ export default Vue.extend({
         orderTypeBuy
       } = this
 
+      if (!hasAmount) {
+        return undefined
+      }
+
       if (orderTypeBuy) {
         if (quoteAvailableBalance.lt(totalWithFees)) {
           return {
@@ -288,10 +289,6 @@ export default Vue.extend({
           }
         }
 
-        return undefined
-      }
-
-      if (!hasAmount) {
         return undefined
       }
 
@@ -350,7 +347,7 @@ export default Vue.extend({
     initialMinMarginRequirementError(): TradeError | undefined {
       const {
         market,
-        margin,
+        notionalWithLeverage,
         hasPrice,
         hasAmount,
         executionPrice,
@@ -358,11 +355,7 @@ export default Vue.extend({
         isSpot
       } = this
 
-      if (isSpot) {
-        return
-      }
-
-      if (!market || !hasPrice || !hasAmount) {
+      if (isSpot || !market || !hasPrice || !hasAmount) {
         return undefined
       }
 
@@ -370,11 +363,11 @@ export default Vue.extend({
         return undefined
       }
 
-      const condition = executionPrice
+      const notionalValueWithMarginRatio = executionPrice
         .times(amount)
         .times((market as UiDerivativeMarketWithToken).initialMarginRatio)
 
-      if (margin.lte(condition)) {
+      if (notionalWithLeverage.lte(notionalValueWithMarginRatio)) {
         return {
           amount: this.$t('trade.order_insufficient_margin')
         }
@@ -465,23 +458,21 @@ export default Vue.extend({
         isSpot
       } = this
 
-      if (!hasPrice || !market || isSpot) {
+      if (isSpot || !hasPrice || !market) {
         return
       }
 
       const leverageToBigNumber = new BigNumberInBase(leverage)
 
-      const divisor = orderTypeBuy
-        ? new BigNumberInBase(marketMarkPrice)
-            .times((market as UiDerivativeMarketWithToken).initialMarginRatio)
-            .minus(marketMarkPrice)
-            .plus(executionPrice)
-        : new BigNumberInBase(marketMarkPrice)
-            .times((market as UiDerivativeMarketWithToken).initialMarginRatio)
-            .plus(marketMarkPrice)
-            .minus(executionPrice)
+      const priceWithMarginRatio = new BigNumberInBase(marketMarkPrice).times(
+        (market as UiDerivativeMarketWithToken).initialMarginRatio
+      )
 
-      const maxLeverage = executionPrice.dividedBy(divisor)
+      const priceBasedOnOrderType = orderTypeBuy
+        ? priceWithMarginRatio.minus(marketMarkPrice).plus(executionPrice)
+        : priceWithMarginRatio.plus(marketMarkPrice).minus(executionPrice)
+
+      const maxLeverage = executionPrice.dividedBy(priceBasedOnOrderType)
 
       if (maxLeverage.gte(1) && leverageToBigNumber.gt(maxLeverage)) {
         return {
@@ -501,7 +492,7 @@ export default Vue.extend({
         market,
         marketMarkPrice,
         orderTypeBuy,
-        margin,
+        notionalWithLeverage,
         hasPrice,
         hasAmount,
         executionPrice,
@@ -509,11 +500,7 @@ export default Vue.extend({
         isSpot
       } = this
 
-      if (isSpot) {
-        return
-      }
-
-      if (!marketMarkPrice || !market || !hasPrice || !hasAmount) {
+      if (isSpot || !marketMarkPrice || !market || !hasPrice || !hasAmount) {
         return undefined
       }
 
@@ -530,10 +517,10 @@ export default Vue.extend({
       }
 
       const notional = executionPrice.times(amount)
-      const dividend = orderTypeBuy
-        ? margin.minus(notional)
-        : margin.plus(notional)
-      const divisor = amount.times(
+      const notionalBasedOnOrderType = orderTypeBuy
+        ? notionalWithLeverage.minus(notional)
+        : notionalWithLeverage.plus(notional)
+      const amountWithInitialMarginRatio = amount.times(
         orderTypeBuy
           ? new BigNumberInBase(
               (market as UiDerivativeMarketWithToken).initialMarginRatio
@@ -542,15 +529,17 @@ export default Vue.extend({
               (market as UiDerivativeMarketWithToken).initialMarginRatio
             )
       )
-      const condition = dividend.div(divisor)
+      const priceBasedOnNotionalAndMarginRatio = notionalBasedOnOrderType.div(
+        amountWithInitialMarginRatio
+      )
 
-      if (orderTypeBuy && markPrice.lt(condition)) {
+      if (orderTypeBuy && markPrice.lt(priceBasedOnNotionalAndMarginRatio)) {
         return {
           amount: this.$t('trade.order_insufficient_margin')
         }
       }
 
-      if (!orderTypeBuy && markPrice.gt(condition)) {
+      if (!orderTypeBuy && markPrice.gt(priceBasedOnNotionalAndMarginRatio)) {
         return {
           amount: this.$t('trade.order_insufficient_margin')
         }
