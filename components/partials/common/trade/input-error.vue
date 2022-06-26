@@ -59,11 +59,6 @@ export default Vue.extend({
       required: true
     },
 
-    notionalWithLeverage: {
-      type: Object as PropType<BigNumberInBase> | undefined,
-      default: undefined
-    },
-
     maxReduceOnly: {
       type: Object as PropType<BigNumberInBase> | undefined,
       default: undefined
@@ -84,9 +79,19 @@ export default Vue.extend({
       default: undefined
     },
 
-    totalWithFees: {
+    notionalValueWithFees: {
       type: Object as PropType<BigNumberInBase>,
-      required: true
+      default: undefined
+    },
+
+    notionalWithLeverage: {
+      type: Object as PropType<BigNumberInBase>,
+      default: undefined
+    },
+
+    notionalWithLeverageAndFees: {
+      type: Object as PropType<BigNumberInBase>,
+      default: undefined
     },
 
     amount: {
@@ -272,7 +277,7 @@ export default Vue.extend({
       const {
         quoteAvailableBalance,
         baseAvailableBalance,
-        totalWithFees,
+        notionalValueWithFees,
         amount,
         hasAmount,
         orderTypeBuy
@@ -283,7 +288,7 @@ export default Vue.extend({
       }
 
       if (orderTypeBuy) {
-        if (quoteAvailableBalance.lt(totalWithFees)) {
+        if (quoteAvailableBalance.lt(notionalValueWithFees)) {
           return {
             price: this.$t('trade.not_enough_balance')
           }
@@ -302,13 +307,17 @@ export default Vue.extend({
     },
 
     availableMarginError(): TradeError | undefined {
-      const { quoteAvailableBalance, orderTypeReduceOnly, totalWithFees } = this
+      const {
+        quoteAvailableBalance,
+        orderTypeReduceOnly,
+        notionalWithLeverageAndFees
+      } = this
 
       if (orderTypeReduceOnly) {
         return undefined
       }
 
-      if (quoteAvailableBalance.lt(totalWithFees)) {
+      if (quoteAvailableBalance.lt(notionalWithLeverageAndFees)) {
         return {
           amount: this.$t('trade.not_enough_balance')
         }

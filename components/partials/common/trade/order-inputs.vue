@@ -99,7 +99,8 @@
         hasQuoteAmount,
         quoteAvailableBalance,
         baseAvailableBalance,
-        totalWithFees,
+        notionalValueWithFees,
+        notionalWithLeverageAndFees,
         amount: inputBaseAmountToBigNumber,
         hasAmount,
         orderTypeBuy,
@@ -279,9 +280,14 @@ export default Vue.extend({
       required: true
     },
 
-    totalWithFees: {
+    notionalValueWithFees: {
       type: Object as PropType<BigNumberInBase>,
-      required: true
+      default: undefined
+    },
+
+    notionalWithLeverageAndFees: {
+      type: Object as PropType<BigNumberInBase>,
+      default: undefined
     },
 
     hasAmount: {

@@ -22,7 +22,7 @@
         executionPrice,
         feeRate,
         lastTradedPrice,
-        totalWithFees,
+        notionalWithLeverageAndFees,
         hasAmount,
         slippageTolerance: form.slippageTolerance,
         tradingType,
@@ -46,30 +46,30 @@
       @update-price-from-last-traded-price="updatePriceFromLastTradedPrice"
     />
 
-    <component
-      :is="tradingTypeMarket ? `OrderDetailsMarket` : 'OrderDetails'"
+    <OrderDetailsWrapper
       v-bind="{
-        price: executionPrice,
+        amount,
+        executionPrice,
+        feeRate,
+        fees,
+        market,
+        makerFeeRate,
+        makerFeeRateDiscount,
+        orderType,
+        orderTypeBuy,
+        postOnly: form.postOnly,
+        quoteAmount,
+        slippage,
+        takerFeeRate,
+        takerFeeRateDiscount,
+        notionalWithLeverageToBigNumber,
+        notionalWithLeverageAndFees,
+        tradingTypeMarket,
         notionalValue,
         liquidationPrice,
-        makerFeeRate,
-        takerFeeRate,
-        makerFeeRateDiscount,
-        takerFeeRateDiscount,
         notionalWithLeverage,
-        feeReturned,
-        feeRebates,
-        orderTypeReduceOnly,
-        orderType,
-        fees,
-        total,
-        totalWithFees,
-        amount,
-        detailsDrawerOpen,
-        executionPrice,
-        postOnly: form.postOnly
+        orderTypeReduceOnly
       }"
-      @drawer-toggle="onDetailsDrawerToggle"
     />
 
     <OrderSubmit
@@ -113,18 +113,12 @@ import {
   cosmosSdkDecToBigNumber,
   FeeDiscountAccountInfo
 } from '@injectivelabs/sdk-ts'
-import OrderDetails from './order-details.vue'
-import OrderLeverage from './order-leverage.vue'
-import OrderLeverageSelect from './order-leverage-select.vue'
-import OrderDetailsMarket from './order-details-market.vue'
 import OrderTypeSelect from '~/components/partials/common/trade/order-type-select.vue'
 import OrderSubmit from '~/components/partials/common/trade/order-submit.vue'
 import OrderInputs from '~/components/partials/common/trade/order-inputs.vue'
 import TradingTypeButtons from '~/components/partials/common/trade/trading-type-buttons.vue'
+import OrderDetailsWrapper from '~/components/partials/common/trade/order-details-wrapper.vue'
 import { AveragePriceOptions } from '~/types'
-import AdvancedSettings from '~/components/partials/common/trade/advanced-settings/index.vue'
-import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
-import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
 import {
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook,
@@ -157,16 +151,10 @@ const initialForm = (): TradeForm => ({
 
 export default Vue.extend({
   components: {
-    VButtonCheckbox: ButtonCheckbox,
-    OrderDetails,
-    OrderLeverage,
-    OrderLeverageSelect,
-    OrderDetailsMarket,
+    OrderDetailsWrapper,
     OrderInputs,
     OrderTypeSelect,
     OrderSubmit,
-    VModalOrderConfirm,
-    AdvancedSettings,
     TradingTypeButtons
   },
 
@@ -614,31 +602,7 @@ export default Vue.extend({
       return notionalValue.times(feeRate)
     },
 
-    feeReturned(): BigNumberInBase {
-      const { notionalValue, takerFeeRate, makerFeeRate } = this
-
-      if (notionalValue.isNaN()) {
-        return ZERO_IN_BASE
-      }
-
-      return notionalValue.times(
-        new BigNumberInBase(takerFeeRate).minus(makerFeeRate)
-      )
-    },
-
-    feeRebates(): BigNumberInBase {
-      const { total, makerFeeRate, market } = this
-
-      if (total.isNaN() || !market) {
-        return ZERO_IN_BASE
-      }
-
-      return new BigNumberInBase(total.times(makerFeeRate).abs()).times(
-        0.6 /* Only 60% of the fees are getting returned */
-      )
-    },
-
-    total(): BigNumberInBase {
+    notionalWithLeverageToBigNumber(): BigNumberInBase {
       const { hasPrice, hasAmount, notionalWithLeverage, market } = this
 
       if (!hasPrice || !hasAmount || !market) {
@@ -648,14 +612,30 @@ export default Vue.extend({
       return new BigNumberInBase(notionalWithLeverage)
     },
 
-    totalWithFees(): BigNumberInBase {
-      const { fees, total, market } = this
+    feeRebates(): BigNumberInBase {
+      const { notionalWithLeverageToBigNumber, makerFeeRate, market } = this
 
-      if (total.isNaN() || total.lte(0) || !market) {
+      if (notionalWithLeverageToBigNumber.isNaN() || !market) {
         return ZERO_IN_BASE
       }
 
-      return fees.plus(total)
+      return new BigNumberInBase(
+        notionalWithLeverageToBigNumber.times(makerFeeRate).abs()
+      ).times(0.6 /* Only 60% of the fees are getting returned */)
+    },
+
+    notionalWithLeverageAndFees(): BigNumberInBase {
+      const { fees, notionalWithLeverageToBigNumber, market } = this
+
+      if (
+        notionalWithLeverageToBigNumber.isNaN() ||
+        notionalWithLeverageToBigNumber.lte(0) ||
+        !market
+      ) {
+        return ZERO_IN_BASE
+      }
+
+      return fees.plus(notionalWithLeverageToBigNumber)
     },
 
     liquidationPrice(): BigNumberInBase {
@@ -717,11 +697,11 @@ export default Vue.extend({
     },
 
     onOrderbookNotionalClick({
-      total,
+      notionalWithLeverageToBigNumber,
       price,
       type
     }: {
-      total: BigNumberInBase
+      notionalWithLeverageToBigNumber: BigNumberInBase
       price: BigNumberInBase
       type: DerivativeOrderSide
     }) {
@@ -737,7 +717,7 @@ export default Vue.extend({
           ? DerivativeOrderSide.Sell
           : DerivativeOrderSide.Buy
 
-      const amount = total
+      const amount = notionalWithLeverageToBigNumber
         .dividedBy(price.times(slippage).toFixed(market.priceDecimals))
         .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
 
