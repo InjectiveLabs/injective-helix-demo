@@ -7,6 +7,7 @@ import {
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   DerivativeOrderSide,
+  MsgCreateBinaryOptionsMarketOrder,
   MsgCreateDerivativeMarketOrder,
   MsgIncreasePositionMargin
   // MsgBatchUpdateOrders
@@ -14,6 +15,7 @@ import {
 import {
   derivativeOrderTypeToGrpcOrderType,
   DerivativesMetrics,
+  MarketType,
   UiDerivativeLimitOrder,
   UiDerivativeMarketWithToken,
   UiDerivativeOrderbook,
@@ -232,7 +234,12 @@ export const actions = actionTree(
           : DerivativeOrderSide.Buy
       const liquidationPrice = getRoundedLiquidationPrice(position, market)
 
-      const message = MsgCreateDerivativeMarketOrder.fromJSON({
+      const messageType =
+        market && market.subType === MarketType.BinaryOptions
+          ? MsgCreateBinaryOptionsMarketOrder
+          : MsgCreateDerivativeMarketOrder
+
+      const message = messageType.fromJSON({
         injectiveAddress,
         margin: '0',
         triggerPrice: '0',
@@ -275,6 +282,10 @@ export const actions = actionTree(
             return undefined
           }
 
+          const messageType =
+            market && market.subType === MarketType.BinaryOptions
+              ? MsgCreateBinaryOptionsMarketOrder
+              : MsgCreateDerivativeMarketOrder
           const orderType =
             position.direction === TradeDirection.Long
               ? DerivativeOrderSide.Sell
@@ -283,12 +294,16 @@ export const actions = actionTree(
 
           return {
             orderType,
+            messageType,
             marketId: market.marketId,
             price: liquidationPrice.toFixed(),
             quantity: derivativeQuantityToChainQuantityToFixed({
               value: position.quantity
             })
           } as {
+            messageType:
+              | typeof MsgCreateBinaryOptionsMarketOrder
+              | typeof MsgCreateDerivativeMarketOrder
             orderType: DerivativeOrderSide
             marketId: string
             price: string
@@ -296,6 +311,9 @@ export const actions = actionTree(
           }
         })
         .filter((p) => p !== undefined) as {
+        messageType:
+          | typeof MsgCreateBinaryOptionsMarketOrder
+          | typeof MsgCreateDerivativeMarketOrder
         orderType: DerivativeOrderSide
         marketId: string
         price: string
@@ -303,7 +321,7 @@ export const actions = actionTree(
       }[]
 
       const messages = formattedPositions.map((position) =>
-        MsgCreateDerivativeMarketOrder.fromJSON({
+        position.messageType.fromJSON({
           injectiveAddress,
           margin: '0',
           triggerPrice: '0',
@@ -389,7 +407,12 @@ export const actions = actionTree(
         ]
       }) */
 
-      const message = MsgCreateDerivativeMarketOrder.fromJSON({
+      const messageType =
+        market && market.subType === MarketType.BinaryOptions
+          ? MsgCreateBinaryOptionsMarketOrder
+          : MsgCreateDerivativeMarketOrder
+
+      const message = messageType.fromJSON({
         injectiveAddress,
         margin: '0',
         triggerPrice: '0',

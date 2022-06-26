@@ -901,7 +901,7 @@ export const actions = actionTree(
       await this.app.$accessor.wallet.validate()
 
       const messageType =
-        market.subType === MarketType.BinaryOptions
+        market && market.subType === MarketType.BinaryOptions
           ? MsgCreateBinaryOptionsMarketOrder
           : MsgCreateDerivativeMarketOrder
 
