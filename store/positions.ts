@@ -113,6 +113,7 @@ export const actions = actionTree(
       const positions = await exchangeDerivativesApi.fetchPositions({
         subaccountId: subaccount.subaccountId
       })
+
       const positionWithActiveMarket = positions.filter((p) => {
         const tickerFormattedToSlug = p.ticker
           .replace('/', '-')

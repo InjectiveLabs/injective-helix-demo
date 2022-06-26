@@ -37,11 +37,6 @@ const mainnetPerpetuals = [
 ]
 const testnetPerpetuals = [...mainnetPerpetuals]
 const mainnetStagingPerpetuals = [...mainnetPerpetuals]
-const perpetuals = IS_TESTNET
-  ? testnetPerpetuals
-  : IS_MAINNET_STAGING
-  ? mainnetStagingPerpetuals
-  : mainnetPerpetuals
 
 const binaryOptions = ['']
 const expiryFutures = ['']
@@ -51,6 +46,14 @@ if (NETWORK === Network.Devnet || IS_MAINNET_STAGING) {
   // spot.push('dot-usdt')
   binaryOptions.push('hhabib-tko-05-30/2023')
 }
+
+const derivatives = IS_TESTNET
+  ? testnetPerpetuals
+  : IS_MAINNET_STAGING
+  ? mainnetStagingPerpetuals
+  : mainnetPerpetuals
+
+const perpetuals = [...derivatives, ...binaryOptions]
 
 const spotRoutes = spot.map((s) => `/spot/${s}`) || []
 const perpetualsRoutes = perpetuals.map((s) => `/perpetuals/${s}`) || []

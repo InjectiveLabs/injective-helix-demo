@@ -28,7 +28,7 @@
             v-for="(position, index) in sortedPositions"
             :key="`positions-${index}-${position.marketId}`"
             :position="position"
-          ></tr>
+          />
         </tbody>
       </table>
       <EmptyList v-else :message="$t('trade.emptyPositions')" />

@@ -54,7 +54,9 @@
           :number="price"
           data-cy="open-position-price-table-data"
         />
-        <span class="text-gray-500 text-xs">{{ markPriceToFormat }}</span>
+        <span v-if="!markPrice.isNaN()" class="text-gray-500 text-xs">
+          {{ markPriceToFormat }}
+        </span>
       </div>
     </td>
 
@@ -186,6 +188,7 @@ import { Status, BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   getTokenLogoWithVendorPathPrefix,
+  MarketType,
   UiDerivativeLimitOrder,
   UiDerivativeMarketWithToken,
   UiPosition,
@@ -258,6 +261,16 @@ export default Vue.extend({
       return markets.find((m) => m.marketId === position.marketId)
     },
 
+    isBinaryOptions(): boolean {
+      const { market } = this
+
+      if (!market) {
+        return false
+      }
+
+      return market.subType === MarketType.BinaryOptions
+    },
+
     orders(): Array<UiDerivativeLimitOrder | UiSpotLimitOrder> {
       const { isOnMarketPage, currentOrders } = this
 
@@ -315,13 +328,13 @@ export default Vue.extend({
     },
 
     notionalValue(): BigNumberInBase {
-      const { market, quantity, markPrice } = this
+      const { market, quantity, markPrice, price, isBinaryOptions } = this
 
       if (!market) {
         return ZERO_IN_BASE
       }
 
-      return markPrice.times(quantity)
+      return isBinaryOptions ? price.times(quantity) : markPrice.times(quantity)
     },
 
     liquidationPrice(): BigNumberInBase {

@@ -1272,10 +1272,20 @@ export default Vue.extend({
     },
 
     marginBaseOnWorstPrice(): BigNumberInBase {
-      const { worstPrice, hasPrice, hasAmount, form, market } = this
+      const { worstPrice, hasPrice, hasAmount, form, market, orderType } = this
 
       if (!hasPrice || !hasAmount || !market) {
         return ZERO_IN_BASE
+      }
+
+      if (market.subType === MarketType.BinaryOptions) {
+        return new BigNumberInBase(
+          calculateBinaryOptionsMargin({
+            orderSide: orderType,
+            quantity: form.amount,
+            price: worstPrice.toFixed()
+          }).toFixed(market.priceDecimals)
+        )
       }
 
       return new BigNumberInBase(
@@ -1718,8 +1728,14 @@ export default Vue.extend({
     },
 
     submitLimitOrder() {
-      const { orderType, market, marginBaseOnWorstPrice, price, orderTypeReduceOnly, amount } =
-        this
+      const {
+        orderType,
+        market,
+        marginBaseOnWorstPrice,
+        price,
+        orderTypeReduceOnly,
+        amount
+      } = this
 
       if (!market) {
         return
