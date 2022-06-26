@@ -55,7 +55,8 @@ if (NETWORK === Network.Devnet || IS_MAINNET_STAGING) {
 const spotRoutes = spot.map((s) => `/spot/${s}`) || []
 const perpetualsRoutes = perpetuals.map((s) => `/perpetuals/${s}`) || []
 const derivativesRoutes = perpetuals.map((s) => `/derivatives/${s}`) || [] // Legacy support
-const binaryOptionsRoutes = spot.map((s) => `/binary-options/${s}`) || []
+const binaryOptionsRoutes =
+  binaryOptions.map((s) => `/binary-options/${s}`) || []
 
 const upcomingMarketsRoutes = []
 const deprecatedMarketsRoutes = IS_TESTNET || IS_DEVNET ? [] : []
