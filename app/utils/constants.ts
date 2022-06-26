@@ -122,3 +122,5 @@ export const COIN_GECKO_OPTIONS = {
     ? 'https://pro-api.coingecko.com/api/v3'
     : 'https://api.coingecko.com/api/v3'
 }
+
+export const ONE_IN_BASE = new BigNumberInBase(1)

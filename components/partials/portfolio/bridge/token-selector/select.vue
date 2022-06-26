@@ -88,9 +88,9 @@
                     v-if="logo"
                     :src="getTokenLogoWithVendorPathPrefix(logo)"
                     :alt="name"
-                    class="rounded-full w-4 h-4"
+                    class="rounded-full w-6 h-6"
                   />
-                  <IconCategoryAlt v-else class="rounded-full w-4 h-4" />
+                  <IconCategoryAlt v-else class="rounded-full w-6 h-6" />
                   <span
                     class="font-bold text-lg px-3 text-gray-200 tracking-wide break-normal"
                     data-cy="token-selector-selected-text-content"

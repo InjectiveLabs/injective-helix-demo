@@ -16,6 +16,7 @@ import {
   BridgingNetwork,
   BankBalanceWithToken,
   BankBalanceWithTokenAndBalance,
+  getTokenLogoWithVendorPathPrefix,
   SubaccountBalanceWithToken,
   TokenWithBalanceAndPrice
 } from '@injectivelabs/sdk-ui-ts'
@@ -142,6 +143,10 @@ export default Vue.extend({
 
           return {
             ...token,
+            token: {
+              ...token.token,
+              logo: getTokenLogoWithVendorPathPrefix(token.token.logo)
+            },
             balance: balance.toFixed()
           } as BankBalanceWithTokenAndBalance
         })

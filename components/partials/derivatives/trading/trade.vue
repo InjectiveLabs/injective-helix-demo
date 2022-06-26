@@ -481,13 +481,6 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const makerFeeRate = new BigNumberInBase(market.makerFeeRate)
-      const takerFeeRate = new BigNumberInBase(market.takerFeeRate)
-
-      if (makerFeeRate.lte(0)) {
-        return takerFeeRate
-      }
-
       return new BigNumberInBase(market.takerFeeRate).times(
         new BigNumberInBase(1).minus(takerFeeRateDiscount)
       )
@@ -1278,6 +1271,32 @@ export default Vue.extend({
       )
     },
 
+    marginBaseOnWorstPrice(): BigNumberInBase {
+      const { worstPrice, hasPrice, hasAmount, form, market, orderType } = this
+
+      if (!hasPrice || !hasAmount || !market) {
+        return ZERO_IN_BASE
+      }
+
+      if (market.subType === MarketType.BinaryOptions) {
+        return new BigNumberInBase(
+          calculateBinaryOptionsMargin({
+            orderSide: orderType,
+            quantity: form.amount,
+            price: worstPrice.toFixed()
+          }).toFixed(market.priceDecimals)
+        )
+      }
+
+      return new BigNumberInBase(
+        calculateMargin({
+          quantity: form.amount,
+          price: worstPrice.toFixed(),
+          leverage: form.leverage
+        }).toFixed(market.priceDecimals)
+      )
+    },
+
     notionalValue(): BigNumberInBase {
       const { executionPrice, amount, market } = this
 
@@ -1709,8 +1728,14 @@ export default Vue.extend({
     },
 
     submitLimitOrder() {
-      const { orderType, market, margin, price, orderTypeReduceOnly, amount } =
-        this
+      const {
+        orderType,
+        market,
+        marginBaseOnWorstPrice,
+        price,
+        orderTypeReduceOnly,
+        amount
+      } = this
 
       if (!market) {
         return
@@ -1721,7 +1746,7 @@ export default Vue.extend({
       this.$accessor.derivatives
         .submitLimitOrder({
           price,
-          margin,
+          margin: marginBaseOnWorstPrice,
           orderType,
           reduceOnly: orderTypeReduceOnly,
           quantity: amount
@@ -1741,7 +1766,7 @@ export default Vue.extend({
         orderType,
         orderTypeReduceOnly,
         market,
-        margin,
+        marginBaseOnWorstPrice,
         worstPrice,
         amount
       } = this
@@ -1755,7 +1780,7 @@ export default Vue.extend({
       this.$accessor.derivatives
         .submitMarketOrder({
           orderType,
-          margin,
+          margin: marginBaseOnWorstPrice,
           reduceOnly: orderTypeReduceOnly,
           price: worstPrice,
           quantity: amount

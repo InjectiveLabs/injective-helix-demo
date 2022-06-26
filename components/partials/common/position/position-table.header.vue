@@ -10,12 +10,9 @@
         </div>
       </th>
       <th>
-        <div class="flex items-center">
+        <div class="flex items-center justify-end">
           <span>{{ $t('trade.amount') }}</span>
-          <IconInfoTooltip
-            class="ml-2"
-            :tooltip="$t('trade.amount_tooltip')"
-          />
+          <IconInfoTooltip class="ml-2" :tooltip="$t('trade.amount_tooltip')" />
         </div>
       </th>
       <th class="text-right">
@@ -42,10 +39,7 @@
       <th>
         <div class="flex items-center justify-end">
           <span>{{ $t('trade.total') }}</span>
-          <IconInfoTooltip
-            class="ml-2"
-            :tooltip="$t('trade.total_tooltip')"
-          />
+          <IconInfoTooltip class="ml-2" :tooltip="$t('trade.total_tooltip')" />
         </div>
       </th>
       <th class="text-right">
