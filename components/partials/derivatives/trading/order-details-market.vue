@@ -25,7 +25,7 @@
       <div class="mt-4">
         <TextInfo
           v-if="!orderTypeReduceOnly"
-          :title="$t('trade.notionalWithLeverage')"
+          :title="$t('trade.margin')"
           class="mt-2"
         >
           <IconInfoTooltip
@@ -149,14 +149,21 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { DerivativeOrderSide } from '@injectivelabs/sdk-ts'
+import {
+  UiDerivativeMarketWithToken,
+  ZERO_IN_BASE
+} from '@injectivelabs/sdk-ui-ts'
+import {
+  DerivativeOrderSide,
+  cosmosSdkDecToBigNumber
+} from '@injectivelabs/sdk-ts'
 import Drawer from '~/components/elements/drawer.vue'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
+import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 
 export default Vue.extend({
   components: {
@@ -200,16 +207,6 @@ export default Vue.extend({
     },
 
     makerFeeRate: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
-    },
-
-    takerExpectedPts: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
-    },
-
-    makerExpectedPts: {
       required: true,
       type: Object as PropType<BigNumberInBase>
     },
@@ -265,6 +262,10 @@ export default Vue.extend({
       return this.$accessor.derivatives.market
     },
 
+    tradingRewardsCampaign(): TradingRewardsCampaign | undefined {
+      return this.$accessor.exchange.tradingRewardsCampaign
+    },
+
     marketHasNegativeMakerFee(): boolean {
       const { market } = this
 
@@ -273,6 +274,131 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(market.makerFeeRate).lt(0)
+    },
+
+    makerExpectedPts(): BigNumberInBase {
+      const { market, makerFeeRate, tradingRewardsCampaign, fees } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      if (makerFeeRate.lte(0)) {
+        return ZERO_IN_BASE
+      }
+
+      if (
+        !tradingRewardsCampaign ||
+        !tradingRewardsCampaign.tradingRewardCampaignInfo ||
+        !tradingRewardsCampaign.tradingRewardCampaignInfo
+          .disqualifiedMarketIdsList
+      ) {
+        return ZERO_IN_BASE
+      }
+
+      const disqualified =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
+          (marketId) => marketId === market.marketId
+        )
+
+      if (disqualified) {
+        return ZERO_IN_BASE
+      }
+
+      const denomIncluded =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
+          (denom) => denom === market.quoteDenom
+        )
+
+      if (!denomIncluded) {
+        return ZERO_IN_BASE
+      }
+
+      const boostedList = tradingRewardsCampaign.tradingRewardCampaignInfo
+        .tradingRewardBoostInfo
+        ? tradingRewardsCampaign.tradingRewardCampaignInfo
+            .tradingRewardBoostInfo.boostedDerivativeMarketIdsList
+        : []
+      const multipliersList = tradingRewardsCampaign.tradingRewardCampaignInfo
+        .tradingRewardBoostInfo
+        ? tradingRewardsCampaign.tradingRewardCampaignInfo
+            .tradingRewardBoostInfo.derivativeMarketMultipliersList
+        : []
+
+      const boosted = boostedList.findIndex(
+        (derivativeMarketId) => derivativeMarketId === market.marketId
+      )
+
+      const boostedMultiplier =
+        boosted >= 0
+          ? cosmosSdkDecToBigNumber(
+              multipliersList[boosted]
+                ? multipliersList[boosted].makerPointsMultiplier
+                : 1
+            )
+          : 1
+
+      return new BigNumberInBase(fees).times(boostedMultiplier)
+    },
+
+    takerExpectedPts(): BigNumberInBase {
+      const { market, tradingRewardsCampaign, fees } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      if (
+        !tradingRewardsCampaign ||
+        !tradingRewardsCampaign.tradingRewardCampaignInfo ||
+        !tradingRewardsCampaign.tradingRewardCampaignInfo
+          .disqualifiedMarketIdsList
+      ) {
+        return ZERO_IN_BASE
+      }
+
+      const disqualified =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
+          (marketId) => marketId === market.marketId
+        )
+
+      if (disqualified) {
+        return ZERO_IN_BASE
+      }
+
+      const denomIncluded =
+        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
+          (denom) => denom === market.quoteDenom
+        )
+
+      if (!denomIncluded) {
+        return ZERO_IN_BASE
+      }
+
+      const boostedList = tradingRewardsCampaign.tradingRewardCampaignInfo
+        .tradingRewardBoostInfo
+        ? tradingRewardsCampaign.tradingRewardCampaignInfo
+            .tradingRewardBoostInfo.boostedDerivativeMarketIdsList
+        : []
+      const multipliersList = tradingRewardsCampaign.tradingRewardCampaignInfo
+        .tradingRewardBoostInfo
+        ? tradingRewardsCampaign.tradingRewardCampaignInfo
+            .tradingRewardBoostInfo.derivativeMarketMultipliersList
+        : []
+
+      const boosted = boostedList.findIndex(
+        (derivativeMarketId) => derivativeMarketId === market.marketId
+      )
+      const boostedMultiplier =
+        boosted >= 0
+          ? cosmosSdkDecToBigNumber(
+              multipliersList[boosted]
+                ? multipliersList[boosted].takerPointsMultiplier
+                : 1
+            )
+          : 1
+
+      return new BigNumberInBase(fees).times(boostedMultiplier)
     },
 
     totalWithFeesToFormat(): string {

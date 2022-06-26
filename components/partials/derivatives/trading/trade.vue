@@ -21,7 +21,6 @@
         orderType,
         executionPrice,
         feeRate,
-        amountStep,
         lastTradedPrice,
         totalWithFees,
         hasAmount,
@@ -53,8 +52,6 @@
         price: executionPrice,
         notionalValue,
         liquidationPrice,
-        makerExpectedPts,
-        takerExpectedPts,
         makerFeeRate,
         takerFeeRate,
         makerFeeRateDiscount,
@@ -135,7 +132,6 @@ import {
   calculateMargin,
   calculateAverageExecutionPriceFromFillableNotionalOnOrderBook
 } from '~/app/client/utils/derivatives'
-import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 
 interface TradeForm {
   reduceOnly: boolean
@@ -282,10 +278,6 @@ export default Vue.extend({
       return this.$accessor.exchange.feeDiscountAccountInfo
     },
 
-    tradingRewardsCampaign(): TradingRewardsCampaign | undefined {
-      return this.$accessor.exchange.tradingRewardsCampaign
-    },
-
     quoteAvailableBalance(): BigNumberInBase {
       const { subaccount, market } = this
 
@@ -342,9 +334,9 @@ export default Vue.extend({
     },
 
     hasAmount(): boolean {
-      const { amount, amountStep } = this
+      const { amount } = this
 
-      return !amount.isNaN() && amount.gt(0) && amount.gte(amountStep)
+      return !amount.isNaN() && amount.gt(0)
     },
 
     slippage(): BigNumberInBase {
@@ -564,30 +556,6 @@ export default Vue.extend({
       return this.form.reduceOnly && this.showReduceOnly
     },
 
-    amountStep(): string {
-      const { market } = this
-
-      if (!market) {
-        return '1'
-      }
-
-      const decimalsAllowed = new BigNumberInBase(market.quantityDecimals)
-
-      if (decimalsAllowed.eq(0)) {
-        return '1'
-      }
-
-      if (decimalsAllowed.eq(1)) {
-        return '0.1'
-      }
-
-      if (decimalsAllowed.gt(1)) {
-        return '0.' + '0'.repeat(decimalsAllowed.toNumber() - 1) + '1'
-      }
-
-      return '1'
-    },
-
     notionalWithLeverage(): BigNumberInBase {
       const { executionPrice, hasPrice, hasAmount, form, market } = this
 
@@ -599,6 +567,22 @@ export default Vue.extend({
         calculateMargin({
           quantity: form.amount,
           price: executionPrice.toFixed(),
+          leverage: form.leverage
+        }).toFixed(market.priceDecimals)
+      )
+    },
+
+    notionalWithLeverageBasedOnWorstPrice(): BigNumberInBase {
+      const { worstPrice, hasPrice, hasAmount, form, market } = this
+
+      if (!hasPrice || !hasAmount || !market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(
+        calculateMargin({
+          quantity: form.amount,
+          price: worstPrice.toFixed(),
           leverage: form.leverage
         }).toFixed(market.priceDecimals)
       )
@@ -628,131 +612,6 @@ export default Vue.extend({
       }
 
       return notionalValue.times(feeRate)
-    },
-
-    makerExpectedPts(): BigNumberInBase {
-      const { market, makerFeeRate, tradingRewardsCampaign, fees } = this
-
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      if (makerFeeRate.lte(0)) {
-        return ZERO_IN_BASE
-      }
-
-      if (
-        !tradingRewardsCampaign ||
-        !tradingRewardsCampaign.tradingRewardCampaignInfo ||
-        !tradingRewardsCampaign.tradingRewardCampaignInfo
-          .disqualifiedMarketIdsList
-      ) {
-        return ZERO_IN_BASE
-      }
-
-      const disqualified =
-        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-          (marketId) => marketId === market.marketId
-        )
-
-      if (disqualified) {
-        return ZERO_IN_BASE
-      }
-
-      const denomIncluded =
-        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-          (denom) => denom === market.quoteDenom
-        )
-
-      if (!denomIncluded) {
-        return ZERO_IN_BASE
-      }
-
-      const boostedList = tradingRewardsCampaign.tradingRewardCampaignInfo
-        .tradingRewardBoostInfo
-        ? tradingRewardsCampaign.tradingRewardCampaignInfo
-            .tradingRewardBoostInfo.boostedDerivativeMarketIdsList
-        : []
-      const multipliersList = tradingRewardsCampaign.tradingRewardCampaignInfo
-        .tradingRewardBoostInfo
-        ? tradingRewardsCampaign.tradingRewardCampaignInfo
-            .tradingRewardBoostInfo.derivativeMarketMultipliersList
-        : []
-
-      const boosted = boostedList.findIndex(
-        (derivativeMarketId) => derivativeMarketId === market.marketId
-      )
-
-      const boostedMultiplier =
-        boosted >= 0
-          ? cosmosSdkDecToBigNumber(
-              multipliersList[boosted]
-                ? multipliersList[boosted].makerPointsMultiplier
-                : 1
-            )
-          : 1
-
-      return new BigNumberInBase(fees).times(boostedMultiplier)
-    },
-
-    takerExpectedPts(): BigNumberInBase {
-      const { market, tradingRewardsCampaign, fees } = this
-
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      if (
-        !tradingRewardsCampaign ||
-        !tradingRewardsCampaign.tradingRewardCampaignInfo ||
-        !tradingRewardsCampaign.tradingRewardCampaignInfo
-          .disqualifiedMarketIdsList
-      ) {
-        return ZERO_IN_BASE
-      }
-
-      const disqualified =
-        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-          (marketId) => marketId === market.marketId
-        )
-
-      if (disqualified) {
-        return ZERO_IN_BASE
-      }
-
-      const denomIncluded =
-        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-          (denom) => denom === market.quoteDenom
-        )
-
-      if (!denomIncluded) {
-        return ZERO_IN_BASE
-      }
-
-      const boostedList = tradingRewardsCampaign.tradingRewardCampaignInfo
-        .tradingRewardBoostInfo
-        ? tradingRewardsCampaign.tradingRewardCampaignInfo
-            .tradingRewardBoostInfo.boostedDerivativeMarketIdsList
-        : []
-      const multipliersList = tradingRewardsCampaign.tradingRewardCampaignInfo
-        .tradingRewardBoostInfo
-        ? tradingRewardsCampaign.tradingRewardCampaignInfo
-            .tradingRewardBoostInfo.derivativeMarketMultipliersList
-        : []
-
-      const boosted = boostedList.findIndex(
-        (derivativeMarketId) => derivativeMarketId === market.marketId
-      )
-      const boostedMultiplier =
-        boosted >= 0
-          ? cosmosSdkDecToBigNumber(
-              multipliersList[boosted]
-                ? multipliersList[boosted].takerPointsMultiplier
-                : 1
-            )
-          : 1
-
-      return new BigNumberInBase(fees).times(boostedMultiplier)
     },
 
     feeReturned(): BigNumberInBase {
@@ -909,7 +768,7 @@ export default Vue.extend({
       const {
         orderTypeToSubmit,
         market,
-        notionalWithLeverage,
+        notionalWithLeverageBasedOnWorstPrice,
         price,
         orderTypeReduceOnly,
         amount
@@ -924,7 +783,7 @@ export default Vue.extend({
       this.$accessor.derivatives
         .submitLimitOrder({
           price,
-          notionalWithLeverage,
+          notionalWithLeverageBasedOnWorstPrice,
           orderType: orderTypeToSubmit,
           reduceOnly: orderTypeReduceOnly,
           quantity: amount
@@ -944,7 +803,7 @@ export default Vue.extend({
         orderType,
         orderTypeReduceOnly,
         market,
-        notionalWithLeverage,
+        notionalWithLeverageBasedOnWorstPrice,
         worstPrice,
         amount
       } = this
@@ -958,7 +817,7 @@ export default Vue.extend({
       this.$accessor.derivatives
         .submitMarketOrder({
           orderType,
-          notionalWithLeverage,
+          notionalWithLeverageBasedOnWorstPrice,
           reduceOnly: orderTypeReduceOnly,
           price: worstPrice,
           quantity: amount

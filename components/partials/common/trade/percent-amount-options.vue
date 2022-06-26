@@ -291,7 +291,7 @@ export default Vue.extend({
       isSpot
         ? this.updateSpotQuoteAmount()
         : this.$emit(
-            'update-quote-amount-from-percentage',
+            'update:quoteAmountFromPercentage',
             quoteAmountFromPercentage
           )
     },
