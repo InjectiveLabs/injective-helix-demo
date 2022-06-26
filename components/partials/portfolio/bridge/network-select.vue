@@ -23,10 +23,10 @@
         </span>
       </template>
 
-      <template #selected-option="{ icon, text }">
+      <template #selected-option="{ symbol, text }">
         <div class="flex items-center">
           <img
-            :src="icon"
+            :src="getTokenLogoWithVendorPathPrefix(symbol)"
             :alt="text"
             class="selected-icon rounded-full mr-3"
           />
@@ -41,9 +41,13 @@
         </div>
       </template>
 
-      <template #option="{ icon, text }">
+      <template #option="{ symbol, text }">
         <div class="flex items-center">
-          <img :src="icon" :alt="text" class="rounded-full w-6 h-6 mr-3" />
+          <img
+            :src="getTokenLogoWithVendorPathPrefix(symbol)"
+            :alt="text"
+            class="rounded-full w-6 h-6 mr-3"
+          />
           <div>
             <p
               class="text-sm tracking-1"
@@ -61,7 +65,11 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import VSelect from 'vue-select'
-import { BridgingNetwork, NetworkMeta } from '@injectivelabs/sdk-ui-ts'
+import {
+  BridgingNetwork,
+  getTokenLogoWithVendorPathPrefix,
+  NetworkMeta
+} from '@injectivelabs/sdk-ui-ts'
 import { networksMeta } from '~/app/data/bridge'
 import { BridgeType } from '~/types'
 
@@ -84,6 +92,7 @@ export default Vue.extend({
 
   data() {
     return {
+      getTokenLogoWithVendorPathPrefix,
       options: networksMeta as NetworkMeta[]
     }
   },

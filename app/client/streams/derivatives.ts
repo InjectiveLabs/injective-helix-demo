@@ -9,7 +9,9 @@ import {
   PositionsStreamCallback
 } from '@injectivelabs/sdk-ts'
 import {
-  UiExpiryFuturesMarketWithToken,
+  MarketType,
+  UiBinaryOptionsMarketWithToken,
+  UiDerivativeMarketWithToken,
   UiPerpetualMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { streamProvider } from '../../providers/StreamProvider'
@@ -144,16 +146,25 @@ export const streamMarketMarkPrice = ({
   market,
   callback
 }: {
-  market: UiPerpetualMarketWithToken | UiExpiryFuturesMarketWithToken
+  market: UiDerivativeMarketWithToken
   callback: OraclePriceStreamCallback
 }) => {
   const streamFn = oracleStream.streamOraclePrices.bind(oracleStream)
-  const streamFnArgs = {
-    oracleType: market.oracleType,
-    baseSymbol: market.oracleBase,
-    quoteSymbol: market.oracleQuote,
-    callback
-  }
+  const streamFnArgs =
+    market.subType === MarketType.BinaryOptions
+      ? {
+          baseSymbol: (market as UiPerpetualMarketWithToken).oracleBase,
+          quoteSymbol: (market as UiPerpetualMarketWithToken).oracleQuote,
+          oracleType: market.oracleType,
+          callback
+        }
+      : {
+          oracleType: market.oracleType,
+          baseSymbol: (market as UiBinaryOptionsMarketWithToken).oracleSymbol,
+          quoteSymbol: (market as UiBinaryOptionsMarketWithToken)
+            .oracleProvider,
+          callback
+        }
 
   streamProvider.subscribe({
     fn: streamFn,

@@ -70,7 +70,7 @@ export const ETHEREUM_CHAIN_ID: EthereumChainId = process.env
   ? parseInt(process.env.APP_ETHEREUM_CHAIN_ID.toString())
   : parseInt(
       (IS_TESTNET || IS_DEVNET
-        ? EthereumChainId.Kovan
+        ? EthereumChainId.Goerli
         : EthereumChainId.Mainnet
       ).toString()
     )

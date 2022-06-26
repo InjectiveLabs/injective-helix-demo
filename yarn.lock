@@ -2240,10 +2240,10 @@
     shx "^0.3.2"
     snakecase-keys "^5.4.1"
 
-"@injectivelabs/sdk-ui-ts@1.0.44":
-  version "1.0.44"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.0.44.tgz#ddd43e37b0bf6bc4db69185684f4bf4c2c411832"
-  integrity sha512-90GmOU25Osohm7KjoDd8jv1einZcCMGF/Aw0s8vG5ZvpWrAfP42NgE2RxiI1MvEdyr5T3AWqSGXZl0vq1sNmmw==
+"@injectivelabs/sdk-ui-ts@1.0.47":
+  version "1.0.47"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.0.47.tgz#7f03ac01643af5d80c27cf66593a6a68871ba4cb"
+  integrity sha512-avFlXjYKGxY5qsOJF4pl+WaJ5Ho9GnSRe75drYf0rbLd/hJdPNJ5hXMfTRv3fJ/dnMb+Ejw2yT8yuYWC07QIgA==
   dependencies:
     "@injectivelabs/exceptions" "^1.0.5"
     "@injectivelabs/networks" "^1.0.5"

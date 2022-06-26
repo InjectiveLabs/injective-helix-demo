@@ -53,8 +53,13 @@ export const getExactDecimalsFromNumber = (number: number | string): number => {
   if (Number(number) % 1 !== 0 || number.toString().includes('.')) {
     const [, decimals] = number.toString().split('.')
 
+    if (!decimals) {
+      return 0
+    }
+
     return decimals.length
   }
+
   return 0
 }
 

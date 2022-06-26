@@ -442,7 +442,13 @@ export const actions = actionTree(
               quoteSymbol: (market as UiPerpetualMarketWithToken).oracleQuote,
               oracleType: market.oracleType
             })
-          : { price: '0' } /* TODO */
+          : await exchangeOracleApi.fetchOraclePrice({
+              baseSymbol: (market as UiBinaryOptionsMarketWithToken)
+                .oracleSymbol,
+              quoteSymbol: (market as UiBinaryOptionsMarketWithToken)
+                .oracleProvider,
+              oracleType: market.oracleType
+            })
 
       commit('setMarket', market)
       commit('setMarketSummary', {
@@ -536,12 +542,8 @@ export const actions = actionTree(
         return
       }
 
-      const derivativeMarket = market as
-        | UiPerpetualMarketWithToken
-        | UiExpiryFuturesMarketWithToken
-
       streamMarketMarkPrice({
-        market: derivativeMarket,
+        market,
         callback: ({ price, operation }) => {
           if (!price) {
             return
@@ -746,9 +748,9 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      const market = markets.find((m) => m.marketId === order.marketId)!
+      const market = markets.find((m) => m.marketId === order.marketId)
       const messageType =
-        market.subType === MarketType.BinaryOptions
+        market && market.subType === MarketType.BinaryOptions
           ? MsgBatchCancelBinaryOptionsOrders
           : MsgBatchCancelDerivativeOrders
 
@@ -784,9 +786,9 @@ export const actions = actionTree(
       await this.app.$accessor.wallet.validate()
 
       const messages = orders.map((order) => {
-        const market = markets.find((m) => m.marketId === order.marketId)!
+        const market = markets.find((m) => m.marketId === order.marketId)
         const messageType =
-          market.subType === MarketType.BinaryOptions
+          market && market.subType === MarketType.BinaryOptions
             ? MsgBatchCancelBinaryOptionsOrders
             : MsgBatchCancelDerivativeOrders
 
