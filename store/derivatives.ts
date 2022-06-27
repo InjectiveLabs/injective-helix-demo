@@ -19,14 +19,18 @@ import {
   UiDerivativeTransformer,
   zeroDerivativeMarketSummary,
   ZERO_IN_BASE,
-  ZERO_TO_STRING
+  ZERO_TO_STRING,
+  UiExpiryFuturesMarketWithToken,
+  UiPerpetualMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import {
   DerivativeOrderSide,
   DerivativeOrderState,
   MsgBatchCancelDerivativeOrders,
   MsgCreateDerivativeLimitOrder,
-  MsgCreateDerivativeMarketOrder
+  MsgCreateDerivativeMarketOrder,
+  PerpetualMarket,
+  ExpiryFuturesMarket
 } from '@injectivelabs/sdk-ts'
 import {
   streamOrderbook,
@@ -46,10 +50,14 @@ import {
   msgBroadcastClient,
   tokenService
 } from '~/app/Services'
-import { derivatives as allowedPerpetualMarkets } from '~/routes.config'
-import { NonBinaryOptionsDerivativeMarket } from '~/types'
+import {
+  perpetuals as allowedPerpetualMarkets,
+  expiryFutures as allowedExpiryFutures
+} from '~/routes.config'
 
 const initialStateFactory = () => ({
+  perpetualMarkets: [] as UiPerpetualMarketWithToken[],
+  expiryFuturesMarkets: [] as UiExpiryFuturesMarketWithToken[],
   markets: [] as UiDerivativeMarketWithToken[],
   marketsSummary: [] as UiDerivativeMarketSummary[],
   market: undefined as UiDerivativeMarketWithToken | undefined,
@@ -64,8 +72,12 @@ const initialStateFactory = () => ({
 const initialState = initialStateFactory()
 
 export const state = () => ({
-  markets: initialState.markets as UiDerivativeMarketWithToken[],
+  perpetualMarkets:
+    initialState.perpetualMarkets as UiPerpetualMarketWithToken[],
+  expiryFuturesMarkets:
+    initialState.expiryFuturesMarkets as UiExpiryFuturesMarketWithToken[],
   marketsSummary: initialState.marketsSummary as UiDerivativeMarketSummary[],
+  markets: initialState.markets as UiDerivativeMarketWithToken[],
   market: initialState.market as UiDerivativeMarketWithToken | undefined,
   marketSummary: initialState.marketSummary as
     | UiDerivativeMarketSummary
@@ -132,6 +144,13 @@ export const mutations = {
     state.market = market
   },
 
+  setMarkets(
+    state: DerivativeStoreState,
+    markets: UiDerivativeMarketWithToken[]
+  ) {
+    state.markets = markets
+  },
+
   setMarketSummary(
     state: DerivativeStoreState,
     marketSummary: UiDerivativeMarketSummary
@@ -155,11 +174,18 @@ export const mutations = {
     state.subaccountTrades = initialState.subaccountTrades
   },
 
-  setMarkets(
+  setPerpetualMarkets(
     state: DerivativeStoreState,
-    markets: UiDerivativeMarketWithToken[]
+    markets: UiPerpetualMarketWithToken[]
   ) {
-    state.markets = markets
+    state.perpetualMarkets = markets
+  },
+
+  setExpiryFuturesMarkets(
+    state: DerivativeStoreState,
+    markets: UiExpiryFuturesMarketWithToken[]
+  ) {
+    state.expiryFuturesMarkets = markets
   },
 
   setMarketsSummary(
@@ -285,17 +311,27 @@ export const actions = actionTree(
     },
 
     async init({ commit }) {
-      const markets = await exchangeDerivativesApi.fetchMarkets()
+      const markets = (await exchangeDerivativesApi.fetchMarkets()) as Array<
+        PerpetualMarket | ExpiryFuturesMarket
+      >
       const marketsWithToken = await tokenService.getDerivativeMarketsWithToken(
         markets
       )
-      const uiMarkets =
-        UiDerivativeTransformer.derivativeMarketsToUiSpotMarkets(
-          marketsWithToken
+      const perpetualMarkets = marketsWithToken.filter((m) => m.isPerpetual)
+      const expiryFuturesMarkets = marketsWithToken.filter(
+        (m) => !m.isPerpetual
+      )
+      const uiPerpetualMarkets =
+        UiDerivativeTransformer.perpetualMarketsToUiPerpetualMarkets(
+          perpetualMarkets
+        )
+      const uiExpiryFuturesMarkets =
+        UiDerivativeTransformer.expiryFuturesMarketsToUiExpiryFuturesMarkets(
+          expiryFuturesMarkets
         )
 
       // Only include markets that we pre-defined to generate static routes for
-      const uiMarketsWithToken = uiMarkets
+      const uiPerpetualMarketsWithToken = uiPerpetualMarkets
         .filter((market) => {
           return allowedPerpetualMarkets.includes(market.slug)
         })
@@ -305,8 +341,23 @@ export const actions = actionTree(
             allowedPerpetualMarkets.indexOf(b.slug)
           )
         })
+      const uiExpiryFuturesWithToken = uiExpiryFuturesMarkets
+        .filter((market) => {
+          return allowedExpiryFutures.includes(market.slug)
+        })
+        .sort((a, b) => {
+          return (
+            allowedExpiryFutures.indexOf(a.slug) -
+            allowedExpiryFutures.indexOf(b.slug)
+          )
+        })
 
-      commit('setMarkets', uiMarketsWithToken)
+      commit('setPerpetualMarkets', uiPerpetualMarketsWithToken)
+      commit('setExpiryFuturesMarkets', uiExpiryFuturesWithToken)
+      commit('setMarkets', [
+        ...uiPerpetualMarketsWithToken,
+        ...uiExpiryFuturesWithToken
+      ])
 
       const marketsSummary =
         await exchangeRestDerivativesChronosApi.fetchMarketsSummary()
@@ -330,6 +381,7 @@ export const actions = actionTree(
       }
 
       const { markets: newMarkets } = state
+
       const market = newMarkets.find(
         (market) => market.slug.toLowerCase() === marketSlug.toLowerCase()
       )
@@ -342,9 +394,10 @@ export const actions = actionTree(
         await exchangeRestDerivativesChronosApi.fetchMarketSummary(
           market.marketId
         )
+
       const oraclePrice = await exchangeOracleApi.fetchOraclePrice({
-        baseSymbol: (market as NonBinaryOptionsDerivativeMarket).oracleBase,
-        quoteSymbol: (market as NonBinaryOptionsDerivativeMarket).oracleQuote,
+        baseSymbol: (market as UiPerpetualMarketWithToken).oracleBase,
+        quoteSymbol: (market as UiPerpetualMarketWithToken).oracleQuote,
         oracleType: market.oracleType
       })
 
@@ -560,7 +613,7 @@ export const actions = actionTree(
     },
 
     async fetchMarketsSummary({ state, commit }) {
-      const { marketsSummary, markets, market } = state
+      const { marketsSummary, market, markets } = state
 
       if (marketsSummary.length === 0) {
         return
@@ -641,7 +694,9 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      const message = MsgBatchCancelDerivativeOrders.fromJSON({
+      const messageType = MsgBatchCancelDerivativeOrders
+
+      const message = messageType.fromJSON({
         injectiveAddress,
         orders: [
           {
@@ -671,8 +726,10 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      const messages = orders.map((order) =>
-        MsgBatchCancelDerivativeOrders.fromJSON({
+      const messages = orders.map((order) => {
+        const messageType = MsgBatchCancelDerivativeOrders
+
+        return messageType.fromJSON({
           injectiveAddress,
           orders: [
             {
@@ -682,7 +739,7 @@ export const actions = actionTree(
             }
           ]
         })
-      )
+      })
 
       await msgBroadcastClient.broadcast({
         address,
@@ -692,23 +749,23 @@ export const actions = actionTree(
     },
 
     async submitLimitOrder(
-      _,
+      { state },
       {
         price,
         reduceOnly,
-        notionalWithLeverageBasedOnWorstPrice,
+        margin,
         quantity,
         orderType
       }: {
         reduceOnly: boolean
         price: BigNumberInBase
-        notionalWithLeverageBasedOnWorstPrice: BigNumberInBase
+        margin: BigNumberInBase
         quantity: BigNumberInBase
         orderType: DerivativeOrderSide
       }
     ) {
+      const { market } = state
       const { subaccount } = this.app.$accessor.account
-      const { market } = this.app.$accessor.derivatives
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
       const { address, injectiveAddress, isUserWalletConnected } =
         this.app.$accessor.wallet
@@ -720,7 +777,9 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      const message = MsgCreateDerivativeLimitOrder.fromJSON({
+      const messageType = MsgCreateDerivativeLimitOrder
+
+      const message = messageType.fromJSON({
         injectiveAddress,
         orderType: derivativeOrderTypeToGrpcOrderType(orderType),
         price: derivativePriceToChainPriceToFixed({
@@ -731,7 +790,7 @@ export const actions = actionTree(
         margin: reduceOnly
           ? ZERO_TO_STRING
           : derivativeMarginToChainMarginToFixed({
-              value: notionalWithLeverageBasedOnWorstPrice,
+              value: margin,
               quoteDecimals: market.quoteToken.decimals
             }),
         marketId: market.marketId,
@@ -747,23 +806,23 @@ export const actions = actionTree(
     },
 
     async submitMarketOrder(
-      _,
+      { state },
       {
         quantity,
         price,
-        notionalWithLeverageBasedOnWorstPrice,
+        margin,
         reduceOnly,
         orderType
       }: {
         reduceOnly: boolean
         price: BigNumberInBase
-        notionalWithLeverageBasedOnWorstPrice: BigNumberInBase
+        margin: BigNumberInBase
         quantity: BigNumberInBase
         orderType: DerivativeOrderSide
       }
     ) {
+      const { market } = state
       const { subaccount } = this.app.$accessor.account
-      const { market } = this.app.$accessor.derivatives
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
       const { address, injectiveAddress, isUserWalletConnected } =
         this.app.$accessor.wallet
@@ -775,7 +834,9 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      const message = MsgCreateDerivativeMarketOrder.fromJSON({
+      const messageType = MsgCreateDerivativeMarketOrder
+
+      const message = messageType.fromJSON({
         injectiveAddress,
         triggerPrice: '0',
         orderType: derivativeOrderTypeToGrpcOrderType(orderType),
@@ -787,7 +848,7 @@ export const actions = actionTree(
         margin: reduceOnly
           ? ZERO_TO_STRING
           : derivativeMarginToChainMarginToFixed({
-              value: notionalWithLeverageBasedOnWorstPrice,
+              value: margin,
               quoteDecimals: market.quoteToken.decimals
             }),
         marketId: market.marketId,

@@ -22,8 +22,8 @@ import Vue from 'vue'
 // @ts-ignore
 import VCountdown from '@chenfengyuan/vue-countdown'
 import moment from 'moment'
-import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import MarketInfo from '~/components/elements/market-info.vue'
+import { NonBinaryOptionsDerivativeMarket } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -39,8 +39,9 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiDerivativeMarketWithToken | undefined {
-      return this.$accessor.derivatives.market
+    market(): NonBinaryOptionsDerivativeMarket | undefined {
+      return this.$accessor.derivatives
+        .market as NonBinaryOptionsDerivativeMarket
     },
 
     perpetualMarket(): boolean {

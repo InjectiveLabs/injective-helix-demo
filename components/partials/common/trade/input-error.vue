@@ -290,6 +290,7 @@ export default Vue.extend({
         if (
           quoteAvailableBalance &&
           quoteAvailableBalance.gt('0') &&
+          notionalValueWithFees &&
           notionalValueWithFees.isFinite() &&
           quoteAvailableBalance.lt(notionalValueWithFees)
         ) {
@@ -303,6 +304,7 @@ export default Vue.extend({
 
       if (
         baseAvailableBalance &&
+        amount &&
         amount.isFinite() &&
         baseAvailableBalance.lt(amount)
       ) {
@@ -358,8 +360,8 @@ export default Vue.extend({
 
       if (
         orders.length <= 0 &&
-        ((amount.isFinite() && amount.gt(0)) ||
-          (quoteAmount.isFinite() && quoteAmount.gt(0)))
+        ((amount && amount.isFinite() && amount.gt(0)) ||
+          (quoteAmount && quoteAmount.isFinite() && quoteAmount.gt(0)))
       ) {
         return {
           amount: this.$t('trade.not_enough_fillable_orders')
@@ -428,6 +430,8 @@ export default Vue.extend({
       }, ZERO_IN_BASE)
 
       if (
+        totalAmount &&
+        amount &&
         totalAmount.isFinite() &&
         amount.isFinite() &&
         totalAmount.lt(amount)

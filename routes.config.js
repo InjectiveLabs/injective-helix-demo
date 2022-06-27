@@ -1,8 +1,6 @@
-const { Network } = require('@injectivelabs/networks')
 const {
   IS_TESTNET,
   IS_MAINNET_STAGING,
-  NETWORK,
   IS_DEVNET
 } = require('./app/utils/constants')
 
@@ -25,30 +23,29 @@ const spot = IS_TESTNET
   ? mainnetStagingSpot
   : mainnetSpot
 
-const mainnetDerivatives = [
+const mainnetPerpetuals = [
   'btc-usdt-perp',
   'inj-usdt-perp',
   'eth-usdt-perp',
+  'osmo-usdt-perp',
   'bayc-weth-perp',
   'bnb-usdt-perp',
   'stx-usdt-perp',
   'atom-usdt-perp'
 ]
-const testnetDerivatives = [...mainnetDerivatives]
-const mainnetStagingDerivatives = [...mainnetDerivatives]
-const derivatives = IS_TESTNET
-  ? testnetDerivatives
+const testnetPerpetuals = [...mainnetPerpetuals]
+const mainnetStagingPerpetuals = [...mainnetPerpetuals]
+const perpetuals = IS_TESTNET
+  ? testnetPerpetuals
   : IS_MAINNET_STAGING
-  ? mainnetStagingDerivatives
-  : mainnetDerivatives
+  ? mainnetStagingPerpetuals
+  : mainnetPerpetuals
 
-if (NETWORK === Network.Devnet || IS_MAINNET_STAGING) {
-  derivatives.push('osmo-usdt-perp')
-  // spot.push('dot-usdt')
-}
+const expiryFutures = ['']
 
 const spotRoutes = spot.map((s) => `/spot/${s}`) || []
-const derivativesRoutes = derivatives.map((s) => `/derivatives/${s}`) || [] // example: '/market/huahua-usdt'
+const perpetualsRoutes = perpetuals.map((s) => `/perpetuals/${s}`) || []
+const derivativesRoutes = perpetuals.map((s) => `/derivatives/${s}`) || [] // Legacy support
 
 const upcomingMarketsRoutes = []
 const deprecatedMarketsRoutes = IS_TESTNET || IS_DEVNET ? [] : []
@@ -67,9 +64,12 @@ module.exports = [
   ...upcomingMarketsRoutes,
   ...deprecatedMarketsRoutes,
   ...spotRoutes,
+  ...perpetualsRoutes,
   ...derivativesRoutes
 ]
 
 module.exports.spot = spot
-module.exports.derivatives = derivatives
+module.exports.derivatives = perpetuals /* Legacy support */
+module.exports.perpetuals = perpetuals
+module.exports.expiryFutures = expiryFutures
 module.exports.upcomingMarketsRoutes = upcomingMarketsRoutes

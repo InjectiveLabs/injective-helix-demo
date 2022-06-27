@@ -102,7 +102,6 @@ import {
   DerivativeOrderSide,
   UiDerivativeLimitOrder,
   UiDerivativeMarketSummary,
-  UiDerivativeMarketWithToken,
   UiDerivativeOrderbook,
   UiPosition,
   UiPriceLevel,
@@ -118,7 +117,7 @@ import OrderSubmit from '~/components/partials/common/trade/order-submit.vue'
 import OrderInputs from '~/components/partials/common/trade/order-inputs.vue'
 import TradingTypeButtons from '~/components/partials/common/trade/trading-type-buttons.vue'
 import OrderDetailsWrapper from '~/components/partials/common/trade/order-details-wrapper.vue'
-import { AveragePriceOptions } from '~/types'
+import { AveragePriceOptions, NonBinaryOptionsDerivativeMarket } from '~/types'
 import {
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook,
@@ -174,8 +173,9 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiDerivativeMarketWithToken | undefined {
-      return this.$accessor.derivatives.market
+    market(): NonBinaryOptionsDerivativeMarket | undefined {
+      return this.$accessor.derivatives
+        .market as NonBinaryOptionsDerivativeMarket
     },
 
     wallet(): Wallet {
@@ -767,7 +767,7 @@ export default Vue.extend({
       this.$accessor.derivatives
         .submitLimitOrder({
           price,
-          notionalWithLeverageBasedOnWorstPrice,
+          margin: notionalWithLeverageBasedOnWorstPrice,
           orderType: orderTypeToSubmit,
           reduceOnly: orderTypeReduceOnly,
           quantity: amount
@@ -801,7 +801,7 @@ export default Vue.extend({
       this.$accessor.derivatives
         .submitMarketOrder({
           orderType,
-          notionalWithLeverageBasedOnWorstPrice,
+          margin: notionalWithLeverageBasedOnWorstPrice,
           reduceOnly: orderTypeReduceOnly,
           price: worstPrice,
           quantity: amount
