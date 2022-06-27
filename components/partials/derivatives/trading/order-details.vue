@@ -299,11 +299,15 @@ export default Vue.extend({
 
       if (!market) {
         return notionalWithLeverageAndFees.toFormat(
-          UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+          UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+          BigNumberInBase.ROUND_DOWN
         )
       }
 
-      return notionalWithLeverageAndFees.toFormat(market.priceDecimals)
+      return notionalWithLeverageAndFees.toFormat(
+        market.priceDecimals,
+        BigNumberInBase.ROUND_DOWN
+      )
     },
 
     notionalWithLeverageToFormat(): string {

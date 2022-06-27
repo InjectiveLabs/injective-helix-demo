@@ -422,7 +422,7 @@ export default Vue.extend({
 
       return fees.toFormat(
         getDecimalsFromNumber(fees.toNumber()),
-        BigNumberInBase.ROUND_HALF_UP
+        BigNumberInBase.ROUND_DOWN
       )
     },
 
