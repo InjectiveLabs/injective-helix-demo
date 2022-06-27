@@ -176,48 +176,6 @@ export const calculateWorstExecutionPriceFromOrderbook = ({
   return worstPrice
 }
 
-export const getQuoteFromPercentageQuantityNonReduceOnly = ({
-  percentageToNumber,
-  quoteAvailableBalance,
-  market,
-  records,
-  leverage,
-  feeRate
-}: {
-  percentageToNumber: BigNumberInBase
-  quoteAvailableBalance: BigNumberInBase
-  market: UiDerivativeMarketWithToken
-  records: UiPriceLevel[]
-  leverage: string
-  feeRate: BigNumberInBase
-}) => {
-  const totalNotional = records.reduce((totalNotional, { quantity, price }) => {
-    const orderPrice = new BigNumberInBase(price).toWei(
-      market.baseToken.decimals - market.quoteToken.decimals
-    )
-
-    const orderQuantity = new BigNumberInWei(quantity).toBase(
-      market.baseToken.decimals
-    )
-
-    return totalNotional.plus(orderQuantity.times(orderPrice))
-  }, ZERO_IN_BASE)
-
-  const quoteBalanceByPercentage = new BigNumberInBase(
-    quoteAvailableBalance
-  ).times(percentageToNumber)
-
-  if (totalNotional.lte(quoteBalanceByPercentage)) {
-    return totalNotional
-  }
-
-  const quoteBalanceWithFeesAndLeverage = quoteBalanceByPercentage.div(
-    new BigNumberInBase(1).plus(feeRate).times(leverage)
-  )
-
-  return quoteBalanceWithFeesAndLeverage
-}
-
 export const calculateWorstPriceUsingQuoteAmountAndOrderBookNonSwap = ({
   records,
   market,
@@ -327,7 +285,7 @@ export const calculateAverageExecutionPriceFromFillableNotionalOnOrderBook = ({
   return sum.div(amount)
 }
 
-export const getApproxAmountFromPercentage = ({
+export const getDerivativesBaseAmountForPercentage = ({
   records,
   notionalWithLeverage,
   market,
@@ -380,6 +338,48 @@ export const getApproxAmountFromPercentage = ({
     amountFromAvailableMargin.toNumber(),
     market.quantityDecimals
   )
+}
+
+export const getDerivativesQuoteAmountForPercentageNonReduceOnly = ({
+  percentageToNumber,
+  quoteAvailableBalance,
+  market,
+  records,
+  leverage,
+  feeRate
+}: {
+  percentageToNumber: BigNumberInBase
+  quoteAvailableBalance: BigNumberInBase
+  market: UiDerivativeMarketWithToken
+  records: UiPriceLevel[]
+  leverage: string
+  feeRate: BigNumberInBase
+}) => {
+  const totalNotional = records.reduce((totalNotional, { quantity, price }) => {
+    const orderPrice = new BigNumberInBase(price).toWei(
+      market.baseToken.decimals - market.quoteToken.decimals
+    )
+
+    const orderQuantity = new BigNumberInWei(quantity).toBase(
+      market.baseToken.decimals
+    )
+
+    return totalNotional.plus(orderQuantity.times(orderPrice))
+  }, ZERO_IN_BASE)
+
+  const quoteBalanceByPercentage = new BigNumberInBase(
+    quoteAvailableBalance
+  ).times(percentageToNumber)
+
+  if (totalNotional.lte(quoteBalanceByPercentage)) {
+    return totalNotional
+  }
+
+  const quoteBalanceWithFeesAndLeverage = quoteBalanceByPercentage.div(
+    new BigNumberInBase(1).plus(feeRate).times(leverage)
+  )
+
+  return quoteBalanceWithFeesAndLeverage
 }
 
 export const getRoundedLiquidationPrice = (

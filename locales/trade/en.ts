@@ -236,6 +236,8 @@ export default {
       'Your transaction might get executed at a less desirable price if slippage % is set too high.',
     invalid_slippage: 'Please enter a valid slippage percentage.',
     low_slippage_tolerance_warning:
-      'Your transaction might not be executed if slippage % is set too low.'
+      'Your transaction might not be executed if slippage % is set too low.',
+    limited_orderbook_liquidity:
+      'Percentage amounts are limited by the liquidity available on the orderbook.'
   }
 }

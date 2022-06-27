@@ -24,14 +24,14 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { formatAmountToAllowableDecimals } from '~/app/utils/formatters'
 import {
-  getApproxAmountForBuyOrder,
-  getApproxAmountForSellOrder,
-  getQuoteForPercentageSell,
-  getQuoteForPercentageBuy
+  getSpotBaseAmountForPercentageSell,
+  getSpotBaseAmountForPercentageBuy,
+  getSpotQuoteForPercentageSell,
+  getSpotQuoteForPercentageBuy
 } from '~/app/client/utils/spot'
 import {
-  getApproxAmountFromPercentage,
-  getQuoteFromPercentageQuantityNonReduceOnly
+  getDerivativesBaseAmountForPercentage,
+  getDerivativesQuoteAmountForPercentageNonReduceOnly
 } from '~/app/client/utils/derivatives'
 
 export default Vue.extend({
@@ -151,10 +151,6 @@ export default Vue.extend({
         proportionalPercentage
       ).div(100)
 
-      const balance = orderTypeBuy
-        ? quoteAvailableBalance
-        : baseAvailableBalance
-
       if (!market) {
         return ''
       }
@@ -166,7 +162,7 @@ export default Vue.extend({
       }
 
       if (!isSpot) {
-        return getApproxAmountFromPercentage({
+        return getDerivativesBaseAmountForPercentage({
           market: market as UiDerivativeMarketWithToken,
           notionalWithLeverage: quoteAvailableBalance,
           leverage,
@@ -178,17 +174,17 @@ export default Vue.extend({
       }
 
       if (!orderTypeBuy) {
-        return getApproxAmountForSellOrder({
+        return getSpotBaseAmountForPercentageSell({
           buys,
-          balance,
+          baseAvailableBalance,
           market: market as UiSpotMarketWithToken,
           percentageToNumber
         })
       }
 
-      return getApproxAmountForBuyOrder({
+      return getSpotBaseAmountForPercentageBuy({
         market: market as UiSpotMarketWithToken,
-        balance,
+        quoteAvailableBalance,
         percentageToNumber: percentageToNumber.toNumber(),
         sells,
         feeRate,
@@ -227,7 +223,7 @@ export default Vue.extend({
           .toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
       }
 
-      return getQuoteFromPercentageQuantityNonReduceOnly({
+      return getDerivativesQuoteAmountForPercentageNonReduceOnly({
         percentageToNumber,
         quoteAvailableBalance,
         market: market as UiDerivativeMarketWithToken,
@@ -319,14 +315,14 @@ export default Vue.extend({
       )
 
       const quoteAmount = orderTypeBuy
-        ? getQuoteForPercentageBuy({
+        ? getSpotQuoteForPercentageBuy({
             sells,
             market: market as UiSpotMarketWithToken,
             quoteAvailableBalance,
             percentToNumber,
             takerFeeRate
           })
-        : getQuoteForPercentageSell({
+        : getSpotQuoteForPercentageSell({
             buys,
             market: market as UiSpotMarketWithToken,
             baseAvailableBalance,

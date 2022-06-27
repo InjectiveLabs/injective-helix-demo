@@ -88,26 +88,28 @@
 
     <InputError
       v-bind="{
-        hasInputErrors,
-        market,
-        executionPrice,
-        leverage: inputLeverage,
-        lastTradedPrice,
-        notionalWithLeverage,
-        maxReduceOnly,
-        quoteAmount: inputQuoteAmountToBigNumber,
-        hasQuoteAmount,
-        quoteAvailableBalance,
-        baseAvailableBalance,
-        notionalValueWithFees,
-        notionalWithLeverageAndFees,
         amount: inputBaseAmountToBigNumber,
-        hasAmount,
-        orderTypeBuy,
-        tradingTypeMarket,
-        sells,
+        baseAvailableBalance,
         buys,
-        hasPrice
+        executionPrice,
+        hasAmount,
+        hasInputErrors,
+        hasPrice,
+        hasQuoteAmount,
+        inputProportionalPercentage,
+        lastTradedPrice,
+        leverage: inputLeverage,
+        market,
+        maxReduceOnly,
+        notionalValueWithFees,
+        notionalWithLeverage,
+        notionalWithLeverageAndFees,
+        orderTypeBuy,
+        potentiallyShowPercentageWarning,
+        quoteAmount: inputQuoteAmountToBigNumber,
+        quoteAvailableBalance,
+        sells,
+        tradingTypeMarket
       }"
       @update:hasInputErrors="updateHasInputErrors"
     />
@@ -344,7 +346,8 @@ export default Vue.extend({
       inputProportionalPercentage: 0,
       inputSlippageTolerance: '0.5',
       inputReduceOnly: false,
-      inputLeverage: '1'
+      inputLeverage: '1',
+      potentiallyShowPercentageWarning: false
     }
   },
 
@@ -510,6 +513,16 @@ export default Vue.extend({
 
       this.$emit('update:proportionalPercentage', proportionalPercentage)
       this.$emit('update:averagePriceOption', AveragePriceOptions.Percentage)
+
+      this.setShouldPotentiallyShowPercentageWarning()
+    },
+
+    setShouldPotentiallyShowPercentageWarning() {
+      this.potentiallyShowPercentageWarning = true
+
+      setTimeout(() => {
+        this.potentiallyShowPercentageWarning = false
+      }, 5000)
     },
 
     setPostOnly(postOnly: boolean) {

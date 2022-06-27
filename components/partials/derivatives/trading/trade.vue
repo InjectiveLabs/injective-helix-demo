@@ -35,7 +35,8 @@
         notionalWithLeverage,
         position,
         orderTypeReduceOnly,
-        quoteAvailableBalance
+        quoteAvailableBalance,
+        showReduceOnly
       }"
       :average-price-option.sync="averagePriceOption"
       :amount.sync="form.amount"
@@ -449,6 +450,7 @@ export default Vue.extend({
 
     showReduceOnly(): boolean {
       const { orderType, position } = this
+
       if (!position) {
         return false
       }

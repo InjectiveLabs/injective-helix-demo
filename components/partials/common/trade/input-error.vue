@@ -14,6 +14,18 @@
     >
       {{ priceError }}
     </span>
+    <PercentWarning
+      v-if="potentiallyShowPercentageWarning && !hasPriceOrAmountError"
+      v-bind="{
+        baseAvailableBalance,
+        buys,
+        inputProportionalPercentage,
+        market,
+        orderTypeBuy,
+        quoteAvailableBalance,
+        sells
+      }"
+    />
   </div>
 </template>
 
@@ -34,8 +46,13 @@ import {
   DEFAULT_MIN_PRICE_BAND_DIFFERENCE,
   PRICE_BAND_ENABLED
 } from '~/app/utils/constants'
+import PercentWarning from '~/components/partials/common/trade/percent-warning.vue'
 
 export default Vue.extend({
+  components: {
+    PercentWarning
+  },
+
   props: {
     quoteAvailableBalance: {
       type: Object as PropType<BigNumberInBase>,
@@ -66,6 +83,11 @@ export default Vue.extend({
       default: () => ZERO_IN_BASE
     },
 
+    potentiallyShowPercentageWarning: {
+      type: Boolean,
+      required: true
+    },
+
     quoteAmount: {
       type: Object as PropType<BigNumberInBase>,
       required: true
@@ -73,6 +95,11 @@ export default Vue.extend({
 
     hasQuoteAmount: {
       type: Boolean,
+      required: true
+    },
+
+    inputProportionalPercentage: {
+      type: Number,
       required: true
     },
 
@@ -255,16 +282,22 @@ export default Vue.extend({
       return undefined
     },
 
-    priceError(): string | undefined {
+    priceError(): string {
       const { price } = this.errors
 
-      return price
+      return price || ''
     },
 
-    amountError(): string | undefined {
+    amountError(): string {
       const { amount } = this.errors
 
-      return amount
+      return amount || ''
+    },
+
+    hasPriceOrAmountError(): boolean {
+      const { priceError, amountError } = this
+
+      return priceError.length > 0 || amountError.length > 0
     },
 
     availableBalanceError(): TradeError | undefined {
