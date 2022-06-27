@@ -94,7 +94,11 @@ import {
 } from '@injectivelabs/utils'
 import Vue from 'vue'
 import { format, intervalToDuration } from 'date-fns'
-import { cosmosSdkDecToBigNumber, FeeDiscountAccountInfo, FeeDiscountSchedule } from '@injectivelabs/sdk-ts'
+import {
+  cosmosSdkDecToBigNumber,
+  FeeDiscountAccountInfo,
+  FeeDiscountSchedule
+} from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import { getAbbreviatedVolume } from '~/app/utils/market'
@@ -130,7 +134,10 @@ export default Vue.extend({
         return '-'
       }
 
-      return format(Number(feeDiscountAccountInfo.accountTtl.ttlTimestamp) * 1000, 'yyyy-MM-dd HH:mm:ss (zzz)')
+      return format(
+        Number(feeDiscountAccountInfo.accountTtl.ttlTimestamp) * 1000,
+        'yyyy-MM-dd HH:mm:ss (zzz)'
+      )
     },
 
     feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
@@ -172,7 +179,11 @@ export default Vue.extend({
     volume(): BigNumberInBase {
       const { feeDiscountAccountInfo } = this
 
-      if (!feeDiscountAccountInfo || !feeDiscountAccountInfo.accountInfo || !feeDiscountAccountInfo.accountInfo.volume) {
+      if (
+        !feeDiscountAccountInfo ||
+        !feeDiscountAccountInfo.accountInfo ||
+        !feeDiscountAccountInfo.accountInfo.volume
+      ) {
         return ZERO_IN_BASE
       }
 
@@ -196,9 +207,13 @@ export default Vue.extend({
         return '0'
       }
 
-      const totalinSeconds = feeDiscountSchedule.bucketDuration * feeDiscountSchedule.bucketCount
+      const totalinSeconds =
+        feeDiscountSchedule.bucketDuration * feeDiscountSchedule.bucketCount
 
-      const { days } = intervalToDuration({ start: 0, end: totalinSeconds * 1000 })
+      const { days } = intervalToDuration({
+        start: 0,
+        end: totalinSeconds * 1000
+      })
 
       if (!days) {
         return '0'
@@ -263,7 +278,7 @@ export default Vue.extend({
       const offset = target.scrollLeft
       const viewWidth = target.clientWidth
       const total = target.scrollWidth - viewWidth
-      this.slideIndex = Math.round(offset / total * 2)
+      this.slideIndex = Math.round((offset / total) * 2)
     }
   }
 })
