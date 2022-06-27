@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full w-full flex flex-wrap py-4 fee-discounts">
+  <div class="h-full w-full flex flex-wrap fee-discounts min-h-screen-excluding-header-and-footer">
     <HocLoading :status="status">
       <div class="container">
         <div class="w-full mx-auto xl:w-4/5">

@@ -1,3 +1,27 @@
+:root {
+  --header-height: 56px;
+  --footer-height: 697px;
+}
+
+
+@media (min-width: 480px) {
+  :root {
+    --footer-height: 565px;
+  }
+}
+
+@media (min-width: 640px) {
+  :root {
+    --footer-height: 445px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --footer-height: 377px;
+  }
+}
+
 html {
   @apply bg-gray-1000;
 }
@@ -18,7 +42,11 @@ body {
 }
 
 .min-h-screen-excluding-header {
-  min-height: calc(100vh - 56px);
+  min-height: calc(100vh - var(--header-height));
+}
+
+.min-h-screen-excluding-header-and-footer {
+  min-height: calc(100vh - var(--header-height) - var(--footer-height));
 }
 
 .h-full-grow {
