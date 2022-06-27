@@ -248,7 +248,7 @@ export default {
     staked_amount_tooltip:
       'The amount of INJ required to be staked. Staking INJ secures the protocol, earns rewards and can help obtain a more preferable fee tier.',
     tier: 'Tier',
-    current_apy: 'Current APY',
+    current_apr: 'Current APR',
     maker: 'Maker',
     taker: 'Taker',
     off: 'Off',

@@ -48,7 +48,8 @@ export default Vue.extend({
     Promise.all([
       this.$accessor.exchange.fetchParams(),
       this.$accessor.exchange.fetchFeeDiscountSchedule(),
-      this.$accessor.exchange.fetchFeeDiscountAccountInfo()
+      this.$accessor.exchange.fetchFeeDiscountAccountInfo(),
+      this.$accessor.params.fetchAprParams()
     ])
       .then(() => {
         //

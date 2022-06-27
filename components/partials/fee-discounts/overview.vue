@@ -49,7 +49,7 @@
             </div>
             <div class="mt-4">
               <span class="text-xs text-gray-400">
-                {{ $t('fee_discounts.current_apy') }}: {{ aprToFormat }}%
+                {{ $t('fee_discounts.current_apr') }}: {{ aprToFormat }}%
               </span>
             </div>
           </div>
@@ -86,6 +86,7 @@
 
 <script lang="ts">
 import {
+  BigNumber,
   BigNumberInBase,
   BigNumberInWei,
   Status,
@@ -175,7 +176,11 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(feeDiscountAccountInfo.accountInfo.volume).toBase()
+      const volume = new BigNumberInBase(
+        cosmosSdkDecToBigNumber(feeDiscountAccountInfo.accountInfo.volume)
+      )
+
+      return volume.dividedBy(new BigNumber(10).pow(6))
     },
 
     volumeToFormat(): string {
