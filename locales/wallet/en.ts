@@ -40,7 +40,7 @@ export default {
       'Please connect to your wallet to start trading on Injective!',
     highlyExperimental: 'Highly Experimental!',
 
-    connectUsingTorus: 'Connect using Torus',
+    connectUsingTorus: 'One-click login with',
     torus: 'Torus',
     trezor: 'Trezor',
     Trezor: 'Trezor',
