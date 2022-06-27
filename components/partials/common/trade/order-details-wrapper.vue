@@ -20,7 +20,7 @@
       makerFeeRateDiscount,
       makerFeeRateToFormat,
       marketHasNegativeMakerFee,
-      minimumReceivedAmountToFormat,
+      minimumReceivedAmount,
       notionalValue,
       notionalWithLeverage,
       notionalWithLeverageAndFees,
@@ -54,10 +54,7 @@ import OrderDetailsMarketSpot from '~/components/partials/spot/trading/order-det
 import OrderDetailsDerivatives from '~/components/partials/derivatives/trading/order-details.vue'
 import OrderDetailsMarketDerivatives from '~/components/partials/derivatives/trading/order-details-market.vue'
 import { TradingRewardsCampaign } from '~/app/client/types/exchange'
-import {
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-} from '~/app/utils/constants'
+import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
 
 export default Vue.extend({
@@ -395,10 +392,13 @@ export default Vue.extend({
       const fees = executionPrice.times(amount).times(feeRate)
 
       if (!market) {
-        return fees.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+        return fees.toFormat(
+          UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+          BigNumberInBase.ROUND_DOWN
+        )
       }
 
-      return fees.toFormat(market.priceDecimals)
+      return fees.toFormat(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
     },
 
     executionPriceToFormat(): string {
@@ -497,7 +497,7 @@ export default Vue.extend({
       return feeRebates.toFormat(market.priceDecimals)
     },
 
-    minimumReceivedAmountToFormat(): string {
+    minimumReceivedAmount(): BigNumberInBase {
       const {
         tradingTypeMarket,
         amount,
@@ -509,12 +509,12 @@ export default Vue.extend({
         slippage
       } = this
 
-      if ((!orderTypeBuy && quoteAmount.isNaN()) || !market) {
-        return ZERO_IN_BASE.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+      if ((!orderTypeBuy && !quoteAmount.isFinite()) || !market) {
+        return ZERO_IN_BASE
       }
 
-      if (orderTypeBuy && amount.isNaN()) {
-        return ZERO_IN_BASE.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
+      if (orderTypeBuy && !amount.isFinite()) {
+        return ZERO_IN_BASE
       }
 
       const feeMultiplier = orderTypeBuy
@@ -526,20 +526,14 @@ export default Vue.extend({
           ? quoteAmount.div(executionPrice.times(feeMultiplier).times(slippage))
           : quoteAmount.div(executionPrice.times(feeMultiplier))
 
-        return minimumReceivedBaseAmount.toFormat(
-          market.quantityDecimals,
-          BigNumberInBase.ROUND_DOWN
-        )
+        return minimumReceivedBaseAmount
       }
 
-      const minimumReceivedQuoteAmountToFormat = tradingTypeMarket
+      const minimumReceivedQuoteAmount = tradingTypeMarket
         ? amount.times(executionPrice).times(feeMultiplier).times(slippage)
         : amount.times(executionPrice).times(feeMultiplier)
 
-      return minimumReceivedQuoteAmountToFormat.toFormat(
-        market.priceDecimals,
-        BigNumberInBase.ROUND_DOWN
-      )
+      return minimumReceivedQuoteAmount
     }
   },
 

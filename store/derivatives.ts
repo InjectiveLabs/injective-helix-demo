@@ -47,6 +47,7 @@ import {
   tokenService
 } from '~/app/Services'
 import { derivatives as allowedPerpetualMarkets } from '~/routes.config'
+import { NonBinaryOptionsDerivativeMarket } from '~/types'
 
 const initialStateFactory = () => ({
   markets: [] as UiDerivativeMarketWithToken[],
@@ -342,8 +343,8 @@ export const actions = actionTree(
           market.marketId
         )
       const oraclePrice = await exchangeOracleApi.fetchOraclePrice({
-        baseSymbol: market.oracleBase,
-        quoteSymbol: market.oracleQuote,
+        baseSymbol: (market as NonBinaryOptionsDerivativeMarket).oracleBase,
+        quoteSymbol: (market as NonBinaryOptionsDerivativeMarket).oracleQuote,
         oracleType: market.oracleType
       })
 

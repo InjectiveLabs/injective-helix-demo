@@ -19,15 +19,14 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { TradeError } from 'types/errors'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
-  UiDerivativeMarketWithToken,
   UiSpotMarketWithToken,
   UiPriceLevel,
   ZERO_IN_BASE,
   NUMBER_REGEX
 } from '@injectivelabs/sdk-ui-ts'
+import { NonBinaryOptionsDerivativeMarket, TradeError } from '~/types'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
 import {
   DEFAULT_MAX_PRICE_BAND_DIFFERENCE,
@@ -44,7 +43,7 @@ export default Vue.extend({
 
     market: {
       type: Object as PropType<
-        UiDerivativeMarketWithToken | UiSpotMarketWithToken
+        UiSpotMarketWithToken | NonBinaryOptionsDerivativeMarket
       >,
       required: true
     },
@@ -288,7 +287,12 @@ export default Vue.extend({
       }
 
       if (orderTypeBuy) {
-        if (quoteAvailableBalance.lt(notionalValueWithFees)) {
+        if (
+          quoteAvailableBalance &&
+          quoteAvailableBalance.gt('0') &&
+          notionalValueWithFees.isFinite() &&
+          quoteAvailableBalance.lt(notionalValueWithFees)
+        ) {
           return {
             price: this.$t('trade.not_enough_balance')
           }
@@ -297,7 +301,11 @@ export default Vue.extend({
         return undefined
       }
 
-      if (baseAvailableBalance && baseAvailableBalance.lt(amount)) {
+      if (
+        baseAvailableBalance &&
+        amount.isFinite() &&
+        baseAvailableBalance.lt(amount)
+      ) {
         return {
           amount: this.$t('trade.not_enough_balance')
         }
@@ -317,7 +325,11 @@ export default Vue.extend({
         return undefined
       }
 
-      if (quoteAvailableBalance.lt(notionalWithLeverageAndFees)) {
+      if (
+        notionalWithLeverageAndFees &&
+        notionalWithLeverageAndFees.isFinite() &&
+        quoteAvailableBalance.lt(notionalWithLeverageAndFees)
+      ) {
         return {
           amount: this.$t('trade.not_enough_balance')
         }
@@ -344,7 +356,11 @@ export default Vue.extend({
 
       const orders = orderTypeBuy ? sells : buys
 
-      if (orders.length <= 0 && (amount.gt(0) || quoteAmount.gt(0))) {
+      if (
+        orders.length <= 0 &&
+        ((amount.isFinite() && amount.gt(0)) ||
+          (quoteAmount.isFinite() && quoteAmount.gt(0)))
+      ) {
         return {
           amount: this.$t('trade.not_enough_fillable_orders')
         }
@@ -374,7 +390,7 @@ export default Vue.extend({
 
       const notionalValueWithMarginRatio = executionPrice
         .times(amount)
-        .times((market as UiDerivativeMarketWithToken).initialMarginRatio)
+        .times((market as NonBinaryOptionsDerivativeMarket).initialMarginRatio)
 
       if (notionalWithLeverage.lte(notionalValueWithMarginRatio)) {
         return {
@@ -411,7 +427,11 @@ export default Vue.extend({
         )
       }, ZERO_IN_BASE)
 
-      if (totalAmount.lt(amount)) {
+      if (
+        totalAmount.isFinite() &&
+        amount.isFinite() &&
+        totalAmount.lt(amount)
+      ) {
         return {
           amount: this.$t('trade.not_enough_fillable_orders')
         }
@@ -425,11 +445,7 @@ export default Vue.extend({
 
       const priceToString = executionPrice.toFixed()
 
-      if (priceToString) {
-        return undefined
-      }
-
-      if (NUMBER_REGEX.test(priceToString)) {
+      if (priceToString || NUMBER_REGEX.test(priceToString)) {
         return undefined
       }
 
@@ -474,7 +490,7 @@ export default Vue.extend({
       const leverageToBigNumber = new BigNumberInBase(leverage)
 
       const priceWithMarginRatio = new BigNumberInBase(marketMarkPrice).times(
-        (market as UiDerivativeMarketWithToken).initialMarginRatio
+        (market as NonBinaryOptionsDerivativeMarket).initialMarginRatio
       )
 
       const priceBasedOnOrderType = orderTypeBuy
@@ -532,10 +548,10 @@ export default Vue.extend({
       const amountWithInitialMarginRatio = amount.times(
         orderTypeBuy
           ? new BigNumberInBase(
-              (market as UiDerivativeMarketWithToken).initialMarginRatio
+              (market as NonBinaryOptionsDerivativeMarket).initialMarginRatio
             ).minus(1)
           : new BigNumberInBase(1).plus(
-              (market as UiDerivativeMarketWithToken).initialMarginRatio
+              (market as NonBinaryOptionsDerivativeMarket).initialMarginRatio
             )
       )
       const priceBasedOnNotionalAndMarginRatio = notionalBasedOnOrderType.div(

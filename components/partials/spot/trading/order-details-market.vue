@@ -18,10 +18,9 @@
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </TextInfo>
-
         <TextInfo class="mt-2" :title="$t('trade.min_received_amount')">
           <span
-            v-if="!amount.isNaN()"
+            v-if="minimumReceivedAmount.gt(0)"
             class="font-mono flex items-start break-all"
           >
             {{ minimumReceivedAmountToFormat }}
@@ -158,8 +157,8 @@ export default Vue.extend({
       type: Object as PropType<BigNumberInBase>
     },
 
-    minimumReceivedAmountToFormat: {
-      type: String,
+    minimumReceivedAmount: {
+      type: Object as PropType<BigNumberInBase>,
       default: undefined
     },
 
@@ -213,6 +212,24 @@ export default Vue.extend({
   computed: {
     market(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
+    },
+
+    minimumReceivedAmountToFormat(): string | undefined {
+      const { market, orderTypeBuy, minimumReceivedAmount } = this
+
+      if (!market || !minimumReceivedAmount.isFinite()) {
+        return
+      }
+
+      return orderTypeBuy
+        ? minimumReceivedAmount.toFormat(
+            market.quantityDecimals,
+            BigNumberInBase.ROUND_DOWN
+          )
+        : minimumReceivedAmount.toFormat(
+            market.priceDecimals,
+            BigNumberInBase.ROUND_DOWN
+          )
     },
 
     notionalValueToFormat(): string {

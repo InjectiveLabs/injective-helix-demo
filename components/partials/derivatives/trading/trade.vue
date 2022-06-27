@@ -615,7 +615,11 @@ export default Vue.extend({
     feeRebates(): BigNumberInBase {
       const { notionalWithLeverageToBigNumber, makerFeeRate, market } = this
 
-      if (notionalWithLeverageToBigNumber.isNaN() || !market) {
+      if (
+        !market ||
+        notionalWithLeverageToBigNumber.isNaN() ||
+        makerFeeRate.gte(0)
+      ) {
         return ZERO_IN_BASE
       }
 

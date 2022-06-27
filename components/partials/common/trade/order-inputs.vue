@@ -159,7 +159,7 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import OrderLeverage from '~/components/partials/derivatives/trading/order-leverage.vue'
 import OrderLeverageSelect from '~/components/partials/derivatives/trading/order-leverage-select.vue'
-import { AveragePriceOptions } from '~/types'
+import { AveragePriceOptions, NonBinaryOptionsDerivativeMarket } from '~/types'
 import PercentAmountOptions from '~/components/partials/common/trade/percent-amount-options.vue'
 import InputError from '~/components/partials/common/trade/input-error.vue'
 import AdvancedSettings from '~/components/partials/common/trade/advanced-settings/index.vue'
@@ -180,7 +180,7 @@ export default Vue.extend({
   props: {
     market: {
       type: Object as PropType<
-        UiSpotMarketWithToken | UiDerivativeMarketWithToken
+        UiSpotMarketWithToken | NonBinaryOptionsDerivativeMarket
       >,
       required: true
     },
@@ -396,7 +396,9 @@ export default Vue.extend({
 
       const maxLeverage = new BigNumberInBase(
         new BigNumberInBase(1)
-          .dividedBy((market as UiDerivativeMarketWithToken).initialMarginRatio)
+          .dividedBy(
+            (market as NonBinaryOptionsDerivativeMarket).initialMarginRatio
+          )
           .dp(0)
       )
 
@@ -673,7 +675,7 @@ export default Vue.extend({
         executionPrice.times(feeMultiplier)
       )
 
-      if (baseAmount.gt('0')) {
+      if (baseAmount.isFinite() && baseAmount.gt('0')) {
         const formattedBaseAmount = baseAmount.toFixed(
           market.quantityDecimals,
           BigNumberInBase.ROUND_DOWN

@@ -86,7 +86,7 @@
           </span>
         </TextInfo>
 
-        <TextInfo v-if="!postOnly" :title="$t('trade.fee')" class="mt-2">
+        <TextInfo :title="$t('trade.fee')" class="mt-2">
           <div slot="context">
             <div class="flex items-center">
               <IconInfoTooltip
