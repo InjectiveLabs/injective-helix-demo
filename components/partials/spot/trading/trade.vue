@@ -20,6 +20,7 @@
         hasPrice,
         lastTradedPrice,
         market,
+        orderType,
         orderTypeBuy,
         quoteAvailableBalance,
         sells,
@@ -44,22 +45,22 @@
     <component
       :is="tradingTypeMarket ? `OrderDetailsMarket` : 'OrderDetails'"
       v-bind="{
-        executionPrice,
-        orderType,
-        makerFeeRate,
-        takerFeeRate,
-        makerFeeRateDiscount,
-        takerFeeRateDiscount,
-        orderTypeBuy,
-        fees,
-        total,
-        totalWithFees,
         amount,
-        quoteAmount,
         detailsDrawerOpen,
-        postOnly: form.postOnly,
+        executionPrice,
         feeRate,
-        slippage
+        fees,
+        makerFeeRate,
+        makerFeeRateDiscount,
+        orderType,
+        orderTypeBuy,
+        postOnly: form.postOnly,
+        quoteAmount,
+        slippage,
+        takerFeeRate,
+        takerFeeRateDiscount,
+        total,
+        totalWithFees
       }"
       @set:drawer-toggle="onDetailsDrawerToggle"
     />
@@ -67,8 +68,8 @@
     <OrderSubmit
       v-bind="{
         executionPrice,
-        hasInputErrors,
         hasAdvancedSettingsErrors,
+        hasInputErrors,
         lastTradedPrice,
         market,
         orderType,

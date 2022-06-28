@@ -7,8 +7,7 @@
         orderTypeBuy,
         tradingTypeMarket,
         hasError,
-        hasInjForGasOrNotKeplr,
-        priceHasHighDeviationWarning
+        hasInjForGasOrNotKeplr
       }"
     />
 
@@ -17,14 +16,8 @@
       :status="status"
       :disabled="hasError || !isUserWalletConnected || !hasInjForGasOrNotKeplr"
       :ghost="hasError"
-      :aqua="
-        (!hasInputErrors || hasAdvancedSettingsErrors) &&
-        orderType === SpotOrderSide.Buy
-      "
-      :red="
-        (!hasInputErrors || hasAdvancedSettingsErrors) &&
-        orderType === SpotOrderSide.Sell
-      "
+      :aqua="(!hasInputErrors || hasAdvancedSettingsErrors) && isOrderTypeBuy"
+      :red="(!hasInputErrors || hasAdvancedSettingsErrors) && isOrderTypeSell"
       class="w-full"
       data-cy="trading-page-execute-button"
       @click.stop="onSubmit"
@@ -38,14 +31,21 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { Wallet } from '@injectivelabs/ts-types'
-import { SpotOrderSide, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import {
+  SpotOrderSide,
+  UiSpotMarketWithToken,
+  DerivativeOrderSide,
+  UiDerivativeMarketWithToken,
+  UiDerivativeLimitOrder
+} from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import { Modal } from '~/types'
 import OrderError from '~/components/partials/common/trade/order-error.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
 import {
   DEFAULT_PRICE_WARNING_DEVIATION,
-  BIGGER_PRICE_WARNING_DEVIATION
+  BIGGER_PRICE_WARNING_DEVIATION,
+  UI_DEFAULT_MAX_NUMBER_OF_ORDERS
 } from '~/app/utils/constants'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
 
@@ -67,12 +67,14 @@ export default Vue.extend({
     },
 
     orderType: {
-      type: String as PropType<SpotOrderSide>,
+      type: String as PropType<SpotOrderSide | DerivativeOrderSide>,
       required: true
     },
 
     market: {
-      type: Object as PropType<UiSpotMarketWithToken>,
+      type: Object as PropType<
+        UiSpotMarketWithToken | UiDerivativeMarketWithToken
+      >,
       required: true
     },
 
@@ -96,6 +98,11 @@ export default Vue.extend({
       required: true
     },
 
+    orderTypeReduceOnly: {
+      type: Boolean,
+      default: false
+    },
+
     status: {
       type: Object as PropType<Status>,
       required: true
@@ -104,7 +111,8 @@ export default Vue.extend({
 
   data() {
     return {
-      SpotOrderSide
+      SpotOrderSide,
+      DerivativeOrderSide
     }
   },
 
@@ -121,10 +129,51 @@ export default Vue.extend({
       return this.$accessor.wallet.wallet
     },
 
+    orders(): UiDerivativeLimitOrder[] {
+      return this.$accessor.derivatives.subaccountOrders
+    },
+
+    isOrderTypeBuy(): boolean {
+      const { orderType, SpotOrderSide, DerivativeOrderSide } = this
+
+      return (
+        orderType === SpotOrderSide.Buy || orderType === DerivativeOrderSide.Buy
+      )
+    },
+
+    isOrderTypeSell(): boolean {
+      const { orderType, SpotOrderSide, DerivativeOrderSide } = this
+
+      return (
+        orderType === SpotOrderSide.Sell ||
+        orderType === DerivativeOrderSide.Sell
+      )
+    },
+
     hasError(): boolean {
       const { hasAdvancedSettingsErrors, hasInputErrors } = this
 
       return hasAdvancedSettingsErrors || hasInputErrors
+    },
+
+    maxOrdersError(): string | undefined {
+      const { orders, tradingTypeMarket, orderType } = this
+
+      const filteredOrders = orders.filter(
+        (order) => order.orderSide === orderType
+      )
+
+      if (tradingTypeMarket) {
+        return undefined
+      }
+
+      if (filteredOrders.length >= UI_DEFAULT_MAX_NUMBER_OF_ORDERS) {
+        return this.$t('trade.you_can_only_have_max_orders', {
+          number: UI_DEFAULT_MAX_NUMBER_OF_ORDERS
+        })
+      }
+
+      return undefined
     },
 
     hasInjForGasOrNotKeplr(): boolean {
@@ -141,12 +190,17 @@ export default Vue.extend({
       const {
         executionPrice,
         orderTypeBuy,
+        orderTypeReduceOnly,
         tradingTypeMarket,
         market,
         lastTradedPrice
       } = this
 
       if (!market || !tradingTypeMarket || executionPrice.lte(0)) {
+        return false
+      }
+
+      if (orderTypeReduceOnly) {
         return false
       }
 
@@ -169,9 +223,13 @@ export default Vue.extend({
   },
 
   methods: {
-    submit() {
-      const { hasError, priceHasHighDeviationWarning, isUserWalletConnected } =
-        this
+    onSubmit() {
+      const {
+        hasError,
+        maxOrdersError,
+        priceHasHighDeviationWarning,
+        isUserWalletConnected
+      } = this
 
       if (!isUserWalletConnected) {
         return this.$toast.error(this.$t('please_connect_your_wallet'))
@@ -179,6 +237,10 @@ export default Vue.extend({
 
       if (hasError) {
         return this.$toast.error(this.$t('trade.error_in_form'))
+      }
+
+      if (maxOrdersError) {
+        return this.$toast.error(maxOrdersError)
       }
 
       if (priceHasHighDeviationWarning) {

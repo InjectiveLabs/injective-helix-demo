@@ -695,13 +695,13 @@ export const actions = actionTree(
       {
         price,
         reduceOnly,
-        margin,
+        notionalWithLeverageBasedOnWorstPrice,
         quantity,
         orderType
       }: {
         reduceOnly: boolean
         price: BigNumberInBase
-        margin: BigNumberInBase
+        notionalWithLeverageBasedOnWorstPrice: BigNumberInBase
         quantity: BigNumberInBase
         orderType: DerivativeOrderSide
       }
@@ -730,7 +730,7 @@ export const actions = actionTree(
         margin: reduceOnly
           ? ZERO_TO_STRING
           : derivativeMarginToChainMarginToFixed({
-              value: margin,
+              value: notionalWithLeverageBasedOnWorstPrice,
               quoteDecimals: market.quoteToken.decimals
             }),
         marketId: market.marketId,
@@ -750,13 +750,13 @@ export const actions = actionTree(
       {
         quantity,
         price,
-        margin,
+        notionalWithLeverageBasedOnWorstPrice,
         reduceOnly,
         orderType
       }: {
         reduceOnly: boolean
         price: BigNumberInBase
-        margin: BigNumberInBase
+        notionalWithLeverageBasedOnWorstPrice: BigNumberInBase
         quantity: BigNumberInBase
         orderType: DerivativeOrderSide
       }
@@ -786,7 +786,7 @@ export const actions = actionTree(
         margin: reduceOnly
           ? ZERO_TO_STRING
           : derivativeMarginToChainMarginToFixed({
-              value: margin,
+              value: notionalWithLeverageBasedOnWorstPrice,
               quoteDecimals: market.quoteToken.decimals
             }),
         marketId: market.marketId,
