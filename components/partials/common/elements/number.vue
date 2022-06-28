@@ -93,6 +93,7 @@ export default Vue.extend({
         return [formattedNumber]
       }
 
+      // Please note that this will remove the sign from any number passed to this function so negative becomes positive.
       const match = formattedNumber.match(/^-?([\d,]+)((\.)(\d+?\d+?)(0*))?$/)
       const groups = !match
         ? formattedNumber
