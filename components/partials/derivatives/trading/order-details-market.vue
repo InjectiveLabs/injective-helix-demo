@@ -278,15 +278,12 @@ export default Vue.extend({
     notionalWithLeverageAndFeesToFormat(): string {
       const { notionalWithLeverageAndFees, market } = this
 
-      if (!market) {
-        return notionalWithLeverageAndFees.toFormat(
-          UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-          BigNumberInBase.ROUND_DOWN
-        )
-      }
+      const decimals = market
+        ? market.priceDecimals
+        : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 
       return notionalWithLeverageAndFees.toFormat(
-        market.priceDecimals,
+        decimals,
         BigNumberInBase.ROUND_DOWN
       )
     },
@@ -294,33 +291,21 @@ export default Vue.extend({
     liquidationPriceToFormat(): string {
       const { liquidationPrice, market } = this
 
-      if (!market) {
-        return liquidationPrice.toFormat(
-          UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-          BigNumberInBase.ROUND_HALF_UP
-        )
-      }
+      const decimals = market
+        ? market.priceDecimals
+        : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 
-      return liquidationPrice.toFormat(
-        market.priceDecimals,
-        BigNumberInBase.ROUND_HALF_UP
-      )
+      return liquidationPrice.toFormat(decimals, BigNumberInBase.ROUND_HALF_UP)
     },
 
     notionalWithLeverageToFormat(): string {
       const { notionalWithLeverage, market } = this
 
-      if (!market) {
-        return notionalWithLeverage.toFormat(
-          UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-          BigNumberInBase.ROUND_DOWN
-        )
-      }
+      const decimals = market
+        ? market.priceDecimals
+        : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 
-      return notionalWithLeverage.toFormat(
-        market.priceDecimals,
-        BigNumberInBase.ROUND_DOWN
-      )
+      return notionalWithLeverage.toFormat(decimals, BigNumberInBase.ROUND_DOWN)
     }
   },
 

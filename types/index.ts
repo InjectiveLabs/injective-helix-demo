@@ -3,9 +3,7 @@ import {
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiSpotMarketSummary,
-  UiSpotMarketWithToken,
-  UiPerpetualMarketWithToken,
-  UiExpiryFuturesMarketWithToken
+  UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 
@@ -56,10 +54,6 @@ export interface MarketRoute {
 }
 
 export declare type TokenUsdPriceMap = Record<string, number>
-
-export type NonBinaryOptionsDerivativeMarket =
-  | UiPerpetualMarketWithToken
-  | UiExpiryFuturesMarketWithToken
 
 export * from './enums'
 export * from './env'

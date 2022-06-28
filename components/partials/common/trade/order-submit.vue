@@ -14,10 +14,16 @@
     <VButton
       lg
       :status="status"
-      :disabled="hasError || !isUserWalletConnected || !hasInjForGasOrNotKeplr"
+      :disabled="
+        hasError ||
+        !isUserWalletConnected ||
+        !hasInjForGasOrNotKeplr ||
+        !hasAmount ||
+        !executionPrice.gt('0')
+      "
       :ghost="hasError"
       :aqua="(!hasInputErrors || hasAdvancedSettingsErrors) && isOrderTypeBuy"
-      :red="(!hasInputErrors || hasAdvancedSettingsErrors) && isOrderTypeSell"
+      :red="(!hasInputErrors || hasAdvancedSettingsErrors) && !isOrderTypeBuy"
       class="w-full"
       data-cy="trading-page-execute-button"
       @click.stop="onSubmit"
@@ -75,6 +81,16 @@ export default Vue.extend({
       type: Object as PropType<
         UiSpotMarketWithToken | UiDerivativeMarketWithToken
       >,
+      required: true
+    },
+
+    hasAmount: {
+      type: Boolean,
+      required: true
+    },
+
+    hasPrice: {
+      type: Boolean,
       required: true
     },
 
@@ -136,18 +152,7 @@ export default Vue.extend({
     isOrderTypeBuy(): boolean {
       const { orderType, SpotOrderSide, DerivativeOrderSide } = this
 
-      return (
-        orderType === SpotOrderSide.Buy || orderType === DerivativeOrderSide.Buy
-      )
-    },
-
-    isOrderTypeSell(): boolean {
-      const { orderType, SpotOrderSide, DerivativeOrderSide } = this
-
-      return (
-        orderType === SpotOrderSide.Sell ||
-        orderType === DerivativeOrderSide.Sell
-      )
+      return [SpotOrderSide.Buy, DerivativeOrderSide.Buy].includes(orderType)
     },
 
     hasError(): boolean {

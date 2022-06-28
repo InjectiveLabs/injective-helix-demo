@@ -217,7 +217,7 @@ export default Vue.extend({
     minimumReceivedAmountToFormat(): string | undefined {
       const { market, orderTypeBuy, minimumReceivedAmount } = this
 
-      if (!market || !minimumReceivedAmount.isFinite()) {
+      if (!market) {
         return
       }
 

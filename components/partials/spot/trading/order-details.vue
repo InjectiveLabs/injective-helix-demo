@@ -263,11 +263,11 @@ export default Vue.extend({
       return this.$accessor.spot.market
     },
 
-    minimumReceivedAmountToFormat(): string | undefined {
+    minimumReceivedAmountToFormat(): string {
       const { market, orderTypeBuy, minimumReceivedAmount } = this
 
-      if (!market || !minimumReceivedAmount.isFinite()) {
-        return
+      if (!market) {
+        return ''
       }
 
       return orderTypeBuy

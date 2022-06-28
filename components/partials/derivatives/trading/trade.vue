@@ -2,10 +2,14 @@
   <div v-if="market" class="px-4 w-full">
     <TradingTypeButtons
       :trading-type.sync="tradingType"
-      @update:trading-type="resetForm"
+      @update:trading-type="handleTradingTypeChange"
     />
 
-    <OrderTypeSelect :order-type.sync="orderType" v-bind="{ market }" />
+    <OrderTypeSelect
+      :order-type.sync="orderType"
+      v-bind="{ market }"
+      @update:order-type="handleOrderTypeChange"
+    />
 
     <OrderInputs
       ref="orderInputs"
@@ -25,6 +29,7 @@
         notionalWithLeverageAndFees,
         hasAmount,
         slippageTolerance: form.slippageTolerance,
+        showReduceOnly,
         tradingType,
         averagePriceOption,
         notionalWithLeverage,
@@ -75,8 +80,10 @@
     <OrderSubmit
       v-bind="{
         executionPrice,
+        hasAmount,
         hasInputErrors,
         hasAdvancedSettingsErrors,
+        hasPrice,
         lastTradedPrice,
         market,
         orderType,
@@ -106,7 +113,9 @@ import {
   UiPosition,
   UiPriceLevel,
   ZERO_IN_BASE,
-  UiSubaccount
+  UiSubaccount,
+  UiPerpetualMarketWithToken,
+  UiExpiryFuturesMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import {
   cosmosSdkDecToBigNumber,
@@ -117,7 +126,7 @@ import OrderSubmit from '~/components/partials/common/trade/order-submit.vue'
 import OrderInputs from '~/components/partials/common/trade/order-inputs.vue'
 import TradingTypeButtons from '~/components/partials/common/trade/trading-type-buttons.vue'
 import OrderDetailsWrapper from '~/components/partials/common/trade/order-details-wrapper.vue'
-import { AveragePriceOptions, NonBinaryOptionsDerivativeMarket } from '~/types'
+import { AveragePriceOptions } from '~/types'
 import {
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook,
@@ -173,9 +182,13 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): NonBinaryOptionsDerivativeMarket | undefined {
-      return this.$accessor.derivatives
-        .market as NonBinaryOptionsDerivativeMarket
+    market():
+      | UiPerpetualMarketWithToken
+      | UiExpiryFuturesMarketWithToken
+      | undefined {
+      return this.$accessor.derivatives.market as
+        | UiPerpetualMarketWithToken
+        | UiExpiryFuturesMarketWithToken
     },
 
     wallet(): Wallet {
@@ -314,17 +327,25 @@ export default Vue.extend({
     },
 
     amount(): BigNumberInBase {
-      return new BigNumberInBase(this.form.amount)
+      const {
+        form: { amount }
+      } = this
+
+      return amount ? new BigNumberInBase(amount) : ZERO_IN_BASE
     },
 
     quoteAmount(): BigNumberInBase {
-      return new BigNumberInBase(this.form.quoteAmount)
+      const {
+        form: { quoteAmount }
+      } = this
+
+      return quoteAmount ? new BigNumberInBase(quoteAmount) : ZERO_IN_BASE
     },
 
     hasAmount(): boolean {
       const { amount } = this
 
-      return !amount.isNaN() && amount.gt(0)
+      return amount.gt('0')
     },
 
     slippage(): BigNumberInBase {
@@ -440,11 +461,7 @@ export default Vue.extend({
         position.direction === TradeDirection.Short &&
         orderType === DerivativeOrderSide.Sell
 
-      if (longAndBuy || shortAndSell) {
-        return false
-      }
-
-      return true
+      return !(longAndBuy || shortAndSell)
     },
 
     tradingTypeMarket(): boolean {
@@ -521,17 +538,13 @@ export default Vue.extend({
     executionPrice(): BigNumberInBase {
       const { tradingTypeMarket, averagePrice, price } = this
 
-      if (tradingTypeMarket) {
-        return averagePrice
-      }
-
-      return price
+      return tradingTypeMarket ? averagePrice : price
     },
 
     hasPrice(): boolean {
       const { price } = this
 
-      return price.gt(0)
+      return price.gt('0')
     },
 
     orderTypeBuy(): boolean {
@@ -682,14 +695,20 @@ export default Vue.extend({
   },
 
   methods: {
-    resetForm() {
-      this.form.amount = ''
-      this.form.quoteAmount = ''
-      this.form.price = ''
-      this.form.quoteAmount = ''
-      this.form.proportionalPercentage = 0
-      this.form.reduceOnly = false
-      this.form.postOnly = false
+    handleOrderTypeChange() {
+      const {
+        form: { quoteAmount }
+      } = this
+
+      this.$nextTick(() => this.$orderInputs.onQuoteAmountChange(quoteAmount))
+    },
+
+    handleTradingTypeChange() {
+      const {
+        form: { quoteAmount }
+      } = this
+
+      this.$nextTick(() => this.$orderInputs.onQuoteAmountChange(quoteAmount))
     },
 
     onDetailsDrawerToggle() {

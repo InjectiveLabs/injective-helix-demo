@@ -2,10 +2,14 @@
   <div v-if="market" class="px-4 w-full">
     <TradingTypeButtons
       :trading-type.sync="tradingType"
-      @update:tradingType="resetForm"
+      @update:trading-type="handleTradingTypeChange"
     />
 
-    <OrderTypeSelect :order-type.sync="orderType" v-bind="{ market }" />
+    <OrderTypeSelect
+      :order-type.sync="orderType"
+      v-bind="{ market }"
+      @update:order-type="handleOrderTypeChange"
+    />
 
     <OrderInputs
       ref="orderInputs"
@@ -69,6 +73,8 @@
         executionPrice,
         hasAdvancedSettingsErrors,
         hasInputErrors,
+        hasAmount,
+        hasPrice,
         lastTradedPrice,
         market,
         orderType,
@@ -229,17 +235,25 @@ export default Vue.extend({
     },
 
     amount(): BigNumberInBase {
-      return new BigNumberInBase(this.form.amount)
+      const {
+        form: { amount }
+      } = this
+
+      return amount ? new BigNumberInBase(amount) : ZERO_IN_BASE
     },
 
     quoteAmount(): BigNumberInBase {
-      return new BigNumberInBase(this.form.quoteAmount)
+      const {
+        form: { quoteAmount }
+      } = this
+
+      return quoteAmount ? new BigNumberInBase(quoteAmount) : ZERO_IN_BASE
     },
 
     hasAmount(): boolean {
       const { amount } = this
 
-      return !amount.isNaN() && amount.gt(0)
+      return amount.gt('0')
     },
 
     baseAvailableBalance(): BigNumberInBase {
@@ -392,13 +406,17 @@ export default Vue.extend({
     },
 
     price(): BigNumberInBase {
-      return new BigNumberInBase(this.form.price)
+      const {
+        form: { price }
+      } = this
+
+      return price ? new BigNumberInBase(this.form.price) : ZERO_IN_BASE
     },
 
     hasPrice(): boolean {
       const { price } = this
 
-      return price.gt(0)
+      return price.gt('0')
     },
 
     averagePriceDerivedFromBaseAmount(): BigNumberInBase {
@@ -507,15 +525,7 @@ export default Vue.extend({
     executionPrice(): BigNumberInBase {
       const { tradingTypeMarket, averagePrice, price } = this
 
-      if (tradingTypeMarket) {
-        if (averagePrice.isNaN()) {
-          return ZERO_IN_BASE
-        }
-
-        return averagePrice
-      }
-
-      return price
+      return tradingTypeMarket ? averagePrice : price
     },
 
     worstPrice(): BigNumberInBase {
@@ -581,6 +591,22 @@ export default Vue.extend({
   },
 
   methods: {
+    handleOrderTypeChange() {
+      const {
+        form: { quoteAmount }
+      } = this
+
+      this.$nextTick(() => this.$orderInputs.onQuoteAmountChange(quoteAmount))
+    },
+
+    handleTradingTypeChange() {
+      const {
+        form: { quoteAmount }
+      } = this
+
+      this.$nextTick(() => this.$orderInputs.onQuoteAmountChange(quoteAmount))
+    },
+
     updatePriceFromLastTradedPrice() {
       const { lastTradedPrice, market } = this
 
@@ -588,7 +614,10 @@ export default Vue.extend({
         return
       }
 
-      this.form.price = lastTradedPrice.toFixed(market.priceDecimals)
+      this.form.price = lastTradedPrice.toFixed(
+        market.priceDecimals,
+        BigNumberInBase.ROUND_HALF_UP
+      )
     },
 
     onOrderbookNotionalClick({

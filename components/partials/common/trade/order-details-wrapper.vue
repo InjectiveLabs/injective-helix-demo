@@ -181,6 +181,10 @@ export default Vue.extend({
   },
 
   computed: {
+    tradingRewardsCampaign(): TradingRewardsCampaign | undefined {
+      return this.$accessor.exchange.tradingRewardsCampaign
+    },
+
     isSpot(): boolean {
       return this.$route.name === 'spot-spot'
     },
@@ -188,16 +192,13 @@ export default Vue.extend({
     orderDetailsComponent(): string {
       const { tradingTypeMarket, isSpot } = this
 
-      if (isSpot) {
-        return tradingTypeMarket ? 'OrderDetailsMarketSpot' : 'OrderDetailsSpot'
+      if (tradingTypeMarket) {
+        return isSpot
+          ? 'OrderDetailsMarketSpot'
+          : 'OrderDetailsMarketDerivatives'
       }
-      return tradingTypeMarket
-        ? 'OrderDetailsMarketDerivatives'
-        : 'OrderDetailsDerivatives'
-    },
 
-    tradingRewardsCampaign(): TradingRewardsCampaign | undefined {
-      return this.$accessor.exchange.tradingRewardsCampaign
+      return isSpot ? 'OrderDetailsSpot' : 'OrderDetailsDerivatives'
     },
 
     feeReturned(): BigNumberInBase {
@@ -366,7 +367,9 @@ export default Vue.extend({
       }
 
       const boostedMultiplier = cosmosSdkDecToBigNumber(
-        multiplierList ? multiplierList.makerPointsMultiplier : 1
+        multiplierList.makerPointsMultiplier
+          ? multiplierList.makerPointsMultiplier
+          : 1
       )
 
       return new BigNumberInBase(fees).times(boostedMultiplier)
@@ -380,7 +383,9 @@ export default Vue.extend({
       }
 
       const boostedMultiplier = cosmosSdkDecToBigNumber(
-        multiplierList ? multiplierList.takerPointsMultiplier : 1
+        multiplierList.takerPointsMultiplier
+          ? multiplierList.takerPointsMultiplier
+          : 1
       )
 
       return new BigNumberInBase(fees).times(boostedMultiplier)
@@ -391,30 +396,21 @@ export default Vue.extend({
 
       const fees = executionPrice.times(amount).times(feeRate)
 
-      if (!market) {
-        return fees.toFormat(
-          UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-          BigNumberInBase.ROUND_DOWN
-        )
-      }
+      const decimal = market
+        ? market.priceDecimals
+        : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 
-      return fees.toFormat(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
+      return fees.toFormat(decimal, BigNumberInBase.ROUND_DOWN)
     },
 
     executionPriceToFormat(): string {
       const { executionPrice, market } = this
 
-      if (!market) {
-        return executionPrice.toFormat(
-          UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-          BigNumberInBase.ROUND_HALF_UP
-        )
-      }
+      const decimal = market
+        ? market.priceDecimals
+        : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 
-      return executionPrice.toFormat(
-        market.priceDecimals,
-        BigNumberInBase.ROUND_HALF_UP
-      )
+      return executionPrice.toFormat(decimal, BigNumberInBase.ROUND_HALF_UP)
     },
 
     feesToFormat(): string {
@@ -509,11 +505,7 @@ export default Vue.extend({
         slippage
       } = this
 
-      if ((!orderTypeBuy && !quoteAmount.isFinite()) || !market) {
-        return ZERO_IN_BASE
-      }
-
-      if (orderTypeBuy && !amount.isFinite()) {
+      if (!market) {
         return ZERO_IN_BASE
       }
 
@@ -522,18 +514,22 @@ export default Vue.extend({
         : new BigNumberInBase(1).minus(feeRate)
 
       if (orderTypeBuy) {
-        const minimumReceivedBaseAmount = tradingTypeMarket
-          ? quoteAmount.div(executionPrice.times(feeMultiplier).times(slippage))
-          : quoteAmount.div(executionPrice.times(feeMultiplier))
+        const minimumReceivedBaseAmount = quoteAmount.div(
+          executionPrice.times(feeMultiplier)
+        )
 
-        return minimumReceivedBaseAmount
+        return tradingTypeMarket
+          ? minimumReceivedBaseAmount.times(slippage)
+          : minimumReceivedBaseAmount
       }
 
-      const minimumReceivedQuoteAmount = tradingTypeMarket
-        ? amount.times(executionPrice).times(feeMultiplier).times(slippage)
-        : amount.times(executionPrice).times(feeMultiplier)
+      const minimumReceivedQuoteAmount = amount
+        .times(executionPrice)
+        .times(feeMultiplier)
 
-      return minimumReceivedQuoteAmount
+      return tradingTypeMarket
+        ? minimumReceivedQuoteAmount.times(slippage)
+        : minimumReceivedQuoteAmount
     }
   },
 
