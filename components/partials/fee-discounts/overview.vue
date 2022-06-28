@@ -196,6 +196,10 @@ export default Vue.extend({
     volumeToFormat(): string {
       const { volume } = this
 
+      if (volume.eq(ZERO_IN_BASE)) {
+        return '0.00'
+      }
+
       return getAbbreviatedVolume(volume)
     },
 
