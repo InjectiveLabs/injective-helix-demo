@@ -86,7 +86,6 @@
 
 <script lang="ts">
 import {
-  BigNumber,
   BigNumberInBase,
   BigNumberInWei,
   Status,
@@ -191,7 +190,7 @@ export default Vue.extend({
         cosmosSdkDecToBigNumber(feeDiscountAccountInfo.accountInfo.volume)
       )
 
-      return volume.dividedBy(new BigNumber(10).pow(6))
+      return new BigNumberInWei(volume).toBase(6)
     },
 
     volumeToFormat(): string {
