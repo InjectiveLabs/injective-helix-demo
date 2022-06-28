@@ -25,7 +25,6 @@ import Vue from 'vue'
 import TierInfo from './tier-info.vue'
 import StakedAmount from './staked-amount.vue'
 import TradingVolume from './trading-volume.vue'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 import HorizontalScrollView from '~/components/elements/horizontal-scroll-view.vue'
 
@@ -39,9 +38,7 @@ export default Vue.extend({
 
   data() {
     return {
-      status: new Status(StatusType.Loading),
-      slideIndex: 0,
-      UI_DEFAULT_MIN_DISPLAY_DECIMALS
+      status: new Status(StatusType.Loading)
     }
   },
 
