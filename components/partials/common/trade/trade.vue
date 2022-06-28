@@ -69,7 +69,6 @@
     <td class="h-8 text-right font-mono">
       <VNumber
         use-number-decimals
-        dont-group-values
         :number="fee"
         data-cy="trade-history-fee-table-data"
       >
