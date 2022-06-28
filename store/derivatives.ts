@@ -477,6 +477,31 @@ export const actions = actionTree(
       await this.app.$accessor.account.streamSubaccountBalances()
     },
 
+    async getMarketMarkPrice({ commit, state }) {
+      const { market } = state
+
+      if (!market) {
+        return
+      }
+
+      const oraclePrice =
+        market.subType !== MarketType.BinaryOptions
+          ? await exchangeOracleApi.fetchOraclePrice({
+              baseSymbol: (market as UiPerpetualMarketWithToken).oracleBase,
+              quoteSymbol: (market as UiPerpetualMarketWithToken).oracleQuote,
+              oracleType: market.oracleType
+            })
+          : await exchangeOracleApi.fetchOraclePriceNoThrow({
+              baseSymbol: (market as UiBinaryOptionsMarketWithToken)
+                .oracleSymbol,
+              quoteSymbol: (market as UiBinaryOptionsMarketWithToken)
+                .oracleProvider,
+              oracleType: market.oracleType
+            })
+
+      commit('setMarketMarkPrice', oraclePrice.price)
+    },
+
     async pollOrderbook({ commit, state }) {
       const { market } = state
 
