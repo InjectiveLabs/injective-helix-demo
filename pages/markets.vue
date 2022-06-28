@@ -120,6 +120,9 @@ export default Vue.extend({
         ...deprecatedMarketSummaries,
         zeroDerivativeMarketSummary(
           '0x7ba77b6c69c15270bd9235f11a0068f3080017116aa3c57e17c16f49ea13f57f'
+        ) /* TODO remove */,
+        zeroDerivativeMarketSummary(
+          '0x59d526be33d5b00e856903810a5cc7676892f47954267805721614a403862470'
         ) /* TODO remove */
       ]
     },

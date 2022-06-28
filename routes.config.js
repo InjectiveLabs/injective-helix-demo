@@ -1,8 +1,6 @@
-const { Network } = require('@injectivelabs/networks')
 const {
   IS_TESTNET,
   IS_MAINNET_STAGING,
-  NETWORK,
   IS_DEVNET
 } = require('./app/utils/constants')
 
@@ -46,10 +44,11 @@ const perpetuals = IS_TESTNET
 const binaryOptions = ['']
 const expiryFutures = ['']
 
-if (NETWORK === Network.Devnet || IS_MAINNET_STAGING) {
+if (IS_DEVNET || IS_MAINNET_STAGING) {
   // perpetuals.push()
   // spot.push('dot-usdt')
   binaryOptions.push('hhabib-tko-05-30-2023')
+  binaryOptions.push('tik-ok')
 }
 
 const spotRoutes = spot.map((s) => `/spot/${s}`) || []

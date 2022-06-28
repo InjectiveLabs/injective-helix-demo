@@ -435,27 +435,13 @@ export const actions = actionTree(
           market.marketId
         )
 
-      const oraclePrice =
-        market.subType !== MarketType.BinaryOptions
-          ? await exchangeOracleApi.fetchOraclePrice({
-              baseSymbol: (market as UiPerpetualMarketWithToken).oracleBase,
-              quoteSymbol: (market as UiPerpetualMarketWithToken).oracleQuote,
-              oracleType: market.oracleType
-            })
-          : await exchangeOracleApi.fetchOraclePrice({
-              baseSymbol: (market as UiBinaryOptionsMarketWithToken)
-                .oracleSymbol,
-              quoteSymbol: (market as UiBinaryOptionsMarketWithToken)
-                .oracleProvider,
-              oracleType: market.oracleType
-            })
-
       commit('setMarket', market)
       commit('setMarketSummary', {
         ...summary,
         marketId: market.marketId
       })
-      commit('setMarketMarkPrice', oraclePrice.price)
+
+      await this.app.$accessor.derivatives.getMarketMarkPrice()
 
       if (ORDERBOOK_STREAMING_ENABLED) {
         await this.app.$accessor.derivatives.streamOrderbook()
