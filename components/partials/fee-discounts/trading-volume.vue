@@ -25,7 +25,7 @@ import Vue from 'vue'
 import { cosmosSdkDecToBigNumber, FeeDiscountAccountInfo, FeeDiscountSchedule } from '@injectivelabs/sdk-ts'
 import { intervalToDuration } from 'date-fns'
 import { getAbbreviatedVolume } from '~/app/utils/market'
-import { USDT_DECIMAL_PLACE } from '~/app/utils/constants'
+import { USDT_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   computed: {
@@ -52,7 +52,7 @@ export default Vue.extend({
         cosmosSdkDecToBigNumber(feeDiscountAccountInfo.accountInfo.volume)
       )
 
-      return new BigNumberInWei(volume).toBase(USDT_DECIMAL_PLACE)
+      return new BigNumberInWei(volume).toBase(USDT_DECIMALS)
     },
 
     volumeToFormat(): string {

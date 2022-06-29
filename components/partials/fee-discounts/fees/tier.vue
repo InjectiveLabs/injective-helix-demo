@@ -35,7 +35,7 @@ import {
   FeeDiscountTierInfo
 } from '@injectivelabs/sdk-ts'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
-import { USDT_DECIMAL_PLACE } from '~/app/utils/constants'
+import { USDT_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   props: {
@@ -94,7 +94,7 @@ export default Vue.extend({
 
       return new BigNumberInWei(
         cosmosSdkDecToBigNumber(tier.volume)
-      ).toBase(USDT_DECIMAL_PLACE)
+      ).toBase(USDT_DECIMALS)
     },
 
     volumeToFormat(): string {
