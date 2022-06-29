@@ -8,51 +8,10 @@
         {{ $t('markets.title') }}
       </h3>
 
-      <div
-        v-if="markets.length > 0"
-        v-touch:swipe.left="handleSwipeRight"
-        v-touch:swipe.right="handleSwipeLeft"
-        class="md:hidden"
-      >
-        <transition mode="out-in" :name="animation">
-          <MarketCard
-            v-if="newMarket && activeIndex === 1"
-            key="market-card-1"
-            :market="newMarket.market"
-            :summary="newMarket.summary"
-            :volume-in-usd="newMarket.volumeInUsd"
-          >
-            {{ $t('markets.whatsNew') }}
-          </MarketCard>
-
-          <MarketCard
-            v-if="topVolume && activeIndex === 2"
-            key="market-card-2"
-            :market="topVolume.market"
-            :summary="topVolume.summary"
-            :volume-in-usd="topVolume.volumeInUsd"
-          >
-            {{ $t('markets.topVolume') }}
-          </MarketCard>
-
-          <MarketCard
-            v-if="topGainer && activeIndex === 3"
-            key="market-card-3"
-            :market="topGainer.market"
-            :summary="topGainer.summary"
-            :volume-in-usd="topGainer.volumeInUsd"
-          >
-            {{ $t('markets.topGainer') }}
-          </MarketCard>
-        </transition>
-      </div>
-
-      <div
-        v-if="markets.length > 0"
-        class="hidden md:grid grid-cols-2 xl:grid-cols-3 gap-6 mt-6"
-      >
+      <HorizontalScrollView class="mt-6">
         <MarketCard
           v-if="newMarket"
+          class="flex-0-full col-span-6 xl:col-span-4"
           data-cy="market-card-whats-new"
           :market="newMarket.market"
           :summary="newMarket.summary"
@@ -63,6 +22,7 @@
 
         <MarketCard
           v-if="topVolume"
+          class="flex-0-full col-span-6 xl:col-span-4"
           data-cy="market-card-top-volume"
           :market="topVolume.market"
           :summary="topVolume.summary"
@@ -73,6 +33,7 @@
 
         <MarketCard
           v-if="topGainer"
+          class="flex-0-full col-span-6 xl:col-span-4"
           data-cy="market-card-top-gainer"
           :market="topGainer.market"
           :summary="topGainer.summary"
@@ -80,17 +41,7 @@
         >
           {{ $t('markets.topGainer') }}
         </MarketCard>
-      </div>
-
-      <div class="flex justify-center gap-2 mt-6 md:hidden">
-        <MarketDot
-          v-for="dot in dotCount"
-          :key="`market-dot-${dot}`"
-          :index="dot"
-          :active="activeIndex === dot"
-          @click="handleDotClick"
-        />
-      </div>
+      </HorizontalScrollView>
     </div>
   </div>
 </template>
@@ -99,7 +50,7 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import MarketCard from '~/components/partials/markets/market-card.vue'
-import MarketDot from '~/components/partials/markets/market-dot.vue'
+import HorizontalScrollView from '~/components/elements/horizontal-scroll-view.vue'
 import { newMarketsSlug } from '~/app/data/market'
 import { UiMarketAndSummaryWithVolumeInUsd } from '~/types'
 
@@ -114,22 +65,14 @@ const sortMarketsAlphabetically = (
 
 export default Vue.extend({
   components: {
-    MarketCard,
-    MarketDot
+    HorizontalScrollView,
+    MarketCard
   },
 
   props: {
     markets: {
       type: Array as PropType<UiMarketAndSummaryWithVolumeInUsd[]>,
       required: true
-    }
-  },
-
-  data() {
-    return {
-      activeIndex: 1,
-      dotCount: 3,
-      animation: 'fade-right'
     }
   },
 
@@ -206,39 +149,6 @@ export default Vue.extend({
             : market
         }
       )
-    }
-  },
-
-  mounted() {},
-
-  methods: {
-    handleDotClick(index: number) {
-      this.animation = index > this.activeIndex ? 'fade-left' : 'fade-right'
-      this.activeIndex = index
-    },
-
-    handleSwipeRight() {
-      const { activeIndex, dotCount } = this
-
-      if (activeIndex === dotCount) {
-        this.activeIndex = 1
-        this.animation = 'fade-left'
-      } else {
-        this.animation = 'fade-right'
-        this.activeIndex = this.activeIndex + 1
-      }
-    },
-
-    handleSwipeLeft() {
-      const { activeIndex, dotCount } = this
-
-      if (activeIndex === 1) {
-        this.animation = 'fade-right'
-        this.activeIndex = dotCount
-      } else {
-        this.animation = 'fade-left'
-        this.activeIndex = this.activeIndex - 1
-      }
     }
   }
 })
