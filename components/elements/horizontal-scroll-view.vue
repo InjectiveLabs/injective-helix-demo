@@ -9,9 +9,9 @@
     </div>
     <div class="flex gap-2 justify-center mt-4 md:hidden">
       <HorizontalScrollViewIndicator
-        v-for="i in viewCount"
-        :key="`horizontal-scroll-view-indicator-${i}`"
-        :active="viewIndex === i - 1"
+        v-for="index in viewCount"
+        :key="`horizontal-scroll-view-indicator-${index}`"
+        :active="viewIndex === index - 1"
       />
     </div>
   </div>
@@ -35,6 +35,7 @@ export default Vue.extend({
 
   mounted() {
     const viewsElement = this.$refs.views as HTMLElement
+
     if (viewsElement) {
       this.viewCount = viewsElement.children.length
     }

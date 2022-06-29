@@ -30,22 +30,6 @@ export default Vue.extend({
       return this.$accessor.exchange.feeDiscountAccountInfo
     },
 
-    stakedAmount(): BigNumberInBase {
-      const { feeDiscountAccountInfo } = this
-
-      if (!feeDiscountAccountInfo) {
-        return ZERO_IN_BASE
-      }
-
-      if (!feeDiscountAccountInfo.accountInfo) {
-        return ZERO_IN_BASE
-      }
-
-      return new BigNumberInBase(
-        cosmosSdkDecToBigNumber(feeDiscountAccountInfo.accountInfo.stakedAmount)
-      )
-    },
-
     apr(): BigNumberInBase {
       return this.$accessor.params.apr
     },
@@ -54,6 +38,18 @@ export default Vue.extend({
       const { apr } = this
 
       return apr.times(100).toFormat(2)
+    },
+
+    stakedAmount(): BigNumberInBase {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo || !feeDiscountAccountInfo.accountInfo) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(
+        cosmosSdkDecToBigNumber(feeDiscountAccountInfo.accountInfo.stakedAmount)
+      )
     }
   }
 })

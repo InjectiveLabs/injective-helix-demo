@@ -2,15 +2,9 @@
   <HocLoading :status="status">
     <div v-if="isUserWalletConnected">
       <HorizontalScrollView>
-        <div class="flex-0-full md:col-span-6">
-          <TierInfo />
-        </div>
-        <div class="flex-0-full md:col-span-3">
-          <StakedAmount />
-        </div>
-        <div class="flex-0-full md:col-span-3">
-          <TradingVolume />
-        </div>
+        <TierInfo class="flex-0-full md:col-span-6" />
+        <StakedAmount class="flex-0-full md:col-span-3" />
+        <TradingVolume class="flex-0-full md:col-span-3" />
       </HorizontalScrollView>
     </div>
   </HocLoading>
