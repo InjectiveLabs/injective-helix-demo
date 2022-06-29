@@ -2,6 +2,7 @@
   <div
     class="w-2 h-2 rounded-full bg-white"
     :class="{ 'bg-opacity-50': active, 'bg-opacity-10': !active }"
+    @click="$emit('click')"
   />
 </template>
 
