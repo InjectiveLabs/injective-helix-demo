@@ -43,11 +43,11 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.updateChildCount()
-
     window.addEventListener('resize', this.updateChildCount)
 
     this.animate()
+
+    Vue.nextTick(this.updateChildCount)
   },
 
   beforeDestroy() {
