@@ -65,6 +65,7 @@ module.exports = [
   '/market',
   '/register',
   '/trade-and-earn',
+  '/convert',
   ...upcomingMarketsRoutes,
   ...deprecatedMarketsRoutes,
   ...spotRoutes,
