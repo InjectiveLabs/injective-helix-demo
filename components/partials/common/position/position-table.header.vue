@@ -18,7 +18,7 @@
       <th class="text-right">
         <span>{{ $t('trade.entryMark') }}</span>
       </th>
-      <th>
+      <th v-if="!isBinaryOptionsPage">
         <div class="flex items-center justify-end">
           <span>{{ $t('trade.estLiqPrice') }}</span>
           <IconInfoTooltip
@@ -45,7 +45,7 @@
       <th class="text-right">
         <span>{{ $t('trade.margin') }}</span>
       </th>
-      <th class="text-right">
+      <th v-if="!isBinaryOptionsPage" class="text-right">
         <span>{{ $t('trade.leverage') }}</span>
       </th>
       <th></th>
@@ -56,8 +56,10 @@
 <script lang="ts">
 import Vue from 'vue'
 export default Vue.extend({
-  props: {
-    //
+  computed: {
+    isBinaryOptionsPage(): boolean {
+      return this.$route.name === 'binary-options-binaryOption'
+    }
   }
 })
 </script>

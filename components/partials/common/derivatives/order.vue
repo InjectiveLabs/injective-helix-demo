@@ -87,7 +87,7 @@
       />
     </td>
 
-    <td class="h-8 text-right font-mono">
+    <td v-if="!isBinaryOptionsPage" class="h-8 text-right font-mono">
       <span
         v-if="leverage.gte(0)"
         class="flex items-center justify-end"
@@ -189,6 +189,10 @@ export default Vue.extend({
       const { markets, order } = this
 
       return markets.find((m) => m.marketId === order.marketId)
+    },
+
+    isBinaryOptionsPage(): boolean {
+      return this.$route.name === 'binary-options-binaryOption'
     },
 
     isReduceOnly(): boolean {

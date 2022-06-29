@@ -24,7 +24,7 @@ import {
 import { FEE_RECIPIENT } from '~/app/utils/constants'
 import { streamSubaccountPositions } from '~/app/client/streams/derivatives'
 import { getRoundedLiquidationPrice } from '~/app/client/utils/derivatives'
-import { derivatives } from '~/routes.config'
+import { binaryOptions, derivatives } from '~/routes.config'
 import { exchangeDerivativesApi, msgBroadcastClient } from '~/app/Services'
 
 const initialStateFactory = () => ({
@@ -118,11 +118,13 @@ export const actions = actionTree(
 
       const positionWithActiveMarket = positions.filter((p) => {
         const tickerFormattedToSlug = p.ticker
-          .replace('/', '-')
-          .replace(' ', '-')
+          .replaceAll('/', '-')
+          .replaceAll(' ', '-')
           .toLowerCase()
 
-        return derivatives.includes(tickerFormattedToSlug)
+        return [...derivatives, ...binaryOptions].includes(
+          tickerFormattedToSlug
+        )
       })
 
       commit('setSubaccountPositions', positionWithActiveMarket)

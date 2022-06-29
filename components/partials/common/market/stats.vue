@@ -38,7 +38,10 @@
         </span>
       </MarketInfo>
       <MarketInfo
-        v-if="market.type === MarketType.Derivative"
+        v-if="
+          market.type === MarketType.Derivative &&
+          market.subType !== MarketType.BinaryOptions
+        "
         :title="$t('trade.est_funding_rate')"
         :tooltip="$t('trade.funding_rate_tooltip')"
       >
