@@ -79,6 +79,8 @@ import {
   UiSpotMarketWithToken,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
+  UiExpiryFuturesMarketWithToken,
+  UiPerpetualMarketWithToken,
   Change,
   MarketType,
   ZERO_IN_BASE,
@@ -178,7 +180,15 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const derivativeMarket = market as UiDerivativeMarketWithToken
+      if (market.subType === MarketType.BinaryOptions) {
+        return ZERO_IN_BASE
+      }
+
+      if (market.subType === MarketType.Futures) {
+        return ZERO_IN_BASE
+      }
+
+      const derivativeMarket = market as UiPerpetualMarketWithToken
 
       if (
         !derivativeMarket.perpetualMarketFunding ||
@@ -210,7 +220,15 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const derivativeMarket = market as UiDerivativeMarketWithToken
+      if (market.subType === MarketType.BinaryOptions) {
+        return ZERO_IN_BASE
+      }
+
+      if (market.subType === MarketType.Futures) {
+        return ZERO_IN_BASE
+      }
+
+      const derivativeMarket = market as UiPerpetualMarketWithToken
 
       if (
         !derivativeMarket.perpetualMarketFunding ||
@@ -287,8 +305,8 @@ export default Vue.extend({
         return ''
       }
 
-      const expiryFuturesMarketInfo = (market as UiDerivativeMarketWithToken)
-        .expiryFuturesMarketInfo
+      const derivativeMarket = market as UiExpiryFuturesMarketWithToken
+      const expiryFuturesMarketInfo = derivativeMarket.expiryFuturesMarketInfo
 
       if (!expiryFuturesMarketInfo) {
         return ''

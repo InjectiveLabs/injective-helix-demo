@@ -11,22 +11,28 @@ import {
   Change,
   derivativeOrderTypeToGrpcOrderType,
   DerivativesMetrics,
+  MarketType,
+  UiBinaryOptionsMarketWithToken,
   UiDerivativeLimitOrder,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiDerivativeOrderbook,
   UiDerivativeTrade,
   UiDerivativeTransformer,
-  zeroDerivativeMarketSummary,
+  UiExpiryFuturesMarketWithToken,
+  UiPerpetualMarketWithToken,
   ZERO_IN_BASE,
-  ZERO_TO_STRING
+  ZERO_TO_STRING,
+  zeroDerivativeMarketSummary
 } from '@injectivelabs/sdk-ui-ts'
 import {
   DerivativeOrderSide,
   DerivativeOrderState,
+  ExpiryFuturesMarket,
   MsgBatchCancelDerivativeOrders,
   MsgCreateDerivativeLimitOrder,
-  MsgCreateDerivativeMarketOrder
+  MsgCreateDerivativeMarketOrder,
+  PerpetualMarket
 } from '@injectivelabs/sdk-ts'
 import {
   streamOrderbook,
@@ -37,6 +43,7 @@ import {
 } from '~/app/client/streams/derivatives'
 import {
   FEE_RECIPIENT,
+  IS_DEVNET,
   ORDERBOOK_STREAMING_ENABLED
 } from '~/app/utils/constants'
 import {
@@ -46,9 +53,16 @@ import {
   msgBroadcastClient,
   tokenService
 } from '~/app/Services'
-import { derivatives as allowedPerpetualMarkets } from '~/routes.config'
+import {
+  perpetuals as allowedPerpetualMarkets,
+  binaryOptions as allowedBinaryOptionsMarkets,
+  expiryFutures as allowedExpiryFutures
+} from '~/routes.config'
 
 const initialStateFactory = () => ({
+  perpetualMarkets: [] as UiPerpetualMarketWithToken[],
+  expiryFuturesMarkets: [] as UiExpiryFuturesMarketWithToken[],
+  binaryOptionsMarkets: [] as UiBinaryOptionsMarketWithToken[],
   markets: [] as UiDerivativeMarketWithToken[],
   marketsSummary: [] as UiDerivativeMarketSummary[],
   market: undefined as UiDerivativeMarketWithToken | undefined,
@@ -63,6 +77,12 @@ const initialStateFactory = () => ({
 const initialState = initialStateFactory()
 
 export const state = () => ({
+  perpetualMarkets:
+    initialState.perpetualMarkets as UiPerpetualMarketWithToken[],
+  expiryFuturesMarkets:
+    initialState.expiryFuturesMarkets as UiExpiryFuturesMarketWithToken[],
+  binaryOptionsMarkets:
+    initialState.binaryOptionsMarkets as UiBinaryOptionsMarketWithToken[],
   markets: initialState.markets as UiDerivativeMarketWithToken[],
   marketsSummary: initialState.marketsSummary as UiDerivativeMarketSummary[],
   market: initialState.market as UiDerivativeMarketWithToken | undefined,
@@ -140,6 +160,27 @@ export const mutations = {
 
   setMarketMarkPrice(state: DerivativeStoreState, marketMarkPrice: string) {
     state.marketMarkPrice = marketMarkPrice
+  },
+
+  setPerpetualMarkets(
+    state: DerivativeStoreState,
+    markets: UiPerpetualMarketWithToken[]
+  ) {
+    state.perpetualMarkets = markets
+  },
+
+  setExpiryFuturesMarkets(
+    state: DerivativeStoreState,
+    markets: UiExpiryFuturesMarketWithToken[]
+  ) {
+    state.expiryFuturesMarkets = markets
+  },
+
+  setBinaryOptionsMarkets(
+    state: DerivativeStoreState,
+    markets: UiBinaryOptionsMarketWithToken[]
+  ) {
+    state.binaryOptionsMarkets = markets
   },
 
   resetMarket(state: DerivativeStoreState) {
@@ -284,16 +325,39 @@ export const actions = actionTree(
     },
 
     async init({ commit }) {
-      const markets = await exchangeDerivativesApi.fetchMarkets()
+      const markets = (await exchangeDerivativesApi.fetchMarkets()) as Array<
+        PerpetualMarket | ExpiryFuturesMarket
+      >
       const marketsWithToken = await tokenService.getDerivativeMarketsWithToken(
         markets
       )
-      const uiMarkets = marketsWithToken.map(
-        UiDerivativeTransformer.derivativeMarketToUiDerivativeMarket
+
+      const perpetualMarkets = marketsWithToken.filter((m) => m.isPerpetual)
+      const expiryFuturesMarkets = marketsWithToken.filter(
+        (m) => !m.isPerpetual
       )
+      const uiPerpetualMarkets =
+        UiDerivativeTransformer.perpetualMarketsToUiPerpetualMarkets(
+          perpetualMarkets
+        )
+      const uiExpiryFuturesMarkets =
+        UiDerivativeTransformer.expiryFuturesMarketsToUiExpiryFuturesMarkets(
+          expiryFuturesMarkets
+        )
+      const binaryOptionsMarkets = IS_DEVNET
+        ? await exchangeDerivativesApi.fetchBinaryOptionsMarkets()
+        : []
+      const binaryOptionsMarketsWithToken =
+        await tokenService.getBinaryOptionsMarketsWithToken(
+          binaryOptionsMarkets
+        )
+      const uiBinaryOptionsMarkets =
+        UiDerivativeTransformer.binaryOptionsMarketsToUiBinaryOptionsMarkets(
+          binaryOptionsMarketsWithToken
+        )
 
       // Only include markets that we pre-defined to generate static routes for
-      const uiMarketsWithToken = uiMarkets
+      const uiPerpetualMarketsWithToken = uiPerpetualMarkets
         .filter((market) => {
           return allowedPerpetualMarkets.includes(market.slug)
         })
@@ -303,8 +367,35 @@ export const actions = actionTree(
             allowedPerpetualMarkets.indexOf(b.slug)
           )
         })
+      const uiExpiryFuturesWithToken = uiExpiryFuturesMarkets
+        .filter((market) => {
+          return allowedExpiryFutures.includes(market.slug)
+        })
+        .sort((a, b) => {
+          return (
+            allowedExpiryFutures.indexOf(a.slug) -
+            allowedExpiryFutures.indexOf(b.slug)
+          )
+        })
+      const uiBinaryOptionsMarketsWithToken = uiBinaryOptionsMarkets
+        .filter((market) => {
+          return allowedBinaryOptionsMarkets.includes(market.slug)
+        })
+        .sort((a, b) => {
+          return (
+            allowedBinaryOptionsMarkets.indexOf(a.slug) -
+            allowedBinaryOptionsMarkets.indexOf(b.slug)
+          )
+        })
 
-      commit('setMarkets', uiMarketsWithToken)
+      commit('setPerpetualMarkets', uiPerpetualMarketsWithToken)
+      commit('setExpiryFuturesMarkets', uiExpiryFuturesWithToken)
+      commit('setBinaryOptionsMarkets', uiBinaryOptionsMarketsWithToken)
+      commit('setMarkets', [
+        ...uiPerpetualMarketsWithToken,
+        ...uiExpiryFuturesWithToken,
+        ...uiBinaryOptionsMarketsWithToken
+      ])
 
       const marketsSummary =
         await exchangeRestDerivativesChronosApi.fetchMarketsSummary()
@@ -340,11 +431,20 @@ export const actions = actionTree(
         await exchangeRestDerivativesChronosApi.fetchMarketSummary(
           market.marketId
         )
-      const oraclePrice = await exchangeOracleApi.fetchOraclePrice({
-        baseSymbol: market.oracleBase,
-        quoteSymbol: market.oracleQuote,
-        oracleType: market.oracleType
-      })
+      const oraclePrice =
+        market.subType !== MarketType.BinaryOptions
+          ? await exchangeOracleApi.fetchOraclePrice({
+              baseSymbol: (market as UiPerpetualMarketWithToken).oracleBase,
+              quoteSymbol: (market as UiPerpetualMarketWithToken).oracleQuote,
+              oracleType: market.oracleType
+            })
+          : await exchangeOracleApi.fetchOraclePriceNoThrow({
+              baseSymbol: (market as UiBinaryOptionsMarketWithToken)
+                .oracleSymbol,
+              quoteSymbol: (market as UiBinaryOptionsMarketWithToken)
+                .oracleProvider,
+              oracleType: market.oracleType
+            })
 
       commit('setMarket', market)
       commit('setMarketSummary', {

@@ -6,13 +6,14 @@ import {
   derivativePriceToChainPrice
 } from '@injectivelabs/utils'
 import {
-  UiBaseDerivativeMarket,
+  DerivativeOrderSide,
   UiDerivativeMarketWithToken,
-  UiPosition,
+  UiExpiryFuturesMarketWithToken,
   UiOrderbookPriceLevel,
+  UiPerpetualMarketWithToken,
+  UiPosition,
   UiPriceLevel,
-  ZERO_IN_BASE,
-  DerivativeOrderSide
+  ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 
 export const calculateMargin = ({
@@ -116,7 +117,7 @@ export const calculateLiquidationPrice = ({
   quantity: string
   margin: string
   orderType: DerivativeOrderSide
-  market: UiBaseDerivativeMarket
+  market: UiPerpetualMarketWithToken | UiExpiryFuturesMarketWithToken
 }): BigNumberInBase => {
   if (!price || !quantity || !margin) {
     return ZERO_IN_BASE

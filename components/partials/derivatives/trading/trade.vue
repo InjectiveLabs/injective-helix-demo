@@ -223,15 +223,17 @@ import {
 } from '@injectivelabs/ts-types'
 import {
   DerivativeOrderSide,
+  NUMBER_REGEX,
   UiDerivativeLimitOrder,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiDerivativeOrderbook,
+  UiExpiryFuturesMarketWithToken,
+  UiPerpetualMarketWithToken,
   UiPosition,
   UiPriceLevel,
-  NUMBER_REGEX,
-  ZERO_IN_BASE,
-  UiSubaccount
+  UiSubaccount,
+  ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 import {
   cosmosSdkDecToBigNumber,
@@ -737,13 +739,17 @@ export default Vue.extend({
 
       const leverage = new BigNumberInBase(form.leverage)
 
+      const derivativeMarket = market as
+        | UiPerpetualMarketWithToken
+        | UiExpiryFuturesMarketWithToken
+
       const divisor = orderTypeBuy
         ? new BigNumberInBase(marketMarkPrice)
-            .times(market.initialMarginRatio)
+            .times(derivativeMarket.initialMarginRatio)
             .minus(marketMarkPrice)
             .plus(executionPrice)
         : new BigNumberInBase(marketMarkPrice)
-            .times(market.initialMarginRatio)
+            .times(derivativeMarket.initialMarginRatio)
             .plus(marketMarkPrice)
             .minus(executionPrice)
       const maxLeverage = executionPrice.dividedBy(divisor)
@@ -879,14 +885,17 @@ export default Vue.extend({
         }
       }
 
+      const derivativeMarket = market as
+        | UiPerpetualMarketWithToken
+        | UiExpiryFuturesMarketWithToken
       const notional = executionPrice.times(amount)
       const dividend = orderTypeBuy
         ? margin.minus(notional)
         : margin.plus(notional)
       const divisor = amount.times(
         orderTypeBuy
-          ? new BigNumberInBase(market.initialMarginRatio).minus(1)
-          : new BigNumberInBase(1).plus(market.initialMarginRatio)
+          ? new BigNumberInBase(derivativeMarket.initialMarginRatio).minus(1)
+          : new BigNumberInBase(1).plus(derivativeMarket.initialMarginRatio)
       )
       const condition = dividend.div(divisor)
 
@@ -917,9 +926,12 @@ export default Vue.extend({
         return undefined
       }
 
+      const derivativeMarket = market as
+        | UiPerpetualMarketWithToken
+        | UiExpiryFuturesMarketWithToken
       const condition = executionPrice
         .times(amount)
-        .times(market.initialMarginRatio)
+        .times(derivativeMarket.initialMarginRatio)
 
       if (margin.lte(condition)) {
         return {
@@ -1203,8 +1215,13 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
+      const derivativeMarket = market as
+        | UiPerpetualMarketWithToken
+        | UiExpiryFuturesMarketWithToken
       const maxLeverage = new BigNumberInBase(
-        new BigNumberInBase(1).dividedBy(market.initialMarginRatio).dp(0)
+        new BigNumberInBase(1)
+          .dividedBy(derivativeMarket.initialMarginRatio)
+          .dp(0)
       )
 
       const steps = [1, 2, 5, 10, 20, 50, 100, 150, 200]
@@ -1462,8 +1479,12 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
+      const derivativeMarket = market as
+        | UiPerpetualMarketWithToken
+        | UiExpiryFuturesMarketWithToken
+
       return calculateLiquidationPrice({
-        market,
+        market: derivativeMarket,
         orderType,
         margin: margin.toFixed(),
         price: executionPrice.toFixed(),
@@ -1675,8 +1696,14 @@ export default Vue.extend({
     },
 
     submitLimitOrder() {
-      const { orderType, market, marginBaseOnWorstPrice, price, orderTypeReduceOnly, amount } =
-        this
+      const {
+        orderType,
+        market,
+        marginBaseOnWorstPrice,
+        price,
+        orderTypeReduceOnly,
+        amount
+      } = this
 
       if (!market) {
         return
