@@ -95,6 +95,7 @@ export const msgBroadcastClient = new MsgBroadcastClient({
   walletStrategy
 })
 export const web3Client = new Web3Client({
+  // @ts-ignore
   walletStrategy,
   network: NETWORK,
   ethereumChainId: ETHEREUM_CHAIN_ID

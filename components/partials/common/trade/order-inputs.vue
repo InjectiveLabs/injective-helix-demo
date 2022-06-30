@@ -99,7 +99,8 @@
         hasQuoteAmount,
         quoteAvailableBalance,
         baseAvailableBalance,
-        totalWithFees,
+        notionalValueWithFees,
+        notionalWithLeverageAndFees,
         amount: inputBaseAmountToBigNumber,
         hasAmount,
         orderTypeBuy,
@@ -154,7 +155,9 @@ import {
   UiPosition,
   ZERO_IN_BASE,
   SpotOrderSide,
-  DerivativeOrderSide
+  DerivativeOrderSide,
+  UiPerpetualMarketWithToken,
+  UiExpiryFuturesMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import OrderLeverage from '~/components/partials/derivatives/trading/order-leverage.vue'
 import OrderLeverageSelect from '~/components/partials/derivatives/trading/order-leverage-select.vue'
@@ -179,7 +182,9 @@ export default Vue.extend({
   props: {
     market: {
       type: Object as PropType<
-        UiSpotMarketWithToken | UiDerivativeMarketWithToken
+        | UiSpotMarketWithToken
+        | UiPerpetualMarketWithToken
+        | UiExpiryFuturesMarketWithToken
       >,
       required: true
     },
@@ -279,9 +284,14 @@ export default Vue.extend({
       required: true
     },
 
-    totalWithFees: {
+    notionalValueWithFees: {
       type: Object as PropType<BigNumberInBase>,
-      required: true
+      default: undefined
+    },
+
+    notionalWithLeverageAndFees: {
+      type: Object as PropType<BigNumberInBase>,
+      default: undefined
     },
 
     hasAmount: {
@@ -390,7 +400,13 @@ export default Vue.extend({
 
       const maxLeverage = new BigNumberInBase(
         new BigNumberInBase(1)
-          .dividedBy((market as UiDerivativeMarketWithToken).initialMarginRatio)
+          .dividedBy(
+            (
+              market as
+                | UiPerpetualMarketWithToken
+                | UiExpiryFuturesMarketWithToken
+            ).initialMarginRatio
+          )
           .dp(0)
       )
 
@@ -461,31 +477,14 @@ export default Vue.extend({
 
       if (!price) {
         const formattedPrice = newPrice.toFixed(market.priceDecimals)
+
         this.inputPrice = formattedPrice
         this.$emit('update:price', formattedPrice)
       }
     },
 
-    orderType() {
-      const { tradingType, inputPrice, market } = this
-
-      if (tradingType === TradeExecutionType.LimitFill && market) {
-        this.onPriceChange(inputPrice)
-      }
-    },
-
-    tradingType(newTradingType: TradeExecutionType) {
-      const { inputPrice, market } = this
-
-      if (newTradingType === TradeExecutionType.LimitFill && market) {
-        this.onPriceChange(inputPrice)
-      }
-    },
-
-    orderTypeReduceOnly(newReduceOnly: boolean) {
-      if (newReduceOnly) {
-        this.onLeverageChange('1') // set the leverage to 1 if the reduce only is set
-      }
+    price(newPrice: string) {
+      this.inputPrice = newPrice
     }
   },
 
@@ -531,6 +530,7 @@ export default Vue.extend({
 
     onLeverageChange(leverage: string) {
       const { maxLeverageAvailable } = this
+
       const leverageToBigNumber = new BigNumberInBase(leverage)
 
       if (leverageToBigNumber.gte(maxLeverageAvailable)) {
@@ -560,6 +560,10 @@ export default Vue.extend({
       this.inputReduceOnly = reduceOnly
 
       this.$emit('update:reduceOnly', reduceOnly)
+
+      if (reduceOnly) {
+        this.onLeverageChange('1') // set the leverage to 1 if the reduce only is set
+      }
     },
 
     onPriceChange(price: string = '') {
@@ -605,14 +609,14 @@ export default Vue.extend({
 
       this.$emit('update:proportionalPercentage', 0)
 
-      if (!hasPrice && !tradingTypeMarket) {
-        this.updatePriceFromLastTradedPrice()
-      }
-
       if (isSpot) {
         this.updateSpotQuoteAmountFromBase()
       } else {
         this.updateDerivativesQuoteAmountFromBase()
+      }
+
+      if (!hasPrice && !tradingTypeMarket) {
+        this.updatePriceFromLastTradedPrice()
       }
     },
 
@@ -667,7 +671,7 @@ export default Vue.extend({
         executionPrice.times(feeMultiplier)
       )
 
-      if (baseAmount.gt('0')) {
+      if (baseAmount.gt('0') && baseAmount.isFinite()) {
         const formattedBaseAmount = baseAmount.toFixed(
           market.quantityDecimals,
           BigNumberInBase.ROUND_DOWN

@@ -2,10 +2,14 @@
   <div v-if="market" class="px-4 w-full">
     <TradingTypeButtons
       :trading-type.sync="tradingType"
-      @update:trading-type="resetForm"
+      @update:trading-type="handleTradingTypeChange"
     />
 
-    <OrderTypeSelect :order-type.sync="orderType" v-bind="{ market }" />
+    <OrderTypeSelect
+      :order-type.sync="orderType"
+      v-bind="{ market }"
+      @update:order-type="handleOrderTypeChange"
+    />
 
     <OrderInputs
       ref="orderInputs"
@@ -22,9 +26,10 @@
         executionPrice,
         feeRate,
         lastTradedPrice,
-        totalWithFees,
+        notionalWithLeverageAndFees,
         hasAmount,
         slippageTolerance: form.slippageTolerance,
+        showReduceOnly,
         tradingType,
         averagePriceOption,
         notionalWithLeverage,
@@ -46,37 +51,39 @@
       @update-price-from-last-traded-price="updatePriceFromLastTradedPrice"
     />
 
-    <component
-      :is="tradingTypeMarket ? `OrderDetailsMarket` : 'OrderDetails'"
+    <OrderDetailsWrapper
       v-bind="{
-        price: executionPrice,
+        amount,
+        executionPrice,
+        feeRate,
+        fees,
+        market,
+        makerFeeRate,
+        makerFeeRateDiscount,
+        orderType,
+        orderTypeBuy,
+        postOnly: form.postOnly,
+        quoteAmount,
+        slippage,
+        takerFeeRate,
+        takerFeeRateDiscount,
+        notionalWithLeverageToBigNumber,
+        notionalWithLeverageAndFees,
+        tradingTypeMarket,
         notionalValue,
         liquidationPrice,
-        makerFeeRate,
-        takerFeeRate,
-        makerFeeRateDiscount,
-        takerFeeRateDiscount,
         notionalWithLeverage,
-        feeReturned,
-        feeRebates,
-        orderTypeReduceOnly,
-        orderType,
-        fees,
-        total,
-        totalWithFees,
-        amount,
-        detailsDrawerOpen,
-        executionPrice,
-        postOnly: form.postOnly
+        orderTypeReduceOnly
       }"
-      @drawer-toggle="onDetailsDrawerToggle"
     />
 
     <OrderSubmit
       v-bind="{
         executionPrice,
+        hasAmount,
         hasInputErrors,
         hasAdvancedSettingsErrors,
+        hasPrice,
         lastTradedPrice,
         market,
         orderType,
@@ -102,29 +109,24 @@ import {
   DerivativeOrderSide,
   UiDerivativeLimitOrder,
   UiDerivativeMarketSummary,
-  UiDerivativeMarketWithToken,
   UiDerivativeOrderbook,
   UiPosition,
   UiPriceLevel,
   ZERO_IN_BASE,
-  UiSubaccount
+  UiSubaccount,
+  UiPerpetualMarketWithToken,
+  UiExpiryFuturesMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import {
   cosmosSdkDecToBigNumber,
   FeeDiscountAccountInfo
 } from '@injectivelabs/sdk-ts'
-import OrderDetails from './order-details.vue'
-import OrderLeverage from './order-leverage.vue'
-import OrderLeverageSelect from './order-leverage-select.vue'
-import OrderDetailsMarket from './order-details-market.vue'
 import OrderTypeSelect from '~/components/partials/common/trade/order-type-select.vue'
 import OrderSubmit from '~/components/partials/common/trade/order-submit.vue'
 import OrderInputs from '~/components/partials/common/trade/order-inputs.vue'
 import TradingTypeButtons from '~/components/partials/common/trade/trading-type-buttons.vue'
+import OrderDetailsWrapper from '~/components/partials/common/trade/order-details-wrapper.vue'
 import { AveragePriceOptions } from '~/types'
-import AdvancedSettings from '~/components/partials/common/trade/advanced-settings/index.vue'
-import ButtonCheckbox from '~/components/inputs/button-checkbox.vue'
-import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
 import {
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook,
@@ -157,16 +159,10 @@ const initialForm = (): TradeForm => ({
 
 export default Vue.extend({
   components: {
-    VButtonCheckbox: ButtonCheckbox,
-    OrderDetails,
-    OrderLeverage,
-    OrderLeverageSelect,
-    OrderDetailsMarket,
+    OrderDetailsWrapper,
     OrderInputs,
     OrderTypeSelect,
     OrderSubmit,
-    VModalOrderConfirm,
-    AdvancedSettings,
     TradingTypeButtons
   },
 
@@ -186,8 +182,13 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiDerivativeMarketWithToken | undefined {
-      return this.$accessor.derivatives.market
+    market():
+      | UiPerpetualMarketWithToken
+      | UiExpiryFuturesMarketWithToken
+      | undefined {
+      return this.$accessor.derivatives.market as
+        | UiPerpetualMarketWithToken
+        | UiExpiryFuturesMarketWithToken
     },
 
     wallet(): Wallet {
@@ -326,17 +327,25 @@ export default Vue.extend({
     },
 
     amount(): BigNumberInBase {
-      return new BigNumberInBase(this.form.amount)
+      const {
+        form: { amount }
+      } = this
+
+      return amount ? new BigNumberInBase(amount) : ZERO_IN_BASE
     },
 
     quoteAmount(): BigNumberInBase {
-      return new BigNumberInBase(this.form.quoteAmount)
+      const {
+        form: { quoteAmount }
+      } = this
+
+      return quoteAmount ? new BigNumberInBase(quoteAmount) : ZERO_IN_BASE
     },
 
     hasAmount(): boolean {
       const { amount } = this
 
-      return !amount.isNaN() && amount.gt(0)
+      return amount.gt('0')
     },
 
     slippage(): BigNumberInBase {
@@ -452,11 +461,7 @@ export default Vue.extend({
         position.direction === TradeDirection.Short &&
         orderType === DerivativeOrderSide.Sell
 
-      if (longAndBuy || shortAndSell) {
-        return false
-      }
-
-      return true
+      return !(longAndBuy || shortAndSell)
     },
 
     tradingTypeMarket(): boolean {
@@ -533,17 +538,13 @@ export default Vue.extend({
     executionPrice(): BigNumberInBase {
       const { tradingTypeMarket, averagePrice, price } = this
 
-      if (tradingTypeMarket) {
-        return averagePrice
-      }
-
-      return price
+      return tradingTypeMarket ? averagePrice : price
     },
 
     hasPrice(): boolean {
       const { price } = this
 
-      return price.gt(0)
+      return price.gt('0')
     },
 
     orderTypeBuy(): boolean {
@@ -614,31 +615,7 @@ export default Vue.extend({
       return notionalValue.times(feeRate)
     },
 
-    feeReturned(): BigNumberInBase {
-      const { notionalValue, takerFeeRate, makerFeeRate } = this
-
-      if (notionalValue.isNaN()) {
-        return ZERO_IN_BASE
-      }
-
-      return notionalValue.times(
-        new BigNumberInBase(takerFeeRate).minus(makerFeeRate)
-      )
-    },
-
-    feeRebates(): BigNumberInBase {
-      const { total, makerFeeRate, market } = this
-
-      if (total.isNaN() || !market) {
-        return ZERO_IN_BASE
-      }
-
-      return new BigNumberInBase(total.times(makerFeeRate).abs()).times(
-        0.6 /* Only 60% of the fees are getting returned */
-      )
-    },
-
-    total(): BigNumberInBase {
+    notionalWithLeverageToBigNumber(): BigNumberInBase {
       const { hasPrice, hasAmount, notionalWithLeverage, market } = this
 
       if (!hasPrice || !hasAmount || !market) {
@@ -648,14 +625,34 @@ export default Vue.extend({
       return new BigNumberInBase(notionalWithLeverage)
     },
 
-    totalWithFees(): BigNumberInBase {
-      const { fees, total, market } = this
+    feeRebates(): BigNumberInBase {
+      const { notionalWithLeverageToBigNumber, makerFeeRate, market } = this
 
-      if (total.isNaN() || total.lte(0) || !market) {
+      if (
+        !market ||
+        notionalWithLeverageToBigNumber.isNaN() ||
+        makerFeeRate.gte(0)
+      ) {
         return ZERO_IN_BASE
       }
 
-      return fees.plus(total)
+      return new BigNumberInBase(
+        notionalWithLeverageToBigNumber.times(makerFeeRate).abs()
+      ).times(0.6 /* Only 60% of the fees are getting returned */)
+    },
+
+    notionalWithLeverageAndFees(): BigNumberInBase {
+      const { fees, notionalWithLeverageToBigNumber, market } = this
+
+      if (
+        notionalWithLeverageToBigNumber.isNaN() ||
+        notionalWithLeverageToBigNumber.lte(0) ||
+        !market
+      ) {
+        return ZERO_IN_BASE
+      }
+
+      return fees.plus(notionalWithLeverageToBigNumber)
     },
 
     liquidationPrice(): BigNumberInBase {
@@ -698,14 +695,20 @@ export default Vue.extend({
   },
 
   methods: {
-    resetForm() {
-      this.form.amount = ''
-      this.form.quoteAmount = ''
-      this.form.price = ''
-      this.form.quoteAmount = ''
-      this.form.proportionalPercentage = 0
-      this.form.reduceOnly = false
-      this.form.postOnly = false
+    handleOrderTypeChange() {
+      const {
+        form: { quoteAmount }
+      } = this
+
+      this.$nextTick(() => this.$orderInputs.onQuoteAmountChange(quoteAmount))
+    },
+
+    handleTradingTypeChange() {
+      const {
+        form: { quoteAmount }
+      } = this
+
+      this.$nextTick(() => this.$orderInputs.onQuoteAmountChange(quoteAmount))
     },
 
     onDetailsDrawerToggle() {
@@ -717,11 +720,11 @@ export default Vue.extend({
     },
 
     onOrderbookNotionalClick({
-      total,
+      notionalWithLeverageToBigNumber,
       price,
       type
     }: {
-      total: BigNumberInBase
+      notionalWithLeverageToBigNumber: BigNumberInBase
       price: BigNumberInBase
       type: DerivativeOrderSide
     }) {
@@ -737,7 +740,7 @@ export default Vue.extend({
           ? DerivativeOrderSide.Sell
           : DerivativeOrderSide.Buy
 
-      const amount = total
+      const amount = notionalWithLeverageToBigNumber
         .dividedBy(price.times(slippage).toFixed(market.priceDecimals))
         .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
 
@@ -783,7 +786,7 @@ export default Vue.extend({
       this.$accessor.derivatives
         .submitLimitOrder({
           price,
-          notionalWithLeverageBasedOnWorstPrice,
+          margin: notionalWithLeverageBasedOnWorstPrice,
           orderType: orderTypeToSubmit,
           reduceOnly: orderTypeReduceOnly,
           quantity: amount
@@ -817,7 +820,7 @@ export default Vue.extend({
       this.$accessor.derivatives
         .submitMarketOrder({
           orderType,
-          notionalWithLeverageBasedOnWorstPrice,
+          margin: notionalWithLeverageBasedOnWorstPrice,
           reduceOnly: orderTypeReduceOnly,
           price: worstPrice,
           quantity: amount

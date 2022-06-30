@@ -83,7 +83,9 @@ import {
   MarketType,
   ZERO_IN_BASE,
   BIG_NUMBER_ROUND_DOWN_MODE,
-  SpotOrderSide
+  SpotOrderSide,
+  UiPerpetualMarketWithToken,
+  UiExpiryFuturesMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import MarketNextFunding from './next-funding.vue'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
@@ -178,7 +180,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const derivativeMarket = market as UiDerivativeMarketWithToken
+      const derivativeMarket = market as UiPerpetualMarketWithToken
 
       if (
         !derivativeMarket.perpetualMarketFunding ||
@@ -210,7 +212,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const derivativeMarket = market as UiDerivativeMarketWithToken
+      const derivativeMarket = market as UiPerpetualMarketWithToken
 
       if (
         !derivativeMarket.perpetualMarketFunding ||
@@ -287,7 +289,7 @@ export default Vue.extend({
         return ''
       }
 
-      const expiryFuturesMarketInfo = (market as UiDerivativeMarketWithToken)
+      const expiryFuturesMarketInfo = (market as UiExpiryFuturesMarketWithToken)
         .expiryFuturesMarketInfo
 
       if (!expiryFuturesMarketInfo) {

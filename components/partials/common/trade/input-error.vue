@@ -19,15 +19,15 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { TradeError } from 'types/errors'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
-  UiDerivativeMarketWithToken,
   UiSpotMarketWithToken,
   UiPriceLevel,
   ZERO_IN_BASE,
-  NUMBER_REGEX
+  UiPerpetualMarketWithToken,
+  UiExpiryFuturesMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
+import { TradeError } from '~/types'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
 import {
   DEFAULT_MAX_PRICE_BAND_DIFFERENCE,
@@ -38,13 +38,15 @@ import {
 export default Vue.extend({
   props: {
     quoteAvailableBalance: {
-      type: Object as PropType<BigNumberInBase> | undefined,
-      default: undefined
+      type: Object as PropType<BigNumberInBase>,
+      default: () => ZERO_IN_BASE
     },
 
     market: {
       type: Object as PropType<
-        UiDerivativeMarketWithToken | UiSpotMarketWithToken
+        | UiSpotMarketWithToken
+        | UiPerpetualMarketWithToken
+        | UiExpiryFuturesMarketWithToken
       >,
       required: true
     },
@@ -59,14 +61,9 @@ export default Vue.extend({
       required: true
     },
 
-    notionalWithLeverage: {
-      type: Object as PropType<BigNumberInBase> | undefined,
-      default: undefined
-    },
-
     maxReduceOnly: {
-      type: Object as PropType<BigNumberInBase> | undefined,
-      default: undefined
+      type: Object as PropType<BigNumberInBase>,
+      default: () => ZERO_IN_BASE
     },
 
     quoteAmount: {
@@ -80,13 +77,23 @@ export default Vue.extend({
     },
 
     baseAvailableBalance: {
-      type: Object as PropType<BigNumberInBase> | undefined,
-      default: undefined
+      type: Object as PropType<BigNumberInBase>,
+      default: () => ZERO_IN_BASE
     },
 
-    totalWithFees: {
+    notionalValueWithFees: {
       type: Object as PropType<BigNumberInBase>,
-      required: true
+      default: () => ZERO_IN_BASE
+    },
+
+    notionalWithLeverage: {
+      type: Object as PropType<BigNumberInBase>,
+      default: () => ZERO_IN_BASE
+    },
+
+    notionalWithLeverageAndFees: {
+      type: Object as PropType<BigNumberInBase>,
+      default: () => ZERO_IN_BASE
     },
 
     amount: {
@@ -162,12 +169,8 @@ export default Vue.extend({
         return this.amountTooBigToFillError
       }
 
-      if (this.notEnoughOrdersToFillFromError) {
-        return this.notEnoughOrdersToFillFromError
-      }
-
-      if (this.amountNotValidNumberError) {
-        return this.amountNotValidNumberError
+      if (this.emptyOrderbookWithAmountInput) {
+        return this.emptyOrderbookWithAmountInput
       }
 
       if (this.maxLeverageError) {
@@ -184,10 +187,6 @@ export default Vue.extend({
 
       if (this.reduceOnlyExcessError) {
         return this.reduceOnlyExcessError
-      }
-
-      if (this.priceNotValidError) {
-        return this.priceNotValidError
       }
 
       if (this.priceHighDeviationFromMidOrderbookPrice) {
@@ -256,26 +255,27 @@ export default Vue.extend({
       return undefined
     },
 
-    priceError(): string | null {
+    priceError(): string | undefined {
       const { price } = this.errors
 
-      return price || null
+      return price
     },
 
-    amountError(): string | null {
+    amountError(): string | undefined {
       const { amount } = this.errors
 
-      return amount || null
+      return amount
     },
 
     availableBalanceError(): TradeError | undefined {
       const {
         quoteAvailableBalance,
         baseAvailableBalance,
-        totalWithFees,
+        notionalValueWithFees,
         amount,
         hasAmount,
-        orderTypeBuy
+        orderTypeBuy,
+        isSpot
       } = this
 
       if (!hasAmount) {
@@ -283,7 +283,7 @@ export default Vue.extend({
       }
 
       if (orderTypeBuy) {
-        if (quoteAvailableBalance.lt(totalWithFees)) {
+        if (quoteAvailableBalance.lt(notionalValueWithFees)) {
           return {
             price: this.$t('trade.not_enough_balance')
           }
@@ -292,7 +292,7 @@ export default Vue.extend({
         return undefined
       }
 
-      if (baseAvailableBalance && baseAvailableBalance.lt(amount)) {
+      if (isSpot && baseAvailableBalance.lt(amount)) {
         return {
           amount: this.$t('trade.not_enough_balance')
         }
@@ -302,13 +302,17 @@ export default Vue.extend({
     },
 
     availableMarginError(): TradeError | undefined {
-      const { quoteAvailableBalance, orderTypeReduceOnly, totalWithFees } = this
+      const {
+        quoteAvailableBalance,
+        orderTypeReduceOnly,
+        notionalWithLeverageAndFees
+      } = this
 
       if (orderTypeReduceOnly) {
         return undefined
       }
 
-      if (quoteAvailableBalance.lt(totalWithFees)) {
+      if (quoteAvailableBalance.lt(notionalWithLeverageAndFees)) {
         return {
           amount: this.$t('trade.not_enough_balance')
         }
@@ -317,7 +321,7 @@ export default Vue.extend({
       return undefined
     },
 
-    notEnoughOrdersToFillFromError(): TradeError | undefined {
+    emptyOrderbookWithAmountInput(): TradeError | undefined {
       const {
         tradingTypeMarket,
         orderTypeBuy,
@@ -365,7 +369,13 @@ export default Vue.extend({
 
       const notionalValueWithMarginRatio = executionPrice
         .times(amount)
-        .times((market as UiDerivativeMarketWithToken).initialMarginRatio)
+        .times(
+          (
+            market as
+              | UiPerpetualMarketWithToken
+              | UiExpiryFuturesMarketWithToken
+          ).initialMarginRatio
+        )
 
       if (notionalWithLeverage.lte(notionalValueWithMarginRatio)) {
         return {
@@ -411,42 +421,6 @@ export default Vue.extend({
       return undefined
     },
 
-    priceNotValidError(): TradeError | undefined {
-      const { executionPrice } = this
-
-      const priceToString = executionPrice.toFixed()
-
-      if (priceToString) {
-        return undefined
-      }
-
-      if (NUMBER_REGEX.test(priceToString)) {
-        return undefined
-      }
-
-      return {
-        price: this.$t('trade.not_valid_number')
-      }
-    },
-
-    amountNotValidNumberError(): TradeError | undefined {
-      const { amount } = this
-
-      const amountToString = amount.toFixed()
-
-      if (!Number(amountToString)) {
-        return undefined
-      }
-
-      if (NUMBER_REGEX.test(amountToString)) {
-        return undefined
-      }
-
-      return {
-        amount: this.$t('trade.not_valid_number')
-      }
-    },
-
     maxLeverageError(): TradeError | undefined {
       const {
         executionPrice,
@@ -465,7 +439,8 @@ export default Vue.extend({
       const leverageToBigNumber = new BigNumberInBase(leverage)
 
       const priceWithMarginRatio = new BigNumberInBase(marketMarkPrice).times(
-        (market as UiDerivativeMarketWithToken).initialMarginRatio
+        (market as UiPerpetualMarketWithToken | UiExpiryFuturesMarketWithToken)
+          .initialMarginRatio
       )
 
       const priceBasedOnOrderType = orderTypeBuy
@@ -500,13 +475,20 @@ export default Vue.extend({
         isSpot
       } = this
 
-      if (isSpot || !marketMarkPrice || !market || !hasPrice || !hasAmount) {
+      if (
+        isSpot ||
+        !marketMarkPrice ||
+        !market ||
+        !hasPrice ||
+        !hasAmount ||
+        excludedPriceDeviationSlugs.includes(market.ticker)
+      ) {
         return undefined
       }
 
-      if (excludedPriceDeviationSlugs.includes(market.ticker)) {
-        return undefined
-      }
+      const marketWithType = market as
+        | UiPerpetualMarketWithToken
+        | UiExpiryFuturesMarketWithToken
 
       const markPrice = new BigNumberInBase(marketMarkPrice)
 
@@ -522,12 +504,8 @@ export default Vue.extend({
         : notionalWithLeverage.plus(notional)
       const amountWithInitialMarginRatio = amount.times(
         orderTypeBuy
-          ? new BigNumberInBase(
-              (market as UiDerivativeMarketWithToken).initialMarginRatio
-            ).minus(1)
-          : new BigNumberInBase(1).plus(
-              (market as UiDerivativeMarketWithToken).initialMarginRatio
-            )
+          ? new BigNumberInBase(marketWithType.initialMarginRatio).minus(1)
+          : new BigNumberInBase(1).plus(marketWithType.initialMarginRatio)
       )
       const priceBasedOnNotionalAndMarginRatio = notionalBasedOnOrderType.div(
         amountWithInitialMarginRatio
@@ -568,35 +546,9 @@ export default Vue.extend({
     },
 
     hasErrors(): boolean {
-      const {
-        priceError,
-        amountError,
-        tradingTypeMarket,
-        hasAmount,
-        hasPrice,
-        executionPrice,
-        amount
-      } = this
+      const { priceError, amountError } = this
 
-      if (priceError || amountError || !hasAmount) {
-        return true
-      }
-
-      if (amount.lte(0)) {
-        return true
-      }
-
-      if (!tradingTypeMarket) {
-        if (executionPrice.lte(0) || !hasPrice) {
-          return true
-        }
-      }
-
-      if (!tradingTypeMarket && hasPrice && executionPrice.lte(0)) {
-        return true
-      }
-
-      return false
+      return !!(priceError || amountError)
     }
   },
 

@@ -57,7 +57,7 @@ export default Vue.extend({
 
   methods: {
     handleOrderTypeChange(orderType: SpotOrderSide) {
-      this.$emit('update:orderType', orderType)
+      this.$emit('update:order-type', orderType)
     }
   }
 })

@@ -22,7 +22,10 @@ import Vue from 'vue'
 // @ts-ignore
 import VCountdown from '@chenfengyuan/vue-countdown'
 import moment from 'moment'
-import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import {
+  UiPerpetualMarketWithToken,
+  UiExpiryFuturesMarketWithToken
+} from '@injectivelabs/sdk-ui-ts'
 import MarketInfo from '~/components/elements/market-info.vue'
 
 export default Vue.extend({
@@ -39,8 +42,13 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiDerivativeMarketWithToken | undefined {
-      return this.$accessor.derivatives.market
+    market():
+      | UiPerpetualMarketWithToken
+      | UiExpiryFuturesMarketWithToken
+      | undefined {
+      return this.$accessor.derivatives.market as
+        | UiPerpetualMarketWithToken
+        | UiExpiryFuturesMarketWithToken
     },
 
     perpetualMarket(): boolean {

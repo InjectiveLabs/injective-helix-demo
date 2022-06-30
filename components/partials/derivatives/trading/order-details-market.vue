@@ -14,7 +14,7 @@
           />
           <span class="font-mono flex items-start break-all">
             <span class="mr-1">≈</span>
-            {{ totalWithFeesToFormat }}
+            {{ notionalWithLeverageAndFeesToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
             </span>
@@ -47,10 +47,10 @@
 
         <TextInfo :title="$t('trade.averagePrice')" class="mt-2">
           <span
-            v-if="!price.isNaN()"
+            v-if="!executionPrice.isNaN()"
             class="font-mono flex items-start break-all"
           >
-            {{ priceToFormat }}
+            {{ executionPriceToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
             </span>
@@ -125,7 +125,7 @@
         </TextInfo>
 
         <!-- <TextInfo
-          v-if="takerExpectedPts.gte(0)"
+          v-if="expectedPts.gte(0)"
           :title="$t('trade.expected_points')"
           class="mt-2"
         >
@@ -135,7 +135,7 @@
             :tooltip="$t('trade.expected_points_note')"
           />
           <span class="font-mono flex items-start break-all">
-            {{ `${takerExpectedPtsToFormat}` }}
+            {{ `${expectedPtsToFormat}` }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ $t('pts') }}
             </span>
@@ -149,20 +149,9 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  UiDerivativeMarketWithToken,
-  ZERO_IN_BASE
-} from '@injectivelabs/sdk-ui-ts'
-import {
-  DerivativeOrderSide,
-  cosmosSdkDecToBigNumber
-} from '@injectivelabs/sdk-ts'
+import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import Drawer from '~/components/elements/drawer.vue'
-import {
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-} from '~/app/utils/constants'
-import { getDecimalsFromNumber } from '~/app/utils/helpers'
+import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 
 export default Vue.extend({
@@ -171,89 +160,99 @@ export default Vue.extend({
   },
 
   props: {
-    orderType: {
-      required: true,
-      type: String as PropType<DerivativeOrderSide>
-    },
-
-    total: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
-    },
-
-    totalWithFees: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+    notionalWithLeverageAndFees: {
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     },
 
     liquidationPrice: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     },
 
     takerFeeRateDiscount: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     },
 
     makerFeeRateDiscount: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     },
 
     takerFeeRate: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     },
 
     makerFeeRate: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+      type: Object as PropType<BigNumberInBase>,
+      required: true
+    },
+
+    takerFeeRateToFormat: {
+      type: String,
+      required: true
     },
 
     notionalWithLeverage: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     },
 
     fees: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+      type: Object as PropType<BigNumberInBase>,
+      required: true
+    },
+
+    makerExpectedPts: {
+      type: Object as PropType<BigNumberInBase>,
+      required: true
+    },
+
+    takerExpectedPts: {
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     },
 
     feeReturned: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+      type: Object as PropType<BigNumberInBase>,
+      required: true
+    },
+
+    feesToFormat: {
+      type: String,
+      required: true
     },
 
     notionalValue: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
-    },
-
-    price: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     },
 
     executionPrice: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+      type: Object as PropType<BigNumberInBase>,
+      required: true
+    },
+
+    executionPriceToFormat: {
+      type: String,
+      required: true
     },
 
     amount: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     },
 
     orderTypeReduceOnly: {
-      required: true,
-      type: Boolean
+      type: Boolean,
+      required: true
     },
 
     detailsDrawerOpen: {
-      required: true,
-      type: Boolean
+      type: Boolean,
+      required: true
     }
   },
 
@@ -276,223 +275,43 @@ export default Vue.extend({
       return new BigNumberInBase(market.makerFeeRate).lt(0)
     },
 
-    makerExpectedPts(): BigNumberInBase {
-      const { market, makerFeeRate, tradingRewardsCampaign, fees } = this
+    notionalWithLeverageAndFeesToFormat(): string {
+      const { notionalWithLeverageAndFees, market } = this
 
-      if (!market) {
-        return ZERO_IN_BASE
-      }
+      const decimals = market
+        ? market.priceDecimals
+        : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 
-      if (makerFeeRate.lte(0)) {
-        return ZERO_IN_BASE
-      }
-
-      if (
-        !tradingRewardsCampaign ||
-        !tradingRewardsCampaign.tradingRewardCampaignInfo ||
-        !tradingRewardsCampaign.tradingRewardCampaignInfo
-          .disqualifiedMarketIdsList
-      ) {
-        return ZERO_IN_BASE
-      }
-
-      const disqualified =
-        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-          (marketId) => marketId === market.marketId
-        )
-
-      if (disqualified) {
-        return ZERO_IN_BASE
-      }
-
-      const denomIncluded =
-        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-          (denom) => denom === market.quoteDenom
-        )
-
-      if (!denomIncluded) {
-        return ZERO_IN_BASE
-      }
-
-      const boostedList = tradingRewardsCampaign.tradingRewardCampaignInfo
-        .tradingRewardBoostInfo
-        ? tradingRewardsCampaign.tradingRewardCampaignInfo
-            .tradingRewardBoostInfo.boostedDerivativeMarketIdsList
-        : []
-      const multipliersList = tradingRewardsCampaign.tradingRewardCampaignInfo
-        .tradingRewardBoostInfo
-        ? tradingRewardsCampaign.tradingRewardCampaignInfo
-            .tradingRewardBoostInfo.derivativeMarketMultipliersList
-        : []
-
-      const boosted = boostedList.findIndex(
-        (derivativeMarketId) => derivativeMarketId === market.marketId
+      return notionalWithLeverageAndFees.toFormat(
+        decimals,
+        BigNumberInBase.ROUND_DOWN
       )
-
-      const boostedMultiplier =
-        boosted >= 0
-          ? cosmosSdkDecToBigNumber(
-              multipliersList[boosted]
-                ? multipliersList[boosted].makerPointsMultiplier
-                : 1
-            )
-          : 1
-
-      return new BigNumberInBase(fees).times(boostedMultiplier)
-    },
-
-    takerExpectedPts(): BigNumberInBase {
-      const { market, tradingRewardsCampaign, fees } = this
-
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      if (
-        !tradingRewardsCampaign ||
-        !tradingRewardsCampaign.tradingRewardCampaignInfo ||
-        !tradingRewardsCampaign.tradingRewardCampaignInfo
-          .disqualifiedMarketIdsList
-      ) {
-        return ZERO_IN_BASE
-      }
-
-      const disqualified =
-        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-          (marketId) => marketId === market.marketId
-        )
-
-      if (disqualified) {
-        return ZERO_IN_BASE
-      }
-
-      const denomIncluded =
-        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-          (denom) => denom === market.quoteDenom
-        )
-
-      if (!denomIncluded) {
-        return ZERO_IN_BASE
-      }
-
-      const boostedList = tradingRewardsCampaign.tradingRewardCampaignInfo
-        .tradingRewardBoostInfo
-        ? tradingRewardsCampaign.tradingRewardCampaignInfo
-            .tradingRewardBoostInfo.boostedDerivativeMarketIdsList
-        : []
-      const multipliersList = tradingRewardsCampaign.tradingRewardCampaignInfo
-        .tradingRewardBoostInfo
-        ? tradingRewardsCampaign.tradingRewardCampaignInfo
-            .tradingRewardBoostInfo.derivativeMarketMultipliersList
-        : []
-
-      const boosted = boostedList.findIndex(
-        (derivativeMarketId) => derivativeMarketId === market.marketId
-      )
-      const boostedMultiplier =
-        boosted >= 0
-          ? cosmosSdkDecToBigNumber(
-              multipliersList[boosted]
-                ? multipliersList[boosted].takerPointsMultiplier
-                : 1
-            )
-          : 1
-
-      return new BigNumberInBase(fees).times(boostedMultiplier)
-    },
-
-    totalWithFeesToFormat(): string {
-      const { totalWithFees, market } = this
-
-      if (!market) {
-        return totalWithFees.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return totalWithFees.toFormat(market.priceDecimals)
     },
 
     liquidationPriceToFormat(): string {
       const { liquidationPrice, market } = this
 
-      if (!market) {
-        return liquidationPrice.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
+      const decimals = market
+        ? market.priceDecimals
+        : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 
-      return liquidationPrice.toFormat(market.priceDecimals)
+      return liquidationPrice.toFormat(decimals, BigNumberInBase.ROUND_HALF_UP)
     },
 
     notionalWithLeverageToFormat(): string {
       const { notionalWithLeverage, market } = this
 
-      if (!market) {
-        return notionalWithLeverage.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
+      const decimals = market
+        ? market.priceDecimals
+        : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 
-      return notionalWithLeverage.toFormat(market.priceDecimals)
-    },
-
-    feesToFormat(): string {
-      const { fees } = this
-
-      return fees.toFormat(getDecimalsFromNumber(fees.toNumber()))
-    },
-
-    makerFeeRateToFormat(): string {
-      const { makerFeeRate } = this
-
-      const number = makerFeeRate.times(100)
-
-      return number.toFormat(getDecimalsFromNumber(number.toNumber()))
-    },
-
-    takerFeeRateToFormat(): string {
-      const { takerFeeRate } = this
-
-      const number = takerFeeRate.times(100)
-
-      return number.toFormat(getDecimalsFromNumber(number.toNumber()))
-    },
-
-    makerExpectedPtsToFormat(): string {
-      const { makerExpectedPts } = this
-
-      return makerExpectedPts.toFormat(
-        getDecimalsFromNumber(makerExpectedPts.toNumber())
-      )
-    },
-
-    takerExpectedPtsToFormat(): string {
-      const { takerExpectedPts } = this
-
-      return takerExpectedPts.toFormat(
-        getDecimalsFromNumber(takerExpectedPts.toNumber())
-      )
-    },
-
-    priceToFormat(): string {
-      const { executionPrice, market } = this
-
-      if (!market) {
-        return executionPrice.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
-      }
-
-      return executionPrice.toFormat(market.quantityDecimals)
-    },
-
-    amountToFormat(): string {
-      const { amount, market } = this
-
-      if (!market) {
-        return amount.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
-      }
-
-      return amount.toFormat(market.quantityDecimals)
+      return notionalWithLeverage.toFormat(decimals, BigNumberInBase.ROUND_DOWN)
     }
   },
 
   methods: {
     onDrawerToggle() {
-      this.$emit('drawer-toggle')
+      this.$emit('@set:drawer-toggle')
     }
   }
 })
