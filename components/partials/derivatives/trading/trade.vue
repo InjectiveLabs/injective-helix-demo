@@ -1236,6 +1236,22 @@ export default Vue.extend({
       )
     },
 
+    marginBaseOnWorstPrice(): BigNumberInBase {
+      const { worstPrice, hasPrice, hasAmount, form, market } = this
+
+      if (!hasPrice || !hasAmount || !market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(
+        calculateMargin({
+          quantity: form.amount,
+          price: worstPrice.toFixed(),
+          leverage: form.leverage
+        }).toFixed(market.priceDecimals)
+      )
+    },
+
     notionalValue(): BigNumberInBase {
       const { executionPrice, amount, market } = this
 
@@ -1659,7 +1675,7 @@ export default Vue.extend({
     },
 
     submitLimitOrder() {
-      const { orderType, market, margin, price, orderTypeReduceOnly, amount } =
+      const { orderType, market, marginBaseOnWorstPrice, price, orderTypeReduceOnly, amount } =
         this
 
       if (!market) {
@@ -1671,7 +1687,7 @@ export default Vue.extend({
       this.$accessor.derivatives
         .submitLimitOrder({
           price,
-          margin,
+          margin: marginBaseOnWorstPrice,
           orderType,
           reduceOnly: orderTypeReduceOnly,
           quantity: amount
@@ -1691,7 +1707,7 @@ export default Vue.extend({
         orderType,
         orderTypeReduceOnly,
         market,
-        margin,
+        marginBaseOnWorstPrice,
         worstPrice,
         amount
       } = this
@@ -1705,7 +1721,7 @@ export default Vue.extend({
       this.$accessor.derivatives
         .submitMarketOrder({
           orderType,
-          margin,
+          margin: marginBaseOnWorstPrice,
           reduceOnly: orderTypeReduceOnly,
           price: worstPrice,
           quantity: amount
