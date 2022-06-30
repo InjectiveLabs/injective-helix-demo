@@ -287,7 +287,7 @@ export const calculateAverageExecutionPriceFromFillableNotionalOnOrderBook = ({
 
 export const getDerivativesBaseAmountForPercentage = ({
   records,
-  notionalWithLeverage,
+  quoteAvailableBalance,
   market,
   leverage = '1',
   percentageToNumber = 1,
@@ -295,14 +295,14 @@ export const getDerivativesBaseAmountForPercentage = ({
   executionPrice
 }: {
   records: UiPriceLevel[]
-  notionalWithLeverage: BigNumberInBase
+  quoteAvailableBalance: BigNumberInBase
   percentageToNumber?: number
   leverage: string
   market: UiDerivativeMarketWithToken
   feeRate: BigNumberInBase
   executionPrice: BigNumberInBase
 }) => {
-  const availableMargin = new BigNumberInBase(notionalWithLeverage).times(
+  const availableMargin = new BigNumberInBase(quoteAvailableBalance).times(
     percentageToNumber
   )
 

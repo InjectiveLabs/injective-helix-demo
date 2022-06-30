@@ -620,11 +620,11 @@ export default Vue.extend({
     },
 
     onOrderbookNotionalClick({
-      notionalValue,
+      total,
       price,
       type
     }: {
-      notionalValue: BigNumberInBase
+      total: BigNumberInBase
       price: BigNumberInBase
       type: SpotOrderSide
     }) {
@@ -638,7 +638,7 @@ export default Vue.extend({
       this.orderType =
         type === SpotOrderSide.Buy ? SpotOrderSide.Sell : SpotOrderSide.Buy
 
-      const amount = notionalValue
+      const amount = total
         .dividedBy(price.times(slippage).toFixed(market.priceDecimals))
         .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
 

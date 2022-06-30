@@ -33,10 +33,12 @@
         tradingType,
         averagePriceOption,
         notionalWithLeverage,
+        notionalWithLeverageBasedOnWorstPrice,
         position,
         orderTypeReduceOnly,
         quoteAvailableBalance,
-        showReduceOnly
+        showReduceOnly,
+        worstPrice
       }"
       :average-price-option.sync="averagePriceOption"
       :amount.sync="form.amount"
@@ -508,7 +510,6 @@ export default Vue.extend({
       if (!market) {
         return ZERO_IN_BASE
       }
-
       const records = orderTypeBuy ? sells : buys
 
       const quoteAmountForAveragePrice =
@@ -527,14 +528,28 @@ export default Vue.extend({
     averagePrice(): BigNumberInBase {
       const {
         averagePriceDerivedFromBaseAmount,
-        averagePriceDerivedFromQuoteAmount
+        averagePriceDerivedFromQuoteAmount,
+        averagePriceOption,
+        orderTypeBuy
       } = this
 
-      if (averagePriceDerivedFromBaseAmount.gt(0)) {
+      if (averagePriceOption === AveragePriceOptions.BaseAmount) {
         return averagePriceDerivedFromBaseAmount
       }
 
-      return averagePriceDerivedFromQuoteAmount
+      if (averagePriceOption === AveragePriceOptions.QuoteAmount) {
+        return averagePriceDerivedFromQuoteAmount
+      }
+
+      if (averagePriceOption === AveragePriceOptions.Percentage) {
+        if (orderTypeBuy) {
+          return averagePriceDerivedFromQuoteAmount
+        }
+
+        return averagePriceDerivedFromBaseAmount
+      }
+
+      return ZERO_IN_BASE
     },
 
     executionPrice(): BigNumberInBase {
@@ -722,11 +737,11 @@ export default Vue.extend({
     },
 
     onOrderbookNotionalClick({
-      notionalWithLeverageToBigNumber,
+      total,
       price,
       type
     }: {
-      notionalWithLeverageToBigNumber: BigNumberInBase
+      total: BigNumberInBase
       price: BigNumberInBase
       type: DerivativeOrderSide
     }) {
@@ -742,7 +757,7 @@ export default Vue.extend({
           ? DerivativeOrderSide.Sell
           : DerivativeOrderSide.Buy
 
-      const amount = notionalWithLeverageToBigNumber
+      const amount = total
         .dividedBy(price.times(slippage).toFixed(market.priceDecimals))
         .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
 

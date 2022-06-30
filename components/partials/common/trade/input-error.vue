@@ -73,6 +73,11 @@ export default Vue.extend({
       required: true
     },
 
+    worstPrice: {
+      type: Object as PropType<BigNumberInBase>,
+      default: undefined
+    },
+
     lastTradedPrice: {
       type: Object as PropType<BigNumberInBase>,
       required: true
@@ -114,6 +119,11 @@ export default Vue.extend({
     },
 
     notionalWithLeverage: {
+      type: Object as PropType<BigNumberInBase>,
+      default: () => ZERO_IN_BASE
+    },
+
+    notionalWithLeverageBasedOnWorstPrice: {
       type: Object as PropType<BigNumberInBase>,
       default: () => ZERO_IN_BASE
     },
@@ -500,10 +510,10 @@ export default Vue.extend({
         market,
         marketMarkPrice,
         orderTypeBuy,
-        notionalWithLeverage,
+        notionalWithLeverageBasedOnWorstPrice,
         hasPrice,
         hasAmount,
-        executionPrice,
+        worstPrice,
         amount,
         isSpot
       } = this
@@ -514,6 +524,7 @@ export default Vue.extend({
         !market ||
         !hasPrice ||
         !hasAmount ||
+        !worstPrice ||
         excludedPriceDeviationSlugs.includes(market.ticker)
       ) {
         return undefined
@@ -531,10 +542,10 @@ export default Vue.extend({
         }
       }
 
-      const notional = executionPrice.times(amount)
+      const notional = worstPrice.times(amount)
       const notionalBasedOnOrderType = orderTypeBuy
-        ? notionalWithLeverage.minus(notional)
-        : notionalWithLeverage.plus(notional)
+        ? notionalWithLeverageBasedOnWorstPrice.minus(notional)
+        : notionalWithLeverageBasedOnWorstPrice.plus(notional)
       const amountWithInitialMarginRatio = amount.times(
         orderTypeBuy
           ? new BigNumberInBase(marketWithType.initialMarginRatio).minus(1)
@@ -544,13 +555,15 @@ export default Vue.extend({
         amountWithInitialMarginRatio
       )
 
-      if (orderTypeBuy && markPrice.lt(priceBasedOnNotionalAndMarginRatio)) {
-        return {
-          amount: this.$t('trade.order_insufficient_margin')
-        }
-      }
+      const isBuyAndMarkPriceLessThanPrice =
+        orderTypeBuy && markPrice.lt(priceBasedOnNotionalAndMarginRatio)
+      const isSellAndMarkPriceGreaterThanPrice =
+        !orderTypeBuy && markPrice.gt(priceBasedOnNotionalAndMarginRatio)
 
-      if (!orderTypeBuy && markPrice.gt(priceBasedOnNotionalAndMarginRatio)) {
+      if (
+        isBuyAndMarkPriceLessThanPrice ||
+        isSellAndMarkPriceGreaterThanPrice
+      ) {
         return {
           amount: this.$t('trade.order_insufficient_margin')
         }

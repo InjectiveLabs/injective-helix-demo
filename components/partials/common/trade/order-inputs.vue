@@ -103,13 +103,15 @@
         maxReduceOnly,
         notionalValueWithFees,
         notionalWithLeverage,
+        notionalWithLeverageBasedOnWorstPrice,
         notionalWithLeverageAndFees,
         orderTypeBuy,
         potentiallyShowPercentageWarning,
         quoteAmount: inputQuoteAmountToBigNumber,
         quoteAvailableBalance,
         sells,
-        tradingTypeMarket
+        tradingTypeMarket,
+        worstPrice
       }"
       @update:hasInputErrors="updateHasInputErrors"
     />
@@ -281,6 +283,11 @@ export default Vue.extend({
       required: true
     },
 
+    worstPrice: {
+      type: Object as PropType<BigNumberInBase>,
+      default: undefined
+    },
+
     hasInputErrors: {
       type: Boolean,
       required: true
@@ -327,6 +334,11 @@ export default Vue.extend({
     },
 
     notionalWithLeverage: {
+      type: Object as PropType<BigNumberInBase> | undefined,
+      default: undefined
+    },
+
+    notionalWithLeverageBasedOnWorstPrice: {
       type: Object as PropType<BigNumberInBase> | undefined,
       default: undefined
     },
@@ -471,23 +483,36 @@ export default Vue.extend({
   },
 
   watch: {
-    lastTradedPrice(newPrice: BigNumberInBase) {
-      const { price, market } = this
+    lastTradedPrice: {
+      handler(newPrice: BigNumberInBase) {
+        const { price, market } = this
 
-      if (!market) {
-        return
-      }
+        if (!market) {
+          return
+        }
 
-      if (!price) {
-        const formattedPrice = newPrice.toFixed(market.priceDecimals)
+        if (!price && !newPrice.eq('0')) {
+          const formattedPrice = newPrice.toFixed(market.priceDecimals)
 
-        this.inputPrice = formattedPrice
-        this.$emit('update:price', formattedPrice)
-      }
+          this.inputPrice = formattedPrice
+          this.$emit('update:price', formattedPrice)
+        }
+      },
+      immediate: true
     },
 
     price(newPrice: string) {
       this.inputPrice = newPrice
+    },
+
+    executionPrice() {
+      const { averagePriceOption, inputBaseAmount, inputQuoteAmount } = this
+
+      if (averagePriceOption === AveragePriceOptions.QuoteAmount) {
+        this.onQuoteAmountChange(inputQuoteAmount)
+      } else if (averagePriceOption === AveragePriceOptions.BaseAmount) {
+        this.onAmountChange(inputBaseAmount)
+      }
     }
   },
 
@@ -501,7 +526,7 @@ export default Vue.extend({
     updateQuoteAmountFromPercentage(quoteAmount: string) {
       this.inputQuoteAmount = quoteAmount
 
-      this.$emit('update:quoteAmount', quoteAmount)
+      this.$emit('update:quote-amount', quoteAmount)
     },
 
     updateHasAdvancedSettingsErrors(hasAdvancedSettingsErrors: boolean) {
@@ -649,7 +674,7 @@ export default Vue.extend({
 
       this.inputQuoteAmount = formattedQuoteAmount
 
-      this.$emit('update:quoteAmount', formattedQuoteAmount)
+      this.$emit('update:quote-amount', formattedQuoteAmount)
       this.$emit('update:proportionalPercentage', 0)
 
       if (!hasPrice && !tradingTypeMarket) {
@@ -754,11 +779,11 @@ export default Vue.extend({
 
         this.inputQuoteAmount = formattedQuoteAmount
 
-        this.$emit('update:quoteAmount', formattedQuoteAmount)
+        this.$emit('update:quote-amount', formattedQuoteAmount)
       } else {
         this.inputQuoteAmount = ''
 
-        this.$emit('update:quoteAmount', '')
+        this.$emit('update:quote-amount', '')
       }
     },
 

@@ -14,9 +14,10 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   UiPriceLevel,
   UiSpotMarketWithToken,
+  UiPerpetualMarketWithToken,
+  UiExpiryFuturesMarketWithToken,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
-import { NonBinaryOptionsDerivativeMarket } from '~/types'
 
 export default Vue.extend({
   props: {
@@ -47,7 +48,9 @@ export default Vue.extend({
 
     market: {
       type: Object as PropType<
-        UiSpotMarketWithToken | NonBinaryOptionsDerivativeMarket
+        | UiSpotMarketWithToken
+        | UiPerpetualMarketWithToken
+        | UiExpiryFuturesMarketWithToken
       >,
       required: true
     },

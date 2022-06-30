@@ -164,7 +164,7 @@ export default Vue.extend({
       if (!isSpot) {
         return getDerivativesBaseAmountForPercentage({
           market: market as UiDerivativeMarketWithToken,
-          notionalWithLeverage: quoteAvailableBalance,
+          quoteAvailableBalance,
           leverage,
           percentageToNumber: percentageToNumber.toNumber(),
           records: orderTypeBuy ? sells : buys,
