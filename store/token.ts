@@ -19,7 +19,7 @@ import {
   tokenService,
   web3Client
 } from '~/app/Services'
-import { BTC_COIN_GECKO_ID } from '~/app/utils/constants'
+import { BTC_COIN_GECKO_ID, IS_TESTNET } from '~/app/utils/constants'
 import { backupPromiseCall } from '~/app/utils/async'
 import { TokenUsdPriceMap } from '~/types'
 
@@ -292,13 +292,21 @@ export const actions = actionTree(
         .toWei(token.decimals)
         .toFixed()
 
-      const tx = await web3Client.getPeggyTransferTx({
-        address,
-        gasPrice,
-        denom: token.denom,
-        amount: actualAmount,
-        destinationAddress: ethDestinationAddress
-      })
+      const tx = IS_TESTNET
+        ? await web3Client.getPeggyTransferTx({
+            address,
+            gasPrice,
+            denom: token.denom,
+            amount: actualAmount,
+            destinationAddress: ethDestinationAddress
+          })
+        : await web3Client.getPeggyTransferTxOld({
+            address,
+            gasPrice,
+            denom: token.denom,
+            amount: actualAmount,
+            destinationAddress: ethDestinationAddress
+          })
 
       await web3Client.sendTransaction({
         tx,

@@ -614,7 +614,7 @@ export const actions = actionTree(
     },
 
     async submitLimitOrder(
-      _,
+      { state },
       {
         price,
         quantity,
@@ -625,8 +625,8 @@ export const actions = actionTree(
         orderType: SpotOrderSide
       }
     ) {
+      const { market } = state
       const { subaccount } = this.app.$accessor.account
-      const { market } = this.app.$accessor.spot
       const { address, injectiveAddress, isUserWalletConnected } =
         this.app.$accessor.wallet
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
@@ -663,7 +663,7 @@ export const actions = actionTree(
     },
 
     async submitMarketOrder(
-      _,
+      { state },
       {
         quantity,
         price,
@@ -674,8 +674,8 @@ export const actions = actionTree(
         orderType: SpotOrderSide
       }
     ) {
+      const { market } = state
       const { subaccount } = this.app.$accessor.account
-      const { market } = this.app.$accessor.spot
       const { address, injectiveAddress, isUserWalletConnected } =
         this.app.$accessor.wallet
       const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral

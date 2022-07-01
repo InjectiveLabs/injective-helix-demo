@@ -265,9 +265,9 @@ export default Vue.extend({
   data() {
     return {
       search: '',
-      isDropdownOpen: false,
-      isSearching: false,
       forceClose: true,
+      isSearching: false,
+      isDropdownOpen: false,
       getTokenLogoWithVendorPathPrefix
     }
   },

@@ -14,8 +14,8 @@
 
       <NavItem
         :to="{
-          name: 'derivatives-derivative',
-          params: { derivative: 'btc-usdt-perp' }
+          name: 'perpetuals-perpetual',
+          params: { perpetual: 'btc-usdt-perp' }
         }"
         class="block"
         data-cy="header-trade-link"
@@ -119,6 +119,10 @@ import NavItem from './item.vue'
 import NavItemDummy from './item-dummy.vue'
 import PopperBox from '~/components/elements/popper-box.vue'
 import { IS_DEVNET, IS_STAGING, IS_TESTNET } from '~/app/utils/constants'
+import {
+  derivativeMarketRouteNames,
+  spotMarketRouteNames
+} from '~/app/data/market'
 
 export default Vue.extend({
   components: {
@@ -134,7 +138,8 @@ export default Vue.extend({
 
     isMarketPage(): boolean {
       const { $route } = this
-      return ['spot-spot', 'derivatives-derivative'].includes(
+
+      return [...derivativeMarketRouteNames, ...spotMarketRouteNames].includes(
         $route.name as string
       )
     },
