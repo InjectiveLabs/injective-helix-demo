@@ -174,6 +174,10 @@ export default Vue.extend({
         return this.$t('walletHistory.terraWithdrawalType')
       }
 
+      if (transaction.receiver.startsWith('evmos')) {
+        return this.$t('walletHistory.evmosWithdrawalType')
+      }
+
       if (
         transaction.sender.startsWith('inj') &&
         transaction.receiver.startsWith('inj')
