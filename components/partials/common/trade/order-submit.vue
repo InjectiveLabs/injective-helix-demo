@@ -89,11 +89,6 @@ export default Vue.extend({
       required: true
     },
 
-    hasPrice: {
-      type: Boolean,
-      required: true
-    },
-
     orderTypeBuy: {
       type: Boolean,
       required: true

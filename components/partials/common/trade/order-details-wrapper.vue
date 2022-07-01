@@ -519,7 +519,7 @@ export default Vue.extend({
         )
 
         return tradingTypeMarket
-          ? minimumReceivedBaseAmount.times(slippage)
+          ? minimumReceivedBaseAmount.div(slippage)
           : minimumReceivedBaseAmount
       }
 

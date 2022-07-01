@@ -48,6 +48,11 @@ export default Vue.extend({
       required: true
     },
 
+    tradingTypeMarket: {
+      type: Boolean,
+      required: true
+    },
+
     hasPrice: {
       type: Boolean,
       required: true
@@ -258,13 +263,18 @@ export default Vue.extend({
     },
 
     updateBaseAmountBasedOnPercentage() {
-      const { hasPrice, market, approxAmountFromPercentage = '' } = this
+      const {
+        hasPrice,
+        tradingTypeMarket,
+        market,
+        approxAmountFromPercentage = ''
+      } = this
 
       if (!market) {
         return
       }
 
-      if (!hasPrice) {
+      if (!hasPrice && !tradingTypeMarket) {
         this.$emit('update:priceFromLastTradedPrice')
       }
 

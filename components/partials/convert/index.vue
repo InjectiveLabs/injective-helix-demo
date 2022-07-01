@@ -1570,7 +1570,7 @@ export default Vue.extend({
     },
 
     submitMarketOrder(): void {
-      const { orderType, market, form, fee } = this
+      const { orderType, market, form } = this
 
       if (!market) {
         return
@@ -1592,18 +1592,6 @@ export default Vue.extend({
         orderType === SpotOrderSide.Buy
           ? new BigNumberInBase(form.toAmount)
           : new BigNumberInBase(form.amount)
-
-      if (this.isStagingOrTestnetOrDevnet) {
-        /* eslint-disable */
-        console.log('quantity:', quantity.toNumber())
-        console.log('fee:', fee.toNumber())
-        console.log('price:', price.toFixed(decimalPlaces))
-        console.log(
-          'price (without fee):',
-          price.minus(fee).toFixed(decimalPlaces)
-        )
-        /* eslint-enable */
-      }
 
       this.$accessor.spot
         .submitMarketOrder({

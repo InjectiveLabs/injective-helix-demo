@@ -559,9 +559,9 @@ export default Vue.extend({
     },
 
     hasPrice(): boolean {
-      const { price } = this
+      const { executionPrice } = this
 
-      return price.gt('0')
+      return executionPrice.gt('0')
     },
 
     orderTypeBuy(): boolean {

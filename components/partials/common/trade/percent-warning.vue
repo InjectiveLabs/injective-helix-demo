@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="shouldShowPercentWarning"
     class="flex mt-4 gap-2 text-xs font-semibold text-warning"
     font-semibold
     text-2xs
@@ -73,7 +74,6 @@ export default Vue.extend({
         const orderPrice = new BigNumberInBase(price).toWei(
           market.baseToken.decimals - market.quoteToken.decimals
         )
-
         const orderQuantity = new BigNumberInWei(quantity).toBase(
           market.baseToken.decimals
         )
@@ -89,9 +89,11 @@ export default Vue.extend({
         inputProportionalPercentage
       } = this
 
-      const percentQuoteAvailableBalance = quoteAvailableBalance.times(
+      const percentageToNumber = new BigNumberInBase(
         inputProportionalPercentage
-      )
+      ).div(100)
+      const percentQuoteAvailableBalance =
+        quoteAvailableBalance.times(percentageToNumber)
 
       return percentQuoteAvailableBalance.gt(orderbookSellSideTotalNotional)
     },
@@ -117,9 +119,11 @@ export default Vue.extend({
         inputProportionalPercentage
       } = this
 
-      const percentBaseAvailableBalance = baseAvailableBalance.times(
+      const percentageToNumber = new BigNumberInBase(
         inputProportionalPercentage
-      )
+      ).div(100)
+      const percentBaseAvailableBalance =
+        baseAvailableBalance.times(percentageToNumber)
 
       return percentBaseAvailableBalance.gt(orderbookBuySideTotalAmount)
     },

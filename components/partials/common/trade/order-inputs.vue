@@ -74,7 +74,8 @@
             orderTypeReduceOnly,
             position,
             quoteAvailableBalance,
-            leverage
+            leverage,
+            tradingTypeMarket
           }"
           ref="percentageOptions"
           :proportional-percentage="inputProportionalPercentage"

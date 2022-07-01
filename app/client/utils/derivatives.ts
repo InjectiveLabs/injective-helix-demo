@@ -257,7 +257,6 @@ export const calculateAverageExecutionPriceFromFillableNotionalOnOrderBook = ({
       )
 
       const orderNotional = orderQuantity.times(orderPrice)
-
       const minNotional = BigNumberInBase.min(
         remainNotionalToFill,
         orderNotional
