@@ -2036,10 +2036,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/sdk-ts@1.0.28", "@injectivelabs/sdk-ts@^1.0.28":
-  version "1.0.28"
-  resolved "https://registry.npmjs.org/@injectivelabs/sdk-ts/-/sdk-ts-1.0.28.tgz#72e8420bdb368f1cd493560203df18045c16edcc"
-  integrity sha512-qXRNHcjfSl9h5Xn2m9YTqNG5d7ovPrfmHptZEYMNZuRA+Pgb+tnni6uQOxxRW+sF2AjJhfR2yC1twGruKQcqBA==
+"@injectivelabs/sdk-ts@1.0.29", "@injectivelabs/sdk-ts@^1.0.29":
+  version "1.0.29"
+  resolved "https://registry.npmjs.org/@injectivelabs/sdk-ts/-/sdk-ts-1.0.29.tgz#e1050b7348011c8f8f2ece0a653f2e6d8e1ff8e3"
+  integrity sha512-0X2Rj4IAGxLBau/owuC6g86gmSZjsbvOYwk46Sq1qqbuzP3p4VCm2Hp1OLWzmWMp2inEss3h0TGZNH2DeddhqQ==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@improbable-eng/grpc-web" "^0.15.0"
@@ -2055,8 +2055,10 @@
     "@types/google-protobuf" "^3.15.5"
     bech32 "^2.0.0"
     bip39 "^3.0.4"
+    ethereumjs-abi "^0.6.8"
     ethereumjs-util "^7.1.4"
     ethers "^5.6.4"
+    ethjs-util "^0.1.6"
     graphql "^16.3.0"
     keccak256 "^1.0.6"
     link-module-alias "^1.2.0"
@@ -2064,14 +2066,14 @@
     shx "^0.3.2"
     snakecase-keys "^5.4.1"
 
-"@injectivelabs/sdk-ui-ts@1.0.52":
-  version "1.0.52"
-  resolved "https://registry.npmjs.org/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.0.52.tgz#e3302c8451e315bbffe0ce5e92478f1f461e4591"
-  integrity sha512-p3h7+S4RDB1FOF0Uf9boe8AwJ3ohYV9fiBgGJ6gkonirzbVnhtjyGB6tIaZsdie/PMLasJSrQE7KjYZ7cfznnA==
+"@injectivelabs/sdk-ui-ts@1.0.53":
+  version "1.0.53"
+  resolved "https://registry.npmjs.org/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.0.53.tgz#d2778d029d32e5e108506f32df8de6ebfc162886"
+  integrity sha512-XTy3r2JqKUaIGFcNlGKgP3enQIzomxESHtn6DyIDHJH7sCne3RqZq5PH4xtD2T61V4iur1p++Y6A4RN/SMjOJQ==
   dependencies:
     "@injectivelabs/exceptions" "^1.0.5"
     "@injectivelabs/networks" "^1.0.5"
-    "@injectivelabs/sdk-ts" "^1.0.28"
+    "@injectivelabs/sdk-ts" "^1.0.29"
     "@injectivelabs/token-metadata" "^1.0.5"
     "@injectivelabs/token-utils" "^1.0.6"
     "@injectivelabs/ts-types" "^1.0.4"
