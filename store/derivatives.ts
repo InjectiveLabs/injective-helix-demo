@@ -423,7 +423,8 @@ export const actions = actionTree(
       const { markets: newMarkets } = state
 
       const market = newMarkets.find(
-        (market) => market.slug.toLowerCase() === marketSlug.toLowerCase()
+        (market) =>
+          marketSlug && market.slug.toLowerCase() === marketSlug.toLowerCase()
       )
 
       if (!market) {
