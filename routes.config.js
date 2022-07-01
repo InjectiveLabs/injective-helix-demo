@@ -47,8 +47,8 @@ const expiryFutures = ['']
 if (IS_DEVNET || IS_MAINNET_STAGING) {
   // perpetuals.push()
   // spot.push('dot-usdt')
-  binaryOptions.push('hhabib-tko-05-30-2023')
-  binaryOptions.push('tik-ok')
+  // binaryOptions.push('hhabib-tko-05-30-2023')
+  // binaryOptions.push('tik-ok')
 }
 
 const spotRoutes = spot.map((s) => `/spot/${s}`) || []

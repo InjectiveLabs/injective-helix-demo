@@ -3853,9 +3853,9 @@
   integrity sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==
 
 "@types/node-sass@*":
-  version "4.11.2"
-  resolved "https://registry.npmjs.org/@types/node-sass/-/node-sass-4.11.2.tgz#ecdaa44a1ba8847bf7dea2aadbfe33a91a263514"
-  integrity sha512-pOFlTw/OtZda4e+yMjq6/QYuvY0RDMQ+mxXdWj7rfSyf18V8hS4SfgurO+MasAkQsv6Wt6edOGlwh5QqJml9gw==
+  version "4.11.3"
+  resolved "https://registry.npmjs.org/@types/node-sass/-/node-sass-4.11.3.tgz#cabbe257bb1b615fcf0f8536d4673102e9930a3d"
+  integrity sha512-wXPCn3t9uu5rR4zXNSLasZHQMuRzUKBsdi4MsgT8uq4Lp1gQQo+T2G23tGj4SSgDHeNBle6vGseZtM2XV/X9bw==
   dependencies:
     "@types/node" "*"
 
@@ -7567,9 +7567,9 @@ eip1193-provider@^1.0.1:
     "@json-rpc-tools/provider" "^1.5.5"
 
 electron-to-chromium@^1.4.172:
-  version "1.4.173"
-  resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.173.tgz#48f128dda49cd7f6317e65ac0085bd3a6b9b6e3b"
-  integrity sha512-Qo3LnVW6JRNhD32viSdPebxKI7K+3WeBDjU1+Q2yZS83zAh8C2LyPpzTimlciv6U74KpY9n/0ESAhUByRke0jw==
+  version "1.4.174"
+  resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.174.tgz#ffdf57f26dd4558c5aabdb4b190c47af1c4e443b"
+  integrity sha512-JER+w+9MV2MBVFOXxP036bLlNOnzbYAWrWU8sNUwoOO69T3w4564WhM5H5atd8VVS8U4vpi0i0kdoYzm1NPQgQ==
 
 elliptic@6.5.4, elliptic@^6.4.0, elliptic@^6.5.2, elliptic@^6.5.3, elliptic@^6.5.4:
   version "6.5.4"
@@ -17110,9 +17110,9 @@ type-fest@^0.8.0, type-fest@^0.8.1:
   integrity sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==
 
 type-fest@^2.5.2:
-  version "2.14.0"
-  resolved "https://registry.npmjs.org/type-fest/-/type-fest-2.14.0.tgz#f990e19169517d689c98e16d128b231022b27e12"
-  integrity sha512-hQnTQkFjL5ik6HF2fTAM8ycbr94UbQXK364wF930VHb0dfBJ5JBP8qwrR8TaK9zwUEk7meruo2JAUDMwvuxd/w==
+  version "2.15.1"
+  resolved "https://registry.npmjs.org/type-fest/-/type-fest-2.15.1.tgz#ad596982d50c157f7e981307c21c3983970e4e77"
+  integrity sha512-LYSjcIz3NmoQksXq/3/B7Nfad+T8mkaI628agAAnHCpXPTBRMK2ygt3eABpzII8CbZZM8dLdVQ4Gr8ousjFjMw==
 
 type-is@^1.6.16, type-is@~1.6.18:
   version "1.6.18"

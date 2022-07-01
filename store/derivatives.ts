@@ -11,31 +11,31 @@ import {
   Change,
   derivativeOrderTypeToGrpcOrderType,
   DerivativesMetrics,
+  MarketType,
+  UiBinaryOptionsMarketWithToken,
   UiDerivativeLimitOrder,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiDerivativeOrderbook,
   UiDerivativeTrade,
   UiDerivativeTransformer,
-  UiBinaryOptionsMarketWithToken,
-  zeroDerivativeMarketSummary,
-  ZERO_IN_BASE,
-  ZERO_TO_STRING,
   UiExpiryFuturesMarketWithToken,
   UiPerpetualMarketWithToken,
-  MarketType
+  ZERO_IN_BASE,
+  ZERO_TO_STRING,
+  zeroDerivativeMarketSummary
 } from '@injectivelabs/sdk-ui-ts'
 import {
   DerivativeOrderSide,
   DerivativeOrderState,
-  MsgBatchCancelDerivativeOrders,
-  MsgCreateDerivativeLimitOrder,
-  MsgCreateDerivativeMarketOrder,
-  PerpetualMarket,
   ExpiryFuturesMarket,
   MsgBatchCancelBinaryOptionsOrders,
+  MsgBatchCancelDerivativeOrders,
   MsgCreateBinaryOptionsLimitOrder,
-  MsgCreateBinaryOptionsMarketOrder
+  MsgCreateBinaryOptionsMarketOrder,
+  MsgCreateDerivativeLimitOrder,
+  MsgCreateDerivativeMarketOrder,
+  PerpetualMarket
 } from '@injectivelabs/sdk-ts'
 import {
   streamOrderbook,
@@ -84,10 +84,10 @@ export const state = () => ({
     initialState.perpetualMarkets as UiPerpetualMarketWithToken[],
   expiryFuturesMarkets:
     initialState.expiryFuturesMarkets as UiExpiryFuturesMarketWithToken[],
-  marketsSummary: initialState.marketsSummary as UiDerivativeMarketSummary[],
   binaryOptionsMarkets:
     initialState.binaryOptionsMarkets as UiBinaryOptionsMarketWithToken[],
   markets: initialState.markets as UiDerivativeMarketWithToken[],
+  marketsSummary: initialState.marketsSummary as UiDerivativeMarketSummary[],
   market: initialState.market as UiDerivativeMarketWithToken | undefined,
   marketSummary: initialState.marketSummary as
     | UiDerivativeMarketSummary
@@ -172,18 +172,6 @@ export const mutations = {
     state.marketMarkPrice = marketMarkPrice
   },
 
-  resetMarket(state: DerivativeStoreState) {
-    const initialState = initialStateFactory()
-
-    state.market = initialState.market
-    state.marketSummary = initialState.marketSummary
-    state.marketMarkPrice = initialState.marketMarkPrice
-    state.orderbook = initialState.orderbook
-    state.trades = initialState.trades
-    state.subaccountOrders = initialState.subaccountOrders
-    state.subaccountTrades = initialState.subaccountTrades
-  },
-
   setPerpetualMarkets(
     state: DerivativeStoreState,
     markets: UiPerpetualMarketWithToken[]
@@ -203,6 +191,18 @@ export const mutations = {
     markets: UiBinaryOptionsMarketWithToken[]
   ) {
     state.binaryOptionsMarkets = markets
+  },
+
+  resetMarket(state: DerivativeStoreState) {
+    const initialState = initialStateFactory()
+
+    state.market = initialState.market
+    state.marketSummary = initialState.marketSummary
+    state.marketMarkPrice = initialState.marketMarkPrice
+    state.orderbook = initialState.orderbook
+    state.trades = initialState.trades
+    state.subaccountOrders = initialState.subaccountOrders
+    state.subaccountTrades = initialState.subaccountTrades
   },
 
   setMarketsSummary(

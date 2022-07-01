@@ -93,7 +93,7 @@ export default Vue.extend({
         return [formattedNumber]
       }
 
-      const match = formattedNumber.match(/^-?([\d,]+)((\.)(\d+?\d+?)(0*))?$/)
+      const match = formattedNumber.match(/^(-?[\d,]+)((\.)(\d+?\d+?)(0*))?$/)
       const groups = !match
         ? formattedNumber
           ? [formattedNumber]

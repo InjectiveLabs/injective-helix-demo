@@ -217,18 +217,18 @@ import {
 } from '@injectivelabs/ts-types'
 import {
   DerivativeOrderSide,
+  MarketType,
+  NUMBER_REGEX,
   UiDerivativeLimitOrder,
   UiDerivativeMarketSummary,
+  UiDerivativeMarketWithToken,
   UiDerivativeOrderbook,
+  UiExpiryFuturesMarketWithToken,
+  UiPerpetualMarketWithToken,
   UiPosition,
   UiPriceLevel,
-  NUMBER_REGEX,
-  ZERO_IN_BASE,
   UiSubaccount,
-  UiPerpetualMarketWithToken,
-  UiExpiryFuturesMarketWithToken,
-  UiDerivativeMarketWithToken,
-  MarketType
+  ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 import {
   cosmosSdkDecToBigNumber,
@@ -935,7 +935,6 @@ export default Vue.extend({
       const derivativeMarket = market as
         | UiPerpetualMarketWithToken
         | UiExpiryFuturesMarketWithToken
-
       const condition = executionPrice
         .times(amount)
         .times(derivativeMarket.initialMarginRatio)

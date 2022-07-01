@@ -84,13 +84,13 @@ import {
   UiDerivativeMarketSummary,
   UiBinaryOptionsMarketWithToken,
   UiDerivativeMarketWithToken,
+  UiExpiryFuturesMarketWithToken,
+  UiPerpetualMarketWithToken,
   Change,
   MarketType,
   ZERO_IN_BASE,
   BIG_NUMBER_ROUND_DOWN_MODE,
-  SpotOrderSide,
-  UiPerpetualMarketWithToken,
-  UiExpiryFuturesMarketWithToken
+  SpotOrderSide
 } from '@injectivelabs/sdk-ui-ts'
 import MarketNextFunding from './next-funding.vue'
 import MarketSettlement from './settlement.vue'

@@ -6,15 +6,15 @@ import {
   derivativePriceToChainPrice
 } from '@injectivelabs/utils'
 import {
-  UiPerpetualMarketWithToken,
-  UiDerivativeMarketWithToken,
-  UiPosition,
-  UiOrderbookPriceLevel,
-  UiPriceLevel,
-  ZERO_IN_BASE,
   DerivativeOrderSide,
+  UiBinaryOptionsMarketWithToken,
+  UiDerivativeMarketWithToken,
   UiExpiryFuturesMarketWithToken,
-  UiBinaryOptionsMarketWithToken
+  UiOrderbookPriceLevel,
+  UiPerpetualMarketWithToken,
+  UiPosition,
+  UiPriceLevel,
+  ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 
 export const calculateMargin = ({
