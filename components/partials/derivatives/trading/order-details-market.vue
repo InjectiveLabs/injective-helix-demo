@@ -100,11 +100,10 @@
                 :tooltip="$t('trade.fees_tooltip')"
               />
               <IconCheckTooltip
-                v-if="makerFeeRateDiscount.gt(0) || takerFeeRateDiscount.gt(0)"
+                v-if="takerFeeRateDiscount.gt(0)"
                 class="ml-2 text-primary-500"
                 :tooltip="
                   $t('trade.fees_tooltip_discount', {
-                    maker: makerFeeRateDiscount.times(100).toFixed(),
                     taker: takerFeeRateDiscount.times(100).toFixed()
                   })
                 "
@@ -210,11 +209,6 @@ export default Vue.extend({
     },
 
     takerExpectedPts: {
-      type: Object as PropType<BigNumberInBase>,
-      required: true
-    },
-
-    feeReturned: {
       type: Object as PropType<BigNumberInBase>,
       required: true
     },

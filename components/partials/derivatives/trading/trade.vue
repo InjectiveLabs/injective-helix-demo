@@ -60,23 +60,23 @@
         executionPrice,
         feeRate,
         fees,
-        market,
+        liquidationPrice,
         makerFeeRate,
         makerFeeRateDiscount,
+        market,
+        notionalValue,
+        notionalWithLeverage,
+        notionalWithLeverageToBigNumber,
+        notionalWithLeverageAndFees,
         orderType,
         orderTypeBuy,
+        orderTypeReduceOnly,
         postOnly: form.postOnly,
         quoteAmount,
         slippage,
         takerFeeRate,
         takerFeeRateDiscount,
-        notionalWithLeverageToBigNumber,
-        notionalWithLeverageAndFees,
-        tradingTypeMarket,
-        notionalValue,
-        liquidationPrice,
-        notionalWithLeverage,
-        orderTypeReduceOnly
+        tradingTypeMarket
       }"
     />
 

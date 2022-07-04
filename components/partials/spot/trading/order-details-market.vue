@@ -55,11 +55,10 @@
                 :tooltip="$t('trade.fees_tooltip')"
               />
               <IconCheckTooltip
-                v-if="makerFeeRateDiscount.gt(0) || takerFeeRateDiscount.gt(0)"
+                v-if="takerFeeRateDiscount.gt(0)"
                 class="ml-2 text-primary-500"
                 :tooltip="
                   $t('trade.fees_tooltip_discount', {
-                    maker: makerFeeRateDiscount.times(100).toFixed(),
                     taker: takerFeeRateDiscount.times(100).toFixed()
                   })
                 "
@@ -68,7 +67,7 @@
           </div>
           <span v-if="fees.gt(0)" class="font-mono flex items-start break-all">
             <span class="mr-1">≈</span>
-            {{ totalEstimatedFees }}
+            {{ feesToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
             </span>
@@ -142,7 +141,7 @@ export default Vue.extend({
       type: Boolean
     },
 
-    totalEstimatedFees: {
+    feesToFormat: {
       type: String,
       default: undefined
     },

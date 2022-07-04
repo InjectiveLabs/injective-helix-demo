@@ -61,7 +61,7 @@
         </TextInfo>
 
         <TextInfo
-          v-if="marketHasNegativeMakerFee && postOnly"
+          v-if="!(postOnly && marketHasNegativeMakerFee)"
           :title="$t('trade.fee')"
           class="mt-2"
         >
@@ -74,7 +74,7 @@
                   marketHasNegativeMakerFee
                     ? $t('trade.fee_order_details_note_negative_margin')
                     : $t('trade.fee_order_details_note', {
-                        feeReturned: feeReturned.toFixed()
+                        feeReturnedToFormat
                       })
                 "
               />
@@ -99,9 +99,8 @@
               />
             </div>
           </div>
-
           <span v-if="fees.gt(0)" class="font-mono flex items-start break-all">
-            {{ totalEstimatedFees }}
+            {{ feesToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
             </span>
@@ -159,6 +158,7 @@ import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import Drawer from '~/components/elements/drawer.vue'
+import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import { Icon } from '~/types'
 
 export default Vue.extend({
@@ -189,6 +189,11 @@ export default Vue.extend({
 
     feeRebates: {
       type: Object as PropType<BigNumberInBase>,
+      required: true
+    },
+
+    feesToFormat: {
+      type: String,
       required: true
     },
 
@@ -237,8 +242,8 @@ export default Vue.extend({
       required: true
     },
 
-    totalEstimatedFees: {
-      type: String,
+    notionalValueWithFees: {
+      type: Object as PropType<BigNumberInBase>,
       default: undefined
     },
 
@@ -280,6 +285,22 @@ export default Vue.extend({
             market.priceDecimals,
             BigNumberInBase.ROUND_DOWN
           )
+    },
+
+    feeReturnedToFormat(): string {
+      const { feeReturned, market } = this
+
+      if (!market) {
+        return feeReturned.toFormat(
+          UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+          BigNumberInBase.ROUND_DOWN
+        )
+      }
+
+      return feeReturned.toFormat(
+        market.priceDecimals,
+        BigNumberInBase.ROUND_DOWN
+      )
     }
   },
 

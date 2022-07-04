@@ -87,7 +87,7 @@
         </TextInfo>
 
         <TextInfo
-          v-if="marketHasNegativeMakerFee && postOnly"
+          v-if="!(postOnly && marketHasNegativeMakerFee)"
           :title="$t('trade.fee')"
           class="mt-2"
         >
@@ -100,7 +100,7 @@
                   marketHasNegativeMakerFee
                     ? $t('trade.fee_order_details_note_negative_margin')
                     : $t('trade.fee_order_details_note', {
-                        feeReturned: feeReturned.toFixed()
+                        feeReturnedToFormat
                       })
                 "
               />
@@ -348,6 +348,22 @@ export default Vue.extend({
       return liquidationPrice.toFormat(
         market.priceDecimals,
         BigNumberInBase.ROUND_HALF_UP
+      )
+    },
+
+    feeReturnedToFormat(): string {
+      const { feeReturned, market } = this
+
+      if (!market) {
+        return feeReturned.toFormat(
+          UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+          BigNumberInBase.ROUND_DOWN
+        )
+      }
+
+      return feeReturned.toFormat(
+        market.priceDecimals,
+        BigNumberInBase.ROUND_DOWN
       )
     }
   },
