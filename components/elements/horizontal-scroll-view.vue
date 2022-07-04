@@ -136,9 +136,11 @@ export default Vue.extend({
       this.hasFocus = false
 
       const views = this.$refs.views as HTMLElement
-      this.lastKnownOffsetX = this.currentOffsetX = views.style.transform
+      this.lastKnownOffsetX = views.style.transform
         ? this.translationToVector(views.style.transform).x * -1
         : 0
+
+      this.currentOffsetX = this.lastKnownOffsetX
     },
 
     updateOffset(offset: number) {
