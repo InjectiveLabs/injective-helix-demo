@@ -125,3 +125,4 @@ export const COIN_GECKO_OPTIONS = {
 }
 
 export const ONE_IN_BASE = new BigNumberInBase(1)
+export const USDT_DECIMALS = 6

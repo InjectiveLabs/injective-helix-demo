@@ -1,12 +1,10 @@
 <template>
   <tr>
     <td class="h-8 text-left font-mono">
-      <div class="flex items-center">
+      <div class="flex items-center gap-4">
+        <div v-if="isUserTierLevel" class="bg-primary-500 w-2 h-2 ml-2 rounded-full" />
+        <div v-else class="w-2 h-2 ml-2" />
         <span>#{{ index }}</span>
-        <IconCheckCircle
-          v-if="isUserTierLevel"
-          class="w-4 h-4 ml-2 text-primary-500"
-        />
       </div>
     </td>
     <td class="h-8 text-right font-mono">
@@ -19,7 +17,7 @@
       </span>
     </td>
     <td class="h-8 text-right font-mono">
-      &#8805; {{ feePaidAmountToFormat }}
+      &#8805; {{ volumeToFormat }}
       <span class="text-2xs text-gray-500"> USD </span>
     </td>
     <td class="h-8 text-right font-mono">{{ makerFeeDiscountToFormat }}%</td>
@@ -37,6 +35,7 @@ import {
   FeeDiscountTierInfo
 } from '@injectivelabs/sdk-ts'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
+import { USDT_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   props: {
@@ -86,22 +85,22 @@ export default Vue.extend({
       return stakedAmount.toFormat(0)
     },
 
-    feePaidAmount(): BigNumberInBase {
+    volume(): BigNumberInBase {
       const { tier } = this
 
-      if (!tier.feePaidAmount) {
+      if (!tier.volume) {
         return ZERO_IN_BASE
       }
 
       return new BigNumberInWei(
-        cosmosSdkDecToBigNumber(tier.feePaidAmount)
-      ).toBase(6 /* USDT */)
+        cosmosSdkDecToBigNumber(tier.volume)
+      ).toBase(USDT_DECIMALS)
     },
 
-    feePaidAmountToFormat(): string {
-      const { feePaidAmount } = this
+    volumeToFormat(): string {
+      const { volume } = this
 
-      return feePaidAmount.toFormat(0)
+      return volume.toFormat(0)
     },
 
     makerFeeDiscount(): BigNumberInBase {

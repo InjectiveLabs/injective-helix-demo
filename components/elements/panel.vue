@@ -6,6 +6,7 @@
     >
       <h3 class="text-xl font-bold text-gray-200">
         <slot name="title">{{ title }}</slot>
+        <slot name="subtitle"></slot>
       </h3>
       <slot name="title-context" />
     </div>
