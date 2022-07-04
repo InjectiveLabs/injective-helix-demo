@@ -330,9 +330,9 @@ export const getDerivativesBaseAmountForPercentage = ({
     )
   }
 
-  const amountFromAvailableMargin = availableMargin.div(
-    executionPrice.times(new BigNumberInBase(1).plus(feeRate)).times(leverage)
-  )
+  const amountFromAvailableMargin = availableMargin
+    .div(executionPrice.times(new BigNumberInBase(1).plus(feeRate)))
+    .times(leverage)
 
   return formatAmountToAllowableDecimals(
     amountFromAvailableMargin.toNumber(),
@@ -375,9 +375,9 @@ export const getDerivativesQuoteAmountForPercentageNonReduceOnly = ({
     return totalNotional
   }
 
-  const quoteBalanceWithFeesAndLeverage = quoteBalanceByPercentage.div(
-    new BigNumberInBase(1).plus(feeRate).times(leverage)
-  )
+  const quoteBalanceWithFeesAndLeverage = quoteBalanceByPercentage
+    .div(new BigNumberInBase(1).plus(feeRate))
+    .times(leverage)
 
   return quoteBalanceWithFeesAndLeverage
 }
