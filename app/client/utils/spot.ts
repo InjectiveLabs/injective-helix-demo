@@ -178,7 +178,7 @@ export const getApproxAmountForMarketOrder = ({
   const fee = new BigNumberInBase(market.takerFeeRate)
   const availableBalance = balance.times(percent)
   let totalQuantity = ZERO_IN_BASE
-  let totalNotional = ZERO_IN_BASE
+  let totalNotional: BigNumberInBase
 
   for (const record of records) {
     const price = new BigNumberInBase(record.price)

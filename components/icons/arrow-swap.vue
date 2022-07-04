@@ -14,3 +14,11 @@
     <path d="M28.9423 18.9844L22.6331 12.6752" stroke-width="2" />
   </svg>
 </template>
+
+<script lang="ts">
+import Vue from 'vue'
+
+export default Vue.extend({
+  //
+})
+</script>

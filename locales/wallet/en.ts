@@ -68,10 +68,10 @@ export default {
 
   insufficientGas: {
     insufficientGas: 'Insufficient Funds for Gas',
-    insufficientGasNote:
-      'When using Keplr wallet to connect to the exchange you are covering the gas fees and it seems you do not have enough INJ balance in your Injective Wallet.',
-    insufficientGasNote2:
-      'Please top up your Injective Wallet with sufficient INJ on <a href="{hubUrl}" target="_blank" class="text-primary-500">Injective Hub</a> to ensure sufficient fee coverage for future transactions.',
-    tradingFormNote: 'Insufficient INJ in your wallet for transaction fees.'
+    insufficientGasNoteDescription:
+      'Get a small amount of free INJ from a {faucetLink} or top up your Injective Wallet on {hubLink} to ensure sufficient fee coverage for future transactions.',
+    communityDrivenFaucet: 'community driven faucet',
+    getFreeInj: 'Get Free INJ',
+    injectiveHub: 'Injective Hub'
   }
 }

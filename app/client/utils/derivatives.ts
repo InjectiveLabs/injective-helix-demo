@@ -6,13 +6,15 @@ import {
   derivativePriceToChainPrice
 } from '@injectivelabs/utils'
 import {
-  UiBaseDerivativeMarket,
+  DerivativeOrderSide,
+  UiBinaryOptionsMarketWithToken,
   UiDerivativeMarketWithToken,
-  UiPosition,
+  UiExpiryFuturesMarketWithToken,
   UiOrderbookPriceLevel,
+  UiPerpetualMarketWithToken,
+  UiPosition,
   UiPriceLevel,
-  ZERO_IN_BASE,
-  DerivativeOrderSide
+  ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 
 export const calculateMargin = ({
@@ -116,7 +118,7 @@ export const calculateLiquidationPrice = ({
   quantity: string
   margin: string
   orderType: DerivativeOrderSide
-  market: UiBaseDerivativeMarket
+  market: UiPerpetualMarketWithToken | UiExpiryFuturesMarketWithToken
 }): BigNumberInBase => {
   if (!price || !quantity || !margin) {
     return ZERO_IN_BASE
@@ -219,7 +221,7 @@ export const getApproxAmountForMarketOrder = ({
   const fee = new BigNumberInBase(market.takerFeeRate)
   const availableMargin = new BigNumberInBase(margin).times(percent)
   let totalQuantity = ZERO_IN_BASE
-  let totalNotional = ZERO_IN_BASE
+  let totalNotional: BigNumberInBase
 
   for (const record of records) {
     const price = new BigNumberInBase(
@@ -268,4 +270,75 @@ export const getRoundedLiquidationPrice = (
   return liquidationPriceRoundedToMinTickPrice.lte(0)
     ? minTickPrice
     : liquidationPriceRoundedToMinTickPrice
+}
+
+export const calculateBinaryOptionsMargin = ({
+  quantity,
+  price,
+  orderSide
+}: {
+  quantity: string
+  price: string
+  orderSide: DerivativeOrderSide
+}): BigNumberInBase => {
+  if (orderSide === DerivativeOrderSide.Buy) {
+    return new BigNumberInBase(quantity).times(price)
+  }
+
+  return new BigNumberInBase(quantity).times(
+    new BigNumberInBase(1).minus(price)
+  )
+}
+
+export const getApproxAmountForBinaryOptionsMarketOrder = ({
+  records,
+  margin,
+  market,
+  orderSide,
+  slippage,
+  leverage = 1,
+  percent = 1
+}: {
+  records: UiPriceLevel[]
+  margin: BigNumberInBase
+  percent?: number
+  slippage: number
+  orderSide: DerivativeOrderSide
+  leverage?: number | string
+  market: UiBinaryOptionsMarketWithToken
+}) => {
+  const fee = new BigNumberInBase(market.takerFeeRate)
+  const availableMargin = new BigNumberInBase(margin).times(percent)
+  let totalQuantity = ZERO_IN_BASE
+  let totalNotional = ZERO_IN_BASE
+
+  for (const record of records) {
+    const price = new BigNumberInBase(
+      new BigNumberInWei(record.price)
+        .times(slippage)
+        .toBase(market.quoteToken.decimals)
+    )
+    const quantity = new BigNumberInBase(
+      new BigNumberInBase(record.quantity).dp(market.quantityDecimals)
+    )
+
+    totalQuantity = totalQuantity.plus(quantity)
+    totalNotional = totalQuantity.times(price)
+
+    const totalFees = new BigNumberInWei(totalNotional.times(fee))
+    const totalMargin = calculateBinaryOptionsMargin({
+      quantity: totalQuantity.toFixed(),
+      price: price.toFixed(),
+      orderSide
+    })
+    const total = totalMargin.plus(totalFees)
+
+    if (total.gt(availableMargin)) {
+      return availableMargin
+        .times(leverage)
+        .dividedBy(fee.times(leverage).plus(1).times(price))
+    }
+  }
+
+  return totalQuantity
 }

@@ -1206,7 +1206,18 @@ export default Vue.extend({
         return ''
       }
 
-      if (!orderTypeBuy) {
+      if (tradingTypeMarket) {
+        if (orderTypeBuy) {
+          return getApproxAmountForMarketOrder({
+            market,
+            balance,
+            slippage: slippage.toNumber(),
+            percent: percentageToNumber.toNumber(),
+            records: sells
+          }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
+        }
+
+        // Sell market order
         const totalFillableAmount = buys.reduce((totalAmount, { quantity }) => {
           return totalAmount.plus(
             new BigNumberInWei(quantity).toBase(market.baseToken.decimals)
@@ -1225,16 +1236,6 @@ export default Vue.extend({
           market.quantityDecimals,
           BigNumberInBase.ROUND_FLOOR
         )
-      }
-
-      if (tradingTypeMarket) {
-        return getApproxAmountForMarketOrder({
-          market,
-          balance,
-          slippage: slippage.toNumber(),
-          percent: percentageToNumber.toNumber(),
-          records: orderTypeBuy ? sells : buys
-        }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
       }
 
       if (executionPrice.lte(0)) {

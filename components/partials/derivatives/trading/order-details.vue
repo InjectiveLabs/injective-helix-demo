@@ -42,7 +42,7 @@
         </TextInfo>
 
         <TextInfo
-          v-if="!orderTypeReduceOnly"
+          v-if="!orderTypeReduceOnly && !isBinaryOption"
           :title="$t('trade.liquidation_price')"
           class="mt-2"
         >
@@ -197,6 +197,7 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
+  MarketType,
   UiDerivativeMarketWithToken,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
@@ -320,6 +321,16 @@ export default Vue.extend({
   computed: {
     market(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
+    },
+
+    isBinaryOption(): boolean {
+      const { market } = this
+
+      if (!market) {
+        return false
+      }
+
+      return market.subType === MarketType.BinaryOptions
     },
 
     totalWithFeesToFormat(): string {

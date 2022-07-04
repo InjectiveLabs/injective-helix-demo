@@ -43,8 +43,8 @@ export default Vue.extend({
     handleGetStartedClick() {
       if (this.isUserWalletConnected) {
         this.$router.push({
-          name: 'derivatives-derivative',
-          params: { derivative: 'btc-usdt-perp' }
+          name: 'perpetuals-perpetual',
+          params: { perpetual: 'btc-usdt-perp' }
         })
       } else {
         this.$root.$emit('wallet-clicked')

@@ -37,12 +37,20 @@ export const validateMetamask = async (
   const metamaskChainIdDoesntMatchTheActiveChainId = chainId !== metamaskChainId
 
   if (metamaskChainIdDoesntMatchTheActiveChainId) {
+    if (chainId === EthereumChainId.Kovan) {
+      throw new Web3Exception(
+        'Please change your Metamask network to Kovan Test Network'
+      )
+    }
+
+    if (chainId === EthereumChainId.Goerli) {
+      throw new Web3Exception(
+        'Please change your Metamask network to Goerli Test Network'
+      )
+    }
+
     throw new Web3Exception(
-      `Please change your Metamask network to ${
-        chainId === EthereumChainId.Kovan
-          ? 'Kovan Test Network'
-          : 'Ethereum Mainnet'
-      }`
+      'Please change your Metamask network to Ethereum Mainnet'
     )
   }
 }

@@ -87,7 +87,7 @@
       />
     </td>
 
-    <td class="h-8 text-right font-mono">
+    <td v-if="!isBinaryOptionsPage" class="h-8 text-right font-mono">
       <span
         v-if="leverage.gte(0)"
         class="flex items-center justify-end"
@@ -152,7 +152,7 @@ import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
 import {
   UiDerivativeLimitOrder,
-  UiDerivativeMarketWithToken,
+  UiBinaryOptionsMarketWithToken,
   DerivativeOrderSide,
   ZERO_IN_BASE,
   getTokenLogoWithVendorPathPrefix
@@ -161,6 +161,7 @@ import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
+import { getMarketRoute } from '~/app/utils/market'
 
 export default Vue.extend({
   props: {
@@ -180,14 +181,18 @@ export default Vue.extend({
   },
 
   computed: {
-    markets(): UiDerivativeMarketWithToken[] {
-      return this.$accessor.derivatives.markets
+    markets(): UiBinaryOptionsMarketWithToken[] {
+      return this.$accessor.derivatives.binaryOptionsMarkets
     },
 
-    market(): UiDerivativeMarketWithToken | undefined {
+    market(): UiBinaryOptionsMarketWithToken | undefined {
       const { markets, order } = this
 
       return markets.find((m) => m.marketId === order.marketId)
+    },
+
+    isBinaryOptionsPage(): boolean {
+      return this.$route.name === 'binary-options-binaryOption'
     },
 
     isReduceOnly(): boolean {
@@ -343,13 +348,7 @@ export default Vue.extend({
         return
       }
 
-      return this.$router.push({
-        name: 'derivatives-derivative',
-        params: {
-          marketId: market.marketId,
-          derivative: market.slug
-        }
-      })
+      return this.$router.push({ ...getMarketRoute(market) })
     }
   }
 })
