@@ -35,28 +35,6 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </TextInfo>
 
-        <TextInfo
-          v-if="!orderTypeBuy"
-          :title="$t('trade.est_receiving_amount')"
-          class="mt-2"
-        >
-          <IconInfoTooltip
-            slot="context"
-            class="ml-2"
-            :tooltip="$t('trade.est_receiving_amount_note')"
-          />
-          <span
-            v-if="notionalValue.gt(0)"
-            class="font-mono flex items-start break-all"
-          >
-            {{ notionalValueToFormat }}
-            <span class="text-gray-500 ml-1 break-normal">
-              {{ market.quoteToken.symbol }}
-            </span>
-          </span>
-          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </TextInfo>
-
         <TextInfo :title="$t('trade.taker_rate')" class="mt-2">
           <IconInfoTooltip
             slot="context"

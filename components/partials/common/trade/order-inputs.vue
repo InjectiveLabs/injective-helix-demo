@@ -606,7 +606,7 @@ export default Vue.extend({
     },
 
     onPriceChange(price: string = '') {
-      const { hasAmount, market, isSpot } = this
+      const { hasAmount, market, isSpot, averagePriceOption } = this
 
       if (!market) {
         return
@@ -620,6 +620,12 @@ export default Vue.extend({
       this.inputPrice = formattedPrice
 
       this.$emit('update:price', formattedPrice)
+
+      if (averagePriceOption === AveragePriceOptions.Percentage) {
+        this.$percentageOptions.updateBaseAmountBasedOnPercentage()
+        this.$percentageOptions.updateQuoteAmountBasedOnPercentage()
+        return
+      }
 
       if (hasAmount) {
         isSpot

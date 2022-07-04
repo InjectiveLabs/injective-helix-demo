@@ -73,7 +73,7 @@ export default {
       'The execution price for your order deviates at least {percentage}% than the last traded price. Click confirm if you still want to execute it.',
     order_price_low_warn: 'Order price is too low',
     order_price_high_warn: 'Order price is too high',
-    max_leverage_warn: 'Please decrease leverage.',
+    max_leverage_warn: 'Please decrease leverage',
     reduce_only_in_excess:
       'Total size of reduce-only orders would exceed size of your position',
     max_leverage: 'Max Leverage:  {max}',
@@ -97,9 +97,6 @@ export default {
       'Mark Price: The oracle price for the base asset.',
     funding_rate_tooltip:
       'The interest rate paid is determined by the difference between the perpetual swap price and the underlying spot price. If the funding rate is positive, traders with long positions will pay traders with short positions. If the funding rate is negative, traders with short positions will pay those in long positions.',
-    est_receiving_amount: 'Est. Receiving Amount (Worst Case)',
-    est_receiving_amount_note:
-      'The lowest amount you can actually receive for the trade.',
     est_fee_rebate: 'Est. Fee Rebate',
     est_fee_rebate_note:
       'The estimated rebate is the rebate that is granted if the limit order is filled as a maker order.',
@@ -233,11 +230,11 @@ export default {
     advanced_settings: 'Advanced Settings',
     slippage_tolerance: 'Slippage Tolerance',
     high_slippage_warning:
-      'Your transaction might get executed at a less desirable price if slippage % is set too high.',
-    invalid_slippage: 'Please enter a valid slippage percentage.',
+      'Your transaction might get executed at a less desirable price if slippage % is set too high',
+    invalid_slippage: 'Please enter a valid slippage percentage',
     low_slippage_tolerance_warning:
-      'Your transaction might not be executed if slippage % is set too low.',
+      'Your transaction might not be executed if slippage % is set too low',
     limited_orderbook_liquidity:
-      'Percentage amounts are limited by the liquidity available on the orderbook.'
+      'Percentage amounts are limited by the liquidity available on the orderbook'
   }
 }
