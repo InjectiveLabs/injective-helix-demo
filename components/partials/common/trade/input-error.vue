@@ -544,7 +544,7 @@ export default Vue.extend({
         return undefined
       }
 
-       if (market.subType === MarketType.BinaryOptions) {
+      if (market.subType === MarketType.BinaryOptions) {
         return undefined
       }
 
@@ -583,7 +583,7 @@ export default Vue.extend({
         isSellAndMarkPriceGreaterThanPrice
       ) {
         return {
-          amount: this.$t('trade.order_insufficient_margin')
+          amount: this.$t('trade.max_leverage_warn')
         }
       }
 
