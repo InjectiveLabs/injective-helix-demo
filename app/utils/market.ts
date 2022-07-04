@@ -98,7 +98,7 @@ export const getAbbreviatedVolume = (value: BigNumberInBase): string => {
 
   if (value.gt(thousand)) {
     return `${value
-      .dividedBy(million)
+      .dividedBy(thousand)
       .toFormat(2, BigNumberInBase.ROUND_DOWN)}K`
   }
 
