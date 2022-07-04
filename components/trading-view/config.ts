@@ -1,3 +1,4 @@
+// @ts-ignore
 import '~/static/chart/datafeeds/udf/build/polyfills.js'
 import { Datafeed } from './datafeed/index'
 import { BASE_URL } from '~/app/utils/constants'

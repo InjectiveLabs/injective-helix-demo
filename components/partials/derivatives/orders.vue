@@ -83,9 +83,11 @@
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import {
+  UiBinaryOptionsMarketWithToken,
   UiDerivativeMarketWithToken,
   UiDerivativeLimitOrder,
-  UiPosition
+  UiPosition,
+  MarketType
 } from '@injectivelabs/sdk-ui-ts'
 import OpenOrders from './orders/index.vue'
 import OpenPositions from './positions/index.vue'
@@ -124,6 +126,10 @@ export default Vue.extend({
       return this.$accessor.derivatives.market
     },
 
+    binaryOptionsMarkets(): UiBinaryOptionsMarketWithToken[] {
+      return this.$accessor.derivatives.binaryOptionsMarkets
+    },
+
     orders(): UiDerivativeLimitOrder[] {
       return this.$accessor.derivatives.subaccountOrders
     },
@@ -147,15 +153,57 @@ export default Vue.extend({
     },
 
     filteredOrders(): UiDerivativeLimitOrder[] {
-      const { currentMarketOnly, orders, currentMarketOrders } = this
+      const {
+        market,
+        binaryOptionsMarkets,
+        currentMarketOnly,
+        orders,
+        currentMarketOrders
+      } = this
 
-      return currentMarketOnly ? currentMarketOrders : orders
+      if (!market) {
+        return []
+      }
+
+      const filteredOrders = currentMarketOnly ? currentMarketOrders : orders
+
+      return filteredOrders.filter((order) => {
+        if (market.subType !== MarketType.BinaryOptions) {
+          return order
+        }
+
+        return binaryOptionsMarkets.some(
+          (market) => market.marketId === order.marketId
+        )
+      })
     },
 
     filteredPositions(): UiPosition[] {
-      const { currentMarketOnly, positions, currentMarketPositions } = this
+      const {
+        market,
+        binaryOptionsMarkets,
+        currentMarketOnly,
+        positions,
+        currentMarketPositions
+      } = this
 
-      return currentMarketOnly ? currentMarketPositions : positions
+      if (!market) {
+        return []
+      }
+
+      const filteredPositions = currentMarketOnly
+        ? currentMarketPositions
+        : positions
+
+      return filteredPositions.filter((position) => {
+        if (market.subType !== MarketType.BinaryOptions) {
+          return position
+        }
+
+        return binaryOptionsMarkets.some(
+          (market) => market.marketId === position.marketId
+        )
+      })
     }
   },
 

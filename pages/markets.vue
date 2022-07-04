@@ -10,10 +10,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import {
+  UiBinaryOptionsMarketWithToken,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiSpotMarketSummary,
-  UiSpotMarketWithToken
+  UiSpotMarketWithToken,
+  zeroDerivativeMarketSummary
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import Markets from '~/components/partials/markets/index.vue'
@@ -83,7 +85,11 @@ export default Vue.extend({
       return this.$accessor.token.tokenUsdPriceMap
     },
 
-    markets(): Array<UiSpotMarketWithToken | UiDerivativeMarketWithToken> {
+    markets(): Array<
+      | UiSpotMarketWithToken
+      | UiDerivativeMarketWithToken
+      | UiBinaryOptionsMarketWithToken
+    > {
       const {
         spotMarkets,
         derivativeMarkets,
@@ -111,7 +117,13 @@ export default Vue.extend({
         ...derivativeMarketsSummary,
         ...spotMarketsSummary,
         ...upcomingMarketSummaries,
-        ...deprecatedMarketSummaries
+        ...deprecatedMarketSummaries,
+        zeroDerivativeMarketSummary(
+          '0x7ba77b6c69c15270bd9235f11a0068f3080017116aa3c57e17c16f49ea13f57f'
+        ) /* TODO remove */,
+        zeroDerivativeMarketSummary(
+          '0x59d526be33d5b00e856903810a5cc7676892f47954267805721614a403862470'
+        ) /* TODO remove */
       ]
     },
 

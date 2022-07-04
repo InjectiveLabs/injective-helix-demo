@@ -5,42 +5,50 @@ export const networksMeta = [
   {
     text: 'Injective',
     value: BridgingNetwork.Injective,
-    icon: '/bridgingNetworks/injective.png'
+    icon: '/bridgingNetworks/injective.png',
+    symbol: 'injective-v3.svg'
   },
   {
     text: 'Ethereum',
     value: BridgingNetwork.Ethereum,
-    icon: '/bridgingNetworks/ethereum.png'
+    icon: '/bridgingNetworks/ethereum.png',
+    symbol: 'ethereum.svg'
   },
   {
     text: 'CosmosHub',
     value: BridgingNetwork.CosmosHub,
-    icon: '/bridgingNetworks/cosmosHub.png'
+    icon: '/bridgingNetworks/cosmosHub.png',
+    symbol: 'atom.svg'
   },
   {
     text: 'Terra',
     value: BridgingNetwork.Terra,
-    icon: '/bridgingNetworks/terra.png'
+    icon: '/bridgingNetworks/terra.png',
+    symbol: 'luna.png'
   },
   {
     text: 'Osmosis',
     value: BridgingNetwork.Osmosis,
-    icon: '/bridgingNetworks/osmosis.png'
+    icon: '/bridgingNetworks/osmosis.png',
+    symbol: 'osmo.png'
   },
   {
     text: 'Chihuahua',
     value: BridgingNetwork.Chihuahua,
-    icon: '/bridgingNetworks/chihuahua.jpeg'
+    icon: '/bridgingNetworks/chihuahua.jpeg',
+    symbol: 'chihuahua.jpeg'
   },
   {
     text: 'Evmos',
     value: BridgingNetwork.Evmos,
-    icon: '/bridgingNetworks/evmos.png'
+    icon: '/bridgingNetworks/evmos.png',
+    symbol: 'evmos.svg'
   },
   {
     text: 'Persistence',
     value: BridgingNetwork.Persistence,
-    icon: '/bridgingNetworks/persistence.png'
+    icon: '/bridgingNetworks/persistence.png',
+    symbol: 'xprt.svg'
   },
   /*
   {
@@ -52,12 +60,14 @@ export const networksMeta = [
   {
     text: 'Axelar',
     value: BridgingNetwork.Axelar,
-    icon: '/bridgingNetworks/axelar.jpeg'
+    icon: '/bridgingNetworks/axelar.jpeg',
+    symbol: 'axelar.jpeg'
   },
   {
     text: 'Moonbeam',
     value: BridgingNetwork.Moonbeam,
-    icon: '/bridgingNetworks/moonbeam.png'
+    icon: '/bridgingNetworks/moonbeam.png',
+    symbol: 'injective.png'
   }
 ] as NetworkMeta[]
 

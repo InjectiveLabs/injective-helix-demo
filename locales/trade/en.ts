@@ -197,7 +197,8 @@ export default {
     convert: {
       connect_wallet: 'Connect Wallet',
       insufficient_balance: 'Insufficient Balance',
-      insufficient_balance_verbose: 'Insufficient {symbol} balance for this conversion. Please top up your trading account.',
+      insufficient_balance_verbose:
+        'Insufficient {symbol} balance for this conversion. Please top up your trading account.',
       insufficient_liquidity: 'Insufficient Liquidity',
       convert_success: 'Converted Successfully',
       convert_failed: 'Conversion Failed',
@@ -210,10 +211,13 @@ export default {
       current_rate: 'Current',
       advanced_settings: 'Advanced Settings',
       slippage_tolerance: 'Slippage Tolerance',
-      slippage_tolerance_tooltip: 'Your transaction will be automatically cancelled if the price changes unfavorably by more than this percentage.',
+      slippage_tolerance_tooltip:
+        'Your transaction will be automatically cancelled if the price changes unfavorably by more than this percentage.',
       slippage_too_high: 'Slippage % can not be higher than 50%.',
-      high_slippage_warning: 'Your transaction might be executed at a less desirable price if slippage % is set too high.',
-      low_slippage_warning: 'Your transaction might not be executed if slippage % is set too low.',
+      high_slippage_warning:
+        'Your transaction might be executed at a less desirable price if slippage % is set too high.',
+      low_slippage_warning:
+        'Your transaction might not be executed if slippage % is set too low.',
       slippage_auto: 'Auto',
       go_to_portfolio: 'Go to Portfolio',
       go_to_hub: 'Injective Hub',
@@ -221,7 +225,13 @@ export default {
       minimum_received: 'Minimum Received',
       fetching_price: 'Fetching price',
       reset_to_default_pair: 'Invalid pair {pair}, resetting to USDT/INJ',
-      invalid_token_symbol_warning: 'Invalid token {symbol}, defaulting to {defaultSymbol}.'
+      invalid_token_symbol_warning:
+        'Invalid token {symbol}, defaulting to {defaultSymbol}.'
+    },
+
+    binaryOptions: {
+      settlement: 'Settlement',
+      settlement_tooltip: 'Settlement Tooltip'
     }
   }
 }
