@@ -1,11 +1,16 @@
 <template>
   <div>
     <div
-      ref="views"
-      class="flex md:grid grid-cols-12 gap-6 overflow-x-auto hide-scrollbar"
-      @scroll="handleScroll"
+      class="overflow-x-hidden hide-scrollbar"
+      @mouseenter="handleMouseEnter"
+      @mouseleave="handleMouseLeave"
+      @touchstart="handleTouchStart"
+      @touchend="handleTouchEnd"
+      @touchmove="handleTouchMove"
     >
-      <slot></slot>
+      <div ref="views" class="flex md:grid grid-cols-12 gap-6 views">
+        <slot></slot>
+      </div>
     </div>
     <div class="flex gap-2 justify-center mt-4 md:hidden">
       <HorizontalScrollViewIndicator
@@ -21,9 +26,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import HorizontalScrollViewIndicator from './horizontal-scroll-view-indicator.vue'
-import { lerp, Easings } from '~/app/utils/animation'
 
-const ANIMATION_DURATION_IN_SECONDS: number = 0.5
+interface Vector {
+  x: number
+  y: number
+  z: number
+}
 
 export default Vue.extend({
   components: {
@@ -34,75 +42,171 @@ export default Vue.extend({
     return {
       viewCount: 0,
       viewIndex: 0,
-      currentOffset: 0,
-      targetOffset: 0,
-      hasReachedTargetOffset: true,
-      start: performance.now(),
-      rafHandle: undefined as any
+      hasFocus: false,
+      lastKnownOffsetX: 0,
+      currentOffsetX: 0,
+      touchStartX: 0,
+      animationTimeout: undefined as any
     }
   },
 
   mounted() {
-    window.addEventListener('resize', this.updateChildCount)
+    window.addEventListener('wheel', this.handleScroll)
+    window.addEventListener('resize', this.handleResize)
 
-    this.animate()
-
-    Vue.nextTick(this.updateChildCount)
+    this.$nextTick(this.updateViewCount)
   },
 
   beforeDestroy() {
-    window.removeEventListener('resize', this.updateChildCount)
+    window.removeEventListener('wheel', this.handleScroll)
+    window.removeEventListener('resize', this.handleResize)
   },
 
   methods: {
-    handleScroll(e: Event): void {
-      const target = e.target as HTMLElement
-      const offset = target.scrollLeft
-      const viewWidth = target.clientWidth
-      const total = target.scrollWidth - viewWidth
+    handleResize(): void {
+      this.updateViewCount()
+    },
 
-      this.viewIndex = Math.round((offset / total) * 2)
+    handleScroll(e: WheelEvent): void {
+      if (this.hasFocus) {
+        const views = this.$refs.views as HTMLElement
+        const total = views.scrollWidth - views.clientWidth
+        const deltaX = e.deltaX
+
+        let newOffsetX = this.currentOffsetX - deltaX
+        newOffsetX = Math.max(newOffsetX, 0)
+        newOffsetX = Math.min(newOffsetX, total)
+
+        this.currentOffsetX = newOffsetX
+
+        this.updateOffset(newOffsetX)
+        this.updateIndicators(newOffsetX)
+      }
+    },
+
+    handleTouchMove(e: TouchEvent): void {
+      e.preventDefault()
+      if (this.hasFocus) {
+        const views = this.$refs.views as HTMLElement
+        const startX = this.touchStartX
+        const currentX = this.getTouchPositionX(e)
+        const offsetX = currentX - startX
+        const total = views.scrollWidth - views.clientWidth
+        const newOffsetX = this.clamp(this.currentOffsetX - offsetX, 0, total)
+
+        this.updateOffset(newOffsetX)
+        this.updateIndicators(newOffsetX)
+      }
     },
 
     handleScrollToIndex(index: number): void {
-      const target = this.$refs.views as HTMLElement
-      const viewWidth = target.clientWidth
-      const total = target.scrollWidth - viewWidth
+      const views = this.$refs.views as HTMLElement
+      const total = views.scrollWidth
+      const totalViewWidth = views.clientWidth * this.viewCount
+      const totalPadding = total - totalViewWidth
+      const padding = totalPadding / (this.viewCount - 1)
+      const newOffsetX = views.clientWidth * index + padding * index
 
-      this.currentOffset = target.scrollLeft
-      this.targetOffset = (index / 2) * total
+      this.updateAnimationClasses()
 
-      this.animate()
+      this.currentOffsetX = newOffsetX
+      this.lastKnownOffsetX = newOffsetX
+
+      this.updateOffset(newOffsetX)
+      this.updateIndicators(newOffsetX)
     },
 
-    animate(): void {
-      this.start = performance.now()
-      this.rafHandle = window.requestAnimationFrame(this.animationLoop)
+    handleMouseEnter(): void {
+      this.currentOffsetX = this.lastKnownOffsetX
+      this.hasFocus = true
     },
 
-    animationLoop(now: number): void {
-      const { currentOffset, targetOffset, start } = this
-
-      const target = this.$refs.views as HTMLElement
-      const deltaTime = (now - start) * 0.001
-      const t = Math.min(deltaTime / ANIMATION_DURATION_IN_SECONDS, 1)
-
-      target.scrollLeft = lerp(currentOffset, targetOffset, Easings.easeInOut(t))
-
-      if (t < 1) {
-        this.rafHandle = window.requestAnimationFrame(this.animationLoop)
-      } else {
-        window.cancelAnimationFrame(this.rafHandle)
-      }
+    handleMouseLeave(): void {
+      this.hasFocus = false
+      this.lastKnownOffsetX = this.currentOffsetX
     },
 
-    updateChildCount(): void {
-      const viewsElement = this.$refs.views as HTMLElement
+    handleTouchStart(e: TouchEvent): void {
+      this.currentOffsetX = this.lastKnownOffsetX
+      this.touchStartX = this.getTouchPositionX(e)
+      this.hasFocus = true
+    },
 
-      if (viewsElement) {
-        this.viewCount = viewsElement.children.length
-      }
+    handleTouchEnd(): void {
+      this.hasFocus = false
+
+      const views = this.$refs.views as HTMLElement
+      this.lastKnownOffsetX = this.currentOffsetX = views.style.transform
+        ? this.translationToVector(views.style.transform).x * -1
+        : 0
+    },
+
+    updateOffset(offset: number) {
+      const views = this.$refs.views as HTMLElement
+
+      views.style.transform = `translate3d(${offset * -1}px, 0, 0)`
+    },
+
+    updateIndicators(offsetX: number) {
+      const { viewCount } = this
+      const views = this.$refs.views as HTMLElement
+      const total = views.scrollWidth
+
+      this.viewIndex = Math.round((offsetX / total) * viewCount)
+    },
+
+    updateAnimationClasses() {
+      const views = this.$refs.views as HTMLElement
+
+      views.classList.add('animated')
+
+      clearTimeout(this.animationTimeout)
+
+      this.animationTimeout = setTimeout(() => {
+        views.classList.remove('animated')
+      }, 200)
+    },
+
+    updateViewCount() {
+      const views = this.$refs.views as HTMLElement
+
+      this.viewCount = views.children.length
+    },
+
+    translationToVector(translation: string): Vector {
+      const values = translation
+        .split(/\w+\(|\);?/gim)[1]
+        .split(/,\s?/g)
+        .map(parseFloat)
+
+      const x = values[0] || 0
+      const y = values[1] || 0
+      const z = values[2] || 0
+
+      return { x, y, z }
+    },
+
+    getTouchPositionX(e: TouchEvent): number {
+      const touch = e.touches[0] || e.changedTouches[0]
+
+      return touch.pageX
+    },
+
+    clamp(val: number, min: number, max: number) {
+      return Math.min(Math.max(val, min), max)
     }
   }
 })
 </script>
+
+<style lang="scss" scoped>
+.views {
+  transform: translate3d(0, 0, 0);
+  transform-origin: top left;
+  will-change: transform;
+
+  &.animated {
+    transition: transform 200ms ease-in-out;
+  }
+}
+</style>
