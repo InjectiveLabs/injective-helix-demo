@@ -91,8 +91,7 @@ jobs:
       APP_NETWORK: testnetK8s
       APP_ENV: testnet
       APP_CHAIN_ID: injective-888
-      APP_ETHEREUM_CHAIN_ID: 42
-      ## APP_ETHEREUM_CHAIN_ID: 5 - TODO GOERLI
+      APP_ETHEREUM_CHAIN_ID: 5
       SOURCE_DIR: dist
       DEST_DIR: www
 
