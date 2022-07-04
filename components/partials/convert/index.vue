@@ -1,56 +1,17 @@
 <template>
   <div class="bg-gray-800 rounded-xl py-8">
     <div class="px-8 w-full">
-      <!-- <div class="flex items-center justify-center">
-        <VButton
-          class="text-center rounded-3xl focus:outline-none px-2 py-1 text-xs font-bold tracking-wide text-primary-500 hover:text-primary-600"
-          :class="{ 'text-gray-500': !tradingTypeMarket }"
-          @click.stop="onTradingTypeToggle(TradeExecutionType.Market)"
-        >
-          {{ $t('trade.market') }}
-        </VButton>
-        <div class="mx-2 w-px h-4 bg-gray-500"></div>
-        <VButton
-          class="text-center rounded-3xl focus:outline-none px-2 py-1 text-xs font-bold tracking-wide text-primary-500 hover:text-primary-600"
-          :class="{ 'text-gray-500': tradingTypeMarket }"
-          @click.stop="onTradingTypeToggle(TradeExecutionType.LimitFill)"
-        >
-          {{ $t('trade.limit') }}
-        </VButton>
-      </div> -->
       <div class="flex items-center justify-between mb-8">
         <span class="font-bold text-lg">
           {{ $t('trade.convert.convert') }}
         </span>
-        <button
-          id="convert-settings-dropdown-target"
-          type="button"
-          @click="toggleConvertSettingsModal"
-        >
-          <IconCogwheel
-            class="cursor-pointer hover:text-primary-500"
-            :class="
-              convertSettingsModalActive ? 'text-primary-500' : 'text-gray-500'
-            "
-          />
-        </button>
-        <PopperBox
-          ref="convert-settings-dropdown"
-          class="popper rounded-lg flex flex-col flex-wrap text-xs absolute bg-gray-800 p-4 z-1110 border border-primary-500 shadow-lg w-[calc(100%-6rem)] xs:w-96"
-          binding-element="#convert-settings-dropdown-target"
-          :options="popperOptions"
-          hide-arrow
-          disable-auto-close
-          @close="hideConvertSettingsModal"
-        >
-          <AdvancedSettings
-            :status="status"
-            :warnings="slippageWarnings"
-            :errors="slippageErrors"
-            :slippage-tolerance="form.slippageTolerance"
-            @set:slippageTolerance="setSlippageTolerance"
-          />
-        </PopperBox>
+        <AdvancedSettings
+          :status="status"
+          :warnings="slippageWarnings"
+          :errors="slippageErrors"
+          :slippage-tolerance="form.slippageTolerance"
+          @set-slippage-tolerance="setSlippageTolerance"
+        />
       </div>
       <div>
         <TokenSelector
@@ -65,31 +26,12 @@
           :prefix="orderTypeBuy ? '&asymp;' : null"
           :usd-price="fromUsdPrice"
           :step="orderTypeBuy ? priceStep : amountStep"
+          :max-decimals="maxDecimalsFrom"
           @input:amount="onSetAmount"
           @input:token="onSetFromToken"
           @input:max="onMaxInput"
         />
         <div class="flex justify-between items-center -my-2">
-          <!-- <div v-if="!tradingTypeMarket" class="w-full -mt-2">
-            <VInput
-              ref="input-price"
-              v-model="form.price"
-              :placeholder="priceStep"
-              :disabled="tradingTypeMarket"
-              type="number"
-              :step="priceStep"
-              :max-decimals="market ? market.quoteToken.decimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS"
-              :max-label="'trade.convert.current_rate'"
-              min="0"
-              @blur="onPriceBlur"
-              @input="onPriceChange"
-              @input-max="setRateToLastTradePrice"
-            >
-              <template slot="addon">
-                <span class="text-2xs md:text-xs font-semibold uppercase tracking-wider text-gray-500">{{ $t('trade.convert.rate') }}</span>
-              </template>
-            </VInput>
-          </div> -->
           <button
             type="button"
             class="rounded-full z-1000 flex items-center justify-center min-w-[32px] w-8 h-8 bg-primary-600 hover:bg-primary-500 relative mx-auto"
@@ -111,13 +53,14 @@
           :prefix="orderTypeBuy ? null : '≈'"
           :validation-rules="'positiveNumber'"
           :step="orderTypeBuy ? amountStep : priceStep"
+          :max-decimals="maxDecimalsTo"
           disable-max-selector
           @input:amount="onSetToAmount"
           @input:token="onSetToToken"
         />
       </div>
       <ConvertDetails
-        v-if="fromToken && toToken"
+        v-if="market && fromToken && toToken"
         :pending="pricesPending"
         :from-token="fromToken"
         :to-token="toToken"
@@ -129,7 +72,6 @@
         :order-type="orderType"
         :slippage="slippage"
         :fee-rate="feeRate"
-        :calculate-execution-price-for-amount="calculateExecutionPriceForAmount"
       />
       <div class="mt-6">
         <VButton
@@ -193,24 +135,25 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import {
   cosmosSdkDecToBigNumber,
-  getDecimalsFromNumber,
-  FeeDiscountAccountInfo
+  FeeDiscountAccountInfo,
+  getDecimalsFromNumber
 } from '@injectivelabs/sdk-ts'
 import { Token } from '@injectivelabs/token-metadata'
 import TokenSelector from './token-selector.vue'
 import AdvancedSettings from './advanced-settings.vue'
 import ConvertDetails from './convert-details.vue'
 import ConvertErrors from './convert-errors.vue'
-import PopperBox from '~/components/elements/popper-box.vue'
+import {
+  ConvertTradeError,
+  ConvertTradeErrorLinkType,
+  ConvertForm
+} from './types'
 import {
   DEFAULT_MARKET_PRICE_WARNING_DEVIATION,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   DEFAULT_MAX_SLIPPAGE,
-  IS_TESTNET,
-  IS_DEVNET,
-  IS_STAGING
+  ONE_IN_BASE
 } from '~/app/utils/constants'
 import ModalInsufficientInjForGas from '~/components/partials/modals/insufficient-inj-for-gas.vue'
 import { Modal } from '~/types'
@@ -221,26 +164,7 @@ import {
 } from '~/app/client/utils/spot'
 import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 
-interface TradeForm {
-  amount: string
-  toAmount: string
-  price: string
-  slippageTolerance: string
-}
-
-enum ConvertTradeErrorLinkType {
-  None = 0,
-  Portfolio = 1,
-  Hub = 2
-}
-
-interface ConvertTradeError extends TradeError {
-  linkType: ConvertTradeErrorLinkType
-}
-
-const ONE_IN_BASE = new BigNumberInBase(1)
-
-const initialForm = (): TradeForm => ({
+const initialForm = (): ConvertForm => ({
   amount: '',
   toAmount: '',
   price: '',
@@ -253,8 +177,7 @@ export default Vue.extend({
     TokenSelector,
     AdvancedSettings,
     ConvertDetails,
-    ConvertErrors,
-    PopperBox
+    ConvertErrors
   },
 
   data() {
@@ -263,14 +186,12 @@ export default Vue.extend({
       TradeExecutionType,
       SpotOrderSide,
       UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-      tradingType: TradeExecutionType.Market,
       orderType: SpotOrderSide.Buy,
       detailsDrawerOpen: true,
       status: new Status(),
       form: initialForm(),
       fromToken: null as Token | null,
       toToken: null as Token | null,
-      convertSettingsModalActive: false,
       fromUsdPrice: new BigNumberInBase(0).toFormat(
         UI_DEFAULT_MIN_DISPLAY_DECIMALS
       ),
@@ -282,10 +203,6 @@ export default Vue.extend({
   },
 
   computed: {
-    isStagingOrTestnetOrDevnet(): boolean {
-      return IS_TESTNET || IS_DEVNET || IS_STAGING
-    },
-
     fromAmount(): string {
       const { amount } = this.form
 
@@ -320,24 +237,6 @@ export default Vue.extend({
       const { hasErrors, hasEnoughInjForGasOrNotKeplr } = this
 
       return hasErrors || !hasEnoughInjForGasOrNotKeplr
-    },
-
-    $popper(): any {
-      return this.$refs['convert-settings-dropdown']
-    },
-
-    popperOptions(): any {
-      return {
-        placement: 'bottom-end',
-        modifiers: [
-          {
-            name: 'offset',
-            options: {
-              offset: [0, 8]
-            }
-          }
-        ]
-      }
     },
 
     showErrors(): boolean | undefined {
@@ -641,10 +540,10 @@ export default Vue.extend({
     },
 
     executionPrice(): BigNumberInBase {
-      const { orderType, sells, buys, hasAmount, market, slippage, amount } =
+      const { orderTypeBuy, sells, buys, hasAmount, market, slippage, amount } =
         this
 
-      const records = orderType === SpotOrderSide.Buy ? sells : buys
+      const records = orderTypeBuy ? sells : buys
 
       if (!market || !hasAmount || records.length === 0) {
         return ZERO_IN_BASE
@@ -662,17 +561,33 @@ export default Vue.extend({
     },
 
     executionPriceWithoutSlippage(): BigNumberInBase {
-      const { orderType, sells, buys, hasAmount, market, amount } = this
+      const {
+        orderTypeBuy,
+        sells,
+        buys,
+        hasAmount,
+        market,
+        fromAmount,
+        toAmount
+      } = this
 
-      const records = orderType === SpotOrderSide.Buy ? sells : buys
+      const records = orderTypeBuy ? sells : buys
 
       if (!market || !hasAmount || records.length === 0) {
         return ZERO_IN_BASE
       }
 
+      const fromAmountAsNumber =
+        fromAmount !== '' ? new BigNumberInBase(fromAmount) : ZERO_IN_BASE
+
+      const toAmountAsNumber =
+        toAmount !== '' ? new BigNumberInBase(toAmount) : ZERO_IN_BASE
+
+      const quantity = orderTypeBuy ? toAmountAsNumber : fromAmountAsNumber
+
       const averagePrice = calculateAverageExecutionPriceFromOrderbook({
         records,
-        amount,
+        amount: quantity,
         market
       })
 
@@ -680,45 +595,33 @@ export default Vue.extend({
     },
 
     worstPrice(): BigNumberInBase {
-      const { orderType, slippage, sells, buys, hasAmount, market, amount } =
+      const { orderTypeBuy, slippage, sells, buys, hasAmount, market, amount } =
         this
 
       if (!market || !hasAmount) {
         return ZERO_IN_BASE
       }
 
-      const records = orderType === SpotOrderSide.Buy ? sells : buys
+      const records = orderTypeBuy ? sells : buys
 
-      const worstPrice = calculateWorstExecutionPriceFromOrderbook({
-        records,
-        amount,
-        market
-      })
-
-      return new BigNumberInBase(
-        worstPrice.times(slippage).toFixed(market.priceDecimals)
-      )
-    },
-
-    worstPriceFromQuote(): BigNumberInBase {
-      const { orderType, slippage, sells, buys, hasAmount, market, amount } =
-        this
-
-      if (!market || !hasAmount) {
-        return ZERO_IN_BASE
-      }
-
-      const records = orderType === SpotOrderSide.Buy ? sells : buys
-
-      const worstPrice =
-        calculateWorstExecutionPriceUsingQuoteAmountAndOrderbook({
-          records,
-          market,
-          amount
-        })
+      const worstPrice = orderTypeBuy
+        ? calculateWorstExecutionPriceUsingQuoteAmountAndOrderbook({
+            records,
+            market,
+            amount
+          })
+        : calculateWorstExecutionPriceFromOrderbook({
+            records,
+            amount,
+            market
+          })
 
       return new BigNumberInBase(
-        worstPrice.times(slippage).toFixed(market.quantityDecimals)
+        worstPrice
+          .times(slippage)
+          .toFixed(
+            orderTypeBuy ? market.quantityDecimals : market.priceDecimals
+          )
       )
     },
 
@@ -778,6 +681,22 @@ export default Vue.extend({
       }
 
       return '1'
+    },
+
+    maxDecimalsFrom(): number {
+      const { orderTypeBuy, priceStep, amountStep } = this
+
+      return getDecimalsFromNumber(
+        Number(orderTypeBuy ? priceStep : amountStep)
+      )
+    },
+
+    maxDecimalsTo(): number {
+      const { orderTypeBuy, priceStep, amountStep } = this
+
+      return getDecimalsFromNumber(
+        Number(orderTypeBuy ? amountStep : priceStep)
+      )
     },
 
     executionPriceHasHighDeviationWarning(): boolean {
@@ -842,15 +761,20 @@ export default Vue.extend({
     },
 
     notEnoughOrdersToFillFromError(): ConvertTradeError | undefined {
-      const { orderTypeBuy, sells, buys, amount, hasAmount } = this
+      const { orderTypeBuy, sells, buys, hasAmount, fromAmount, toAmount } =
+        this
 
       if (!hasAmount) {
         return
       }
 
+      const quantity = orderTypeBuy
+        ? new BigNumberInBase(toAmount)
+        : new BigNumberInBase(fromAmount)
+
       const orders = orderTypeBuy ? sells : buys
 
-      if (orders.length <= 0 && amount.gt(0)) {
+      if (orders.length <= 0 && quantity.gt(0)) {
         return {
           amount: this.$t('trade.not_enough_fillable_orders'),
           linkType: ConvertTradeErrorLinkType.None
@@ -971,7 +895,14 @@ export default Vue.extend({
     },
 
     hasErrors(): boolean {
-      const { priceError, amountError, hasAmount, amount } = this
+      const {
+        priceError,
+        amountError,
+        hasAmount,
+        amount,
+        fromAmount,
+        toAmount
+      } = this
 
       if (priceError) {
         return true
@@ -986,6 +917,10 @@ export default Vue.extend({
       }
 
       if (amount.lte(0)) {
+        return true
+      }
+
+      if (fromAmount === '' || toAmount === '') {
         return true
       }
 
@@ -1006,176 +941,6 @@ export default Vue.extend({
       const { executionPrice, amount, feeRate } = this
 
       return executionPrice.times(amount.times(feeRate))
-    },
-
-    makerExpectedPts(): BigNumberInBase {
-      const { market, makerFeeRate, tradingRewardsCampaign, fees } = this
-
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      if (makerFeeRate.lte(0)) {
-        return ZERO_IN_BASE
-      }
-
-      if (!tradingRewardsCampaign) {
-        return ZERO_IN_BASE
-      }
-
-      if (!tradingRewardsCampaign.tradingRewardCampaignInfo) {
-        return ZERO_IN_BASE
-      }
-
-      const disqualified =
-        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-          (marketId) => marketId === market.marketId
-        )
-
-      if (disqualified) {
-        return ZERO_IN_BASE
-      }
-
-      const denomIncluded =
-        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-          (denom) => denom === market.quoteDenom
-        )
-
-      if (!denomIncluded) {
-        return ZERO_IN_BASE
-      }
-
-      const boostedList = tradingRewardsCampaign.tradingRewardCampaignInfo
-        .tradingRewardBoostInfo
-        ? tradingRewardsCampaign.tradingRewardCampaignInfo
-            .tradingRewardBoostInfo.boostedSpotMarketIdsList
-        : []
-
-      const multipliersList = tradingRewardsCampaign.tradingRewardCampaignInfo
-        .tradingRewardBoostInfo
-        ? tradingRewardsCampaign.tradingRewardCampaignInfo
-            .tradingRewardBoostInfo.spotMarketMultipliersList
-        : []
-
-      const boosted = boostedList.findIndex(
-        (spotMarketId) => spotMarketId === market.marketId
-      )
-
-      const boostedMultiplier =
-        boosted >= 0
-          ? cosmosSdkDecToBigNumber(
-              multipliersList[boosted]
-                ? multipliersList[boosted].makerPointsMultiplier
-                : 1
-            )
-          : 1
-
-      return new BigNumberInBase(fees).times(boostedMultiplier)
-    },
-
-    takerExpectedPts(): BigNumberInBase {
-      const { market, tradingRewardsCampaign, fees } = this
-
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      if (!tradingRewardsCampaign) {
-        return ZERO_IN_BASE
-      }
-
-      if (!tradingRewardsCampaign.tradingRewardCampaignInfo) {
-        return ZERO_IN_BASE
-      }
-
-      const disqualified =
-        tradingRewardsCampaign.tradingRewardCampaignInfo.disqualifiedMarketIdsList.find(
-          (marketId) => marketId === market.marketId
-        )
-
-      if (disqualified) {
-        return ZERO_IN_BASE
-      }
-
-      const denomIncluded =
-        tradingRewardsCampaign.tradingRewardCampaignInfo.quoteDenomsList.find(
-          (denom) => denom === market.quoteDenom
-        )
-
-      if (!denomIncluded) {
-        return ZERO_IN_BASE
-      }
-
-      const boostedList = tradingRewardsCampaign.tradingRewardCampaignInfo
-        .tradingRewardBoostInfo
-        ? tradingRewardsCampaign.tradingRewardCampaignInfo
-            .tradingRewardBoostInfo.boostedSpotMarketIdsList
-        : []
-
-      const multipliersList = tradingRewardsCampaign.tradingRewardCampaignInfo
-        .tradingRewardBoostInfo
-        ? tradingRewardsCampaign.tradingRewardCampaignInfo
-            .tradingRewardBoostInfo.spotMarketMultipliersList
-        : []
-
-      const boosted = boostedList.findIndex(
-        (spotMarketId) => spotMarketId === market.marketId
-      )
-
-      const boostedMultiplier =
-        boosted >= 0
-          ? cosmosSdkDecToBigNumber(
-              multipliersList[boosted]
-                ? multipliersList[boosted].takerPointsMultiplier
-                : 1
-            )
-          : 1
-
-      return new BigNumberInBase(fees).times(boostedMultiplier)
-    },
-
-    totalWithFees(): BigNumberInBase {
-      const { fees, total, market } = this
-
-      if (total.isNaN() || total.lte(0) || !market) {
-        return ZERO_IN_BASE
-      }
-
-      return fees.plus(total)
-    },
-
-    totalWithoutFees(): BigNumberInBase {
-      const { fees, total, market } = this
-
-      if (total.isNaN() || total.lte(0) || !market) {
-        return ZERO_IN_BASE
-      }
-
-      return total.minus(fees)
-    },
-
-    feeReturned(): BigNumberInBase {
-      const { total, takerFeeRate, makerFeeRate, market } = this
-
-      if (total.isNaN() || total.lte(0) || !market) {
-        return ZERO_IN_BASE
-      }
-
-      return total.times(
-        new BigNumberInBase(takerFeeRate).minus(makerFeeRate.abs())
-      )
-    },
-
-    feeRebates(): BigNumberInBase {
-      const { total, makerFeeRate, market } = this
-
-      if (total.isNaN() || !market) {
-        return ZERO_IN_BASE
-      }
-
-      return new BigNumberInBase(total.times(makerFeeRate).abs()).times(
-        0.6 /* Only 60% of the fees are getting returned */
-      )
     },
 
     tokens(): Token[] {
@@ -1238,76 +1003,32 @@ export default Vue.extend({
       )
     },
 
-    amountToFormat(): string {
-      const { amount, orderTypeBuy, market } = this
-
-      if (amount.isNaN()) {
-        return ZERO_IN_BASE.toFormat(
-          orderTypeBuy
-            ? UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-            : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-        )
-      }
-
-      if (!market) {
-        return amount.toFormat(
-          orderTypeBuy
-            ? UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-            : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-        )
-      }
-
-      return amount.toFormat(
-        orderTypeBuy ? market.priceDecimals : market.quantityDecimals
-      )
-    },
-
-    extractedTotal(): BigNumberInBase {
-      const { totalWithFees, amount } = this
-
-      if (amount.isNaN()) {
-        return ZERO_IN_BASE
-      }
-
-      return totalWithFees
-    },
-
-    extractedTotalToFormat(): string {
-      const { extractedTotal, market } = this
-
-      if (!market) {
-        return extractedTotal.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return extractedTotal.toFormat(market.priceDecimals)
-    },
-
     fee(): BigNumberInBase {
       const {
-        amount,
+        orderTypeBuy,
+        fromAmount,
+        toAmount,
         executionPriceWithoutSlippage,
         takerFeeRate,
         takerFeeRateDiscount
       } = this
 
-      if (amount.isNaN()) {
+      const quantity = orderTypeBuy
+        ? new BigNumberInBase(toAmount)
+        : new BigNumberInBase(fromAmount)
+
+      if (quantity.isNaN() || quantity.eq(ZERO_IN_BASE)) {
         return ZERO_IN_BASE
       }
 
       const discount = new BigNumberInBase(1).minus(takerFeeRateDiscount)
 
       const fee = executionPriceWithoutSlippage
-        .times(amount)
+        .times(quantity)
         .times(takerFeeRate)
         .times(discount)
 
       return fee
-    },
-
-    feeToFormat(): string {
-      const { fee } = this
-
-      return fee.toFormat(getDecimalsFromNumber(fee.toNumber()))
     },
 
     wallet(): Wallet {
@@ -1330,22 +1051,6 @@ export default Vue.extend({
   },
 
   watch: {
-    orderType() {
-      const { tradingType, form, market } = this
-
-      if (tradingType === TradeExecutionType.LimitFill && market) {
-        this.onPriceChange(form.price)
-      }
-    },
-
-    tradingType(newTradingType: TradeExecutionType) {
-      const { form, market } = this
-
-      if (newTradingType === TradeExecutionType.LimitFill && market) {
-        this.onPriceChange(form.price)
-      }
-    },
-
     fromToken(token) {
       this.updateOrderType()
       this.updatePrices()
@@ -1396,12 +1101,8 @@ export default Vue.extend({
       this.$accessor.modal.openModal(Modal.InsufficientInjForGas)
     }
 
-    let { from, to } = this.$route.query
-
-    if (!from || !to) {
-      from = 'usdt'
-      to = 'inj'
-    }
+    let from = (this.$route.query.from as string) || 'usdt'
+    let to = (this.$route.query.to as string) || 'inj'
 
     if (!this.isTokenSymbolValid(from)) {
       this.$toast.error(
@@ -1410,7 +1111,6 @@ export default Vue.extend({
           defaultSymbol: 'USDT'
         })
       )
-
       from = 'usdt'
     }
 
@@ -1447,9 +1147,9 @@ export default Vue.extend({
     calculateAverageExecutionPriceWithoutSlippage(
       amount: BigNumberInBase
     ): BigNumberInBase {
-      const { orderType, sells, buys, market } = this
+      const { orderTypeBuy, sells, buys, market } = this
 
-      const records = orderType === SpotOrderSide.Buy ? sells : buys
+      const records = orderTypeBuy ? sells : buys
 
       if (!market || amount.eq(ZERO_IN_BASE) || records.length === 0) {
         return ZERO_IN_BASE
@@ -1509,68 +1209,8 @@ export default Vue.extend({
       return !!market
     },
 
-    onDetailsDrawerToggle(): void {
-      this.detailsDrawerOpen = !this.detailsDrawerOpen
-    },
-
-    onPriceChange(price: string = ''): void {
-      this.form.price = price.toString()
-    },
-
-    onPriceBlur(): void {
-      const { market, form, hasPrice } = this
-
-      if (!market || !hasPrice) {
-        return
-      }
-
-      this.form.price = new BigNumberInBase(form.price || 0).toFixed(
-        market.priceDecimals
-      )
-    },
-
-    onAmountBlur(): void {
-      const { market, form } = this
-
-      if (!market) {
-        return
-      }
-
-      if (form.amount.trim() !== '') {
-        this.form.amount = new BigNumberInBase(form.amount).toFixed(
-          market.quantityDecimals,
-          BigNumberInBase.ROUND_DOWN
-        )
-      }
-    },
-
-    submitLimitOrder(): void {
-      const { orderType, market, price, amount } = this
-
-      if (!market) {
-        return
-      }
-
-      this.status.setLoading()
-
-      this.$accessor.spot
-        .submitLimitOrder({
-          price,
-          quantity: amount,
-          orderType
-        })
-        .then(() => {
-          this.$toast.success(this.$t('trade.convert.convert_success'))
-          this.$set(this, 'form', initialForm())
-        })
-        .catch(this.$onRejected)
-        .finally(() => {
-          this.status.setIdle()
-        })
-    },
-
     submitMarketOrder(): void {
-      const { orderType, market, form } = this
+      const { orderType, orderTypeBuy, market, form } = this
 
       if (!market) {
         return
@@ -1578,25 +1218,16 @@ export default Vue.extend({
 
       this.status.setLoading()
 
-      const decimalPlaces =
-        orderType === SpotOrderSide.Buy
-          ? market.priceDecimals
-          : market.quantityDecimals
+      const price = this.worstPrice
 
-      const price =
-        orderType === SpotOrderSide.Buy
-          ? this.worstPriceFromQuote
-          : this.worstPrice
-
-      const quantity =
-        orderType === SpotOrderSide.Buy
-          ? new BigNumberInBase(form.toAmount)
-          : new BigNumberInBase(form.amount)
+      const quantity = orderTypeBuy
+        ? new BigNumberInBase(form.toAmount)
+        : new BigNumberInBase(form.amount)
 
       this.$accessor.spot
         .submitMarketOrder({
           quantity,
-          price: price.toFixed(decimalPlaces),
+          price,
           orderType
         })
         .then(() => {
@@ -1703,26 +1334,6 @@ export default Vue.extend({
       this.form.amount = fromAmount.toFormat(decimalPlaces)
     },
 
-    calculateExecutionPriceForAmount(amount: BigNumberInBase): BigNumberInBase {
-      const { orderTypeBuy, sells, buys, market, slippage } = this
-
-      if (!market || !amount) {
-        return ZERO_IN_BASE
-      }
-
-      const records = orderTypeBuy ? sells : buys
-
-      const worstPrice = calculateWorstExecutionPriceFromOrderbook({
-        records,
-        amount,
-        market
-      })
-
-      return new BigNumberInBase(
-        worstPrice.times(slippage).toFixed(market.priceDecimals)
-      )
-    },
-
     onMaxInput(max: string): void {
       const { orderTypeBuy, executionPrice, feeRate, market } = this
 
@@ -1781,14 +1392,7 @@ export default Vue.extend({
 
       if (toToken) {
         if (!this.isValidMarket(token, toToken)) {
-          // this.toToken = null
           this.fromToken = token
-          // return
-          // this.fromToken = this.getTokenBySymbol('usdt')
-
-          // if (toToken.denom === 'usdt') {
-          //   this.resetToDefaultMarket()
-          // }
           return
         }
       }
@@ -1808,13 +1412,7 @@ export default Vue.extend({
 
       if (fromToken) {
         if (!this.isValidMarket(fromToken, token)) {
-          // this.fromToken = null
           this.toToken = token
-          // return
-          // this.toToken = this.getTokenBySymbol('usdt')
-          // if (fromToken.denom === 'usdt') {
-          //   this.resetToDefaultMarket()
-          // }
           return
         }
       }
@@ -1951,27 +1549,6 @@ export default Vue.extend({
 
     isValidMarket(fromToken: Token, toToken: Token): boolean {
       return !!this.findMarket(fromToken, toToken)
-    },
-
-    toggleConvertSettingsModal(): void {
-      if (!this.$popper || this.status.isLoading()) {
-        return
-      }
-
-      const isActive = this.$popper.$el.hasAttribute('data-show')
-
-      if (isActive) {
-        this.$popper.hideDropdown()
-        this.convertSettingsModalActive = false
-      } else {
-        this.$popper.showDropdown()
-        this.convertSettingsModalActive = true
-      }
-    },
-
-    hideConvertSettingsModal(): void {
-      this.$popper.hideDropdown()
-      this.convertSettingsModalActive = false
     },
 
     handleClickOrConnect(): void {

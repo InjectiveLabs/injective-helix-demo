@@ -29,6 +29,7 @@ import {
   cancelSubaccountStreams
 } from '~/app/client/streams/account'
 import { backupPromiseCall } from '~/app/utils/async'
+import { derivativeMarketRouteNames } from '~/app/data/market'
 
 const initialStateFactory = () => ({
   subaccountIds: [] as string[],
@@ -177,7 +178,11 @@ export const actions = actionTree(
         await this.app.$accessor.spot.streamSubaccountTrades()
       }
 
-      if (this.app.context.route.name === 'derivatives-derivative') {
+      if (
+        derivativeMarketRouteNames.includes(
+          this.app.context.route.name as string
+        )
+      ) {
         await this.app.$accessor.derivatives.fetchSubaccountOrders()
         await this.app.$accessor.derivatives.fetchSubaccountTrades()
         await this.app.$accessor.derivatives.streamSubaccountOrders()

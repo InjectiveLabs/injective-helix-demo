@@ -19,7 +19,7 @@
 
       <div class="mt-4">
         <TextInfo
-          v-if="!orderTypeReduceOnly"
+          v-if="!orderTypeReduceOnly && !isBinaryOption"
           :title="$t('trade.liquidation_price')"
           class="mt-2"
         >
@@ -105,10 +105,7 @@
                 "
               />
               <IconCheckTooltip
-                v-if="
-                  !marketHasNegativeMakerFee &&
-                  (makerFeeRateDiscount.gt(0) || takerFeeRateDiscount.gt(0))
-                "
+                v-if="makerFeeRateDiscount.gt(0) || takerFeeRateDiscount.gt(0)"
                 class="ml-2 text-primary-500"
                 :tooltip="
                   $t('trade.fees_tooltip_discount', {
@@ -175,11 +172,13 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import {
+  MarketType,
+  UiDerivativeMarketWithToken
+} from '@injectivelabs/sdk-ui-ts'
 import Drawer from '~/components/elements/drawer.vue'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import { Icon } from '~/types'
-import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 
 export default Vue.extend({
   components: {
@@ -294,8 +293,14 @@ export default Vue.extend({
       return this.$accessor.derivatives.market
     },
 
-    tradingRewardsCampaign(): TradingRewardsCampaign | undefined {
-      return this.$accessor.exchange.tradingRewardsCampaign
+    isBinaryOption(): boolean {
+      const { market } = this
+
+      if (!market) {
+        return false
+      }
+
+      return market.subType === MarketType.BinaryOptions
     },
 
     notionalWithLeverageAndFeesToFormat(): string {

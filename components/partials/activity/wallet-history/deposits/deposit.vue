@@ -173,6 +173,10 @@ export default Vue.extend({
         return this.$t('walletHistory.terraDepositType')
       }
 
+      if (transaction.sender.startsWith('evmos')) {
+        return this.$t('walletHistory.evmosDepositType')
+      }
+
       if (
         transaction.sender.startsWith('inj') &&
         transaction.receiver.startsWith('inj')

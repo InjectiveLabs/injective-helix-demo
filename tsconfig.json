@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES2018",
-    "module": "ESNext",
-    "moduleResolution": "Node",
+    "module": "esnext",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "lib": [
       "ESNext",
@@ -42,6 +42,7 @@
   },
   "vueCompilerOptions": {
     "experimentalCompatMode": 2,
+    "target": 2,
     "experimentalTemplateCompilerOptions": {
       "compatConfig": {
         "MODE": 2

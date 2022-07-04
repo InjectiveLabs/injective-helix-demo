@@ -45,6 +45,7 @@
       :slippage-tolerance.sync="form.slippageTolerance"
       @update:priceFromLastTradedPrice="updatePriceFromLastTradedPrice"
     />
+
     <OrderDetailsWrapper
       v-bind="{
         amount,

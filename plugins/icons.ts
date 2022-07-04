@@ -64,6 +64,10 @@ import WalletConnect from '~/components/icons/wallet-connect.vue'
 import Cogwheel from '~/components/icons/cogwheel.vue'
 import Warn from '~/components/icons/warn.vue'
 import ExclamationCircleFill from '~/components/icons/exclamation-circle-fill.vue'
+import GoogleSocial from '~/components/icons/google-social.vue'
+import FacebookSocial from '~/components/icons/facebook-social.vue'
+import TwitterSocial from '~/components/icons/twitter-social.vue'
+import DiscordSocial from '~/components/icons/discord-social.vue'
 
 Vue.component('IconArrow', Arrow)
 Vue.component('IconArrowSwap', ArrowSwap)
@@ -129,3 +133,7 @@ Vue.component('IconYoutubeCircle', YoutubeCircle)
 Vue.component('IconCogwheel', Cogwheel)
 Vue.component('IconWarn', Warn)
 Vue.component('IconExclamationCircleFill', ExclamationCircleFill)
+Vue.component('IconGoogleSocial', GoogleSocial)
+Vue.component('IconFacebookSocial', FacebookSocial)
+Vue.component('IconTwitterSocial', TwitterSocial)
+Vue.component('IconDiscordSocial', DiscordSocial)

@@ -118,7 +118,7 @@
     />
 
     <OrderLeverage
-      v-if="!orderTypeReduceOnly && !isSpot"
+      v-if="!orderTypeReduceOnly && !isSpot && market.subType !== MarketType.BinaryOptions"
       class="mt-6"
       :leverage="leverage"
       :max-leverage="maxLeverageAvailable.toFixed()"
@@ -162,7 +162,8 @@ import {
   SpotOrderSide,
   DerivativeOrderSide,
   UiPerpetualMarketWithToken,
-  UiExpiryFuturesMarketWithToken
+  UiExpiryFuturesMarketWithToken,
+  MarketType
 } from '@injectivelabs/sdk-ui-ts'
 import OrderLeverage from '~/components/partials/derivatives/trading/order-leverage.vue'
 import OrderLeverageSelect from '~/components/partials/derivatives/trading/order-leverage-select.vue'
@@ -352,6 +353,7 @@ export default Vue.extend({
 
   data() {
     return {
+      MarketType,
       inputBaseAmount: '',
       inputQuoteAmount: '',
       inputPrice: '',

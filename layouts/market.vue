@@ -121,7 +121,20 @@ export default Vue.extend({
         return hardcodedSlug
       }
 
-      return isSpotMarket ? params.spot : params.derivative
+      if (isSpotMarket) {
+        return params.spot
+      }
+
+      if (params.perpetual) {
+        return params.perpetual
+      }
+
+      if (params.binaryOption) {
+        return params.binaryOption
+      }
+
+      // TODO - Expiry Futures
+      return params.derivative
     },
 
     marketIsBeta(): boolean {

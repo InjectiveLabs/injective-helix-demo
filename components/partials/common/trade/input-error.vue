@@ -37,7 +37,8 @@ import {
   UiPriceLevel,
   ZERO_IN_BASE,
   UiPerpetualMarketWithToken,
-  UiExpiryFuturesMarketWithToken
+  UiExpiryFuturesMarketWithToken,
+  MarketType
 } from '@injectivelabs/sdk-ui-ts'
 import { TradeError } from '~/types'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
@@ -181,6 +182,12 @@ export default Vue.extend({
     hasInputErrors: {
       type: Boolean,
       required: true
+    }
+  },
+
+  data() {
+    return {
+      MarketType
     }
   },
 
@@ -406,6 +413,10 @@ export default Vue.extend({
         return undefined
       }
 
+      if (market.subType === MarketType.BinaryOptions) {
+        return
+      }
+
       if (excludedPriceDeviationSlugs.includes(market.ticker)) {
         return undefined
       }
@@ -524,9 +535,16 @@ export default Vue.extend({
         !market ||
         !hasPrice ||
         !hasAmount ||
-        !worstPrice ||
-        excludedPriceDeviationSlugs.includes(market.ticker)
+        !worstPrice
       ) {
+        return undefined
+      }
+
+      if (excludedPriceDeviationSlugs.includes(market.ticker)) {
+        return undefined
+      }
+
+       if (market.subType === MarketType.BinaryOptions) {
         return undefined
       }
 

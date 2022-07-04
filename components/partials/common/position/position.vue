@@ -48,23 +48,22 @@
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <div v-else>
         <VNumber
-          :decimals="
-            market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-          "
+          :decimals="priceDecimal"
           :number="price"
           data-cy="open-position-price-table-data"
         />
-        <span class="text-gray-500 text-xs">{{ markPriceToFormat }}</span>
+        <span v-if="!markPrice.isNaN()" class="text-gray-500 text-xs">
+          {{ markPriceToFormat }}
+        </span>
       </div>
     </td>
 
-    <td class="text-right font-mono">
-      <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+    <td v-if="!isBinaryOptionsPage" class="text-right font-mono">
+      <span v-if="isBinaryOptions">&mdash;</span>
+      <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <VNumber
         v-else
-        :decimals="
-          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-        "
+        :decimals="priceDecimal"
         :number="liquidationPrice"
         data-cy="open-position-liquidation-price-table-data"
       />
@@ -110,9 +109,7 @@
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <VNumber
         v-else
-        :decimals="
-          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-        "
+        :decimals="priceDecimal"
         :number="notionalValue"
         data-cy="open-position-total-table-data"
       >
@@ -128,12 +125,11 @@
       <div v-else class="flex items-center justify-end h-8">
         <VNumber
           data-cy="open-position-margin-table-data"
-          :decimals="
-            market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-          "
+          :decimals="priceDecimal"
           :number="margin"
         />
         <button
+          v-if="!isBinaryOptions"
           role="button"
           type="button"
           class="border border-gray-500 text-gray-500 hover:text-primary-500 hover:border-primary-500 ml-2 px-1"
@@ -144,8 +140,9 @@
         </button>
       </div>
     </td>
-    <td class="text-right font-mono">
-      <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+    <td v-if="!isBinaryOptionsPage" class="text-right font-mono">
+      <span v-if="isBinaryOptions">&mdash;</span>
+      <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <span
         v-else-if="effectiveLeverage.gte(0)"
         class="flex items-center justify-end"
@@ -186,6 +183,7 @@ import { Status, BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   getTokenLogoWithVendorPathPrefix,
+  MarketType,
   UiDerivativeLimitOrder,
   UiDerivativeMarketWithToken,
   UiPosition,
@@ -195,8 +193,11 @@ import {
 import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+  UI_DEFAULT_BINARY_OPTIONS_PRICE_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
+import { getMarketRoute } from '~/app/utils/market'
+import { derivativeMarketRouteNames } from '~/app/data/market'
 
 export default Vue.extend({
   props: {
@@ -247,13 +248,37 @@ export default Vue.extend({
     },
 
     isOnMarketPage(): boolean {
-      return this.$route.name === 'derivatives-derivative'
+      return derivativeMarketRouteNames.includes(this.$route.name as string)
     },
 
     market(): UiDerivativeMarketWithToken | undefined {
       const { markets, position } = this
 
       return markets.find((m) => m.marketId === position.marketId)
+    },
+
+    isBinaryOptionsPage(): boolean {
+      return this.$route.name === 'binary-options-binaryOption'
+    },
+
+    isBinaryOptions(): boolean {
+      const { market } = this
+
+      if (!market) {
+        return false
+      }
+
+      return market.subType === MarketType.BinaryOptions
+    },
+
+    priceDecimal(): number {
+      const { isBinaryOptions, market } = this
+
+      if (isBinaryOptions) {
+        return UI_DEFAULT_BINARY_OPTIONS_PRICE_DECIMALS
+      }
+
+      return market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
     },
 
     orders(): Array<UiDerivativeLimitOrder | UiSpotLimitOrder> {
@@ -313,13 +338,13 @@ export default Vue.extend({
     },
 
     notionalValue(): BigNumberInBase {
-      const { market, quantity, markPrice } = this
+      const { market, quantity, markPrice, price, isBinaryOptions } = this
 
       if (!market) {
         return ZERO_IN_BASE
       }
 
-      return markPrice.times(quantity)
+      return isBinaryOptions ? price.times(quantity) : markPrice.times(quantity)
     },
 
     liquidationPrice(): BigNumberInBase {
@@ -616,13 +641,7 @@ export default Vue.extend({
         return
       }
 
-      return this.$router.push({
-        name: 'derivatives-derivative',
-        params: {
-          marketId: market.marketId,
-          derivative: market.slug
-        }
-      })
+      return this.$router.push({ ...getMarketRoute(market) })
     }
   }
 })

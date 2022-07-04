@@ -110,15 +110,16 @@ import {
 } from '@injectivelabs/ts-types'
 import {
   DerivativeOrderSide,
+  MarketType,
   UiDerivativeLimitOrder,
   UiDerivativeMarketSummary,
   UiDerivativeOrderbook,
+  UiExpiryFuturesMarketWithToken,
+  UiPerpetualMarketWithToken,
   UiPosition,
   UiPriceLevel,
   ZERO_IN_BASE,
-  UiSubaccount,
-  UiPerpetualMarketWithToken,
-  UiExpiryFuturesMarketWithToken
+  UiSubaccount
 } from '@injectivelabs/sdk-ui-ts'
 import {
   cosmosSdkDecToBigNumber,
@@ -135,7 +136,8 @@ import {
   calculateWorstExecutionPriceFromOrderbook,
   calculateLiquidationPrice,
   calculateMargin,
-  calculateAverageExecutionPriceFromFillableNotionalOnOrderBook
+  calculateAverageExecutionPriceFromFillableNotionalOnOrderBook,
+  calculateBinaryOptionsMargin
 } from '~/app/client/utils/derivatives'
 
 interface TradeForm {
@@ -171,6 +173,7 @@ export default Vue.extend({
 
   data() {
     return {
+      MarketType,
       TradeExecutionType,
       DerivativeOrderSide,
       tradingType: TradeExecutionType.LimitFill,
@@ -575,10 +578,21 @@ export default Vue.extend({
     },
 
     notionalWithLeverage(): BigNumberInBase {
-      const { executionPrice, hasPrice, hasAmount, form, market } = this
+      const { executionPrice, hasPrice, hasAmount, form, market, orderType } =
+        this
 
       if (!hasPrice || !hasAmount || !market) {
         return ZERO_IN_BASE
+      }
+
+      if (market.subType === MarketType.BinaryOptions) {
+        return new BigNumberInBase(
+          calculateBinaryOptionsMargin({
+            orderSide: orderType,
+            quantity: form.amount,
+            price: executionPrice.toFixed()
+          }).toFixed(market.priceDecimals)
+        )
       }
 
       return new BigNumberInBase(
@@ -591,10 +605,20 @@ export default Vue.extend({
     },
 
     notionalWithLeverageBasedOnWorstPrice(): BigNumberInBase {
-      const { worstPrice, hasPrice, hasAmount, form, market } = this
+      const { worstPrice, hasPrice, hasAmount, form, market, orderType } = this
 
       if (!hasPrice || !hasAmount || !market) {
         return ZERO_IN_BASE
+      }
+
+      if (market.subType === MarketType.BinaryOptions) {
+        return new BigNumberInBase(
+          calculateBinaryOptionsMargin({
+            orderSide: orderType,
+            quantity: form.amount,
+            price: worstPrice.toFixed()
+          }).toFixed(market.priceDecimals)
+        )
       }
 
       return new BigNumberInBase(
@@ -687,8 +711,16 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
+      if (market.subType === MarketType.BinaryOptions) {
+        return ZERO_IN_BASE
+      }
+
+      const derivativeMarket = market as
+        | UiPerpetualMarketWithToken
+        | UiExpiryFuturesMarketWithToken
+
       return calculateLiquidationPrice({
-        market,
+        market: derivativeMarket,
         orderType,
         notionalWithLeverage: notionalWithLeverage.toFixed(),
         price: executionPrice.toFixed(),

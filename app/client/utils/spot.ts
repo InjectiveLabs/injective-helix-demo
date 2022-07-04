@@ -322,7 +322,7 @@ export const getSpotBaseAmountForPercentageBuy = ({
   const percentageQuoteAvailableBalance =
     quoteAvailableBalance.times(percentageToNumber)
   let totalQuantity = ZERO_IN_BASE
-  let totalNotional = ZERO_IN_BASE
+  let totalNotional: BigNumberInBase
 
   for (const record of sells) {
     const price = new BigNumberInBase(record.price).toWei(
