@@ -1,4 +1,4 @@
-name: DEX production deployment
+name: DEX Mainnet Deployments
 
 on:
   push:
