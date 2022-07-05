@@ -17,10 +17,10 @@ jobs:
       APP_CHAIN_ID: injective-1
       APP_ETHEREUM_CHAIN_ID: 1
       SOURCE_DIR: dist
-      DEST_DIR: www
+      DEST_DIR: wwwg
 
       ## Flags
-      MAINTENANCE_ENABLED: true
+      MAINTENANCE_ENABLED: false
       GAS_FREE_DEPOSIT_REBATE_ENABLED: true
       META_TAGS_ENABLED: true
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
