@@ -362,7 +362,7 @@ export default Vue.extend({
         form: { slippageTolerance }
       } = this
 
-      const slippageAsBigNumber = new BigNumberInBase(slippageTolerance)
+      const slippageAsBigNumber = new BigNumberInBase(slippageTolerance || 0)
 
       return new BigNumberInBase(
         orderTypeBuy

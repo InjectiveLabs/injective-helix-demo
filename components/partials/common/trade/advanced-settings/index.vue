@@ -44,8 +44,7 @@
             <IconCaretDown
               class="text-gray-500 group-hover:text-gray-200 w-4 h-4"
               :class="{
-                visibility:
-                  slippageSelection === SlippageDisplayOptions.Selectable
+                invisible: !slippageIsToggleable
               }"
             />
           </div>
@@ -55,7 +54,7 @@
               :value="slippageTolerance"
               :wrapper-classes="wrapperClasses"
               :input-classes="inputClasses"
-              :disabled="false"
+              :disabled="!slippageIsToggleable"
               type="number"
               :step="0.01"
               :max-decimals="2"
@@ -151,6 +150,7 @@ export default Vue.extend({
   computed: {
     wrapperClasses(): string {
       const { hasWarning, hasError } = this
+
       if (hasWarning) {
         return 'border-warning bg-warning bg-opacity-10 border shadow-none'
       }
@@ -199,7 +199,7 @@ export default Vue.extend({
       }
 
       if (Number(value) > 50) {
-        this.$emit('set:slippageTolerance', '50')
+        this.$emit('set:slippageTolerance', value)
       }
 
       this.$emit('set:slippageTolerance', value)
@@ -209,8 +209,9 @@ export default Vue.extend({
 
     handleSlippageCheckboxToggle(checked: boolean) {
       if (!checked) {
-        this.setSlippageToDefault()
+        this.setToZeroSlippage()
       } else {
+        this.setToDefaultSlippage()
         this.toggleSlippageToSelectable()
       }
     },
@@ -227,7 +228,13 @@ export default Vue.extend({
       this.$emit('set:postOnly', checked)
     },
 
-    setSlippageToDefault() {
+    setToZeroSlippage() {
+      this.slippageSelection = SlippageDisplayOptions.NonSelectableDefault
+
+      this.$emit('set:slippageTolerance', '0')
+    },
+
+    setToDefaultSlippage() {
       this.slippageSelection = SlippageDisplayOptions.NonSelectableDefault
 
       this.$emit('set:slippageTolerance', DEFAULT_MAX_SLIPPAGE.toFormat(1))

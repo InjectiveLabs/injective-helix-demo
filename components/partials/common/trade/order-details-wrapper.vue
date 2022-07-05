@@ -27,6 +27,7 @@
       orderTypeBuy,
       orderTypeReduceOnly,
       postOnly,
+      slippage,
       takerFeeRate,
       takerFeeRateDiscount,
       takerFeeRateDiscount,

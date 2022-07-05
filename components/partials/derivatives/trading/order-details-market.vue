@@ -203,6 +203,11 @@ export default Vue.extend({
       required: true
     },
 
+    slippage: {
+      type: Object as PropType<BigNumberInBase>,
+      required: true
+    },
+
     makerExpectedPts: {
       type: Object as PropType<BigNumberInBase>,
       required: true
@@ -275,16 +280,15 @@ export default Vue.extend({
     },
 
     notionalWithLeverageAndFeesToFormat(): string {
-      const { notionalWithLeverageAndFees, market } = this
+      const { notionalWithLeverageAndFees, market, slippage } = this
 
       const decimals = market
         ? market.priceDecimals
         : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 
-      return notionalWithLeverageAndFees.toFormat(
-        decimals,
-        BigNumberInBase.ROUND_DOWN
-      )
+      return notionalWithLeverageAndFees
+        .times(slippage)
+        .toFormat(decimals, BigNumberInBase.ROUND_DOWN)
     },
 
     liquidationPriceToFormat(): string {
@@ -298,13 +302,15 @@ export default Vue.extend({
     },
 
     notionalWithLeverageToFormat(): string {
-      const { notionalWithLeverage, market } = this
+      const { notionalWithLeverage, market, slippage } = this
 
       const decimals = market
         ? market.priceDecimals
         : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 
-      return notionalWithLeverage.toFormat(decimals, BigNumberInBase.ROUND_DOWN)
+      return notionalWithLeverage
+        .times(slippage)
+        .toFormat(decimals, BigNumberInBase.ROUND_DOWN)
     }
   },
 
