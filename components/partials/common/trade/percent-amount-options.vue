@@ -30,7 +30,8 @@ import {
   getSpotQuoteForPercentageBuy
 } from '~/app/client/utils/spot'
 import {
-  getDerivativesBaseAmountForPercentage,
+  getDerivativesLimitBaseAmountForPercentage,
+  getDerivativesMarketBaseAmountForPercentage,
   getDerivativesQuoteAmountForPercentageNonReduceOnly
 } from '~/app/client/utils/derivatives'
 
@@ -93,6 +94,11 @@ export default Vue.extend({
       required: true
     },
 
+    worstPrice: {
+      type: Object as PropType<BigNumberInBase>,
+      required: true
+    },
+
     feeRate: {
       type: Object as PropType<BigNumberInBase>,
       required: true
@@ -106,6 +112,11 @@ export default Vue.extend({
     orderTypeReduceOnly: {
       type: Boolean,
       default: false
+    },
+
+    slippage: {
+      type: Object as PropType<BigNumberInBase> | undefined,
+      default: undefined
     },
 
     position: {
@@ -143,13 +154,16 @@ export default Vue.extend({
         baseAvailableBalance,
         quoteAvailableBalance,
         executionPrice,
+        worstPrice,
         proportionalPercentage,
         feeRate,
         orderTypeReduceOnly,
         position,
         maxReduceOnly,
         leverage,
-        isSpot
+        isSpot,
+        tradingTypeMarket,
+        slippage
       } = this
 
       const percentageToNumber = new BigNumberInBase(
@@ -166,15 +180,30 @@ export default Vue.extend({
           .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
       }
 
+      const useExecutionPrice = isSpot || (!isSpot && !tradingTypeMarket)
+
+      const price = useExecutionPrice ? executionPrice : worstPrice
+
       if (!isSpot) {
-        return getDerivativesBaseAmountForPercentage({
+        if (tradingTypeMarket) {
+          return getDerivativesMarketBaseAmountForPercentage({
+            records: orderTypeBuy ? sells : buys,
+            quoteAvailableBalance,
+            market: market as UiDerivativeMarketWithToken,
+            slippage: slippage.toNumber(),
+            leverage,
+            percent: percentageToNumber.toNumber()
+          })
+        }
+
+        return getDerivativesLimitBaseAmountForPercentage({
           market: market as UiDerivativeMarketWithToken,
           quoteAvailableBalance,
           leverage,
           percentageToNumber: percentageToNumber.toNumber(),
           records: orderTypeBuy ? sells : buys,
           feeRate,
-          executionPrice
+          executionPrice: price
         })
       }
 

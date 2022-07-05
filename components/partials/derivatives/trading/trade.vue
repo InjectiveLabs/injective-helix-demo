@@ -24,11 +24,13 @@
         orderTypeBuy,
         orderType,
         executionPrice,
+        fees,
         feeRate,
         lastTradedPrice,
         notionalWithLeverageAndFees,
         hasAmount,
         slippageTolerance: form.slippageTolerance,
+        slippage,
         showReduceOnly,
         tradingType,
         averagePriceOption,
@@ -578,19 +580,31 @@ export default Vue.extend({
     },
 
     notionalWithLeverage(): BigNumberInBase {
-      const { executionPrice, hasPrice, hasAmount, form, market, orderType } =
-        this
+      const {
+        worstPrice,
+        executionPrice,
+        hasPrice,
+        hasAmount,
+        form,
+        market,
+        orderType,
+        tradingTypeMarket
+      } = this
 
       if (!hasPrice || !hasAmount || !market) {
         return ZERO_IN_BASE
       }
+
+      const price = tradingTypeMarket
+        ? worstPrice.toFixed()
+        : executionPrice.toFixed()
 
       if (market.subType === MarketType.BinaryOptions) {
         return new BigNumberInBase(
           calculateBinaryOptionsMargin({
             orderSide: orderType,
             quantity: form.amount,
-            price: executionPrice.toFixed()
+            price
           }).toFixed(market.priceDecimals)
         )
       }
@@ -598,7 +612,7 @@ export default Vue.extend({
       return new BigNumberInBase(
         calculateMargin({
           quantity: form.amount,
-          price: executionPrice.toFixed(),
+          price,
           leverage: form.leverage
         }).toFixed(market.priceDecimals)
       )
@@ -820,7 +834,7 @@ export default Vue.extend({
       const {
         orderTypeToSubmit,
         market,
-        notionalWithLeverageBasedOnWorstPrice,
+        notionalWithLeverage,
         price,
         orderTypeReduceOnly,
         amount
@@ -835,7 +849,7 @@ export default Vue.extend({
       this.$accessor.derivatives
         .submitLimitOrder({
           price,
-          margin: notionalWithLeverageBasedOnWorstPrice,
+          margin: notionalWithLeverage,
           orderType: orderTypeToSubmit,
           reduceOnly: orderTypeReduceOnly,
           quantity: amount

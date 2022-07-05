@@ -67,9 +67,11 @@
             maxReduceOnly,
             buys,
             sells,
+            slippage,
             orderTypeBuy,
             baseAvailableBalance,
             executionPrice,
+            worstPrice,
             feeRate,
             orderTypeReduceOnly,
             position,
@@ -93,6 +95,7 @@
         baseAvailableBalance,
         buys,
         executionPrice,
+        fees,
         hasAmount,
         hasInputErrors,
         hasPrice,
@@ -118,7 +121,11 @@
     />
 
     <OrderLeverage
-      v-if="!orderTypeReduceOnly && !isSpot && market.subType !== MarketType.BinaryOptions"
+      v-if="
+        !orderTypeReduceOnly &&
+        !isSpot &&
+        market.subType !== MarketType.BinaryOptions
+      "
       class="mt-6"
       :leverage="leverage"
       :max-leverage="maxLeverageAvailable.toFixed()"
@@ -295,6 +302,11 @@ export default Vue.extend({
       required: true
     },
 
+    fees: {
+      type: Object as PropType<BigNumberInBase>,
+      default: undefined
+    },
+
     notionalValueWithFees: {
       type: Object as PropType<BigNumberInBase>,
       default: undefined
@@ -341,6 +353,11 @@ export default Vue.extend({
     },
 
     notionalWithLeverageBasedOnWorstPrice: {
+      type: Object as PropType<BigNumberInBase> | undefined,
+      default: undefined
+    },
+
+    slippage: {
       type: Object as PropType<BigNumberInBase> | undefined,
       default: undefined
     },

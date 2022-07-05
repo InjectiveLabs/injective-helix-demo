@@ -285,7 +285,65 @@ export const calculateAverageExecutionPriceFromFillableNotionalOnOrderBook = ({
   return sum.div(amount)
 }
 
-export const getDerivativesBaseAmountForPercentage = ({
+export const getDerivativesMarketBaseAmountForPercentage = ({
+  records,
+  quoteAvailableBalance,
+  market,
+  slippage,
+  leverage = '1',
+  percent = 1
+}: {
+  records: UiPriceLevel[]
+  quoteAvailableBalance: BigNumberInBase
+  percent?: number
+  slippage: number
+  leverage: string
+  market: UiDerivativeMarketWithToken
+}) => {
+  const fee = new BigNumberInBase(market.takerFeeRate)
+  const availableMargin = new BigNumberInBase(quoteAvailableBalance).times(
+    percent
+  )
+
+  let totalQuantity = ZERO_IN_BASE
+  let totalNotional: BigNumberInBase
+
+  for (const record of records) {
+    const price = new BigNumberInBase(
+      new BigNumberInWei(record.price)
+        .times(slippage)
+        .toBase(market.quoteToken.decimals)
+    )
+    const quantity = new BigNumberInBase(
+      new BigNumberInBase(record.quantity).dp(market.quantityDecimals)
+    )
+
+    totalQuantity = totalQuantity.plus(quantity)
+    totalNotional = totalQuantity.times(price)
+
+    const totalFees = new BigNumberInWei(totalNotional.times(fee))
+    const totalMargin = calculateMargin({
+      quantity: totalQuantity.toFixed(),
+      price: price.toFixed(),
+      leverage
+    })
+    const total = totalMargin.plus(totalFees)
+
+    if (total.gt(availableMargin)) {
+      return availableMargin
+        .times(leverage)
+        .dividedBy(fee.times(leverage).plus(1).times(price))
+        .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
+    }
+  }
+
+  return formatAmountToAllowableDecimals(
+    totalQuantity.toNumber(),
+    market.quantityDecimals
+  )
+}
+
+export const getDerivativesLimitBaseAmountForPercentage = ({
   records,
   quoteAvailableBalance,
   market,
@@ -330,14 +388,13 @@ export const getDerivativesBaseAmountForPercentage = ({
     )
   }
 
-  const amountFromAvailableMargin = availableMargin
-    .div(executionPrice.times(new BigNumberInBase(1).plus(feeRate)))
-    .times(leverage)
+  const fee = new BigNumberInBase(feeRate)
 
-  return formatAmountToAllowableDecimals(
-    amountFromAvailableMargin.toNumber(),
-    market.quantityDecimals
-  )
+  return new BigNumberInBase(availableMargin)
+    .times(leverage)
+    .dividedBy(executionPrice.times(fee.times(leverage).plus(1)))
+    .times(percentageToNumber)
+    .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
 }
 
 export const getDerivativesQuoteAmountForPercentageNonReduceOnly = ({

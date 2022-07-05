@@ -139,6 +139,11 @@ export default Vue.extend({
       required: true
     },
 
+    fees: {
+      type: Object as PropType<BigNumberInBase>,
+      required: true
+    },
+
     hasAmount: {
       type: Boolean,
       required: true
@@ -478,17 +483,23 @@ export default Vue.extend({
     maxLeverageError(): TradeError | undefined {
       const {
         executionPrice,
+        worstPrice,
         orderTypeBuy,
         hasPrice,
         market,
         marketMarkPrice,
         leverage,
-        isSpot
+        isSpot,
+        tradingTypeMarket
       } = this
 
       if (isSpot || !hasPrice || !market) {
         return
       }
+
+      const useExecutionPrice = isSpot || (!isSpot && !tradingTypeMarket)
+
+      const price = useExecutionPrice ? executionPrice : worstPrice
 
       const leverageToBigNumber = new BigNumberInBase(leverage)
 
@@ -498,10 +509,10 @@ export default Vue.extend({
       )
 
       const priceBasedOnOrderType = orderTypeBuy
-        ? priceWithMarginRatio.minus(marketMarkPrice).plus(executionPrice)
-        : priceWithMarginRatio.plus(marketMarkPrice).minus(executionPrice)
+        ? priceWithMarginRatio.minus(marketMarkPrice).plus(price)
+        : priceWithMarginRatio.plus(marketMarkPrice).minus(price)
 
-      const maxLeverage = executionPrice.dividedBy(priceBasedOnOrderType)
+      const maxLeverage = price.dividedBy(priceBasedOnOrderType)
 
       if (maxLeverage.gte(1) && leverageToBigNumber.gt(maxLeverage)) {
         return {
@@ -518,15 +529,18 @@ export default Vue.extend({
 
     markPriceThresholdError(): TradeError | undefined {
       const {
+        executionPrice,
         market,
         marketMarkPrice,
         orderTypeBuy,
         notionalWithLeverageBasedOnWorstPrice,
+        notionalWithLeverage,
         hasPrice,
         hasAmount,
         worstPrice,
         amount,
-        isSpot
+        isSpot,
+        tradingTypeMarket
       } = this
 
       if (
@@ -548,6 +562,14 @@ export default Vue.extend({
         return undefined
       }
 
+      const useExecutionPrice = isSpot || (!isSpot && !tradingTypeMarket)
+
+      const price = useExecutionPrice ? executionPrice : worstPrice
+
+      const notionalWithLeverageBasedOnMarketType = useExecutionPrice
+        ? notionalWithLeverage
+        : notionalWithLeverageBasedOnWorstPrice
+
       const marketWithType = market as
         | UiPerpetualMarketWithToken
         | UiExpiryFuturesMarketWithToken
@@ -560,10 +582,10 @@ export default Vue.extend({
         }
       }
 
-      const notional = worstPrice.times(amount)
+      const notional = price.times(amount)
       const notionalBasedOnOrderType = orderTypeBuy
-        ? notionalWithLeverageBasedOnWorstPrice.minus(notional)
-        : notionalWithLeverageBasedOnWorstPrice.plus(notional)
+        ? notionalWithLeverageBasedOnMarketType.minus(notional)
+        : notionalWithLeverageBasedOnMarketType.plus(notional)
       const amountWithInitialMarginRatio = amount.times(
         orderTypeBuy
           ? new BigNumberInBase(marketWithType.initialMarginRatio).minus(1)
