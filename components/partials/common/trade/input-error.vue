@@ -139,11 +139,6 @@ export default Vue.extend({
       required: true
     },
 
-    fees: {
-      type: Object as PropType<BigNumberInBase>,
-      required: true
-    },
-
     hasAmount: {
       type: Boolean,
       required: true

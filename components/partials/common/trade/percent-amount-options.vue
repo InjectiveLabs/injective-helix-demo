@@ -30,8 +30,9 @@ import {
   getSpotQuoteForPercentageBuy
 } from '~/app/client/utils/spot'
 import {
-  getDerivativesLimitBaseAmountForPercentage,
+  getApproxAmountForMarketOrder,
   getDerivativesMarketBaseAmountForPercentage,
+  getDerivativesLimitBaseAmountForPercentage,
   getDerivativesQuoteAmountForPercentageNonReduceOnly
 } from '~/app/client/utils/derivatives'
 
@@ -96,7 +97,7 @@ export default Vue.extend({
 
     worstPrice: {
       type: Object as PropType<BigNumberInBase>,
-      required: true
+      default: undefined
     },
 
     feeRate: {
@@ -145,34 +146,139 @@ export default Vue.extend({
       return this.$route.name === 'spot-spot'
     },
 
-    approxAmountFromPercentage(): string {
+    maxDerivativesAmountFromPercentage(): string {
       const {
         market,
         buys,
+        takerFeeRate,
         sells,
-        orderTypeBuy,
-        baseAvailableBalance,
-        quoteAvailableBalance,
-        executionPrice,
-        worstPrice,
         proportionalPercentage,
-        feeRate,
-        orderTypeReduceOnly,
+        slippage,
+        leverage,
+        tradingTypeMarket,
+        orderTypeBuy,
         position,
         maxReduceOnly,
-        leverage,
-        isSpot,
-        tradingTypeMarket,
-        slippage
+        orderTypeReduceOnly,
+        quoteAvailableBalance,
+        executionPrice,
+        isSpot
       } = this
+
+      if (!market || isSpot) {
+        return ''
+      }
 
       const percentageToNumber = new BigNumberInBase(
         proportionalPercentage
       ).div(100)
 
+      if (orderTypeReduceOnly && position) {
+        return maxReduceOnly
+          .times(percentageToNumber)
+          .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
+      }
+
+      if (tradingTypeMarket) {
+        return getApproxAmountForMarketOrder({
+          market: market as UiDerivativeMarketWithToken,
+          margin: quoteAvailableBalance,
+          leverage,
+          slippage: slippage.toNumber(),
+          percent: percentageToNumber.toNumber(),
+          records: orderTypeBuy ? sells : buys
+        }).toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
+      }
+
+      if (executionPrice.lte(0)) {
+        return ''
+      }
+
+      if (quoteAvailableBalance.lte(0)) {
+        return ''
+      }
+
+      const fee = new BigNumberInBase(takerFeeRate)
+
+      return new BigNumberInBase(quoteAvailableBalance)
+        .times(leverage)
+        .dividedBy(executionPrice.times(fee.times(leverage).plus(1)))
+        .times(percentageToNumber)
+        .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_FLOOR)
+    },
+
+    defaultDerivativesAmountFromPercentage(): string {
+      const {
+        market,
+        buys,
+        sells,
+        orderTypeBuy,
+        quoteAvailableBalance,
+        executionPrice,
+        slippage,
+        proportionalPercentage,
+        feeRate,
+        leverage,
+        tradingTypeMarket,
+        isSpot
+      } = this
+
+      if (!market || isSpot) {
+        return ''
+      }
+
+      const percentageToNumber = new BigNumberInBase(
+        proportionalPercentage
+      ).div(100)
+
+      if (tradingTypeMarket) {
+        return getDerivativesMarketBaseAmountForPercentage({
+          records: orderTypeBuy ? sells : buys,
+          quoteAvailableBalance,
+          market: market as UiDerivativeMarketWithToken,
+          slippage: slippage.toNumber(),
+          leverage,
+          percent: percentageToNumber.toNumber()
+        })
+      }
+
+      return getDerivativesLimitBaseAmountForPercentage({
+        market: market as UiDerivativeMarketWithToken,
+        quoteAvailableBalance,
+        leverage,
+        percentageToNumber: percentageToNumber.toNumber(),
+        records: orderTypeBuy ? sells : buys,
+        feeRate,
+        executionPrice
+      })
+    },
+
+    approxAmountFromPercentage(): string {
+      const {
+        proportionalPercentage,
+        maxDerivativesAmountFromPercentage,
+        defaultDerivativesAmountFromPercentage,
+        orderTypeReduceOnly,
+        orderTypeBuy,
+        buys,
+        baseAvailableBalance,
+        isSpot,
+        quoteAvailableBalance,
+        position,
+        maxReduceOnly,
+        sells,
+        feeRate,
+        executionPrice,
+        market
+      } = this
+
       if (!market) {
         return ''
       }
+
+      const percentageToNumber = new BigNumberInBase(
+        proportionalPercentage
+      ).div(100)
 
       if (orderTypeReduceOnly && position) {
         return maxReduceOnly
@@ -180,31 +286,10 @@ export default Vue.extend({
           .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
       }
 
-      const useExecutionPrice = isSpot || (!isSpot && !tradingTypeMarket)
-
-      const price = useExecutionPrice ? executionPrice : worstPrice
-
       if (!isSpot) {
-        if (tradingTypeMarket) {
-          return getDerivativesMarketBaseAmountForPercentage({
-            records: orderTypeBuy ? sells : buys,
-            quoteAvailableBalance,
-            market: market as UiDerivativeMarketWithToken,
-            slippage: slippage.toNumber(),
-            leverage,
-            percent: percentageToNumber.toNumber()
-          })
-        }
-
-        return getDerivativesLimitBaseAmountForPercentage({
-          market: market as UiDerivativeMarketWithToken,
-          quoteAvailableBalance,
-          leverage,
-          percentageToNumber: percentageToNumber.toNumber(),
-          records: orderTypeBuy ? sells : buys,
-          feeRate,
-          executionPrice: price
-        })
+        return proportionalPercentage === 100
+          ? maxDerivativesAmountFromPercentage
+          : defaultDerivativesAmountFromPercentage
       }
 
       if (!orderTypeBuy) {
@@ -231,7 +316,7 @@ export default Vue.extend({
         maxReduceOnly,
         orderTypeReduceOnly,
         proportionalPercentage,
-        executionPrice,
+        worstPrice,
         feeRate,
         leverage,
         market,
@@ -253,7 +338,7 @@ export default Vue.extend({
       if (orderTypeReduceOnly && position) {
         return maxReduceOnly
           .times(percentageToNumber)
-          .times(executionPrice)
+          .times(worstPrice)
           .toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
       }
 

@@ -95,7 +95,6 @@
         baseAvailableBalance,
         buys,
         executionPrice,
-        fees,
         hasAmount,
         hasInputErrors,
         hasPrice,

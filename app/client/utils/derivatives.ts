@@ -285,6 +285,57 @@ export const calculateAverageExecutionPriceFromFillableNotionalOnOrderBook = ({
   return sum.div(amount)
 }
 
+export const getApproxAmountForMarketOrder = ({
+  records,
+  margin,
+  market,
+  slippage,
+  leverage = '1',
+  percent = 1
+}: {
+  records: UiPriceLevel[]
+  margin: BigNumberInBase
+  percent?: number
+  slippage: number
+  leverage: string
+  market: UiDerivativeMarketWithToken
+}) => {
+  const fee = new BigNumberInBase(market.takerFeeRate)
+  const availableMargin = new BigNumberInBase(margin).times(percent)
+  let totalQuantity = ZERO_IN_BASE
+  let totalNotional: BigNumberInBase
+
+  for (const record of records) {
+    const price = new BigNumberInBase(
+      new BigNumberInWei(record.price)
+        .times(slippage)
+        .toBase(market.quoteToken.decimals)
+    )
+    const quantity = new BigNumberInBase(
+      new BigNumberInBase(record.quantity).dp(market.quantityDecimals)
+    )
+
+    totalQuantity = totalQuantity.plus(quantity)
+    totalNotional = totalQuantity.times(price)
+
+    const totalFees = new BigNumberInWei(totalNotional.times(fee))
+    const totalMargin = calculateMargin({
+      quantity: totalQuantity.toFixed(),
+      price: price.toFixed(),
+      leverage
+    })
+    const total = totalMargin.plus(totalFees)
+
+    if (total.gt(availableMargin)) {
+      return availableMargin
+        .times(leverage)
+        .dividedBy(fee.times(leverage).plus(1).times(price))
+    }
+  }
+
+  return totalQuantity
+}
+
 export const getDerivativesMarketBaseAmountForPercentage = ({
   records,
   quoteAvailableBalance,
