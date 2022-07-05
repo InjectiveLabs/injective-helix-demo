@@ -209,7 +209,7 @@ export default Vue.extend({
 
     handleSlippageCheckboxToggle(checked: boolean) {
       if (!checked) {
-        this.defaultToZeroSlippage()
+        this.setSlippageToDefault()
       } else {
         this.toggleSlippageToSelectable()
       }
@@ -227,10 +227,10 @@ export default Vue.extend({
       this.$emit('set:postOnly', checked)
     },
 
-    defaultToZeroSlippage() {
+    setSlippageToDefault() {
       this.slippageSelection = SlippageDisplayOptions.NonSelectableDefault
 
-      this.$emit('set:slippageTolerance', '0')
+      this.$emit('set:slippageTolerance', DEFAULT_MAX_SLIPPAGE.toFormat(1))
     },
 
     toggleSlippageToSelectable() {

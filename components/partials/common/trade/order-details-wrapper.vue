@@ -479,7 +479,7 @@ export default Vue.extend({
         slippage
       } = this
 
-      if (!market) {
+      if (!market || executionPrice.isEqualTo('0')) {
         return ZERO_IN_BASE
       }
 
