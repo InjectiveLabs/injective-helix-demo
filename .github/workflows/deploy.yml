@@ -20,7 +20,7 @@ jobs:
       DEST_DIR: www
 
       ## Flags
-      MAINTENANCE_ENABLED: true
+      MAINTENANCE_ENABLED: false
       GAS_FREE_DEPOSIT_REBATE_ENABLED: true
       META_TAGS_ENABLED: true
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
