@@ -16,6 +16,7 @@ import * as referral from '~/store/referral'
 import * as positions from '~/store/positions'
 import * as token from '~/store/token'
 import * as wallet from '~/store/wallet'
+import * as params from '~/store/params'
 
 export const accessorType = getAccessorType({
   modules: {
@@ -34,6 +35,7 @@ export const accessorType = getAccessorType({
     positions,
     spot,
     token,
-    wallet
+    wallet,
+    params
   }
 })

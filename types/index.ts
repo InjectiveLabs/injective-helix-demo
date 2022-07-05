@@ -49,6 +49,8 @@ export interface MarketRoute {
     marketId: string
     market?: string
     derivative?: string
+    perpetual?: string
+    binaryOption?: string
     spot?: string
   }
 }

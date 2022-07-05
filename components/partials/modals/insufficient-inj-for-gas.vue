@@ -6,28 +6,46 @@
     </h3>
 
     <div class="relative">
-      <p
+      <i18n
+        path="insufficientGas.insufficientGasNoteDescription"
+        tag="p"
         class="text-left text-sm text-gray-100"
-        v-text="$t('insufficientGas.insufficientGasNote')"
-      ></p>
-      <p
-        class="text-left text-sm text-gray-100 mt-4"
-        v-html="$t('insufficientGas.insufficientGasNote2', { hubUrl: hubUrl })"
-      ></p>
+      >
+        <template #faucetLink>
+          <a
+            target="_blank"
+            class="text-primary-500 dark:text-primary-800"
+            :href="faucetUrl"
+            @click="closeModal"
+          >
+            {{ $t('insufficientGas.communityDrivenFaucet') }}
+          </a>
+        </template>
+
+        <template #hubLink>
+          <a
+            target="_blank"
+            class="text-primary-500 dark:text-primary-800"
+            :href="hubUrl"
+            @click="closeModal"
+          >
+            {{ $t('insufficientGas.injectiveHub') }}
+          </a>
+        </template>
+      </i18n>
 
       <div class="mt-6 flex items-center justify-center">
-        <VButton
-          type="button"
-          md
-          primary
-          class="whitespace-nowrap"
-          @click.stop="() => {}"
-        >
-          <a :href="hubUrl" target="_blank" class="flex items-center">
-            <span class="mr-2">Injective Hub</span>
+        <a :href="hubUrl" target="_blank">
+          <VButton
+            type="button"
+            md
+            primary
+            class="flex items-center whitespace-nowrap"
+          >
+            <span class="mr-2">{{ $t('insufficientGas.getFreeInj') }}</span>
             <IconExternalLink class="w-3 h-3" />
-          </a>
-        </VButton>
+          </VButton>
+        </a>
       </div>
     </div>
   </VModal>
@@ -43,6 +61,10 @@ export default Vue.extend({
       return this.$accessor.modal.modals[Modal.InsufficientInjForGas]
     },
 
+    faucetUrl(): string {
+      return 'https://inj.supply/'
+    },
+
     hubUrl(): string {
       return 'https://hub.injective.network/bridge'
     }
@@ -51,15 +73,6 @@ export default Vue.extend({
   methods: {
     closeModal() {
       this.$accessor.modal.closeModal(Modal.InsufficientInjForGas)
-    },
-
-    handleConfirm() {
-      this.closeModal()
-      this.$emit('confirmed')
-    },
-
-    handleCancel() {
-      this.closeModal()
     }
   }
 })

@@ -60,7 +60,7 @@ export default Vue.extend({
     showFooter(): boolean {
       const { $route } = this
 
-      return ['index', 'portfolio', 'markets'].includes($route.name as string)
+      return ['index', 'portfolio', 'markets', 'fee-discounts'].includes($route.name as string)
     }
   },
 

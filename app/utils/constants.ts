@@ -39,6 +39,7 @@ export const UI_DEFAULT_PRICE_DISPLAY_DECIMALS = 4
 export const UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS = 4
 export const UI_DEFAULT_AGGREGATION_DECIMALS = 3
 export const UI_DEFAULT_AGGREGATION_DECIMALS_STRING = '3'
+export const UI_DEFAULT_BINARY_OPTIONS_PRICE_DECIMALS = 4
 export const UI_DEFAULT_DMM_DECIMALS = 2
 export const UI_DEFAULT_TOKEN_ASSET_DECIMALS = 8
 export const UI_MINIMAL_AMOUNT = new BigNumber(1).shiftedBy(
@@ -70,7 +71,7 @@ export const ETHEREUM_CHAIN_ID: EthereumChainId = process.env
   ? parseInt(process.env.APP_ETHEREUM_CHAIN_ID.toString())
   : parseInt(
       (IS_TESTNET || IS_DEVNET
-        ? EthereumChainId.Kovan
+        ? EthereumChainId.Goerli
         : EthereumChainId.Mainnet
       ).toString()
     )
@@ -124,3 +125,4 @@ export const COIN_GECKO_OPTIONS = {
 }
 
 export const ONE_IN_BASE = new BigNumberInBase(1)
+export const USDT_DECIMALS = 6

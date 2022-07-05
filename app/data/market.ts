@@ -77,3 +77,10 @@ export const deprecatedMarkets =
   IS_DEVNET || IS_TESTNET
     ? []
     : ([] as Array<UiSpotMarketWithToken | UiDerivativeMarketWithToken>)
+
+export const derivativeMarketRouteNames = [
+  'perpetuals-perpetual',
+  'binary-options-binaryOption',
+  'derivatives-derivative'
+]
+export const spotMarketRouteNames = ['spot-spot']

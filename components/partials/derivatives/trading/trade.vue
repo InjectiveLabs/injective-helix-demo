@@ -120,23 +120,17 @@
         </span>
       </div>
 
-      <v-order-leverage
-        v-if="!orderTypeReduceOnly"
+      <OrderLeverage
+        v-if="
+          !orderTypeReduceOnly && market.subType !== MarketType.BinaryOptions
+        "
         class="mt-6"
         :leverage="form.leverage"
         :max-leverage="maxLeverageAvailable.toFixed()"
         @change="onLeverageChange"
       />
 
-      <v-order-leverage-select
-        v-if="false"
-        class="mt-4"
-        :max-leverage="maxLeverageAvailable.toFixed()"
-        :leverage="form.leverage"
-        @change="onLeverageChange"
-      />
-
-      <VButton-checkbox
+      <ButtonCheckbox
         v-if="showReduceOnly"
         v-model="form.reduceOnly"
         class="mt-2"
@@ -144,7 +138,7 @@
       />
     </div>
     <component
-      :is="tradingTypeMarket ? `v-order-details-market` : 'v-order-details'"
+      :is="tradingTypeMarket ? `OrderDetailsMarket` : 'OrderDetails'"
       v-bind="{
         price: executionPrice,
         notionalValue,
@@ -208,7 +202,7 @@
       </VButton>
     </div>
 
-    <VModal-order-confirm @confirmed="submitLimitOrder" />
+    <VModalOrderConfirm @confirmed="submitLimitOrder" />
   </div>
 </template>
 
@@ -223,15 +217,18 @@ import {
 } from '@injectivelabs/ts-types'
 import {
   DerivativeOrderSide,
+  MarketType,
+  NUMBER_REGEX,
   UiDerivativeLimitOrder,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiDerivativeOrderbook,
+  UiExpiryFuturesMarketWithToken,
+  UiPerpetualMarketWithToken,
   UiPosition,
   UiPriceLevel,
-  NUMBER_REGEX,
-  ZERO_IN_BASE,
-  UiSubaccount
+  UiSubaccount,
+  ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 import {
   cosmosSdkDecToBigNumber,
@@ -239,7 +236,6 @@ import {
 } from '@injectivelabs/sdk-ts'
 import OrderDetails from './order-details.vue'
 import OrderLeverage from './order-leverage.vue'
-import OrderLeverageSelect from './order-leverage-select.vue'
 import OrderDetailsMarket from './order-details-market.vue'
 import {
   DEFAULT_MAX_SLIPPAGE,
@@ -258,7 +254,8 @@ import {
   calculateWorstExecutionPriceFromOrderbook,
   calculateLiquidationPrice,
   calculateMargin,
-  getApproxAmountForMarketOrder
+  getApproxAmountForMarketOrder,
+  calculateBinaryOptionsMargin
 } from '~/app/client/utils/derivatives'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
 import { TradingRewardsCampaign } from '~/app/client/types/exchange'
@@ -279,16 +276,16 @@ const initialForm = (): TradeForm => ({
 
 export default Vue.extend({
   components: {
-    'VButton-checkbox': ButtonCheckbox,
-    'v-order-details': OrderDetails,
-    'v-order-leverage': OrderLeverage,
-    'v-order-leverage-select': OrderLeverageSelect,
-    'v-order-details-market': OrderDetailsMarket,
+    ButtonCheckbox,
+    OrderDetails,
+    OrderLeverage,
+    OrderDetailsMarket,
     VModalOrderConfirm
   },
 
   data() {
     return {
+      MarketType,
       TradeExecutionType,
       DerivativeOrderSide,
       tradingType: TradeExecutionType.Market,
@@ -735,15 +732,22 @@ export default Vue.extend({
         return
       }
 
+      if (market.subType === MarketType.BinaryOptions) {
+        return
+      }
+
+      const derivativeMarket = market as
+        | UiPerpetualMarketWithToken
+        | UiExpiryFuturesMarketWithToken
       const leverage = new BigNumberInBase(form.leverage)
 
       const divisor = orderTypeBuy
         ? new BigNumberInBase(marketMarkPrice)
-            .times(market.initialMarginRatio)
+            .times(derivativeMarket.initialMarginRatio)
             .minus(marketMarkPrice)
             .plus(executionPrice)
         : new BigNumberInBase(marketMarkPrice)
-            .times(market.initialMarginRatio)
+            .times(derivativeMarket.initialMarginRatio)
             .plus(marketMarkPrice)
             .minus(executionPrice)
       const maxLeverage = executionPrice.dividedBy(divisor)
@@ -867,6 +871,10 @@ export default Vue.extend({
         return undefined
       }
 
+      if (market.subType === MarketType.BinaryOptions) {
+        return undefined
+      }
+
       if (excludedPriceDeviationSlugs.includes(market.ticker)) {
         return undefined
       }
@@ -879,14 +887,17 @@ export default Vue.extend({
         }
       }
 
+      const derivativeMarket = market as
+        | UiPerpetualMarketWithToken
+        | UiExpiryFuturesMarketWithToken
       const notional = executionPrice.times(amount)
       const dividend = orderTypeBuy
         ? margin.minus(notional)
         : margin.plus(notional)
       const divisor = amount.times(
         orderTypeBuy
-          ? new BigNumberInBase(market.initialMarginRatio).minus(1)
-          : new BigNumberInBase(1).plus(market.initialMarginRatio)
+          ? new BigNumberInBase(derivativeMarket.initialMarginRatio).minus(1)
+          : new BigNumberInBase(1).plus(derivativeMarket.initialMarginRatio)
       )
       const condition = dividend.div(divisor)
 
@@ -913,13 +924,20 @@ export default Vue.extend({
         return undefined
       }
 
+      if (market.subType === MarketType.BinaryOptions) {
+        return
+      }
+
       if (excludedPriceDeviationSlugs.includes(market.ticker)) {
         return undefined
       }
 
+      const derivativeMarket = market as
+        | UiPerpetualMarketWithToken
+        | UiExpiryFuturesMarketWithToken
       const condition = executionPrice
         .times(amount)
-        .times(market.initialMarginRatio)
+        .times(derivativeMarket.initialMarginRatio)
 
       if (margin.lte(condition)) {
         return {
@@ -1203,8 +1221,13 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
+      const derivativeMarket = market as
+        | UiPerpetualMarketWithToken
+        | UiExpiryFuturesMarketWithToken
       const maxLeverage = new BigNumberInBase(
-        new BigNumberInBase(1).dividedBy(market.initialMarginRatio).dp(0)
+        new BigNumberInBase(1)
+          .dividedBy(derivativeMarket.initialMarginRatio)
+          .dp(0)
       )
 
       const steps = [1, 2, 5, 10, 20, 50, 100, 150, 200]
@@ -1221,10 +1244,21 @@ export default Vue.extend({
     },
 
     margin(): BigNumberInBase {
-      const { executionPrice, hasPrice, hasAmount, form, market } = this
+      const { executionPrice, hasPrice, hasAmount, form, market, orderType } =
+        this
 
       if (!hasPrice || !hasAmount || !market) {
         return ZERO_IN_BASE
+      }
+
+      if (market.subType === MarketType.BinaryOptions) {
+        return new BigNumberInBase(
+          calculateBinaryOptionsMargin({
+            orderSide: orderType,
+            quantity: form.amount,
+            price: executionPrice.toFixed()
+          }).toFixed(market.priceDecimals)
+        )
       }
 
       return new BigNumberInBase(
@@ -1237,10 +1271,20 @@ export default Vue.extend({
     },
 
     marginBaseOnWorstPrice(): BigNumberInBase {
-      const { worstPrice, hasPrice, hasAmount, form, market } = this
+      const { worstPrice, hasPrice, hasAmount, form, market, orderType } = this
 
       if (!hasPrice || !hasAmount || !market) {
         return ZERO_IN_BASE
+      }
+
+      if (market.subType === MarketType.BinaryOptions) {
+        return new BigNumberInBase(
+          calculateBinaryOptionsMargin({
+            orderSide: orderType,
+            quantity: form.amount,
+            price: worstPrice.toFixed()
+          }).toFixed(market.priceDecimals)
+        )
       }
 
       return new BigNumberInBase(
@@ -1462,8 +1506,16 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
+      if (market.subType === MarketType.BinaryOptions) {
+        return ZERO_IN_BASE
+      }
+
+      const derivativeMarket = market as
+        | UiPerpetualMarketWithToken
+        | UiExpiryFuturesMarketWithToken
+
       return calculateLiquidationPrice({
-        market,
+        market: derivativeMarket,
         orderType,
         margin: margin.toFixed(),
         price: executionPrice.toFixed(),
@@ -1675,8 +1727,14 @@ export default Vue.extend({
     },
 
     submitLimitOrder() {
-      const { orderType, market, marginBaseOnWorstPrice, price, orderTypeReduceOnly, amount } =
-        this
+      const {
+        orderType,
+        market,
+        marginBaseOnWorstPrice,
+        price,
+        orderTypeReduceOnly,
+        amount
+      } = this
 
       if (!market) {
         return

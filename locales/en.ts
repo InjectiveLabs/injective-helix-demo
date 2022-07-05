@@ -87,7 +87,6 @@ export default {
   acknowledge_5:
     'You understand the risks associated with using leverage, entering into perpetual contracts, and trading in digital assets.',
   'Fee Discounts': 'Fee Discounts',
-  tier: 'Tier',
   staked_amount: 'Staked Amount',
   'My Tier': 'My Tier',
   'My Tier Tooltip':
@@ -103,16 +102,9 @@ export default {
   'faq-category-All': 'All',
   'faq-category-General': 'General',
   and: 'and',
-  fee_discount_staked_amount: 'Staked Amount',
-  fee_discount_staked_amount_tooltip:
-    'The amount of INJ required to be staked. Staking INJ secures the protocol, earns rewards and can help obtain a more preferable fee tier.',
   fee_discount_fees_paid: 'Total Fees Paid',
   fee_discount_fees_paid_tooltip:
     'The total fees required to be paid on Injective. Fees are paid to execute trades on the protocol. The amount of fees paid helps determine the fee tier. The total fees collected are summed up on a 30 day rolling basis period.',
-  fee_discount_maker: 'Maker Rate Discount',
-  fee_discount_maker_tooltip: 'Maker fee discount based on the fee tier.',
-  fee_discount_taker: 'Taker Rate Discount',
-  fee_discount_taker_tooltip: 'Taker fee discount based on the fee tier.',
   'Current Epoch': 'Current Epoch',
   'Past Epoch': 'Past Epoch',
   Rewards: 'Rewards',
@@ -236,5 +228,32 @@ export default {
     dmmProgram: 'Dmm program',
     dmmProgramDescription:
       'Flagship liquidity mining program designed for Dedicated Market Makers.'
+  },
+
+  fee_discounts: {
+    page_title: 'Fee Discounts',
+    page_description: 'Trading fees are based on a user\'s staked amount of INJ and the total trading volume in the past 28 days.',
+    page_description_warning: 'Please note that the maker fee discounts are only applicable to markets with a non-negative maker fee.',
+    my_tier: 'My Tier',
+    my_staked_amount: 'Staked Amount',
+    my_staked_amount_tooltip: 'The amount of INJ that you have staked. Staking INJ secures the protocol, earns you rewards and can help you obtain a more preferable fee tier.',
+    my_trading_volume: 'My Trading Volume',
+    trading_volume: 'Trading Volume',
+    trading_volume_tooltip: 'The total volume traded on a 28-day rolling basis. Only markets in USD quote denoms are included at this moment.',
+    maker_rate_discount: 'Maker Rate Discount',
+    maker_rate_discount_tooltip: 'Maker fee discount based on the fee tier.',
+    taker_rate_discount: 'Taker Rate Discount',
+    taker_rate_discount_tooltip: 'Taker fee discount based on the fee tier.',
+    staked_amount: 'Staked Amount',
+    staked_amount_tooltip:
+      'The amount of INJ required to be staked. Staking INJ secures the protocol, earns rewards and can help obtain a more preferable fee tier.',
+    tier: 'Tier',
+    current_apr: 'Current APR',
+    maker: 'Maker',
+    taker: 'Taker',
+    off: 'Off',
+    last_updated_at: 'Last updated at',
+    update_daily: 'Update daily',
+    in_past_days: 'In past {days} days'
   }
 }

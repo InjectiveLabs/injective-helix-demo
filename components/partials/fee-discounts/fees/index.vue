@@ -4,16 +4,16 @@
       <thead>
         <tr>
           <th class="text-left">
-            {{ $t('tier') }}
+            {{ $t('fee_discounts.tier') }}
           </th>
           <th class="text-right">
             <div class="flex items-end justify-end">
               <span>
-                {{ $t('fee_discount_staked_amount') }}
+                {{ $t('fee_discounts.staked_amount') }}
               </span>
               <IconInfoTooltip
                 class="ml-2"
-                :tooltip="$t('fee_discount_staked_amount_tooltip')"
+                :tooltip="$t('fee_discounts.staked_amount_tooltip')"
               />
             </div>
           </th>
@@ -21,33 +21,33 @@
           <th class="text-right">
             <div class="flex items-end justify-end">
               <span>
-                {{ $t('trade.fees_paid') }}
+                {{ $t('fee_discounts.trading_volume') }}
               </span>
               <IconInfoTooltip
                 class="ml-2"
-                :tooltip="$t('fee_discount_fees_paid_tooltip')"
+                :tooltip="$t('fee_discounts.trading_volume_tooltip')"
               />
             </div>
           </th>
           <th class="text-right">
             <div class="flex items-end justify-end">
               <span>
-                {{ $t('fee_discount_maker') }}
+                {{ $t('fee_discounts.maker_rate_discount') }}
               </span>
               <IconInfoTooltip
                 class="ml-2"
-                :tooltip="$t('fee_discount_maker_tooltip')"
+                :tooltip="$t('fee_discounts.maker_rate_discount_tooltip')"
               />
             </div>
           </th>
           <th class="text-right">
             <div class="flex items-end justify-end">
               <span>
-                {{ $t('fee_discount_taker') }}
+                {{ $t('fee_discounts.taker_rate_discount') }}
               </span>
               <IconInfoTooltip
                 class="ml-2"
-                :tooltip="$t('fee_discount_taker_tooltip')"
+                :tooltip="$t('fee_discounts.taker_rate_discount_tooltip')"
               />
             </div>
           </th>
@@ -101,7 +101,8 @@ export default Vue.extend({
           makerDiscountRate: '0',
           takerDiscountRate: '0',
           stakedAmount: '0',
-          feePaidAmount: '0'
+          feePaidAmount: '0',
+          volume: '0'
         },
         ...feeDiscountSchedule.tierInfosList
       ]

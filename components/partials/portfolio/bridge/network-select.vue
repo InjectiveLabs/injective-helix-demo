@@ -61,7 +61,11 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import VSelect from 'vue-select'
-import { BridgingNetwork, NetworkMeta } from '@injectivelabs/sdk-ui-ts'
+import {
+  BridgingNetwork,
+  getTokenLogoWithVendorPathPrefix,
+  NetworkMeta
+} from '@injectivelabs/sdk-ui-ts'
 import { networksMeta } from '~/app/data/bridge'
 import { BridgeType } from '~/types'
 
@@ -84,6 +88,7 @@ export default Vue.extend({
 
   data() {
     return {
+      getTokenLogoWithVendorPathPrefix,
       options: networksMeta as NetworkMeta[]
     }
   },

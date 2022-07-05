@@ -45,6 +45,7 @@ jobs:
       APP_BUGSNAG_KEY: ${{ secrets.APP_BUGSNAG_KEY }}
       APP_ALCHEMY_KEY: ${{ secrets.APP_ALCHEMY_KEY }}
       APP_ALCHEMY_KOVAN_KEY: ${{ secrets.APP_ALCHEMY_KOVAN_KEY }}
+      APP_ALCHEMY_GOERLI_KEY: ${{ secrets.APP_ALCHEMY_GOERLI_KEY }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_S3_BUCKET: ${{ secrets.AWS_S3_STAGING_BUCKET }}
@@ -90,7 +91,7 @@ jobs:
       APP_NETWORK: testnetK8s
       APP_ENV: testnet
       APP_CHAIN_ID: injective-888
-      APP_ETHEREUM_CHAIN_ID: 42
+      APP_ETHEREUM_CHAIN_ID: 5
       SOURCE_DIR: dist
       DEST_DIR: www
 
@@ -119,6 +120,7 @@ jobs:
       APP_BUGSNAG_KEY: ${{ secrets.APP_BUGSNAG_KEY }}
       APP_ALCHEMY_KEY: ${{ secrets.APP_ALCHEMY_KEY }}
       APP_ALCHEMY_KOVAN_KEY: ${{ secrets.APP_ALCHEMY_KOVAN_KEY }}
+      APP_ALCHEMY_GOERLI_KEY: ${{ secrets.APP_ALCHEMY_GOERLI_KEY }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_S3_BUCKET: ${{ secrets.AWS_S3_TESTNET_BUCKET }}

@@ -29,6 +29,7 @@ declare global {
       APP_BUGSNAG_KEY: string
       APP_ALCHEMY_KEY: string
       APP_ALCHEMY_KOVAN_KEY: string
+      APP_ALCHEMY_GOERLI_KEY: string
       APP_CHAIN_ID: string
       APP_ETHEREUM_CHAIN_ID: string
     }
