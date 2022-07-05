@@ -29,7 +29,7 @@ export const getRpcWsUrlsForChainIds = (): Record<EthereumChainId, string> => {
 }
 
 export const alchemyRpcEndpoint = IS_TESTNET
-  ? `https://eth-kovan.alchemyapi.io/v2/${process.env.APP_ALCHEMY_KOVAN_KEY}`
+  ? `https://eth-goerli.alchemyapi.io/v2/${process.env.APP_ALCHEMY_KOVAN_KEY}`
   : `https://eth-mainnet.alchemyapi.io/v2/${process.env.APP_ALCHEMY_KEY}`
 
 const rpcUrls = getRpcUrlsForChainIds()
