@@ -1,4 +1,4 @@
-name: DEX Deployments
+name: DEX Mainnet Deployments
 
 on:
   push:
