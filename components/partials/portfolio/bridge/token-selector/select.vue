@@ -86,7 +86,7 @@
                 <div class="flex justify-end items-center h-[32px] ml-4">
                   <img
                     v-if="logo"
-                    :src="getLogo(logo)"
+                    :src="getTokenLogoWithVendorPathPrefix(logo)"
                     :alt="name"
                     class="rounded-full w-6 h-6"
                   />
@@ -267,7 +267,8 @@ export default Vue.extend({
       search: '',
       forceClose: true,
       isSearching: false,
-      isDropdownOpen: false
+      isDropdownOpen: false,
+      getTokenLogoWithVendorPathPrefix
     }
   },
 
@@ -320,14 +321,6 @@ export default Vue.extend({
   },
 
   methods: {
-    getLogo(logoPath: string): string {
-      if (logoPath.startsWith('/bridgingNetworks')) {
-        return logoPath
-      }
-
-      return getTokenLogoWithVendorPathPrefix(logoPath)
-    },
-
     resetInputFields() {
       if (this.$inputForm) {
         this.$inputForm.reset()
