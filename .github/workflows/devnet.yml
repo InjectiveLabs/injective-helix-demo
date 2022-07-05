@@ -1,4 +1,4 @@
-name: CD Devnet
+name: DEX Devnet Deployments
 
 on:
   push:
