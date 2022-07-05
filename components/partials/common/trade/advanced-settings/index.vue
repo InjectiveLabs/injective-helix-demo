@@ -198,6 +198,10 @@ export default Vue.extend({
         value = DEFAULT_MAX_SLIPPAGE.toFormat(1)
       }
 
+      if (Number(value) > 50) {
+        this.$emit('set:slippageTolerance', '50')
+      }
+
       this.$emit('set:slippageTolerance', value)
 
       this.toggleSlippageToSelectable()
