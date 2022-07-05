@@ -67,7 +67,7 @@ export const networksMeta = [
     text: 'Moonbeam',
     value: BridgingNetwork.Moonbeam,
     icon: '/bridgingNetworks/moonbeam.png',
-    symbol: 'injective.png'
+    symbol: 'dot.jpeg'
   }
 ] as NetworkMeta[]
 

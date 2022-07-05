@@ -23,10 +23,10 @@
         </span>
       </template>
 
-      <template #selected-option="{ symbol, text }">
+      <template #selected-option="{ icon, text }">
         <div class="flex items-center">
           <img
-            :src="getTokenLogoWithVendorPathPrefix(symbol)"
+            :src="icon"
             :alt="text"
             class="selected-icon rounded-full mr-3"
           />
@@ -41,13 +41,9 @@
         </div>
       </template>
 
-      <template #option="{ symbol, text }">
+      <template #option="{ icon, text }">
         <div class="flex items-center">
-          <img
-            :src="getTokenLogoWithVendorPathPrefix(symbol)"
-            :alt="text"
-            class="rounded-full w-6 h-6 mr-3"
-          />
+          <img :src="icon" :alt="text" class="rounded-full w-6 h-6 mr-3" />
           <div>
             <p
               class="text-sm tracking-1"
