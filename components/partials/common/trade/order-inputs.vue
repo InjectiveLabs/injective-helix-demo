@@ -109,6 +109,7 @@
         notionalWithLeverageBasedOnWorstPrice,
         notionalWithLeverageAndFees,
         orderTypeBuy,
+        orderTypeReduceOnly,
         potentiallyShowPercentageWarning,
         quoteAmount: inputQuoteAmountToBigNumber,
         quoteAvailableBalance,

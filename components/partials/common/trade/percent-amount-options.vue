@@ -96,7 +96,7 @@ export default Vue.extend({
     },
 
     worstPrice: {
-      type: Object as PropType<BigNumberInBase>,
+      type: Object as PropType<BigNumberInBase> | undefined,
       default: undefined
     },
 
