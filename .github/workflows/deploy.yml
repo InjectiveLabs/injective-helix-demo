@@ -17,7 +17,7 @@ jobs:
       APP_CHAIN_ID: injective-1
       APP_ETHEREUM_CHAIN_ID: 1
       SOURCE_DIR: dist
-      DEST_DIR: wwwg
+      DEST_DIR: www
 
       ## Flags
       MAINTENANCE_ENABLED: false
