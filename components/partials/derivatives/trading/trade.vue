@@ -141,6 +141,7 @@ import {
   calculateAverageExecutionPriceFromFillableNotionalOnOrderBook,
   calculateBinaryOptionsMargin
 } from '~/app/client/utils/derivatives'
+import { ONE_IN_BASE } from '~/app/utils/constants'
 
 interface TradeForm {
   reduceOnly: boolean
@@ -363,6 +364,10 @@ export default Vue.extend({
       } = this
 
       const slippageAsBigNumber = new BigNumberInBase(slippageTolerance || 0)
+
+      if (slippageAsBigNumber.gt(50)) {
+        return ONE_IN_BASE
+      }
 
       return new BigNumberInBase(
         orderTypeBuy
