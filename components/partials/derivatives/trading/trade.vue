@@ -680,6 +680,20 @@ export default Vue.extend({
       return new BigNumberInBase(notionalWithLeverage)
     },
 
+    notionalWithLeverageAndFees(): BigNumberInBase {
+      const { fees, notionalWithLeverageToBigNumber, market } = this
+
+      if (
+        notionalWithLeverageToBigNumber.isNaN() ||
+        notionalWithLeverageToBigNumber.lte(0) ||
+        !market
+      ) {
+        return ZERO_IN_BASE
+      }
+
+      return fees.plus(notionalWithLeverageToBigNumber)
+    },
+
     feeRebates(): BigNumberInBase {
       const { notionalWithLeverageToBigNumber, makerFeeRate, market } = this
 
@@ -694,20 +708,6 @@ export default Vue.extend({
       return new BigNumberInBase(
         notionalWithLeverageToBigNumber.times(makerFeeRate).abs()
       ).times(0.6 /* Only 60% of the fees are getting returned */)
-    },
-
-    notionalWithLeverageAndFees(): BigNumberInBase {
-      const { fees, notionalWithLeverageToBigNumber, market } = this
-
-      if (
-        notionalWithLeverageToBigNumber.isNaN() ||
-        notionalWithLeverageToBigNumber.lte(0) ||
-        !market
-      ) {
-        return ZERO_IN_BASE
-      }
-
-      return fees.plus(notionalWithLeverageToBigNumber)
     },
 
     liquidationPrice(): BigNumberInBase {
