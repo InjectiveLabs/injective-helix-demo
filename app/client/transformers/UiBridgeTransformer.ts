@@ -23,7 +23,7 @@ export class UiBridgeTransformer {
       txHash: transaction.hash,
       explorerLink: `${getExplorerUrl(NETWORK)}/transaction/${
         transaction.hash
-      }`,
+      }/`,
       timestamp: Date.parse(transaction.blockTimestamp),
       state: BridgeTransactionState.Completed,
       blockHeight: transaction.blockNumber
@@ -52,7 +52,7 @@ export class UiBridgeTransformer {
       amount: transaction.amount,
       denom: transaction.denom,
       txHash: '',
-      explorerLink: `${getExplorerUrl(NETWORK)}/account/${explorerAccount}`,
+      explorerLink: `${getExplorerUrl(NETWORK)}/account/${explorerAccount}/`,
       timestamp: transaction.executedAt,
       state: BridgeTransactionState.Completed
     }

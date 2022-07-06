@@ -167,7 +167,7 @@ export default Vue.extend({
     explorerUrl(): string {
       const { injectiveAddress } = this
 
-      return `${getExplorerUrl(NETWORK)}/account/${injectiveAddress}`
+      return `${getExplorerUrl(NETWORK)}/account/${injectiveAddress}/`
     },
 
     isModalOpen(): boolean {
