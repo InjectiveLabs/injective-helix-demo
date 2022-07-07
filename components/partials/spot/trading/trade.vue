@@ -19,10 +19,10 @@
         baseAvailableBalance,
         buys,
         executionPrice,
-        feeRate,
         hasAmount,
         hasPrice,
         lastTradedPrice,
+        makerFeeRate,
         market,
         orderType,
         orderTypeBuy,
@@ -436,20 +436,16 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const records = orderTypeBuy ? sells : buys
-
       const percentBaseBalance = baseAvailableBalance.times(
         proportionalPercentage
       )
 
-      const baseAmountForAveragePrice =
-        averagePriceOption === AveragePriceOptions.BaseAmount
-          ? amount
-          : percentBaseBalance
-
       return calculateAverageExecutionPriceFromOrderbook({
-        records,
-        amount: baseAmountForAveragePrice,
+        records: orderTypeBuy ? sells : buys,
+        amount:
+          averagePriceOption === AveragePriceOptions.BaseAmount
+            ? amount
+            : percentBaseBalance,
         market
       })
     },
@@ -470,8 +466,6 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const records = orderTypeBuy ? sells : buys
-
       const percentQuoteBalance = quoteAvailableBalance.times(
         proportionalPercentage
       )
@@ -483,7 +477,7 @@ export default Vue.extend({
 
       const averagePrice =
         calculateAverageExecutionPriceFromFillableNotionalOnOrderBook({
-          records,
+          records: orderTypeBuy ? sells : buys,
           quoteAmount: quoteAmountForAveragePrice,
           market
         })

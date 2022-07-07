@@ -15,31 +15,31 @@
       ref="orderInputs"
       class="mt-8"
       v-bind="{
-        tradingTypeMarket,
-        market,
-        sells,
-        takerFeeRate,
-        hasPrice,
+        averagePriceOption,
         buys,
-        orderTypeBuy,
-        orderType,
         executionPrice,
         fees,
-        feeRate,
-        lastTradedPrice,
-        notionalWithLeverageAndFees,
         hasAmount,
-        slippageTolerance: form.slippageTolerance,
-        slippage,
-        showReduceOnly,
-        tradingType,
-        averagePriceOption,
+        hasPrice,
+        lastTradedPrice,
+        makerFeeRate,
+        market,
         notionalWithLeverage,
+        notionalWithLeverageAndFees,
         notionalWithLeverageBasedOnWorstPrice,
-        position,
+        orderType,
+        orderTypeBuy,
         orderTypeReduceOnly,
+        position,
         quoteAvailableBalance,
+        sells,
         showReduceOnly,
+        showReduceOnly,
+        slippage,
+        slippageTolerance: form.slippageTolerance,
+        takerFeeRate,
+        tradingType,
+        tradingTypeMarket,
         worstPrice
       }"
       :average-price-option.sync="averagePriceOption"
@@ -496,10 +496,8 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const records = orderTypeBuy ? sells : buys
-
       const averagePrice = calculateAverageExecutionPriceFromOrderbook({
-        records,
+        records: orderTypeBuy ? sells : buys,
         amount,
         market
       })
@@ -515,21 +513,25 @@ export default Vue.extend({
         market,
         quoteAmount,
         quoteAvailableBalance,
-        form: { proportionalPercentage }
+        form: { proportionalPercentage },
+        averagePriceOption
       } = this
 
       if (!market) {
         return ZERO_IN_BASE
       }
-      const records = orderTypeBuy ? sells : buys
 
-      const quoteAmountForAveragePrice =
-        proportionalPercentage > 0 ? quoteAvailableBalance : quoteAmount
+      const percentQuoteBalance = quoteAvailableBalance.times(
+        proportionalPercentage
+      )
 
       const averagePrice =
         calculateAverageExecutionPriceFromFillableNotionalOnOrderBook({
-          records,
-          quoteAmount: quoteAmountForAveragePrice,
+          records: orderTypeBuy ? sells : buys,
+          quoteAmount:
+            averagePriceOption === AveragePriceOptions.QuoteAmount
+              ? quoteAmount
+              : percentQuoteBalance,
           market
         })
 
@@ -540,24 +542,18 @@ export default Vue.extend({
       const {
         averagePriceDerivedFromBaseAmount,
         averagePriceDerivedFromQuoteAmount,
-        averagePriceOption,
-        orderTypeBuy
+        averagePriceOption
       } = this
 
       if (averagePriceOption === AveragePriceOptions.BaseAmount) {
         return averagePriceDerivedFromBaseAmount
       }
 
-      if (averagePriceOption === AveragePriceOptions.QuoteAmount) {
+      if (
+        averagePriceOption === AveragePriceOptions.QuoteAmount ||
+        averagePriceOption === AveragePriceOptions.Percentage
+      ) {
         return averagePriceDerivedFromQuoteAmount
-      }
-
-      if (averagePriceOption === AveragePriceOptions.Percentage) {
-        if (orderTypeBuy) {
-          return averagePriceDerivedFromQuoteAmount
-        }
-
-        return averagePriceDerivedFromBaseAmount
       }
 
       return ZERO_IN_BASE

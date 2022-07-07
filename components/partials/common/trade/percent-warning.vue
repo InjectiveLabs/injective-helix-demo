@@ -27,6 +27,11 @@ export default Vue.extend({
       required: true
     },
 
+    isSpot: {
+      type: Boolean,
+      required: true
+    },
+
     baseAvailableBalance: {
       type: Object as PropType<BigNumberInBase> | undefined,
       default: undefined
@@ -82,7 +87,7 @@ export default Vue.extend({
       }, ZERO_IN_BASE)
     },
 
-    percentQuoteAvailableBalanceGreaterThanOrderbookBuySideNotional(): boolean {
+    percentAvailableBalanceGreaterThanSellSideOrderbookNotional(): boolean {
       const {
         orderbookSellSideTotalNotional,
         quoteAvailableBalance,
@@ -112,32 +117,36 @@ export default Vue.extend({
       }, ZERO_IN_BASE)
     },
 
-    percentBaseAvailableBalanceGreaterThanOrderbookSellSideAmount(): boolean {
+    percentAvailableBalanceGreaterThanBuySideOrderbookAmount(): boolean {
       const {
         orderbookBuySideTotalAmount,
         baseAvailableBalance,
-        inputProportionalPercentage
+        quoteAvailableBalance,
+        inputProportionalPercentage,
+        isSpot
       } = this
 
       const percentageToNumber = new BigNumberInBase(
         inputProportionalPercentage
       ).div(100)
-      const percentBaseAvailableBalance =
-        baseAvailableBalance.times(percentageToNumber)
 
-      return percentBaseAvailableBalance.gt(orderbookBuySideTotalAmount)
+      const balance = isSpot ? baseAvailableBalance : quoteAvailableBalance
+
+      const percentAvailableBalance = balance.times(percentageToNumber)
+
+      return percentAvailableBalance.gt(orderbookBuySideTotalAmount)
     },
 
     shouldShowPercentWarning(): boolean {
       const {
         orderTypeBuy,
-        percentQuoteAvailableBalanceGreaterThanOrderbookBuySideNotional,
-        percentBaseAvailableBalanceGreaterThanOrderbookSellSideAmount
+        percentAvailableBalanceGreaterThanSellSideOrderbookNotional,
+        percentAvailableBalanceGreaterThanBuySideOrderbookAmount
       } = this
 
       return orderTypeBuy
-        ? percentQuoteAvailableBalanceGreaterThanOrderbookBuySideNotional
-        : percentBaseAvailableBalanceGreaterThanOrderbookSellSideAmount
+        ? percentAvailableBalanceGreaterThanSellSideOrderbookNotional
+        : percentAvailableBalanceGreaterThanBuySideOrderbookAmount
     }
   }
 })

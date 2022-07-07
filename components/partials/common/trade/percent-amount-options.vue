@@ -99,12 +99,12 @@ export default Vue.extend({
       default: undefined
     },
 
-    feeRate: {
+    takerFeeRate: {
       type: Object as PropType<BigNumberInBase>,
       required: true
     },
 
-    takerFeeRate: {
+    makerFeeRate: {
       type: Object as PropType<BigNumberInBase>,
       required: true
     },
@@ -112,6 +112,11 @@ export default Vue.extend({
     orderTypeReduceOnly: {
       type: Boolean,
       default: false
+    },
+
+    inputPostOnly: {
+      type: Boolean,
+      required: true
     },
 
     slippage: {
@@ -178,18 +183,20 @@ export default Vue.extend({
 
     derivativesBaseAmount(): string {
       const {
-        market,
         buys,
-        sells,
+        executionPrice,
+        inputPostOnly,
+        isSpot,
+        leverage,
+        makerFeeRate,
+        market,
         orderTypeBuy,
         proportionalPercentage,
         quoteAvailableBalance,
-        executionPrice,
-        feeRate,
-        leverage,
-        tradingTypeMarket,
+        sells,
         slippage,
-        isSpot
+        takerFeeRate,
+        tradingTypeMarket
       } = this
 
       if (
@@ -212,7 +219,8 @@ export default Vue.extend({
             market: market as UiDerivativeMarketWithToken,
             leverage,
             percentageToNumber: percentageToNumber.toNumber(),
-            feeRate,
+            feeRate:
+              !tradingTypeMarket && inputPostOnly ? makerFeeRate : takerFeeRate,
             executionPrice
           })
         : getDerivativesMarketBaseAmountForPercentage({
@@ -227,16 +235,19 @@ export default Vue.extend({
 
     spotBaseAmount(): string {
       const {
-        market,
+        baseAvailableBalance,
         buys,
-        sells,
+        executionPrice,
+        inputPostOnly,
+        isSpot,
+        makerFeeRate,
+        market,
         orderTypeBuy,
         proportionalPercentage,
-        baseAvailableBalance,
         quoteAvailableBalance,
-        executionPrice,
-        feeRate,
-        isSpot
+        sells,
+        takerFeeRate,
+        tradingTypeMarket
       } = this
 
       if (!isSpot || !market) {
@@ -259,25 +270,29 @@ export default Vue.extend({
             quoteAvailableBalance,
             percentageToNumber: percentageToNumber.toNumber(),
             sells,
-            feeRate,
+            feeRate:
+              !tradingTypeMarket && inputPostOnly ? makerFeeRate : takerFeeRate,
             executionPrice
           })
     },
 
     quoteAmountFromPercentage(): string {
       const {
-        maxReduceOnly,
-        orderTypeReduceOnly,
-        proportionalPercentage,
-        worstPrice,
-        feeRate,
+        buys,
+        inputPostOnly,
         leverage,
+        makerFeeRate,
         market,
-        position,
-        quoteAvailableBalance,
+        maxReduceOnly,
         orderTypeBuy,
+        orderTypeReduceOnly,
+        position,
+        proportionalPercentage,
+        quoteAvailableBalance,
         sells,
-        buys
+        takerFeeRate,
+        tradingTypeMarket,
+        worstPrice
       } = this
 
       if (!market) {
@@ -301,7 +316,8 @@ export default Vue.extend({
         market: market as UiDerivativeMarketWithToken,
         records: orderTypeBuy ? sells : buys,
         leverage,
-        feeRate
+        feeRate:
+          !tradingTypeMarket && inputPostOnly ? makerFeeRate : takerFeeRate
       }).toFixed(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
     }
   },
@@ -371,16 +387,18 @@ export default Vue.extend({
 
     updateSpotQuoteAmount() {
       const {
+        baseAvailableBalance,
+        buys,
+        executionPrice,
+        inputPostOnly,
+        makerFeeRate,
+        market,
+        orderTypeBuy,
+        proportionalPercentage,
         quoteAvailableBalance = ZERO_IN_BASE,
         sells,
         takerFeeRate,
-        market,
-        orderTypeBuy,
-        buys,
-        baseAvailableBalance,
-        executionPrice,
-        feeRate,
-        proportionalPercentage
+        tradingTypeMarket
       } = this
 
       if (!market) {
@@ -397,7 +415,8 @@ export default Vue.extend({
             market: market as UiSpotMarketWithToken,
             quoteAvailableBalance,
             percentToNumber,
-            takerFeeRate
+            feeRate:
+              !tradingTypeMarket && inputPostOnly ? makerFeeRate : takerFeeRate
           })
         : getSpotQuoteForPercentageSell({
             buys,
@@ -405,7 +424,8 @@ export default Vue.extend({
             baseAvailableBalance,
             percentToNumber,
             executionPrice,
-            feeRate
+            feeRate:
+              !tradingTypeMarket && inputPostOnly ? makerFeeRate : takerFeeRate
           })
 
       this.$emit('update:quoteAmountFromPercentage', quoteAmount)

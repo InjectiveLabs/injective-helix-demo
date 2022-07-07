@@ -60,25 +60,26 @@
         <PercentAmountOptions
           slot="context"
           v-bind="{
-            quoteAvailableBalance,
-            sells,
-            takerFeeRate,
-            market,
-            hasPrice,
-            maxReduceOnly,
-            buys,
-            sells,
-            slippage,
-            orderTypeBuy,
             baseAvailableBalance,
+            buys,
             executionPrice,
-            worstPrice,
-            feeRate,
+            hasPrice,
+            inputPostOnly,
+            leverage,
+            makerFeeRate,
+            market,
+            maxReduceOnly,
+            orderTypeBuy,
             orderTypeReduceOnly,
             position,
             quoteAvailableBalance,
-            leverage,
-            tradingTypeMarket
+            quoteAvailableBalance,
+            sells,
+            sells,
+            slippage,
+            takerFeeRate,
+            tradingTypeMarket,
+            worstPrice
           }"
           ref="percentageOptions"
           :proportional-percentage="inputProportionalPercentage"
@@ -273,7 +274,7 @@ export default Vue.extend({
       required: true
     },
 
-    feeRate: {
+    makerFeeRate: {
       type: Object as PropType<BigNumberInBase>,
       required: true
     },
@@ -534,27 +535,6 @@ export default Vue.extend({
       } else if (averagePriceOption === AveragePriceOptions.BaseAmount) {
         this.onAmountChange(inputBaseAmount)
       }
-    },
-
-    feeRate() {
-      const {
-        averagePriceOption,
-        reduceOnly,
-        tradingTypeMarket,
-        orderTypeBuy,
-        isSpot
-      } = this
-      if (!tradingTypeMarket) {
-        if (isSpot && averagePriceOption !== AveragePriceOptions.Percentage) {
-          orderTypeBuy
-            ? this.updateSpotBaseAmountFromQuote()
-            : this.updateSpotQuoteAmountFromBase()
-          return
-        }
-        if (!reduceOnly) {
-          this.$percentageOptions.updateBaseAndQuoteAmountFromPercentage()
-        }
-      }
     }
   },
 
@@ -596,6 +576,38 @@ export default Vue.extend({
       this.inputPostOnly = postOnly
 
       this.$emit('update:postOnly', postOnly)
+
+      this.updateInputsOnPostOnlyToggle()
+    },
+
+    updateInputsOnPostOnlyToggle() {
+      const {
+        averagePriceOption,
+        reduceOnly,
+        tradingTypeMarket,
+        orderTypeBuy,
+        isSpot
+      } = this
+
+      if (!tradingTypeMarket) {
+        if (!isSpot && averagePriceOption !== AveragePriceOptions.Percentage) {
+          return
+        }
+
+        if (isSpot && averagePriceOption !== AveragePriceOptions.Percentage) {
+          orderTypeBuy
+            ? this.updateSpotBaseAmountFromQuote()
+            : this.updateSpotQuoteAmountFromBase()
+          return
+        }
+
+        if (
+          averagePriceOption === AveragePriceOptions.Percentage &&
+          !reduceOnly
+        ) {
+          this.$percentageOptions.updateBaseAndQuoteAmountFromPercentage()
+        }
+      }
     },
 
     onLeverageChange(leverage: string) {
@@ -746,12 +758,18 @@ export default Vue.extend({
         executionPrice,
         market,
         orderTypeBuy,
-        feeRate
+        makerFeeRate,
+        takerFeeRate,
+        inputPostOnly,
+        tradingTypeMarket
       } = this
 
       if (!market) {
         return
       }
+
+      const feeRate =
+        !tradingTypeMarket && inputPostOnly ? makerFeeRate : takerFeeRate
 
       const feeMultiplier = orderTypeBuy
         ? new BigNumberInBase(1).plus(feeRate)
@@ -804,16 +822,22 @@ export default Vue.extend({
 
     updateSpotQuoteAmountFromBase() {
       const {
-        inputBaseAmountToBigNumber,
         executionPrice,
+        inputBaseAmountToBigNumber,
+        inputPostOnly,
+        makerFeeRate,
         market,
-        feeRate,
-        orderTypeBuy
+        orderTypeBuy,
+        takerFeeRate,
+        tradingTypeMarket
       } = this
 
       if (!market) {
         return
       }
+
+      const feeRate =
+        !tradingTypeMarket && inputPostOnly ? makerFeeRate : takerFeeRate
 
       const feeMultiplier = orderTypeBuy
         ? new BigNumberInBase(1).plus(feeRate)
@@ -864,7 +888,7 @@ export default Vue.extend({
       }
     },
 
-    checkIfPriceInputFieldIsActive() {
+    checkIfPriceInputFieldIsActive(): boolean {
       const priceInput = document.getElementById('input-price')
       const priceInputId = priceInput ? priceInput.id : ''
       const activeElement = document.activeElement

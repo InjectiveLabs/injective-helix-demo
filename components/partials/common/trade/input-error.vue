@@ -20,6 +20,7 @@
         baseAvailableBalance,
         buys,
         inputProportionalPercentage,
+        isSpot,
         market,
         orderTypeBuy,
         quoteAvailableBalance,

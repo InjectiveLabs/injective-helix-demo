@@ -419,13 +419,13 @@ export const getSpotQuoteForPercentageBuy = ({
   market,
   quoteAvailableBalance,
   percentToNumber,
-  takerFeeRate
+  feeRate
 }: {
   sells: UiPriceLevel[]
   market: UiSpotMarketWithToken
   quoteAvailableBalance: BigNumberInBase
   percentToNumber: BigNumberInBase
-  takerFeeRate: BigNumberInBase
+  feeRate: BigNumberInBase
 }) => {
   let totalNotional = ZERO_IN_BASE
 
@@ -441,7 +441,7 @@ export const getSpotQuoteForPercentageBuy = ({
     totalNotional = totalNotional.plus(price.times(quantity))
   }
 
-  const totalFees = totalNotional.times(takerFeeRate)
+  const totalFees = totalNotional.times(feeRate)
   const total = totalNotional.plus(totalFees)
 
   const quoteBalance = quoteAvailableBalance.times(percentToNumber)
