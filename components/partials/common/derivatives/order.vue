@@ -153,6 +153,7 @@ import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
 import {
   UiDerivativeLimitOrder,
   UiBinaryOptionsMarketWithToken,
+  UiPerpetualMarketWithToken,
   DerivativeOrderSide,
   ZERO_IN_BASE,
   getTokenLogoWithVendorPathPrefix
@@ -181,14 +182,23 @@ export default Vue.extend({
   },
 
   computed: {
-    markets(): UiBinaryOptionsMarketWithToken[] {
+    perpetualMarkets(): UiPerpetualMarketWithToken[] {
+      return this.$accessor.derivatives.perpetualMarkets
+    },
+
+    binaryMarkets(): UiBinaryOptionsMarketWithToken[] {
       return this.$accessor.derivatives.binaryOptionsMarkets
     },
 
-    market(): UiBinaryOptionsMarketWithToken | undefined {
-      const { markets, order } = this
+    market():
+      | UiPerpetualMarketWithToken
+      | UiBinaryOptionsMarketWithToken
+      | undefined {
+      const { binaryMarkets, perpetualMarkets, order } = this
 
-      return markets.find((m) => m.marketId === order.marketId)
+      return [...binaryMarkets, ...perpetualMarkets].find(
+        (m) => m.marketId === order.marketId
+      )
     },
 
     isBinaryOptionsPage(): boolean {
