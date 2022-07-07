@@ -2,6 +2,7 @@
   <div>
     <VInput
       v-if="!tradingTypeMarket"
+      id="input-price"
       ref="input-price"
       :value="inputPrice"
       :placeholder="priceStep"
@@ -533,6 +534,27 @@ export default Vue.extend({
       } else if (averagePriceOption === AveragePriceOptions.BaseAmount) {
         this.onAmountChange(inputBaseAmount)
       }
+    },
+
+    feeRate() {
+      const {
+        averagePriceOption,
+        reduceOnly,
+        tradingTypeMarket,
+        orderTypeBuy,
+        isSpot
+      } = this
+      if (!tradingTypeMarket) {
+        if (isSpot && averagePriceOption !== AveragePriceOptions.Percentage) {
+          orderTypeBuy
+            ? this.updateSpotBaseAmountFromQuote()
+            : this.updateSpotQuoteAmountFromBase()
+          return
+        }
+        if (!reduceOnly) {
+          this.$percentageOptions.updateBaseAndQuoteAmountFromPercentage()
+        }
+      }
     }
   },
 
@@ -571,19 +593,9 @@ export default Vue.extend({
     },
 
     setPostOnly(postOnly: boolean) {
-      const { averagePriceOption, reduceOnly } = this
-
       this.inputPostOnly = postOnly
 
       this.$emit('update:postOnly', postOnly)
-
-      if (averagePriceOption !== AveragePriceOptions.Percentage) {
-        return this.updateSpotBaseAmountFromQuote()
-      }
-
-      if (!reduceOnly) {
-        return this.$percentageOptions.updateBaseAndQuoteAmountFromPercentage()
-      }
     },
 
     onLeverageChange(leverage: string) {
@@ -640,16 +652,22 @@ export default Vue.extend({
 
       this.$emit('update:price', formattedPrice)
 
-      if (averagePriceOption === AveragePriceOptions.Percentage) {
+      if (hasAmount && averagePriceOption === AveragePriceOptions.Percentage) {
         this.$percentageOptions.updateBaseAmountBasedOnPercentage()
         this.$percentageOptions.updateQuoteAmountBasedOnPercentage()
         return
       }
 
-      if (hasAmount) {
-        isSpot
+      if (hasAmount && averagePriceOption === AveragePriceOptions.BaseAmount) {
+        return isSpot
           ? this.updateSpotQuoteAmountFromBase()
           : this.updateDerivativesQuoteAmountFromBase()
+      }
+
+      if (hasAmount && averagePriceOption === AveragePriceOptions.QuoteAmount) {
+        return isSpot
+          ? this.updateSpotBaseAmountFromQuote()
+          : this.updateDerivativesBaseAmountFromQuote()
       }
     },
 
@@ -679,7 +697,11 @@ export default Vue.extend({
         this.updateDerivativesQuoteAmountFromBase()
       }
 
-      if (!hasPrice && !tradingTypeMarket) {
+      if (
+        !hasPrice &&
+        !tradingTypeMarket &&
+        !this.checkIfPriceInputFieldIsActive()
+      ) {
         this.updatePriceFromLastTradedPrice()
       }
     },
@@ -703,7 +725,11 @@ export default Vue.extend({
       this.$emit('update:quote-amount', formattedQuoteAmount)
       this.$emit('update:proportionalPercentage', 0)
 
-      if (!hasPrice && !tradingTypeMarket) {
+      if (
+        !hasPrice &&
+        !tradingTypeMarket &&
+        !this.checkIfPriceInputFieldIsActive()
+      ) {
         this.updatePriceFromLastTradedPrice()
       }
 
@@ -836,6 +862,15 @@ export default Vue.extend({
 
         this.$emit('update:quote-amount', '')
       }
+    },
+
+    checkIfPriceInputFieldIsActive() {
+      const priceInput = document.getElementById('input-price')
+      const priceInputId = priceInput ? priceInput.id : ''
+      const activeElement = document.activeElement
+      const activeElementId = activeElement ? activeElement.id : ''
+
+      return priceInputId === activeElementId
     },
 
     updatePriceFromLastTradedPrice() {

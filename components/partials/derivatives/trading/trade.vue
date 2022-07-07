@@ -446,14 +446,15 @@ export default Vue.extend({
       const {
         form: { postOnly },
         takerFeeRate,
-        makerFeeRate
+        makerFeeRate,
+        tradingTypeMarket
       } = this
 
-      if (!postOnly) {
-        return takerFeeRate
+      if (postOnly && !tradingTypeMarket) {
+        return makerFeeRate
       }
 
-      return makerFeeRate
+      return takerFeeRate
     },
 
     price(): BigNumberInBase {
