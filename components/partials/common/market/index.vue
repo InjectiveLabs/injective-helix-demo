@@ -51,9 +51,7 @@ import {
   getTokenLogoWithVendorPathPrefix,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
-  UiBinaryOptionsMarketWithToken,
-  UiSpotMarketSummary,
-  UiSpotMarketWithToken
+  UiSpotMarketSummary
 } from '@injectivelabs/sdk-ui-ts'
 import MarketStats from './stats.vue'
 import LastTradedPriceAndChange from './last-traded-price-and-change.vue'
@@ -66,11 +64,7 @@ export default Vue.extend({
 
   props: {
     market: {
-      type: Object as PropType<
-        | UiSpotMarketWithToken
-        | UiDerivativeMarketWithToken
-        | UiBinaryOptionsMarketWithToken
-      >,
+      type: Object as PropType<UiDerivativeMarketWithToken>,
       required: true
     },
 
