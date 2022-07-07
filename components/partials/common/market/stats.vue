@@ -80,9 +80,7 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { fromUnixTime, formatDistanceToNow } from 'date-fns'
 import {
   UiSpotMarketSummary,
-  UiSpotMarketWithToken,
   UiDerivativeMarketSummary,
-  UiBinaryOptionsMarketWithToken,
   UiDerivativeMarketWithToken,
   UiExpiryFuturesMarketWithToken,
   UiPerpetualMarketWithToken,
@@ -106,11 +104,7 @@ export default Vue.extend({
 
   props: {
     market: {
-      type: Object as PropType<
-        | UiSpotMarketWithToken
-        | UiDerivativeMarketWithToken
-        | UiBinaryOptionsMarketWithToken
-      >,
+      type: Object as PropType<UiDerivativeMarketWithToken>,
       required: true
     },
 

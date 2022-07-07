@@ -10,7 +10,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import {
-  UiBinaryOptionsMarketWithToken,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiSpotMarketSummary,
@@ -85,11 +84,7 @@ export default Vue.extend({
       return this.$accessor.token.tokenUsdPriceMap
     },
 
-    markets(): Array<
-      | UiSpotMarketWithToken
-      | UiDerivativeMarketWithToken
-      | UiBinaryOptionsMarketWithToken
-    > {
+    markets(): Array<UiSpotMarketWithToken | UiDerivativeMarketWithToken> {
       const {
         spotMarkets,
         derivativeMarkets,

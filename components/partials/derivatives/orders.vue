@@ -155,6 +155,7 @@ export default Vue.extend({
     filteredOrders(): UiDerivativeLimitOrder[] {
       const {
         market,
+        markets,
         binaryOptionsMarkets,
         currentMarketOnly,
         orders,
@@ -169,7 +170,7 @@ export default Vue.extend({
 
       return filteredOrders.filter((order) => {
         if (market.subType !== MarketType.BinaryOptions) {
-          return order
+          return markets.some((market) => market.marketId === order.marketId)
         }
 
         return binaryOptionsMarkets.some(

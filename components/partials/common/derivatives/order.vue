@@ -152,7 +152,7 @@ import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
 import {
   UiDerivativeLimitOrder,
-  UiBinaryOptionsMarketWithToken,
+  UiDerivativeMarketWithToken,
   DerivativeOrderSide,
   ZERO_IN_BASE,
   getTokenLogoWithVendorPathPrefix
@@ -181,11 +181,11 @@ export default Vue.extend({
   },
 
   computed: {
-    markets(): UiBinaryOptionsMarketWithToken[] {
-      return this.$accessor.derivatives.binaryOptionsMarkets
+    markets(): UiDerivativeMarketWithToken[] {
+      return this.$accessor.derivatives.markets
     },
 
-    market(): UiBinaryOptionsMarketWithToken | undefined {
+    market(): UiDerivativeMarketWithToken | undefined {
       const { markets, order } = this
 
       return markets.find((m) => m.marketId === order.marketId)
