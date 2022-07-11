@@ -23,6 +23,7 @@ import Vue from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { cosmosSdkDecToBigNumber, FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   computed: {
@@ -55,7 +56,7 @@ export default Vue.extend({
     stakedAmountToFormat(): string {
       const { stakedAmount } = this
 
-      return stakedAmount.toFormat(2)
+      return stakedAmount.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     }
   }
 })
