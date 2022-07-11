@@ -34,7 +34,6 @@
           'text-red-500': total.lt(0)
         }"
         :decimals="UI_DEFAULT_MAX_DISPLAY_DECIMALS"
-        :prefix="total.lt(0) ? '-' : ''"
         :number="total"
       >
         <span slot="addon" class="text-2xs text-gray-500">
