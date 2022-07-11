@@ -6,7 +6,7 @@
           {{ $t('fee_discounts.my_staked_amount') }}
         </span>
         <span class="uppercase text-xs lg:text-base text-gray-500 font-bold tracking-widest whitespace-nowrap">
-          <b class="text-xl lg:text-2xl font-bold text-white tracking-normal font-mono">{{ stakedAmount }}</b> INJ
+          <b class="text-xl lg:text-2xl font-bold text-white tracking-normal font-mono">{{ stakedAmountToFormat }}</b> INJ
         </span>
       </div>
     </div>
@@ -50,6 +50,12 @@ export default Vue.extend({
       return new BigNumberInBase(
         cosmosSdkDecToBigNumber(feeDiscountAccountInfo.accountInfo.stakedAmount)
       )
+    },
+
+    stakedAmountToFormat(): string {
+      const { stakedAmount } = this
+
+      return stakedAmount.toFormat(2)
     }
   }
 })
