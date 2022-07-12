@@ -9,6 +9,7 @@
         <TextInfo :title="$t('trade.averagePrice')" class="mt-2">
           <span
             v-if="!executionPrice.isNaN()"
+            data-cy="trading-page-details-execution-price-text-content"
             class="font-mono flex items-start break-all"
           >
             {{ executionPriceToFormat }}
@@ -21,6 +22,7 @@
         <TextInfo class="mt-2" :title="$t('trade.min_received_amount')">
           <span
             v-if="minimumReceivedAmount.gt(0)"
+            data-cy="trading-page-details-minimum-amount-text-content"
             class="font-mono flex items-start break-all"
           >
             {{ minimumReceivedAmountToFormat }}
@@ -41,7 +43,7 @@
             class="ml-2"
             :tooltip="$t('trade.taker_rate_note')"
           />
-          <span class="font-mono flex items-center">
+          <span class="font-mono flex items-center" data-cy="trading-page-details-taker-fee-percentage-text-content">
             {{ `${takerFeeRateToFormat}%` }}
           </span>
         </TextInfo>
@@ -65,7 +67,7 @@
               />
             </div>
           </div>
-          <span v-if="fees.gt(0)" class="font-mono flex items-start break-all">
+          <span v-if="fees.gt(0)" class="font-mono flex items-start break-all" data-cy="trading-page-details-fee-value-text-content">
             <span class="mr-1">≈</span>
             {{ feesToFormat }}
             <span class="text-gray-500 ml-1 break-normal">

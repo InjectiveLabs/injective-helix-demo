@@ -4,7 +4,7 @@
       class="group flex align-center my-2 cursor-pointer"
       @click="toggleDrawer"
     >
-      <span class="block font-semibold text-sm text-gray-200 flex-1">
+      <span class="block font-semibold text-sm text-gray-200 flex-1" data-cy="trading-page-advanced-settings-span">
         {{ $t('trade.advanced_settings') }}
       </span>
       <div class="flex items-stretch">
@@ -20,6 +20,7 @@
           v-if="showReduceOnly"
           :value="reduceOnly"
           class="mt-2"
+          data-cy="trading-page-reduce-only-checkbox"
           @input="handleReduceOnlyCheckboxToggle"
         >
           <slot class="text-xs"> {{ $t('trade.reduce_only') }}</slot>
@@ -29,6 +30,7 @@
             v-if="tradingTypeMarket"
             v-model="slippageIsToggleable"
             class="flex items-center flex-1"
+            data-cy="trading-page-slippage-checkbox"
             @input="handleSlippageCheckboxToggle"
           >
             <slot class="text-xs">
@@ -43,6 +45,7 @@
             <div>{{ slippageTolerance }}%</div>
             <IconCaretDown
               class="text-gray-500 group-hover:text-gray-200 w-4 h-4"
+              data-cy="trading-page-slippage-toggle-icon"
               :class="{
                 invisible: !slippageIsToggleable
               }"
@@ -64,6 +67,7 @@
               small
               :show-prefix="hasWarning || hasError"
               show-addon
+              data-cy="trading-page-slippage-input"
               @input="handleInput"
               @blur="handleBlur"
             >
@@ -74,6 +78,7 @@
         <VCheckbox
           v-if="!tradingTypeMarket"
           :value="postOnly"
+          data-cy="trading-page-post-only-checkbox"
           class="flex items-center"
           @input="handlePostOnlyCheckboxToggle"
         >

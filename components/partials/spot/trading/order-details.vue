@@ -9,6 +9,7 @@
         <TextInfo :title="$t('trade.price')" class="mt-2">
           <span
             v-if="executionPrice.gt(0)"
+            data-cy="trading-page-details-execution-price-text-content"
             class="font-mono flex items-start break-all"
           >
             {{ executionPriceToFormat }}
@@ -34,7 +35,7 @@
                 : $t('trade.maker_taker_rate_note')
             "
           />
-          <span class="font-mono flex items-center">
+          <span class="font-mono flex items-center" data-cy="trading-page-details-fee-percentage-text-content">
             {{
               postOnly
                 ? `${makerFeeRateToFormat}%`
@@ -82,7 +83,7 @@
               />
             </div>
           </div>
-          <span v-if="fees.gt(0)" class="font-mono flex items-start break-all">
+          <span v-if="fees.gt(0)" class="font-mono flex items-start break-all" data-cy="trading-page-details-fee-value-text-content">
             {{ feesToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
@@ -104,6 +105,7 @@
           </div>
           <span
             v-if="feeRebates.gt(0)"
+             data-cy="trading-page-details-fee-rebate-value-text-content"
             class="font-mono flex items-start break-all"
           >
             {{ feeRebatesToFormat }}

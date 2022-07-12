@@ -29,7 +29,7 @@
         type="number"
         :step="amountStep"
         min="0"
-        data-cy="trading-page-amount-input"
+        data-cy="trading-page-base-amount-input"
         show-addon
         @input="onAmountChange"
       >
@@ -49,7 +49,7 @@
         type="number"
         :step="amountStep"
         min="0"
-        data-cy="trading-page-amount-input"
+        data-cy="trading-page-quote-amount-input"
         show-prefix
         show-addon
         @input="onQuoteAmountChange"

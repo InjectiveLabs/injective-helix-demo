@@ -26,6 +26,7 @@
         quoteAvailableBalance,
         sells
       }"
+      data-cy="trading-page-percent-warning-text-content"
     />
   </div>
 </template>
