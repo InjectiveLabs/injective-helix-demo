@@ -6,7 +6,7 @@
           {{ $t('fee_discounts.my_staked_amount') }}
         </span>
         <span class="uppercase text-xs lg:text-base text-gray-500 font-bold tracking-widest whitespace-nowrap">
-          <b class="text-xl lg:text-2xl font-bold text-white tracking-normal font-mono">{{ stakedAmount }}</b> INJ
+          <b class="text-xl lg:text-2xl font-bold text-white tracking-normal font-mono">{{ stakedAmountToFormat }}</b> INJ
         </span>
       </div>
     </div>
@@ -23,6 +23,7 @@ import Vue from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { cosmosSdkDecToBigNumber, FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   computed: {
@@ -50,6 +51,12 @@ export default Vue.extend({
       return new BigNumberInBase(
         cosmosSdkDecToBigNumber(feeDiscountAccountInfo.accountInfo.stakedAmount)
       )
+    },
+
+    stakedAmountToFormat(): string {
+      const { stakedAmount } = this
+
+      return stakedAmount.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
     }
   }
 })

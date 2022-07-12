@@ -6,6 +6,7 @@ import {
   getReferralInfo,
   refer
 } from '~/app/services/referrals'
+import { REFERRALS_ENABLED } from '~/app/utils/constants'
 
 const initialStateFactory = () => ({
   feeRecipient: undefined as AccountAddress | undefined,
@@ -55,11 +56,19 @@ export const actions = actionTree(
         return
       }
 
+      if (!REFERRALS_ENABLED) {
+        return
+      }
+
       await this.app.$accessor.referral.getFeeRecipient(injectiveAddress)
       await this.app.$accessor.referral.getRefereeInfo(injectiveAddress)
     },
 
     async getRefereeInfo({ commit }, address: AccountAddress) {
+      if (!REFERRALS_ENABLED) {
+        return
+      }
+
       const { refereeInfo, referrerInfo } = await getReferralInfo(address)
 
       if (refereeInfo) {
@@ -72,7 +81,13 @@ export const actions = actionTree(
     },
 
     async getFeeRecipient({ commit }, address: AccountAddress) {
-      commit('setFeeRecipient', await getFeeRecipient(address))
+      if (!REFERRALS_ENABLED) {
+        return
+      }
+
+      const feeRecipient = await getFeeRecipient(address)
+
+      commit('setFeeRecipient', feeRecipient)
     },
 
     async refer(_, code: string) {
@@ -80,6 +95,10 @@ export const actions = actionTree(
         this.app.$accessor.wallet
 
       if (!isUserWalletConnected || !injectiveAddress) {
+        return
+      }
+
+      if (!REFERRALS_ENABLED) {
         return
       }
 
