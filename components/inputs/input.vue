@@ -166,11 +166,6 @@ export default Vue.extend({
       default: false
     },
 
-    showCheck: {
-      type: Boolean,
-      default: false
-    },
-
     showPrefix: {
       type: Boolean,
       default: false

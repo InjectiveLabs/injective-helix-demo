@@ -38,6 +38,11 @@ import Orderbook from '~/components/partials/derivatives/orderbook.vue'
 import { Modal } from '~/types'
 import { deprecatedMarkets, upcomingMarkets } from '~/app/data/market'
 
+type DeprecatedMarket =
+  | UiSpotMarketWithToken
+  | UiDerivativeMarketWithToken
+  | undefined
+
 export default Vue.extend({
   components: {
     MarketLayout,
@@ -71,10 +76,7 @@ export default Vue.extend({
       return upcomingMarkets.map((m) => m.slug).includes(market)
     },
 
-    deprecatedMarket():
-      | UiSpotMarketWithToken
-      | UiDerivativeMarketWithToken
-      | undefined {
+    deprecatedMarket(): DeprecatedMarket {
       const {
         $route: {
           params: { market: slug }

@@ -13,10 +13,7 @@
       <th>
         <div class="flex items-center justify-end">
           <span>{{ $t('trade.amount') }}</span>
-          <IconInfoTooltip
-            class="ml-2"
-            :tooltip="$t('trade.amount_tooltip')"
-          />
+          <IconInfoTooltip class="ml-2" :tooltip="$t('trade.amount_tooltip')" />
         </div>
       </th>
       <th class="text-right">
@@ -25,7 +22,7 @@
       <th class="text-right">
         {{ $t('trade.filled') }}
       </th>
-      <th class="text-right">
+      <th v-if="!isBinaryOptionsPage" class="text-right">
         {{ $t('trade.leverage') }}
       </th>
       <th class="text-right">
@@ -39,8 +36,10 @@
 <script lang="ts">
 import Vue from 'vue'
 export default Vue.extend({
-  props: {
-    //
+  computed: {
+    isBinaryOptionsPage(): boolean {
+      return this.$route.name === 'binary-options-binaryOption'
+    }
   }
 })
 </script>

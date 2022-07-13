@@ -15,27 +15,32 @@
       ref="orderInputs"
       class="mt-8"
       v-bind="{
-        tradingTypeMarket,
-        market,
-        sells,
-        takerFeeRate,
-        hasPrice,
-        buys,
-        orderTypeBuy,
-        orderType,
-        executionPrice,
-        feeRate,
-        lastTradedPrice,
-        notionalWithLeverageAndFees,
-        hasAmount,
-        slippageTolerance: form.slippageTolerance,
-        showReduceOnly,
-        tradingType,
         averagePriceOption,
+        buys,
+        executionPrice,
+        fees,
+        hasAmount,
+        hasPrice,
+        lastTradedPrice,
+        makerFeeRate,
+        market,
         notionalWithLeverage,
-        position,
+        notionalWithLeverageAndFees,
+        notionalWithLeverageBasedOnWorstPrice,
+        orderType,
+        orderTypeBuy,
         orderTypeReduceOnly,
-        quoteAvailableBalance
+        position,
+        quoteAvailableBalance,
+        sells,
+        showReduceOnly,
+        showReduceOnly,
+        slippage,
+        slippageTolerance: form.slippageTolerance,
+        takerFeeRate,
+        tradingType,
+        tradingTypeMarket,
+        worstPrice
       }"
       :average-price-option.sync="averagePriceOption"
       :amount.sync="form.amount"
@@ -57,23 +62,23 @@
         executionPrice,
         feeRate,
         fees,
-        market,
+        liquidationPrice,
         makerFeeRate,
         makerFeeRateDiscount,
+        market,
+        notionalValue,
+        notionalWithLeverage,
+        notionalWithLeverageToBigNumber,
+        notionalWithLeverageAndFees,
         orderType,
         orderTypeBuy,
+        orderTypeReduceOnly,
         postOnly: form.postOnly,
         quoteAmount,
         slippage,
         takerFeeRate,
         takerFeeRateDiscount,
-        notionalWithLeverageToBigNumber,
-        notionalWithLeverageAndFees,
-        tradingTypeMarket,
-        notionalValue,
-        liquidationPrice,
-        notionalWithLeverage,
-        orderTypeReduceOnly
+        tradingTypeMarket
       }"
     />
 
@@ -107,15 +112,16 @@ import {
 } from '@injectivelabs/ts-types'
 import {
   DerivativeOrderSide,
+  MarketType,
   UiDerivativeLimitOrder,
   UiDerivativeMarketSummary,
   UiDerivativeOrderbook,
+  UiExpiryFuturesMarketWithToken,
+  UiPerpetualMarketWithToken,
   UiPosition,
   UiPriceLevel,
   ZERO_IN_BASE,
-  UiSubaccount,
-  UiPerpetualMarketWithToken,
-  UiExpiryFuturesMarketWithToken
+  UiSubaccount
 } from '@injectivelabs/sdk-ui-ts'
 import {
   cosmosSdkDecToBigNumber,
@@ -132,8 +138,10 @@ import {
   calculateWorstExecutionPriceFromOrderbook,
   calculateLiquidationPrice,
   calculateMargin,
-  calculateAverageExecutionPriceFromFillableNotionalOnOrderBook
+  calculateAverageExecutionPriceFromFillableNotionalOnOrderBook,
+  calculateBinaryOptionsMargin
 } from '~/app/client/utils/derivatives'
+import { ONE_IN_BASE } from '~/app/utils/constants'
 
 interface TradeForm {
   reduceOnly: boolean
@@ -168,6 +176,7 @@ export default Vue.extend({
 
   data() {
     return {
+      MarketType,
       TradeExecutionType,
       DerivativeOrderSide,
       tradingType: TradeExecutionType.LimitFill,
@@ -354,7 +363,11 @@ export default Vue.extend({
         form: { slippageTolerance }
       } = this
 
-      const slippageAsBigNumber = new BigNumberInBase(slippageTolerance)
+      const slippageAsBigNumber = new BigNumberInBase(slippageTolerance || 0)
+
+      if (slippageAsBigNumber.gt(50)) {
+        return ONE_IN_BASE
+      }
 
       return new BigNumberInBase(
         orderTypeBuy
@@ -433,14 +446,15 @@ export default Vue.extend({
       const {
         form: { postOnly },
         takerFeeRate,
-        makerFeeRate
+        makerFeeRate,
+        tradingTypeMarket
       } = this
 
-      if (!postOnly) {
-        return takerFeeRate
+      if (postOnly && !tradingTypeMarket) {
+        return makerFeeRate
       }
 
-      return makerFeeRate
+      return takerFeeRate
     },
 
     price(): BigNumberInBase {
@@ -449,6 +463,7 @@ export default Vue.extend({
 
     showReduceOnly(): boolean {
       const { orderType, position } = this
+
       if (!position) {
         return false
       }
@@ -481,10 +496,8 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const records = orderTypeBuy ? sells : buys
-
       const averagePrice = calculateAverageExecutionPriceFromOrderbook({
-        records,
+        records: orderTypeBuy ? sells : buys,
         amount,
         market
       })
@@ -500,22 +513,25 @@ export default Vue.extend({
         market,
         quoteAmount,
         quoteAvailableBalance,
-        form: { proportionalPercentage }
+        form: { proportionalPercentage },
+        averagePriceOption
       } = this
 
       if (!market) {
         return ZERO_IN_BASE
       }
 
-      const records = orderTypeBuy ? sells : buys
-
-      const quoteAmountForAveragePrice =
-        proportionalPercentage > 0 ? quoteAvailableBalance : quoteAmount
+      const percentQuoteBalance = quoteAvailableBalance.times(
+        proportionalPercentage
+      )
 
       const averagePrice =
         calculateAverageExecutionPriceFromFillableNotionalOnOrderBook({
-          records,
-          quoteAmount: quoteAmountForAveragePrice,
+          records: orderTypeBuy ? sells : buys,
+          quoteAmount:
+            averagePriceOption === AveragePriceOptions.QuoteAmount
+              ? quoteAmount
+              : percentQuoteBalance,
           market
         })
 
@@ -525,14 +541,22 @@ export default Vue.extend({
     averagePrice(): BigNumberInBase {
       const {
         averagePriceDerivedFromBaseAmount,
-        averagePriceDerivedFromQuoteAmount
+        averagePriceDerivedFromQuoteAmount,
+        averagePriceOption
       } = this
 
-      if (averagePriceDerivedFromBaseAmount.gt(0)) {
+      if (averagePriceOption === AveragePriceOptions.BaseAmount) {
         return averagePriceDerivedFromBaseAmount
       }
 
-      return averagePriceDerivedFromQuoteAmount
+      if (
+        averagePriceOption === AveragePriceOptions.QuoteAmount ||
+        averagePriceOption === AveragePriceOptions.Percentage
+      ) {
+        return averagePriceDerivedFromQuoteAmount
+      }
+
+      return ZERO_IN_BASE
     },
 
     executionPrice(): BigNumberInBase {
@@ -542,9 +566,9 @@ export default Vue.extend({
     },
 
     hasPrice(): boolean {
-      const { price } = this
+      const { executionPrice } = this
 
-      return price.gt('0')
+      return executionPrice.gt('0')
     },
 
     orderTypeBuy(): boolean {
@@ -558,26 +582,59 @@ export default Vue.extend({
     },
 
     notionalWithLeverage(): BigNumberInBase {
-      const { executionPrice, hasPrice, hasAmount, form, market } = this
+      const {
+        worstPrice,
+        executionPrice,
+        hasPrice,
+        hasAmount,
+        form,
+        market,
+        orderType,
+        tradingTypeMarket
+      } = this
 
       if (!hasPrice || !hasAmount || !market) {
         return ZERO_IN_BASE
       }
 
+      const price = tradingTypeMarket
+        ? worstPrice.toFixed()
+        : executionPrice.toFixed()
+
+      if (market.subType === MarketType.BinaryOptions) {
+        return new BigNumberInBase(
+          calculateBinaryOptionsMargin({
+            orderSide: orderType,
+            quantity: form.amount,
+            price
+          }).toFixed(market.priceDecimals)
+        )
+      }
+
       return new BigNumberInBase(
         calculateMargin({
           quantity: form.amount,
-          price: executionPrice.toFixed(),
+          price,
           leverage: form.leverage
         }).toFixed(market.priceDecimals)
       )
     },
 
     notionalWithLeverageBasedOnWorstPrice(): BigNumberInBase {
-      const { worstPrice, hasPrice, hasAmount, form, market } = this
+      const { worstPrice, hasPrice, hasAmount, form, market, orderType } = this
 
       if (!hasPrice || !hasAmount || !market) {
         return ZERO_IN_BASE
+      }
+
+      if (market.subType === MarketType.BinaryOptions) {
+        return new BigNumberInBase(
+          calculateBinaryOptionsMargin({
+            orderSide: orderType,
+            quantity: form.amount,
+            price: worstPrice.toFixed()
+          }).toFixed(market.priceDecimals)
+        )
       }
 
       return new BigNumberInBase(
@@ -590,13 +647,18 @@ export default Vue.extend({
     },
 
     notionalValue(): BigNumberInBase {
-      const { executionPrice, amount, market } = this
+      const { executionPrice, worstPrice, tradingTypeMarket, amount, market } =
+        this
 
       if (amount.isNaN() || !market) {
         return ZERO_IN_BASE
       }
 
-      const notional = amount.times(executionPrice)
+      const price = tradingTypeMarket
+        ? worstPrice.toFixed()
+        : executionPrice.toFixed()
+
+      const notional = amount.times(price)
 
       if (notional.lt(0)) {
         return ZERO_IN_BASE
@@ -625,6 +687,20 @@ export default Vue.extend({
       return new BigNumberInBase(notionalWithLeverage)
     },
 
+    notionalWithLeverageAndFees(): BigNumberInBase {
+      const { fees, notionalWithLeverageToBigNumber, market } = this
+
+      if (
+        notionalWithLeverageToBigNumber.isNaN() ||
+        notionalWithLeverageToBigNumber.lte(0) ||
+        !market
+      ) {
+        return ZERO_IN_BASE
+      }
+
+      return fees.plus(notionalWithLeverageToBigNumber)
+    },
+
     feeRebates(): BigNumberInBase {
       const { notionalWithLeverageToBigNumber, makerFeeRate, market } = this
 
@@ -641,20 +717,6 @@ export default Vue.extend({
       ).times(0.6 /* Only 60% of the fees are getting returned */)
     },
 
-    notionalWithLeverageAndFees(): BigNumberInBase {
-      const { fees, notionalWithLeverageToBigNumber, market } = this
-
-      if (
-        notionalWithLeverageToBigNumber.isNaN() ||
-        notionalWithLeverageToBigNumber.lte(0) ||
-        !market
-      ) {
-        return ZERO_IN_BASE
-      }
-
-      return fees.plus(notionalWithLeverageToBigNumber)
-    },
-
     liquidationPrice(): BigNumberInBase {
       const {
         executionPrice,
@@ -663,18 +725,32 @@ export default Vue.extend({
         hasPrice,
         orderType,
         market,
-        form
+        form,
+        worstPrice,
+        tradingTypeMarket
       } = this
 
       if (!hasAmount || !hasPrice || !market) {
         return ZERO_IN_BASE
       }
 
+      if (market.subType === MarketType.BinaryOptions) {
+        return ZERO_IN_BASE
+      }
+
+      const derivativeMarket = market as
+        | UiPerpetualMarketWithToken
+        | UiExpiryFuturesMarketWithToken
+
+      const price = tradingTypeMarket
+        ? worstPrice.toFixed()
+        : executionPrice.toFixed()
+
       return calculateLiquidationPrice({
-        market,
+        market: derivativeMarket,
         orderType,
         notionalWithLeverage: notionalWithLeverage.toFixed(),
-        price: executionPrice.toFixed(),
+        price,
         quantity: form.amount
       })
     },
@@ -720,11 +796,11 @@ export default Vue.extend({
     },
 
     onOrderbookNotionalClick({
-      notionalWithLeverageToBigNumber,
+      total,
       price,
       type
     }: {
-      notionalWithLeverageToBigNumber: BigNumberInBase
+      total: BigNumberInBase
       price: BigNumberInBase
       type: DerivativeOrderSide
     }) {
@@ -740,7 +816,7 @@ export default Vue.extend({
           ? DerivativeOrderSide.Sell
           : DerivativeOrderSide.Buy
 
-      const amount = notionalWithLeverageToBigNumber
+      const amount = total
         .dividedBy(price.times(slippage).toFixed(market.priceDecimals))
         .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
 
@@ -771,7 +847,7 @@ export default Vue.extend({
       const {
         orderTypeToSubmit,
         market,
-        notionalWithLeverageBasedOnWorstPrice,
+        notionalWithLeverage,
         price,
         orderTypeReduceOnly,
         amount
@@ -786,7 +862,7 @@ export default Vue.extend({
       this.$accessor.derivatives
         .submitLimitOrder({
           price,
-          margin: notionalWithLeverageBasedOnWorstPrice,
+          margin: notionalWithLeverage,
           orderType: orderTypeToSubmit,
           reduceOnly: orderTypeReduceOnly,
           quantity: amount

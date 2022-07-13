@@ -346,7 +346,7 @@ export default Vue.extend({
 
         return total.plus(
           new BigNumberInBase(
-            cosmosSdkDecToBigNumber(pendingTotalTradeRewardPoints || 0)
+            cosmosSdkDecToBigNumber(pendingTotalTradeRewardPoints)
           )
         )
       }, ZERO_IN_BASE)

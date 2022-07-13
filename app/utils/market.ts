@@ -38,6 +38,27 @@ export const getMarketRoute = (
   }
 
   if (market.type === MarketType.Derivative) {
+    if (market.subType === MarketType.BinaryOptions) {
+      return {
+        name: 'binary-options-binaryOption',
+        params: {
+          marketId: market.marketId,
+          binaryOption: market.slug
+        }
+      }
+    }
+
+    if (market.subType === MarketType.Perpetual) {
+      return {
+        name: 'perpetuals-perpetual',
+        params: {
+          marketId: market.marketId,
+          perpetual: market.slug
+        }
+      }
+    }
+
+    /* TODO - Expiry Futures */
     return {
       name: 'derivatives-derivative',
       params: {
@@ -77,7 +98,7 @@ export const getAbbreviatedVolume = (value: BigNumberInBase): string => {
 
   if (value.gt(thousand)) {
     return `${value
-      .dividedBy(million)
+      .dividedBy(thousand)
       .toFormat(2, BigNumberInBase.ROUND_DOWN)}K`
   }
 

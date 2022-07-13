@@ -14,6 +14,20 @@
     >
       {{ priceError }}
     </span>
+    <PercentWarning
+      v-if="potentiallyShowPercentageWarning && !hasPriceOrAmountError"
+      v-bind="{
+        baseAvailableBalance,
+        buys,
+        inputProportionalPercentage,
+        isSpot,
+        market,
+        orderTypeBuy,
+        quoteAvailableBalance,
+        sells
+      }"
+      data-cy="trading-page-percent-warning-text-content"
+    />
   </div>
 </template>
 
@@ -25,7 +39,8 @@ import {
   UiPriceLevel,
   ZERO_IN_BASE,
   UiPerpetualMarketWithToken,
-  UiExpiryFuturesMarketWithToken
+  UiExpiryFuturesMarketWithToken,
+  MarketType
 } from '@injectivelabs/sdk-ui-ts'
 import { TradeError } from '~/types'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
@@ -34,8 +49,13 @@ import {
   DEFAULT_MIN_PRICE_BAND_DIFFERENCE,
   PRICE_BAND_ENABLED
 } from '~/app/utils/constants'
+import PercentWarning from '~/components/partials/common/trade/percent-warning.vue'
 
 export default Vue.extend({
+  components: {
+    PercentWarning
+  },
+
   props: {
     quoteAvailableBalance: {
       type: Object as PropType<BigNumberInBase>,
@@ -56,6 +76,11 @@ export default Vue.extend({
       required: true
     },
 
+    worstPrice: {
+      type: Object as PropType<BigNumberInBase>,
+      default: undefined
+    },
+
     lastTradedPrice: {
       type: Object as PropType<BigNumberInBase>,
       required: true
@@ -66,6 +91,11 @@ export default Vue.extend({
       default: () => ZERO_IN_BASE
     },
 
+    potentiallyShowPercentageWarning: {
+      type: Boolean,
+      required: true
+    },
+
     quoteAmount: {
       type: Object as PropType<BigNumberInBase>,
       required: true
@@ -73,6 +103,11 @@ export default Vue.extend({
 
     hasQuoteAmount: {
       type: Boolean,
+      required: true
+    },
+
+    inputProportionalPercentage: {
+      type: Number,
       required: true
     },
 
@@ -87,6 +122,11 @@ export default Vue.extend({
     },
 
     notionalWithLeverage: {
+      type: Object as PropType<BigNumberInBase>,
+      default: () => ZERO_IN_BASE
+    },
+
+    notionalWithLeverageBasedOnWorstPrice: {
       type: Object as PropType<BigNumberInBase>,
       default: () => ZERO_IN_BASE
     },
@@ -144,6 +184,12 @@ export default Vue.extend({
     hasInputErrors: {
       type: Boolean,
       required: true
+    }
+  },
+
+  data() {
+    return {
+      MarketType
     }
   },
 
@@ -255,16 +301,22 @@ export default Vue.extend({
       return undefined
     },
 
-    priceError(): string | undefined {
+    priceError(): string {
       const { price } = this.errors
 
-      return price
+      return price || ''
     },
 
-    amountError(): string | undefined {
+    amountError(): string {
       const { amount } = this.errors
 
-      return amount
+      return amount || ''
+    },
+
+    hasPriceOrAmountError(): boolean {
+      const { priceError, amountError } = this
+
+      return priceError.length > 0 || amountError.length > 0
     },
 
     availableBalanceError(): TradeError | undefined {
@@ -363,6 +415,10 @@ export default Vue.extend({
         return undefined
       }
 
+      if (market.subType === MarketType.BinaryOptions) {
+        return
+      }
+
       if (excludedPriceDeviationSlugs.includes(market.ticker)) {
         return undefined
       }
@@ -424,30 +480,34 @@ export default Vue.extend({
     maxLeverageError(): TradeError | undefined {
       const {
         executionPrice,
+        worstPrice,
         orderTypeBuy,
         hasPrice,
         market,
         marketMarkPrice,
         leverage,
-        isSpot
+        isSpot,
+        tradingTypeMarket
       } = this
 
       if (isSpot || !hasPrice || !market) {
         return
       }
 
-      const leverageToBigNumber = new BigNumberInBase(leverage)
+      const useExecutionPrice = !tradingTypeMarket
+      const price = useExecutionPrice ? executionPrice : worstPrice
 
+      const leverageToBigNumber = new BigNumberInBase(leverage)
       const priceWithMarginRatio = new BigNumberInBase(marketMarkPrice).times(
         (market as UiPerpetualMarketWithToken | UiExpiryFuturesMarketWithToken)
           .initialMarginRatio
       )
 
       const priceBasedOnOrderType = orderTypeBuy
-        ? priceWithMarginRatio.minus(marketMarkPrice).plus(executionPrice)
-        : priceWithMarginRatio.plus(marketMarkPrice).minus(executionPrice)
+        ? priceWithMarginRatio.minus(marketMarkPrice).plus(price)
+        : priceWithMarginRatio.plus(marketMarkPrice).minus(price)
 
-      const maxLeverage = executionPrice.dividedBy(priceBasedOnOrderType)
+      const maxLeverage = price.dividedBy(priceBasedOnOrderType)
 
       if (maxLeverage.gte(1) && leverageToBigNumber.gt(maxLeverage)) {
         return {
@@ -464,15 +524,18 @@ export default Vue.extend({
 
     markPriceThresholdError(): TradeError | undefined {
       const {
+        executionPrice,
         market,
         marketMarkPrice,
         orderTypeBuy,
+        notionalWithLeverageBasedOnWorstPrice,
         notionalWithLeverage,
         hasPrice,
         hasAmount,
-        executionPrice,
+        worstPrice,
         amount,
-        isSpot
+        isSpot,
+        tradingTypeMarket
       } = this
 
       if (
@@ -481,10 +544,24 @@ export default Vue.extend({
         !market ||
         !hasPrice ||
         !hasAmount ||
-        excludedPriceDeviationSlugs.includes(market.ticker)
+        !worstPrice
       ) {
         return undefined
       }
+
+      if (excludedPriceDeviationSlugs.includes(market.ticker)) {
+        return undefined
+      }
+
+      if (market.subType === MarketType.BinaryOptions) {
+        return undefined
+      }
+
+      const useExecutionPrice = !tradingTypeMarket
+      const price = useExecutionPrice ? executionPrice : worstPrice
+      const notionalWithLeverageBasedOnMarketType = useExecutionPrice
+        ? notionalWithLeverage
+        : notionalWithLeverageBasedOnWorstPrice
 
       const marketWithType = market as
         | UiPerpetualMarketWithToken
@@ -498,10 +575,10 @@ export default Vue.extend({
         }
       }
 
-      const notional = executionPrice.times(amount)
+      const notional = price.times(amount)
       const notionalBasedOnOrderType = orderTypeBuy
-        ? notionalWithLeverage.minus(notional)
-        : notionalWithLeverage.plus(notional)
+        ? notionalWithLeverageBasedOnMarketType.minus(notional)
+        : notionalWithLeverageBasedOnMarketType.plus(notional)
       const amountWithInitialMarginRatio = amount.times(
         orderTypeBuy
           ? new BigNumberInBase(marketWithType.initialMarginRatio).minus(1)
@@ -511,13 +588,15 @@ export default Vue.extend({
         amountWithInitialMarginRatio
       )
 
-      if (orderTypeBuy && markPrice.lt(priceBasedOnNotionalAndMarginRatio)) {
-        return {
-          amount: this.$t('trade.order_insufficient_margin')
-        }
-      }
+      const isBuyAndMarkPriceLessThanPrice =
+        orderTypeBuy && markPrice.lt(priceBasedOnNotionalAndMarginRatio)
+      const isSellAndMarkPriceGreaterThanPrice =
+        !orderTypeBuy && markPrice.gt(priceBasedOnNotionalAndMarginRatio)
 
-      if (!orderTypeBuy && markPrice.gt(priceBasedOnNotionalAndMarginRatio)) {
+      if (
+        isBuyAndMarkPriceLessThanPrice ||
+        isSellAndMarkPriceGreaterThanPrice
+      ) {
         return {
           amount: this.$t('trade.order_insufficient_margin')
         }

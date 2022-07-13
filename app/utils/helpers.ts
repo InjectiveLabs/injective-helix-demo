@@ -59,6 +59,7 @@ export const getExactDecimalsFromNumber = (number: number | string): number => {
 
     return decimals.length
   }
+
   return 0
 }
 

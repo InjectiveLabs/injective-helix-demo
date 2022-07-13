@@ -2,6 +2,7 @@
   <div>
     <VInput
       v-if="!tradingTypeMarket"
+      id="input-price"
       ref="input-price"
       :value="inputPrice"
       :placeholder="priceStep"
@@ -28,7 +29,7 @@
         type="number"
         :step="amountStep"
         min="0"
-        data-cy="trading-page-amount-input"
+        data-cy="trading-page-base-amount-input"
         show-addon
         @input="onAmountChange"
       >
@@ -48,7 +49,7 @@
         type="number"
         :step="amountStep"
         min="0"
-        data-cy="trading-page-amount-input"
+        data-cy="trading-page-quote-amount-input"
         show-prefix
         show-addon
         @input="onQuoteAmountChange"
@@ -59,22 +60,26 @@
         <PercentAmountOptions
           slot="context"
           v-bind="{
-            quoteAvailableBalance,
-            sells,
-            takerFeeRate,
-            market,
-            hasPrice,
-            maxReduceOnly,
-            buys,
-            sells,
-            orderTypeBuy,
             baseAvailableBalance,
+            buys,
             executionPrice,
-            feeRate,
+            hasPrice,
+            inputPostOnly,
+            leverage,
+            makerFeeRate,
+            market,
+            maxReduceOnly,
+            orderTypeBuy,
             orderTypeReduceOnly,
             position,
             quoteAvailableBalance,
-            leverage
+            quoteAvailableBalance,
+            sells,
+            sells,
+            slippage,
+            takerFeeRate,
+            tradingTypeMarket,
+            worstPrice
           }"
           ref="percentageOptions"
           :proportional-percentage="inputProportionalPercentage"
@@ -88,32 +93,41 @@
 
     <InputError
       v-bind="{
-        hasInputErrors,
-        market,
-        executionPrice,
-        leverage: inputLeverage,
-        lastTradedPrice,
-        notionalWithLeverage,
-        maxReduceOnly,
-        quoteAmount: inputQuoteAmountToBigNumber,
-        hasQuoteAmount,
-        quoteAvailableBalance,
-        baseAvailableBalance,
-        notionalValueWithFees,
-        notionalWithLeverageAndFees,
         amount: inputBaseAmountToBigNumber,
-        hasAmount,
-        orderTypeBuy,
-        tradingTypeMarket,
-        sells,
+        baseAvailableBalance,
         buys,
-        hasPrice
+        executionPrice,
+        hasAmount,
+        hasInputErrors,
+        hasPrice,
+        hasQuoteAmount,
+        inputProportionalPercentage,
+        lastTradedPrice,
+        leverage: inputLeverage,
+        market,
+        maxReduceOnly,
+        notionalValueWithFees,
+        notionalWithLeverage,
+        notionalWithLeverageBasedOnWorstPrice,
+        notionalWithLeverageAndFees,
+        orderTypeBuy,
+        orderTypeReduceOnly,
+        potentiallyShowPercentageWarning,
+        quoteAmount: inputQuoteAmountToBigNumber,
+        quoteAvailableBalance,
+        sells,
+        tradingTypeMarket,
+        worstPrice
       }"
       @update:hasInputErrors="updateHasInputErrors"
     />
 
     <OrderLeverage
-      v-if="!orderTypeReduceOnly && !isSpot"
+      v-if="
+        !orderTypeReduceOnly &&
+        !isSpot &&
+        market.subType !== MarketType.BinaryOptions
+      "
       class="mt-6"
       :leverage="leverage"
       :max-leverage="maxLeverageAvailable.toFixed()"
@@ -157,7 +171,8 @@ import {
   SpotOrderSide,
   DerivativeOrderSide,
   UiPerpetualMarketWithToken,
-  UiExpiryFuturesMarketWithToken
+  UiExpiryFuturesMarketWithToken,
+  MarketType
 } from '@injectivelabs/sdk-ui-ts'
 import OrderLeverage from '~/components/partials/derivatives/trading/order-leverage.vue'
 import OrderLeverageSelect from '~/components/partials/derivatives/trading/order-leverage-select.vue'
@@ -259,7 +274,7 @@ export default Vue.extend({
       required: true
     },
 
-    feeRate: {
+    makerFeeRate: {
       type: Object as PropType<BigNumberInBase>,
       required: true
     },
@@ -279,9 +294,19 @@ export default Vue.extend({
       required: true
     },
 
+    worstPrice: {
+      type: Object as PropType<BigNumberInBase>,
+      default: undefined
+    },
+
     hasInputErrors: {
       type: Boolean,
       required: true
+    },
+
+    fees: {
+      type: Object as PropType<BigNumberInBase>,
+      default: undefined
     },
 
     notionalValueWithFees: {
@@ -329,6 +354,16 @@ export default Vue.extend({
       default: undefined
     },
 
+    notionalWithLeverageBasedOnWorstPrice: {
+      type: Object as PropType<BigNumberInBase> | undefined,
+      default: undefined
+    },
+
+    slippage: {
+      type: Object as PropType<BigNumberInBase> | undefined,
+      default: undefined
+    },
+
     leverage: {
       type: String,
       default: undefined
@@ -337,6 +372,7 @@ export default Vue.extend({
 
   data() {
     return {
+      MarketType,
       inputBaseAmount: '',
       inputQuoteAmount: '',
       inputPrice: '',
@@ -344,7 +380,8 @@ export default Vue.extend({
       inputProportionalPercentage: 0,
       inputSlippageTolerance: '0.5',
       inputReduceOnly: false,
-      inputLeverage: '1'
+      inputLeverage: '1',
+      potentiallyShowPercentageWarning: false
     }
   },
 
@@ -468,23 +505,36 @@ export default Vue.extend({
   },
 
   watch: {
-    lastTradedPrice(newPrice: BigNumberInBase) {
-      const { price, market } = this
+    lastTradedPrice: {
+      handler(newPrice: BigNumberInBase) {
+        const { price, market } = this
 
-      if (!market) {
-        return
-      }
+        if (!market) {
+          return
+        }
 
-      if (!price) {
-        const formattedPrice = newPrice.toFixed(market.priceDecimals)
+        if (!price && !newPrice.eq('0')) {
+          const formattedPrice = newPrice.toFixed(market.priceDecimals)
 
-        this.inputPrice = formattedPrice
-        this.$emit('update:price', formattedPrice)
-      }
+          this.inputPrice = formattedPrice
+          this.$emit('update:price', formattedPrice)
+        }
+      },
+      immediate: true
     },
 
     price(newPrice: string) {
       this.inputPrice = newPrice
+    },
+
+    executionPrice() {
+      const { averagePriceOption, inputBaseAmount, inputQuoteAmount } = this
+
+      if (averagePriceOption === AveragePriceOptions.QuoteAmount) {
+        this.onQuoteAmountChange(inputQuoteAmount)
+      } else if (averagePriceOption === AveragePriceOptions.BaseAmount) {
+        this.onAmountChange(inputBaseAmount)
+      }
     }
   },
 
@@ -498,7 +548,7 @@ export default Vue.extend({
     updateQuoteAmountFromPercentage(quoteAmount: string) {
       this.inputQuoteAmount = quoteAmount
 
-      this.$emit('update:quoteAmount', quoteAmount)
+      this.$emit('update:quote-amount', quoteAmount)
     },
 
     updateHasAdvancedSettingsErrors(hasAdvancedSettingsErrors: boolean) {
@@ -510,21 +560,53 @@ export default Vue.extend({
 
       this.$emit('update:proportionalPercentage', proportionalPercentage)
       this.$emit('update:averagePriceOption', AveragePriceOptions.Percentage)
+
+      this.setShouldPotentiallyShowPercentageWarning()
+    },
+
+    setShouldPotentiallyShowPercentageWarning() {
+      this.potentiallyShowPercentageWarning = true
+
+      setTimeout(() => {
+        this.potentiallyShowPercentageWarning = false
+      }, 5000)
     },
 
     setPostOnly(postOnly: boolean) {
-      const { averagePriceOption, reduceOnly } = this
-
       this.inputPostOnly = postOnly
 
       this.$emit('update:postOnly', postOnly)
 
-      if (averagePriceOption !== AveragePriceOptions.Percentage) {
-        return this.updateSpotBaseAmountFromQuote()
-      }
+      this.updateInputsOnPostOnlyToggle()
+    },
 
-      if (!reduceOnly) {
-        return this.$percentageOptions.updateBaseAndQuoteAmountFromPercentage()
+    updateInputsOnPostOnlyToggle() {
+      const {
+        averagePriceOption,
+        reduceOnly,
+        tradingTypeMarket,
+        orderTypeBuy,
+        isSpot
+      } = this
+
+      if (!tradingTypeMarket) {
+        if (!isSpot && averagePriceOption !== AveragePriceOptions.Percentage) {
+          return
+        }
+
+        if (isSpot && averagePriceOption !== AveragePriceOptions.Percentage) {
+          orderTypeBuy
+            ? this.updateSpotBaseAmountFromQuote()
+            : this.updateSpotQuoteAmountFromBase()
+          return
+        }
+
+        if (
+          averagePriceOption === AveragePriceOptions.Percentage &&
+          !reduceOnly
+        ) {
+          this.$percentageOptions.updateBaseAndQuoteAmountFromPercentage()
+        }
       }
     },
 
@@ -567,7 +649,7 @@ export default Vue.extend({
     },
 
     onPriceChange(price: string = '') {
-      const { hasAmount, market, isSpot } = this
+      const { hasAmount, market, isSpot, averagePriceOption } = this
 
       if (!market) {
         return
@@ -582,10 +664,22 @@ export default Vue.extend({
 
       this.$emit('update:price', formattedPrice)
 
-      if (hasAmount) {
-        isSpot
+      if (hasAmount && averagePriceOption === AveragePriceOptions.Percentage) {
+        this.$percentageOptions.updateBaseAmountBasedOnPercentage()
+        this.$percentageOptions.updateQuoteAmountBasedOnPercentage()
+        return
+      }
+
+      if (hasAmount && averagePriceOption === AveragePriceOptions.BaseAmount) {
+        return isSpot
           ? this.updateSpotQuoteAmountFromBase()
           : this.updateDerivativesQuoteAmountFromBase()
+      }
+
+      if (hasAmount && averagePriceOption === AveragePriceOptions.QuoteAmount) {
+        return isSpot
+          ? this.updateSpotBaseAmountFromQuote()
+          : this.updateDerivativesBaseAmountFromQuote()
       }
     },
 
@@ -615,7 +709,11 @@ export default Vue.extend({
         this.updateDerivativesQuoteAmountFromBase()
       }
 
-      if (!hasPrice && !tradingTypeMarket) {
+      if (
+        !hasPrice &&
+        !tradingTypeMarket &&
+        !this.checkIfPriceInputFieldIsActive()
+      ) {
         this.updatePriceFromLastTradedPrice()
       }
     },
@@ -636,10 +734,14 @@ export default Vue.extend({
 
       this.inputQuoteAmount = formattedQuoteAmount
 
-      this.$emit('update:quoteAmount', formattedQuoteAmount)
+      this.$emit('update:quote-amount', formattedQuoteAmount)
       this.$emit('update:proportionalPercentage', 0)
 
-      if (!hasPrice && !tradingTypeMarket) {
+      if (
+        !hasPrice &&
+        !tradingTypeMarket &&
+        !this.checkIfPriceInputFieldIsActive()
+      ) {
         this.updatePriceFromLastTradedPrice()
       }
 
@@ -656,12 +758,18 @@ export default Vue.extend({
         executionPrice,
         market,
         orderTypeBuy,
-        feeRate
+        makerFeeRate,
+        takerFeeRate,
+        inputPostOnly,
+        tradingTypeMarket
       } = this
 
       if (!market) {
         return
       }
+
+      const feeRate =
+        !tradingTypeMarket && inputPostOnly ? makerFeeRate : takerFeeRate
 
       const feeMultiplier = orderTypeBuy
         ? new BigNumberInBase(1).plus(feeRate)
@@ -714,16 +822,22 @@ export default Vue.extend({
 
     updateSpotQuoteAmountFromBase() {
       const {
-        inputBaseAmountToBigNumber,
         executionPrice,
+        inputBaseAmountToBigNumber,
+        inputPostOnly,
+        makerFeeRate,
         market,
-        feeRate,
-        orderTypeBuy
+        orderTypeBuy,
+        takerFeeRate,
+        tradingTypeMarket
       } = this
 
       if (!market) {
         return
       }
+
+      const feeRate =
+        !tradingTypeMarket && inputPostOnly ? makerFeeRate : takerFeeRate
 
       const feeMultiplier = orderTypeBuy
         ? new BigNumberInBase(1).plus(feeRate)
@@ -741,11 +855,11 @@ export default Vue.extend({
 
         this.inputQuoteAmount = formattedQuoteAmount
 
-        this.$emit('update:quoteAmount', formattedQuoteAmount)
+        this.$emit('update:quote-amount', formattedQuoteAmount)
       } else {
         this.inputQuoteAmount = ''
 
-        this.$emit('update:quoteAmount', '')
+        this.$emit('update:quote-amount', '')
       }
     },
 
@@ -772,6 +886,15 @@ export default Vue.extend({
 
         this.$emit('update:quote-amount', '')
       }
+    },
+
+    checkIfPriceInputFieldIsActive(): boolean {
+      const priceInput = document.getElementById('input-price')
+      const priceInputId = priceInput ? priceInput.id : ''
+      const activeElement = document.activeElement
+      const activeElementId = activeElement ? activeElement.id : ''
+
+      return priceInputId === activeElementId
     },
 
     updatePriceFromLastTradedPrice() {

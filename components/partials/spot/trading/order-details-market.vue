@@ -9,6 +9,7 @@
         <TextInfo :title="$t('trade.averagePrice')" class="mt-2">
           <span
             v-if="!executionPrice.isNaN()"
+            data-cy="trading-page-details-execution-price-text-content"
             class="font-mono flex items-start break-all"
           >
             {{ executionPriceToFormat }}
@@ -21,6 +22,7 @@
         <TextInfo class="mt-2" :title="$t('trade.min_received_amount')">
           <span
             v-if="minimumReceivedAmount.gt(0)"
+            data-cy="trading-page-details-minimum-amount-text-content"
             class="font-mono flex items-start break-all"
           >
             {{ minimumReceivedAmountToFormat }}
@@ -35,35 +37,16 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </TextInfo>
 
-        <TextInfo
-          v-if="!orderTypeBuy"
-          :title="$t('trade.est_receiving_amount')"
-          class="mt-2"
-        >
-          <IconInfoTooltip
-            slot="context"
-            class="ml-2"
-            :tooltip="$t('trade.est_receiving_amount_note')"
-          />
-          <span
-            v-if="notionalValue.gt(0)"
-            class="font-mono flex items-start break-all"
-          >
-            {{ notionalValueToFormat }}
-            <span class="text-gray-500 ml-1 break-normal">
-              {{ market.quoteToken.symbol }}
-            </span>
-          </span>
-          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </TextInfo>
-
         <TextInfo :title="$t('trade.taker_rate')" class="mt-2">
           <IconInfoTooltip
             slot="context"
             class="ml-2"
             :tooltip="$t('trade.taker_rate_note')"
           />
-          <span class="font-mono flex items-center">
+          <span
+            class="font-mono flex items-center"
+            data-cy="trading-page-details-taker-fee-percentage-text-content"
+          >
             {{ `${takerFeeRateToFormat}%` }}
           </span>
         </TextInfo>
@@ -77,23 +60,23 @@
                 :tooltip="$t('trade.fees_tooltip')"
               />
               <IconCheckTooltip
-                v-if="
-                  !marketHasNegativeMakerFee &&
-                  (makerFeeRateDiscount.gt(0) || takerFeeRateDiscount.gt(0))
-                "
+                v-if="takerFeeRateDiscount.gt(0)"
                 class="ml-2 text-primary-500"
                 :tooltip="
                   $t('trade.fees_tooltip_discount', {
-                    maker: makerFeeRateDiscount.times(100).toFixed(),
                     taker: takerFeeRateDiscount.times(100).toFixed()
                   })
                 "
               />
             </div>
           </div>
-          <span v-if="fees.gt(0)" class="font-mono flex items-start break-all">
+          <span
+            v-if="fees.gt(0)"
+            class="font-mono flex items-start break-all"
+            data-cy="trading-page-details-fee-value-text-content"
+          >
             <span class="mr-1">≈</span>
-            {{ totalEstimatedFees }}
+            {{ feesToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
             </span>
@@ -167,7 +150,7 @@ export default Vue.extend({
       type: Boolean
     },
 
-    totalEstimatedFees: {
+    feesToFormat: {
       type: String,
       default: undefined
     },
@@ -245,7 +228,7 @@ export default Vue.extend({
 
   methods: {
     onDrawerToggle() {
-      this.$emit('@set:drawer-toggle')
+      this.$emit('set:drawer-toggle')
     }
   }
 })

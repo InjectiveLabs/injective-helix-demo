@@ -12,7 +12,10 @@
             class="ml-2"
             :tooltip="$t('trade.market_total_tooltip')"
           />
-          <span class="font-mono flex items-start break-all">
+          <span
+            class="font-mono flex items-start break-all"
+            data-cy="trading-page-details-total-text-content"
+          >
             <span class="mr-1">≈</span>
             {{ notionalWithLeverageAndFeesToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
@@ -35,6 +38,7 @@
           />
           <span
             v-if="notionalWithLeverage.gt(0)"
+            data-cy="trading-page-details-margin-text-content"
             class="font-mono flex items-start break-all"
           >
             {{ notionalWithLeverageToFormat }}
@@ -45,9 +49,10 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </TextInfo>
 
-        <TextInfo :title="$t('trade.averagePrice')" class="mt-2">
+        <!-- <TextInfo :title="$t('trade.averagePrice')" class="mt-2">
           <span
             v-if="!executionPrice.isNaN()"
+            data-cy="trading-page-details-execution-price-text-content"
             class="font-mono flex items-start break-all"
           >
             {{ executionPriceToFormat }}
@@ -56,10 +61,10 @@
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </TextInfo>
+        </TextInfo> -->
 
         <TextInfo
-          v-if="!orderTypeReduceOnly"
+          v-if="!orderTypeReduceOnly && !isBinaryOption"
           :title="$t('trade.liquidation_price')"
           class="mt-2"
         >
@@ -70,6 +75,7 @@
           />
           <span
             v-if="liquidationPrice.gt(0)"
+            data-cy="trading-page-details-liquidation-price-text-content"
             class="font-mono flex items-start break-all"
           >
             {{ liquidationPriceToFormat }}
@@ -86,7 +92,10 @@
             class="ml-2"
             :tooltip="$t('trade.taker_rate_note')"
           />
-          <span class="font-mono flex items-center">
+          <span
+            class="font-mono flex items-center"
+            data-cy="trading-page-details-taker-fee-percentage-text-content"
+          >
             {{ `${takerFeeRateToFormat}%` }}
           </span>
         </TextInfo>
@@ -100,21 +109,21 @@
                 :tooltip="$t('trade.fees_tooltip')"
               />
               <IconCheckTooltip
-                v-if="
-                  !marketHasNegativeMakerFee &&
-                  (makerFeeRateDiscount.gt(0) || takerFeeRateDiscount.gt(0))
-                "
+                v-if="takerFeeRateDiscount.gt(0)"
                 class="ml-2 text-primary-500"
                 :tooltip="
                   $t('trade.fees_tooltip_discount', {
-                    maker: makerFeeRateDiscount.times(100).toFixed(),
                     taker: takerFeeRateDiscount.times(100).toFixed()
                   })
                 "
               />
             </div>
           </div>
-          <span v-if="fees.gt(0)" class="font-mono flex items-start break-all">
+          <span
+            v-if="fees.gt(0)"
+            class="font-mono flex items-start break-all"
+            data-cy="trading-page-details-fee-value-text-content"
+          >
             <span class="mr-1">≈</span>
             {{ feesToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
@@ -149,10 +158,12 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import {
+  MarketType,
+  UiDerivativeMarketWithToken
+} from '@injectivelabs/sdk-ui-ts'
 import Drawer from '~/components/elements/drawer.vue'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
-import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 
 export default Vue.extend({
   components: {
@@ -205,17 +216,17 @@ export default Vue.extend({
       required: true
     },
 
+    slippage: {
+      type: Object as PropType<BigNumberInBase>,
+      required: true
+    },
+
     makerExpectedPts: {
       type: Object as PropType<BigNumberInBase>,
       required: true
     },
 
     takerExpectedPts: {
-      type: Object as PropType<BigNumberInBase>,
-      required: true
-    },
-
-    feeReturned: {
       type: Object as PropType<BigNumberInBase>,
       required: true
     },
@@ -261,8 +272,14 @@ export default Vue.extend({
       return this.$accessor.derivatives.market
     },
 
-    tradingRewardsCampaign(): TradingRewardsCampaign | undefined {
-      return this.$accessor.exchange.tradingRewardsCampaign
+    isBinaryOption(): boolean {
+      const { market } = this
+
+      if (!market) {
+        return false
+      }
+
+      return market.subType === MarketType.BinaryOptions
     },
 
     marketHasNegativeMakerFee(): boolean {
@@ -311,7 +328,7 @@ export default Vue.extend({
 
   methods: {
     onDrawerToggle() {
-      this.$emit('@set:drawer-toggle')
+      this.$emit('set:drawer-toggle')
     }
   }
 })

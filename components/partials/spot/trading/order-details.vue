@@ -3,34 +3,18 @@
     <VDrawer
       :custom-handler="true"
       :custom-is-open="detailsDrawerOpen"
-      @set:drawerToggle="onDrawerToggle"
+      @set:drawer-toggle="onDrawerToggle"
     >
       <div class="mt-4">
         <TextInfo :title="$t('trade.price')" class="mt-2">
           <span
             v-if="executionPrice.gt(0)"
+            data-cy="trading-page-details-execution-price-text-content"
             class="font-mono flex items-start break-all"
           >
             {{ executionPriceToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
-            </span>
-          </span>
-          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </TextInfo>
-
-        <TextInfo class="mt-2" :title="$t('trade.min_received_amount')">
-          <span
-            v-if="minimumReceivedAmount.gt(0)"
-            class="font-mono flex items-start break-all"
-          >
-            {{ minimumReceivedAmountToFormat }}
-            <span class="text-gray-500 ml-1 break-normal">
-              {{
-                orderTypeBuy
-                  ? market.baseToken.symbol
-                  : market.quoteToken.symbol
-              }}
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
@@ -51,7 +35,10 @@
                 : $t('trade.maker_taker_rate_note')
             "
           />
-          <span class="font-mono flex items-center">
+          <span
+            class="font-mono flex items-center"
+            data-cy="trading-page-details-fee-percentage-text-content"
+          >
             {{
               postOnly
                 ? `${makerFeeRateToFormat}%`
@@ -60,9 +47,13 @@
           </span>
         </TextInfo>
 
-        <TextInfo :title="$t('trade.fee')" class="mt-2">
+        <TextInfo
+          v-if="!(postOnly && marketHasNegativeMakerFee)"
+          :title="$t('trade.fee')"
+          class="mt-2"
+        >
           <div slot="context">
-            <div class="flex items-start">
+            <div class="flex items-center">
               <IconInfoTooltip
                 v-if="!orderTypeBuy"
                 class="ml-2"
@@ -70,7 +61,7 @@
                   marketHasNegativeMakerFee
                     ? $t('trade.fee_order_details_note_negative_margin')
                     : $t('trade.fee_order_details_note', {
-                        feeReturned: feeReturned.toFixed()
+                        feeReturnedToFormat
                       })
                 "
               />
@@ -84,10 +75,7 @@
                 "
               />
               <IconCheckTooltip
-                v-if="
-                  !marketHasNegativeMakerFee &&
-                  (makerFeeRateDiscount.gt(0) || takerFeeRateDiscount.gt(0))
-                "
+                v-if="makerFeeRateDiscount.gt(0) || takerFeeRateDiscount.gt(0)"
                 class="ml-2 text-primary-500"
                 :tooltip="
                   $t('trade.fees_tooltip_discount', {
@@ -98,9 +86,12 @@
               />
             </div>
           </div>
-
-          <span v-if="fees.gt(0)" class="font-mono flex items-start break-all">
-            {{ totalEstimatedFees }}
+          <span
+            v-if="fees.gt(0)"
+            class="font-mono flex items-start break-all"
+            data-cy="trading-page-details-fee-value-text-content"
+          >
+            {{ feesToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
             </span>
@@ -121,6 +112,7 @@
           </div>
           <span
             v-if="feeRebates.gt(0)"
+            data-cy="trading-page-details-fee-rebate-value-text-content"
             class="font-mono flex items-start break-all"
           >
             {{ feeRebatesToFormat }}
@@ -158,6 +150,7 @@ import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import Drawer from '~/components/elements/drawer.vue'
+import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import { Icon } from '~/types'
 
 export default Vue.extend({
@@ -191,14 +184,14 @@ export default Vue.extend({
       required: true
     },
 
-    feeRebatesToFormat: {
+    feesToFormat: {
       type: String,
       required: true
     },
 
-    minimumReceivedAmount: {
-      type: Object as PropType<BigNumberInBase>,
-      default: undefined
+    feeRebatesToFormat: {
+      type: String,
+      required: true
     },
 
     orderTypeBuy: {
@@ -236,8 +229,8 @@ export default Vue.extend({
       required: true
     },
 
-    totalEstimatedFees: {
-      type: String,
+    notionalValueWithFees: {
+      type: Object as PropType<BigNumberInBase>,
       default: undefined
     },
 
@@ -263,28 +256,26 @@ export default Vue.extend({
       return this.$accessor.spot.market
     },
 
-    minimumReceivedAmountToFormat(): string {
-      const { market, orderTypeBuy, minimumReceivedAmount } = this
+    feeReturnedToFormat(): string {
+      const { feeReturned, market } = this
 
       if (!market) {
-        return ''
+        return feeReturned.toFormat(
+          UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+          BigNumberInBase.ROUND_DOWN
+        )
       }
 
-      return orderTypeBuy
-        ? minimumReceivedAmount.toFormat(
-            market.quantityDecimals,
-            BigNumberInBase.ROUND_DOWN
-          )
-        : minimumReceivedAmount.toFormat(
-            market.priceDecimals,
-            BigNumberInBase.ROUND_DOWN
-          )
+      return feeReturned.toFormat(
+        market.priceDecimals,
+        BigNumberInBase.ROUND_DOWN
+      )
     }
   },
 
   methods: {
     onDrawerToggle() {
-      this.$emit('@set:drawer-toggle')
+      this.$emit('set:drawer-toggle')
     }
   }
 })

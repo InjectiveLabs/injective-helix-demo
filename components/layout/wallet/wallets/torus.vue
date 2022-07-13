@@ -11,11 +11,17 @@
               <p class="text-xl font-semibold text-gray-200 truncate">
                 {{ $t('connect.torus') }}
               </p>
-              <p class="flex items-center text-sm text-gray-200">
-                <span class="truncate" data-cy="connect-wallet-popup-torus-button">{{
-                  $t('connect.connectUsingTorus')
-                  }}</span>
-              </p>
+              <div class="flex items-center text-sm text-gray-200">
+                <span class="truncate" data-cy="connect-wallet-popup-torus-button">
+                  {{ $t('connect.connectUsingTorus') }}
+                </span>
+                <div class="ml-4 grid grid-cols-4 gap-4">
+                  <IconGoogleSocial class="w-4 h-4" />
+                  <IconFacebookSocial class="w-4 h-4" />
+                  <IconTwitterSocial class="w-4 h-4" />
+                  <IconDiscordSocial class="w-4 h-4" />
+                </div>
+              </div>
             </div>
           </div>
         </div>

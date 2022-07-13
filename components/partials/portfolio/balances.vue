@@ -125,8 +125,9 @@ import {
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   BankBalanceWithToken,
-  IbcBankBalanceWithToken,
   BankBalanceWithTokenAndBalanceWithUsdBalance,
+  getTokenLogoWithVendorPathPrefix,
+  IbcBankBalanceWithToken,
   SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance,
   TokenWithBalanceAndPrice,
   UiDerivativeMarketWithToken,
@@ -281,7 +282,10 @@ export default Vue.extend({
           balance,
           balanceInUsd,
           denom: tokenWithBalance.denom,
-          token: tokenWithBalance
+          token: {
+            ...tokenWithBalance,
+            logo: getTokenLogoWithVendorPathPrefix(tokenWithBalance.logo)
+          }
         }
       })
     },
@@ -321,7 +325,11 @@ export default Vue.extend({
           totalBalanceInUsd: balanceInBigNumber
             .plus(margin)
             .times(usdPrice)
-            .plus(pnl)
+            .plus(pnl),
+          token: {
+            ...balance.token,
+            logo: getTokenLogoWithVendorPathPrefix(balance.token.logo)
+          }
         }
       })
     },

@@ -27,11 +27,11 @@
       orderTypeBuy,
       orderTypeReduceOnly,
       postOnly,
+      slippage,
       takerFeeRate,
       takerFeeRateDiscount,
       takerFeeRateDiscount,
-      takerFeeRateToFormat,
-      totalEstimatedFees
+      takerFeeRateToFormat
     }"
     @set:drawer-toggle="onDetailsDrawerToggle"
   />
@@ -202,42 +202,25 @@ export default Vue.extend({
     },
 
     feeReturned(): BigNumberInBase {
-      const {
-        isSpot,
-        notionalValue,
-        notionalWithLeverage,
-        takerFeeRate,
-        makerFeeRate,
-        market
-      } = this
+      const { notionalValue, takerFeeRate, makerFeeRate, market } = this
 
-      const total = isSpot ? notionalValue : notionalWithLeverage
-
-      if (total.isNaN() || total.lte(0) || !market) {
+      if (notionalValue.isNaN() || notionalValue.lte(0) || !market) {
         return ZERO_IN_BASE
       }
 
-      return total.times(
+      return notionalValue.times(
         new BigNumberInBase(takerFeeRate).minus(makerFeeRate.abs())
       )
     },
 
     feeRebates(): BigNumberInBase {
-      const {
-        isSpot,
-        notionalValue,
-        notionalWithLeverage,
-        makerFeeRate,
-        market
-      } = this
+      const { notionalValue, makerFeeRate, market } = this
 
-      const total = isSpot ? notionalValue : notionalWithLeverage
-
-      if (total.isNaN() || !market) {
+      if (notionalValue.isNaN() || !market) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(total.times(makerFeeRate).abs()).times(
+      return new BigNumberInBase(notionalValue.times(makerFeeRate).abs()).times(
         0.6 /* Only 60% of the fees are getting returned */
       )
     },
@@ -391,18 +374,6 @@ export default Vue.extend({
       return new BigNumberInBase(fees).times(boostedMultiplier)
     },
 
-    totalEstimatedFees(): string {
-      const { executionPrice, amount, feeRate, market } = this
-
-      const fees = executionPrice.times(amount).times(feeRate)
-
-      const decimal = market
-        ? market.priceDecimals
-        : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-
-      return fees.toFormat(decimal, BigNumberInBase.ROUND_DOWN)
-    },
-
     executionPriceToFormat(): string {
       const { executionPrice, market } = this
 
@@ -414,12 +385,16 @@ export default Vue.extend({
     },
 
     feesToFormat(): string {
-      const { fees } = this
+      const { fees, market } = this
 
-      return fees.toFormat(
-        getDecimalsFromNumber(fees.toNumber()),
-        BigNumberInBase.ROUND_DOWN
-      )
+      if (!market) {
+        return fees.toFormat(
+          UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+          BigNumberInBase.ROUND_DOWN
+        )
+      }
+
+      return fees.toFormat(market.priceDecimals, BigNumberInBase.ROUND_DOWN)
     },
 
     makerFeeRateToFormat(): string {
@@ -505,7 +480,7 @@ export default Vue.extend({
         slippage
       } = this
 
-      if (!market) {
+      if (!market || executionPrice.isEqualTo('0')) {
         return ZERO_IN_BASE
       }
 
@@ -519,7 +494,7 @@ export default Vue.extend({
         )
 
         return tradingTypeMarket
-          ? minimumReceivedBaseAmount.times(slippage)
+          ? minimumReceivedBaseAmount.div(slippage)
           : minimumReceivedBaseAmount
       }
 

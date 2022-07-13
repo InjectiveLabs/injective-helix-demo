@@ -28,7 +28,7 @@
             v-for="(position, index) in sortedPositions"
             :key="`positions-${index}-${position.marketId}`"
             :position="position"
-          ></tr>
+          />
         </tbody>
       </table>
       <EmptyList v-else :message="$t('trade.emptyPositions')" />
@@ -39,6 +39,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import {
+  MarketType,
+  UiBinaryOptionsMarketWithToken,
   UiDerivativeMarketWithToken,
   UiPosition
 } from '@injectivelabs/sdk-ui-ts'
@@ -73,20 +75,33 @@ export default Vue.extend({
       return this.$accessor.derivatives.market
     },
 
+    binaryOptionsMarkets(): UiBinaryOptionsMarketWithToken[] {
+      return this.$accessor.derivatives.binaryOptionsMarkets
+    },
+
     positions(): UiPosition[] {
       return this.$accessor.positions.subaccountPositions
     },
 
     filteredPositions(): UiPosition[] {
-      const { currentMarketOnly, market, positions } = this
+      const { binaryOptionsMarkets, currentMarketOnly, market, positions } =
+        this
 
-      if (!currentMarketOnly) {
-        return positions
+      if (!market) {
+        return []
       }
 
-      return positions.filter(
-        (position) => position.marketId === market?.marketId
-      )
+      if (market.subType === MarketType.BinaryOptions) {
+        return positions.filter((position) =>
+          binaryOptionsMarkets.some(
+            (market) => market.marketId === position.marketId
+          )
+        )
+      }
+
+      return !currentMarketOnly
+        ? positions
+        : positions.filter((position) => position.marketId === market?.marketId)
     },
 
     sortedPositions(): UiPosition[] {

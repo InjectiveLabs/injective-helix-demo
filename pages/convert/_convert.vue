@@ -16,7 +16,6 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import Convert from '~/components/partials/convert/index.vue'
 import { Modal } from '~/types'
-import { ORDERBOOK_POLLING_ENABLED } from '~/app/utils/constants'
 import { betaMarketSlugs } from '~/app/data/market'
 
 export default Vue.extend({
@@ -49,10 +48,16 @@ export default Vue.extend({
   mounted() {
     Promise.all([
       this.$accessor.spot.init(),
+      this.$accessor.spot.fetchOrderbook(),
+      this.$accessor.exchange.fetchTradingRewardsCampaign(),
+      this.$accessor.exchange.fetchFeeDiscountAccountInfo(),
       this.$accessor.token.getErc20TokensWithBalanceAndPriceFromBankAndMarkets()
-    ]).then(() => {
-      this.status.setIdle()
-    })
+    ])
+      .catch(this.$onRejected)
+      .then(() => {
+        this.setMarket('inj-usdt')
+        this.startPollingOrderbook()
+      })
   },
 
   beforeDestroy() {
@@ -62,44 +67,27 @@ export default Vue.extend({
   },
 
   methods: {
-    setOrderbookPolling() {
-      if (ORDERBOOK_POLLING_ENABLED) {
-        this.interval = setInterval(async () => {
-          await this.$accessor.derivatives.pollOrderbook()
-        }, 2000)
+    async setMarket(slug: string) {
+      await this.$accessor.spot.reset()
+      await this.$accessor.spot.initMarket(slug)
+      await this.$accessor.spot.initMarketStreams()
+
+      this.status.setIdle()
+
+      if (this.marketIsBeta) {
+        this.$accessor.modal.openModal(Modal.MarketBeta)
       }
     },
 
-    setMarket(slug: string) {
-      this.$accessor.spot.reset()
-      this.$accessor.spot
-        .initMarket(slug)
-        .then(() => {
-          this.setOrderbookPolling()
-          this.$accessor.spot.initMarketStreams()
-        })
-        .catch(this.$onRejected)
-        .finally(() => {
-          this.status.setIdle()
-          if (this.marketIsBeta) {
-            this.$accessor.modal.openModal(Modal.MarketBeta)
-          }
-        })
+    startPollingOrderbook() {
+      if (this.interval) {
+        clearInterval(this.interval)
+      }
 
-      Promise.all([
-        this.$accessor.spot.init(),
-        this.$accessor.spot.fetchOrderbook(),
-        this.$accessor.spot.fetchTrades(),
-        this.$accessor.exchange.fetchTradingRewardsCampaign(),
-        this.$accessor.exchange.fetchFeeDiscountAccountInfo()
-      ])
-        .then(() => {
-          //
-        })
-        .catch(this.$onRejected)
-        .finally(() => {
-          //
-        })
+      this.$accessor.spot.pollOrderbook()
+      this.interval = setInterval(() => {
+        this.$accessor.spot.pollOrderbook()
+      }, 5000)
     }
   }
 })

@@ -46,12 +46,12 @@ export default Vue.extend({
 
       if (
         slippageToleranceToBigNumber.gt(new BigNumberInBase(5)) &&
-        slippageToleranceToBigNumber.isLessThan(new BigNumberInBase(50))
+        slippageToleranceToBigNumber.lte(new BigNumberInBase(50))
       ) {
         return this.$t('trade.high_slippage_warning')
       }
 
-      if (slippageToleranceToBigNumber.isLessThan(new BigNumberInBase(0.05))) {
+      if (slippageToleranceToBigNumber.lte(new BigNumberInBase(0.05))) {
         return this.$t('trade.low_slippage_tolerance_warning')
       }
 

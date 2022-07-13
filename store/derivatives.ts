@@ -11,26 +11,31 @@ import {
   Change,
   derivativeOrderTypeToGrpcOrderType,
   DerivativesMetrics,
+  MarketType,
+  UiBinaryOptionsMarketWithToken,
   UiDerivativeLimitOrder,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiDerivativeOrderbook,
   UiDerivativeTrade,
   UiDerivativeTransformer,
-  zeroDerivativeMarketSummary,
+  UiExpiryFuturesMarketWithToken,
+  UiPerpetualMarketWithToken,
   ZERO_IN_BASE,
   ZERO_TO_STRING,
-  UiExpiryFuturesMarketWithToken,
-  UiPerpetualMarketWithToken
+  zeroDerivativeMarketSummary
 } from '@injectivelabs/sdk-ui-ts'
 import {
   DerivativeOrderSide,
   DerivativeOrderState,
+  ExpiryFuturesMarket,
+  MsgBatchCancelBinaryOptionsOrders,
   MsgBatchCancelDerivativeOrders,
+  MsgCreateBinaryOptionsLimitOrder,
+  MsgCreateBinaryOptionsMarketOrder,
   MsgCreateDerivativeLimitOrder,
   MsgCreateDerivativeMarketOrder,
-  PerpetualMarket,
-  ExpiryFuturesMarket
+  PerpetualMarket
 } from '@injectivelabs/sdk-ts'
 import {
   streamOrderbook,
@@ -41,6 +46,7 @@ import {
 } from '~/app/client/streams/derivatives'
 import {
   FEE_RECIPIENT,
+  IS_DEVNET,
   ORDERBOOK_STREAMING_ENABLED
 } from '~/app/utils/constants'
 import {
@@ -52,12 +58,14 @@ import {
 } from '~/app/Services'
 import {
   perpetuals as allowedPerpetualMarkets,
+  binaryOptions as allowedBinaryOptionsMarkets,
   expiryFutures as allowedExpiryFutures
 } from '~/routes.config'
 
 const initialStateFactory = () => ({
   perpetualMarkets: [] as UiPerpetualMarketWithToken[],
   expiryFuturesMarkets: [] as UiExpiryFuturesMarketWithToken[],
+  binaryOptionsMarkets: [] as UiBinaryOptionsMarketWithToken[],
   markets: [] as UiDerivativeMarketWithToken[],
   marketsSummary: [] as UiDerivativeMarketSummary[],
   market: undefined as UiDerivativeMarketWithToken | undefined,
@@ -76,8 +84,10 @@ export const state = () => ({
     initialState.perpetualMarkets as UiPerpetualMarketWithToken[],
   expiryFuturesMarkets:
     initialState.expiryFuturesMarkets as UiExpiryFuturesMarketWithToken[],
-  marketsSummary: initialState.marketsSummary as UiDerivativeMarketSummary[],
+  binaryOptionsMarkets:
+    initialState.binaryOptionsMarkets as UiBinaryOptionsMarketWithToken[],
   markets: initialState.markets as UiDerivativeMarketWithToken[],
+  marketsSummary: initialState.marketsSummary as UiDerivativeMarketSummary[],
   market: initialState.market as UiDerivativeMarketWithToken | undefined,
   marketSummary: initialState.marketSummary as
     | UiDerivativeMarketSummary
@@ -162,18 +172,6 @@ export const mutations = {
     state.marketMarkPrice = marketMarkPrice
   },
 
-  resetMarket(state: DerivativeStoreState) {
-    const initialState = initialStateFactory()
-
-    state.market = initialState.market
-    state.marketSummary = initialState.marketSummary
-    state.marketMarkPrice = initialState.marketMarkPrice
-    state.orderbook = initialState.orderbook
-    state.trades = initialState.trades
-    state.subaccountOrders = initialState.subaccountOrders
-    state.subaccountTrades = initialState.subaccountTrades
-  },
-
   setPerpetualMarkets(
     state: DerivativeStoreState,
     markets: UiPerpetualMarketWithToken[]
@@ -186,6 +184,25 @@ export const mutations = {
     markets: UiExpiryFuturesMarketWithToken[]
   ) {
     state.expiryFuturesMarkets = markets
+  },
+
+  setBinaryOptionsMarkets(
+    state: DerivativeStoreState,
+    markets: UiBinaryOptionsMarketWithToken[]
+  ) {
+    state.binaryOptionsMarkets = markets
+  },
+
+  resetMarket(state: DerivativeStoreState) {
+    const initialState = initialStateFactory()
+
+    state.market = initialState.market
+    state.marketSummary = initialState.marketSummary
+    state.marketMarkPrice = initialState.marketMarkPrice
+    state.orderbook = initialState.orderbook
+    state.trades = initialState.trades
+    state.subaccountOrders = initialState.subaccountOrders
+    state.subaccountTrades = initialState.subaccountTrades
   },
 
   setMarketsSummary(
@@ -329,6 +346,17 @@ export const actions = actionTree(
         UiDerivativeTransformer.expiryFuturesMarketsToUiExpiryFuturesMarkets(
           expiryFuturesMarkets
         )
+      const binaryOptionsMarkets = IS_DEVNET
+        ? await exchangeDerivativesApi.fetchBinaryOptionsMarkets()
+        : []
+      const binaryOptionsMarketsWithToken =
+        await tokenService.getBinaryOptionsMarketsWithToken(
+          binaryOptionsMarkets
+        )
+      const uiBinaryOptionsMarkets =
+        UiDerivativeTransformer.binaryOptionsMarketsToUiBinaryOptionsMarkets(
+          binaryOptionsMarketsWithToken
+        )
 
       // Only include markets that we pre-defined to generate static routes for
       const uiPerpetualMarketsWithToken = uiPerpetualMarkets
@@ -351,12 +379,24 @@ export const actions = actionTree(
             allowedExpiryFutures.indexOf(b.slug)
           )
         })
+      const uiBinaryOptionsMarketsWithToken = uiBinaryOptionsMarkets
+        .filter((market) => {
+          return allowedBinaryOptionsMarkets.includes(market.slug)
+        })
+        .sort((a, b) => {
+          return (
+            allowedBinaryOptionsMarkets.indexOf(a.slug) -
+            allowedBinaryOptionsMarkets.indexOf(b.slug)
+          )
+        })
 
       commit('setPerpetualMarkets', uiPerpetualMarketsWithToken)
       commit('setExpiryFuturesMarkets', uiExpiryFuturesWithToken)
+      commit('setBinaryOptionsMarkets', uiBinaryOptionsMarketsWithToken)
       commit('setMarkets', [
         ...uiPerpetualMarketsWithToken,
-        ...uiExpiryFuturesWithToken
+        ...uiExpiryFuturesWithToken,
+        ...uiBinaryOptionsMarketsWithToken
       ])
 
       const marketsSummary =
@@ -383,7 +423,8 @@ export const actions = actionTree(
       const { markets: newMarkets } = state
 
       const market = newMarkets.find(
-        (market) => market.slug.toLowerCase() === marketSlug.toLowerCase()
+        (market) =>
+          marketSlug && market.slug.toLowerCase() === marketSlug.toLowerCase()
       )
 
       if (!market) {
@@ -395,18 +436,13 @@ export const actions = actionTree(
           market.marketId
         )
 
-      const oraclePrice = await exchangeOracleApi.fetchOraclePrice({
-        baseSymbol: (market as UiPerpetualMarketWithToken).oracleBase,
-        quoteSymbol: (market as UiPerpetualMarketWithToken).oracleQuote,
-        oracleType: market.oracleType
-      })
-
       commit('setMarket', market)
       commit('setMarketSummary', {
         ...summary,
         marketId: market.marketId
       })
-      commit('setMarketMarkPrice', oraclePrice.price)
+
+      await this.app.$accessor.derivatives.getMarketMarkPrice()
 
       if (ORDERBOOK_STREAMING_ENABLED) {
         await this.app.$accessor.derivatives.streamOrderbook()
@@ -426,6 +462,31 @@ export const actions = actionTree(
       await this.app.$accessor.derivatives.streamSubaccountTrades()
       await this.app.$accessor.positions.streamSubaccountPositions()
       await this.app.$accessor.account.streamSubaccountBalances()
+    },
+
+    async getMarketMarkPrice({ commit, state }) {
+      const { market } = state
+
+      if (!market) {
+        return
+      }
+
+      const oraclePrice =
+        market.subType !== MarketType.BinaryOptions
+          ? await exchangeOracleApi.fetchOraclePrice({
+              baseSymbol: (market as UiPerpetualMarketWithToken).oracleBase,
+              quoteSymbol: (market as UiPerpetualMarketWithToken).oracleQuote,
+              oracleType: market.oracleType
+            })
+          : await exchangeOracleApi.fetchOraclePriceNoThrow({
+              baseSymbol: (market as UiBinaryOptionsMarketWithToken)
+                .oracleSymbol,
+              quoteSymbol: (market as UiBinaryOptionsMarketWithToken)
+                .oracleProvider,
+              oracleType: market.oracleType
+            })
+
+      commit('setMarketMarkPrice', oraclePrice.price)
     },
 
     async pollOrderbook({ commit, state }) {
@@ -486,6 +547,10 @@ export const actions = actionTree(
       const { market } = state
 
       if (!market) {
+        return
+      }
+
+      if (market.subType === MarketType.BinaryOptions) {
         return
       }
 
@@ -682,7 +747,8 @@ export const actions = actionTree(
       commit('setSubaccountTrades', trades)
     },
 
-    async cancelOrder(_, order: UiDerivativeLimitOrder) {
+    async cancelOrder({ state }, order: UiDerivativeLimitOrder) {
+      const { markets } = state
       const { subaccount } = this.app.$accessor.account
       const { address, injectiveAddress, isUserWalletConnected } =
         this.app.$accessor.wallet
@@ -694,7 +760,16 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      const messageType = MsgBatchCancelDerivativeOrders
+      const market = markets.find((m) => m.marketId === order.marketId)
+
+      if (!market) {
+        return
+      }
+
+      const messageType =
+        market.subType === MarketType.BinaryOptions
+          ? MsgBatchCancelBinaryOptionsOrders
+          : MsgBatchCancelDerivativeOrders
 
       const message = messageType.fromJSON({
         injectiveAddress,
@@ -714,7 +789,8 @@ export const actions = actionTree(
       })
     },
 
-    async batchCancelOrder(_, orders: UiDerivativeLimitOrder[]) {
+    async batchCancelOrder({ state }, orders: UiDerivativeLimitOrder[]) {
+      const { markets } = state
       const { subaccount } = this.app.$accessor.account
       const { address, injectiveAddress, isUserWalletConnected } =
         this.app.$accessor.wallet
@@ -727,7 +803,11 @@ export const actions = actionTree(
       await this.app.$accessor.wallet.validate()
 
       const messages = orders.map((order) => {
-        const messageType = MsgBatchCancelDerivativeOrders
+        const market = markets.find((m) => m.marketId === order.marketId)
+        const messageType =
+          market && market.subType === MarketType.BinaryOptions
+            ? MsgBatchCancelBinaryOptionsOrders
+            : MsgBatchCancelDerivativeOrders
 
         return messageType.fromJSON({
           injectiveAddress,
@@ -777,7 +857,10 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      const messageType = MsgCreateDerivativeLimitOrder
+      const messageType =
+        market.subType === MarketType.BinaryOptions
+          ? MsgCreateBinaryOptionsLimitOrder
+          : MsgCreateDerivativeLimitOrder
 
       const message = messageType.fromJSON({
         injectiveAddress,
@@ -834,7 +917,10 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      const messageType = MsgCreateDerivativeMarketOrder
+      const messageType =
+        market.subType === MarketType.BinaryOptions
+          ? MsgCreateBinaryOptionsMarketOrder
+          : MsgCreateDerivativeMarketOrder
 
       const message = messageType.fromJSON({
         injectiveAddress,

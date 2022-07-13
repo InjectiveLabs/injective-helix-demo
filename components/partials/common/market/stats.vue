@@ -38,7 +38,10 @@
         </span>
       </MarketInfo>
       <MarketInfo
-        v-if="market.type === MarketType.Derivative"
+        v-if="
+          market.type === MarketType.Derivative &&
+          market.subType !== MarketType.BinaryOptions
+        "
         :title="$t('trade.est_funding_rate')"
         :tooltip="$t('trade.funding_rate_tooltip')"
       >
@@ -57,9 +60,10 @@
         </span>
         <span v-else class="lg:text-right font-mono block">&mdash;</span>
       </MarketInfo>
-      <MarketNextFunding v-if="market.type === MarketType.Derivative" />
+      <MarketNextFunding v-if="market.subType === MarketType.Perpetual" />
+      <MarketSettlement v-if="market.subType === MarketType.BinaryOptions" />
       <MarketInfo
-        v-if="market.type === MarketType.Derivative && expiryAt"
+        v-if="market.subType === MarketType.Futures && expiryAt"
         :title="$t('trade.expiry_date')"
       >
         <span class="lg:text-right font-mono block">
@@ -78,6 +82,7 @@ import {
   UiSpotMarketSummary,
   UiSpotMarketWithToken,
   UiDerivativeMarketSummary,
+  UiBinaryOptionsMarketWithToken,
   UiDerivativeMarketWithToken,
   Change,
   MarketType,
@@ -88,19 +93,23 @@ import {
   UiExpiryFuturesMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import MarketNextFunding from './next-funding.vue'
+import MarketSettlement from './settlement.vue'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import MarketInfo from '~/components/elements/market-info.vue'
 
 export default Vue.extend({
   components: {
     MarketInfo,
-    MarketNextFunding
+    MarketNextFunding,
+    MarketSettlement
   },
 
   props: {
     market: {
       type: Object as PropType<
-        UiSpotMarketWithToken | UiDerivativeMarketWithToken
+        | UiSpotMarketWithToken
+        | UiDerivativeMarketWithToken
+        | UiBinaryOptionsMarketWithToken
       >,
       required: true
     },
@@ -180,6 +189,14 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
+      if (market.subType === MarketType.BinaryOptions) {
+        return ZERO_IN_BASE
+      }
+
+      if (market.subType === MarketType.Futures) {
+        return ZERO_IN_BASE
+      }
+
       const derivativeMarket = market as UiPerpetualMarketWithToken
 
       if (
@@ -209,6 +226,14 @@ export default Vue.extend({
       }
 
       if (market.type === MarketType.Spot) {
+        return ZERO_IN_BASE
+      }
+
+      if (market.subType === MarketType.BinaryOptions) {
+        return ZERO_IN_BASE
+      }
+
+      if (market.subType === MarketType.Futures) {
         return ZERO_IN_BASE
       }
 
@@ -285,12 +310,24 @@ export default Vue.extend({
     expiryAt(): string {
       const { market } = this
 
-      if (!market || market.type === MarketType.Spot) {
+      if (!market) {
         return ''
       }
 
-      const expiryFuturesMarketInfo = (market as UiExpiryFuturesMarketWithToken)
-        .expiryFuturesMarketInfo
+      if (market.type === MarketType.Spot) {
+        return ''
+      }
+
+      if (market.subType === MarketType.BinaryOptions) {
+        return ''
+      }
+
+      if (market.subType === MarketType.Perpetual) {
+        return ''
+      }
+
+      const derivativeMarket = market as UiExpiryFuturesMarketWithToken
+      const expiryFuturesMarketInfo = derivativeMarket.expiryFuturesMarketInfo
 
       if (!expiryFuturesMarketInfo) {
         return ''

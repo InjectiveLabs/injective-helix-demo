@@ -19,10 +19,10 @@
         baseAvailableBalance,
         buys,
         executionPrice,
-        feeRate,
         hasAmount,
         hasPrice,
         lastTradedPrice,
+        makerFeeRate,
         market,
         orderType,
         orderTypeBuy,
@@ -74,7 +74,6 @@
         hasAdvancedSettingsErrors,
         hasInputErrors,
         hasAmount,
-        hasPrice,
         lastTradedPrice,
         market,
         orderType,
@@ -316,7 +315,7 @@ export default Vue.extend({
         form: { slippageTolerance }
       } = this
 
-      const slippageAsBigNumber = new BigNumberInBase(slippageTolerance)
+      const slippageAsBigNumber = new BigNumberInBase(slippageTolerance || 0)
 
       return new BigNumberInBase(
         orderTypeBuy
@@ -395,14 +394,15 @@ export default Vue.extend({
       const {
         form: { postOnly },
         takerFeeRate,
-        makerFeeRate
+        makerFeeRate,
+        tradingTypeMarket
       } = this
 
-      if (!postOnly) {
-        return takerFeeRate
+      if (postOnly && !tradingTypeMarket) {
+        return makerFeeRate
       }
 
-      return makerFeeRate
+      return takerFeeRate
     },
 
     price(): BigNumberInBase {
@@ -414,9 +414,9 @@ export default Vue.extend({
     },
 
     hasPrice(): boolean {
-      const { price } = this
+      const { executionPrice } = this
 
-      return price.gt('0')
+      return executionPrice.gt('0')
     },
 
     averagePriceDerivedFromBaseAmount(): BigNumberInBase {
@@ -436,20 +436,16 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const records = orderTypeBuy ? sells : buys
-
       const percentBaseBalance = baseAvailableBalance.times(
         proportionalPercentage
       )
 
-      const baseAmountForAveragePrice =
-        averagePriceOption === AveragePriceOptions.BaseAmount
-          ? amount
-          : percentBaseBalance
-
       return calculateAverageExecutionPriceFromOrderbook({
-        records,
-        amount: baseAmountForAveragePrice,
+        records: orderTypeBuy ? sells : buys,
+        amount:
+          averagePriceOption === AveragePriceOptions.BaseAmount
+            ? amount
+            : percentBaseBalance,
         market
       })
     },
@@ -470,8 +466,6 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      const records = orderTypeBuy ? sells : buys
-
       const percentQuoteBalance = quoteAvailableBalance.times(
         proportionalPercentage
       )
@@ -483,7 +477,7 @@ export default Vue.extend({
 
       const averagePrice =
         calculateAverageExecutionPriceFromFillableNotionalOnOrderBook({
-          records,
+          records: orderTypeBuy ? sells : buys,
           quoteAmount: quoteAmountForAveragePrice,
           market
         })
@@ -621,11 +615,11 @@ export default Vue.extend({
     },
 
     onOrderbookNotionalClick({
-      notionalValue,
+      total,
       price,
       type
     }: {
-      notionalValue: BigNumberInBase
+      total: BigNumberInBase
       price: BigNumberInBase
       type: SpotOrderSide
     }) {
@@ -639,7 +633,7 @@ export default Vue.extend({
       this.orderType =
         type === SpotOrderSide.Buy ? SpotOrderSide.Sell : SpotOrderSide.Buy
 
-      const amount = notionalValue
+      const amount = total
         .dividedBy(price.times(slippage).toFixed(market.priceDecimals))
         .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
 
