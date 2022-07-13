@@ -29,7 +29,6 @@ export default Vue.extend({
     },
     dataCy: {
       type: String,
-      required: false,
       default: 'unknown-id'
     }
   },

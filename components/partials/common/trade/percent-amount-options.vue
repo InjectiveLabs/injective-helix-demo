@@ -3,7 +3,7 @@
     <span
       v-for="(percent, index) in percentages"
       :key="index"
-      :data-cy="`trading-page-precentage-selector-${percent}-span`"
+      :data-cy="`trading-page-percentage-selector-${percent}-span`"
       class="mr-1 cursor-pointer"
       @click.stop="onPercentAmountSelected(percent)"
     >
