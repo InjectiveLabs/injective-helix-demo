@@ -4,12 +4,11 @@
       :id="uid"
       :value="value"
       :checked="!!value"
-      :data-cy="dataCy"
       class="checkbox"
       type="checkbox"
       @change="handleChange"
     />
-    <label :for="uid" class="flex"><slot /></label>
+    <label :for="uid" :data-cy="dataCy" class="flex"><slot /></label>
   </div>
 </template>
 
