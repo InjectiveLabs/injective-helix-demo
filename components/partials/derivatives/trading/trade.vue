@@ -725,7 +725,9 @@ export default Vue.extend({
         hasPrice,
         orderType,
         market,
-        form
+        form,
+        worstPrice,
+        tradingTypeMarket
       } = this
 
       if (!hasAmount || !hasPrice || !market) {
@@ -740,11 +742,15 @@ export default Vue.extend({
         | UiPerpetualMarketWithToken
         | UiExpiryFuturesMarketWithToken
 
+      const price = tradingTypeMarket
+        ? worstPrice.toFixed()
+        : executionPrice.toFixed()
+
       return calculateLiquidationPrice({
         market: derivativeMarket,
         orderType,
         notionalWithLeverage: notionalWithLeverage.toFixed(),
-        price: executionPrice.toFixed(),
+        price,
         quantity: form.amount
       })
     },
