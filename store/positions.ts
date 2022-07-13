@@ -237,7 +237,7 @@ export const actions = actionTree(
       const liquidationPrice = getRoundedLiquidationPrice(position, market)
 
       const messageType =
-        market && market.subType === MarketType.BinaryOptions
+        market.subType === MarketType.BinaryOptions
           ? MsgCreateBinaryOptionsMarketOrder
           : MsgCreateDerivativeMarketOrder
 
@@ -285,7 +285,7 @@ export const actions = actionTree(
           }
 
           const messageType =
-            market && market.subType === MarketType.BinaryOptions
+            market.subType === MarketType.BinaryOptions
               ? MsgCreateBinaryOptionsMarketOrder
               : MsgCreateDerivativeMarketOrder
           const orderType =
@@ -365,11 +365,7 @@ export const actions = actionTree(
       const actualMarket = (currentMarket ||
         market) as UiDerivativeMarketWithToken
 
-      if (
-        !isUserWalletConnected ||
-        !subaccount ||
-        (!market && !currentMarket)
-      ) {
+      if (!isUserWalletConnected || !subaccount || !actualMarket) {
         return
       }
 
@@ -410,7 +406,7 @@ export const actions = actionTree(
       }) */
 
       const messageType =
-        market && market.subType === MarketType.BinaryOptions
+        actualMarket.subType === MarketType.BinaryOptions
           ? MsgCreateBinaryOptionsMarketOrder
           : MsgCreateDerivativeMarketOrder
 
