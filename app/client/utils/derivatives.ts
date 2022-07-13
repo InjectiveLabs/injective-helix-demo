@@ -552,7 +552,7 @@ export const getApproxAmountForBinaryOptionsMarketOrder = ({
   const fee = new BigNumberInBase(market.takerFeeRate)
   const availableMargin = new BigNumberInBase(margin).times(percent)
   let totalQuantity = ZERO_IN_BASE
-  let totalNotional = ZERO_IN_BASE
+  let totalNotional: BigNumberInBase
 
   for (const record of records) {
     const price = new BigNumberInBase(
