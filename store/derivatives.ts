@@ -761,8 +761,13 @@ export const actions = actionTree(
       await this.app.$accessor.wallet.validate()
 
       const market = markets.find((m) => m.marketId === order.marketId)
+
+      if (!market) {
+        return
+      }
+
       const messageType =
-        market && market.subType === MarketType.BinaryOptions
+        market.subType === MarketType.BinaryOptions
           ? MsgBatchCancelBinaryOptionsOrders
           : MsgBatchCancelDerivativeOrders
 
@@ -913,7 +918,7 @@ export const actions = actionTree(
       await this.app.$accessor.wallet.validate()
 
       const messageType =
-        market && market.subType === MarketType.BinaryOptions
+        market.subType === MarketType.BinaryOptions
           ? MsgCreateBinaryOptionsMarketOrder
           : MsgCreateDerivativeMarketOrder
 

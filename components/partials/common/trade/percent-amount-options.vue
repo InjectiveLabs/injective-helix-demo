@@ -200,12 +200,11 @@ export default Vue.extend({
         tradingTypeMarket
       } = this
 
-      if (
-        isSpot ||
-        !market ||
-        executionPrice.lte(0) ||
-        quoteAvailableBalance.lte(0)
-      ) {
+      if (!market) {
+        return ''
+      }
+
+      if (isSpot || executionPrice.lte(0) || quoteAvailableBalance.lte(0)) {
         return ''
       }
 
@@ -215,19 +214,18 @@ export default Vue.extend({
 
       return !tradingTypeMarket
         ? getDerivativesLimitBaseAmountForPercentage({
-            records: orderTypeBuy ? sells : buys,
-            quoteAvailableBalance,
-            market: market as UiDerivativeMarketWithToken,
             leverage,
+            executionPrice,
+            quoteAvailableBalance,
+            records: orderTypeBuy ? sells : buys,
+            market: market as UiDerivativeMarketWithToken,
             percentageToNumber: percentageToNumber.toNumber(),
-            feeRate:
-              !tradingTypeMarket && inputPostOnly ? makerFeeRate : takerFeeRate,
-            executionPrice
+            feeRate: inputPostOnly ? makerFeeRate : takerFeeRate
           })
         : getDerivativesMarketBaseAmountForPercentage({
-            market: market as UiDerivativeMarketWithToken,
-            quoteAvailableBalance,
             leverage,
+            quoteAvailableBalance,
+            market: market as UiDerivativeMarketWithToken,
             slippage: slippage.toNumber(),
             percent: percentageToNumber.toNumber(),
             records: orderTypeBuy ? sells : buys

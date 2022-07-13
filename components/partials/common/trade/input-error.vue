@@ -494,12 +494,10 @@ export default Vue.extend({
         return
       }
 
-      const useExecutionPrice = isSpot || (!isSpot && !tradingTypeMarket)
-
+      const useExecutionPrice = !tradingTypeMarket
       const price = useExecutionPrice ? executionPrice : worstPrice
 
       const leverageToBigNumber = new BigNumberInBase(leverage)
-
       const priceWithMarginRatio = new BigNumberInBase(marketMarkPrice).times(
         (market as UiPerpetualMarketWithToken | UiExpiryFuturesMarketWithToken)
           .initialMarginRatio
@@ -559,10 +557,8 @@ export default Vue.extend({
         return undefined
       }
 
-      const useExecutionPrice = isSpot || (!isSpot && !tradingTypeMarket)
-
+      const useExecutionPrice = !tradingTypeMarket
       const price = useExecutionPrice ? executionPrice : worstPrice
-
       const notionalWithLeverageBasedOnMarketType = useExecutionPrice
         ? notionalWithLeverage
         : notionalWithLeverageBasedOnWorstPrice

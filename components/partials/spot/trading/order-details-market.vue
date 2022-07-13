@@ -43,7 +43,10 @@
             class="ml-2"
             :tooltip="$t('trade.taker_rate_note')"
           />
-          <span class="font-mono flex items-center" data-cy="trading-page-details-taker-fee-percentage-text-content">
+          <span
+            class="font-mono flex items-center"
+            data-cy="trading-page-details-taker-fee-percentage-text-content"
+          >
             {{ `${takerFeeRateToFormat}%` }}
           </span>
         </TextInfo>
@@ -67,7 +70,11 @@
               />
             </div>
           </div>
-          <span v-if="fees.gt(0)" class="font-mono flex items-start break-all" data-cy="trading-page-details-fee-value-text-content">
+          <span
+            v-if="fees.gt(0)"
+            class="font-mono flex items-start break-all"
+            data-cy="trading-page-details-fee-value-text-content"
+          >
             <span class="mr-1">≈</span>
             {{ feesToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
@@ -221,7 +228,7 @@ export default Vue.extend({
 
   methods: {
     onDrawerToggle() {
-      this.$emit('@set:drawer-toggle')
+      this.$emit('set:drawer-toggle')
     }
   }
 })
