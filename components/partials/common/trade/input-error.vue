@@ -598,7 +598,7 @@ export default Vue.extend({
         isSellAndMarkPriceGreaterThanPrice
       ) {
         return {
-          amount: this.$t('trade.max_leverage_warn')
+          amount: this.$t('trade.order_insufficient_margin')
         }
       }
 

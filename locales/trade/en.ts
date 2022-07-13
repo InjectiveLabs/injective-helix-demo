@@ -81,7 +81,8 @@ export default {
       'You can only have {number} orders per side per market per trading account',
     no_liquidity: 'Not enough Liquidity',
     add_margin_to_position_title: 'Add Margin',
-    order_insufficient_margin: 'Order has insufficient margin',
+    order_insufficient_margin:
+      'Please increase the price or amount to meet margin requirement',
     mark_price_invalid: 'The mark price is not valid',
     success_added_margin: 'You have successfully added margin to your position',
     add_margin: 'Add Margin',
