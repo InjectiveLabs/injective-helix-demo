@@ -46,7 +46,7 @@ export default {
     emptyPositions: 'No positions found',
     emptyTrades: 'No trades found',
     entry_price: 'Entry price',
-    liquidation_price: 'Liquidation price',
+    liquidation_price: 'Liquidation Price',
     liquidation_price_tooltip:
       'The price at which your position will be liquidated or force-exited to prevent further losses.',
     unrealized_pnl: 'Unrealized PnL',

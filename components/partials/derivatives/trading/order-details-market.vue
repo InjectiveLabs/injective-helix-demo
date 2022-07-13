@@ -12,7 +12,10 @@
             class="ml-2"
             :tooltip="$t('trade.market_total_tooltip')"
           />
-          <span class="font-mono flex items-start break-all" data-cy="trading-page-details-total-text-content">
+          <span
+            class="font-mono flex items-start break-all"
+            data-cy="trading-page-details-total-text-content"
+          >
             <span class="mr-1">≈</span>
             {{ notionalWithLeverageAndFeesToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
@@ -35,7 +38,7 @@
           />
           <span
             v-if="notionalWithLeverage.gt(0)"
-             data-cy="trading-page-details-margin-text-content"
+            data-cy="trading-page-details-margin-text-content"
             class="font-mono flex items-start break-all"
           >
             {{ notionalWithLeverageToFormat }}
@@ -46,7 +49,7 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </TextInfo>
 
-        <TextInfo :title="$t('trade.averagePrice')" class="mt-2">
+        <!-- <TextInfo :title="$t('trade.averagePrice')" class="mt-2">
           <span
             v-if="!executionPrice.isNaN()"
             data-cy="trading-page-details-execution-price-text-content"
@@ -58,7 +61,7 @@
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </TextInfo>
+        </TextInfo> -->
 
         <TextInfo
           v-if="!orderTypeReduceOnly && !isBinaryOption"
@@ -89,7 +92,10 @@
             class="ml-2"
             :tooltip="$t('trade.taker_rate_note')"
           />
-          <span class="font-mono flex items-center" data-cy="trading-page-details-taker-fee-percentage-text-content">
+          <span
+            class="font-mono flex items-center"
+            data-cy="trading-page-details-taker-fee-percentage-text-content"
+          >
             {{ `${takerFeeRateToFormat}%` }}
           </span>
         </TextInfo>
@@ -113,7 +119,11 @@
               />
             </div>
           </div>
-          <span v-if="fees.gt(0)" class="font-mono flex items-start break-all" data-cy="trading-page-details-fee-value-text-content">
+          <span
+            v-if="fees.gt(0)"
+            class="font-mono flex items-start break-all"
+            data-cy="trading-page-details-fee-value-text-content"
+          >
             <span class="mr-1">≈</span>
             {{ feesToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
@@ -318,7 +328,7 @@ export default Vue.extend({
 
   methods: {
     onDrawerToggle() {
-      this.$emit('@set:drawer-toggle')
+      this.$emit('set:drawer-toggle')
     }
   }
 })

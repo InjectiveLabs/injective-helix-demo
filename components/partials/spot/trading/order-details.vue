@@ -3,7 +3,7 @@
     <VDrawer
       :custom-handler="true"
       :custom-is-open="detailsDrawerOpen"
-      @set:drawerToggle="onDrawerToggle"
+      @set:drawer-toggle="onDrawerToggle"
     >
       <div class="mt-4">
         <TextInfo :title="$t('trade.price')" class="mt-2">
@@ -35,7 +35,10 @@
                 : $t('trade.maker_taker_rate_note')
             "
           />
-          <span class="font-mono flex items-center" data-cy="trading-page-details-fee-percentage-text-content">
+          <span
+            class="font-mono flex items-center"
+            data-cy="trading-page-details-fee-percentage-text-content"
+          >
             {{
               postOnly
                 ? `${makerFeeRateToFormat}%`
@@ -83,7 +86,11 @@
               />
             </div>
           </div>
-          <span v-if="fees.gt(0)" class="font-mono flex items-start break-all" data-cy="trading-page-details-fee-value-text-content">
+          <span
+            v-if="fees.gt(0)"
+            class="font-mono flex items-start break-all"
+            data-cy="trading-page-details-fee-value-text-content"
+          >
             {{ feesToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
@@ -105,7 +112,7 @@
           </div>
           <span
             v-if="feeRebates.gt(0)"
-             data-cy="trading-page-details-fee-rebate-value-text-content"
+            data-cy="trading-page-details-fee-rebate-value-text-content"
             class="font-mono flex items-start break-all"
           >
             {{ feeRebatesToFormat }}
@@ -268,7 +275,7 @@ export default Vue.extend({
 
   methods: {
     onDrawerToggle() {
-      this.$emit('@set:drawer-toggle')
+      this.$emit('set:drawer-toggle')
     }
   }
 })

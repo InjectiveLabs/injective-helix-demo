@@ -7,7 +7,10 @@
     >
       <p slot="header" class="flex justify-between text-sm">
         <TextInfo :title="$t('trade.total')" lg>
-          <span class="font-mono flex items-start break-all" data-cy="trading-page-details-total-text-content">
+          <span
+            class="font-mono flex items-start break-all"
+            data-cy="trading-page-details-total-text-content"
+          >
             <span class="mr-1">≈</span>
             {{ notionalWithLeverageAndFeesToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
@@ -79,7 +82,10 @@
                 : $t('trade.maker_taker_rate_note')
             "
           />
-          <span class="font-mono flex items-center" data-cy="trading-page-details-fee-percentage-text-content">
+          <span
+            class="font-mono flex items-center"
+            data-cy="trading-page-details-fee-percentage-text-content"
+          >
             {{
               postOnly
                 ? `${makerFeeRateToFormat}%`
@@ -118,7 +124,11 @@
               />
             </div>
           </div>
-          <span v-if="fees.gt(0)" class="font-mono flex items-start break-all" data-cy="trading-page-details-fee-value-text-content">
+          <span
+            v-if="fees.gt(0)"
+            class="font-mono flex items-start break-all"
+            data-cy="trading-page-details-fee-value-text-content"
+          >
             {{ feesToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
@@ -373,7 +383,7 @@ export default Vue.extend({
 
   methods: {
     onDrawerToggle() {
-      this.$emit('@set:drawer-toggle')
+      this.$emit('set:drawer-toggle')
     }
   }
 })
