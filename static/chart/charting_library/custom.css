@@ -1,0 +1,313 @@
+body,
+html {
+  font-family: 'Montserrat', sans-serif;
+}
+
+body {
+  overflow: visible;
+}
+
+.chart-page .chart-container {
+  border: 0;
+  background: transparent;
+}
+
+.pane-legend-item-value-wrap .pane-legend-item-value-container {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+span.pane-legend-line.apply-overflow-tooltip {
+  color: #aaaaaa !important;
+}
+
+span.pane-legend-line.apply-overflow-tooltip.main {
+  font-size: 12px !important;
+}
+
+.chart-container {
+  overflow: visible !important;
+  top: -5px !important;
+}
+
+.toolbar-2n2cwgp5- {
+  padding: 0px;
+}
+.value-DWZXOdoK-,
+.toolbar-2n2cwgp5-,
+.metric-uxyW5qk0- {
+  font-size: 12px !important;
+}
+
+.toolbar-2n2cwgp5- .fill-2axUON87- {
+  background-color: #15171e !important;
+}
+
+.group-wWM3zP_M-:first-child,
+.group-wWM3zP_M-:last-child {
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.apply-common-tooltip,
+.apply-common-tooltip:hover {
+  background: none !important;
+  color: #d3d7e2 !important;
+  border: none !important;
+}
+
+.menuWrap-23ejLU7n- {
+  background-color: #15171e;
+  border: 0px;
+}
+
+.separator-25lkUpN-- {
+  background-color: #4c5156;
+}
+
+.item-2xPVYue0- {
+  background-color: #14151a !important;
+  color: #d3d7e2;
+}
+
+.item-2xPVYue0-:hover {
+  color: #009199 !important;
+}
+
+.isActive-2j-GhQs_- {
+  background-color: #14151a !important;
+  color: #009199 !important;
+}
+
+.tv-tabbed-dialog {
+  background-color: #14151a;
+  border: 0px;
+}
+
+.tv-control-input {
+  background-color: transparent !important;
+  border-radius: 4px;
+  color: #d3d7e2 !important;
+}
+
+.symbol-edit-popup,
+.tv-dialog,
+._tv-dialog {
+  background-color: #14151a !important;
+  color: #d3d7e2 !important;
+  border: 0px !important;
+}
+
+a.properties-tabs-label.active:after {
+  background-color: #009199 !important;
+}
+
+._tv-dialog-content label,
+.property-page td,
+.sbOptions a:link,
+.sbSelector,
+.tv-caret,
+.tv-insert-indicator-dialog__title-text,
+.header-dpl-vtN_-,
+.properties-tabs-label,
+.tv-tabs__tab.i-active,
+.tv-tabs__tab:hover {
+  color: #d3d7e2 !important;
+}
+
+.sbOptions,
+.dialog-37P3XYj--,
+.textInput-3WRWEmm7-,
+.switcher,
+.items,
+.tv-select-container,
+.tv-search-row__input {
+  background-color: #14151a !important;
+}
+
+.sbOptions a:hover,
+.tv-insert-study-item:hover {
+  background-color: transparent !important;
+  color: #009199 !important;
+}
+
+.sbOptions a.active {
+  background-color: transparent !important;
+  border-left: 3px solid #009199 !important;
+}
+
+.tv-dialog__close svg {
+  fill: #d3d7e2 !important;
+}
+
+.copyBtn-1oB8tEqo- {
+  box-shadow: none !important;
+}
+
+.text-2KOWx3rB- {
+  background-color: #14151a !important;
+  border-color: #d3d7e2 !important;
+}
+
+.button-2O-nMUcz- {
+  border: 1px solid #3bb3e4 !important;
+}
+
+.textInput-3WRWEmm7- {
+  color: #d3d7e2 !important;
+  border: 1px solid #3bb3e4 !important;
+}
+
+.tv-text-input {
+  color: #d3d7e2 !important;
+  background-color: #14151a !important;
+}
+
+.item:hover {
+  background-color: transparent !important;
+}
+
+.item.selected {
+  background: #333b44 !important;
+  border-left: 4px solid #009199 !important;
+}
+
+._tv-button.tv-left {
+  background: #14151a !important;
+  color: #d3d7e2 !important;
+  border: 0.5px solid #d3d7e2;
+}
+
+.message-2o-rtQm0- {
+  background: #14151ad4 !important;
+  color: #d3d7e2 !important;
+}
+
+.message-2o-rtQm0- {
+  display: none;
+}
+
+.header-chart-panel,
+.group-wWM3zP_M- {
+  background: #15171e !important;
+}
+
+.menuBox-20sJGjtG- {
+  padding: 0 !important;
+}
+
+.layout__area--center {
+  top: 50px !important;
+}
+
+.chart-container > .chart-controls-bar {
+  background-color: #14151a !important;
+  height: 36px !important;
+  bottom: -15px !important;
+  left: 8px;
+}
+
+.chart-controls-bar > .chart-controls-bar-buttons {
+  top: 4px !important;
+}
+
+.tv-market-status--market--for-chart {
+  display: block !important;
+  color: #71d7d0 !important;
+}
+
+.tv-market-status--market .tv-market-status__dot {
+  background-color: #71d7d0 !important;
+}
+
+.chart-controls-bar-buttons a.active {
+  color: #4b649e !important;
+}
+
+.apply-common-tooltip::before {
+  border-color: #19222d !important;
+}
+
+.theme-dark body,
+.theme-dark [class^='menuWrap-'],
+.theme-dark [class^='menuWrap-'] [class^='item-'],
+.theme-dark .tv-dialog,
+.theme-dark .tv-tabbed-dialog,
+.theme-dark .tv-insert-indicator-dialog__search-control,
+.theme-dark .tv-insert-indicator-dialog__search-control .tv-search-row__input {
+  background: #15171e !important;
+}
+
+.button-263WXsg-- .icon-1Y-3MM9F-.hovered--MYZioUu-,
+.feature-no-touch .button-263WXsg-- .icon-1Y-3MM9F-:active,
+.feature-no-touch .button-263WXsg-- .icon-1Y-3MM9F-:hover,
+.feature-touch .button-263WXsg-- .icon-1Y-3MM9F-:active {
+  color: #4b649e !important;
+}
+
+.tv-text p,
+.tv-dialog__title {
+  color: #d3d7e2 !important;
+}
+
+html.theme-dark .button-13wlLwhJ-.isOpened-1939ai3F-.hover-3L87f6Kw-:before,
+html.theme-dark .button-13wlLwhJ-.isOpened-1939ai3F-:active:before,
+html.theme-dark .button-13wlLwhJ-.isOpened-1939ai3F-:before,
+html.theme-dark .button-2ioYhFEY-.isInteractive-20uLObIc-:hover:before,
+html.theme-dark
+  .button-2ioYhFEY-.isInteractive-20uLObIc-.isGrouped-2BBXQnbO-:hover:before {
+  background: #15171e !important;
+  border-color: #121826 !important;
+}
+
+html.theme-dark
+  .button-2ioYhFEY-.isInteractive-20uLObIc-.isOpened-p-Ume5l9-.hover-yHQNmTbI-:before,
+html.theme-dark
+  .button-2ioYhFEY-.isInteractive-20uLObIc-.isOpened-p-Ume5l9-:active:before,
+html.theme-dark
+  .button-2ioYhFEY-.isInteractive-20uLObIc-.isOpened-p-Ume5l9-:before,
+html.theme-dark .button-13wlLwhJ-:hover:before {
+  background: #15171e !important;
+  border-color: #121826 !important;
+  content: '';
+  display: block;
+  position: absolute;
+  z-index: -1;
+  top: 2px;
+  right: 2px;
+  bottom: 2px;
+  left: 2px;
+  border-radius: 2px;
+}
+
+.button-263WXsg-- .icon-1Y-3MM9F-.hovered--MYZioUu-,
+.feature-no-touch .button-263WXsg-- .icon-1Y-3MM9F-:active,
+.feature-no-touch .button-263WXsg-- .icon-1Y-3MM9F-:hover,
+.feature-touch .button-263WXsg-- .icon-1Y-3MM9F-:active {
+  color: #00f2ff !important;
+  opacity: 0.75;
+}
+
+html.theme-dark
+  .button-263WXsg--.isTransparent-sRmateFl-.isActive-2mI1-NUL-
+  .icon-1Y-3MM9F- {
+  color: #00f2ff !important;
+}
+
+html.theme-dark .button-263WXsg--:hover .bg-1kRv1Pf2-,
+html.theme-dark .button-88UE6omC-:hover:before {
+  background: #1d2130 !important;
+}
+
+html.theme-dark .scrollBot-2HHpZNuf-,
+html.theme-dark .scrollTop-1eXi8ltS-,
+html.theme-dark .item-stVdeCwG-.interactive-3E0jwVyG-:hover {
+  background: #1d2130 !important;
+  color: #d3d7e2 !important;
+  opacity: 0.97 !important;
+}
+
+html.theme-dark .group-2JyOhh7Z- {
+  background: #1d2130 !important;
+}

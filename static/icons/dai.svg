@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg version="1.1" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+<g fill="none" fill-rule="evenodd">
+<rect transform="translate(8 8) rotate(45) translate(-8 -8)" x="2.8514" y="2.8514" width="10.297" height="10.297" rx="1" stroke="#fff" stroke-width="1.5"/>
+<rect transform="translate(8 8.4699) rotate(45) translate(-8 -8.4699)" x="6.1828" y="6.6527" width="3.6343" height="3.6343" rx=".25" fill="#fff"/>
+<path transform="translate(8 8.4998) rotate(45) translate(-8 -8.4998)" d="m13.221 3.7786v9.4425c0 0.27614-0.22386 0.5-0.5 0.5h-9.4425c-0.27614 0-0.5-0.22386-0.5-0.5 0-0.13261 0.052678-0.25979 0.14645-0.35355l9.4425-9.4425c0.19526-0.19526 0.51184-0.19526 0.70711 0 0.093768 0.093768 0.14645 0.22095 0.14645 0.35355z" fill="#fff"/>
+</g>
+</svg>

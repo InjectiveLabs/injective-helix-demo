@@ -1,0 +1,25 @@
+@tailwind base;
+
+@import './components/mixins';
+@import './components/root';
+@import './components/columns';
+@import './components/charts';
+@import './components/fonts';
+
+@tailwind components;
+@import './components/inputs';
+@import './components/buttons';
+@import './components/table';
+@import './components/tooltips';
+@import './components/tabs';
+@import './components/slider';
+@import './components/scrollbar';
+@import './components/dropdown';
+@import 'vue-select/src/scss/vue-select.scss';
+
+@tailwind utilities;
+@import './components/lists';
+@import './components/transitions';
+@import './components/custom';
+@import './components/hamburger';
+@import './components/animate';

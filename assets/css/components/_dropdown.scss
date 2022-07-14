@@ -1,0 +1,39 @@
+.popper {
+  @apply opacity-0;
+
+  display: none !important;
+
+  .arrow,
+  .arrow::before {
+    position: absolute;
+    width: 20px;
+    height: 10px;
+    background: inherit;
+  }
+
+  .arrow {
+    visibility: hidden;
+    top: 0;
+    bottom: -10px;
+
+    &::before {
+      visibility: visible;
+      content: '';
+      transform: rotate(45deg);
+    }
+  }
+
+  &[data-show] {
+    @apply opacity-100;
+
+    display: block !important;
+  }
+}
+
+.orderbook-summary {
+  @apply opacity-0;
+
+  &[data-show] {
+    @apply opacity-100;
+  }
+}

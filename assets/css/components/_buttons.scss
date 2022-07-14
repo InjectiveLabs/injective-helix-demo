@@ -1,0 +1,170 @@
+.btn {
+  @apply px-6 rounded-sm inline-block text-white text-xs no-underline font-bold h-12 min-w-btn text-center;
+  line-height: 1.25rem;
+  outline: none !important;
+
+  &.btn-primary {
+    @apply bg-primary-500 text-primary-900;
+    &:hover {
+      @apply bg-primary-600;
+    }
+  }
+
+  &.btn-red {
+    @apply bg-red-500;
+    &:hover {
+      @apply bg-red-600;
+    }
+  }
+
+  &.btn-aqua {
+    @apply bg-aqua-500;
+    &:hover {
+      @apply bg-aqua-600;
+    }
+  }
+
+  &.btn-dark {
+    @apply bg-gray-700;
+    &:hover {
+      @apply bg-gray-800;
+    }
+  }
+
+  &.btn-transparent {
+    @apply text-gray-200;
+    &:hover {
+      @apply text-gray-300;
+    }
+
+    .light & {
+      @apply text-gray-700;
+      &:hover {
+        @apply text-gray-800;
+      }
+    }
+  }
+
+  &.btn-default {
+    @apply bg-gray-500 text-gray-900;
+    &:hover {
+      @apply bg-gray-600;
+    }
+  }
+
+  &.btn-xs {
+    @apply h-6 text-2xs py-px px-1 min-w-0;
+    line-height: 0;
+  }
+
+  &.btn-sm {
+    @apply h-8;
+    line-height: 0;
+  }
+
+  &.btn-md {
+    @apply h-10;
+    line-height: 1rem;
+  }
+
+  &.btn-lg {
+    @apply h-12 text-lg;
+    line-height: 2rem;
+  }
+
+  &.btn-wide {
+    @apply px-12 py-3 w-full;
+  }
+
+  &[disabled],
+  .btn-disabled {
+    @apply pointer-events-none cursor-not-allowed opacity-75;
+  }
+}
+
+.btn-icon {
+  @apply h-10 w-10 rounded-sm inline-block align-middle text-xs no-underline text-gray-500;
+
+  .icon {
+    @apply h-8 w-8;
+  }
+}
+
+.btn-select {
+  @apply border border-primary-600 px-3 py-2 uppercase text-sm outline-none;
+
+  span {
+    @apply w-full block;
+  }
+
+  &.is-half {
+    @apply py-2 text-xs w-1/2;
+  }
+
+  &.is-active {
+    @apply bg-primary-500;
+
+    span {
+      @apply text-primary-900 font-semibold;
+    }
+  }
+
+  &:hover {
+    span {
+      @apply opacity-75;
+    }
+  }
+
+  &:first-of-type {
+    @apply rounded-l-sm border-r-0;
+  }
+
+  &:last-of-type {
+    @apply rounded-r-sm border-l-0;
+  }
+
+  &:focus {
+    @apply outline-none;
+  }
+}
+
+.btn-text {
+  @apply px-6 py-2 inline-block no-underline cursor-pointer font-bold;
+  line-height: 1.25rem;
+  outline: none !important;
+
+  &.btn-primary {
+    @apply text-primary-500;
+    &:hover {
+      @apply text-primary-700;
+    }
+  }
+
+  &.btn-accent {
+    @apply text-red-500;
+    &:hover {
+      @apply text-red-700;
+    }
+  }
+
+  &.btn-default {
+    @apply text-gray-700;
+    &:hover {
+      @apply text-gray-800;
+    }
+  }
+
+  &.btn-sm {
+    @apply h-8;
+    line-height: 1rem;
+  }
+
+  &.btn-lg {
+    @apply h-12 text-lg;
+    line-height: 2rem;
+  }
+
+  &[disabled] {
+    @apply opacity-75 pointer-events-none cursor-not-allowed;
+  }
+}

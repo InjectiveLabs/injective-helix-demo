@@ -1,0 +1,94 @@
+.fallBar,
+.fallStick {
+  fill: theme('colors.red.500');
+  background-color: theme('colors.red.500');
+}
+
+.riseStick {
+  fill: theme('colors.primary.500');
+  background-color: theme('colors.primary.500');
+}
+
+.riseBar {
+  fill: theme('colors.gray.100');
+  background-color: theme('colors.gray.100');
+  stroke: theme('colors.primary.400');
+  stroke-width: 1;
+}
+
+.equal {
+  fill: theme('colors.gray.400');
+  background-color: theme('colors.gray.400');
+}
+
+.volume {
+  fill: theme('colors.gray.100');
+  background-color: theme('colors.gray.100');
+}
+
+.bands rect {
+  fill: theme('colors.gray.400');
+  fill-opacity: 0.3;
+  stroke-opacity: 0;
+  pointer-events: all;
+  shape-rendering: crispEdges;
+}
+
+.bands .hovered {
+  fill-opacity: 0.6;
+}
+
+.candles .hovered {
+  stroke-width: 2;
+}
+.candles .hovered.riseBar {
+  stroke: theme('colors.primary.600');
+}
+.candles .hovered.fallBar {
+  stroke: theme('colors.red.600');
+}
+.candles .hovered.equal {
+  stroke: theme('colors.gray.500');
+}
+
+.sticks .hovered.riseStick {
+  stroke: theme('colors.primary.400');
+}
+
+.sticks .hovered.fallStick {
+  stroke: theme('colors.primary.400');
+}
+
+.volume .hovered {
+  fill: theme('colors.gray.700');
+}
+
+.axisYMainLabel {
+  font-weight: 600;
+  font-size: 12px;
+  color: theme('colors.gray.700');
+}
+
+.axisYVolumeLabel {
+  color: theme('colors.gray.700');
+  font-size: 12px;
+}
+
+.axisXMainLabel {
+  color: theme('colors.gray.700');
+  font-size: 12px;
+}
+
+.axisLineMain {
+  stroke: theme('colors.gray.600');
+  stroke-width: 1px;
+}
+
+.axisYVolumeLineMain {
+  stroke-linecap: round;
+}
+
+.axisLineGrid {
+  stroke: theme('colors.gray.600');
+  stroke-width: 1px;
+}

@@ -1,0 +1,294 @@
+.overflow-fix {
+  margin-right: calc(-1 * (100vw - 100%));
+  overflow-x: hidden;
+}
+
+.table-orders {
+  @apply h-full min-h-orders max-h-2xs;
+
+  @screen lg {
+    @apply max-h-xs;
+  }
+
+  @screen 4xl {
+    @apply max-h-lg;
+  }
+}
+
+.orderbook-h {
+  height: 30rem;
+
+  @screen lg {
+    height: 38rem;
+  }
+
+  @screen 4xl {
+    height: 40rem;
+  }
+}
+
+.orderbook-half-h {
+  @apply h-48;
+
+  @screen lg {
+    height: 15.5rem;
+  }
+
+  @screen 4xl {
+    height: 16rem;
+  }
+}
+
+.orderbook-middle-h {
+  @apply h-8;
+
+  @screen lg {
+    @apply h-12;
+  }
+
+  @screen 4xl {
+    @apply h-16;
+  }
+}
+
+.card-table-wrap-content {
+  @apply flex-1 w-full;
+
+  th {
+    @apply pb-4 text-gray-200 uppercase;
+  }
+}
+
+.card-table-wrap-content-lighter {
+  @apply bg-gray-800 px-4 py-2 flex-1 w-full;
+}
+
+.toasted.bubble {
+  @apply shadow-md border;
+}
+
+.toasted.bubble.error {
+  @apply text-gray-800 font-bold;
+  background: theme('colors.red.500') !important;
+}
+
+.toasted.bubble.info {
+  @apply text-gray-500 shadow-md;
+  background: theme('colors.gray.700') !important;
+
+  .action {
+    @apply font-bold;
+  }
+
+  .text-primary-500 {
+    color: theme('colors.primary.500') !important;
+  }
+}
+
+.toasted.bubble.success {
+  @apply text-gray-800 font-bold;
+  background: theme('colors.primary.500') !important;
+}
+
+.toasted.bubble.default {
+  @apply text-gray-200 shadow-sm;
+  background: theme('colors.gray.600') !important;
+}
+
+.toasted-container .toasted.default .action.text-primary-500 {
+  @apply text-primary-500 font-bold;
+}
+
+.toasted-container .toasted.default .action.text-red-500 {
+  @apply text-red-500 font-bold;
+}
+
+.toasted-container .toasted.default .action.text-gray-300 {
+  @apply text-gray-300 font-bold;
+}
+
+.bg-gradient-300 {
+  background-color: rgba(181, 187, 202, 0.03);
+}
+
+.bg-gradient-200 {
+  background-color: rgba(176, 187, 202, 0.08) !important;
+}
+
+.wallet-not-connected {
+  height: 125px;
+}
+
+.wallet-not-connected-market-balances {
+  margin-top: -385px;
+}
+
+.spinner {
+  @apply block mx-auto w-6 h-6 bg-transparent border-4 rounded-full top-0 left-0 border-transparent;
+  border-top-color: theme('colors.white');
+  animation: spin 0.6s ease-out infinite;
+
+  &-sm {
+    @apply w-4 h-4;
+  }
+
+  &-md {
+    @apply w-5 h-5;
+  }
+
+  &-lg {
+    @apply w-10 h-10;
+  }
+}
+
+[class*='bg-red-'] .spinner {
+  border-top-color: theme('colors.gray.200');
+}
+
+[class*='bg-primary-'] .spinner {
+  border-top-color: theme('colors.gray.200');
+}
+
+[class*='bg-aqua-'] .spinner {
+  border-top-color: theme('colors.gray.200');
+}
+
+[class*='bg-gray-200'] .spinner {
+  border-top-color: theme('colors.primary.850');
+}
+
+[class*='text-primary-'].spinner {
+  border-top-color: theme('colors.primary.500');
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(359deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.hover-scale {
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+.depth-col {
+  @apply absolute right-0 top-0 h-full;
+
+  &.longs,
+  &.buys {
+    background: theme('colors.aqua.500');
+    opacity: 0.2;
+  }
+
+  &.shorts,
+  &.sells {
+    background: theme('colors.red.500');
+    opacity: 0.2;
+  }
+}
+
+.size-col {
+  @apply absolute right-0 text-xs font-mono top-0 invisible;
+  height: 100%;
+  width: calc(100%);
+
+  &.up {
+    @apply visible;
+    fill: theme('colors.aqua.500');
+    opacity: 0.35;
+    animation: sizeColUp 0.5s ease-in-out;
+    color: rgb(255, 255, 255) !important;
+  }
+
+  &.down {
+    @apply visible;
+    fill: theme('colors.red.500');
+    opacity: 0.35;
+    animation: sizeColDown 0.5s ease-in-out;
+    color: rgb(255, 255, 255) !important;
+  }
+}
+
+@keyframes sizeColUp {
+  0% {
+    background-color: rgba(#0ee29b, 0.35);
+  }
+  100% {
+    background-color: unset;
+  }
+}
+
+@keyframes sizeColDown {
+  0% {
+    background-color: rgba(#f3164d, 0.35);
+  }
+  100% {
+    background-color: unset;
+  }
+}
+
+.step-circle {
+  @apply text-gray-400 relative;
+  min-height: 1em;
+
+  .title {
+    @apply leading-6 text-2xs uppercase font-semibold;
+  }
+
+  .caption {
+    @apply text-sm text-gray-100;
+  }
+
+  & + .step-circle {
+    @apply mt-12;
+  }
+
+  & > div:first-child {
+    position: static;
+    height: 0;
+  }
+
+  & > div:not(:first-child) {
+    @apply ml-6 pl-4;
+  }
+
+  .circle {
+    @apply bg-gray-500 relative w-6 h-6 leading-6 rounded-full text-gray-200 text-center;
+    box-shadow: 0 0 0 1px #a6a8ad;
+
+    &::after {
+      content: ' ';
+      @apply absolute block top-px bottom-px h-12 w-px;
+      right: 50%;
+      left: 50%;
+      transform: scale(1, 2);
+      transform-origin: 50% -50%;
+      background-color: rgba(166, 168, 173, 0.25);
+      z-index: -1;
+    }
+  }
+
+  &:last-child .circle::after {
+    display: none;
+  }
+
+  &.active {
+    @apply text-primary-500;
+  }
+
+  &.active .circle {
+    @apply bg-primary-500;
+    box-shadow: 0 0 0 1px #00f2ff;
+  }
+}
