@@ -41,7 +41,8 @@
             :label="slippageTolerancePreset.label"
             :value="slippageTolerancePreset.value"
             :active="
-              Number(slippageTolerancePreset.value) === Number(slippageTolerance)
+              Number(slippageTolerancePreset.value) ===
+              Number(slippageTolerance)
             "
             :class="{
               'hidden sm:block': index === slippageTolerancePresets.length - 1
@@ -70,7 +71,10 @@
             <span slot="addon"> % </span>
           </VInput>
         </div>
-        <div v-if="hasWarnings && !hasErrors" class="block mt-4 text-orange-500">
+        <div
+          v-if="hasWarnings && !hasErrors"
+          class="block mt-4 text-orange-500"
+        >
           <span
             v-for="(warning, index) in warnings"
             :key="`slippage-tolerance-warning-${index}`"

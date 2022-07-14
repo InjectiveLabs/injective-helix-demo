@@ -1,4 +1,5 @@
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
+import { getExactDecimalsFromNumber } from '~/app/utils/helpers'
 
 BigNumber.config({
   FORMAT: {
@@ -79,4 +80,47 @@ export const reverseFormatMarketIdToComplyToZeroEx = (
   marketId: string
 ): string => {
   return marketId.slice(0, marketId.length - 8)
+}
+
+export const formatAmountToAllowableDecimals = (
+  value: string | number,
+  allowableDecimals: number
+): string => {
+  const decimalPlacesInValue = new BigNumberInBase(
+    getExactDecimalsFromNumber(value)
+  )
+  const valueToString = value.toString()
+
+  if (decimalPlacesInValue.lte(0)) {
+    return valueToString
+  }
+
+  const decimalMoreThanAllowance = decimalPlacesInValue.gte(allowableDecimals)
+
+  return decimalMoreThanAllowance
+    ? new BigNumberInBase(valueToString).toFixed(
+        allowableDecimals,
+        BigNumberInBase.ROUND_DOWN
+      )
+    : valueToString
+}
+
+export const formatPriceToAllowableDecimals = (
+  value: string | number,
+  allowableDecimals: number
+): string => {
+  const decimalPlacesInValue = new BigNumberInBase(
+    getExactDecimalsFromNumber(value)
+  )
+  const valueToString = value.toString()
+
+  if (decimalPlacesInValue.lte(0)) {
+    return valueToString
+  }
+
+  const decimalMoreThanAllowance = decimalPlacesInValue.gte(allowableDecimals)
+
+  return decimalMoreThanAllowance
+    ? new BigNumberInBase(valueToString).toFixed(allowableDecimals)
+    : valueToString
 }

@@ -15,6 +15,7 @@ export default {
     side_tooltip: 'The side of your trade: long or short',
     price: 'Price',
     amount: 'Amount',
+    min_received_amount: 'Mininum Received Amount',
     averagePrice: 'Average Price',
     amount_tooltip:
       'The total value of the base asset at the time which the trade was executed (i.e. for BTC/USDT, BTC is the base asset and USDT is the quote asset).',
@@ -34,8 +35,8 @@ export default {
     clearAll: 'Clear All',
     closeAll: 'Close All',
     closeAllPositions: 'Close all positions',
-    reduce_only: 'Reduce Only',
-    post_only: 'Post Only',
+    reduce_only: 'Reduce-Only',
+    post_only: 'Post-Only',
     leverage: 'Leverage',
     limit: 'Limit',
     market: 'Market',
@@ -45,7 +46,7 @@ export default {
     emptyPositions: 'No positions found',
     emptyTrades: 'No trades found',
     entry_price: 'Entry price',
-    liquidation_price: 'Liquidation price',
+    liquidation_price: 'Liquidation Price',
     liquidation_price_tooltip:
       'The price at which your position will be liquidated or force-exited to prevent further losses.',
     unrealized_pnl: 'Unrealized PnL',
@@ -72,7 +73,7 @@ export default {
       'The execution price for your order deviates at least {percentage}% than the last traded price. Click confirm if you still want to execute it.',
     order_price_low_warn: 'Order price is too low',
     order_price_high_warn: 'Order price is too high',
-    max_leverage_warn: 'Please decrease leverage.',
+    max_leverage_warn: 'Please decrease leverage',
     reduce_only_in_excess:
       'Total size of reduce-only orders would exceed size of your position',
     max_leverage: 'Max Leverage:  {max}',
@@ -80,7 +81,8 @@ export default {
       'You can only have {number} orders per side per market per trading account',
     no_liquidity: 'Not enough Liquidity',
     add_margin_to_position_title: 'Add Margin',
-    order_insufficient_margin: 'Order has insufficient margin',
+    order_insufficient_margin:
+      'Please modify price, amount, or leverage to meet margin requirement',
     mark_price_invalid: 'The mark price is not valid',
     success_added_margin: 'You have successfully added margin to your position',
     add_margin: 'Add Margin',
@@ -96,9 +98,6 @@ export default {
       'Mark Price: The oracle price for the base asset.',
     funding_rate_tooltip:
       'The interest rate paid is determined by the difference between the perpetual swap price and the underlying spot price. If the funding rate is positive, traders with long positions will pay traders with short positions. If the funding rate is negative, traders with short positions will pay those in long positions.',
-    est_receiving_amount: 'Est. Receiving Amount (Worst Case)',
-    est_receiving_amount_note:
-      'The lowest amount you can actually receive for the trade.',
     est_fee_rebate: 'Est. Fee Rebate',
     est_fee_rebate_note:
       'The estimated rebate is the rebate that is granted if the limit order is filled as a maker order.',
@@ -112,8 +111,6 @@ export default {
     not_enough_balance: 'Not enough balance',
     reduce_only_exceed_position:
       'Total size of reduce-only orders exceed the size of your position',
-    worst_price_note:
-      'Note: If the execution price exceeds the {slippage}% slippage protection, your order will be automatically cancelled',
     next_funding: 'Next Funding',
     next_funding_tooltip:
       'The time remaining for the end of the funding interval.',
@@ -169,6 +166,9 @@ export default {
     taker_rate: 'Taker Fee Rate',
     taker_rate_note:
       'Taker fee rate for the current market. Can be lowered based on the fee discounts incentive program.',
+    maker_rate: 'Maker Fee Rate',
+    maker_rate_note:
+      'Maker fee rate for the current market. Can be lowered based on the fee discounts incentive program.',
     expected_points: 'Expected Points',
     expected_points_note:
       'The expected points you will earn for the Injective Astro incentive program based on the execution type of your order (maker or taker).',
@@ -228,7 +228,15 @@ export default {
       invalid_token_symbol_warning:
         'Invalid token {symbol}, defaulting to {defaultSymbol}.'
     },
-
+    advanced_settings: 'Advanced Settings',
+    slippage_tolerance: 'Slippage Tolerance',
+    high_slippage_warning:
+      'Your transaction might get executed at a less desirable price if slippage % is set too high',
+    invalid_slippage: 'Please enter a valid slippage percentage',
+    low_slippage_tolerance_warning:
+      'Your transaction might not be executed if slippage % is set too low',
+    limited_orderbook_liquidity:
+      'Percentage amounts are limited by the liquidity available on the orderbook',
     binaryOptions: {
       settlement: 'Settlement',
       settlement_tooltip: 'Settlement Tooltip'

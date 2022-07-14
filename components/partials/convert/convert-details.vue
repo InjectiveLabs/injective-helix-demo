@@ -158,6 +158,18 @@ export default Vue.extend({
       return !amount.isNaN() && amount.gt(0) && amount.gte(amountStep)
     },
 
+    rate(): BigNumberInBase {
+      const { averagePriceWithoutSlippage } = this
+
+      return averagePriceWithoutSlippage.times(ONE_IN_BASE)
+    },
+
+    rateToFormat(): string {
+      const { rate } = this
+
+      return rate.toFormat()
+    },
+
     feeRate(): BigNumberInBase {
       const { takerFeeRate, takerFeeRateDiscount } = this
 

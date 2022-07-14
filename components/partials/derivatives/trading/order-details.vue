@@ -7,9 +7,12 @@
     >
       <p slot="header" class="flex justify-between text-sm">
         <TextInfo :title="$t('trade.total')" lg>
-          <span class="font-mono flex items-start break-all">
+          <span
+            class="font-mono flex items-start break-all"
+            data-cy="trading-page-details-total-text-content"
+          >
             <span class="mr-1">≈</span>
-            {{ totalWithFeesToFormat }}
+            {{ notionalWithLeverageAndFeesToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
             </span>
@@ -18,29 +21,6 @@
       </p>
 
       <div class="mt-4">
-        <TextInfo :title="$t('trade.amount')">
-          <span
-            v-if="!amount.isNaN()"
-            class="font-mono flex items-start break-all"
-          >
-            {{ amountToFormat }}
-            <span class="text-gray-500 ml-1 break-normal">
-              {{ market.baseToken.symbol }}
-            </span>
-          </span>
-          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </TextInfo>
-
-        <TextInfo :title="$t('trade.price')" class="mt-2">
-          <span v-if="price.gt(0)" class="font-mono flex items-start break-all">
-            {{ priceToFormat }}
-            <span class="text-gray-500 ml-1 break-normal">
-              {{ market.quoteToken.symbol }}
-            </span>
-          </span>
-          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </TextInfo>
-
         <TextInfo
           v-if="!orderTypeReduceOnly && !isBinaryOption"
           :title="$t('trade.liquidation_price')"
@@ -53,6 +33,7 @@
           />
           <span
             v-if="liquidationPrice.gt(0)"
+            data-cy="trading-page-details-liquidation-price-text-content"
             class="font-mono flex items-start break-all"
           >
             {{ liquidationPriceToFormat }}
@@ -74,10 +55,11 @@
             :tooltip="$t('trade.margin_tooltip')"
           />
           <span
-            v-if="margin.gt(0)"
+            v-if="notionalWithLeverage.gt(0)"
+            data-cy="trading-page-details-notional-value-text-content"
             class="font-mono flex items-start break-all"
           >
-            {{ marginToFormat }}
+            {{ notionalWithLeverageToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
             </span>
@@ -85,36 +67,38 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </TextInfo>
 
-        <TextInfo :title="$t('trade.notional_value')" class="mt-2">
+        <TextInfo
+          :title="
+            postOnly ? $t('trade.maker_rate') : $t('trade.maker_taker_rate')
+          "
+          class="mt-2"
+        >
           <IconInfoTooltip
             slot="context"
             class="ml-2"
-            :tooltip="$t('trade.total_tooltip')"
+            :tooltip="
+              postOnly
+                ? $t('trade.maker_rate_note')
+                : $t('trade.maker_taker_rate_note')
+            "
           />
           <span
-            v-if="notionalValue.gt(0)"
-            class="font-mono flex items-start break-all"
+            class="font-mono flex items-center"
+            data-cy="trading-page-details-fee-percentage-text-content"
           >
-            {{ notionalValueToFormat }}
-            <span class="text-gray-500 ml-1 break-normal">
-              {{ market.quoteToken.symbol }}
-            </span>
-          </span>
-          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </TextInfo>
-
-        <TextInfo :title="$t('trade.maker_taker_rate')" class="mt-2">
-          <IconInfoTooltip
-            slot="context"
-            class="ml-2"
-            :tooltip="$t('trade.maker_taker_rate_note')"
-          />
-          <span class="font-mono flex items-center">
-            {{ `${makerFeeRateToFormat}%/${takerFeeRateToFormat}%` }}
+            {{
+              postOnly
+                ? `${makerFeeRateToFormat}%`
+                : `${makerFeeRateToFormat}%/${takerFeeRateToFormat}%`
+            }}
           </span>
         </TextInfo>
 
-        <TextInfo :title="$t('trade.fee')" class="mt-2">
+        <TextInfo
+          v-if="!(postOnly && marketHasNegativeMakerFee)"
+          :title="$t('trade.fee')"
+          class="mt-2"
+        >
           <div slot="context">
             <div class="flex items-center">
               <IconInfoTooltip
@@ -124,7 +108,7 @@
                   marketHasNegativeMakerFee
                     ? $t('trade.fee_order_details_note_negative_margin')
                     : $t('trade.fee_order_details_note', {
-                        feeReturned: feeReturned.toFixed()
+                        feeReturnedToFormat
                       })
                 "
               />
@@ -140,7 +124,11 @@
               />
             </div>
           </div>
-          <span v-if="fees.gt(0)" class="font-mono flex items-start break-all">
+          <span
+            v-if="fees.gt(0)"
+            class="font-mono flex items-start break-all"
+            data-cy="trading-page-details-fee-value-text-content"
+          >
             {{ feesToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
@@ -161,6 +149,7 @@
           />
           <span
             v-if="feeRebates.gt(0)"
+            data-cy="trading-page-details-fee-rebate-value-text-content"
             class="font-mono flex items-start break-all"
           >
             {{ feeRebatesToFormat }}
@@ -182,7 +171,7 @@
             :tooltip="$t('trade.expected_points_note')"
           />
           <span class="font-mono flex items-start break-all">
-            {{ `${makerExpectedPtsToFormat}/${takerExpectedPtsToFormat}` }}
+            {{ expectedPointsToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ $t('pts') }}
             </span>
@@ -198,16 +187,10 @@ import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   MarketType,
-  UiDerivativeMarketWithToken,
-  ZERO_IN_BASE
+  UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
-import { DerivativeOrderSide } from '@injectivelabs/sdk-ts'
 import Drawer from '~/components/elements/drawer.vue'
-import {
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-} from '~/app/utils/constants'
-import { getDecimalsFromNumber } from '~/app/utils/helpers'
+import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import { Icon } from '~/types'
 
 export default Vue.extend({
@@ -216,99 +199,99 @@ export default Vue.extend({
   },
 
   props: {
-    orderType: {
-      required: true,
-      type: String as PropType<DerivativeOrderSide>
-    },
-
-    totalWithFees: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
-    },
-
-    total: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+    notionalWithLeverageAndFees: {
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     },
 
     liquidationPrice: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     },
 
     takerFeeRateDiscount: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     },
 
     makerFeeRateDiscount: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     },
 
-    takerFeeRate: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+    takerFeeRateToFormat: {
+      type: String,
+      required: true
     },
 
-    makerFeeRate: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+    expectedPointsToFormat: {
+      type: String,
+      required: true
     },
 
-    takerExpectedPts: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+    makerFeeRateToFormat: {
+      type: String,
+      required: true
     },
 
-    makerExpectedPts: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+    feeRebatesToFormat: {
+      type: String,
+      required: true
     },
 
-    margin: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+    notionalWithLeverage: {
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     },
 
     fees: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     },
 
     feeReturned: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     },
 
     feeRebates: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     },
 
-    notionalValue: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+    feesToFormat: {
+      type: String,
+      required: true
     },
 
-    price: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+    marketHasNegativeMakerFee: {
+      type: Boolean,
+      required: true
+    },
+
+    executionPrice: {
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     },
 
     amount: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     },
 
     orderTypeReduceOnly: {
-      required: true,
-      type: Boolean
+      type: Boolean,
+      required: true
     },
 
     detailsDrawerOpen: {
-      required: true,
-      type: Boolean
+      type: Boolean,
+      required: true
+    },
+
+    postOnly: {
+      type: Boolean,
+      required: true
     }
   },
 
@@ -333,132 +316,74 @@ export default Vue.extend({
       return market.subType === MarketType.BinaryOptions
     },
 
-    totalWithFeesToFormat(): string {
-      const { totalWithFees, market } = this
+    notionalWithLeverageAndFeesToFormat(): string {
+      const { notionalWithLeverageAndFees, market } = this
 
       if (!market) {
-        return totalWithFees.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+        return notionalWithLeverageAndFees.toFormat(
+          UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+          BigNumberInBase.ROUND_DOWN
+        )
       }
 
-      return totalWithFees.toFormat(market.priceDecimals)
+      return notionalWithLeverageAndFees.toFormat(
+        market.priceDecimals,
+        BigNumberInBase.ROUND_DOWN
+      )
     },
 
-    priceToFormat(): string {
-      const { price, market } = this
+    notionalWithLeverageToFormat(): string {
+      const { notionalWithLeverage, market } = this
 
       if (!market) {
-        return price.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+        return notionalWithLeverage.toFormat(
+          UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+          BigNumberInBase.ROUND_DOWN
+        )
       }
 
-      return price.toFormat(market.priceDecimals)
-    },
-
-    notionalValueToFormat(): string {
-      const { notionalValue, market } = this
-
-      if (!market) {
-        return notionalValue.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return notionalValue.toFormat(market.priceDecimals)
+      return notionalWithLeverage.toFormat(
+        market.priceDecimals,
+        BigNumberInBase.ROUND_DOWN
+      )
     },
 
     liquidationPriceToFormat(): string {
       const { liquidationPrice, market } = this
 
       if (!market) {
-        return liquidationPrice.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+        return liquidationPrice.toFormat(
+          UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+          BigNumberInBase.ROUND_HALF_UP
+        )
       }
 
-      return liquidationPrice.toFormat(market.priceDecimals)
-    },
-
-    marginToFormat(): string {
-      const { margin, market } = this
-
-      if (!market) {
-        return margin.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return margin.toFormat(market.priceDecimals)
-    },
-
-    feesToFormat(): string {
-      const { fees } = this
-
-      return fees.toFormat(getDecimalsFromNumber(fees.toNumber()))
-    },
-
-    marketHasNegativeMakerFee(): boolean {
-      const { market } = this
-
-      if (!market) {
-        return false
-      }
-
-      return new BigNumberInBase(market.makerFeeRate).lt(0)
-    },
-
-    feeRebatesToFormat(): string {
-      const { feeRebates, market } = this
-
-      if (!market) {
-        return feeRebates.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return feeRebates.toFormat(market.priceDecimals)
-    },
-
-    makerFeeRateToFormat(): string {
-      const { makerFeeRate } = this
-
-      const number = makerFeeRate.times(100)
-
-      return number.toFormat(getDecimalsFromNumber(number.toNumber()))
-    },
-
-    takerFeeRateToFormat(): string {
-      const { takerFeeRate } = this
-
-      const number = takerFeeRate.times(100)
-
-      return number.toFormat(getDecimalsFromNumber(number.toNumber()))
-    },
-
-    makerExpectedPtsToFormat(): string {
-      const { makerExpectedPts } = this
-
-      return makerExpectedPts
-        .abs()
-        .toFormat(getDecimalsFromNumber(makerExpectedPts.toNumber()))
-    },
-
-    takerExpectedPtsToFormat(): string {
-      const { takerExpectedPts } = this
-
-      return takerExpectedPts.toFormat(
-        getDecimalsFromNumber(takerExpectedPts.toNumber())
+      return liquidationPrice.toFormat(
+        market.priceDecimals,
+        BigNumberInBase.ROUND_HALF_UP
       )
     },
 
-    amountToFormat(): string {
-      const { amount, market } = this
-
-      if (amount.isNaN()) {
-        return ZERO_IN_BASE.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
-      }
+    feeReturnedToFormat(): string {
+      const { feeReturned, market } = this
 
       if (!market) {
-        return amount.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
+        return feeReturned.toFormat(
+          UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+          BigNumberInBase.ROUND_DOWN
+        )
       }
 
-      return amount.toFormat(market.quantityDecimals)
+      return feeReturned.toFormat(
+        market.priceDecimals,
+        BigNumberInBase.ROUND_DOWN
+      )
     }
   },
 
   methods: {
     onDrawerToggle() {
-      this.$emit('drawer-toggle')
+      this.$emit('set:drawer-toggle')
     }
   }
 })
