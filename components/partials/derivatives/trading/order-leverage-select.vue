@@ -33,7 +33,7 @@ export default Vue.extend({
 
   data() {
     return {
-      leverageSteps: [1, 2, 3, 5, 10, 20, 50, 100]
+      leverageSteps: [1, 2, 3, 5, 10, 20, 50, 100, 150, 200]
     }
   },
 

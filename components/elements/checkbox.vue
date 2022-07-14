@@ -8,7 +8,7 @@
       type="checkbox"
       @change="handleChange"
     />
-    <label :for="uid" class="flex"><slot /></label>
+    <label :for="uid" :data-cy="dataCy" class="flex"><slot /></label>
   </div>
 </template>
 
@@ -25,6 +25,10 @@ export default Vue.extend({
     value: {
       type: [Boolean, String],
       required: true
+    },
+    dataCy: {
+      type: String,
+      default: 'unknown-id'
     }
   },
 
@@ -37,6 +41,12 @@ export default Vue.extend({
   computed: {
     uid(): string {
       return window.crypto.getRandomValues(new Uint32Array(1))[0].toString()
+    }
+  },
+
+  mounted() {
+    if (this.value === true) {
+      this.checked = true
     }
   },
 

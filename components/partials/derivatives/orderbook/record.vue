@@ -17,6 +17,7 @@
     >
       <IconArrow
         v-if="existsInUserOrders"
+        data-cy="orderbook-record-own-order-icon"
         class="text-gray-300 transform rotate-180 mr-2 w-2 h-2"
       />
       <span

@@ -3,78 +3,55 @@
     <VDrawer
       :custom-handler="true"
       :custom-is-open="detailsDrawerOpen"
-      @drawer-toggle="onDrawerToggle"
+      @set:drawer-toggle="onDrawerToggle"
     >
-      <p slot="header" class="flex justify-between text-sm">
-        <TextInfo :title="$t('trade.total')" lg>
-          <span class="font-mono flex items-start break-all">
-            <span class="mr-1">≈</span>
-            {{ extractedTotalToFormat }}
-            <span class="text-gray-500 ml-1 break-normal">
-              {{ market.quoteToken.symbol }}
-            </span>
-          </span>
-        </TextInfo>
-      </p>
-
       <div class="mt-4">
-        <TextInfo :title="$t('trade.amount')">
+        <TextInfo :title="$t('trade.price')" class="mt-2">
           <span
-            v-if="!amount.isNaN()"
+            v-if="executionPrice.gt(0)"
+            data-cy="trading-page-details-execution-price-text-content"
             class="font-mono flex items-start break-all"
           >
-            {{ amountToFormat }}
-            <span class="text-gray-500 ml-1 break-normal">
-              {{ market.baseToken.symbol }}
-            </span>
-          </span>
-          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </TextInfo>
-
-        <TextInfo :title="$t('trade.price')" class="mt-2">
-          <span v-if="price.gt(0)" class="font-mono flex items-start break-all">
-            {{ priceToFormat }}
+            {{ executionPriceToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </TextInfo>
-
-        <TextInfo :title="$t('trade.maker_taker_rate')" class="mt-2">
-          <IconInfoTooltip
-            slot="context"
-            class="ml-2"
-            :tooltip="$t('trade.maker_taker_rate_note')"
-          />
-          <span class="font-mono flex items-center">
-            {{ `${makerFeeRateToFormat}%/${takerFeeRateToFormat}%` }}
-          </span>
         </TextInfo>
 
         <TextInfo
-          v-if="!orderTypeBuy"
-          :title="$t('trade.est_receiving_amount')"
+          :title="
+            postOnly ? $t('trade.maker_rate') : $t('trade.maker_taker_rate')
+          "
           class="mt-2"
         >
           <IconInfoTooltip
             slot="context"
             class="ml-2"
-            :tooltip="$t('trade.est_receiving_amount_note')"
+            :tooltip="
+              postOnly
+                ? $t('trade.maker_rate_note')
+                : $t('trade.maker_taker_rate_note')
+            "
           />
           <span
-            v-if="totalWithoutFees.gt(0)"
             class="font-mono flex items-center"
+            data-cy="trading-page-details-fee-percentage-text-content"
           >
-            {{ totalWithoutFeesToFormat }}
-            <span class="text-gray-500 ml-1">
-              {{ market.quoteToken.symbol }}
-            </span>
+            {{
+              postOnly
+                ? `${makerFeeRateToFormat}%`
+                : `${makerFeeRateToFormat}%/${takerFeeRateToFormat}%`
+            }}
           </span>
-          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </TextInfo>
 
-        <TextInfo :title="$t('trade.fee')" class="mt-2">
+        <TextInfo
+          v-if="!(postOnly && marketHasNegativeMakerFee)"
+          :title="$t('trade.fee')"
+          class="mt-2"
+        >
           <div slot="context">
             <div class="flex items-center">
               <IconInfoTooltip
@@ -84,7 +61,7 @@
                   marketHasNegativeMakerFee
                     ? $t('trade.fee_order_details_note_negative_margin')
                     : $t('trade.fee_order_details_note', {
-                        feeReturned: feeReturned.toFixed()
+                        feeReturnedToFormat
                       })
                 "
               />
@@ -109,8 +86,11 @@
               />
             </div>
           </div>
-
-          <span v-if="fees.gt(0)" class="font-mono flex items-start break-all">
+          <span
+            v-if="fees.gt(0)"
+            class="font-mono flex items-start break-all"
+            data-cy="trading-page-details-fee-value-text-content"
+          >
             {{ feesToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
@@ -132,6 +112,7 @@
           </div>
           <span
             v-if="feeRebates.gt(0)"
+            data-cy="trading-page-details-fee-rebate-value-text-content"
             class="font-mono flex items-start break-all"
           >
             {{ feeRebatesToFormat }}
@@ -153,7 +134,7 @@
             :tooltip="$t('trade.expected_points_note')"
           />
           <span class="font-mono flex items-start break-all">
-            {{ `${makerExpectedPtsToFormat}/${takerExpectedPtsToFormat}` }}
+            {{ expectedPointsToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ $t('pts') }}
             </span>
@@ -167,15 +148,10 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  UiSpotMarketWithToken,
-  ZERO_IN_BASE,
-  SpotOrderSide
-} from '@injectivelabs/sdk-ui-ts'
+import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import Drawer from '~/components/elements/drawer.vue'
-import { Icon } from '~/types'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
-import { getDecimalsFromNumber } from '~/app/utils/helpers'
+import { Icon } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -183,89 +159,89 @@ export default Vue.extend({
   },
 
   props: {
-    orderTypeBuy: {
-      required: true,
-      type: Boolean
+    executionPriceToFormat: {
+      type: String,
+      default: undefined
     },
 
-    orderType: {
-      required: true,
-      type: String as PropType<SpotOrderSide>
-    },
-
-    total: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
-    },
-
-    totalWithFees: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
-    },
-
-    totalWithoutFees: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
-    },
-
-    feeReturned: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
-    },
-
-    feeRebates: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
-    },
-
-    takerFeeRateDiscount: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
-    },
-
-    makerFeeRateDiscount: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
-    },
-
-    takerFeeRate: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
-    },
-
-    makerFeeRate: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
-    },
-
-    takerExpectedPts: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
-    },
-
-    makerExpectedPts: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+    executionPrice: {
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     },
 
     fees: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     },
 
-    price: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+    feeReturned: {
+      type: Object as PropType<BigNumberInBase>,
+      required: true
+    },
+
+    feeRebates: {
+      type: Object as PropType<BigNumberInBase>,
+      required: true
+    },
+
+    feesToFormat: {
+      type: String,
+      required: true
+    },
+
+    feeRebatesToFormat: {
+      type: String,
+      required: true
+    },
+
+    orderTypeBuy: {
+      type: Boolean,
+      required: true
+    },
+
+    postOnly: {
+      type: Boolean,
+      required: true
+    },
+
+    takerFeeRateToFormat: {
+      type: String,
+      default: undefined
+    },
+
+    makerFeeRateToFormat: {
+      type: String,
+      default: undefined
+    },
+
+    marketHasNegativeMakerFee: {
+      type: Boolean,
+      required: true
+    },
+
+    makerFeeRateDiscount: {
+      type: Object as PropType<BigNumberInBase>,
+      required: true
+    },
+
+    takerFeeRateDiscount: {
+      type: Object as PropType<BigNumberInBase>,
+      required: true
+    },
+
+    notionalValueWithFees: {
+      type: Object as PropType<BigNumberInBase>,
+      default: undefined
     },
 
     amount: {
-      required: true,
-      type: Object as PropType<BigNumberInBase>
+      type: Object as PropType<BigNumberInBase>,
+      required: true
     },
 
     detailsDrawerOpen: {
-      required: true,
-      type: Boolean
+      type: Boolean,
+      required: true
     }
   },
 
@@ -280,122 +256,26 @@ export default Vue.extend({
       return this.$accessor.spot.market
     },
 
-    extractedTotal(): BigNumberInBase {
-      const { totalWithFees, amount } = this
-
-      if (amount.isNaN()) {
-        return ZERO_IN_BASE
-      }
-
-      return totalWithFees
-    },
-
-    extractedTotalToFormat(): string {
-      const { extractedTotal, market } = this
+    feeReturnedToFormat(): string {
+      const { feeReturned, market } = this
 
       if (!market) {
-        return extractedTotal.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+        return feeReturned.toFormat(
+          UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+          BigNumberInBase.ROUND_DOWN
+        )
       }
 
-      return extractedTotal.toFormat(market.priceDecimals)
-    },
-
-    totalWithoutFeesToFormat(): string {
-      const { totalWithoutFees, market } = this
-
-      if (!market) {
-        return totalWithoutFees.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return totalWithoutFees.toFormat(market.priceDecimals)
-    },
-
-    priceToFormat(): string {
-      const { price, market } = this
-
-      if (!market) {
-        return price.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return price.toFormat(market.priceDecimals)
-    },
-
-    feesToFormat(): string {
-      const { fees } = this
-
-      return fees.toFormat(getDecimalsFromNumber(fees.toNumber()))
-    },
-
-    makerFeeRateToFormat(): string {
-      const { makerFeeRate } = this
-
-      const number = makerFeeRate.times(100)
-
-      return number.toFormat(getDecimalsFromNumber(number.toNumber()))
-    },
-
-    takerFeeRateToFormat(): string {
-      const { takerFeeRate } = this
-
-      const number = takerFeeRate.times(100)
-
-      return number.toFormat(getDecimalsFromNumber(number.toNumber()))
-    },
-
-    makerExpectedPtsToFormat(): string {
-      const { makerExpectedPts } = this
-
-      return makerExpectedPts
-        .abs()
-        .toFormat(getDecimalsFromNumber(makerExpectedPts.toNumber()))
-    },
-
-    takerExpectedPtsToFormat(): string {
-      const { takerExpectedPts } = this
-
-      return takerExpectedPts.toFormat(
-        getDecimalsFromNumber(takerExpectedPts.toNumber())
+      return feeReturned.toFormat(
+        market.priceDecimals,
+        BigNumberInBase.ROUND_DOWN
       )
-    },
-
-    marketHasNegativeMakerFee(): boolean {
-      const { market } = this
-
-      if (!market) {
-        return false
-      }
-
-      return new BigNumberInBase(market.makerFeeRate).lt(0)
-    },
-
-    feeRebatesToFormat(): string {
-      const { feeRebates, market } = this
-
-      if (!market) {
-        return feeRebates.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return feeRebates.toFormat(market.priceDecimals)
-    },
-
-    amountToFormat(): string {
-      const { amount, market } = this
-
-      if (amount.isNaN()) {
-        return ZERO_IN_BASE.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      if (!market) {
-        return amount.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-      }
-
-      return amount.toFormat(market.priceDecimals)
     }
   },
 
   methods: {
     onDrawerToggle() {
-      this.$emit('drawer-toggle')
+      this.$emit('set:drawer-toggle')
     }
   }
 })
