@@ -61,6 +61,7 @@ import {
   binaryOptions as allowedBinaryOptionsMarkets,
   expiryFutures as allowedExpiryFutures
 } from '~/routes.config'
+import { ActivityFetchOptions } from '~/types'
 
 const initialStateFactory = () => ({
   perpetualMarkets: [] as UiPerpetualMarketWithToken[],
@@ -74,6 +75,8 @@ const initialStateFactory = () => ({
   orderbook: undefined as UiDerivativeOrderbook | undefined,
   trades: [] as UiDerivativeTrade[],
   subaccountTrades: [] as UiDerivativeTrade[],
+  subaccountTradesEndTime: 0 as number,
+  subaccountTradesTotal: 0 as number,
   subaccountOrders: [] as UiDerivativeLimitOrder[]
 })
 
@@ -95,6 +98,8 @@ export const state = () => ({
   marketMarkPrice: initialState.marketMarkPrice as string,
   trades: initialState.trades as UiDerivativeTrade[],
   subaccountTrades: initialState.subaccountTrades as UiDerivativeTrade[],
+  subaccountTradesEndTime: initialState.subaccountTradesEndTime as number,
+  subaccountTradesTotal: initialState.subaccountTradesTotal as number,
   subaccountOrders: initialState.subaccountOrders as UiDerivativeLimitOrder[],
   orderbook: initialState.orderbook as UiDerivativeOrderbook | undefined
 })
@@ -225,6 +230,14 @@ export const mutations = {
     subaccountTrades: UiDerivativeTrade[]
   ) {
     state.subaccountTrades = subaccountTrades
+  },
+
+  setSubaccountTradesEndTime(state: DerivativeStoreState, endTime: number) {
+    state.subaccountTradesEndTime = endTime
+  },
+
+  setSubaccountTradesTotal(state: DerivativeStoreState, total: number) {
+    state.subaccountTradesTotal = total
   },
 
   setSubaccountOrders(
@@ -655,19 +668,24 @@ export const actions = actionTree(
         return
       }
 
-      commit(
-        'setTrades',
-        await exchangeDerivativesApi.fetchTrades({ marketId: market.marketId })
-      )
+      const { trades } = await exchangeDerivativesApi.fetchTrades({ marketId: market.marketId })
+
+      commit('setTrades', trades)
     },
 
-    async fetchSubaccountOrders({ commit }) {
+    async fetchSubaccountOrders(
+      { commit }
+      // activityFetchOptions: ActivityFetchOptions | undefined
+    ) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
       if (!isUserWalletConnected || !subaccount) {
         return
       }
+
+      // const pagination = fetchPositionsOptions?.pagination
+      // const filters = fetchPositionsOptions?.filters
 
       commit(
         'setSubaccountOrders',
@@ -732,7 +750,7 @@ export const actions = actionTree(
       })
     },
 
-    async fetchSubaccountTrades({ commit }) {
+    async fetchSubaccountTrades({ state, commit }, activityFetchOptions: ActivityFetchOptions | undefined) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -740,9 +758,27 @@ export const actions = actionTree(
         return
       }
 
-      const trades = await exchangeDerivativesApi.fetchTrades({
-        subaccountId: subaccount.subaccountId
+      if (state.subaccountTrades.length > 0 && state.subaccountTradesEndTime === 0) {
+        commit('setSubaccountTradesEndTime', state.subaccountTrades[0].executedAt)
+      }
+
+      const pagination = activityFetchOptions?.pagination
+      const filters = activityFetchOptions?.filters
+
+      const { trades, paging } = await exchangeDerivativesApi.fetchTrades({
+        marketId: filters?.marketId,
+        marketIds: filters?.marketIds,
+        subaccountId: subaccount.subaccountId,
+        executionType: filters?.type,
+        direction: filters?.direction,
+        pagination: {
+          skip: pagination ? pagination.skip : 0,
+          limit: pagination ? pagination.limit : 0,
+          endTime: state.subaccountTradesEndTime
+        }
       })
+
+      commit('setSubaccountTradesTotal', paging.total)
 
       commit('setSubaccountTrades', trades)
     },
@@ -761,13 +797,8 @@ export const actions = actionTree(
       await this.app.$accessor.wallet.validate()
 
       const market = markets.find((m) => m.marketId === order.marketId)
-
-      if (!market) {
-        return
-      }
-
       const messageType =
-        market.subType === MarketType.BinaryOptions
+        market && market.subType === MarketType.BinaryOptions
           ? MsgBatchCancelBinaryOptionsOrders
           : MsgBatchCancelDerivativeOrders
 
@@ -918,7 +949,7 @@ export const actions = actionTree(
       await this.app.$accessor.wallet.validate()
 
       const messageType =
-        market.subType === MarketType.BinaryOptions
+        market && market.subType === MarketType.BinaryOptions
           ? MsgCreateBinaryOptionsMarketOrder
           : MsgCreateDerivativeMarketOrder
 

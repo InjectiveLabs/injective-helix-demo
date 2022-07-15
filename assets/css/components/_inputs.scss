@@ -345,11 +345,8 @@ input[type='number'] {
   }
 }
 
-.input-convert {
-  .vs__dropdown-menu {
-    @apply z-1110;
-  }
-
+.input-convert,
+.token-selector__token-only {
   .input-token {
     @apply bg-gray-900;
 
@@ -363,12 +360,45 @@ input[type='number'] {
       }
     }
 
+    .vs__dropdown-option {
+      @apply p-2;
+    }
+  }
+}
+
+.input-convert {
+  .vs__dropdown-menu {
+    @apply z-1110;
+  }
+
+  .input-token {
     .input-max-button {
       @apply bg-primary-600 px-1 py-0 h-[20px] flex items-center justify-center font-bold text-white mr-0;
     }
+  }
+}
+.token-selector__token-only {
+  .v-select.input-token.input-select {
+    @apply rounded-full h-[40px];
 
-    .vs__dropdown-option {
+    .vs__selected {
+      @apply h-[40px];
+    }
+
+    .vs__search {
+      @apply h-[40px] pl-6 pr-4 py-3 uppercase m-0 text-xs placeholder-gray-500;
+    }
+
+    .vs__dropdown-menu {
       @apply p-2;
+    }
+
+    .vs__selected-text-content {
+      @apply text-sm;
+    }
+
+    .vs__selected-icon {
+      @apply w-4 h-4;
     }
   }
 }

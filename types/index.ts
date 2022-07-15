@@ -5,7 +5,9 @@ import {
   UiSpotMarketSummary,
   UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
+import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types/dist/trade'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { PaginationOption } from '@injectivelabs/sdk-ts'
 
 export interface DOMEvent<T extends EventTarget> extends Event {
   target: T
@@ -56,6 +58,19 @@ export interface MarketRoute {
 }
 
 export declare type TokenUsdPriceMap = Record<string, number>
+
+export interface FilterOptions {
+  marketId?: string
+  marketIds?: string[]
+  direction?: TradeDirection
+  type?: TradeExecutionType,
+  denom?: string
+}
+
+export interface ActivityFetchOptions {
+  pagination?: PaginationOption
+  filters?: FilterOptions
+}
 
 export * from './enums'
 export * from './env'

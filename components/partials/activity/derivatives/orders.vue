@@ -1,101 +1,117 @@
 <template>
   <HocLoading :status="status">
-    <VCardTableWrap>
-      <template #actions>
-        <div
-          class="col-span-12 sm:col-span-6 lg:col-span-4 grid grid-cols-5 gap-4"
-        >
-          <VSearch
-            dense
-            class="col-span-3"
-            data-cy="universal-table-filter-by-asset-input"
-            :placeholder="$t('trade.filter')"
-            :search="search"
-            @searched="handleInputOnSearch"
-          />
-          <FilterSelector
-            class="col-span-2"
-            data-cy="universal-table-filter-by-side-drop-down"
-            :type="TradeSelectorType.Side"
-            :value="side"
-            @click="handleSideClick"
-          />
-        </div>
-
-        <div
-          v-if="filteredOrders.length > 0"
-          class="col-span-12 flex justify-between items-center sm:hidden mt-3 text-xs px-3"
-        >
-          <span class="tracking-widest uppercase tracking-3">
-            {{ $t('trade.side') }} / {{ $t('trade.market') }}
-          </span>
-          <span
-            class="text-red-550 leading-5 cursor-pointer"
-            @click.stop="handleCancelOrders"
+    <div class="w-full h-full flex flex-col">
+      <VCardTableWrap>
+        <template #actions>
+          <div
+            class="col-span-12 sm:col-span-6 lg:col-span-4 grid grid-cols-5 gap-4"
           >
-            {{ $t('trade.cancelAll') }}
-          </span>
-        </div>
-
-        <div
-          class="col-span-6 lg:col-span-8 sm:text-right mt-0 hidden sm:block"
-        >
-          <VButton
-            v-if="filteredOrders.length > 0"
-            red-outline
-            md
-            data-cy="activity-cancel-all-button"
-            @click.stop="handleCancelOrders"
-          >
-            {{ $t('trade.cancelAllOrders') }}
-          </VButton>
-        </div>
-      </template>
-
-      <!-- mobile table -->
-      <TableBody
-        :show-empty="filteredOrders.length === 0"
-        class="sm:hidden mt-3 max-h-lg overflow-y-auto"
-      >
-        <MobileOrder
-          v-for="(order, index) in filteredOrders"
-          :key="`mobile-derivative-orders-${index}-${order.orderHash}`"
-          class="col-span-1"
-          :order="order"
-        />
-
-        <EmptyList slot="empty" :message="$t('trade.emptyOrders')" />
-      </TableBody>
-
-      <TableWrapper break-md class="mt-4 hidden sm:block">
-        <table v-if="filteredOrders.length > 0" class="table">
-          <OrdersTableHeader />
-          <tbody>
-            <tr
-              is="Order"
-              v-for="(order, index) in filteredOrders"
-              :key="`orders-${index}-${order.orderHash}`"
-              :order="order"
+            <VSearch
+              dense
+              class="col-span-3"
+              :wrapper-classes="'rounded-full'"
+              data-cy="universal-table-filter-by-asset-input"
+              :placeholder="$t('trade.filter')"
+              :search="search"
+              @searched="handleInputOnSearch"
             />
-          </tbody>
-        </table>
-        <EmptyList
-          v-else
-          :message="$t('trade.emptyOrders')"
-          data-cy="universal-table-nothing-found"
-        />
-      </TableWrapper>
+            <FilterSelector
+              class="col-span-2"
+              data-cy="universal-table-filter-by-side-drop-down"
+              :type="TradeSelectorType.Side"
+              :value="side"
+              @click="handleSideClick"
+            />
+          </div>
 
-      <portal to="activity-card-derivative-count">
-        <span class="font-semibold text-sm md:text-lg">
-          {{ orders.length }}
-        </span>
-      </portal>
+          <div
+            v-if="filteredOrders.length > 0"
+            class="col-span-12 flex justify-between items-center sm:hidden mt-3 text-xs px-3"
+          >
+            <span class="tracking-widest uppercase tracking-3">
+              {{ $t('trade.side') }} / {{ $t('trade.market') }}
+            </span>
+            <span
+              class="text-red-550 leading-5 cursor-pointer"
+              @click.stop="handleCancelOrders"
+            >
+              {{ $t('trade.cancelAll') }}
+            </span>
+          </div>
 
-      <portal to="activity-tab-derivative-count">
-        <span v-if="status.isNotLoading()"> ({{ orders.length }}) </span>
-      </portal>
-    </VCardTableWrap>
+          <div
+            class="col-span-6 lg:col-span-8 sm:text-right mt-0 hidden sm:block"
+          >
+            <VButton
+              v-if="filteredOrders.length > 0"
+              red-outline
+              md
+              data-cy="activity-cancel-all-button"
+              @click.stop="handleCancelOrders"
+            >
+              {{ $t('trade.cancelAllOrders') }}
+            </VButton>
+          </div>
+        </template>
+
+        <!-- mobile table -->
+        <TableBody
+          :show-empty="filteredOrders.length === 0"
+          class="sm:hidden mt-3 max-h-lg overflow-y-auto"
+        >
+          <MobileOrder
+            v-for="(order, index) in filteredOrders"
+            :key="`mobile-derivative-orders-${index}-${order.orderHash}`"
+            class="col-span-1"
+            :order="order"
+          />
+
+          <EmptyList slot="empty" :message="$t('trade.emptyOrders')" />
+        </TableBody>
+
+        <TableWrapper break-md class="mt-4 hidden sm:block">
+          <table v-if="filteredOrders.length > 0" class="table">
+            <OrdersTableHeader />
+            <tbody>
+              <tr
+                is="Order"
+                v-for="(order, index) in filteredOrders"
+                :key="`orders-${index}-${order.orderHash}`"
+                :order="order"
+              />
+            </tbody>
+          </table>
+          <EmptyList
+            v-else
+            :message="$t('trade.emptyOrders')"
+            data-cy="universal-table-nothing-found"
+          />
+        </TableWrapper>
+
+        <portal to="activity-card-derivative-count">
+          <span class="font-semibold text-sm md:text-lg">
+            {{ orders.length }}
+          </span>
+        </portal>
+
+        <portal to="activity-tab-derivative-count">
+          <span v-if="status.isNotLoading()"> ({{ orders.length }}) </span>
+        </portal>
+      </VCardTableWrap>
+
+      <!-- <Pagination
+        v-if="status.isIdle()"
+        class="mt-4"
+        v-bind="{
+          limit,
+          page,
+          totalPages,
+          totalCount
+        }"
+        @update:limit="handleLimitChangeEvent"
+        @update:page="handlePageChangeEvent"
+      /> -->
+    </div>
   </HocLoading>
 </template>
 
@@ -112,6 +128,8 @@ import OrdersTableHeader from '~/components/partials/common/derivatives/orders-t
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import { TradeSelectorType } from '~/types/enums'
+// import Pagination from '~/components/partials/common/pagination.vue'
+import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -120,6 +138,7 @@ export default Vue.extend({
     MobileOrder,
     OrdersTableHeader,
     TableBody
+    // Pagination
   },
 
   data() {
@@ -127,7 +146,9 @@ export default Vue.extend({
       TradeSelectorType,
       search: '',
       side: undefined as string | undefined,
-      status: new Status(StatusType.Loading)
+      status: new Status(StatusType.Loading),
+      page: 1,
+      limit: UI_DEFAULT_PAGINATION_LIMIT_COUNT
     }
   },
 
@@ -161,24 +182,47 @@ export default Vue.extend({
 
         return isPartOfSearchFilter && isPartOfSideFilter
       })
+    },
+
+    totalCount(): number {
+      return 10
+    },
+
+    totalPages(): number {
+      const { totalCount, limit } = this
+
+      return Math.ceil(totalCount / limit)
     }
   },
 
   mounted() {
-    this.status.setLoading()
-
-    Promise.all([this.$accessor.derivatives.fetchSubaccountOrders()])
-      .then(() => {
-        //
-      })
-      .catch(this.$onError)
+    this.updateOrders()
       .finally(() => {
-        this.status.setIdle()
         this.$root.$emit('derivative-tab-loaded')
       })
   },
 
   methods: {
+    updateOrders(): Promise<void> {
+      this.status.setLoading()
+
+      return Promise.all([
+        this.$accessor.derivatives.fetchSubaccountOrders(
+          // {
+          //   skip: (this.page - 1) * this.limit,
+          //   limit: this.limit
+          // }
+        )
+      ])
+        .then(() => {
+          //
+        })
+        .catch(this.$onError)
+        .finally(() => {
+          this.status.setIdle()
+        })
+    },
+
     cancelAllOrder(): Promise<void> {
       const { filteredOrders } = this
 
@@ -212,6 +256,16 @@ export default Vue.extend({
 
     handleSideClick(side: string | undefined) {
       this.side = side
+    },
+
+    handleLimitChangeEvent(limit: number) {
+      this.limit = limit
+      this.updateOrders()
+    },
+
+    handlePageChangeEvent(page: number) {
+      this.page = page
+      this.updateOrders()
     }
   }
 })

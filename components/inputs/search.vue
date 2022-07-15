@@ -6,6 +6,7 @@
     :show-close="showClearIcon"
     :small="small"
     :value="search"
+    show-addon
     @input="input"
     @close="clear"
   >

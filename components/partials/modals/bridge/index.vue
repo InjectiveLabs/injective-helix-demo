@@ -82,6 +82,8 @@
             :is-ibc-transfer="isIbcTransfer"
             :balance="balance"
             small
+            show-input
+            show-custom-indicator
             show-errors-below
             @input:amount="handleAmountChange"
             @input:token="handleTokenChange"

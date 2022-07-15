@@ -16,6 +16,7 @@ import {
 } from '~/app/Services'
 import { UiBridgeTransformer } from '~/app/client/transformers/UiBridgeTransformer'
 import { UiExplorerTransformer } from '~/app/client/transformers/UiExplorerTransformer'
+import { ActivityFetchOptions } from '~/types'
 
 const initialStateFactory = () => ({
   ibcTransferTransactions: [] as IBCTransferTx[],
@@ -27,7 +28,9 @@ const initialStateFactory = () => ({
   injectiveTransfers: [] as BankMsgSendTransaction[],
   injectiveTransferBridgeTransactions: [] as UiBridgeTransactionWithToken[],
   subaccountTransfers: [] as UiSubaccountTransfer[],
-  subaccountTransferBridgeTransactions: [] as UiBridgeTransactionWithToken[]
+  subaccountTransferBridgeTransactions: [] as UiBridgeTransactionWithToken[],
+  subaccountTransferBridgeTransactionsEndTime: 0 as number,
+  subaccountTransferBridgeTransactionsTotal: 0 as number
 })
 const initialState = initialStateFactory()
 
@@ -55,7 +58,9 @@ export const state = () => ({
   subaccountTransfers:
     initialState.subaccountTransfers as UiSubaccountTransfer[],
   subaccountTransferBridgeTransactions:
-    initialState.subaccountTransferBridgeTransactions as UiBridgeTransactionWithToken[]
+    initialState.subaccountTransferBridgeTransactions as UiBridgeTransactionWithToken[],
+  subaccountTransferBridgeTransactionsEndTime: initialState.subaccountTransferBridgeTransactionsEndTime as number,
+  subaccountTransferBridgeTransactionsTotal: initialState.subaccountTransferBridgeTransactionsTotal as number
 })
 
 export type BridgeStoreState = ReturnType<typeof state>
@@ -171,6 +176,14 @@ export const mutations = {
       subaccountTransferBridgeTransactions
   },
 
+  setSubaccountTransferBridgeTransactionsEndTime(state: BridgeStoreState, endTime: number) {
+    state.subaccountTransferBridgeTransactionsEndTime = endTime
+  },
+
+  setSubaccountTransferBridgeTransactionsTotal(state: BridgeStoreState, total: number) {
+    state.subaccountTransferBridgeTransactionsTotal = total
+  },
+
   reset(state: BridgeStoreState) {
     const initialState = initialStateFactory()
 
@@ -229,7 +242,10 @@ export const actions = actionTree(
       )
     },
 
-    async fetchSubaccountTransfers({ commit }) {
+    async fetchSubaccountTransfers(
+      { state, commit },
+      activityFetchOptions: ActivityFetchOptions | undefined
+    ) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -237,24 +253,39 @@ export const actions = actionTree(
         return
       }
 
-      const transfers = await exchangeAccountApi.fetchSubaccountHistory({
-        subaccountId: subaccount.subaccountId
+      if (state.subaccountTransferBridgeTransactions.length > 0 && state.subaccountTransferBridgeTransactionsEndTime === 0) {
+        commit('setSubaccountTransferBridgeTransactionsEndTime', state.subaccountTransferBridgeTransactions[0].timestamp)
+      }
+
+      const pagination = activityFetchOptions?.pagination
+      const filters = activityFetchOptions?.filters
+
+      const { transfers, paging } = await exchangeAccountApi.fetchSubaccountHistory({
+        // marketId: filters?.marketId
+        subaccountId: subaccount.subaccountId,
+        denom: filters?.denom,
+        pagination: {
+          skip: pagination ? pagination.skip : 0,
+          limit: pagination ? pagination.limit : 0,
+          endTime: state.subaccountTransferBridgeTransactionsEndTime
+        }
       })
+
       const uiTransfers = transfers.map(
         UiAccountTransformer.grpcAccountTransferToUiAccountTransfer
       )
+
       const transactions = uiTransfers.map(
         UiBridgeTransformer.convertSubaccountTransfersToUiBridgeTransaction
       )
 
-      const uiBridgeTransactionsWithToken =
-        await tokenService.getBridgeTransactionsWithToken(transactions)
+      const uiBridgeTransactionsWithToken = await tokenService.getBridgeTransactionsWithToken(transactions)
+
+      commit('setSubaccountTransferBridgeTransactionsTotal', paging.total)
 
       commit('setSubaccountTransferTransactions', transactions)
-      commit(
-        'setSubaccountTransferBridgeTransactions',
-        uiBridgeTransactionsWithToken
-      )
+
+      commit('setSubaccountTransferBridgeTransactions', uiBridgeTransactionsWithToken)
     },
 
     async fetchIBCTransferTransactions({ commit }) {

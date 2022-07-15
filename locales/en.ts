@@ -255,5 +255,14 @@ export default {
     last_updated_at: 'Last updated at',
     update_daily: 'Update daily',
     in_past_days: 'In past {days} days'
+  },
+
+  pagination: {
+    showRows: 'Show rows',
+    showCountOutOfTotal: 'Showing {from} - {to} out of {totalCount}'
+  },
+
+  filters: {
+    clearAll: 'Clear All'
   }
 }
