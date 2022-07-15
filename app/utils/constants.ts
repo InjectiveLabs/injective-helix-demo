@@ -110,6 +110,18 @@ export const INJ_TO_IBC_TRANSFER_FEE = 0.002
 export const HIDDEN_BALANCE_DISPLAY = '********'
 
 const endpoints = getEndpointsForNetwork(NETWORK)
+const endpointsNotProvided =
+  !endpoints &&
+  (!APP_EXCHANGE_API_ENDPOINT ||
+    !APP_SENTRY_GRPC_ENDPOINT ||
+    !APP_SENTRY_HTTP_ENDPOINT)
+
+if (endpointsNotProvided) {
+  throw new Error(
+    'You either have to provide a correct APP_NETWORK in the .env or provide APP_EXCHANGE_API_ENDPOINT, APP_SENTRY_GRPC_ENDPOINT and APP_SENTRY_HTTP_ENDPOINT'
+  )
+}
+
 export const ENDPOINTS = {
   ...endpoints,
   chronosApi: APP_CHRONOS_API_ENDPOINT || undefined,
