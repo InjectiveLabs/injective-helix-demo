@@ -5,6 +5,9 @@
       :custom-is-open="detailsDrawerOpen"
       @drawer-toggle="onDrawerToggle"
     >
+      <p slot="header" class="flex justify-between text-sm">
+        <TextInfo :title="$t('trade.details')" lg />
+      </p>
       <div class="mt-4">
         <TextInfo :title="$t('trade.averagePrice')" class="mt-2">
           <span
