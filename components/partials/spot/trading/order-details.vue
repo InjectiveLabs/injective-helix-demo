@@ -3,8 +3,11 @@
     <VDrawer
       :custom-handler="true"
       :custom-is-open="detailsDrawerOpen"
-      @set:drawer-toggle="onDrawerToggle"
+      @drawer-toggle="onDrawerToggle"
     >
+      <p slot="header" class="flex justify-between text-sm">
+        <TextInfo :title="$t('trade.details')" lg />
+      </p>
       <div class="mt-4">
         <TextInfo :title="$t('trade.price')" class="mt-2">
           <span

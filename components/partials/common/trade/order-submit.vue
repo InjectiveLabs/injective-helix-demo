@@ -196,7 +196,7 @@ export default Vue.extend({
         lastTradedPrice
       } = this
 
-      if (!market || !tradingTypeMarket || executionPrice.lte(0)) {
+      if (!market || tradingTypeMarket || executionPrice.lte(0)) {
         return false
       }
 

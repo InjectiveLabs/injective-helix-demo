@@ -237,6 +237,7 @@ export default {
       'Your transaction might not be executed if slippage % is set too low',
     limited_orderbook_liquidity:
       'Percentage amounts are limited by the liquidity available on the orderbook',
+    details: 'Details',
     binaryOptions: {
       settlement: 'Settlement',
       settlement_tooltip: 'Settlement Tooltip'
