@@ -5,7 +5,7 @@ const metaTags = {
     ? process.env.APP_NAME
     : 'Injective Pro: Decentralized Cryptocurrency Derivatives, Ethereum and Altcoin Exchange',
   description:
-    'Injective is the first front-running resistant, layer-2 exchange protocol that unlocks the full potential of borderless finance by supporting margin trading, derivatives, and futures.',
+    'Injective is an open interoperable smart contracts layer-one blockchain network optimized for decentralized finance applications.',
   keywords:
     'injective protocol, dapp, decentralized app, cryptocurrency, criptocurrency exchange, exchange, exchange token, ethereum, ethereum token, erc20, futures, perpetuals, futures protocol',
   author: 'InjectiveLabs',
