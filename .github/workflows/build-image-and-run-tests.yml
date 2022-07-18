@@ -117,6 +117,7 @@ jobs:
             '/root/cypress/e2e/website/activity/derivatives-activity-tests.cy.ts',
             '/root/cypress/e2e/website/activity/spot-activity-tests.cy.ts',
             '/root/cypress/e2e/website/activity/positions-activity-tests.cy.ts'
+            '/root/cypress/e2e/website/trade/trade-perp-orders-tests.cy.ts,/root/cypress/e2e/website/trade/trade-spot-orders-tests.cy.ts'
           ]
     needs: build
     env:
@@ -180,7 +181,7 @@ jobs:
         uses: actions/checkout@master
         with:
           repository: InjectiveLabs/injective-devops
-          ref: 'f/funding_payment'
+          ref: 'f/trading-form-improvement-new-tests'
           token: ${{ secrets.BARTEKS_PAT }}
           path: ./injective-devops
       - name: Start standalone network
