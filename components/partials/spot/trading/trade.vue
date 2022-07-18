@@ -643,7 +643,9 @@ export default Vue.extend({
     },
 
     onOrderbookSizeClick(size: string) {
-      this.$orderInputs.onAmountChange(size)
+      if (this.$orderInputs) {
+        this.$orderInputs.onAmountChange(size)
+      }
     },
 
     onOrderbookPriceClick(price: string) {
