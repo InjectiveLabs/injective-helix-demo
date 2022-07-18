@@ -1,42 +1,81 @@
 <template>
-  <li v-if="market" class="flex h-6 items-center last:mb-0 first:mt-0 relative cursor-pointer w-full overflow-hidden"
-    @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
+  <li
+    v-if="market"
+    class="flex h-6 items-center last:mb-0 first:mt-0 relative cursor-pointer w-full overflow-hidden"
+    @mouseenter="handleMouseEnter"
+    @mouseleave="handleMouseLeave"
+  >
     <span class="size-col" :class="newRecordClass"></span>
-    <span class="depth-col" :style="depthWidth" :class="type === SpotOrderSide.Buy ? 'buys' : 'sells'"></span>
-    <span class="w-1/3 text-xs px-2 flex items-center justify-end z-10" @click.stop="onPriceClick">
-      <IconArrow v-if="existsInUserOrders" data-cy="orderbook-record-own-order-icon"
-        class="text-gray-300 transform rotate-180 mr-2 w-2 h-2" />
-      <span class="block text-right font-mono" :class="{
-        'text-aqua-500': recordTypeBuy,
-        'text-red-500': !recordTypeBuy
-      }">
-        <VNumber :prefix="
-          aggregatedValue.gt(record.aggregatedPrice || 0) && recordTypeBuy
-            ? '<'
-            : ''
-        " :decimals="aggregation < 0 ? 0 : aggregation" :number="
-  aggregatedValue.gt(record.aggregatedPrice || 0)
-    ? aggregatedValue
-    : record.aggregatedPrice
-" dont-group-values data-cy="orderbook-record-price-text-content" />
+    <span
+      class="depth-col"
+      :style="depthWidth"
+      :class="type === SpotOrderSide.Buy ? 'buys' : 'sells'"
+    ></span>
+    <span
+      class="w-1/3 text-xs px-2 flex items-center justify-end z-10"
+      @click.stop="onPriceClick"
+    >
+      <IconArrow
+        v-if="existsInUserOrders"
+        data-cy="orderbook-record-own-order-icon"
+        class="text-gray-300 transform rotate-180 mr-2 w-2 h-2"
+      />
+      <span
+        class="block text-right font-mono"
+        :class="{
+          'text-aqua-500': recordTypeBuy,
+          'text-red-500': !recordTypeBuy
+        }"
+      >
+        <VNumber
+          :prefix="
+            aggregatedValue.gt(record.aggregatedPrice || 0) && recordTypeBuy
+              ? '<'
+              : ''
+          "
+          :decimals="aggregation < 0 ? 0 : aggregation"
+          :number="
+            aggregatedValue.gt(record.aggregatedPrice || 0)
+              ? aggregatedValue
+              : record.aggregatedPrice
+          "
+          dont-group-values
+          data-cy="orderbook-record-price-text-content"
+        />
       </span>
     </span>
     <span class="w-1/3 text-xs px-2 z-10" @click.stop="onQuantityClick">
-      <span class="block text-right font-mono" :class="{
-        'text-red-500': quantityChange === Change.Decrease,
-        'text-aqua-500': quantityChange === Change.Increase
-      }">
-        <VNumber :decimals="
-          market
-            ? market.quantityDecimals
-            : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-        " :number="quantity" dont-group-values data-cy="orderbook-record-quantity-text-content" />
+      <span
+        class="block text-right font-mono"
+        :class="{
+          'text-red-500': quantityChange === Change.Decrease,
+          'text-aqua-500': quantityChange === Change.Increase
+        }"
+      >
+        <VNumber
+          :decimals="
+            market
+              ? market.quantityDecimals
+              : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+          "
+          :number="quantity"
+          dont-group-values
+          data-cy="orderbook-record-quantity-text-content"
+        />
       </span>
     </span>
-    <span class="w-1/3 text-xs px-2 z-10 font-mono text-right" @click.stop="onTotalNotionalClick">
-      <VNumber :decimals="
-        market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-      " :number="total" dont-group-values data-cy="orderbook-record-total-text-content" />
+    <span
+      class="w-1/3 text-xs px-2 z-10 font-mono text-right"
+      @click.stop="onTotalNotionalClick"
+    >
+      <VNumber
+        :decimals="
+          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+        "
+        :number="total"
+        dont-group-values
+        data-cy="orderbook-record-total-text-content"
+      />
     </span>
   </li>
 </template>
