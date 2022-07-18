@@ -4,17 +4,18 @@
       <div class="flex items-center gap-4 px-4 py-3 lg:pt-0 lg:px-0">
         <TabSelectorItem
           v-model="component"
+          data-cy="trade-page-chart-selector"
           :option="components.charts"
           class="lg:hidden"
         >
           <span>{{ $t('trade.chart') }}</span>
         </TabSelectorItem>
 
-        <TabSelectorItem v-model="component" :option="components.orderbook">
+        <TabSelectorItem v-model="component" data-cy="trade-page-orderbook-selector" :option="components.orderbook">
           <span>{{ $t('trade.orderbook') }}</span>
         </TabSelectorItem>
 
-        <TabSelectorItem v-model="component" :option="components.trades">
+        <TabSelectorItem v-model="component" data-cy="trade-page-trades-selector" :option="components.trades">
           <span>{{ $t('trade.trades') }}</span>
         </TabSelectorItem>
       </div>

@@ -29,7 +29,7 @@
       <div
         class="col-span-12 sm:col-span-6 mb-4 mx-4 sm:mt-4 flex items-center justify-between sm:justify-end"
       >
-        <VCheckbox v-if="market" v-model="currentMarketOnly" class="mr-4">
+        <VCheckbox v-if="market" v-model="currentMarketOnly" data-cy="trade-page-filter-by-ticker-checkbox" class="mr-4">
           {{ $t('trade.asset_only', { asset: market.ticker }) }}
         </VCheckbox>
         <VButton
