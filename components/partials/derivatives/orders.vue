@@ -3,33 +3,24 @@
     <template #actions>
       <div class="col-span-12 lg:col-span-7 xl:col-span-8 m-4 lg:mx-0">
         <div class="flex items-center justify-between lg:justify-start">
-          <VButtonFilter
-            v-model="component"
-            :option="components.openPositions"
-            data-cy="trading-page-open-positions-tab-button"
-          >
+          <VButtonFilter v-model="component" :option="components.openPositions"
+            data-cy="trading-page-open-positions-tab-button">
             <span class="uppercase text-xs font-semibold">
               {{ $t('activity.openPositions') }}
               {{ `(${filteredPositions.length})` }}
             </span>
           </VButtonFilter>
           <VSeparator />
-          <VButtonFilter
-            v-model="component"
-            :option="components.openOrders"
-            data-cy="trading-page-open-orders-tab-button"
-          >
+          <VButtonFilter v-model="component" :option="components.openOrders"
+            data-cy="trading-page-open-orders-tab-button">
             <span class="uppercase text-xs font-semibold">
               {{ $t('activity.openOrders') }}
               {{ `(${filteredOrders.length})` }}
             </span>
           </VButtonFilter>
           <VSeparator />
-          <VButtonFilter
-            v-model="component"
-            :option="components.tradeHistory"
-            data-cy="trading-page-trade-history-tab-button"
-          >
+          <VButtonFilter v-model="component" :option="components.tradeHistory"
+            data-cy="trading-page-trade-history-tab-button">
             <span class="uppercase text-xs font-semibold">
               {{ $t('activity.tradeHistory') }}
             </span>
@@ -38,30 +29,20 @@
       </div>
 
       <div
-        class="col-span-12 lg:col-span-5 xl:col-span-4 mx-4 mb-4 flex items-center justify-between lg:justify-end lg:ml-0 lg:mr-2 lg:mt-4"
-      >
-        <VCheckbox v-if="market" v-model="currentMarketOnly" class="lg:mr-4">
+        class="col-span-12 lg:col-span-5 xl:col-span-4 mx-4 mb-4 flex items-center justify-between lg:justify-end lg:ml-0 lg:mr-2 lg:mt-4">
+        <VCheckbox v-if="market" v-model="currentMarketOnly" data-cy="trade-page-filter-by-ticker-checkbox"
+          class="lg:mr-4">
           {{ $t('trade.asset_only', { asset: market.ticker }) }}
         </VCheckbox>
-        <VButton
-          v-if="
+        <VButton v-if="
             component === components.openOrders && filteredOrders.length > 0
-          "
-          red-outline
-          sm
-          @click.stop="handleCancelAllClick"
-        >
+          " red-outline sm @click.stop="handleCancelAllClick">
           {{ $t('trade.cancelAllOrders') }}
         </VButton>
-        <VButton
-          v-if="
+        <VButton v-if="
             component === components.openPositions &&
             filteredPositions.length > 0
-          "
-          red-outline
-          sm
-          @click.stop="handleCloseAllPositionsClick"
-        >
+          " red-outline sm @click.stop="handleCloseAllPositionsClick">
           {{ $t('trade.closeAllPositions') }}
         </VButton>
       </div>
@@ -69,11 +50,7 @@
 
     <HocLoading :status="status">
       <VCard class="h-full">
-        <component
-          :is="component"
-          v-if="component"
-          v-bind="{ currentMarketOnly }"
-        />
+        <component :is="component" v-if="component" v-bind="{ currentMarketOnly }" />
       </VCard>
     </HocLoading>
   </VCardTableWrap>
