@@ -43,7 +43,7 @@
         <span class="lg:text-right font-mono block">
           <span
             v-if="low.gt(0) && !low.isNaN()"
-            data-cy="market-info-high-price-24h-span"
+            data-cy="market-info-low-price-24h-span"
           >{{ lowToFormat }}</span>
           <span v-else class="text-gray-400">&mdash;</span>
         </span>
