@@ -7,7 +7,7 @@
       <span v-if="pending" class="text-sm">
         {{ $t('trade.convert.fetching_price') }}...
       </span>
-      <span v-else-if="hasAmount" class="text-sm">
+      <span v-else-if="hasAmount" class="text-sm" data-cy="convert-widget-details-rate-span">
         1 {{ fromToken.symbol }} ≈ {{ averagePriceWithoutSlippageToFormat }}
         {{ toToken.symbol }}
       </span>
@@ -17,7 +17,7 @@
       <span class="text-gray-500 uppercase tracking-widest font-bold text-xs">
         {{ $t('trade.convert.fee') }} {{ feeRateToFormat }}%
       </span>
-      <span v-if="hasAmount" class="text-sm">
+      <span v-if="hasAmount" class="text-sm" data-cy="convert-widget-details-fee-span">
         ≈ {{ feeToFormat }} {{ market.quoteToken.symbol }}
       </span>
       <span v-else class="text-sm"> -- </span>
@@ -32,10 +32,10 @@
       <span v-else class="text-sm"> -- </span>
     </div> -->
     <div class="flex items-center justify-between my-1">
-      <span class="text-gray-500 uppercase tracking-widest font-bold text-xs">
+      <span class="text-gray-500 uppercase tracking-widest font-bold text-xs" data-cy="convert-widget-details-minimum-received-span">
         {{ $t('trade.convert.minimum_received') }}
       </span>
-      <span v-if="hasAmount" class="text-sm">
+      <span v-if=" hasAmount" class="text-sm">
         {{ minimumReceivedToFormat }} {{ toToken.symbol }}
       </span>
       <span v-else class="text-sm"> -- </span>

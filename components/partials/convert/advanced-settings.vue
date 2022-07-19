@@ -2,6 +2,7 @@
   <div>
     <button
       id="convert-settings-dropdown-target"
+      data-cy="convert-widget-advanced-settings-toggle-button"
       type="button"
       @click="toggleConvertSettingsModal"
     >
@@ -47,10 +48,12 @@
             :class="{
               'hidden sm:block': index === slippageTolerancePresets.length - 1
             }"
+            :data-cy="`convert-widget-advanced-settings-slippage-${slippageTolerancePreset.value}-button`"
             @click="setSlippageTolerance"
           />
           <VInput
             class="col-span-3"
+            data-cy="convert-widget-advanced-settings-slippage-input"
             :value="slippageTolerance"
             :wrapper-classes="wrapperClass"
             :input-classes="inputClass"
@@ -74,6 +77,7 @@
         <div
           v-if="hasWarnings && !hasErrors"
           class="block mt-4 text-orange-500"
+          data-cy="convert-widget-advanced-settings-warnings-div"
         >
           <span
             v-for="(warning, index) in warnings"
@@ -82,7 +86,7 @@
             {{ warning }}
           </span>
         </div>
-        <div v-if="hasErrors" class="block mt-4 text-red-500">
+        <div v-if="hasErrors" class="block mt-4 text-red-500" data-cy="convert-widget-advanced-settings-errors-div">
           <span
             v-for="(error, index) in errors"
             :key="`slippage-tolerance-error-${index}`"
