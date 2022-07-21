@@ -116,7 +116,7 @@ jobs:
             '/root/cypress/e2e/website/portfolio/portfolio-tests.cy.ts',
             '/root/cypress/e2e/website/activity/derivatives-activity-tests.cy.ts',
             '/root/cypress/e2e/website/activity/spot-activity-tests.cy.ts',
-            '/root/cypress/e2e/website/activity/positions-activity-tests.cy.ts'
+            '/root/cypress/e2e/website/activity/positions-activity-tests.cy.ts',
             '/root/cypress/e2e/website/trade/trade-perp-orders-tests.cy.ts,/root/cypress/e2e/website/trade/trade-spot-orders-tests.cy.ts'
           ]
     needs: build
