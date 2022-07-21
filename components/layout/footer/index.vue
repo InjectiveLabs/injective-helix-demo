@@ -1,22 +1,15 @@
 <template>
-  <footer class="h-full py-16 border-t border-gray-700">
+  <footer class="h-full py-16 bg-gray-900">
     <div
       class="w-full mx-auto lg:w-4/5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 3md:grid-cols-10 lg:grid-cols-12 gap-8 px-8 lg:px-0"
     >
       <div class="sm:col-span-1 xs:col-span-2 3md:col-span-3 lg:col-span-5">
         <div
-          class="flex items-center cursor-pointer mb-8"
+          class="flex items-center cursor-pointer mb-6"
           @click="$router.push({ name: 'index' })"
         >
-          <v-logo id="bbb" key="bbb" class="h-8 w-8 mr-2" alt="InjectivePro" />
-          <div class="text-white flex items-center">
-            <v-logo-text class="w-24 mr-4" />
-            <p class="uppercase flex">
-              <span>p</span>
-              <span class="mx-1">r</span>
-              <span>o</span>
-            </p>
-          </div>
+          <Logo class="h-10 w-10 mr-2" alt="Helix" />
+          <LogoText class="h-8" />
         </div>
 
         <span class="text-gray-500 text-xs">
@@ -25,7 +18,7 @@
       </div>
 
       <div class="3md:col-span-2">
-        <h3 class="font-bold text-lg mb-2">{{ $t('footer.resources') }}</h3>
+        <h3 class="font-bold text-lg mb-4">{{ $t('footer.resources') }}</h3>
 
         <div
           v-for="(item, index) in aboutUsList"
@@ -51,7 +44,7 @@
       </div>
 
       <div class="3md:col-span-2">
-        <h3 class="font-bold text-lg mb-2">{{ $t('footer.support') }}</h3>
+        <h3 class="font-bold text-lg mb-4">{{ $t('footer.support') }}</h3>
 
         <div
           v-for="(item, index) in learnList"
@@ -81,7 +74,7 @@
 
         <div class="flex items-center">
           <a
-            class="w-6 h-6 text-aqua-250 hover:text-primary-500 mr-6"
+            class="w-6 h-6 text-gray-500 hover:text-primary-500 mr-4"
             href="https://discord.com/invite/injective"
             target="_blank"
           >
@@ -89,7 +82,7 @@
           </a>
 
           <a
-            class="w-6 h-6 text-aqua-250 hover:text-primary-500 mr-6"
+            class="w-6 h-6 text-gray-500 hover:text-primary-500 mr-4"
             href="https://twitter.com/InjectiveLabs"
             target="_blank"
           >
@@ -97,7 +90,7 @@
           </a>
 
           <a
-            class="w-6 h-6 text-aqua-250 hover:text-primary-500 mr-6"
+            class="w-6 h-6 text-gray-500 hover:text-primary-500 mr-4"
             href="https://t.me/joininjective"
             target="_blank"
           >
@@ -105,7 +98,7 @@
           </a>
 
           <a
-            class="w-6 h-6 text-aqua-250 hover:text-primary-500 mr-6"
+            class="w-6 h-6 text-gray-500 hover:text-primary-500 mr-4"
             href="https://www.youtube.com/channel/UCN99m0dicoMjNmJV9mxioqQ"
             target="_blank"
           >
@@ -113,7 +106,7 @@
           </a>
 
           <a
-            class="w-6 h-6 text-aqua-250 hover:text-primary-500"
+            class="w-6 h-6 text-gray-500 hover:text-primary-500"
             href="https://www.reddit.com/r/injective/"
             target="_blank"
           >
@@ -127,13 +120,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import VLogo from '~/components/elements/logo.vue'
-import VLogoText from '~/components/elements/logo-text.vue'
+import Logo from '~/components/elements/logo.vue'
+import LogoText from '~/components/elements/logo-text.vue'
 
 export default Vue.extend({
   components: {
-    VLogo,
-    VLogoText
+    Logo,
+    LogoText
   },
 
   data() {

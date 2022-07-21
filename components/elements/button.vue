@@ -170,7 +170,7 @@ export default Vue.extend({
             'font-semibold',
             'bg-primary-500',
             'hover:bg-primary-400',
-            'text-gray-800',
+            'text-white',
             'shadow-none'
           )
         } else if (this.aqua) {
