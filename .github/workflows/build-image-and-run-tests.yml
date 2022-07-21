@@ -86,7 +86,7 @@ jobs:
         uses: actions/checkout@master
         with:
           repository: Tofel/cypress-ts
-          ref: 'f/funding_payments'
+          ref: 'f/trading-form-improvement-new-tests'
           token: ${{ secrets.BARTEKS_PAT }}
           path: ./cypress-ts
       - name: Build Cypress test image
@@ -181,7 +181,7 @@ jobs:
         uses: actions/checkout@master
         with:
           repository: InjectiveLabs/injective-devops
-          ref: 'f/trading-form-improvement-new-tests'
+          ref: 'f/speed_up_market_launch'
           token: ${{ secrets.BARTEKS_PAT }}
           path: ./injective-devops
       - name: Start standalone network
