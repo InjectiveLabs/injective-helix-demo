@@ -53,7 +53,9 @@
 
       <div slot="content">
         <NavItem :to="{ name: 'trade-and-earn' }">
-          {{ $t('navigation.tradeAndEarn') }}
+          <span class="font-normal tracking-wide">
+            {{ $t('navigation.tradeAndEarn') }}
+          </span>
         </NavItem>
 
         <a
@@ -61,7 +63,9 @@
           href="https:/dmm.injective.network"
           target="_blank"
         >
-          {{ $t('navigation.dmmProgram') }}
+          <span class="font-normal tracking-wide">
+            {{ $t('navigation.dmmProgram') }}
+          </span>
         </a>
 
         <a
@@ -69,7 +73,9 @@
           href="https://affiliate.helixapp.com"
           target="_blank"
         >
-          {{ $t('navigation.affiliateProgram') }}
+          <span class="font-normal tracking-wide">
+            {{ $t('navigation.affiliateProgram') }}
+          </span>
         </a>
       </div>
     </Accordion>
