@@ -32,10 +32,10 @@
       <span v-else class="text-sm"> -- </span>
     </div> -->
     <div class="flex items-center justify-between my-1">
-      <span class="text-gray-500 uppercase tracking-widest font-bold text-xs" data-cy="convert-widget-details-minimum-received-span">
+      <span class="text-gray-500 uppercase tracking-widest font-bold text-xs">
         {{ $t('trade.convert.minimum_received') }}
       </span>
-      <span v-if=" hasAmount" class="text-sm">
+      <span v-if=" hasAmount" class="text-sm" data-cy="convert-widget-details-minimum-received-span">
         {{ minimumReceivedToFormat }} {{ toToken.symbol }}
       </span>
       <span v-else class="text-sm"> -- </span>

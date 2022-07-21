@@ -9,7 +9,6 @@
         v-bind="$attrs"
         ref="tokenSelector"
         class="input-select input-token flex"
-        data-cy="token-selector-drop-down"
         :class="{ 'input-error': inputErrors && inputErrors.length > 0 }"
         label="denom"
         :auto-scroll="false"
@@ -83,7 +82,7 @@
                 </div>
               </div>
               <div class="flex flex-col">
-                <div class="flex justify-end items-center h-[32px] ml-4">
+                <div class="flex justify-end items-center h-[32px] ml-4" data-cy="token-selector-drop-down">
                   <img
                     v-if="logo"
                     :src="getTokenLogoWithVendorPathPrefix(logo)"
@@ -104,6 +103,7 @@
                 <div v-if="showBalance" class="pr-4 h-5 relative">
                   <span
                     class="text-[12px] whitespace-nowrap absolute right-4 top-0"
+                    data-cy="token-selector-selected-balance-span"
                     :class="{
                       'text-red-400': errors.length > 0,
                       'text-primary-600': errors.length === 0
