@@ -110,13 +110,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        specs:
-          [
-            '/root/cypress/e2e/website/wallets/wallets-connections.cy.ts,/root/cypress/e2e/website/markets/markets-tests.cy.ts,/root/cypress/e2e/website/activity/positions-funding-payment-tests.cy',
-            '/root/cypress/e2e/website/portfolio/portfolio-tests.cy.ts',
-            '/root/cypress/e2e/website/activity/derivatives-activity-tests.cy.ts',
-            '/root/cypress/e2e/website/activity/spot-activity-tests.cy.ts',
-            '/root/cypress/e2e/website/activity/positions-activity-tests.cy.ts'
+        specs: [
+            # '/root/cypress/e2e/website/wallets/wallets-connections.cy.ts,/root/cypress/e2e/website/markets/markets-tests.cy.ts,/root/cypress/e2e/website/activity/positions-funding-payment-tests.cy',
+            # '/root/cypress/e2e/website/portfolio/portfolio-tests.cy.ts',
+            # '/root/cypress/e2e/website/activity/derivatives-activity-tests.cy.ts',
+            # '/root/cypress/e2e/website/activity/spot-activity-tests.cy.ts',
+            # '/root/cypress/e2e/website/activity/positions-activity-tests.cy.ts',
+            '/root/cypress/e2e/website/trade/trade-perp-orders-tests.cy.ts',
+            '/root/cypress/e2e/website/trade/trade-spot-orders-tests.cy.ts'
           ]
     needs: build
     env:
