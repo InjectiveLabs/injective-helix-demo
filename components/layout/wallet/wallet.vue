@@ -3,7 +3,7 @@
     <div class="flex items-center">
       <div
         id="wallet-address"
-        class="font-mono text-sm cursor-pointer flex items-center justify-center lg:justify-start w-[41px] lg:w-auto lg:px-6 rounded-lg h-[41px]"
+        class="font-mono text-sm cursor-pointer flex items-center justify-center lg:justify-start w-10 h-10 lg:w-auto lg:px-6 rounded-lg"
         data-cy="wallet-connected-popover"
         :class="{
           'text-primary-500 bg-gray-800': isWalletDropdownOpen,
