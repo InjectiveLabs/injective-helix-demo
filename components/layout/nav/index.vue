@@ -12,46 +12,30 @@
         {{ $t('trade.markets') }}
       </NavItem>
 
-      <NavItem
-        :to="{
-          name: 'perpetuals-perpetual',
-          params: { perpetual: 'btc-usdt-perp' }
-        }"
-        class="block"
-        data-cy="header-trade-link"
+      <NavItemDummy
+        id="trade-dropdown"
+        class="hidden lg:block"
+        @mouseenter.native="handleShowTradeDropdown"
+        @mouseleave.native="handleHideTradeDropdown"
+        @focus.native="handleShowTradeDropdown"
+        @blur.native="handleHideTradeDropdown"
       >
         {{ $t('navigation.trade') }}
-      </NavItem>
+      </NavItemDummy>
 
-      <NavItem
-        v-if="isStagingOrTestnetOrDevnet"
-        :to="{ name: 'convert-convert', query: { from: 'usdt', to: 'inj' } }"
-        class="block"
-        data-cy="header-convert-link"
-      >
-        {{ $t('navigation.convert') }}
-      </NavItem>
+      <MobileNav />
 
       <NavItemDummy
         id="rewards-dropdown"
         class="hidden lg:block"
-        @mouseenter.native="handleShowDropdown"
-        @mouseleave.native="handleHideDropdown"
-        @focus.native="handleShowDropdown"
-        @blur.native="handleHideDropdown"
+        @mouseenter.native="handleShowRewardsDropdown"
+        @mouseleave.native="handleHideRewardsDropdown"
+        @focus.native="handleShowRewardsDropdown"
+        @blur.native="handleHideRewardsDropdown"
       >
         {{ $t('navigation.rewards') }}
       </NavItemDummy>
-      <NavItem class="block lg:hidden" :to="{ name: 'trade-and-earn' }">
-        {{ $t('navigation.rewards') }}
-      </NavItem>
-      <a
-        href="https://dmm.injective.network/"
-        target="_blank"
-        class="lg:hidden"
-      >
-        <NavItemDummy>{{ $t('navigation.dmmProgram') }}</NavItemDummy>
-      </a>
+
       <NavItem
         v-if="isUserWalletConnected"
         class="block lg:hidden"
@@ -71,42 +55,109 @@
     </nav>
 
     <PopperBox
+      ref="popper-trade-dropdown"
+      class="popper rounded-lg flex flex-col flex-wrap text-xs absolute w-80 xs:w-96 p-4 bg-gray-800"
+      :options="popperOptions"
+      binding-element="#trade-dropdown"
+    >
+      <nuxt-link
+        :to="{
+          name: 'spot-spot',
+          params: { spot: 'inj-usdt' }
+        }"
+        class="p-2 block rounded group hover:bg-gray-700 relative z-10 bg-gray-800 mb-2"
+        data-cy="header-trade-link"
+      >
+        <p class="font-semibold text-base text-white">
+          {{ $t('navigation.spot') }}
+        </p>
+        <p
+          class="text-sm leading-6 text-gray-500 group-hover:text-gray-100 mt-1"
+        >
+          {{ $t('navigation.spotDescription') }}
+        </p>
+      </nuxt-link>
+      <nuxt-link
+        :to="{
+          name: 'perpetuals-perpetual',
+          params: { perpetual: 'btc-usdt-perp' }
+        }"
+        class="p-2 block rounded group hover:bg-gray-700 relative z-10 bg-gray-800 mb-2"
+        data-cy="header-trade-link"
+      >
+        <p class="font-semibold text-base text-white">
+          {{ $t('navigation.perpetual') }}
+        </p>
+        <p
+          class="text-sm leading-6 text-gray-500 group-hover:text-gray-100 mt-1"
+        >
+          {{ $t('navigation.perpetualDescription') }}
+        </p>
+      </nuxt-link>
+      <nuxt-link
+        v-if="isStagingOrTestnetOrDevnet"
+        :to="{ name: 'convert-convert', query: { from: 'usdt', to: 'inj' } }"
+        class="p-2 block rounded group hover:bg-gray-700 relative z-10 bg-gray-800"
+        data-cy="header-convert-link"
+      >
+        <p class="font-semibold text-base text-white">
+          {{ $t('navigation.convert') }}
+        </p>
+        <p
+          class="text-sm leading-6 text-gray-500 group-hover:text-gray-100 mt-1"
+        >
+          {{ $t('navigation.convertDescription') }}
+        </p>
+      </nuxt-link>
+    </PopperBox>
+
+    <PopperBox
       ref="popper-rewards-dropdown"
-      class="popper rounded-lg flex flex-col flex-wrap text-xs absolute w-80 xs:w-96"
-      :class="[isMarketPage ? 'bg-gray-900' : 'bg-gray-800']"
+      class="popper rounded-lg flex flex-col flex-wrap text-xs absolute w-80 xs:w-96 p-4 bg-gray-800"
+      :options="popperOptions"
       binding-element="#rewards-dropdown"
     >
       <nuxt-link
         :to="{ name: 'trade-and-earn' }"
-        :class="[isMarketPage ? 'bg-gray-900' : 'bg-gray-800']"
-        class="p-6 block rounded-t-lg group hover:bg-gray-700 relative z-10"
+        class="p-2 block rounded group hover:bg-gray-700 relative z-10 bg-gray-800 mb-2"
       >
-        <p
-          class="font-semibold tracking-widest uppercase text-sm text-gray-200 group-hover:text-gray-100"
-        >
+        <p class="font-semibold text-base text-white">
           {{ $t('navigation.tradeAndEarn') }}
         </p>
         <p
-          class="text-sm leading-6 text-gray-500 group-hover:text-gray-100 mt-3"
+          class="text-sm leading-6 text-gray-500 group-hover:text-gray-100 mt-1"
         >
           {{ $t('navigation.tradeAndEarnDescription') }}
         </p>
       </nuxt-link>
       <a
-        href="https://dmm.injective.network/"
+        href="https:/dmm.injective.network"
         target="_blank"
-        class="p-6 block rounded-b-lg group hover:bg-gray-700"
+        class="p-2 block rounded group hover:bg-gray-700 mb-2"
       >
-        <p
-          class="font-semibold tracking-widest uppercase text-sm text-gray-200 group-hover:text-gray-100 flex items-center"
-        >
+        <p class="font-semibold text-base text-white flex items-center">
           <span>{{ $t('navigation.dmmProgram') }}</span>
-          <IconExternalLinkArrow class="w-auto h-2 ml-2" />
+          <IconExternalLinkArrow class="w-auto h-3 ml-2" />
         </p>
         <p
-          class="text-sm leading-6 text-gray-500 group-hover:text-gray-100 mt-3"
+          class="text-sm leading-6 text-gray-500 group-hover:text-gray-100 mt-1"
         >
           {{ $t('navigation.dmmProgramDescription') }}
+        </p>
+      </a>
+      <a
+        href="https://affiliate.helixapp.com"
+        target="_blank"
+        class="p-2 block rounded group hover:bg-gray-700"
+      >
+        <p class="font-semibold text-base text-white flex items-center">
+          <span>{{ $t('navigation.affiliateProgram') }}</span>
+          <IconExternalLinkArrow class="w-auto h-3 ml-2" />
+        </p>
+        <p
+          class="text-sm leading-6 text-gray-500 group-hover:text-gray-100 mt-1"
+        >
+          {{ $t('navigation.affiliateProgramDescription') }}
         </p>
       </a>
     </PopperBox>
@@ -117,7 +168,9 @@
 import Vue from 'vue'
 import NavItem from './item.vue'
 import NavItemDummy from './item-dummy.vue'
+import MobileNav from './mobile.vue'
 import PopperBox from '~/components/elements/popper-box.vue'
+
 import { IS_DEVNET, IS_STAGING, IS_TESTNET } from '~/app/utils/constants'
 import {
   derivativeMarketRouteNames,
@@ -128,7 +181,8 @@ export default Vue.extend({
   components: {
     NavItem,
     NavItemDummy,
-    PopperBox
+    PopperBox,
+    MobileNav
   },
 
   computed: {
@@ -144,8 +198,26 @@ export default Vue.extend({
       )
     },
 
-    $popper(): any {
+    $rewardsPopper(): any {
       return this.$refs['popper-rewards-dropdown']
+    },
+
+    $tradePopper(): any {
+      return this.$refs['popper-trade-dropdown']
+    },
+
+    popperOptions(): any {
+      return {
+        placement: 'bottom',
+        modifiers: [
+          {
+            name: 'offset',
+            options: {
+              offset: [0, 22]
+            }
+          }
+        ]
+      }
     },
 
     isStagingOrTestnetOrDevnet(): boolean {
@@ -154,15 +226,27 @@ export default Vue.extend({
   },
 
   methods: {
-    handleShowDropdown() {
-      if (this.$popper) {
-        this.$popper.showDropdown()
+    handleShowRewardsDropdown() {
+      if (this.$rewardsPopper) {
+        this.$rewardsPopper.showDropdown()
       }
     },
 
-    handleHideDropdown() {
-      if (this.$popper) {
-        this.$popper.hideDropdown()
+    handleHideRewardsDropdown() {
+      if (this.$rewardsPopper) {
+        this.$rewardsPopper.hideDropdown()
+      }
+    },
+
+    handleShowTradeDropdown() {
+      if (this.$tradePopper) {
+        this.$tradePopper.showDropdown()
+      }
+    },
+
+    handleHideTradeDropdown() {
+      if (this.$tradePopper) {
+        this.$tradePopper.hideDropdown()
       }
     }
   }

@@ -83,7 +83,7 @@
                 </div>
               </div>
               <div class="flex flex-col">
-                <div class="flex justify-end items-center h-[32px] ml-4">
+                <div class="flex justify-end items-center h-8 ml-4">
                   <img
                     v-if="logo"
                     :src="getTokenLogoWithVendorPathPrefix(logo)"

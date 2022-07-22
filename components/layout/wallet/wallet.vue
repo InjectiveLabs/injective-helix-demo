@@ -3,7 +3,7 @@
     <div class="flex items-center">
       <div
         id="wallet-address"
-        class="font-mono text-sm cursor-pointer flex items-center p-2 rounded-lg"
+        class="font-mono text-sm cursor-pointer flex items-center justify-center lg:justify-start w-10 h-10 lg:w-auto lg:px-6 rounded-lg"
         data-cy="wallet-connected-popover"
         :class="{
           'text-primary-500 bg-gray-800': isWalletDropdownOpen,
@@ -14,14 +14,14 @@
         @focus="handleShowDropdown"
         @blur="handleHideDropdown"
       >
-        <IconUser class="w-4 h-4 mr-2" />
-        <span class="">
+        <IconUser class="w-4 h-4 lg:mr-2" />
+        <span class="hidden lg:block">
           {{ formattedInjectiveAddress }}
         </span>
       </div>
     </div>
 
-    <VPopperBox
+    <PopperBox
       ref="popper-wallet"
       class="popper bg-gray-800 rounded flex flex-col flex-wrap absolute min-w-[356px] z-10 shadow-md"
       binding-element="#wallet-address"
@@ -150,7 +150,7 @@
           </ul>
         </div>
       </div>
-    </VPopperBox>
+    </PopperBox>
   </div>
 </template>
 
@@ -166,7 +166,7 @@ import { Wallet } from '@injectivelabs/ts-types'
 import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
 import ConnectedWallet from './connected-wallet.vue'
 import LogoMini from '~/components/elements/logo-mini.vue'
-import VPopperBox from '~/components/elements/popper-box.vue'
+import PopperBox from '~/components/elements/popper-box.vue'
 import { getReferralUrl } from '~/app/utils/helpers'
 import {
   REFERRALS_ENABLED,
@@ -175,7 +175,7 @@ import {
 
 export default Vue.extend({
   components: {
-    VPopperBox,
+    PopperBox,
     LogoMini,
     ConnectedWallet
   },

@@ -4,6 +4,7 @@ export default {
     address: 'Address',
     close: 'Close',
     connect: 'Connect',
+    connectWallet: 'Connect Wallet',
     connectToWallet: 'Connect to Wallet',
     connectUsingBrowser: 'Connect using browser wallet',
     connectUsingHardware: 'Connect using hardware wallet',

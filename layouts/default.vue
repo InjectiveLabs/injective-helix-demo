@@ -3,13 +3,14 @@
     <transition name="page" appear>
       <HocLoading :status="status">
         <div>
-          <SidebarMobile
-            :is-sidebar-open="isOpenSidebar"
-            @sidebar-closed="onCloseSideBar"
-          />
+          <SidebarMobile :is-sidebar-open="isOpenSidebar" />
           <client-only>
             <div class="relative bg-gray-1050">
-              <TopBar @sidebar-opened="isOpenSidebar = true" />
+              <TopBar
+                :is-sidebar-open="isOpenSidebar"
+                @sidebar-opened="isOpenSidebar = true"
+                @sidebar-closed="onCloseSideBar"
+              />
               <main
                 class="w-full h-full min-h-screen-excluding-header flex flex-col"
               >
@@ -60,7 +61,9 @@ export default Vue.extend({
     showFooter(): boolean {
       const { $route } = this
 
-      return ['index', 'portfolio', 'markets', 'fee-discounts'].includes($route.name as string)
+      return ['index', 'portfolio', 'markets', 'fee-discounts'].includes(
+        $route.name as string
+      )
     }
   },
 

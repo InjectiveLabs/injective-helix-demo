@@ -53,16 +53,15 @@ module.exports = {
       current: 'current-color',
 
       primary: {
-        100: '#f0feff',
-        200: '#b3fbff',
-        300: '#75f8ff',
-        400: '#3df5ff',
-        500: '#00f2ff',
-        600: '#00c2cc',
-        700: '#009199',
+        100: '#E4F3FF',
+        200: '#c8e6ff',
+        300: '#8ac9fe',
+        400: '#5eaff2',
+        500: '#2891e9',
+        600: '#1e70b5',
+        700: '#1a5f99',
         800: '#006166',
-        850: '#0DBFC8',
-        900: '#003033'
+        900: '#0a3d55'
       },
 
       aqua: {
@@ -156,6 +155,10 @@ module.exports = {
       },
 
       fontSize: {
+        xs: ['0.75rem', { lineHeight: '0.75rem' }],
+        sm: ['0.875rem', { lineHeight: '0.875rem' }],
+        base: ['1rem', { lineHeight: '1rem' }],
+        xl: ['1.25rem', { lineHeight: '1.25rem' }],
         '3xs': '0.625rem',
         '2xs': '0.7rem',
         footer: '0.85rem'
@@ -172,7 +175,7 @@ module.exports = {
       },
 
       fontFamily: {
-        sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
+        sans: ['Inter', ...defaultTheme.fontFamily.sans],
         serif: ['Droid Sans', ...defaultTheme.fontFamily.serif],
         mono: ['Fira Mono', ...defaultTheme.fontFamily.mono]
       },
