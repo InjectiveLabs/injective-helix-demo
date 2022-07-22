@@ -155,7 +155,10 @@ module.exports = {
       },
 
       fontSize: {
-        sm: ['0.875rem', '1rem'],
+        xs: ['0.75rem', { lineHeight: '0.75rem' }],
+        sm: ['0.875rem', { lineHeight: '0.875rem' }],
+        base: ['1rem', { lineHeight: '1rem' }],
+        xl: ['1.25rem', { lineHeight: '1.25rem' }],
         '3xs': '0.625rem',
         '2xs': '0.7rem',
         footer: '0.85rem'

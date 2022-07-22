@@ -3,7 +3,7 @@
     <VButton
       md
       primary
-      class="rounded-lg whitespace-nowrap h-[32px] lg:h-[41px] px-4 lg:px-8 bg-primary-500 hover:bg-primary-400"
+      class="rounded-lg whitespace-nowrap h-8 lg:h-[41px] px-4 lg:px-8 bg-primary-500 hover:bg-primary-400"
       data-cy="header-wallet-connect-button"
       @click="handleWalletConnectClicked"
     >
