@@ -176,16 +176,16 @@ jobs:
           docker load --input /tmp/core-image.tar
           docker load --input /tmp/trading-bot-image.tar
           docker load --input /tmp/liquidator-bot-image.tar
-      - name: Checkout injective-devops
+      - name: Checkout injective-ci-configs
         uses: actions/checkout@master
         with:
-          repository: InjectiveLabs/injective-devops
+          repository: InjectiveLabs/injective-ci-configs
           ref: 'f/speed_up_market_launch'
           token: ${{ secrets.BARTEKS_PAT }}
-          path: ./injective-devops
+          path: ./injective-ci-configs
       - name: Start standalone network
         run: |
-          cd injective-devops/network/standalone
+          cd injective-ci-configs/network/standalone
           export GENESIS_TWEAK_FUNDING_RATE=false
           if [[ "${{ matrix.specs }}" == *funding* ]]; then
             echo "Genesis will have a very frequent funding payment interval to ease testing"
@@ -195,7 +195,7 @@ jobs:
           docker-compose -f docker-compose-base.yaml -f docker-compose-helix.yaml up -d
       - name: Execute Cypress tests
         run: |
-          cd injective-devops/network/standalone
+          cd injective-ci-configs/network/standalone
           export CYPRESS_TEST_TAG=${{ env.GIT_BRANCH_NAME }}
           export CYPRESS_RECORD_KEY=584d4202-b81f-481d-9e74-5f72e97e907c
           export CYPRESS_SPEC_FILE=${{ matrix.specs }}
