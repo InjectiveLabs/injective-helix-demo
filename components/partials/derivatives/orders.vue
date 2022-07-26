@@ -49,6 +49,7 @@
           "
           red-outline
           sm
+          data-cy="trade-page-cancel-all-button"
           @click.stop="handleCancelAllClick"
         >
           {{ $t('trade.cancelAllOrders') }}
@@ -60,6 +61,7 @@
           "
           red-outline
           sm
+          data-cy="trade-page-cancel-all-button"
           @click.stop="handleCloseAllPositionsClick"
         >
           {{ $t('trade.closeAllPositions') }}

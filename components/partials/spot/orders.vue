@@ -39,6 +39,7 @@
           class="mr-2"
           red-outline
           sm
+          data-cy="trade-page-cancel-all-button"
           @click.stop="handleCancelAllClick"
         >
           {{ $t('trade.cancelAllOrders') }}
