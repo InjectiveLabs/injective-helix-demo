@@ -197,7 +197,7 @@ jobs:
         run: |
           cd injective-ci-configs/network/standalone
           export CYPRESS_TEST_TAG=${{ env.GIT_BRANCH_NAME }}
-          export CYPRESS_RECORD_KEY=584d4202-b81f-481d-9e74-5f72e97e907c
+          export CYPRESS_RECORD_KEY=8eab12ba-ed7d-4559-8162-b55b65b6653a
           export CYPRESS_SPEC_FILE=${{ matrix.specs }}
           export CYPRESS_GROUP="${{ steps.uuid.outputs.UUID }}"
           export CYPRESS_BUILD_ID="${{ env.CYPRESS_BUILD_ID }}"
