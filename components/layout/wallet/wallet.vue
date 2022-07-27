@@ -3,7 +3,7 @@
     <div class="flex items-center">
       <div
         id="wallet-address"
-        class="font-mono text-sm cursor-pointer flex items-center justify-center lg:justify-start w-10 h-10 lg:w-auto lg:px-6 rounded-lg"
+        class="font-medium text-sm cursor-pointer flex items-center justify-center lg:justify-start w-10 h-10 lg:w-auto lg:px-6 rounded-lg"
         data-cy="wallet-connected-popover"
         :class="{
           'text-primary-500 bg-gray-800': isWalletDropdownOpen,
@@ -23,30 +23,24 @@
 
     <PopperBox
       ref="popper-wallet"
-      class="popper bg-gray-800 rounded flex flex-col flex-wrap absolute min-w-[356px] z-10 shadow-md"
+      class="popper bg-gray-950 rounded flex flex-col flex-wrap absolute min-w-[356px] z-10 shadow-md p-4"
       binding-element="#wallet-address"
       data-cy="wallet-connected-popper"
       :options="popperOption"
     >
-      <div>
-        <div class="flex items-center justify-between px-6 py-4">
-          <h3 class="text-sm tracking-wider uppercase">
+      <div class="bg-gray-975 rounded p-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-medium">
             {{ $t('navigation.myAccount') }}
           </h3>
-          <span
-            class="text-sm text-primary-500 cursor-pointer"
-            data-cy="wallet-connected-popper-disconnect-button"
-            @click="handleClickOnLogout"
-            >{{ $t('navigation.disconnect') }}
-          </span>
         </div>
-        <div class="mt-2 flex items-center px-6">
+        <div class="mt-2 flex items-center">
           <LogoMini class="w-12 h-12 mr-4" />
           <div class="flex-1 flex-wrap">
             <div class="flex items-center justify-between w-full">
               <div>
                 <span
-                  class="font-mono w-full block"
+                  class="font-medium w-full block"
                   data-cy="wallet-connected-popper-inj-address-text-content"
                 >
                   {{ formattedInjectiveAddress }}
@@ -62,19 +56,16 @@
                   type="button"
                   data-cy="wallet-connected-popper-inj-address-copy-button"
                 >
-                  <IconCopy
-                    class="w-5 h-5 text-gray-500 hover:text-primary-500"
-                  />
+                  <IconCopy class="w-5 h-5 text-gray-500 hover:text-aqua-500" />
                 </button>
               </div>
             </div>
             <span
-              class="w-full flex items-center justify-between mt-2 cursor-pointer"
+              class="w-full flex items-center justify-end mt-2 cursor-pointer"
               @click.stop="handleClickOnFeeDiscounts"
             >
-              <IconCrown class="w-6 h-6 -mt-1" />
               <span
-                class="text-primary-500 text-sm px-1 py-0.4 bg-primary-500 bg-opacity-10 rounded align-top"
+                class="text-aqua-500 text-sm p-1 bg-aqua-600 bg-opacity-10 rounded align-top"
               >
                 {{
                   tierLevel > 0
@@ -88,7 +79,7 @@
             </span>
           </div>
         </div>
-        <div v-if="referralsEnabled" class="px-6 mt-6 pb-6">
+        <div v-if="referralsEnabled" class="mt-6 pb-6">
           <div class="border-t"></div>
           <div class="flex items-center justify-between mt-6 text-sm">
             <h3 class="text-sm font-semibold tracking-wider uppercase">
@@ -105,7 +96,7 @@
               v-if="referralCode"
               :href="referralDashboardLink"
               target="_blank"
-              class="cursor-pointer text-primary-500 font-semibold tracking-wide"
+              class="cursor-pointer text-aqua-500 font-semibold tracking-wide"
             >
               <div class="flex items-center">
                 <span class="mr-2">
@@ -117,38 +108,43 @@
             <span v-else class="text-gray-500">&mdash;</span>
           </div>
         </div>
-        <div
-          class="pt-4 px-6 bg-gray-900"
-          :class="{ 'mt-6': !referralsEnabled }"
-        >
-          <h3 class="text-xs tracking-wide uppercase">
+      </div>
+      <div class="rounded p-4">
+        <div class="flex items-start justify-between">
+          <h3 class="text-sm font-medium">
             {{ $t('navigation.connectedWallets') }}
           </h3>
-          <ul class="pt-4 pb-6">
-            <ConnectedWallet v-if="wallet === Wallet.Metamask" lg>
-              <IconMetamask class="w-8 h-8 mx-auto" />
-            </ConnectedWallet>
-            <ConnectedWallet v-if="wallet === Wallet.WalletConnect" lg>
-              <IconWalletConnect class="w-8 h-8 mx-auto" />
-            </ConnectedWallet>
-            <ConnectedWallet v-if="wallet === Wallet.Keplr" lg>
-              <img
-                src="/keplr-icon.png"
-                class="w-8 h-8 mx-auto"
-                alt="Keplr Icon"
-              />
-            </ConnectedWallet>
-            <ConnectedWallet v-if="wallet === Wallet.Ledger" lg>
-              <IconLedger class="w-8 h-8 mx-auto" />
-            </ConnectedWallet>
-            <ConnectedWallet v-if="wallet === Wallet.Torus" lg>
-              <IconTorus class="w-8 h-8 mx-auto" />
-            </ConnectedWallet>
-            <ConnectedWallet v-if="wallet === Wallet.Trezor" lg>
-              <IconTrezor class="w-8 h-8 mx-auto" />
-            </ConnectedWallet>
-          </ul>
+          <span
+            class="text-sm font-medium text-aqua-500 cursor-pointer"
+            data-cy="wallet-connected-popper-disconnect-button"
+            @click="handleClickOnLogout"
+            >{{ $t('navigation.disconnect') }}
+          </span>
         </div>
+        <ul class="pt-4">
+          <ConnectedWallet v-if="wallet === Wallet.Metamask" lg>
+            <IconMetamask class="mx-auto" />
+          </ConnectedWallet>
+          <ConnectedWallet v-if="wallet === Wallet.WalletConnect" lg>
+            <IconWalletConnect class="mx-auto" />
+          </ConnectedWallet>
+          <ConnectedWallet v-if="wallet === Wallet.Keplr" lg>
+            <img
+              src="/keplr-icon.png"
+              class="mx-auto"
+              alt="Keplr Icon"
+            />
+          </ConnectedWallet>
+          <ConnectedWallet v-if="wallet === Wallet.Ledger" lg>
+            <IconLedger class="mx-auto" />
+          </ConnectedWallet>
+          <ConnectedWallet v-if="wallet === Wallet.Torus" lg>
+            <IconTorus class="mx-auto" />
+          </ConnectedWallet>
+          <ConnectedWallet v-if="wallet === Wallet.Trezor" lg>
+            <IconTrezor class="mx-auto" />
+          </ConnectedWallet>
+        </ul>
       </div>
     </PopperBox>
   </div>
