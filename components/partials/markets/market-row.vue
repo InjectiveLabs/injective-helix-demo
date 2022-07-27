@@ -1,6 +1,6 @@
 <template>
   <div
-    class="grid grid-cols-3 sm:grid-cols-10 3md:grid-cols-12 text-gray-200 gap-4 text-sm px-4 py-5 mb-1 bg-gray-800 bg-opacity-50 items-center rounded"
+    class="grid grid-cols-3 sm:grid-cols-10 3md:grid-cols-12 text-gray-200 gap-4 text-sm px-4 py-5 mb-1 items-center rounded border-b border-b-gray-600"
     :data-cy="`markets-table-row-${market.ticker}`"
   >
     <span class="text-sm col-span-2 sm:col-span-3 flex items-center">
@@ -21,7 +21,7 @@
         />
         <div class="flex flex-col">
           <span
-            class="tracking-widest font-bold"
+            class="tracking-wider font-bold mb-1"
             data-cy="markets-ticker-name-table-data"
             >{{ market.ticker }}
           </span>
@@ -40,19 +40,12 @@
     <!-- Mobile column -->
     <div class="sm:hidden flex flex-col items-end font-mono">
       <div class="flex items-center">
-        <IconArrow
-          v-if="!lastTradedPrice.isNaN() && lastTradedPrice.gt(0)"
-          class="transform w-3 h-3 mr-1"
-          :class="{
-            'text-aqua-500 rotate-90': lastPriceChange !== Change.Decrease,
-            'text-red-500 -rotate-90': lastPriceChange === Change.Decrease
-          }"
-        />
         <span
           v-if="!lastTradedPrice.isNaN()"
           class=""
           :class="{
-            'text-aqua-500': lastPriceChange !== Change.Decrease,
+            'text-aqua-500': lastPriceChange === Change.Increase,
+            'text-white': lastPriceChange === Change.NoChange,
             'text-red-500': lastPriceChange === Change.Decrease
           }"
         >
@@ -72,19 +65,12 @@
       class="hidden font-mono sm:flex items-center justify-end col-span-2"
       data-cy="markets-last-traded-price-table-data"
     >
-      <IconArrow
-        v-if="!lastTradedPrice.isNaN() && lastTradedPrice.gt(0)"
-        class="transform w-3 h-3 mr-1"
-        :class="{
-          'text-aqua-500 rotate-90': lastPriceChange !== Change.Decrease,
-          'text-red-500 -rotate-90': lastPriceChange === Change.Decrease
-        }"
-      />
       <span
         v-if="!lastTradedPrice.isNaN()"
         :class="{
-          'text-aqua-500': lastPriceChange !== Change.Decrease,
-          'text-red-500': lastPriceChange === Change.Decrease
+            'text-aqua-500': lastPriceChange === Change.Increase,
+            'text-white': lastPriceChange === Change.NoChange,
+            'text-red-500': lastPriceChange === Change.Decrease
         }"
       >
         {{ lastTradedPriceToFormat }}
@@ -105,7 +91,7 @@
 
     <span class="hidden sm:block font-mono col-span-3">
       <div v-if="!quoteVolume.isNaN()" class="flex flex-col items-end">
-        <span data-cy="markets-volume-usd-table-data">
+        <span data-cy="markets-volume-usd-table-data" class="mb-1">
           {{ volumeInUsdToFormat }} USD
         </span>
         <span

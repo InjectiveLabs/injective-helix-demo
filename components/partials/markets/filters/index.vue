@@ -1,8 +1,10 @@
 <template>
   <div>
-    <div class="flex items-center justify-between flex-wrap">
+    <div
+      class="flex items-center justify-between flex-wrap border-b border-b-gray-600"
+    >
       <div
-        class="flex items-centers gap-2 3md:gap-4 overflow-x-auto mb-4 2md:mb-0 justify-between xs:justify-start w-full xs:w-auto hide-scrollbar"
+        class="flex items-centers gap-2 3md:gap-4 overflow-x-auto justify-between xs:justify-start w-full xs:w-auto hide-scrollbar -mb-0.5"
       >
         <MarketTypeSelector
           :type="MarketType.Favorite"
@@ -11,7 +13,7 @@
           @click="handleTypeClick"
         >
           <span class="flex items-center">
-            <IconStar class="mr-1" />
+            <IconStarBorder class="mr-1" />
             <span>{{ $t('trade.favorites') }}</span>
           </span>
         </MarketTypeSelector>
@@ -44,44 +46,36 @@
         </MarketTypeSelector>
       </div>
 
-      <VSearch
+      <Search
         name="search"
-        class="sm:w-auto md:w-xs"
-        wrapper-classes="bg-gray-800 rounded-3xl pl-2"
+        class="sm:w-auto md:w-3xs"
+        wrapper-classes="pl-2"
+        input-classes="placeholder-white"
         dense
         transparent-bg
         data-cy="markets-search-input"
         :placeholder="$t('trade.search_markets')"
         :search="search"
+        show-prefix
         @searched="handleSearchedEvent"
       />
     </div>
 
-    <div class="flex items-center justify-between mt-6">
-      <div class="flex items-center gap-3 md:gap-6">
-        <MarketQuoteSelector
-          :active="activeQuote === MarketQuoteType.All"
-          :type="MarketQuoteType.All"
-          data-cy="markets-quote-all-button"
-          @click="handleQuoteClick"
+    <div class="flex items-center justify-between mt-6 mb-2">
+      <div class="flex items-center gap-2">
+        <MarketCategorySelector
+          v-for="marketCategoryType in marketCategoryTypes"
+          :key="marketCategoryType.key"
+          :type="marketCategoryType.type"
+          :active="activeCategory === marketCategoryType.type"
+          :data-cy="`market-category-${marketCategoryType.key}-button`"
+          @click="handleCategoryChange"
         >
-          {{ $t('trade.all') }}
-        </MarketQuoteSelector>
-        <div class="border-r h-4 border-gray-600 w-px" />
-        <MarketQuoteSelector
-          :active="activeQuote === MarketQuoteType.USDT"
-          :type="MarketQuoteType.USDT"
-          data-cy="markets-quote-usdt-button"
-          @click="handleQuoteClick"
-        >
-          USDT
-        </MarketQuoteSelector>
+          {{ marketCategoryType.label }}
+        </MarketCategorySelector>
       </div>
 
-      <MarketCategorySelector
-        :type="activeCategory"
-        @click="handleCategoryChange"
-      />
+      <MarketQuoteSelector :type="activeQuote" @click="handleQuoteChange" />
     </div>
   </div>
 </template>
@@ -92,7 +86,7 @@ import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import MarketCategorySelector from '~/components/partials/markets/filters/market-category-selector.vue'
 import MarketTypeSelector from '~/components/partials/markets/filters/market-type-selector.vue'
 import MarketQuoteSelector from '~/components/partials/markets/filters/market-quote-selector.vue'
-import VSearch from '~/components/inputs/search.vue'
+import Search from '~/components/inputs/search.vue'
 import { MarketCategoryType, MarketQuoteType } from '~/types'
 
 export default Vue.extend({
@@ -100,7 +94,7 @@ export default Vue.extend({
     MarketCategorySelector,
     MarketQuoteSelector,
     MarketTypeSelector,
-    VSearch
+    Search
   },
 
   props: {
@@ -129,7 +123,16 @@ export default Vue.extend({
     return {
       MarketCategoryType,
       MarketType,
-      MarketQuoteType
+      MarketQuoteType,
+      marketCategoryTypes: Object.entries(MarketCategoryType).map(
+        ([key, value]) => {
+          return {
+            key: `market-category-type-${value}`,
+            label: key,
+            type: MarketCategoryType[key as keyof typeof MarketCategoryType]
+          }
+        }
+      )
     }
   },
 
@@ -169,7 +172,7 @@ export default Vue.extend({
       this.$emit('update:search', search)
     },
 
-    handleQuoteClick(quote: MarketQuoteType) {
+    handleQuoteChange(quote: MarketQuoteType) {
       this.$emit('update:activeQuote', quote)
 
       if (quote === this.activeQuote) {

@@ -7,7 +7,7 @@
         data-cy="wallet-connected-popover"
         :class="{
           'text-primary-500 bg-gray-800': isWalletDropdownOpen,
-          'text-gray-300': !isWalletDropdownOpen
+          'text-white': !isWalletDropdownOpen
         }"
         @mouseenter="handleShowDropdown"
         @mouseleave="handleHideDropdown"
