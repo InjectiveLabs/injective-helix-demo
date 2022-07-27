@@ -1,11 +1,11 @@
 <template>
-  <div id="pro" class="w-full h-full min-h-screen bg-gray-1050 relative">
+  <div id="pro" class="w-full h-full min-h-screen bg-gray-900 relative">
     <transition name="page" appear>
       <HocLoading :status="status">
         <div>
           <SidebarMobile :is-sidebar-open="isOpenSidebar" />
           <client-only>
-            <div class="relative bg-gray-1050">
+            <div class="relative bg-gray-900">
               <TopBar
                 :is-sidebar-open="isOpenSidebar"
                 @sidebar-opened="isOpenSidebar = true"
