@@ -1,5 +1,5 @@
 <template>
-  <li class="flex items-center">
+  <li class="flex items-start">
     <div class="flex items-center mr-4" :class="[lg ? 'w-12 h-12' : 'w-8 h-8']">
       <slot></slot>
     </div>
