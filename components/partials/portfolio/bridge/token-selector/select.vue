@@ -54,7 +54,7 @@
                   :valid="valid"
                   :max="balanceToFixed"
                   :max-decimals="maxDecimals"
-                  :max-selector="!disableMaxSelector && balance.gt(0.0001)"
+                  :max-selector="showMaxSelector"
                   :max-classes="'input-max-button'"
                   :value="amount"
                   :prefix="prefix"
@@ -82,8 +82,8 @@
                   </span>
                 </div>
               </div>
-              <div class="flex flex-col">
-                <div class="flex justify-end items-center h-8 ml-4">
+              <div class="flex flex-col gap-2 pr-4">
+                <div class="flex justify-end items-center h-6 ml-4">
                   <img
                     v-if="logo"
                     :src="getTokenLogoWithVendorPathPrefix(logo)"
@@ -92,25 +92,31 @@
                   />
                   <IconCategoryAlt v-else class="rounded-full w-6 h-6" />
                   <span
-                    class="font-bold text-lg px-3 text-gray-200 tracking-wide break-normal"
+                    class="font-semibold text-lg px-2 text-gray-200 break-normal"
                     data-cy="token-selector-selected-text-content"
                   >
                     {{ symbol }}
                   </span>
-                  <div class="block pr-4 text-white">
+                  <div class="block text-white">
                     <IconCaretDownSlim />
                   </div>
                 </div>
-                <div v-if="showBalance" class="pr-4 h-5 relative">
+                <div v-if="showBalance || showMaxSelector" class="h-5 flex items-center justify-end gap-2">
                   <span
-                    class="text-[12px] whitespace-nowrap absolute right-4 top-0"
+                    v-if="showBalance"
+                    class="text-xs whitespace-nowrap"
                     :class="{
                       'text-red-400': errors.length > 0,
-                      'text-primary-600': errors.length === 0
+                      'text-blue-200': errors.length === 0
                     }"
                   >
                     {{ $t('bridge.balance') }}: {{ balanceToFixed }}
                   </span>
+                  <button v-if="showMaxSelector" class="bg-blue-200 bg-opacity-20 rounded px-1 h-4 cursor-pointer flex items-center justify-center hover:bg-opacity-40 group">
+                    <span class="text-3xs text-blue-200 text-xs whitespace-nowrap uppercase group-hover:text-white">
+                      Max
+                    </span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -134,7 +140,7 @@
               :placeholder="$t('common.search')"
               data-cy="token-selector-search"
               :wrapper-classes="'shadow-none'"
-              :input-classes="'bg-gray-800 rounded-lg'"
+              :input-classes="'bg-gray-900 rounded'"
               @blur="resetIsSearching"
               @click.native.stop="focusSearchInput"
             >
@@ -309,6 +315,12 @@ export default Vue.extend({
       return this.$refs['bridge-token-input'] as InstanceType<
         typeof ValidationObserver
       >
+    },
+
+    showMaxSelector(): boolean {
+      const { disableMaxSelector, balance } = this
+
+      return !disableMaxSelector && balance.gt(0.0001)
     }
   },
 
