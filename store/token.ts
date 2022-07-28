@@ -163,9 +163,11 @@ export const actions = actionTree(
       const tradeableTokensWithBalanceAndPrice = await Promise.all(
         uniqueDenomsNotInBankBalances.map(async (denom) => {
           const token = await tokenService.getDenomToken(denom)
+          const erc20Token = token as Erc20Token
+
           const tokenBalance = await web3Client.fetchTokenBalanceAndAllowance({
             address,
-            contractAddress: token.address || ''
+            contractAddress: erc20Token.address
           })
 
           return {
