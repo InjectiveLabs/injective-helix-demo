@@ -101,7 +101,10 @@
                     <IconCaretDownSlim />
                   </div>
                 </div>
-                <div v-if="showBalance || showMaxSelector" class="h-5 flex items-center justify-end gap-2">
+                <div
+                  v-if="showBalance || showMaxSelector"
+                  class="h-5 flex items-center justify-end gap-2"
+                >
                   <span
                     v-if="showBalance"
                     class="text-xs whitespace-nowrap"
@@ -112,8 +115,13 @@
                   >
                     {{ $t('bridge.balance') }}: {{ balanceToFixed }}
                   </span>
-                  <button v-if="showMaxSelector" class="bg-primary-500 bg-opacity-20 rounded px-1 h-4 cursor-pointer flex items-center justify-center hover:bg-opacity-40 group">
-                    <span class="text-3xs text-primary-500 text-xs whitespace-nowrap uppercase group-hover:text-white">
+                  <button
+                    v-if="showMaxSelector"
+                    class="bg-primary-500 bg-opacity-20 rounded px-1 h-4 cursor-pointer flex items-center justify-center hover:bg-opacity-40 group"
+                  >
+                    <span
+                      class="text-3xs text-primary-500 text-xs whitespace-nowrap uppercase group-hover:text-white"
+                    >
                       Max
                     </span>
                   </button>
