@@ -107,13 +107,13 @@
                     class="text-xs whitespace-nowrap"
                     :class="{
                       'text-red-400': errors.length > 0,
-                      'text-blue-200': errors.length === 0
+                      'text-primary-500': errors.length === 0
                     }"
                   >
                     {{ $t('bridge.balance') }}: {{ balanceToFixed }}
                   </span>
-                  <button v-if="showMaxSelector" class="bg-blue-200 bg-opacity-20 rounded px-1 h-4 cursor-pointer flex items-center justify-center hover:bg-opacity-40 group">
-                    <span class="text-3xs text-blue-200 text-xs whitespace-nowrap uppercase group-hover:text-white">
+                  <button v-if="showMaxSelector" class="bg-primary-500 bg-opacity-20 rounded px-1 h-4 cursor-pointer flex items-center justify-center hover:bg-opacity-40 group">
+                    <span class="text-3xs text-primary-500 text-xs whitespace-nowrap uppercase group-hover:text-white">
                       Max
                     </span>
                   </button>
