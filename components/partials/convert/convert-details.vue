@@ -23,7 +23,8 @@
           {{ toToken.symbol }}
         </span>
         <span v-else class="text-sm"> -- </span>
-        <!-- <PopperBox
+        <!-- Temporarily disabled this component until design finalizes.
+        <PopperBox
           ref="rate-tooltip"
           class="popper rounded-lg flex flex-col flex-wrap text-xs absolute w-[286px] p-4 bg-helixGray-800 border border-helixGray-900 shadow"
           :options="popperOptions"
