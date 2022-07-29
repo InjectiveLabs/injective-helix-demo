@@ -154,10 +154,10 @@ export default Vue.extend({
     approxAmountFromPercentage(): string {
       const {
         market,
-        proportionalPercentage,
-        orderTypeReduceOnly,
-        position,
-        maxReduceOnly,
+        // proportionalPercentage,
+        // orderTypeReduceOnly,
+        // position,
+        // maxReduceOnly,
         isSpot,
         derivativesBaseAmount,
         spotBaseAmount
@@ -167,16 +167,18 @@ export default Vue.extend({
         return ''
       }
 
-      const percentageToNumber = new BigNumberInBase(
-        proportionalPercentage
-      ).div(100)
+      // const percentageToNumber = new BigNumberInBase(
+      //   proportionalPercentage
+      // ).div(100)
 
       if (!isSpot) {
-        return orderTypeReduceOnly && position
-          ? maxReduceOnly
-              .times(percentageToNumber)
-              .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
-          : derivativesBaseAmount
+        return derivativesBaseAmount
+
+        // return orderTypeReduceOnly && position
+        //   ? maxReduceOnly
+        //       .times(percentageToNumber)
+        //       .toFixed(market.quantityDecimals, BigNumberInBase.ROUND_DOWN)
+        //   : derivativesBaseAmount
       }
 
       return spotBaseAmount

@@ -462,21 +462,23 @@ export default Vue.extend({
     },
 
     showReduceOnly(): boolean {
-      const { orderType, position } = this
+      // const { orderType, position } = this
 
-      if (!position) {
-        return false
-      }
+      // if (!position) {
+      //   return false
+      // }
 
-      const longAndBuy =
-        position.direction === TradeDirection.Long &&
-        orderType === DerivativeOrderSide.Buy
+      // const longAndBuy =
+      //   position.direction === TradeDirection.Long &&
+      //   orderType === DerivativeOrderSide.Buy
 
-      const shortAndSell =
-        position.direction === TradeDirection.Short &&
-        orderType === DerivativeOrderSide.Sell
+      // const shortAndSell =
+      //   position.direction === TradeDirection.Short &&
+      //   orderType === DerivativeOrderSide.Sell
 
-      return !(longAndBuy || shortAndSell)
+      // return !(longAndBuy || shortAndSell)
+
+      return true
     },
 
     tradingTypeMarket(): boolean {

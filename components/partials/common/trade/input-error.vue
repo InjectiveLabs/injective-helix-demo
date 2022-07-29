@@ -231,9 +231,9 @@ export default Vue.extend({
         return this.initialMinMarginRequirementError
       }
 
-      if (this.reduceOnlyExcessError) {
-        return this.reduceOnlyExcessError
-      }
+      // if (this.reduceOnlyExcessError) {
+      //   return this.reduceOnlyExcessError
+      // }
 
       if (this.priceHighDeviationFromMidOrderbookPrice) {
         return this.priceHighDeviationFromMidOrderbookPrice
@@ -356,13 +356,13 @@ export default Vue.extend({
     availableMarginError(): TradeError | undefined {
       const {
         quoteAvailableBalance,
-        orderTypeReduceOnly,
+        // orderTypeReduceOnly,
         notionalWithLeverageAndFees
       } = this
 
-      if (orderTypeReduceOnly) {
-        return undefined
-      }
+      // if (orderTypeReduceOnly) {
+      //   return undefined
+      // }
 
       if (quoteAvailableBalance.lt(notionalWithLeverageAndFees)) {
         return {
