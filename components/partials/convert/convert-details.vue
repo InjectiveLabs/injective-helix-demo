@@ -4,13 +4,7 @@
       <span class="text-gray-400 text-sm">
         {{ $t('trade.convert.rate') }}
       </span>
-      <div
-        id="rate-tooltip"
-        @mouseenter="handleShowRateTooltip"
-        @mouseleave="handleHideRateTooltip"
-        @focus="handleShowRateTooltip"
-        @blur="handleHideRateTooltip"
-      >
+      <ConvertRateTooltip>
         <span v-if="pending" class="text-sm">
           {{ $t('trade.convert.fetching_price') }}...
         </span>
@@ -23,37 +17,7 @@
           {{ toToken.symbol }}
         </span>
         <span v-else class="text-sm"> -- </span>
-        <!-- <PopperBox
-          ref="rate-tooltip"
-          class="popper rounded-lg flex flex-col flex-wrap text-xs absolute w-[286px] p-4 bg-helixGray-800 border border-helixGray-900 shadow"
-          :options="popperOptions"
-          binding-element="#rate-tooltip"
-        >
-          <div>
-            <div class="flex items-center justify-start gap-1">
-              <IconInfo />
-              <span class="text-sm">How does the exchange work?</span>
-            </div>
-            <p class="mb-5 mt-2 text-xs">
-              lorem ipsum dolor amet
-            </p>
-            <div class="flex flex-col gap-2">
-              <div class="flex items-center justify-start gap-2">
-                <div class="w-2 h-2 bg-green-500 rounded-full" />
-                <span class="text-xs">Good - xx % range with market rate</span>
-              </div>
-              <div class="flex items-center justify-start gap-2">
-                <div class="w-2 h-2 bg-yellow-500 rounded-full" />
-                <span class="text-xs">Fair - xx % range with market rate</span>
-              </div>
-              <div class="flex items-center justify-start gap-2">
-                <div class="w-2 h-2 bg-red-500 rounded-full" />
-                <span class="text-xs">Poor - low liquidity, xx % range with market rate</span>
-              </div>
-            </div>
-          </div>
-        </PopperBox> -->
-      </div>
+      </ConvertRateTooltip>
     </div>
     <div class="flex items-center justify-between">
       <span class="text-gray-400 text-sm">
@@ -98,7 +62,7 @@ import {
   cosmosSdkDecToBigNumber,
   FeeDiscountAccountInfo
 } from '@injectivelabs/sdk-ts'
-// import PopperBox from '~/components/elements/popper-box.vue'
+import ConvertRateTooltip from './convert-rate-tooltip.vue'
 import {
   ONE_IN_BASE,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -108,15 +72,9 @@ import {
   calculateWorstExecutionPriceFromOrderbook
 } from '~/app/client/utils/spot'
 
-enum RateQuality {
-  Good = 'good',
-  Fair = 'fair',
-  Poor = 'poor'
-}
-
 export default Vue.extend({
   components: {
-    // PopperBox
+    ConvertRateTooltip
   },
 
   props: {
@@ -221,20 +179,6 @@ export default Vue.extend({
       const { rate } = this
 
       return rate.toFormat()
-    },
-
-    rateQuality(): RateQuality {
-      return RateQuality.Fair
-    },
-
-    rateClass(): Object {
-      const { rateQuality } = this
-
-      return {
-        'text-green-500': rateQuality === RateQuality.Good,
-        'text-yellow-500': rateQuality === RateQuality.Fair,
-        'text-red-500': rateQuality === RateQuality.Poor
-      }
     },
 
     feeRate(): BigNumberInBase {
@@ -445,38 +389,6 @@ export default Vue.extend({
       const { minimumReceived } = this
 
       return minimumReceived.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
-    },
-
-    $popper(): any {
-      return this.$refs['rate-tooltip']
-    },
-
-    popperOptions(): any {
-      return {
-        placement: 'bottom',
-        modifiers: [
-          {
-            name: 'offset',
-            options: {
-              offset: [0, 22]
-            }
-          }
-        ]
-      }
-    }
-  },
-
-  methods: {
-    handleShowRateTooltip() {
-      if (this.$popper) {
-        this.$popper.showDropdown()
-      }
-    },
-
-    handleHideRateTooltip() {
-      if (this.$popper) {
-        this.$popper.hideDropdown()
-      }
     }
   }
 })
