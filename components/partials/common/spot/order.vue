@@ -25,7 +25,7 @@
         class="pl-1"
         data-cy="spot-order-order-side-table-data"
         :class="{
-          'text-aqua-500': orderTypeBuy,
+          'text-green-500': orderTypeBuy,
           'text-red-500': !orderTypeBuy
         }"
       >

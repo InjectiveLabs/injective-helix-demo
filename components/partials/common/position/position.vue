@@ -24,7 +24,7 @@
       <span
         data-cy="open-position-trade-direction-table-data"
         :class="{
-          'text-aqua-500': position.direction === TradeDirection.Long,
+          'text-green-500': position.direction === TradeDirection.Long,
           'text-red-500': position.direction === TradeDirection.Short
         }"
       >
@@ -84,7 +84,7 @@
             <span
               data-cy="postion-entry-pnl"
               :class="{
-                'text-aqua-500': pnl.gte(0),
+                'text-green-500': pnl.gte(0),
                 'text-red-500': pnl.lt(0)
               }"
             >
@@ -468,7 +468,7 @@ export default Vue.extend({
         return ''
       }
 
-      return pnl.gte(0) ? 'text-aqua-500' : 'text-red-500'
+      return pnl.gte(0) ? 'text-green-500' : 'text-red-500'
     },
 
     effectiveLeverage(): BigNumberInBase {

@@ -56,7 +56,7 @@
       <span
         class="font-semibold text-right"
         :class="{
-          'text-aqua-500': trade.tradeDirection === TradeDirection.Buy,
+          'text-green-500': trade.tradeDirection === TradeDirection.Buy,
           'text-red-500': trade.tradeDirection === TradeDirection.Sell
         }"
       >

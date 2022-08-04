@@ -4,24 +4,49 @@
       v-if="!tradingTypeMarket"
       id="input-price"
       ref="input-price"
+      class="mb-6"
+      :wrapper-classes="'shadow-none'"
       :value="inputPrice"
       :placeholder="priceStep"
-      :label="$t('trade.price')"
+      :label="tradingTypeLimit ? $t('trade.price') : $t('trade.trigger_price')"
       :disabled="tradingTypeMarket"
       type="number"
       :step="priceStep"
       :max-decimals="market ? market.quoteToken.decimals : 6"
       min="0"
       data-cy="trading-page-price-input"
+      show-addon
       @input="onPriceChange"
     >
       <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
     </VInput>
 
-    <div class="flex gap-3 mt-6">
+    <VInput
+      v-if="tradingTypeStopLimit"
+      id="limit-price"
+      ref="limit-price"
+      class="mb-6"
+      :wrapper-classes="'shadow-none'"
+      :value="inputPrice"
+      :placeholder="priceStep"
+      :label="$t('trade.limit_price')"
+      :disabled="!tradingTypeStopLimit"
+      type="number"
+      :step="priceStep"
+      :max-decimals="market ? market.quoteToken.decimals : 6"
+      min="0"
+      data-cy="trading-page-price-input"
+      show-addon
+      @input="onPriceChange"
+    >
+      <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
+    </VInput>
+
+    <div class="flex gap-3">
       <VInput
         ref="input-amount"
         v-model="inputBaseAmount"
+        :wrapper-classes="'shadow-none'"
         :label="$t('trade.amount')"
         :custom-handler="true"
         :max-decimals="market ? market.quantityDecimals : 6"
@@ -43,6 +68,7 @@
       <VInput
         ref="input-quote-amount"
         v-model="inputQuoteAmount"
+        :wrapper-classes="'shadow-none'"
         :custom-handler="true"
         :max-decimals="market ? market.priceDecimals : 6"
         :placeholder="amountStep"
@@ -143,7 +169,7 @@
     />
 
     <AdvancedSettings
-      :trading-type-market="tradingTypeMarket"
+      :trading-type="tradingType"
       :slippage-tolerance="inputSlippageTolerance"
       :post-only="inputPostOnly"
       :reduce-only="inputReduceOnly"
@@ -204,13 +230,28 @@ export default Vue.extend({
       required: true
     },
 
-    tradingTypeMarket: {
-      type: Boolean,
+    tradingType: {
+      type: String as PropType<TradeExecutionType>,
       required: true
     },
 
-    tradingType: {
-      type: String as PropType<TradeExecutionType>,
+    tradingTypeMarket: {
+      type: Boolean as PropType<boolean>,
+      required: true
+    },
+
+    tradingTypeLimit: {
+      type: Boolean as PropType<boolean>,
+      required: true
+    },
+
+    tradingTypeStopMarket: {
+      type: Boolean as PropType<boolean>,
+      required: true
+    },
+
+    tradingTypeStopLimit: {
+      type: Boolean as PropType<boolean>,
       required: true
     },
 

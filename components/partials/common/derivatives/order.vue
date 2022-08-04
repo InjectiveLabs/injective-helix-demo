@@ -28,7 +28,7 @@
       <span
         data-cy="derivative-order-order-side-table-data"
         :class="{
-          'text-aqua-500': order.orderSide === DerivativeOrderSide.Buy,
+          'text-green-500': order.orderSide === DerivativeOrderSide.Buy,
           'text-red-500': order.orderSide === DerivativeOrderSide.Sell
         }"
       >

@@ -38,7 +38,7 @@
       class="text-2xl tracking-wide font-mono font-light flex items-center mt-4"
       data-cy="market-card-last-traded-price-text-content"
       :class="{
-        'text-aqua-500 ': summary.lastPriceChange !== Change.Decrease,
+        'text-green-500 ': summary.lastPriceChange !== Change.Decrease,
         'text-red-500': summary.lastPriceChange === Change.Decrease
       }"
     >
@@ -48,7 +48,7 @@
       <span
         class="mr-2"
         data-cy="market-card-change_24h-text-content"
-        :class="change.gte(0) ? 'text-aqua-500' : 'text-red-500'"
+        :class="change.gte(0) ? 'text-green-500' : 'text-red-500'"
       >
         {{ changeToFormat }}%
       </span>

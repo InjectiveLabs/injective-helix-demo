@@ -56,7 +56,7 @@
                   type="button"
                   data-cy="wallet-connected-popper-inj-address-copy-button"
                 >
-                  <IconCopy class="w-5 h-5 text-gray-500 hover:text-aqua-500" />
+                  <IconCopy class="w-5 h-5 text-gray-500 hover:text-green-500" />
                 </button>
               </div>
             </div>
@@ -65,7 +65,7 @@
               @click.stop="handleClickOnFeeDiscounts"
             >
               <span
-                class="text-aqua-500 text-sm p-1 bg-aqua-600 bg-opacity-10 rounded align-top"
+                class="text-green-500 text-sm p-1 bg-green-600 bg-opacity-10 rounded align-top"
               >
                 {{
                   tierLevel > 0
@@ -96,7 +96,7 @@
               v-if="referralCode"
               :href="referralDashboardLink"
               target="_blank"
-              class="cursor-pointer text-aqua-500 font-semibold tracking-wide"
+              class="cursor-pointer text-green-500 font-semibold tracking-wide"
             >
               <div class="flex items-center">
                 <span class="mr-2">
@@ -115,7 +115,7 @@
             {{ $t('navigation.connectedWallets') }}
           </h3>
           <span
-            class="text-sm font-medium text-aqua-500 cursor-pointer"
+            class="text-sm font-medium text-green-500 cursor-pointer"
             data-cy="wallet-connected-popper-disconnect-button"
             @click="handleClickOnLogout"
             >{{ $t('navigation.disconnect') }}

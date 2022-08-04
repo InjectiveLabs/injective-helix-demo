@@ -1,5 +1,5 @@
 <template>
-  <div class="border-t mt-6">
+  <div v-if="showAdvancedSettings" class="border-t mt-6">
     <div
       class="group flex align-center my-2 cursor-pointer"
       @click="toggleDrawer"
@@ -27,7 +27,7 @@
         </VCheckbox>
         <div class="flex">
           <VCheckbox
-            v-if="tradingTypeMarket"
+            v-if="tradingTypeStopMarket"
             v-model="slippageIsToggleable"
             class="flex items-center flex-1"
             data-cy="trading-page-slippage-checkbox"
@@ -76,7 +76,7 @@
           </div>
         </div>
         <VCheckbox
-          v-if="!tradingTypeMarket"
+          v-if="tradingTypeLimit || tradingTypeStopLimit"
           :value="postOnly"
           data-cy="trading-page-post-only-checkbox"
           class="flex items-center"
@@ -98,7 +98,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { TradeExecutionType } from '@injectivelabs/ts-types'
+import Vue, { PropType } from 'vue'
 import { DEFAULT_MAX_SLIPPAGE } from '~/app/utils/constants'
 import Error from '~/components/partials/common/trade/advanced-settings/error.vue'
 
@@ -118,8 +119,8 @@ export default Vue.extend({
       required: true
     },
 
-    tradingTypeMarket: {
-      type: Boolean,
+    tradingType: {
+      type: String as PropType<TradeExecutionType>,
       required: true
     },
 
@@ -153,6 +154,36 @@ export default Vue.extend({
   },
 
   computed: {
+    tradingTypeMarket(): boolean {
+      const { tradingType } = this
+
+      return tradingType === TradeExecutionType.Market
+    },
+
+    tradingTypeLimit(): boolean {
+      const { tradingType } = this
+
+      return tradingType === TradeExecutionType.LimitFill
+    },
+
+    tradingTypeStopLimit(): boolean {
+      const { tradingType } = this
+
+      return tradingType.toString() === 'stopLimit'
+    },
+
+    tradingTypeStopMarket(): boolean {
+      const { tradingType } = this
+
+      return tradingType.toString() === 'stopMarket'
+    },
+
+    showAdvancedSettings(): boolean {
+      const { tradingTypeMarket } = this
+
+      return !tradingTypeMarket
+    },
+
     wrapperClasses(): string {
       const { hasWarning, hasError } = this
 
@@ -178,21 +209,21 @@ export default Vue.extend({
     },
 
     showSlippageAsSelectableOrDefaultForMarket(): boolean {
-      const { slippageSelection, tradingTypeMarket } = this
+      const { slippageSelection, tradingTypeStopMarket } = this
 
       return (
         (slippageSelection === SlippageDisplayOptions.Selectable ||
           slippageSelection === SlippageDisplayOptions.NonSelectableDefault) &&
-        tradingTypeMarket
+        tradingTypeStopMarket
       )
     },
 
     showSlippageInputFieldForMarket(): boolean {
-      const { slippageSelection, tradingTypeMarket } = this
+      const { slippageSelection, tradingTypeStopMarket } = this
 
       return (
         slippageSelection === SlippageDisplayOptions.SlippageInput &&
-        tradingTypeMarket
+        tradingTypeStopMarket
       )
     }
   },

@@ -6,7 +6,7 @@
       <div class="flex items-center gap-1">
         <span
           :class="{
-            'text-aqua-500': position.direction === TradeDirection.Long,
+            'text-green-500': position.direction === TradeDirection.Long,
             'text-red-500': position.direction === TradeDirection.Short
           }"
         >
@@ -426,7 +426,7 @@ export default Vue.extend({
         return ''
       }
 
-      return pnl.gte(0) ? 'text-aqua-500' : 'text-red-500'
+      return pnl.gte(0) ? 'text-green-500' : 'text-red-500'
     },
 
     effectiveLeverage(): BigNumberInBase {
