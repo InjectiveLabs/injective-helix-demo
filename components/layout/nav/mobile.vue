@@ -29,7 +29,6 @@
         </NavItem>
 
         <NavItem
-          v-if="isStagingOrTestnetOrDevnet"
           :to="{
             name: 'convert-convert',
             query: { from: 'usdt', to: 'inj' }
@@ -86,7 +85,6 @@
 import Vue from 'vue'
 import NavItem from './item.vue'
 import Accordion from '~/components/elements/accordion.vue'
-import { IS_DEVNET, IS_STAGING, IS_TESTNET } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -98,12 +96,6 @@ export default Vue.extend({
     return {
       tradeMenuOpen: false,
       rewardsMenuOpen: false
-    }
-  },
-
-  computed: {
-    isStagingOrTestnetOrDevnet(): boolean {
-      return IS_TESTNET || IS_DEVNET || IS_STAGING
     }
   },
 

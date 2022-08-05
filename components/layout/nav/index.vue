@@ -95,7 +95,6 @@
         </p>
       </nuxt-link>
       <nuxt-link
-        v-if="isStagingOrTestnetOrDevnet"
         :to="{ name: 'convert-convert', query: { from: 'usdt', to: 'inj' } }"
         class="p-2 block rounded group hover:bg-gray-700 relative z-10 bg-gray-800"
         data-cy="header-convert-link"
@@ -171,7 +170,6 @@ import NavItemDummy from './item-dummy.vue'
 import MobileNav from './mobile.vue'
 import PopperBox from '~/components/elements/popper-box.vue'
 
-import { IS_DEVNET, IS_STAGING, IS_TESTNET } from '~/app/utils/constants'
 import {
   derivativeMarketRouteNames,
   spotMarketRouteNames
@@ -218,10 +216,6 @@ export default Vue.extend({
           }
         ]
       }
-    },
-
-    isStagingOrTestnetOrDevnet(): boolean {
-      return IS_TESTNET || IS_DEVNET || IS_STAGING
     }
   },
 
