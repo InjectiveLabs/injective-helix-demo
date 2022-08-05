@@ -5,18 +5,18 @@
         {{ $t('trade.convert.rate') }}
       </span>
       <ConvertRateTooltip>
-        <span v-if="pending" class="text-sm">
+        <span v-if="pending" class="text-sm cursor-default">
           {{ $t('trade.convert.fetching_price') }}...
         </span>
         <span
           v-else-if="hasAmount"
-          class="text-sm"
+          class="text-sm cursor-default"
           :class="rateClass"
         >
           1 {{ fromToken.symbol }} ≈ {{ averagePriceWithoutSlippageToFormat }}
           {{ toToken.symbol }}
         </span>
-        <span v-else class="text-sm"> -- </span>
+        <span v-else class="text-sm cursor-default"> -- </span>
       </ConvertRateTooltip>
     </div>
     <div class="flex items-center justify-between">

@@ -9,7 +9,7 @@
   >
     <slot></slot>
     <!-- Todo: Temporarily disabled until Helix Convert design finalizes. -->
-    <!-- <PopperBox
+    <PopperBox
       ref="rate-tooltip"
       hide-arrow
       class="popper rounded-lg flex flex-col flex-wrap text-xs absolute w-[286px] p-4 bg-helixGray-800 border border-helixGray-900 shadow"
@@ -37,13 +37,13 @@
           </div>
         </div>
       </div>
-    </PopperBox> -->
+    </PopperBox>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-// import PopperBox from '~/components/elements/popper-box.vue'
+import PopperBox from '~/components/elements/popper-box.vue'
 
 enum RateQuality {
   Good = 'good',
@@ -55,7 +55,7 @@ export default Vue.extend({
   name: 'RateTooltip',
 
   components: {
-    // PopperBox
+    PopperBox
   },
 
   computed: {
