@@ -128,10 +128,10 @@ export default Vue.extend({
 
   computed: {
     classes() {
-      const classes = ['text-center', 'rounded-3xl', 'focus:outline-none']
+      const classes = ['text-center', 'rounded', 'focus:outline-none']
 
       if (this.disabled) {
-        classes.push('pointer-events-none', 'text-gray-600')
+        classes.push('pointer-events-none', 'text-white', 'bg-helixGray-500')
 
         if (!this.text) {
           classes.push('border', 'border-gray-700')
@@ -143,7 +143,7 @@ export default Vue.extend({
       } else if (this.md) {
         classes.push('px-4', 'py-2', 'text-sm')
       } else if (this.lg) {
-        classes.push('px-6', 'py-2.5', 'text-base', 'leading-5', 'max-h-10')
+        classes.push('px-6', 'py-2.5', 'text-sm', 'font-semibold', 'max-h-10')
       } else if (this.xl) {
         classes.push('px-6', 'py-3')
       } else if (this.textLg) {

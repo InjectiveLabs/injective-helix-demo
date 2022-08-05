@@ -339,6 +339,12 @@ input[type='number'] {
   }
 }
 
+.v-select.input-select.input-token {
+  .vs__dropdown-menu {
+    @apply bg-gray-950 shadow-md;
+  }
+}
+
 .input-token {
   .vs__actions {
     padding: 0 !important;

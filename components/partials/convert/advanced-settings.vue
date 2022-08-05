@@ -6,7 +6,7 @@
       @click="toggleConvertSettingsModal"
     >
       <IconCogwheel
-        class="cursor-pointer hover:text-primary-500"
+        class="cursor-pointer hover:text-primary-500 w-6 h-6"
         :class="
           convertSettingsModalActive ? 'text-primary-500' : 'text-gray-500'
         "
