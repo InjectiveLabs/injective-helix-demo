@@ -1,6 +1,6 @@
 <template>
-  <div v-if="market" class="mt-6 py-6 border-t relative">
-    <VDrawer
+  <div v-if="market" class="pt-6 border-t relative">
+    <Drawer
       :custom-handler="true"
       :custom-is-open="detailsDrawerOpen"
       @drawer-toggle="onDrawerToggle"
@@ -9,24 +9,11 @@
         <TextInfo :title="$t('trade.details')" lg />
       </p>
       <div class="mt-4">
-        <TextInfo :title="$t('trade.averagePrice')" class="mt-2">
-          <span
-            v-if="!executionPrice.isNaN()"
-            data-cy="trading-page-details-execution-price-text-content"
-            class="font-mono flex items-start break-all"
-          >
-            {{ executionPriceToFormat }}
-            <span class="text-gray-500 ml-1 break-normal">
-              {{ market.quoteToken.symbol }}
-            </span>
-          </span>
-          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </TextInfo>
-        <TextInfo class="mt-2" :title="$t('trade.min_received_amount')">
+        <TextInfo class="mt-2" :title="$t('trade.amount')">
           <span
             v-if="minimumReceivedAmount.gt(0)"
             data-cy="trading-page-details-minimum-amount-text-content"
-            class="font-mono flex items-start break-all"
+            class="flex items-start break-all"
           >
             {{ minimumReceivedAmountToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
@@ -40,6 +27,20 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </TextInfo>
 
+        <TextInfo :title="$t('trade.averagePrice')" class="mt-2">
+          <span
+            v-if="!executionPrice.isNaN()"
+            data-cy="trading-page-details-execution-price-text-content"
+            class="flex items-start break-all"
+          >
+            {{ executionPriceToFormat }}
+            <span class="text-gray-500 ml-1 break-normal">
+              {{ market.quoteToken.symbol }}
+            </span>
+          </span>
+          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
+        </TextInfo>
+
         <TextInfo :title="$t('trade.taker_rate')" class="mt-2">
           <IconInfoTooltip
             slot="context"
@@ -47,7 +48,7 @@
             :tooltip="$t('trade.taker_rate_note')"
           />
           <span
-            class="font-mono flex items-center"
+            class="flex items-center"
             data-cy="trading-page-details-taker-fee-percentage-text-content"
           >
             {{ `${takerFeeRateToFormat}%` }}
@@ -75,7 +76,7 @@
           </div>
           <span
             v-if="fees.gt(0)"
-            class="font-mono flex items-start break-all"
+            class="flex items-start break-all"
             data-cy="trading-page-details-fee-value-text-content"
           >
             <span class="mr-1">≈</span>
@@ -97,7 +98,7 @@
             class="ml-2"
             :tooltip="$t('trade.expected_points_note')"
           />
-          <span class="font-mono flex items-start break-all">
+          <span class="flex items-start break-all">
             {{ `${takerExpectedPtsToFormat}` }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ $t('pts') }}
@@ -105,7 +106,7 @@
           </span>
         </TextInfo> -->
       </div>
-    </VDrawer>
+    </Drawer>
   </div>
 </template>
 
@@ -119,7 +120,7 @@ import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
-    VDrawer: Drawer
+    Drawer
   },
 
   props: {

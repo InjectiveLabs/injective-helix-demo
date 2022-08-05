@@ -72,6 +72,12 @@ import {
   calculateWorstExecutionPriceFromOrderbook
 } from '~/app/client/utils/spot'
 
+enum RateQuality {
+  Good = 'good',
+  Fair = 'fair',
+  Poor = 'poor'
+}
+
 export default Vue.extend({
   components: {
     ConvertRateTooltip
@@ -179,6 +185,20 @@ export default Vue.extend({
       const { rate } = this
 
       return rate.toFormat()
+    },
+
+    rateQuality(): RateQuality {
+      return RateQuality.Fair
+    },
+
+    rateClass(): Object {
+      const { rateQuality } = this
+
+      return {
+        'text-green-500': rateQuality === RateQuality.Good,
+        'text-yellow-500': rateQuality === RateQuality.Fair,
+        'text-red-500': rateQuality === RateQuality.Poor
+      }
     },
 
     feeRate(): BigNumberInBase {
@@ -389,6 +409,38 @@ export default Vue.extend({
       const { minimumReceived } = this
 
       return minimumReceived.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+    },
+
+    $popper(): any {
+      return this.$refs['rate-tooltip']
+    },
+
+    popperOptions(): any {
+      return {
+        placement: 'bottom',
+        modifiers: [
+          {
+            name: 'offset',
+            options: {
+              offset: [0, 22]
+            }
+          }
+        ]
+      }
+    }
+  },
+
+  methods: {
+    handleShowRateTooltip() {
+      if (this.$popper) {
+        this.$popper.showDropdown()
+      }
+    },
+
+    handleHideRateTooltip() {
+      if (this.$popper) {
+        this.$popper.hideDropdown()
+      }
     }
   }
 })

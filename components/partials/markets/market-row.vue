@@ -44,7 +44,7 @@
           v-if="!lastTradedPrice.isNaN()"
           class=""
           :class="{
-            'text-aqua-500': lastPriceChange === Change.Increase,
+            'text-green-500': lastPriceChange === Change.Increase,
             'text-white': lastPriceChange === Change.NoChange,
             'text-red-500': lastPriceChange === Change.Decrease
           }"
@@ -55,7 +55,7 @@
       </div>
 
       <div v-if="!change.isNaN()" class="mt-1">
-        <span :class="change.gte(0) ? 'text-aqua-500' : 'text-red-500'">
+        <span :class="change.gte(0) ? 'text-green-500' : 'text-red-500'">
           {{ changeToFormat }}%
         </span>
       </div>
@@ -68,7 +68,7 @@
       <span
         v-if="!lastTradedPrice.isNaN()"
         :class="{
-            'text-aqua-500': lastPriceChange === Change.Increase,
+            'text-green-500': lastPriceChange === Change.Increase,
             'text-white': lastPriceChange === Change.NoChange,
             'text-red-500': lastPriceChange === Change.Decrease
         }"
@@ -82,7 +82,7 @@
       <span
         v-if="!change.isNaN()"
         data-cy="markets-change_24h-table-data"
-        :class="change.gte(0) ? 'text-aqua-500' : 'text-red-500'"
+        :class="change.gte(0) ? 'text-green-500' : 'text-red-500'"
       >
         {{ changeToFormat }}%
       </span>

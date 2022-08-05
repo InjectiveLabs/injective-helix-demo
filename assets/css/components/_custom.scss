@@ -141,6 +141,15 @@
   }
 }
 
+.button-spinner {
+  border-top-color: theme('colors.white');
+  animation: spin 0.6s ease-out infinite;
+
+  &.text-primary-500 {
+    border-top-color: theme('colors.primary.500');
+  }
+}
+
 [class*='bg-red-'] .spinner {
   border-top-color: theme('colors.gray.200');
 }

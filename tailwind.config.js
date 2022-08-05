@@ -118,7 +118,9 @@ module.exports = {
       },
 
       green: {
-        500: '#0EE29B'
+        400: '#3EE8AF',
+        500: '#0EE29B',
+        600: '#0DCB8C'
       },
 
       orange: {
@@ -192,7 +194,7 @@ module.exports = {
       fontFamily: {
         sans: ['Inter', ...defaultTheme.fontFamily.sans],
         serif: ['Droid Sans', ...defaultTheme.fontFamily.serif],
-        mono: ['Fira Mono', ...defaultTheme.fontFamily.mono]
+        mono: ['Inter', ...defaultTheme.fontFamily.sans]
       },
 
       borderRadius: {

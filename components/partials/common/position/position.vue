@@ -24,7 +24,7 @@
       <span
         data-cy="open-position-trade-direction-table-data"
         :class="{
-          'text-aqua-500': position.direction === TradeDirection.Long,
+          'text-green-500': position.direction === TradeDirection.Long,
           'text-red-500': position.direction === TradeDirection.Short
         }"
       >
@@ -84,7 +84,7 @@
             <span
               data-cy="postion-entry-pnl"
               :class="{
-                'text-aqua-500': pnl.gte(0),
+                'text-green-500': pnl.gte(0),
                 'text-red-500': pnl.lt(0)
               }"
             >
@@ -168,7 +168,7 @@
         @click="onClosePositionClick"
       >
         <div
-          class="flex items-center justify-center rounded-full bg-opacity-10 w-8 h-8 hover:bg-opacity-10 bg-red-550 hover:bg-red-600 text-red-550 hover:text-red-600"
+          class="flex items-center justify-center rounded-full bg-opacity-10 w-8 h-8 hover:bg-opacity-10 bg-red-500 hover:bg-red-600 text-red-500 hover:text-red-600"
         >
           <IconClose class="h-4 w-4" />
         </div>
@@ -468,7 +468,7 @@ export default Vue.extend({
         return ''
       }
 
-      return pnl.gte(0) ? 'text-aqua-500' : 'text-red-500'
+      return pnl.gte(0) ? 'text-green-500' : 'text-red-500'
     },
 
     effectiveLeverage(): BigNumberInBase {

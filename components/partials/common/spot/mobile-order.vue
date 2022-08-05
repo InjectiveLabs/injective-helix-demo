@@ -5,7 +5,7 @@
         <div class="flex items-center gap-1">
           <span
             :class="{
-              'text-aqua-500': orderTypeBuy,
+              'text-green-500': orderTypeBuy,
               'text-red-500': !orderTypeBuy
             }"
           >
