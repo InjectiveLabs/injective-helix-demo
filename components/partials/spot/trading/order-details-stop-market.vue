@@ -13,7 +13,7 @@
           <span
             v-if="minimumReceivedAmount.gt(0)"
             data-cy="trading-page-details-minimum-amount-text-content"
-            class="font-mono flex items-start break-all"
+            class="flex items-start break-all"
           >
             {{ minimumReceivedAmountToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
@@ -34,7 +34,7 @@
             :tooltip="$t('trade.taker_rate_note')"
           />
           <span
-            class="font-mono flex items-center"
+            class="flex items-center"
             data-cy="trading-page-details-taker-fee-percentage-text-content"
           >
             {{ `${takerFeeRateToFormat}%` }}

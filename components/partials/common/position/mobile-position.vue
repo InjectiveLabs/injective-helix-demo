@@ -35,7 +35,7 @@
         @click="onClosePositionClick"
       >
         <div
-          class="flex items-center justify-center rounded-full bg-opacity-10 w-5 h-5 hover:bg-opacity-10 bg-red-550 text-red-550"
+          class="flex items-center justify-center rounded-full bg-opacity-10 w-5 h-5 hover:bg-opacity-10 bg-red-500 text-red-500"
         >
           <IconClose class="h-3 w-3" />
         </div>

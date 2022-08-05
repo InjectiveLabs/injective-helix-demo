@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="relative">
     <Select
       class="select"
       :options="options"

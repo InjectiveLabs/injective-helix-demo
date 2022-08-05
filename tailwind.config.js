@@ -194,7 +194,7 @@ module.exports = {
       fontFamily: {
         sans: ['Inter', ...defaultTheme.fontFamily.sans],
         serif: ['Droid Sans', ...defaultTheme.fontFamily.serif],
-        mono: ['Fira Mono', ...defaultTheme.fontFamily.mono]
+        mono: ['Inter', ...defaultTheme.fontFamily.sans]
       },
 
       borderRadius: {

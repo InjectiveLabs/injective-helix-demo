@@ -417,7 +417,8 @@ input[type='number'] {
   }
 
   .vs__dropdown-menu {
-    @apply bg-gray-900 rounded-lg p-4 flex flex-col gap-4;
+    @apply bg-gray-900 rounded-lg p-4 flex flex-col gap-4 top-6 right-0;
+    left: unset;
   }
 
   .vs__dropdown-option {

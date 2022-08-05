@@ -507,12 +507,14 @@ export default Vue.extend({
     tradingTypeStopLimit(): boolean {
       const { tradingType } = this
 
+      // TODO: Replace with enum from BE once available.
       return tradingType.toString() === 'stopLimit'
     },
 
     tradingTypeStopMarket(): boolean {
       const { tradingType } = this
 
+      // TODO: Replace with enum from BE once available.
       return tradingType.toString() === 'stopMarket'
     },
 

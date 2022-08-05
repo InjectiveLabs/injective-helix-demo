@@ -2,7 +2,7 @@
   <VPanel class="w-full">
     <div>
       <div class="flex items-center justify-between">
-        <p class="text-xs text-gray-500 flex items-center uppercase">
+        <p class="text-xs text-gray-500 flex items-center">
           {{ $t('marketPage.assets') }}
         </p>
         <nuxt-link

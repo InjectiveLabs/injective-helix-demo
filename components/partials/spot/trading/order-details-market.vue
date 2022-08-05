@@ -13,7 +13,7 @@
           <span
             v-if="minimumReceivedAmount.gt(0)"
             data-cy="trading-page-details-minimum-amount-text-content"
-            class="font-mono flex items-start break-all"
+            class="flex items-start break-all"
           >
             {{ minimumReceivedAmountToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
@@ -31,7 +31,7 @@
           <span
             v-if="!executionPrice.isNaN()"
             data-cy="trading-page-details-execution-price-text-content"
-            class="font-mono flex items-start break-all"
+            class="flex items-start break-all"
           >
             {{ executionPriceToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
@@ -48,7 +48,7 @@
             :tooltip="$t('trade.taker_rate_note')"
           />
           <span
-            class="font-mono flex items-center"
+            class="flex items-center"
             data-cy="trading-page-details-taker-fee-percentage-text-content"
           >
             {{ `${takerFeeRateToFormat}%` }}
@@ -76,7 +76,7 @@
           </div>
           <span
             v-if="fees.gt(0)"
-            class="font-mono flex items-start break-all"
+            class="flex items-start break-all"
             data-cy="trading-page-details-fee-value-text-content"
           >
             <span class="mr-1">≈</span>
@@ -98,7 +98,7 @@
             class="ml-2"
             :tooltip="$t('trade.expected_points_note')"
           />
-          <span class="font-mono flex items-start break-all">
+          <span class="flex items-start break-all">
             {{ `${takerExpectedPtsToFormat}` }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ $t('pts') }}

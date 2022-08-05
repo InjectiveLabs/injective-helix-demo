@@ -12,10 +12,10 @@
       </p>
       <div class="inline-block">
         <div
-          class="flex items-center bg-green-600 bg-opacity-10 w-auto p-1 rounded"
+          class="flex items-center bg-aqua-600 bg-opacity-10 w-auto p-1 rounded"
         >
-          <span class="rounded-full w-1 h-1 mr-1 bg-green-500"></span>
-          <span class="text-green-500" :class="[lg ? 'text-sm' : 'text-2xs']">
+          <span class="rounded-full w-1 h-1 mr-1 bg-aqua-500"></span>
+          <span class="text-aqua-500" :class="[lg ? 'text-sm' : 'text-2xs']">
             {{ $t('navigation.connected') }}
           </span>
         </div>
@@ -29,7 +29,7 @@
         type="button"
         data-cy="wallet-connected-popper-wallet-address-copy-button"
       >
-        <IconCopy class="w-5 h-5 text-gray-500 hover:text-green-500" />
+        <IconCopy class="w-5 h-5 text-gray-500 hover:text-aqua-500" />
       </button>
     </div>
   </li>
