@@ -9,8 +9,10 @@ export const convertToNumericValue = (value: string, maxDecimals: number) => {
     return value
   }
 
-  if (value.includes('.')) {
-    const [wholeValue, decimalValue] = value.split('.')
+  const numericValue = `${parseFloat(value.replace(/[^.\d]/g, ''))}`
+
+  if (numericValue.includes('.')) {
+    const [wholeValue, decimalValue] = numericValue.split('.')
 
     const formattedDecimalValue =
       decimalValue.length > maxDecimals
@@ -20,7 +22,7 @@ export const convertToNumericValue = (value: string, maxDecimals: number) => {
     return `${Number(wholeValue)}.${formattedDecimalValue}`
   }
 
-  return Number(value)
+  return Number(numericValue)
 }
 
 export const passNumericInputValidation = (

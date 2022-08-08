@@ -111,7 +111,7 @@
 import Vue, { PropType } from 'vue'
 import { debounce } from 'lodash'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
-import { DOMEvent } from '~/types'
+import { DOMEvent, PasteEvent } from '~/types'
 import {
   convertToNumericValue,
   passNumericInputValidation
@@ -344,9 +344,19 @@ export default Vue.extend({
   methods: {
     debounce,
 
-    handlePaste(event: DOMEvent<HTMLInputElement>) {
-      if (event.target.type === 'number') {
+    handlePaste(event: PasteEvent<HTMLInputElement>) {
+      const { maxDecimals } = this
+      const { clipboardData, target } = event
+
+      if (target.type === 'number') {
         event.preventDefault()
+
+        if (clipboardData) {
+          const value = clipboardData.getData('text')
+          const formattedValue = convertToNumericValue(value, maxDecimals)
+
+          this.$emit('input', formattedValue)
+        }
       }
     },
 

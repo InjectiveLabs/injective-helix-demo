@@ -7,6 +7,9 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 
+export interface PasteEvent<T extends EventTarget> extends ClipboardEvent {
+  target: T
+}
 export interface DOMEvent<T extends EventTarget> extends Event {
   target: T
   keyCode?: number
