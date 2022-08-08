@@ -1,35 +1,48 @@
 <template>
   <!-- eslint-disable vue/no-v-html -->
-  <main
-    class="flex flex-wrap flex-col justify-center items-center h-full w-full px-4 min-h-screen"
-  >
-    <div class="container">
-      <h1 class="text-white font-bold mt-4 text-3xl text-center">
-        {{ $t('maintenance_header') }}
-      </h1>
-      <h2
-        class="text-gray-300 text-xl mx-auto w-full lg:w-2/3 text-center mt-1"
-        v-html="$t('maintenance_subheader')"
-      ></h2>
-      <div class="text-center mt-6">
-        <VButton primary lg>
-          <a href="https://hub.injective.network/trade" target="_blank">{{
-            $t('maintenance_button')
-          }}</a>
-        </VButton>
+  <main class="flex flex-col h-screen w-full">
+    <div class="container flex flex-col h-full p-4 sm:p-20">
+      <div class="flex items-center justify-center mx-auto">
+        <Logo class="h-10 w-10 mr-2" alt="Helix" />
+        <LogoText class="h-8" />
       </div>
-      <h3
-        class="text-gray-500 text-md text-center"
-        v-html="$t('maintenance_body')"
-      ></h3>
+
+      <div class="h-[calc(100%-20px)] flex flex-col justify-center items-center">
+        <h1 class="text-white font-bold text-3xl text-center">
+          {{ $t('maintenance_header') }}
+        </h1>
+
+        <h2
+          class="text-white text-xl text-center my-4 max-w-xl"
+          v-html="$t('maintenance_body')"
+        />
+
+        <div class="text-center">
+          <VButton primary xl class="rounded-full">
+            <a
+              href="https://status.exchange.injective.network/"
+              target="_blank"
+            >
+              {{ $t('maintenance_button') }}
+            </a>
+          </VButton>
+        </div>
+      </div>
     </div>
   </main>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import Logo from '~/components/elements/logo.vue'
+import LogoText from '~/components/elements/logo-text.vue'
 
 export default Vue.extend({
+  components: {
+    Logo,
+    LogoText
+  },
+
   layout: 'blank'
 })
 </script>
