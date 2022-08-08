@@ -53,7 +53,7 @@
               <div class="block w-full">
                 <div class="flex items-center justify-between">
                   <div
-                    class="text-xs uppercase text-gray-100 tracking-wider font-semibold flex-grow"
+                    class="text-sm uppercase text-white font-semibold flex-grow"
                   >
                     <slot name="title" />
                   </div>
