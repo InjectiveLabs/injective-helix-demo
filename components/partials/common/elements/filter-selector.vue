@@ -1,5 +1,5 @@
 <template>
-  <VDropdown round hide-bottom-border>
+  <VDropdown hide-bottom-border>
     <template slot="title">
       <div class="flex items-center justify-between bg-gray-900 flex-grow">
         <slot name="label" />

@@ -42,7 +42,7 @@
       >
         <div
           v-show="isOpen"
-          class="inline-block align-bottom bg-gray-800 shadow-sm rounded-xl text-left transform transition-all w-full h-full"
+          class="inline-block align-bottom bg-gray-950 shadow-none rounded-lg text-left transform transition-all w-full h-full"
           :class="classes"
           role="dialog"
           :aria-modal="isOpen"

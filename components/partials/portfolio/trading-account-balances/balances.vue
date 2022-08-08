@@ -39,7 +39,7 @@
         v-if="isUserWalletConnected && sortedBalances.length > 0"
         class="md:hidden xl:grid"
       >
-        <div class="col-span-5 grid grid-cols-5 gap-4">
+        <div class="col-span-5 grid grid-cols-5 gap-4 items-center">
           <span>
             {{ $t('portfolio.asset') }}
           </span>

@@ -12,11 +12,11 @@
     <div>
       <div v-if="isUserWalletConnected">
         <div v-if="!isIbcTransfer">
-          <h3 class="text-xl font-semibold mt-6">
+          <h3 class="text-xl font-medium mt-6">
             {{ $t('bridge.confirmTransaction') }}
           </h3>
 
-          <div v-if="form.token" class="text-center mt-6 mb-10">
+          <div v-if="form.token" class="text-center my-8">
             <img
               v-if="tokenLogo"
               :src="tokenLogo"
@@ -73,7 +73,7 @@
 
           <div v-if="origin === BridgingNetwork.Injective" class="mt-6">
             <!-- Amount -->
-            <ConfirmAmountRow class="mb-2">
+            <ConfirmAmountRow class="mb-4">
               <template slot="title">
                 {{ $t('bridge.amount') }}
               </template>
@@ -94,7 +94,7 @@
             <!-- Bridge Fee -->
             <ConfirmAmountRow
               v-if="destination === BridgingNetwork.Ethereum"
-              class="mb-2"
+              class="mb-4"
             >
               <template slot="title">
                 {{ $t('bridge.bridgeFee') }}
@@ -117,10 +117,8 @@
             </ConfirmAmountRow>
           </div>
 
-          <div class="border-t border-gray-700 mt-4 pt-4" />
-
           <div v-if="origin === BridgingNetwork.Injective">
-            <ConfirmAmountRow class="mb-2" bold>
+            <ConfirmAmountRow class="mb-4" bold>
               <template slot="title">
                 {{ $t('bridge.transferAmount') }}
               </template>
@@ -142,7 +140,7 @@
               </template>
             </ConfirmAmountRow>
 
-            <ConfirmAmountRow bold class="mb-10">
+            <ConfirmAmountRow bold class="mb-6">
               <template slot="title">
                 {{ $t('bridge.gasFee') }}
               </template>
@@ -165,7 +163,7 @@
             <VButton
               lg
               primary
-              class="w-full xs:w-2/3 font-bold"
+              class="w-full font-semibold rounded"
               :disabled="buttonConfirmationDisabled"
               :status="status"
               data-cy="transfer-confirm-modal-confirm-button"

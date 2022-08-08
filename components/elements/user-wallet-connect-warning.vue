@@ -10,7 +10,7 @@
       <VButton
         md
         primary
-        class="mt-2"
+        class="mt-2 rounded"
         data-cy="wallet-not-connected-warning-modal-connect-button"
         @click.stop="handleClickOnConnect"
       >

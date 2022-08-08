@@ -30,7 +30,7 @@
 
       <VButton
         v-if="!hideBalance"
-        class="cursor-pointer"
+        class="cursor-pointer rounded"
         :status="status"
         @click="onClosePositionClick"
       >

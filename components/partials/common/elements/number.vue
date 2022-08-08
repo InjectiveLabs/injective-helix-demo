@@ -1,8 +1,7 @@
 <template>
   <div>
     <span
-      class="font-mono inline-block"
-      :class="[dense ? 'leading-3' : 'leading-5']"
+      class="font-mono inline-block text-white font-medium text-xs"
     >
       <div class="flex">
         <span class="">{{ prefix || '' }}{{ formattedNumber[0] }}</span>

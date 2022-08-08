@@ -124,6 +124,7 @@ module.exports = {
       },
 
       orange: {
+        400: '#F7931A',
         500: '#F3610F'
       },
 

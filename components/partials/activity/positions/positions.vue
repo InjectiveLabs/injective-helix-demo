@@ -46,6 +46,7 @@
             md
             :status="status"
             data-cy="activity-cancel-all-button"
+            class="rounded"
             @click.stop="handleClosePositions"
           >
             {{ $t('trade.closeAllPositions') }}

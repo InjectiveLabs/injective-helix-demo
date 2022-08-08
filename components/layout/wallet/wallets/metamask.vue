@@ -19,7 +19,7 @@
                   v-if="!metamaskInstalled"
                   text
                   sm
-                  class="inline-flex items-center"
+                  class="inline-flex items-center rounded"
                   @click.stop="() => {}"
                 >
                   <a

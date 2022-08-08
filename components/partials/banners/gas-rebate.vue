@@ -51,7 +51,7 @@
               primary
               :status="status"
               :disabled="activeStep !== 3"
-              class="block w-56 mt-3"
+              class="block w-56 mt-3 rounded"
               @click.native="handleClickOnRedeem"
             >
               <span class="font-bold" data-cy="new-user-banner-claim-button">
@@ -89,7 +89,12 @@
             key="newUserMobileThree"
             class="text-sm font-semibold max-w-xs"
           >
-            <VButton lg primary class="block w-80" :disabled="activeStep !== 3">
+            <VButton
+              lg
+              primary
+              class="block w-80 rounded"
+              :disabled="activeStep !== 3"
+            >
               <span class="font-bold">
                 {{ $t('banners.newUser.claimRebate') }}
               </span>

@@ -19,7 +19,7 @@
       :ghost="hasError"
       :green="(!hasInputErrors || hasAdvancedSettingsErrors) && isOrderTypeBuy"
       :red="(!hasInputErrors || hasAdvancedSettingsErrors) && !isOrderTypeBuy"
-      class="w-full"
+      class="w-full rounded"
       data-cy="trading-page-execute-button"
       @click.stop="onSubmit"
     >

@@ -87,7 +87,7 @@
       </VCardSelect>
     </div>
 
-    <div class="w-full mt-6 relative">
+    <div class="w-full mt-14 relative">
       <portal to="account-summary">
         <AccountSummary
           :status="status"

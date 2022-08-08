@@ -52,8 +52,8 @@
           <VInput
             class="col-span-3"
             :value="slippageTolerance"
-            :wrapper-classes="wrapperClass"
-            :input-classes="inputClass"
+            :wrapper-classes="wrapperClasses"
+            :input-classes="inputClasses"
             :disabled="false"
             type="number"
             :step="0.01"
@@ -161,7 +161,7 @@ export default Vue.extend({
       }
     },
 
-    wrapperClass(): string {
+    wrapperClasses(): string {
       const { hasWarnings, hasErrors } = this
 
       if (hasErrors) {
@@ -175,7 +175,7 @@ export default Vue.extend({
       return 'border-transparent border shadow-none'
     },
 
-    inputClass(): string {
+    inputClasses(): string {
       const { hasWarnings, hasErrors } = this
 
       if (hasWarnings || hasErrors) {

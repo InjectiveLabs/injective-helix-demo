@@ -251,7 +251,7 @@ export default Vue.extend({
 
     wrapperClass(): string {
       const { dense, lg, xl, transparentBg, wrapperClasses } = this
-      const classes = []
+      const classes = ['shadow-none']
 
       if (!dense) {
         classes.push('mt-2')

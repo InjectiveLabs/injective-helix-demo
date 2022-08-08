@@ -29,7 +29,7 @@
 
         <VButton
           v-if="orderFillable"
-          class="cursor-pointer"
+          class="cursor-pointer rounded"
           :status="status"
           @click.stop="onCancelOrder"
         >

@@ -54,7 +54,6 @@
                   :valid="valid"
                   :max="balanceToFixed"
                   :max-decimals="maxDecimals"
-                  :max-selector="showMaxSelector"
                   :max-classes="'input-max-button'"
                   :value="amount"
                   :prefix="prefix"
@@ -147,7 +146,6 @@
               round
               :placeholder="$t('common.search')"
               data-cy="token-selector-search"
-              :wrapper-classes="'shadow-none'"
               :input-classes="'bg-gray-900 rounded'"
               @blur="resetIsSearching"
               @click.native.stop="focusSearchInput"

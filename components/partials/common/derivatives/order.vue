@@ -133,7 +133,7 @@
           v-if="orderFillable"
           :status="status"
           data-cy="derivative-order-cancel-link"
-          class="w-6 h-6"
+          class="rounded w-6 h-6"
           @click="onCancelOrder"
         >
           <div

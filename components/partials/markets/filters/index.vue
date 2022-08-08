@@ -49,7 +49,6 @@
       <Search
         name="search"
         class="sm:w-auto md:w-3xs"
-        wrapper-classes="pl-2"
         input-classes="placeholder-white"
         dense
         transparent-bg

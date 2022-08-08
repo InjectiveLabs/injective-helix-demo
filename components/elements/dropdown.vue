@@ -110,13 +110,15 @@ export default Vue.extend({
     selectorClass(): string {
       const { round } = this
 
-      if (!round) {
-        return 'border-gray-600'
+      const classes = ['bg-gray-900', 'h-10', 'px-4', 'py-3']
+
+      if (round) {
+        classes.push('rounded-full')
+      } else {
+        classes.push('rounded')
       }
 
-      // text-gray-500 border-gray-600
-
-      return 'bg-gray-900 rounded-full h-10 px-4 py-3'
+      return classes.join(' ')
     }
   },
 

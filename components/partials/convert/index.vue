@@ -81,7 +81,7 @@
           :disabled="ctaButtonDisabled"
           :ghost="hasErrors"
           :primary="!hasErrors"
-          class="w-full"
+          class="w-full rounded"
           :class="{ 'bg-opacity-50': status.isLoading() }"
           @click.stop="onSubmit"
         >
@@ -92,7 +92,7 @@
           lg
           :status="status"
           primary
-          class="w-full"
+          class="w-full rounded"
           :class="{ 'bg-opacity-50': status.isLoading() }"
           @click.stop="handleClickOrConnect"
         >

@@ -45,6 +45,7 @@
             red-outline
             md
             data-cy="activity-cancel-all-button"
+            class="rounded"
             @click.stop="handleCancelOrders"
           >
             {{ $t('trade.cancelAllOrders') }}
