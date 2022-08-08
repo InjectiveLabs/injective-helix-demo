@@ -101,6 +101,7 @@
         <VButton
           v-if="orderFillable"
           :status="status"
+          class="w-6 h-6"
           data-cy="spot-order-cancel-link"
           @click="onCancelOrder"
         >

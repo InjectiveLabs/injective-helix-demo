@@ -165,10 +165,11 @@
         v-if="!hideBalance"
         data-cy="open-position-cancel-link"
         :status="status"
+        class="w-6 h-6"
         @click="onClosePositionClick"
       >
         <div
-          class="flex items-center justify-center rounded-full bg-opacity-10 w-8 h-8 hover:bg-opacity-10 bg-red-500 hover:bg-red-600 text-red-500 hover:text-red-600"
+          class="flex items-center justify-center rounded-full bg-opacity-10 w-6 h-6 hover:bg-opacity-10 bg-red-500 hover:bg-red-600 text-red-500 hover:text-red-600"
         >
           <IconClose class="h-4 w-4" />
         </div>
