@@ -4,7 +4,7 @@
       class="w-1/3 text-xs px-2 cursor-pointer text-right font-mono"
       data-cy="trades-table-price-span"
       :class="{
-        'text-aqua-500': trade.tradeDirection === TradeDirection.Buy,
+        'text-green-500': trade.tradeDirection === TradeDirection.Buy,
         'text-red-500': trade.tradeDirection === TradeDirection.Sell
       }"
     >

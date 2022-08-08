@@ -148,7 +148,7 @@ export const actions = actionTree(
         markets.map((market) => market.marketId)
       )
       const marketsOrderbookMap = marketsOrderbook.reduce(
-        (marketOrderbooks, orderbook, index) => {
+        (marketOrderbooks, { orderbook }, index) => {
           return {
             ...marketOrderbooks,
             [markets[index].marketId]: orderbook
@@ -178,7 +178,7 @@ export const actions = actionTree(
         subaccountPositions.map((position) => position.marketId)
       )
       const marketsOrderbookMap = marketsOrderbook.reduce(
-        (marketOrderbooks, orderbook, index) => {
+        (marketOrderbooks, { orderbook }, index) => {
           return {
             ...marketOrderbooks,
             [subaccountPositions[index].marketId]: orderbook

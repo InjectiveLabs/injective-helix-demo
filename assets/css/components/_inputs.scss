@@ -339,6 +339,12 @@ input[type='number'] {
   }
 }
 
+.v-select.input-select.input-token {
+  .vs__dropdown-menu {
+    @apply bg-gray-950 shadow-md;
+  }
+}
+
 .input-token {
   .vs__actions {
     padding: 0 !important;
@@ -375,6 +381,57 @@ input[type='number'] {
 
 .v-select.input-select.vs--open {
   @apply bg-gray-900;
+}
+
+
+.select {
+  .vs__dropdown-toggle {
+    @apply border-none p-0;
+  }
+
+  .vs__selected-options {
+    @apply p-0 flex items-center justify-start;
+  }
+
+  .vs__selected {
+    @apply p-0 m-0 border-none h-4 flex items-center justify-start;
+  }
+
+  .vs__actions {
+    @apply p-0 ml-1;
+  }
+
+  .vs__search {
+    @apply p-0 m-0 h-4;
+
+    &:focus {
+      @apply p-0 m-0 h-4;
+    }
+  }
+
+  &.vs--open {
+    .vs__selected {
+      position: relative !important;
+      opacity: 1 !important;
+    }
+  }
+
+  .vs__dropdown-menu {
+    @apply bg-gray-900 rounded-lg p-4 flex flex-col gap-4 top-6 right-0;
+    left: unset;
+  }
+
+  .vs__dropdown-option {
+    @apply text-sm font-semibold cursor-pointer text-white p-0;
+  }
+
+  .vs__dropdown-option--selected {
+    @apply text-primary-500;
+  }
+
+  .vs__dropdown-option--highlight {
+    @apply text-primary-500 bg-transparent;
+  }
 }
 
 /* stylelint-enable */

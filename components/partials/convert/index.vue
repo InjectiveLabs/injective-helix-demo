@@ -34,7 +34,7 @@
         <div class="flex justify-between items-center -my-2">
           <button
             type="button"
-            class="rounded-full z-1000 flex items-center justify-center min-w-[32px] w-8 h-8 bg-primary-600 hover:bg-primary-500 relative mx-auto"
+            class="rounded-full z-1000 flex items-center justify-center min-w-[32px] w-8 h-8 bg-primary-500 hover:bg-primary-600 relative mx-auto"
             :class="{ 'opacity-50': status.isLoading() }"
             @click="switchTokens"
           >
@@ -230,7 +230,7 @@ export default Vue.extend({
         return this.$t('trade.convert.insufficient_balance')
       }
 
-      return this.$t('trade.convert.convert_now')
+      return this.$t('trade.convert.convert')
     },
 
     ctaButtonDisabled(): boolean {

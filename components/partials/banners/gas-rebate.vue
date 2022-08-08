@@ -119,7 +119,8 @@ import {
   UiSpotTrade,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
-import { Token } from '@injectivelabs/token-metadata'
+import { Token, Erc20Token } from '@injectivelabs/token-metadata'
+
 import {
   BigNumberInBase,
   BigNumberInWei,
@@ -262,7 +263,7 @@ export default Vue.extend({
 
       const tokenWithBalance = (bankUsdtBalance ||
         subaccountUsdtBalance) as unknown as { token: Token }
-      const usdtToken = tokenWithBalance.token
+      const usdtToken = tokenWithBalance.token as Erc20Token
       const usdtAddress = usdtToken.address.replace('peggy', '').toLowerCase()
 
       const deposit = deposits.find((deposit) => {

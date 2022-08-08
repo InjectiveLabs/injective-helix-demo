@@ -1,7 +1,7 @@
 <template>
   <div v-if="market">
     <div
-      class="grid grid-cols-2 md:grid-cols-3 gap-2.5 lg:gap-0 lg:flex overflow-x-auto overflow-y-none text-xs"
+      class="grid grid-cols-2 md:grid-cols-3 gap-2.5 lg:gap-0 lg:flex overflow-x-auto text-xs overflow-y-hidden"
     >
       <MarketInfo
         v-if="market.type === MarketType.Derivative"
@@ -59,7 +59,7 @@
         <span v-if="!fundingRate.isNaN()" class="lg:text-right font-mono block">
           <span
             :class="{
-              'text-aqua-500': fundingRate.gte(0),
+              'text-green-500': fundingRate.gte(0),
               'text-red-500': fundingRate.lt(0)
             }"
             data-cy="market-info-funding-rate-span"

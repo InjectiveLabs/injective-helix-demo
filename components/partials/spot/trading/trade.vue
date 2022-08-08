@@ -1,7 +1,11 @@
 <template>
-  <div v-if="market" class="px-4 w-full">
+  <div v-if="market" class="w-full flex flex-col gap-6">
     <TradingTypeButtons
       :trading-type.sync="tradingType"
+      :trading-type-market="tradingTypeMarket"
+      :trading-type-limit="tradingTypeLimit"
+      :trading-type-stop-market="tradingTypeStopMarket"
+      :trading-type-stop-limit="tradingTypeStopLimit"
       @update:trading-type="handleTradingTypeChange"
     />
 
@@ -13,7 +17,6 @@
 
     <OrderInputs
       ref="orderInputs"
-      class="mt-8"
       v-bind="{
         averagePriceOption,
         baseAvailableBalance,
@@ -32,7 +35,10 @@
         takerFeeRate,
         notionalValueWithFees,
         tradingType,
-        tradingTypeMarket
+        tradingTypeMarket,
+        tradingTypeLimit,
+        tradingTypeStopMarket,
+        tradingTypeStopLimit
       }"
       :amount.sync="form.amount"
       :average-price-option.sync="averagePriceOption"
@@ -64,9 +70,17 @@
         takerFeeRateDiscount,
         notionalValue,
         notionalValueWithFees,
-        tradingTypeMarket
+        tradingType,
+        tradingTypeMarket,
+        tradingTypeLimit,
+        tradingTypeStopMarket,
+        tradingTypeStopLimit
       }"
     />
+
+    <!-- <span class="text-gray-500 text-xs leading-4">
+      {{ $t('trade.slippage_cancellation_notice') }}
+    </span> -->
 
     <OrderSubmit
       v-bind="{
@@ -200,6 +214,26 @@ export default Vue.extend({
       const { tradingType } = this
 
       return tradingType === TradeExecutionType.Market
+    },
+
+    tradingTypeLimit(): boolean {
+      const { tradingType } = this
+
+      return tradingType === TradeExecutionType.LimitFill
+    },
+
+    tradingTypeStopLimit(): boolean {
+      const { tradingType } = this
+
+      // TODO: Replace with enum from BE once available.
+      return tradingType.toString() === 'stopLimit'
+    },
+
+    tradingTypeStopMarket(): boolean {
+      const { tradingType } = this
+
+      // TODO: Replace with enum from BE once available.
+      return tradingType.toString() === 'stopMarket'
     },
 
     orderTypeBuy(): boolean {

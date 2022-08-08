@@ -1,20 +1,26 @@
 <template>
-  <div class="mt-6 flex flex-col">
-    <div class="flex items-start justify-between my-1">
-      <span class="text-gray-500 uppercase tracking-widest font-bold text-xs">
+  <div class="mt-6 flex flex-col gap-4">
+    <div class="flex items-center justify-between">
+      <span class="text-gray-400 text-sm">
         {{ $t('trade.convert.rate') }}
       </span>
-      <span v-if="pending" class="text-sm">
-        {{ $t('trade.convert.fetching_price') }}...
-      </span>
-      <span v-else-if="hasAmount" class="text-sm">
-        1 {{ fromToken.symbol }} ≈ {{ averagePriceWithoutSlippageToFormat }}
-        {{ toToken.symbol }}
-      </span>
-      <span v-else class="text-sm"> -- </span>
+      <ConvertRateTooltip>
+        <span v-if="pending" class="text-sm cursor-default">
+          {{ $t('trade.convert.fetching_price') }}...
+        </span>
+        <span
+          v-else-if="hasAmount"
+          class="text-sm cursor-default"
+          :class="rateClass"
+        >
+          1 {{ fromToken.symbol }} ≈ {{ averagePriceWithoutSlippageToFormat }}
+          {{ toToken.symbol }}
+        </span>
+        <span v-else class="text-sm cursor-default"> -- </span>
+      </ConvertRateTooltip>
     </div>
-    <div class="flex items-center justify-between my-1">
-      <span class="text-gray-500 uppercase tracking-widest font-bold text-xs">
+    <div class="flex items-center justify-between">
+      <span class="text-gray-400 text-sm">
         {{ $t('trade.convert.fee') }} {{ feeRateToFormat }}%
       </span>
       <span v-if="hasAmount" class="text-sm">
@@ -22,7 +28,7 @@
       </span>
       <span v-else class="text-sm"> -- </span>
     </div>
-    <!-- <div class="flex items-center justify-between my-1">
+    <!-- <div class="flex items-center justify-between">
       <span class="text-gray-500 uppercase tracking-widest font-bold text-xs">
         {{ $t('trade.convert.estimated_slippage') }}
       </span>
@@ -31,8 +37,8 @@
       </span>
       <span v-else class="text-sm"> -- </span>
     </div> -->
-    <div class="flex items-center justify-between my-1">
-      <span class="text-gray-500 uppercase tracking-widest font-bold text-xs">
+    <div class="flex items-center justify-between">
+      <span class="text-gray-400 text-sm">
         {{ $t('trade.convert.minimum_received') }}
       </span>
       <span v-if="hasAmount" class="text-sm">
@@ -56,6 +62,7 @@ import {
   cosmosSdkDecToBigNumber,
   FeeDiscountAccountInfo
 } from '@injectivelabs/sdk-ts'
+import ConvertRateTooltip from './convert-rate-tooltip.vue'
 import {
   ONE_IN_BASE,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -65,7 +72,17 @@ import {
   calculateWorstExecutionPriceFromOrderbook
 } from '~/app/client/utils/spot'
 
+enum RateQuality {
+  Good = 'good',
+  Fair = 'fair',
+  Poor = 'poor'
+}
+
 export default Vue.extend({
+  components: {
+    ConvertRateTooltip
+  },
+
   props: {
     fromToken: {
       type: Object,
@@ -168,6 +185,20 @@ export default Vue.extend({
       const { rate } = this
 
       return rate.toFormat()
+    },
+
+    rateQuality(): RateQuality {
+      return RateQuality.Fair
+    },
+
+    rateClass(): Object {
+      const { rateQuality } = this
+
+      return {
+        'text-green-500': rateQuality === RateQuality.Good,
+        'text-yellow-500': rateQuality === RateQuality.Fair,
+        'text-red-500': rateQuality === RateQuality.Poor
+      }
     },
 
     feeRate(): BigNumberInBase {
@@ -378,6 +409,38 @@ export default Vue.extend({
       const { minimumReceived } = this
 
       return minimumReceived.toFormat(UI_DEFAULT_PRICE_DISPLAY_DECIMALS)
+    },
+
+    $popper(): any {
+      return this.$refs['rate-tooltip']
+    },
+
+    popperOptions(): any {
+      return {
+        placement: 'bottom',
+        modifiers: [
+          {
+            name: 'offset',
+            options: {
+              offset: [0, 22]
+            }
+          }
+        ]
+      }
+    }
+  },
+
+  methods: {
+    handleShowRateTooltip() {
+      if (this.$popper) {
+        this.$popper.showDropdown()
+      }
+    },
+
+    handleHideRateTooltip() {
+      if (this.$popper) {
+        this.$popper.hideDropdown()
+      }
     }
   }
 })

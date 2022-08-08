@@ -23,7 +23,7 @@
       <span
         class="block text-right font-mono"
         :class="{
-          'text-aqua-500': recordTypeBuy,
+          'text-green-500': recordTypeBuy,
           'text-red-500': !recordTypeBuy
         }"
       >
@@ -49,7 +49,7 @@
         class="block text-right font-mono"
         :class="{
           'text-red-500': quantityChange === Change.Decrease,
-          'text-aqua-500': quantityChange === Change.Increase
+          'text-green-500': quantityChange === Change.Increase
         }"
       >
         <VNumber

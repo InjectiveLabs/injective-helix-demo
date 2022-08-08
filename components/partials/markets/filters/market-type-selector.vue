@@ -1,10 +1,10 @@
 <template>
   <div
-    class="px-4 py-2.5 rounded-3xl cursor-pointer bg-gray-800"
+    class="px-4 py-2.5 cursor-pointer"
     :class="[
       active
-        ? 'border border-primary-500 text-primary-500 hover:border-primary-600 hover:text-primary-600'
-        : 'text-gray-500 border border-transparent hover:border-primary-500 hover:text-primary-500'
+        ? 'border-2 border-transparent border-b-primary-500 text-primary-500'
+        : 'text-gray-300 border-2 border-transparent hover:border-b-primary-500 hover:text-primary-500'
     ]"
     @click="handleTypeClick"
   >

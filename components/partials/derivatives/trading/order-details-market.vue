@@ -1,6 +1,6 @@
 <template>
-  <div v-if="market" class="mt-6 py-6 border-t relative">
-    <VDrawer
+  <div v-if="market" class="pt-6 border-t relative">
+    <Drawer
       :custom-handler="true"
       :custom-is-open="detailsDrawerOpen"
       @drawer-toggle="onDrawerToggle"
@@ -26,22 +26,13 @@
       </p>
 
       <div class="mt-4">
-        <TextInfo
-          v-if="!orderTypeReduceOnly"
-          :title="$t('trade.margin')"
-          class="mt-2"
-        >
-          <IconInfoTooltip
-            slot="context"
-            class="ml-2"
-            :tooltip="$t('trade.margin_tooltip')"
-          />
+        <TextInfo :title="$t('trade.amount')" class="mt-2">
           <span
-            v-if="notionalWithLeverage.gt(0)"
-            data-cy="trading-page-details-margin-text-content"
+            v-if="!amount.isNaN()"
+            data-cy="trading-page-details-execution-price-text-content"
             class="font-mono flex items-start break-all"
           >
-            {{ notionalWithLeverageToFormat }}
+            {{ amountToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
             </span>
@@ -49,7 +40,7 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </TextInfo>
 
-        <!-- <TextInfo :title="$t('trade.averagePrice')" class="mt-2">
+        <TextInfo :title="$t('trade.averagePrice')" class="mt-2">
           <span
             v-if="!executionPrice.isNaN()"
             data-cy="trading-page-details-execution-price-text-content"
@@ -61,7 +52,7 @@
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </TextInfo> -->
+        </TextInfo>
 
         <TextInfo
           v-if="!orderTypeReduceOnly && !isBinaryOption"
@@ -79,6 +70,29 @@
             class="font-mono flex items-start break-all"
           >
             {{ liquidationPriceToFormat }}
+            <span class="text-gray-500 ml-1 break-normal">
+              {{ market.quoteToken.symbol }}
+            </span>
+          </span>
+          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
+        </TextInfo>
+
+        <TextInfo
+          v-if="!orderTypeReduceOnly"
+          :title="$t('trade.margin')"
+          class="mt-2"
+        >
+          <IconInfoTooltip
+            slot="context"
+            class="ml-2"
+            :tooltip="$t('trade.margin_tooltip')"
+          />
+          <span
+            v-if="notionalWithLeverage.gt(0)"
+            data-cy="trading-page-details-margin-text-content"
+            class="font-mono flex items-start break-all"
+          >
+            {{ notionalWithLeverageToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
             </span>
@@ -133,7 +147,7 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </TextInfo>
 
-        <!-- <TextInfo
+        <TextInfo
           v-if="expectedPts.gte(0)"
           :title="$t('trade.expected_points')"
           class="mt-2"
@@ -149,9 +163,9 @@
               {{ $t('pts') }}
             </span>
           </span>
-        </TextInfo> -->
+        </TextInfo>
       </div>
-    </VDrawer>
+    </Drawer>
   </div>
 </template>
 
@@ -167,7 +181,7 @@ import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
-    VDrawer: Drawer
+    Drawer
   },
 
   props: {
@@ -270,6 +284,19 @@ export default Vue.extend({
   computed: {
     market(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
+    },
+
+    amountToFormat(): string {
+      // TODO: Replace this with correct value derived from amount prop.
+      return '-'
+    },
+
+    expectedPts(): BigNumberInBase {
+      return new BigNumberInBase(0)
+    },
+
+    expectedPtsToFormat(): string {
+      return this.expectedPts.toFixed(0)
     },
 
     isBinaryOption(): boolean {

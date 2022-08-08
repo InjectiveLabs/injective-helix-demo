@@ -1,6 +1,6 @@
 <template>
   <nuxt-link
-    class="rounded-2xl bg-transparent shadow-card p-4 bg-white bg-opacity-5 block"
+    class="rounded-lg bg-transparent shadow-card p-4 bg-gray-950 bg-opacity-30 block"
     :to="marketRoute"
   >
     <div class="flex items-center justify-between text-gray-500">
@@ -38,26 +38,17 @@
       class="text-2xl tracking-wide font-mono font-light flex items-center mt-4"
       data-cy="market-card-last-traded-price-text-content"
       :class="{
-        'text-aqua-500 ': summary.lastPriceChange !== Change.Decrease,
+        'text-green-500 ': summary.lastPriceChange !== Change.Decrease,
         'text-red-500': summary.lastPriceChange === Change.Decrease
       }"
     >
-      <IconArrow
-        v-if="lastTradedPrice.gt(0)"
-        class="transform w-5 h-5 mr-1"
-        :class="{
-          'rotate-90': summary.lastPriceChange !== Change.Decrease,
-          ' -rotate-90': summary.lastPriceChange === Change.Decrease
-        }"
-      />
-
       {{ lastTradedPriceToFormat }}
     </p>
     <div class="flex items-center font-mono text-sm tracking-wide mt-2">
       <span
         class="mr-2"
         data-cy="market-card-change_24h-text-content"
-        :class="change.gte(0) ? 'text-aqua-500' : 'text-red-500'"
+        :class="change.gte(0) ? 'text-green-500' : 'text-red-500'"
       >
         {{ changeToFormat }}%
       </span>
