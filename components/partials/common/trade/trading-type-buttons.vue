@@ -20,7 +20,7 @@
           tradingTypeLimit | tradingTypeStopLimit | tradingTypeStopMarket,
         'text-primary-500': tradingTypeMarket
       }"
-      data-cy="trading-page-switch-to-limit-button"
+      data-cy="trading-page-switch-to-market-button"
       @click.stop="onTradingTypeToggle(TradeExecutionType.Market)"
     >
       {{ $t('trade.market') }}
@@ -33,7 +33,7 @@
           'text-gray-500': !tradingTypeStopMarket && !tradingTypeStopLimit,
           'text-primary-500': tradingTypeStopMarket || tradingTypeStopLimit
         }"
-        data-cy="trading-page-switch-to-limit-button"
+        data-cy="trading-page-switch-to-stop-button"
         @click.stop="
           onTradingTypeToggle(
             tradingTypeStopMarket ? 'stopMarket' : 'stopLimit'
