@@ -13,6 +13,7 @@
     <VModal
       :is-open="isOpenConnectModal"
       md
+      no-padding
       @modal-closed="isOpenConnectModal = false"
     >
       <h3 slot="title">
@@ -20,7 +21,7 @@
       </h3>
       <div class="relative mt-6">
         <HocLoading :status="status">
-          <ul class="divide-y divide-gray-800 border-gray-700 rounded-lg">
+          <ul class="divide-y divide-gray-800 border-gray-700 rounded-lg overflow-hidden">
             <Metamask />
             <Keplr />
             <Torus />

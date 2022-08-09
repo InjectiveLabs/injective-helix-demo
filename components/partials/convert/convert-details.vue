@@ -4,7 +4,7 @@
       <span class="text-gray-400 text-sm">
         {{ $t('trade.convert.rate') }}
       </span>
-      <ConvertRateTooltip>
+      <!-- <ConvertRateTooltip> -->
         <span v-if="pending" class="text-sm cursor-default">
           {{ $t('trade.convert.fetching_price') }}...
         </span>
@@ -17,7 +17,7 @@
           {{ toToken.symbol }}
         </span>
         <span v-else class="text-sm cursor-default"> -- </span>
-      </ConvertRateTooltip>
+      <!-- </ConvertRateTooltip> -->
     </div>
     <div class="flex items-center justify-between">
       <span class="text-gray-400 text-sm">
@@ -62,7 +62,7 @@ import {
   cosmosSdkDecToBigNumber,
   FeeDiscountAccountInfo
 } from '@injectivelabs/sdk-ts'
-import ConvertRateTooltip from './convert-rate-tooltip.vue'
+// import ConvertRateTooltip from './convert-rate-tooltip.vue'
 import {
   ONE_IN_BASE,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -72,16 +72,16 @@ import {
   calculateWorstExecutionPriceFromOrderbook
 } from '~/app/client/utils/spot'
 
-enum RateQuality {
-  Good = 'good',
-  Fair = 'fair',
-  Poor = 'poor'
-}
+// enum RateQuality {
+//   Good = 'good',
+//   Fair = 'fair',
+//   Poor = 'poor'
+// }
 
 export default Vue.extend({
-  components: {
-    ConvertRateTooltip
-  },
+  // components: {
+  //   ConvertRateTooltip
+  // },
 
   props: {
     fromToken: {
@@ -187,19 +187,19 @@ export default Vue.extend({
       return rate.toFormat()
     },
 
-    rateQuality(): RateQuality {
-      return RateQuality.Fair
-    },
+    // rateQuality(): RateQuality {
+    //   return RateQuality.Fair
+    // },
 
-    rateClass(): Object {
-      const { rateQuality } = this
+    // rateClass(): Object {
+    //   const { rateQuality } = this
 
-      return {
-        'text-green-500': rateQuality === RateQuality.Good,
-        'text-yellow-500': rateQuality === RateQuality.Fair,
-        'text-red-500': rateQuality === RateQuality.Poor
-      }
-    },
+    //   return {
+    //     'text-green-500': rateQuality === RateQuality.Good,
+    //     'text-yellow-500': rateQuality === RateQuality.Fair,
+    //     'text-red-500': rateQuality === RateQuality.Poor
+    //   }
+    // },
 
     feeRate(): BigNumberInBase {
       const { takerFeeRate, takerFeeRateDiscount } = this
