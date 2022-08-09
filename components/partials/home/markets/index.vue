@@ -25,7 +25,7 @@
                 'text-gray-500': filterType !== MarketFilterType.Volume
               }"
               text-sm
-              class="font-normal"
+              class="font-normal rounded"
               @click.stop="updateFilterType(MarketFilterType.Volume)"
             >
               <span class="uppercase text-xs">{{ $t('home.trending') }}</span>
@@ -36,7 +36,7 @@
                 'text-gray-500': filterType !== MarketFilterType.New
               }"
               text-sm
-              class="font-normal"
+              class="font-normal rounded"
               @click.stop="updateFilterType(MarketFilterType.New)"
             >
               <span class="uppercase text-xs">{{ $t('home.whatsNew') }}</span>
@@ -58,7 +58,7 @@
 
     <div v-if="filterType !== MarketFilterType.All" class="text-center">
       <nuxt-link :to="{ name: 'markets' }">
-        <VButton lg primary class="w-60 mt-6">
+        <VButton lg primary class="w-60 mt-6 rounded">
           {{ $t('home.viewAllMarkets') }}
         </VButton>
       </nuxt-link>

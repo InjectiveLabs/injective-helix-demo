@@ -9,16 +9,16 @@
     </span>
     <span class="xl:col-span-2">
       <div class="flex items-center justify-end xl:justify-start">
-        <div v-if="tokenLogo" class="w-6 h-6">
+        <div v-if="tokenLogo" class="w-4 h-4">
           <img
             :src="tokenLogo"
             :alt="balance.token.name"
             class="min-w-full h-auto rounded-full"
           />
         </div>
-        <div class="ml-3">
+        <div class="ml-2">
           <span
-            class="text-gray-200 font-bold"
+            class="text-white font-medium text-xs"
             data-cy="wallet-balance-token-symbol-table-data"
           >
             {{ balance.token.symbol }}
@@ -33,8 +33,12 @@
       class="xl:col-span-2 font-mono text-right whitespace-nowrap"
       data-cy="wallet-balance-total-table-data"
     >
-      <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-      <span v-else>{{ bankBalanceToString }}</span>
+      <span v-if="hideBalance" class="text-white font-medium text-xs">{{
+        HIDDEN_BALANCE_DISPLAY
+      }}</span>
+      <span v-else class="text-white font-medium text-xs">{{
+        bankBalanceToString
+      }}</span>
     </span>
     <span class="font-mono text-left xl:hidden">
       {{ $t('common.value') }}
@@ -43,16 +47,19 @@
       class="xl:col-span-4 font-mono whitespace-nowrap text-right"
       data-cy="wallet-balance-value-table-data"
     >
-      <span v-if="hideBalance">
+      <span v-if="hideBalance" class="text-white font-medium text-xs">
         {{ HIDDEN_BALANCE_DISPLAY }}
       </span>
       <span v-else class="flex items-end justify-end flex-col">
-        <span class="leading-4" data-cy="wallet-balance-value-usd-table-data">
+        <span
+          class="text-white font-medium text-xs"
+          data-cy="wallet-balance-value-usd-table-data"
+        >
           {{ totalInUsdToString }} USD
         </span>
         <span
           v-if="totalInBtc.gt(0)"
-          class="text-opacity-50 text-gray-200 text-2xs xs:ml-1 leading-4"
+          class="text-gray-500 font-medium text-xs mt-1"
           data-cy="wallet-balance-value-btc-table-data"
         >
           ≈ {{ totalInBtcToString }} BTC
@@ -60,24 +67,24 @@
       </span>
     </span>
     <div
-      class="col-span-2 xl:col-span-4 text-right text-primary-500 text-sm flex justify-around sm:justify-end items-center"
+      class="col-span-2 xl:col-span-4 text-right text-primary-500 text-sm flex justify-around sm:justify-end items-center gap-4"
     >
       <span
-        class="cursor-pointer"
+        class="cursor-pointer font-medium text-xs"
         data-cy="wallet-balance-deposit-link"
         @click="handleDepositClick"
       >
         {{ $t('common.deposit') }}
       </span>
       <span
-        class="cursor-pointer ml-6"
+        class="cursor-pointer font-medium text-xs"
         data-cy="wallet-balance-withdraw-link"
         @click="handleWithdrawClick"
       >
         {{ $t('common.withdraw') }}
       </span>
       <span
-        class="cursor-pointer ml-6"
+        class="cursor-pointer font-medium text-xs"
         data-cy="wallet-balance-transfer-link"
         @click="handleTransferClick"
       >

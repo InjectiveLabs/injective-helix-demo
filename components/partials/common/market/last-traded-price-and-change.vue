@@ -8,7 +8,7 @@
         v-if="[Change.Increase, Change.Decrease].includes(lastTradePriceChange)"
         class="transform w-3 h-3 mr-1"
         :class="{
-          'text-aqua-500 rotate-90': lastTradePriceChange === Change.Increase,
+          'text-green-500 rotate-90': lastTradePriceChange === Change.Increase,
           'text-red-500 -rotate-90': lastTradePriceChange === Change.Decrease
         }"
       />
@@ -16,7 +16,7 @@
         v-if="!lastTradedPrice.isNaN()"
         data-cy="markets-last-traded-price-table-data"
         :class="{
-          'text-aqua-500': lastTradePriceChange !== Change.Decrease,
+          'text-green-500': lastTradePriceChange !== Change.Decrease,
           'text-red-500': lastTradePriceChange === Change.Decrease
         }"
       >
@@ -27,7 +27,7 @@
 
     <div v-if="!change.isNaN()" class="mt-1 text-xs">
       <span
-        :class="change.gte(0) ? 'text-aqua-500' : 'text-red-500'"
+        :class="change.gte(0) ? 'text-green-500' : 'text-red-500'"
         data-cy="markets-change_24h-table-data"
       >
         {{ changeToFormat }}%

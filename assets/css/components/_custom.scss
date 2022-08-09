@@ -55,7 +55,7 @@
   @apply flex-1 w-full;
 
   th {
-    @apply pb-4 text-gray-200 uppercase;
+    @apply py-4 text-gray-200 uppercase;
   }
 }
 
@@ -141,6 +141,15 @@
   }
 }
 
+.button-spinner {
+  border-top-color: theme('colors.white');
+  animation: spin 0.6s ease-out infinite;
+
+  &.text-primary-500 {
+    border-top-color: theme('colors.primary.500');
+  }
+}
+
 [class*='bg-red-'] .spinner {
   border-top-color: theme('colors.gray.200');
 }
@@ -154,7 +163,7 @@
 }
 
 [class*='bg-gray-200'] .spinner {
-  border-top-color: theme('colors.primary.850');
+  border-top-color: theme('colors.primary.500');
 }
 
 [class*='text-primary-'].spinner {

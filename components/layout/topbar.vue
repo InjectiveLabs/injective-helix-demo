@@ -1,47 +1,42 @@
 <template>
   <header
-    class="relative z-1100 flex-shrink-0 flex h-14 bg-black shadow-top-bar-dark"
+    class="w-full z-1100 flex-shrink-0 flex h-12 lg:h-14 bg-gray-900 items-center"
+    :class="{ 'fixed': isSidebarOpen, 'relative': !isSidebarOpen }"
   >
-    <button
-      class="px-4 border-r border-gray-600 text-gray-200 lg:hidden"
-      @click.stop="handleClickOnSidebarToggle"
+    <div
+      class="cursor-pointer pl-6 lg:pr-6 lg:border-r flex items-center"
+      @click="$router.push({ name: 'index' })"
     >
-      <span class="sr-only">{{ $t('common.open') }}</span>
-      <IconMenu class="w-6 h-6" />
-    </button>
-    <div class="flex-1 px-2 lg:px-8 flex justify-end lg:justify-between">
+      <Logo class="w-auto h-6 lg:h-[30px]" alt="Helix" />
+      <LogoText class="block lg:hidden ml-2 h-6 lg:[h-30px]" />
+    </div>
+    <div class="flex-1 px-2 lg:px-6 flex justify-end lg:justify-between">
       <div
         class="relative h-0 -z-10 w-0 opacity-0 lg:h-full lg:z-0 lg:w-full lg:opacity-100 flex items-center"
       >
-        <div
-          class="py-px pr-8 border-r cursor-pointer"
-          @click="$router.push({ name: 'index' })"
-        >
-          <v-logo class="w-auto h-[30px]" alt="InjectivePro" />
-        </div>
-        <v-nav class="hidden lg:block ml-2" />
+        <Nav class="hidden lg:block" />
       </div>
-      <div class="py-3 flex">
-        <v-nav-item
+      <div class="flex items-center">
+        <NavItem
           v-if="isUserWalletConnected"
           class="hidden lg:flex"
           data-cy="header-activity-link"
           :to="{ name: 'activity' }"
         >
           {{ $t('navigation.activity') }}
-        </v-nav-item>
-        <v-nav-item
+        </NavItem>
+        <NavItem
           v-if="isUserWalletConnected"
           class="hidden lg:flex"
           data-cy="header-portfolio-link"
           :to="{ name: 'portfolio' }"
         >
           {{ $t('navigation.portfolio') }}
-        </v-nav-item>
+        </NavItem>
 
         <!--
         <div class="hidden xs:flex">
-          <v-nav-item-dummy
+          <NavItemDummy
             v-show="isUserWalletConnected"
             id="dashboard"
             @mouseenter.native="handleShowDropdown"
@@ -51,17 +46,17 @@
             @click.native="handleClickOnDashboard"
           >
             {{ $t('navigation.dashboard') }}
-          </v-nav-item-dummy>
+          </NavItemDummy>
         </div>
 
-        <VPopperBox
+        <PopperBox
           ref="popper-dashboard"
           class="popper px-4 py-4 rounded-lg flex flex-col flex-wrap text-xs absolute w-3xs"
           :class="[isMarketPage ? 'bg-gray-900' : 'bg-gray-800']"
           binding-element="#dashboard"
         >
           <div>
-            <v-nav-item
+            <NavItem
               :to="{ name: 'portfolio' }"
               class="hover:text-primary-500 inline-block hover:bg-transparent w-full mb-2"
               dense
@@ -74,8 +69,8 @@
                 </span>
                 {{ $t('navigation.portfolio') }}
               </span>
-            </v-nav-item>
-            <v-nav-item
+            </NavItem>
+            <NavItem
               :to="{ name: 'activity' }"
               class="hover:text-primary-500 inline-block hover:bg-transparent w-full"
               dense
@@ -88,46 +83,66 @@
                 </span>
                 {{ $t('navigation.activity') }}
               </span>
-            </v-nav-item>
+            </NavItem>
           </div>
-        </VPopperBox>
+        </PopperBox>
         -->
 
-        <v-user-wallet
+        <UserWallet
           v-if="isUserWalletConnected && isUserConnectedProcessCompleted"
         />
-        <v-user-wallet-connect
-          v-else
-          @wallet-connected="handleConnectedWallet"
-        />
+        <UserWalletConnect v-else @wallet-connected="handleConnectedWallet" />
       </div>
     </div>
+    <button
+      class="px-4 border-r border-gray-600 text-gray-200 lg:hidden"
+      @click.stop="handleClickOnSidebarToggle"
+    >
+      <template v-if="isSidebarOpen">
+        <span class="sr-only">{{ $t('common.close') }}</span>
+        <IconClose class="w-6 h-6" />
+      </template>
+      <template v-else>
+        <span class="sr-only">{{ $t('common.open') }}</span>
+        <IconMenu class="w-6 h-6" />
+      </template>
+    </button>
   </header>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import VUserWallet from './wallet/wallet.vue'
-import VUserWalletConnect from './wallet/connect.vue'
-import VNavItem from './nav/item.vue'
-import VNav from '~/components/layout/nav/index.vue'
-import VLogo from '~/components/elements/logo.vue'
+import UserWallet from './wallet/wallet.vue'
+import UserWalletConnect from './wallet/connect.vue'
+import NavItem from './nav/item.vue'
+import Nav from '~/components/layout/nav/index.vue'
+import Logo from '~/components/elements/logo.vue'
+import LogoText from '~/components/elements/logo-text.vue'
 import {
   derivativeMarketRouteNames,
   spotMarketRouteNames
 } from '~/app/data/market'
-// import VNavItemDummy from './nav/item-dummy.vue'
-// import VPopperBox from '~/components/elements/popper-box.vue'
+// import NavItemDummy from './nav/item-dummy.vue'
+// import PopperBox from '~/components/elements/popper-box.vue'
 
 export default Vue.extend({
   components: {
-    VNav,
-    VNavItem,
-    VUserWallet,
-    VLogo,
-    // VNavItemDummy,
-    // VPopperBox,
-    VUserWalletConnect
+    Nav,
+    NavItem,
+    UserWallet,
+    Logo,
+    LogoText,
+    // NavItemDummy,
+    // PopperBox,
+    UserWalletConnect
+  },
+
+  props: {
+    isSidebarOpen: {
+      required: true,
+      default: false,
+      type: Boolean
+    }
   },
 
   data() {
@@ -170,7 +185,9 @@ export default Vue.extend({
 
   methods: {
     handleClickOnSidebarToggle() {
-      this.$emit('sidebar-opened')
+      const { isSidebarOpen } = this
+
+      this.$emit(isSidebarOpen ? 'sidebar-closed' : 'sidebar-opened')
     },
 
     handleClickOnDashboard() {

@@ -20,7 +20,7 @@
       v-slot="{ invalid }"
       ref="form"
     >
-      <div>
+      <div class="mb-4">
         <TransferDirectionSwitch
           v-if="bridgeType === BridgeType.Transfer"
           v-bind="{ transferDirection }"
@@ -52,7 +52,7 @@
           </VInput>
         </ValidationProvider>
       </div>
-      <div v-if="isWithdrawToInjectiveAddress" class="mt-6 w-full">
+      <div v-if="isWithdrawToInjectiveAddress" class="my-4 w-full">
         <div class="flex items-center justify-between text-gray-200">
           <span v-tooltip="{ content: $t('memo.memoTooltip') }" class="text-xs">
             {{ $t('memo.memo') }}
@@ -70,9 +70,8 @@
           </VInput>
         </div>
       </div>
-      <div v-if="!isIbcTransfer" class="mt-6">
+      <div v-if="!isIbcTransfer">
         <div v-if="hasAllowance">
-          <Balance :balance="balance" :token="form.token" class="mb-2" />
           <TokenSelector
             :amount="form.amount"
             :value="form.token"
@@ -84,18 +83,19 @@
             small
             show-input
             show-custom-indicator
+            show-balance
             show-errors-below
             @input:amount="handleAmountChange"
             @input:token="handleTokenChange"
           >
           </TokenSelector>
         </div>
-        <div class="mt-8 text-center">
+        <div class="mt-6 text-center">
           <VButton
             v-if="shouldConnectMetamask"
             lg
             primary
-            class="w-full font-bold"
+            class="w-full font-semibold rounded"
             data-cy="transfer-modal-transfer-now-button"
             :disabled="true"
             @click="() => {}"
@@ -112,7 +112,7 @@
               v-else
               lg
               primary
-              class="w-full xs:w-1/2 font-bold"
+              class="w-full font-semibold rounded"
               data-cy="transfer-modal-transfer-now-button"
               :disabled="invalid"
               @click="handleTransferNowClick"
@@ -144,7 +144,6 @@ import { Token } from '@injectivelabs/token-metadata'
 import { BridgeType, Modal, TransferDirection } from '~/types'
 import TokenSelector from '~/components/partials/portfolio/bridge/token-selector/index.vue'
 import VAllowance from '~/components/elements/allowance.vue'
-import Balance from '~/components/partials/portfolio/bridge/balance.vue'
 import NetworkSelect from '~/components/partials/portfolio/bridge/network-select.vue'
 import IbcTransferNote from '~/components/partials/portfolio/bridge/ibc-transfer-note.vue'
 import TransferDirectionSwitch from '~/components/partials/portfolio/bridge/transfer-direction-switch.vue'
@@ -158,8 +157,7 @@ export default Vue.extend({
     IbcTransferNote,
     TransferDirectionSwitch,
     ValidationProvider,
-    VAllowance,
-    Balance
+    VAllowance
   },
 
   props: {

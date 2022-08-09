@@ -36,7 +36,7 @@
         <span
           :class="{
             'text-red-500': lastTradedPriceChange === Change.Decrease,
-            'text-aqua-500': lastTradedPriceChange !== Change.Decrease
+            'text-green-500': lastTradedPriceChange !== Change.Decrease
           }"
           data-cy="orderbook-last-traded-price-text-content"
           class="font-bold font-mono text-base lg:text-lg 4xl:text-xl"
@@ -51,7 +51,7 @@
           :class="{
             'text-red-500 -rotate-90':
               lastTradedPriceChange === Change.Decrease,
-            'text-aqua-500 rotate-90': lastTradedPriceChange === Change.Increase
+            'text-green-500 rotate-90': lastTradedPriceChange === Change.Increase
           }"
         />
         <span

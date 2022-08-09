@@ -23,7 +23,7 @@
           :class="[
             lg ? 'min-w-12 w-12 h-12' : 'w-4 h-4 md:w-6 md:h-6',
             {
-              'bg-primary-850': isSelected,
+              'bg-primary-500': isSelected,
               'bg-gray-600  group-hover:bg-primary-850': !isSelected
             }
           ]"

@@ -49,6 +49,7 @@
           "
           red-outline
           sm
+          class="rounded"
           @click.stop="handleCancelAllClick"
         >
           {{ $t('trade.cancelAllOrders') }}
@@ -60,6 +61,7 @@
           "
           red-outline
           sm
+          class="rounded"
           @click.stop="handleCloseAllPositionsClick"
         >
           {{ $t('trade.closeAllPositions') }}

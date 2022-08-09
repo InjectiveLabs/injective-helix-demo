@@ -42,7 +42,7 @@
       >
         <div
           v-show="isOpen"
-          class="inline-block align-bottom bg-gray-800 shadow-sm rounded-xl text-left transform transition-all w-full h-full"
+          class="inline-block align-bottom bg-gray-950 shadow-none rounded-lg text-left transform transition-all w-full h-full"
           :class="classes"
           role="dialog"
           :aria-modal="isOpen"
@@ -53,7 +53,7 @@
               <div class="block w-full">
                 <div class="flex items-center justify-between">
                   <div
-                    class="text-xs uppercase text-gray-100 tracking-wider font-semibold flex-grow"
+                    class="text-sm uppercase text-white font-semibold flex-grow"
                   >
                     <slot name="title" />
                   </div>

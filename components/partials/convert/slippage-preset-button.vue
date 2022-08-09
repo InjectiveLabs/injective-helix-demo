@@ -3,7 +3,7 @@
     :disabled="false"
     :ghost="false"
     primary
-    class="rounded-md text-md h-[34px] p-0 tracking-wider col-span-2 flex items-center justify-center hover:bg-primary-500 hover:bg-opacity-10 hover:border hover:border-primary-600 hover:text-primary-600"
+    class="rounded text-md h-[34px] p-0 tracking-wider col-span-2 flex items-center justify-center hover:bg-primary-500 hover:bg-opacity-10 hover:border hover:border-primary-600 hover:text-primary-600"
     :class="classes"
     @click.stop="handleClick"
   >

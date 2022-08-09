@@ -14,6 +14,8 @@ export default {
     side: 'Side',
     side_tooltip: 'The side of your trade: long or short',
     price: 'Price',
+    trigger_price: 'Trigger Price',
+    limit_price: 'Limit Price',
     amount: 'Amount',
     min_received_amount: 'Mininum Received Amount',
     averagePrice: 'Average Price',
@@ -27,7 +29,9 @@ export default {
     fees_tooltip:
       'Trading fees associated with the trade. Trading fees on Injective can be lowered using rebates.',
     buy: 'Buy',
+    buyLong: 'Buy/Long',
     sell: 'Sell',
+    sellShort: 'Sell/Short',
     unfilled: 'Unfilled',
     filter: 'Filter by asset',
     cancelAll: 'Cancel All',
@@ -40,6 +44,8 @@ export default {
     leverage: 'Leverage',
     limit: 'Limit',
     market: 'Market',
+    stopLimit: 'Stop-Limit',
+    stopMarket: 'Stop-Market',
     margin: 'Margin',
     margin_tooltip: 'The total margin required to execute the trade.',
     emptyOrders: 'No orders found',
@@ -237,9 +243,11 @@ export default {
       'Your transaction might not be executed if slippage % is set too low',
     limited_orderbook_liquidity:
       'Percentage amounts are limited by the liquidity available on the orderbook',
+    details: 'Details',
     binaryOptions: {
       settlement: 'Settlement',
       settlement_tooltip: 'Settlement Tooltip'
-    }
+    },
+    slippage_cancellation_notice: 'Note: If the execution price exceeds the 0.5% slippage protection, your order will be automatically cancelled.'
   }
 }

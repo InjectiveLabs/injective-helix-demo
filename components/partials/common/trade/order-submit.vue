@@ -13,23 +13,19 @@
 
     <VButton
       lg
+      :outline="disabled"
       :status="status"
-      :disabled="
-        hasError ||
-        !isUserWalletConnected ||
-        !hasInjForGasOrNotKeplr ||
-        !hasAmount ||
-        !executionPrice.gt('0')
-      "
+      :disabled="disabled"
       :ghost="hasError"
-      :aqua="(!hasInputErrors || hasAdvancedSettingsErrors) && isOrderTypeBuy"
+      :green="(!hasInputErrors || hasAdvancedSettingsErrors) && isOrderTypeBuy"
       :red="(!hasInputErrors || hasAdvancedSettingsErrors) && !isOrderTypeBuy"
-      class="w-full"
+      class="w-full rounded"
       data-cy="trading-page-execute-button"
       @click.stop="onSubmit"
     >
-      {{ $t(orderTypeBuy ? 'trade.buy' : 'trade.sell') }}
+      {{ buttonLabel }}
     </VButton>
+
     <VModalOrderConfirm @confirmed="$emit('submit')" />
   </div>
 </template>
@@ -42,7 +38,8 @@ import {
   UiSpotMarketWithToken,
   DerivativeOrderSide,
   UiDerivativeMarketWithToken,
-  UiDerivativeLimitOrder
+  UiDerivativeLimitOrder,
+  MarketType
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import { Modal } from '~/types'
@@ -128,6 +125,42 @@ export default Vue.extend({
   },
 
   computed: {
+    marketType(): MarketType {
+      const { market } = this
+
+      return market.type
+    },
+
+    disabled(): boolean {
+      const {
+        hasError,
+        isUserWalletConnected,
+        hasInjForGasOrNotKeplr,
+        hasAmount,
+        executionPrice
+      } = this
+
+      return (
+        hasError ||
+        !isUserWalletConnected ||
+        !hasInjForGasOrNotKeplr ||
+        !hasAmount ||
+        !executionPrice.gt('0')
+      )
+    },
+
+    buttonLabel(): string {
+      const { orderTypeBuy, marketType } = this
+
+      if (marketType === MarketType.Spot) {
+        return orderTypeBuy ? this.$t('trade.buy') : this.$t('trade.sell')
+      }
+
+      return orderTypeBuy
+        ? this.$t('trade.buyLong')
+        : this.$t('trade.sellShort')
+    },
+
     hasEnoughInjForGas(): boolean {
       return this.$accessor.bank.hasEnoughInjForGas
     },
@@ -196,7 +229,7 @@ export default Vue.extend({
         lastTradedPrice
       } = this
 
-      if (!market || !tradingTypeMarket || executionPrice.lte(0)) {
+      if (!market || tradingTypeMarket || executionPrice.lte(0)) {
         return false
       }
 

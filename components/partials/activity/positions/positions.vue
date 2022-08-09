@@ -102,7 +102,7 @@
         </portal>
       </VCardTableWrap>
 
-      <!-- <Pagination
+      <Pagination
         v-if="status.isIdle()"
         class="mt-4"
         v-bind="{
@@ -113,7 +113,7 @@
         }"
         @update:limit="handleLimitChangeEvent"
         @update:page="handlePageChangeEvent"
-      /> -->
+      />
     </div>
   </HocLoading>
 </template>
@@ -132,7 +132,7 @@ import MobilePosition from '~/components/partials/common/position/mobile-positio
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import { TradeSelectorType } from '~/types/enums'
-// import Pagination from '~/components/partials/common/pagination.vue'
+import Pagination from '~/components/partials/common/pagination.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
 
 export default Vue.extend({
@@ -141,8 +141,8 @@ export default Vue.extend({
     FilterSelector,
     MobilePosition,
     PositionTableHeader,
-    TableBody
-    // Pagination
+    TableBody,
+    Pagination
   },
 
   data() {

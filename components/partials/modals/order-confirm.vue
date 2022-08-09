@@ -19,14 +19,14 @@
       <div class="mt-6 flex items-center justify-center">
         <VButton
           lg
-          class="mr-4"
+          class="mr-4 rounded"
           primary
           data-cy="price-deviation-modal-confirm-button"
           @click.stop="handleConfirm"
         >
           {{ $t('common.confirm') }}
         </VButton>
-        <VButton lg class="mr-4" red @click.stop="handleCancel">
+        <VButton lg class="mr-4 rounded" red @click.stop="handleCancel">
           {{ $t('common.cancel') }}
         </VButton>
       </div>

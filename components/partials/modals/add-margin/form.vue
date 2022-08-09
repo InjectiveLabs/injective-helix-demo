@@ -51,7 +51,7 @@
           <div class="w-full mt-6 text-center">
             <VButton
               lg
-              class="w-full"
+              class="w-full rounded"
               :status="status"
               :primary="!invalid"
               :disabled="!form.amount || invalid"

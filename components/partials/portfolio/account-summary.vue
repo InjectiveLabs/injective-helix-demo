@@ -5,22 +5,18 @@
       data-cy="account-summary-toggle-icon"
       @click="toggleHideBalance"
     >
-      <h4 class="text-sm uppercase text-gray-400">
+      <h4 class="text-sm uppercase text-gray-500">
         {{ $t('portfolio.accountSummary') }}
       </h4>
       <IconShow
-        class="w-4 h-4 ml-4 text-gray-400 hover:text-primary-500"
+        class="w-4 h-4 ml-4 text-gray-500 hover:text-primary-500"
         data-cy="account-summary-visibility-toggle-button"
       />
     </div>
-    <div
-      class="flex flex-wrap items-center justify-center sm:justify-start lg:justify-between mt-3 sm:mt-4"
-    >
-      <div
-        class="flex tracking-wide items-end flex-wrap justify-center sm:justify-start"
-      >
+    <div class="flex flex-wrap items-center justify-between mt-2">
+      <div class="flex items-center flex-wrap justify-center sm:justify-start">
         <h2
-          class="text-white text-2xl sm:text-3xl xl:text-4xl mr-4"
+          class="text-white text-2xl sm:text-3xl xl:text-4xl mr-2 font-semibold"
           data-cy="account-summary-usd-text-content-parent"
         >
           <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }} </span>
@@ -31,7 +27,7 @@
         </h2>
         <span
           v-if="!hideBalance"
-          class="text-2xl text-gray-400 sm:mt-4 lg:mt-0"
+          class="text-2xl text-gray-400"
           data-cy="account-summary-btc-text-content"
         >
           <span v-if="status.isNotLoading()">
@@ -39,12 +35,15 @@
           </span>
         </span>
       </div>
-      <div v-if="status.isNotLoading()" class="flex items-center mt-4 lg:mt-0">
+      <div
+        v-if="status.isNotLoading()"
+        class="flex justify-end items-center gap-4 mt-2 sm:mt-0"
+      >
         <VButton
           outline
           md
-          class="mr-6"
           data-cy="account-summary-deposit-button"
+          class="rounded"
           @click="handleDepositClick"
         >
           <span class="text-primary-500">{{ $t('common.deposit') }}</span>
@@ -52,8 +51,8 @@
         <VButton
           outline
           md
-          class="mr-4"
           data-cy="account-summary-withdraw-button"
+          class="rounded"
           @click="handleWithdrawClick"
         >
           <span class="text-primary-500">{{ $t('common.withdraw') }}</span>
@@ -62,6 +61,7 @@
           outline
           md
           data-cy="account-summary-transfer-button"
+          class="rounded"
           @click="handleTransferClick"
         >
           <span class="text-primary-500">{{ $t('common.transfer') }}</span>

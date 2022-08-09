@@ -38,14 +38,14 @@
           v-if="!lastTradedPrice.isNaN()"
           class="transform w-3 h-3 mr-1"
           :class="{
-            'text-aqua-500 rotate-90': lastPriceChange !== Change.Decrease,
+            'text-green-500 rotate-90': lastPriceChange !== Change.Decrease,
             'text-red-500 -rotate-90': lastPriceChange === Change.Decrease
           }"
         />
         <span
           v-if="!lastTradedPrice.isNaN()"
           :class="{
-            'text-aqua-500': lastPriceChange !== Change.Decrease,
+            'text-green-500': lastPriceChange !== Change.Decrease,
             'text-red-500': lastPriceChange === Change.Decrease
           }"
         >
@@ -66,7 +66,7 @@
       >
         <span
           v-if="!change.isNaN()"
-          :class="change.gte(0) ? 'text-aqua-500' : 'text-red-500'"
+          :class="change.gte(0) ? 'text-green-500' : 'text-red-500'"
         >
           {{ changeToFormat }}%
         </span>
