@@ -59,6 +59,7 @@
       :has-input-errors.sync="hasInputErrors"
       :has-advanced-settings-errors.sync="hasAdvancedSettingsErrors"
       @update-price-from-last-traded-price="updatePriceFromLastTradedPrice"
+      @update-trigger-price="updateTriggerPrice"
     />
 
     <OrderDetailsWrapper
@@ -173,6 +174,7 @@ const initialForm = (): TradeForm => ({
   quoteAmount: '',
   postOnly: false,
   price: '',
+  triggerPrice: '',
   leverage: '1',
   slippageTolerance: '0.5',
   proportionalPercentage: 0
@@ -472,6 +474,10 @@ export default Vue.extend({
 
     price(): BigNumberInBase {
       return new BigNumberInBase(this.form.price)
+    },
+
+    triggerPrice(): BigNumberInBase {
+      return new BigNumberInBase(this.form.triggerPrice)
     },
 
     showReduceOnly(): boolean {
@@ -878,7 +884,45 @@ export default Vue.extend({
       this.form.price = lastTradedPrice.toFixed(market.priceDecimals)
     },
 
+    updateTriggerPrice() {
+      console.log('update trigger price')
+    },
+
     submitLimitOrder() {
+      const {
+        orderTypeToSubmit,
+        market,
+        notionalWithLeverage,
+        price,
+        orderTypeReduceOnly,
+        amount
+      } = this
+
+      if (!market) {
+        return
+      }
+
+      this.status.setLoading()
+
+      this.$accessor.derivatives
+        .submitLimitOrder({
+          price,
+          margin: notionalWithLeverage,
+          orderType: orderTypeToSubmit,
+          reduceOnly: orderTypeReduceOnly,
+          quantity: amount
+        })
+        .then(() => {
+          this.$toast.success(this.$t('trade.order_placed'))
+          this.$set(this, 'form', initialForm())
+        })
+        .catch(this.$onRejected)
+        .finally(() => {
+          this.status.setIdle()
+        })
+    },
+
+    submitStopLimitOrder() {
       const {
         orderTypeToSubmit,
         market,
@@ -946,12 +990,55 @@ export default Vue.extend({
         })
     },
 
-    onSubmit() {
-      const { tradingTypeMarket } = this
+    submitStopMarketOrder() {
+      const {
+        orderType,
+        orderTypeReduceOnly,
+        market,
+        notionalWithLeverageBasedOnWorstPrice,
+        worstPrice,
+        triggerPrice,
+        amount
+      } = this
 
-      return tradingTypeMarket
-        ? this.submitMarketOrder()
-        : this.submitLimitOrder()
+      if (!market) {
+        return
+      }
+
+      this.status.setLoading()
+
+      this.$accessor.derivatives
+        .submitStopMarketOrder({
+          orderType,
+          margin: notionalWithLeverageBasedOnWorstPrice,
+          reduceOnly: orderTypeReduceOnly,
+          price: worstPrice,
+          triggerPrice,
+          quantity: amount
+        })
+        .then(() => {
+          this.$toast.success(this.$t('trade.trade_placed'))
+          this.$set(this, 'form', initialForm())
+        })
+        .catch(this.$onRejected)
+        .finally(() => {
+          this.status.setIdle()
+        })
+    },
+
+    onSubmit() {
+      const { tradingType } = this
+
+      switch (tradingType.toString()) {
+        case TradeExecutionType.LimitFill.toString():
+          return this.submitLimitOrder()
+        case TradeExecutionType.Market.toString():
+          return this.submitMarketOrder()
+        case 'stopLimit':
+          return this.submitStopLimitOrder()
+        case 'stopMarket':
+          return this.submitStopMarketOrder()
+      }
     }
   }
 })
