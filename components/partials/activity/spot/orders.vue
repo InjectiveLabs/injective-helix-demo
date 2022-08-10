@@ -3,18 +3,19 @@
     <div class="w-full h-full flex flex-col">
       <VCardTableWrap>
         <template #actions>
-          <div
-            class="col-span-12 sm:col-span-6 lg:col-span-4 grid grid-cols-5 gap-4"
-          >
-            <VSearch
+          <div class="col-span-12 lg:col-span-8 grid grid-cols-5 sm:grid-cols-4 gap-4 w-full">
+            <TokenSelector
+              class="token-selector__token-only"
+              :value="selectedToken"
+              :options="supportedTokens"
+              :placeholder="'Search asset'"
+              :balance="balance"
               dense
-              class="col-span-3"
-              :wrapper-classes="'rounded-full'"
-              data-cy="universal-table-filter-by-asset-input"
-              :placeholder="$t('trade.filter')"
-              :search="search"
-              @searched="handleInputOnSearch"
+              rounded
+              show-default-indicator
+              @input:token="handleSelectToken"
             />
+
             <FilterSelector
               class="col-span-2"
               data-cy="universal-table-filter-by-side-drop-down"
@@ -117,11 +118,16 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Status, StatusType } from '@injectivelabs/utils'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
+  BankBalanceWithTokenAndBalance,
+  BankBalanceWithTokenAndBalanceInBase,
+  SpotOrderSide,
   UiSpotLimitOrder,
-  UiSpotMarketWithToken
+  UiSpotMarketWithToken,
+  ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
+import { Token } from '@injectivelabs/token-metadata'
 import Order from '~/components/partials/common/spot/order.vue'
 import OrdersTableHeader from '~/components/partials/common/spot/orders-table-header.vue'
 import MobileOrder from '~/components/partials/common/spot/mobile-order.vue'
@@ -130,6 +136,21 @@ import TableBody from '~/components/elements/table-body.vue'
 import { TradeSelectorType } from '~/types/enums'
 import Pagination from '~/components/partials/common/pagination.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
+import TokenSelector from '@/components/partials/portfolio/bridge/token-selector/select.vue'
+
+function stringToSpotOrderSide(side: string): SpotOrderSide | undefined {
+  switch (side) {
+    case 'buy': {
+      return SpotOrderSide.Buy
+    }
+    case 'taker': {
+      return SpotOrderSide.Sell
+    }
+    default: {
+      return undefined
+    }
+  }
+}
 
 export default Vue.extend({
   components: {
@@ -138,7 +159,8 @@ export default Vue.extend({
     MobileOrder,
     OrdersTableHeader,
     TableBody,
-    Pagination
+    Pagination,
+    TokenSelector
   },
 
   data() {
@@ -148,7 +170,8 @@ export default Vue.extend({
       side: undefined as string | undefined,
       status: new Status(StatusType.Loading),
       page: 1,
-      limit: UI_DEFAULT_PAGINATION_LIMIT_COUNT
+      limit: UI_DEFAULT_PAGINATION_LIMIT_COUNT,
+      selectedToken: undefined as Token | undefined
     }
   },
 
@@ -186,13 +209,30 @@ export default Vue.extend({
     },
 
     totalCount(): number {
-      return 10
+      return this.$accessor.spot.subaccountOrdersTotal
     },
 
     totalPages(): number {
       const { totalCount, limit } = this
 
       return Math.ceil(totalCount / limit)
+    },
+
+    balance(): BigNumberInBase {
+      return ZERO_IN_BASE
+    },
+
+    supportedTokens(): BankBalanceWithTokenAndBalanceInBase[] {
+      const supportedTokens = this.$store.state.activity.supportedTokens
+
+      return supportedTokens.filter(
+        (token: BankBalanceWithTokenAndBalance) =>
+          !!this.markets.find(
+            (market) =>
+              market.baseToken.denom === token.denom ||
+              market.quoteToken.denom === token.denom
+          )
+      )
     }
   },
 
@@ -207,13 +247,25 @@ export default Vue.extend({
     updateOrders(): Promise<void> {
       this.status.setLoading()
 
+      const orderSide = this.side ? stringToSpotOrderSide(this.side) : undefined
+
+      const marketId = this.markets.find(m => {
+        return m.baseToken.symbol === this.selectedToken?.symbol || m.quoteToken.symbol === this.selectedToken?.symbol
+      })?.marketId
+
+      // const marketIds = this.markets.map(market => market.marketId)
+
       return Promise.all([
-        this.$accessor.spot.fetchSubaccountOrders(
-          // {
-          //   skip: (this.page - 1) * this.limit,
-          //   limit: this.limit
-          // }
-        )
+        this.$accessor.spot.fetchSubaccountOrders({
+          pagination: {
+            skip: (this.page - 1) * this.limit,
+            limit: this.limit
+          },
+          filters: {
+            marketId,
+            orderSide
+          }
+        })
       ])
         .then(() => {
           //
@@ -266,6 +318,12 @@ export default Vue.extend({
 
     handlePageChangeEvent(page: number) {
       this.page = page
+
+      this.updateOrders()
+    },
+
+    handleSelectToken(token: Token) {
+      this.selectedToken = token
 
       this.updateOrders()
     }

@@ -7,7 +7,7 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types/dist/trade'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { PaginationOption } from '@injectivelabs/sdk-ts'
+import { PaginationOption, SpotOrderSide } from '@injectivelabs/sdk-ts'
 
 export interface DOMEvent<T extends EventTarget> extends Event {
   target: T
@@ -63,6 +63,7 @@ export interface FilterOptions {
   marketId?: string
   marketIds?: string[]
   direction?: TradeDirection
+  orderSide?: SpotOrderSide
   type?: TradeExecutionType,
   denom?: string
 }

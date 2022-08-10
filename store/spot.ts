@@ -55,7 +55,8 @@ const initialStateFactory = () => ({
   subaccountTrades: [] as UiSpotTrade[],
   subaccountTradesEndTime: 0 as number,
   subaccountTradesTotal: 0 as number,
-  subaccountOrders: [] as UiSpotLimitOrder[]
+  subaccountOrders: [] as UiSpotLimitOrder[],
+  subaccountOrdersTotal: 0 as number
 })
 
 const initialState = initialStateFactory()
@@ -70,6 +71,7 @@ export const state = () => ({
   subaccountTradesEndTime: initialState.subaccountTradesEndTime as number,
   subaccountTradesTotal: initialState.subaccountTradesTotal as number,
   subaccountOrders: initialState.subaccountOrders as UiSpotLimitOrder[],
+  subaccountOrdersTotal: initialState.subaccountOrdersTotal as number,
   orderbook: initialState.orderbook as UiSpotOrderbook | undefined
 })
 
@@ -172,6 +174,10 @@ export const mutations = {
 
   setSubaccountTradesTotal(state: SpotStoreState, total: number) {
     state.subaccountTradesTotal = total
+  },
+
+  setSubaccountOrdersTotal(state: SpotStoreState, total: number) {
+    state.subaccountOrdersTotal = total
   },
 
   setSubaccountOrders(
@@ -469,10 +475,7 @@ export const actions = actionTree(
       })
     },
 
-    async fetchSubaccountOrders(
-      { commit }
-      // activityFetchOptions: ActivityFetchOptions | undefined
-    ) {
+    async fetchSubaccountOrders({ commit }, activityFetchOptions: ActivityFetchOptions | undefined) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -480,15 +483,22 @@ export const actions = actionTree(
         return
       }
 
-      // const pagination = fetchPositionsOptions?.pagination
-      // const filters = fetchPositionsOptions?.filters
+      const pagination = activityFetchOptions?.pagination
+      const filters = activityFetchOptions?.filters
 
-      commit(
-        'setSubaccountOrders',
-        await exchangeSpotApi.fetchOrders({
-          subaccountId: subaccount.subaccountId
-        })
-      )
+      const { orders, paging } = await exchangeSpotApi.fetchOrders({
+        marketId: filters?.marketId,
+        subaccountId: subaccount.subaccountId,
+        orderSide: filters?.orderSide,
+        pagination: {
+          skip: pagination ? pagination.skip : 0,
+          limit: pagination ? pagination.limit : 0
+        }
+      })
+
+      commit('setSubaccountOrdersTotal', paging.total)
+
+      commit('setSubaccountOrders', orders)
     },
 
     async fetchOrderbook({ state, commit }) {

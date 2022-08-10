@@ -12,7 +12,7 @@ import {
   getAddressFromInjectiveAddress,
   MsgSendToEth
 } from '@injectivelabs/sdk-ts'
-import { Token, Erc20Token } from '@injectivelabs/token-metadata'
+import { Erc20Token, Token } from '@injectivelabs/token-metadata'
 import {
   msgBroadcastClient,
   tokenPrice,

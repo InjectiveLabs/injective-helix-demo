@@ -124,7 +124,7 @@ import {
   UiSpotTrade,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
-import { Token, Erc20Token } from '@injectivelabs/token-metadata'
+import { Erc20Token, Token } from '@injectivelabs/token-metadata'
 
 import {
   BigNumberInBase,
