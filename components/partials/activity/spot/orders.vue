@@ -3,55 +3,56 @@
     <div class="w-full h-full flex flex-col">
       <VCardTableWrap>
         <template #actions>
-          <div class="col-span-12 lg:col-span-8 grid grid-cols-5 sm:grid-cols-4 gap-4 w-full">
+          <div class="col-span-12 grid grid-cols-12 gap-4 w-full">
             <TokenSelector
-              class="token-selector__token-only"
+              class="token-selector__token-only col-span-4 md:col-span-3 lg:col-span-2"
               :value="selectedToken"
               :options="supportedTokens"
               :placeholder="'Search asset'"
               :balance="balance"
               dense
-              rounded
               show-default-indicator
               @input:token="handleSelectToken"
             />
 
             <FilterSelector
-              class="col-span-2"
+              class="col-span-4 md:col-span-3 lg:col-span-2"
               data-cy="universal-table-filter-by-side-drop-down"
               :type="TradeSelectorType.Side"
               :value="side"
               @click="handleSideClick"
             />
-          </div>
 
-          <div
-            v-if="filteredOrders.length > 0"
-            class="col-span-12 flex justify-between items-center sm:hidden mt-3 text-xs px-3"
-          >
-            <span class="tracking-widest uppercase tracking-3">
-              {{ $t('trade.side') }} / {{ $t('trade.market') }}
-            </span>
-            <span
-              class="text-red-550 leading-5 cursor-pointer"
-              @click.stop="handleCancelOrders"
-            >
-              {{ $t('trade.cancelAll') }}
-            </span>
-          </div>
+            <div class="hidden md:block md:col-span-3 lg:col-span-6" />
 
-          <div
-            class="col-span-6 lg:col-span-8 sm:text-right mt-0 hidden sm:block"
-          >
-            <VButton
+            <div
               v-if="filteredOrders.length > 0"
-              red-outline
-              md
-              data-cy="activity-cancel-all-button"
-              @click.stop="handleCancelOrders"
+              class="col-span-4 md:col-span-3 lg:col-span-2 flex justify-between items-center sm:hidden mt-3 text-xs px-3"
             >
-              {{ $t('trade.cancelAllOrders') }}
-            </VButton>
+              <span class="tracking-widest uppercase tracking-3">
+                {{ $t('trade.side') }} / {{ $t('trade.market') }}
+              </span>
+              <span
+                class="text-red-550 leading-5 cursor-pointer"
+                @click.stop="handleCancelOrders"
+              >
+                {{ $t('trade.cancelAll') }}
+              </span>
+            </div>
+
+            <div
+              class="col-span-4 md:col-span-3 lg:col-span-2 sm:text-right mt-0 hidden sm:block"
+            >
+              <VButton
+                v-if="filteredOrders.length > 0"
+                red-outline
+                md
+                data-cy="activity-cancel-all-button"
+                @click.stop="handleCancelOrders"
+              >
+                {{ $t('trade.cancelAllOrders') }}
+              </VButton>
+            </div>
           </div>
         </template>
 
@@ -122,7 +123,6 @@ import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
   BankBalanceWithTokenAndBalance,
   BankBalanceWithTokenAndBalanceInBase,
-  SpotOrderSide,
   UiSpotLimitOrder,
   UiSpotMarketWithToken,
   ZERO_IN_BASE
@@ -137,20 +137,7 @@ import { TradeSelectorType } from '~/types/enums'
 import Pagination from '~/components/partials/common/pagination.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
 import TokenSelector from '@/components/partials/portfolio/bridge/token-selector/select.vue'
-
-function stringToSpotOrderSide(side: string): SpotOrderSide | undefined {
-  switch (side) {
-    case 'buy': {
-      return SpotOrderSide.Buy
-    }
-    case 'taker': {
-      return SpotOrderSide.Sell
-    }
-    default: {
-      return undefined
-    }
-  }
-}
+import { stringToSpotOrderSide } from '@/components/partials/activity/common/utils'
 
 export default Vue.extend({
   components: {
@@ -185,27 +172,34 @@ export default Vue.extend({
     },
 
     filteredOrders(): UiSpotLimitOrder[] {
-      const { markets, search, orders, side } = this
+      const {
+        // markets,
+        // search,
+        orders
+        // side
+      } = this
 
-      return orders.filter((o) => {
-        const market = markets.find((m) => m.marketId === o.marketId)
+      // return orders.filter((o) => {
+      //   const market = markets.find((m) => m.marketId === o.marketId)
 
-        if (!market) {
-          return false
-        }
+      //   if (!market) {
+      //     return false
+      //   }
 
-        if (!search && !side) {
-          return true
-        }
+      //   if (!search && !side) {
+      //     return true
+      //   }
 
-        const isPartOfSearchFilter =
-          !search ||
-          market.ticker.toLowerCase().includes(search.trim().toLowerCase())
+      //   const isPartOfSearchFilter =
+      //     !search ||
+      //     market.ticker.toLowerCase().includes(search.trim().toLowerCase())
 
-        const isPartOfSideFilter = !side || o.orderSide === side
+      //   const isPartOfSideFilter = !side || o.orderSide === side
 
-        return isPartOfSearchFilter && isPartOfSideFilter
-      })
+      //   return isPartOfSearchFilter && isPartOfSideFilter
+      // })
+
+      return orders
     },
 
     totalCount(): number {
@@ -263,6 +257,7 @@ export default Vue.extend({
           },
           filters: {
             marketId,
+            // marketIds,
             orderSide
           }
         })
@@ -300,10 +295,6 @@ export default Vue.extend({
           this.$toast.success(this.$t('trade.orders_cancelled'))
         })
         .catch(this.$onRejected)
-    },
-
-    handleInputOnSearch(search: string) {
-      this.search = search
     },
 
     handleSideClick(side: string | undefined) {

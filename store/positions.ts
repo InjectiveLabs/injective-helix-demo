@@ -24,19 +24,24 @@ import {
 import { FEE_RECIPIENT } from '~/app/utils/constants'
 import { streamSubaccountPositions } from '~/app/client/streams/derivatives'
 import { getRoundedLiquidationPrice } from '~/app/client/utils/derivatives'
-import { binaryOptions, derivatives } from '~/routes.config'
+// import { binaryOptions, derivatives } from '~/routes.config'
 import { exchangeDerivativesApi, msgBroadcastClient } from '~/app/Services'
+import { ActivityFetchOptions } from '~/types'
 
 const initialStateFactory = () => ({
   orderbooks: {} as Record<string, UiDerivativeOrderbook>,
-  subaccountPositions: [] as UiPosition[]
+  subaccountPositions: [] as UiPosition[],
+  subaccountPositionsTotal: 0 as number,
+  subaccountPositionsEndTime: 0 as number
 })
 
 const initialState = initialStateFactory()
 
 export const state = () => ({
   orderbooks: initialState.orderbooks as Record<string, UiDerivativeOrderbook>,
-  subaccountPositions: initialState.subaccountPositions as UiPosition[]
+  subaccountPositions: initialState.subaccountPositions as UiPosition[],
+  subaccountPositionsTotal: initialState.subaccountPositionsTotal as number,
+  subaccountPositionsEndTime: initialState.subaccountPositionsEndTime as number
 })
 
 export type PositionStoreState = ReturnType<typeof state>
@@ -54,6 +59,14 @@ export const mutations = {
     subaccountPositions: UiPosition[]
   ) {
     state.subaccountPositions = subaccountPositions
+  },
+
+  setSubaccountPositionsTotal(state: PositionStoreState, total: number) {
+    state.subaccountPositionsTotal = total
+  },
+
+  setSubaccountPositionsEndTime(state: PositionStoreState, endTime: number) {
+    state.subaccountPositionsEndTime = endTime
   },
 
   updateSubaccountPosition(
@@ -104,7 +117,7 @@ export const actions = actionTree(
       commit('reset')
     },
 
-    async fetchSubaccountPositions({ commit }) {
+    async fetchSubaccountPositions({ commit }, activityFetchOptions: ActivityFetchOptions | undefined) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -112,22 +125,34 @@ export const actions = actionTree(
         return
       }
 
-      const positions = await exchangeDerivativesApi.fetchPositions({
-        subaccountId: subaccount.subaccountId
+      const pagination = activityFetchOptions?.pagination
+      const filters = activityFetchOptions?.filters
+
+      const { positions, paging } = await exchangeDerivativesApi.fetchPositions({
+        marketId: filters?.marketId,
+        subaccountId: subaccount.subaccountId,
+        pagination: {
+          skip: pagination ? pagination.skip : 0,
+          limit: pagination ? pagination.limit : 0
+        }
       })
 
-      const positionWithActiveMarket = positions.filter((p) => {
-        const tickerFormattedToSlug = p.ticker
-          .replaceAll('/', '-')
-          .replaceAll(' ', '-')
-          .toLowerCase()
+      // TODO: We can no longer do this because the paging will otherwise be incorrect.
 
-        return [...derivatives, ...binaryOptions].includes(
-          tickerFormattedToSlug
-        )
-      })
+      // const positionWithActiveMarket = positions.filter((p) => {
+      //   const tickerFormattedToSlug = p.ticker
+      //     .replaceAll('/', '-')
+      //     .replaceAll(' ', '-')
+      //     .toLowerCase()
 
-      commit('setSubaccountPositions', positionWithActiveMarket)
+      //   return [...derivatives, ...binaryOptions].includes(
+      //     tickerFormattedToSlug
+      //   )
+      // })
+
+      commit('setSubaccountPositionsTotal', paging.total)
+
+      commit('setSubaccountPositions', positions)
     },
 
     // Fetching multiple market orderbooks for unrealized PnL calculation within

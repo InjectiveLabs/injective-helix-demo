@@ -10,7 +10,10 @@
         ref="tokenSelector"
         class="input-select input-token flex"
         data-cy="token-selector-drop-down"
-        :class="{ 'input-error': inputErrors && inputErrors.length > 0 }"
+        :class="{
+          'input-error': inputErrors && inputErrors.length > 0,
+          'rounded-full': rounded
+        }"
         label="denom"
         :auto-scroll="false"
         :clearable="false"
@@ -24,7 +27,11 @@
         @click.native="handleDropdownToggle"
       >
         <template #open-indicator="{ attributes }">
-          <div v-bind="attributes" class="cursor-pointer" :class="{ 'mr-4': showDefaultIndicator }">
+          <div
+            v-bind="attributes"
+            class="cursor-pointer"
+            :class="{ 'mr-4': showDefaultIndicator }"
+          >
             <IconCaretDownSlim v-if="showDefaultIndicator" />
           </div>
         </template>
@@ -39,7 +46,9 @@
               `required|positiveNumber|enoughBalance:0.0001,${balanceToFixed}`
             "
           >
-            <div :class="{ 'flex justify-between items-center gap-4': showInput }">
+            <div
+              :class="{ 'flex justify-between items-center gap-4': showInput }"
+            >
               <div v-if="showInput" class="flex flex-col w-full justify-center">
                 <VInput
                   id="bridge-input"
@@ -86,7 +95,10 @@
               <div class="flex flex-col">
                 <div
                   class="flex items-center h-[32px] ml-4"
-                  :class="{ 'justify-end': showInput, 'justify-start': !showInput }"
+                  :class="{
+                    'justify-end': showInput,
+                    'justify-start': !showInput
+                  }"
                 >
                   <img
                     v-if="logo"
@@ -101,7 +113,11 @@
                   >
                     {{ symbol }}
                   </span>
-                  <div v-if="showCustomIndicator" class="block pr-4 text-white" :class="{ 'ml-auto': !showInput }">
+                  <div
+                    v-if="showCustomIndicator"
+                    class="block pr-4 text-white"
+                    :class="{ 'ml-auto': !showInput }"
+                  >
                     <IconCaretDownSlim />
                   </div>
                 </div>

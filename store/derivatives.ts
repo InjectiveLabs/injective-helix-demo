@@ -77,7 +77,9 @@ const initialStateFactory = () => ({
   subaccountTrades: [] as UiDerivativeTrade[],
   subaccountTradesEndTime: 0 as number,
   subaccountTradesTotal: 0 as number,
-  subaccountOrders: [] as UiDerivativeLimitOrder[]
+  subaccountOrders: [] as UiDerivativeLimitOrder[],
+  subaccountOrdersEndTime: 0 as number,
+  subaccountOrdersTotal: 0 as number
 })
 
 const initialState = initialStateFactory()
@@ -101,6 +103,8 @@ export const state = () => ({
   subaccountTradesEndTime: initialState.subaccountTradesEndTime as number,
   subaccountTradesTotal: initialState.subaccountTradesTotal as number,
   subaccountOrders: initialState.subaccountOrders as UiDerivativeLimitOrder[],
+  subaccountOrdersEndTime: initialState.subaccountOrdersEndTime as number,
+  subaccountOrdersTotal: initialState.subaccountOrdersTotal as number,
   orderbook: initialState.orderbook as UiDerivativeOrderbook | undefined
 })
 
@@ -245,6 +249,14 @@ export const mutations = {
     subaccountOrders: UiDerivativeLimitOrder[]
   ) {
     state.subaccountOrders = subaccountOrders
+  },
+
+  setSubaccountOrdersEndTime(state: DerivativeStoreState, endTime: number) {
+    state.subaccountOrdersEndTime = endTime
+  },
+
+  setSubaccountOrdersTotal(state: DerivativeStoreState, total: number) {
+    state.subaccountOrdersTotal = total
   },
 
   pushSubaccountOrder(
@@ -673,10 +685,7 @@ export const actions = actionTree(
       commit('setTrades', trades)
     },
 
-    async fetchSubaccountOrders(
-      { commit }
-      // activityFetchOptions: ActivityFetchOptions | undefined
-    ) {
+    async fetchSubaccountOrders({ commit }, activityFetchOptions: ActivityFetchOptions | undefined) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -684,15 +693,22 @@ export const actions = actionTree(
         return
       }
 
-      // const pagination = fetchPositionsOptions?.pagination
-      // const filters = fetchPositionsOptions?.filters
+      const pagination = activityFetchOptions?.pagination
+      const filters = activityFetchOptions?.filters
 
-      commit(
-        'setSubaccountOrders',
-        await exchangeDerivativesApi.fetchOrders({
-          subaccountId: subaccount.subaccountId
-        })
-      )
+      const { orders, paging } = await exchangeDerivativesApi.fetchOrders({
+        marketId: filters?.marketId,
+        subaccountId: subaccount.subaccountId,
+        orderSide: filters?.orderSide as DerivativeOrderSide,
+        pagination: {
+          skip: pagination ? pagination.skip : 0,
+          limit: pagination ? pagination.limit : 0
+        }
+      })
+
+      commit('setSubaccountOrdersTotal', paging.total)
+
+      commit('setSubaccountOrders', orders)
     },
 
     async fetchMarketsSummary({ state, commit }) {

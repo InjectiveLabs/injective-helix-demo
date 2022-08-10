@@ -3,55 +3,58 @@
     <div class="w-full h-full flex flex-col">
       <VCardTableWrap>
         <template #actions>
-          <div
-            class="col-span-12 sm:col-span-6 lg:col-span-4 grid grid-cols-5 gap-4"
-          >
-            <VSearch
+          <div class="col-span-12 grid grid-cols-12 gap-4 w-full">
+            <TokenSelector
+              class="token-selector__token-only col-span-4 md:col-span-3 lg:col-span-2"
+              :value="selectedToken"
+              :options="supportedTokens"
+              :placeholder="'Search asset'"
+              :balance="balance"
               dense
-              class="col-span-3"
-              :wrapper-classes="'rounded-full'"
-              :placeholder="$t('trade.filter')"
-              :search="search"
-              data-cy="universal-table-filter-by-asset-input"
-              @searched="handleInputOnSearch"
+              show-default-indicator
+              @input:token="handleSelectToken"
             />
+
             <FilterSelector
-              class="col-span-2"
+              class="col-span-4 md:col-span-3 lg:col-span-2"
               :type="TradeSelectorType.PositionSide"
               :value="side"
               data-cy="universal-table-filter-by-side-drop-down"
               @click="handleSideClick"
             />
-          </div>
 
-          <div
-            v-if="filteredPositions.length > 0"
-            class="col-span-12 flex justify-between items-center sm:hidden mt-3 text-xs px-3"
-          >
-            <span class="tracking-widest uppercase tracking-3">
-              {{ $t('trade.side') }} / {{ $t('trade.market') }}
-            </span>
-            <span
-              class="text-red-550 leading-5 cursor-pointer"
-              @click.stop="handleClosePositions"
-            >
-              {{ $t('trade.closeAll') }}
-            </span>
-          </div>
+            <div class="hidden md:block md:col-span-3 lg:col-span-6" />
 
-          <div
-            class="col-span-6 lg:col-span-8 sm:text-right mt-0 hidden sm:block"
-          >
-            <VButton
-              v-if="filteredPositions.length > 0 && walletIsNotKeplr"
-              red-outline
-              md
-              :status="status"
-              data-cy="activity-cancel-all-button"
-              @click.stop="handleClosePositions"
+            <div
+              v-if="filteredPositions.length > 0"
+              class="col-span-4 md:col-span-3 lg:col-span-2 flex justify-between items-center sm:hidden mt-3 text-xs px-3"
             >
-              {{ $t('trade.closeAllPositions') }}
-            </VButton>
+              <span class="tracking-widest uppercase tracking-3">
+                {{ $t('trade.side') }} / {{ $t('trade.market') }}
+              </span>
+              <span
+                class="text-red-500 leading-5 cursor-pointer"
+                @click.stop="handleClosePositions"
+              >
+                {{ $t('trade.closeAll') }}
+              </span>
+            </div>
+
+            <div
+              class="col-span-4 md:col-span-3 lg:col-span-2 sm:text-right mt-0 hidden sm:block"
+            >
+              <VButton
+                v-if="filteredPositions.length > 0 && walletIsNotKeplr"
+                red-outline
+                md
+                :status="status"
+                data-cy="activity-cancel-all-button"
+                class="rounded"
+                @click.stop="handleClosePositions"
+              >
+                {{ $t('trade.closeAllPositions') }}
+              </VButton>
+            </div>
           </div>
         </template>
 
@@ -119,13 +122,17 @@
 </template>
 
 <script lang="ts">
-import { Status, StatusType } from '@injectivelabs/utils'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import Vue from 'vue'
 import {
   UiPosition,
-  UiDerivativeMarketWithToken
+  UiDerivativeMarketWithToken,
+  ZERO_IN_BASE,
+  BankBalanceWithTokenAndBalanceInBase,
+  BankBalanceWithTokenAndBalance
 } from '@injectivelabs/sdk-ui-ts'
 import { Wallet } from '@injectivelabs/ts-types'
+import { Token } from '@injectivelabs/token-metadata'
 import Position from '~/components/partials/common/position/position.vue'
 import PositionTableHeader from '~/components/partials/common/position/position-table.header.vue'
 import MobilePosition from '~/components/partials/common/position/mobile-position.vue'
@@ -134,6 +141,7 @@ import TableBody from '~/components/elements/table-body.vue'
 import { TradeSelectorType } from '~/types/enums'
 import Pagination from '~/components/partials/common/pagination.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
+import TokenSelector from '@/components/partials/portfolio/bridge/token-selector/select.vue'
 
 export default Vue.extend({
   components: {
@@ -142,7 +150,8 @@ export default Vue.extend({
     MobilePosition,
     PositionTableHeader,
     TableBody,
-    Pagination
+    Pagination,
+    TokenSelector
   },
 
   data() {
@@ -153,7 +162,8 @@ export default Vue.extend({
       status: new Status(StatusType.Loading),
       poll: undefined as any,
       page: 1,
-      limit: UI_DEFAULT_PAGINATION_LIMIT_COUNT
+      limit: UI_DEFAULT_PAGINATION_LIMIT_COUNT,
+      selectedToken: undefined as Token | undefined
     }
   },
 
@@ -171,27 +181,34 @@ export default Vue.extend({
     },
 
     filteredPositions(): UiPosition[] {
-      const { positions, markets, search, side } = this
+      const {
+        positions
+        // markets,
+        // search,
+        // side
+      } = this
 
-      return positions.filter((p) => {
-        const market = markets.find((m) => m.marketId === p.marketId)
+      // return positions.filter((p) => {
+      //   const market = markets.find((m) => m.marketId === p.marketId)
 
-        if (!market) {
-          return false
-        }
+      //   if (!market) {
+      //     return false
+      //   }
 
-        if (!search && !side) {
-          return true
-        }
+      //   if (!search && !side) {
+      //     return true
+      //   }
 
-        const isPartOfSearchFilter =
-          !search ||
-          market.ticker.toLowerCase().includes(search.trim().toLowerCase())
+      //   const isPartOfSearchFilter =
+      //     !search ||
+      //     market.ticker.toLowerCase().includes(search.trim().toLowerCase())
 
-        const isPartOfSideFilter = !side || p.direction === side
+      //   const isPartOfSideFilter = !side || p.direction === side
 
-        return isPartOfSearchFilter && isPartOfSideFilter
-      })
+      //   return isPartOfSearchFilter && isPartOfSideFilter
+      // })
+
+      return positions
     },
 
     sortedPositions(): UiPosition[] {
@@ -216,6 +233,23 @@ export default Vue.extend({
       const { totalCount, limit } = this
 
       return Math.ceil(totalCount / limit)
+    },
+
+    balance(): BigNumberInBase {
+      return ZERO_IN_BASE
+    },
+
+    supportedTokens(): BankBalanceWithTokenAndBalanceInBase[] {
+      const supportedTokens = this.$store.state.activity.supportedTokens
+
+      return supportedTokens.filter(
+        (token: BankBalanceWithTokenAndBalance) =>
+          !!this.markets.find(
+            (market) =>
+              market.baseToken.denom === token.denom ||
+              market.quoteToken.denom === token.denom
+          )
+      )
     }
   },
 
@@ -238,12 +272,17 @@ export default Vue.extend({
 
       return Promise.all([
         this.$accessor.derivatives.fetchSubaccountOrders(),
-        this.$accessor.positions.fetchSubaccountPositions(
-          // {
-          //   skip: (this.page - 1) * this.limit,
-          //   limit: this.limit
-          // }
-        )
+        this.$accessor.positions.fetchSubaccountPositions({
+          pagination: {
+            skip: (this.page - 1) * this.limit,
+            limit: this.limit
+          },
+          filters: {
+            // marketId,
+            // marketIds,
+            // orderSide
+          }
+        })
       ])
         .catch(this.$onError)
         .then(() => {
@@ -326,6 +365,12 @@ export default Vue.extend({
 
     handlePageChangeEvent(page: number) {
       this.page = page
+
+      this.updatePositions()
+    },
+
+    handleSelectToken(token: Token) {
+      this.selectedToken = token
 
       this.updatePositions()
     }

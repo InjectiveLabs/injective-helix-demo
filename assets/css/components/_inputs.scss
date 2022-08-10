@@ -385,7 +385,7 @@ input[type='number'] {
 }
 .token-selector__token-only {
   .v-select.input-token.input-select {
-    @apply rounded-full h-[40px];
+    @apply rounded h-[40px];
 
     .vs__selected {
       @apply h-[40px];

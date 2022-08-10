@@ -3,54 +3,56 @@
     <div class="w-full h-full flex flex-col">
       <VCardTableWrap>
         <template #actions>
-          <div
-            class="col-span-12 sm:col-span-6 lg:col-span-4 grid grid-cols-5 gap-4"
-          >
-            <VSearch
+          <div class="col-span-12 grid grid-cols-12 gap-4 w-full">
+            <TokenSelector
+              class="token-selector__token-only col-span-4 md:col-span-3 lg:col-span-2"
+              :value="selectedToken"
+              :options="supportedTokens"
+              :placeholder="'Search asset'"
+              :balance="balance"
               dense
-              class="col-span-3"
-              :wrapper-classes="'rounded-full'"
-              data-cy="universal-table-filter-by-asset-input"
-              :placeholder="$t('trade.filter')"
-              :search="search"
-              @searched="handleInputOnSearch"
+              show-default-indicator
+              @input:token="handleSelectToken"
             />
+
             <FilterSelector
-              class="col-span-2"
+              class="col-span-4 md:col-span-3 lg:col-span-2"
               data-cy="universal-table-filter-by-side-drop-down"
               :type="TradeSelectorType.Side"
               :value="side"
               @click="handleSideClick"
             />
-          </div>
 
-          <div
-            v-if="filteredOrders.length > 0"
-            class="col-span-12 flex justify-between items-center sm:hidden mt-3 text-xs px-3"
-          >
-            <span class="tracking-widest uppercase tracking-3">
-              {{ $t('trade.side') }} / {{ $t('trade.market') }}
-            </span>
-            <span
-              class="text-red-550 leading-5 cursor-pointer"
-              @click.stop="handleCancelOrders"
-            >
-              {{ $t('trade.cancelAll') }}
-            </span>
-          </div>
+            <div class="hidden md:block md:col-span-3 lg:col-span-6" />
 
-          <div
-            class="col-span-6 lg:col-span-8 sm:text-right mt-0 hidden sm:block"
-          >
-            <VButton
+            <div
               v-if="filteredOrders.length > 0"
-              red-outline
-              md
-              data-cy="activity-cancel-all-button"
-              @click.stop="handleCancelOrders"
+              class="col-span-4 md:col-span-3 lg:col-span-2 flex justify-between items-center sm:hidden mt-3 text-xs px-3"
             >
-              {{ $t('trade.cancelAllOrders') }}
-            </VButton>
+              <span class="tracking-widest uppercase tracking-3">
+                {{ $t('trade.side') }} / {{ $t('trade.market') }}
+              </span>
+              <span
+                class="text-red-550 leading-5 cursor-pointer"
+                @click.stop="handleCancelOrders"
+              >
+                {{ $t('trade.cancelAll') }}
+              </span>
+            </div>
+
+            <div
+              class="col-span-4 md:col-span-3 lg:col-span-2 sm:text-right mt-0 hidden sm:block"
+            >
+              <VButton
+                v-if="filteredOrders.length > 0"
+                red-outline
+                md
+                data-cy="activity-cancel-all-button"
+                @click.stop="handleCancelOrders"
+              >
+                {{ $t('trade.cancelAllOrders') }}
+              </VButton>
+            </div>
           </div>
         </template>
 
@@ -116,12 +118,16 @@
 </template>
 
 <script lang="ts">
-import { Status, StatusType } from '@injectivelabs/utils'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import Vue from 'vue'
 import {
+  BankBalanceWithTokenAndBalance,
+  BankBalanceWithTokenAndBalanceInBase,
   UiDerivativeLimitOrder,
-  UiDerivativeMarketWithToken
+  UiDerivativeMarketWithToken,
+  ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
+import { Token } from '@injectivelabs/token-metadata'
 import MobileOrder from '~/components/partials/common/derivatives/mobile-order.vue'
 import Order from '~/components/partials/common/derivatives/order.vue'
 import OrdersTableHeader from '~/components/partials/common/derivatives/orders-table-header.vue'
@@ -130,6 +136,8 @@ import TableBody from '~/components/elements/table-body.vue'
 import { TradeSelectorType } from '~/types/enums'
 import Pagination from '~/components/partials/common/pagination.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
+import TokenSelector from '@/components/partials/portfolio/bridge/token-selector/select.vue'
+import { stringToDerivativeOrderSide } from '@/components/partials/activity/common/utils'
 
 export default Vue.extend({
   components: {
@@ -138,7 +146,8 @@ export default Vue.extend({
     MobileOrder,
     OrdersTableHeader,
     TableBody,
-    Pagination
+    Pagination,
+    TokenSelector
   },
 
   data() {
@@ -148,7 +157,8 @@ export default Vue.extend({
       side: undefined as string | undefined,
       status: new Status(StatusType.Loading),
       page: 1,
-      limit: UI_DEFAULT_PAGINATION_LIMIT_COUNT
+      limit: UI_DEFAULT_PAGINATION_LIMIT_COUNT,
+      selectedToken: undefined as Token | undefined
     }
   },
 
@@ -162,36 +172,60 @@ export default Vue.extend({
     },
 
     filteredOrders(): UiDerivativeLimitOrder[] {
-      const { markets, search, orders, side } = this
+      const {
+        // markets,
+        // search,
+        orders
+        // side
+      } = this
 
-      return orders.filter((o) => {
-        const market = markets.find((m) => m.marketId === o.marketId)
+      // return orders.filter((o) => {
+      //   const market = markets.find((m) => m.marketId === o.marketId)
 
-        if (!market) {
-          return false
-        }
+      //   if (!market) {
+      //     return false
+      //   }
 
-        if (!search && !side) {
-          return true
-        }
+      //   if (!search && !side) {
+      //     return true
+      //   }
 
-        const isPartOfSearchFilter =
-          !search ||
-          market.ticker.toLowerCase().includes(search.trim().toLowerCase())
-        const isPartOfSideFilter = !side || o.orderSide === side
+      //   const isPartOfSearchFilter =
+      //     !search ||
+      //     market.ticker.toLowerCase().includes(search.trim().toLowerCase())
+      //   const isPartOfSideFilter = !side || o.orderSide === side
 
-        return isPartOfSearchFilter && isPartOfSideFilter
-      })
+      //   return isPartOfSearchFilter && isPartOfSideFilter
+      // })
+
+      return orders
     },
 
     totalCount(): number {
-      return 10
+      return this.$accessor.derivatives.subaccountOrdersTotal
     },
 
     totalPages(): number {
       const { totalCount, limit } = this
 
       return Math.ceil(totalCount / limit)
+    },
+
+    balance(): BigNumberInBase {
+      return ZERO_IN_BASE
+    },
+
+    supportedTokens(): BankBalanceWithTokenAndBalanceInBase[] {
+      const supportedTokens = this.$store.state.activity.supportedTokens
+
+      return supportedTokens.filter(
+        (token: BankBalanceWithTokenAndBalance) =>
+          !!this.markets.find(
+            (market) =>
+              market.baseToken.denom === token.denom ||
+              market.quoteToken.denom === token.denom
+          )
+      )
     }
   },
 
@@ -206,13 +240,26 @@ export default Vue.extend({
     updateOrders(): Promise<void> {
       this.status.setLoading()
 
+      const orderSide = this.side ? stringToDerivativeOrderSide(this.side) : undefined
+
+      const marketId = this.markets.find(m => {
+        return m.baseToken.symbol === this.selectedToken?.symbol || m.quoteToken.symbol === this.selectedToken?.symbol
+      })?.marketId
+
+      // const marketIds = this.markets.map(market => market.marketId)
+
       return Promise.all([
-        this.$accessor.derivatives.fetchSubaccountOrders(
-          // {
-          //   skip: (this.page - 1) * this.limit,
-          //   limit: this.limit
-          // }
-        )
+        this.$accessor.derivatives.fetchSubaccountOrders({
+          pagination: {
+            skip: (this.page - 1) * this.limit,
+            limit: this.limit
+          },
+          filters: {
+            marketId,
+            // marketIds,
+            orderSide
+          }
+        })
       ])
         .then(() => {
           //
@@ -250,10 +297,6 @@ export default Vue.extend({
         .catch(this.$onRejected)
     },
 
-    handleInputOnSearch(search: string) {
-      this.search = search
-    },
-
     handleSideClick(side: string | undefined) {
       this.side = side
     },
@@ -265,6 +308,12 @@ export default Vue.extend({
 
     handlePageChangeEvent(page: number) {
       this.page = page
+      this.updateOrders()
+    },
+
+    handleSelectToken(token: Token) {
+      this.selectedToken = token
+
       this.updateOrders()
     }
   }

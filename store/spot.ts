@@ -489,7 +489,7 @@ export const actions = actionTree(
       const { orders, paging } = await exchangeSpotApi.fetchOrders({
         marketId: filters?.marketId,
         subaccountId: subaccount.subaccountId,
-        orderSide: filters?.orderSide,
+        orderSide: filters?.orderSide as SpotOrderSide,
         pagination: {
           skip: pagination ? pagination.skip : 0,
           limit: pagination ? pagination.limit : 0
