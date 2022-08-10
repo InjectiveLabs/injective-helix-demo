@@ -180,7 +180,7 @@ jobs:
         uses: actions/checkout@master
         with:
           repository: InjectiveLabs/injective-ci-configs
-          ref: 'f/speed_up_market_launch'
+          ref: 'f/use_indexer'
           token: ${{ secrets.BARTEKS_PAT }}
           path: ./injective-ci-configs
       - name: Start standalone network
