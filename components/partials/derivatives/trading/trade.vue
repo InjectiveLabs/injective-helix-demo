@@ -163,6 +163,7 @@ interface TradeForm {
   quoteAmount: string
   postOnly: boolean
   price: string
+  triggerPrice: string
   leverage: string
   slippageTolerance: string
   proportionalPercentage: number
