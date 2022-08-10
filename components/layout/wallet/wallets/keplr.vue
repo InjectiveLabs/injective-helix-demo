@@ -1,5 +1,5 @@
 <template>
-  <Wallet @click="handleClick">
+  <WalletWrapper @click="handleClick">
     <template #icon>
       <img src="/keplr-icon.png" class="w-8 h-8" alt="Keplr Icon" />
     </template>
@@ -11,17 +11,17 @@
         {{ $t('connect.connectUsingKeplr') }}
       </span>
     </template>
-  </Wallet>
+  </WalletWrapper>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import Wallet from './wallet.vue'
+import WalletWrapper from './wallet-wrapper.vue'
 import { WalletConnectStatus } from '~/types'
 
 export default Vue.extend({
   components: {
-    Wallet
+    WalletWrapper
   },
 
   methods: {

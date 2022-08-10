@@ -1,5 +1,5 @@
 <template>
-  <Wallet @click="handleClick">
+  <WalletWrapper @click="handleClick">
     <template #icon>
       <IconMetamask class="w-8 h-8" />
     </template>
@@ -27,17 +27,17 @@
         {{ $t('connect.connectUsingBrowser') }}
       </span>
     </template>
-  </Wallet>
+  </WalletWrapper>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import Wallet from './wallet.vue'
+import WalletWrapper from './wallet-wrapper.vue'
 import { WalletConnectStatus } from '~/types'
 
 export default Vue.extend({
   components: {
-    Wallet
+    WalletWrapper
   },
 
   computed: {

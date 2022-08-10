@@ -1,5 +1,5 @@
 <template>
-  <Wallet @click="handleClick">
+  <WalletWrapper @click="handleClick">
     <template #icon>
       <IconTorus class="w-8 h-8" />
     </template>
@@ -19,17 +19,17 @@
         <IconDiscordSocial class="w-4 h-4" />
       </div>
     </template>
-  </Wallet>
+  </WalletWrapper>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import Wallet from './wallet.vue'
+import WalletWrapper from './wallet-wrapper.vue'
 import { WalletConnectStatus } from '~/types/enums'
 
 export default Vue.extend({
   components: {
-    Wallet
+    WalletWrapper
   },
 
   methods: {

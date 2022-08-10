@@ -1,5 +1,5 @@
 <template>
-  <Wallet @click="handleClick">
+  <WalletWrapper @click="handleClick">
     <template #icon>
       <IconTrezor class="w-8 h-8" />
     </template>
@@ -11,16 +11,16 @@
         {{ $t('connect.connectUsingHardware') }}
       </span>
     </template>
-  </Wallet>
+  </WalletWrapper>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import Wallet from './wallet.vue'
+import WalletWrapper from './wallet-wrapper.vue'
 
 export default Vue.extend({
   components: {
-    Wallet
+    WalletWrapper
   },
 
   methods: {
