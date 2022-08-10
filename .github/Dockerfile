@@ -10,6 +10,7 @@ RUN echo "APP_BASE_URL=$APP_BASE_URL" >> .env
 RUN echo "APP_NETWORK=local" >> .env
 RUN echo "APP_CHAIN_ID=injective-777" >> .env
 RUN echo "APP_ETHEREUM_CHAIN_ID=5" >> .env
+RUN echo "APP_CHRONOS_API_ENDPOINT=http://localhost:4445" >> .env
 RUN echo "APP_ALCHEMY_KOVAN_KEY=$APP_ALCHEMY_KOVAN_KEY" >> .env
 RUN echo "APP_ALCHEMY_GOERLI_KEY=$APP_ALCHEMY_GOERLI_KEY" >> .env
 RUN echo "APP_FEE_RECIPIENT=$HELIX_FEE_RECIPIENT" >> .env
