@@ -36,8 +36,8 @@ import {
   ORDERBOOK_STREAMING_ENABLED
 } from '~/app/utils/constants'
 import {
-  exchangeRestSpotChronosApi,
-  exchangeSpotApi,
+  indexerRestSpotChronosApi,
+  indexerSpotApi,
   msgBroadcastClient,
   tokenPrice,
   tokenService
@@ -253,7 +253,7 @@ export const actions = actionTree(
     },
 
     async init({ commit }) {
-      const markets = await exchangeSpotApi.fetchMarkets()
+      const markets = await indexerSpotApi.fetchMarkets()
       const marketsWithToken = await tokenService.getSpotMarketsWithToken(
         markets
       )
@@ -275,7 +275,7 @@ export const actions = actionTree(
       commit('setMarkets', uiMarketsWithToken)
 
       const marketsSummary =
-        await exchangeRestSpotChronosApi.fetchMarketsSummary()
+        await indexerRestSpotChronosApi.fetchMarketsSummary()
       const marketSummaryNotExists =
         !marketsSummary || (marketsSummary && marketsSummary.length === 0)
       const actualMarketsSummary = marketSummaryNotExists
@@ -301,7 +301,7 @@ export const actions = actionTree(
         throw new Error('Market not found. Please refresh the page.')
       }
 
-      const summary = await exchangeRestSpotChronosApi.fetchMarketSummary(
+      const summary = await indexerRestSpotChronosApi.fetchMarketSummary(
         market.marketId
       )
 
@@ -313,8 +313,8 @@ export const actions = actionTree(
       }
 
       // TODO
-      await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
-      await this.app.$accessor.exchange.fetchTradingRewardsCampaign()
+      await this.app.$accessor.indexer.fetchFeeDiscountAccountInfo()
+      await this.app.$accessor.indexer.fetchTradingRewardsCampaign()
     },
 
     async initMarketStreams({ state }) {
@@ -339,7 +339,7 @@ export const actions = actionTree(
 
       commit(
         'setOrderbook',
-        await exchangeSpotApi.fetchOrderbook(market.marketId)
+        await indexerSpotApi.fetchOrderbook(market.marketId)
       )
     },
 
@@ -466,7 +466,7 @@ export const actions = actionTree(
 
       commit(
         'setSubaccountOrders',
-        await exchangeSpotApi.fetchOrders({
+        await indexerSpotApi.fetchOrders({
           subaccountId: subaccount.subaccountId
         })
       )
@@ -481,7 +481,7 @@ export const actions = actionTree(
 
       commit(
         'setOrderbook',
-        await exchangeSpotApi.fetchOrderbook(market.marketId)
+        await indexerSpotApi.fetchOrderbook(market.marketId)
       )
     },
 
@@ -494,7 +494,7 @@ export const actions = actionTree(
 
       commit(
         'setTrades',
-        await exchangeSpotApi.fetchTrades({ marketId: market.marketId })
+        await indexerSpotApi.fetchTrades({ marketId: market.marketId })
       )
     },
 
@@ -506,7 +506,7 @@ export const actions = actionTree(
         return
       }
 
-      const trades = await exchangeSpotApi.fetchTrades({
+      const trades = await indexerSpotApi.fetchTrades({
         subaccountId: subaccount.subaccountId
       })
 
@@ -521,7 +521,7 @@ export const actions = actionTree(
       }
 
       const updatedMarketsSummary =
-        await exchangeRestSpotChronosApi.fetchMarketsSummary()
+        await indexerRestSpotChronosApi.fetchMarketsSummary()
       const combinedMarketsSummary =
         UiSpotTransformer.spotMarketsSummaryComparisons(
           updatedMarketsSummary,

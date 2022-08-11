@@ -1,5 +1,5 @@
 import {
-  ExchangeGrpcSpotStream,
+  IndexerGrpcSpotStream,
   SpotOrderbookStreamCallback,
   SpotOrdersStreamCallback,
   SpotTradesStreamCallback
@@ -9,9 +9,7 @@ import { streamProvider } from '../../providers/StreamProvider'
 import { ENDPOINTS } from '~/app/utils/constants'
 import { StreamType } from '~/types'
 
-export const spotMarketStream = new ExchangeGrpcSpotStream(
-  ENDPOINTS.exchangeApi
-)
+export const spotMarketStream = new IndexerGrpcSpotStream(ENDPOINTS.indexerApi)
 
 export const streamOrderbook = ({
   marketId,
