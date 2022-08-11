@@ -4,6 +4,7 @@
       :id="uid"
       :value="value"
       :checked="!!value"
+      :disabled="disabled"
       class="checkbox"
       type="checkbox"
       @change="handleChange"
@@ -26,9 +27,15 @@ export default Vue.extend({
       type: [Boolean, String],
       required: true
     },
+
     dataCy: {
       type: String,
       default: 'unknown-id'
+    },
+
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
 

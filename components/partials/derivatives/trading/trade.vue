@@ -59,7 +59,7 @@
       :has-input-errors.sync="hasInputErrors"
       :has-advanced-settings-errors.sync="hasAdvancedSettingsErrors"
       @update-price-from-last-traded-price="updatePriceFromLastTradedPrice"
-      @update-trigger-price="updateTriggerPrice"
+      @update:trigger-price="updateTriggerPrice"
     />
 
     <OrderDetailsWrapper
@@ -885,8 +885,8 @@ export default Vue.extend({
       this.form.price = lastTradedPrice.toFixed(market.priceDecimals)
     },
 
-    updateTriggerPrice() {
-      console.log('update trigger price')
+    updateTriggerPrice(triggerPrice: string) {
+      this.form.triggerPrice = triggerPrice
     },
 
     submitLimitOrder() {

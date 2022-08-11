@@ -1,13 +1,13 @@
 <template>
   <div>
     <VInput
-      v-if="!tradingTypeMarket"
+      v-if="tradingTypeLimit"
       id="input-price"
       ref="input-price"
       class="mb-6"
       :value="inputPrice"
       :placeholder="priceStep"
-      :label="tradingTypeLimit ? $t('trade.price') : $t('trade.trigger_price')"
+      :label="$t('trade.price')"
       :disabled="tradingTypeMarket"
       type="number"
       :step="priceStep"
@@ -16,6 +16,26 @@
       data-cy="trading-page-price-input"
       show-addon
       @input="onPriceChange"
+    >
+      <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
+    </VInput>
+
+    <VInput
+      v-if="tradingTypeStopLimit || tradingTypeStopMarket"
+      id="trigger-price"
+      ref="trigger-price"
+      class="mb-6"
+      :value="triggerPrice"
+      :placeholder="priceStep"
+      :label="$t('trade.trigger_price')"
+      :disabled="tradingTypeMarket || tradingTypeLimit"
+      type="number"
+      :step="priceStep"
+      :max-decimals="market ? market.quoteToken.decimals : 6"
+      min="0"
+      data-cy="trading-page-trigger-price-input"
+      show-addon
+      @input="onTriggerPriceChange"
     >
       <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
     </VInput>
@@ -63,6 +83,7 @@
       </VInput>
 
       <VInput
+        v-if="!tradingTypeMarket"
         ref="input-quote-amount"
         v-model="inputQuoteAmount"
         :custom-handler="true"
@@ -169,6 +190,7 @@
       :slippage-tolerance="inputSlippageTolerance"
       :post-only="inputPostOnly"
       :reduce-only="inputReduceOnly"
+      :reduce-only-disabled="tradingTypeStopLimit || tradingTypeStopMarket"
       :show-reduce-only="showReduceOnly"
       :leverage="inputLeverage"
       :has-advanced-settings-errors="hasAdvancedSettingsErrors"
@@ -413,6 +435,7 @@ export default Vue.extend({
       inputBaseAmount: '',
       inputQuoteAmount: '',
       inputPrice: '',
+      triggerPrice: '',
       inputPostOnly: false,
       inputProportionalPercentage: 0,
       inputSlippageTolerance: '0.5',
@@ -550,6 +573,8 @@ export default Vue.extend({
           return
         }
 
+        console.log('newLastTradedPrice:', newPrice.toFixed(market.priceDecimals))
+
         if (!price && !newPrice.eq('0')) {
           const formattedPrice = newPrice.toFixed(market.priceDecimals)
 
@@ -573,6 +598,12 @@ export default Vue.extend({
         this.onAmountChange(inputBaseAmount)
       }
     }
+  },
+
+  mounted() {
+    const { amountStep } = this
+
+    this.inputBaseAmount = amountStep
   },
 
   methods: {
@@ -718,6 +749,27 @@ export default Vue.extend({
           ? this.updateSpotBaseAmountFromQuote()
           : this.updateDerivativesBaseAmountFromQuote()
       }
+    },
+
+    onTriggerPriceChange(triggerPrice: string = '') {
+      const {
+          // hasAmount,
+        market
+        // isSpot,
+        // averagePriceOption
+      } = this
+
+      if (!market) {
+        return
+      }
+
+      const formattedTriggerPrice = formatPriceToAllowableDecimals(
+        triggerPrice,
+        market.priceDecimals
+      )
+
+      this.triggerPrice = formattedTriggerPrice
+      this.$emit('update:trigger-price', formattedTriggerPrice)
     },
 
     onAmountChange(amount: string = '') {

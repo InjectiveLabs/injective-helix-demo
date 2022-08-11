@@ -19,6 +19,7 @@
         <VCheckbox
           v-if="showReduceOnly"
           :value="reduceOnly"
+          :disabled="reduceOnlyDisabled"
           class="mt-2"
           data-cy="trading-page-reduce-only-checkbox"
           @input="handleReduceOnlyCheckboxToggle"
@@ -131,6 +132,12 @@ export default Vue.extend({
     },
 
     reduceOnly: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+
+    reduceOnlyDisabled: {
       type: Boolean,
       required: false,
       default: false
