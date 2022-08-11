@@ -68,6 +68,10 @@ import GoogleSocial from '~/components/icons/google-social.vue'
 import FacebookSocial from '~/components/icons/facebook-social.vue'
 import TwitterSocial from '~/components/icons/twitter-social.vue'
 import DiscordSocial from '~/components/icons/discord-social.vue'
+import LightningFill from '~/components/icons/lightning-fill.vue'
+import BoundingBoxCircles from '~/components/icons/bounding-box-circles.vue'
+import Gas from '~/components/icons/gas.vue'
+import ShieldLockFill from '~/components/icons/shield-lock-fill.vue'
 
 Vue.component('IconArrow', Arrow)
 Vue.component('IconArrowSwap', ArrowSwap)
@@ -137,3 +141,7 @@ Vue.component('IconGoogleSocial', GoogleSocial)
 Vue.component('IconFacebookSocial', FacebookSocial)
 Vue.component('IconTwitterSocial', TwitterSocial)
 Vue.component('IconDiscordSocial', DiscordSocial)
+Vue.component('IconLightningFill', LightningFill)
+Vue.component('IconBoundingBoxCircles', BoundingBoxCircles)
+Vue.component('IconGas', Gas)
+Vue.component('IconShieldLockFill', ShieldLockFill)

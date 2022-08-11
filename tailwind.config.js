@@ -39,6 +39,7 @@ module.exports = {
     boxShadow: {
       primary: '0px 0px 4px #00f2ff',
       card: '0px 0px 16px rgb(22 25 34 / 30%)',
+      helix: '0px 0px 100px rgba(0, 0, 0, 0.1)',
       DEFAULT: '0px 0px 4px #08090c',
       sm: '0px 0px 5px #08090c',
       md: '0px 0px 6px #08090c',
@@ -108,6 +109,8 @@ module.exports = {
       },
 
       helixGray: {
+        200: '#E5E5E5',
+        300: '#727376',
         500: '#434448',
         800: '#1C1E29',
         900: '#292C35'

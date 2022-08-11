@@ -15,7 +15,7 @@
           class="w-60 mt-10 rounded"
           @click="handleGetStartedClick"
         >
-          {{ $t('home.getStarted') }}
+          {{ $t('home.startTradingNow') }}
         </VButton>
       </div>
     </div>

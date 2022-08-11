@@ -1,9 +1,9 @@
 export default {
   home: {
-    title: 'Buy & Sell Crypto on the Premier Cross-Chain Exchange',
+    title: 'Buy & Sell Bitcoin & Crypto',
     subtitle:
-      'Trade unlimited crypto markets on the fast, gasless, low fee, secure, and fully decentralized exchange protocol.',
-    getStarted: 'Get started',
+      'Trade unlimited crypto markets on the premier decentralized cross-chain exchange',
+    startTradingNow: 'Start Trading Now',
     viewAllMarkets: 'View all markets',
     trending: 'Trending',
     whatsNew: "What's new",

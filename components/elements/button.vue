@@ -205,6 +205,14 @@ export default Vue.extend({
             'text-white',
             'shadow-none'
           )
+        } else if (this.gray) {
+          classes.push(
+            'font-semibold',
+            'bg-gray-900',
+            'hover:bg-gray-950',
+            'text-white',
+            'shadow-none'
+          )
         } else if (this.red) {
           classes.push(
             'font-semibold',

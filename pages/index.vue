@@ -1,7 +1,7 @@
 <template>
   <div class="bg-gray-900 bg-opacity-80">
     <VHero />
-    <div class="h-full w-full flex flex-wrap pb-4 -mt-24">
+    <div class="h-full w-full flex flex-wrap pb-4">
       <div class="container">
         <div class="w-full mx-auto xl:w-4/5">
           <VOverview />
