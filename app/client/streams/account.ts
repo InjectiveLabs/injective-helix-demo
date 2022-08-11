@@ -1,12 +1,12 @@
 import {
   BalanceStreamCallback,
-  ExchangeGrpcAccountStream
+  IndexerGrpcAccountStream
 } from '@injectivelabs/sdk-ts'
 import { streamProvider } from '../../providers/StreamProvider'
 import { ENDPOINTS } from '~/app/utils/constants'
 import { StreamType } from '~/types/enums'
 
-export const subaccountStream = new ExchangeGrpcAccountStream(
+export const subaccountStream = new IndexerGrpcAccountStream(
   ENDPOINTS.exchangeApi
 )
 
