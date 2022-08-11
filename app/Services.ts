@@ -69,34 +69,34 @@ export const auctionApi = new ChainGrpcAuctionApi(ENDPOINTS.sentryGrpcApi)
 export const exchangeApi = new ChainGrpcExchangeApi(ENDPOINTS.sentryGrpcApi)
 export const oracleApi = new ChainGrpcOracleApi(ENDPOINTS.sentryGrpcApi)
 export const exchangeExplorerApi = new IndexerGrpcExplorerApi(
-  ENDPOINTS.exchangeApi
+  ENDPOINTS.indexerApi
 )
 export const exchangeAccountApi = new IndexerGrpcAccountApi(
-  ENDPOINTS.exchangeApi
+  ENDPOINTS.indexerApi
 )
-export const exchangeOracleApi = new IndexerGrpcOracleApi(ENDPOINTS.exchangeApi)
+export const exchangeOracleApi = new IndexerGrpcOracleApi(ENDPOINTS.indexerApi)
 export const exchangeRestExplorerApi = new IndexerRestExplorerApi(
-  `${ENDPOINTS.exchangeApi}/api/explorer/v1`
+  `${ENDPOINTS.indexerApi}/api/explorer/v1`
 )
 export const exchangeRestDerivativesChronosApi =
   new IndexerRestDerivativesChronosApi(
     `${
       ENDPOINTS.chronosApi
         ? `${ENDPOINTS.chronosApi}/api/v1/derivative`
-        : `${ENDPOINTS.exchangeApi}/api/chronos/v1/derivative`
+        : `${ENDPOINTS.indexerApi}/api/chronos/v1/derivative`
     }`
   )
 export const exchangeRestSpotChronosApi = new IndexerRestSpotChronosApi(
   `${
     ENDPOINTS.chronosApi
       ? `${ENDPOINTS.chronosApi}/api/v1/spot`
-      : `${ENDPOINTS.exchangeApi}/api/chronos/v1/spot`
+      : `${ENDPOINTS.indexerApi}/api/chronos/v1/spot`
   }`
 )
 export const exchangeDerivativesApi = new IndexerGrpcDerivativesApi(
-  ENDPOINTS.exchangeApi
+  ENDPOINTS.indexerApi
 )
-export const exchangeSpotApi = new IndexerGrpcSpotApi(ENDPOINTS.exchangeApi)
+export const exchangeSpotApi = new IndexerGrpcSpotApi(ENDPOINTS.indexerApi)
 
 export const apolloConsumer = new ApolloConsumer(
   peggyGraphQlEndpointForNetwork(NETWORK)
