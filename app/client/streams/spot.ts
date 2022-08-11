@@ -1,15 +1,17 @@
 import {
-  IndexerGrpcSpotStream,
+  ExchangeGrpcSpotStream,
   SpotOrderbookStreamCallback,
   SpotOrdersStreamCallback,
   SpotTradesStreamCallback
-} from '@injectivelabs/sdk-ts'
+} from '@injectivelabs/sdk-ts/dist/client/exchange'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import { streamProvider } from '../../providers/StreamProvider'
 import { ENDPOINTS } from '~/app/utils/constants'
 import { StreamType } from '~/types'
 
-export const spotMarketStream = new IndexerGrpcSpotStream(ENDPOINTS.exchangeApi)
+export const spotMarketStream = new ExchangeGrpcSpotStream(
+  ENDPOINTS.exchangeApi
+)
 
 export const streamOrderbook = ({
   marketId,
