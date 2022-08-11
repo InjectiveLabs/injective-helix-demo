@@ -1,19 +1,20 @@
 import {
+  ExchangeGrpcDerivativesStream,
+  ExchangeGrpcSpotStream,
   DerivativeOrdersStreamCallback,
   DerivativeTradesStreamCallback,
-  IndexerGrpcDerivativesStream,
-  IndexerGrpcSpotStream,
   SpotOrdersStreamCallback,
   SpotTradesStreamCallback
-} from '@injectivelabs/sdk-ts'
+} from '@injectivelabs/sdk-ts/dist/client/exchange'
+
 import { streamProvider } from '../../providers/StreamProvider'
 import { StreamType } from '~/types'
 import { ENDPOINTS } from '~/app/utils/constants'
 
-export const spotMarketStream = new IndexerGrpcSpotStream(
+export const spotMarketStream = new ExchangeGrpcSpotStream(
   ENDPOINTS.exchangeApi
 )
-export const derivativesMarketStream = new IndexerGrpcDerivativesStream(
+export const derivativesMarketStream = new ExchangeGrpcDerivativesStream(
   ENDPOINTS.exchangeApi
 )
 
