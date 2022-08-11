@@ -1,51 +1,39 @@
 <template>
-  <li>
-    <div class="block hover:bg-gray-800 border-gray-600 rounded-lg cursor-pointer" @click="handleClickOnTorusConnect">
-      <div class="flex items-center pl-4 py-4">
-        <div class="min-w-0 flex-1 flex items-center">
-          <div class="flex-shrink-0 mr-2 text-gray-200">
-            <IconTorus class="w-8 h-8" />
-          </div>
-          <div class="min-w-0 flex-1 px-4 md:grid md:grid-cols-1 md:gap-4 text-left">
-            <div>
-              <p class="text-xl font-semibold text-white truncate">
-                {{ $t('connect.torus') }}
-              </p>
-              <div class="flex items-center text-sm text-gray-200">
-                <span class="truncate" data-cy="connect-wallet-popup-torus-button">
-                  {{ $t('connect.connectUsingTorus') }}
-                </span>
-                <div class="ml-4 grid grid-cols-4 gap-4">
-                  <IconGoogleSocial class="w-4 h-4" />
-                  <IconFacebookSocial class="w-4 h-4" />
-                  <IconTwitterSocial class="w-4 h-4" />
-                  <IconDiscordSocial class="w-4 h-4" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <IconCaretDown class="transform -rotate-90 h-5 w-5 text-gray-200" />
-        </div>
+  <WalletWrapper @click="handleClick">
+    <template #icon>
+      <IconTorus class="w-8 h-8" />
+    </template>
+    <template #title>
+      {{ $t('connect.torus') }}
+    </template>
+    <template #description>
+      <span data-cy="connect-wallet-popup-torus-button">
+        {{ $t('connect.connectUsingTorus') }}
+      </span>
+    </template>
+    <template #addon>
+      <div class="ml-4 grid grid-cols-4 gap-4 text-white">
+        <IconGoogleSocial class="w-4 h-4" />
+        <IconFacebookSocial class="w-4 h-4" />
+        <IconTwitterSocial class="w-4 h-4" />
+        <IconDiscordSocial class="w-4 h-4" />
       </div>
-    </div>
-  </li>
+    </template>
+  </WalletWrapper>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import WalletWrapper from './wallet-wrapper.vue'
 import { WalletConnectStatus } from '~/types/enums'
 
 export default Vue.extend({
-  computed: {
-    metamaskInstalled(): boolean {
-      return this.$accessor.wallet.metamaskInstalled
-    }
+  components: {
+    WalletWrapper
   },
 
   methods: {
-    handleClickOnTorusConnect() {
+    handleClick() {
       this.$accessor.wallet
         .connectTorus()
         .then(() => {

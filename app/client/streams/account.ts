@@ -7,7 +7,7 @@ import { ENDPOINTS } from '~/app/utils/constants'
 import { StreamType } from '~/types/enums'
 
 export const subaccountStream = new IndexerGrpcAccountStream(
-  ENDPOINTS.exchangeApi
+  ENDPOINTS.indexerApi
 )
 
 export const streamSubaccountBalances = ({

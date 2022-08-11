@@ -10,25 +10,25 @@ import {
   UiBridgeTransformer
 } from '@injectivelabs/sdk-ui-ts'
 import {
-  ApolloConsumer,
   ChainGrpcAuctionApi,
   ChainGrpcBankApi,
+  ChainGrpcMintApi,
+  ChainGrpcStakingApi,
   ChainGrpcDistributionApi,
-  ChainGrpcExchangeApi,
   ChainGrpcGovApi,
   ChainGrpcInsuranceFundApi,
-  ChainGrpcMintApi,
-  ChainGrpcOracleApi,
   ChainGrpcPeggyApi,
-  ChainGrpcStakingApi,
-  IndexerGrpcAccountApi,
-  IndexerGrpcDerivativesApi,
-  IndexerGrpcExplorerApi,
-  IndexerGrpcOracleApi,
-  IndexerGrpcSpotApi,
-  IndexerRestDerivativesChronosApi,
   IndexerRestExplorerApi,
-  IndexerRestSpotChronosApi
+  IndexerGrpcExplorerApi,
+  ApolloConsumer,
+  ChainGrpcExchangeApi,
+  ChainGrpcOracleApi,
+  IndexerGrpcDerivativesApi,
+  IndexerGrpcSpotApi,
+  IndexerGrpcAccountApi,
+  IndexerRestDerivativesChronosApi,
+  IndexerRestSpotChronosApi,
+  IndexerGrpcOracleApi
 } from '@injectivelabs/sdk-ts/dist/client'
 import {
   NETWORK,
@@ -68,37 +68,33 @@ export const peggyApi = new ChainGrpcPeggyApi(ENDPOINTS.sentryGrpcApi)
 export const auctionApi = new ChainGrpcAuctionApi(ENDPOINTS.sentryGrpcApi)
 export const exchangeApi = new ChainGrpcExchangeApi(ENDPOINTS.sentryGrpcApi)
 export const oracleApi = new ChainGrpcOracleApi(ENDPOINTS.sentryGrpcApi)
-export const exchangeExplorerApi = new IndexerGrpcExplorerApi(
-  ENDPOINTS.exchangeApi
+export const indexerExplorerApi = new IndexerGrpcExplorerApi(
+  ENDPOINTS.indexerApi
 )
-export const exchangeAccountApi = new IndexerGrpcAccountApi(
-  ENDPOINTS.exchangeApi
+export const indexerAccountApi = new IndexerGrpcAccountApi(ENDPOINTS.indexerApi)
+export const indexerOracleApi = new IndexerGrpcOracleApi(ENDPOINTS.indexerApi)
+export const indexerRestExplorerApi = new IndexerRestExplorerApi(
+  `${ENDPOINTS.indexerApi}/api/explorer/v1`
 )
-export const exchangeOracleApi = new IndexerGrpcOracleApi(
-  ENDPOINTS.exchangeApi
-)
-export const exchangeRestExplorerApi = new IndexerRestExplorerApi(
-  `${ENDPOINTS.exchangeApi}/api/explorer/v1`
-)
-export const exchangeRestDerivativesChronosApi =
+export const indexerRestDerivativesChronosApi =
   new IndexerRestDerivativesChronosApi(
     `${
       ENDPOINTS.chronosApi
         ? `${ENDPOINTS.chronosApi}/api/v1/derivative`
-        : `${ENDPOINTS.exchangeApi}/api/chronos/v1/derivative`
+        : `${ENDPOINTS.indexerApi}/api/chronos/v1/derivative`
     }`
   )
-export const exchangeRestSpotChronosApi = new IndexerRestSpotChronosApi(
+export const indexerRestSpotChronosApi = new IndexerRestSpotChronosApi(
   `${
     ENDPOINTS.chronosApi
       ? `${ENDPOINTS.chronosApi}/api/v1/spot`
-      : `${ENDPOINTS.exchangeApi}/api/chronos/v1/spot`
+      : `${ENDPOINTS.indexerApi}/api/chronos/v1/spot`
   }`
 )
-export const exchangeDerivativesApi = new IndexerGrpcDerivativesApi(
-  ENDPOINTS.exchangeApi
+export const indexerDerivativesApi = new IndexerGrpcDerivativesApi(
+  ENDPOINTS.indexerApi
 )
-export const exchangeSpotApi = new IndexerGrpcSpotApi(ENDPOINTS.exchangeApi)
+export const indexerSpotApi = new IndexerGrpcSpotApi(ENDPOINTS.indexerApi)
 
 export const apolloConsumer = new ApolloConsumer(
   peggyGraphQlEndpointForNetwork(NETWORK)
