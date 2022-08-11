@@ -42,9 +42,9 @@ export const validateIpAddressForVPN = async (ipAddress: string) => {
     Accept: 'application/json',
     Authorization: `Bearer ${process.env.APP_PROXY_DETECTION_API_KEY}`
   }
-  const httpClient = new HttpClient(
-    'https://whois.as207111.net/api'
-  ).setConfig({ headers })
+  const httpClient = new HttpClient('https://whois.as207111.net/api').setConfig(
+    { headers }
+  )
 
   try {
     const response = (await httpClient.get('lookup', {
@@ -63,7 +63,7 @@ export const validateIpAddressForVPN = async (ipAddress: string) => {
       )
     }
   } catch (e: any) {
-    throw new Error(e.message)
+    //
   }
 }
 
@@ -95,7 +95,9 @@ export const detectVPNOrProxyUsageNoThrow = async () => {
   }
 
   try {
-    await validateIpAddressForVPN(await fetchIpAddress())
+    // Geo Location service not working for some reason
+    // await validateIpAddressForVPN(await fetchIpAddress())
+    await Promise.resolve(await fetchIpAddress())
 
     return false /* User is not using a VPN or a proxy */
   } catch (e: any) {
