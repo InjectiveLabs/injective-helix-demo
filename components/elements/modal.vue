@@ -48,7 +48,7 @@
           :aria-modal="isOpen"
           aria-labelledby="modal-headline"
         >
-          <div class="mb-6">
+          <div class="mb-6 px-6 pt-6">
             <slot name="header">
               <div class="block w-full">
                 <div class="flex items-center justify-between">
@@ -72,9 +72,13 @@
             </slot>
           </div>
 
-          <slot />
+          <div :class="{ 'px-6': !noPadding, 'pb-6': !hasFooter }">
+            <slot />
+          </div>
 
-          <slot name="footer" />
+          <div v-if="hasFooter" class="px-6 pb-6">
+            <slot name="footer" />
+          </div>
         </div>
       </transition>
     </div>
@@ -123,6 +127,11 @@ export default Vue.extend({
     lg: {
       type: Boolean,
       default: false
+    },
+
+    noPadding: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -142,8 +151,6 @@ export default Vue.extend({
         return 'py-6 px-4 min-h-screen flex-grow flex flex-col'
       }
 
-      classes.push('p-6')
-
       if (sm) {
         classes.push('max-w-md')
       } else if (md) {
@@ -155,6 +162,10 @@ export default Vue.extend({
       }
 
       return classes.join(' ')
+    },
+
+    hasFooter() {
+      return !!this.$slots.footer
     }
   },
 
