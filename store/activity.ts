@@ -1,7 +1,12 @@
 import { actionTree, getterTree } from 'typed-vuex'
 import { FundingPayment, TradingReward } from '@injectivelabs/sdk-ts'
 import { BankBalanceWithTokenAndBalance } from '@injectivelabs/sdk-ui-ts'
-import { exchangeAccountApi, exchangeDerivativesApi, bankApi, tokenService } from '~/app/Services'
+import {
+  indexerAccountApi,
+  indexerDerivativesApi,
+  bankApi,
+  tokenService
+} from '~/app/Services'
 import { ActivityFetchOptions } from '~/types'
 
 const initialStateFactory = () => ({
@@ -19,9 +24,11 @@ export const state = () => ({
     initialState.subaccountFundingPayments as Array<FundingPayment>,
   tradingRewardsHistory:
     initialState.tradingRewardsHistory as Array<TradingReward>,
-  subaccountFundingPaymentsEndTime: initialState.subaccountFundingPaymentsEndTime,
+  subaccountFundingPaymentsEndTime:
+    initialState.subaccountFundingPaymentsEndTime,
   subaccountFundingPaymentsTotal: initialState.subaccountFundingPaymentsTotal,
-  supportedTokens: initialState.supportedTokens as Array<BankBalanceWithTokenAndBalance>
+  supportedTokens:
+    initialState.supportedTokens as Array<BankBalanceWithTokenAndBalance>
 })
 
 export type ActivityStoreState = ReturnType<typeof state>
@@ -45,7 +52,10 @@ export const mutations = {
     state.tradingRewardsHistory = tradingRewardsHistory
   },
 
-  setSubaccountFundingPaymentsEndTime(state: ActivityStoreState, endTime: number) {
+  setSubaccountFundingPaymentsEndTime(
+    state: ActivityStoreState,
+    endTime: number
+  ) {
     state.subaccountFundingPaymentsEndTime = endTime
   },
 
@@ -53,7 +63,10 @@ export const mutations = {
     state.subaccountFundingPaymentsTotal = total
   },
 
-  setSupportedTokens(state: ActivityStoreState, supportedTokens: Array<BankBalanceWithTokenAndBalance>) {
+  setSupportedTokens(
+    state: ActivityStoreState,
+    supportedTokens: Array<BankBalanceWithTokenAndBalance>
+  ) {
     state.supportedTokens = supportedTokens
   },
 
@@ -78,14 +91,17 @@ export const actions = actionTree(
 
       commit(
         'setTradingRewardHistory',
-        await exchangeAccountApi.fetchRewards({
+        await indexerAccountApi.fetchRewards({
           address: injectiveAddress,
           epoch: -1
         })
       )
     },
 
-    async fetchSubaccountFundingPayments({ state, commit }, activityFetchOptions: ActivityFetchOptions | undefined) {
+    async fetchSubaccountFundingPayments(
+      { state, commit },
+      activityFetchOptions: ActivityFetchOptions | undefined
+    ) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -93,23 +109,30 @@ export const actions = actionTree(
         return
       }
 
-      if (state.subaccountFundingPayments.length > 0 && state.subaccountFundingPaymentsEndTime === 0) {
-        commit('setSubaccountFundingPaymentsEndTime', state.subaccountFundingPayments[0].timestamp)
+      if (
+        state.subaccountFundingPayments.length > 0 &&
+        state.subaccountFundingPaymentsEndTime === 0
+      ) {
+        commit(
+          'setSubaccountFundingPaymentsEndTime',
+          state.subaccountFundingPayments[0].timestamp
+        )
       }
 
       const pagination = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
 
-      const { fundingPayments, paging } = await exchangeDerivativesApi.fetchFundingPayments({
-        marketId: filters?.marketId,
-        marketIds: filters?.marketIds,
-        subaccountId: subaccount.subaccountId,
-        pagination: {
-          skip: pagination ? pagination.skip : 0,
-          limit: pagination ? pagination.limit : 0,
-          endTime: state.subaccountFundingPaymentsEndTime
-        }
-      })
+      const { fundingPayments, paging } =
+        await indexerDerivativesApi.fetchFundingPayments({
+          marketId: filters?.marketId,
+          marketIds: filters?.marketIds,
+          subaccountId: subaccount.subaccountId,
+          pagination: {
+            skip: pagination ? pagination.skip : 0,
+            limit: pagination ? pagination.limit : 0,
+            endTime: state.subaccountFundingPaymentsEndTime
+          }
+        })
 
       commit('setSubaccountFundingPaymentsTotal', paging.total)
 
@@ -119,11 +142,11 @@ export const actions = actionTree(
     async fetchSupportedTokens({ commit }) {
       const { supply } = await bankApi.fetchTotalSupply()
 
-      const tokens = await Promise.all(supply.map(({ denom }) =>
-        tokenService.getDenomToken(denom)
-      ))
+      const tokens = await Promise.all(
+        supply.map(({ denom }) => tokenService.getDenomToken(denom))
+      )
 
-      const result = tokens.map(token => {
+      const result = tokens.map((token) => {
         return {
           balance: '',
           denom: token.denom,

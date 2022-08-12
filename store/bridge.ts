@@ -10,8 +10,8 @@ import {
 import { BankMsgSendTransaction } from '@injectivelabs/sdk-ts'
 import {
   bridgeTransformer,
-  exchangeAccountApi,
-  exchangeExplorerApi,
+  indexerAccountApi,
+  indexerExplorerApi,
   tokenService
 } from '~/app/Services'
 import { UiBridgeTransformer } from '~/app/client/transformers/UiBridgeTransformer'
@@ -220,7 +220,7 @@ export const actions = actionTree(
         return
       }
 
-      const { txs } = await exchangeExplorerApi.fetchAccountTx({
+      const { txs } = await indexerExplorerApi.fetchAccountTx({
         address: injectiveAddress,
         limit: -1,
         type: 'cosmos.bank.v1beta1.MsgSend'
@@ -260,7 +260,7 @@ export const actions = actionTree(
       const pagination = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
 
-      const { transfers, paging } = await exchangeAccountApi.fetchSubaccountHistory({
+      const { transfers, paging } = await indexerAccountApi.fetchSubaccountHistory({
         // marketId: filters?.marketId
         subaccountId: subaccount.subaccountId,
         denom: filters?.denom,
@@ -296,7 +296,7 @@ export const actions = actionTree(
         return
       }
 
-      const transactions = await exchangeExplorerApi.fetchIBCTransferTxs({
+      const transactions = await indexerExplorerApi.fetchIBCTransferTxs({
         sender: injectiveAddress,
         receiver: injectiveAddress
       })
@@ -324,7 +324,7 @@ export const actions = actionTree(
         return
       }
 
-      const transactions = await exchangeExplorerApi.fetchPeggyDepositTxs({
+      const transactions = await indexerExplorerApi.fetchPeggyDepositTxs({
         sender: address,
         receiver: injectiveAddress
       })
@@ -352,7 +352,7 @@ export const actions = actionTree(
         return
       }
 
-      const transactions = await exchangeExplorerApi.fetchPeggyWithdrawalTxs({
+      const transactions = await indexerExplorerApi.fetchPeggyWithdrawalTxs({
         sender: injectiveAddress,
         receiver: address
       })

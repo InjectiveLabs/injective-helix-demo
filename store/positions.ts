@@ -25,7 +25,7 @@ import { FEE_RECIPIENT } from '~/app/utils/constants'
 import { streamSubaccountPositions } from '~/app/client/streams/derivatives'
 import { getRoundedLiquidationPrice } from '~/app/client/utils/derivatives'
 // import { binaryOptions, derivatives } from '~/routes.config'
-import { exchangeDerivativesApi, msgBroadcastClient } from '~/app/Services'
+import { indexerDerivativesApi, msgBroadcastClient } from '~/app/Services'
 import { ActivityFetchOptions } from '~/types'
 
 const initialStateFactory = () => ({
@@ -128,7 +128,7 @@ export const actions = actionTree(
       const pagination = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
 
-      const { positions, paging } = await exchangeDerivativesApi.fetchPositions({
+      const { positions, paging } = await indexerDerivativesApi.fetchPositions({
         marketId: filters?.marketId,
         subaccountId: subaccount.subaccountId,
         pagination: {
@@ -169,7 +169,7 @@ export const actions = actionTree(
         return
       }
 
-      const marketsOrderbook = await exchangeDerivativesApi.fetchOrderbooks(
+      const marketsOrderbook = await indexerDerivativesApi.fetchOrderbooks(
         markets.map((market) => market.marketId)
       )
       const marketsOrderbookMap = marketsOrderbook.reduce(
@@ -199,7 +199,7 @@ export const actions = actionTree(
         return
       }
 
-      const marketsOrderbook = await exchangeDerivativesApi.fetchOrderbooks(
+      const marketsOrderbook = await indexerDerivativesApi.fetchOrderbooks(
         subaccountPositions.map((position) => position.marketId)
       )
       const marketsOrderbookMap = marketsOrderbook.reduce(
