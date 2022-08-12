@@ -1,6 +1,6 @@
 import { actionTree, getterTree } from 'typed-vuex'
 import { FundingPayment, TradingReward } from '@injectivelabs/sdk-ts'
-import { exchangeAccountApi, exchangeDerivativesApi } from '~/app/Services'
+import { indexerAccountApi, indexerDerivativesApi } from '~/app/Services'
 
 const initialStateFactory = () => ({
   subaccountFundingPayments: [] as Array<FundingPayment>,
@@ -58,7 +58,7 @@ export const actions = actionTree(
 
       commit(
         'setTradingRewardHistory',
-        await exchangeAccountApi.fetchRewards({
+        await indexerAccountApi.fetchRewards({
           address: injectiveAddress,
           epoch: -1
         })
@@ -73,11 +73,9 @@ export const actions = actionTree(
         return
       }
 
-      const fundingPayments = await exchangeDerivativesApi.fetchFundingPayments(
-        {
-          subaccountId: subaccount.subaccountId
-        }
-      )
+      const fundingPayments = await indexerDerivativesApi.fetchFundingPayments({
+        subaccountId: subaccount.subaccountId
+      })
 
       commit('setSubaccountFundingPayments', fundingPayments)
     }
