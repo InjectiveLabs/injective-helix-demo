@@ -19,7 +19,7 @@ import {
 } from '@injectivelabs/sdk-ts'
 import { Token } from '@injectivelabs/token-metadata'
 import {
-  exchangeAccountApi,
+  indexerAccountApi,
   msgBroadcastClient,
   tokenPrice,
   tokenService
@@ -149,7 +149,7 @@ export const actions = actionTree(
         return
       }
 
-      const subaccountIds = await exchangeAccountApi.fetchSubaccountsList(
+      const subaccountIds = await indexerAccountApi.fetchSubaccountsList(
         injectiveAddress
       )
 
@@ -158,7 +158,7 @@ export const actions = actionTree(
       }
 
       const [subaccountId] = subaccountIds
-      const balances = await exchangeAccountApi.fetchSubaccountBalancesList(
+      const balances = await indexerAccountApi.fetchSubaccountBalancesList(
         subaccountId
       )
       const subaccount = {
@@ -255,7 +255,7 @@ export const actions = actionTree(
       }
 
       const { subaccountId } = subaccount
-      const balances = await exchangeAccountApi.fetchSubaccountBalancesList(
+      const balances = await indexerAccountApi.fetchSubaccountBalancesList(
         subaccountId
       )
       const updatedSubaccount = {
@@ -280,9 +280,7 @@ export const actions = actionTree(
         await this.app.$accessor.account.init()
       }
 
-      const portfolio = await exchangeAccountApi.fetchPortfolio(
-        injectiveAddress
-      )
+      const portfolio = await indexerAccountApi.fetchPortfolio(injectiveAddress)
 
       commit('setPortfolioValue', portfolio)
     },

@@ -6,9 +6,9 @@ import {
   UiAccountTransformer
 } from '@injectivelabs/sdk-ui-ts'
 import {
-  exchangeDerivativesApi,
-  exchangeSpotApi,
-  exchangeAccountApi
+  indexerDerivativesApi,
+  indexerSpotApi,
+  indexerAccountApi
 } from '~/app/Services'
 
 const initialStateFactory = () => ({
@@ -79,12 +79,13 @@ export const actions = actionTree(
         return
       }
 
-      const spotTrades = await exchangeSpotApi.fetchTrades({
+      const { trades: spotTrades } = await indexerSpotApi.fetchTrades({
         subaccountId: subaccount.subaccountId
       })
-      const derivativeTrades = await exchangeDerivativesApi.fetchTrades({
-        subaccountId: subaccount.subaccountId
-      })
+      const { trades: derivativeTrades } =
+        await indexerDerivativesApi.fetchTrades({
+          subaccountId: subaccount.subaccountId
+        })
 
       commit('setTrades', [...spotTrades, ...derivativeTrades])
     },
@@ -97,7 +98,7 @@ export const actions = actionTree(
         return
       }
 
-      const transfers = await exchangeAccountApi.fetchSubaccountHistory({
+      const { transfers } = await indexerAccountApi.fetchSubaccountHistory({
         subaccountId: subaccount.subaccountId
       })
       const uiTransfers = transfers.map(

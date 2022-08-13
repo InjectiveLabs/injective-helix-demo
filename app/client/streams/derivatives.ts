@@ -3,11 +3,11 @@ import {
   DerivativeOrderbookStreamCallback,
   DerivativeOrdersStreamCallback,
   DerivativeTradesStreamCallback,
-  ExchangeGrpcDerivativesStream,
-  ExchangeGrpcOracleStream,
+  IndexerGrpcDerivativesStream,
+  IndexerGrpcOracleStream,
   OraclePriceStreamCallback,
   PositionsStreamCallback
-} from '@injectivelabs/sdk-ts/dist/client/exchange'
+} from '@injectivelabs/sdk-ts'
 import {
   MarketType,
   UiBinaryOptionsMarketWithToken,
@@ -18,10 +18,10 @@ import { streamProvider } from '../../providers/StreamProvider'
 import { ENDPOINTS } from '~/app/utils/constants'
 import { StreamType } from '~/types'
 
-export const derivativesMarketStream = new ExchangeGrpcDerivativesStream(
+export const derivativesMarketStream = new IndexerGrpcDerivativesStream(
   ENDPOINTS.exchangeApi
 )
-export const oracleStream = new ExchangeGrpcOracleStream(ENDPOINTS.exchangeApi)
+export const oracleStream = new IndexerGrpcOracleStream(ENDPOINTS.exchangeApi)
 export const streamOrderbook = ({
   marketId,
   callback

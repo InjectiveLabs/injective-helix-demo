@@ -50,9 +50,9 @@ import {
   ORDERBOOK_STREAMING_ENABLED
 } from '~/app/utils/constants'
 import {
-  exchangeDerivativesApi,
-  exchangeOracleApi,
-  exchangeRestDerivativesChronosApi,
+  indexerDerivativesApi,
+  indexerOracleApi,
+  indexerRestDerivativesChronosApi,
   msgBroadcastClient,
   tokenService
 } from '~/app/Services'
@@ -328,7 +328,7 @@ export const actions = actionTree(
     },
 
     async init({ commit }) {
-      const markets = (await exchangeDerivativesApi.fetchMarkets()) as Array<
+      const markets = (await indexerDerivativesApi.fetchMarkets()) as Array<
         PerpetualMarket | ExpiryFuturesMarket
       >
       const marketsWithToken = await tokenService.getDerivativeMarketsWithToken(
@@ -347,7 +347,7 @@ export const actions = actionTree(
           expiryFuturesMarkets
         )
       const binaryOptionsMarkets = IS_DEVNET
-        ? await exchangeDerivativesApi.fetchBinaryOptionsMarkets()
+        ? await indexerDerivativesApi.fetchBinaryOptionsMarkets()
         : []
       const binaryOptionsMarketsWithToken =
         await tokenService.getBinaryOptionsMarketsWithToken(
@@ -400,7 +400,7 @@ export const actions = actionTree(
       ])
 
       const marketsSummary =
-        await exchangeRestDerivativesChronosApi.fetchMarketsSummary()
+        await indexerRestDerivativesChronosApi.fetchMarketsSummary()
       const marketSummaryNotExists =
         !marketsSummary || (marketsSummary && marketsSummary.length === 0)
       const actualMarketsSummary = marketSummaryNotExists
@@ -431,10 +431,9 @@ export const actions = actionTree(
         throw new Error('Market not found. Please refresh the page.')
       }
 
-      const summary =
-        await exchangeRestDerivativesChronosApi.fetchMarketSummary(
-          market.marketId
-        )
+      const summary = await indexerRestDerivativesChronosApi.fetchMarketSummary(
+        market.marketId
+      )
 
       commit('setMarket', market)
       commit('setMarketSummary', {
@@ -473,12 +472,12 @@ export const actions = actionTree(
 
       const oraclePrice =
         market.subType !== MarketType.BinaryOptions
-          ? await exchangeOracleApi.fetchOraclePrice({
+          ? await indexerOracleApi.fetchOraclePrice({
               baseSymbol: (market as UiPerpetualMarketWithToken).oracleBase,
               quoteSymbol: (market as UiPerpetualMarketWithToken).oracleQuote,
               oracleType: market.oracleType
             })
-          : await exchangeOracleApi.fetchOraclePriceNoThrow({
+          : await indexerOracleApi.fetchOraclePriceNoThrow({
               baseSymbol: (market as UiBinaryOptionsMarketWithToken)
                 .oracleSymbol,
               quoteSymbol: (market as UiBinaryOptionsMarketWithToken)
@@ -498,7 +497,7 @@ export const actions = actionTree(
 
       commit(
         'setOrderbook',
-        await exchangeDerivativesApi.fetchOrderbook(market.marketId)
+        await indexerDerivativesApi.fetchOrderbook(market.marketId)
       )
     },
 
@@ -644,7 +643,7 @@ export const actions = actionTree(
 
       commit(
         'setOrderbook',
-        await exchangeDerivativesApi.fetchOrderbook(market.marketId)
+        await indexerDerivativesApi.fetchOrderbook(market.marketId)
       )
     },
 
@@ -655,10 +654,11 @@ export const actions = actionTree(
         return
       }
 
-      commit(
-        'setTrades',
-        await exchangeDerivativesApi.fetchTrades({ marketId: market.marketId })
-      )
+      const { trades } = await indexerDerivativesApi.fetchTrades({
+        marketId: market.marketId
+      })
+
+      commit('setTrades', trades)
     },
 
     async fetchSubaccountOrders({ commit }) {
@@ -669,12 +669,11 @@ export const actions = actionTree(
         return
       }
 
-      commit(
-        'setSubaccountOrders',
-        await exchangeDerivativesApi.fetchOrders({
-          subaccountId: subaccount.subaccountId
-        })
-      )
+      const { orders } = await indexerDerivativesApi.fetchOrders({
+        subaccountId: subaccount.subaccountId
+      })
+
+      commit('setSubaccountOrders', orders)
     },
 
     async fetchMarketsSummary({ state, commit }) {
@@ -685,7 +684,7 @@ export const actions = actionTree(
       }
 
       const updatedMarketsSummary =
-        await exchangeRestDerivativesChronosApi.fetchMarketsSummary()
+        await indexerRestDerivativesChronosApi.fetchMarketsSummary()
       const combinedMarketsSummary =
         UiDerivativeTransformer.derivativeMarketsSummaryComparisons(
           updatedMarketsSummary,
@@ -722,7 +721,7 @@ export const actions = actionTree(
         return
       }
 
-      const updatedMarket = await exchangeDerivativesApi.fetchMarket(
+      const updatedMarket = await indexerDerivativesApi.fetchMarket(
         market.marketId
       )
 
@@ -740,7 +739,7 @@ export const actions = actionTree(
         return
       }
 
-      const trades = await exchangeDerivativesApi.fetchTrades({
+      const { trades } = await indexerDerivativesApi.fetchTrades({
         subaccountId: subaccount.subaccountId
       })
 
