@@ -237,7 +237,7 @@ export const actions = actionTree(
         return
       }
 
-      const transfers = await indexerAccountApi.fetchSubaccountHistory({
+      const { transfers } = await indexerAccountApi.fetchSubaccountHistory({
         subaccountId: subaccount.subaccountId
       })
       const uiTransfers = transfers.map(
