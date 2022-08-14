@@ -4,15 +4,10 @@
       <VCardTableWrap>
         <template #actions>
           <div class="col-span-12 grid grid-cols-12 gap-4 w-full">
-            <TokenSelector
-              class="token-selector__token-only col-span-4 md:col-span-3 lg:col-span-2"
+            <SearchAsset
+              :markets="markets"
               :value="selectedToken"
-              :options="supportedTokens"
-              :placeholder="'Search asset'"
-              :balance="balance"
-              dense
-              show-default-indicator
-              @input:token="handleSelectToken"
+              @select="handleSearch"
             />
 
             <FilterSelector
@@ -21,6 +16,11 @@
               :value="side"
               data-cy="universal-table-filter-by-side-drop-down"
               @click="handleSideClick"
+            />
+
+            <ClearFiltersButton
+              v-if="showClearFiltersButton"
+              @clear="handleClearFilters"
             />
 
             <div class="hidden md:block md:col-span-3 lg:col-span-6" />
@@ -122,14 +122,11 @@
 </template>
 
 <script lang="ts">
-import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+import { Status, StatusType } from '@injectivelabs/utils'
 import Vue from 'vue'
 import {
   UiPosition,
-  UiDerivativeMarketWithToken,
-  ZERO_IN_BASE,
-  BankBalanceWithTokenAndBalanceInBase,
-  BankBalanceWithTokenAndBalance
+  UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { Wallet } from '@injectivelabs/ts-types'
 import { Token } from '@injectivelabs/token-metadata'
@@ -141,7 +138,8 @@ import TableBody from '~/components/elements/table-body.vue'
 import { TradeSelectorType } from '~/types/enums'
 import Pagination from '~/components/partials/common/pagination.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
-import TokenSelector from '@/components/partials/portfolio/bridge/token-selector/select.vue'
+import SearchAsset from '@/components/partials/activity/common/search-asset.vue'
+import ClearFiltersButton from '@/components/partials/activity/common/clear-filters-button.vue'
 
 export default Vue.extend({
   components: {
@@ -151,7 +149,8 @@ export default Vue.extend({
     PositionTableHeader,
     TableBody,
     Pagination,
-    TokenSelector
+    SearchAsset,
+    ClearFiltersButton
   },
 
   data() {
@@ -235,21 +234,8 @@ export default Vue.extend({
       return Math.ceil(totalCount / limit)
     },
 
-    balance(): BigNumberInBase {
-      return ZERO_IN_BASE
-    },
-
-    supportedTokens(): BankBalanceWithTokenAndBalanceInBase[] {
-      const supportedTokens = this.$store.state.activity.supportedTokens
-
-      return supportedTokens.filter(
-        (token: BankBalanceWithTokenAndBalance) =>
-          !!this.markets.find(
-            (market) =>
-              market.baseToken.denom === token.denom ||
-              market.quoteToken.denom === token.denom
-          )
-      )
+    showClearFiltersButton(): boolean {
+      return !!this.selectedToken
     }
   },
 
@@ -270,6 +256,12 @@ export default Vue.extend({
     updatePositions(): Promise<void> {
       this.status.setLoading()
 
+      const marketId = this.markets.find(m => {
+        return m.baseToken.symbol === this.selectedToken?.symbol || m.quoteToken.symbol === this.selectedToken?.symbol
+      })?.marketId
+
+      const marketIds = this.markets.map(market => market.marketId)
+
       return Promise.all([
         this.$accessor.derivatives.fetchSubaccountOrders(),
         this.$accessor.positions.fetchSubaccountPositions({
@@ -278,9 +270,8 @@ export default Vue.extend({
             limit: this.limit
           },
           filters: {
-            // marketId,
-            // marketIds,
-            // orderSide
+            marketId,
+            marketIds
           }
         })
       ])
@@ -344,6 +335,8 @@ export default Vue.extend({
 
     handleSideClick(side: string | undefined) {
       this.side = side
+
+      this.updatePositions()
     },
 
     pollSubaccountPositions() {
@@ -369,8 +362,14 @@ export default Vue.extend({
       this.updatePositions()
     },
 
-    handleSelectToken(token: Token) {
+    handleSearch(token: Token) {
       this.selectedToken = token
+
+      this.updatePositions()
+    },
+
+    handleClearFilters() {
+      this.selectedToken = undefined
 
       this.updatePositions()
     }

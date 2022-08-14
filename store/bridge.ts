@@ -257,16 +257,16 @@ export const actions = actionTree(
         commit('setSubaccountTransferBridgeTransactionsEndTime', state.subaccountTransferBridgeTransactions[0].timestamp)
       }
 
-      const pagination = activityFetchOptions?.pagination
+      const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
 
-      const { transfers, paging } = await indexerAccountApi.fetchSubaccountHistory({
+      const { transfers, pagination } = await indexerAccountApi.fetchSubaccountHistory({
         // marketId: filters?.marketId
         subaccountId: subaccount.subaccountId,
         denom: filters?.denom,
         pagination: {
-          skip: pagination ? pagination.skip : 0,
-          limit: pagination ? pagination.limit : 0,
+          skip: paginationOptions ? paginationOptions.skip : 0,
+          limit: paginationOptions ? paginationOptions.limit : 0,
           endTime: state.subaccountTransferBridgeTransactionsEndTime
         }
       })
@@ -281,7 +281,7 @@ export const actions = actionTree(
 
       const uiBridgeTransactionsWithToken = await tokenService.getBridgeTransactionsWithToken(transactions)
 
-      commit('setSubaccountTransferBridgeTransactionsTotal', paging.total)
+      commit('setSubaccountTransferBridgeTransactionsTotal', pagination.total)
 
       commit('setSubaccountTransferTransactions', transactions)
 

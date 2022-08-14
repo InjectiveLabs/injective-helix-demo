@@ -119,22 +119,21 @@ export const actions = actionTree(
         )
       }
 
-      const pagination = activityFetchOptions?.pagination
+      const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
 
-      const { fundingPayments, paging } =
-        await indexerDerivativesApi.fetchFundingPayments({
+      const { fundingPayments, pagination } = await indexerDerivativesApi.fetchFundingPayments({
           marketId: filters?.marketId,
           marketIds: filters?.marketIds,
           subaccountId: subaccount.subaccountId,
           pagination: {
-            skip: pagination ? pagination.skip : 0,
-            limit: pagination ? pagination.limit : 0,
+            skip: paginationOptions ? paginationOptions.skip : 0,
+            limit: paginationOptions ? paginationOptions.limit : 0,
             endTime: state.subaccountFundingPaymentsEndTime
           }
         })
 
-      commit('setSubaccountFundingPaymentsTotal', paging.total)
+      commit('setSubaccountFundingPaymentsTotal', pagination.total)
 
       commit('setSubaccountFundingPayments', fundingPayments)
     },

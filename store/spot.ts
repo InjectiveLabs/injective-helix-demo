@@ -56,7 +56,8 @@ const initialStateFactory = () => ({
   subaccountTradesEndTime: 0 as number,
   subaccountTradesTotal: 0 as number,
   subaccountOrders: [] as UiSpotLimitOrder[],
-  subaccountOrdersTotal: 0 as number
+  subaccountOrdersTotal: 0 as number,
+  subaccountOrdersEndTime: 0 as number
 })
 
 const initialState = initialStateFactory()
@@ -72,6 +73,7 @@ export const state = () => ({
   subaccountTradesTotal: initialState.subaccountTradesTotal as number,
   subaccountOrders: initialState.subaccountOrders as UiSpotLimitOrder[],
   subaccountOrdersTotal: initialState.subaccountOrdersTotal as number,
+  subaccountOrdersEndTime: initialState.subaccountOrdersEndTime as number,
   orderbook: initialState.orderbook as UiSpotOrderbook | undefined
 })
 
@@ -178,6 +180,10 @@ export const mutations = {
 
   setSubaccountOrdersTotal(state: SpotStoreState, total: number) {
     state.subaccountOrdersTotal = total
+  },
+
+  setSubaccountOrdersEndTime(state: SpotStoreState, endTime: number) {
+    state.subaccountOrdersEndTime = endTime
   },
 
   setSubaccountOrders(
@@ -483,20 +489,23 @@ export const actions = actionTree(
         return
       }
 
-      const pagination = activityFetchOptions?.pagination
+      // TODO: Implement endTime.
+
+      const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
 
-      const { orders, paging } = await indexerSpotApi.fetchOrders({
+      const { orders, pagination } = await indexerSpotApi.fetchOrders({
         marketId: filters?.marketId,
+        marketIds: filters?.marketIds,
         subaccountId: subaccount.subaccountId,
         orderSide: filters?.orderSide as SpotOrderSide,
         pagination: {
-          skip: pagination ? pagination.skip : 0,
-          limit: pagination ? pagination.limit : 0
+          skip: paginationOptions ? paginationOptions.skip : 0,
+          limit: paginationOptions ? paginationOptions.limit : 0
         }
       })
 
-      commit('setSubaccountOrdersTotal', paging.total)
+      commit('setSubaccountOrdersTotal', pagination.total)
 
       commit('setSubaccountOrders', orders)
     },
@@ -538,23 +547,23 @@ export const actions = actionTree(
         commit('setSubaccountTradesEndTime', state.subaccountTrades[0].timestamp)
       }
 
-      const pagination = activityFetchOptions?.pagination
+      const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
 
-      const { trades, paging } = await indexerSpotApi.fetchTrades({
+      const { trades, pagination } = await indexerSpotApi.fetchTrades({
         marketId: filters?.marketId,
         marketIds: filters?.marketIds,
         subaccountId: subaccount.subaccountId,
         executionType: filters?.type,
         direction: filters?.direction,
         pagination: {
-          skip: pagination ? pagination.skip : 0,
-          limit: pagination ? pagination.limit : 0,
+          skip: paginationOptions ? paginationOptions.skip : 0,
+          limit: paginationOptions ? paginationOptions.limit : 0,
           endTime: state.subaccountTradesEndTime
         }
       })
 
-      commit('setSubaccountTradesTotal', paging.total)
+      commit('setSubaccountTradesTotal', pagination.total)
 
       commit('setSubaccountTrades', trades)
     },

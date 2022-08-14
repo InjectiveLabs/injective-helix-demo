@@ -692,20 +692,21 @@ export const actions = actionTree(
         return
       }
 
-      const pagination = activityFetchOptions?.pagination
+      const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
 
-      const { orders, paging } = await indexerDerivativesApi.fetchOrders({
+      const { orders, pagination } = await indexerDerivativesApi.fetchOrders({
         marketId: filters?.marketId,
+        marketIds: filters?.marketIds,
         subaccountId: subaccount.subaccountId,
         orderSide: filters?.orderSide as DerivativeOrderSide,
         pagination: {
-          skip: pagination ? pagination.skip : 0,
-          limit: pagination ? pagination.limit : 0
+          skip: paginationOptions ? paginationOptions.skip : 0,
+          limit: paginationOptions ? paginationOptions.limit : 0
         }
       })
 
-      commit('setSubaccountOrdersTotal', paging.total)
+      commit('setSubaccountOrdersTotal', pagination.total)
 
       commit('setSubaccountOrders', orders)
     },
@@ -777,23 +778,23 @@ export const actions = actionTree(
         commit('setSubaccountTradesEndTime', state.subaccountTrades[0].executedAt)
       }
 
-      const pagination = activityFetchOptions?.pagination
+      const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
 
-      const { trades, paging } = await indexerDerivativesApi.fetchTrades({
+      const { trades, pagination } = await indexerDerivativesApi.fetchTrades({
         marketId: filters?.marketId,
         marketIds: filters?.marketIds,
         subaccountId: subaccount.subaccountId,
         executionType: filters?.type,
         direction: filters?.direction,
         pagination: {
-          skip: pagination ? pagination.skip : 0,
-          limit: pagination ? pagination.limit : 0,
+          skip: paginationOptions ? paginationOptions.skip : 0,
+          limit: paginationOptions ? paginationOptions.limit : 0,
           endTime: state.subaccountTradesEndTime
         }
       })
 
-      commit('setSubaccountTradesTotal', paging.total)
+      commit('setSubaccountTradesTotal', pagination.total)
 
       commit('setSubaccountTrades', trades)
     },

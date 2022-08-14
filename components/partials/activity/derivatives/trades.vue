@@ -6,16 +6,10 @@
           <div
             class="col-span-12 lg:col-span-8 grid grid-cols-5 sm:grid-cols-4 gap-4 w-full"
           >
-            <TokenSelector
-              class="token-selector__token-only"
+            <SearchAsset
+              :markets="markets"
               :value="selectedToken"
-              :options="supportedTokens"
-              :placeholder="'Search asset'"
-              :balance="balance"
-              dense
-              rounded
-              show-default-indicator
-              @input:token="handleSelectToken"
+              @select="handleSearch"
             />
 
             <div
@@ -40,6 +34,11 @@
               :type="TradeSelectorType.Side"
               :value="side"
               @click="handleSideClick"
+            />
+
+            <ClearFiltersButton
+              v-if="showClearFiltersButton"
+              @clear="handleClearFilters"
             />
           </div>
         </template>
@@ -106,17 +105,14 @@
 </template>
 
 <script lang="ts">
-import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+import { Status, StatusType } from '@injectivelabs/utils'
 import Vue from 'vue'
 import {
   UiDerivativeTrade,
-  UiDerivativeMarketWithToken,
-  ZERO_IN_BASE,
-  BankBalanceWithTokenAndBalanceInBase,
-  BankBalanceWithTokenAndBalance
+  UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
-import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 import { Token } from '@injectivelabs/token-metadata'
+import { stringToTradeDirection, stringToTradeExecutionType } from '@/components/partials/activity/common/utils'
 import Trade from '~/components/partials/common/trade/trade.vue'
 import MobileTrade from '~/components/partials/common/trade/mobile-trade.vue'
 import TradesTableHeader from '~/components/partials/common/trade/trades-table-header.vue'
@@ -128,43 +124,7 @@ import { TradeSelectorType } from '~/types/enums'
 import { Modal } from '~/types'
 import Pagination from '~/components/partials/common/pagination.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
-import TokenSelector from '@/components/partials/portfolio/bridge/token-selector/select.vue'
-
-function stringToTradeExecutionType(
-  type: string
-): TradeExecutionType | undefined {
-  switch (type) {
-    case 'market': {
-      return TradeExecutionType.Market
-    }
-    case 'limitFill': {
-      return TradeExecutionType.LimitFill
-    }
-    case 'limitMatchRestingOrder': {
-      return TradeExecutionType.LimitMatchRestingOrder
-    }
-    case 'limitMatchNewOrder': {
-      return TradeExecutionType.LimitMatchNewOrder
-    }
-    default: {
-      return undefined
-    }
-  }
-}
-
-function stringToTradeDirection(side: string): TradeDirection | undefined {
-  switch (side) {
-    case 'buy': {
-      return TradeDirection.Buy
-    }
-    case 'taker': {
-      return TradeDirection.Sell
-    }
-    default: {
-      return undefined
-    }
-  }
-}
+import SearchAsset from '@/components/partials/activity/common/search-asset.vue'
 
 export default Vue.extend({
   components: {
@@ -176,7 +136,7 @@ export default Vue.extend({
     TableBody,
     TradesTableHeader,
     Pagination,
-    TokenSelector
+    SearchAsset
   },
 
   data() {
@@ -210,7 +170,7 @@ export default Vue.extend({
         // type,
         // side
       } = this
-      return trades
+
       // return trades.filter((t) => {
       //   const market = markets.find((m) => m.marketId === t.marketId)
       //   if (!market) {
@@ -231,6 +191,8 @@ export default Vue.extend({
       //   const isPartOfSideFilter = !side || t.tradeDirection === side
       //   return isPartOfSearchFilter && isPartOfTypeFilter && isPartOfSideFilter
       // })
+
+      return trades
     },
 
     totalCount(): number {
@@ -243,24 +205,7 @@ export default Vue.extend({
       return Math.ceil(totalCount / limit)
     },
 
-    balance(): BigNumberInBase {
-      return ZERO_IN_BASE
-    },
-
-    supportedTokens(): BankBalanceWithTokenAndBalanceInBase[] {
-      const supportedTokens = this.$store.state.activity.supportedTokens
-
-      return supportedTokens.filter(
-        (token: BankBalanceWithTokenAndBalance) =>
-          !!this.markets.find(
-            (market) =>
-              market.baseToken.denom === token.denom ||
-              market.quoteToken.denom === token.denom
-          )
-      )
-    },
-
-    showClearAllButton(): boolean {
+    showClearFiltersButton(): boolean {
       return !!this.selectedToken || !!this.type || !!this.side
     }
   },
@@ -311,10 +256,6 @@ export default Vue.extend({
         })
     },
 
-    // handleInputOnSearch(search: string) {
-    //   this.search = search
-    // },
-
     handleSideClick(side: string | undefined) {
       this.side = side
 
@@ -349,7 +290,7 @@ export default Vue.extend({
       this.updateTrades()
     },
 
-    handleSelectToken(token: Token) {
+    handleSearch(token: Token) {
       this.selectedToken = token
 
       this.updateTrades()

@@ -3,26 +3,15 @@
     <div class="w-full h-full flex flex-col">
       <VCardTableWrap>
         <template #actions>
-          <div class="col-span-12 lg:col-span-8 grid grid-cols-5 sm:grid-cols-4 gap-4 w-full">
-            <TokenSelector
-              class="token-selector__token-only"
-              :value="selectedToken"
-              :options="supportedTokens"
-              :placeholder="'Search asset'"
-              :balance="balance"
-              dense
-              rounded
-              show-default-indicator
-              @input:token="handleSelectToken"
-            />
+          <div
+            class="col-span-12 lg:col-span-8 grid grid-cols-5 sm:grid-cols-4 gap-4 w-full"
+          >
+            <SearchAsset :value="selectedToken" @select="handleSearch" />
 
-            <div
-              v-if="showClearAllButton"
-              class="flex items-center h-[40px] text-sm cursor-pointer text-primary-500 hover:text-primary-600"
-              @click="handleClearFilters"
-            >
-              {{ $t('filters.clearAll') }}
-            </div>
+            <ClearFiltersButton
+              v-if="showClearFiltersButton"
+              @clear="handleClearFilters"
+            />
           </div>
         </template>
 
@@ -63,22 +52,24 @@
 </template>
 
 <script lang="ts">
-import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+import { Status, StatusType } from '@injectivelabs/utils'
 import Vue from 'vue'
-import { BankBalanceWithTokenAndBalanceInBase, UiBridgeTransactionWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { UiBridgeTransactionWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
 import TransfersTableHeader from '~/components/partials/activity/wallet-history/common/table-header.vue'
 import Transfer from '~/components/partials/activity/wallet-history/transfers/transfer.vue'
 import Pagination from '~/components/partials/common/pagination.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
-import TokenSelector from '@/components/partials/portfolio/bridge/token-selector/select.vue'
+import SearchAsset from '@/components/partials/activity/common/search-asset.vue'
+import ClearFiltersButton from '@/components/partials/activity/common/clear-filters-button.vue'
 
 export default Vue.extend({
   components: {
     Transfer,
     TransfersTableHeader,
     Pagination,
-    TokenSelector
+    SearchAsset,
+    ClearFiltersButton
   },
 
   data() {
@@ -101,7 +92,7 @@ export default Vue.extend({
         transactions
         // search
       } = this
-      return transactions
+
       // return transactions.filter((transaction) => {
       //   if (!search) {
       //     return true
@@ -111,6 +102,8 @@ export default Vue.extend({
       //     .includes(search.trim().toLowerCase())
       //   return isPartOfSearchFilter
       // })
+
+      return transactions
     },
 
     totalCount(): number {
@@ -123,15 +116,7 @@ export default Vue.extend({
       return Math.ceil(totalCount / limit)
     },
 
-    balance(): BigNumberInBase {
-      return ZERO_IN_BASE
-    },
-
-    supportedTokens(): BankBalanceWithTokenAndBalanceInBase[] {
-      return this.$store.state.activity.supportedTokens
-    },
-
-    showClearAllButton(): boolean {
+    showClearFiltersButton(): boolean {
       return !!this.selectedToken
     }
   },
@@ -147,17 +132,15 @@ export default Vue.extend({
       const denom = this.selectedToken?.denom
 
       Promise.all([
-        this.$accessor.bridge.fetchSubaccountTransfers(
-          {
-            pagination: {
-              skip: (this.page - 1) * this.limit,
-              limit: this.limit
-            },
-            filters: {
-              denom
-            }
+        this.$accessor.bridge.fetchSubaccountTransfers({
+          pagination: {
+            skip: (this.page - 1) * this.limit,
+            limit: this.limit
+          },
+          filters: {
+            denom
           }
-        )
+        })
       ])
         .then(() => {
           //
@@ -167,10 +150,6 @@ export default Vue.extend({
           this.status.setIdle()
         })
     },
-
-    // handleInputOnSearch(search: string) {
-    //   this.search = search
-    // },
 
     handleLimitChangeEvent(limit: number) {
       this.limit = limit
@@ -184,7 +163,7 @@ export default Vue.extend({
       this.updateTransfers()
     },
 
-    handleSelectToken(token: Token) {
+    handleSearch(token: Token) {
       this.selectedToken = token
 
       this.updateTransfers()

@@ -6,25 +6,16 @@
           <div
             class="col-span-12 lg:col-span-8 grid grid-cols-5 sm:grid-cols-4 gap-4 w-full"
           >
-            <TokenSelector
-              class="token-selector__token-only"
+            <SearchAsset
+              :markets="markets"
               :value="selectedToken"
-              :options="supportedTokens"
-              :placeholder="'Search asset'"
-              :balance="balance"
-              dense
-              rounded
-              show-default-indicator
-              @input:token="handleSelectToken"
+              @select="handleSearch"
             />
 
-            <div
-              v-if="showClearAllButton"
-              class="flex items-center h-[40px] text-sm cursor-pointer text-primary-500 hover:text-primary-600"
-              @click="handleClearFilters"
-            >
-              {{ $t('filters.clearAll') }}
-            </div>
+            <ClearFiltersButton
+              v-if="showClearFiltersButton"
+              @clear="handleClearFilters"
+            />
           </div>
 
           <div
@@ -107,14 +98,9 @@
 </template>
 
 <script lang="ts">
-import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+import { Status, StatusType } from '@injectivelabs/utils'
 import Vue from 'vue'
-import {
-  BankBalanceWithTokenAndBalance,
-  BankBalanceWithTokenAndBalanceInBase,
-  UiDerivativeMarketWithToken,
-  ZERO_IN_BASE
-} from '@injectivelabs/sdk-ui-ts'
+import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { FundingPayment } from '@injectivelabs/sdk-ts'
 import { Token } from '@injectivelabs/token-metadata'
 import FundingPaymentsTableHeader from '~/components/partials/common/derivatives/funding-payments-table-header.vue'
@@ -123,7 +109,8 @@ import FundingPaymentRow from '~/components/partials/common/derivatives/funding-
 import MobileFundingPayment from '~/components/partials/common/derivatives/mobile-funding-payment.vue'
 import Pagination from '~/components/partials/common/pagination.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
-import TokenSelector from '@/components/partials/portfolio/bridge/token-selector/select.vue'
+import SearchAsset from '@/components/partials/activity/common/search-asset.vue'
+import ClearFiltersButton from '@/components/partials/activity/common/clear-filters-button.vue'
 
 export default Vue.extend({
   components: {
@@ -132,7 +119,8 @@ export default Vue.extend({
     MobileFundingPayment,
     TableBody,
     Pagination,
-    TokenSelector
+    SearchAsset,
+    ClearFiltersButton
   },
 
   data() {
@@ -160,7 +148,7 @@ export default Vue.extend({
         // markets,
         // search
       } = this
-      return fundingPayments
+
       // return fundingPayments.filter((p) => {
       //   const market = markets.find((m) => m.marketId === p.marketId)
       //   if (!market || !search) {
@@ -171,6 +159,8 @@ export default Vue.extend({
       //     .includes(search.trim().toLowerCase())
       //   return isPartOfSearchFilter
       // })
+
+      return fundingPayments
     },
 
     totalCount(): number {
@@ -183,24 +173,7 @@ export default Vue.extend({
       return Math.ceil(totalCount / limit)
     },
 
-    balance(): BigNumberInBase {
-      return ZERO_IN_BASE
-    },
-
-    supportedTokens(): BankBalanceWithTokenAndBalanceInBase[] {
-      const supportedTokens = this.$store.state.activity.supportedTokens
-
-      return supportedTokens.filter(
-        (token: BankBalanceWithTokenAndBalance) =>
-          !!this.markets.find(
-            (market) =>
-              market.baseToken.denom === token.denom ||
-              market.quoteToken.denom === token.denom
-          )
-      )
-    },
-
-    showClearAllButton(): boolean {
+    showClearFiltersButton(): boolean {
       return !!this.selectedToken
     }
   },
@@ -243,10 +216,6 @@ export default Vue.extend({
         })
     },
 
-    // handleInputOnSearch(search: string) {
-    //   this.search = search
-    // },
-
     handleLimitChangeEvent(limit: number) {
       this.limit = limit
 
@@ -259,7 +228,7 @@ export default Vue.extend({
       this.updateFundingPayments()
     },
 
-    handleSelectToken(token: Token) {
+    handleSearch(token: Token) {
       this.selectedToken = token
 
       this.updateFundingPayments()

@@ -1,4 +1,5 @@
 import { DerivativeOrderSide, SpotOrderSide } from '@injectivelabs/sdk-ui-ts'
+import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 
 export function stringToDerivativeOrderSide(
   side: string
@@ -23,6 +24,40 @@ export function stringToSpotOrderSide(side: string): SpotOrderSide | undefined {
     }
     case 'sell': {
       return SpotOrderSide.Sell
+    }
+    default: {
+      return undefined
+    }
+  }
+}
+
+export function stringToTradeExecutionType (type: string): TradeExecutionType | undefined {
+  switch (type) {
+    case 'market': {
+      return TradeExecutionType.Market
+    }
+    case 'limitFill': {
+      return TradeExecutionType.LimitFill
+    }
+    case 'limitMatchRestingOrder': {
+      return TradeExecutionType.LimitMatchRestingOrder
+    }
+    case 'limitMatchNewOrder': {
+      return TradeExecutionType.LimitMatchNewOrder
+    }
+    default: {
+      return undefined
+    }
+  }
+}
+
+export function stringToTradeDirection(side: string): TradeDirection | undefined {
+  switch (side) {
+    case 'buy': {
+      return TradeDirection.Buy
+    }
+    case 'taker': {
+      return TradeDirection.Sell
     }
     default: {
       return undefined

@@ -125,19 +125,20 @@ export const actions = actionTree(
         return
       }
 
-      const pagination = activityFetchOptions?.pagination
+      const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
 
-      const { positions, paging } = await indexerDerivativesApi.fetchPositions({
+      const { positions, pagination } = await indexerDerivativesApi.fetchPositions({
         marketId: filters?.marketId,
+        marketIds: filters?.marketIds,
         subaccountId: subaccount.subaccountId,
         pagination: {
-          skip: pagination ? pagination.skip : 0,
-          limit: pagination ? pagination.limit : 0
+          skip: paginationOptions ? paginationOptions.skip : 0,
+          limit: paginationOptions ? paginationOptions.limit : 0
         }
       })
 
-      // TODO: We can no longer do this because the paging will otherwise be incorrect.
+      // TODO: We can no longer do this because the pagination will otherwise be incorrect.
 
       // const positionWithActiveMarket = positions.filter((p) => {
       //   const tickerFormattedToSlug = p.ticker
@@ -150,7 +151,7 @@ export const actions = actionTree(
       //   )
       // })
 
-      commit('setSubaccountPositionsTotal', paging.total)
+      commit('setSubaccountPositionsTotal', pagination.total)
 
       commit('setSubaccountPositions', positions)
     },
