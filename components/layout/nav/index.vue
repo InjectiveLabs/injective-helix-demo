@@ -72,7 +72,7 @@
           {{ $t('navigation.spot') }}
         </p>
         <p
-          class="text-sm leading-6 text-gray-500 group-hover:text-gray-100 mt-1"
+          class="text-sm text-gray-500 group-hover:text-gray-100 mt-1"
         >
           {{ $t('navigation.spotDescription') }}
         </p>
@@ -89,7 +89,7 @@
           {{ $t('navigation.perpetual') }}
         </p>
         <p
-          class="text-sm leading-6 text-gray-500 group-hover:text-gray-100 mt-1"
+          class="text-sm text-gray-500 group-hover:text-gray-100 mt-1"
         >
           {{ $t('navigation.perpetualDescription') }}
         </p>
@@ -103,7 +103,7 @@
           {{ $t('navigation.convert') }}
         </p>
         <p
-          class="text-sm leading-6 text-gray-500 group-hover:text-gray-100 mt-1"
+          class="text-sm text-gray-500 group-hover:text-gray-100 mt-1"
         >
           {{ $t('navigation.convertDescription') }}
         </p>
@@ -124,7 +124,7 @@
           {{ $t('navigation.tradeAndEarn') }}
         </p>
         <p
-          class="text-sm leading-6 text-gray-500 group-hover:text-gray-100 mt-1"
+          class="text-sm text-gray-500 group-hover:text-gray-100 mt-1"
         >
           {{ $t('navigation.tradeAndEarnDescription') }}
         </p>
@@ -139,7 +139,7 @@
           <IconExternalLinkArrow class="w-auto h-3 ml-2" />
         </p>
         <p
-          class="text-sm leading-6 text-gray-500 group-hover:text-gray-100 mt-1"
+          class="text-sm text-gray-500 group-hover:text-gray-100 mt-1"
         >
           {{ $t('navigation.dmmProgramDescription') }}
         </p>
@@ -154,7 +154,7 @@
           <IconExternalLinkArrow class="w-auto h-3 ml-2" />
         </p>
         <p
-          class="text-sm leading-6 text-gray-500 group-hover:text-gray-100 mt-1"
+          class="text-sm text-gray-500 group-hover:text-gray-100 mt-1"
         >
           {{ $t('navigation.affiliateProgramDescription') }}
         </p>
