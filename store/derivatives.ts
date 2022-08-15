@@ -654,10 +654,11 @@ export const actions = actionTree(
         return
       }
 
-      commit(
-        'setTrades',
-        await indexerDerivativesApi.fetchTrades({ marketId: market.marketId })
-      )
+      const { trades } = await indexerDerivativesApi.fetchTrades({
+        marketId: market.marketId
+      })
+
+      commit('setTrades', trades)
     },
 
     async fetchSubaccountOrders({ commit }) {
@@ -668,12 +669,11 @@ export const actions = actionTree(
         return
       }
 
-      commit(
-        'setSubaccountOrders',
-        await indexerDerivativesApi.fetchOrders({
-          subaccountId: subaccount.subaccountId
-        })
-      )
+      const { orders } = await indexerDerivativesApi.fetchOrders({
+        subaccountId: subaccount.subaccountId
+      })
+
+      commit('setSubaccountOrders', orders)
     },
 
     async fetchMarketsSummary({ state, commit }) {
@@ -739,7 +739,7 @@ export const actions = actionTree(
         return
       }
 
-      const trades = await indexerDerivativesApi.fetchTrades({
+      const { trades } = await indexerDerivativesApi.fetchTrades({
         subaccountId: subaccount.subaccountId
       })
 
