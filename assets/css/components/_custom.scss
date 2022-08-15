@@ -18,7 +18,9 @@
 .orderbook-h {
   --orderbook-height: 30rem;
   --orderbook-aggregation-height: 48px;
+  --orderbook-header-height: 32px;
   --orderbook-middle-height: 2rem;
+
   height: var(--orderbook-height);
 
   @screen lg {
@@ -38,7 +40,6 @@
 
 .orderbook-half-h {
   --orderbook-half-height: calc((var(--orderbook-height) - var(--orderbook-aggregation-height)) / 2);
-  --orderbook-header-height: 32px;
   height: calc(var(--orderbook-half-height) - var(--orderbook-middle-height) / 2 - var(--orderbook-header-height) / 2);
 }
 
