@@ -929,6 +929,7 @@ export default Vue.extend({
         market,
         notionalWithLeverage,
         price,
+        triggerPrice,
         orderTypeReduceOnly,
         amount
       } = this
@@ -940,8 +941,9 @@ export default Vue.extend({
       this.status.setLoading()
 
       this.$accessor.derivatives
-        .submitLimitOrder({
+        .submitStopLimitOrder({
           price,
+          triggerPrice,
           margin: notionalWithLeverage,
           orderType: orderTypeToSubmit,
           reduceOnly: orderTypeReduceOnly,

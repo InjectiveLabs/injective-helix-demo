@@ -573,8 +573,6 @@ export default Vue.extend({
           return
         }
 
-        console.log('newLastTradedPrice:', newPrice.toFixed(market.priceDecimals))
-
         if (!price && !newPrice.eq('0')) {
           const formattedPrice = newPrice.toFixed(market.priceDecimals)
 
@@ -753,7 +751,7 @@ export default Vue.extend({
 
     onTriggerPriceChange(triggerPrice: string = '') {
       const {
-          // hasAmount,
+        // hasAmount,
         market
         // isSpot,
         // averagePriceOption

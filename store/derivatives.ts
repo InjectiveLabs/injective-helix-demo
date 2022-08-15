@@ -887,6 +887,72 @@ export const actions = actionTree(
       })
     },
 
+    async submitStopLimitOrder(
+      { state },
+      {
+        price,
+        triggerPrice,
+        reduceOnly,
+        margin,
+        quantity,
+        orderType
+      }: {
+        reduceOnly: boolean
+        price: BigNumberInBase
+        triggerPrice: BigNumberInBase
+        margin: BigNumberInBase
+        quantity: BigNumberInBase
+        orderType: DerivativeOrderSide
+      }
+    ) {
+      const { market } = state
+      const { subaccount } = this.app.$accessor.account
+      const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
+
+      if (!isUserWalletConnected || !subaccount || !market) {
+        return
+      }
+
+      await this.app.$accessor.app.queue()
+      await this.app.$accessor.wallet.validate()
+
+      const messageType =
+        market.subType === MarketType.BinaryOptions
+          ? MsgCreateBinaryOptionsLimitOrder
+          : MsgCreateDerivativeLimitOrder
+
+      const message = messageType.fromJSON({
+        injectiveAddress,
+        orderType: derivativeOrderTypeToGrpcOrderType(orderType),
+        triggerPrice: derivativePriceToChainPriceToFixed({
+          value: triggerPrice,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        price: derivativePriceToChainPriceToFixed({
+          value: price,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        quantity: derivativeQuantityToChainQuantityToFixed({ value: quantity }),
+        margin: reduceOnly
+          ? ZERO_TO_STRING
+          : derivativeMarginToChainMarginToFixed({
+              value: margin,
+              quoteDecimals: market.quoteToken.decimals
+            }),
+        marketId: market.marketId,
+        feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
+        subaccountId: subaccount.subaccountId
+      })
+
+      await msgBroadcastClient.broadcast({
+        address,
+        msgs: message,
+        bucket: DerivativesMetrics.CreateLimitOrder
+      })
+    },
+
     async submitMarketOrder(
       { state },
       {
@@ -960,57 +1026,58 @@ export const actions = actionTree(
       }: {
         reduceOnly: boolean
         price: BigNumberInBase
-        triggerPrice: BigNumberInBase,
+        triggerPrice: BigNumberInBase
         margin: BigNumberInBase
         quantity: BigNumberInBase
         orderType: DerivativeOrderSide
-      }) {
-        const { market } = state
-        const { subaccount } = this.app.$accessor.account
-        const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
-        const { address, injectiveAddress, isUserWalletConnected } =
-          this.app.$accessor.wallet
-
-        if (!isUserWalletConnected || !subaccount || !market) {
-          return
-        }
-
-        await this.app.$accessor.app.queue()
-        await this.app.$accessor.wallet.validate()
-
-        const messageType =
-          market.subType === MarketType.BinaryOptions
-            ? MsgCreateBinaryOptionsMarketOrder
-            : MsgCreateDerivativeMarketOrder
-
-        const message = messageType.fromJSON({
-          injectiveAddress,
-          orderType: derivativeOrderTypeToGrpcOrderType(orderType),
-          price: derivativePriceToChainPriceToFixed({
-            value: price,
-            quoteDecimals: market.quoteToken.decimals
-          }),
-          triggerPrice: derivativePriceToChainPriceToFixed({
-            value: triggerPrice,
-            quoteDecimals: market.quoteToken.decimals
-          }),
-          quantity: derivativeQuantityToChainQuantityToFixed({ value: quantity }),
-          margin: reduceOnly
-            ? ZERO_TO_STRING
-            : derivativeMarginToChainMarginToFixed({
-                value: margin,
-                quoteDecimals: market.quoteToken.decimals
-              }),
-          marketId: market.marketId,
-          feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
-          subaccountId: subaccount.subaccountId
-        })
-
-        await msgBroadcastClient.broadcast({
-          address,
-          msgs: message,
-          bucket: DerivativesMetrics.CreateMarketOrder
-        })
       }
+    ) {
+      const { market } = state
+      const { subaccount } = this.app.$accessor.account
+      const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
+
+      if (!isUserWalletConnected || !subaccount || !market) {
+        return
+      }
+
+      await this.app.$accessor.app.queue()
+      await this.app.$accessor.wallet.validate()
+
+      const messageType =
+        market.subType === MarketType.BinaryOptions
+          ? MsgCreateBinaryOptionsMarketOrder
+          : MsgCreateDerivativeMarketOrder
+
+      const message = messageType.fromJSON({
+        injectiveAddress,
+        orderType: derivativeOrderTypeToGrpcOrderType(orderType),
+        price: derivativePriceToChainPriceToFixed({
+          value: price,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        triggerPrice: derivativePriceToChainPriceToFixed({
+          value: triggerPrice,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        quantity: derivativeQuantityToChainQuantityToFixed({ value: quantity }),
+        margin: reduceOnly
+          ? ZERO_TO_STRING
+          : derivativeMarginToChainMarginToFixed({
+              value: margin,
+              quoteDecimals: market.quoteToken.decimals
+            }),
+        marketId: market.marketId,
+        feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
+        subaccountId: subaccount.subaccountId
+      })
+
+      await msgBroadcastClient.broadcast({
+        address,
+        msgs: message,
+        bucket: DerivativesMetrics.CreateMarketOrder
+      })
+    }
   }
 )

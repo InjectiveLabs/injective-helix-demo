@@ -661,6 +661,62 @@ export const actions = actionTree(
       })
     },
 
+    async submitStopLimitOrder(
+      { state },
+      {
+        price,
+        triggerPrice,
+        quantity,
+        orderType
+      }: {
+        price: BigNumberInBase
+        triggerPrice: BigNumberInBase
+        quantity: BigNumberInBase
+        orderType: SpotOrderSide
+      }
+    ) {
+      const { market } = state
+      const { subaccount } = this.app.$accessor.account
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
+      const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
+
+      if (!isUserWalletConnected || !subaccount || !market) {
+        return
+      }
+
+      await this.app.$accessor.app.queue()
+      await this.app.$accessor.wallet.validate()
+
+      const message = MsgCreateSpotLimitOrder.fromJSON({
+        injectiveAddress,
+        orderType: spotOrderTypeToGrpcOrderType(orderType),
+        price: spotPriceToChainPriceToFixed({
+          value: price,
+          baseDecimals: market.baseToken.decimals,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        triggerPrice: spotPriceToChainPriceToFixed({
+          value: triggerPrice,
+          baseDecimals: market.baseToken.decimals,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        quantity: spotQuantityToChainQuantityToFixed({
+          value: quantity,
+          baseDecimals: market.baseToken.decimals
+        }),
+        marketId: market.marketId,
+        feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
+        subaccountId: subaccount.subaccountId
+      })
+
+      await msgBroadcastClient.broadcast({
+        address,
+        msgs: message,
+        bucket: SpotMetrics.CreateLimitOrder
+      })
+    },
+
     async submitMarketOrder(
       { state },
       {
@@ -691,6 +747,62 @@ export const actions = actionTree(
         orderType: spotOrderTypeToGrpcOrderType(orderType),
         price: spotPriceToChainPriceToFixed({
           value: price,
+          baseDecimals: market.baseToken.decimals,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        quantity: spotQuantityToChainQuantityToFixed({
+          value: quantity,
+          baseDecimals: market.baseToken.decimals
+        }),
+        marketId: market.marketId,
+        feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
+        subaccountId: subaccount.subaccountId
+      })
+
+      await msgBroadcastClient.broadcast({
+        address,
+        msgs: message,
+        bucket: SpotMetrics.CreateMarketOrder
+      })
+    },
+
+    async submitStopMarketOrder(
+      { state },
+      {
+        quantity,
+        price,
+        triggerPrice,
+        orderType
+      }: {
+        price: BigNumberInBase
+        triggerPrice: BigNumberInBase
+        quantity: BigNumberInBase
+        orderType: SpotOrderSide
+      }
+    ) {
+      const { market } = state
+      const { subaccount } = this.app.$accessor.account
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
+      const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
+
+      if (!isUserWalletConnected || !subaccount || !market) {
+        return
+      }
+
+      await this.app.$accessor.app.queue()
+      await this.app.$accessor.wallet.validate()
+
+      const message = MsgCreateSpotMarketOrder.fromJSON({
+        injectiveAddress,
+        orderType: spotOrderTypeToGrpcOrderType(orderType),
+        price: spotPriceToChainPriceToFixed({
+          value: price,
+          baseDecimals: market.baseToken.decimals,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        triggerPrice: spotPriceToChainPriceToFixed({
+          value: triggerPrice,
           baseDecimals: market.baseToken.decimals,
           quoteDecimals: market.quoteToken.decimals
         }),

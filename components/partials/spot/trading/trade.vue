@@ -50,6 +50,7 @@
       :quote-amount.sync="form.quoteAmount"
       :slippage-tolerance.sync="form.slippageTolerance"
       @update:priceFromLastTradedPrice="updatePriceFromLastTradedPrice"
+      @update:trigger-price="updateTriggerPrice"
     />
 
     <OrderDetailsWrapper
@@ -132,6 +133,7 @@ interface TradeForm {
   amount: string
   quoteAmount: string
   price: string
+  triggerPrice: string
   slippageTolerance: string
   postOnly: boolean
   proportionalPercentage: number
@@ -141,6 +143,7 @@ const initialForm = (): TradeForm => ({
   amount: '',
   quoteAmount: '',
   price: '',
+  triggerPrice: '',
   slippageTolerance: '0.5',
   postOnly: false,
   proportionalPercentage: 0
@@ -447,6 +450,10 @@ export default Vue.extend({
       return price ? new BigNumberInBase(this.form.price) : ZERO_IN_BASE
     },
 
+    triggerPrice(): BigNumberInBase {
+      return new BigNumberInBase(this.form.triggerPrice)
+    },
+
     hasPrice(): boolean {
       const { executionPrice } = this
 
@@ -648,6 +655,10 @@ export default Vue.extend({
       )
     },
 
+    updateTriggerPrice(triggerPrice: string) {
+      this.form.triggerPrice = triggerPrice
+    },
+
     onOrderbookNotionalClick({
       total,
       price,
@@ -723,6 +734,32 @@ export default Vue.extend({
         })
     },
 
+    submitStopLimitOrder() {
+      const { orderTypeToSubmit, market, price, triggerPrice, amount } = this
+
+      if (!market) {
+        return
+      }
+
+      this.status.setLoading()
+
+      this.$accessor.spot
+        .submitStopLimitOrder({
+          price,
+          triggerPrice,
+          quantity: amount,
+          orderType: orderTypeToSubmit
+        })
+        .then(() => {
+          this.$toast.success(this.$t('trade.order_placed'))
+          this.$set(this, 'form', initialForm())
+        })
+        .catch(this.$onRejected)
+        .finally(() => {
+          this.status.setIdle()
+        })
+    },
+
     submitMarketOrder() {
       const { orderType, market, worstPrice, amount } = this
 
@@ -748,12 +785,45 @@ export default Vue.extend({
         })
     },
 
-    onSubmit() {
-      const { tradingTypeMarket } = this
+    submitStopMarketOrder() {
+      const { orderType, market, worstPrice, triggerPrice, amount } = this
 
-      return tradingTypeMarket
-        ? this.submitMarketOrder()
-        : this.submitLimitOrder()
+      if (!market) {
+        return
+      }
+
+      this.status.setLoading()
+
+      this.$accessor.spot
+        .submitStopMarketOrder({
+          quantity: amount,
+          price: worstPrice,
+          triggerPrice,
+          orderType
+        })
+        .then(() => {
+          this.$toast.success(this.$t('trade.trade_placed'))
+          this.$set(this, 'form', initialForm())
+        })
+        .catch(this.$onRejected)
+        .finally(() => {
+          this.status.setIdle()
+        })
+    },
+
+    onSubmit() {
+      const { tradingType } = this
+
+      switch (tradingType.toString()) {
+        case TradeExecutionType.Market.toString():
+          return this.submitMarketOrder()
+        case TradeExecutionType.LimitFill.toString():
+          return this.submitLimitOrder()
+        case 'stopLimit':
+          return this.submitStopLimitOrder()
+        case 'stopMarket':
+          return this.submitStopMarketOrder()
+      }
     }
   }
 })
