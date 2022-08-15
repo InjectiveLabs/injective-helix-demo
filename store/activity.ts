@@ -134,7 +134,6 @@ export const actions = actionTree(
         })
 
       commit('setSubaccountFundingPaymentsTotal', pagination.total)
-
       commit('setSubaccountFundingPayments', fundingPayments)
     },
 
