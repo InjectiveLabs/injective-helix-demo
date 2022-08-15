@@ -679,7 +679,9 @@ export const actions = actionTree(
         return
       }
 
-      const { trades } = await indexerDerivativesApi.fetchTrades({ marketId: market.marketId })
+      const { trades } = await indexerDerivativesApi.fetchTrades({
+        marketId: market.marketId
+      })
 
       commit('setTrades', trades)
     },
@@ -707,7 +709,6 @@ export const actions = actionTree(
       })
 
       commit('setSubaccountOrdersTotal', pagination.total)
-
       commit('setSubaccountOrders', orders)
     },
 

@@ -337,9 +337,8 @@ export const actions = actionTree(
         await this.app.$accessor.spot.streamOrderbook()
       }
 
-      // TODO
-      await this.app.$accessor.indexer.fetchFeeDiscountAccountInfo()
-      await this.app.$accessor.indexer.fetchTradingRewardsCampaign()
+      await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
+      await this.app.$accessor.exchange.fetchTradingRewardsCampaign()
     },
 
     async initMarketStreams({ state }) {
@@ -490,7 +489,6 @@ export const actions = actionTree(
       }
 
       // TODO: Implement endTime.
-
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
 
@@ -506,7 +504,6 @@ export const actions = actionTree(
       })
 
       commit('setSubaccountOrdersTotal', pagination.total)
-
       commit('setSubaccountOrders', orders)
     },
 
@@ -564,7 +561,6 @@ export const actions = actionTree(
       })
 
       commit('setSubaccountTradesTotal', pagination.total)
-
       commit('setSubaccountTrades', trades)
     },
 
