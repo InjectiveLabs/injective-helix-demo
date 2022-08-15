@@ -73,9 +73,10 @@ export const actions = actionTree(
         return
       }
 
-      const fundingPayments = await indexerDerivativesApi.fetchFundingPayments({
-        subaccountId: subaccount.subaccountId
-      })
+      const { fundingPayments } =
+        await indexerDerivativesApi.fetchFundingPayments({
+          subaccountId: subaccount.subaccountId
+        })
 
       commit('setSubaccountFundingPayments', fundingPayments)
     }

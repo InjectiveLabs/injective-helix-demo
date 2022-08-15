@@ -112,7 +112,7 @@ export const actions = actionTree(
         return
       }
 
-      const positions = await indexerDerivativesApi.fetchPositions({
+      const { positions } = await indexerDerivativesApi.fetchPositions({
         subaccountId: subaccount.subaccountId
       })
 
