@@ -8,7 +8,9 @@
       type="checkbox"
       @change="handleChange"
     />
-    <label :for="uid" :data-cy="dataCy" class="flex"><slot /></label>
+    <label :for="uid" :data-cy="dataCy" class="flex items-center">
+      <slot />
+    </label>
   </div>
 </template>
 
