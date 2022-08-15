@@ -1,92 +1,88 @@
 <template>
   <HocLoading :status="status">
     <div class="w-full h-full flex flex-col">
-      <VCardTableWrap>
-        <template #actions>
+      <Toolbar>
+        <template #filters>
+          <SearchAsset
+            :markets="markets"
+            :value="selectedToken"
+            @select="handleSearch"
+          />
+
           <div
-            class="col-span-12 lg:col-span-8 grid grid-cols-5 sm:grid-cols-4 gap-4 w-full"
+            class="col-span-2 flex items-center bg-gray-900 rounded-full text-gray-200 py-3 px-6 text-xs cursor-pointer sm:hidden shadow-sm"
+            @click="openMobileFilterModal"
           >
-            <SearchAsset
-              :markets="markets"
-              :value="selectedToken"
-              @select="handleSearch"
-            />
-
-            <div
-              class="col-span-2 flex items-center bg-gray-900 rounded-full text-gray-200 py-3 px-6 text-xs cursor-pointer sm:hidden shadow-sm"
-              @click="openMobileFilterModal"
-            >
-              <IconFilter class="min-w-4 mr-2" />
-              <span>{{ $t('common.filters') }}</span>
-            </div>
-
-            <FilterSelector
-              class="self-start hidden sm:block"
-              data-cy="universal-table-filter-by-type-drop-down"
-              :type="TradeSelectorType.Type"
-              :value="type"
-              @click="handleTypeClick"
-            />
-
-            <FilterSelector
-              class="self-start hidden sm:block"
-              data-cy="universal-table-filter-by-side-drop-down"
-              :type="TradeSelectorType.Side"
-              :value="side"
-              @click="handleSideClick"
-            />
-
-            <ClearFiltersButton
-              v-if="showClearFiltersButton"
-              @clear="handleClearFilters"
-            />
+            <IconFilter class="min-w-4 mr-2" />
+            <span>{{ $t('common.filters') }}</span>
           </div>
+
+          <FilterSelector
+            class="col-span-3 hidden sm:block"
+            data-cy="universal-table-filter-by-type-drop-down"
+            :type="TradeSelectorType.Type"
+            :value="type"
+            @click="handleTypeClick"
+          />
+
+          <FilterSelector
+            class="col-span-3 hidden sm:block"
+            data-cy="universal-table-filter-by-side-drop-down"
+            :type="TradeSelectorType.Side"
+            :value="side"
+            @click="handleSideClick"
+          />
+
+          <ClearFiltersButton
+            v-if="showClearFiltersButton"
+            @clear="handleClearFilters"
+          />
         </template>
+      </Toolbar>
 
-        <!-- mobile table -->
-        <TableBody
-          :show-empty="filteredTrades.length === 0"
-          class="sm:hidden mt-3 max-h-lg overflow-y-auto"
-        >
-          <MobileTrade
-            v-for="(trade, index) in filteredTrades"
-            :key="`mobile-derivative-trade-${index}`"
-            class="col-span-1"
-            :trade="trade"
-            @showTradeDetails="handleShowTradeDetails"
-          />
-
-          <EmptyList slot="empty" :message="$t('trade.emptyTrades')" />
-        </TableBody>
-
-        <TableWrapper break-md class="mt-4 hidden sm:block">
-          <table v-if="filteredTrades.length > 0" class="table">
-            <TradesTableHeader />
-            <tbody>
-              <tr
-                is="Trade"
-                v-for="(trade, index) in filteredTrades"
-                :key="`trade-${index}`"
-                :trade="trade"
-              ></tr>
-            </tbody>
-          </table>
-          <EmptyList
-            v-else
-            :message="$t('trade.emptyTrades')"
-            data-cy="universal-table-nothing-found"
-          />
-        </TableWrapper>
-
-        <ModalMobileTradeFilter
-          :type="type"
-          :side="side"
-          @type:update="handleTypeClick"
-          @side:update="handleSideClick"
+      <!-- mobile table -->
+      <TableBody
+        :show-empty="filteredTrades.length === 0"
+        class="sm:hidden mt-3 max-h-lg overflow-y-auto"
+      >
+        <MobileTrade
+          v-for="(trade, index) in filteredTrades"
+          :key="`mobile-derivative-trade-${index}`"
+          class="col-span-1"
+          :trade="trade"
+          @showTradeDetails="handleShowTradeDetails"
         />
 
-        <ModalMobileTradeDetails :trade="tradeDetails" />
-      </VCardTableWrap>
+        <EmptyList slot="empty" :message="$t('trade.emptyTrades')" />
+      </TableBody>
+
+      <TableWrapper break-md class="mt-4 hidden sm:block">
+        <table v-if="filteredTrades.length > 0" class="table">
+          <TradesTableHeader />
+          <tbody>
+            <tr
+              is="Trade"
+              v-for="(trade, index) in filteredTrades"
+              :key="`trade-${index}`"
+              :trade="trade"
+            ></tr>
+          </tbody>
+        </table>
+        <EmptyList
+          v-else
+          :message="$t('trade.emptyTrades')"
+          data-cy="universal-table-nothing-found"
+        />
+      </TableWrapper>
+
+      <ModalMobileTradeFilter
+        :type="type"
+        :side="side"
+        @type:update="handleTypeClick"
+        @side:update="handleSideClick"
+      />
+
+      <ModalMobileTradeDetails :trade="tradeDetails" />
 
       <Pagination
         v-if="status.isIdle()"
@@ -122,9 +118,11 @@ import ModalMobileTradeDetails from '~/components/partials/modals/mobile-trade-d
 import TableBody from '~/components/elements/table-body.vue'
 import { TradeSelectorType } from '~/types/enums'
 import { Modal } from '~/types'
-import Pagination from '~/components/partials/common/pagination.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
+import Pagination from '~/components/partials/common/pagination.vue'
 import SearchAsset from '@/components/partials/activity/common/search-asset.vue'
+import ClearFiltersButton from '@/components/partials/activity/common/clear-filters-button.vue'
+import Toolbar from '@/components/partials/activity/common/toolbar.vue'
 
 export default Vue.extend({
   components: {
@@ -136,7 +134,9 @@ export default Vue.extend({
     TableBody,
     TradesTableHeader,
     Pagination,
-    SearchAsset
+    SearchAsset,
+    ClearFiltersButton,
+    Toolbar
   },
 
   data() {

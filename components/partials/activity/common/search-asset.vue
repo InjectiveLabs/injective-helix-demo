@@ -1,6 +1,6 @@
 <template>
   <TokenSelector
-    class="token-selector__token-only col-span-4 md:col-span-3 lg:col-span-2"
+    class="token-selector__token-only min-w-3xs"
     :value="value"
     :options="supportedTokens"
     :placeholder="'Search asset'"

@@ -1,109 +1,107 @@
 <template>
   <HocLoading :status="status">
     <div class="w-full h-full flex flex-col">
-      <VCardTableWrap>
-        <template #actions>
-          <div class="col-span-12 grid grid-cols-12 gap-4 w-full">
-            <SearchAsset
-              :markets="markets"
-              :value="selectedToken"
-              @select="handleSearch"
-            />
+      <Toolbar>
+        <template #filters>
+          <SearchAsset
+            :markets="markets"
+            :value="selectedToken"
+            @select="handleSearch"
+          />
 
-            <FilterSelector
-              class="col-span-4 md:col-span-3 lg:col-span-2"
-              :type="TradeSelectorType.PositionSide"
-              :value="side"
-              data-cy="universal-table-filter-by-side-drop-down"
-              @click="handleSideClick"
-            />
+          <FilterSelector
+            class="min-w-3xs"
+            :type="TradeSelectorType.PositionSide"
+            :value="side"
+            data-cy="universal-table-filter-by-side-drop-down"
+            @click="handleSideClick"
+          />
 
-            <ClearFiltersButton
-              v-if="showClearFiltersButton"
-              @clear="handleClearFilters"
-            />
-
-            <div class="hidden md:block md:col-span-3 lg:col-span-6" />
-
-            <div
-              v-if="filteredPositions.length > 0"
-              class="col-span-4 md:col-span-3 lg:col-span-2 flex justify-between items-center sm:hidden mt-3 text-xs px-3"
-            >
-              <span class="tracking-widest uppercase tracking-3">
-                {{ $t('trade.side') }} / {{ $t('trade.market') }}
-              </span>
-              <span
-                class="text-red-500 leading-5 cursor-pointer"
-                @click.stop="handleClosePositions"
-              >
-                {{ $t('trade.closeAll') }}
-              </span>
-            </div>
-
-            <div
-              class="col-span-4 md:col-span-3 lg:col-span-2 sm:text-right mt-0 hidden sm:block"
-            >
-              <VButton
-                v-if="filteredPositions.length > 0 && walletIsNotKeplr"
-                red-outline
-                md
-                :status="status"
-                data-cy="activity-cancel-all-button"
-                class="rounded"
-                @click.stop="handleClosePositions"
-              >
-                {{ $t('trade.closeAllPositions') }}
-              </VButton>
-            </div>
-          </div>
+          <ClearFiltersButton
+            v-if="showClearFiltersButton"
+            @clear="handleClearFilters"
+          />
         </template>
 
-        <!-- mobile table -->
-        <TableBody
-          :show-empty="filteredPositions.length === 0"
-          class="sm:hidden mt-3 max-h-lg overflow-y-auto"
-        >
-          <MobilePosition
-            v-for="(position, index) in sortedPositions"
-            :key="`mobile-positions-${index}-${position.marketId}`"
-            class="col-span-1"
-            :position="position"
-          />
+        <template #actions>
+          <div
+            v-if="filteredPositions.length > 0"
+            class="col-span-4 md:col-span-3 lg:col-span-2 flex justify-between items-center sm:hidden mt-3 text-xs px-3"
+          >
+            <span class="tracking-widest uppercase tracking-3">
+              {{ $t('trade.side') }} / {{ $t('trade.market') }}
+            </span>
+            <span
+              class="text-red-500 leading-5 cursor-pointer"
+              @click.stop="handleClosePositions"
+            >
+              {{ $t('trade.closeAll') }}
+            </span>
+          </div>
 
-          <EmptyList slot="empty" :message="$t('trade.emptyPositions')" />
-        </TableBody>
+          <div
+            class="col-span-4 md:col-span-3 lg:col-span-2 sm:text-right mt-0 hidden sm:block"
+          >
+            <VButton
+              v-if="filteredPositions.length > 0 && walletIsNotKeplr"
+              red-outline
+              md
+              :status="status"
+              data-cy="activity-cancel-all-button"
+              class="rounded"
+              @click.stop="handleClosePositions"
+            >
+              {{ $t('trade.closeAllPositions') }}
+            </VButton>
+          </div>
+        </template>
+      </Toolbar>
 
-        <TableWrapper break-md class="mt-4 hidden sm:block">
-          <table v-if="filteredPositions.length > 0" class="table">
-            <PositionTableHeader />
-            <tbody>
-              <tr
-                is="Position"
-                v-for="(position, index) in sortedPositions"
-                :key="`positions-${index}-${position.marketId}`"
-                :position="position"
-              />
-            </tbody>
-          </table>
+      <!-- mobile table -->
+      <TableBody
+        :show-empty="filteredPositions.length === 0"
+        class="sm:hidden mt-3 max-h-lg overflow-y-auto"
+      >
+        <MobilePosition
+          v-for="(position, index) in sortedPositions"
+          :key="`mobile-positions-${index}-${position.marketId}`"
+          class="col-span-1"
+          :position="position"
+        />
 
-          <EmptyList
-            v-else
-            data-cy="universal-table-nothing-found"
-            :message="$t('trade.emptyPositions')"
-            class="min-h-orders"
-          />
-        </TableWrapper>
+        <EmptyList slot="empty" :message="$t('trade.emptyPositions')" />
+      </TableBody>
 
-        <portal to="activity-card-position-count">
-          <span class="font-semibold text-sm md:text-lg">
-            {{ positions.length }}
-          </span>
-        </portal>
+      <TableWrapper break-md class="mt-4 hidden sm:block">
+        <table v-if="filteredPositions.length > 0" class="table">
+          <PositionTableHeader />
+          <tbody>
+            <tr
+              is="Position"
+              v-for="(position, index) in sortedPositions"
+              :key="`positions-${index}-${position.marketId}`"
+              :position="position"
+            />
+          </tbody>
+        </table>
 
-        <portal to="activity-tab-position-count">
-          <span v-if="status.isNotLoading()"> ({{ positions.length }}) </span>
-        </portal>
-      </VCardTableWrap>
+        <EmptyList
+          v-else
+          data-cy="universal-table-nothing-found"
+          :message="$t('trade.emptyPositions')"
+          class="min-h-orders"
+        />
+      </TableWrapper>
+
+      <portal to="activity-card-position-count">
+        <span class="font-semibold text-sm md:text-lg">
+          {{ positions.length }}
+        </span>
+      </portal>
+
+      <portal to="activity-tab-position-count">
+        <span v-if="status.isNotLoading()"> ({{ positions.length }}) </span>
+      </portal>
 
       <Pagination
         v-if="status.isIdle()"
@@ -140,6 +138,7 @@ import Pagination from '~/components/partials/common/pagination.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
 import SearchAsset from '@/components/partials/activity/common/search-asset.vue'
 import ClearFiltersButton from '@/components/partials/activity/common/clear-filters-button.vue'
+import Toolbar from '@/components/partials/activity/common/toolbar.vue'
 
 export default Vue.extend({
   components: {
@@ -150,7 +149,8 @@ export default Vue.extend({
     TableBody,
     Pagination,
     SearchAsset,
-    ClearFiltersButton
+    ClearFiltersButton,
+    Toolbar
   },
 
   data() {
@@ -242,10 +242,9 @@ export default Vue.extend({
   mounted() {
     this.pollSubaccountPositions()
 
-    this.updatePositions()
-      .then(() => {
-        this.$root.$emit('position-tab-loaded')
-      })
+    this.updatePositions().then(() => {
+      this.$root.$emit('position-tab-loaded')
+    })
   },
 
   beforeDestroy() {
@@ -256,11 +255,14 @@ export default Vue.extend({
     updatePositions(): Promise<void> {
       this.status.setLoading()
 
-      const marketId = this.markets.find(m => {
-        return m.baseToken.symbol === this.selectedToken?.symbol || m.quoteToken.symbol === this.selectedToken?.symbol
+      const marketId = this.markets.find((m) => {
+        return (
+          m.baseToken.symbol === this.selectedToken?.symbol ||
+          m.quoteToken.symbol === this.selectedToken?.symbol
+        )
       })?.marketId
 
-      const marketIds = this.markets.map(market => market.marketId)
+      const marketIds = this.markets.map((market) => market.marketId)
 
       return Promise.all([
         this.$accessor.derivatives.fetchSubaccountOrders(),
@@ -341,12 +343,25 @@ export default Vue.extend({
 
     pollSubaccountPositions() {
       this.poll = setInterval(() => {
-        this.$accessor.positions.fetchSubaccountPositions(
-          // {
-          //   skip: (this.page - 1) * this.limit,
-          //   limit: this.limit
-          // }
-        )
+        const marketId = this.markets.find((m) => {
+          return (
+            m.baseToken.symbol === this.selectedToken?.symbol ||
+            m.quoteToken.symbol === this.selectedToken?.symbol
+          )
+        })?.marketId
+
+        const marketIds = this.markets.map((market) => market.marketId)
+
+        this.$accessor.positions.fetchSubaccountPositions({
+          pagination: {
+            skip: (this.page - 1) * this.limit,
+            limit: this.limit
+          },
+          filters: {
+            marketId,
+            marketIds
+          }
+        })
       }, 30 * 1000)
     },
 

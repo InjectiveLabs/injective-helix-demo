@@ -1,39 +1,35 @@
 <template>
   <HocLoading :status="status">
     <div class="w-full h-full flex flex-col">
-      <VCardTableWrap>
-        <template #actions>
-          <div
-            class="col-span-12 lg:col-span-8 grid grid-cols-5 sm:grid-cols-4 gap-4 w-full"
-          >
-            <SearchAsset :value="selectedToken" @select="handleSearch" />
+      <Toolbar>
+        <template #filters>
+          <SearchAsset :value="selectedToken" @select="handleSearch" />
 
-            <ClearFiltersButton
-              v-if="showClearFiltersButton"
-              @clear="handleClearFilters"
-            />
-          </div>
-        </template>
-
-        <TableWrapper break-md class="mt-4">
-          <table v-if="filteredTransactions.length > 0" class="table">
-            <TransfersTableHeader />
-            <tbody>
-              <tr
-                is="Transfer"
-                v-for="(transaction, index) in filteredTransactions"
-                :key="`transfers-${index}-${transaction.timestamp}`"
-                :transaction="transaction"
-              />
-            </tbody>
-          </table>
-          <EmptyList
-            v-else
-            :message="$t('walletHistory.emptySubaccountTransfers')"
-            class="min-h-orders"
+          <ClearFiltersButton
+            v-if="showClearFiltersButton"
+            @clear="handleClearFilters"
           />
-        </TableWrapper>
-      </VCardTableWrap>
+        </template>
+      </Toolbar>
+
+      <TableWrapper break-md class="mt-4">
+        <table v-if="filteredTransactions.length > 0" class="table">
+          <TransfersTableHeader />
+          <tbody>
+            <tr
+              is="Transfer"
+              v-for="(transaction, index) in filteredTransactions"
+              :key="`transfers-${index}-${transaction.timestamp}`"
+              :transaction="transaction"
+            />
+          </tbody>
+        </table>
+        <EmptyList
+          v-else
+          :message="$t('walletHistory.emptySubaccountTransfers')"
+          class="min-h-orders"
+        />
+      </TableWrapper>
 
       <Pagination
         v-if="status.isIdle()"
@@ -62,6 +58,7 @@ import Pagination from '~/components/partials/common/pagination.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
 import SearchAsset from '@/components/partials/activity/common/search-asset.vue'
 import ClearFiltersButton from '@/components/partials/activity/common/clear-filters-button.vue'
+import Toolbar from '@/components/partials/activity/common/toolbar.vue'
 
 export default Vue.extend({
   components: {
@@ -69,7 +66,8 @@ export default Vue.extend({
     TransfersTableHeader,
     Pagination,
     SearchAsset,
-    ClearFiltersButton
+    ClearFiltersButton,
+    Toolbar
   },
 
   data() {

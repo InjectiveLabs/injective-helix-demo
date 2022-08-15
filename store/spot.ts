@@ -494,6 +494,8 @@ export const actions = actionTree(
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
 
+      console.log(filters)
+
       const { orders, pagination } = await indexerSpotApi.fetchOrders({
         marketId: filters?.marketId,
         marketIds: filters?.marketIds,

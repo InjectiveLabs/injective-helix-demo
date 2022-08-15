@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex items-center h-[40px] text-sm cursor-pointer text-primary-500 hover:text-primary-600"
+    class="flex items-center h-[40px] text-sm cursor-pointer text-primary-500 hover:text-primary-600 whitespace-nowrap"
     @click="handleClear"
   >
     {{ $t('filters.clearAll') }}

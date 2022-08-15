@@ -1,85 +1,79 @@
 <template>
   <HocLoading :status="status">
     <div class="w-full h-full flex flex-col">
-      <VCardTableWrap>
-        <template #actions>
-          <div
-            class="col-span-12 lg:col-span-8 grid grid-cols-5 sm:grid-cols-4 gap-4 w-full"
-          >
-            <SearchAsset
-              :markets="markets"
-              :value="selectedToken"
-              @select="handleSearch"
-            />
+      <Toolbar>
+        <template #filters>
+          <SearchAsset
+            :markets="markets"
+            :value="selectedToken"
+            @select="handleSearch"
+          />
 
-            <ClearFiltersButton
-              v-if="showClearFiltersButton"
-              @clear="handleClearFilters"
-            />
-          </div>
-
-          <div
-            class="col-span-12 grid grid-cols-2 gap-4 sm:hidden mt-4 uppercase text-xs tracking-wide px-2"
-          >
-            <span class="flex items-center gap-1">
-              <span>{{ $t('trade.pair') }}</span>
-              <span>/</span>
-              <span>{{ $t('trade.time') }}</span>
-              <IconInfoTooltip
-                class="ml-2"
-                :tooltip="$t('trade.timestamp_tooltip')"
-              />
-            </span>
-
-            <span class="flex items-center justify-end gap-1">
-              <span>
-                {{ $t('fundingPayments.payment') }}
-              </span>
-              <IconInfoTooltip
-                class="ml-2"
-                :tooltip="$t('fundingPayments.paymentTooltip')"
-              />
-            </span>
-          </div>
+          <ClearFiltersButton
+            v-if="showClearFiltersButton"
+            @clear="handleClearFilters"
+          />
         </template>
 
-        <!-- mobile table -->
-        <TableBody
-          :show-empty="filteredFundingPayments.length === 0"
-          class="sm:hidden mt-3 max-h-lg overflow-y-auto"
-        >
-          <MobileFundingPayment
-            v-for="(fundingPayment, index) in filteredFundingPayments"
-            :key="`mobile-funding-payment-${index}`"
-            class="col-span-1"
-            :funding-payment="fundingPayment"
-          />
+        <template #actions>
+          <span class="flex items-center gap-1">
+            <span>{{ $t('trade.pair') }}</span>
+            <span>/</span>
+            <span>{{ $t('trade.time') }}</span>
+            <IconInfoTooltip
+              class="ml-2"
+              :tooltip="$t('trade.timestamp_tooltip')"
+            />
+          </span>
 
-          <EmptyList
-            slot="empty"
-            :message="$t('fundingPayments.emptyFundingPayments')"
-          />
-        </TableBody>
+          <span class="flex items-center justify-end gap-1">
+            <span>
+              {{ $t('fundingPayments.payment') }}
+            </span>
+            <IconInfoTooltip
+              class="ml-2"
+              :tooltip="$t('fundingPayments.paymentTooltip')"
+            />
+          </span>
+        </template>
+      </Toolbar>
 
-        <TableWrapper break-md class="mt-4 hidden sm:block">
-          <table v-if="filteredFundingPayments.length > 0" class="table">
-            <FundingPaymentsTableHeader />
-            <tbody>
-              <tr
-                is="FundingPaymentRow"
-                v-for="(fundingPayment, index) in filteredFundingPayments"
-                :key="`funding-payments-${index}-${fundingPayment.marketId}`"
-                :funding-payment="fundingPayment"
-              />
-            </tbody>
-          </table>
-          <EmptyList
-            v-else
-            data-cy="universal-table-nothing-found"
-            :message="$t('fundingPayments.emptyFundingPayments')"
-          />
-        </TableWrapper>
-      </VCardTableWrap>
+      <!-- mobile table -->
+      <TableBody
+        :show-empty="filteredFundingPayments.length === 0"
+        class="sm:hidden mt-3 max-h-lg overflow-y-auto"
+      >
+        <MobileFundingPayment
+          v-for="(fundingPayment, index) in filteredFundingPayments"
+          :key="`mobile-funding-payment-${index}`"
+          class="col-span-1"
+          :funding-payment="fundingPayment"
+        />
+
+        <EmptyList
+          slot="empty"
+          :message="$t('fundingPayments.emptyFundingPayments')"
+        />
+      </TableBody>
+
+      <TableWrapper break-md class="mt-4 hidden sm:block">
+        <table v-if="filteredFundingPayments.length > 0" class="table">
+          <FundingPaymentsTableHeader />
+          <tbody>
+            <tr
+              is="FundingPaymentRow"
+              v-for="(fundingPayment, index) in filteredFundingPayments"
+              :key="`funding-payments-${index}-${fundingPayment.marketId}`"
+              :funding-payment="fundingPayment"
+            />
+          </tbody>
+        </table>
+        <EmptyList
+          v-else
+          data-cy="universal-table-nothing-found"
+          :message="$t('fundingPayments.emptyFundingPayments')"
+        />
+      </TableWrapper>
 
       <Pagination
         v-if="status.isIdle()"
@@ -111,6 +105,7 @@ import Pagination from '~/components/partials/common/pagination.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
 import SearchAsset from '@/components/partials/activity/common/search-asset.vue'
 import ClearFiltersButton from '@/components/partials/activity/common/clear-filters-button.vue'
+import Toolbar from '@/components/partials/activity/common/toolbar.vue'
 
 export default Vue.extend({
   components: {
@@ -120,7 +115,8 @@ export default Vue.extend({
     TableBody,
     Pagination,
     SearchAsset,
-    ClearFiltersButton
+    ClearFiltersButton,
+    Toolbar
   },
 
   data() {
