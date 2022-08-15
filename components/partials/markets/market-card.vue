@@ -38,7 +38,8 @@
         class="text-xl tracking-wide font-mono font-semibold flex items-center mr-2"
         data-cy="market-card-last-traded-price-text-content"
         :class="{
-          'text-green-500 ': summary.lastPriceChange !== Change.Decrease,
+          'text-green-500 ': summary.lastPriceChange === Change.Increase,
+          'text-white': summary.lastPriceChange === Change.NoChange,
           'text-red-500': summary.lastPriceChange === Change.Decrease
         }"
       >
