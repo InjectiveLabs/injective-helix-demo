@@ -185,7 +185,7 @@ export default Vue.extend({
           classes.push(
             'font-semibold',
             'bg-primary-500',
-            'hover:bg-primary-400',
+            'hover:bg-primary-600',
             'text-white',
             'shadow-none'
           )

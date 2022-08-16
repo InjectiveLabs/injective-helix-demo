@@ -109,6 +109,8 @@ module.exports = {
 
       helixGray: {
         500: '#434448',
+        700: '#1D212B',
+        750: '#141519',
         800: '#1C1E29',
         900: '#292C35'
       },
@@ -130,6 +132,10 @@ module.exports = {
 
       yellow: {
         500: '#FFBC00'
+      },
+
+      purple: {
+        200: '#E1E8FF'
       },
 
       warning: '#F7931A',
@@ -173,9 +179,9 @@ module.exports = {
       },
 
       fontSize: {
-        xs: ['0.75rem', { lineHeight: '0.75rem' }],
-        sm: ['0.875rem', { lineHeight: '0.875rem' }],
-        base: ['1rem', { lineHeight: '1rem' }],
+        xs: ['0.75rem', { lineHeight: '1rem' }],
+        sm: ['0.875rem', { lineHeight: '1.25rem' }],
+        base: ['1rem', { lineHeight: '1.5rem' }],
         xl: ['1.25rem', { lineHeight: '1.75rem' }],
         '3xl': ['2rem', { lineHeight: '2.25rem' }],
         '3xs': '0.625rem',
