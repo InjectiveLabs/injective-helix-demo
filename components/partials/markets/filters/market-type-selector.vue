@@ -1,14 +1,15 @@
 <template>
   <div
-    class="px-4 py-2.5 cursor-pointer"
-    :class="[
-      active
-        ? 'border-2 border-transparent border-b-primary-500 text-primary-500'
-        : 'text-gray-300 border-2 border-transparent hover:border-b-primary-500 hover:text-primary-500'
-    ]"
+    class="group px-4 h-[40px] cursor-pointer relative flex items-center justify-center"
+    :class="{ 'text-gray-300': !active, 'text-primary-500': active }"
     @click="handleTypeClick"
   >
-    <p class="text-sm capitalize select-none whitespace-nowrap"><slot /></p>
+    <p class="text-sm capitalize select-none whitespace-nowrap">
+      <slot />
+    </p>
+    <div class="group-hover:block absolute inset-0 pointer-events-none" :class="{ 'hidden': !active }">
+      <div class="h-[2px] w-full bg-primary-500 absolute bottom-0" />
+    </div>
   </div>
 </template>
 
