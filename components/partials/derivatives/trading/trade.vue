@@ -107,9 +107,14 @@
         market,
         orderType,
         orderTypeBuy,
+        orderTypeToSubmit,
         orderTypeReduceOnly,
         status,
-        tradingTypeMarket
+        tradingType,
+        tradingTypeMarket,
+        tradingTypeLimit,
+        tradingTypeStopMarket,
+        tradingTypeStopLimit
       }"
       @submit="onSubmit"
     />
@@ -247,8 +252,22 @@ export default Vue.extend({
     orderTypeToSubmit(): DerivativeOrderSide {
       const {
         form: { postOnly },
-        orderTypeBuy
+        orderTypeBuy,
+        tradingTypeStopLimit,
+        tradingTypeStopMarket,
+        triggerPrice,
+        price
       } = this
+
+      if (tradingTypeStopLimit || tradingTypeStopMarket) {
+        return orderTypeBuy
+          ? triggerPrice.lt(price)
+            ? DerivativeOrderSide.TakeBuy
+            : DerivativeOrderSide.StopBuy
+          : triggerPrice.gt(price)
+            ? DerivativeOrderSide.TakeSell
+            : DerivativeOrderSide.StopSell
+      }
 
       switch (true) {
         case postOnly && orderTypeBuy: {
@@ -925,11 +944,11 @@ export default Vue.extend({
 
     submitStopLimitOrder() {
       const {
-        orderType,
         market,
         notionalWithLeverage,
         price,
         triggerPrice,
+        orderTypeToSubmit,
         orderTypeReduceOnly,
         amount
       } = this
@@ -939,15 +958,6 @@ export default Vue.extend({
       }
 
       this.status.setLoading()
-
-      // TODO: Move this to util.
-      const orderTypeToSubmit = orderType === DerivativeOrderSide.Buy
-        ? triggerPrice.lt(price)
-          ? DerivativeOrderSide.TakeBuy
-          : DerivativeOrderSide.StopBuy
-        : triggerPrice.gt(price)
-          ? DerivativeOrderSide.TakeSell
-          : DerivativeOrderSide.StopSell
 
       this.$accessor.derivatives
         .submitStopLimitOrder({
@@ -1004,7 +1014,7 @@ export default Vue.extend({
 
     submitStopMarketOrder() {
       const {
-        orderType,
+        orderTypeToSubmit,
         orderTypeReduceOnly,
         market,
         notionalWithLeverageBasedOnWorstPrice,
@@ -1018,15 +1028,6 @@ export default Vue.extend({
       }
 
       this.status.setLoading()
-
-      // TODO: Move this to util.
-      const orderTypeToSubmit = orderType === DerivativeOrderSide.Buy
-        ? triggerPrice.lt(worstPrice)
-          ? DerivativeOrderSide.TakeBuy
-          : DerivativeOrderSide.StopBuy
-        : triggerPrice.gt(worstPrice)
-          ? DerivativeOrderSide.TakeSell
-          : DerivativeOrderSide.StopSell
 
       this.$accessor.derivatives
         .submitStopMarketOrder({

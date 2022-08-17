@@ -195,11 +195,11 @@ export default Vue.extend({
 
     handleShowTradeDetails(trade: UiDerivativeTrade) {
       this.tradeDetails = trade
-      this.$accessor.modal.openModal(Modal.MobileTradeDetails)
+      this.$accessor.modal.openModal({ type: Modal.MobileTradeDetails })
     },
 
     openMobileFilterModal() {
-      this.$accessor.modal.openModal(Modal.MobileTradeFilter)
+      this.$accessor.modal.openModal({ type: Modal.MobileTradeFilter })
     }
   }
 })

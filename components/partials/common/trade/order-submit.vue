@@ -32,7 +32,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { Wallet } from '@injectivelabs/ts-types'
+import { TradeExecutionType, Wallet } from '@injectivelabs/ts-types'
 import {
   SpotOrderSide,
   UiSpotMarketWithToken,
@@ -91,7 +91,32 @@ export default Vue.extend({
       required: true
     },
 
+    orderTypeToSubmit: {
+      type: String as PropType<SpotOrderSide | DerivativeOrderSide>,
+      required: true
+    },
+
+    tradingType: {
+      type: String as PropType<TradeExecutionType>,
+      required: true
+    },
+
     tradingTypeMarket: {
+      type: Boolean,
+      required: true
+    },
+
+    tradingTypeLimit: {
+      type: Boolean,
+      required: true
+    },
+
+    tradingTypeStopMarket: {
+      type: Boolean,
+      required: true
+    },
+
+    tradingTypeStopLimit: {
       type: Boolean,
       required: true
     },
@@ -261,7 +286,11 @@ export default Vue.extend({
         hasError,
         maxOrdersError,
         priceHasHighDeviationWarning,
-        isUserWalletConnected
+        isUserWalletConnected,
+        orderTypeToSubmit: orderType,
+        tradingType,
+        tradingTypeStopMarket,
+        tradingTypeStopLimit
       } = this
 
       if (!isUserWalletConnected) {
@@ -277,7 +306,19 @@ export default Vue.extend({
       }
 
       if (priceHasHighDeviationWarning) {
-        return this.$accessor.modal.openModal(Modal.OrderConfirm)
+        return this.$accessor.modal.openModal({
+          type: Modal.OrderConfirm
+        })
+      }
+
+      if (tradingTypeStopMarket || tradingTypeStopLimit) {
+        return this.$accessor.modal.openModal({
+          type: Modal.OrderConfirm,
+          data: {
+            tradingType,
+            orderType
+          }
+        })
       }
 
       this.$emit('submit')

@@ -248,6 +248,8 @@ export default {
       settlement: 'Settlement',
       settlement_tooltip: 'Settlement Tooltip'
     },
-    slippage_cancellation_notice: 'Note: If the execution price exceeds the 0.5% slippage protection, your order will be automatically cancelled.'
+    slippage_cancellation_notice: 'Note: If the execution price exceeds the 0.5% slippage protection, your order will be automatically cancelled.',
+    takeProfit: 'Take-Profit',
+    stopLoss: 'Stop-Loss'
   }
 }

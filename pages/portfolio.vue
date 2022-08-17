@@ -72,7 +72,7 @@ export default Vue.extend({
 
       if ($route.name === 'register' && code && code.toString().trim() !== '') {
         if (refereeInfo === undefined) {
-          this.$accessor.modal.openModal(Modal.RefereeOnboarding)
+          this.$accessor.modal.openModal({ type: Modal.RefereeOnboarding })
         } else {
           this.$toast.error(this.$t('referralModal.alreadyReferredToast'))
         }

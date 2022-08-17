@@ -93,8 +93,13 @@
         market,
         orderType,
         orderTypeBuy,
+        orderTypeToSubmit,
         status,
-        tradingTypeMarket
+        tradingType,
+        tradingTypeMarket,
+        tradingTypeLimit,
+        tradingTypeStopMarket,
+        tradingTypeStopLimit
       }"
       @submit="onSubmit"
     />
