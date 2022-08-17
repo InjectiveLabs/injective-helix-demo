@@ -16,7 +16,7 @@
         </template>
 
         <template #actions>
-          <span class="flex items-center gap-1">
+          <span class="flex items-center gap-1 text-xs">
             <span>{{ $t('trade.pair') }}</span>
             <span>/</span>
             <span>{{ $t('trade.time') }}</span>
@@ -26,7 +26,7 @@
             />
           </span>
 
-          <span class="flex items-center justify-end gap-1">
+          <span class="flex items-center justify-end gap-1 text-xs">
             <span>
               {{ $t('fundingPayments.payment') }}
             </span>

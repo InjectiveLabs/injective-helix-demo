@@ -392,7 +392,7 @@ input[type='number'] {
     }
 
     .vs__search {
-      @apply h-[40px] pl-6 pr-4 py-3 m-0 text-sm placeholder-gray-500;
+      @apply h-[40px] px-4 py-3 m-0 text-sm placeholder-gray-500;
     }
 
     .vs__dropdown-menu {

@@ -18,7 +18,7 @@
           </div>
 
           <FilterSelector
-            class="col-span-3 hidden sm:block"
+            class="min-w-3xs hidden sm:block"
             data-cy="universal-table-filter-by-type-drop-down"
             :type="TradeSelectorType.Type"
             :value="type"
@@ -26,7 +26,7 @@
           />
 
           <FilterSelector
-            class="col-span-3 hidden sm:block"
+            class="min-w-3xs hidden sm:block"
             data-cy="universal-table-filter-by-side-drop-down"
             :type="TradeSelectorType.Side"
             :value="side"

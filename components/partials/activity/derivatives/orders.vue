@@ -10,7 +10,7 @@
           />
 
           <FilterSelector
-            class="col-span-3"
+            class="min-w-3xs"
             data-cy="universal-table-filter-by-side-drop-down"
             :type="TradeSelectorType.Side"
             :value="side"
