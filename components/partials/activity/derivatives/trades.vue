@@ -42,11 +42,11 @@
 
       <!-- mobile table -->
       <TableBody
-        :show-empty="filteredTrades.length === 0"
+        :show-empty="trades.length === 0"
         class="sm:hidden mt-3 max-h-lg overflow-y-auto"
       >
         <MobileTrade
-          v-for="(trade, index) in filteredTrades"
+          v-for="(trade, index) in trades"
           :key="`mobile-derivative-trade-${index}`"
           class="col-span-1"
           :trade="trade"
@@ -57,12 +57,12 @@
       </TableBody>
 
       <TableWrapper break-md class="mt-4 hidden sm:block">
-        <table v-if="filteredTrades.length > 0" class="table">
+        <table v-if="trades.length > 0" class="table">
           <TradesTableHeader />
           <tbody>
             <tr
               is="Trade"
-              v-for="(trade, index) in filteredTrades"
+              v-for="(trade, index) in trades"
               :key="`trade-${index}`"
               :trade="trade"
             ></tr>
@@ -160,39 +160,6 @@ export default Vue.extend({
 
     trades(): UiDerivativeTrade[] {
       return this.$accessor.derivatives.subaccountTrades
-    },
-
-    filteredTrades(): UiDerivativeTrade[] {
-      const {
-        trades
-        // search,
-        // markets,
-        // type,
-        // side
-      } = this
-
-      // return trades.filter((t) => {
-      //   const market = markets.find((m) => m.marketId === t.marketId)
-      //   if (!market) {
-      //     return false
-      //   }
-      //   if (!search && !type && !side) {
-      //     return true
-      //   }
-      //   const isPartOfSearchFilter =
-      //     !search ||
-      //     market.ticker.toLowerCase().includes(search.trim().toLowerCase())
-      //   const isMarketType = type === TradeExecutionType.Market
-      //   const isPartOfTypeFilter =
-      //     !type ||
-      //     (isMarketType &&
-      //       t.tradeExecutionType === TradeExecutionType.Market) ||
-      //     (!isMarketType && t.tradeExecutionType !== TradeExecutionType.Market)
-      //   const isPartOfSideFilter = !side || t.tradeDirection === side
-      //   return isPartOfSearchFilter && isPartOfTypeFilter && isPartOfSideFilter
-      // })
-
-      return trades
     },
 
     totalCount(): number {

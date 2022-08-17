@@ -25,7 +25,7 @@
 
         <template #actions>
           <div
-            v-if="filteredPositions.length > 0"
+            v-if="positions.length > 0"
             class="col-span-4 md:col-span-3 lg:col-span-2 flex justify-between items-center sm:hidden mt-3 text-xs px-3"
           >
             <span class="tracking-widest uppercase tracking-3">
@@ -43,7 +43,7 @@
             class="col-span-4 md:col-span-3 lg:col-span-2 sm:text-right mt-0 hidden sm:block"
           >
             <VButton
-              v-if="filteredPositions.length > 0 && walletIsNotKeplr"
+              v-if="positions.length > 0 && walletIsNotKeplr"
               red-outline
               md
               :status="status"
@@ -59,7 +59,7 @@
 
       <!-- mobile table -->
       <TableBody
-        :show-empty="filteredPositions.length === 0"
+        :show-empty="positions.length === 0"
         class="sm:hidden mt-3 max-h-lg overflow-y-auto"
       >
         <MobilePosition
@@ -73,7 +73,7 @@
       </TableBody>
 
       <TableWrapper break-md class="mt-4 hidden sm:block">
-        <table v-if="filteredPositions.length > 0" class="table">
+        <table v-if="positions.length > 0" class="table">
           <PositionTableHeader />
           <tbody>
             <tr
@@ -179,41 +179,10 @@ export default Vue.extend({
       return this.$accessor.derivatives.markets
     },
 
-    filteredPositions(): UiPosition[] {
-      const {
-        positions
-        // markets,
-        // search,
-        // side
-      } = this
-
-      // return positions.filter((p) => {
-      //   const market = markets.find((m) => m.marketId === p.marketId)
-
-      //   if (!market) {
-      //     return false
-      //   }
-
-      //   if (!search && !side) {
-      //     return true
-      //   }
-
-      //   const isPartOfSearchFilter =
-      //     !search ||
-      //     market.ticker.toLowerCase().includes(search.trim().toLowerCase())
-
-      //   const isPartOfSideFilter = !side || p.direction === side
-
-      //   return isPartOfSearchFilter && isPartOfSideFilter
-      // })
-
-      return positions
-    },
-
     sortedPositions(): UiPosition[] {
-      const { filteredPositions } = this
+      const { positions } = this
 
-      return [...filteredPositions].sort((p1: UiPosition, p2: UiPosition) => {
+      return [...positions].sort((p1: UiPosition, p2: UiPosition) => {
         return p1.ticker.localeCompare(p2.ticker)
       })
     },
@@ -289,14 +258,14 @@ export default Vue.extend({
     },
 
     closeAllPositions(): Promise<void> {
-      const { filteredPositions } = this
+      const { positions } = this
 
-      return this.$accessor.positions.closeAllPosition(filteredPositions)
+      return this.$accessor.positions.closeAllPosition(positions)
     },
 
     closePosition(): Promise<void> {
-      const { filteredPositions, markets } = this
-      const [position] = filteredPositions
+      const { positions, markets } = this
+      const [position] = positions
 
       const market = markets.find((m) => m.marketId === position.marketId)
 
@@ -317,12 +286,12 @@ export default Vue.extend({
     },
 
     handleClosePositions() {
-      const { filteredPositions } = this
+      const { positions } = this
 
       this.status.setLoading()
 
       const action =
-        filteredPositions.length === 1
+        positions.length === 1
           ? this.closePosition
           : this.closeAllPositions
 

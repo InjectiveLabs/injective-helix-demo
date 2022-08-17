@@ -13,12 +13,12 @@
       </Toolbar>
 
       <TableWrapper break-md class="mt-4">
-        <table v-if="filteredTransactions.length > 0" class="table">
+        <table v-if="transactions.length > 0" class="table">
           <TransfersTableHeader />
           <tbody>
             <tr
               is="Transfer"
-              v-for="(transaction, index) in filteredTransactions"
+              v-for="(transaction, index) in transactions"
               :key="`transfers-${index}-${transaction.timestamp}`"
               :transaction="transaction"
             />
@@ -83,25 +83,6 @@ export default Vue.extend({
   computed: {
     transactions(): UiBridgeTransactionWithToken[] {
       return this.$accessor.bridge.subaccountTransferBridgeTransactions
-    },
-
-    filteredTransactions(): UiBridgeTransactionWithToken[] {
-      const {
-        transactions
-        // search
-      } = this
-
-      // return transactions.filter((transaction) => {
-      //   if (!search) {
-      //     return true
-      //   }
-      //   const isPartOfSearchFilter = transaction.token.symbol
-      //     .toLowerCase()
-      //     .includes(search.trim().toLowerCase())
-      //   return isPartOfSearchFilter
-      // })
-
-      return transactions
     },
 
     totalCount(): number {

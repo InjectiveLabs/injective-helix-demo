@@ -25,7 +25,7 @@
 
         <template #actions>
           <div
-            v-if="filteredOrders.length > 0"
+            v-if="orders.length > 0"
             class="col-span-4 md:col-span-3 lg:col-span-2 flex justify-between items-center sm:hidden mt-3 text-xs px-3"
           >
             <span class="tracking-widest uppercase tracking-3">
@@ -43,7 +43,7 @@
             class="col-span-4 md:col-span-3 lg:col-span-2 sm:text-right mt-0 hidden sm:block"
           >
             <VButton
-              v-if="filteredOrders.length > 0"
+              v-if="orders.length > 0"
               red-outline
               md
               data-cy="activity-cancel-all-button"
@@ -57,11 +57,11 @@
 
       <!-- mobile table -->
       <TableBody
-        :show-empty="filteredOrders.length === 0"
+        :show-empty="orders.length === 0"
         class="sm:hidden mt-3 max-h-lg overflow-y-auto"
       >
         <MobileOrder
-          v-for="(order, index) in filteredOrders"
+          v-for="(order, index) in orders"
           :key="`mobile-derivative-orders-${index}-${order.orderHash}`"
           class="col-span-1"
           :order="order"
@@ -71,12 +71,12 @@
       </TableBody>
 
       <TableWrapper break-md class="mt-4 hidden sm:block">
-        <table v-if="filteredOrders.length > 0" class="table">
+        <table v-if="orders.length > 0" class="table">
           <OrdersTableHeader />
           <tbody>
             <tr
               is="Order"
-              v-for="(order, index) in filteredOrders"
+              v-for="(order, index) in orders"
               :key="`orders-${index}-${order.orderHash}`"
               :order="order"
             />
@@ -170,36 +170,6 @@ export default Vue.extend({
       return this.$accessor.derivatives.markets
     },
 
-    filteredOrders(): UiDerivativeLimitOrder[] {
-      const {
-        // markets,
-        // search,
-        orders
-        // side
-      } = this
-
-      // return orders.filter((o) => {
-      //   const market = markets.find((m) => m.marketId === o.marketId)
-
-      //   if (!market) {
-      //     return false
-      //   }
-
-      //   if (!search && !side) {
-      //     return true
-      //   }
-
-      //   const isPartOfSearchFilter =
-      //     !search ||
-      //     market.ticker.toLowerCase().includes(search.trim().toLowerCase())
-      //   const isPartOfSideFilter = !side || o.orderSide === side
-
-      //   return isPartOfSearchFilter && isPartOfSideFilter
-      // })
-
-      return orders
-    },
-
     totalCount(): number {
       return this.$accessor.derivatives.subaccountOrdersTotal
     },
@@ -229,9 +199,7 @@ export default Vue.extend({
     updateOrders(): Promise<void> {
       this.status.setLoading()
 
-      const orderSide = this.side
-        ? stringToDerivativeOrderSide(this.side)
-        : undefined
+      const orderSide = stringToDerivativeOrderSide(this.side)
 
       const marketId = this.markets.find((m) => {
         return (
@@ -263,24 +231,24 @@ export default Vue.extend({
     },
 
     cancelAllOrder(): Promise<void> {
-      const { filteredOrders } = this
+      const { orders } = this
 
-      return this.$accessor.derivatives.batchCancelOrder(filteredOrders)
+      return this.$accessor.derivatives.batchCancelOrder(orders)
     },
 
     cancelOrder(): Promise<void> {
-      const { filteredOrders } = this
+      const { orders } = this
 
-      const [order] = filteredOrders
+      const [order] = orders
 
       return this.$accessor.derivatives.cancelOrder(order)
     },
 
     handleCancelOrders() {
-      const { filteredOrders } = this
+      const { orders } = this
 
       const action =
-        filteredOrders.length === 1 ? this.cancelOrder : this.cancelAllOrder
+        orders.length === 1 ? this.cancelOrder : this.cancelAllOrder
 
       action()
         .then(() => {
@@ -291,6 +259,8 @@ export default Vue.extend({
 
     handleSideClick(side: string | undefined) {
       this.side = side
+
+      this.updateOrders()
     },
 
     handleLimitChangeEvent(limit: number) {

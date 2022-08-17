@@ -49,13 +49,6 @@ export default Vue.extend({
       return ZERO_IN_BASE
     },
 
-    activeMarkets(): (UiDerivativeMarketWithToken | UiSpotMarketWithToken)[] {
-      return [
-        ...this.$accessor.derivatives.markets,
-        ...this.$accessor.spot.markets
-      ]
-    },
-
     supportedTokens(): BankBalanceWithTokenAndBalanceInBase[] {
       if (!this.markets) {
         return this.$store.state.activity.supportedTokens
@@ -64,7 +57,7 @@ export default Vue.extend({
       const supportedTokens = this.$store.state.activity.supportedTokens
       const markets: Array<
         UiDerivativeMarketWithToken | UiSpotMarketWithToken
-      > = this.activeMarkets
+      > = this.markets
 
       return supportedTokens.filter(
         (token: BankBalanceWithTokenAndBalance) =>

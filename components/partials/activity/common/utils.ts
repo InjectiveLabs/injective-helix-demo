@@ -2,7 +2,7 @@ import { DerivativeOrderSide, SpotOrderSide } from '@injectivelabs/sdk-ui-ts'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 
 export function stringToDerivativeOrderSide(
-  side: string
+  side: string | undefined
 ): DerivativeOrderSide | undefined {
   switch (side) {
     case 'buy': {
@@ -17,7 +17,9 @@ export function stringToDerivativeOrderSide(
   }
 }
 
-export function stringToSpotOrderSide(side: string): SpotOrderSide | undefined {
+export function stringToSpotOrderSide(
+  side: string | undefined
+): SpotOrderSide | undefined {
   switch (side) {
     case 'buy': {
       return SpotOrderSide.Buy

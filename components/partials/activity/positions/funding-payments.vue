@@ -40,11 +40,11 @@
 
       <!-- mobile table -->
       <TableBody
-        :show-empty="filteredFundingPayments.length === 0"
+        :show-empty="fundingPayments.length === 0"
         class="sm:hidden mt-3 max-h-lg overflow-y-auto"
       >
         <MobileFundingPayment
-          v-for="(fundingPayment, index) in filteredFundingPayments"
+          v-for="(fundingPayment, index) in fundingPayments"
           :key="`mobile-funding-payment-${index}`"
           class="col-span-1"
           :funding-payment="fundingPayment"
@@ -57,12 +57,12 @@
       </TableBody>
 
       <TableWrapper break-md class="mt-4 hidden sm:block">
-        <table v-if="filteredFundingPayments.length > 0" class="table">
+        <table v-if="fundingPayments.length > 0" class="table">
           <FundingPaymentsTableHeader />
           <tbody>
             <tr
               is="FundingPaymentRow"
-              v-for="(fundingPayment, index) in filteredFundingPayments"
+              v-for="(fundingPayment, index) in fundingPayments"
               :key="`funding-payments-${index}-${fundingPayment.marketId}`"
               :funding-payment="fundingPayment"
             />
@@ -136,27 +136,6 @@ export default Vue.extend({
 
     markets(): UiDerivativeMarketWithToken[] {
       return this.$accessor.derivatives.markets
-    },
-
-    filteredFundingPayments(): FundingPayment[] {
-      const {
-        fundingPayments
-        // markets,
-        // search
-      } = this
-
-      // return fundingPayments.filter((p) => {
-      //   const market = markets.find((m) => m.marketId === p.marketId)
-      //   if (!market || !search) {
-      //     return true
-      //   }
-      //   const isPartOfSearchFilter = market.ticker
-      //     .toLowerCase()
-      //     .includes(search.trim().toLowerCase())
-      //   return isPartOfSearchFilter
-      // })
-
-      return fundingPayments
     },
 
     totalCount(): number {
