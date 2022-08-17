@@ -9,10 +9,10 @@
     }"
     @click="$emit('selected', option)"
   >
-    <div :class="{ 'min-w-2xs sm:min-w-full': lg }">
+    <div class="h-full flex flex-col" :class="{ 'min-w-2xs sm:min-w-full': lg }">
       <slot name="subtitle"></slot>
 
-      <div class="flex" :class="{ 'justify-between': lg }">
+      <div class="flex items-center h-full" :class="{ 'justify-between': lg }">
         <div v-if="status.isLoading()" class="mr-4">
           <span class="spinner text-primary-500" />
         </div>

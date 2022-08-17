@@ -23,7 +23,7 @@
 
         <IconWallet slot="icon" class="w-6 h-auto" />
 
-        <div class="text-right">
+        <div class="text-right h-full">
           <p class="text-gray-500 text-xs uppercase mb-2 tracking-wider">
             {{ $t('portfolio.walletValue') }}
           </p>

@@ -4,7 +4,6 @@
       <HocLoading :status="status">
         <div class="container pt-6 pb-12">
           <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12">
-            <WelcomeBanner />
             <!--
               A clever solution here to apply loading state to account
               summary based on the bank/trading account balances loading
@@ -27,7 +26,6 @@ import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { RefereeInfo } from '@injectivelabs/referral-consumer'
 import Balances from '~/components/partials/portfolio/balances.vue'
-import WelcomeBanner from '~/components/partials/banners/welcome.vue'
 import Bridge from '~/components/partials/portfolio/bridge.vue'
 import { Modal } from '~/types'
 import ModalOnboardReferee from '~/components/partials/modals/referee-onboarding.vue'
@@ -37,7 +35,6 @@ export default Vue.extend({
   components: {
     Bridge,
     Balances,
-    WelcomeBanner,
     ModalOnboardReferee
   },
 

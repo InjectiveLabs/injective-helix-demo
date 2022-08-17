@@ -9,7 +9,9 @@
       type="checkbox"
       @change="handleChange"
     />
-    <label :for="uid" :data-cy="dataCy" class="flex"><slot /></label>
+    <label :for="uid" :data-cy="dataCy" class="flex items-center">
+      <slot />
+    </label>
   </div>
 </template>
 
@@ -87,7 +89,22 @@ export default Vue.extend({
 
   // Disabled box.
   &:disabled + label::before {
-    @apply shadow-none bg-gray-600 border-transparent bg-opacity-50;
+    @apply shadow-none border-gray-500;
+  }
+
+  &:disabled + label::after {
+    content: '';
+
+    @apply absolute top-0 left-0 flex items-center justify-center;
+
+    width: 8px;
+    background-color: theme('colors.gray.500');
+    height: 2px;
+    transform: translate(4px, 7px);
+  }
+
+  &:checked + label::before {
+    @apply bg-white;
   }
 
   // Checkmark
@@ -98,7 +115,7 @@ export default Vue.extend({
 
     width: 5px;
     height: 10px;
-    border: 2px solid theme('colors.gray.200');
+    border: 2px solid theme('colors.gray.900');
     border-top-style: none;
     border-left-style: none;
     transform: translate(6px, 1.5px) rotate(45deg);
