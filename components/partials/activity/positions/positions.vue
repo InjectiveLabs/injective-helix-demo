@@ -126,7 +126,7 @@ import {
   UiPosition,
   UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
-import { Wallet } from '@injectivelabs/ts-types'
+import { TradeDirection, Wallet } from '@injectivelabs/ts-types'
 import { Token } from '@injectivelabs/token-metadata'
 import Position from '~/components/partials/common/position/position.vue'
 import PositionTableHeader from '~/components/partials/common/position/position-table.header.vue'
@@ -225,7 +225,7 @@ export default Vue.extend({
     },
 
     totalCount(): number {
-      return 10
+      return this.$accessor.positions.subaccountPositionsTotal
     },
 
     totalPages(): number {
@@ -235,7 +235,11 @@ export default Vue.extend({
     },
 
     showClearFiltersButton(): boolean {
-      return !!this.selectedToken
+      return !!this.selectedToken || !!this.side
+    },
+
+    activeMarketIds(): string[] {
+      return this.$accessor.derivatives.activeMarketIds
     }
   },
 
@@ -255,14 +259,14 @@ export default Vue.extend({
     updatePositions(): Promise<void> {
       this.status.setLoading()
 
+      const direction = this.side as TradeDirection
+
       const marketId = this.markets.find((m) => {
         return (
           m.baseToken.symbol === this.selectedToken?.symbol ||
           m.quoteToken.symbol === this.selectedToken?.symbol
         )
       })?.marketId
-
-      const marketIds = this.markets.map((market) => market.marketId)
 
       return Promise.all([
         this.$accessor.derivatives.fetchSubaccountOrders(),
@@ -273,7 +277,8 @@ export default Vue.extend({
           },
           filters: {
             marketId,
-            marketIds
+            marketIds: this.activeMarketIds,
+            direction
           }
         })
       ])
@@ -385,6 +390,7 @@ export default Vue.extend({
 
     handleClearFilters() {
       this.selectedToken = undefined
+      this.side = undefined
 
       this.updatePositions()
     }

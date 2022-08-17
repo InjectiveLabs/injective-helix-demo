@@ -4,7 +4,7 @@
       <div class="flex items-center justify-between bg-gray-900 flex-grow">
         <slot name="label" />
         <span
-          class="text-xs ml-2"
+          class="text-sm ml-2"
           :class="{ 'text-gray-200': value !== undefined }"
           data-cy="reusable-selected-value-text-content"
         >

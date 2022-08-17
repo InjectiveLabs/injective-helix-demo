@@ -132,24 +132,12 @@ export const actions = actionTree(
         marketId: filters?.marketId,
         marketIds: filters?.marketIds,
         subaccountId: subaccount.subaccountId,
+        direction: filters?.direction,
         pagination: {
           skip: paginationOptions ? paginationOptions.skip : 0,
           limit: paginationOptions ? paginationOptions.limit : 0
         }
       })
-
-      // TODO: We can no longer do this because the pagination will otherwise be incorrect.
-
-      // const positionWithActiveMarket = positions.filter((p) => {
-      //   const tickerFormattedToSlug = p.ticker
-      //     .replaceAll('/', '-')
-      //     .replaceAll(' ', '-')
-      //     .toLowerCase()
-
-      //   return [...derivatives, ...binaryOptions].includes(
-      //     tickerFormattedToSlug
-      //   )
-      // })
 
       commit('setSubaccountPositionsTotal', pagination.total)
       commit('setSubaccountPositions', positions)

@@ -31,19 +31,22 @@ export function stringToSpotOrderSide(side: string): SpotOrderSide | undefined {
   }
 }
 
-export function stringToTradeExecutionType (type: string): TradeExecutionType | undefined {
+export function stringToTradeExecutionTypes(
+  type: string | undefined
+): TradeExecutionType[] | undefined {
   switch (type) {
     case 'market': {
-      return TradeExecutionType.Market
+      return [TradeExecutionType.Market]
     }
-    case 'limitFill': {
-      return TradeExecutionType.LimitFill
-    }
-    case 'limitMatchRestingOrder': {
-      return TradeExecutionType.LimitMatchRestingOrder
-    }
+    case 'limit':
+    case 'limitFill':
+    case 'limitMatchRestingOrder':
     case 'limitMatchNewOrder': {
-      return TradeExecutionType.LimitMatchNewOrder
+      return [
+        TradeExecutionType.LimitFill,
+        TradeExecutionType.LimitMatchRestingOrder,
+        TradeExecutionType.LimitMatchNewOrder
+      ]
     }
     default: {
       return undefined
@@ -51,13 +54,22 @@ export function stringToTradeExecutionType (type: string): TradeExecutionType | 
   }
 }
 
-export function stringToTradeDirection(side: string): TradeDirection | undefined {
+export function stringToTradeDirection(
+  side: string | undefined
+): TradeDirection | undefined {
   switch (side) {
     case 'buy': {
       return TradeDirection.Buy
     }
+    case 'sell':
     case 'taker': {
       return TradeDirection.Sell
+    }
+    case 'long': {
+      return TradeDirection.Long
+    }
+    case 'short': {
+      return TradeDirection.Short
     }
     default: {
       return undefined

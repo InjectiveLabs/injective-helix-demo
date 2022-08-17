@@ -171,6 +171,10 @@ export default Vue.extend({
 
     showClearFiltersButton(): boolean {
       return !!this.selectedToken
+    },
+
+    activeMarketIds(): string[] {
+      return this.$accessor.derivatives.activeMarketIds
     }
   },
 
@@ -189,8 +193,6 @@ export default Vue.extend({
         )
       })?.marketId
 
-      const marketIds = this.markets.map((market) => market.marketId)
-
       Promise.all([
         this.$accessor.activity.fetchSubaccountFundingPayments({
           pagination: {
@@ -199,7 +201,7 @@ export default Vue.extend({
           },
           filters: {
             marketId,
-            marketIds
+            marketIds: this.activeMarketIds
           }
         })
       ])

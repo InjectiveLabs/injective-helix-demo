@@ -108,7 +108,7 @@ import {
   UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
-import { stringToTradeDirection, stringToTradeExecutionType } from '@/components/partials/activity/common/utils'
+import { stringToTradeDirection, stringToTradeExecutionTypes } from '@/components/partials/activity/common/utils'
 import Trade from '~/components/partials/common/trade/trade.vue'
 import MobileTrade from '~/components/partials/common/trade/mobile-trade.vue'
 import TradesTableHeader from '~/components/partials/common/trade/trades-table-header.vue'
@@ -207,6 +207,10 @@ export default Vue.extend({
 
     showClearFiltersButton(): boolean {
       return !!this.selectedToken || !!this.type || !!this.side
+    },
+
+    activeMarketIds(): string[] {
+      return this.$accessor.derivatives.activeMarketIds
     }
   },
 
@@ -218,20 +222,14 @@ export default Vue.extend({
     updateTrades() {
       this.status.setLoading()
 
-      const type = this.type ? stringToTradeExecutionType(this.type) : undefined
-
-      const direction = this.side
-        ? stringToTradeDirection(this.side)
-        : undefined
-
+      const types = stringToTradeExecutionTypes(this.type)
+      const direction = stringToTradeDirection(this.side)
       const marketId = this.markets.find((m) => {
         return (
           m.baseToken.symbol === this.selectedToken?.symbol ||
           m.quoteToken.symbol === this.selectedToken?.symbol
         )
       })?.marketId
-
-      const marketIds = this.markets.map((market) => market.marketId)
 
       Promise.all([
         this.$accessor.derivatives.fetchSubaccountTrades({
@@ -240,10 +238,10 @@ export default Vue.extend({
             limit: this.limit
           },
           filters: {
-            type,
+            types,
             direction,
             marketId,
-            marketIds
+            marketIds: this.activeMarketIds
           }
         })
       ])

@@ -385,14 +385,14 @@ input[type='number'] {
 }
 .token-selector__token-only {
   .v-select.input-token.input-select {
-    @apply rounded h-[40px];
+    @apply rounded-lg h-[40px];
 
     .vs__selected {
       @apply h-[40px];
     }
 
     .vs__search {
-      @apply h-[40px] pl-6 pr-4 py-3 uppercase m-0 text-xs placeholder-gray-500;
+      @apply h-[40px] pl-6 pr-4 py-3 m-0 text-sm placeholder-gray-500;
     }
 
     .vs__dropdown-menu {

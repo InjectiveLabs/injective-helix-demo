@@ -155,7 +155,9 @@ export const getters = getterTree(state, {
     const secondLastPrice = new BigNumberInBase(secondLastTrade.executionPrice)
 
     return lastPrice.gte(secondLastPrice) ? Change.Increase : Change.Decrease
-  }
+  },
+
+  activeMarketIds: (state) => state.markets.map(m => m.marketId)
 })
 
 export const mutations = {
@@ -786,7 +788,7 @@ export const actions = actionTree(
         marketId: filters?.marketId,
         marketIds: filters?.marketIds,
         subaccountId: subaccount.subaccountId,
-        executionType: filters?.type,
+        executionTypes: filters?.types,
         direction: filters?.direction,
         pagination: {
           skip: paginationOptions ? paginationOptions.skip : 0,
