@@ -798,7 +798,6 @@ export const actions = actionTree(
       })
 
       commit('setSubaccountTradesTotal', pagination.total)
-
       commit('setSubaccountTrades', trades)
     },
 

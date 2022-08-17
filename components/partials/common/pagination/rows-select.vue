@@ -26,35 +26,43 @@
 import Vue, { PropType } from 'vue'
 import Dropdown from '~/components/partials/common/dropdown.vue'
 import SelectorItem from '~/components/partials/common/pagination/selector-item.vue'
+
 export default Vue.extend({
   components: {
     Dropdown,
     SelectorItem
   },
+
   props: {
     extraLimitOptions: {
       type: Array as PropType<number[]>,
       default: () => []
     },
+
     limit: {
       type: Number,
       required: true
     }
   },
+
   data() {
     return {
       limitOptions: [10, 20, 50, 100]
     }
   },
+
   computed: {
     options(): number[] {
       const { limitOptions, extraLimitOptions } = this
+
       return [...limitOptions, ...extraLimitOptions].sort((a, b) => a - b)
     }
   },
+
   methods: {
     handleClick(item: string) {
       const { limit } = this
+
       if (Number(item) !== limit) {
         this.$emit('update:limit', Number(item))
       }

@@ -14,26 +14,32 @@
 
 <script lang="ts">
 import Vue from 'vue'
+
 export default Vue.extend({
   props: {
     active: {
       type: Boolean,
       default: false
     },
+
     page: {
       type: [Number, String],
       required: true
     }
   },
+
   computed: {
     isPage(): boolean {
       const { page } = this
+
       return page !== '...'
     }
   },
+
   methods: {
     handleClickEvent() {
       const { page, isPage } = this
+
       if (isPage) {
         this.$emit('click', page)
       }

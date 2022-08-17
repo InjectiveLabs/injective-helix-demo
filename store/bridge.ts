@@ -261,7 +261,6 @@ export const actions = actionTree(
       const filters = activityFetchOptions?.filters
 
       const { transfers, pagination } = await indexerAccountApi.fetchSubaccountHistory({
-        // marketId: filters?.marketId
         subaccountId: subaccount.subaccountId,
         denom: filters?.denom,
         pagination: {
@@ -282,9 +281,7 @@ export const actions = actionTree(
       const uiBridgeTransactionsWithToken = await tokenService.getBridgeTransactionsWithToken(transactions)
 
       commit('setSubaccountTransferBridgeTransactionsTotal', pagination.total)
-
       commit('setSubaccountTransferTransactions', transactions)
-
       commit('setSubaccountTransferBridgeTransactions', uiBridgeTransactionsWithToken)
     },
 

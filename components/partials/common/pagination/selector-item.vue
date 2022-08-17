@@ -7,6 +7,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+
 export default Vue.extend({
   props: {
     item: {
@@ -14,9 +15,11 @@ export default Vue.extend({
       required: true
     }
   },
+
   methods: {
     handleClick() {
       const { item } = this
+
       this.$emit('click', item)
     }
   }
