@@ -25,21 +25,6 @@
 
         <template #actions>
           <div
-            v-if="positions.length > 0"
-            class="col-span-4 md:col-span-3 lg:col-span-2 flex justify-between items-center sm:hidden mt-3 text-xs px-3"
-          >
-            <span class="tracking-widest uppercase tracking-3">
-              {{ $t('trade.side') }} / {{ $t('trade.market') }}
-            </span>
-            <span
-              class="text-red-500 leading-5 cursor-pointer"
-              @click.stop="handleClosePositions"
-            >
-              {{ $t('trade.closeAll') }}
-            </span>
-          </div>
-
-          <div
             class="col-span-4 md:col-span-3 lg:col-span-2 sm:text-right mt-0 hidden sm:block"
           >
             <VButton
@@ -291,9 +276,7 @@ export default Vue.extend({
       this.status.setLoading()
 
       const action =
-        positions.length === 1
-          ? this.closePosition
-          : this.closeAllPositions
+        positions.length === 1 ? this.closePosition : this.closeAllPositions
 
       action()
         .then(() => {
