@@ -925,7 +925,7 @@ export default Vue.extend({
 
     submitStopLimitOrder() {
       const {
-        orderTypeToSubmit,
+        orderType,
         market,
         notionalWithLeverage,
         price,
@@ -939,6 +939,15 @@ export default Vue.extend({
       }
 
       this.status.setLoading()
+
+      // TODO: Move this to util.
+      const orderTypeToSubmit = orderType === DerivativeOrderSide.Buy
+        ? triggerPrice.lt(price)
+          ? DerivativeOrderSide.TakeBuy
+          : DerivativeOrderSide.StopBuy
+        : triggerPrice.gt(price)
+          ? DerivativeOrderSide.TakeSell
+          : DerivativeOrderSide.StopSell
 
       this.$accessor.derivatives
         .submitStopLimitOrder({
@@ -1010,9 +1019,18 @@ export default Vue.extend({
 
       this.status.setLoading()
 
+      // TODO: Move this to util.
+      const orderTypeToSubmit = orderType === DerivativeOrderSide.Buy
+        ? triggerPrice.lt(worstPrice)
+          ? DerivativeOrderSide.TakeBuy
+          : DerivativeOrderSide.StopBuy
+        : triggerPrice.gt(worstPrice)
+          ? DerivativeOrderSide.TakeSell
+          : DerivativeOrderSide.StopSell
+
       this.$accessor.derivatives
         .submitStopMarketOrder({
-          orderType,
+          orderType: orderTypeToSubmit,
           margin: notionalWithLeverageBasedOnWorstPrice,
           reduceOnly: orderTypeReduceOnly,
           price: worstPrice,
