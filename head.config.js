@@ -39,8 +39,8 @@ module.exports = {
   },
   script: scripts,
   link: [
-    { rel: 'icon', type: 'image/png', href: '/favicon.png' },
-    { rel: 'shortcut-icon', type: 'image/png', href: '/favicon.png' },
-    { rel: 'apple-touch-icon', type: 'image/png', href: '/favicon.png' }
+    { rel: 'icon', type: 'image/png', href: '/favicon.png?v=1' },
+    { rel: 'shortcut-icon', type: 'image/png', href: '/favicon.png?v=1' },
+    { rel: 'apple-touch-icon', type: 'image/png', href: '/favicon.png?v=1' }
   ]
 }
