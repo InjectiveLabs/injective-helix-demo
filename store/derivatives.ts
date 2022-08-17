@@ -923,24 +923,36 @@ export const actions = actionTree(
           ? MsgCreateBinaryOptionsLimitOrder
           : MsgCreateDerivativeLimitOrder
 
+      const msgTriggerPrice = derivativePriceToChainPriceToFixed({
+        value: triggerPrice,
+        quoteDecimals: market.quoteToken.decimals
+      })
+      const msgPrice = derivativePriceToChainPriceToFixed({
+        value: price,
+        quoteDecimals: market.quoteToken.decimals
+      })
+      const msgQuantity = derivativeQuantityToChainQuantityToFixed({ value: quantity })
+      const msgMargin = reduceOnly
+        ? ZERO_TO_STRING
+        : derivativeMarginToChainMarginToFixed({
+            value: margin,
+            quoteDecimals: market.quoteToken.decimals
+          })
+
+      console.log('type: stop-limit') // eslint-disable-line
+      console.log('orderType:', orderType, derivativeOrderTypeToGrpcOrderType(orderType)) // eslint-disable-line
+      console.log('price:', msgPrice) // eslint-disable-line
+      console.log('triggerPrice:', msgTriggerPrice) // eslint-disable-line
+      console.log('quantity:', msgQuantity) // eslint-disable-line
+      console.log('margin:', msgMargin) // eslint-disable-line
+
       const message = messageType.fromJSON({
         injectiveAddress,
         orderType: derivativeOrderTypeToGrpcOrderType(orderType),
-        triggerPrice: derivativePriceToChainPriceToFixed({
-          value: triggerPrice,
-          quoteDecimals: market.quoteToken.decimals
-        }),
-        price: derivativePriceToChainPriceToFixed({
-          value: price,
-          quoteDecimals: market.quoteToken.decimals
-        }),
-        quantity: derivativeQuantityToChainQuantityToFixed({ value: quantity }),
-        margin: reduceOnly
-          ? ZERO_TO_STRING
-          : derivativeMarginToChainMarginToFixed({
-              value: margin,
-              quoteDecimals: market.quoteToken.decimals
-            }),
+        triggerPrice: msgTriggerPrice,
+        price: msgPrice,
+        quantity: msgQuantity,
+        margin: msgMargin,
         marketId: market.marketId,
         feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
@@ -1050,24 +1062,36 @@ export const actions = actionTree(
           ? MsgCreateBinaryOptionsMarketOrder
           : MsgCreateDerivativeMarketOrder
 
+      const msgPrice = derivativePriceToChainPriceToFixed({
+        value: price,
+        quoteDecimals: market.quoteToken.decimals
+      })
+      const msgTriggerPrice = derivativePriceToChainPriceToFixed({
+        value: triggerPrice,
+        quoteDecimals: market.quoteToken.decimals
+      })
+      const msgQuantity = derivativeQuantityToChainQuantityToFixed({ value: quantity })
+      const msgMargin = reduceOnly
+        ? ZERO_TO_STRING
+        : derivativeMarginToChainMarginToFixed({
+            value: margin,
+            quoteDecimals: market.quoteToken.decimals
+          })
+
+      console.log('type: stop-market') // eslint-disable-line
+      console.log('orderType:', orderType, derivativeOrderTypeToGrpcOrderType(orderType)) // eslint-disable-line
+      console.log('price:', msgPrice) // eslint-disable-line
+      console.log('triggerPrice:', msgTriggerPrice) // eslint-disable-line
+      console.log('quantity:', msgQuantity) // eslint-disable-line
+      console.log('margin:', msgMargin) // eslint-disable-line
+
       const message = messageType.fromJSON({
         injectiveAddress,
         orderType: derivativeOrderTypeToGrpcOrderType(orderType),
-        price: derivativePriceToChainPriceToFixed({
-          value: price,
-          quoteDecimals: market.quoteToken.decimals
-        }),
-        triggerPrice: derivativePriceToChainPriceToFixed({
-          value: triggerPrice,
-          quoteDecimals: market.quoteToken.decimals
-        }),
-        quantity: derivativeQuantityToChainQuantityToFixed({ value: quantity }),
-        margin: reduceOnly
-          ? ZERO_TO_STRING
-          : derivativeMarginToChainMarginToFixed({
-              value: margin,
-              quoteDecimals: market.quoteToken.decimals
-            }),
+        price: msgPrice,
+        triggerPrice: msgTriggerPrice,
+        quantity: msgQuantity,
+        margin: msgMargin,
         marketId: market.marketId,
         feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
         subaccountId: subaccount.subaccountId
