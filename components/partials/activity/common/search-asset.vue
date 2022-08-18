@@ -46,7 +46,7 @@ export default Vue.extend({
 
   computed: {
     supportedTokens(): BankBalanceWithTokenAndBalanceInBase[] {
-      return this.$store.state.activity.supportedTokens
+      return this.$accessor.activity.supportedTokens
     },
 
     filteredSupportedTokens(): BankBalanceWithTokenAndBalanceInBase[] {
