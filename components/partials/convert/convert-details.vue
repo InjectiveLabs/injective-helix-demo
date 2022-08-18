@@ -191,15 +191,19 @@ export default Vue.extend({
     //   return RateQuality.Fair
     // },
 
-    // rateClass(): Object {
-    //   const { rateQuality } = this
+    rateClass(): Object {
+      // TODO: Activate commented code below once rate quality is determined dynamically.
 
-    //   return {
-    //     'text-green-500': rateQuality === RateQuality.Good,
-    //     'text-yellow-500': rateQuality === RateQuality.Fair,
-    //     'text-red-500': rateQuality === RateQuality.Poor
-    //   }
-    // },
+      // const { rateQuality } = this
+
+      // return {
+      //   'text-green-500': rateQuality === RateQuality.Good,
+      //   'text-yellow-500': rateQuality === RateQuality.Fair,
+      //   'text-red-500': rateQuality === RateQuality.Poor
+      // }
+
+      return {}
+    },
 
     feeRate(): BigNumberInBase {
       const { takerFeeRate, takerFeeRateDiscount } = this
