@@ -32,9 +32,24 @@
         </template>
       </Toolbar>
 
-      <div>
-        Triggers
-      </div>
+      <TableWrapper break-md class="mt-4 hidden sm:block">
+        <table v-if="triggers.length > 0" class="table">
+          <TriggersTableHeader />
+          <tbody>
+            <tr
+              is="Trigger"
+              v-for="(trigger, index) in triggers"
+              :key="`trigger-${index}`"
+              :trigger="trigger"
+            ></tr>
+          </tbody>
+        </table>
+        <EmptyList
+          v-else
+          :message="$t('trade.emptyTriggers')"
+          data-cy="universal-table-nothing-found"
+        />
+      </TableWrapper>
 
       <portal to="activity-tab-derivative-triggers-count">
         <span v-if="status.isNotLoading()"> ({{ triggers.length }}) </span>
@@ -60,22 +75,27 @@
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Token } from '@injectivelabs/token-metadata'
-import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { DerivativeOrderSide, UiDerivativeLimitOrder, UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { DerivativeOrderState } from '@injectivelabs/sdk-ts'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import Pagination from '~/components/partials/common/pagination.vue'
-import SearchAsset from '@/components/partials/activity/common/search-asset.vue'
-import ClearFiltersButton from '@/components/partials/activity/common/clear-filters-button.vue'
-import Toolbar from '@/components/partials/activity/common/toolbar.vue'
+import SearchAsset from '~/components/partials/activity/common/search-asset.vue'
+import ClearFiltersButton from '~/components/partials/activity/common/clear-filters-button.vue'
+import Toolbar from '~/components/partials/activity/common/toolbar.vue'
+import Trigger from '~/components/partials/common/derivatives/trigger.vue'
+import TriggersTableHeader from '~/components/partials/common/derivatives/triggers-table-header.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
 import { TradeSelectorType } from '~/types'
 
 export default Vue.extend({
   components: {
-    FilterSelector,
+    Trigger,
+    Toolbar,
     Pagination,
     SearchAsset,
+    FilterSelector,
     ClearFiltersButton,
-    Toolbar
+    TriggersTableHeader
   },
 
   data() {
@@ -95,8 +115,23 @@ export default Vue.extend({
       return this.$accessor.derivatives.activeMarketIds
     },
 
-    triggers(): number[] {
-      return [1, 2, 3]
+    triggers(): UiDerivativeLimitOrder[] {
+      return [
+        {
+          orderHash: 'orderHash',
+          orderSide: DerivativeOrderSide.Buy,
+          marketId: 'marketId',
+          subaccountId: 'subaccountId',
+          isReduceOnly: false,
+          margin: 'margin',
+          price: 'price',
+          quantity: 'quantity',
+          unfilledQuantity: 'unfilledQuantity',
+          triggerPrice: 'triggerPrice',
+          feeRecipient: 'feeRecipient',
+          state: DerivativeOrderState.Filled
+        }
+      ]
     },
 
     markets(): UiDerivativeMarketWithToken[] {

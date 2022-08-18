@@ -42,6 +42,7 @@ export default {
     reduce_only: 'Reduce-Only',
     post_only: 'Post-Only',
     leverage: 'Leverage',
+    triggerCondition: 'Trigger condition',
     limit: 'Limit',
     market: 'Market',
     stopLimit: 'Stop-Limit',
@@ -51,6 +52,7 @@ export default {
     emptyOrders: 'No orders found',
     emptyPositions: 'No positions found',
     emptyTrades: 'No trades found',
+    emptyTriggers: 'No triggers found',
     entry_price: 'Entry price',
     liquidation_price: 'Liquidation Price',
     liquidation_price_tooltip:
