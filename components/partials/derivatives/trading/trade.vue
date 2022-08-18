@@ -256,6 +256,10 @@ export default Vue.extend({
       return this.$accessor.positions.subaccountPositions
     },
 
+    markPrice(): BigNumberInBase {
+      return new BigNumberInBase(this.$accessor.derivatives.marketMarkPrice)
+    },
+
     orderTypeToSubmit(): DerivativeOrderSide {
       const {
         form: { postOnly },
@@ -263,17 +267,21 @@ export default Vue.extend({
         tradingTypeStopLimit,
         tradingTypeStopMarket,
         triggerPrice,
+        markPrice,
         price
       } = this
 
       if (tradingTypeStopLimit || tradingTypeStopMarket) {
+        console.log('mark_price:', markPrice.toString()) // eslint-disable-line
+        console.log('last_traded_price:', price.toString()) // eslint-disable-line
+
         return orderTypeBuy
-          ? triggerPrice.lt(price)
+          ? triggerPrice.lt(markPrice)
             ? DerivativeOrderSide.TakeBuy
             : DerivativeOrderSide.StopBuy
-          : triggerPrice.gt(price)
-          ? DerivativeOrderSide.TakeSell
-          : DerivativeOrderSide.StopSell
+          : triggerPrice.gt(markPrice)
+            ? DerivativeOrderSide.TakeSell
+            : DerivativeOrderSide.StopSell
       }
 
       switch (true) {
