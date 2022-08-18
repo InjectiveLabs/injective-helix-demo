@@ -162,7 +162,22 @@ export default Vue.extend({
     },
 
     tradingTypeMarket: {
-      type: Boolean,
+      type: Boolean as PropType<boolean>,
+      required: true
+    },
+
+    tradingTypeLimit: {
+      type: Boolean as PropType<boolean>,
+      required: true
+    },
+
+    tradingTypeStopMarket: {
+      type: Boolean as PropType<boolean>,
+      required: true
+    },
+
+    tradingTypeStopLimit: {
+      type: Boolean as PropType<boolean>,
       required: true
     },
 
@@ -246,6 +261,8 @@ export default Vue.extend({
       const {
         isSpot,
         tradingTypeMarket,
+        tradingTypeStopLimit,
+        tradingTypeStopMarket,
         hasPrice,
         hasAmount,
         market,
@@ -254,7 +271,14 @@ export default Vue.extend({
         executionPrice
       } = this
 
-      if (tradingTypeMarket || !hasPrice || !hasAmount || !market) {
+      if (
+        tradingTypeMarket ||
+        tradingTypeStopMarket ||
+        tradingTypeStopLimit ||
+        !hasPrice ||
+        !hasAmount ||
+        !market
+      ) {
         return
       }
 

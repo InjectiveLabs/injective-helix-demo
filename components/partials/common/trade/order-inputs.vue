@@ -159,7 +159,10 @@
         quoteAmount: inputQuoteAmountToBigNumber,
         quoteAvailableBalance,
         sells,
+        tradingTypeLimit,
         tradingTypeMarket,
+        tradingTypeStopLimit,
+        tradingTypeStopMarket,
         worstPrice
       }"
       @update:hasInputErrors="updateHasInputErrors"
