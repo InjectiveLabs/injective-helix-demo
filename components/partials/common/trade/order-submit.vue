@@ -26,7 +26,7 @@
       {{ buttonLabel }}
     </VButton>
 
-    <VModalOrderConfirm @confirmed="$emit('submit')" />
+    <VModalOrderConfirm @confirmed="handleTradeConfirmationModalConfirm" />
   </div>
 </template>
 
@@ -42,15 +42,9 @@ import {
   MarketType
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
-import { Modal } from '~/types'
 import OrderError from '~/components/partials/common/trade/order-error.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
-import {
-  DEFAULT_PRICE_WARNING_DEVIATION,
-  BIGGER_PRICE_WARNING_DEVIATION,
-  UI_DEFAULT_MAX_NUMBER_OF_ORDERS
-} from '~/app/utils/constants'
-import { excludedPriceDeviationSlugs } from '~/app/data/market'
+import { UI_DEFAULT_MAX_NUMBER_OF_ORDERS } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -242,56 +236,12 @@ export default Vue.extend({
       }
 
       return hasEnoughInjForGas
-    },
-
-    priceHasHighDeviationWarning(): boolean {
-      const {
-        executionPrice,
-        orderTypeBuy,
-        orderTypeReduceOnly,
-        tradingTypeMarket,
-        market,
-        lastTradedPrice
-      } = this
-
-      if (!market || tradingTypeMarket || executionPrice.lte(0)) {
-        return false
-      }
-
-      if (orderTypeReduceOnly) {
-        return false
-      }
-
-      const defaultPriceWarningDeviation = excludedPriceDeviationSlugs.includes(
-        market.ticker
-      )
-        ? BIGGER_PRICE_WARNING_DEVIATION
-        : DEFAULT_PRICE_WARNING_DEVIATION
-
-      const deviation = new BigNumberInBase(1)
-        .minus(
-          orderTypeBuy
-            ? lastTradedPrice.dividedBy(executionPrice)
-            : executionPrice.dividedBy(lastTradedPrice)
-        )
-        .times(100)
-
-      return deviation.gt(defaultPriceWarningDeviation)
     }
   },
 
   methods: {
     onSubmit() {
-      const {
-        hasError,
-        maxOrdersError,
-        priceHasHighDeviationWarning,
-        isUserWalletConnected,
-        orderTypeToSubmit: orderType,
-        tradingType,
-        tradingTypeStopMarket,
-        tradingTypeStopLimit
-      } = this
+      const { hasError, maxOrdersError, isUserWalletConnected } = this
 
       if (!isUserWalletConnected) {
         return this.$toast.error(this.$t('please_connect_your_wallet'))
@@ -305,22 +255,10 @@ export default Vue.extend({
         return this.$toast.error(maxOrdersError)
       }
 
-      if (priceHasHighDeviationWarning) {
-        return this.$accessor.modal.openModal({
-          type: Modal.OrderConfirm
-        })
-      }
+      this.$emit('submit:request')
+    },
 
-      if (tradingTypeStopMarket || tradingTypeStopLimit) {
-        return this.$accessor.modal.openModal({
-          type: Modal.OrderConfirm,
-          data: {
-            tradingType,
-            orderType
-          }
-        })
-      }
-
+    handleTradeConfirmationModalConfirm() {
       this.$emit('submit')
     }
   }

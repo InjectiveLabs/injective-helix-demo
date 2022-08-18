@@ -116,7 +116,8 @@
         tradingTypeStopMarket,
         tradingTypeStopLimit
       }"
-      @submit="onSubmit"
+      @submit="handleSubmit"
+      @submit:request="handleRequestSubmit"
     />
   </div>
 </template>
@@ -151,7 +152,7 @@ import OrderSubmit from '~/components/partials/common/trade/order-submit.vue'
 import OrderInputs from '~/components/partials/common/trade/order-inputs.vue'
 import TradingTypeButtons from '~/components/partials/common/trade/trading-type-buttons.vue'
 import OrderDetailsWrapper from '~/components/partials/common/trade/order-details-wrapper.vue'
-import { AveragePriceOptions } from '~/types'
+import { AveragePriceOptions, Modal, TradeConfirmationModalData } from '~/types'
 import {
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook,
@@ -160,7 +161,13 @@ import {
   calculateAverageExecutionPriceFromFillableNotionalOnOrderBook,
   calculateBinaryOptionsMargin
 } from '~/app/client/utils/derivatives'
-import { ONE_IN_BASE } from '~/app/utils/constants'
+import {
+  BIGGER_PRICE_WARNING_DEVIATION,
+  DEFAULT_PRICE_WARNING_DEVIATION,
+  ONE_IN_BASE
+} from '~/app/utils/constants'
+import { excludedPriceDeviationSlugs } from '~/app/data/market'
+import { localStorage } from '~/app/Services'
 
 interface TradeForm {
   reduceOnly: boolean
@@ -265,8 +272,8 @@ export default Vue.extend({
             ? DerivativeOrderSide.TakeBuy
             : DerivativeOrderSide.StopBuy
           : triggerPrice.gt(price)
-            ? DerivativeOrderSide.TakeSell
-            : DerivativeOrderSide.StopSell
+          ? DerivativeOrderSide.TakeSell
+          : DerivativeOrderSide.StopSell
       }
 
       switch (true) {
@@ -820,6 +827,41 @@ export default Vue.extend({
 
     $orderInputs(): any {
       return this.$refs.orderInputs
+    },
+
+    priceHasHighDeviationWarning(): boolean {
+      const {
+        executionPrice,
+        orderTypeBuy,
+        orderTypeReduceOnly,
+        tradingTypeMarket,
+        market,
+        lastTradedPrice
+      } = this
+
+      if (!market || tradingTypeMarket || executionPrice.lte(0)) {
+        return false
+      }
+
+      if (orderTypeReduceOnly) {
+        return false
+      }
+
+      const defaultPriceWarningDeviation = excludedPriceDeviationSlugs.includes(
+        market.ticker
+      )
+        ? BIGGER_PRICE_WARNING_DEVIATION
+        : DEFAULT_PRICE_WARNING_DEVIATION
+
+      const deviation = new BigNumberInBase(1)
+        .minus(
+          orderTypeBuy
+            ? lastTradedPrice.dividedBy(executionPrice)
+            : executionPrice.dividedBy(lastTradedPrice)
+        )
+        .times(100)
+
+      return deviation.gt(defaultPriceWarningDeviation)
     }
   },
 
@@ -1048,7 +1090,49 @@ export default Vue.extend({
         })
     },
 
-    onSubmit() {
+    handleRequestSubmit() {
+      const {
+        tradingType,
+        tradingTypeLimit,
+        tradingTypeMarket,
+        tradingTypeStopLimit,
+        priceHasHighDeviationWarning,
+        orderTypeToSubmit: orderType
+      } = this
+
+      if (priceHasHighDeviationWarning) {
+        return this.$accessor.modal.openModal({
+          type: Modal.OrderConfirm
+        })
+      }
+
+      const shouldSkipTradeConfirmationModal = localStorage.get('skipTradeConfirmationModal') === true
+
+      if (shouldSkipTradeConfirmationModal || tradingTypeMarket || tradingTypeLimit) {
+        return this.handleSubmit()
+      }
+
+      const modalData: TradeConfirmationModalData = {
+        tradingType,
+        orderType,
+        quoteAmount: ZERO_IN_BASE,
+        quoteSymbol: '',
+        baseAmount: ZERO_IN_BASE,
+        baseSymbol: ''
+      }
+
+      if (tradingTypeStopLimit) {
+        modalData.price = ZERO_IN_BASE
+        modalData.priceSymbol = ''
+      }
+
+      return this.$accessor.modal.openModal({
+        type: Modal.OrderConfirm,
+        data: modalData
+      })
+    },
+
+    handleSubmit() {
       const { tradingType } = this
 
       switch (tradingType.toString()) {

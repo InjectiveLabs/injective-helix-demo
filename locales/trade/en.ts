@@ -250,6 +250,10 @@ export default {
     },
     slippage_cancellation_notice: 'Note: If the execution price exceeds the 0.5% slippage protection, your order will be automatically cancelled.',
     takeProfit: 'Take-Profit',
-    stopLoss: 'Stop-Loss'
+    stopLoss: 'Stop-Loss',
+    confirmOrderModal: {
+      descriptionLimit: 'If the mark price {verb} to or {preposition} <b>{quoteAmount} {quoteSymbol}</b>, a limit order to {orderType} <b>{baseAmount} {baseSymbol}</b> at a price of <b>{price} {priceSymbol}</b> will be placed.',
+      descriptionMarket: 'If the mark price {verb} to or {preposition} <b>{quoteAmount} {quoteSymbol}</b>, a {tradingType} order to {orderType} <b>{baseAmount} {baseSymbol}</b> will be placed.'
+    }
   }
 }

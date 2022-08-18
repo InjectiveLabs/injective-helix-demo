@@ -20,10 +20,8 @@
       </h3>
 
       <div class="flex flex-col gap-6">
-        <p class="text-sm">
-          If the mark price drops to or below 30,250.0 USDT, a limit order to
-          buy 0.0001 BTC at a price of 30,223.0 USDT will be placed.
-        </p>
+        <!-- eslint-disable-next-line vue/no-v-html -->
+        <p class="text-sm" v-html="description" />
         <div class="flex justify-between items-center gap-6">
           <VButton
             md
@@ -94,6 +92,7 @@ import { SpotOrderSide, DerivativeOrderSide } from '@injectivelabs/sdk-ts'
 import { TradeExecutionType } from '@injectivelabs/ts-types'
 import { DEFAULT_PRICE_WARNING_DEVIATION } from '~/app/utils/constants'
 import { Modal } from '~/types'
+import { localStorage } from '~/app/Services'
 
 export default Vue.extend({
   data() {
@@ -115,6 +114,28 @@ export default Vue.extend({
         SpotOrderSide.StopBuy,
         DerivativeOrderSide.TakeBuy,
         DerivativeOrderSide.StopBuy
+      ].includes(orderType)
+    },
+
+    orderTypeTakeProfit(): boolean {
+      const { orderType } = this
+
+      return [
+        SpotOrderSide.TakeBuy,
+        DerivativeOrderSide.TakeBuy,
+        SpotOrderSide.TakeSell,
+        DerivativeOrderSide.TakeSell
+      ].includes(orderType)
+    },
+
+    orderTypeStopLoss(): boolean {
+      const { orderType } = this
+
+      return [
+        SpotOrderSide.StopBuy,
+        DerivativeOrderSide.StopBuy,
+        SpotOrderSide.StopSell,
+        DerivativeOrderSide.StopSell
       ].includes(orderType)
     },
 
@@ -140,26 +161,56 @@ export default Vue.extend({
     },
 
     title(): string {
-      const { orderType, tradingTypeMarket } = this
+      const { orderTypeTakeProfit, orderTypeStopLoss, tradingTypeMarket } = this
 
       const suffix = tradingTypeMarket
         ? this.$t('trade.market')
         : this.$t('trade.limit')
 
-      switch (orderType) {
-        case SpotOrderSide.TakeBuy:
-        case DerivativeOrderSide.TakeBuy:
-        case SpotOrderSide.TakeSell:
-        case DerivativeOrderSide.TakeSell:
-          return [this.$t('trade.takeProfit'), suffix].join(' ')
-        case SpotOrderSide.StopBuy:
-        case DerivativeOrderSide.StopBuy:
-        case SpotOrderSide.StopSell:
-        case DerivativeOrderSide.StopSell:
-          return [this.$t('trade.stopLoss'), suffix].join(' ')
-        default:
-          return ''
+      if (orderTypeTakeProfit) {
+        return [this.$t('trade.takeProfit'), suffix].join(' ')
       }
+
+      if (orderTypeStopLoss) {
+        return [this.$t('trade.stopLoss'), suffix].join(' ')
+      }
+
+      return ''
+    },
+
+    description(): string {
+      const { orderTypeBuy, orderTypeTakeProfit, orderTypeStopLoss, tradingTypeMarket } = this
+
+      const orderType = orderTypeBuy ? 'buy' : 'sell'
+      const tradingType = tradingTypeMarket && orderTypeBuy ? 'market' : 'limit'
+      const markPriceIncrease = (orderTypeBuy && orderTypeStopLoss) || (!orderTypeBuy && orderTypeTakeProfit)
+      const verb = markPriceIncrease ? 'rises' : 'drops'
+      const preposition = markPriceIncrease ? 'above' : 'below'
+
+      if (tradingTypeMarket) {
+        return this.$t('trade.confirmOrderModal.descriptionMarket', {
+          verb,
+          preposition,
+          quoteAmount: 1,
+          quoteSymbol: 'USDT',
+          tradingType,
+          orderType,
+          baseAmount: 1,
+          baseSymbol: 'BTC'
+        })
+      }
+
+      return this.$t('trade.confirmOrderModal.descriptionLimit', {
+        verb,
+        preposition,
+        quoteAmount: 1,
+        quoteSymbol: 'USDT',
+        orderType,
+        baseAmount: 1,
+        baseSymbol: 'BTC',
+        price: 1,
+        priceSymbol: 'USDT'
+      })
     }
   },
 
@@ -177,7 +228,9 @@ export default Vue.extend({
       this.handleCloseModal()
     },
 
-    toggleDoNotShow() {}
+    toggleDoNotShow() {
+      localStorage.set('skipTradeConfirmationModal', true)
+    }
   }
 })
 </script>
