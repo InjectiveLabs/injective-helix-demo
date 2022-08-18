@@ -108,7 +108,7 @@ import Vue from 'vue'
 import { UiSpotTrade, UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
 import { TradeDirection } from '@injectivelabs/ts-types'
-import { stringToTradeExecutionTypes } from '@/components/partials/activity/common/utils'
+import { tradeTypesToTradeExecutionTypes } from '@/components/partials/activity/common/utils'
 import Trade from '~/components/partials/common/trade/trade.vue'
 import MobileTrade from '~/components/partials/common/trade/mobile-trade.vue'
 import TradesTableHeader from '~/components/partials/common/trade/trades-table-header.vue'
@@ -116,7 +116,7 @@ import FilterSelector from '~/components/partials/common/elements/filter-selecto
 import ModalMobileTradeFilter from '~/components/partials/modals/mobile-trade-filter.vue'
 import ModalMobileTradeDetails from '~/components/partials/modals/mobile-trade-details.vue'
 import TableBody from '~/components/elements/table-body.vue'
-import { TradeSelectorType } from '~/types/enums'
+import { TradeSelectorType, TradeTypes } from '~/types/enums'
 import { Modal } from '~/types'
 import Pagination from '~/components/partials/common/pagination.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
@@ -188,7 +188,7 @@ export default Vue.extend({
     updateTrades() {
       this.status.setLoading()
 
-      const types = stringToTradeExecutionTypes(this.type)
+      const types = tradeTypesToTradeExecutionTypes(this.type as TradeTypes)
       const direction = this.side as TradeDirection
       const marketId = this.markets.find((m) => {
         return (

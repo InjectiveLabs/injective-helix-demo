@@ -1,24 +1,20 @@
 import { TradeExecutionType } from '@injectivelabs/ts-types'
+import { TradeTypes } from '~/types'
 
-export function stringToTradeExecutionTypes(
-  type: string | undefined
+export function tradeTypesToTradeExecutionTypes(
+  type: TradeTypes | undefined
 ): TradeExecutionType[] | undefined {
-  switch (type) {
-    case 'market': {
-      return [TradeExecutionType.Market]
-    }
-    case 'limit':
-    case 'limitFill':
-    case 'limitMatchRestingOrder':
-    case 'limitMatchNewOrder': {
-      return [
-        TradeExecutionType.LimitFill,
-        TradeExecutionType.LimitMatchRestingOrder,
-        TradeExecutionType.LimitMatchNewOrder
-      ]
-    }
-    default: {
-      return undefined
-    }
+  if (type === TradeTypes.Market) {
+    return [TradeExecutionType.Market]
   }
+
+  if (type === TradeTypes.Limit) {
+    return [
+      TradeExecutionType.LimitFill,
+      TradeExecutionType.LimitMatchRestingOrder,
+      TradeExecutionType.LimitMatchNewOrder
+    ]
+  }
+
+  return undefined
 }
