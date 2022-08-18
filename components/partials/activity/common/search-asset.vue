@@ -2,7 +2,7 @@
   <TokenSelector
     class="token-selector__token-only min-w-3xs"
     :value="value"
-    :options="filteredSupportedTokens"
+    :options="supportedTokens"
     :placeholder="$t('trade.market')"
     :balance="balance"
     dense
