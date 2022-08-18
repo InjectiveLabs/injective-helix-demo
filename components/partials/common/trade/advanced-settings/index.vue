@@ -1,5 +1,5 @@
 <template>
-  <div class="border-t mt-6">
+  <div v-if="showAdvancedSettings" class="border-t mt-6">
     <div
       class="group flex align-center my-2 cursor-pointer"
       @click="toggleDrawer"
@@ -80,7 +80,7 @@
           </div>
         </div>
         <VCheckbox
-          v-if="tradingTypeLimit || tradingTypeStopLimit"
+          v-if="tradingTypeLimit"
           :value="postOnly"
           data-cy="trading-page-post-only-checkbox"
           class="flex items-center"
@@ -164,6 +164,12 @@ export default Vue.extend({
   },
 
   computed: {
+    showAdvancedSettings(): boolean {
+      const { tradingTypeStopLimit } = this
+
+      return !tradingTypeStopLimit
+    },
+
     tradingTypeMarket(): boolean {
       const { tradingType } = this
 
