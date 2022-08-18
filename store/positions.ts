@@ -24,7 +24,6 @@ import {
 import { FEE_RECIPIENT } from '~/app/utils/constants'
 import { streamSubaccountPositions } from '~/app/client/streams/derivatives'
 import { getRoundedLiquidationPrice } from '~/app/client/utils/derivatives'
-// import { binaryOptions, derivatives } from '~/routes.config'
 import { indexerDerivativesApi, msgBroadcastClient } from '~/app/Services'
 import { ActivityFetchOptions } from '~/types'
 

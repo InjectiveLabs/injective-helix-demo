@@ -152,6 +152,10 @@ export default Vue.extend({
   },
 
   computed: {
+    activeMarketIds(): string[] {
+      return this.$accessor.derivatives.activeMarketIds
+    },
+
     wallet(): Wallet {
       return this.$accessor.wallet.wallet
     },
@@ -162,6 +166,10 @@ export default Vue.extend({
 
     markets(): UiDerivativeMarketWithToken[] {
       return this.$accessor.derivatives.markets
+    },
+
+    totalCount(): number {
+      return this.$accessor.positions.subaccountPositionsTotal
     },
 
     sortedPositions(): UiPosition[] {
@@ -178,10 +186,6 @@ export default Vue.extend({
       return wallet !== Wallet.Keplr
     },
 
-    totalCount(): number {
-      return this.$accessor.positions.subaccountPositionsTotal
-    },
-
     totalPages(): number {
       const { totalCount, limit } = this
 
@@ -190,17 +194,13 @@ export default Vue.extend({
 
     showClearFiltersButton(): boolean {
       return !!this.selectedToken || !!this.side
-    },
-
-    activeMarketIds(): string[] {
-      return this.$accessor.derivatives.activeMarketIds
     }
   },
 
   mounted() {
     this.pollSubaccountPositions()
 
-    this.updatePositions().then(() => {
+    this.fetchPositions().then(() => {
       this.$root.$emit('position-tab-loaded')
     })
   },
@@ -210,21 +210,31 @@ export default Vue.extend({
   },
 
   methods: {
-    updatePositions(): Promise<void> {
+    fetchPositions(): Promise<void> {
       this.status.setLoading()
 
-      const direction = this.side as TradeDirection
+      return Promise.all([
+        this.$accessor.derivatives.fetchSubaccountOrders(),
+        this.fetchSubaccountPositions()
+      ])
+        .catch(this.$onError)
+        .then(() => {
+          this.status.setIdle()
+        })
+    },
 
-      const marketId = this.markets.find((m) => {
+    fetchSubaccountPositions() {
+      const { side, markets } = this
+
+      const direction = side as TradeDirection
+      const marketId = markets.find((m) => {
         return (
           m.baseToken.symbol === this.selectedToken?.symbol ||
           m.quoteToken.symbol === this.selectedToken?.symbol
         )
       })?.marketId
 
-      return Promise.all([
-        this.$accessor.derivatives.fetchSubaccountOrders(),
-        this.$accessor.positions.fetchSubaccountPositions({
+      this.$accessor.positions.fetchSubaccountPositions({
           pagination: {
             skip: (this.page - 1) * this.limit,
             limit: this.limit
@@ -234,11 +244,6 @@ export default Vue.extend({
             marketIds: this.activeMarketIds,
             direction
           }
-        })
-      ])
-        .catch(this.$onError)
-        .then(() => {
-          this.status.setIdle()
         })
     },
 
@@ -295,56 +300,36 @@ export default Vue.extend({
     handleSideClick(side: string | undefined) {
       this.side = side
 
-      this.updatePositions()
+      this.fetchPositions()
     },
 
     pollSubaccountPositions() {
-      this.poll = setInterval(() => {
-        const marketId = this.markets.find((m) => {
-          return (
-            m.baseToken.symbol === this.selectedToken?.symbol ||
-            m.quoteToken.symbol === this.selectedToken?.symbol
-          )
-        })?.marketId
-
-        const marketIds = this.markets.map((market) => market.marketId)
-
-        this.$accessor.positions.fetchSubaccountPositions({
-          pagination: {
-            skip: (this.page - 1) * this.limit,
-            limit: this.limit
-          },
-          filters: {
-            marketId,
-            marketIds
-          }
-        })
-      }, 30 * 1000)
+      this.poll = setInterval(this.fetchSubaccountPositions, 30 * 1000)
     },
 
     handleLimitChangeEvent(limit: number) {
       this.limit = limit
 
-      this.updatePositions()
+      this.fetchPositions()
     },
 
     handlePageChangeEvent(page: number) {
       this.page = page
 
-      this.updatePositions()
+      this.fetchPositions()
     },
 
     handleSearch(token: Token) {
       this.selectedToken = token
 
-      this.updatePositions()
+      this.fetchPositions()
     },
 
     handleClearFilters() {
       this.selectedToken = undefined
       this.side = undefined
 
-      this.updatePositions()
+      this.fetchPositions()
     }
   }
 })

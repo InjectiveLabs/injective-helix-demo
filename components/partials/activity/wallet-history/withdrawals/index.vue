@@ -31,6 +31,8 @@
         />
       </TableWrapper>
 
+      <!-- Enable <Pagination> once withdrawals pagination is supported in the indexer -->
+
       <!-- <Pagination
         v-if="status.isIdle()"
         class="mt-4"
@@ -131,11 +133,11 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.updateWithdrawals()
+    this.fetchWithdrawals()
   },
 
   methods: {
-    updateWithdrawals() {
+    fetchWithdrawals() {
       this.status.setLoading()
 
       Promise.all([
@@ -159,25 +161,25 @@ export default Vue.extend({
     handleLimitChangeEvent(limit: number) {
       this.limit = limit
 
-      this.updateWithdrawals()
+      this.fetchWithdrawals()
     },
 
     handlePageChangeEvent(page: number) {
       this.page = page
 
-      this.updateWithdrawals()
+      this.fetchWithdrawals()
     },
 
     handleSearch(token: Token) {
       this.selectedToken = token
 
-      this.updateWithdrawals()
+      this.fetchWithdrawals()
     },
 
     handleClearFilters() {
       this.selectedToken = undefined
 
-      this.updateWithdrawals()
+      this.fetchWithdrawals()
     }
   }
 })

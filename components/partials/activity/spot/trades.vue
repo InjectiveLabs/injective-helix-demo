@@ -153,6 +153,10 @@ export default Vue.extend({
   },
 
   computed: {
+    activeMarketIds(): string[] {
+      return this.$accessor.spot.activeMarketIds
+    },
+
     markets(): UiSpotMarketWithToken[] {
       return this.$accessor.spot.markets
     },
@@ -173,19 +177,15 @@ export default Vue.extend({
 
     showClearFiltersButton(): boolean {
       return !!this.selectedToken || !!this.type || !!this.side
-    },
-
-    activeMarketIds(): string[] {
-      return this.$accessor.spot.activeMarketIds
     }
   },
 
   mounted() {
-    this.updateTrades()
+    this.fetchTrades()
   },
 
   methods: {
-    updateTrades() {
+    fetchTrades() {
       this.status.setLoading()
 
       const types = tradeTypesToTradeExecutionTypes(this.type as TradeTypes)
@@ -223,13 +223,13 @@ export default Vue.extend({
     handleSideClick(side: string | undefined) {
       this.side = side
 
-      this.updateTrades()
+      this.fetchTrades()
     },
 
     handleTypeClick(type: string | undefined) {
       this.type = type
 
-      this.updateTrades()
+      this.fetchTrades()
     },
 
     handleShowTradeDetails(trade: UiSpotTrade) {
@@ -245,19 +245,19 @@ export default Vue.extend({
     handleLimitChangeEvent(limit: number) {
       this.limit = limit
 
-      this.updateTrades()
+      this.fetchTrades()
     },
 
     handlePageChangeEvent(page: number) {
       this.page = page
 
-      this.updateTrades()
+      this.fetchTrades()
     },
 
     handleSearch(token: Token) {
       this.selectedToken = token
 
-      this.updateTrades()
+      this.fetchTrades()
     },
 
     handleClearFilters() {
@@ -265,7 +265,7 @@ export default Vue.extend({
       this.side = undefined
       this.type = undefined
 
-      this.updateTrades()
+      this.fetchTrades()
     }
   }
 })

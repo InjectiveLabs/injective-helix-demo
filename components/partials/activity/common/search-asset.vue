@@ -2,7 +2,7 @@
   <TokenSelector
     class="token-selector__token-only min-w-3xs"
     :value="value"
-    :options="supportedTokens"
+    :options="filteredSupportedTokens"
     :placeholder="'Market'"
     :balance="balance"
     dense
@@ -45,16 +45,13 @@ export default Vue.extend({
   },
 
   computed: {
-    balance(): BigNumberInBase {
-      return ZERO_IN_BASE
+    supportedTokens(): BankBalanceWithTokenAndBalanceInBase[] {
+      return this.$store.state.activity.supportedTokens
     },
 
-    supportedTokens(): BankBalanceWithTokenAndBalanceInBase[] {
-      if (!this.markets) {
-        return this.$store.state.activity.supportedTokens
-      }
+    filteredSupportedTokens(): BankBalanceWithTokenAndBalanceInBase[] {
+      const { supportedTokens } = this
 
-      const supportedTokens = this.$store.state.activity.supportedTokens
       const markets: Array<
         UiDerivativeMarketWithToken | UiSpotMarketWithToken
       > = this.markets
@@ -67,6 +64,10 @@ export default Vue.extend({
               market.quoteToken.denom === token.denom
           )
       )
+    },
+
+    balance(): BigNumberInBase {
+      return ZERO_IN_BASE
     }
   },
 

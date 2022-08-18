@@ -162,6 +162,10 @@ export default Vue.extend({
   },
 
   computed: {
+    activeMarketIds(): string[] {
+      return this.$accessor.derivatives.activeMarketIds
+    },
+
     orders(): UiDerivativeLimitOrder[] {
       return this.$accessor.derivatives.subaccountOrders
     },
@@ -182,21 +186,17 @@ export default Vue.extend({
 
     showClearFiltersButton(): boolean {
       return !!this.selectedToken || !!this.side
-    },
-
-    activeMarketIds(): string[] {
-      return this.$accessor.derivatives.activeMarketIds
     }
   },
 
   mounted() {
-    this.updateOrders().finally(() => {
+    this.fetchOrders().finally(() => {
       this.$root.$emit('derivative-tab-loaded')
     })
   },
 
   methods: {
-    updateOrders(): Promise<void> {
+    fetchOrders(): Promise<void> {
       this.status.setLoading()
 
       const orderSide = this.side as DerivativeOrderSide
@@ -259,30 +259,30 @@ export default Vue.extend({
     handleSideClick(side: string | undefined) {
       this.side = side
 
-      this.updateOrders()
+      this.fetchOrders()
     },
 
     handleLimitChangeEvent(limit: number) {
       this.limit = limit
-      this.updateOrders()
+      this.fetchOrders()
     },
 
     handlePageChangeEvent(page: number) {
       this.page = page
-      this.updateOrders()
+      this.fetchOrders()
     },
 
     handleSearch(token: Token) {
       this.selectedToken = token
 
-      this.updateOrders()
+      this.fetchOrders()
     },
 
     handleClearFilters() {
       this.selectedToken = undefined
       this.side = undefined
 
-      this.updateOrders()
+      this.fetchOrders()
     }
   }
 })

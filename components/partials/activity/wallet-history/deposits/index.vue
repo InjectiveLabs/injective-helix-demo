@@ -31,6 +31,8 @@
         />
       </TableWrapper>
 
+      <!-- Enable <Pagination> once deposits pagination is supported in the indexer -->
+
       <!-- <Pagination
         v-if="status.isIdle()"
         class="mt-4"
@@ -131,11 +133,11 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.updateDeposits()
+    this.fetchDeposits()
   },
 
   methods: {
-    updateDeposits() {
+    fetchDeposits() {
       this.status.setLoading()
 
       Promise.all([
@@ -155,25 +157,25 @@ export default Vue.extend({
     handleLimitChangeEvent(limit: number) {
       this.limit = limit
 
-      this.updateDeposits()
+      this.fetchDeposits()
     },
 
     handlePageChangeEvent(page: number) {
       this.page = page
 
-      this.updateDeposits()
+      this.fetchDeposits()
     },
 
     handleSearch(token: Token) {
       this.selectedToken = token
 
-      this.updateDeposits()
+      this.fetchDeposits()
     },
 
     handleClearFilters() {
       this.selectedToken = undefined
 
-      this.updateDeposits()
+      this.fetchDeposits()
     }
   }
 })

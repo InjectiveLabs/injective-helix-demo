@@ -130,6 +130,10 @@ export default Vue.extend({
   },
 
   computed: {
+    activeMarketIds(): string[] {
+      return this.$accessor.derivatives.activeMarketIds
+    },
+
     fundingPayments(): FundingPayment[] {
       return this.$accessor.activity.subaccountFundingPayments
     },
@@ -150,19 +154,15 @@ export default Vue.extend({
 
     showClearFiltersButton(): boolean {
       return !!this.selectedToken
-    },
-
-    activeMarketIds(): string[] {
-      return this.$accessor.derivatives.activeMarketIds
     }
   },
 
   mounted() {
-    this.updateFundingPayments()
+    this.fetchFundingPayments()
   },
 
   methods: {
-    updateFundingPayments() {
+    fetchFundingPayments() {
       this.status.setLoading()
 
       const marketId = this.markets.find((m) => {
@@ -196,25 +196,25 @@ export default Vue.extend({
     handleLimitChangeEvent(limit: number) {
       this.limit = limit
 
-      this.updateFundingPayments()
+      this.fetchFundingPayments()
     },
 
     handlePageChangeEvent(page: number) {
       this.page = page
 
-      this.updateFundingPayments()
+      this.fetchFundingPayments()
     },
 
     handleSearch(token: Token) {
       this.selectedToken = token
 
-      this.updateFundingPayments()
+      this.fetchFundingPayments()
     },
 
     handleClearFilters() {
       this.selectedToken = undefined
 
-      this.updateFundingPayments()
+      this.fetchFundingPayments()
     }
   }
 })
