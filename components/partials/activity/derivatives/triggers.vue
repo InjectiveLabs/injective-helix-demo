@@ -75,8 +75,7 @@
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Token } from '@injectivelabs/token-metadata'
-import { DerivativeOrderSide, UiDerivativeLimitOrder, UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { DerivativeOrderState } from '@injectivelabs/sdk-ts'
+import { UiDerivativeLimitOrder, UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import Pagination from '~/components/partials/common/pagination.vue'
 import SearchAsset from '~/components/partials/activity/common/search-asset.vue'
@@ -116,22 +115,7 @@ export default Vue.extend({
     },
 
     triggers(): UiDerivativeLimitOrder[] {
-      return [
-        {
-          orderHash: 'orderHash',
-          orderSide: DerivativeOrderSide.Buy,
-          marketId: 'marketId',
-          subaccountId: 'subaccountId',
-          isReduceOnly: false,
-          margin: 'margin',
-          price: 'price',
-          quantity: 'quantity',
-          unfilledQuantity: 'unfilledQuantity',
-          triggerPrice: 'triggerPrice',
-          feeRecipient: 'feeRecipient',
-          state: DerivativeOrderState.Filled
-        }
-      ]
+      return []
     },
 
     markets(): UiDerivativeMarketWithToken[] {

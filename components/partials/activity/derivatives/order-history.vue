@@ -32,9 +32,28 @@
         </template>
       </Toolbar>
 
-      <div>
-        Orders
-      </div>
+      <TableWrapper break-md class="mt-4 hidden sm:block">
+        <table v-if="orders.length > 0" class="table">
+          <OrderHistoryTableHeader />
+          <tbody>
+            <tr
+              is="Order"
+              v-for="(order, index) in orders"
+              :key="`order-${index}`"
+              :order="order"
+            ></tr>
+          </tbody>
+        </table>
+        <EmptyList
+          v-else
+          :message="$t('trade.emptyOrders')"
+          data-cy="universal-table-nothing-found"
+        />
+      </TableWrapper>
+
+      <portal to="activity-tab-derivative-orders-count">
+        <span v-if="status.isNotLoading()"> ({{ orders.length }}) </span>
+      </portal>
 
       <Pagination
         v-if="status.isIdle()"
@@ -56,22 +75,26 @@
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Token } from '@injectivelabs/token-metadata'
-import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { UiDerivativeLimitOrder, UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import Pagination from '~/components/partials/common/pagination.vue'
-import SearchAsset from '@/components/partials/activity/common/search-asset.vue'
-import ClearFiltersButton from '@/components/partials/activity/common/clear-filters-button.vue'
-import Toolbar from '@/components/partials/activity/common/toolbar.vue'
+import SearchAsset from '~/components/partials/activity/common/search-asset.vue'
+import ClearFiltersButton from '~/components/partials/activity/common/clear-filters-button.vue'
+import Toolbar from '~/components/partials/activity/common/toolbar.vue'
+import Order from '~/components/partials/common/derivatives/order.vue'
+import OrderHistoryTableHeader from '~/components/partials/common/derivatives/order-history-table-header.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
 import { TradeSelectorType } from '~/types'
 
 export default Vue.extend({
   components: {
-    FilterSelector,
+    Order,
+    Toolbar,
     Pagination,
     SearchAsset,
+    FilterSelector,
     ClearFiltersButton,
-    Toolbar
+    OrderHistoryTableHeader
   },
 
   data() {
@@ -91,8 +114,8 @@ export default Vue.extend({
       return this.$accessor.derivatives.activeMarketIds
     },
 
-    orders(): number[] {
-      return [1, 2, 3]
+    orders(): UiDerivativeLimitOrder[] {
+      return []
     },
 
     markets(): UiDerivativeMarketWithToken[] {
