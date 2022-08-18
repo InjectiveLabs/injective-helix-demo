@@ -443,9 +443,9 @@ export default Vue.extend({
       if (max || maxSelector) {
         if (max) {
           this.handleChangeFromString(value)
-          this.$emit('input-max', value)
+          this.$emit('input:max', value)
         } else {
-          this.$emit('input-max')
+          this.$emit('input:max')
         }
       }
     }

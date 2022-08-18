@@ -62,7 +62,7 @@
                   :disabled="disabled"
                   disable-addon-padding
                   @input="handleAmountChange"
-                  @input-max="handleMax"
+                  @input:max="handleEmitMax"
                   @blur="resetIsSearching"
                   @mousedown.native.stop="focusInput"
                 />
@@ -117,6 +117,7 @@
                   <button
                     v-if="showMaxSelector"
                     class="bg-primary-500 bg-opacity-20 rounded px-1 h-4 cursor-pointer flex items-center justify-center hover:bg-opacity-40 group"
+                    @click.stop="handleMax"
                   >
                     <span
                       class="text-3xs text-primary-500 text-xs whitespace-nowrap uppercase group-hover:text-white"
@@ -127,13 +128,16 @@
                 </div>
               </div>
             </div>
-            <span
-              v-if="showErrorsBelow && errors.length > 0"
-              data-cy="reusable-input-bellow-error-text-content"
-              class="text-red-400 absolute text-xs mt-[28px]"
-            >
-              {{ errors[0] }}
-            </span>
+            <template v-if="showErrorsBelow && errors.length > 0">
+              <portal to="token-selector-errors">
+                <span
+                  data-cy="token-selector-errors"
+                  class="text-red-400 text-xs block mt-2"
+                >
+                  {{ errors[0] }}
+                </span>
+              </portal>
+            </template>
           </ValidationProvider>
         </template>
 
@@ -160,6 +164,10 @@
         </template>
       </VSelect>
     </ValidationObserver>
+    <portal-target
+      name="token-selector-errors"
+      data-cy="token-selector-errors"
+    />
   </div>
 </template>
 
@@ -167,7 +175,7 @@
 import Vue, { PropType } from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import VSelect from 'vue-select'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import {
   BankBalanceWithTokenAndBalanceInBase,
   BIG_NUMBER_ROUND_DOWN_MODE,
@@ -405,7 +413,18 @@ export default Vue.extend({
       this.$emit('input:token', value.token)
     },
 
-    handleMax(value: string) {
+    handleEmitMax(value: string) {
+      this.$emit('input:max', value)
+    },
+
+    handleMax() {
+      const { balanceToFixed, maxDecimals } = this
+
+      const value = new BigNumberInBase(balanceToFixed).toFixed(
+        maxDecimals,
+        BigNumber.ROUND_DOWN
+      )
+
       this.$emit('input:max', value)
     }
   }
