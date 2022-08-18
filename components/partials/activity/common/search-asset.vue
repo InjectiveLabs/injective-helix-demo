@@ -3,7 +3,7 @@
     class="token-selector__token-only min-w-3xs"
     :value="value"
     :options="filteredSupportedTokens"
-    :placeholder="'Market'"
+    :placeholder="$t('trade.market')"
     :balance="balance"
     dense
     show-default-indicator
@@ -13,7 +13,6 @@
 
 <script lang="ts">
 import {
-  BankBalanceWithTokenAndBalance,
   BankBalanceWithTokenAndBalanceInBase,
   UiDerivativeMarketWithToken,
   UiSpotMarketWithToken,
@@ -50,20 +49,32 @@ export default Vue.extend({
     },
 
     filteredSupportedTokens(): BankBalanceWithTokenAndBalanceInBase[] {
-      const { supportedTokens } = this
-
       const markets: Array<
         UiDerivativeMarketWithToken | UiSpotMarketWithToken
       > = this.markets
 
-      return supportedTokens.filter(
-        (token: BankBalanceWithTokenAndBalance) =>
-          !!markets.find(
-            (market: UiDerivativeMarketWithToken | UiSpotMarketWithToken) =>
-              market.baseToken.denom === token.denom ||
-              market.quoteToken.denom === token.denom
-          )
-      )
+      // TODO: In TokenSelector V2 refactor this to also accept array of tokens.
+      const tokens = markets.reduce((list, market) => {
+        const baseToken = {
+          balance: '',
+          denom: market.baseToken.denom,
+          token: market.baseToken
+        } as BankBalanceWithTokenAndBalanceInBase
+
+        const quoteToken = {
+          balance: '',
+          denom: market.quoteToken.denom,
+          token: market.quoteToken
+        } as BankBalanceWithTokenAndBalanceInBase
+
+        return [...list, baseToken, quoteToken]
+      }, [] as BankBalanceWithTokenAndBalanceInBase[])
+
+      const uniqueTokens = [
+        ...new Map(tokens.map((token) => [token.denom, token])).values()
+      ]
+
+      return uniqueTokens
     },
 
     balance(): BigNumberInBase {
