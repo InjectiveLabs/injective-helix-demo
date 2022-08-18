@@ -1,10 +1,13 @@
 <template>
-  <div v-if="showAdvancedSettings" class="border-t mt-6">
+  <div class="border-t mt-6">
     <div
       class="group flex align-center my-2 cursor-pointer"
       @click="toggleDrawer"
     >
-      <span class="block font-semibold text-sm text-gray-200 flex-1" data-cy="trading-page-advanced-settings-span">
+      <span
+        class="block font-semibold text-sm text-gray-200 flex-1"
+        data-cy="trading-page-advanced-settings-span"
+      >
         {{ $t('trade.advanced_settings') }}
       </span>
       <div class="flex items-stretch">
@@ -28,7 +31,7 @@
         </VCheckbox>
         <div class="flex">
           <VCheckbox
-            v-if="tradingTypeStopMarket"
+            v-if="tradingTypeMarket || tradingTypeStopMarket"
             v-model="slippageIsToggleable"
             class="flex items-center flex-1"
             data-cy="trading-page-slippage-checkbox"
@@ -187,12 +190,6 @@ export default Vue.extend({
       return tradingType.toString() === 'stopMarket'
     },
 
-    showAdvancedSettings(): boolean {
-      const { tradingTypeMarket } = this
-
-      return !tradingTypeMarket
-    },
-
     wrapperClasses(): string {
       const { hasWarning, hasError } = this
 
@@ -218,21 +215,23 @@ export default Vue.extend({
     },
 
     showSlippageAsSelectableOrDefaultForMarket(): boolean {
-      const { slippageSelection, tradingTypeStopMarket } = this
+      const { slippageSelection, tradingTypeMarket, tradingTypeStopMarket } =
+        this
 
       return (
         (slippageSelection === SlippageDisplayOptions.Selectable ||
           slippageSelection === SlippageDisplayOptions.NonSelectableDefault) &&
-        tradingTypeStopMarket
+        (tradingTypeMarket || tradingTypeStopMarket)
       )
     },
 
     showSlippageInputFieldForMarket(): boolean {
-      const { slippageSelection, tradingTypeStopMarket } = this
+      const { slippageSelection, tradingTypeMarket, tradingTypeStopMarket } =
+        this
 
       return (
         slippageSelection === SlippageDisplayOptions.SlippageInput &&
-        tradingTypeStopMarket
+        (tradingTypeMarket || tradingTypeStopMarket)
       )
     }
   },
