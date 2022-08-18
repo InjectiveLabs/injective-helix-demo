@@ -129,8 +129,7 @@ export default Vue.extend({
     this.$root.$on('spot-tab-loaded', this.spotTabLoaded)
 
     Promise.all([
-      this.$accessor.account.init(),
-      this.$accessor.activity.fetchSupportedTokens()
+      this.$accessor.account.init()
     ])
       .then(() => {
         //

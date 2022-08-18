@@ -45,10 +45,6 @@ export default Vue.extend({
 
   computed: {
     supportedTokens(): BankBalanceWithTokenAndBalanceInBase[] {
-      return this.$accessor.activity.supportedTokens
-    },
-
-    filteredSupportedTokens(): BankBalanceWithTokenAndBalanceInBase[] {
       const markets: Array<
         UiDerivativeMarketWithToken | UiSpotMarketWithToken
       > = this.markets

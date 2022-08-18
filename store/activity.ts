@@ -3,9 +3,7 @@ import { FundingPayment, TradingReward } from '@injectivelabs/sdk-ts'
 import { BankBalanceWithTokenAndBalance } from '@injectivelabs/sdk-ui-ts'
 import {
   indexerAccountApi,
-  indexerDerivativesApi,
-  bankApi,
-  tokenService
+  indexerDerivativesApi
 } from '~/app/Services'
 import { ActivityFetchOptions } from '~/types'
 
@@ -135,24 +133,6 @@ export const actions = actionTree(
 
       commit('setSubaccountFundingPaymentsTotal', pagination.total)
       commit('setSubaccountFundingPayments', fundingPayments)
-    },
-
-    async fetchSupportedTokens({ commit }) {
-      const { supply } = await bankApi.fetchTotalSupply()
-
-      const tokens = await Promise.all(
-        supply.map(({ denom }) => tokenService.getDenomToken(denom))
-      )
-
-      const result = tokens.map((token) => {
-        return {
-          balance: '',
-          denom: token.denom,
-          token
-        } as BankBalanceWithTokenAndBalance
-      })
-
-      commit('setSupportedTokens', result)
     }
   }
 )
