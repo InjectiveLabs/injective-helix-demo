@@ -6,6 +6,7 @@
       :disabled="isIbcTransfer"
       @input:token="handleTokenChange"
       @input:amount="handleAmountChange"
+      @input:max="handleMax"
     />
   </div>
 </template>
@@ -163,6 +164,10 @@ export default Vue.extend({
 
     handleTokenChange(value: Token) {
       this.$emit('input:token', value)
+    },
+
+    handleMax(value: string) {
+      this.$emit('input:max', value)
     }
   }
 })
