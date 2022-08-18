@@ -108,7 +108,8 @@ import {
   UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
-import { stringToTradeDirection, stringToTradeExecutionTypes } from '@/components/partials/activity/common/utils'
+import { TradeDirection } from '@injectivelabs/ts-types'
+import { stringToTradeExecutionTypes } from '@/components/partials/activity/common/utils'
 import Trade from '~/components/partials/common/trade/trade.vue'
 import MobileTrade from '~/components/partials/common/trade/mobile-trade.vue'
 import TradesTableHeader from '~/components/partials/common/trade/trades-table-header.vue'
@@ -190,7 +191,7 @@ export default Vue.extend({
       this.status.setLoading()
 
       const types = stringToTradeExecutionTypes(this.type)
-      const direction = stringToTradeDirection(this.side)
+      const direction = this.side as TradeDirection
       const marketId = this.markets.find((m) => {
         return (
           m.baseToken.symbol === this.selectedToken?.symbol ||

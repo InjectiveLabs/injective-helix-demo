@@ -118,6 +118,7 @@
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import {
+  SpotOrderSide,
   UiSpotLimitOrder,
   UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
@@ -133,7 +134,6 @@ import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
 import SearchAsset from '@/components/partials/activity/common/search-asset.vue'
 import ClearFiltersButton from '@/components/partials/activity/common/clear-filters-button.vue'
 import Toolbar from '@/components/partials/activity/common/toolbar.vue'
-import { stringToSpotOrderSide } from '@/components/partials/activity/common/utils'
 
 export default Vue.extend({
   components: {
@@ -198,8 +198,7 @@ export default Vue.extend({
     updateOrders(): Promise<void> {
       this.status.setLoading()
 
-      const orderSide = stringToSpotOrderSide(this.side)
-
+      const orderSide = this.side as SpotOrderSide
       const marketId = this.markets.find((m) => {
         return (
           m.baseToken.symbol === this.selectedToken?.symbol ||
