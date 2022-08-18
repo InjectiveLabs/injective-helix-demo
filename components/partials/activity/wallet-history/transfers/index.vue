@@ -101,11 +101,11 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.updateTransfers()
+    this.fetchTransfers()
   },
 
   methods: {
-    updateTransfers() {
+    fetchTransfers() {
       this.status.setLoading()
 
       const denom = this.selectedToken?.denom
@@ -133,25 +133,25 @@ export default Vue.extend({
     handleLimitChangeEvent(limit: number) {
       this.limit = limit
 
-      this.updateTransfers()
+      this.fetchTransfers()
     },
 
     handlePageChangeEvent(page: number) {
       this.page = page
 
-      this.updateTransfers()
+      this.fetchTransfers()
     },
 
     handleSearch(token: Token) {
       this.selectedToken = token
 
-      this.updateTransfers()
+      this.fetchTransfers()
     },
 
     handleClearFilters() {
       this.selectedToken = undefined
 
-      this.updateTransfers()
+      this.fetchTransfers()
     }
   }
 })
