@@ -45,7 +45,8 @@
         tradingTypeLimit,
         tradingTypeStopMarket,
         tradingTypeStopLimit,
-        worstPrice
+        worstPrice,
+        triggerPrice
       }"
       :average-price-option.sync="averagePriceOption"
       :amount.sync="form.amount"
@@ -103,6 +104,7 @@
         hasInputErrors,
         hasAdvancedSettingsErrors,
         hasPrice,
+        hasTriggerPrice,
         lastTradedPrice,
         market,
         orderType,
@@ -267,19 +269,19 @@ export default Vue.extend({
         tradingTypeStopLimit,
         tradingTypeStopMarket,
         triggerPrice,
-        markPrice,
-        price
+        markPrice
       } = this
 
       if (tradingTypeStopLimit || tradingTypeStopMarket) {
-        console.log('mark_price:', markPrice.toString()) // eslint-disable-line
-        console.log('last_traded_price:', price.toString()) // eslint-disable-line
+        const triggerPriceInBase = triggerPrice !== undefined
+          ? triggerPrice
+          : ZERO_IN_BASE
 
         return orderTypeBuy
-          ? triggerPrice.lt(markPrice)
+          ? triggerPriceInBase.lt(markPrice)
             ? DerivativeOrderSide.TakeBuy
             : DerivativeOrderSide.StopBuy
-          : triggerPrice.gt(markPrice)
+          : triggerPriceInBase.gt(markPrice)
             ? DerivativeOrderSide.TakeSell
             : DerivativeOrderSide.StopSell
       }
@@ -511,7 +513,11 @@ export default Vue.extend({
       return new BigNumberInBase(this.form.price)
     },
 
-    triggerPrice(): BigNumberInBase {
+    triggerPrice(): BigNumberInBase | undefined {
+      if (this.form.triggerPrice === '') {
+        return undefined
+      }
+
       return new BigNumberInBase(this.form.triggerPrice)
     },
 
@@ -643,6 +649,12 @@ export default Vue.extend({
       const { executionPrice } = this
 
       return executionPrice.gt('0')
+    },
+
+    hasTriggerPrice(): boolean {
+      const { triggerPrice } = this
+
+      return triggerPrice !== undefined
     },
 
     orderTypeBuy(): boolean {
@@ -1003,7 +1015,7 @@ export default Vue.extend({
         amount
       } = this
 
-      if (!market) {
+      if (!market || !triggerPrice) {
         return
       }
 
@@ -1073,7 +1085,7 @@ export default Vue.extend({
         amount
       } = this
 
-      if (!market) {
+      if (!market || !triggerPrice) {
         return
       }
 

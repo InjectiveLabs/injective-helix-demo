@@ -25,7 +25,7 @@
       id="trigger-price"
       ref="trigger-price"
       class="mb-6"
-      :value="triggerPrice"
+      :value="inputTriggerPrice"
       :placeholder="priceStep"
       :label="$t('trade.trigger_price')"
       :disabled="tradingTypeMarket || tradingTypeLimit"
@@ -163,7 +163,8 @@
         tradingTypeMarket,
         tradingTypeStopLimit,
         tradingTypeStopMarket,
-        worstPrice
+        worstPrice,
+        triggerPrice
       }"
       @update:hasInputErrors="updateHasInputErrors"
     />
@@ -361,6 +362,11 @@ export default Vue.extend({
       default: undefined
     },
 
+    triggerPrice: {
+      type: Object as PropType<BigNumberInBase>,
+      default: undefined
+    },
+
     hasInputErrors: {
       type: Boolean,
       required: true
@@ -438,7 +444,7 @@ export default Vue.extend({
       inputBaseAmount: '',
       inputQuoteAmount: '',
       inputPrice: '',
-      triggerPrice: '',
+      inputTriggerPrice: '',
       inputPostOnly: false,
       inputProportionalPercentage: 0,
       inputSlippageTolerance: '0.5',
@@ -769,7 +775,7 @@ export default Vue.extend({
         market.priceDecimals
       )
 
-      this.triggerPrice = formattedTriggerPrice
+      this.inputTriggerPrice = formattedTriggerPrice
       this.$emit('update:trigger-price', formattedTriggerPrice)
     },
 

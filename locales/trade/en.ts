@@ -182,6 +182,7 @@ export default {
       'The execution price for this trade is far away from the current orderbook mid price.',
     execution_price_far_away_from_last_traded_price:
       'Please note that the execution price for this trade deviates a lot from the last traded price.',
+    trigger_price_zero: 'The trigger price must be higher than 0.',
     there_are_no_disqualified_markets_on_this_relayer:
       'There are no disqualified markets on this relayer.',
     liquidation: 'Liquidation',

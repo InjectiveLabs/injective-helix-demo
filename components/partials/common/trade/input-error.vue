@@ -81,6 +81,11 @@ export default Vue.extend({
       default: undefined
     },
 
+    triggerPrice: {
+      type: Object as PropType<BigNumberInBase>,
+      default: undefined
+    },
+
     lastTradedPrice: {
       type: Object as PropType<BigNumberInBase>,
       required: true
@@ -254,7 +259,35 @@ export default Vue.extend({
         return this.priceHighDeviationFromMidOrderbookPrice
       }
 
+      if (this.triggerPriceEqualsZero) {
+        return this.triggerPriceEqualsZero
+      }
+
       return { price: '', amount: '' }
+    },
+
+    triggerPriceEqualsZero(): TradeError | undefined {
+      const {
+        tradingTypeMarket,
+        tradingTypeLimit,
+        triggerPrice
+      } = this
+
+      if (tradingTypeMarket || tradingTypeLimit) {
+        return
+      }
+
+      if (triggerPrice === undefined) {
+        return
+      }
+
+      if (triggerPrice.gt(ZERO_IN_BASE)) {
+        return
+      }
+
+      return {
+        price: this.$t('trade.trigger_price_zero')
+      }
     },
 
     priceHighDeviationFromMidOrderbookPrice(): TradeError | undefined {

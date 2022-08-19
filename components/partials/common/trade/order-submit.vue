@@ -80,6 +80,11 @@ export default Vue.extend({
       required: true
     },
 
+    hasTriggerPrice: {
+      type: Boolean,
+      required: true
+    },
+
     orderTypeBuy: {
       type: Boolean,
       required: true
@@ -153,9 +158,12 @@ export default Vue.extend({
     disabled(): boolean {
       const {
         hasError,
+        tradingTypeStopMarket,
+        tradingTypeStopLimit,
         isUserWalletConnected,
         hasInjForGasOrNotKeplr,
         hasAmount,
+        hasTriggerPrice,
         executionPrice
       } = this
 
@@ -164,6 +172,7 @@ export default Vue.extend({
         !isUserWalletConnected ||
         !hasInjForGasOrNotKeplr ||
         !hasAmount ||
+        ((tradingTypeStopMarket || tradingTypeStopLimit) && !hasTriggerPrice) ||
         !executionPrice.gt('0')
       )
     },

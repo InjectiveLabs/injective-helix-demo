@@ -89,6 +89,7 @@
         hasAdvancedSettingsErrors,
         hasInputErrors,
         hasAmount,
+        hasTriggerPrice,
         lastTradedPrice,
         market,
         orderType,
@@ -470,6 +471,12 @@ export default Vue.extend({
       const { executionPrice } = this
 
       return executionPrice.gt('0')
+    },
+
+    hasTriggerPrice(): boolean {
+      const { triggerPrice } = this
+
+      return triggerPrice !== undefined
     },
 
     averagePriceDerivedFromBaseAmount(): BigNumberInBase {
