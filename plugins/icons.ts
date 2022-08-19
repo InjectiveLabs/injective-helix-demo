@@ -68,6 +68,7 @@ import GoogleSocial from '~/components/icons/google-social.vue'
 import FacebookSocial from '~/components/icons/facebook-social.vue'
 import TwitterSocial from '~/components/icons/twitter-social.vue'
 import DiscordSocial from '~/components/icons/discord-social.vue'
+import Minus from '~/components/icons/minus.vue'
 
 Vue.component('IconArrow', Arrow)
 Vue.component('IconArrowSwap', ArrowSwap)
@@ -137,3 +138,4 @@ Vue.component('IconGoogleSocial', GoogleSocial)
 Vue.component('IconFacebookSocial', FacebookSocial)
 Vue.component('IconTwitterSocial', TwitterSocial)
 Vue.component('IconDiscordSocial', DiscordSocial)
+Vue.component('IconMinus', Minus)

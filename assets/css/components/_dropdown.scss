@@ -3,23 +3,19 @@
 
   display: none !important;
 
-  .arrow,
-  .arrow::before {
+  .arrow {
     position: absolute;
     width: 20px;
     height: 10px;
     background: inherit;
-  }
-
-  .arrow {
     visibility: hidden;
     top: 0;
     bottom: -10px;
 
-    &::before {
+
+    svg {
       visibility: visible;
-      content: '';
-      transform: rotate(45deg);
+      top: -6px;
     }
   }
 

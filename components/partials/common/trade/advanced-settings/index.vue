@@ -23,22 +23,26 @@
           v-if="showReduceOnly"
           :value="reduceOnly"
           :disabled="reduceOnlyDisabled"
-          class="mt-2"
           data-cy="trading-page-reduce-only-checkbox"
           @input="handleReduceOnlyCheckboxToggle"
         >
-          <slot class="text-xs"> {{ $t('trade.reduce_only') }}</slot>
+          <slot>
+            <span class="text-sm">
+              {{ $t('trade.reduce_only') }}
+            </span>
+          </slot>
         </VCheckbox>
-        <div class="flex">
+        <div class="flex justify-between">
           <VCheckbox
             v-if="tradingTypeMarket || tradingTypeStopMarket"
             v-model="slippageIsToggleable"
-            class="flex items-center flex-1"
             data-cy="trading-page-slippage-checkbox"
             @input="handleSlippageCheckboxToggle"
           >
-            <slot class="text-xs">
-              {{ `${$t('trade.slippage_tolerance')} :` }}
+            <slot>
+              <span class="text-sm">
+                {{ `${$t('trade.slippage_tolerance')} :` }}
+              </span>
             </slot>
           </VCheckbox>
           <div
@@ -46,7 +50,7 @@
             class="group flex items-center cursor-pointer gap-2"
             @click="toggleToSlippageInput()"
           >
-            <div>{{ slippageTolerance }}%</div>
+            <div class="text-sm">{{ slippageTolerance }}%</div>
             <IconCaretDown
               class="text-gray-500 group-hover:text-gray-200 w-4 h-4"
               data-cy="trading-page-slippage-toggle-icon"
@@ -83,11 +87,12 @@
           v-if="tradingTypeLimit"
           :value="postOnly"
           data-cy="trading-page-post-only-checkbox"
-          class="flex items-center"
           @input="handlePostOnlyCheckboxToggle"
         >
-          <slot class="text-xs">
-            {{ $t('trade.post_only') }}
+          <slot>
+            <span class="text-sm">
+              {{ $t('trade.post_only') }}
+            </span>
           </slot>
         </VCheckbox>
       </span>
@@ -214,10 +219,10 @@ export default Vue.extend({
       const { hasWarning, hasError } = this
 
       if (hasWarning || hasError) {
-        return 'bg-transparent text-right px-1'
+        return 'bg-transparent text-right text-sm px-1'
       }
 
-      return 'text-right px-1'
+      return 'text-right text-sm px-1'
     },
 
     showSlippageAsSelectableOrDefaultForMarket(): boolean {

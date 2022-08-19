@@ -5,7 +5,19 @@
     @mouseleave="onMouseLeave"
     @mouseenter="showDropdown"
   >
-    <div v-if="!hideArrow" class="arrow" data-popper-arrow />
+    <div v-if="!hideArrow" class="arrow" data-popper-arrow>
+      <svg
+        width="12"
+        height="6"
+        viewBox="0 0 12 6"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        class="absolute"
+        :class="arrowClasses"
+      >
+        <path d="M12 6H0L6.26087 0L12 6Z" fill="currentColor" />
+      </svg>
+    </div>
     <slot></slot>
   </div>
 </template>
@@ -39,6 +51,16 @@ export default Vue.extend({
     hideArrow: {
       type: Boolean,
       default: false
+    },
+
+    arrowClass: {
+      type: String,
+      default: undefined
+    },
+
+    arrowColor: {
+      type: String,
+      default: 'text-gray-950'
     }
   },
 
@@ -59,6 +81,24 @@ export default Vue.extend({
       const { uid } = this
 
       return this.$refs[uid] as InstanceType<typeof HTMLElement>
+    },
+
+    arrowClasses(): string {
+      const { arrowClass, arrowColor } = this
+
+      const classes = []
+
+      if (arrowClass) {
+        classes.push(arrowClass)
+      }
+
+      if (arrowColor) {
+        const formattedArrowColor = this.formatArrowColor(arrowColor)
+
+        classes.push(formattedArrowColor)
+      }
+
+      return classes.join(' ')
     }
   },
 
@@ -113,6 +153,14 @@ export default Vue.extend({
     hide() {
       this.active = false
       this.$popperElement.removeAttribute('data-show')
+    },
+
+    formatArrowColor(value: string) {
+      if (value.startsWith('bg')) {
+        return value.replace('bg', 'text')
+      }
+
+      return value
     }
   }
 })
