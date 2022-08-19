@@ -152,3 +152,9 @@ export enum AveragePriceOptions {
   QuoteAmount = 2,
   Percentage = 3
 }
+
+export enum AmplitudeEvents {
+  ConnectClicked = 'Connect Clicked',
+  WalletSelected = 'Wallet Selected',
+  Login = 'Login'
+}

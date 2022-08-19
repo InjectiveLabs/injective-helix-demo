@@ -22,6 +22,42 @@
     web3-utils "1.5.2"
     websocket "^1.0.28"
 
+"@amplitude/analytics-browser@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-browser/-/analytics-browser-1.2.0.tgz#d8827db47408077fc0ea0adac7c50bd4c9799554"
+  integrity sha512-c2f7XzUjRfEqCehLLI1eSABCtj1rCnYHrIRPpZeQCn8k20Ned2rPC81nHf64Zysq/3n8cWN8mqvlEg9s8Tn0hw==
+  dependencies:
+    "@amplitude/analytics-connector" "^1.4.5"
+    "@amplitude/analytics-core" "^0.8.0"
+    "@amplitude/analytics-types" "^0.8.0"
+    "@amplitude/ua-parser-js" "^0.7.31"
+    tslib "^2.3.1"
+
+"@amplitude/analytics-connector@^1.4.5":
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-connector/-/analytics-connector-1.4.5.tgz#07e9375101332bd8b6f15e39e70f31f287e87ad0"
+  integrity sha512-ELAP6ivg+13uSk+TOirGZE/92M+tTbeiQ/i7eXgDO4Hiy00Abf/UxO/rp9WovtxCyeFYTILrujEYxPv5cRQmFw==
+  dependencies:
+    "@amplitude/ua-parser-js" "0.7.31"
+
+"@amplitude/analytics-core@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-core/-/analytics-core-0.8.0.tgz#db6b6032fb9f419134f165fabb813e22d32c60ac"
+  integrity sha512-HcNDNeqptZckNODArb6/V+LSYpfvVFDk5ZaIbPUywlp3fqZ6yPeefUdv01t6nOiHAz3BXmSzIfgIJ6g6eytikw==
+  dependencies:
+    "@amplitude/analytics-types" "^0.8.0"
+    tslib "^2.3.1"
+
+"@amplitude/analytics-types@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-types/-/analytics-types-0.8.0.tgz#7d6a21b5c3e5d2a9b7fa208a07fb656bc44d9f60"
+  integrity sha512-YgWiCXJ6SQmY7MNAKmn2MzPlsRgj5Sunrwz9lTN4EjtVaZ79b/ltiNuCG2Hb+xnjNpspCzW0g8GxF+I70uU5Kg==
+
+"@amplitude/ua-parser-js@0.7.31", "@amplitude/ua-parser-js@^0.7.31":
+  version "0.7.31"
+  resolved "https://registry.yarnpkg.com/@amplitude/ua-parser-js/-/ua-parser-js-0.7.31.tgz#749bf7cb633cfcc7ff3c10805bad7c5f6fbdbc61"
+  integrity sha512-+z8UGRaj13Pt5NDzOnkTBy49HE2CX64jeL0ArB86HAtilpnfkPB7oqkigN7Lf2LxscMg4QhFD7mmCfedh3rqTg==
+
 "@ampproject/remapping@^2.1.0":
   version "2.2.0"
   resolved "https://registry.npmjs.org/@ampproject/remapping/-/remapping-2.2.0.tgz#56c133824780de3174aed5ab6834f3026790154d"
