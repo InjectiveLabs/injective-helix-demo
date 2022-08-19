@@ -85,6 +85,11 @@ export default Vue.extend({
       required: true
     },
 
+    triggerPriceEqualsMarkPrice: {
+      type: Boolean,
+      required: true
+    },
+
     orderTypeBuy: {
       type: Boolean,
       required: true
@@ -149,6 +154,19 @@ export default Vue.extend({
   },
 
   computed: {
+    isSpot(): boolean {
+      return this.$route.name === 'spot-spot'
+    },
+
+    isConditionalOrder(): boolean {
+      const {
+        tradingTypeStopMarket,
+        tradingTypeStopLimit
+      } = this
+
+      return tradingTypeStopMarket || tradingTypeStopLimit
+    },
+
     marketType(): MarketType {
       const { market } = this
 
@@ -158,13 +176,14 @@ export default Vue.extend({
     disabled(): boolean {
       const {
         hasError,
-        tradingTypeStopMarket,
-        tradingTypeStopLimit,
         isUserWalletConnected,
         hasInjForGasOrNotKeplr,
         hasAmount,
         hasTriggerPrice,
-        executionPrice
+        triggerPriceEqualsMarkPrice,
+        executionPrice,
+        isSpot,
+        isConditionalOrder
       } = this
 
       return (
@@ -172,7 +191,8 @@ export default Vue.extend({
         !isUserWalletConnected ||
         !hasInjForGasOrNotKeplr ||
         !hasAmount ||
-        ((tradingTypeStopMarket || tradingTypeStopLimit) && !hasTriggerPrice) ||
+        (!isSpot && isConditionalOrder && !hasTriggerPrice) ||
+        (!isSpot && isConditionalOrder && triggerPriceEqualsMarkPrice) ||
         !executionPrice.gt('0')
       )
     },

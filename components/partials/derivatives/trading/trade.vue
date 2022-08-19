@@ -105,6 +105,7 @@
         hasAdvancedSettingsErrors,
         hasPrice,
         hasTriggerPrice,
+        triggerPriceEqualsMarkPrice,
         lastTradedPrice,
         market,
         orderType,
@@ -121,6 +122,7 @@
       @submit="handleSubmit"
       @submit:request="handleRequestSubmit"
     />
+    {{ markPrice.toString() }}
   </div>
 </template>
 
@@ -256,10 +258,6 @@ export default Vue.extend({
 
     positions(): UiPosition[] {
       return this.$accessor.positions.subaccountPositions
-    },
-
-    markPrice(): BigNumberInBase {
-      return new BigNumberInBase(this.$accessor.derivatives.marketMarkPrice)
     },
 
     orderTypeToSubmit(): DerivativeOrderSide {
@@ -521,6 +519,10 @@ export default Vue.extend({
       return new BigNumberInBase(this.form.triggerPrice)
     },
 
+    markPrice(): BigNumberInBase {
+      return new BigNumberInBase(this.$accessor.derivatives.marketMarkPrice)
+    },
+
     showReduceOnly(): boolean {
       const { orderType, position } = this
 
@@ -655,6 +657,16 @@ export default Vue.extend({
       const { triggerPrice } = this
 
       return triggerPrice !== undefined
+    },
+
+    triggerPriceEqualsMarkPrice(): boolean {
+      const { triggerPrice, markPrice } = this
+
+      if (!triggerPrice) {
+        return false
+      }
+
+      return triggerPrice.eq(markPrice)
     },
 
     orderTypeBuy(): boolean {

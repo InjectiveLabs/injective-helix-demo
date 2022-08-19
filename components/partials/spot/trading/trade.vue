@@ -90,6 +90,7 @@
         hasInputErrors,
         hasAmount,
         hasTriggerPrice,
+        triggerPriceEqualsMarkPrice,
         lastTradedPrice,
         market,
         orderType,
@@ -467,6 +468,10 @@ export default Vue.extend({
       return new BigNumberInBase(this.form.triggerPrice)
     },
 
+    markPrice(): BigNumberInBase {
+      return new BigNumberInBase(this.$accessor.derivatives.marketMarkPrice)
+    },
+
     hasPrice(): boolean {
       const { executionPrice } = this
 
@@ -477,6 +482,16 @@ export default Vue.extend({
       const { triggerPrice } = this
 
       return triggerPrice !== undefined
+    },
+
+    triggerPriceEqualsMarkPrice(): boolean {
+      const { triggerPrice, markPrice } = this
+
+      if (!triggerPrice) {
+        return false
+      }
+
+      return triggerPrice.eq(markPrice)
     },
 
     averagePriceDerivedFromBaseAmount(): BigNumberInBase {
