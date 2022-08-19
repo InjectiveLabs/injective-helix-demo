@@ -117,7 +117,8 @@
         tradingTypeMarket,
         tradingTypeLimit,
         tradingTypeStopMarket,
-        tradingTypeStopLimit
+        tradingTypeStopLimit,
+        isConditionalOrder
       }"
       @submit="handleSubmit"
       @submit:request="handleRequestSubmit"
@@ -260,6 +261,12 @@ export default Vue.extend({
       return this.$accessor.positions.subaccountPositions
     },
 
+    isConditionalOrder(): boolean {
+      const { tradingTypeStopMarket, tradingTypeStopLimit } = this
+
+      return tradingTypeStopMarket || tradingTypeStopLimit
+    },
+
     orderTypeToSubmit(): DerivativeOrderSide {
       const {
         form: { postOnly },
@@ -271,17 +278,16 @@ export default Vue.extend({
       } = this
 
       if (tradingTypeStopLimit || tradingTypeStopMarket) {
-        const triggerPriceInBase = triggerPrice !== undefined
-          ? triggerPrice
-          : ZERO_IN_BASE
+        const triggerPriceInBase =
+          triggerPrice !== undefined ? triggerPrice : ZERO_IN_BASE
 
         return orderTypeBuy
           ? triggerPriceInBase.lt(markPrice)
             ? DerivativeOrderSide.TakeBuy
             : DerivativeOrderSide.StopBuy
           : triggerPriceInBase.gt(markPrice)
-            ? DerivativeOrderSide.TakeSell
-            : DerivativeOrderSide.StopSell
+          ? DerivativeOrderSide.TakeSell
+          : DerivativeOrderSide.StopSell
       }
 
       switch (true) {
@@ -1124,7 +1130,11 @@ export default Vue.extend({
 
     handleRequestSubmit() {
       const {
+        price,
+        amount,
+        market,
         tradingType,
+        triggerPrice,
         tradingTypeLimit,
         tradingTypeMarket,
         tradingTypeStopLimit,
@@ -1138,24 +1148,33 @@ export default Vue.extend({
         })
       }
 
-      const shouldSkipTradeConfirmationModal = localStorage.get('skipTradeConfirmationModal') === true
+      const shouldSkipTradeConfirmationModal =
+        localStorage.get('skipTradeConfirmationModal') === true
 
-      if (shouldSkipTradeConfirmationModal || tradingTypeMarket || tradingTypeLimit) {
+      if (
+        shouldSkipTradeConfirmationModal ||
+        tradingTypeMarket ||
+        tradingTypeLimit
+      ) {
         return this.handleSubmit()
+      }
+
+      if (!triggerPrice || !market || (tradingTypeStopLimit && !price)) {
+        return
       }
 
       const modalData: TradeConfirmationModalData = {
         tradingType,
         orderType,
-        quoteAmount: ZERO_IN_BASE,
-        quoteSymbol: '',
-        baseAmount: ZERO_IN_BASE,
-        baseSymbol: ''
+        triggerPrice,
+        triggerPriceSymbol: market.quoteToken.symbol,
+        amount,
+        amountSymbol: market.baseToken.symbol
       }
 
       if (tradingTypeStopLimit) {
-        modalData.price = ZERO_IN_BASE
-        modalData.priceSymbol = ''
+        modalData.price = price
+        modalData.priceSymbol = market.quoteToken.symbol
       }
 
       return this.$accessor.modal.openModal({

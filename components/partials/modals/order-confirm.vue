@@ -93,6 +93,7 @@ import { TradeExecutionType } from '@injectivelabs/ts-types'
 import { DEFAULT_PRICE_WARNING_DEVIATION } from '~/app/utils/constants'
 import { Modal } from '~/types'
 import { localStorage } from '~/app/Services'
+import { BigNumberInBase } from '~/../injective-ts/packages/utils/dist'
 
 export default Vue.extend({
   data() {
@@ -104,6 +105,38 @@ export default Vue.extend({
   computed: {
     orderType(): SpotOrderSide | DerivativeOrderSide {
       return this.$accessor.modal.data?.orderType
+    },
+
+    tradingType(): TradeExecutionType {
+      return this.$accessor.modal.data?.tradingType
+    },
+
+    isModalOpen(): boolean {
+      return this.$accessor.modal.modals[Modal.OrderConfirm]
+    },
+
+    amount(): BigNumberInBase {
+      return this.$accessor.modal.data?.amount
+    },
+
+    amountSymbol(): string {
+      return this.$accessor.modal.data?.amountSymbol
+    },
+
+    price(): BigNumberInBase {
+      return this.$accessor.modal.data?.price
+    },
+
+    priceSymbol(): string {
+      return this.$accessor.modal.data?.priceSymbol
+    },
+
+    triggerPrice(): BigNumberInBase {
+      return this.$accessor.modal.data?.triggerPrice
+    },
+
+    triggerPriceSymbol(): string {
+      return this.$accessor.modal.data?.triggerPriceSymbol
     },
 
     orderTypeBuy(): boolean {
@@ -139,14 +172,6 @@ export default Vue.extend({
       ].includes(orderType)
     },
 
-    tradingType(): TradeExecutionType {
-      return this.$accessor.modal.data?.tradingType
-    },
-
-    isModalOpen(): boolean {
-      return this.$accessor.modal.modals[Modal.OrderConfirm]
-    },
-
     titlePrefix(): string {
       const { orderTypeBuy } = this
 
@@ -179,38 +204,47 @@ export default Vue.extend({
     },
 
     description(): string {
-      const { orderTypeBuy, orderTypeTakeProfit, orderTypeStopLoss, tradingTypeMarket } = this
+      const {
+        orderTypeBuy,
+        orderTypeTakeProfit,
+        orderTypeStopLoss,
+        tradingTypeMarket,
+        price: priceInBase,
+        priceSymbol,
+        triggerPrice: triggerPriceInBase,
+        triggerPriceSymbol,
+        amount: amountInBase,
+        amountSymbol
+      } = this
 
       const orderType = orderTypeBuy ? 'buy' : 'sell'
       const tradingType = tradingTypeMarket && orderTypeBuy ? 'market' : 'limit'
-      const markPriceIncrease = (orderTypeBuy && orderTypeStopLoss) || (!orderTypeBuy && orderTypeTakeProfit)
+      const markPriceIncrease =
+        (orderTypeBuy && orderTypeStopLoss) ||
+        (!orderTypeBuy && orderTypeTakeProfit)
       const verb = markPriceIncrease ? 'rises' : 'drops'
       const preposition = markPriceIncrease ? 'above' : 'below'
+      const price = !tradingTypeMarket ? priceInBase.toFixed(1) : ''
+      const triggerPrice = triggerPriceInBase.toFixed(1)
+      const amount = amountInBase.toFixed(4)
 
-      if (tradingTypeMarket) {
-        return this.$t('trade.confirmOrderModal.descriptionMarket', {
+      return this.$t(
+        tradingTypeMarket
+          ? 'trade.confirmOrderModal.descriptionMarket'
+          : 'trade.confirmOrderModal.descriptionLimit',
+        {
           verb,
           preposition,
-          quoteAmount: 1,
-          quoteSymbol: 'USDT',
+          triggerPrice,
+          triggerPriceSymbol,
           tradingType,
           orderType,
-          baseAmount: 1,
-          baseSymbol: 'BTC'
-        })
-      }
-
-      return this.$t('trade.confirmOrderModal.descriptionLimit', {
-        verb,
-        preposition,
-        quoteAmount: 1,
-        quoteSymbol: 'USDT',
-        orderType,
-        baseAmount: 1,
-        baseSymbol: 'BTC',
-        price: 1,
-        priceSymbol: 'USDT'
-      })
+          amount,
+          amountSymbol,
+          price,
+          priceSymbol
+        }
+      )
     }
   },
 

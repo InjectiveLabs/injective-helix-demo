@@ -61,10 +61,10 @@ export interface MarketRoute {
 export interface TradeConfirmationModalData {
   tradingType: TradeExecutionType,
   orderType: SpotOrderSide | DerivativeOrderSide,
-  quoteAmount: BigNumberInBase
-  quoteSymbol: string
-  baseAmount: BigNumberInBase
-  baseSymbol: string
+  triggerPrice: BigNumberInBase
+  triggerPriceSymbol: string
+  amount: BigNumberInBase
+  amountSymbol: string
   price?: BigNumberInBase
   priceSymbol?: string
 }

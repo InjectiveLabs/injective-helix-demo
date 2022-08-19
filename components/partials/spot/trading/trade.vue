@@ -877,7 +877,11 @@ export default Vue.extend({
 
     handleRequestSubmit() {
       const {
+        price,
+        amount,
+        market,
         tradingType,
+        triggerPrice,
         tradingTypeLimit,
         tradingTypeMarket,
         tradingTypeStopLimit,
@@ -902,18 +906,22 @@ export default Vue.extend({
         return this.handleSubmit()
       }
 
+      if (!triggerPrice || !market || (tradingTypeStopLimit && !price)) {
+        return
+      }
+
       const modalData: TradeConfirmationModalData = {
         tradingType,
         orderType,
-        quoteAmount: ZERO_IN_BASE,
-        quoteSymbol: '',
-        baseAmount: ZERO_IN_BASE,
-        baseSymbol: ''
+        triggerPrice,
+        triggerPriceSymbol: market.quoteToken.symbol,
+        amount,
+        amountSymbol: market.baseToken.symbol
       }
 
       if (tradingTypeStopLimit) {
-        modalData.price = ZERO_IN_BASE
-        modalData.priceSymbol = ''
+        modalData.price = price
+        modalData.priceSymbol = market.quoteToken.symbol
       }
 
       return this.$accessor.modal.openModal({

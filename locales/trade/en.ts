@@ -253,8 +253,8 @@ export default {
     takeProfit: 'Take-Profit',
     stopLoss: 'Stop-Loss',
     confirmOrderModal: {
-      descriptionLimit: 'If the mark price {verb} to or {preposition} <b>{quoteAmount} {quoteSymbol}</b>, a limit order to {orderType} <b>{baseAmount} {baseSymbol}</b> at a price of <b>{price} {priceSymbol}</b> will be placed.',
-      descriptionMarket: 'If the mark price {verb} to or {preposition} <b>{quoteAmount} {quoteSymbol}</b>, a {tradingType} order to {orderType} <b>{baseAmount} {baseSymbol}</b> will be placed.'
+      descriptionLimit: 'If the mark price {verb} to or {preposition} <b>{triggerPrice} {triggerPriceSymbol}</b>, a limit order to {orderType} <b>{amount} {amountSymbol}</b> at a price of <b>{price} {priceSymbol}</b> will be placed.',
+      descriptionMarket: 'If the mark price {verb} to or {preposition} <b>{triggerPrice} {triggerPriceSymbol}</b>, a {tradingType} order to {orderType} <b>{amount} {amountSymbol}</b> will be placed.'
     }
   }
 }

@@ -143,6 +143,11 @@ export default Vue.extend({
     status: {
       type: Object as PropType<Status>,
       required: true
+    },
+
+    isConditionalOrder: {
+      type: Boolean,
+      required: true
     }
   },
 
@@ -156,15 +161,6 @@ export default Vue.extend({
   computed: {
     isSpot(): boolean {
       return this.$route.name === 'spot-spot'
-    },
-
-    isConditionalOrder(): boolean {
-      const {
-        tradingTypeStopMarket,
-        tradingTypeStopLimit
-      } = this
-
-      return tradingTypeStopMarket || tradingTypeStopLimit
     },
 
     marketType(): MarketType {
