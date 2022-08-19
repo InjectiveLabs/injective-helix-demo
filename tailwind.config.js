@@ -43,6 +43,7 @@ module.exports = {
       sm: '0px 0px 5px #08090c',
       md: '0px 0px 6px #08090c',
       none: 'none',
+      dropdown: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
       'top-bar-dark': '0px 1px 0px #2A2F41'
     },
 
@@ -108,6 +109,7 @@ module.exports = {
       },
 
       helixGray: {
+        400: '#727376',
         500: '#434448',
         700: '#1D212B',
         750: '#141519',

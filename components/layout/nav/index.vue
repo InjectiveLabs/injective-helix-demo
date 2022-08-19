@@ -56,7 +56,7 @@
 
     <PopperBox
       ref="popper-trade-dropdown"
-      class="popper rounded-lg flex flex-col flex-wrap text-xs absolute w-80 xs:w-96 bg-gray-800 overflow-hidden"
+      class="popper rounded-lg flex flex-col flex-wrap text-xs absolute w-80 xs:w-96 bg-gray-800 shadow-dropdown"
       :options="popperOptions"
       binding-element="#trade-dropdown"
     >
@@ -112,7 +112,7 @@
 
     <PopperBox
       ref="popper-rewards-dropdown"
-      class="popper rounded-lg flex flex-col flex-wrap text-xs absolute w-80 xs:w-96 bg-gray-800 overflow-hidden"
+      class="popper rounded-lg flex flex-col flex-wrap text-xs absolute w-80 xs:w-96 bg-gray-800 shadow-dropdown"
       :options="popperOptions"
       binding-element="#rewards-dropdown"
     >

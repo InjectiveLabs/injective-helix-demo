@@ -2,7 +2,7 @@
   <!-- eslint-disable vue/no-parsing-error -->
   <tr v-if="market" :data-cy="'funding-payments-table-row-' + market.ticker">
     <td class="h-8 font-mono">
-      <span class="text-gray-400 text-xs">{{ time }}</span>
+      <span class="text-gray-400 text-sm">{{ time }}</span>
     </td>
 
     <td class="h-8 text-left cursor-pointer">
@@ -36,7 +36,7 @@
         :decimals="UI_DEFAULT_MAX_DISPLAY_DECIMALS"
         :number="total"
       >
-        <span slot="addon" class="text-2xs text-gray-500">
+        <span slot="addon" class="text-sm text-gray-500">
           {{ market.quoteToken.symbol }}
         </span>
       </VNumber>

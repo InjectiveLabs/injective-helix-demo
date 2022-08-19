@@ -36,7 +36,7 @@
       </span>
       <span
         v-if="isReduceOnly"
-        class="ml-0.5 text-xs text-gray-500"
+        class="ml-0.5 text-sm text-gray-500"
         data-cy="derivative-order-reduce-only-table-data"
       >
         {{ $t('trade.reduce_only') }}
@@ -113,7 +113,7 @@
         "
         :number="total"
       >
-        <span slot="addon" class="text-2xs text-gray-500">
+        <span slot="addon" class="text-sm text-gray-500">
           {{ market.quoteToken.symbol }}
         </span>
       </VNumber>
