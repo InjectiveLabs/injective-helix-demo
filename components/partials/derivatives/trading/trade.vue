@@ -1044,7 +1044,7 @@ export default Vue.extend({
         })
         .then(() => {
           this.$toast.success(this.$t('trade.order_placed'))
-          this.$set(this, 'form', initialForm())
+          this.resetForm()
         })
         .catch(this.$onRejected)
         .finally(() => {
@@ -1080,7 +1080,7 @@ export default Vue.extend({
         })
         .then(() => {
           this.$toast.success(this.$t('trade.order_placed'))
-          this.$set(this, 'form', initialForm())
+          this.resetForm()
         })
         .catch(this.$onRejected)
         .finally(() => {
@@ -1114,7 +1114,7 @@ export default Vue.extend({
         })
         .then(() => {
           this.$toast.success(this.$t('trade.trade_placed'))
-          this.$set(this, 'form', initialForm())
+          this.resetForm()
         })
         .catch(this.$onRejected)
         .finally(() => {
@@ -1150,12 +1150,25 @@ export default Vue.extend({
         })
         .then(() => {
           this.$toast.success(this.$t('trade.trade_placed'))
-          this.$set(this, 'form', initialForm())
+          this.resetForm()
         })
         .catch(this.$onRejected)
         .finally(() => {
           this.status.setIdle()
         })
+    },
+
+    resetForm() {
+      this.$set(this, 'form', initialForm())
+
+      const inputs = this.$refs.orderInputs
+
+      if (!inputs) {
+        return
+      }
+
+      // @ts-ignore
+      inputs.reset()
     },
 
     handleRequestSubmit() {

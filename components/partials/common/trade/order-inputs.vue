@@ -1004,6 +1004,10 @@ export default Vue.extend({
 
     updateHasInputErrors(hasInputErrors: boolean) {
       this.$emit('update:hasInputErrors', hasInputErrors)
+    },
+
+    reset(): void {
+      this.setReduceOnly(false)
     }
   }
 })
