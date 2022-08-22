@@ -868,6 +868,7 @@ export const actions = actionTree(
           value: price,
           quoteDecimals: market.quoteToken.decimals
         }),
+        triggerPrice: '',
         quantity: derivativeQuantityToChainQuantityToFixed({ value: quantity }),
         margin: reduceOnly
           ? ZERO_TO_STRING
@@ -1001,7 +1002,7 @@ export const actions = actionTree(
 
       const message = messageType.fromJSON({
         injectiveAddress,
-        triggerPrice: '0',
+        triggerPrice: '',
         orderType: derivativeOrderTypeToGrpcOrderType(orderType),
         price: derivativePriceToChainPriceToFixed({
           value: price,
