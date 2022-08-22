@@ -310,11 +310,30 @@ export default Vue.extend({
     },
 
     worstPrice(): BigNumberInBase {
-      const { orderTypeBuy, slippage, sells, buys, hasAmount, market, amount } =
-        this
+      const {
+        orderTypeBuy,
+        slippage,
+        sells,
+        buys,
+        hasAmount,
+        market,
+        amount,
+        tradingTypeStopMarket,
+        triggerPrice
+      } = this
 
       if (!market || !hasAmount) {
         return ZERO_IN_BASE
+      }
+
+      if (tradingTypeStopMarket) {
+        if (!triggerPrice) {
+          return ZERO_IN_BASE
+        }
+
+        return new BigNumberInBase(
+          triggerPrice.times(slippage).toFixed(market.priceDecimals)
+        )
       }
 
       const records = orderTypeBuy ? sells : buys
