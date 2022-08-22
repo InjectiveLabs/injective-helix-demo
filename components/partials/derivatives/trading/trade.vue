@@ -124,7 +124,6 @@
       @submit="handleSubmit"
       @submit:request="handleRequestSubmit"
     />
-    {{ markPrice.toString() }}
   </div>
 </template>
 
@@ -151,6 +150,7 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import {
   cosmosSdkDecToBigNumber,
+  DerivativeOrderState,
   FeeDiscountAccountInfo
 } from '@injectivelabs/sdk-ts'
 import OrderTypeSelect from '~/components/partials/common/trade/order-type-select.vue'
@@ -360,6 +360,12 @@ export default Vue.extend({
       return positions.find((position) => position.marketId === market.marketId)
     },
 
+    hasOpenOrder(): boolean {
+      const { orders } = this
+
+      return !!orders.find((order) => order.state === DerivativeOrderState.PartialFilled || DerivativeOrderState.Booked)
+    },
+
     feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
       return this.$accessor.exchange.feeDiscountAccountInfo
     },
@@ -550,10 +556,14 @@ export default Vue.extend({
     },
 
     showReduceOnly(): boolean {
-      const { orderType, position } = this
+      const { orderType, position, isConditionalOrder, hasOpenOrder } = this
 
       if (!position) {
         return false
+      }
+
+      if (isConditionalOrder && hasOpenOrder) {
+        return true
       }
 
       const longAndBuy =

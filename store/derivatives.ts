@@ -1002,7 +1002,6 @@ export const actions = actionTree(
 
       const message = messageType.fromJSON({
         injectiveAddress,
-        triggerPrice: '',
         orderType: derivativeOrderTypeToGrpcOrderType(orderType),
         price: derivativePriceToChainPriceToFixed({
           value: price,

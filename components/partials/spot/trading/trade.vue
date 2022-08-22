@@ -102,7 +102,8 @@
         tradingTypeMarket,
         tradingTypeLimit,
         tradingTypeStopMarket,
-        tradingTypeStopLimit
+        tradingTypeStopLimit,
+        isConditionalOrder
       }"
       @submit="handleSubmit"
       @submit:request="handleRequestSubmit"
@@ -206,6 +207,12 @@ export default Vue.extend({
 
     feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
       return this.$accessor.exchange.feeDiscountAccountInfo
+    },
+
+    isConditionalOrder(): boolean {
+      const { tradingTypeStopMarket, tradingTypeStopLimit } = this
+
+      return tradingTypeStopMarket || tradingTypeStopLimit
     },
 
     buys(): UiPriceLevel[] {

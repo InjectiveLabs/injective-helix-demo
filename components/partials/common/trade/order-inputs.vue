@@ -195,7 +195,6 @@
       :slippage-tolerance="inputSlippageTolerance"
       :post-only="inputPostOnly"
       :reduce-only="inputReduceOnly"
-      :reduce-only-disabled="tradingTypeStopLimit || tradingTypeStopMarket"
       :show-reduce-only="showReduceOnly"
       :leverage="inputLeverage"
       :has-advanced-settings-errors="hasAdvancedSettingsErrors"

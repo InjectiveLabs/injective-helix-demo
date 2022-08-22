@@ -256,10 +256,6 @@ export default Vue.extend({
         return this.initialMinMarginRequirementError
       }
 
-      if (this.reduceOnlyExcessError) {
-        return this.reduceOnlyExcessError
-      }
-
       if (this.priceHighDeviationFromMidOrderbookPrice) {
         return this.priceHighDeviationFromMidOrderbookPrice
       }
@@ -682,25 +678,6 @@ export default Vue.extend({
       ) {
         return {
           amount: this.$t('trade.order_insufficient_margin')
-        }
-      }
-
-      return undefined
-    },
-
-    reduceOnlyExcessError(): TradeError | undefined {
-      const { maxReduceOnly, orderTypeReduceOnly, amount, isSpot } = this
-
-      if (isSpot) {
-        return
-      }
-
-      if (
-        orderTypeReduceOnly &&
-        new BigNumberInBase(amount).gt(maxReduceOnly)
-      ) {
-        return {
-          amount: this.$t('trade.reduce_only_in_excess')
         }
       }
 
