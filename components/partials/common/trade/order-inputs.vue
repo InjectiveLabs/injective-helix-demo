@@ -164,7 +164,8 @@
         tradingTypeStopLimit,
         tradingTypeStopMarket,
         worstPrice,
-        triggerPrice
+        triggerPrice,
+        markPrice
       }"
       @update:hasInputErrors="updateHasInputErrors"
     />
@@ -363,6 +364,11 @@ export default Vue.extend({
     },
 
     triggerPrice: {
+      type: Object as PropType<BigNumberInBase>,
+      default: undefined
+    },
+
+    markPrice: {
       type: Object as PropType<BigNumberInBase>,
       default: undefined
     },

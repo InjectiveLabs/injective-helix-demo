@@ -22,6 +22,7 @@
         baseAvailableBalance,
         buys,
         executionPrice,
+        markPrice,
         hasAmount,
         hasPrice,
         lastTradedPrice,

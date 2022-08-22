@@ -46,7 +46,8 @@
         tradingTypeStopMarket,
         tradingTypeStopLimit,
         worstPrice,
-        triggerPrice
+        triggerPrice,
+        markPrice
       }"
       :average-price-option.sync="averagePriceOption"
       :amount.sync="form.amount"

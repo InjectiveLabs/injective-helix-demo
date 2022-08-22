@@ -91,6 +91,11 @@ export default Vue.extend({
       required: true
     },
 
+    markPrice: {
+      type: Object as PropType<BigNumberInBase>,
+      required: true
+    },
+
     maxReduceOnly: {
       type: Object as PropType<BigNumberInBase>,
       default: () => ZERO_IN_BASE
@@ -263,7 +268,32 @@ export default Vue.extend({
         return this.triggerPriceEqualsZero
       }
 
+      if (this.triggerPriceEqualsMarkPrice) {
+        return this.triggerPriceEqualsMarkPrice
+      }
+
       return { price: '', amount: '' }
+    },
+
+    triggerPriceEqualsMarkPrice(): TradeError | undefined {
+      const {
+        tradingTypeMarket,
+        tradingTypeLimit,
+        triggerPrice,
+        markPrice
+      } = this
+
+      if (tradingTypeMarket || tradingTypeLimit) {
+        return
+      }
+
+      if (triggerPrice === undefined || !triggerPrice.eq(markPrice)) {
+        return
+      }
+
+      return {
+        price: this.$t('trade.trigger_price_equals_mark_price')
+      }
     },
 
     triggerPriceEqualsZero(): TradeError | undefined {
@@ -277,11 +307,7 @@ export default Vue.extend({
         return
       }
 
-      if (triggerPrice === undefined) {
-        return
-      }
-
-      if (triggerPrice.gt(ZERO_IN_BASE)) {
+      if (triggerPrice === undefined || triggerPrice.gt(ZERO_IN_BASE)) {
         return
       }
 
