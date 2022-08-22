@@ -363,7 +363,12 @@ export default Vue.extend({
     hasOpenOrder(): boolean {
       const { orders } = this
 
-      return !!orders.find((order) => order.state === DerivativeOrderState.PartialFilled || DerivativeOrderState.Booked)
+      return !!orders.find(
+        (order) =>
+          order.state === DerivativeOrderState.PartialFilled ||
+          DerivativeOrderState.Unfilled ||
+          DerivativeOrderState.Booked
+      )
     },
 
     feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
@@ -558,12 +563,12 @@ export default Vue.extend({
     showReduceOnly(): boolean {
       const { orderType, position, isConditionalOrder, hasOpenOrder } = this
 
-      if (!position) {
-        return false
+      if (isConditionalOrder) {
+        return !!position || hasOpenOrder
       }
 
-      if (isConditionalOrder && hasOpenOrder) {
-        return true
+      if (!position) {
+        return false
       }
 
       const longAndBuy =
