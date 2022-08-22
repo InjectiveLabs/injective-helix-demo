@@ -14,6 +14,7 @@ import {
   MarketType,
   UiBinaryOptionsMarketWithToken,
   UiDerivativeLimitOrder,
+  UiDerivativeOrderHistory,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiDerivativeOrderbook,
@@ -79,7 +80,8 @@ const initialStateFactory = () => ({
   subaccountTradesTotal: 0 as number,
   subaccountOrders: [] as UiDerivativeLimitOrder[],
   subaccountOrdersEndTime: 0 as number,
-  subaccountOrdersTotal: 0 as number
+  subaccountOrdersTotal: 0 as number,
+  subaccountOrderHistory: [] as UiDerivativeOrderHistory[]
 })
 
 const initialState = initialStateFactory()
@@ -105,6 +107,7 @@ export const state = () => ({
   subaccountOrders: initialState.subaccountOrders as UiDerivativeLimitOrder[],
   subaccountOrdersEndTime: initialState.subaccountOrdersEndTime as number,
   subaccountOrdersTotal: initialState.subaccountOrdersTotal as number,
+  subaccountOrderHistory: initialState.subaccountOrderHistory as UiDerivativeOrderHistory[],
   orderbook: initialState.orderbook as UiDerivativeOrderbook | undefined
 })
 
@@ -259,6 +262,13 @@ export const mutations = {
 
   setSubaccountOrdersTotal(state: DerivativeStoreState, total: number) {
     state.subaccountOrdersTotal = total
+  },
+
+  setSubaccountOrderHistory(
+    state: DerivativeOrderSide,
+    subaccountOrderHistory: UiDerivativeOrderHistory[]
+  ) {
+    state.subaccountOrderHistory = subaccountOrderHistory
   },
 
   pushSubaccountOrder(
@@ -712,6 +722,32 @@ export const actions = actionTree(
 
       commit('setSubaccountOrdersTotal', pagination.total)
       commit('setSubaccountOrders', orders)
+    },
+
+    async fetchOrderHistory({ commit }, activityFetchOptions: ActivityFetchOptions | undefined) {
+      const { subaccount } = this.app.$accessor.account
+      const { isUserWalletConnected } = this.app.$accessor.wallet
+
+      if (!isUserWalletConnected || !subaccount) {
+        return
+      }
+
+      const paginationOptions = activityFetchOptions?.pagination
+      const filters = activityFetchOptions?.filters
+
+      const { orderHistory } = await indexerDerivativesApi.fetchOrderHistory({
+        marketId: filters?.marketId,
+        subaccountId: subaccount.subaccountId,
+        // orderType: filters?.orderType,
+        direction: filters?.direction,
+        isConditional: filters?.isConditional,
+        pagination: {
+          skip: paginationOptions ? paginationOptions.skip : 0,
+          limit: paginationOptions ? paginationOptions.limit : 0
+        }
+      })
+
+      commit('setSubaccountOrderHistory', orderHistory)
     },
 
     async fetchMarketsSummary({ state, commit }) {

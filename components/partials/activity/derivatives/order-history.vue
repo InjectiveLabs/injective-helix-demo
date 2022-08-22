@@ -144,7 +144,23 @@ export default Vue.extend({
   methods: {
     fetchOrderHistory() {
       // TODO: Implement this.
-      this.status.setIdle()
+      this.status.setLoading()
+
+      this.$accessor.derivatives.fetchOrderHistory({
+        pagination: {
+          skip: (this.page - 1) * this.limit,
+          limit: this.limit
+        },
+        filters: {
+          // marketId,
+          // marketIds: this.activeMarketIds,
+          // orderSide
+        }
+      })
+        .catch(this.$onError)
+        .finally(() => {
+          this.status.setIdle()
+        })
     },
 
     handleSideClick(side: string | undefined) {

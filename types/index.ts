@@ -64,8 +64,9 @@ export interface FilterOptions {
   marketIds?: string[]
   direction?: TradeDirection
   orderSide?: SpotOrderSide | DerivativeOrderSide
-  types?: TradeExecutionType[],
+  types?: TradeExecutionType[]
   denom?: string
+  isConditional?: boolean
 }
 
 export interface ActivityFetchOptions {
