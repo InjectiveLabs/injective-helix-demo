@@ -27,6 +27,7 @@ declare module 'vue/types/vue' {
     $amplitude: {
       track: TrackAmplitudeFn
     }
+    $attrs: Record<string, any>
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -42,5 +43,6 @@ declare module '@nuxt/types' {
     $amplitude: {
       track: TrackAmplitudeFn
     }
+    $attrs: Record<string, any>
   }
 }

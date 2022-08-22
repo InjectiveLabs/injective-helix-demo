@@ -24,6 +24,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { MarketType } from '@injectivelabs/sdk-ui-ts'
+import { AmplitudeEvents, DefaultMarket, TradeClickOrigin } from '~/types'
 
 export default Vue.extend({
   computed: {
@@ -35,13 +37,25 @@ export default Vue.extend({
   methods: {
     handleGetStartedClick() {
       if (this.isUserWalletConnected) {
+        this.handleTradeClickedTrack()
+
         this.$router.push({
           name: 'perpetuals-perpetual',
-          params: { perpetual: 'btc-usdt-perp' }
+          params: {
+            perpetual: DefaultMarket.Perpetual
+          }
         })
       } else {
         this.$root.$emit('wallet-clicked')
       }
+    },
+
+    handleTradeClickedTrack() {
+      this.$amplitude.track(AmplitudeEvents.TradeClicked, {
+        market: DefaultMarket.Perpetual,
+        marketType: MarketType.Perpetual,
+        origin: TradeClickOrigin.Lander
+      })
     }
   }
 })

@@ -1,6 +1,6 @@
 <template>
   <nuxt-link :to="marketRoute">
-    <TableRow lg>
+    <TableRow lg @click.native="handleTradeClickedTrack">
       <span class="text-base md:text-sm col-span-2 md:col-span-3">
         <div class="flex items-center justify-start">
           <img
@@ -96,6 +96,7 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
+  MarketType,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   ZERO_IN_BASE,
@@ -105,7 +106,7 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import TableRow from '~/components/elements/table-row.vue'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
-import { Change, MarketRoute } from '~/types'
+import { AmplitudeEvents, Change, MarketRoute, TradeClickOrigin } from '~/types'
 import { betaMarketSlugs } from '~/app/data/market'
 import { getMarketRoute } from '~/app/utils/market'
 
@@ -243,6 +244,27 @@ export default Vue.extend({
       }
 
       return getTokenLogoWithVendorPathPrefix(market.baseToken.logo)
+    }
+  },
+
+  methods: {
+    handleTradeClickedTrack() {
+      if (
+        !this.marketRoute.params ||
+        (!this.marketRoute.params.spot && !this.marketRoute.params.perpetual)
+      ) {
+        return
+      }
+
+      this.$amplitude.track(AmplitudeEvents.TradeClicked, {
+        market: this.marketRoute.params.spot
+          ? this.marketRoute.params.spot
+          : this.marketRoute.params.perpetual,
+        marketType: this.marketRoute.params.spot
+          ? MarketType.Spot
+          : MarketType.Perpetual,
+        origin: TradeClickOrigin.Lander
+      })
     }
   }
 })
