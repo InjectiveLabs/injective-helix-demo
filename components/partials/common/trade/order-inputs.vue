@@ -199,6 +199,7 @@
       :reduce-only-disabled="!showReduceOnly"
       :leverage="inputLeverage"
       :has-advanced-settings-errors="hasAdvancedSettingsErrors"
+      :is-conditional-order="isConditionalOrder"
       @set:postOnly="setPostOnly"
       @set:reduceOnly="setReduceOnly"
       @set:slippageTolerance="setSlippageTolerance"
@@ -441,6 +442,11 @@ export default Vue.extend({
     leverage: {
       type: String,
       default: undefined
+    },
+
+    isConditionalOrder: {
+      type: Boolean,
+      required: true
     },
 
     formId: {

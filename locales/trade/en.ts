@@ -256,6 +256,8 @@ export default {
     confirmOrderModal: {
       descriptionLimit: 'If the mark price {verb} to or {preposition} <b>{triggerPrice} {triggerPriceSymbol}</b>, a limit order to {orderType} <b>{amount} {amountSymbol}</b> at a price of <b>{price} {priceSymbol}</b> will be placed.',
       descriptionMarket: 'If the mark price {verb} to or {preposition} <b>{triggerPrice} {triggerPriceSymbol}</b>, a {tradingType} order to {orderType} <b>{amount} {amountSymbol}</b> will be placed.'
-    }
+    },
+    reduceOnlyTooltip: 'To place a reduce-only order, you will need an open position in the opposite side.',
+    reduceOnlyTooltipConditional: 'To place a reduce-only conditional order, you will need an open position or non reduce-only order in the opposite side.'
   }
 }

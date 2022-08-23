@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center justify-start">
+  <div v-tooltip="{ content: tooltip }" class="flex items-center justify-start">
     <div class="checkbox-wrapper mr-2">
       <input
         :id="uid"
@@ -23,7 +23,10 @@
     <label
       :for="uid"
       class="select-none text-xs"
-      :class="{ 'text-gray-500': disabled, 'text-white cursor-pointer': !disabled }"
+      :class="{
+        'text-gray-500': disabled,
+        'text-white cursor-pointer': !disabled
+      }"
     >
       <slot />
     </label>
@@ -40,6 +43,12 @@ export default Vue.extend({
   },
 
   props: {
+    tooltip: {
+      required: false,
+      default: '',
+      type: String
+    },
+
     value: {
       type: [Boolean, String],
       required: true

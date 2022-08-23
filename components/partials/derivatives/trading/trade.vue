@@ -14,7 +14,7 @@
       v-bind="{ market }"
       @update:order-type="handleOrderTypeChange"
     />
-{{ showReduceOnly }}
+
     <OrderInputs
       ref="orderInputs"
       v-bind="{
@@ -48,6 +48,7 @@
         worstPrice,
         triggerPrice,
         markPrice,
+        isConditionalOrder,
         formId
       }"
       :average-price-option.sync="averagePriceOption"

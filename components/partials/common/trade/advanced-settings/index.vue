@@ -22,6 +22,7 @@
         <VCheckbox
           :value="reduceOnly"
           :disabled="reduceOnlyDisabled"
+          :tooltip="reduceOnlyTooltip"
           data-cy="trading-page-reduce-only-checkbox"
           @input="handleReduceOnlyCheckboxToggle"
         >
@@ -153,6 +154,11 @@ export default Vue.extend({
     postOnly: {
       type: Boolean,
       required: true
+    },
+
+    isConditionalOrder: {
+      type: Boolean,
+      required: true
     }
   },
 
@@ -237,6 +243,18 @@ export default Vue.extend({
         slippageSelection === SlippageDisplayOptions.SlippageInput &&
         (tradingTypeMarket || tradingTypeStopMarket)
       )
+    },
+
+    reduceOnlyTooltip(): string | undefined {
+      const { isConditionalOrder, reduceOnlyDisabled } = this
+
+      if (!reduceOnlyDisabled) {
+        return
+      }
+
+      return isConditionalOrder
+        ? this.$t('trade.reduceOnlyTooltipConditional')
+        : this.$t('trade.reduceOnlyTooltip')
     }
   },
 
