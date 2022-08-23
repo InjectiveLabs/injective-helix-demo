@@ -66,7 +66,8 @@ export interface TradeConfirmationModalData {
   amount: BigNumberInBase
   amountSymbol: string
   price?: BigNumberInBase
-  priceSymbol?: string
+  priceSymbol?: string,
+  isReduceOnly?: boolean
 }
 
 export declare type TokenUsdPriceMap = Record<string, number>

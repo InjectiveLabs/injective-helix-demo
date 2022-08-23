@@ -1187,7 +1187,8 @@ export default Vue.extend({
         isConditionalOrder,
         tradingTypeStopLimit,
         priceHasHighDeviationWarning,
-        orderTypeToSubmit: orderType
+        orderTypeToSubmit: orderType,
+        form
       } = this
 
       if (!isConditionalOrder && priceHasHighDeviationWarning) {
@@ -1217,7 +1218,8 @@ export default Vue.extend({
         triggerPrice,
         triggerPriceSymbol: market.quoteToken.symbol,
         amount,
-        amountSymbol: market.baseToken.symbol
+        amountSymbol: market.baseToken.symbol,
+        isReduceOnly: form.reduceOnly
       }
 
       if (tradingTypeStopLimit) {

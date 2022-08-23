@@ -40,6 +40,7 @@
         tradingTypeLimit,
         tradingTypeStopMarket,
         tradingTypeStopLimit,
+        isConditionalOrder,
         formId
       }"
       :amount.sync="form.amount"
@@ -691,6 +692,10 @@ export default Vue.extend({
         .times(100)
 
       return deviation.gt(defaultPriceWarningDeviation)
+    },
+
+    formId(): number {
+      return this.form.formId
     }
   },
 

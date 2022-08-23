@@ -115,6 +115,10 @@ export default Vue.extend({
       return this.$accessor.modal.modals[Modal.OrderConfirm]
     },
 
+    isReduceOnly(): boolean {
+      return this.$accessor.modal.data?.isReduceOnly
+    },
+
     amount(): BigNumberInBase {
       return this.$accessor.modal.data?.amount
     },
@@ -214,7 +218,8 @@ export default Vue.extend({
         triggerPrice: triggerPriceInBase,
         triggerPriceSymbol,
         amount: amountInBase,
-        amountSymbol
+        amountSymbol,
+        isReduceOnly
       } = this
 
       const orderType = orderTypeBuy ? 'buy' : 'sell'
@@ -242,7 +247,8 @@ export default Vue.extend({
           amount,
           amountSymbol,
           price,
-          priceSymbol
+          priceSymbol,
+          reduceOnly: isReduceOnly ? ' reduce-only ' : ' '
         }
       )
     }

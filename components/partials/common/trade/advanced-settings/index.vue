@@ -20,6 +20,7 @@
     <div v-show="drawerIsOpen" class="flex gap-1 my-auto">
       <span class="flex flex-col flex-1 my-auto gap-1">
         <VCheckbox
+          v-if="tradingTypeStopMarket || tradingTypeStopLimit"
           :value="reduceOnly"
           :disabled="reduceOnlyDisabled"
           :tooltip="reduceOnlyTooltip"
