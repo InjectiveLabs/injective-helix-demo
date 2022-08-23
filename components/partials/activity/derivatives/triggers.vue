@@ -123,7 +123,7 @@ export default Vue.extend({
     },
 
     totalCount(): number {
-      return this.$accessor.derivatives.subaccountTradesTotal
+      return this.$accessor.derivatives.subaccountOrdersPagination.total
     },
 
     totalPages(): number {
