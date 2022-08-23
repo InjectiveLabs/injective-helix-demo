@@ -572,7 +572,6 @@ export default Vue.extend({
     showReduceOnly(): boolean {
       const { orderType, position, isConditionalOrder, hasOpenOrder } = this
 
-      console.log(isConditionalOrder, position, hasOpenOrder)
       if (isConditionalOrder) {
         return !!position || hasOpenOrder
       }
