@@ -1,55 +1,47 @@
 <template>
-  <div class="loading-spinner" data-cy="loading-spinner">
-    <div />
-    <div />
-    <div />
-    <LogoMini class="mt-2 ml-2 h-8 w-8" />
+  <div class="loading-spinner">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      width="200px"
+      height="200px"
+      viewBox="0 0 100 100"
+      preserveAspectRatio="xMidYMid"
+    >
+      <circle
+        cx="50"
+        cy="50"
+        fill="none"
+        stroke="#2891e9"
+        stroke-width="8"
+        r="32"
+        stroke-dasharray="150.79644737231007 52.26548245743669"
+        style="animation-play-state: running; animation-delay: 0s"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          repeatCount="indefinite"
+          dur="1s"
+          values="0 50 50;360 50 50"
+          keyTimes="0;1"
+          style="animation-play-state: running; animation-delay: 0s"
+        />
+      </circle>
+    </svg>
   </div>
 </template>
 
-<script lang="ts">
-import Vue from 'vue'
-import LogoMini from './logo-mini.vue'
-
-export default Vue.extend({
-  components: {
-    LogoMini
-  }
-})
-</script>
-
-<style scoped>
+<style lang="scss" scoped>
 .loading-spinner {
-  display: inline-block;
-  position: relative;
-  width: 48px;
-  height: 48px;
-}
-.loading-spinner div {
-  box-sizing: border-box;
-  display: block;
-  position: absolute;
-  width: 48px;
-  height: 48px;
-  border: 2px solid #01cafd;
-  border-radius: 50%;
   animation: loading-spinner 1.2s cubic-bezier(0.5, 0.4, 0.8, 1) infinite;
-  border-color: #01cafd #01cafd transparent transparent;
-}
+  width: 56px;
+  height: 56px;
 
-.loading-spinner .logo-mini {
-  margin-top: 9px;
-  margin-left: 8px;
-}
-
-.loading-spinner div:nth-child(1) {
-  animation-delay: -0.3s;
-}
-.loading-spinner div:nth-child(2) {
-  animation-delay: -0.55s;
-}
-.loading-spinner div:nth-child(3) {
-  animation-delay: -0.8s;
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 @keyframes loading-spinner {

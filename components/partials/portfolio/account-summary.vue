@@ -40,31 +40,31 @@
         class="flex justify-end items-center gap-4 mt-2 sm:mt-0"
       >
         <VButton
-          outline
+          primary-outline
           md
           data-cy="account-summary-deposit-button"
           class="rounded"
           @click="handleDepositClick"
         >
-          <span class="text-primary-500">{{ $t('common.deposit') }}</span>
+          {{ $t('common.deposit') }}
         </VButton>
         <VButton
-          outline
+          primary-outline
           md
           data-cy="account-summary-withdraw-button"
           class="rounded"
           @click="handleWithdrawClick"
         >
-          <span class="text-primary-500">{{ $t('common.withdraw') }}</span>
+          {{ $t('common.withdraw') }}
         </VButton>
         <VButton
-          outline
+          primary-outline
           md
           data-cy="account-summary-transfer-button"
           class="rounded"
           @click="handleTransferClick"
         >
-          <span class="text-primary-500">{{ $t('common.transfer') }}</span>
+          {{ $t('common.transfer') }}
         </VButton>
       </div>
     </div>
