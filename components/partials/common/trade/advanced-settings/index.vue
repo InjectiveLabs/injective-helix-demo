@@ -1,5 +1,5 @@
 <template>
-  <div v-if="showAdvancedSettings" class="border-t mt-6">
+  <div class="border-t mt-6">
     <div
       class="group flex align-center my-2 cursor-pointer"
       @click="toggleDrawer"
@@ -20,7 +20,6 @@
     <div v-show="drawerIsOpen" class="flex gap-1 my-auto">
       <span class="flex flex-col flex-1 my-auto gap-1">
         <VCheckbox
-          v-if="showReduceOnly"
           :value="reduceOnly"
           :disabled="reduceOnlyDisabled"
           data-cy="trading-page-reduce-only-checkbox"
@@ -169,12 +168,6 @@ export default Vue.extend({
   },
 
   computed: {
-    showAdvancedSettings(): boolean {
-      const { tradingTypeStopLimit } = this
-
-      return !tradingTypeStopLimit
-    },
-
     tradingTypeMarket(): boolean {
       const { tradingType } = this
 

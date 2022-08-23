@@ -14,7 +14,7 @@
       v-bind="{ market }"
       @update:order-type="handleOrderTypeChange"
     />
-
+{{ showReduceOnly }}
     <OrderInputs
       ref="orderInputs"
       v-bind="{

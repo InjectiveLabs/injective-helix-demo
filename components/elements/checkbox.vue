@@ -13,13 +13,18 @@
       <label
         :for="uid"
         :data-cy="dataCy"
-        class="top-0 left-0 flex items-center justify-center absolute cursor-pointer"
+        class="top-0 left-0 flex items-center justify-center absolute"
+        :class="{ 'cursor-pointer': !disabled }"
       >
         <IconCheck class="w-2 h-2 text-gray-950 checkmark" />
         <IconMinus class="w-2 h-2 text-helixGray-400 minus" />
       </label>
     </div>
-    <label :for="uid" class="cursor-pointer select-none text-xs">
+    <label
+      :for="uid"
+      class="select-none text-xs"
+      :class="{ 'text-gray-500': disabled, 'text-white cursor-pointer': !disabled }"
+    >
       <slot />
     </label>
   </div>

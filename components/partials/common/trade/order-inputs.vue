@@ -196,6 +196,7 @@
       :post-only="inputPostOnly"
       :reduce-only="inputReduceOnly"
       :show-reduce-only="showReduceOnly"
+      :reduce-only-disabled="!showReduceOnly"
       :leverage="inputLeverage"
       :has-advanced-settings-errors="hasAdvancedSettingsErrors"
       @set:postOnly="setPostOnly"
