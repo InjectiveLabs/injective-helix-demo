@@ -18016,6 +18016,11 @@ vue-no-ssr@^1.1.1:
   resolved "https://registry.npmjs.org/vue-no-ssr/-/vue-no-ssr-1.1.1.tgz#875f3be6fb0ae41568a837f3ac1a80eaa137b998"
   integrity sha512-ZMjqRpWabMPqPc7gIrG0Nw6vRf1+itwf0Itft7LbMXs2g3Zs/NFmevjZGN1x7K3Q95GmIjWbQZTVerxiBxI+0g==
 
+vue-plot@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/vue-plot/-/vue-plot-0.0.3.tgz#29de6159009ab5347f3f1fbb89aafd14be22794a"
+  integrity sha512-rVuVGYzRav3VZnQLRbtxiqDj2LEeQGdKj2R04adzHtZBA7YOT8MpgjwR1l/ECGnnlWTcrj05DIqDxjWl1IqCSg==
+
 vue-resize@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/vue-resize/-/vue-resize-1.0.1.tgz#c120bed4e09938771d622614f57dbcf58a5147ee"
