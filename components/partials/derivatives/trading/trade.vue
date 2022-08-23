@@ -186,7 +186,7 @@ interface TradeForm {
   triggerPrice: string
   leverage: string
   slippageTolerance: string
-  proportionalPercentage: number,
+  proportionalPercentage: number
   formId: number
 }
 
@@ -365,13 +365,18 @@ export default Vue.extend({
     },
 
     hasOpenOrder(): boolean {
-      const { orders } = this
+      const { orders, market } = this
+
+      if (!market) {
+        return false
+      }
 
       return !!orders.find(
         (order) =>
-          order.state === DerivativeOrderState.PartialFilled ||
-          DerivativeOrderState.Unfilled ||
-          DerivativeOrderState.Booked
+          order.marketId === market.marketId &&
+          (order.state === DerivativeOrderState.PartialFilled ||
+            DerivativeOrderState.Unfilled ||
+            DerivativeOrderState.Booked)
       )
     },
 
@@ -567,6 +572,7 @@ export default Vue.extend({
     showReduceOnly(): boolean {
       const { orderType, position, isConditionalOrder, hasOpenOrder } = this
 
+      console.log(isConditionalOrder, position, hasOpenOrder)
       if (isConditionalOrder) {
         return !!position || hasOpenOrder
       }
