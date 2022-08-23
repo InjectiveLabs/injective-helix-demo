@@ -39,7 +39,8 @@
         tradingTypeMarket,
         tradingTypeLimit,
         tradingTypeStopMarket,
-        tradingTypeStopLimit
+        tradingTypeStopLimit,
+        formId
       }"
       :amount.sync="form.amount"
       :average-price-option.sync="averagePriceOption"
@@ -152,17 +153,19 @@ interface TradeForm {
   triggerPrice: string
   slippageTolerance: string
   postOnly: boolean
-  proportionalPercentage: number
+  proportionalPercentage: number,
+  formId: number
 }
 
-const initialForm = (): TradeForm => ({
+const initialForm = (formId: number): TradeForm => ({
   amount: '',
   quoteAmount: '',
   price: '',
   triggerPrice: '',
   slippageTolerance: '0.5',
   postOnly: false,
-  proportionalPercentage: 0
+  proportionalPercentage: 0,
+  formId
 })
 
 export default Vue.extend({
@@ -181,7 +184,7 @@ export default Vue.extend({
       tradingType: TradeExecutionType.LimitFill,
       orderType: SpotOrderSide.Buy,
       status: new Status(),
-      form: initialForm(),
+      form: initialForm(0),
       hasInputErrors: false,
       hasAdvancedSettingsErrors: false,
       averagePriceOption: AveragePriceOptions.None
@@ -774,11 +777,7 @@ export default Vue.extend({
     },
 
     resetForm() {
-      this.form.amount = ''
-      this.form.quoteAmount = ''
-      this.form.price = ''
-      this.form.quoteAmount = ''
-      this.form.proportionalPercentage = 0
+      this.$set(this, 'form', initialForm(this.form.formId + 1))
     },
 
     submitLimitOrder() {
@@ -798,7 +797,7 @@ export default Vue.extend({
         })
         .then(() => {
           this.$toast.success(this.$t('trade.order_placed'))
-          this.$set(this, 'form', initialForm())
+          this.resetForm()
         })
         .catch(this.$onRejected)
         .finally(() => {
@@ -824,7 +823,7 @@ export default Vue.extend({
         })
         .then(() => {
           this.$toast.success(this.$t('trade.order_placed'))
-          this.$set(this, 'form', initialForm())
+          this.resetForm()
         })
         .catch(this.$onRejected)
         .finally(() => {
@@ -849,7 +848,7 @@ export default Vue.extend({
         })
         .then(() => {
           this.$toast.success(this.$t('trade.trade_placed'))
-          this.$set(this, 'form', initialForm())
+          this.resetForm()
         })
         .catch(this.$onRejected)
         .finally(() => {
@@ -875,7 +874,7 @@ export default Vue.extend({
         })
         .then(() => {
           this.$toast.success(this.$t('trade.trade_placed'))
-          this.$set(this, 'form', initialForm())
+          this.resetForm()
         })
         .catch(this.$onRejected)
         .finally(() => {

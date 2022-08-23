@@ -440,6 +440,11 @@ export default Vue.extend({
     leverage: {
       type: String,
       default: undefined
+    },
+
+    formId: {
+      type: Number,
+      required: true
     }
   },
 
@@ -609,6 +614,10 @@ export default Vue.extend({
       } else if (averagePriceOption === AveragePriceOptions.BaseAmount) {
         this.onAmountChange(inputBaseAmount)
       }
+    },
+
+    formId() {
+      this.reset()
     }
   },
 
@@ -1007,7 +1016,9 @@ export default Vue.extend({
     },
 
     reset(): void {
+      this.setPostOnly(false)
       this.setReduceOnly(false)
+      this.setSlippageTolerance('0.5')
     }
   }
 })

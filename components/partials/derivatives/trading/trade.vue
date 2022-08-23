@@ -47,7 +47,8 @@
         tradingTypeStopLimit,
         worstPrice,
         triggerPrice,
-        markPrice
+        markPrice,
+        formId
       }"
       :average-price-option.sync="averagePriceOption"
       :amount.sync="form.amount"
@@ -184,10 +185,11 @@ interface TradeForm {
   triggerPrice: string
   leverage: string
   slippageTolerance: string
-  proportionalPercentage: number
+  proportionalPercentage: number,
+  formId: number
 }
 
-const initialForm = (): TradeForm => ({
+const initialForm = (formId: number): TradeForm => ({
   reduceOnly: false,
   amount: '',
   quoteAmount: '',
@@ -196,7 +198,8 @@ const initialForm = (): TradeForm => ({
   triggerPrice: '',
   leverage: '1',
   slippageTolerance: '0.5',
-  proportionalPercentage: 0
+  proportionalPercentage: 0,
+  formId
 })
 
 export default Vue.extend({
@@ -217,7 +220,7 @@ export default Vue.extend({
       orderType: DerivativeOrderSide.Buy,
       detailsDrawerOpen: true,
       status: new Status(),
-      form: initialForm(),
+      form: initialForm(0),
       hasInputErrors: false,
       hasAdvancedSettingsErrors: false,
       averagePriceOption: AveragePriceOptions.None
@@ -935,6 +938,10 @@ export default Vue.extend({
         .times(100)
 
       return deviation.gt(defaultPriceWarningDeviation)
+    },
+
+    formId(): number {
+      return this.form.formId
     }
   },
 
@@ -1164,16 +1171,7 @@ export default Vue.extend({
     },
 
     resetForm() {
-      this.$set(this, 'form', initialForm())
-
-      const inputs = this.$refs.orderInputs
-
-      if (!inputs) {
-        return
-      }
-
-      // @ts-ignore
-      inputs.reset()
+      this.$set(this, 'form', initialForm(this.form.formId + 1))
     },
 
     handleRequestSubmit() {
