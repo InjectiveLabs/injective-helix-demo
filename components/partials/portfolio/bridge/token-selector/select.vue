@@ -10,7 +10,10 @@
         ref="tokenSelector"
         class="input-select input-token flex"
         data-cy="token-selector-drop-down"
-        :class="{ 'input-error': inputErrors && inputErrors.length > 0 }"
+        :class="{
+          'input-error': inputErrors && inputErrors.length > 0,
+          'rounded-full': rounded
+        }"
         label="denom"
         :auto-scroll="false"
         :clearable="false"
@@ -24,7 +27,13 @@
         @click.native="handleDropdownToggle"
       >
         <template #open-indicator="{ attributes }">
-          <span v-bind="attributes" class="cursor-pointer"> </span>
+          <div
+            v-bind="attributes"
+            class="cursor-pointer"
+            :class="{ 'mr-4': showDefaultIndicator }"
+          >
+            <IconCaretDownSlim v-if="showDefaultIndicator" />
+          </div>
         </template>
 
         <template #selected-option="{ symbol, logo, name }">
@@ -37,8 +46,10 @@
               `required|positiveNumber|enoughBalance:0.0001,${balanceToFixed}`
             "
           >
-            <div class="flex justify-between gap-4 items-center">
-              <div class="flex flex-col w-full justify-center">
+            <div
+              :class="{ 'flex justify-between items-center gap-4': showInput }"
+            >
+              <div v-if="showInput" class="flex flex-col w-full justify-center">
                 <VInput
                   id="bridge-input"
                   dense
@@ -81,22 +92,32 @@
                   </span>
                 </div>
               </div>
-              <div class="flex flex-col gap-2 pr-4">
-                <div class="flex justify-end items-center h-6 ml-4">
+              <div class="flex flex-col">
+                <div
+                  class="flex items-center h-[32px] ml-4"
+                  :class="{
+                    'justify-end': showInput,
+                    'justify-start': !showInput
+                  }"
+                >
                   <img
                     v-if="logo"
                     :src="getTokenLogoWithVendorPathPrefix(logo)"
                     :alt="name"
-                    class="rounded-full w-6 h-6"
+                    class="rounded-full w-6 h-6 vs__selected-icon"
                   />
                   <IconCategoryAlt v-else class="rounded-full w-6 h-6" />
                   <span
-                    class="font-semibold text-lg px-2 text-gray-200 break-normal"
+                    class="font-semibold text-lg px-2 text-gray-200 tracking-wide break-normal vs__selected-text-content"
                     data-cy="token-selector-selected-text-content"
                   >
                     {{ symbol }}
                   </span>
-                  <div class="block text-white">
+                  <div
+                    v-if="showCustomIndicator"
+                    class="block pr-4 text-white"
+                    :class="{ 'ml-auto': !showInput }"
+                  >
                     <IconCaretDownSlim />
                   </div>
                 </div>
@@ -279,6 +300,26 @@ export default Vue.extend({
     maxDecimals: {
       type: Number,
       default: UI_DEFAULT_DISPLAY_DECIMALS
+    },
+
+    showInput: {
+      type: Boolean,
+      default: false
+    },
+
+    showDefaultIndicator: {
+      type: Boolean,
+      default: false
+    },
+
+    showCustomIndicator: {
+      type: Boolean,
+      default: false
+    },
+
+    rounded: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -295,7 +336,6 @@ export default Vue.extend({
   computed: {
     inputClass(): string {
       const { prefix } = this
-
       const classes = ['text-lg font-bold']
 
       if (prefix) {
@@ -359,7 +399,6 @@ export default Vue.extend({
 
     handleDropdownToggle() {
       const { $refs }: { $refs: Record<string, any> } = this
-
       const isOpen = $refs.tokenSelector.open || false
 
       if (isOpen) {
@@ -409,6 +448,7 @@ export default Vue.extend({
 
     handleChange(value: BankBalanceWithTokenAndBalanceInBase) {
       this.forceClose = true
+
       this.$emit('input', value.token)
       this.$emit('input:token', value.token)
     },
