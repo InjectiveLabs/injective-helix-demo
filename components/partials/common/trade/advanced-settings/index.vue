@@ -20,7 +20,7 @@
     <div v-show="drawerIsOpen" class="flex gap-1 my-auto">
       <span class="flex flex-col flex-1 my-auto gap-1">
         <VCheckbox
-          v-if="tradingTypeStopMarket || tradingTypeStopLimit"
+          v-if="!isSpot"
           :value="reduceOnly"
           :disabled="reduceOnlyDisabled"
           :tooltip="reduceOnlyTooltip"
@@ -134,7 +134,7 @@ export default Vue.extend({
       required: true
     },
 
-    showReduceOnly: {
+    reduceOnlyDisabled: {
       type: Boolean,
       required: false,
       default: false
@@ -146,18 +146,17 @@ export default Vue.extend({
       default: false
     },
 
-    reduceOnlyDisabled: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-
     postOnly: {
       type: Boolean,
       required: true
     },
 
     isConditionalOrder: {
+      type: Boolean,
+      required: true
+    },
+
+    isSpot: {
       type: Boolean,
       required: true
     }
