@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container py-10">
     <div class="w-full mx-auto xl:w-4/5">
       <div
         class="rounded-[20px] p-20 bg-gray-100 bg-cover grid grid-cols-12 gap-12"
