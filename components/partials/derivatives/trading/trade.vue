@@ -1178,6 +1178,16 @@ export default Vue.extend({
 
     resetForm() {
       this.$set(this, 'form', initialForm(this.form.formId + 1))
+
+      this.form.reduceOnly = false
+      this.form.amount = ''
+      this.form.quoteAmount = ''
+      this.form.postOnly = false
+      this.form.price = ''
+      this.form.triggerPrice = ''
+      this.form.leverage = '1'
+      this.form.slippageTolerance = '0.5'
+      this.form.proportionalPercentage = 0
     },
 
     handleRequestSubmit() {

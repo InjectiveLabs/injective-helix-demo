@@ -783,6 +783,14 @@ export default Vue.extend({
 
     resetForm() {
       this.$set(this, 'form', initialForm(this.form.formId + 1))
+
+      this.form.amount = ''
+      this.form.quoteAmount = ''
+      this.form.price = ''
+      this.form.triggerPrice = ''
+      this.form.slippageTolerance = '0.5'
+      this.form.postOnly = false
+      this.form.proportionalPercentage = 0
     },
 
     submitLimitOrder() {
