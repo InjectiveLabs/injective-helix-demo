@@ -44,7 +44,14 @@ export default {
         'Receive VIP treatment such as trading fee discounts',
       featureThree: 'Intuitive API',
       featureThreeDescription: 'Easy to integrate with world-class support'
-    }
+    },
+    fast: 'Fast',
+    decentralized: 'Decentralized',
+    gasless: 'Gasless',
+    secure: 'Secure',
+    market: 'Market',
+    lastPrice: 'Last price',
+    change24h: 'Change (24H)'
   },
 
   footer: {

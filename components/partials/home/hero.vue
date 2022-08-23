@@ -19,22 +19,30 @@
           <div class="grid grid-cols-12 gap-4">
             <div class="col-span-6 flex items-center justify-start">
               <IconLightningFill class="text-gray-900 w-6 h-6 mr-3" />
-              <span class="text-gray-900 text-lg">Fast</span>
+              <span class="text-gray-900 text-lg">
+                {{ $t('home.fast') }}
+              </span>
             </div>
 
             <div class="col-span-6 flex items-center justify-start">
               <IconBoundingBoxCircles class="text-gray-900 w-6 h-6 mr-3" />
-              <span class="text-gray-900 text-lg">Decentralized</span>
+              <span class="text-gray-900 text-lg">
+                {{ $t('home.decentralized') }}
+              </span>
             </div>
 
             <div class="col-span-6 flex items-center justify-start">
               <IconGas class="text-gray-900 w-6 h-6 mr-3" />
-              <span class="text-gray-900 text-lg">Gasless</span>
+              <span class="text-gray-900 text-lg">
+                {{ $t('home.gasless') }}
+              </span>
             </div>
 
             <div class="col-span-6 flex items-center justify-start">
               <IconShieldLockFill class="text-gray-900 w-6 h-6 mr-3" />
-              <span class="text-gray-900 text-lg">Secure</span>
+              <span class="text-gray-900 text-lg">
+                {{ $t('home.secure') }}
+              </span>
             </div>
           </div>
           <VButton
@@ -52,17 +60,17 @@
               <span
                 class="col-span-4 uppercase text-helixGray-500 whitespace-nowrap text-xs"
               >
-                Market
+                {{ $t('home.market') }}
               </span>
               <span
                 class="col-span-3 uppercase text-helixGray-500 whitespace-nowrap text-xs text-right"
               >
-                Last price
+                {{ $t('home.lastPrice') }}
               </span>
               <span
                 class="col-span-2 uppercase text-helixGray-500 whitespace-nowrap text-xs"
               >
-                Change (24H)
+              {{ $t('home.change24h') }}
               </span>
               <div class="col-span-3" />
             </div>
