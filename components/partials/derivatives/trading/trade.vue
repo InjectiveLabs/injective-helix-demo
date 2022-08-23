@@ -1183,12 +1183,13 @@ export default Vue.extend({
         triggerPrice,
         tradingTypeLimit,
         tradingTypeMarket,
+        isConditionalOrder,
         tradingTypeStopLimit,
         priceHasHighDeviationWarning,
         orderTypeToSubmit: orderType
       } = this
 
-      if (priceHasHighDeviationWarning) {
+      if (!isConditionalOrder && priceHasHighDeviationWarning) {
         return this.$accessor.modal.openModal({
           type: Modal.OrderConfirm
         })
