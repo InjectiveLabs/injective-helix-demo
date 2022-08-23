@@ -30,8 +30,10 @@ import { ActivityFetchOptions } from '~/types'
 const initialStateFactory = () => ({
   orderbooks: {} as Record<string, UiDerivativeOrderbook>,
   subaccountPositions: [] as UiPosition[],
-  subaccountPositionsTotal: 0 as number,
-  subaccountPositionsEndTime: 0 as number
+  subaccountPositionsPagination: {
+    total: 0 as number,
+    endTime: 0 as number
+  }
 })
 
 const initialState = initialStateFactory()
@@ -39,8 +41,7 @@ const initialState = initialStateFactory()
 export const state = () => ({
   orderbooks: initialState.orderbooks as Record<string, UiDerivativeOrderbook>,
   subaccountPositions: initialState.subaccountPositions as UiPosition[],
-  subaccountPositionsTotal: initialState.subaccountPositionsTotal as number,
-  subaccountPositionsEndTime: initialState.subaccountPositionsEndTime as number
+  subaccountPositionsPagination: initialState.subaccountPositionsPagination
 })
 
 export type PositionStoreState = ReturnType<typeof state>
@@ -61,11 +62,11 @@ export const mutations = {
   },
 
   setSubaccountPositionsTotal(state: PositionStoreState, total: number) {
-    state.subaccountPositionsTotal = total
+    state.subaccountPositionsPagination.total = total
   },
 
   setSubaccountPositionsEndTime(state: PositionStoreState, endTime: number) {
-    state.subaccountPositionsEndTime = endTime
+    state.subaccountPositionsPagination.endTime = endTime
   },
 
   updateSubaccountPosition(
@@ -116,7 +117,10 @@ export const actions = actionTree(
       commit('reset')
     },
 
-    async fetchSubaccountPositions({ commit }, activityFetchOptions: ActivityFetchOptions | undefined) {
+    async fetchSubaccountPositions(
+      { commit },
+      activityFetchOptions: ActivityFetchOptions | undefined
+    ) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -127,16 +131,17 @@ export const actions = actionTree(
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
 
-      const { positions, pagination } = await indexerDerivativesApi.fetchPositions({
-        marketId: filters?.marketId,
-        marketIds: filters?.marketIds,
-        subaccountId: subaccount.subaccountId,
-        direction: filters?.direction,
-        pagination: {
-          skip: paginationOptions ? paginationOptions.skip : 0,
-          limit: paginationOptions ? paginationOptions.limit : 0
-        }
-      })
+      const { positions, pagination } =
+        await indexerDerivativesApi.fetchPositions({
+          marketId: filters?.marketId,
+          marketIds: filters?.marketIds,
+          subaccountId: subaccount.subaccountId,
+          direction: filters?.direction,
+          pagination: {
+            skip: paginationOptions ? paginationOptions.skip : 0,
+            limit: paginationOptions ? paginationOptions.limit : 0
+          }
+        })
 
       commit('setSubaccountPositionsTotal', pagination.total)
       commit('setSubaccountPositions', positions)

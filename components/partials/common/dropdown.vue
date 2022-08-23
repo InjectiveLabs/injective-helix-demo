@@ -4,10 +4,7 @@
       v-on-clickAway="onDropdownClose"
       class="relative inline-block text-left w-full"
     >
-      <div
-        :class="wrapperClass"
-        class="rounded bg-transparent p-2 pr-3"
-      >
+      <div :class="wrapperClass" class="rounded bg-transparent p-2 pr-3">
         <button
           type="button"
           class="inline-flex tracking-widest items-center justify-between w-full uppercase outline-none focus:outline-none"
@@ -47,28 +44,34 @@
 <script lang="ts">
 import Vue from 'vue'
 import { directive as onClickAway } from 'vue-clickaway'
+
 export default Vue.extend({
   directives: {
     onClickAway
   },
+
   props: {
     menuClass: {
       type: String,
       default: ''
     },
+
     wrapperClass: {
       type: String,
       default: ''
     }
   },
+
   data() {
     return {
       isDropdownOpen: false
     }
   },
+
   mounted() {
     this.onDropdownEscClose()
   },
+
   methods: {
     onDropdownEscClose() {
       const onEscape = (e: KeyboardEvent) => {
@@ -76,19 +79,24 @@ export default Vue.extend({
           this.onDropdownClose()
         }
       }
+
       document.addEventListener('keydown', onEscape)
+
       this.$once('hook:destroyed', () => {
         document.removeEventListener('keydown', onEscape)
       })
     },
+
     handleClick() {
       this.onDropdownClose()
     },
+
     onDropdownClose() {
       if (this.isDropdownOpen) {
         this.isDropdownOpen = false
       }
     },
+
     onDropdownToggle() {
       this.isDropdownOpen = !this.isDropdownOpen
     }

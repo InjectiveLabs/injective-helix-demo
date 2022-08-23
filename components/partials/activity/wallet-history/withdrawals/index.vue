@@ -137,10 +137,10 @@ export default Vue.extend({
   },
 
   methods: {
-    fetchWithdrawals() {
+    fetchWithdrawals(): Promise<void> {
       this.status.setLoading()
 
-      Promise.all([
+      return Promise.all([
         this.$accessor.bridge.fetchPeggyWithdrawalTransactions(),
         this.$accessor.bridge.fetchIBCTransferTransactions(),
         this.$accessor.bridge.fetchInjectiveTransactions()

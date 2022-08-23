@@ -11,7 +11,7 @@
         </div>
         <div class="ml-2">
           <span
-            class="text-white font-medium text-xs"
+            class="text-white font-medium text-sm"
             data-cy="open-position-ticker-name-table-data"
           >
             {{ position.ticker }}
@@ -20,7 +20,7 @@
       </div>
     </td>
 
-    <td class="text-left pl-1 font-medium text-xs">
+    <td class="text-left pl-1 font-medium text-sm">
       <span
         data-cy="open-position-trade-direction-table-data"
         :class="{
@@ -32,7 +32,7 @@
       </span>
     </td>
 
-    <td class="text-right font-mono text-white font-medium text-xs">
+    <td class="text-right font-mono text-white font-medium text-sm">
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <VNumber
         v-else
@@ -44,7 +44,7 @@
       />
     </td>
 
-    <td class="text-right font-mono text-white font-medium text-xs">
+    <td class="text-right font-mono text-white font-medium text-sm">
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <div v-else>
         <VNumber
@@ -52,13 +52,13 @@
           :number="price"
           data-cy="open-position-price-table-data"
         />
-        <span v-if="!markPrice.isNaN()" class="text-gray-500 text-xs">
+        <span v-if="!markPrice.isNaN()" class="text-gray-500 text-sm">
           {{ markPriceToFormat }}
         </span>
       </div>
     </td>
 
-    <td v-if="!isBinaryOptionsPage" class="text-right font-mono text-white font-medium text-xs">
+    <td v-if="!isBinaryOptionsPage" class="text-right font-mono text-white font-medium text-sm">
       <span v-if="isBinaryOptions">&mdash;</span>
       <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <VNumber
@@ -69,12 +69,12 @@
       />
     </td>
     <td class="text-right">
-      <span v-if="hideBalance" class="font-mono text-white font-medium text-xs">
+      <span v-if="hideBalance" class="font-mono text-white font-medium text-sm">
         {{ HIDDEN_BALANCE_DISPLAY }}
       </span>
       <div
         v-else-if="!pnl.isNaN()"
-        class="flex items-center justify-end font-medium text-xs"
+        class="flex items-center justify-end font-medium text-sm"
         :class="pnlClass"
       >
         <div class="flex items-end flex-col">
@@ -99,13 +99,13 @@
       </div>
       <span
         v-else
-        class="text-white font-medium text-xs"
+        class="text-white font-medium text-sm"
         data-cy="open-position-no-pnl-table-data"
       >
         {{ $t('trade.not_available_n_a') }}
       </span>
     </td>
-    <td class="text-right font-mono text-white font-medium text-xs">
+    <td class="text-right font-mono text-white font-medium text-sm">
       <span v-if="hideBalance">
         {{ HIDDEN_BALANCE_DISPLAY }}
       </span>
@@ -120,7 +120,7 @@
         </span>
       </VNumber>
     </td>
-    <td class="text-right font-mono text-white font-medium text-xs">
+    <td class="text-right font-mono text-white font-medium text-sm">
       <span v-if="hideBalance">
         {{ HIDDEN_BALANCE_DISPLAY }}
       </span>
@@ -143,11 +143,11 @@
       </div>
     </td>
     <td v-if="!isBinaryOptionsPage" class="text-right font-mono">
-      <span v-if="isBinaryOptions" class="text-white font-medium text-xs">&mdash;</span>
-      <span v-else-if="hideBalance" class="text-white font-medium text-xs">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+      <span v-if="isBinaryOptions" class="text-white font-medium text-sm">&mdash;</span>
+      <span v-else-if="hideBalance" class="text-white font-medium text-sm">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <span
         v-else-if="effectiveLeverage.gte(0)"
-        class="flex items-center justify-end text-white font-medium text-xs"
+        class="flex items-center justify-end text-white font-medium text-sm"
         data-cy="open-position-leverage-table-data"
       >
         {{ effectiveLeverage.toFormat(2) }}
@@ -155,7 +155,7 @@
       </span>
       <span
         v-else
-        class="text-gray-500 font-medium text-xs"
+        class="text-gray-500 font-medium text-sm"
         data-cy="open-position-no-leverage-table-data"
       >
         {{ $t('trade.not_available_n_a') }}

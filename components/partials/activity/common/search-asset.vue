@@ -49,6 +49,10 @@ export default Vue.extend({
         UiDerivativeMarketWithToken | UiSpotMarketWithToken
       > = this.markets
 
+      if (!markets) {
+        return []
+      }
+
       // TODO: In TokenSelector V2 refactor this to also accept array of tokens.
       const tokens = markets.reduce((list, market) => {
         const baseToken = {

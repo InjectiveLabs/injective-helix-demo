@@ -174,7 +174,7 @@ export default Vue.extend({
     },
 
     totalCount(): number {
-      return this.$accessor.spot.subaccountOrdersTotal
+      return this.$accessor.spot.subaccountOrdersPagination.total
     },
 
     totalPages(): number {
@@ -185,6 +185,12 @@ export default Vue.extend({
 
     showClearFiltersButton(): boolean {
       return !!this.selectedToken || !!this.side
+    },
+
+    skip(): number {
+      const { page, limit } = this
+
+      return (page - 1) * limit
     }
   },
 
@@ -196,7 +202,7 @@ export default Vue.extend({
 
   methods: {
     fetchOrders(): Promise<void> {
-      this.status.setLoading()
+      const { skip, limit, activeMarketIds: marketIds } = this
 
       const orderSide = this.side as SpotOrderSide
       const marketId = this.markets.find((m) => {
@@ -206,15 +212,17 @@ export default Vue.extend({
         )
       })?.marketId
 
+      this.status.setLoading()
+
       return Promise.all([
         this.$accessor.spot.fetchSubaccountOrders({
           pagination: {
-            skip: (this.page - 1) * this.limit,
-            limit: this.limit
+            skip,
+            limit
           },
           filters: {
             marketId,
-            marketIds: this.activeMarketIds,
+            marketIds,
             orderSide
           }
         })

@@ -1,17 +1,16 @@
 import { actionTree, getterTree } from 'typed-vuex'
 import { FundingPayment, TradingReward } from '@injectivelabs/sdk-ts'
 import { BankBalanceWithTokenAndBalance } from '@injectivelabs/sdk-ui-ts'
-import {
-  indexerAccountApi,
-  indexerDerivativesApi
-} from '~/app/Services'
+import { indexerAccountApi, indexerDerivativesApi } from '~/app/Services'
 import { ActivityFetchOptions } from '~/types'
 
 const initialStateFactory = () => ({
   subaccountFundingPayments: [] as Array<FundingPayment>,
   tradingRewardsHistory: [] as Array<TradingReward>,
-  subaccountFundingPaymentsEndTime: 0 as number,
-  subaccountFundingPaymentsTotal: 0 as number,
+  subaccountFundingPaymentsPagination: {
+    endTime: 0 as number,
+    total: 0 as number
+  },
   supportedTokens: [] as Array<BankBalanceWithTokenAndBalance>
 })
 
@@ -22,9 +21,8 @@ export const state = () => ({
     initialState.subaccountFundingPayments as Array<FundingPayment>,
   tradingRewardsHistory:
     initialState.tradingRewardsHistory as Array<TradingReward>,
-  subaccountFundingPaymentsEndTime:
-    initialState.subaccountFundingPaymentsEndTime,
-  subaccountFundingPaymentsTotal: initialState.subaccountFundingPaymentsTotal,
+  subaccountFundingPaymentsPagination:
+    initialState.subaccountFundingPaymentsPagination,
   supportedTokens:
     initialState.supportedTokens as Array<BankBalanceWithTokenAndBalance>
 })
@@ -54,11 +52,11 @@ export const mutations = {
     state: ActivityStoreState,
     endTime: number
   ) {
-    state.subaccountFundingPaymentsEndTime = endTime
+    state.subaccountFundingPaymentsPagination.endTime = endTime
   },
 
   setSubaccountFundingPaymentsTotal(state: ActivityStoreState, total: number) {
-    state.subaccountFundingPaymentsTotal = total
+    state.subaccountFundingPaymentsPagination.total = total
   },
 
   setSupportedTokens(
@@ -109,7 +107,7 @@ export const actions = actionTree(
 
       if (
         state.subaccountFundingPayments.length > 0 &&
-        state.subaccountFundingPaymentsEndTime === 0
+        state.subaccountFundingPaymentsPagination.endTime === 0
       ) {
         commit(
           'setSubaccountFundingPaymentsEndTime',
@@ -120,14 +118,15 @@ export const actions = actionTree(
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
 
-      const { fundingPayments, pagination } = await indexerDerivativesApi.fetchFundingPayments({
+      const { fundingPayments, pagination } =
+        await indexerDerivativesApi.fetchFundingPayments({
           marketId: filters?.marketId,
           marketIds: filters?.marketIds,
           subaccountId: subaccount.subaccountId,
           pagination: {
             skip: paginationOptions ? paginationOptions.skip : 0,
             limit: paginationOptions ? paginationOptions.limit : 0,
-            endTime: state.subaccountFundingPaymentsEndTime
+            endTime: state.subaccountFundingPaymentsPagination.endTime
           }
         })
 

@@ -169,7 +169,7 @@ export default Vue.extend({
     },
 
     totalCount(): number {
-      return this.$accessor.positions.subaccountPositionsTotal
+      return this.$accessor.positions.subaccountPositionsPagination.total
     },
 
     sortedPositions(): UiPosition[] {
@@ -194,6 +194,12 @@ export default Vue.extend({
 
     showClearFiltersButton(): boolean {
       return !!this.selectedToken || !!this.side
+    },
+
+    skip(): number {
+      const { page, limit } = this
+
+      return (page - 1) * limit
     }
   },
 
@@ -224,7 +230,7 @@ export default Vue.extend({
     },
 
     fetchSubaccountPositions() {
-      const { side, markets } = this
+      const { side, markets, skip, limit, activeMarketIds: marketIds } = this
 
       const direction = side as TradeDirection
       const marketId = markets.find((m) => {
@@ -234,17 +240,17 @@ export default Vue.extend({
         )
       })?.marketId
 
-      this.$accessor.positions.fetchSubaccountPositions({
-          pagination: {
-            skip: (this.page - 1) * this.limit,
-            limit: this.limit
-          },
-          filters: {
-            marketId,
-            marketIds: this.activeMarketIds,
-            direction
-          }
-        })
+      return this.$accessor.positions.fetchSubaccountPositions({
+        pagination: {
+          skip,
+          limit
+        },
+        filters: {
+          marketId,
+          marketIds,
+          direction
+        }
+      })
     },
 
     closeAllPositions(): Promise<void> {

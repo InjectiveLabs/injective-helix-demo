@@ -29,8 +29,10 @@ const initialStateFactory = () => ({
   injectiveTransferBridgeTransactions: [] as UiBridgeTransactionWithToken[],
   subaccountTransfers: [] as UiSubaccountTransfer[],
   subaccountTransferBridgeTransactions: [] as UiBridgeTransactionWithToken[],
-  subaccountTransferBridgeTransactionsEndTime: 0 as number,
-  subaccountTransferBridgeTransactionsTotal: 0 as number
+  subaccountTransferBridgeTransactionsPagination: {
+    endTime: 0 as number,
+    total: 0 as number
+  }
 })
 const initialState = initialStateFactory()
 
@@ -59,8 +61,8 @@ export const state = () => ({
     initialState.subaccountTransfers as UiSubaccountTransfer[],
   subaccountTransferBridgeTransactions:
     initialState.subaccountTransferBridgeTransactions as UiBridgeTransactionWithToken[],
-  subaccountTransferBridgeTransactionsEndTime: initialState.subaccountTransferBridgeTransactionsEndTime as number,
-  subaccountTransferBridgeTransactionsTotal: initialState.subaccountTransferBridgeTransactionsTotal as number
+  subaccountTransferBridgeTransactionsPagination:
+    initialState.subaccountTransferBridgeTransactionsPagination
 })
 
 export type BridgeStoreState = ReturnType<typeof state>
@@ -176,12 +178,18 @@ export const mutations = {
       subaccountTransferBridgeTransactions
   },
 
-  setSubaccountTransferBridgeTransactionsEndTime(state: BridgeStoreState, endTime: number) {
-    state.subaccountTransferBridgeTransactionsEndTime = endTime
+  setSubaccountTransferBridgeTransactionsEndTime(
+    state: BridgeStoreState,
+    endTime: number
+  ) {
+    state.subaccountTransferBridgeTransactionsPagination.endTime = endTime
   },
 
-  setSubaccountTransferBridgeTransactionsTotal(state: BridgeStoreState, total: number) {
-    state.subaccountTransferBridgeTransactionsTotal = total
+  setSubaccountTransferBridgeTransactionsTotal(
+    state: BridgeStoreState,
+    total: number
+  ) {
+    state.subaccountTransferBridgeTransactionsPagination.total = total
   },
 
   reset(state: BridgeStoreState) {
@@ -253,22 +261,30 @@ export const actions = actionTree(
         return
       }
 
-      if (state.subaccountTransferBridgeTransactions.length > 0 && state.subaccountTransferBridgeTransactionsEndTime === 0) {
-        commit('setSubaccountTransferBridgeTransactionsEndTime', state.subaccountTransferBridgeTransactions[0].timestamp)
+      if (
+        state.subaccountTransferBridgeTransactions.length > 0 &&
+        state.subaccountTransferBridgeTransactionsPagination.endTime === 0
+      ) {
+        commit(
+          'setSubaccountTransferBridgeTransactionsEndTime',
+          state.subaccountTransferBridgeTransactions[0].timestamp
+        )
       }
 
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
 
-      const { transfers, pagination } = await indexerAccountApi.fetchSubaccountHistory({
-        subaccountId: subaccount.subaccountId,
-        denom: filters?.denom,
-        pagination: {
-          skip: paginationOptions ? paginationOptions.skip : 0,
-          limit: paginationOptions ? paginationOptions.limit : 0,
-          endTime: state.subaccountTransferBridgeTransactionsEndTime
-        }
-      })
+      const { transfers, pagination } =
+        await indexerAccountApi.fetchSubaccountHistory({
+          subaccountId: subaccount.subaccountId,
+          denom: filters?.denom,
+          pagination: {
+            skip: paginationOptions ? paginationOptions.skip : 0,
+            limit: paginationOptions ? paginationOptions.limit : 0,
+            endTime:
+              state.subaccountTransferBridgeTransactionsPagination.endTime
+          }
+        })
 
       const uiTransfers = transfers.map(
         UiAccountTransformer.grpcAccountTransferToUiAccountTransfer

@@ -76,12 +76,20 @@ const initialStateFactory = () => ({
   orderbook: undefined as UiDerivativeOrderbook | undefined,
   trades: [] as UiDerivativeTrade[],
   subaccountTrades: [] as UiDerivativeTrade[],
-  subaccountTradesEndTime: 0 as number,
-  subaccountTradesTotal: 0 as number,
+  subaccountTradesPagination: {
+    endTime: 0 as number,
+    total: 0 as number
+  },
   subaccountOrders: [] as UiDerivativeLimitOrder[],
-  subaccountOrdersEndTime: 0 as number,
-  subaccountOrdersTotal: 0 as number,
-  subaccountOrderHistory: [] as UiDerivativeOrderHistory[]
+  subaccountOrdersPagination: {
+    endTime: 0 as number,
+    total: 0 as number
+  },
+  subaccountOrderHistory: [] as UiDerivativeOrderHistory[],
+  subaccountOrderHistoryPagination: {
+    endTime: 0 as number,
+    total: 0 as number
+  }
 })
 
 const initialState = initialStateFactory()
@@ -102,12 +110,11 @@ export const state = () => ({
   marketMarkPrice: initialState.marketMarkPrice as string,
   trades: initialState.trades as UiDerivativeTrade[],
   subaccountTrades: initialState.subaccountTrades as UiDerivativeTrade[],
-  subaccountTradesEndTime: initialState.subaccountTradesEndTime as number,
-  subaccountTradesTotal: initialState.subaccountTradesTotal as number,
+  subaccountTradesPagination: initialState.subaccountTradesPagination,
   subaccountOrders: initialState.subaccountOrders as UiDerivativeLimitOrder[],
-  subaccountOrdersEndTime: initialState.subaccountOrdersEndTime as number,
-  subaccountOrdersTotal: initialState.subaccountOrdersTotal as number,
+  subaccountOrdersPagination: initialState.subaccountOrdersPagination,
   subaccountOrderHistory: initialState.subaccountOrderHistory as UiDerivativeOrderHistory[],
+  subaccountOrderHistoryPagination: initialState.subaccountOrderHistoryPagination,
   orderbook: initialState.orderbook as UiDerivativeOrderbook | undefined
 })
 
@@ -160,7 +167,7 @@ export const getters = getterTree(state, {
     return lastPrice.gte(secondLastPrice) ? Change.Increase : Change.Decrease
   },
 
-  activeMarketIds: (state) => state.markets.map(m => m.marketId)
+  activeMarketIds: (state) => state.markets.map((m) => m.marketId)
 })
 
 export const mutations = {
@@ -242,11 +249,11 @@ export const mutations = {
   },
 
   setSubaccountTradesEndTime(state: DerivativeStoreState, endTime: number) {
-    state.subaccountTradesEndTime = endTime
+    state.subaccountTradesPagination.endTime = endTime
   },
 
   setSubaccountTradesTotal(state: DerivativeStoreState, total: number) {
-    state.subaccountTradesTotal = total
+    state.subaccountTradesPagination.total = total
   },
 
   setSubaccountOrders(
@@ -257,18 +264,23 @@ export const mutations = {
   },
 
   setSubaccountOrdersEndTime(state: DerivativeStoreState, endTime: number) {
-    state.subaccountOrdersEndTime = endTime
+    state.subaccountOrdersPagination.endTime = endTime
   },
 
   setSubaccountOrdersTotal(state: DerivativeStoreState, total: number) {
-    state.subaccountOrdersTotal = total
+    state.subaccountOrdersPagination.total = total
   },
 
-  setSubaccountOrderHistory(
-    state: DerivativeOrderSide,
-    subaccountOrderHistory: UiDerivativeOrderHistory[]
-  ) {
-    state.subaccountOrderHistory = subaccountOrderHistory
+  setSubaccountOrderHistory(state: DerivativeStoreState, orderHistory: UiDerivativeOrderHistory[]) {
+    state.subaccountOrderHistory = orderHistory
+  },
+
+  setSubaccountOrderHistoryEndTime(state: DerivativeStoreState, endTime: number) {
+    state.subaccountOrderHistoryPagination.endTime = endTime
+  },
+
+  setSubaccountOrderHistoryTotal(state: DerivativeStoreState, total: number) {
+    state.subaccountOrderHistoryPagination.total = total
   },
 
   pushSubaccountOrder(
@@ -698,7 +710,10 @@ export const actions = actionTree(
       commit('setTrades', trades)
     },
 
-    async fetchSubaccountOrders({ commit }, activityFetchOptions: ActivityFetchOptions | undefined) {
+    async fetchSubaccountOrders(
+      { commit },
+      activityFetchOptions: ActivityFetchOptions | undefined
+    ) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -805,7 +820,10 @@ export const actions = actionTree(
       })
     },
 
-    async fetchSubaccountTrades({ state, commit }, activityFetchOptions: ActivityFetchOptions | undefined) {
+    async fetchSubaccountTrades(
+      { state, commit },
+      activityFetchOptions: ActivityFetchOptions | undefined
+    ) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -813,8 +831,14 @@ export const actions = actionTree(
         return
       }
 
-      if (state.subaccountTrades.length > 0 && state.subaccountTradesEndTime === 0) {
-        commit('setSubaccountTradesEndTime', state.subaccountTrades[0].executedAt)
+      if (
+        state.subaccountTrades.length > 0 &&
+        state.subaccountTradesPagination.endTime === 0
+      ) {
+        commit(
+          'setSubaccountTradesEndTime',
+          state.subaccountTrades[0].executedAt
+        )
       }
 
       const paginationOptions = activityFetchOptions?.pagination
@@ -829,7 +853,7 @@ export const actions = actionTree(
         pagination: {
           skip: paginationOptions ? paginationOptions.skip : 0,
           limit: paginationOptions ? paginationOptions.limit : 0,
-          endTime: state.subaccountTradesEndTime
+          endTime: state.subaccountTradesPagination.endTime
         }
       })
 

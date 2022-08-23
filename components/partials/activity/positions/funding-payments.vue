@@ -143,7 +143,7 @@ export default Vue.extend({
     },
 
     totalCount(): number {
-      return this.$accessor.activity.subaccountFundingPaymentsTotal
+      return this.$accessor.activity.subaccountFundingPaymentsPagination.total
     },
 
     totalPages(): number {
@@ -154,6 +154,12 @@ export default Vue.extend({
 
     showClearFiltersButton(): boolean {
       return !!this.selectedToken
+    },
+
+    skip(): number {
+      const { page, limit } = this
+
+      return (page - 1) * limit
     }
   },
 
@@ -162,8 +168,8 @@ export default Vue.extend({
   },
 
   methods: {
-    fetchFundingPayments() {
-      this.status.setLoading()
+    fetchFundingPayments(): Promise<void> {
+      const { skip, limit, activeMarketIds: marketIds } = this
 
       const marketId = this.markets.find((m) => {
         return (
@@ -171,16 +177,17 @@ export default Vue.extend({
           m.quoteToken.symbol === this.selectedToken?.symbol
         )
       })?.marketId
+      this.status.setLoading()
 
-      Promise.all([
+      return Promise.all([
         this.$accessor.activity.fetchSubaccountFundingPayments({
           pagination: {
-            skip: (this.page - 1) * this.limit,
-            limit: this.limit
+            skip,
+            limit
           },
           filters: {
             marketId,
-            marketIds: this.activeMarketIds
+            marketIds
           }
         })
       ])

@@ -166,7 +166,7 @@ export default Vue.extend({
     },
 
     totalCount(): number {
-      return this.$accessor.spot.subaccountTradesTotal
+      return this.$accessor.spot.subaccountTradesPagination.total
     },
 
     totalPages(): number {
@@ -177,6 +177,12 @@ export default Vue.extend({
 
     showClearFiltersButton(): boolean {
       return !!this.selectedToken || !!this.type || !!this.side
+    },
+
+    skip(): number {
+      const { page, limit } = this
+
+      return (page - 1) * limit
     }
   },
 
@@ -185,8 +191,8 @@ export default Vue.extend({
   },
 
   methods: {
-    fetchTrades() {
-      this.status.setLoading()
+    fetchTrades(): Promise<void> {
+      const { skip, limit, activeMarketIds: marketIds } = this
 
       const types = tradeTypesToTradeExecutionTypes(this.type as TradeTypes)
       const direction = this.side as TradeDirection
@@ -197,17 +203,19 @@ export default Vue.extend({
         )
       })?.marketId
 
-      Promise.all([
+      this.status.setLoading()
+
+      return Promise.all([
         this.$accessor.spot.fetchSubaccountTrades({
           pagination: {
-            skip: (this.page - 1) * this.limit,
-            limit: this.limit
+            skip,
+            limit
           },
           filters: {
             types,
             direction,
             marketId,
-            marketIds: this.activeMarketIds
+            marketIds
           }
         })
       ])

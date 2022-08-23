@@ -53,11 +53,15 @@ const initialStateFactory = () => ({
   orderbook: undefined as UiSpotOrderbook | undefined,
   trades: [] as UiSpotTrade[],
   subaccountTrades: [] as UiSpotTrade[],
-  subaccountTradesEndTime: 0 as number,
-  subaccountTradesTotal: 0 as number,
+  subaccountTradesPagination: {
+    endTime: 0 as number,
+    total: 0 as number
+  },
   subaccountOrders: [] as UiSpotLimitOrder[],
-  subaccountOrdersTotal: 0 as number,
-  subaccountOrdersEndTime: 0 as number
+  subaccountOrdersPagination: {
+    total: 0 as number,
+    endTime: 0 as number
+  }
 })
 
 const initialState = initialStateFactory()
@@ -69,11 +73,9 @@ export const state = () => ({
   marketSummary: initialState.marketSummary as UiSpotMarketSummary | undefined,
   trades: initialState.trades as UiSpotTrade[],
   subaccountTrades: initialState.subaccountTrades as UiSpotTrade[],
-  subaccountTradesEndTime: initialState.subaccountTradesEndTime as number,
-  subaccountTradesTotal: initialState.subaccountTradesTotal as number,
+  subaccountTradesPagination: initialState.subaccountTradesPagination,
   subaccountOrders: initialState.subaccountOrders as UiSpotLimitOrder[],
-  subaccountOrdersTotal: initialState.subaccountOrdersTotal as number,
-  subaccountOrdersEndTime: initialState.subaccountOrdersEndTime as number,
+  subaccountOrdersPagination: initialState.subaccountOrdersPagination,
   orderbook: initialState.orderbook as UiSpotOrderbook | undefined
 })
 
@@ -126,7 +128,7 @@ export const getters = getterTree(state, {
     return lastPrice.gte(secondLastPrice) ? Change.Increase : Change.Decrease
   },
 
-  activeMarketIds: (state) => state.markets.map(m => m.marketId)
+  activeMarketIds: (state) => state.markets.map((m) => m.marketId)
 })
 
 export const mutations = {
@@ -173,19 +175,19 @@ export const mutations = {
   },
 
   setSubaccountTradesEndTime(state: SpotStoreState, endTime: number) {
-    state.subaccountTradesEndTime = endTime
+    state.subaccountTradesPagination.endTime = endTime
   },
 
   setSubaccountTradesTotal(state: SpotStoreState, total: number) {
-    state.subaccountTradesTotal = total
-  },
-
-  setSubaccountOrdersTotal(state: SpotStoreState, total: number) {
-    state.subaccountOrdersTotal = total
+    state.subaccountTradesPagination.total = total
   },
 
   setSubaccountOrdersEndTime(state: SpotStoreState, endTime: number) {
-    state.subaccountOrdersEndTime = endTime
+    state.subaccountOrdersPagination.endTime = endTime
+  },
+
+  setSubaccountOrdersTotal(state: SpotStoreState, total: number) {
+    state.subaccountOrdersPagination.total = total
   },
 
   setSubaccountOrders(
@@ -482,7 +484,10 @@ export const actions = actionTree(
       })
     },
 
-    async fetchSubaccountOrders({ commit }, activityFetchOptions: ActivityFetchOptions | undefined) {
+    async fetchSubaccountOrders(
+      { commit },
+      activityFetchOptions: ActivityFetchOptions | undefined
+    ) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -534,7 +539,10 @@ export const actions = actionTree(
       commit('setTrades', trades)
     },
 
-    async fetchSubaccountTrades({ state, commit }, activityFetchOptions: ActivityFetchOptions | undefined) {
+    async fetchSubaccountTrades(
+      { state, commit },
+      activityFetchOptions: ActivityFetchOptions | undefined
+    ) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -542,8 +550,14 @@ export const actions = actionTree(
         return
       }
 
-      if (state.subaccountTrades.length > 0 && state.subaccountTradesEndTime === 0) {
-        commit('setSubaccountTradesEndTime', state.subaccountTrades[0].timestamp)
+      if (
+        state.subaccountTrades.length > 0 &&
+        state.subaccountTradesPagination.endTime === 0
+      ) {
+        commit(
+          'setSubaccountTradesEndTime',
+          state.subaccountTrades[0].timestamp
+        )
       }
 
       const paginationOptions = activityFetchOptions?.pagination
@@ -558,7 +572,7 @@ export const actions = actionTree(
         pagination: {
           skip: paginationOptions ? paginationOptions.skip : 0,
           limit: paginationOptions ? paginationOptions.limit : 0,
-          endTime: state.subaccountTradesEndTime
+          endTime: state.subaccountTradesPagination.endTime
         }
       })
 

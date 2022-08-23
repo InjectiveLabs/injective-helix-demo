@@ -123,7 +123,7 @@
                 </div>
                 <div
                   v-if="showBalance || showMaxSelector"
-                  class="h-5 flex items-center justify-end gap-2"
+                  class="h-5 flex items-center justify-end gap-2 pr-4"
                 >
                   <span
                     v-if="showBalance"

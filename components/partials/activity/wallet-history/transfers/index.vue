@@ -86,7 +86,8 @@ export default Vue.extend({
     },
 
     totalCount(): number {
-      return this.$accessor.bridge.subaccountTransferBridgeTransactionsTotal
+      return this.$accessor.bridge
+        .subaccountTransferBridgeTransactionsPagination.total
     },
 
     totalPages(): number {
@@ -97,6 +98,12 @@ export default Vue.extend({
 
     showClearFiltersButton(): boolean {
       return !!this.selectedToken
+    },
+
+    skip(): number {
+      const { page, limit } = this
+
+      return (page - 1) * limit
     }
   },
 
@@ -105,16 +112,18 @@ export default Vue.extend({
   },
 
   methods: {
-    fetchTransfers() {
-      this.status.setLoading()
+    fetchTransfers(): Promise<void> {
+      const { skip, limit } = this
 
       const denom = this.selectedToken?.denom
 
-      Promise.all([
+      this.status.setLoading()
+
+      return Promise.all([
         this.$accessor.bridge.fetchSubaccountTransfers({
           pagination: {
-            skip: (this.page - 1) * this.limit,
-            limit: this.limit
+            skip,
+            limit
           },
           filters: {
             denom
