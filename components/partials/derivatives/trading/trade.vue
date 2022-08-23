@@ -959,19 +959,19 @@ export default Vue.extend({
 
   methods: {
     handleOrderTypeChange() {
-      const {
-        form: { quoteAmount }
-      } = this
+      // const {
+      //   form: { quoteAmount }
+      // } = this
 
-      this.$nextTick(() => this.$orderInputs.onQuoteAmountChange(quoteAmount))
+      // this.$nextTick(() => this.$orderInputs.onQuoteAmountChange(quoteAmount))
     },
 
     handleTradingTypeChange() {
-      const {
-        form: { quoteAmount }
-      } = this
+      // const {
+      //   form: { quoteAmount }
+      // } = this
 
-      this.$nextTick(() => this.$orderInputs.onQuoteAmountChange(quoteAmount))
+      // this.$nextTick(() => this.$orderInputs.onQuoteAmountChange(quoteAmount))
     },
 
     onDetailsDrawerToggle() {

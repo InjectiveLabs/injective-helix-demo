@@ -200,6 +200,7 @@
       :has-advanced-settings-errors="hasAdvancedSettingsErrors"
       :is-conditional-order="isConditionalOrder"
       :is-spot="isSpot"
+      :form-id="formId"
       @set:postOnly="setPostOnly"
       @set:reduceOnly="setReduceOnly"
       @set:slippageTolerance="setSlippageTolerance"
@@ -631,9 +632,7 @@ export default Vue.extend({
   mounted() {
     const { amountStep } = this
 
-    this.inputBaseAmount = amountStep
-
-    this.$emit('update:amount', amountStep)
+    this.onAmountChange(amountStep)
   },
 
   methods: {
@@ -1028,6 +1027,11 @@ export default Vue.extend({
       this.setPostOnly(false)
       this.setReduceOnly(false)
       this.setSlippageTolerance('0.5')
+      this.onPriceChange('')
+      this.onTriggerPriceChange('')
+      this.onAmountChange(this.amountStep)
+      this.onQuoteAmountChange('')
+      this.onLeverageChange('1')
     }
   }
 })

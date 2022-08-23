@@ -4,7 +4,7 @@
       <input
         :id="uid"
         :value="value"
-        :checked="!!value"
+        :checked="checked"
         :disabled="disabled"
         class="checkbox"
         type="checkbox"
@@ -77,16 +77,18 @@ export default Vue.extend({
     }
   },
 
-  mounted() {
-    if (this.value === true) {
-      this.checked = true
+  watch: {
+    value: {
+      handler(val) {
+        this.checked = val
+      },
+      immediate: true
     }
   },
 
   methods: {
     handleChange() {
-      this.checked = !this.checked
-      this.$emit('input', this.checked)
+      this.$emit('input', !this.checked)
     }
   }
 })
