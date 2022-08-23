@@ -54,6 +54,7 @@ import {
   indexerOracleApi,
   indexerRestDerivativesChronosApi,
   msgBroadcastClient,
+  msgBroadcastExperimentalClient,
   tokenService
 } from '~/app/Services'
 import {
@@ -774,6 +775,7 @@ export const actions = actionTree(
         injectiveAddress,
         orders: [
           {
+            orderMask: 1,
             marketId: order.marketId,
             subaccountId: order.subaccountId,
             orderHash: order.orderHash
@@ -781,7 +783,7 @@ export const actions = actionTree(
         ]
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastExperimentalClient.broadcast({
         address,
         msgs: message,
         bucket: DerivativesMetrics.BatchCancelLimitOrders
@@ -932,7 +934,9 @@ export const actions = actionTree(
         value: price,
         quoteDecimals: market.quoteToken.decimals
       })
-      const msgQuantity = derivativeQuantityToChainQuantityToFixed({ value: quantity })
+      const msgQuantity = derivativeQuantityToChainQuantityToFixed({
+        value: quantity
+      })
       const msgMargin = reduceOnly
         ? ZERO_TO_STRING
         : derivativeMarginToChainMarginToFixed({
@@ -941,7 +945,11 @@ export const actions = actionTree(
           })
 
       console.log('type: stop-limit') // eslint-disable-line
-      console.log('orderType:', orderType, derivativeOrderTypeToGrpcOrderType(orderType)) // eslint-disable-line
+      console.log(
+        'orderType:',
+        orderType,
+        derivativeOrderTypeToGrpcOrderType(orderType)
+      ) // eslint-disable-line
       console.log('price:', msgPrice) // eslint-disable-line
       console.log('triggerPrice:', msgTriggerPrice) // eslint-disable-line
       console.log('quantity:', msgQuantity) // eslint-disable-line
@@ -1070,7 +1078,9 @@ export const actions = actionTree(
         value: triggerPrice,
         quoteDecimals: market.quoteToken.decimals
       })
-      const msgQuantity = derivativeQuantityToChainQuantityToFixed({ value: quantity })
+      const msgQuantity = derivativeQuantityToChainQuantityToFixed({
+        value: quantity
+      })
       const msgMargin = reduceOnly
         ? ZERO_TO_STRING
         : derivativeMarginToChainMarginToFixed({
@@ -1079,7 +1089,11 @@ export const actions = actionTree(
           })
 
       console.log('type: stop-market') // eslint-disable-line
-      console.log('orderType:', orderType, derivativeOrderTypeToGrpcOrderType(orderType)) // eslint-disable-line
+      console.log(
+        'orderType:',
+        orderType,
+        derivativeOrderTypeToGrpcOrderType(orderType)
+      ) // eslint-disable-line
       console.log('price:', msgPrice) // eslint-disable-line
       console.log('triggerPrice:', msgTriggerPrice) // eslint-disable-line
       console.log('quantity:', msgQuantity) // eslint-disable-line
