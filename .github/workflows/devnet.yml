@@ -31,10 +31,7 @@ jobs:
           END
 
       - name: Check out the source
-        run: ssh devnet 'cd "'$SOURCE_DIR'" && git fetch && git reset --hard "'$GIT_BRANCH'"'
-
-      - name: Pull latest
-        run: ssh devnet 'git pull'
+        run: ssh devnet 'cd "'$SOURCE_DIR'" && git fetch && git reset --hard "'$GIT_BRANCH'" && put pull'
 
       - name: Install Dependencies
         run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn install'
