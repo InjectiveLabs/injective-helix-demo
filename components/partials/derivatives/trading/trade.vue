@@ -958,15 +958,16 @@ export default Vue.extend({
   },
 
   methods: {
-    handleOrderTypeChange() {
+    handleTradingTypeChange() {
       // const {
       //   form: { quoteAmount }
       // } = this
 
       // this.$nextTick(() => this.$orderInputs.onQuoteAmountChange(quoteAmount))
+      this.resetForm()
     },
 
-    handleTradingTypeChange() {
+    handleOrderTypeChange() {
       // const {
       //   form: { quoteAmount }
       // } = this

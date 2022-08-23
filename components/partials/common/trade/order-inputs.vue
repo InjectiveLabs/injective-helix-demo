@@ -594,9 +594,9 @@ export default Vue.extend({
   watch: {
     lastTradedPrice: {
       handler(newPrice: BigNumberInBase) {
-        const { price, market } = this
+        const { price, market, tradingTypeStopLimit } = this
 
-        if (!market) {
+        if (!market || tradingTypeStopLimit) {
           return
         }
 
@@ -611,6 +611,12 @@ export default Vue.extend({
     },
 
     price(newPrice: string) {
+      const { tradingTypeStopLimit } = this
+
+      if (tradingTypeStopLimit) {
+        return
+      }
+
       this.inputPrice = newPrice
     },
 
