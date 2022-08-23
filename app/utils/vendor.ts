@@ -1,2 +1,5 @@
 export const AMPLITUDE_WALLET = 'wallet'
 export const AMPLITUDE_LOGIN_COUNT = 'login-count'
+export const AMPLITUDE_VIP_TIER_LEVEL = 'VIP Tier'
+export const AMPLITUDE_PLACE_ORDER_ATTEMPT_COUNT = 'Place Order Attempt Count'
+export const AMPLITUDE_PLACE_ORDER_CONFIRM_COUNT = 'Place Order Confirm Count'

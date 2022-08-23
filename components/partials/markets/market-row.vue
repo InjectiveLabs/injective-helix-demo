@@ -121,7 +121,6 @@
         class="text-primary-500 hover:text-primary-600"
         data-cy="markets-trade-link"
         :to="marketRoute"
-        @click.native="handleTradeClickedTrack"
       >
         <div @click="handleTradeClickedTrack">
           {{ $t('trade.trade') }}

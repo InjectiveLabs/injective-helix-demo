@@ -32,7 +32,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { Wallet } from '@injectivelabs/ts-types'
+import { TradeExecutionType, Wallet } from '@injectivelabs/ts-types'
 import {
   SpotOrderSide,
   UiSpotMarketWithToken,
@@ -42,7 +42,8 @@ import {
   MarketType
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
-import { Modal } from '~/types'
+import { Identify, identify } from '@amplitude/analytics-browser'
+import { AmplitudeEvents, Modal } from '~/types'
 import OrderError from '~/components/partials/common/trade/order-error.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
 import {
@@ -50,6 +51,7 @@ import {
   BIGGER_PRICE_WARNING_DEVIATION,
   UI_DEFAULT_MAX_NUMBER_OF_ORDERS
 } from '~/app/utils/constants'
+import { AMPLITUDE_PLACE_ORDER_ATTEMPT_COUNT } from '~/app/utils/vendor'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
 
 export default Vue.extend({
@@ -59,6 +61,11 @@ export default Vue.extend({
   },
 
   props: {
+    amount: {
+      type: String,
+      required: true
+    },
+
     executionPrice: {
       type: Object as PropType<BigNumberInBase>,
       required: true
@@ -86,6 +93,11 @@ export default Vue.extend({
       required: true
     },
 
+    leverage: {
+      type: String,
+      default: ''
+    },
+
     orderTypeBuy: {
       type: Boolean,
       required: true
@@ -111,8 +123,28 @@ export default Vue.extend({
       default: false
     },
 
+    postOnly: {
+      type: Boolean,
+      required: true
+    },
+
+    price: {
+      type: String,
+      required: true
+    },
+
+    slippageTolerance: {
+      type: String,
+      required: true
+    },
+
     status: {
       type: Object as PropType<Status>,
+      required: true
+    },
+
+    tradingType: {
+      type: String as PropType<TradeExecutionType>,
       required: true
     }
   },
@@ -256,6 +288,25 @@ export default Vue.extend({
   },
 
   methods: {
+    handlePlaceOrderAttemptTrack() {
+      const identifyObj = new Identify()
+      identifyObj.add(AMPLITUDE_PLACE_ORDER_ATTEMPT_COUNT, 1)
+      identify(identifyObj)
+
+      this.$amplitude.track(AmplitudeEvents.PlaceOrderAttempt, {
+        market: this.market.slug,
+        marketType: this.market.subType,
+        orderType: this.orderType,
+        tradingType: this.tradingType,
+        amount: this.amount,
+        leverage: this.leverage,
+        triggerPrice: '',
+        limitPrice: this.price,
+        postOnly: this.postOnly,
+        slippageTolerance: this.tradingTypeMarket ? this.slippageTolerance : ''
+      })
+    },
+
     onSubmit() {
       const {
         hasError,
@@ -263,6 +314,8 @@ export default Vue.extend({
         priceHasHighDeviationWarning,
         isUserWalletConnected
       } = this
+
+      this.handlePlaceOrderAttemptTrack()
 
       if (!isUserWalletConnected) {
         return this.$toast.error(this.$t('please_connect_your_wallet'))

@@ -42,8 +42,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Status } from '@injectivelabs/utils'
+import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import { Wallet } from '@injectivelabs/ts-types'
+import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
 import { setUserId, Identify, identify } from '@amplitude/analytics-browser'
 import Metamask from './wallets/metamask.vue'
 import Keplr from './wallets/keplr.vue'
@@ -60,7 +61,11 @@ import {
   IS_STAGING,
   IS_TESTNET
 } from '~/app/utils/constants'
-import { AMPLITUDE_LOGIN_COUNT, AMPLITUDE_WALLET } from '~/app/utils/vendor'
+import {
+  AMPLITUDE_LOGIN_COUNT,
+  AMPLITUDE_VIP_TIER_LEVEL,
+  AMPLITUDE_WALLET
+} from '~/app/utils/vendor'
 import ModalTerms from '~/components/partials/modals/terms.vue'
 
 export default Vue.extend({
@@ -100,6 +105,22 @@ export default Vue.extend({
 
     wallet(): Wallet {
       return this.$accessor.wallet.wallet
+    },
+
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
+    },
+
+    tierLevel(): number {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return 0
+      }
+
+      return new BigNumberInBase(
+        feeDiscountAccountInfo.tierLevel || 0
+      ).toNumber()
     }
   },
 
@@ -198,6 +219,7 @@ export default Vue.extend({
 
       const identifyObj = new Identify()
       identifyObj.set(AMPLITUDE_WALLET, this.wallet)
+      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
       identifyObj.add(AMPLITUDE_LOGIN_COUNT, 1)
       identify(identifyObj)
 

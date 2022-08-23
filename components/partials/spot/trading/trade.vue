@@ -84,6 +84,7 @@
 
     <OrderSubmit
       v-bind="{
+        amount: form.amount,
         executionPrice,
         hasAdvancedSettingsErrors,
         hasInputErrors,
@@ -92,7 +93,11 @@
         market,
         orderType,
         orderTypeBuy,
+        postOnly: form.postOnly,
+        price: form.price,
+        slippageTolerance: form.slippageTolerance,
         status,
+        tradingType,
         tradingTypeMarket
       }"
       @submit="onSubmit"
@@ -112,6 +117,7 @@ import {
   UiSubaccount,
   SpotOrderSide
 } from '@injectivelabs/sdk-ui-ts'
+import { Identify, identify } from '@amplitude/analytics-browser'
 import {
   cosmosSdkDecToBigNumber,
   FeeDiscountAccountInfo
@@ -120,13 +126,14 @@ import OrderDetailsWrapper from '~/components/partials/common/trade/order-detail
 import OrderSubmit from '~/components/partials/common/trade/order-submit.vue'
 import OrderInputs from '~/components/partials/common/trade/order-inputs.vue'
 import OrderTypeSelect from '~/components/partials/common/trade/order-type-select.vue'
-import { AveragePriceOptions } from '~/types'
+import { AmplitudeEvents, AveragePriceOptions } from '~/types'
 import {
   calculateAverageExecutionPriceFromFillableNotionalOnOrderBook,
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook
 } from '~/app/client/utils/spot'
 import TradingTypeButtons from '~/components/partials/common/trade/trading-type-buttons.vue'
+import { AMPLITUDE_PLACE_ORDER_CONFIRM_COUNT } from '~/app/utils/vendor'
 
 interface TradeForm {
   amount: string
@@ -714,6 +721,7 @@ export default Vue.extend({
           orderType: orderTypeToSubmit
         })
         .then(() => {
+          this.handlePlaceOrderConfirmTrack()
           this.$toast.success(this.$t('trade.order_placed'))
           this.$set(this, 'form', initialForm())
         })
@@ -739,6 +747,7 @@ export default Vue.extend({
           orderType
         })
         .then(() => {
+          this.handlePlaceOrderConfirmTrack()
           this.$toast.success(this.$t('trade.trade_placed'))
           this.$set(this, 'form', initialForm())
         })
@@ -754,6 +763,30 @@ export default Vue.extend({
       return tradingTypeMarket
         ? this.submitMarketOrder()
         : this.submitLimitOrder()
+    },
+
+    handlePlaceOrderConfirmTrack() {
+      if (!this.market) {
+        return
+      }
+
+      const identifyObj = new Identify()
+      identifyObj.add(AMPLITUDE_PLACE_ORDER_CONFIRM_COUNT, 1)
+      identify(identifyObj)
+
+      this.$amplitude.track(AmplitudeEvents.PlaceOrderConfirm, {
+        market: this.market.slug,
+        marketType: this.market.subType,
+        orderType: this.orderType,
+        tradingType: this.tradingType,
+        amount: this.form.amount,
+        triggerPrice: '',
+        limitPrice: this.price,
+        postOnly: this.form.postOnly,
+        slippageTolerance: this.tradingTypeMarket
+          ? this.form.slippageTolerance
+          : ''
+      })
     }
   }
 })

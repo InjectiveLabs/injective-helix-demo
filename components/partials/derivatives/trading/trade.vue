@@ -67,6 +67,7 @@
         executionPrice,
         feeRate,
         fees,
+        leverage: form.leverage,
         liquidationPrice,
         makerFeeRate,
         makerFeeRateDiscount,
@@ -97,17 +98,23 @@
 
     <OrderSubmit
       v-bind="{
+        amount: form.amount,
         executionPrice,
         hasAmount,
         hasInputErrors,
         hasAdvancedSettingsErrors,
         hasPrice,
         lastTradedPrice,
+        leverage: form.leverage,
         market,
         orderType,
         orderTypeBuy,
         orderTypeReduceOnly,
+        postOnly: form.postOnly,
+        price: form.price,
+        slippageTolerance: form.slippageTolerance,
         status,
+        tradingType,
         tradingTypeMarket
       }"
       @submit="onSubmit"
@@ -118,6 +125,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { Identify, identify } from '@amplitude/analytics-browser'
 import {
   TradeDirection,
   TradeExecutionType,
@@ -145,7 +153,7 @@ import OrderSubmit from '~/components/partials/common/trade/order-submit.vue'
 import OrderInputs from '~/components/partials/common/trade/order-inputs.vue'
 import TradingTypeButtons from '~/components/partials/common/trade/trading-type-buttons.vue'
 import OrderDetailsWrapper from '~/components/partials/common/trade/order-details-wrapper.vue'
-import { AveragePriceOptions } from '~/types'
+import { AmplitudeEvents, AveragePriceOptions } from '~/types'
 import {
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook,
@@ -155,6 +163,7 @@ import {
   calculateBinaryOptionsMargin
 } from '~/app/client/utils/derivatives'
 import { ONE_IN_BASE } from '~/app/utils/constants'
+import { AMPLITUDE_PLACE_ORDER_CONFIRM_COUNT } from '~/app/utils/vendor'
 
 interface TradeForm {
   reduceOnly: boolean
@@ -903,6 +912,7 @@ export default Vue.extend({
           quantity: amount
         })
         .then(() => {
+          this.handlePlaceOrderConfirmTrack()
           this.$toast.success(this.$t('trade.order_placed'))
           this.$set(this, 'form', initialForm())
         })
@@ -937,6 +947,7 @@ export default Vue.extend({
           quantity: amount
         })
         .then(() => {
+          this.handlePlaceOrderConfirmTrack()
           this.$toast.success(this.$t('trade.trade_placed'))
           this.$set(this, 'form', initialForm())
         })
@@ -952,6 +963,28 @@ export default Vue.extend({
       return tradingTypeMarket
         ? this.submitMarketOrder()
         : this.submitLimitOrder()
+    },
+
+    handlePlaceOrderConfirmTrack() {
+      if (!this.market) {
+        return
+      }
+
+      const identifyObj = new Identify()
+      identifyObj.add(AMPLITUDE_PLACE_ORDER_CONFIRM_COUNT, 1)
+      identify(identifyObj)
+
+      this.$amplitude.track(AmplitudeEvents.PlaceOrderConfirm, {
+        market: this.market.slug,
+        marketType: this.market.subType,
+        orderType: this.orderType,
+        tradingType: this.tradingType,
+        amount: this.form.amount,
+        leverage: this.form.leverage,
+        triggerPrice: '',
+        limitPrice: this.price,
+        postOnly: this.form.postOnly
+      })
     }
   }
 })

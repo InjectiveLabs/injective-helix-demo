@@ -157,6 +157,8 @@ export enum AmplitudeEvents {
   ConnectClicked = 'Connect Clicked',
   WalletSelected = 'Wallet Selected',
   Login = 'Login',
+  PlaceOrderAttempt = 'Place Order Attempt',
+  PlaceOrderConfirm = 'Place Order Confirm',
   TradeClicked = 'Trade Clicked'
 }
 
