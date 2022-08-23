@@ -76,6 +76,40 @@ export default Vue.extend({
   },
 
   mounted() {
+    if (this.type === TradeSelectorType.TypeAll) {
+      this.list = [
+        {
+          text: this.$t('trade.all'),
+          value: undefined
+        },
+        {
+          text: this.$t('trade.market'),
+          value: 'market'
+        },
+        {
+          text: `${this.$t('trade.stopLoss')} ${this.$t('trade.market')}`,
+          value: 'stopLossMarket'
+        },
+        {
+          text: `${this.$t('trade.takeProfit')} ${this.$t('trade.market')}`,
+          value: 'takeProfitMarket'
+        },
+        {
+          text: this.$t('trade.limit'),
+          value: 'limit'
+        },
+        {
+          text: `${this.$t('trade.stopLoss')} ${this.$t('trade.limit')}`,
+          value: 'stopLossLimit'
+        },
+        {
+          text: `${this.$t('trade.takeProfit')} ${this.$t('trade.limit')}`,
+          value: 'takeProfitLimit'
+        }
+      ]
+      this.placeholder = this.$t('trade.type')
+    }
+
     if (this.type === TradeSelectorType.Type) {
       this.list = [
         {

@@ -12,7 +12,7 @@
           <FilterSelector
             class="min-w-3xs hidden sm:block"
             data-cy="universal-table-filter-by-type-drop-down"
-            :type="TradeSelectorType.Type"
+            :type="TradeSelectorType.TypeAll"
             :value="type"
             @click="handleTypeClick"
           />
@@ -75,7 +75,8 @@
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Token } from '@injectivelabs/token-metadata'
-import { UiDerivativeLimitOrder, UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { DerivativeOrderSide, UiDerivativeLimitOrder, UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { TradeDirection } from '@injectivelabs/ts-types'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import Pagination from '~/components/partials/common/pagination.vue'
 import SearchAsset from '~/components/partials/activity/common/search-asset.vue'
@@ -142,19 +143,29 @@ export default Vue.extend({
   },
 
   methods: {
-    fetchOrderHistory() {
-      // TODO: Implement this.
+    fetchOrderHistory(): Promise<void> {
+      const orderType = DerivativeOrderSide.TakeBuy
+      const direction = TradeDirection.Long
+      const isConditional = true
+      const marketId = this.markets.find((m) => {
+        return (
+          m.baseToken.symbol === this.selectedToken?.symbol ||
+          m.quoteToken.symbol === this.selectedToken?.symbol
+        )
+      })?.marketId
+
       this.status.setLoading()
 
-      this.$accessor.derivatives.fetchOrderHistory({
+      return this.$accessor.derivatives.fetchOrderHistory({
         pagination: {
           skip: (this.page - 1) * this.limit,
           limit: this.limit
         },
         filters: {
-          // marketId,
-          // marketIds: this.activeMarketIds,
-          // orderSide
+          marketId,
+          orderType,
+          direction,
+          isConditional
         }
       })
         .catch(this.$onError)

@@ -753,7 +753,7 @@ export const actions = actionTree(
       const { orderHistory } = await indexerDerivativesApi.fetchOrderHistory({
         marketId: filters?.marketId,
         subaccountId: subaccount.subaccountId,
-        // orderType: filters?.orderType,
+        orderType: filters?.orderType as DerivativeOrderSide | undefined,
         direction: filters?.direction,
         isConditional: filters?.isConditional,
         pagination: {
