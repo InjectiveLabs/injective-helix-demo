@@ -33,6 +33,9 @@ jobs:
       - name: Check out the source
         run: ssh devnet 'cd "'$SOURCE_DIR'" && git fetch && git reset --hard "'$GIT_BRANCH'"'
 
+      - name: Pull latest
+        run: ssh devnet 'git pull'
+
       - name: Install Dependencies
         run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn install'
 
@@ -40,7 +43,7 @@ jobs:
         run: ssh devnet 'cd "'$SOURCE_DIR'"  && rm -rf dist'
 
       - name: Remove prev build process
-        run: ssh devnet 'cd "'$SOURCE_DIR'"  && rm -rf ./node_modules/.cache/nuxt'
+        run: ssh devnet 'cd "'$SOURCE_DIR'"  && rm -rf ./node_modules/.cache'
 
       - name: Building the project
         run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn build'
