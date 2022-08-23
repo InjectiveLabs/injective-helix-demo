@@ -72,6 +72,12 @@ export default Vue.extend({
       type: Boolean
     },
 
+    primaryOutline: {
+      required: false,
+      default: false,
+      type: Boolean
+    },
+
     textLg: {
       required: false,
       default: false,
@@ -232,6 +238,15 @@ export default Vue.extend({
             'hover:text-red-600',
             'hover:bg-red-600',
             'hover:bg-opacity-10'
+          )
+        } else if (this.primaryOutline) {
+          classes.push(
+            'text-primary-500',
+            'font-semibold',
+            'border',
+            'border-primary-500',
+            'hover:text-white',
+            'hover:border-white'
           )
         }
       }

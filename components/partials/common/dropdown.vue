@@ -1,27 +1,22 @@
 <template>
-  <div class="">
+  <div>
     <div
-      v-on-clickaway="onDropdownClose"
+      v-on-clickAway="onDropdownClose"
       class="relative inline-block text-left w-full"
-      :class="selectedClass"
     >
-      <div>
+      <div
+        :class="wrapperClass"
+        class="rounded bg-transparent p-2 pr-3"
+      >
         <button
           type="button"
-          class="inline-flex items-center justify-between w-full py-1 text-xs outline-none focus:outline-none text-gray-500"
-          :class="[selectorClass, { 'border-b': !hideBottomBorder }]"
+          class="inline-flex tracking-widest items-center justify-between w-full uppercase outline-none focus:outline-none"
           aria-haspopup="true"
           :aria-expanded="isDropdownOpen"
           @click="onDropdownToggle"
         >
           <slot name="title" />
-          <IconCaretDown
-            class="h-4 w-4"
-            :class="[
-              dark ? 'text-gray-500' : 'text-gray-200',
-              tight ? 'ml-1' : '-mr-1 ml-3 '
-            ]"
-          />
+          <IconCaretDown class="h-auto w-3 transform rotate-180 ml-2" />
         </button>
       </div>
 
@@ -35,7 +30,7 @@
       >
         <div
           v-show="isDropdownOpen"
-          class="origin-top-right absolute left-0 top-0 w-full shadow-md divide-y divide-gray-100 z-20 bg-gray-800 divide-gray-500 overflow-hidden"
+          class="origin-bottom-right absolute left-0 bottom-0 w-full shadow-md divide-y z-20 overflow-hidden rounded-lg"
           :class="menuClass"
           role="menu"
           aria-orientation="vertical"
@@ -51,74 +46,28 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { directive as onClickaway } from 'vue-clickaway'
+import { directive as onClickAway } from 'vue-clickaway'
 
 export default Vue.extend({
   directives: {
-    onClickaway
+    onClickAway
   },
 
   props: {
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-
-    hideBottomBorder: {
-      type: Boolean,
-      default: false
-    },
-
     menuClass: {
       type: String,
       default: ''
     },
 
-    selectedClass: {
+    wrapperClass: {
       type: String,
       default: ''
-    },
-
-    preventClose: {
-      type: Boolean,
-      default: false
-    },
-
-    round: {
-      type: Boolean,
-      default: false
-    },
-
-    dark: {
-      type: Boolean,
-      default: false
-    },
-
-    tight: {
-      type: Boolean,
-      default: false
     }
   },
 
   data() {
     return {
       isDropdownOpen: false
-    }
-  },
-
-  computed: {
-    selectorClass(): string {
-      const { round } = this
-
-      const classes = ['bg-gray-900', 'h-10', 'px-4', 'py-3']
-
-      if (round) {
-        classes.push('rounded-full')
-      } else {
-        classes.push('rounded-lg')
-      }
-
-      return classes.join(' ')
     }
   },
 
@@ -142,12 +91,7 @@ export default Vue.extend({
     },
 
     handleClick() {
-      const { preventClose } = this
-
-      // add support to prevent closing menu on click
-      if (!preventClose) {
-        this.onDropdownClose()
-      }
+      this.onDropdownClose()
     },
 
     onDropdownClose() {
@@ -157,9 +101,7 @@ export default Vue.extend({
     },
 
     onDropdownToggle() {
-      if (!this.disabled) {
-        this.isDropdownOpen = !this.isDropdownOpen
-      }
+      this.isDropdownOpen = !this.isDropdownOpen
     }
   }
 })

@@ -128,7 +128,9 @@ export default Vue.extend({
     this.$root.$on('position-tab-loaded', this.positionTabLoaded)
     this.$root.$on('spot-tab-loaded', this.spotTabLoaded)
 
-    Promise.all([this.$accessor.account.init()])
+    Promise.all([
+      this.$accessor.account.init()
+    ])
       .then(() => {
         //
       })

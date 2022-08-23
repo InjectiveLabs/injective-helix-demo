@@ -1,14 +1,13 @@
 import {
-  DerivativeOrderSide,
-  SpotOrderSide,
   SubaccountBalanceWithToken,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiSpotMarketSummary,
   UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
-import { TradeExecutionType } from '@injectivelabs/ts-types'
+import { TradeExecutionType, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { PaginationOption, SpotOrderSide, DerivativeOrderSide } from '@injectivelabs/sdk-ts'
 
 export interface DOMEvent<T extends EventTarget> extends Event {
   target: T
@@ -71,6 +70,20 @@ export interface TradeConfirmationModalData {
 }
 
 export declare type TokenUsdPriceMap = Record<string, number>
+
+export interface FilterOptions {
+  marketId?: string
+  marketIds?: string[]
+  direction?: TradeDirection
+  orderSide?: SpotOrderSide | DerivativeOrderSide
+  types?: TradeExecutionType[],
+  denom?: string
+}
+
+export interface ActivityFetchOptions {
+  pagination?: PaginationOption
+  filters?: FilterOptions
+}
 
 export * from './enums'
 export * from './env'
