@@ -632,6 +632,8 @@ export default Vue.extend({
     const { amountStep } = this
 
     this.inputBaseAmount = amountStep
+
+    this.$emit('update:amount', amountStep)
   },
 
   methods: {
