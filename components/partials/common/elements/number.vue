@@ -1,7 +1,7 @@
 <template>
   <div>
     <span
-      class="font-mono inline-block text-white font-medium text-xs"
+      class="font-mono inline-block text-white font-medium text-sm"
     >
       <div class="flex">
         <span class="">{{ prefix || '' }}{{ formattedNumber[0] }}</span>

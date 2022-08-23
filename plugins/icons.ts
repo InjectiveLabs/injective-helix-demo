@@ -7,6 +7,7 @@ import Bin from '~/components/icons/bin.vue'
 import Box from '~/components/icons/box.vue'
 import CaretDown from '~/components/icons/caret-down.vue'
 import CaretDownSlim from '~/components/icons/caret-down-slim.vue'
+import CaretThin from '~/components/icons/caret-thin.vue'
 import CategoryAlt from '~/components/icons/category-alt.vue'
 import Check from '~/components/icons/check.vue'
 import CheckCircle from '~/components/icons/check-circle.vue'
@@ -72,6 +73,7 @@ import LightningFill from '~/components/icons/lightning-fill.vue'
 import BoundingBoxCircles from '~/components/icons/bounding-box-circles.vue'
 import Gas from '~/components/icons/gas.vue'
 import ShieldLockFill from '~/components/icons/shield-lock-fill.vue'
+import Minus from '~/components/icons/minus.vue'
 
 Vue.component('IconArrow', Arrow)
 Vue.component('IconArrowSwap', ArrowSwap)
@@ -80,6 +82,7 @@ Vue.component('IconBin', Bin)
 Vue.component('IconBox', Box)
 Vue.component('IconCaretDown', CaretDown)
 Vue.component('IconCaretDownSlim', CaretDownSlim)
+Vue.component('IconCaretThin', CaretThin)
 Vue.component('IconCategoryAlt', CategoryAlt)
 Vue.component('IconCheck', Check)
 Vue.component('IconCheckCircle', CheckCircle)
@@ -145,3 +148,4 @@ Vue.component('IconLightningFill', LightningFill)
 Vue.component('IconBoundingBoxCircles', BoundingBoxCircles)
 Vue.component('IconGas', Gas)
 Vue.component('IconShieldLockFill', ShieldLockFill)
+Vue.component('IconMinus', Minus)

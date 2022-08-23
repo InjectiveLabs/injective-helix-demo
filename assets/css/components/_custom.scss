@@ -16,39 +16,35 @@
 }
 
 .orderbook-h {
-  height: 30rem;
+  --orderbook-height: 30rem;
+  --orderbook-aggregation-height: 48px;
+  --orderbook-header-height: 32px;
+  --orderbook-middle-height: 2rem;
+
+  height: var(--orderbook-height);
 
   @screen lg {
-    height: 38rem;
+    --orderbook-height: 38rem;
+    --orderbook-middle-height: 3rem;
   }
 
   @screen 4xl {
-    height: 40rem;
+    --orderbook-height: 40rem;
+    --orderbook-middle-height: 4rem;
   }
+}
+
+.orderbook-h-inner {
+  height: calc(var(--orderbook-height) - var(--orderbook-aggregation-height));
 }
 
 .orderbook-half-h {
-  @apply h-48;
-
-  @screen lg {
-    height: 15.5rem;
-  }
-
-  @screen 4xl {
-    height: 16rem;
-  }
+  --orderbook-half-height: calc((var(--orderbook-height) - var(--orderbook-aggregation-height)) / 2);
+  height: calc(var(--orderbook-half-height) - var(--orderbook-middle-height) / 2 - var(--orderbook-header-height) / 2);
 }
 
 .orderbook-middle-h {
-  @apply h-8;
-
-  @screen lg {
-    @apply h-12;
-  }
-
-  @screen 4xl {
-    @apply h-16;
-  }
+  height: var(--orderbook-middle-height)
 }
 
 .card-table-wrap-content {
@@ -196,7 +192,7 @@
 
   &.longs,
   &.buys {
-    background: theme('colors.aqua.500');
+    background: theme('colors.green.500');
     opacity: 0.2;
   }
 
@@ -300,4 +296,8 @@
     @apply bg-primary-500;
     box-shadow: 0 0 0 1px #00f2ff;
   }
+}
+
+.rtl {
+  direction: rtl;
 }

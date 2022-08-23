@@ -43,6 +43,7 @@ import {
   tokenService
 } from '~/app/Services'
 import { spot as allowedSpotMarkets } from '~/routes.config'
+import { ActivityFetchOptions } from '~/types'
 
 const initialStateFactory = () => ({
   markets: [] as UiSpotMarketWithToken[],
@@ -52,7 +53,15 @@ const initialStateFactory = () => ({
   orderbook: undefined as UiSpotOrderbook | undefined,
   trades: [] as UiSpotTrade[],
   subaccountTrades: [] as UiSpotTrade[],
-  subaccountOrders: [] as UiSpotLimitOrder[]
+  subaccountTradesPagination: {
+    endTime: 0 as number,
+    total: 0 as number
+  },
+  subaccountOrders: [] as UiSpotLimitOrder[],
+  subaccountOrdersPagination: {
+    total: 0 as number,
+    endTime: 0 as number
+  }
 })
 
 const initialState = initialStateFactory()
@@ -64,7 +73,9 @@ export const state = () => ({
   marketSummary: initialState.marketSummary as UiSpotMarketSummary | undefined,
   trades: initialState.trades as UiSpotTrade[],
   subaccountTrades: initialState.subaccountTrades as UiSpotTrade[],
+  subaccountTradesPagination: initialState.subaccountTradesPagination,
   subaccountOrders: initialState.subaccountOrders as UiSpotLimitOrder[],
+  subaccountOrdersPagination: initialState.subaccountOrdersPagination,
   orderbook: initialState.orderbook as UiSpotOrderbook | undefined
 })
 
@@ -115,7 +126,9 @@ export const getters = getterTree(state, {
     const secondLastPrice = new BigNumberInBase(secondLastTrade.price)
 
     return lastPrice.gte(secondLastPrice) ? Change.Increase : Change.Decrease
-  }
+  },
+
+  activeMarketIds: (state) => state.markets.map((m) => m.marketId)
 })
 
 export const mutations = {
@@ -159,6 +172,22 @@ export const mutations = {
 
   setSubaccountTrades(state: SpotStoreState, subaccountTrades: UiSpotTrade[]) {
     state.subaccountTrades = subaccountTrades
+  },
+
+  setSubaccountTradesEndTime(state: SpotStoreState, endTime: number) {
+    state.subaccountTradesPagination.endTime = endTime
+  },
+
+  setSubaccountTradesTotal(state: SpotStoreState, total: number) {
+    state.subaccountTradesPagination.total = total
+  },
+
+  setSubaccountOrdersEndTime(state: SpotStoreState, endTime: number) {
+    state.subaccountOrdersPagination.endTime = endTime
+  },
+
+  setSubaccountOrdersTotal(state: SpotStoreState, total: number) {
+    state.subaccountOrdersPagination.total = total
   },
 
   setSubaccountOrders(
@@ -312,9 +341,8 @@ export const actions = actionTree(
         await this.app.$accessor.spot.streamOrderbook()
       }
 
-      // TODO
-      await this.app.$accessor.indexer.fetchFeeDiscountAccountInfo()
-      await this.app.$accessor.indexer.fetchTradingRewardsCampaign()
+      await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
+      await this.app.$accessor.exchange.fetchTradingRewardsCampaign()
     },
 
     async initMarketStreams({ state }) {
@@ -456,7 +484,10 @@ export const actions = actionTree(
       })
     },
 
-    async fetchSubaccountOrders({ commit }) {
+    async fetchSubaccountOrders(
+      { commit },
+      activityFetchOptions: ActivityFetchOptions | undefined
+    ) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -464,12 +495,23 @@ export const actions = actionTree(
         return
       }
 
-      commit(
-        'setSubaccountOrders',
-        await indexerSpotApi.fetchOrders({
-          subaccountId: subaccount.subaccountId
-        })
-      )
+      // TODO: Implement endTime.
+      const paginationOptions = activityFetchOptions?.pagination
+      const filters = activityFetchOptions?.filters
+
+      const { orders, pagination } = await indexerSpotApi.fetchOrders({
+        marketId: filters?.marketId,
+        marketIds: filters?.marketIds,
+        subaccountId: subaccount.subaccountId,
+        orderSide: filters?.orderSide as SpotOrderSide,
+        pagination: {
+          skip: paginationOptions ? paginationOptions.skip : 0,
+          limit: paginationOptions ? paginationOptions.limit : 0
+        }
+      })
+
+      commit('setSubaccountOrdersTotal', pagination.total)
+      commit('setSubaccountOrders', orders)
     },
 
     async fetchOrderbook({ state, commit }) {
@@ -492,13 +534,17 @@ export const actions = actionTree(
         return
       }
 
-      commit(
-        'setTrades',
-        await indexerSpotApi.fetchTrades({ marketId: market.marketId })
-      )
+      const { trades } = await indexerSpotApi.fetchTrades({
+        marketId: market.marketId
+      })
+
+      commit('setTrades', trades)
     },
 
-    async fetchSubaccountTrades({ commit }) {
+    async fetchSubaccountTrades(
+      { state, commit },
+      activityFetchOptions: ActivityFetchOptions | undefined
+    ) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -506,10 +552,33 @@ export const actions = actionTree(
         return
       }
 
-      const trades = await indexerSpotApi.fetchTrades({
-        subaccountId: subaccount.subaccountId
+      if (
+        state.subaccountTrades.length > 0 &&
+        state.subaccountTradesPagination.endTime === 0
+      ) {
+        commit(
+          'setSubaccountTradesEndTime',
+          state.subaccountTrades[0].timestamp
+        )
+      }
+
+      const paginationOptions = activityFetchOptions?.pagination
+      const filters = activityFetchOptions?.filters
+
+      const { trades, pagination } = await indexerSpotApi.fetchTrades({
+        marketId: filters?.marketId,
+        marketIds: filters?.marketIds,
+        subaccountId: subaccount.subaccountId,
+        executionTypes: filters?.types,
+        direction: filters?.direction,
+        pagination: {
+          skip: paginationOptions ? paginationOptions.skip : 0,
+          limit: paginationOptions ? paginationOptions.limit : 0,
+          endTime: state.subaccountTradesPagination.endTime
+        }
       })
 
+      commit('setSubaccountTradesTotal', pagination.total)
       commit('setSubaccountTrades', trades)
     },
 

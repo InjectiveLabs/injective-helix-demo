@@ -10,18 +10,18 @@ import {
   UiBridgeTransformer
 } from '@injectivelabs/sdk-ui-ts'
 import {
+  ApolloConsumer,
   ChainGrpcAuctionApi,
   ChainGrpcBankApi,
-  ChainGrpcMintApi,
-  ChainGrpcStakingApi,
   ChainGrpcDistributionApi,
+  ChainGrpcExchangeApi,
   ChainGrpcGovApi,
   ChainGrpcInsuranceFundApi,
   ChainGrpcPeggyApi,
+  ChainGrpcMintApi,
+  ChainGrpcStakingApi,
   IndexerRestExplorerApi,
   IndexerGrpcExplorerApi,
-  ApolloConsumer,
-  ChainGrpcExchangeApi,
   ChainGrpcOracleApi,
   IndexerGrpcDerivativesApi,
   IndexerGrpcSpotApi,
@@ -68,6 +68,7 @@ export const peggyApi = new ChainGrpcPeggyApi(ENDPOINTS.sentryGrpcApi)
 export const auctionApi = new ChainGrpcAuctionApi(ENDPOINTS.sentryGrpcApi)
 export const exchangeApi = new ChainGrpcExchangeApi(ENDPOINTS.sentryGrpcApi)
 export const oracleApi = new ChainGrpcOracleApi(ENDPOINTS.sentryGrpcApi)
+
 export const indexerExplorerApi = new IndexerGrpcExplorerApi(
   ENDPOINTS.indexerApi
 )

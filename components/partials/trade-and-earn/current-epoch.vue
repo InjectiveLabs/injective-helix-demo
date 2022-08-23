@@ -1,5 +1,5 @@
 <template>
-  <VPanel :title="$t('Current Epoch')">
+  <VPanel :title="$t('Current Epoch')" card-wrapper-class="mt-6">
     <div v-if="currentEpochStartTimestamp > 0" slot="title-context">
       {{ $t('tradeAndEarn.campaignEndingOn', { date: epochCountdown }) }}
     </div>

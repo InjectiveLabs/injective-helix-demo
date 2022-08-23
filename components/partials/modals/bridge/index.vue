@@ -81,10 +81,13 @@
             :is-ibc-transfer="isIbcTransfer"
             :balance="balance"
             small
+            show-input
+            show-custom-indicator
             show-balance
             show-errors-below
             @input:amount="handleAmountChange"
             @input:token="handleTokenChange"
+            @input:max="handleMax"
           >
           </TokenSelector>
         </div>
@@ -443,6 +446,10 @@ export default Vue.extend({
     handleTokenChange(token: Token) {
       this.$emit('input-token:update', token)
       this.resetForm()
+    },
+
+    handleMax(value: string) {
+      this.$emit('input-amount:update', value)
     },
 
     handleDestinationAddressChange(address: string) {

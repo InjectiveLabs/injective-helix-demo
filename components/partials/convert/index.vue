@@ -27,6 +27,8 @@
           :usd-price="fromUsdPrice"
           :step="orderTypeBuy ? priceStep : amountStep"
           :max-decimals="maxDecimalsFrom"
+          show-input
+          show-custom-indicator
           @input:amount="onSetAmount"
           @input:token="onSetFromToken"
           @input:max="onMaxInput"
@@ -54,6 +56,8 @@
           :validation-rules="'positiveNumber'"
           :step="orderTypeBuy ? amountStep : priceStep"
           :max-decimals="maxDecimalsTo"
+          show-input
+          show-custom-indicator
           disable-max-selector
           @input:amount="onSetToAmount"
           @input:token="onSetToToken"

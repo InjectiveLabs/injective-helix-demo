@@ -65,10 +65,10 @@ export const actions = actionTree(
         return
       }
 
-      const spotTrades = await indexerSpotApi.fetchTrades({
+      const { trades: spotTrades } = await indexerSpotApi.fetchTrades({
         subaccountId: subaccount.subaccountId
       })
-      const derivativeTrades = await indexerDerivativesApi.fetchTrades({
+      const { trades: derivativeTrades } = await indexerDerivativesApi.fetchTrades({
         subaccountId: subaccount.subaccountId
       })
 
