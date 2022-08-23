@@ -21,9 +21,11 @@
     <div class="col-span-2 flex">
       <span class="w-full text-red-500 font-medium text-sm"> -4.59% </span>
     </div>
-    <div class="col-span-3 flex text-red-500 pr-4 h-7">
+    <div class="col-span-3 flex pr-4 h-7">
       <LineGraph
         :data="chartData"
+        :color="'#f3164d'"
+        :bg-type="'transparent'"
         :stroke-width="1"
         :smoothness="0.2"
       />
