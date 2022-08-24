@@ -762,6 +762,8 @@ export const actions = actionTree(
         }
       })
 
+      console.log(orderHistory)
+
       commit('setSubaccountOrderHistory', orderHistory)
     },
 
