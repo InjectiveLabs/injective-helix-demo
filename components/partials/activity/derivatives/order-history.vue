@@ -75,8 +75,7 @@
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Token } from '@injectivelabs/token-metadata'
-import { DerivativeOrderSide, UiDerivativeLimitOrder, UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { TradeDirection } from '@injectivelabs/ts-types'
+import { UiDerivativeMarketWithToken, UiDerivativeOrderHistory } from '@injectivelabs/sdk-ui-ts'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import Pagination from '~/components/partials/common/pagination.vue'
 import SearchAsset from '~/components/partials/activity/common/search-asset.vue'
@@ -115,8 +114,8 @@ export default Vue.extend({
       return this.$accessor.derivatives.activeMarketIds
     },
 
-    orders(): UiDerivativeLimitOrder[] {
-      return []
+    orders(): UiDerivativeOrderHistory[] {
+      return this.$accessor.derivatives.subaccountOrderHistory
     },
 
     markets(): UiDerivativeMarketWithToken[] {
@@ -144,9 +143,9 @@ export default Vue.extend({
 
   methods: {
     fetchOrderHistory(): Promise<void> {
-      const orderType = DerivativeOrderSide.TakeBuy
-      const direction = TradeDirection.Long
-      const isConditional = true
+      const orderType = undefined
+      const direction = undefined
+      const isConditional = undefined
       const marketId = this.markets.find((m) => {
         return (
           m.baseToken.symbol === this.selectedToken?.symbol ||
@@ -156,7 +155,7 @@ export default Vue.extend({
 
       this.status.setLoading()
 
-      return this.$accessor.derivatives.fetchOrderHistory({
+      return this.$accessor.derivatives.fetchSubaccountOrderHistory({
         pagination: {
           skip: (this.page - 1) * this.limit,
           limit: this.limit

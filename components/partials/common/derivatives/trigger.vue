@@ -2,7 +2,7 @@
   <tr
     v-if="market"
     :data-cy="'derivative-order-table-row-' + market.ticker"
-    :data-cy-hash="order.orderHash"
+    :data-cy-hash="trigger.orderHash"
   >
     <td class="h-8 text-left cursor-pointer" @click="handleClickOnMarket">
       <div class="flex items-center justify-start">
@@ -24,12 +24,18 @@
       </div>
     </td>
 
+    <td class="h-8 font-mono text-left">
+      <span class="text-white">
+        {{ trigger.orderType }}
+      </span>
+    </td>
+
     <td class="h-8 text-left">
       <span
         data-cy="derivative-order-order-side-table-data"
         :class="{
-          'text-green-500': order.orderSide === DerivativeOrderSide.Buy,
-          'text-red-500': order.orderSide === DerivativeOrderSide.Sell
+          'text-green-500': trigger.orderSide === DerivativeOrderSide.Buy,
+          'text-red-500': trigger.orderSide === DerivativeOrderSide.Sell
         }"
       >
         {{ orderSideLocalized }}
@@ -44,7 +50,12 @@
     </td>
 
     <td class="h-8 font-mono text-right">
+      <span v-if="isMarketOrder" class="text-white">
+        {{ $t('trade.market') }}
+      </span>
+
       <VNumber
+        v-else
         data-cy="derivative-order-price-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -60,30 +71,6 @@
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
         :number="quantity"
-      />
-    </td>
-
-    <td class="h-8 font-mono">
-      <div class="flex items-center justify-end">
-        <VNumber
-          data-cy="derivative-order-unfilled-quantity-table-data"
-          :decimals="
-            market
-              ? market.quantityDecimals
-              : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-          "
-          :number="unfilledQuantity"
-        />
-      </div>
-    </td>
-
-    <td class="h-8 text-right font-mono">
-      <VNumber
-        data-cy="derivative-order-filled-quantity-table-data"
-        :decimals="
-          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-        "
-        :number="filledQuantity"
       />
     </td>
 
@@ -105,18 +92,33 @@
       </span>
     </td>
 
-    <td class="h-8 font-right text-right">
+    <td class="h-8 text-right font-mono">
       <VNumber
+        data-cy="derivative-order-filled-quantity-table-data"
+        :decimals="
+          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+        "
+        :number="filledQuantity"
+      />
+    </td>
+
+    <td class="h-12 flex items-center justify-end gap-1">
+      <span class="text-gray-200 text-xs font-semibold">
+        Mark Price
+      </span>
+
+      <span class="text-white text-xs font-semibold">
+        ≤
+      </span>
+
+      <VNumber
+        xs
         data-cy="derivative-order-total-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
         :number="total"
-      >
-        <span slot="addon" class="text-2xs text-gray-500">
-          {{ market.quoteToken.symbol }}
-        </span>
-      </VNumber>
+      />
     </td>
 
     <td class="h-8 relative text-right">
@@ -152,11 +154,11 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
 import {
-  UiDerivativeLimitOrder,
   UiDerivativeMarketWithToken,
   DerivativeOrderSide,
   ZERO_IN_BASE,
-  getTokenLogoWithVendorPathPrefix
+  getTokenLogoWithVendorPathPrefix,
+  UiDerivativeOrderHistory
 } from '@injectivelabs/sdk-ui-ts'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
@@ -168,7 +170,7 @@ export default Vue.extend({
   props: {
     trigger: {
       required: true,
-      type: Object as PropType<UiDerivativeLimitOrder>
+      type: Object as PropType<UiDerivativeOrderHistory>
     }
   },
 
@@ -194,6 +196,12 @@ export default Vue.extend({
 
     isBinaryOptionsPage(): boolean {
       return this.$route.name === 'binary-options-binaryOption'
+    },
+
+    isMarketOrder(): boolean {
+      const { trigger } = this
+
+      return trigger.executionType === 'market'
     },
 
     isReduceOnly(): boolean {

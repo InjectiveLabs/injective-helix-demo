@@ -89,6 +89,11 @@ const initialStateFactory = () => ({
   subaccountOrderHistoryPagination: {
     endTime: 0 as number,
     total: 0 as number
+  },
+  subaccountTriggers: [] as UiDerivativeOrderHistory[],
+  subaccountTriggersPagination: {
+    endTime: 0 as number,
+    total: 0 as number
   }
 })
 
@@ -115,6 +120,8 @@ export const state = () => ({
   subaccountOrdersPagination: initialState.subaccountOrdersPagination,
   subaccountOrderHistory: initialState.subaccountOrderHistory as UiDerivativeOrderHistory[],
   subaccountOrderHistoryPagination: initialState.subaccountOrderHistoryPagination,
+  subaccountTriggers: initialState.subaccountTriggers as UiDerivativeOrderHistory[],
+  subaccountTriggersPagination: initialState.subaccountTriggersPagination,
   orderbook: initialState.orderbook as UiDerivativeOrderbook | undefined
 })
 
@@ -281,6 +288,18 @@ export const mutations = {
 
   setSubaccountOrderHistoryTotal(state: DerivativeStoreState, total: number) {
     state.subaccountOrderHistoryPagination.total = total
+  },
+
+  setSubaccountTriggers(state: DerivativeStoreState, triggers: UiDerivativeOrderHistory[]) {
+    state.subaccountTriggers = triggers
+  },
+
+  setSubaccountTriggersEndTime(state: DerivativeStoreState, endTime: number) {
+    state.subaccountTriggersPagination.endTime = endTime
+  },
+
+  setSubaccountTriggersTotal(state: DerivativeStoreState, total: number) {
+    state.subaccountTriggersPagination.total = total
   },
 
   pushSubaccountOrder(
@@ -739,7 +758,7 @@ export const actions = actionTree(
       commit('setSubaccountOrders', orders)
     },
 
-    async fetchOrderHistory({ commit }, activityFetchOptions: ActivityFetchOptions | undefined) {
+    async fetchSubaccountOrderHistory({ commit }, activityFetchOptions: ActivityFetchOptions | undefined) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -762,9 +781,33 @@ export const actions = actionTree(
         }
       })
 
-      console.log(orderHistory)
-
       commit('setSubaccountOrderHistory', orderHistory)
+    },
+
+    async fetchSubaccountTriggers({ commit }, activityFetchOptions: ActivityFetchOptions | undefined) {
+      const { subaccount } = this.app.$accessor.account
+      const { isUserWalletConnected } = this.app.$accessor.wallet
+
+      if (!isUserWalletConnected || !subaccount) {
+        return
+      }
+
+      const paginationOptions = activityFetchOptions?.pagination
+      const filters = activityFetchOptions?.filters
+
+      const { orderHistory: triggers } = await indexerDerivativesApi.fetchOrderHistory({
+        marketId: filters?.marketId,
+        subaccountId: subaccount.subaccountId,
+        orderType: filters?.orderType as DerivativeOrderSide | undefined,
+        direction: filters?.direction,
+        isConditional: true,
+        pagination: {
+          skip: paginationOptions ? paginationOptions.skip : 0,
+          limit: paginationOptions ? paginationOptions.limit : 0
+        }
+      })
+
+      commit('setSubaccountTriggers', triggers)
     },
 
     async fetchMarketsSummary({ state, commit }) {

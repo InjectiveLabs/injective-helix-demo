@@ -75,7 +75,7 @@
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Token } from '@injectivelabs/token-metadata'
-import { UiDerivativeLimitOrder, UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { UiDerivativeMarketWithToken, UiDerivativeOrderHistory } from '@injectivelabs/sdk-ui-ts'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import Pagination from '~/components/partials/common/pagination.vue'
 import SearchAsset from '~/components/partials/activity/common/search-asset.vue'
@@ -114,8 +114,8 @@ export default Vue.extend({
       return this.$accessor.derivatives.activeMarketIds
     },
 
-    triggers(): UiDerivativeLimitOrder[] {
-      return []
+    triggers(): UiDerivativeOrderHistory[] {
+      return this.$accessor.derivatives.subaccountTriggers
     },
 
     markets(): UiDerivativeMarketWithToken[] {
@@ -123,7 +123,7 @@ export default Vue.extend({
     },
 
     totalCount(): number {
-      return this.$accessor.derivatives.subaccountOrdersPagination.total
+      return this.$accessor.derivatives.subaccountTriggersPagination.total
     },
 
     totalPages(): number {
@@ -142,9 +142,33 @@ export default Vue.extend({
   },
 
   methods: {
-    fetchTriggers() {
-      // TODO: Implement this.
-      this.status.setIdle()
+    fetchTriggers(): Promise<void> {
+      const orderType = undefined
+      const direction = undefined
+      const marketId = this.markets.find((m) => {
+        return (
+          m.baseToken.symbol === this.selectedToken?.symbol ||
+          m.quoteToken.symbol === this.selectedToken?.symbol
+        )
+      })?.marketId
+
+      this.status.setLoading()
+
+      return this.$accessor.derivatives.fetchSubaccountTriggers({
+        pagination: {
+          skip: (this.page - 1) * this.limit,
+          limit: this.limit
+        },
+        filters: {
+          marketId,
+          orderType,
+          direction
+        }
+      })
+        .catch(this.$onError)
+        .finally(() => {
+          this.status.setIdle()
+        })
     },
 
     handleSideClick(side: string | undefined) {
