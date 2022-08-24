@@ -10,10 +10,10 @@
       <th class="text-left">
         {{ $t('trade.market') }}
       </th>
-      <th class="text-right">
+      <th class="text-left">
         {{ $t('trade.type') }}
       </th>
-      <th class="text-right">
+      <th class="text-left">
         {{ $t('trade.side') }}
       </th>
       <th class="text-right">

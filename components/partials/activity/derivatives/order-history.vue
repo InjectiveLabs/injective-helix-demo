@@ -37,7 +37,7 @@
           <OrderHistoryTableHeader />
           <tbody>
             <tr
-              is="Order"
+              is="OrderHistory"
               v-for="(order, index) in orders"
               :key="`order-${index}`"
               :order="order"
@@ -81,14 +81,14 @@ import Pagination from '~/components/partials/common/pagination.vue'
 import SearchAsset from '~/components/partials/activity/common/search-asset.vue'
 import ClearFiltersButton from '~/components/partials/activity/common/clear-filters-button.vue'
 import Toolbar from '~/components/partials/activity/common/toolbar.vue'
-import Order from '~/components/partials/common/derivatives/order.vue'
+import OrderHistory from '~/components/partials/common/derivatives/order-history.vue'
 import OrderHistoryTableHeader from '~/components/partials/common/derivatives/order-history-table-header.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
 import { TradeSelectorType } from '~/types'
 
 export default Vue.extend({
   components: {
-    Order,
+    OrderHistory,
     Toolbar,
     Pagination,
     SearchAsset,

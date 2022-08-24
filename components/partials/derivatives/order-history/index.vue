@@ -5,7 +5,7 @@
         <OrderHistoryTableHeader />
         <tbody>
           <tr
-            is="Order"
+            is="OrderHistory"
             v-for="(order, index) in orders"
             :key="`order-history-${index}`"
             :order="order"
@@ -23,12 +23,12 @@ import {
   UiDerivativeMarketWithToken,
   UiDerivativeOrderHistory
 } from '@injectivelabs/sdk-ui-ts'
-import Order from '~/components/partials/common/derivatives/order.vue'
+import OrderHistory from '~/components/partials/common/derivatives/order-history.vue'
 import OrderHistoryTableHeader from '~/components/partials/common/derivatives/order-history-table-header.vue'
 
 export default Vue.extend({
   components: {
-    Order,
+    OrderHistory,
     OrderHistoryTableHeader
   },
 
