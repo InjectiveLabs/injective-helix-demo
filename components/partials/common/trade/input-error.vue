@@ -474,10 +474,12 @@ export default Vue.extend({
     initialMinMarginRequirementError(): TradeError | undefined {
       const {
         market,
+        tradingTypeStopMarket,
         notionalWithLeverage,
         hasPrice,
         hasAmount,
         executionPrice,
+        worstPrice,
         amount,
         isSpot
       } = this
@@ -498,15 +500,11 @@ export default Vue.extend({
         market as UiPerpetualMarketWithToken | UiExpiryFuturesMarketWithToken
       ).initialMarginRatio
 
-      const notionalValueWithMarginRatio = executionPrice
+      const price = tradingTypeStopMarket ? worstPrice : executionPrice
+
+      const notionalValueWithMarginRatio = price
         .times(amount)
         .times(initialMarginRatio)
-
-      // console.log('exectionPrice:', executionPrice.toString())
-      // console.log('amount:', amount.toString())
-      // console.log('initialMarginRatio:', initialMarginRatio.toString())
-      // console.log('notionalValueWithMarginRatio:', notionalValueWithMarginRatio.toString())
-      // console.log('notionalWithLeverage:', notionalWithLeverage.toString())
 
       if (notionalWithLeverage.lte(notionalValueWithMarginRatio)) {
         return {
