@@ -13,9 +13,10 @@
             class="min-w-full h-auto rounded-full"
           />
         </div>
+
         <div class="ml-3">
           <span
-            class="text-gray-200 font-semibold"
+            class="text-gray-200 text-xs"
             data-cy="derivative-order-ticker-name-table-data"
           >
             {{ market.ticker }}
@@ -24,8 +25,8 @@
       </div>
     </td>
 
-    <td class="h-8 font-mono text-left">
-      <span class="text-white">
+    <td class="h-8 text-left">
+      <span class="text-white text-xs">
         {{ type }}
       </span>
     </td>
@@ -33,6 +34,7 @@
     <td class="h-8 text-left">
       <span
         data-cy="derivative-order-order-side-table-data"
+        class="text-xs"
         :class="{
           'text-green-500': isBuy,
           'text-red-500': !isBuy
@@ -50,12 +52,13 @@
     </td>
 
     <td class="h-8 font-mono text-right">
-      <span v-if="isMarketOrder" class="text-white">
+      <span v-if="isMarketOrder" class="text-white text-xs">
         {{ $t('trade.market') }}
       </span>
 
       <VNumber
         v-else
+        xs
         data-cy="derivative-order-price-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -66,18 +69,19 @@
 
     <td class="h-8 text-right font-mono">
       <VNumber
+        xs
         data-cy="derivative-order-quantity-table-data"
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
-        :number="quantity"
+        :number="total"
       />
     </td>
 
     <td v-if="!isBinaryOptionsPage" class="h-8 text-right font-mono">
       <span
         v-if="leverage.gte(0)"
-        class="flex items-center justify-end"
+        class="flex items-center justify-end text-xs"
         data-cy="derivative-order-leverage-table-data"
       >
         {{ leverage.toFormat(2) }}
@@ -85,7 +89,7 @@
       </span>
       <span
         v-else
-        class="text-gray-400"
+        class="text-gray-400 text-xs"
         data-cy="derivative-order-no-leverage-table-data"
       >
         {{ $t('trade.not_available_n_a') }}
@@ -94,12 +98,17 @@
 
     <td class="h-8 text-right font-mono">
       <VNumber
+        xs
         data-cy="derivative-order-filled-quantity-table-data"
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
-        :number="filledQuantity"
-      />
+        :number="quantity"
+      >
+        <span slot="addon" class="text-xs text-gray-500">
+          {{ market.quoteToken.symbol }}
+        </span>
+      </VNumber>
     </td>
 
     <td class="h-12 flex items-center justify-end gap-1">
@@ -113,7 +122,7 @@
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
-        :number="total"
+        :number="triggerPrice"
       />
     </td>
 
@@ -127,6 +136,7 @@
         >
           {{ $t('common.view') }}
         </span>
+
         <VButton
           v-if="orderFillable"
           :status="status"
@@ -218,6 +228,18 @@ export default Vue.extend({
       }
 
       return new BigNumberInWei(trigger.price).toBase(
+        market.quoteToken.decimals
+      )
+    },
+
+    triggerPrice(): BigNumberInBase {
+      const { trigger, market } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInWei(trigger.triggerPrice).toBase(
         market.quoteToken.decimals
       )
     },
@@ -348,8 +370,12 @@ export default Vue.extend({
     },
 
     type(): string {
-      // const orderType = this.trigger.orderType === ''
-      const orderType = ''
+      const { trigger } = this
+
+      const orderType = trigger.orderType === ('take_sell' || 'take_buy')
+        ? this.$t('trade.takeProfit')
+        : this.$t('trade.stopLoss')
+
       const executionType = this.trigger.executionType === 'market'
         ? this.$t('trade.market')
         : this.$t('trade.limit')
