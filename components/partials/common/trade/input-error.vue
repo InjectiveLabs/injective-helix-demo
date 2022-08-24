@@ -272,12 +272,8 @@ export default Vue.extend({
     },
 
     triggerPriceEqualsMarkPrice(): TradeError | undefined {
-      const {
-        tradingTypeMarket,
-        tradingTypeLimit,
-        triggerPrice,
-        markPrice
-      } = this
+      const { tradingTypeMarket, tradingTypeLimit, triggerPrice, markPrice } =
+        this
 
       if (tradingTypeMarket || tradingTypeLimit) {
         return
@@ -293,11 +289,7 @@ export default Vue.extend({
     },
 
     triggerPriceEqualsZero(): TradeError | undefined {
-      const {
-        tradingTypeMarket,
-        tradingTypeLimit,
-        triggerPrice
-      } = this
+      const { tradingTypeMarket, tradingTypeLimit, triggerPrice } = this
 
       if (tradingTypeMarket || tradingTypeLimit) {
         return
@@ -502,15 +494,19 @@ export default Vue.extend({
         return undefined
       }
 
+      const initialMarginRatio = (
+        market as UiPerpetualMarketWithToken | UiExpiryFuturesMarketWithToken
+      ).initialMarginRatio
+
       const notionalValueWithMarginRatio = executionPrice
         .times(amount)
-        .times(
-          (
-            market as
-              | UiPerpetualMarketWithToken
-              | UiExpiryFuturesMarketWithToken
-          ).initialMarginRatio
-        )
+        .times(initialMarginRatio)
+
+      // console.log('exectionPrice:', executionPrice.toString())
+      // console.log('amount:', amount.toString())
+      // console.log('initialMarginRatio:', initialMarginRatio.toString())
+      // console.log('notionalValueWithMarginRatio:', notionalValueWithMarginRatio.toString())
+      // console.log('notionalWithLeverage:', notionalWithLeverage.toString())
 
       if (notionalWithLeverage.lte(notionalValueWithMarginRatio)) {
         return {
