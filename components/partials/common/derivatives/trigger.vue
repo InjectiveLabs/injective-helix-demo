@@ -26,7 +26,7 @@
 
     <td class="h-8 font-mono text-left">
       <span class="text-white">
-        {{ trigger.orderType }}
+        {{ type }}
       </span>
     </td>
 
@@ -34,8 +34,8 @@
       <span
         data-cy="derivative-order-order-side-table-data"
         :class="{
-          'text-green-500': trigger.orderSide === DerivativeOrderSide.Buy,
-          'text-red-500': trigger.orderSide === DerivativeOrderSide.Sell
+          'text-green-500': isBuy,
+          'text-red-500': !isBuy
         }"
       >
         {{ orderSideLocalized }}
@@ -103,13 +103,9 @@
     </td>
 
     <td class="h-12 flex items-center justify-end gap-1">
-      <span class="text-gray-200 text-xs font-semibold">
-        Mark Price
-      </span>
+      <span class="text-gray-500 text-xs font-semibold"> Mark Price </span>
 
-      <span class="text-white text-xs font-semibold">
-        ≤
-      </span>
+      <span class="text-white text-xs font-semibold"> ≤ </span>
 
       <VNumber
         xs
@@ -221,7 +217,9 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(trigger.price).toBase(market.quoteToken.decimals)
+      return new BigNumberInWei(trigger.price).toBase(
+        market.quoteToken.decimals
+      )
     },
 
     margin(): BigNumberInBase {
@@ -231,7 +229,9 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(trigger.margin).toBase(market.quoteToken.decimals)
+      return new BigNumberInWei(trigger.margin).toBase(
+        market.quoteToken.decimals
+      )
     },
 
     quantity(): BigNumberInBase {
@@ -315,7 +315,7 @@ export default Vue.extend({
     orderSideLocalized(): string {
       const { trigger } = this
 
-      return trigger.orderSide === DerivativeOrderSide.Buy
+      return trigger.direction === DerivativeOrderSide.Buy
         ? this.$t('trade.buy')
         : this.$t('trade.sell')
     },
@@ -332,6 +332,29 @@ export default Vue.extend({
       }
 
       return getTokenLogoWithVendorPathPrefix(market.baseToken.logo)
+    },
+
+    isBuy(): boolean {
+      const { trigger } = this
+
+      switch (trigger.orderType) {
+        case DerivativeOrderSide.TakeBuy:
+        case DerivativeOrderSide.StopBuy:
+        case DerivativeOrderSide.Buy:
+          return true
+        default:
+          return false
+      }
+    },
+
+    type(): string {
+      // const orderType = this.trigger.orderType === ''
+      const orderType = ''
+      const executionType = this.trigger.executionType === 'market'
+        ? this.$t('trade.market')
+        : this.$t('trade.limit')
+
+      return `${orderType} ${executionType}`
     }
   },
 

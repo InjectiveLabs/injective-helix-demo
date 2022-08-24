@@ -906,7 +906,7 @@ export const actions = actionTree(
       commit('setSubaccountTrades', trades)
     },
 
-    async cancelOrder({ state }, order: UiDerivativeLimitOrder) {
+    async cancelOrder({ state }, order: UiDerivativeLimitOrder | UiDerivativeOrderHistory) {
       const { markets } = state
       const { subaccount } = this.app.$accessor.account
       const { address, injectiveAddress, isUserWalletConnected } =
