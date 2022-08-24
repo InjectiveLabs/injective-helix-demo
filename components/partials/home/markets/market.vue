@@ -94,6 +94,8 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
+import { Identify, identify } from '@amplitude/analytics-browser'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   MarketType,
@@ -109,6 +111,7 @@ import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import { AmplitudeEvents, Change, MarketRoute, TradeClickOrigin } from '~/types'
 import { betaMarketSlugs } from '~/app/data/market'
 import { getMarketRoute } from '~/app/utils/market'
+import { AMPLITUDE_VIP_TIER_LEVEL } from '~/app/utils/vendor'
 
 export default Vue.extend({
   components: {
@@ -142,6 +145,22 @@ export default Vue.extend({
   },
 
   computed: {
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
+    },
+
+    tierLevel(): number {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return 0
+      }
+
+      return new BigNumberInBase(
+        feeDiscountAccountInfo.tierLevel || 0
+      ).toNumber()
+    },
+
     lastTradedPrice(): BigNumberInBase {
       const { market, summary } = this
 
@@ -255,6 +274,10 @@ export default Vue.extend({
       ) {
         return
       }
+
+      const identifyObj = new Identify()
+      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
+      identify(identifyObj)
 
       this.$amplitude.track(AmplitudeEvents.TradeClicked, {
         market: this.marketRoute.params.spot

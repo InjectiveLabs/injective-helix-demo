@@ -98,7 +98,9 @@
         slippageTolerance: form.slippageTolerance,
         status,
         tradingType,
-        tradingTypeMarket
+        tradingTypeMarket,
+        tradingTypeStopLimit,
+        tradingTypeStopMarket
       }"
       @submit="onSubmit"
     />
@@ -126,14 +128,21 @@ import OrderDetailsWrapper from '~/components/partials/common/trade/order-detail
 import OrderSubmit from '~/components/partials/common/trade/order-submit.vue'
 import OrderInputs from '~/components/partials/common/trade/order-inputs.vue'
 import OrderTypeSelect from '~/components/partials/common/trade/order-type-select.vue'
-import { AmplitudeEvents, AveragePriceOptions } from '~/types'
+import {
+  AmplitudeEvents,
+  AveragePriceOptions,
+  OrderAttemptStatus
+} from '~/types'
 import {
   calculateAverageExecutionPriceFromFillableNotionalOnOrderBook,
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook
 } from '~/app/client/utils/spot'
 import TradingTypeButtons from '~/components/partials/common/trade/trading-type-buttons.vue'
-import { AMPLITUDE_PLACE_ORDER_CONFIRM_COUNT } from '~/app/utils/vendor'
+import {
+  AMPLITUDE_ATTEMPT_PLACE_ORDER_COUNT,
+  AMPLITUDE_VIP_TIER_LEVEL
+} from '~/app/utils/vendor'
 
 interface TradeForm {
   amount: string
@@ -195,6 +204,18 @@ export default Vue.extend({
 
     feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
       return this.$accessor.exchange.feeDiscountAccountInfo
+    },
+
+    tierLevel(): number {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return 0
+      }
+
+      return new BigNumberInBase(
+        feeDiscountAccountInfo.tierLevel || 0
+      ).toNumber()
     },
 
     buys(): UiPriceLevel[] {
@@ -721,11 +742,14 @@ export default Vue.extend({
           orderType: orderTypeToSubmit
         })
         .then(() => {
-          this.handlePlaceOrderConfirmTrack()
+          this.handleAttemptPlaceOrderTrack()
           this.$toast.success(this.$t('trade.order_placed'))
           this.$set(this, 'form', initialForm())
         })
-        .catch(this.$onRejected)
+        .catch((e) => {
+          this.handleAttemptPlaceOrderTrack(e)
+          this.$onRejected(e)
+        })
         .finally(() => {
           this.status.setIdle()
         })
@@ -747,11 +771,14 @@ export default Vue.extend({
           orderType
         })
         .then(() => {
-          this.handlePlaceOrderConfirmTrack()
+          this.handleAttemptPlaceOrderTrack()
           this.$toast.success(this.$t('trade.trade_placed'))
           this.$set(this, 'form', initialForm())
         })
-        .catch(this.$onRejected)
+        .catch((e) => {
+          this.handleAttemptPlaceOrderTrack(e)
+          this.$onRejected(e)
+        })
         .finally(() => {
           this.status.setIdle()
         })
@@ -765,27 +792,33 @@ export default Vue.extend({
         : this.submitLimitOrder()
     },
 
-    handlePlaceOrderConfirmTrack() {
+    handleAttemptPlaceOrderTrack(errorMessage?: string) {
       if (!this.market) {
         return
       }
 
       const identifyObj = new Identify()
-      identifyObj.add(AMPLITUDE_PLACE_ORDER_CONFIRM_COUNT, 1)
+      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
+      identifyObj.add(AMPLITUDE_ATTEMPT_PLACE_ORDER_COUNT, 1)
       identify(identifyObj)
 
-      this.$amplitude.track(AmplitudeEvents.PlaceOrderConfirm, {
+      this.$amplitude.track(AmplitudeEvents.AttemptPlaceOrder, {
+        amount: this.form.amount,
         market: this.market.slug,
         marketType: this.market.subType,
         orderType: this.orderType,
-        tradingType: this.tradingType,
-        amount: this.form.amount,
-        triggerPrice: '',
-        limitPrice: this.price,
         postOnly: this.form.postOnly,
+        tradingType: this.tradingType,
+        triggerPrice:
+          this.tradingTypeStopMarket || this.tradingTypeStopLimit ? '' : '',
+        limitPrice: !this.tradingTypeMarket ? this.price : '',
         slippageTolerance: this.tradingTypeMarket
           ? this.form.slippageTolerance
-          : ''
+          : '',
+        status: errorMessage
+          ? OrderAttemptStatus.Error
+          : OrderAttemptStatus.Success,
+        error: errorMessage
       })
     }
   }

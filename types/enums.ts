@@ -157,8 +157,8 @@ export enum AmplitudeEvents {
   ConnectClicked = 'Connect Clicked',
   WalletSelected = 'Wallet Selected',
   Login = 'Login',
-  PlaceOrderAttempt = 'Place Order Attempt',
-  PlaceOrderConfirm = 'Place Order Confirm',
+  ClickPlaceOrder = 'Place Order Attempt',
+  AttemptPlaceOrder = 'Place Order Confirm',
   TradeClicked = 'Trade Clicked'
 }
 
@@ -171,4 +171,9 @@ export enum TradeClickOrigin {
   Lander = 'LanderC2A',
   MarketsPage = 'Markets Page',
   TopMenu = 'Top Menu'
+}
+
+export enum OrderAttemptStatus {
+  Success = 'Success',
+  Error = 'Error'
 }

@@ -41,6 +41,7 @@ import {
   UiDerivativeLimitOrder,
   MarketType
 } from '@injectivelabs/sdk-ui-ts'
+import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import { Identify, identify } from '@amplitude/analytics-browser'
 import { AmplitudeEvents, Modal } from '~/types'
@@ -51,7 +52,10 @@ import {
   BIGGER_PRICE_WARNING_DEVIATION,
   UI_DEFAULT_MAX_NUMBER_OF_ORDERS
 } from '~/app/utils/constants'
-import { AMPLITUDE_PLACE_ORDER_ATTEMPT_COUNT } from '~/app/utils/vendor'
+import {
+  AMPLITUDE_VIP_TIER_LEVEL,
+  AMPLITUDE_CLICK_PLACE_ORDER_COUNT
+} from '~/app/utils/vendor'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
 
 export default Vue.extend({
@@ -146,6 +150,16 @@ export default Vue.extend({
     tradingType: {
       type: String as PropType<TradeExecutionType>,
       required: true
+    },
+
+    tradingTypeStopMarket: {
+      type: Boolean,
+      required: true
+    },
+
+    tradingTypeStopLimit: {
+      type: Boolean,
+      required: true
     }
   },
 
@@ -157,6 +171,22 @@ export default Vue.extend({
   },
 
   computed: {
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
+    },
+
+    tierLevel(): number {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return 0
+      }
+
+      return new BigNumberInBase(
+        feeDiscountAccountInfo.tierLevel || 0
+      ).toNumber()
+    },
+
     marketType(): MarketType {
       const { market } = this
 
@@ -288,21 +318,25 @@ export default Vue.extend({
   },
 
   methods: {
-    handlePlaceOrderAttemptTrack() {
+    handleClickPlaceOrderTrack() {
       const identifyObj = new Identify()
-      identifyObj.add(AMPLITUDE_PLACE_ORDER_ATTEMPT_COUNT, 1)
+      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
+      identifyObj.add(AMPLITUDE_CLICK_PLACE_ORDER_COUNT, 1)
       identify(identifyObj)
 
-      this.$amplitude.track(AmplitudeEvents.PlaceOrderAttempt, {
+      this.$amplitude.track(AmplitudeEvents.ClickPlaceOrder, {
+        amount: this.amount,
         market: this.market.slug,
         marketType: this.market.subType,
         orderType: this.orderType,
-        tradingType: this.tradingType,
-        amount: this.amount,
-        leverage: this.leverage,
-        triggerPrice: '',
-        limitPrice: this.price,
         postOnly: this.postOnly,
+        tradingType: this.tradingType,
+        leverage:
+          this.market.subType === MarketType.Perpetual ? this.leverage : '',
+        triggerPrice:
+          this.tradingTypeStopMarket || this.tradingTypeStopLimit ? '' : '',
+        reduceOnly: this.market.subType === MarketType.Perpetual ? '' : '',
+        limitPrice: !this.tradingTypeMarket ? this.price : '',
         slippageTolerance: this.tradingTypeMarket ? this.slippageTolerance : ''
       })
     },
@@ -315,7 +349,7 @@ export default Vue.extend({
         isUserWalletConnected
       } = this
 
-      this.handlePlaceOrderAttemptTrack()
+      this.handleClickPlaceOrderTrack()
 
       if (!isUserWalletConnected) {
         return this.$toast.error(this.$t('please_connect_your_wallet'))
