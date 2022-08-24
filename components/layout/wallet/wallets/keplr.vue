@@ -1,7 +1,7 @@
 <template>
   <WalletWrapper @click="handleClick">
     <template #icon>
-      <img src="/keplr-icon.png" class="w-8 h-8" alt="Keplr Icon" />
+      <IconKeplr class="w-8 h-8" />
     </template>
     <template #title>
       {{ $t('connect.keplr') }}

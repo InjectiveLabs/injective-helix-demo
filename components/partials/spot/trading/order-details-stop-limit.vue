@@ -25,7 +25,7 @@
             "
           />
           <span
-            class="flex items-center"
+            class="font-mono flex items-center"
             data-cy="trading-page-details-fee-percentage-text-content"
           >
             {{
