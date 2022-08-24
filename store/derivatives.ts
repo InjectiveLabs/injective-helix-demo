@@ -876,7 +876,6 @@ export const actions = actionTree(
           injectiveAddress,
           orders: [
             {
-              orderMask: 1,
               marketId: order.marketId,
               subaccountId: order.subaccountId,
               orderHash: order.orderHash
