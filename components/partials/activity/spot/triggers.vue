@@ -12,7 +12,7 @@
           <FilterSelector
             class="min-w-3xs hidden sm:block"
             data-cy="universal-table-filter-by-type-drop-down"
-            :type="TradeSelectorType.TypeAll"
+            :type="TradeSelectorType.Type"
             :value="type"
             @click="handleTypeClick"
           />
@@ -51,7 +51,7 @@
         />
       </TableWrapper>
 
-      <portal to="activity-tab-derivative-triggers-count">
+      <portal to="activity-tab-spot-triggers-count">
         <span v-if="status.isNotLoading()"> ({{ triggers.length }}) </span>
       </portal>
 
@@ -75,15 +75,14 @@
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Token } from '@injectivelabs/token-metadata'
-import { DerivativeOrderSide, UiDerivativeMarketWithToken, UiDerivativeOrderHistory } from '@injectivelabs/sdk-ui-ts'
-import { TradeDirection } from '@injectivelabs/ts-types'
+import { UiSpotMarketWithToken, UiSpotOrderHistory } from '@injectivelabs/sdk-ui-ts'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import Pagination from '~/components/partials/common/pagination.vue'
 import SearchAsset from '~/components/partials/activity/common/search-asset.vue'
 import ClearFiltersButton from '~/components/partials/activity/common/clear-filters-button.vue'
 import Toolbar from '~/components/partials/activity/common/toolbar.vue'
-import Trigger from '~/components/partials/common/derivatives/trigger.vue'
-import TriggersTableHeader from '~/components/partials/common/derivatives/triggers-table-header.vue'
+import Trigger from '~/components/partials/common/spot/trigger.vue'
+import TriggersTableHeader from '~/components/partials/common/spot/triggers-table-header.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
 import { TradeSelectorType } from '~/types'
 
@@ -112,19 +111,19 @@ export default Vue.extend({
 
   computed: {
     activeMarketIds(): string[] {
-      return this.$accessor.derivatives.activeMarketIds
+      return this.$accessor.spot.activeMarketIds
     },
 
-    triggers(): UiDerivativeOrderHistory[] {
-      return this.$accessor.derivatives.subaccountConditionalOrders
+    triggers(): UiSpotOrderHistory[] {
+      return this.$accessor.spot.subaccountConditionalOrders
     },
 
-    markets(): UiDerivativeMarketWithToken[] {
-      return this.$accessor.derivatives.markets
+    markets(): UiSpotMarketWithToken[] {
+      return this.$accessor.spot.markets
     },
 
     totalCount(): number {
-      return this.$accessor.derivatives.subaccountConditionalOrdersPagination.total
+      return this.$accessor.spot.subaccountConditionalOrdersPagination.total
     },
 
     totalPages(): number {
@@ -144,8 +143,8 @@ export default Vue.extend({
 
   methods: {
     fetchTriggers(): Promise<void> {
-      const orderTypes = [] as DerivativeOrderSide[]
-      const direction = this.side as TradeDirection
+      const orderTypes = undefined
+      const direction = undefined
       const marketId = this.markets.find((m) => {
         return (
           m.baseToken.symbol === this.selectedToken?.symbol ||
@@ -155,7 +154,7 @@ export default Vue.extend({
 
       this.status.setLoading()
 
-      return this.$accessor.derivatives.fetchSubaccountConditionalOrders({
+      return this.$accessor.spot.fetchSubaccountConditionalOrders({
         pagination: {
           skip: (this.page - 1) * this.limit,
           limit: this.limit

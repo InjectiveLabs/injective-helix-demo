@@ -42,14 +42,14 @@
 <script lang="ts">
 import Vue from 'vue'
 import {
-  UiDerivativeMarketWithToken,
-  UiDerivativeOrderHistory
-  // UiDerivativeTrade
+  UiSpotMarketWithToken,
+  UiSpotOrderHistory
+  // UiSpotTrade
 } from '@injectivelabs/sdk-ui-ts'
 // import MobileTrade from '~/components/partials/common/trade/mobile-trade.vue'
 // import ModalMobileTradeDetails from '~/components/partials/modals/mobile-trade-details.vue'
-import Trigger from '~/components/partials/common/derivatives/trigger.vue'
-import TriggersTableHeader from '~/components/partials/common/derivatives/triggers-table-header.vue'
+import Trigger from '~/components/partials/common/spot/trigger.vue'
+import TriggersTableHeader from '~/components/partials/common/spot/triggers-table-header.vue'
 // import TableBody from '~/components/elements/table-body.vue'
 // import { Modal } from '~/types'
 
@@ -74,17 +74,17 @@ export default Vue.extend({
   },
 
   computed: {
-    market(): UiDerivativeMarketWithToken | undefined {
-      return this.$accessor.derivatives.market
+    market(): UiSpotMarketWithToken | undefined {
+      return this.$accessor.spot.market
     },
 
-    triggers(): UiDerivativeOrderHistory[] {
-      return this.$accessor.derivatives.subaccountConditionalOrders
+    triggers(): UiSpotOrderHistory[] {
+      return this.$accessor.spot.subaccountConditionalOrders
     }
   }
 
   // methods: {
-  //   handleShowTradeDetails(trade: UiDerivativeTrade) {
+  //   handleShowTradeDetails(trade: UiSpotTrade) {
   //     this.$accessor.modal.openModal(Modal.MobileTradeDetails)
   //   }
   // }

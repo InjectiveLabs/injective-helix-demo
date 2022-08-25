@@ -118,7 +118,7 @@ export const actions = actionTree(
     },
 
     async fetchSubaccountPositions(
-      { commit },
+      { commit, state },
       activityFetchOptions: ActivityFetchOptions | undefined
     ) {
       const { subaccount } = this.app.$accessor.account
@@ -131,6 +131,16 @@ export const actions = actionTree(
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
 
+      if (
+        state.subaccountPositions.length > 0 &&
+        state.subaccountPositionsPagination.endTime === 0
+      ) {
+        commit(
+          'setSubaccountPositionsEndTime',
+          state.subaccountPositions[0].updatedAt
+        )
+      }
+
       const { positions, pagination } =
         await indexerDerivativesApi.fetchPositions({
           marketId: filters?.marketId,
@@ -139,7 +149,8 @@ export const actions = actionTree(
           direction: filters?.direction,
           pagination: {
             skip: paginationOptions ? paginationOptions.skip : 0,
-            limit: paginationOptions ? paginationOptions.limit : 0
+            limit: paginationOptions ? paginationOptions.limit : 0,
+            endTime: state.subaccountPositionsPagination.endTime
           }
         })
 

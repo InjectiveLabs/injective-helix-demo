@@ -278,14 +278,13 @@ export default Vue.extend({
     },
 
     unfilledQuantity(): BigNumberInBase {
-      return ZERO_IN_BASE
-      // const { market, trigger } = this
+      const { market, quantity, filledQuantity } = this
 
-      // if (!market) {
-      //   return ZERO_IN_BASE
-      // }
+      if (!market) {
+        return ZERO_IN_BASE
+      }
 
-      // return new BigNumberInBase(trigger.unfilledQuantity)
+      return quantity.minus(filledQuantity)
     },
 
     filledQuantity(): BigNumberInBase {

@@ -168,7 +168,7 @@ export default Vue.extend({
     },
 
     triggers(): UiDerivativeOrderHistory[] {
-      return this.$accessor.derivatives.subaccountTriggers
+      return this.$accessor.derivatives.subaccountConditionalOrders
     },
 
     orderHistory(): UiDerivativeOrderHistory[] {
@@ -256,9 +256,9 @@ export default Vue.extend({
   mounted() {
     Promise.all([
       this.$accessor.derivatives.fetchSubaccountOrders(),
-      this.$accessor.derivatives.fetchSubaccountTrades(),
-      this.$accessor.derivatives.fetchSubaccountTriggers(),
       this.$accessor.derivatives.fetchSubaccountOrderHistory(),
+      this.$accessor.derivatives.fetchSubaccountConditionalOrders(),
+      this.$accessor.derivatives.fetchSubaccountTrades(),
       this.$accessor.positions.fetchSubaccountPositions()
     ])
       .then(() => {

@@ -65,6 +65,7 @@ export interface FilterOptions {
   direction?: TradeDirection
   orderSide?: SpotOrderSide | DerivativeOrderSide
   orderType?: SpotOrderSide | DerivativeOrderSide
+  orderTypes?: SpotOrderSide[] | DerivativeOrderSide[]
   types?: TradeExecutionType[]
   denom?: string
   isConditional?: boolean

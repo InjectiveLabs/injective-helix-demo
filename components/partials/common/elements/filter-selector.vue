@@ -56,7 +56,7 @@ export default Vue.extend({
   data() {
     return {
       placeholder: '',
-      list: [] as { text: string; value: string | undefined }[]
+      list: [] as { text: string; value: string | Object | undefined }[]
     }
   },
 
@@ -80,31 +80,52 @@ export default Vue.extend({
       this.list = [
         {
           text: this.$t('trade.all'),
-          value: undefined
-        },
-        {
-          text: this.$t('trade.market'),
-          value: 'market'
-        },
-        {
-          text: `${this.$t('trade.stopLoss')} ${this.$t('trade.market')}`,
-          value: 'stopLossMarket'
-        },
-        {
-          text: `${this.$t('trade.takeProfit')} ${this.$t('trade.market')}`,
-          value: 'takeProfitMarket'
+          value: {
+            executionType: undefined,
+            orderType: undefined
+          }
         },
         {
           text: this.$t('trade.limit'),
-          value: 'limit'
+          value: {
+            executionType: 'limit',
+            orderType: undefined
+          }
+        },
+        {
+          text: this.$t('trade.market'),
+          value: {
+            executionType: 'market',
+            orderType: undefined
+          }
         },
         {
           text: `${this.$t('trade.stopLoss')} ${this.$t('trade.limit')}`,
-          value: 'stopLossLimit'
+          value: {
+            executionType: 'limit',
+            orderType: 'stop_loss'
+          }
+        },
+        {
+          text: `${this.$t('trade.stopLoss')} ${this.$t('trade.market')}`,
+          value: {
+            executionType: 'market',
+            orderType: 'stop_loss'
+          }
         },
         {
           text: `${this.$t('trade.takeProfit')} ${this.$t('trade.limit')}`,
-          value: 'takeProfitLimit'
+          value: {
+            executionType: 'limit',
+            orderType: 'take_profit'
+          }
+        },
+        {
+          text: `${this.$t('trade.takeProfit')} ${this.$t('trade.market')}`,
+          value: {
+            executionType: 'market',
+            orderType: 'take_profit'
+          }
         }
       ]
       this.placeholder = this.$t('trade.type')
