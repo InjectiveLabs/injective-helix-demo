@@ -40,6 +40,7 @@ module.exports = {
       primary: '0px 0px 4px #00f2ff',
       card: '0px 0px 16px rgb(22 25 34 / 30%)',
       helix: '0px 0px 100px rgba(0, 0, 0, 0.1)',
+      helixLight: '0px 0px 10px rgba(0,0,0,0.1)',
       DEFAULT: '0px 0px 4px #08090c',
       sm: '0px 0px 5px #08090c',
       md: '0px 0px 6px #08090c',

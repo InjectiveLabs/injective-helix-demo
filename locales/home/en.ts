@@ -3,17 +3,37 @@ export default {
     title: 'Buy & Sell Bitcoin & Crypto',
     subtitle:
       'Trade unlimited crypto markets on the premier decentralized cross-chain exchange',
-    startTradingNow: 'Start Trading Now',
+    tradeNow: 'Trade Now',
+    latestNews: 'Latest News',
     viewAllMarkets: 'View all markets',
     trending: 'Trending',
-    whatsNew: "What's new",
+    newlyAdded: 'Newly added',
     totalTradingVolume: 'Total trading volume',
     totalTrades: 'Total trades',
+    sevenDaysPrice: '7 days price',
     iAm: 'I am...',
     newToCrypto: 'New to Crypto',
     experienceTrader: 'An Experienced Trader',
     institutionalTrader: 'An Institutional Trader',
-    startTradingNote: 'Start trading unlimited markets with zero gas fees',
+    builtOn: 'Built on',
+    startTradingNote: 'Start trading on Helix now',
+    whyTradeOnHelix: 'Why trade on Helix',
+    decentralizedWithAdvancedTypeOrders:
+      'Decentralized order book exchange with advanced order types',
+    enjoySpotTrading:
+      'Enjoy trading spot and perpetual markets on the premier front-running resistant decentralized orderbook exchange using stop-loss and take-profit orders.',
+    lowFees: 'Low fees for maximum benefits',
+    zeroGasFees:
+      'Zero gas fees, low taker fees and highly competitive maker fee rebates for the best trading experience amongst all exchanges.',
+    crossChainAssets: 'Cross-chain assets and novel markets',
+    seamlesslyTransferAssets:
+      'Seamlessly transfer assets from Ethereum and Cosmos networks to trade in popular markets as well as unique markets not available elsewhere.',
+    getStarted: 'Get started in 3 simple steps',
+    bridgeToInjective: 'Bridge assets from Ethereum to Injective',
+    injective: 'INJECTIVE',
+    transferFromInjective: 'Transfer from Injective Wallet to Trading account',
+    startTrading: 'Start trading on Helix',
+    startTradingNow: 'Start trading now',
     newToCryptoFeatures: {
       featureOne: 'Fast and Simple',
       featureOneDescription:

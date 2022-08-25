@@ -1,6 +1,7 @@
 // @ts-nocheck
 import Vue from 'vue'
 
+import AnnouncementsCard from '~/components/elements/announcements-card.vue'
 import Badge from '~/components/elements/badge.vue'
 import BarSteps from '~/components/elements/bar-steps.vue'
 import Button from '~/components/elements/button.vue'
@@ -13,8 +14,8 @@ import Checkbox from '~/components/elements/checkbox.vue'
 import Input from '~/components/inputs/input.vue'
 import Modal from '~/components/elements/modal.vue'
 import Panel from '~/components/elements/panel.vue'
+import PanelLight from '~/components/elements/panel-light.vue'
 import ProgressSteps from '~/components/elements/progress-steps'
-import ResourceCard from '~/components/elements/resource-card.vue'
 import Separator from '~/components/elements/separator.vue'
 import Search from '~/components/elements/search.vue'
 import TableWrapper from '~/components/elements/table-wrapper.vue'
@@ -29,6 +30,7 @@ import IconCheckTooltip from '~/components/elements/info-check-tooltip.vue'
 import VNumber from '~/components/partials/common/elements/number.vue'
 import VEmpNumber from '~/components/partials/common/elements/emp-number.vue'
 
+Vue.component('AnnouncementsCard', AnnouncementsCard)
 Vue.component('VBadge', Badge)
 Vue.component('VBarSteps', BarSteps)
 Vue.component('VButton', Button)
@@ -43,8 +45,8 @@ Vue.component('VInput', Input)
 Vue.component('VModal', Modal)
 Vue.component('VNumber', VNumber)
 Vue.component('VPanel', Panel)
+Vue.component('PanelLight', PanelLight)
 Vue.component('ProgressSteps', ProgressSteps)
-Vue.component('ResourceCard', ResourceCard)
 Vue.component('VSeparator', Separator)
 Vue.component('HocLoading', HocLoading)
 Vue.component('VSearch', Search)

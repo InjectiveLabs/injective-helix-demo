@@ -3,7 +3,7 @@
     <div
       class="grid grid-cols-12 items-center border-b border-helixGray-200 last-of-type:border-b-0 py-4 gap-12 box-content"
     >
-      <div class="col-span-2 flex items-center justify-start pl-4">
+      <div class="col-span-4 flex items-center justify-start pl-4">
         <div class="flex items-center justify-start">
           <img
             :src="baseTokenLogo"
@@ -22,7 +22,7 @@
           </div>
         </div>
       </div>
-      <div class="col-span-2 flex">
+      <div class="col-span-3 flex">
         <span class="w-full text-gray-900 font-medium text-sm text-right">
           <div class="flex align-center justify-end">
             <IconArrow
@@ -50,13 +50,12 @@
         <span
           v-if="!change.isNaN()"
           :class="change.gte(0) ? 'text-green-500' : 'text-red-500'"
-          class="w-full text-right"
         >
           {{ changeToFormat }}%
         </span>
         <span v-else class="text-gray-400">&mdash;</span>
       </div>
-      <div class="col-span-3 flex h-7 w-[70%] justify-self-center">
+      <div class="col-span-3 flex pr-4 h-7">
         <LineGraph
           :data="chartData"
           :color="'#f3164d'"
@@ -64,9 +63,6 @@
           :stroke-width="1"
           :smoothness="0.2"
         />
-      </div>
-      <div class="col-span-3 align-center justify-self-center">
-        <VButton primary-outline-light md class="rounded">Trade</VButton>
       </div>
     </div>
   </nuxt-link>

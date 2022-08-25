@@ -1,83 +1,55 @@
 <template>
-  <div>
-    <div class="overflow-x-auto md:overflow-x-visible w-full rounded">
-      <TableHeader v-if="markets.length !== 0" lg class="pt-0 pb-5">
-        <span class="text-left col-span-3">
-          {{ $t('trade.market') }}
-        </span>
-        <span class="col-span-3">
-          <div class="flex items-center relative justify-end">
-            <span class="flex-1 text-right">{{
-              $t('trade.last_traded_price')
-            }}</span>
-            <IconInfoTooltip
-              class="ml-2"
-              :tooltip="$t('trade.last_traded_price_tooltip')"
-            />
-          </div>
-        </span>
-        <span class="col-span-3">
-          <div class="flex items-center relative justify-end">
-            {{ $t('trade.market_change_24h') }}
-            <IconInfoTooltip
-              class="ml-2"
-              :tooltip="$t('trade.market_change_24h_tooltip')"
-            />
-          </div>
-        </span>
-        <span class="col-span-3">
-          <div class="flex items-center relative justify-end">
-            {{ $t('trade.market_volume_24h') }}
-            <IconInfoTooltip
-              class="ml-2"
-              :tooltip="$t('trade.market_volume_24h_tooltip')"
-            />
-          </div>
-        </span>
-      </TableHeader>
-
-      <TableBody>
-        <Market
+  <HocLoading :status="status" :show-loading="markets.length === 0">
+    <div class="bg-white rounded-lg pt-6 shadow-helix w-full self-center px-4">
+      <div v-if="isHero">
+        <HeroMarketHeader v-if="markets.length !== 0" />
+        <HeroMarketRow
           v-for="({ market, summary }, index) in marketsList"
           :key="`market-${index}`"
-          class="col-span-1"
           :market="market"
           :summary="summary"
         />
-        <MarketNew
+      </div>
+      <div v-else>
+        <MarketHeader />
+        <MarketRow
+          v-for="({ market, summary }, index) in marketsList"
+          :key="`market-${index}`"
+          :market="market"
+          :summary="summary"
+        />
+        <MarketRow
           v-for="({ market, summary }, index) in filteredUpcomingMarkets"
           :key="`market-new-${index}`"
           class="col-span-1"
           :market="market"
           :summary="summary"
         />
-        <MarketDeprecated
+        <MarketRow
           v-for="({ market, summary }, index) in filteredDeprecatedMarkets"
           :key="`market-deprecated-${index}`"
           class="col-span-1"
           :market="market"
           :summary="summary"
         />
-      </TableBody>
+      </div>
     </div>
-  </div>
+  </HocLoading>
 </template>
 
 <script lang="ts">
-import { BigNumberInBase } from '@injectivelabs/utils'
 import Vue, { PropType } from 'vue'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
-  ZERO_IN_BASE,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiSpotMarketSummary,
   UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
-import TableBody from '~/components/elements/table-body.vue'
-import TableHeader from '~/components/elements/table-header.vue'
-import Market from '~/components/partials/home/markets/market.vue'
-import MarketNew from '~/components/partials/home/markets/market-new.vue'
-import MarketDeprecated from '~/components/partials/home/markets/market-deprecated.vue'
+import MarketHeader from '~/components/partials/home/markets/market-header.vue'
+import HeroMarketHeader from '~/components/partials/home/markets/hero-market-header.vue'
+import HeroMarketRow from '~/components/partials/home/markets/hero-market-row.vue'
+import MarketRow from '~/components/partials/home/markets/market.vue'
 import {
   deprecatedMarkets,
   newMarketsSlug,
@@ -87,54 +59,93 @@ import { MarketFilterType, UiMarketAndSummary } from '~/types'
 
 export default Vue.extend({
   components: {
-    TableBody,
-    TableHeader,
-    Market,
-    MarketDeprecated,
-    MarketNew
+    HeroMarketHeader,
+    HeroMarketRow,
+    MarketHeader,
+    MarketRow
   },
 
   props: {
     filterType: {
       type: String as PropType<MarketFilterType>,
-      default: MarketFilterType.All
+      default: MarketFilterType.Volume
     },
 
-    showAll: {
+    limit: {
+      type: Number,
+      default: 5
+    },
+
+    isHero: {
       type: Boolean,
       default: false
-    },
-
-    markets: {
-      type: Array as PropType<
-        Array<UiDerivativeMarketWithToken | UiSpotMarketWithToken>
-      >,
-      required: true
-    },
-
-    summaries: {
-      type: Array as PropType<
-        Array<UiDerivativeMarketSummary | UiSpotMarketSummary>
-      >,
-      required: true
     }
   },
 
   data() {
     return {
-      limit: 5
+      status: new Status(StatusType.Loading),
+      interval: 0 as any
     }
   },
 
   computed: {
+    derivativeMarkets(): UiDerivativeMarketWithToken[] {
+      return this.$accessor.derivatives.markets
+    },
+
+    derivativeMarketsSummary(): UiDerivativeMarketSummary[] {
+      return this.$accessor.derivatives.marketsSummary
+    },
+
+    spotMarkets(): UiSpotMarketWithToken[] {
+      return this.$accessor.spot.markets
+    },
+
+    spotMarketsSummary(): UiSpotMarketSummary[] {
+      return this.$accessor.spot.marketsSummary
+    },
+
+    upcomingMarkets(): Array<
+      UiSpotMarketWithToken | UiDerivativeMarketWithToken
+    > {
+      return this.$accessor.exchange.upcomingMarkets
+    },
+
+    upcomingMarketSummaries(): Array<
+      UiSpotMarketSummary | UiDerivativeMarketSummary
+    > {
+      return this.$accessor.exchange.upcomingMarketsSummaries
+    },
+
+    markets(): Array<UiSpotMarketWithToken | UiDerivativeMarketWithToken> {
+      const { spotMarkets, derivativeMarkets, upcomingMarkets } = this
+
+      return [...derivativeMarkets, ...spotMarkets, ...upcomingMarkets]
+    },
+
+    marketsSummary(): Array<UiSpotMarketSummary | UiDerivativeMarketSummary> {
+      const {
+        spotMarketsSummary,
+        derivativeMarketsSummary,
+        upcomingMarketSummaries
+      } = this
+
+      return [
+        ...derivativeMarketsSummary,
+        ...spotMarketsSummary,
+        ...upcomingMarketSummaries
+      ]
+    },
+
     mappedMarkets(): UiMarketAndSummary[] {
-      const { markets, summaries } = this
+      const { markets, marketsSummary } = this
 
       return markets
         .map((market) => {
           return {
             market,
-            summary: summaries.find(
+            summary: marketsSummary.find(
               (summary) => summary.marketId === market.marketId
             )
           }
@@ -230,24 +241,29 @@ export default Vue.extend({
       const { filteredMarketsList, limit } = this
 
       return filteredMarketsList.slice(0, limit)
-    },
+    }
+  },
 
-    totalVolume(): BigNumberInBase {
-      const { filteredMarkets } = this
+  mounted() {
+    this.setMarketSummariesPolling()
+  },
 
-      return filteredMarkets.reduce((total, { summary }) => {
-        if (!summary.volume || Number.isNaN(summary.volume)) {
-          return total
-        }
+  beforeDestroy() {
+    clearInterval(this.interval)
+  },
 
-        return total.plus(summary.volume)
-      }, ZERO_IN_BASE)
-    },
-
-    totalVolumeToFormat(): string {
-      const { totalVolume } = this
-
-      return totalVolume.toFormat(0, BigNumberInBase.ROUND_DOWN)
+  methods: {
+    setMarketSummariesPolling() {
+      Promise.all([this.$accessor.app.pollMarkets()])
+        .then(() => {
+          this.interval = setInterval(async () => {
+            await this.$accessor.app.pollMarkets()
+          }, 5000)
+        })
+        .catch(this.$onRejected)
+        .finally(() => {
+          this.status.setIdle()
+        })
     }
   }
 })

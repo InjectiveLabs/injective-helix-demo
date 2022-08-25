@@ -1,7 +1,7 @@
 <template>
   <div
-    :style="{ backgroundImage: `url('/svg/bg-dark.svg')` }"
-    class="bg-cover py-14 bg-left-top"
+    :style="{ backgroundImage: `url('/svg/cta-area.svg')` }"
+    class="bg-cover py-14 bg-left-top h-[126px] md:h-[525px] flex items-center"
   >
     <div class="w-full mx-auto max-w-xs sm:max-w-md md:max-w-full xl:w-4/5">
       <h1 class="text-4xl 4xl:text-5xl font-bold tracking-wide text-center">
@@ -12,10 +12,10 @@
         <VButton
           lg
           primary
-          class="w-60 mt-10 rounded"
+          class="w-[160px] mt-10 rounded"
           @click="handleGetStartedClick"
         >
-          {{ $t('home.startTradingNow') }}
+          {{ $t('home.tradeNow') }}
         </VButton>
       </div>
     </div>

@@ -94,3 +94,11 @@ export const getReferralUrl = (): string => {
 
   return 'https://referrals.injective.exchange/'
 }
+
+export const getAnnouncementsListEndpoint = () => {
+  return 'https://injectivelabshelp.zendesk.com/api/v2/help_center/en-us/articles?sort_by=created_at&sort_order=desc&label_names=announcement'
+}
+
+export const getAnnouncementAttachmentEndpoint = (announcementId: number) => {
+  return `https://injectivelabshelp.zendesk.com/api/v2/help_center/en-us/articles/${announcementId}/attachments`
+}

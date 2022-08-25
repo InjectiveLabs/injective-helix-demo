@@ -78,6 +78,12 @@ export default Vue.extend({
       type: Boolean
     },
 
+    primaryOutlineLight: {
+      required: false,
+      default: false,
+      type: Boolean
+    },
+
     textLg: {
       required: false,
       default: false,
@@ -126,6 +132,12 @@ export default Vue.extend({
       type: Boolean
     },
 
+    textHelixGray: {
+      required: false,
+      default: false,
+      type: Boolean
+    },
+
     light: {
       default: false,
       type: Boolean
@@ -154,7 +166,11 @@ export default Vue.extend({
             'border-helixGray-500'
           )
         } else {
-          classes.push('pointer-events-none', 'text-gray-500', 'bg-helixGray-500')
+          classes.push(
+            'pointer-events-none',
+            'text-gray-500',
+            'bg-helixGray-500'
+          )
         }
       }
 
@@ -255,6 +271,21 @@ export default Vue.extend({
             'hover:text-white',
             'hover:border-white'
           )
+        } else if (this.primaryOutlineLight) {
+          classes.push(
+            'text-primary-500',
+            'font-semibold',
+            'border',
+            'border-primary-500',
+            'hover:text-primary-400',
+            'hover:border-primary-400'
+          )
+        } else if (this.textHelixGray) {
+          classes.push(
+            'text-helixGray-900',
+            'font-semibold',
+            'hover:opacity-100'
+          )
         }
       }
 
@@ -266,7 +297,18 @@ export default Vue.extend({
     },
 
     spinnerClasses(): string {
-      const classes = ['top-0', 'left-0', 'mx-auto', 'block', 'w-4', 'h-4', 'border-2', 'rounded-full', 'border-transparent', 'bg-transparent']
+      const classes = [
+        'top-0',
+        'left-0',
+        'mx-auto',
+        'block',
+        'w-4',
+        'h-4',
+        'border-2',
+        'rounded-full',
+        'border-transparent',
+        'bg-transparent'
+      ]
 
       if (this.sm) {
         classes.push('h-3', 'w-3')

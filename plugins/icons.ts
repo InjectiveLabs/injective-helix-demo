@@ -12,6 +12,9 @@ import CategoryAlt from '~/components/icons/category-alt.vue'
 import Check from '~/components/icons/check.vue'
 import CheckCircle from '~/components/icons/check-circle.vue'
 import Chevron from '~/components/icons/chevron.vue'
+import CircleOne from '~/components/icons/circle-one.vue'
+import CircleTwo from '~/components/icons/circle-two.vue'
+import CircleThree from '~/components/icons/circle-three.vue'
 import Close from '~/components/icons/close.vue'
 import Copy from '~/components/icons/copy.vue'
 import CopyPlain from '~/components/icons/copy-plain.vue'
@@ -87,6 +90,9 @@ Vue.component('IconCategoryAlt', CategoryAlt)
 Vue.component('IconCheck', Check)
 Vue.component('IconCheckCircle', CheckCircle)
 Vue.component('IconChevron', Chevron)
+Vue.component('IconCircleOne', CircleOne)
+Vue.component('IconCircleTwo', CircleTwo)
+Vue.component('IconCircleThree', CircleThree)
 Vue.component('IconClose', Close)
 Vue.component('IconCopy', Copy)
 Vue.component('IconTorus', Torus)
