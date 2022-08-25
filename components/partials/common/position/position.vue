@@ -23,6 +23,7 @@
     <td class="text-left pl-1text-xs">
       <span
         data-cy="open-position-trade-direction-table-data"
+        class="text-xs"
         :class="{
           'text-green-500': position.direction === TradeDirection.Long,
           'text-red-500': position.direction === TradeDirection.Short
@@ -128,7 +129,7 @@
       <span v-if="hideBalance">
         {{ HIDDEN_BALANCE_DISPLAY }}
       </span>
-      <div v-else class="flex items-center justify-end h-8">
+      <div v-else class="flex items-center justify-end">
         <VNumber
           xs
           data-cy="open-position-margin-table-data"

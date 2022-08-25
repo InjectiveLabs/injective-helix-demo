@@ -1,13 +1,13 @@
 <template>
   <tr v-if="market" :data-cy="'trade-history-table-row-' + market.ticker">
-    <td class="h-8 text-left font-mono">
-      <span class="text-gray-400 text-sm" data-cy="trade-entry-time">
+    <td class="h-8 text-left">
+      <span class="text-white text-xs" data-cy="trade-entry-time">
         {{ time }}
       </span>
     </td>
     <td class="h-8 text-left cursor-pointer">
       <nuxt-link class="flex items-center justify-start" :to="marketRoute">
-        <div v-if="baseTokenLogo" class="w-6 h-6">
+        <div v-if="baseTokenLogo" class="w-4 h-4">
           <img
             :src="baseTokenLogo"
             :alt="market.baseToken.name"
@@ -16,7 +16,7 @@
         </div>
         <div class="ml-3">
           <span
-            class="text-gray-200 font-semibold"
+            class="text-gray-200 text-xs"
             data-cy="trade-history-ticker-name-table-data"
           >
             {{ market.ticker }}
@@ -26,12 +26,15 @@
     </td>
 
     <td class="h-8 text-left" data-cy="trade-history-execution-type-table-data">
-      {{ tradeExecutionType }}
+      <span class="text-white text-xs">
+        {{ tradeExecutionType }}
+      </span>
     </td>
 
     <td class="h-8 text-left">
       <span
         data-cy="trade-history-trade-directon-table-data"
+        class="text-xs"
         :class="{
           'text-green-500': trade.tradeDirection === TradeDirection.Buy,
           'text-red-500': trade.tradeDirection === TradeDirection.Sell
@@ -49,6 +52,7 @@
 
     <td class="h-8 text-right font-mono">
       <VNumber
+        xs
         data-cy="trade-history-price-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -59,6 +63,7 @@
 
     <td class="h-8 text-right font-mono">
       <VNumber
+        xs
         data-cy="trade-history-quantity-table-data"
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
@@ -68,11 +73,12 @@
     </td>
     <td class="h-8 text-right font-mono">
       <VNumber
+        xs
         use-number-decimals
         :number="fee"
         data-cy="trade-history-fee-table-data"
       >
-        <span slot="addon" class="text-sm text-gray-500">
+        <span slot="addon" class="text-xs text-gray-500">
           {{ market.quoteToken.symbol }}
         </span>
       </VNumber>
@@ -80,13 +86,14 @@
 
     <td class="h-8 text-right font-mono">
       <VNumber
+        xs
         data-cy="trade-history-total-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
         :number="total"
       >
-        <span slot="addon" class="text-sm text-gray-500">
+        <span slot="addon" class="text-xs text-gray-500">
           {{ market.quoteToken.symbol }}
         </span>
       </VNumber>

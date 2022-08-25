@@ -2,7 +2,7 @@
   <tr data-cy="wallet-history-table-row">
     <td class="h-8 font-mono">
       <span
-        class="text-gray-400 text-sm"
+        class="text-gray-400 text-xs"
         data-cy="wallet-history-time-table-data"
       >
         {{ time }}
@@ -13,7 +13,9 @@
       class="h-8 text-left"
       data-cy="wallet-history-operation-type-table-data"
     >
-      <span>{{ transferType }}</span>
+      <span class="text-white text-xs">
+        {{ transferType }}
+      </span>
     </td>
 
     <td class="h-8 text-left cursor-pointer">
@@ -27,7 +29,7 @@
         </div>
         <div class="ml-3">
           <span
-            class="text-gray-200 font-semibold"
+            class="text-gray-200 text-xs"
             data-cy="wallet-history-asset-table-data"
           >
             {{ transaction.token.symbol }}
@@ -38,12 +40,13 @@
 
     <td class="h-8 text-right font-mono">
       <VNumber
+        xs
         :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
         :number="amount"
         :rounding-mode="BIG_NUMBER_ROUND_HALF_UP_MODE"
         data-cy="wallet-history-amount-table-data"
       >
-        <span slot="addon" class="text-sm text-gray-500">
+        <span slot="addon" class="text-xs text-gray-500">
           {{ transaction.token.symbol }}
         </span>
       </VNumber>
@@ -51,6 +54,7 @@
 
     <td class="h-8 text-left font-mono">
       <VAddress
+        xs
         :address="transaction.sender"
         data-cy="wallet-history-sender-table-data"
       >
@@ -60,6 +64,7 @@
 
     <td class="h-8 text-left font-mono">
       <VAddress
+        xs
         :address="transaction.receiver"
         data-cy="wallet-history-receiver-table-data"
       >
@@ -72,7 +77,7 @@
         :href="transaction.explorerLink"
         data-cy="wallet-history-explorer-link"
         target="_blank"
-        class="text-primary-500 cursor-pointer pr-2"
+        class="text-primary-500 cursor-pointer pr-2 text-xs"
       >
         {{ $t('common.view') }}
       </a>
