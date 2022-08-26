@@ -20,20 +20,20 @@
           tradingTypeLimit | tradingTypeStopLimit | tradingTypeStopMarket,
         'text-primary-500': tradingTypeMarket
       }"
-      data-cy="trading-page-switch-to-limit-button"
+      data-cy="trading-page-switch-to-market-button"
       @click.stop="onTradingTypeToggle(TradeExecutionType.Market)"
     >
       {{ $t('trade.market') }}
     </span>
 
-    <div class="flex items-center justify-start">
+    <div v-if="!isSpot" class="flex items-center justify-start">
       <span
         class="text-sm font-semibold cursor-pointer"
         :class="{
           'text-gray-500': !tradingTypeStopMarket && !tradingTypeStopLimit,
           'text-primary-500': tradingTypeStopMarket || tradingTypeStopLimit
         }"
-        data-cy="trading-page-switch-to-limit-button"
+        data-cy="trading-page-switch-to-stop-button"
         @click.stop="
           onTradingTypeToggle(
             tradingTypeStopMarket ? 'stopMarket' : 'stopLimit'
@@ -107,6 +107,10 @@ export default Vue.extend({
   },
 
   computed: {
+    isSpot(): boolean {
+      return this.$route.name === 'spot-spot'
+    },
+
     selectLabel(): string | undefined {
       const { tradingTypeStopMarket } = this
 

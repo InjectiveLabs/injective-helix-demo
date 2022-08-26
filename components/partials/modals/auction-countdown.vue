@@ -148,7 +148,7 @@ export default Vue.extend({
           auctionIsNotClosed &&
           auctionModalIsNotClosed
         ) {
-          this.$accessor.modal.openModal(Modal.AuctionCountdown)
+          this.$accessor.modal.openModal({ type: Modal.AuctionCountdown })
         }
       }
     },

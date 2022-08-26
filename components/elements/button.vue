@@ -250,8 +250,9 @@ export default Vue.extend({
             'text-white',
             'font-semibold',
             'border',
+            'border-white',
             'hover:text-primary-500',
-            'border-primary-500'
+            'hover:border-primary-500'
           )
         } else if (this.redOutline) {
           classes.push(

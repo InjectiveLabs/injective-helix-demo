@@ -3,6 +3,7 @@ import { LocalStorage } from '@injectivelabs/utils'
 import { Web3Client } from '@injectivelabs/sdk-ui-ts/dist/web3'
 import {
   MsgBroadcastClient,
+  MsgBroadcastExperimentalClient,
   TokenService,
   TokenPrice,
   MetricsProvider,
@@ -107,6 +108,11 @@ export const msgBroadcastClient = new MsgBroadcastClient({
   ...apiOptions,
   walletStrategy
 })
+export const msgBroadcastExperimentalClient =
+  new MsgBroadcastExperimentalClient({
+    ...apiOptions,
+    walletStrategy
+  })
 export const web3Client = new Web3Client({
   // @ts-ignore
   walletStrategy,

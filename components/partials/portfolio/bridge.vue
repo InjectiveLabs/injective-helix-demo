@@ -177,7 +177,7 @@ export default Vue.extend({
         this.form.memo = ''
         this.form.destinationAddress = ''
         this.bridgeType = bridgeType
-        this.$accessor.modal.openModal(Modal.Bridge)
+        this.$accessor.modal.openModal({ type: Modal.Bridge })
       })
     },
 
@@ -190,15 +190,15 @@ export default Vue.extend({
     },
 
     handleModalBridgeOpen() {
-      this.$accessor.modal.openModal(Modal.Bridge)
+      this.$accessor.modal.openModal({ type: Modal.Bridge })
     },
 
     handleModalConfirmOpen() {
-      this.$accessor.modal.openModal(Modal.BridgeConfirm)
+      this.$accessor.modal.openModal({ type: Modal.BridgeConfirm })
     },
 
     handleModalCompletedOpen() {
-      this.$accessor.modal.openModal(Modal.BridgeCompleted)
+      this.$accessor.modal.openModal({ type: Modal.BridgeCompleted })
     },
 
     handleAmountUpdate(amount: string) {
@@ -246,7 +246,7 @@ export default Vue.extend({
       this.form.token = token || injToken
       this.bridgeType = BridgeType.Transfer
       this.transferDirection = TransferDirection.bankToTradingAccount
-      this.$accessor.modal.openModal(Modal.Bridge)
+      this.$accessor.modal.openModal({ type: Modal.Bridge })
     },
 
     handleTransferToBank(token: Token) {
@@ -256,7 +256,7 @@ export default Vue.extend({
       this.form.token = token || injToken
       this.bridgeType = BridgeType.Transfer
       this.transferDirection = TransferDirection.tradingAccountToBank
-      this.$accessor.modal.openModal(Modal.Bridge)
+      this.$accessor.modal.openModal({ type: Modal.Bridge })
     },
 
     handleDeposit(token: Token) {
@@ -272,7 +272,7 @@ export default Vue.extend({
           ? BridgingNetwork.CosmosHub
           : getBridgingNetworkBySymbol(formToken.symbol)
       this.bridgeType = BridgeType.Deposit
-      this.$accessor.modal.openModal(Modal.Bridge)
+      this.$accessor.modal.openModal({ type: Modal.Bridge })
     },
 
     handleWithdraw(token: Token) {
@@ -288,7 +288,7 @@ export default Vue.extend({
           ? BridgingNetwork.Injective
           : getBridgingNetworkBySymbol(formToken.symbol)
       this.bridgeType = BridgeType.Withdraw
-      this.$accessor.modal.openModal(Modal.Bridge)
+      this.$accessor.modal.openModal({ type: Modal.Bridge })
     }
   }
 })
