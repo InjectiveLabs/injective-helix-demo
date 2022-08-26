@@ -28,7 +28,7 @@
             {{ $t('portfolio.walletValue') }}
           </p>
           <p
-            class="text-lg 3md:text-2xl"
+            class="text-lg 3md:text-2xl font-mono"
             data-cy="wallet-value-usd-text-content-parent"
           >
             <span v-if="status.isLoading()">&mdash; USD</span>
@@ -65,7 +65,7 @@
             {{ $t('portfolio.portfolioValue') }}
           </p>
           <p
-            class="text-lg 3md:text-2xl"
+            class="text-lg 3md:text-2xl font-mono"
             data-cy="trading-account-total-usd-text-content"
           >
             <span v-if="status.isLoading()">&mdash; USD</span>
@@ -73,7 +73,7 @@
             <span v-else>{{ tradingAccountBalancesToString }} USD</span>
           </p>
           <p
-            class="text-sm mt-2 text-gray-500"
+            class="text-sm mt-2 text-gray-500 font-mono"
             data-cy="trading-account-available-usd-text-content"
           >
             <span v-if="status.isLoading()">&mdash; USD</span>

@@ -3,7 +3,7 @@
     <div
       class="overflow-x-auto md:overflow-x-visible w-full bg-gray-900 rounded"
     >
-      <TableHeader v-if="markets.length !== 0" lg class="pt-0 bg-gray-800 pb-5">
+      <TableHeader v-if="markets.length !== 0" lg class="pt-0 bg-helixGray-950 pb-5">
         <span class="text-left col-span-3">
           {{ $t('trade.market') }}
         </span>

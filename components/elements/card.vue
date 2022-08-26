@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-gray-800 rounded-xl relative"
+    class="bg-helixGray-950 rounded-xl relative"
     :class="{
       'p-4 lg:p-6': lg && !tight,
       'p-4': md && !tight,
