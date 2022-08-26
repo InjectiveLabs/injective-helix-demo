@@ -1,7 +1,13 @@
 <template>
   <div>
-    <div class="overflow-x-auto md:overflow-x-visible w-full rounded">
-      <TableHeader v-if="markets.length !== 0" lg class="pt-0 pb-5">
+    <div
+      class="overflow-x-auto md:overflow-x-visible w-full bg-gray-900 rounded"
+    >
+      <TableHeader
+        v-if="markets.length !== 0"
+        lg
+        class="pt-0 bg-helixGray-950 pb-5"
+      >
         <span class="text-left col-span-3">
           {{ $t('trade.market') }}
         </span>

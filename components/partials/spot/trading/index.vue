@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full px-6 py-4 bg-gray-800 rounded-xl relative">
+  <div class="w-full h-full px-6 py-4 bg-helixGray-950 rounded-xl relative">
     <Trade />
   </div>
 </template>
