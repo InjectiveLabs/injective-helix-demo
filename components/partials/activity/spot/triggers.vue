@@ -51,9 +51,9 @@
         />
       </TableWrapper>
 
-      <portal to="activity-tab-spot-triggers-count">
+      <!-- <portal to="activity-tab-spot-triggers-count">
         <span v-if="status.isNotLoading()"> ({{ triggers.length }}) </span>
-      </portal>
+      </portal> -->
 
       <Pagination
         v-if="status.isIdle()"

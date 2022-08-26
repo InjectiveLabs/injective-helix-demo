@@ -24,10 +24,10 @@
       >
         <div class="flex items-center gap-1">
           <span>{{ $t('activity.triggers') }}</span>
-          <portal-target
+          <!-- <portal-target
             name="activity-tab-derivative-triggers-count"
             data-cy="activity-derivative-orders-link-count"
-          />
+          /> -->
         </div>
       </TabSelectorItem>
 
