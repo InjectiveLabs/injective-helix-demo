@@ -7,6 +7,7 @@ import {
 import { StreamOperation } from '@injectivelabs/ts-types'
 import {
   MsgBatchCancelSpotOrders,
+  MsgCancelSpotOrder,
   MsgCreateSpotLimitOrder,
   MsgCreateSpotMarketOrder,
   SpotOrderSide,
@@ -632,15 +633,11 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      const message = MsgBatchCancelSpotOrders.fromJSON({
+      const message = MsgCancelSpotOrder.fromJSON({
         injectiveAddress,
-        orders: [
-          {
-            marketId: order.marketId,
-            subaccountId: order.subaccountId,
-            orderHash: order.orderHash
-          }
-        ]
+        marketId: order.marketId,
+        subaccountId: order.subaccountId,
+        orderHash: order.orderHash
       })
 
       await msgBroadcastClient.broadcast({
