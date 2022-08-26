@@ -165,7 +165,7 @@ export const actions = actionTree(
 
       commit('setAnnouncements', uiAnnouncements)
 
-      this.app.$accessor.activity.fetchAttachments()
+      await this.app.$accessor.activity.fetchAttachments()
     },
 
     async fetchAttachments({ state, commit }) {
