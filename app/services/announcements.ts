@@ -8,11 +8,13 @@ export const fetchAnnouncementsList = async () => {
   try {
     const announcementsListEndpoint = getAnnouncementsListEndpoint()
     const httpClient = new HttpClient(announcementsListEndpoint)
-    const { data } = await httpClient.get('')
+    const { data } = (await httpClient.get('')) as {
+      data: any
+    }
 
     return data
   } catch (e: any) {
-    throw new Error(e.message)
+    // silently throw error
   }
 }
 
@@ -21,10 +23,12 @@ export const fetchAnnouncementAttachment = async (announcementId: number) => {
     const announcementAttachmentEndpoint =
       getAnnouncementAttachmentEndpoint(announcementId)
     const httpClient = new HttpClient(announcementAttachmentEndpoint)
-    const { data } = await httpClient.get('')
+    const { data } = (await httpClient.get('')) as {
+      data: any
+    }
 
     return data
   } catch (e: any) {
-    throw new Error(e.message)
+    // silently throw error
   }
 }

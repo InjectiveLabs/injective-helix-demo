@@ -43,14 +43,16 @@ export default Vue.extend({
 
   computed: {
     announcements(): Array<Announcement> {
-      return this.$accessor.activity.announcements
+      return this.$accessor.app.announcements
     },
 
     attachments(): Array<Attachment> {
-      return this.$accessor.activity.attachments
+      return this.$accessor.app.attachments
     },
 
-    attachmentsWithAnnouncements(): Array<Attachment | Announcement> {
+    attachmentsWithAnnouncements(): Array<
+      Announcement | (Attachment & Announcement)
+    > {
       const { announcements, attachments } = this
 
       const formattedAttachmentsWithAnnouncements = announcements.map(
@@ -75,7 +77,7 @@ export default Vue.extend({
   },
 
   mounted() {
-    Promise.all([this.$accessor.activity.fetchAnnouncements()])
+    Promise.all([this.$accessor.app.fetchAnnouncements()])
       .then(() => {})
       .catch(this.$onError)
       .finally(() => this.status.setIdle())
