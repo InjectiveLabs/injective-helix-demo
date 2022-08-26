@@ -2,6 +2,7 @@
   <VButton
     :disabled="false"
     :ghost="false"
+    :data-cy="dataCy"
     primary
     class="rounded text-md h-[34px] p-0 tracking-wider col-span-2 flex items-center justify-center hover:bg-primary-500 hover:bg-opacity-10 hover:border hover:border-primary-600 hover:text-primary-600"
     :class="classes"
@@ -29,6 +30,11 @@ export default Vue.extend({
     active: {
       type: Boolean,
       default: false
+    },
+
+    dataCy: {
+      type: String,
+      default: 'unknown-id'
     }
   },
 

@@ -95,6 +95,7 @@
               <div class="flex flex-col">
                 <div
                   class="flex items-center h-[32px] ml-4"
+                  data-cy="token-selector-drop-down"
                   :class="{
                     'justify-end': showInput,
                     'justify-start': !showInput
@@ -127,6 +128,7 @@
                 >
                   <span
                     v-if="showBalance"
+                    data-cy="token-selector-selected-balance-span"
                     class="text-xs whitespace-nowrap"
                     :class="{
                       'text-red-400': errors.length > 0,

@@ -222,6 +222,7 @@ export default Vue.extend({
         isReduceOnly
       } = this
 
+      // TODO: Refactor this to something more sensible.
       const orderType = orderTypeBuy ? 'buy' : 'sell'
       const tradingType = tradingTypeMarket && orderTypeBuy ? 'market' : 'limit'
       const markPriceIncrease =

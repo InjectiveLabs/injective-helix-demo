@@ -61,7 +61,12 @@
       <div
         class="col-span-12 lg:col-span-5 xl:col-span-4 mx-4 mb-4 flex items-center justify-between lg:justify-end lg:ml-0 lg:mr-2 lg:mt-4"
       >
-        <VCheckbox v-if="market" v-model="currentMarketOnly" class="lg:mr-4">
+        <VCheckbox
+          v-if="market"
+          v-model="currentMarketOnly"
+          data-cy="trade-page-filter-by-ticker-checkbox"
+          class="lg:mr-4"
+        >
           {{ $t('trade.asset_only', { asset: market.ticker }) }}
         </VCheckbox>
         <VButton
@@ -70,6 +75,7 @@
           "
           red-outline
           sm
+          data-cy="trade-page-cancel-all-button"
           class="rounded"
           @click.stop="handleCancelAllClick"
         >
@@ -82,6 +88,7 @@
           "
           red-outline
           sm
+          data-cy="trade-page-cancel-all-button"
           class="rounded"
           @click.stop="handleCloseAllPositionsClick"
         >

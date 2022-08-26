@@ -1046,7 +1046,7 @@ export const actions = actionTree(
           value: price,
           quoteDecimals: market.quoteToken.decimals
         }),
-        triggerPrice: '',
+        triggerPrice: '0' /** TODO */,
         quantity: derivativeQuantityToChainQuantityToFixed({ value: quantity }),
         margin: reduceOnly
           ? ZERO_TO_STRING
@@ -1180,6 +1180,7 @@ export const actions = actionTree(
           value: price,
           quoteDecimals: market.quoteToken.decimals
         }),
+        triggerPrice: '0' /** TODO */,
         quantity: derivativeQuantityToChainQuantityToFixed({ value: quantity }),
         margin: reduceOnly
           ? ZERO_TO_STRING
