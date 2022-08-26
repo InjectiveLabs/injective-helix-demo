@@ -31,6 +31,8 @@ import {
   ExpiryFuturesMarket,
   MsgBatchCancelBinaryOptionsOrders,
   MsgBatchCancelDerivativeOrders,
+  MsgCancelBinaryOptionsOrder,
+  MsgCancelDerivativeOrder,
   MsgCreateBinaryOptionsLimitOrder,
   MsgCreateBinaryOptionsMarketOrder,
   MsgCreateDerivativeLimitOrder,
@@ -54,7 +56,6 @@ import {
   indexerOracleApi,
   indexerRestDerivativesChronosApi,
   msgBroadcastClient,
-  msgBroadcastExperimentalClient,
   tokenService
 } from '~/app/Services'
 import {
@@ -832,22 +833,17 @@ export const actions = actionTree(
       const market = markets.find((m) => m.marketId === order.marketId)
       const messageType =
         market && market.subType === MarketType.BinaryOptions
-          ? MsgBatchCancelBinaryOptionsOrders
-          : MsgBatchCancelDerivativeOrders
+          ? MsgCancelBinaryOptionsOrder
+          : MsgCancelDerivativeOrder
 
       const message = messageType.fromJSON({
         injectiveAddress,
-        orders: [
-          {
-            orderMask: 1,
-            marketId: order.marketId,
-            subaccountId: order.subaccountId,
-            orderHash: order.orderHash
-          }
-        ]
+        marketId: order.marketId,
+        subaccountId: order.subaccountId,
+        orderHash: order.orderHash
       })
 
-      await msgBroadcastExperimentalClient.broadcast({
+      await msgBroadcastClient.broadcast({
         address,
         msgs: message,
         bucket: DerivativesMetrics.BatchCancelLimitOrders
@@ -1008,17 +1004,6 @@ export const actions = actionTree(
             quoteDecimals: market.quoteToken.decimals
           })
 
-      console.log('type: stop-limit') // eslint-disable-line
-      console.log(
-        'orderType:',
-        orderType,
-        derivativeOrderTypeToGrpcOrderType(orderType)
-      ) // eslint-disable-line
-      console.log('price:', msgPrice) // eslint-disable-line
-      console.log('triggerPrice:', msgTriggerPrice) // eslint-disable-line
-      console.log('quantity:', msgQuantity) // eslint-disable-line
-      console.log('margin:', msgMargin) // eslint-disable-line
-
       const message = messageType.fromJSON({
         injectiveAddress,
         orderType: derivativeOrderTypeToGrpcOrderType(orderType),
@@ -1151,17 +1136,6 @@ export const actions = actionTree(
             value: margin,
             quoteDecimals: market.quoteToken.decimals
           })
-
-      console.log('type: stop-market') // eslint-disable-line
-      console.log(
-        'orderType:',
-        orderType,
-        derivativeOrderTypeToGrpcOrderType(orderType)
-      ) // eslint-disable-line
-      console.log('price:', msgPrice) // eslint-disable-line
-      console.log('triggerPrice:', msgTriggerPrice) // eslint-disable-line
-      console.log('quantity:', msgQuantity) // eslint-disable-line
-      console.log('margin:', msgMargin) // eslint-disable-line
 
       const message = messageType.fromJSON({
         injectiveAddress,
