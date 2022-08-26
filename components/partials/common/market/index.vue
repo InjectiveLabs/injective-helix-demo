@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-800 shadow-sm px-4 py-1 rounded-xl">
+  <div class="bg-gray-800 shadow-sm px-4 py-1 rounded-xl" data-cy="trading-page-market-info-component">
     <div
       class="mt-1 py-2 lg:py-1 cursor-pointer grid grid-cols-1 lg:grid-cols-3 2xl:grid-cols-4"
     >
