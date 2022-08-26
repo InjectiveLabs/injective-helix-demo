@@ -30,7 +30,7 @@ export default function ({
     timezone,
     container_id: containerId,
     timeframe: '1W',
-    toolbar_bg: theme.colors.gray[900],
+    toolbar_bg: theme.colors.helixGray[950],
     height: '100%',
     width: '100%',
     allow_symbol_change: false,
@@ -69,7 +69,7 @@ export default function ({
     ],
     client_id: 'injective.exchange',
     loading_screen: {
-      backgroundColor: theme.colors.gray[800],
+      backgroundColor: theme.colors.helixGray[950],
       foregroundColor: theme.colors.gray[200]
     },
     overrides: {
