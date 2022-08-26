@@ -128,7 +128,7 @@ export default Vue.extend({
   methods: {
     handleWalletConnectClicked() {
       if (GEO_IP_RESTRICTIONS_ENABLED) {
-        this.$accessor.modal.openModal(Modal.Terms)
+        this.$accessor.modal.openModal({ type: Modal.Terms })
       } else {
         this.isOpenConnectModal = true
       }

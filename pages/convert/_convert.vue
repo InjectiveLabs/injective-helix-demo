@@ -75,7 +75,7 @@ export default Vue.extend({
       this.status.setIdle()
 
       if (this.marketIsBeta) {
-        this.$accessor.modal.openModal(Modal.MarketBeta)
+        this.$accessor.modal.openModal({ type: Modal.MarketBeta })
       }
     },
 
