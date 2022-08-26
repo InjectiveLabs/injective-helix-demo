@@ -55,10 +55,13 @@ export default Vue.extend({
 
       const formattedAttachmentsWithAnnouncements = announcements.map(
         (announcement: Announcement) => {
-          const matchingAttachment = attachments.find(
-            ({ announcementId }) =>
-              announcementId === announcement.announcementId
-          )
+          const matchingAttachment = attachments.find((attachment) => {
+            if (!attachment) {
+              return false
+            }
+
+            return attachment.announcementId === announcement.announcementId
+          })
 
           return matchingAttachment
             ? { ...announcement, ...matchingAttachment }
