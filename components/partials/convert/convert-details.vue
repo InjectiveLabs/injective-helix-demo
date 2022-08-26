@@ -5,25 +5,30 @@
         {{ $t('trade.convert.rate') }}
       </span>
       <!-- <ConvertRateTooltip> -->
-        <span v-if="pending" class="text-sm cursor-default">
-          {{ $t('trade.convert.fetching_price') }}...
-        </span>
-        <span
-          v-else-if="hasAmount"
-          class="text-sm cursor-default"
-          :class="rateClass"
-        >
-          1 {{ fromToken.symbol }} ≈ {{ averagePriceWithoutSlippageToFormat }}
-          {{ toToken.symbol }}
-        </span>
-        <span v-else class="text-sm cursor-default"> -- </span>
+      <span v-if="pending" class="text-sm cursor-default">
+        {{ $t('trade.convert.fetching_price') }}...
+      </span>
+      <span
+        v-else-if="hasAmount"
+        class="text-sm cursor-default"
+        data-cy="convert-widget-details-rate-span"
+        :class="rateClass"
+      >
+        1 {{ fromToken.symbol }} ≈ {{ averagePriceWithoutSlippageToFormat }}
+        {{ toToken.symbol }}
+      </span>
+      <span v-else class="text-sm cursor-default"> -- </span>
       <!-- </ConvertRateTooltip> -->
     </div>
     <div class="flex items-center justify-between">
       <span class="text-gray-400 text-sm">
         {{ $t('trade.convert.fee') }} {{ feeRateToFormat }}%
       </span>
-      <span v-if="hasAmount" class="text-sm">
+      <span
+        v-if="hasAmount"
+        class="text-sm"
+        data-cy="convert-widget-details-fee-span"
+      >
         ≈ {{ feeToFormat }} {{ market.quoteToken.symbol }}
       </span>
       <span v-else class="text-sm"> -- </span>
@@ -41,7 +46,11 @@
       <span class="text-gray-400 text-sm">
         {{ $t('trade.convert.minimum_received') }}
       </span>
-      <span v-if="hasAmount" class="text-sm">
+      <span
+        v-if="hasAmount"
+        class="text-sm"
+        data-cy="convert-widget-details-minimum-received-span"
+      >
         {{ minimumReceivedToFormat }} {{ toToken.symbol }}
       </span>
       <span v-else class="text-sm"> -- </span>

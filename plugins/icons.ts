@@ -32,6 +32,7 @@ import Info from '~/components/icons/info.vue'
 import Ledger from '~/components/icons/ledger.vue'
 import Menu from '~/components/icons/menu.vue'
 import Metamask from '~/components/icons/metamask.vue'
+import Keplr from '~/components/icons/keplr.vue'
 import Moon from '~/components/icons/moon.vue'
 import Network from '~/components/icons/network.vue'
 import News from '~/components/icons/news.vue'
@@ -112,6 +113,7 @@ Vue.component('IconLedger', Ledger)
 Vue.component('IconMenu', Menu)
 Vue.component('IconCrown', Crown)
 Vue.component('IconMetamask', Metamask)
+Vue.component('IconKeplr', Keplr)
 Vue.component('IconMoon', Moon)
 Vue.component('IconNetwork', Network)
 Vue.component('IconNews', News)

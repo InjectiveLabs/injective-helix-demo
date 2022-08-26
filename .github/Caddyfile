@@ -1,0 +1,17 @@
+{
+  servers {
+    protocol {
+      allow_h2c
+    }
+  }
+}
+
+http://localhost {
+  root * /root/dist
+  file_server
+  handle_errors {
+    file_server
+    try_files {path}.html {path} / =404
+    rewrite * {http.error.status_code}.html
+  }
+}

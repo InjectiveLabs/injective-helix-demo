@@ -1,10 +1,10 @@
 <template>
-  <div class="flex items-center justify-start">
+  <div v-tooltip="{ content: tooltip }" class="flex items-center justify-start">
     <div class="checkbox-wrapper mr-2">
       <input
         :id="uid"
         :value="value"
-        :checked="!!value"
+        :checked="checked"
         :disabled="disabled"
         class="checkbox"
         type="checkbox"
@@ -13,7 +13,8 @@
       <label
         :for="uid"
         :data-cy="dataCy"
-        class="top-0 left-0 flex items-center justify-center absolute cursor-pointer"
+        class="top-0 left-0 flex items-center justify-center absolute"
+        :class="{ 'cursor-pointer': !disabled }"
       >
         <IconCheck class="w-2 h-2 text-gray-950 checkmark" />
         <IconMinus class="w-2 h-2 text-helixGray-400 minus" />
@@ -21,7 +22,11 @@
     </div>
     <label
       :for="uid"
-      class="cursor-pointer select-none text-xs"
+      class="select-none text-xs"
+      :class="{
+        'text-gray-500': disabled,
+        'text-white cursor-pointer': !disabled
+      }"
     >
       <slot />
     </label>
@@ -38,6 +43,12 @@ export default Vue.extend({
   },
 
   props: {
+    tooltip: {
+      required: false,
+      default: '',
+      type: String
+    },
+
     value: {
       type: [Boolean, String],
       required: true
@@ -66,16 +77,18 @@ export default Vue.extend({
     }
   },
 
-  mounted() {
-    if (this.value === true) {
-      this.checked = true
+  watch: {
+    value: {
+      handler(val) {
+        this.checked = val
+      },
+      immediate: true
     }
   },
 
   methods: {
     handleChange() {
-      this.checked = !this.checked
-      this.$emit('input', this.checked)
+      this.$emit('input', !this.checked)
     }
   }
 })

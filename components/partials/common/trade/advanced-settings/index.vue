@@ -1,5 +1,5 @@
 <template>
-  <div v-if="showAdvancedSettings" class="border-t mt-6">
+  <div class="border-t mt-6">
     <div
       class="group flex align-center my-2 cursor-pointer"
       @click="toggleDrawer"
@@ -20,8 +20,10 @@
     <div v-show="drawerIsOpen" class="flex gap-1 my-auto">
       <span class="flex flex-col flex-1 my-auto gap-1">
         <VCheckbox
-          v-if="showReduceOnly"
+          v-if="!isSpot"
           :value="reduceOnly"
+          :disabled="reduceOnlyDisabled"
+          :tooltip="reduceOnlyTooltip"
           data-cy="trading-page-reduce-only-checkbox"
           @input="handleReduceOnlyCheckboxToggle"
         >
@@ -33,7 +35,7 @@
         </VCheckbox>
         <div class="flex justify-between">
           <VCheckbox
-            v-if="tradingTypeStopMarket"
+            v-if="tradingTypeMarket || tradingTypeStopMarket"
             v-model="slippageIsToggleable"
             data-cy="trading-page-slippage-checkbox"
             @input="handleSlippageCheckboxToggle"
@@ -83,7 +85,7 @@
           </div>
         </div>
         <VCheckbox
-          v-if="tradingTypeLimit || tradingTypeStopLimit"
+          v-if="tradingTypeLimit"
           :value="postOnly"
           data-cy="trading-page-post-only-checkbox"
           @input="handlePostOnlyCheckboxToggle"
@@ -132,7 +134,7 @@ export default Vue.extend({
       required: true
     },
 
-    showReduceOnly: {
+    reduceOnlyDisabled: {
       type: Boolean,
       required: false,
       default: false
@@ -145,6 +147,16 @@ export default Vue.extend({
     },
 
     postOnly: {
+      type: Boolean,
+      required: true
+    },
+
+    isConditionalOrder: {
+      type: Boolean,
+      required: true
+    },
+
+    isSpot: {
       type: Boolean,
       required: true
     }
@@ -188,12 +200,6 @@ export default Vue.extend({
       return tradingType.toString() === 'stopMarket'
     },
 
-    showAdvancedSettings(): boolean {
-      const { tradingTypeMarket } = this
-
-      return !tradingTypeMarket
-    },
-
     wrapperClasses(): string {
       const { hasWarning, hasError } = this
 
@@ -219,22 +225,36 @@ export default Vue.extend({
     },
 
     showSlippageAsSelectableOrDefaultForMarket(): boolean {
-      const { slippageSelection, tradingTypeStopMarket } = this
+      const { slippageSelection, tradingTypeMarket, tradingTypeStopMarket } =
+        this
 
       return (
         (slippageSelection === SlippageDisplayOptions.Selectable ||
           slippageSelection === SlippageDisplayOptions.NonSelectableDefault) &&
-        tradingTypeStopMarket
+        (tradingTypeMarket || tradingTypeStopMarket)
       )
     },
 
     showSlippageInputFieldForMarket(): boolean {
-      const { slippageSelection, tradingTypeStopMarket } = this
+      const { slippageSelection, tradingTypeMarket, tradingTypeStopMarket } =
+        this
 
       return (
         slippageSelection === SlippageDisplayOptions.SlippageInput &&
-        tradingTypeStopMarket
+        (tradingTypeMarket || tradingTypeStopMarket)
       )
+    },
+
+    reduceOnlyTooltip(): string | undefined {
+      const { isConditionalOrder, reduceOnlyDisabled } = this
+
+      if (!reduceOnlyDisabled) {
+        return
+      }
+
+      return isConditionalOrder
+        ? this.$t('trade.reduceOnlyTooltipConditional')
+        : this.$t('trade.reduceOnlyTooltip')
     }
   },
 

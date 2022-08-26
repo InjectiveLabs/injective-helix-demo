@@ -3,12 +3,6 @@ import { FundingPayment, TradingReward } from '@injectivelabs/sdk-ts'
 import { BankBalanceWithTokenAndBalance } from '@injectivelabs/sdk-ui-ts'
 import { indexerAccountApi, indexerDerivativesApi } from '~/app/Services'
 import { ActivityFetchOptions } from '~/types'
-import {
-  fetchAnnouncementAttachment,
-  fetchAnnouncementsList
-} from '~/app/services/announcements'
-import { UiAnnouncementTransformer } from '~/app/client/transformers/UiAnnouncementTransformer'
-import { Announcement, Attachment } from '~/app/client/types/announcements'
 
 const initialStateFactory = () => ({
   subaccountFundingPayments: [] as Array<FundingPayment>,
@@ -17,9 +11,7 @@ const initialStateFactory = () => ({
     endTime: 0 as number,
     total: 0 as number
   },
-  supportedTokens: [] as Array<BankBalanceWithTokenAndBalance>,
-  announcements: [] as Array<Announcement>,
-  attachments: [] as Array<Attachment>
+  supportedTokens: [] as Array<BankBalanceWithTokenAndBalance>
 })
 
 const initialState = initialStateFactory()
@@ -32,9 +24,7 @@ export const state = () => ({
   subaccountFundingPaymentsPagination:
     initialState.subaccountFundingPaymentsPagination,
   supportedTokens:
-    initialState.supportedTokens as Array<BankBalanceWithTokenAndBalance>,
-  announcements: [] as Array<Announcement>,
-  attachments: [] as Array<Attachment>
+    initialState.supportedTokens as Array<BankBalanceWithTokenAndBalance>
 })
 
 export type ActivityStoreState = ReturnType<typeof state>
@@ -44,14 +34,6 @@ export const getters = getterTree(state, {
 })
 
 export const mutations = {
-  setAnnouncements(state: ActivityStoreState, announcements: Array<any>) {
-    state.announcements = announcements
-  },
-
-  setAttachments(state: ActivityStoreState, attachments: Array<any>) {
-    state.attachments = attachments
-  },
-
   setSubaccountFundingPayments(
     state: ActivityStoreState,
     subaccountFundingPayments: Array<FundingPayment>
@@ -150,43 +132,6 @@ export const actions = actionTree(
 
       commit('setSubaccountFundingPaymentsTotal', pagination.total)
       commit('setSubaccountFundingPayments', fundingPayments)
-    },
-
-    async fetchAnnouncements({ commit }) {
-      const announcements = await fetchAnnouncementsList()
-
-      if (!announcements || !announcements.articles) {
-        return []
-      }
-
-      const uiAnnouncements = announcements.articles.map(
-        UiAnnouncementTransformer.convertAnnouncementToUiAnnouncement
-      )
-
-      commit('setAnnouncements', uiAnnouncements)
-
-      await this.app.$accessor.activity.fetchAttachments()
-    },
-
-    async fetchAttachments({ state, commit }) {
-      const attachments = await Promise.all(
-        state.announcements.map(
-          ({ announcementId }: { announcementId: number }) =>
-            fetchAnnouncementAttachment(announcementId)
-        )
-      )
-
-      if (!attachments) {
-        return []
-      }
-
-      const uiAttachments = attachments.map(
-        UiAnnouncementTransformer.convertAttachmentToUiAttachment
-      )
-
-      if (uiAttachments) {
-        commit('setAttachments', uiAttachments)
-      }
     }
   }
 )
