@@ -42,7 +42,7 @@
           type="button"
           md
           text
-          class="border border-primary-500 w-full border-opacity-50 hover:border-opacity-100"
+          class="border border-primary-500 w-full border-opacity-50 hover:border-opacity-100 rounded"
           @click.stop="handleBack"
         >
           Back

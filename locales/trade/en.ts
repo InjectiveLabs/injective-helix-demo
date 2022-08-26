@@ -14,6 +14,8 @@ export default {
     side: 'Side',
     side_tooltip: 'The side of your trade: long or short',
     price: 'Price',
+    trigger_price: 'Trigger Price',
+    limit_price: 'Limit Price',
     amount: 'Amount',
     min_received_amount: 'Mininum Received Amount',
     averagePrice: 'Average Price',
@@ -27,7 +29,9 @@ export default {
     fees_tooltip:
       'Trading fees associated with the trade. Trading fees on Injective can be lowered using rebates.',
     buy: 'Buy',
+    buyLong: 'Buy/Long',
     sell: 'Sell',
+    sellShort: 'Sell/Short',
     unfilled: 'Unfilled',
     filter: 'Filter by asset',
     cancelAll: 'Cancel All',
@@ -40,6 +44,8 @@ export default {
     leverage: 'Leverage',
     limit: 'Limit',
     market: 'Market',
+    stopLimit: 'Stop-Limit',
+    stopMarket: 'Stop-Market',
     margin: 'Margin',
     margin_tooltip: 'The total margin required to execute the trade.',
     emptyOrders: 'No orders found',
@@ -176,6 +182,8 @@ export default {
       'The execution price for this trade is far away from the current orderbook mid price.',
     execution_price_far_away_from_last_traded_price:
       'Please note that the execution price for this trade deviates a lot from the last traded price.',
+    trigger_price_zero: 'The trigger price must be higher than 0.',
+    trigger_price_equals_mark_price: 'The trigger price cannot be the same as the mark price.',
     there_are_no_disqualified_markets_on_this_relayer:
       'There are no disqualified markets on this relayer.',
     liquidation: 'Liquidation',
@@ -241,6 +249,15 @@ export default {
     binaryOptions: {
       settlement: 'Settlement',
       settlement_tooltip: 'Settlement Tooltip'
-    }
+    },
+    slippage_cancellation_notice: 'Note: If the execution price exceeds the 0.5% slippage protection, your order will be automatically cancelled.',
+    takeProfit: 'Take-Profit',
+    stopLoss: 'Stop-Loss',
+    confirmOrderModal: {
+      descriptionLimit: 'If the mark price {verb} to or {preposition} <b>{triggerPrice} {triggerPriceSymbol}</b>, a{reduceOnly}limit order to {orderType} <b>{amount} {amountSymbol}</b> at a price of <b>{price} {priceSymbol}</b> will be placed.',
+      descriptionMarket: 'If the mark price {verb} to or {preposition} <b>{triggerPrice} {triggerPriceSymbol}</b>, a {tradingType} order to {orderType} <b>{amount} {amountSymbol}</b> will be placed.'
+    },
+    reduceOnlyTooltip: 'To place a reduce-only order, you will need an open position in the opposite side.',
+    reduceOnlyTooltipConditional: 'To place a reduce-only conditional order, you will need an open position or non reduce-only order in the opposite side.'
   }
 }

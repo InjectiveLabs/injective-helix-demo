@@ -40,7 +40,7 @@
             type="button"
             md
             primary
-            class="flex items-center whitespace-nowrap"
+            class="flex items-center whitespace-nowrap rounded"
           >
             <span class="mr-2">{{ $t('insufficientGas.getFreeInj') }}</span>
             <IconExternalLink class="w-3 h-3" />

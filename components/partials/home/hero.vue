@@ -17,7 +17,7 @@
           <VButton
             lg
             primary
-            class="min-w-4xs mt-6"
+            class="min-w-4xs mt-6 rounded"
             @click="handleGetStartedClick"
           >
             {{ $t('home.getStarted') }}

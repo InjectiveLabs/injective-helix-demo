@@ -1,17 +1,12 @@
 <template>
   <HocLoading :status="status">
-    <VCardTableWrap>
-      <template #actions>
-        <div
-          class="col-span-12 lg:col-span-6 grid grid-cols-5 sm:grid-cols-3 gap-4 w-full"
-        >
-          <VSearch
-            dense
-            class="col-span-3 sm:col-span-1"
-            :placeholder="$t('trade.filter')"
-            :search="search"
-            data-cy="universal-table-filter-by-asset-input"
-            @searched="handleInputOnSearch"
+    <div class="w-full h-full flex flex-col">
+      <Toolbar>
+        <template #filters>
+          <SearchAsset
+            :markets="markets"
+            :value="selectedToken"
+            @select="handleSearch"
           />
 
           <div
@@ -23,7 +18,7 @@
           </div>
 
           <FilterSelector
-            class="self-start hidden sm:block"
+            class="min-w-3xs hidden sm:block"
             data-cy="universal-table-filter-by-type-drop-down"
             :type="TradeSelectorType.Type"
             :value="type"
@@ -31,22 +26,27 @@
           />
 
           <FilterSelector
-            class="self-start hidden sm:block"
+            class="min-w-3xs hidden sm:block"
             data-cy="universal-table-filter-by-side-drop-down"
             :type="TradeSelectorType.Side"
             :value="side"
             @click="handleSideClick"
           />
-        </div>
-      </template>
+
+          <ClearFiltersButton
+            v-if="showClearFiltersButton"
+            @clear="handleClearFilters"
+          />
+        </template>
+      </Toolbar>
 
       <!-- mobile table -->
       <TableBody
-        :show-empty="filteredTrades.length === 0"
+        :show-empty="trades.length === 0"
         class="sm:hidden mt-3 max-h-lg overflow-y-auto"
       >
         <MobileTrade
-          v-for="(trade, index) in filteredTrades"
+          v-for="(trade, index) in trades"
           :key="`mobile-derivative-trade-${index}`"
           class="col-span-1"
           :trade="trade"
@@ -57,12 +57,12 @@
       </TableBody>
 
       <TableWrapper break-md class="mt-4 hidden sm:block">
-        <table v-if="filteredTrades.length > 0" class="table">
+        <table v-if="trades.length > 0" class="table">
           <TradesTableHeader />
           <tbody>
             <tr
               is="Trade"
-              v-for="(trade, index) in filteredTrades"
+              v-for="(trade, index) in trades"
               :key="`trade-${index}`"
               :trade="trade"
             ></tr>
@@ -83,7 +83,20 @@
       />
 
       <ModalMobileTradeDetails :trade="tradeDetails" />
-    </VCardTableWrap>
+
+      <Pagination
+        v-if="status.isIdle()"
+        class="mt-4"
+        v-bind="{
+          limit,
+          page,
+          totalPages,
+          totalCount
+        }"
+        @update:limit="handleLimitChangeEvent"
+        @update:page="handlePageChangeEvent"
+      />
+    </div>
   </HocLoading>
 </template>
 
@@ -94,7 +107,9 @@ import {
   UiDerivativeTrade,
   UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
-import { TradeExecutionType } from '@injectivelabs/ts-types'
+import { Token } from '@injectivelabs/token-metadata'
+import { TradeDirection } from '@injectivelabs/ts-types'
+import { tradeTypesToTradeExecutionTypes } from '@/components/partials/activity/common/utils'
 import Trade from '~/components/partials/common/trade/trade.vue'
 import MobileTrade from '~/components/partials/common/trade/mobile-trade.vue'
 import TradesTableHeader from '~/components/partials/common/trade/trades-table-header.vue'
@@ -102,8 +117,13 @@ import FilterSelector from '~/components/partials/common/elements/filter-selecto
 import ModalMobileTradeFilter from '~/components/partials/modals/mobile-trade-filter.vue'
 import ModalMobileTradeDetails from '~/components/partials/modals/mobile-trade-details.vue'
 import TableBody from '~/components/elements/table-body.vue'
-import { TradeSelectorType } from '~/types/enums'
+import { TradeSelectorType, TradeTypes } from '~/types/enums'
 import { Modal } from '~/types'
+import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
+import Pagination from '~/components/partials/common/pagination.vue'
+import SearchAsset from '@/components/partials/activity/common/search-asset.vue'
+import ClearFiltersButton from '@/components/partials/activity/common/clear-filters-button.vue'
+import Toolbar from '@/components/partials/activity/common/toolbar.vue'
 
 export default Vue.extend({
   components: {
@@ -113,7 +133,11 @@ export default Vue.extend({
     ModalMobileTradeDetails,
     ModalMobileTradeFilter,
     TableBody,
-    TradesTableHeader
+    TradesTableHeader,
+    Pagination,
+    SearchAsset,
+    ClearFiltersButton,
+    Toolbar
   },
 
   data() {
@@ -123,11 +147,18 @@ export default Vue.extend({
       type: undefined as string | undefined,
       side: undefined as string | undefined,
       tradeDetails: undefined as UiDerivativeTrade | undefined,
-      status: new Status(StatusType.Loading)
+      status: new Status(StatusType.Loading),
+      page: 1,
+      limit: UI_DEFAULT_PAGINATION_LIMIT_COUNT,
+      selectedToken: undefined as Token | undefined
     }
   },
 
   computed: {
+    activeMarketIds(): string[] {
+      return this.$accessor.derivatives.activeMarketIds
+    },
+
     markets(): UiDerivativeMarketWithToken[] {
       return this.$accessor.derivatives.markets
     },
@@ -136,70 +167,115 @@ export default Vue.extend({
       return this.$accessor.derivatives.subaccountTrades
     },
 
-    filteredTrades(): UiDerivativeTrade[] {
-      const { trades, search, markets, type, side } = this
+    totalCount(): number {
+      return this.$accessor.derivatives.subaccountTradesPagination.total
+    },
 
-      return trades.filter((t) => {
-        const market = markets.find((m) => m.marketId === t.marketId)
+    totalPages(): number {
+      const { totalCount, limit } = this
 
-        if (!market) {
-          return false
-        }
+      return Math.ceil(totalCount / limit)
+    },
 
-        if (!search && !type && !side) {
-          return true
-        }
+    showClearFiltersButton(): boolean {
+      return !!this.selectedToken || !!this.type || !!this.side
+    },
 
-        const isPartOfSearchFilter =
-          !search ||
-          market.ticker.toLowerCase().includes(search.trim().toLowerCase())
+    skip(): number {
+      const { page, limit } = this
 
-        const isMarketType = type === TradeExecutionType.Market
-        const isPartOfTypeFilter =
-          !type ||
-          (isMarketType &&
-            t.tradeExecutionType === TradeExecutionType.Market) ||
-          (!isMarketType && t.tradeExecutionType !== TradeExecutionType.Market)
-        const isPartOfSideFilter = !side || t.tradeDirection === side
-
-        return isPartOfSearchFilter && isPartOfTypeFilter && isPartOfSideFilter
-      })
+      return (page - 1) * limit
     }
   },
 
   mounted() {
-    this.status.setLoading()
-
-    Promise.all([this.$accessor.derivatives.fetchSubaccountTrades()])
-      .then(() => {
-        //
-      })
-      .catch(this.$onError)
-      .finally(() => {
-        this.status.setIdle()
-      })
+    this.fetchTrades()
   },
 
   methods: {
-    handleInputOnSearch(search: string) {
-      this.search = search
+    fetchTrades(): Promise<void> {
+      const { skip, limit, activeMarketIds: marketIds } = this
+
+      const types = tradeTypesToTradeExecutionTypes(this.type as TradeTypes)
+      const direction = this.side as TradeDirection
+      const marketId = this.markets.find((m) => {
+        return (
+          m.baseToken.symbol === this.selectedToken?.symbol ||
+          m.quoteToken.symbol === this.selectedToken?.symbol
+        )
+      })?.marketId
+
+      this.status.setLoading()
+
+      return Promise.all([
+        this.$accessor.derivatives.fetchSubaccountTrades({
+          pagination: {
+            skip,
+            limit
+          },
+          filters: {
+            types,
+            direction,
+            marketId,
+            marketIds
+          }
+        })
+      ])
+        .then(() => {
+          //
+        })
+        .catch(this.$onError)
+        .finally(() => {
+          this.status.setIdle()
+        })
     },
 
     handleSideClick(side: string | undefined) {
       this.side = side
+
+      this.fetchTrades()
     },
 
     handleTypeClick(type: string | undefined) {
       this.type = type
+
+      this.fetchTrades()
     },
 
     handleShowTradeDetails(trade: UiDerivativeTrade) {
       this.tradeDetails = trade
-      this.$accessor.modal.openModal(Modal.MobileTradeDetails)
+
+      this.$accessor.modal.openModal({ type: Modal.MobileTradeFilter })
     },
 
     openMobileFilterModal() {
-      this.$accessor.modal.openModal(Modal.MobileTradeFilter)
+      this.$accessor.modal.openModal({ type: Modal.MobileTradeFilter })
+    },
+
+    handleLimitChangeEvent(limit: number) {
+      this.limit = limit
+
+      this.fetchTrades()
+    },
+
+    handlePageChangeEvent(page: number) {
+      this.page = page
+
+      this.fetchTrades()
+    },
+
+    handleSearch(token: Token) {
+      this.selectedToken = token
+
+      this.fetchTrades()
+    },
+
+    handleClearFilters() {
+      this.selectedToken = undefined
+      this.side = undefined
+      this.type = undefined
+
+      this.fetchTrades()
     }
   }
 })

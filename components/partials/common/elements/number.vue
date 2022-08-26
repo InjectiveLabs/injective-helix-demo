@@ -2,7 +2,7 @@
   <div>
     <span
       class="font-mono inline-block"
-      :class="[dense ? 'leading-3' : 'leading-5']"
+      :class="{ 'text-sm': xs, 'text-sm': sm }"
     >
       <div class="flex">
         <span class="">{{ prefix || '' }}{{ formattedNumber[0] }}</span>
@@ -28,6 +28,16 @@ export default Vue.extend({
       required: false,
       default: UI_DEFAULT_DISPLAY_DECIMALS,
       type: Number
+    },
+
+    xs: {
+      type: Boolean,
+      default: false
+    },
+
+    sm: {
+      type: Boolean,
+      default: false
     },
 
     useNumberDecimals: {

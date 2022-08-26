@@ -24,19 +24,24 @@ import {
 import { FEE_RECIPIENT } from '~/app/utils/constants'
 import { streamSubaccountPositions } from '~/app/client/streams/derivatives'
 import { getRoundedLiquidationPrice } from '~/app/client/utils/derivatives'
-import { binaryOptions, derivatives } from '~/routes.config'
-import { exchangeDerivativesApi, msgBroadcastClient } from '~/app/Services'
+import { indexerDerivativesApi, msgBroadcastClient } from '~/app/Services'
+import { ActivityFetchOptions } from '~/types'
 
 const initialStateFactory = () => ({
   orderbooks: {} as Record<string, UiDerivativeOrderbook>,
-  subaccountPositions: [] as UiPosition[]
+  subaccountPositions: [] as UiPosition[],
+  subaccountPositionsPagination: {
+    total: 0 as number,
+    endTime: 0 as number
+  }
 })
 
 const initialState = initialStateFactory()
 
 export const state = () => ({
   orderbooks: initialState.orderbooks as Record<string, UiDerivativeOrderbook>,
-  subaccountPositions: initialState.subaccountPositions as UiPosition[]
+  subaccountPositions: initialState.subaccountPositions as UiPosition[],
+  subaccountPositionsPagination: initialState.subaccountPositionsPagination
 })
 
 export type PositionStoreState = ReturnType<typeof state>
@@ -54,6 +59,14 @@ export const mutations = {
     subaccountPositions: UiPosition[]
   ) {
     state.subaccountPositions = subaccountPositions
+  },
+
+  setSubaccountPositionsTotal(state: PositionStoreState, total: number) {
+    state.subaccountPositionsPagination.total = total
+  },
+
+  setSubaccountPositionsEndTime(state: PositionStoreState, endTime: number) {
+    state.subaccountPositionsPagination.endTime = endTime
   },
 
   updateSubaccountPosition(
@@ -104,7 +117,10 @@ export const actions = actionTree(
       commit('reset')
     },
 
-    async fetchSubaccountPositions({ commit }) {
+    async fetchSubaccountPositions(
+      { commit },
+      activityFetchOptions: ActivityFetchOptions | undefined
+    ) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -112,22 +128,23 @@ export const actions = actionTree(
         return
       }
 
-      const positions = await exchangeDerivativesApi.fetchPositions({
-        subaccountId: subaccount.subaccountId
-      })
+      const paginationOptions = activityFetchOptions?.pagination
+      const filters = activityFetchOptions?.filters
 
-      const positionWithActiveMarket = positions.filter((p) => {
-        const tickerFormattedToSlug = p.ticker
-          .replaceAll('/', '-')
-          .replaceAll(' ', '-')
-          .toLowerCase()
+      const { positions, pagination } =
+        await indexerDerivativesApi.fetchPositions({
+          marketId: filters?.marketId,
+          marketIds: filters?.marketIds,
+          subaccountId: subaccount.subaccountId,
+          direction: filters?.direction,
+          pagination: {
+            skip: paginationOptions ? paginationOptions.skip : 0,
+            limit: paginationOptions ? paginationOptions.limit : 0
+          }
+        })
 
-        return [...derivatives, ...binaryOptions].includes(
-          tickerFormattedToSlug
-        )
-      })
-
-      commit('setSubaccountPositions', positionWithActiveMarket)
+      commit('setSubaccountPositionsTotal', pagination.total)
+      commit('setSubaccountPositions', positions)
     },
 
     // Fetching multiple market orderbooks for unrealized PnL calculation within
@@ -144,11 +161,11 @@ export const actions = actionTree(
         return
       }
 
-      const marketsOrderbook = await exchangeDerivativesApi.fetchOrderbooks(
+      const marketsOrderbook = await indexerDerivativesApi.fetchOrderbooks(
         markets.map((market) => market.marketId)
       )
       const marketsOrderbookMap = marketsOrderbook.reduce(
-        (marketOrderbooks, orderbook, index) => {
+        (marketOrderbooks, { orderbook }, index) => {
           return {
             ...marketOrderbooks,
             [markets[index].marketId]: orderbook
@@ -174,11 +191,11 @@ export const actions = actionTree(
         return
       }
 
-      const marketsOrderbook = await exchangeDerivativesApi.fetchOrderbooks(
+      const marketsOrderbook = await indexerDerivativesApi.fetchOrderbooks(
         subaccountPositions.map((position) => position.marketId)
       )
       const marketsOrderbookMap = marketsOrderbook.reduce(
-        (marketOrderbooks, orderbook, index) => {
+        (marketOrderbooks, { orderbook }, index) => {
           return {
             ...marketOrderbooks,
             [subaccountPositions[index].marketId]: orderbook

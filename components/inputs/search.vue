@@ -6,11 +6,14 @@
     :show-close="showClearIcon"
     :small="small"
     :value="search"
+    show-addon
+    :show-prefix="showPrefix"
+    :input-classes="inputClass"
     @input="input"
     @close="clear"
   >
     <IconSearch
-      slot="addon"
+      :slot="showPrefix ? 'prefix' : 'addon'"
       class="ml-1"
       :class="[small ? 'w-4 h-4' : 'w-5 h-5']"
     />
@@ -29,6 +32,16 @@ export default Vue.extend({
     small: {
       type: Boolean,
       default: false
+    },
+
+    inputClasses: {
+      type: String,
+      default: ''
+    },
+
+    showPrefix: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -37,6 +50,19 @@ export default Vue.extend({
       const { search } = this
 
       return search.trim().length > 0
+    },
+
+    inputClass(): string {
+      const { showPrefix, inputClasses } = this
+      const classes = []
+
+      if (showPrefix) {
+        classes.push('px-2')
+      }
+
+      classes.push(inputClasses)
+
+      return classes.join(' ')
     }
   },
 

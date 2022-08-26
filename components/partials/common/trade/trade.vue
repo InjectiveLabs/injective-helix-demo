@@ -1,7 +1,7 @@
 <template>
   <tr v-if="market" :data-cy="'trade-history-table-row-' + market.ticker">
     <td class="h-8 text-left font-mono">
-      <span class="text-gray-400 text-xs" data-cy="trade-entry-time">
+      <span class="text-gray-400 text-sm" data-cy="trade-entry-time">
         {{ time }}
       </span>
     </td>
@@ -33,7 +33,7 @@
       <span
         data-cy="trade-history-trade-directon-table-data"
         :class="{
-          'text-aqua-500': trade.tradeDirection === TradeDirection.Buy,
+          'text-green-500': trade.tradeDirection === TradeDirection.Buy,
           'text-red-500': trade.tradeDirection === TradeDirection.Sell
         }"
       >
@@ -72,7 +72,7 @@
         :number="fee"
         data-cy="trade-history-fee-table-data"
       >
-        <span slot="addon" class="text-2xs text-gray-500">
+        <span slot="addon" class="text-sm text-gray-500">
           {{ market.quoteToken.symbol }}
         </span>
       </VNumber>
@@ -86,7 +86,7 @@
         "
         :number="total"
       >
-        <span slot="addon" class="text-2xs text-gray-500">
+        <span slot="addon" class="text-sm text-gray-500">
           {{ market.quoteToken.symbol }}
         </span>
       </VNumber>

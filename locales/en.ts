@@ -41,11 +41,11 @@ export default {
     'Access, create and trade unlimited decentralized finance markets',
   welcome_to_ip_sub:
     'The Canary Chain has a $5,000 trading limit which will be uplifted upon the canonical release over the coming weeks.',
-  maintenance_header: 'Ongoing Scheduled Maintenance',
+  maintenance_header: 'System maintenance in progress',
   maintenance_subheader:
     'While this relayer is down for maintenance,<strong class="text-primary-500">Injective</strong> is never down! You can find other relayers in the Injective Ecosystem on the button below!',
-  maintenance_button: 'Relayers',
-  maintenance_body: '',
+  maintenance_button: 'View status',
+  maintenance_body: 'We are constantly improving Helix. Please come back later. Follow the latest updates on our public status page.',
   token_allowance_successful: 'Token allowance set successful',
   disclaimer_note:
     'By connecting a wallet, you agree to the Injective Labs <a href="https://injectivelabs.org/terms-and-conditions" class="text-primary-500" target="_blank" />Terms and Conditions</a>, have read the <a href="https://injectivelabs.org/privacy-policy" class="text-primary-500" target="_blank" />Privacy Policy</a> and acknowledge that you have read and understand the Injective Protocol <a href="https://injectiveprotocol.com/disclaimer" class="text-primary-500" target="_blank">disclaimer</a>.',
@@ -216,6 +216,7 @@ export default {
     dashboard: 'Dashboard',
     trade: 'Trade',
     convert: 'Convert',
+    convertDescription: 'Easy and instant trade',
     activities: 'Activities',
     activity: 'Activity',
     portfolio: 'Portfolio',
@@ -225,21 +226,32 @@ export default {
     tradeAndEarn: 'Trade and Earn',
     tradeAndEarnDescription:
       'Each trade on Injective can earn you some rewards.',
+    affiliateProgram: 'Affiliate Program',
+    affiliateProgramDescription:
+      'Earn crypto commission by inviting friends to trade on Helix.',
     dmmProgram: 'Dmm program',
     dmmProgramDescription:
-      'Flagship liquidity mining program designed for Dedicated Market Makers.'
+      'Flagship liquidity mining program designed for Dedicated Market Makers.',
+    spot: 'Spot',
+    spotDescription: 'Trade crypto with with on-chain orderbook',
+    perpetual: 'Perpetual',
+    perpetualDescription: 'Trade perpetual contracts settled in USDT or WETH'
   },
 
   fee_discounts: {
     page_title: 'Fee Discounts',
-    page_description: 'Trading fees are based on a user\'s staked amount of INJ and the total trading volume in the past 28 days.',
-    page_description_warning: 'Please note that the maker fee discounts are only applicable to markets with a non-negative maker fee.',
+    page_description:
+      "Trading fees are based on a user's staked amount of INJ and the total trading volume in the past 28 days.",
+    page_description_warning:
+      'Please note that the maker fee discounts are only applicable to markets with a non-negative maker fee.',
     my_tier: 'My Tier',
     my_staked_amount: 'Staked Amount',
-    my_staked_amount_tooltip: 'The amount of INJ that you have staked. Staking INJ secures the protocol, earns you rewards and can help you obtain a more preferable fee tier.',
+    my_staked_amount_tooltip:
+      'The amount of INJ that you have staked. Staking INJ secures the protocol, earns you rewards and can help you obtain a more preferable fee tier.',
     my_trading_volume: 'My Trading Volume',
     trading_volume: 'Trading Volume',
-    trading_volume_tooltip: 'The total volume traded on a 28-day rolling basis. Only markets in USD quote denoms are included at this moment.',
+    trading_volume_tooltip:
+      'The total volume traded on a 28-day rolling basis. Only markets in USD quote denoms are included at this moment.',
     maker_rate_discount: 'Maker Rate Discount',
     maker_rate_discount_tooltip: 'Maker fee discount based on the fee tier.',
     taker_rate_discount: 'Taker Rate Discount',
@@ -255,5 +267,14 @@ export default {
     last_updated_at: 'Last updated at',
     update_daily: 'Update daily',
     in_past_days: 'In past {days} days'
+  },
+
+  pagination: {
+    showRows: 'Show rows',
+    showCountOutOfTotal: 'Showing {from} - {to} out of {totalCount}'
+  },
+
+  filters: {
+    clearAll: 'Clear All'
   }
 }

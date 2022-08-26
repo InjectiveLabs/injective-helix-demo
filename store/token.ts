@@ -12,7 +12,7 @@ import {
   getAddressFromInjectiveAddress,
   MsgSendToEth
 } from '@injectivelabs/sdk-ts'
-import { Token } from '@injectivelabs/token-metadata'
+import { Erc20Token, Token } from '@injectivelabs/token-metadata'
 import {
   msgBroadcastClient,
   tokenPrice,
@@ -112,9 +112,10 @@ export const actions = actionTree(
       const tokenToTokenWithBalanceAndAllowance = async ({
         token
       }: BankBalanceWithToken) => {
+        const erc20Token = token as Erc20Token
         const balance = await web3Client.fetchTokenBalanceAndAllowance({
           address,
-          contractAddress: token.address
+          contractAddress: erc20Token.address
         })
 
         return {
@@ -162,9 +163,11 @@ export const actions = actionTree(
       const tradeableTokensWithBalanceAndPrice = await Promise.all(
         uniqueDenomsNotInBankBalances.map(async (denom) => {
           const token = await tokenService.getDenomToken(denom)
+          const erc20Token = token as Erc20Token
+
           const tokenBalance = await web3Client.fetchTokenBalanceAndAllowance({
             address,
-            contractAddress: token.address
+            contractAddress: erc20Token.address
           })
 
           return {
@@ -225,10 +228,11 @@ export const actions = actionTree(
 
     async setTokenAllowance(
       { state, commit },
-      { address: tokenAddress }: TokenWithBalance
+      tokenWithBalance: TokenWithBalance
     ) {
       const { address } = this.app.$accessor.wallet
       const { gasPrice } = this.app.$accessor.app
+      const tokenAddress = tokenWithBalance.address as keyof Erc20Token
 
       await this.app.$accessor.wallet.validate()
 
@@ -246,10 +250,18 @@ export const actions = actionTree(
 
       const { erc20TokensWithBalanceAndPriceFromBank } = state
       const token = erc20TokensWithBalanceAndPriceFromBank.find(
-        (token) => token.address.toLowerCase() === tokenAddress.toLowerCase()
+        (token) => {
+          const erc20Token = token as Erc20Token
+
+          return erc20Token.address.toLowerCase() === tokenAddress.toLowerCase()
+        }
       )
       const index = erc20TokensWithBalanceAndPriceFromBank.findIndex(
-        (token) => token.address.toLowerCase() === tokenAddress.toLowerCase()
+        (token) => {
+          const erc20Token = token as Erc20Token
+
+          return erc20Token.address.toLowerCase() === tokenAddress.toLowerCase()
+        }
       )
 
       if (!token || index < 0) {

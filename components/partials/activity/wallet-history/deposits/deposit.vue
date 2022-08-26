@@ -2,7 +2,7 @@
   <tr data-cy="wallet-history-table-row">
     <td class="h-8 font-mono">
       <span
-        class="text-gray-400 text-xs"
+        class="text-gray-400 text-sm"
         data-cy="wallet-history-time-table-data"
       >
         {{ time }}
@@ -42,7 +42,7 @@
         :rounding-mode="BIG_NUMBER_ROUND_HALF_UP_MODE"
         data-cy="wallet-history-amount-table-data"
       >
-        <span slot="addon" class="text-2xs text-gray-500">
+        <span slot="addon" class="text-sm text-gray-500">
           {{ transaction.token.symbol }}
         </span>
       </VNumber>

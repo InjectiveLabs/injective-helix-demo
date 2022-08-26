@@ -12,7 +12,7 @@
       </div>
       <div>
         <a :href="auctionUrl" target="_blank" @click="closeModal">
-          <VButton primary lg>
+          <VButton primary lg class="rounded">
             <span>{{ $t('auction.countdown.button') }}</span>
           </VButton>
         </a>
@@ -148,7 +148,7 @@ export default Vue.extend({
           auctionIsNotClosed &&
           auctionModalIsNotClosed
         ) {
-          this.$accessor.modal.openModal(Modal.AuctionCountdown)
+          this.$accessor.modal.openModal({ type: Modal.AuctionCountdown })
         }
       }
     },

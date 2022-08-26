@@ -10,14 +10,16 @@ const modals = modalValues.reduce((previous: ModalState, current: Modal) => {
 
 const initialStateFactory = () => ({
   modals,
-  persistModal: undefined
+  persistModal: undefined,
+  data: undefined
 })
 
 const initialState = initialStateFactory()
 
 export const state = () => ({
   modals: initialState.modals as ModalState,
-  persistModal: initialState.persistModal as Modal | undefined
+  persistModal: initialState.persistModal as Modal | undefined,
+  data: initialState.data as any
 })
 
 export type ModalStoreState = ReturnType<typeof state>
@@ -37,6 +39,10 @@ export const mutations = {
     }
   },
 
+  clearData(state: ModalStoreState) {
+    state.data = undefined
+  },
+
   toggleModal(state: ModalStoreState, modal: Modal) {
     if (modalExists(modal)) {
       state.modals = {
@@ -46,11 +52,12 @@ export const mutations = {
     }
   },
 
-  openModal(state: ModalStoreState, modal: Modal) {
-    if (modalExists(modal)) {
+  openModal(state: ModalStoreState, modal: { type: Modal, data?: any }) {
+    if (modalExists(modal.type)) {
       const initialState = initialStateFactory()
 
-      state.modals = { ...initialState.modals, [modal]: true }
+      state.data = modal.data
+      state.modals = { ...initialState.modals, [modal.type]: true }
     }
   },
 
@@ -71,7 +78,7 @@ export const actions = actionTree(
         return
       }
 
-      commit('openModal', persistModal)
+      commit('openModal', { type: persistModal })
       commit('setPersistModal', undefined)
     }
   }

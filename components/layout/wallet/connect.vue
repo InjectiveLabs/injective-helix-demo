@@ -3,15 +3,17 @@
     <VButton
       md
       primary
+      class="rounded-lg whitespace-nowrap h-8 lg:h-10 px-4 lg:px-8 bg-primary-500 hover:bg-primary-400"
       data-cy="header-wallet-connect-button"
       @click="handleWalletConnectClicked"
     >
-      {{ $t('connect.connect') }}
+      {{ $t('connect.connectWallet') }}
     </VButton>
 
     <VModal
       :is-open="isOpenConnectModal"
       md
+      no-padding
       @modal-closed="isOpenConnectModal = false"
     >
       <h3 slot="title">
@@ -19,7 +21,7 @@
       </h3>
       <div class="relative mt-6">
         <HocLoading :status="status">
-          <ul class="divide-y divide-gray-800 border-gray-700 rounded-lg">
+          <ul class="divide-y divide-gray-800 border-gray-700 rounded-lg overflow-hidden">
             <Metamask />
             <Keplr />
             <Torus />
@@ -126,7 +128,7 @@ export default Vue.extend({
   methods: {
     handleWalletConnectClicked() {
       if (GEO_IP_RESTRICTIONS_ENABLED) {
-        this.$accessor.modal.openModal(Modal.Terms)
+        this.$accessor.modal.openModal({ type: Modal.Terms })
       } else {
         this.isOpenConnectModal = true
       }

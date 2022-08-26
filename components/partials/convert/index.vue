@@ -28,6 +28,8 @@
           :usd-price="fromUsdPrice"
           :step="orderTypeBuy ? priceStep : amountStep"
           :max-decimals="maxDecimalsFrom"
+          show-input
+          show-custom-indicator
           @input:amount="onSetAmount"
           @input:token="onSetFromToken"
           @input:max="onMaxInput"
@@ -35,7 +37,7 @@
         <div class="flex justify-between items-center -my-2">
           <button
             type="button"
-            class="rounded-full z-1000 flex items-center justify-center min-w-[32px] w-8 h-8 bg-primary-600 hover:bg-primary-500 relative mx-auto"
+            class="rounded-full z-1000 flex items-center justify-center min-w-[32px] w-8 h-8 bg-primary-500 hover:bg-primary-600 relative mx-auto"
             data-cy="convert-widget-switch-sides-button"
             :class="{ 'opacity-50': status.isLoading() }"
             @click="switchTokens"
@@ -57,6 +59,8 @@
           :validation-rules="'positiveNumber'"
           :step="orderTypeBuy ? amountStep : priceStep"
           :max-decimals="maxDecimalsTo"
+          show-input
+          show-custom-indicator
           disable-max-selector
           @input:amount="onSetToAmount"
           @input:token="onSetToToken"
@@ -84,8 +88,8 @@
           :disabled="ctaButtonDisabled"
           :ghost="hasErrors"
           :primary="!hasErrors"
+          class="w-full rounded"
           data-cy="convert-widget-submit-button"
-          class="w-full"
           :class="{ 'bg-opacity-50': status.isLoading() }"
           @click.stop="onSubmit"
         >
@@ -96,8 +100,8 @@
           lg
           :status="status"
           primary
+          class="w-full rounded"
           data-cy="convert-widget-connect-wallet-button"
-          class="w-full"
           :class="{ 'bg-opacity-50': status.isLoading() }"
           @click.stop="handleClickOrConnect"
         >
@@ -236,7 +240,7 @@ export default Vue.extend({
         return this.$t('trade.convert.insufficient_balance')
       }
 
-      return this.$t('trade.convert.convert_now')
+      return this.$t('trade.convert.convert')
     },
 
     ctaButtonDisabled(): boolean {
@@ -1104,7 +1108,7 @@ export default Vue.extend({
 
   mounted() {
     if (!this.hasEnoughInjForGasOrNotKeplr) {
-      this.$accessor.modal.openModal(Modal.InsufficientInjForGas)
+      this.$accessor.modal.openModal({ type: Modal.InsufficientInjForGas })
     }
 
     let from = (this.$route.query.from as string) || 'usdt'

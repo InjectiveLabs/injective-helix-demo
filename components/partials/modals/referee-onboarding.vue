@@ -34,7 +34,7 @@
         <div class="grid grid-cols-1 xs:grid-cols-2 gap-4">
           <VButton
             xl
-            class="inline-flex items-center justify-center"
+            class="inline-flex items-center justify-center rounded"
             light
             :status="metamaskStatus"
             @click="connectMetamask"
@@ -47,7 +47,7 @@
 
           <VButton
             xl
-            class="inline-flex items-center justify-center"
+            class="inline-flex items-center justify-center rounded"
             light
             :disabled="metamaskStatus.isLoading()"
             @click="connectLedger"
@@ -80,7 +80,7 @@
         <VButton
           primary
           xl
-          class="w-full"
+          class="w-full rounded"
           :disabled="invalid"
           :status="referStatus"
           @click="handleConfirm"

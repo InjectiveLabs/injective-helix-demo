@@ -40,7 +40,8 @@
 import Vue, { PropType } from 'vue'
 import {
   cosmosSdkDecToBigNumber,
-  PointsMultiplier
+  PointsMultiplier,
+  TradeExecutionType
 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
@@ -49,20 +50,28 @@ import {
   ZERO_IN_BASE,
   SpotOrderSide
 } from '@injectivelabs/sdk-ui-ts'
-import OrderDetailsSpot from '~/components/partials/spot/trading/order-details.vue'
+import OrderDetailsLimitSpot from '~/components/partials/spot/trading/order-details-limit.vue'
 import OrderDetailsMarketSpot from '~/components/partials/spot/trading/order-details-market.vue'
-import OrderDetailsDerivatives from '~/components/partials/derivatives/trading/order-details.vue'
+import OrderDetailsStopLimitSpot from '~/components/partials/spot/trading/order-details-stop-limit.vue'
+import OrderDetailsStopMarketSpot from '~/components/partials/spot/trading/order-details-stop-market.vue'
+import OrderDetailsLimitDerivatives from '~/components/partials/derivatives/trading/order-details-limit.vue'
 import OrderDetailsMarketDerivatives from '~/components/partials/derivatives/trading/order-details-market.vue'
+import OrderDetailsStopLimitDerivatives from '~/components/partials/derivatives/trading/order-details-stop-limit.vue'
+import OrderDetailsStopMarketDerivatives from '~/components/partials/derivatives/trading/order-details-stop-market.vue'
 import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import { getDecimalsFromNumber } from '~/app/utils/helpers'
 
 export default Vue.extend({
   components: {
-    OrderDetailsSpot,
+    OrderDetailsLimitSpot,
+    OrderDetailsStopLimitSpot,
     OrderDetailsMarketSpot,
-    OrderDetailsDerivatives,
-    OrderDetailsMarketDerivatives
+    OrderDetailsStopMarketSpot,
+    OrderDetailsLimitDerivatives,
+    OrderDetailsMarketDerivatives,
+    OrderDetailsStopLimitDerivatives,
+    OrderDetailsStopMarketDerivatives
   },
 
   props: {
@@ -73,8 +82,28 @@ export default Vue.extend({
       required: true
     },
 
+    tradingType: {
+      type: String as PropType<TradeExecutionType>,
+      required: true
+    },
+
     tradingTypeMarket: {
-      type: Boolean,
+      type: Boolean as PropType<boolean>,
+      required: true
+    },
+
+    tradingTypeLimit: {
+      type: Boolean as PropType<boolean>,
+      required: true
+    },
+
+    tradingTypeStopMarket: {
+      type: Boolean as PropType<boolean>,
+      required: true
+    },
+
+    tradingTypeStopLimit: {
+      type: Boolean as PropType<boolean>,
       required: true
     },
 
@@ -190,7 +219,12 @@ export default Vue.extend({
     },
 
     orderDetailsComponent(): string {
-      const { tradingTypeMarket, isSpot } = this
+      const {
+        tradingTypeMarket,
+        tradingTypeLimit,
+        tradingTypeStopLimit,
+        isSpot
+      } = this
 
       if (tradingTypeMarket) {
         return isSpot
@@ -198,7 +232,19 @@ export default Vue.extend({
           : 'OrderDetailsMarketDerivatives'
       }
 
-      return isSpot ? 'OrderDetailsSpot' : 'OrderDetailsDerivatives'
+      if (tradingTypeLimit) {
+        return isSpot ? 'OrderDetailsLimitSpot' : 'OrderDetailsLimitDerivatives'
+      }
+
+      if (tradingTypeStopLimit) {
+        return isSpot
+          ? 'OrderDetailsStopLimitSpot'
+          : 'OrderDetailsStopLimitDerivatives'
+      }
+
+      return isSpot
+        ? 'OrderDetailsStopMarketSpot'
+        : 'OrderDetailsStopMarketDerivatives'
     },
 
     feeReturned(): BigNumberInBase {

@@ -3,6 +3,7 @@ import { LocalStorage } from '@injectivelabs/utils'
 import { Web3Client } from '@injectivelabs/sdk-ui-ts/dist/web3'
 import {
   MsgBroadcastClient,
+  MsgBroadcastExperimentalClient,
   TokenService,
   TokenPrice,
   MetricsProvider,
@@ -10,25 +11,25 @@ import {
   UiBridgeTransformer
 } from '@injectivelabs/sdk-ui-ts'
 import {
+  ApolloConsumer,
   ChainGrpcAuctionApi,
   ChainGrpcBankApi,
-  ChainGrpcMintApi,
-  ChainGrpcStakingApi,
   ChainGrpcDistributionApi,
+  ChainGrpcExchangeApi,
   ChainGrpcGovApi,
   ChainGrpcInsuranceFundApi,
   ChainGrpcPeggyApi,
-  ExchangeRestExplorerApi,
-  ExchangeGrpcExplorerApi,
-  ApolloConsumer,
-  ChainGrpcExchangeApi,
+  ChainGrpcMintApi,
+  ChainGrpcStakingApi,
+  IndexerRestExplorerApi,
+  IndexerGrpcExplorerApi,
   ChainGrpcOracleApi,
-  ExchangeGrpcDerivativesApi,
-  ExchangeGrpcSpotApi,
-  ExchangeGrpcAccountApi,
-  ExchangeRestDerivativesChronosApi,
-  ExchangeRestSpotChronosApi,
-  ExchangeGrpcOracleApi
+  IndexerGrpcDerivativesApi,
+  IndexerGrpcSpotApi,
+  IndexerGrpcAccountApi,
+  IndexerRestDerivativesChronosApi,
+  IndexerRestSpotChronosApi,
+  IndexerGrpcOracleApi
 } from '@injectivelabs/sdk-ts/dist/client'
 import {
   NETWORK,
@@ -68,37 +69,34 @@ export const peggyApi = new ChainGrpcPeggyApi(ENDPOINTS.sentryGrpcApi)
 export const auctionApi = new ChainGrpcAuctionApi(ENDPOINTS.sentryGrpcApi)
 export const exchangeApi = new ChainGrpcExchangeApi(ENDPOINTS.sentryGrpcApi)
 export const oracleApi = new ChainGrpcOracleApi(ENDPOINTS.sentryGrpcApi)
-export const exchangeExplorerApi = new ExchangeGrpcExplorerApi(
-  ENDPOINTS.exchangeApi
+
+export const indexerExplorerApi = new IndexerGrpcExplorerApi(
+  ENDPOINTS.indexerApi
 )
-export const exchangeAccountApi = new ExchangeGrpcAccountApi(
-  ENDPOINTS.exchangeApi
+export const indexerAccountApi = new IndexerGrpcAccountApi(ENDPOINTS.indexerApi)
+export const indexerOracleApi = new IndexerGrpcOracleApi(ENDPOINTS.indexerApi)
+export const indexerRestExplorerApi = new IndexerRestExplorerApi(
+  `${ENDPOINTS.indexerApi}/api/explorer/v1`
 )
-export const exchangeOracleApi = new ExchangeGrpcOracleApi(
-  ENDPOINTS.exchangeApi
-)
-export const exchangeRestExplorerApi = new ExchangeRestExplorerApi(
-  `${ENDPOINTS.exchangeApi}/api/explorer/v1`
-)
-export const exchangeRestDerivativesChronosApi =
-  new ExchangeRestDerivativesChronosApi(
+export const indexerRestDerivativesChronosApi =
+  new IndexerRestDerivativesChronosApi(
     `${
       ENDPOINTS.chronosApi
         ? `${ENDPOINTS.chronosApi}/api/v1/derivative`
-        : `${ENDPOINTS.exchangeApi}/api/chronos/v1/derivative`
+        : `${ENDPOINTS.indexerApi}/api/chronos/v1/derivative`
     }`
   )
-export const exchangeRestSpotChronosApi = new ExchangeRestSpotChronosApi(
+export const indexerRestSpotChronosApi = new IndexerRestSpotChronosApi(
   `${
     ENDPOINTS.chronosApi
       ? `${ENDPOINTS.chronosApi}/api/v1/spot`
-      : `${ENDPOINTS.exchangeApi}/api/chronos/v1/spot`
+      : `${ENDPOINTS.indexerApi}/api/chronos/v1/spot`
   }`
 )
-export const exchangeDerivativesApi = new ExchangeGrpcDerivativesApi(
-  ENDPOINTS.exchangeApi
+export const indexerDerivativesApi = new IndexerGrpcDerivativesApi(
+  ENDPOINTS.indexerApi
 )
-export const exchangeSpotApi = new ExchangeGrpcSpotApi(ENDPOINTS.exchangeApi)
+export const indexerSpotApi = new IndexerGrpcSpotApi(ENDPOINTS.indexerApi)
 
 export const apolloConsumer = new ApolloConsumer(
   peggyGraphQlEndpointForNetwork(NETWORK)
@@ -110,6 +108,11 @@ export const msgBroadcastClient = new MsgBroadcastClient({
   ...apiOptions,
   walletStrategy
 })
+export const msgBroadcastExperimentalClient =
+  new MsgBroadcastExperimentalClient({
+    ...apiOptions,
+    walletStrategy
+  })
 export const web3Client = new Web3Client({
   // @ts-ignore
   walletStrategy,

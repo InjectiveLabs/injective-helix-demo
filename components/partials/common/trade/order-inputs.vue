@@ -1,9 +1,10 @@
 <template>
   <div>
     <VInput
-      v-if="!tradingTypeMarket"
+      v-if="tradingTypeLimit"
       id="input-price"
       ref="input-price"
+      class="mb-6"
       :value="inputPrice"
       :placeholder="priceStep"
       :label="$t('trade.price')"
@@ -13,12 +14,53 @@
       :max-decimals="market ? market.quoteToken.decimals : 6"
       min="0"
       data-cy="trading-page-price-input"
+      show-addon
       @input="onPriceChange"
     >
       <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
     </VInput>
 
-    <div class="flex gap-3 mt-6">
+    <VInput
+      v-if="tradingTypeStopLimit || tradingTypeStopMarket"
+      id="trigger-price"
+      ref="trigger-price"
+      class="mb-6"
+      :value="inputTriggerPrice"
+      :placeholder="priceStep"
+      :label="$t('trade.trigger_price')"
+      :disabled="tradingTypeMarket || tradingTypeLimit"
+      type="number"
+      :step="priceStep"
+      :max-decimals="market ? market.quoteToken.decimals : 6"
+      min="0"
+      data-cy="trading-page-trigger-price-input"
+      show-addon
+      @input="onTriggerPriceChange"
+    >
+      <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
+    </VInput>
+
+    <VInput
+      v-if="tradingTypeStopLimit"
+      id="limit-price"
+      ref="limit-price"
+      class="mb-6"
+      :value="inputPrice"
+      :placeholder="priceStep"
+      :label="$t('trade.limit_price')"
+      :disabled="!tradingTypeStopLimit"
+      type="number"
+      :step="priceStep"
+      :max-decimals="market ? market.quoteToken.decimals : 6"
+      min="0"
+      data-cy="trading-page-price-input"
+      show-addon
+      @input="onPriceChange"
+    >
+      <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
+    </VInput>
+
+    <div class="flex gap-3">
       <VInput
         ref="input-amount"
         v-model="inputBaseAmount"
@@ -41,6 +83,7 @@
       </VInput>
 
       <VInput
+        v-if="!tradingTypeMarket"
         ref="input-quote-amount"
         v-model="inputQuoteAmount"
         :custom-handler="true"
@@ -116,8 +159,13 @@
         quoteAmount: inputQuoteAmountToBigNumber,
         quoteAvailableBalance,
         sells,
+        tradingTypeLimit,
         tradingTypeMarket,
-        worstPrice
+        tradingTypeStopLimit,
+        tradingTypeStopMarket,
+        worstPrice,
+        triggerPrice,
+        markPrice
       }"
       @update:hasInputErrors="updateHasInputErrors"
     />
@@ -143,13 +191,16 @@
     />
 
     <AdvancedSettings
-      :trading-type-market="tradingTypeMarket"
+      :trading-type="tradingType"
       :slippage-tolerance="inputSlippageTolerance"
       :post-only="inputPostOnly"
       :reduce-only="inputReduceOnly"
-      :show-reduce-only="showReduceOnly"
+      :reduce-only-disabled="!showReduceOnly"
       :leverage="inputLeverage"
       :has-advanced-settings-errors="hasAdvancedSettingsErrors"
+      :is-conditional-order="isConditionalOrder"
+      :is-spot="isSpot"
+      :form-id="formId"
       @set:postOnly="setPostOnly"
       @set:reduceOnly="setReduceOnly"
       @set:slippageTolerance="setSlippageTolerance"
@@ -204,13 +255,28 @@ export default Vue.extend({
       required: true
     },
 
-    tradingTypeMarket: {
-      type: Boolean,
+    tradingType: {
+      type: String as PropType<TradeExecutionType>,
       required: true
     },
 
-    tradingType: {
-      type: String as PropType<TradeExecutionType>,
+    tradingTypeMarket: {
+      type: Boolean as PropType<boolean>,
+      required: true
+    },
+
+    tradingTypeLimit: {
+      type: Boolean as PropType<boolean>,
+      required: true
+    },
+
+    tradingTypeStopMarket: {
+      type: Boolean as PropType<boolean>,
+      required: true
+    },
+
+    tradingTypeStopLimit: {
+      type: Boolean as PropType<boolean>,
       required: true
     },
 
@@ -299,6 +365,16 @@ export default Vue.extend({
       default: undefined
     },
 
+    triggerPrice: {
+      type: Object as PropType<BigNumberInBase>,
+      default: undefined
+    },
+
+    markPrice: {
+      type: Object as PropType<BigNumberInBase>,
+      default: undefined
+    },
+
     hasInputErrors: {
       type: Boolean,
       required: true
@@ -367,6 +443,16 @@ export default Vue.extend({
     leverage: {
       type: String,
       default: undefined
+    },
+
+    isConditionalOrder: {
+      type: Boolean,
+      required: true
+    },
+
+    formId: {
+      type: Number,
+      required: true
     }
   },
 
@@ -376,6 +462,7 @@ export default Vue.extend({
       inputBaseAmount: '',
       inputQuoteAmount: '',
       inputPrice: '',
+      inputTriggerPrice: '',
       inputPostOnly: false,
       inputProportionalPercentage: 0,
       inputSlippageTolerance: '0.5',
@@ -507,9 +594,9 @@ export default Vue.extend({
   watch: {
     lastTradedPrice: {
       handler(newPrice: BigNumberInBase) {
-        const { price, market } = this
+        const { price, market, tradingTypeStopLimit } = this
 
-        if (!market) {
+        if (!market || tradingTypeStopLimit) {
           return
         }
 
@@ -524,6 +611,12 @@ export default Vue.extend({
     },
 
     price(newPrice: string) {
+      const { tradingTypeStopLimit } = this
+
+      if (tradingTypeStopLimit) {
+        return
+      }
+
       this.inputPrice = newPrice
     },
 
@@ -535,7 +628,17 @@ export default Vue.extend({
       } else if (averagePriceOption === AveragePriceOptions.BaseAmount) {
         this.onAmountChange(inputBaseAmount)
       }
+    },
+
+    formId() {
+      this.reset()
     }
+  },
+
+  mounted() {
+    const { amountStep } = this
+
+    this.onAmountChange(amountStep)
   },
 
   methods: {
@@ -681,6 +784,22 @@ export default Vue.extend({
           ? this.updateSpotBaseAmountFromQuote()
           : this.updateDerivativesBaseAmountFromQuote()
       }
+    },
+
+    onTriggerPriceChange(triggerPrice: string = '') {
+      const { market } = this
+
+      if (!market) {
+        return
+      }
+
+      const formattedTriggerPrice = formatPriceToAllowableDecimals(
+        triggerPrice,
+        market.priceDecimals
+      )
+
+      this.inputTriggerPrice = formattedTriggerPrice
+      this.$emit('update:trigger-price', formattedTriggerPrice)
     },
 
     onAmountChange(amount: string = '') {
@@ -903,6 +1022,17 @@ export default Vue.extend({
 
     updateHasInputErrors(hasInputErrors: boolean) {
       this.$emit('update:hasInputErrors', hasInputErrors)
+    },
+
+    reset(): void {
+      this.setPostOnly(false)
+      this.setReduceOnly(false)
+      this.setSlippageTolerance('0.5')
+      this.onPriceChange('')
+      this.onTriggerPriceChange('')
+      this.onAmountChange(this.amountStep)
+      this.onQuoteAmountChange('')
+      this.onLeverageChange('1')
     }
   }
 })

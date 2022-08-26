@@ -9,7 +9,11 @@
         v-bind="$attrs"
         ref="tokenSelector"
         class="input-select input-token flex"
-        :class="{ 'input-error': inputErrors && inputErrors.length > 0 }"
+        data-cy="token-selector-drop-down"
+        :class="{
+          'input-error': inputErrors && inputErrors.length > 0,
+          'rounded-full': rounded
+        }"
         label="denom"
         :auto-scroll="false"
         :clearable="false"
@@ -23,7 +27,13 @@
         @click.native="handleDropdownToggle"
       >
         <template #open-indicator="{ attributes }">
-          <span v-bind="attributes" class="cursor-pointer"> </span>
+          <div
+            v-bind="attributes"
+            class="cursor-pointer"
+            :class="{ 'mr-4': showDefaultIndicator }"
+          >
+            <IconCaretDownSlim v-if="showDefaultIndicator" />
+          </div>
         </template>
 
         <template #selected-option="{ symbol, logo, name }">
@@ -36,8 +46,10 @@
               `required|positiveNumber|enoughBalance:0.0001,${balanceToFixed}`
             "
           >
-            <div class="flex justify-between gap-4 items-center">
-              <div class="flex flex-col w-full justify-center">
+            <div
+              :class="{ 'flex justify-between items-center gap-4': showInput }"
+            >
+              <div v-if="showInput" class="flex flex-col w-full justify-center">
                 <VInput
                   id="bridge-input"
                   dense
@@ -53,7 +65,6 @@
                   :valid="valid"
                   :max="balanceToFixed"
                   :max-decimals="maxDecimals"
-                  :max-selector="!disableMaxSelector && balance.gt(0.0001)"
                   :max-classes="'input-max-button'"
                   :value="amount"
                   :prefix="prefix"
@@ -62,7 +73,7 @@
                   :disabled="disabled"
                   disable-addon-padding
                   @input="handleAmountChange"
-                  @input-max="handleMax"
+                  @input:max="handleEmitMax"
                   @blur="resetIsSearching"
                   @mousedown.native.stop="focusInput"
                 />
@@ -82,45 +93,74 @@
                 </div>
               </div>
               <div class="flex flex-col">
-                <div class="flex justify-end items-center h-[32px] ml-4" data-cy="token-selector-drop-down">
+                <div
+                  class="flex items-center h-[32px] ml-4"
+                  data-cy="token-selector-drop-down"
+                  :class="{
+                    'justify-end': showInput,
+                    'justify-start': !showInput
+                  }"
+                >
                   <img
                     v-if="logo"
                     :src="getTokenLogoWithVendorPathPrefix(logo)"
                     :alt="name"
-                    class="rounded-full w-6 h-6"
+                    class="rounded-full w-6 h-6 vs__selected-icon"
                   />
                   <IconCategoryAlt v-else class="rounded-full w-6 h-6" />
                   <span
-                    class="font-bold text-lg px-3 text-gray-200 tracking-wide break-normal"
+                    class="font-semibold text-lg px-2 text-gray-200 tracking-wide break-normal vs__selected-text-content"
                     data-cy="token-selector-selected-text-content"
                   >
                     {{ symbol }}
                   </span>
-                  <div class="block pr-4 text-white">
+                  <div
+                    v-if="showCustomIndicator"
+                    class="block pr-4 text-white"
+                    :class="{ 'ml-auto': !showInput }"
+                  >
                     <IconCaretDownSlim />
                   </div>
                 </div>
-                <div v-if="showBalance" class="pr-4 h-5 relative">
+                <div
+                  v-if="showBalance || showMaxSelector"
+                  class="h-5 flex items-center justify-end gap-2 pr-4"
+                >
                   <span
-                    class="text-[12px] whitespace-nowrap absolute right-4 top-0"
+                    v-if="showBalance"
                     data-cy="token-selector-selected-balance-span"
+                    class="text-xs whitespace-nowrap"
                     :class="{
                       'text-red-400': errors.length > 0,
-                      'text-primary-600': errors.length === 0
+                      'text-primary-500': errors.length === 0
                     }"
                   >
                     {{ $t('bridge.balance') }}: {{ balanceToFixed }}
                   </span>
+                  <button
+                    v-if="showMaxSelector"
+                    class="bg-primary-500 bg-opacity-20 rounded px-1 h-4 cursor-pointer flex items-center justify-center hover:bg-opacity-40 group"
+                    @click.stop="handleMax"
+                  >
+                    <span
+                      class="text-3xs text-primary-500 text-xs whitespace-nowrap uppercase group-hover:text-white"
+                    >
+                      Max
+                    </span>
+                  </button>
                 </div>
               </div>
             </div>
-            <span
-              v-if="showErrorsBelow && errors.length > 0"
-              data-cy="reusable-input-bellow-error-text-content"
-              class="text-red-400 absolute text-xs mt-[28px]"
-            >
-              {{ errors[0] }}
-            </span>
+            <template v-if="showErrorsBelow && errors.length > 0">
+              <portal to="token-selector-errors">
+                <span
+                  data-cy="token-selector-errors"
+                  class="text-red-400 text-xs block mt-2"
+                >
+                  {{ errors[0] }}
+                </span>
+              </portal>
+            </template>
           </ValidationProvider>
         </template>
 
@@ -133,8 +173,7 @@
               round
               :placeholder="$t('common.search')"
               data-cy="token-selector-search"
-              :wrapper-classes="'shadow-none'"
-              :input-classes="'bg-gray-800 rounded-lg'"
+              :input-classes="'bg-gray-900 rounded'"
               @blur="resetIsSearching"
               @click.native.stop="focusSearchInput"
             >
@@ -148,6 +187,10 @@
         </template>
       </VSelect>
     </ValidationObserver>
+    <portal-target
+      name="token-selector-errors"
+      data-cy="token-selector-errors"
+    />
   </div>
 </template>
 
@@ -155,7 +198,7 @@
 import Vue, { PropType } from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import VSelect from 'vue-select'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import {
   BankBalanceWithTokenAndBalanceInBase,
   BIG_NUMBER_ROUND_DOWN_MODE,
@@ -259,6 +302,26 @@ export default Vue.extend({
     maxDecimals: {
       type: Number,
       default: UI_DEFAULT_DISPLAY_DECIMALS
+    },
+
+    showInput: {
+      type: Boolean,
+      default: false
+    },
+
+    showDefaultIndicator: {
+      type: Boolean,
+      default: false
+    },
+
+    showCustomIndicator: {
+      type: Boolean,
+      default: false
+    },
+
+    rounded: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -275,7 +338,6 @@ export default Vue.extend({
   computed: {
     inputClass(): string {
       const { prefix } = this
-
       const classes = ['text-lg font-bold']
 
       if (prefix) {
@@ -309,6 +371,12 @@ export default Vue.extend({
       return this.$refs['bridge-token-input'] as InstanceType<
         typeof ValidationObserver
       >
+    },
+
+    showMaxSelector(): boolean {
+      const { disableMaxSelector, balance } = this
+
+      return !disableMaxSelector && balance.gt(0.0001)
     }
   },
 
@@ -333,7 +401,6 @@ export default Vue.extend({
 
     handleDropdownToggle() {
       const { $refs }: { $refs: Record<string, any> } = this
-
       const isOpen = $refs.tokenSelector.open || false
 
       if (isOpen) {
@@ -383,11 +450,23 @@ export default Vue.extend({
 
     handleChange(value: BankBalanceWithTokenAndBalanceInBase) {
       this.forceClose = true
+
       this.$emit('input', value.token)
       this.$emit('input:token', value.token)
     },
 
-    handleMax(value: string) {
+    handleEmitMax(value: string) {
+      this.$emit('input:max', value)
+    },
+
+    handleMax() {
+      const { balanceToFixed, maxDecimals } = this
+
+      const value = new BigNumberInBase(balanceToFixed).toFixed(
+        maxDecimals,
+        BigNumber.ROUND_DOWN
+      )
+
       this.$emit('input:max', value)
     }
   }

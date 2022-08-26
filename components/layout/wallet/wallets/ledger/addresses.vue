@@ -17,7 +17,11 @@
       </div>
       <div class="w-full px-4 mb-2 text-left">
         <div v-if="status.isNotLoading()">
-          <VButton sm @click.stop.prevent="handleClickOnFetchAddresses">
+          <VButton
+            sm
+            class="rounded"
+            @click.stop.prevent="handleClickOnFetchAddresses"
+          >
             <div
               class="-mx-2 mt-2 flex items-center font-semibold text-primary-500 hover:text-primary-400"
             >

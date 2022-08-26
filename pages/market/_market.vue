@@ -94,11 +94,11 @@ export default Vue.extend({
   methods: {
     onLoad() {
       if (this.marketIsNew) {
-        this.$accessor.modal.openModal(Modal.MarketNew)
+        this.$accessor.modal.openModal({ type: Modal.MarketNew })
       }
 
       if (this.deprecatedMarket) {
-        this.$accessor.modal.openModal(Modal.MarketDeprecated)
+        this.$accessor.modal.openModal({ type: Modal.MarketDeprecated })
       }
     }
   }

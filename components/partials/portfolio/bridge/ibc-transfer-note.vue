@@ -1,16 +1,17 @@
 <template>
-  <div class="mt-6" data-cy="ibc-transfer-modal-note-text-content">
-    <p
-      class="text-xs w-full p-2 mr-6 bg-primary-500 bg-opacity-10 text-primary-500 rounded"
-    >
-      {{ $t('bridge.ibcTransfersNote') }}
-    </p>
+  <div class="mt-4" data-cy="ibc-transfer-modal-note-text-content">
+    <div class="flex justify-start items-center">
+      <IconInfoTooltip :color="'text-warning'" lg />
+      <p class="text-xs text-warning ml-2">
+        {{ $t('bridge.ibcTransfersNote') }}
+      </p>
+    </div>
     <div class="text-center mt-6">
       <VButton
         type="button"
-        md
+        lg
         primary
-        class="whitespace-nowrap"
+        class="w-full rounded flex items-center justify-center"
         data-cy="ibc-transfer-modal-hub-button"
         @click.stop="() => {}"
       >

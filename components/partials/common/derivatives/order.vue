@@ -28,7 +28,7 @@
       <span
         data-cy="derivative-order-order-side-table-data"
         :class="{
-          'text-aqua-500': order.orderSide === DerivativeOrderSide.Buy,
+          'text-green-500': order.orderSide === DerivativeOrderSide.Buy,
           'text-red-500': order.orderSide === DerivativeOrderSide.Sell
         }"
       >
@@ -36,7 +36,7 @@
       </span>
       <span
         v-if="isReduceOnly"
-        class="ml-0.5 text-xs text-gray-500"
+        class="ml-0.5 text-sm text-gray-500"
         data-cy="derivative-order-reduce-only-table-data"
       >
         {{ $t('trade.reduce_only') }}
@@ -113,7 +113,7 @@
         "
         :number="total"
       >
-        <span slot="addon" class="text-2xs text-gray-500">
+        <span slot="addon" class="text-sm text-gray-500">
           {{ market.quoteToken.symbol }}
         </span>
       </VNumber>
@@ -133,10 +133,11 @@
           v-if="orderFillable"
           :status="status"
           data-cy="derivative-order-cancel-link"
+          class="rounded w-6 h-6"
           @click="onCancelOrder"
         >
           <div
-            class="flex items-center justify-center rounded-full bg-red-550 bg-opacity-10 w-8 h-8 hover:bg-red-600 text-red-550 hover:text-red-600 hover:bg-opacity-10"
+            class="flex items-center justify-center rounded-full w-6 h-6 bg-red-500 bg-opacity-10 text-red-500 hover:bg-red-600 hover:text-red-600 hover:bg-opacity-10"
           >
             <IconBin />
           </div>

@@ -9,7 +9,12 @@
       </h1>
 
       <div class="text-center">
-        <VButton lg primary class="w-60 mt-10" @click="handleGetStartedClick">
+        <VButton
+          lg
+          primary
+          class="w-60 mt-10 rounded"
+          @click="handleGetStartedClick"
+        >
           {{ $t('home.getStarted') }}
         </VButton>
       </div>

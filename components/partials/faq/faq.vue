@@ -1,7 +1,7 @@
 <template>
   <div>
     <dl class="mt-6 space-y-6 divide-y divide-gray-700">
-      <VAccordion
+      <Accordion
         v-for="(panel, index) in filteredFaqs"
         :key="`faq-${index}`"
         :is-open="openPanelIndex === index"
@@ -14,32 +14,34 @@
           <v-badge xs primary> New </v-badge>
         </div>
 
-        <i18n :path="`${panel.type} content`" tag="p">
-          <template v-if="panel.link" #action>
-            <a :href="panel.link" class="text-primary-500" target="_blank">
-              {{ $t(`${panel.type} link`) }}
-            </a>
-          </template>
+        <div slot="content">
+          <i18n :path="`${panel.type} content`" tag="p">
+            <template v-if="panel.link" #action>
+              <a :href="panel.link" class="text-primary-500" target="_blank">
+                {{ $t(`${panel.type} link`) }}
+              </a>
+            </template>
 
-          <template v-if="panel.link2" #action2>
-            <a :href="panel.link2" class="text-primary-500" target="_blank">
-              {{ $t(`${panel.type} link2`) }}
-            </a>
-          </template>
-        </i18n>
-      </VAccordion>
+            <template v-if="panel.link2" #action2>
+              <a :href="panel.link2" class="text-primary-500" target="_blank">
+                {{ $t(`${panel.type} link2`) }}
+              </a>
+            </template>
+          </i18n>
+        </div>
+      </Accordion>
     </dl>
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import VAccordion from '~/components/elements/accordion.vue'
+import Accordion from '~/components/elements/accordion.vue'
 import { Faq, FaqCategory } from '~/types/faq'
 
 export default Vue.extend({
   components: {
-    VAccordion
+    Accordion
   },
 
   props: {
@@ -104,7 +106,7 @@ export default Vue.extend({
     },
 
     handleTogglePanel(index: number) {
-      this.openPanelIndex = index
+      this.openPanelIndex = this.openPanelIndex !== index ? index : -1
     }
   }
 })

@@ -25,7 +25,7 @@
         class="pl-1"
         data-cy="spot-order-order-side-table-data"
         :class="{
-          'text-aqua-500': orderTypeBuy,
+          'text-green-500': orderTypeBuy,
           'text-red-500': !orderTypeBuy
         }"
       >
@@ -84,7 +84,7 @@
         "
         :number="total"
       >
-        <span slot="addon" class="text-2xs text-gray-500">
+        <span slot="addon" class="text-sm text-gray-500">
           {{ market.quoteToken.symbol }}
         </span>
       </VNumber>
@@ -101,11 +101,12 @@
         <VButton
           v-if="orderFillable"
           :status="status"
+          class="rounded w-6 h-6"
           data-cy="spot-order-cancel-link"
           @click="onCancelOrder"
         >
           <div
-            class="flex items-center justify-center rounded-full bg-red-550 bg-opacity-10 w-8 h-8 hover:bg-red-600 text-red-550 hover:text-red-600 hover:bg-opacity-10"
+            class="flex items-center justify-center rounded-full w-6 h-6 bg-red-500 bg-opacity-10 text-red-500 hover:bg-red-600 hover:text-red-600 hover:bg-opacity-10"
           >
             <IconBin />
           </div>

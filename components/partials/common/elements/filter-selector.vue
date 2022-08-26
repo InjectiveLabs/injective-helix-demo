@@ -1,10 +1,10 @@
 <template>
-  <VDropdown round hide-bottom-border>
+  <Dropdown hide-bottom-border>
     <template slot="title">
       <div class="flex items-center justify-between bg-gray-900 flex-grow">
         <slot name="label" />
         <span
-          class="text-xs ml-2"
+          class="text-sm"
           :class="{ 'text-gray-200': value !== undefined }"
           data-cy="reusable-selected-value-text-content"
         >
@@ -24,20 +24,20 @@
         {{ item.text }}
       </SelectorItem>
     </div>
-  </VDropdown>
+  </Dropdown>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { TransferType } from '@injectivelabs/sdk-ts'
-import VDropdown from '~/components/elements/dropdown.vue'
+import Dropdown from '~/components/elements/dropdown.vue'
 import SelectorItem from '~/components/layout/selectors/selector-item.vue'
 import { TradeSelectorType, TradeTypes } from '~/types/enums'
 
 export default Vue.extend({
   components: {
-    VDropdown,
+    Dropdown,
     SelectorItem
   },
 
