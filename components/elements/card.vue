@@ -1,12 +1,5 @@
 <template>
-  <div
-    class="bg-helixGray-950 rounded-xl relative"
-    :class="{
-      'p-4 lg:p-6': lg && !tight,
-      'p-4': md && !tight,
-      'p-2 lg:p-3': !md && !lg && !tight
-    }"
-  >
+  <div class="rounded-xl relative" :class="[bgColor, padding]">
     <slot />
   </div>
 </template>
@@ -18,7 +11,7 @@ export default Vue.extend({
   props: {
     bgColor: {
       type: String,
-      default: 'bg-gray-800'
+      default: 'bg-helixGray-950'
     },
 
     noPadding: {
