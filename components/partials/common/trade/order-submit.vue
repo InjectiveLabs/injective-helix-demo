@@ -182,15 +182,35 @@ export default Vue.extend({
         isConditionalOrder
       } = this
 
-      return (
+      const commonErrors =
         hasError ||
         !isUserWalletConnected ||
         !hasInjForGasOrNotKeplr ||
-        !hasAmount ||
-        (!isSpot && isConditionalOrder && !hasTriggerPrice) ||
-        (!isSpot && isConditionalOrder && triggerPriceEqualsMarkPrice) ||
-        !executionPrice.gt('0')
-      )
+        !hasAmount
+
+      if (commonErrors) {
+        return true
+      }
+
+      const isPerpConditionalOrderWithoutTriggerPrice =
+        !isSpot && isConditionalOrder && !hasTriggerPrice
+
+      if (isPerpConditionalOrderWithoutTriggerPrice) {
+        return true
+      }
+
+      const isPerpConditionalOrderWithIncorrectTriggerPrice =
+        !isSpot && isConditionalOrder && triggerPriceEqualsMarkPrice
+
+      if (isPerpConditionalOrderWithIncorrectTriggerPrice) {
+        return true
+      }
+
+      if (executionPrice.lte(0)) {
+        return true
+      }
+
+      return false
     },
 
     buttonLabel(): string {

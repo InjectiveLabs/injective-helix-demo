@@ -787,12 +787,7 @@ export default Vue.extend({
     },
 
     onTriggerPriceChange(triggerPrice: string = '') {
-      const {
-        // hasAmount,
-        market
-        // isSpot,
-        // averagePriceOption
-      } = this
+      const { market } = this
 
       if (!market) {
         return
