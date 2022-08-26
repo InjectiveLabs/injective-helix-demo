@@ -2341,10 +2341,10 @@
     "@improbable-eng/grpc-web" "^0.14.0"
     google-protobuf "^3.14.0"
 
-"@injectivelabs/indexer-api@^1.0.8":
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/indexer-api/-/indexer-api-1.0.8.tgz#6cdafbe9d5b3a32ab8cd35216c90876394b86812"
-  integrity sha512-gM8zGtpy3+/J8zWgudPX21uuK6VFrVZDFikJIbtkzvabbCiICQ1rORUHBSF/U1ExpbU1DilVg7RDGe8G4HsiPA==
+"@injectivelabs/indexer-api@^1.0.10":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/indexer-api/-/indexer-api-1.0.10.tgz#aa2e5b04f7df4ac1dd10fd0975848ed97ce699bf"
+  integrity sha512-XXcSu7Bfcg4srfOmrCtUMMoFmUv3Xw80JLVhN5y4PoXQpci8Ub48jL1D5NP6pnnVh44+W9DOWnGiUQ6cmNmT9w==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     google-protobuf "^3.14.0"
@@ -2380,10 +2380,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/sdk-ts@1.0.103", "@injectivelabs/sdk-ts@^1.0.103":
-  version "1.0.103"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.0.103.tgz#365d334059daff94c3d6bc6b4a851a4fb37d259f"
-  integrity sha512-3Q5RF/R4l0Rel3TDk0WF/YndTPX1JEIedI7AiedSdGeIvb4ya8AMom2Tou5ehhgarjk0goFtFtYZoAyqZwh0Zw==
+"@injectivelabs/sdk-ts@1.0.104", "@injectivelabs/sdk-ts@^1.0.104":
+  version "1.0.104"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.0.104.tgz#fa25dbc3f8b04d56997241b8635ac64a7bc4dbf8"
+  integrity sha512-TixVStSj4teASebrVww4OG0xAM4JCexsI199huW38Q9hNq5q1xBFCKs0to+wQNVBM83Wcx8TC3WSuePZLgjBQg==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@improbable-eng/grpc-web" "^0.15.0"
@@ -2391,7 +2391,7 @@
     "@injectivelabs/chain-api" "^1.8.0-rc8"
     "@injectivelabs/exceptions" "^1.0.8"
     "@injectivelabs/exchange-api" "^2.2.77"
-    "@injectivelabs/indexer-api" "^1.0.8"
+    "@injectivelabs/indexer-api" "^1.0.10"
     "@injectivelabs/networks" "^1.0.13"
     "@injectivelabs/token-metadata" "^1.0.21"
     "@injectivelabs/ts-types" "^1.0.7"
@@ -2413,14 +2413,14 @@
     shx "^0.3.2"
     snakecase-keys "^5.4.1"
 
-"@injectivelabs/sdk-ui-ts@1.0.143":
-  version "1.0.143"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.0.143.tgz#766291dd5a3ddb57e0802ae3a2716181c893c101"
-  integrity sha512-mo1pY8rP1HBhEPv3VU0QintZL9r38oHvpNccYeMhAyUW2pSpVcKvllF5X3gtpSjewFLkOTm603bUmLfRMIhBaQ==
+"@injectivelabs/sdk-ui-ts@1.0.144":
+  version "1.0.144"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.0.144.tgz#bf39b1496b6b62ac993af08d702b710cf9db75d0"
+  integrity sha512-ZUPJWGH70ZMrDA5eIoJUlfGfwC7rQ0IiVFbdLaBnjYIr72OEx0bJhQ6H1s/OHJnI0VpTRWNQA2uMsYJl3O7AoA==
   dependencies:
     "@injectivelabs/exceptions" "^1.0.8"
     "@injectivelabs/networks" "^1.0.13"
-    "@injectivelabs/sdk-ts" "^1.0.103"
+    "@injectivelabs/sdk-ts" "^1.0.104"
     "@injectivelabs/token-metadata" "^1.0.21"
     "@injectivelabs/token-utils" "^1.0.12"
     "@injectivelabs/ts-types" "^1.0.7"
