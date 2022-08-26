@@ -245,7 +245,7 @@ export const actions = actionTree(
         )
       )
 
-      if (!attachments) {
+      if (!attachments || attachments.length === 0) {
         return []
       }
 
