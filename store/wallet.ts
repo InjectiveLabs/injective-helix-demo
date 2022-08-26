@@ -320,7 +320,7 @@ export const actions = actionTree(
         const { hasEnoughInjForGas } = this.app.$accessor.bank
 
         if (!hasEnoughInjForGas) {
-          this.app.$accessor.modal.openModal(Modal.InsufficientInjForGas)
+          this.app.$accessor.modal.openModal({ type: Modal.InsufficientInjForGas })
 
           throw new Error('Insufficient INJ to pay for gas/transaction fees.')
         }

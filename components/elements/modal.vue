@@ -203,6 +203,7 @@ export default Vue.extend({
       setTimeout(() => {
         this.isVisibleOnViewport = false
         this.$emit('modal-closed:animation')
+        this.$accessor.modal.clearData()
       }, 300)
     },
 

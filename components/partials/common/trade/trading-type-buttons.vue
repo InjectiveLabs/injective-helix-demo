@@ -26,7 +26,7 @@
       {{ $t('trade.market') }}
     </span>
 
-    <div class="flex items-center justify-start">
+    <div v-if="!isSpot" class="flex items-center justify-start">
       <span
         class="text-sm font-semibold cursor-pointer"
         :class="{
@@ -107,6 +107,10 @@ export default Vue.extend({
   },
 
   computed: {
+    isSpot(): boolean {
+      return this.$route.name === 'spot-spot'
+    },
+
     selectLabel(): string | undefined {
       const { tradingTypeStopMarket } = this
 

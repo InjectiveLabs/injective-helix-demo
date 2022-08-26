@@ -1102,7 +1102,7 @@ export default Vue.extend({
 
   mounted() {
     if (!this.hasEnoughInjForGasOrNotKeplr) {
-      this.$accessor.modal.openModal(Modal.InsufficientInjForGas)
+      this.$accessor.modal.openModal({ type: Modal.InsufficientInjForGas })
     }
 
     let from = (this.$route.query.from as string) || 'usdt'

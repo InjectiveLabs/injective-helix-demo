@@ -152,7 +152,7 @@ export default Vue.extend({
       .catch(this.$onRejected)
       .finally(() => {
         if (this.marketIsBeta) {
-          this.$accessor.modal.openModal(Modal.MarketBeta)
+          this.$accessor.modal.openModal({ type: Modal.MarketBeta })
         }
 
         this.status.setIdle()
