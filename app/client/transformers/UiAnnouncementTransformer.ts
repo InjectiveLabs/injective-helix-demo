@@ -16,7 +16,10 @@ export class UiAnnouncementTransformer {
   static convertAttachmentToUiAttachment(
     attachment: Record<string, any>
   ): Attachment | undefined {
-    if (!attachment.article_attachments) {
+    if (
+      !attachment.article_attachments ||
+      attachment.article_attachments.length === 0
+    ) {
       return
     }
 

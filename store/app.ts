@@ -224,8 +224,12 @@ export const actions = actionTree(
     async fetchAnnouncements({ commit }) {
       const announcements = await fetchAnnouncementsList()
 
-      if (!announcements || !announcements.articles) {
-        return []
+      if (
+        !announcements ||
+        !announcements.articles ||
+        announcements.articles.length === 0
+      ) {
+        return
       }
 
       const uiAnnouncements = announcements.articles.map(
@@ -238,6 +242,10 @@ export const actions = actionTree(
     },
 
     async fetchAttachments({ state, commit }) {
+      if (state.announcements.length === 0) {
+        return
+      }
+
       const attachments = await Promise.all(
         state.announcements.map(
           ({ announcementId }: { announcementId: number }) =>
@@ -246,14 +254,14 @@ export const actions = actionTree(
       )
 
       if (!attachments || attachments.length === 0) {
-        return []
+        return
       }
 
       const uiAttachments = attachments.map(
         UiAnnouncementTransformer.convertAttachmentToUiAttachment
       )
 
-      if (uiAttachments) {
+      if (uiAttachments.length !== 0) {
         commit('setAttachments', uiAttachments)
       }
     },

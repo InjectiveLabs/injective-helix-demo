@@ -55,6 +55,10 @@ export default Vue.extend({
     > {
       const { announcements, attachments } = this
 
+      if (announcements.length === 0) {
+        return []
+      }
+
       const formattedAttachmentsWithAnnouncements = announcements.map(
         (announcement: Announcement) => {
           const matchingAttachment = attachments.find((attachment) => {
@@ -70,10 +74,6 @@ export default Vue.extend({
             : announcement
         }
       )
-
-      if (!formattedAttachmentsWithAnnouncements) {
-        return []
-      }
 
       return formattedAttachmentsWithAnnouncements.slice(0, 3)
     }
