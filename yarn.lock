@@ -2380,10 +2380,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/sdk-ts@1.0.105", "@injectivelabs/sdk-ts@^1.0.105":
-  version "1.0.105"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.0.105.tgz#e06f69dd9e88a1af4d0aec870a8deede823768c6"
-  integrity sha512-tCsnLSuxpt9J46kX/4th7VMV9I52W3WthiuyRaKy2AwVY/ZIR9IlZ1KA8G32AzwIxGXGVVTvVvsnPfuXYdKXsQ==
+"@injectivelabs/sdk-ts@1.0.107", "@injectivelabs/sdk-ts@^1.0.107":
+  version "1.0.107"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.0.107.tgz#a3157d7f6bb63301f2dd03718d6f23a472f6b1ed"
+  integrity sha512-k5XJNTG+q/0+ZBTh7u3xitsddNqqDO47IcXGL5WSwqaWRYcmWgB3u+7i5cD38BGKJ9DTHYSBJRJnGW3xuBAq6g==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@improbable-eng/grpc-web" "^0.15.0"
@@ -2413,14 +2413,14 @@
     shx "^0.3.2"
     snakecase-keys "^5.4.1"
 
-"@injectivelabs/sdk-ui-ts@1.0.145":
-  version "1.0.145"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.0.145.tgz#5fe2681d90945297359f9532f97175756cde8658"
-  integrity sha512-GQyCp02fNznyXxlCa7gzlAifq4LrRXPlgYjUImaaWkHI/9+Kb4obPD+ewwKTmPbksUFaQGutMhPFFPtZN1OOTA==
+"@injectivelabs/sdk-ui-ts@1.0.147":
+  version "1.0.147"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.0.147.tgz#534cd2a43a8a685c1b45baba2bed388c64d732ff"
+  integrity sha512-ZrjkkeI+SJrlpL5rTzMXp6xpzAG3Txvbo1nKXCQ82AIUOp+KVIb5TMiQOXtrcOBQAjiZ3qvdZKCAkyvDK9VAuA==
   dependencies:
     "@injectivelabs/exceptions" "^1.0.8"
     "@injectivelabs/networks" "^1.0.13"
-    "@injectivelabs/sdk-ts" "^1.0.105"
+    "@injectivelabs/sdk-ts" "^1.0.107"
     "@injectivelabs/token-metadata" "^1.0.21"
     "@injectivelabs/token-utils" "^1.0.12"
     "@injectivelabs/ts-types" "^1.0.7"
