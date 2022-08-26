@@ -84,7 +84,7 @@
         "
         :number="total"
       >
-        <span slot="addon" class="text-2xs text-gray-500">
+        <span slot="addon" class="text-sm text-gray-500">
           {{ market.quoteToken.symbol }}
         </span>
       </VNumber>
@@ -101,6 +101,7 @@
         <VButton
           v-if="orderFillable"
           :status="status"
+          class="rounded w-6 h-6"
           data-cy="spot-order-cancel-link"
           @click="onCancelOrder"
         >

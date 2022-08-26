@@ -12,7 +12,7 @@
       </div>
       <div>
         <a :href="auctionUrl" target="_blank" @click="closeModal">
-          <VButton primary lg>
+          <VButton primary lg class="rounded">
             <span>{{ $t('auction.countdown.button') }}</span>
           </VButton>
         </a>

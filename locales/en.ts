@@ -41,11 +41,11 @@ export default {
     'Access, create and trade unlimited decentralized finance markets',
   welcome_to_ip_sub:
     'The Canary Chain has a $5,000 trading limit which will be uplifted upon the canonical release over the coming weeks.',
-  maintenance_header: 'Ongoing Scheduled Maintenance',
+  maintenance_header: 'System maintenance in progress',
   maintenance_subheader:
     'While this relayer is down for maintenance,<strong class="text-primary-500">Injective</strong> is never down! You can find other relayers in the Injective Ecosystem on the button below!',
-  maintenance_button: 'Relayers',
-  maintenance_body: '',
+  maintenance_button: 'View status',
+  maintenance_body: 'We are constantly improving Helix. Please come back later. Follow the latest updates on our public status page.',
   token_allowance_successful: 'Token allowance set successful',
   disclaimer_note:
     'By connecting a wallet, you agree to the Injective Labs <a href="https://injectivelabs.org/terms-and-conditions" class="text-primary-500" target="_blank" />Terms and Conditions</a>, have read the <a href="https://injectivelabs.org/privacy-policy" class="text-primary-500" target="_blank" />Privacy Policy</a> and acknowledge that you have read and understand the Injective Protocol <a href="https://injectiveprotocol.com/disclaimer" class="text-primary-500" target="_blank">disclaimer</a>.',
@@ -267,5 +267,14 @@ export default {
     last_updated_at: 'Last updated at',
     update_daily: 'Update daily',
     in_past_days: 'In past {days} days'
+  },
+
+  pagination: {
+    showRows: 'Show rows',
+    showCountOutOfTotal: 'Showing {from} - {to} out of {totalCount}'
+  },
+
+  filters: {
+    clearAll: 'Clear All'
   }
 }

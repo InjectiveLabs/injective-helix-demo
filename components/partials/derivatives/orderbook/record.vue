@@ -28,6 +28,7 @@
         }"
       >
         <VNumber
+          xs
           :prefix="
             aggregatedValue.gt(record.aggregatedPrice || 0) && recordTypeBuy
               ? '<'
@@ -53,6 +54,7 @@
         }"
       >
         <VNumber
+          xs
           :decimals="
             market
               ? market.quantityDecimals
@@ -69,6 +71,7 @@
       @click.stop="onTotalNotionalClick"
     >
       <VNumber
+        xs
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "

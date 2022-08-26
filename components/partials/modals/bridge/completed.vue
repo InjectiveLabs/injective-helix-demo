@@ -22,7 +22,7 @@
             <VButton
               lg
               primary
-              class="font-bold w-4xs"
+              class="font-bold w-4xs rounded"
               data-cy="transfer-completed-modal-ok-button"
               @click="handleModalClose"
             >

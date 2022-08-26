@@ -2,16 +2,16 @@
   <tr v-if="market" :data-cy="'open-position-table-row-' + position.ticker">
     <td class="text-left cursor-pointer" @click="handleClickOnMarket">
       <div class="flex items-center justify-start">
-        <div v-if="baseTokenLogo" class="w-6 h-6">
+        <div v-if="baseTokenLogo" class="w-4 h-4">
           <img
             :src="baseTokenLogo"
             :alt="market.baseToken.name"
             class="min-w-full h-auto rounded-full"
           />
         </div>
-        <div class="ml-3">
+        <div class="ml-2">
           <span
-            class="text-gray-200 font-semibold"
+            class="text-white font-medium text-sm"
             data-cy="open-position-ticker-name-table-data"
           >
             {{ position.ticker }}
@@ -20,7 +20,7 @@
       </div>
     </td>
 
-    <td class="text-left pl-1">
+    <td class="text-left pl-1 font-medium text-sm">
       <span
         data-cy="open-position-trade-direction-table-data"
         :class="{
@@ -32,7 +32,7 @@
       </span>
     </td>
 
-    <td class="text-right font-mono">
+    <td class="text-right font-mono text-white font-medium text-sm">
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <VNumber
         v-else
@@ -44,7 +44,7 @@
       />
     </td>
 
-    <td class="text-right font-mono">
+    <td class="text-right font-mono text-white font-medium text-sm">
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <div v-else>
         <VNumber
@@ -52,13 +52,13 @@
           :number="price"
           data-cy="open-position-price-table-data"
         />
-        <span v-if="!markPrice.isNaN()" class="text-gray-500 text-xs">
+        <span v-if="!markPrice.isNaN()" class="text-gray-500 text-sm">
           {{ markPriceToFormat }}
         </span>
       </div>
     </td>
 
-    <td v-if="!isBinaryOptionsPage" class="text-right font-mono">
+    <td v-if="!isBinaryOptionsPage" class="text-right font-mono text-white font-medium text-sm">
       <span v-if="isBinaryOptions">&mdash;</span>
       <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <VNumber
@@ -69,12 +69,12 @@
       />
     </td>
     <td class="text-right">
-      <span v-if="hideBalance" class="font-mono">{{
-        HIDDEN_BALANCE_DISPLAY
-      }}</span>
+      <span v-if="hideBalance" class="font-mono text-white font-medium text-sm">
+        {{ HIDDEN_BALANCE_DISPLAY }}
+      </span>
       <div
         v-else-if="!pnl.isNaN()"
-        class="flex items-center justify-end text-xs"
+        class="flex items-center justify-end font-medium text-sm"
         :class="pnlClass"
       >
         <div class="flex items-end flex-col">
@@ -92,21 +92,23 @@
             </span>
             <span class="ml-1 text-2xs">{{ market.quoteToken.symbol }}</span>
           </span>
-          <span class="flex">
+          <span class="flex mt-1">
             {{ (percentagePnl.gte(0) ? '+' : '') + percentagePnl.toFormat(2) }}%
           </span>
         </div>
       </div>
       <span
         v-else
-        class="text-gray-400"
+        class="text-white font-medium text-sm"
         data-cy="open-position-no-pnl-table-data"
       >
         {{ $t('trade.not_available_n_a') }}
       </span>
     </td>
-    <td class="text-right font-mono">
-      <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+    <td class="text-right font-mono text-white font-medium text-sm">
+      <span v-if="hideBalance">
+        {{ HIDDEN_BALANCE_DISPLAY }}
+      </span>
       <VNumber
         v-else
         :decimals="priceDecimal"
@@ -118,8 +120,8 @@
         </span>
       </VNumber>
     </td>
-    <td class="text-right">
-      <span v-if="hideBalance" class="font-mono">
+    <td class="text-right font-mono text-white font-medium text-sm">
+      <span v-if="hideBalance">
         {{ HIDDEN_BALANCE_DISPLAY }}
       </span>
       <div v-else class="flex items-center justify-end h-8">
@@ -141,11 +143,11 @@
       </div>
     </td>
     <td v-if="!isBinaryOptionsPage" class="text-right font-mono">
-      <span v-if="isBinaryOptions">&mdash;</span>
-      <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+      <span v-if="isBinaryOptions" class="text-white font-medium text-sm">&mdash;</span>
+      <span v-else-if="hideBalance" class="text-white font-medium text-sm">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <span
         v-else-if="effectiveLeverage.gte(0)"
-        class="flex items-center justify-end"
+        class="flex items-center justify-end text-white font-medium text-sm"
         data-cy="open-position-leverage-table-data"
       >
         {{ effectiveLeverage.toFormat(2) }}
@@ -153,7 +155,7 @@
       </span>
       <span
         v-else
-        class="text-gray-400"
+        class="text-gray-500 font-medium text-sm"
         data-cy="open-position-no-leverage-table-data"
       >
         {{ $t('trade.not_available_n_a') }}
@@ -165,10 +167,11 @@
         v-if="!hideBalance"
         data-cy="open-position-cancel-link"
         :status="status"
+        class="rounded w-6 h-6"
         @click="onClosePositionClick"
       >
         <div
-          class="flex items-center justify-center rounded-full bg-opacity-10 w-8 h-8 hover:bg-opacity-10 bg-red-500 hover:bg-red-600 text-red-500 hover:text-red-600"
+          class="flex items-center justify-center rounded-full bg-opacity-10 w-6 h-6 hover:bg-opacity-10 bg-red-500 hover:bg-red-600 text-red-500 hover:text-red-600"
         >
           <IconClose class="h-4 w-4" />
         </div>

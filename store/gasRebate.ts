@@ -5,8 +5,8 @@ import { redeem } from '~/app/services/gasRebate'
 import { backupPromiseCall } from '~/app/utils/async'
 import {
   apolloConsumer,
-  exchangeDerivativesApi,
-  exchangeSpotApi
+  indexerDerivativesApi,
+  indexerSpotApi
 } from '~/app/Services'
 
 const initialStateFactory = () => ({
@@ -65,10 +65,10 @@ export const actions = actionTree(
         return
       }
 
-      const spotTrades = await exchangeSpotApi.fetchTrades({
+      const { trades: spotTrades } = await indexerSpotApi.fetchTrades({
         subaccountId: subaccount.subaccountId
       })
-      const derivativeTrades = await exchangeDerivativesApi.fetchTrades({
+      const { trades: derivativeTrades } = await indexerDerivativesApi.fetchTrades({
         subaccountId: subaccount.subaccountId
       })
 

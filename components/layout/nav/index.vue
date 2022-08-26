@@ -56,7 +56,7 @@
 
     <PopperBox
       ref="popper-trade-dropdown"
-      class="popper rounded-lg flex flex-col flex-wrap text-xs absolute w-80 xs:w-96 p-4 bg-gray-800"
+      class="popper rounded-lg flex flex-col flex-wrap text-xs absolute w-80 xs:w-96 bg-gray-800 shadow-dropdown"
       :options="popperOptions"
       binding-element="#trade-dropdown"
     >
@@ -65,14 +65,14 @@
           name: 'spot-spot',
           params: { spot: 'inj-usdt' }
         }"
-        class="p-2 block rounded group hover:bg-gray-700 relative z-10 bg-gray-800 mb-2"
+        class="p-4 block rounded-t group hover:bg-gray-700 relative z-10 bg-gray-800 mb-2"
         data-cy="header-trade-link"
       >
         <p class="font-semibold text-base text-white">
           {{ $t('navigation.spot') }}
         </p>
         <p
-          class="text-sm leading-6 text-gray-500 group-hover:text-gray-100 mt-1"
+          class="text-sm text-gray-500 group-hover:text-gray-100 mt-1"
         >
           {{ $t('navigation.spotDescription') }}
         </p>
@@ -82,28 +82,28 @@
           name: 'perpetuals-perpetual',
           params: { perpetual: 'btc-usdt-perp' }
         }"
-        class="p-2 block rounded group hover:bg-gray-700 relative z-10 bg-gray-800 mb-2"
+        class="p-4 block group hover:bg-gray-700 relative z-10 bg-gray-800 mb-2"
         data-cy="header-trade-link"
       >
         <p class="font-semibold text-base text-white">
           {{ $t('navigation.perpetual') }}
         </p>
         <p
-          class="text-sm leading-6 text-gray-500 group-hover:text-gray-100 mt-1"
+          class="text-sm text-gray-500 group-hover:text-gray-100 mt-1"
         >
           {{ $t('navigation.perpetualDescription') }}
         </p>
       </nuxt-link>
       <nuxt-link
         :to="{ name: 'convert-convert', query: { from: 'usdt', to: 'inj' } }"
-        class="p-2 block rounded group hover:bg-gray-700 relative z-10 bg-gray-800"
+        class="p-4 block rounded-b group hover:bg-gray-700 relative z-10 bg-gray-800"
         data-cy="header-convert-link"
       >
         <p class="font-semibold text-base text-white">
           {{ $t('navigation.convert') }}
         </p>
         <p
-          class="text-sm leading-6 text-gray-500 group-hover:text-gray-100 mt-1"
+          class="text-sm text-gray-500 group-hover:text-gray-100 mt-1"
         >
           {{ $t('navigation.convertDescription') }}
         </p>
@@ -112,19 +112,19 @@
 
     <PopperBox
       ref="popper-rewards-dropdown"
-      class="popper rounded-lg flex flex-col flex-wrap text-xs absolute w-80 xs:w-96 p-4 bg-gray-800"
+      class="popper rounded-lg flex flex-col flex-wrap text-xs absolute w-80 xs:w-96 bg-gray-800 shadow-dropdown"
       :options="popperOptions"
       binding-element="#rewards-dropdown"
     >
       <nuxt-link
         :to="{ name: 'trade-and-earn' }"
-        class="p-2 block rounded group hover:bg-gray-700 relative z-10 bg-gray-800 mb-2"
+        class="p-4 block rounded-t group hover:bg-gray-700 relative z-10 bg-gray-800 mb-2"
       >
         <p class="font-semibold text-base text-white">
           {{ $t('navigation.tradeAndEarn') }}
         </p>
         <p
-          class="text-sm leading-6 text-gray-500 group-hover:text-gray-100 mt-1"
+          class="text-sm text-gray-500 group-hover:text-gray-100 mt-1"
         >
           {{ $t('navigation.tradeAndEarnDescription') }}
         </p>
@@ -132,14 +132,14 @@
       <a
         href="https:/dmm.injective.network"
         target="_blank"
-        class="p-2 block rounded group hover:bg-gray-700 mb-2"
+        class="p-4 block group hover:bg-gray-700 mb-2"
       >
         <p class="font-semibold text-base text-white flex items-center">
           <span>{{ $t('navigation.dmmProgram') }}</span>
           <IconExternalLinkArrow class="w-auto h-3 ml-2" />
         </p>
         <p
-          class="text-sm leading-6 text-gray-500 group-hover:text-gray-100 mt-1"
+          class="text-sm text-gray-500 group-hover:text-gray-100 mt-1"
         >
           {{ $t('navigation.dmmProgramDescription') }}
         </p>
@@ -147,14 +147,14 @@
       <a
         href="https://affiliate.helixapp.com"
         target="_blank"
-        class="p-2 block rounded group hover:bg-gray-700"
+        class="p-4 block rounded-b group hover:bg-gray-700"
       >
         <p class="font-semibold text-base text-white flex items-center">
           <span>{{ $t('navigation.affiliateProgram') }}</span>
           <IconExternalLinkArrow class="w-auto h-3 ml-2" />
         </p>
         <p
-          class="text-sm leading-6 text-gray-500 group-hover:text-gray-100 mt-1"
+          class="text-sm text-gray-500 group-hover:text-gray-100 mt-1"
         >
           {{ $t('navigation.affiliateProgramDescription') }}
         </p>

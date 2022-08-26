@@ -2,14 +2,13 @@
   <VCard
     v-if="showWelcomeBanner && status.isNotLoading()"
     md
-    :style="{ backgroundImage: `url('/svg/bg-dark.svg')` }"
-    class="bg-cover mb-12"
+    class="welcome mb-12"
     data-cy="welcome-banner-component"
   >
     <div class="grid grid-cols-1 3md:grid-cols-3 lg:grid-cols-2 3md:gap-4">
       <div class="3md:col-span-2 lg:col-span-1">
-        <p class="font-bold text-xl mb-2">{{ $t('banners.welcome.title') }}</p>
-        <p class="text-sm text-gray-500 mb-4">
+        <p class="font-semibold text-xl text-white mb-2">{{ $t('banners.welcome.title') }}</p>
+        <p class="text-sm text-white mb-5">
           {{ $t('banners.welcome.subtitle') }}
         </p>
         <img
@@ -29,7 +28,7 @@
           </span>
         </div>
         <div
-          class="w-full sm:w-1/3 md:w-2/5 font-semibold mt-4 text-sm"
+          class="w-full sm:w-1/3 md:w-2/5 mt-4 text-sm"
           :class="{
             'mx-auto': activeStep === 2,
             'ml-auto text-right': activeStep === 3
@@ -50,7 +49,7 @@
               type="button"
               lg
               primary
-              class="mt-4 w-40"
+              class="mt-4 w-40 rounded"
               data-cy="welcome-banner-action-button"
               @click.native="handleClickOnButton"
             >
@@ -64,15 +63,15 @@
         </div>
       </div>
 
-      <div class="mt-8 3md:mt-0">
-        <div class="3md:text-right text-sm 3md:text-xs lg:text-sm">
+      <div class="mt-4 3md:mt-0">
+        <div class="flex items-center justify-start lg:justify-end gap-4">
           <a
             href=" https://injectiveprotocol.zendesk.com/hc/en-us/sections/4415560819860--Bridge"
             target="_blank"
-            class="inline-block mr-4"
+            class="inline-block"
           >
-            <span class="bg-gray-900 py-2 px-4 flex items-center rounded-full">
-              <span>{{ $t('banners.welcome.howItWorks') }}</span>
+            <span class="bg-gray-900 py-2 px-4 flex items-center rounded-lg">
+              <span class="font-medium text-sm">{{ $t('banners.welcome.howItWorks') }}</span>
               <IconArrow class="w-3 h-3 rotate-[135deg] ml-2" />
             </span>
           </a>
@@ -82,8 +81,8 @@
             target="_blank"
             class="inline-block"
           >
-            <span class="bg-gray-900 py-2 px-4 flex items-center rounded-full">
-              <span>{{ $t('banners.welcome.faq') }}</span>
+            <span class="bg-gray-900 py-2 px-4 flex items-center rounded-lg">
+              <span class="font-medium text-sm">{{ $t('banners.welcome.faq') }}</span>
               <IconArrow class="w-3 h-3 rotate-[135deg] ml-2" />
             </span>
           </a>
@@ -177,3 +176,9 @@ export default Vue.extend({
   }
 })
 </script>
+
+<style lang="scss" scoped>
+.welcome {
+  background: linear-gradient(90deg, rgba(0, 130, 250, 0.1) 0%, rgba(0, 169, 176, 0.1) 100%);
+}
+</style>

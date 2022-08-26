@@ -33,7 +33,7 @@
         />
       </div>
       <HocLoading :status="status">
-        <div>
+        <div class="orderbook-h-inner overflow-y-hidden">
           <MarketChart
             v-show="component === components.charts"
             :market="market"

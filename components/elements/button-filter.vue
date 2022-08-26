@@ -2,7 +2,7 @@
   <VButton
     text-sm
     :gray="component !== option"
-    class="font-normal"
+    class="font-normal rounded"
     @click.stop="onSelect"
   >
     <slot></slot>

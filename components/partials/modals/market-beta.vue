@@ -11,7 +11,7 @@
       ></p>
 
       <div class="mt-6 flex items-center justify-center">
-        <VButton lg primary @click.stop="handleConfirm">
+        <VButton lg primary class="rounded" @click.stop="handleConfirm">
           {{ $t('marketBeta.I Understand') }}
         </VButton>
       </div>

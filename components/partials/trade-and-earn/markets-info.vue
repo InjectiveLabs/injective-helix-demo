@@ -1,5 +1,5 @@
 <template>
-  <VPanel :title="$t('trade.marketsInformation')">
+  <VPanel :title="$t('trade.marketsInformation')" card-wrapper-class="mt-6">
     <div class="flex items-center">
       <VButtonFilter
         v-if="false"

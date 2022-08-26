@@ -1,6 +1,6 @@
 <template>
   <div
-    class="grid grid-cols-3 sm:grid-cols-10 3md:grid-cols-12 text-gray-200 gap-4 text-sm px-4 py-5 mb-1 items-center rounded border-b border-b-gray-600"
+    class="grid grid-cols-3 sm:grid-cols-10 3md:grid-cols-12 text-gray-200 gap-4 text-sm px-4 py-5 mb-1 items-center border-b border-b-gray-600"
     :data-cy="`markets-table-row-${market.ticker}`"
   >
     <span class="text-sm col-span-2 sm:col-span-3 flex items-center">
@@ -68,9 +68,9 @@
       <span
         v-if="!lastTradedPrice.isNaN()"
         :class="{
-            'text-green-500': lastPriceChange === Change.Increase,
-            'text-white': lastPriceChange === Change.NoChange,
-            'text-red-500': lastPriceChange === Change.Decrease
+          'text-green-500': lastPriceChange === Change.Increase,
+          'text-white': lastPriceChange === Change.NoChange,
+          'text-red-500': lastPriceChange === Change.Decrease
         }"
       >
         {{ lastTradedPriceToFormat }}
@@ -82,7 +82,11 @@
       <span
         v-if="!change.isNaN()"
         data-cy="markets-change_24h-table-data"
-        :class="change.gte(0) ? 'text-green-500' : 'text-red-500'"
+        :class="{
+          'text-green-500': change.gt(0),
+          'text-white': change.eq(0),
+          'text-red-500': change.lt(0)
+        }"
       >
         {{ changeToFormat }}%
       </span>

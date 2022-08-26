@@ -23,14 +23,20 @@
 
       <div class="mt-6 flex flex-col gap-4">
         <nuxt-link :to="{ name: 'markets' }" class="">
-          <VButton lg primary class="w-full" @click.stop="() => {}">
+          <VButton lg primary class="w-full rounded" @click.stop="() => {}">
             <span class="font-semibold">
               {{ $t('marketDeprecated.exploreOtherMarkets') }}
             </span>
           </VButton>
         </nuxt-link>
 
-        <VButton v-if="!isTerraNetwork" lg outline @click.stop="() => {}">
+        <VButton
+          v-if="!isTerraNetwork"
+          lg
+          outline
+          class="rounded"
+          @click.stop="() => {}"
+        >
           <a
             :href="`https://hub.injective.network/bridge/?token=${symbol}`"
             target="_blank"

@@ -28,7 +28,7 @@
           <VButton
             md
             :status="status"
-            class="w-full"
+            class="w-full rounded"
             :primary="!invalid"
             :disabled="!form.address || invalid"
             @click.stop="onConnect"

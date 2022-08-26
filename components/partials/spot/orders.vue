@@ -36,7 +36,7 @@
           v-if="
             component === components.openOrders && filteredOrders.length > 0
           "
-          class="mr-2"
+          class="mr-2 rounded"
           red-outline
           sm
           data-cy="trade-page-cancel-all-button"

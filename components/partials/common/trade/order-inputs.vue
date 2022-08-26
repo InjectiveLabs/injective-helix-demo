@@ -5,7 +5,6 @@
       id="input-price"
       ref="input-price"
       class="mb-6"
-      :wrapper-classes="'shadow-none'"
       :value="inputPrice"
       :placeholder="priceStep"
       :label="tradingTypeLimit ? $t('trade.price') : $t('trade.trigger_price')"
@@ -26,7 +25,6 @@
       id="limit-price"
       ref="limit-price"
       class="mb-6"
-      :wrapper-classes="'shadow-none'"
       :value="inputPrice"
       :placeholder="priceStep"
       :label="$t('trade.limit_price')"
@@ -46,7 +44,6 @@
       <VInput
         ref="input-amount"
         v-model="inputBaseAmount"
-        :wrapper-classes="'shadow-none'"
         :label="$t('trade.amount')"
         :custom-handler="true"
         :max-decimals="market ? market.quantityDecimals : 6"
@@ -68,7 +65,6 @@
       <VInput
         ref="input-quote-amount"
         v-model="inputQuoteAmount"
-        :wrapper-classes="'shadow-none'"
         :custom-handler="true"
         :max-decimals="market ? market.priceDecimals : 6"
         :placeholder="amountStep"

@@ -72,6 +72,12 @@ export default Vue.extend({
       type: Boolean
     },
 
+    primaryOutline: {
+      required: false,
+      default: false,
+      type: Boolean
+    },
+
     textLg: {
       required: false,
       default: false,
@@ -133,11 +139,11 @@ export default Vue.extend({
   },
 
   computed: {
-    classes(): string {
-      const classes = ['text-center', 'rounded', 'focus:outline-none']
+    classes() {
+      const classes = ['text-center', 'focus:outline-none']
 
       if (this.disabled) {
-        classes.push('pointer-events-none', 'text-white', 'bg-helixGray-500')
+        classes.push('pointer-events-none', 'text-gray-500', 'bg-helixGray-500')
 
         if (this.outline) {
           classes.push(
@@ -148,7 +154,7 @@ export default Vue.extend({
             'border-helixGray-500'
           )
         } else {
-          classes.push('pointer-events-none', 'text-white', 'bg-helixGray-500')
+          classes.push('pointer-events-none', 'text-gray-500', 'bg-helixGray-500')
         }
       }
 
@@ -157,7 +163,7 @@ export default Vue.extend({
       } else if (this.md) {
         classes.push('px-4', 'py-2', 'text-sm')
       } else if (this.lg) {
-        classes.push('px-6', 'py-2.5', 'text-sm', 'font-semibold', 'max-h-10')
+        classes.push('px-6', 'py-2.5', 'text-base', 'leading-5', 'max-h-10')
       } else if (this.xl) {
         classes.push('px-6', 'py-3')
       } else if (this.textLg) {
@@ -185,7 +191,7 @@ export default Vue.extend({
           classes.push(
             'font-semibold',
             'bg-primary-500',
-            'hover:bg-primary-400',
+            'hover:bg-primary-600',
             'text-white',
             'shadow-none'
           )
@@ -232,6 +238,15 @@ export default Vue.extend({
             'hover:bg-red-600',
             'hover:bg-opacity-10'
           )
+        } else if (this.primaryOutline) {
+          classes.push(
+            'text-primary-500',
+            'font-semibold',
+            'border',
+            'border-primary-500',
+            'hover:text-white',
+            'hover:border-white'
+          )
         }
       }
 
@@ -248,7 +263,7 @@ export default Vue.extend({
       if (this.sm) {
         classes.push('h-3', 'w-3')
       } else if (this.lg) {
-        classes.push('h-[14px]', 'w-[14px]')
+        classes.push('h-5', 'w-5')
       } else if (this.xl) {
         classes.push('h-6', 'w-6')
       }
