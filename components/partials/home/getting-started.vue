@@ -1,5 +1,5 @@
 <template>
-  <div class="text-helixGray-900 mb-10 sm:mb-[144px]">
+  <div class="text-helixGray-900 sm:mb-[144px] mb-10">
     <div
       class="font-semibold text-2xl sm-text-3xl text-helixGray-900 text-left sm:text-center mt-16 sm:mt-[120px] mb-6"
     >
