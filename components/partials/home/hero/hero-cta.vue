@@ -1,5 +1,7 @@
 <template>
-  <div class="col-span-12 lg:col-span-4 3xl:col-span-5 4xl:col-span-6">
+  <div
+    class="col-span-12 lg:col-span-4 3xl:col-span-5 4xl:col-span-6 flex flex-col sm:block"
+  >
     <div class="flex items-center justify-start mb-8">
       <Logo class="w-auto h-6" alt="Helix" />
       <LogoText class="block ml-2 h-6 text-gray-900" />

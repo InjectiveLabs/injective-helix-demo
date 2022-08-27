@@ -4,10 +4,11 @@
     :class="!$slots.illustration ? 'bg-gray-100' : 'bg-transparent'"
     :bg-color="bgColor"
     :no-padding="$slots.illustration ? true : false"
+    class="h-[173px] md:h-[200px] text-xl flex"
   >
     <a
       :href="htmlUrl"
-      class="hover:text-black hover:cursor-pointer text-gray-900"
+      class="hover:text-black hover:cursor-pointer text-gray-900 flex-1 flex flex-col gap-2"
       target="_blank"
     >
       <div v-if="!$slots.illustration" class="flex justify-between">
@@ -17,7 +18,7 @@
       <div v-if="!$slots.illustration" class="font-semibold">
         <slot name="title" />
       </div>
-      <div class="overflow-hidden rounded-lg w-max">
+      <div class="overflow-hidden rounded-lg">
         <slot name="illustration" />
       </div>
     </a>

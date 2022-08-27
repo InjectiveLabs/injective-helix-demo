@@ -5,7 +5,7 @@
       <div class="container">
         <div class="w-full mx-auto xl:w-4/5">
           <Announcements />
-          <MarketsPanel class="mt-16" />
+          <MarketsPanel class="mt-8 sm:mt-16" />
           <WhyTrade />
           <GettingStarted />
         </div>

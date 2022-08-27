@@ -1,15 +1,16 @@
 <template>
-  <div class="container py-10">
+  <div class="container py-4 sm:py-10">
     <div class="w-full mx-auto xl:w-4/5">
       <div
-        class="rounded-[20px] p-16 bg-gray-100 bg-cover grid grid-cols-12 gap-12 align-center"
-        style="background-image: url('/svg/helix-hero-bg.svg')"
+        class="block md:grid rounded-[20px] p-6 md:p-16 bg-gray-100 bg-cover grid-cols-12 gap-12 items-center bg-hero"
       >
         <HeroCTA />
-        <div class="col-span-8 3xl:col-span-7 4xl:col-span-6 hidden lg:block">
+        <div
+          class="col-span-8 3xl:col-span-7 4xl:col-span-6 hidden lg:block lg:mt-6"
+        >
           <Markets is-hero />
         </div>
-        <div class="col-span-3 flex gap-2">
+        <div class="col-span-3 hidden md:flex gap-2 w-max">
           <span class="text-helixGray-900">{{ $t('home.builtOn') }}</span>
           <InjectiveLogo />
         </div>

@@ -263,6 +263,10 @@ module.exports = {
         5: '1.25rem',
         6: '1.5rem',
         ...extraSizings
+      },
+
+      backgroundImage: {
+        hero: 'url(/svg/helix-hero-bg.svg)'
       }
     }
   },

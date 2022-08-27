@@ -1,6 +1,6 @@
 <template>
   <HocLoading :status="status" :show-loading="markets.length === 0">
-    <div class="bg-white rounded-lg pt-6 shadow-helix w-full self-center px-4">
+    <div class="bg-white rounded-lg pt-6 w-full self-center px-4">
       <div v-if="isHero">
         <HeroMarketHeader v-if="markets.length !== 0" />
         <HeroMarketRow
@@ -10,7 +10,7 @@
           :summary="summary"
         />
       </div>
-      <div v-else>
+      <div v-else class="overflow-auto">
         <MarketHeader />
         <MarketRow
           v-for="({ market, summary }, index) in marketsList"
@@ -268,3 +268,15 @@ export default Vue.extend({
   }
 })
 </script>
+
+<style lang="scss" scoped>
+*::-webkit-scrollbar-thumb {
+  background-color: #d9dadc;
+  border-radius: 20px;
+  border: 2px solid #d9dadc;
+}
+
+*::-webkit-scrollbar-track {
+  background: #fff;
+}
+</style>

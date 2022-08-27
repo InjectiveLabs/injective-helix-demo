@@ -1,7 +1,7 @@
 <template>
   <HocLoading :status="status">
     <div class="text-gray-900">
-      <div class="text-3xl font-semibold pb-8">
+      <div class="text-2xl sm:text-3xl font-semibold pb-4 sm:pb-8">
         {{ $t('home.latestNews') }}
       </div>
       <div
@@ -20,7 +20,7 @@
             <img
               :src="card.contentUrl"
               :alt="card.title"
-              class="object-cover h-[310px] md:h-[210px] lg:[h-487px] xl:h-[172px] 4xl:h-[230px]"
+              class="h-[173px] md:h-[200px] w-full"
             />
           </template>
         </AnnouncementsCard>
