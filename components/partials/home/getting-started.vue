@@ -6,7 +6,7 @@
       {{ $t('home.getStarted') }}
     </div>
     <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-      <div class="order-1 md:order-2 md:col-span-6">
+      <div class="order-1 md:order-first md:col-span-6">
         <img src="images/video.svg" alt="Getting started video" />
       </div>
       <div class="md:col-span-6 flex flex-col gap-6 font-medium">

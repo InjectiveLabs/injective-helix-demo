@@ -1,6 +1,6 @@
 export default {
   home: {
-    title: 'Buy & Sell Bitcoin & Crypto',
+    title: 'Decentralized Spot & Derivative Exchange',
     subtitle:
       'Trade unlimited crypto markets on the premier decentralized cross-chain exchange',
     tradeNow: 'Trade Now',

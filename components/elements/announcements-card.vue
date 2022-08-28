@@ -1,14 +1,16 @@
 <template>
   <VCard
     md
-    :class="!$slots.illustration ? 'bg-gray-100' : 'bg-transparent'"
+    :class="
+      !$slots.illustration ? 'bg-gray-100 max-w-[375px]' : 'bg-transparent'
+    "
     :bg-color="bgColor"
     :no-padding="$slots.illustration ? true : false"
-    class="h-[173px] md:h-[200px] text-xl flex"
+    class="text-xl h-full"
   >
     <a
       :href="htmlUrl"
-      class="hover:text-black hover:cursor-pointer text-gray-900 flex-1 flex flex-col gap-2"
+      class="hover:text-black hover:cursor-pointer text-gray-900 flex-1 flex flex-col gap-2 h-full"
       target="_blank"
     >
       <div v-if="!$slots.illustration" class="flex justify-between">
@@ -18,7 +20,7 @@
       <div v-if="!$slots.illustration" class="font-semibold">
         <slot name="title" />
       </div>
-      <div class="overflow-hidden rounded-lg">
+      <div class="overflow-hidden h-full">
         <slot name="illustration" />
       </div>
     </a>

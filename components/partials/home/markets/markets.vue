@@ -8,6 +8,10 @@
           :key="`market-${index}`"
           :market="market"
           :summary="summary"
+          :class="{
+            'block border-b border-helixGray-200':
+              index !== marketsList.length - 1
+          }"
         />
       </div>
       <div v-else class="overflow-auto">
@@ -17,6 +21,10 @@
           :key="`market-${index}`"
           :market="market"
           :summary="summary"
+          :class="{
+            'block border-b border-helixGray-200':
+              index !== marketsList.length - 1
+          }"
         />
         <MarketRow
           v-for="({ market, summary }, index) in filteredUpcomingMarkets"
@@ -24,6 +32,10 @@
           class="col-span-1"
           :market="market"
           :summary="summary"
+          :class="{
+            'block border-b border-helixGray-200':
+              index !== filteredUpcomingMarkets.length - 1
+          }"
         />
         <MarketRow
           v-for="({ market, summary }, index) in filteredDeprecatedMarkets"
@@ -31,6 +43,10 @@
           class="col-span-1"
           :market="market"
           :summary="summary"
+          :class="{
+            'block border-b border-helixGray-200':
+              index !== filteredDeprecatedMarkets.length - 1
+          }"
         />
       </div>
     </div>

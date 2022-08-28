@@ -6,12 +6,12 @@
       </div>
       <div
         v-if="attachmentsWithAnnouncements.length > 0"
-        class="grid grid-cols-4 md:grid-cols-8 xl:grid-cols-12 gap-4 lg:gap-6"
+        class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-12 gap-4 lg:gap-6"
       >
         <AnnouncementsCard
           v-for="(card, index) in attachmentsWithAnnouncements"
           :key="`news-card-${index}`"
-          class="col-span-4 text-gray-900"
+          class="col-span-1 xl:col-span-4 text-gray-900 h-[200px] overflow-hidden"
           :html-url="card.htmlUrl"
         >
           <template slot="date">{{ card.createdAt }}</template>
@@ -20,7 +20,7 @@
             <img
               :src="card.contentUrl"
               :alt="card.title"
-              class="h-[173px] md:h-[200px] w-full"
+              class="cover h-full block rounded-lg"
             />
           </template>
         </AnnouncementsCard>

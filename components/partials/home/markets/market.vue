@@ -1,7 +1,7 @@
 <template>
   <nuxt-link :to="marketRoute">
     <div
-      class="grid grid-cols-12 items-center border-b border-helixGray-200 last-of-type:border-b-1 py-[10px] gap-12 box-content min-w-[912px]"
+      class="grid grid-cols-12 items-center py-[10px] gap-12 box-content min-w-[912px]"
     >
       <div class="col-span-2 flex items-center justify-start pl-4">
         <div class="flex items-center justify-start">
