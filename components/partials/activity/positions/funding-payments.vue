@@ -76,7 +76,7 @@
       </TableWrapper>
 
       <Pagination
-        v-if="status.isIdle()"
+        v-if="status.isIdle() && fundingPayments.length > 0"
         class="mt-4"
         v-bind="{
           limit,

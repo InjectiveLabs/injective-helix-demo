@@ -288,9 +288,11 @@ export default Vue.extend({
     },
 
     filledQuantity(): BigNumberInBase {
-      const { unfilledQuantity, quantity } = this
+      const { trigger } = this
 
-      return quantity.minus(unfilledQuantity)
+      console.log(trigger)
+
+      return new BigNumberInBase(trigger.filledQuantity)
     },
 
     leverage(): BigNumberInBase {

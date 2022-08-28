@@ -56,7 +56,7 @@
       </portal> -->
 
       <Pagination
-        v-if="status.isIdle()"
+        v-if="status.isIdle() && triggers.length > 0"
         class="mt-4"
         v-bind="{
           limit,

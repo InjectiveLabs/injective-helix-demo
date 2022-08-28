@@ -85,7 +85,7 @@
       <ModalMobileTradeDetails :trade="tradeDetails" />
 
       <Pagination
-        v-if="status.isIdle()"
+        v-if="status.isIdle() && trades.length > 0"
         class="mt-4"
         v-bind="{
           limit,
