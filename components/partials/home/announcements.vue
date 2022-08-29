@@ -75,7 +75,12 @@ export default Vue.extend({
         }
       )
 
-      return formattedAttachmentsWithAnnouncements.slice(0, 3)
+      const defaultAnnouncementsSize = 3
+
+      return formattedAttachmentsWithAnnouncements.slice(
+        0,
+        defaultAnnouncementsSize
+      )
     }
   },
 

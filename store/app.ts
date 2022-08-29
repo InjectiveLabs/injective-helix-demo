@@ -57,8 +57,6 @@ const initialState = {
       country: ''
     }
   } as UserBasedState,
-
-  // Announcements
   announcements: [] as Array<Announcement>,
   attachments: [] as Array<Attachment>
 }

@@ -23,7 +23,7 @@ export class UiAnnouncementTransformer {
       return
     }
 
-    const attachmentInfo = attachment.article_attachments[0]
+    const [attachmentInfo] = attachment.article_attachments
 
     return {
       announcementId: attachmentInfo.article_id,

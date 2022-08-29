@@ -1,7 +1,7 @@
 <template>
   <nuxt-link :to="marketRoute">
     <div
-      class="grid grid-cols-12 items-center py-[10px] gap-12 box-content min-w-[912px]"
+      class="grid grid-cols-12 items-center py-2.5 gap-12 box-content min-w-[912px]"
     >
       <div class="col-span-2 flex items-center justify-start pl-4">
         <div class="flex items-center justify-start">
@@ -59,7 +59,7 @@
       <div class="col-span-3 flex h-7 w-[70%] justify-self-center">
         <HocLoading :status="status">
           <LineGraph
-            v-if="chartData.length > 0"
+            v-if="chartData.length > 1"
             :data="chartData"
             :color="'#f3164d'"
             :bg-type="'transparent'"
@@ -96,7 +96,10 @@ import {
 } from '~/app/utils/constants'
 import { Change, MarketRoute } from '~/types'
 import { betaMarketSlugs } from '~/app/data/market'
-import { getMarketRoute, getFormattedMarketsHistory } from '~/app/utils/market'
+import {
+  getMarketRoute,
+  getFormattedMarketsHistoryChartData
+} from '~/app/utils/market'
 
 export default Vue.extend({
   components: {
@@ -145,7 +148,7 @@ export default Vue.extend({
         return []
       }
 
-      return getFormattedMarketsHistory(matchingMarket)
+      return getFormattedMarketsHistoryChartData(matchingMarket)
     },
 
     lastTradedPrice(): BigNumberInBase {
@@ -241,11 +244,7 @@ export default Vue.extend({
     baseTokenLogo(): string {
       const { market } = this
 
-      if (!market) {
-        return ''
-      }
-
-      if (!market.baseToken) {
+      if (!market || !market.baseToken) {
         return ''
       }
 

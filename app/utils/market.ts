@@ -192,39 +192,47 @@ export const marketIsPartOfSearch = (
   )
 }
 
-export const getFormattedMarketsHistory = (marketsHistory: UiMarketHistory) => {
-  const holcDictionary = {} as { [key: string]: number[] }
+export const getFormattedMarketsHistoryChartData = (
+  marketsHistory: UiMarketHistory
+) => {
+  const yAxisHolcPriceDictionary = {} as { [key: string]: number[] }
 
+  // Create a dictionary of the form {'holcPriceIndex': [openPrice, closePrice, lowPrice, highPrice]}
   marketsHistory.openPrice.forEach((holdPrice: number, index: number) => {
-    if (!holcDictionary[index]) {
-      holcDictionary[index] = []
+    if (!yAxisHolcPriceDictionary[index]) {
+      yAxisHolcPriceDictionary[index] = []
     }
 
-    holcDictionary[index].push(holdPrice)
+    yAxisHolcPriceDictionary[index].push(holdPrice)
   })
 
   marketsHistory.closePrice.forEach((closePrice: number, index: number) => {
-    holcDictionary[index].push(closePrice)
+    yAxisHolcPriceDictionary[index].push(closePrice)
   })
 
   marketsHistory.lowPrice.forEach((lowPrice: number, index: number) => {
-    holcDictionary[index].push(lowPrice)
+    yAxisHolcPriceDictionary[index].push(lowPrice)
   })
 
   marketsHistory.highPrice.forEach((highPrice: number, index: number) => {
-    holcDictionary[index].push(highPrice)
+    yAxisHolcPriceDictionary[index].push(highPrice)
   })
 
-  const time = marketsHistory.time.map((time: number) => {
+  const xAxisTimeList = marketsHistory.time.map((time: number) => {
     return time - marketsHistory.time[0]
   })
 
-  const formattedMarketsHistory = Object.keys(holcDictionary).map(
+  // get the average of the prices to create holc price data points for chart yAxis
+  const formattedMarketsHistory = Object.keys(yAxisHolcPriceDictionary).map(
     (key, index) => {
-      const holcValue =
-        holcDictionary[key].reduce((a, b) => a + b, 0) /
-        holcDictionary[key].length
-      return [time[index], holcValue]
+      const yAxisHolcPrice =
+        yAxisHolcPriceDictionary[key].reduce(
+          (price, totalPrice) => price + totalPrice,
+          0
+        ) / yAxisHolcPriceDictionary[key].length
+      const xAxisTime = xAxisTimeList[index]
+
+      return [xAxisTime, yAxisHolcPrice]
     }
   )
 

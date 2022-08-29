@@ -33,7 +33,7 @@ export default Vue.extend({
   props: {
     htmlUrl: {
       type: String,
-      default: ''
+      required: true
     }
   },
 
