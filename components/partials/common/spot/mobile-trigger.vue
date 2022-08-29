@@ -103,6 +103,7 @@ import {
   UiSpotOrderHistory,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
+import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import TableRow from '~/components/elements/table-row.vue'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
@@ -163,7 +164,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(order.quantity)
+      return new BigNumberInBase(cosmosSdkDecToBigNumber(order.quantity))
     },
 
     unfilledQuantity(): BigNumberInBase {
@@ -179,7 +180,7 @@ export default Vue.extend({
     filledQuantity(): BigNumberInBase {
       const { order } = this
 
-      return new BigNumberInBase(order.filledQuantity)
+      return new BigNumberInBase(cosmosSdkDecToBigNumber(order.filledQuantity))
     },
 
     orderFillable(): boolean {

@@ -240,9 +240,9 @@ export default Vue.extend({
     },
 
     filledQuantity(): BigNumberInBase {
-      const { unfilledQuantity, quantity } = this
+      const { order } = this
 
-      return quantity.minus(unfilledQuantity)
+      return new BigNumberInBase(cosmosSdkDecToBigNumber(order.filledQuantity))
     },
 
     leverage(): BigNumberInBase {
