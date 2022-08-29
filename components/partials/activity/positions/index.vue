@@ -10,10 +10,9 @@
           >
             <div class="flex items-center gap-1">
               <span>{{ $t('activity.openPositions') }}</span>
-              <portal-target
-                name="activity-tab-position-count"
-                data-cy="activity-open-positions-link-count"
-              />
+              <span data-cy="activity-open-positions-link-count">
+                ({{ positions.length }})
+              </span>
             </div>
           </TabSelectorItem>
 
@@ -30,6 +29,12 @@
           </TabSelectorItem>
         </div>
 
+        <portal to="activity-card-position-count">
+          <span class="font-semibold text-sm md:text-lg">
+            {{ positions.length }}
+          </span>
+        </portal>
+
         <VCard md class="h-full mt-4 xs:mt-6">
           <Positions v-show="component === components.positions" />
           <FundingPayments v-if="component === components.fundingPayments" />
@@ -43,6 +48,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { UiPosition } from '@injectivelabs/sdk-ui-ts'
 import Positions from '~/components/partials/activity/positions/positions.vue'
 import FundingPayments from '~/components/partials/activity/positions/funding-payments.vue'
 import ModalAddMargin from '~/components/partials/modals/add-margin/index.vue'
@@ -66,6 +72,12 @@ export default Vue.extend({
       components,
       component: components.positions,
       status: new Status(StatusType.Loading)
+    }
+  },
+
+  computed: {
+    positions(): UiPosition[] {
+      return this.$accessor.positions.subaccountPositions
     }
   },
 

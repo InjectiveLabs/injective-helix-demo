@@ -84,10 +84,6 @@
         </span>
       </portal>
 
-      <portal to="activity-tab-position-count">
-        <span v-if="status.isNotLoading()"> ({{ positions.length }}) </span>
-      </portal>
-
       <Pagination
         v-if="status.isIdle() && positions.length > 0"
         class="mt-4"
