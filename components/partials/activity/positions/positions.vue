@@ -48,7 +48,7 @@
         class="sm:hidden mt-3 max-h-lg overflow-y-auto"
       >
         <MobilePosition
-          v-for="(position, index) in sortedPositions"
+          v-for="(position, index) in positions"
           :key="`mobile-positions-${index}-${position.marketId}`"
           class="col-span-1"
           :position="position"
@@ -63,7 +63,7 @@
           <tbody>
             <tr
               is="Position"
-              v-for="(position, index) in sortedPositions"
+              v-for="(position, index) in positions"
               :key="`positions-${index}-${position.marketId}`"
               :position="position"
             />
@@ -89,7 +89,7 @@
       </portal>
 
       <Pagination
-        v-if="status.isIdle()"
+        v-if="status.isIdle() && positions.length > 0"
         class="mt-4"
         v-bind="{
           limit,
@@ -170,14 +170,6 @@ export default Vue.extend({
 
     totalCount(): number {
       return this.$accessor.positions.subaccountPositionsPagination.total
-    },
-
-    sortedPositions(): UiPosition[] {
-      const { positions } = this
-
-      return [...positions].sort((p1: UiPosition, p2: UiPosition) => {
-        return p1.ticker.localeCompare(p2.ticker)
-      })
     },
 
     walletIsNotKeplr(): boolean {
@@ -334,6 +326,7 @@ export default Vue.extend({
     handleClearFilters() {
       this.selectedToken = undefined
       this.side = undefined
+      this.page = 1
 
       this.fetchPositions()
     }

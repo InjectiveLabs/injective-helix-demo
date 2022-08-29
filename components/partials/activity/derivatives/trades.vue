@@ -85,7 +85,7 @@
       <ModalMobileTradeDetails :trade="tradeDetails" />
 
       <Pagination
-        v-if="status.isIdle()"
+        v-if="status.isIdle() && trades.length > 0"
         class="mt-4"
         v-bind="{
           limit,
@@ -274,6 +274,7 @@ export default Vue.extend({
       this.selectedToken = undefined
       this.side = undefined
       this.type = undefined
+      this.page = 1
 
       this.fetchTrades()
     }

@@ -294,15 +294,11 @@ export const actions = actionTree(
         UiBridgeTransformer.convertSubaccountTransfersToUiBridgeTransaction
       )
 
-      const uiBridgeTransactionsWithToken =
-        await tokenService.getBridgeTransactionsWithToken(transactions)
+      const uiBridgeTransactionsWithToken = await tokenService.getBridgeTransactionsWithToken(transactions)
 
       commit('setSubaccountTransferBridgeTransactionsTotal', pagination.total)
       commit('setSubaccountTransferTransactions', transactions)
-      commit(
-        'setSubaccountTransferBridgeTransactions',
-        uiBridgeTransactionsWithToken
-      )
+      commit('setSubaccountTransferBridgeTransactions', uiBridgeTransactionsWithToken)
     },
 
     async fetchIBCTransferTransactions({ commit }) {

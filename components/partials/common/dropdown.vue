@@ -4,10 +4,7 @@
       v-on-clickAway="onDropdownClose"
       class="relative inline-block text-left w-full"
     >
-      <div
-        :class="wrapperClass"
-        class="rounded bg-transparent p-2 pr-3"
-      >
+      <div :class="wrapperClass" class="rounded bg-transparent p-2 pr-3">
         <button
           type="button"
           class="inline-flex tracking-widest items-center justify-between w-full uppercase outline-none focus:outline-none"

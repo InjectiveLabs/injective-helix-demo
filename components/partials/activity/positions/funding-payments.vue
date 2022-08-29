@@ -76,7 +76,7 @@
       </TableWrapper>
 
       <Pagination
-        v-if="status.isIdle()"
+        v-if="status.isIdle() && fundingPayments.length > 0"
         class="mt-4"
         v-bind="{
           limit,
@@ -177,7 +177,6 @@ export default Vue.extend({
           m.quoteToken.symbol === this.selectedToken?.symbol
         )
       })?.marketId
-
       this.status.setLoading()
 
       return Promise.all([
@@ -221,6 +220,7 @@ export default Vue.extend({
 
     handleClearFilters() {
       this.selectedToken = undefined
+      this.page = 1
 
       this.fetchFundingPayments()
     }
