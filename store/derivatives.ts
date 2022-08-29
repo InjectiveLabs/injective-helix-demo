@@ -852,6 +852,7 @@ export const actions = actionTree(
           marketId: filters?.marketId,
           subaccountId: subaccount.subaccountId,
           orderTypes: filters?.orderTypes as DerivativeOrderSide[],
+          executionTypes: filters?.executionTypes as TradeExecutionType[],
           direction: filters?.direction,
           isConditional: true,
           pagination: {

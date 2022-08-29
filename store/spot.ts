@@ -4,7 +4,7 @@ import {
   spotPriceToChainPriceToFixed,
   spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/utils'
-import { StreamOperation } from '@injectivelabs/ts-types'
+import { StreamOperation, TradeExecutionType } from '@injectivelabs/ts-types'
 import {
   MsgBatchCancelSpotOrders,
   MsgCancelSpotOrder,
@@ -569,6 +569,7 @@ export const actions = actionTree(
         marketId: filters?.marketId,
         subaccountId: subaccount.subaccountId,
         orderTypes: filters?.orderTypes as SpotOrderSide[],
+        executionTypes: filters?.executionTypes as TradeExecutionType[],
         direction: filters?.direction,
         isConditional: filters?.isConditional,
         pagination: {
@@ -608,6 +609,7 @@ export const actions = actionTree(
         marketId: filters?.marketId,
         subaccountId: subaccount.subaccountId,
         orderTypes: filters?.orderTypes as SpotOrderSide[],
+        executionTypes: filters?.executionTypes as TradeExecutionType[],
         direction: filters?.direction,
         isConditional: true,
         pagination: {

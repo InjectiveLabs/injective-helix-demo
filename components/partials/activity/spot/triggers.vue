@@ -75,7 +75,13 @@
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Token } from '@injectivelabs/token-metadata'
-import { SpotOrderSide, UiSpotMarketWithToken, UiSpotOrderHistory } from '@injectivelabs/sdk-ui-ts'
+import {
+  SpotOrderSide,
+  UiSpotMarketWithToken,
+  UiSpotOrderHistory
+} from '@injectivelabs/sdk-ui-ts'
+import { TradeExecutionType } from '@injectivelabs/ts-types'
+import { orderTypeToOrderTypes } from '../common/utils'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import Pagination from '~/components/partials/common/pagination.vue'
 import SearchAsset from '~/components/partials/activity/common/search-asset.vue'
@@ -144,11 +150,15 @@ export default Vue.extend({
 
   methods: {
     fetchTriggers(): Promise<void> {
-      const orderTypes = (
+      const orderTypes =
         this.type && this.type.orderType
-          ? this.orderTypeToOrderTypes(this.type.orderType)
-          : []
-      ) as SpotOrderSide[]
+          ? orderTypeToOrderTypes(this.type.orderType)
+          : undefined
+
+      const executionTypes =
+        this.type && this.type.executionType
+          ? [this.type.executionType]
+          : undefined
 
       const direction = this.side as TradeDirection
       const marketId = this.markets.find((m) => {
@@ -160,17 +170,19 @@ export default Vue.extend({
 
       this.status.setLoading()
 
-      return this.$accessor.spot.fetchSubaccountConditionalOrders({
-        pagination: {
-          skip: (this.page - 1) * this.limit,
-          limit: this.limit
-        },
-        filters: {
-          marketId,
-          orderTypes,
-          direction
-        }
-      })
+      return this.$accessor.spot
+        .fetchSubaccountConditionalOrders({
+          pagination: {
+            skip: (this.page - 1) * this.limit,
+            limit: this.limit
+          },
+          filters: {
+            marketId,
+            orderTypes: orderTypes as SpotOrderSide[],
+            executionTypes: executionTypes as TradeExecutionType[],
+            direction
+          }
+        })
         .catch(this.$onError)
         .finally(() => {
           this.status.setIdle()

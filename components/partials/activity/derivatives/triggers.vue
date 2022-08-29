@@ -75,8 +75,13 @@
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Token } from '@injectivelabs/token-metadata'
-import { DerivativeOrderSide, UiDerivativeMarketWithToken, UiDerivativeOrderHistory } from '@injectivelabs/sdk-ui-ts'
-import { TradeDirection } from '@injectivelabs/ts-types'
+import {
+  DerivativeOrderSide,
+  UiDerivativeMarketWithToken,
+  UiDerivativeOrderHistory
+} from '@injectivelabs/sdk-ui-ts'
+import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
+import { orderTypeToOrderTypes } from '../common/utils'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import Pagination from '~/components/partials/common/pagination.vue'
 import SearchAsset from '~/components/partials/activity/common/search-asset.vue'
@@ -124,7 +129,8 @@ export default Vue.extend({
     },
 
     totalCount(): number {
-      return this.$accessor.derivatives.subaccountConditionalOrdersPagination.total
+      return this.$accessor.derivatives.subaccountConditionalOrdersPagination
+        .total
     },
 
     totalPages(): number {
@@ -144,11 +150,15 @@ export default Vue.extend({
 
   methods: {
     fetchTriggers(): Promise<void> {
-      const orderTypes = (
+      const orderTypes =
         this.type && this.type.orderType
-          ? this.orderTypeToOrderTypes(this.type.orderType)
+          ? orderTypeToOrderTypes(this.type.orderType)
           : []
-      ) as DerivativeOrderSide[]
+
+      const executionTypes =
+        this.type && this.type.executionType
+          ? [this.type.executionType]
+          : undefined
 
       const direction = this.side as TradeDirection
       const marketId = this.markets.find((m) => {
@@ -160,29 +170,23 @@ export default Vue.extend({
 
       this.status.setLoading()
 
-      return this.$accessor.derivatives.fetchSubaccountConditionalOrders({
-        pagination: {
-          skip: (this.page - 1) * this.limit,
-          limit: this.limit
-        },
-        filters: {
-          marketId,
-          orderTypes,
-          direction
-        }
-      })
+      return this.$accessor.derivatives
+        .fetchSubaccountConditionalOrders({
+          pagination: {
+            skip: (this.page - 1) * this.limit,
+            limit: this.limit
+          },
+          filters: {
+            marketId,
+            orderTypes: orderTypes as DerivativeOrderSide[],
+            executionTypes: executionTypes as TradeExecutionType[],
+            direction
+          }
+        })
         .catch(this.$onError)
         .finally(() => {
           this.status.setIdle()
         })
-    },
-
-    orderTypeToOrderTypes(orderType: string) {
-      if (orderType === 'take_profit') {
-        return ['take_buy', 'take_sell']
-      }
-
-      return ['stop_buy', 'stop_sell']
     },
 
     handleSideClick(side: string | undefined) {

@@ -18,3 +18,11 @@ export function tradeTypesToTradeExecutionTypes(
 
   return undefined
 }
+
+export function orderTypeToOrderTypes(orderType: string) {
+  if (orderType === 'take_profit') {
+    return ['take_buy', 'take_sell']
+  }
+
+  return ['stop_buy', 'stop_sell']
+}

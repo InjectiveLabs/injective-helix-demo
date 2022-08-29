@@ -81,6 +81,7 @@ import {
   UiDerivativeOrderHistory
 } from '@injectivelabs/sdk-ui-ts'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
+import { orderTypeToOrderTypes } from '../common/utils'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import Pagination from '~/components/partials/common/pagination.vue'
 import SearchAsset from '~/components/partials/activity/common/search-asset.vue'
@@ -150,14 +151,12 @@ export default Vue.extend({
     fetchOrderHistory(): Promise<void> {
       const orderTypes =
         this.type && this.type.orderType
-          ? (this.orderTypeToOrderTypes(
-              this.type.orderType
-            ) as DerivativeOrderSide[])
-          : undefined
+          ? orderTypeToOrderTypes(this.type.orderType)
+          : []
 
       const executionTypes =
         this.type && this.type.executionType
-          ? ([this.type.executionType] as TradeExecutionType[])
+          ? [this.type.executionType]
           : undefined
 
       const direction = this.side as TradeDirection
@@ -179,8 +178,8 @@ export default Vue.extend({
           },
           filters: {
             marketId,
-            orderTypes,
-            executionTypes,
+            orderTypes: orderTypes as DerivativeOrderSide[],
+            executionTypes: executionTypes as TradeExecutionType[],
             direction,
             isConditional
           }
@@ -189,14 +188,6 @@ export default Vue.extend({
         .finally(() => {
           this.status.setIdle()
         })
-    },
-
-    orderTypeToOrderTypes(orderType: string) {
-      if (orderType === 'take_profit') {
-        return ['take_buy', 'take_sell']
-      }
-
-      return ['stop_buy', 'stop_sell']
     },
 
     handleSideClick(side: string | undefined) {
