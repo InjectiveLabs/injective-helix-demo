@@ -4,7 +4,7 @@
     :data-cy="'derivative-order-table-row-' + market.ticker"
     :data-cy-hash="order.orderHash"
   >
-    <td class="h-8 text-left cursor-pointer" @click="handleClickOnMarket">
+    <td class="h-12 text-left cursor-pointer" @click="handleClickOnMarket">
       <div class="flex items-center justify-start">
         <div v-if="baseTokenLogo" class="w-4 h-4">
           <img
@@ -24,7 +24,7 @@
       </div>
     </td>
 
-    <td class="h-8 text-left">
+    <td class="h-12 text-left">
       <span
         data-cy="derivative-order-order-side-table-data"
         class="text-xs"
@@ -44,7 +44,7 @@
       </span>
     </td>
 
-    <td class="h-8 font-mono text-right">
+    <td class="h-12 font-mono text-right">
       <VNumber
         xs
         data-cy="derivative-order-price-table-data"
@@ -55,7 +55,7 @@
       />
     </td>
 
-    <td class="h-8 text-right font-mono">
+    <td class="h-12 text-right font-mono">
       <VNumber
         xs
         data-cy="derivative-order-quantity-table-data"
@@ -66,7 +66,7 @@
       />
     </td>
 
-    <td class="h-8 font-mono">
+    <td class="h-12 font-mono">
       <div class="flex items-center justify-end">
         <VNumber
           xs
@@ -81,7 +81,7 @@
       </div>
     </td>
 
-    <td class="h-8 text-right font-mono">
+    <td class="h-12 text-right font-mono">
       <VNumber
         xs
         data-cy="derivative-order-filled-quantity-table-data"
@@ -92,7 +92,7 @@
       />
     </td>
 
-    <td v-if="!isBinaryOptionsPage" class="h-8 text-right font-mono">
+    <td v-if="!isBinaryOptionsPage" class="h-12 text-right font-mono">
       <span
         v-if="leverage.gte(0)"
         class="flex items-center justify-end text-xs"
@@ -110,7 +110,7 @@
       </span>
     </td>
 
-    <td class="h-8 font-right text-right">
+    <td class="h-12 font-right text-right">
       <VNumber
         xs
         data-cy="derivative-order-total-table-data"
@@ -125,7 +125,7 @@
       </VNumber>
     </td>
 
-    <td class="h-8 relative text-right">
+    <td class="h-12 relative text-right">
       <div class="flex items-center justify-end">
         <span
           v-if="false"

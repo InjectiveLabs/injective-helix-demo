@@ -4,15 +4,15 @@
     :data-cy="'derivative-order-table-row-' + market.ticker"
     :data-cy-hash="order.orderHash"
   >
-    <td class="h-8 text-left">
+    <td class="h-12 text-left">
       <span class="text-white text-xs">
         {{ timestamp }}
       </span>
     </td>
 
-    <td class="h-8 text-left cursor-pointer" @click="handleClickOnMarket">
+    <td class="h-12 text-left cursor-pointer" @click="handleClickOnMarket">
       <div class="flex items-center justify-start">
-        <div v-if="baseTokenLogo" class="w-6 h-6">
+        <div v-if="baseTokenLogo" class="w-4 h-4">
           <img
             :src="baseTokenLogo"
             :alt="market.baseToken.name"
@@ -30,13 +30,13 @@
       </div>
     </td>
 
-    <td class="h-8 text-left">
+    <td class="h-12 text-left">
       <span class="text-white text-xs">
         {{ type }}
       </span>
     </td>
 
-    <td class="h-8 text-left">
+    <td class="h-12 text-left">
       <span
         data-cy="derivative-order-order-side-table-data"
         class="text-xs"
@@ -56,7 +56,7 @@
       </span>
     </td>
 
-    <td class="h-8 font-mono text-right">
+    <td class="h-12 font-mono text-right">
       <VNumber
         xs
         data-cy="derivative-order-price-table-data"
@@ -67,7 +67,7 @@
       />
     </td>
 
-    <td class="h-8 text-right font-mono">
+    <td class="h-12 text-right font-mono">
       <VNumber
         xs
         data-cy="derivative-order-quantity-table-data"
@@ -78,7 +78,7 @@
       />
     </td>
 
-    <td class="h-8 font-right text-right">
+    <td class="h-12 font-right text-right">
       <VNumber
         xs
         data-cy="derivative-order-total-table-data"
@@ -122,7 +122,7 @@
       </template>
     </td>
 
-    <td class="h-8 relative text-right">
+    <td class="h-12 relative text-right">
       <span class="text-white text-xs">
         {{ orderStatus }}
       </span>

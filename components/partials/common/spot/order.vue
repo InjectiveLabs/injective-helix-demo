@@ -1,6 +1,6 @@
 <template>
   <tr v-if="market" :data-cy="'spot-order-table-row-' + market.ticker">
-    <td class="h-8 text-left cursor-pointer" @click="handleClickOnMarket">
+    <td class="h-12 text-left cursor-pointer" @click="handleClickOnMarket">
       <div class="flex items-center justify-start">
         <div v-if="baseTokenLogo" class="w-4 h-4">
           <img
@@ -20,7 +20,7 @@
       </div>
     </td>
 
-    <td class="h-8 text-left">
+    <td class="h-12 text-left">
       <span
         class="text-xs"
         data-cy="spot-order-order-side-table-data"
@@ -33,7 +33,7 @@
       </span>
     </td>
 
-    <td class="h-8 font-mono text-right">
+    <td class="h-12 font-mono text-right">
       <VNumber
         xs
         data-cy="spot-order-price-table-data"
@@ -43,7 +43,7 @@
         :number="price"
       />
     </td>
-    <td class="h-8 text-right font-mono">
+    <td class="h-12 text-right font-mono">
       <VNumber
         xs
         data-cy="spot-order-quantity-table-data"
@@ -53,7 +53,7 @@
         :number="quantity"
       />
     </td>
-    <td class="h-8 text-right font-mono">
+    <td class="h-12 text-right font-mono">
       <VNumber
         xs
         data-cy="spot-order-unfilled-quantity-table-data"
@@ -63,7 +63,7 @@
         :number="unfilledQuantity"
       />
     </td>
-    <td class="h-8">
+    <td class="h-12">
       <div class="flex items-center justify-end">
         <VNumber
           xs
@@ -80,7 +80,7 @@
         </span>
       </div>
     </td>
-    <td class="h-8 font-mono text-right">
+    <td class="h-12 font-mono text-right">
       <VNumber
         xs
         data-cy="spot-order-total-table-data"
@@ -94,7 +94,7 @@
         </span>
       </VNumber>
     </td>
-    <td class="h-8 relative">
+    <td class="h-12 relative">
       <div class="flex items-center justify-end">
         <span
           v-if="false"

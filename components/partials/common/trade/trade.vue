@@ -1,11 +1,11 @@
 <template>
   <tr v-if="market" :data-cy="'trade-history-table-row-' + market.ticker">
-    <td class="h-8 text-left">
+    <td class="h-12 text-left">
       <span class="text-white text-xs" data-cy="trade-entry-time">
         {{ time }}
       </span>
     </td>
-    <td class="h-8 text-left cursor-pointer">
+    <td class="h-12 text-left cursor-pointer">
       <nuxt-link class="flex items-center justify-start" :to="marketRoute">
         <div v-if="baseTokenLogo" class="w-4 h-4">
           <img
@@ -25,13 +25,13 @@
       </nuxt-link>
     </td>
 
-    <td class="h-8 text-left" data-cy="trade-history-execution-type-table-data">
+    <td class="h-12 text-left" data-cy="trade-history-execution-type-table-data">
       <span class="text-white text-xs">
         {{ tradeExecutionType }}
       </span>
     </td>
 
-    <td class="h-8 text-left">
+    <td class="h-12 text-left">
       <span
         data-cy="trade-history-trade-directon-table-data"
         class="text-xs"
@@ -50,7 +50,7 @@
       </span>
     </td>
 
-    <td class="h-8 text-right font-mono">
+    <td class="h-12 text-right font-mono">
       <VNumber
         xs
         data-cy="trade-history-price-table-data"
@@ -61,7 +61,7 @@
       />
     </td>
 
-    <td class="h-8 text-right font-mono">
+    <td class="h-12 text-right font-mono">
       <VNumber
         xs
         data-cy="trade-history-quantity-table-data"
@@ -71,7 +71,7 @@
         :number="quantity"
       />
     </td>
-    <td class="h-8 text-right font-mono">
+    <td class="h-12 text-right font-mono">
       <VNumber
         xs
         use-number-decimals
@@ -84,7 +84,7 @@
       </VNumber>
     </td>
 
-    <td class="h-8 text-right font-mono">
+    <td class="h-12 text-right font-mono">
       <VNumber
         xs
         data-cy="trade-history-total-table-data"
