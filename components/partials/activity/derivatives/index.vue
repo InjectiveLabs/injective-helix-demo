@@ -7,7 +7,9 @@
         :option="components.orders"
       >
         <div class="flex items-center gap-1">
-          <span class="whitespace-nowrap">{{ $t('activity.openOrders') }}</span>
+          <span class="whitespace-nowrap">
+            {{ $t('activity.openOrders') }}
+          </span>
           <span data-cy="activity-derivative-orders-link-count">
             ({{ orders.length }})
           </span>
@@ -22,7 +24,9 @@
         :option="components.triggers"
       >
         <div class="flex items-center gap-1">
-          <span class="whitespace-nowrap">{{ $t('activity.triggers') }}</span>
+          <span class="whitespace-nowrap">
+            {{ $t('activity.triggers') }}
+          </span>
           <span data-cy="activity-derivative-orders-link-count">
             ({{ triggers.length }})
           </span>
@@ -37,7 +41,9 @@
         :option="components.orderHistory"
       >
         <div class="flex items-center gap-1">
-          <span class="whitespace-nowrap">{{ $t('activity.orderHistory') }}</span>
+          <span class="whitespace-nowrap">
+            {{ $t('activity.orderHistory') }}
+          </span>
         </div>
       </TabSelectorItem>
 
@@ -49,7 +55,9 @@
         :option="components.trades"
       >
         <div class="flex items-center gap-1">
-          <span class="whitespace-nowrap">{{ $t('activity.tradeHistory') }}</span>
+          <span class="whitespace-nowrap">
+            {{ $t('activity.tradeHistory') }}
+          </span>
         </div>
       </TabSelectorItem>
     </div>
@@ -60,7 +68,7 @@
       </span>
     </portal>
 
-    <VCard md class="h-full mt-6">
+    <VCard md class="h-full mt-4 xs:mt-6">
       <Orders v-show="component === components.orders" />
       <Trades v-if="component === components.trades" />
       <Triggers v-if="component === components.triggers" />
@@ -71,7 +79,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { UiDerivativeLimitOrder, UiDerivativeOrderHistory } from '@injectivelabs/sdk-ui-ts'
+import {
+  UiDerivativeLimitOrder,
+  UiDerivativeOrderHistory
+} from '@injectivelabs/sdk-ui-ts'
 import Orders from '~/components/partials/activity/derivatives/orders.vue'
 import Trades from '~/components/partials/activity/derivatives/trades.vue'
 import OrderHistory from '~/components/partials/activity/derivatives/order-history.vue'

@@ -9,7 +9,10 @@
             :option="components.positions"
           >
             <div class="flex items-center gap-1">
-              <span class="whitespace-nowrap">{{ $t('activity.openPositions') }}</span>
+              <span class="whitespace-nowrap">
+                {{ $t('activity.openPositions') }}
+              </span>
+
               <span data-cy="activity-open-positions-link-count">
                 ({{ positions.length }})
               </span>
@@ -24,7 +27,9 @@
             :option="components.fundingPayments"
           >
             <div class="flex items-center gap-1">
-              <span class="whitespace-nowrap">{{ $t('activity.fundingPayments') }}</span>
+              <span class="whitespace-nowrap">
+                {{ $t('activity.fundingPayments') }}
+              </span>
             </div>
           </TabSelectorItem>
         </div>
