@@ -112,9 +112,17 @@
     </td>
 
     <td class="h-12 flex items-center justify-end gap-1">
-      <span class="text-gray-500 text-xs font-semibold"> Mark Price </span>
+      <span class="text-gray-500 text-xs font-semibold">
+        {{ $t('trade.mark_price') }}
+      </span>
 
-      <span class="text-white text-xs font-semibold"> ≤ </span>
+      <span
+        v-if="(isStopLoss && isSell) || (isTakeProfit && isBuy)"
+        class="text-white text-xs font-semibold"
+      >
+        &le;
+      </span>
+      <span v-else class="text-white text-xs font-semibold"> &ge; </span>
 
       <VNumber
         xs
@@ -150,6 +158,7 @@
             <IconBin />
           </div>
         </VButton>
+
         <span v-else class="inline-block">&mdash;</span>
       </div>
     </td>
@@ -245,16 +254,15 @@ export default Vue.extend({
     },
 
     margin(): BigNumberInBase {
-      return ZERO_IN_BASE
-      // const { market, trigger } = this
+      const { market, trigger } = this
 
-      // if (!market) {
-      //   return ZERO_IN_BASE
-      // }
+      if (!market) {
+        return ZERO_IN_BASE
+      }
 
-      // return new BigNumberInWei(trigger.margin).toBase(
-      //   market.quoteToken.decimals
-      // )
+      return new BigNumberInWei(trigger.margin).toBase(
+        market.quoteToken.decimals
+      )
     },
 
     quantity(): BigNumberInBase {
@@ -338,9 +346,7 @@ export default Vue.extend({
     orderSideLocalized(): string {
       const { isBuy } = this
 
-      return isBuy
-        ? this.$t('trade.buy')
-        : this.$t('trade.sell')
+      return isBuy ? this.$t('trade.buy') : this.$t('trade.sell')
     },
 
     baseTokenLogo(): string {
@@ -370,18 +376,58 @@ export default Vue.extend({
       }
     },
 
+    isSell(): boolean {
+      const { trigger } = this
+
+      switch (trigger.orderType) {
+        case DerivativeOrderSide.TakeSell:
+        case DerivativeOrderSide.StopSell:
+        case DerivativeOrderSide.Sell:
+          return true
+        default:
+          return false
+      }
+    },
+
+    isStopLoss(): boolean {
+      const { trigger } = this
+
+      return (
+        trigger.orderType === DerivativeOrderSide.StopBuy ||
+        trigger.orderType === DerivativeOrderSide.StopSell
+      )
+    },
+
+    isTakeProfit(): boolean {
+      const { trigger } = this
+
+      return (
+        trigger.orderType === DerivativeOrderSide.TakeBuy ||
+        trigger.orderType === DerivativeOrderSide.TakeSell
+      )
+    },
+
     type(): string {
       const { trigger } = this
 
-      const orderType = trigger.orderType === ('take_sell' || 'take_buy')
-        ? this.$t('trade.takeProfit')
-        : this.$t('trade.stopLoss')
+      const executionType =
+        trigger.executionType === 'market'
+          ? this.$t('trade.market')
+          : this.$t('trade.limit')
 
-      const executionType = trigger.executionType === 'market'
-        ? this.$t('trade.market')
-        : this.$t('trade.limit')
-
-      return `${orderType} ${executionType}`
+      switch (trigger.orderType) {
+        case 'buy':
+        case 'sell':
+          return executionType
+        case 'take_sell':
+        case 'take_buy':
+          return `${this.$t('trade.takeProfit')} ${executionType}`
+        case 'stop_sell':
+        case 'stop_buy':
+          return `${this.$t('trade.stopLoss')} ${executionType}`
+        default:
+          return ''
+      }
     }
   },
 

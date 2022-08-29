@@ -95,9 +95,17 @@
 
     <td class="h-12 flex items-center justify-end gap-1">
       <template v-if="order.isConditional">
-        <span class="text-gray-500 text-xs font-semibold"> Mark Price </span>
+        <span class="text-gray-500 text-xs font-semibold">
+          {{ $t('trade.mark_price') }}
+        </span>
 
-        <span class="text-white text-xs font-semibold"> ≤ </span>
+        <span
+          v-if="(isStopLoss && isSell) || (isTakeProfit && isBuy)"
+          class="text-white text-xs font-semibold"
+        >
+          &le;
+        </span>
+        <span v-else class="text-white text-xs font-semibold"> &ge; </span>
 
         <VNumber
           xs
@@ -204,14 +212,13 @@ export default Vue.extend({
     },
 
     margin(): BigNumberInBase {
-      return ZERO_IN_BASE
-      // const { market, order } = this
+      const { market, order } = this
 
-      // if (!market) {
-      //   return ZERO_IN_BASE
-      // }
+      if (!market) {
+        return ZERO_IN_BASE
+      }
 
-      // return new BigNumberInWei(order.margin).toBase(market.quoteToken.decimals)
+      return new BigNumberInWei(order.margin).toBase(market.quoteToken.decimals)
     },
 
     quantity(): BigNumberInBase {
@@ -325,6 +332,37 @@ export default Vue.extend({
       }
     },
 
+    isSell(): boolean {
+      const { order } = this
+
+      switch (order.orderType) {
+        case DerivativeOrderSide.TakeSell:
+        case DerivativeOrderSide.StopSell:
+        case DerivativeOrderSide.Sell:
+          return true
+        default:
+          return false
+      }
+    },
+
+    isStopLoss(): boolean {
+      const { order } = this
+
+      return (
+        order.orderType === DerivativeOrderSide.StopBuy ||
+        order.orderType === DerivativeOrderSide.StopSell
+      )
+    },
+
+    isTakeProfit(): boolean {
+      const { order } = this
+
+      return (
+        order.orderType === DerivativeOrderSide.TakeBuy ||
+        order.orderType === DerivativeOrderSide.TakeSell
+      )
+    },
+
     timestamp(): string {
       const { order } = this
 
@@ -334,17 +372,24 @@ export default Vue.extend({
     type(): string {
       const { order } = this
 
-      const orderType =
-        order.orderType === ('take_sell' || 'take_buy')
-          ? this.$t('trade.takeProfit')
-          : this.$t('trade.stopLoss')
-
       const executionType =
         order.executionType === 'market'
           ? this.$t('trade.market')
           : this.$t('trade.limit')
 
-      return `${orderType} ${executionType}`
+      switch (order.orderType) {
+        case 'buy':
+        case 'sell':
+          return executionType
+        case 'take_sell':
+        case 'take_buy':
+          return `${this.$t('trade.takeProfit')} ${executionType}`
+        case 'stop_sell':
+        case 'stop_buy':
+          return `${this.$t('trade.stopLoss')} ${executionType}`
+        default:
+          return ''
+      }
     },
 
     orderStatus(): string {
@@ -352,13 +397,13 @@ export default Vue.extend({
 
       switch (order.state) {
         case 'booked':
-          return 'Booked'
+          return this.$t('trade.open')
         case 'partial_filled':
-          return 'Partially Filled'
+          return this.$t('trade.partiallyFilled')
         case 'filled':
-          return 'Filled'
+          return this.$t('trade.filled')
         case 'canceled':
-          return 'Cancelled'
+          return this.$t('trade.cancelled')
         default: {
           return ''
         }
