@@ -5,10 +5,10 @@
     >
       {{ $t('home.whyTradeOnHelix') }}
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-12">
       <div class="md:col-span-4">
         <div class="mb-4">
-          <img src="svg/why-trade-on-helix-01.svg" alt="" />
+          <img class="w-full" src="svg/why-trade-on-helix-01.svg" alt="" />
         </div>
         <div class="font-semibold text-xl mb-4">
           {{ $t('home.decentralizedWithAdvancedTypeOrders') }}
@@ -19,7 +19,7 @@
       </div>
       <div class="md:col-span-4">
         <div class="mb-4">
-          <img src="svg/why-trade-on-helix-02.svg" alt="" />
+          <img class="w-full" src="svg/why-trade-on-helix-02.svg" alt="" />
         </div>
         <div class="font-semibold text-xl mb-4">
           {{ $t('home.lowFees') }}
@@ -30,7 +30,7 @@
       </div>
       <div class="md:col-span-4">
         <div class="mb-4">
-          <img src="svg/why-trade-on-helix-03.svg" alt="" />
+          <img class="w-full" src="svg/why-trade-on-helix-03.svg" alt="" />
         </div>
         <div class="font-semibold text-xl mb-4">
           {{ $t('home.crossChainAssets') }}
