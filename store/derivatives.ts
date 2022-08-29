@@ -6,7 +6,7 @@ import {
   derivativePriceToChainPriceToFixed,
   derivativeQuantityToChainQuantityToFixed
 } from '@injectivelabs/utils'
-import { StreamOperation } from '@injectivelabs/ts-types'
+import { StreamOperation, TradeExecutionType } from '@injectivelabs/ts-types'
 import {
   Change,
   derivativeOrderTypeToGrpcOrderType,
@@ -120,10 +120,14 @@ export const state = () => ({
   subaccountTradesPagination: initialState.subaccountTradesPagination,
   subaccountOrders: initialState.subaccountOrders as UiDerivativeLimitOrder[],
   subaccountOrdersPagination: initialState.subaccountOrdersPagination,
-  subaccountOrderHistory: initialState.subaccountOrderHistory as UiDerivativeOrderHistory[],
-  subaccountOrderHistoryPagination: initialState.subaccountOrderHistoryPagination,
-  subaccountConditionalOrders: initialState.subaccountConditionalOrders as UiDerivativeOrderHistory[],
-  subaccountConditionalOrdersPagination: initialState.subaccountConditionalOrdersPagination,
+  subaccountOrderHistory:
+    initialState.subaccountOrderHistory as UiDerivativeOrderHistory[],
+  subaccountOrderHistoryPagination:
+    initialState.subaccountOrderHistoryPagination,
+  subaccountConditionalOrders:
+    initialState.subaccountConditionalOrders as UiDerivativeOrderHistory[],
+  subaccountConditionalOrdersPagination:
+    initialState.subaccountConditionalOrdersPagination,
   orderbook: initialState.orderbook as UiDerivativeOrderbook | undefined
 })
 
@@ -280,11 +284,17 @@ export const mutations = {
     state.subaccountOrdersPagination.total = total
   },
 
-  setSubaccountOrderHistory(state: DerivativeStoreState, orderHistory: UiDerivativeOrderHistory[]) {
+  setSubaccountOrderHistory(
+    state: DerivativeStoreState,
+    orderHistory: UiDerivativeOrderHistory[]
+  ) {
     state.subaccountOrderHistory = orderHistory
   },
 
-  setSubaccountOrderHistoryEndTime(state: DerivativeStoreState, endTime: number) {
+  setSubaccountOrderHistoryEndTime(
+    state: DerivativeStoreState,
+    endTime: number
+  ) {
     state.subaccountOrderHistoryPagination.endTime = endTime
   },
 
@@ -292,15 +302,24 @@ export const mutations = {
     state.subaccountOrderHistoryPagination.total = total
   },
 
-  setSubaccountConditionalOrders(state: DerivativeStoreState, conditionalOrders: UiDerivativeOrderHistory[]) {
+  setSubaccountConditionalOrders(
+    state: DerivativeStoreState,
+    conditionalOrders: UiDerivativeOrderHistory[]
+  ) {
     state.subaccountConditionalOrders = conditionalOrders
   },
 
-  setSubaccountConditionalOrdersEndTime(state: DerivativeStoreState, endTime: number) {
+  setSubaccountConditionalOrdersEndTime(
+    state: DerivativeStoreState,
+    endTime: number
+  ) {
     state.subaccountConditionalOrdersPagination.endTime = endTime
   },
 
-  setSubaccountConditionalOrdersTotal(state: DerivativeStoreState, total: number) {
+  setSubaccountConditionalOrdersTotal(
+    state: DerivativeStoreState,
+    total: number
+  ) {
     state.subaccountConditionalOrdersPagination.total = total
   },
 
@@ -761,7 +780,10 @@ export const actions = actionTree(
       commit('setSubaccountOrders', orders)
     },
 
-    async fetchSubaccountOrderHistory({ commit, state }, activityFetchOptions: ActivityFetchOptions | undefined) {
+    async fetchSubaccountOrderHistory(
+      { commit, state },
+      activityFetchOptions: ActivityFetchOptions | undefined
+    ) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -782,24 +804,29 @@ export const actions = actionTree(
         )
       }
 
-      const { orderHistory, pagination } = await indexerDerivativesApi.fetchOrderHistory({
-        marketId: filters?.marketId,
-        subaccountId: subaccount.subaccountId,
-        orderTypes: filters?.orderTypes as DerivativeOrderSide[],
-        direction: filters?.direction,
-        isConditional: filters?.isConditional,
-        pagination: {
-          skip: paginationOptions ? paginationOptions.skip : 0,
-          limit: paginationOptions ? paginationOptions.limit : 0,
-          endTime: state.subaccountOrderHistoryPagination.endTime
-        }
-      })
+      const { orderHistory, pagination } =
+        await indexerDerivativesApi.fetchOrderHistory({
+          marketId: filters?.marketId,
+          subaccountId: subaccount.subaccountId,
+          orderTypes: filters?.orderTypes as DerivativeOrderSide[],
+          executionTypes: filters?.executionTypes as TradeExecutionType[],
+          direction: filters?.direction,
+          isConditional: filters?.isConditional,
+          pagination: {
+            skip: paginationOptions ? paginationOptions.skip : 0,
+            limit: paginationOptions ? paginationOptions.limit : 0,
+            endTime: state.subaccountOrderHistoryPagination.endTime
+          }
+        })
 
       commit('setSubaccountOrderHistoryTotal', pagination.total)
       commit('setSubaccountOrderHistory', orderHistory)
     },
 
-    async fetchSubaccountConditionalOrders({ commit, state }, activityFetchOptions: ActivityFetchOptions | undefined) {
+    async fetchSubaccountConditionalOrders(
+      { commit, state },
+      activityFetchOptions: ActivityFetchOptions | undefined
+    ) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -820,18 +847,19 @@ export const actions = actionTree(
         )
       }
 
-      const { orderHistory, pagination } = await indexerDerivativesApi.fetchOrderHistory({
-        marketId: filters?.marketId,
-        subaccountId: subaccount.subaccountId,
-        orderTypes: filters?.orderTypes as DerivativeOrderSide[],
-        direction: filters?.direction,
-        isConditional: true,
-        pagination: {
-          skip: paginationOptions ? paginationOptions.skip : 0,
-          limit: paginationOptions ? paginationOptions.limit : 0,
-          endTime: state.subaccountConditionalOrdersPagination.endTime
-        }
-      })
+      const { orderHistory, pagination } =
+        await indexerDerivativesApi.fetchOrderHistory({
+          marketId: filters?.marketId,
+          subaccountId: subaccount.subaccountId,
+          orderTypes: filters?.orderTypes as DerivativeOrderSide[],
+          direction: filters?.direction,
+          isConditional: true,
+          pagination: {
+            skip: paginationOptions ? paginationOptions.skip : 0,
+            limit: paginationOptions ? paginationOptions.limit : 0,
+            endTime: state.subaccountConditionalOrdersPagination.endTime
+          }
+        })
 
       commit('setSubaccountConditionalOrdersTotal', pagination.total)
       commit('setSubaccountConditionalOrders', orderHistory)
@@ -933,7 +961,10 @@ export const actions = actionTree(
       commit('setSubaccountTrades', trades)
     },
 
-    async cancelOrder({ state }, order: UiDerivativeLimitOrder | UiDerivativeOrderHistory) {
+    async cancelOrder(
+      { state },
+      order: UiDerivativeLimitOrder | UiDerivativeOrderHistory
+    ) {
       const { markets } = state
       const { subaccount } = this.app.$accessor.account
       const { address, injectiveAddress, isUserWalletConnected } =

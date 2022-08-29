@@ -49,7 +49,7 @@ export default Vue.extend({
     },
 
     value: {
-      type: String,
+      type: [String, Object],
       default: undefined
     }
   },
@@ -58,7 +58,7 @@ export default Vue.extend({
     return {
       placeholder: '',
       list: [] as {
-        text: string;
+        text: string
         value: string | OrderTypeFilter | undefined
       }[]
     }
@@ -73,8 +73,12 @@ export default Vue.extend({
       }
 
       return (
-        list.find(({ value }) => value === selected)?.text ||
-        this.$t('trade.all')
+        list.find(({ value }) => {
+          if (typeof selected === 'object') {
+            return JSON.stringify(value) === JSON.stringify(selected)
+          }
+          return value === selected
+        })?.text || this.$t('trade.all')
       )
     }
   },

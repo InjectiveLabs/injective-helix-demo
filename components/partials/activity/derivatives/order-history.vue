@@ -80,7 +80,7 @@ import {
   UiDerivativeMarketWithToken,
   UiDerivativeOrderHistory
 } from '@injectivelabs/sdk-ui-ts'
-import { TradeDirection } from '@injectivelabs/ts-types'
+import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import Pagination from '~/components/partials/common/pagination.vue'
 import SearchAsset from '~/components/partials/activity/common/search-asset.vue'
@@ -148,11 +148,17 @@ export default Vue.extend({
 
   methods: {
     fetchOrderHistory(): Promise<void> {
-      const orderTypes = (
+      const orderTypes =
         this.type && this.type.orderType
-          ? this.orderTypeToOrderTypes(this.type.orderType)
-          : []
-      ) as DerivativeOrderSide[]
+          ? (this.orderTypeToOrderTypes(
+              this.type.orderType
+            ) as DerivativeOrderSide[])
+          : undefined
+
+      const executionTypes =
+        this.type && this.type.executionType
+          ? ([this.type.executionType] as TradeExecutionType[])
+          : undefined
 
       const direction = this.side as TradeDirection
       const isConditional = undefined
@@ -174,6 +180,7 @@ export default Vue.extend({
           filters: {
             marketId,
             orderTypes,
+            executionTypes,
             direction,
             isConditional
           }
