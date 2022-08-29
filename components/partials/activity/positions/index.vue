@@ -2,14 +2,14 @@
   <div class="h-full">
     <HocLoading :status="status">
       <div class="h-full flex flex-col">
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-4 overflow-x-auto hide-scrollbar">
           <TabSelectorItem
             v-model="component"
             data-cy="activity-open-positions-link"
             :option="components.positions"
           >
             <div class="flex items-center gap-1">
-              <span>{{ $t('activity.openPositions') }}</span>
+              <span class="whitespace-nowrap">{{ $t('activity.openPositions') }}</span>
               <span data-cy="activity-open-positions-link-count">
                 ({{ positions.length }})
               </span>
@@ -24,7 +24,7 @@
             :option="components.fundingPayments"
           >
             <div class="flex items-center gap-1">
-              <span>{{ $t('activity.fundingPayments') }}</span>
+              <span class="whitespace-nowrap">{{ $t('activity.fundingPayments') }}</span>
             </div>
           </TabSelectorItem>
         </div>

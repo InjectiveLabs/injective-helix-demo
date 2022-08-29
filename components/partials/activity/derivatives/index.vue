@@ -1,13 +1,13 @@
 <template>
   <div class="h-full flex flex-col">
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-4 overflow-x-auto hide-scrollbar">
       <TabSelectorItem
         v-model="component"
         data-cy="activity-derivative-orders-link"
         :option="components.orders"
       >
         <div class="flex items-center gap-1">
-          <span>{{ $t('activity.openOrders') }}</span>
+          <span class="whitespace-nowrap">{{ $t('activity.openOrders') }}</span>
           <span data-cy="activity-derivative-orders-link-count">
             ({{ orders.length }})
           </span>
@@ -22,7 +22,7 @@
         :option="components.triggers"
       >
         <div class="flex items-center gap-1">
-          <span>{{ $t('activity.triggers') }}</span>
+          <span class="whitespace-nowrap">{{ $t('activity.triggers') }}</span>
           <span data-cy="activity-derivative-orders-link-count">
             ({{ triggers.length }})
           </span>
@@ -37,7 +37,7 @@
         :option="components.orderHistory"
       >
         <div class="flex items-center gap-1">
-          <span>{{ $t('activity.orderHistory') }}</span>
+          <span class="whitespace-nowrap">{{ $t('activity.orderHistory') }}</span>
         </div>
       </TabSelectorItem>
 
@@ -49,7 +49,7 @@
         :option="components.trades"
       >
         <div class="flex items-center gap-1">
-          <span>{{ $t('activity.tradeHistory') }}</span>
+          <span class="whitespace-nowrap">{{ $t('activity.tradeHistory') }}</span>
         </div>
       </TabSelectorItem>
     </div>
