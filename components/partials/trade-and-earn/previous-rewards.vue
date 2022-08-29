@@ -49,7 +49,7 @@
               <VEmpNumber :number="pendingTradeRewardPointsFactored">
                 <span>{{ $t('pts') }}</span>
               </VEmpNumber>
-              <span class="px-2">/</span>
+              <span class="px-2 text-xl self-center">/</span>
               <VEmpNumber :number="totalPendingTradeRewardPointsFactored">
                 <span>{{ $t('pts') }}</span>
               </VEmpNumber>
@@ -58,7 +58,7 @@
           </template>
           <template slot="title">
             <div
-              class="flex items-center justify-center text-xs text-gray-450 whitespace-nowrap -ml-2"
+              class="flex items-center justify-center text-xs text-gray-450 3xl:whitespace-nowrap -ml-2"
             >
               {{ $t('tradeAndEarn.myRewardPoints') }}
               <IconInfoTooltip

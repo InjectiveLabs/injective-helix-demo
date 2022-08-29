@@ -3,7 +3,7 @@
     class="flex flex-wrap items-center w-full"
     :class="{
       'text-xs': !lg && !sm,
-      'text-sm': sm,
+      'text-xs sm:text-sm': sm,
       'text-base': lg
     }"
   >
