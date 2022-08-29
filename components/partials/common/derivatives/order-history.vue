@@ -4,6 +4,12 @@
     :data-cy="'derivative-order-table-row-' + market.ticker"
     :data-cy-hash="order.orderHash"
   >
+    <td class="h-12 text-left">
+      <span class="text-white text-xs">
+        {{ timestamp }}
+      </span>
+    </td>
+
     <td class="h-12 text-left cursor-pointer" @click="handleClickOnMarket">
       <div class="flex items-center justify-start">
         <div v-if="baseTokenLogo" class="w-4 h-4">
@@ -25,12 +31,18 @@
     </td>
 
     <td class="h-12 text-left">
+      <span class="text-white text-xs">
+        {{ type }}
+      </span>
+    </td>
+
+    <td class="h-12 text-left">
       <span
         data-cy="derivative-order-order-side-table-data"
         class="text-xs"
         :class="{
-          'text-green-500': order.orderSide === DerivativeOrderSide.Buy,
-          'text-red-500': order.orderSide === DerivativeOrderSide.Sell
+          'text-green-500': isBuy,
+          'text-red-500': !isBuy
         }"
       >
         {{ orderSideLocalized }}
@@ -66,50 +78,6 @@
       />
     </td>
 
-    <td class="h-12 font-mono">
-      <div class="flex items-center justify-end">
-        <VNumber
-          xs
-          data-cy="derivative-order-unfilled-quantity-table-data"
-          :decimals="
-            market
-              ? market.quantityDecimals
-              : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-          "
-          :number="unfilledQuantity"
-        />
-      </div>
-    </td>
-
-    <td class="h-12 text-right font-mono">
-      <VNumber
-        xs
-        data-cy="derivative-order-filled-quantity-table-data"
-        :decimals="
-          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-        "
-        :number="filledQuantity"
-      />
-    </td>
-
-    <td v-if="!isBinaryOptionsPage" class="h-12 text-right font-mono">
-      <span
-        v-if="leverage.gte(0)"
-        class="flex items-center justify-end text-xs"
-        data-cy="derivative-order-leverage-table-data"
-      >
-        {{ leverage.toFormat(2) }}
-        <span class="text-gray-300 text-xs">&times;</span>
-      </span>
-      <span
-        v-else
-        class="text-gray-400 text-xs"
-        data-cy="derivative-order-no-leverage-table-data"
-      >
-        {{ $t('trade.not_available_n_a') }}
-      </span>
-    </td>
-
     <td class="h-12 font-right text-right">
       <VNumber
         xs
@@ -125,31 +93,39 @@
       </VNumber>
     </td>
 
-    <td class="h-12 relative text-right">
-      <div class="flex items-center justify-end">
-        <span
-          v-if="false"
-          class="cursor-pointer text-primary-500 mr-6"
-          data-cy="derivative-order-view-link"
-          @click="handleClickOnMarket"
-        >
-          {{ $t('common.view') }}
+    <td class="h-12 flex items-center justify-end gap-1">
+      <template v-if="order.isConditional">
+        <span class="text-gray-500 text-xs font-semibold">
+          {{ $t('trade.mark_price') }}
         </span>
-        <VButton
-          v-if="orderFillable"
-          :status="status"
-          data-cy="derivative-order-cancel-link"
-          class="rounded w-6 h-6"
-          @click="onCancelOrder"
+
+        <span
+          v-if="(isStopLoss && isSell) || (isTakeProfit && isBuy)"
+          class="text-white text-xs font-semibold"
         >
-          <div
-            class="flex items-center justify-center rounded-full w-6 h-6 bg-red-500 bg-opacity-10 text-red-500 hover:bg-red-600 hover:text-red-600 hover:bg-opacity-10"
-          >
-            <IconBin />
-          </div>
-        </VButton>
-        <span v-else class="inline-block">&mdash;</span>
-      </div>
+          &le;
+        </span>
+        <span v-else class="text-white text-xs font-semibold"> &ge; </span>
+
+        <VNumber
+          xs
+          data-cy="derivative-order-total-table-data"
+          :decimals="
+            market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+          "
+          :number="triggerPrice"
+        />
+      </template>
+
+      <template v-else>
+        <span>&mdash;</span>
+      </template>
+    </td>
+
+    <td class="h-12 relative text-right">
+      <span class="text-white text-xs">
+        {{ orderStatus }}
+      </span>
     </td>
   </tr>
 </template>
@@ -158,12 +134,13 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
 import {
-  UiDerivativeLimitOrder,
+  UiDerivativeOrderHistory,
   UiDerivativeMarketWithToken,
   DerivativeOrderSide,
   ZERO_IN_BASE,
   getTokenLogoWithVendorPathPrefix
 } from '@injectivelabs/sdk-ui-ts'
+import { format } from 'date-fns'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -174,7 +151,7 @@ export default Vue.extend({
   props: {
     order: {
       required: true,
-      type: Object as PropType<UiDerivativeLimitOrder>
+      type: Object as PropType<UiDerivativeOrderHistory>
     }
   },
 
@@ -222,6 +199,18 @@ export default Vue.extend({
       return new BigNumberInWei(order.price).toBase(market.quoteToken.decimals)
     },
 
+    triggerPrice(): BigNumberInBase {
+      const { order, market } = this
+
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInWei(order.triggerPrice).toBase(
+        market.quoteToken.decimals
+      )
+    },
+
     margin(): BigNumberInBase {
       const { market, order } = this
 
@@ -253,13 +242,13 @@ export default Vue.extend({
     },
 
     unfilledQuantity(): BigNumberInBase {
-      const { market, order } = this
+      const { market, quantity, filledQuantity } = this
 
       if (!market) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(order.unfilledQuantity)
+      return quantity.minus(filledQuantity)
     },
 
     filledQuantity(): BigNumberInBase {
@@ -311,11 +300,9 @@ export default Vue.extend({
     },
 
     orderSideLocalized(): string {
-      const { order } = this
+      const { isBuy } = this
 
-      return order.orderSide === DerivativeOrderSide.Buy
-        ? this.$t('trade.buy')
-        : this.$t('trade.sell')
+      return isBuy ? this.$t('trade.buy') : this.$t('trade.sell')
     },
 
     baseTokenLogo(): string {
@@ -330,6 +317,97 @@ export default Vue.extend({
       }
 
       return getTokenLogoWithVendorPathPrefix(market.baseToken.logo)
+    },
+
+    isBuy(): boolean {
+      const { order } = this
+
+      switch (order.orderType) {
+        case DerivativeOrderSide.TakeBuy:
+        case DerivativeOrderSide.StopBuy:
+        case DerivativeOrderSide.Buy:
+          return true
+        default:
+          return false
+      }
+    },
+
+    isSell(): boolean {
+      const { order } = this
+
+      switch (order.orderType) {
+        case DerivativeOrderSide.TakeSell:
+        case DerivativeOrderSide.StopSell:
+        case DerivativeOrderSide.Sell:
+          return true
+        default:
+          return false
+      }
+    },
+
+    isStopLoss(): boolean {
+      const { order } = this
+
+      return (
+        order.orderType === DerivativeOrderSide.StopBuy ||
+        order.orderType === DerivativeOrderSide.StopSell
+      )
+    },
+
+    isTakeProfit(): boolean {
+      const { order } = this
+
+      return (
+        order.orderType === DerivativeOrderSide.TakeBuy ||
+        order.orderType === DerivativeOrderSide.TakeSell
+      )
+    },
+
+    timestamp(): string {
+      const { order } = this
+
+      return format(order.createdAt, 'dd MMM HH:mm:ss')
+    },
+
+    type(): string {
+      const { order } = this
+
+      const executionType =
+        order.executionType === 'market'
+          ? this.$t('trade.market')
+          : this.$t('trade.limit')
+
+      switch (order.orderType) {
+        case 'buy':
+        case 'sell':
+          return executionType
+        case 'take_sell':
+        case 'take_buy':
+          return `${this.$t('trade.takeProfit')} ${executionType}`
+        case 'stop_sell':
+        case 'stop_buy':
+          return `${this.$t('trade.stopLoss')} ${executionType}`
+        default:
+          return ''
+      }
+    },
+
+    orderStatus(): string {
+      const { order } = this
+
+      switch (order.state) {
+        case 'booked':
+          return this.$t('trade.open')
+        case 'partial_filled':
+          return this.$t('trade.partiallyFilled')
+        case 'filled':
+          return this.$t('trade.filled')
+        case 'canceled':
+          return this.$t('trade.cancelled')
+        default: {
+          return ''
+        }
+      }
     }
   },
 

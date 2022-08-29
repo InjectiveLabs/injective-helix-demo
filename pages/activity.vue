@@ -44,7 +44,7 @@
             >
               <portal-target
                 slot="icon"
-                name="activity-card-derivative-count"
+                name="activity-card-derivative-order-count"
                 data-cy="activity-derivatives-orders-panel-count"
               />
               <span class="text-sm whitespace-nowrap">

@@ -10,6 +10,7 @@ export default {
     chart: 'Chart',
     pair: 'Pair',
     type: 'Type',
+    status: 'Status',
     type_tooltip: 'The type of your order: limit or market.',
     side: 'Side',
     side_tooltip: 'The side of your trade: long or short',
@@ -42,6 +43,7 @@ export default {
     reduce_only: 'Reduce-Only',
     post_only: 'Post-Only',
     leverage: 'Leverage',
+    triggerCondition: 'Trigger condition',
     limit: 'Limit',
     market: 'Market',
     stopLimit: 'Stop-Limit',
@@ -51,6 +53,7 @@ export default {
     emptyOrders: 'No orders found',
     emptyPositions: 'No positions found',
     emptyTrades: 'No trades found',
+    emptyTriggers: 'No triggers found',
     entry_price: 'Entry price',
     liquidation_price: 'Liquidation Price',
     liquidation_price_tooltip:
@@ -149,6 +152,7 @@ export default {
     trades: 'Trades',
     tradeHistoryDetails: 'Trade History Details',
     time: 'Time',
+    timeTooltip: 'The time at which the {type} occurred.',
     max: 'Max',
     orderbook: 'Orderbook',
     markets: 'Markets',
@@ -258,6 +262,9 @@ export default {
       descriptionMarket: 'If the mark price {verb} to or {preposition} <b>{triggerPrice} {triggerPriceSymbol}</b>, a {tradingType} order to {orderType} <b>{amount} {amountSymbol}</b> will be placed.'
     },
     reduceOnlyTooltip: 'To place a reduce-only order, you will need an open position in the opposite side.',
-    reduceOnlyTooltipConditional: 'To place a reduce-only conditional order, you will need an open position or non reduce-only order in the opposite side.'
+    reduceOnlyTooltipConditional: 'To place a reduce-only conditional order, you will need an open position or non reduce-only order in the opposite side.',
+    open: 'Open',
+    partiallyFilled: 'Partially Filled',
+    cancelled: 'Cancelled'
   }
 }

@@ -13,7 +13,34 @@
               {{ `(${filteredOrders.length})` }}
             </span>
           </VButtonFilter>
+
           <VSeparator />
+
+          <VButtonFilter
+            v-model="component"
+            :option="components.triggers"
+            data-cy="trading-page-triggers-tab-button"
+          >
+            <span class="uppercase text-xs font-semibold">
+              {{ $t('activity.triggers') }}
+              {{ `(${triggers.length})` }}
+            </span>
+          </VButtonFilter>
+
+          <VSeparator />
+
+          <VButtonFilter
+            v-model="component"
+            :option="components.orderHistory"
+            data-cy="trading-page-order-history-tab-button"
+          >
+            <span class="uppercase text-xs font-semibold">
+              {{ $t('activity.orderHistory') }}
+            </span>
+          </VButtonFilter>
+
+          <VSeparator />
+
           <VButtonFilter
             v-model="component"
             :option="components.tradeHistory"
@@ -63,22 +90,28 @@
 import Vue from 'vue'
 import {
   UiSpotLimitOrder,
-  UiSpotMarketWithToken
+  UiSpotMarketWithToken,
+  UiSpotOrderHistory
 } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import OpenOrders from './orders/index.vue'
+import Triggers from './triggers/index.vue'
+import OrderHistory from './order-history/index.vue'
 import TradeHistory from './trade-history/index.vue'
 
 const components = {
-  orderHistory: '',
   openOrders: 'openOrders',
+  triggers: 'triggers',
+  orderHistory: 'orderHistory',
   tradeHistory: 'TradeHistory'
 }
 
 export default Vue.extend({
   components: {
-    TradeHistory,
-    OpenOrders
+    OpenOrders,
+    Triggers,
+    OrderHistory,
+    TradeHistory
   },
 
   data() {
@@ -100,6 +133,14 @@ export default Vue.extend({
       return this.$accessor.spot.subaccountOrders
     },
 
+    orderHistory(): UiSpotOrderHistory[] {
+      return this.$accessor.spot.subaccountOrderHistory
+    },
+
+    triggers(): UiSpotOrderHistory[] {
+      return this.$accessor.spot.subaccountConditionalOrders
+    },
+
     currentMarketOrders(): UiSpotLimitOrder[] {
       const { market, orders } = this
 
@@ -116,6 +157,8 @@ export default Vue.extend({
   mounted() {
     Promise.all([
       this.$accessor.spot.fetchSubaccountOrders(),
+      this.$accessor.spot.fetchSubaccountOrderHistory(),
+      this.$accessor.spot.fetchSubaccountConditionalOrders(),
       this.$accessor.spot.fetchSubaccountTrades()
     ])
       .then(() => {

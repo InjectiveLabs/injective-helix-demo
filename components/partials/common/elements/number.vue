@@ -2,7 +2,7 @@
   <div>
     <span
       class="font-mono inline-block"
-      :class="{ 'text-sm': xs, 'text-sm': sm }"
+      :class="{ 'text-xs': xs, 'text-sm': sm }"
     >
       <div class="flex">
         <span class="">{{ prefix || '' }}{{ formattedNumber[0] }}</span>
