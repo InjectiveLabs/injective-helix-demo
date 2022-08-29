@@ -3,40 +3,35 @@
     <div class="w-full h-full flex flex-col">
       <Toolbar>
         <template #filters>
-          <SearchAsset
-            :markets="markets"
-            :value="selectedToken"
-            @select="handleSearch"
-          />
+          <div class="grid grid-cols-12 items-center gap-4 w-full">
+            <SearchAsset
+              class="col-span-12 sm:col-span-3"
+              :markets="markets"
+              :value="selectedToken"
+              @select="handleSearch"
+            />
 
-          <div
-            class="col-span-2 flex items-center bg-gray-900 rounded-full text-gray-200 py-3 px-6 text-xs cursor-pointer sm:hidden shadow-sm"
-            @click="openMobileFilterModal"
-          >
-            <IconFilter class="min-w-4 mr-2" />
-            <span>{{ $t('common.filters') }}</span>
+            <FilterSelector
+              class="col-span-6 sm:col-span-3"
+              data-cy="universal-table-filter-by-type-drop-down"
+              :type="TradeSelectorType.Type"
+              :value="type"
+              @click="handleTypeClick"
+            />
+
+            <FilterSelector
+              class="col-span-6 sm:col-span-3"
+              data-cy="universal-table-filter-by-side-drop-down"
+              :type="TradeSelectorType.Side"
+              :value="side"
+              @click="handleSideClick"
+            />
+
+            <ClearFiltersButton
+              v-if="showClearFiltersButton"
+              @clear="handleClearFilters"
+            />
           </div>
-
-          <FilterSelector
-            class="min-w-3xs hidden sm:block"
-            data-cy="universal-table-filter-by-type-drop-down"
-            :type="TradeSelectorType.Type"
-            :value="type"
-            @click="handleTypeClick"
-          />
-
-          <FilterSelector
-            class="min-w-3xs hidden sm:block"
-            data-cy="universal-table-filter-by-side-drop-down"
-            :type="TradeSelectorType.Side"
-            :value="side"
-            @click="handleSideClick"
-          />
-
-          <ClearFiltersButton
-            v-if="showClearFiltersButton"
-            @clear="handleClearFilters"
-          />
         </template>
       </Toolbar>
 

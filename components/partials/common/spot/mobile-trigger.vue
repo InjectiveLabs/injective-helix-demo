@@ -5,8 +5,8 @@
         <div class="flex items-center gap-1">
           <span
             :class="{
-              'text-green-500': order.orderSide === DerivativeOrderSide.Buy,
-              'text-red-500': order.orderSide === DerivativeOrderSide.Sell
+              'text-green-500': isBuy,
+              'text-red-500': !isBuy
             }"
           >
             {{ orderSideLocalized }}
@@ -20,10 +20,6 @@
           </div>
           <span class="text-gray-200 font-semibold">
             {{ market.ticker }}
-          </span>
-
-          <span v-if="leverage.gte(0)" class="font-mono">
-            {{ leverage.toFormat(2) }}x
           </span>
         </div>
 
@@ -41,10 +37,10 @@
         </VButton>
       </div>
       <div
-        v-if="isReduceOnly"
+        v-if="false"
         class="mt-0.5 text-gray-500 uppercase tracking-widest text-2xs"
       >
-        {{ $t('trade.reduce_only') }}
+        {{ $t('trade.post_only') }}
       </div>
     </div>
 
@@ -99,20 +95,19 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
-  UiDerivativeLimitOrder,
-  UiDerivativeMarketWithToken,
-  DerivativeOrderSide,
-  ZERO_IN_BASE,
-  getTokenLogoWithVendorPathPrefix
+  getTokenLogoWithVendorPathPrefix,
+  SpotOrderSide,
+  UiSpotMarketWithToken,
+  UiSpotOrderHistory,
+  ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 import TableRow from '~/components/elements/table-row.vue'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
-import { getMarketRoute } from '~/app/utils/market'
 
 export default Vue.extend({
   components: {
@@ -122,38 +117,29 @@ export default Vue.extend({
   props: {
     order: {
       required: true,
-      type: Object as PropType<UiDerivativeLimitOrder>
+      type: Object as PropType<UiSpotOrderHistory>
     }
   },
 
   data() {
     return {
-      DerivativeOrderSide,
-      UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
       UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-      status: new Status()
+      UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+      SpotOrderSide,
+      status: new Status(),
+      statusTest: new Status(StatusType.Loading)
     }
   },
 
   computed: {
-    markets(): UiDerivativeMarketWithToken[] {
-      return this.$accessor.derivatives.markets
+    markets(): UiSpotMarketWithToken[] {
+      return this.$accessor.spot.markets
     },
 
-    market(): UiDerivativeMarketWithToken | undefined {
+    market(): UiSpotMarketWithToken | undefined {
       const { markets, order } = this
 
       return markets.find((m) => m.marketId === order.marketId)
-    },
-
-    isReduceOnly(): boolean {
-      const { margin, order } = this
-
-      if (order.isReduceOnly) {
-        return true
-      }
-
-      return margin.isZero()
     },
 
     price(): BigNumberInBase {
@@ -163,17 +149,11 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(order.price).toBase(market.quoteToken.decimals)
-    },
-
-    margin(): BigNumberInBase {
-      const { market, order } = this
-
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      return new BigNumberInWei(order.margin).toBase(market.quoteToken.decimals)
+      return new BigNumberInBase(
+        new BigNumberInBase(order.price).toWei(
+          market.baseToken.decimals - market.quoteToken.decimals
+        )
+      )
     },
 
     quantity(): BigNumberInBase {
@@ -186,60 +166,20 @@ export default Vue.extend({
       return new BigNumberInBase(order.quantity)
     },
 
-    quantityToFormat(): string {
-      const { market, quantity } = this
-
-      if (!market) {
-        return quantity.toFormat(UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS)
-      }
-
-      return quantity.toFormat(market.quantityDecimals)
-    },
-
     unfilledQuantity(): BigNumberInBase {
-      const { market, order } = this
+      const { market, quantity, filledQuantity } = this
 
       if (!market) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(order.unfilledQuantity)
+      return quantity.minus(filledQuantity)
     },
 
     filledQuantity(): BigNumberInBase {
-      const { unfilledQuantity, quantity } = this
+      const { order } = this
 
-      return quantity.minus(unfilledQuantity)
-    },
-
-    leverage(): BigNumberInBase {
-      const { quantity, isReduceOnly, margin, price } = this
-
-      if (isReduceOnly) {
-        return new BigNumberInBase('')
-      }
-
-      return new BigNumberInBase(price.times(quantity).dividedBy(margin))
-    },
-
-    filledQuantityPercentage(): BigNumberInBase {
-      const { filledQuantity, quantity, market } = this
-
-      if (!market) {
-        return ZERO_IN_BASE
-      }
-
-      if (filledQuantity.lte(0)) {
-        return ZERO_IN_BASE
-      }
-
-      return new BigNumberInBase(filledQuantity.dividedBy(quantity))
-    },
-
-    orderFullyFilled(): boolean {
-      const { unfilledQuantity } = this
-
-      return unfilledQuantity.isZero()
+      return new BigNumberInBase(order.filledQuantity)
     },
 
     orderFillable(): boolean {
@@ -251,15 +191,13 @@ export default Vue.extend({
     total(): BigNumberInBase {
       const { price, quantity } = this
 
-      return price.multipliedBy(quantity)
+      return quantity.multipliedBy(price)
     },
 
     orderSideLocalized(): string {
-      const { order } = this
+      const { isBuy } = this
 
-      return order.orderSide === DerivativeOrderSide.Buy
-        ? this.$t('trade.buy')
-        : this.$t('trade.sell')
+      return isBuy ? this.$t('trade.buy') : this.$t('trade.sell')
     },
 
     baseTokenLogo(): string {
@@ -274,6 +212,19 @@ export default Vue.extend({
       }
 
       return getTokenLogoWithVendorPathPrefix(market.baseToken.logo)
+    },
+
+    isBuy(): boolean {
+      const { order } = this
+
+      switch (order.orderType) {
+        case SpotOrderSide.TakeBuy:
+        case SpotOrderSide.StopBuy:
+        case SpotOrderSide.Buy:
+          return true
+        default:
+          return false
+      }
     }
   },
 
@@ -281,7 +232,7 @@ export default Vue.extend({
     onCancelOrder(): void {
       this.status.setLoading()
 
-      this.$accessor.derivatives
+      this.$accessor.spot
         .cancelOrder(this.order)
         .then(() => {
           this.$toast.success(this.$t('trade.order_success_canceling'))
@@ -299,7 +250,13 @@ export default Vue.extend({
         return
       }
 
-      return this.$router.push({ ...getMarketRoute(market) })
+      return this.$router.push({
+        name: 'spot-spot',
+        params: {
+          marketId: market.marketId,
+          spot: market.slug
+        }
+      })
     }
   }
 })

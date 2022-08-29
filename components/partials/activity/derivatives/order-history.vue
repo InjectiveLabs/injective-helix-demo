@@ -3,34 +3,51 @@
     <div class="w-full h-full flex flex-col">
       <Toolbar>
         <template #filters>
-          <SearchAsset
-            :markets="markets"
-            :value="selectedToken"
-            @select="handleSearch"
-          />
+          <div class="grid grid-cols-12 items-center gap-4 w-full">
+            <SearchAsset
+              class="col-span-12 sm:col-span-3"
+              :markets="markets"
+              :value="selectedToken"
+              @select="handleSearch"
+            />
 
-          <FilterSelector
-            class="min-w-3xs hidden sm:block"
-            data-cy="universal-table-filter-by-type-drop-down"
-            :type="TradeSelectorType.TypeAll"
-            :value="type"
-            @click="handleTypeClick"
-          />
+            <FilterSelector
+              class="col-span-6 sm:col-span-3"
+              data-cy="universal-table-filter-by-type-drop-down"
+              :type="TradeSelectorType.TypeAll"
+              :value="type"
+              @click="handleTypeClick"
+            />
 
-          <FilterSelector
-            class="min-w-3xs hidden sm:block"
-            data-cy="universal-table-filter-by-side-drop-down"
-            :type="TradeSelectorType.Side"
-            :value="side"
-            @click="handleSideClick"
-          />
+            <FilterSelector
+              class="col-span-6 sm:col-span-3"
+              data-cy="universal-table-filter-by-side-drop-down"
+              :type="TradeSelectorType.Side"
+              :value="side"
+              @click="handleSideClick"
+            />
 
-          <ClearFiltersButton
-            v-if="showClearFiltersButton"
-            @clear="handleClearFilters"
-          />
+            <ClearFiltersButton
+              v-if="showClearFiltersButton"
+              @clear="handleClearFilters"
+            />
+          </div>
         </template>
       </Toolbar>
+
+      <TableBody
+        :show-empty="orders.length === 0"
+        class="sm:hidden mt-3 max-h-lg overflow-y-auto"
+      >
+        <MobileOrderHistory
+          v-for="(order, index) in orders"
+          :key="`mobile-derivative-orders-${index}-${order.orderHash}`"
+          class="col-span-1"
+          :order="order"
+        />
+
+        <EmptyList slot="empty" :message="$t('trade.emptyOrders')" />
+      </TableBody>
 
       <TableWrapper break-md class="mt-4 hidden sm:block">
         <table v-if="orders.length > 0" class="table">
@@ -87,6 +104,8 @@ import OrderHistory from '~/components/partials/common/derivatives/order-history
 import OrderHistoryTableHeader from '~/components/partials/common/derivatives/order-history-table-header.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
 import { OrderTypeFilter, TradeSelectorType } from '~/types'
+import TableBody from '~/components/elements/table-body.vue'
+import MobileOrderHistory from '~/components/partials/common/derivatives/mobile-order-history.vue'
 
 export default Vue.extend({
   components: {
@@ -96,7 +115,9 @@ export default Vue.extend({
     SearchAsset,
     FilterSelector,
     ClearFiltersButton,
-    OrderHistoryTableHeader
+    OrderHistoryTableHeader,
+    TableBody,
+    MobileOrderHistory
   },
 
   data() {

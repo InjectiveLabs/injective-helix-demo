@@ -72,15 +72,11 @@
     </td>
 
     <td class="h-12 text-right">
-      <span class="text-white text-xs">
-        Unfilled
-      </span>
+      <span class="text-white text-xs"> Unfilled </span>
     </td>
 
     <td class="h-12 text-right">
-      <span class="text-white text-xs">
-        Filled
-      </span>
+      <span class="text-white text-xs"> Filled </span>
     </td>
 
     <td class="h-12 text-right font-mono">
@@ -100,9 +96,7 @@
 
     <td class="h-12 flex items-center justify-end gap-1">
       <template v-if="isMarketOrder">
-        <span class="text-white text-xs">
-          &mdash;
-        </span>
+        <span class="text-white text-xs"> &mdash; </span>
       </template>
 
       <template v-else>
@@ -161,7 +155,6 @@ import {
   getTokenLogoWithVendorPathPrefix,
   UiSpotOrderHistory
 } from '@injectivelabs/sdk-ui-ts'
-import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -237,7 +230,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(cosmosSdkDecToBigNumber(trigger.quantity))
+      return new BigNumberInBase(trigger.quantity)
     },
 
     quantityToFormat(): string {

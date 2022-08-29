@@ -3,55 +3,41 @@
     <div class="w-full h-full flex flex-col">
       <Toolbar>
         <template #filters>
-          <SearchAsset
-            :markets="markets"
-            :value="selectedToken"
-            @select="handleSearch"
-          />
+          <div class="grid grid-cols-12 items-center gap-4 w-full">
+            <SearchAsset
+              class="col-span-6 sm:col-span-3"
+              :markets="markets"
+              :value="selectedToken"
+              @select="handleSearch"
+            />
 
-          <FilterSelector
-            class="min-w-3xs"
-            data-cy="universal-table-filter-by-side-drop-down"
-            :type="TradeSelectorType.Side"
-            :value="side"
-            @click="handleSideClick"
-          />
+            <FilterSelector
+              class="col-span-6 sm:col-span-3"
+              data-cy="universal-table-filter-by-side-drop-down"
+              :type="TradeSelectorType.Side"
+              :value="side"
+              @click="handleSideClick"
+            />
 
-          <ClearFiltersButton
-            v-if="showClearFiltersButton"
-            @clear="handleClearFilters"
-          />
+            <ClearFiltersButton
+              v-if="showClearFiltersButton"
+              @clear="handleClearFilters"
+            />
+          </div>
         </template>
 
         <template #actions>
-          <div
+          <VButton
             v-if="orders.length > 0"
-            class="col-span-4 md:col-span-3 lg:col-span-2 flex justify-between items-center sm:hidden mt-3 text-xs px-3"
+            red-outline
+            md
+            data-cy="activity-cancel-all-button"
+            @click.stop="handleCancelOrders"
           >
-            <span class="tracking-widest uppercase tracking-3">
-              {{ $t('trade.side') }} / {{ $t('trade.market') }}
-            </span>
-            <span
-              class="text-red-500 leading-5 cursor-pointer"
-              @click.stop="handleCancelOrders"
-            >
-              {{ $t('trade.cancelAll') }}
-            </span>
-          </div>
-
-          <div
-            class="col-span-4 md:col-span-3 lg:col-span-2 sm:text-right mt-0 hidden sm:block"
-          >
-            <VButton
-              v-if="orders.length > 0"
-              red-outline
-              md
-              data-cy="activity-cancel-all-button"
-              @click.stop="handleCancelOrders"
-            >
+            <span class="whitespace-nowrap">
               {{ $t('trade.cancelAllOrders') }}
-            </VButton>
-          </div>
+            </span>
+          </VButton>
         </template>
       </Toolbar>
 

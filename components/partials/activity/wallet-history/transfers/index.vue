@@ -3,12 +3,18 @@
     <div class="w-full h-full flex flex-col">
       <Toolbar>
         <template #filters>
-          <SearchAsset :value="selectedToken" @select="handleSearch" />
+          <div class="grid grid-cols-12 items-center gap-4 w-full">
+            <SearchAsset
+              class="col-span-12 sm:col-span-3"
+              :value="selectedToken"
+              @select="handleSearch"
+            />
 
-          <ClearFiltersButton
-            v-if="showClearFiltersButton"
-            @clear="handleClearFilters"
-          />
+            <ClearFiltersButton
+              v-if="showClearFiltersButton"
+              @clear="handleClearFilters"
+            />
+          </div>
         </template>
       </Toolbar>
 

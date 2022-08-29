@@ -3,42 +3,43 @@
     <div class="w-full h-full flex flex-col">
       <Toolbar>
         <template #filters>
-          <SearchAsset
-            :markets="markets"
-            :value="selectedToken"
-            @select="handleSearch"
-          />
+          <div class="grid grid-cols-12 items-center gap-4 w-full">
+            <SearchAsset
+              class="col-span-6 sm:col-span-3"
+              :markets="markets"
+              :value="selectedToken"
+              @select="handleSearch"
+            />
 
-          <FilterSelector
-            class="min-w-3xs"
-            :type="TradeSelectorType.PositionSide"
-            :value="side"
-            data-cy="universal-table-filter-by-side-drop-down"
-            @click="handleSideClick"
-          />
+            <FilterSelector
+              class="col-span-6 sm:col-span-3"
+              :type="TradeSelectorType.PositionSide"
+              :value="side"
+              data-cy="universal-table-filter-by-side-drop-down"
+              @click="handleSideClick"
+            />
 
-          <ClearFiltersButton
-            v-if="showClearFiltersButton"
-            @clear="handleClearFilters"
-          />
+            <ClearFiltersButton
+              v-if="showClearFiltersButton"
+              @clear="handleClearFilters"
+            />
+          </div>
         </template>
 
         <template #actions>
-          <div
-            class="col-span-4 md:col-span-3 lg:col-span-2 sm:text-right mt-0 hidden sm:block"
+          <VButton
+            v-if="positions.length > 0 && walletIsNotKeplr"
+            red-outline
+            md
+            :status="status"
+            data-cy="activity-cancel-all-button"
+            class="rounded"
+            @click.stop="handleClosePositions"
           >
-            <VButton
-              v-if="positions.length > 0 && walletIsNotKeplr"
-              red-outline
-              md
-              :status="status"
-              data-cy="activity-cancel-all-button"
-              class="rounded"
-              @click.stop="handleClosePositions"
-            >
+            <span class="whitespace-nowrap">
               {{ $t('trade.closeAllPositions') }}
-            </VButton>
-          </div>
+            </span>
+          </VButton>
         </template>
       </Toolbar>
 
