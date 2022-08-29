@@ -141,6 +141,7 @@ import {
   getTokenLogoWithVendorPathPrefix
 } from '@injectivelabs/sdk-ui-ts'
 import { format } from 'date-fns'
+import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -228,7 +229,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(order.quantity)
+      return new BigNumberInBase(cosmosSdkDecToBigNumber(order.quantity))
     },
 
     quantityToFormat(): string {
