@@ -101,12 +101,6 @@ export default Vue.extend({
     }
   },
 
-  watch: {
-    subAccount() {
-      this.$accessor.spot.fetchSubaccountTrades()
-    }
-  },
-
   methods: {
     handleShowTradeDetails(trade: UiSpotTrade) {
       this.tradeDetails = trade
