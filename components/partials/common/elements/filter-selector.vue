@@ -49,7 +49,7 @@ export default Vue.extend({
     },
 
     value: {
-      type: [String, () => Object as PropType<OrderTypeFilter>],
+      type: [String, Object],
       default: undefined
     }
   },
