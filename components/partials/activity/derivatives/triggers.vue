@@ -85,7 +85,7 @@ import Toolbar from '~/components/partials/activity/common/toolbar.vue'
 import Trigger from '~/components/partials/common/derivatives/trigger.vue'
 import TriggersTableHeader from '~/components/partials/common/derivatives/triggers-table-header.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
-import { TradeSelectorType } from '~/types'
+import { OrderTypeFilter, TradeSelectorType } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -101,7 +101,7 @@ export default Vue.extend({
   data() {
     return {
       TradeSelectorType,
-      type: undefined as string | undefined,
+      type: undefined as OrderTypeFilter | undefined,
       side: undefined as string | undefined,
       status: new Status(StatusType.Loading),
       page: 1,
@@ -144,7 +144,12 @@ export default Vue.extend({
 
   methods: {
     fetchTriggers(): Promise<void> {
-      const orderTypes = [] as DerivativeOrderSide[]
+      const orderTypes = (
+        this.type && this.type.orderType
+          ? this.orderTypeToOrderTypes(this.type.orderType)
+          : []
+      ) as DerivativeOrderSide[]
+
       const direction = this.side as TradeDirection
       const marketId = this.markets.find((m) => {
         return (
@@ -172,13 +177,21 @@ export default Vue.extend({
         })
     },
 
+    orderTypeToOrderTypes(orderType: string) {
+      if (orderType === 'take_profit') {
+        return ['take_buy', 'take_sell']
+      }
+
+      return ['stop_buy', 'stop_sell']
+    },
+
     handleSideClick(side: string | undefined) {
       this.side = side
 
       this.fetchTriggers()
     },
 
-    handleTypeClick(type: string | undefined) {
+    handleTypeClick(type: OrderTypeFilter | undefined) {
       this.type = type
 
       this.fetchTriggers()
@@ -205,6 +218,7 @@ export default Vue.extend({
       this.selectedToken = undefined
       this.side = undefined
       this.type = undefined
+      this.page = 1
 
       this.fetchTriggers()
     }

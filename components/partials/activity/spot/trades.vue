@@ -272,6 +272,7 @@ export default Vue.extend({
       this.selectedToken = undefined
       this.side = undefined
       this.type = undefined
+      this.page = 1
 
       this.fetchTrades()
     }

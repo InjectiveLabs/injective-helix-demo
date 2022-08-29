@@ -75,7 +75,7 @@
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Token } from '@injectivelabs/token-metadata'
-import { UiSpotMarketWithToken, UiSpotOrderHistory } from '@injectivelabs/sdk-ui-ts'
+import { SpotOrderSide, UiSpotMarketWithToken, UiSpotOrderHistory } from '@injectivelabs/sdk-ui-ts'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import Pagination from '~/components/partials/common/pagination.vue'
 import SearchAsset from '~/components/partials/activity/common/search-asset.vue'
@@ -84,7 +84,8 @@ import Toolbar from '~/components/partials/activity/common/toolbar.vue'
 import Trigger from '~/components/partials/common/spot/trigger.vue'
 import TriggersTableHeader from '~/components/partials/common/spot/triggers-table-header.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
-import { TradeSelectorType } from '~/types'
+import { OrderTypeFilter, TradeSelectorType } from '~/types'
+import { TradeDirection } from '~/../injective-ts/packages/ts-types/dist'
 
 export default Vue.extend({
   components: {
@@ -100,7 +101,7 @@ export default Vue.extend({
   data() {
     return {
       TradeSelectorType,
-      type: undefined as string | undefined,
+      type: undefined as OrderTypeFilter | undefined,
       side: undefined as string | undefined,
       status: new Status(StatusType.Loading),
       page: 1,
@@ -143,8 +144,13 @@ export default Vue.extend({
 
   methods: {
     fetchTriggers(): Promise<void> {
-      const orderTypes = undefined
-      const direction = undefined
+      const orderTypes = (
+        this.type && this.type.orderType
+          ? this.orderTypeToOrderTypes(this.type.orderType)
+          : []
+      ) as SpotOrderSide[]
+
+      const direction = this.side as TradeDirection
       const marketId = this.markets.find((m) => {
         return (
           m.baseToken.symbol === this.selectedToken?.symbol ||
@@ -171,13 +177,21 @@ export default Vue.extend({
         })
     },
 
+    orderTypeToOrderTypes(orderType: string) {
+      if (orderType === 'take_profit') {
+        return ['take_buy', 'take_sell']
+      }
+
+      return ['stop_buy', 'stop_sell']
+    },
+
     handleSideClick(side: string | undefined) {
       this.side = side
 
       this.fetchTriggers()
     },
 
-    handleTypeClick(type: string | undefined) {
+    handleTypeClick(type: OrderTypeFilter | undefined) {
       this.type = type
 
       this.fetchTriggers()
@@ -204,6 +218,7 @@ export default Vue.extend({
       this.selectedToken = undefined
       this.side = undefined
       this.type = undefined
+      this.page = 1
 
       this.fetchTriggers()
     }

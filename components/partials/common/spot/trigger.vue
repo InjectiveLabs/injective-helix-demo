@@ -229,19 +229,6 @@ export default Vue.extend({
       )
     },
 
-    margin(): BigNumberInBase {
-      return ZERO_IN_BASE
-      // const { market, trigger } = this
-
-      // if (!market) {
-      //   return ZERO_IN_BASE
-      // }
-
-      // return new BigNumberInWei(trigger.margin).toBase(
-      //   market.quoteToken.decimals
-      // )
-    },
-
     quantity(): BigNumberInBase {
       const { market, trigger } = this
 

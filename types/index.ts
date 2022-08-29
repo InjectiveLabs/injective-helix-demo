@@ -88,6 +88,11 @@ export interface ActivityFetchOptions {
   filters?: FilterOptions
 }
 
+export interface OrderTypeFilter {
+  executionType?: string
+  orderType?: string
+}
+
 export * from './enums'
 export * from './env'
 export * from './errors'

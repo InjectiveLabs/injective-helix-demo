@@ -220,6 +220,7 @@ export default Vue.extend({
 
     handleClearFilters() {
       this.selectedToken = undefined
+      this.page = 1
 
       this.fetchFundingPayments()
     }

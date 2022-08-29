@@ -75,7 +75,12 @@
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Token } from '@injectivelabs/token-metadata'
-import { UiDerivativeMarketWithToken, UiDerivativeOrderHistory } from '@injectivelabs/sdk-ui-ts'
+import {
+  DerivativeOrderSide,
+  UiDerivativeMarketWithToken,
+  UiDerivativeOrderHistory
+} from '@injectivelabs/sdk-ui-ts'
+import { TradeDirection } from '@injectivelabs/ts-types'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import Pagination from '~/components/partials/common/pagination.vue'
 import SearchAsset from '~/components/partials/activity/common/search-asset.vue'
@@ -84,7 +89,7 @@ import Toolbar from '~/components/partials/activity/common/toolbar.vue'
 import OrderHistory from '~/components/partials/common/derivatives/order-history.vue'
 import OrderHistoryTableHeader from '~/components/partials/common/derivatives/order-history-table-header.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
-import { TradeSelectorType } from '~/types'
+import { OrderTypeFilter, TradeSelectorType } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -100,7 +105,7 @@ export default Vue.extend({
   data() {
     return {
       TradeSelectorType,
-      type: undefined as string | undefined,
+      type: undefined as OrderTypeFilter | undefined,
       side: undefined as string | undefined,
       status: new Status(StatusType.Loading),
       page: 1,
@@ -143,8 +148,13 @@ export default Vue.extend({
 
   methods: {
     fetchOrderHistory(): Promise<void> {
-      const orderType = undefined
-      const direction = undefined
+      const orderTypes = (
+        this.type && this.type.orderType
+          ? this.orderTypeToOrderTypes(this.type.orderType)
+          : []
+      ) as DerivativeOrderSide[]
+
+      const direction = this.side as TradeDirection
       const isConditional = undefined
       const marketId = this.markets.find((m) => {
         return (
@@ -155,22 +165,31 @@ export default Vue.extend({
 
       this.status.setLoading()
 
-      return this.$accessor.derivatives.fetchSubaccountOrderHistory({
-        pagination: {
-          skip: (this.page - 1) * this.limit,
-          limit: this.limit
-        },
-        filters: {
-          marketId,
-          orderType,
-          direction,
-          isConditional
-        }
-      })
+      return this.$accessor.derivatives
+        .fetchSubaccountOrderHistory({
+          pagination: {
+            skip: (this.page - 1) * this.limit,
+            limit: this.limit
+          },
+          filters: {
+            marketId,
+            orderTypes,
+            direction,
+            isConditional
+          }
+        })
         .catch(this.$onError)
         .finally(() => {
           this.status.setIdle()
         })
+    },
+
+    orderTypeToOrderTypes(orderType: string) {
+      if (orderType === 'take_profit') {
+        return ['take_buy', 'take_sell']
+      }
+
+      return ['stop_buy', 'stop_sell']
     },
 
     handleSideClick(side: string | undefined) {
@@ -179,7 +198,7 @@ export default Vue.extend({
       this.fetchOrderHistory()
     },
 
-    handleTypeClick(type: string | undefined) {
+    handleTypeClick(type: OrderTypeFilter | undefined) {
       this.type = type
 
       this.fetchOrderHistory()
@@ -206,6 +225,7 @@ export default Vue.extend({
       this.selectedToken = undefined
       this.side = undefined
       this.type = undefined
+      this.page = 1
 
       this.fetchOrderHistory()
     }

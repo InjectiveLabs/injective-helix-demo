@@ -326,6 +326,7 @@ export default Vue.extend({
     handleClearFilters() {
       this.selectedToken = undefined
       this.side = undefined
+      this.page = 1
 
       this.fetchPositions()
     }

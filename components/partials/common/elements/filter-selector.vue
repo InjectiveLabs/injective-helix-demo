@@ -34,6 +34,7 @@ import { TransferType } from '@injectivelabs/sdk-ts'
 import Dropdown from '~/components/elements/dropdown.vue'
 import SelectorItem from '~/components/layout/selectors/selector-item.vue'
 import { TradeSelectorType, TradeTypes } from '~/types/enums'
+import { OrderTypeFilter } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -56,7 +57,10 @@ export default Vue.extend({
   data() {
     return {
       placeholder: '',
-      list: [] as { text: string; value: string | Object | undefined }[]
+      list: [] as {
+        text: string;
+        value: string | OrderTypeFilter | undefined
+      }[]
     }
   },
 
@@ -205,7 +209,7 @@ export default Vue.extend({
   },
 
   methods: {
-    handleClick({ value }: { value: string }) {
+    handleClick({ value }: { value: string | OrderTypeFilter }) {
       this.$emit('click', value)
     }
   }
