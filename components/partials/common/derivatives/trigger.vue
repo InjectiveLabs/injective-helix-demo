@@ -290,8 +290,6 @@ export default Vue.extend({
     filledQuantity(): BigNumberInBase {
       const { trigger } = this
 
-      console.log(trigger)
-
       return new BigNumberInBase(trigger.filledQuantity)
     },
 
