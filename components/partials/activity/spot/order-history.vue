@@ -51,10 +51,6 @@
         />
       </TableWrapper>
 
-      <portal to="activity-tab-spot-orders-count">
-        <span v-if="status.isNotLoading()"> ({{ orders.length }}) </span>
-      </portal>
-
       <Pagination
         v-if="status.isIdle() && orders.length > 0"
         class="mt-4"

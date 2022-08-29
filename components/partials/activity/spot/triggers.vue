@@ -51,10 +51,6 @@
         />
       </TableWrapper>
 
-      <!-- <portal to="activity-tab-spot-triggers-count">
-        <span v-if="status.isNotLoading()"> ({{ triggers.length }}) </span>
-      </portal> -->
-
       <Pagination
         v-if="status.isIdle() && triggers.length > 0"
         class="mt-4"

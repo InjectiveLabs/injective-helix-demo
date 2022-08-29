@@ -8,10 +8,9 @@
       >
         <div class="flex items-center gap-1">
           <span>{{ $t('activity.openOrders') }}</span>
-          <portal-target
-            name="activity-tab-spot-count"
-            data-cy="activity-spot-orders-link-count"
-          />
+          <span data-cy="activity-spot-orders-link-count">
+            ({{ orders.length }})
+          </span>
         </div>
       </TabSelectorItem>
 
@@ -24,10 +23,9 @@
       >
         <div class="flex items-center gap-1">
           <span>{{ $t('activity.triggers') }}</span>
-          <!-- <portal-target
-            name="activity-tab-spot-triggers-count"
-            data-cy="activity-spot-orders-link-count"
-          /> -->
+          <span data-cy="activity-spot-orders-link-count">
+            ({{ triggers.length }})
+          </span>
         </div>
       </TabSelectorItem>
 
@@ -55,6 +53,13 @@
         </div>
       </TabSelectorItem>
     </div>
+
+    <portal to="activity-card-spot-count">
+      <span class="font-semibold text-sm md:text-lg">
+        {{ orders.length }}
+      </span>
+    </portal>
+
     <VCard md class="h-full mt-6">
       <Orders v-show="component === components.orders" />
       <OrderHistory v-if="component === components.orderHistory" />
@@ -66,6 +71,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { UiSpotLimitOrder, UiSpotOrderHistory } from '@injectivelabs/sdk-ui-ts'
 import Orders from '~/components/partials/activity/spot/orders.vue'
 import OrderHistory from '~/components/partials/activity/spot/order-history.vue'
 import Triggers from '~/components/partials/activity/spot/triggers.vue'
@@ -92,6 +98,16 @@ export default Vue.extend({
     return {
       components,
       component: components.orders
+    }
+  },
+
+  computed: {
+    orders(): UiSpotLimitOrder[] {
+      return this.$accessor.spot.subaccountOrders
+    },
+
+    triggers(): UiSpotOrderHistory[] {
+      return this.$accessor.spot.subaccountConditionalOrders
     }
   },
 

@@ -89,16 +89,6 @@
         />
       </TableWrapper>
 
-      <portal to="activity-card-derivative-order-count">
-        <span class="font-semibold text-sm md:text-lg">
-          {{ orders.length }}
-        </span>
-      </portal>
-
-      <portal to="activity-tab-derivative-orders-count">
-        <span v-if="status.isNotLoading()"> ({{ orders.length }}) </span>
-      </portal>
-
       <Pagination
         v-if="status.isIdle() && orders.length > 0"
         class="mt-4"
