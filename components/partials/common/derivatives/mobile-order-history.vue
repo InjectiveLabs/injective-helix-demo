@@ -26,19 +26,6 @@
             {{ leverage.toFormat(2) }}x
           </span>
         </div>
-
-        <VButton
-          v-if="orderFillable"
-          class="cursor-pointer rounded"
-          :status="status"
-          @click.stop="onCancelOrder"
-        >
-          <div
-            class="flex items-center justify-center rounded-full bg-opacity-10 w-5 h-5 hover:bg-opacity-10 bg-red-500 text-red-500"
-          >
-            <IconBin class="h-3 w-3" />
-          </div>
-        </VButton>
       </div>
       <div
         v-if="isReduceOnly"
@@ -242,12 +229,6 @@ export default Vue.extend({
       return unfilledQuantity.isZero()
     },
 
-    orderFillable(): boolean {
-      const { unfilledQuantity, quantity } = this
-
-      return unfilledQuantity.lte(quantity)
-    },
-
     total(): BigNumberInBase {
       const { price, quantity } = this
 
@@ -289,20 +270,6 @@ export default Vue.extend({
   },
 
   methods: {
-    onCancelOrder(): void {
-      this.status.setLoading()
-
-      this.$accessor.derivatives
-        .cancelOrder(this.order)
-        .then(() => {
-          this.$toast.success(this.$t('trade.order_success_canceling'))
-        })
-        .catch(this.$onRejected)
-        .finally(() => {
-          this.status.setIdle()
-        })
-    },
-
     handleClickOnMarket() {
       const { market } = this
 

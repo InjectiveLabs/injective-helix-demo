@@ -37,7 +37,6 @@
       <th class="text-right">
         {{ $t('trade.status') }}
       </th>
-      <th></th>
     </tr>
   </thead>
 </template>

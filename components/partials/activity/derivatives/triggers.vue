@@ -105,7 +105,7 @@ import TriggersTableHeader from '~/components/partials/common/derivatives/trigge
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
 import { OrderTypeFilter, TradeSelectorType } from '~/types'
 import TableBody from '~/components/elements/table-body.vue'
-import MobileTrigger from '~/components/partials/common/derivatives/mobile-order-history.vue'
+import MobileTrigger from '~/components/partials/common/derivatives/mobile-trigger.vue'
 
 export default Vue.extend({
   components: {
