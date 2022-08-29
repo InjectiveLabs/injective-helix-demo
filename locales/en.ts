@@ -45,7 +45,8 @@ export default {
   maintenance_subheader:
     'While this relayer is down for maintenance,<strong class="text-primary-500">Injective</strong> is never down! You can find other relayers in the Injective Ecosystem on the button below!',
   maintenance_button: 'View status',
-  maintenance_body: 'We are constantly improving Helix. Please come back later. Follow the latest updates on our public status page.',
+  maintenance_body:
+    'We are constantly improving Helix. Please come back later. Follow the latest updates on our public status page.',
   token_allowance_successful: 'Token allowance set successful',
   disclaimer_note:
     'By connecting a wallet, you agree to the Injective Labs <a href="https://injectivelabs.org/terms-and-conditions" class="text-primary-500" target="_blank" />Terms and Conditions</a>, have read the <a href="https://injectivelabs.org/privacy-policy" class="text-primary-500" target="_blank" />Privacy Policy</a> and acknowledge that you have read and understand the Injective Protocol <a href="https://injectiveprotocol.com/disclaimer" class="text-primary-500" target="_blank">disclaimer</a>.',
@@ -225,13 +226,13 @@ export default {
     noTierLevel: 'No VIP Tier',
     tradeAndEarn: 'Trade and Earn',
     tradeAndEarnDescription:
-      'Each trade on Injective can earn you some rewards.',
+      'Each trade on Injective can earn you some rewards',
     affiliateProgram: 'Affiliate Program',
     affiliateProgramDescription:
-      'Earn crypto commission by inviting friends to trade on Helix.',
-    dmmProgram: 'Dmm program',
+      'Earn crypto commission by inviting friends to trade on Helix',
+    dmmProgram: 'DMM Program',
     dmmProgramDescription:
-      'Flagship liquidity mining program designed for Dedicated Market Makers.',
+      'Provide liquidity and mine INJ as our dedicated market makers',
     spot: 'Spot',
     spotDescription: 'Trade crypto with with on-chain orderbook',
     perpetual: 'Perpetual',
