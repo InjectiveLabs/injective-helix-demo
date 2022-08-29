@@ -40,10 +40,6 @@
   @apply overflow-y-auto;
 
   li {
-    &:nth-child(odd) {
-      background-color: theme('colors.gray.950');
-    }
-
     &:hover {
       background-color: theme('colors.gray.800') !important;
     }

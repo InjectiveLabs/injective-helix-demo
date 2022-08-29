@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-800 rounded-xl py-8">
+  <div class="bg-helixGray-950 rounded-xl py-8">
     <div class="px-8 w-full">
       <div class="flex items-center justify-between mb-8">
         <span class="font-bold text-lg">

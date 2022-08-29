@@ -14,9 +14,9 @@
       />
     </div>
     <div class="flex flex-wrap items-center justify-between mt-2">
-      <div class="flex items-center flex-wrap justify-center sm:justify-start">
+      <div class="flex items-center flex-wrap justify-start mb-4 xl:mb-0">
         <h2
-          class="text-white text-2xl sm:text-3xl xl:text-4xl mr-2 font-semibold"
+          class="text-white text-2xl sm:text-3xl xl:text-4xl mr-2 font-semibold font-mono"
           data-cy="account-summary-usd-text-content-parent"
         >
           <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }} </span>
@@ -27,7 +27,7 @@
         </h2>
         <span
           v-if="!hideBalance"
-          class="text-2xl text-gray-400"
+          class="text-2xl text-gray-400 font-mono"
           data-cy="account-summary-btc-text-content"
         >
           <span v-if="status.isNotLoading()">

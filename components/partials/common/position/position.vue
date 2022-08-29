@@ -78,7 +78,7 @@
       </span>
       <div
         v-else-if="!pnl.isNaN()"
-        class="flex items-center justify-end text-xs"
+        class="flex items-center justify-end font-medium text-xs font-mono"
         :class="pnlClass"
       >
         <div class="flex items-end flex-col">
