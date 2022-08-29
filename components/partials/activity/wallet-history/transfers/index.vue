@@ -32,7 +32,7 @@
       </TableWrapper>
 
       <Pagination
-        v-if="status.isIdle()"
+        v-if="status.isIdle() && transactions.length > 0"
         class="mt-4"
         v-bind="{
           limit,
@@ -159,6 +159,7 @@ export default Vue.extend({
 
     handleClearFilters() {
       this.selectedToken = undefined
+      this.page = 1
 
       this.fetchTransfers()
     }

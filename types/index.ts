@@ -76,13 +76,21 @@ export interface FilterOptions {
   marketIds?: string[]
   direction?: TradeDirection
   orderSide?: SpotOrderSide | DerivativeOrderSide
-  types?: TradeExecutionType[],
+  orderType?: SpotOrderSide | DerivativeOrderSide
+  orderTypes?: SpotOrderSide[] | DerivativeOrderSide[]
+  types?: TradeExecutionType[]
   denom?: string
+  isConditional?: boolean
 }
 
 export interface ActivityFetchOptions {
   pagination?: PaginationOption
   filters?: FilterOptions
+}
+
+export interface OrderTypeFilter {
+  executionType?: string
+  orderType?: string
 }
 
 export * from './enums'
