@@ -1,5 +1,6 @@
 import {
   UiDerivativeMarketWithToken,
+  UiMarketHistory,
   UiSpotMarketWithToken,
   MarketType
 } from '@injectivelabs/sdk-ui-ts'
@@ -189,4 +190,43 @@ export const marketIsPartOfSearch = (
     market.baseToken.symbol.toLowerCase().startsWith(query) ||
     market.ticker.toLowerCase().startsWith(query)
   )
+}
+
+export const getFormattedMarketsHistory = (marketsHistory: UiMarketHistory) => {
+  const holcDictionary = {} as { [key: string]: number[] }
+
+  marketsHistory.openPrice.forEach((holdPrice: number, index: number) => {
+    if (!holcDictionary[index]) {
+      holcDictionary[index] = []
+    }
+
+    holcDictionary[index].push(holdPrice)
+  })
+
+  marketsHistory.closePrice.forEach((closePrice: number, index: number) => {
+    holcDictionary[index].push(closePrice)
+  })
+
+  marketsHistory.lowPrice.forEach((lowPrice: number, index: number) => {
+    holcDictionary[index].push(lowPrice)
+  })
+
+  marketsHistory.highPrice.forEach((highPrice: number, index: number) => {
+    holcDictionary[index].push(highPrice)
+  })
+
+  const time = marketsHistory.time.map((time: number) => {
+    return time - marketsHistory.time[0]
+  })
+
+  const formattedMarketsHistory = Object.keys(holcDictionary).map(
+    (key, index) => {
+      const holcValue =
+        holcDictionary[key].reduce((a, b) => a + b, 0) /
+        holcDictionary[key].length
+      return [time[index], holcValue]
+    }
+  )
+
+  return formattedMarketsHistory
 }

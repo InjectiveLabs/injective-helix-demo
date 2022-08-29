@@ -33,7 +33,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { MarketFilterType } from '~/types'
-import Markets from '~/components/partials/home/markets/markets.vue'
+import Markets from '~/components/partials/home/common/markets.vue'
 
 export default Vue.extend({
   components: {

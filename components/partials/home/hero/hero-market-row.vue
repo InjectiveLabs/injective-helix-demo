@@ -1,9 +1,9 @@
 <template>
   <nuxt-link :to="marketRoute">
     <div
-      class="grid grid-cols-12 items-center py-[10px] gap-12 box-content min-w-[912px]"
+      class="grid grid-cols-12 items-center border-helixGray-200 py-[10px] gap-12 box-content"
     >
-      <div class="col-span-2 flex items-center justify-start pl-4">
+      <div class="col-span-4 flex items-center justify-start pl-4">
         <div class="flex items-center justify-start">
           <img
             :src="baseTokenLogo"
@@ -22,7 +22,7 @@
           </div>
         </div>
       </div>
-      <div class="col-span-2 flex">
+      <div class="col-span-3 flex">
         <span class="w-full text-gray-900 font-medium text-sm text-right">
           <div class="flex align-center justify-end">
             <IconArrow
@@ -50,14 +50,14 @@
         <span
           v-if="!change.isNaN()"
           :class="change.gte(0) ? 'text-green-500' : 'text-red-500'"
-          class="w-full text-right"
         >
-          {{ changeToFormat }}%
+          {{ `${change.gte(0) ? '+' : ''}${changeToFormat}%` }}
         </span>
         <span v-else class="text-gray-400">&mdash;</span>
       </div>
-      <div class="col-span-3 flex h-7 w-[70%] justify-self-center">
+      <div class="col-span-3 flex pr-4 h-7">
         <LineGraph
+          v-if="chartData.length > 0"
           :data="chartData"
           :color="'#f3164d'"
           :bg-type="'transparent'"
@@ -65,21 +65,19 @@
           :smoothness="0.2"
         />
       </div>
-      <div class="col-span-3 align-center justify-self-center">
-        <VButton primary-outline-light md class="rounded">Trade</VButton>
-      </div>
     </div>
   </nuxt-link>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 // @ts-ignore
 import { LineGraph } from 'vue-plot'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
+  UiMarketHistory,
   ZERO_IN_BASE,
   UiSpotMarketSummary,
   UiSpotMarketWithToken,
@@ -88,7 +86,7 @@ import {
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import { Change, MarketRoute } from '~/types'
 import { betaMarketSlugs } from '~/app/data/market'
-import { getMarketRoute } from '~/app/utils/market'
+import { getMarketRoute, getFormattedMarketsHistory } from '~/app/utils/market'
 
 export default Vue.extend({
   components: {
@@ -112,32 +110,34 @@ export default Vue.extend({
   data() {
     return {
       Change,
-      chartData: [
-        [0, 670.083],
-        [63, 648.297],
-        [126, 609.14],
-        [189, 618.952],
-        [252, 544.733],
-        [315, 521.324],
-        [378, 521.982],
-        [441, 465.814],
-        [504, 493.411],
-        [567, 371.442],
-        [630, 466.558],
-        [693, 302.238],
-        [756, 345.249],
-        [819, 329.911],
-        [882, 259.528],
-        [945, 145.526],
-        [1008, 110.93],
-        [1071, 179.909],
-        [1134, 186.363],
-        [1197, 50]
-      ]
+      status: new Status(StatusType.Loading)
     }
   },
 
   computed: {
+    marketsHistory(): UiMarketHistory[] {
+      return this.$accessor.exchange.marketsHistory
+    },
+
+    chartData(): number[][] {
+      const { market, marketsHistory } = this
+      if (marketsHistory.length === 0 || !market) {
+        return []
+      }
+
+      const matchingMarket = marketsHistory.find(
+        (marketHistory: UiMarketHistory) => {
+          return marketHistory.marketId === market.marketId
+        }
+      )
+
+      if (!matchingMarket) {
+        return []
+      }
+
+      return getFormattedMarketsHistory(matchingMarket)
+    },
+
     lastTradedPrice(): BigNumberInBase {
       const { market, summary } = this
 

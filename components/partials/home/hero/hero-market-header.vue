@@ -1,7 +1,7 @@
 <template>
-  <div class="grid grid-cols-12 gap-12 px-4">
+  <div class="grid grid-cols-12 items-center gap-12 box-content">
     <span
-      class="col-span-4 uppercase text-helixGray-500 whitespace-nowrap text-xs"
+      class="pl-4 col-span-4 uppercase text-helixGray-500 whitespace-nowrap text-xs"
     >
       {{ $t('home.market') }}
     </span>
@@ -16,10 +16,9 @@
       {{ $t('home.change24h') }}
     </span>
     <span
-      class="col-span-2 uppercase text-helixGray-500 whitespace-nowrap text-xs"
+      class="col-span-3 uppercase text-helixGray-500 whitespace-nowrap text-xs"
     >
       {{ $t('home.sevenDaysPrice') }}
     </span>
-    <div class="col-span-1" />
   </div>
 </template>

@@ -6,7 +6,7 @@
       >
         <HeroCTA />
         <div
-          class="col-span-8 3xl:col-span-7 4xl:col-span-6 hidden lg:block lg:mt-6"
+          class="col-span-7 3xl:col-span-7 4xl:col-span-6 hidden lg:block lg:mt-6"
         >
           <Markets is-hero />
         </div>
@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import Markets from '~/components/partials/home/markets/markets.vue'
+import Markets from '~/components/partials/home/common/markets.vue'
 import HeroCTA from '~/components/partials/home/hero/hero-cta.vue'
 import InjectiveLogo from '~/components/icons/injective-logo.vue'
 

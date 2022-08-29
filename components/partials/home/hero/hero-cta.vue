@@ -1,6 +1,6 @@
 <template>
   <div
-    class="col-span-12 lg:col-span-4 3xl:col-span-5 4xl:col-span-6 flex flex-col sm:block"
+    class="col-span-12 lg:col-span-5 3xl:col-span-5 4xl:col-span-6 flex flex-col sm:block"
   >
     <div class="flex items-center justify-start mb-8">
       <Logo class="w-auto h-6" alt="Helix" />

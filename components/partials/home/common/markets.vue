@@ -1,11 +1,11 @@
 <template>
   <HocLoading :status="status" :show-loading="markets.length === 0">
-    <div class="bg-white rounded-lg pt-6 w-full self-center px-4">
+    <div class="bg-white rounded-lg pt-6 w-full self-center">
       <div v-if="isHero">
         <HeroMarketHeader v-if="markets.length !== 0" />
         <HeroMarketRow
           v-for="({ market, summary }, index) in marketsList"
-          :key="`market-${index}`"
+          :key="`market-${market.marketId}`"
           :market="market"
           :summary="summary"
           :class="{
@@ -18,34 +18,12 @@
         <MarketHeader />
         <MarketRow
           v-for="({ market, summary }, index) in marketsList"
-          :key="`market-${index}`"
+          :key="`market-${market.marketId}`"
           :market="market"
           :summary="summary"
           :class="{
             'block border-b border-helixGray-200':
               index !== marketsList.length - 1
-          }"
-        />
-        <MarketRow
-          v-for="({ market, summary }, index) in filteredUpcomingMarkets"
-          :key="`market-new-${index}`"
-          class="col-span-1"
-          :market="market"
-          :summary="summary"
-          :class="{
-            'block border-b border-helixGray-200':
-              index !== filteredUpcomingMarkets.length - 1
-          }"
-        />
-        <MarketRow
-          v-for="({ market, summary }, index) in filteredDeprecatedMarkets"
-          :key="`market-deprecated-${index}`"
-          class="col-span-1"
-          :market="market"
-          :summary="summary"
-          :class="{
-            'block border-b border-helixGray-200':
-              index !== filteredDeprecatedMarkets.length - 1
           }"
         />
       </div>
@@ -59,13 +37,14 @@ import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
+  UiMarketHistory,
   UiSpotMarketSummary,
   UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import MarketHeader from '~/components/partials/home/markets/market-header.vue'
-import HeroMarketHeader from '~/components/partials/home/markets/hero-market-header.vue'
-import HeroMarketRow from '~/components/partials/home/markets/hero-market-row.vue'
-import MarketRow from '~/components/partials/home/markets/market.vue'
+import HeroMarketHeader from '~/components/partials/home//hero/hero-market-header.vue'
+import HeroMarketRow from '~/components/partials/home//hero/hero-market-row.vue'
+import MarketRow from '~/components/partials/home/markets/market-row.vue'
 import {
   deprecatedMarkets,
   newMarketsSlug,
@@ -134,6 +113,10 @@ export default Vue.extend({
       return this.$accessor.exchange.upcomingMarketsSummaries
     },
 
+    marketsHistory(): UiMarketHistory[] {
+      return this.$accessor.exchange.marketsHistory
+    },
+
     markets(): Array<UiSpotMarketWithToken | UiDerivativeMarketWithToken> {
       const { spotMarkets, derivativeMarkets, upcomingMarkets } = this
 
@@ -196,14 +179,6 @@ export default Vue.extend({
       )
     },
 
-    filteredDeprecatedMarkets(): UiMarketAndSummary[] {
-      const { mappedMarkets, deprecatedMarketsSlugs } = this
-
-      return mappedMarkets.filter((m) =>
-        deprecatedMarketsSlugs.includes(m.market.slug)
-      )
-    },
-
     marketsSortedByVolume(): UiMarketAndSummary[] {
       const { filteredMarkets } = this
 
@@ -234,7 +209,6 @@ export default Vue.extend({
         filteredMarkets,
         marketsSortedByVolume,
         newMarketsList,
-        filteredUpcomingMarkets,
         filterType
       } = this
 
@@ -244,10 +218,6 @@ export default Vue.extend({
 
       if (filterType === MarketFilterType.Volume) {
         return marketsSortedByVolume
-      }
-
-      if (filterType === MarketFilterType.Upcoming) {
-        return filteredUpcomingMarkets
       }
 
       return filteredMarkets
