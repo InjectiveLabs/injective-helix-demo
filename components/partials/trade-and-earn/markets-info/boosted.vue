@@ -9,17 +9,18 @@
           v-for="derivative in boostedMarkets.derivatives"
           :key="`derivative-${derivative.ticker}`"
           :title="derivative.ticker"
-          class="mt-2"
+          class="mt-1 text-gray-550"
+          sm
         >
-          <p class="text-gray-300 font-mono">
+          <p class="text-white font-mono">
             <span>
               {{ derivative.makerPointsMultiplier }}x
-              <span class="text-2xs text-gray-400 font-sans">
+              <span class="text-sm text-gray-350 font-sans">
                 {{ $t('maker_points_mul') }}
               </span>
               /
               {{ derivative.takerPointsMultiplier }}x
-              <span class="text-2xs text-gray-400 font-sans">
+              <span class="text-sm text-gray-350 font-sans">
                 {{ $t('taker_points_mul') }}
               </span>
             </span>
@@ -35,17 +36,18 @@
           v-for="spot in boostedMarkets.spot"
           :key="`spot-${spot.ticker}`"
           :title="spot.ticker"
-          class="mt-2"
+          class="mt-1 text-gray-550"
+          sm
         >
-          <p class="text-gray-300 font-mono">
+          <p class="text-white font-mono">
             <span>
               {{ spot.makerPointsMultiplier }}x
-              <span class="text-2xs text-gray-400 font-sans">
+              <span class="text-sm text-gray-350 font-sans">
                 {{ $t('maker_points_mul') }}
               </span>
               /
               {{ spot.takerPointsMultiplier }}x
-              <span class="text-2xs text-gray-400 font-sans">
+              <span class="text-sm text-gray-350 font-sans">
                 {{ $t('taker_points_mul') }}
               </span>
             </span>
@@ -54,10 +56,10 @@
       </div>
     </div>
     <template slot="title">
-      <div class="flex items-center justify-center">
+      <div class="flex items-center justify-center text-gray-450 text-xs">
         {{ $t('trade.boosted_markets') }}
         <IconInfoTooltip
-          class="ml-2"
+          class="ml-2 text-gray-450"
           :tooltip="$t('trade.boosted_markets_tooltip')"
         />
       </div>
