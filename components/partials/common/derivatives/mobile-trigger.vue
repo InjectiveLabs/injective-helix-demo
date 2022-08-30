@@ -52,7 +52,12 @@
       {{ $t('trade.price') }}
     </span>
     <div class="text-right">
+      <span v-if="isMarketOrder" class="text-white text-xs">
+        {{ $t('trade.market') }}
+      </span>
+
       <VNumber
+        v-else
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
@@ -144,6 +149,12 @@ export default Vue.extend({
       const { markets, order } = this
 
       return markets.find((m) => m.marketId === order.marketId)
+    },
+
+    isMarketOrder(): boolean {
+      const { order } = this
+
+      return order.executionType === 'market'
     },
 
     isReduceOnly(): boolean {

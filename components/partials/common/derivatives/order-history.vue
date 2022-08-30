@@ -57,7 +57,12 @@
     </td>
 
     <td class="h-12 font-mono text-right">
+      <span v-if="isMarketOrder" class="text-white text-xs">
+        {{ $t('trade.market') }}
+      </span>
+
       <VNumber
+        v-else
         xs
         data-cy="derivative-order-price-table-data"
         :decimals="
@@ -177,6 +182,12 @@ export default Vue.extend({
 
     isBinaryOptionsPage(): boolean {
       return this.$route.name === 'binary-options-binaryOption'
+    },
+
+    isMarketOrder(): boolean {
+      const { order } = this
+
+      return order.executionType === 'market'
     },
 
     isReduceOnly(): boolean {
