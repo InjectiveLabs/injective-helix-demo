@@ -175,7 +175,17 @@ export default Vue.extend({
     },
 
     triggers(): UiDerivativeOrderHistory[] {
-      return this.$accessor.derivatives.subaccountConditionalOrders
+      const { currentMarketOnly, market } = this
+
+      const result = this.$accessor.derivatives.subaccountConditionalOrders
+
+      if (!currentMarketOnly || !market) {
+        return result
+      }
+
+      return result.filter(
+        (order: UiDerivativeOrderHistory) => order.marketId === market.marketId
+      )
     },
 
     orderHistory(): UiDerivativeOrderHistory[] {
