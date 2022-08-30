@@ -568,7 +568,7 @@ export const actions = actionTree(
       const { orderHistory } = await indexerSpotApi.fetchOrderHistory({
         marketId: filters?.marketId,
         subaccountId: subaccount.subaccountId,
-        orderTypes: filters?.orderTypes as SpotOrderSide[],
+        orderTypes: filters?.orderTypes as unknown as SpotOrderSide[],
         executionTypes: filters?.executionTypes as TradeExecutionType[],
         direction: filters?.direction,
         isConditional: filters?.isConditional,
@@ -608,7 +608,7 @@ export const actions = actionTree(
       const { orderHistory, pagination } = await indexerSpotApi.fetchOrderHistory({
         marketId: filters?.marketId,
         subaccountId: subaccount.subaccountId,
-        orderTypes: filters?.orderTypes as SpotOrderSide[],
+        orderTypes: filters?.orderTypes as unknown as SpotOrderSide[],
         executionTypes: filters?.executionTypes as TradeExecutionType[],
         direction: filters?.direction,
         isConditional: true,

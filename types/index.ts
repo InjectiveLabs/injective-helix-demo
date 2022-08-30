@@ -8,6 +8,7 @@ import {
 import { TradeExecutionType, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { PaginationOption, SpotOrderSide, DerivativeOrderSide } from '@injectivelabs/sdk-ts'
+import { ConditionalOrderSide } from '~/components/partials/activity/common/types'
 
 export interface DOMEvent<T extends EventTarget> extends Event {
   target: T
@@ -77,7 +78,7 @@ export interface FilterOptions {
   direction?: TradeDirection
   orderSide?: SpotOrderSide | DerivativeOrderSide
   orderType?: SpotOrderSide | DerivativeOrderSide
-  orderTypes?: SpotOrderSide[] | DerivativeOrderSide[]
+  orderTypes?: ConditionalOrderSide[]
   executionTypes?: TradeExecutionType[],
   types?: TradeExecutionType[]
   denom?: string

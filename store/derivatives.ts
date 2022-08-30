@@ -808,7 +808,7 @@ export const actions = actionTree(
         await indexerDerivativesApi.fetchOrderHistory({
           marketId: filters?.marketId,
           subaccountId: subaccount.subaccountId,
-          orderTypes: filters?.orderTypes as DerivativeOrderSide[],
+          orderTypes: filters?.orderTypes as unknown as DerivativeOrderSide[],
           executionTypes: filters?.executionTypes as TradeExecutionType[],
           direction: filters?.direction,
           isConditional: filters?.isConditional,
@@ -851,7 +851,7 @@ export const actions = actionTree(
         await indexerDerivativesApi.fetchOrderHistory({
           marketId: filters?.marketId,
           subaccountId: subaccount.subaccountId,
-          orderTypes: filters?.orderTypes as DerivativeOrderSide[],
+          orderTypes: filters?.orderTypes as unknown as DerivativeOrderSide[],
           executionTypes: filters?.executionTypes as TradeExecutionType[],
           direction: filters?.direction,
           isConditional: true,

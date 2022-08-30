@@ -3,16 +3,16 @@
     <div class="w-full h-full flex flex-col">
       <Toolbar>
         <template #filters>
-          <div class="grid grid-cols-12 items-center gap-4 w-full">
+          <div class="grid grid-cols-4 items-center gap-4 w-full">
             <SearchAsset
-              class="col-span-12 sm:col-span-3"
+              class="col-span-4 sm:col-span-1"
               :markets="markets"
               :value="selectedToken"
               @select="handleSearch"
             />
 
             <FilterSelector
-              class="col-span-6 sm:col-span-3"
+              class="col-span-2 sm:col-span-1"
               data-cy="universal-table-filter-by-type-drop-down"
               :type="TradeSelectorType.TypeAll"
               :value="type"
@@ -20,7 +20,7 @@
             />
 
             <FilterSelector
-              class="col-span-6 sm:col-span-3"
+              class="col-span-2 sm:col-span-1"
               data-cy="universal-table-filter-by-side-drop-down"
               :type="TradeSelectorType.Side"
               :value="side"
@@ -88,9 +88,10 @@
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Token } from '@injectivelabs/token-metadata'
-import { SpotOrderSide, UiSpotMarketWithToken, UiSpotOrderHistory } from '@injectivelabs/sdk-ui-ts'
+import { UiSpotMarketWithToken, UiSpotOrderHistory } from '@injectivelabs/sdk-ui-ts'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 import { orderTypeToOrderTypes } from '../common/utils'
+import { ConditionalOrderSide } from '../common/types'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import Pagination from '~/components/partials/common/pagination.vue'
 import SearchAsset from '~/components/partials/activity/common/search-asset.vue'
@@ -190,7 +191,7 @@ export default Vue.extend({
         },
         filters: {
           marketId,
-          orderTypes: orderTypes as SpotOrderSide[],
+          orderTypes: orderTypes as ConditionalOrderSide[],
           executionTypes: executionTypes as TradeExecutionType[],
           direction,
           isConditional
