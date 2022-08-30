@@ -369,20 +369,23 @@ export const mutations = {
     state: DerivativeStoreState,
     subaccountOrder: UiDerivativeOrderHistory
   ) {
-    const subaccountConditionalOrders = [...state.subaccountConditionalOrders].filter(
-      (order) => order.orderHash !== subaccountOrder.orderHash
-    )
+    const subaccountConditionalOrders = [
+      ...state.subaccountConditionalOrders
+    ].filter((order) => order.orderHash !== subaccountOrder.orderHash)
 
-    state.subaccountConditionalOrders = [subaccountOrder, ...subaccountConditionalOrders]
+    state.subaccountConditionalOrders = [
+      subaccountOrder,
+      ...subaccountConditionalOrders
+    ]
   },
 
   deleteSubaccountConditionalOrder(
     state: DerivativeStoreState,
     subaccountOrder: UiDerivativeOrderHistory
   ) {
-    const subaccountConditionalOrders = [...state.subaccountConditionalOrders].filter(
-      (order) => order.orderHash !== subaccountOrder.orderHash
-    )
+    const subaccountConditionalOrders = [
+      ...state.subaccountConditionalOrders
+    ].filter((order) => order.orderHash !== subaccountOrder.orderHash)
 
     state.subaccountConditionalOrders = subaccountConditionalOrders
   },
@@ -695,11 +698,11 @@ export const actions = actionTree(
           }
 
           const isConditional = [
-            'take_buy',
-            'take_sell',
-            'stop_buy',
-            'stop_sell'
-          ].includes(order.orderType)
+            DerivativeOrderSide.TakeBuy,
+            DerivativeOrderSide.TakeSell,
+            DerivativeOrderSide.StopBuy,
+            DerivativeOrderSide.StopSell
+          ].includes(order.orderType as DerivativeOrderSide)
 
           switch (order.state) {
             case DerivativeOrderState.Booked:

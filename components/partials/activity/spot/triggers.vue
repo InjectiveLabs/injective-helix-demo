@@ -205,14 +205,6 @@ export default Vue.extend({
         })
     },
 
-    orderTypeToOrderTypes(orderType: string) {
-      if (orderType === 'take_profit') {
-        return ['take_buy', 'take_sell']
-      }
-
-      return ['stop_buy', 'stop_sell']
-    },
-
     handleSideClick(side: string | undefined) {
       this.side = side
 

@@ -131,6 +131,7 @@ import {
   getTokenLogoWithVendorPathPrefix
 } from '@injectivelabs/sdk-ui-ts'
 import { format } from 'date-fns'
+import { TradeExecutionType } from '@injectivelabs/ts-types'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -341,19 +342,19 @@ export default Vue.extend({
       const { order } = this
 
       const executionType =
-        order.executionType === 'market'
+        order.executionType === TradeExecutionType.Market
           ? this.$t('trade.market')
           : this.$t('trade.limit')
 
       switch (order.orderType) {
-        case 'buy':
-        case 'sell':
+        case SpotOrderSide.Buy:
+        case SpotOrderSide.Sell:
           return executionType
-        case 'take_sell':
-        case 'take_buy':
+        case SpotOrderSide.TakeSell:
+        case SpotOrderSide.TakeBuy:
           return `${this.$t('trade.takeProfit')} ${executionType}`
-        case 'stop_sell':
-        case 'stop_buy':
+        case SpotOrderSide.StopSell:
+        case SpotOrderSide.StopBuy:
           return `${this.$t('trade.stopLoss')} ${executionType}`
         default:
           return ''

@@ -146,7 +146,7 @@
         </span>
 
         <VButton
-          v-if="orderFillable"
+          v-if="isCancelable"
           :status="status"
           data-cy="derivative-order-cancel-link"
           class="rounded w-6 h-6"
@@ -175,6 +175,8 @@ import {
   getTokenLogoWithVendorPathPrefix,
   UiDerivativeOrderHistory
 } from '@injectivelabs/sdk-ui-ts'
+import { TradeExecutionType } from '@injectivelabs/ts-types'
+import { DerivativeOrderState } from '@injectivelabs/sdk-ts'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -332,13 +334,15 @@ export default Vue.extend({
     },
 
     orderFillable(): boolean {
-      const { trigger, unfilledQuantity, quantity } = this
-
-      if (trigger.state === 'canceled' || trigger.state === 'filled') {
-        return false
-      }
+      const { unfilledQuantity, quantity } = this
 
       return unfilledQuantity.lte(quantity)
+    },
+
+    isCancelable(): boolean {
+      const { trigger } = this
+
+      return trigger.state === DerivativeOrderState.Booked
     },
 
     total(): BigNumberInBase {
@@ -415,19 +419,19 @@ export default Vue.extend({
       const { trigger } = this
 
       const executionType =
-        trigger.executionType === 'market'
+        trigger.executionType === TradeExecutionType.Market
           ? this.$t('trade.market')
           : this.$t('trade.limit')
 
       switch (trigger.orderType) {
-        case 'buy':
-        case 'sell':
+        case DerivativeOrderSide.Buy:
+        case DerivativeOrderSide.Sell:
           return executionType
-        case 'take_sell':
-        case 'take_buy':
+        case DerivativeOrderSide.TakeSell:
+        case DerivativeOrderSide.TakeBuy:
           return `${this.$t('trade.takeProfit')} ${executionType}`
-        case 'stop_sell':
-        case 'stop_buy':
+        case DerivativeOrderSide.StopSell:
+        case DerivativeOrderSide.StopBuy:
           return `${this.$t('trade.stopLoss')} ${executionType}`
         default:
           return ''

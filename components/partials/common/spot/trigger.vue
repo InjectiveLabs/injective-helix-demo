@@ -156,6 +156,7 @@ import {
   UiSpotOrderHistory
 } from '@injectivelabs/sdk-ui-ts'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
+import { TradeExecutionType } from '@injectivelabs/ts-types'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -335,19 +336,19 @@ export default Vue.extend({
       const { trigger } = this
 
       const executionType =
-        trigger.executionType === 'market'
+        trigger.executionType === TradeExecutionType.Market
           ? this.$t('trade.market')
           : this.$t('trade.limit')
 
       switch (trigger.orderType) {
-        case 'buy':
-        case 'sell':
+        case SpotOrderSide.Buy:
+        case SpotOrderSide.Sell:
           return executionType
-        case 'take_sell':
-        case 'take_buy':
+        case SpotOrderSide.TakeSell:
+        case SpotOrderSide.TakeBuy:
           return `${this.$t('trade.takeProfit')} ${executionType}`
-        case 'stop_sell':
-        case 'stop_buy':
+        case SpotOrderSide.StopSell:
+        case SpotOrderSide.StopBuy:
           return `${this.$t('trade.stopLoss')} ${executionType}`
         default:
           return ''

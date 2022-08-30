@@ -28,7 +28,7 @@
         </div>
 
         <VButton
-          v-if="orderFillable"
+          v-if="isCancelable"
           class="cursor-pointer rounded"
           :status="status"
           @click.stop="onCancelOrder"
@@ -112,6 +112,7 @@ import {
   getTokenLogoWithVendorPathPrefix,
   UiDerivativeOrderHistory
 } from '@injectivelabs/sdk-ui-ts'
+import { DerivativeOrderState } from '@injectivelabs/sdk-ts'
 import TableRow from '~/components/elements/table-row.vue'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
@@ -257,6 +258,12 @@ export default Vue.extend({
       const { unfilledQuantity, quantity } = this
 
       return unfilledQuantity.lte(quantity)
+    },
+
+    isCancelable(): boolean {
+      const { order } = this
+
+      return order.state === DerivativeOrderState.Booked
     },
 
     total(): BigNumberInBase {
