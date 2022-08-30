@@ -5,14 +5,14 @@
         <template #filters>
           <div class="grid grid-cols-4 items-center gap-4 w-full">
             <SearchAsset
-              class="col-span-4 sm:col-span-3"
+              class="col-span-4 sm:col-span-1"
               :markets="markets"
               :value="selectedToken"
               @select="handleSearch"
             />
 
             <FilterSelector
-              class="col-span-2 sm:col-span-2"
+              class="col-span-2 sm:col-span-1"
               data-cy="universal-table-filter-by-type-drop-down"
               :type="TradeSelectorType.TypeAll"
               :value="type"
@@ -20,7 +20,7 @@
             />
 
             <FilterSelector
-              class="col-span-2 sm:col-span-2"
+              class="col-span-2 sm:col-span-1"
               data-cy="universal-table-filter-by-side-drop-down"
               :type="TradeSelectorType.Side"
               :value="side"
