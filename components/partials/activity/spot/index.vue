@@ -16,9 +16,9 @@
         </div>
       </TabSelectorItem>
 
-      <div class="w-px h-4 bg-gray-500" />
+      <!-- <div class="w-px h-4 bg-gray-500" /> -->
 
-      <TabSelectorItem
+      <!-- <TabSelectorItem
         v-model="component"
         data-cy="activity-spot-triggers-link"
         :option="components.triggers"
@@ -31,7 +31,7 @@
             ({{ triggers.length }})
           </span>
         </div>
-      </TabSelectorItem>
+      </TabSelectorItem> -->
 
       <div class="w-px h-4 bg-gray-500" />
 
@@ -71,7 +71,7 @@
     <VCard md class="h-full mt-4 xs:mt-6">
       <Orders v-show="component === components.orders" />
       <OrderHistory v-if="component === components.orderHistory" />
-      <Triggers v-if="component === components.triggers" />
+      <!-- <Triggers v-if="component === components.triggers" /> -->
       <Trades v-if="component === components.trades" />
     </VCard>
   </div>
@@ -79,17 +79,17 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { UiSpotLimitOrder, UiSpotOrderHistory } from '@injectivelabs/sdk-ui-ts'
+import { UiSpotLimitOrder } from '@injectivelabs/sdk-ui-ts'
 import Orders from '~/components/partials/activity/spot/orders.vue'
 import OrderHistory from '~/components/partials/activity/spot/order-history.vue'
-import Triggers from '~/components/partials/activity/spot/triggers.vue'
+// import Triggers from '~/components/partials/activity/spot/triggers.vue'
 import Trades from '~/components/partials/activity/spot/trades.vue'
 import TabSelectorItem from '~/components/partials/activity/common/tab-selector-item.vue'
 
 const components = {
   orders: 'orders',
   trades: 'trades',
-  triggers: 'triggers',
+  // triggers: 'triggers',
   orderHistory: 'order-history'
 }
 
@@ -98,7 +98,7 @@ export default Vue.extend({
     Trades,
     Orders,
     OrderHistory,
-    Triggers,
+    // Triggers,
     TabSelectorItem
   },
 
@@ -112,11 +112,11 @@ export default Vue.extend({
   computed: {
     orders(): UiSpotLimitOrder[] {
       return this.$accessor.spot.subaccountOrders
-    },
-
-    triggers(): UiSpotOrderHistory[] {
-      return this.$accessor.spot.subaccountConditionalOrders
     }
+
+    // triggers(): UiSpotOrderHistory[] {
+    //   return this.$accessor.spot.subaccountConditionalOrders
+    // }
   },
 
   mounted() {

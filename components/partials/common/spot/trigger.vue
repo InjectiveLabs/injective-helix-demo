@@ -255,9 +255,15 @@ export default Vue.extend({
     },
 
     filledQuantity(): BigNumberInBase {
-      const { trigger } = this
+      const { trigger, market } = this
 
-      return new BigNumberInBase(cosmosSdkDecToBigNumber(trigger.filledQuantity))
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(
+        cosmosSdkDecToBigNumber(trigger.filledQuantity)
+      )
     },
 
     filledQuantityPercentage(): BigNumberInBase {

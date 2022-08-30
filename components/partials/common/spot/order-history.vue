@@ -183,7 +183,11 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(order.price).toBase(market.quoteToken.decimals)
+      return new BigNumberInBase(
+        new BigNumberInBase(order.price).toWei(
+          market.baseToken.decimals - market.quoteToken.decimals
+        )
+      )
     },
 
     triggerPrice(): BigNumberInBase {
