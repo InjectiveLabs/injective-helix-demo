@@ -52,32 +52,36 @@ if (IS_DEVNET || IS_MAINNET_STAGING) {
   // binaryOptions.push('tik-ok')
 }
 
-const spotRoutes = spot.map((s) => `/spot/${s}`) || []
-const perpetualsRoutes = perpetuals.map((s) => `/perpetuals/${s}`) || []
-const derivativesRoutes = perpetuals.map((s) => `/derivatives/${s}`) || [] // Legacy support
-const binaryOptionsRoutes =
-  binaryOptions.map((s) => `/binary-options/${s}`) || []
+// Todo: remove commented L56-62 on Helix launch
+// const spotRoutes = spot.map((s) => `/spot/${s}`) || []
+// const perpetualsRoutes = perpetuals.map((s) => `/perpetuals/${s}`) || []
+// const derivativesRoutes = perpetuals.map((s) => `/derivatives/${s}`) || [] // Legacy support
+// const binaryOptionsRoutes =
+//   binaryOptions.map((s) => `/binary-options/${s}`) || []
 
+// const deprecatedMarketsRoutes = IS_TESTNET || IS_DEVNET ? [] : []
 const upcomingMarketsRoutes = []
-const deprecatedMarketsRoutes = IS_TESTNET || IS_DEVNET ? [] : []
 
 module.exports = [
-  '/',
-  '/portfolio',
-  '/activity',
-  '/fee-discounts',
-  '/trade-and-earn',
-  '/faq',
-  '/markets',
-  '/market',
-  '/register',
-  '/trade-and-earn',
-  ...upcomingMarketsRoutes,
-  ...deprecatedMarketsRoutes,
-  ...spotRoutes,
-  ...perpetualsRoutes,
-  ...derivativesRoutes,
-  ...binaryOptionsRoutes
+  '/'
+  /*
+    todo: uncomment on helix launch
+  */
+  // '/portfolio',
+  // '/activity',
+  // '/fee-discounts',
+  // '/trade-and-earn',
+  // '/faq',
+  // '/markets',
+  // '/market',
+  // '/register',
+  // '/trade-and-earn',
+  // ...upcomingMarketsRoutes,
+  // ...deprecatedMarketsRoutes,
+  // ...spotRoutes,
+  // ...perpetualsRoutes,
+  // ...derivativesRoutes,
+  // ...binaryOptionsRoutes
 ]
 
 module.exports.spot = spot
