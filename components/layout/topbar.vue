@@ -1,14 +1,13 @@
 <template>
   <header
     class="w-full z-1100 flex-shrink-0 flex h-12 lg:h-14 bg-gray-900 items-center"
-    :class="{ 'fixed': isSidebarOpen, 'relative': !isSidebarOpen }"
+    :class="{ fixed: isSidebarOpen, relative: !isSidebarOpen }"
   >
     <div
       class="cursor-pointer pl-6 lg:pr-6 lg:border-r flex items-center"
       @click="$router.push({ name: 'index' })"
     >
       <Logo class="w-auto h-6 lg:h-[30px]" alt="Helix" />
-      <LogoText class="block lg:hidden ml-2 h-6 lg:[h-30px]" />
     </div>
     <div class="flex-1 px-2 lg:px-6 flex justify-end lg:justify-between">
       <div
@@ -117,7 +116,6 @@ import UserWalletConnect from './wallet/connect.vue'
 import NavItem from './nav/item.vue'
 import Nav from '~/components/layout/nav/index.vue'
 import Logo from '~/components/elements/logo.vue'
-import LogoText from '~/components/elements/logo-text.vue'
 import {
   derivativeMarketRouteNames,
   spotMarketRouteNames
@@ -131,7 +129,6 @@ export default Vue.extend({
     NavItem,
     UserWallet,
     Logo,
-    LogoText,
     // NavItemDummy,
     // PopperBox,
     UserWalletConnect

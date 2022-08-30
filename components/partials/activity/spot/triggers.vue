@@ -92,7 +92,7 @@ import {
   UiSpotMarketWithToken,
   UiSpotOrderHistory
 } from '@injectivelabs/sdk-ui-ts'
-import { TradeExecutionType } from '@injectivelabs/ts-types'
+import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 import { orderTypeToOrderTypes } from '../common/utils'
 import { ConditionalOrderSide } from '../common/types'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
@@ -104,7 +104,6 @@ import Trigger from '~/components/partials/common/spot/trigger.vue'
 import TriggersTableHeader from '~/components/partials/common/spot/triggers-table-header.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
 import { OrderTypeFilter, TradeSelectorType } from '~/types'
-import { TradeDirection } from '~/../injective-ts/packages/ts-types/dist'
 import TableBody from '~/components/elements/table-body.vue'
 import MobileTrigger from '~/components/partials/common/spot/mobile-trigger.vue'
 

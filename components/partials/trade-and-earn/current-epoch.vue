@@ -1,6 +1,10 @@
 <template>
   <VPanel :title="$t('Current Epoch')" card-wrapper-class="mt-6">
-    <div v-if="currentEpochStartTimestamp > 0" slot="title-context">
+    <div
+      v-if="currentEpochStartTimestamp > 0"
+      slot="title-context"
+      class="text-gray-200"
+    >
       {{ $t('tradeAndEarn.campaignEndingOn', { date: epochCountdown }) }}
     </div>
     <HocLoading :status="status">
@@ -15,20 +19,20 @@
             </VEmpNumber>
 
             <VEmpNumber
+              class="text-gray-450"
               sm
-              class="text-gray-400"
               prefix="≈"
               :number="injMaxCampaignRewardsInUsd"
               :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
             >
-              <span class="text-3xs">USD</span>
+              <span>USD</span>
             </VEmpNumber>
           </template>
           <template slot="title">
-            <div class="flex items-center justify-center">
+            <div class="flex items-center justify-center text-gray-450 text-xs">
               {{ $t('max_campaign_rewards') }}
               <IconInfoTooltip
-                class="ml-2"
+                class="ml-2 text-gray-450"
                 :tooltip="$t('max_campaign_rewards_tooltip')"
               />
             </div>
@@ -43,18 +47,20 @@
               <VEmpNumber :number="tradeRewardPointsFactored">
                 <span>{{ $t('pts') }}</span>
               </VEmpNumber>
-              <span class="px-2">/</span>
+              <span class="px-2 text-xl self-center">/</span>
               <VEmpNumber :number="totalTradeRewardPointsFactored">
                 <span>{{ $t('pts') }}</span>
               </VEmpNumber>
             </div>
-            <span v-else>&mdash;</span>
+            <span v-else class="text-gray-450">&mdash;</span>
           </template>
           <template slot="title">
-            <div class="flex items-center justify-center">
+            <div
+              class="flex items-center justify-center text-xs text-gray-450 3xl:whitespace-nowrap -ml-2"
+            >
               {{ $t('tradeAndEarn.myRewardPoints') }}
               <IconInfoTooltip
-                class="ml-2"
+                class="ml-2 text-gray-450"
                 :tooltip="$t('tradeAndEarn.myRewardPoints_tooltip')"
               />
             </div>
@@ -73,19 +79,19 @@
             <VEmpNumber
               v-if="isUserWalletConnected"
               sm
-              class="text-gray-400"
+              class="text-gray-450"
               prefix="≈"
               :number="estimatedRewardsInUsd"
               :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
             >
-              <span class="text-3xs">USD</span>
+              <span class="text-sm">USD</span>
             </VEmpNumber>
           </template>
           <template slot="title">
-            <div class="flex items-center justify-center">
+            <div class="flex items-center justify-center text-xs text-gray-450">
               {{ $t('est_rewards') }}
               <IconInfoTooltip
-                class="ml-2"
+                class="ml-2 text-gray-450"
                 :tooltip="
                   $t('est_rewards_tooltip', {
                     maxRewards: DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS

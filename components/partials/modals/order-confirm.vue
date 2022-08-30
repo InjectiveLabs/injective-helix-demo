@@ -90,10 +90,10 @@
 import Vue from 'vue'
 import { SpotOrderSide, DerivativeOrderSide } from '@injectivelabs/sdk-ts'
 import { TradeExecutionType } from '@injectivelabs/ts-types'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { DEFAULT_PRICE_WARNING_DEVIATION } from '~/app/utils/constants'
 import { Modal } from '~/types'
 import { localStorage } from '~/app/Services'
-import { BigNumberInBase } from '~/../injective-ts/packages/utils/dist'
 
 export default Vue.extend({
   data() {

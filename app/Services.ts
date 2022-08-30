@@ -29,8 +29,9 @@ import {
   IndexerGrpcAccountApi,
   IndexerRestDerivativesChronosApi,
   IndexerRestSpotChronosApi,
+  IndexerRestMarketChronosApi,
   IndexerGrpcOracleApi
-} from '@injectivelabs/sdk-ts/dist/client'
+} from '@injectivelabs/sdk-ts'
 import {
   NETWORK,
   METRICS_ENABLED,
@@ -92,6 +93,10 @@ export const indexerRestSpotChronosApi = new IndexerRestSpotChronosApi(
       ? `${ENDPOINTS.chronosApi}/api/v1/spot`
       : `${ENDPOINTS.indexerApi}/api/chronos/v1/spot`
   }`
+)
+
+export const indexerRestMarketChronosApi = new IndexerRestMarketChronosApi(
+  `${ENDPOINTS.indexerApi}/api/chronos/v1/market`
 )
 export const indexerDerivativesApi = new IndexerGrpcDerivativesApi(
   ENDPOINTS.indexerApi
