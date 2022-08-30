@@ -365,13 +365,13 @@ export default Vue.extend({
 
       switch (order.state) {
         case 'booked':
-          return 'Booked'
+          return this.$t('trade.open')
         case 'partial_filled':
-          return 'Partially Filled'
+          return this.$t('trade.partiallyFilled')
         case 'filled':
-          return 'Filled'
+          return this.$t('trade.filled')
         case 'canceled':
-          return 'Cancelled'
+          return this.$t('trade.cancelled')
         default: {
           return ''
         }
