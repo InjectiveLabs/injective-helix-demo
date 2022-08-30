@@ -12,18 +12,22 @@ export default Vue.extend({
       type: String,
       default: 'bg-helixGray-950'
     },
+
     noPadding: {
       type: Boolean,
       default: false
     },
+
     lg: {
       type: Boolean,
       default: false
     },
+
     md: {
       type: Boolean,
       default: false
     },
+
     tight: {
       type: Boolean,
       default: false

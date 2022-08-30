@@ -25,19 +25,16 @@ export default Vue.extend({
   props: {
     title: {
       type: String,
-      required: true,
-      default: ''
+      required: true
     },
 
     sm: {
       type: Boolean,
-      required: false,
       default: false
     },
 
     lg: {
       type: Boolean,
-      required: false,
       default: false
     }
   }
