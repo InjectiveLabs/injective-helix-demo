@@ -8,7 +8,7 @@
             :option="components.openPositions"
             data-cy="trading-page-open-positions-tab-button"
           >
-            <span class="uppercase text-xs font-semibold">
+            <span class="uppercase text-xs font-semibold whitespace-nowrap overflow-ellipsis">
               {{ $t('activity.openPositions') }}
               {{ `(${filteredPositions.length})` }}
             </span>
@@ -19,7 +19,7 @@
             :option="components.openOrders"
             data-cy="trading-page-open-orders-tab-button"
           >
-            <span class="uppercase text-xs font-semibold">
+            <span class="uppercase text-xs font-semibold whitespace-nowrap overflow-ellipsis">
               {{ $t('activity.openOrders') }}
               {{ `(${filteredOrders.length})` }}
             </span>
@@ -30,7 +30,7 @@
             :option="components.triggers"
             data-cy="trading-page-triggers-tab-button"
           >
-            <span class="uppercase text-xs font-semibold">
+            <span class="uppercase text-xs font-semibold whitespace-nowrap overflow-ellipsis">
               {{ $t('activity.triggers') }}
               {{ `(${triggers.length})` }}
             </span>
@@ -41,7 +41,7 @@
             :option="components.orderHistory"
             data-cy="trading-page-order-history-tab-button"
           >
-            <span class="uppercase text-xs font-semibold">
+            <span class="uppercase text-xs font-semibold whitespace-nowrap overflow-ellipsis">
               {{ $t('activity.orderHistory') }}
             </span>
           </VButtonFilter>
@@ -51,7 +51,7 @@
             :option="components.tradeHistory"
             data-cy="trading-page-trade-history-tab-button"
           >
-            <span class="uppercase text-xs font-semibold">
+            <span class="uppercase text-xs font-semibold whitespace-nowrap overflow-ellipsis">
               {{ $t('activity.tradeHistory') }}
             </span>
           </VButtonFilter>
@@ -98,7 +98,7 @@
     </template>
 
     <HocLoading :status="status">
-      <VCard class="h-full">
+      <VCard class="h-full p-2" no-padding>
         <component
           :is="component"
           v-if="component"
