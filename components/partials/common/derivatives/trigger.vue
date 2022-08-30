@@ -332,7 +332,11 @@ export default Vue.extend({
     },
 
     orderFillable(): boolean {
-      const { unfilledQuantity, quantity } = this
+      const { trigger, unfilledQuantity, quantity } = this
+
+      if (trigger.state === 'canceled' || trigger.state === 'filled') {
+        return false
+      }
 
       return unfilledQuantity.lte(quantity)
     },

@@ -188,6 +188,8 @@ export default Vue.extend({
         )
       })?.marketId
 
+      console.log(marketId, marketIds)
+
       this.status.setLoading()
 
       return Promise.all([
