@@ -572,6 +572,7 @@ export const actions = actionTree(
         executionTypes: filters?.executionTypes as TradeExecutionType[],
         direction: filters?.direction,
         isConditional: filters?.isConditional,
+        state: SpotOrderState.Booked,
         pagination: {
           skip: paginationOptions ? paginationOptions.skip : 0,
           limit: paginationOptions ? paginationOptions.limit : 0

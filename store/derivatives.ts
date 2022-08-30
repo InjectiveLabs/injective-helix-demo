@@ -888,6 +888,7 @@ export const actions = actionTree(
           executionTypes: filters?.executionTypes as TradeExecutionType[],
           direction: filters?.direction,
           isConditional: true,
+          state: DerivativeOrderState.Booked,
           pagination: {
             skip: paginationOptions ? paginationOptions.skip : 0,
             limit: paginationOptions ? paginationOptions.limit : 0,
