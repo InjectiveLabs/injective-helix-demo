@@ -202,7 +202,9 @@ export const getFormattedMarketsHistoryChartData = (
       marketsHistory.lowPrice[index] +
       marketsHistory.closePrice[index]
 
-    const yAxisHolcAveragePrice = totalPrice / 4
+    const yAxisHolcAveragePrice = new BigNumberInBase(totalPrice)
+      .dividedBy(4)
+      .toNumber()
 
     const xAxisTime = time - times[0]
 

@@ -134,6 +134,7 @@ export default Vue.extend({
 
     chartData(): number[][] {
       const { market, marketsHistory } = this
+
       if (marketsHistory.length === 0 || !market) {
         return []
       }

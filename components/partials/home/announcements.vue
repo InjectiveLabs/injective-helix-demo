@@ -54,28 +54,26 @@ export default Vue.extend({
       Announcement | (Attachment & Announcement)
     > {
       const { announcements, attachments } = this
+      const defaultAnnouncementsSize = 3
 
       if (announcements.length === 0) {
         return []
       }
 
+      const filteredAttachments = attachments.filter((attachment) => attachment)
       const formattedAttachmentsWithAnnouncements = announcements.map(
         (announcement: Announcement) => {
-          const matchingAttachment = attachments.find((attachment) => {
-            if (!attachment) {
-              return false
-            }
-
+          const matchingAttachment = filteredAttachments.find((attachment) => {
             return attachment.announcementId === announcement.announcementId
           })
 
-          return matchingAttachment
-            ? { ...announcement, ...matchingAttachment }
-            : announcement
+          if (!matchingAttachment) {
+            return announcement
+          }
+
+          return { ...announcement, ...matchingAttachment }
         }
       )
-
-      const defaultAnnouncementsSize = 3
 
       return formattedAttachmentsWithAnnouncements.slice(
         0,
