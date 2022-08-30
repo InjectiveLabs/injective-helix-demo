@@ -75,7 +75,12 @@ export default Vue.extend({
       return (
         list.find(({ value }) => {
           if (typeof selected === 'object') {
-            return JSON.stringify(value) === JSON.stringify(selected)
+            const v = value as OrderTypeFilter
+
+            return (
+              v.executionType === selected.executionType &&
+              v.orderType === selected.orderType
+            )
           }
           return value === selected
         })?.text || this.$t('trade.all')

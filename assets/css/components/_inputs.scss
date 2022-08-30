@@ -352,22 +352,24 @@ input[type='number'] {
 }
 
 .input-convert,
-.token-selector__token-only {
-  .input-token {
-    @apply bg-gray-900;
+.token-selector {
+  &.token-only {
+    .input-token {
+      @apply bg-gray-900;
 
-    .vs__selected-options > input {
-      @apply pointer-events-none;
-    }
-
-    &.open {
       .vs__selected-options > input {
-        @apply pointer-events-auto;
+        @apply pointer-events-none;
       }
-    }
 
-    .vs__dropdown-option {
-      @apply p-2;
+      &.open {
+        .vs__selected-options > input {
+          @apply pointer-events-auto;
+        }
+      }
+
+      .vs__dropdown-option {
+        @apply p-2;
+      }
     }
   }
 }
@@ -383,28 +385,30 @@ input[type='number'] {
     }
   }
 }
-.token-selector__token-only {
-  .v-select.input-token.input-select {
-    @apply rounded-lg h-[40px];
+.token-selector {
+  &.token-only {
+    .v-select.input-token.input-select {
+      @apply rounded-lg h-[40px];
 
-    .vs__selected {
-      @apply h-[40px];
-    }
+      .vs__selected {
+        @apply h-[40px];
+      }
 
-    .vs__search {
-      @apply h-[40px] px-4 py-3 m-0 text-sm placeholder-gray-500;
-    }
+      .vs__search {
+        @apply h-[40px] px-4 py-3 m-0 text-sm placeholder-gray-500;
+      }
 
-    .vs__dropdown-menu {
-      @apply p-2;
-    }
+      .vs__dropdown-menu {
+        @apply p-2;
+      }
 
-    .vs__selected-text-content {
-      @apply text-sm;
-    }
+      .vs__selected-text-content {
+        @apply text-sm;
+      }
 
-    .vs__selected-icon {
-      @apply w-4 h-4;
+      .vs__selected-icon {
+        @apply w-4 h-4;
+      }
     }
   }
 }

@@ -210,6 +210,7 @@ export default Vue.extend({
         .catch(this.$onError)
         .finally(() => {
           this.status.setIdle()
+          this.$emit('update')
         })
     },
 

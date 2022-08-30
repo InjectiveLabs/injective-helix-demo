@@ -3,7 +3,7 @@
     <div class="w-full h-full flex flex-col">
       <Toolbar>
         <template #filters>
-          <div class="grid grid-cols-4 items-center gap-4 w-full">
+          <div class="grid grid-cols-2 sm:grid-cols-4 items-center gap-4 w-full">
             <SearchAsset
               class="col-span-4 sm:col-span-1"
               :markets="markets"
@@ -12,7 +12,6 @@
             />
 
             <FilterSelector
-              class="col-span-2 sm:col-span-1"
               data-cy="universal-table-filter-by-type-drop-down"
               :type="TradeSelectorType.TypeAll"
               :value="type"
@@ -20,7 +19,6 @@
             />
 
             <FilterSelector
-              class="col-span-2 sm:col-span-1"
               data-cy="universal-table-filter-by-side-drop-down"
               :type="TradeSelectorType.Side"
               :value="side"
@@ -203,6 +201,7 @@ export default Vue.extend({
         .catch(this.$onError)
         .finally(() => {
           this.status.setIdle()
+          this.$emit('update')
         })
     },
 
