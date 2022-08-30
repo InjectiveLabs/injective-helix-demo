@@ -33,6 +33,7 @@ export default Vue.extend({
       default: false
     }
   },
+
   computed: {
     padding(): any {
       const { lg, tight, md, noPadding } = this
