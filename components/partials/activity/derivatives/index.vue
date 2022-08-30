@@ -69,16 +69,10 @@
     </portal>
 
     <VCard md class="h-full mt-4 xs:mt-6">
-      <Orders v-if="component === components.orders" @update="handleUpdate" />
-      <Trades v-if="component === components.trades" @update="handleUpdate" />
-      <Triggers
-        v-if="component === components.triggers"
-        @update="handleUpdate"
-      />
-      <OrderHistory
-        v-if="component === components.orderHistory"
-        @update="handleUpdate"
-      />
+      <Orders v-if="component === components.orders" />
+      <Trades v-if="component === components.trades" />
+      <Triggers v-if="component === components.triggers" />
+      <OrderHistory v-if="component === components.orderHistory" />
     </VCard>
   </div>
 </template>
@@ -133,10 +127,6 @@ export default Vue.extend({
     this.$accessor.derivatives.streamTrades()
   },
 
-  methods: {
-    handleUpdate() {
-      console.log('eandle update')
-    }
-  }
+  methods: {}
 })
 </script>
