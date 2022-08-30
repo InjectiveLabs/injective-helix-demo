@@ -340,17 +340,24 @@ export default Vue.extend({
     type(): string {
       const { order } = this
 
-      const orderType =
-        order.orderType === ('take_sell' || 'take_buy')
-          ? this.$t('trade.takeProfit')
-          : this.$t('trade.stopLoss')
-
       const executionType =
         order.executionType === 'market'
           ? this.$t('trade.market')
           : this.$t('trade.limit')
 
-      return `${orderType} ${executionType}`
+      switch (order.orderType) {
+        case 'buy':
+        case 'sell':
+          return executionType
+        case 'take_sell':
+        case 'take_buy':
+          return `${this.$t('trade.takeProfit')} ${executionType}`
+        case 'stop_sell':
+        case 'stop_buy':
+          return `${this.$t('trade.stopLoss')} ${executionType}`
+        default:
+          return ''
+      }
     },
 
     orderStatus(): string {
