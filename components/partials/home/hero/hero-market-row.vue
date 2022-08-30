@@ -1,126 +1,102 @@
 <template>
   <nuxt-link :to="marketRoute">
-    <TableRow lg>
-      <span class="text-base md:text-sm col-span-2 md:col-span-3">
+    <div
+      class="grid grid-cols-12 items-center border-helixGray-200 py-2.5 gap-10 box-content"
+    >
+      <div class="col-span-4 flex items-center justify-start pl-4">
         <div class="flex items-center justify-start">
           <img
             :src="baseTokenLogo"
             :alt="market.baseToken.name"
             class="w-4 h-4 md:w-6 md:h-6 mr-4"
           />
-          <div class="mr-4 text-left">
+          <div
+            class="mr-4 text-left text-helixGray-500 text-sm font-bold whitespace-nowrap mb-1"
+          >
             <div class="flex">
               {{ market.ticker }}
-              <span
-                v-if="isMarketBeta"
-                primary
-                xs
-                class="ml-2 text-2xs uppercase text-primary-500"
-              >
-                {{ $t('marketBeta.beta') }}
-              </span>
             </div>
-            <span class="text-gray-500 text-xs hidden md:block">
+            <span class="text-helixGray-300 text-xs">
               {{ market.baseToken.name }}
             </span>
           </div>
         </div>
-      </span>
-      <span
-        class="col-span-1 text-2xs md:text-sm text-gray-300 text-left md:hidden"
-      >
-        {{ $t('trade.last_traded_price') }}
-      </span>
-      <span
-        class="font-mono text-right text-2xs md:text-sm flex items-center justify-end col-span-1 md:col-span-3"
-      >
-        <IconArrow
-          v-if="!lastTradedPrice.isNaN()"
-          class="transform w-3 h-3 mr-1"
-          :class="{
-            'text-green-500 rotate-90': lastPriceChange !== Change.Decrease,
-            'text-red-500 -rotate-90': lastPriceChange === Change.Decrease
-          }"
-        />
-        <span
-          v-if="!lastTradedPrice.isNaN()"
-          :class="{
-            'text-green-500': lastPriceChange !== Change.Decrease,
-            'text-red-500': lastPriceChange === Change.Decrease
-          }"
-        >
-          {{ lastTradedPriceToFormat }}
-          <span class="text-xs text-gray-500 ml-1">
-            {{ market.quoteToken.symbol }}
-          </span>
+      </div>
+      <div class="col-span-3 flex">
+        <span class="w-full text-gray-900 font-medium text-sm text-right">
+          <div class="flex align-center justify-end">
+            <IconArrow
+              v-if="!lastTradedPrice.isNaN()"
+              class="transform w-3 h-3 mr-1 mt-1"
+              :class="{
+                'text-green-500 rotate-90': lastPriceChange !== Change.Decrease,
+                'text-red-500 -rotate-90': lastPriceChange === Change.Decrease
+              }"
+            />
+            <span
+              v-if="!lastTradedPrice.isNaN()"
+              :class="{
+                'text-green-500': lastPriceChange !== Change.Decrease,
+                'text-red-500': lastPriceChange === Change.Decrease
+              }"
+            >
+              {{ lastTradedPriceToFormat }}
+            </span>
+            <span v-else class="text-gray-400">&mdash;</span>
+          </div>
         </span>
-        <span v-else class="text-gray-400">&mdash;</span>
-      </span>
-      <span
-        class="col-span-1 text-2xs md:text-sm text-gray-300 text-left md:hidden"
-      >
-        {{ $t('trade.market_change_24h') }}
-      </span>
-      <span
-        class="font-mono text-right text-2xs md:text-sm col-span-1 md:col-span-3"
-      >
+      </div>
+      <div class="col-span-2 flex">
         <span
           v-if="!change.isNaN()"
           :class="change.gte(0) ? 'text-green-500' : 'text-red-500'"
         >
-          {{ changeToFormat }}%
+          {{ `${change.gte(0) ? '+' : ''}${changeToFormat}%` }}
         </span>
         <span v-else class="text-gray-400">&mdash;</span>
-      </span>
-      <span
-        class="col-span-1 text-2xs md:text-sm text-gray-300 text-left md:hidden"
-      >
-        {{ $t('trade.market_volume_24h') }}
-      </span>
-      <span
-        class="text-2xs md:text-sm font-mono text-right col-span-1 md:col-span-3"
-      >
-        <span v-if="!volume.isNaN()">
-          {{ volumeToFormat }}
-          <span class="text-xs text-gray-500 ml-1">
-            {{ market.quoteToken.symbol }}
-          </span>
-        </span>
-        <span v-else class="text-gray-400">&mdash;</span>
-      </span>
-    </TableRow>
+      </div>
+      <div class="col-span-3 flex pr-4 h-7">
+        <LineGraph
+          v-if="chartData.length > 1"
+          :data="chartData"
+          :color="'#f3164d'"
+          :bg-type="'transparent'"
+          :stroke-width="1"
+          :smoothness="0.2"
+        />
+      </div>
+    </div>
   </nuxt-link>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+// @ts-ignore
+import { LineGraph } from 'vue-plot'
 import {
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
+  UiMarketHistory,
   ZERO_IN_BASE,
   UiSpotMarketSummary,
   UiSpotMarketWithToken,
   getTokenLogoWithVendorPathPrefix
 } from '@injectivelabs/sdk-ui-ts'
-import TableRow from '~/components/elements/table-row.vue'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import { Change, MarketRoute } from '~/types'
 import { betaMarketSlugs } from '~/app/data/market'
-import { getMarketRoute } from '~/app/utils/market'
+import {
+  getMarketRoute,
+  getFormattedMarketsHistoryChartData
+} from '~/app/utils/market'
 
 export default Vue.extend({
   components: {
-    TableRow
+    LineGraph
   },
 
   props: {
-    condensed: {
-      required: false,
-      default: false,
-      type: Boolean
-    },
-
     market: {
       required: true,
       type: Object as PropType<
@@ -136,11 +112,35 @@ export default Vue.extend({
 
   data() {
     return {
-      Change
+      Change,
+      status: new Status(StatusType.Loading)
     }
   },
 
   computed: {
+    marketsHistory(): UiMarketHistory[] {
+      return this.$accessor.exchange.marketsHistory
+    },
+
+    chartData(): number[][] {
+      const { market, marketsHistory } = this
+      if (marketsHistory.length === 0 || !market) {
+        return []
+      }
+
+      const matchingMarket = marketsHistory.find(
+        (marketHistory: UiMarketHistory) => {
+          return marketHistory.marketId === market.marketId
+        }
+      )
+
+      if (!matchingMarket) {
+        return []
+      }
+
+      return getFormattedMarketsHistoryChartData(matchingMarket)
+    },
+
     lastTradedPrice(): BigNumberInBase {
       const { market, summary } = this
 
@@ -234,11 +234,7 @@ export default Vue.extend({
     baseTokenLogo(): string {
       const { market } = this
 
-      if (!market) {
-        return ''
-      }
-
-      if (!market.baseToken) {
+      if (!market || !market.baseToken) {
         return ''
       }
 

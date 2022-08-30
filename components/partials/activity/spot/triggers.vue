@@ -75,7 +75,12 @@
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Token } from '@injectivelabs/token-metadata'
-import { SpotOrderSide, UiSpotMarketWithToken, UiSpotOrderHistory } from '@injectivelabs/sdk-ui-ts'
+import {
+  SpotOrderSide,
+  UiSpotMarketWithToken,
+  UiSpotOrderHistory
+} from '@injectivelabs/sdk-ui-ts'
+import { TradeDirection } from '@injectivelabs/ts-types'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import Pagination from '~/components/partials/common/pagination.vue'
 import SearchAsset from '~/components/partials/activity/common/search-asset.vue'
@@ -85,7 +90,6 @@ import Trigger from '~/components/partials/common/spot/trigger.vue'
 import TriggersTableHeader from '~/components/partials/common/spot/triggers-table-header.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
 import { OrderTypeFilter, TradeSelectorType } from '~/types'
-import { TradeDirection } from '~/../injective-ts/packages/ts-types/dist'
 
 export default Vue.extend({
   components: {
@@ -160,17 +164,18 @@ export default Vue.extend({
 
       this.status.setLoading()
 
-      return this.$accessor.spot.fetchSubaccountConditionalOrders({
-        pagination: {
-          skip: (this.page - 1) * this.limit,
-          limit: this.limit
-        },
-        filters: {
-          marketId,
-          orderTypes,
-          direction
-        }
-      })
+      return this.$accessor.spot
+        .fetchSubaccountConditionalOrders({
+          pagination: {
+            skip: (this.page - 1) * this.limit,
+            limit: this.limit
+          },
+          filters: {
+            marketId,
+            orderTypes,
+            direction
+          }
+        })
         .catch(this.$onError)
         .finally(() => {
           this.status.setIdle()

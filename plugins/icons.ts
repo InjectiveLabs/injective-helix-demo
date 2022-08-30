@@ -12,6 +12,9 @@ import CategoryAlt from '~/components/icons/category-alt.vue'
 import Check from '~/components/icons/check.vue'
 import CheckCircle from '~/components/icons/check-circle.vue'
 import Chevron from '~/components/icons/chevron.vue'
+import CircleOne from '~/components/icons/circle-one.vue'
+import CircleTwo from '~/components/icons/circle-two.vue'
+import CircleThree from '~/components/icons/circle-three.vue'
 import Close from '~/components/icons/close.vue'
 import Copy from '~/components/icons/copy.vue'
 import CopyPlain from '~/components/icons/copy-plain.vue'
@@ -70,6 +73,10 @@ import GoogleSocial from '~/components/icons/google-social.vue'
 import FacebookSocial from '~/components/icons/facebook-social.vue'
 import TwitterSocial from '~/components/icons/twitter-social.vue'
 import DiscordSocial from '~/components/icons/discord-social.vue'
+import LightningFill from '~/components/icons/lightning-fill.vue'
+import BoundingBoxCircles from '~/components/icons/bounding-box-circles.vue'
+import Gas from '~/components/icons/gas.vue'
+import ShieldLockFill from '~/components/icons/shield-lock-fill.vue'
 import Minus from '~/components/icons/minus.vue'
 
 Vue.component('IconArrow', Arrow)
@@ -84,6 +91,9 @@ Vue.component('IconCategoryAlt', CategoryAlt)
 Vue.component('IconCheck', Check)
 Vue.component('IconCheckCircle', CheckCircle)
 Vue.component('IconChevron', Chevron)
+Vue.component('IconCircleOne', CircleOne)
+Vue.component('IconCircleTwo', CircleTwo)
+Vue.component('IconCircleThree', CircleThree)
 Vue.component('IconClose', Close)
 Vue.component('IconCopy', Copy)
 Vue.component('IconTorus', Torus)
@@ -142,4 +152,8 @@ Vue.component('IconGoogleSocial', GoogleSocial)
 Vue.component('IconFacebookSocial', FacebookSocial)
 Vue.component('IconTwitterSocial', TwitterSocial)
 Vue.component('IconDiscordSocial', DiscordSocial)
+Vue.component('IconLightningFill', LightningFill)
+Vue.component('IconBoundingBoxCircles', BoundingBoxCircles)
+Vue.component('IconGas', Gas)
+Vue.component('IconShieldLockFill', ShieldLockFill)
 Vue.component('IconMinus', Minus)

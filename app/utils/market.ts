@@ -1,5 +1,6 @@
 import {
   UiDerivativeMarketWithToken,
+  UiMarketHistory,
   UiSpotMarketWithToken,
   MarketType
 } from '@injectivelabs/sdk-ui-ts'
@@ -189,4 +190,24 @@ export const marketIsPartOfSearch = (
     market.baseToken.symbol.toLowerCase().startsWith(query) ||
     market.ticker.toLowerCase().startsWith(query)
   )
+}
+
+export const getFormattedMarketsHistoryChartData = (
+  marketsHistory: UiMarketHistory
+) => {
+  return marketsHistory.time.map((time, index, times) => {
+    const totalPrice =
+      marketsHistory.openPrice[index] +
+      marketsHistory.highPrice[index] +
+      marketsHistory.lowPrice[index] +
+      marketsHistory.closePrice[index]
+
+    const yAxisHolcAveragePrice = new BigNumberInBase(totalPrice)
+      .dividedBy(4)
+      .toNumber()
+
+    const xAxisTime = time - times[0]
+
+    return [xAxisTime, yAxisHolcAveragePrice]
+  })
 }

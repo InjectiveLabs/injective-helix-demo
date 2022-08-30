@@ -22,6 +22,12 @@ import {
 } from '~/app/services/region'
 import { todayInSeconds } from '~/app/utils/time'
 import { streamProvider } from '~/app/providers/StreamProvider'
+import {
+  fetchAnnouncementAttachment,
+  fetchAnnouncementsList
+} from '~/app/services/announcements'
+import { UiAnnouncementTransformer } from '~/app/client/transformers/UiAnnouncementTransformer'
+import { Announcement, Attachment } from '~/app/client/types/announcements'
 
 export interface UserBasedState {
   vpnOrProxyUsageValidationTimestamp: number
@@ -50,7 +56,9 @@ const initialState = {
       continent: '',
       country: ''
     }
-  } as UserBasedState
+  } as UserBasedState,
+  announcements: [] as Array<Announcement>,
+  attachments: [] as Array<Attachment>
 }
 
 export const state = () => ({
@@ -60,7 +68,9 @@ export const state = () => ({
   gasPrice: initialState.gasPrice as string,
   state: initialState.state as AppState,
   marketsLoadingState: initialState.marketsLoadingState as StatusType,
-  userState: initialState.userState as UserBasedState
+  userState: initialState.userState as UserBasedState,
+  announcements: [] as Array<Announcement>,
+  attachments: [] as Array<Attachment>
 })
 
 export type AppStoreState = ReturnType<typeof state>
@@ -107,6 +117,14 @@ export const mutations = {
       ...state.userState,
       favoriteMarkets
     }
+  },
+
+  setAnnouncements(state: AppStoreState, announcements: Array<any>) {
+    state.announcements = announcements
+  },
+
+  setAttachments(state: AppStoreState, attachments: Array<any>) {
+    state.attachments = attachments
   }
 }
 
@@ -199,6 +217,51 @@ export const actions = actionTree(
     async pollMarkets(_) {
       await this.app.$accessor.derivatives.fetchMarketsSummary()
       await this.app.$accessor.spot.fetchMarketsSummary()
+    },
+
+    async fetchAnnouncements({ commit }) {
+      const announcements = await fetchAnnouncementsList()
+
+      if (
+        !announcements ||
+        !announcements.articles ||
+        announcements.articles.length === 0
+      ) {
+        return
+      }
+
+      const uiAnnouncements = announcements.articles.map(
+        UiAnnouncementTransformer.convertAnnouncementToUiAnnouncement
+      )
+
+      commit('setAnnouncements', uiAnnouncements)
+
+      await this.app.$accessor.app.fetchAttachments()
+    },
+
+    async fetchAttachments({ state, commit }) {
+      if (state.announcements.length === 0) {
+        return
+      }
+
+      const attachments = await Promise.all(
+        state.announcements.map(
+          ({ announcementId }: { announcementId: number }) =>
+            fetchAnnouncementAttachment(announcementId)
+        )
+      )
+
+      if (!attachments || attachments.length === 0) {
+        return
+      }
+
+      const uiAttachments = attachments.map(
+        UiAnnouncementTransformer.convertAttachmentToUiAttachment
+      )
+
+      if (uiAttachments.length !== 0) {
+        commit('setAttachments', uiAttachments)
+      }
     },
 
     cancelAllStreams() {

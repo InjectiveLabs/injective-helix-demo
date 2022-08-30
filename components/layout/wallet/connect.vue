@@ -3,7 +3,7 @@
     <VButton
       md
       primary
-      class="rounded-lg whitespace-nowrap h-8 lg:h-10 px-4 lg:px-8 bg-primary-500 hover:bg-primary-400"
+      class="rounded-lg whitespace-nowrap h-8 lg:h-10 px-4 lg:px-8 bg-primary-500 hover:bg-primary-400 flex items-center"
       data-cy="header-wallet-connect-button"
       @click="handleWalletConnectClicked"
     >
@@ -21,7 +21,9 @@
       </h3>
       <div class="relative mt-6">
         <HocLoading :status="status">
-          <ul class="divide-y divide-gray-800 border-gray-700 rounded-lg overflow-hidden">
+          <ul
+            class="divide-y divide-gray-800 border-gray-700 rounded-lg overflow-hidden"
+          >
             <Metamask />
             <Keplr />
             <Torus />
