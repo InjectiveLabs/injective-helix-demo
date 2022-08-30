@@ -365,6 +365,28 @@ export const mutations = {
     state.subaccountOrders = subaccountOrders
   },
 
+  pushOrUpdateSubaccountConditionalOrder(
+    state: DerivativeStoreState,
+    subaccountOrder: UiDerivativeOrderHistory
+  ) {
+    const subaccountConditionalOrders = [...state.subaccountConditionalOrders].filter(
+      (order) => order.orderHash !== subaccountOrder.orderHash
+    )
+
+    state.subaccountConditionalOrders = [subaccountOrder, ...subaccountConditionalOrders]
+  },
+
+  deleteSubaccountConditionalOrder(
+    state: DerivativeStoreState,
+    subaccountOrder: UiDerivativeOrderHistory
+  ) {
+    const subaccountConditionalOrders = [...state.subaccountConditionalOrders].filter(
+      (order) => order.orderHash !== subaccountOrder.orderHash
+    )
+
+    state.subaccountConditionalOrders = subaccountConditionalOrders
+  },
+
   pushSubaccountTrade(
     state: DerivativeStoreState,
     subaccountTrade: UiDerivativeTrade
@@ -672,22 +694,33 @@ export const actions = actionTree(
             return
           }
 
+          const isConditional = [
+            'take_buy',
+            'take_sell',
+            'stop_buy',
+            'stop_sell'
+          ].includes(order.orderType)
+
           switch (order.state) {
             case DerivativeOrderState.Booked:
-              commit('pushOrUpdateSubaccountOrder', order)
-              break
             case DerivativeOrderState.Unfilled:
-              commit('pushOrUpdateSubaccountOrder', order)
+            case DerivativeOrderState.PartialFilled: {
+              const action = isConditional
+                ? 'pushOrUpdateSubaccountConditionalOrder'
+                : 'pushOrUpdateSubaccountOrder'
+
+              commit(action, order)
               break
-            case DerivativeOrderState.PartialFilled:
-              commit('pushOrUpdateSubaccountOrder', order)
-              break
+            }
             case DerivativeOrderState.Canceled:
-              commit('deleteSubaccountOrder', order)
+            case DerivativeOrderState.Filled: {
+              const action = isConditional
+                ? 'deleteSubaccountConditionalOrder'
+                : 'deleteSubaccountOrder'
+
+              commit(action, order)
               break
-            case DerivativeOrderState.Filled:
-              commit('deleteSubaccountOrder', order)
-              break
+            }
           }
         }
       })
