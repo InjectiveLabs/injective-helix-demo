@@ -98,7 +98,8 @@ export enum TradeTypes {
 
 export enum TradeSelectorType {
   Type = 'type',
-  TypeAll = 'type-all',
+  TypeAllDerivatives = 'type-all-derivatives',
+  TypeAllSpot = 'type-all-spot',
   Side = 'side',
   PositionSide = 'position-side',
   TransferType = 'transfer-type'

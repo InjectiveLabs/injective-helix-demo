@@ -13,7 +13,7 @@
 
             <FilterSelector
               data-cy="universal-table-filter-by-type-drop-down"
-              :type="TradeSelectorType.TypeAll"
+              :type="TradeSelectorType.TypeAllDerivatives"
               :value="type"
               @click="handleTypeClick"
             />

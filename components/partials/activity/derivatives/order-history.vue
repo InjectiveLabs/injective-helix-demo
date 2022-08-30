@@ -14,7 +14,7 @@
             <FilterSelector
               class="col-span-2 sm:col-span-1"
               data-cy="universal-table-filter-by-type-drop-down"
-              :type="TradeSelectorType.TypeAll"
+              :type="TradeSelectorType.TypeAllDerivatives"
               :value="type"
               @click="handleTypeClick"
             />

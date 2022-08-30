@@ -89,7 +89,34 @@ export default Vue.extend({
   },
 
   mounted() {
-    if (this.type === TradeSelectorType.TypeAll) {
+    if (this.type === TradeSelectorType.TypeAllSpot) {
+      this.list = [
+        {
+          text: this.$t('trade.all'),
+          value: {
+            executionType: undefined,
+            orderType: undefined
+          }
+        },
+        {
+          text: this.$t('trade.limit'),
+          value: {
+            executionType: 'limit',
+            orderType: undefined
+          }
+        },
+        {
+          text: this.$t('trade.market'),
+          value: {
+            executionType: 'market',
+            orderType: undefined
+          }
+        }
+      ]
+      this.placeholder = this.$t('trade.type')
+    }
+
+    if (this.type === TradeSelectorType.TypeAllDerivatives) {
       this.list = [
         {
           text: this.$t('trade.all'),
