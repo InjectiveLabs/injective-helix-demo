@@ -210,6 +210,7 @@ export default Vue.extend({
 
       return Promise.all([
         this.$accessor.derivatives.fetchSubaccountOrders(),
+        this.$accessor.derivatives.fetchSubaccountConditionalOrders(),
         this.fetchSubaccountPositions()
       ])
         .catch(this.$onError)
