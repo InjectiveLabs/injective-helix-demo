@@ -82,7 +82,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
 import {
   getTokenLogoWithVendorPathPrefix,
   SpotOrderSide,
@@ -90,7 +90,6 @@ import {
   UiSpotOrderHistory,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
-import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import TableRow from '~/components/elements/table-row.vue'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
@@ -151,7 +150,9 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(cosmosSdkDecToBigNumber(order.quantity))
+      return new BigNumberInWei(order.quantity).toBase(
+        market.baseToken.decimals
+      )
     },
 
     unfilledQuantity(): BigNumberInBase {
@@ -165,9 +166,15 @@ export default Vue.extend({
     },
 
     filledQuantity(): BigNumberInBase {
-      const { order } = this
+      const { market, order } = this
 
-      return new BigNumberInBase(cosmosSdkDecToBigNumber(order.filledQuantity))
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInWei(order.filledQuantity).toBase(
+        market.baseToken.decimals
+      )
     },
 
     total(): BigNumberInBase {
