@@ -4,7 +4,7 @@
       <div v-if="isHero">
         <HeroMarketHeader v-if="markets.length !== 0" />
         <HeroMarketRow
-          v-for="({ market, summary }, index) in marketsList"
+          v-for="({ market, summary }, index) in heroMarketsList"
           :key="`market-${market.marketId}`"
           :market="market"
           :summary="summary"
@@ -68,7 +68,7 @@ export default Vue.extend({
 
     limit: {
       type: Number,
-      default: 5
+      default: 3
     },
 
     isHero: {
@@ -227,6 +227,18 @@ export default Vue.extend({
       const { filteredMarketsList, limit } = this
 
       return filteredMarketsList.slice(0, limit)
+    },
+
+    heroMarketsList(): UiMarketAndSummary[] {
+      const { marketsList, newMarketsList } = this
+
+      const [latestMarket, secondLatestMarket] = newMarketsList
+
+      if (!latestMarket || !secondLatestMarket) {
+        return marketsList
+      }
+
+      return [...marketsList, latestMarket, secondLatestMarket]
     }
   },
 

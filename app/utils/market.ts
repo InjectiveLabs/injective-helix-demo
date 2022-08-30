@@ -195,46 +195,17 @@ export const marketIsPartOfSearch = (
 export const getFormattedMarketsHistoryChartData = (
   marketsHistory: UiMarketHistory
 ) => {
-  const yAxisHolcPriceDictionary = {} as { [key: string]: number[] }
+  return marketsHistory.time.map((time, index, times) => {
+    const totalPrice =
+      marketsHistory.openPrice[index] +
+      marketsHistory.highPrice[index] +
+      marketsHistory.lowPrice[index] +
+      marketsHistory.closePrice[index]
 
-  // Create a dictionary of the form {'holcPriceIndex': [openPrice, closePrice, lowPrice, highPrice]}
-  marketsHistory.openPrice.forEach((holdPrice: number, index: number) => {
-    if (!yAxisHolcPriceDictionary[index]) {
-      yAxisHolcPriceDictionary[index] = []
-    }
+    const yAxisHolcAveragePrice = totalPrice / 4
 
-    yAxisHolcPriceDictionary[index].push(holdPrice)
+    const xAxisTime = time - times[0]
+
+    return [xAxisTime, yAxisHolcAveragePrice]
   })
-
-  marketsHistory.closePrice.forEach((closePrice: number, index: number) => {
-    yAxisHolcPriceDictionary[index].push(closePrice)
-  })
-
-  marketsHistory.lowPrice.forEach((lowPrice: number, index: number) => {
-    yAxisHolcPriceDictionary[index].push(lowPrice)
-  })
-
-  marketsHistory.highPrice.forEach((highPrice: number, index: number) => {
-    yAxisHolcPriceDictionary[index].push(highPrice)
-  })
-
-  const xAxisTimeList = marketsHistory.time.map((time: number) => {
-    return time - marketsHistory.time[0]
-  })
-
-  // get the average of the prices to create holc price data points for chart yAxis
-  const formattedMarketsHistory = Object.keys(yAxisHolcPriceDictionary).map(
-    (key, index) => {
-      const yAxisHolcPrice =
-        yAxisHolcPriceDictionary[key].reduce(
-          (price, totalPrice) => price + totalPrice,
-          0
-        ) / yAxisHolcPriceDictionary[key].length
-      const xAxisTime = xAxisTimeList[index]
-
-      return [xAxisTime, yAxisHolcPrice]
-    }
-  )
-
-  return formattedMarketsHistory
 }
