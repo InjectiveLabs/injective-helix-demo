@@ -74,7 +74,7 @@
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
-        :number="total"
+        :number="quantity"
       />
     </td>
 
@@ -103,7 +103,7 @@
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
-        :number="quantity"
+        :number="total"
       >
         <span slot="addon" class="text-xs text-gray-500">
           {{ market.quoteToken.symbol }}
