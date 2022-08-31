@@ -6,7 +6,9 @@
       <Logo class="w-auto h-6" alt="Helix" />
       <LogoText class="block ml-2 h-6 text-gray-900" />
     </div>
-    <h1 class="text-gray-900 font-bold text-5xl 3xl:text-6xl mb-8">
+    <h1
+      class="text-gray-900 font-bold text-[44px] sm:text-5xl 3xl:text-6xl mb-8"
+    >
       {{ $t('home.title') }}
     </h1>
     <p class="text-gray-900 mt-4 text-base 3xl:text-xl mb-8">
