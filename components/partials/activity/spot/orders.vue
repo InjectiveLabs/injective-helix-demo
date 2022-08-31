@@ -138,7 +138,7 @@ export default Vue.extend({
 
   computed: {
     activeMarketIds(): string[] {
-      return this.$accessor.derivatives.activeMarketIds
+      return this.$accessor.spot.activeMarketIds
     },
 
     orders(): UiSpotLimitOrder[] {
