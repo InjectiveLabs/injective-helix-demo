@@ -426,6 +426,8 @@ export default Vue.extend({
       switch (trigger.orderType) {
         case DerivativeOrderSide.Buy:
         case DerivativeOrderSide.Sell:
+        case DerivativeOrderSide.BuyPO:
+        case DerivativeOrderSide.SellPO:
           return executionType
         case DerivativeOrderSide.TakeSell:
         case DerivativeOrderSide.TakeBuy:

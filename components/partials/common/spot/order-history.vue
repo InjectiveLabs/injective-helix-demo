@@ -349,6 +349,8 @@ export default Vue.extend({
       switch (order.orderType) {
         case SpotOrderSide.Buy:
         case SpotOrderSide.Sell:
+        case SpotOrderSide.BuyPO:
+        case SpotOrderSide.SellPO:
           return executionType
         case SpotOrderSide.TakeSell:
         case SpotOrderSide.TakeBuy:
