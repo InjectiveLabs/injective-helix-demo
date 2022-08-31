@@ -1,8 +1,8 @@
 export default {
   home: {
-    title: 'Decentralized Spot & Derivative Exchange',
+    title: 'The Premier Decentralized Crypto Exchange',
     subtitle:
-      'Trade unlimited crypto markets on the premier decentralized cross-chain exchange',
+      'Trade unlimited cross-chain crypto assets and perpetual markets with market leading rebates*',
     tradeNow: 'Trade Now',
     latestNews: 'Latest News',
     viewAllMarkets: 'View all markets',
@@ -16,8 +16,8 @@ export default {
     experienceTrader: 'An Experienced Trader',
     institutionalTrader: 'An Institutional Trader',
     builtOn: 'Built on',
-    startTradingNote: 'Start trading on Helix now',
-    whyTradeOnHelix: 'Why trade on Helix',
+    startTradingNote: 'Start Trading on Helix Now',
+    whyTradeOnHelix: 'Why Trade on Helix',
     decentralizedWithAdvancedTypeOrders:
       'Decentralized order book exchange with advanced order types',
     enjoySpotTrading:
@@ -27,12 +27,12 @@ export default {
       'Zero gas fees, low taker fees and highly competitive maker fee rebates for the best trading experience amongst all exchanges.',
     crossChainAssets: 'Cross-chain assets and novel markets',
     seamlesslyTransferAssets:
-      'Seamlessly transfer assets from Ethereum and Cosmos networks to trade in popular markets as well as unique markets not available elsewhere.',
-    getStarted: 'Get started in 3 simple steps',
-    bridgeToInjective: 'Bridge assets from Ethereum to Injective',
+      'Seamlessly transfer assets from Ethereum and Cosmos networks to trade popular markets as well as unique markets not available elsewhere.',
+    getStarted: 'Get Started in 3 Simple Steps',
+    bridgeToInjective: 'Transfer assets to Injective',
     injective: 'INJECTIVE',
-    transferFromInjective: 'Transfer from Injective Wallet to Trading account',
-    startTrading: 'Start trading on Helix',
+    tradeSpotMarket: 'Trade spot markets',
+    tradePerpetuals: 'Trade perpetuals with advanced orders',
     startTradingNow: 'Start trading now',
     newToCryptoFeatures: {
       featureOne: 'Fast and Simple',
@@ -66,8 +66,8 @@ export default {
       featureThreeDescription: 'Easy to integrate with world-class support'
     },
     fast: 'Fast',
-    decentralized: 'Decentralized',
-    gasless: 'Gasless',
+    interoperable: 'Interoperable',
+    gasFree: 'Gas Free',
     secure: 'Secure',
     market: 'Market',
     lastPrice: 'Last price',
@@ -84,6 +84,8 @@ export default {
     submitRequest: 'Submit A Request',
     feeDiscounts: 'Fee Discounts',
     apiDocumentation: 'API Documentation',
-    community: 'Community'
+    community: 'Community',
+    helixProvides:
+      '*Helix is able to provide maker rebates across a number of markets as approved via the Injective DAO.'
   }
 }
