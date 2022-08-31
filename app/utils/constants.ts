@@ -2,6 +2,38 @@ import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import { getEndpointsForNetwork, Network } from '@injectivelabs/networks'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 
+const getChainId = (): ChainId => {
+  const envChainId = process.env.APP_CHAIN_ID
+
+  if (envChainId) {
+    return envChainId as ChainId
+  }
+
+  if (IS_TESTNET) {
+    return ChainId.Testnet
+  }
+
+  if (IS_DEVNET) {
+    return ChainId.Devnet
+  }
+
+  return ChainId.Mainnet
+}
+
+const getEthereumChainId = (): EthereumChainId => {
+  const envEthereumChainId = process.env.APP_ETHEREUM_CHAIN_ID
+
+  if (envEthereumChainId) {
+    return parseInt(process.env.APP_ETHEREUM_CHAIN_ID.toString())
+  }
+
+  if (IS_TESTNET || IS_DEVNET) {
+    return EthereumChainId.Goerli
+  }
+
+  return EthereumChainId.Mainnet
+}
+
 export const IS_DEVELOPMENT: boolean = process.env.NODE_ENV === 'development'
 export const IS_PRODUCTION: boolean = process.env.NODE_ENV === 'production'
 export const IS_MAINNET_STAGING: boolean = process.env.APP_ENV === 'staging'
@@ -58,24 +90,8 @@ export const IS_TESTNET = [Network.Testnet, Network.TestnetK8s].includes(
   NETWORK
 )
 
-export const CHAIN_ID: ChainId = (
-  process.env.APP_CHAIN_ID
-    ? process.env.APP_CHAIN_ID
-    : IS_TESTNET
-    ? ChainId.Testnet
-    : IS_DEVNET
-    ? ChainId.Devnet
-    : ChainId.Mainnet
-) as ChainId
-export const ETHEREUM_CHAIN_ID: EthereumChainId = process.env
-  .APP_ETHEREUM_CHAIN_ID
-  ? parseInt(process.env.APP_ETHEREUM_CHAIN_ID.toString())
-  : parseInt(
-      (IS_TESTNET || IS_DEVNET
-        ? EthereumChainId.Goerli
-        : EthereumChainId.Mainnet
-      ).toString()
-    )
+export const CHAIN_ID: ChainId = getChainId()
+export const ETHEREUM_CHAIN_ID: EthereumChainId = getEthereumChainId()
 
 export const BIG_NUMBER_ROUND_HALF_UP_MODE = BigNumber.ROUND_HALF_UP
 
@@ -91,7 +107,6 @@ export const DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS = 25
 
 export const MAX_DISPLAYABLE_NUMBER = new BigNumberInBase(1_000_000_000)
 
-export const APP_GAS_REBATE_API = process.env.APP_GAS_REBATE_API as string
 export const MIN_AMOUNT_REQUIRED_FOR_GAS_REBATE = 500
 export const MIN_TIMESTAMP_REQUIRED_FOR_GAS_REBATE = 1638313200 // 01 Dec 2020 00:00
 export const DMM_TIME_STAMP_FORMAT: string = "MMM-dd-yyyy HH:mm:ss 'UTC'xxx"
@@ -142,5 +157,4 @@ export const USDT_DECIMALS = 6
 export const UI_DEFAULT_PAGINATION_LIMIT_COUNT = 20
 
 export const MARKETS_HISTORY_CHART_SEVEN_DAYS = 154
-
 export const MARKETS_HISTORY_CHART_ONE_HOUR = 60
