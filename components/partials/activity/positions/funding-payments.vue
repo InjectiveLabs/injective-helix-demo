@@ -208,6 +208,7 @@ export default Vue.extend({
     handleLimitChangeEvent(limit: number) {
       this.limit = limit
 
+      this.resetPagination()
       this.fetchFundingPayments()
     },
 
@@ -220,14 +221,19 @@ export default Vue.extend({
     handleSearch(token: Token) {
       this.selectedToken = token
 
+      this.resetPagination()
       this.fetchFundingPayments()
     },
 
     handleClearFilters() {
       this.selectedToken = undefined
-      this.page = 1
 
+      this.resetPagination()
       this.fetchFundingPayments()
+    },
+
+    resetPagination() {
+      this.page = 1
     }
   }
 })

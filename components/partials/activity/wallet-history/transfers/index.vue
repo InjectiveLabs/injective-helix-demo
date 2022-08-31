@@ -148,6 +148,7 @@ export default Vue.extend({
     handleLimitChangeEvent(limit: number) {
       this.limit = limit
 
+      this.resetPagination()
       this.fetchTransfers()
     },
 
@@ -160,14 +161,19 @@ export default Vue.extend({
     handleSearch(token: Token) {
       this.selectedToken = token
 
+      this.resetPagination()
       this.fetchTransfers()
     },
 
     handleClearFilters() {
       this.selectedToken = undefined
-      this.page = 1
 
+      this.resetPagination()
       this.fetchTransfers()
+    },
+
+    resetPagination() {
+      this.page = 1
     }
   }
 })

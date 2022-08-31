@@ -289,13 +289,10 @@ export default Vue.extend({
         })
     },
 
-    handleInputOnSearch(search: string) {
-      this.search = search
-    },
-
     handleSideClick(side: string | undefined) {
       this.side = side
 
+      this.resetPagination()
       this.fetchPositions()
     },
 
@@ -306,6 +303,7 @@ export default Vue.extend({
     handleLimitChangeEvent(limit: number) {
       this.limit = limit
 
+      this.resetPagination()
       this.fetchPositions()
     },
 
@@ -318,15 +316,20 @@ export default Vue.extend({
     handleSearch(token: Token) {
       this.selectedToken = token
 
+      this.resetPagination()
       this.fetchPositions()
     },
 
     handleClearFilters() {
       this.selectedToken = undefined
       this.side = undefined
-      this.page = 1
 
+      this.resetPagination()
       this.fetchPositions()
+    },
+
+    resetPagination() {
+      this.page = 1
     }
   }
 })

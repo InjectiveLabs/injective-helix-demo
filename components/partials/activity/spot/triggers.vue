@@ -207,17 +207,21 @@ export default Vue.extend({
     handleSideClick(side: string | undefined) {
       this.side = side
 
+      this.resetPagination()
       this.fetchTriggers()
     },
 
     handleTypeClick(type: OrderTypeFilter | undefined) {
       this.type = type
 
+      this.resetPagination()
       this.fetchTriggers()
     },
+
     handleLimitChangeEvent(limit: number) {
       this.limit = limit
 
+      this.resetPagination()
       this.fetchTriggers()
     },
 
@@ -230,6 +234,7 @@ export default Vue.extend({
     handleSearch(token: Token) {
       this.selectedToken = token
 
+      this.resetPagination()
       this.fetchTriggers()
     },
 
@@ -237,9 +242,13 @@ export default Vue.extend({
       this.selectedToken = undefined
       this.side = undefined
       this.type = undefined
-      this.page = 1
 
+      this.resetPagination()
       this.fetchTriggers()
+    },
+
+    resetPagination() {
+      this.page = 1
     }
   }
 })

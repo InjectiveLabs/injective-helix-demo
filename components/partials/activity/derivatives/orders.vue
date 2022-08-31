@@ -244,31 +244,40 @@ export default Vue.extend({
     handleSideClick(side: string | undefined) {
       this.side = side
 
+      this.resetPagination()
       this.fetchOrders()
     },
 
     handleLimitChangeEvent(limit: number) {
       this.limit = limit
+
+      this.resetPagination()
       this.fetchOrders()
     },
 
     handlePageChangeEvent(page: number) {
       this.page = page
+
       this.fetchOrders()
     },
 
     handleSearch(token: Token) {
       this.selectedToken = token
 
+      this.resetPagination()
       this.fetchOrders()
     },
 
     handleClearFilters() {
       this.selectedToken = undefined
       this.side = undefined
-      this.page = 1
 
+      this.resetPagination()
       this.fetchOrders()
+    },
+
+    resetPagination() {
+      this.page = 1
     }
   }
 })
