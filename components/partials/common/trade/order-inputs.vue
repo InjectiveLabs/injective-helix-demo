@@ -807,7 +807,6 @@ export default Vue.extend({
       if (!market) {
         return
       }
-
       const triggerPriceToBigNumber = new BigNumberInBase(triggerPrice)
       const formattedTriggerPrice = formatPriceToAllowableDecimals(
         triggerPrice,
@@ -823,11 +822,7 @@ export default Vue.extend({
         return
       }
 
-      if (
-        hasAmount &&
-        averagePriceOption === AveragePriceOptions.BaseAmount &&
-        triggerPriceToBigNumber.gt(0)
-      ) {
+      if (hasAmount && averagePriceOption === AveragePriceOptions.BaseAmount) {
         this.updateDerivativesQuoteAmountFromBase()
       }
 
@@ -1046,7 +1041,10 @@ export default Vue.extend({
       const price = tradingTypeStopMarket ? triggerPrice : executionPrice
       const quoteAmount = inputBaseAmountToBigNumber.times(price)
 
-      if (tradingTypeStopLimit && triggerPrice.lte(0)) {
+      if (
+        (tradingTypeStopMarket || tradingTypeStopLimit) &&
+        triggerPrice.lte(0)
+      ) {
         this.inputQuoteAmount = ''
         this.$emit('update:quote-amount', '')
         return
@@ -1085,11 +1083,15 @@ export default Vue.extend({
     },
 
     reset(): void {
+      const defaultPrice = this.tradingTypeStopLimit
+        ? ''
+        : this.lastTradedPrice.toString()
+
       this.onQuoteAmountChange('')
       this.setPostOnly(false)
       this.setReduceOnly(false)
       this.setSlippageTolerance('0.5')
-      this.onPriceChange(this.lastTradedPrice.toString())
+      this.onPriceChange(defaultPrice)
       this.onTriggerPriceChange('')
       this.onAmountChange(this.amountStep)
       this.onLeverageChange('1')
