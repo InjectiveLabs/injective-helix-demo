@@ -10,7 +10,8 @@ jobs:
     if: true
     env:
       ## Public
-      APP_NAME: 'Helix | The Premier Decentralized Spot and Derivatives Exchange'
+      APP_NAME: 'Hi Helix 👋'
+      # APP_NAME: 'Helix | The Premier Decentralized Spot and Derivatives Exchange'
       APP_BASE_URL: https://helixapp.com
       APP_NETWORK: mainnet
       APP_ENV: mainnet
