@@ -5,11 +5,13 @@
       <LogoText class="block h-10 text-white" />
     </div>
 
-    <h1 class="text-3xl leading-10 mt-8 mb-6">Sign up for early access</h1>
+    <h1 class="text-2xl xs:text-3xl leading-10 mt-8 mb-6">
+      Sign up for early access
+    </h1>
 
     <ValidationObserver v-slot="{ invalid }" ref="form">
       <ValidationProvider v-slot="{ errors }" name="email" :rules="`email`">
-        <div class="w-[360px] bg-gray-950 rounded-lg flex items-center">
+        <div class="w-80 xs:w-[360px] bg-gray-950 rounded-lg flex items-center">
           <VInput
             v-model="email"
             placeholder="Subscribe to get updates"

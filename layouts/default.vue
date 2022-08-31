@@ -1,11 +1,11 @@
 <template>
   <div id="pro" class="w-full h-full min-h-screen bg-gray-900 relative">
     <!-- Todo: remove on helix launch -->
-    <div>
+    <div v-if="IS_MAINNET">
       <nuxt />
     </div>
 
-    <transition v-if="false" name="page" appear>
+    <transition v-else name="page" appear>
       <HocLoading :status="status">
         <div>
           <SidebarMobile :is-sidebar-open="isOpenSidebar" />
@@ -43,7 +43,7 @@ import TopBar from '~/components/layout/topbar.vue'
 import SidebarMobile from '~/components/layout/sidebar-mobile.vue'
 import ModalAuctionCountdown from '~/components/partials/modals/auction-countdown.vue'
 import ModalInsufficientInjForGas from '~/components/partials/modals/insufficient-inj-for-gas.vue'
-import { SHOW_AUCTION_COUNTDOWN } from '~/app/utils/constants'
+import { IS_MAINNET, SHOW_AUCTION_COUNTDOWN } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -56,6 +56,7 @@ export default Vue.extend({
 
   data() {
     return {
+      IS_MAINNET,
       SHOW_AUCTION_COUNTDOWN,
       isOpenSidebar: false,
       status: new Status(StatusType.Loading)
@@ -73,9 +74,7 @@ export default Vue.extend({
   },
 
   mounted() {
-    /*
-      Todo: remove commented codes on Helix launch
-
+    if (!IS_MAINNET) {
       Promise.all([this.$accessor.wallet.init()])
         .then(() => {
           //
@@ -112,7 +111,7 @@ export default Vue.extend({
 
       this.$root.$on('wallet-connected', this.handleWalletConnected)
       this.$root.$on('nav-link-clicked', this.onCloseSideBar)
-    */
+    }
   },
 
   beforeDestroy() {

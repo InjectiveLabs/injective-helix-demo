@@ -57,6 +57,8 @@ export const IS_DEVNET = [
 export const IS_TESTNET = [Network.Testnet, Network.TestnetK8s].includes(
   NETWORK
 )
+export const IS_MAINNET =
+  NETWORK === Network.Mainnet || process.env.APP_ENV === 'mainnet'
 
 export const CHAIN_ID: ChainId = (
   process.env.APP_CHAIN_ID

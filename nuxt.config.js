@@ -119,7 +119,7 @@ export default {
 
   router: {
     linkActiveClass: 'is-active',
-    middleware: ['maintenance', 'connected'],
+    middleware: ['maintenance', 'connected', 'early-access'], // todo: remove earlyAccess on Helix launch
     extendRoutes(routes) {
       return [
         ...routes,

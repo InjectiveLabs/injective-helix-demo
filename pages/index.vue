@@ -1,9 +1,9 @@
 <template>
   <div>
     <!-- Todo: remove on helix launch -->
-    <EarlyAccess />
+    <EarlyAccess v-if="IS_MAINNET" />
 
-    <div v-if="false" class="bg-white">
+    <div v-else class="bg-white">
       <Hero />
       <div class="h-full w-full flex flex-wrap pb-4">
         <div class="container">
@@ -30,6 +30,7 @@ import WhyTrade from '~/components/partials/home/why-trade.vue'
 import GettingStarted from '~/components/partials/home/getting-started.vue'
 // Todo: remove on helix launch
 import EarlyAccess from '~/components/partials/home/early-access.vue'
+import { IS_MAINNET } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -40,6 +41,11 @@ export default Vue.extend({
     WhyTrade,
     GettingStarted,
     EarlyAccess
+  },
+  data() {
+    return {
+      IS_MAINNET
+    }
   }
 })
 </script>
