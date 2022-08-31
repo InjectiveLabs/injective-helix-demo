@@ -757,19 +757,26 @@ export default Vue.extend({
     },
 
     onPriceChange(price: string = '') {
-      const { hasAmount, market, isSpot, averagePriceOption } = this
+      const {
+        hasAmount,
+        market,
+        isSpot,
+        averagePriceOption,
+        inputTriggerPrice,
+        tradingTypeStopLimit
+      } = this
 
       if (!market) {
         return
       }
 
+      const triggerPriceToBigNumber = new BigNumberInBase(inputTriggerPrice)
       const formattedPrice = formatPriceToAllowableDecimals(
         price,
         market.priceDecimals
       )
 
       this.inputPrice = formattedPrice
-
       this.$emit('update:price', formattedPrice)
 
       if (hasAmount && averagePriceOption === AveragePriceOptions.Percentage) {
@@ -779,6 +786,10 @@ export default Vue.extend({
       }
 
       if (hasAmount && averagePriceOption === AveragePriceOptions.BaseAmount) {
+        if (tradingTypeStopLimit && triggerPriceToBigNumber.lte(0)) {
+          return
+        }
+
         return isSpot
           ? this.updateSpotQuoteAmountFromBase()
           : this.updateDerivativesQuoteAmountFromBase()
@@ -792,12 +803,13 @@ export default Vue.extend({
     },
 
     onTriggerPriceChange(triggerPrice: string = '') {
-      const { market } = this
+      const { averagePriceOption, hasAmount, market } = this
 
       if (!market) {
         return
       }
 
+      const triggerPriceToBigNumber = new BigNumberInBase(triggerPrice)
       const formattedTriggerPrice = formatPriceToAllowableDecimals(
         triggerPrice,
         market.priceDecimals
@@ -805,10 +817,29 @@ export default Vue.extend({
 
       this.inputTriggerPrice = formattedTriggerPrice
       this.$emit('update:trigger-price', formattedTriggerPrice)
+
+      if (hasAmount && averagePriceOption === AveragePriceOptions.Percentage) {
+        this.$percentageOptions.updateBaseAmountBasedOnPercentage()
+        this.$percentageOptions.updateQuoteAmountBasedOnPercentage()
+        return
+      }
+
+      if (
+        hasAmount &&
+        averagePriceOption === AveragePriceOptions.BaseAmount &&
+        triggerPriceToBigNumber.gt(0)
+      ) {
+        this.updateDerivativesQuoteAmountFromBase()
+      }
+
+      if (hasAmount && averagePriceOption === AveragePriceOptions.QuoteAmount) {
+        this.updateDerivativesBaseAmountFromQuote()
+      }
     },
 
     onAmountChange(amount: string = '') {
-      const { hasPrice, market, isSpot, tradingTypeMarket } = this
+      const { hasPrice, market, isSpot, tradingTypeMarket, inputTriggerPrice } =
+        this
 
       if (!market) {
         return
@@ -816,6 +847,7 @@ export default Vue.extend({
 
       this.$emit('update:averagePriceOption', AveragePriceOptions.BaseAmount)
 
+      const triggerPriceToBigNumber = new BigNumberInBase(inputTriggerPrice)
       const formattedBaseAmount = formatAmountToAllowableDecimals(
         amount,
         market.quantityDecimals
@@ -828,7 +860,9 @@ export default Vue.extend({
 
       if (isSpot) {
         this.updateSpotQuoteAmountFromBase()
-      } else {
+      }
+
+      if (!this.tradingTypeStopLimit || triggerPriceToBigNumber.gt(0)) {
         this.updateDerivativesQuoteAmountFromBase()
       }
 
@@ -901,7 +935,7 @@ export default Vue.extend({
         executionPrice.times(feeMultiplier)
       )
 
-      if (baseAmount.gt('0') && baseAmount.isFinite()) {
+      if (baseAmount.gt(0) && baseAmount.isFinite()) {
         const formattedBaseAmount = baseAmount.toFixed(
           market.quantityDecimals,
           BigNumberInBase.ROUND_DOWN
@@ -932,7 +966,7 @@ export default Vue.extend({
       const price = tradingTypeStopMarket ? triggerPrice : executionPrice
       const baseAmount = inputQuoteAmountToBigNumber.div(price)
 
-      if (baseAmount.gt('0')) {
+      if (baseAmount.gt(0)) {
         const formattedBaseAmount = baseAmount.toFixed(
           market.quantityDecimals,
           BigNumberInBase.ROUND_DOWN
@@ -1007,7 +1041,7 @@ export default Vue.extend({
       if (!market) {
         return
       }
-
+      console.log('trying to update quote amount from base')
       // calculate executionPrice here because executionPrice computed property not updating in time
       const executionPrice = tradingTypeMarket ? averagePrice : inputPrice
       const price = tradingTypeStopMarket ? triggerPrice : executionPrice
