@@ -19,14 +19,14 @@
           class="flex items-center gap-4 shadow-helixLight h-[80px] md:ml-6 opacity-50"
         >
           <IconCircleTwo class="ml-6" /><span>{{
-            $t('home.transferFromInjective')
+            $t('home.tradeSpotMarket')
           }}</span>
         </div>
         <div
           class="flex items-center gap-4 shadow-helixLight h-[80px] md:ml-12 opacity-50"
         >
           <IconCircleThree class="ml-6" /><span>{{
-            $t('home.startTrading')
+            $t('home.tradePerpetuals')
           }}</span>
         </div>
       </div>

@@ -134,7 +134,7 @@
           {{ $t('navigation.dmmProgramDescription') }}
         </p>
       </a>
-      <a
+      <!-- <a
         href="https://affiliate.helixapp.com"
         target="_blank"
         class="p-4 block rounded-b group hover:bg-gray-700"
@@ -146,7 +146,7 @@
         <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
           {{ $t('navigation.affiliateProgramDescription') }}
         </p>
-      </a>
+      </a> -->
     </PopperBox>
   </div>
 </template>
