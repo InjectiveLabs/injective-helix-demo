@@ -69,7 +69,7 @@
     </portal>
 
     <VCard md class="h-full mt-4 xs:mt-6">
-      <Orders v-if="component === components.orders" />
+      <Orders v-show="component === components.orders" />
       <Trades v-if="component === components.trades" />
       <Triggers v-if="component === components.triggers" />
       <OrderHistory v-if="component === components.orderHistory" />
