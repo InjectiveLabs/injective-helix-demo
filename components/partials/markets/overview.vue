@@ -1,6 +1,5 @@
 <template>
   <div
-    :style="{ backgroundImage: `url('/svg/bg-blue-glow.svg')` }"
     class="py-6 md:pt-12 md:pb-16 bg-cover bg-center"
   >
     <div class="container xl:max-w-6xl mx-auto">
@@ -8,7 +7,7 @@
         {{ $t('markets.title') }}
       </h3>
 
-      <HorizontalScrollView class="mt-6">
+      <HorizontalScrollView class="mt-4">
         <MarketCard
           v-if="newMarket"
           class="flex-0-full col-span-6 xl:col-span-4"

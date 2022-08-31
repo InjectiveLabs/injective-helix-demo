@@ -1,6 +1,6 @@
 <template>
   <div>
-    <VButton md primary class="w-full" @click="handleClickOnButton">
+    <VButton md primary class="w-full rounded" @click="handleClickOnButton">
       <span v-if="activeStep === 1" data-cy="onboarding-banner-deposit-button">
         {{ $t('common.deposit') }}
       </span>

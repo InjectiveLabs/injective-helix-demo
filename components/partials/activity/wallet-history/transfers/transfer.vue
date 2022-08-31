@@ -10,9 +10,12 @@
     </td>
 
     <td class="h-8 text-left">
-      <span data-cy="wallet-history-operation-type-table-data">{{
-        transferType
-      }}</span>
+      <span
+        data-cy="wallet-history-operation-type-table-data"
+        class="text-white text-xs"
+      >
+        {{ transferType }}
+      </span>
     </td>
 
     <td class="h-8 text-left cursor-pointer">
@@ -26,7 +29,7 @@
         </div>
         <div class="ml-3">
           <span
-            class="text-gray-200 font-semibold"
+            class="text-gray-200 text-xs"
             data-cy="wallet-history-asset-table-data"
           >
             {{ transaction.token.symbol }}
@@ -42,7 +45,7 @@
         :rounding-mode="BIG_NUMBER_ROUND_HALF_UP_MODE"
         data-cy="wallet-history-amount-table-data"
       >
-        <span slot="addon" class="text-2xs text-gray-500">
+        <span slot="addon" class="text-xs text-gray-500">
           {{ transaction.token.symbol }}
         </span>
       </VNumber>
@@ -50,6 +53,7 @@
 
     <td class="h-8 text-left font-mono">
       <VAddress
+        xs
         :address="transaction.sender"
         data-cy="wallet-history-sender-table-data"
       >
@@ -59,6 +63,7 @@
 
     <td class="h-8 text-left font-mono">
       <VAddress
+        xs
         :address="transaction.receiver"
         data-cy="wallet-history-receiver-table-data"
       >
@@ -71,7 +76,7 @@
         :href="transaction.explorerLink"
         data-cy="wallet-history-explorer-link"
         target="_blank"
-        class="text-primary-500 cursor-pointer pr-2"
+        class="text-primary-500 cursor-pointer pr-2 text-xs"
       >
         {{ $t('common.view') }}
       </a>

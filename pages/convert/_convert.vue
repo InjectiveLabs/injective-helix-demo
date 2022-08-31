@@ -75,7 +75,7 @@ export default Vue.extend({
       this.status.setIdle()
 
       if (this.marketIsBeta) {
-        this.$accessor.modal.openModal(Modal.MarketBeta)
+        this.$accessor.modal.openModal({ type: Modal.MarketBeta })
       }
     },
 
@@ -96,15 +96,15 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .convert-container {
   @apply h-full w-full flex flex-wrap py-4;
-  background: radial-gradient(
-      45.83% 49.94% at 100% 0%,
-      rgba(1, 184, 252, 0.15) 0%,
-      rgba(13, 191, 200, 0) 100%
-    ),
-    radial-gradient(
-      75.69% 42.3% at 0% 100%,
-      rgba(1, 184, 252, 0.15) 0%,
-      rgba(13, 191, 200, 0) 100%
-    );
+  // background: radial-gradient(
+  //     45.83% 49.94% at 100% 0%,
+  //     rgba(1, 184, 252, 0.15) 0%,
+  //     rgba(13, 191, 200, 0) 100%
+  //   ),
+  //   radial-gradient(
+  //     75.69% 42.3% at 0% 100%,
+  //     rgba(1, 184, 252, 0.15) 0%,
+  //     rgba(13, 191, 200, 0) 100%
+  //   );
 }
 </style>

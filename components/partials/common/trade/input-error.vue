@@ -81,7 +81,17 @@ export default Vue.extend({
       default: undefined
     },
 
+    triggerPrice: {
+      type: Object as PropType<BigNumberInBase>,
+      default: undefined
+    },
+
     lastTradedPrice: {
+      type: Object as PropType<BigNumberInBase>,
+      required: true
+    },
+
+    markPrice: {
       type: Object as PropType<BigNumberInBase>,
       required: true
     },
@@ -162,7 +172,22 @@ export default Vue.extend({
     },
 
     tradingTypeMarket: {
-      type: Boolean,
+      type: Boolean as PropType<boolean>,
+      required: true
+    },
+
+    tradingTypeLimit: {
+      type: Boolean as PropType<boolean>,
+      required: true
+    },
+
+    tradingTypeStopMarket: {
+      type: Boolean as PropType<boolean>,
+      required: true
+    },
+
+    tradingTypeStopLimit: {
+      type: Boolean as PropType<boolean>,
       required: true
     },
 
@@ -231,21 +256,60 @@ export default Vue.extend({
         return this.initialMinMarginRequirementError
       }
 
-      if (this.reduceOnlyExcessError) {
-        return this.reduceOnlyExcessError
-      }
-
       if (this.priceHighDeviationFromMidOrderbookPrice) {
         return this.priceHighDeviationFromMidOrderbookPrice
       }
 
+      if (this.triggerPriceEqualsZero) {
+        return this.triggerPriceEqualsZero
+      }
+
+      if (this.triggerPriceEqualsMarkPrice) {
+        return this.triggerPriceEqualsMarkPrice
+      }
+
       return { price: '', amount: '' }
+    },
+
+    triggerPriceEqualsMarkPrice(): TradeError | undefined {
+      const { tradingTypeMarket, tradingTypeLimit, triggerPrice, markPrice } =
+        this
+
+      if (tradingTypeMarket || tradingTypeLimit) {
+        return
+      }
+
+      if (triggerPrice === undefined || !triggerPrice.eq(markPrice)) {
+        return
+      }
+
+      return {
+        price: this.$t('trade.trigger_price_equals_mark_price')
+      }
+    },
+
+    triggerPriceEqualsZero(): TradeError | undefined {
+      const { tradingTypeMarket, tradingTypeLimit, triggerPrice } = this
+
+      if (tradingTypeMarket || tradingTypeLimit) {
+        return
+      }
+
+      if (triggerPrice === undefined || triggerPrice.gt(ZERO_IN_BASE)) {
+        return
+      }
+
+      return {
+        price: this.$t('trade.trigger_price_zero')
+      }
     },
 
     priceHighDeviationFromMidOrderbookPrice(): TradeError | undefined {
       const {
         isSpot,
         tradingTypeMarket,
+        tradingTypeStopLimit,
+        tradingTypeStopMarket,
         hasPrice,
         hasAmount,
         market,
@@ -254,7 +318,14 @@ export default Vue.extend({
         executionPrice
       } = this
 
-      if (tradingTypeMarket || !hasPrice || !hasAmount || !market) {
+      if (
+        tradingTypeMarket ||
+        tradingTypeStopMarket ||
+        tradingTypeStopLimit ||
+        !hasPrice ||
+        !hasAmount ||
+        !market
+      ) {
         return
       }
 
@@ -403,10 +474,12 @@ export default Vue.extend({
     initialMinMarginRequirementError(): TradeError | undefined {
       const {
         market,
+        tradingTypeStopMarket,
         notionalWithLeverage,
         hasPrice,
         hasAmount,
         executionPrice,
+        worstPrice,
         amount,
         isSpot
       } = this
@@ -423,15 +496,15 @@ export default Vue.extend({
         return undefined
       }
 
-      const notionalValueWithMarginRatio = executionPrice
+      const initialMarginRatio = (
+        market as UiPerpetualMarketWithToken | UiExpiryFuturesMarketWithToken
+      ).initialMarginRatio
+
+      const price = tradingTypeStopMarket ? worstPrice : executionPrice
+
+      const notionalValueWithMarginRatio = price
         .times(amount)
-        .times(
-          (
-            market as
-              | UiPerpetualMarketWithToken
-              | UiExpiryFuturesMarketWithToken
-          ).initialMarginRatio
-        )
+        .times(initialMarginRatio)
 
       if (notionalWithLeverage.lte(notionalValueWithMarginRatio)) {
         return {
@@ -599,25 +672,6 @@ export default Vue.extend({
       ) {
         return {
           amount: this.$t('trade.order_insufficient_margin')
-        }
-      }
-
-      return undefined
-    },
-
-    reduceOnlyExcessError(): TradeError | undefined {
-      const { maxReduceOnly, orderTypeReduceOnly, amount, isSpot } = this
-
-      if (isSpot) {
-        return
-      }
-
-      if (
-        orderTypeReduceOnly &&
-        new BigNumberInBase(amount).gt(maxReduceOnly)
-      ) {
-        return {
-          amount: this.$t('trade.reduce_only_in_excess')
         }
       }
 

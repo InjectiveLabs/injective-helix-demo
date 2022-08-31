@@ -13,47 +13,38 @@
 
     <VButton
       lg
+      :outline="disabled"
       :status="status"
-      :disabled="
-        hasError ||
-        !isUserWalletConnected ||
-        !hasInjForGasOrNotKeplr ||
-        !hasAmount ||
-        !executionPrice.gt('0')
-      "
+      :disabled="disabled"
       :ghost="hasError"
-      :aqua="(!hasInputErrors || hasAdvancedSettingsErrors) && isOrderTypeBuy"
+      :green="(!hasInputErrors || hasAdvancedSettingsErrors) && isOrderTypeBuy"
       :red="(!hasInputErrors || hasAdvancedSettingsErrors) && !isOrderTypeBuy"
-      class="w-full"
+      class="w-full rounded"
       data-cy="trading-page-execute-button"
       @click.stop="onSubmit"
     >
-      {{ $t(orderTypeBuy ? 'trade.buy' : 'trade.sell') }}
+      {{ buttonLabel }}
     </VButton>
-    <VModalOrderConfirm @confirmed="$emit('submit')" />
+
+    <VModalOrderConfirm @confirmed="handleTradeConfirmationModalConfirm" />
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { Wallet } from '@injectivelabs/ts-types'
+import { TradeExecutionType, Wallet } from '@injectivelabs/ts-types'
 import {
   SpotOrderSide,
   UiSpotMarketWithToken,
   DerivativeOrderSide,
   UiDerivativeMarketWithToken,
-  UiDerivativeLimitOrder
+  UiDerivativeLimitOrder,
+  MarketType
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
-import { Modal } from '~/types'
 import OrderError from '~/components/partials/common/trade/order-error.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
-import {
-  DEFAULT_PRICE_WARNING_DEVIATION,
-  BIGGER_PRICE_WARNING_DEVIATION,
-  UI_DEFAULT_MAX_NUMBER_OF_ORDERS
-} from '~/app/utils/constants'
-import { excludedPriceDeviationSlugs } from '~/app/data/market'
+import { UI_DEFAULT_MAX_NUMBER_OF_ORDERS } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -89,12 +80,47 @@ export default Vue.extend({
       required: true
     },
 
+    hasTriggerPrice: {
+      type: Boolean,
+      required: true
+    },
+
+    triggerPriceEqualsMarkPrice: {
+      type: Boolean,
+      required: true
+    },
+
     orderTypeBuy: {
       type: Boolean,
       required: true
     },
 
+    orderTypeToSubmit: {
+      type: String as PropType<SpotOrderSide | DerivativeOrderSide>,
+      required: true
+    },
+
+    tradingType: {
+      type: String as PropType<TradeExecutionType>,
+      required: true
+    },
+
     tradingTypeMarket: {
+      type: Boolean,
+      required: true
+    },
+
+    tradingTypeLimit: {
+      type: Boolean,
+      required: true
+    },
+
+    tradingTypeStopMarket: {
+      type: Boolean,
+      required: true
+    },
+
+    tradingTypeStopLimit: {
       type: Boolean,
       required: true
     },
@@ -117,6 +143,11 @@ export default Vue.extend({
     status: {
       type: Object as PropType<Status>,
       required: true
+    },
+
+    isConditionalOrder: {
+      type: Boolean,
+      required: true
     }
   },
 
@@ -128,6 +159,72 @@ export default Vue.extend({
   },
 
   computed: {
+    isSpot(): boolean {
+      return this.$route.name === 'spot-spot'
+    },
+
+    marketType(): MarketType {
+      const { market } = this
+
+      return market.type
+    },
+
+    disabled(): boolean {
+      const {
+        hasError,
+        isUserWalletConnected,
+        hasInjForGasOrNotKeplr,
+        hasAmount,
+        hasTriggerPrice,
+        triggerPriceEqualsMarkPrice,
+        executionPrice,
+        isSpot,
+        isConditionalOrder
+      } = this
+
+      const commonErrors =
+        hasError ||
+        !isUserWalletConnected ||
+        !hasInjForGasOrNotKeplr ||
+        !hasAmount
+
+      if (commonErrors) {
+        return true
+      }
+
+      const isPerpConditionalOrderWithoutTriggerPrice =
+        !isSpot && isConditionalOrder && !hasTriggerPrice
+
+      if (isPerpConditionalOrderWithoutTriggerPrice) {
+        return true
+      }
+
+      const isPerpConditionalOrderWithIncorrectTriggerPrice =
+        !isSpot && isConditionalOrder && triggerPriceEqualsMarkPrice
+
+      if (isPerpConditionalOrderWithIncorrectTriggerPrice) {
+        return true
+      }
+
+      if (executionPrice.lte(0)) {
+        return true
+      }
+
+      return false
+    },
+
+    buttonLabel(): string {
+      const { orderTypeBuy, marketType } = this
+
+      if (marketType === MarketType.Spot) {
+        return orderTypeBuy ? this.$t('trade.buy') : this.$t('trade.sell')
+      }
+
+      return orderTypeBuy
+        ? this.$t('trade.buyLong')
+        : this.$t('trade.sellShort')
+    },
+
     hasEnoughInjForGas(): boolean {
       return this.$accessor.bank.hasEnoughInjForGas
     },
@@ -184,52 +281,12 @@ export default Vue.extend({
       }
 
       return hasEnoughInjForGas
-    },
-
-    priceHasHighDeviationWarning(): boolean {
-      const {
-        executionPrice,
-        orderTypeBuy,
-        orderTypeReduceOnly,
-        tradingTypeMarket,
-        market,
-        lastTradedPrice
-      } = this
-
-      if (!market || !tradingTypeMarket || executionPrice.lte(0)) {
-        return false
-      }
-
-      if (orderTypeReduceOnly) {
-        return false
-      }
-
-      const defaultPriceWarningDeviation = excludedPriceDeviationSlugs.includes(
-        market.ticker
-      )
-        ? BIGGER_PRICE_WARNING_DEVIATION
-        : DEFAULT_PRICE_WARNING_DEVIATION
-
-      const deviation = new BigNumberInBase(1)
-        .minus(
-          orderTypeBuy
-            ? lastTradedPrice.dividedBy(executionPrice)
-            : executionPrice.dividedBy(lastTradedPrice)
-        )
-        .times(100)
-
-      return deviation.gt(defaultPriceWarningDeviation)
     }
   },
 
   methods: {
     onSubmit() {
-      const {
-        hasError,
-        maxOrdersError,
-        priceHasHighDeviationWarning,
-        isUserWalletConnected
-      } = this
+      const { hasError, maxOrdersError, isUserWalletConnected } = this
 
       if (!isUserWalletConnected) {
         return this.$toast.error(this.$t('please_connect_your_wallet'))
@@ -243,10 +300,10 @@ export default Vue.extend({
         return this.$toast.error(maxOrdersError)
       }
 
-      if (priceHasHighDeviationWarning) {
-        return this.$accessor.modal.openModal(Modal.OrderConfirm)
-      }
+      this.$emit('submit:request')
+    },
 
+    handleTradeConfirmationModalConfirm() {
       this.$emit('submit')
     }
   }

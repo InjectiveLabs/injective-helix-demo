@@ -8,6 +8,7 @@ const mainnetSpot = [
   'inj-usdt',
   'dot-usdt',
   'atom-usdt',
+  'usdc-usdt',
   'xprt-usdt',
   'weth-usdt',
   'evmos-usdt',

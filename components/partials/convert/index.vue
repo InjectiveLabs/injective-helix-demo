@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-800 rounded-xl py-8">
+  <div class="bg-helixGray-950 rounded-xl py-8">
     <div class="px-8 w-full">
       <div class="flex items-center justify-between mb-8">
         <span class="font-bold text-lg">
@@ -16,6 +16,7 @@
       <div>
         <TokenSelector
           class="input-convert"
+          data-cy="convert-widget-from-input"
           :disabled="status && status.isLoading()"
           :amount="fromAmount"
           :balance="fromBalance"
@@ -27,6 +28,8 @@
           :usd-price="fromUsdPrice"
           :step="orderTypeBuy ? priceStep : amountStep"
           :max-decimals="maxDecimalsFrom"
+          show-input
+          show-custom-indicator
           @input:amount="onSetAmount"
           @input:token="onSetFromToken"
           @input:max="onMaxInput"
@@ -34,7 +37,8 @@
         <div class="flex justify-between items-center -my-2">
           <button
             type="button"
-            class="rounded-full z-1000 flex items-center justify-center min-w-[32px] w-8 h-8 bg-primary-600 hover:bg-primary-500 relative mx-auto"
+            class="rounded-full z-1000 flex items-center justify-center min-w-[32px] w-8 h-8 bg-primary-500 hover:bg-primary-600 relative mx-auto"
+            data-cy="convert-widget-switch-sides-button"
             :class="{ 'opacity-50': status.isLoading() }"
             @click="switchTokens"
           >
@@ -43,6 +47,7 @@
         </div>
         <TokenSelector
           class="input-convert"
+          data-cy="convert-widget-to-input"
           :disabled="status && status.isLoading()"
           :amount="toAmount"
           :balance="toBalance"
@@ -54,6 +59,8 @@
           :validation-rules="'positiveNumber'"
           :step="orderTypeBuy ? amountStep : priceStep"
           :max-decimals="maxDecimalsTo"
+          show-input
+          show-custom-indicator
           disable-max-selector
           @input:amount="onSetToAmount"
           @input:token="onSetToToken"
@@ -81,7 +88,8 @@
           :disabled="ctaButtonDisabled"
           :ghost="hasErrors"
           :primary="!hasErrors"
-          class="w-full"
+          class="w-full rounded"
+          data-cy="convert-widget-submit-button"
           :class="{ 'bg-opacity-50': status.isLoading() }"
           @click.stop="onSubmit"
         >
@@ -92,7 +100,8 @@
           lg
           :status="status"
           primary
-          class="w-full"
+          class="w-full rounded"
+          data-cy="convert-widget-connect-wallet-button"
           :class="{ 'bg-opacity-50': status.isLoading() }"
           @click.stop="handleClickOrConnect"
         >
@@ -102,6 +111,7 @@
       <span
         v-if="executionPriceHasHighDeviationWarning"
         class="block mt-4 text-2xs font-semibold text-red-200"
+        data-cy="convert-widget-price-deviation-warning"
       >
         {{ $t('trade.execution_price_far_away_from_last_traded_price') }}
       </span>
@@ -230,7 +240,7 @@ export default Vue.extend({
         return this.$t('trade.convert.insufficient_balance')
       }
 
-      return this.$t('trade.convert.convert_now')
+      return this.$t('trade.convert.convert')
     },
 
     ctaButtonDisabled(): boolean {
@@ -1098,7 +1108,7 @@ export default Vue.extend({
 
   mounted() {
     if (!this.hasEnoughInjForGasOrNotKeplr) {
-      this.$accessor.modal.openModal(Modal.InsufficientInjForGas)
+      this.$accessor.modal.openModal({ type: Modal.InsufficientInjForGas })
     }
 
     let from = (this.$route.query.from as string) || 'usdt'

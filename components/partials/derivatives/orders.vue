@@ -27,6 +27,27 @@
           <VSeparator />
           <VButtonFilter
             v-model="component"
+            :option="components.triggers"
+            data-cy="trading-page-triggers-tab-button"
+          >
+            <span class="uppercase text-xs font-semibold">
+              {{ $t('activity.triggers') }}
+              {{ `(${triggers.length})` }}
+            </span>
+          </VButtonFilter>
+          <VSeparator />
+          <VButtonFilter
+            v-model="component"
+            :option="components.orderHistory"
+            data-cy="trading-page-order-history-tab-button"
+          >
+            <span class="uppercase text-xs font-semibold">
+              {{ $t('activity.orderHistory') }}
+            </span>
+          </VButtonFilter>
+          <VSeparator />
+          <VButtonFilter
+            v-model="component"
             :option="components.tradeHistory"
             data-cy="trading-page-trade-history-tab-button"
           >
@@ -40,7 +61,12 @@
       <div
         class="col-span-12 lg:col-span-5 xl:col-span-4 mx-4 mb-4 flex items-center justify-between lg:justify-end lg:ml-0 lg:mr-2 lg:mt-4"
       >
-        <VCheckbox v-if="market" v-model="currentMarketOnly" class="lg:mr-4">
+        <VCheckbox
+          v-if="market"
+          v-model="currentMarketOnly"
+          data-cy="trade-page-filter-by-ticker-checkbox"
+          class="lg:mr-4"
+        >
           {{ $t('trade.asset_only', { asset: market.ticker }) }}
         </VCheckbox>
         <VButton
@@ -49,6 +75,8 @@
           "
           red-outline
           sm
+          data-cy="trade-page-cancel-all-button"
+          class="rounded"
           @click.stop="handleCancelAllClick"
         >
           {{ $t('trade.cancelAllOrders') }}
@@ -60,6 +88,8 @@
           "
           red-outline
           sm
+          data-cy="trade-page-cancel-all-button"
+          class="rounded"
           @click.stop="handleCloseAllPositionsClick"
         >
           {{ $t('trade.closeAllPositions') }}
@@ -87,24 +117,30 @@ import {
   UiDerivativeMarketWithToken,
   UiDerivativeLimitOrder,
   UiPosition,
-  MarketType
+  MarketType,
+  UiDerivativeOrderHistory
 } from '@injectivelabs/sdk-ui-ts'
 import OpenOrders from './orders/index.vue'
 import OpenPositions from './positions/index.vue'
 import TradeHistory from './trade-history/index.vue'
+import OrderHistory from './order-history/index.vue'
+import Triggers from './triggers/index.vue'
 
 const components = {
-  orderHistory: '',
   openOrders: 'OpenOrders',
   openPositions: 'OpenPositions',
-  tradeHistory: 'TradeHistory'
+  tradeHistory: 'TradeHistory',
+  orderHistory: 'OrderHistory',
+  triggers: 'Triggers'
 }
 
 export default Vue.extend({
   components: {
     TradeHistory,
     OpenOrders,
-    OpenPositions
+    OpenPositions,
+    OrderHistory,
+    Triggers
   },
 
   data() {
@@ -136,6 +172,14 @@ export default Vue.extend({
 
     positions(): UiPosition[] {
       return this.$accessor.positions.subaccountPositions
+    },
+
+    triggers(): UiDerivativeOrderHistory[] {
+      return this.$accessor.derivatives.subaccountConditionalOrders
+    },
+
+    orderHistory(): UiDerivativeOrderHistory[] {
+      return this.$accessor.derivatives.subaccountOrderHistory
     },
 
     currentMarketOrders(): UiDerivativeLimitOrder[] {
@@ -219,6 +263,8 @@ export default Vue.extend({
   mounted() {
     Promise.all([
       this.$accessor.derivatives.fetchSubaccountOrders(),
+      this.$accessor.derivatives.fetchSubaccountOrderHistory(),
+      this.$accessor.derivatives.fetchSubaccountConditionalOrders(),
       this.$accessor.derivatives.fetchSubaccountTrades(),
       this.$accessor.positions.fetchSubaccountPositions()
     ])

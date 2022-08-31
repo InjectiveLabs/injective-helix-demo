@@ -9,7 +9,8 @@ export default {
     emptyHeader: 'No markets found',
     emptyDescription: 'Try another search term or you can propose some!',
     poweredBy: 'Powered by',
-    vol: 'Vol'
+    vol: 'Vol',
+    quote: 'Quote'
   },
 
   marketPage: {

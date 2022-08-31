@@ -2,6 +2,8 @@ import { actionTree, getterTree } from 'typed-vuex'
 import {
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
+  UiMarketHistory,
+  UiMarketsHistoryTransformer,
   UiSpotMarketSummary,
   UiSpotMarketWithToken,
   zeroSpotMarketSummary,
@@ -13,7 +15,11 @@ import {
   FeeDiscountSchedule
 } from '@injectivelabs/sdk-ts'
 import { Token } from '@injectivelabs/token-metadata'
-import { exchangeApi, tokenService } from '~/app/Services'
+import {
+  exchangeApi,
+  indexerRestMarketChronosApi,
+  tokenService
+} from '~/app/Services'
 import { upcomingMarkets, deprecatedMarkets } from '~/app/data/market'
 import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 
@@ -37,7 +43,8 @@ const initialStateFactory = () => ({
   >,
   deprecatedMarketsSummaries: deprecatedMarkets.map((m) =>
     zeroSpotMarketSummary(m.marketId)
-  ) as Array<UiSpotMarketSummary | UiDerivativeMarketSummary>
+  ) as Array<UiSpotMarketSummary | UiDerivativeMarketSummary>,
+  marketsHistory: [] as UiMarketHistory[]
 })
 
 const initialState = initialStateFactory()
@@ -68,7 +75,8 @@ export const state = () => ({
   >,
   deprecatedMarketsSummaries: initialState.deprecatedMarketsSummaries as Array<
     UiSpotMarketSummary | UiDerivativeMarketSummary
-  >
+  >,
+  marketsHistory: initialState.marketsHistory as UiMarketHistory[]
 })
 
 export type ExchangeStoreState = ReturnType<typeof state>
@@ -115,6 +123,13 @@ export const mutations = {
     tradeRewardsPoints: string[]
   ) {
     state.pendingTradeRewardsPoints = tradeRewardsPoints
+  },
+
+  setMarketsHistory(
+    state: ExchangeStoreState,
+    marketsHistory: UiMarketHistory[]
+  ) {
+    state.marketsHistory = [...state.marketsHistory, ...marketsHistory]
   },
 
   reset(state: ExchangeStoreState) {
@@ -263,6 +278,39 @@ export const actions = actionTree(
       )
 
       commit('setPendingTradeRewardPoints', rewards)
+    },
+
+    async getMarketsHistory(
+      { state, commit },
+      {
+        marketIds,
+        resolution,
+        countback
+      }: { marketIds: string[]; resolution: number; countback: number }
+    ) {
+      const marketHistoryAlreadyExists = marketIds.every((marketId) => {
+        return state.marketsHistory.find((marketHistory: UiMarketHistory) => {
+          return marketHistory.marketId === marketId
+        })
+      })
+
+      if (marketHistoryAlreadyExists) {
+        return
+      }
+
+      const marketsHistory =
+        await indexerRestMarketChronosApi.fetchMarketsHistory({
+          marketIds,
+          resolution,
+          countback
+        })
+
+      const marketsHistoryToUiMarketsHistory =
+        UiMarketsHistoryTransformer.marketsHistoryToUiMarketsHistory(
+          marketsHistory
+        )
+
+      commit('setMarketsHistory', marketsHistoryToUiMarketsHistory)
     },
 
     async reset({ commit }) {

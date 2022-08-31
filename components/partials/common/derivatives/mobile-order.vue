@@ -5,7 +5,7 @@
         <div class="flex items-center gap-1">
           <span
             :class="{
-              'text-aqua-500': order.orderSide === DerivativeOrderSide.Buy,
+              'text-green-500': order.orderSide === DerivativeOrderSide.Buy,
               'text-red-500': order.orderSide === DerivativeOrderSide.Sell
             }"
           >
@@ -29,7 +29,7 @@
 
         <VButton
           v-if="orderFillable"
-          class="cursor-pointer"
+          class="cursor-pointer rounded"
           :status="status"
           @click.stop="onCancelOrder"
         >

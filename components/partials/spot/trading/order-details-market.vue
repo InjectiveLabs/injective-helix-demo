@@ -1,25 +1,15 @@
 <template>
-  <div v-if="market" class="mt-6 py-6 border-t relative">
-    <VDrawer
+  <div v-if="market" class="pt-6 border-t relative">
+    <Drawer
       :custom-handler="true"
       :custom-is-open="detailsDrawerOpen"
       @drawer-toggle="onDrawerToggle"
     >
+      <p slot="header" class="flex justify-between text-sm">
+        <TextInfo :title="$t('trade.details')" lg />
+      </p>
       <div class="mt-4">
-        <TextInfo :title="$t('trade.averagePrice')" class="mt-2">
-          <span
-            v-if="!executionPrice.isNaN()"
-            data-cy="trading-page-details-execution-price-text-content"
-            class="font-mono flex items-start break-all"
-          >
-            {{ executionPriceToFormat }}
-            <span class="text-gray-500 ml-1 break-normal">
-              {{ market.quoteToken.symbol }}
-            </span>
-          </span>
-          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </TextInfo>
-        <TextInfo class="mt-2" :title="$t('trade.min_received_amount')">
+        <TextInfo class="mt-2" :title="$t('trade.amount')">
           <span
             v-if="minimumReceivedAmount.gt(0)"
             data-cy="trading-page-details-minimum-amount-text-content"
@@ -32,6 +22,20 @@
                   ? market.baseToken.symbol
                   : market.quoteToken.symbol
               }}
+            </span>
+          </span>
+          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
+        </TextInfo>
+
+        <TextInfo :title="$t('trade.averagePrice')" class="mt-2">
+          <span
+            v-if="!executionPrice.isNaN()"
+            data-cy="trading-page-details-execution-price-text-content"
+            class="font-mono flex items-start break-all"
+          >
+            {{ executionPriceToFormat }}
+            <span class="text-gray-500 ml-1 break-normal">
+              {{ market.quoteToken.symbol }}
             </span>
           </span>
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
@@ -102,7 +106,7 @@
           </span>
         </TextInfo> -->
       </div>
-    </VDrawer>
+    </Drawer>
   </div>
 </template>
 
@@ -116,7 +120,7 @@ import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
-    VDrawer: Drawer
+    Drawer
   },
 
   props: {

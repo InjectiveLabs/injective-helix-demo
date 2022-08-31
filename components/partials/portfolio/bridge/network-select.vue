@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <h3 class="text-lg text-gray-200 font-semibold mb-4">
+    <h3 class="text-lg text-gray-200 mb-4">
       <slot name="title"></slot>
     </h3>
     <VSelect
