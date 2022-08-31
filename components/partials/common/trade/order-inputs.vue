@@ -372,7 +372,7 @@ export default Vue.extend({
 
     triggerPrice: {
       type: Object as PropType<BigNumberInBase>,
-      default: undefined
+      default: ZERO_IN_BASE
     },
 
     markPrice: {
@@ -765,7 +765,6 @@ export default Vue.extend({
         inputTriggerPrice,
         tradingTypeStopLimit
       } = this
-
       if (!market) {
         return
       }
@@ -1033,28 +1032,33 @@ export default Vue.extend({
         averagePrice,
         inputPrice,
         market,
-        triggerPrice,
         tradingTypeMarket,
-        tradingTypeStopMarket
+        tradingTypeStopMarket,
+        tradingTypeStopLimit,
+        triggerPrice
       } = this
 
       if (!market) {
         return
       }
-      console.log('trying to update quote amount from base')
       // calculate executionPrice here because executionPrice computed property not updating in time
       const executionPrice = tradingTypeMarket ? averagePrice : inputPrice
       const price = tradingTypeStopMarket ? triggerPrice : executionPrice
       const quoteAmount = inputBaseAmountToBigNumber.times(price)
 
-      if (quoteAmount.gt('0')) {
+      if (tradingTypeStopLimit && triggerPrice.lte(0)) {
+        this.inputQuoteAmount = ''
+        this.$emit('update:quote-amount', '')
+        return
+      }
+
+      if (quoteAmount.gt(0)) {
         const formattedQuoteAmount = quoteAmount.toFixed(
           market.priceDecimals,
           BigNumberInBase.ROUND_DOWN
         )
 
         this.inputQuoteAmount = formattedQuoteAmount
-
         this.$emit('update:quote-amount', formattedQuoteAmount)
       } else {
         this.inputQuoteAmount = ''
@@ -1081,6 +1085,7 @@ export default Vue.extend({
     },
 
     reset(): void {
+      this.onQuoteAmountChange('')
       this.setPostOnly(false)
       this.setReduceOnly(false)
       this.setSlippageTolerance('0.5')
