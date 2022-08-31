@@ -23,14 +23,14 @@
       <div class="col-span-6 flex items-center justify-start">
         <IconBoundingBoxCircles class="text-gray-900 w-6 h-6 mr-3" />
         <span class="text-gray-900 text-lg">
-          {{ $t('home.decentralized') }}
+          {{ $t('home.unmatchedRewards') }}
         </span>
       </div>
 
       <div class="col-span-6 flex items-center justify-start">
         <IconGas class="text-gray-900 w-6 h-6 mr-3" />
         <span class="text-gray-900 text-lg">
-          {{ $t('home.gasless') }}
+          {{ $t('home.gasFree') }}
         </span>
       </div>
 

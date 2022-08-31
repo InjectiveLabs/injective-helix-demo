@@ -234,11 +234,13 @@ export default Vue.extend({
 
       const [latestMarket, secondLatestMarket] = newMarketsList
 
-      if (!latestMarket || !secondLatestMarket) {
+      if (!latestMarket) {
         return marketsList
       }
 
-      return [...marketsList, latestMarket, secondLatestMarket]
+      return secondLatestMarket
+        ? [...marketsList, latestMarket, secondLatestMarket]
+        : [...marketsList, latestMarket]
     }
   },
 
