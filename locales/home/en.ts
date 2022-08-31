@@ -84,6 +84,8 @@ export default {
     submitRequest: 'Submit A Request',
     feeDiscounts: 'Fee Discounts',
     apiDocumentation: 'API Documentation',
-    community: 'Community'
+    community: 'Community',
+    disclaimer:
+      'By subscribing, you agree to the {termsAndCondition}, have read the {privacyPolicy} and acknowledge that you have read and understand the {disclaimer}.' // todo: remove on helix launch
   }
 }

@@ -57,6 +57,34 @@
         <IconTwitter />
       </a>
     </div>
+
+    <div class="max-w-[360px] absolute bottom-12">
+      <i18n path="footer.disclaimer" tag="p" class="text-xs text-gray-450">
+        <template #termsAndCondition>
+          <a
+            class="underline hover:text-primary-500"
+            href="https://injectivelabs.org/terms-and-conditions"
+            target="_blank"
+          >Terms and Conditions</a>
+        </template>
+
+        <template #privacyPolicy>
+          <a
+            class="underline hover:text-primary-500"
+            href="https://injectivelabs.org/privacy-policy"
+            target="_blank"
+          >Privacy Policy</a>
+        </template>
+
+        <template #disclaimer>
+          <a
+            class="underline hover:text-primary-500"
+            href="https://injective.com/disclaimer/"
+            target="_blank"
+          >Disclaimer</a>
+        </template>
+      </i18n>
+    </div>
   </div>
 </template>
 
