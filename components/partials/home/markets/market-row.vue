@@ -61,7 +61,7 @@
           <LineGraph
             v-if="chartData.length > 1"
             :data="chartData"
-            :color="'#f3164d'"
+            :color="chartLineColor"
             :bg-type="'transparent'"
             :stroke-width="1"
             :smoothness="0.2"
@@ -160,6 +160,19 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(summary.price)
+    },
+
+    chartLineColor(): string {
+      const { chartData } = this
+
+      if (chartData.length < 1) {
+        return ''
+      }
+
+      const [, lastYAxisHolcPrice] = chartData[chartData.length - 1]
+      const [, firstYaxisHolcPrice] = chartData[0]
+
+      return lastYAxisHolcPrice >= firstYaxisHolcPrice ? '#0EE29B' : '#f3164d'
     },
 
     lastTradedPriceToFormat(): string {
