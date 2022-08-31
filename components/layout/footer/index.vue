@@ -15,6 +15,9 @@
         <span class="text-gray-500 text-xs">
           &copy; {{ new Date().getFullYear() }} Injective Labs Inc.
         </span>
+        <div class="hidden lg:block mt-12 text-sm max-w-[450px]">
+          {{ $t('footer.helixProvides') }}
+        </div>
       </div>
 
       <div class="3md:col-span-2">
@@ -115,6 +118,10 @@
             <IconRedditCircle />
           </a>
         </div>
+      </div>
+
+      <div class="xs:col-span-2 sm:col-span-3 md:col-span-5 lg:hidden text-sm">
+        {{ $t('footer.helixProvides') }}
       </div>
     </div>
   </footer>

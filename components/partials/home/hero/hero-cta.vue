@@ -6,7 +6,9 @@
       <Logo class="w-auto h-6" alt="Helix" />
       <LogoText class="block ml-2 h-6 text-gray-900" />
     </div>
-    <h1 class="text-gray-900 font-bold text-5xl 3xl:text-6xl mb-8">
+    <h1
+      class="text-gray-900 font-bold text-[36px] leading-[58px] sm:text-5xl sm:leading-[60px] 3xl:leading-[77px] 3xl:text-[64px] mb-8"
+    >
       {{ $t('home.title') }}
     </h1>
     <p class="text-gray-900 mt-4 text-base 3xl:text-xl mb-8">
@@ -23,14 +25,14 @@
       <div class="col-span-6 flex items-center justify-start">
         <IconBoundingBoxCircles class="text-gray-900 w-6 h-6 mr-3" />
         <span class="text-gray-900 text-lg">
-          {{ $t('home.decentralized') }}
+          {{ $t('home.interoperable') }}
         </span>
       </div>
 
       <div class="col-span-6 flex items-center justify-start">
         <IconGas class="text-gray-900 w-6 h-6 mr-3" />
         <span class="text-gray-900 text-lg">
-          {{ $t('home.gasless') }}
+          {{ $t('home.gasFree') }}
         </span>
       </div>
 
