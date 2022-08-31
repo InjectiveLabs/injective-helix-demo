@@ -86,6 +86,7 @@ export default Vue.extend({
   methods: {
     subscribe() {
       this.status.setLoading()
+
       subscribeToNewsLetter(this.email)
         .then(() => {
           this.$toast.success("You've successfully signed up for early access!")
