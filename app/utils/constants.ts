@@ -91,7 +91,7 @@ export const IS_TESTNET = [Network.Testnet, Network.TestnetK8s].includes(
   NETWORK
 )
 export const IS_MAINNET =
-  NETWORK === Network.Mainnet || process.env.APP_ENV === 'mainnet' || true
+  NETWORK === Network.Mainnet || process.env.APP_ENV === 'mainnet'
 
 export const CHAIN_ID: ChainId = getChainId()
 export const ETHEREUM_CHAIN_ID: EthereumChainId = getEthereumChainId()
