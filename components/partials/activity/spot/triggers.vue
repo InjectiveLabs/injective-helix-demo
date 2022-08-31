@@ -166,10 +166,9 @@ export default Vue.extend({
 
   methods: {
     fetchTriggers(): Promise<void> {
-      const orderTypes =
-        this.type && this.type.orderType
-          ? orderTypeToOrderTypes(this.type.orderType)
-          : undefined
+      const orderTypes = this.type && !!this.type.executionType
+        ? orderTypeToOrderTypes(this.type.orderType)
+        : []
 
       const executionTypes =
         this.type && this.type.executionType

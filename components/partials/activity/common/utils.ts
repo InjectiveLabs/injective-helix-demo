@@ -20,7 +20,11 @@ export function tradeTypesToTradeExecutionTypes(
   return undefined
 }
 
-export function orderTypeToOrderTypes(orderType: string) {
+export function orderTypeToOrderTypes(orderType?: string) {
+  if (orderType === undefined) {
+    return [ConditionalOrderSide.Buy, ConditionalOrderSide.Sell]
+  }
+
   if (orderType === ConditionalOrderType.TakeProfit) {
     return [ConditionalOrderSide.TakeBuy, ConditionalOrderSide.TakeSell]
   }

@@ -92,13 +92,6 @@ export default Vue.extend({
     if (this.type === TradeSelectorType.TypeAllSpot) {
       this.list = [
         {
-          text: this.$t('trade.all'),
-          value: {
-            executionType: undefined,
-            orderType: undefined
-          }
-        },
-        {
           text: this.$t('trade.limit'),
           value: {
             executionType: 'limit',
@@ -118,13 +111,6 @@ export default Vue.extend({
 
     if (this.type === TradeSelectorType.TypeAllDerivatives) {
       this.list = [
-        {
-          text: this.$t('trade.all'),
-          value: {
-            executionType: undefined,
-            orderType: undefined
-          }
-        },
         {
           text: this.$t('trade.limit'),
           value: {
