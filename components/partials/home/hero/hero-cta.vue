@@ -23,7 +23,7 @@
       <div class="col-span-6 flex items-center justify-start">
         <IconBoundingBoxCircles class="text-gray-900 w-6 h-6 mr-3" />
         <span class="text-gray-900 text-lg">
-          {{ $t('home.unmatchedRewards') }}
+          {{ $t('home.interoperable') }}
         </span>
       </div>
 

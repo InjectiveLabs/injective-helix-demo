@@ -1,6 +1,6 @@
 export default {
   home: {
-    title: 'The Premier Decentralized Spot and Derivatives Exchange',
+    title: 'The Premier Decentralized Crypto Exchange',
     subtitle:
       'Trade unlimited cross-chain crypto assets and perpetual markets with market leading rebates*',
     tradeNow: 'Trade Now',
@@ -66,7 +66,7 @@ export default {
       featureThreeDescription: 'Easy to integrate with world-class support'
     },
     fast: 'Fast',
-    unmatchedRewards: 'Unmatched Rewards',
+    interoperable: 'Interoperable',
     gasFree: 'Gas Free',
     secure: 'Secure',
     market: 'Market',
