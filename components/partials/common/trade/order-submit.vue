@@ -39,6 +39,7 @@ import {
   DerivativeOrderSide,
   UiDerivativeMarketWithToken,
   UiDerivativeLimitOrder,
+  UiSpotLimitOrder,
   MarketType
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
@@ -237,8 +238,30 @@ export default Vue.extend({
       return this.$accessor.wallet.wallet
     },
 
-    orders(): UiDerivativeLimitOrder[] {
+    derivativeOrders(): UiDerivativeLimitOrder[] {
       return this.$accessor.derivatives.subaccountOrders
+    },
+
+    spotOrders(): UiSpotLimitOrder[] {
+      return this.$accessor.spot.subaccountOrders
+    },
+
+    filteredDerivativeOrders(): UiDerivativeLimitOrder[] {
+      const { market, orderType } = this
+
+      return this.$accessor.derivatives.subaccountOrders.filter(
+        (order) =>
+          order.orderSide === orderType && order.marketId === market.marketId
+      )
+    },
+
+    filteredSpotOrders(): UiSpotLimitOrder[] {
+      const { market, orderType } = this
+
+      return this.$accessor.spot.subaccountOrders.filter(
+        (order) =>
+          order.orderSide === orderType && order.marketId === market.marketId
+      )
     },
 
     isOrderTypeBuy(): boolean {
@@ -254,11 +277,16 @@ export default Vue.extend({
     },
 
     maxOrdersError(): string | undefined {
-      const { orders, tradingTypeMarket, orderType } = this
+      const {
+        isSpot,
+        filteredDerivativeOrders,
+        filteredSpotOrders,
+        tradingTypeMarket
+      } = this
 
-      const filteredOrders = orders.filter(
-        (order) => order.orderSide === orderType
-      )
+      const filteredOrders = isSpot
+        ? filteredSpotOrders
+        : filteredDerivativeOrders
 
       if (tradingTypeMarket) {
         return undefined
@@ -286,7 +314,7 @@ export default Vue.extend({
 
   methods: {
     onSubmit() {
-      const { hasError, maxOrdersError, isUserWalletConnected } = this
+      const { hasError, isUserWalletConnected, maxOrdersError } = this
 
       if (!isUserWalletConnected) {
         return this.$toast.error(this.$t('please_connect_your_wallet'))

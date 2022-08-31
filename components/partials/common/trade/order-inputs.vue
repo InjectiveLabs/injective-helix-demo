@@ -372,7 +372,7 @@ export default Vue.extend({
 
     triggerPrice: {
       type: Object as PropType<BigNumberInBase>,
-      default: ZERO_IN_BASE
+      default: () => ZERO_IN_BASE
     },
 
     markPrice: {
