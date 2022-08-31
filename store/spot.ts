@@ -47,6 +47,24 @@ import {
 import { spot as allowedSpotMarkets } from '~/routes.config'
 import { ActivityFetchOptions } from '~/types'
 
+// TODO: This is a temporary function until we have a proper OrderHistory stream.
+function orderToOrderHistory(order: UiSpotLimitOrder): UiSpotOrderHistory {
+  return {
+    ...order,
+    active: ![
+      SpotOrderState.Filled,
+      SpotOrderState.Canceled,
+      SpotOrderState.Triggered
+    ].includes(order.state),
+    executionType: '',
+    orderType: '',
+    filledQuantity: new BigNumberInBase(order.quantity)
+      .minus(new BigNumberInBase(order.unfilledQuantity))
+      .toString(),
+    direction: order.orderSide
+  }
+}
+
 const initialStateFactory = () => ({
   markets: [] as UiSpotMarketWithToken[],
   marketsSummary: [] as UiSpotMarketSummary[],
@@ -283,23 +301,28 @@ export const mutations = {
 
   pushOrUpdateSubaccountOrderHistory(
     state: SpotStoreState,
-    subaccountOrder: UiSpotLimitOrder
+    subaccountOrder: UiSpotOrderHistory
   ) {
     const subaccountOrderHistory = [...state.subaccountOrderHistory].filter(
       (order) => order.orderHash !== subaccountOrder.orderHash
     )
 
-    // TODO: Replace this temporary fix with a dedicated stream for order history instead.
-    const order = {
-      ...subaccountOrder,
-      orderType: subaccountOrder.orderSide,
-      direction: subaccountOrder.orderSide
-    } as unknown as UiSpotOrderHistory
+    state.subaccountOrderHistory = [subaccountOrder, ...subaccountOrderHistory]
+  },
 
-    state.subaccountOrderHistory = [
-      order,
-      ...subaccountOrderHistory
-    ]
+  updateSubaccountOrderHistory(
+    state: SpotStoreState,
+    subaccountOrder: UiSpotOrderHistory
+  ) {
+    if (subaccountOrder.orderHash) {
+      state.subaccountOrderHistory = state.subaccountOrderHistory.map(
+        (order) => {
+          return order.orderHash === subaccountOrder.orderHash
+            ? subaccountOrder
+            : order
+        }
+      )
+    }
   },
 
   deleteSubaccountOrder(
@@ -505,12 +528,16 @@ export const actions = actionTree(
             case SpotOrderState.Booked:
             case SpotOrderState.Unfilled:
             case SpotOrderState.PartialFilled: {
-              commit('pushOrUpdateSubaccountOrderHistory', order)
+              commit(
+                'pushOrUpdateSubaccountOrderHistory',
+                orderToOrderHistory(order)
+              )
               commit('pushOrUpdateSubaccountOrder', order)
               break
             }
             case SpotOrderState.Canceled:
             case SpotOrderState.Filled: {
+              commit('updateSubaccountOrderHistory', orderToOrderHistory(order))
               commit('deleteSubaccountOrder', order)
               break
             }

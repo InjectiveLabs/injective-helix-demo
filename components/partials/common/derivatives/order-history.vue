@@ -105,7 +105,7 @@
         </span>
 
         <span
-          v-if="(isStopLoss && isSell) || (isTakeProfit && isBuy)"
+          v-if="(isStopLoss && !isBuy) || (isTakeProfit && isBuy)"
           class="text-white text-xs font-semibold"
         >
           &le;
@@ -334,23 +334,15 @@ export default Vue.extend({
     isBuy(): boolean {
       const { order } = this
 
+      if (order.direction === DerivativeOrderSide.Buy) {
+        return true
+      }
+
       switch (order.orderType) {
         case DerivativeOrderSide.TakeBuy:
         case DerivativeOrderSide.StopBuy:
         case DerivativeOrderSide.Buy:
-          return true
-        default:
-          return false
-      }
-    },
-
-    isSell(): boolean {
-      const { order } = this
-
-      switch (order.orderType) {
-        case DerivativeOrderSide.TakeSell:
-        case DerivativeOrderSide.StopSell:
-        case DerivativeOrderSide.Sell:
+        case DerivativeOrderSide.BuyPO:
           return true
         default:
           return false

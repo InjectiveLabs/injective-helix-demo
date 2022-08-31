@@ -66,6 +66,24 @@ import {
 } from '~/routes.config'
 import { ActivityFetchOptions } from '~/types'
 
+// TODO: This is a temporary function until we have a proper OrderHistory stream.
+function orderToOrderHistory(
+  order: UiDerivativeLimitOrder
+): UiDerivativeOrderHistory {
+  return {
+    ...order,
+    isActive: ![
+      DerivativeOrderState.Filled,
+      DerivativeOrderState.Canceled,
+      DerivativeOrderState.Triggered
+    ].includes(order.state),
+    filledQuantity: new BigNumberInBase(order.quantity)
+      .minus(new BigNumberInBase(order.unfilledQuantity))
+      .toString(),
+    direction: order.orderSide
+  }
+}
+
 const initialStateFactory = () => ({
   perpetualMarkets: [] as UiPerpetualMarketWithToken[],
   expiryFuturesMarkets: [] as UiExpiryFuturesMarketWithToken[],
@@ -381,16 +399,31 @@ export const mutations = {
 
   pushOrUpdateSubaccountOrderHistory(
     state: DerivativeStoreState,
-    subaccountOrder: UiDerivativeLimitOrder | UiDerivativeOrderHistory
+    subaccountOrder: UiDerivativeOrderHistory
   ) {
-    const subaccountOrderHistory = [
-      ...state.subaccountOrderHistory
-    ].filter((order) => order.orderHash !== subaccountOrder.orderHash)
+    const subaccountOrderHistory = [...state.subaccountOrderHistory].filter(
+      (order) => order.orderHash !== subaccountOrder.orderHash
+    )
 
     state.subaccountOrderHistory = [
       subaccountOrder as UiDerivativeOrderHistory,
       ...subaccountOrderHistory
     ]
+  },
+
+  updateSubaccountOrderHistory(
+    state: DerivativeStoreState,
+    subaccountOrder: UiDerivativeOrderHistory
+  ) {
+    if (subaccountOrder.orderHash) {
+      state.subaccountOrderHistory = state.subaccountOrderHistory.map(
+        (order) => {
+          return order.orderHash === subaccountOrder.orderHash
+            ? subaccountOrder
+            : order
+        }
+      )
+    }
   },
 
   deleteSubaccountConditionalOrder(
@@ -722,7 +755,10 @@ export const actions = actionTree(
             case DerivativeOrderState.Booked:
             case DerivativeOrderState.Unfilled:
             case DerivativeOrderState.PartialFilled: {
-              commit('pushOrUpdateSubaccountOrderHistory', order)
+              commit(
+                'pushOrUpdateSubaccountOrderHistory',
+                orderToOrderHistory(order)
+              )
               commit(
                 isConditional
                   ? 'pushOrUpdateSubaccountConditionalOrder'
@@ -733,11 +769,13 @@ export const actions = actionTree(
             }
             case DerivativeOrderState.Canceled:
             case DerivativeOrderState.Filled: {
-              const action = isConditional
-                ? 'deleteSubaccountConditionalOrder'
-                : 'deleteSubaccountOrder'
-
-              commit(action, order)
+              commit('updateSubaccountOrderHistory', orderToOrderHistory(order))
+              commit(
+                isConditional
+                  ? 'deleteSubaccountConditionalOrder'
+                  : 'deleteSubaccountOrder',
+                order
+              )
               break
             }
           }

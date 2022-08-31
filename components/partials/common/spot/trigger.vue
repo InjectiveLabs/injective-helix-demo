@@ -322,10 +322,15 @@ export default Vue.extend({
     isBuy(): boolean {
       const { trigger } = this
 
+      if (trigger.direction === SpotOrderSide.Buy) {
+        return true
+      }
+
       switch (trigger.orderType) {
         case SpotOrderSide.TakeBuy:
         case SpotOrderSide.StopBuy:
         case SpotOrderSide.Buy:
+        case SpotOrderSide.BuyPO:
           return true
         default:
           return false
