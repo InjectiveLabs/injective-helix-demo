@@ -217,7 +217,7 @@ export default {
     dashboard: 'Dashboard',
     trade: 'Trade',
     convert: 'Convert',
-    convertDescription: 'Easy and instant trade',
+    convertDescription: 'Trade through a simple & intuitive interface',
     activities: 'Activities',
     activity: 'Activity',
     portfolio: 'Portfolio',
@@ -225,8 +225,7 @@ export default {
     makerTakerFee: '-{maker}% maker / -{taker}% taker',
     noTierLevel: 'No VIP Tier',
     tradeAndEarn: 'Trade and Earn',
-    tradeAndEarnDescription:
-      'Each trade on Injective can earn you some rewards',
+    tradeAndEarnDescription: 'Earn rewards with every trade',
     affiliateProgram: 'Affiliate Program',
     affiliateProgramDescription:
       'Earn crypto commission by inviting friends to trade on Helix',
@@ -234,7 +233,7 @@ export default {
     dmmProgramDescription:
       'Provide liquidity and mine INJ as our dedicated market makers',
     spot: 'Spot',
-    spotDescription: 'Trade crypto with with on-chain orderbook',
+    spotDescription: 'Trade crypto on an on-chain orderbook',
     perpetual: 'Perpetual',
     perpetualDescription: 'Trade perpetual contracts settled in USDT or WETH'
   },

@@ -12,7 +12,7 @@ declare global {
       APP_CHRONOS_API_ENDPOINT: string
       APP_SENTRY_GRPC_ENDPOINT: string
       APP_SENTRY_HTTP_ENDPOINT: string
-      APP_GAS_REBATE_API: string
+      APP_NEWSLETTER_API: string
       META_TAGS_ENABLED: string
       ORDERBOOK_POLLING_ENABLED: string
       METRICS_ENABLED: string

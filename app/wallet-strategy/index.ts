@@ -1,6 +1,11 @@
 import { WalletStrategy } from '@injectivelabs/wallet-ts'
 import { EthereumChainId } from '@injectivelabs/ts-types'
-import { CHAIN_ID, ETHEREUM_CHAIN_ID, IS_TESTNET } from '~/app/utils/constants'
+import {
+  CHAIN_ID,
+  ETHEREUM_CHAIN_ID,
+  IS_DEVNET,
+  IS_TESTNET
+} from '~/app/utils/constants'
 
 export const getRpcUrlsForChainIds = (): Record<EthereumChainId, string> => {
   return {
@@ -28,9 +33,10 @@ export const getRpcWsUrlsForChainIds = (): Record<EthereumChainId, string> => {
   }
 }
 
-export const alchemyRpcEndpoint = IS_TESTNET
-  ? `https://eth-goerli.alchemyapi.io/v2/${process.env.APP_ALCHEMY_GOERLI_KEY}`
-  : `https://eth-mainnet.alchemyapi.io/v2/${process.env.APP_ALCHEMY_KEY}`
+export const alchemyRpcEndpoint =
+  IS_TESTNET || IS_DEVNET
+    ? `https://eth-goerli.alchemyapi.io/v2/${process.env.APP_ALCHEMY_GOERLI_KEY}`
+    : `https://eth-mainnet.alchemyapi.io/v2/${process.env.APP_ALCHEMY_KEY}`
 
 const rpcUrls = getRpcUrlsForChainIds()
 const wsRpcUrls = getRpcWsUrlsForChainIds()
