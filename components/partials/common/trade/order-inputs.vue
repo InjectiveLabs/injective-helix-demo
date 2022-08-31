@@ -600,7 +600,7 @@ export default Vue.extend({
           return
         }
 
-        if (!price && !newPrice.eq('0')) {
+        if (!Number(price) && !newPrice.eq('0')) {
           const formattedPrice = newPrice.toFixed(market.priceDecimals)
 
           this.inputPrice = formattedPrice
@@ -817,7 +817,6 @@ export default Vue.extend({
       )
 
       this.inputBaseAmount = formattedBaseAmount
-
       this.$emit('update:amount', formattedBaseAmount)
 
       this.$emit('update:proportionalPercentage', 0)
@@ -905,12 +904,11 @@ export default Vue.extend({
         )
 
         this.inputBaseAmount = formattedBaseAmount
-
         this.$emit('update:amount', formattedBaseAmount)
       } else {
-        this.inputBaseAmount = ''
-
-        this.$emit('update:amount', '')
+        // updates base amount if no calculated base amount or on trading type changes
+        this.inputBaseAmount = this.amountStep
+        this.$emit('update:amount', this.amountStep)
       }
     },
 
