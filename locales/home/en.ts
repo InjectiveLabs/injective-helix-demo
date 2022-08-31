@@ -86,6 +86,8 @@ export default {
     apiDocumentation: 'API Documentation',
     community: 'Community',
     helixProvides:
-      '*Helix is able to provide maker rebates across a number of markets as approved via the Injective DAO.'
+      '*Helix is able to provide maker rebates across a number of markets as approved via the Injective DAO.',
+    disclaimer:
+      'By subscribing, you agree to the {termsAndCondition}, have read the {privacyPolicy} and acknowledge that you have read and understand the {disclaimer}.' // todo: remove on helix launch
   }
 }

@@ -29,7 +29,7 @@ export const validateGeoLocation = (geoLocation: GeoLocation) => {
 export const fetchIpAddress = async () => {
   try {
     const httpClient = new HttpClient('https://www.myexternalip.com/json')
-    const { data } = await httpClient.get('')
+    const { data } = (await httpClient.get('')) as any
 
     return data.ip
   } catch (e: any) {
@@ -42,9 +42,9 @@ export const validateIpAddressForVPN = async (ipAddress: string) => {
     Accept: 'application/json',
     Authorization: `Bearer ${process.env.APP_PROXY_DETECTION_API_KEY}`
   }
-  const httpClient = new HttpClient(
-    'https://whois.as207111.net/api'
-  ).setConfig({ headers })
+  const httpClient = new HttpClient('https://whois.as207111.net/api').setConfig(
+    { headers }
+  )
 
   try {
     const response = (await httpClient.get('lookup', {
