@@ -379,6 +379,20 @@ export const mutations = {
     ]
   },
 
+  pushOrUpdateSubaccountOrderHistory(
+    state: DerivativeStoreState,
+    subaccountOrder: UiDerivativeLimitOrder | UiDerivativeOrderHistory
+  ) {
+    const subaccountOrderHistory = [
+      ...state.subaccountOrderHistory
+    ].filter((order) => order.orderHash !== subaccountOrder.orderHash)
+
+    state.subaccountOrderHistory = [
+      subaccountOrder as UiDerivativeOrderHistory,
+      ...subaccountOrderHistory
+    ]
+  },
+
   deleteSubaccountConditionalOrder(
     state: DerivativeStoreState,
     subaccountOrder: UiDerivativeOrderHistory
@@ -708,11 +722,13 @@ export const actions = actionTree(
             case DerivativeOrderState.Booked:
             case DerivativeOrderState.Unfilled:
             case DerivativeOrderState.PartialFilled: {
-              const action = isConditional
-                ? 'pushOrUpdateSubaccountConditionalOrder'
-                : 'pushOrUpdateSubaccountOrder'
-
-              commit(action, order)
+              commit('pushOrUpdateSubaccountOrderHistory', order)
+              commit(
+                isConditional
+                  ? 'pushOrUpdateSubaccountConditionalOrder'
+                  : 'pushOrUpdateSubaccountOrder',
+                order
+              )
               break
             }
             case DerivativeOrderState.Canceled:
@@ -1035,7 +1051,10 @@ export const actions = actionTree(
       })
     },
 
-    async batchCancelOrder({ state }, orders: UiDerivativeLimitOrder[] | UiDerivativeOrderHistory[]) {
+    async batchCancelOrder(
+      { state },
+      orders: UiDerivativeLimitOrder[] | UiDerivativeOrderHistory[]
+    ) {
       const { markets } = state
       const { subaccount } = this.app.$accessor.account
       const { address, injectiveAddress, isUserWalletConnected } =
@@ -1048,24 +1067,26 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      const messages = orders.map((order: UiDerivativeLimitOrder | UiDerivativeOrderHistory) => {
-        const market = markets.find((m) => m.marketId === order.marketId)
-        const messageType =
-          market && market.subType === MarketType.BinaryOptions
-            ? MsgBatchCancelBinaryOptionsOrders
-            : MsgBatchCancelDerivativeOrders
+      const messages = orders.map(
+        (order: UiDerivativeLimitOrder | UiDerivativeOrderHistory) => {
+          const market = markets.find((m) => m.marketId === order.marketId)
+          const messageType =
+            market && market.subType === MarketType.BinaryOptions
+              ? MsgBatchCancelBinaryOptionsOrders
+              : MsgBatchCancelDerivativeOrders
 
-        return messageType.fromJSON({
-          injectiveAddress,
-          orders: [
-            {
-              marketId: order.marketId,
-              subaccountId: order.subaccountId,
-              orderHash: order.orderHash
-            }
-          ]
-        })
-      })
+          return messageType.fromJSON({
+            injectiveAddress,
+            orders: [
+              {
+                marketId: order.marketId,
+                subaccountId: order.subaccountId,
+                orderHash: order.orderHash
+              }
+            ]
+          })
+        }
+      )
 
       await msgBroadcastClient.broadcast({
         address,

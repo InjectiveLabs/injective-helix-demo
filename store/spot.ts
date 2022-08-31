@@ -88,10 +88,14 @@ export const state = () => ({
   subaccountTradesPagination: initialState.subaccountTradesPagination,
   subaccountOrders: initialState.subaccountOrders as UiSpotLimitOrder[],
   subaccountOrdersPagination: initialState.subaccountOrdersPagination,
-  subaccountOrderHistory: initialState.subaccountOrderHistory as UiSpotOrderHistory[],
-  subaccountOrderHistoryPagination: initialState.subaccountOrderHistoryPagination,
-  subaccountConditionalOrders: initialState.subaccountConditionalOrders as UiSpotOrderHistory[],
-  subaccountConditionalOrdersPagination: initialState.subaccountConditionalOrdersPagination,
+  subaccountOrderHistory:
+    initialState.subaccountOrderHistory as UiSpotOrderHistory[],
+  subaccountOrderHistoryPagination:
+    initialState.subaccountOrderHistoryPagination,
+  subaccountConditionalOrders:
+    initialState.subaccountConditionalOrders as UiSpotOrderHistory[],
+  subaccountConditionalOrdersPagination:
+    initialState.subaccountConditionalOrdersPagination,
   orderbook: initialState.orderbook as UiSpotOrderbook | undefined
 })
 
@@ -206,7 +210,10 @@ export const mutations = {
     state.subaccountOrdersPagination.total = total
   },
 
-  setSubaccountOrderHistory(state: SpotStoreState, orderHistory: UiSpotOrderHistory[]) {
+  setSubaccountOrderHistory(
+    state: SpotStoreState,
+    orderHistory: UiSpotOrderHistory[]
+  ) {
     state.subaccountOrderHistory = orderHistory
   },
 
@@ -218,11 +225,17 @@ export const mutations = {
     state.subaccountOrderHistoryPagination.total = total
   },
 
-  setSubaccountConditionalOrders(state: SpotStoreState, conditionalOrders: UiSpotOrderHistory[]) {
+  setSubaccountConditionalOrders(
+    state: SpotStoreState,
+    conditionalOrders: UiSpotOrderHistory[]
+  ) {
     state.subaccountConditionalOrders = conditionalOrders
   },
 
-  setSubaccountConditionalOrdersEndTime(state: SpotStoreState, endTime: number) {
+  setSubaccountConditionalOrdersEndTime(
+    state: SpotStoreState,
+    endTime: number
+  ) {
     state.subaccountConditionalOrdersPagination.endTime = endTime
   },
 
@@ -266,6 +279,27 @@ export const mutations = {
     )
 
     state.subaccountOrders = [subaccountOrder, ...subaccountOrders]
+  },
+
+  pushOrUpdateSubaccountOrderHistory(
+    state: SpotStoreState,
+    subaccountOrder: UiSpotLimitOrder
+  ) {
+    const subaccountOrderHistory = [...state.subaccountOrderHistory].filter(
+      (order) => order.orderHash !== subaccountOrder.orderHash
+    )
+
+    // TODO: Replace this temporary fix with a dedicated stream for order history instead.
+    const order = {
+      ...subaccountOrder,
+      orderType: subaccountOrder.orderSide,
+      direction: subaccountOrder.orderSide
+    } as unknown as UiSpotOrderHistory
+
+    state.subaccountOrderHistory = [
+      order,
+      ...subaccountOrderHistory
+    ]
   },
 
   deleteSubaccountOrder(
@@ -471,6 +505,7 @@ export const actions = actionTree(
             case SpotOrderState.Booked:
             case SpotOrderState.Unfilled:
             case SpotOrderState.PartialFilled: {
+              commit('pushOrUpdateSubaccountOrderHistory', order)
               commit('pushOrUpdateSubaccountOrder', order)
               break
             }
@@ -550,7 +585,10 @@ export const actions = actionTree(
       commit('setSubaccountOrders', orders)
     },
 
-    async fetchSubaccountOrderHistory({ commit }, activityFetchOptions: ActivityFetchOptions | undefined) {
+    async fetchSubaccountOrderHistory(
+      { commit },
+      activityFetchOptions: ActivityFetchOptions | undefined
+    ) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -602,19 +640,20 @@ export const actions = actionTree(
         )
       }
 
-      const { orderHistory, pagination } = await indexerSpotApi.fetchOrderHistory({
-        marketId: filters?.marketId,
-        subaccountId: subaccount.subaccountId,
-        orderTypes: filters?.orderTypes as unknown as SpotOrderSide[],
-        executionTypes: filters?.executionTypes as TradeExecutionType[],
-        direction: filters?.direction,
-        isConditional: true,
-        pagination: {
-          skip: paginationOptions ? paginationOptions.skip : 0,
-          limit: paginationOptions ? paginationOptions.limit : 0,
-          endTime: state.subaccountConditionalOrdersPagination.endTime
-        }
-      })
+      const { orderHistory, pagination } =
+        await indexerSpotApi.fetchOrderHistory({
+          marketId: filters?.marketId,
+          subaccountId: subaccount.subaccountId,
+          orderTypes: filters?.orderTypes as unknown as SpotOrderSide[],
+          executionTypes: filters?.executionTypes as TradeExecutionType[],
+          direction: filters?.direction,
+          isConditional: true,
+          pagination: {
+            skip: paginationOptions ? paginationOptions.skip : 0,
+            limit: paginationOptions ? paginationOptions.limit : 0,
+            endTime: state.subaccountConditionalOrdersPagination.endTime
+          }
+        })
 
       commit('setSubaccountConditionalOrdersTotal', pagination.total)
       commit('setSubaccountConditionalOrders', orderHistory)
@@ -640,7 +679,9 @@ export const actions = actionTree(
         return
       }
 
-      const { trades } = await indexerSpotApi.fetchTrades({ marketId: market.marketId })
+      const { trades } = await indexerSpotApi.fetchTrades({
+        marketId: market.marketId
+      })
 
       commit('setTrades', trades)
     },
