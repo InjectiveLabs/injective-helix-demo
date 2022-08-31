@@ -394,6 +394,7 @@ export default Vue.extend({
         case DerivativeOrderSide.StopBuy:
           return `${this.$t('trade.stopLoss')} ${executionType}`
         default:
+          console.log('unknown orderType:', order.orderType, order)
           return ''
       }
     },
