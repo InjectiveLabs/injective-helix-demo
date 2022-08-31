@@ -7,7 +7,7 @@
       <LogoText class="block ml-2 h-6 text-gray-900" />
     </div>
     <h1
-      class="text-gray-900 font-bold text-[44px] sm:text-5xl 3xl:text-6xl mb-8"
+      class="text-gray-900 font-bold text-[40px] leading-[58px] sm:text-5xl sm:leading-[60px] 3xl:leading-[77px] 3xl:text-[64px] mb-8"
     >
       {{ $t('home.title') }}
     </h1>
