@@ -63,6 +63,7 @@ export const APP_SENTRY_HTTP_ENDPOINT: string =
   process.env.APP_SENTRY_HTTP_ENDPOINT || ''
 export const APP_CHRONOS_API_ENDPOINT: string =
   process.env.APP_CHRONOS_API_ENDPOINT || ''
+export const APP_NEWSLETTER_API: string = process.env.APP_NEWSLETTER_API || ''
 
 export const UI_DEFAULT_MIN_DISPLAY_DECIMALS = 2
 export const UI_DEFAULT_DISPLAY_DECIMALS = 4
@@ -90,7 +91,7 @@ export const IS_TESTNET = [Network.Testnet, Network.TestnetK8s].includes(
   NETWORK
 )
 export const IS_MAINNET =
-  NETWORK === Network.Mainnet || process.env.APP_ENV === 'mainnet'
+  NETWORK === Network.Mainnet || process.env.APP_ENV === 'mainnet' || true
 
 export const CHAIN_ID: ChainId = getChainId()
 export const ETHEREUM_CHAIN_ID: EthereumChainId = getEthereumChainId()

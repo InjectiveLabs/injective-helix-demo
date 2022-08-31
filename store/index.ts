@@ -8,7 +8,6 @@ import * as bridge from '~/store/bridge'
 import * as derivatives from '~/store/derivatives'
 import * as exchange from '~/store/exchange'
 import * as activity from '~/store/activity'
-import * as gasRebate from '~/store/gasRebate'
 import * as onboard from '~/store/onboard'
 import * as modal from '~/store/modal'
 import * as spot from '~/store/spot'
@@ -28,7 +27,6 @@ export const accessorType = getAccessorType({
     derivatives,
     onboard,
     exchange,
-    gasRebate,
     modal,
     activity,
     referral,

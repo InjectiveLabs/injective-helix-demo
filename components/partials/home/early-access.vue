@@ -25,9 +25,9 @@
             class="bg-[#2891E9] p-4 h-12 text-sm cursor-pointer hover:bg-opacity-50 rounded-lg leading-4"
             :class="{
               'bg-opacity-50 text-white text-opacity-60':
-                invalid || email.trim() === ''
+                invalid || !trimmedEmail
             }"
-            :disabled="invalid || email.trim() === ''"
+            :disabled="invalid || !trimmedEmail"
             :status="status"
             @click="subscribe"
           >
@@ -83,6 +83,14 @@ export default Vue.extend({
     }
   },
 
+  computed: {
+    trimmedEmail(): string {
+      const { email } = this
+
+      return email.trim()
+    }
+  },
+
   methods: {
     subscribe() {
       this.status.setLoading()
@@ -90,6 +98,9 @@ export default Vue.extend({
       subscribeToNewsLetter(this.email)
         .then(() => {
           this.$toast.success("You've successfully signed up for early access!")
+        })
+        .catch((_e: any) => {
+          this.$toast.error('Something happened, please try again later!')
         })
         .finally(() => {
           this.status.setIdle()

@@ -1,22 +1,18 @@
 import { HttpClient } from '@injectivelabs/utils'
-
-const httpClient = new HttpClient(
-  'https://www.getrevue.co/profile/chrischoitweets'
-)
+import { APP_NEWSLETTER_API } from '../utils/constants'
 
 export const subscribeToNewsLetter = async (email: string) => {
+  const httpClient = new HttpClient(APP_NEWSLETTER_API)
+
   try {
-    const { data } = (await httpClient.post('/add_subscriber'),
-    {
-      data: {
-        email
-      }
-    }) as {
+    const response = (await httpClient.get('MailchimpHandler', {
+      email
+    })) as {
       data: any
     }
 
-    return data
+    return response.data
   } catch (e: any) {
-    // silently throw error
+    throw new Error(e)
   }
 }
