@@ -26,17 +26,19 @@
         <span class="w-full text-gray-900 font-medium text-sm text-right">
           <div class="flex align-center justify-end">
             <IconArrow
-              v-if="!lastTradedPrice.isNaN()"
+              v-if="
+                !lastTradedPrice.isNaN() && lastPriceChange !== Change.NoChange
+              "
               class="transform w-3 h-3 mr-1 mt-1"
               :class="{
-                'text-green-500 rotate-90': lastPriceChange !== Change.Decrease,
+                'text-green-500 rotate-90': lastPriceChange === Change.Increase,
                 'text-red-500 -rotate-90': lastPriceChange === Change.Decrease
               }"
             />
             <span
               v-if="!lastTradedPrice.isNaN()"
               :class="{
-                'text-green-500': lastPriceChange !== Change.Decrease,
+                'text-green-500': lastPriceChange === Change.Increase,
                 'text-red-500': lastPriceChange === Change.Decrease
               }"
             >
