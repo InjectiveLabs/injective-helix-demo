@@ -43,7 +43,7 @@
     <div class="flex items-center gap-4 mt-10 mb-20">
       <a
         class="w-6 h-6 text-white hover:text-primary-500"
-        href="https://t.me/joininjective"
+        href="https://t.me/helixapp"
         target="_blank"
       >
         <IconTelegramCircle />
@@ -65,7 +65,8 @@
             class="underline hover:text-primary-500"
             href="https://injectivelabs.org/terms-and-conditions"
             target="_blank"
-          >Terms and Conditions</a>
+            >Terms and Conditions
+          </a>
         </template>
 
         <template #privacyPolicy>
@@ -73,7 +74,8 @@
             class="underline hover:text-primary-500"
             href="https://injectivelabs.org/privacy-policy"
             target="_blank"
-          >Privacy Policy</a>
+            >Privacy Policy
+          </a>
         </template>
 
         <template #disclaimer>
@@ -81,7 +83,8 @@
             class="underline hover:text-primary-500"
             href="https://injective.com/disclaimer/"
             target="_blank"
-          >Disclaimer</a>
+            >Disclaimer
+          </a>
         </template>
       </i18n>
     </div>
@@ -127,8 +130,8 @@ export default Vue.extend({
         .then(() => {
           this.$toast.success("You've successfully signed up for early access!")
         })
-        .catch((_e: any) => {
-          this.$toast.error('Something happened, please try again later!')
+        .catch((e: any) => {
+          this.$toast.error(e.message.replace('Error', ''))
         })
         .finally(() => {
           this.status.setIdle()
