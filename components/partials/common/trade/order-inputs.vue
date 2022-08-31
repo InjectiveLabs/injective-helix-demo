@@ -246,6 +246,11 @@ export default Vue.extend({
   },
 
   props: {
+    averagePrice: {
+      type: Object as PropType<BigNumberInBase>,
+      default: () => ZERO_IN_BASE
+    },
+
     market: {
       type: Object as PropType<
         | UiSpotMarketWithToken
@@ -851,7 +856,6 @@ export default Vue.extend({
       )
 
       this.inputQuoteAmount = formattedQuoteAmount
-
       this.$emit('update:quote-amount', formattedQuoteAmount)
       this.$emit('update:proportionalPercentage', 0)
 
@@ -906,20 +910,27 @@ export default Vue.extend({
         this.inputBaseAmount = formattedBaseAmount
         this.$emit('update:amount', formattedBaseAmount)
       } else {
-        // updates base amount if no calculated base amount or on trading type changes
+        // updates inputBaseAmount also if a tradingType changes
         this.inputBaseAmount = this.amountStep
         this.$emit('update:amount', this.amountStep)
       }
     },
 
     updateDerivativesBaseAmountFromQuote() {
-      const { inputQuoteAmountToBigNumber, executionPrice, market } = this
+      const {
+        inputQuoteAmountToBigNumber,
+        executionPrice,
+        market,
+        tradingTypeStopMarket,
+        triggerPrice
+      } = this
 
       if (!market) {
         return
       }
 
-      const baseAmount = inputQuoteAmountToBigNumber.div(executionPrice)
+      const price = tradingTypeStopMarket ? triggerPrice : executionPrice
+      const baseAmount = inputQuoteAmountToBigNumber.div(price)
 
       if (baseAmount.gt('0')) {
         const formattedBaseAmount = baseAmount.toFixed(
@@ -931,17 +942,18 @@ export default Vue.extend({
 
         this.$emit('update:amount', formattedBaseAmount)
       } else {
-        this.inputBaseAmount = ''
-
-        this.$emit('update:amount', '')
+        // updates inputBaseAmount also if a tradingType changes
+        this.inputBaseAmount = this.amountStep
+        this.$emit('update:amount', this.amountStep)
       }
     },
 
     updateSpotQuoteAmountFromBase() {
       const {
-        executionPrice,
+        averagePrice,
         inputBaseAmountToBigNumber,
         inputPostOnly,
+        inputPrice,
         makerFeeRate,
         market,
         orderTypeBuy,
@@ -960,6 +972,8 @@ export default Vue.extend({
         ? new BigNumberInBase(1).plus(feeRate)
         : new BigNumberInBase(1).minus(feeRate)
 
+      // calculate executionPrice here because executionPrice computed property not updating in time
+      const executionPrice = tradingTypeMarket ? averagePrice : inputPrice
       const quoteAmount = inputBaseAmountToBigNumber
         .times(executionPrice)
         .times(feeMultiplier)
@@ -971,7 +985,6 @@ export default Vue.extend({
         )
 
         this.inputQuoteAmount = formattedQuoteAmount
-
         this.$emit('update:quote-amount', formattedQuoteAmount)
       } else {
         this.inputQuoteAmount = ''
@@ -981,13 +994,24 @@ export default Vue.extend({
     },
 
     updateDerivativesQuoteAmountFromBase() {
-      const { inputBaseAmountToBigNumber, executionPrice, market } = this
+      const {
+        inputBaseAmountToBigNumber,
+        averagePrice,
+        inputPrice,
+        market,
+        triggerPrice,
+        tradingTypeMarket,
+        tradingTypeStopMarket
+      } = this
 
       if (!market) {
         return
       }
 
-      const quoteAmount = inputBaseAmountToBigNumber.times(executionPrice)
+      // calculate executionPrice here because executionPrice computed property not updating in time
+      const executionPrice = tradingTypeMarket ? averagePrice : inputPrice
+      const price = tradingTypeStopMarket ? triggerPrice : executionPrice
+      const quoteAmount = inputBaseAmountToBigNumber.times(price)
 
       if (quoteAmount.gt('0')) {
         const formattedQuoteAmount = quoteAmount.toFixed(
@@ -1026,10 +1050,9 @@ export default Vue.extend({
       this.setPostOnly(false)
       this.setReduceOnly(false)
       this.setSlippageTolerance('0.5')
-      this.onPriceChange('')
+      this.onPriceChange(this.lastTradedPrice.toString())
       this.onTriggerPriceChange('')
       this.onAmountChange(this.amountStep)
-      this.onQuoteAmountChange('')
       this.onLeverageChange('1')
     }
   }
