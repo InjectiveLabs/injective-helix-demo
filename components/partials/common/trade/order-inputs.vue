@@ -807,7 +807,7 @@ export default Vue.extend({
       if (!market) {
         return
       }
-      const triggerPriceToBigNumber = new BigNumberInBase(triggerPrice)
+
       const formattedTriggerPrice = formatPriceToAllowableDecimals(
         triggerPrice,
         market.priceDecimals

@@ -64,7 +64,7 @@
     "vee-validate": "^3.4.5",
     "vue-clickaway": "^2.2.2",
     "vue-i18n": "^8.23.0",
-    "vue-plot": "^0.0.6",
+    "vue-plot": "0.0.7",
     "vue-router": "^3.5.1",
     "vue-select": "^3.12.2",
     "vue2-touch-events": "^3.2.2"
