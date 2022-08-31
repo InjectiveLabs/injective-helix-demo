@@ -25,11 +25,8 @@
           <IconInfoTooltip class="ml-2" :tooltip="$t('trade.amount_tooltip')" />
         </div>
       </th>
-      <th>
-        <div class="flex items-center justify-end">
-          <span>{{ $t('trade.total') }}</span>
-          <IconInfoTooltip class="ml-2" :tooltip="$t('trade.total_tooltip')" />
-        </div>
+      <th class="text-right">
+        {{ $t('trade.total') }}
       </th>
       <th class="text-right">
         {{ $t('trade.triggerCondition') }}

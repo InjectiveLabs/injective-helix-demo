@@ -1035,7 +1035,7 @@ export const actions = actionTree(
       })
     },
 
-    async batchCancelOrder({ state }, orders: UiDerivativeLimitOrder[]) {
+    async batchCancelOrder({ state }, orders: UiDerivativeLimitOrder[] | UiDerivativeOrderHistory[]) {
       const { markets } = state
       const { subaccount } = this.app.$accessor.account
       const { address, injectiveAddress, isUserWalletConnected } =
@@ -1048,7 +1048,7 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      const messages = orders.map((order) => {
+      const messages = orders.map((order: UiDerivativeLimitOrder | UiDerivativeOrderHistory) => {
         const market = markets.find((m) => m.marketId === order.marketId)
         const messageType =
           market && market.subType === MarketType.BinaryOptions
