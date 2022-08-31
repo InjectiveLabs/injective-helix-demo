@@ -130,8 +130,8 @@ export default Vue.extend({
         .then(() => {
           this.$toast.success("You've successfully signed up for early access!")
         })
-        .catch((_e: any) => {
-          this.$toast.error('Something happened, please try again later!')
+        .catch((e: any) => {
+          this.$toast.error(e.message.replace('Error', ''))
         })
         .finally(() => {
           this.status.setIdle()
