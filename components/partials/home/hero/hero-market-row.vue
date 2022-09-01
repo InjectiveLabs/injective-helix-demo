@@ -2,7 +2,7 @@
   <nuxt-link :to="marketRoute">
     <div
       class="grid grid-cols-12 items-center border-helixGray-200 py-4 gap-10 box-content"
-      @click.native="handleTradeClickedTrack"
+      @click="handleTradeClickedTrack"
     >
       <div class="col-span-4 flex items-center justify-start pl-4">
         <div class="flex items-center justify-start">

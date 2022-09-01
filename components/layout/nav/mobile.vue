@@ -61,7 +61,7 @@
 
         <a
           class="text-gray-200 hover:bg-gray-800 hover:text-white text-sm font-semibold rounded-lg cursor-pointer mx-px h-10 flex items-center px-6 py-2"
-          href="https:/dmm.injective.network"
+          href="https://dmm.injective.network"
           target="_blank"
         >
           <span class="font-normal tracking-wide">

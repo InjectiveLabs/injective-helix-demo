@@ -126,7 +126,7 @@
         </p>
       </nuxt-link>
       <a
-        href="https:/dmm.injective.network"
+        href="https://dmm.injective.network"
         target="_blank"
         class="p-4 block group hover:bg-gray-700"
       >

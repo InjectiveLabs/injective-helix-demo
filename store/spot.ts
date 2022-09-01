@@ -658,20 +658,21 @@ export const actions = actionTree(
         )
       }
 
-      const { orderHistory, pagination } = await indexerSpotApi.fetchOrderHistory({
-        marketId: filters?.marketId,
-        subaccountId: subaccount.subaccountId,
-        orderTypes: filters?.orderTypes as unknown as SpotOrderSide[],
-        executionTypes: filters?.executionTypes as TradeExecutionType[],
-        direction: filters?.direction,
-        isConditional: filters?.isConditional,
-        state: SpotOrderState.Booked,
-        pagination: {
-          skip: paginationOptions ? paginationOptions.skip : 0,
-          limit: paginationOptions ? paginationOptions.limit : 0,
-          endTime: state.subaccountOrderHistoryPagination.endTime
-        }
-      })
+      const { orderHistory, pagination } =
+        await indexerSpotApi.fetchOrderHistory({
+          marketId: filters?.marketId,
+          subaccountId: subaccount.subaccountId,
+          orderTypes: filters?.orderTypes as unknown as SpotOrderSide[],
+          executionTypes: filters?.executionTypes as TradeExecutionType[],
+          direction: filters?.direction,
+          isConditional: filters?.isConditional,
+          state: SpotOrderState.Booked,
+          pagination: {
+            skip: paginationOptions ? paginationOptions.skip : 0,
+            limit: paginationOptions ? paginationOptions.limit : 0,
+            endTime: state.subaccountOrderHistoryPagination.endTime
+          }
+        })
 
       commit('setSubaccountOrderHistoryTotal', pagination.total)
       commit('setSubaccountOrderHistory', orderHistory)
