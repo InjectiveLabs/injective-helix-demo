@@ -779,13 +779,13 @@ export const actions = actionTree(
 
           switch (order.state) {
             case DerivativeOrderState.Booked:
+            case DerivativeOrderState.Filled:
             case DerivativeOrderState.Unfilled:
             case DerivativeOrderState.PartialFilled: {
               commit('pushOrUpdateSubaccountOrderHistory', order)
               break
             }
-            case DerivativeOrderState.Canceled:
-            case DerivativeOrderState.Filled: {
+            case DerivativeOrderState.Canceled: {
               commit('updateSubaccountOrderHistory', order)
               break
             }
