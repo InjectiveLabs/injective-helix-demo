@@ -1,9 +1,9 @@
 <template>
   <div>
     <!-- Todo: remove on helix launch -->
-    <EarlyAccess v-if="IS_MAINNET" />
+    <EarlyAccess v-if="false" />
 
-    <div v-else class="bg-white">
+    <div class="bg-white">
       <Hero />
       <div class="h-full w-full flex flex-wrap pb-4">
         <div class="container">

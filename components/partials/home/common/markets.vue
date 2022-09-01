@@ -5,7 +5,7 @@
         <HeroMarketHeader v-if="markets.length !== 0" />
         <HeroMarketRow
           v-for="({ market, summary }, index) in heroMarketsList"
-          :key="`market-${market.marketId}`"
+          :key="`hero-market-${market.marketId}-${index}`"
           :market="market"
           :summary="summary"
           :class="{
@@ -18,7 +18,7 @@
         <MarketHeader />
         <MarketRow
           v-for="({ market, summary }, index) in marketsList"
-          :key="`market-${market.marketId}`"
+          :key="`market-${market.marketId}-${index}`"
           :market="market"
           :summary="summary"
           :class="{
