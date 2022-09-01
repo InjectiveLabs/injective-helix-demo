@@ -155,7 +155,6 @@ import {
   getTokenLogoWithVendorPathPrefix,
   UiSpotOrderHistory
 } from '@injectivelabs/sdk-ui-ts'
-import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import { TradeExecutionType } from '@injectivelabs/ts-types'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
@@ -232,7 +231,9 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(cosmosSdkDecToBigNumber(trigger.quantity))
+      return new BigNumberInWei(trigger.quantity).toBase(
+        market.baseToken.decimals
+      )
     },
 
     quantityToFormat(): string {
@@ -262,8 +263,8 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(
-        cosmosSdkDecToBigNumber(trigger.filledQuantity)
+      return new BigNumberInWei(trigger.filledQuantity).toBase(
+        market.baseToken.decimals
       )
     },
 
