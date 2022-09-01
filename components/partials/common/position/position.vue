@@ -61,7 +61,10 @@
       </div>
     </td>
 
-    <td v-if="!isBinaryOptionsPage" class="text-right font-mono text-white text-xs">
+    <td
+      v-if="!isBinaryOptionsPage"
+      class="text-right font-mono text-white text-xs"
+    >
       <span v-if="isBinaryOptions">&mdash;</span>
       <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <VNumber
@@ -150,7 +153,9 @@
     </td>
     <td v-if="!isBinaryOptionsPage" class="text-right font-mono">
       <span v-if="isBinaryOptions" class="text-white text-xs">&mdash;</span>
-      <span v-else-if="hideBalance" class="text-white text-xs">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+      <span v-else-if="hideBalance" class="text-white text-xs">{{
+        HIDDEN_BALANCE_DISPLAY
+      }}</span>
       <span
         v-else-if="effectiveLeverage.gte(0)"
         class="flex items-center justify-end text-white text-xs"
@@ -650,7 +655,7 @@ export default Vue.extend({
         return
       }
 
-      return this.$router.push({ ...getMarketRoute(market) })
+      return this.$router.push(getMarketRoute(market))
     }
   }
 })

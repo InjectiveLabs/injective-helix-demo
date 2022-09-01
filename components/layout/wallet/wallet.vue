@@ -15,7 +15,7 @@
         @blur="handleHideDropdown"
       >
         <IconUser class="w-4 h-4 lg:mr-2" />
-        <span class="hidden lg:block">
+        <span class="hidden lg:block font-mono">
           {{ formattedInjectiveAddress }}
         </span>
       </div>
@@ -35,12 +35,12 @@
           </h3>
         </div>
         <div class="mt-2 flex items-center">
-          <LogoMini class="w-12 h-12 mr-4" />
+          <p class="pt-2"><LogoMini class="w-12 h-12 mr-2" /></p>
           <div class="flex-1 flex-wrap">
             <div class="flex items-center justify-between w-full">
-              <div>
+              <div class="">
                 <span
-                  class="font-medium w-full block"
+                  class="w-full block font-mono"
                   data-cy="wallet-connected-popper-inj-address-text-content"
                 >
                   {{ formattedInjectiveAddress }}
@@ -61,7 +61,7 @@
               </div>
             </div>
             <span
-              class="w-full flex items-center justify-end mt-2 cursor-pointer"
+              class="w-full flex items-center justify-start mt-2 cursor-pointer"
               @click.stop="handleClickOnFeeDiscounts"
             >
               <span
@@ -177,7 +177,7 @@ export default Vue.extend({
       Wallet,
       REFERRALS_ENABLED,
       isInjectiveAddress: true,
-      isWalletDropdownOpen: false,
+      isWalletDropdownOpen: true,
       popperOption: {
         placement: 'bottom-start',
         modifiers: [

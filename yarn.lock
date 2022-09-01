@@ -2365,10 +2365,10 @@
     "@improbable-eng/grpc-web" "^0.14.0"
     google-protobuf "^3.14.0"
 
-"@injectivelabs/indexer-api@^1.0.15":
-  version "1.0.15"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/indexer-api/-/indexer-api-1.0.15.tgz#cf71963973cf78eb843106ff412dd7d566d8bc89"
-  integrity sha512-eT0MFEhlRLwaqOE/i1m4VfQDh8dJzwW1RMm1lHeuwBCLuz/0VpFiFnmWQvgPnU6769l9SlIncvsFVx/cBfE4jQ==
+"@injectivelabs/indexer-api@^1.0.16":
+  version "1.0.16"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/indexer-api/-/indexer-api-1.0.16.tgz#36a762a771c2644a26b56250eed56ff23500dfbc"
+  integrity sha512-694Pije1YfNwe8UyrflvfzPgTvVF70hxkmWdzOkEZkQ1fybGcpXtAlCI2rIxcUXKqU13qnK9g8drl7tNqqb/fg==
   dependencies:
     "@improbable-eng/grpc-web" "^0.14.0"
     google-protobuf "^3.14.0"
@@ -2404,10 +2404,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/sdk-ts@1.0.114", "@injectivelabs/sdk-ts@^1.0.114":
-  version "1.0.114"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.0.114.tgz#2d24acd8cd7cd5461bef7d80440dc1713ece8ddd"
-  integrity sha512-ySycFIvvzozd3Yq9JPiC326rQOYcYK20GcFTCeiFbdLgTwydduWl2ilMpdLXfbCi9rHpMsHEjhvvDRQLtTsN5w==
+"@injectivelabs/sdk-ts@1.0.115", "@injectivelabs/sdk-ts@^1.0.115":
+  version "1.0.115"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.0.115.tgz#b72b17f0ca30dd42c0650cc7e9d61373e32e365e"
+  integrity sha512-HI5eDHQ95m2e6nfBkHEjULR1yVgKXtP/4IXoHkZa+eKRMBuKzaU0aZJ1tW7F6pzGJcrMxN+l6n+xwwky9g68Fg==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@improbable-eng/grpc-web" "^0.15.0"
@@ -2415,7 +2415,7 @@
     "@injectivelabs/chain-api" "^1.8.0-rc8"
     "@injectivelabs/exceptions" "^1.0.9"
     "@injectivelabs/exchange-api" "^2.2.77"
-    "@injectivelabs/indexer-api" "^1.0.15"
+    "@injectivelabs/indexer-api" "^1.0.16"
     "@injectivelabs/networks" "^1.0.14"
     "@injectivelabs/token-metadata" "^1.0.22"
     "@injectivelabs/ts-types" "^1.0.8"
@@ -2437,14 +2437,14 @@
     shx "^0.3.2"
     snakecase-keys "^5.4.1"
 
-"@injectivelabs/sdk-ui-ts@1.0.155":
-  version "1.0.155"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.0.155.tgz#6206b255b93d0f302f8cb6ba62517fa2e8105ab6"
-  integrity sha512-rY2vq5xp4RFlUohkt0PX+a+T5CiCx15Ix0Jxi1GocH3KOsiryYOSpcD5FqpN5LtNOV91EdRdC6iNquARWy0+Aw==
+"@injectivelabs/sdk-ui-ts@1.0.156":
+  version "1.0.156"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.0.156.tgz#9f625a366fffeaa85ff46b8e4be0fe53764747cd"
+  integrity sha512-1hwz5z0nkwEMadZaa9gzgqCyXW18bVcAulCpm6+l+4fBEqCKhPiERaezpTV3DWNFoG1EmpZ3NCy6PsBXMer1VQ==
   dependencies:
     "@injectivelabs/exceptions" "^1.0.9"
     "@injectivelabs/networks" "^1.0.14"
-    "@injectivelabs/sdk-ts" "^1.0.114"
+    "@injectivelabs/sdk-ts" "^1.0.115"
     "@injectivelabs/token-metadata" "^1.0.22"
     "@injectivelabs/token-utils" "^1.0.13"
     "@injectivelabs/ts-types" "^1.0.8"
@@ -7600,7 +7600,7 @@ de-indent@^1.0.2:
   resolved "https://registry.yarnpkg.com/de-indent/-/de-indent-1.0.2.tgz#b2038e846dc33baa5796128d0804b455b8c1e21d"
   integrity sha512-e/1zu3xH5MQryN2zdVaF0OrdNLUbvWxzMbi+iNA6Bky7l1RoP8a2fIbRocyHclXt/arDrrR6lL3TqFD9pMQTsg==
 
-debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.9:
+debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.6, debug@^2.6.9:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
   integrity sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==
@@ -9800,6 +9800,11 @@ get-value@^2.0.3, get-value@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/get-value/-/get-value-2.0.6.tgz#dc15ca1c672387ca76bd37ac0a395ba2042a2c28"
   integrity sha512-Ln0UQDlxH1BapMu3GPtf7CuYNwRZf2gwCuPqbyG6pB8WfmFpzqcy4xtAaAMUhnNqjMKTiCPZG2oMT3YSx8U2NA==
+
+get-youtube-id@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/get-youtube-id/-/get-youtube-id-1.0.1.tgz#adb6f475e292d98f98ed5bfb530887656193e157"
+  integrity sha512-5yidLzoLXbtw82a/Wb7LrajkGn29BM6JuLWeHyNfzOGp1weGyW4+7eMz6cP23+etqj27VlOFtq8fFFDMLq/FXQ==
 
 getpass@^0.1.1:
   version "0.1.7"
@@ -12218,6 +12223,11 @@ load-json-file@^4.0.0:
     parse-json "^4.0.0"
     pify "^3.0.0"
     strip-bom "^3.0.0"
+
+load-script@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/load-script/-/load-script-1.0.0.tgz#0491939e0bee5643ee494a7e3da3d2bac70c6ca4"
+  integrity sha512-kPEjMFtZvwL9TaZo0uZ2ml+Ye9HUMmPwbYRJ324qF9tqMejwykJ5ggTyvzmrbBeapCAbk98BSbTeovHEEP1uCA==
 
 loader-runner@^2.4.0:
   version "2.4.0"
@@ -16350,6 +16360,11 @@ sirv@^1.0.7:
     mrmime "^1.0.0"
     totalist "^1.0.0"
 
+sister@^3.0.0:
+  version "3.0.2"
+  resolved "https://registry.npmjs.org/sister/-/sister-3.0.2.tgz#bb3e39f07b1f75bbe1945f29a27ff1e5a2f26be4"
+  integrity sha512-p19rtTs+NksBRKW9qn0UhZ8/TUI9BPw9lmtHny+Y3TinWlOa9jWh9xB0AtPSdmOy49NJJJSSe0Ey4C7h0TrcYA==
+
 sisteransi@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/sisteransi/-/sisteransi-1.0.5.tgz#134d681297756437cc05ca01370d3a7a571075ed"
@@ -18314,6 +18329,14 @@ vue-toasted@^1.1.28:
   resolved "https://registry.yarnpkg.com/vue-toasted/-/vue-toasted-1.1.28.tgz#dbabb83acc89f7a9e8765815e491d79f0dc65c26"
   integrity sha512-UUzr5LX51UbbiROSGZ49GOgSzFxaMHK6L00JV8fir/CYNJCpIIvNZ5YmS4Qc8Y2+Z/4VVYRpeQL2UO0G800Raw==
 
+vue-youtube@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.npmjs.org/vue-youtube/-/vue-youtube-1.4.0.tgz#34b74a967783d3c64596d886efef5966032f9428"
+  integrity sha512-PCyfGAouSt6rTX0GLUzpdX2XC52zYf7a9mUhdp53jeDlPoU40hpsvyV3Zg2+947pvbv27ORcmtzm2fqO08kh9Q==
+  dependencies:
+    get-youtube-id "^1.0.0"
+    youtube-player "^5.4.0"
+
 vue2-touch-events@^3.2.2:
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/vue2-touch-events/-/vue2-touch-events-3.2.2.tgz#77b760a70659ed8a75e7c685163e73497be87042"
@@ -19423,6 +19446,15 @@ yocto-queue@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
+
+youtube-player@^5.4.0:
+  version "5.5.2"
+  resolved "https://registry.npmjs.org/youtube-player/-/youtube-player-5.5.2.tgz#052b86b1eabe21ff331095ffffeae285fa7f7cb5"
+  integrity sha512-ZGtsemSpXnDky2AUYWgxjaopgB+shFHgXVpiJFeNB5nWEugpW1KWYDaHKuLqh2b67r24GtP6HoSW5swvf0fFIQ==
+  dependencies:
+    debug "^2.6.6"
+    load-script "^1.0.0"
+    sister "^3.0.0"
 
 zen-observable-ts@^1.2.5:
   version "1.2.5"

@@ -74,7 +74,7 @@
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
-        :number="total"
+        :number="quantity"
       />
     </td>
 
@@ -103,7 +103,7 @@
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
         "
-        :number="quantity"
+        :number="total"
       >
         <span slot="addon" class="text-xs text-gray-500">
           {{ market.quoteToken.symbol }}
@@ -117,7 +117,7 @@
       </span>
 
       <span
-        v-if="(isStopLoss && isSell) || (isTakeProfit && isBuy)"
+        v-if="(isStopLoss && !isBuy) || (isTakeProfit && isBuy)"
         class="text-white text-xs font-semibold"
       >
         &le;
@@ -146,7 +146,7 @@
         </span>
 
         <VButton
-          v-if="orderFillable"
+          v-if="isCancelable"
           :status="status"
           data-cy="derivative-order-cancel-link"
           class="rounded w-6 h-6"
@@ -175,6 +175,8 @@ import {
   getTokenLogoWithVendorPathPrefix,
   UiDerivativeOrderHistory
 } from '@injectivelabs/sdk-ui-ts'
+import { TradeExecutionType } from '@injectivelabs/ts-types'
+import { DerivativeOrderState } from '@injectivelabs/sdk-ts'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -272,7 +274,9 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(trigger.quantity)
+      return new BigNumberInWei(trigger.quantity).toBase(
+        market.baseToken.decimals
+      )
     },
 
     quantityToFormat(): string {
@@ -296,9 +300,15 @@ export default Vue.extend({
     },
 
     filledQuantity(): BigNumberInBase {
-      const { trigger } = this
+      const { trigger, market } = this
 
-      return new BigNumberInBase(trigger.filledQuantity)
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInWei(trigger.filledQuantity).toBase(
+        market.baseToken.decimals
+      )
     },
 
     leverage(): BigNumberInBase {
@@ -337,6 +347,12 @@ export default Vue.extend({
       return unfilledQuantity.lte(quantity)
     },
 
+    isCancelable(): boolean {
+      const { trigger } = this
+
+      return trigger.state === DerivativeOrderState.Booked
+    },
+
     total(): BigNumberInBase {
       const { price, quantity } = this
 
@@ -366,23 +382,15 @@ export default Vue.extend({
     isBuy(): boolean {
       const { trigger } = this
 
+      if (trigger.direction === DerivativeOrderSide.Buy) {
+        return true
+      }
+
       switch (trigger.orderType) {
         case DerivativeOrderSide.TakeBuy:
         case DerivativeOrderSide.StopBuy:
         case DerivativeOrderSide.Buy:
-          return true
-        default:
-          return false
-      }
-    },
-
-    isSell(): boolean {
-      const { trigger } = this
-
-      switch (trigger.orderType) {
-        case DerivativeOrderSide.TakeSell:
-        case DerivativeOrderSide.StopSell:
-        case DerivativeOrderSide.Sell:
+        case DerivativeOrderSide.BuyPO:
           return true
         default:
           return false
@@ -411,19 +419,21 @@ export default Vue.extend({
       const { trigger } = this
 
       const executionType =
-        trigger.executionType === 'market'
+        trigger.executionType === TradeExecutionType.Market
           ? this.$t('trade.market')
           : this.$t('trade.limit')
 
       switch (trigger.orderType) {
-        case 'buy':
-        case 'sell':
+        case DerivativeOrderSide.Buy:
+        case DerivativeOrderSide.Sell:
+        case DerivativeOrderSide.BuyPO:
+        case DerivativeOrderSide.SellPO:
           return executionType
-        case 'take_sell':
-        case 'take_buy':
+        case DerivativeOrderSide.TakeSell:
+        case DerivativeOrderSide.TakeBuy:
           return `${this.$t('trade.takeProfit')} ${executionType}`
-        case 'stop_sell':
-        case 'stop_buy':
+        case DerivativeOrderSide.StopSell:
+        case DerivativeOrderSide.StopBuy:
           return `${this.$t('trade.stopLoss')} ${executionType}`
         default:
           return ''
@@ -453,7 +463,7 @@ export default Vue.extend({
         return
       }
 
-      return this.$router.push({ ...getMarketRoute(market) })
+      return this.$router.push(getMarketRoute(market))
     }
   }
 })

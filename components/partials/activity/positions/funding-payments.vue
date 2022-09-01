@@ -3,38 +3,43 @@
     <div class="w-full h-full flex flex-col">
       <Toolbar>
         <template #filters>
-          <SearchAsset
-            :markets="markets"
-            :value="selectedToken"
-            @select="handleSearch"
-          />
+          <div class="grid grid-cols-4 items-center gap-4 w-full">
+            <SearchAsset
+              class="col-span-4 sm:col-span-1"
+              :markets="markets"
+              :value="selectedToken"
+              @select="handleSearch"
+            />
 
-          <ClearFiltersButton
-            v-if="showClearFiltersButton"
-            @clear="handleClearFilters"
-          />
+            <ClearFiltersButton
+              v-if="showClearFiltersButton"
+              @clear="handleClearFilters"
+            />
+          </div>
         </template>
 
         <template #actions>
-          <span class="flex items-center gap-1 text-xs">
-            <span>{{ $t('trade.pair') }}</span>
-            <span>/</span>
-            <span>{{ $t('trade.time') }}</span>
-            <IconInfoTooltip
-              class="ml-2"
-              :tooltip="$t('trade.timestamp_tooltip')"
-            />
-          </span>
-
-          <span class="flex items-center justify-end gap-1 text-xs">
-            <span>
-              {{ $t('fundingPayments.payment') }}
+          <div class="flex items-center justify-between gap-4">
+            <span class="flex items-center gap-1 text-xs">
+              <span>{{ $t('trade.pair') }}</span>
+              <span>/</span>
+              <span>{{ $t('trade.time') }}</span>
+              <IconInfoTooltip
+                class="ml-2"
+                :tooltip="$t('trade.timestamp_tooltip')"
+              />
             </span>
-            <IconInfoTooltip
-              class="ml-2"
-              :tooltip="$t('fundingPayments.paymentTooltip')"
-            />
-          </span>
+
+            <span class="flex items-center justify-end gap-1 text-xs">
+              <span>
+                {{ $t('fundingPayments.payment') }}
+              </span>
+              <IconInfoTooltip
+                class="ml-2"
+                :tooltip="$t('fundingPayments.paymentTooltip')"
+              />
+            </span>
+          </div>
         </template>
       </Toolbar>
 
@@ -203,6 +208,7 @@ export default Vue.extend({
     handleLimitChangeEvent(limit: number) {
       this.limit = limit
 
+      this.resetPagination()
       this.fetchFundingPayments()
     },
 
@@ -215,14 +221,19 @@ export default Vue.extend({
     handleSearch(token: Token) {
       this.selectedToken = token
 
+      this.resetPagination()
       this.fetchFundingPayments()
     },
 
     handleClearFilters() {
       this.selectedToken = undefined
-      this.page = 1
 
+      this.resetPagination()
       this.fetchFundingPayments()
+    },
+
+    resetPagination() {
+      this.page = 1
     }
   }
 })

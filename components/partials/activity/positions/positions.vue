@@ -3,42 +3,43 @@
     <div class="w-full h-full flex flex-col">
       <Toolbar>
         <template #filters>
-          <SearchAsset
-            :markets="markets"
-            :value="selectedToken"
-            @select="handleSearch"
-          />
+          <div class="grid grid-cols-4 items-center gap-4 w-full">
+            <SearchAsset
+              class="col-span-2 sm:col-span-1"
+              :markets="markets"
+              :value="selectedToken"
+              @select="handleSearch"
+            />
 
-          <FilterSelector
-            class="min-w-3xs"
-            :type="TradeSelectorType.PositionSide"
-            :value="side"
-            data-cy="universal-table-filter-by-side-drop-down"
-            @click="handleSideClick"
-          />
+            <FilterSelector
+              class="col-span-2 sm:col-span-1"
+              :type="TradeSelectorType.PositionSide"
+              :value="side"
+              data-cy="universal-table-filter-by-side-drop-down"
+              @click="handleSideClick"
+            />
 
-          <ClearFiltersButton
-            v-if="showClearFiltersButton"
-            @clear="handleClearFilters"
-          />
+            <ClearFiltersButton
+              v-if="showClearFiltersButton"
+              @clear="handleClearFilters"
+            />
+          </div>
         </template>
 
         <template #actions>
-          <div
-            class="col-span-4 md:col-span-3 lg:col-span-2 sm:text-right mt-0 hidden sm:block"
+          <VButton
+            v-if="positions.length > 0 && walletIsNotKeplr"
+            red-outline
+            md
+            :status="status"
+            data-cy="activity-cancel-all-button"
+            class="rounded"
+            @click.stop="handleClosePositions"
           >
-            <VButton
-              v-if="positions.length > 0 && walletIsNotKeplr"
-              red-outline
-              md
-              :status="status"
-              data-cy="activity-cancel-all-button"
-              class="rounded"
-              @click.stop="handleClosePositions"
-            >
+            <span class="whitespace-nowrap">
               {{ $t('trade.closeAllPositions') }}
-            </VButton>
-          </div>
+            </span>
+          </VButton>
         </template>
       </Toolbar>
 
@@ -82,10 +83,6 @@
         <span class="font-semibold text-sm md:text-lg">
           {{ positions.length }}
         </span>
-      </portal>
-
-      <portal to="activity-tab-position-count">
-        <span v-if="status.isNotLoading()"> ({{ positions.length }}) </span>
       </portal>
 
       <Pagination
@@ -213,6 +210,7 @@ export default Vue.extend({
 
       return Promise.all([
         this.$accessor.derivatives.fetchSubaccountOrders(),
+        this.$accessor.derivatives.fetchSubaccountConditionalOrders(),
         this.fetchSubaccountPositions()
       ])
         .catch(this.$onError)
@@ -291,13 +289,10 @@ export default Vue.extend({
         })
     },
 
-    handleInputOnSearch(search: string) {
-      this.search = search
-    },
-
     handleSideClick(side: string | undefined) {
       this.side = side
 
+      this.resetPagination()
       this.fetchPositions()
     },
 
@@ -308,6 +303,7 @@ export default Vue.extend({
     handleLimitChangeEvent(limit: number) {
       this.limit = limit
 
+      this.resetPagination()
       this.fetchPositions()
     },
 
@@ -320,15 +316,20 @@ export default Vue.extend({
     handleSearch(token: Token) {
       this.selectedToken = token
 
+      this.resetPagination()
       this.fetchPositions()
     },
 
     handleClearFilters() {
       this.selectedToken = undefined
       this.side = undefined
-      this.page = 1
 
+      this.resetPagination()
       this.fetchPositions()
+    },
+
+    resetPagination() {
+      this.page = 1
     }
   }
 })

@@ -3,7 +3,11 @@
     <HocLoading :key="$route.fullPath" :status="status">
       <div class="container">
         <div class="mx-auto h-full w-full sm:w-md flex flex-col justify-center">
-          <Convert class="mt-[-56px]" @set-market="setMarket" />
+          <Convert
+            class="mt-[-56px]"
+            :fetch-status="fetchStatus"
+            @set-market="setMarket"
+          />
         </div>
       </div>
     </HocLoading>
@@ -25,6 +29,7 @@ export default Vue.extend({
 
   data() {
     return {
+      fetchStatus: new Status(StatusType.Idle),
       status: new Status(StatusType.Loading),
       interval: 0 as any
     }
@@ -55,6 +60,8 @@ export default Vue.extend({
     ])
       .catch(this.$onRejected)
       .then(() => {
+        this.status.setIdle()
+
         this.setMarket('inj-usdt')
         this.startPollingOrderbook()
       })
@@ -67,12 +74,16 @@ export default Vue.extend({
   },
 
   methods: {
-    async setMarket(slug: string) {
-      await this.$accessor.spot.reset()
-      await this.$accessor.spot.initMarket(slug)
-      await this.$accessor.spot.initMarketStreams()
+    setMarket(slug: string) {
+      this.fetchStatus.setLoading()
 
-      this.status.setIdle()
+      Promise.all([
+        this.$accessor.spot.reset(),
+        this.$accessor.spot.initMarket(slug),
+        this.$accessor.spot.initMarketStreams()
+      ]).finally(() => {
+        this.fetchStatus.setIdle()
+      })
 
       if (this.marketIsBeta) {
         this.$accessor.modal.openModal({ type: Modal.MarketBeta })

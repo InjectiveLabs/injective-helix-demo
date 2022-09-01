@@ -65,7 +65,7 @@
           name: 'spot-spot',
           params: { spot: 'inj-usdt' }
         }"
-        class="p-4 block rounded-t group hover:bg-gray-700 relative z-10 bg-gray-950 mb-2"
+        class="p-4 block rounded-t group hover:bg-gray-700 relative z-10 bg-gray-950"
         data-cy="header-trade-link"
       >
         <p class="font-semibold text-base text-white">
@@ -80,7 +80,7 @@
           name: 'perpetuals-perpetual',
           params: { perpetual: 'btc-usdt-perp' }
         }"
-        class="p-4 block group hover:bg-gray-700 relative z-10 bg-gray-950 mb-2"
+        class="p-4 block group hover:bg-gray-700 relative z-10 bg-gray-950"
         data-cy="header-trade-link"
       >
         <p class="font-semibold text-base text-white">
@@ -112,7 +112,7 @@
     >
       <nuxt-link
         :to="{ name: 'trade-and-earn' }"
-        class="p-4 block rounded-t group hover:bg-gray-700 relative z-10 bg-gray-950 mb-2"
+        class="p-4 block rounded-t group hover:bg-gray-700 relative z-10 bg-gray-950"
       >
         <p class="font-semibold text-base text-white">
           {{ $t('navigation.tradeAndEarn') }}
@@ -124,7 +124,7 @@
       <a
         href="https:/dmm.injective.network"
         target="_blank"
-        class="p-4 block group hover:bg-gray-700 mb-2"
+        class="p-4 block group hover:bg-gray-700"
       >
         <p class="font-semibold text-base text-white flex items-center">
           <span>{{ $t('navigation.dmmProgram') }}</span>
@@ -157,7 +157,6 @@ import NavItem from './item.vue'
 import NavItemDummy from './item-dummy.vue'
 import MobileNav from './mobile.vue'
 import PopperBox from '~/components/elements/popper-box.vue'
-
 import {
   derivativeMarketRouteNames,
   spotMarketRouteNames

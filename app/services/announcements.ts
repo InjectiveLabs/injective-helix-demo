@@ -1,7 +1,7 @@
 import { HttpClient } from '@injectivelabs/utils'
 
 const httpClient = new HttpClient(
-  'https://injectivelabshelp.zendesk.com/api/v2/help_center/en-us'
+  'https://helixapp.zendesk.com/api/v2/help_center/en-us'
 )
 
 export const fetchAnnouncementsList = async () => {

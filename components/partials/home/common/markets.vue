@@ -21,7 +21,7 @@
         <MarketHeader class="pt-6 pb-2" />
         <MarketRow
           v-for="({ market, summary }, index) in marketsList"
-          :key="`market-${market.marketId}`"
+          :key="`market-${market.marketId}-${index}`"
           :market="market"
           :summary="summary"
           :class="{
