@@ -16,7 +16,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import WalletWrapper from './wallet-wrapper.vue'
+import { AmplitudeEvents } from '~/types/enums'
 
 export default Vue.extend({
   components: {
@@ -25,6 +27,10 @@ export default Vue.extend({
 
   methods: {
     handleClick() {
+      this.$amplitude.track(AmplitudeEvents.WalletSelected, {
+        wallet: Wallet.Trezor
+      })
+
       this.$emit('wallet-trezor-connecting')
     }
   }

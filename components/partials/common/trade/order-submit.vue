@@ -43,10 +43,17 @@ import {
   MarketType,
   UiDerivativeOrderHistory
 } from '@injectivelabs/sdk-ui-ts'
+import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
+import { Identify, identify } from '@amplitude/analytics-browser'
+import { AmplitudeEvents } from '~/types'
 import OrderError from '~/components/partials/common/trade/order-error.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
 import { UI_DEFAULT_MAX_NUMBER_OF_ORDERS } from '~/app/utils/constants'
+import {
+  AMPLITUDE_VIP_TIER_LEVEL,
+  AMPLITUDE_CLICK_PLACE_ORDER_COUNT
+} from '~/app/utils/vendor'
 
 export default Vue.extend({
   components: {
@@ -55,6 +62,11 @@ export default Vue.extend({
   },
 
   props: {
+    amount: {
+      type: String,
+      required: true
+    },
+
     executionPrice: {
       type: Object as PropType<BigNumberInBase>,
       required: true
@@ -90,6 +102,11 @@ export default Vue.extend({
     triggerPriceEqualsMarkPrice: {
       type: Boolean,
       required: true
+    },
+
+    leverage: {
+      type: String,
+      default: ''
     },
 
     orderTypeBuy: {
@@ -142,6 +159,21 @@ export default Vue.extend({
       default: false
     },
 
+    postOnly: {
+      type: Boolean,
+      required: true
+    },
+
+    price: {
+      type: String,
+      required: true
+    },
+
+    slippageTolerance: {
+      type: String,
+      required: true
+    },
+
     status: {
       type: Object as PropType<Status>,
       required: true
@@ -161,6 +193,22 @@ export default Vue.extend({
   },
 
   computed: {
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
+    },
+
+    tierLevel(): number {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return 0
+      }
+
+      return new BigNumberInBase(
+        feeDiscountAccountInfo.tierLevel || 0
+      ).toNumber()
+    },
+
     isSpot(): boolean {
       return this.$route.name === 'spot-spot'
     },
@@ -331,6 +379,8 @@ export default Vue.extend({
     onSubmit() {
       const { hasError, isUserWalletConnected, maxOrdersError } = this
 
+      this.handleClickPlaceOrderTrack()
+
       if (!isUserWalletConnected) {
         return this.$toast.error(this.$t('please_connect_your_wallet'))
       }
@@ -348,6 +398,30 @@ export default Vue.extend({
 
     handleTradeConfirmationModalConfirm() {
       this.$emit('submit')
+    },
+
+    handleClickPlaceOrderTrack() {
+      const identifyObj = new Identify()
+      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
+      identifyObj.add(AMPLITUDE_CLICK_PLACE_ORDER_COUNT, 1)
+      identify(identifyObj)
+
+      // todo: refactor this to be more clean
+      this.$amplitude.track(AmplitudeEvents.ClickPlaceOrder, {
+        amount: this.amount,
+        market: this.market.slug,
+        marketType: this.market.subType,
+        orderType: this.orderType,
+        postOnly: this.postOnly,
+        tradingType: this.tradingType,
+        leverage:
+          this.market.subType === MarketType.Perpetual ? this.leverage : '',
+        triggerPrice:
+          this.tradingTypeStopMarket || this.tradingTypeStopLimit ? '' : '',
+        reduceOnly: this.market.subType === MarketType.Perpetual ? '' : '',
+        limitPrice: !this.tradingTypeMarket ? this.price : '',
+        slippageTolerance: this.tradingTypeMarket ? this.slippageTolerance : ''
+      })
     }
   }
 })

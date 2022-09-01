@@ -16,8 +16,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import WalletWrapper from './wallet-wrapper.vue'
-import { WalletConnectStatus } from '~/types'
+import { AmplitudeEvents, WalletConnectStatus } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -26,6 +27,10 @@ export default Vue.extend({
 
   methods: {
     handleClick() {
+      this.$amplitude.track(AmplitudeEvents.WalletSelected, {
+        wallet: Wallet.Keplr
+      })
+
       this.$accessor.wallet
         .connectKeplr()
         .then(() => {

@@ -156,3 +156,29 @@ export enum AveragePriceOptions {
   QuoteAmount = 2,
   Percentage = 3
 }
+
+export enum AmplitudeEvents {
+  ConnectClicked = 'Connect Clicked',
+  WalletSelected = 'Wallet Selected',
+  Login = 'Login',
+  ClickPlaceOrder = 'Place Order Attempt',
+  AttemptPlaceOrder = 'Place Order Confirm',
+  TradeClicked = 'Trade Clicked',
+  CosmoverseGiveawayCampaign = 'Cosmoverse Giveaway Campaign'
+}
+
+export enum DefaultMarket {
+  Perpetual = 'btc-usdt-perp',
+  Spot = 'inj-usdt'
+}
+
+export enum TradeClickOrigin {
+  Lander = 'LanderC2A',
+  MarketsPage = 'Markets Page',
+  TopMenu = 'Top Menu'
+}
+
+export enum OrderAttemptStatus {
+  Success = 'Success',
+  Error = 'Error'
+}

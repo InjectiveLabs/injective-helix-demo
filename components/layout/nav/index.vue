@@ -63,10 +63,11 @@
       <nuxt-link
         :to="{
           name: 'spot-spot',
-          params: { spot: 'inj-usdt' }
+          params: { spot: DefaultMarket.Spot }
         }"
         class="p-4 block rounded-t group hover:bg-gray-700 relative z-10 bg-gray-950"
         data-cy="header-trade-link"
+        @click.native="handleSpotTradeClickedTrack"
       >
         <p class="font-semibold text-base text-white">
           {{ $t('navigation.spot') }}
@@ -78,10 +79,13 @@
       <nuxt-link
         :to="{
           name: 'perpetuals-perpetual',
-          params: { perpetual: 'btc-usdt-perp' }
+          params: {
+            perpetual: DefaultMarket.Perpetual
+          }
         }"
         class="p-4 block group hover:bg-gray-700 relative z-10 bg-gray-950"
         data-cy="header-trade-link"
+        @click.native="handlePerpetualTradeClickedTrack"
       >
         <p class="font-semibold text-base text-white">
           {{ $t('navigation.perpetual') }}
@@ -153,10 +157,17 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
+import { MarketType } from '@injectivelabs/sdk-ui-ts'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { Identify, identify } from '@amplitude/analytics-browser'
 import NavItem from './item.vue'
 import NavItemDummy from './item-dummy.vue'
 import MobileNav from './mobile.vue'
 import PopperBox from '~/components/elements/popper-box.vue'
+import { AmplitudeEvents, DefaultMarket, TradeClickOrigin } from '~/types'
+import { AMPLITUDE_VIP_TIER_LEVEL } from '~/app/utils/vendor'
+
 import {
   derivativeMarketRouteNames,
   spotMarketRouteNames
@@ -170,9 +181,29 @@ export default Vue.extend({
     MobileNav
   },
 
+  data() {
+    return { DefaultMarket }
+  },
+
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
+    },
+
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
+    },
+
+    tierLevel(): number {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return 0
+      }
+
+      return new BigNumberInBase(
+        feeDiscountAccountInfo.tierLevel || 0
+      ).toNumber()
     },
 
     isMarketPage(): boolean {
@@ -229,6 +260,30 @@ export default Vue.extend({
       if (this.$tradePopper) {
         this.$tradePopper.hideDropdown()
       }
+    },
+
+    handleSpotTradeClickedTrack() {
+      const identifyObj = new Identify()
+      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
+      identify(identifyObj)
+
+      this.$amplitude.track(AmplitudeEvents.TradeClicked, {
+        market: DefaultMarket.Spot,
+        marketType: MarketType.Spot,
+        origin: TradeClickOrigin.TopMenu
+      })
+    },
+
+    handlePerpetualTradeClickedTrack() {
+      const identifyObj = new Identify()
+      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
+      identify(identifyObj)
+
+      this.$amplitude.track(AmplitudeEvents.TradeClicked, {
+        market: DefaultMarket.Perpetual,
+        marketType: MarketType.Perpetual,
+        origin: TradeClickOrigin.TopMenu
+      })
     }
   }
 })

@@ -2,6 +2,7 @@
   <nuxt-link :to="marketRoute">
     <div
       class="grid grid-cols-12 items-center border-helixGray-200 py-4 gap-10 box-content"
+      @click.native="handleTradeClickedTrack"
     >
       <div class="col-span-4 flex items-center justify-start pl-4">
         <div class="flex items-center justify-start">
@@ -72,7 +73,10 @@ import Vue, { PropType } from 'vue'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 // @ts-ignore
 import { LineGraph } from 'vue-plot'
+import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
+import { Identify, identify } from '@amplitude/analytics-browser'
 import {
+  MarketType,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiMarketHistory,
@@ -82,12 +86,13 @@ import {
   getTokenLogoWithVendorPathPrefix
 } from '@injectivelabs/sdk-ui-ts'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
-import { Change, MarketRoute } from '~/types'
+import { AmplitudeEvents, Change, MarketRoute, TradeClickOrigin } from '~/types'
 import { betaMarketSlugs } from '~/app/data/market'
 import {
   getMarketRoute,
   getFormattedMarketsHistoryChartData
 } from '~/app/utils/market'
+import { AMPLITUDE_VIP_TIER_LEVEL } from '~/app/utils/vendor'
 
 export default Vue.extend({
   components: {
@@ -123,6 +128,22 @@ export default Vue.extend({
   },
 
   computed: {
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
+    },
+
+    tierLevel(): number {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return 0
+      }
+
+      return new BigNumberInBase(
+        feeDiscountAccountInfo.tierLevel || 0
+      ).toNumber()
+    },
+
     marketsHistory(): UiMarketHistory[] {
       return this.$accessor.exchange.marketsHistory
     },
@@ -300,6 +321,29 @@ export default Vue.extend({
       setTimeout(() => {
         this.useDefaultLastTradedPriceColor = true
       }, 3000)
+    },
+
+    handleTradeClickedTrack() {
+      if (
+        !this.marketRoute.params ||
+        (!this.marketRoute.params.spot && !this.marketRoute.params.perpetual)
+      ) {
+        return
+      }
+
+      const identifyObj = new Identify()
+      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
+      identify(identifyObj)
+
+      this.$amplitude.track(AmplitudeEvents.TradeClicked, {
+        market: this.marketRoute.params.spot
+          ? this.marketRoute.params.spot
+          : this.marketRoute.params.perpetual,
+        marketType: this.marketRoute.params.spot
+          ? MarketType.Spot
+          : MarketType.Perpetual,
+        origin: TradeClickOrigin.Lander
+      })
     }
   }
 })

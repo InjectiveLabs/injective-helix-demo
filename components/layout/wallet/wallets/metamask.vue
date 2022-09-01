@@ -12,11 +12,7 @@
         class="inline-flex items-center rounded"
         @click.stop="() => {}"
       >
-        <a
-          href="https://metamask.io/download"
-          target="_blank"
-          rel="noreferrer"
-        >
+        <a href="https://metamask.io/download" target="_blank" rel="noreferrer">
           {{ $t('connect.download') }}
         </a>
         <IconArrow class="transform rotate-180 w-3 h-3 ml-1" />
@@ -32,8 +28,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import WalletWrapper from './wallet-wrapper.vue'
-import { WalletConnectStatus } from '~/types'
+import { WalletConnectStatus, AmplitudeEvents } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -48,6 +45,10 @@ export default Vue.extend({
 
   methods: {
     handleClick() {
+      this.$amplitude.track(AmplitudeEvents.WalletSelected, {
+        wallet: Wallet.Metamask
+      })
+
       this.$accessor.wallet
         .connectMetamask()
         .then(() => {

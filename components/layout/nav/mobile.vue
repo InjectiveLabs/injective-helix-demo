@@ -9,7 +9,7 @@
         <NavItem
           :to="{
             name: 'spot-spot',
-            params: { spot: 'inj-usdt' }
+            params: { spot: DefaultMarket.Spot }
           }"
         >
           <span class="font-normal tracking-wide">{{
@@ -20,7 +20,9 @@
         <NavItem
           :to="{
             name: 'perpetuals-perpetual',
-            params: { perpetual: 'btc-usdt-perp' }
+            params: {
+              perpetual: DefaultMarket.Perpetual
+            }
           }"
         >
           <span class="font-normal tracking-wide">{{
@@ -85,6 +87,7 @@
 import Vue from 'vue'
 import NavItem from './item.vue'
 import Accordion from '~/components/elements/accordion.vue'
+import { DefaultMarket } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -94,6 +97,7 @@ export default Vue.extend({
 
   data() {
     return {
+      DefaultMarket,
       tradeMenuOpen: false,
       rewardsMenuOpen: false
     }

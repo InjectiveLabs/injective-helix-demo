@@ -28,6 +28,7 @@
     }
   },
   "dependencies": {
+    "@amplitude/analytics-browser": "^1.2.0",
     "@apollo/client": "^3.5.5",
     "@chenfengyuan/vue-countdown": "^1.1.5",
     "@injectivelabs/contracts": "1.0.24",

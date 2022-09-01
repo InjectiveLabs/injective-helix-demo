@@ -31,6 +31,7 @@ export default {
     '~/plugins/store',
     '~/plugins/click-outside',
     '~/plugins/youtube',
+    '~/plugins/amplitude',
 
     { src: '~/plugins/touch-events', ssr: false },
     { src: '~/plugins/tooltip', ssr: false },
@@ -109,6 +110,7 @@ export default {
     APP_GOOGLE_ANALYTICS_KEY: process.env.APP_GOOGLE_ANALYTICS_KEY,
     APP_GOOGLE_SITE_VERIFICATION_KEY:
       process.env.APP_GOOGLE_SITE_VERIFICATION_KEY,
+    APP_AMPLITUDE_KEY: process.env.APP_AMPLITUDE_KEY,
     APP_BUGSNAG_KEY: process.env.APP_BUGSNAG_KEY,
     APP_ALCHEMY_KEY: process.env.APP_ALCHEMY_KEY,
     APP_ALCHEMY_KOVAN_KEY: process.env.APP_ALCHEMY_KOVAN_KEY,

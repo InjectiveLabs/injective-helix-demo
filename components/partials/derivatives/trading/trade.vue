@@ -72,6 +72,7 @@
         executionPrice,
         feeRate,
         fees,
+        leverage: form.leverage,
         liquidationPrice,
         makerFeeRate,
         makerFeeRateDiscount,
@@ -91,8 +92,8 @@
         tradingType,
         tradingTypeMarket,
         tradingTypeLimit,
-        tradingTypeStopMarket,
-        tradingTypeStopLimit
+        tradingTypeStopLimit,
+        tradingTypeStopMarket
       }"
     />
 
@@ -102,6 +103,7 @@
 
     <OrderSubmit
       v-bind="{
+        amount: form.amount,
         executionPrice,
         hasAmount,
         hasInputErrors,
@@ -110,11 +112,15 @@
         hasTriggerPrice,
         triggerPriceEqualsMarkPrice,
         lastTradedPrice,
+        leverage: form.leverage,
         market,
         orderType,
         orderTypeBuy,
         orderTypeToSubmit,
         orderTypeReduceOnly,
+        postOnly: form.postOnly,
+        price: form.price,
+        slippageTolerance: form.slippageTolerance,
         status,
         tradingType,
         tradingTypeMarket,
@@ -132,6 +138,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { Identify, identify } from '@amplitude/analytics-browser'
 import {
   TradeDirection,
   TradeExecutionType,
@@ -160,7 +167,13 @@ import OrderSubmit from '~/components/partials/common/trade/order-submit.vue'
 import OrderInputs from '~/components/partials/common/trade/order-inputs.vue'
 import TradingTypeButtons from '~/components/partials/common/trade/trading-type-buttons.vue'
 import OrderDetailsWrapper from '~/components/partials/common/trade/order-details-wrapper.vue'
-import { AveragePriceOptions, Modal, TradeConfirmationModalData } from '~/types'
+import {
+  AmplitudeEvents,
+  AveragePriceOptions,
+  Modal,
+  OrderAttemptStatus,
+  TradeConfirmationModalData
+} from '~/types'
 import {
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook,
@@ -176,6 +189,10 @@ import {
 } from '~/app/utils/constants'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
 import { localStorage } from '~/app/Services'
+import {
+  AMPLITUDE_ATTEMPT_PLACE_ORDER_COUNT,
+  AMPLITUDE_VIP_TIER_LEVEL
+} from '~/app/utils/vendor'
 
 interface TradeForm {
   reduceOnly: boolean
@@ -270,6 +287,22 @@ export default Vue.extend({
       const { tradingTypeStopMarket, tradingTypeStopLimit } = this
 
       return tradingTypeStopMarket || tradingTypeStopLimit
+    },
+
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
+    },
+
+    tierLevel(): number {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return 0
+      }
+
+      return new BigNumberInBase(
+        feeDiscountAccountInfo.tierLevel || 0
+      ).toNumber()
     },
 
     orderTypeToSubmit(): DerivativeOrderSide {
@@ -378,10 +411,6 @@ export default Vue.extend({
             DerivativeOrderState.Unfilled ||
             DerivativeOrderState.Booked)
       )
-    },
-
-    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
-      return this.$accessor.exchange.feeDiscountAccountInfo
     },
 
     quoteAvailableBalance(): BigNumberInBase {
@@ -1122,10 +1151,14 @@ export default Vue.extend({
           quantity: amount
         })
         .then(() => {
+          this.handleAttemptPlaceOrderTrack()
           this.$toast.success(this.$t('trade.order_placed'))
           this.resetForm()
         })
-        .catch(this.$onRejected)
+        .catch((e) => {
+          this.handleAttemptPlaceOrderTrack(e)
+          this.$onRejected(e)
+        })
         .finally(() => {
           this.status.setIdle()
         })
@@ -1158,10 +1191,14 @@ export default Vue.extend({
           quantity: amount
         })
         .then(() => {
+          this.handleAttemptPlaceOrderTrack()
           this.$toast.success(this.$t('trade.order_placed'))
           this.resetForm()
         })
-        .catch(this.$onRejected)
+        .catch((e) => {
+          this.handleAttemptPlaceOrderTrack(e)
+          this.$onRejected(e)
+        })
         .finally(() => {
           this.status.setIdle()
         })
@@ -1192,10 +1229,14 @@ export default Vue.extend({
           quantity: amount
         })
         .then(() => {
+          this.handleAttemptPlaceOrderTrack()
           this.$toast.success(this.$t('trade.trade_placed'))
           this.resetForm()
         })
-        .catch(this.$onRejected)
+        .catch((e) => {
+          this.handleAttemptPlaceOrderTrack(e)
+          this.$onRejected(e)
+        })
         .finally(() => {
           this.status.setIdle()
         })
@@ -1228,10 +1269,14 @@ export default Vue.extend({
           quantity: amount
         })
         .then(() => {
+          this.handleAttemptPlaceOrderTrack()
           this.$toast.success(this.$t('trade.trade_placed'))
           this.resetForm()
         })
-        .catch(this.$onRejected)
+        .catch((e) => {
+          this.handleAttemptPlaceOrderTrack(e)
+          this.$onRejected(e)
+        })
         .finally(() => {
           this.status.setIdle()
         })
@@ -1322,6 +1367,37 @@ export default Vue.extend({
         case 'stopMarket':
           return this.submitStopMarketOrder()
       }
+    },
+
+    handleAttemptPlaceOrderTrack(errorMessage?: string) {
+      if (!this.market) {
+        return
+      }
+
+      const identifyObj = new Identify()
+      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
+      identifyObj.add(AMPLITUDE_ATTEMPT_PLACE_ORDER_COUNT, 1)
+      identify(identifyObj)
+
+      this.$amplitude.track(AmplitudeEvents.AttemptPlaceOrder, {
+        amount: this.form.amount,
+        leverage: this.form.leverage,
+        market: this.market.slug,
+        marketType: this.market.subType,
+        orderType: this.orderType,
+        postOnly: this.form.postOnly,
+        tradingType: this.tradingType,
+        triggerPrice:
+          this.tradingTypeStopMarket || this.tradingTypeStopLimit
+            ? this.form.triggerPrice
+            : '',
+        reduceOnly: this.form.reduceOnly,
+        limitPrice: !this.tradingTypeMarket ? this.price : '',
+        status: errorMessage
+          ? OrderAttemptStatus.Error
+          : OrderAttemptStatus.Success,
+        error: errorMessage
+      })
     }
   }
 })
