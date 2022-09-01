@@ -79,6 +79,7 @@
         :order-type="orderType"
         :slippage="slippage"
         :fee-rate="feeRate"
+        :has-liquidity="!emptyLiquidity"
       />
       <div class="mt-6">
         <VButton

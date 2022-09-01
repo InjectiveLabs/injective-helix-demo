@@ -215,7 +215,7 @@ export default {
       insufficient_liquidity: 'Insufficient Liquidity',
       convert_success: 'Converted Successfully',
       convert_failed: 'Conversion Failed',
-      convert: 'Helix Convert',
+      convert: 'Convert',
       convert_now: 'Convert Now',
       to: 'To',
       from: 'From',
