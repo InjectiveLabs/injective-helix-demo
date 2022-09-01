@@ -10,9 +10,7 @@
             :alt="market.baseToken.name"
             class="w-4 h-4 md:w-6 md:h-6 mr-3"
           />
-          <div
-            class="mr-4 text-left text-helixGray-500 text-sm whitespace-nowrap mb-1"
-          >
+          <div class="text-left text-helixGray-500 text-sm whitespace-nowrap">
             <div class="flex leading-4 font-bold">
               {{ market.ticker }}
             </div>
