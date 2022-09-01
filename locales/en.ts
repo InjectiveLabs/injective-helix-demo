@@ -80,11 +80,11 @@ export default {
   acknowledge_1:
     'You are not a person or company who is a resident of, is located, incorporated, or has a registered agent in, the United States of America or a Restricted Territory (as defined in the T&C).',
   acknowledge_2:
-    'You will not in the future access this site or use Injective.Exchange while located in the United States of America or a Restricted Territory.',
+    'You will not in the future access this site or use helixapp.com while located in the United States of America or a Restricted Territory.',
   acknowledge_3:
     'You are not using, and will not in the future use, a virtual private network or other means to mask your physical location from a Restricted Territory.',
   acknowledge_4:
-    'You are lawfully permitted to access this site and trade on Injective.Exchange under the laws of the jurisdiction in which you reside and are located.',
+    'You are lawfully permitted to access this site and trade on helixapp.com under the laws of the jurisdiction in which you reside and are located.',
   acknowledge_5:
     'You understand the risks associated with using leverage, entering into perpetual contracts, and trading in digital assets.',
   'Fee Discounts': 'Fee Discounts',
@@ -193,7 +193,7 @@ export default {
 
   marketDeprecated: {
     title: 'No longer tradable',
-    description: '{ticker} is no longer tradable on Injective Pro.',
+    description: '{ticker} is no longer tradable on Helix.',
     subDescriptionOne:
       'If you would like to continue trading {ticker}, you could still do so with other exchanges in the Injective ecosystem.',
     subDescriptionTwo:
