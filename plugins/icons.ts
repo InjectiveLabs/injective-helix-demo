@@ -7,10 +7,14 @@ import Bin from '~/components/icons/bin.vue'
 import Box from '~/components/icons/box.vue'
 import CaretDown from '~/components/icons/caret-down.vue'
 import CaretDownSlim from '~/components/icons/caret-down-slim.vue'
+import CaretThin from '~/components/icons/caret-thin.vue'
 import CategoryAlt from '~/components/icons/category-alt.vue'
 import Check from '~/components/icons/check.vue'
 import CheckCircle from '~/components/icons/check-circle.vue'
 import Chevron from '~/components/icons/chevron.vue'
+import CircleOne from '~/components/icons/circle-one.vue'
+import CircleTwo from '~/components/icons/circle-two.vue'
+import CircleThree from '~/components/icons/circle-three.vue'
 import Close from '~/components/icons/close.vue'
 import Copy from '~/components/icons/copy.vue'
 import CopyPlain from '~/components/icons/copy-plain.vue'
@@ -28,6 +32,7 @@ import Info from '~/components/icons/info.vue'
 import Ledger from '~/components/icons/ledger.vue'
 import Menu from '~/components/icons/menu.vue'
 import Metamask from '~/components/icons/metamask.vue'
+import Keplr from '~/components/icons/keplr.vue'
 import Moon from '~/components/icons/moon.vue'
 import Network from '~/components/icons/network.vue'
 import News from '~/components/icons/news.vue'
@@ -68,6 +73,11 @@ import GoogleSocial from '~/components/icons/google-social.vue'
 import FacebookSocial from '~/components/icons/facebook-social.vue'
 import TwitterSocial from '~/components/icons/twitter-social.vue'
 import DiscordSocial from '~/components/icons/discord-social.vue'
+import LightningFill from '~/components/icons/lightning-fill.vue'
+import BoundingBoxCircles from '~/components/icons/bounding-box-circles.vue'
+import Gas from '~/components/icons/gas.vue'
+import ShieldLockFill from '~/components/icons/shield-lock-fill.vue'
+import Minus from '~/components/icons/minus.vue'
 
 Vue.component('IconArrow', Arrow)
 Vue.component('IconArrowSwap', ArrowSwap)
@@ -76,10 +86,14 @@ Vue.component('IconBin', Bin)
 Vue.component('IconBox', Box)
 Vue.component('IconCaretDown', CaretDown)
 Vue.component('IconCaretDownSlim', CaretDownSlim)
+Vue.component('IconCaretThin', CaretThin)
 Vue.component('IconCategoryAlt', CategoryAlt)
 Vue.component('IconCheck', Check)
 Vue.component('IconCheckCircle', CheckCircle)
 Vue.component('IconChevron', Chevron)
+Vue.component('IconCircleOne', CircleOne)
+Vue.component('IconCircleTwo', CircleTwo)
+Vue.component('IconCircleThree', CircleThree)
 Vue.component('IconClose', Close)
 Vue.component('IconCopy', Copy)
 Vue.component('IconTorus', Torus)
@@ -99,6 +113,7 @@ Vue.component('IconLedger', Ledger)
 Vue.component('IconMenu', Menu)
 Vue.component('IconCrown', Crown)
 Vue.component('IconMetamask', Metamask)
+Vue.component('IconKeplr', Keplr)
 Vue.component('IconMoon', Moon)
 Vue.component('IconNetwork', Network)
 Vue.component('IconNews', News)
@@ -137,3 +152,8 @@ Vue.component('IconGoogleSocial', GoogleSocial)
 Vue.component('IconFacebookSocial', FacebookSocial)
 Vue.component('IconTwitterSocial', TwitterSocial)
 Vue.component('IconDiscordSocial', DiscordSocial)
+Vue.component('IconLightningFill', LightningFill)
+Vue.component('IconBoundingBoxCircles', BoundingBoxCircles)
+Vue.component('IconGas', Gas)
+Vue.component('IconShieldLockFill', ShieldLockFill)
+Vue.component('IconMinus', Minus)

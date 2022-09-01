@@ -23,12 +23,12 @@
 
     <PopperBox
       ref="popper-wallet"
-      class="popper bg-gray-950 rounded flex flex-col flex-wrap absolute min-w-[356px] z-10 shadow-md p-4"
+      class="popper bg-gray-950 rounded-lg flex flex-col flex-wrap absolute min-w-[356px] z-10 shadow-md"
       binding-element="#wallet-address"
       data-cy="wallet-connected-popper"
       :options="popperOption"
     >
-      <div class="bg-gray-975 rounded p-4">
+      <div class="bg-gray-975 rounded-t-lg p-4">
         <div class="flex items-center justify-between">
           <h3 class="text-sm font-medium">
             {{ $t('navigation.myAccount') }}
@@ -109,7 +109,7 @@
           </div>
         </div>
       </div>
-      <div class="rounded p-4">
+      <div class="p-4">
         <div class="flex items-start justify-between">
           <h3 class="text-sm font-medium">
             {{ $t('navigation.connectedWallets') }}
@@ -129,11 +129,7 @@
             <IconWalletConnect class="mx-auto" />
           </ConnectedWallet>
           <ConnectedWallet v-if="wallet === Wallet.Keplr" lg>
-            <img
-              src="/keplr-icon.png"
-              class="mx-auto"
-              alt="Keplr Icon"
-            />
+            <IconKeplr class="mx-auto" />
           </ConnectedWallet>
           <ConnectedWallet v-if="wallet === Wallet.Ledger" lg>
             <IconLedger class="mx-auto" />

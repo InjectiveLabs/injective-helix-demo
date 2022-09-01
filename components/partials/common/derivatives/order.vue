@@ -4,9 +4,9 @@
     :data-cy="'derivative-order-table-row-' + market.ticker"
     :data-cy-hash="order.orderHash"
   >
-    <td class="h-8 text-left cursor-pointer" @click="handleClickOnMarket">
+    <td class="h-12 text-left cursor-pointer" @click="handleClickOnMarket">
       <div class="flex items-center justify-start">
-        <div v-if="baseTokenLogo" class="w-6 h-6">
+        <div v-if="baseTokenLogo" class="w-4 h-4">
           <img
             :src="baseTokenLogo"
             :alt="market.baseToken.name"
@@ -15,7 +15,7 @@
         </div>
         <div class="ml-3">
           <span
-            class="text-gray-200 font-semibold"
+            class="text-gray-200 text-xs"
             data-cy="derivative-order-ticker-name-table-data"
           >
             {{ market.ticker }}
@@ -24,9 +24,10 @@
       </div>
     </td>
 
-    <td class="h-8 text-left">
+    <td class="h-12 text-left">
       <span
         data-cy="derivative-order-order-side-table-data"
+        class="text-xs"
         :class="{
           'text-green-500': order.orderSide === DerivativeOrderSide.Buy,
           'text-red-500': order.orderSide === DerivativeOrderSide.Sell
@@ -43,8 +44,9 @@
       </span>
     </td>
 
-    <td class="h-8 font-mono text-right">
+    <td class="h-12 font-mono text-right">
       <VNumber
+        xs
         data-cy="derivative-order-price-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -53,8 +55,9 @@
       />
     </td>
 
-    <td class="h-8 text-right font-mono">
+    <td class="h-12 text-right font-mono">
       <VNumber
+        xs
         data-cy="derivative-order-quantity-table-data"
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
@@ -63,9 +66,10 @@
       />
     </td>
 
-    <td class="h-8 font-mono">
+    <td class="h-12 font-mono">
       <div class="flex items-center justify-end">
         <VNumber
+          xs
           data-cy="derivative-order-unfilled-quantity-table-data"
           :decimals="
             market
@@ -77,8 +81,9 @@
       </div>
     </td>
 
-    <td class="h-8 text-right font-mono">
+    <td class="h-12 text-right font-mono">
       <VNumber
+        xs
         data-cy="derivative-order-filled-quantity-table-data"
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
@@ -87,39 +92,40 @@
       />
     </td>
 
-    <td v-if="!isBinaryOptionsPage" class="h-8 text-right font-mono">
+    <td v-if="!isBinaryOptionsPage" class="h-12 text-right font-mono">
       <span
         v-if="leverage.gte(0)"
-        class="flex items-center justify-end"
+        class="flex items-center justify-end text-xs"
         data-cy="derivative-order-leverage-table-data"
       >
         {{ leverage.toFormat(2) }}
-        <span class="text-gray-300">&times;</span>
+        <span class="text-gray-300 text-xs">&times;</span>
       </span>
       <span
         v-else
-        class="text-gray-400"
+        class="text-gray-400 text-xs"
         data-cy="derivative-order-no-leverage-table-data"
       >
         {{ $t('trade.not_available_n_a') }}
       </span>
     </td>
 
-    <td class="h-8 font-right text-right">
+    <td class="h-12 font-right text-right">
       <VNumber
+        xs
         data-cy="derivative-order-total-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
         :number="total"
       >
-        <span slot="addon" class="text-2xs text-gray-500">
+        <span slot="addon" class="text-xs text-gray-500">
           {{ market.quoteToken.symbol }}
         </span>
       </VNumber>
     </td>
 
-    <td class="h-8 relative text-right">
+    <td class="h-12 relative text-right">
       <div class="flex items-center justify-end">
         <span
           v-if="false"

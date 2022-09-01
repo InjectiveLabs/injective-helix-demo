@@ -44,7 +44,7 @@
             >
               <portal-target
                 slot="icon"
-                name="activity-card-derivative-count"
+                name="activity-card-derivative-order-count"
                 data-cy="activity-derivatives-orders-panel-count"
               />
               <span class="text-sm whitespace-nowrap">
@@ -128,7 +128,9 @@ export default Vue.extend({
     this.$root.$on('position-tab-loaded', this.positionTabLoaded)
     this.$root.$on('spot-tab-loaded', this.spotTabLoaded)
 
-    Promise.all([this.$accessor.account.init()])
+    Promise.all([
+      this.$accessor.account.init()
+    ])
       .then(() => {
         //
       })

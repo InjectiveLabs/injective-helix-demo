@@ -13,7 +13,7 @@ localize({
       injaddress: 'This field is not a valid Injective address',
       required: 'This field is required',
       positiveNumber: 'This field is not a valid number',
-      email: 'This field should be a valid email',
+      email: 'This field is not a valid email',
       between: (_field: string, params: Record<string, any>) =>
         `${
           params.max <= params.min

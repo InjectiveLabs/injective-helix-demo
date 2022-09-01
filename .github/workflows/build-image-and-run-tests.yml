@@ -1,0 +1,205 @@
+name: Build test image and run tests
+
+on:
+  push:
+
+jobs:
+  build:
+    name: 'Build images for tests'
+    runs-on: ubuntu-20.04
+    timeout-minutes: 20
+    steps:
+      - name: Download Docker images
+        run: |
+          DOCKER_IMAGES=('public.ecr.aws/l9h3g6c6/injective-exchange:experimental' 'public.ecr.aws/l9h3g6c6/injective-core:prod' 'public.ecr.aws/l9h3g6c6/injective-trading-bot:latest' 'public.ecr.aws/l9h3g6c6/injective-liquidator-bot:latest')
+          echo "Downloading all docker images required by standalone network"
+          echo "Using throttle to avoid Amazon ECR's rate limting."
+          for image in "${DOCKER_IMAGES[@]}"
+          do
+            echo "Pulling image: $image"
+            attempts=0
+            until docker pull "$image"
+            do
+              [[ attempts -eq 15 ]] && echo "Reached maximum attempts of 15!" && exit 1
+              echo "Cooling down for 10 seconds."
+              sleep 10
+              ((attempts++))
+              echo "aaaagain!"
+            done
+          done
+          echo "All images downloaded"
+      - name: Export Docker images
+        run: |
+          docker save -o /tmp/exchange-image.tar public.ecr.aws/l9h3g6c6/injective-exchange:experimental
+          docker save -o /tmp/core-image.tar public.ecr.aws/l9h3g6c6/injective-core:prod
+          docker save -o /tmp/trading-bot-image.tar public.ecr.aws/l9h3g6c6/injective-trading-bot:latest
+          docker save -o /tmp/liquidator-bot-image.tar public.ecr.aws/l9h3g6c6/injective-liquidator-bot:latest
+      - name: Upload Exchange image
+        uses: actions/upload-artifact@v2
+        with:
+          name: exchange-image
+          path: /tmp/exchange-image.tar
+      - name: Upload Core image
+        uses: actions/upload-artifact@v2
+        with:
+          name: core-image
+          path: /tmp/core-image.tar
+      - name: Upload Trading Bot image
+        uses: actions/upload-artifact@v2
+        with:
+          name: trading-bot-image
+          path: /tmp/trading-bot-image.tar
+      - name: Upload Liquidator Bot image
+        uses: actions/upload-artifact@v2
+        with:
+          name: liquidator-bot-image
+          path: /tmp/liquidator-bot-image.tar
+      - name: Get branch name
+        id: git-branch-name
+        uses: EthanSK/git-branch-name-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Checkout injective-helix
+        uses: actions/checkout@master
+        with:
+          repository: InjectiveLabs/injective-helix
+          ref: ${{ github.ref }}
+          path: ./injective-helix
+      - name: Build HELIX image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./injective-helix/
+          file: ./injective-helix/.github/Dockerfile
+          push: false
+          tags: public.ecr.aws/l9h3g6c6/injective-helix:${{ env.GIT_BRANCH_NAME }}
+          outputs: type=docker,dest=/tmp/helix-image.tar
+          build-args: |
+            HELIX_FEE_RECIPIENT=${{ secrets.APP_FEE_RECIPIENT }}
+            APP_ALCHEMY_KOVAN_KEY=${{ secrets.APP_ALCHEMY_KOVAN_KEY }}
+            APP_ALCHEMY_GOERLI_KEY=${{ secrets.APP_ALCHEMY_GOERLI_KEY }}
+      - name: Upload HELIX artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: helix-image
+          path: /tmp/helix-image.tar
+      - name: Checkout cypress-ts repo
+        uses: actions/checkout@master
+        with:
+          repository: Tofel/cypress-ts
+          ref: 'f/trading-form-improvement-new-tests'
+          token: ${{ secrets.BARTEKS_PAT }}
+          path: ./cypress-ts
+      - name: Build Cypress test image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./cypress-ts
+          file: ./cypress-ts/.github/Dockerfile
+          push: false
+          tags: injective-cypress:${{ env.GIT_BRANCH_NAME }}
+          outputs: type=docker,dest=/tmp/cypress-image.tar
+      - name: Upload Cypress artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: cypress-image
+          path: /tmp/cypress-image.tar
+          retention-days: 1
+  run_cypress_tests:
+    name: 'Run Cypress intergration tests'
+    runs-on: ubuntu-20.04
+    timeout-minutes: 80
+    strategy:
+      fail-fast: false
+      matrix:
+        specs: [
+            # '/root/cypress/e2e/website/wallets/wallets-connections.cy.ts,/root/cypress/e2e/website/markets/markets-tests.cy.ts,/root/cypress/e2e/website/activity/positions-funding-payment-tests.cy',
+            # '/root/cypress/e2e/website/portfolio/portfolio-tests.cy.ts',
+            # '/root/cypress/e2e/website/activity/derivatives-activity-tests.cy.ts',
+            # '/root/cypress/e2e/website/activity/spot-activity-tests.cy.ts',
+            # '/root/cypress/e2e/website/activity/positions-activity-tests.cy.ts',
+            '/root/cypress/e2e/website/trade/trade-perp-orders-tests.cy.ts',
+            '/root/cypress/e2e/website/trade/trade-spot-orders-tests.cy.ts'
+          ]
+    needs: build
+    env:
+      HELIX_IMAGE_TAG: $GIT_BRANCH_NAME
+      EXCHANGE_ALCHEMY_API_GOERLI_KEY: ${{ secrets.APP_ALCHEMY_GOERLI_KEY }}
+      EXCHANGE_FEE_PAYER_PK: ${{ secrets.APP_CI_EXCHANGE_FEE_PAYER_PK }}
+      CYPRESS_TEST_TAG: $GIT_BRANCH_NAME
+      CYPRESS_BUILD_ID: '$GIT_BRANCH_NAME-${{ github.sha }}-${{ github.run_attempt }}'
+      CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+    steps:
+      - name: Generate UUID
+        id: uuid
+        run: |
+          echo "::set-output name=UUID::$(uuidgen)"
+      - name: Get branch name
+        id: git-branch-name
+        uses: EthanSK/git-branch-name-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Download HELIX artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: helix-image
+          path: /tmp
+      - name: Download Cypress artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: cypress-image
+          path: /tmp
+      - name: Download Exchange artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: exchange-image
+          path: /tmp
+      - name: Download Core artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: core-image
+          path: /tmp
+      - name: Download Trading Bot artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: trading-bot-image
+          path: /tmp
+      - name: Download Liquidator Bot artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: liquidator-bot-image
+          path: /tmp
+      - name: Load Docker images
+        run: |
+          ls -al /tmp
+          docker load --input /tmp/helix-image.tar
+          docker load --input /tmp/cypress-image.tar
+          docker load --input /tmp/exchange-image.tar
+          docker load --input /tmp/core-image.tar
+          docker load --input /tmp/trading-bot-image.tar
+          docker load --input /tmp/liquidator-bot-image.tar
+      - name: Checkout injective-ci-configs
+        uses: actions/checkout@master
+        with:
+          repository: InjectiveLabs/injective-ci-configs
+          ref: 'f/use_indexer'
+          token: ${{ secrets.BARTEKS_PAT }}
+          path: ./injective-ci-configs
+      - name: Start standalone network
+        run: |
+          cd injective-ci-configs/network/standalone
+          export GENESIS_TWEAK_FUNDING_RATE=false
+          if [[ "${{ matrix.specs }}" == *funding* ]]; then
+            echo "Genesis will have a very frequent funding payment interval to ease testing"
+            export GENESIS_TWEAK_FUNDING_RATE=true
+          fi
+          docker-compose -f docker-compose-base.yaml -f docker-compose-helix.yaml build --build-arg IMAGE_TAG=${{ env.HELIX_IMAGE_TAG }}
+          docker-compose -f docker-compose-base.yaml -f docker-compose-helix.yaml up -d
+      - name: Execute Cypress tests
+        run: |
+          cd injective-ci-configs/network/standalone
+          export CYPRESS_TEST_TAG=${{ env.GIT_BRANCH_NAME }}
+          export CYPRESS_RECORD_KEY=8eab12ba-ed7d-4559-8162-b55b65b6653a
+          export CYPRESS_SPEC_FILE=${{ matrix.specs }}
+          export CYPRESS_GROUP="${{ steps.uuid.outputs.UUID }}"
+          export CYPRESS_BUILD_ID="${{ env.CYPRESS_BUILD_ID }}"
+          export BASE_URL="https://localhost/"
+          docker-compose -f docker-compose-base.yaml -f docker-compose-helix.yaml -f docker-compose-cypress.yaml run injective-cypress

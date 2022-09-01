@@ -13,7 +13,7 @@
           <span
             v-if="executionPrice.gt(0)"
             data-cy="trading-page-details-execution-price-text-content"
-            class="flex items-start break-all"
+            class="font-mono flex items-start break-all"
           >
             {{ executionPriceToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
@@ -39,7 +39,7 @@
             "
           />
           <span
-            class="flex items-center"
+            class="font-mono flex items-center"
             data-cy="trading-page-details-fee-percentage-text-content"
           >
             {{
@@ -91,7 +91,7 @@
           </div>
           <span
             v-if="fees.gt(0)"
-            class="flex items-start break-all"
+            class="font-mono flex items-start break-all"
             data-cy="trading-page-details-fee-value-text-content"
           >
             {{ feesToFormat }}
@@ -116,7 +116,7 @@
           <span
             v-if="feeRebates.gt(0)"
             data-cy="trading-page-details-fee-rebate-value-text-content"
-            class="flex items-start break-all"
+            class="font-mono flex items-start break-all"
           >
             {{ feeRebatesToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
@@ -136,7 +136,7 @@
             class="ml-2"
             :tooltip="$t('trade.expected_points_note')"
           />
-          <span class="flex items-start break-all">
+          <span class="font-mono flex items-start break-all">
             {{ expectedPointsToFormat }}
             <span class="text-gray-500 ml-1 break-normal">
               {{ $t('pts') }}

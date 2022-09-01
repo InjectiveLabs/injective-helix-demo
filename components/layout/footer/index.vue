@@ -5,16 +5,19 @@
     >
       <div class="sm:col-span-1 xs:col-span-2 3md:col-span-3 lg:col-span-5">
         <div
-          class="flex items-center cursor-pointer mb-6"
+          class="flex items-center cursor-pointer md:mb-6"
           @click="$router.push({ name: 'index' })"
         >
           <Logo class="h-10 w-10 mr-2" alt="Helix" />
-          <LogoText class="h-8" />
+          <LogoText class="h-6 md:h-8" />
         </div>
 
         <span class="text-gray-500 text-xs">
           &copy; {{ new Date().getFullYear() }} Injective Labs Inc.
         </span>
+        <div class="hidden lg:block mt-12 text-sm max-w-[450px]">
+          {{ $t('footer.helixProvides') }}
+        </div>
       </div>
 
       <div class="3md:col-span-2">
@@ -70,7 +73,9 @@
       </div>
 
       <div class="md:col-span-3">
-        <h3 class="font-bold text-lg mb-6">{{ $t('footer.community') }}</h3>
+        <h3 class="font-bold text-lg mb-4 md:mb-6">
+          {{ $t('footer.community') }}
+        </h3>
 
         <div class="flex items-center">
           <a
@@ -83,7 +88,7 @@
 
           <a
             class="w-6 h-6 text-gray-500 hover:text-primary-500 mr-4"
-            href="https://twitter.com/InjectiveLabs"
+            href="https://twitter.com/HelixApp_"
             target="_blank"
           >
             <IconTwitterCircle />
@@ -91,7 +96,7 @@
 
           <a
             class="w-6 h-6 text-gray-500 hover:text-primary-500 mr-4"
-            href="https://t.me/joininjective"
+            href="https://t.me/helixapp"
             target="_blank"
           >
             <IconTelegramCircle />
@@ -113,6 +118,10 @@
             <IconRedditCircle />
           </a>
         </div>
+      </div>
+
+      <div class="xs:col-span-2 sm:col-span-3 md:col-span-5 lg:hidden text-sm">
+        {{ $t('footer.helixProvides') }}
       </div>
     </div>
   </footer>

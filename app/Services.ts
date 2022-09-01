@@ -3,6 +3,7 @@ import { LocalStorage } from '@injectivelabs/utils'
 import { Web3Client } from '@injectivelabs/sdk-ui-ts/dist/web3'
 import {
   MsgBroadcastClient,
+  MsgBroadcastExperimentalClient,
   TokenService,
   TokenPrice,
   MetricsProvider,
@@ -10,26 +11,27 @@ import {
   UiBridgeTransformer
 } from '@injectivelabs/sdk-ui-ts'
 import {
+  ApolloConsumer,
   ChainGrpcAuctionApi,
   ChainGrpcBankApi,
-  ChainGrpcMintApi,
-  ChainGrpcStakingApi,
   ChainGrpcDistributionApi,
+  ChainGrpcExchangeApi,
   ChainGrpcGovApi,
   ChainGrpcInsuranceFundApi,
   ChainGrpcPeggyApi,
+  ChainGrpcMintApi,
+  ChainGrpcStakingApi,
   IndexerRestExplorerApi,
   IndexerGrpcExplorerApi,
-  ApolloConsumer,
-  ChainGrpcExchangeApi,
   ChainGrpcOracleApi,
   IndexerGrpcDerivativesApi,
   IndexerGrpcSpotApi,
   IndexerGrpcAccountApi,
   IndexerRestDerivativesChronosApi,
   IndexerRestSpotChronosApi,
+  IndexerRestMarketChronosApi,
   IndexerGrpcOracleApi
-} from '@injectivelabs/sdk-ts/dist/client'
+} from '@injectivelabs/sdk-ts'
 import {
   NETWORK,
   METRICS_ENABLED,
@@ -68,6 +70,7 @@ export const peggyApi = new ChainGrpcPeggyApi(ENDPOINTS.sentryGrpcApi)
 export const auctionApi = new ChainGrpcAuctionApi(ENDPOINTS.sentryGrpcApi)
 export const exchangeApi = new ChainGrpcExchangeApi(ENDPOINTS.sentryGrpcApi)
 export const oracleApi = new ChainGrpcOracleApi(ENDPOINTS.sentryGrpcApi)
+
 export const indexerExplorerApi = new IndexerGrpcExplorerApi(
   ENDPOINTS.indexerApi
 )
@@ -91,6 +94,10 @@ export const indexerRestSpotChronosApi = new IndexerRestSpotChronosApi(
       : `${ENDPOINTS.indexerApi}/api/chronos/v1/spot`
   }`
 )
+
+export const indexerRestMarketChronosApi = new IndexerRestMarketChronosApi(
+  `${ENDPOINTS.indexerApi}/api/chronos/v1/market`
+)
 export const indexerDerivativesApi = new IndexerGrpcDerivativesApi(
   ENDPOINTS.indexerApi
 )
@@ -106,6 +113,11 @@ export const msgBroadcastClient = new MsgBroadcastClient({
   ...apiOptions,
   walletStrategy
 })
+export const msgBroadcastExperimentalClient =
+  new MsgBroadcastExperimentalClient({
+    ...apiOptions,
+    walletStrategy
+  })
 export const web3Client = new Web3Client({
   // @ts-ignore
   walletStrategy,

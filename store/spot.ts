@@ -7,6 +7,7 @@ import {
 import { StreamOperation } from '@injectivelabs/ts-types'
 import {
   MsgBatchCancelSpotOrders,
+  MsgCancelSpotOrder,
   MsgCreateSpotLimitOrder,
   MsgCreateSpotMarketOrder,
   SpotOrderSide,
@@ -20,6 +21,7 @@ import {
   UiSpotMarketSummary,
   UiSpotMarketWithToken,
   UiSpotOrderbook,
+  UiSpotOrderHistory,
   UiSpotTrade,
   UiSpotTransformer,
   zeroSpotMarketSummary,
@@ -43,6 +45,7 @@ import {
   tokenService
 } from '~/app/Services'
 import { spot as allowedSpotMarkets } from '~/routes.config'
+import { ActivityFetchOptions } from '~/types'
 
 const initialStateFactory = () => ({
   markets: [] as UiSpotMarketWithToken[],
@@ -52,7 +55,25 @@ const initialStateFactory = () => ({
   orderbook: undefined as UiSpotOrderbook | undefined,
   trades: [] as UiSpotTrade[],
   subaccountTrades: [] as UiSpotTrade[],
-  subaccountOrders: [] as UiSpotLimitOrder[]
+  subaccountTradesPagination: {
+    endTime: 0 as number,
+    total: 0 as number
+  },
+  subaccountOrders: [] as UiSpotLimitOrder[],
+  subaccountOrdersPagination: {
+    total: 0 as number,
+    endTime: 0 as number
+  },
+  subaccountOrderHistory: [] as UiSpotOrderHistory[],
+  subaccountOrderHistoryPagination: {
+    total: 0 as number,
+    endTime: 0 as number
+  },
+  subaccountConditionalOrders: [] as UiSpotOrderHistory[],
+  subaccountConditionalOrdersPagination: {
+    total: 0 as number,
+    endTime: 0 as number
+  }
 })
 
 const initialState = initialStateFactory()
@@ -64,7 +85,13 @@ export const state = () => ({
   marketSummary: initialState.marketSummary as UiSpotMarketSummary | undefined,
   trades: initialState.trades as UiSpotTrade[],
   subaccountTrades: initialState.subaccountTrades as UiSpotTrade[],
+  subaccountTradesPagination: initialState.subaccountTradesPagination,
   subaccountOrders: initialState.subaccountOrders as UiSpotLimitOrder[],
+  subaccountOrdersPagination: initialState.subaccountOrdersPagination,
+  subaccountOrderHistory: initialState.subaccountOrderHistory as UiSpotOrderHistory[],
+  subaccountOrderHistoryPagination: initialState.subaccountOrderHistoryPagination,
+  subaccountConditionalOrders: initialState.subaccountConditionalOrders as UiSpotOrderHistory[],
+  subaccountConditionalOrdersPagination: initialState.subaccountConditionalOrdersPagination,
   orderbook: initialState.orderbook as UiSpotOrderbook | undefined
 })
 
@@ -115,7 +142,9 @@ export const getters = getterTree(state, {
     const secondLastPrice = new BigNumberInBase(secondLastTrade.price)
 
     return lastPrice.gte(secondLastPrice) ? Change.Increase : Change.Decrease
-  }
+  },
+
+  activeMarketIds: (state) => state.markets.map((m) => m.marketId)
 })
 
 export const mutations = {
@@ -159,6 +188,46 @@ export const mutations = {
 
   setSubaccountTrades(state: SpotStoreState, subaccountTrades: UiSpotTrade[]) {
     state.subaccountTrades = subaccountTrades
+  },
+
+  setSubaccountTradesEndTime(state: SpotStoreState, endTime: number) {
+    state.subaccountTradesPagination.endTime = endTime
+  },
+
+  setSubaccountTradesTotal(state: SpotStoreState, total: number) {
+    state.subaccountTradesPagination.total = total
+  },
+
+  setSubaccountOrdersEndTime(state: SpotStoreState, endTime: number) {
+    state.subaccountOrdersPagination.endTime = endTime
+  },
+
+  setSubaccountOrdersTotal(state: SpotStoreState, total: number) {
+    state.subaccountOrdersPagination.total = total
+  },
+
+  setSubaccountOrderHistory(state: SpotStoreState, orderHistory: UiSpotOrderHistory[]) {
+    state.subaccountOrderHistory = orderHistory
+  },
+
+  setSubaccountOrderHistoryEndTime(state: SpotStoreState, endTime: number) {
+    state.subaccountOrderHistoryPagination.endTime = endTime
+  },
+
+  setSubaccountOrderHistoryTotal(state: SpotStoreState, total: number) {
+    state.subaccountOrderHistoryPagination.total = total
+  },
+
+  setSubaccountConditionalOrders(state: SpotStoreState, conditionalOrders: UiSpotOrderHistory[]) {
+    state.subaccountConditionalOrders = conditionalOrders
+  },
+
+  setSubaccountConditionalOrdersEndTime(state: SpotStoreState, endTime: number) {
+    state.subaccountConditionalOrdersPagination.endTime = endTime
+  },
+
+  setSubaccountConditionalOrdersTotal(state: SpotStoreState, total: number) {
+    state.subaccountConditionalOrdersPagination.total = total
   },
 
   setSubaccountOrders(
@@ -455,7 +524,10 @@ export const actions = actionTree(
       })
     },
 
-    async fetchSubaccountOrders({ commit }) {
+    async fetchSubaccountOrders(
+      { commit },
+      activityFetchOptions: ActivityFetchOptions | undefined
+    ) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -463,11 +535,90 @@ export const actions = actionTree(
         return
       }
 
-      const { orders } = await indexerSpotApi.fetchOrders({
-        subaccountId: subaccount.subaccountId
+      const paginationOptions = activityFetchOptions?.pagination
+      const filters = activityFetchOptions?.filters
+
+      const { orders, pagination } = await indexerSpotApi.fetchOrders({
+        marketId: filters?.marketId,
+        marketIds: filters?.marketIds,
+        subaccountId: subaccount.subaccountId,
+        orderSide: filters?.orderSide as SpotOrderSide,
+        // isConditional: false,
+        pagination: {
+          skip: paginationOptions ? paginationOptions.skip : 0,
+          limit: paginationOptions ? paginationOptions.limit : 0
+        }
       })
 
+      commit('setSubaccountOrdersTotal', pagination.total)
       commit('setSubaccountOrders', orders)
+    },
+
+    async fetchSubaccountOrderHistory({ commit }, activityFetchOptions: ActivityFetchOptions | undefined) {
+      const { subaccount } = this.app.$accessor.account
+      const { isUserWalletConnected } = this.app.$accessor.wallet
+
+      if (!isUserWalletConnected || !subaccount) {
+        return
+      }
+
+      const paginationOptions = activityFetchOptions?.pagination
+      const filters = activityFetchOptions?.filters
+
+      const { orderHistory } = await indexerSpotApi.fetchOrderHistory({
+        marketId: filters?.marketId,
+        subaccountId: subaccount.subaccountId,
+        orderTypes: filters?.orderTypes as SpotOrderSide[],
+        direction: filters?.direction,
+        isConditional: filters?.isConditional,
+        pagination: {
+          skip: paginationOptions ? paginationOptions.skip : 0,
+          limit: paginationOptions ? paginationOptions.limit : 0
+        }
+      })
+
+      commit('setSubaccountOrderHistory', orderHistory)
+    },
+
+    async fetchSubaccountConditionalOrders(
+      { commit, state },
+      activityFetchOptions: ActivityFetchOptions | undefined
+    ) {
+      const { subaccount } = this.app.$accessor.account
+      const { isUserWalletConnected } = this.app.$accessor.wallet
+
+      if (!isUserWalletConnected || !subaccount) {
+        return
+      }
+
+      const paginationOptions = activityFetchOptions?.pagination
+      const filters = activityFetchOptions?.filters
+
+      if (
+        state.subaccountConditionalOrders.length > 0 &&
+        state.subaccountConditionalOrdersPagination.endTime === 0
+      ) {
+        commit(
+          'setSubaccountConditionalOrdersEndTime',
+          state.subaccountConditionalOrders[0].createdAt
+        )
+      }
+
+      const { orderHistory, pagination } = await indexerSpotApi.fetchOrderHistory({
+        marketId: filters?.marketId,
+        subaccountId: subaccount.subaccountId,
+        orderTypes: filters?.orderTypes as SpotOrderSide[],
+        direction: filters?.direction,
+        isConditional: true,
+        pagination: {
+          skip: paginationOptions ? paginationOptions.skip : 0,
+          limit: paginationOptions ? paginationOptions.limit : 0,
+          endTime: state.subaccountConditionalOrdersPagination.endTime
+        }
+      })
+
+      commit('setSubaccountConditionalOrdersTotal', pagination.total)
+      commit('setSubaccountConditionalOrders', orderHistory)
     },
 
     async fetchOrderbook({ state, commit }) {
@@ -490,14 +641,15 @@ export const actions = actionTree(
         return
       }
 
-      const { trades } = await indexerSpotApi.fetchTrades({
-        marketId: market.marketId
-      })
+      const { trades } = await indexerSpotApi.fetchTrades({ marketId: market.marketId })
 
       commit('setTrades', trades)
     },
 
-    async fetchSubaccountTrades({ commit }) {
+    async fetchSubaccountTrades(
+      { state, commit },
+      activityFetchOptions: ActivityFetchOptions | undefined
+    ) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -505,10 +657,33 @@ export const actions = actionTree(
         return
       }
 
-      const { trades } = await indexerSpotApi.fetchTrades({
-        subaccountId: subaccount.subaccountId
+      if (
+        state.subaccountTrades.length > 0 &&
+        state.subaccountTradesPagination.endTime === 0
+      ) {
+        commit(
+          'setSubaccountTradesEndTime',
+          state.subaccountTrades[0].timestamp
+        )
+      }
+
+      const paginationOptions = activityFetchOptions?.pagination
+      const filters = activityFetchOptions?.filters
+
+      const { trades, pagination } = await indexerSpotApi.fetchTrades({
+        marketId: filters?.marketId,
+        marketIds: filters?.marketIds,
+        subaccountId: subaccount.subaccountId,
+        executionTypes: filters?.types,
+        direction: filters?.direction,
+        pagination: {
+          skip: paginationOptions ? paginationOptions.skip : 0,
+          limit: paginationOptions ? paginationOptions.limit : 0,
+          endTime: state.subaccountTradesPagination.endTime
+        }
       })
 
+      commit('setSubaccountTradesTotal', pagination.total)
       commit('setSubaccountTrades', trades)
     },
 
@@ -550,7 +725,7 @@ export const actions = actionTree(
       }
     },
 
-    async cancelOrder(_, order: UiSpotLimitOrder) {
+    async cancelOrder(_, order: UiSpotLimitOrder | UiSpotOrderHistory) {
       const { subaccount } = this.app.$accessor.account
       const { address, injectiveAddress, isUserWalletConnected } =
         this.app.$accessor.wallet
@@ -562,15 +737,11 @@ export const actions = actionTree(
       await this.app.$accessor.app.queue()
       await this.app.$accessor.wallet.validate()
 
-      const message = MsgBatchCancelSpotOrders.fromJSON({
+      const message = MsgCancelSpotOrder.fromJSON({
         injectiveAddress,
-        orders: [
-          {
-            marketId: order.marketId,
-            subaccountId: order.subaccountId,
-            orderHash: order.orderHash
-          }
-        ]
+        marketId: order.marketId,
+        subaccountId: order.subaccountId,
+        orderHash: order.orderHash
       })
 
       await msgBroadcastClient.broadcast({
@@ -661,6 +832,62 @@ export const actions = actionTree(
       })
     },
 
+    async submitStopLimitOrder(
+      { state },
+      {
+        price,
+        triggerPrice,
+        quantity,
+        orderType
+      }: {
+        price: BigNumberInBase
+        triggerPrice: BigNumberInBase
+        quantity: BigNumberInBase
+        orderType: SpotOrderSide
+      }
+    ) {
+      const { market } = state
+      const { subaccount } = this.app.$accessor.account
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
+      const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
+
+      if (!isUserWalletConnected || !subaccount || !market) {
+        return
+      }
+
+      await this.app.$accessor.app.queue()
+      await this.app.$accessor.wallet.validate()
+
+      const message = MsgCreateSpotLimitOrder.fromJSON({
+        injectiveAddress,
+        orderType: spotOrderTypeToGrpcOrderType(orderType),
+        price: spotPriceToChainPriceToFixed({
+          value: price,
+          baseDecimals: market.baseToken.decimals,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        triggerPrice: spotPriceToChainPriceToFixed({
+          value: triggerPrice,
+          baseDecimals: market.baseToken.decimals,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        quantity: spotQuantityToChainQuantityToFixed({
+          value: quantity,
+          baseDecimals: market.baseToken.decimals
+        }),
+        marketId: market.marketId,
+        feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
+        subaccountId: subaccount.subaccountId
+      })
+
+      await msgBroadcastClient.broadcast({
+        address,
+        msgs: message,
+        bucket: SpotMetrics.CreateLimitOrder
+      })
+    },
+
     async submitMarketOrder(
       { state },
       {
@@ -691,6 +918,62 @@ export const actions = actionTree(
         orderType: spotOrderTypeToGrpcOrderType(orderType),
         price: spotPriceToChainPriceToFixed({
           value: price,
+          baseDecimals: market.baseToken.decimals,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        quantity: spotQuantityToChainQuantityToFixed({
+          value: quantity,
+          baseDecimals: market.baseToken.decimals
+        }),
+        marketId: market.marketId,
+        feeRecipient: referralFeeRecipient || FEE_RECIPIENT,
+        subaccountId: subaccount.subaccountId
+      })
+
+      await msgBroadcastClient.broadcast({
+        address,
+        msgs: message,
+        bucket: SpotMetrics.CreateMarketOrder
+      })
+    },
+
+    async submitStopMarketOrder(
+      { state },
+      {
+        quantity,
+        price,
+        triggerPrice,
+        orderType
+      }: {
+        price: BigNumberInBase
+        triggerPrice: BigNumberInBase
+        quantity: BigNumberInBase
+        orderType: SpotOrderSide
+      }
+    ) {
+      const { market } = state
+      const { subaccount } = this.app.$accessor.account
+      const { address, injectiveAddress, isUserWalletConnected } =
+        this.app.$accessor.wallet
+      const { feeRecipient: referralFeeRecipient } = this.app.$accessor.referral
+
+      if (!isUserWalletConnected || !subaccount || !market) {
+        return
+      }
+
+      await this.app.$accessor.app.queue()
+      await this.app.$accessor.wallet.validate()
+
+      const message = MsgCreateSpotMarketOrder.fromJSON({
+        injectiveAddress,
+        orderType: spotOrderTypeToGrpcOrderType(orderType),
+        price: spotPriceToChainPriceToFixed({
+          value: price,
+          baseDecimals: market.baseToken.decimals,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        triggerPrice: spotPriceToChainPriceToFixed({
+          value: triggerPrice,
           baseDecimals: market.baseToken.decimals,
           quoteDecimals: market.quoteToken.decimals
         }),

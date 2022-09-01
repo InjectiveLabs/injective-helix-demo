@@ -1,8 +1,8 @@
 <template>
   <tr v-if="market" :data-cy="'spot-order-table-row-' + market.ticker">
-    <td class="h-8 text-left cursor-pointer" @click="handleClickOnMarket">
+    <td class="h-12 text-left cursor-pointer" @click="handleClickOnMarket">
       <div class="flex items-center justify-start">
-        <div v-if="baseTokenLogo" class="w-6 h-6">
+        <div v-if="baseTokenLogo" class="w-4 h-4">
           <img
             :src="baseTokenLogo"
             :alt="market.baseToken.name"
@@ -11,7 +11,7 @@
         </div>
         <div class="ml-3">
           <span
-            class="text-gray-200 font-semibold"
+            class="text-gray-200 text-xs"
             data-cy="spot-order-ticker-name-table-data"
           >
             {{ market.ticker }}
@@ -20,9 +20,9 @@
       </div>
     </td>
 
-    <td class="h-8 text-left">
+    <td class="h-12 text-left">
       <span
-        class="pl-1"
+        class="text-xs"
         data-cy="spot-order-order-side-table-data"
         :class="{
           'text-green-500': orderTypeBuy,
@@ -33,8 +33,9 @@
       </span>
     </td>
 
-    <td class="h-8 font-mono text-right">
+    <td class="h-12 font-mono text-right">
       <VNumber
+        xs
         data-cy="spot-order-price-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -42,8 +43,9 @@
         :number="price"
       />
     </td>
-    <td class="h-8 text-right font-mono">
+    <td class="h-12 text-right font-mono">
       <VNumber
+        xs
         data-cy="spot-order-quantity-table-data"
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
@@ -51,8 +53,9 @@
         :number="quantity"
       />
     </td>
-    <td class="h-8 text-right font-mono">
+    <td class="h-12 text-right font-mono">
       <VNumber
+        xs
         data-cy="spot-order-unfilled-quantity-table-data"
         :decimals="
           market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
@@ -60,9 +63,10 @@
         :number="unfilledQuantity"
       />
     </td>
-    <td class="h-8">
+    <td class="h-12">
       <div class="flex items-center justify-end">
         <VNumber
+          xs
           data-cy="spot-order-filled-quantity-table-data"
           :decimals="
             market
@@ -71,25 +75,26 @@
           "
           :number="filledQuantity"
         />
-        <span v-if="filledQuantity.gt('0')" class="ml-1">
+        <span v-if="filledQuantity.gt('0')" class="ml-1 text-xs">
           ({{ filledQuantityPercentageToFormat }}%)
         </span>
       </div>
     </td>
-    <td class="h-8 font-mono text-right">
+    <td class="h-12 font-mono text-right">
       <VNumber
+        xs
         data-cy="spot-order-total-table-data"
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
         :number="total"
       >
-        <span slot="addon" class="text-2xs text-gray-500">
+        <span slot="addon" class="text-xs text-gray-500">
           {{ market.quoteToken.symbol }}
         </span>
       </VNumber>
     </td>
-    <td class="h-8 relative">
+    <td class="h-12 relative">
       <div class="flex items-center justify-end">
         <span
           v-if="false"

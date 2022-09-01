@@ -13,7 +13,34 @@
               {{ `(${filteredOrders.length})` }}
             </span>
           </VButtonFilter>
+
           <VSeparator />
+
+          <VButtonFilter
+            v-model="component"
+            :option="components.triggers"
+            data-cy="trading-page-triggers-tab-button"
+          >
+            <span class="uppercase text-xs font-semibold">
+              {{ $t('activity.triggers') }}
+              {{ `(${triggers.length})` }}
+            </span>
+          </VButtonFilter>
+
+          <VSeparator />
+
+          <VButtonFilter
+            v-model="component"
+            :option="components.orderHistory"
+            data-cy="trading-page-order-history-tab-button"
+          >
+            <span class="uppercase text-xs font-semibold">
+              {{ $t('activity.orderHistory') }}
+            </span>
+          </VButtonFilter>
+
+          <VSeparator />
+
           <VButtonFilter
             v-model="component"
             :option="components.tradeHistory"
@@ -29,7 +56,7 @@
       <div
         class="col-span-12 sm:col-span-6 mb-4 mx-4 sm:mt-4 flex items-center justify-between sm:justify-end"
       >
-        <VCheckbox v-if="market" v-model="currentMarketOnly" class="mr-4">
+        <VCheckbox v-if="market" v-model="currentMarketOnly" data-cy="trade-page-filter-by-ticker-checkbox" class="lg:mr-4">
           {{ $t('trade.asset_only', { asset: market.ticker }) }}
         </VCheckbox>
         <VButton
@@ -39,6 +66,7 @@
           class="mr-2 rounded"
           red-outline
           sm
+          data-cy="trade-page-cancel-all-button"
           @click.stop="handleCancelAllClick"
         >
           {{ $t('trade.cancelAllOrders') }}
@@ -62,22 +90,28 @@
 import Vue from 'vue'
 import {
   UiSpotLimitOrder,
-  UiSpotMarketWithToken
+  UiSpotMarketWithToken,
+  UiSpotOrderHistory
 } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import OpenOrders from './orders/index.vue'
+import Triggers from './triggers/index.vue'
+import OrderHistory from './order-history/index.vue'
 import TradeHistory from './trade-history/index.vue'
 
 const components = {
-  orderHistory: '',
   openOrders: 'openOrders',
+  triggers: 'triggers',
+  orderHistory: 'orderHistory',
   tradeHistory: 'TradeHistory'
 }
 
 export default Vue.extend({
   components: {
-    TradeHistory,
-    OpenOrders
+    OpenOrders,
+    Triggers,
+    OrderHistory,
+    TradeHistory
   },
 
   data() {
@@ -99,6 +133,14 @@ export default Vue.extend({
       return this.$accessor.spot.subaccountOrders
     },
 
+    orderHistory(): UiSpotOrderHistory[] {
+      return this.$accessor.spot.subaccountOrderHistory
+    },
+
+    triggers(): UiSpotOrderHistory[] {
+      return this.$accessor.spot.subaccountConditionalOrders
+    },
+
     currentMarketOrders(): UiSpotLimitOrder[] {
       const { market, orders } = this
 
@@ -115,6 +157,8 @@ export default Vue.extend({
   mounted() {
     Promise.all([
       this.$accessor.spot.fetchSubaccountOrders(),
+      this.$accessor.spot.fetchSubaccountOrderHistory(),
+      this.$accessor.spot.fetchSubaccountConditionalOrders(),
       this.$accessor.spot.fetchSubaccountTrades()
     ])
       .then(() => {

@@ -3,7 +3,7 @@
     <VButton
       md
       primary
-      class="rounded-lg whitespace-nowrap h-8 lg:h-10 px-4 lg:px-8 bg-primary-500 hover:bg-primary-400"
+      class="rounded-lg whitespace-nowrap h-8 lg:h-10 px-4 lg:px-8 bg-primary-500 hover:bg-primary-400 flex items-center"
       data-cy="header-wallet-connect-button"
       @click="handleWalletConnectClicked"
     >
@@ -164,7 +164,7 @@ export default Vue.extend({
       this.$amplitude.track(AmplitudeEvents.ConnectClicked)
 
       if (GEO_IP_RESTRICTIONS_ENABLED) {
-        this.$accessor.modal.openModal(Modal.Terms)
+        this.$accessor.modal.openModal({ type: Modal.Terms })
       } else {
         this.isOpenConnectModal = true
       }

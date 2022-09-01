@@ -56,7 +56,7 @@
 
     <PopperBox
       ref="popper-trade-dropdown"
-      class="popper rounded-lg flex flex-col flex-wrap text-xs absolute w-80 xs:w-96 bg-gray-800 overflow-hidden"
+      class="popper rounded-lg flex flex-col flex-wrap text-xs absolute w-80 xs:w-96 bg-gray-950 shadow-dropdown"
       :options="popperOptions"
       binding-element="#trade-dropdown"
     >
@@ -65,7 +65,7 @@
           name: 'spot-spot',
           params: { spot: DefaultMarket.Spot }
         }"
-        class="p-4 block rounded-t group hover:bg-gray-700 relative z-10 bg-gray-800 mb-2"
+        class="p-4 block rounded-t group hover:bg-gray-700 relative z-10 bg-gray-950 mb-2"
         data-cy="header-trade-link"
         @click.native="handleSpotTradeClickedTrack"
       >
@@ -83,7 +83,7 @@
             perpetual: DefaultMarket.Perpetual
           }
         }"
-        class="p-4 block group hover:bg-gray-700 relative z-10 bg-gray-800 mb-2"
+        class="p-4 block group hover:bg-gray-700 relative z-10 bg-gray-950 mb-2"
         data-cy="header-trade-link"
         @click.native="handlePerpetualTradeClickedTrack"
       >
@@ -96,7 +96,7 @@
       </nuxt-link>
       <nuxt-link
         :to="{ name: 'convert-convert', query: { from: 'usdt', to: 'inj' } }"
-        class="p-4 block rounded-b group hover:bg-gray-700 relative z-10 bg-gray-800"
+        class="p-4 block rounded-b group hover:bg-gray-700 relative z-10 bg-gray-950"
         data-cy="header-convert-link"
       >
         <p class="font-semibold text-base text-white">
@@ -110,13 +110,13 @@
 
     <PopperBox
       ref="popper-rewards-dropdown"
-      class="popper rounded-lg flex flex-col flex-wrap text-xs absolute w-80 xs:w-96 bg-gray-800 overflow-hidden"
+      class="popper rounded-lg flex flex-col flex-wrap text-xs absolute w-80 xs:w-96 bg-gray-950 shadow-dropdown"
       :options="popperOptions"
       binding-element="#rewards-dropdown"
     >
       <nuxt-link
         :to="{ name: 'trade-and-earn' }"
-        class="p-4 block rounded-t group hover:bg-gray-700 relative z-10 bg-gray-800 mb-2"
+        class="p-4 block rounded-t group hover:bg-gray-700 relative z-10 bg-gray-950 mb-2"
       >
         <p class="font-semibold text-base text-white">
           {{ $t('navigation.tradeAndEarn') }}
@@ -138,7 +138,7 @@
           {{ $t('navigation.dmmProgramDescription') }}
         </p>
       </a>
-      <a
+      <!-- <a
         href="https://affiliate.helixapp.com"
         target="_blank"
         class="p-4 block rounded-b group hover:bg-gray-700"
@@ -150,7 +150,7 @@
         <p class="text-sm text-gray-500 group-hover:text-gray-100 mt-1">
           {{ $t('navigation.affiliateProgramDescription') }}
         </p>
-      </a>
+      </a> -->
     </PopperBox>
   </div>
 </template>

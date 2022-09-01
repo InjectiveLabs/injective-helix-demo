@@ -1,0 +1,291 @@
+<template>
+  <nuxt-link :to="marketRoute">
+    <div
+      class="grid grid-cols-12 items-center border-helixGray-200 py-4 gap-10 box-content"
+      @click.native="handleTradeClickedTrack"
+    >
+      <div class="col-span-4 flex items-center justify-start pl-4">
+        <div class="flex items-center justify-start">
+          <img
+            :src="baseTokenLogo"
+            :alt="market.baseToken.name"
+            class="w-4 h-4 md:w-6 md:h-6 mr-3"
+          />
+          <div
+            class="text-left text-helixGray-500 text-sm font-bold whitespace-nowrap"
+          >
+            <div class="flex leading-4">
+              {{ market.ticker }}
+            </div>
+            <p class="text-helixGray-300 text-xs leading-3.5">
+              {{ market.baseToken.name }}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-span-3 flex">
+        <span class="w-full text-gray-900 font-medium text-sm text-right">
+          <div class="flex align-center justify-end">
+            <IconArrow
+              v-if="!lastTradedPrice.isNaN()"
+              class="transform w-3 h-3 mr-1 mt-1"
+              :class="{
+                'text-green-500 rotate-90': lastPriceChange !== Change.Decrease,
+                'text-red-500 -rotate-90': lastPriceChange === Change.Decrease
+              }"
+            />
+            <span
+              v-if="!lastTradedPrice.isNaN()"
+              :class="{
+                'text-green-500': lastPriceChange !== Change.Decrease,
+                'text-red-500': lastPriceChange === Change.Decrease
+              }"
+            >
+              {{ lastTradedPriceToFormat }}
+            </span>
+            <span v-else class="text-gray-400">&mdash;</span>
+          </div>
+        </span>
+      </div>
+      <div class="col-span-2 flex">
+        <span
+          v-if="!change.isNaN()"
+          :class="change.gte(0) ? 'text-green-500' : 'text-red-500'"
+        >
+          {{ `${change.gte(0) ? '+' : ''}${changeToFormat}%` }}
+        </span>
+        <span v-else class="text-gray-400">&mdash;</span>
+      </div>
+      <div class="col-span-3 flex pr-4 h-7">
+        <LineGraph
+          v-if="chartData.length > 1"
+          :data="chartData"
+          :color="'#f3164d'"
+          :bg-type="'transparent'"
+          :stroke-width="1"
+          :smoothness="0.2"
+        />
+      </div>
+    </div>
+  </nuxt-link>
+</template>
+
+<script lang="ts">
+import Vue, { PropType } from 'vue'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+// @ts-ignore
+import { LineGraph } from 'vue-plot'
+import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
+import { Identify, identify } from '@amplitude/analytics-browser'
+import {
+  MarketType,
+  UiDerivativeMarketSummary,
+  UiDerivativeMarketWithToken,
+  UiMarketHistory,
+  ZERO_IN_BASE,
+  UiSpotMarketSummary,
+  UiSpotMarketWithToken,
+  getTokenLogoWithVendorPathPrefix
+} from '@injectivelabs/sdk-ui-ts'
+import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { AmplitudeEvents, Change, MarketRoute, TradeClickOrigin } from '~/types'
+import { betaMarketSlugs } from '~/app/data/market'
+import {
+  getMarketRoute,
+  getFormattedMarketsHistoryChartData
+} from '~/app/utils/market'
+import { AMPLITUDE_VIP_TIER_LEVEL } from '~/app/utils/vendor'
+
+export default Vue.extend({
+  components: {
+    LineGraph
+  },
+
+  props: {
+    market: {
+      required: true,
+      type: Object as PropType<
+        UiDerivativeMarketWithToken | UiSpotMarketWithToken
+      >
+    },
+
+    summary: {
+      required: true,
+      type: Object as PropType<UiDerivativeMarketSummary | UiSpotMarketSummary>
+    }
+  },
+
+  data() {
+    return {
+      Change,
+      status: new Status(StatusType.Loading)
+    }
+  },
+
+  computed: {
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
+    },
+
+    tierLevel(): number {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return 0
+      }
+
+      return new BigNumberInBase(
+        feeDiscountAccountInfo.tierLevel || 0
+      ).toNumber()
+    },
+
+    marketsHistory(): UiMarketHistory[] {
+      return this.$accessor.exchange.marketsHistory
+    },
+
+    chartData(): number[][] {
+      const { market, marketsHistory } = this
+      if (marketsHistory.length === 0 || !market) {
+        return []
+      }
+
+      const matchingMarket = marketsHistory.find(
+        (marketHistory: UiMarketHistory) => {
+          return marketHistory.marketId === market.marketId
+        }
+      )
+
+      if (!matchingMarket) {
+        return []
+      }
+
+      return getFormattedMarketsHistoryChartData(matchingMarket)
+    },
+
+    lastTradedPrice(): BigNumberInBase {
+      const { market, summary } = this
+
+      if (!market || !summary) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(summary.price)
+    },
+
+    lastTradedPriceToFormat(): string {
+      const { market, lastTradedPrice } = this
+
+      if (!market) {
+        return lastTradedPrice.toFormat(
+          UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+          BigNumberInBase.ROUND_DOWN
+        )
+      }
+
+      return lastTradedPrice.toFormat(
+        market.priceDecimals,
+        BigNumberInBase.ROUND_DOWN
+      )
+    },
+
+    isMarketBeta(): boolean {
+      const { market } = this
+
+      if (!market) {
+        return false
+      }
+
+      return betaMarketSlugs.includes(market.slug)
+    },
+
+    volume(): BigNumberInBase {
+      const { market, summary } = this
+
+      if (!market || !summary) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(summary.volume)
+    },
+
+    volumeToFormat(): string {
+      const { volume } = this
+
+      return volume.toFormat(0, BigNumberInBase.ROUND_DOWN)
+    },
+
+    change(): BigNumberInBase {
+      const { market, summary } = this
+
+      if (!market || !summary) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(summary.change)
+    },
+
+    changeToFormat(): string {
+      const { change } = this
+
+      return change.toFormat(2, BigNumberInBase.ROUND_DOWN)
+    },
+
+    lastPriceChange(): Change {
+      const { market, summary } = this
+
+      if (!market || !summary) {
+        return Change.NoChange
+      }
+
+      if (!summary.lastPriceChange) {
+        return Change.NoChange
+      }
+
+      return summary.lastPriceChange
+    },
+
+    marketRoute(): MarketRoute {
+      const { market } = this
+
+      const marketRoute = getMarketRoute(market)
+
+      return marketRoute || { name: 'markets' }
+    },
+
+    baseTokenLogo(): string {
+      const { market } = this
+
+      if (!market || !market.baseToken) {
+        return ''
+      }
+
+      return getTokenLogoWithVendorPathPrefix(market.baseToken.logo)
+    }
+  },
+
+  methods: {
+    handleTradeClickedTrack() {
+      if (
+        !this.marketRoute.params ||
+        (!this.marketRoute.params.spot && !this.marketRoute.params.perpetual)
+      ) {
+        return
+      }
+
+      const identifyObj = new Identify()
+      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
+      identify(identifyObj)
+
+      this.$amplitude.track(AmplitudeEvents.TradeClicked, {
+        market: this.marketRoute.params.spot
+          ? this.marketRoute.params.spot
+          : this.marketRoute.params.perpetual,
+        marketType: this.marketRoute.params.spot
+          ? MarketType.Spot
+          : MarketType.Perpetual,
+        origin: TradeClickOrigin.Lander
+      })
+    }
+  }
+})
+</script>

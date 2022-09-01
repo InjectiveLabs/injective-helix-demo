@@ -1,28 +1,24 @@
 <template>
   <HocLoading :status="status">
-    <VCardTableWrap>
-      <template #actions>
-        <div
-          class="col-span-12 sm:col-span-6 lg:col-span-4 grid grid-cols-5 gap-4"
-        >
-          <VSearch
-            dense
-            class="col-span-3"
-            data-cy="universal-table-filter-by-asset-input"
-            :placeholder="$t('trade.filter')"
-            :search="search"
-            @searched="handleInputOnSearch"
+    <div class="w-full h-full flex flex-col">
+      <Toolbar>
+        <template #filters>
+          <SearchAsset :value="selectedToken" @select="handleSearch" />
+
+          <ClearFiltersButton
+            v-if="showClearFiltersButton"
+            @clear="handleClearFilters"
           />
-        </div>
-      </template>
+        </template>
+      </Toolbar>
 
       <TableWrapper break-md class="mt-4">
-        <table v-if="sortedTransactions.length > 0" class="table">
+        <table v-if="transactions.length > 0" class="table">
           <TransfersTableHeader />
           <tbody>
             <tr
               is="Transfer"
-              v-for="(transaction, index) in sortedTransactions"
+              v-for="(transaction, index) in transactions"
               :key="`transfers-${index}-${transaction.timestamp}`"
               :transaction="transaction"
             />
@@ -34,7 +30,20 @@
           class="min-h-orders"
         />
       </TableWrapper>
-    </VCardTableWrap>
+
+      <Pagination
+        v-if="status.isIdle() && transactions.length > 0"
+        class="mt-4"
+        v-bind="{
+          limit,
+          page,
+          totalPages,
+          totalCount
+        }"
+        @update:limit="handleLimitChangeEvent"
+        @update:page="handlePageChangeEvent"
+      />
+    </div>
   </HocLoading>
 </template>
 
@@ -42,19 +51,32 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import Vue from 'vue'
 import { UiBridgeTransactionWithToken } from '@injectivelabs/sdk-ui-ts'
+import { Token } from '@injectivelabs/token-metadata'
 import TransfersTableHeader from '~/components/partials/activity/wallet-history/common/table-header.vue'
 import Transfer from '~/components/partials/activity/wallet-history/transfers/transfer.vue'
+import Pagination from '~/components/partials/common/pagination.vue'
+import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
+import SearchAsset from '@/components/partials/activity/common/search-asset.vue'
+import ClearFiltersButton from '@/components/partials/activity/common/clear-filters-button.vue'
+import Toolbar from '@/components/partials/activity/common/toolbar.vue'
 
 export default Vue.extend({
   components: {
     Transfer,
-    TransfersTableHeader
+    TransfersTableHeader,
+    Pagination,
+    SearchAsset,
+    ClearFiltersButton,
+    Toolbar
   },
 
   data() {
     return {
       search: '',
-      status: new Status(StatusType.Loading)
+      status: new Status(StatusType.Loading),
+      page: 1,
+      limit: UI_DEFAULT_PAGINATION_LIMIT_COUNT,
+      selectedToken: undefined as Token | undefined
     }
   },
 
@@ -63,47 +85,83 @@ export default Vue.extend({
       return this.$accessor.bridge.subaccountTransferBridgeTransactions
     },
 
-    filteredTransactions(): UiBridgeTransactionWithToken[] {
-      const { transactions, search } = this
-
-      return transactions.filter((transaction) => {
-        if (!search) {
-          return true
-        }
-
-        const isPartOfSearchFilter = transaction.token.symbol
-          .toLowerCase()
-          .includes(search.trim().toLowerCase())
-
-        return isPartOfSearchFilter
-      })
+    totalCount(): number {
+      return this.$accessor.bridge
+        .subaccountTransferBridgeTransactionsPagination.total
     },
 
-    sortedTransactions(): UiBridgeTransactionWithToken[] {
-      const { filteredTransactions } = this
+    totalPages(): number {
+      const { totalCount, limit } = this
 
-      return filteredTransactions.sort((a, b) => {
-        return b.timestamp - a.timestamp
-      })
+      return Math.ceil(totalCount / limit)
+    },
+
+    showClearFiltersButton(): boolean {
+      return !!this.selectedToken
+    },
+
+    skip(): number {
+      const { page, limit } = this
+
+      return (page - 1) * limit
     }
   },
 
   mounted() {
-    this.status.setLoading()
-
-    Promise.all([this.$accessor.bridge.fetchSubaccountTransfers()])
-      .then(() => {
-        //
-      })
-      .catch(this.$onError)
-      .finally(() => {
-        this.status.setIdle()
-      })
+    this.fetchTransfers()
   },
 
   methods: {
-    handleInputOnSearch(search: string) {
-      this.search = search
+    fetchTransfers(): Promise<void> {
+      const { skip, limit } = this
+
+      const denom = this.selectedToken?.denom
+
+      this.status.setLoading()
+
+      return Promise.all([
+        this.$accessor.bridge.fetchSubaccountTransfers({
+          pagination: {
+            skip,
+            limit
+          },
+          filters: {
+            denom
+          }
+        })
+      ])
+        .then(() => {
+          //
+        })
+        .catch(this.$onError)
+        .finally(() => {
+          this.status.setIdle()
+        })
+    },
+
+    handleLimitChangeEvent(limit: number) {
+      this.limit = limit
+
+      this.fetchTransfers()
+    },
+
+    handlePageChangeEvent(page: number) {
+      this.page = page
+
+      this.fetchTransfers()
+    },
+
+    handleSearch(token: Token) {
+      this.selectedToken = token
+
+      this.fetchTransfers()
+    },
+
+    handleClearFilters() {
+      this.selectedToken = undefined
+      this.page = 1
+
+      this.fetchTransfers()
     }
   }
 })

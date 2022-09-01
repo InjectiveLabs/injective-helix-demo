@@ -39,10 +39,13 @@ module.exports = {
     boxShadow: {
       primary: '0px 0px 4px #00f2ff',
       card: '0px 0px 16px rgb(22 25 34 / 30%)',
+      helix: '0px 0px 100px rgba(0, 0, 0, 0.1)',
+      helixLight: '0px 0px 10px rgba(0,0,0,0.1)',
       DEFAULT: '0px 0px 4px #08090c',
       sm: '0px 0px 5px #08090c',
       md: '0px 0px 6px #08090c',
       none: 'none',
+      dropdown: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)',
       'top-bar-dark': '0px 1px 0px #2A2F41'
     },
 
@@ -94,7 +97,9 @@ module.exports = {
         100: '#F8F8F8',
         200: '#F2F2F2',
         300: '#D9DADC',
+        350: '#D0D0D1',
         400: '#a6a8ad',
+        450: '#A1A1A3',
         500: '#717584',
         600: '#434858',
         700: '#2A2F41',
@@ -108,11 +113,15 @@ module.exports = {
       },
 
       helixGray: {
+        200: '#E5E5E5',
+        300: '#727376',
+        400: '#727376',
         500: '#434448',
         700: '#1D212B',
         750: '#141519',
         800: '#1C1E29',
-        900: '#292C35'
+        900: '#292C35',
+        950: '#181A21'
       },
 
       blue: {
@@ -202,7 +211,7 @@ module.exports = {
       fontFamily: {
         sans: ['Inter', ...defaultTheme.fontFamily.sans],
         serif: ['Droid Sans', ...defaultTheme.fontFamily.serif],
-        mono: ['Inter', ...defaultTheme.fontFamily.sans]
+        mono: ['Roboto Mono', ...defaultTheme.fontFamily.mono]
       },
 
       borderRadius: {
@@ -256,6 +265,10 @@ module.exports = {
         5: '1.25rem',
         6: '1.5rem',
         ...extraSizings
+      },
+
+      backgroundImage: {
+        hero: 'url(/svg/helix-hero-bg.svg)'
       }
     }
   },

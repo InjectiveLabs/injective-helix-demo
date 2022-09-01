@@ -17,16 +17,6 @@ if (process.env.APP_GOOGLE_SITE_VERIFICATION_KEY) {
 }
 
 const scripts = []
-if (process.env.NODE_ENV === 'production' && process.env.APP_ELEVIO_ID) {
-  scripts.push({
-    src:
-      'https://cdn.elev.io/sdk/bootloader/v4/elevio-bootloader.js?cid=' +
-      process.env.APP_ELEVIO_ID,
-    async: true,
-    defer: true,
-    body: true
-  })
-}
 
 module.exports = {
   titleTemplate: process.env.APP_NAME,
@@ -39,8 +29,12 @@ module.exports = {
   },
   script: scripts,
   link: [
-    { rel: 'icon', type: 'image/png', href: '/helix-favicon.png' },
-    { rel: 'shortcut-icon', type: 'image/png', href: '/helix-favicon.png' },
-    { rel: 'apple-touch-icon', type: 'image/png', href: '/helix-favicon.png' }
+    { rel: 'icon', type: 'image/png', href: '/helix-favicon.png?v=1' },
+    { rel: 'shortcut-icon', type: 'image/png', href: '/helix-favicon.png?v=1' },
+    {
+      rel: 'apple-touch-icon',
+      type: 'image/png',
+      href: '/helix-favicon.png?v=1'
+    }
   ]
 }

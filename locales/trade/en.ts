@@ -10,6 +10,7 @@ export default {
     chart: 'Chart',
     pair: 'Pair',
     type: 'Type',
+    status: 'Status',
     type_tooltip: 'The type of your order: limit or market.',
     side: 'Side',
     side_tooltip: 'The side of your trade: long or short',
@@ -42,6 +43,7 @@ export default {
     reduce_only: 'Reduce-Only',
     post_only: 'Post-Only',
     leverage: 'Leverage',
+    triggerCondition: 'Trigger condition',
     limit: 'Limit',
     market: 'Market',
     stopLimit: 'Stop-Limit',
@@ -51,6 +53,7 @@ export default {
     emptyOrders: 'No orders found',
     emptyPositions: 'No positions found',
     emptyTrades: 'No trades found',
+    emptyTriggers: 'No triggers found',
     entry_price: 'Entry price',
     liquidation_price: 'Liquidation Price',
     liquidation_price_tooltip:
@@ -149,6 +152,7 @@ export default {
     trades: 'Trades',
     tradeHistoryDetails: 'Trade History Details',
     time: 'Time',
+    timeTooltip: 'The time at which the {type} occurred.',
     max: 'Max',
     orderbook: 'Orderbook',
     markets: 'Markets',
@@ -182,6 +186,8 @@ export default {
       'The execution price for this trade is far away from the current orderbook mid price.',
     execution_price_far_away_from_last_traded_price:
       'Please note that the execution price for this trade deviates a lot from the last traded price.',
+    trigger_price_zero: 'The trigger price must be higher than 0.',
+    trigger_price_equals_mark_price: 'The trigger price cannot be the same as the mark price.',
     there_are_no_disqualified_markets_on_this_relayer:
       'There are no disqualified markets on this relayer.',
     liquidation: 'Liquidation',
@@ -248,6 +254,17 @@ export default {
       settlement: 'Settlement',
       settlement_tooltip: 'Settlement Tooltip'
     },
-    slippage_cancellation_notice: 'Note: If the execution price exceeds the 0.5% slippage protection, your order will be automatically cancelled.'
+    slippage_cancellation_notice: 'Note: If the execution price exceeds the 0.5% slippage protection, your order will be automatically cancelled.',
+    takeProfit: 'Take-Profit',
+    stopLoss: 'Stop-Loss',
+    confirmOrderModal: {
+      descriptionLimit: 'If the mark price {verb} to or {preposition} <b>{triggerPrice} {triggerPriceSymbol}</b>, a{reduceOnly}limit order to {orderType} <b>{amount} {amountSymbol}</b> at a price of <b>{price} {priceSymbol}</b> will be placed.',
+      descriptionMarket: 'If the mark price {verb} to or {preposition} <b>{triggerPrice} {triggerPriceSymbol}</b>, a {tradingType} order to {orderType} <b>{amount} {amountSymbol}</b> will be placed.'
+    },
+    reduceOnlyTooltip: 'To place a reduce-only order, you will need an open position in the opposite side.',
+    reduceOnlyTooltipConditional: 'To place a reduce-only conditional order, you will need an open position or non reduce-only order in the opposite side.',
+    open: 'Open',
+    partiallyFilled: 'Partially Filled',
+    cancelled: 'Cancelled'
   }
 }
