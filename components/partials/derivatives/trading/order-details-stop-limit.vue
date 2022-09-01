@@ -72,17 +72,17 @@
           <span v-else class="text-gray-500 ml-1"> &mdash; </span>
         </TextInfo>
 
-        <TextInfo :title="$t('trade.maker_rate')" class="mt-2">
+        <TextInfo :title="$t('trade.maker_taker_rate')" class="mt-2">
           <IconInfoTooltip
             slot="context"
             class="ml-2"
-            :tooltip="$t('trade.maker_rate_note')"
+            :tooltip="$t('trade.maker_taker_rate_note')"
           />
           <span
             class="font-mono flex items-center"
             data-cy="trading-page-details-fee-percentage-text-content"
           >
-            {{ `${makerFeeRateToFormat}%` }}
+            {{ `${makerFeeRateToFormat}%/${takerFeeRateToFormat}%` }}
           </span>
         </TextInfo>
       </div>
@@ -117,6 +117,11 @@ export default Vue.extend({
     },
 
     makerFeeRateToFormat: {
+      type: String,
+      required: true
+    },
+
+    takerFeeRateToFormat: {
       type: String,
       required: true
     },

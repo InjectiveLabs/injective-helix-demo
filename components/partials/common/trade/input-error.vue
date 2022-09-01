@@ -588,7 +588,8 @@ export default Vue.extend({
         worstPrice,
         amount,
         isSpot,
-        tradingTypeMarket
+        tradingTypeMarket,
+        tradingTypeStopMarket
       } = this
 
       if (
@@ -610,7 +611,7 @@ export default Vue.extend({
         return undefined
       }
 
-      const useExecutionPrice = !tradingTypeMarket
+      const useExecutionPrice = !tradingTypeMarket && !tradingTypeStopMarket
       const price = useExecutionPrice ? executionPrice : worstPrice
       const notionalWithLeverageBasedOnMarketType = useExecutionPrice
         ? notionalWithLeverage

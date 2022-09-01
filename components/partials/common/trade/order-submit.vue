@@ -26,7 +26,7 @@
       {{ buttonLabel }}
     </VButton>
 
-    <VModalOrderConfirm @confirmed="handleTradeConfirmationModalConfirm" />
+    <VModalOrderConfirm @confirmed="'handleTradeConfirmationModalConfirm'" />
   </div>
 </template>
 
