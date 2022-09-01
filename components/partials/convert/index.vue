@@ -68,7 +68,7 @@
       </div>
       <ConvertDetails
         v-if="market && fromToken && toToken"
-        :pending="pricesPending"
+        :pending="pricesPending || fetchStatus.isLoading()"
         :from-token="fromToken"
         :to-token="toToken"
         :amount="amount"
@@ -129,7 +129,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import { TradeError } from 'types/errors'
 import { BigNumberInWei, Status, BigNumberInBase } from '@injectivelabs/utils'
 import { TradeExecutionType, Wallet } from '@injectivelabs/ts-types'
@@ -190,6 +190,14 @@ export default Vue.extend({
     ConvertErrors
   },
 
+  props: {
+    fetchStatus: {
+      required: false,
+      type: Object as PropType<Status>,
+      default: () => new Status()
+    }
+  },
+
   data() {
     return {
       ConvertTradeErrorLinkType,
@@ -226,13 +234,10 @@ export default Vue.extend({
     },
 
     ctaButtonLabel(): string {
-      const {
-        availableBalanceError,
-        amountTooBigToFillError,
-        notEnoughOrdersToFillFromError
-      } = this
+      const { availableBalanceError, amountTooBigToFillError, emptyLiquidity } =
+        this
 
-      if (amountTooBigToFillError || notEnoughOrdersToFillFromError) {
+      if (amountTooBigToFillError || emptyLiquidity) {
         return this.$t('trade.convert.insufficient_liquidity')
       }
 
@@ -770,21 +775,16 @@ export default Vue.extend({
       return undefined
     },
 
-    notEnoughOrdersToFillFromError(): ConvertTradeError | undefined {
-      const { orderTypeBuy, sells, buys, hasAmount, fromAmount, toAmount } =
-        this
+    emptyLiquidity(): ConvertTradeError | undefined {
+      const { orderTypeBuy, sells, buys, hasAmount } = this
 
       if (!hasAmount) {
         return
       }
 
-      const quantity = orderTypeBuy
-        ? new BigNumberInBase(toAmount)
-        : new BigNumberInBase(fromAmount)
-
       const orders = orderTypeBuy ? sells : buys
 
-      if (orders.length <= 0 && quantity.gt(0)) {
+      if (orders.length <= 0) {
         return {
           amount: this.$t('trade.not_enough_fillable_orders'),
           linkType: ConvertTradeErrorLinkType.None
@@ -889,8 +889,8 @@ export default Vue.extend({
         return this.amountTooBigToFillError
       }
 
-      if (this.notEnoughOrdersToFillFromError) {
-        return this.notEnoughOrdersToFillFromError
+      if (this.emptyLiquidity) {
+        return this.emptyLiquidity
       }
 
       if (this.amountNotValidNumberError) {
