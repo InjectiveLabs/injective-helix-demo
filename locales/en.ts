@@ -216,7 +216,7 @@ export default {
     rewards: 'Rewards',
     dashboard: 'Dashboard',
     trade: 'Trade',
-    convert: 'Helix Convert',
+    convert: 'Convert',
     convertDescription: 'Trade through a simple & intuitive interface',
     activities: 'Activities',
     activity: 'Activity',
