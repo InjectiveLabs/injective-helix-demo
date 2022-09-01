@@ -13,6 +13,10 @@ export const subscribeToNewsLetter = async (email: string) => {
 
     return response.data
   } catch (e: any) {
-    throw new Error(e)
+    throw new Error(
+      e.response
+        ? e.response.data.message
+        : 'Something happened, please try again later!'
+    )
   }
 }

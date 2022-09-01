@@ -56,7 +56,7 @@ Reach out to us at one of the following places!
 - Twitter at <a href="https://twitter.com/InjectiveLabs" target="_blank">`@InjectiveLabs`</a>
 - Discord at <a href="https://discord.com/invite/NK4qdbv" target="_blank">`Injective Discord`</a>
 - Telegram at <a href="https://t.me/joininjective" target="_blank">`Injective Telegram`</a>
-- Telegram at <a href="https://t.me/joininjective" target="_blank">`Helix Telegram`</a>
+- Telegram at <a href="https://t.me/helixapp" target="_blank">`Helix Telegram`</a>
 
 ---
 
