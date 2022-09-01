@@ -88,8 +88,8 @@ enum VideoType {
 
 const videoLinksId = {
   [VideoType.HowToBridge]: 'ohYsCATcHWI',
-  [VideoType.HowToPurchaseTokens]: 'hgM6Z7YqnDk',
-  [VideoType.HowToPlaceStopOrders]: 'phdJxdbLn1o'
+  [VideoType.HowToPurchaseTokens]: 'phdJxdbLn1o',
+  [VideoType.HowToPlaceStopOrders]: 'hgM6Z7YqnDk'
 }
 
 export default Vue.extend({
