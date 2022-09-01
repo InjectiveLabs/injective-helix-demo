@@ -17,6 +17,7 @@ type StreamFn =
   | typeof spotMarketStream.streamSpotOrderbook
   | typeof spotMarketStream.streamSpotMarket
   | typeof spotMarketStream.streamSpotOrders
+  | typeof spotMarketStream.streamSpotOrderHistory
   | typeof spotMarketStream.streamSpotTrades
   | typeof oracleStream.streamOraclePrices
   | typeof subaccountStream.streamSubaccountBalance

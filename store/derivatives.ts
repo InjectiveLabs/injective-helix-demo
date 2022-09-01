@@ -67,24 +67,6 @@ import {
 } from '~/routes.config'
 import { ActivityFetchOptions } from '~/types'
 
-// TODO: This is a temporary function until we have a proper OrderHistory stream.
-function orderToOrderHistory(
-  order: UiDerivativeLimitOrder
-): UiDerivativeOrderHistory {
-  return {
-    ...order,
-    isActive: ![
-      DerivativeOrderState.Filled,
-      DerivativeOrderState.Canceled,
-      DerivativeOrderState.Triggered
-    ].includes(order.state),
-    filledQuantity: new BigNumberInBase(order.quantity)
-      .minus(new BigNumberInBase(order.unfilledQuantity))
-      .toString(),
-    direction: order.orderSide
-  }
-}
-
 const initialStateFactory = () => ({
   perpetualMarkets: [] as UiPerpetualMarketWithToken[],
   expiryFuturesMarkets: [] as UiExpiryFuturesMarketWithToken[],
@@ -620,6 +602,7 @@ export const actions = actionTree(
       await this.app.$accessor.derivatives.streamTrades()
       await this.app.$accessor.derivatives.streamMarketMarkPrices()
       await this.app.$accessor.derivatives.streamSubaccountOrders()
+      await this.app.$accessor.derivatives.streamSubaccountOrderHistory()
       await this.app.$accessor.derivatives.streamSubaccountTrades()
       await this.app.$accessor.positions.streamSubaccountPositions()
       await this.app.$accessor.account.streamSubaccountBalances()
@@ -741,8 +724,6 @@ export const actions = actionTree(
       streamSubaccountOrders({
         subaccountId: subaccount.subaccountId,
         callback: ({ order }) => {
-          console.log('orders stream:', order)
-
           if (!order) {
             return
           }
@@ -792,8 +773,6 @@ export const actions = actionTree(
       streamSubaccountOrderHistory({
         subaccountId: subaccount.subaccountId,
         callback: ({ order }) => {
-          console.log('order history stream:', order, commit)
-
           if (!order) {
             return
           }

@@ -175,6 +175,7 @@ export const actions = actionTree(
         await this.app.$accessor.spot.fetchSubaccountOrders()
         await this.app.$accessor.spot.fetchSubaccountTrades()
         await this.app.$accessor.spot.streamSubaccountOrders()
+        await this.app.$accessor.spot.streamSubaccountOrderHistory()
         await this.app.$accessor.spot.streamSubaccountTrades()
       }
 
@@ -186,6 +187,7 @@ export const actions = actionTree(
         await this.app.$accessor.derivatives.fetchSubaccountOrders()
         await this.app.$accessor.derivatives.fetchSubaccountTrades()
         await this.app.$accessor.derivatives.streamSubaccountOrders()
+        await this.app.$accessor.derivatives.streamSubaccountOrderHistory()
         await this.app.$accessor.derivatives.streamSubaccountTrades()
         await this.app.$accessor.positions.fetchSubaccountPositions()
         await this.app.$accessor.positions.streamSubaccountPositions()

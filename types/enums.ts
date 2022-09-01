@@ -132,6 +132,7 @@ export enum MarketTypeFavorite {
 export enum StreamType {
   SubaccountBalances = 'subaccount-balances',
   SpotSubaccountOrders = 'spot-subaccount-orders',
+  SpotSubaccountOrderHistory = 'spot-subaccount-order-history',
   SpotSubaccountTrades = 'spot-subaccount-trades',
   DerivativesSubaccountOrders = 'derivatives-subaccount-orders',
   DerivativesSubaccountOrderHistory = 'derivatives-subaccount-order-history',

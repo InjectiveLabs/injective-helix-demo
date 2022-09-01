@@ -121,6 +121,7 @@ export default Vue.extend({
 
   mounted() {
     this.$accessor.spot.streamSubaccountOrders()
+    this.$accessor.spot.streamSubaccountOrderHistory()
     this.$accessor.spot.streamSubaccountTrades()
   }
 })
