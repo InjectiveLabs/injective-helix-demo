@@ -1,24 +1,24 @@
 <template>
   <nuxt-link :to="marketRoute">
     <div
-      class="grid grid-cols-12 items-center border-helixGray-200 py-2.5 gap-10 box-content"
+      class="grid grid-cols-12 items-center border-helixGray-200 py-4 gap-10 box-content"
     >
       <div class="col-span-4 flex items-center justify-start pl-4">
         <div class="flex items-center justify-start">
           <img
             :src="baseTokenLogo"
             :alt="market.baseToken.name"
-            class="w-4 h-4 md:w-6 md:h-6 mr-4"
+            class="w-4 h-4 md:w-6 md:h-6 mr-3"
           />
           <div
-            class="mr-4 text-left text-helixGray-500 text-sm font-bold whitespace-nowrap mb-1"
+            class="text-left text-helixGray-500 text-sm font-bold whitespace-nowrap"
           >
-            <div class="flex">
+            <div class="flex leading-4">
               {{ market.ticker }}
             </div>
-            <span class="text-helixGray-300 text-xs">
+            <p class="text-helixGray-300 text-xs leading-3.5">
               {{ market.baseToken.name }}
-            </span>
+            </p>
           </div>
         </div>
       </div>

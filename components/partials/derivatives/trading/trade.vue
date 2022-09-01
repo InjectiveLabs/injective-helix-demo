@@ -769,9 +769,26 @@ export default Vue.extend({
     },
 
     notionalWithLeverageBasedOnWorstPrice(): BigNumberInBase {
-      const { worstPrice, hasPrice, hasAmount, form, market, orderType } = this
+      const {
+        worstPrice,
+        hasPrice,
+        hasAmount,
+        form,
+        market,
+        orderType,
+        triggerPrice,
+        tradingTypeStopMarket
+      } = this
 
-      if (!hasPrice || !hasAmount || !market) {
+      if (!hasAmount || !market) {
+        return ZERO_IN_BASE
+      }
+
+      if (!hasPrice && !tradingTypeStopMarket) {
+        return ZERO_IN_BASE
+      }
+
+      if (!triggerPrice && tradingTypeStopMarket) {
         return ZERO_IN_BASE
       }
 
@@ -971,7 +988,6 @@ export default Vue.extend({
       // const {
       //   form: { quoteAmount }
       // } = this
-
       // this.$nextTick(() => this.$orderInputs.onQuoteAmountChange(quoteAmount))
     },
 

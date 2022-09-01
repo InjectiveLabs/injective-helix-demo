@@ -155,8 +155,6 @@ export default Vue.extend({
       const classes = ['text-center', 'focus:outline-none']
 
       if (this.disabled) {
-        classes.push('pointer-events-none', 'text-gray-500', 'bg-helixGray-500')
-
         if (this.outline) {
           classes.push(
             'pointer-events-none',
