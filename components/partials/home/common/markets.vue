@@ -1,29 +1,31 @@
 <template>
   <HocLoading :status="status" :show-loading="markets.length === 0">
-    <div class="bg-white rounded-lg pt-6 w-full self-center">
+    <div class="bg-white rounded-lg w-full self-center">
       <div v-if="isHero">
-        <HeroMarketHeader v-if="markets.length !== 0" />
+        <HeroMarketHeader
+          v-if="heroMarketsList.length !== 0"
+          class="pt-6 pb-2"
+        />
         <HeroMarketRow
           v-for="({ market, summary }, index) in heroMarketsList"
-          :key="`market-${market.marketId}`"
+          :key="`market-hero-${index}-${market.marketId}`"
           :market="market"
           :summary="summary"
           :class="{
             'block border-b border-helixGray-200':
-              index !== marketsList.length - 1
+              index !== heroMarketsList.length - 1
           }"
         />
       </div>
       <div v-else class="overflow-auto">
-        <MarketHeader />
+        <MarketHeader class="pt-6 pb-2" />
         <MarketRow
           v-for="({ market, summary }, index) in marketsList"
           :key="`market-${market.marketId}`"
           :market="market"
           :summary="summary"
           :class="{
-            'block border-b border-helixGray-200':
-              index !== marketsList.length - 1
+            'border-b border-helixGray-200': index !== marketsList.length - 1
           }"
         />
       </div>
