@@ -88,7 +88,7 @@
 
           <a
             class="w-6 h-6 text-gray-500 hover:text-primary-500 mr-4"
-            href="https://twitter.com/InjectiveLabs"
+            href="https://twitter.com/helixapp_"
             target="_blank"
           >
             <IconTwitterCircle />
@@ -96,26 +96,10 @@
 
           <a
             class="w-6 h-6 text-gray-500 hover:text-primary-500 mr-4"
-            href="https://t.me/joininjective"
+            href="https://t.me/helixapp"
             target="_blank"
           >
             <IconTelegramCircle />
-          </a>
-
-          <a
-            class="w-6 h-6 text-gray-500 hover:text-primary-500 mr-4"
-            href="https://www.youtube.com/channel/UCN99m0dicoMjNmJV9mxioqQ"
-            target="_blank"
-          >
-            <IconYoutubeCircle />
-          </a>
-
-          <a
-            class="w-6 h-6 text-gray-500 hover:text-primary-500"
-            href="https://www.reddit.com/r/injective/"
-            target="_blank"
-          >
-            <IconRedditCircle />
           </a>
         </div>
       </div>
@@ -166,10 +150,6 @@ export default Vue.extend({
         {
           text: this.$t('footer.faq'),
           link: 'faq'
-        },
-        {
-          text: this.$t('footer.submitRequest'),
-          link: 'https://injectivepro.zendesk.com/hc/en-us/requests/new'
         }
       ]
     }
