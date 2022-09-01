@@ -15,7 +15,9 @@
         <span class="text-gray-500 text-xs">
           &copy; {{ new Date().getFullYear() }} Injective Labs Inc.
         </span>
-        <div class="hidden lg:block mt-12 text-sm max-w-[450px]">
+        <div
+          class="hidden text-sm opacity-75 lg:block mt-6 italic max-w-[450px]"
+        >
           {{ $t('footer.helixProvides') }}
         </div>
       </div>
@@ -31,7 +33,7 @@
           <a
             v-if="item.link.startsWith('http')"
             :href="item.link"
-            class="cursor-pointer hover:text-primary-500"
+            class="opacity-75 cursor-pointer hover:text-primary-500"
             target="_blank"
           >
             {{ item.text }}
@@ -39,7 +41,7 @@
           <nuxt-link
             v-else-if="item.link"
             :to="{ name: item.link }"
-            class="cursor-pointer hover:text-primary-500"
+            class="opacity-75 cursor-pointer hover:text-primary-500"
           >
             {{ item.text }}
           </nuxt-link>
@@ -57,7 +59,7 @@
           <a
             v-if="item.link.startsWith('http')"
             :href="item.link"
-            class="cursor-pointer hover:text-primary-500"
+            class="opacity-75 cursor-pointer hover:text-primary-500"
             target="_blank"
           >
             {{ item.text }}
@@ -65,7 +67,7 @@
           <nuxt-link
             v-else-if="item.link"
             :to="{ name: item.link }"
-            class="cursor-pointer hover:text-primary-500"
+            class="opacity-75 yarcursor-pointer hover:text-primary-500"
           >
             {{ item.text }}
           </nuxt-link>

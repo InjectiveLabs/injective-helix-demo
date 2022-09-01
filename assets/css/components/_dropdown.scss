@@ -3,6 +3,7 @@
   transition: all .2s linear;
   transform: scale(0);
   opacity: 0;
+  visibility: hidden;
   display:
     block !important;
 
@@ -25,6 +26,7 @@
   &[data-show] {
     @apply opacity-100;
     transform: scale(1);
+    visibility: visible;
     display: block !important;
   }
 }
