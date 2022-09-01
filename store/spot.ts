@@ -542,13 +542,13 @@ export const actions = actionTree(
 
           switch (order.state) {
             case SpotOrderState.Booked:
+            case SpotOrderState.Filled:
             case SpotOrderState.Unfilled:
             case SpotOrderState.PartialFilled: {
               commit('pushOrUpdateSubaccountOrderHistory', order)
               break
             }
-            case SpotOrderState.Canceled:
-            case SpotOrderState.Filled: {
+            case SpotOrderState.Canceled: {
               commit('updateSubaccountOrderHistory', order)
               break
             }
