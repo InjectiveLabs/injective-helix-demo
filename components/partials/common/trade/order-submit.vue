@@ -207,7 +207,7 @@ export default Vue.extend({
         return true
       }
 
-      if (executionPrice.lte(0)) {
+      if (executionPrice.lte(0) && !this.tradingTypeStopMarket) {
         return true
       }
 
