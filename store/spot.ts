@@ -31,6 +31,7 @@ import {
   streamOrderbook,
   streamTrades,
   streamSubaccountOrders,
+  streamSubaccountOrderHistory,
   streamSubaccountTrades
 } from '~/app/client/streams/spot'
 import {
@@ -46,24 +47,6 @@ import {
 } from '~/app/Services'
 import { spot as allowedSpotMarkets } from '~/routes.config'
 import { ActivityFetchOptions } from '~/types'
-
-// TODO: This is a temporary function until we have a proper OrderHistory stream.
-function orderToOrderHistory(order: UiSpotLimitOrder): UiSpotOrderHistory {
-  return {
-    ...order,
-    active: ![
-      SpotOrderState.Filled,
-      SpotOrderState.Canceled,
-      SpotOrderState.Triggered
-    ].includes(order.state),
-    executionType: '',
-    orderType: '',
-    filledQuantity: new BigNumberInBase(order.quantity)
-      .minus(new BigNumberInBase(order.unfilledQuantity))
-      .toString(),
-    direction: order.orderSide
-  }
-}
 
 const initialStateFactory = () => ({
   markets: [] as UiSpotMarketWithToken[],
@@ -452,6 +435,7 @@ export const actions = actionTree(
       await this.app.$accessor.spot.streamTrades()
       await this.app.$accessor.spot.streamSubaccountTrades()
       await this.app.$accessor.spot.streamSubaccountOrders()
+      await this.app.$accessor.spot.streamSubaccountOrderHistory()
       await this.app.$accessor.account.streamSubaccountBalances()
     },
 
@@ -528,17 +512,44 @@ export const actions = actionTree(
             case SpotOrderState.Booked:
             case SpotOrderState.Unfilled:
             case SpotOrderState.PartialFilled: {
-              commit(
-                'pushOrUpdateSubaccountOrderHistory',
-                orderToOrderHistory(order)
-              )
               commit('pushOrUpdateSubaccountOrder', order)
               break
             }
             case SpotOrderState.Canceled:
             case SpotOrderState.Filled: {
-              commit('updateSubaccountOrderHistory', orderToOrderHistory(order))
               commit('deleteSubaccountOrder', order)
+              break
+            }
+          }
+        }
+      })
+    },
+
+    streamSubaccountOrderHistory({ commit }) {
+      const { subaccount } = this.app.$accessor.account
+      const { isUserWalletConnected } = this.app.$accessor.wallet
+
+      if (!isUserWalletConnected || !subaccount) {
+        return
+      }
+
+      streamSubaccountOrderHistory({
+        subaccountId: subaccount.subaccountId,
+        callback: ({ order }) => {
+          if (!order) {
+            return
+          }
+
+          switch (order.state) {
+            case SpotOrderState.Booked:
+            case SpotOrderState.Unfilled:
+            case SpotOrderState.PartialFilled: {
+              commit('pushOrUpdateSubaccountOrderHistory', order)
+              break
+            }
+            case SpotOrderState.Canceled:
+            case SpotOrderState.Filled: {
+              commit('updateSubaccountOrderHistory', order)
               break
             }
           }

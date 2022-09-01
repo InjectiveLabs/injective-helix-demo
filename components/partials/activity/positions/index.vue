@@ -98,7 +98,8 @@ export default Vue.extend({
 
     Promise.all([
       this.$accessor.positions.streamSubaccountPositions(),
-      this.$accessor.derivatives.streamSubaccountOrders()
+      this.$accessor.derivatives.streamSubaccountOrders(),
+      this.$accessor.derivatives.streamSubaccountOrderHistory()
     ])
       .then(() => {
         //
