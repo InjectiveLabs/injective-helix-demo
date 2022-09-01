@@ -10,25 +10,31 @@
         <img src="images/video.svg" alt="Getting started video" />
       </div>
       <div class="md:col-span-6 flex flex-col gap-6 font-medium">
-        <div class="flex items-center gap-4 shadow-helixLight h-[80px]">
-          <IconCircleOne class="ml-6" /><span>{{
-            $t('home.bridgeToInjective')
-          }}</span>
-        </div>
-        <div
-          class="flex items-center gap-4 shadow-helixLight h-[80px] md:ml-6 opacity-50"
-        >
-          <IconCircleTwo class="ml-6" /><span>{{
-            $t('home.tradeSpotMarket')
-          }}</span>
-        </div>
-        <div
-          class="flex items-center gap-4 shadow-helixLight h-[80px] md:ml-12 opacity-50"
-        >
-          <IconCircleThree class="ml-6" /><span>{{
-            $t('home.tradePerpetuals')
-          }}</span>
-        </div>
+        <a href="https://youtu.be/ohYsCATcHWI" target="_blank">
+          <div class="flex items-center gap-4 shadow-helixLight h-[80px]">
+            <IconCircleOne class="ml-6" /><span>{{
+              $t('home.howToBridge')
+            }}</span>
+          </div>
+        </a>
+        <a href="https://youtu.be/phdJxdbLn1o" target="_blank">
+          <div
+            class="flex items-center gap-4 shadow-helixLight h-[80px] md:ml-6 opacity-50"
+          >
+            <IconCircleTwo class="ml-6" /><span>{{
+              $t('home.howToPurchaseTokens')
+            }}</span>
+          </div>
+        </a>
+        <a href="https://youtu.be/hgM6Z7YqnDk">
+          <div
+            class="flex items-center gap-4 shadow-helixLight h-[80px] md:ml-12 opacity-50"
+          >
+            <IconCircleThree class="ml-6" /><span>{{
+              $t('home.howToPlaceStopOrders')
+            }}</span>
+          </div>
+        </a>
       </div>
     </div>
   </div>

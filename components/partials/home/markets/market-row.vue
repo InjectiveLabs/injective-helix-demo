@@ -26,19 +26,16 @@
         <span class="w-full text-gray-900 font-medium text-sm text-right">
           <div class="flex align-center justify-end">
             <IconArrow
-              v-if="!lastTradedPrice.isNaN()"
+              v-if="!lastTradedPrice.isNaN() && !useDefaultLastTradedPriceColor"
               class="transform w-3 h-3 mr-1 mt-1"
               :class="{
-                'text-green-500 rotate-90': lastPriceChange !== Change.Decrease,
+                'text-green-500 rotate-90': lastPriceChange === Change.Increase,
                 'text-red-500 -rotate-90': lastPriceChange === Change.Decrease
               }"
             />
             <span
               v-if="!lastTradedPrice.isNaN()"
-              :class="{
-                'text-green-500': lastPriceChange !== Change.Decrease,
-                'text-red-500': lastPriceChange === Change.Decrease
-              }"
+              :class="lastTradedPriceTextColorClass"
             >
               {{ lastTradedPriceToFormat }}
             </span>
@@ -61,10 +58,11 @@
           <LineGraph
             v-if="chartData.length > 1"
             :data="chartData"
-            :color="'#f3164d'"
+            :color="chartLineColor"
             :bg-type="'transparent'"
             :stroke-width="1"
             :smoothness="0.2"
+            :padding="chartPadding"
           />
         </HocLoading>
       </div>
@@ -123,13 +121,33 @@ export default Vue.extend({
   data() {
     return {
       Change,
-      status: new Status(StatusType.Loading)
+      status: new Status(StatusType.Loading),
+      chartPadding: {
+        top: 4,
+        right: 10,
+        bottom: 4,
+        left: 10
+      },
+      useDefaultLastTradedPriceColor: true
     }
   },
 
   computed: {
     marketsHistory(): UiMarketHistory[] {
       return this.$accessor.exchange.marketsHistory
+    },
+
+    lastTradedPriceTextColorClass(): Record<string, boolean> | string {
+      const { lastPriceChange, useDefaultLastTradedPriceColor } = this
+
+      if (useDefaultLastTradedPriceColor) {
+        return 'text-helixGray-500'
+      }
+
+      return {
+        'text-green-500': lastPriceChange !== Change.Decrease,
+        'text-red-500': lastPriceChange === Change.Decrease
+      }
     },
 
     chartData(): number[][] {
@@ -160,6 +178,29 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(summary.price)
+    },
+
+    chartLineColor(): string {
+      const { chartData } = this
+
+      const minimumChartDataPoints = 2
+
+      if (chartData.length < minimumChartDataPoints) {
+        return ''
+      }
+
+      const [firstChartDataPoint] = chartData
+      const lastChartDataPointPosition = new BigNumberInBase(chartData.length)
+        .minus(1)
+        .toNumber()
+      const [, firstYaxisHolcPrice] = firstChartDataPoint
+      const [, lastYAxisHolcPrice] = chartData[lastChartDataPointPosition]
+      const positiveChangeColor = '#0EE29B'
+      const negativeChangeColor = '#F3164D'
+
+      return new BigNumberInBase(lastYAxisHolcPrice).gte(firstYaxisHolcPrice)
+        ? positiveChangeColor
+        : negativeChangeColor
     },
 
     lastTradedPriceToFormat(): string {
@@ -253,6 +294,16 @@ export default Vue.extend({
     }
   },
 
+  watch: {
+    lastPriceChange(status) {
+      if (status === Change.NoChange) {
+        return
+      }
+
+      this.updateLastPriceChangeColor()
+    }
+  },
+
   mounted() {
     Promise.all([
       this.$accessor.exchange.getMarketsHistory({
@@ -268,6 +319,16 @@ export default Vue.extend({
       .finally(() => {
         this.status.setIdle()
       })
+  },
+
+  methods: {
+    updateLastPriceChangeColor() {
+      this.useDefaultLastTradedPriceColor = false
+
+      setTimeout(() => {
+        this.useDefaultLastTradedPriceColor = true
+      }, 3000)
+    }
   }
 })
 </script>
