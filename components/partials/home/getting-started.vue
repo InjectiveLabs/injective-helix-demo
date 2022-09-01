@@ -40,14 +40,14 @@
         <div
           class="flex items-center gap-4 cursor-pointer shadow-helixLight h-[80px] md:ml-6"
           :class="{
-            'opacity-50': selectedVideoType !== VideoType.HowToPlaceStopOrders
+            'opacity-50': selectedVideoType !== VideoType.HowToPurchaseTokens
           }"
-          @click="switchVideo(VideoType.HowToPlaceStopOrders)"
+          @click="switchVideo(VideoType.HowToPurchaseTokens)"
         >
           <IconCircleTwo
             class="ml-6"
             :class="[
-              selectedVideoType === VideoType.HowToPlaceStopOrders
+              selectedVideoType === VideoType.HowToPurchaseTokens
                 ? 'text-blue-100'
                 : 'text-gray-450'
             ]"
@@ -58,14 +58,14 @@
         <div
           class="flex items-center gap-4 cursor-pointer shadow-helixLight h-[80px] md:ml-12"
           :class="{
-            'opacity-50': selectedVideoType !== VideoType.HowToPurchaseTokens
+            'opacity-50': selectedVideoType !== VideoType.HowToPlaceStopOrders
           }"
-          @click="switchVideo(VideoType.HowToPurchaseTokens)"
+          @click="switchVideo(VideoType.HowToPlaceStopOrders)"
         >
           <IconCircleThree
             class="ml-6"
             :class="[
-              selectedVideoType === VideoType.HowToPurchaseTokens
+              selectedVideoType === VideoType.HowToPlaceStopOrders
                 ? 'text-blue-100'
                 : 'text-gray-450'
             ]"
