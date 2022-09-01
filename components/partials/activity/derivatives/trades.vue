@@ -3,40 +3,35 @@
     <div class="w-full h-full flex flex-col">
       <Toolbar>
         <template #filters>
-          <SearchAsset
-            :markets="markets"
-            :value="selectedToken"
-            @select="handleSearch"
-          />
+          <div class="grid grid-cols-4 items-center gap-4 w-full">
+            <SearchAsset
+              class="col-span-4 sm:col-span-1"
+              :markets="markets"
+              :value="selectedToken"
+              @select="handleSearch"
+            />
 
-          <div
-            class="col-span-2 flex items-center bg-gray-900 rounded-full text-gray-200 py-3 px-6 text-xs cursor-pointer sm:hidden shadow-sm"
-            @click="openMobileFilterModal"
-          >
-            <IconFilter class="min-w-4 mr-2" />
-            <span>{{ $t('common.filters') }}</span>
+            <FilterSelector
+              class="col-span-2 sm:col-span-1"
+              data-cy="universal-table-filter-by-type-drop-down"
+              :type="TradeSelectorType.Type"
+              :value="type"
+              @click="handleTypeClick"
+            />
+
+            <FilterSelector
+              class="col-span-2 sm:col-span-1"
+              data-cy="universal-table-filter-by-side-drop-down"
+              :type="TradeSelectorType.Side"
+              :value="side"
+              @click="handleSideClick"
+            />
+
+            <ClearFiltersButton
+              v-if="showClearFiltersButton"
+              @clear="handleClearFilters"
+            />
           </div>
-
-          <FilterSelector
-            class="min-w-3xs hidden sm:block"
-            data-cy="universal-table-filter-by-type-drop-down"
-            :type="TradeSelectorType.Type"
-            :value="type"
-            @click="handleTypeClick"
-          />
-
-          <FilterSelector
-            class="min-w-3xs hidden sm:block"
-            data-cy="universal-table-filter-by-side-drop-down"
-            :type="TradeSelectorType.Side"
-            :value="side"
-            @click="handleSideClick"
-          />
-
-          <ClearFiltersButton
-            v-if="showClearFiltersButton"
-            @clear="handleClearFilters"
-          />
         </template>
       </Toolbar>
 
@@ -233,12 +228,14 @@ export default Vue.extend({
     handleSideClick(side: string | undefined) {
       this.side = side
 
+      this.resetPagination()
       this.fetchTrades()
     },
 
     handleTypeClick(type: string | undefined) {
       this.type = type
 
+      this.resetPagination()
       this.fetchTrades()
     },
 
@@ -255,6 +252,7 @@ export default Vue.extend({
     handleLimitChangeEvent(limit: number) {
       this.limit = limit
 
+      this.resetPagination()
       this.fetchTrades()
     },
 
@@ -267,6 +265,7 @@ export default Vue.extend({
     handleSearch(token: Token) {
       this.selectedToken = token
 
+      this.resetPagination()
       this.fetchTrades()
     },
 
@@ -274,9 +273,13 @@ export default Vue.extend({
       this.selectedToken = undefined
       this.side = undefined
       this.type = undefined
-      this.page = 1
 
+      this.resetPagination()
       this.fetchTrades()
+    },
+
+    resetPagination() {
+      this.page = 1
     }
   }
 })

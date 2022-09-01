@@ -40,7 +40,8 @@ import {
   UiDerivativeMarketWithToken,
   UiDerivativeLimitOrder,
   UiSpotLimitOrder,
-  MarketType
+  MarketType,
+  UiDerivativeOrderHistory
 } from '@injectivelabs/sdk-ui-ts'
 import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
@@ -255,7 +256,7 @@ export default Vue.extend({
         return true
       }
 
-      if (executionPrice.lte(0)) {
+      if (executionPrice.lte(0) && !this.tradingTypeStopMarket) {
         return true
       }
 
@@ -290,6 +291,10 @@ export default Vue.extend({
       return this.$accessor.derivatives.subaccountOrders
     },
 
+    conditionalOrders(): UiDerivativeOrderHistory[] {
+      return this.$accessor.derivatives.subaccountConditionalOrders
+    },
+
     spotOrders(): UiSpotLimitOrder[] {
       return this.$accessor.spot.subaccountOrders
     },
@@ -300,6 +305,15 @@ export default Vue.extend({
       return derivativeOrders.filter(
         (order) =>
           order.orderSide === orderType && order.marketId === market.marketId
+      )
+    },
+
+    filteredConditionalOrders(): UiDerivativeOrderHistory[] {
+      const { market, orderType, conditionalOrders } = this
+
+      return conditionalOrders.filter(
+        (order) =>
+          order.direction === orderType && order.marketId === market.marketId
       )
     },
 
@@ -329,12 +343,13 @@ export default Vue.extend({
         isSpot,
         filteredDerivativeOrders,
         filteredSpotOrders,
+        filteredConditionalOrders,
         tradingTypeMarket
       } = this
 
       const filteredOrders = isSpot
         ? filteredSpotOrders
-        : filteredDerivativeOrders
+        : [...filteredDerivativeOrders, ...filteredConditionalOrders]
 
       if (tradingTypeMarket) {
         return undefined

@@ -98,7 +98,8 @@ export enum TradeTypes {
 
 export enum TradeSelectorType {
   Type = 'type',
-  TypeAll = 'type-all',
+  TypeAllDerivatives = 'type-all-derivatives',
+  TypeAllSpot = 'type-all-spot',
   Side = 'side',
   PositionSide = 'position-side',
   TransferType = 'transfer-type'
@@ -131,8 +132,10 @@ export enum MarketTypeFavorite {
 export enum StreamType {
   SubaccountBalances = 'subaccount-balances',
   SpotSubaccountOrders = 'spot-subaccount-orders',
+  SpotSubaccountOrderHistory = 'spot-subaccount-order-history',
   SpotSubaccountTrades = 'spot-subaccount-trades',
   DerivativesSubaccountOrders = 'derivatives-subaccount-orders',
+  DerivativesSubaccountOrderHistory = 'derivatives-subaccount-order-history',
   DerivativesSubaccountTrades = 'derivatives-subaccount-trades',
   DerivativesSubaccountPositions = 'derivatives-positions-trades',
   DerivativesOrderbook = 'derivatives-orderbook',

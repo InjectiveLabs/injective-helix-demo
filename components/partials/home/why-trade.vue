@@ -5,8 +5,8 @@
     >
       {{ $t('home.whyTradeOnHelix') }}
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-12">
-      <div class="md:col-span-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-12">
+      <div class="sm:mt-[14px] lg:mt-5">
         <div class="mb-4">
           <img class="w-full" src="svg/why-trade-on-helix-01.svg" alt="" />
         </div>
@@ -17,7 +17,7 @@
           {{ $t('home.enjoySpotTrading') }}
         </div>
       </div>
-      <div class="md:col-span-4">
+      <div class="sm:mt-[9px] lg:mt-3">
         <div class="mb-4">
           <img class="w-full" src="svg/why-trade-on-helix-02.svg" alt="" />
         </div>
@@ -28,7 +28,7 @@
           {{ $t('home.zeroGasFees') }}
         </div>
       </div>
-      <div class="md:col-span-4">
+      <div>
         <div class="mb-4">
           <img class="w-full" src="svg/why-trade-on-helix-03.svg" alt="" />
         </div>

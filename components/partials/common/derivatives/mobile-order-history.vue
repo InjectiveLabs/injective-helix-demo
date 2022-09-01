@@ -5,8 +5,8 @@
         <div class="flex items-center gap-1">
           <span
             :class="{
-              'text-green-500': order.orderSide === DerivativeOrderSide.Buy,
-              'text-red-500': order.orderSide === DerivativeOrderSide.Sell
+              'text-green-500': isBuy,
+              'text-red-500': !isBuy
             }"
           >
             {{ orderSideLocalized }}
@@ -26,19 +26,6 @@
             {{ leverage.toFormat(2) }}x
           </span>
         </div>
-
-        <VButton
-          v-if="orderFillable"
-          class="cursor-pointer rounded"
-          :status="status"
-          @click.stop="onCancelOrder"
-        >
-          <div
-            class="flex items-center justify-center rounded-full bg-opacity-10 w-5 h-5 hover:bg-opacity-10 bg-red-500 text-red-500"
-          >
-            <IconBin class="h-3 w-3" />
-          </div>
-        </VButton>
       </div>
       <div
         v-if="isReduceOnly"
@@ -52,7 +39,12 @@
       {{ $t('trade.price') }}
     </span>
     <div class="text-right">
+      <span v-if="isMarketOrder" class="text-white text-xs">
+        {{ $t('trade.market') }}
+      </span>
+
       <VNumber
+        v-else
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
         "
@@ -101,11 +93,11 @@
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
 import {
-  UiDerivativeLimitOrder,
   UiDerivativeMarketWithToken,
   DerivativeOrderSide,
   ZERO_IN_BASE,
-  getTokenLogoWithVendorPathPrefix
+  getTokenLogoWithVendorPathPrefix,
+  UiDerivativeOrderHistory
 } from '@injectivelabs/sdk-ui-ts'
 import TableRow from '~/components/elements/table-row.vue'
 import {
@@ -122,7 +114,7 @@ export default Vue.extend({
   props: {
     order: {
       required: true,
-      type: Object as PropType<UiDerivativeLimitOrder>
+      type: Object as PropType<UiDerivativeOrderHistory>
     }
   },
 
@@ -144,6 +136,12 @@ export default Vue.extend({
       const { markets, order } = this
 
       return markets.find((m) => m.marketId === order.marketId)
+    },
+
+    isMarketOrder(): boolean {
+      const { order } = this
+
+      return order.executionType === 'market'
     },
 
     isReduceOnly(): boolean {
@@ -197,19 +195,19 @@ export default Vue.extend({
     },
 
     unfilledQuantity(): BigNumberInBase {
-      const { market, order } = this
+      const { market, quantity, filledQuantity } = this
 
       if (!market) {
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(order.unfilledQuantity)
+      return quantity.minus(filledQuantity)
     },
 
     filledQuantity(): BigNumberInBase {
-      const { unfilledQuantity, quantity } = this
+      const { order } = this
 
-      return quantity.minus(unfilledQuantity)
+      return new BigNumberInBase(order.filledQuantity)
     },
 
     leverage(): BigNumberInBase {
@@ -242,12 +240,6 @@ export default Vue.extend({
       return unfilledQuantity.isZero()
     },
 
-    orderFillable(): boolean {
-      const { unfilledQuantity, quantity } = this
-
-      return unfilledQuantity.lte(quantity)
-    },
-
     total(): BigNumberInBase {
       const { price, quantity } = this
 
@@ -255,11 +247,9 @@ export default Vue.extend({
     },
 
     orderSideLocalized(): string {
-      const { order } = this
+      const { isBuy } = this
 
-      return order.orderSide === DerivativeOrderSide.Buy
-        ? this.$t('trade.buy')
-        : this.$t('trade.sell')
+      return isBuy ? this.$t('trade.buy') : this.$t('trade.sell')
     },
 
     baseTokenLogo(): string {
@@ -274,24 +264,28 @@ export default Vue.extend({
       }
 
       return getTokenLogoWithVendorPathPrefix(market.baseToken.logo)
+    },
+
+    isBuy(): boolean {
+      const { order } = this
+
+      if (order.direction === DerivativeOrderSide.Buy) {
+        return true
+      }
+
+      switch (order.orderType) {
+        case DerivativeOrderSide.TakeBuy:
+        case DerivativeOrderSide.StopBuy:
+        case DerivativeOrderSide.Buy:
+        case DerivativeOrderSide.BuyPO:
+          return true
+        default:
+          return false
+      }
     }
   },
 
   methods: {
-    onCancelOrder(): void {
-      this.status.setLoading()
-
-      this.$accessor.derivatives
-        .cancelOrder(this.order)
-        .then(() => {
-          this.$toast.success(this.$t('trade.order_success_canceling'))
-        })
-        .catch(this.$onRejected)
-        .finally(() => {
-          this.status.setIdle()
-        })
-    },
-
     handleClickOnMarket() {
       const { market } = this
 

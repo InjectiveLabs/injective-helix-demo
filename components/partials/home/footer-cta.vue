@@ -1,7 +1,7 @@
 <template>
   <div
     :style="{ backgroundImage: `url('/svg/cta-area.svg')` }"
-    class="bg-cover py-14 bg-left-top h-[126px] md:h-[525px] flex items-center"
+    class="bg-cover py-14 bg-left-top h-[189px] md:h-[790px] flex items-center"
   >
     <div
       class="w-full mx-auto max-w-xs sm:max-w-md md:max-w-full xl:w-4/5 flex flex-col md:block items-center"

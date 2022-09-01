@@ -49,7 +49,7 @@ export default Vue.extend({
     },
 
     value: {
-      type: String,
+      type: [String, Object],
       default: undefined
     }
   },
@@ -58,7 +58,7 @@ export default Vue.extend({
     return {
       placeholder: '',
       list: [] as {
-        text: string;
+        text: string
         value: string | OrderTypeFilter | undefined
       }[]
     }
@@ -73,22 +73,44 @@ export default Vue.extend({
       }
 
       return (
-        list.find(({ value }) => value === selected)?.text ||
-        this.$t('trade.all')
+        list.find(({ value }) => {
+          if (typeof selected === 'object') {
+            const v = value as OrderTypeFilter
+
+            return (
+              v.executionType === selected.executionType &&
+              v.orderType === selected.orderType
+            )
+          }
+          return value === selected
+        })?.text || this.$t('trade.all')
       )
     }
   },
 
   mounted() {
-    if (this.type === TradeSelectorType.TypeAll) {
+    if (this.type === TradeSelectorType.TypeAllSpot) {
       this.list = [
         {
-          text: this.$t('trade.all'),
+          text: this.$t('trade.limit'),
           value: {
-            executionType: undefined,
+            executionType: 'limit',
             orderType: undefined
           }
         },
+        {
+          text: this.$t('trade.market'),
+          value: {
+            executionType: 'market',
+            orderType: undefined
+          }
+        }
+      ]
+      this.placeholder = this.$t('trade.type')
+    }
+
+    if (this.type === TradeSelectorType.TypeAllDerivatives) {
+      this.list = [
         {
           text: this.$t('trade.limit'),
           value: {

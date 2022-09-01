@@ -65,7 +65,7 @@
           name: 'spot-spot',
           params: { spot: DefaultMarket.Spot }
         }"
-        class="p-4 block rounded-t group hover:bg-gray-700 relative z-10 bg-gray-950 mb-2"
+        class="p-4 block rounded-t group hover:bg-gray-700 relative z-10 bg-gray-950"
         data-cy="header-trade-link"
         @click.native="handleSpotTradeClickedTrack"
       >
@@ -83,7 +83,7 @@
             perpetual: DefaultMarket.Perpetual
           }
         }"
-        class="p-4 block group hover:bg-gray-700 relative z-10 bg-gray-950 mb-2"
+        class="p-4 block group hover:bg-gray-700 relative z-10 bg-gray-950"
         data-cy="header-trade-link"
         @click.native="handlePerpetualTradeClickedTrack"
       >
@@ -116,7 +116,7 @@
     >
       <nuxt-link
         :to="{ name: 'trade-and-earn' }"
-        class="p-4 block rounded-t group hover:bg-gray-700 relative z-10 bg-gray-950 mb-2"
+        class="p-4 block rounded-t group hover:bg-gray-700 relative z-10 bg-gray-950"
       >
         <p class="font-semibold text-base text-white">
           {{ $t('navigation.tradeAndEarn') }}
@@ -128,7 +128,7 @@
       <a
         href="https:/dmm.injective.network"
         target="_blank"
-        class="p-4 block group hover:bg-gray-700 mb-2"
+        class="p-4 block group hover:bg-gray-700"
       >
         <p class="font-semibold text-base text-white flex items-center">
           <span>{{ $t('navigation.dmmProgram') }}</span>

@@ -12,11 +12,10 @@
               :option="components.positions"
               :status="positionLoadingStatus"
             >
-              <portal-target
-                slot="icon"
-                name="activity-card-position-count"
-                data-cy="activity-open-positions-panel-count"
-              />
+              <span slot="icon" class="font-semibold text-sm md:text-lg">
+                {{ totalPositionsCount }}
+              </span>
+
               <span class="text-sm whitespace-nowrap">
                 {{ $t('activity.positions') }}
               </span>
@@ -27,11 +26,10 @@
               :option="components.spot"
               :status="spotLoadingStatus"
             >
-              <portal-target
-                slot="icon"
-                name="activity-card-spot-count"
-                data-cy="activity-spot-orders-panel-count"
-              />
+              <span slot="icon" class="font-semibold text-sm md:text-lg">
+                {{ totalSpotOrderCount }}
+              </span>
+
               <span class="text-sm whitespace-nowrap">
                 {{ $t('activity.spotOrders') }}
               </span>
@@ -42,11 +40,10 @@
               :option="components.derivatives"
               :status="derivativeLoadingStatus"
             >
-              <portal-target
-                slot="icon"
-                name="activity-card-derivative-order-count"
-                data-cy="activity-derivatives-orders-panel-count"
-              />
+              <span slot="icon" class="font-semibold text-sm md:text-lg">
+                {{ totalDerivativeOrderCount }}
+              </span>
+
               <span class="text-sm whitespace-nowrap">
                 {{ $t('activity.derivativeOrders') }}
               </span>
@@ -123,14 +120,26 @@ export default Vue.extend({
     }
   },
 
+  computed: {
+    totalPositionsCount(): number {
+      return this.$accessor.positions.subaccountPositionsPagination.total
+    },
+
+    totalSpotOrderCount(): number {
+      return this.$accessor.spot.subaccountOrdersPagination.total
+    },
+
+    totalDerivativeOrderCount(): number {
+      return this.$accessor.derivatives.subaccountOrdersPagination.total
+    }
+  },
+
   mounted() {
     this.$root.$on('derivative-tab-loaded', this.derivativeTabLoaded)
     this.$root.$on('position-tab-loaded', this.positionTabLoaded)
     this.$root.$on('spot-tab-loaded', this.spotTabLoaded)
 
-    Promise.all([
-      this.$accessor.account.init()
-    ])
+    Promise.all([this.$accessor.account.init()])
       .then(() => {
         //
       })

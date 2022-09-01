@@ -1,4 +1,5 @@
 import { TradeExecutionType } from '@injectivelabs/ts-types'
+import { ConditionalOrderSide, ConditionalOrderType } from './types'
 import { TradeTypes } from '~/types'
 
 export function tradeTypesToTradeExecutionTypes(
@@ -17,4 +18,16 @@ export function tradeTypesToTradeExecutionTypes(
   }
 
   return undefined
+}
+
+export function orderTypeToOrderTypes(orderType?: string) {
+  if (orderType === undefined) {
+    return [ConditionalOrderSide.Buy, ConditionalOrderSide.Sell]
+  }
+
+  if (orderType === ConditionalOrderType.TakeProfit) {
+    return [ConditionalOrderSide.TakeBuy, ConditionalOrderSide.TakeSell]
+  }
+
+  return [ConditionalOrderSide.StopBuy, ConditionalOrderSide.StopSell]
 }

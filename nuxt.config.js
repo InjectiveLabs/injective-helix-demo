@@ -30,6 +30,7 @@ export default {
     '~/plugins/utils',
     '~/plugins/store',
     '~/plugins/click-outside',
+    '~/plugins/youtube',
     '~/plugins/amplitude',
 
     { src: '~/plugins/touch-events', ssr: false },

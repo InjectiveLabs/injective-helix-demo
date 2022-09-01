@@ -461,10 +461,22 @@ export default Vue.extend({
         executionPrice,
         worstPrice,
         amount,
-        isSpot
+        isSpot,
+        triggerPrice
       } = this
 
-      if (isSpot || !market || !hasPrice || !hasAmount) {
+      const hasTriggerPrice =
+        triggerPrice !== undefined && new BigNumberInBase(triggerPrice).gt(0)
+
+      if (!hasAmount || !market || isSpot) {
+        return undefined
+      }
+
+      if (!hasPrice && !tradingTypeStopMarket) {
+        return undefined
+      }
+
+      if (!hasTriggerPrice && tradingTypeStopMarket) {
         return undefined
       }
 

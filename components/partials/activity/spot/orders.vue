@@ -3,58 +3,44 @@
     <div class="w-full h-full flex flex-col">
       <Toolbar>
         <template #filters>
-          <SearchAsset
-            :markets="markets"
-            :value="selectedToken"
-            @select="handleSearch"
-          />
+          <div class="grid grid-cols-4 items-center gap-4 w-full">
+            <SearchAsset
+              class="col-span-2 sm:col-span-1"
+              :markets="markets"
+              :value="selectedToken"
+              @select="handleSearch"
+            />
 
-          <FilterSelector
-            class="min-w-3xs"
-            data-cy="universal-table-filter-by-side-drop-down"
-            :type="TradeSelectorType.Side"
-            :value="side"
-            @click="handleSideClick"
-          />
+            <FilterSelector
+              class="col-span-2 sm:col-span-1"
+              data-cy="universal-table-filter-by-side-drop-down"
+              :type="TradeSelectorType.Side"
+              :value="side"
+              @click="handleSideClick"
+            />
 
-          <ClearFiltersButton
-            v-if="showClearFiltersButton"
-            @clear="handleClearFilters"
-          />
+            <ClearFiltersButton
+              v-if="showClearFiltersButton"
+              @clear="handleClearFilters"
+            />
+          </div>
         </template>
-        <template #actions>
-          <div
-            v-if="orders.length > 0"
-            class="col-span-4 md:col-span-3 lg:col-span-2 flex justify-between items-center sm:hidden mt-3 text-xs px-3"
-          >
-            <span class="tracking-widest uppercase tracking-3">
-              {{ $t('trade.side') }} / {{ $t('trade.market') }}
-            </span>
-            <span
-              class="text-red-550 leading-5 cursor-pointer"
-              @click.stop="handleCancelOrders"
-            >
-              {{ $t('trade.cancelAll') }}
-            </span>
-          </div>
 
-          <div
-            class="col-span-4 md:col-span-3 lg:col-span-2 sm:text-right mt-0 hidden sm:block"
+        <template #actions>
+          <VButton
+            v-if="orders.length > 0"
+            red-outline
+            md
+            data-cy="activity-cancel-all-button"
+            @click.stop="handleCancelOrders"
           >
-            <VButton
-              v-if="orders.length > 0"
-              red-outline
-              md
-              data-cy="activity-cancel-all-button"
-              @click.stop="handleCancelOrders"
-            >
+            <span class="whitespace-nowrap">
               {{ $t('trade.cancelAllOrders') }}
-            </VButton>
-          </div>
+            </span>
+          </VButton>
         </template>
       </Toolbar>
 
-      <!-- mobile table -->
       <TableBody
         :show-empty="orders.length === 0"
         class="sm:hidden mt-3 max-h-lg overflow-y-auto"
@@ -87,16 +73,6 @@
           data-cy="universal-table-nothing-found"
         />
       </TableWrapper>
-
-      <portal to="activity-card-spot-count">
-        <span class="font-semibold text-sm md:text-lg">
-          {{ orders.length }}
-        </span>
-      </portal>
-
-      <portal to="activity-tab-spot-count">
-        <span v-if="status.isNotLoading()"> ({{ orders.length }}) </span>
-      </portal>
 
       <Pagination
         v-if="status.isIdle() && orders.length > 0"
@@ -162,7 +138,7 @@ export default Vue.extend({
 
   computed: {
     activeMarketIds(): string[] {
-      return this.$accessor.derivatives.activeMarketIds
+      return this.$accessor.spot.activeMarketIds
     },
 
     orders(): UiSpotLimitOrder[] {
@@ -265,12 +241,14 @@ export default Vue.extend({
     handleSideClick(side: string | undefined) {
       this.side = side
 
+      this.resetPagination()
       this.fetchOrders()
     },
 
     handleLimitChangeEvent(limit: number) {
       this.limit = limit
 
+      this.resetPagination()
       this.fetchOrders()
     },
 
@@ -283,15 +261,20 @@ export default Vue.extend({
     handleSearch(token: Token) {
       this.selectedToken = token
 
+      this.resetPagination()
       this.fetchOrders()
     },
 
     handleClearFilters() {
       this.selectedToken = undefined
       this.side = undefined
-      this.page = 1
 
+      this.resetPagination()
       this.fetchOrders()
+    },
+
+    resetPagination() {
+      this.page = 1
     }
   }
 })

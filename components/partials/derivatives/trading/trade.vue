@@ -767,16 +767,27 @@ export default Vue.extend({
         form,
         market,
         orderType,
-        tradingTypeMarket
+        tradingTypeMarket,
+        tradingTypeStopMarket,
+        triggerPrice
       } = this
 
-      if (!hasPrice || !hasAmount || !market) {
+      if (!hasAmount || !market) {
         return ZERO_IN_BASE
       }
 
-      const price = tradingTypeMarket
-        ? worstPrice.toFixed()
-        : executionPrice.toFixed()
+      if (!hasPrice && !tradingTypeStopMarket) {
+        return ZERO_IN_BASE
+      }
+
+      if (!triggerPrice && tradingTypeStopMarket) {
+        return ZERO_IN_BASE
+      }
+
+      const price =
+        tradingTypeMarket || tradingTypeStopMarket
+          ? worstPrice.toFixed()
+          : executionPrice.toFixed()
 
       if (market.subType === MarketType.BinaryOptions) {
         return new BigNumberInBase(
@@ -841,16 +852,23 @@ export default Vue.extend({
     },
 
     notionalValue(): BigNumberInBase {
-      const { executionPrice, worstPrice, tradingTypeMarket, amount, market } =
-        this
+      const {
+        executionPrice,
+        worstPrice,
+        tradingTypeMarket,
+        tradingTypeStopMarket,
+        amount,
+        market
+      } = this
 
       if (amount.isNaN() || !market) {
         return ZERO_IN_BASE
       }
 
-      const price = tradingTypeMarket
-        ? worstPrice.toFixed()
-        : executionPrice.toFixed()
+      const price =
+        tradingTypeMarket || tradingTypeStopMarket
+          ? worstPrice.toFixed()
+          : executionPrice.toFixed()
 
       const notional = amount.times(price)
 
@@ -872,9 +890,24 @@ export default Vue.extend({
     },
 
     notionalWithLeverageToBigNumber(): BigNumberInBase {
-      const { hasPrice, hasAmount, notionalWithLeverage, market } = this
+      const {
+        hasPrice,
+        hasAmount,
+        notionalWithLeverage,
+        market,
+        tradingTypeStopMarket,
+        triggerPrice
+      } = this
 
-      if (!hasPrice || !hasAmount || !market) {
+      if (!hasAmount || !market) {
+        return ZERO_IN_BASE
+      }
+
+      if (!hasPrice && !tradingTypeStopMarket) {
+        return ZERO_IN_BASE
+      }
+
+      if (!triggerPrice && tradingTypeStopMarket) {
         return ZERO_IN_BASE
       }
 
@@ -921,10 +954,20 @@ export default Vue.extend({
         market,
         form,
         worstPrice,
-        tradingTypeMarket
+        tradingTypeMarket,
+        tradingTypeStopMarket,
+        triggerPrice
       } = this
 
-      if (!hasAmount || !hasPrice || !market) {
+      if (!hasAmount || !market) {
+        return ZERO_IN_BASE
+      }
+
+      if (!hasPrice && !tradingTypeStopMarket) {
+        return ZERO_IN_BASE
+      }
+
+      if (!triggerPrice && tradingTypeStopMarket) {
         return ZERO_IN_BASE
       }
 
@@ -936,9 +979,10 @@ export default Vue.extend({
         | UiPerpetualMarketWithToken
         | UiExpiryFuturesMarketWithToken
 
-      const price = tradingTypeMarket
-        ? worstPrice.toFixed()
-        : executionPrice.toFixed()
+      const price =
+        tradingTypeMarket || tradingTypeStopMarket
+          ? worstPrice.toFixed()
+          : executionPrice.toFixed()
 
       return calculateLiquidationPrice({
         market: derivativeMarket,

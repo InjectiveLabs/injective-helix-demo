@@ -139,7 +139,7 @@ export default Vue.extend({
 
     hideDropdown() {
       // prevents hiding popper when moving from binding element to popper element
-      this.delayHide = setTimeout(this.hide, 100)
+      this.delayHide = setTimeout(this.hide, 50)
     },
 
     onMouseLeave() {
