@@ -147,7 +147,7 @@ export default Vue.extend({
       learnList: [
         {
           text: this.$t('footer.faq'),
-          link: 'faq'
+          link: 'https://helixapp.zendesk.com/'
         }
       ]
     }
