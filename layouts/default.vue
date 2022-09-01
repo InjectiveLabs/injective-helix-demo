@@ -1,11 +1,6 @@
 <template>
   <div id="pro" class="w-full h-full min-h-screen bg-gray-900 relative">
-    <!-- Todo: remove on helix launch -->
-    <div v-if="IS_MAINNET">
-      <nuxt />
-    </div>
-
-    <transition v-else name="page" appear>
+    <transition name="page" appear>
       <HocLoading :status="status">
         <div>
           <SidebarMobile :is-sidebar-open="isOpenSidebar" />
