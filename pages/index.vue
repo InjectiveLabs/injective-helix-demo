@@ -1,16 +1,16 @@
 <template>
   <div>
-    <HelixAppRedirection />
+    <AppRedirect />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import HelixAppRedirection from '~/components/partials/home/helix-app-redirection.vue'
+import AppRedirect from '~/components/partials/home/app-redirect.vue'
 
 export default Vue.extend({
   components: {
-    HelixAppRedirection
+    AppRedirect
   },
 
   data() {
