@@ -88,7 +88,10 @@
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Token } from '@injectivelabs/token-metadata'
-import { UiSpotMarketWithToken, UiSpotOrderHistory } from '@injectivelabs/sdk-ui-ts'
+import {
+  UiSpotMarketWithToken,
+  UiSpotOrderHistory
+} from '@injectivelabs/sdk-ui-ts'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 import { orderTypeToOrderTypes } from '../common/utils'
 import { ConditionalOrderSide } from '../common/types'
@@ -154,6 +157,34 @@ export default Vue.extend({
 
     showClearFiltersButton(): boolean {
       return !!this.selectedToken || !!this.type || !!this.side
+    },
+
+    paginationOrderTypes(): ConditionalOrderSide[] {
+      const { type } = this
+
+      if (!type) {
+        return []
+      }
+
+      if (type.executionType) {
+        return []
+      }
+
+      return orderTypeToOrderTypes(type.orderType)
+    },
+
+    paginationExecutionTypes(): TradeExecutionType[] | undefined {
+      const { type } = this
+
+      if (!type) {
+        return undefined
+      }
+
+      if (!type.executionType) {
+        return undefined
+      }
+
+      return [type.executionType] as TradeExecutionType[]
     }
   },
 
@@ -163,15 +194,6 @@ export default Vue.extend({
 
   methods: {
     fetchOrderHistory(): Promise<void> {
-      const orderTypes = this.type && !!this.type.executionType
-        ? orderTypeToOrderTypes(this.type.orderType)
-        : []
-
-      const executionTypes =
-        this.type && this.type.executionType
-          ? [this.type.executionType]
-          : undefined
-
       const direction = this.side as TradeDirection
       const isConditional = undefined
       const marketId = this.markets.find((m) => {
@@ -183,19 +205,20 @@ export default Vue.extend({
 
       this.status.setLoading()
 
-      return this.$accessor.spot.fetchSubaccountOrderHistory({
-        pagination: {
-          skip: (this.page - 1) * this.limit,
-          limit: this.limit
-        },
-        filters: {
-          marketId,
-          orderTypes: orderTypes as ConditionalOrderSide[],
-          executionTypes: executionTypes as TradeExecutionType[],
-          direction,
-          isConditional
-        }
-      })
+      return this.$accessor.spot
+        .fetchSubaccountOrderHistory({
+          pagination: {
+            skip: (this.page - 1) * this.limit,
+            limit: this.limit
+          },
+          filters: {
+            marketId,
+            orderTypes: this.paginationOrderTypes,
+            executionTypes: this.paginationExecutionTypes,
+            direction,
+            isConditional
+          }
+        })
         .catch(this.$onError)
         .finally(() => {
           this.status.setIdle()

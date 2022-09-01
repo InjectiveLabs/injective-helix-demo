@@ -172,6 +172,34 @@ export default Vue.extend({
 
     showClearFiltersButton(): boolean {
       return !!this.selectedToken || !!this.type || !!this.side
+    },
+
+    paginationOrderTypes(): ConditionalOrderSide[] {
+      const { type } = this
+
+      if (!type) {
+        return []
+      }
+
+      if (type.executionType) {
+        return []
+      }
+
+      return orderTypeToOrderTypes(type.orderType)
+    },
+
+    paginationExecutionTypes(): TradeExecutionType[] | undefined {
+      const { type } = this
+
+      if (!type) {
+        return undefined
+      }
+
+      if (!type.executionType) {
+        return undefined
+      }
+
+      return [type.executionType] as TradeExecutionType[]
     }
   },
 
@@ -181,15 +209,6 @@ export default Vue.extend({
 
   methods: {
     fetchTriggers(): Promise<void> {
-      const orderTypes = this.type && !!this.type.executionType
-        ? orderTypeToOrderTypes(this.type.orderType)
-        : []
-
-      const executionTypes =
-        this.type && this.type.executionType
-          ? [this.type.executionType]
-          : undefined
-
       const direction = this.side as TradeDirection
       const marketId = this.markets.find((m) => {
         return (
@@ -208,8 +227,8 @@ export default Vue.extend({
           },
           filters: {
             marketId,
-            orderTypes: orderTypes as ConditionalOrderSide[],
-            executionTypes: executionTypes as TradeExecutionType[],
+            orderTypes: this.paginationOrderTypes,
+            executionTypes: this.paginationExecutionTypes,
             direction
           }
         })

@@ -72,167 +72,175 @@ export default Vue.extend({
         return placeholder
       }
 
-      return (
-        list.find(({ value }) => {
-          if (typeof selected === 'object') {
-            const v = value as OrderTypeFilter
+      const selectedValue = list.find(({ value }) => {
+        if (typeof selected === 'object') {
+          const v = value as OrderTypeFilter
 
-            return (
-              v.executionType === selected.executionType &&
-              v.orderType === selected.orderType
-            )
-          }
-          return value === selected
-        })?.text || this.$t('trade.all')
-      )
+          return (
+            v.executionType === selected.executionType &&
+            v.orderType === selected.orderType
+          )
+        }
+        return value === selected
+      })
+
+      if (selectedValue) {
+        return selectedValue.text
+      }
+
+      return this.$t('trade.all')
     }
   },
 
   mounted() {
-    if (this.type === TradeSelectorType.TypeAllSpot) {
-      this.list = [
-        {
-          text: this.$t('trade.limit'),
-          value: {
-            executionType: 'limit',
-            orderType: undefined
-          }
-        },
-        {
-          text: this.$t('trade.market'),
-          value: {
-            executionType: 'market',
-            orderType: undefined
-          }
-        }
-      ]
-      this.placeholder = this.$t('trade.type')
-    }
-
-    if (this.type === TradeSelectorType.TypeAllDerivatives) {
-      this.list = [
-        {
-          text: this.$t('trade.limit'),
-          value: {
-            executionType: 'limit',
-            orderType: undefined
-          }
-        },
-        {
-          text: this.$t('trade.market'),
-          value: {
-            executionType: 'market',
-            orderType: undefined
-          }
-        },
-        {
-          text: `${this.$t('trade.stopLoss')} ${this.$t('trade.limit')}`,
-          value: {
-            executionType: 'limit',
-            orderType: 'stop_loss'
-          }
-        },
-        {
-          text: `${this.$t('trade.stopLoss')} ${this.$t('trade.market')}`,
-          value: {
-            executionType: 'market',
-            orderType: 'stop_loss'
-          }
-        },
-        {
-          text: `${this.$t('trade.takeProfit')} ${this.$t('trade.limit')}`,
-          value: {
-            executionType: 'limit',
-            orderType: 'take_profit'
-          }
-        },
-        {
-          text: `${this.$t('trade.takeProfit')} ${this.$t('trade.market')}`,
-          value: {
-            executionType: 'market',
-            orderType: 'take_profit'
-          }
-        }
-      ]
-      this.placeholder = this.$t('trade.type')
-    }
-
-    if (this.type === TradeSelectorType.Type) {
-      this.list = [
-        {
-          text: this.$t('trade.all'),
-          value: undefined
-        },
-        {
-          text: this.$t('trade.market'),
-          value: TradeTypes.Market
-        },
-        {
-          text: this.$t('trade.limit'),
-          value: TradeTypes.Limit
-        }
-      ]
-      this.placeholder = this.$t('trade.type')
-    }
-
-    if (this.type === TradeSelectorType.TransferType) {
-      this.list = [
-        {
-          text: this.$t('trade.all'),
-          value: undefined
-        },
-        {
-          text: this.$t('walletHistory.transfers.deposit'),
-          value: TransferType.Deposit
-        },
-        {
-          text: this.$t('walletHistory.transfers.deposit'),
-          value: TransferType.Withdraw
-        }
-      ]
-      this.placeholder = this.$t('trade.type')
-    }
-
-    if (this.type === TradeSelectorType.Side) {
-      this.list = [
-        {
-          text: this.$t('trade.all'),
-          value: undefined
-        },
-        {
-          text: this.$t('trade.buy'),
-          value: TradeDirection.Buy
-        },
-        {
-          text: this.$t('trade.sell'),
-          value: TradeDirection.Sell
-        }
-      ]
-      this.placeholder = this.$t('trade.side')
-    }
-
-    if (this.type === TradeSelectorType.PositionSide) {
-      this.list = [
-        {
-          text: this.$t('trade.all'),
-          value: undefined
-        },
-        {
-          text: this.$t('trade.long'),
-          value: TradeDirection.Long
-        },
-        {
-          text: this.$t('trade.short'),
-          value: TradeDirection.Short
-        }
-      ]
-      this.placeholder = this.$t('trade.side')
-    }
+    this.prePopulateSelectList()
   },
 
   methods: {
     handleClick({ value }: { value: string | OrderTypeFilter }) {
       this.$emit('click', value)
+    },
+
+    prePopulateSelectList() {
+      if (this.type === TradeSelectorType.TypeAllSpot) {
+        this.list = [
+          {
+            text: this.$t('trade.limit'),
+            value: {
+              executionType: 'limit',
+              orderType: undefined
+            }
+          },
+          {
+            text: this.$t('trade.market'),
+            value: {
+              executionType: 'market',
+              orderType: undefined
+            }
+          }
+        ]
+        this.placeholder = this.$t('trade.type')
+      }
+
+      if (this.type === TradeSelectorType.TypeAllDerivatives) {
+        this.list = [
+          {
+            text: this.$t('trade.limit'),
+            value: {
+              executionType: 'limit',
+              orderType: undefined
+            }
+          },
+          {
+            text: this.$t('trade.market'),
+            value: {
+              executionType: 'market',
+              orderType: undefined
+            }
+          },
+          {
+            text: `${this.$t('trade.stopLoss')} ${this.$t('trade.limit')}`,
+            value: {
+              executionType: 'limit',
+              orderType: 'stop_loss'
+            }
+          },
+          {
+            text: `${this.$t('trade.stopLoss')} ${this.$t('trade.market')}`,
+            value: {
+              executionType: 'market',
+              orderType: 'stop_loss'
+            }
+          },
+          {
+            text: `${this.$t('trade.takeProfit')} ${this.$t('trade.limit')}`,
+            value: {
+              executionType: 'limit',
+              orderType: 'take_profit'
+            }
+          },
+          {
+            text: `${this.$t('trade.takeProfit')} ${this.$t('trade.market')}`,
+            value: {
+              executionType: 'market',
+              orderType: 'take_profit'
+            }
+          }
+        ]
+        this.placeholder = this.$t('trade.type')
+      }
+
+      if (this.type === TradeSelectorType.Type) {
+        this.list = [
+          {
+            text: this.$t('trade.all'),
+            value: undefined
+          },
+          {
+            text: this.$t('trade.market'),
+            value: TradeTypes.Market
+          },
+          {
+            text: this.$t('trade.limit'),
+            value: TradeTypes.Limit
+          }
+        ]
+        this.placeholder = this.$t('trade.type')
+      }
+
+      if (this.type === TradeSelectorType.TransferType) {
+        this.list = [
+          {
+            text: this.$t('trade.all'),
+            value: undefined
+          },
+          {
+            text: this.$t('walletHistory.transfers.deposit'),
+            value: TransferType.Deposit
+          },
+          {
+            text: this.$t('walletHistory.transfers.deposit'),
+            value: TransferType.Withdraw
+          }
+        ]
+        this.placeholder = this.$t('trade.type')
+      }
+
+      if (this.type === TradeSelectorType.Side) {
+        this.list = [
+          {
+            text: this.$t('trade.all'),
+            value: undefined
+          },
+          {
+            text: this.$t('trade.buy'),
+            value: TradeDirection.Buy
+          },
+          {
+            text: this.$t('trade.sell'),
+            value: TradeDirection.Sell
+          }
+        ]
+        this.placeholder = this.$t('trade.side')
+      }
+
+      if (this.type === TradeSelectorType.PositionSide) {
+        this.list = [
+          {
+            text: this.$t('trade.all'),
+            value: undefined
+          },
+          {
+            text: this.$t('trade.long'),
+            value: TradeDirection.Long
+          },
+          {
+            text: this.$t('trade.short'),
+            value: TradeDirection.Short
+          }
+        ]
+        this.placeholder = this.$t('trade.side')
+      }
     }
   }
 })

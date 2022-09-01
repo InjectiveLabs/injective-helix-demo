@@ -17,7 +17,7 @@ import { USDT_COIN_GECKO_ID } from '~/app/utils/constants'
 
 export const getMarketRoute = (
   market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
-): MarketRoute | undefined => {
+): MarketRoute => {
   if (upcomingMarkets.map((m) => m.slug).includes(market.slug)) {
     return {
       name: 'market-market',
@@ -76,6 +76,14 @@ export const getMarketRoute = (
         marketId: market.marketId,
         spot: market.slug
       }
+    }
+  }
+
+  return {
+    name: 'market-market',
+    params: {
+      marketId: market.marketId,
+      market: market.slug
     }
   }
 }

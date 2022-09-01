@@ -276,6 +276,18 @@ export default Vue.extend({
         (component === components.openOrders && filteredOrders.length > 0) ||
         (component === components.triggers && triggers.length > 0)
       )
+    },
+
+    cancelAllAction(): () => Promise<void> {
+      const { filteredOrders, triggers, component } = this
+
+      if (component === components.triggers) {
+        return triggers.length === 1 ? this.cancelOrder : this.cancelAllOrder
+      }
+
+      return filteredOrders.length === 1
+        ? this.cancelOrder
+        : this.cancelAllOrder
     }
   },
 
@@ -336,18 +348,9 @@ export default Vue.extend({
     },
 
     handleCancelAllClick() {
-      const { filteredOrders, triggers, component } = this
+      const { cancelAllAction } = this
 
-      const action =
-        component === components.triggers
-          ? triggers.length === 1
-            ? this.cancelOrder
-            : this.cancelAllOrder
-          : filteredOrders.length === 1
-          ? this.cancelOrder
-          : this.cancelAllOrder
-
-      action()
+      cancelAllAction()
         .then(() => {
           this.$toast.success(this.$t('trade.orders_cancelled'))
         })

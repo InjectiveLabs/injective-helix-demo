@@ -333,7 +333,7 @@ export default Vue.extend({
         return
       }
 
-      return this.$router.push({ ...getMarketRoute(market) })
+      return this.$router.push(getMarketRoute(market))
     }
   }
 })
