@@ -11,7 +11,7 @@
             {{ $t('activity.openOrders') }}
           </span>
           <span data-cy="activity-derivative-orders-link-count">
-            ({{ orders.length }})
+            ({{ totalOrderCount }})
           </span>
         </div>
       </TabSelectorItem>
@@ -28,7 +28,7 @@
             {{ $t('activity.triggers') }}
           </span>
           <span data-cy="activity-derivative-orders-link-count">
-            ({{ triggers.length }})
+            ({{ totalTriggerCount }})
           </span>
         </div>
       </TabSelectorItem>
@@ -62,12 +62,6 @@
       </TabSelectorItem>
     </div>
 
-    <portal to="activity-card-derivative-order-count">
-      <span class="font-semibold text-sm md:text-lg">
-        {{ orders.length }}
-      </span>
-    </portal>
-
     <VCard md class="h-full mt-4 xs:mt-6">
       <Orders v-show="component === components.orders" />
       <Trades v-if="component === components.trades" />
@@ -79,10 +73,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import {
-  UiDerivativeLimitOrder,
-  UiDerivativeOrderHistory
-} from '@injectivelabs/sdk-ui-ts'
 import Orders from '~/components/partials/activity/derivatives/orders.vue'
 import Trades from '~/components/partials/activity/derivatives/trades.vue'
 import OrderHistory from '~/components/partials/activity/derivatives/order-history.vue'
@@ -113,12 +103,12 @@ export default Vue.extend({
   },
 
   computed: {
-    orders(): UiDerivativeLimitOrder[] {
-      return this.$accessor.derivatives.subaccountOrders
+    totalOrderCount(): number {
+      return this.$accessor.derivatives.subaccountOrdersPagination.total
     },
 
-    triggers(): UiDerivativeOrderHistory[] {
-      return this.$accessor.derivatives.subaccountConditionalOrders
+    totalTriggerCount(): number {
+      return this.$accessor.derivatives.subaccountConditionalOrdersPagination.total
     }
   },
 
