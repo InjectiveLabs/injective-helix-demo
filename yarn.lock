@@ -2404,10 +2404,10 @@
     shx "^0.3.2"
     snakecase-keys "^3.2.1"
 
-"@injectivelabs/sdk-ts@1.0.113", "@injectivelabs/sdk-ts@^1.0.113":
-  version "1.0.113"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.0.113.tgz#b963c561d4a9480266f2fa7da840d06a334794c7"
-  integrity sha512-2FNwqtcfHdeZjQ9lDauu6eINSxO4KRuoujYyuDLMism0Pnt8ecHK2xiK2cX7DV43yzRWjopdo7MlMY0bdiXVlQ==
+"@injectivelabs/sdk-ts@1.0.114", "@injectivelabs/sdk-ts@^1.0.114":
+  version "1.0.114"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.0.114.tgz#2d24acd8cd7cd5461bef7d80440dc1713ece8ddd"
+  integrity sha512-ySycFIvvzozd3Yq9JPiC326rQOYcYK20GcFTCeiFbdLgTwydduWl2ilMpdLXfbCi9rHpMsHEjhvvDRQLtTsN5w==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@improbable-eng/grpc-web" "^0.15.0"
@@ -2437,14 +2437,14 @@
     shx "^0.3.2"
     snakecase-keys "^5.4.1"
 
-"@injectivelabs/sdk-ui-ts@1.0.154":
-  version "1.0.154"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.0.154.tgz#4c81b07bbb2ce15031275855f8298b4191c29416"
-  integrity sha512-1vkdNmJI/mXWvE/yoNhGzHwE9Gpa7+YMG1BkFEvI7kIg/M6BvJPZbCy5iHrft87HBADvlmdrLDq+adEr4gqEpg==
+"@injectivelabs/sdk-ui-ts@1.0.155":
+  version "1.0.155"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.0.155.tgz#6206b255b93d0f302f8cb6ba62517fa2e8105ab6"
+  integrity sha512-rY2vq5xp4RFlUohkt0PX+a+T5CiCx15Ix0Jxi1GocH3KOsiryYOSpcD5FqpN5LtNOV91EdRdC6iNquARWy0+Aw==
   dependencies:
     "@injectivelabs/exceptions" "^1.0.9"
     "@injectivelabs/networks" "^1.0.14"
-    "@injectivelabs/sdk-ts" "^1.0.113"
+    "@injectivelabs/sdk-ts" "^1.0.114"
     "@injectivelabs/token-metadata" "^1.0.22"
     "@injectivelabs/token-utils" "^1.0.13"
     "@injectivelabs/ts-types" "^1.0.8"
@@ -18252,10 +18252,10 @@ vue-no-ssr@^1.1.1:
   resolved "https://registry.yarnpkg.com/vue-no-ssr/-/vue-no-ssr-1.1.1.tgz#875f3be6fb0ae41568a837f3ac1a80eaa137b998"
   integrity sha512-ZMjqRpWabMPqPc7gIrG0Nw6vRf1+itwf0Itft7LbMXs2g3Zs/NFmevjZGN1x7K3Q95GmIjWbQZTVerxiBxI+0g==
 
-vue-plot@^0.0.6:
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/vue-plot/-/vue-plot-0.0.6.tgz#e4b7764ee02d0bb90f9c586254893a2c324fd91f"
-  integrity sha512-awUmpR8E1ekHhDbUaQUAoxoryypdGF4J5KzEzNjYg7AAT1TT92i5cSxRTouEVdxIFkRHg++mSZsqmNZyYy9h8w==
+vue-plot@0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/vue-plot/-/vue-plot-0.0.7.tgz#f8e38629a0b48c054e07059ad3b53ddae681228e"
+  integrity sha512-Bkq9nahUiIrfbaJ9fUruWj7O62i7w1QdfZLaw6CjmZF8ttxz5v8q1G7e0HwmuoNz0k7UBhesxWGRHnvgIXHFxQ==
 
 vue-resize@^1.0.1:
   version "1.0.1"
