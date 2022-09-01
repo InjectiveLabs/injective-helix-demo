@@ -41,7 +41,7 @@
             @input="handleSlippageCheckboxToggle"
           >
             <slot>
-              <span class="text-sm">
+              <span class="text-sm whitespace-nowrap overflow-ellipsis pr-2">
                 {{ `${$t('trade.slippage_tolerance')} :` }}
               </span>
             </slot>

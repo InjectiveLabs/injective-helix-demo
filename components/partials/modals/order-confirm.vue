@@ -224,7 +224,7 @@ export default Vue.extend({
 
       // TODO: Refactor this to something more sensible.
       const orderType = orderTypeBuy ? 'buy' : 'sell'
-      const tradingType = tradingTypeMarket && orderTypeBuy ? 'market' : 'limit'
+      const tradingType = tradingTypeMarket ? 'market' : 'limit'
       const markPriceIncrease =
         (orderTypeBuy && orderTypeStopLoss) ||
         (!orderTypeBuy && orderTypeTakeProfit)

@@ -131,6 +131,7 @@ import {
   getTokenLogoWithVendorPathPrefix
 } from '@injectivelabs/sdk-ui-ts'
 import { format } from 'date-fns'
+import { TradeExecutionType } from '@injectivelabs/ts-types'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -182,7 +183,11 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(order.price).toBase(market.quoteToken.decimals)
+      return new BigNumberInBase(
+        new BigNumberInBase(order.price).toWei(
+          market.baseToken.decimals - market.quoteToken.decimals
+        )
+      )
     },
 
     triggerPrice(): BigNumberInBase {
@@ -215,7 +220,9 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(order.quantity)
+      return new BigNumberInWei(order.quantity).toBase(
+        market.baseToken.decimals
+      )
     },
 
     quantityToFormat(): string {
@@ -239,9 +246,15 @@ export default Vue.extend({
     },
 
     filledQuantity(): BigNumberInBase {
-      const { unfilledQuantity, quantity } = this
+      const { market, order } = this
 
-      return quantity.minus(unfilledQuantity)
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInWei(order.filledQuantity).toBase(
+        market.baseToken.decimals
+      )
     },
 
     leverage(): BigNumberInBase {
@@ -309,10 +322,15 @@ export default Vue.extend({
     isBuy(): boolean {
       const { order } = this
 
+      if (order.direction === SpotOrderSide.Buy) {
+        return true
+      }
+
       switch (order.orderType) {
         case SpotOrderSide.TakeBuy:
         case SpotOrderSide.StopBuy:
         case SpotOrderSide.Buy:
+        case SpotOrderSide.BuyPO:
           return true
         default:
           return false
@@ -328,17 +346,26 @@ export default Vue.extend({
     type(): string {
       const { order } = this
 
-      const orderType =
-        order.orderType === ('take_sell' || 'take_buy')
-          ? this.$t('trade.takeProfit')
-          : this.$t('trade.stopLoss')
-
       const executionType =
-        order.executionType === 'market'
+        order.executionType === TradeExecutionType.Market
           ? this.$t('trade.market')
           : this.$t('trade.limit')
 
-      return `${orderType} ${executionType}`
+      switch (order.orderType) {
+        case SpotOrderSide.Buy:
+        case SpotOrderSide.Sell:
+        case SpotOrderSide.BuyPO:
+        case SpotOrderSide.SellPO:
+          return executionType
+        case SpotOrderSide.TakeSell:
+        case SpotOrderSide.TakeBuy:
+          return `${this.$t('trade.takeProfit')} ${executionType}`
+        case SpotOrderSide.StopSell:
+        case SpotOrderSide.StopBuy:
+          return `${this.$t('trade.stopLoss')} ${executionType}`
+        default:
+          return ''
+      }
     },
 
     orderStatus(): string {
@@ -346,13 +373,13 @@ export default Vue.extend({
 
       switch (order.state) {
         case 'booked':
-          return 'Booked'
+          return this.$t('trade.open')
         case 'partial_filled':
-          return 'Partially Filled'
+          return this.$t('trade.partiallyFilled')
         case 'filled':
-          return 'Filled'
+          return this.$t('trade.filled')
         case 'canceled':
-          return 'Cancelled'
+          return this.$t('trade.cancelled')
         default: {
           return ''
         }

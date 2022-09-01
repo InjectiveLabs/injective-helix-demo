@@ -3,34 +3,65 @@
     <div class="w-full h-full flex flex-col">
       <Toolbar>
         <template #filters>
-          <SearchAsset
-            :markets="markets"
-            :value="selectedToken"
-            @select="handleSearch"
-          />
+          <div
+            class="grid grid-cols-2 sm:grid-cols-4 items-center gap-4 w-full"
+          >
+            <SearchAsset
+              class="col-span-4 sm:col-span-1"
+              :markets="markets"
+              :value="selectedToken"
+              @select="handleSearch"
+            />
 
-          <FilterSelector
-            class="min-w-3xs hidden sm:block"
-            data-cy="universal-table-filter-by-type-drop-down"
-            :type="TradeSelectorType.TypeAll"
-            :value="type"
-            @click="handleTypeClick"
-          />
+            <FilterSelector
+              data-cy="universal-table-filter-by-type-drop-down"
+              :type="TradeSelectorType.TypeAllDerivatives"
+              :value="type"
+              @click="handleTypeClick"
+            />
 
-          <FilterSelector
-            class="min-w-3xs hidden sm:block"
-            data-cy="universal-table-filter-by-side-drop-down"
-            :type="TradeSelectorType.Side"
-            :value="side"
-            @click="handleSideClick"
-          />
+            <FilterSelector
+              data-cy="universal-table-filter-by-side-drop-down"
+              :type="TradeSelectorType.Side"
+              :value="side"
+              @click="handleSideClick"
+            />
 
-          <ClearFiltersButton
-            v-if="showClearFiltersButton"
-            @clear="handleClearFilters"
-          />
+            <ClearFiltersButton
+              v-if="showClearFiltersButton"
+              @clear="handleClearFilters"
+            />
+          </div>
+        </template>
+
+        <template #actions>
+          <VButton
+            v-if="triggers.length > 0"
+            red-outline
+            md
+            data-cy="activity-cancel-all-button"
+            @click.stop="handleCancelOrders"
+          >
+            <span class="whitespace-nowrap">
+              {{ $t('trade.cancelAllOrders') }}
+            </span>
+          </VButton>
         </template>
       </Toolbar>
+
+      <TableBody
+        :show-empty="triggers.length === 0"
+        class="sm:hidden mt-3 max-h-lg overflow-y-auto"
+      >
+        <MobileTrigger
+          v-for="(trigger, index) in triggers"
+          :key="`mobile-derivative-triggers-${index}-${trigger.orderHash}`"
+          class="col-span-1"
+          :order="trigger"
+        />
+
+        <EmptyList slot="empty" :message="$t('trade.emptyTriggers')" />
+      </TableBody>
 
       <TableWrapper break-md class="mt-4 hidden sm:block">
         <table v-if="triggers.length > 0" class="table">
@@ -50,10 +81,6 @@
           data-cy="universal-table-nothing-found"
         />
       </TableWrapper>
-
-      <!-- <portal to="activity-tab-derivative-triggers-count">
-        <span v-if="status.isNotLoading()"> ({{ triggers.length }}) </span>
-      </portal> -->
 
       <Pagination
         v-if="status.isIdle() && triggers.length > 0"
@@ -75,8 +102,13 @@
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Token } from '@injectivelabs/token-metadata'
-import { DerivativeOrderSide, UiDerivativeMarketWithToken, UiDerivativeOrderHistory } from '@injectivelabs/sdk-ui-ts'
-import { TradeDirection } from '@injectivelabs/ts-types'
+import {
+  UiDerivativeMarketWithToken,
+  UiDerivativeOrderHistory
+} from '@injectivelabs/sdk-ui-ts'
+import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
+import { orderTypeToOrderTypes } from '../common/utils'
+import { ConditionalOrderSide } from '../common/types'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import Pagination from '~/components/partials/common/pagination.vue'
 import SearchAsset from '~/components/partials/activity/common/search-asset.vue'
@@ -86,6 +118,8 @@ import Trigger from '~/components/partials/common/derivatives/trigger.vue'
 import TriggersTableHeader from '~/components/partials/common/derivatives/triggers-table-header.vue'
 import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
 import { OrderTypeFilter, TradeSelectorType } from '~/types'
+import TableBody from '~/components/elements/table-body.vue'
+import MobileTrigger from '~/components/partials/common/derivatives/mobile-trigger.vue'
 
 export default Vue.extend({
   components: {
@@ -95,7 +129,9 @@ export default Vue.extend({
     SearchAsset,
     FilterSelector,
     ClearFiltersButton,
-    TriggersTableHeader
+    TriggersTableHeader,
+    TableBody,
+    MobileTrigger
   },
 
   data() {
@@ -124,7 +160,8 @@ export default Vue.extend({
     },
 
     totalCount(): number {
-      return this.$accessor.derivatives.subaccountConditionalOrdersPagination.total
+      return this.$accessor.derivatives.subaccountConditionalOrdersPagination
+        .total
     },
 
     totalPages(): number {
@@ -144,11 +181,14 @@ export default Vue.extend({
 
   methods: {
     fetchTriggers(): Promise<void> {
-      const orderTypes = (
-        this.type && this.type.orderType
-          ? this.orderTypeToOrderTypes(this.type.orderType)
-          : []
-      ) as DerivativeOrderSide[]
+      const orderTypes = this.type && !!this.type.executionType
+        ? orderTypeToOrderTypes(this.type.orderType)
+        : []
+
+      const executionTypes =
+        this.type && this.type.executionType
+          ? [this.type.executionType]
+          : undefined
 
       const direction = this.side as TradeDirection
       const marketId = this.markets.find((m) => {
@@ -160,45 +200,44 @@ export default Vue.extend({
 
       this.status.setLoading()
 
-      return this.$accessor.derivatives.fetchSubaccountConditionalOrders({
-        pagination: {
-          skip: (this.page - 1) * this.limit,
-          limit: this.limit
-        },
-        filters: {
-          marketId,
-          orderTypes,
-          direction
-        }
-      })
+      return this.$accessor.derivatives
+        .fetchSubaccountConditionalOrders({
+          pagination: {
+            skip: (this.page - 1) * this.limit,
+            limit: this.limit
+          },
+          filters: {
+            marketId,
+            orderTypes: orderTypes as ConditionalOrderSide[],
+            executionTypes: executionTypes as TradeExecutionType[],
+            direction
+          }
+        })
         .catch(this.$onError)
         .finally(() => {
           this.status.setIdle()
+          this.$emit('update')
         })
-    },
-
-    orderTypeToOrderTypes(orderType: string) {
-      if (orderType === 'take_profit') {
-        return ['take_buy', 'take_sell']
-      }
-
-      return ['stop_buy', 'stop_sell']
     },
 
     handleSideClick(side: string | undefined) {
       this.side = side
 
+      this.resetPagination()
       this.fetchTriggers()
     },
 
     handleTypeClick(type: OrderTypeFilter | undefined) {
       this.type = type
 
+      this.resetPagination()
       this.fetchTriggers()
     },
+
     handleLimitChangeEvent(limit: number) {
       this.limit = limit
 
+      this.resetPagination()
       this.fetchTriggers()
     },
 
@@ -211,6 +250,7 @@ export default Vue.extend({
     handleSearch(token: Token) {
       this.selectedToken = token
 
+      this.resetPagination()
       this.fetchTriggers()
     },
 
@@ -218,9 +258,40 @@ export default Vue.extend({
       this.selectedToken = undefined
       this.side = undefined
       this.type = undefined
-      this.page = 1
 
+      this.resetPagination()
       this.fetchTriggers()
+    },
+
+    cancelAllOrder(): Promise<void> {
+      const { triggers } = this
+
+      return this.$accessor.derivatives.batchCancelOrder(triggers)
+    },
+
+    cancelOrder(): Promise<void> {
+      const { triggers } = this
+
+      const [trigger] = triggers
+
+      return this.$accessor.derivatives.cancelOrder(trigger)
+    },
+
+    handleCancelOrders() {
+      const { triggers } = this
+
+      const action =
+        triggers.length === 1 ? this.cancelOrder : this.cancelAllOrder
+
+      action()
+        .then(() => {
+          this.$toast.success(this.$t('trade.orders_cancelled'))
+        })
+        .catch(this.$onRejected)
+    },
+
+    resetPagination() {
+      this.page = 1
     }
   }
 })

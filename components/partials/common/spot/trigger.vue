@@ -72,15 +72,11 @@
     </td>
 
     <td class="h-12 text-right">
-      <span class="text-white text-xs">
-        Unfilled
-      </span>
+      <span class="text-white text-xs"> Unfilled </span>
     </td>
 
     <td class="h-12 text-right">
-      <span class="text-white text-xs">
-        Filled
-      </span>
+      <span class="text-white text-xs"> Filled </span>
     </td>
 
     <td class="h-12 text-right font-mono">
@@ -100,9 +96,7 @@
 
     <td class="h-12 flex items-center justify-end gap-1">
       <template v-if="isMarketOrder">
-        <span class="text-white text-xs">
-          &mdash;
-        </span>
+        <span class="text-white text-xs"> &mdash; </span>
       </template>
 
       <template v-else>
@@ -161,6 +155,8 @@ import {
   getTokenLogoWithVendorPathPrefix,
   UiSpotOrderHistory
 } from '@injectivelabs/sdk-ui-ts'
+import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
+import { TradeExecutionType } from '@injectivelabs/ts-types'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -236,7 +232,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(trigger.quantity)
+      return new BigNumberInBase(cosmosSdkDecToBigNumber(trigger.quantity))
     },
 
     quantityToFormat(): string {
@@ -260,9 +256,15 @@ export default Vue.extend({
     },
 
     filledQuantity(): BigNumberInBase {
-      const { trigger } = this
+      const { trigger, market } = this
 
-      return new BigNumberInBase(trigger.filledQuantity)
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInBase(
+        cosmosSdkDecToBigNumber(trigger.filledQuantity)
+      )
     },
 
     filledQuantityPercentage(): BigNumberInBase {
@@ -320,10 +322,15 @@ export default Vue.extend({
     isBuy(): boolean {
       const { trigger } = this
 
+      if (trigger.direction === SpotOrderSide.Buy) {
+        return true
+      }
+
       switch (trigger.orderType) {
         case SpotOrderSide.TakeBuy:
         case SpotOrderSide.StopBuy:
         case SpotOrderSide.Buy:
+        case SpotOrderSide.BuyPO:
           return true
         default:
           return false
@@ -333,17 +340,26 @@ export default Vue.extend({
     type(): string {
       const { trigger } = this
 
-      const orderType =
-        trigger.orderType === ('take_sell' || 'take_buy')
-          ? this.$t('trade.takeProfit')
-          : this.$t('trade.stopLoss')
-
       const executionType =
-        trigger.executionType === 'market'
+        trigger.executionType === TradeExecutionType.Market
           ? this.$t('trade.market')
           : this.$t('trade.limit')
 
-      return `${orderType} ${executionType}`
+      switch (trigger.orderType) {
+        case SpotOrderSide.Buy:
+        case SpotOrderSide.Sell:
+        case SpotOrderSide.BuyPO:
+        case SpotOrderSide.SellPO:
+          return executionType
+        case SpotOrderSide.TakeSell:
+        case SpotOrderSide.TakeBuy:
+          return `${this.$t('trade.takeProfit')} ${executionType}`
+        case SpotOrderSide.StopSell:
+        case SpotOrderSide.StopBuy:
+          return `${this.$t('trade.stopLoss')} ${executionType}`
+        default:
+          return ''
+      }
     }
   },
 

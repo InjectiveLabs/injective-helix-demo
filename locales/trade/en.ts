@@ -265,6 +265,7 @@ export default {
     reduceOnlyTooltipConditional: 'To place a reduce-only conditional order, you will need an open position or non reduce-only order in the opposite side.',
     open: 'Open',
     partiallyFilled: 'Partially Filled',
-    cancelled: 'Cancelled'
+    cancelled: 'Cancelled',
+    spotTradeHistoryTotalTooltip: 'Total value of the order in quote currency'
   }
 }
