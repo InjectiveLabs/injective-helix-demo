@@ -109,6 +109,7 @@ import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
+import { getMarketRoute } from '~/app/utils/market'
 
 export default Vue.extend({
   components: {
@@ -256,13 +257,7 @@ export default Vue.extend({
         return
       }
 
-      return this.$router.push({
-        name: 'spot-spot',
-        params: {
-          marketId: market.marketId,
-          spot: market.slug
-        }
-      })
+      return this.$router.push(getMarketRoute(market))
     }
   }
 })

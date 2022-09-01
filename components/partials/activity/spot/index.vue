@@ -17,23 +17,6 @@
         </div>
       </TabSelectorItem>
 
-      <!-- <div class="w-px h-4 bg-gray-500" /> -->
-
-      <!-- <TabSelectorItem
-        v-model="component"
-        data-cy="activity-spot-triggers-link"
-        :option="components.triggers"
-      >
-        <div class="flex items-center gap-1">
-          <span class="whitespace-nowrap">
-            {{ $t('activity.triggers') }}
-          </span>
-          <span data-cy="activity-spot-orders-link-count">
-            ({{ triggers.length }})
-          </span>
-        </div>
-      </TabSelectorItem> -->
-
       <div class="w-px h-4 bg-gray-500" />
 
       <TabSelectorItem

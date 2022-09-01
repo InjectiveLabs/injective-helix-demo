@@ -1,17 +1,18 @@
 const { BASE_URL } = require('./app/utils/constants')
 
 const metaTags = {
-  title: process.env.APP_NAME ? process.env.APP_NAME : 'Helix',
-  // : 'Helix | The Premier Decentralized Spot and Derivatives Exchange',
+  title: process.env.APP_NAME
+    ? process.env.APP_NAME
+    : 'Helix | The Premier Decentralized Spot and Derivatives Exchange',
   description:
-    // 'Trade on Helix - the premier decentralized spot and derivatives exchange with low fees and gas free execution',
-    'Sign up for early access',
-  // keywords: 'injective protocol, dapp, decentralized app, cryptocurrency, cryptocurrency exchange, exchange, ethereum, erc20, futures, perpetuals, futures protocol, cosmos, spot trading, derivatives, injective, ibc, cross-chain',
+    'Trade on Helix - the premier decentralized spot and derivatives exchange with low fees and gas free execution',
+  keywords:
+    'injective protocol, dapp, decentralized app, cryptocurrency, cryptocurrency exchange, exchange, ethereum, erc20, futures, perpetuals, futures protocol, cosmos, spot trading, derivatives, injective, ibc, cross-chain',
   author: 'InjectiveLabs',
   url: 'https://helixapp.com',
   shortName: 'Helix',
-  twitterHandle: '@helixapp_',
-  ogImage: `${BASE_URL}/images/og-helix-small.jpeg` // Change this to another image (change the name of the file as well to clear cache from social media)
+  twitterHandle: '@InjectiveLabs',
+  ogImage: `${BASE_URL}/images/og-helix.jpeg` // Change this to another image (change the name of the file as well to clear cache from social media)
 }
 
 const nuxtMetaTags = [

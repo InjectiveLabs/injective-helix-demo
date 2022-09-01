@@ -1,28 +1,32 @@
 <template>
-  <div
-    :style="{ backgroundImage: `url('/svg/cta-area.svg')` }"
-    class="bg-cover py-14 bg-left-top h-[189px] md:h-[790px] flex items-center"
-  >
+  <div>
     <div
-      class="w-full mx-auto max-w-xs sm:max-w-md md:max-w-full xl:w-4/5 flex flex-col md:block items-center"
+      :style="{ backgroundImage: `url('/svg/cta-area.svg')` }"
+      class="bg-cover py-14 bg-left-top h-[189px] md:h-[790px] flex items-center"
     >
-      <h1
-        class="text-2xl md:text-4xl 4xl:text-5xl font-bold tracking-wide text-center"
+      <div
+        class="w-full mx-auto max-w-xs sm:max-w-md md:max-w-full xl:w-4/5 flex flex-col md:block items-center"
       >
-        {{ $t('home.startTradingNote') }}
-      </h1>
-
-      <div class="text-center">
-        <VButton
-          lg
-          primary
-          class="w-[133px] md:w-[160px] mt-2 md:mt-10 rounded"
-          @click="handleGetStartedClick"
+        <h1
+          class="text-2xl md:text-4xl 4xl:text-5xl font-bold tracking-wide text-center"
         >
-          {{ $t('home.tradeNow') }}
-        </VButton>
+          {{ $t('home.startTradingNote') }}
+        </h1>
+
+        <div class="text-center">
+          <VButton
+            lg
+            primary
+            class="w-[133px] md:w-[160px] mt-2 md:mt-10 rounded"
+            @click="handleGetStartedClick"
+          >
+            {{ $t('home.tradeNow') }}
+          </VButton>
+        </div>
       </div>
     </div>
+
+    <NewsLetter />
   </div>
 </template>
 
@@ -32,10 +36,15 @@ import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
 import { Identify, identify } from '@amplitude/analytics-browser'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
+import NewsLetter from '~/components/partials/home/news-letter.vue'
 import { AmplitudeEvents, DefaultMarket, TradeClickOrigin } from '~/types'
 import { AMPLITUDE_VIP_TIER_LEVEL } from '~/app/utils/vendor'
 
 export default Vue.extend({
+  components: {
+    NewsLetter
+  },
+
   computed: {
     isUserWalletConnected() {
       return this.$accessor.wallet.isUserWalletConnected
@@ -60,9 +69,9 @@ export default Vue.extend({
 
   methods: {
     handleGetStartedClick() {
-      if (this.isUserWalletConnected) {
-        this.handleTradeClickedTrack()
+      this.handleTradeClickedTrack()
 
+      if (this.isUserWalletConnected) {
         this.$router.push({
           name: 'perpetuals-perpetual',
           params: {
