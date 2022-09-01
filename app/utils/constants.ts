@@ -31,8 +31,6 @@ export const APP_SENTRY_HTTP_ENDPOINT: string =
   process.env.APP_SENTRY_HTTP_ENDPOINT || ''
 export const APP_CHRONOS_API_ENDPOINT: string =
   process.env.APP_CHRONOS_API_ENDPOINT || ''
-export const HELIX_APP_REDIRECTION: boolean =
-  process.env.HELIX_APP_REDIRECTION === 'true'
 
 export const UI_DEFAULT_MIN_DISPLAY_DECIMALS = 2
 export const UI_DEFAULT_DISPLAY_DECIMALS = 4
