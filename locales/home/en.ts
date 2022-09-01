@@ -74,6 +74,18 @@ export default {
     change24h: 'Change (24H)'
   },
 
+  newsLetter: {
+    title: 'Subscribe to Helix newsletter',
+    emailAddress: 'Email address',
+    subscribe: 'Subscribe',
+    disclaimer: 'Disclaimer',
+    privacyPolicy: 'Privacy Policy',
+    termsAndCondition: 'Terms and Conditions',
+    subscribeToast: "You've successfully subscribed to our newsletter!",
+    disclaimerMessage:
+      'By subscribing, you agree to the {termsAndCondition}, have read the {privacyPolicy} and acknowledge that you have read and understand the {disclaimer}.'
+  },
+
   footer: {
     resources: 'Resources',
     analytics: 'Analytics',
@@ -86,8 +98,6 @@ export default {
     apiDocumentation: 'API Documentation',
     community: 'Community',
     helixProvides:
-      '*Note: Helix is able to provide maker rebates across a number of markets as approved via the Injective DAO.',
-    disclaimer:
-      'By subscribing, you agree to the {termsAndCondition}, have read the {privacyPolicy} and acknowledge that you have read and understand the {disclaimer}.' // todo: remove on helix launch
+      '*Note: Helix is able to provide maker rebates across a number of markets as approved via the Injective DAO.'
   }
 }
