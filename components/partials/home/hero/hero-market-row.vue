@@ -128,6 +128,10 @@ export default Vue.extend({
   },
 
   computed: {
+    marketsHistory(): UiMarketHistory[] {
+      return this.$accessor.exchange.marketsHistory
+    },
+
     feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
       return this.$accessor.exchange.feeDiscountAccountInfo
     },
@@ -142,10 +146,6 @@ export default Vue.extend({
       return new BigNumberInBase(
         feeDiscountAccountInfo.tierLevel || 0
       ).toNumber()
-    },
-
-    marketsHistory(): UiMarketHistory[] {
-      return this.$accessor.exchange.marketsHistory
     },
 
     lastTradedPriceTextColorClass(): Record<string, boolean> | string {

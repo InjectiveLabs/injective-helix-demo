@@ -116,6 +116,10 @@ export default Vue.extend({
 
   methods: {
     handleCosmoverseGiveawayCampaignTrack() {
+      if (!this.$route.query.utm_source) {
+        return
+      }
+
       this.$amplitude.track(AmplitudeEvents.CosmoverseGiveawayCampaign, {
         utm_source: this.$route.query.utm_source,
         utm_medium: this.$route.query.utm_medium,
