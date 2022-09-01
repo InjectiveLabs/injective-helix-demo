@@ -166,7 +166,7 @@ export default Vue.extend({
         return []
       }
 
-      if (type.executionType) {
+      if (!type.executionType) {
         return []
       }
 
