@@ -778,13 +778,17 @@ export default Vue.extend({
       this.inputPrice = formattedPrice
       this.$emit('update:price', formattedPrice)
 
-      if (hasAmount && averagePriceOption === AveragePriceOptions.Percentage) {
+      if (!hasAmount) {
+        return
+      }
+
+      if (averagePriceOption === AveragePriceOptions.Percentage) {
         this.$percentageOptions.updateBaseAmountBasedOnPercentage()
         this.$percentageOptions.updateQuoteAmountBasedOnPercentage()
         return
       }
 
-      if (hasAmount && averagePriceOption === AveragePriceOptions.BaseAmount) {
+      if (averagePriceOption === AveragePriceOptions.BaseAmount) {
         if (tradingTypeStopLimit && triggerPriceToBigNumber.lte(0)) {
           return
         }
@@ -794,7 +798,7 @@ export default Vue.extend({
           : this.updateDerivativesQuoteAmountFromBase()
       }
 
-      if (hasAmount && averagePriceOption === AveragePriceOptions.QuoteAmount) {
+      if (averagePriceOption === AveragePriceOptions.QuoteAmount) {
         return isSpot
           ? this.updateSpotBaseAmountFromQuote()
           : this.updateDerivativesBaseAmountFromQuote()
