@@ -28,6 +28,7 @@ jobs:
       GEO_IP_RESTRICTIONS_ENABLED: true
       SHOW_AUCTION_COUNTDOWN: false
       REFERRALS_ENABLED: false
+      HELIX_APP_REDIRECTION: true
 
       ## Endpoints
       APP_EXCHANGE_API_ENDPOINT: ''
@@ -105,6 +106,7 @@ jobs:
       SHOW_AUCTION_COUNTDOWN: false
       PRICE_BAND_ENABLED: false
       REFERRALS_ENABLED: true
+      HELIX_APP_REDIRECTION: false
 
       ## Endpoints
       APP_EXCHANGE_API_ENDPOINT: ''
@@ -180,6 +182,7 @@ jobs:
       GEO_IP_RESTRICTIONS_ENABLED: false
       SHOW_AUCTION_COUNTDOWN: false
       REFERRALS_ENABLED: false
+      HELIX_APP_REDIRECTION: false
 
       ## Endpoints
       APP_EXCHANGE_API_ENDPOINT: ''

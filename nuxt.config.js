@@ -119,7 +119,7 @@ export default {
 
   router: {
     linkActiveClass: 'is-active',
-    middleware: ['maintenance', 'connected'],
+    middleware: ['maintenance', 'connected', 'helix-app-redirection'],
     extendRoutes(routes) {
       return [
         ...routes,

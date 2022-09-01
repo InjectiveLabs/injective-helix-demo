@@ -1,6 +1,10 @@
 <template>
-  <div id="pro" class="w-full h-full min-h-screen bg-gray-1050 relative">
-    <transition name="page" appear>
+  <div id="pro" class="w-full h-full min-h-screen relative">
+    <div v-if="HELIX_APP_REDIRECTION">
+      <nuxt />
+    </div>
+
+    <transition v-else name="page" appear>
       <HocLoading :status="status">
         <div>
           <SidebarMobile
@@ -37,7 +41,10 @@ import TopBar from '~/components/layout/topbar.vue'
 import SidebarMobile from '~/components/layout/sidebar-mobile.vue'
 import ModalAuctionCountdown from '~/components/partials/modals/auction-countdown.vue'
 import ModalInsufficientInjForGas from '~/components/partials/modals/insufficient-inj-for-gas.vue'
-import { SHOW_AUCTION_COUNTDOWN } from '~/app/utils/constants'
+import {
+  HELIX_APP_REDIRECTION,
+  SHOW_AUCTION_COUNTDOWN
+} from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -50,9 +57,10 @@ export default Vue.extend({
 
   data() {
     return {
+      HELIX_APP_REDIRECTION,
       SHOW_AUCTION_COUNTDOWN,
       isOpenSidebar: false,
-      status: new Status(StatusType.Loading)
+      status: new Status(StatusType.Idle)
     }
   },
 
@@ -60,47 +68,53 @@ export default Vue.extend({
     showFooter(): boolean {
       const { $route } = this
 
-      return ['index', 'portfolio', 'markets', 'fee-discounts'].includes($route.name as string)
+      return ['index', 'portfolio', 'markets', 'fee-discounts'].includes(
+        $route.name as string
+      )
     }
   },
 
   mounted() {
-    Promise.all([this.$accessor.wallet.init()])
-      .then(() => {
+    if (!HELIX_APP_REDIRECTION) {
+      this.status.setLoading()
+
+      Promise.all([this.$accessor.wallet.init()])
+        .then(() => {
+          //
+        })
+        .catch(this.$onRejected)
+        .finally(() => {
+          this.status.setIdle()
+        })
+
+      Promise.all([
+        this.$accessor.app.init(),
+        this.$accessor.bank.init(),
+        this.$accessor.account.init()
+      ])
+        .then(() => {
+          //
+        })
+        .catch(this.$onRejected)
+
+      // Actions that should't block the app from loading
+      Promise.all([
+        this.$accessor.app.fetchGasPrice(),
+        this.$accessor.referral.init(),
+        this.$accessor.exchange.initFeeDiscounts()
+      ]).then(() => {
         //
       })
-      .catch(this.$onRejected)
-      .finally(() => {
-        this.status.setIdle()
-      })
 
-    Promise.all([
-      this.$accessor.app.init(),
-      this.$accessor.bank.init(),
-      this.$accessor.account.init()
-    ])
-      .then(() => {
-        //
-      })
-      .catch(this.$onRejected)
+      this.onLoadMarketsInit()
 
-    // Actions that should't block the app from loading
-    Promise.all([
-      this.$accessor.app.fetchGasPrice(),
-      this.$accessor.referral.init(),
-      this.$accessor.exchange.initFeeDiscounts()
-    ]).then(() => {
-      //
-    })
+      if (SHOW_AUCTION_COUNTDOWN) {
+        this.$accessor.auction.fetchAuctionModuleState()
+      }
 
-    this.onLoadMarketsInit()
-
-    if (SHOW_AUCTION_COUNTDOWN) {
-      this.$accessor.auction.fetchAuctionModuleState()
+      this.$root.$on('wallet-connected', this.handleWalletConnected)
+      this.$root.$on('nav-link-clicked', this.onCloseSideBar)
     }
-
-    this.$root.$on('wallet-connected', this.handleWalletConnected)
-    this.$root.$on('nav-link-clicked', this.onCloseSideBar)
   },
 
   beforeDestroy() {

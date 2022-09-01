@@ -172,6 +172,7 @@ module.exports = {
       },
 
       fontFamily: {
+        inter: ['Inter', ...defaultTheme.fontFamily.sans],
         sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
         serif: ['Droid Sans', ...defaultTheme.fontFamily.serif],
         mono: ['Fira Mono', ...defaultTheme.fontFamily.mono]
