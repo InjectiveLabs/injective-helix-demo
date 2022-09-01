@@ -10,10 +10,8 @@
             :alt="market.baseToken.name"
             class="w-4 h-4 md:w-6 md:h-6 mr-3"
           />
-          <div
-            class="text-left text-helixGray-500 text-sm font-bold whitespace-nowrap"
-          >
-            <div class="flex leading-4">
+          <div class="text-left text-helixGray-500 text-sm whitespace-nowrap">
+            <div class="flex leading-4 font-bold">
               {{ market.ticker }}
             </div>
             <p class="text-helixGray-300 text-xs leading-3.5">
@@ -23,7 +21,9 @@
         </div>
       </div>
       <div class="col-span-3 flex">
-        <span class="w-full text-gray-900 font-medium text-sm text-right">
+        <span
+          class="w-full text-gray-900 font-medium text-sm text-right font-mono"
+        >
           <div class="flex align-center justify-end">
             <IconArrow
               v-if="!lastTradedPrice.isNaN() && !useDefaultLastTradedPriceColor"
@@ -43,7 +43,7 @@
           </div>
         </span>
       </div>
-      <div class="col-span-2 flex">
+      <div class="col-span-2 flex font-mono">
         <span
           v-if="!change.isNaN()"
           :class="change.gte(0) ? 'text-green-500' : 'text-red-500'"
@@ -59,7 +59,7 @@
           :color="chartLineColor"
           :bg-type="'transparent'"
           :stroke-width="1"
-          :smoothness="0.2"
+          :smoothness="0.05"
           :padding="chartPadding"
         />
       </div>

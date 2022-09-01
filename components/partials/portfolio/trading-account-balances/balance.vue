@@ -27,7 +27,7 @@
           </div>
         </div>
       </span>
-      <span class="font-mono text-left xl:hidden">
+      <span class="text-left xl:hidden">
         {{ $t('portfolio.total') }}
       </span>
       <span
@@ -37,7 +37,7 @@
         <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
         <span v-else>{{ totalBalanceToString }}</span>
       </span>
-      <span class="font-mono text-left xl:hidden">
+      <span class="text-left xl:hidden">
         {{ $t('portfolio.available') }}
       </span>
       <span

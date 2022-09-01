@@ -1,16 +1,19 @@
 <template>
   <li class="flex items-start">
-    <div class="flex items-center mr-4" :class="[lg ? 'w-12 h-12' : 'w-8 h-8']">
+    <div
+      class="flex items-center mr-4 pt-2"
+      :class="[lg ? 'w-12 h-12' : 'w-8 h-8']"
+    >
       <slot></slot>
     </div>
-    <div class="font-medium text-sm">
+    <div class="font-mono">
       <p
-        :class="[lg ? 'text-base mb-2' : 'text-xs']"
+        :class="[lg ? 'text-base' : 'text-xs']"
         data-cy="wallet-connected-popper-wallet-address-text-content"
       >
         {{ formattedAddress }}
       </p>
-      <div class="inline-block">
+      <div class="inline-block mt-2">
         <div
           class="flex items-center bg-aqua-600 bg-opacity-10 w-auto p-1 rounded"
         >

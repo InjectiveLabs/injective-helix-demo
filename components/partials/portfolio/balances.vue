@@ -79,8 +79,12 @@
             <span v-if="status.isLoading()">&mdash; USD</span>
             <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
             <span v-else>
-              {{ $t('common.available') }}
-              {{ totalTradingAccountAvailableBalancesToString }} USD
+              <span class="text-gray-500 text-xs uppercase tracking-wider">{{
+                $t('common.available')
+              }}</span>
+              <span class="font-mono">
+                {{ totalTradingAccountAvailableBalancesToString }} USD
+              </span>
             </span>
           </p>
         </div>
