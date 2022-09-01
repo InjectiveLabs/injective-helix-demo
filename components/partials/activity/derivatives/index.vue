@@ -124,6 +124,7 @@ export default Vue.extend({
 
   mounted() {
     this.$accessor.derivatives.streamSubaccountOrders()
+    this.$accessor.derivatives.streamSubaccountOrderHistory()
     this.$accessor.derivatives.streamTrades()
   },
 

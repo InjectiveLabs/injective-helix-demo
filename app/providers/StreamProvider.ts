@@ -11,6 +11,7 @@ type StreamFn =
   | typeof derivativesMarketStream.streamDerivativeMarket
   | typeof derivativesMarketStream.streamDerivativeOrderbook
   | typeof derivativesMarketStream.streamDerivativeOrders
+  | typeof derivativesMarketStream.streamDerivativeOrderHistory
   | typeof derivativesMarketStream.streamDerivativePositions
   | typeof derivativesMarketStream.streamDerivativeTrades
   | typeof spotMarketStream.streamSpotOrderbook

@@ -134,6 +134,7 @@ export enum StreamType {
   SpotSubaccountOrders = 'spot-subaccount-orders',
   SpotSubaccountTrades = 'spot-subaccount-trades',
   DerivativesSubaccountOrders = 'derivatives-subaccount-orders',
+  DerivativesSubaccountOrderHistory = 'derivatives-subaccount-order-history',
   DerivativesSubaccountTrades = 'derivatives-subaccount-trades',
   DerivativesSubaccountPositions = 'derivatives-positions-trades',
   DerivativesOrderbook = 'derivatives-orderbook',

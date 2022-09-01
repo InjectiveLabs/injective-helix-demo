@@ -44,6 +44,7 @@ import {
   streamOrderbook,
   streamTrades,
   streamSubaccountOrders,
+  streamSubaccountOrderHistory,
   streamSubaccountTrades,
   streamMarketMarkPrice
 } from '~/app/client/streams/derivatives'
@@ -740,6 +741,8 @@ export const actions = actionTree(
       streamSubaccountOrders({
         subaccountId: subaccount.subaccountId,
         callback: ({ order }) => {
+          console.log('orders stream:', order)
+
           if (!order) {
             return
           }
@@ -756,10 +759,6 @@ export const actions = actionTree(
             case DerivativeOrderState.Unfilled:
             case DerivativeOrderState.PartialFilled: {
               commit(
-                'pushOrUpdateSubaccountOrderHistory',
-                orderToOrderHistory(order)
-              )
-              commit(
                 isConditional
                   ? 'pushOrUpdateSubaccountConditionalOrder'
                   : 'pushOrUpdateSubaccountOrder',
@@ -769,13 +768,46 @@ export const actions = actionTree(
             }
             case DerivativeOrderState.Canceled:
             case DerivativeOrderState.Filled: {
-              commit('updateSubaccountOrderHistory', orderToOrderHistory(order))
               commit(
                 isConditional
                   ? 'deleteSubaccountConditionalOrder'
                   : 'deleteSubaccountOrder',
                 order
               )
+              break
+            }
+          }
+        }
+      })
+    },
+
+    streamSubaccountOrderHistory({ commit }) {
+      const { subaccount } = this.app.$accessor.account
+      const { isUserWalletConnected } = this.app.$accessor.wallet
+
+      if (!isUserWalletConnected || !subaccount) {
+        return
+      }
+
+      streamSubaccountOrderHistory({
+        subaccountId: subaccount.subaccountId,
+        callback: ({ order }) => {
+          console.log('order history stream:', order, commit)
+
+          if (!order) {
+            return
+          }
+
+          switch (order.state) {
+            case DerivativeOrderState.Booked:
+            case DerivativeOrderState.Unfilled:
+            case DerivativeOrderState.PartialFilled: {
+              commit('pushOrUpdateSubaccountOrderHistory', order)
+              break
+            }
+            case DerivativeOrderState.Canceled:
+            case DerivativeOrderState.Filled: {
+              commit('updateSubaccountOrderHistory', order)
               break
             }
           }

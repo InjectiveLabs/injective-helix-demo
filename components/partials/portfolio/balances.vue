@@ -444,7 +444,8 @@ export default Vue.extend({
       // set up streaming
       this.$accessor.account.streamSubaccountBalances(),
       this.$accessor.positions.streamSubaccountPositions(),
-      this.$accessor.derivatives.streamSubaccountOrders()
+      this.$accessor.derivatives.streamSubaccountOrders(),
+      this.$accessor.derivatives.streamSubaccountOrderHistory()
     ])
       .then(() => {
         //
