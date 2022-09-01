@@ -602,7 +602,7 @@ export default Vue.extend({
       handler(newPrice: BigNumberInBase) {
         const { price, market, tradingTypeStopLimit } = this
 
-        const hasNoInputPrice = new BigNumberInBase(price).eq(0)
+        const hasNoInputPrice = new BigNumberInBase(price).lte(0) || !price
         const hasLatestLastTradedPrice = newPrice.gt('0')
 
         if (!market || tradingTypeStopLimit) {
