@@ -13,26 +13,31 @@
         <IconStarBorder v-else class="min-w-6 w-6 h-6" />
       </div>
 
-      <nuxt-link class="cursor-pointer flex items-center" :to="marketRoute">
-        <img
-          :src="baseTokenLogo"
-          :alt="market.baseToken.name"
-          class="w-6 h-6 mr-3 hidden 3md:block"
-        />
-        <div class="flex flex-col">
-          <span
-            class="tracking-wider font-bold mb-1"
-            data-cy="markets-ticker-name-table-data"
-            >{{ market.ticker }}
-          </span>
-          <span class="text-gray-500 text-xs hidden md:block">
-            {{ market.baseToken.name }}
-          </span>
-          <span class="text-gray-500 text-xs sm:hidden tracking-wide mt-1">
-            {{ $t('markets.vol') }} {{ abbreviatedVolumeInUsdToFormat }} USD
-          </span>
+      <nuxt-link :to="marketRoute">
+        <div
+          class="cursor-pointer flex items-center"
+          @click="handleTradeClickedTrack"
+        >
+          <img
+            :src="baseTokenLogo"
+            :alt="market.baseToken.name"
+            class="w-6 h-6 mr-3 hidden 3md:block"
+          />
+          <div class="flex flex-col">
+            <span
+              class="tracking-wider font-bold mb-1"
+              data-cy="markets-ticker-name-table-data"
+              >{{ market.ticker }}
+            </span>
+            <span class="text-gray-500 text-xs hidden md:block">
+              {{ market.baseToken.name }}
+            </span>
+            <span class="text-gray-500 text-xs sm:hidden tracking-wide mt-1">
+              {{ $t('markets.vol') }} {{ abbreviatedVolumeInUsdToFormat }} USD
+            </span>
 
-          <v-powered-by v-if="isBaycWeth" class="mt-1.5" />
+            <v-powered-by v-if="isBaycWeth" class="mt-1.5" />
+          </div>
         </div>
       </nuxt-link>
     </span>
@@ -117,7 +122,9 @@
         data-cy="markets-trade-link"
         :to="marketRoute"
       >
-        {{ $t('trade.trade') }}
+        <div @click="handleTradeClickedTrack">
+          {{ $t('trade.trade') }}
+        </div>
       </nuxt-link>
 
       <div
@@ -143,7 +150,10 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
+import { Identify, identify } from '@amplitude/analytics-browser'
 import {
+  MarketType,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   ZERO_IN_BASE,
@@ -157,9 +167,10 @@ import {
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
 import VPoweredBy from '~/components/partials/markets/powered-by.vue'
-import { Change, MarketRoute } from '~/types'
+import { AmplitudeEvents, Change, MarketRoute, TradeClickOrigin } from '~/types'
 import { betaMarketSlugs } from '~/app/data/market'
 import { getAbbreviatedVolume, getMarketRoute } from '~/app/utils/market'
+import { AMPLITUDE_VIP_TIER_LEVEL } from '~/app/utils/vendor'
 
 export default Vue.extend({
   components: {
@@ -194,6 +205,22 @@ export default Vue.extend({
   computed: {
     favoriteMarkets(): string[] {
       return this.$accessor.app.favoriteMarkets
+    },
+
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
+    },
+
+    tierLevel(): number {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return 0
+      }
+
+      return new BigNumberInBase(
+        feeDiscountAccountInfo.tierLevel || 0
+      ).toNumber()
     },
 
     lastTradedPrice(): BigNumberInBase {
@@ -330,6 +357,29 @@ export default Vue.extend({
       const { market } = this
 
       this.$accessor.app.updateFavoriteMarkets(market.marketId)
+    },
+
+    handleTradeClickedTrack() {
+      if (
+        !this.marketRoute.params ||
+        (!this.marketRoute.params.spot && !this.marketRoute.params.perpetual)
+      ) {
+        return
+      }
+
+      const identifyObj = new Identify()
+      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
+      identify(identifyObj)
+
+      this.$amplitude.track(AmplitudeEvents.TradeClicked, {
+        market: this.marketRoute.params.spot
+          ? this.marketRoute.params.spot
+          : this.marketRoute.params.perpetual,
+        marketType: this.marketRoute.params.spot
+          ? MarketType.Spot
+          : MarketType.Perpetual,
+        origin: TradeClickOrigin.MarketsPage
+      })
     }
   }
 })

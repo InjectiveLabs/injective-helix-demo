@@ -48,6 +48,7 @@
         }"
       >
         {{ `< ${UI_MINIMAL_AMOUNT.toFormat(6)}` }}
+        <span class="text-gray-500">{{ market.quoteToken.symbol }}</span>
       </span>
     </td>
   </tr>

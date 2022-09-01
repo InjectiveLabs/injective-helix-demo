@@ -1,13 +1,11 @@
 <template>
-  <div
-    class="col-span-12 lg:col-span-5 3xl:col-span-5 4xl:col-span-6 flex flex-col sm:block"
-  >
+  <div class="flex flex-col sm:block">
     <div class="flex items-center justify-start mb-8">
       <Logo class="w-auto h-6" alt="Helix" />
       <LogoText class="block ml-2 h-6 text-gray-900" />
     </div>
     <h1
-      class="text-gray-900 font-bold text-[36px] leading-[58px] sm:text-5xl sm:leading-[60px] 3xl:leading-[77px] 3xl:text-[64px] mb-8"
+      class="text-gray-900 font-bold text-[36px] leading-[58px] sm:text-5xl sm:leading-[60px] 3xl:leading-[72px] 3xl:text-[60px] 4xl:leading-[77px] 4xl:text-[64px] mb-8"
     >
       {{ $t('home.title') }}
     </h1>
@@ -55,8 +53,14 @@
 </template>
 <script lang="ts">
 import Vue from 'vue'
-import Logo from '~/components/elements/logo.vue'
+import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
+import { Identify, identify } from '@amplitude/analytics-browser'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import LogoText from '~/components/elements/logo-text.vue'
+import Logo from '~/components/elements/logo.vue'
+import { AmplitudeEvents, DefaultMarket, TradeClickOrigin } from '~/types'
+import { AMPLITUDE_VIP_TIER_LEVEL } from '~/app/utils/vendor'
 
 export default Vue.extend({
   components: {
@@ -67,11 +71,29 @@ export default Vue.extend({
   computed: {
     isUserWalletConnected() {
       return this.$accessor.wallet.isUserWalletConnected
+    },
+
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
+    },
+
+    tierLevel(): number {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return 0
+      }
+
+      return new BigNumberInBase(
+        feeDiscountAccountInfo.tierLevel || 0
+      ).toNumber()
     }
   },
 
   methods: {
     handleGetStartedClick() {
+      this.handleTradeClickedTrack()
+
       if (this.isUserWalletConnected) {
         this.$router.push({
           name: 'perpetuals-perpetual',
@@ -80,6 +102,18 @@ export default Vue.extend({
       } else {
         this.$root.$emit('wallet-clicked')
       }
+    },
+
+    handleTradeClickedTrack() {
+      const identifyObj = new Identify()
+      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
+      identify(identifyObj)
+
+      this.$amplitude.track(AmplitudeEvents.TradeClicked, {
+        market: DefaultMarket.Perpetual,
+        marketType: MarketType.Perpetual,
+        origin: TradeClickOrigin.Lander
+      })
     }
   }
 })

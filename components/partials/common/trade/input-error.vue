@@ -260,10 +260,6 @@ export default Vue.extend({
         return this.priceHighDeviationFromMidOrderbookPrice
       }
 
-      if (this.triggerPriceEqualsZero) {
-        return this.triggerPriceEqualsZero
-      }
-
       if (this.triggerPriceEqualsMarkPrice) {
         return this.triggerPriceEqualsMarkPrice
       }
@@ -285,22 +281,6 @@ export default Vue.extend({
 
       return {
         price: this.$t('trade.trigger_price_equals_mark_price')
-      }
-    },
-
-    triggerPriceEqualsZero(): TradeError | undefined {
-      const { tradingTypeMarket, tradingTypeLimit, triggerPrice } = this
-
-      if (tradingTypeMarket || tradingTypeLimit) {
-        return
-      }
-
-      if (triggerPrice === undefined || triggerPrice.gt(ZERO_IN_BASE)) {
-        return
-      }
-
-      return {
-        price: this.$t('trade.trigger_price_zero')
       }
     },
 
@@ -481,10 +461,22 @@ export default Vue.extend({
         executionPrice,
         worstPrice,
         amount,
-        isSpot
+        isSpot,
+        triggerPrice
       } = this
 
-      if (isSpot || !market || !hasPrice || !hasAmount) {
+      const hasTriggerPrice =
+        triggerPrice !== undefined && new BigNumberInBase(triggerPrice).gt(0)
+
+      if (!hasAmount || !market || isSpot) {
+        return undefined
+      }
+
+      if (!hasPrice && !tradingTypeStopMarket) {
+        return undefined
+      }
+
+      if (!hasTriggerPrice && tradingTypeStopMarket) {
         return undefined
       }
 
@@ -608,7 +600,8 @@ export default Vue.extend({
         worstPrice,
         amount,
         isSpot,
-        tradingTypeMarket
+        tradingTypeMarket,
+        tradingTypeStopMarket
       } = this
 
       if (
@@ -630,7 +623,7 @@ export default Vue.extend({
         return undefined
       }
 
-      const useExecutionPrice = !tradingTypeMarket
+      const useExecutionPrice = !tradingTypeMarket && !tradingTypeStopMarket
       const price = useExecutionPrice ? executionPrice : worstPrice
       const notionalWithLeverageBasedOnMarketType = useExecutionPrice
         ? notionalWithLeverage

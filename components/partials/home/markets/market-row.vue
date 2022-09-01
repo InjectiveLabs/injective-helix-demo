@@ -1,44 +1,44 @@
 <template>
-  <nuxt-link :to="marketRoute">
+  <nuxt-link :to="marketRoute" class="block min-w-3xl lg:min-w-[912px]">
     <div
-      class="grid grid-cols-12 items-center py-2.5 gap-12 box-content min-w-[912px]"
+      class="grid grid-cols-12 items-center py-4 gap-12 box-content"
+      @click="handleTradeClickedTrack"
     >
-      <div class="col-span-2 flex items-center justify-start pl-4">
+      <div
+        class="col-span-3 lg:col-span-2 flex items-center justify-start pl-4"
+      >
         <div class="flex items-center justify-start">
           <img
             :src="baseTokenLogo"
             :alt="market.baseToken.name"
-            class="w-4 h-4 md:w-6 md:h-6 mr-4"
+            class="w-4 h-4 md:w-6 md:h-6 mr-3"
           />
-          <div
-            class="mr-4 text-left text-helixGray-500 text-sm font-bold whitespace-nowrap mb-1"
-          >
-            <div class="flex">
+          <div class="text-left text-helixGray-500 text-sm whitespace-nowrap">
+            <div class="flex leading-4 font-bold">
               {{ market.ticker }}
             </div>
-            <span class="text-helixGray-300 text-xs">
+            <p class="text-helixGray-300 text-xs leading-3.5">
               {{ market.baseToken.name }}
-            </span>
+            </p>
           </div>
         </div>
       </div>
       <div class="col-span-2 flex">
-        <span class="w-full text-gray-900 font-medium text-sm text-right">
+        <span
+          class="w-full text-gray-900 font-medium text-sm font-mono text-right"
+        >
           <div class="flex align-center justify-end">
             <IconArrow
-              v-if="!lastTradedPrice.isNaN()"
+              v-if="!lastTradedPrice.isNaN() && !useDefaultLastTradedPriceColor"
               class="transform w-3 h-3 mr-1 mt-1"
               :class="{
-                'text-green-500 rotate-90': lastPriceChange !== Change.Decrease,
+                'text-green-500 rotate-90': lastPriceChange === Change.Increase,
                 'text-red-500 -rotate-90': lastPriceChange === Change.Decrease
               }"
             />
             <span
               v-if="!lastTradedPrice.isNaN()"
-              :class="{
-                'text-green-500': lastPriceChange !== Change.Decrease,
-                'text-red-500': lastPriceChange === Change.Decrease
-              }"
+              :class="lastTradedPriceTextColorClass"
             >
               {{ lastTradedPriceToFormat }}
             </span>
@@ -50,7 +50,7 @@
         <span
           v-if="!change.isNaN()"
           :class="change.gte(0) ? 'text-green-500' : 'text-red-500'"
-          class="w-full text-right"
+          class="w-full text-right font-mono"
         >
           {{ changeToFormat }}%
         </span>
@@ -61,14 +61,15 @@
           <LineGraph
             v-if="chartData.length > 1"
             :data="chartData"
-            :color="'#f3164d'"
+            :color="chartLineColor"
             :bg-type="'transparent'"
             :stroke-width="1"
-            :smoothness="0.2"
+            :smoothness="0.05"
+            :padding="chartPadding"
           />
         </HocLoading>
       </div>
-      <div class="col-span-3 align-center justify-self-center">
+      <div class="col-span-2 lg:col-span-3 align-center justify-self-center">
         <VButton primary-outline-light md class="rounded">Trade</VButton>
       </div>
     </div>
@@ -79,8 +80,11 @@
 import Vue, { PropType } from 'vue'
 // @ts-ignore
 import { LineGraph } from 'vue-plot'
+import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
+import { Identify, identify } from '@amplitude/analytics-browser'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
+  MarketType,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiMarketHistory,
@@ -94,12 +98,13 @@ import {
   MARKETS_HISTORY_CHART_SEVEN_DAYS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
-import { Change, MarketRoute } from '~/types'
+import { AmplitudeEvents, Change, MarketRoute, TradeClickOrigin } from '~/types'
 import { betaMarketSlugs } from '~/app/data/market'
 import {
   getMarketRoute,
   getFormattedMarketsHistoryChartData
 } from '~/app/utils/market'
+import { AMPLITUDE_VIP_TIER_LEVEL } from '~/app/utils/vendor'
 
 export default Vue.extend({
   components: {
@@ -123,13 +128,49 @@ export default Vue.extend({
   data() {
     return {
       Change,
-      status: new Status(StatusType.Loading)
+      status: new Status(StatusType.Loading),
+      chartPadding: {
+        top: 4,
+        right: 10,
+        bottom: 4,
+        left: 10
+      },
+      useDefaultLastTradedPriceColor: true
     }
   },
 
   computed: {
     marketsHistory(): UiMarketHistory[] {
       return this.$accessor.exchange.marketsHistory
+    },
+
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
+    },
+
+    tierLevel(): number {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return 0
+      }
+
+      return new BigNumberInBase(
+        feeDiscountAccountInfo.tierLevel || 0
+      ).toNumber()
+    },
+
+    lastTradedPriceTextColorClass(): Record<string, boolean> | string {
+      const { lastPriceChange, useDefaultLastTradedPriceColor } = this
+
+      if (useDefaultLastTradedPriceColor) {
+        return 'text-helixGray-500'
+      }
+
+      return {
+        'text-green-500': lastPriceChange !== Change.Decrease,
+        'text-red-500': lastPriceChange === Change.Decrease
+      }
     },
 
     chartData(): number[][] {
@@ -160,6 +201,29 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(summary.price)
+    },
+
+    chartLineColor(): string {
+      const { chartData } = this
+
+      const minimumChartDataPoints = 2
+
+      if (chartData.length < minimumChartDataPoints) {
+        return ''
+      }
+
+      const [firstChartDataPoint] = chartData
+      const lastChartDataPointPosition = new BigNumberInBase(chartData.length)
+        .minus(1)
+        .toNumber()
+      const [, firstYaxisHolcPrice] = firstChartDataPoint
+      const [, lastYAxisHolcPrice] = chartData[lastChartDataPointPosition]
+      const positiveChangeColor = '#0EE29B'
+      const negativeChangeColor = '#F3164D'
+
+      return new BigNumberInBase(lastYAxisHolcPrice).gte(firstYaxisHolcPrice)
+        ? positiveChangeColor
+        : negativeChangeColor
     },
 
     lastTradedPriceToFormat(): string {
@@ -253,6 +317,16 @@ export default Vue.extend({
     }
   },
 
+  watch: {
+    lastPriceChange(status) {
+      if (status === Change.NoChange) {
+        return
+      }
+
+      this.updateLastPriceChangeColor()
+    }
+  },
+
   mounted() {
     Promise.all([
       this.$accessor.exchange.getMarketsHistory({
@@ -268,6 +342,39 @@ export default Vue.extend({
       .finally(() => {
         this.status.setIdle()
       })
+  },
+
+  methods: {
+    updateLastPriceChangeColor() {
+      this.useDefaultLastTradedPriceColor = false
+
+      setTimeout(() => {
+        this.useDefaultLastTradedPriceColor = true
+      }, 3000)
+    },
+
+    handleTradeClickedTrack() {
+      if (
+        !this.marketRoute.params ||
+        (!this.marketRoute.params.spot && !this.marketRoute.params.perpetual)
+      ) {
+        return
+      }
+
+      const identifyObj = new Identify()
+      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
+      identify(identifyObj)
+
+      this.$amplitude.track(AmplitudeEvents.TradeClicked, {
+        market: this.marketRoute.params.spot
+          ? this.marketRoute.params.spot
+          : this.marketRoute.params.perpetual,
+        marketType: this.marketRoute.params.spot
+          ? MarketType.Spot
+          : MarketType.Perpetual,
+        origin: TradeClickOrigin.Lander
+      })
+    }
   }
 })
 </script>

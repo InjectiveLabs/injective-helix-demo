@@ -1,17 +1,18 @@
 <template>
   <div class="h-full flex flex-col">
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-4 overflow-x-auto hide-scrollbar">
       <TabSelectorItem
         v-model="component"
         data-cy="activity-derivative-orders-link"
         :option="components.orders"
       >
         <div class="flex items-center gap-1">
-          <span>{{ $t('activity.openOrders') }}</span>
-          <portal-target
-            name="activity-tab-derivative-orders-count"
-            data-cy="activity-derivative-orders-link-count"
-          />
+          <span class="whitespace-nowrap">
+            {{ $t('activity.openOrders') }}
+          </span>
+          <span data-cy="activity-derivative-orders-link-count">
+            ({{ totalOrderCount }})
+          </span>
         </div>
       </TabSelectorItem>
 
@@ -23,11 +24,12 @@
         :option="components.triggers"
       >
         <div class="flex items-center gap-1">
-          <span>{{ $t('activity.triggers') }}</span>
-          <!-- <portal-target
-            name="activity-tab-derivative-triggers-count"
-            data-cy="activity-derivative-orders-link-count"
-          /> -->
+          <span class="whitespace-nowrap">
+            {{ $t('activity.triggers') }}
+          </span>
+          <span data-cy="activity-derivative-orders-link-count">
+            ({{ totalTriggerCount }})
+          </span>
         </div>
       </TabSelectorItem>
 
@@ -39,7 +41,9 @@
         :option="components.orderHistory"
       >
         <div class="flex items-center gap-1">
-          <span>{{ $t('activity.orderHistory') }}</span>
+          <span class="whitespace-nowrap">
+            {{ $t('activity.orderHistory') }}
+          </span>
         </div>
       </TabSelectorItem>
 
@@ -51,12 +55,14 @@
         :option="components.trades"
       >
         <div class="flex items-center gap-1">
-          <span>{{ $t('activity.tradeHistory') }}</span>
+          <span class="whitespace-nowrap">
+            {{ $t('activity.tradeHistory') }}
+          </span>
         </div>
       </TabSelectorItem>
     </div>
 
-    <VCard md class="h-full mt-6">
+    <VCard md class="h-full mt-4 xs:mt-6">
       <Orders v-show="component === components.orders" />
       <Trades v-if="component === components.trades" />
       <Triggers v-if="component === components.triggers" />
@@ -96,9 +102,22 @@ export default Vue.extend({
     }
   },
 
+  computed: {
+    totalOrderCount(): number {
+      return this.$accessor.derivatives.subaccountOrdersPagination.total
+    },
+
+    totalTriggerCount(): number {
+      return this.$accessor.derivatives.subaccountConditionalOrdersPagination.total
+    }
+  },
+
   mounted() {
     this.$accessor.derivatives.streamSubaccountOrders()
+    this.$accessor.derivatives.streamSubaccountOrderHistory()
     this.$accessor.derivatives.streamTrades()
-  }
+  },
+
+  methods: {}
 })
 </script>

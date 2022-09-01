@@ -40,7 +40,7 @@
       <th>
         <div class="flex items-center justify-end">
           <span>{{ $t('trade.total') }}</span>
-          <IconInfoTooltip class="ml-2" :tooltip="$t('trade.total_tooltip')" />
+          <IconInfoTooltip class="ml-2" :tooltip="totalTooltip" />
         </div>
       </th>
     </tr>
@@ -51,6 +51,19 @@
 import Vue from 'vue'
 
 export default Vue.extend({
+  computed: {
+    isSpot(): boolean {
+      return this.$route.name === 'spot-spot'
+    },
+
+    totalTooltip(): string {
+      const { isSpot } = this
+
+      return isSpot
+        ? this.$t('trade.spotTradeHistoryTotalTooltip')
+        : this.$t('trade.total_tooltip')
+    }
+  }
   //
 })
 </script>

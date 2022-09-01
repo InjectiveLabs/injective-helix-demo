@@ -1,11 +1,6 @@
 <template>
   <div id="pro" class="w-full h-full min-h-screen bg-gray-900 relative">
-    <!-- Todo: remove on helix launch -->
-    <div v-if="IS_MAINNET">
-      <nuxt />
-    </div>
-
-    <transition v-else name="page" appear>
+    <transition name="page" appear>
       <HocLoading :status="status">
         <div>
           <SidebarMobile :is-sidebar-open="isOpenSidebar" />
@@ -43,7 +38,8 @@ import TopBar from '~/components/layout/topbar.vue'
 import SidebarMobile from '~/components/layout/sidebar-mobile.vue'
 import ModalAuctionCountdown from '~/components/partials/modals/auction-countdown.vue'
 import ModalInsufficientInjForGas from '~/components/partials/modals/insufficient-inj-for-gas.vue'
-import { IS_MAINNET, SHOW_AUCTION_COUNTDOWN } from '~/app/utils/constants'
+import { SHOW_AUCTION_COUNTDOWN } from '~/app/utils/constants'
+import { AmplitudeEvents } from '~/types/enums'
 
 export default Vue.extend({
   components: {
@@ -56,7 +52,6 @@ export default Vue.extend({
 
   data() {
     return {
-      IS_MAINNET,
       SHOW_AUCTION_COUNTDOWN,
       isOpenSidebar: false,
       status: new Status(StatusType.Loading)
@@ -74,44 +69,44 @@ export default Vue.extend({
   },
 
   mounted() {
-    if (!IS_MAINNET) {
-      Promise.all([this.$accessor.wallet.init()])
-        .then(() => {
-          //
-        })
-        .catch(this.$onRejected)
-        .finally(() => {
-          this.status.setIdle()
-        })
+    this.handleCosmoverseGiveawayCampaignTrack()
 
-      Promise.all([
-        this.$accessor.app.init(),
-        this.$accessor.bank.init(),
-        this.$accessor.account.init()
-      ])
-        .then(() => {
-          //
-        })
-        .catch(this.$onRejected)
-
-      // Actions that should't block the app from loading
-      Promise.all([
-        this.$accessor.app.fetchGasPrice(),
-        this.$accessor.referral.init(),
-        this.$accessor.exchange.initFeeDiscounts()
-      ]).then(() => {
+    Promise.all([this.$accessor.wallet.init()])
+      .then(() => {
         //
       })
+      .catch(this.$onRejected)
+      .finally(() => {
+        this.status.setIdle()
+      })
 
-      this.onLoadMarketsInit()
+    Promise.all([
+      this.$accessor.app.init(),
+      this.$accessor.bank.init(),
+      this.$accessor.account.init()
+    ])
+      .then(() => {
+        //
+      })
+      .catch(this.$onRejected)
 
-      if (SHOW_AUCTION_COUNTDOWN) {
-        this.$accessor.auction.fetchAuctionModuleState()
-      }
+    // Actions that should't block the app from loading
+    Promise.all([
+      this.$accessor.app.fetchGasPrice(),
+      this.$accessor.referral.init(),
+      this.$accessor.exchange.initFeeDiscounts()
+    ]).then(() => {
+      //
+    })
 
-      this.$root.$on('wallet-connected', this.handleWalletConnected)
-      this.$root.$on('nav-link-clicked', this.onCloseSideBar)
+    this.onLoadMarketsInit()
+
+    if (SHOW_AUCTION_COUNTDOWN) {
+      this.$accessor.auction.fetchAuctionModuleState()
     }
+
+    this.$root.$on('wallet-connected', this.handleWalletConnected)
+    this.$root.$on('nav-link-clicked', this.onCloseSideBar)
   },
 
   beforeDestroy() {
@@ -120,6 +115,18 @@ export default Vue.extend({
   },
 
   methods: {
+    handleCosmoverseGiveawayCampaignTrack() {
+      if (!this.$route.query.utm_source) {
+        return
+      }
+
+      this.$amplitude.track(AmplitudeEvents.CosmoverseGiveawayCampaign, {
+        utm_source: this.$route.query.utm_source,
+        utm_medium: this.$route.query.utm_medium,
+        utm_campaign: this.$route.query.utm_campaign
+      })
+    },
+
     onLoadMarketsInit() {
       this.$accessor.app.setMarketsLoadingState(StatusType.Loading)
 

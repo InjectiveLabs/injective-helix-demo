@@ -42,9 +42,7 @@ export const newMarketsSlug = [
   'osmo-usdt-perp',
   'dot-usdt',
   'stx-usdt-perp',
-  'xprt-usdt',
-  'evmos-usdt',
-  BAYC_WETH_PERP_SLUG
+  'xprt-usdt'
 ]
 
 export const experimentalMarketsSlug = [

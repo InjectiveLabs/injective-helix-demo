@@ -8,7 +8,9 @@
             :option="components.openPositions"
             data-cy="trading-page-open-positions-tab-button"
           >
-            <span class="uppercase text-xs font-semibold">
+            <span
+              class="uppercase text-xs font-semibold whitespace-nowrap overflow-ellipsis"
+            >
               {{ $t('activity.openPositions') }}
               {{ `(${filteredPositions.length})` }}
             </span>
@@ -19,7 +21,9 @@
             :option="components.openOrders"
             data-cy="trading-page-open-orders-tab-button"
           >
-            <span class="uppercase text-xs font-semibold">
+            <span
+              class="uppercase text-xs font-semibold whitespace-nowrap overflow-ellipsis"
+            >
               {{ $t('activity.openOrders') }}
               {{ `(${filteredOrders.length})` }}
             </span>
@@ -30,7 +34,9 @@
             :option="components.triggers"
             data-cy="trading-page-triggers-tab-button"
           >
-            <span class="uppercase text-xs font-semibold">
+            <span
+              class="uppercase text-xs font-semibold whitespace-nowrap overflow-ellipsis"
+            >
               {{ $t('activity.triggers') }}
               {{ `(${triggers.length})` }}
             </span>
@@ -41,7 +47,9 @@
             :option="components.orderHistory"
             data-cy="trading-page-order-history-tab-button"
           >
-            <span class="uppercase text-xs font-semibold">
+            <span
+              class="uppercase text-xs font-semibold whitespace-nowrap overflow-ellipsis"
+            >
               {{ $t('activity.orderHistory') }}
             </span>
           </VButtonFilter>
@@ -51,7 +59,9 @@
             :option="components.tradeHistory"
             data-cy="trading-page-trade-history-tab-button"
           >
-            <span class="uppercase text-xs font-semibold">
+            <span
+              class="uppercase text-xs font-semibold whitespace-nowrap overflow-ellipsis"
+            >
               {{ $t('activity.tradeHistory') }}
             </span>
           </VButtonFilter>
@@ -70,9 +80,7 @@
           {{ $t('trade.asset_only', { asset: market.ticker }) }}
         </VCheckbox>
         <VButton
-          v-if="
-            component === components.openOrders && filteredOrders.length > 0
-          "
+          v-if="showCancelAllButton"
           red-outline
           sm
           data-cy="trade-page-cancel-all-button"
@@ -98,7 +106,7 @@
     </template>
 
     <HocLoading :status="status">
-      <VCard class="h-full">
+      <VCard class="h-full p-2" no-padding>
         <component
           :is="component"
           v-if="component"
@@ -175,7 +183,17 @@ export default Vue.extend({
     },
 
     triggers(): UiDerivativeOrderHistory[] {
-      return this.$accessor.derivatives.subaccountConditionalOrders
+      const { currentMarketOnly, market } = this
+
+      const result = this.$accessor.derivatives.subaccountConditionalOrders
+
+      if (!currentMarketOnly || !market) {
+        return result
+      }
+
+      return result.filter(
+        (order: UiDerivativeOrderHistory) => order.marketId === market.marketId
+      )
     },
 
     orderHistory(): UiDerivativeOrderHistory[] {
@@ -249,6 +267,27 @@ export default Vue.extend({
           (market) => market.marketId === position.marketId
         )
       })
+    },
+
+    showCancelAllButton(): boolean {
+      const { component, filteredOrders, triggers } = this
+
+      return (
+        (component === components.openOrders && filteredOrders.length > 0) ||
+        (component === components.triggers && triggers.length > 0)
+      )
+    },
+
+    cancelAllAction(): () => Promise<void> {
+      const { filteredOrders, triggers, component } = this
+
+      if (component === components.triggers) {
+        return triggers.length === 1 ? this.cancelOrder : this.cancelAllOrder
+      }
+
+      return filteredOrders.length === 1
+        ? this.cancelOrder
+        : this.cancelAllOrder
     }
   },
 
@@ -292,26 +331,26 @@ export default Vue.extend({
     },
 
     cancelAllOrder(): Promise<void> {
-      const { filteredOrders } = this
+      const { filteredOrders, triggers, component } = this
 
-      return this.$accessor.derivatives.batchCancelOrder(filteredOrders)
+      return component === components.triggers
+        ? this.$accessor.derivatives.batchCancelOrder(triggers)
+        : this.$accessor.derivatives.batchCancelOrder(filteredOrders)
     },
 
     cancelOrder(): Promise<void> {
-      const { filteredOrders } = this
+      const { filteredOrders, triggers, component } = this
 
-      const [order] = filteredOrders
+      const [order] =
+        component === components.triggers ? triggers : filteredOrders
 
       return this.$accessor.derivatives.cancelOrder(order)
     },
 
     handleCancelAllClick() {
-      const { filteredOrders } = this
+      const { cancelAllAction } = this
 
-      const action =
-        filteredOrders.length === 1 ? this.cancelOrder : this.cancelAllOrder
-
-      action()
+      cancelAllAction()
         .then(() => {
           this.$toast.success(this.$t('trade.orders_cancelled'))
         })

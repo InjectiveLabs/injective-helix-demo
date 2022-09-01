@@ -57,7 +57,12 @@
     </td>
 
     <td class="h-12 font-mono text-right">
+      <span v-if="isMarketOrder" class="text-white text-xs">
+        {{ $t('trade.market') }}
+      </span>
+
       <VNumber
+        v-else
         xs
         data-cy="derivative-order-price-table-data"
         :decimals="
@@ -100,7 +105,7 @@
         </span>
 
         <span
-          v-if="(isStopLoss && isSell) || (isTakeProfit && isBuy)"
+          v-if="(isStopLoss && !isBuy) || (isTakeProfit && isBuy)"
           class="text-white text-xs font-semibold"
         >
           &le;
@@ -141,6 +146,7 @@ import {
   getTokenLogoWithVendorPathPrefix
 } from '@injectivelabs/sdk-ui-ts'
 import { format } from 'date-fns'
+import { TradeExecutionType } from '@injectivelabs/ts-types'
 import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -177,6 +183,12 @@ export default Vue.extend({
 
     isBinaryOptionsPage(): boolean {
       return this.$route.name === 'binary-options-binaryOption'
+    },
+
+    isMarketOrder(): boolean {
+      const { order } = this
+
+      return order.executionType === 'market'
     },
 
     isReduceOnly(): boolean {
@@ -252,9 +264,9 @@ export default Vue.extend({
     },
 
     filledQuantity(): BigNumberInBase {
-      const { unfilledQuantity, quantity } = this
+      const { order } = this
 
-      return quantity.minus(unfilledQuantity)
+      return new BigNumberInBase(order.filledQuantity)
     },
 
     leverage(): BigNumberInBase {
@@ -322,23 +334,15 @@ export default Vue.extend({
     isBuy(): boolean {
       const { order } = this
 
+      if (order.direction === DerivativeOrderSide.Buy) {
+        return true
+      }
+
       switch (order.orderType) {
         case DerivativeOrderSide.TakeBuy:
         case DerivativeOrderSide.StopBuy:
         case DerivativeOrderSide.Buy:
-          return true
-        default:
-          return false
-      }
-    },
-
-    isSell(): boolean {
-      const { order } = this
-
-      switch (order.orderType) {
-        case DerivativeOrderSide.TakeSell:
-        case DerivativeOrderSide.StopSell:
-        case DerivativeOrderSide.Sell:
+        case DerivativeOrderSide.BuyPO:
           return true
         default:
           return false
@@ -373,19 +377,21 @@ export default Vue.extend({
       const { order } = this
 
       const executionType =
-        order.executionType === 'market'
+        order.executionType === TradeExecutionType.Market
           ? this.$t('trade.market')
           : this.$t('trade.limit')
 
       switch (order.orderType) {
-        case 'buy':
-        case 'sell':
+        case DerivativeOrderSide.Buy:
+        case DerivativeOrderSide.Sell:
+        case DerivativeOrderSide.BuyPO:
+        case DerivativeOrderSide.SellPO:
           return executionType
-        case 'take_sell':
-        case 'take_buy':
+        case DerivativeOrderSide.TakeSell:
+        case DerivativeOrderSide.TakeBuy:
           return `${this.$t('trade.takeProfit')} ${executionType}`
-        case 'stop_sell':
-        case 'stop_buy':
+        case DerivativeOrderSide.StopSell:
+        case DerivativeOrderSide.StopBuy:
           return `${this.$t('trade.stopLoss')} ${executionType}`
         default:
           return ''
@@ -433,7 +439,7 @@ export default Vue.extend({
         return
       }
 
-      return this.$router.push({ ...getMarketRoute(market) })
+      return this.$router.push(getMarketRoute(market))
     }
   }
 })

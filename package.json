@@ -28,14 +28,15 @@
     }
   },
   "dependencies": {
+    "@amplitude/analytics-browser": "^1.2.0",
     "@apollo/client": "^3.5.5",
     "@chenfengyuan/vue-countdown": "^1.1.5",
     "@injectivelabs/contracts": "1.0.24",
     "@injectivelabs/exceptions": "1.0.9",
     "@injectivelabs/networks": "1.0.14",
     "@injectivelabs/referral-consumer": "0.5.7",
-    "@injectivelabs/sdk-ts": "1.0.113",
-    "@injectivelabs/sdk-ui-ts": "1.0.154",
+    "@injectivelabs/sdk-ts": "1.0.115",
+    "@injectivelabs/sdk-ui-ts": "1.0.156",
     "@injectivelabs/token-metadata": "1.0.22",
     "@injectivelabs/token-utils": "1.0.13",
     "@injectivelabs/ts-types": "1.0.8",
@@ -64,9 +65,10 @@
     "vee-validate": "^3.4.5",
     "vue-clickaway": "^2.2.2",
     "vue-i18n": "^8.23.0",
-    "vue-plot": "^0.0.6",
+    "vue-plot": "0.0.7",
     "vue-router": "^3.5.1",
     "vue-select": "^3.12.2",
+    "vue-youtube": "^1.4.0",
     "vue2-touch-events": "^3.2.2"
   },
   "devDependencies": {

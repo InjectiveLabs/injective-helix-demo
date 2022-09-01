@@ -98,7 +98,8 @@ export enum TradeTypes {
 
 export enum TradeSelectorType {
   Type = 'type',
-  TypeAll = 'type-all',
+  TypeAllDerivatives = 'type-all-derivatives',
+  TypeAllSpot = 'type-all-spot',
   Side = 'side',
   PositionSide = 'position-side',
   TransferType = 'transfer-type'
@@ -131,8 +132,10 @@ export enum MarketTypeFavorite {
 export enum StreamType {
   SubaccountBalances = 'subaccount-balances',
   SpotSubaccountOrders = 'spot-subaccount-orders',
+  SpotSubaccountOrderHistory = 'spot-subaccount-order-history',
   SpotSubaccountTrades = 'spot-subaccount-trades',
   DerivativesSubaccountOrders = 'derivatives-subaccount-orders',
+  DerivativesSubaccountOrderHistory = 'derivatives-subaccount-order-history',
   DerivativesSubaccountTrades = 'derivatives-subaccount-trades',
   DerivativesSubaccountPositions = 'derivatives-positions-trades',
   DerivativesOrderbook = 'derivatives-orderbook',
@@ -152,4 +155,30 @@ export enum AveragePriceOptions {
   BaseAmount = 1,
   QuoteAmount = 2,
   Percentage = 3
+}
+
+export enum AmplitudeEvents {
+  ConnectClicked = 'Connect Clicked',
+  WalletSelected = 'Wallet Selected',
+  Login = 'Login',
+  ClickPlaceOrder = 'Place Order Attempt',
+  AttemptPlaceOrder = 'Place Order Confirm',
+  TradeClicked = 'Trade Clicked',
+  CosmoverseGiveawayCampaign = 'Cosmoverse Giveaway Campaign'
+}
+
+export enum DefaultMarket {
+  Perpetual = 'btc-usdt-perp',
+  Spot = 'inj-usdt'
+}
+
+export enum TradeClickOrigin {
+  Lander = 'LanderC2A',
+  MarketsPage = 'Markets Page',
+  TopMenu = 'Top Menu'
+}
+
+export enum OrderAttemptStatus {
+  Success = 'Success',
+  Error = 'Error'
 }

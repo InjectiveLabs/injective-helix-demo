@@ -96,6 +96,9 @@ export const IS_MAINNET =
 export const CHAIN_ID: ChainId = getChainId()
 export const ETHEREUM_CHAIN_ID: EthereumChainId = getEthereumChainId()
 
+export const AMPLITUDE_KEY = process.env.APP_AMPLITUDE_KEY || ''
+export const HAS_AMPLITUDE_KEY = !!AMPLITUDE_KEY
+
 export const BIG_NUMBER_ROUND_HALF_UP_MODE = BigNumber.ROUND_HALF_UP
 
 // 6 gwei for Kovan, fetched from gasStation for Mainnet

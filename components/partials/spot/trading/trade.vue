@@ -88,24 +88,28 @@
 
     <OrderSubmit
       v-bind="{
+        amount: form.amount,
         executionPrice,
         hasAdvancedSettingsErrors,
-        hasInputErrors,
         hasAmount,
+        hasInputErrors,
         hasTriggerPrice,
-        triggerPriceEqualsMarkPrice,
+        isConditionalOrder,
         lastTradedPrice,
         market,
         orderType,
         orderTypeBuy,
         orderTypeToSubmit,
+        postOnly: form.postOnly,
+        price: form.price,
+        slippageTolerance: form.slippageTolerance,
         status,
         tradingType,
-        tradingTypeMarket,
         tradingTypeLimit,
-        tradingTypeStopMarket,
+        tradingTypeMarket,
         tradingTypeStopLimit,
-        isConditionalOrder
+        tradingTypeStopMarket,
+        triggerPriceEqualsMarkPrice
       }"
       @submit="handleSubmit"
       @submit:request="handleRequestSubmit"
@@ -125,6 +129,7 @@ import {
   UiSubaccount,
   SpotOrderSide
 } from '@injectivelabs/sdk-ui-ts'
+import { Identify, identify } from '@amplitude/analytics-browser'
 import {
   cosmosSdkDecToBigNumber,
   FeeDiscountAccountInfo
@@ -133,7 +138,13 @@ import OrderDetailsWrapper from '~/components/partials/common/trade/order-detail
 import OrderSubmit from '~/components/partials/common/trade/order-submit.vue'
 import OrderInputs from '~/components/partials/common/trade/order-inputs.vue'
 import OrderTypeSelect from '~/components/partials/common/trade/order-type-select.vue'
-import { AveragePriceOptions, Modal, TradeConfirmationModalData } from '~/types'
+import {
+  AmplitudeEvents,
+  AveragePriceOptions,
+  Modal,
+  OrderAttemptStatus,
+  TradeConfirmationModalData
+} from '~/types'
 import {
   calculateAverageExecutionPriceFromFillableNotionalOnOrderBook,
   calculateAverageExecutionPriceFromOrderbook,
@@ -146,6 +157,10 @@ import {
 } from '~/app/utils/constants'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
 import { localStorage } from '~/app/Services'
+import {
+  AMPLITUDE_ATTEMPT_PLACE_ORDER_COUNT,
+  AMPLITUDE_VIP_TIER_LEVEL
+} from '~/app/utils/vendor'
 
 interface TradeForm {
   amount: string
@@ -154,7 +169,7 @@ interface TradeForm {
   triggerPrice: string
   slippageTolerance: string
   postOnly: boolean
-  proportionalPercentage: number,
+  proportionalPercentage: number
   formId: number
 }
 
@@ -211,6 +226,18 @@ export default Vue.extend({
 
     feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
       return this.$accessor.exchange.feeDiscountAccountInfo
+    },
+
+    tierLevel(): number {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return 0
+      }
+
+      return new BigNumberInBase(
+        feeDiscountAccountInfo.tierLevel || 0
+      ).toNumber()
     },
 
     isConditionalOrder(): boolean {
@@ -719,7 +746,6 @@ export default Vue.extend({
       // const {
       //   form: { quoteAmount }
       // } = this
-
       // this.$nextTick(() => this.$orderInputs.onQuoteAmountChange(quoteAmount))
     },
 
@@ -810,10 +836,14 @@ export default Vue.extend({
           orderType: orderTypeToSubmit
         })
         .then(() => {
+          this.handleAttemptPlaceOrderTrack()
           this.$toast.success(this.$t('trade.order_placed'))
           this.resetForm()
         })
-        .catch(this.$onRejected)
+        .catch((e) => {
+          this.handleAttemptPlaceOrderTrack(e)
+          this.$onRejected(e)
+        })
         .finally(() => {
           this.status.setIdle()
         })
@@ -836,10 +866,14 @@ export default Vue.extend({
           orderType: orderTypeToSubmit
         })
         .then(() => {
+          this.handleAttemptPlaceOrderTrack()
           this.$toast.success(this.$t('trade.order_placed'))
           this.resetForm()
         })
-        .catch(this.$onRejected)
+        .catch((e) => {
+          this.handleAttemptPlaceOrderTrack(e)
+          this.$onRejected(e)
+        })
         .finally(() => {
           this.status.setIdle()
         })
@@ -861,10 +895,14 @@ export default Vue.extend({
           orderType
         })
         .then(() => {
+          this.handleAttemptPlaceOrderTrack()
           this.$toast.success(this.$t('trade.trade_placed'))
           this.resetForm()
         })
-        .catch(this.$onRejected)
+        .catch((e) => {
+          this.handleAttemptPlaceOrderTrack(e)
+          this.$onRejected(e)
+        })
         .finally(() => {
           this.status.setIdle()
         })
@@ -887,10 +925,14 @@ export default Vue.extend({
           orderType
         })
         .then(() => {
+          this.handleAttemptPlaceOrderTrack()
           this.$toast.success(this.$t('trade.trade_placed'))
           this.resetForm()
         })
-        .catch(this.$onRejected)
+        .catch((e) => {
+          this.handleAttemptPlaceOrderTrack(e)
+          this.$onRejected(e)
+        })
         .finally(() => {
           this.status.setIdle()
         })
@@ -965,6 +1007,37 @@ export default Vue.extend({
         case 'stopMarket':
           return this.submitStopMarketOrder()
       }
+    },
+
+    handleAttemptPlaceOrderTrack(errorMessage?: string) {
+      if (!this.market) {
+        return
+      }
+
+      // todo: refactor this to be cleaner
+      const identifyObj = new Identify()
+      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
+      identifyObj.add(AMPLITUDE_ATTEMPT_PLACE_ORDER_COUNT, 1)
+      identify(identifyObj)
+
+      this.$amplitude.track(AmplitudeEvents.AttemptPlaceOrder, {
+        amount: this.form.amount,
+        market: this.market.slug,
+        marketType: this.market.subType,
+        orderType: this.orderType,
+        postOnly: this.form.postOnly,
+        tradingType: this.tradingType,
+        triggerPrice:
+          this.tradingTypeStopMarket || this.tradingTypeStopLimit ? '' : '',
+        limitPrice: !this.tradingTypeMarket ? this.price : '',
+        slippageTolerance: this.tradingTypeMarket
+          ? this.form.slippageTolerance
+          : '',
+        status: errorMessage
+          ? OrderAttemptStatus.Error
+          : OrderAttemptStatus.Success,
+        error: errorMessage
+      })
     }
   }
 })

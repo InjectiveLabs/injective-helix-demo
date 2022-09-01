@@ -11,11 +11,13 @@ type StreamFn =
   | typeof derivativesMarketStream.streamDerivativeMarket
   | typeof derivativesMarketStream.streamDerivativeOrderbook
   | typeof derivativesMarketStream.streamDerivativeOrders
+  | typeof derivativesMarketStream.streamDerivativeOrderHistory
   | typeof derivativesMarketStream.streamDerivativePositions
   | typeof derivativesMarketStream.streamDerivativeTrades
   | typeof spotMarketStream.streamSpotOrderbook
   | typeof spotMarketStream.streamSpotMarket
   | typeof spotMarketStream.streamSpotOrders
+  | typeof spotMarketStream.streamSpotOrderHistory
   | typeof spotMarketStream.streamSpotTrades
   | typeof oracleStream.streamOraclePrices
   | typeof subaccountStream.streamSubaccountBalance

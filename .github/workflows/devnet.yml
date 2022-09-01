@@ -1,4 +1,4 @@
-name: DEX Devnet Deployments
+name: Helix Devnet CD
 
 on:
   push:
@@ -15,6 +15,8 @@ jobs:
       SSH_HOST: ${{ secrets.DEVNET_SSH_HOST }}
       SOURCE_DIR: ${{ secrets.DEVNET_SOURCE_PATH}}
       GIT_BRANCH: ${{secrets.DEVNET_GIT_BRANCH}}
+      APP_GOOGLE_ANALYTICS_KEY: ${{ secrets.APP_DEVNET_GOOGLE_ANALYTICS_KEY }}
+      APP_AMPLITUDE_KEY: ${{secrets.APP_DEVNET_AMPLITUDE_KEY}}
     steps:
       - name: Configure SSH
         run: |

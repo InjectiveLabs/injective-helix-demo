@@ -9,7 +9,7 @@
         <NavItem
           :to="{
             name: 'spot-spot',
-            params: { spot: 'inj-usdt' }
+            params: { spot: DefaultMarket.Spot }
           }"
         >
           <span class="font-normal tracking-wide">{{
@@ -20,7 +20,9 @@
         <NavItem
           :to="{
             name: 'perpetuals-perpetual',
-            params: { perpetual: 'btc-usdt-perp' }
+            params: {
+              perpetual: DefaultMarket.Perpetual
+            }
           }"
         >
           <span class="font-normal tracking-wide">{{
@@ -59,7 +61,7 @@
 
         <a
           class="text-gray-200 hover:bg-gray-800 hover:text-white text-sm font-semibold rounded-lg cursor-pointer mx-px h-10 flex items-center px-6 py-2"
-          href="https:/dmm.injective.network"
+          href="https://dmm.injective.network"
           target="_blank"
         >
           <span class="font-normal tracking-wide">
@@ -85,6 +87,7 @@
 import Vue from 'vue'
 import NavItem from './item.vue'
 import Accordion from '~/components/elements/accordion.vue'
+import { DefaultMarket } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -94,6 +97,7 @@ export default Vue.extend({
 
   data() {
     return {
+      DefaultMarket,
       tradeMenuOpen: false,
       rewardsMenuOpen: false
     }

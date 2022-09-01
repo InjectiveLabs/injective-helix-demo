@@ -3,12 +3,18 @@
     <div class="w-full h-full flex flex-col">
       <Toolbar>
         <template #filters>
-          <SearchAsset :value="selectedToken" @select="handleSearch" />
+          <div class="grid grid-cols-4 items-center gap-4 w-full">
+            <SearchAsset
+              class="col-span-4 sm:col-span-1"
+              :value="selectedToken"
+              @select="handleSearch"
+            />
 
-          <ClearFiltersButton
-            v-if="showClearFiltersButton"
-            @clear="handleClearFilters"
-          />
+            <ClearFiltersButton
+              v-if="showClearFiltersButton"
+              @clear="handleClearFilters"
+            />
+          </div>
         </template>
       </Toolbar>
 
@@ -142,6 +148,7 @@ export default Vue.extend({
     handleLimitChangeEvent(limit: number) {
       this.limit = limit
 
+      this.resetPagination()
       this.fetchTransfers()
     },
 
@@ -154,14 +161,19 @@ export default Vue.extend({
     handleSearch(token: Token) {
       this.selectedToken = token
 
+      this.resetPagination()
       this.fetchTransfers()
     },
 
     handleClearFilters() {
       this.selectedToken = undefined
-      this.page = 1
 
+      this.resetPagination()
       this.fetchTransfers()
+    },
+
+    resetPagination() {
+      this.page = 1
     }
   }
 })

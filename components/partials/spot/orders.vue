@@ -16,7 +16,7 @@
 
           <VSeparator />
 
-          <VButtonFilter
+          <!-- <VButtonFilter
             v-model="component"
             :option="components.triggers"
             data-cy="trading-page-triggers-tab-button"
@@ -25,9 +25,9 @@
               {{ $t('activity.triggers') }}
               {{ `(${triggers.length})` }}
             </span>
-          </VButtonFilter>
+          </VButtonFilter> -->
 
-          <VSeparator />
+          <!-- <VSeparator /> -->
 
           <VButtonFilter
             v-model="component"
@@ -95,13 +95,13 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import OpenOrders from './orders/index.vue'
-import Triggers from './triggers/index.vue'
+// import Triggers from './triggers/index.vue'
 import OrderHistory from './order-history/index.vue'
 import TradeHistory from './trade-history/index.vue'
 
 const components = {
   openOrders: 'openOrders',
-  triggers: 'triggers',
+  // triggers: 'triggers',
   orderHistory: 'orderHistory',
   tradeHistory: 'TradeHistory'
 }
@@ -109,7 +109,7 @@ const components = {
 export default Vue.extend({
   components: {
     OpenOrders,
-    Triggers,
+    // Triggers,
     OrderHistory,
     TradeHistory
   },
@@ -137,9 +137,9 @@ export default Vue.extend({
       return this.$accessor.spot.subaccountOrderHistory
     },
 
-    triggers(): UiSpotOrderHistory[] {
-      return this.$accessor.spot.subaccountConditionalOrders
-    },
+    // triggers(): UiSpotOrderHistory[] {
+    //   return this.$accessor.spot.subaccountConditionalOrders
+    // },
 
     currentMarketOrders(): UiSpotLimitOrder[] {
       const { market, orders } = this
@@ -158,7 +158,7 @@ export default Vue.extend({
     Promise.all([
       this.$accessor.spot.fetchSubaccountOrders(),
       this.$accessor.spot.fetchSubaccountOrderHistory(),
-      this.$accessor.spot.fetchSubaccountConditionalOrders(),
+      // this.$accessor.spot.fetchSubaccountConditionalOrders(),
       this.$accessor.spot.fetchSubaccountTrades()
     ])
       .then(() => {

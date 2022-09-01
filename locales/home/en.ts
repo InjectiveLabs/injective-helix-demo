@@ -19,20 +19,20 @@ export default {
     startTradingNote: 'Start Trading on Helix Now',
     whyTradeOnHelix: 'Why Trade on Helix',
     decentralizedWithAdvancedTypeOrders:
-      'Decentralized order book exchange with advanced order types',
+      'Decentralized exchange with advanced order types',
     enjoySpotTrading:
       'Enjoy trading spot and perpetual markets on the premier front-running resistant decentralized orderbook exchange using stop-loss and take-profit orders.',
-    lowFees: 'Low fees for maximum benefits',
+    lowFees: 'Minimal fees for maximum benefits and rewards',
     zeroGasFees:
       'Zero gas fees, low taker fees and highly competitive maker fee rebates for the best trading experience amongst all exchanges.',
     crossChainAssets: 'Cross-chain assets and novel markets',
     seamlesslyTransferAssets:
       'Seamlessly transfer assets from Ethereum and Cosmos networks to trade popular markets as well as unique markets not available elsewhere.',
     getStarted: 'Get Started in 3 Simple Steps',
-    bridgeToInjective: 'Transfer assets to Injective',
+    howToBridge: 'How To Bridge Assets to Begin Trading',
     injective: 'INJECTIVE',
-    tradeSpotMarket: 'Trade spot markets',
-    tradePerpetuals: 'Trade perpetuals with advanced orders',
+    howToPurchaseTokens: 'How To Purchase Tokens on Spot Market',
+    howToPlaceStopOrders: 'How To Place Stop-Market Orders',
     startTradingNow: 'Start trading now',
     newToCryptoFeatures: {
       featureOne: 'Fast and Simple',
@@ -74,6 +74,18 @@ export default {
     change24h: 'Change (24H)'
   },
 
+  newsLetter: {
+    title: 'Subscribe to Helix newsletter',
+    emailAddress: 'Email address',
+    subscribe: 'Subscribe',
+    disclaimer: 'Disclaimer',
+    privacyPolicy: 'Privacy Policy',
+    termsAndCondition: 'Terms and Conditions',
+    subscribeToast: "You've successfully subscribed to our newsletter!",
+    disclaimerMessage:
+      'By subscribing, you agree to the {termsAndCondition}, have read the {privacyPolicy} and acknowledge that you have read and understand the {disclaimer}.'
+  },
+
   footer: {
     resources: 'Resources',
     analytics: 'Analytics',
@@ -86,8 +98,6 @@ export default {
     apiDocumentation: 'API Documentation',
     community: 'Community',
     helixProvides:
-      '*Helix is able to provide maker rebates across a number of markets as approved via the Injective DAO.',
-    disclaimer:
-      'By subscribing, you agree to the {termsAndCondition}, have read the {privacyPolicy} and acknowledge that you have read and understand the {disclaimer}.' // todo: remove on helix launch
+      '*Note: Helix is able to provide maker rebates across a number of markets as approved via the Injective DAO.'
   }
 }

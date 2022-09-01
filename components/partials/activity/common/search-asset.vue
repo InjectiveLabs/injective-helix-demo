@@ -1,6 +1,6 @@
 <template>
   <TokenSelector
-    class="token-selector__token-only min-w-3xs"
+    class="token-selector token-only"
     :value="value"
     :options="supportedTokens"
     :placeholder="$t('trade.market')"
