@@ -274,7 +274,9 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(trigger.quantity)
+      return new BigNumberInWei(trigger.quantity).toBase(
+        market.baseToken.decimals
+      )
     },
 
     quantityToFormat(): string {
@@ -298,9 +300,15 @@ export default Vue.extend({
     },
 
     filledQuantity(): BigNumberInBase {
-      const { trigger } = this
+      const { trigger, market } = this
 
-      return new BigNumberInBase(trigger.filledQuantity)
+      if (!market) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInWei(trigger.filledQuantity).toBase(
+        market.baseToken.decimals
+      )
     },
 
     leverage(): BigNumberInBase {

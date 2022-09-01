@@ -10,8 +10,9 @@
           <span class="whitespace-nowrap">
             {{ $t('activity.openOrders') }}
           </span>
+
           <span data-cy="activity-spot-orders-link-count">
-            ({{ orders.length }})
+            ({{ totalOrderCount }})
           </span>
         </div>
       </TabSelectorItem>
@@ -62,12 +63,6 @@
       </TabSelectorItem>
     </div>
 
-    <portal to="activity-card-spot-count">
-      <span class="font-semibold text-sm md:text-lg">
-        {{ orders.length }}
-      </span>
-    </portal>
-
     <VCard md class="h-full mt-4 xs:mt-6">
       <Orders v-show="component === components.orders" />
       <OrderHistory v-if="component === components.orderHistory" />
@@ -79,7 +74,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { UiSpotLimitOrder } from '@injectivelabs/sdk-ui-ts'
 import Orders from '~/components/partials/activity/spot/orders.vue'
 import OrderHistory from '~/components/partials/activity/spot/order-history.vue'
 // import Triggers from '~/components/partials/activity/spot/triggers.vue'
@@ -110,13 +104,9 @@ export default Vue.extend({
   },
 
   computed: {
-    orders(): UiSpotLimitOrder[] {
-      return this.$accessor.spot.subaccountOrders
+    totalOrderCount(): number {
+      return this.$accessor.spot.subaccountOrdersPagination.total
     }
-
-    // triggers(): UiSpotOrderHistory[] {
-    //   return this.$accessor.spot.subaccountConditionalOrders
-    // }
   },
 
   mounted() {
