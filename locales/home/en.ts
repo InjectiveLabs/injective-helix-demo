@@ -22,7 +22,7 @@ export default {
       'Decentralized exchange with advanced order types',
     enjoySpotTrading:
       'Enjoy trading spot and perpetual markets on the premier front-running resistant decentralized orderbook exchange using stop-loss and take-profit orders.',
-    lowFees: 'Minimal fees for maximum benefits',
+    lowFees: 'Minimal fees for maximum benefits and rewards',
     zeroGasFees:
       'Zero gas fees, low taker fees and highly competitive maker fee rebates for the best trading experience amongst all exchanges.',
     crossChainAssets: 'Cross-chain assets and novel markets',
