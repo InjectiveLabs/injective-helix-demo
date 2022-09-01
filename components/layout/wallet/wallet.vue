@@ -177,7 +177,7 @@ export default Vue.extend({
       Wallet,
       REFERRALS_ENABLED,
       isInjectiveAddress: true,
-      isWalletDropdownOpen: true,
+      isWalletDropdownOpen: false,
       popperOption: {
         placement: 'bottom-start',
         modifiers: [
