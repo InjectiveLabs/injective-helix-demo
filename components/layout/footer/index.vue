@@ -134,10 +134,6 @@ export default Vue.extend({
           link: 'https://api.injective.exchange/'
         },
         {
-          text: this.$t('footer.analytics'),
-          link: 'https://info.injective.exchange/'
-        },
-        {
           text: this.$t('footer.privacyPolicy'),
           link: 'https://injectivelabs.org/privacy-policy'
         },
