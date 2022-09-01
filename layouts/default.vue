@@ -44,6 +44,7 @@ import SidebarMobile from '~/components/layout/sidebar-mobile.vue'
 import ModalAuctionCountdown from '~/components/partials/modals/auction-countdown.vue'
 import ModalInsufficientInjForGas from '~/components/partials/modals/insufficient-inj-for-gas.vue'
 import { IS_MAINNET, SHOW_AUCTION_COUNTDOWN } from '~/app/utils/constants'
+import { AmplitudeEvents } from '~/types/enums'
 
 export default Vue.extend({
   components: {
@@ -75,6 +76,8 @@ export default Vue.extend({
 
   mounted() {
     if (!IS_MAINNET) {
+      this.handleCosmoverseGiveawayCampaignTrack()
+
       Promise.all([this.$accessor.wallet.init()])
         .then(() => {
           //
@@ -120,6 +123,14 @@ export default Vue.extend({
   },
 
   methods: {
+    handleCosmoverseGiveawayCampaignTrack() {
+      this.$amplitude.track(AmplitudeEvents.CosmoverseGiveawayCampaign, {
+        utm_source: this.$route.query.utm_source,
+        utm_medium: this.$route.query.utm_medium,
+        utm_campaign: this.$route.query.utm_campaign
+      })
+    },
+
     onLoadMarketsInit() {
       this.$accessor.app.setMarketsLoadingState(StatusType.Loading)
 

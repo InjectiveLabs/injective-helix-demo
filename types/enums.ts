@@ -163,7 +163,8 @@ export enum AmplitudeEvents {
   Login = 'Login',
   ClickPlaceOrder = 'Place Order Attempt',
   AttemptPlaceOrder = 'Place Order Confirm',
-  TradeClicked = 'Trade Clicked'
+  TradeClicked = 'Trade Clicked',
+  CosmoverseGiveawayCampaign = 'Cosmoverse Giveaway Campaign'
 }
 
 export enum DefaultMarket {

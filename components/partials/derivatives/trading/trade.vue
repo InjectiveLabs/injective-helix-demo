@@ -1155,7 +1155,10 @@ export default Vue.extend({
           this.$toast.success(this.$t('trade.order_placed'))
           this.resetForm()
         })
-        .catch(this.$onRejected)
+        .catch((e) => {
+          this.handleAttemptPlaceOrderTrack(e)
+          this.$onRejected(e)
+        })
         .finally(() => {
           this.status.setIdle()
         })
@@ -1188,6 +1191,7 @@ export default Vue.extend({
           quantity: amount
         })
         .then(() => {
+          this.handleAttemptPlaceOrderTrack()
           this.$toast.success(this.$t('trade.order_placed'))
           this.resetForm()
         })
@@ -1229,7 +1233,10 @@ export default Vue.extend({
           this.$toast.success(this.$t('trade.trade_placed'))
           this.resetForm()
         })
-        .catch(this.$onRejected)
+        .catch((e) => {
+          this.handleAttemptPlaceOrderTrack(e)
+          this.$onRejected(e)
+        })
         .finally(() => {
           this.status.setIdle()
         })
@@ -1262,10 +1269,14 @@ export default Vue.extend({
           quantity: amount
         })
         .then(() => {
+          this.handleAttemptPlaceOrderTrack()
           this.$toast.success(this.$t('trade.trade_placed'))
           this.resetForm()
         })
-        .catch(this.$onRejected)
+        .catch((e) => {
+          this.handleAttemptPlaceOrderTrack(e)
+          this.$onRejected(e)
+        })
         .finally(() => {
           this.status.setIdle()
         })
@@ -1377,8 +1388,10 @@ export default Vue.extend({
         postOnly: this.form.postOnly,
         tradingType: this.tradingType,
         triggerPrice:
-          this.tradingTypeStopMarket || this.tradingTypeStopLimit ? '' : '',
-        reduceOnly: '',
+          this.tradingTypeStopMarket || this.tradingTypeStopLimit
+            ? this.form.triggerPrice
+            : '',
+        reduceOnly: this.form.reduceOnly,
         limitPrice: !this.tradingTypeMarket ? this.price : '',
         status: errorMessage
           ? OrderAttemptStatus.Error

@@ -840,7 +840,10 @@ export default Vue.extend({
           this.$toast.success(this.$t('trade.order_placed'))
           this.resetForm()
         })
-        .catch(this.$onRejected)
+        .catch((e) => {
+          this.handleAttemptPlaceOrderTrack(e)
+          this.$onRejected(e)
+        })
         .finally(() => {
           this.status.setIdle()
         })
@@ -863,6 +866,7 @@ export default Vue.extend({
           orderType: orderTypeToSubmit
         })
         .then(() => {
+          this.handleAttemptPlaceOrderTrack()
           this.$toast.success(this.$t('trade.order_placed'))
           this.resetForm()
         })
@@ -891,10 +895,14 @@ export default Vue.extend({
           orderType
         })
         .then(() => {
+          this.handleAttemptPlaceOrderTrack()
           this.$toast.success(this.$t('trade.trade_placed'))
           this.resetForm()
         })
-        .catch(this.$onRejected)
+        .catch((e) => {
+          this.handleAttemptPlaceOrderTrack(e)
+          this.$onRejected(e)
+        })
         .finally(() => {
           this.status.setIdle()
         })
@@ -917,10 +925,14 @@ export default Vue.extend({
           orderType
         })
         .then(() => {
+          this.handleAttemptPlaceOrderTrack()
           this.$toast.success(this.$t('trade.trade_placed'))
           this.resetForm()
         })
-        .catch(this.$onRejected)
+        .catch((e) => {
+          this.handleAttemptPlaceOrderTrack(e)
+          this.$onRejected(e)
+        })
         .finally(() => {
           this.status.setIdle()
         })
@@ -1002,6 +1014,7 @@ export default Vue.extend({
         return
       }
 
+      // todo: refactor this to be cleaner
       const identifyObj = new Identify()
       identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
       identifyObj.add(AMPLITUDE_ATTEMPT_PLACE_ORDER_COUNT, 1)

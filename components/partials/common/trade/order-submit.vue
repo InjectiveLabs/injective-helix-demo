@@ -406,6 +406,7 @@ export default Vue.extend({
       identifyObj.add(AMPLITUDE_CLICK_PLACE_ORDER_COUNT, 1)
       identify(identifyObj)
 
+      // todo: refactor this to be more clean
       this.$amplitude.track(AmplitudeEvents.ClickPlaceOrder, {
         amount: this.amount,
         market: this.market.slug,

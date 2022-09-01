@@ -59,21 +59,29 @@ export default Vue.extend({
     spotMarket(): string {
       const { $attrs } = this
 
-      if (!$attrs || !$attrs.to || !$attrs.to.params) {
+      type Attrs = { to: { params: { spot: string } } }
+
+      const attrs = $attrs as unknown as Attrs
+
+      if (!attrs || !attrs.to || !attrs.to.params) {
         return ''
       }
 
-      return $attrs.to.params.spot
+      return attrs.to.params.spot
     },
 
     perpetualMarket(): string {
       const { $attrs } = this
 
-      if (!$attrs || !$attrs.to || !$attrs.to.params) {
+      type Attrs = { to: { params: { perpetual: string } } }
+
+      const attrs = $attrs as unknown as Attrs
+
+      if (!attrs || !attrs.to || !attrs.to.params) {
         return ''
       }
 
-      return $attrs.to.params.perpetual
+      return attrs.to.params.perpetual
     }
   },
 
