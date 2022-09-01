@@ -246,11 +246,6 @@ export default Vue.extend({
   },
 
   props: {
-    averagePrice: {
-      type: Object as PropType<BigNumberInBase>,
-      default: () => ZERO_IN_BASE
-    },
-
     market: {
       type: Object as PropType<
         | UiSpotMarketWithToken
@@ -593,6 +588,12 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(1).shiftedBy(-market.priceDecimals).toFixed()
+    },
+
+    defaultPrice(): string {
+      const { tradingTypeStopLimit, lastTradedPrice } = this
+
+      return tradingTypeStopLimit ? '' : lastTradedPrice.toString()
     }
   },
 
@@ -601,11 +602,14 @@ export default Vue.extend({
       handler(newPrice: BigNumberInBase) {
         const { price, market, tradingTypeStopLimit } = this
 
+        const hasNoInputPrice = new BigNumberInBase(price).eq(0)
+        const hasLatestLastTradedPrice = newPrice.gt('0')
+
         if (!market || tradingTypeStopLimit) {
           return
         }
 
-        if (!Number(price) && !newPrice.eq('0')) {
+        if (hasNoInputPrice && hasLatestLastTradedPrice) {
           const formattedPrice = newPrice.toFixed(market.priceDecimals)
 
           this.inputPrice = formattedPrice
@@ -713,6 +717,7 @@ export default Vue.extend({
           averagePriceOption === AveragePriceOptions.Percentage &&
           !reduceOnly
         ) {
+          // todo: refactor this to ideally pass props to the child component and use a computed property from there
           this.$percentageOptions.updateBaseAndQuoteAmountFromPercentage()
         }
       }
@@ -783,6 +788,7 @@ export default Vue.extend({
       }
 
       if (averagePriceOption === AveragePriceOptions.Percentage) {
+        // todo: refactor this to ideally pass props to the child component and use a computed property from there
         this.$percentageOptions.updateBaseAmountBasedOnPercentage()
         this.$percentageOptions.updateQuoteAmountBasedOnPercentage()
         return
@@ -821,6 +827,7 @@ export default Vue.extend({
       this.$emit('update:trigger-price', formattedTriggerPrice)
 
       if (hasAmount && averagePriceOption === AveragePriceOptions.Percentage) {
+        // todo: refactor this to ideally pass props to the child component and use a computed property from there
         this.$percentageOptions.updateBaseAmountBasedOnPercentage()
         this.$percentageOptions.updateQuoteAmountBasedOnPercentage()
         return
@@ -836,8 +843,14 @@ export default Vue.extend({
     },
 
     onAmountChange(amount: string = '') {
-      const { hasPrice, market, isSpot, tradingTypeMarket, inputTriggerPrice } =
-        this
+      const {
+        hasPrice,
+        market,
+        isSpot,
+        tradingTypeMarket,
+        tradingTypeStopLimit,
+        inputTriggerPrice
+      } = this
 
       if (!market) {
         return
@@ -860,7 +873,7 @@ export default Vue.extend({
         this.updateSpotQuoteAmountFromBase()
       }
 
-      if (!this.tradingTypeStopLimit || triggerPriceToBigNumber.gt(0)) {
+      if (!tradingTypeStopLimit || triggerPriceToBigNumber.gt(0)) {
         this.updateDerivativesQuoteAmountFromBase()
       }
 
@@ -982,10 +995,9 @@ export default Vue.extend({
 
     updateSpotQuoteAmountFromBase() {
       const {
-        averagePrice,
+        executionPrice,
         inputBaseAmountToBigNumber,
         inputPostOnly,
-        inputPrice,
         makerFeeRate,
         market,
         orderTypeBuy,
@@ -1004,8 +1016,6 @@ export default Vue.extend({
         ? new BigNumberInBase(1).plus(feeRate)
         : new BigNumberInBase(1).minus(feeRate)
 
-      // calculate executionPrice here because executionPrice computed property not updating in time
-      const executionPrice = tradingTypeMarket ? averagePrice : inputPrice
       const quoteAmount = inputBaseAmountToBigNumber
         .times(executionPrice)
         .times(feeMultiplier)
@@ -1027,11 +1037,9 @@ export default Vue.extend({
 
     updateDerivativesQuoteAmountFromBase() {
       const {
+        executionPrice,
         inputBaseAmountToBigNumber,
-        averagePrice,
-        inputPrice,
         market,
-        tradingTypeMarket,
         tradingTypeStopMarket,
         tradingTypeStopLimit,
         triggerPrice
@@ -1040,8 +1048,7 @@ export default Vue.extend({
       if (!market) {
         return
       }
-      // calculate executionPrice here because executionPrice computed property not updating in time
-      const executionPrice = tradingTypeMarket ? averagePrice : inputPrice
+
       const price = tradingTypeStopMarket ? triggerPrice : executionPrice
       const quoteAmount = inputBaseAmountToBigNumber.times(price)
 
@@ -1087,15 +1094,11 @@ export default Vue.extend({
     },
 
     reset(): void {
-      const defaultPrice = this.tradingTypeStopLimit
-        ? ''
-        : this.lastTradedPrice.toString()
-
       this.onQuoteAmountChange('')
       this.setPostOnly(false)
       this.setReduceOnly(false)
       this.setSlippageTolerance('0.5')
-      this.onPriceChange(defaultPrice)
+      this.onPriceChange(this.defaultPrice)
       this.onTriggerPriceChange('')
       this.onAmountChange(this.amountStep)
       this.onLeverageChange('1')

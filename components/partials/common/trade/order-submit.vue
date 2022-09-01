@@ -247,18 +247,18 @@ export default Vue.extend({
     },
 
     filteredDerivativeOrders(): UiDerivativeLimitOrder[] {
-      const { market, orderType } = this
+      const { market, orderType, derivativeOrders } = this
 
-      return this.$accessor.derivatives.subaccountOrders.filter(
+      return derivativeOrders.filter(
         (order) =>
           order.orderSide === orderType && order.marketId === market.marketId
       )
     },
 
     filteredSpotOrders(): UiSpotLimitOrder[] {
-      const { market, orderType } = this
+      const { market, orderType, spotOrders } = this
 
-      return this.$accessor.spot.subaccountOrders.filter(
+      return spotOrders.filter(
         (order) =>
           order.orderSide === orderType && order.marketId === market.marketId
       )
