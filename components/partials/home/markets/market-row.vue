@@ -11,9 +11,9 @@
             class="w-4 h-4 md:w-6 md:h-6 mr-3"
           />
           <div
-            class="mr-4 text-left text-helixGray-500 text-sm font-bold whitespace-nowrap mb-1"
+            class="mr-4 text-left text-helixGray-500 text-sm whitespace-nowrap mb-1"
           >
-            <div class="flex leading-4">
+            <div class="flex leading-4 font-bold">
               {{ market.ticker }}
             </div>
             <p class="text-helixGray-300 text-xs leading-3.5">
@@ -23,7 +23,9 @@
         </div>
       </div>
       <div class="col-span-2 flex">
-        <span class="w-full text-gray-900 font-medium text-sm text-right">
+        <span
+          class="w-full text-gray-900 font-medium text-sm font-mono text-right"
+        >
           <div class="flex align-center justify-end">
             <IconArrow
               v-if="!lastTradedPrice.isNaN() && !useDefaultLastTradedPriceColor"
@@ -47,7 +49,7 @@
         <span
           v-if="!change.isNaN()"
           :class="change.gte(0) ? 'text-green-500' : 'text-red-500'"
-          class="w-full text-right"
+          class="w-full text-right font-mono"
         >
           {{ changeToFormat }}%
         </span>
@@ -61,7 +63,7 @@
             :color="chartLineColor"
             :bg-type="'transparent'"
             :stroke-width="1"
-            :smoothness="0.2"
+            :smoothness="0.05"
             :padding="chartPadding"
           />
         </HocLoading>

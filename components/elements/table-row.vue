@@ -5,7 +5,8 @@
       {
         'p-3 xs:leading-3': dense,
         'px-6 py-3': lg,
-        'px-3 py-4': !dense && !lg
+        'px-3 py-3': md,
+        'px-3 py-4': isDefaultSize
       }
     ]"
   >
@@ -23,9 +24,22 @@ export default Vue.extend({
       default: false
     },
 
+    md: {
+      type: Boolean,
+      default: false
+    },
+
     lg: {
       type: Boolean,
       default: false
+    }
+  },
+
+  computed: {
+    isDefaultSize(): boolean {
+      const { md, lg, dense } = this
+
+      return !md && !lg && !dense
     }
   }
 })

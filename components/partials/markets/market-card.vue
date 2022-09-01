@@ -47,7 +47,7 @@
       </p>
 
       <span
-        class="text-sm"
+        class="text-sm font-mono"
         data-cy="market-card-change_24h-text-content"
         :class="{
           'text-green-500': change.gt(0),
@@ -63,7 +63,8 @@
       class="text-gray-500 w-full text-sm"
       data-cy="market-card-volume-usd-text-content"
     >
-      {{ $t('markets.vol') }} {{ volumeInUsdToFormat }} USD
+      {{ $t('markets.vol') }}
+      <span class="font-mono">{{ volumeInUsdToFormat }}</span> USD
     </span>
   </nuxt-link>
 </template>

@@ -1,7 +1,10 @@
 .popper {
   @apply opacity-0;
-
-  display: none !important;
+  transition: all .2s linear;
+  transform: scale(0);
+  opacity: 0;
+  display:
+    block !important;
 
   .arrow {
     position: absolute;
@@ -21,7 +24,7 @@
 
   &[data-show] {
     @apply opacity-100;
-
+    transform: scale(1);
     display: block !important;
   }
 }
@@ -31,5 +34,19 @@
 
   &[data-show] {
     @apply opacity-100;
+  }
+}
+
+@keyframes popper-dropdown {
+  from {
+    transform: scale(0);
+    opacity: 0;
+    transition: all .2s linear;
+  }
+
+  to {
+    transition: all .2s linear;
+    opacity: 1;
+    transform: scale(1);
   }
 }
