@@ -12,11 +12,10 @@
               :option="components.positions"
               :status="positionLoadingStatus"
             >
-              <portal-target
-                slot="icon"
-                name="activity-card-position-count"
-                data-cy="activity-open-positions-panel-count"
-              />
+              <span slot="icon" class="font-semibold text-sm md:text-lg">
+                {{ totalPositionsCount }}
+              </span>
+
               <span class="text-sm whitespace-nowrap">
                 {{ $t('activity.positions') }}
               </span>
@@ -27,11 +26,10 @@
               :option="components.spot"
               :status="spotLoadingStatus"
             >
-              <portal-target
-                slot="icon"
-                name="activity-card-spot-count"
-                data-cy="activity-spot-orders-panel-count"
-              />
+              <span slot="icon" class="font-semibold text-sm md:text-lg">
+                {{ totalSpotOrderCount }}
+              </span>
+
               <span class="text-sm whitespace-nowrap">
                 {{ $t('activity.spotOrders') }}
               </span>
@@ -42,11 +40,10 @@
               :option="components.derivatives"
               :status="derivativeLoadingStatus"
             >
-              <portal-target
-                slot="icon"
-                name="activity-card-derivative-count"
-                data-cy="activity-derivatives-orders-panel-count"
-              />
+              <span slot="icon" class="font-semibold text-sm md:text-lg">
+                {{ totalDerivativeOrderCount }}
+              </span>
+
               <span class="text-sm whitespace-nowrap">
                 {{ $t('activity.derivativeOrders') }}
               </span>
@@ -120,6 +117,20 @@ export default Vue.extend({
       positionLoadingStatus: new Status(StatusType.Loading),
       spotLoadingStatus: new Status(StatusType.Loading),
       status: new Status(StatusType.Loading)
+    }
+  },
+
+  computed: {
+    totalPositionsCount(): number {
+      return this.$accessor.positions.subaccountPositionsPagination.total
+    },
+
+    totalSpotOrderCount(): number {
+      return this.$accessor.spot.subaccountOrdersPagination.total
+    },
+
+    totalDerivativeOrderCount(): number {
+      return this.$accessor.derivatives.subaccountOrdersPagination.total
     }
   },
 

@@ -1,43 +1,124 @@
 <template>
-  <div class="flex items-center justify-center">
-    <VButton
+  <div class="flex items-center justify-start gap-4">
+    <span
+      class="text-sm font-semibold cursor-pointer"
       :class="{
-        'text-gray-500': tradingType === TradeExecutionType.Market
+        'text-gray-500':
+          tradingTypeMarket | tradingTypeStopLimit | tradingTypeStopMarket,
+        'text-primary-500': tradingTypeLimit
       }"
-      text-xs
       data-cy="trading-page-switch-to-limit-button"
       @click.stop="onTradingTypeToggle(TradeExecutionType.LimitFill)"
     >
       {{ $t('trade.limit') }}
-    </VButton>
-    <div class="mx-2 w-px h-4 bg-gray-500"></div>
-    <VButton
+    </span>
+
+    <span
+      class="text-sm font-semibold cursor-pointer"
       :class="{
-        'text-gray-500': tradingType === TradeExecutionType.LimitFill
+        'text-gray-500':
+          tradingTypeLimit | tradingTypeStopLimit | tradingTypeStopMarket,
+        'text-primary-500': tradingTypeMarket
       }"
-      text-xs
       data-cy="trading-page-switch-to-market-button"
       @click.stop="onTradingTypeToggle(TradeExecutionType.Market)"
     >
       {{ $t('trade.market') }}
-    </VButton>
+    </span>
+
+    <div v-if="!isSpot" class="flex items-center justify-start">
+      <span
+        class="text-sm font-semibold cursor-pointer"
+        :class="{
+          'text-gray-500': !tradingTypeStopMarket && !tradingTypeStopLimit,
+          'text-primary-500': tradingTypeStopMarket || tradingTypeStopLimit
+        }"
+        data-cy="trading-page-switch-to-stop-button"
+        @click.stop="
+          onTradingTypeToggle(
+            tradingTypeStopMarket ? 'stopMarket' : 'stopLimit'
+          )
+        "
+      >
+        {{ selectLabel }}
+      </span>
+
+      <Select
+        :options="selectOptions"
+        :value="tradingType"
+        hide-current-value
+        @change="({ value }) => onTradingTypeToggle(value)"
+      />
+    </div>
   </div>
 </template>
+
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import { TradeExecutionType } from '@injectivelabs/ts-types'
+import Select from '@/components/elements/select.vue'
 
 export default Vue.extend({
+  components: {
+    Select
+  },
+
   props: {
     tradingType: {
       type: String,
+      required: true
+    },
+
+    tradingTypeMarket: {
+      type: Boolean as PropType<boolean>,
+      required: true
+    },
+
+    tradingTypeLimit: {
+      type: Boolean as PropType<boolean>,
+      required: true
+    },
+
+    tradingTypeStopMarket: {
+      type: Boolean as PropType<boolean>,
+      required: true
+    },
+
+    tradingTypeStopLimit: {
+      type: Boolean as PropType<boolean>,
       required: true
     }
   },
 
   data() {
     return {
-      TradeExecutionType
+      TradeExecutionType,
+      selectOptions: [
+        {
+          label: this.$t('trade.stopLimit'),
+          value: 'stopLimit'
+        },
+        {
+          label: this.$t('trade.stopMarket'),
+          value: 'stopMarket'
+        }
+      ]
+    }
+  },
+
+  computed: {
+    isSpot(): boolean {
+      return this.$route.name === 'spot-spot'
+    },
+
+    selectLabel(): string | undefined {
+      const { tradingTypeStopMarket } = this
+
+      if (tradingTypeStopMarket) {
+        return this.$t('trade.stopMarket')
+      }
+
+      return this.$t('trade.stopLimit')
     }
   },
 

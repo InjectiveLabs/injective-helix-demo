@@ -3,6 +3,7 @@ import { LocalStorage } from '@injectivelabs/utils'
 import { Web3Client } from '@injectivelabs/sdk-ui-ts/dist/web3'
 import {
   MsgBroadcastClient,
+  MsgBroadcastExperimentalClient,
   TokenService,
   TokenPrice,
   MetricsProvider,
@@ -17,19 +18,20 @@ import {
   ChainGrpcExchangeApi,
   ChainGrpcGovApi,
   ChainGrpcInsuranceFundApi,
-  ChainGrpcMintApi,
-  ChainGrpcOracleApi,
   ChainGrpcPeggyApi,
+  ChainGrpcMintApi,
   ChainGrpcStakingApi,
-  IndexerGrpcAccountApi,
-  IndexerGrpcDerivativesApi,
-  IndexerGrpcExplorerApi,
-  IndexerGrpcOracleApi,
-  IndexerGrpcSpotApi,
-  IndexerRestDerivativesChronosApi,
   IndexerRestExplorerApi,
-  IndexerRestSpotChronosApi
-} from '@injectivelabs/sdk-ts/dist/client'
+  IndexerGrpcExplorerApi,
+  ChainGrpcOracleApi,
+  IndexerGrpcDerivativesApi,
+  IndexerGrpcSpotApi,
+  IndexerGrpcAccountApi,
+  IndexerRestDerivativesChronosApi,
+  IndexerRestSpotChronosApi,
+  IndexerRestMarketChronosApi,
+  IndexerGrpcOracleApi
+} from '@injectivelabs/sdk-ts'
 import {
   NETWORK,
   METRICS_ENABLED,
@@ -91,6 +93,10 @@ export const indexerRestSpotChronosApi = new IndexerRestSpotChronosApi(
       : `${ENDPOINTS.indexerApi}/api/chronos/v1/spot`
   }`
 )
+
+export const indexerRestMarketChronosApi = new IndexerRestMarketChronosApi(
+  `${ENDPOINTS.indexerApi}/api/chronos/v1/market`
+)
 export const indexerDerivativesApi = new IndexerGrpcDerivativesApi(
   ENDPOINTS.indexerApi
 )
@@ -106,6 +112,11 @@ export const msgBroadcastClient = new MsgBroadcastClient({
   ...apiOptions,
   walletStrategy
 })
+export const msgBroadcastExperimentalClient =
+  new MsgBroadcastExperimentalClient({
+    ...apiOptions,
+    walletStrategy
+  })
 export const web3Client = new Web3Client({
   // @ts-ignore
   walletStrategy,

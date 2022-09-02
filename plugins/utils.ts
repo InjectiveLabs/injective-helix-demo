@@ -73,7 +73,7 @@ export default ({ app }: Context, inject: any) => {
       isInsufficientGasError(error) &&
       app.$accessor.wallet.wallet !== Wallet.Metamask
     ) {
-      app.$accessor.modal.openModal(Modal.InsufficientInjForGas)
+      app.$accessor.modal.openModal({ type: Modal.InsufficientInjForGas })
     }
 
     if (!isErrorExcludedFromToast(error)) {
@@ -94,7 +94,7 @@ export default ({ app }: Context, inject: any) => {
       isInsufficientGasError(error) &&
       app.$accessor.wallet.wallet !== Wallet.Metamask
     ) {
-      app.$accessor.modal.openModal(Modal.InsufficientInjForGas)
+      app.$accessor.modal.openModal({ type: Modal.InsufficientInjForGas })
     }
 
     if (!isErrorExcludedFromToast(error)) {

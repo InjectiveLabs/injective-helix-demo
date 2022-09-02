@@ -1,14 +1,18 @@
 <template>
   <div v-if="market">
     <div
-      class="grid grid-cols-2 md:grid-cols-3 gap-2.5 lg:gap-0 lg:flex overflow-x-auto overflow-y-none text-xs"
+      class="grid grid-cols-2 md:grid-cols-3 gap-2.5 lg:gap-0 lg:flex overflow-x-auto text-xs overflow-y-hidden"
     >
       <MarketInfo
         v-if="market.type === MarketType.Derivative"
         :title="$t('trade.mark_price')"
         :tooltip="$t('trade.mark_price_tooltip')"
       >
-        <span v-if="!markPrice.isNaN()" class="lg:text-right font-mono block">
+        <span
+          v-if="!markPrice.isNaN()"
+          class="lg:text-right font-mono block"
+          data-cy="market-info-mark-price-span"
+        >
           {{ markPriceToFormat }}
         </span>
         <span v-else class="text-gray-400">&mdash;</span>
@@ -20,6 +24,7 @@
         <span
           v-if="volume.gt(0) && !volume.isNaN()"
           class="lg:text-right font-mono block"
+          data-cy="market-info-volume-24h-span"
         >
           {{ volumeToFormat }}
         </span>
@@ -27,13 +32,23 @@
       </MarketInfo>
       <MarketInfo :title="$t('trade.high')">
         <span class="lg:text-right font-mono block">
-          <span v-if="high.gt(0) && !high.isNaN()">{{ highToFormat }}</span>
+          <span
+            v-if="high.gt(0) && !high.isNaN()"
+            data-cy="market-info-high-price-24h-span"
+          >
+            {{ highToFormat }}
+          </span>
           <span v-else class="text-gray-400">&mdash;</span>
         </span>
       </MarketInfo>
       <MarketInfo :title="$t('trade.low')">
         <span class="lg:text-right font-mono block">
-          <span v-if="low.gt(0) && !low.isNaN()">{{ lowToFormat }}</span>
+          <span
+            v-if="low.gt(0) && !low.isNaN()"
+            data-cy="market-info-low-price-24h-span"
+          >
+            {{ lowToFormat }}
+          </span>
           <span v-else class="text-gray-400">&mdash;</span>
         </span>
       </MarketInfo>
@@ -48,9 +63,10 @@
         <span v-if="!fundingRate.isNaN()" class="lg:text-right font-mono block">
           <span
             :class="{
-              'text-aqua-500': fundingRate.gte(0),
+              'text-green-500': fundingRate.gte(0),
               'text-red-500': fundingRate.lt(0)
             }"
+            data-cy="market-info-funding-rate-span"
           >
             {{
               (fundingRate.gt(0) ? '+' : '') +

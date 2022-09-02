@@ -2,7 +2,8 @@
   <p
     class="flex flex-wrap items-center w-full"
     :class="{
-      'text-xs': !lg,
+      'text-xs': !lg && !sm,
+      'text-xs sm:text-sm': sm,
       'text-base': lg
     }"
   >
@@ -23,15 +24,18 @@ import Vue from 'vue'
 export default Vue.extend({
   props: {
     title: {
-      required: true,
-      default: '',
-      type: String
+      type: String,
+      required: true
+    },
+
+    sm: {
+      type: Boolean,
+      default: false
     },
 
     lg: {
-      default: false,
       type: Boolean,
-      required: false
+      default: false
     }
   }
 })

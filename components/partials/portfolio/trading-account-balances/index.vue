@@ -18,7 +18,7 @@
 
     <VModalAddMargin />
     <portal to="portfolio-balance-sub-tabs">
-      <div class="mt-3 flex items-center gap-6">
+      <div class="mt-4 flex items-center gap-4">
         <TabSelectorItem
           v-model="component"
           :option="components.balances"

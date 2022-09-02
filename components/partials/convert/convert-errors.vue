@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-4">
+  <div class="mt-4" data-cy="convert-widget-error-div">
     <span
       v-if="!hasEnoughInjForGasOrNotKeplr"
       class="block mt-4 text-2xs font-semibold text-red-500 first-of-type:mt-0"

@@ -24,6 +24,8 @@ const actionsThatSetAppStateToBusy = [
   'derivatives/batchCancelOrder',
   'derivatives/submitLimitOrder',
   'derivatives/submitMarketOrder',
+  'derivatives/submitStopLimitOrder',
+  'derivatives/submitStopMarketOrder',
   'positions/closePosition',
   'positions/closePositionAndReduceOnlyOrders',
   'positions/closeAllPosition',
@@ -31,7 +33,9 @@ const actionsThatSetAppStateToBusy = [
   'spot/cancelOrder',
   'spot/batchCancelOrder',
   'spot/submitLimitOrder',
-  'spot/submitMarketOrder'
+  'spot/submitMarketOrder',
+  'spot/submitStopLimitOrder',
+  'spot/submitStopMarketOrder'
 ]
 
 const store: Plugin = ({ store, app }) => {

@@ -2,7 +2,7 @@
   <div class="mt-2 text-right">
     <div class="text-primary-400 tracking-1 text-sm">
       {{ $t('bridge.available') }}
-      <span data-cy="transfer-modal-available-text-content">{{
+      <span class="font-mono" data-cy="transfer-modal-available-text-content">{{
         balanceToString
       }}</span>
     </div>

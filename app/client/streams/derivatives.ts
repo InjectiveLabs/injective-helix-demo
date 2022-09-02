@@ -2,6 +2,7 @@ import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import {
   DerivativeOrderbookStreamCallback,
   DerivativeOrdersStreamCallback,
+  DerivativeOrderHistoryStreamCallback,
   DerivativeTradesStreamCallback,
   IndexerGrpcDerivativesStream,
   IndexerGrpcOracleStream,
@@ -19,9 +20,9 @@ import { ENDPOINTS } from '~/app/utils/constants'
 import { StreamType } from '~/types'
 
 export const derivativesMarketStream = new IndexerGrpcDerivativesStream(
-  ENDPOINTS.exchangeApi
+  ENDPOINTS.indexerApi
 )
-export const oracleStream = new IndexerGrpcOracleStream(ENDPOINTS.exchangeApi)
+export const oracleStream = new IndexerGrpcOracleStream(ENDPOINTS.indexerApi)
 export const streamOrderbook = ({
   marketId,
   callback
@@ -114,6 +115,31 @@ export const streamSubaccountOrders = ({
     fn: streamFn,
     args: streamFnArgs,
     key: StreamType.DerivativesSubaccountOrders
+  })
+}
+
+export const streamSubaccountOrderHistory = ({
+  marketId,
+  subaccountId,
+  callback
+}: {
+  marketId?: string
+  subaccountId?: string
+  callback: DerivativeOrderHistoryStreamCallback
+}) => {
+  const streamFn = derivativesMarketStream.streamDerivativeOrderHistory.bind(
+    derivativesMarketStream
+  )
+  const streamFnArgs = {
+    ...(subaccountId && { subaccountId }),
+    ...(marketId && { marketId }),
+    callback
+  }
+
+  streamProvider.subscribe({
+    fn: streamFn,
+    args: streamFnArgs,
+    key: StreamType.DerivativesSubaccountOrderHistory
   })
 }
 

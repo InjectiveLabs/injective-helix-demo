@@ -1,10 +1,10 @@
 <template>
-  <VDropdown round hide-bottom-border>
+  <Dropdown hide-bottom-border>
     <template slot="title">
       <div class="flex items-center justify-between bg-gray-900 flex-grow">
         <slot name="label" />
         <span
-          class="text-xs ml-2"
+          class="text-sm"
           :class="{ 'text-gray-200': value !== undefined }"
           data-cy="reusable-selected-value-text-content"
         >
@@ -24,20 +24,21 @@
         {{ item.text }}
       </SelectorItem>
     </div>
-  </VDropdown>
+  </Dropdown>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { TransferType } from '@injectivelabs/sdk-ts'
-import VDropdown from '~/components/elements/dropdown.vue'
+import Dropdown from '~/components/elements/dropdown.vue'
 import SelectorItem from '~/components/layout/selectors/selector-item.vue'
 import { TradeSelectorType, TradeTypes } from '~/types/enums'
+import { OrderTypeFilter } from '~/types'
 
 export default Vue.extend({
   components: {
-    VDropdown,
+    Dropdown,
     SelectorItem
   },
 
@@ -48,7 +49,7 @@ export default Vue.extend({
     },
 
     value: {
-      type: String,
+      type: [String, Object],
       default: undefined
     }
   },
@@ -56,7 +57,10 @@ export default Vue.extend({
   data() {
     return {
       placeholder: '',
-      list: [] as { text: string; value: string | undefined }[]
+      list: [] as {
+        text: string
+        value: string | OrderTypeFilter | undefined
+      }[]
     }
   },
 
@@ -68,90 +72,175 @@ export default Vue.extend({
         return placeholder
       }
 
-      return (
-        list.find(({ value }) => value === selected)?.text ||
-        this.$t('trade.all')
-      )
+      const selectedValue = list.find(({ value }) => {
+        if (typeof selected === 'object') {
+          const v = value as OrderTypeFilter
+
+          return (
+            v.executionType === selected.executionType &&
+            v.orderType === selected.orderType
+          )
+        }
+        return value === selected
+      })
+
+      if (selectedValue) {
+        return selectedValue.text
+      }
+
+      return this.$t('trade.all')
     }
   },
 
   mounted() {
-    if (this.type === TradeSelectorType.Type) {
-      this.list = [
-        {
-          text: this.$t('trade.all'),
-          value: undefined
-        },
-        {
-          text: this.$t('trade.market'),
-          value: TradeTypes.Market
-        },
-        {
-          text: this.$t('trade.limit'),
-          value: TradeTypes.Limit
-        }
-      ]
-      this.placeholder = this.$t('trade.type')
-    }
-
-    if (this.type === TradeSelectorType.TransferType) {
-      this.list = [
-        {
-          text: this.$t('trade.all'),
-          value: undefined
-        },
-        {
-          text: this.$t('walletHistory.transfers.deposit'),
-          value: TransferType.Deposit
-        },
-        {
-          text: this.$t('walletHistory.transfers.deposit'),
-          value: TransferType.Withdraw
-        }
-      ]
-      this.placeholder = this.$t('trade.type')
-    }
-
-    if (this.type === TradeSelectorType.Side) {
-      this.list = [
-        {
-          text: this.$t('trade.all'),
-          value: undefined
-        },
-        {
-          text: this.$t('trade.buy'),
-          value: TradeDirection.Buy
-        },
-        {
-          text: this.$t('trade.sell'),
-          value: TradeDirection.Sell
-        }
-      ]
-      this.placeholder = this.$t('trade.side')
-    }
-
-    if (this.type === TradeSelectorType.PositionSide) {
-      this.list = [
-        {
-          text: this.$t('trade.all'),
-          value: undefined
-        },
-        {
-          text: this.$t('trade.long'),
-          value: TradeDirection.Long
-        },
-        {
-          text: this.$t('trade.short'),
-          value: TradeDirection.Short
-        }
-      ]
-      this.placeholder = this.$t('trade.side')
-    }
+    this.prePopulateSelectList()
   },
 
   methods: {
-    handleClick({ value }: { value: string }) {
+    handleClick({ value }: { value: string | OrderTypeFilter }) {
       this.$emit('click', value)
+    },
+
+    prePopulateSelectList() {
+      if (this.type === TradeSelectorType.TypeAllSpot) {
+        this.list = [
+          {
+            text: this.$t('trade.limit'),
+            value: {
+              executionType: 'limit',
+              orderType: undefined
+            }
+          },
+          {
+            text: this.$t('trade.market'),
+            value: {
+              executionType: 'market',
+              orderType: undefined
+            }
+          }
+        ]
+        this.placeholder = this.$t('trade.type')
+      }
+
+      if (this.type === TradeSelectorType.TypeAllDerivatives) {
+        this.list = [
+          {
+            text: this.$t('trade.limit'),
+            value: {
+              executionType: 'limit',
+              orderType: undefined
+            }
+          },
+          {
+            text: this.$t('trade.market'),
+            value: {
+              executionType: 'market',
+              orderType: undefined
+            }
+          },
+          {
+            text: `${this.$t('trade.stopLoss')} ${this.$t('trade.limit')}`,
+            value: {
+              executionType: 'limit',
+              orderType: 'stop_loss'
+            }
+          },
+          {
+            text: `${this.$t('trade.stopLoss')} ${this.$t('trade.market')}`,
+            value: {
+              executionType: 'market',
+              orderType: 'stop_loss'
+            }
+          },
+          {
+            text: `${this.$t('trade.takeProfit')} ${this.$t('trade.limit')}`,
+            value: {
+              executionType: 'limit',
+              orderType: 'take_profit'
+            }
+          },
+          {
+            text: `${this.$t('trade.takeProfit')} ${this.$t('trade.market')}`,
+            value: {
+              executionType: 'market',
+              orderType: 'take_profit'
+            }
+          }
+        ]
+        this.placeholder = this.$t('trade.type')
+      }
+
+      if (this.type === TradeSelectorType.Type) {
+        this.list = [
+          {
+            text: this.$t('trade.all'),
+            value: undefined
+          },
+          {
+            text: this.$t('trade.market'),
+            value: TradeTypes.Market
+          },
+          {
+            text: this.$t('trade.limit'),
+            value: TradeTypes.Limit
+          }
+        ]
+        this.placeholder = this.$t('trade.type')
+      }
+
+      if (this.type === TradeSelectorType.TransferType) {
+        this.list = [
+          {
+            text: this.$t('trade.all'),
+            value: undefined
+          },
+          {
+            text: this.$t('walletHistory.transfers.deposit'),
+            value: TransferType.Deposit
+          },
+          {
+            text: this.$t('walletHistory.transfers.deposit'),
+            value: TransferType.Withdraw
+          }
+        ]
+        this.placeholder = this.$t('trade.type')
+      }
+
+      if (this.type === TradeSelectorType.Side) {
+        this.list = [
+          {
+            text: this.$t('trade.all'),
+            value: undefined
+          },
+          {
+            text: this.$t('trade.buy'),
+            value: TradeDirection.Buy
+          },
+          {
+            text: this.$t('trade.sell'),
+            value: TradeDirection.Sell
+          }
+        ]
+        this.placeholder = this.$t('trade.side')
+      }
+
+      if (this.type === TradeSelectorType.PositionSide) {
+        this.list = [
+          {
+            text: this.$t('trade.all'),
+            value: undefined
+          },
+          {
+            text: this.$t('trade.long'),
+            value: TradeDirection.Long
+          },
+          {
+            text: this.$t('trade.short'),
+            value: TradeDirection.Short
+          }
+        ]
+        this.placeholder = this.$t('trade.side')
+      }
     }
   }
 })

@@ -5,16 +5,25 @@
         <TabSelectorItem
           v-model="component"
           :option="components.charts"
+          data-cy="trade-page-chart-selector"
           class="lg:hidden"
         >
           <span>{{ $t('trade.chart') }}</span>
         </TabSelectorItem>
 
-        <TabSelectorItem v-model="component" :option="components.orderbook">
+        <TabSelectorItem
+          v-model="component"
+          data-cy="trade-page-orderbook-selector"
+          :option="components.orderbook"
+        >
           <span>{{ $t('trade.orderbook') }}</span>
         </TabSelectorItem>
 
-        <TabSelectorItem v-model="component" :option="components.trades">
+        <TabSelectorItem
+          v-model="component"
+          data-cy="trade-page-trades-selector"
+          :option="components.trades"
+        >
           <span>{{ $t('trade.trades') }}</span>
         </TabSelectorItem>
       </div>
@@ -32,7 +41,7 @@
         />
       </div>
       <HocLoading :status="status">
-        <div>
+        <div class="orderbook-h-inner overflow-y-hidden">
           <MarketChart
             v-show="component === components.charts"
             :market="market"

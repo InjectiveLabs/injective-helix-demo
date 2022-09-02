@@ -3,15 +3,17 @@
     <VButton
       md
       primary
+      class="rounded-lg whitespace-nowrap h-8 lg:h-10 px-4 lg:px-8 bg-primary-500 hover:bg-primary-400 flex items-center"
       data-cy="header-wallet-connect-button"
       @click="handleWalletConnectClicked"
     >
-      {{ $t('connect.connect') }}
+      {{ $t('connect.connectWallet') }}
     </VButton>
 
     <VModal
       :is-open="isOpenConnectModal"
       md
+      no-padding
       @modal-closed="isOpenConnectModal = false"
     >
       <h3 slot="title">
@@ -19,7 +21,9 @@
       </h3>
       <div class="relative mt-6">
         <HocLoading :status="status">
-          <ul class="divide-y divide-gray-800 border-gray-700 rounded-lg">
+          <ul
+            class="divide-y divide-gray-800 border-gray-700 rounded-lg overflow-hidden"
+          >
             <Metamask />
             <Keplr />
             <Torus />
@@ -38,7 +42,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Status } from '@injectivelabs/utils'
+import { BigNumberInBase, Status } from '@injectivelabs/utils'
+import { Wallet } from '@injectivelabs/ts-types'
+import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
+import { setUserId, Identify, identify } from '@amplitude/analytics-browser'
 import Metamask from './wallets/metamask.vue'
 import Keplr from './wallets/keplr.vue'
 import Ledger from './wallets/ledger.vue'
@@ -47,13 +54,18 @@ import WalletConnect from './wallets/wallet-connect.vue'
 import Trezor from './wallets/trezor.vue'
 import ModalLedger from './wallets/ledger/index.vue'
 import ModalTrezor from './wallets/trezor/index.vue'
-import { Modal, WalletConnectStatus } from '~/types'
+import { Modal, WalletConnectStatus, AmplitudeEvents } from '~/types'
 import {
   GEO_IP_RESTRICTIONS_ENABLED,
   IS_DEVNET,
   IS_STAGING,
   IS_TESTNET
 } from '~/app/utils/constants'
+import {
+  AMPLITUDE_LOGIN_COUNT,
+  AMPLITUDE_VIP_TIER_LEVEL,
+  AMPLITUDE_WALLET
+} from '~/app/utils/vendor'
 import ModalTerms from '~/components/partials/modals/terms.vue'
 
 export default Vue.extend({
@@ -85,6 +97,30 @@ export default Vue.extend({
 
     isStagingOrTestnetOrDevnet(): boolean {
       return IS_TESTNET || IS_DEVNET || IS_STAGING
+    },
+
+    injectiveAddress(): string {
+      return this.$accessor.wallet.injectiveAddress
+    },
+
+    wallet(): Wallet {
+      return this.$accessor.wallet.wallet
+    },
+
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
+    },
+
+    tierLevel(): number {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return 0
+      }
+
+      return new BigNumberInBase(
+        feeDiscountAccountInfo.tierLevel || 0
+      ).toNumber()
     }
   },
 
@@ -125,8 +161,10 @@ export default Vue.extend({
 
   methods: {
     handleWalletConnectClicked() {
+      this.$amplitude.track(AmplitudeEvents.ConnectClicked)
+
       if (GEO_IP_RESTRICTIONS_ENABLED) {
-        this.$accessor.modal.openModal(Modal.Terms)
+        this.$accessor.modal.openModal({ type: Modal.Terms })
       } else {
         this.isOpenConnectModal = true
       }
@@ -141,6 +179,7 @@ export default Vue.extend({
     },
 
     handleConnectedWallet() {
+      this.handleConnectedWalletTrack()
       this.$toast.success(this.$t('connect.successfullyConnected'))
       this.$emit('wallet-connected')
       this.$root.$emit('wallet-connected')
@@ -173,6 +212,21 @@ export default Vue.extend({
 
     handleDisconnectedWallet() {
       this.status.setIdle()
+    },
+
+    handleConnectedWalletTrack() {
+      setUserId(this.injectiveAddress)
+
+      const identifyObj = new Identify()
+      identifyObj.set(AMPLITUDE_WALLET, this.wallet)
+      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
+      identifyObj.add(AMPLITUDE_LOGIN_COUNT, 1)
+      identify(identifyObj)
+
+      this.$amplitude.track(AmplitudeEvents.Login, {
+        wallet: this.wallet,
+        address: this.injectiveAddress
+      })
     }
   }
 })

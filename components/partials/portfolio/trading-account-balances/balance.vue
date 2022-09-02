@@ -10,16 +10,16 @@
       </span>
       <span class="text-right xl:text-left">
         <div class="flex items-center justify-end xl:justify-start">
-          <div v-if="tokenLogo" class="w-6 h-6">
+          <div v-if="tokenLogo" class="w-4 h-4">
             <img
               :src="tokenLogo"
               :alt="balance.token.name"
               class="min-w-full h-auto rounded-full"
             />
           </div>
-          <div class="ml-3">
+          <div class="ml-2">
             <span
-              class="text-gray-200 font-bold"
+              class="text-white font-medium text-xs"
               data-cy="trading-account-token-symbol-table-data"
             >
               {{ balance.token.symbol }}
@@ -27,21 +27,21 @@
           </div>
         </div>
       </span>
-      <span class="font-mono text-left xl:hidden">
+      <span class="text-left xl:hidden">
         {{ $t('portfolio.total') }}
       </span>
       <span
-        class="xl:col-span-2 font-mono text-right justify-end xl:flex items-center"
+        class="xl:col-span-2 font-mono text-right justify-end xl:flex items-center text-white font-medium text-xs"
         data-cy="trading-account-total-table-data"
       >
         <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
         <span v-else>{{ totalBalanceToString }}</span>
       </span>
-      <span class="font-mono text-left xl:hidden">
+      <span class="text-left xl:hidden">
         {{ $t('portfolio.available') }}
       </span>
       <span
-        class="xl:col-span-2 font-mono text-right xl:flex items-center justify-end"
+        class="xl:col-span-2 font-mono text-right xl:flex items-center justify-end text-white font-medium text-xs"
         data-cy="trading-account-available-table-data"
       >
         <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
@@ -54,7 +54,7 @@
         {{ $t('portfolio.marginHold') }}
       </span>
       <span
-        class="xl:col-span-2 font-mono text-right xl:flex items-center justify-end"
+        class="xl:col-span-2 font-mono text-right xl:flex items-center justify-end text-white font-medium text-xs"
         data-cy="trading-account-margin-hold-table-data"
       >
         <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
@@ -66,7 +66,7 @@
         {{ $t('trade.unrealized_pnl') }}
       </span>
       <span
-        class="xl:col-span-2 font-mono text-right xl:flex items-center justify-end"
+        class="xl:col-span-2 font-mono text-right xl:flex items-center justify-end text-white font-medium text-xs"
         data-cy="trading-account-pnl-table-data"
       >
         <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
@@ -88,14 +88,14 @@
         </span>
         <span v-else class="flex items-end justify-end flex-col">
           <span
-            class="leading-4"
+            class="text-white font-medium text-xs"
             data-cy="trading-account-value-usd-table-data"
           >
             {{ totalBalanceInUsdToString }} USD
           </span>
           <span
             v-if="totalBalanceInBtc.gt(0)"
-            class="text-opacity-50 text-gray-200 text-2xs xs:ml-1 leading-4"
+            class="text-gray-500 font-medium text-xs mt-1"
             data-cy="trading-account-value-btc-table-data"
           >
             ≈ {{ totalBalanceInBtcToString }} BTC
@@ -103,11 +103,11 @@
         </span>
       </span>
       <div
-        class="col-span-2 text-right text-primary-500 text-sm flex justify-around sm:justify-end items-center"
+        class="col-span-2 text-right text-primary-500 text-sm flex justify-around sm:justify-end items-center gap-4"
       >
         <nuxt-link
           v-if="spotMarketRoute"
-          class="cursor-pointer"
+          class="cursor-pointer font-medium text-xs"
           data-cy="trading-account-trade-link"
           :to="{ name: 'spot-spot', params: { spot: spotMarketRoute } }"
         >
@@ -117,7 +117,7 @@
         </nuxt-link>
 
         <span
-          class="cursor-pointer ml-6"
+          class="cursor-pointer font-medium text-xs"
           data-cy="trading-account-transfer-link"
           @click="handleTransferClick"
         >

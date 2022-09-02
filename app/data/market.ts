@@ -42,8 +42,7 @@ export const newMarketsSlug = [
   'osmo-usdt-perp',
   'dot-usdt',
   'stx-usdt-perp',
-  'xprt-usdt',
-  'evmos-usdt'
+  'xprt-usdt'
 ]
 
 export const experimentalMarketsSlug = [

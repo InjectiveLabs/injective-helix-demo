@@ -2,6 +2,7 @@ import {
   IndexerGrpcSpotStream,
   SpotOrderbookStreamCallback,
   SpotOrdersStreamCallback,
+  SpotOrderHistoryStreamCallback,
   SpotTradesStreamCallback
 } from '@injectivelabs/sdk-ts'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
@@ -9,7 +10,7 @@ import { streamProvider } from '../../providers/StreamProvider'
 import { ENDPOINTS } from '~/app/utils/constants'
 import { StreamType } from '~/types'
 
-export const spotMarketStream = new IndexerGrpcSpotStream(ENDPOINTS.exchangeApi)
+export const spotMarketStream = new IndexerGrpcSpotStream(ENDPOINTS.indexerApi)
 
 export const streamOrderbook = ({
   marketId,
@@ -95,5 +96,29 @@ export const streamSubaccountOrders = ({
     fn: streamFn,
     args: streamFnArgs,
     key: StreamType.SpotSubaccountOrders
+  })
+}
+
+export const streamSubaccountOrderHistory = ({
+  marketId,
+  subaccountId,
+  callback
+}: {
+  marketId?: string
+  subaccountId?: string
+  callback: SpotOrderHistoryStreamCallback
+}) => {
+  const streamFn =
+    spotMarketStream.streamSpotOrderHistory.bind(spotMarketStream)
+  const streamFnArgs = {
+    ...(subaccountId && { subaccountId }),
+    ...(marketId && { marketId }),
+    callback
+  }
+
+  streamProvider.subscribe({
+    fn: streamFn,
+    args: streamFnArgs,
+    key: StreamType.SpotSubaccountOrderHistory
   })
 }

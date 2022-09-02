@@ -69,18 +69,14 @@ export const actions = actionTree(
         return
       }
 
-      try {
-        const { refereeInfo, referrerInfo } = await getReferralInfo(address)
+      const { refereeInfo, referrerInfo } = await getReferralInfo(address)
 
-        if (refereeInfo) {
-          commit('setRefereeInfo', refereeInfo)
-        }
+      if (refereeInfo) {
+        commit('setRefereeInfo', refereeInfo)
+      }
 
-        if (referrerInfo) {
-          commit('setReferrerInfo', referrerInfo)
-        }
-      } catch (e) {
-        //
+      if (referrerInfo) {
+        commit('setReferrerInfo', referrerInfo)
       }
     },
 
@@ -89,13 +85,9 @@ export const actions = actionTree(
         return
       }
 
-      try {
-        const feeRecipient = await getFeeRecipient(address)
+      const feeRecipient = await getFeeRecipient(address)
 
-        commit('setFeeRecipient', feeRecipient)
-      } catch (e) {
-        //
-      }
+      commit('setFeeRecipient', feeRecipient)
     },
 
     async refer(_, code: string) {

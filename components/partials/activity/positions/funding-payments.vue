@@ -1,52 +1,55 @@
 <template>
   <HocLoading :status="status">
-    <VCardTableWrap>
-      <template #actions>
-        <div
-          class="col-span-12 sm:col-span-6 lg:col-span-4 grid grid-cols-5 gap-4"
-        >
-          <VSearch
-            dense
-            class="col-span-5 sm:col-span-3"
-            :placeholder="$t('trade.search_market')"
-            :search="search"
-            data-cy="universal-table-filter-by-asset-input"
-            @searched="handleInputOnSearch"
-          />
-        </div>
-
-        <div
-          class="col-span-12 grid grid-cols-2 gap-4 sm:hidden mt-4 uppercase text-xs tracking-wide px-2"
-        >
-          <span class="flex items-center gap-1">
-            <span>{{ $t('trade.pair') }}</span>
-            <span>/</span>
-            <span>{{ $t('trade.time') }}</span>
-            <IconInfoTooltip
-              class="ml-2"
-              :tooltip="$t('trade.timestamp_tooltip')"
+    <div class="w-full h-full flex flex-col">
+      <Toolbar>
+        <template #filters>
+          <div class="grid grid-cols-4 items-center gap-4 w-full">
+            <SearchAsset
+              class="col-span-4 sm:col-span-1"
+              :markets="markets"
+              :value="selectedToken"
+              @select="handleSearch"
             />
-          </span>
 
-          <span class="flex items-center justify-end gap-1">
-            <span>
-              {{ $t('fundingPayments.payment') }}
+            <ClearFiltersButton
+              v-if="showClearFiltersButton"
+              @clear="handleClearFilters"
+            />
+          </div>
+        </template>
+
+        <template #actions>
+          <div class="flex items-center justify-between gap-4">
+            <span class="flex items-center gap-1 text-xs">
+              <span>{{ $t('trade.pair') }}</span>
+              <span>/</span>
+              <span>{{ $t('trade.time') }}</span>
+              <IconInfoTooltip
+                class="ml-2"
+                :tooltip="$t('trade.timestamp_tooltip')"
+              />
             </span>
-            <IconInfoTooltip
-              class="ml-2"
-              :tooltip="$t('fundingPayments.paymentTooltip')"
-            />
-          </span>
-        </div>
-      </template>
+
+            <span class="flex items-center justify-end gap-1 text-xs">
+              <span>
+                {{ $t('fundingPayments.payment') }}
+              </span>
+              <IconInfoTooltip
+                class="ml-2"
+                :tooltip="$t('fundingPayments.paymentTooltip')"
+              />
+            </span>
+          </div>
+        </template>
+      </Toolbar>
 
       <!-- mobile table -->
       <TableBody
-        :show-empty="filteredFundingPayments.length === 0"
+        :show-empty="fundingPayments.length === 0"
         class="sm:hidden mt-3 max-h-lg overflow-y-auto"
       >
         <MobileFundingPayment
-          v-for="(fundingPayment, index) in filteredFundingPayments"
+          v-for="(fundingPayment, index) in fundingPayments"
           :key="`mobile-funding-payment-${index}`"
           class="col-span-1"
           :funding-payment="fundingPayment"
@@ -59,12 +62,12 @@
       </TableBody>
 
       <TableWrapper break-md class="mt-4 hidden sm:block">
-        <table v-if="filteredFundingPayments.length > 0" class="table">
+        <table v-if="fundingPayments.length > 0" class="table">
           <FundingPaymentsTableHeader />
           <tbody>
             <tr
               is="FundingPaymentRow"
-              v-for="(fundingPayment, index) in filteredFundingPayments"
+              v-for="(fundingPayment, index) in fundingPayments"
               :key="`funding-payments-${index}-${fundingPayment.marketId}`"
               :funding-payment="fundingPayment"
             />
@@ -76,7 +79,20 @@
           :message="$t('fundingPayments.emptyFundingPayments')"
         />
       </TableWrapper>
-    </VCardTableWrap>
+
+      <Pagination
+        v-if="status.isIdle() && fundingPayments.length > 0"
+        class="mt-4"
+        v-bind="{
+          limit,
+          page,
+          totalPages,
+          totalCount
+        }"
+        @update:limit="handleLimitChangeEvent"
+        @update:page="handlePageChangeEvent"
+      />
+    </div>
   </HocLoading>
 </template>
 
@@ -85,27 +101,44 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import Vue from 'vue'
 import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { FundingPayment } from '@injectivelabs/sdk-ts'
+import { Token } from '@injectivelabs/token-metadata'
 import FundingPaymentsTableHeader from '~/components/partials/common/derivatives/funding-payments-table-header.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import FundingPaymentRow from '~/components/partials/common/derivatives/funding-payment.vue'
 import MobileFundingPayment from '~/components/partials/common/derivatives/mobile-funding-payment.vue'
+import Pagination from '~/components/partials/common/pagination.vue'
+import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
+import SearchAsset from '@/components/partials/activity/common/search-asset.vue'
+import ClearFiltersButton from '@/components/partials/activity/common/clear-filters-button.vue'
+import Toolbar from '@/components/partials/activity/common/toolbar.vue'
 
 export default Vue.extend({
   components: {
     FundingPaymentRow,
     FundingPaymentsTableHeader,
     MobileFundingPayment,
-    TableBody
+    TableBody,
+    Pagination,
+    SearchAsset,
+    ClearFiltersButton,
+    Toolbar
   },
 
   data() {
     return {
       search: '',
-      status: new Status(StatusType.Loading)
+      status: new Status(StatusType.Loading),
+      page: 1,
+      limit: UI_DEFAULT_PAGINATION_LIMIT_COUNT,
+      selectedToken: undefined as Token | undefined
     }
   },
 
   computed: {
+    activeMarketIds(): string[] {
+      return this.$accessor.derivatives.activeMarketIds
+    },
+
     fundingPayments(): FundingPayment[] {
       return this.$accessor.activity.subaccountFundingPayments
     },
@@ -114,41 +147,93 @@ export default Vue.extend({
       return this.$accessor.derivatives.markets
     },
 
-    filteredFundingPayments(): FundingPayment[] {
-      const { fundingPayments, markets, search } = this
+    totalCount(): number {
+      return this.$accessor.activity.subaccountFundingPaymentsPagination.total
+    },
 
-      return fundingPayments.filter((p) => {
-        const market = markets.find((m) => m.marketId === p.marketId)
+    totalPages(): number {
+      const { totalCount, limit } = this
 
-        if (!market || !search) {
-          return true
-        }
+      return Math.ceil(totalCount / limit)
+    },
 
-        const isPartOfSearchFilter = market.ticker
-          .toLowerCase()
-          .includes(search.trim().toLowerCase())
+    showClearFiltersButton(): boolean {
+      return !!this.selectedToken
+    },
 
-        return isPartOfSearchFilter
-      })
+    skip(): number {
+      const { page, limit } = this
+
+      return (page - 1) * limit
     }
   },
 
   mounted() {
-    this.status.setLoading()
-
-    Promise.all([this.$accessor.activity.fetchSubaccountFundingPayments()])
-      .then(() => {
-        //
-      })
-      .catch(this.$onError)
-      .finally(() => {
-        this.status.setIdle()
-      })
+    this.fetchFundingPayments()
   },
 
   methods: {
-    handleInputOnSearch(search: string) {
-      this.search = search
+    fetchFundingPayments(): Promise<void> {
+      const { skip, limit, activeMarketIds: marketIds } = this
+
+      const marketId = this.markets.find((m) => {
+        return (
+          m.baseToken.symbol === this.selectedToken?.symbol ||
+          m.quoteToken.symbol === this.selectedToken?.symbol
+        )
+      })?.marketId
+      this.status.setLoading()
+
+      return Promise.all([
+        this.$accessor.activity.fetchSubaccountFundingPayments({
+          pagination: {
+            skip,
+            limit
+          },
+          filters: {
+            marketId,
+            marketIds
+          }
+        })
+      ])
+        .then(() => {
+          //
+        })
+        .catch(this.$onError)
+        .finally(() => {
+          this.status.setIdle()
+        })
+    },
+
+    handleLimitChangeEvent(limit: number) {
+      this.limit = limit
+
+      this.resetPagination()
+      this.fetchFundingPayments()
+    },
+
+    handlePageChangeEvent(page: number) {
+      this.page = page
+
+      this.fetchFundingPayments()
+    },
+
+    handleSearch(token: Token) {
+      this.selectedToken = token
+
+      this.resetPagination()
+      this.fetchFundingPayments()
+    },
+
+    handleClearFilters() {
+      this.selectedToken = undefined
+
+      this.resetPagination()
+      this.fetchFundingPayments()
+    },
+
+    resetPagination() {
+      this.page = 1
     }
   }
 })

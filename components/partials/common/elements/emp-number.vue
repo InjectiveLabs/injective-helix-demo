@@ -5,7 +5,7 @@
     :decimals="formattedNumberWithDecimals.decimals"
     :class="classes"
   >
-    <span slot="addon" class="text-xs text-gray-400 ml-1">
+    <span slot="addon" class="text-sm text-gray-450 ml-1">
       <slot></slot>
     </span>
   </VNumber>
@@ -58,12 +58,10 @@ export default Vue.extend({
       } = this
       const classes = ['flex', 'items-end', 'justify-center']
 
-      if (number.toFixed(decimals).length > 16 + decimals || sm) {
-        classes.push('text-xs')
-      } else if (number.toFixed(decimals).length > 12 + decimals) {
+      if (number.toFixed(decimals).length > 12 + decimals || sm) {
         classes.push('text-sm')
       } else {
-        classes.push('text-lg')
+        classes.push('text-xl')
       }
 
       return classes.join(' ')

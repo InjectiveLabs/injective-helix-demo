@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-900 p-3 rounded-lg flex items-center">
+  <div class="bg-gray-900 p-4 rounded flex items-center">
     <img
       v-if="!hideIcon"
       :src="networkMeta.icon"

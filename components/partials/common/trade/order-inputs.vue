@@ -1,9 +1,10 @@
 <template>
   <div>
     <VInput
-      v-if="!tradingTypeMarket"
+      v-if="tradingTypeLimit"
       id="input-price"
       ref="input-price"
+      class="mb-6"
       :value="inputPrice"
       :placeholder="priceStep"
       :label="$t('trade.price')"
@@ -13,12 +14,53 @@
       :max-decimals="market ? market.quoteToken.decimals : 6"
       min="0"
       data-cy="trading-page-price-input"
+      show-addon
       @input="onPriceChange"
     >
       <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
     </VInput>
 
-    <div class="flex gap-3 mt-6">
+    <VInput
+      v-if="tradingTypeStopLimit || tradingTypeStopMarket"
+      id="trigger-price"
+      ref="trigger-price"
+      class="mb-6"
+      :value="inputTriggerPrice"
+      :placeholder="priceStep"
+      :label="$t('trade.trigger_price')"
+      :disabled="tradingTypeMarket || tradingTypeLimit"
+      type="number"
+      :step="priceStep"
+      :max-decimals="market ? market.quoteToken.decimals : 6"
+      min="0"
+      data-cy="trading-page-trigger-price-input"
+      show-addon
+      @input="onTriggerPriceChange"
+    >
+      <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
+    </VInput>
+
+    <VInput
+      v-if="tradingTypeStopLimit"
+      id="limit-price"
+      ref="limit-price"
+      class="mb-6"
+      :value="inputPrice"
+      :placeholder="priceStep"
+      :label="$t('trade.limit_price')"
+      :disabled="!tradingTypeStopLimit"
+      type="number"
+      :step="priceStep"
+      :max-decimals="market ? market.quoteToken.decimals : 6"
+      min="0"
+      data-cy="trading-page-price-input"
+      show-addon
+      @input="onPriceChange"
+    >
+      <span slot="addon">{{ market.quoteToken.symbol.toUpperCase() }}</span>
+    </VInput>
+
+    <div class="flex gap-3">
       <VInput
         ref="input-amount"
         v-model="inputBaseAmount"
@@ -41,6 +83,7 @@
       </VInput>
 
       <VInput
+        v-if="!tradingTypeMarket"
         ref="input-quote-amount"
         v-model="inputQuoteAmount"
         :custom-handler="true"
@@ -116,8 +159,13 @@
         quoteAmount: inputQuoteAmountToBigNumber,
         quoteAvailableBalance,
         sells,
+        tradingTypeLimit,
         tradingTypeMarket,
-        worstPrice
+        tradingTypeStopLimit,
+        tradingTypeStopMarket,
+        worstPrice,
+        triggerPrice,
+        markPrice
       }"
       @update:hasInputErrors="updateHasInputErrors"
     />
@@ -143,13 +191,16 @@
     />
 
     <AdvancedSettings
-      :trading-type-market="tradingTypeMarket"
+      :trading-type="tradingType"
       :slippage-tolerance="inputSlippageTolerance"
       :post-only="inputPostOnly"
       :reduce-only="inputReduceOnly"
-      :show-reduce-only="showReduceOnly"
+      :reduce-only-disabled="!showReduceOnly"
       :leverage="inputLeverage"
       :has-advanced-settings-errors="hasAdvancedSettingsErrors"
+      :is-conditional-order="isConditionalOrder"
+      :is-spot="isSpot"
+      :form-id="formId"
       @set:postOnly="setPostOnly"
       @set:reduceOnly="setReduceOnly"
       @set:slippageTolerance="setSlippageTolerance"
@@ -204,13 +255,28 @@ export default Vue.extend({
       required: true
     },
 
-    tradingTypeMarket: {
-      type: Boolean,
+    tradingType: {
+      type: String as PropType<TradeExecutionType>,
       required: true
     },
 
-    tradingType: {
-      type: String as PropType<TradeExecutionType>,
+    tradingTypeMarket: {
+      type: Boolean as PropType<boolean>,
+      required: true
+    },
+
+    tradingTypeLimit: {
+      type: Boolean as PropType<boolean>,
+      required: true
+    },
+
+    tradingTypeStopMarket: {
+      type: Boolean as PropType<boolean>,
+      required: true
+    },
+
+    tradingTypeStopLimit: {
+      type: Boolean as PropType<boolean>,
       required: true
     },
 
@@ -299,6 +365,16 @@ export default Vue.extend({
       default: undefined
     },
 
+    triggerPrice: {
+      type: Object as PropType<BigNumberInBase>,
+      default: () => ZERO_IN_BASE
+    },
+
+    markPrice: {
+      type: Object as PropType<BigNumberInBase>,
+      default: undefined
+    },
+
     hasInputErrors: {
       type: Boolean,
       required: true
@@ -367,6 +443,16 @@ export default Vue.extend({
     leverage: {
       type: String,
       default: undefined
+    },
+
+    isConditionalOrder: {
+      type: Boolean,
+      required: true
+    },
+
+    formId: {
+      type: Number,
+      required: true
     }
   },
 
@@ -376,6 +462,7 @@ export default Vue.extend({
       inputBaseAmount: '',
       inputQuoteAmount: '',
       inputPrice: '',
+      inputTriggerPrice: '',
       inputPostOnly: false,
       inputProportionalPercentage: 0,
       inputSlippageTolerance: '0.5',
@@ -501,19 +588,28 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(1).shiftedBy(-market.priceDecimals).toFixed()
+    },
+
+    defaultPrice(): string {
+      const { tradingTypeStopLimit, lastTradedPrice } = this
+
+      return tradingTypeStopLimit ? '' : lastTradedPrice.toString()
     }
   },
 
   watch: {
     lastTradedPrice: {
       handler(newPrice: BigNumberInBase) {
-        const { price, market } = this
+        const { price, market, tradingTypeStopLimit } = this
 
-        if (!market) {
+        const hasNoInputPrice = new BigNumberInBase(price).lte(0) || !price
+        const hasLatestLastTradedPrice = newPrice.gt('0')
+
+        if (!market || tradingTypeStopLimit) {
           return
         }
 
-        if (!price && !newPrice.eq('0')) {
+        if (hasNoInputPrice && hasLatestLastTradedPrice) {
           const formattedPrice = newPrice.toFixed(market.priceDecimals)
 
           this.inputPrice = formattedPrice
@@ -524,6 +620,12 @@ export default Vue.extend({
     },
 
     price(newPrice: string) {
+      const { tradingTypeStopLimit } = this
+
+      if (tradingTypeStopLimit) {
+        return
+      }
+
       this.inputPrice = newPrice
     },
 
@@ -535,7 +637,17 @@ export default Vue.extend({
       } else if (averagePriceOption === AveragePriceOptions.BaseAmount) {
         this.onAmountChange(inputBaseAmount)
       }
+    },
+
+    formId() {
+      this.reset()
     }
+  },
+
+  mounted() {
+    const { amountStep } = this
+
+    this.onAmountChange(amountStep)
   },
 
   methods: {
@@ -605,6 +717,7 @@ export default Vue.extend({
           averagePriceOption === AveragePriceOptions.Percentage &&
           !reduceOnly
         ) {
+          // todo: refactor this to ideally pass props to the child component and use a computed property from there
           this.$percentageOptions.updateBaseAndQuoteAmountFromPercentage()
         }
       }
@@ -649,42 +762,95 @@ export default Vue.extend({
     },
 
     onPriceChange(price: string = '') {
-      const { hasAmount, market, isSpot, averagePriceOption } = this
-
+      const {
+        hasAmount,
+        market,
+        isSpot,
+        averagePriceOption,
+        inputTriggerPrice,
+        tradingTypeStopLimit
+      } = this
       if (!market) {
         return
       }
 
+      const triggerPriceToBigNumber = new BigNumberInBase(inputTriggerPrice)
       const formattedPrice = formatPriceToAllowableDecimals(
         price,
         market.priceDecimals
       )
 
       this.inputPrice = formattedPrice
-
       this.$emit('update:price', formattedPrice)
 
-      if (hasAmount && averagePriceOption === AveragePriceOptions.Percentage) {
+      if (!hasAmount) {
+        return
+      }
+
+      if (averagePriceOption === AveragePriceOptions.Percentage) {
+        // todo: refactor this to ideally pass props to the child component and use a computed property from there
         this.$percentageOptions.updateBaseAmountBasedOnPercentage()
         this.$percentageOptions.updateQuoteAmountBasedOnPercentage()
         return
       }
 
-      if (hasAmount && averagePriceOption === AveragePriceOptions.BaseAmount) {
+      if (averagePriceOption === AveragePriceOptions.BaseAmount) {
+        if (tradingTypeStopLimit && triggerPriceToBigNumber.lte(0)) {
+          return
+        }
+
         return isSpot
           ? this.updateSpotQuoteAmountFromBase()
           : this.updateDerivativesQuoteAmountFromBase()
       }
 
-      if (hasAmount && averagePriceOption === AveragePriceOptions.QuoteAmount) {
+      if (averagePriceOption === AveragePriceOptions.QuoteAmount) {
         return isSpot
           ? this.updateSpotBaseAmountFromQuote()
           : this.updateDerivativesBaseAmountFromQuote()
       }
     },
 
+    onTriggerPriceChange(triggerPrice: string = '') {
+      const { averagePriceOption, hasAmount, market } = this
+
+      if (!market) {
+        return
+      }
+
+      const formattedTriggerPrice = formatPriceToAllowableDecimals(
+        triggerPrice,
+        market.priceDecimals
+      )
+
+      this.inputTriggerPrice = formattedTriggerPrice
+      this.$emit('update:trigger-price', formattedTriggerPrice)
+
+      if (hasAmount && averagePriceOption === AveragePriceOptions.Percentage) {
+        // todo: refactor this to ideally pass props to the child component and use a computed property from there
+        this.$percentageOptions.updateBaseAmountBasedOnPercentage()
+        this.$percentageOptions.updateQuoteAmountBasedOnPercentage()
+        return
+      }
+
+      if (hasAmount && averagePriceOption === AveragePriceOptions.BaseAmount) {
+        this.updateDerivativesQuoteAmountFromBase()
+      }
+
+      if (hasAmount && averagePriceOption === AveragePriceOptions.QuoteAmount) {
+        this.updateDerivativesBaseAmountFromQuote()
+      }
+    },
+
     onAmountChange(amount: string = '') {
-      const { hasPrice, market, isSpot, tradingTypeMarket } = this
+      const {
+        hasPrice,
+        market,
+        isSpot,
+        tradingTypeMarket,
+        tradingTypeStopLimit,
+        inputTriggerPrice
+      } = this
 
       if (!market) {
         return
@@ -692,20 +858,22 @@ export default Vue.extend({
 
       this.$emit('update:averagePriceOption', AveragePriceOptions.BaseAmount)
 
+      const triggerPriceToBigNumber = new BigNumberInBase(inputTriggerPrice)
       const formattedBaseAmount = formatAmountToAllowableDecimals(
         amount,
         market.quantityDecimals
       )
 
       this.inputBaseAmount = formattedBaseAmount
-
       this.$emit('update:amount', formattedBaseAmount)
 
       this.$emit('update:proportionalPercentage', 0)
 
       if (isSpot) {
         this.updateSpotQuoteAmountFromBase()
-      } else {
+      }
+
+      if (!tradingTypeStopLimit || triggerPriceToBigNumber.gt(0)) {
         this.updateDerivativesQuoteAmountFromBase()
       }
 
@@ -733,7 +901,6 @@ export default Vue.extend({
       )
 
       this.inputQuoteAmount = formattedQuoteAmount
-
       this.$emit('update:quote-amount', formattedQuoteAmount)
       this.$emit('update:proportionalPercentage', 0)
 
@@ -779,32 +946,38 @@ export default Vue.extend({
         executionPrice.times(feeMultiplier)
       )
 
-      if (baseAmount.gt('0') && baseAmount.isFinite()) {
+      if (baseAmount.gt(0) && baseAmount.isFinite()) {
         const formattedBaseAmount = baseAmount.toFixed(
           market.quantityDecimals,
           BigNumberInBase.ROUND_DOWN
         )
 
         this.inputBaseAmount = formattedBaseAmount
-
         this.$emit('update:amount', formattedBaseAmount)
       } else {
-        this.inputBaseAmount = ''
-
-        this.$emit('update:amount', '')
+        // updates inputBaseAmount also if a tradingType changes
+        this.inputBaseAmount = this.amountStep
+        this.$emit('update:amount', this.amountStep)
       }
     },
 
     updateDerivativesBaseAmountFromQuote() {
-      const { inputQuoteAmountToBigNumber, executionPrice, market } = this
+      const {
+        inputQuoteAmountToBigNumber,
+        executionPrice,
+        market,
+        tradingTypeStopMarket,
+        triggerPrice
+      } = this
 
       if (!market) {
         return
       }
 
-      const baseAmount = inputQuoteAmountToBigNumber.div(executionPrice)
+      const price = tradingTypeStopMarket ? triggerPrice : executionPrice
+      const baseAmount = inputQuoteAmountToBigNumber.div(price)
 
-      if (baseAmount.gt('0')) {
+      if (baseAmount.gt(0)) {
         const formattedBaseAmount = baseAmount.toFixed(
           market.quantityDecimals,
           BigNumberInBase.ROUND_DOWN
@@ -814,9 +987,9 @@ export default Vue.extend({
 
         this.$emit('update:amount', formattedBaseAmount)
       } else {
-        this.inputBaseAmount = ''
-
-        this.$emit('update:amount', '')
+        // updates inputBaseAmount also if a tradingType changes
+        this.inputBaseAmount = this.amountStep
+        this.$emit('update:amount', this.amountStep)
       }
     },
 
@@ -854,7 +1027,6 @@ export default Vue.extend({
         )
 
         this.inputQuoteAmount = formattedQuoteAmount
-
         this.$emit('update:quote-amount', formattedQuoteAmount)
       } else {
         this.inputQuoteAmount = ''
@@ -864,22 +1036,38 @@ export default Vue.extend({
     },
 
     updateDerivativesQuoteAmountFromBase() {
-      const { inputBaseAmountToBigNumber, executionPrice, market } = this
+      const {
+        executionPrice,
+        inputBaseAmountToBigNumber,
+        market,
+        tradingTypeStopMarket,
+        tradingTypeStopLimit,
+        triggerPrice
+      } = this
 
       if (!market) {
         return
       }
 
-      const quoteAmount = inputBaseAmountToBigNumber.times(executionPrice)
+      const price = tradingTypeStopMarket ? triggerPrice : executionPrice
+      const quoteAmount = inputBaseAmountToBigNumber.times(price)
 
-      if (quoteAmount.gt('0')) {
+      if (
+        (tradingTypeStopMarket || tradingTypeStopLimit) &&
+        triggerPrice.lte(0)
+      ) {
+        this.inputQuoteAmount = ''
+        this.$emit('update:quote-amount', '')
+        return
+      }
+
+      if (quoteAmount.gt(0)) {
         const formattedQuoteAmount = quoteAmount.toFixed(
           market.priceDecimals,
           BigNumberInBase.ROUND_DOWN
         )
 
         this.inputQuoteAmount = formattedQuoteAmount
-
         this.$emit('update:quote-amount', formattedQuoteAmount)
       } else {
         this.inputQuoteAmount = ''
@@ -903,6 +1091,17 @@ export default Vue.extend({
 
     updateHasInputErrors(hasInputErrors: boolean) {
       this.$emit('update:hasInputErrors', hasInputErrors)
+    },
+
+    reset(): void {
+      this.onQuoteAmountChange('')
+      this.setPostOnly(false)
+      this.setReduceOnly(false)
+      this.setSlippageTolerance('0.5')
+      this.onPriceChange(this.defaultPrice)
+      this.onTriggerPriceChange('')
+      this.onAmountChange(this.amountStep)
+      this.onLeverageChange('1')
     }
   }
 })

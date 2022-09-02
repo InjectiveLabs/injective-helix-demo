@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full xs:w-1/2 font-bold mx-auto">
+  <div class="w-full">
     <p class="mb-4">
       {{ $t('bridge.setAllowanceFor', { asset: tokenWithBalance.symbol }) }}
     </p>
@@ -7,7 +7,7 @@
       lg
       primary
       :status="status"
-      class="w-full"
+      class="w-full rounded"
       data-cy="allowance-modal-set-button"
       @click.stop="handleClickOnSetAllowance"
     >

@@ -1,18 +1,31 @@
 <template>
-  <li v-if="market" class="flex h-6 items-center last:mb-0 first:mt-0 relative">
+  <li
+    v-if="market"
+    :data-cy="`trades-table-${
+      trade.tradeDirection === TradeDirection.Buy ? 'buy' : 'sell'
+    }-row`"
+    class="flex h-6 items-center last:mb-0 first:mt-0 relative"
+  >
     <span
       class="w-1/3 text-xs px-2 cursor-pointer text-right font-mono"
+      data-cy="trades-table-price-span"
       :class="{
-        'text-aqua-500': trade.tradeDirection === TradeDirection.Buy,
+        'text-green-500': trade.tradeDirection === TradeDirection.Buy,
         'text-red-500': trade.tradeDirection === TradeDirection.Sell
       }"
     >
       {{ priceToFormat }}
     </span>
-    <span class="w-1/3 text-xs px-2 text-right font-mono">
+    <span
+      class="w-1/3 text-xs px-2 text-right font-mono"
+      data-cy="trades-table-quantity-span"
+    >
       {{ quantityToFormat }}
     </span>
-    <span class="w-1/3 text-xs px-2 text-gray-500 text-right font-mono">
+    <span
+      class="w-1/3 text-xs px-2 text-gray-500 text-right font-mono"
+      data-cy="trades-table-time-span"
+    >
       {{ time }}
     </span>
   </li>

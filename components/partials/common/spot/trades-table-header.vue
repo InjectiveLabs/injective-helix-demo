@@ -1,5 +1,5 @@
 <template>
-  <thead class="bg-gray-800">
+  <thead class="bg-helixGray-950">
     <tr>
       <th class="text-left">
         <div class="flex items-center">
@@ -25,28 +25,19 @@
       <th>
         <div class="flex items-center justify-end">
           <span>{{ $t('trade.amount') }}</span>
-          <IconInfoTooltip
-            class="ml-2"
-            :tooltip="$t('trade.amount_tooltip')"
-          />
+          <IconInfoTooltip class="ml-2" :tooltip="$t('trade.amount_tooltip')" />
         </div>
       </th>
       <th>
         <div class="flex items-center justify-end">
           {{ $t('trade.fee') }}
-          <IconInfoTooltip
-            class="ml-2"
-            :tooltip="$t('trade.fees_tooltip')"
-          />
+          <IconInfoTooltip class="ml-2" :tooltip="$t('trade.fees_tooltip')" />
         </div>
       </th>
       <th>
         <div class="flex items-center justify-end">
           <span>{{ $t('trade.total') }}</span>
-          <IconInfoTooltip
-            class="ml-2"
-            :tooltip="$t('trade.total_tooltip')"
-          />
+          <IconInfoTooltip class="ml-2" :tooltip="$t('trade.total_tooltip')" />
         </div>
       </th>
     </tr>

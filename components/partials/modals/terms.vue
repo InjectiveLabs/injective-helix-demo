@@ -31,10 +31,10 @@
         </li>
       </ul>
       <div class="mt-6 flex items-center justify-center">
-        <VButton lg class="mr-4" primary @click.stop="handleConfirm">
+        <VButton lg class="mr-4 rounded" primary @click.stop="handleConfirm">
           {{ $t('common.confirm') }}
         </VButton>
-        <VButton lg class="mr-4" text-red @click.stop="handleCancel">
+        <VButton lg class="mr-4 rounded" text-red @click.stop="handleCancel">
           {{ $t('common.cancel') }}
         </VButton>
       </div>

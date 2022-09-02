@@ -53,6 +53,12 @@ export default Vue.extend({
       default: false
     },
 
+    green: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+
     red: {
       type: Boolean,
       required: false,
@@ -68,7 +74,7 @@ export default Vue.extend({
     classes(): string {
       const classes = [
         'uppercase',
-        'rounded-2xl',
+        'rounded',
         'text-xs',
         'tracking-wide',
         'outline-none',
@@ -92,6 +98,8 @@ export default Vue.extend({
           classes.push('text-primary-500', 'border', 'border-primary-500')
         } else if (this.aqua) {
           classes.push('text-aqua-500', 'border', 'border-aqua-500')
+        } else if (this.green) {
+          classes.push('text-green-500', 'border', 'border-green-500')
         } else if (this.red) {
           classes.push('text-red-500', 'border', 'border-red-500')
         } else if (this.text) {

@@ -12,7 +12,7 @@ import {
   getAddressFromInjectiveAddress,
   MsgSendToEth
 } from '@injectivelabs/sdk-ts'
-import { Token, Erc20Token } from '@injectivelabs/token-metadata'
+import { Erc20Token, Token } from '@injectivelabs/token-metadata'
 import {
   msgBroadcastClient,
   tokenPrice,
@@ -231,7 +231,7 @@ export const actions = actionTree(
     ) {
       const { address } = this.app.$accessor.wallet
       const { gasPrice } = this.app.$accessor.app
-       const tokenAddress = tokenWithBalance.address as keyof Erc20Token
+      const tokenAddress = tokenWithBalance.address as keyof Erc20Token
 
       await this.app.$accessor.wallet.validate()
 

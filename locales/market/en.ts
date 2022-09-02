@@ -9,7 +9,8 @@ export default {
     emptyHeader: 'No markets found',
     emptyDescription: 'Try another search term or you can propose some!',
     poweredBy: 'Powered by',
-    vol: 'Vol'
+    vol: 'Vol',
+    quote: 'Quote'
   },
 
   marketPage: {
@@ -20,7 +21,7 @@ export default {
     noChainBalance: 'We cannot find any token balances for your address.',
     noChainBalanceNote: 'Use Injective Bridge to transfer assets to Injective.',
     noTradingAccountBalance:
-      'Transfer to your Injective Trading Account to start trading on Injective Exchange.',
+      'Transfer to your Injective Trading Account to start trading on Helix.',
     startTrading: 'Start Trading!',
     availableBalance: 'Available {asset}',
     transferToTrade: 'Transfer to trade',

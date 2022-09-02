@@ -9,10 +9,10 @@
       </span>
     </template>
     <template slot="title">
-      <div class="flex items-center justify-center">
+      <div class="flex items-center justify-center text-gray-450">
         {{ $t('trade.disqualified_markets') }}
         <IconInfoTooltip
-          class="ml-2"
+          class="ml-2 text-gray-450"
           :tooltip="$t('trade.disqualified_markets_tooltip')"
         />
       </div>

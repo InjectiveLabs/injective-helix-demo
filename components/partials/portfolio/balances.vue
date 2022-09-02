@@ -23,12 +23,12 @@
 
         <IconWallet slot="icon" class="w-6 h-auto" />
 
-        <div class="text-right">
+        <div class="text-right h-full">
           <p class="text-gray-500 text-xs uppercase mb-2 tracking-wider">
             {{ $t('portfolio.walletValue') }}
           </p>
           <p
-            class="text-lg 3md:text-2xl"
+            class="text-lg 3md:text-2xl font-mono"
             data-cy="wallet-value-usd-text-content-parent"
           >
             <span v-if="status.isLoading()">&mdash; USD</span>
@@ -65,7 +65,7 @@
             {{ $t('portfolio.portfolioValue') }}
           </p>
           <p
-            class="text-lg 3md:text-2xl"
+            class="text-lg 3md:text-2xl font-mono"
             data-cy="trading-account-total-usd-text-content"
           >
             <span v-if="status.isLoading()">&mdash; USD</span>
@@ -73,21 +73,25 @@
             <span v-else>{{ tradingAccountBalancesToString }} USD</span>
           </p>
           <p
-            class="text-sm mt-2 text-gray-500"
+            class="text-sm mt-2 text-gray-500 font-mono"
             data-cy="trading-account-available-usd-text-content"
           >
             <span v-if="status.isLoading()">&mdash; USD</span>
             <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
             <span v-else>
-              {{ $t('common.available') }}
-              {{ totalTradingAccountAvailableBalancesToString }} USD
+              <span class="text-gray-500 text-xs uppercase tracking-wider">{{
+                $t('common.available')
+              }}</span>
+              <span class="font-mono">
+                {{ totalTradingAccountAvailableBalancesToString }} USD
+              </span>
             </span>
           </p>
         </div>
       </VCardSelect>
     </div>
 
-    <div class="w-full mt-6 relative">
+    <div class="w-full mt-14 relative">
       <portal to="account-summary">
         <AccountSummary
           :status="status"
@@ -444,7 +448,8 @@ export default Vue.extend({
       // set up streaming
       this.$accessor.account.streamSubaccountBalances(),
       this.$accessor.positions.streamSubaccountPositions(),
-      this.$accessor.derivatives.streamSubaccountOrders()
+      this.$accessor.derivatives.streamSubaccountOrders(),
+      this.$accessor.derivatives.streamSubaccountOrderHistory()
     ])
       .then(() => {
         //
