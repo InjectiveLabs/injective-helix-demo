@@ -24,13 +24,10 @@ declare module 'vue/types/vue' {
     $onConfirm: (e: string, cb: Function) => void
     $router: VueRouter
     $accessor: typeof accessorType
-<<<<<<< HEAD
-=======
     $amplitude: {
       track: TrackAmplitudeFn
     }
     $attrs: Record<string, any>
->>>>>>> helix/master
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -43,12 +40,9 @@ declare module '@nuxt/types' {
   interface NuxtAppOptions {
     $accessor: typeof accessorType
     $toast: Toasted
-<<<<<<< HEAD
-=======
     $amplitude: {
       track: TrackAmplitudeFn
     }
     $attrs: Record<string, any>
->>>>>>> helix/master
   }
 }

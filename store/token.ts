@@ -12,11 +12,7 @@ import {
   getAddressFromInjectiveAddress,
   MsgSendToEth
 } from '@injectivelabs/sdk-ts'
-<<<<<<< HEAD
-import { Token, Erc20Token } from '@injectivelabs/token-metadata'
-=======
 import { Erc20Token, Token } from '@injectivelabs/token-metadata'
->>>>>>> helix/master
 import {
   msgBroadcastClient,
   tokenPrice,
@@ -168,10 +164,6 @@ export const actions = actionTree(
         uniqueDenomsNotInBankBalances.map(async (denom) => {
           const token = await tokenService.getDenomToken(denom)
           const erc20Token = token as Erc20Token
-<<<<<<< HEAD
-=======
-
->>>>>>> helix/master
           const tokenBalance = await web3Client.fetchTokenBalanceAndAllowance({
             address,
             contractAddress: erc20Token.address
@@ -239,11 +231,7 @@ export const actions = actionTree(
     ) {
       const { address } = this.app.$accessor.wallet
       const { gasPrice } = this.app.$accessor.app
-<<<<<<< HEAD
-       const tokenAddress = tokenWithBalance.address as keyof Erc20Token
-=======
       const tokenAddress = tokenWithBalance.address as keyof Erc20Token
->>>>>>> helix/master
 
       await this.app.$accessor.wallet.validate()
 
@@ -260,21 +248,11 @@ export const actions = actionTree(
       })
 
       const { erc20TokensWithBalanceAndPriceFromBank } = state
-<<<<<<< HEAD
       const token = erc20TokensWithBalanceAndPriceFromBank.find((token) => {
         const erc20Token = token as Erc20Token
 
         return erc20Token.address.toLowerCase() === tokenAddress.toLowerCase()
       })
-=======
-      const token = erc20TokensWithBalanceAndPriceFromBank.find(
-        (token) => {
-          const erc20Token = token as Erc20Token
-
-          return erc20Token.address.toLowerCase() === tokenAddress.toLowerCase()
-        }
-      )
->>>>>>> helix/master
       const index = erc20TokensWithBalanceAndPriceFromBank.findIndex(
         (token) => {
           const erc20Token = token as Erc20Token

@@ -2,11 +2,8 @@ import { actionTree, getterTree } from 'typed-vuex'
 import {
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
-<<<<<<< HEAD
-=======
   UiMarketHistory,
   UiMarketsHistoryTransformer,
->>>>>>> helix/master
   UiSpotMarketSummary,
   UiSpotMarketWithToken,
   zeroSpotMarketSummary,
@@ -18,15 +15,11 @@ import {
   FeeDiscountSchedule
 } from '@injectivelabs/sdk-ts'
 import { Token } from '@injectivelabs/token-metadata'
-<<<<<<< HEAD
-import { exchangeApi, tokenService } from '~/app/Services'
-=======
 import {
   exchangeApi,
   indexerRestMarketChronosApi,
   tokenService
 } from '~/app/Services'
->>>>>>> helix/master
 import { upcomingMarkets, deprecatedMarkets } from '~/app/data/market'
 import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 
@@ -50,12 +43,8 @@ const initialStateFactory = () => ({
   >,
   deprecatedMarketsSummaries: deprecatedMarkets.map((m) =>
     zeroSpotMarketSummary(m.marketId)
-<<<<<<< HEAD
-  ) as Array<UiSpotMarketSummary | UiDerivativeMarketSummary>
-=======
   ) as Array<UiSpotMarketSummary | UiDerivativeMarketSummary>,
   marketsHistory: [] as UiMarketHistory[]
->>>>>>> helix/master
 })
 
 const initialState = initialStateFactory()
@@ -86,12 +75,8 @@ export const state = () => ({
   >,
   deprecatedMarketsSummaries: initialState.deprecatedMarketsSummaries as Array<
     UiSpotMarketSummary | UiDerivativeMarketSummary
-<<<<<<< HEAD
-  >
-=======
   >,
   marketsHistory: initialState.marketsHistory as UiMarketHistory[]
->>>>>>> helix/master
 })
 
 export type ExchangeStoreState = ReturnType<typeof state>
@@ -140,8 +125,6 @@ export const mutations = {
     state.pendingTradeRewardsPoints = tradeRewardsPoints
   },
 
-<<<<<<< HEAD
-=======
   setMarketsHistory(
     state: ExchangeStoreState,
     marketsHistory: UiMarketHistory[]
@@ -149,7 +132,6 @@ export const mutations = {
     state.marketsHistory = [...state.marketsHistory, ...marketsHistory]
   },
 
->>>>>>> helix/master
   reset(state: ExchangeStoreState) {
     const initialState = initialStateFactory()
 
@@ -298,8 +280,6 @@ export const actions = actionTree(
       commit('setPendingTradeRewardPoints', rewards)
     },
 
-<<<<<<< HEAD
-=======
     async getMarketsHistory(
       { state, commit },
       {
@@ -333,7 +313,6 @@ export const actions = actionTree(
       commit('setMarketsHistory', marketsHistoryToUiMarketsHistory)
     },
 
->>>>>>> helix/master
     async reset({ commit }) {
       await Promise.resolve(commit('reset'))
     }
