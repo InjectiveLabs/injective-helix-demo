@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-2 w-px h-4 bg-gray-700"></div>
+  <div class="xl:mx-2 w-px h-4 bg-gray-700"></div>
 </template>
 
 <script lang="ts">

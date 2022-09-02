@@ -28,7 +28,7 @@
           {{ $t('trade.side') }} / {{ $t('trade.market') }}
         </span>
         <span
-          class="text-red-550 leading-5 cursor-pointer"
+          class="text-red-500 cursor-pointer"
           data-cy="trading-account-positions-table-cancel-all-button"
           @click.stop="handleClosePositions"
         >
@@ -45,8 +45,9 @@
           "
           data-cy="trading-account-positions-table-cancel-all-button"
           red-outline
-          md
+          sm
           :status="status"
+          class="rounded"
           @click.stop="handleClosePositions"
         >
           {{ $t('trade.closeAllPositions') }}

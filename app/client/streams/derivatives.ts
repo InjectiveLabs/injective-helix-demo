@@ -2,6 +2,10 @@ import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import {
   DerivativeOrderbookStreamCallback,
   DerivativeOrdersStreamCallback,
+<<<<<<< HEAD
+=======
+  DerivativeOrderHistoryStreamCallback,
+>>>>>>> helix/master
   DerivativeTradesStreamCallback,
   IndexerGrpcDerivativesStream,
   IndexerGrpcOracleStream,
@@ -19,9 +23,15 @@ import { ENDPOINTS } from '~/app/utils/constants'
 import { StreamType } from '~/types'
 
 export const derivativesMarketStream = new IndexerGrpcDerivativesStream(
+<<<<<<< HEAD
   ENDPOINTS.exchangeApi
 )
 export const oracleStream = new IndexerGrpcOracleStream(ENDPOINTS.exchangeApi)
+=======
+  ENDPOINTS.indexerApi
+)
+export const oracleStream = new IndexerGrpcOracleStream(ENDPOINTS.indexerApi)
+>>>>>>> helix/master
 export const streamOrderbook = ({
   marketId,
   callback
@@ -117,6 +127,34 @@ export const streamSubaccountOrders = ({
   })
 }
 
+<<<<<<< HEAD
+=======
+export const streamSubaccountOrderHistory = ({
+  marketId,
+  subaccountId,
+  callback
+}: {
+  marketId?: string
+  subaccountId?: string
+  callback: DerivativeOrderHistoryStreamCallback
+}) => {
+  const streamFn = derivativesMarketStream.streamDerivativeOrderHistory.bind(
+    derivativesMarketStream
+  )
+  const streamFnArgs = {
+    ...(subaccountId && { subaccountId }),
+    ...(marketId && { marketId }),
+    callback
+  }
+
+  streamProvider.subscribe({
+    fn: streamFn,
+    args: streamFnArgs,
+    key: StreamType.DerivativesSubaccountOrderHistory
+  })
+}
+
+>>>>>>> helix/master
 export const streamSubaccountPositions = ({
   subaccountId,
   marketId,

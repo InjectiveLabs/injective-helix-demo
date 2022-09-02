@@ -6,7 +6,7 @@
       <nuxt-link class="flex items-center gap-1" :to="marketRoute">
         <span
           :class="{
-            'text-aqua-500': trade.tradeDirection === TradeDirection.Buy,
+            'text-green-500': trade.tradeDirection === TradeDirection.Buy,
             'text-red-500': trade.tradeDirection === TradeDirection.Sell
           }"
         >

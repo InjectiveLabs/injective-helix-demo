@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 # 🌟 Injective DEX
 
 _Decentralized Derivatives Trading. Any Market. Anytime. Anywhere._
 
 [Get a taste of the UI](https://injective.exchange)
+=======
+# 🌟 Injective Helix
+
+_Helix | The Premier Decentralized Spot and Derivatives Exchange_
+
+[Get a taste of the UI](https://helixapp.com)
+>>>>>>> helix/master
 
 ## ✨ Features
 
@@ -50,9 +58,29 @@ More details about how to deploy a Nuxt project can be found on their docs.
 
 Reach out to us at one of the following places!
 
+<<<<<<< HEAD
 - Website at <a href="https://injectiveprotocol.com" target="_blank">`injectiveprotocol.com`</a>
 - Twitter at <a href="https://twitter.com/Injective_" target="_blank">`@Injective`</a>
+=======
+- Website at <a href="https://injective.com" target="_blank">`injective.com`</a>
+- Website at <a href="https://injectivelabs.org" target="_blank">`injectivelabs.org`</a>
+- Twitter at <a href="https://twitter.com/Injective_" target="_blank">`@Injective`</a>
+- Twitter at <a href="https://twitter.com/InjectiveLabs" target="_blank">`@InjectiveLabs`</a>
+- Discord at <a href="https://discord.com/invite/NK4qdbv" target="_blank">`Injective Discord`</a>
+- Telegram at <a href="https://t.me/joininjective" target="_blank">`Injective Telegram`</a>
+- Telegram at <a href="https://t.me/helixapp" target="_blank">`Helix Telegram`</a>
+>>>>>>> helix/master
 
 ---
 
 ## 🔓 License
+<<<<<<< HEAD
+=======
+
+This software is licensed under the MIT license. See [LICENSE](./LICENSE) for full disclosure.
+
+<p>&nbsp;</p>
+<div align="center">
+  <sub><em>Powering the future of decentralized finance.</em></sub>
+</div>
+>>>>>>> helix/master

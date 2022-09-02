@@ -1,35 +1,34 @@
 <template>
-  <div class="mt-4">
-    <div class="bg-gray-900 rounded-2xl flex">
-      <VButtonSelect
-        :value="orderType"
-        :option="SpotOrderSide.Buy"
-        aqua
-        class="w-1/2"
-        data-cy="trading-page-switch-to-side-buy-button"
-        @selected="handleOrderTypeChange"
-      >
-        {{
-          $t('trade.buy_asset', {
-            asset: market.baseToken.symbol
-          })
-        }}
-      </VButtonSelect>
-      <VButtonSelect
-        :value="orderType"
-        :option="SpotOrderSide.Sell"
-        red
-        class="w-1/2"
-        data-cy="trading-page-switch-to-side-sell-button"
-        @selected="handleOrderTypeChange"
-      >
-        {{
-          $t('trade.sell_asset', {
-            asset: market.baseToken.symbol
-          })
-        }}
-      </VButtonSelect>
-    </div>
+  <div class="bg-gray-900 rounded flex h-9">
+    <VButtonSelect
+      :value="orderType"
+      :option="SpotOrderSide.Buy"
+      green
+      class="w-1/2"
+      data-cy="trading-page-switch-to-side-buy-button"
+      @selected="handleOrderTypeChange"
+    >
+      {{
+        $t('trade.buy_asset', {
+          asset: market.baseToken.symbol
+        })
+      }}
+    </VButtonSelect>
+
+    <VButtonSelect
+      :value="orderType"
+      :option="SpotOrderSide.Sell"
+      red
+      class="w-1/2"
+      data-cy="trading-page-switch-to-side-sell-button"
+      @selected="handleOrderTypeChange"
+    >
+      {{
+        $t('trade.sell_asset', {
+          asset: market.baseToken.symbol
+        })
+      }}
+    </VButtonSelect>
   </div>
 </template>
 <script lang="ts">

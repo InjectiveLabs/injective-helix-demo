@@ -1,6 +1,8 @@
 <template>
   <div class="flex items-center">
-    <span class="tracking-tight"><slot /></span>
+    <span class="tracking-tight" :class="{ 'text-xs': xs, 'text-sm': sm }">
+      <slot />
+    </span>
     <div
       v-clipboard="() => address"
       v-clipboard:success="() => $toast.success($t('connect.addressCopied'))"
@@ -19,6 +21,16 @@ export default Vue.extend({
     address: {
       type: String,
       required: true
+    },
+
+    xs: {
+      type: Boolean,
+      default: false
+    },
+
+    sm: {
+      type: Boolean,
+      default: false
     }
   }
 })

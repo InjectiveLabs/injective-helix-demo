@@ -52,8 +52,8 @@ export default Vue.extend({
       this.$emit('input:amount', amount)
     },
 
-    handleMax(percent: Number) {
-      this.$emit('input:max', percent)
+    handleMax(value: string) {
+      this.$emit('input:max', value)
     }
   }
 })

@@ -10,10 +10,11 @@ export default {
     openOrders: 'Open Orders',
     tradeHistory: 'Trade History',
     positions: 'Positions',
-    ordersHistory: 'Orders History',
+    orderHistory: 'Order History',
     openPositions: 'Open positions',
     cancelOrders: 'Cancel Orders',
-    funds: 'Funds'
+    funds: 'Funds',
+    triggers: 'Triggers'
   },
 
   fundingPayments: {

@@ -2,18 +2,20 @@
   <div class="h-full">
     <HocLoading :status="status">
       <div class="h-full flex flex-col">
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-4 overflow-x-auto hide-scrollbar">
           <TabSelectorItem
             v-model="component"
             data-cy="activity-open-positions-link"
             :option="components.positions"
           >
             <div class="flex items-center gap-1">
-              <span>{{ $t('activity.openPositions') }}</span>
-              <portal-target
-                name="activity-tab-position-count"
-                data-cy="activity-open-positions-link-count"
-              />
+              <span class="whitespace-nowrap">
+                {{ $t('activity.openPositions') }}
+              </span>
+
+              <span data-cy="activity-open-positions-link-count">
+                ({{ totalPositionsCount }})
+              </span>
             </div>
           </TabSelectorItem>
 
@@ -25,7 +27,9 @@
             :option="components.fundingPayments"
           >
             <div class="flex items-center gap-1">
-              <span>{{ $t('activity.fundingPayments') }}</span>
+              <span class="whitespace-nowrap">
+                {{ $t('activity.fundingPayments') }}
+              </span>
             </div>
           </TabSelectorItem>
         </div>
@@ -69,6 +73,12 @@ export default Vue.extend({
     }
   },
 
+  computed: {
+    totalPositionsCount(): number {
+      return this.$accessor.positions.subaccountPositionsPagination.total
+    }
+  },
+
   mounted() {
     this.status.setLoading()
 
@@ -81,7 +91,8 @@ export default Vue.extend({
 
     Promise.all([
       this.$accessor.positions.streamSubaccountPositions(),
-      this.$accessor.derivatives.streamSubaccountOrders()
+      this.$accessor.derivatives.streamSubaccountOrders(),
+      this.$accessor.derivatives.streamSubaccountOrderHistory()
     ])
       .then(() => {
         //

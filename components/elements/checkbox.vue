@@ -1,14 +1,35 @@
 <template>
-  <div class="text-xs">
-    <input
-      :id="uid"
-      :value="value"
-      :checked="!!value"
-      class="checkbox"
-      type="checkbox"
-      @change="handleChange"
-    />
-    <label :for="uid" :data-cy="dataCy" class="flex"><slot /></label>
+  <div v-tooltip="{ content: tooltip }" class="flex items-center justify-start">
+    <div class="checkbox-wrapper mr-2">
+      <input
+        :id="uid"
+        :value="value"
+        :checked="checked"
+        :disabled="disabled"
+        class="checkbox"
+        type="checkbox"
+        @change="handleChange"
+      />
+      <label
+        :for="uid"
+        :data-cy="dataCy"
+        class="top-0 left-0 flex items-center justify-center absolute"
+        :class="{ 'cursor-pointer': !disabled }"
+      >
+        <IconCheck class="w-2 h-2 text-gray-950 checkmark" />
+        <IconMinus class="w-2 h-2 text-helixGray-400 minus" />
+      </label>
+    </div>
+    <label
+      :for="uid"
+      class="select-none text-xs"
+      :class="{
+        'text-gray-500': disabled,
+        'text-white cursor-pointer': !disabled
+      }"
+    >
+      <slot />
+    </label>
   </div>
 </template>
 
@@ -22,10 +43,22 @@ export default Vue.extend({
   },
 
   props: {
+    tooltip: {
+      required: false,
+      default: '',
+      type: String
+    },
+
     value: {
       type: [Boolean, String],
       required: true
     },
+
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+
     dataCy: {
       type: String,
       default: 'unknown-id'
@@ -44,57 +77,68 @@ export default Vue.extend({
     }
   },
 
-  mounted() {
-    if (this.value === true) {
-      this.checked = true
+  watch: {
+    value: {
+      handler(val) {
+        this.checked = val
+      },
+      immediate: true
     }
   },
 
   methods: {
     handleChange() {
-      this.checked = !this.checked
-      this.$emit('input', this.checked)
+      this.$emit('input', !this.checked)
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
-.checkbox {
-  @apply absolute opacity-0;
+.checkbox-wrapper {
+  --checkbox-width: 16px;
+  --checkbox-height: 16px;
+  position: relative;
+  width: var(--checkbox-width);
+  height: var(--checkbox-height);
 
-  + label {
-    @apply relative cursor-pointer p-0 select-none;
+  input[type='checkbox'] {
+    visibility: hidden;
+    width: var(--checkbox-width);
+    height: var(--checkbox-height);
+  }
 
-    &::before {
-      content: '';
+  input[type='checkbox'] + label {
+    width: var(--checkbox-width);
+    height: var(--checkbox-height);
+    border: 1px solid white;
+    background-color: transparent;
 
-      @apply mr-2 inline-block align-top w-4 h-4 bg-transparent border border-gray-200;
+    .checkmark,
+    .minus {
+      display: none;
     }
   }
 
-  // Disabled state label.
-  &:disabled + label {
-    @apply text-gray-400;
+  input[type='checkbox']:checked + label {
+    background-color: #fff;
+
+    .checkmark {
+      display: block;
+    }
   }
 
-  // Disabled box.
-  &:disabled + label::before {
-    @apply shadow-none bg-gray-600 border-transparent bg-opacity-50;
-  }
+  input[type='checkbox']:disabled + label {
+    border-color: #727376;
+    background-color: transparent;
 
-  // Checkmark
-  &:checked + label::after {
-    content: '';
+    .checkmark {
+      display: none;
+    }
 
-    @apply absolute left-0 top-0;
-
-    width: 5px;
-    height: 10px;
-    border: 2px solid theme('colors.gray.200');
-    border-top-style: none;
-    border-left-style: none;
-    transform: translate(6px, 1.5px) rotate(45deg);
+    .minus {
+      display: block;
+    }
   }
 }
 </style>

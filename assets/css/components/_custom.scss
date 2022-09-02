@@ -16,6 +16,7 @@
 }
 
 .orderbook-h {
+<<<<<<< HEAD
   height: 30rem;
 
   @screen lg {
@@ -49,13 +50,48 @@
   @screen 4xl {
     @apply h-16;
   }
+=======
+  --orderbook-height: 30rem;
+  --orderbook-aggregation-height: 48px;
+  --orderbook-header-height: 32px;
+  --orderbook-middle-height: 2rem;
+
+  height: var(--orderbook-height);
+
+  @screen lg {
+    --orderbook-height: 38rem;
+    --orderbook-middle-height: 3rem;
+  }
+
+  @screen 4xl {
+    --orderbook-height: 40rem;
+    --orderbook-middle-height: 4rem;
+  }
+}
+
+.orderbook-h-inner {
+  height: calc(var(--orderbook-height) - var(--orderbook-aggregation-height));
+}
+
+.orderbook-half-h {
+  --orderbook-half-height: calc((var(--orderbook-height) - var(--orderbook-aggregation-height)) / 2);
+  height: calc(var(--orderbook-half-height) - var(--orderbook-middle-height) / 2 - var(--orderbook-header-height) / 2);
+}
+
+.orderbook-middle-h {
+  height: var(--orderbook-middle-height)
+>>>>>>> helix/master
 }
 
 .card-table-wrap-content {
   @apply flex-1 w-full;
 
   th {
+<<<<<<< HEAD
     @apply pb-4 text-gray-200 uppercase;
+=======
+    @apply py-4 text-gray-200 uppercase;
+>>>>>>> helix/master
   }
 }
 
@@ -141,6 +177,18 @@
   }
 }
 
+<<<<<<< HEAD
+=======
+.button-spinner {
+  border-top-color: theme('colors.white');
+  animation: spin 0.6s ease-out infinite;
+
+  &.text-primary-500 {
+    border-top-color: theme('colors.primary.500');
+  }
+}
+
+>>>>>>> helix/master
 [class*='bg-red-'] .spinner {
   border-top-color: theme('colors.gray.200');
 }
@@ -154,7 +202,11 @@
 }
 
 [class*='bg-gray-200'] .spinner {
+<<<<<<< HEAD
   border-top-color: theme('colors.primary.850');
+=======
+  border-top-color: theme('colors.primary.500');
+>>>>>>> helix/master
 }
 
 [class*='text-primary-'].spinner {
@@ -187,7 +239,11 @@
 
   &.longs,
   &.buys {
+<<<<<<< HEAD
     background: theme('colors.aqua.500');
+=======
+    background: theme('colors.green.500');
+>>>>>>> helix/master
     opacity: 0.2;
   }
 
@@ -292,3 +348,10 @@
     box-shadow: 0 0 0 1px #00f2ff;
   }
 }
+<<<<<<< HEAD
+=======
+
+.rtl {
+  direction: rtl;
+}
+>>>>>>> helix/master

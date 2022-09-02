@@ -1,7 +1,11 @@
 <template>
-  <div v-if="market" class="px-4 w-full">
+  <div v-if="market" class="w-full flex flex-col gap-6">
     <TradingTypeButtons
       :trading-type.sync="tradingType"
+      :trading-type-market="tradingTypeMarket"
+      :trading-type-limit="tradingTypeLimit"
+      :trading-type-stop-market="tradingTypeStopMarket"
+      :trading-type-stop-limit="tradingTypeStopLimit"
       @update:trading-type="handleTradingTypeChange"
     />
 
@@ -13,12 +17,12 @@
 
     <OrderInputs
       ref="orderInputs"
-      class="mt-8"
       v-bind="{
         averagePriceOption,
         baseAvailableBalance,
         buys,
         executionPrice,
+        markPrice,
         hasAmount,
         hasPrice,
         lastTradedPrice,
@@ -32,7 +36,12 @@
         takerFeeRate,
         notionalValueWithFees,
         tradingType,
-        tradingTypeMarket
+        tradingTypeMarket,
+        tradingTypeLimit,
+        tradingTypeStopMarket,
+        tradingTypeStopLimit,
+        isConditionalOrder,
+        formId
       }"
       :amount.sync="form.amount"
       :average-price-option.sync="averagePriceOption"
@@ -44,6 +53,7 @@
       :quote-amount.sync="form.quoteAmount"
       :slippage-tolerance.sync="form.slippageTolerance"
       @update:priceFromLastTradedPrice="updatePriceFromLastTradedPrice"
+      @update:trigger-price="updateTriggerPrice"
     />
 
     <OrderDetailsWrapper
@@ -64,24 +74,45 @@
         takerFeeRateDiscount,
         notionalValue,
         notionalValueWithFees,
-        tradingTypeMarket
+        tradingType,
+        tradingTypeMarket,
+        tradingTypeLimit,
+        tradingTypeStopMarket,
+        tradingTypeStopLimit
       }"
     />
 
+    <!-- <span class="text-gray-500 text-xs leading-4">
+      {{ $t('trade.slippage_cancellation_notice') }}
+    </span> -->
+
     <OrderSubmit
       v-bind="{
+        amount: form.amount,
         executionPrice,
         hasAdvancedSettingsErrors,
-        hasInputErrors,
         hasAmount,
+        hasInputErrors,
+        hasTriggerPrice,
+        isConditionalOrder,
         lastTradedPrice,
         market,
         orderType,
         orderTypeBuy,
+        orderTypeToSubmit,
+        postOnly: form.postOnly,
+        price: form.price,
+        slippageTolerance: form.slippageTolerance,
         status,
-        tradingTypeMarket
+        tradingType,
+        tradingTypeLimit,
+        tradingTypeMarket,
+        tradingTypeStopLimit,
+        tradingTypeStopMarket,
+        triggerPriceEqualsMarkPrice
       }"
-      @submit="onSubmit"
+      @submit="handleSubmit"
+      @submit:request="handleRequestSubmit"
     />
   </div>
 </template>
@@ -98,6 +129,7 @@ import {
   UiSubaccount,
   SpotOrderSide
 } from '@injectivelabs/sdk-ui-ts'
+import { Identify, identify } from '@amplitude/analytics-browser'
 import {
   cosmosSdkDecToBigNumber,
   FeeDiscountAccountInfo
@@ -106,30 +138,50 @@ import OrderDetailsWrapper from '~/components/partials/common/trade/order-detail
 import OrderSubmit from '~/components/partials/common/trade/order-submit.vue'
 import OrderInputs from '~/components/partials/common/trade/order-inputs.vue'
 import OrderTypeSelect from '~/components/partials/common/trade/order-type-select.vue'
-import { AveragePriceOptions } from '~/types'
+import {
+  AmplitudeEvents,
+  AveragePriceOptions,
+  Modal,
+  OrderAttemptStatus,
+  TradeConfirmationModalData
+} from '~/types'
 import {
   calculateAverageExecutionPriceFromFillableNotionalOnOrderBook,
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook
 } from '~/app/client/utils/spot'
 import TradingTypeButtons from '~/components/partials/common/trade/trading-type-buttons.vue'
+import {
+  BIGGER_PRICE_WARNING_DEVIATION,
+  DEFAULT_PRICE_WARNING_DEVIATION
+} from '~/app/utils/constants'
+import { excludedPriceDeviationSlugs } from '~/app/data/market'
+import { localStorage } from '~/app/Services'
+import {
+  AMPLITUDE_ATTEMPT_PLACE_ORDER_COUNT,
+  AMPLITUDE_VIP_TIER_LEVEL
+} from '~/app/utils/vendor'
 
 interface TradeForm {
   amount: string
   quoteAmount: string
   price: string
+  triggerPrice: string
   slippageTolerance: string
   postOnly: boolean
   proportionalPercentage: number
+  formId: number
 }
 
-const initialForm = (): TradeForm => ({
+const initialForm = (formId: number): TradeForm => ({
   amount: '',
   quoteAmount: '',
   price: '',
+  triggerPrice: '',
   slippageTolerance: '0.5',
   postOnly: false,
-  proportionalPercentage: 0
+  proportionalPercentage: 0,
+  formId
 })
 
 export default Vue.extend({
@@ -148,7 +200,7 @@ export default Vue.extend({
       tradingType: TradeExecutionType.LimitFill,
       orderType: SpotOrderSide.Buy,
       status: new Status(),
-      form: initialForm(),
+      form: initialForm(0),
       hasInputErrors: false,
       hasAdvancedSettingsErrors: false,
       averagePriceOption: AveragePriceOptions.None
@@ -176,6 +228,24 @@ export default Vue.extend({
       return this.$accessor.exchange.feeDiscountAccountInfo
     },
 
+    tierLevel(): number {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return 0
+      }
+
+      return new BigNumberInBase(
+        feeDiscountAccountInfo.tierLevel || 0
+      ).toNumber()
+    },
+
+    isConditionalOrder(): boolean {
+      const { tradingTypeStopMarket, tradingTypeStopLimit } = this
+
+      return tradingTypeStopMarket || tradingTypeStopLimit
+    },
+
     buys(): UiPriceLevel[] {
       const { orderbook } = this
 
@@ -200,6 +270,26 @@ export default Vue.extend({
       const { tradingType } = this
 
       return tradingType === TradeExecutionType.Market
+    },
+
+    tradingTypeLimit(): boolean {
+      const { tradingType } = this
+
+      return tradingType === TradeExecutionType.LimitFill
+    },
+
+    tradingTypeStopLimit(): boolean {
+      const { tradingType } = this
+
+      // TODO: Replace with enum from BE once available.
+      return tradingType.toString() === 'stopLimit'
+    },
+
+    tradingTypeStopMarket(): boolean {
+      const { tradingType } = this
+
+      // TODO: Replace with enum from BE once available.
+      return tradingType.toString() === 'stopMarket'
     },
 
     orderTypeBuy(): boolean {
@@ -413,10 +503,34 @@ export default Vue.extend({
       return price ? new BigNumberInBase(this.form.price) : ZERO_IN_BASE
     },
 
+    triggerPrice(): BigNumberInBase {
+      return new BigNumberInBase(this.form.triggerPrice)
+    },
+
+    markPrice(): BigNumberInBase {
+      return new BigNumberInBase(this.$accessor.derivatives.marketMarkPrice)
+    },
+
     hasPrice(): boolean {
       const { executionPrice } = this
 
       return executionPrice.gt('0')
+    },
+
+    hasTriggerPrice(): boolean {
+      const { triggerPrice } = this
+
+      return triggerPrice !== undefined
+    },
+
+    triggerPriceEqualsMarkPrice(): boolean {
+      const { triggerPrice, markPrice } = this
+
+      if (!triggerPrice) {
+        return false
+      }
+
+      return triggerPrice.eq(markPrice)
     },
 
     averagePriceDerivedFromBaseAmount(): BigNumberInBase {
@@ -575,6 +689,40 @@ export default Vue.extend({
 
     $orderInputs(): any {
       return this.$refs.orderInputs
+    },
+
+    priceHasHighDeviationWarning(): boolean {
+      const {
+        executionPrice,
+        orderTypeBuy,
+        tradingTypeMarket,
+        market,
+        lastTradedPrice
+      } = this
+
+      if (!market || tradingTypeMarket || executionPrice.lte(0)) {
+        return false
+      }
+
+      const defaultPriceWarningDeviation = excludedPriceDeviationSlugs.includes(
+        market.ticker
+      )
+        ? BIGGER_PRICE_WARNING_DEVIATION
+        : DEFAULT_PRICE_WARNING_DEVIATION
+
+      const deviation = new BigNumberInBase(1)
+        .minus(
+          orderTypeBuy
+            ? lastTradedPrice.dividedBy(executionPrice)
+            : executionPrice.dividedBy(lastTradedPrice)
+        )
+        .times(100)
+
+      return deviation.gt(defaultPriceWarningDeviation)
+    },
+
+    formId(): number {
+      return this.form.formId
     }
   },
 
@@ -585,20 +733,20 @@ export default Vue.extend({
   },
 
   methods: {
-    handleOrderTypeChange() {
-      const {
-        form: { quoteAmount }
-      } = this
+    handleTradingTypeChange() {
+      // const {
+      //   form: { quoteAmount }
+      // } = this
 
-      this.$nextTick(() => this.$orderInputs.onQuoteAmountChange(quoteAmount))
+      // this.$nextTick(() => this.$orderInputs.onQuoteAmountChange(quoteAmount))
+      this.resetForm()
     },
 
-    handleTradingTypeChange() {
-      const {
-        form: { quoteAmount }
-      } = this
-
-      this.$nextTick(() => this.$orderInputs.onQuoteAmountChange(quoteAmount))
+    handleOrderTypeChange() {
+      // const {
+      //   form: { quoteAmount }
+      // } = this
+      // this.$nextTick(() => this.$orderInputs.onQuoteAmountChange(quoteAmount))
     },
 
     updatePriceFromLastTradedPrice() {
@@ -612,6 +760,10 @@ export default Vue.extend({
         market.priceDecimals,
         BigNumberInBase.ROUND_HALF_UP
       )
+    },
+
+    updateTriggerPrice(triggerPrice: string) {
+      this.form.triggerPrice = triggerPrice
     },
 
     onOrderbookNotionalClick({
@@ -657,10 +809,14 @@ export default Vue.extend({
     },
 
     resetForm() {
+      this.$set(this, 'form', initialForm(this.form.formId + 1))
+
       this.form.amount = ''
       this.form.quoteAmount = ''
       this.form.price = ''
-      this.form.quoteAmount = ''
+      this.form.triggerPrice = ''
+      this.form.slippageTolerance = '0.5'
+      this.form.postOnly = false
       this.form.proportionalPercentage = 0
     },
 
@@ -680,10 +836,44 @@ export default Vue.extend({
           orderType: orderTypeToSubmit
         })
         .then(() => {
+          this.handleAttemptPlaceOrderTrack()
           this.$toast.success(this.$t('trade.order_placed'))
-          this.$set(this, 'form', initialForm())
+          this.resetForm()
         })
-        .catch(this.$onRejected)
+        .catch((e) => {
+          this.handleAttemptPlaceOrderTrack(e)
+          this.$onRejected(e)
+        })
+        .finally(() => {
+          this.status.setIdle()
+        })
+    },
+
+    submitStopLimitOrder() {
+      const { orderTypeToSubmit, market, price, triggerPrice, amount } = this
+
+      if (!market) {
+        return
+      }
+
+      this.status.setLoading()
+
+      this.$accessor.spot
+        .submitStopLimitOrder({
+          price,
+          triggerPrice,
+          quantity: amount,
+          orderType: orderTypeToSubmit
+        })
+        .then(() => {
+          this.handleAttemptPlaceOrderTrack()
+          this.$toast.success(this.$t('trade.order_placed'))
+          this.resetForm()
+        })
+        .catch((e) => {
+          this.handleAttemptPlaceOrderTrack(e)
+          this.$onRejected(e)
+        })
         .finally(() => {
           this.status.setIdle()
         })
@@ -705,21 +895,149 @@ export default Vue.extend({
           orderType
         })
         .then(() => {
+          this.handleAttemptPlaceOrderTrack()
           this.$toast.success(this.$t('trade.trade_placed'))
-          this.$set(this, 'form', initialForm())
+          this.resetForm()
         })
-        .catch(this.$onRejected)
+        .catch((e) => {
+          this.handleAttemptPlaceOrderTrack(e)
+          this.$onRejected(e)
+        })
         .finally(() => {
           this.status.setIdle()
         })
     },
 
-    onSubmit() {
-      const { tradingTypeMarket } = this
+    submitStopMarketOrder() {
+      const { orderType, market, worstPrice, triggerPrice, amount } = this
 
-      return tradingTypeMarket
-        ? this.submitMarketOrder()
-        : this.submitLimitOrder()
+      if (!market) {
+        return
+      }
+
+      this.status.setLoading()
+
+      this.$accessor.spot
+        .submitStopMarketOrder({
+          quantity: amount,
+          price: worstPrice,
+          triggerPrice,
+          orderType
+        })
+        .then(() => {
+          this.handleAttemptPlaceOrderTrack()
+          this.$toast.success(this.$t('trade.trade_placed'))
+          this.resetForm()
+        })
+        .catch((e) => {
+          this.handleAttemptPlaceOrderTrack(e)
+          this.$onRejected(e)
+        })
+        .finally(() => {
+          this.status.setIdle()
+        })
+    },
+
+    handleRequestSubmit() {
+      const {
+        price,
+        amount,
+        market,
+        tradingType,
+        triggerPrice,
+        tradingTypeLimit,
+        tradingTypeMarket,
+        isConditionalOrder,
+        tradingTypeStopLimit,
+        priceHasHighDeviationWarning,
+        orderType
+      } = this
+
+      if (!isConditionalOrder && priceHasHighDeviationWarning) {
+        return this.$accessor.modal.openModal({
+          type: Modal.OrderConfirm
+        })
+      }
+
+      const shouldSkipTradeConfirmationModal =
+        localStorage.get('skipTradeConfirmationModal') === true
+
+      if (
+        shouldSkipTradeConfirmationModal ||
+        tradingTypeMarket ||
+        tradingTypeLimit
+      ) {
+        return this.handleSubmit()
+      }
+
+      if (!triggerPrice || !market || (tradingTypeStopLimit && !price)) {
+        return
+      }
+
+      const modalData: TradeConfirmationModalData = {
+        tradingType,
+        orderType,
+        triggerPrice,
+        triggerPriceSymbol: market.quoteToken.symbol,
+        amount,
+        amountSymbol: market.baseToken.symbol
+      }
+
+      if (tradingTypeStopLimit) {
+        modalData.price = price
+        modalData.priceSymbol = market.quoteToken.symbol
+      }
+
+      return this.$accessor.modal.openModal({
+        type: Modal.OrderConfirm,
+        data: modalData
+      })
+    },
+
+    handleSubmit() {
+      const { tradingType } = this
+
+      switch (tradingType.toString()) {
+        case TradeExecutionType.Market.toString():
+          return this.submitMarketOrder()
+        case TradeExecutionType.LimitFill.toString():
+          return this.submitLimitOrder()
+        case 'stopLimit':
+          return this.submitStopLimitOrder()
+        case 'stopMarket':
+          return this.submitStopMarketOrder()
+      }
+    },
+
+    handleAttemptPlaceOrderTrack(errorMessage?: string) {
+      if (!this.market) {
+        return
+      }
+
+      // todo: refactor this to be cleaner
+      const identifyObj = new Identify()
+      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
+      identifyObj.add(AMPLITUDE_ATTEMPT_PLACE_ORDER_COUNT, 1)
+      identify(identifyObj)
+
+      this.$amplitude.track(AmplitudeEvents.AttemptPlaceOrder, {
+        amount: this.form.amount,
+        market: this.market.slug,
+        marketType: this.market.subType,
+        orderType: this.orderType,
+        postOnly: this.form.postOnly,
+        tradingType: this.tradingType,
+        triggerPrice:
+          this.tradingTypeStopMarket || this.tradingTypeStopLimit ? '' : '',
+        limitPrice: !this.tradingTypeMarket ? this.price : '',
+        slippageTolerance: this.tradingTypeMarket
+          ? this.form.slippageTolerance
+          : '',
+        status: errorMessage
+          ? OrderAttemptStatus.Error
+          : OrderAttemptStatus.Success,
+        error: errorMessage
+      })
     }
   }
 })

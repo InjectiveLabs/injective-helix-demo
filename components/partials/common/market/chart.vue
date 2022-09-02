@@ -1,5 +1,7 @@
 <template>
-  <div class="bg-gray-800 lg:rounded-l-xl lg:shadow-sm h-full overflow-hidden">
+  <div
+    class="bg-helixGray-950 lg:rounded-l-xl lg:shadow-sm h-full overflow-hidden"
+  >
     <div
       ref="trading-view-wrap"
       class="orderbook-h lg:h-full lg:min-h-full h-full w-full relative flex"

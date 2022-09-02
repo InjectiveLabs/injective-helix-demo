@@ -1,18 +1,22 @@
 <template>
   <div
-    class="group w-full border-t-4 cursor-pointer shadow-card text-gray-200 bg-gray-800"
+    class="group w-full border-t-4 cursor-pointer shadow-card text-gray-200 bg-helixGray-950"
     :class="{
       'border-primary-500 rounded-b-md': isSelected,
-      'border-transparent rounded-b-md opacity-50 rounded-t-md hover:border-primary-500 hover:rounded-b-md hover:rounded-t-none hover:opacity-100': !isSelected,
+      'border-transparent rounded-b-md opacity-50 rounded-t-md hover:border-primary-500 hover:rounded-b-md hover:rounded-t-none hover:opacity-100':
+        !isSelected,
       'px-4 py-5': lg,
       'p-3 lg:px-4 lg:py-5': !lg
     }"
     @click="$emit('selected', option)"
   >
-    <div :class="{ 'min-w-2xs sm:min-w-full': lg }">
+    <div
+      class="h-full flex flex-col"
+      :class="{ 'min-w-2xs sm:min-w-full': lg }"
+    >
       <slot name="subtitle"></slot>
 
-      <div class="flex" :class="{ 'justify-between': lg }">
+      <div class="flex items-center h-full" :class="{ 'justify-between': lg }">
         <div v-if="status.isLoading()" class="mr-4">
           <span class="spinner text-primary-500" />
         </div>
@@ -23,8 +27,8 @@
           :class="[
             lg ? 'min-w-12 w-12 h-12' : 'w-4 h-4 md:w-6 md:h-6',
             {
-              'bg-primary-850': isSelected,
-              'bg-gray-600  group-hover:bg-primary-850': !isSelected
+              'bg-primary-500': isSelected,
+              'bg-gray-600 group-hover:bg-primary-850': !isSelected
             }
           ]"
         >

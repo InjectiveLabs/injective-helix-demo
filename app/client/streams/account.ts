@@ -1,13 +1,22 @@
 import {
+<<<<<<< HEAD
   IndexerGrpcAccountStream,
   BalanceStreamCallback
+=======
+  BalanceStreamCallback,
+  IndexerGrpcAccountStream
+>>>>>>> helix/master
 } from '@injectivelabs/sdk-ts'
 import { streamProvider } from '../../providers/StreamProvider'
 import { ENDPOINTS } from '~/app/utils/constants'
 import { StreamType } from '~/types/enums'
 
 export const subaccountStream = new IndexerGrpcAccountStream(
+<<<<<<< HEAD
   ENDPOINTS.exchangeApi
+=======
+  ENDPOINTS.indexerApi
+>>>>>>> helix/master
 )
 
 export const streamSubaccountBalances = ({

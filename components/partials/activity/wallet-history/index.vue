@@ -1,13 +1,15 @@
 <template>
   <div class="h-full flex flex-col">
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-4 overflow-x-auto hide-scrollbar">
       <TabSelectorItem
         v-model="component"
         data-cy="wallet-history-transfers-link"
         :option="components.transfers"
       >
         <div class="flex items-center gap-1">
-          <span>{{ $t('walletHistory.transfers.transfers') }}</span>
+          <span class="whitespace-nowrap">
+            {{ $t('walletHistory.transfers.transfers') }}
+          </span>
         </div>
       </TabSelectorItem>
 
@@ -19,7 +21,9 @@
         :option="components.deposits"
       >
         <div class="flex items-center gap-1">
-          <span>{{ $t('walletHistory.deposits') }}</span>
+          <span class="whitespace-nowrap">
+            {{ $t('walletHistory.deposits') }}
+          </span>
         </div>
       </TabSelectorItem>
 
@@ -31,11 +35,14 @@
         :option="components.withdrawals"
       >
         <div class="flex items-center gap-1">
-          <span>{{ $t('walletHistory.withdrawals') }}</span>
+          <span class="whitespace-nowrap">
+            {{ $t('walletHistory.withdrawals') }}
+          </span>
         </div>
       </TabSelectorItem>
     </div>
-    <VCard md class="h-full mt-6">
+
+    <VCard md class="h-full mt-4 xs:mt-6">
       <component :is="`${component}`"></component>
     </VCard>
   </div>

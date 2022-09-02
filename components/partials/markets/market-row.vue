@@ -1,6 +1,6 @@
 <template>
   <div
-    class="grid grid-cols-3 sm:grid-cols-10 3md:grid-cols-12 text-gray-200 gap-4 text-sm px-4 py-5 mb-1 bg-gray-800 bg-opacity-50 items-center rounded"
+    class="grid grid-cols-3 sm:grid-cols-10 3md:grid-cols-12 text-gray-200 gap-4 text-sm px-4 py-5 mb-1 items-center"
     :data-cy="`markets-table-row-${market.ticker}`"
   >
     <span class="text-sm col-span-2 sm:col-span-3 flex items-center">
@@ -13,26 +13,31 @@
         <IconStarBorder v-else class="min-w-6 w-6 h-6" />
       </div>
 
-      <nuxt-link class="cursor-pointer flex items-center" :to="marketRoute">
-        <img
-          :src="baseTokenLogo"
-          :alt="market.baseToken.name"
-          class="w-6 h-6 mr-3 hidden 3md:block"
-        />
-        <div class="flex flex-col">
-          <span
-            class="tracking-widest font-bold"
-            data-cy="markets-ticker-name-table-data"
-            >{{ market.ticker }}
-          </span>
-          <span class="text-gray-500 text-xs hidden md:block">
-            {{ market.baseToken.name }}
-          </span>
-          <span class="text-gray-500 text-xs sm:hidden tracking-wide mt-1">
-            {{ $t('markets.vol') }} {{ abbreviatedVolumeInUsdToFormat }} USD
-          </span>
+      <nuxt-link :to="marketRoute">
+        <div
+          class="cursor-pointer flex items-center"
+          @click="handleTradeClickedTrack"
+        >
+          <img
+            :src="baseTokenLogo"
+            :alt="market.baseToken.name"
+            class="w-6 h-6 mr-3 hidden 3md:block"
+          />
+          <div class="flex flex-col">
+            <span
+              class="tracking-wider font-bold mb-1"
+              data-cy="markets-ticker-name-table-data"
+              >{{ market.ticker }}
+            </span>
+            <span class="text-gray-500 text-xs hidden md:block">
+              {{ market.baseToken.name }}
+            </span>
+            <span class="text-gray-500 text-xs sm:hidden tracking-wide mt-1">
+              {{ $t('markets.vol') }} {{ abbreviatedVolumeInUsdToFormat }} USD
+            </span>
 
-          <v-powered-by v-if="isBaycWeth" class="mt-1.5" />
+            <v-powered-by v-if="isBaycWeth" class="mt-1.5" />
+          </div>
         </div>
       </nuxt-link>
     </span>
@@ -40,19 +45,12 @@
     <!-- Mobile column -->
     <div class="sm:hidden flex flex-col items-end font-mono">
       <div class="flex items-center">
-        <IconArrow
-          v-if="!lastTradedPrice.isNaN() && lastTradedPrice.gt(0)"
-          class="transform w-3 h-3 mr-1"
-          :class="{
-            'text-aqua-500 rotate-90': lastPriceChange !== Change.Decrease,
-            'text-red-500 -rotate-90': lastPriceChange === Change.Decrease
-          }"
-        />
         <span
           v-if="!lastTradedPrice.isNaN()"
           class=""
           :class="{
-            'text-aqua-500': lastPriceChange !== Change.Decrease,
+            'text-green-500': lastPriceChange === Change.Increase,
+            'text-white': lastPriceChange === Change.NoChange,
             'text-red-500': lastPriceChange === Change.Decrease
           }"
         >
@@ -62,7 +60,7 @@
       </div>
 
       <div v-if="!change.isNaN()" class="mt-1">
-        <span :class="change.gte(0) ? 'text-aqua-500' : 'text-red-500'">
+        <span :class="change.gte(0) ? 'text-green-500' : 'text-red-500'">
           {{ changeToFormat }}%
         </span>
       </div>
@@ -72,18 +70,11 @@
       class="hidden font-mono sm:flex items-center justify-end col-span-2"
       data-cy="markets-last-traded-price-table-data"
     >
-      <IconArrow
-        v-if="!lastTradedPrice.isNaN() && lastTradedPrice.gt(0)"
-        class="transform w-3 h-3 mr-1"
-        :class="{
-          'text-aqua-500 rotate-90': lastPriceChange !== Change.Decrease,
-          'text-red-500 -rotate-90': lastPriceChange === Change.Decrease
-        }"
-      />
       <span
         v-if="!lastTradedPrice.isNaN()"
         :class="{
-          'text-aqua-500': lastPriceChange !== Change.Decrease,
+          'text-green-500': lastPriceChange === Change.Increase,
+          'text-white': lastPriceChange === Change.NoChange,
           'text-red-500': lastPriceChange === Change.Decrease
         }"
       >
@@ -96,7 +87,11 @@
       <span
         v-if="!change.isNaN()"
         data-cy="markets-change_24h-table-data"
-        :class="change.gte(0) ? 'text-aqua-500' : 'text-red-500'"
+        :class="{
+          'text-green-500': change.gt(0),
+          'text-white': change.eq(0),
+          'text-red-500': change.lt(0)
+        }"
       >
         {{ changeToFormat }}%
       </span>
@@ -105,7 +100,7 @@
 
     <span class="hidden sm:block font-mono col-span-3">
       <div v-if="!quoteVolume.isNaN()" class="flex flex-col items-end">
-        <span data-cy="markets-volume-usd-table-data">
+        <span data-cy="markets-volume-usd-table-data" class="mb-1">
           {{ volumeInUsdToFormat }} USD
         </span>
         <span
@@ -127,7 +122,9 @@
         data-cy="markets-trade-link"
         :to="marketRoute"
       >
-        {{ $t('trade.trade') }}
+        <div @click="handleTradeClickedTrack">
+          {{ $t('trade.trade') }}
+        </div>
       </nuxt-link>
 
       <div
@@ -153,7 +150,10 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
+import { Identify, identify } from '@amplitude/analytics-browser'
 import {
+  MarketType,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   ZERO_IN_BASE,
@@ -167,9 +167,10 @@ import {
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
 import VPoweredBy from '~/components/partials/markets/powered-by.vue'
-import { Change, MarketRoute } from '~/types'
+import { AmplitudeEvents, Change, MarketRoute, TradeClickOrigin } from '~/types'
 import { betaMarketSlugs } from '~/app/data/market'
 import { getAbbreviatedVolume, getMarketRoute } from '~/app/utils/market'
+import { AMPLITUDE_VIP_TIER_LEVEL } from '~/app/utils/vendor'
 
 export default Vue.extend({
   components: {
@@ -204,6 +205,22 @@ export default Vue.extend({
   computed: {
     favoriteMarkets(): string[] {
       return this.$accessor.app.favoriteMarkets
+    },
+
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
+    },
+
+    tierLevel(): number {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return 0
+      }
+
+      return new BigNumberInBase(
+        feeDiscountAccountInfo.tierLevel || 0
+      ).toNumber()
     },
 
     lastTradedPrice(): BigNumberInBase {
@@ -340,6 +357,29 @@ export default Vue.extend({
       const { market } = this
 
       this.$accessor.app.updateFavoriteMarkets(market.marketId)
+    },
+
+    handleTradeClickedTrack() {
+      if (
+        !this.marketRoute.params ||
+        (!this.marketRoute.params.spot && !this.marketRoute.params.perpetual)
+      ) {
+        return
+      }
+
+      const identifyObj = new Identify()
+      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
+      identify(identifyObj)
+
+      this.$amplitude.track(AmplitudeEvents.TradeClicked, {
+        market: this.marketRoute.params.spot
+          ? this.marketRoute.params.spot
+          : this.marketRoute.params.perpetual,
+        marketType: this.marketRoute.params.spot
+          ? MarketType.Spot
+          : MarketType.Perpetual,
+        origin: TradeClickOrigin.MarketsPage
+      })
     }
   }
 })

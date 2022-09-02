@@ -2,6 +2,41 @@ import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import { getEndpointsForNetwork, Network } from '@injectivelabs/networks'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 
+<<<<<<< HEAD
+=======
+const getChainId = (): ChainId => {
+  const envChainId = process.env.APP_CHAIN_ID
+
+  if (envChainId) {
+    return envChainId as ChainId
+  }
+
+  if (IS_TESTNET) {
+    return ChainId.Testnet
+  }
+
+  if (IS_DEVNET) {
+    return ChainId.Devnet
+  }
+
+  return ChainId.Mainnet
+}
+
+const getEthereumChainId = (): EthereumChainId => {
+  const envEthereumChainId = process.env.APP_ETHEREUM_CHAIN_ID
+
+  if (envEthereumChainId) {
+    return parseInt(process.env.APP_ETHEREUM_CHAIN_ID.toString())
+  }
+
+  if (IS_TESTNET || IS_DEVNET) {
+    return EthereumChainId.Goerli
+  }
+
+  return EthereumChainId.Mainnet
+}
+
+>>>>>>> helix/master
 export const IS_DEVELOPMENT: boolean = process.env.NODE_ENV === 'development'
 export const IS_PRODUCTION: boolean = process.env.NODE_ENV === 'production'
 export const IS_MAINNET_STAGING: boolean = process.env.APP_ENV === 'staging'
@@ -31,6 +66,10 @@ export const APP_SENTRY_HTTP_ENDPOINT: string =
   process.env.APP_SENTRY_HTTP_ENDPOINT || ''
 export const APP_CHRONOS_API_ENDPOINT: string =
   process.env.APP_CHRONOS_API_ENDPOINT || ''
+<<<<<<< HEAD
+=======
+export const APP_NEWSLETTER_API: string = process.env.APP_NEWSLETTER_API || ''
+>>>>>>> helix/master
 
 export const UI_DEFAULT_MIN_DISPLAY_DECIMALS = 2
 export const UI_DEFAULT_DISPLAY_DECIMALS = 4
@@ -57,6 +96,7 @@ export const IS_DEVNET = [
 export const IS_TESTNET = [Network.Testnet, Network.TestnetK8s].includes(
   NETWORK
 )
+<<<<<<< HEAD
 
 export const CHAIN_ID: ChainId = (
   process.env.APP_CHAIN_ID
@@ -76,6 +116,16 @@ export const ETHEREUM_CHAIN_ID: EthereumChainId = process.env
         : EthereumChainId.Mainnet
       ).toString()
     )
+=======
+export const IS_MAINNET =
+  NETWORK === Network.Mainnet || process.env.APP_ENV === 'mainnet'
+
+export const CHAIN_ID: ChainId = getChainId()
+export const ETHEREUM_CHAIN_ID: EthereumChainId = getEthereumChainId()
+
+export const AMPLITUDE_KEY = process.env.APP_AMPLITUDE_KEY || ''
+export const HAS_AMPLITUDE_KEY = !!AMPLITUDE_KEY
+>>>>>>> helix/master
 
 export const BIG_NUMBER_ROUND_HALF_UP_MODE = BigNumber.ROUND_HALF_UP
 
@@ -91,7 +141,10 @@ export const DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS = 25
 
 export const MAX_DISPLAYABLE_NUMBER = new BigNumberInBase(1_000_000_000)
 
+<<<<<<< HEAD
 export const APP_GAS_REBATE_API = process.env.APP_GAS_REBATE_API as string
+=======
+>>>>>>> helix/master
 export const MIN_AMOUNT_REQUIRED_FOR_GAS_REBATE = 500
 export const MIN_TIMESTAMP_REQUIRED_FOR_GAS_REBATE = 1638313200 // 01 Dec 2020 00:00
 export const DMM_TIME_STAMP_FORMAT: string = "MMM-dd-yyyy HH:mm:ss 'UTC'xxx"
@@ -139,3 +192,10 @@ export const COIN_GECKO_OPTIONS = {
 
 export const ONE_IN_BASE = new BigNumberInBase(1)
 export const USDT_DECIMALS = 6
+<<<<<<< HEAD
+=======
+export const UI_DEFAULT_PAGINATION_LIMIT_COUNT = 20
+
+export const MARKETS_HISTORY_CHART_SEVEN_DAYS = 154
+export const MARKETS_HISTORY_CHART_ONE_HOUR = 60
+>>>>>>> helix/master

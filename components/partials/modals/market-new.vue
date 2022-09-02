@@ -8,7 +8,7 @@
       <p class="text-center text-sm text-gray-100" v-text="description"></p>
 
       <div class="mt-6 flex items-center justify-center">
-        <VButton lg primary @click.stop="() => {}">
+        <VButton lg primary class="rounded" @click.stop="() => {}">
           <a
             :href="`https://hub.injective.network/bridge/?token=${token}`"
             target="_blank"

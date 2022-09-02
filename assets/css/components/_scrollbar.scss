@@ -15,7 +15,11 @@
 }
 
 *::-webkit-scrollbar-thumb {
+<<<<<<< HEAD
   background-color: theme('colors.gray.700');
+=======
+  background-color: theme('colors.gray.800');
+>>>>>>> helix/master
   border-radius: 20px;
   border: 2px solid theme('colors.gray.900');
 }

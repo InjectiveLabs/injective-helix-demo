@@ -15,7 +15,7 @@ export default {
   /*
    ** Customize the progress-bar color
    */
-  loading: { color: '#00F2FE' },
+  loading: { color: '#2891e9' },
   /*
    ** Global CSS
    */
@@ -30,6 +30,8 @@ export default {
     '~/plugins/utils',
     '~/plugins/store',
     '~/plugins/click-outside',
+    '~/plugins/youtube',
+    '~/plugins/amplitude',
 
     { src: '~/plugins/touch-events', ssr: false },
     { src: '~/plugins/tooltip', ssr: false },
@@ -90,7 +92,7 @@ export default {
     APP_CHRONOS_API_ENDPOINT: process.env.APP_CHRONOS_API_ENDPOINT,
     APP_SENTRY_GRPC_ENDPOINT: process.env.APP_SENTRY_GRPC_ENDPOINT,
     APP_SENTRY_HTTP_ENDPOINT: process.env.APP_SENTRY_HTTP_ENDPOINT,
-    APP_GAS_REBATE_API: process.env.APP_GAS_REBATE_API,
+    APP_NEWSLETTER_API: process.env.APP_NEWSLETTER_API,
     METRICS_ENABLED: process.env.METRICS_ENABLED,
     PRICE_BAND_ENABLED: process.env.PRICE_BAND_ENABLED,
     GAS_FREE_DEPOSIT_REBATE_ENABLED:
@@ -102,13 +104,13 @@ export default {
     MAINTENANCE_ENABLED: process.env.MAINTENANCE_ENABLED,
     REFERRALS_ENABLED: process.env.REFERRALS_ENABLED,
     APP_FEE_RECIPIENT: process.env.APP_FEE_RECIPIENT,
-    APP_ELEVIO_ID: process.env.APP_ELEVIO_ID,
     APP_NETWORK: process.env.APP_NETWORK,
     APP_CHAIN_ID: process.env.APP_CHAIN_ID,
     APP_ETHEREUM_CHAIN_ID: process.env.APP_ETHEREUM_CHAIN_ID,
     APP_GOOGLE_ANALYTICS_KEY: process.env.APP_GOOGLE_ANALYTICS_KEY,
     APP_GOOGLE_SITE_VERIFICATION_KEY:
       process.env.APP_GOOGLE_SITE_VERIFICATION_KEY,
+    APP_AMPLITUDE_KEY: process.env.APP_AMPLITUDE_KEY,
     APP_BUGSNAG_KEY: process.env.APP_BUGSNAG_KEY,
     APP_ALCHEMY_KEY: process.env.APP_ALCHEMY_KEY,
     APP_ALCHEMY_KOVAN_KEY: process.env.APP_ALCHEMY_KOVAN_KEY,
@@ -119,7 +121,7 @@ export default {
 
   router: {
     linkActiveClass: 'is-active',
-    middleware: ['maintenance', 'connected', 'app-redirect'],
+    middleware: ['maintenance', 'connected'],
     extendRoutes(routes) {
       return [
         ...routes,

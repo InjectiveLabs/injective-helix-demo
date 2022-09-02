@@ -1,65 +1,55 @@
 <template>
   <HocLoading :status="status">
-    <VCardTableWrap>
-      <template #actions>
-        <div
-          class="col-span-12 sm:col-span-6 lg:col-span-4 grid grid-cols-5 gap-4"
-        >
-          <VSearch
-            dense
-            class="col-span-3"
-            :placeholder="$t('trade.filter')"
-            :search="search"
-            data-cy="universal-table-filter-by-asset-input"
-            @searched="handleInputOnSearch"
-          />
-          <FilterSelector
-            class="col-span-2"
-            :type="TradeSelectorType.PositionSide"
-            :value="side"
-            data-cy="universal-table-filter-by-side-drop-down"
-            @click="handleSideClick"
-          />
-        </div>
+    <div class="w-full h-full flex flex-col">
+      <Toolbar>
+        <template #filters>
+          <div class="grid grid-cols-4 items-center gap-4 w-full">
+            <SearchAsset
+              class="col-span-2 sm:col-span-1"
+              :markets="markets"
+              :value="selectedToken"
+              @select="handleSearch"
+            />
 
-        <div
-          v-if="filteredPositions.length > 0"
-          class="col-span-12 flex justify-between items-center sm:hidden mt-3 text-xs px-3"
-        >
-          <span class="tracking-widest uppercase tracking-3">
-            {{ $t('trade.side') }} / {{ $t('trade.market') }}
-          </span>
-          <span
-            class="text-red-550 leading-5 cursor-pointer"
-            @click.stop="handleClosePositions"
-          >
-            {{ $t('trade.closeAll') }}
-          </span>
-        </div>
+            <FilterSelector
+              class="col-span-2 sm:col-span-1"
+              :type="TradeSelectorType.PositionSide"
+              :value="side"
+              data-cy="universal-table-filter-by-side-drop-down"
+              @click="handleSideClick"
+            />
 
-        <div
-          class="col-span-6 lg:col-span-8 sm:text-right mt-0 hidden sm:block"
-        >
+            <ClearFiltersButton
+              v-if="showClearFiltersButton"
+              @clear="handleClearFilters"
+            />
+          </div>
+        </template>
+
+        <template #actions>
           <VButton
-            v-if="filteredPositions.length > 0 && walletIsNotKeplr"
+            v-if="positions.length > 0 && walletIsNotKeplr"
             red-outline
             md
             :status="status"
             data-cy="activity-cancel-all-button"
+            class="rounded"
             @click.stop="handleClosePositions"
           >
-            {{ $t('trade.closeAllPositions') }}
+            <span class="whitespace-nowrap">
+              {{ $t('trade.closeAllPositions') }}
+            </span>
           </VButton>
-        </div>
-      </template>
+        </template>
+      </Toolbar>
 
       <!-- mobile table -->
       <TableBody
-        :show-empty="filteredPositions.length === 0"
+        :show-empty="positions.length === 0"
         class="sm:hidden mt-3 max-h-lg overflow-y-auto"
       >
         <MobilePosition
-          v-for="(position, index) in sortedPositions"
+          v-for="(position, index) in positions"
           :key="`mobile-positions-${index}-${position.marketId}`"
           class="col-span-1"
           :position="position"
@@ -69,12 +59,12 @@
       </TableBody>
 
       <TableWrapper break-md class="mt-4 hidden sm:block">
-        <table v-if="filteredPositions.length > 0" class="table">
+        <table v-if="positions.length > 0" class="table">
           <PositionTableHeader />
           <tbody>
             <tr
               is="Position"
-              v-for="(position, index) in sortedPositions"
+              v-for="(position, index) in positions"
               :key="`positions-${index}-${position.marketId}`"
               :position="position"
             />
@@ -95,10 +85,19 @@
         </span>
       </portal>
 
-      <portal to="activity-tab-position-count">
-        <span v-if="status.isNotLoading()"> ({{ positions.length }}) </span>
-      </portal>
-    </VCardTableWrap>
+      <Pagination
+        v-if="status.isIdle() && positions.length > 0"
+        class="mt-4"
+        v-bind="{
+          limit,
+          page,
+          totalPages,
+          totalCount
+        }"
+        @update:limit="handleLimitChangeEvent"
+        @update:page="handlePageChangeEvent"
+      />
+    </div>
   </HocLoading>
 </template>
 
@@ -109,13 +108,19 @@ import {
   UiPosition,
   UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
-import { Wallet } from '@injectivelabs/ts-types'
+import { TradeDirection, Wallet } from '@injectivelabs/ts-types'
+import { Token } from '@injectivelabs/token-metadata'
 import Position from '~/components/partials/common/position/position.vue'
 import PositionTableHeader from '~/components/partials/common/position/position-table.header.vue'
 import MobilePosition from '~/components/partials/common/position/mobile-position.vue'
 import FilterSelector from '~/components/partials/common/elements/filter-selector.vue'
 import TableBody from '~/components/elements/table-body.vue'
 import { TradeSelectorType } from '~/types/enums'
+import Pagination from '~/components/partials/common/pagination.vue'
+import { UI_DEFAULT_PAGINATION_LIMIT_COUNT } from '~/app/utils/constants'
+import SearchAsset from '@/components/partials/activity/common/search-asset.vue'
+import ClearFiltersButton from '@/components/partials/activity/common/clear-filters-button.vue'
+import Toolbar from '@/components/partials/activity/common/toolbar.vue'
 
 export default Vue.extend({
   components: {
@@ -123,7 +128,11 @@ export default Vue.extend({
     FilterSelector,
     MobilePosition,
     PositionTableHeader,
-    TableBody
+    TableBody,
+    Pagination,
+    SearchAsset,
+    ClearFiltersButton,
+    Toolbar
   },
 
   data() {
@@ -132,11 +141,18 @@ export default Vue.extend({
       search: '',
       side: undefined as string | undefined,
       status: new Status(StatusType.Loading),
-      poll: undefined as any
+      poll: undefined as any,
+      page: 1,
+      limit: UI_DEFAULT_PAGINATION_LIMIT_COUNT,
+      selectedToken: undefined as Token | undefined
     }
   },
 
   computed: {
+    activeMarketIds(): string[] {
+      return this.$accessor.derivatives.activeMarketIds
+    },
+
     wallet(): Wallet {
       return this.$accessor.wallet.wallet
     },
@@ -149,58 +165,39 @@ export default Vue.extend({
       return this.$accessor.derivatives.markets
     },
 
-    filteredPositions(): UiPosition[] {
-      const { positions, markets, search, side } = this
-
-      return positions.filter((p) => {
-        const market = markets.find((m) => m.marketId === p.marketId)
-
-        if (!market) {
-          return false
-        }
-
-        if (!search && !side) {
-          return true
-        }
-
-        const isPartOfSearchFilter =
-          !search ||
-          market.ticker.toLowerCase().includes(search.trim().toLowerCase())
-        const isPartOfSideFilter = !side || p.direction === side
-
-        return isPartOfSearchFilter && isPartOfSideFilter
-      })
-    },
-
-    sortedPositions(): UiPosition[] {
-      const { filteredPositions } = this
-
-      return [...filteredPositions].sort((p1: UiPosition, p2: UiPosition) => {
-        return p1.ticker.localeCompare(p2.ticker)
-      })
+    totalCount(): number {
+      return this.$accessor.positions.subaccountPositionsPagination.total
     },
 
     walletIsNotKeplr(): boolean {
       const { wallet } = this
 
       return wallet !== Wallet.Keplr
+    },
+
+    totalPages(): number {
+      const { totalCount, limit } = this
+
+      return Math.ceil(totalCount / limit)
+    },
+
+    showClearFiltersButton(): boolean {
+      return !!this.selectedToken || !!this.side
+    },
+
+    skip(): number {
+      const { page, limit } = this
+
+      return (page - 1) * limit
     }
   },
 
   mounted() {
-    this.status.setLoading()
-
-    Promise.all([
-      this.$accessor.derivatives.fetchSubaccountOrders(),
-      this.$accessor.positions.fetchSubaccountPositions()
-    ])
-      .catch(this.$onError)
-      .finally(() => {
-        this.status.setIdle()
-        this.$root.$emit('position-tab-loaded')
-      })
-
     this.pollSubaccountPositions()
+
+    this.fetchPositions().then(() => {
+      this.$root.$emit('position-tab-loaded')
+    })
   },
 
   beforeDestroy() {
@@ -208,16 +205,54 @@ export default Vue.extend({
   },
 
   methods: {
-    closeAllPositions(): Promise<void> {
-      const { filteredPositions } = this
+    fetchPositions(): Promise<void> {
+      this.status.setLoading()
 
-      return this.$accessor.positions.closeAllPosition(filteredPositions)
+      return Promise.all([
+        this.$accessor.derivatives.fetchSubaccountOrders(),
+        this.$accessor.derivatives.fetchSubaccountConditionalOrders(),
+        this.fetchSubaccountPositions()
+      ])
+        .catch(this.$onError)
+        .then(() => {
+          this.status.setIdle()
+        })
+    },
+
+    fetchSubaccountPositions() {
+      const { side, markets, skip, limit, activeMarketIds: marketIds } = this
+
+      const direction = side as TradeDirection
+      const marketId = markets.find((m) => {
+        return (
+          m.baseToken.symbol === this.selectedToken?.symbol ||
+          m.quoteToken.symbol === this.selectedToken?.symbol
+        )
+      })?.marketId
+
+      return this.$accessor.positions.fetchSubaccountPositions({
+        pagination: {
+          skip,
+          limit
+        },
+        filters: {
+          marketId,
+          marketIds,
+          direction
+        }
+      })
+    },
+
+    closeAllPositions(): Promise<void> {
+      const { positions } = this
+
+      return this.$accessor.positions.closeAllPosition(positions)
     },
 
     closePosition(): Promise<void> {
-      const { filteredPositions, markets } = this
+      const { positions, markets } = this
+      const [position] = positions
 
-      const [position] = filteredPositions
       const market = markets.find((m) => m.marketId === position.marketId)
 
       if (!market) {
@@ -237,14 +272,12 @@ export default Vue.extend({
     },
 
     handleClosePositions() {
-      const { filteredPositions } = this
+      const { positions } = this
 
       this.status.setLoading()
 
       const action =
-        filteredPositions.length === 1
-          ? this.closePosition
-          : this.closeAllPositions
+        positions.length === 1 ? this.closePosition : this.closeAllPositions
 
       action()
         .then(() => {
@@ -256,18 +289,47 @@ export default Vue.extend({
         })
     },
 
-    handleInputOnSearch(search: string) {
-      this.search = search
-    },
-
     handleSideClick(side: string | undefined) {
       this.side = side
+
+      this.resetPagination()
+      this.fetchPositions()
     },
 
     pollSubaccountPositions() {
-      this.poll = setInterval(() => {
-        this.$accessor.positions.fetchSubaccountPositions()
-      }, 30 * 1000)
+      this.poll = setInterval(this.fetchSubaccountPositions, 30 * 1000)
+    },
+
+    handleLimitChangeEvent(limit: number) {
+      this.limit = limit
+
+      this.resetPagination()
+      this.fetchPositions()
+    },
+
+    handlePageChangeEvent(page: number) {
+      this.page = page
+
+      this.fetchPositions()
+    },
+
+    handleSearch(token: Token) {
+      this.selectedToken = token
+
+      this.resetPagination()
+      this.fetchPositions()
+    },
+
+    handleClearFilters() {
+      this.selectedToken = undefined
+      this.side = undefined
+
+      this.resetPagination()
+      this.fetchPositions()
+    },
+
+    resetPagination() {
+      this.page = 1
     }
   }
 })

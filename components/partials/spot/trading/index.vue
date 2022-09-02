@@ -1,7 +1,7 @@
 <template>
-  <VCard class="w-full h-full">
+  <div class="w-full h-full px-6 py-4 bg-helixGray-950 rounded-xl relative">
     <Trade />
-  </VCard>
+  </div>
 </template>
 
 <script lang="ts">

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col flex-wrap overflow-y-hidden w-full">
+  <div class="flex flex-col flex-wrap overflow-y-hidden w-full px-2">
     <div
       ref="sellOrders"
       class="overflow-y-scroll overflow-x-hidden w-full orderbook-half-h"
@@ -14,6 +14,7 @@
             v-for="(sell, index) in sellsWithDepth"
             :key="`order-book-sell-${sell.aggregatedPrice || sell.price}`"
             :ref="`order-book-sell-${index}`"
+            class="bg-gray-950 bg-opacity-20 hover:bg-purple-200 hover:bg-opacity-5"
             :class="{
               active: sellHoverPosition !== null && index >= sellHoverPosition
             }"
@@ -36,7 +37,7 @@
         <span
           :class="{
             'text-red-500': lastTradedPriceChange === Change.Decrease,
-            'text-aqua-500': lastTradedPriceChange !== Change.Decrease
+            'text-green-500': lastTradedPriceChange !== Change.Decrease
           }"
           data-cy="orderbook-last-traded-price-text-content"
           class="font-bold font-mono text-base lg:text-lg 4xl:text-xl"
@@ -51,7 +52,8 @@
           :class="{
             'text-red-500 -rotate-90':
               lastTradedPriceChange === Change.Decrease,
-            'text-aqua-500 rotate-90': lastTradedPriceChange === Change.Increase
+            'text-green-500 rotate-90':
+              lastTradedPriceChange === Change.Increase
           }"
         />
         <span
@@ -78,6 +80,7 @@
             v-for="(buy, index) in buysWithDepth"
             :key="`order-book-buy-${buy.aggregatedPrice || buy.price}`"
             :ref="`order-book-buy-${index}`"
+            class="bg-gray-950 bg-opacity-20 hover:bg-purple-200 hover:bg-opacity-5"
             :class="{
               active: buyHoverPosition !== null && index <= buyHoverPosition
             }"

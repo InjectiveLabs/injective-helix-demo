@@ -1,4 +1,5 @@
 import {
+<<<<<<< HEAD
   IndexerGrpcDerivativesStream,
   IndexerGrpcSpotStream,
   DerivativeOrdersStreamCallback,
@@ -7,13 +8,28 @@ import {
   SpotTradesStreamCallback
 } from '@injectivelabs/sdk-ts'
 
+=======
+  DerivativeOrdersStreamCallback,
+  DerivativeTradesStreamCallback,
+  IndexerGrpcDerivativesStream,
+  IndexerGrpcSpotStream,
+  SpotOrdersStreamCallback,
+  SpotTradesStreamCallback
+} from '@injectivelabs/sdk-ts'
+>>>>>>> helix/master
 import { streamProvider } from '../../providers/StreamProvider'
 import { StreamType } from '~/types'
 import { ENDPOINTS } from '~/app/utils/constants'
 
+<<<<<<< HEAD
 export const spotMarketStream = new IndexerGrpcSpotStream(ENDPOINTS.exchangeApi)
 export const derivativesMarketStream = new IndexerGrpcDerivativesStream(
   ENDPOINTS.exchangeApi
+=======
+export const spotMarketStream = new IndexerGrpcSpotStream(ENDPOINTS.indexerApi)
+export const derivativesMarketStream = new IndexerGrpcDerivativesStream(
+  ENDPOINTS.indexerApi
+>>>>>>> helix/master
 )
 
 export const streamSubaccountSpotOrders = ({

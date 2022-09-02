@@ -4,17 +4,14 @@
       <HocLoading :status="status">
         <div class="container pt-6 pb-12">
           <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12">
-            <WelcomeBanner />
             <!--
               A clever solution here to apply loading state to account
               summary based on the bank/trading account balances loading
             -->
-            <div class="lg:pb-4 relative">
+            <div class="relative">
               <portal-target name="account-summary" />
             </div>
-            <GasRebate class="mt-6" />
-            <div class="border-b border-gray-600 w-full my-6"></div>
-            <Balances class="mt-4" />
+            <Balances class="mt-8" />
             <Bridge />
           </div>
         </div>
@@ -29,8 +26,6 @@ import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { RefereeInfo } from '@injectivelabs/referral-consumer'
 import Balances from '~/components/partials/portfolio/balances.vue'
-import WelcomeBanner from '~/components/partials/banners/welcome.vue'
-import GasRebate from '~/components/partials/banners/gas-rebate.vue'
 import Bridge from '~/components/partials/portfolio/bridge.vue'
 import { Modal } from '~/types'
 import ModalOnboardReferee from '~/components/partials/modals/referee-onboarding.vue'
@@ -40,8 +35,6 @@ export default Vue.extend({
   components: {
     Bridge,
     Balances,
-    WelcomeBanner,
-    GasRebate,
     ModalOnboardReferee
   },
 
@@ -79,7 +72,7 @@ export default Vue.extend({
 
       if ($route.name === 'register' && code && code.toString().trim() !== '') {
         if (refereeInfo === undefined) {
-          this.$accessor.modal.openModal(Modal.RefereeOnboarding)
+          this.$accessor.modal.openModal({ type: Modal.RefereeOnboarding })
         } else {
           this.$toast.error(this.$t('referralModal.alreadyReferredToast'))
         }

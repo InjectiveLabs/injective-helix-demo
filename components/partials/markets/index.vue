@@ -10,7 +10,8 @@
       :active-type.sync="activeType"
       :search.sync="search"
     />
-    <div class="border-b border-gray-600 w-full h-px pb-4 mb-4 md:hidden" />
+
+    <div class="border-b border-gray-600 w-full h-px mt-6 mb-4 md:hidden" />
 
     <!-- mobile header -->
     <TableHeader classes="grid grid-cols-3 md:hidden">

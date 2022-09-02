@@ -251,7 +251,7 @@ export default Vue.extend({
 
     wrapperClass(): string {
       const { dense, lg, xl, transparentBg, wrapperClasses } = this
-      const classes = []
+      const classes = ['shadow-none']
 
       if (!dense) {
         classes.push('mt-2')
@@ -443,9 +443,9 @@ export default Vue.extend({
       if (max || maxSelector) {
         if (max) {
           this.handleChangeFromString(value)
-          this.$emit('input-max', value)
+          this.$emit('input:max', value)
         } else {
-          this.$emit('input-max')
+          this.$emit('input:max')
         }
       }
     }

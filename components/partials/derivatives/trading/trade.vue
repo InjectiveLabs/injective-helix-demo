@@ -1,7 +1,11 @@
 <template>
-  <div v-if="market" class="px-4 w-full">
+  <div v-if="market" class="w-full flex flex-col gap-6">
     <TradingTypeButtons
       :trading-type.sync="tradingType"
+      :trading-type-market="tradingTypeMarket"
+      :trading-type-limit="tradingTypeLimit"
+      :trading-type-stop-market="tradingTypeStopMarket"
+      :trading-type-stop-limit="tradingTypeStopLimit"
       @update:trading-type="handleTradingTypeChange"
     />
 
@@ -13,7 +17,6 @@
 
     <OrderInputs
       ref="orderInputs"
-      class="mt-8"
       v-bind="{
         averagePriceOption,
         buys,
@@ -34,13 +37,19 @@
         quoteAvailableBalance,
         sells,
         showReduceOnly,
-        showReduceOnly,
         slippage,
         slippageTolerance: form.slippageTolerance,
         takerFeeRate,
         tradingType,
         tradingTypeMarket,
-        worstPrice
+        tradingTypeLimit,
+        tradingTypeStopMarket,
+        tradingTypeStopLimit,
+        worstPrice,
+        triggerPrice,
+        markPrice,
+        isConditionalOrder,
+        formId
       }"
       :average-price-option.sync="averagePriceOption"
       :amount.sync="form.amount"
@@ -54,6 +63,7 @@
       :has-input-errors.sync="hasInputErrors"
       :has-advanced-settings-errors.sync="hasAdvancedSettingsErrors"
       @update-price-from-last-traded-price="updatePriceFromLastTradedPrice"
+      @update:trigger-price="updateTriggerPrice"
     />
 
     <OrderDetailsWrapper
@@ -62,6 +72,7 @@
         executionPrice,
         feeRate,
         fees,
+        leverage: form.leverage,
         liquidationPrice,
         makerFeeRate,
         makerFeeRateDiscount,
@@ -78,26 +89,48 @@
         slippage,
         takerFeeRate,
         takerFeeRateDiscount,
-        tradingTypeMarket
+        tradingType,
+        tradingTypeMarket,
+        tradingTypeLimit,
+        tradingTypeStopLimit,
+        tradingTypeStopMarket
       }"
     />
 
+    <!-- <span class="text-gray-500 text-xs leading-4">
+      {{ $t('trade.slippage_cancellation_notice') }}
+    </span> -->
+
     <OrderSubmit
       v-bind="{
+        amount: form.amount,
         executionPrice,
         hasAmount,
         hasInputErrors,
         hasAdvancedSettingsErrors,
         hasPrice,
+        hasTriggerPrice,
+        triggerPriceEqualsMarkPrice,
         lastTradedPrice,
+        leverage: form.leverage,
         market,
         orderType,
         orderTypeBuy,
+        orderTypeToSubmit,
         orderTypeReduceOnly,
+        postOnly: form.postOnly,
+        price: form.price,
+        slippageTolerance: form.slippageTolerance,
         status,
-        tradingTypeMarket
+        tradingType,
+        tradingTypeMarket,
+        tradingTypeLimit,
+        tradingTypeStopMarket,
+        tradingTypeStopLimit,
+        isConditionalOrder
       }"
-      @submit="onSubmit"
+      @submit="handleSubmit"
+      @submit:request="handleRequestSubmit"
     />
   </div>
 </template>
@@ -105,6 +138,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { Identify, identify } from '@amplitude/analytics-browser'
 import {
   TradeDirection,
   TradeExecutionType,
@@ -125,6 +159,7 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import {
   cosmosSdkDecToBigNumber,
+  DerivativeOrderState,
   FeeDiscountAccountInfo
 } from '@injectivelabs/sdk-ts'
 import OrderTypeSelect from '~/components/partials/common/trade/order-type-select.vue'
@@ -132,7 +167,13 @@ import OrderSubmit from '~/components/partials/common/trade/order-submit.vue'
 import OrderInputs from '~/components/partials/common/trade/order-inputs.vue'
 import TradingTypeButtons from '~/components/partials/common/trade/trading-type-buttons.vue'
 import OrderDetailsWrapper from '~/components/partials/common/trade/order-details-wrapper.vue'
-import { AveragePriceOptions } from '~/types'
+import {
+  AmplitudeEvents,
+  AveragePriceOptions,
+  Modal,
+  OrderAttemptStatus,
+  TradeConfirmationModalData
+} from '~/types'
 import {
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook,
@@ -141,7 +182,17 @@ import {
   calculateAverageExecutionPriceFromFillableNotionalOnOrderBook,
   calculateBinaryOptionsMargin
 } from '~/app/client/utils/derivatives'
-import { ONE_IN_BASE } from '~/app/utils/constants'
+import {
+  BIGGER_PRICE_WARNING_DEVIATION,
+  DEFAULT_PRICE_WARNING_DEVIATION,
+  ONE_IN_BASE
+} from '~/app/utils/constants'
+import { excludedPriceDeviationSlugs } from '~/app/data/market'
+import { localStorage } from '~/app/Services'
+import {
+  AMPLITUDE_ATTEMPT_PLACE_ORDER_COUNT,
+  AMPLITUDE_VIP_TIER_LEVEL
+} from '~/app/utils/vendor'
 
 interface TradeForm {
   reduceOnly: boolean
@@ -149,20 +200,24 @@ interface TradeForm {
   quoteAmount: string
   postOnly: boolean
   price: string
+  triggerPrice: string
   leverage: string
   slippageTolerance: string
   proportionalPercentage: number
+  formId: number
 }
 
-const initialForm = (): TradeForm => ({
+const initialForm = (formId: number): TradeForm => ({
   reduceOnly: false,
   amount: '',
   quoteAmount: '',
   postOnly: false,
   price: '',
+  triggerPrice: '',
   leverage: '1',
   slippageTolerance: '0.5',
-  proportionalPercentage: 0
+  proportionalPercentage: 0,
+  formId
 })
 
 export default Vue.extend({
@@ -183,7 +238,7 @@ export default Vue.extend({
       orderType: DerivativeOrderSide.Buy,
       detailsDrawerOpen: true,
       status: new Status(),
-      form: initialForm(),
+      form: initialForm(0),
       hasInputErrors: false,
       hasAdvancedSettingsErrors: false,
       averagePriceOption: AveragePriceOptions.None
@@ -228,11 +283,50 @@ export default Vue.extend({
       return this.$accessor.positions.subaccountPositions
     },
 
+    isConditionalOrder(): boolean {
+      const { tradingTypeStopMarket, tradingTypeStopLimit } = this
+
+      return tradingTypeStopMarket || tradingTypeStopLimit
+    },
+
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
+    },
+
+    tierLevel(): number {
+      const { feeDiscountAccountInfo } = this
+
+      if (!feeDiscountAccountInfo) {
+        return 0
+      }
+
+      return new BigNumberInBase(
+        feeDiscountAccountInfo.tierLevel || 0
+      ).toNumber()
+    },
+
     orderTypeToSubmit(): DerivativeOrderSide {
       const {
         form: { postOnly },
-        orderTypeBuy
+        orderTypeBuy,
+        tradingTypeStopLimit,
+        tradingTypeStopMarket,
+        triggerPrice,
+        markPrice
       } = this
+
+      if (tradingTypeStopLimit || tradingTypeStopMarket) {
+        const triggerPriceInBase =
+          triggerPrice !== undefined ? triggerPrice : ZERO_IN_BASE
+
+        return orderTypeBuy
+          ? triggerPriceInBase.lt(markPrice)
+            ? DerivativeOrderSide.TakeBuy
+            : DerivativeOrderSide.StopBuy
+          : triggerPriceInBase.gt(markPrice)
+          ? DerivativeOrderSide.TakeSell
+          : DerivativeOrderSide.StopSell
+      }
 
       switch (true) {
         case postOnly && orderTypeBuy: {
@@ -254,11 +348,30 @@ export default Vue.extend({
     },
 
     worstPrice(): BigNumberInBase {
-      const { orderTypeBuy, slippage, sells, buys, hasAmount, market, amount } =
-        this
+      const {
+        orderTypeBuy,
+        slippage,
+        sells,
+        buys,
+        hasAmount,
+        market,
+        amount,
+        tradingTypeStopMarket,
+        triggerPrice
+      } = this
 
       if (!market || !hasAmount) {
         return ZERO_IN_BASE
+      }
+
+      if (tradingTypeStopMarket) {
+        if (!triggerPrice) {
+          return ZERO_IN_BASE
+        }
+
+        return new BigNumberInBase(
+          triggerPrice.times(slippage).toFixed(market.priceDecimals)
+        )
       }
 
       const records = orderTypeBuy ? sells : buys
@@ -284,8 +397,20 @@ export default Vue.extend({
       return positions.find((position) => position.marketId === market.marketId)
     },
 
-    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
-      return this.$accessor.exchange.feeDiscountAccountInfo
+    hasOpenOrder(): boolean {
+      const { orders, market } = this
+
+      if (!market) {
+        return false
+      }
+
+      return !!orders.find(
+        (order) =>
+          order.marketId === market.marketId &&
+          (order.state === DerivativeOrderState.PartialFilled ||
+            DerivativeOrderState.Unfilled ||
+            DerivativeOrderState.Booked)
+      )
     },
 
     quoteAvailableBalance(): BigNumberInBase {
@@ -461,8 +586,24 @@ export default Vue.extend({
       return new BigNumberInBase(this.form.price)
     },
 
+    triggerPrice(): BigNumberInBase | undefined {
+      if (this.form.triggerPrice === '') {
+        return undefined
+      }
+
+      return new BigNumberInBase(this.form.triggerPrice)
+    },
+
+    markPrice(): BigNumberInBase {
+      return new BigNumberInBase(this.$accessor.derivatives.marketMarkPrice)
+    },
+
     showReduceOnly(): boolean {
-      const { orderType, position } = this
+      const { orderType, position, isConditionalOrder, hasOpenOrder } = this
+
+      if (isConditionalOrder) {
+        return !!position || hasOpenOrder
+      }
 
       if (!position) {
         return false
@@ -483,6 +624,26 @@ export default Vue.extend({
       const { tradingType } = this
 
       return tradingType === TradeExecutionType.Market
+    },
+
+    tradingTypeLimit(): boolean {
+      const { tradingType } = this
+
+      return tradingType === TradeExecutionType.LimitFill
+    },
+
+    tradingTypeStopLimit(): boolean {
+      const { tradingType } = this
+
+      // TODO: Replace with enum from BE once available.
+      return tradingType.toString() === 'stopLimit'
+    },
+
+    tradingTypeStopMarket(): boolean {
+      const { tradingType } = this
+
+      // TODO: Replace with enum from BE once available.
+      return tradingType.toString() === 'stopMarket'
     },
 
     averagePriceDerivedFromBaseAmount(): BigNumberInBase {
@@ -571,6 +732,22 @@ export default Vue.extend({
       return executionPrice.gt('0')
     },
 
+    hasTriggerPrice(): boolean {
+      const { triggerPrice } = this
+
+      return triggerPrice !== undefined
+    },
+
+    triggerPriceEqualsMarkPrice(): boolean {
+      const { triggerPrice, markPrice } = this
+
+      if (!triggerPrice) {
+        return false
+      }
+
+      return triggerPrice.eq(markPrice)
+    },
+
     orderTypeBuy(): boolean {
       const { orderType } = this
 
@@ -590,16 +767,27 @@ export default Vue.extend({
         form,
         market,
         orderType,
-        tradingTypeMarket
+        tradingTypeMarket,
+        tradingTypeStopMarket,
+        triggerPrice
       } = this
 
-      if (!hasPrice || !hasAmount || !market) {
+      if (!hasAmount || !market) {
         return ZERO_IN_BASE
       }
 
-      const price = tradingTypeMarket
-        ? worstPrice.toFixed()
-        : executionPrice.toFixed()
+      if (!hasPrice && !tradingTypeStopMarket) {
+        return ZERO_IN_BASE
+      }
+
+      if (!triggerPrice && tradingTypeStopMarket) {
+        return ZERO_IN_BASE
+      }
+
+      const price =
+        tradingTypeMarket || tradingTypeStopMarket
+          ? worstPrice.toFixed()
+          : executionPrice.toFixed()
 
       if (market.subType === MarketType.BinaryOptions) {
         return new BigNumberInBase(
@@ -621,9 +809,26 @@ export default Vue.extend({
     },
 
     notionalWithLeverageBasedOnWorstPrice(): BigNumberInBase {
-      const { worstPrice, hasPrice, hasAmount, form, market, orderType } = this
+      const {
+        worstPrice,
+        hasPrice,
+        hasAmount,
+        form,
+        market,
+        orderType,
+        triggerPrice,
+        tradingTypeStopMarket
+      } = this
 
-      if (!hasPrice || !hasAmount || !market) {
+      if (!hasAmount || !market) {
+        return ZERO_IN_BASE
+      }
+
+      if (!hasPrice && !tradingTypeStopMarket) {
+        return ZERO_IN_BASE
+      }
+
+      if (!triggerPrice && tradingTypeStopMarket) {
         return ZERO_IN_BASE
       }
 
@@ -647,16 +852,23 @@ export default Vue.extend({
     },
 
     notionalValue(): BigNumberInBase {
-      const { executionPrice, worstPrice, tradingTypeMarket, amount, market } =
-        this
+      const {
+        executionPrice,
+        worstPrice,
+        tradingTypeMarket,
+        tradingTypeStopMarket,
+        amount,
+        market
+      } = this
 
       if (amount.isNaN() || !market) {
         return ZERO_IN_BASE
       }
 
-      const price = tradingTypeMarket
-        ? worstPrice.toFixed()
-        : executionPrice.toFixed()
+      const price =
+        tradingTypeMarket || tradingTypeStopMarket
+          ? worstPrice.toFixed()
+          : executionPrice.toFixed()
 
       const notional = amount.times(price)
 
@@ -678,9 +890,24 @@ export default Vue.extend({
     },
 
     notionalWithLeverageToBigNumber(): BigNumberInBase {
-      const { hasPrice, hasAmount, notionalWithLeverage, market } = this
+      const {
+        hasPrice,
+        hasAmount,
+        notionalWithLeverage,
+        market,
+        tradingTypeStopMarket,
+        triggerPrice
+      } = this
 
-      if (!hasPrice || !hasAmount || !market) {
+      if (!hasAmount || !market) {
+        return ZERO_IN_BASE
+      }
+
+      if (!hasPrice && !tradingTypeStopMarket) {
+        return ZERO_IN_BASE
+      }
+
+      if (!triggerPrice && tradingTypeStopMarket) {
         return ZERO_IN_BASE
       }
 
@@ -727,10 +954,20 @@ export default Vue.extend({
         market,
         form,
         worstPrice,
-        tradingTypeMarket
+        tradingTypeMarket,
+        tradingTypeStopMarket,
+        triggerPrice
       } = this
 
-      if (!hasAmount || !hasPrice || !market) {
+      if (!hasAmount || !market) {
+        return ZERO_IN_BASE
+      }
+
+      if (!hasPrice && !tradingTypeStopMarket) {
+        return ZERO_IN_BASE
+      }
+
+      if (!triggerPrice && tradingTypeStopMarket) {
         return ZERO_IN_BASE
       }
 
@@ -742,9 +979,10 @@ export default Vue.extend({
         | UiPerpetualMarketWithToken
         | UiExpiryFuturesMarketWithToken
 
-      const price = tradingTypeMarket
-        ? worstPrice.toFixed()
-        : executionPrice.toFixed()
+      const price =
+        tradingTypeMarket || tradingTypeStopMarket
+          ? worstPrice.toFixed()
+          : executionPrice.toFixed()
 
       return calculateLiquidationPrice({
         market: derivativeMarket,
@@ -761,6 +999,45 @@ export default Vue.extend({
 
     $orderInputs(): any {
       return this.$refs.orderInputs
+    },
+
+    priceHasHighDeviationWarning(): boolean {
+      const {
+        executionPrice,
+        orderTypeBuy,
+        orderTypeReduceOnly,
+        tradingTypeMarket,
+        market,
+        lastTradedPrice
+      } = this
+
+      if (!market || tradingTypeMarket || executionPrice.lte(0)) {
+        return false
+      }
+
+      if (orderTypeReduceOnly) {
+        return false
+      }
+
+      const defaultPriceWarningDeviation = excludedPriceDeviationSlugs.includes(
+        market.ticker
+      )
+        ? BIGGER_PRICE_WARNING_DEVIATION
+        : DEFAULT_PRICE_WARNING_DEVIATION
+
+      const deviation = new BigNumberInBase(1)
+        .minus(
+          orderTypeBuy
+            ? lastTradedPrice.dividedBy(executionPrice)
+            : executionPrice.dividedBy(lastTradedPrice)
+        )
+        .times(100)
+
+      return deviation.gt(defaultPriceWarningDeviation)
+    },
+
+    formId(): number {
+      return this.form.formId
     }
   },
 
@@ -771,20 +1048,20 @@ export default Vue.extend({
   },
 
   methods: {
-    handleOrderTypeChange() {
-      const {
-        form: { quoteAmount }
-      } = this
+    handleTradingTypeChange() {
+      // const {
+      //   form: { quoteAmount }
+      // } = this
 
-      this.$nextTick(() => this.$orderInputs.onQuoteAmountChange(quoteAmount))
+      // this.$nextTick(() => this.$orderInputs.onQuoteAmountChange(quoteAmount))
+      this.resetForm()
     },
 
-    handleTradingTypeChange() {
-      const {
-        form: { quoteAmount }
-      } = this
-
-      this.$nextTick(() => this.$orderInputs.onQuoteAmountChange(quoteAmount))
+    handleOrderTypeChange() {
+      // const {
+      //   form: { quoteAmount }
+      // } = this
+      // this.$nextTick(() => this.$orderInputs.onQuoteAmountChange(quoteAmount))
     },
 
     onDetailsDrawerToggle() {
@@ -845,6 +1122,10 @@ export default Vue.extend({
       this.form.price = lastTradedPrice.toFixed(market.priceDecimals)
     },
 
+    updateTriggerPrice(triggerPrice: string) {
+      this.form.triggerPrice = triggerPrice
+    },
+
     submitLimitOrder() {
       const {
         orderTypeToSubmit,
@@ -870,10 +1151,54 @@ export default Vue.extend({
           quantity: amount
         })
         .then(() => {
+          this.handleAttemptPlaceOrderTrack()
           this.$toast.success(this.$t('trade.order_placed'))
-          this.$set(this, 'form', initialForm())
+          this.resetForm()
         })
-        .catch(this.$onRejected)
+        .catch((e) => {
+          this.handleAttemptPlaceOrderTrack(e)
+          this.$onRejected(e)
+        })
+        .finally(() => {
+          this.status.setIdle()
+        })
+    },
+
+    submitStopLimitOrder() {
+      const {
+        market,
+        notionalWithLeverage,
+        price,
+        triggerPrice,
+        orderTypeToSubmit,
+        orderTypeReduceOnly,
+        amount
+      } = this
+
+      if (!market || !triggerPrice) {
+        return
+      }
+
+      this.status.setLoading()
+
+      this.$accessor.derivatives
+        .submitStopLimitOrder({
+          price,
+          triggerPrice,
+          margin: notionalWithLeverage,
+          orderType: orderTypeToSubmit,
+          reduceOnly: orderTypeReduceOnly,
+          quantity: amount
+        })
+        .then(() => {
+          this.handleAttemptPlaceOrderTrack()
+          this.$toast.success(this.$t('trade.order_placed'))
+          this.resetForm()
+        })
+        .catch((e) => {
+          this.handleAttemptPlaceOrderTrack(e)
+          this.$onRejected(e)
+        })
         .finally(() => {
           this.status.setIdle()
         })
@@ -904,21 +1229,175 @@ export default Vue.extend({
           quantity: amount
         })
         .then(() => {
+          this.handleAttemptPlaceOrderTrack()
           this.$toast.success(this.$t('trade.trade_placed'))
-          this.$set(this, 'form', initialForm())
+          this.resetForm()
         })
-        .catch(this.$onRejected)
+        .catch((e) => {
+          this.handleAttemptPlaceOrderTrack(e)
+          this.$onRejected(e)
+        })
         .finally(() => {
           this.status.setIdle()
         })
     },
 
-    onSubmit() {
-      const { tradingTypeMarket } = this
+    submitStopMarketOrder() {
+      const {
+        orderTypeToSubmit,
+        orderTypeReduceOnly,
+        market,
+        notionalWithLeverageBasedOnWorstPrice,
+        worstPrice,
+        triggerPrice,
+        amount
+      } = this
 
-      return tradingTypeMarket
-        ? this.submitMarketOrder()
-        : this.submitLimitOrder()
+      if (!market || !triggerPrice) {
+        return
+      }
+
+      this.status.setLoading()
+
+      this.$accessor.derivatives
+        .submitStopMarketOrder({
+          orderType: orderTypeToSubmit,
+          margin: notionalWithLeverageBasedOnWorstPrice,
+          reduceOnly: orderTypeReduceOnly,
+          price: worstPrice,
+          triggerPrice,
+          quantity: amount
+        })
+        .then(() => {
+          this.handleAttemptPlaceOrderTrack()
+          this.$toast.success(this.$t('trade.trade_placed'))
+          this.resetForm()
+        })
+        .catch((e) => {
+          this.handleAttemptPlaceOrderTrack(e)
+          this.$onRejected(e)
+        })
+        .finally(() => {
+          this.status.setIdle()
+        })
+    },
+
+    resetForm() {
+      this.$set(this, 'form', initialForm(this.form.formId + 1))
+
+      this.form.reduceOnly = false
+      this.form.amount = ''
+      this.form.quoteAmount = ''
+      this.form.postOnly = false
+      this.form.price = ''
+      this.form.triggerPrice = ''
+      this.form.leverage = '1'
+      this.form.slippageTolerance = '0.5'
+      this.form.proportionalPercentage = 0
+    },
+
+    handleRequestSubmit() {
+      const {
+        price,
+        amount,
+        market,
+        tradingType,
+        triggerPrice,
+        tradingTypeLimit,
+        tradingTypeMarket,
+        isConditionalOrder,
+        tradingTypeStopLimit,
+        priceHasHighDeviationWarning,
+        orderTypeToSubmit: orderType,
+        form
+      } = this
+
+      if (!isConditionalOrder && priceHasHighDeviationWarning) {
+        return this.$accessor.modal.openModal({
+          type: Modal.OrderConfirm
+        })
+      }
+
+      const shouldSkipTradeConfirmationModal =
+        localStorage.get('skipTradeConfirmationModal') === true
+
+      if (
+        shouldSkipTradeConfirmationModal ||
+        tradingTypeMarket ||
+        tradingTypeLimit
+      ) {
+        return this.handleSubmit()
+      }
+
+      if (!triggerPrice || !market || (tradingTypeStopLimit && !price)) {
+        return
+      }
+
+      const modalData: TradeConfirmationModalData = {
+        tradingType,
+        orderType,
+        triggerPrice,
+        triggerPriceSymbol: market.quoteToken.symbol,
+        amount,
+        amountSymbol: market.baseToken.symbol,
+        isReduceOnly: form.reduceOnly
+      }
+
+      if (tradingTypeStopLimit) {
+        modalData.price = price
+        modalData.priceSymbol = market.quoteToken.symbol
+      }
+
+      return this.$accessor.modal.openModal({
+        type: Modal.OrderConfirm,
+        data: modalData
+      })
+    },
+
+    handleSubmit() {
+      const { tradingType } = this
+
+      switch (tradingType.toString()) {
+        case TradeExecutionType.LimitFill.toString():
+          return this.submitLimitOrder()
+        case TradeExecutionType.Market.toString():
+          return this.submitMarketOrder()
+        case 'stopLimit':
+          return this.submitStopLimitOrder()
+        case 'stopMarket':
+          return this.submitStopMarketOrder()
+      }
+    },
+
+    handleAttemptPlaceOrderTrack(errorMessage?: string) {
+      if (!this.market) {
+        return
+      }
+
+      const identifyObj = new Identify()
+      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
+      identifyObj.add(AMPLITUDE_ATTEMPT_PLACE_ORDER_COUNT, 1)
+      identify(identifyObj)
+
+      this.$amplitude.track(AmplitudeEvents.AttemptPlaceOrder, {
+        amount: this.form.amount,
+        leverage: this.form.leverage,
+        market: this.market.slug,
+        marketType: this.market.subType,
+        orderType: this.orderType,
+        postOnly: this.form.postOnly,
+        tradingType: this.tradingType,
+        triggerPrice:
+          this.tradingTypeStopMarket || this.tradingTypeStopLimit
+            ? this.form.triggerPrice
+            : '',
+        reduceOnly: this.form.reduceOnly,
+        limitPrice: !this.tradingTypeMarket ? this.price : '',
+        status: errorMessage
+          ? OrderAttemptStatus.Error
+          : OrderAttemptStatus.Success,
+        error: errorMessage
+      })
     }
   }
 })

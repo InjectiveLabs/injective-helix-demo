@@ -2081,17 +2081,17 @@
         "signature": "32c99fa076e9003754192d706f4b9da23573624efbb881e42532131bed744edc",
         "affectsGlobalScope": false
       },
-      "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/indexerRestDerivativesChronosApi.d.ts": {
+      "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/ExchangeRestDerivativesChronosApi.d.ts": {
         "version": "a080d9fdb94a3ba99238ff11da6caf77b61517aa84b21cc83a9fa0980c91b78f",
         "signature": "a080d9fdb94a3ba99238ff11da6caf77b61517aa84b21cc83a9fa0980c91b78f",
         "affectsGlobalScope": false
       },
-      "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/indexerRestSpotChronosApi.d.ts": {
+      "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/ExchangeRestSpotChronosApi.d.ts": {
         "version": "5dde33aff06ae7a7755210ddf9b1418cc75b46076e1981364a65d9a1f5f2f431",
         "signature": "5dde33aff06ae7a7755210ddf9b1418cc75b46076e1981364a65d9a1f5f2f431",
         "affectsGlobalScope": false
       },
-      "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/indexerRestExplorerApi.d.ts": {
+      "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/ExchangeRestExplorerApi.d.ts": {
         "version": "5ff5e7417b22decf25be04b1a6219a1dc7696a8379e88d1306d3acb538edc055",
         "signature": "5ff5e7417b22decf25be04b1a6219a1dc7696a8379e88d1306d3acb538edc055",
         "affectsGlobalScope": false
@@ -7424,26 +7424,26 @@
         "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/types/index.d.ts",
         "./node_modules/date-fns/typings.d.ts"
       ],
-      "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/indexerRestDerivativesChronosApi.d.ts": [
+      "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/ExchangeRestDerivativesChronosApi.d.ts": [
         "./node_modules/@injectivelabs/sdk-ts/dist/client/BaseRestConsumer.d.ts",
         "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/types/derivatives-rest.d.ts",
         "./node_modules/date-fns/typings.d.ts"
       ],
-      "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/indexerRestExplorerApi.d.ts": [
+      "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/ExchangeRestExplorerApi.d.ts": [
         "./node_modules/@injectivelabs/sdk-ts/dist/client/BaseRestConsumer.d.ts",
         "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/types/explorer-rest.d.ts",
         "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/types/explorer.d.ts",
         "./node_modules/date-fns/typings.d.ts"
       ],
-      "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/indexerRestSpotChronosApi.d.ts": [
+      "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/ExchangeRestSpotChronosApi.d.ts": [
         "./node_modules/@injectivelabs/sdk-ts/dist/client/BaseRestConsumer.d.ts",
         "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/types/spot-rest.d.ts",
         "./node_modules/date-fns/typings.d.ts"
       ],
       "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/index.d.ts": [
-        "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/indexerRestDerivativesChronosApi.d.ts",
-        "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/indexerRestExplorerApi.d.ts",
-        "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/indexerRestSpotChronosApi.d.ts",
+        "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/ExchangeRestDerivativesChronosApi.d.ts",
+        "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/ExchangeRestExplorerApi.d.ts",
+        "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/ExchangeRestSpotChronosApi.d.ts",
         "./node_modules/date-fns/typings.d.ts"
       ],
       "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/transformers/ExchangeAccountStreamTransformer.d.ts": [
@@ -13204,26 +13204,26 @@
         "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/types/index.d.ts",
         "./node_modules/date-fns/typings.d.ts"
       ],
-      "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/indexerRestDerivativesChronosApi.d.ts": [
+      "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/ExchangeRestDerivativesChronosApi.d.ts": [
         "./node_modules/@injectivelabs/sdk-ts/dist/client/BaseRestConsumer.d.ts",
         "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/types/derivatives-rest.d.ts",
         "./node_modules/date-fns/typings.d.ts"
       ],
-      "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/indexerRestExplorerApi.d.ts": [
+      "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/ExchangeRestExplorerApi.d.ts": [
         "./node_modules/@injectivelabs/sdk-ts/dist/client/BaseRestConsumer.d.ts",
         "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/types/explorer-rest.d.ts",
         "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/types/explorer.d.ts",
         "./node_modules/date-fns/typings.d.ts"
       ],
-      "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/indexerRestSpotChronosApi.d.ts": [
+      "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/ExchangeRestSpotChronosApi.d.ts": [
         "./node_modules/@injectivelabs/sdk-ts/dist/client/BaseRestConsumer.d.ts",
         "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/types/spot-rest.d.ts",
         "./node_modules/date-fns/typings.d.ts"
       ],
       "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/index.d.ts": [
-        "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/indexerRestDerivativesChronosApi.d.ts",
-        "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/indexerRestExplorerApi.d.ts",
-        "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/indexerRestSpotChronosApi.d.ts",
+        "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/ExchangeRestDerivativesChronosApi.d.ts",
+        "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/ExchangeRestExplorerApi.d.ts",
+        "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/ExchangeRestSpotChronosApi.d.ts",
         "./node_modules/date-fns/typings.d.ts"
       ],
       "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/transformers/ExchangeAccountStreamTransformer.d.ts": [
@@ -17243,9 +17243,9 @@
       "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/grpc_stream/ExchangeGrpcSpotStream.d.ts",
       "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/grpc_stream/index.d.ts",
       "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/index.d.ts",
-      "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/indexerRestDerivativesChronosApi.d.ts",
-      "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/indexerRestExplorerApi.d.ts",
-      "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/indexerRestSpotChronosApi.d.ts",
+      "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/ExchangeRestDerivativesChronosApi.d.ts",
+      "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/ExchangeRestExplorerApi.d.ts",
+      "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/ExchangeRestSpotChronosApi.d.ts",
       "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/index.d.ts",
       "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/transformers/ExchangeAccountStreamTransformer.d.ts",
       "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/transformers/ExchangeAuctionStreamTransformer.d.ts",
@@ -20516,15 +20516,15 @@
         1
       ],
       [
-        "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/indexerRestDerivativesChronosApi.d.ts",
+        "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/ExchangeRestDerivativesChronosApi.d.ts",
         1
       ],
       [
-        "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/indexerRestExplorerApi.d.ts",
+        "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/ExchangeRestExplorerApi.d.ts",
         1
       ],
       [
-        "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/indexerRestSpotChronosApi.d.ts",
+        "./node_modules/@injectivelabs/sdk-ts/dist/client/exchange/rest/ExchangeRestSpotChronosApi.d.ts",
         1
       ],
       [

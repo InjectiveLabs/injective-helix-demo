@@ -1,31 +1,57 @@
 .popper {
   @apply opacity-0;
+<<<<<<< HEAD
 
   display: none !important;
 
   .arrow,
   .arrow::before {
+=======
+  transition: all .2s linear;
+  transform: scale(0);
+  opacity: 0;
+  visibility: hidden;
+  display:
+    block !important;
+
+  .arrow {
+>>>>>>> helix/master
     position: absolute;
     width: 20px;
     height: 10px;
     background: inherit;
+<<<<<<< HEAD
   }
 
   .arrow {
+=======
+>>>>>>> helix/master
     visibility: hidden;
     top: 0;
     bottom: -10px;
 
+<<<<<<< HEAD
     &::before {
       visibility: visible;
       content: '';
       transform: rotate(45deg);
+=======
+
+    svg {
+      visibility: visible;
+      top: -6px;
+>>>>>>> helix/master
     }
   }
 
   &[data-show] {
     @apply opacity-100;
+<<<<<<< HEAD
 
+=======
+    transform: scale(1);
+    visibility: visible;
+>>>>>>> helix/master
     display: block !important;
   }
 }
@@ -37,3 +63,20 @@
     @apply opacity-100;
   }
 }
+<<<<<<< HEAD
+=======
+
+@keyframes popper-dropdown {
+  from {
+    transform: scale(0);
+    opacity: 0;
+    transition: all .2s linear;
+  }
+
+  to {
+    transition: all .2s linear;
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+>>>>>>> helix/master

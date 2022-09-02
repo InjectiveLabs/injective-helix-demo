@@ -69,6 +69,7 @@ export const actions = actionTree(
         return
       }
 
+<<<<<<< HEAD
       try {
         const { refereeInfo, referrerInfo } = await getReferralInfo(address)
 
@@ -81,6 +82,16 @@ export const actions = actionTree(
         }
       } catch (e) {
         //
+=======
+      const { refereeInfo, referrerInfo } = await getReferralInfo(address)
+
+      if (refereeInfo) {
+        commit('setRefereeInfo', refereeInfo)
+      }
+
+      if (referrerInfo) {
+        commit('setReferrerInfo', referrerInfo)
+>>>>>>> helix/master
       }
     },
 
@@ -89,6 +100,7 @@ export const actions = actionTree(
         return
       }
 
+<<<<<<< HEAD
       try {
         const feeRecipient = await getFeeRecipient(address)
 
@@ -96,6 +108,11 @@ export const actions = actionTree(
       } catch (e) {
         //
       }
+=======
+      const feeRecipient = await getFeeRecipient(address)
+
+      commit('setFeeRecipient', feeRecipient)
+>>>>>>> helix/master
     },
 
     async refer(_, code: string) {

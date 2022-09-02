@@ -26,10 +26,13 @@
   @apply overflow-y-auto;
 
   li {
+<<<<<<< HEAD
     &:nth-child(odd) {
       background-color: theme('colors.gray.950');
     }
 
+=======
+>>>>>>> helix/master
     &:hover {
       background-color: theme('colors.gray.800') !important;
     }
@@ -44,10 +47,13 @@
   @apply overflow-y-auto;
 
   li {
+<<<<<<< HEAD
     &:nth-child(odd) {
       background-color: theme('colors.gray.950');
     }
 
+=======
+>>>>>>> helix/master
     &:hover {
       background-color: theme('colors.gray.800') !important;
     }

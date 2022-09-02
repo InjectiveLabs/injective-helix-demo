@@ -2,19 +2,23 @@
   <div>
     <div
       v-if="baseTradingBalance"
-      class="flex justify-between items-center text-xs mb-2"
+      class="flex justify-between items-center text-xs mb-4"
     >
-      <span>
+      <span class="text-gray-500">
         {{ $t('trade.available_asset', { asset: market.baseToken.symbol }) }}
       </span>
-      <span class="font-mono">{{ baseTradingAvailableBalanceToFormat }}</span>
+      <span class="font-mono text-white">{{
+        baseTradingAvailableBalanceToFormat
+      }}</span>
     </div>
 
     <div class="flex justify-between items-center text-xs">
-      <span>
+      <span class="text-gray-500">
         {{ $t('trade.available_asset', { asset: market.quoteToken.symbol }) }}
       </span>
-      <span class="font-mono">{{ quoteTradingAvailableBalanceToFormat }}</span>
+      <span class="font-mono text-white">{{
+        quoteTradingAvailableBalanceToFormat
+      }}</span>
     </div>
   </div>
 </template>
