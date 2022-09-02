@@ -1,7 +1,7 @@
 {
-  "name": "injective-dex",
-  "version": "0.5.0",
-  "description": "Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.",
+  "name": "injective-helix",
+  "version": "1.7.0",
+  "description": "The Premier Decentralized Crypto Exchange",
   "author": "Bojan Angjelkoski <bojan@injectiveprotocol.com>",
   "private": true,
   "scripts": {
