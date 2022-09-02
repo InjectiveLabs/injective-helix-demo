@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-name: DEX Devnet Deployments
-=======
 name: Helix Devnet CD
->>>>>>> helix/master
 
 on:
   push:
@@ -11,10 +7,7 @@ on:
 
 jobs:
   devnet:
-<<<<<<< HEAD
     if: false
-=======
->>>>>>> helix/master
     name: 'Deploy to devnet'
     runs-on: ubuntu-latest
     env:
@@ -23,11 +16,8 @@ jobs:
       SSH_HOST: ${{ secrets.DEVNET_SSH_HOST }}
       SOURCE_DIR: ${{ secrets.DEVNET_SOURCE_PATH}}
       GIT_BRANCH: ${{secrets.DEVNET_GIT_BRANCH}}
-<<<<<<< HEAD
-=======
       APP_GOOGLE_ANALYTICS_KEY: ${{ secrets.APP_DEVNET_GOOGLE_ANALYTICS_KEY }}
       APP_AMPLITUDE_KEY: ${{secrets.APP_DEVNET_AMPLITUDE_KEY}}
->>>>>>> helix/master
     steps:
       - name: Configure SSH
         run: |
@@ -44,11 +34,7 @@ jobs:
           END
 
       - name: Check out the source
-<<<<<<< HEAD
-        run: ssh devnet 'cd "'$SOURCE_DIR'" && git fetch && git reset --hard "'$GIT_BRANCH'"'
-=======
         run: ssh devnet 'cd "'$SOURCE_DIR'" && git fetch && git reset --hard "'$GIT_BRANCH'" && git pull'
->>>>>>> helix/master
 
       - name: Install Dependencies
         run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn install'
@@ -57,11 +43,7 @@ jobs:
         run: ssh devnet 'cd "'$SOURCE_DIR'"  && rm -rf dist'
 
       - name: Remove prev build process
-<<<<<<< HEAD
-        run: ssh devnet 'cd "'$SOURCE_DIR'"  && rm -rf ./node_modules/.cache/nuxt'
-=======
         run: ssh devnet 'cd "'$SOURCE_DIR'"  && rm -rf ./node_modules/.cache'
->>>>>>> helix/master
 
       - name: Building the project
         run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn build'
