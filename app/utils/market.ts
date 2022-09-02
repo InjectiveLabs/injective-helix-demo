@@ -1,9 +1,6 @@
 import {
   UiDerivativeMarketWithToken,
-<<<<<<< HEAD
-=======
   UiMarketHistory,
->>>>>>> helix/master
   UiSpotMarketWithToken,
   MarketType
 } from '@injectivelabs/sdk-ui-ts'
@@ -20,11 +17,7 @@ import { USDT_COIN_GECKO_ID } from '~/app/utils/constants'
 
 export const getMarketRoute = (
   market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
-<<<<<<< HEAD
-): MarketRoute | undefined => {
-=======
 ): MarketRoute => {
->>>>>>> helix/master
   if (upcomingMarkets.map((m) => m.slug).includes(market.slug)) {
     return {
       name: 'market-market',
@@ -85,8 +78,6 @@ export const getMarketRoute = (
       }
     }
   }
-<<<<<<< HEAD
-=======
 
   return {
     name: 'market-market',
@@ -95,7 +86,6 @@ export const getMarketRoute = (
       market: market.slug
     }
   }
->>>>>>> helix/master
 }
 
 export const getAbbreviatedVolume = (value: BigNumberInBase): string => {
@@ -209,8 +199,6 @@ export const marketIsPartOfSearch = (
     market.ticker.toLowerCase().startsWith(query)
   )
 }
-<<<<<<< HEAD
-=======
 
 export const getFormattedMarketsHistoryChartData = (
   marketsHistory: UiMarketHistory
@@ -231,4 +219,3 @@ export const getFormattedMarketsHistoryChartData = (
     return [xAxisTime, yAxisHolcAveragePrice]
   })
 }
->>>>>>> helix/master

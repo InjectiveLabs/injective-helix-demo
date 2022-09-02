@@ -137,8 +137,6 @@
   font-display: swap;
 }
 
-<<<<<<< HEAD
-=======
 @font-face {
   font-family: 'Roboto Mono';
   font-style: normal;
@@ -196,7 +194,6 @@
   src: url('./../fonts/RobotoMonoBold.woff2') format('woff2');
 }
 
->>>>>>> helix/master
 .text-gradient {
   @apply text-transparent bg-clip-text bg-gradient-to-tr from-blue-200 to-primary-500;
 }

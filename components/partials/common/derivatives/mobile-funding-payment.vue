@@ -28,11 +28,7 @@
           v-if="total.abs().gt(UI_MINIMAL_AMOUNT)"
           data-cy="funding-payments-total-table-data"
           :class="{
-<<<<<<< HEAD
-            'text-aqua-500': total.gte(0),
-=======
             'text-green-500': total.gte(0),
->>>>>>> helix/master
             'text-red-500': total.lt(0)
           }"
           :decimals="UI_DEFAULT_MAX_DISPLAY_DECIMALS"
@@ -46,11 +42,7 @@
         <span
           v-else
           :class="{
-<<<<<<< HEAD
-            'text-aqua-500': total.gte(0),
-=======
             'text-green-500': total.gte(0),
->>>>>>> helix/master
             'text-red-500': total.lt(0)
           }"
         >

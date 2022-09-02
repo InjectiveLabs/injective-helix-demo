@@ -339,23 +339,18 @@ input[type='number'] {
   }
 }
 
-<<<<<<< HEAD
-=======
 .v-select.input-select.input-token {
   .vs__dropdown-menu {
     @apply bg-gray-950 shadow-md;
   }
 }
 
->>>>>>> helix/master
 .input-token {
   .vs__actions {
     padding: 0 !important;
   }
 }
 
-<<<<<<< HEAD
-=======
 .input-convert,
 .token-selector {
   &.token-only {
@@ -379,33 +374,12 @@ input[type='number'] {
   }
 }
 
->>>>>>> helix/master
 .input-convert {
   .vs__dropdown-menu {
     @apply z-1110;
   }
 
   .input-token {
-<<<<<<< HEAD
-    @apply bg-gray-900;
-
-    .vs__selected-options > input {
-      @apply pointer-events-none;
-    }
-
-    &.open {
-      .vs__selected-options > input {
-        @apply pointer-events-auto;
-      }
-    }
-
-    .input-max-button {
-      @apply bg-primary-600 px-1 py-0 h-[20px] flex items-center justify-center font-bold text-white mr-0;
-    }
-
-    .vs__dropdown-option {
-      @apply p-2;
-=======
     .input-max-button {
       @apply bg-primary-600 px-1 py-0 h-[20px] flex items-center justify-center font-bold text-white mr-0;
     }
@@ -435,7 +409,6 @@ input[type='number'] {
       .vs__selected-icon {
         @apply w-4 h-4;
       }
->>>>>>> helix/master
     }
   }
 }
@@ -444,8 +417,6 @@ input[type='number'] {
   @apply bg-gray-900;
 }
 
-<<<<<<< HEAD
-=======
 
 .select {
   .vs__dropdown-toggle {
@@ -497,5 +468,4 @@ input[type='number'] {
   }
 }
 
->>>>>>> helix/master
 /* stylelint-enable */

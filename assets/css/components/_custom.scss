@@ -16,41 +16,6 @@
 }
 
 .orderbook-h {
-<<<<<<< HEAD
-  height: 30rem;
-
-  @screen lg {
-    height: 38rem;
-  }
-
-  @screen 4xl {
-    height: 40rem;
-  }
-}
-
-.orderbook-half-h {
-  @apply h-48;
-
-  @screen lg {
-    height: 15.5rem;
-  }
-
-  @screen 4xl {
-    height: 16rem;
-  }
-}
-
-.orderbook-middle-h {
-  @apply h-8;
-
-  @screen lg {
-    @apply h-12;
-  }
-
-  @screen 4xl {
-    @apply h-16;
-  }
-=======
   --orderbook-height: 30rem;
   --orderbook-aggregation-height: 48px;
   --orderbook-header-height: 32px;
@@ -80,18 +45,13 @@
 
 .orderbook-middle-h {
   height: var(--orderbook-middle-height)
->>>>>>> helix/master
 }
 
 .card-table-wrap-content {
   @apply flex-1 w-full;
 
   th {
-<<<<<<< HEAD
-    @apply pb-4 text-gray-200 uppercase;
-=======
     @apply py-4 text-gray-200 uppercase;
->>>>>>> helix/master
   }
 }
 
@@ -177,8 +137,6 @@
   }
 }
 
-<<<<<<< HEAD
-=======
 .button-spinner {
   border-top-color: theme('colors.white');
   animation: spin 0.6s ease-out infinite;
@@ -188,7 +146,6 @@
   }
 }
 
->>>>>>> helix/master
 [class*='bg-red-'] .spinner {
   border-top-color: theme('colors.gray.200');
 }
@@ -202,11 +159,7 @@
 }
 
 [class*='bg-gray-200'] .spinner {
-<<<<<<< HEAD
-  border-top-color: theme('colors.primary.850');
-=======
   border-top-color: theme('colors.primary.500');
->>>>>>> helix/master
 }
 
 [class*='text-primary-'].spinner {
@@ -239,11 +192,7 @@
 
   &.longs,
   &.buys {
-<<<<<<< HEAD
-    background: theme('colors.aqua.500');
-=======
     background: theme('colors.green.500');
->>>>>>> helix/master
     opacity: 0.2;
   }
 
@@ -348,10 +297,7 @@
     box-shadow: 0 0 0 1px #00f2ff;
   }
 }
-<<<<<<< HEAD
-=======
 
 .rtl {
   direction: rtl;
 }
->>>>>>> helix/master
