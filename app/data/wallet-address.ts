@@ -20,9 +20,6 @@ export const blacklistedAddresses = [
   '0x2f389ce8bd8ff92de3402ffce4691d17fc4f6535',
   '0x19aa5fe80d33a56d56c78e82ea5e50e5d80b4dff',
   '0xe7aa314c77f4233c18c6cc84384a9247c0cf367b',
-<<<<<<< HEAD
-  '0x308ed4b7b49797e1a98d3818bff6fe5385410370'
-=======
   '0x308ed4b7b49797e1a98d3818bff6fe5385410370',
   '0x8589427373D6D84E98730D7795D8f6f8731FDA16',
   '0x722122dF12D4e14e13Ac3b6895a86e84145b6967',
@@ -69,5 +66,4 @@ export const blacklistedAddresses = [
   '0xd90e2f925DA726b50C4Ed8D0Fb90Ad053324F31b',
   '0xd96f2B1c14Db8458374d9Aca76E26c3D18364307',
   '0x4736dCf1b7A3d580672CcE6E7c65cd5cc9cFBa9D'
->>>>>>> helix/master
 ]

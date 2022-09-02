@@ -209,15 +209,6 @@ export const customAggregations = {
     maxTick: getDecimalPlaceFromValue('0.0001')
   },
 
-<<<<<<< HEAD
-  'USDC/USDT': {
-    minTick: getDecimalPlaceFromValue('0.0001'),
-    default: getDecimalPlaceFromValue('0.0001'),
-    maxTick: getDecimalPlaceFromValue('0.1')
-  },
-
-=======
->>>>>>> helix/master
   'BTC/USDT PERP': {
     minTick: getDecimalPlaceFromValue('0.1'),
     default: getDecimalPlaceFromValue('1'),

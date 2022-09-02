@@ -3,10 +3,7 @@ import { LocalStorage } from '@injectivelabs/utils'
 import { Web3Client } from '@injectivelabs/sdk-ui-ts/dist/web3'
 import {
   MsgBroadcastClient,
-<<<<<<< HEAD
-=======
   MsgBroadcastExperimentalClient,
->>>>>>> helix/master
   TokenService,
   TokenPrice,
   MetricsProvider,
@@ -21,21 +18,6 @@ import {
   ChainGrpcExchangeApi,
   ChainGrpcGovApi,
   ChainGrpcInsuranceFundApi,
-<<<<<<< HEAD
-  ChainGrpcMintApi,
-  ChainGrpcOracleApi,
-  ChainGrpcPeggyApi,
-  ChainGrpcStakingApi,
-  IndexerGrpcAccountApi,
-  IndexerGrpcDerivativesApi,
-  IndexerGrpcExplorerApi,
-  IndexerGrpcOracleApi,
-  IndexerGrpcSpotApi,
-  IndexerRestDerivativesChronosApi,
-  IndexerRestExplorerApi,
-  IndexerRestSpotChronosApi
-} from '@injectivelabs/sdk-ts/dist/client'
-=======
   ChainGrpcPeggyApi,
   ChainGrpcMintApi,
   ChainGrpcStakingApi,
@@ -50,7 +32,6 @@ import {
   IndexerRestMarketChronosApi,
   IndexerGrpcOracleApi
 } from '@injectivelabs/sdk-ts'
->>>>>>> helix/master
 import {
   NETWORK,
   METRICS_ENABLED,
@@ -89,10 +70,6 @@ export const peggyApi = new ChainGrpcPeggyApi(ENDPOINTS.sentryGrpcApi)
 export const auctionApi = new ChainGrpcAuctionApi(ENDPOINTS.sentryGrpcApi)
 export const exchangeApi = new ChainGrpcExchangeApi(ENDPOINTS.sentryGrpcApi)
 export const oracleApi = new ChainGrpcOracleApi(ENDPOINTS.sentryGrpcApi)
-<<<<<<< HEAD
-=======
-
->>>>>>> helix/master
 export const indexerExplorerApi = new IndexerGrpcExplorerApi(
   ENDPOINTS.indexerApi
 )
@@ -116,13 +93,10 @@ export const indexerRestSpotChronosApi = new IndexerRestSpotChronosApi(
       : `${ENDPOINTS.indexerApi}/api/chronos/v1/spot`
   }`
 )
-<<<<<<< HEAD
-=======
 
 export const indexerRestMarketChronosApi = new IndexerRestMarketChronosApi(
   `${ENDPOINTS.indexerApi}/api/chronos/v1/market`
 )
->>>>>>> helix/master
 export const indexerDerivativesApi = new IndexerGrpcDerivativesApi(
   ENDPOINTS.indexerApi
 )
@@ -138,14 +112,11 @@ export const msgBroadcastClient = new MsgBroadcastClient({
   ...apiOptions,
   walletStrategy
 })
-<<<<<<< HEAD
-=======
 export const msgBroadcastExperimentalClient =
   new MsgBroadcastExperimentalClient({
     ...apiOptions,
     walletStrategy
   })
->>>>>>> helix/master
 export const web3Client = new Web3Client({
   // @ts-ignore
   walletStrategy,

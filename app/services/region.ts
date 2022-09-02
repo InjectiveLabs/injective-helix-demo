@@ -29,11 +29,7 @@ export const validateGeoLocation = (geoLocation: GeoLocation) => {
 export const fetchIpAddress = async () => {
   try {
     const httpClient = new HttpClient('https://www.myexternalip.com/json')
-<<<<<<< HEAD
-    const { data } = await httpClient.get('')
-=======
     const { data } = (await httpClient.get('')) as any
->>>>>>> helix/master
 
     return data.ip
   } catch (e: any) {
@@ -67,11 +63,7 @@ export const validateIpAddressForVPN = async (ipAddress: string) => {
       )
     }
   } catch (e: any) {
-<<<<<<< HEAD
-    //
-=======
     throw new Error(e.message)
->>>>>>> helix/master
   }
 }
 
@@ -103,13 +95,7 @@ export const detectVPNOrProxyUsageNoThrow = async () => {
   }
 
   try {
-<<<<<<< HEAD
-    // Geo Location service not working for some reason
-    // await validateIpAddressForVPN(await fetchIpAddress())
-    await Promise.resolve(await fetchIpAddress())
-=======
     await validateIpAddressForVPN(await fetchIpAddress())
->>>>>>> helix/master
 
     return false /* User is not using a VPN or a proxy */
   } catch (e: any) {

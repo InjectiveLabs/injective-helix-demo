@@ -2,10 +2,7 @@ import {
   IndexerGrpcSpotStream,
   SpotOrderbookStreamCallback,
   SpotOrdersStreamCallback,
-<<<<<<< HEAD
-=======
   SpotOrderHistoryStreamCallback,
->>>>>>> helix/master
   SpotTradesStreamCallback
 } from '@injectivelabs/sdk-ts'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
@@ -13,11 +10,7 @@ import { streamProvider } from '../../providers/StreamProvider'
 import { ENDPOINTS } from '~/app/utils/constants'
 import { StreamType } from '~/types'
 
-<<<<<<< HEAD
-export const spotMarketStream = new IndexerGrpcSpotStream(ENDPOINTS.exchangeApi)
-=======
 export const spotMarketStream = new IndexerGrpcSpotStream(ENDPOINTS.indexerApi)
->>>>>>> helix/master
 
 export const streamOrderbook = ({
   marketId,
@@ -105,8 +98,6 @@ export const streamSubaccountOrders = ({
     key: StreamType.SpotSubaccountOrders
   })
 }
-<<<<<<< HEAD
-=======
 
 export const streamSubaccountOrderHistory = ({
   marketId,
@@ -117,7 +108,8 @@ export const streamSubaccountOrderHistory = ({
   subaccountId?: string
   callback: SpotOrderHistoryStreamCallback
 }) => {
-  const streamFn = spotMarketStream.streamSpotOrderHistory.bind(spotMarketStream)
+  const streamFn =
+    spotMarketStream.streamSpotOrderHistory.bind(spotMarketStream)
   const streamFnArgs = {
     ...(subaccountId && { subaccountId }),
     ...(marketId && { marketId }),
@@ -130,4 +122,3 @@ export const streamSubaccountOrderHistory = ({
     key: StreamType.SpotSubaccountOrderHistory
   })
 }
->>>>>>> helix/master
