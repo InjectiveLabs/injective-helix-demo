@@ -118,8 +118,6 @@ export default {
     not_available_n_a: 'N/A',
     position_closed: 'Position Closed',
     not_enough_balance: 'Not enough balance',
-    reduce_only_exceed_position:
-      'Total size of reduce-only orders exceed the size of your position',
     next_funding: 'Next Funding',
     next_funding_tooltip:
       'The time remaining for the end of the funding interval.',
