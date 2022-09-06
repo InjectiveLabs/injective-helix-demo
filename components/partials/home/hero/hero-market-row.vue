@@ -85,7 +85,11 @@ import {
   UiSpotMarketWithToken,
   getTokenLogoWithVendorPathPrefix
 } from '@injectivelabs/sdk-ui-ts'
-import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import {
+  MARKETS_HISTORY_CHART_ONE_HOUR,
+  MARKETS_HISTORY_CHART_SEVEN_DAYS,
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+} from '~/app/utils/constants'
 import { AmplitudeEvents, Change, MarketRoute, TradeClickOrigin } from '~/types'
 import { betaMarketSlugs } from '~/app/data/market'
 import {
@@ -312,6 +316,23 @@ export default Vue.extend({
 
       this.updateLastPriceChangeColor()
     }
+  },
+
+  mounted() {
+    Promise.all([
+      this.$accessor.exchange.getMarketsHistory({
+        marketIds: [this.market.marketId],
+        resolution: MARKETS_HISTORY_CHART_ONE_HOUR,
+        countback: MARKETS_HISTORY_CHART_SEVEN_DAYS
+      })
+    ])
+      .then(() => {
+        //
+      })
+      .catch(this.$onError)
+      .finally(() => {
+        this.status.setIdle()
+      })
   },
 
   methods: {
