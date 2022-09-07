@@ -2416,6 +2416,7 @@
   dependencies:
     "@injectivelabs/exceptions" "^1.0.10"
     "@injectivelabs/utils" "^1.0.14"
+
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
