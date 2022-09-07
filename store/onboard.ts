@@ -87,10 +87,6 @@ export const actions = actionTree(
         await indexerDerivativesApi.fetchTrades({
           subaccountId: subaccount.subaccountId
         })
-      const { trades: derivativeTrades } =
-        await indexerDerivativesApi.fetchTrades({
-          subaccountId: subaccount.subaccountId
-        })
 
       commit('setTrades', [...spotTrades, ...derivativeTrades])
     },
