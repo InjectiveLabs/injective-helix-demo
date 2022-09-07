@@ -17,7 +17,7 @@ const mainnetSpot = [
   'gf-usdt'
 ]
 const testnetSpot = [...mainnetSpot]
-const mainnetStagingSpot = [...mainnetSpot]
+const mainnetStagingSpot = [...mainnetSpot, 'strd-usdt']
 const spot = IS_TESTNET
   ? testnetSpot
   : IS_MAINNET_STAGING
@@ -43,7 +43,7 @@ const perpetuals = IS_TESTNET
   : mainnetPerpetuals
 
 const binaryOptions = ['']
-const expiryFutures = ['']
+const expiryFutures = ['btc-usdt-expiry']
 
 if (IS_DEVNET || IS_MAINNET_STAGING) {
   // perpetuals.push()
