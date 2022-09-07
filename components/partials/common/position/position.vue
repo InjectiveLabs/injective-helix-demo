@@ -201,7 +201,6 @@ import {
   UiDerivativeLimitOrder,
   UiDerivativeMarketWithToken,
   UiPosition,
-  UiSpotLimitOrder,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 import {
@@ -250,9 +249,11 @@ export default Vue.extend({
     },
 
     reduceOnlyCurrentOrders(): UiDerivativeLimitOrder[] {
-      const { currentOrders } = this
+      const { currentOrders, position } = this
 
-      return currentOrders.filter((order) => order.isReduceOnly)
+      return currentOrders.filter(
+        (order) => order.isReduceOnly && order.marketId === position.marketId
+      )
     },
 
     hasReduceOnlyOrders(): boolean {
@@ -293,16 +294,6 @@ export default Vue.extend({
       }
 
       return market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-    },
-
-    orders(): Array<UiDerivativeLimitOrder | UiSpotLimitOrder> {
-      const { isOnMarketPage, currentOrders } = this
-
-      if (isOnMarketPage) {
-        return currentOrders
-      }
-
-      return this.$accessor.derivatives.subaccountOrders
     },
 
     price(): BigNumberInBase {
@@ -373,23 +364,6 @@ export default Vue.extend({
       ).toBase(market.quoteToken.decimals)
 
       return liquidationPrice.gt(0) ? liquidationPrice : new BigNumberInBase(0)
-    },
-
-    totalReduceOnlyQuantity(): BigNumberInBase {
-      const { market, position, orders } = this
-
-      if (!position || !market) {
-        return ZERO_IN_BASE
-      }
-
-      const reduceOnlyOrders = orders.filter(
-        (o) => (o as UiDerivativeLimitOrder).isReduceOnly
-      )
-
-      return reduceOnlyOrders.reduce(
-        (total, order) => total.plus(order.quantity),
-        ZERO_IN_BASE
-      )
     },
 
     bankruptcyPrice(): BigNumberInBase {
@@ -515,25 +489,8 @@ export default Vue.extend({
       return undefined
     },
 
-    aggregateReduceOnlyQuantityExceedError(): string | undefined {
-      const { totalReduceOnlyQuantity, position } = this
-
-      if (
-        totalReduceOnlyQuantity.gt(0) &&
-        totalReduceOnlyQuantity.gt(position.quantity)
-      ) {
-        return this.$t('trade.reduce_only_exceed_position')
-      }
-
-      return undefined
-    },
-
     positionCloseError(): string | undefined {
-      const {
-        notEnoughLiquidityError,
-        aggregateReduceOnlyQuantityExceedError,
-        market
-      } = this
+      const { notEnoughLiquidityError, market } = this
 
       if (!market) {
         return
@@ -541,10 +498,6 @@ export default Vue.extend({
 
       if (notEnoughLiquidityError) {
         return notEnoughLiquidityError
-      }
-
-      if (aggregateReduceOnlyQuantityExceedError) {
-        return aggregateReduceOnlyQuantityExceedError
       }
 
       return undefined
