@@ -201,7 +201,6 @@ import {
   UiDerivativeLimitOrder,
   UiDerivativeMarketWithToken,
   UiPosition,
-  UiSpotLimitOrder,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 import {
