@@ -54,13 +54,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
-import { Identify, identify } from '@amplitude/analytics-browser'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import LogoText from '~/components/elements/logo-text.vue'
 import Logo from '~/components/elements/logo.vue'
-import { AmplitudeEvents, DefaultMarket, TradeClickOrigin } from '~/types'
-import { AMPLITUDE_VIP_TIER_LEVEL } from '~/app/utils/vendor'
+import { DefaultMarket, TradeClickOrigin } from '~/types'
+import { submitTradeClickedTrackEvent } from '~/app/client/utils/amplitude'
 
 export default Vue.extend({
   components: {
@@ -105,11 +104,8 @@ export default Vue.extend({
     },
 
     handleTradeClickedTrack() {
-      const identifyObj = new Identify()
-      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
-      identify(identifyObj)
-
-      this.$amplitude.track(AmplitudeEvents.TradeClicked, {
+      submitTradeClickedTrackEvent({
+        tierLevel: this.tierLevel,
         market: DefaultMarket.Perpetual,
         marketType: MarketType.Perpetual,
         origin: TradeClickOrigin.Lander

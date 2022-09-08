@@ -160,13 +160,12 @@ import Vue from 'vue'
 import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { Identify, identify } from '@amplitude/analytics-browser'
 import NavItem from './item.vue'
 import NavItemDummy from './item-dummy.vue'
 import MobileNav from './mobile.vue'
 import PopperBox from '~/components/elements/popper-box.vue'
-import { AmplitudeEvents, DefaultMarket, TradeClickOrigin } from '~/types'
-import { AMPLITUDE_VIP_TIER_LEVEL } from '~/app/utils/vendor'
+import { DefaultMarket, TradeClickOrigin } from '~/types'
+import { submitTradeClickedTrackEvent } from '~/app/client/utils/amplitude'
 
 import {
   derivativeMarketRouteNames,
@@ -263,11 +262,8 @@ export default Vue.extend({
     },
 
     handleSpotTradeClickedTrack() {
-      const identifyObj = new Identify()
-      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
-      identify(identifyObj)
-
-      this.$amplitude.track(AmplitudeEvents.TradeClicked, {
+      submitTradeClickedTrackEvent({
+        tierLevel: this.tierLevel,
         market: DefaultMarket.Spot,
         marketType: MarketType.Spot,
         origin: TradeClickOrigin.TopMenu
@@ -275,11 +271,8 @@ export default Vue.extend({
     },
 
     handlePerpetualTradeClickedTrack() {
-      const identifyObj = new Identify()
-      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
-      identify(identifyObj)
-
-      this.$amplitude.track(AmplitudeEvents.TradeClicked, {
+      submitTradeClickedTrackEvent({
+        tierLevel: this.tierLevel,
         market: DefaultMarket.Perpetual,
         marketType: MarketType.Perpetual,
         origin: TradeClickOrigin.TopMenu

@@ -127,6 +127,7 @@
         tradingTypeLimit,
         tradingTypeStopMarket,
         tradingTypeStopLimit,
+        triggerPrice: form.triggerPrice,
         isConditionalOrder
       }"
       @submit="handleSubmit"
@@ -138,7 +139,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { Identify, identify } from '@amplitude/analytics-browser'
 import {
   TradeDirection,
   TradeExecutionType,
@@ -168,7 +168,6 @@ import OrderInputs from '~/components/partials/common/trade/order-inputs.vue'
 import TradingTypeButtons from '~/components/partials/common/trade/trading-type-buttons.vue'
 import OrderDetailsWrapper from '~/components/partials/common/trade/order-details-wrapper.vue'
 import {
-  AmplitudeEvents,
   AveragePriceOptions,
   Modal,
   OrderAttemptStatus,
@@ -189,10 +188,7 @@ import {
 } from '~/app/utils/constants'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
 import { localStorage } from '~/app/Services'
-import {
-  AMPLITUDE_ATTEMPT_PLACE_ORDER_COUNT,
-  AMPLITUDE_VIP_TIER_LEVEL
-} from '~/app/utils/vendor'
+import { submitAttemptPlaceOrderTrackEvent } from '~/app/client/utils/amplitude'
 
 interface TradeForm {
   reduceOnly: boolean
@@ -1374,28 +1370,28 @@ export default Vue.extend({
         return
       }
 
-      const identifyObj = new Identify()
-      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
-      identifyObj.add(AMPLITUDE_ATTEMPT_PLACE_ORDER_COUNT, 1)
-      identify(identifyObj)
+      const slippageTolerance = this.tradingTypeMarket
+        ? this.form.slippageTolerance
+        : ''
+      const postOnly = this.tradingTypeLimit && this.form.postOnly
+      const status = errorMessage
+        ? OrderAttemptStatus.Error
+        : OrderAttemptStatus.Success
 
-      this.$amplitude.track(AmplitudeEvents.AttemptPlaceOrder, {
+      submitAttemptPlaceOrderTrackEvent({
+        tierLevel: this.tierLevel,
         amount: this.form.amount,
         leverage: this.form.leverage,
         market: this.market.slug,
         marketType: this.market.subType,
         orderType: this.orderType,
-        postOnly: this.form.postOnly,
+        postOnly,
         tradingType: this.tradingType,
-        triggerPrice:
-          this.tradingTypeStopMarket || this.tradingTypeStopLimit
-            ? this.form.triggerPrice
-            : '',
+        triggerPrice: this.form.triggerPrice,
         reduceOnly: this.form.reduceOnly,
-        limitPrice: !this.tradingTypeMarket ? this.price : '',
-        status: errorMessage
-          ? OrderAttemptStatus.Error
-          : OrderAttemptStatus.Success,
+        limitPrice: this.form.price,
+        slippageTolerance,
+        status,
         error: errorMessage
       })
     }

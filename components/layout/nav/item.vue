@@ -16,10 +16,9 @@
 import Vue from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
-import { Identify, identify } from '@amplitude/analytics-browser'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
-import { AmplitudeEvents, TradeClickOrigin } from '~/types'
-import { AMPLITUDE_VIP_TIER_LEVEL } from '~/app/utils/vendor'
+import { DefaultMarket, TradeClickOrigin } from '~/types'
+import { submitTradeClickedTrackEvent } from '~/app/client/utils/amplitude'
 
 export default Vue.extend({
   props: {
@@ -82,6 +81,18 @@ export default Vue.extend({
       }
 
       return attrs.to.params.perpetual
+    },
+
+    market(): DefaultMarket {
+      const { spotMarket } = this
+
+      return spotMarket ? DefaultMarket.Spot : DefaultMarket.Perpetual
+    },
+
+    marketType(): MarketType {
+      const { spotMarket } = this
+
+      return spotMarket ? MarketType.Spot : MarketType.Perpetual
     }
   },
 
@@ -95,13 +106,10 @@ export default Vue.extend({
     },
 
     handleTradeClickedTrack() {
-      const identifyObj = new Identify()
-      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
-      identify(identifyObj)
-
-      this.$amplitude.track(AmplitudeEvents.TradeClicked, {
-        market: this.spotMarket ? this.spotMarket : this.perpetualMarket,
-        marketType: this.spotMarket ? MarketType.Spot : MarketType.Perpetual,
+      submitTradeClickedTrackEvent({
+        tierLevel: this.tierLevel,
+        market: this.market,
+        marketType: this.marketType,
         origin: TradeClickOrigin.TopMenu
       })
     }

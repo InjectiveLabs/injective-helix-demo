@@ -16,9 +16,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { Wallet } from '@injectivelabs/ts-types'
 import WalletWrapper from './wallet-wrapper.vue'
-import { AmplitudeEvents } from '~/types'
+import { submitWalletSelectedTrackEvent } from '~/app/client/utils/amplitude'
 
 export default Vue.extend({
   components: {
@@ -27,9 +27,7 @@ export default Vue.extend({
 
   methods: {
     handleClick() {
-      this.$amplitude.track(AmplitudeEvents.WalletSelected, {
-        wallet: Wallet.Ledger
-      })
+      submitWalletSelectedTrackEvent(Wallet.Ledger)
 
       this.$emit('wallet-ledger-connecting')
     }
