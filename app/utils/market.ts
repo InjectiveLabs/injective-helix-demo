@@ -5,7 +5,12 @@ import {
   MarketType
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { MarketCategoryType, MarketQuoteType, MarketRoute } from '~/types'
+import {
+  DefaultMarket,
+  MarketCategoryType,
+  MarketQuoteType,
+  MarketRoute
+} from '~/types'
 import {
   experimentalMarketsSlug,
   slugsToIncludeInCosmosCategory,
@@ -49,17 +54,23 @@ export const getMarketRoute = (
       }
     }
 
-    if (market.subType === MarketType.Perpetual) {
+    if (
+      [
+        MarketType.Derivative,
+        MarketType.Perpetual,
+        MarketType.Futures
+      ].includes(market.type)
+    ) {
       return {
-        name: 'perpetuals-perpetual',
+        name: 'futures-futures',
         params: {
           marketId: market.marketId,
-          perpetual: market.slug
+          futures: market.slug
         }
       }
     }
 
-    /* TODO - Expiry Futures */
+    /* Default derivative market route */
     return {
       name: 'derivatives-derivative',
       params: {
@@ -84,6 +95,24 @@ export const getMarketRoute = (
     params: {
       marketId: market.marketId,
       market: market.slug
+    }
+  }
+}
+
+export const getDefaultPerpetualMarketRoute = () => {
+  return {
+    name: 'futures-futures',
+    params: {
+      futures: DefaultMarket.Perpetual
+    }
+  }
+}
+
+export const getDefaultSpotMarketRoute = () => {
+  return {
+    name: 'spot-spot',
+    params: {
+      spot: DefaultMarket.Spot
     }
   }
 }

@@ -79,6 +79,7 @@ export const deprecatedMarkets =
 
 export const derivativeMarketRouteNames = [
   'perpetuals-perpetual',
+  'futures-futures',
   'binary-options-binaryOption',
   'derivatives-derivative'
 ]

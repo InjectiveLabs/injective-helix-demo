@@ -70,10 +70,10 @@ export default Vue.extend({
       return attrs.to.params.spot
     },
 
-    perpetualMarket(): string {
+    futuresMarket(): string {
       const { $attrs } = this
 
-      type Attrs = { to: { params: { perpetual: string } } }
+      type Attrs = { to: { params: { futures: string } } }
 
       const attrs = $attrs as unknown as Attrs
 
@@ -81,13 +81,13 @@ export default Vue.extend({
         return ''
       }
 
-      return attrs.to.params.perpetual
+      return attrs.to.params.futures
     }
   },
 
   methods: {
     handleClickEvent() {
-      if (this.spotMarket || this.perpetualMarket) {
+      if (this.spotMarket || this.futuresMarket) {
         this.handleTradeClickedTrack()
       }
 
@@ -100,7 +100,7 @@ export default Vue.extend({
       identify(identifyObj)
 
       this.$amplitude.track(AmplitudeEvents.TradeClicked, {
-        market: this.spotMarket ? this.spotMarket : this.perpetualMarket,
+        market: this.spotMarket ? this.spotMarket : this.futuresMarket,
         marketType: this.spotMarket ? MarketType.Spot : MarketType.Perpetual,
         origin: TradeClickOrigin.TopMenu
       })

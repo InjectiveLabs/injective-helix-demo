@@ -362,7 +362,7 @@ export default Vue.extend({
     handleTradeClickedTrack() {
       if (
         !this.marketRoute.params ||
-        (!this.marketRoute.params.spot && !this.marketRoute.params.perpetual)
+        (!this.marketRoute.params.spot && !this.marketRoute.params.futures)
       ) {
         return
       }
@@ -374,7 +374,7 @@ export default Vue.extend({
       this.$amplitude.track(AmplitudeEvents.TradeClicked, {
         market: this.marketRoute.params.spot
           ? this.marketRoute.params.spot
-          : this.marketRoute.params.perpetual,
+          : this.marketRoute.params.futures,
         marketType: this.marketRoute.params.spot
           ? MarketType.Spot
           : MarketType.Perpetual,

@@ -39,6 +39,7 @@ import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import NewsLetter from '~/components/partials/home/news-letter.vue'
 import { AmplitudeEvents, DefaultMarket, TradeClickOrigin } from '~/types'
 import { AMPLITUDE_VIP_TIER_LEVEL } from '~/app/utils/vendor'
+import { getDefaultPerpetualMarketRoute } from '~/app/utils/market'
 
 export default Vue.extend({
   components: {
@@ -72,12 +73,7 @@ export default Vue.extend({
       this.handleTradeClickedTrack()
 
       if (this.isUserWalletConnected) {
-        this.$router.push({
-          name: 'perpetuals-perpetual',
-          params: {
-            perpetual: DefaultMarket.Perpetual
-          }
-        })
+        this.$router.push(getDefaultPerpetualMarketRoute())
       } else {
         this.$root.$emit('wallet-clicked')
       }

@@ -61,10 +61,7 @@
       binding-element="#trade-dropdown"
     >
       <nuxt-link
-        :to="{
-          name: 'spot-spot',
-          params: { spot: DefaultMarket.Spot }
-        }"
+        :to="defaultSpotMarketRoute"
         class="p-4 block rounded-t group hover:bg-gray-700 relative z-10 bg-gray-950"
         data-cy="header-trade-link"
         @click.native="handleSpotTradeClickedTrack"
@@ -77,12 +74,7 @@
         </p>
       </nuxt-link>
       <nuxt-link
-        :to="{
-          name: 'perpetuals-perpetual',
-          params: {
-            perpetual: DefaultMarket.Perpetual
-          }
-        }"
+        :to="defaultPerpetualMarketRoute"
         class="p-4 block group hover:bg-gray-700 relative z-10 bg-gray-950"
         data-cy="header-trade-link"
         @click.native="handlePerpetualTradeClickedTrack"
@@ -165,13 +157,22 @@ import NavItem from './item.vue'
 import NavItemDummy from './item-dummy.vue'
 import MobileNav from './mobile.vue'
 import PopperBox from '~/components/elements/popper-box.vue'
-import { AmplitudeEvents, DefaultMarket, TradeClickOrigin } from '~/types'
+import {
+  AmplitudeEvents,
+  DefaultMarket,
+  MarketRouteWithoutMarketId,
+  TradeClickOrigin
+} from '~/types'
 import { AMPLITUDE_VIP_TIER_LEVEL } from '~/app/utils/vendor'
 
 import {
   derivativeMarketRouteNames,
   spotMarketRouteNames
 } from '~/app/data/market'
+import {
+  getDefaultPerpetualMarketRoute,
+  getDefaultSpotMarketRoute
+} from '~/app/utils/market'
 
 export default Vue.extend({
   components: {
@@ -182,7 +183,9 @@ export default Vue.extend({
   },
 
   data() {
-    return { DefaultMarket }
+    return {
+      DefaultMarket
+    }
   },
 
   computed: {
@@ -212,6 +215,14 @@ export default Vue.extend({
       return [...derivativeMarketRouteNames, ...spotMarketRouteNames].includes(
         $route.name as string
       )
+    },
+
+    defaultPerpetualMarketRoute(): MarketRouteWithoutMarketId {
+      return getDefaultPerpetualMarketRoute()
+    },
+
+    defaultSpotMarketRoute(): MarketRouteWithoutMarketId {
+      return getDefaultSpotMarketRoute()
     },
 
     $rewardsPopper(): any {

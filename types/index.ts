@@ -7,7 +7,11 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { TradeExecutionType, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { PaginationOption, SpotOrderSide, DerivativeOrderSide } from '@injectivelabs/sdk-ts'
+import {
+  PaginationOption,
+  SpotOrderSide,
+  DerivativeOrderSide
+} from '@injectivelabs/sdk-ts'
 import { ConditionalOrderSide } from '~/components/partials/activity/common/types'
 
 export interface DOMEvent<T extends EventTarget> extends Event {
@@ -52,6 +56,19 @@ export interface MarketRoute {
     marketId: string
     market?: string
     derivative?: string
+    futures?: string
+    perpetual?: string
+    binaryOption?: string
+    spot?: string
+  }
+}
+
+export interface MarketRouteWithoutMarketId {
+  name: string
+  params?: {
+    market?: string
+    derivative?: string
+    futures?: string
     perpetual?: string
     binaryOption?: string
     spot?: string
@@ -59,14 +76,14 @@ export interface MarketRoute {
 }
 
 export interface TradeConfirmationModalData {
-  tradingType: TradeExecutionType,
-  orderType: SpotOrderSide | DerivativeOrderSide,
+  tradingType: TradeExecutionType
+  orderType: SpotOrderSide | DerivativeOrderSide
   triggerPrice: BigNumberInBase
   triggerPriceSymbol: string
   amount: BigNumberInBase
   amountSymbol: string
   price?: BigNumberInBase
-  priceSymbol?: string,
+  priceSymbol?: string
   isReduceOnly?: boolean
 }
 
@@ -79,7 +96,7 @@ export interface FilterOptions {
   orderSide?: SpotOrderSide | DerivativeOrderSide
   orderType?: SpotOrderSide | DerivativeOrderSide
   orderTypes?: ConditionalOrderSide[]
-  executionTypes?: TradeExecutionType[],
+  executionTypes?: TradeExecutionType[]
   types?: TradeExecutionType[]
   denom?: string
   isConditional?: boolean
