@@ -483,6 +483,8 @@ export const actions = actionTree(
         (m) => !m.isPerpetual
       )
 
+      console.log(markets.map((m) => m.ticker))
+
       const uiPerpetualMarkets =
         UiDerivativeTransformer.perpetualMarketsToUiPerpetualMarkets(
           perpetualMarkets
