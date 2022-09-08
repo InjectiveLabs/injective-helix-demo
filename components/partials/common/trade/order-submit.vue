@@ -45,15 +45,10 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
-import { Identify, identify } from '@amplitude/analytics-browser'
-import { AmplitudeEvents } from '~/types'
 import OrderError from '~/components/partials/common/trade/order-error.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
 import { UI_DEFAULT_MAX_NUMBER_OF_ORDERS } from '~/app/utils/constants'
-import {
-  AMPLITUDE_VIP_TIER_LEVEL,
-  AMPLITUDE_CLICK_PLACE_ORDER_COUNT
-} from '~/app/utils/vendor'
+import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
 
 export default Vue.extend({
   components: {
@@ -182,6 +177,11 @@ export default Vue.extend({
     isConditionalOrder: {
       type: Boolean,
       required: true
+    },
+
+    triggerPrice: {
+      type: String,
+      default: ''
     }
   },
 
@@ -401,26 +401,38 @@ export default Vue.extend({
     },
 
     handleClickPlaceOrderTrack() {
-      const identifyObj = new Identify()
-      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
-      identifyObj.add(AMPLITUDE_CLICK_PLACE_ORDER_COUNT, 1)
-      identify(identifyObj)
+      const {
+        tradingTypeMarket,
+        tradingTypeLimit,
+        orderTypeReduceOnly,
+        isSpot,
+        slippageTolerance,
+        postOnly,
+        amount,
+        market,
+        orderType,
+        tradingType,
+        leverage,
+        triggerPrice,
+        price
+      } = this
 
-      // todo: refactor this to be more clean
-      this.$amplitude.track(AmplitudeEvents.ClickPlaceOrder, {
-        amount: this.amount,
-        market: this.market.slug,
-        marketType: this.market.subType,
-        orderType: this.orderType,
-        postOnly: this.postOnly,
-        tradingType: this.tradingType,
-        leverage:
-          this.market.subType === MarketType.Perpetual ? this.leverage : '',
-        triggerPrice:
-          this.tradingTypeStopMarket || this.tradingTypeStopLimit ? '' : '',
-        reduceOnly: this.market.subType === MarketType.Perpetual ? '' : '',
-        limitPrice: !this.tradingTypeMarket ? this.price : '',
-        slippageTolerance: this.tradingTypeMarket ? this.slippageTolerance : ''
+      const actualSlippageTolerance = tradingTypeMarket ? slippageTolerance : ''
+      const actualPostOnly = tradingTypeLimit && postOnly
+      const reduceOnly = !isSpot && orderTypeReduceOnly
+
+      amplitudeTracker.submitClickPlaceOrderTrackEvent({
+        amount,
+        leverage,
+        orderType,
+        reduceOnly,
+        tradingType,
+        triggerPrice,
+        limitPrice: price,
+        market: market.slug,
+        postOnly: actualPostOnly,
+        slippageTolerance: actualSlippageTolerance,
+        marketType: market.subType
       })
     }
   }

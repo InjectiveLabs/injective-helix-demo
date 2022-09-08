@@ -53,14 +53,11 @@
 </template>
 <script lang="ts">
 import Vue from 'vue'
-import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
-import { Identify, identify } from '@amplitude/analytics-browser'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import LogoText from '~/components/elements/logo-text.vue'
 import Logo from '~/components/elements/logo.vue'
-import { AmplitudeEvents, DefaultMarket, TradeClickOrigin } from '~/types'
-import { AMPLITUDE_VIP_TIER_LEVEL } from '~/app/utils/vendor'
+import { DefaultMarket, TradeClickOrigin } from '~/types'
+import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
 import { getDefaultPerpetualMarketRouteParams } from '~/app/utils/market'
 
 export default Vue.extend({
@@ -72,22 +69,6 @@ export default Vue.extend({
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
-    },
-
-    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
-      return this.$accessor.exchange.feeDiscountAccountInfo
-    },
-
-    tierLevel(): number {
-      const { feeDiscountAccountInfo } = this
-
-      if (!feeDiscountAccountInfo) {
-        return 0
-      }
-
-      return new BigNumberInBase(
-        feeDiscountAccountInfo.tierLevel || 0
-      ).toNumber()
     }
   },
 
@@ -103,11 +84,7 @@ export default Vue.extend({
     },
 
     handleTradeClickedTrack() {
-      const identifyObj = new Identify()
-      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
-      identify(identifyObj)
-
-      this.$amplitude.track(AmplitudeEvents.TradeClicked, {
+      amplitudeTracker.submitTradeClickedTrackEvent({
         market: DefaultMarket.Perpetual,
         marketType: MarketType.Perpetual,
         origin: TradeClickOrigin.Lander

@@ -149,26 +149,17 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { Identify, identify } from '@amplitude/analytics-browser'
 import NavItem from './item.vue'
 import NavItemDummy from './item-dummy.vue'
 import MobileNav from './mobile.vue'
 import PopperBox from '~/components/elements/popper-box.vue'
-import {
-  AmplitudeEvents,
-  DefaultMarket,
-  DefaultMarketRoute,
-  TradeClickOrigin
-} from '~/types'
-import { AMPLITUDE_VIP_TIER_LEVEL } from '~/app/utils/vendor'
-
+import { DefaultMarket, DefaultMarketRoute, TradeClickOrigin } from '~/types'
 import {
   derivativeMarketRouteNames,
   spotMarketRouteNames
 } from '~/app/data/market'
+import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
 import {
   getDefaultPerpetualMarketRoute,
   getDefaultSpotMarketRoute
@@ -191,22 +182,6 @@ export default Vue.extend({
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
-    },
-
-    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
-      return this.$accessor.exchange.feeDiscountAccountInfo
-    },
-
-    tierLevel(): number {
-      const { feeDiscountAccountInfo } = this
-
-      if (!feeDiscountAccountInfo) {
-        return 0
-      }
-
-      return new BigNumberInBase(
-        feeDiscountAccountInfo.tierLevel || 0
-      ).toNumber()
     },
 
     isMarketPage(): boolean {
@@ -274,11 +249,7 @@ export default Vue.extend({
     },
 
     handleSpotTradeClickedTrack() {
-      const identifyObj = new Identify()
-      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
-      identify(identifyObj)
-
-      this.$amplitude.track(AmplitudeEvents.TradeClicked, {
+      amplitudeTracker.submitTradeClickedTrackEvent({
         market: DefaultMarket.Spot,
         marketType: MarketType.Spot,
         origin: TradeClickOrigin.TopMenu
@@ -286,11 +257,7 @@ export default Vue.extend({
     },
 
     handlePerpetualTradeClickedTrack() {
-      const identifyObj = new Identify()
-      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
-      identify(identifyObj)
-
-      this.$amplitude.track(AmplitudeEvents.TradeClicked, {
+      amplitudeTracker.submitTradeClickedTrackEvent({
         market: DefaultMarket.Perpetual,
         marketType: MarketType.Perpetual,
         origin: TradeClickOrigin.TopMenu

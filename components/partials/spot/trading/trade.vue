@@ -129,7 +129,6 @@ import {
   UiSubaccount,
   SpotOrderSide
 } from '@injectivelabs/sdk-ui-ts'
-import { Identify, identify } from '@amplitude/analytics-browser'
 import {
   cosmosSdkDecToBigNumber,
   FeeDiscountAccountInfo
@@ -139,7 +138,6 @@ import OrderSubmit from '~/components/partials/common/trade/order-submit.vue'
 import OrderInputs from '~/components/partials/common/trade/order-inputs.vue'
 import OrderTypeSelect from '~/components/partials/common/trade/order-type-select.vue'
 import {
-  AmplitudeEvents,
   AveragePriceOptions,
   Modal,
   OrderAttemptStatus,
@@ -157,10 +155,7 @@ import {
 } from '~/app/utils/constants'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
 import { localStorage } from '~/app/Services'
-import {
-  AMPLITUDE_ATTEMPT_PLACE_ORDER_COUNT,
-  AMPLITUDE_VIP_TIER_LEVEL
-} from '~/app/utils/vendor'
+import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
 
 interface TradeForm {
   amount: string
@@ -1010,32 +1005,35 @@ export default Vue.extend({
     },
 
     handleAttemptPlaceOrderTrack(errorMessage?: string) {
-      if (!this.market) {
+      const {
+        market,
+        tradingTypeMarket,
+        form,
+        tradingTypeLimit,
+        tradingType,
+        orderType
+      } = this
+
+      if (!market) {
         return
       }
 
-      // todo: refactor this to be cleaner
-      const identifyObj = new Identify()
-      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
-      identifyObj.add(AMPLITUDE_ATTEMPT_PLACE_ORDER_COUNT, 1)
-      identify(identifyObj)
+      const slippageTolerance = tradingTypeMarket ? form.slippageTolerance : ''
+      const postOnly = tradingTypeLimit && form.postOnly
+      const status = errorMessage
+        ? OrderAttemptStatus.Error
+        : OrderAttemptStatus.Success
 
-      this.$amplitude.track(AmplitudeEvents.AttemptPlaceOrder, {
-        amount: this.form.amount,
-        market: this.market.slug,
-        marketType: this.market.subType,
-        orderType: this.orderType,
-        postOnly: this.form.postOnly,
-        tradingType: this.tradingType,
-        triggerPrice:
-          this.tradingTypeStopMarket || this.tradingTypeStopLimit ? '' : '',
-        limitPrice: !this.tradingTypeMarket ? this.price : '',
-        slippageTolerance: this.tradingTypeMarket
-          ? this.form.slippageTolerance
-          : '',
-        status: errorMessage
-          ? OrderAttemptStatus.Error
-          : OrderAttemptStatus.Success,
+      amplitudeTracker.submitAttemptPlaceOrderTrackEvent({
+        status,
+        postOnly,
+        orderType,
+        tradingType,
+        slippageTolerance,
+        amount: form.amount,
+        market: market.slug,
+        marketType: market.subType,
+        limitPrice: form.price,
         error: errorMessage
       })
     }

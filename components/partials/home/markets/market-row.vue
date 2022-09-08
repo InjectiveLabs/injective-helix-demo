@@ -80,11 +80,8 @@
 import Vue, { PropType } from 'vue'
 // @ts-ignore
 import { LineGraph } from 'vue-plot'
-import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
-import { Identify, identify } from '@amplitude/analytics-browser'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
-  MarketType,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiMarketHistory,
@@ -98,13 +95,13 @@ import {
   MARKETS_HISTORY_CHART_SEVEN_DAYS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
-import { AmplitudeEvents, Change, MarketRoute, TradeClickOrigin } from '~/types'
+import { Change, MarketRoute, TradeClickOrigin } from '~/types'
 import { betaMarketSlugs } from '~/app/data/market'
 import {
   getMarketRoute,
   getFormattedMarketsHistoryChartData
 } from '~/app/utils/market'
-import { AMPLITUDE_VIP_TIER_LEVEL } from '~/app/utils/vendor'
+import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
 
 export default Vue.extend({
   components: {
@@ -142,22 +139,6 @@ export default Vue.extend({
   computed: {
     marketsHistory(): UiMarketHistory[] {
       return this.$accessor.exchange.marketsHistory
-    },
-
-    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
-      return this.$accessor.exchange.feeDiscountAccountInfo
-    },
-
-    tierLevel(): number {
-      const { feeDiscountAccountInfo } = this
-
-      if (!feeDiscountAccountInfo) {
-        return 0
-      }
-
-      return new BigNumberInBase(
-        feeDiscountAccountInfo.tierLevel || 0
-      ).toNumber()
     },
 
     lastTradedPriceTextColorClass(): Record<string, boolean> | string {
@@ -354,24 +335,9 @@ export default Vue.extend({
     },
 
     handleTradeClickedTrack() {
-      if (
-        !this.marketRoute.params ||
-        (!this.marketRoute.params.spot && !this.marketRoute.params.futures)
-      ) {
-        return
-      }
-
-      const identifyObj = new Identify()
-      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
-      identify(identifyObj)
-
-      this.$amplitude.track(AmplitudeEvents.TradeClicked, {
-        market: this.marketRoute.params.spot
-          ? this.marketRoute.params.spot
-          : this.marketRoute.params.futures,
-        marketType: this.marketRoute.params.spot
-          ? MarketType.Spot
-          : MarketType.Perpetual,
+      amplitudeTracker.submitTradeClickedTrackEvent({
+        market: this.market.slug,
+        marketType: this.market.subType,
         origin: TradeClickOrigin.Lander
       })
     }
