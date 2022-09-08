@@ -16,9 +16,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Wallet } from '@injectivelabs/wallet-ts'
 import WalletWrapper from './wallet-wrapper.vue'
-import { submitWalletSelectedTrackEvent } from '~/app/client/utils/amplitude'
 
 export default Vue.extend({
   components: {
@@ -27,8 +25,6 @@ export default Vue.extend({
 
   methods: {
     handleClick() {
-      submitWalletSelectedTrackEvent(Wallet.Trezor)
-
       this.$emit('wallet-trezor-connecting')
     }
   }

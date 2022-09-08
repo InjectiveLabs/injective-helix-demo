@@ -48,7 +48,7 @@ import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import OrderError from '~/components/partials/common/trade/order-error.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
 import { UI_DEFAULT_MAX_NUMBER_OF_ORDERS } from '~/app/utils/constants'
-import { submitClickPlaceOrderTrackEvent } from '~/app/client/utils/amplitude'
+import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
 
 export default Vue.extend({
   components: {
@@ -401,25 +401,38 @@ export default Vue.extend({
     },
 
     handleClickPlaceOrderTrack() {
-      const slippageTolerance = this.tradingTypeMarket
-        ? this.slippageTolerance
-        : ''
-      const postOnly = this.tradingTypeLimit && this.postOnly
-      const reduceOnly = !this.isSpot && this.orderTypeReduceOnly
-
-      submitClickPlaceOrderTrackEvent({
-        tierLevel: this.tierLevel,
-        amount: this.amount,
-        market: this.market.slug,
-        marketType: this.market.subType,
-        orderType: this.orderType,
+      const {
+        tradingTypeMarket,
+        tradingTypeLimit,
+        orderTypeReduceOnly,
+        isSpot,
+        slippageTolerance,
         postOnly,
-        tradingType: this.tradingType,
-        leverage: this.leverage,
-        triggerPrice: this.triggerPrice,
+        amount,
+        market,
+        orderType,
+        tradingType,
+        leverage,
+        triggerPrice,
+        price
+      } = this
+
+      const actualSlippageTolerance = tradingTypeMarket ? slippageTolerance : ''
+      const actualPostOnly = tradingTypeLimit && postOnly
+      const reduceOnly = !isSpot && orderTypeReduceOnly
+
+      amplitudeTracker.submitClickPlaceOrderTrackEvent({
+        amount,
+        leverage,
+        orderType,
         reduceOnly,
-        limitPrice: this.price,
-        slippageTolerance
+        tradingType,
+        triggerPrice,
+        limitPrice: price,
+        market: market.slug,
+        postOnly: actualPostOnly,
+        slippageTolerance: actualSlippageTolerance,
+        marketType: market.subType
       })
     }
   }

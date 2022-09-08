@@ -61,10 +61,7 @@ import {
   IS_TESTNET
 } from '~/app/utils/constants'
 import ModalTerms from '~/components/partials/modals/terms.vue'
-import {
-  submitWalletConnectClickedTrackEvent,
-  submitWalletConnectedTrackEvent
-} from '~/app/client/utils/amplitude'
+import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
 
 export default Vue.extend({
   components: {
@@ -159,7 +156,7 @@ export default Vue.extend({
 
   methods: {
     handleWalletConnectClicked() {
-      submitWalletConnectClickedTrackEvent()
+      amplitudeTracker.submitWalletConnectClickedTrackEvent()
 
       if (GEO_IP_RESTRICTIONS_ENABLED) {
         this.$accessor.modal.openModal({ type: Modal.Terms })
@@ -213,11 +210,14 @@ export default Vue.extend({
     },
 
     handleConnectedWalletTrack() {
-      submitWalletConnectedTrackEvent({
+      const amplitudeUser = {
         tierLevel: this.tierLevel,
         address: this.injectiveAddress,
         wallet: this.wallet
-      })
+      }
+
+      amplitudeTracker.setUser(amplitudeUser)
+      amplitudeTracker.submitWalletConnectedTrackEvent()
     }
   }
 })

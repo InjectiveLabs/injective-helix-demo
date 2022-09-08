@@ -188,7 +188,7 @@ import {
 } from '~/app/utils/constants'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
 import { localStorage } from '~/app/Services'
-import { submitAttemptPlaceOrderTrackEvent } from '~/app/client/utils/amplitude'
+import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
 
 interface TradeForm {
   reduceOnly: boolean
@@ -1366,32 +1366,38 @@ export default Vue.extend({
     },
 
     handleAttemptPlaceOrderTrack(errorMessage?: string) {
-      if (!this.market) {
+      const {
+        market,
+        tradingTypeMarket,
+        form,
+        tradingTypeLimit,
+        orderType,
+        tradingType
+      } = this
+
+      if (!market) {
         return
       }
 
-      const slippageTolerance = this.tradingTypeMarket
-        ? this.form.slippageTolerance
-        : ''
-      const postOnly = this.tradingTypeLimit && this.form.postOnly
+      const slippageTolerance = tradingTypeMarket ? form.slippageTolerance : ''
+      const postOnly = tradingTypeLimit && form.postOnly
       const status = errorMessage
         ? OrderAttemptStatus.Error
         : OrderAttemptStatus.Success
 
-      submitAttemptPlaceOrderTrackEvent({
-        tierLevel: this.tierLevel,
-        amount: this.form.amount,
-        leverage: this.form.leverage,
-        market: this.market.slug,
-        marketType: this.market.subType,
-        orderType: this.orderType,
-        postOnly,
-        tradingType: this.tradingType,
-        triggerPrice: this.form.triggerPrice,
-        reduceOnly: this.form.reduceOnly,
-        limitPrice: this.form.price,
-        slippageTolerance,
+      amplitudeTracker.submitAttemptPlaceOrderTrackEvent({
         status,
+        postOnly,
+        orderType,
+        tradingType,
+        slippageTolerance,
+        amount: form.amount,
+        leverage: form.leverage,
+        market: market.slug,
+        marketType: market.subType,
+        triggerPrice: form.triggerPrice,
+        reduceOnly: form.reduceOnly,
+        limitPrice: form.price,
         error: errorMessage
       })
     }

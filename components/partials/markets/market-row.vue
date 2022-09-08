@@ -150,7 +150,6 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
 import {
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
@@ -168,7 +167,7 @@ import VPoweredBy from '~/components/partials/markets/powered-by.vue'
 import { Change, MarketRoute, TradeClickOrigin } from '~/types'
 import { betaMarketSlugs } from '~/app/data/market'
 import { getAbbreviatedVolume, getMarketRoute } from '~/app/utils/market'
-import { submitTradeClickedTrackEvent } from '~/app/client/utils/amplitude'
+import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
 
 export default Vue.extend({
   components: {
@@ -203,22 +202,6 @@ export default Vue.extend({
   computed: {
     favoriteMarkets(): string[] {
       return this.$accessor.app.favoriteMarkets
-    },
-
-    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
-      return this.$accessor.exchange.feeDiscountAccountInfo
-    },
-
-    tierLevel(): number {
-      const { feeDiscountAccountInfo } = this
-
-      if (!feeDiscountAccountInfo) {
-        return 0
-      }
-
-      return new BigNumberInBase(
-        feeDiscountAccountInfo.tierLevel || 0
-      ).toNumber()
     },
 
     lastTradedPrice(): BigNumberInBase {
@@ -358,8 +341,7 @@ export default Vue.extend({
     },
 
     handleTradeClickedTrack() {
-      submitTradeClickedTrackEvent({
-        tierLevel: this.tierLevel,
+      amplitudeTracker.submitTradeClickedTrackEvent({
         market: this.market.slug,
         marketType: this.market.subType,
         origin: TradeClickOrigin.MarketsPage

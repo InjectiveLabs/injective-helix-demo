@@ -73,7 +73,6 @@ import Vue, { PropType } from 'vue'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 // @ts-ignore
 import { LineGraph } from 'vue-plot'
-import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
 import {
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
@@ -94,7 +93,7 @@ import {
   getMarketRoute,
   getFormattedMarketsHistoryChartData
 } from '~/app/utils/market'
-import { submitTradeClickedTrackEvent } from '~/app/client/utils/amplitude'
+import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
 
 export default Vue.extend({
   components: {
@@ -132,22 +131,6 @@ export default Vue.extend({
   computed: {
     marketsHistory(): UiMarketHistory[] {
       return this.$accessor.exchange.marketsHistory
-    },
-
-    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
-      return this.$accessor.exchange.feeDiscountAccountInfo
-    },
-
-    tierLevel(): number {
-      const { feeDiscountAccountInfo } = this
-
-      if (!feeDiscountAccountInfo) {
-        return 0
-      }
-
-      return new BigNumberInBase(
-        feeDiscountAccountInfo.tierLevel || 0
-      ).toNumber()
     },
 
     lastTradedPriceTextColorClass(): Record<string, boolean> | string {
@@ -343,8 +326,7 @@ export default Vue.extend({
     },
 
     handleTradeClickedTrack() {
-      submitTradeClickedTrackEvent({
-        tierLevel: this.tierLevel,
+      amplitudeTracker.submitTradeClickedTrackEvent({
         market: this.market.slug,
         marketType: this.market.subType,
         origin: TradeClickOrigin.Lander

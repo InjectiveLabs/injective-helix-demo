@@ -14,11 +14,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { DefaultMarket, TradeClickOrigin } from '~/types'
-import { submitTradeClickedTrackEvent } from '~/app/client/utils/amplitude'
+import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
 
 export default Vue.extend({
   props: {
@@ -29,22 +27,6 @@ export default Vue.extend({
   },
 
   computed: {
-    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
-      return this.$accessor.exchange.feeDiscountAccountInfo
-    },
-
-    tierLevel(): number {
-      const { feeDiscountAccountInfo } = this
-
-      if (!feeDiscountAccountInfo) {
-        return 0
-      }
-
-      return new BigNumberInBase(
-        feeDiscountAccountInfo.tierLevel || 0
-      ).toNumber()
-    },
-
     classes(): string[] {
       const { dense } = this
 
@@ -106,8 +88,7 @@ export default Vue.extend({
     },
 
     handleTradeClickedTrack() {
-      submitTradeClickedTrackEvent({
-        tierLevel: this.tierLevel,
+      amplitudeTracker.submitTradeClickedTrackEvent({
         market: this.market,
         marketType: this.marketType,
         origin: TradeClickOrigin.TopMenu

@@ -157,20 +157,17 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import NavItem from './item.vue'
 import NavItemDummy from './item-dummy.vue'
 import MobileNav from './mobile.vue'
 import PopperBox from '~/components/elements/popper-box.vue'
 import { DefaultMarket, TradeClickOrigin } from '~/types'
-import { submitTradeClickedTrackEvent } from '~/app/client/utils/amplitude'
-
 import {
   derivativeMarketRouteNames,
   spotMarketRouteNames
 } from '~/app/data/market'
+import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
 
 export default Vue.extend({
   components: {
@@ -187,22 +184,6 @@ export default Vue.extend({
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
-    },
-
-    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
-      return this.$accessor.exchange.feeDiscountAccountInfo
-    },
-
-    tierLevel(): number {
-      const { feeDiscountAccountInfo } = this
-
-      if (!feeDiscountAccountInfo) {
-        return 0
-      }
-
-      return new BigNumberInBase(
-        feeDiscountAccountInfo.tierLevel || 0
-      ).toNumber()
     },
 
     isMarketPage(): boolean {
@@ -262,8 +243,7 @@ export default Vue.extend({
     },
 
     handleSpotTradeClickedTrack() {
-      submitTradeClickedTrackEvent({
-        tierLevel: this.tierLevel,
+      amplitudeTracker.submitTradeClickedTrackEvent({
         market: DefaultMarket.Spot,
         marketType: MarketType.Spot,
         origin: TradeClickOrigin.TopMenu
@@ -271,8 +251,7 @@ export default Vue.extend({
     },
 
     handlePerpetualTradeClickedTrack() {
-      submitTradeClickedTrackEvent({
-        tierLevel: this.tierLevel,
+      amplitudeTracker.submitTradeClickedTrackEvent({
         market: DefaultMarket.Perpetual,
         marketType: MarketType.Perpetual,
         origin: TradeClickOrigin.TopMenu
