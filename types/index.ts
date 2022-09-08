@@ -63,15 +63,17 @@ export interface MarketRoute {
   }
 }
 
-export interface MarketRouteWithoutMarketId {
-  name: string
-  params?: {
-    market?: string
-    derivative?: string
-    futures?: string
-    perpetual?: string
-    binaryOption?: string
-    spot?: string
+export interface DefaultMarketRoute {
+  to: {
+    name: string
+    params?: {
+      market?: string
+      derivative?: string
+      futures?: string
+      perpetual?: string
+      binaryOption?: string
+      spot?: string
+    }
   }
 }
 

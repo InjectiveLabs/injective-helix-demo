@@ -482,6 +482,7 @@ export const actions = actionTree(
       const expiryFuturesMarkets = marketsWithToken.filter(
         (m) => !m.isPerpetual
       )
+
       const uiPerpetualMarkets =
         UiDerivativeTransformer.perpetualMarketsToUiPerpetualMarkets(
           perpetualMarkets

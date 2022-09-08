@@ -44,11 +44,17 @@ const perpetuals = IS_TESTNET
 
 const binaryOptions = ['']
 const expiryFutures = ['']
-const futures = [...perpetuals, ...expiryFutures]
 
 if (IS_DEVNET || IS_MAINNET_STAGING) {
-  //
+  expiryFutures.push(
+    'bojan-expiry',
+    'eth-usdt-08sep22-06',
+    'eth-usdt-08sep22-10',
+    'eth-usdt-08sep22-11',
+    'eth-usdt-08sep22-12'
+  )
 }
+const futures = [...perpetuals, ...expiryFutures]
 
 const spotRoutes = spot.map((s) => `/spot/${s}`) || []
 const futuresRoutes = futures.map((s) => `/futures/${s}`) || []

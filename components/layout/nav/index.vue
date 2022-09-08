@@ -160,7 +160,7 @@ import PopperBox from '~/components/elements/popper-box.vue'
 import {
   AmplitudeEvents,
   DefaultMarket,
-  MarketRouteWithoutMarketId,
+  DefaultMarketRoute,
   TradeClickOrigin
 } from '~/types'
 import { AMPLITUDE_VIP_TIER_LEVEL } from '~/app/utils/vendor'
@@ -217,11 +217,11 @@ export default Vue.extend({
       )
     },
 
-    defaultPerpetualMarketRoute(): MarketRouteWithoutMarketId {
+    defaultPerpetualMarketRoute(): DefaultMarketRoute {
       return getDefaultPerpetualMarketRoute()
     },
 
-    defaultSpotMarketRoute(): MarketRouteWithoutMarketId {
+    defaultSpotMarketRoute(): DefaultMarketRoute {
       return getDefaultSpotMarketRoute()
     },
 

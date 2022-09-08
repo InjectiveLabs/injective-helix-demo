@@ -75,7 +75,7 @@
 import Vue from 'vue'
 import NavItem from './item.vue'
 import Accordion from '~/components/elements/accordion.vue'
-import { DefaultMarket, MarketRouteWithoutMarketId } from '~/types'
+import { DefaultMarket, DefaultMarketRoute } from '~/types'
 import {
   getDefaultPerpetualMarketRoute,
   getDefaultSpotMarketRoute
@@ -95,6 +95,16 @@ export default Vue.extend({
     }
   },
 
+  computed: {
+    defaultPerpetualMarketRoute(): DefaultMarketRoute {
+      return getDefaultPerpetualMarketRoute()
+    },
+
+    defaultSpotMarketRoute(): DefaultMarketRoute {
+      return getDefaultSpotMarketRoute()
+    }
+  },
+
   methods: {
     handleToggleTradeMenu() {
       this.tradeMenuOpen = !this.tradeMenuOpen
@@ -102,14 +112,6 @@ export default Vue.extend({
 
     handleToggleRewardsMenu() {
       this.rewardsMenuOpen = !this.rewardsMenuOpen
-    },
-
-    defaultPerpetualMarketRoute(): MarketRouteWithoutMarketId {
-      return getDefaultPerpetualMarketRoute()
-    },
-
-    defaultSpotMarketRoute(): MarketRouteWithoutMarketId {
-      return getDefaultSpotMarketRoute()
     }
   }
 })

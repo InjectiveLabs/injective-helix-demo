@@ -61,7 +61,7 @@ import LogoText from '~/components/elements/logo-text.vue'
 import Logo from '~/components/elements/logo.vue'
 import { AmplitudeEvents, DefaultMarket, TradeClickOrigin } from '~/types'
 import { AMPLITUDE_VIP_TIER_LEVEL } from '~/app/utils/vendor'
-import { getDefaultPerpetualMarketRoute } from '~/app/utils/market'
+import { getDefaultPerpetualMarketRouteParams } from '~/app/utils/market'
 
 export default Vue.extend({
   components: {
@@ -96,7 +96,7 @@ export default Vue.extend({
       this.handleTradeClickedTrack()
 
       if (this.isUserWalletConnected) {
-        this.$router.push(getDefaultPerpetualMarketRoute())
+        this.$router.push(getDefaultPerpetualMarketRouteParams())
       } else {
         this.$root.$emit('wallet-clicked')
       }

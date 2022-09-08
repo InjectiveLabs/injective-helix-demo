@@ -54,13 +54,7 @@ export const getMarketRoute = (
       }
     }
 
-    if (
-      [
-        MarketType.Derivative,
-        MarketType.Perpetual,
-        MarketType.Futures
-      ].includes(market.type)
-    ) {
+    if ([MarketType.Perpetual, MarketType.Futures].includes(market.subType)) {
       return {
         name: 'futures-futures',
         params: {
@@ -101,6 +95,28 @@ export const getMarketRoute = (
 
 export const getDefaultPerpetualMarketRoute = () => {
   return {
+    to: {
+      name: 'futures-futures',
+      params: {
+        futures: DefaultMarket.Perpetual
+      }
+    }
+  }
+}
+
+export const getDefaultSpotMarketRoute = () => {
+  return {
+    to: {
+      name: 'spot-spot',
+      params: {
+        spot: DefaultMarket.Spot
+      }
+    }
+  }
+}
+
+export const getDefaultPerpetualMarketRouteParams = () => {
+  return {
     name: 'futures-futures',
     params: {
       futures: DefaultMarket.Perpetual
@@ -108,7 +124,7 @@ export const getDefaultPerpetualMarketRoute = () => {
   }
 }
 
-export const getDefaultSpotMarketRoute = () => {
+export const getDefaultSpotMarketRouteParams = () => {
   return {
     name: 'spot-spot',
     params: {
