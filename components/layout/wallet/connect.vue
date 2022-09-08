@@ -43,7 +43,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
-import { Wallet } from '@injectivelabs/ts-types'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
 import Metamask from './wallets/metamask.vue'
 import Keplr from './wallets/keplr.vue'

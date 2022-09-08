@@ -5,7 +5,8 @@ import {
   track
 } from '@amplitude/analytics-browser'
 import { BaseEvent } from '@amplitude/analytics-types'
-import { TradeExecutionType, Wallet } from '@injectivelabs/ts-types'
+import { TradeExecutionType } from '@injectivelabs/ts-types'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import { DerivativeOrderSide, SpotOrderSide } from '@injectivelabs/sdk-ui-ts'
 import {
   AmplitudeEvents,

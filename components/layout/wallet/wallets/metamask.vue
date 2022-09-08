@@ -28,7 +28,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Wallet } from '@injectivelabs/ts-types'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import WalletWrapper from './wallet-wrapper.vue'
 import { WalletConnectStatus } from '~/types'
 import { submitWalletSelectedTrackEvent } from '~/app/client/utils/amplitude'
