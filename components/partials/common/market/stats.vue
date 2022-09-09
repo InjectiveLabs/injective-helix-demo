@@ -148,7 +148,8 @@ export default Vue.extend({
       BIG_NUMBER_ROUND_DOWN_MODE,
       Change,
       MarketType,
-      SpotOrderSide
+      SpotOrderSide,
+      timeToExpiry: ''
     }
   },
 
@@ -399,7 +400,38 @@ export default Vue.extend({
       return expiryFuturesMarketInfo.expirationTimestamp <= now
     },
 
-    timeToExpiry(): string {
+    userTimezone(): string {
+      return format(new Date(), 'OOOO')
+    }
+  },
+
+  watch: {
+    isExpired(hasExpired) {
+      const { market } = this
+      if (market.subType === MarketType.Futures && hasExpired) {
+        window.location.reload()
+      }
+    }
+  },
+  mounted() {
+    this.setTimeToExpiryInterval()
+    this.setIntervalForNow()
+  },
+
+  methods: {
+    setTimeToExpiryInterval() {
+      setInterval(() => {
+        this.setTimeToExpiry()
+      }, 1000)
+    },
+
+    setIntervalForNow() {
+      setInterval(() => {
+        this.now = Date.now() / 1000
+      }, 1000)
+    },
+
+    setTimeToExpiry() {
       const { market } = this
 
       if (!market) {
@@ -429,16 +461,12 @@ export default Vue.extend({
         return ''
       }
 
-      return formatDistanceToNow(
+      this.timeToExpiry = formatDistanceToNow(
         fromUnixTime(expiryFuturesMarketInfo.expirationTimestamp),
         {
           addSuffix: true
         }
       )
-    },
-
-    userTimezone(): string {
-      return format(new Date(), 'OOOO')
     }
   }
 })
