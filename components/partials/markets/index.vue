@@ -1,129 +1,142 @@
 <template>
   <div class="container xl:max-w-6xl mx-auto py-6 md:py-12">
-    <h3 class="text-xl tracking-wider leading-6 font-bold md:hidden mb-6">
-      {{ $t('markets.title') }}
-    </h3>
+    <div>
+      <h3 class="text-xl tracking-wider leading-6 font-bold md:hidden mb-6">
+        {{ $t('markets.title') }}
+      </h3>
 
-    <MarketFilter
-      :active-category.sync="activeCategory"
-      :active-quote.sync="activeQuote"
-      :active-type.sync="activeType"
-      :search.sync="search"
-    />
-
-    <div class="border-b border-gray-600 w-full h-px mt-6 mb-4 md:hidden" />
-
-    <!-- mobile header -->
-    <TableHeader classes="grid grid-cols-3 md:hidden">
-      <SortableHeaderItem
-        :value="MarketHeaderType.Market"
-        :sort-by="sortBy"
-        :ascending="ascending"
-        @sort="handleSort"
-      >
-        <span class="text-gray-200 text-xs">
-          {{ $t('trade.market') }}
-        </span>
-      </SortableHeaderItem>
-
-      <SortableHeaderItem
-        class="justify-end col-span-2"
-        :value="MarketHeaderType.Change"
-        :sort-by="sortBy"
-        :ascending="ascending"
-        @sort="handleSort"
-      >
-        <span slot="prefix" class="text-gray-200 text-xs mr-1">
-          {{ $t('trade.last_price') }} /
-        </span>
-
-        <span class="text-gray-200 text-xs">
-          {{ $t('trade.market_change_24h') }}
-        </span>
-      </SortableHeaderItem>
-    </TableHeader>
-
-    <TableHeader class="grid-cols-10 3md:grid-cols-12">
-      <SortableHeaderItem
-        class="col-span-3"
-        :value="MarketHeaderType.Market"
-        :sort-by="sortBy"
-        :ascending="ascending"
-        @sort="handleSort"
-      >
-        <span
-          class="text-gray-200 text-xs"
-          data-cy="markets-market-table-header"
-        >
-          {{ $t('trade.market') }}
-        </span>
-      </SortableHeaderItem>
-
-      <span class="text-right col-span-2">
-        <span class="text-gray-200 text-xs">
-          {{ $t('trade.last_price') }}
-        </span>
-      </span>
-
-      <SortableHeaderItem
-        class="col-span-2 justify-end"
-        :value="MarketHeaderType.Change"
-        :sort-by="sortBy"
-        :ascending="ascending"
-        @sort="handleSort"
-      >
-        <span
-          class="text-gray-200 text-xs"
-          data-cy="markets-change_24h-table-header"
-        >
-          {{ $t('trade.market_change_24h') }}
-        </span>
-      </SortableHeaderItem>
-
-      <SortableHeaderItem
-        class="col-span-3 justify-end"
-        :value="MarketHeaderType.Volume"
-        :sort-by="sortBy"
-        :ascending="ascending"
-        @sort="handleSort"
-      >
-        <span
-          class="text-gray-200 text-xs"
-          data-cy="markets-volume_24h-table-header"
-        >
-          {{ $t('trade.volume_24h') }}
-        </span>
-      </SortableHeaderItem>
-      <span class="hidden 3md:block text-left col-span-2" />
-    </TableHeader>
-
-    <TableBody light :show-empty="sortedMarkets.length === 0">
-      <MarketRow
-        v-for="({ market, summary, volumeInUsd }, index) in sortedMarkets"
-        :key="`market-row-${index}`"
-        :market="market"
-        :summary="summary"
-        :volume-in-usd="volumeInUsd"
+      <MarketFilter
+        :active-category.sync="activeCategory"
+        :active-quote.sync="activeQuote"
+        :active-type.sync="activeType"
+        :search.sync="search"
       />
 
-      <EmptyList
-        slot="empty"
-        classes="bg-gray-850 min-h-3xs"
-        data-cy="markets-no-data-table"
-        :message="$t('markets.emptyHeader')"
-      >
-        <span class="mt-2 text-xs text-gray-500">{{
-          $t('markets.emptyDescription')
-        }}</span>
-      </EmptyList>
-    </TableBody>
+      <div class="border-b border-gray-600 w-full h-px mt-6 mb-4 md:hidden" />
+
+      <!-- mobile header -->
+      <TableHeader classes="grid grid-cols-3 md:hidden">
+        <SortableHeaderItem
+          :value="MarketHeaderType.Market"
+          :sort-by="sortBy"
+          :ascending="ascending"
+          @sort="handleSort"
+        >
+          <span class="text-gray-200 text-xs">
+            {{ $t('trade.market') }}
+          </span>
+        </SortableHeaderItem>
+
+        <SortableHeaderItem
+          class="justify-end col-span-2"
+          :value="MarketHeaderType.Change"
+          :sort-by="sortBy"
+          :ascending="ascending"
+          @sort="handleSort"
+        >
+          <span slot="prefix" class="text-gray-200 text-xs mr-1">
+            {{ $t('trade.last_price') }} /
+          </span>
+
+          <span class="text-gray-200 text-xs">
+            {{ $t('trade.market_change_24h') }}
+          </span>
+        </SortableHeaderItem>
+      </TableHeader>
+
+      <TableHeader class="grid-cols-10 3md:grid-cols-12">
+        <SortableHeaderItem
+          class="col-span-3"
+          :value="MarketHeaderType.Market"
+          :sort-by="sortBy"
+          :ascending="ascending"
+          @sort="handleSort"
+        >
+          <span
+            class="text-gray-200 text-xs"
+            data-cy="markets-market-table-header"
+          >
+            {{ $t('trade.market') }}
+          </span>
+        </SortableHeaderItem>
+
+        <span class="text-right col-span-2">
+          <span class="text-gray-200 text-xs">
+            {{ $t('trade.last_price') }}
+          </span>
+        </span>
+
+        <SortableHeaderItem
+          class="col-span-2 justify-end"
+          :value="MarketHeaderType.Change"
+          :sort-by="sortBy"
+          :ascending="ascending"
+          @sort="handleSort"
+        >
+          <span
+            class="text-gray-200 text-xs"
+            data-cy="markets-change_24h-table-header"
+          >
+            {{ $t('trade.market_change_24h') }}
+          </span>
+        </SortableHeaderItem>
+
+        <SortableHeaderItem
+          class="col-span-3 justify-end"
+          :value="MarketHeaderType.Volume"
+          :sort-by="sortBy"
+          :ascending="ascending"
+          @sort="handleSort"
+        >
+          <span
+            class="text-gray-200 text-xs"
+            data-cy="markets-volume_24h-table-header"
+          >
+            {{ $t('trade.volume_24h') }}
+          </span>
+        </SortableHeaderItem>
+        <span class="hidden 3md:block text-left col-span-2" />
+      </TableHeader>
+
+      <TableBody light :show-empty="sortedMarkets.length === 0">
+        <MarketRow
+          v-for="({ market, summary, volumeInUsd }, index) in sortedMarkets"
+          :key="`market-row-${index}`"
+          :market="market"
+          :summary="summary"
+          :volume-in-usd="volumeInUsd"
+        />
+
+        <EmptyList
+          slot="empty"
+          classes="bg-gray-850 min-h-3xs"
+          data-cy="markets-no-data-table"
+          :message="$t('markets.emptyHeader')"
+        >
+          <span class="mt-2 text-xs text-gray-500">{{
+            $t('markets.emptyDescription')
+          }}</span>
+        </EmptyList>
+      </TableBody>
+    </div>
+    <div v-if="recentlyExpiredMarkets.length > 0" class="mt-12">
+      <h3 class="text-sm tracking-wider leading-6 mb-4">
+        {{ $t('markets.expiredRecently') }}
+      </h3>
+
+      <RecentlyExpiredMarkets :markets="recentlyExpiredMarkets" />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { MarketType } from '@injectivelabs/sdk-ui-ts'
+import {
+  MarketType,
+  UiDerivativeMarketWithToken
+} from '@injectivelabs/sdk-ui-ts'
+import RecentlyExpiredMarkets from '~/components/partials/markets/markets-expired/index.vue'
 import MarketFilter from '~/components/partials/markets/filters/index.vue'
 import MarketRow from '~/components/partials/markets/market-row.vue'
 import SortableHeaderItem from '~/components/elements/sortable-header-item.vue'
@@ -152,6 +165,7 @@ export default Vue.extend({
   components: {
     SortableHeaderItem,
     TableBody,
+    RecentlyExpiredMarkets,
     TableHeader,
     MarketFilter,
     MarketRow
@@ -177,6 +191,10 @@ export default Vue.extend({
   },
 
   computed: {
+    recentlyExpiredMarkets(): Array<UiDerivativeMarketWithToken> {
+      return this.$accessor.derivatives.recentlyExpiredMarkets
+    },
+
     favoriteMarkets(): string[] {
       return this.$accessor.app.favoriteMarkets
     },

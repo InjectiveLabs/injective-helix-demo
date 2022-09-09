@@ -4,7 +4,8 @@ import {
   UiSpotMarketWithToken,
   MarketType
 } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, SECONDS_IN_A_DAY } from '@injectivelabs/utils'
+import { ExpiryFuturesMarket } from '@injectivelabs/sdk-ts'
 import {
   DefaultMarket,
   MarketCategoryType,
@@ -263,4 +264,31 @@ export const getFormattedMarketsHistoryChartData = (
 
     return [xAxisTime, yAxisHolcAveragePrice]
   })
+}
+
+export const marketIsRecentlyExpired = (market: ExpiryFuturesMarket) => {
+  const now = Date.now() / 1000
+  const secondsInADay = SECONDS_IN_A_DAY.toNumber()
+
+  if (!market) {
+    return false
+  }
+
+  if (!market.expiryFuturesMarketInfo) {
+    return false
+  }
+
+  if (!market.expiryFuturesMarketInfo.expirationTimestamp) {
+    return false
+  }
+
+  const isExpired = market.expiryFuturesMarketInfo.expirationTimestamp <= now
+
+  if (!isExpired) {
+    return false
+  }
+
+  return (
+    market.expiryFuturesMarketInfo.expirationTimestamp + secondsInADay > now
+  )
 }
