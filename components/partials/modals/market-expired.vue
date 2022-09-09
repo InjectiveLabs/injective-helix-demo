@@ -42,19 +42,29 @@
       </p>
 
       <div class="mt-6 flex items-center justify-center">
-        <VButton md primary class="rounded mr-2" @click.stop="() => {}">
+        <VButton
+          md
+          primary
+          class="px-0 py-0 rounded mr-2"
+          @click.stop="() => {}"
+        >
           <nuxt-link
             :to="{ name: 'markets' }"
-            class="flex items-center justify-center"
+            class="flex items-center justify-center px-4 py-2"
           >
             <span>{{ $t('marketExpired.exploreMarkets') }}</span>
           </nuxt-link>
         </VButton>
-        <VButton md primary-outline class="rounded" @click.stop="() => {}">
+        <VButton
+          md
+          primary-outline
+          class="px-0 py-0 rounded"
+          @click.stop="() => {}"
+        >
           <nuxt-link
             :to="{ name: 'activity' }"
             target="_blank"
-            class="flex items-center justify-center"
+            class="flex items-center justify-center px-4 py-2"
           >
             <span>{{ $t('marketExpired.goToActivity') }}</span>
           </nuxt-link>
