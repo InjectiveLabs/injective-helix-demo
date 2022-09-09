@@ -21,6 +21,7 @@ import {
 } from '~/app/utils/vendor'
 import { HAS_AMPLITUDE_KEY } from '~/app/utils/constants'
 import { AmplitudeEvents, OrderAttemptStatus, TradeClickOrigin } from '~/types'
+import { localStorage } from '~/app/Services'
 
 type TrackAmplitudeFn = <T extends string | BaseEvent>(
   args: T,
@@ -52,17 +53,32 @@ export class AmplitudeTracker {
   private user?: AmplitudeTrackerUser
 
   constructor(user?: AmplitudeTrackerUser) {
-    this.user = user
+    const userFromLocalStorage =
+      this.getUserLocalStorage() as AmplitudeTrackerUser
+
+    if (!user && !!userFromLocalStorage) {
+      this.user = userFromLocalStorage
+    } else {
+      this.user = user
+    }
   }
 
   setUser(user: AmplitudeTrackerUser) {
     this.user = user
-
     setUserId(user.address)
+    this.setUserLocalStorage(user)
   }
 
   getUser(): AmplitudeTrackerUser | undefined {
     return this.user
+  }
+
+  setUserLocalStorage(user: AmplitudeTrackerUser) {
+    localStorage.set('amplitudeUser', user)
+  }
+
+  getUserLocalStorage(): unknown {
+    return localStorage.get('amplitudeUser')
   }
 
   getIdentify(): Identify {
