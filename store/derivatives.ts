@@ -584,7 +584,7 @@ export const actions = actionTree(
     },
 
     async initMarket({ commit, state }, marketSlug: string) {
-      const { markets } = state
+      const { markets, recentlyExpiredMarkets } = state
 
       if (!markets.length) {
         await this.app.$accessor.derivatives.init()
@@ -592,7 +592,7 @@ export const actions = actionTree(
 
       const { markets: newMarkets } = state
 
-      const market = newMarkets.find(
+      const market = [...newMarkets, ...recentlyExpiredMarkets].find(
         (market) =>
           marketSlug && market.slug.toLowerCase() === marketSlug.toLowerCase()
       )

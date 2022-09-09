@@ -2,12 +2,12 @@
   <VModal
     :is-open="isModalOpen"
     has-blur-bg
-    md
+    sm
     is-always-open
     @modal-closed="closeModal"
   >
     <h3 slot="title">
-      {{ $t('marketExpiry.title') }}
+      {{ $t('marketExpired.title') }}
     </h3>
 
     <div class="relative">
@@ -34,31 +34,29 @@
         </div>
       </div>
 
-      <p class="text-center text-sm text-gray-100 mt-4">
-        {{ $t('marketExpiry.expiredNote') }}
+      <p class="text-sm text-gray-100 mt-4">
+        {{ $t('marketExpired.expiredNote') }}
       </p>
-      <p class="text-center text-sm text-gray-100 mt-2">
-        {{ $t('marketExpiry.activityPageNote') }}
+      <p class="text-sm text-gray-100 mt-2">
+        {{ $t('marketExpired.activityPageNote') }}
       </p>
 
       <div class="mt-6 flex items-center justify-center">
-        <VButton lg primary class="rounded" @click.stop="() => {}">
+        <VButton md primary class="rounded mr-2" @click.stop="() => {}">
           <nuxt-link
             :to="{ name: 'markets' }"
             class="flex items-center justify-center"
           >
-            <span class="mr-2">{{ $t('marketExpiry.exploreMarkets') }}</span>
-            <IconExternalLink class="w-3 h-3" />
+            <span>{{ $t('marketExpired.exploreMarkets') }}</span>
           </nuxt-link>
         </VButton>
-        <VButton primary-outline class="rounded" @click.stop="() => {}">
+        <VButton md primary-outline class="rounded" @click.stop="() => {}">
           <nuxt-link
             :to="{ name: 'activity' }"
             target="_blank"
             class="flex items-center justify-center"
           >
-            <span class="mr-2">{{ $t('marketExpiry.goToActivity') }}</span>
-            <IconExternalLink class="w-3 h-3" />
+            <span>{{ $t('marketExpired.goToActivity') }}</span>
           </nuxt-link>
         </VButton>
       </div>
