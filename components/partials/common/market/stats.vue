@@ -105,7 +105,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { fromUnixTime, formatDistanceToNow, format } from 'date-fns'
+import { fromUnixTime, formatDistance, format } from 'date-fns'
 import {
   UiSpotMarketSummary,
   UiDerivativeMarketSummary,
@@ -148,8 +148,7 @@ export default Vue.extend({
       BIG_NUMBER_ROUND_DOWN_MODE,
       Change,
       MarketType,
-      SpotOrderSide,
-      timeToExpiry: ''
+      SpotOrderSide
     }
   },
 
@@ -402,37 +401,10 @@ export default Vue.extend({
 
     userTimezone(): string {
       return format(new Date(), 'OOOO')
-    }
-  },
-
-  watch: {
-    isExpired(hasExpired) {
-      const { market } = this
-      if (market.subType === MarketType.Futures && hasExpired) {
-        window.location.reload()
-      }
-    }
-  },
-  mounted() {
-    this.setTimeToExpiryInterval()
-    this.setIntervalForNow()
-  },
-
-  methods: {
-    setTimeToExpiryInterval() {
-      setInterval(() => {
-        this.setTimeToExpiry()
-      }, 1000)
     },
 
-    setIntervalForNow() {
-      setInterval(() => {
-        this.now = Date.now() / 1000
-      }, 1000)
-    },
-
-    setTimeToExpiry() {
-      const { market } = this
+    timeToExpiry(): string {
+      const { market, now } = this
 
       if (!market) {
         return ''
@@ -461,12 +433,39 @@ export default Vue.extend({
         return ''
       }
 
-      this.timeToExpiry = formatDistanceToNow(
-        fromUnixTime(expiryFuturesMarketInfo.expirationTimestamp),
-        {
-          addSuffix: true
-        }
+      const nowInMilliseconds = new BigNumberInBase(now).times(1000).toNumber()
+      const expirationTimestampInMilliseconds = new BigNumberInBase(
+        expiryFuturesMarketInfo.expirationTimestamp
       )
+        .times(1000)
+        .toNumber()
+
+      return formatDistance(
+        nowInMilliseconds,
+        expirationTimestampInMilliseconds
+      )
+    }
+  },
+
+  watch: {
+    isExpired(hasExpired) {
+      const { market } = this
+
+      if (market.subType === MarketType.Futures && hasExpired) {
+        window.location.reload()
+      }
+    }
+  },
+
+  mounted() {
+    this.setIntervalForNow()
+  },
+
+  methods: {
+    setIntervalForNow() {
+      setInterval(() => {
+        this.now = Date.now() / 1000
+      }, 5000)
     }
   }
 })
