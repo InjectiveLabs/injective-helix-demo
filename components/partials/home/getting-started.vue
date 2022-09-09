@@ -12,7 +12,7 @@
           :style="{
             width: '100%',
             padding: '0 1px',
-            'border-radius': '8px',
+            'border-radius': '8px'
           }"
           :video-id="videoId"
         />
@@ -137,11 +137,9 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-.youtube-player {
-  iframe {
-    @media (min-width: 1024px) {
-      height: 100%;
-    }
+@media (min-width: 1024px) {
+  .youtube-player iframe {
+    height: 100%;
   }
 }
 </style>
