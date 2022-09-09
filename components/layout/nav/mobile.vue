@@ -6,25 +6,13 @@
       </div>
 
       <template slot="content">
-        <NavItem
-          :to="{
-            name: 'spot-spot',
-            params: { spot: DefaultMarket.Spot }
-          }"
-        >
+        <NavItem :to="defaultSpotMarketRoute">
           <span class="font-normal tracking-wide">{{
             $t('navigation.spot')
           }}</span>
         </NavItem>
 
-        <NavItem
-          :to="{
-            name: 'perpetuals-perpetual',
-            params: {
-              perpetual: DefaultMarket.Perpetual
-            }
-          }"
-        >
+        <NavItem :to="defaultPerpetualMarketRoute">
           <span class="font-normal tracking-wide">{{
             $t('navigation.perpetual')
           }}</span>
@@ -87,7 +75,11 @@
 import Vue from 'vue'
 import NavItem from './item.vue'
 import Accordion from '~/components/elements/accordion.vue'
-import { DefaultMarket } from '~/types'
+import { DefaultMarket, DefaultMarketRoute } from '~/types'
+import {
+  getDefaultPerpetualMarketRoute,
+  getDefaultSpotMarketRoute
+} from '~/app/utils/market'
 
 export default Vue.extend({
   components: {
@@ -100,6 +92,16 @@ export default Vue.extend({
       DefaultMarket,
       tradeMenuOpen: false,
       rewardsMenuOpen: false
+    }
+  },
+
+  computed: {
+    defaultPerpetualMarketRoute(): DefaultMarketRoute {
+      return getDefaultPerpetualMarketRoute()
+    },
+
+    defaultSpotMarketRoute(): DefaultMarketRoute {
+      return getDefaultSpotMarketRoute()
     }
   },
 

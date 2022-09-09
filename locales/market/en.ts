@@ -10,7 +10,9 @@ export default {
     emptyDescription: 'Try another search term or you can propose some!',
     poweredBy: 'Powered by',
     vol: 'Vol',
-    quote: 'Quote'
+    quote: 'Quote',
+    expiredRecently: 'Expired in last 24 hours',
+    settledAt: 'Settled at'
   },
 
   marketPage: {

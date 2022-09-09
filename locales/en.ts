@@ -191,6 +191,16 @@ export default {
     soonToBeReleased: 'Coming soon!'
   },
 
+  marketExpired: {
+    title: 'Market Expired',
+    expiredNote:
+      'This futures contract has just expired and reached settlement.',
+    activityPageNote:
+      'If you did hold position(s) till expiry, please go to Activity to check the settlement record.',
+    exploreMarkets: 'Explore Markets',
+    goToActivity: 'Go To Activity'
+  },
+
   marketDeprecated: {
     title: 'No longer tradable',
     description: '{ticker} is no longer tradable on Helix.',

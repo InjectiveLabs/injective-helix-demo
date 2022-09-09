@@ -58,6 +58,7 @@ import LogoText from '~/components/elements/logo-text.vue'
 import Logo from '~/components/elements/logo.vue'
 import { DefaultMarket, TradeClickOrigin } from '~/types'
 import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
+import { getDefaultPerpetualMarketRouteParams } from '~/app/utils/market'
 
 export default Vue.extend({
   components: {
@@ -76,10 +77,7 @@ export default Vue.extend({
       this.handleTradeClickedTrack()
 
       if (this.isUserWalletConnected) {
-        this.$router.push({
-          name: 'perpetuals-perpetual',
-          params: { perpetual: 'btc-usdt-perp' }
-        })
+        this.$router.push(getDefaultPerpetualMarketRouteParams())
       } else {
         this.$root.$emit('wallet-clicked')
       }
