@@ -53,14 +53,7 @@ export class AmplitudeTracker {
   private user?: AmplitudeTrackerUser
 
   constructor(user?: AmplitudeTrackerUser) {
-    const userFromLocalStorage =
-      this.getUserLocalStorage() as AmplitudeTrackerUser
-
-    if (!user && !!userFromLocalStorage) {
-      this.user = userFromLocalStorage
-    } else {
-      this.user = user
-    }
+    this.user = user || this.getUserLocalStorage()
   }
 
   setUser(user: AmplitudeTrackerUser) {
@@ -77,8 +70,10 @@ export class AmplitudeTracker {
     localStorage.set('amplitudeUser', user)
   }
 
-  getUserLocalStorage(): unknown {
-    return localStorage.get('amplitudeUser')
+  getUserLocalStorage(): AmplitudeTrackerUser | undefined {
+    return localStorage.get('amplitudeUser') as unknown as
+      | AmplitudeTrackerUser
+      | undefined
   }
 
   getIdentify(): Identify {
