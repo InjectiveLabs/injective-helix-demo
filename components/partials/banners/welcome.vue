@@ -7,7 +7,9 @@
   >
     <div class="grid grid-cols-1 3md:grid-cols-3 lg:grid-cols-2 3md:gap-4">
       <div class="3md:col-span-2 lg:col-span-1">
-        <p class="font-semibold text-xl text-white mb-2">{{ $t('banners.welcome.title') }}</p>
+        <p class="font-semibold text-xl text-white mb-2">
+          {{ $t('banners.welcome.title') }}
+        </p>
         <p class="text-sm text-white mb-5">
           {{ $t('banners.welcome.subtitle') }}
         </p>
@@ -71,7 +73,9 @@
             class="inline-block"
           >
             <span class="bg-gray-900 py-2 px-4 flex items-center rounded-lg">
-              <span class="font-medium text-sm">{{ $t('banners.welcome.howItWorks') }}</span>
+              <span class="font-medium text-sm">{{
+                $t('banners.welcome.howItWorks')
+              }}</span>
               <IconArrow class="w-3 h-3 rotate-[135deg] ml-2" />
             </span>
           </a>
@@ -82,7 +86,9 @@
             class="inline-block"
           >
             <span class="bg-gray-900 py-2 px-4 flex items-center rounded-lg">
-              <span class="font-medium text-sm">{{ $t('banners.welcome.faq') }}</span>
+              <span class="font-medium text-sm">{{
+                $t('banners.welcome.faq')
+              }}</span>
               <IconArrow class="w-3 h-3 rotate-[135deg] ml-2" />
             </span>
           </a>
@@ -100,6 +106,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { getDefaultPerpetualMarketRouteParams } from '~/app/utils/market'
 
 export default Vue.extend({
   data() {
@@ -167,10 +174,7 @@ export default Vue.extend({
       } else if (this.activeStep === 2) {
         this.$root.$emit('bridge:transfer')
       } else {
-        this.$router.push({
-          name: 'perpetuals-perpetual',
-          params: { perpetual: 'btc-usdt-perp' }
-        })
+        this.$router.push(getDefaultPerpetualMarketRouteParams())
       }
     }
   }
@@ -179,6 +183,10 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .welcome {
-  background: linear-gradient(90deg, rgba(0, 130, 250, 0.1) 0%, rgba(0, 169, 176, 0.1) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(0, 130, 250, 0.1) 0%,
+    rgba(0, 169, 176, 0.1) 100%
+  );
 }
 </style>
