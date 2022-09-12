@@ -44,7 +44,7 @@
           </div>
         </span>
       </div>
-      <div class="col-span-2 flex font-mono">
+      <div class="col-span-2 flex font-mono text-sm">
         <span
           v-if="!change.isNaN()"
           :class="change.gte(0) ? 'text-green-500' : 'text-red-500'"
@@ -53,7 +53,7 @@
         </span>
         <span v-else class="text-gray-400">&mdash;</span>
       </div>
-      <div class="col-span-3 flex pr-4 h-7">
+      <div class="col-span-3 flex pr-4 h-7 relative">
         <LineGraph
           v-if="chartData.length > 1"
           :data="chartData"
