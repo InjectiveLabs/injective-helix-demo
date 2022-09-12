@@ -159,7 +159,6 @@ import {
   getTokenLogoWithVendorPathPrefix
 } from '@injectivelabs/sdk-ui-ts'
 import {
-  BAYC_WETH_PERP_SLUG,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
@@ -309,7 +308,7 @@ export default Vue.extend({
         return false
       }
 
-      return market.slug === BAYC_WETH_PERP_SLUG
+      return market.slug === 'bayc-weth-perp'
     },
 
     isFavorite(): boolean {

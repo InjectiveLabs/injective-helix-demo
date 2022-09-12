@@ -82,10 +82,7 @@ import {
 import { BigNumberInBase } from '@injectivelabs/utils'
 import VPoweredBy from '~/components/partials/markets/powered-by.vue'
 import { Change, MarketRoute } from '~/types'
-import {
-  BAYC_WETH_PERP_SLUG,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-} from '~/app/utils/constants'
+import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import { getMarketRoute } from '~/app/utils/market'
 
 export default Vue.extend({
@@ -175,7 +172,7 @@ export default Vue.extend({
         return false
       }
 
-      return market.slug === BAYC_WETH_PERP_SLUG
+      return market.slug === 'bayc-weth-perp'
     },
 
     baseTokenLogo(): string {

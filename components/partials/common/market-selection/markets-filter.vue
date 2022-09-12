@@ -21,8 +21,8 @@
         </MarketTypeSelector>
 
         <MarketTypeSelector
-          :type="MarketType.Perpetual"
-          :active="activeType === MarketType.Perpetual"
+          :type="MarketType.Derivative"
+          :active="activeType === MarketType.Derivative"
           data-cy="markets-perpetual-selector"
           @click="handleTypeClick"
         >
