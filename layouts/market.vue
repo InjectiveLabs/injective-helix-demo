@@ -125,16 +125,22 @@ export default Vue.extend({
         return params.spot
       }
 
+      // Deprecated
       if (params.perpetual) {
         return params.perpetual
+      }
+
+      // Deprecated
+      if (params.derivative) {
+        return params.derivative
       }
 
       if (params.binaryOption) {
         return params.binaryOption
       }
 
-      // TODO - Expiry Futures
-      return params.derivative
+      // Perps and Expiry Futures
+      return params.futures
     },
 
     marketIsBeta(): boolean {

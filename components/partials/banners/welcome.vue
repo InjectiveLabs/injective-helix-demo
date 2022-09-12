@@ -106,6 +106,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { getDefaultPerpetualMarketRouteParams } from '~/app/utils/market'
 
 export default Vue.extend({
   data() {
@@ -173,10 +174,7 @@ export default Vue.extend({
       } else if (this.activeStep === 2) {
         this.$root.$emit('bridge:transfer')
       } else {
-        this.$router.push({
-          name: 'perpetuals-perpetual',
-          params: { perpetual: 'btc-usdt-perp' }
-        })
+        this.$router.push(getDefaultPerpetualMarketRouteParams())
       }
     }
   }

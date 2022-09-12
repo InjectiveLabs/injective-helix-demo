@@ -150,10 +150,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
-import { Identify, identify } from '@amplitude/analytics-browser'
 import {
-  MarketType,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   ZERO_IN_BASE,
@@ -167,10 +164,10 @@ import {
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
 import VPoweredBy from '~/components/partials/markets/powered-by.vue'
-import { AmplitudeEvents, Change, MarketRoute, TradeClickOrigin } from '~/types'
+import { Change, MarketRoute, TradeClickOrigin } from '~/types'
 import { betaMarketSlugs } from '~/app/data/market'
 import { getAbbreviatedVolume, getMarketRoute } from '~/app/utils/market'
-import { AMPLITUDE_VIP_TIER_LEVEL } from '~/app/utils/vendor'
+import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
 
 export default Vue.extend({
   components: {
@@ -205,22 +202,6 @@ export default Vue.extend({
   computed: {
     favoriteMarkets(): string[] {
       return this.$accessor.app.favoriteMarkets
-    },
-
-    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
-      return this.$accessor.exchange.feeDiscountAccountInfo
-    },
-
-    tierLevel(): number {
-      const { feeDiscountAccountInfo } = this
-
-      if (!feeDiscountAccountInfo) {
-        return 0
-      }
-
-      return new BigNumberInBase(
-        feeDiscountAccountInfo.tierLevel || 0
-      ).toNumber()
     },
 
     lastTradedPrice(): BigNumberInBase {
@@ -360,24 +341,9 @@ export default Vue.extend({
     },
 
     handleTradeClickedTrack() {
-      if (
-        !this.marketRoute.params ||
-        (!this.marketRoute.params.spot && !this.marketRoute.params.perpetual)
-      ) {
-        return
-      }
-
-      const identifyObj = new Identify()
-      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
-      identify(identifyObj)
-
-      this.$amplitude.track(AmplitudeEvents.TradeClicked, {
-        market: this.marketRoute.params.spot
-          ? this.marketRoute.params.spot
-          : this.marketRoute.params.perpetual,
-        marketType: this.marketRoute.params.spot
-          ? MarketType.Spot
-          : MarketType.Perpetual,
+      amplitudeTracker.submitTradeClickedTrackEvent({
+        market: this.market.slug,
+        marketType: this.market.subType,
         origin: TradeClickOrigin.MarketsPage
       })
     }
