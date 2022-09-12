@@ -14,12 +14,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
-import { Identify, identify } from '@amplitude/analytics-browser'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
-import { AmplitudeEvents, TradeClickOrigin } from '~/types'
-import { AMPLITUDE_VIP_TIER_LEVEL } from '~/app/utils/vendor'
+import { DefaultMarket, TradeClickOrigin } from '~/types'
+import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
 
 export default Vue.extend({
   props: {
@@ -30,22 +27,6 @@ export default Vue.extend({
   },
 
   computed: {
-    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
-      return this.$accessor.exchange.feeDiscountAccountInfo
-    },
-
-    tierLevel(): number {
-      const { feeDiscountAccountInfo } = this
-
-      if (!feeDiscountAccountInfo) {
-        return 0
-      }
-
-      return new BigNumberInBase(
-        feeDiscountAccountInfo.tierLevel || 0
-      ).toNumber()
-    },
-
     classes(): string[] {
       const { dense } = this
 
@@ -70,10 +51,10 @@ export default Vue.extend({
       return attrs.to.params.spot
     },
 
-    perpetualMarket(): string {
+    futuresMarket(): string {
       const { $attrs } = this
 
-      type Attrs = { to: { params: { perpetual: string } } }
+      type Attrs = { to: { params: { futures: string } } }
 
       const attrs = $attrs as unknown as Attrs
 
@@ -81,13 +62,25 @@ export default Vue.extend({
         return ''
       }
 
-      return attrs.to.params.perpetual
+      return attrs.to.params.futures
+    },
+
+    market(): DefaultMarket {
+      const { spotMarket } = this
+
+      return spotMarket ? DefaultMarket.Spot : DefaultMarket.Perpetual
+    },
+
+    marketType(): MarketType {
+      const { spotMarket } = this
+
+      return spotMarket ? MarketType.Spot : MarketType.Perpetual
     }
   },
 
   methods: {
     handleClickEvent() {
-      if (this.spotMarket || this.perpetualMarket) {
+      if (this.spotMarket || this.futuresMarket) {
         this.handleTradeClickedTrack()
       }
 
@@ -95,13 +88,9 @@ export default Vue.extend({
     },
 
     handleTradeClickedTrack() {
-      const identifyObj = new Identify()
-      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
-      identify(identifyObj)
-
-      this.$amplitude.track(AmplitudeEvents.TradeClicked, {
-        market: this.spotMarket ? this.spotMarket : this.perpetualMarket,
-        marketType: this.spotMarket ? MarketType.Spot : MarketType.Perpetual,
+      amplitudeTracker.submitTradeClickedTrackEvent({
+        market: this.market,
+        marketType: this.marketType,
         origin: TradeClickOrigin.TopMenu
       })
     }

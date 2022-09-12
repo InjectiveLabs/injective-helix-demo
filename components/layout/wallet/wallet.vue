@@ -129,7 +129,7 @@
             <IconWalletConnect class="mx-auto" />
           </ConnectedWallet>
           <ConnectedWallet v-if="wallet === Wallet.Keplr" lg>
-            <IconKeplr class="mx-auto" />
+            <IconKeplr class="mx-auto w-8 h-8" />
           </ConnectedWallet>
           <ConnectedWallet v-if="wallet === Wallet.Ledger" lg>
             <IconLedger class="mx-auto" />
