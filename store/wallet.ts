@@ -13,6 +13,7 @@ import {
   derivativeMarketRouteNames,
   spotMarketRouteNames
 } from '~/app/data/market'
+import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
 
 const initialStateFactory = () => ({
   walletConnectStatus: WalletConnectStatus.idle as WalletConnectStatus,
@@ -125,7 +126,9 @@ export const actions = actionTree(
       }
     },
 
-    async onConnect(_) {
+    async onConnect({ state }) {
+      const { wallet } = state
+
       await this.app.$accessor.account.fetchSubaccounts()
       await this.app.$accessor.bank.fetchBalances()
       await this.app.$accessor.exchange.initFeeDiscounts()
@@ -145,6 +148,8 @@ export const actions = actionTree(
       ) {
         await this.app.$accessor.account.streamSubaccountBalances()
       }
+
+      amplitudeTracker.submitWalletSelectedTrackEvent(wallet)
     },
 
     async isMetamaskInstalled({ commit }) {
@@ -320,7 +325,9 @@ export const actions = actionTree(
         const { hasEnoughInjForGas } = this.app.$accessor.bank
 
         if (!hasEnoughInjForGas) {
-          this.app.$accessor.modal.openModal({ type: Modal.InsufficientInjForGas })
+          this.app.$accessor.modal.openModal({
+            type: Modal.InsufficientInjForGas
+          })
 
           throw new Error('Insufficient INJ to pay for gas/transaction fees.')
         }

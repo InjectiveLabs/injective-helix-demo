@@ -1,7 +1,6 @@
 import VueI18n, { Path, Values, Locale } from 'vue-i18n/types'
 import VueRouter from 'vue-router'
 import { Toasted } from 'vue-toasted'
-import { TrackAmplitudeFn } from '~/plugins/amplitude'
 import { accessorType } from '~/store'
 
 /**
@@ -24,9 +23,6 @@ declare module 'vue/types/vue' {
     $onConfirm: (e: string, cb: Function) => void
     $router: VueRouter
     $accessor: typeof accessorType
-    $amplitude: {
-      track: TrackAmplitudeFn
-    }
     $attrs: Record<string, any>
   }
 
@@ -40,9 +36,6 @@ declare module '@nuxt/types' {
   interface NuxtAppOptions {
     $accessor: typeof accessorType
     $toast: Toasted
-    $amplitude: {
-      track: TrackAmplitudeFn
-    }
     $attrs: Record<string, any>
   }
 }

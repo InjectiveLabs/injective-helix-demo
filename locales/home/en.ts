@@ -29,10 +29,10 @@ export default {
     seamlesslyTransferAssets:
       'Seamlessly transfer assets from Ethereum and Cosmos networks to trade popular markets as well as unique markets not available elsewhere.',
     getStarted: 'Get Started in 3 Simple Steps',
-    howToBridge: 'How To Bridge Assets to Begin Trading',
+    howToBridge: 'Transfer assets to begin',
     injective: 'INJECTIVE',
-    howToPurchaseTokens: 'How To Purchase Tokens on Spot Market',
-    howToPlaceStopOrders: 'How To Place Stop-Market Orders',
+    howToPurchaseTokens: 'Trade spot markets',
+    howToPlaceStopOrders: 'Trade perpetuals with advanced orders',
     startTradingNow: 'Start trading now',
     newToCryptoFeatures: {
       featureOne: 'Fast and Simple',

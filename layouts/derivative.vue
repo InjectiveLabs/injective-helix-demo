@@ -13,25 +13,33 @@
 
     <div slot="modals">
       <ModalAddMargin />
+      <ModalMarketExpired v-if="marketIsExpired" :market="market" />
     </div>
   </MarketLayout>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import {
+  MarketType,
+  UiDerivativeMarketWithToken,
+  UiExpiryFuturesMarketWithToken
+} from '@injectivelabs/sdk-ui-ts'
 import MarketLayout from '~/layouts/market.vue'
 import ModalAddMargin from '~/components/partials/modals/add-margin/index.vue'
+import ModalMarketExpired from '~/components/partials/modals/market-expired.vue'
 import Balances from '~/components/partials/common/balances/index.vue'
 import Trading from '~/components/partials/derivatives/trading/index.vue'
 import MarketChart from '~/components/partials/common/market/chart.vue'
 import Orders from '~/components/partials/derivatives/orders.vue'
 import Orderbook from '~/components/partials/derivatives/orderbook.vue'
 import { ORDERBOOK_POLLING_ENABLED } from '~/app/utils/constants'
+import { Modal } from '~/types'
 
 export default Vue.extend({
   components: {
     MarketLayout,
+    ModalMarketExpired,
     ModalAddMargin,
     Trading,
     Balances,
@@ -42,13 +50,36 @@ export default Vue.extend({
 
   data() {
     return {
-      interval: 0 as any
+      interval: 0 as any,
+      now: Date.now() / 1000
     }
   },
 
   computed: {
     market(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
+    },
+
+    marketIsExpired(): boolean {
+      const { market, now } = this
+
+      if (!market) {
+        return false
+      }
+
+      if (market.subType !== MarketType.Futures) {
+        return false
+      }
+
+      const expiryFuturesMarket = market as UiExpiryFuturesMarketWithToken
+
+      if (!expiryFuturesMarket.expiryFuturesMarketInfo) {
+        return false
+      }
+
+      return (
+        expiryFuturesMarket.expiryFuturesMarketInfo.expirationTimestamp <= now
+      )
     }
   },
 
@@ -64,6 +95,11 @@ export default Vue.extend({
       ])
         .then(() => {})
         .catch(this.$onRejected)
+        .finally(() => {
+          if (this.marketIsExpired) {
+            this.$accessor.modal.openModal({ type: Modal.MarketExpired })
+          }
+        })
     },
 
     setOrderbookPolling() {

@@ -28,9 +28,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Wallet } from '@injectivelabs/wallet-ts'
 import WalletWrapper from './wallet-wrapper.vue'
-import { WalletConnectStatus, AmplitudeEvents } from '~/types'
+import { WalletConnectStatus } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -45,10 +44,6 @@ export default Vue.extend({
 
   methods: {
     handleClick() {
-      this.$amplitude.track(AmplitudeEvents.WalletSelected, {
-        wallet: Wallet.Metamask
-      })
-
       this.$accessor.wallet
         .connectMetamask()
         .then(() => {
