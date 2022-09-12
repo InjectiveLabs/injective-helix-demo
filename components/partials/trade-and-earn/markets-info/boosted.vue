@@ -79,7 +79,7 @@ import {
 } from '@injectivelabs/sdk-ts'
 import VItem from '~/components/partials/common/stats/item.vue'
 import {
-  derivatives as sortPerpetualMarkets,
+  perpetuals as sortPerpetualMarkets,
   spot as sortSpotMarkets
 } from '~/routes.config'
 import { TradingRewardsCampaign } from '~/app/client/types/exchange'

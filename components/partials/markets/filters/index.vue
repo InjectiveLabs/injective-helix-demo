@@ -42,7 +42,8 @@
           data-cy="markets-perpetual-selector"
           @click="handleTypeClick"
         >
-          {{ $t('trade.perpetual') }}
+          <!-- {{ $t('trade.perpetual') }} -->
+          {{ $t('trade.futures') }}
         </MarketTypeSelector>
       </div>
 

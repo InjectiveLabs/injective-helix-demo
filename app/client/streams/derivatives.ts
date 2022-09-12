@@ -177,7 +177,7 @@ export const streamMarketMarkPrice = ({
 }) => {
   const streamFn = oracleStream.streamOraclePrices.bind(oracleStream)
   const streamFnArgs =
-    market.subType === MarketType.BinaryOptions
+    market.subType !== MarketType.BinaryOptions
       ? {
           baseSymbol: (market as UiPerpetualMarketWithToken).oracleBase,
           quoteSymbol: (market as UiPerpetualMarketWithToken).oracleQuote,

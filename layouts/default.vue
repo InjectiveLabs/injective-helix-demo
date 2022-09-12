@@ -39,7 +39,10 @@ import SidebarMobile from '~/components/layout/sidebar-mobile.vue'
 import ModalAuctionCountdown from '~/components/partials/modals/auction-countdown.vue'
 import ModalInsufficientInjForGas from '~/components/partials/modals/insufficient-inj-for-gas.vue'
 import { SHOW_AUCTION_COUNTDOWN } from '~/app/utils/constants'
-import { AmplitudeEvents } from '~/types/enums'
+import {
+  amplitudeTracker,
+  CosmoverseGiveawayCampaignArgs
+} from '~/app/providers/AmplitudeTracker'
 
 export default Vue.extend({
   components: {
@@ -116,15 +119,17 @@ export default Vue.extend({
 
   methods: {
     handleCosmoverseGiveawayCampaignTrack() {
-      if (!this.$route.query.utm_source) {
+      const {
+        $route: { query }
+      } = this
+
+      if (!query || !query.utm_source) {
         return
       }
 
-      this.$amplitude.track(AmplitudeEvents.CosmoverseGiveawayCampaign, {
-        utm_source: this.$route.query.utm_source,
-        utm_medium: this.$route.query.utm_medium,
-        utm_campaign: this.$route.query.utm_campaign
-      })
+      amplitudeTracker.submitCosmoverseGiveawayCampaignTrackEvent(
+        query as unknown as CosmoverseGiveawayCampaignArgs
+      )
     },
 
     onLoadMarketsInit() {

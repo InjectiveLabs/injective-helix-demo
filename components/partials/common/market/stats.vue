@@ -55,7 +55,7 @@
       <MarketInfo
         v-if="
           market.type === MarketType.Derivative &&
-          market.subType !== MarketType.BinaryOptions
+          market.subType === MarketType.Perpetual
         "
         :title="$t('trade.est_funding_rate')"
         :tooltip="$t('trade.funding_rate_tooltip')"
@@ -79,12 +79,24 @@
       <MarketNextFunding v-if="market.subType === MarketType.Perpetual" />
       <MarketSettlement v-if="market.subType === MarketType.BinaryOptions" />
       <MarketInfo
-        v-if="market.subType === MarketType.Futures && expiryAt"
-        :title="$t('trade.expiry_date')"
+        v-if="market.subType === MarketType.Futures && timeToExpiry"
+        :title="$t('trade.time_to_expiry')"
       >
-        <span class="lg:text-right font-mono block">
+        <span v-if="!isExpired" class="lg:text-right font-mono block">
+          {{ timeToExpiry }}
+        </span>
+        <span v-else class="lg:text-right font-mono block">&mdash;</span>
+      </MarketInfo>
+      <MarketInfo
+        v-if="market.subType === MarketType.Futures && expiryAt"
+        :title="
+          $t('trade.expiry_time_with_timezone', { timezone: userTimezone })
+        "
+      >
+        <span v-if="!isExpired" class="lg:text-right font-mono block">
           {{ expiryAt }}
         </span>
+        <span v-else class="lg:text-right font-mono block">&mdash;</span>
       </MarketInfo>
     </div>
   </div>
@@ -93,7 +105,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { fromUnixTime, formatDistanceToNow } from 'date-fns'
+import { fromUnixTime, formatDistance, format } from 'date-fns'
 import {
   UiSpotMarketSummary,
   UiDerivativeMarketSummary,
@@ -132,6 +144,7 @@ export default Vue.extend({
 
   data() {
     return {
+      now: Date.now() / 1000,
       BIG_NUMBER_ROUND_DOWN_MODE,
       Change,
       MarketType,
@@ -347,12 +360,112 @@ export default Vue.extend({
         return ''
       }
 
-      return formatDistanceToNow(
+      return format(
         fromUnixTime(expiryFuturesMarketInfo.expirationTimestamp),
-        {
-          addSuffix: true
-        }
+        'dd LLL yyyy, HH:mm:ss'
       )
+    },
+
+    isExpired(): boolean {
+      const { market, now } = this
+
+      if (!market) {
+        return true
+      }
+
+      if (market.type === MarketType.Spot) {
+        return true
+      }
+
+      if (market.subType === MarketType.BinaryOptions) {
+        return true
+      }
+
+      if (market.subType === MarketType.Perpetual) {
+        return true
+      }
+
+      const derivativeMarket = market as UiExpiryFuturesMarketWithToken
+      const expiryFuturesMarketInfo = derivativeMarket.expiryFuturesMarketInfo
+
+      if (!expiryFuturesMarketInfo) {
+        return true
+      }
+
+      if (!expiryFuturesMarketInfo.expirationTimestamp) {
+        return true
+      }
+
+      return expiryFuturesMarketInfo.expirationTimestamp <= now
+    },
+
+    userTimezone(): string {
+      return format(new Date(), 'OOOO')
+    },
+
+    timeToExpiry(): string {
+      const { market, now } = this
+
+      if (!market) {
+        return ''
+      }
+
+      if (market.type === MarketType.Spot) {
+        return ''
+      }
+
+      if (market.subType === MarketType.BinaryOptions) {
+        return ''
+      }
+
+      if (market.subType === MarketType.Perpetual) {
+        return ''
+      }
+
+      const derivativeMarket = market as UiExpiryFuturesMarketWithToken
+      const expiryFuturesMarketInfo = derivativeMarket.expiryFuturesMarketInfo
+
+      if (!expiryFuturesMarketInfo) {
+        return ''
+      }
+
+      if (!expiryFuturesMarketInfo.expirationTimestamp) {
+        return ''
+      }
+
+      const nowInMilliseconds = new BigNumberInBase(now).times(1000).toNumber()
+      const expirationTimestampInMilliseconds = new BigNumberInBase(
+        expiryFuturesMarketInfo.expirationTimestamp
+      )
+        .times(1000)
+        .toNumber()
+
+      return formatDistance(
+        nowInMilliseconds,
+        expirationTimestampInMilliseconds
+      )
+    }
+  },
+
+  watch: {
+    isExpired(hasExpired) {
+      const { market } = this
+
+      if (market.subType === MarketType.Futures && hasExpired) {
+        window.location.reload()
+      }
+    }
+  },
+
+  mounted() {
+    this.setIntervalForNow()
+  },
+
+  methods: {
+    setIntervalForNow() {
+      setInterval(() => {
+        this.now = Date.now() / 1000
+      }, 5000)
     }
   }
 })

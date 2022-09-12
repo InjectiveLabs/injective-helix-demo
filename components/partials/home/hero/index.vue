@@ -8,9 +8,11 @@
         <div class="col-span-6 3xl:col-span-6 hidden lg:block lg:mt-6">
           <Markets is-hero class="max-w-lg ml-auto 3xl:mr-10" />
         </div>
-        <div class="col-span-3 hidden md:flex gap-2 w-max">
-          <span class="text-helixGray-900">{{ $t('home.builtOn') }}</span>
-          <InjectiveLogo />
+        <div class="col-span-3 flex gap-2 w-max items-center mt-6 md:mt-0">
+          <span class="text-helixGray-900 text-sm md:text-base">
+            {{ $t('home.builtOn') }}
+          </span>
+          <InjectiveLogo class="w-20 md:w-28" />
         </div>
       </div>
     </div>

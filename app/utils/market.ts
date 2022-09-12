@@ -4,8 +4,14 @@ import {
   UiSpotMarketWithToken,
   MarketType
 } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { MarketCategoryType, MarketQuoteType, MarketRoute } from '~/types'
+import { BigNumberInBase, SECONDS_IN_A_DAY } from '@injectivelabs/utils'
+import { ExpiryFuturesMarket } from '@injectivelabs/sdk-ts'
+import {
+  DefaultMarket,
+  MarketCategoryType,
+  MarketQuoteType,
+  MarketRoute
+} from '~/types'
 import {
   experimentalMarketsSlug,
   slugsToIncludeInCosmosCategory,
@@ -49,17 +55,17 @@ export const getMarketRoute = (
       }
     }
 
-    if (market.subType === MarketType.Perpetual) {
+    if ([MarketType.Perpetual, MarketType.Futures].includes(market.subType)) {
       return {
-        name: 'perpetuals-perpetual',
+        name: 'futures-futures',
         params: {
           marketId: market.marketId,
-          perpetual: market.slug
+          futures: market.slug
         }
       }
     }
 
-    /* TODO - Expiry Futures */
+    /* Default derivative market route */
     return {
       name: 'derivatives-derivative',
       params: {
@@ -84,6 +90,46 @@ export const getMarketRoute = (
     params: {
       marketId: market.marketId,
       market: market.slug
+    }
+  }
+}
+
+export const getDefaultPerpetualMarketRoute = () => {
+  return {
+    to: {
+      name: 'futures-futures',
+      params: {
+        futures: DefaultMarket.Perpetual
+      }
+    }
+  }
+}
+
+export const getDefaultSpotMarketRoute = () => {
+  return {
+    to: {
+      name: 'spot-spot',
+      params: {
+        spot: DefaultMarket.Spot
+      }
+    }
+  }
+}
+
+export const getDefaultPerpetualMarketRouteParams = () => {
+  return {
+    name: 'futures-futures',
+    params: {
+      futures: DefaultMarket.Perpetual
+    }
+  }
+}
+
+export const getDefaultSpotMarketRouteParams = () => {
+  return {
+    name: 'spot-spot',
+    params: {
+      spot: DefaultMarket.Spot
     }
   }
 }
@@ -218,4 +264,31 @@ export const getFormattedMarketsHistoryChartData = (
 
     return [xAxisTime, yAxisHolcAveragePrice]
   })
+}
+
+export const marketIsRecentlyExpired = (market: ExpiryFuturesMarket) => {
+  const now = Date.now() / 1000
+  const secondsInADay = SECONDS_IN_A_DAY.toNumber()
+
+  if (!market) {
+    return false
+  }
+
+  if (!market.expiryFuturesMarketInfo) {
+    return false
+  }
+
+  if (!market.expiryFuturesMarketInfo.expirationTimestamp) {
+    return false
+  }
+
+  const isExpired = market.expiryFuturesMarketInfo.expirationTimestamp <= now
+
+  if (!isExpired) {
+    return false
+  }
+
+  return (
+    market.expiryFuturesMarketInfo.expirationTimestamp + secondsInADay > now
+  )
 }

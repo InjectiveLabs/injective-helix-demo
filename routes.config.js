@@ -35,7 +35,7 @@ const mainnetPerpetuals = [
   'atom-usdt-perp'
 ]
 const testnetPerpetuals = [...mainnetPerpetuals]
-const mainnetStagingPerpetuals = [...mainnetPerpetuals]
+const mainnetStagingPerpetuals = [...mainnetPerpetuals, 'eth-usdt-19sept22']
 const perpetuals = IS_TESTNET
   ? testnetPerpetuals
   : IS_MAINNET_STAGING
@@ -43,18 +43,16 @@ const perpetuals = IS_TESTNET
   : mainnetPerpetuals
 
 const binaryOptions = ['']
-const expiryFutures = ['btc-usdt-expiry']
+const expiryFutures = ['']
 
 if (IS_DEVNET || IS_MAINNET_STAGING) {
-  // perpetuals.push()
-  // spot.push('dot-usdt')
-  // binaryOptions.push('hhabib-tko-05-30-2023')
-  // binaryOptions.push('tik-ok')
+  //
 }
 
+const futures = [...perpetuals, ...expiryFutures]
+
 const spotRoutes = spot.map((s) => `/spot/${s}`) || []
-const perpetualsRoutes = perpetuals.map((s) => `/perpetuals/${s}`) || []
-const derivativesRoutes = perpetuals.map((s) => `/derivatives/${s}`) || [] // Legacy support
+const futuresRoutes = futures.map((s) => `/futures/${s}`) || []
 const binaryOptionsRoutes =
   binaryOptions.map((s) => `/binary-options/${s}`) || []
 
@@ -76,14 +74,13 @@ module.exports = [
   ...upcomingMarketsRoutes,
   ...deprecatedMarketsRoutes,
   ...spotRoutes,
-  ...perpetualsRoutes,
-  ...derivativesRoutes,
+  ...futuresRoutes,
   ...binaryOptionsRoutes
 ]
 
 module.exports.spot = spot
 module.exports.binaryOptions = binaryOptions
-module.exports.derivatives = perpetuals /* Legacy support */
-module.exports.perpetuals = perpetuals
 module.exports.expiryFutures = expiryFutures
+module.exports.perpetuals = perpetuals
+module.exports.futures = futures
 module.exports.upcomingMarketsRoutes = upcomingMarketsRoutes
