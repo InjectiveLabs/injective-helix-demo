@@ -50,13 +50,13 @@
         <span
           v-if="!change.isNaN()"
           :class="change.gte(0) ? 'text-green-500' : 'text-red-500'"
-          class="w-full text-right font-mono"
+          class="w-full text-right font-mono text-sm"
         >
           {{ changeToFormat }}%
         </span>
         <span v-else class="text-gray-400">&mdash;</span>
       </div>
-      <div class="col-span-3 flex h-7 w-[70%] justify-self-center">
+      <div class="col-span-3 flex h-7 w-[70%] justify-self-center relative">
         <HocLoading :status="status">
           <LineGraph
             v-if="chartData.length > 1"
