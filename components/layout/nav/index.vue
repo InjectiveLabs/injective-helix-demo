@@ -154,15 +154,15 @@ import NavItem from './item.vue'
 import NavItemDummy from './item-dummy.vue'
 import MobileNav from './mobile.vue'
 import PopperBox from '~/components/elements/popper-box.vue'
-import { DefaultMarket, DefaultMarketRoute, TradeClickOrigin } from '~/types'
+import { DefaultMarket, MarketRoute, TradeClickOrigin } from '~/types'
 import {
   derivativeMarketRouteNames,
   spotMarketRouteNames
 } from '~/app/data/market'
 import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
 import {
-  getDefaultPerpetualMarketRoute,
-  getDefaultSpotMarketRoute
+  getDefaultPerpetualMarketRouteParams,
+  getDefaultSpotMarketRouteParams
 } from '~/app/utils/market'
 
 export default Vue.extend({
@@ -192,12 +192,12 @@ export default Vue.extend({
       )
     },
 
-    defaultPerpetualMarketRoute(): DefaultMarketRoute {
-      return getDefaultPerpetualMarketRoute()
+    defaultPerpetualMarketRoute(): MarketRoute {
+      return getDefaultPerpetualMarketRouteParams()
     },
 
-    defaultSpotMarketRoute(): DefaultMarketRoute {
-      return getDefaultSpotMarketRoute()
+    defaultSpotMarketRoute(): MarketRoute {
+      return getDefaultSpotMarketRouteParams()
     },
 
     $rewardsPopper(): any {
