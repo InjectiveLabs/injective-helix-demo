@@ -99,6 +99,7 @@ export const getDefaultPerpetualMarketRoute = () => {
     to: {
       name: 'futures-futures',
       params: {
+        marketId: '',
         futures: DefaultMarket.Perpetual
       }
     }
@@ -110,6 +111,7 @@ export const getDefaultSpotMarketRoute = () => {
     to: {
       name: 'spot-spot',
       params: {
+        marketId: '',
         spot: DefaultMarket.Spot
       }
     }
@@ -120,6 +122,7 @@ export const getDefaultPerpetualMarketRouteParams = () => {
   return {
     name: 'futures-futures',
     params: {
+      marketId: '',
       futures: DefaultMarket.Perpetual
     }
   }
@@ -129,6 +132,7 @@ export const getDefaultSpotMarketRouteParams = () => {
   return {
     name: 'spot-spot',
     params: {
+      marketId: '',
       spot: DefaultMarket.Spot
     }
   }
