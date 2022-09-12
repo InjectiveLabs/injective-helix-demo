@@ -35,7 +35,7 @@ const mainnetPerpetuals = [
   'atom-usdt-perp'
 ]
 const testnetPerpetuals = [...mainnetPerpetuals]
-const mainnetStagingPerpetuals = [...mainnetPerpetuals]
+const mainnetStagingPerpetuals = [...mainnetPerpetuals, 'eth-usdt-19sept22']
 const perpetuals = IS_TESTNET
   ? testnetPerpetuals
   : IS_MAINNET_STAGING
@@ -46,14 +46,9 @@ const binaryOptions = ['']
 const expiryFutures = ['']
 
 if (IS_DEVNET || IS_MAINNET_STAGING) {
-  expiryFutures.push(
-    'bojan-expiry',
-    'eth-usdt-08sep22-06',
-    'eth-usdt-08sep22-10',
-    'eth-usdt-08sep22-11',
-    'eth-usdt-08sep22-12'
-  )
+  //
 }
+
 const futures = [...perpetuals, ...expiryFutures]
 
 const spotRoutes = spot.map((s) => `/spot/${s}`) || []
