@@ -4,7 +4,7 @@ const {
   IS_DEVNET
 } = require('./app/utils/constants')
 
-const mainnetSpot = [
+const spot = [
   'inj-usdt',
   'dot-usdt',
   'atom-usdt',
@@ -16,15 +16,8 @@ const mainnetSpot = [
   'link-usdt',
   'gf-usdt'
 ]
-const testnetSpot = [...mainnetSpot]
-const mainnetStagingSpot = [...mainnetSpot, 'strd-usdt']
-const spot = IS_TESTNET
-  ? testnetSpot
-  : IS_MAINNET_STAGING
-  ? mainnetStagingSpot
-  : mainnetSpot
 
-const mainnetPerpetuals = [
+const perpetuals = [
   'btc-usdt-perp',
   'inj-usdt-perp',
   'eth-usdt-perp',
@@ -34,19 +27,27 @@ const mainnetPerpetuals = [
   'stx-usdt-perp',
   'atom-usdt-perp'
 ]
-const testnetPerpetuals = [...mainnetPerpetuals]
-const mainnetStagingPerpetuals = [...mainnetPerpetuals, 'eth-usdt-19sept22']
-const perpetuals = IS_TESTNET
-  ? testnetPerpetuals
-  : IS_MAINNET_STAGING
-  ? mainnetStagingPerpetuals
-  : mainnetPerpetuals
 
-const binaryOptions = ['']
-const expiryFutures = ['']
+/** @type string[] */
+const binaryOptions = []
+/** @type string[] */
+const expiryFutures = []
 
-if (IS_DEVNET || IS_MAINNET_STAGING) {
+if (IS_DEVNET) {
   //
+}
+
+if (IS_TESTNET) {
+  //
+}
+
+if (IS_MAINNET_STAGING) {
+  //
+}
+
+if (IS_MAINNET_STAGING || IS_DEVNET) {
+  spot.push('strd-usdt')
+  expiryFutures.push('eth-usdt-19sep22')
 }
 
 const futures = [...perpetuals, ...expiryFutures]
