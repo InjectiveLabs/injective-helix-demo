@@ -7,7 +7,7 @@
       >
         {{ $t('trade.execution_price_far_away_from_last_traded_price') }}
       </p>
-      <p class="text-2xs text-red-400 mb-4">
+      <p v-if="!hasInjForGasOrNotKeplr" class="text-2xs text-red-400 mb-4">
         {{ $t('insufficientGas.tradingFormNote') }}
         <a
           :href="faucetUrl"
