@@ -16,6 +16,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { UiSpotMarketWithToken, UiSpotTrade } from '@injectivelabs/sdk-ui-ts'
+import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import Trade from './trade.vue'
 import TableHead from '~/components/partials/common/trades/table-head.vue'
 
@@ -32,6 +33,12 @@ export default Vue.extend({
 
     trades(): UiSpotTrade[] {
       return this.$accessor.spot.trades
+    },
+
+    filteredTrades(): UiSpotTrade[] {
+      return this.$accessor.spot.trades.filter(
+        (trade) => trade.executionSide === TradeExecutionSide.Taker
+      )
     }
   }
 })
