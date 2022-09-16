@@ -74,6 +74,7 @@ export default {
       'Get a small amount of free INJ from a {faucetLink} or top up your Injective Wallet on {hubLink} to ensure sufficient fee coverage for future transactions.',
     communityDrivenFaucet: 'community driven faucet',
     getFreeInj: 'Get Free INJ',
-    injectiveHub: 'Injective Hub'
+    injectiveHub: 'Injective Hub',
+    tradingFormNote: 'Insufficient INJ to pay for gas/transaction fees.'
   }
 }
