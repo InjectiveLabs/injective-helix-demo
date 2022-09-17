@@ -133,7 +133,7 @@
 import Vue, { PropType } from 'vue'
 import { TradeError } from 'types/errors'
 import { BigNumberInWei, Status, BigNumberInBase } from '@injectivelabs/utils'
-import { TradeExecutionType, Wallet } from '@injectivelabs/ts-types'
+import { TradeExecutionType } from '@injectivelabs/ts-types'
 import {
   NUMBER_REGEX,
   ZERO_IN_BASE,
@@ -150,6 +150,7 @@ import {
   getDecimalsFromNumber
 } from '@injectivelabs/sdk-ts'
 import { Token } from '@injectivelabs/token-metadata'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import TokenSelector from './token-selector.vue'
 import AdvancedSettings from './advanced-settings.vue'
 import ConvertDetails from './convert-details.vue'

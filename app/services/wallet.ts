@@ -1,4 +1,4 @@
-import { Wallet } from '@injectivelabs/ts-types'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import { Web3Exception } from '@injectivelabs/exceptions'
 import { walletStrategy } from '~/app/wallet-strategy'
 import { blacklistedAddresses } from '~/app/data/wallet-address'

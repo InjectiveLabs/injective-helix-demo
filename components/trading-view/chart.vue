@@ -55,8 +55,7 @@ export default Vue.extend({
       datafeedEndpoint: this.datafeedEndpoint
     })
 
-    // @ts-ignore
-    this.tradingView = new TradingWidget(widgetOptions)
+    this.tradingView = new TradingWidget(widgetOptions as any)
     this.tradingView.onChartReady(() => {
       this.$emit('ready')
     })

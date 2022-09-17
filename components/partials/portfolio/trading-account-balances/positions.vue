@@ -104,7 +104,7 @@ import {
   UiPosition,
   UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
-import { Wallet } from '@injectivelabs/ts-types'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import MobilePosition from '~/components/partials/common/position/mobile-position.vue'
 import Position from '~/components/partials/common/position/position.vue'
 import PositionTableHeader from '~/components/partials/common/position/position-table.header.vue'

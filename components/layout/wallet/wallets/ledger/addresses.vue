@@ -45,8 +45,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status } from '@injectivelabs/utils'
-import { LedgerDerivationPathType } from '@injectivelabs/wallet-ts'
-import { Wallet } from '@injectivelabs/ts-types'
+import { LedgerDerivationPathType, Wallet } from '@injectivelabs/wallet-ts'
 import VSelectCustom from '~/components/inputs/select-custom.vue'
 
 export default Vue.extend({
