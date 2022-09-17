@@ -3,11 +3,7 @@ import {
   UiDerivativeMarketWithToken,
   UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
-import {
-  BAYC_WETH_PERP_SLUG,
-  IS_DEVNET,
-  IS_TESTNET
-} from '~/app/utils/constants'
+import { IS_DEVNET, IS_TESTNET } from '~/app/utils/constants'
 
 export interface UnTradableMarket {
   slug: string
@@ -38,6 +34,7 @@ export const marketBaseFromTicker = (
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'eth-usdt-19sep22',
   'usdc-usdt',
   'osmo-usdt-perp',
   'dot-usdt',
@@ -46,9 +43,10 @@ export const newMarketsSlug = [
 ]
 
 export const experimentalMarketsSlug = [
-  BAYC_WETH_PERP_SLUG,
   'ape-usdt',
-  'gf-usdt'
+  'gf-usdt',
+  'bayc-weth-perp',
+  'eth-usdt-19sep22'
 ]
 
 export const slugsToIncludeInCosmosCategory = [

@@ -139,11 +139,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import {
-  TradeDirection,
-  TradeExecutionType,
-  Wallet
-} from '@injectivelabs/ts-types'
+import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 import {
   DerivativeOrderSide,
   MarketType,
@@ -162,6 +158,7 @@ import {
   DerivativeOrderState,
   FeeDiscountAccountInfo
 } from '@injectivelabs/sdk-ts'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import OrderTypeSelect from '~/components/partials/common/trade/order-type-select.vue'
 import OrderSubmit from '~/components/partials/common/trade/order-submit.vue'
 import OrderInputs from '~/components/partials/common/trade/order-inputs.vue'

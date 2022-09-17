@@ -31,7 +31,7 @@ const perpetuals = [
 /** @type string[] */
 const binaryOptions = []
 /** @type string[] */
-const expiryFutures = []
+const expiryFutures = ['eth-usdt-19sep22']
 
 if (IS_DEVNET) {
   //
@@ -47,7 +47,6 @@ if (IS_MAINNET_STAGING) {
 
 if (IS_MAINNET_STAGING || IS_DEVNET) {
   spot.push('strd-usdt')
-  expiryFutures.push('eth-usdt-19sep22')
 }
 
 const futures = [...perpetuals, ...expiryFutures]
