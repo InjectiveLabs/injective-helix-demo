@@ -30,7 +30,7 @@
               v-if="!lastTradedPrice.isNaN() && !useDefaultLastTradedPriceColor"
               class="transform w-3 h-3 mr-1 mt-1"
               :class="{
-                'text-green-500 rotate-90': lastPriceChange === Change.Increase,
+                'text-green-700 rotate-90': lastPriceChange === Change.Increase,
                 'text-red-500 -rotate-90': lastPriceChange === Change.Decrease
               }"
             />
@@ -44,16 +44,16 @@
           </div>
         </span>
       </div>
-      <div class="col-span-2 flex font-mono">
+      <div class="col-span-2 flex font-mono text-sm">
         <span
           v-if="!change.isNaN()"
-          :class="change.gte(0) ? 'text-green-500' : 'text-red-500'"
+          :class="change.gte(0) ? 'text-green-700' : 'text-red-500'"
         >
           {{ `${change.gte(0) ? '+' : ''}${changeToFormat}%` }}
         </span>
         <span v-else class="text-gray-400">&mdash;</span>
       </div>
-      <div class="col-span-3 flex pr-4 h-7">
+      <div class="col-span-3 flex pr-4 h-7 relative">
         <LineGraph
           v-if="chartData.length > 1"
           :data="chartData"
@@ -71,7 +71,6 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-// @ts-ignore
 import { LineGraph } from 'vue-plot'
 import {
   UiDerivativeMarketSummary,
@@ -141,7 +140,7 @@ export default Vue.extend({
       }
 
       return {
-        'text-green-500': lastPriceChange !== Change.Decrease,
+        'text-green-700': lastPriceChange !== Change.Decrease,
         'text-red-500': lastPriceChange === Change.Decrease
       }
     },
@@ -180,7 +179,7 @@ export default Vue.extend({
         .toNumber()
       const [, firstYaxisHolcPrice] = firstChartDataPoint
       const [, lastYAxisHolcPrice] = chartData[lastChartDataPointPosition]
-      const positiveChangeColor = '#0EE29B'
+      const positiveChangeColor = '#12B17C'
       const negativeChangeColor = '#F3164D'
 
       return new BigNumberInBase(lastYAxisHolcPrice).gte(firstYaxisHolcPrice)

@@ -27,7 +27,7 @@
             <Metamask />
             <Keplr />
             <Torus />
-            <WalletConnect v-if="isStagingOrTestnetOrDevnet" />
+            <!-- <WalletConnect v-if="isStagingOrTestnetOrDevnet" /> -->
             <Ledger @wallet-ledger-connecting="handleLedgerConnectingWallet" />
             <Trezor @wallet-trezor-connecting="handleTrezorConnectingWallet" />
           </ul>
@@ -49,7 +49,7 @@ import Metamask from './wallets/metamask.vue'
 import Keplr from './wallets/keplr.vue'
 import Ledger from './wallets/ledger.vue'
 import Torus from './wallets/torus.vue'
-import WalletConnect from './wallets/wallet-connect.vue'
+// import WalletConnect from './wallets/wallet-connect.vue'
 import Trezor from './wallets/trezor.vue'
 import ModalLedger from './wallets/ledger/index.vue'
 import ModalTrezor from './wallets/trezor/index.vue'
@@ -72,7 +72,7 @@ export default Vue.extend({
     Ledger,
     Trezor,
     ModalLedger,
-    WalletConnect,
+    // WalletConnect,
     ModalTrezor
   },
 

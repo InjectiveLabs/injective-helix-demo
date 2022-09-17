@@ -1,5 +1,5 @@
 import { WalletStrategy } from '@injectivelabs/wallet-ts'
-import { EthereumChainId } from '@injectivelabs/ts-types'
+import { EthereumChainId, Wallet } from '@injectivelabs/ts-types'
 import {
   CHAIN_ID,
   ETHEREUM_CHAIN_ID,
@@ -46,6 +46,7 @@ export const walletStrategy = new WalletStrategy({
   ethereumChainId: ETHEREUM_CHAIN_ID,
   options: {
     wsRpcUrls,
-    rpcUrls
+    rpcUrls,
+    disabledWallets: [Wallet.WalletConnect]
   }
 })

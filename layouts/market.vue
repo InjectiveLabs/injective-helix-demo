@@ -181,8 +181,12 @@ export default Vue.extend({
   },
 
   methods: {
-    initMarket(): Promise<void> {
+    initMarket() {
       const { isSpotMarket, slug } = this
+
+      if (!slug) {
+        return
+      }
 
       return isSpotMarket
         ? this.$accessor.spot.initMarket(slug)
