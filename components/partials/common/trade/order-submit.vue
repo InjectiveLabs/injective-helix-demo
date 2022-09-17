@@ -32,7 +32,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { TradeExecutionType, Wallet } from '@injectivelabs/ts-types'
+import { TradeExecutionType } from '@injectivelabs/ts-types'
 import {
   SpotOrderSide,
   UiSpotMarketWithToken,
@@ -45,6 +45,7 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import OrderError from '~/components/partials/common/trade/order-error.vue'
 import VModalOrderConfirm from '~/components/partials/modals/order-confirm.vue'
 import { UI_DEFAULT_MAX_NUMBER_OF_ORDERS } from '~/app/utils/constants'
