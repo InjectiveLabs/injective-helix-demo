@@ -1,5 +1,5 @@
 import { actionTree, getterTree } from 'typed-vuex'
-import { Wallet } from '@injectivelabs/ts-types'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import {
   getAddressFromInjectiveAddress,
   getInjectiveAddress

@@ -5,7 +5,9 @@
     >
       {{ $t('home.getStarted') }}
     </div>
-    <div class="justify-between items-stretch gap-4 flex flex-col-reverse lg:flex-row">
+    <div
+      class="justify-between items-stretch gap-4 flex flex-col-reverse lg:flex-row"
+    >
       <div class="w-full youtube-player">
         <youtube
           ref="youtube"
@@ -106,20 +108,22 @@ export default Vue.extend({
       return videoLinksId[selectedVideoType]
     },
 
-    youtubePlayer() {
-      // @ts-ignore
-      if (!this.$refs.youtube || !this.$refs.youtube.player) {
+    youtubePlayer(): any {
+      const { $refs } = this
+      const youtube = $refs.youtube as any
+
+      if (!youtube || !youtube.player) {
         return
       }
 
-      // @ts-ignore
-      return this.$refs.youtube.player
+      return youtube.player
     }
   },
 
   methods: {
     switchVideo(type: VideoType) {
       this.selectedVideoType = type
+
       this.$nextTick(() => {
         setTimeout(() => {
           this.handlePlay()

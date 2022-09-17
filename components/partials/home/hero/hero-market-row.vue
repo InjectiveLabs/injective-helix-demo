@@ -71,7 +71,6 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-// @ts-ignore
 import { LineGraph } from 'vue-plot'
 import {
   UiDerivativeMarketSummary,

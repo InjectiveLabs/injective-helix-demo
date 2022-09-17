@@ -78,7 +78,6 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-// @ts-ignore
 import { LineGraph } from 'vue-plot'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
