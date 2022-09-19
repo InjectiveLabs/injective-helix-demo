@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { Wallet } from '@injectivelabs/ts-types'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import { Context } from '@nuxt/types'
 import {
   IS_DEVELOPMENT,

@@ -140,7 +140,7 @@ import {
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { Wallet } from '@injectivelabs/ts-types'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import { Token } from '@injectivelabs/token-metadata'
 import { BridgeType, Modal, TransferDirection } from '~/types'
 import TokenSelector from '~/components/partials/portfolio/bridge/token-selector/index.vue'
