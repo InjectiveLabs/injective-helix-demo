@@ -63,6 +63,7 @@ import Vue, { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { debounce } from 'lodash'
 import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import Orderbook from './orderbook/index.vue'
 import VTrades from './trades/index.vue'
 import AggregationSelector from '~/components/partials/common/orderbook/aggregation-selector.vue'
@@ -115,7 +116,7 @@ export default Vue.extend({
 
     Promise.all([
       this.$accessor.derivatives.fetchOrderbook(),
-      this.$accessor.derivatives.fetchTrades()
+      this.$accessor.derivatives.fetchTrades(TradeExecutionSide.Taker)
     ])
       .then(() => {
         //

@@ -55,6 +55,7 @@ import Vue, { PropType } from 'vue'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { debounce } from 'lodash'
+import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import Orderbook from './orderbook/index.vue'
 import Trades from './trades/index.vue'
 import AggregationSelector from '~/components/partials/common/orderbook/aggregation-selector.vue'
@@ -107,7 +108,7 @@ export default Vue.extend({
 
     Promise.all([
       this.$accessor.spot.fetchOrderbook(),
-      this.$accessor.spot.fetchTrades()
+      this.$accessor.spot.fetchTrades(TradeExecutionSide.Taker)
     ])
       .then(() => {
         //
