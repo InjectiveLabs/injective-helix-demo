@@ -1,5 +1,5 @@
-import { WalletStrategy } from '@injectivelabs/wallet-ts'
-import { EthereumChainId, Wallet } from '@injectivelabs/ts-types'
+import { WalletStrategy, Wallet } from '@injectivelabs/wallet-ts'
+import { EthereumChainId } from '@injectivelabs/ts-types'
 import {
   CHAIN_ID,
   ETHEREUM_CHAIN_ID,
