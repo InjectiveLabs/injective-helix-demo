@@ -4,7 +4,7 @@
     <div class="flex-1 w-full overflow-y-auto overflow-x-hidden rounded-b-lg">
       <ul class="list-trades w-full">
         <Trade
-          v-for="(trade, index) in filteredTrades"
+          v-for="(trade, index) in trades"
           :key="`trade-${index}`"
           :trade="trade"
         ></Trade>
@@ -19,7 +19,6 @@ import {
   UiDerivativeMarketWithToken,
   UiDerivativeTrade
 } from '@injectivelabs/sdk-ui-ts'
-import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import Trade from './trade.vue'
 import TableHead from '~/components/partials/common/trades/table-head.vue'
 
@@ -36,14 +35,6 @@ export default Vue.extend({
 
     trades(): UiDerivativeTrade[] {
       return this.$accessor.derivatives.trades
-    },
-
-    filteredTrades(): UiDerivativeTrade[] {
-      const { trades } = this
-
-      return trades.filter(
-        (trade) => trade.executionSide === TradeExecutionSide.Taker
-      )
     }
   }
 })
