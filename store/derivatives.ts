@@ -6,7 +6,11 @@ import {
   derivativePriceToChainPriceToFixed,
   derivativeQuantityToChainQuantityToFixed
 } from '@injectivelabs/utils'
-import { StreamOperation, TradeExecutionType } from '@injectivelabs/ts-types'
+import {
+  StreamOperation,
+  TradeExecutionSide,
+  TradeExecutionType
+} from '@injectivelabs/ts-types'
 import {
   Change,
   derivativeOrderTypeToGrpcOrderType,
@@ -863,7 +867,7 @@ export const actions = actionTree(
       )
     },
 
-    async fetchTrades({ state, commit }) {
+    async fetchTrades({ state, commit }, executionSide?: TradeExecutionSide) {
       const { market } = state
 
       if (!market) {
@@ -871,7 +875,8 @@ export const actions = actionTree(
       }
 
       const { trades } = await indexerDerivativesApi.fetchTrades({
-        marketId: market.marketId
+        marketId: market.marketId,
+        executionSide
       })
 
       commit('setTrades', trades)
