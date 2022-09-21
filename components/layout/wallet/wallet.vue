@@ -131,6 +131,12 @@
           <ConnectedWallet v-if="wallet === Wallet.Keplr" lg>
             <IconKeplr class="mx-auto w-8 h-8" />
           </ConnectedWallet>
+          <ConnectedWallet v-if="wallet === Wallet.Leap" lg>
+            <IconLeap class="mx-auto w-8 h-8" />
+          </ConnectedWallet>
+          <ConnectedWallet v-if="wallet === Wallet.Cosmostation" lg>
+            <IconCosmostation class="mx-auto w-8 h-8" />
+          </ConnectedWallet>
           <ConnectedWallet v-if="wallet === Wallet.Ledger" lg>
             <IconLedger class="mx-auto" />
           </ConnectedWallet>

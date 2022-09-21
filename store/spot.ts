@@ -31,6 +31,7 @@ import {
   zeroSpotMarketSummary,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
+import { GeneralException } from '@injectivelabs/exceptions'
 import {
   streamOrderbook,
   streamTrades,
@@ -411,7 +412,9 @@ export const actions = actionTree(
       )
 
       if (!market) {
-        throw new Error('Market not found. Please refresh the page.')
+        throw new GeneralException(
+          new Error('Market not found. Please refresh the page.')
+        )
       }
 
       const summary = await indexerRestSpotChronosApi.fetchMarketSummary(
