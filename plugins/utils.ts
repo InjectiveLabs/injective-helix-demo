@@ -1,118 +1,77 @@
 /* eslint-disable no-console */
-import { Wallet } from '@injectivelabs/wallet-ts'
-import { Context } from '@nuxt/types'
 import {
-  IS_DEVELOPMENT,
-  IS_PRODUCTION,
-  IS_TESTNET
-} from '~/app/utils/constants'
+  ChainCosmosErrorCode,
+  ErrorType,
+  isThrownException,
+  ThrownException
+} from '@injectivelabs/exceptions'
+import { isCosmosWallet } from '@injectivelabs/wallet-ts'
+import { Context } from '@nuxt/types'
+import { IS_PRODUCTION } from '~/app/utils/constants'
 import { Modal } from '~/types/enums'
 
-const isErrorExcludedFromToast = (error: any): boolean => {
-  const disabledPatterns = [
-    //
-  ] as RegExp[]
+const reportToBugSnag = (bugsnag: any, error: ThrownException) => {
+  if (!IS_PRODUCTION) {
+    console.warn(error.toCompactError().message)
 
-  const errorMessage =
-    typeof error === 'object' && error !== null ? error.message : error || ''
+    return console.error(error)
+  }
 
-  return disabledPatterns.some((pattern) => pattern.test(errorMessage))
+  if ([ErrorType.Unspecified, ErrorType.WalletError].includes(error.type)) {
+    console.warn(error.toCompactError().message)
+
+    return console.error(error)
+  }
+
+  return bugsnag.notify(error.toCompactError())
 }
 
-const isInsufficientGasError = (error: any): boolean => {
-  const errorMessage =
-    typeof error === 'object' && error !== null ? error.message : error || ''
-
-  return errorMessage.includes('insufficient funds')
-}
-
-const isErrorExcludedFromReporting = (error: any): boolean => {
-  const disabledMessages = [
-    'Your country is restricted from trading on this relayer',
-    'Your IP address is detected as a proxy or you are using a VPN provider.',
-    'Please make sure your Ledger device is connected, unlocked and your Ethereum app is open'
-  ]
-  const errorMessage =
-    typeof error === 'object' && error !== null ? error.message : error || ''
-
-  return (
-    errorMessage.startsWith('Metamask:') ||
-    errorMessage.includes('MetaMask') ||
-    errorMessage.includes('Metamask') ||
-    errorMessage.includes('metamask') ||
-    errorMessage.includes('metamask') ||
-    errorMessage.startsWith('cannot find epoch with id') ||
-    errorMessage.startsWith('Failed to fetch') ||
-    errorMessage.startsWith('Network Error') ||
-    disabledMessages.includes(errorMessage) ||
-    isErrorExcludedFromToast(error)
+const reportUnknownErrorToBugsnag = (bugsnag: any, error: Error) => {
+  const newError = new Error(
+    `The ${error.message} is not handled as an Exception - ${error.stack}`
   )
+
+  bugsnag.notify(newError)
+  console.warn(newError.message)
 }
 
-const parseMessage = (error: any): string => {
-  if (!error.message) {
-    return ''
-  }
-
-  if (isInsufficientGasError(error.message)) {
-    return 'Insufficient INJ to pay for gas/transaction fees.'
-  }
-
-  if (error.message.toLowerCase().includes('response closed')) {
-    return 'Something happened. Please refresh the page.'
-  }
-
-  return `${error.message[0].toUpperCase()}${error.message.slice(1)}`
+const notifyTheUser = (toast: any, error: ThrownException) => {
+  return toast.error(error.message)
 }
 
-export default ({ app }: Context, inject: any) => {
-  const bugsnag = app.$bugsnag
+const handleInsufficientGas = ($accessor: any, error: ThrownException) => {
+  const { wallet } = $accessor.wallet
 
-  inject('onRejected', (error: Error) => {
-    if (
-      isInsufficientGasError(error) &&
-      app.$accessor.wallet.wallet !== Wallet.Metamask
-    ) {
-      app.$accessor.modal.openModal({ type: Modal.InsufficientInjForGas })
+  if (!isCosmosWallet(wallet)) {
+    return
+  }
+
+  if (error.contextCode !== ChainCosmosErrorCode.ErrInsufficientFee) {
+    return
+  }
+
+  return $accessor.modal.openModal(Modal.InsufficientInjForGas)
+}
+
+export default (
+  { app: { $accessor, $bugsnag }, $toast }: Context,
+  inject: any
+) => {
+  const errorHandler = (error: ThrownException) => {
+    notifyTheUser($toast, error)
+
+    if (!isThrownException(error)) {
+      return reportUnknownErrorToBugsnag(error, $bugsnag)
     }
 
-    if (!isErrorExcludedFromToast(error)) {
-      app.$toast.error(parseMessage(error))
-    }
+    reportToBugSnag($bugsnag, error)
+    handleInsufficientGas($accessor, error)
+  }
 
-    if (bugsnag && IS_PRODUCTION && !isErrorExcludedFromReporting(error)) {
-      bugsnag.notify(error)
-    }
+  const confirmHandler = <T extends Function>(message: string, callback: T) => {
+    $toast.clear()
 
-    if (IS_DEVELOPMENT || IS_TESTNET) {
-      console.error(error)
-    }
-  })
-
-  inject('onError', (error: Error) => {
-    if (
-      isInsufficientGasError(error) &&
-      app.$accessor.wallet.wallet !== Wallet.Metamask
-    ) {
-      app.$accessor.modal.openModal({ type: Modal.InsufficientInjForGas })
-    }
-
-    if (!isErrorExcludedFromToast(error)) {
-      app.$toast.error(parseMessage(error))
-    }
-
-    if (bugsnag && IS_PRODUCTION && !isErrorExcludedFromReporting(error)) {
-      bugsnag.notify(error)
-    }
-
-    if (IS_DEVELOPMENT || IS_TESTNET) {
-      console.error(error)
-    }
-  })
-
-  inject('onConfirm', <T extends Function>(message: string, callback: T) => {
-    app.$toast.clear()
-    return app.$toast.show(message, {
+    return $toast.show(message, {
       duration: 10000,
       action: [
         {
@@ -132,5 +91,9 @@ export default ({ app }: Context, inject: any) => {
         }
       ]
     })
-  })
+  }
+
+  inject('onRejected', errorHandler)
+  inject('onError', errorHandler)
+  inject('onConfirm', confirmHandler)
 }

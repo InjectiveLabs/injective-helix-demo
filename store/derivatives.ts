@@ -44,6 +44,7 @@ import {
   MsgCreateDerivativeMarketOrder,
   PerpetualMarket
 } from '@injectivelabs/sdk-ts'
+import { GeneralException } from '@injectivelabs/exceptions'
 import {
   streamOrderbook,
   streamTrades,
@@ -602,7 +603,9 @@ export const actions = actionTree(
       )
 
       if (!market) {
-        throw new Error('Market not found. Please refresh the page.')
+        throw new GeneralException(
+          new Error('Market not found. Please refresh the page.')
+        )
       }
 
       const summary = await indexerRestDerivativesChronosApi.fetchMarketSummary(

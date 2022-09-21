@@ -13,7 +13,7 @@ export const fetchAnnouncementsList = async () => {
     }
 
     return data
-  } catch (e: any) {
+  } catch (e: unknown) {
     // silently throw error
   }
 }
@@ -27,7 +27,7 @@ export const fetchAnnouncementAttachment = async (announcementId: number) => {
     }
 
     return data
-  } catch (e: any) {
+  } catch (e: unknown) {
     // silently throw error
   }
 }

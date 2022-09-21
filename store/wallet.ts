@@ -4,6 +4,12 @@ import {
   getAddressFromInjectiveAddress,
   getInjectiveAddress
 } from '@injectivelabs/sdk-ts'
+import {
+  ChainCosmosErrorCode,
+  CosmosWalletException,
+  ErrorType,
+  UnspecifiedErrorCode
+} from '@injectivelabs/exceptions'
 import { confirm, connect, getAddresses } from '~/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '~/app/services/metamask'
 import { Modal, WalletConnectStatus } from '~/types'
@@ -288,6 +294,56 @@ export const actions = actionTree(
       commit('setWalletConnectStatus', WalletConnectStatus.connected)
     },
 
+    async connectLeap({ commit }) {
+      await this.app.$accessor.app.validate()
+
+      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
+      commit('setWallet', Wallet.Leap)
+
+      await connect({
+        wallet: Wallet.Leap
+      })
+
+      const injectiveAddresses = await getAddresses()
+      const [injectiveAddress] = injectiveAddresses
+      const addressConfirmation = await confirm(injectiveAddress)
+      const ethereumAddress = getAddressFromInjectiveAddress(injectiveAddress)
+
+      commit('setInjectiveAddress', injectiveAddress)
+      commit('setAddress', ethereumAddress)
+      commit('setAddresses', injectiveAddresses)
+      commit('setAddressConfirmation', addressConfirmation)
+
+      await this.app.$accessor.wallet.onConnect()
+
+      commit('setWalletConnectStatus', WalletConnectStatus.connected)
+    },
+
+    async connectCosmostation({ commit }) {
+      await this.app.$accessor.app.validate()
+
+      commit('setWalletConnectStatus', WalletConnectStatus.connecting)
+      commit('setWallet', Wallet.Cosmostation)
+
+      await connect({
+        wallet: Wallet.Cosmostation
+      })
+
+      const injectiveAddresses = await getAddresses()
+      const [injectiveAddress] = injectiveAddresses
+      const addressConfirmation = await confirm(injectiveAddress)
+      const ethereumAddress = getAddressFromInjectiveAddress(injectiveAddress)
+
+      commit('setInjectiveAddress', injectiveAddress)
+      commit('setAddress', ethereumAddress)
+      commit('setAddresses', injectiveAddresses)
+      commit('setAddressConfirmation', addressConfirmation)
+
+      await this.app.$accessor.wallet.onConnect()
+
+      commit('setWalletConnectStatus', WalletConnectStatus.connected)
+    },
+
     async connectTorus({ commit }) {
       await this.app.$accessor.app.validate()
 
@@ -329,7 +385,14 @@ export const actions = actionTree(
             type: Modal.InsufficientInjForGas
           })
 
-          throw new Error('Insufficient INJ to pay for gas/transaction fees.')
+          throw new CosmosWalletException(
+            new Error('Insufficient INJ to pay for gas/transaction fees.'),
+            {
+              code: UnspecifiedErrorCode,
+              type: ErrorType.WalletError,
+              contextCode: ChainCosmosErrorCode.ErrInsufficientFee
+            }
+          )
         }
       }
     },
