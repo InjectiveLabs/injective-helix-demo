@@ -25,10 +25,12 @@
             class="divide-y divide-gray-800 border-gray-700 rounded-lg overflow-hidden"
           >
             <Metamask />
-            <Keplr />
-            <Torus />
-            <!-- <WalletConnect v-if="isStagingOrTestnetOrDevnet" /> -->
             <Ledger @wallet-ledger-connecting="handleLedgerConnectingWallet" />
+            <Leap v-if="isStagingOrTestnetOrDevnet" />
+            <Cosmostation v-if="isStagingOrTestnetOrDevnet" />
+            <Torus />
+            <Keplr />
+            <!-- <WalletConnect v-if="isStagingOrTestnetOrDevnet" /> -->
             <Trezor @wallet-trezor-connecting="handleTrezorConnectingWallet" />
           </ul>
         </HocLoading>
@@ -48,6 +50,8 @@ import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
 import Metamask from './wallets/metamask.vue'
 import Keplr from './wallets/keplr.vue'
 import Ledger from './wallets/ledger.vue'
+import Leap from './wallets/leap.vue'
+import Cosmostation from './wallets/cosmostation.vue'
 import Torus from './wallets/torus.vue'
 // import WalletConnect from './wallets/wallet-connect.vue'
 import Trezor from './wallets/trezor.vue'
@@ -65,6 +69,8 @@ import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
 
 export default Vue.extend({
   components: {
+    Leap,
+    Cosmostation,
     ModalTerms,
     Metamask,
     Keplr,

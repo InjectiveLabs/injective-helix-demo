@@ -1,5 +1,9 @@
 import { EthereumChainId } from '@injectivelabs/ts-types'
-import { Web3Exception } from '@injectivelabs/exceptions'
+import {
+  ErrorType,
+  MetamaskException,
+  UnspecifiedErrorCode
+} from '@injectivelabs/exceptions'
 import detectEthereumProvider from '@metamask/detect-provider'
 import { ETHEREUM_CHAIN_ID } from '../utils/constants'
 import { walletStrategy } from '../wallet-strategy'
@@ -18,8 +22,14 @@ export const validateMetamask = async (
   const metamaskIsLocked = addresses.length === 0
 
   if (metamaskIsLocked) {
-    throw new Web3Exception(
-      'Your Metamask is currently locked. Please unlock your Metamask.'
+    throw new MetamaskException(
+      new Error(
+        'Your Metamask is currently locked. Please unlock your Metamask.'
+      ),
+      {
+        code: UnspecifiedErrorCode,
+        type: ErrorType.WalletError
+      }
     )
   }
 
@@ -28,8 +38,14 @@ export const validateMetamask = async (
     address && metamaskActiveAddress.toLowerCase() !== address.toLowerCase()
 
   if (metamaskActiveAddressDoesntMatchTheActiveAddress) {
-    throw new Web3Exception(
-      'You are connected to the wrong address. Please logout and connect to Metamask again'
+    throw new MetamaskException(
+      new Error(
+        'You are connected to the wrong address. Please logout and connect to Metamask again'
+      ),
+      {
+        code: UnspecifiedErrorCode,
+        type: ErrorType.WalletError
+      }
     )
   }
 
@@ -38,19 +54,31 @@ export const validateMetamask = async (
 
   if (metamaskChainIdDoesntMatchTheActiveChainId) {
     if (chainId === EthereumChainId.Kovan) {
-      throw new Web3Exception(
-        'Please change your Metamask network to Kovan Test Network'
+      throw new MetamaskException(
+        new Error('Please change your Metamask network to Kovan Test Network'),
+        {
+          code: UnspecifiedErrorCode,
+          type: ErrorType.WalletError
+        }
       )
     }
 
     if (chainId === EthereumChainId.Goerli) {
-      throw new Web3Exception(
-        'Please change your Metamask network to Goerli Test Network'
+      throw new MetamaskException(
+        new Error('Please change your Metamask network to Goerli Test Network'),
+        {
+          code: UnspecifiedErrorCode,
+          type: ErrorType.WalletError
+        }
       )
     }
 
-    throw new Web3Exception(
-      'Please change your Metamask network to Ethereum Mainnet'
+    throw new MetamaskException(
+      new Error('Please change your Metamask network to Ethereum Mainnet'),
+      {
+        code: UnspecifiedErrorCode,
+        type: ErrorType.WalletError
+      }
     )
   }
 }
