@@ -128,6 +128,7 @@ import {
   MarketType,
   UiDerivativeOrderHistory
 } from '@injectivelabs/sdk-ui-ts'
+import { GeneralException } from '@injectivelabs/exceptions'
 import OpenOrders from './orders/index.vue'
 import OpenPositions from './positions/index.vue'
 import TradeHistory from './trade-history/index.vue'
@@ -374,10 +375,12 @@ export default Vue.extend({
 
       if (!market) {
         return Promise.reject(
-          new Error(
-            this.$t('trade.position_market_not_found', {
-              marketId: position.marketId
-            })
+          new GeneralException(
+            Error(
+              this.$t('trade.position_market_not_found', {
+                marketId: position.marketId
+              })
+            )
           )
         )
       }

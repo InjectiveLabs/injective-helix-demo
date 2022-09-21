@@ -46,7 +46,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { BridgingNetwork, KeplrNetworks } from '@injectivelabs/sdk-ui-ts'
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
 import { Token } from '@injectivelabs/token-metadata'
 import { injToken } from '~/app/data/token'
 import { BridgeType, Modal, TransferDirection } from '~/types'
@@ -145,7 +145,7 @@ export default Vue.extend({
     this.$root.$on('bridge:reset', this.handleResetForm)
 
     this.handleQueryParams()
-    this.handlePreFillKeplrWallet()
+    this.handlePreFillCosmosWallet()
   },
 
   beforeDestroy() {
@@ -181,10 +181,10 @@ export default Vue.extend({
       })
     },
 
-    handlePreFillKeplrWallet() {
+    handlePreFillCosmosWallet() {
       const { wallet } = this
 
-      if (wallet === Wallet.Keplr) {
+      if (isCosmosWallet(wallet)) {
         this.bridgingNetwork = BridgingNetwork.CosmosHub
       }
     },
@@ -267,10 +267,9 @@ export default Vue.extend({
       this.form.memo = ''
       this.form.destinationAddress = ''
       this.form.token = formToken
-      this.bridgingNetwork =
-        wallet === Wallet.Keplr
-          ? BridgingNetwork.CosmosHub
-          : getBridgingNetworkBySymbol(formToken.symbol)
+      this.bridgingNetwork = isCosmosWallet(wallet)
+        ? BridgingNetwork.CosmosHub
+        : getBridgingNetworkBySymbol(formToken.symbol)
       this.bridgeType = BridgeType.Deposit
       this.$accessor.modal.openModal({ type: Modal.Bridge })
     },
@@ -283,10 +282,9 @@ export default Vue.extend({
       this.form.memo = ''
       this.form.destinationAddress = ''
       this.form.token = formToken
-      this.bridgingNetwork =
-        wallet === Wallet.Keplr
-          ? BridgingNetwork.Injective
-          : getBridgingNetworkBySymbol(formToken.symbol)
+      this.bridgingNetwork = isCosmosWallet(wallet)
+        ? BridgingNetwork.Injective
+        : getBridgingNetworkBySymbol(formToken.symbol)
       this.bridgeType = BridgeType.Withdraw
       this.$accessor.modal.openModal({ type: Modal.Bridge })
     }
