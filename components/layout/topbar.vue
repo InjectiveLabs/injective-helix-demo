@@ -33,60 +33,6 @@
           {{ $t('navigation.portfolio') }}
         </NavItem>
 
-        <!--
-        <div class="hidden xs:flex">
-          <NavItemDummy
-            v-show="isUserWalletConnected"
-            id="dashboard"
-            @mouseenter.native="handleShowDropdown"
-            @mouseleave.native="handleHideDropdown"
-            @focus.native="handleShowDropdown"
-            @blur.native="handleHideDropdown"
-            @click.native="handleClickOnDashboard"
-          >
-            {{ $t('navigation.dashboard') }}
-          </NavItemDummy>
-        </div>
-
-        <PopperBox
-          ref="popper-dashboard"
-          class="popper px-4 py-4 rounded-lg flex flex-col flex-wrap text-xs absolute w-3xs"
-          :class="[isMarketPage ? 'bg-gray-900' : 'bg-gray-800']"
-          binding-element="#dashboard"
-        >
-          <div>
-            <NavItem
-              :to="{ name: 'portfolio' }"
-              class="hover:text-primary-500 inline-block hover:bg-transparent w-full mb-2"
-              dense
-            >
-              <span class="flex items-center">
-                <span
-                  class="w-8 h-8 rounded-full bg-gray-1000 flex items-center justify-center mr-2"
-                >
-                  <IconWallet class="w-4 h-4" />
-                </span>
-                {{ $t('navigation.portfolio') }}
-              </span>
-            </NavItem>
-            <NavItem
-              :to="{ name: 'activity' }"
-              class="hover:text-primary-500 inline-block hover:bg-transparent w-full"
-              dense
-            >
-              <span class="flex items-center">
-                <span
-                  class="w-8 h-8 rounded-full bg-gray-1000 flex items-center justify-center mr-2"
-                >
-                  <IconMenuAlt class="w-4 h-4" />
-                </span>
-                {{ $t('navigation.activity') }}
-              </span>
-            </NavItem>
-          </div>
-        </PopperBox>
-        -->
-
         <UserWallet
           v-if="isUserWalletConnected && isUserConnectedProcessCompleted"
         />
@@ -120,8 +66,6 @@ import {
   derivativeMarketRouteNames,
   spotMarketRouteNames
 } from '~/app/data/market'
-// import NavItemDummy from './nav/item-dummy.vue'
-// import PopperBox from '~/components/elements/popper-box.vue'
 
 export default Vue.extend({
   components: {
@@ -129,8 +73,6 @@ export default Vue.extend({
     NavItem,
     UserWallet,
     Logo,
-    // NavItemDummy,
-    // PopperBox,
     UserWalletConnect
   },
 

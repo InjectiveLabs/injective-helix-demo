@@ -10,11 +10,13 @@
       <p v-if="!hasInjForGasOrNotKeplr" class="text-2xs text-red-400 mb-4">
         {{ $t('insufficientGas.tradingFormNote') }}
         <a
-          :href="hubUrl"
+          :href="faucetUrl"
           target="_blank"
           class="flex items-center text-primary-500"
         >
-          <span class="mr-1">Injective Hub</span>
+          <span class="mr-1">
+            {{ $t('insufficientGas.getFreeInj') }}
+          </span>
           <IconExternalLink class="w-2 h-2" />
         </a>
       </p>
@@ -61,8 +63,8 @@ export default Vue.extend({
   },
 
   computed: {
-    hubUrl(): string {
-      return 'https://hub.injective.network/bridge'
+    faucetUrl(): string {
+      return 'https://inj.supply/'
     },
 
     executionPriceHasHighDeviationWarning(): boolean {

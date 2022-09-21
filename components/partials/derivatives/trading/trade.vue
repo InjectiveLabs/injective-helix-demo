@@ -127,6 +127,7 @@
         tradingTypeLimit,
         tradingTypeStopMarket,
         tradingTypeStopLimit,
+        triggerPrice: form.triggerPrice,
         isConditionalOrder
       }"
       @submit="handleSubmit"
@@ -138,12 +139,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status, BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { Identify, identify } from '@amplitude/analytics-browser'
-import {
-  TradeDirection,
-  TradeExecutionType,
-  Wallet
-} from '@injectivelabs/ts-types'
+import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 import {
   DerivativeOrderSide,
   MarketType,
@@ -162,13 +158,13 @@ import {
   DerivativeOrderState,
   FeeDiscountAccountInfo
 } from '@injectivelabs/sdk-ts'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import OrderTypeSelect from '~/components/partials/common/trade/order-type-select.vue'
 import OrderSubmit from '~/components/partials/common/trade/order-submit.vue'
 import OrderInputs from '~/components/partials/common/trade/order-inputs.vue'
 import TradingTypeButtons from '~/components/partials/common/trade/trading-type-buttons.vue'
 import OrderDetailsWrapper from '~/components/partials/common/trade/order-details-wrapper.vue'
 import {
-  AmplitudeEvents,
   AveragePriceOptions,
   Modal,
   OrderAttemptStatus,
@@ -189,10 +185,7 @@ import {
 } from '~/app/utils/constants'
 import { excludedPriceDeviationSlugs } from '~/app/data/market'
 import { localStorage } from '~/app/Services'
-import {
-  AMPLITUDE_ATTEMPT_PLACE_ORDER_COUNT,
-  AMPLITUDE_VIP_TIER_LEVEL
-} from '~/app/utils/vendor'
+import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
 
 interface TradeForm {
   reduceOnly: boolean
@@ -1370,32 +1363,38 @@ export default Vue.extend({
     },
 
     handleAttemptPlaceOrderTrack(errorMessage?: string) {
-      if (!this.market) {
+      const {
+        market,
+        tradingTypeMarket,
+        form,
+        tradingTypeLimit,
+        orderType,
+        tradingType
+      } = this
+
+      if (!market) {
         return
       }
 
-      const identifyObj = new Identify()
-      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
-      identifyObj.add(AMPLITUDE_ATTEMPT_PLACE_ORDER_COUNT, 1)
-      identify(identifyObj)
+      const slippageTolerance = tradingTypeMarket ? form.slippageTolerance : ''
+      const postOnly = tradingTypeLimit && form.postOnly
+      const status = errorMessage
+        ? OrderAttemptStatus.Error
+        : OrderAttemptStatus.Success
 
-      this.$amplitude.track(AmplitudeEvents.AttemptPlaceOrder, {
-        amount: this.form.amount,
-        leverage: this.form.leverage,
-        market: this.market.slug,
-        marketType: this.market.subType,
-        orderType: this.orderType,
-        postOnly: this.form.postOnly,
-        tradingType: this.tradingType,
-        triggerPrice:
-          this.tradingTypeStopMarket || this.tradingTypeStopLimit
-            ? this.form.triggerPrice
-            : '',
-        reduceOnly: this.form.reduceOnly,
-        limitPrice: !this.tradingTypeMarket ? this.price : '',
-        status: errorMessage
-          ? OrderAttemptStatus.Error
-          : OrderAttemptStatus.Success,
+      amplitudeTracker.submitAttemptPlaceOrderTrackEvent({
+        status,
+        postOnly,
+        orderType,
+        tradingType,
+        slippageTolerance,
+        amount: form.amount,
+        leverage: form.leverage,
+        market: market.slug,
+        marketType: market.subType,
+        triggerPrice: form.triggerPrice,
+        reduceOnly: form.reduceOnly,
+        limitPrice: form.price,
         error: errorMessage
       })
     }

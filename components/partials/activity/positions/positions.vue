@@ -108,8 +108,9 @@ import {
   UiPosition,
   UiDerivativeMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
-import { TradeDirection, Wallet } from '@injectivelabs/ts-types'
+import { TradeDirection } from '@injectivelabs/ts-types'
 import { Token } from '@injectivelabs/token-metadata'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import Position from '~/components/partials/common/position/position.vue'
 import PositionTableHeader from '~/components/partials/common/position/position-table.header.vue'
 import MobilePosition from '~/components/partials/common/position/mobile-position.vue'
@@ -233,7 +234,8 @@ export default Vue.extend({
       return this.$accessor.positions.fetchSubaccountPositions({
         pagination: {
           skip,
-          limit
+          limit,
+          endTime: 0
         },
         filters: {
           marketId,

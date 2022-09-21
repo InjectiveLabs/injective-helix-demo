@@ -10,7 +10,7 @@
           >
             <span class="uppercase text-xs font-semibold">
               {{ $t('trade.open_orders') }}
-              {{ `(${filteredOrders.length})` }}
+              {{ `(${orders.length})` }}
             </span>
           </VButtonFilter>
 
@@ -56,13 +56,16 @@
       <div
         class="col-span-12 sm:col-span-6 mb-4 mx-4 sm:mt-4 flex items-center justify-between sm:justify-end"
       >
-        <VCheckbox v-if="market" v-model="currentMarketOnly" data-cy="trade-page-filter-by-ticker-checkbox" class="lg:mr-4">
+        <VCheckbox
+          v-if="market"
+          v-model="currentMarketOnly"
+          data-cy="trade-page-filter-by-ticker-checkbox"
+          class="lg:mr-4"
+        >
           {{ $t('trade.asset_only', { asset: market.ticker }) }}
         </VCheckbox>
         <VButton
-          v-if="
-            component === components.openOrders && filteredOrders.length > 0
-          "
+          v-if="component === components.openOrders && orders.length > 0"
           class="mr-2 rounded"
           red-outline
           sm
@@ -76,11 +79,7 @@
 
     <HocLoading :status="status">
       <VCard class="h-full">
-        <component
-          :is="component"
-          v-if="component"
-          v-bind="{ currentMarketOnly }"
-        ></component>
+        <component :is="component" v-if="component"></component>
       </VCard>
     </HocLoading>
   </VCardTableWrap>
@@ -145,55 +144,78 @@ export default Vue.extend({
       const { market, orders } = this
 
       return orders.filter((order) => order.marketId === market?.marketId)
-    },
+    }
+  },
 
-    filteredOrders(): UiSpotLimitOrder[] {
-      const { currentMarketOnly, orders, currentMarketOrders } = this
-
-      return currentMarketOnly ? currentMarketOrders : orders
+  watch: {
+    currentMarketOnly: {
+      handler() {
+        this.fetchAll()
+      },
+      immediate: true
     }
   },
 
   mounted() {
-    Promise.all([
-      this.$accessor.spot.fetchSubaccountOrders(),
-      this.$accessor.spot.fetchSubaccountOrderHistory(),
-      // this.$accessor.spot.fetchSubaccountConditionalOrders(),
-      this.$accessor.spot.fetchSubaccountTrades()
-    ])
-      .then(() => {
-        //
-      })
-      .catch(this.$onError)
-      .finally(() => {
-        this.status.setIdle()
-      })
+    this.fetchAll().catch(this.$onError)
   },
 
   methods: {
+    fetchAll(): Promise<void> {
+      return new Promise((resolve, reject) => {
+        const { currentMarketOnly, market } = this
+
+        this.status.setLoading()
+
+        const fetchOptions = {
+          filters: {
+            marketId: currentMarketOnly && market ? market.marketId : undefined
+          },
+          pagination: {
+            endTime: 0
+          }
+        }
+
+        Promise.all([
+          this.$accessor.spot.fetchSubaccountOrders(fetchOptions),
+          this.$accessor.spot.fetchSubaccountOrderHistory(fetchOptions),
+          // this.$accessor.spot.fetchSubaccountConditionalOrders(fetchOptions),
+          this.$accessor.spot.fetchSubaccountTrades(fetchOptions)
+        ])
+          .then(() => {
+            //
+          })
+          .catch(reject)
+          .finally(() => {
+            this.status.setIdle()
+            resolve()
+          })
+      })
+    },
+
     onSelect(component: string) {
       this.component = component
     },
 
     cancelOrder(): Promise<void> {
-      const { filteredOrders } = this
+      const { orders } = this
 
-      const [order] = filteredOrders
+      const [order] = orders
 
       return this.$accessor.spot.cancelOrder(order)
     },
 
     cancelAllOrders(): Promise<void> {
-      const { filteredOrders } = this
+      const { orders } = this
 
-      return this.$accessor.spot.batchCancelOrder(filteredOrders)
+      return this.$accessor.spot.batchCancelOrder(orders)
     },
 
     handleCancelAllClick() {
-      const { filteredOrders } = this
+      const { orders } = this
 
       const action =
-        filteredOrders.length === 1 ? this.cancelOrder : this.cancelAllOrders
+        orders.length === 1 ? this.cancelOrder : this.cancelAllOrders
 
       action()
         .then(() => {

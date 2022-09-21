@@ -113,13 +113,13 @@ export default {
     funding_fee: 'Funding fee',
     funding_rate: 'Funding Rate',
     est_funding_rate: 'Est. Funding Rate',
-    expiry_date: 'Expiry Date',
+    expiry_time: 'Expiry Time',
+    expiry_time_with_timezone: 'Expiry Time ({timezone})',
+    time_to_expiry: 'Time to expiry',
     derivatives: 'Derivatives',
     not_available_n_a: 'N/A',
     position_closed: 'Position Closed',
     not_enough_balance: 'Not enough balance',
-    reduce_only_exceed_position:
-      'Total size of reduce-only orders exceed the size of your position',
     next_funding: 'Next Funding',
     next_funding_tooltip:
       'The time remaining for the end of the funding interval.',

@@ -27,7 +27,7 @@
             <Metamask />
             <Keplr />
             <Torus />
-            <WalletConnect v-if="isStagingOrTestnetOrDevnet" />
+            <!-- <WalletConnect v-if="isStagingOrTestnetOrDevnet" /> -->
             <Ledger @wallet-ledger-connecting="handleLedgerConnectingWallet" />
             <Trezor @wallet-trezor-connecting="handleTrezorConnectingWallet" />
           </ul>
@@ -43,30 +43,25 @@
 <script lang="ts">
 import Vue from 'vue'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
-import { Wallet } from '@injectivelabs/ts-types'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
-import { setUserId, Identify, identify } from '@amplitude/analytics-browser'
 import Metamask from './wallets/metamask.vue'
 import Keplr from './wallets/keplr.vue'
 import Ledger from './wallets/ledger.vue'
 import Torus from './wallets/torus.vue'
-import WalletConnect from './wallets/wallet-connect.vue'
+// import WalletConnect from './wallets/wallet-connect.vue'
 import Trezor from './wallets/trezor.vue'
 import ModalLedger from './wallets/ledger/index.vue'
 import ModalTrezor from './wallets/trezor/index.vue'
-import { Modal, WalletConnectStatus, AmplitudeEvents } from '~/types'
+import { Modal, WalletConnectStatus } from '~/types'
 import {
   GEO_IP_RESTRICTIONS_ENABLED,
   IS_DEVNET,
   IS_STAGING,
   IS_TESTNET
 } from '~/app/utils/constants'
-import {
-  AMPLITUDE_LOGIN_COUNT,
-  AMPLITUDE_VIP_TIER_LEVEL,
-  AMPLITUDE_WALLET
-} from '~/app/utils/vendor'
 import ModalTerms from '~/components/partials/modals/terms.vue'
+import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
 
 export default Vue.extend({
   components: {
@@ -77,7 +72,7 @@ export default Vue.extend({
     Ledger,
     Trezor,
     ModalLedger,
-    WalletConnect,
+    // WalletConnect,
     ModalTrezor
   },
 
@@ -161,7 +156,7 @@ export default Vue.extend({
 
   methods: {
     handleWalletConnectClicked() {
-      this.$amplitude.track(AmplitudeEvents.ConnectClicked)
+      amplitudeTracker.submitWalletConnectClickedTrackEvent()
 
       if (GEO_IP_RESTRICTIONS_ENABLED) {
         this.$accessor.modal.openModal({ type: Modal.Terms })
@@ -215,18 +210,14 @@ export default Vue.extend({
     },
 
     handleConnectedWalletTrack() {
-      setUserId(this.injectiveAddress)
+      const amplitudeUser = {
+        tierLevel: this.tierLevel,
+        address: this.injectiveAddress,
+        wallet: this.wallet
+      }
 
-      const identifyObj = new Identify()
-      identifyObj.set(AMPLITUDE_WALLET, this.wallet)
-      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
-      identifyObj.add(AMPLITUDE_LOGIN_COUNT, 1)
-      identify(identifyObj)
-
-      this.$amplitude.track(AmplitudeEvents.Login, {
-        wallet: this.wallet,
-        address: this.injectiveAddress
-      })
+      amplitudeTracker.setUser(amplitudeUser)
+      amplitudeTracker.submitWalletConnectedTrackEvent()
     }
   }
 })

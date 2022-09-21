@@ -6,7 +6,11 @@ import {
   derivativePriceToChainPriceToFixed,
   derivativeQuantityToChainQuantityToFixed
 } from '@injectivelabs/utils'
-import { StreamOperation, TradeExecutionType } from '@injectivelabs/ts-types'
+import {
+  StreamOperation,
+  TradeExecutionSide,
+  TradeExecutionType
+} from '@injectivelabs/ts-types'
 import {
   Change,
   derivativeOrderTypeToGrpcOrderType,
@@ -46,7 +50,10 @@ import {
   streamSubaccountOrders,
   streamSubaccountOrderHistory,
   streamSubaccountTrades,
-  streamMarketMarkPrice
+  streamMarketMarkPrice,
+  cancelSubaccountOrderHistoryStream,
+  cancelSubaccountOrdersStream,
+  cancelSubaccountTradesStream
 } from '~/app/client/streams/derivatives'
 import {
   FEE_RECIPIENT,
@@ -66,10 +73,12 @@ import {
   expiryFutures as allowedExpiryFutures
 } from '~/routes.config'
 import { ActivityFetchOptions } from '~/types'
+import { marketIsRecentlyExpired } from '~/app/utils/market'
 
 const initialStateFactory = () => ({
   perpetualMarkets: [] as UiPerpetualMarketWithToken[],
   expiryFuturesMarkets: [] as UiExpiryFuturesMarketWithToken[],
+  recentlyExpiredMarkets: [] as UiExpiryFuturesMarketWithToken[],
   binaryOptionsMarkets: [] as UiBinaryOptionsMarketWithToken[],
   markets: [] as UiDerivativeMarketWithToken[],
   marketsSummary: [] as UiDerivativeMarketSummary[],
@@ -107,6 +116,8 @@ export const state = () => ({
     initialState.perpetualMarkets as UiPerpetualMarketWithToken[],
   expiryFuturesMarkets:
     initialState.expiryFuturesMarkets as UiExpiryFuturesMarketWithToken[],
+  recentlyExpiredMarkets:
+    initialState.recentlyExpiredMarkets as UiExpiryFuturesMarketWithToken[],
   binaryOptionsMarkets:
     initialState.binaryOptionsMarkets as UiBinaryOptionsMarketWithToken[],
   markets: initialState.markets as UiDerivativeMarketWithToken[],
@@ -219,6 +230,13 @@ export const mutations = {
     markets: UiExpiryFuturesMarketWithToken[]
   ) {
     state.expiryFuturesMarkets = markets
+  },
+
+  setRecentlyExpiredMarkets(
+    state: DerivativeStoreState,
+    markets: UiExpiryFuturesMarketWithToken[]
+  ) {
+    state.recentlyExpiredMarkets = markets
   },
 
   setBinaryOptionsMarkets(
@@ -475,13 +493,23 @@ export const actions = actionTree(
       const markets = (await indexerDerivativesApi.fetchMarkets()) as Array<
         PerpetualMarket | ExpiryFuturesMarket
       >
+      const recentlyExpiredMarkets = (
+        (await indexerDerivativesApi.fetchMarkets({
+          marketStatus: 'expired'
+        })) as Array<ExpiryFuturesMarket>
+      ).filter(marketIsRecentlyExpired)
+
       const marketsWithToken = await tokenService.getDerivativeMarketsWithToken(
         markets
       )
+      const recentlyExpiredMarketsWithToken =
+        await tokenService.getDerivativeMarketsWithToken(recentlyExpiredMarkets)
+
       const perpetualMarkets = marketsWithToken.filter((m) => m.isPerpetual)
       const expiryFuturesMarkets = marketsWithToken.filter(
         (m) => !m.isPerpetual
       )
+
       const uiPerpetualMarkets =
         UiDerivativeTransformer.perpetualMarketsToUiPerpetualMarkets(
           perpetualMarkets
@@ -489,6 +517,10 @@ export const actions = actionTree(
       const uiExpiryFuturesMarkets =
         UiDerivativeTransformer.expiryFuturesMarketsToUiExpiryFuturesMarkets(
           expiryFuturesMarkets
+        )
+      const uiRecentlyExpiredMarkets =
+        UiDerivativeTransformer.expiryFuturesMarketsToUiExpiryFuturesMarkets(
+          recentlyExpiredMarketsWithToken
         )
       const binaryOptionsMarkets = IS_DEVNET
         ? await indexerDerivativesApi.fetchBinaryOptionsMarkets()
@@ -536,6 +568,7 @@ export const actions = actionTree(
 
       commit('setPerpetualMarkets', uiPerpetualMarketsWithToken)
       commit('setExpiryFuturesMarkets', uiExpiryFuturesWithToken)
+      commit('setRecentlyExpiredMarkets', uiRecentlyExpiredMarkets)
       commit('setBinaryOptionsMarkets', uiBinaryOptionsMarketsWithToken)
       commit('setMarkets', [
         ...uiPerpetualMarketsWithToken,
@@ -558,7 +591,7 @@ export const actions = actionTree(
     },
 
     async initMarket({ commit, state }, marketSlug: string) {
-      const { markets } = state
+      const { markets, recentlyExpiredMarkets } = state
 
       if (!markets.length) {
         await this.app.$accessor.derivatives.init()
@@ -566,7 +599,7 @@ export const actions = actionTree(
 
       const { markets: newMarkets } = state
 
-      const market = newMarkets.find(
+      const market = [...newMarkets, ...recentlyExpiredMarkets].find(
         (market) =>
           marketSlug && market.slug.toLowerCase() === marketSlug.toLowerCase()
       )
@@ -713,7 +746,7 @@ export const actions = actionTree(
       })
     },
 
-    streamSubaccountOrders({ commit }) {
+    streamSubaccountOrders({ commit }, marketId?: string) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -722,6 +755,7 @@ export const actions = actionTree(
       }
 
       streamSubaccountOrders({
+        marketId,
         subaccountId: subaccount.subaccountId,
         callback: ({ order }) => {
           if (!order) {
@@ -762,7 +796,11 @@ export const actions = actionTree(
       })
     },
 
-    streamSubaccountOrderHistory({ commit }) {
+    cancelSubaccountOrdersStream() {
+      cancelSubaccountOrdersStream()
+    },
+
+    streamSubaccountOrderHistory({ commit }, marketId?: string) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -771,6 +809,7 @@ export const actions = actionTree(
       }
 
       streamSubaccountOrderHistory({
+        marketId,
         subaccountId: subaccount.subaccountId,
         callback: ({ order }) => {
           if (!order) {
@@ -794,7 +833,11 @@ export const actions = actionTree(
       })
     },
 
-    streamSubaccountTrades({ commit }) {
+    cancelSubaccountOrderHistoryStream() {
+      cancelSubaccountOrderHistoryStream()
+    },
+
+    streamSubaccountTrades({ commit }, marketId?: string) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -803,6 +846,7 @@ export const actions = actionTree(
       }
 
       streamSubaccountTrades({
+        marketId,
         subaccountId: subaccount.subaccountId,
         callback: ({ trade, operation }) => {
           if (!trade) {
@@ -824,6 +868,10 @@ export const actions = actionTree(
       })
     },
 
+    cancelSubaccountTradesStream() {
+      cancelSubaccountTradesStream()
+    },
+
     async fetchOrderbook({ state, commit }) {
       const { market } = state
 
@@ -837,7 +885,7 @@ export const actions = actionTree(
       )
     },
 
-    async fetchTrades({ state, commit }) {
+    async fetchTrades({ state, commit }, executionSide?: TradeExecutionSide) {
       const { market } = state
 
       if (!market) {
@@ -845,14 +893,15 @@ export const actions = actionTree(
       }
 
       const { trades } = await indexerDerivativesApi.fetchTrades({
-        marketId: market.marketId
+        marketId: market.marketId,
+        executionSide
       })
 
       commit('setTrades', trades)
     },
 
     async fetchSubaccountOrders(
-      { commit },
+      { state, commit },
       activityFetchOptions: ActivityFetchOptions | undefined
     ) {
       const { subaccount } = this.app.$accessor.account
@@ -865,6 +914,16 @@ export const actions = actionTree(
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
 
+      if (
+        state.subaccountOrders.length > 0 &&
+        state.subaccountOrdersPagination.endTime === 0
+      ) {
+        commit(
+          'setSubaccountOrdersEndTime',
+          state.subaccountOrders[0].createdAt
+        )
+      }
+
       const { orders, pagination } = await indexerDerivativesApi.fetchOrders({
         marketId: filters?.marketId,
         marketIds: filters?.marketIds,
@@ -873,7 +932,10 @@ export const actions = actionTree(
         isConditional: false,
         pagination: {
           skip: paginationOptions ? paginationOptions.skip : 0,
-          limit: paginationOptions ? paginationOptions.limit : 0
+          limit: paginationOptions ? paginationOptions.limit : 0,
+          endTime: paginationOptions
+            ? paginationOptions.endTime
+            : state.subaccountOrdersPagination.endTime
         }
       })
 
@@ -916,7 +978,9 @@ export const actions = actionTree(
           pagination: {
             skip: paginationOptions ? paginationOptions.skip : 0,
             limit: paginationOptions ? paginationOptions.limit : 0,
-            endTime: state.subaccountOrderHistoryPagination.endTime
+            endTime: paginationOptions
+              ? paginationOptions.endTime
+              : state.subaccountOrderHistoryPagination.endTime
           }
         })
 
@@ -960,7 +1024,9 @@ export const actions = actionTree(
           pagination: {
             skip: paginationOptions ? paginationOptions.skip : 0,
             limit: paginationOptions ? paginationOptions.limit : 0,
-            endTime: state.subaccountConditionalOrdersPagination.endTime
+            endTime: paginationOptions
+              ? paginationOptions.endTime
+              : state.subaccountConditionalOrdersPagination.endTime
           }
         })
 
@@ -1056,7 +1122,9 @@ export const actions = actionTree(
         pagination: {
           skip: paginationOptions ? paginationOptions.skip : 0,
           limit: paginationOptions ? paginationOptions.limit : 0,
-          endTime: state.subaccountTradesPagination.endTime
+          endTime: paginationOptions
+            ? paginationOptions.endTime
+            : state.subaccountTradesPagination.endTime
         }
       })
 

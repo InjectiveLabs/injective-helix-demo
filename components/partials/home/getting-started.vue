@@ -5,20 +5,21 @@
     >
       {{ $t('home.getStarted') }}
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-      <div class="order-1 md:order-first md:col-span-6">
+    <div
+      class="justify-between items-stretch gap-4 flex flex-col-reverse lg:flex-row"
+    >
+      <div class="w-full youtube-player">
         <youtube
           ref="youtube"
           :style="{
             width: '100%',
-            height: '100%',
             padding: '0 1px',
             'border-radius': '8px'
           }"
           :video-id="videoId"
         />
       </div>
-      <div class="md:col-span-6 flex flex-col gap-6 font-medium">
+      <div class="lg:col-span-6 flex flex-col gap-6 font-medium w-full">
         <div
           class="flex items-center gap-4 cursor-pointer shadow-helixLight h-[80px]"
           :class="{
@@ -38,7 +39,7 @@
         </div>
 
         <div
-          class="flex items-center gap-4 cursor-pointer shadow-helixLight h-[80px] md:ml-6"
+          class="flex items-center gap-4 cursor-pointer shadow-helixLight h-[80px] lg:ml-6"
           :class="{
             'opacity-50': selectedVideoType !== VideoType.HowToPurchaseTokens
           }"
@@ -56,7 +57,7 @@
         </div>
 
         <div
-          class="flex items-center gap-4 cursor-pointer shadow-helixLight h-[80px] md:ml-12"
+          class="flex items-center gap-4 cursor-pointer shadow-helixLight h-[80px] lg:ml-12"
           :class="{
             'opacity-50': selectedVideoType !== VideoType.HowToPlaceStopOrders
           }"
@@ -107,20 +108,22 @@ export default Vue.extend({
       return videoLinksId[selectedVideoType]
     },
 
-    youtubePlayer() {
-      // @ts-ignore
-      if (!this.$refs.youtube || !this.$refs.youtube.player) {
+    youtubePlayer(): any {
+      const { $refs } = this
+      const youtube = $refs.youtube as any
+
+      if (!youtube || !youtube.player) {
         return
       }
 
-      // @ts-ignore
-      return this.$refs.youtube.player
+      return youtube.player
     }
   },
 
   methods: {
     switchVideo(type: VideoType) {
       this.selectedVideoType = type
+
       this.$nextTick(() => {
         setTimeout(() => {
           this.handlePlay()
@@ -136,3 +139,11 @@ export default Vue.extend({
   }
 })
 </script>
+
+<style lang="scss">
+@media (min-width: 1024px) {
+  .youtube-player iframe {
+    height: 100%;
+  }
+}
+</style>

@@ -3,7 +3,11 @@
     <div class="flex flex-wrap -mx-4">
       <div class="w-full px-4 mb-2 text-left">
         <div v-if="status.isNotLoading()">
-          <VButton class="rounded" sm @click.stop.prevent="handleClickOnFetchAddresses">
+          <VButton
+            class="rounded"
+            sm
+            @click.stop.prevent="handleClickOnFetchAddresses"
+          >
             <div
               class="-mx-2 mt-2 flex items-center font-semibold text-primary-500 hover:text-primary-400"
             >
@@ -27,7 +31,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Status } from '@injectivelabs/utils'
-import { Wallet } from '@injectivelabs/ts-types'
+import { Wallet } from '@injectivelabs/wallet-ts'
 
 export default Vue.extend({
   components: {

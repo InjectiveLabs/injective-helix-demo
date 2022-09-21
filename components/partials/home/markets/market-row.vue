@@ -32,7 +32,7 @@
               v-if="!lastTradedPrice.isNaN() && !useDefaultLastTradedPriceColor"
               class="transform w-3 h-3 mr-1 mt-1"
               :class="{
-                'text-green-500 rotate-90': lastPriceChange === Change.Increase,
+                'text-green-700 rotate-90': lastPriceChange === Change.Increase,
                 'text-red-500 -rotate-90': lastPriceChange === Change.Decrease
               }"
             />
@@ -49,14 +49,14 @@
       <div class="col-span-2 flex">
         <span
           v-if="!change.isNaN()"
-          :class="change.gte(0) ? 'text-green-500' : 'text-red-500'"
-          class="w-full text-right font-mono"
+          :class="change.gte(0) ? 'text-green-700' : 'text-red-500'"
+          class="w-full text-right font-mono text-sm"
         >
           {{ changeToFormat }}%
         </span>
         <span v-else class="text-gray-400">&mdash;</span>
       </div>
-      <div class="col-span-3 flex h-7 w-[70%] justify-self-center">
+      <div class="col-span-3 flex h-7 w-[70%] justify-self-center relative">
         <HocLoading :status="status">
           <LineGraph
             v-if="chartData.length > 1"
@@ -78,13 +78,9 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-// @ts-ignore
 import { LineGraph } from 'vue-plot'
-import { FeeDiscountAccountInfo } from '@injectivelabs/sdk-ts'
-import { Identify, identify } from '@amplitude/analytics-browser'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
-  MarketType,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiMarketHistory,
@@ -98,13 +94,13 @@ import {
   MARKETS_HISTORY_CHART_SEVEN_DAYS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
-import { AmplitudeEvents, Change, MarketRoute, TradeClickOrigin } from '~/types'
+import { Change, MarketRoute, TradeClickOrigin } from '~/types'
 import { betaMarketSlugs } from '~/app/data/market'
 import {
   getMarketRoute,
   getFormattedMarketsHistoryChartData
 } from '~/app/utils/market'
-import { AMPLITUDE_VIP_TIER_LEVEL } from '~/app/utils/vendor'
+import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
 
 export default Vue.extend({
   components: {
@@ -144,22 +140,6 @@ export default Vue.extend({
       return this.$accessor.exchange.marketsHistory
     },
 
-    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
-      return this.$accessor.exchange.feeDiscountAccountInfo
-    },
-
-    tierLevel(): number {
-      const { feeDiscountAccountInfo } = this
-
-      if (!feeDiscountAccountInfo) {
-        return 0
-      }
-
-      return new BigNumberInBase(
-        feeDiscountAccountInfo.tierLevel || 0
-      ).toNumber()
-    },
-
     lastTradedPriceTextColorClass(): Record<string, boolean> | string {
       const { lastPriceChange, useDefaultLastTradedPriceColor } = this
 
@@ -168,7 +148,7 @@ export default Vue.extend({
       }
 
       return {
-        'text-green-500': lastPriceChange !== Change.Decrease,
+        'text-green-700': lastPriceChange !== Change.Decrease,
         'text-red-500': lastPriceChange === Change.Decrease
       }
     },
@@ -218,7 +198,7 @@ export default Vue.extend({
         .toNumber()
       const [, firstYaxisHolcPrice] = firstChartDataPoint
       const [, lastYAxisHolcPrice] = chartData[lastChartDataPointPosition]
-      const positiveChangeColor = '#0EE29B'
+      const positiveChangeColor = '#12B17C'
       const negativeChangeColor = '#F3164D'
 
       return new BigNumberInBase(lastYAxisHolcPrice).gte(firstYaxisHolcPrice)
@@ -354,24 +334,9 @@ export default Vue.extend({
     },
 
     handleTradeClickedTrack() {
-      if (
-        !this.marketRoute.params ||
-        (!this.marketRoute.params.spot && !this.marketRoute.params.perpetual)
-      ) {
-        return
-      }
-
-      const identifyObj = new Identify()
-      identifyObj.set(AMPLITUDE_VIP_TIER_LEVEL, this.tierLevel)
-      identify(identifyObj)
-
-      this.$amplitude.track(AmplitudeEvents.TradeClicked, {
-        market: this.marketRoute.params.spot
-          ? this.marketRoute.params.spot
-          : this.marketRoute.params.perpetual,
-        marketType: this.marketRoute.params.spot
-          ? MarketType.Spot
-          : MarketType.Perpetual,
+      amplitudeTracker.submitTradeClickedTrackEvent({
+        market: this.market.slug,
+        marketType: this.market.subType,
         origin: TradeClickOrigin.Lander
       })
     }

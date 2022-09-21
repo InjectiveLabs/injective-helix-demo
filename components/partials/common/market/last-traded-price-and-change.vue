@@ -218,9 +218,16 @@ export default Vue.extend({
   watch: {
     lastTradedPriceToFormat(newPrice: string) {
       const { market, updateTab } = this
+      const marketTypePrefix = [
+        MarketType.Derivative,
+        MarketType.Futures,
+        MarketType.Perpetual
+      ].includes(market.type)
+        ? '| Futures'
+        : ''
 
       if (market && updateTab) {
-        document.title = `${newPrice} - ${market.ticker} | ${metaTags.title}`
+        document.title = `${newPrice} - ${market.ticker} ${marketTypePrefix} | ${metaTags.title}`
       }
     }
   },
