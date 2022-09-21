@@ -52,7 +52,10 @@ export default {
 
     keplrWarning: 'Warning: Ensure you use Injective v1.1 on Keplr!',
     keplrWarningTooltip:
-      "When connecting using Keplr, always ensure that you have the Injective v1.1 version in the Keplr's chain list. If you don't, remove the existing Injective version, disconnect from the Hub and reconnect again. This will ensure you have the latest Injective version added on Keplr."
+      "When connecting using Keplr, always ensure that you have the Injective v1.1 version in the Keplr's chain list. If you don't, remove the existing Injective version, disconnect from the Hub and reconnect again. This will ensure you have the latest Injective version added on Keplr.",
+
+    leap: 'Leap',
+    cosmostation: 'Cosmostation'
   },
 
   memo: {

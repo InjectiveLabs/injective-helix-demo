@@ -6,6 +6,7 @@ import {
   fetchGasPrice
 } from '@injectivelabs/sdk-ui-ts'
 import { StatusType } from '@injectivelabs/utils'
+import { GeneralException } from '@injectivelabs/exceptions'
 import {
   CHAIN_ID,
   ETHEREUM_CHAIN_ID,
@@ -182,7 +183,7 @@ export const actions = actionTree(
 
     queue({ state, commit }) {
       if (state.state === AppState.Busy) {
-        throw new Error('You have a pending transaction.')
+        throw new GeneralException(new Error('You have a pending transaction.'))
       } else {
         commit('setAppState', AppState.Busy)
       }
