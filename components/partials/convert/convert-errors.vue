@@ -1,7 +1,7 @@
 <template>
   <div class="mt-4" data-cy="convert-widget-error-div">
     <span
-      v-if="!hasEnoughInjForGasOrNotKeplr"
+      v-if="!hasEnoughInjForGasOrNotCosmosWallet"
       class="block mt-4 text-2xs font-semibold text-red-500 first-of-type:mt-0"
     >
       {{ $t('insufficientGas.tradingFormNote') }}
@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
 
 export default Vue.extend({
   props: {
@@ -92,11 +92,13 @@ export default Vue.extend({
       return this.$accessor.bank.hasEnoughInjForGas
     },
 
-    hasEnoughInjForGasOrNotKeplr(): boolean {
+    hasEnoughInjForGasOrNotCosmosWallet(): boolean {
       const { wallet, hasEnoughInjForGas } = this
-      if (wallet !== Wallet.Keplr) {
+
+      if (!isCosmosWallet(wallet)) {
         return true
       }
+
       return hasEnoughInjForGas
     }
   }

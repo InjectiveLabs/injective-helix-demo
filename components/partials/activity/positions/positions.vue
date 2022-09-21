@@ -28,7 +28,7 @@
 
         <template #actions>
           <VButton
-            v-if="positions.length > 0 && walletIsNotKeplr"
+            v-if="positions.length > 0 && !walletIsCosmosWallet"
             red-outline
             md
             :status="status"
@@ -110,7 +110,8 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { Token } from '@injectivelabs/token-metadata'
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
+import { GeneralException } from '@injectivelabs/exceptions'
 import Position from '~/components/partials/common/position/position.vue'
 import PositionTableHeader from '~/components/partials/common/position/position-table.header.vue'
 import MobilePosition from '~/components/partials/common/position/mobile-position.vue'
@@ -170,10 +171,10 @@ export default Vue.extend({
       return this.$accessor.positions.subaccountPositionsPagination.total
     },
 
-    walletIsNotKeplr(): boolean {
+    walletIsCosmosWallet(): boolean {
       const { wallet } = this
 
-      return wallet !== Wallet.Keplr
+      return isCosmosWallet(wallet)
     },
 
     totalPages(): number {
@@ -258,10 +259,12 @@ export default Vue.extend({
 
       if (!market) {
         return Promise.reject(
-          new Error(
-            this.$t('trade.position_market_not_found', {
-              marketId: position.marketId
-            })
+          new GeneralException(
+            Error(
+              this.$t('trade.position_market_not_found', {
+                marketId: position.marketId
+              })
+            )
           )
         )
       }
