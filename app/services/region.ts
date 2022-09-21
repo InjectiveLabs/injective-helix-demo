@@ -1,4 +1,8 @@
 import { HttpClient } from '@injectivelabs/utils'
+import {
+  GeneralException,
+  HttpRequestException
+} from '@injectivelabs/exceptions'
 import { restrictedCountries } from '../data/geoip'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '../utils/constants'
 import { GeoLocation } from '~/types'
@@ -22,7 +26,9 @@ export const fetchGeoLocation = async (): Promise<GeoLocation> => {
 
 export const validateGeoLocation = (geoLocation: GeoLocation) => {
   if (restrictedCountries.includes(geoLocation.country)) {
-    throw new Error('Your country is restricted from trading on this relayer')
+    throw new GeneralException(
+      new Error('Your country is restricted from trading on this relayer')
+    )
   }
 }
 
@@ -32,8 +38,10 @@ export const fetchIpAddress = async () => {
     const { data } = (await httpClient.get('')) as any
 
     return data.ip
-  } catch (e: any) {
-    throw new Error(e.message)
+  } catch (e: unknown) {
+    throw new HttpRequestException(new Error((e as any).message), {
+      contextModule: 'region'
+    })
   }
 }
 
@@ -58,12 +66,20 @@ export const validateIpAddressForVPN = async (ipAddress: string) => {
     const { privacy } = response.data
 
     if (privacy.proxy) {
-      throw new Error(
-        'Your IP address is detected as a proxy or you are using a VPN provider.'
+      throw new GeneralException(
+        new Error(
+          'Your IP address is detected as a proxy or you are using a VPN provider.'
+        )
       )
     }
-  } catch (e: any) {
-    throw new Error(e.message)
+  } catch (e: unknown) {
+    if (e instanceof GeneralException) {
+      throw e
+    }
+
+    throw new HttpRequestException(new Error((e as any).message), {
+      contextModule: 'region'
+    })
   }
 }
 
@@ -77,11 +93,15 @@ export const detectVPNOrProxyUsage = async () => {
 
   try {
     await validateIpAddressForVPN(await fetchIpAddress())
-  } catch (e: any) {
-    if (e.message && e.message.startsWith('Request failed')) {
+  } catch (e: unknown) {
+    const error = e as any
+
+    if (error.message && error.message.startsWith('Request failed')) {
       return false /* Request failed, check next time */
     } else {
-      throw new Error(e.message)
+      throw new HttpRequestException(new Error((e as any).message), {
+        contextModule: 'region'
+      })
     }
   }
 }
@@ -98,8 +118,10 @@ export const detectVPNOrProxyUsageNoThrow = async () => {
     await validateIpAddressForVPN(await fetchIpAddress())
 
     return false /* User is not using a VPN or a proxy */
-  } catch (e: any) {
-    if (e.message && e.message.startsWith('Request failed')) {
+  } catch (e: unknown) {
+    const error = e as any
+
+    if (error.message && error.message.startsWith('Request failed')) {
       return false /* Request failed, check next time */
     }
 
