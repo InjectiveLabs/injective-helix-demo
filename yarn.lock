@@ -2584,10 +2584,10 @@
     shx "^0.3.2"
     snakecase-keys "^5.4.1"
 
-"@injectivelabs/sdk-ui-ts@1.0.208":
-  version "1.0.208"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.0.208.tgz#e8c13c6341a5aceca96c0ee659169e8496581cc4"
-  integrity sha512-egUNEHIl8Hp0BE3SzDUSDXukrpaqTqAbK17c3OtjiVi/NJ2hdbS/SsiiG/pJw3Z065wNyvQIgiOto3hmtSYM0g==
+"@injectivelabs/sdk-ui-ts@1.0.209":
+  version "1.0.209"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ui-ts/-/sdk-ui-ts-1.0.209.tgz#69eadb10c13d05bdcffa29e88bc6dcbf2edb1b3e"
+  integrity sha512-MlbaK4U6MclZj4Q7/sWjXJwYkMjJoiETn60vc9zTka9uwFV7PK7oaDf0BzXE6M198y44rfZJPkjF52QPGvGlbg==
   dependencies:
     "@injectivelabs/exceptions" "^1.0.22"
     "@injectivelabs/networks" "^1.0.31"
@@ -2596,7 +2596,7 @@
     "@injectivelabs/token-utils" "^1.0.29"
     "@injectivelabs/ts-types" "^1.0.13"
     "@injectivelabs/utils" "^1.0.28"
-    "@injectivelabs/wallet-ts" "^1.0.110"
+    "@injectivelabs/wallet-ts" "^1.0.111"
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
@@ -2669,10 +2669,10 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/wallet-ts@1.0.110", "@injectivelabs/wallet-ts@^1.0.110":
-  version "1.0.110"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.0.110.tgz#0ed1498436b5133a43668e1d57839b1654e057db"
-  integrity sha512-STYr/H2cFDOMilkcpyM++VxgR2kcsncMnqZ1LhiX93s1mevobaTrJyot4FB0JNG/IbgxK1num0HbT5K0VGQgDA==
+"@injectivelabs/wallet-ts@1.0.111", "@injectivelabs/wallet-ts@^1.0.111":
+  version "1.0.111"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.0.111.tgz#82d2abf96f2f83ce69c1a7ed9f21601b436b9456"
+  integrity sha512-H6scpbtHbvNBCh8tGfhOWeEYUdSJOpTJLRRpnQrScgB++1M+P4nWXoYlyNQHtu3I416ok+e5nJeCepOBrgrCQA==
   dependencies:
     "@alch/alchemy-web3" "1.1.3"
     "@axelar-network/axelarjs-sdk" "0.5.32"
