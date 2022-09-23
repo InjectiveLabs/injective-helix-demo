@@ -13,17 +13,13 @@ import { Modal } from '~/types/enums'
 const reportToBugSnag = (bugsnag: any, error: ThrownException) => {
   if (!IS_PRODUCTION) {
     console.warn(error.toCompactError().message)
-
-    return console.error(error)
-  }
-
-  if ([ErrorType.Unspecified, ErrorType.WalletError].includes(error.type)) {
+    console.error(error)
+  } else if (
+    [ErrorType.Unspecified, ErrorType.WalletError].includes(error.type)
+  ) {
     console.warn(error.toCompactError().message)
-
-    return console.error(error)
-  }
-
-  if (bugsnag) {
+    console.error(error)
+  } else if (bugsnag) {
     bugsnag.notify(error.toCompactError())
   }
 }
@@ -62,6 +58,10 @@ export default (
   { app: { $accessor, $bugsnag }, $toast }: Context,
   inject: any
 ) => {
+  window.onunhandledrejection = function (event) {
+    reportToBugSnag($bugsnag, event.reason)
+  }
+
   const errorHandler = (error: ThrownException) => {
     notifyTheUser($toast, error)
 
