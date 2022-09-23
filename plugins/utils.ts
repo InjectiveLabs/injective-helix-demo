@@ -23,7 +23,9 @@ const reportToBugSnag = (bugsnag: any, error: ThrownException) => {
     return console.error(error)
   }
 
-  return bugsnag.notify(error.toCompactError())
+  if (bugsnag) {
+    bugsnag.notify(error.toCompactError())
+  }
 }
 
 const reportUnknownErrorToBugsnag = (bugsnag: any, error: Error) => {
@@ -31,7 +33,10 @@ const reportUnknownErrorToBugsnag = (bugsnag: any, error: Error) => {
     `The ${error.message} is not handled as an Exception - ${error.stack}`
   )
 
-  bugsnag.notify(newError)
+  if (bugsnag) {
+    bugsnag.notify(newError)
+  }
+
   console.warn(newError.message)
 }
 
