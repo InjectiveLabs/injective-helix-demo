@@ -58,7 +58,7 @@ export default (
   { app: { $accessor, $bugsnag }, $toast }: Context,
   inject: any
 ) => {
-  window.onunhandledrejection = function (event) {
+  window.onunhandledrejection = function (event: PromiseRejectionEvent) {
     reportToBugSnag($bugsnag, event.reason)
   }
 
