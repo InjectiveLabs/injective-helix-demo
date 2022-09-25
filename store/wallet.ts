@@ -20,6 +20,7 @@ import {
   spotMarketRouteNames
 } from '~/app/data/market'
 import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
+import { confirmCorrectKeplrAddress, validateKeplr } from '~/app/services/keplr'
 
 const initialStateFactory = () => ({
   walletConnectStatus: WalletConnectStatus.idle as WalletConnectStatus,
@@ -284,6 +285,8 @@ export const actions = actionTree(
       const addressConfirmation = await confirm(injectiveAddress)
       const ethereumAddress = getAddressFromInjectiveAddress(injectiveAddress)
 
+      await confirmCorrectKeplrAddress(injectiveAddress)
+
       commit('setInjectiveAddress', injectiveAddress)
       commit('setAddress', ethereumAddress)
       commit('setAddresses', injectiveAddresses)
@@ -370,10 +373,14 @@ export const actions = actionTree(
     },
 
     async validate({ state }) {
-      const { ethereumChainId } = this.app.$accessor.app
+      const { ethereumChainId, chainId } = this.app.$accessor.app
 
       if (state.wallet === Wallet.Metamask) {
         await validateMetamask(state.address, ethereumChainId)
+      }
+
+      if (state.wallet === Wallet.Keplr) {
+        await validateKeplr(state.address, chainId)
       }
 
       // Validate whether the user has enough gas to pay for the transaction
