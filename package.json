@@ -36,7 +36,7 @@
     "@injectivelabs/networks": "1.0.31",
     "@injectivelabs/referral-consumer": "0.5.7",
     "@injectivelabs/sdk-ts": "1.0.160",
-    "@injectivelabs/sdk-ui-ts": "1.0.216",
+    "@injectivelabs/sdk-ui-ts": "1.0.217",
     "@injectivelabs/token-metadata": "1.0.41",
     "@injectivelabs/token-utils": "1.0.29",
     "@injectivelabs/ts-types": "1.0.13",
