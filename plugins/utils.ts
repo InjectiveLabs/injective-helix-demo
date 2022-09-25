@@ -59,14 +59,20 @@ export default (
   inject: any
 ) => {
   window.onunhandledrejection = function (event: PromiseRejectionEvent) {
-    reportToBugSnag($bugsnag, event.reason)
+    const error = event.reason
+
+    if (!isThrownException(error)) {
+      reportUnknownErrorToBugsnag($bugsnag, error)
+    } else {
+      reportToBugSnag($bugsnag, error)
+    }
   }
 
   const errorHandler = (error: ThrownException) => {
     notifyTheUser($toast, error)
 
     if (!isThrownException(error)) {
-      return reportUnknownErrorToBugsnag(error, $bugsnag)
+      return reportUnknownErrorToBugsnag($bugsnag, error)
     }
 
     reportToBugSnag($bugsnag, error)
