@@ -13,17 +13,15 @@ import { Modal } from '~/types/enums'
 const reportToBugSnag = (bugsnag: any, error: ThrownException) => {
   if (!IS_PRODUCTION) {
     console.warn(error.toCompactError().message)
-
-    return console.error(error)
-  }
-
-  if ([ErrorType.Unspecified, ErrorType.WalletError].includes(error.type)) {
+    console.error(error)
+  } else if (
+    [ErrorType.Unspecified, ErrorType.WalletError].includes(error.type)
+  ) {
     console.warn(error.toCompactError().message)
-
-    return console.error(error)
+    console.error(error)
+  } else if (bugsnag) {
+    bugsnag.notify(error.toCompactError())
   }
-
-  return bugsnag.notify(error.toCompactError())
 }
 
 const reportUnknownErrorToBugsnag = (bugsnag: any, error: Error) => {
@@ -31,7 +29,10 @@ const reportUnknownErrorToBugsnag = (bugsnag: any, error: Error) => {
     `The ${error.message} is not handled as an Exception - ${error.stack}`
   )
 
-  bugsnag.notify(newError)
+  if (bugsnag) {
+    bugsnag.notify(newError)
+  }
+
   console.warn(newError.message)
 }
 
@@ -57,11 +58,21 @@ export default (
   { app: { $accessor, $bugsnag }, $toast }: Context,
   inject: any
 ) => {
+  window.onunhandledrejection = function (event: PromiseRejectionEvent) {
+    const error = event.reason
+
+    if (!isThrownException(error)) {
+      reportUnknownErrorToBugsnag($bugsnag, error)
+    } else {
+      reportToBugSnag($bugsnag, error)
+    }
+  }
+
   const errorHandler = (error: ThrownException) => {
     notifyTheUser($toast, error)
 
     if (!isThrownException(error)) {
-      return reportUnknownErrorToBugsnag(error, $bugsnag)
+      return reportUnknownErrorToBugsnag($bugsnag, error)
     }
 
     reportToBugSnag($bugsnag, error)
