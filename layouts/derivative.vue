@@ -6,7 +6,7 @@
     </template>
 
     <template v-if="market">
-      <Market-chart slot="chart" :market="market" class="hidden lg:block" />
+      <MarketChart slot="chart" :market="market" class="hidden lg:block" />
       <Orderbook slot="order-books" :market="market" />
       <Orders slot="orders" />
     </template>

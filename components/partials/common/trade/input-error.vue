@@ -219,12 +219,16 @@ export default Vue.extend({
   },
 
   computed: {
-    isSpot(): boolean {
-      return this.$route.name === 'spot-spot'
-    },
-
     marketMarkPrice(): string {
       return this.$accessor.derivatives.marketMarkPrice
+    },
+
+    isUserWalletConnected(): boolean {
+      return this.$accessor.wallet.isUserWalletConnected
+    },
+
+    isSpot(): boolean {
+      return this.$route.name === 'spot-spot'
     },
 
     errors(): TradeError {
@@ -374,12 +378,17 @@ export default Vue.extend({
       const {
         quoteAvailableBalance,
         baseAvailableBalance,
+        isUserWalletConnected,
         notionalValueWithFees,
         amount,
         hasAmount,
         orderTypeBuy,
         isSpot
       } = this
+
+      if (!isUserWalletConnected) {
+        return undefined
+      }
 
       if (!hasAmount) {
         return undefined
@@ -408,8 +417,13 @@ export default Vue.extend({
       const {
         quoteAvailableBalance,
         orderTypeReduceOnly,
+        isUserWalletConnected,
         notionalWithLeverageAndFees
       } = this
+
+      if (isUserWalletConnected) {
+        return undefined
+      }
 
       if (orderTypeReduceOnly) {
         return undefined
