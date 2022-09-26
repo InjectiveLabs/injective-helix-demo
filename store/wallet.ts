@@ -1,5 +1,5 @@
 import { actionTree, getterTree } from 'typed-vuex'
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
 import {
   getAddressFromInjectiveAddress,
   getInjectiveAddress
@@ -10,9 +10,10 @@ import {
   ErrorType,
   UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
+import { CosmosChainId } from '@injectivelabs/ts-types'
 import { confirm, connect, getAddresses } from '~/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '~/app/services/metamask'
-import { Modal, WalletConnectStatus } from '~/types'
+import { WalletConnectStatus } from '~/types'
 import { GAS_FREE_DEPOSIT_REBATE_ENABLED } from '~/app/utils/constants'
 import { walletStrategy } from '~/app/wallet-strategy'
 import {
@@ -20,7 +21,10 @@ import {
   spotMarketRouteNames
 } from '~/app/data/market'
 import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
-import { confirmCorrectKeplrAddress, validateKeplr } from '~/app/services/keplr'
+import {
+  confirmCorrectKeplrAddress,
+  validateCosmosWallet
+} from '~/app/services/cosmos'
 
 const initialStateFactory = () => ({
   walletConnectStatus: WalletConnectStatus.idle as WalletConnectStatus,
@@ -373,25 +377,22 @@ export const actions = actionTree(
     },
 
     async validate({ state }) {
+      const { wallet, injectiveAddress, address } = state
       const { ethereumChainId, chainId } = this.app.$accessor.app
+      const { hasEnoughInjForGas } = this.app.$accessor.bank
 
-      if (state.wallet === Wallet.Metamask) {
-        await validateMetamask(state.address, ethereumChainId)
+      if (wallet === Wallet.Metamask) {
+        await validateMetamask(address, ethereumChainId)
       }
 
-      if (state.wallet === Wallet.Keplr) {
-        await validateKeplr(state.address, chainId)
-      }
-
-      // Validate whether the user has enough gas to pay for the transaction
-      if (state.wallet === Wallet.Keplr) {
-        const { hasEnoughInjForGas } = this.app.$accessor.bank
+      if (isCosmosWallet(wallet)) {
+        await validateCosmosWallet({
+          address: injectiveAddress,
+          chainId: chainId as unknown as CosmosChainId,
+          wallet
+        })
 
         if (!hasEnoughInjForGas) {
-          this.app.$accessor.modal.openModal({
-            type: Modal.InsufficientInjForGas
-          })
-
           throw new CosmosWalletException(
             new Error('Insufficient INJ to pay for gas/transaction fees.'),
             {

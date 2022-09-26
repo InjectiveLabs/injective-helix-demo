@@ -4,8 +4,8 @@ import {
   UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
 import { PublicKey } from '@injectivelabs/sdk-ts'
-import { ChainId } from '@injectivelabs/ts-types'
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { CosmosChainId } from '@injectivelabs/ts-types'
+import { CosmosWalletStrategy, Wallet } from '@injectivelabs/wallet-ts'
 import { KeplrWallet } from '@injectivelabs/wallet-ts/dist/keplr'
 import { CHAIN_ID } from '../utils/constants'
 import { walletStrategy } from '../wallet-strategy'
@@ -33,14 +33,30 @@ export const confirmCorrectKeplrAddress = async (injectiveAddress: string) => {
   }
 }
 
-export const validateKeplr = async (address: string, chainId: ChainId) => {
-  const keplr = new KeplrWallet(chainId)
+export const validateCosmosWallet = async ({
+  wallet,
+  address,
+  chainId
+}: {
+  wallet: Wallet
+  address: string
+  chainId: CosmosChainId
+}) => {
+  const cosmosWalletStrategy = new CosmosWalletStrategy({
+    wallet,
+    chainId
+  })
 
-  if (!(await keplr.checkChainIdSupport())) {
-    await keplr.experimentalSuggestChain()
+  if (!(await cosmosWalletStrategy.isChainIdSupported())) {
+    throw new CosmosWalletException(
+      new Error(`The wallet does not support ${chainId}`),
+      {
+        code: UnspecifiedErrorCode
+      }
+    )
   }
 
-  const accounts = await keplr.getAccounts()
+  const accounts = await cosmosWalletStrategy.getAddresses()
 
   if (accounts.length === 0) {
     throw new CosmosWalletException(
@@ -53,10 +69,10 @@ export const validateKeplr = async (address: string, chainId: ChainId) => {
   }
 
   const [account] = accounts
-  const keplrActiveAddressDoesntMatchTheActiveAddress =
-    address && account.address.toLowerCase() !== address.toLowerCase()
+  const activeAddressDoesntMatchTheActiveAddress =
+    address && account.toLowerCase() !== address.toLowerCase()
 
-  if (keplrActiveAddressDoesntMatchTheActiveAddress) {
+  if (activeAddressDoesntMatchTheActiveAddress) {
     throw new CosmosWalletException(
       new Error(
         `You are connected to the wrong address. Your connected address is ${address}`
