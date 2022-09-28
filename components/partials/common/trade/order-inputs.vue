@@ -645,9 +645,7 @@ export default Vue.extend({
   },
 
   mounted() {
-    const { amountStep } = this
-
-    this.onAmountChange(amountStep)
+    //
   },
 
   methods: {
