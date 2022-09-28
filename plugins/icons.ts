@@ -17,6 +17,7 @@ import CircleTwo from '~/components/icons/circle-two.vue'
 import CircleThree from '~/components/icons/circle-three.vue'
 import Close from '~/components/icons/close.vue'
 import Copy from '~/components/icons/copy.vue'
+import Cosmostation from '~/components/icons/cosmostation.vue'
 import CopyPlain from '~/components/icons/copy-plain.vue'
 import Dashboard from '~/components/icons/dashboard.vue'
 import Discord from '~/components/icons/discord.vue'
@@ -30,6 +31,7 @@ import Governance from '~/components/icons/governance.vue'
 import History from '~/components/icons/history.vue'
 import Info from '~/components/icons/info.vue'
 import Ledger from '~/components/icons/ledger.vue'
+import Leap from '~/components/icons/leap.vue'
 import Menu from '~/components/icons/menu.vue'
 import Metamask from '~/components/icons/metamask.vue'
 import Keplr from '~/components/icons/keplr.vue'
@@ -78,6 +80,8 @@ import BoundingBoxCircles from '~/components/icons/bounding-box-circles.vue'
 import Gas from '~/components/icons/gas.vue'
 import ShieldLockFill from '~/components/icons/shield-lock-fill.vue'
 import Minus from '~/components/icons/minus.vue'
+import TrophyColor from '~/components/icons/trophy-color.vue'
+import Trophy from '~/components/icons/trophy.vue'
 
 Vue.component('IconArrow', Arrow)
 Vue.component('IconArrowSwap', ArrowSwap)
@@ -96,6 +100,7 @@ Vue.component('IconCircleTwo', CircleTwo)
 Vue.component('IconCircleThree', CircleThree)
 Vue.component('IconClose', Close)
 Vue.component('IconCopy', Copy)
+Vue.component('IconCosmostation', Cosmostation)
 Vue.component('IconTorus', Torus)
 Vue.component('IconCopyPlain', CopyPlain)
 Vue.component('IconDashboard', Dashboard)
@@ -110,6 +115,7 @@ Vue.component('IconGovernance', Governance)
 Vue.component('IconHistory', History)
 Vue.component('IconInfo', Info)
 Vue.component('IconLedger', Ledger)
+Vue.component('IconLeap', Leap)
 Vue.component('IconMenu', Menu)
 Vue.component('IconCrown', Crown)
 Vue.component('IconMetamask', Metamask)
@@ -157,3 +163,5 @@ Vue.component('IconBoundingBoxCircles', BoundingBoxCircles)
 Vue.component('IconGas', Gas)
 Vue.component('IconShieldLockFill', ShieldLockFill)
 Vue.component('IconMinus', Minus)
+Vue.component('IconTrophyColor', TrophyColor)
+Vue.component('IconTrophy', Trophy)

@@ -1,13 +1,9 @@
 <template>
   <div>
-    <div
-      class="flex items-center justify-between flex-wrap border-b border-b-gray-600"
-    >
-      <div
-        class="flex items-center gap-2 3md:gap-4 overflow-x-auto justify-between xs:justify-start w-full xs:w-auto hide-scrollbar mb-[-2px]"
-      >
-        <MarketTypeSelector
-          :type="MarketType.Favorite"
+    <TabMenu>
+      <template #items>
+        <TabMenuItem
+          :value="MarketType.Favorite"
           :active="activeType === MarketType.Favorite"
           data-cy="markets-favorites-selector"
           @click="handleTypeClick"
@@ -16,50 +12,51 @@
             <IconStarBorder class="mr-1" />
             <span>{{ $t('trade.favorites') }}</span>
           </span>
-        </MarketTypeSelector>
+        </TabMenuItem>
 
-        <MarketTypeSelector
-          :type="''"
+        <TabMenuItem
+          :value="''"
           :active="activeType === ''"
           data-cy="markets-all-markets-selector"
           @click="handleTypeClick"
         >
           {{ $t('trade.allMarkets') }}
-        </MarketTypeSelector>
+        </TabMenuItem>
 
-        <MarketTypeSelector
-          :type="MarketType.Spot"
+        <TabMenuItem
+          :value="MarketType.Spot"
           :active="activeType === MarketType.Spot"
           data-cy="markets-spot-selector"
           @click="handleTypeClick"
         >
           {{ $t('trade.spots') }}
-        </MarketTypeSelector>
+        </TabMenuItem>
 
-        <MarketTypeSelector
-          :type="MarketType.Derivative"
+        <TabMenuItem
+          :value="MarketType.Derivative"
           :active="activeType === MarketType.Derivative"
           data-cy="markets-perpetual-selector"
           @click="handleTypeClick"
         >
-          <!-- {{ $t('trade.perpetual') }} -->
           {{ $t('trade.futures') }}
-        </MarketTypeSelector>
-      </div>
+        </TabMenuItem>
+      </template>
 
-      <Search
-        name="search"
-        class="sm:w-auto md:w-3xs"
-        input-classes="placeholder-white"
-        dense
-        transparent-bg
-        data-cy="markets-search-input"
-        :placeholder="$t('trade.search_markets')"
-        :search="search"
-        show-prefix
-        @searched="handleSearchedEvent"
-      />
-    </div>
+      <template #actions>
+        <Search
+          name="search"
+          class="sm:w-auto md:w-3xs"
+          input-classes="placeholder-white"
+          dense
+          transparent-bg
+          data-cy="markets-search-input"
+          :placeholder="$t('trade.search_markets')"
+          :search="search"
+          show-prefix
+          @searched="handleSearchedEvent"
+        />
+      </template>
+    </TabMenu>
 
     <div class="flex items-center justify-between mt-6 mb-2">
       <div class="flex items-center gap-2">
@@ -75,7 +72,12 @@
         </MarketCategorySelector>
       </div>
 
-      <MarketQuoteSelector :type="activeQuote" @click="handleQuoteChange" />
+      <Selector
+        :label="$t('markets.quote')"
+        :options="quoteOptions"
+        :value="activeQuote"
+        @select="handleQuoteChange"
+      />
     </div>
   </div>
 </template>
@@ -84,17 +86,19 @@
 import Vue, { PropType } from 'vue'
 import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import MarketCategorySelector from '~/components/partials/markets/filters/market-category-selector.vue'
-import MarketTypeSelector from '~/components/partials/markets/filters/market-type-selector.vue'
-import MarketQuoteSelector from '~/components/partials/markets/filters/market-quote-selector.vue'
 import Search from '~/components/inputs/search.vue'
 import { MarketCategoryType, MarketQuoteType } from '~/types'
+import TabMenu from '~/components/elements/tab-menu.vue'
+import TabMenuItem from '~/components/elements/tab-menu-item.vue'
+import Selector from '~/components/elements/selector.vue'
 
 export default Vue.extend({
   components: {
     MarketCategorySelector,
-    MarketQuoteSelector,
-    MarketTypeSelector,
-    Search
+    Search,
+    TabMenu,
+    TabMenuItem,
+    Selector
   },
 
   props: {
@@ -130,6 +134,14 @@ export default Vue.extend({
             key: `market-category-type-${value}`,
             label: key,
             type: MarketCategoryType[key as keyof typeof MarketCategoryType]
+          }
+        }
+      ),
+      quoteOptions: Object.entries(MarketQuoteType).map(
+        ([key, value]) => {
+          return {
+            label: key,
+            value
           }
         }
       )

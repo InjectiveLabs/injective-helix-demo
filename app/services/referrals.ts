@@ -1,3 +1,4 @@
+import { GrpcUnaryRequestException } from '@injectivelabs/exceptions'
 import {
   ReferralConsumer,
   ReferralInfo,
@@ -28,8 +29,10 @@ export const refer = async ({
     const response = await referralConsumer.refer({ address, code })
 
     return response
-  } catch (e: any) {
-    throw new Error(e.message)
+  } catch (e: unknown) {
+    throw new GrpcUnaryRequestException(new Error((e as any).message), {
+      contextModule: 'referrals'
+    })
   }
 }
 
@@ -40,8 +43,10 @@ export const getReferralInfo = async (
     const response = await referralConsumer.getReferralInfo(address)
 
     return ReferralTransformer.grpcReferralInfoToReferralInfo(response)
-  } catch (e: any) {
-    throw new Error(e.message)
+  } catch (e: unknown) {
+    throw new GrpcUnaryRequestException(new Error((e as any).message), {
+      contextModule: 'referrals'
+    })
   }
 }
 
@@ -51,7 +56,9 @@ export const getFeeRecipient = async (address: string): Promise<string> => {
 
     return ReferralTransformer.grpcFeeRecipientToFeeRecipient(response)
       .feeRecipient
-  } catch (e: any) {
-    throw new Error(e.message)
+  } catch (e: unknown) {
+    throw new GrpcUnaryRequestException(new Error((e as any).message), {
+      contextModule: 'referrals'
+    })
   }
 }

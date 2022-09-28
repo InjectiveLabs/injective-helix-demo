@@ -4,7 +4,11 @@ import {
   spotPriceToChainPriceToFixed,
   spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/utils'
-import { StreamOperation, TradeExecutionType } from '@injectivelabs/ts-types'
+import {
+  StreamOperation,
+  TradeExecutionSide,
+  TradeExecutionType
+} from '@injectivelabs/ts-types'
 import {
   MsgBatchCancelSpotOrders,
   MsgCancelSpotOrder,
@@ -27,6 +31,7 @@ import {
   zeroSpotMarketSummary,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
+import { GeneralException } from '@injectivelabs/exceptions'
 import {
   streamOrderbook,
   streamTrades,
@@ -407,7 +412,9 @@ export const actions = actionTree(
       )
 
       if (!market) {
-        throw new Error('Market not found. Please refresh the page.')
+        throw new GeneralException(
+          new Error('Market not found. Please refresh the page.')
+        )
       }
 
       const summary = await indexerRestSpotChronosApi.fetchMarketSummary(
@@ -733,7 +740,7 @@ export const actions = actionTree(
       )
     },
 
-    async fetchTrades({ state, commit }) {
+    async fetchTrades({ state, commit }, executionSide?: TradeExecutionSide) {
       const { market } = state
 
       if (!market) {
@@ -741,7 +748,8 @@ export const actions = actionTree(
       }
 
       const { trades } = await indexerSpotApi.fetchTrades({
-        marketId: market.marketId
+        marketId: market.marketId,
+        executionSide
       })
 
       commit('setTrades', trades)

@@ -34,7 +34,7 @@ const binaryOptions = []
 const expiryFutures = ['eth-usdt-19sep22']
 
 if (IS_DEVNET) {
-  //
+  spot.push('proj-usdt')
 }
 
 if (IS_TESTNET) {
@@ -71,6 +71,7 @@ module.exports = [
   '/register',
   '/trade-and-earn',
   '/convert',
+  '/leaderboard',
   ...upcomingMarketsRoutes,
   ...deprecatedMarketsRoutes,
   ...spotRoutes,

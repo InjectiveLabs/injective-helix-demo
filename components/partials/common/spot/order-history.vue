@@ -278,7 +278,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(filledQuantity.dividedBy(quantity))
+      return new BigNumberInBase(filledQuantity.dividedBy(quantity).times(100))
     },
 
     orderFullyFilled(): boolean {
