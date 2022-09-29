@@ -37,6 +37,14 @@
       </NavItemDummy>
 
       <NavItem
+        class="block"
+        data-cy="nav-leaderboard-link"
+        :to="{ name: 'leaderboard' }"
+      >
+        {{ $t('navigation.leaderboard') }}
+      </NavItem>
+
+      <NavItem
         v-if="isUserWalletConnected"
         class="block lg:hidden"
         data-cy="nav-portfolio-link"
