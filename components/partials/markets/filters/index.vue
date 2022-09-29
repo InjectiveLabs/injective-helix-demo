@@ -92,6 +92,25 @@ import TabMenu from '~/components/elements/tab-menu.vue'
 import TabMenuItem from '~/components/elements/tab-menu-item.vue'
 import Selector from '~/components/elements/selector.vue'
 
+function getMarketCategoryTypes() {
+  return Object.entries(MarketCategoryType).map(([key, value]) => {
+    return {
+      key: `market-category-type-${value}`,
+      label: key,
+      type: MarketCategoryType[key as keyof typeof MarketCategoryType]
+    }
+  })
+}
+
+function getQuoteOptions() {
+  return Object.entries(MarketQuoteType).map(([key, value]) => {
+    return {
+      label: key,
+      value
+    }
+  })
+}
+
 export default Vue.extend({
   components: {
     MarketCategorySelector,
@@ -128,23 +147,8 @@ export default Vue.extend({
       MarketCategoryType,
       MarketType,
       MarketQuoteType,
-      marketCategoryTypes: Object.entries(MarketCategoryType).map(
-        ([key, value]) => {
-          return {
-            key: `market-category-type-${value}`,
-            label: key,
-            type: MarketCategoryType[key as keyof typeof MarketCategoryType]
-          }
-        }
-      ),
-      quoteOptions: Object.entries(MarketQuoteType).map(
-        ([key, value]) => {
-          return {
-            label: key,
-            value
-          }
-        }
-      )
+      marketCategoryTypes: getMarketCategoryTypes(),
+      quoteOptions: getQuoteOptions()
     }
   },
 

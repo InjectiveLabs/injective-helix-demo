@@ -93,11 +93,11 @@ export default Vue.extend({
     return {
       resolutionOptions: [
         {
-          label: 'Daily',
+          label: this.$t('leaderboard.resolutionOptions.daily'),
           value: '1d'
         },
         {
-          label: 'Weekly',
+          label: this.$t('leaderboard.resolutionOptions.weekly'),
           value: '7d'
         }
       ]

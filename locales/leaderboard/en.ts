@@ -11,6 +11,10 @@ export default {
     },
     lastUpdatedAt: 'Last updated at {timestamp}',
     resolution: 'Time interval',
+    resolutionOptions: {
+      daily: 'Daily',
+      weekly: 'Weekly'
+    },
     rank: 'Rank',
     address: 'Address',
     volume: 'Volume',
