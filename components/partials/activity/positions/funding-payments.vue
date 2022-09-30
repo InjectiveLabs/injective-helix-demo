@@ -19,7 +19,7 @@
         </template>
 
         <template #actions>
-          <div class="flex items-center justify-between gap-4">
+          <div class="flex items-center justify-between gap-4 visible sm:hidden">
             <span class="flex items-center gap-1 text-xs">
               <span>{{ $t('trade.pair') }}</span>
               <span>/</span>
