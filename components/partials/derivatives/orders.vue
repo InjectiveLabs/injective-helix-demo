@@ -269,10 +269,6 @@ export default Vue.extend({
     }
 
     this.init()
-      .then(() => {
-        //
-      })
-      .catch(this.$onError)
   },
 
   methods: {
@@ -285,51 +281,48 @@ export default Vue.extend({
       ])
     },
 
-    init(): Promise<void> {
-      return new Promise((resolve, reject) => {
-        const { currentMarketOnly, market } = this
+    init() {
+      const { currentMarketOnly, market } = this
 
-        this.status.setLoading()
+      this.status.setLoading()
 
-        const fetchOptions = {
-          filters: {
-            marketId: currentMarketOnly && market ? market.marketId : undefined
-          },
-          pagination: {
-            endTime: 0
-          }
+      const fetchOptions = {
+        filters: {
+          marketId: currentMarketOnly && market ? market.marketId : undefined
+        },
+        pagination: {
+          endTime: 0
         }
+      }
 
-        Promise.all([
-          this.$accessor.derivatives.fetchSubaccountOrders(fetchOptions),
-          this.$accessor.derivatives.fetchSubaccountOrderHistory(fetchOptions),
-          this.$accessor.derivatives.fetchSubaccountConditionalOrders(
-            fetchOptions
-          ),
-          this.$accessor.derivatives.fetchSubaccountTrades(fetchOptions),
-          this.$accessor.positions.fetchSubaccountPositions(fetchOptions),
-          this.$accessor.positions.streamSubaccountPositions(
-            fetchOptions.filters.marketId
-          ),
-          this.$accessor.derivatives.streamSubaccountOrders(
-            fetchOptions.filters.marketId
-          ),
-          this.$accessor.derivatives.streamSubaccountOrderHistory(
-            fetchOptions.filters.marketId
-          ),
-          this.$accessor.derivatives.streamSubaccountTrades(
-            fetchOptions.filters.marketId
-          )
-        ])
-          .then(() => {
-            //
-          })
-          .catch(reject)
-          .finally(() => {
-            this.status.setIdle()
-            resolve()
-          })
-      })
+      Promise.all([
+        this.$accessor.derivatives.fetchSubaccountOrders(fetchOptions),
+        this.$accessor.derivatives.fetchSubaccountOrderHistory(fetchOptions),
+        this.$accessor.derivatives.fetchSubaccountConditionalOrders(
+          fetchOptions
+        ),
+        this.$accessor.derivatives.fetchSubaccountTrades(fetchOptions),
+        this.$accessor.positions.fetchSubaccountPositions(fetchOptions),
+        this.$accessor.positions.streamSubaccountPositions(
+          fetchOptions.filters.marketId
+        ),
+        this.$accessor.derivatives.streamSubaccountOrders(
+          fetchOptions.filters.marketId
+        ),
+        this.$accessor.derivatives.streamSubaccountOrderHistory(
+          fetchOptions.filters.marketId
+        ),
+        this.$accessor.derivatives.streamSubaccountTrades(
+          fetchOptions.filters.marketId
+        )
+      ])
+        .then(() => {
+          //
+        })
+        .catch(this.$onRejected)
+        .finally(() => {
+          this.status.setIdle()
+        })
     },
 
     onSelect(component: string) {
