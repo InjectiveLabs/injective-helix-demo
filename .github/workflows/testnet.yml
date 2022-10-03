@@ -18,7 +18,7 @@ jobs:
       ## Public
       APP_NAME: 'Helix Testnet | The Premier Decentralized Spot and Derivatives Exchange'
       APP_BASE_URL: https://testnet.helixapp.com
-      APP_NETWORK: testnet
+      APP_NETWORK: testnetK8s
       APP_ENV: testnet
       APP_CHAIN_ID: injective-888
 
