@@ -2,7 +2,9 @@
   <div
     class="grid grid-cols-6 md:grid-cols-12 text-gray-200 gap-4 text-sm px-4 items-center h-14 border-b border-helixGray-500"
   >
-    <div class="text-sm col-span-1 md:col-span-2 flex items-center justify-start">
+    <div
+      class="text-sm col-span-1 md:col-span-2 flex items-center justify-start"
+    >
       <span class="font-semibold mr-2">
         {{ rank }}
       </span>
@@ -13,7 +15,10 @@
       class="font-mono flex items-center justify-start col-span-3 md:col-span-2"
       data-cy="markets-last-traded-price-table-data"
     >
-      <div v-if="avatarSrc" class="min-w-6 min-h-6 w-6 h-6 rounded-full overflow-hidden mr-2">
+      <div
+        v-if="avatarSrc"
+        class="min-w-6 min-h-6 w-6 h-6 rounded-full overflow-hidden mr-2"
+      >
         <img :src="avatarSrc" />
       </div>
       <div v-else class="min-w-6 min-h-6 w-6 h-6 rounded-full bg-white mr-2" />
@@ -23,7 +28,9 @@
     </span>
 
     <span class="block font-mono text-right col-span-2 md:col-span-3 text-sm">
-      <span class="text-white overflow-ellipsis whitespace-nowrap"> {{ formattedVolume }} USD </span>
+      <span class="text-white overflow-ellipsis whitespace-nowrap">
+        {{ formattedVolume }} USD
+      </span>
     </span>
 
     <span class="hidden md:block col-span-1" />
@@ -50,7 +57,9 @@ import identicon from 'identicon'
 
 import Vue from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
 import Progress from '~/components/elements/progress.vue'
+import { NETWORK } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -113,17 +122,18 @@ export default Vue.extend({
     explorerUrl(): string {
       const { address } = this
 
-      return `https://explorer.injective.network/account/${address}/?tab=transactions`
+      const baseUrl = getExplorerUrl(NETWORK)
+
+      return `${baseUrl}/account/${address}/?tab=transactions`
     }
   },
 
   mounted() {
     const { address } = this
 
-    this.generateAvatar(address)
-      .then((buffer: string) => {
-        this.avatarSrc = buffer
-      })
+    this.generateAvatar(address).then((buffer: string) => {
+      this.avatarSrc = buffer
+    })
   },
 
   methods: {
