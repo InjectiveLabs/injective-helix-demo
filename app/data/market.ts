@@ -45,7 +45,6 @@ export const newMarketsSlug = [
 export const experimentalMarketsSlug = [
   'ape-usdt',
   'gf-usdt',
-  'bayc-weth-perp',
   'eth-usdt-19sep22'
 ]
 
@@ -62,7 +61,7 @@ export const slugsToExcludeFromEthereumCategory = [
   'link-usdt-perp'
 ]
 
-export const excludedPriceDeviationSlugs = ['bayc-weth-perp'] as string[]
+export const excludedPriceDeviationSlugs = [] as string[]
 
 export const upcomingMarkets = [
   //
