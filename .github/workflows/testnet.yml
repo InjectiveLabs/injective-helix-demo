@@ -54,3 +54,6 @@ jobs:
 
       - name: Generating the static pages
         run: ssh testnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn generate'
+      
+      - name: Generating the static pages
+        run: ssh testnet 'sudo chown -R root:ubuntu $HOME/inj/injective-helix/dist'
