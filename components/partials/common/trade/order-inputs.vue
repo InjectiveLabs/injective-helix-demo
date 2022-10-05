@@ -83,7 +83,6 @@
       </VInput>
 
       <VInput
-        v-if="!tradingTypeMarket"
         ref="input-quote-amount"
         v-model="inputQuoteAmount"
         :custom-handler="true"
