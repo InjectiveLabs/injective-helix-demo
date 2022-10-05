@@ -11,8 +11,8 @@
       <IconTrophyColor v-if="rank <= 3" class="min-w-4 w-4 h-4" />
     </div>
 
-    <span
-      class="font-mono flex items-center justify-start col-span-3 md:col-span-2"
+    <div
+      class="font-mono flex items-center justify-start col-span-3 md:col-span-3 overflow-hidden"
       data-cy="markets-last-traded-price-table-data"
     >
       <div
@@ -22,12 +22,12 @@
         <img :src="avatarSrc" />
       </div>
       <div v-else class="min-w-6 min-h-6 w-6 h-6 rounded-full bg-white mr-2" />
-      <span class="text-white">
-        {{ formattedAddress }}
+      <span class="text-white whitespace-nowrap overflow-hidden overflow-ellipsis">
+        {{ address }}
       </span>
-    </span>
+    </div>
 
-    <span class="block font-mono text-right col-span-2 md:col-span-3 text-sm">
+    <span class="block font-mono text-right col-span-2 md:col-span-2 text-sm">
       <span class="text-white overflow-ellipsis whitespace-nowrap">
         {{ formattedVolume }} USD
       </span>
@@ -95,16 +95,6 @@ export default Vue.extend({
   },
 
   computed: {
-    formattedAddress(): string {
-      const { address } = this
-
-      return (
-        address.slice(0, 6) +
-        '......' +
-        address.slice(address.length - 6, address.length)
-      )
-    },
-
     percentage(): Number {
       const { perc } = this
 
