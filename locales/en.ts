@@ -7,6 +7,7 @@ import home from './home/en'
 import market from './market/en'
 import wallet from './wallet/en'
 import trade from './trade/en'
+import leaderboard from './leaderboard/en'
 
 export default {
   ...activities,
@@ -19,6 +20,7 @@ export default {
   ...bridge,
   ...wallet,
   ...trade,
+  ...leaderboard,
   common: {
     available: 'Available',
     back: 'Back',
@@ -245,7 +247,8 @@ export default {
     spot: 'Spot',
     spotDescription: 'Trade crypto on an on-chain orderbook',
     perpetual: 'Perpetual',
-    perpetualDescription: 'Trade perpetual contracts settled in USDT or WETH'
+    perpetualDescription: 'Trade perpetual contracts settled in USDT or WETH',
+    leaderboard: 'Leaderboard'
   },
 
   fee_discounts: {

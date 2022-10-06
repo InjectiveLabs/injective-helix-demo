@@ -93,6 +93,10 @@ export const streamSubaccountTrades = ({
   })
 }
 
+export const cancelSubaccountTradesStream = () => {
+  streamProvider.cancel(StreamType.DerivativesSubaccountTrades)
+}
+
 export const streamSubaccountOrders = ({
   marketId,
   subaccountId,
@@ -116,6 +120,10 @@ export const streamSubaccountOrders = ({
     args: streamFnArgs,
     key: StreamType.DerivativesSubaccountOrders
   })
+}
+
+export const cancelSubaccountOrdersStream = () => {
+  streamProvider.cancel(StreamType.DerivativesSubaccountOrders)
 }
 
 export const streamSubaccountOrderHistory = ({
@@ -143,6 +151,10 @@ export const streamSubaccountOrderHistory = ({
   })
 }
 
+export const cancelSubaccountOrderHistoryStream = () => {
+  streamProvider.cancel(StreamType.DerivativesSubaccountOrderHistory)
+}
+
 export const streamSubaccountPositions = ({
   subaccountId,
   marketId,
@@ -155,6 +167,7 @@ export const streamSubaccountPositions = ({
   const streamFn = derivativesMarketStream.streamDerivativePositions.bind(
     derivativesMarketStream
   )
+
   const streamFnArgs = {
     ...(subaccountId && { subaccountId }),
     ...(marketId && { marketId }),
@@ -166,6 +179,10 @@ export const streamSubaccountPositions = ({
     args: streamFnArgs,
     key: StreamType.DerivativesSubaccountPositions
   })
+}
+
+export const cancelSubaccountPositionsStream = () => {
+  streamProvider.cancel(StreamType.DerivativesSubaccountPositions)
 }
 
 export const streamMarketMarkPrice = ({

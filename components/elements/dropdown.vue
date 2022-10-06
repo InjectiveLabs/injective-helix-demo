@@ -97,6 +97,11 @@ export default Vue.extend({
     tight: {
       type: Boolean,
       default: false
+    },
+
+    noPadding: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -108,14 +113,18 @@ export default Vue.extend({
 
   computed: {
     selectorClass(): string {
-      const { round } = this
+      const { round, noPadding } = this
 
-      const classes = ['bg-gray-900', 'h-10', 'px-4', 'py-3']
+      const classes = ['bg-gray-900', 'h-10']
 
       if (round) {
         classes.push('rounded-full')
       } else {
         classes.push('rounded-lg')
+      }
+
+      if (!noPadding) {
+        classes.push('px-4 py-3')
       }
 
       return classes.join(' ')
