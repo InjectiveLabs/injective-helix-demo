@@ -34,7 +34,7 @@ export const marketBaseFromTicker = (
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
-  'eth-usdt-19sep22',
+  'strd-usdt',
   'usdc-usdt',
   'osmo-usdt-perp',
   'dot-usdt',
