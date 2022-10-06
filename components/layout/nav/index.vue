@@ -36,6 +36,7 @@
         {{ $t('navigation.rewards') }}
       </NavItemDummy>
 
+      <!--
       <NavItem
         class="block"
         data-cy="nav-leaderboard-link"
@@ -43,6 +44,7 @@
       >
         {{ $t('navigation.leaderboard') }}
       </NavItem>
+      -->
 
       <NavItem
         v-if="isUserWalletConnected"
