@@ -39,6 +39,8 @@ export default Vue.extend({
     LeaderboardTable
   },
 
+  middleware: ['leaderboard'],
+
   data() {
     return {
       status: new Status(StatusType.Loading),
