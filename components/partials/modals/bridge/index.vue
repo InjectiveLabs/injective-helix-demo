@@ -86,7 +86,7 @@
             show-custom-indicator
             show-balance
             show-errors-below
-            :validation-rules="`required|positiveNumber|enoughBalanceAndGas:0.0001,${balanceToFixed},${INJ_TO_IBC_TRANSFER_FEE}`"
+            :validation-rules="`required|positiveNumber|enoughBalanceIncludeGas:0.0001,${balanceToFixed},${INJ_TO_IBC_TRANSFER_FEE}`"
             @input:amount="handleAmountChange"
             @input:token="handleTokenChange"
             @input:max="handleMax"

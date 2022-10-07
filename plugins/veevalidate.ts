@@ -23,7 +23,7 @@ localize({
       max: 'This field should be less than {length}',
       min: 'This field should be greater than {length}',
       enoughBalance: 'Insufficient balance',
-      enoughBalanceAndGas: 'Insufficient balance to cover price and gas fee'
+      enoughBalanceIncludeGas: 'Insufficient balance to cover price and gas fee'
     }
   }
 })
@@ -56,7 +56,7 @@ extend('enoughBalance', {
   },
   params: ['min', 'max']
 })
-extend('enoughBalanceAndGas', {
+extend('enoughBalanceIncludeGas', {
   validate: (value: string | number, { min, max, gasBuffer }: Record<string, any>) => {
     const maxSpendableBalance = Number(max) - Number(gasBuffer)
 
