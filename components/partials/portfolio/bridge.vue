@@ -202,6 +202,7 @@ export default Vue.extend({
     },
 
     handleAmountUpdate(amount: string) {
+      console.log('amount', amount)
       this.form.amount = amount.toString()
     },
 

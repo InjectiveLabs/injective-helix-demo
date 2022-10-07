@@ -2,7 +2,7 @@
   <div v-if="market" class="h-full">
     <!-- mobile table -->
     <TableBody
-      :show-empty="filteredPositions.length === 0"
+      :show-empty="sortedPositions.length === 0"
       class="sm:hidden max-h-lg overflow-y-auto"
     >
       <mobile-position
@@ -20,7 +20,7 @@
     </TableBody>
 
     <TableWrapper class="hidden sm:block">
-      <table v-if="filteredPositions.length > 0" class="table">
+      <table v-if="sortedPositions.length > 0" class="table">
         <PositionTableHeader />
         <tbody>
           <tr
@@ -57,13 +57,6 @@ export default Vue.extend({
     TableBody
   },
 
-  props: {
-    currentMarketOnly: {
-      type: Boolean,
-      default: false
-    }
-  },
-
   data() {
     return {
       interval: 0 as any
@@ -75,6 +68,10 @@ export default Vue.extend({
       return this.$accessor.derivatives.market
     },
 
+    markets(): UiDerivativeMarketWithToken[] {
+      return this.$accessor.derivatives.markets
+    },
+
     binaryOptionsMarkets(): UiBinaryOptionsMarketWithToken[] {
       return this.$accessor.derivatives.binaryOptionsMarkets
     },
@@ -84,24 +81,25 @@ export default Vue.extend({
     },
 
     filteredPositions(): UiPosition[] {
-      const { binaryOptionsMarkets, currentMarketOnly, market, positions } =
-        this
+      const { binaryOptionsMarkets, market, markets, positions } = this
 
       if (!market) {
         return []
       }
 
+      const result = positions.filter((position) => {
+        return !!markets.find((m) => m.marketId === position.marketId)
+      })
+
       if (market.subType === MarketType.BinaryOptions) {
-        return positions.filter((position) =>
+        return result.filter((position) =>
           binaryOptionsMarkets.some(
             (market) => market.marketId === position.marketId
           )
         )
       }
 
-      return !currentMarketOnly
-        ? positions
-        : positions.filter((position) => position.marketId === market?.marketId)
+      return result
     },
 
     sortedPositions(): UiPosition[] {

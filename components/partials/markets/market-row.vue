@@ -35,8 +35,6 @@
             <span class="text-gray-500 text-xs sm:hidden tracking-wide mt-1">
               {{ $t('markets.vol') }} {{ abbreviatedVolumeInUsdToFormat }} USD
             </span>
-
-            <v-powered-by v-if="isBaycWeth" class="mt-1.5" />
           </div>
         </div>
       </nuxt-link>
@@ -162,17 +160,12 @@ import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
-import VPoweredBy from '~/components/partials/markets/powered-by.vue'
 import { Change, MarketRoute, TradeClickOrigin } from '~/types'
 import { betaMarketSlugs } from '~/app/data/market'
 import { getAbbreviatedVolume, getMarketRoute } from '~/app/utils/market'
 import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
 
 export default Vue.extend({
-  components: {
-    VPoweredBy
-  },
-
   props: {
     market: {
       type: Object as PropType<
@@ -299,16 +292,6 @@ export default Vue.extend({
       const marketRoute = getMarketRoute(market)
 
       return marketRoute || { name: 'index' }
-    },
-
-    isBaycWeth(): boolean {
-      const { market } = this
-
-      if (!market || !market.slug) {
-        return false
-      }
-
-      return market.slug === 'bayc-weth-perp'
     },
 
     isFavorite(): boolean {

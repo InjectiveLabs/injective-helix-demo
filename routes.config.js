@@ -6,6 +6,7 @@ const {
 
 const spot = [
   'inj-usdt',
+  'strd-usdt',
   'dot-usdt',
   'atom-usdt',
   'usdc-usdt',
@@ -22,7 +23,6 @@ const perpetuals = [
   'inj-usdt-perp',
   'eth-usdt-perp',
   'osmo-usdt-perp',
-  'bayc-weth-perp',
   'bnb-usdt-perp',
   'stx-usdt-perp',
   'atom-usdt-perp'
@@ -46,7 +46,7 @@ if (IS_MAINNET_STAGING) {
 }
 
 if (IS_MAINNET_STAGING || IS_DEVNET) {
-  spot.push('strd-usdt')
+  //
 }
 
 const futures = [...perpetuals, ...expiryFutures]

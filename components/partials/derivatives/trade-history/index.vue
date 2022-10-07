@@ -2,11 +2,11 @@
   <div v-if="market" class="h-full">
     <!-- mobile table -->
     <TableBody
-      :show-empty="filteredTrades.length === 0"
+      :show-empty="trades.length === 0"
       class="sm:hidden max-h-lg overflow-y-auto"
     >
       <MobileTrade
-        v-for="(trade, index) in filteredTrades"
+        v-for="(trade, index) in trades"
         :key="`mobile-trade-history-${index}`"
         class="col-span-1"
         :trade="trade"
@@ -21,12 +21,12 @@
     </TableBody>
 
     <TableWrapper class="hidden sm:block">
-      <table v-if="filteredTrades.length > 0" class="table">
+      <table v-if="trades.length > 0" class="table">
         <TradesTableHeader />
         <tbody>
           <tr
             is="Trade"
-            v-for="(trade, index) in filteredTrades"
+            v-for="(trade, index) in trades"
             :key="`trades-history-${index}`"
             :trade="trade"
           />
@@ -61,13 +61,6 @@ export default Vue.extend({
     TradesTableHeader
   },
 
-  props: {
-    currentMarketOnly: {
-      type: Boolean,
-      default: false
-    }
-  },
-
   data() {
     return {
       tradeDetails: undefined as UiDerivativeTrade | undefined
@@ -81,16 +74,6 @@ export default Vue.extend({
 
     trades(): UiDerivativeTrade[] {
       return this.$accessor.derivatives.subaccountTrades
-    },
-
-    filteredTrades(): UiDerivativeTrade[] {
-      const { currentMarketOnly, market, trades } = this
-
-      if (!currentMarketOnly) {
-        return trades
-      }
-
-      return trades.filter((trade) => trade.marketId === market?.marketId)
     }
   },
 
