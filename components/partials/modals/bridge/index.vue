@@ -80,11 +80,13 @@
             :destination="destination"
             :is-ibc-transfer="isIbcTransfer"
             :balance="balance"
+            :balance-decimal-places="balanceDecimalPlaces"
             small
             show-input
             show-custom-indicator
             show-balance
             show-errors-below
+            :validation-rules="`required|positiveNumber|enoughBalanceAndGas:0.0001,${balanceToFixed},${INJ_TO_IBC_TRANSFER_FEE}`"
             @input:amount="handleAmountChange"
             @input:token="handleTokenChange"
             @input:max="handleMax"
@@ -134,6 +136,7 @@ import Vue, { PropType } from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import {
   BankBalanceWithToken,
+  BIG_NUMBER_ROUND_DOWN_MODE,
   BridgingNetwork,
   SubaccountBalanceWithToken,
   TokenWithBalanceAndPrice,
@@ -148,7 +151,10 @@ import VAllowance from '~/components/elements/allowance.vue'
 import NetworkSelect from '~/components/partials/portfolio/bridge/network-select.vue'
 import IbcTransferNote from '~/components/partials/portfolio/bridge/ibc-transfer-note.vue'
 import TransferDirectionSwitch from '~/components/partials/portfolio/bridge/transfer-direction-switch.vue'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import {
+  INJ_TO_IBC_TRANSFER_FEE,
+  UI_DEFAULT_DISPLAY_DECIMALS
+} from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -208,7 +214,8 @@ export default Vue.extend({
       memoRequired: false,
       BridgeType,
       TransferDirection,
-      BridgingNetwork
+      BridgingNetwork,
+      INJ_TO_IBC_TRANSFER_FEE
     }
   },
 
@@ -305,6 +312,12 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(token.allowance).gt(0)
+    },
+
+    isWalletExemptFromGasFee(): boolean {
+      const { wallet } = this
+
+      return !isCosmosWallet(wallet)
     },
 
     shouldConnectMetamask(): boolean {
@@ -421,6 +434,16 @@ export default Vue.extend({
       return onWithdrawBalance
     },
 
+    balanceDecimalPlaces(): number {
+      return UI_DEFAULT_DISPLAY_DECIMALS
+    },
+
+    balanceToFixed(): string {
+      const { balance, balanceDecimalPlaces } = this
+
+      return balance.toFixed(balanceDecimalPlaces, BIG_NUMBER_ROUND_DOWN_MODE)
+    },
+
     isModalOpen(): boolean {
       return this.$accessor.modal.modals[Modal.Bridge]
     },
@@ -449,6 +472,14 @@ export default Vue.extend({
     },
 
     handleMax(value: string) {
+      const { form, isWalletExemptFromGasFee } = this
+
+      if (form.token.symbol === 'INJ' && !isWalletExemptFromGasFee) {
+        const newValue = Number(value) - INJ_TO_IBC_TRANSFER_FEE
+
+        return this.$emit('input-amount:update', newValue.toString())
+      }
+
       this.$emit('input-amount:update', value)
     },
 
