@@ -167,7 +167,7 @@
               :disabled="buttonConfirmationDisabled"
               :status="status"
               data-cy="transfer-confirm-modal-confirm-button"
-              @click="handlerFunction"
+              @click="handleConfirmation"
             >
               {{ buttonConfirmationText }}
             </VButton>
@@ -207,6 +207,7 @@ import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
+import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
 
 export default Vue.extend({
   components: {
@@ -598,8 +599,9 @@ export default Vue.extend({
       this.$accessor.modal.closeModal(Modal.BridgeConfirm)
     },
 
-    handleConfirmClick() {
-      this.$emit('bridge:confirmed')
+    handleConfirmation() {
+      this.handleTransferTradingAccountTrack()
+      this.handlerFunction()
     },
 
     handleWithdrawToInjective() {
@@ -722,6 +724,16 @@ export default Vue.extend({
         .finally(() => {
           this.status.setIdle()
         })
+    },
+
+    handleTransferTradingAccountTrack() {
+      const { form, transferDirection } = this
+
+      amplitudeTracker.transferTradingAccountTrack({
+        transferDirection,
+        token: form.token.name,
+        amount: form.amount
+      })
     }
   }
 })
