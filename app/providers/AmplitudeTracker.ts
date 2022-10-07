@@ -16,11 +16,17 @@ import {
   AMPLITUDE_ATTEMPT_PLACE_ORDER_COUNT,
   AMPLITUDE_CLICK_PLACE_ORDER_COUNT,
   AMPLITUDE_LOGIN_COUNT,
+  AMPLITUDE_TRANSFERS_MADE_COUNT,
   AMPLITUDE_VIP_TIER_LEVEL,
   AMPLITUDE_WALLET
 } from '~/app/utils/vendor'
 import { HAS_AMPLITUDE_KEY } from '~/app/utils/constants'
-import { AmplitudeEvents, OrderAttemptStatus, TradeClickOrigin } from '~/types'
+import {
+  AmplitudeEvents,
+  OrderAttemptStatus,
+  TradeClickOrigin,
+  TransferDirection
+} from '~/types'
 import { localStorage } from '~/app/Services'
 
 type TrackAmplitudeFn = <T extends string | BaseEvent>(
@@ -257,6 +263,32 @@ export class AmplitudeTracker {
       utm_source: utmSource,
       utm_medium: utmMedium,
       utm_campaign: utmCampaign
+    })
+  }
+
+  transferTradingAccountTrack({
+    transferDirection,
+    token,
+    amount
+  }: {
+    transferDirection: TransferDirection
+    token: string
+    amount: string
+  }) {
+    const { user } = this
+    const identify = this.getIdentify()
+
+    if (!user || !identify) {
+      return
+    }
+
+    identify.add(AMPLITUDE_TRANSFERS_MADE_COUNT, 1)
+    amplitudeIdentify(identify)
+
+    trackAmplitude(AmplitudeEvents.Transfer, {
+      transferDirection,
+      token,
+      amount
     })
   }
 }
