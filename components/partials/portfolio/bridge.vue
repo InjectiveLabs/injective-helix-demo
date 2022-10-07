@@ -45,9 +45,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BridgingNetwork, KeplrNetworks } from '@injectivelabs/sdk-ui-ts'
+import { BankBalanceWithToken, BridgingNetwork, KeplrNetworks, SubaccountBalanceWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
 import { Token } from '@injectivelabs/token-metadata'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { injToken } from '~/app/data/token'
 import { BridgeType, Modal, TransferDirection } from '~/types'
 import VModalBridge from '~/components/partials/modals/bridge/index.vue'
@@ -55,6 +56,7 @@ import VModalBridgeConfirm from '~/components/partials/modals/bridge/confirm.vue
 import VModalBridgeCompleted from '~/components/partials/modals/bridge/completed.vue'
 import { getBridgingNetworkBySymbol } from '~/app/data/bridge'
 import { tokenService } from '~/app/Services'
+import { INJ_TO_IBC_TRANSFER_FEE } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -86,6 +88,60 @@ export default Vue.extend({
   computed: {
     wallet(): Wallet {
       return this.$accessor.wallet.wallet
+    },
+
+    subaccountBalancesWithToken(): SubaccountBalanceWithToken[] {
+      return this.$accessor.account.subaccountBalancesWithToken
+    },
+
+    bankBalancesWithToken(): BankBalanceWithToken[] {
+      return this.$accessor.bank.bankErc20BalancesWithToken
+    },
+
+    ibcBankBalancesWithToken(): BankBalanceWithToken[] {
+      return this.$accessor.bank.bankIbcBalancesWithToken
+    },
+
+    transferBalance(): BigNumberInBase {
+      const {
+        form,
+        bridgeType,
+        transferDirection,
+        subaccountBalancesWithToken,
+        bankBalancesWithToken,
+        ibcBankBalancesWithToken
+      } = this
+
+      if (bridgeType !== BridgeType.Transfer) {
+        return ZERO_IN_BASE
+      }
+
+      if (transferDirection === TransferDirection.bankToTradingAccount) {
+        const balances = [...bankBalancesWithToken, ...ibcBankBalancesWithToken]
+        const balance = balances.find(
+          (balance) => balance.token.denom === form.token.denom
+        )
+
+        if (!balance) {
+          return ZERO_IN_BASE
+        }
+
+        return new BigNumberInWei(balance.balance || 0).toBase(
+          balance.token.decimals
+        )
+      }
+
+      const balance = subaccountBalancesWithToken.find(
+        (balance) => balance.denom === form.token.denom
+      )
+
+      if (!balance) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInWei(balance.availableBalance || 0).toBase(
+        balance.token.decimals
+      )
     },
 
     origin(): BridgingNetwork | TransferDirection {
@@ -246,6 +302,15 @@ export default Vue.extend({
       this.form.token = token || injToken
       this.bridgeType = BridgeType.Transfer
       this.transferDirection = TransferDirection.bankToTradingAccount
+
+      const { transferBalance } = this
+      const transferFee = new BigNumberInBase(INJ_TO_IBC_TRANSFER_FEE)
+
+      if (transferBalance.lt(transferFee)) {
+        this.$accessor.modal.openModal({ type: Modal.InsufficientInjForGas })
+        return
+      }
+
       this.$accessor.modal.openModal({ type: Modal.Bridge })
     },
 
