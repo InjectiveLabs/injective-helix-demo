@@ -1,31 +1,32 @@
 <template>
   <div>
     <TableHeader
-      class="grid-cols-10 3md:grid-cols-12 border-b border-helixGray-500"
+      class="grid-cols-6 md:grid-cols-12 border-b border-helixGray-500"
+      :classes="'grid'"
     >
-      <span class="col-span-2">
+      <span class="col-span-1 md:col-span-2">
         <span class="text-gray-200 text-xs">
           {{ $t('leaderboard.rank') }}
         </span>
       </span>
 
-      <span class="col-span-2">
+      <span class="col-span-3 md:col-span-2">
         <span class="text-gray-200 text-xs">
           {{ $t('leaderboard.address') }}
         </span>
       </span>
 
-      <span class="text-right col-span-3 text-gray-200 text-xs">
+      <span class="text-right col-span-2 md:col-span-3 text-gray-200 text-xs">
         {{ $t('leaderboard.volume') }}
       </span>
 
-      <span class="hidden sm:block col-span-1" />
+      <span class="hidden md:block col-span-1" />
 
-      <span class="text-right col-span-2 text-gray-200 text-xs">
+      <span class="hidden md:block text-right col-span-2 text-gray-200 text-xs">
         {{ $t('leaderboard.volumePercentage') }}
       </span>
 
-      <span class="hidden 3md:block text-left col-span-2" />
+      <span class="hidden md:block text-left col-span-2" />
     </TableHeader>
 
     <HocLoading :status="status">
@@ -84,7 +85,7 @@ export default Vue.extend({
 
   computed: {
     entries(): UiLeaderboardEntry[] {
-      return this.$accessor.leaderboard.entries
+      return this.$accessor.leaderboard.entries.slice(0, 6)
     }
   }
 })

@@ -41,5 +41,21 @@ export const actions = actionTree(
       commit('setEntries', entries || [])
       commit('setLastUpdatedAt', updatedAt)
     }
+
+    // async fetchLeaderboardRank({ state, commit }, resolution: string) {
+    //   const { subaccount } = this.app.$accessor.account
+    //   const { isUserWalletConnected, injectiveAddress } = this.app.$accessor.wallet
+
+    //   if (!isUserWalletConnected || !subaccount || !injectiveAddress) {
+    //     return
+    //   }
+
+    //   const { updatedAt, rank } = await indexerRestLeaderboardChronosApi.fetchLeaderboardRank({
+    //     subaccountId: subaccount.subaccountId,
+    //     resolution
+    //   })
+
+    //   commit('setLastUpdatedAt', updatedAt)
+    // }
   }
 )
