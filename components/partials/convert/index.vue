@@ -133,7 +133,7 @@
 import Vue, { PropType } from 'vue'
 import { TradeError } from 'types/errors'
 import { BigNumberInWei, Status, BigNumberInBase } from '@injectivelabs/utils'
-import { TradeExecutionType, Wallet } from '@injectivelabs/ts-types'
+import { TradeExecutionType } from '@injectivelabs/ts-types'
 import {
   NUMBER_REGEX,
   ZERO_IN_BASE,
@@ -150,6 +150,7 @@ import {
   getDecimalsFromNumber
 } from '@injectivelabs/sdk-ts'
 import { Token } from '@injectivelabs/token-metadata'
+import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
 import TokenSelector from './token-selector.vue'
 import AdvancedSettings from './advanced-settings.vue'
 import ConvertDetails from './convert-details.vue'
@@ -250,17 +251,22 @@ export default Vue.extend({
     },
 
     ctaButtonDisabled(): boolean {
-      const { hasErrors, hasEnoughInjForGasOrNotKeplr } = this
+      const { hasErrors, hasEnoughInjForGasOrNotCosmosWallet } = this
 
-      return hasErrors || !hasEnoughInjForGasOrNotKeplr
+      return hasErrors || !hasEnoughInjForGasOrNotCosmosWallet
     },
 
     showErrors(): boolean | undefined {
-      const { market, amountError, priceError, hasEnoughInjForGasOrNotKeplr } =
-        this
+      const {
+        market,
+        amountError,
+        priceError,
+        hasEnoughInjForGasOrNotCosmosWallet
+      } = this
 
       return (
-        market && !!(amountError || priceError || !hasEnoughInjForGasOrNotKeplr)
+        market &&
+        !!(amountError || priceError || !hasEnoughInjForGasOrNotCosmosWallet)
       )
     },
 
@@ -1050,10 +1056,10 @@ export default Vue.extend({
       return this.$accessor.bank.hasEnoughInjForGas
     },
 
-    hasEnoughInjForGasOrNotKeplr(): boolean {
+    hasEnoughInjForGasOrNotCosmosWallet(): boolean {
       const { wallet, hasEnoughInjForGas } = this
 
-      if (wallet !== Wallet.Keplr) {
+      if (!isCosmosWallet(wallet)) {
         return true
       }
 
@@ -1108,7 +1114,7 @@ export default Vue.extend({
   },
 
   mounted() {
-    if (!this.hasEnoughInjForGasOrNotKeplr) {
+    if (!this.hasEnoughInjForGasOrNotCosmosWallet) {
       this.$accessor.modal.openModal({ type: Modal.InsufficientInjForGas })
     }
 

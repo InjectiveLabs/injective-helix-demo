@@ -3,7 +3,6 @@ import { LocalStorage } from '@injectivelabs/utils'
 import { Web3Client } from '@injectivelabs/sdk-ui-ts/dist/web3'
 import {
   MsgBroadcastClient,
-  MsgBroadcastExperimentalClient,
   TokenService,
   TokenPrice,
   MetricsProvider,
@@ -30,6 +29,7 @@ import {
   IndexerRestDerivativesChronosApi,
   IndexerRestSpotChronosApi,
   IndexerRestMarketChronosApi,
+  IndexerRestLeaderboardChronosApi,
   IndexerGrpcOracleApi
 } from '@injectivelabs/sdk-ts'
 import {
@@ -94,7 +94,13 @@ export const indexerRestSpotChronosApi = new IndexerRestSpotChronosApi(
       : `${ENDPOINTS.indexerApi}/api/chronos/v1/spot`
   }`
 )
-
+export const indexerRestLeaderboardChronosApi = new IndexerRestLeaderboardChronosApi(
+  `${
+    ENDPOINTS.chronosApi
+      ? `${ENDPOINTS.chronosApi}/api/v1/leaderboard`
+      : `${ENDPOINTS.indexerApi}/api/chronos/v1/leaderboard`
+  }`
+)
 export const indexerRestMarketChronosApi = new IndexerRestMarketChronosApi(
   `${ENDPOINTS.indexerApi}/api/chronos/v1/market`
 )
@@ -113,13 +119,7 @@ export const msgBroadcastClient = new MsgBroadcastClient({
   ...apiOptions,
   walletStrategy
 })
-export const msgBroadcastExperimentalClient =
-  new MsgBroadcastExperimentalClient({
-    ...apiOptions,
-    walletStrategy
-  })
 export const web3Client = new Web3Client({
-  // @ts-ignore
   walletStrategy,
   network: NETWORK,
   ethereumChainId: ETHEREUM_CHAIN_ID
@@ -137,5 +137,5 @@ export const bridgeTransformer = new UiBridgeTransformer(NETWORK)
 
 // Singletons
 export const localStorage: LocalStorage = new LocalStorage(
-  `inj-dex-v8-${NETWORK}-${process.env.APP_ENV || 'mainnet'}`
+  `inj-dex-v10-${NETWORK}-${process.env.APP_ENV || 'mainnet'}`
 )

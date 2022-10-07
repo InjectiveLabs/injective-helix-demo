@@ -4,7 +4,11 @@ import {
   spotPriceToChainPriceToFixed,
   spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/utils'
-import { StreamOperation, TradeExecutionType } from '@injectivelabs/ts-types'
+import {
+  StreamOperation,
+  TradeExecutionSide,
+  TradeExecutionType
+} from '@injectivelabs/ts-types'
 import {
   MsgBatchCancelSpotOrders,
   MsgCancelSpotOrder,
@@ -27,6 +31,7 @@ import {
   zeroSpotMarketSummary,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
+import { GeneralException } from '@injectivelabs/exceptions'
 import {
   streamOrderbook,
   streamTrades,
@@ -407,7 +412,9 @@ export const actions = actionTree(
       )
 
       if (!market) {
-        throw new Error('Market not found. Please refresh the page.')
+        throw new GeneralException(
+          new Error('Market not found. Please refresh the page.')
+        )
       }
 
       const summary = await indexerRestSpotChronosApi.fetchMarketSummary(
@@ -626,7 +633,9 @@ export const actions = actionTree(
         pagination: {
           skip: paginationOptions ? paginationOptions.skip : 0,
           limit: paginationOptions ? paginationOptions.limit : 0,
-          endTime: state.subaccountOrdersPagination.endTime
+          endTime: paginationOptions
+            ? paginationOptions.endTime
+            : state.subaccountOrdersPagination.endTime
         }
       })
 
@@ -669,7 +678,9 @@ export const actions = actionTree(
           pagination: {
             skip: paginationOptions ? paginationOptions.skip : 0,
             limit: paginationOptions ? paginationOptions.limit : 0,
-            endTime: state.subaccountOrderHistoryPagination.endTime
+            endTime: paginationOptions
+              ? paginationOptions.endTime
+              : state.subaccountOrderHistoryPagination.endTime
           }
         })
 
@@ -712,7 +723,9 @@ export const actions = actionTree(
           pagination: {
             skip: paginationOptions ? paginationOptions.skip : 0,
             limit: paginationOptions ? paginationOptions.limit : 0,
-            endTime: state.subaccountConditionalOrdersPagination.endTime
+            endTime: paginationOptions
+              ? paginationOptions.endTime
+              : state.subaccountConditionalOrdersPagination.endTime
           }
         })
 
@@ -733,7 +746,7 @@ export const actions = actionTree(
       )
     },
 
-    async fetchTrades({ state, commit }) {
+    async fetchTrades({ state, commit }, executionSide?: TradeExecutionSide) {
       const { market } = state
 
       if (!market) {
@@ -741,7 +754,8 @@ export const actions = actionTree(
       }
 
       const { trades } = await indexerSpotApi.fetchTrades({
-        marketId: market.marketId
+        marketId: market.marketId,
+        executionSide
       })
 
       commit('setTrades', trades)
@@ -780,7 +794,9 @@ export const actions = actionTree(
         pagination: {
           skip: paginationOptions ? paginationOptions.skip : 0,
           limit: paginationOptions ? paginationOptions.limit : 0,
-          endTime: state.subaccountTradesPagination.endTime
+          endTime: paginationOptions
+            ? paginationOptions.endTime
+            : state.subaccountTradesPagination.endTime
         }
       })
 

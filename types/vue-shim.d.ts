@@ -1,3 +1,4 @@
+import { ThrownException } from '@injectivelabs/exceptions'
 import VueI18n, { Path, Values, Locale } from 'vue-i18n/types'
 import VueRouter from 'vue-router'
 import { Toasted } from 'vue-toasted'
@@ -18,12 +19,12 @@ declare module 'vue/types/vue' {
   interface Vue {
     $toast: Toasted
     $t: typeof VueI18n.prototype.t
-    $onError: (e: string) => void
-    $onRejected: (e: string) => void
+    $onError: (e: ThrownException) => void
+    $onRejected: (e: ThrownException) => void
     $onConfirm: (e: string, cb: Function) => void
     $router: VueRouter
     $accessor: typeof accessorType
-    $attrs: Record<string, any>
+    // $attrs: Record<string, string>
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

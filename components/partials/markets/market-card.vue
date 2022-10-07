@@ -7,8 +7,6 @@
       <p class="tracking-widest uppercase text-xs">
         <slot />
       </p>
-
-      <v-powered-by v-if="isBaycWeth" />
     </div>
     <div class="flex justify-between mt-4">
       <div class="flex items-center">
@@ -80,16 +78,11 @@ import {
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import VPoweredBy from '~/components/partials/markets/powered-by.vue'
 import { Change, MarketRoute } from '~/types'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import { getMarketRoute } from '~/app/utils/market'
 
 export default Vue.extend({
-  components: {
-    VPoweredBy
-  },
-
   props: {
     market: {
       type: Object as PropType<
@@ -163,16 +156,6 @@ export default Vue.extend({
       const marketRoute = getMarketRoute(market)
 
       return marketRoute || { name: 'index' }
-    },
-
-    isBaycWeth(): boolean {
-      const { market } = this
-
-      if (!market || !market.slug) {
-        return false
-      }
-
-      return market.slug === 'bayc-weth-perp'
     },
 
     baseTokenLogo(): string {

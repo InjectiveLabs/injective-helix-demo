@@ -1,6 +1,7 @@
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import { getEndpointsForNetwork, Network } from '@injectivelabs/networks'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
+import { GeneralException } from '@injectivelabs/exceptions'
 
 const getChainId = (): ChainId => {
   const envChainId = process.env.APP_CHAIN_ID
@@ -136,8 +137,10 @@ const endpointsNotProvided =
     !APP_SENTRY_HTTP_ENDPOINT)
 
 if (endpointsNotProvided) {
-  throw new Error(
-    'You either have to provide a correct APP_NETWORK in the .env or provide APP_EXCHANGE_API_ENDPOINT, APP_SENTRY_GRPC_ENDPOINT and APP_SENTRY_HTTP_ENDPOINT'
+  throw new GeneralException(
+    new Error(
+      'You either have to provide a correct APP_NETWORK in the .env or provide APP_EXCHANGE_API_ENDPOINT, APP_SENTRY_GRPC_ENDPOINT and APP_SENTRY_HTTP_ENDPOINT'
+    )
   )
 }
 

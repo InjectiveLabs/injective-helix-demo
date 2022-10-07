@@ -1,3 +1,4 @@
+import { HttpRequestException } from '@injectivelabs/exceptions'
 import { HttpClient } from '@injectivelabs/utils'
 import { APP_NEWSLETTER_API } from '../utils/constants'
 
@@ -12,11 +13,16 @@ export const subscribeToNewsLetter = async (email: string) => {
     }
 
     return response.data
-  } catch (e: any) {
-    throw new Error(
-      e.response
-        ? e.response.data.message
-        : 'Something happened, please try again later!'
+  } catch (e: unknown) {
+    const response = (e as any).response
+
+    throw new HttpRequestException(
+      new Error(
+        response
+          ? response.data.message
+          : 'Something happened, please try again later!'
+      ),
+      { contextModule: 'newsletter' }
     )
   }
 }
