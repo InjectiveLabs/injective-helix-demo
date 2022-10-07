@@ -421,7 +421,7 @@ export default Vue.extend({
         notionalWithLeverageAndFees
       } = this
 
-      if (isUserWalletConnected) {
+      if (!isUserWalletConnected) {
         return undefined
       }
 
