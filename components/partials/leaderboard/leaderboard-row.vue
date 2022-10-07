@@ -1,42 +1,49 @@
 <template>
   <div
-    class="grid grid-cols-10 3md:grid-cols-12 text-gray-200 gap-4 text-sm px-4 items-center h-14 border-b border-helixGray-500"
+    class="grid grid-cols-6 md:grid-cols-12 text-gray-200 gap-4 text-sm px-4 items-center h-14 border-b border-helixGray-500"
   >
-    <div class="text-sm col-span-2 flex items-center justify-start">
+    <div
+      class="text-sm col-span-1 md:col-span-2 flex items-center justify-start"
+    >
       <span class="font-semibold mr-2">
         {{ rank }}
       </span>
       <IconTrophyColor v-if="rank <= 3" class="min-w-4 w-4 h-4" />
     </div>
 
-    <span
-      class="hidden font-mono sm:flex items-center justify-start col-span-2"
+    <div
+      class="font-mono flex items-center justify-start col-span-3 md:col-span-3 overflow-hidden"
       data-cy="markets-last-traded-price-table-data"
     >
-      <div v-if="avatarSrc" class="min-w-6 min-h-6 w-6 h-6 rounded-full overflow-hidden mr-2">
+      <div
+        v-if="avatarSrc"
+        class="min-w-6 min-h-6 w-6 h-6 rounded-full overflow-hidden mr-2"
+      >
         <img :src="avatarSrc" />
       </div>
       <div v-else class="min-w-6 min-h-6 w-6 h-6 rounded-full bg-white mr-2" />
-      <span class="text-white">
-        {{ formattedAddress }}
+      <span class="text-white whitespace-nowrap overflow-hidden overflow-ellipsis">
+        {{ address }}
+      </span>
+    </div>
+
+    <span class="block font-mono text-right col-span-2 md:col-span-2 text-sm">
+      <span class="text-white overflow-ellipsis whitespace-nowrap">
+        {{ formattedVolume }} USD
       </span>
     </span>
 
-    <span class="hidden sm:block font-mono text-right col-span-3 text-sm">
-      <span class="text-white"> {{ formattedVolume }} USD </span>
-    </span>
+    <span class="hidden md:block col-span-1" />
 
-    <span class="hidden sm:block col-span-1" />
-
-    <div class="hidden sm:block font-mono text-right col-span-2 text-sm">
+    <div class="hidden md:block font-mono text-right col-span-2 text-sm">
       <Progress :value="percentage" />
     </div>
 
-    <div class="hidden sm:block col-span-2 text-right">
+    <div class="hidden md:block col-span-2 text-right">
       <a
         :href="explorerUrl"
         target="_blank"
-        class="text-primary-500 cursor-pointer"
+        class="text-primary-500 cursor-pointer whitespace-nowrap overflow-ellipsis"
       >
         {{ $t('leaderboard.viewOnExplorer') }}
       </a>
@@ -50,7 +57,9 @@ import identicon from 'identicon'
 
 import Vue from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { getExplorerUrl } from '@injectivelabs/sdk-ui-ts'
 import Progress from '~/components/elements/progress.vue'
+import { NETWORK } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -86,16 +95,6 @@ export default Vue.extend({
   },
 
   computed: {
-    formattedAddress(): string {
-      const { address } = this
-
-      return (
-        address.slice(0, 6) +
-        '......' +
-        address.slice(address.length - 6, address.length)
-      )
-    },
-
     percentage(): Number {
       const { perc } = this
 
@@ -113,17 +112,18 @@ export default Vue.extend({
     explorerUrl(): string {
       const { address } = this
 
-      return `https://explorer.injective.network/account/${address}`
+      const baseUrl = getExplorerUrl(NETWORK)
+
+      return `${baseUrl}/account/${address}/?tab=transactions`
     }
   },
 
   mounted() {
     const { address } = this
 
-    this.generateAvatar(address)
-      .then((buffer: string) => {
-        this.avatarSrc = buffer
-      })
+    this.generateAvatar(address).then((buffer: string) => {
+      this.avatarSrc = buffer
+    })
   },
 
   methods: {
