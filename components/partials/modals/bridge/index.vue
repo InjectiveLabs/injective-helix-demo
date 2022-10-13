@@ -87,7 +87,7 @@
             show-custom-indicator
             show-balance
             show-errors-below
-            :validation-rules="`required|positiveNumber|enoughBalanceIncludeGas:0.0001,${balanceToFixed},${INJ_TO_IBC_TRANSFER_FEE}`"
+            :validation-rules="validationRules"
             @input:amount="handleAmountChange"
             @input:token="handleTokenChange"
             @input:max="handleMax"
@@ -451,6 +451,16 @@ export default Vue.extend({
 
     $form(): InstanceType<typeof ValidationObserver> {
       return this.$refs.form as InstanceType<typeof ValidationObserver>
+    },
+
+    validationRules(): string {
+      const { isWalletExemptFromGasFee, balanceToFixed } = this
+
+      if (isWalletExemptFromGasFee) {
+        return `required|positiveNumber|enoughBalance:0.0001,${balanceToFixed}`
+      }
+
+      return `required|positiveNumber|enoughBalanceIncludeGas:0.0001,${balanceToFixed},${INJ_TO_IBC_TRANSFER_FEE}`
     }
   },
 
