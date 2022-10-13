@@ -135,7 +135,7 @@
                       'text-primary-500': errors.length === 0
                     }"
                   >
-                    {{ $t('bridge.balance') }}: {{ balanceToFixed }}
+                    {{ $t('bridge.available') }}: {{ balanceToFixed }}
                   </span>
                   <button
                     v-if="showMaxSelector"
