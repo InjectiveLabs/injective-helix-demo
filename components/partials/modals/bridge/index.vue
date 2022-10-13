@@ -421,7 +421,8 @@ export default Vue.extend({
         onDepositBalance,
         onWithdrawBalance,
         isWalletExemptFromGasFee,
-        transferDirection
+        transferDirection,
+        form
       } = this
 
       const balance =
@@ -433,7 +434,8 @@ export default Vue.extend({
 
       if (
         isWalletExemptFromGasFee ||
-        transferDirection === TransferDirection.tradingAccountToBank
+        transferDirection === TransferDirection.tradingAccountToBank ||
+        form.token.symbol !== 'INJ'
       ) {
         return balance
       }
