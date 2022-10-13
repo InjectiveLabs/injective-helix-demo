@@ -27,7 +27,7 @@
             <Metamask />
             <Ledger @wallet-ledger-connecting="handleLedgerConnectingWallet" />
             <Leap />
-            <Cosmostation v-if="isStagingOrTestnetOrDevnet" />
+            <Cosmostation />
             <Torus />
             <Keplr />
             <!-- <WalletConnect v-if="isStagingOrTestnetOrDevnet" /> -->

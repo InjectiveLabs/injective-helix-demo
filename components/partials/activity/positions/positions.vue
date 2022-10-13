@@ -235,7 +235,8 @@ export default Vue.extend({
       return this.$accessor.positions.fetchSubaccountPositions({
         pagination: {
           skip,
-          limit
+          limit,
+          endTime: 0
         },
         filters: {
           marketId,

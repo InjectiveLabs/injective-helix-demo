@@ -1,12 +1,12 @@
 <template>
   <div v-if="market" class="h-full">
     <TableWrapper class="hidden sm:block">
-      <table v-if="filteredOrders.length > 0" class="table">
+      <table v-if="orders.length > 0" class="table">
         <OrderHistoryTableHeader />
         <tbody>
           <tr
             is="OrderHistory"
-            v-for="(order, index) in filteredOrders"
+            v-for="(order, index) in orders"
             :key="`order-history-${index}`"
             :order="order"
           />
@@ -32,13 +32,6 @@ export default Vue.extend({
     OrderHistoryTableHeader
   },
 
-  props: {
-    currentMarketOnly: {
-      type: Boolean,
-      default: false
-    }
-  },
-
   data() {
     return {}
   },
@@ -50,18 +43,6 @@ export default Vue.extend({
 
     orders(): UiDerivativeOrderHistory[] {
       return this.$accessor.derivatives.subaccountOrderHistory
-    },
-
-    filteredOrders(): UiDerivativeOrderHistory[] {
-      const { orders, currentMarketOnly, market } = this
-
-      if (!currentMarketOnly || !market) {
-        return orders
-      }
-
-      return orders.filter(
-        (order: UiDerivativeOrderHistory) => order.marketId === market.marketId
-      )
     }
   }
 })

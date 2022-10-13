@@ -51,7 +51,10 @@ import {
   streamSubaccountOrders,
   streamSubaccountOrderHistory,
   streamSubaccountTrades,
-  streamMarketMarkPrice
+  streamMarketMarkPrice,
+  cancelSubaccountOrderHistoryStream,
+  cancelSubaccountOrdersStream,
+  cancelSubaccountTradesStream
 } from '~/app/client/streams/derivatives'
 import {
   FEE_RECIPIENT,
@@ -746,7 +749,7 @@ export const actions = actionTree(
       })
     },
 
-    streamSubaccountOrders({ commit }) {
+    streamSubaccountOrders({ commit }, marketId?: string) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -755,6 +758,7 @@ export const actions = actionTree(
       }
 
       streamSubaccountOrders({
+        marketId,
         subaccountId: subaccount.subaccountId,
         callback: ({ order }) => {
           if (!order) {
@@ -795,7 +799,11 @@ export const actions = actionTree(
       })
     },
 
-    streamSubaccountOrderHistory({ commit }) {
+    cancelSubaccountOrdersStream() {
+      cancelSubaccountOrdersStream()
+    },
+
+    streamSubaccountOrderHistory({ commit }, marketId?: string) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -804,6 +812,7 @@ export const actions = actionTree(
       }
 
       streamSubaccountOrderHistory({
+        marketId,
         subaccountId: subaccount.subaccountId,
         callback: ({ order }) => {
           if (!order) {
@@ -827,7 +836,11 @@ export const actions = actionTree(
       })
     },
 
-    streamSubaccountTrades({ commit }) {
+    cancelSubaccountOrderHistoryStream() {
+      cancelSubaccountOrderHistoryStream()
+    },
+
+    streamSubaccountTrades({ commit }, marketId?: string) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -836,6 +849,7 @@ export const actions = actionTree(
       }
 
       streamSubaccountTrades({
+        marketId,
         subaccountId: subaccount.subaccountId,
         callback: ({ trade, operation }) => {
           if (!trade) {
@@ -855,6 +869,10 @@ export const actions = actionTree(
           }
         }
       })
+    },
+
+    cancelSubaccountTradesStream() {
+      cancelSubaccountTradesStream()
     },
 
     async fetchOrderbook({ state, commit }) {
@@ -886,7 +904,7 @@ export const actions = actionTree(
     },
 
     async fetchSubaccountOrders(
-      { commit },
+      { state, commit },
       activityFetchOptions: ActivityFetchOptions | undefined
     ) {
       const { subaccount } = this.app.$accessor.account
@@ -899,6 +917,16 @@ export const actions = actionTree(
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
 
+      if (
+        state.subaccountOrders.length > 0 &&
+        state.subaccountOrdersPagination.endTime === 0
+      ) {
+        commit(
+          'setSubaccountOrdersEndTime',
+          state.subaccountOrders[0].createdAt
+        )
+      }
+
       const { orders, pagination } = await indexerDerivativesApi.fetchOrders({
         marketId: filters?.marketId,
         marketIds: filters?.marketIds,
@@ -907,7 +935,10 @@ export const actions = actionTree(
         isConditional: false,
         pagination: {
           skip: paginationOptions ? paginationOptions.skip : 0,
-          limit: paginationOptions ? paginationOptions.limit : 0
+          limit: paginationOptions ? paginationOptions.limit : 0,
+          endTime: paginationOptions
+            ? paginationOptions.endTime
+            : state.subaccountOrdersPagination.endTime
         }
       })
 
@@ -950,7 +981,9 @@ export const actions = actionTree(
           pagination: {
             skip: paginationOptions ? paginationOptions.skip : 0,
             limit: paginationOptions ? paginationOptions.limit : 0,
-            endTime: state.subaccountOrderHistoryPagination.endTime
+            endTime: paginationOptions
+              ? paginationOptions.endTime
+              : state.subaccountOrderHistoryPagination.endTime
           }
         })
 
@@ -994,7 +1027,9 @@ export const actions = actionTree(
           pagination: {
             skip: paginationOptions ? paginationOptions.skip : 0,
             limit: paginationOptions ? paginationOptions.limit : 0,
-            endTime: state.subaccountConditionalOrdersPagination.endTime
+            endTime: paginationOptions
+              ? paginationOptions.endTime
+              : state.subaccountConditionalOrdersPagination.endTime
           }
         })
 
@@ -1090,7 +1125,9 @@ export const actions = actionTree(
         pagination: {
           skip: paginationOptions ? paginationOptions.skip : 0,
           limit: paginationOptions ? paginationOptions.limit : 0,
-          endTime: state.subaccountTradesPagination.endTime
+          endTime: paginationOptions
+            ? paginationOptions.endTime
+            : state.subaccountTradesPagination.endTime
         }
       })
 

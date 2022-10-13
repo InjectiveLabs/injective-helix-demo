@@ -21,12 +21,12 @@
     </TableBody> -->
 
     <TableWrapper class="hidden sm:block">
-      <table v-if="filteredTriggers.length > 0" class="table">
+      <table v-if="triggers.length > 0" class="table">
         <TriggersTableHeader />
         <tbody>
           <tr
             is="Trigger"
-            v-for="(trigger, index) in filteredTriggers"
+            v-for="(trigger, index) in triggers"
             :key="`triggers-${index}`"
             :trigger="trigger"
           />
@@ -62,13 +62,6 @@ export default Vue.extend({
     TriggersTableHeader
   },
 
-  props: {
-    currentMarketOnly: {
-      type: Boolean,
-      default: false
-    }
-  },
-
   data() {
     return {}
   },
@@ -80,18 +73,6 @@ export default Vue.extend({
 
     triggers(): UiDerivativeOrderHistory[] {
       return this.$accessor.derivatives.subaccountConditionalOrders
-    },
-
-    filteredTriggers(): UiDerivativeOrderHistory[] {
-      const { triggers, currentMarketOnly, market } = this
-
-      if (!currentMarketOnly || !market) {
-        return triggers
-      }
-
-      return triggers.filter(
-        (trigger: UiDerivativeOrderHistory) => trigger.marketId === market.marketId
-      )
     }
   }
 
