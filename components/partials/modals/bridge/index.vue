@@ -81,6 +81,7 @@
             :is-ibc-transfer="isIbcTransfer"
             :balance="balance"
             :balance-decimal-places="balanceDecimalPlaces"
+            :balance-label="$t('bridge.available')"
             small
             show-input
             show-custom-indicator

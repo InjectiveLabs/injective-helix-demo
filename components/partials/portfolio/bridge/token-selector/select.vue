@@ -135,7 +135,7 @@
                       'text-primary-500': errors.length === 0
                     }"
                   >
-                    {{ $t('bridge.available') }}: {{ balanceToFixed }}
+                    {{ formattedBalance }}
                   </span>
                   <button
                     v-if="showMaxSelector"
@@ -249,6 +249,11 @@ export default Vue.extend({
       default: UI_DEFAULT_DISPLAY_DECIMALS
     },
 
+    balanceLabel: {
+      type: String,
+      default: undefined
+    },
+
     showBalance: {
       type: Boolean,
       default: false
@@ -351,6 +356,12 @@ export default Vue.extend({
       const { balance, balanceDecimalPlaces } = this
 
       return balance.toFixed(balanceDecimalPlaces, BIG_NUMBER_ROUND_DOWN_MODE)
+    },
+
+    formattedBalance(): string {
+      const { balanceLabel, balanceToFixed } = this
+
+      return `${balanceLabel}: ${balanceToFixed}`
     },
 
     filteredOptions(): BankBalanceWithTokenAndBalanceInBase[] {
