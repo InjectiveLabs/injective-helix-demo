@@ -23,7 +23,7 @@ localize({
       max: 'This field should be less than {length}',
       min: 'This field should be greater than {length}',
       enoughBalance: 'Insufficient balance',
-      enoughBalanceIncludeGas: 'Insufficient balance to cover price and gas fee'
+      enoughBalanceIncludeGas: 'Insufficient balance to cover transfer amount and gas fee'
     }
   }
 })

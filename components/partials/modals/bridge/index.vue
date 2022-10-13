@@ -87,7 +87,6 @@
             show-custom-indicator
             show-balance
             show-errors-below
-            :validation-rules="validationRules"
             @input:amount="handleAmountChange"
             @input:token="handleTokenChange"
             @input:max="handleMax"
@@ -420,19 +419,32 @@ export default Vue.extend({
         bridgeType,
         onTransferBalance,
         onDepositBalance,
-        onWithdrawBalance
+        onWithdrawBalance,
+        isWalletExemptFromGasFee,
+        transferDirection
       } = this
 
-      if (bridgeType === BridgeType.Transfer) {
-        return onTransferBalance
+      const balance =
+        bridgeType === BridgeType.Transfer
+          ? onTransferBalance
+          : bridgeType === BridgeType.Deposit
+          ? onDepositBalance
+          : onWithdrawBalance
+
+      if (
+        isWalletExemptFromGasFee ||
+        transferDirection === TransferDirection.tradingAccountToBank
+      ) {
+        return balance
       }
 
-      if (bridgeType === BridgeType.Deposit) {
-        return onDepositBalance
+      const transferableBalance = balance.minus(INJ_TO_IBC_TRANSFER_FEE)
+
+      if (transferableBalance.lte(ZERO_IN_BASE)) {
+        return ZERO_IN_BASE
       }
 
-      // Withdraw
-      return onWithdrawBalance
+      return transferableBalance
     },
 
     balanceDecimalPlaces(): number {
@@ -451,16 +463,6 @@ export default Vue.extend({
 
     $form(): InstanceType<typeof ValidationObserver> {
       return this.$refs.form as InstanceType<typeof ValidationObserver>
-    },
-
-    validationRules(): string {
-      const { isWalletExemptFromGasFee, balanceToFixed } = this
-
-      if (isWalletExemptFromGasFee) {
-        return `required|positiveNumber|enoughBalance:0.0001,${balanceToFixed}`
-      }
-
-      return `required|positiveNumber|enoughBalanceIncludeGas:0.0001,${balanceToFixed},${INJ_TO_IBC_TRANSFER_FEE}`
     }
   },
 
@@ -483,14 +485,6 @@ export default Vue.extend({
     },
 
     handleMax(value: string) {
-      const { form, isWalletExemptFromGasFee } = this
-
-      if (form.token.symbol === 'INJ' && !isWalletExemptFromGasFee) {
-        const newValue = Number(value) - INJ_TO_IBC_TRANSFER_FEE
-
-        return this.$emit('input-amount:update', newValue.toString())
-      }
-
       this.$emit('input-amount:update', value)
     },
 
