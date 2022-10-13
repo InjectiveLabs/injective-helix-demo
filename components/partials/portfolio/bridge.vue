@@ -45,7 +45,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BankBalanceWithToken, BridgingNetwork, KeplrNetworks, SubaccountBalanceWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import {
+  BankBalanceWithToken,
+  BridgingNetwork,
+  KeplrNetworks,
+  SubaccountBalanceWithToken,
+  ZERO_IN_BASE
+} from '@injectivelabs/sdk-ui-ts'
 import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
 import { Token } from '@injectivelabs/token-metadata'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
@@ -100,6 +106,12 @@ export default Vue.extend({
 
     ibcBankBalancesWithToken(): BankBalanceWithToken[] {
       return this.$accessor.bank.bankIbcBalancesWithToken
+    },
+
+    isWalletExemptFromGasFee(): boolean {
+      const { wallet } = this
+
+      return !isCosmosWallet(wallet)
     },
 
     transferBalance(): BigNumberInBase {
@@ -296,6 +308,8 @@ export default Vue.extend({
     },
 
     handleTransfer(token: Token) {
+      const { isWalletExemptFromGasFee } = this
+
       this.form.amount = ''
       this.form.memo = ''
       this.form.destinationAddress = ''
@@ -306,7 +320,7 @@ export default Vue.extend({
       const { transferBalance } = this
       const transferFee = new BigNumberInBase(INJ_TO_IBC_TRANSFER_FEE)
 
-      if (transferBalance.lt(transferFee)) {
+      if (!isWalletExemptFromGasFee && transferBalance.lt(transferFee)) {
         this.$accessor.modal.openModal({ type: Modal.InsufficientInjForGas })
         return
       }
