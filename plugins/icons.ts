@@ -80,6 +80,8 @@ import BoundingBoxCircles from '~/components/icons/bounding-box-circles.vue'
 import Gas from '~/components/icons/gas.vue'
 import ShieldLockFill from '~/components/icons/shield-lock-fill.vue'
 import Minus from '~/components/icons/minus.vue'
+import TrophyColor from '~/components/icons/trophy-color.vue'
+import Trophy from '~/components/icons/trophy.vue'
 
 Vue.component('IconArrow', Arrow)
 Vue.component('IconArrowSwap', ArrowSwap)
@@ -161,3 +163,5 @@ Vue.component('IconBoundingBoxCircles', BoundingBoxCircles)
 Vue.component('IconGas', Gas)
 Vue.component('IconShieldLockFill', ShieldLockFill)
 Vue.component('IconMinus', Minus)
+Vue.component('IconTrophyColor', TrophyColor)
+Vue.component('IconTrophy', Trophy)

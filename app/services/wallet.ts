@@ -30,6 +30,16 @@ export const getAddresses = async (): Promise<string[]> => {
     )
   }
 
+  if (!addresses.every((address) => !!address)) {
+    throw new WalletException(
+      new Error('There are no addresses linked in this wallet.'),
+      {
+        code: UnspecifiedErrorCode,
+        type: ErrorType.WalletError
+      }
+    )
+  }
+
   if (GEO_IP_RESTRICTIONS_ENABLED) {
     const [address] = addresses
     const addressIsBlackListed =

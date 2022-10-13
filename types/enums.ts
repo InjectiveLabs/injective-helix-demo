@@ -165,6 +165,7 @@ export enum AmplitudeEvents {
   ClickPlaceOrder = 'Place Order Attempt',
   AttemptPlaceOrder = 'Place Order Confirm',
   TradeClicked = 'Trade Clicked',
+  Transfer = 'Transfer',
   CosmoverseGiveawayCampaign = 'Cosmoverse Giveaway Campaign'
 }
 

@@ -83,7 +83,6 @@
       </VInput>
 
       <VInput
-        v-if="!tradingTypeMarket"
         ref="input-quote-amount"
         v-model="inputQuoteAmount"
         :custom-handler="true"
@@ -645,9 +644,7 @@ export default Vue.extend({
   },
 
   mounted() {
-    const { amountStep } = this
-
-    this.onAmountChange(amountStep)
+    //
   },
 
   methods: {
