@@ -2,6 +2,7 @@
   <div>
     <TokenSelector
       v-bind="$attrs"
+      :form-id="formId"
       :options="supplyWithSortedBalanceInBase"
       :disabled="isIbcTransfer"
       @input:token="handleTokenChange"
@@ -50,6 +51,13 @@ export default Vue.extend({
       required: true
     }
   },
+
+  data() {
+    return {
+      formId: 0
+    }
+  },
+
   computed: {
     erc20TokensWithBalanceAndPriceFromBank(): TokenWithBalanceAndPrice[] {
       return this.$accessor.token.erc20TokensWithBalanceAndPriceFromBank
