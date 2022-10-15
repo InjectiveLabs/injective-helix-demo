@@ -69,7 +69,6 @@
         />
       </div>
       <ConvertDetails
-        v-if="market && fromToken && toToken"
         :pending="pricesPending || fetchStatus.isLoading()"
         :from-token="fromToken"
         :to-token="toToken"
