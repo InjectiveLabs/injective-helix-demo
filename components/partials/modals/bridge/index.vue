@@ -460,7 +460,7 @@ export default Vue.extend({
 
     handleCloseModal() {
       this.$accessor.modal.closeModal(Modal.Bridge)
-      this.formId++
+      this.formId += 1
     },
 
     handleResetBridge() {
