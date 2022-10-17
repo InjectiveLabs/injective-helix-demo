@@ -69,7 +69,7 @@
         />
       </div>
       <ConvertDetails
-        :pending="pricesPending || fetchStatus.isLoading()"
+        :is-pending="pricesPending || fetchStatus.isLoading()"
         :from-token="fromToken"
         :to-token="toToken"
         :amount="amount"
@@ -225,6 +225,46 @@ export default Vue.extend({
   },
 
   computed: {
+    isUserWalletConnected(): boolean {
+      return this.$accessor.wallet.isUserWalletConnected
+    },
+
+    markets(): UiSpotMarketWithToken[] {
+      return this.$store.state.spot.markets
+    },
+
+    market(): UiSpotMarketWithToken | undefined {
+      return this.$accessor.spot.market
+    },
+
+    orderbook(): UiSpotOrderbook | undefined {
+      return this.$accessor.spot.orderbook
+    },
+
+    subaccount(): UiSubaccount | undefined {
+      return this.$accessor.account.subaccount
+    },
+
+    lastTradedPrice(): BigNumberInBase {
+      return this.$accessor.spot.lastTradedPrice
+    },
+
+    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
+      return this.$accessor.exchange.feeDiscountAccountInfo
+    },
+
+    tradingRewardsCampaign(): TradingRewardsCampaign | undefined {
+      return this.$accessor.exchange.tradingRewardsCampaign
+    },
+
+    wallet(): Wallet {
+      return this.$accessor.wallet.wallet
+    },
+
+    hasEnoughInjForGas(): boolean {
+      return this.$accessor.bank.hasEnoughInjForGas
+    },
+
     fromAmount(): string {
       const { amount } = this.form
 
@@ -324,38 +364,6 @@ export default Vue.extend({
       }
 
       return result
-    },
-
-    isUserWalletConnected(): boolean {
-      return this.$accessor.wallet.isUserWalletConnected
-    },
-
-    markets(): UiSpotMarketWithToken[] {
-      return this.$store.state.spot.markets
-    },
-
-    market(): UiSpotMarketWithToken | undefined {
-      return this.$accessor.spot.market
-    },
-
-    orderbook(): UiSpotOrderbook | undefined {
-      return this.$accessor.spot.orderbook
-    },
-
-    subaccount(): UiSubaccount | undefined {
-      return this.$accessor.account.subaccount
-    },
-
-    lastTradedPrice(): BigNumberInBase {
-      return this.$accessor.spot.lastTradedPrice
-    },
-
-    feeDiscountAccountInfo(): FeeDiscountAccountInfo | undefined {
-      return this.$accessor.exchange.feeDiscountAccountInfo
-    },
-
-    tradingRewardsCampaign(): TradingRewardsCampaign | undefined {
-      return this.$accessor.exchange.tradingRewardsCampaign
     },
 
     baseAvailableBalance(): BigNumberInBase {
@@ -1048,14 +1056,6 @@ export default Vue.extend({
         .times(discount)
 
       return fee
-    },
-
-    wallet(): Wallet {
-      return this.$accessor.wallet.wallet
-    },
-
-    hasEnoughInjForGas(): boolean {
-      return this.$accessor.bank.hasEnoughInjForGas
     },
 
     hasEnoughInjForGasOrNotCosmosWallet(): boolean {
