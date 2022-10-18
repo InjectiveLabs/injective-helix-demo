@@ -11,6 +11,9 @@
             :fetch-status="fetchStatus"
             :from-token="fromToken"
             :to-token="toToken"
+            :market="market"
+            :order-type="orderType"
+            :tokens-with-balances="tokensWithBalances"
             @update:from-token="handleFromTokenChange"
             @update:to-token="handleToTokenChange"
             @update:switch="handleSwitchTokens"
@@ -23,9 +26,23 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Status, StatusType } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  Status,
+  StatusType
+} from '@injectivelabs/utils'
+import {
+  BankBalanceWithToken,
+  BankBalanceWithTokenAndBalance,
+  getTokenLogoWithVendorPathPrefix,
+  SpotOrderSide,
+  SubaccountBalanceWithToken,
+  TokenWithBalanceAndPrice,
+  UiSpotMarketWithToken
+} from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
+import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
 import Convert from '~/components/partials/convert/index.vue'
 import { Modal } from '~/types'
 import { betaMarketSlugs } from '~/app/data/market'
@@ -41,18 +58,93 @@ export default Vue.extend({
       status: new Status(StatusType.Loading),
       interval: 0 as any,
       fromToken: undefined as Token | undefined,
-      toToken: undefined as Token | undefined
+      toToken: undefined as Token | undefined,
+      orderType: SpotOrderSide.Buy
     }
   },
 
   computed: {
+    erc20TokensWithBalanceAndPriceFromBank(): TokenWithBalanceAndPrice[] {
+      return this.$accessor.token.erc20TokensWithBalanceAndPriceFromBank
+    },
+
+    bankErc20BalancesWithToken(): BankBalanceWithToken[] {
+      return this.$accessor.bank.bankErc20BalancesWithToken
+    },
+
+    bankIbcBalancesWithToken(): BankBalanceWithToken[] {
+      return this.$accessor.bank.bankIbcBalancesWithToken
+    },
+
+    bankBalancesWithToken(): BankBalanceWithToken[] {
+      const { bankErc20BalancesWithToken, bankIbcBalancesWithToken } = this
+
+      return [...bankErc20BalancesWithToken, ...bankIbcBalancesWithToken]
+    },
+
+    subaccountBalancesWithToken(): SubaccountBalanceWithToken[] {
+      return this.$accessor.account.subaccountBalancesWithToken
+    },
+
+    subaccountBalancesWithTokenAsBankBalanceWithToken(): BankBalanceWithToken[] {
+      const { subaccountBalancesWithToken } = this
+
+      return subaccountBalancesWithToken.map((balance) => ({
+        ...balance,
+        balance: balance.availableBalance
+      }))
+    },
+
+    erc20TokensWithBalanceAndPriceFromBankAsBankBalanceWithToken(): BankBalanceWithToken[] {
+      const { erc20TokensWithBalanceAndPriceFromBank } = this
+
+      return erc20TokensWithBalanceAndPriceFromBank
+        .map((token) => ({
+          token,
+          denom: token.denom,
+          balance: token.balance
+        }))
+        .filter(({ denom }) => !denom.startsWith('ibc'))
+    },
+
+    tokensWithBalances(): BankBalanceWithTokenAndBalance[] {
+      const { bankBalancesWithToken } = this
+
+      return bankBalancesWithToken
+        .map((token) => {
+          const balance = new BigNumberInWei(token.balance || 0).toBase(
+            token.token ? token.token.decimals : 18
+          )
+
+          return {
+            ...token,
+            token: {
+              ...token.token,
+              logo: getTokenLogoWithVendorPathPrefix(token.token.logo)
+            },
+            balance: balance.toFixed()
+          } as BankBalanceWithTokenAndBalance
+        })
+        .sort((supply1, supply2) =>
+          new BigNumberInBase(supply2.balance).minus(supply1.balance).toNumber()
+        )
+    },
+
+    wallet(): Wallet {
+      return this.$accessor.wallet.wallet
+    },
+
+    hasEnoughInjForGas(): boolean {
+      return this.$accessor.bank.hasEnoughInjForGas
+    },
+
     marketIsBeta(): boolean {
       const { params } = this.$route
       return betaMarketSlugs.includes(params.spot)
     },
 
     markets(): UiSpotMarketWithToken[] {
-      return this.$store.state.spot.markets
+      return this.$accessor.spot.markets
     },
 
     market(): UiSpotMarketWithToken | undefined {
@@ -69,6 +161,16 @@ export default Vue.extend({
       return markets.find(
         (market: UiSpotMarketWithToken) => market.slug === slug
       )
+    },
+
+    hasEnoughInjForGasOrNotCosmosWallet(): boolean {
+      const { wallet, hasEnoughInjForGas } = this
+
+      if (!isCosmosWallet(wallet)) {
+        return true
+      }
+
+      return hasEnoughInjForGas
     }
   },
 
@@ -77,18 +179,27 @@ export default Vue.extend({
       handler(market: UiSpotMarketWithToken | undefined) {
         if (market) {
           this.initMarket(market.slug)
+          this.handleOrderTypeChange()
+          return
         }
+
+        this.resetToDefaultMarket()
       },
       immediate: true
     }
   },
 
   mounted() {
+    if (!this.hasEnoughInjForGasOrNotCosmosWallet) {
+      this.$accessor.modal.openModal({ type: Modal.InsufficientInjForGas })
+    }
+
     Promise.all([
       this.$accessor.spot.init(),
       this.$accessor.spot.fetchOrderbook(),
       this.$accessor.exchange.fetchTradingRewardsCampaign(),
       this.$accessor.exchange.fetchFeeDiscountAccountInfo(),
+      this.$accessor.bank.fetchBankBalancesWithToken(),
       this.$accessor.token.getErc20TokensWithBalanceAndPriceFromBankAndMarkets()
     ])
       .catch(this.$onRejected)
@@ -123,8 +234,6 @@ export default Vue.extend({
     initMarket(slug: string) {
       this.fetchStatus.setLoading()
 
-      console.log('initializing market:', slug)
-
       Promise.all([
         this.$accessor.spot.reset(),
         this.$accessor.spot.initMarket(slug),
@@ -143,13 +252,12 @@ export default Vue.extend({
 
       this.fromToken = token
 
-      this.$router.replace({
-        name: 'convert-convert',
-        query: {
-          from: token.symbol.toLowerCase(),
-          to: toToken ? toToken.symbol.toLowerCase() : undefined
-        }
+      this.updateQueryParams({
+        from: token.symbol.toLowerCase(),
+        to: toToken ? toToken.symbol.toLowerCase() : undefined
       })
+
+      this.handleOrderTypeChange()
     },
 
     handleToTokenChange(token: Token) {
@@ -157,25 +265,53 @@ export default Vue.extend({
 
       this.toToken = token
 
-      this.$router.replace({
-        name: 'convert-convert',
-        query: {
-          from: fromToken ? fromToken.symbol.toLowerCase() : undefined,
-          to: token.symbol.toLowerCase()
-        }
+      this.updateQueryParams({
+        from: fromToken ? fromToken.symbol.toLowerCase() : undefined,
+        to: token.symbol.toLowerCase()
       })
+
+      this.handleOrderTypeChange()
     },
 
     handleSwitchTokens({ from, to }: { from: Token; to: Token }) {
       this.fromToken = from
       this.toToken = to
 
+      this.updateQueryParams({
+        from: from.symbol.toLowerCase(),
+        to: to.symbol.toLowerCase()
+      })
+    },
+
+    handleOrderTypeChange() {
+      const { market, fromToken } = this
+
+      if (!market || !fromToken) {
+        return
+      }
+
+      this.orderType =
+        market.baseDenom === fromToken.denom
+          ? SpotOrderSide.Sell
+          : SpotOrderSide.Buy
+    },
+
+    updateQueryParams({
+      from,
+      to
+    }: {
+      from: string | undefined
+      to: string | undefined
+    }) {
+      const { from: currentFrom, to: currentTo } = this.$route.query
+
+      if (from === currentFrom && to === currentTo) {
+        return
+      }
+
       this.$router.replace({
         name: 'convert-convert',
-        query: {
-          from: from.symbol.toLowerCase(),
-          to: to.symbol.toLowerCase()
-        }
+        query: { from, to }
       })
     },
 
@@ -190,7 +326,7 @@ export default Vue.extend({
       }, 5000)
     },
 
-    getTokenBySymbol(symbol: string): Token | undefined {
+    getTokenBySymbol(symbol: string) {
       const { markets } = this
 
       const market = markets.find((m: UiSpotMarketWithToken) =>
@@ -206,6 +342,29 @@ export default Vue.extend({
       }
 
       return market.quoteToken
+    },
+
+    resetToDefaultMarket() {
+      const { fromToken, toToken } = this
+
+      if (!fromToken || !toToken) {
+        return
+      }
+
+      const pair = `${fromToken.symbol}/${toToken.symbol}`
+
+      const from = this.getTokenBySymbol('usdt')
+      const to = this.getTokenBySymbol('inj')
+
+      if (!from || !to) {
+        return
+      }
+
+      this.handleSwitchTokens({ from, to })
+
+      this.$toast.error(
+        this.$t('trade.convert.reset_to_default_pair', { pair })
+      )
     }
   }
 })

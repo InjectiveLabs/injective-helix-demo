@@ -161,6 +161,7 @@ import {
   ConvertTradeErrorLinkType,
   ConvertForm
 } from './types'
+import { sanitizeAmount } from './helpers'
 import {
   DEFAULT_MARKET_PRICE_WARNING_DEVIATION,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
@@ -169,7 +170,6 @@ import {
   ONE_IN_BASE
 } from '~/app/utils/constants'
 import ModalInsufficientInjForGas from '~/components/partials/modals/insufficient-inj-for-gas.vue'
-import { Modal } from '~/types'
 import {
   calculateAverageExecutionPriceFromOrderbook,
   calculateWorstExecutionPriceFromOrderbook,
@@ -208,6 +208,21 @@ export default Vue.extend({
     toToken: {
       type: Object as PropType<Token>,
       default: undefined
+    },
+
+    market: {
+      type: Object as PropType<UiSpotMarketWithToken>,
+      default: undefined
+    },
+
+    orderType: {
+      type: String as PropType<SpotOrderSide>,
+      required: true
+    },
+
+    tokensWithBalances: {
+      type: Array as PropType<BankBalanceWithTokenAndBalance[]>,
+      required: true
     }
   },
 
@@ -217,7 +232,6 @@ export default Vue.extend({
       TradeExecutionType,
       SpotOrderSide,
       UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-      orderType: SpotOrderSide.Buy,
       detailsDrawerOpen: true,
       status: new Status(),
       formId: 0,
@@ -238,11 +252,7 @@ export default Vue.extend({
     },
 
     markets(): UiSpotMarketWithToken[] {
-      return this.$store.state.spot.markets
-    },
-
-    market(): UiSpotMarketWithToken | undefined {
-      return this.$accessor.spot.market
+      return this.$accessor.spot.markets
     },
 
     orderbook(): UiSpotOrderbook | undefined {
@@ -273,16 +283,26 @@ export default Vue.extend({
       return this.$accessor.bank.hasEnoughInjForGas
     },
 
+    hasEnoughInjForGasOrNotCosmosWallet(): boolean {
+      const { wallet, hasEnoughInjForGas } = this
+
+      if (!isCosmosWallet(wallet)) {
+        return true
+      }
+
+      return hasEnoughInjForGas
+    },
+
     fromAmount(): string {
       const { amount } = this.form
 
-      return this.sanitizeAmount(amount)
+      return sanitizeAmount(amount)
     },
 
     toAmount(): string {
       const { toAmount } = this.form
 
-      return this.sanitizeAmount(toAmount)
+      return sanitizeAmount(toAmount)
     },
 
     ctaButtonLabel(): string {
@@ -478,7 +498,7 @@ export default Vue.extend({
     },
 
     amount(): BigNumberInBase {
-      const amount = this.sanitizeAmount(this.form.amount) || 0
+      const amount = sanitizeAmount(this.form.amount) || 0
 
       return new BigNumberInBase(amount)
     },
@@ -881,7 +901,7 @@ export default Vue.extend({
         return undefined
       }
 
-      const amount = this.sanitizeAmount(form.amount)
+      const amount = sanitizeAmount(form.amount)
 
       if (NUMBER_REGEX.test(amount)) {
         return undefined
@@ -978,63 +998,45 @@ export default Vue.extend({
       return executionPrice.times(amount.times(feeRate))
     },
 
-    tokens(): Token[] {
-      // TODO: Replace this with an easier way to get a list of all available tokens.
-      return this.$store.state.spot.markets
-        .map((market: UiSpotMarketWithToken) => [
-          market.baseToken,
-          market.quoteToken
-        ])
-        .flat()
-        .filter(
-          (a: Token, i: number, arr: Array<Token>) =>
-            arr.findIndex((b: Token) => b.symbol === a.symbol) === i
-        )
-    },
-
-    tokensWithBalances(): BankBalanceWithTokenAndBalance[] {
-      return this.tokens.map((token: Token) => {
-        const balance = this.getFormattedBalance(token)
-
-        return {
-          balance,
-          denom: token.denom,
-          token
-        } as BankBalanceWithTokenAndBalance
-      })
-    },
-
-    fromTokens(): BankBalanceWithTokenAndBalance[] {
-      return this.tokensWithBalances
-    },
-
-    toTokens(): BankBalanceWithTokenAndBalance[] {
-      const { fromToken } = this
+    marketsCompatibleWithFromToken(): UiSpotMarketWithToken[] {
+      const { fromToken, markets } = this
 
       if (!fromToken) {
         return []
       }
 
-      // TODO: Replace this with an easier way to get a list of available symbols.
-      const allowedSymbols = this.$store.state.spot.markets
-        .filter(
-          (m: UiSpotMarketWithToken) =>
-            m.baseToken.symbol === fromToken.symbol ||
-            m.quoteToken.symbol === fromToken.symbol
-        )
-        .map((m: UiSpotMarketWithToken) => [
-          m.baseToken.symbol,
-          m.quoteToken.symbol
-        ])
-        .flat()
-        .filter(
-          (a: string, i: number, arr: Array<string>) =>
-            arr.findIndex((b: string) => b === a) === i
-        )
+      return markets.filter(
+        (market: UiSpotMarketWithToken) =>
+          market.baseDenom === fromToken.denom ||
+          market.quoteDenom === fromToken.denom
+      )
+    },
 
-      return this.tokensWithBalances.filter(
-        (t: BankBalanceWithTokenAndBalance) =>
-          allowedSymbols.includes(t.token.symbol)
+    fromTokens(): BankBalanceWithTokenAndBalance[] {
+      const { tokensWithBalances, markets } = this
+
+      return tokensWithBalances.filter(
+        (tokenWithBalance: BankBalanceWithTokenAndBalance) => {
+          return !!markets.find(
+            (market: UiSpotMarketWithToken) =>
+              market.baseDenom === tokenWithBalance.denom ||
+              market.quoteDenom === tokenWithBalance.denom
+          )
+        }
+      )
+    },
+
+    toTokens(): BankBalanceWithTokenAndBalance[] {
+      const { tokensWithBalances, marketsCompatibleWithFromToken } = this
+
+      return tokensWithBalances.filter(
+        (tokenWithBalance: BankBalanceWithTokenAndBalance) => {
+          return marketsCompatibleWithFromToken.find(
+            (market: UiSpotMarketWithToken) =>
+              market.baseDenom === tokenWithBalance.denom ||
+              market.quoteDenom === tokenWithBalance.denom
+          )
+        }
       )
     },
 
@@ -1064,111 +1066,17 @@ export default Vue.extend({
         .times(discount)
 
       return fee
-    },
-
-    hasEnoughInjForGasOrNotCosmosWallet(): boolean {
-      const { wallet, hasEnoughInjForGas } = this
-
-      if (!isCosmosWallet(wallet)) {
-        return true
-      }
-
-      return hasEnoughInjForGas
     }
   },
 
   watch: {
-    fromToken(token) {
-      this.updateOrderType()
+    fromToken() {
       this.updatePrices()
-
-      const { toToken, market } = this
-
-      if (!toToken || !token) {
-        return
-      }
-
-      const newMarket = this.findMarket(token, toToken)
-
-      if (!newMarket) {
-        this.resetToDefaultMarket()
-        return
-      }
-
-      if (newMarket && market?.slug !== newMarket.slug) {
-        this.$emit('set-market', newMarket.slug)
-      }
     },
 
-    toToken(token) {
-      this.updateOrderType()
+    toToken() {
       this.updatePrices()
-
-      const { fromToken, market } = this
-
-      if (!fromToken || !token) {
-        return
-      }
-
-      const newMarket = this.findMarket(fromToken, token)
-
-      if (!newMarket) {
-        this.resetToDefaultMarket()
-        return
-      }
-
-      if (newMarket && market?.slug !== newMarket.slug) {
-        this.$emit('set-market', newMarket.slug)
-      }
     }
-  },
-
-  mounted() {
-    if (!this.hasEnoughInjForGasOrNotCosmosWallet) {
-      this.$accessor.modal.openModal({ type: Modal.InsufficientInjForGas })
-    }
-
-    let from = (this.$route.query.from as string) || 'usdt'
-    let to = (this.$route.query.to as string) || 'inj'
-
-    if (!this.isTokenSymbolValid(from)) {
-      this.$toast.error(
-        this.$t('trade.convert.invalid_token_symbol_warning', {
-          symbol: from.toUpperCase(),
-          defaultSymbol: 'USDT'
-        })
-      )
-      from = 'usdt'
-    }
-
-    if (!this.isTokenSymbolValid(to)) {
-      this.$toast.error(
-        this.$t('trade.convert.invalid_token_symbol_warning', {
-          symbol: to.toUpperCase(),
-          defaultSymbol: 'INJ'
-        })
-      )
-
-      to = 'inj'
-    }
-
-    const market = this.getMarketFromRoute()
-    const fromToken = this.getTokenBySymbol(from)
-    // const toToken = this.getTokenBySymbol(to)
-
-    let orderType = SpotOrderSide.Buy
-
-    if (market) {
-      orderType =
-        market.baseDenom === fromToken?.denom
-          ? SpotOrderSide.Sell
-          : SpotOrderSide.Buy
-    }
-
-    // this.$emit('update:from-token', fromToken)
-    // this.$emit('update:to-token', toToken)
-
-    this.orderType = orderType
   },
 
   methods: {
@@ -1194,47 +1102,6 @@ export default Vue.extend({
 
     setSlippageTolerance(slippageTolerance: string): void {
       this.form.slippageTolerance = slippageTolerance
-    },
-
-    getMarketFromRoute(): UiSpotMarketWithToken | undefined {
-      const { from, to } = this.$route.query
-
-      const market = this.markets.find((m: any) => {
-        const [base, quote] = m.slug.split('-')
-        return (
-          (from === base || from === quote) && (to === base || to === quote)
-        )
-      })
-
-      return market
-    },
-
-    getTokenBySymbol(symbol: string): Token | null {
-      const market = this.$store.state.spot.markets.find(
-        (m: UiSpotMarketWithToken) =>
-          m.baseToken.symbol.toLowerCase() === symbol ||
-          m.quoteToken.symbol.toLowerCase() === symbol
-      )
-
-      if (!market) {
-        return null
-      }
-
-      if (market.baseToken.symbol.toLowerCase() === symbol) {
-        return market.baseToken
-      }
-
-      return market.quoteToken
-    },
-
-    isTokenSymbolValid(symbol: any): boolean {
-      const market = this.$store.state.spot.markets.find(
-        (m: UiSpotMarketWithToken) =>
-          m.baseToken.symbol.toLowerCase() === symbol ||
-          m.quoteToken.symbol.toLowerCase() === symbol
-      )
-
-      return !!market
     },
 
     submitMarketOrder(): void {
@@ -1423,14 +1290,8 @@ export default Vue.extend({
         return
       }
 
-      if (toToken) {
-        if (!this.isValidMarket(token, toToken)) {
-          this.$emit('update:from-token', token)
-          return
-        }
-      }
-
       this.$emit('update:from-token', token)
+
       this.form.amount = ''
       this.form.toAmount = ''
     },
@@ -1443,45 +1304,10 @@ export default Vue.extend({
         return
       }
 
-      if (fromToken) {
-        if (!this.isValidMarket(fromToken, token)) {
-          this.$emit('update:to-token', token)
-          return
-        }
-      }
-
       this.$emit('update:to-token', token)
+
       this.form.amount = ''
       this.form.toAmount = ''
-    },
-
-    sanitizeAmount(amount: string): string {
-      let result = amount
-
-      // Transforms 12,345.67 to 12345.67
-      result = result.replace(/,/gim, '')
-
-      // Transforms 12. to 12
-      if (result.endsWith('.')) {
-        return result.replace(/\./gim, '')
-      }
-
-      return result
-    },
-
-    resetToDefaultMarket(): void {
-      const { fromToken, toToken } = this
-
-      if (!fromToken || !toToken) {
-        return
-      }
-
-      const pair = `${fromToken.symbol}/${toToken.symbol}`
-
-      this.$emit('update:from-token', this.getTokenBySymbol('usdt'))
-      this.$emit('update:to-token', this.getTokenBySymbol('inj'))
-
-      this.$toast.info(this.$t('trade.convert.reset_to_default_pair', { pair }))
     },
 
     switchTokens(): void {
@@ -1491,32 +1317,13 @@ export default Vue.extend({
         return
       }
 
-      this.$emit('update:switch', { from: fromToken, to: toToken })
+      this.$emit('update:switch', { from: toToken, to: fromToken })
 
       // TODO: Come up with a robust way to handle modifying these values based on whatever values were already present.
       this.form.amount = ''
       this.form.toAmount = ''
 
       this.updatePrices()
-    },
-
-    updateOrderType(): void {
-      const { fromToken, toToken } = this
-
-      if (!fromToken || !toToken) {
-        return
-      }
-
-      const market = this.findMarket(fromToken, toToken)
-
-      if (!market) {
-        return
-      }
-
-      this.orderType =
-        market.baseDenom === fromToken.denom
-          ? SpotOrderSide.Sell
-          : SpotOrderSide.Buy
     },
 
     async updatePrices(): Promise<void> {
@@ -1531,7 +1338,7 @@ export default Vue.extend({
 
         const priceAsBigNumber = new BigNumberInBase(price)
 
-        const amount = this.sanitizeAmount(this.form.amount)
+        const amount = sanitizeAmount(this.form.amount)
 
         const quantity = new BigNumberInBase(amount || 0)
 
@@ -1547,7 +1354,7 @@ export default Vue.extend({
 
         const priceAsBigNumber = new BigNumberInBase(price)
 
-        const amount = this.sanitizeAmount(this.form.toAmount)
+        const amount = sanitizeAmount(this.form.toAmount)
 
         const quantity = new BigNumberInBase(amount || 0)
 
@@ -1557,29 +1364,6 @@ export default Vue.extend({
       }
 
       this.pricesPending = false
-    },
-
-    findMarket(
-      fromToken: Token,
-      toToken: Token
-    ): UiSpotMarketWithToken | undefined {
-      // TODO: Replace with simpler way to check if a market exists.
-      const market = this.$accessor.spot.markets.find(
-        (m: UiSpotMarketWithToken) => {
-          return (
-            (m.baseToken.denom === fromToken.denom &&
-              m.quoteToken.denom === toToken.denom) ||
-            (m.baseToken.denom === toToken.denom &&
-              m.quoteToken.denom === fromToken.denom)
-          )
-        }
-      )
-
-      return market
-    },
-
-    isValidMarket(fromToken: Token, toToken: Token): boolean {
-      return !!this.findMarket(fromToken, toToken)
     },
 
     handleClickOrConnect(): void {
