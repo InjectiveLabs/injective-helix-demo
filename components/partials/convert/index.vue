@@ -198,6 +198,16 @@ export default Vue.extend({
       required: false,
       type: Object as PropType<Status>,
       default: () => new Status()
+    },
+
+    fromToken: {
+      type: Object as PropType<Token>,
+      default: undefined
+    },
+
+    toToken: {
+      type: Object as PropType<Token>,
+      default: undefined
     }
   },
 
@@ -212,8 +222,6 @@ export default Vue.extend({
       status: new Status(),
       formId: 0,
       form: initialForm(),
-      fromToken: null as Token | null,
-      toToken: null as Token | null,
       fromUsdPrice: new BigNumberInBase(0).toFormat(
         UI_DEFAULT_MIN_DISPLAY_DECIMALS
       ),
@@ -1146,7 +1154,7 @@ export default Vue.extend({
 
     const market = this.getMarketFromRoute()
     const fromToken = this.getTokenBySymbol(from)
-    const toToken = this.getTokenBySymbol(to)
+    // const toToken = this.getTokenBySymbol(to)
 
     let orderType = SpotOrderSide.Buy
 
@@ -1157,8 +1165,9 @@ export default Vue.extend({
           : SpotOrderSide.Buy
     }
 
-    this.fromToken = fromToken
-    this.toToken = toToken
+    // this.$emit('update:from-token', fromToken)
+    // this.$emit('update:to-token', toToken)
+
     this.orderType = orderType
   },
 
@@ -1416,12 +1425,12 @@ export default Vue.extend({
 
       if (toToken) {
         if (!this.isValidMarket(token, toToken)) {
-          this.fromToken = token
+          this.$emit('update:from-token', token)
           return
         }
       }
 
-      this.fromToken = token
+      this.$emit('update:from-token', token)
       this.form.amount = ''
       this.form.toAmount = ''
     },
@@ -1436,12 +1445,12 @@ export default Vue.extend({
 
       if (fromToken) {
         if (!this.isValidMarket(fromToken, token)) {
-          this.toToken = token
+          this.$emit('update:to-token', token)
           return
         }
       }
 
-      this.toToken = token
+      this.$emit('update:to-token', token)
       this.form.amount = ''
       this.form.toAmount = ''
     },
@@ -1469,8 +1478,8 @@ export default Vue.extend({
 
       const pair = `${fromToken.symbol}/${toToken.symbol}`
 
-      this.fromToken = this.getTokenBySymbol('usdt')
-      this.toToken = this.getTokenBySymbol('inj')
+      this.$emit('update:from-token', this.getTokenBySymbol('usdt'))
+      this.$emit('update:to-token', this.getTokenBySymbol('inj'))
 
       this.$toast.info(this.$t('trade.convert.reset_to_default_pair', { pair }))
     },
@@ -1482,9 +1491,7 @@ export default Vue.extend({
         return
       }
 
-      const from = fromToken
-      this.fromToken = toToken
-      this.toToken = from
+      this.$emit('update:switch', { from: fromToken, to: toToken })
 
       // TODO: Come up with a robust way to handle modifying these values based on whatever values were already present.
       this.form.amount = ''
