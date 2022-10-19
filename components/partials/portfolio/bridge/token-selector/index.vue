@@ -1,15 +1,14 @@
 <template>
-  <div>
-    <TokenSelector
-      v-bind="$attrs"
-      :options="supplyWithSortedBalanceInBase"
-      :disabled="isIbcTransfer"
-      @input:token="handleTokenChange"
-      @input:amount="handleAmountChange"
-      @input:max="handleMax"
-    />
-  </div>
+  <TokenSelector
+    v-bind="$attrs"
+    :options="supplyWithSortedBalanceInBase"
+    :disabled="isIbcTransfer"
+    @input:token="handleTokenChange"
+    @input:amount="handleAmountChange"
+    @input:max="handleMax"
+  />
 </template>
+
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
@@ -50,6 +49,7 @@ export default Vue.extend({
       required: true
     }
   },
+
   computed: {
     erc20TokensWithBalanceAndPriceFromBank(): TokenWithBalanceAndPrice[] {
       return this.$accessor.token.erc20TokensWithBalanceAndPriceFromBank
