@@ -69,7 +69,7 @@
         />
       </div>
       <ConvertDetails
-        :is-pending="pricesPending || fetchStatus.isLoading()"
+        :is-pending="fromUsdPricePending || fetchStatus.isLoading()"
         :from-token="fromToken"
         :to-token="toToken"
         :amount="amount"
@@ -223,6 +223,11 @@ export default Vue.extend({
     tokensWithBalances: {
       type: Array as PropType<BankBalanceWithTokenAndBalance[]>,
       required: true
+    },
+
+    fromUsdPrice: {
+      type: Number,
+      default: 0
     }
   },
 
@@ -236,13 +241,10 @@ export default Vue.extend({
       status: new Status(),
       formId: 0,
       form: initialForm(),
-      fromUsdPrice: new BigNumberInBase(0).toFormat(
-        UI_DEFAULT_MIN_DISPLAY_DECIMALS
-      ),
       toUsdPrice: new BigNumberInBase(0).toFormat(
         UI_DEFAULT_MIN_DISPLAY_DECIMALS
       ),
-      pricesPending: false
+      fromUsdPricePending: false
     }
   },
 
@@ -1071,11 +1073,11 @@ export default Vue.extend({
 
   watch: {
     fromToken() {
-      this.updatePrices()
+      this.$emit('update:prices')
     },
 
     toToken() {
-      this.updatePrices()
+      this.$emit('update:prices')
     }
   },
 
@@ -1157,7 +1159,7 @@ export default Vue.extend({
     onSetAmount(quantity: string): void {
       const { orderTypeBuy, market, fromToken, feeRate } = this
 
-      this.updatePrices()
+      this.$emit('update:prices')
 
       this.form.amount = quantity
 
@@ -1197,7 +1199,7 @@ export default Vue.extend({
     onSetToAmount(quantity: string) {
       const { orderTypeBuy, market, toToken, feeRate } = this
 
-      this.updatePrices()
+      this.$emit('update:prices')
 
       this.form.toAmount = quantity
 
@@ -1237,7 +1239,7 @@ export default Vue.extend({
     onMaxInput(max: string): void {
       const { orderTypeBuy, executionPrice, feeRate, market } = this
 
-      this.updatePrices()
+      this.$emit('update:prices')
 
       this.form.amount = max
 
@@ -1323,47 +1325,7 @@ export default Vue.extend({
       this.form.amount = ''
       this.form.toAmount = ''
 
-      this.updatePrices()
-    },
-
-    async updatePrices(): Promise<void> {
-      const { fromToken, toToken } = this
-
-      this.pricesPending = true
-
-      if (fromToken) {
-        const price = await this.$accessor.spot.fetchUsdPrice(
-          fromToken.coinGeckoId
-        )
-
-        const priceAsBigNumber = new BigNumberInBase(price)
-
-        const amount = sanitizeAmount(this.form.amount)
-
-        const quantity = new BigNumberInBase(amount || 0)
-
-        this.fromUsdPrice = priceAsBigNumber
-          .times(quantity)
-          .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
-      }
-
-      if (toToken) {
-        const price = await this.$accessor.spot.fetchUsdPrice(
-          toToken.coinGeckoId
-        )
-
-        const priceAsBigNumber = new BigNumberInBase(price)
-
-        const amount = sanitizeAmount(this.form.toAmount)
-
-        const quantity = new BigNumberInBase(amount || 0)
-
-        this.toUsdPrice = priceAsBigNumber
-          .times(quantity)
-          .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
-      }
-
-      this.pricesPending = false
+      this.$emit('update:prices')
     },
 
     handleClickOrConnect(): void {

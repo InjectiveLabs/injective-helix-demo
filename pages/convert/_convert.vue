@@ -2,9 +2,6 @@
   <div class="convert-container min-h-screen-excluding-header">
     <HocLoading :key="$route.fullPath" :status="status">
       <div class="container">
-        <div>from: {{ fromToken }}</div>
-        <div>to: {{ toToken }}</div>
-        <div>market: {{ market }}</div>
         <div class="mx-auto h-full w-full sm:w-md flex flex-col justify-center">
           <Convert
             class="mt-[-56px]"
@@ -14,9 +11,11 @@
             :market="market"
             :order-type="orderType"
             :tokens-with-balances="tokensWithBalances"
+            :from-usd-price="fromUsdPrice"
             @update:from-token="handleFromTokenChange"
             @update:to-token="handleToTokenChange"
             @update:switch="handleSwitchTokens"
+            @update:prices="handleUpdatePrices"
           />
         </div>
       </div>
@@ -56,10 +55,13 @@ export default Vue.extend({
     return {
       fetchStatus: new Status(StatusType.Idle),
       status: new Status(StatusType.Loading),
-      interval: 0 as any,
+      orderbookInterval: 0 as any,
+      pricesInterval: 0 as any,
       fromToken: undefined as Token | undefined,
       toToken: undefined as Token | undefined,
-      orderType: SpotOrderSide.Buy
+      orderType: SpotOrderSide.Buy,
+      fromUsdPricePending: false,
+      fromUsdPrice: 0
     }
   },
 
@@ -209,13 +211,16 @@ export default Vue.extend({
         this.initTokens()
 
         this.startPollingOrderbook()
+        this.startPollingPrices()
       })
   },
 
   beforeDestroy() {
     this.$accessor.spot.reset()
     this.$accessor.modal.reset()
-    clearInterval(this.interval)
+
+    clearInterval(this.orderbookInterval)
+    clearInterval(this.pricesInterval)
   },
 
   methods: {
@@ -316,14 +321,30 @@ export default Vue.extend({
     },
 
     startPollingOrderbook() {
-      if (this.interval) {
-        clearInterval(this.interval)
+      const { orderbookInterval } = this
+
+      if (orderbookInterval) {
+        clearInterval(orderbookInterval)
       }
 
       this.$accessor.spot.pollOrderbook()
-      this.interval = setInterval(() => {
-        this.$accessor.spot.pollOrderbook()
-      }, 5000)
+
+      this.orderbookInterval = setInterval(
+        this.$accessor.spot.pollOrderbook,
+        5000
+      )
+    },
+
+    startPollingPrices() {
+      const { pricesInterval } = this
+
+      if (pricesInterval) {
+        clearInterval(pricesInterval)
+      }
+
+      this.handleUpdatePrices()
+
+      this.pricesInterval = setInterval(this.handleUpdatePrices, 5000)
     },
 
     getTokenBySymbol(symbol: string) {
@@ -365,6 +386,26 @@ export default Vue.extend({
       this.$toast.error(
         this.$t('trade.convert.reset_to_default_pair', { pair })
       )
+    },
+
+    handleUpdatePrices() {
+      const { fromToken } = this
+
+      if (!fromToken) {
+        return
+      }
+
+      this.fromUsdPricePending = true
+
+      this.$accessor.spot
+        .fetchUsdPrice(fromToken.coinGeckoId)
+        .then((price: number) => {
+          this.fromUsdPrice = price
+        })
+        .catch(this.$onError)
+        .finally(() => {
+          this.fromUsdPricePending = false
+        })
     }
   }
 })

@@ -86,7 +86,7 @@
                     {{ errors[0] }}
                   </span>
                   <span
-                    v-else-if="usdPrice !== ''"
+                    v-else-if="usdPrice !== -1"
                     class="text-gray-500 text-[12px]"
                   >
                     {{ usdPrice }} USD
@@ -256,8 +256,8 @@ export default Vue.extend({
     },
 
     usdPrice: {
-      type: String,
-      default: ''
+      type: Number,
+      default: -1
     },
 
     value: {

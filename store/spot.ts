@@ -18,7 +18,6 @@ import {
   SpotOrderState
 } from '@injectivelabs/sdk-ts'
 import {
-  BankBalanceWithTokenAndBalance,
   Change,
   SpotMetrics,
   spotOrderTypeToGrpcOrderType,
