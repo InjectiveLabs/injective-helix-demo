@@ -24,7 +24,12 @@
             <slot name="trading-panel" />
           </div>
         </div>
-        <div class="col-span-6 lg:col-span-9 4xl:col-span-9">
+        <div
+          class="col-span-6 lg:col-span-9 4xl:col-span-9"
+          :class="{
+            '-order-1': tradingLayoutAlignment === TradingLayoutAlignment.Right
+          }"
+        >
           <div class="flex flex-wrap flex-col w-full h-full">
             <div class="w-full">
               <VCard tight>
@@ -67,6 +72,7 @@ import MarketSelection from '~/components/partials/common/market-selection/index
 import ModalMarketBeta from '~/components/partials/modals/market-beta.vue'
 import { betaMarketSlugs } from '~/app/data/market'
 import { Modal } from '~/types'
+import { TradingLayoutAlignment } from '~/store/app'
 
 export default Vue.extend({
   name: 'MarketsLayout',
@@ -87,12 +93,17 @@ export default Vue.extend({
 
   data() {
     return {
+      TradingLayoutAlignment,
       status: new Status(StatusType.Loading),
       showMarketList: false
     }
   },
 
   computed: {
+    tradingLayoutAlignment(): TradingLayoutAlignment {
+      return this.$accessor.app.layoutPreferences.tradingLayoutAlignment
+    },
+
     derivativeMarket(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },

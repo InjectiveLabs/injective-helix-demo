@@ -37,6 +37,15 @@ export interface UserBasedState {
   geoLocation: GeoLocation
 }
 
+export enum TradingLayoutAlignment {
+  Left = 'left',
+  Right = 'right'
+}
+
+export interface LayoutPreferences {
+  tradingLayoutAlignment: TradingLayoutAlignment
+}
+
 const initialState = {
   // App Settings
   locale: english,
@@ -59,7 +68,12 @@ const initialState = {
     }
   } as UserBasedState,
   announcements: [] as Array<Announcement>,
-  attachments: [] as Array<Attachment>
+  attachments: [] as Array<Attachment>,
+
+  // Layout preferences
+  layoutPreferences: {
+    tradingLayoutAlignment: TradingLayoutAlignment.Left
+  } as LayoutPreferences
 }
 
 export const state = () => ({
@@ -71,7 +85,8 @@ export const state = () => ({
   marketsLoadingState: initialState.marketsLoadingState as StatusType,
   userState: initialState.userState as UserBasedState,
   announcements: [] as Array<Announcement>,
-  attachments: [] as Array<Attachment>
+  attachments: [] as Array<Attachment>,
+  layoutPreferences: initialState.layoutPreferences as LayoutPreferences
 })
 
 export type AppStoreState = ReturnType<typeof state>
@@ -126,6 +141,13 @@ export const mutations = {
 
   setAttachments(state: AppStoreState, attachments: Array<any>) {
     state.attachments = attachments
+  },
+
+  setTradingLayoutAlignment(
+    state: AppStoreState,
+    alignment: TradingLayoutAlignment
+  ) {
+    state.layoutPreferences.tradingLayoutAlignment = alignment
   }
 }
 

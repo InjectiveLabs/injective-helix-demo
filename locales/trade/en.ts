@@ -272,6 +272,11 @@ export default {
     open: 'Open',
     partiallyFilled: 'Partially Filled',
     cancelled: 'Cancelled',
-    spotTradeHistoryTotalTooltip: 'Total value of the order in quote currency'
+    spotTradeHistoryTotalTooltip: 'Total value of the order in quote currency',
+    tradingLayout: 'Trading Layout',
+    tradingLayoutOptions: {
+      left: 'Left',
+      right: 'Right'
+    }
   }
 }
