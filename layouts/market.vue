@@ -27,7 +27,7 @@
         <div
           class="col-span-6 lg:col-span-9 4xl:col-span-9"
           :class="{
-            '-order-1': tradingLayoutAlignment === TradingLayoutAlignment.Right
+            '-order-1': tradingLayout === TradingLayout.Right
           }"
         >
           <div class="flex flex-wrap flex-col w-full h-full">
@@ -40,8 +40,7 @@
                   <div
                     class="col-span-6 lg:col-span-8 4xl:col-span-9"
                     :class="{
-                      '-order-1':
-                        tradingLayoutAlignment === TradingLayoutAlignment.Right
+                      '-order-1': tradingLayout === TradingLayout.Right
                     }"
                   >
                     <slot name="chart" />
@@ -77,7 +76,7 @@ import DerivativeMarket from '~/components/partials/derivatives/market.vue'
 import MarketSelection from '~/components/partials/common/market-selection/index.vue'
 import ModalMarketBeta from '~/components/partials/modals/market-beta.vue'
 import { betaMarketSlugs } from '~/app/data/market'
-import { Modal, TradingLayoutAlignment } from '~/types'
+import { Modal, TradingLayout } from '~/types'
 
 export default Vue.extend({
   name: 'MarketsLayout',
@@ -98,15 +97,15 @@ export default Vue.extend({
 
   data() {
     return {
-      TradingLayoutAlignment,
+      TradingLayout,
       status: new Status(StatusType.Loading),
       showMarketList: false
     }
   },
 
   computed: {
-    tradingLayoutAlignment(): TradingLayoutAlignment {
-      return this.$accessor.app.userState.tradingLayoutAlignment
+    tradingLayout(): TradingLayout {
+      return this.$accessor.app.userState.tradingLayout
     },
 
     derivativeMarket(): UiDerivativeMarketWithToken | undefined {

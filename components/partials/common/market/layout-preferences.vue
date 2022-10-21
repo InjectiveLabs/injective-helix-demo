@@ -6,13 +6,13 @@
 
     <RadioGroup
       class="flex gap-8 items-start"
-      :value="tradingLayoutAlignment"
-      @change="handleSetTradingLayoutAlignment"
+      :value="tradingLayout"
+      @change="handleChangeTradingLayout"
     >
       <template #options="{ value, setValue }">
         <RadioButton
-          :active="value === TradingLayoutAlignment.Left"
-          @click="() => setValue(TradingLayoutAlignment.Left)"
+          :active="value === TradingLayout.Left"
+          @click="() => setValue(TradingLayout.Left)"
         >
           <template #label>
             <span class="text-white">
@@ -24,8 +24,8 @@
             <div
               class="border rounded-sm"
               :class="{
-                'border-white': value === TradingLayoutAlignment.Left,
-                'border-transparent': value !== TradingLayoutAlignment.Left
+                'border-white': value === TradingLayout.Left,
+                'border-transparent': value !== TradingLayout.Left
               }"
             >
               <img src="/images/layout-left.svg" class="pointer-events-none" />
@@ -34,8 +34,8 @@
         </RadioButton>
 
         <RadioButton
-          :active="value === TradingLayoutAlignment.Right"
-          @click="() => setValue(TradingLayoutAlignment.Right)"
+          :active="value === TradingLayout.Right"
+          @click="() => setValue(TradingLayout.Right)"
         >
           <template #label>
             <span class="text-white">
@@ -47,8 +47,8 @@
             <div
               class="border rounded-sm"
               :class="{
-                'border-white': value === TradingLayoutAlignment.Right,
-                'border-transparent': value !== TradingLayoutAlignment.Right
+                'border-white': value === TradingLayout.Right,
+                'border-transparent': value !== TradingLayout.Right
               }"
             >
               <img src="/images/layout-right.svg" class="pointer-events-none" />
@@ -65,7 +65,7 @@ import Vue from 'vue'
 
 import RadioGroup from '~/components/elements/radio-group.vue'
 import RadioButton from '~/components/elements/radio-button.vue'
-import { TradingLayoutAlignment } from '~/types'
+import { TradingLayout } from '~/types'
 import { UserBasedState } from '~/store/app'
 
 export default Vue.extend({
@@ -76,7 +76,7 @@ export default Vue.extend({
 
   data() {
     return {
-      TradingLayoutAlignment
+      TradingLayout
     }
   },
 
@@ -85,18 +85,18 @@ export default Vue.extend({
       return this.$accessor.app.userState
     },
 
-    tradingLayoutAlignment(): TradingLayoutAlignment {
-      return this.$accessor.app.userState.tradingLayoutAlignment
+    tradingLayout(): TradingLayout {
+      return this.$accessor.app.userState.tradingLayout
     }
   },
 
   methods: {
-    handleSetTradingLayoutAlignment(alignment: TradingLayoutAlignment) {
+    handleChangeTradingLayout(tradingLayout: TradingLayout) {
       const { userState } = this
 
       this.$accessor.app.setUserState({
         ...userState,
-        tradingLayoutAlignment: alignment
+        tradingLayout
       })
     }
   }
