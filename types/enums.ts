@@ -190,3 +190,8 @@ export enum OrderbookLayout {
   Buys = 'buys',
   Sells = 'sells'
 }
+
+export enum TradingLayout {
+  Left = 'left',
+  Right = 'right'
+}
