@@ -184,3 +184,9 @@ export enum OrderAttemptStatus {
   Success = 'Success',
   Error = 'Error'
 }
+
+export enum OrderbookLayout {
+  Default = 'default',
+  Buys = 'buys',
+  Sells = 'sells'
+}

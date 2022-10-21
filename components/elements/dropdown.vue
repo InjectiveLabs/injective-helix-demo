@@ -8,7 +8,7 @@
       <div>
         <button
           type="button"
-          class="inline-flex items-center justify-between w-full py-1 text-xs outline-none focus:outline-none text-gray-500"
+          class="inline-flex items-center justify-between w-full text-xs outline-none focus:outline-none text-gray-500"
           :class="[selectorClass, { 'border-b': !hideBottomBorder }]"
           aria-haspopup="true"
           :aria-expanded="isDropdownOpen"
@@ -74,6 +74,11 @@ export default Vue.extend({
       default: ''
     },
 
+    selectorClass: {
+      type: String,
+      default: 'bg-gray-900 h-10'
+    },
+
     selectedClass: {
       type: String,
       default: ''
@@ -112,10 +117,10 @@ export default Vue.extend({
   },
 
   computed: {
-    selectorClass(): string {
-      const { round, noPadding } = this
+    selectorClasses(): string {
+      const { selectorClass, round, noPadding } = this
 
-      const classes = ['bg-gray-900', 'h-10']
+      const classes = [selectorClass]
 
       if (round) {
         classes.push('rounded-full')
