@@ -1,6 +1,6 @@
 <template>
   <button class="flex justify-start gap-2" @click="handleClick">
-    <div class="w-4 h-4 border border-white rounded-full p-[2px]">
+    <div class="w-4 h-4 border border-white rounded-full p-[3px]">
       <div v-if="active" class="w-full h-full bg-white rounded-full" />
     </div>
     <div class="flex flex-col gap-2 justify-center items-start">
