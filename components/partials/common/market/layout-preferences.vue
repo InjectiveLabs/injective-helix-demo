@@ -12,7 +12,7 @@
       <template #options="{ value, setValue }">
         <RadioButton
           :active="value === TradingLayout.Left"
-          @click="() => setValue(TradingLayout.Left)"
+          @click="setValue(TradingLayout.Left)"
         >
           <template #label>
             <span class="text-white">
@@ -35,7 +35,7 @@
 
         <RadioButton
           :active="value === TradingLayout.Right"
-          @click="() => setValue(TradingLayout.Right)"
+          @click="setValue(TradingLayout.Right)"
         >
           <template #label>
             <span class="text-white">
