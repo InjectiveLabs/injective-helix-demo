@@ -19,8 +19,17 @@
               {{ $t('trade.tradingLayoutOptions.left') }}
             </span>
           </template>
+
           <template #addon>
-            <img src="/images/layout-left.svg" class="pointer-events-none" />
+            <div
+              class="border rounded-sm"
+              :class="{
+                'border-white': value === TradingLayoutAlignment.Left,
+                'border-transparent': value !== TradingLayoutAlignment.Left
+              }"
+            >
+              <img src="/images/layout-left.svg" class="pointer-events-none" />
+            </div>
           </template>
         </RadioButton>
 
@@ -33,8 +42,17 @@
               {{ $t('trade.tradingLayoutOptions.right') }}
             </span>
           </template>
+
           <template #addon>
-            <img src="/images/layout-right.svg" class="pointer-events-none" />
+            <div
+              class="border rounded-sm"
+              :class="{
+                'border-white': value === TradingLayoutAlignment.Right,
+                'border-transparent': value !== TradingLayoutAlignment.Right
+              }"
+            >
+              <img src="/images/layout-right.svg" class="pointer-events-none" />
+            </div>
           </template>
         </RadioButton>
       </template>
