@@ -48,10 +48,10 @@
       <div class="ml-auto hidden lg:block">
         <button
           id="layout-preferences-button"
-          class="w-4 h-4 cursor-pointer group"
-          @click="handleToggleLayoutPreferences"
+          class="w-6 h-6 cursor-pointer group flex justify-center items-center"
+          @mouseenter="showLayoutPreferences"
         >
-          <IconSliders class="text-gray-450 group-hover:text-white" />
+          <IconSliders class="text-gray-450 group-hover:text-white w-4 h-4" />
         </button>
       </div>
     </div>
@@ -60,6 +60,7 @@
       ref="layout-preferences-dropdown"
       class="popper rounded-lg flex flex-col flex-wrap text-xs absolute w-80 bg-gray-950 shadow-dropdown z-1000"
       :options="popperOptions"
+      :hide-arrow="true"
       binding-element="#layout-preferences-button"
     >
       <LayoutPreferences />
@@ -105,12 +106,6 @@ export default Vue.extend({
     }
   },
 
-  data() {
-    return {
-      popperActive: false
-    }
-  },
-
   computed: {
     baseTokenLogo(): string {
       const { market } = this
@@ -132,12 +127,12 @@ export default Vue.extend({
 
     popperOptions(): any {
       return {
-        placement: 'bottom',
+        placement: 'bottom-end',
         modifiers: [
           {
             name: 'offset',
             options: {
-              offset: [0, 22]
+              offset: [0, 0]
             }
           }
         ]
@@ -150,25 +145,11 @@ export default Vue.extend({
       this.$root.$emit('toggle-market-list')
     },
 
-    handleToggleLayoutPreferences() {
-      const fn = this.popperActive
-        ? this.hideLayoutPreferences
-        : this.showLayoutPreferences
-
-      fn()
-    },
-
     showLayoutPreferences() {
-      if (this.$popper) {
-        this.$popper.showDropdown()
-        this.popperActive = true
-      }
-    },
+      const { $popper } = this
 
-    hideLayoutPreferences() {
-      if (this.$popper) {
-        this.$popper.hideDropdown()
-        this.popperActive = false
+      if ($popper) {
+        $popper.showDropdown()
       }
     }
   }
