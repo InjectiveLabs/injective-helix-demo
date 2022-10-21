@@ -184,3 +184,8 @@ export enum OrderAttemptStatus {
   Success = 'Success',
   Error = 'Error'
 }
+
+export enum TradingLayoutAlignment {
+  Left = 'left',
+  Right = 'right'
+}

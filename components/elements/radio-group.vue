@@ -10,7 +10,7 @@ import Vue from 'vue'
 export default Vue.extend({
   props: {
     value: {
-      type: Number,
+      type: [Object, String, Number],
       default: 0
     }
   },

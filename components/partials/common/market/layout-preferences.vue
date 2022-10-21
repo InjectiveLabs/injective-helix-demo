@@ -47,7 +47,8 @@ import Vue from 'vue'
 
 import RadioGroup from '~/components/elements/radio-group.vue'
 import RadioButton from '~/components/elements/radio-button.vue'
-import { TradingLayoutAlignment } from '~/store/app'
+import { TradingLayoutAlignment } from '~/types'
+import { UserBasedState } from '~/store/app'
 
 export default Vue.extend({
   components: {
@@ -62,14 +63,23 @@ export default Vue.extend({
   },
 
   computed: {
+    userState(): UserBasedState {
+      return this.$accessor.app.userState
+    },
+
     tradingLayoutAlignment(): TradingLayoutAlignment {
-      return this.$accessor.app.layoutPreferences.tradingLayoutAlignment
+      return this.$accessor.app.userState.tradingLayoutAlignment
     }
   },
 
   methods: {
     handleSetTradingLayoutAlignment(alignment: TradingLayoutAlignment) {
-      this.$accessor.app.setTradingLayoutAlignment(alignment)
+      const { userState } = this
+
+      this.$accessor.app.setUserState({
+        ...userState,
+        tradingLayoutAlignment: alignment
+      })
     }
   }
 })

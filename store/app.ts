@@ -15,7 +15,7 @@ import {
   VPN_PROXY_VALIDATION_PERIOD
 } from '~/app/utils/constants'
 import { Locale, english } from '~/locales'
-import { AppState, GeoLocation } from '~/types'
+import { AppState, GeoLocation, TradingLayoutAlignment } from '~/types'
 import {
   fetchGeoLocation,
   validateGeoLocation,
@@ -35,14 +35,6 @@ export interface UserBasedState {
   favoriteMarkets: string[]
   auctionsViewed: number[]
   geoLocation: GeoLocation
-}
-
-export enum TradingLayoutAlignment {
-  Left = 'left',
-  Right = 'right'
-}
-
-export interface LayoutPreferences {
   tradingLayoutAlignment: TradingLayoutAlignment
 }
 
@@ -65,15 +57,11 @@ const initialState = {
     geoLocation: {
       continent: '',
       country: ''
-    }
+    },
+    tradingLayoutAlignment: TradingLayoutAlignment.Left
   } as UserBasedState,
   announcements: [] as Array<Announcement>,
-  attachments: [] as Array<Attachment>,
-
-  // Layout preferences
-  layoutPreferences: {
-    tradingLayoutAlignment: TradingLayoutAlignment.Left
-  } as LayoutPreferences
+  attachments: [] as Array<Attachment>
 }
 
 export const state = () => ({
@@ -85,8 +73,7 @@ export const state = () => ({
   marketsLoadingState: initialState.marketsLoadingState as StatusType,
   userState: initialState.userState as UserBasedState,
   announcements: [] as Array<Announcement>,
-  attachments: [] as Array<Attachment>,
-  layoutPreferences: initialState.layoutPreferences as LayoutPreferences
+  attachments: [] as Array<Attachment>
 })
 
 export type AppStoreState = ReturnType<typeof state>
@@ -141,13 +128,6 @@ export const mutations = {
 
   setAttachments(state: AppStoreState, attachments: Array<any>) {
     state.attachments = attachments
-  },
-
-  setTradingLayoutAlignment(
-    state: AppStoreState,
-    alignment: TradingLayoutAlignment
-  ) {
-    state.layoutPreferences.tradingLayoutAlignment = alignment
   }
 }
 

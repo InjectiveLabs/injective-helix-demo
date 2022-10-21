@@ -71,8 +71,7 @@ import DerivativeMarket from '~/components/partials/derivatives/market.vue'
 import MarketSelection from '~/components/partials/common/market-selection/index.vue'
 import ModalMarketBeta from '~/components/partials/modals/market-beta.vue'
 import { betaMarketSlugs } from '~/app/data/market'
-import { Modal } from '~/types'
-import { TradingLayoutAlignment } from '~/store/app'
+import { Modal, TradingLayoutAlignment } from '~/types'
 
 export default Vue.extend({
   name: 'MarketsLayout',
@@ -101,7 +100,7 @@ export default Vue.extend({
 
   computed: {
     tradingLayoutAlignment(): TradingLayoutAlignment {
-      return this.$accessor.app.layoutPreferences.tradingLayoutAlignment
+      return this.$accessor.app.userState.tradingLayoutAlignment
     },
 
     derivativeMarket(): UiDerivativeMarketWithToken | undefined {
