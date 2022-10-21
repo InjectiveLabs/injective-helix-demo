@@ -6,7 +6,7 @@
         'opacity-100': orderbookLayout === OrderbookLayout.Default,
         'opacity-30': orderbookLayout !== OrderbookLayout.Default
       }"
-      @click="() => setOrderbookLayout(OrderbookLayout.Default)"
+      @click="setOrderbookLayout(OrderbookLayout.Default)"
     >
       <IconDefault class="w-3 h-3" />
     </button>
@@ -17,7 +17,7 @@
         'opacity-100': orderbookLayout === OrderbookLayout.Buys,
         'opacity-30': orderbookLayout !== OrderbookLayout.Buys
       }"
-      @click="() => setOrderbookLayout(OrderbookLayout.Buys)"
+      @click="setOrderbookLayout(OrderbookLayout.Buys)"
     >
       <IconBuys class="w-3 h-3" />
     </button>
@@ -28,7 +28,7 @@
         'opacity-100': orderbookLayout === OrderbookLayout.Sells,
         'opacity-30': orderbookLayout !== OrderbookLayout.Sells
       }"
-      @click="() => setOrderbookLayout(OrderbookLayout.Sells)"
+      @click="setOrderbookLayout(OrderbookLayout.Sells)"
     >
       <IconSells class="w-3 h-3" />
     </button>
