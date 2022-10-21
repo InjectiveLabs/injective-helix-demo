@@ -37,7 +37,13 @@
                   <div class="col-span-6 lg:col-span-4 4xl:col-span-3">
                     <slot name="order-books" />
                   </div>
-                  <div class="col-span-6 lg:col-span-8 4xl:col-span-9">
+                  <div
+                    class="col-span-6 lg:col-span-8 4xl:col-span-9"
+                    :class="{
+                      '-order-1':
+                        tradingLayoutAlignment === TradingLayoutAlignment.Right
+                    }"
+                  >
                     <slot name="chart" />
                   </div>
                 </div>
