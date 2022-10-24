@@ -56,11 +56,7 @@ import {
 import SubaccountBalance from './subaccount.vue'
 import VOnboard from './onboard.vue'
 import { getHubUrl } from '~/app/utils/helpers'
-
-type CurrentMarket =
-  | UiSpotMarketWithToken
-  | UiDerivativeMarketWithToken
-  | undefined
+import { CurrentMarket } from '~/types'
 
 export default Vue.extend({
   components: {
