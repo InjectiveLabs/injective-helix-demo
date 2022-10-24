@@ -1,5 +1,5 @@
 <template>
-  <v-dropdown dark hide-bottom-border tight no-padding>
+  <Dropdown dark hide-bottom-border tight no-padding>
     <template slot="title">
       <div
         class="text-xs leading-5 select-none"
@@ -21,13 +21,13 @@
         <span>{{ item.label }}</span>
       </SelectorItem>
     </div>
-  </v-dropdown>
+  </Dropdown>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import SelectorItem from '~/components/layout/selectors/selector-item.vue'
-import VDropdown from '~/components/elements/dropdown.vue'
+import Dropdown from '~/components/elements/dropdown.vue'
 
 interface TabMenuSelectorOption {
   label: string
@@ -37,7 +37,7 @@ interface TabMenuSelectorOption {
 export default Vue.extend({
   components: {
     SelectorItem,
-    VDropdown
+    Dropdown
   },
 
   props: {

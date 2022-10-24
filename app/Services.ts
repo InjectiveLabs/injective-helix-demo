@@ -94,13 +94,14 @@ export const indexerRestSpotChronosApi = new IndexerRestSpotChronosApi(
       : `${ENDPOINTS.indexerApi}/api/chronos/v1/spot`
   }`
 )
-export const indexerRestLeaderboardChronosApi = new IndexerRestLeaderboardChronosApi(
-  `${
-    ENDPOINTS.chronosApi
-      ? `${ENDPOINTS.chronosApi}/api/v1/leaderboard`
-      : `${ENDPOINTS.indexerApi}/api/chronos/v1/leaderboard`
-  }`
-)
+export const indexerRestLeaderboardChronosApi =
+  new IndexerRestLeaderboardChronosApi(
+    `${
+      ENDPOINTS.chronosApi
+        ? `${ENDPOINTS.chronosApi}/api/v1/leaderboard`
+        : `${ENDPOINTS.indexerApi}/api/chronos/v1/leaderboard`
+    }`
+  )
 export const indexerRestMarketChronosApi = new IndexerRestMarketChronosApi(
   `${ENDPOINTS.indexerApi}/api/chronos/v1/market`
 )
@@ -119,6 +120,7 @@ export const msgBroadcastClient = new MsgBroadcastClient({
   ...apiOptions,
   walletStrategy
 })
+
 export const web3Client = new Web3Client({
   walletStrategy,
   network: NETWORK,

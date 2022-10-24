@@ -1,6 +1,7 @@
 <template>
   <TokenSelector
     class="token-selector token-only"
+    :form-id="formId"
     :value="value"
     :options="supportedTokens"
     :placeholder="$t('trade.market')"
@@ -40,6 +41,12 @@ export default Vue.extend({
     value: {
       type: Object as PropType<Token> | undefined,
       default: undefined
+    }
+  },
+
+  data() {
+    return {
+      formId: 0
     }
   },
 
