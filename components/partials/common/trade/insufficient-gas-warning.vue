@@ -1,28 +1,9 @@
 <template>
   <div
     v-if="showInsufficientFundsWarning"
-    class="p-6 bg-helixGray-950 rounded-lg flex flex-col gap-3 mb-1"
+    class="bg-helixGray-950 rounded-lg mb-1 p-6"
   >
-    <span class="text-xs font-semibold uppercase">
-      {{ $t('insufficientGas.insufficientGas') }}
-    </span>
-    <span class="text-xs">
-      {{
-        $t('insufficientGas.insufficientGasNoteDescription', {
-          faucetLink,
-          hubLink
-        })
-      }}
-    </span>
-    <VButton
-      type="button"
-      md
-      primary
-      class="flex justify-center items-center whitespace-nowrap rounded"
-    >
-      <span class="mr-2">{{ $t('insufficientGas.getFreeInj') }}</span>
-      <IconExternalLink class="w-3 h-3" />
-    </VButton>
+    <InsufficientGasInner />
   </div>
 </template>
 
@@ -36,11 +17,15 @@ import {
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import InsufficientGasInner from '~/components/partials/common/elements/insufficient-gas-inner.vue'
 import { INJ_TO_IBC_TRANSFER_FEE } from '~/app/utils/constants'
-import { getHubUrl } from '~/app/utils/helpers'
 import { CurrentMarket } from '~/types'
 
 export default Vue.extend({
+  components: {
+    InsufficientGasInner
+  },
+
   computed: {
     wallet(): Wallet {
       return this.$accessor.wallet.wallet
@@ -109,14 +94,6 @@ export default Vue.extend({
       return new BigNumberInWei(balance.availableBalance || 0).toBase(
         market.quoteToken.decimals
       )
-    },
-
-    faucetLink(): string {
-      return 'https://inj.supply/'
-    },
-
-    hubLink(): string {
-      return `${getHubUrl()}/bridge`
     }
   }
 })
