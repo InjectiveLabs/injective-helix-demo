@@ -34,7 +34,7 @@
             <div class="w-full">
               <VCard tight>
                 <div class="grid grid-cols-6 lg:grid-cols-12">
-                  <div class="col-span-6 lg:col-span-4 4xl:col-span-3">
+                  <div class="col-span-6 lg:col-span-4 4xl:col-span-3 z-1000">
                     <slot name="order-books" />
                   </div>
                   <div
