@@ -80,7 +80,7 @@
         :order-type="orderType"
         :slippage="slippage"
         :fee-rate="feeRate"
-        :has-liquidity="!emptyLiquidity || !amountTooBigToFillError"
+        :has-liquidity="!emptyLiquidity && !amountTooBigToFillError"
       />
       <div class="mt-6">
         <VButton
