@@ -1,6 +1,7 @@
 <template>
   <MarketLayout @loaded="onLoad">
     <template slot="trading-panel">
+      <InsufficientGasWarning />
       <Balances />
       <Trading class="mt-1 flex-1" />
     </template>
@@ -34,6 +35,7 @@ import MarketChart from '~/components/partials/common/market/chart.vue'
 import Orders from '~/components/partials/derivatives/orders.vue'
 import Orderbook from '~/components/partials/derivatives/orderbook.vue'
 import { ORDERBOOK_POLLING_ENABLED } from '~/app/utils/constants'
+import InsufficientGasWarning from '~/components/partials/common/trade/insufficient-gas-warning.vue'
 import { Modal } from '~/types'
 
 export default Vue.extend({
@@ -45,7 +47,8 @@ export default Vue.extend({
     Balances,
     Orders,
     Orderbook,
-    MarketChart
+    MarketChart,
+    InsufficientGasWarning
   },
 
   data() {
