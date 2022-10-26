@@ -185,6 +185,10 @@ export default Vue.extend({
           return
         }
 
+        if (!this.fromToken || !this.toToken) {
+          return
+        }
+
         this.resetToDefaultMarket()
       },
       immediate: true
@@ -227,12 +231,20 @@ export default Vue.extend({
     initTokens() {
       const { from, to } = this.$route.query
 
+      if (from === to) {
+        return this.resetToDefaultMarket()
+      }
+
       if (from) {
         this.fromToken = this.getTokenBySymbol(from)
       }
 
       if (to) {
         this.toToken = this.getTokenBySymbol(to)
+      }
+
+      if (!this.fromToken || !this.toToken) {
+        this.resetToDefaultMarket()
       }
     },
 
@@ -366,14 +378,6 @@ export default Vue.extend({
     },
 
     resetToDefaultMarket() {
-      const { fromToken, toToken } = this
-
-      if (!fromToken || !toToken) {
-        return
-      }
-
-      const pair = `${fromToken.symbol}/${toToken.symbol}`
-
       const from = this.getTokenBySymbol('usdt')
       const to = this.getTokenBySymbol('inj')
 
@@ -384,7 +388,7 @@ export default Vue.extend({
       this.handleSwitchTokens({ from, to })
 
       this.$toast.error(
-        this.$t('trade.convert.reset_to_default_pair', { pair })
+        this.$t('trade.convert.reset_to_default_pair', { pair: 'USDT/INJ' })
       )
     },
 

@@ -47,9 +47,7 @@
               `required|positiveNumber|enoughBalance:0.0001,${balanceToFixed}`
             "
           >
-            <div
-              :class="{ 'flex justify-between items-center gap-4': showInput }"
-            >
+            <div :class="{ 'flex justify-between items-center': showInput }">
               <div v-if="showInput" class="flex flex-col w-full justify-center">
                 <VInput
                   id="bridge-input"
@@ -412,7 +410,8 @@ export default Vue.extend({
 
     resetValidation() {
       if (this.$refs.validationProvider) {
-        const validationProvider = this.$refs.validationProvider as InstanceType<typeof ValidationProvider>
+        const validationProvider = this.$refs
+          .validationProvider as InstanceType<typeof ValidationProvider>
 
         validationProvider.reset()
       }
