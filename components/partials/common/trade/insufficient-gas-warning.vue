@@ -69,7 +69,7 @@ export default Vue.extend({
       return !hasSufficientBalance
     },
 
-    injBalance(): BigNumberInBase {
+    balance(): BigNumberInBase {
       const { bankBalances } = this
 
       const injBalance = bankBalances[injToken.denom || INJ_DENOM]
@@ -82,9 +82,9 @@ export default Vue.extend({
     },
 
     hasSufficientBalance(): boolean {
-      const { injBalance } = this
+      const { balance } = this
 
-      return injBalance.gt(new BigNumberInBase(INJ_TO_IBC_TRANSFER_FEE))
+      return balance.gt(new BigNumberInBase(INJ_TO_IBC_TRANSFER_FEE))
     }
   }
 })
