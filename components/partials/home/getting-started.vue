@@ -88,7 +88,7 @@ enum VideoType {
 }
 
 const videoLinksId = {
-  [VideoType.HowToBridge]: 'ohYsCATcHWI',
+  [VideoType.HowToBridge]: 'zfhVFXT8IvQ',
   [VideoType.HowToPurchaseTokens]: 'phdJxdbLn1o',
   [VideoType.HowToPlaceStopOrders]: 'hgM6Z7YqnDk'
 }

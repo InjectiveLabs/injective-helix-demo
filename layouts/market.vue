@@ -24,15 +24,25 @@
             <slot name="trading-panel" />
           </div>
         </div>
-        <div class="col-span-6 lg:col-span-9 4xl:col-span-9">
+        <div
+          class="col-span-6 lg:col-span-9 4xl:col-span-9"
+          :class="{
+            '-order-1': tradingLayout === TradingLayout.Right
+          }"
+        >
           <div class="flex flex-wrap flex-col w-full h-full">
             <div class="w-full">
               <VCard tight>
                 <div class="grid grid-cols-6 lg:grid-cols-12">
-                  <div class="col-span-6 lg:col-span-4 4xl:col-span-3">
+                  <div class="col-span-6 lg:col-span-4 4xl:col-span-3 z-1000">
                     <slot name="order-books" />
                   </div>
-                  <div class="col-span-6 lg:col-span-8 4xl:col-span-9">
+                  <div
+                    class="col-span-6 lg:col-span-8 4xl:col-span-9"
+                    :class="{
+                      '-order-1': tradingLayout === TradingLayout.Right
+                    }"
+                  >
                     <slot name="chart" />
                   </div>
                 </div>
@@ -66,7 +76,7 @@ import DerivativeMarket from '~/components/partials/derivatives/market.vue'
 import MarketSelection from '~/components/partials/common/market-selection/index.vue'
 import ModalMarketBeta from '~/components/partials/modals/market-beta.vue'
 import { betaMarketSlugs } from '~/app/data/market'
-import { Modal } from '~/types'
+import { Modal, TradingLayout } from '~/types'
 
 export default Vue.extend({
   name: 'MarketsLayout',
@@ -87,12 +97,17 @@ export default Vue.extend({
 
   data() {
     return {
+      TradingLayout,
       status: new Status(StatusType.Loading),
       showMarketList: false
     }
   },
 
   computed: {
+    tradingLayout(): TradingLayout {
+      return this.$accessor.app.userState.tradingLayout
+    },
+
     derivativeMarket(): UiDerivativeMarketWithToken | undefined {
       return this.$accessor.derivatives.market
     },

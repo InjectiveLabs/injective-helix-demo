@@ -15,6 +15,7 @@
       </div>
       <div>
         <TokenSelector
+          :form-id="formId"
           class="input-convert"
           data-cy="convert-widget-from-input"
           :disabled="status && status.isLoading()"
@@ -47,6 +48,7 @@
           </button>
         </div>
         <TokenSelector
+          :form-id="formId"
           class="input-convert"
           data-cy="convert-widget-to-input"
           :disabled="status && status.isLoading()"
@@ -211,6 +213,7 @@ export default Vue.extend({
       orderType: SpotOrderSide.Buy,
       detailsDrawerOpen: true,
       status: new Status(),
+      formId: 0,
       form: initialForm(),
       fromToken: null as Token | null,
       toToken: null as Token | null,
@@ -1251,12 +1254,17 @@ export default Vue.extend({
         })
         .then(() => {
           this.$toast.success(this.$t('trade.convert.convert_success'))
-          this.$set(this, 'form', initialForm())
+          this.resetForm()
         })
         .catch(this.$onRejected)
         .finally(() => {
           this.status.setIdle()
         })
+    },
+
+    resetForm(): void {
+      this.$set(this, 'form', initialForm())
+      this.formId += 1
     },
 
     onSubmit(): any {

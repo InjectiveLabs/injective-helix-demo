@@ -11,21 +11,34 @@
           <span>{{ $t('trade.chart') }}</span>
         </TabSelectorItem>
 
-        <TabSelectorItem v-model="component" data-cy="trade-page-orderbook-selector" :option="components.orderbook">
+        <TabSelectorItem
+          v-model="component"
+          data-cy="trade-page-orderbook-selector"
+          :option="components.orderbook"
+        >
           <span>{{ $t('trade.orderbook') }}</span>
         </TabSelectorItem>
 
-        <TabSelectorItem v-model="component" data-cy="trade-page-trades-selector" :option="components.trades">
+        <TabSelectorItem
+          v-model="component"
+          data-cy="trade-page-trades-selector"
+          :option="components.trades"
+        >
           <span>{{ $t('trade.trades') }}</span>
         </TabSelectorItem>
       </div>
     </div>
 
     <div class="bg-gray-900 rounded-lg orderbook-h relative">
-      <div class="flex px-4">
+      <div
+        class="flex px-4"
+        :class="{ 'py-1': component === components.orderbook }"
+      >
+        <LayoutPreferences v-if="component === components.orderbook" />
+
         <AggregationSelector
           v-if="component === components.orderbook"
-          class="ml-auto py-1"
+          class="ml-auto h-6"
           :min-tick="minTick"
           :value="aggregation"
           :max-tick="maxTick"
@@ -59,6 +72,7 @@ import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import Orderbook from './orderbook/index.vue'
 import VTrades from './trades/index.vue'
 import AggregationSelector from '~/components/partials/common/orderbook/aggregation-selector.vue'
+import LayoutPreferences from '~/components/partials/common/orderbook/layout-preferences.vue'
 import MarketChart from '~/components/partials/common/market/chart.vue'
 import TabSelectorItem from '~/components/partials/common/market/tab-selector-item.vue'
 import { UI_DEFAULT_AGGREGATION_DECIMALS_STRING } from '~/app/utils/constants'
@@ -75,6 +89,7 @@ const components = {
 
 export default Vue.extend({
   components: {
+    LayoutPreferences,
     AggregationSelector,
     MarketChart,
     TabSelectorItem,

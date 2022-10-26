@@ -39,6 +39,7 @@
         <template #selected-option="{ symbol, logo, name }">
           <ValidationProvider
             v-slot="{ errors, valid }"
+            ref="validationProvider"
             name="amount"
             class="w-full"
             :rules="
@@ -327,6 +328,11 @@ export default Vue.extend({
     rounded: {
       type: Boolean,
       default: false
+    },
+
+    formId: {
+      type: Number,
+      required: true
     }
   },
 
@@ -391,6 +397,15 @@ export default Vue.extend({
     }
   },
 
+  watch: {
+    formId: {
+      handler() {
+        this.resetValidation()
+      },
+      immediate: true
+    }
+  },
+
   mounted() {
     this.$root.$on('bridge:reset', this.resetInputFields)
   },
@@ -403,6 +418,14 @@ export default Vue.extend({
     resetInputFields() {
       if (this.$inputForm) {
         this.$inputForm.reset()
+      }
+    },
+
+    resetValidation() {
+      if (this.$refs.validationProvider) {
+        const validationProvider = this.$refs.validationProvider as InstanceType<typeof ValidationProvider>
+
+        validationProvider.reset()
       }
     },
 

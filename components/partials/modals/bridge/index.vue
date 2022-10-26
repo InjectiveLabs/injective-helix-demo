@@ -73,6 +73,7 @@
       <div v-if="!isIbcTransfer">
         <div v-if="hasAllowance">
           <TokenSelector
+            :form-id="formId"
             :amount="form.amount"
             :value="form.token"
             :max-decimals="maxDecimals"
@@ -211,6 +212,7 @@ export default Vue.extend({
 
   data() {
     return {
+      formId: 0,
       memoRequired: false,
       BridgeType,
       TransferDirection,
@@ -496,6 +498,7 @@ export default Vue.extend({
 
     handleCloseModal() {
       this.$accessor.modal.closeModal(Modal.Bridge)
+      this.formId += 1
     },
 
     handleResetBridge() {

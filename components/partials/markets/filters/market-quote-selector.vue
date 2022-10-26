@@ -1,5 +1,5 @@
 <template>
-  <v-dropdown dark hide-bottom-border tight>
+  <Dropdown dark hide-bottom-border tight>
     <template slot="title">
       <div
         class="uppercase text-xs tracking-wide leading-5 select-none"
@@ -21,19 +21,19 @@
         <span class="uppercase">{{ item }}</span>
       </SelectorItem>
     </div>
-  </v-dropdown>
+  </Dropdown>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import SelectorItem from '~/components/layout/selectors/selector-item.vue'
-import VDropdown from '~/components/elements/dropdown.vue'
+import Dropdown from '~/components/elements/dropdown.vue'
 import { MarketQuoteType } from '~/types'
 
 export default Vue.extend({
   components: {
     SelectorItem,
-    VDropdown
+    Dropdown
   },
 
   props: {
