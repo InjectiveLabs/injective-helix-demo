@@ -11,12 +11,13 @@
 import Vue from 'vue'
 import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
 import {
-  UiSubaccount,
   UiSpotMarketWithToken,
   UiDerivativeMarketWithToken,
-  ZERO_IN_BASE
+  ZERO_IN_BASE,
+  BankBalances,
+  INJ_DENOM
 } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import InsufficientGasInner from '~/components/partials/common/elements/insufficient-gas-inner.vue'
 import { INJ_TO_IBC_TRANSFER_FEE } from '~/app/utils/constants'
 import { CurrentMarket } from '~/types'
@@ -32,8 +33,8 @@ export default Vue.extend({
       return this.$accessor.wallet.wallet
     },
 
-    subaccount(): UiSubaccount | undefined {
-      return this.$accessor.account.subaccount
+    bankBalances(): BankBalances {
+      return this.$accessor.bank.balances
     },
 
     currentSpotMarket(): UiSpotMarketWithToken | undefined {
@@ -69,23 +70,15 @@ export default Vue.extend({
     },
 
     injBalance(): BigNumberInBase {
-      const { subaccount, market } = this
+      const { bankBalances } = this
 
-      if (!subaccount || !market) {
+      const injBalance = bankBalances[injToken.denom || INJ_DENOM]
+
+      if (!injBalance) {
         return ZERO_IN_BASE
       }
 
-      const balance = subaccount.balances.find(
-        (balance) => balance.denom.toLowerCase() === 'inj'
-      )
-
-      if (!balance) {
-        return ZERO_IN_BASE
-      }
-
-      return new BigNumberInWei(balance.availableBalance || 0).toBase(
-        injToken.decimals
-      )
+      return new BigNumberInBase(injBalance)
     },
 
     hasSufficientBalance(): boolean {
