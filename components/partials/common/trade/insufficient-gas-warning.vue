@@ -20,6 +20,7 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import InsufficientGasInner from '~/components/partials/common/elements/insufficient-gas-inner.vue'
 import { INJ_TO_IBC_TRANSFER_FEE } from '~/app/utils/constants'
 import { CurrentMarket } from '~/types'
+import { injToken } from '~/app/data/token'
 
 export default Vue.extend({
   components: {
@@ -58,22 +59,16 @@ export default Vue.extend({
     },
 
     showInsufficientFundsWarning(): boolean {
-      const { market, isWalletExemptFromGasFee, balance } = this
+      const { market, isWalletExemptFromGasFee, hasSufficientBalance } = this
 
-      if (
-        !market ||
-        market.baseToken.denom.toLowerCase() !== 'inj' ||
-        isWalletExemptFromGasFee
-      ) {
+      if (!market || isWalletExemptFromGasFee) {
         return false
       }
 
-      const transferFee = new BigNumberInBase(INJ_TO_IBC_TRANSFER_FEE)
-
-      return balance.lt(transferFee)
+      return !hasSufficientBalance
     },
 
-    balance(): BigNumberInBase {
+    injBalance(): BigNumberInBase {
       const { subaccount, market } = this
 
       if (!subaccount || !market) {
@@ -81,10 +76,7 @@ export default Vue.extend({
       }
 
       const balance = subaccount.balances.find(
-        (balance) =>
-          balance.denom.toLowerCase() ===
-            market.baseToken.denom.toLowerCase() ||
-          balance.denom.toLowerCase() === market.quoteToken.denom.toLowerCase()
+        (balance) => balance.denom.toLowerCase() === 'inj'
       )
 
       if (!balance) {
@@ -92,8 +84,14 @@ export default Vue.extend({
       }
 
       return new BigNumberInWei(balance.availableBalance || 0).toBase(
-        market.quoteToken.decimals
+        injToken.decimals
       )
+    },
+
+    hasSufficientBalance(): boolean {
+      const { injBalance } = this
+
+      return injBalance.gt(new BigNumberInBase(INJ_TO_IBC_TRANSFER_FEE))
     }
   }
 })
