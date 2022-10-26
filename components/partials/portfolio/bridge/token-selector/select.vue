@@ -387,7 +387,7 @@ export default Vue.extend({
     showMaxSelector(): boolean {
       const { disableMaxSelector, balance } = this
 
-      return !disableMaxSelector && balance.gt(0.0001)
+      return !disableMaxSelector && balance.gte(0.0001)
     }
   },
 
