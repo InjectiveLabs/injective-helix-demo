@@ -25,12 +25,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import {
-  BigNumberInBase,
-  BigNumberInWei,
-  Status,
-  StatusType
-} from '@injectivelabs/utils'
+import { Status, StatusType } from '@injectivelabs/utils'
 import {
   BankBalanceWithToken,
   BankBalanceWithTokenAndBalance,
@@ -110,26 +105,27 @@ export default Vue.extend({
     },
 
     tokensWithBalances(): BankBalanceWithTokenAndBalance[] {
-      const { bankBalancesWithToken } = this
+      const { bankBalancesWithToken, supportedTokens } = this
 
-      return bankBalancesWithToken
-        .map((token) => {
-          const balance = new BigNumberInWei(token.balance || 0).toBase(
-            token.token ? token.token.decimals : 18
-          )
-
-          return {
-            ...token,
-            token: {
-              ...token.token,
-              logo: getTokenLogoWithVendorPathPrefix(token.token.logo)
-            },
-            balance: balance.toFixed()
-          } as BankBalanceWithTokenAndBalance
-        })
-        .sort((supply1, supply2) =>
-          new BigNumberInBase(supply2.balance).minus(supply1.balance).toNumber()
+      return supportedTokens.map((t) => {
+        const balanceWithToken = bankBalancesWithToken.find(
+          (b) => b.denom === t.denom
         )
+
+        const token = {
+          ...t,
+          logo: getTokenLogoWithVendorPathPrefix(t.logo)
+        }
+
+        const denom = t.denom
+        const balance = balanceWithToken ? balanceWithToken.balance : '0'
+
+        return {
+          balance,
+          denom,
+          token
+        } as BankBalanceWithTokenAndBalance
+      })
     },
 
     wallet(): Wallet {
@@ -147,6 +143,10 @@ export default Vue.extend({
 
     markets(): UiSpotMarketWithToken[] {
       return this.$accessor.spot.markets
+    },
+
+    supportedTokens(): Token[] {
+      return this.$accessor.spot.supportedTokens
     },
 
     market(): UiSpotMarketWithToken | undefined {
