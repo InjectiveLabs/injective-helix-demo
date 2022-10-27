@@ -1,8 +1,8 @@
 :root {
   --header-height: 56px;
   --footer-height: 697px;
+  --market-info-height: 208px;
 }
-
 
 @media (min-width: 480px) {
   :root {
@@ -16,9 +16,16 @@
   }
 }
 
+@media (min-width: 768px) {
+  :root {
+    --market-info-height: 162px;
+  }
+}
+
 @media (min-width: 1024px) {
   :root {
     --footer-height: 377px;
+    --market-info-height: 56px;
   }
 }
 
@@ -47,6 +54,14 @@ body {
 
 .min-h-screen-excluding-header-and-footer {
   min-height: calc(100vh - var(--header-height) - var(--footer-height));
+}
+
+.h-market-info {
+  height: var(--market-info-height);
+}
+
+.h-screen-excluding-header-and-market-info {
+  height: calc(100vh - var(--header-height) - var(--market-info-height));
 }
 
 .h-full-grow {

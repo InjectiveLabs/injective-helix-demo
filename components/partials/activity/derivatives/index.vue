@@ -62,7 +62,7 @@
       </TabSelectorItem>
     </div>
 
-    <VCard md class="h-full mt-4 xs:mt-6">
+    <VCard md class="h-full mt-4 xs:mt-6 relative">
       <Orders v-show="component === components.orders" />
       <Trades v-if="component === components.trades" />
       <Triggers v-if="component === components.triggers" />
@@ -108,7 +108,8 @@ export default Vue.extend({
     },
 
     totalTriggerCount(): number {
-      return this.$accessor.derivatives.subaccountConditionalOrdersPagination.total
+      return this.$accessor.derivatives.subaccountConditionalOrdersPagination
+        .total
     }
   },
 

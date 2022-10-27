@@ -106,7 +106,7 @@
     </template>
 
     <HocLoading :status="status">
-      <VCard class="h-full p-2" no-padding>
+      <VCard class="h-full p-2 relative" no-padding>
         <component :is="component" v-if="component" />
       </VCard>
     </HocLoading>

@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-xl relative" :class="[bgColor, padding]">
+  <div class="rounded-xl" :class="[bgColor, padding]">
     <slot />
   </div>
 </template>

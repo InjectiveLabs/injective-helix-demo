@@ -15,9 +15,13 @@
           />
           <div class="leading-none select-none">
             <p class="text-gray-100 font-semibold text-sm flex items-center">
-              <span data-cy="trading-page-ticker-name-text-content">{{
-                market.ticker
-              }}</span>
+              <span
+                data-cy="trading-page-ticker-name-text-content"
+                class="whitespace-nowrap overflow-ellipsis overflow-hidden"
+              >
+                {{ market.ticker }}
+              </span>
+
               <IconChevron
                 class="w-auto h-3 text-gray-500 ml-2 transform transition ease-in-out duration-300"
                 :class="[expanded ? 'rotate-90' : '-rotate-90']"
@@ -42,7 +46,7 @@
       <MarketStats
         :market="market"
         :summary="summary"
-        class="mt-4 lg:mt-0 flex-1 overflow-x-auto col-span-2 2xl:col-span-3"
+        class="mt-4 lg:mt-0 flex-1 col-span-2 2xl:col-span-3"
       />
 
       <div class="ml-auto hidden lg:block">
