@@ -15,12 +15,9 @@
           @click="onDropdownToggle"
         >
           <slot name="title" />
-          <IconCaretDown
-            class="h-4 w-4"
-            :class="[
-              dark ? 'text-gray-500' : 'text-gray-200',
-              tight ? 'ml-1' : '-mr-1 ml-3 '
-            ]"
+          <IconCaretDownSlim
+            class="ml-2"
+            :class="[dark ? 'text-gray-500' : 'text-gray-200']"
           />
         </button>
       </div>

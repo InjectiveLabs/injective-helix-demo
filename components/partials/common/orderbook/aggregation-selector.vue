@@ -1,5 +1,5 @@
 <template>
-  <Dropdown hide-bottom-border :selector-class="'h-6'" :no-padding="true">
+  <Dropdown hide-bottom-border :selector-class="'h-6'" :no-padding="true" dark>
     <template slot="title">
       <div class="flex items-center justify-end w-[80px]">
         <span class="text-xs ml-2">{{ display }}</span>
