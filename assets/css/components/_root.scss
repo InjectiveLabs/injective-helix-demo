@@ -67,3 +67,7 @@ body {
 .h-full-grow {
   @apply flex flex-col flex-grow h-full;
 }
+
+.top-header-and-market-info {
+  top: calc(var(--header-height) + var(--market-info-height));
+}

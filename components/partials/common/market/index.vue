@@ -1,12 +1,12 @@
 <template>
   <div
-    class="bg-helixGray-950 shadow-sm px-4 py-1 rounded-xl"
+    class="bg-helixGray-950 shadow-sm px-4 py-1 rounded-xl h-full"
     data-cy="trading-page-market-info-component"
   >
     <div
-      class="mt-1 py-2 lg:py-1 cursor-pointer grid grid-cols-1 lg:grid-cols-4 2xl:grid-cols-5 items-center"
+      class="flex justify-between items-center flex-wrap lg:flex-nowrap gap-4 h-full"
     >
-      <div class="flex items-center w-auto justify-between lg:pr-5">
+      <div class="flex justify-between items-center w-full lg:w-auto gap-2">
         <div class="flex items-center" @click="handleTokenClick">
           <img
             :src="baseTokenLogo"
@@ -46,7 +46,7 @@
       <MarketStats
         :market="market"
         :summary="summary"
-        class="mt-4 lg:mt-0 flex-1 col-span-2 2xl:col-span-3"
+        class="w-full lg:w-auto pb-4 lg:pb-0"
       />
 
       <div class="ml-auto hidden lg:block">
