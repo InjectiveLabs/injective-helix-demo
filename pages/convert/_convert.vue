@@ -61,6 +61,26 @@ export default Vue.extend({
   },
 
   computed: {
+    wallet(): Wallet {
+      return this.$accessor.wallet.wallet
+    },
+
+    hasEnoughInjForGas(): boolean {
+      return this.$accessor.bank.hasEnoughInjForGas
+    },
+
+    markets(): UiSpotMarketWithToken[] {
+      return this.$accessor.spot.markets
+    },
+
+    supportedTokens(): Token[] {
+      return this.$accessor.spot.supportedTokens
+    },
+
+    subaccountBalancesWithToken(): SubaccountBalanceWithToken[] {
+      return this.$accessor.account.subaccountBalancesWithToken
+    },
+
     erc20TokensWithBalanceAndPriceFromBank(): TokenWithBalanceAndPrice[] {
       return this.$accessor.token.erc20TokensWithBalanceAndPriceFromBank
     },
@@ -77,10 +97,6 @@ export default Vue.extend({
       const { bankErc20BalancesWithToken, bankIbcBalancesWithToken } = this
 
       return [...bankErc20BalancesWithToken, ...bankIbcBalancesWithToken]
-    },
-
-    subaccountBalancesWithToken(): SubaccountBalanceWithToken[] {
-      return this.$accessor.account.subaccountBalancesWithToken
     },
 
     subaccountBalancesWithTokenAsBankBalanceWithToken(): BankBalanceWithToken[] {
@@ -128,25 +144,9 @@ export default Vue.extend({
       })
     },
 
-    wallet(): Wallet {
-      return this.$accessor.wallet.wallet
-    },
-
-    hasEnoughInjForGas(): boolean {
-      return this.$accessor.bank.hasEnoughInjForGas
-    },
-
     marketIsBeta(): boolean {
       const { params } = this.$route
       return betaMarketSlugs.includes(params.spot)
-    },
-
-    markets(): UiSpotMarketWithToken[] {
-      return this.$accessor.spot.markets
-    },
-
-    supportedTokens(): Token[] {
-      return this.$accessor.spot.supportedTokens
     },
 
     market(): UiSpotMarketWithToken | undefined {
