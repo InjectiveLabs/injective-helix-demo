@@ -299,7 +299,7 @@ export default Vue.extend({
       this.bridgeType = BridgeType.Transfer
       this.transferDirection = TransferDirection.bankToTradingAccount
 
-      if (isWalletExemptFromGasFee && !hasSufficientBalance) {
+      if (!isWalletExemptFromGasFee && !hasSufficientBalance) {
         this.$accessor.modal.openModal({ type: Modal.InsufficientInjForGas })
         return
       }
