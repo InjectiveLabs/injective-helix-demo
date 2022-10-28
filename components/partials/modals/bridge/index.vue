@@ -80,7 +80,9 @@
             :origin="origin"
             :destination="destination"
             :is-ibc-transfer="isIbcTransfer"
-            :balance="balance"
+            :balance="transferableBalance"
+            :balance-decimal-places="balanceDecimalPlaces"
+            :balance-label="$t('bridge.available')"
             small
             show-input
             show-custom-indicator
@@ -149,7 +151,10 @@ import VAllowance from '~/components/elements/allowance.vue'
 import NetworkSelect from '~/components/partials/portfolio/bridge/network-select.vue'
 import IbcTransferNote from '~/components/partials/portfolio/bridge/ibc-transfer-note.vue'
 import TransferDirectionSwitch from '~/components/partials/portfolio/bridge/transfer-direction-switch.vue'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import {
+  INJ_TO_IBC_TRANSFER_FEE,
+  UI_DEFAULT_DISPLAY_DECIMALS
+} from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -210,7 +215,8 @@ export default Vue.extend({
       memoRequired: false,
       BridgeType,
       TransferDirection,
-      BridgingNetwork
+      BridgingNetwork,
+      INJ_TO_IBC_TRANSFER_FEE
     }
   },
 
@@ -307,6 +313,12 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(token.allowance).gt(0)
+    },
+
+    isWalletExemptFromGasFee(): boolean {
+      const { wallet } = this
+
+      return !isCosmosWallet(wallet)
     },
 
     shouldConnectMetamask(): boolean {
@@ -419,8 +431,31 @@ export default Vue.extend({
         return onDepositBalance
       }
 
-      // Withdraw
       return onWithdrawBalance
+    },
+
+    transferableBalance(): BigNumberInBase {
+      const { isWalletExemptFromGasFee, transferDirection, form, balance } =
+        this
+
+      if (
+        isWalletExemptFromGasFee ||
+        transferDirection === TransferDirection.tradingAccountToBank ||
+        form.token.symbol !== 'INJ'
+      ) {
+        return balance
+      }
+
+      const transferableBalance = balance.minus(INJ_TO_IBC_TRANSFER_FEE)
+      if (transferableBalance.lte(ZERO_IN_BASE)) {
+        return ZERO_IN_BASE
+      }
+
+      return transferableBalance
+    },
+
+    balanceDecimalPlaces(): number {
+      return UI_DEFAULT_DISPLAY_DECIMALS
     },
 
     isModalOpen(): boolean {
