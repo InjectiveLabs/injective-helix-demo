@@ -80,7 +80,7 @@
             :origin="origin"
             :destination="destination"
             :is-ibc-transfer="isIbcTransfer"
-            :balance="balance"
+            :balance="transferableBalance"
             :balance-decimal-places="balanceDecimalPlaces"
             :balance-label="$t('bridge.available')"
             small
@@ -137,7 +137,6 @@ import Vue, { PropType } from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import {
   BankBalanceWithToken,
-  BIG_NUMBER_ROUND_DOWN_MODE,
   BridgingNetwork,
   SubaccountBalanceWithToken,
   TokenWithBalanceAndPrice,
@@ -421,18 +420,23 @@ export default Vue.extend({
         bridgeType,
         onTransferBalance,
         onDepositBalance,
-        onWithdrawBalance,
-        isWalletExemptFromGasFee,
-        transferDirection,
-        form
+        onWithdrawBalance
       } = this
 
-      const balance =
-        bridgeType === BridgeType.Transfer
-          ? onTransferBalance
-          : bridgeType === BridgeType.Deposit
-          ? onDepositBalance
-          : onWithdrawBalance
+      if (bridgeType === BridgeType.Transfer) {
+        return onTransferBalance
+      }
+
+      if (bridgeType === BridgeType.Deposit) {
+        return onDepositBalance
+      }
+
+      return onWithdrawBalance
+    },
+
+    transferableBalance(): BigNumberInBase {
+      const { isWalletExemptFromGasFee, transferDirection, form, balance } =
+        this
 
       if (
         isWalletExemptFromGasFee ||
@@ -443,7 +447,6 @@ export default Vue.extend({
       }
 
       const transferableBalance = balance.minus(INJ_TO_IBC_TRANSFER_FEE)
-
       if (transferableBalance.lte(ZERO_IN_BASE)) {
         return ZERO_IN_BASE
       }
@@ -453,12 +456,6 @@ export default Vue.extend({
 
     balanceDecimalPlaces(): number {
       return UI_DEFAULT_DISPLAY_DECIMALS
-    },
-
-    balanceToFixed(): string {
-      const { balance, balanceDecimalPlaces } = this
-
-      return balance.toFixed(balanceDecimalPlaces, BIG_NUMBER_ROUND_DOWN_MODE)
     },
 
     isModalOpen(): boolean {
