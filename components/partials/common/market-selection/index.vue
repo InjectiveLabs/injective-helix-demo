@@ -1,5 +1,8 @@
 <template>
-  <VCard class="relative h-full" md>
+  <VCard
+    class="col-span-6 lg:col-span-3 4xl:col-span-3 h-full pointer-events-auto"
+    md
+  >
     <HocLoading :status="status" :show-loading="mappedMarkets.length === 0">
       <MarketsTable :markets="mappedMarkets" />
     </HocLoading>

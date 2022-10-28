@@ -1,5 +1,5 @@
 <template>
-  <VCard lg>
+  <VCard lg class="relative">
     <HocLoading :status="status">
       <VCardTableWrap>
         <div

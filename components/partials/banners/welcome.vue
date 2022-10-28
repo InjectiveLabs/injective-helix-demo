@@ -2,7 +2,7 @@
   <VCard
     v-if="showWelcomeBanner && status.isNotLoading()"
     md
-    class="welcome mb-12"
+    class="welcome mb-12 relative"
     data-cy="welcome-banner-component"
   >
     <div class="grid grid-cols-1 3md:grid-cols-3 lg:grid-cols-2 3md:gap-4">

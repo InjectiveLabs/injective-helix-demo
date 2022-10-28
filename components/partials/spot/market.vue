@@ -1,5 +1,5 @@
 <template>
-  <div v-if="market">
+  <div v-if="market" class="h-full">
     <Market :market="market" :summary="marketSummary" v-bind="$attrs" />
   </div>
 </template>
