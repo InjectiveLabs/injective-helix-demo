@@ -158,7 +158,7 @@ export default Vue.extend({
 
       const slug = ['usdt'].includes(fromToken.symbol.toLowerCase())
         ? `${toToken.symbol.toLowerCase()}-${fromToken.symbol.toLowerCase()}`
-        : `${fromToken.symbol.toLowerCase()}-${toToken.symbol.toLocaleLowerCase()}`
+        : `${fromToken.symbol.toLowerCase()}-${toToken.symbol.toLowerCase()}`
 
       return markets.find(
         (market: UiSpotMarketWithToken) => market.slug === slug
