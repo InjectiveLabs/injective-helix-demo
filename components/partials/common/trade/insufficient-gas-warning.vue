@@ -17,7 +17,7 @@ import {
   BankBalances,
   INJ_DENOM
 } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import InsufficientGasInner from '~/components/partials/common/elements/insufficient-gas-inner.vue'
 import { INJ_TO_IBC_TRANSFER_FEE } from '~/app/utils/constants'
 import { CurrentMarket } from '~/types'
@@ -78,7 +78,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(injBalance)
+      return new BigNumberInWei(injBalance).toBase(injToken.decimals)
     },
 
     hasSufficientBalance(): boolean {
