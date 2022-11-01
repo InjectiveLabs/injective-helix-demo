@@ -83,6 +83,7 @@
             :balance="transferableBalance"
             :balance-decimal-places="balanceDecimalPlaces"
             :balance-label="$t('bridge.available')"
+            :options="supplyWithSortedBalanceInBase"
             small
             show-input
             show-custom-indicator
@@ -91,8 +92,7 @@
             @input:amount="handleAmountChange"
             @input:token="handleTokenChange"
             @input:max="handleMax"
-          >
-          </TokenSelector>
+          />
         </div>
         <div class="mt-6 text-center">
           <VButton
@@ -137,7 +137,9 @@ import Vue, { PropType } from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import {
   BankBalanceWithToken,
+  BankBalanceWithTokenAndBalance,
   BridgingNetwork,
+  getTokenLogoWithVendorPathPrefix,
   SubaccountBalanceWithToken,
   TokenWithBalanceAndPrice,
   ZERO_IN_BASE
@@ -256,6 +258,14 @@ export default Vue.extend({
 
     ibcBankBalancesWithToken(): BankBalanceWithToken[] {
       return this.$accessor.bank.bankIbcBalancesWithToken
+    },
+
+    isModalOpen(): boolean {
+      return this.$accessor.modal.modals[Modal.Bridge]
+    },
+
+    modalData(): any {
+      return this.$accessor.modal.data
     },
 
     isWithdrawToInjectiveAddress(): boolean {
@@ -458,12 +468,124 @@ export default Vue.extend({
       return UI_DEFAULT_DISPLAY_DECIMALS
     },
 
-    isModalOpen(): boolean {
-      return this.$accessor.modal.modals[Modal.Bridge]
+    erc20TokensWithBalanceAndPriceFromBankAsBankBalanceWithToken(): BankBalanceWithToken[] {
+      const { erc20TokensWithBalanceAndPriceFromBank } = this
+
+      return erc20TokensWithBalanceAndPriceFromBank
+        .map((token) => ({
+          token,
+          denom: token.denom,
+          balance: token.balance
+        }))
+        .filter(({ denom }) => !denom.startsWith('ibc'))
+    },
+
+    subaccountBalancesWithTokenAsBankBalanceWithToken(): BankBalanceWithToken[] {
+      const { subaccountBalancesWithToken } = this
+
+      return subaccountBalancesWithToken.map((balance) => ({
+        ...balance,
+        balance: balance.availableBalance
+      }))
+    },
+
+    supply(): BankBalanceWithToken[] {
+      const {
+        bankBalancesWithToken,
+        subaccountBalancesWithTokenAsBankBalanceWithToken,
+        erc20TokensWithBalanceAndPriceFromBankAsBankBalanceWithToken,
+        origin,
+        destination,
+        isIbcTransfer
+      } = this
+
+      if (isIbcTransfer) {
+        return [] // IBC transfers are not supported on the Bridge Lite
+      }
+
+      if (
+        origin === BridgingNetwork.Ethereum &&
+        destination === BridgingNetwork.Injective
+      ) {
+        return erc20TokensWithBalanceAndPriceFromBankAsBankBalanceWithToken
+      }
+
+      if (
+        origin === BridgingNetwork.Injective &&
+        destination === BridgingNetwork.Ethereum
+      ) {
+        return erc20TokensWithBalanceAndPriceFromBankAsBankBalanceWithToken
+      }
+
+      if (origin === TransferDirection.bankToTradingAccount) {
+        return bankBalancesWithToken
+      }
+
+      if (origin === TransferDirection.tradingAccountToBank) {
+        return subaccountBalancesWithTokenAsBankBalanceWithToken
+      }
+
+      return bankBalancesWithToken
+    },
+
+    supplyWithSortedBalanceInBase(): BankBalanceWithTokenAndBalance[] {
+      const { supply } = this
+
+      const result = supply
+        .map((token) => {
+          const balance = new BigNumberInWei(token.balance || 0).toBase(
+            token.token ? token.token.decimals : 18
+          )
+
+          return {
+            ...token,
+            token: {
+              ...token.token,
+              logo: getTokenLogoWithVendorPathPrefix(token.token.logo)
+            },
+            balance: balance.toFixed()
+          } as BankBalanceWithTokenAndBalance
+        })
+        .sort((supply1, supply2) =>
+          new BigNumberInBase(supply2.balance).minus(supply1.balance).toNumber()
+        )
+
+      return result
     },
 
     $form(): InstanceType<typeof ValidationObserver> {
       return this.$refs.form as InstanceType<typeof ValidationObserver>
+    }
+  },
+
+  watch: {
+    modalData: {
+      handler(value) {
+        if (!value) {
+          return
+        }
+
+        const { supplyWithSortedBalanceInBase } = this
+
+        if (
+          !supplyWithSortedBalanceInBase ||
+          supplyWithSortedBalanceInBase.length === 0
+        ) {
+          return
+        }
+
+        const destinationToken = supplyWithSortedBalanceInBase.find(
+          (token) => token.denom === value.denom
+        )
+
+        if (!destinationToken) {
+          return
+        }
+
+        this.$emit('input-token:update', destinationToken.token)
+      },
+      immediate: true,
+      deep: true
     }
   },
 
