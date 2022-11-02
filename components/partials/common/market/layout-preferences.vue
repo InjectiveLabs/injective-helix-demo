@@ -1,5 +1,7 @@
 <template>
-  <div class="flex flex-col p-4 gap-3">
+  <div
+    class="flex-col p-4 gap-3 pointer-events-none hidden lg:flex lg:pointer-events-auto"
+  >
     <span class="font-semibold">
       {{ $t('trade.tradingLayout') }}
     </span>

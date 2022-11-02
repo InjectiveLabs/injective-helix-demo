@@ -1,21 +1,26 @@
 <template>
-  <MarketLayout @loaded="onLoad">
-    <template slot="trading-panel">
-      <Balances />
-      <Trading class="mt-1 flex-1" />
-    </template>
+  <div>
+    <MarketLayout @loaded="onLoad">
+      <template slot="trading-panel">
+        <InsufficientGasWarning />
+        <Balances />
+        <Trading class="mt-1 flex-1" />
+      </template>
 
-    <template v-if="market">
-      <MarketChart slot="chart" :market="market" class="hidden lg:block" />
-      <Orderbook slot="order-books" :market="market" />
-      <Orders slot="orders" />
-    </template>
+      <template v-if="market">
+        <MarketChart slot="chart" :market="market" class="hidden lg:block" />
+        <Orderbook slot="order-books" :market="market" />
+        <Orders slot="orders" />
+      </template>
 
-    <div slot="modals">
-      <ModalAddMargin />
-      <ModalMarketExpired v-if="marketIsExpired" :market="market" />
-    </div>
-  </MarketLayout>
+      <div slot="modals">
+        <ModalAddMargin />
+        <ModalMarketExpired v-if="marketIsExpired" :market="market" />
+      </div>
+    </MarketLayout>
+
+    <Bridge />
+  </div>
 </template>
 
 <script lang="ts">
@@ -34,7 +39,9 @@ import MarketChart from '~/components/partials/common/market/chart.vue'
 import Orders from '~/components/partials/derivatives/orders.vue'
 import Orderbook from '~/components/partials/derivatives/orderbook.vue'
 import { ORDERBOOK_POLLING_ENABLED } from '~/app/utils/constants'
+import InsufficientGasWarning from '~/components/partials/common/trade/insufficient-gas-warning.vue'
 import { Modal } from '~/types'
+import Bridge from '~/components/partials/portfolio/bridge.vue'
 
 export default Vue.extend({
   components: {
@@ -45,7 +52,9 @@ export default Vue.extend({
     Balances,
     Orders,
     Orderbook,
-    MarketChart
+    MarketChart,
+    InsufficientGasWarning,
+    Bridge
   },
 
   data() {
@@ -90,6 +99,7 @@ export default Vue.extend({
   methods: {
     onLoad() {
       Promise.all([
+        this.$accessor.bank.fetchBankBalancesWithToken(),
         this.setOrderbookPolling(),
         this.$accessor.derivatives.initMarketStreams()
       ])

@@ -1,7 +1,7 @@
 <template>
   <div v-if="market">
     <div
-      class="grid grid-cols-2 md:grid-cols-3 gap-2.5 lg:gap-0 lg:flex overflow-x-auto text-xs overflow-y-hidden"
+      class="grid grid-cols-2 md:grid-cols-3 gap-2.5 lg:gap-0 lg:flex overflow-hidden text-xs"
     >
       <MarketInfo
         v-if="market.type === MarketType.Derivative"

@@ -45,9 +45,18 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { BridgingNetwork, KeplrNetworks } from '@injectivelabs/sdk-ui-ts'
+import {
+  BankBalances,
+  BankBalanceWithToken,
+  BridgingNetwork,
+  INJ_DENOM,
+  KeplrNetworks,
+  SubaccountBalanceWithToken,
+  ZERO_IN_BASE
+} from '@injectivelabs/sdk-ui-ts'
 import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
 import { Token } from '@injectivelabs/token-metadata'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { injToken } from '~/app/data/token'
 import { BridgeType, Modal, TransferDirection } from '~/types'
 import VModalBridge from '~/components/partials/modals/bridge/index.vue'
@@ -55,6 +64,7 @@ import VModalBridgeConfirm from '~/components/partials/modals/bridge/confirm.vue
 import VModalBridgeCompleted from '~/components/partials/modals/bridge/completed.vue'
 import { getBridgingNetworkBySymbol } from '~/app/data/bridge'
 import { tokenService } from '~/app/Services'
+import { INJ_TO_IBC_TRANSFER_FEE } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -86,6 +96,46 @@ export default Vue.extend({
   computed: {
     wallet(): Wallet {
       return this.$accessor.wallet.wallet
+    },
+
+    bankBalances(): BankBalances {
+      return this.$accessor.bank.balances
+    },
+
+    subaccountBalancesWithToken(): SubaccountBalanceWithToken[] {
+      return this.$accessor.account.subaccountBalancesWithToken
+    },
+
+    bankBalancesWithToken(): BankBalanceWithToken[] {
+      return this.$accessor.bank.bankErc20BalancesWithToken
+    },
+
+    ibcBankBalancesWithToken(): BankBalanceWithToken[] {
+      return this.$accessor.bank.bankIbcBalancesWithToken
+    },
+
+    isWalletExemptFromGasFee(): boolean {
+      const { wallet } = this
+
+      return !isCosmosWallet(wallet)
+    },
+
+    balance(): BigNumberInBase {
+      const { bankBalances } = this
+
+      const balance = bankBalances[injToken.denom || INJ_DENOM]
+
+      if (!balance) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInWei(balance).toBase(injToken.decimals)
+    },
+
+    hasSufficientBalance(): boolean {
+      const { balance } = this
+
+      return balance.gt(new BigNumberInBase(INJ_TO_IBC_TRANSFER_FEE))
     },
 
     origin(): BridgingNetwork | TransferDirection {
@@ -240,12 +290,20 @@ export default Vue.extend({
     },
 
     handleTransfer(token: Token) {
+      const { isWalletExemptFromGasFee, hasSufficientBalance } = this
+
       this.form.amount = ''
       this.form.memo = ''
       this.form.destinationAddress = ''
       this.form.token = token || injToken
       this.bridgeType = BridgeType.Transfer
       this.transferDirection = TransferDirection.bankToTradingAccount
+
+      if (!isWalletExemptFromGasFee && !hasSufficientBalance) {
+        this.$accessor.modal.openModal({ type: Modal.InsufficientInjForGas })
+        return
+      }
+
       this.$accessor.modal.openModal({ type: Modal.Bridge })
     },
 

@@ -1,5 +1,8 @@
 <template>
-  <Dropdown hide-bottom-border>
+  <Dropdown
+    hide-bottom-border
+    :selector-class="'bg-gray-900 px-4 rounded-lg h-[38px]'"
+  >
     <template slot="title">
       <div class="flex items-center justify-between bg-gray-900 flex-grow">
         <slot name="label" />

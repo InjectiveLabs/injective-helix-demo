@@ -114,6 +114,11 @@ export interface OrderTypeFilter {
   orderType?: string
 }
 
+export type CurrentMarket =
+  | UiSpotMarketWithToken
+  | UiDerivativeMarketWithToken
+  | undefined
+
 export * from './enums'
 export * from './env'
 export * from './errors'
