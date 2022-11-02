@@ -788,7 +788,11 @@ export default Vue.extend({
     },
 
     onOrderbookPriceClick(price: string) {
-      this.tradingType = TradeExecutionType.LimitFill
+      const { tradingType } = this
+
+      if (tradingType === TradeExecutionType.Market) {
+        return
+      }
 
       this.$nextTick(() => {
         this.$orderInputs.onPriceChange(price)
