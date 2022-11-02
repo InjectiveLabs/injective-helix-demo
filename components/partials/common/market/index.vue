@@ -62,7 +62,7 @@
 
     <PopperBox
       ref="layout-preferences-dropdown"
-      class="popper rounded-lg flex flex-col flex-wrap text-xs absolute w-80 bg-gray-950 shadow-dropdown z-1000"
+      class="popper rounded-lg flex flex-col flex-wrap text-xs absolute w-80 bg-gray-950 shadow-dropdown z-1100"
       :options="popperOptions"
       :hide-arrow="true"
       binding-element="#layout-preferences-button"
