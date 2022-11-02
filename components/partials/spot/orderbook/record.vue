@@ -4,6 +4,7 @@
     class="flex h-6 items-center last:mb-0 first:mt-0 relative cursor-pointer w-full overflow-hidden"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
+    @click.stop="onPriceClick"
   >
     <span class="size-col" :class="newRecordClass"></span>
     <span
@@ -11,10 +12,7 @@
       :style="depthWidth"
       :class="type === SpotOrderSide.Buy ? 'buys' : 'sells'"
     ></span>
-    <span
-      class="w-1/3 text-xs px-2 flex items-center justify-end z-10"
-      @click.stop="onPriceClick"
-    >
+    <span class="w-1/3 text-xs px-2 flex items-center justify-end z-10">
       <IconArrow
         v-if="existsInUserOrders"
         data-cy="orderbook-record-own-order-icon"
@@ -44,7 +42,7 @@
         />
       </span>
     </span>
-    <span class="w-1/3 text-xs px-2 z-10" @click.stop="onPriceClick">
+    <span class="w-1/3 text-xs px-2 z-10">
       <span
         class="block text-right font-mono"
         :class="{
@@ -64,10 +62,7 @@
         />
       </span>
     </span>
-    <span
-      class="w-1/3 text-xs px-2 z-10 font-mono text-right"
-      @click.stop="onPriceClick"
-    >
+    <span class="w-1/3 text-xs px-2 z-10 font-mono text-right">
       <VNumber
         :decimals="
           market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
