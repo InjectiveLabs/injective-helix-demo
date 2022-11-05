@@ -182,7 +182,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { BigNumberInBase, Status } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
 import {
   BRIDGE_FEE_IN_USD,
   INJ_DENOM,
@@ -313,7 +313,7 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(injBalance)
+      return new BigNumberInWei(injBalance).toBase(injToken.decimals)
     },
 
     hasSufficientBalance(): boolean {

@@ -1,5 +1,5 @@
 <template>
-  <VDropdown hide-bottom-border>
+  <Dropdown hide-bottom-border :selector-class="'h-6'" :no-padding="true" dark>
     <template slot="title">
       <div class="flex items-center justify-end w-[80px]">
         <span class="text-xs ml-2">{{ display }}</span>
@@ -16,19 +16,19 @@
         {{ item.text }}
       </SelectorItem>
     </div>
-  </VDropdown>
+  </Dropdown>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import SelectorItem from '~/components/layout/selectors/selector-item.vue'
-import VDropdown from '~/components/elements/dropdown.vue'
+import Dropdown from '~/components/elements/dropdown.vue'
 import { aggregationList } from '~/app/data/aggregation'
 
 export default Vue.extend({
   components: {
     SelectorItem,
-    VDropdown
+    Dropdown
   },
 
   props: {

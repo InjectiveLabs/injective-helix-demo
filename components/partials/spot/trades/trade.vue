@@ -7,7 +7,7 @@
     class="flex h-6 items-center last:mb-0 first:mt-0 relative"
   >
     <span
-      class="w-1/3 text-xs px-2 cursor-pointer text-right font-mono"
+      class="w-1/3 text-xs px-2 text-right font-mono"
       data-cy="trades-table-price-span"
       :class="{
         'text-green-500': trade.tradeDirection === TradeDirection.Buy,

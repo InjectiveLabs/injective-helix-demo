@@ -6,43 +6,6 @@
       <VCardSelect
         v-model="component"
         lg
-        :option="components.bankAccount"
-        data-cy="wallet-panel"
-      >
-        <template slot="subtitle">
-          <div class="font-semibold text-lg flex items-center mb-2">
-            <span>{{ $t('portfolio.bankAccount') }}</span>
-            <IconInfoTooltip
-              class="ml-3"
-              color="text-gray-200"
-              :tooltip="$t('portfolio.bankAccountTooltip')"
-              lg
-            />
-          </div>
-        </template>
-
-        <IconWallet slot="icon" class="w-6 h-auto" />
-
-        <div class="text-right h-full">
-          <p class="text-gray-500 text-xs uppercase mb-2 tracking-wider">
-            {{ $t('portfolio.walletValue') }}
-          </p>
-          <p
-            class="text-lg 3md:text-2xl font-mono"
-            data-cy="wallet-value-usd-text-content-parent"
-          >
-            <span v-if="status.isLoading()">&mdash; USD</span>
-            <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-            <span v-else data-cy="wallet-value-usd-text-content">
-              {{ totalBankBalanceToString }} USD
-            </span>
-          </p>
-        </div>
-      </VCardSelect>
-
-      <VCardSelect
-        v-model="component"
-        lg
         :option="components.tradingAccount"
         data-cy="trading-account-panel"
       >
@@ -85,6 +48,43 @@
               <span class="font-mono">
                 {{ totalTradingAccountAvailableBalancesToString }} USD
               </span>
+            </span>
+          </p>
+        </div>
+      </VCardSelect>
+
+      <VCardSelect
+        v-model="component"
+        lg
+        :option="components.bankAccount"
+        data-cy="wallet-panel"
+      >
+        <template slot="subtitle">
+          <div class="font-semibold text-lg flex items-center mb-2">
+            <span>{{ $t('portfolio.bankAccount') }}</span>
+            <IconInfoTooltip
+              class="ml-3"
+              color="text-gray-200"
+              :tooltip="$t('portfolio.bankAccountTooltip')"
+              lg
+            />
+          </div>
+        </template>
+
+        <IconWallet slot="icon" class="w-6 h-auto" />
+
+        <div class="text-right h-full">
+          <p class="text-gray-500 text-xs uppercase mb-2 tracking-wider">
+            {{ $t('portfolio.walletValue') }}
+          </p>
+          <p
+            class="text-lg 3md:text-2xl font-mono"
+            data-cy="wallet-value-usd-text-content-parent"
+          >
+            <span v-if="status.isLoading()">&mdash; USD</span>
+            <span v-else-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
+            <span v-else data-cy="wallet-value-usd-text-content">
+              {{ totalBankBalanceToString }} USD
             </span>
           </p>
         </div>
@@ -172,7 +172,7 @@ export default Vue.extend({
       hideBalance: false,
 
       components,
-      component: components.bankAccount
+      component: components.tradingAccount
     }
   },
 

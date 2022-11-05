@@ -15,7 +15,7 @@ import {
   VPN_PROXY_VALIDATION_PERIOD
 } from '~/app/utils/constants'
 import { Locale, english } from '~/locales'
-import { AppState, GeoLocation } from '~/types'
+import { AppState, GeoLocation, OrderbookLayout, TradingLayout } from '~/types'
 import {
   fetchGeoLocation,
   validateGeoLocation,
@@ -35,6 +35,8 @@ export interface UserBasedState {
   favoriteMarkets: string[]
   auctionsViewed: number[]
   geoLocation: GeoLocation
+  orderbookLayout: OrderbookLayout
+  tradingLayout: TradingLayout
 }
 
 const initialState = {
@@ -56,7 +58,9 @@ const initialState = {
     geoLocation: {
       continent: '',
       country: ''
-    }
+    },
+    orderbookLayout: OrderbookLayout.Default,
+    tradingLayout: TradingLayout.Left
   } as UserBasedState,
   announcements: [] as Array<Announcement>,
   attachments: [] as Array<Attachment>
