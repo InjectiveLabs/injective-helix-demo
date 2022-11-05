@@ -6,7 +6,7 @@
     "
     :bg-color="bgColor"
     :no-padding="$slots.illustration ? true : false"
-    class="text-xl h-full"
+    class="text-xl h-full relative"
   >
     <a
       :href="htmlUrl"

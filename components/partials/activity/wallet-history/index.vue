@@ -42,7 +42,7 @@
       </TabSelectorItem>
     </div>
 
-    <VCard md class="h-full mt-4 xs:mt-6">
+    <VCard md class="h-full mt-4 xs:mt-6 relative">
       <component :is="`${component}`"></component>
     </VCard>
   </div>

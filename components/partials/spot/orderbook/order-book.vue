@@ -1,8 +1,13 @@
 <template>
   <div class="flex flex-col flex-wrap w-full overflow-y-hidden px-2">
     <div
+      v-if="orderbookLayout !== OrderbookLayout.Buys"
       ref="sellOrders"
-      class="overflow-y-scroll overflow-x-hidden w-full orderbook-half-h"
+      class="overflow-y-scroll overflow-x-hidden w-full"
+      :class="{
+        'orderbook-half-h': orderbookLayout !== OrderbookLayout.Sells,
+        'orderbook-full-h': orderbookLayout === OrderbookLayout.Sells
+      }"
     >
       <div class="flex h-full w-full">
         <ul
@@ -60,8 +65,13 @@
     </div>
 
     <div
+      v-if="orderbookLayout !== OrderbookLayout.Sells"
       ref="buyOrders"
-      class="overflow-y-scroll overflow-x-hidden w-full orderbook-half-h"
+      class="overflow-y-scroll overflow-x-hidden w-full"
+      :class="{
+        'orderbook-half-h': orderbookLayout !== OrderbookLayout.Buys,
+        'orderbook-full-h': orderbookLayout === OrderbookLayout.Buys
+      }"
     >
       <div class="flex h-full w-full">
         <ul
@@ -121,6 +131,8 @@ import {
   getAggregationPrice
 } from '~/app/client/utils/spot'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { UserBasedState } from '~/store/app'
+import { OrderbookLayout } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -140,6 +152,7 @@ export default Vue.extend({
       Change,
       TradeDirection,
       SpotOrderSide,
+      OrderbookLayout,
       autoScrollSellsLocked: false,
       autoScrollBuysLocked: false,
       buyHoverPosition: null as number | null,
@@ -160,6 +173,10 @@ export default Vue.extend({
   },
 
   computed: {
+    userState(): UserBasedState {
+      return this.$accessor.app.userState
+    },
+
     trades(): UiSpotTrade[] {
       return this.$accessor.spot.trades
     },
@@ -202,6 +219,12 @@ export default Vue.extend({
       }
 
       return lastTradedPrice.toFormat(market.priceDecimals)
+    },
+
+    orderbookLayout(): OrderbookLayout {
+      const { userState } = this
+
+      return userState.orderbookLayout
     },
 
     sells(): UiPriceLevel[] {

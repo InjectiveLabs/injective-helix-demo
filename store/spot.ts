@@ -154,7 +154,16 @@ export const getters = getterTree(state, {
     return lastPrice.gte(secondLastPrice) ? Change.Increase : Change.Decrease
   },
 
-  activeMarketIds: (state) => state.markets.map((m) => m.marketId)
+  activeMarketIds: (state) => state.markets.map((m) => m.marketId),
+
+  supportedTokens: (state) => [
+    ...new Map(
+      state.markets
+        .map(({ baseToken, quoteToken }) => [baseToken, quoteToken])
+        .flat()
+        .map((item) => [item.denom, item])
+    ).values()
+  ]
 })
 
 export const mutations = {

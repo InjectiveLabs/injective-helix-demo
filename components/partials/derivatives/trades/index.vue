@@ -7,7 +7,7 @@
           v-for="(trade, index) in trades"
           :key="`trade-${index}`"
           :trade="trade"
-        ></Trade>
+        />
       </ul>
     </div>
   </div>

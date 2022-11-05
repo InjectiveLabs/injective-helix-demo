@@ -1,5 +1,5 @@
 <template>
-  <VCard>
+  <VCard class="relative">
     <div class="relative h-full">
       <div class="flex flex-col flex-wrap h-full">
         <div v-if="false" class="w-full">
