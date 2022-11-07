@@ -2,7 +2,8 @@
   "name": "injective-helix",
   "version": "1.7.0",
   "description": "The Premier Decentralized Crypto Exchange",
-  "author": "Bojan Angjelkoski <bojan@injectiveprotocol.com>",
+  "license": "Apache 2.0",
+  "author": "@InjectiveLabs",
   "private": true,
   "scripts": {
     "dev": "nuxt",
