@@ -147,7 +147,7 @@ if (endpointsNotProvided) {
 export const ENDPOINTS = {
   ...endpoints,
   chronosApi: APP_CHRONOS_API_ENDPOINT || undefined,
-  exchangeApiEndpoint: APP_EXCHANGE_API_ENDPOINT || endpoints.exchangeApi,
+  exchangeApiEndpoint: APP_EXCHANGE_API_ENDPOINT || endpoints.indexerApi,
   sentryGrpcApiEndpoint: APP_SENTRY_GRPC_ENDPOINT || endpoints.sentryGrpcApi,
   sentryHttpApi: APP_SENTRY_HTTP_ENDPOINT || endpoints.sentryHttpApi
 }
@@ -165,3 +165,5 @@ export const UI_DEFAULT_PAGINATION_LIMIT_COUNT = 20
 
 export const MARKETS_HISTORY_CHART_SEVEN_DAYS = 154
 export const MARKETS_HISTORY_CHART_ONE_HOUR = 60
+
+export const FEE_PAYER_PUB_KEY = process.env.APP_FEE_PAYER_PUB_KEY || ''

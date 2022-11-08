@@ -1,4 +1,4 @@
-import { WalletStrategy, Wallet } from '@injectivelabs/wallet-ts'
+import { WalletStrategy } from '@injectivelabs/wallet-ts'
 import { EthereumChainId } from '@injectivelabs/ts-types'
 import {
   CHAIN_ID,
@@ -43,10 +43,9 @@ const wsRpcUrls = getRpcWsUrlsForChainIds()
 
 export const walletStrategy = new WalletStrategy({
   chainId: CHAIN_ID,
-  ethereumChainId: ETHEREUM_CHAIN_ID,
-  options: {
-    wsRpcUrls,
+  ethereumOptions: {
     rpcUrls,
-    disabledWallets: [Wallet.WalletConnect]
+    wsRpcUrls,
+    ethereumChainId: ETHEREUM_CHAIN_ID
   }
 })

@@ -2,12 +2,12 @@ import { CoinGeckoApi } from '@injectivelabs/token-utils'
 import { LocalStorage } from '@injectivelabs/utils'
 import { Web3Client } from '@injectivelabs/sdk-ui-ts/dist/web3'
 import {
-  MsgBroadcastClient,
   TokenService,
   TokenPrice,
   MetricsProvider,
   peggyGraphQlEndpointForNetwork,
-  UiBridgeTransformer
+  UiBridgeTransformer,
+  MsgBroadcastClient
 } from '@injectivelabs/sdk-ui-ts'
 import {
   ApolloConsumer,
@@ -38,7 +38,8 @@ import {
   ETHEREUM_CHAIN_ID,
   COIN_GECKO_OPTIONS,
   CHAIN_ID,
-  ENDPOINTS
+  ENDPOINTS,
+  FEE_PAYER_PUB_KEY
 } from './utils/constants'
 import { walletStrategy } from './wallet-strategy'
 
@@ -118,7 +119,8 @@ export const coinGeckoApi = new CoinGeckoApi(COIN_GECKO_OPTIONS)
 // Transaction broadcaster
 export const msgBroadcastClient = new MsgBroadcastClient({
   ...apiOptions,
-  walletStrategy
+  walletStrategy,
+  feePayerPubKey: FEE_PAYER_PUB_KEY
 })
 
 export const web3Client = new Web3Client({

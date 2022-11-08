@@ -3,8 +3,7 @@ import {
   TokenWithBalanceAndPrice,
   UNLIMITED_ALLOWANCE,
   INJ_COIN_GECKO_ID,
-  BankBalanceWithToken,
-  AccountMetrics
+  BankBalanceWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
@@ -249,13 +248,11 @@ export const actions = actionTree(
       })
 
       const { erc20TokensWithBalanceAndPriceFromBank } = state
-      const token = erc20TokensWithBalanceAndPriceFromBank.find(
-        (token) => {
-          const erc20Token = token as Erc20Token
+      const token = erc20TokensWithBalanceAndPriceFromBank.find((token) => {
+        const erc20Token = token as Erc20Token
 
-          return erc20Token.address.toLowerCase() === tokenAddress.toLowerCase()
-        }
-      )
+        return erc20Token.address.toLowerCase() === tokenAddress.toLowerCase()
+      })
       const index = erc20TokensWithBalanceAndPriceFromBank.findIndex(
         (token) => {
           const erc20Token = token as Erc20Token
@@ -363,10 +360,9 @@ export const actions = actionTree(
         }
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: AccountMetrics.SendToEth
+        msgs: message
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
