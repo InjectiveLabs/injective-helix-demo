@@ -72,7 +72,7 @@ export const getDecimalsFromNumber = (number: number | string): number => {
 }
 
 export const getChronosDatafeedEndpoint = (marketType: string): string => {
-  return `${ENDPOINTS.exchangeApiEndpoint}/api/chronos/v1/${marketType}`
+  return `${ENDPOINTS.indexerApi}/api/chronos/v1/${marketType}`
 }
 
 export const getHubUrl = (): string => {

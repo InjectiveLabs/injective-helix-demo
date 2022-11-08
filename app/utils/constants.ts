@@ -56,8 +56,8 @@ export const ORDERBOOK_STREAMING_ENABLED: boolean = !ORDERBOOK_POLLING_ENABLED
 
 export const BASE_URL: string = process.env.APP_BASE_URL
 export const FEE_RECIPIENT: string = process.env.APP_FEE_RECIPIENT
-export const APP_EXCHANGE_API_ENDPOINT: string =
-  process.env.APP_EXCHANGE_API_ENDPOINT || ''
+export const APP_INDEXER_API_ENDPOINT: string =
+  process.env.APP_INDEXER_API_ENDPOINT || ''
 export const APP_SENTRY_GRPC_ENDPOINT: string =
   process.env.APP_SENTRY_GRPC_ENDPOINT || ''
 export const APP_SENTRY_HTTP_ENDPOINT: string =
@@ -132,7 +132,7 @@ export const HIDDEN_BALANCE_DISPLAY = '********'
 const endpoints = getEndpointsForNetwork(NETWORK)
 const endpointsNotProvided =
   !endpoints &&
-  (!APP_EXCHANGE_API_ENDPOINT ||
+  (!APP_INDEXER_API_ENDPOINT ||
     !APP_SENTRY_GRPC_ENDPOINT ||
     !APP_SENTRY_HTTP_ENDPOINT)
 
@@ -147,7 +147,7 @@ if (endpointsNotProvided) {
 export const ENDPOINTS = {
   ...endpoints,
   chronosApi: APP_CHRONOS_API_ENDPOINT || undefined,
-  exchangeApiEndpoint: APP_EXCHANGE_API_ENDPOINT || endpoints.indexerApi,
+  indexerApiEndpoint: APP_INDEXER_API_ENDPOINT || endpoints.indexerApi,
   sentryGrpcApiEndpoint: APP_SENTRY_GRPC_ENDPOINT || endpoints.sentryGrpcApi,
   sentryHttpApi: APP_SENTRY_HTTP_ENDPOINT || endpoints.sentryHttpApi
 }

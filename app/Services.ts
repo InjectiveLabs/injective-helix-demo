@@ -6,8 +6,7 @@ import {
   TokenPrice,
   MetricsProvider,
   peggyGraphQlEndpointForNetwork,
-  UiBridgeTransformer,
-  MsgBroadcastClient
+  UiBridgeTransformer
 } from '@injectivelabs/sdk-ui-ts'
 import {
   ApolloConsumer,
@@ -32,6 +31,7 @@ import {
   IndexerRestLeaderboardChronosApi,
   IndexerGrpcOracleApi
 } from '@injectivelabs/sdk-ts'
+import { MsgBroadcaster } from '@injectivelabs/wallet-ts'
 import {
   NETWORK,
   METRICS_ENABLED,
@@ -117,7 +117,7 @@ export const apolloConsumer = new ApolloConsumer(
 export const coinGeckoApi = new CoinGeckoApi(COIN_GECKO_OPTIONS)
 
 // Transaction broadcaster
-export const msgBroadcastClient = new MsgBroadcastClient({
+export const msgBroadcastClient = new MsgBroadcaster({
   ...apiOptions,
   walletStrategy,
   feePayerPubKey: FEE_PAYER_PUB_KEY
