@@ -111,6 +111,18 @@ export const indexerDerivativesApi = new IndexerGrpcDerivativesApi(
 )
 export const indexerSpotApi = new IndexerGrpcSpotApi(ENDPOINTS.indexerApi)
 
+// TODO: Move to SDK.
+export const ninjaPassApi = {
+  async fetchNinjaPassCodes(address: string) {
+    const baseUrl = 'http://localhost:3005'
+    const res = await fetch(`${baseUrl}/codes?address=${address}`, {
+      method: 'GET'
+    })
+
+    return await res.json()
+  }
+}
+
 export const apolloConsumer = new ApolloConsumer(
   peggyGraphQlEndpointForNetwork(NETWORK)
 )
