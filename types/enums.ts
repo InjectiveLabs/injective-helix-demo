@@ -57,7 +57,8 @@ export enum Modal {
   RefereeOnboarding = 'referee-onboarding',
   InsufficientInjForGas = 'insufficient-inj-for-gas',
   MobileTradeFilter = 'mobile-trade-filter',
-  MobileTradeDetails = 'mobile-trade-details'
+  MobileTradeDetails = 'mobile-trade-details',
+  NinjaPassWinner = 'ninja-pass-winner'
 }
 
 export enum Breakpoint {

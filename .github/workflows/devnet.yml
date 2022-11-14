@@ -17,6 +17,7 @@ jobs:
       GIT_BRANCH: ${{secrets.DEVNET_GIT_BRANCH}}
       APP_GOOGLE_ANALYTICS_KEY: ${{ secrets.APP_DEVNET_GOOGLE_ANALYTICS_KEY }}
       APP_AMPLITUDE_KEY: ${{secrets.APP_DEVNET_AMPLITUDE_KEY}}
+      APP_NINJA_PASS_ENDPOINT: ${{ secrets.APP_NINJA_PASS_ENDPOINT }}
     steps:
       - name: Configure SSH
         run: |

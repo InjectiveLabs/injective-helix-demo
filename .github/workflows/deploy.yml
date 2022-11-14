@@ -44,6 +44,7 @@ jobs:
       APP_BUGSNAG_KEY: ${{ secrets.APP_BUGSNAG_KEY }}
       APP_AMPLITUDE_KEY: ${{ secrets.APP_AMPLITUDE_KEY }}
       APP_ALCHEMY_KEY: ${{ secrets.APP_ALCHEMY_KEY }}
+      APP_NINJA_PASS_ENDPOINT: ${{ secrets.APP_NINJA_PASS_ENDPOINT }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_S3_BUCKET: ${{ secrets.AWS_S3_MAINNET_BUCKET }}

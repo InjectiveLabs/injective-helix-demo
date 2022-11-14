@@ -21,6 +21,7 @@ jobs:
       APP_NETWORK: testnetK8s
       APP_ENV: testnet
       APP_CHAIN_ID: injective-888
+      APP_NINJA_PASS_ENDPOINT: ${{ secrets.APP_NINJA_PASS_ENDPOINT }}
 
     steps:
       - name: Configure SSH
@@ -54,6 +55,6 @@ jobs:
 
       - name: Generating the static pages
         run: ssh testnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn generate'
-      
+
       - name: Generating the static pages
         run: ssh testnet 'sudo chown -R root:ubuntu $HOME/inj/injective-helix/dist'
