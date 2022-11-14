@@ -145,12 +145,7 @@ export default Vue.extend({
     },
 
     handleNinjaPassGiveaway() {
-      this.$accessor.ninjapass
-        .fetchCodes()
-        .then(() => {
-          //
-        })
-        .catch(this.$onRejected)
+      this.$accessor.ninjapass.fetchCodes()
     },
 
     onLoadMarketsInit() {

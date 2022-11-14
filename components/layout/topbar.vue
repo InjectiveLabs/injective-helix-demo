@@ -153,6 +153,12 @@ export default Vue.extend({
 
     handleConnectedWallet() {
       this.isUserConnectedProcessCompleted = true
+
+      this.handleNinjaPassGiveaway()
+    },
+
+    handleNinjaPassGiveaway() {
+      this.$accessor.ninjapass.fetchCodes()
     },
 
     handleShowDropdown() {
