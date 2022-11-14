@@ -36,7 +36,8 @@ export default {
     { src: '~/plugins/touch-events', ssr: false },
     { src: '~/plugins/tooltip', ssr: false },
     { src: '~/plugins/clipboard', ssr: false },
-    { src: '~/plugins/veevalidate', ssr: false }
+    { src: '~/plugins/veevalidate', ssr: false },
+    { src: '~/plugins/confetti', ssr: false }
   ],
 
   typescript: {

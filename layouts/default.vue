@@ -28,6 +28,8 @@
         </div>
       </HocLoading>
     </transition>
+
+    <Confetti />
   </div>
 </template>
 
@@ -40,6 +42,7 @@ import SidebarMobile from '~/components/layout/sidebar-mobile.vue'
 import ModalAuctionCountdown from '~/components/partials/modals/auction-countdown.vue'
 import ModalInsufficientInjForGas from '~/components/partials/modals/insufficient-inj-for-gas.vue'
 import ModalNinjaPassWinner from '~/components/partials/modals/ninja-pass-winner.vue'
+import Confetti from '~/components/elements/confetti.vue'
 import { SHOW_AUCTION_COUNTDOWN } from '~/app/utils/constants'
 import {
   amplitudeTracker,
@@ -53,7 +56,8 @@ export default Vue.extend({
     ModalNinjaPassWinner,
     TopBar,
     VFooter: Footer,
-    SidebarMobile
+    SidebarMobile,
+    Confetti
   },
 
   data() {
@@ -141,7 +145,12 @@ export default Vue.extend({
     },
 
     handleNinjaPassGiveaway() {
-      this.$accessor.ninja.fetchNinjaPassCodes()
+      this.$accessor.ninjapass
+        .fetchCodes()
+        .then(() => {
+          //
+        })
+        .catch(this.$onRejected)
     },
 
     onLoadMarketsInit() {

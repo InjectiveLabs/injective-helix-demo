@@ -17,7 +17,7 @@ import * as token from '~/store/token'
 import * as wallet from '~/store/wallet'
 import * as params from '~/store/params'
 import * as leaderboard from '~/store/leaderboard'
-import * as ninja from '~/store/ninja'
+import * as ninjapass from '~/store/ninjapass'
 
 export const accessorType = getAccessorType({
   modules: {
@@ -38,6 +38,6 @@ export const accessorType = getAccessorType({
     wallet,
     params,
     leaderboard,
-    ninja
+    ninjapass
   }
 })
