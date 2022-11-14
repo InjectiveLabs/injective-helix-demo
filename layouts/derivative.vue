@@ -20,8 +20,6 @@
     </MarketLayout>
 
     <Bridge />
-
-    <Confetti />
   </div>
 </template>
 
@@ -44,7 +42,6 @@ import { ORDERBOOK_POLLING_ENABLED } from '~/app/utils/constants'
 import InsufficientGasWarning from '~/components/partials/common/trade/insufficient-gas-warning.vue'
 import { Modal } from '~/types'
 import Bridge from '~/components/partials/portfolio/bridge.vue'
-import Confetti from '~/components/elements/confetti.vue'
 
 export default Vue.extend({
   components: {
@@ -57,8 +54,7 @@ export default Vue.extend({
     Orderbook,
     MarketChart,
     InsufficientGasWarning,
-    Bridge,
-    Confetti
+    Bridge
   },
 
   data() {
@@ -96,10 +92,6 @@ export default Vue.extend({
     }
   },
 
-  mounted() {
-    this.handleNinjaPassGiveaway()
-  },
-
   beforeDestroy() {
     clearInterval(this.interval)
   },
@@ -126,10 +118,6 @@ export default Vue.extend({
           await this.$accessor.derivatives.pollOrderbook()
         }, 2000)
       }
-    },
-
-    handleNinjaPassGiveaway() {
-      this.$accessor.ninjapass.fetchCodes()
     }
   }
 })
