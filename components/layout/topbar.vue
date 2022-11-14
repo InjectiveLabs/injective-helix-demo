@@ -18,7 +18,7 @@
       <div class="flex items-center">
         <NavItemDummy
           v-if="isUserWalletConnected && hasNinjaPassCodes"
-          class="hidden px-0 w-10 items-center justify-center lg:flex"
+          class="flex px-0 w-10 items-center justify-center"
           @click="handleShowNinjaPassModal"
         >
           <IconGift class="text-white w-4 h-4" />
