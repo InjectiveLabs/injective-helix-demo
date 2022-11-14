@@ -6,13 +6,16 @@
       hide-close-button
       @modal-closed="closeModal"
     >
-      <h3 slot="title" class="normal-case">Congratulations! 🎉</h3>
+      <h3 slot="title" class="normal-case">
+        {{ $t('ninjaPass.congratulations') }}
+      </h3>
 
       <div class="flex flex-col">
-        <span class="text-sm mb-4">You’ve won an exclusive Ninja Pass 🥷</span>
+        <span class="text-sm mb-4">
+          {{ $t('ninjaPass.description') }}
+        </span>
         <span class="text-sm">
-          It will serve as your gateway into exclusive Injective events,
-          products, giveaways and many more surprises.
+          {{ $t('ninjaPass.congratulations') }}
         </span>
         <div class="grid grid-cols-1 gap-4 mt-6 sm:grid-cols-2">
           <a
@@ -20,7 +23,9 @@
             target="_blank"
             class="bg-blue-300 py-2 h-10 rounded border border-blue-300 flex items-center justify-center gap-2"
           >
-            <span class="font-medium text-white">Verify now</span>
+            <span class="font-medium text-white">
+              {{ $t('ninjaPass.verifyNow') }}
+            </span>
             <IconExternalLink class="w-4 h-4 text-white" />
           </a>
 
@@ -28,7 +33,9 @@
             class="bg-transparent py-2 h-10 rounded border border-white"
             @click="closeModal"
           >
-            <span class="font-medium text-white">Later</span>
+            <span class="font-medium text-white">
+              {{ $t('ninjaPass.later') }}
+            </span>
           </button>
         </div>
       </div>
