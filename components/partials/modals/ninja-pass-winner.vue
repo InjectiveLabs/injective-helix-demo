@@ -1,6 +1,11 @@
 <template>
   <div>
-    <VModal :is-open="hasCodes" sm is-always-open @modal-closed="closeModal">
+    <VModal
+      :is-open="isModalOpen"
+      sm
+      hide-close-button
+      @modal-closed="closeModal"
+    >
       <h3 slot="title" class="normal-case">Congratulations! 🎉</h3>
 
       <div class="flex flex-col">
@@ -42,6 +47,10 @@ export default Vue.extend({
       return this.$accessor.wallet.injectiveAddress
     },
 
+    isModalOpen(): boolean {
+      return this.$accessor.modal.modals[Modal.NinjaPassWinner]
+    },
+
     hasCodes(): boolean {
       return this.$accessor.ninjapass.codes.length > 0
     },
@@ -63,6 +72,7 @@ export default Vue.extend({
     hasCodes: {
       handler(hasCodes: boolean) {
         if (hasCodes) {
+          this.$accessor.modal.openModal({ type: Modal.NinjaPassWinner })
           this.$confetti.activate()
         }
       }
