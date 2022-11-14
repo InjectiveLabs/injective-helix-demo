@@ -31,7 +31,7 @@ export default {
             ? response.data.message
             : 'Something happened, please try again later!'
         ),
-        { contextModule: 'newsletter' }
+        { contextModule: 'ninjapass' }
       )
     }
   }
