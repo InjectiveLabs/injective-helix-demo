@@ -9,7 +9,7 @@
           It will serve as your gateway into exclusive Injective events,
           products, giveaways and many more surprises.
         </span>
-        <div class="grid grid-cols-2 gap-4 mt-6">
+        <div class="grid grid-cols-1 gap-4 mt-6 sm:grid-cols-2">
           <a
             :href="ninjaPassUrl"
             target="_blank"
