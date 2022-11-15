@@ -21,7 +21,7 @@ export default {
         data: any
       }
 
-      return res.data
+      return res.data.codes
     } catch (e: unknown) {
       const response = (e as any).response
 

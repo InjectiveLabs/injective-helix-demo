@@ -32,13 +32,11 @@ export const actions = actionTree(
       }
 
       try {
-        const { codes } = await ninjaPassApi.fetchNinjaPassCodes(
-          injectiveAddress
-        )
+        const codes = await ninjaPassApi.fetchNinjaPassCodes(injectiveAddress)
 
         commit('setCodes', codes)
       } catch (ex) {
-        commit('setCodes', [])
+        // TODO: Maybe add some logging, for now fail silently as it's not blocking.
       }
     }
   }
