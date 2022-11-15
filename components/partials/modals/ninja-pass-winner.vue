@@ -59,10 +59,18 @@ export default Vue.extend({
     },
 
     hasCodes(): boolean {
+      if (!this.$accessor.ninjapass.codes) {
+        return false
+      }
+
       return this.$accessor.ninjapass.codes.length > 0
     },
 
-    ninjaPassCode(): string {
+    ninjaPassCode(): string | undefined {
+      if (!this.$accessor.ninjapass.codes) {
+        return undefined
+      }
+
       return this.$accessor.ninjapass.codes[0]
     },
 
@@ -70,6 +78,10 @@ export default Vue.extend({
       const { ninjaPassCode, injAddress } = this
 
       const baseUrl = APP_NINJA_PASS_API_ENDPOINT
+
+      if (!ninjaPassCode) {
+        return baseUrl
+      }
 
       return `${baseUrl}/?code=${ninjaPassCode}&address=${injAddress}`
     }
