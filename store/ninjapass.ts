@@ -31,9 +31,15 @@ export const actions = actionTree(
         return
       }
 
-      const { codes } = await ninjaPassApi.fetchNinjaPassCodes(injectiveAddress)
+      try {
+        const { codes } = await ninjaPassApi.fetchNinjaPassCodes(
+          injectiveAddress
+        )
 
-      commit('setCodes', codes)
+        commit('setCodes', codes)
+      } catch (ex) {
+        commit('setCodes', [])
+      }
     }
   }
 )

@@ -108,10 +108,6 @@ export default Vue.extend({
     },
 
     hasNinjaPassCodes(): boolean {
-      if (!this.$accessor.ninjapass.codes) {
-        return false
-      }
-
       return this.$accessor.ninjapass.codes.length > 0
     },
 
