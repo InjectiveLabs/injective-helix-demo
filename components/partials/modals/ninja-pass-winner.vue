@@ -62,7 +62,7 @@ export default Vue.extend({
       return this.$accessor.ninjapass.codes.length > 0
     },
 
-    ninjaPassCode(): string {
+    ninjaPassCode(): string | undefined {
       return this.$accessor.ninjapass.codes[0]
     },
 

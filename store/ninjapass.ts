@@ -1,5 +1,5 @@
 import { actionTree, mutationTree } from 'typed-vuex'
-import ninjaPassApi from '~/app/services/ninja-pass-api'
+import { fetchNinjaPassCodes } from '~/app/services/ninja-pass-api'
 
 const initialStateFactory = () => ({
   codes: [] as string[]
@@ -31,7 +31,7 @@ export const actions = actionTree(
         return
       }
 
-      const { codes } = await ninjaPassApi.fetchNinjaPassCodes(injectiveAddress)
+      const codes = (await fetchNinjaPassCodes(injectiveAddress)) || []
 
       commit('setCodes', codes)
     }
