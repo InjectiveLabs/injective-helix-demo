@@ -1,5 +1,5 @@
 import { actionTree, mutationTree } from 'typed-vuex'
-import { fetchNinjaPassCodes } from '~/app/services/ninja-pass-api'
+import { fetchNinjaPassCodes } from '~/app/services/ninjapass'
 
 const initialStateFactory = () => ({
   codes: [] as string[]
