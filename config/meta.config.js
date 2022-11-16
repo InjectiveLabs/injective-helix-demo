@@ -1,4 +1,4 @@
-const { BASE_URL } = require('./app/utils/constants')
+const { BASE_URL } = require('../app/utils/constants')
 
 const metaTags = {
   title: process.env.APP_NAME

@@ -49,7 +49,7 @@ import {
   tokenPrice,
   tokenService
 } from '~/app/Services'
-import { spot as allowedSpotMarkets } from '~/routes.config'
+import { spot as allowedSpotMarkets } from '~/config/routes.config'
 import { ActivityFetchOptions } from '~/types'
 
 const initialStateFactory = () => ({

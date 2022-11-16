@@ -30,6 +30,7 @@ import {
   zeroDerivativeMarketSummary
 } from '@injectivelabs/sdk-ui-ts'
 import {
+  BinaryOptionsMarket,
   DerivativeOrderSide,
   DerivativeOrderState,
   ExpiryFuturesMarket,
@@ -71,7 +72,7 @@ import {
   perpetuals as allowedPerpetualMarkets,
   binaryOptions as allowedBinaryOptionsMarkets,
   expiryFutures as allowedExpiryFutures
-} from '~/routes.config'
+} from '~/config/routes.config'
 import { ActivityFetchOptions } from '~/types'
 import { marketIsRecentlyExpired } from '~/app/utils/market'
 
@@ -523,7 +524,7 @@ export const actions = actionTree(
           recentlyExpiredMarketsWithToken
         )
       const binaryOptionsMarkets = IS_DEVNET
-        ? await indexerDerivativesApi.fetchBinaryOptionsMarkets()
+        ? ((await indexerDerivativesApi.fetchBinaryOptionsMarkets()) as BinaryOptionsMarket[])
         : []
       const binaryOptionsMarketsWithToken =
         await tokenService.getBinaryOptionsMarketsWithToken(

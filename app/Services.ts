@@ -1,6 +1,6 @@
 import { CoinGeckoApi } from '@injectivelabs/token-utils'
 import { LocalStorage } from '@injectivelabs/utils'
-import { Web3Client } from '@injectivelabs/sdk-ui-ts/dist/web3'
+import { Web3Client } from '@injectivelabs/wallet-ts/dist/core/transactions/Web3Broadcaster'
 import {
   TokenService,
   TokenPrice,

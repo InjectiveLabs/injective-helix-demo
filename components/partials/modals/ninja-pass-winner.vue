@@ -12,10 +12,10 @@
 
       <div class="flex flex-col">
         <span class="text-sm mb-4">
-          {{ $t('ninjaPass.description') }}
+          {{ $t('ninjaPass.title') }}
         </span>
         <span class="text-sm">
-          {{ $t('ninjaPass.congratulations') }}
+          {{ $t('ninjaPass.description') }}
         </span>
         <div class="grid grid-cols-1 gap-4 mt-6 sm:grid-cols-2">
           <a
@@ -54,24 +54,42 @@ export default Vue.extend({
       return this.$accessor.wallet.injectiveAddress
     },
 
+    codes(): { address: string; code: string }[] {
+      return this.$accessor.ninjapass.codes
+    },
+
     isModalOpen(): boolean {
       return this.$accessor.modal.modals[Modal.NinjaPassWinner]
     },
 
     hasCodes(): boolean {
-      return this.$accessor.ninjapass.codes.length > 0
+      const { codes } = this
+
+      return codes.length > 0
     },
 
-    ninjaPassCode(): string | undefined {
-      return this.$accessor.ninjapass.codes[0]
+    ninjaPassCode(): { address: string; code: string } | undefined {
+      const { codes } = this
+
+      if (codes.length === 0) {
+        return
+      }
+
+      const [code] = codes
+
+      return code
     },
 
-    ninjaPassUrl(): string {
+    ninjaPassUrl(): string | undefined {
       const { ninjaPassCode, injAddress } = this
+
+      if (!ninjaPassCode) {
+        return
+      }
 
       const baseUrl = APP_NINJA_PASS_API_ENDPOINT
 
-      return `${baseUrl}/?code=${ninjaPassCode}&address=${injAddress}`
+      return `${baseUrl}/?code=${ninjaPassCode?.code}&address=${injAddress}`
     }
   },
 

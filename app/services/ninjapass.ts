@@ -7,7 +7,7 @@ export const fetchNinjaPassCodes = async (address: string) => {
   try {
     const res = (await httpClient.get(`codes?address=${address}`)) as {
       data: {
-        codes: string[]
+        codes: { address: string; code: string }[]
       }
     }
 

@@ -2,19 +2,22 @@ import { actionTree, mutationTree } from 'typed-vuex'
 import { fetchNinjaPassCodes } from '~/app/services/ninjapass'
 
 const initialStateFactory = () => ({
-  codes: [] as string[]
+  codes: [] as { address: string; code: string }[]
 })
 
 const initialState = initialStateFactory()
 
 export const state = () => ({
-  codes: initialState.codes as string[]
+  codes: initialState.codes as { address: string; code: string }[]
 })
 
 export type NinjaPassStoreState = ReturnType<typeof state>
 
 export const mutations = mutationTree(state, {
-  setCodes(state: NinjaPassStoreState, codes: string[]) {
+  setCodes(
+    state: NinjaPassStoreState,
+    codes: { address: string; code: string }[]
+  ) {
     state.codes = codes
   }
 })
