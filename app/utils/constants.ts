@@ -66,7 +66,8 @@ export const APP_CHRONOS_API_ENDPOINT: string =
   process.env.APP_CHRONOS_API_ENDPOINT || ''
 export const APP_NEWSLETTER_API: string = process.env.APP_NEWSLETTER_API || ''
 export const APP_NINJA_PASS_API_ENDPOINT: string =
-  process.env.APP_NINJA_PASS_API_ENDPOINT || ''
+  process.env.APP_NINJA_PASS_API_ENDPOINT ||
+  'https://api.ninjapass.injective.dev'
 
 export const UI_DEFAULT_MIN_DISPLAY_DECIMALS = 2
 export const UI_DEFAULT_DISPLAY_DECIMALS = 4
