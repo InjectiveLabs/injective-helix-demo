@@ -5,11 +5,11 @@ module.exports = {
   generate: {
     done(_builder) {
       const outDir = path.resolve(
-        __dirname,
+        process.cwd(),
         'dist/vendor/@injectivelabs/token-metadata'
       )
       const sourceDir = path.resolve(
-        __dirname,
+        process.cwd(),
         'node_modules/@injectivelabs/token-metadata/dist/images'
       )
 
