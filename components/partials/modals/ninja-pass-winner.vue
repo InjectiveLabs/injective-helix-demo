@@ -50,7 +50,11 @@ import { Modal } from '~/types'
 
 export default Vue.extend({
   computed: {
-    injAddress(): string {
+    isUserWalletConnected(): boolean {
+      return this.$accessor.wallet.isUserWalletConnected
+    },
+
+    injectiveAddress(): string {
       return this.$accessor.wallet.injectiveAddress
     },
 
@@ -81,7 +85,7 @@ export default Vue.extend({
     },
 
     ninjaPassUrl(): string | undefined {
-      const { ninjaPassCode, injAddress } = this
+      const { ninjaPassCode, injectiveAddress } = this
 
       if (!ninjaPassCode) {
         return
@@ -89,11 +93,19 @@ export default Vue.extend({
 
       const baseUrl = APP_NINJA_PASS_API_ENDPOINT
 
-      return `${baseUrl}/?code=${ninjaPassCode?.code}&address=${injAddress}`
+      return `${baseUrl}/?code=${ninjaPassCode?.code}&address=${injectiveAddress}`
     }
   },
 
   watch: {
+    isUserWalletConnected: {
+      handler(isUserWalletConnected: boolean) {
+        if (isUserWalletConnected) {
+          this.$accessor.ninjapass.fetchCodes()
+        }
+      }
+    },
+
     hasCodes: {
       handler(hasCodes: boolean) {
         if (hasCodes) {
@@ -101,6 +113,12 @@ export default Vue.extend({
           this.$confetti.activate()
         }
       }
+    }
+  },
+
+  mounted() {
+    if (this.isUserWalletConnected) {
+      this.$accessor.ninjapass.fetchCodes()
     }
   },
 
