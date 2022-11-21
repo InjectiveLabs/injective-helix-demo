@@ -45,7 +45,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { APP_NINJA_PASS_API_ENDPOINT } from '~/app/utils/constants'
 import { Modal } from '~/types'
 
 export default Vue.extend({
@@ -91,9 +90,7 @@ export default Vue.extend({
         return
       }
 
-      const baseUrl = APP_NINJA_PASS_API_ENDPOINT
-
-      return `${baseUrl}/?code=${ninjaPassCode?.code}&address=${injectiveAddress}`
+      return `https://ninjapass.injective.com/?code=${ninjaPassCode?.code}&address=${injectiveAddress}`
     }
   },
 

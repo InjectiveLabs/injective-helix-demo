@@ -45,7 +45,8 @@ export const newMarketsSlug = [
 export const experimentalMarketsSlug = [
   'ape-usdt',
   'gf-usdt',
-  'eth-usdt-19sep22'
+  'eth-usdt-19sep22',
+  'osmo-usdt-perp'
 ]
 
 export const slugsToIncludeInCosmosCategory = [
