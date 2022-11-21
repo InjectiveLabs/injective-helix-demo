@@ -83,6 +83,7 @@ import Minus from '~/components/icons/minus.vue'
 import TrophyColor from '~/components/icons/trophy-color.vue'
 import Trophy from '~/components/icons/trophy.vue'
 import Sliders from '~/components/icons/sliders.vue'
+import Gift from '~/components/icons/gift.vue'
 
 Vue.component('IconArrow', Arrow)
 Vue.component('IconArrowSwap', ArrowSwap)
@@ -167,3 +168,4 @@ Vue.component('IconMinus', Minus)
 Vue.component('IconTrophyColor', TrophyColor)
 Vue.component('IconTrophy', Trophy)
 Vue.component('IconSliders', Sliders)
+Vue.component('IconGift', Gift)

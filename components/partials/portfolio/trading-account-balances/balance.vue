@@ -142,7 +142,7 @@ import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
-import { spot as allowedSpotMarkets } from '~/routes.config'
+import { spot as allowedSpotMarkets } from '~/config/routes.config'
 
 export default Vue.extend({
   components: {

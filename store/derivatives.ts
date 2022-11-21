@@ -14,7 +14,6 @@ import {
 import {
   Change,
   derivativeOrderTypeToGrpcOrderType,
-  DerivativesMetrics,
   MarketType,
   UiBinaryOptionsMarketWithToken,
   UiDerivativeLimitOrder,
@@ -31,6 +30,7 @@ import {
   zeroDerivativeMarketSummary
 } from '@injectivelabs/sdk-ui-ts'
 import {
+  BinaryOptionsMarket,
   DerivativeOrderSide,
   DerivativeOrderState,
   ExpiryFuturesMarket,
@@ -72,7 +72,7 @@ import {
   perpetuals as allowedPerpetualMarkets,
   binaryOptions as allowedBinaryOptionsMarkets,
   expiryFutures as allowedExpiryFutures
-} from '~/routes.config'
+} from '~/config/routes.config'
 import { ActivityFetchOptions } from '~/types'
 import { marketIsRecentlyExpired } from '~/app/utils/market'
 
@@ -524,7 +524,7 @@ export const actions = actionTree(
           recentlyExpiredMarketsWithToken
         )
       const binaryOptionsMarkets = IS_DEVNET
-        ? await indexerDerivativesApi.fetchBinaryOptionsMarkets()
+        ? ((await indexerDerivativesApi.fetchBinaryOptionsMarkets()) as BinaryOptionsMarket[])
         : []
       const binaryOptionsMarketsWithToken =
         await tokenService.getBinaryOptionsMarketsWithToken(
@@ -1164,10 +1164,9 @@ export const actions = actionTree(
         orderHash: order.orderHash
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: DerivativesMetrics.BatchCancelLimitOrders
+        msgs: message
       })
     },
 
@@ -1208,10 +1207,9 @@ export const actions = actionTree(
         }
       )
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: messages,
-        bucket: DerivativesMetrics.BatchCancelLimitOrders
+        msgs: messages
       })
     },
 
@@ -1269,10 +1267,9 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: DerivativesMetrics.CreateLimitOrder
+        msgs: message
       })
     },
 
@@ -1342,10 +1339,9 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: DerivativesMetrics.CreateLimitOrder
+        msgs: message
       })
     },
 
@@ -1403,10 +1399,9 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: DerivativesMetrics.CreateMarketOrder
+        msgs: message
       })
     },
 
@@ -1476,10 +1471,9 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: DerivativesMetrics.CreateMarketOrder
+        msgs: message
       })
     }
   }

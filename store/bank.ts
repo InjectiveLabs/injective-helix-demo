@@ -1,6 +1,5 @@
 import { MsgSend } from '@injectivelabs/sdk-ts'
 import {
-  AccountMetrics,
   UiBankTransformer,
   BankBalances,
   BankBalanceWithToken,
@@ -167,8 +166,7 @@ export const actions = actionTree(
         }
       })
 
-      await msgBroadcastClient.broadcast({
-        bucket: AccountMetrics.Send,
+      await msgBroadcastClient.broadcastOld({
         msgs: message,
         memo,
         address

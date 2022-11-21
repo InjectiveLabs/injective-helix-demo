@@ -56,8 +56,8 @@ export const ORDERBOOK_STREAMING_ENABLED: boolean = !ORDERBOOK_POLLING_ENABLED
 
 export const BASE_URL: string = process.env.APP_BASE_URL
 export const FEE_RECIPIENT: string = process.env.APP_FEE_RECIPIENT
-export const APP_EXCHANGE_API_ENDPOINT: string =
-  process.env.APP_EXCHANGE_API_ENDPOINT || ''
+export const APP_INDEXER_API_ENDPOINT: string =
+  process.env.APP_INDEXER_API_ENDPOINT || ''
 export const APP_SENTRY_GRPC_ENDPOINT: string =
   process.env.APP_SENTRY_GRPC_ENDPOINT || ''
 export const APP_SENTRY_HTTP_ENDPOINT: string =
@@ -65,6 +65,9 @@ export const APP_SENTRY_HTTP_ENDPOINT: string =
 export const APP_CHRONOS_API_ENDPOINT: string =
   process.env.APP_CHRONOS_API_ENDPOINT || ''
 export const APP_NEWSLETTER_API: string = process.env.APP_NEWSLETTER_API || ''
+export const APP_NINJA_PASS_API_ENDPOINT: string =
+  process.env.APP_NINJA_PASS_API_ENDPOINT ||
+  'https://api.ninjapass.injective.dev'
 
 export const UI_DEFAULT_MIN_DISPLAY_DECIMALS = 2
 export const UI_DEFAULT_DISPLAY_DECIMALS = 4
@@ -132,7 +135,7 @@ export const HIDDEN_BALANCE_DISPLAY = '********'
 const endpoints = getEndpointsForNetwork(NETWORK)
 const endpointsNotProvided =
   !endpoints &&
-  (!APP_EXCHANGE_API_ENDPOINT ||
+  (!APP_INDEXER_API_ENDPOINT ||
     !APP_SENTRY_GRPC_ENDPOINT ||
     !APP_SENTRY_HTTP_ENDPOINT)
 
@@ -147,7 +150,7 @@ if (endpointsNotProvided) {
 export const ENDPOINTS = {
   ...endpoints,
   chronosApi: APP_CHRONOS_API_ENDPOINT || undefined,
-  exchangeApiEndpoint: APP_EXCHANGE_API_ENDPOINT || endpoints.exchangeApi,
+  indexerApiEndpoint: APP_INDEXER_API_ENDPOINT || endpoints.indexerApi,
   sentryGrpcApiEndpoint: APP_SENTRY_GRPC_ENDPOINT || endpoints.sentryGrpcApi,
   sentryHttpApi: APP_SENTRY_HTTP_ENDPOINT || endpoints.sentryHttpApi
 }
@@ -165,3 +168,5 @@ export const UI_DEFAULT_PAGINATION_LIMIT_COUNT = 20
 
 export const MARKETS_HISTORY_CHART_SEVEN_DAYS = 154
 export const MARKETS_HISTORY_CHART_ONE_HOUR = 60
+
+export const FEE_PAYER_PUB_KEY = process.env.APP_FEE_PAYER_PUB_KEY || ''

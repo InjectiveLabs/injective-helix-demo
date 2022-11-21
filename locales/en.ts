@@ -289,5 +289,14 @@ export default {
 
   filters: {
     clearAll: 'Clear All'
+  },
+
+  ninjaPass: {
+    congratulations: 'Congratulations! 🎉',
+    title: 'You’ve won an exclusive Ninja Pass 🥷',
+    description:
+      'It will serve as your gateway into exclusive Injective events, products, giveaways and many more surprises.',
+    verifyNow: 'Verify now',
+    later: 'Later'
   }
 }
