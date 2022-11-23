@@ -46,11 +46,14 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Modal } from '~/types'
-import { localStorage } from '~/app/Services'
-import { HAS_SEEN_NINJA_PASS_WINNER_MODAL } from '~/app/utils/constants'
+import { UserBasedState } from '~/store/app'
 
 export default Vue.extend({
   computed: {
+    userState(): UserBasedState {
+      return this.$accessor.app.userState
+    },
+
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
     },
@@ -93,6 +96,10 @@ export default Vue.extend({
       }
 
       return `https://ninjapass.injective.com/?code=${ninjaPassCode?.code}&address=${injectiveAddress}`
+    },
+
+    hasSeenNinjaPassWinnerModal(): boolean {
+      return this.$accessor.app.userState.ninjaPassWinnerModalViewed
     }
   },
 
@@ -107,12 +114,9 @@ export default Vue.extend({
 
     hasCodes: {
       handler(hasCodes: boolean) {
-        if (hasCodes) {
-          const hasSeenNinjaPassWinnerModal = localStorage.get(
-            HAS_SEEN_NINJA_PASS_WINNER_MODAL,
-            false
-          )
+        const { hasSeenNinjaPassWinnerModal } = this
 
+        if (hasCodes) {
           if (!hasSeenNinjaPassWinnerModal) {
             this.$accessor.modal.openModal({ type: Modal.NinjaPassWinner })
             this.$confetti.activate()
@@ -132,7 +136,12 @@ export default Vue.extend({
     closeModal() {
       this.$accessor.modal.closeModal(Modal.NinjaPassWinner)
 
-      localStorage.set(HAS_SEEN_NINJA_PASS_WINNER_MODAL, true)
+      const { userState } = this
+
+      this.$accessor.app.setUserState({
+        ...userState,
+        ninjaPassWinnerModalViewed: true
+      })
     }
   }
 })
