@@ -46,6 +46,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Modal } from '~/types'
+import { localStorage } from '~/app/Services'
+import { HAS_SEEN_NINJA_PASS_WINNER_MODAL } from '~/app/utils/constants'
 
 export default Vue.extend({
   computed: {
@@ -106,8 +108,15 @@ export default Vue.extend({
     hasCodes: {
       handler(hasCodes: boolean) {
         if (hasCodes) {
-          this.$accessor.modal.openModal({ type: Modal.NinjaPassWinner })
-          this.$confetti.activate()
+          const hasSeenNinjaPassWinnerModal = localStorage.get(
+            HAS_SEEN_NINJA_PASS_WINNER_MODAL,
+            false
+          )
+
+          if (!hasSeenNinjaPassWinnerModal) {
+            this.$accessor.modal.openModal({ type: Modal.NinjaPassWinner })
+            this.$confetti.activate()
+          }
         }
       }
     }
@@ -122,6 +131,8 @@ export default Vue.extend({
   methods: {
     closeModal() {
       this.$accessor.modal.closeModal(Modal.NinjaPassWinner)
+
+      localStorage.set(HAS_SEEN_NINJA_PASS_WINNER_MODAL, true)
     }
   }
 })

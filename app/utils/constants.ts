@@ -170,3 +170,5 @@ export const MARKETS_HISTORY_CHART_SEVEN_DAYS = 154
 export const MARKETS_HISTORY_CHART_ONE_HOUR = 60
 
 export const FEE_PAYER_PUB_KEY = process.env.APP_FEE_PAYER_PUB_KEY || ''
+export const HAS_SEEN_NINJA_PASS_WINNER_MODAL =
+  'has-seen-ninja-pass-winner-modal'
