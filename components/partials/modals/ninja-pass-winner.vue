@@ -46,9 +46,14 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Modal } from '~/types'
+import { UserBasedState } from '~/store/app'
 
 export default Vue.extend({
   computed: {
+    userState(): UserBasedState {
+      return this.$accessor.app.userState
+    },
+
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
     },
@@ -91,6 +96,10 @@ export default Vue.extend({
       }
 
       return `https://ninjapass.injective.com/?code=${ninjaPassCode?.code}&address=${injectiveAddress}`
+    },
+
+    hasSeenNinjaPassWinnerModal(): boolean {
+      return this.$accessor.app.userState.ninjaPassWinnerModalViewed
     }
   },
 
@@ -105,7 +114,9 @@ export default Vue.extend({
 
     hasCodes: {
       handler(hasCodes: boolean) {
-        if (hasCodes) {
+        const { hasSeenNinjaPassWinnerModal } = this
+
+        if (hasCodes && !hasSeenNinjaPassWinnerModal) {
           this.$accessor.modal.openModal({ type: Modal.NinjaPassWinner })
           this.$confetti.activate()
         }
@@ -122,6 +133,13 @@ export default Vue.extend({
   methods: {
     closeModal() {
       this.$accessor.modal.closeModal(Modal.NinjaPassWinner)
+
+      const { userState } = this
+
+      this.$accessor.app.setUserState({
+        ...userState,
+        ninjaPassWinnerModalViewed: true
+      })
     }
   }
 })
