@@ -37,6 +37,7 @@ export interface UserBasedState {
   geoLocation: GeoLocation
   orderbookLayout: OrderbookLayout
   tradingLayout: TradingLayout
+  ninjaPassWinnerModalViewed: boolean
 }
 
 const initialState = {
@@ -60,7 +61,8 @@ const initialState = {
       country: ''
     },
     orderbookLayout: OrderbookLayout.Default,
-    tradingLayout: TradingLayout.Left
+    tradingLayout: TradingLayout.Left,
+    ninjaPassWinnerModalViewed: false
   } as UserBasedState,
   announcements: [] as Array<Announcement>,
   attachments: [] as Array<Attachment>
