@@ -116,11 +116,9 @@ export default Vue.extend({
       handler(hasCodes: boolean) {
         const { hasSeenNinjaPassWinnerModal } = this
 
-        if (hasCodes) {
-          if (!hasSeenNinjaPassWinnerModal) {
-            this.$accessor.modal.openModal({ type: Modal.NinjaPassWinner })
-            this.$confetti.activate()
-          }
+        if (hasCodes && !hasSeenNinjaPassWinnerModal) {
+          this.$accessor.modal.openModal({ type: Modal.NinjaPassWinner })
+          this.$confetti.activate()
         }
       }
     }
