@@ -37,7 +37,8 @@ export default {
     ok: 'OK',
     open: 'Open',
     close: 'Close',
-    required: 'Required'
+    required: 'Required',
+    waived: 'Waived'
   },
   welcome_to_ip:
     'Access, create and trade unlimited decentralized finance markets',

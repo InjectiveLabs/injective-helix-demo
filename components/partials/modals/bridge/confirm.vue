@@ -140,7 +140,8 @@
               </template>
             </ConfirmAmountRow>
 
-            <ConfirmAmountRow bold class="mb-6">
+            <!-- Fee Delegation for all wallets not active -->
+            <ConfirmAmountRow v-if="false" bold class="mb-6">
               <template slot="title">
                 {{ $t('bridge.gasFee') }}
               </template>
@@ -154,6 +155,19 @@
               <template slot="amountInUsd">
                 <span data-cy="transfer-confirm-modal-gas-fee-usd-text-content">
                   ${{ gasFeeInUsdToString }}
+                </span>
+              </template>
+            </ConfirmAmountRow>
+
+            <!-- Fee Delegation for all wallets active -->
+            <ConfirmAmountRow v-else bold class="mb-6">
+              <template slot="title">
+                {{ $t('bridge.gasFee') }}
+              </template>
+
+              <template slot="amount">
+                <span data-cy="transfer-confirm-modal-gas-fee-text-content">
+                  {{ $t('common.waived') }}
                 </span>
               </template>
             </ConfirmAmountRow>
@@ -204,6 +218,7 @@ import { TransferSide } from '~/types'
 import { injToken } from '~/app/data/token'
 import {
   INJ_GAS_BUFFER,
+  INJ_GAS_FEE,
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
@@ -462,7 +477,7 @@ export default Vue.extend({
     },
 
     gasFee(): BigNumberInBase {
-      return new BigNumberInBase(INJ_GAS_BUFFER)
+      return new BigNumberInBase(INJ_GAS_FEE)
     },
 
     gasFeeToString(): string {
