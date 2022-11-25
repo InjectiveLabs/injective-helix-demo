@@ -12,6 +12,10 @@ export default {
       showAddress: 'Show address',
       howItWorks: 'How it works',
       faq: 'F.A.Q'
+    },
+    kado: {
+      title: 'Get USDT instantly using fiat on Kado!',
+      tryNow: 'Try now'
     }
   }
 }
