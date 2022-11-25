@@ -1,5 +1,6 @@
 <template>
   <div>
+    <KadoBanner />
     <div class="bg-white">
       <Hero />
       <div class="h-full w-full flex flex-wrap pb-4">
@@ -19,6 +20,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import KadoBanner from '~/components/partials/banners/kado.vue'
 import Hero from '~/components/partials/home/hero/index.vue'
 import Announcements from '~/components/partials/home/announcements.vue'
 import MarketsPanel from '~/components/partials/home/markets/markets-panel.vue'
@@ -28,6 +30,7 @@ import GettingStarted from '~/components/partials/home/getting-started.vue'
 
 export default Vue.extend({
   components: {
+    KadoBanner,
     Hero,
     Announcements,
     MarketsPanel,
