@@ -147,6 +147,7 @@ import {
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
 import { Token } from '@injectivelabs/token-metadata'
+import { INJ_DENOM } from '@injectivelabs/sdk-ts'
 import { BridgeType, Modal, TransferDirection } from '~/types'
 import TokenSelector from '~/components/partials/portfolio/bridge/token-selector/index.vue'
 import VAllowance from '~/components/elements/allowance.vue'
@@ -154,7 +155,7 @@ import NetworkSelect from '~/components/partials/portfolio/bridge/network-select
 import IbcTransferNote from '~/components/partials/portfolio/bridge/ibc-transfer-note.vue'
 import TransferDirectionSwitch from '~/components/partials/portfolio/bridge/transfer-direction-switch.vue'
 import {
-  INJ_TO_IBC_TRANSFER_FEE,
+  INJ_GAS_BUFFER,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
 
@@ -217,8 +218,7 @@ export default Vue.extend({
       memoRequired: false,
       BridgeType,
       TransferDirection,
-      BridgingNetwork,
-      INJ_TO_IBC_TRANSFER_FEE
+      BridgingNetwork
     }
   },
 
@@ -451,12 +451,13 @@ export default Vue.extend({
       if (
         isWalletExemptFromGasFee ||
         transferDirection === TransferDirection.tradingAccountToBank ||
-        form.token.symbol !== 'INJ'
+        form.token.denom !== INJ_DENOM
       ) {
         return balance
       }
 
-      const transferableBalance = balance.minus(INJ_TO_IBC_TRANSFER_FEE)
+      const transferableBalance = balance.minus(INJ_GAS_BUFFER)
+
       if (transferableBalance.lte(ZERO_IN_BASE)) {
         return ZERO_IN_BASE
       }

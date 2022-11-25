@@ -203,7 +203,7 @@ import { networksMeta, transferSideMeta } from '~/app/data/bridge'
 import { TransferSide } from '~/types'
 import { injToken } from '~/app/data/token'
 import {
-  INJ_TO_IBC_TRANSFER_FEE,
+  INJ_GAS_BUFFER,
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
@@ -319,7 +319,7 @@ export default Vue.extend({
     hasSufficientBalance(): boolean {
       const { injBalance } = this
 
-      return injBalance.gt(new BigNumberInBase(INJ_TO_IBC_TRANSFER_FEE))
+      return injBalance.gt(new BigNumberInBase(INJ_GAS_BUFFER))
     },
 
     bridgeTitle(): string {
@@ -462,7 +462,7 @@ export default Vue.extend({
     },
 
     gasFee(): BigNumberInBase {
-      return new BigNumberInBase(INJ_TO_IBC_TRANSFER_FEE)
+      return new BigNumberInBase(INJ_GAS_BUFFER)
     },
 
     gasFeeToString(): string {

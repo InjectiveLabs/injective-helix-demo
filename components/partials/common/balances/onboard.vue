@@ -42,7 +42,7 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { CurrentMarket, Modal } from '~/types'
 import { injToken } from '~/app/data/token'
-import { INJ_TO_IBC_TRANSFER_FEE } from '~/app/utils/constants'
+import { INJ_GAS_BUFFER } from '~/app/utils/constants'
 
 export default Vue.extend({
   computed: {
@@ -103,7 +103,7 @@ export default Vue.extend({
     hasSufficientBalance(): boolean {
       const { balance } = this
 
-      return balance.gt(new BigNumberInBase(INJ_TO_IBC_TRANSFER_FEE))
+      return balance.gt(new BigNumberInBase(INJ_GAS_BUFFER))
     }
   },
 
