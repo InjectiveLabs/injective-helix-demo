@@ -1,7 +1,11 @@
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  INJ_DENOM
+} from '@injectivelabs/utils'
 import { Coin } from '@injectivelabs/ts-types'
-import { INJ_DENOM, Pool } from '@injectivelabs/sdk-ts'
+import { Pool } from '@injectivelabs/sdk-ts'
 import {
   MinModuleParams as MintModuleParams,
   StakingModuleParams,

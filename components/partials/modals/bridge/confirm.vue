@@ -140,7 +140,8 @@
               </template>
             </ConfirmAmountRow>
 
-            <ConfirmAmountRow bold class="mb-6">
+            <!-- Fee Delegation for all wallets not active -->
+            <ConfirmAmountRow v-if="false" bold class="mb-6">
               <template slot="title">
                 {{ $t('bridge.gasFee') }}
               </template>
@@ -154,6 +155,19 @@
               <template slot="amountInUsd">
                 <span data-cy="transfer-confirm-modal-gas-fee-usd-text-content">
                   ${{ gasFeeInUsdToString }}
+                </span>
+              </template>
+            </ConfirmAmountRow>
+
+            <!-- Fee Delegation for all wallets active -->
+            <ConfirmAmountRow v-else bold class="mb-6">
+              <template slot="title">
+                {{ $t('bridge.gasFee') }}
+              </template>
+
+              <template slot="amount">
+                <span data-cy="transfer-confirm-modal-gas-fee-text-content">
+                  {{ $t('common.waived') }}
                 </span>
               </template>
             </ConfirmAmountRow>
@@ -182,10 +196,9 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei, INJ_DENOM, Status } from '@injectivelabs/utils'
 import {
   BRIDGE_FEE_IN_USD,
-  INJ_DENOM,
   BridgingNetwork,
   NetworkMeta,
   ZERO_IN_BASE,
@@ -203,7 +216,8 @@ import { networksMeta, transferSideMeta } from '~/app/data/bridge'
 import { TransferSide } from '~/types'
 import { injToken } from '~/app/data/token'
 import {
-  INJ_TO_IBC_TRANSFER_FEE,
+  INJ_GAS_BUFFER,
+  INJ_GAS_FEE,
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
@@ -319,7 +333,7 @@ export default Vue.extend({
     hasSufficientBalance(): boolean {
       const { injBalance } = this
 
-      return injBalance.gt(new BigNumberInBase(INJ_TO_IBC_TRANSFER_FEE))
+      return injBalance.gt(new BigNumberInBase(INJ_GAS_BUFFER))
     },
 
     bridgeTitle(): string {
@@ -462,7 +476,7 @@ export default Vue.extend({
     },
 
     gasFee(): BigNumberInBase {
-      return new BigNumberInBase(INJ_TO_IBC_TRANSFER_FEE)
+      return new BigNumberInBase(INJ_GAS_FEE)
     },
 
     gasFeeToString(): string {

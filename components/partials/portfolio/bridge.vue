@@ -49,14 +49,17 @@ import {
   BankBalances,
   BankBalanceWithToken,
   BridgingNetwork,
-  INJ_DENOM,
   KeplrNetworks,
   SubaccountBalanceWithToken,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
 import { Token } from '@injectivelabs/token-metadata'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  INJ_DENOM
+} from '@injectivelabs/utils'
 import { injToken } from '~/app/data/token'
 import { BridgeType, Modal, TransferDirection } from '~/types'
 import VModalBridge from '~/components/partials/modals/bridge/index.vue'
@@ -64,7 +67,7 @@ import VModalBridgeConfirm from '~/components/partials/modals/bridge/confirm.vue
 import VModalBridgeCompleted from '~/components/partials/modals/bridge/completed.vue'
 import { getBridgingNetworkBySymbol } from '~/app/data/bridge'
 import { tokenService } from '~/app/Services'
-import { INJ_TO_IBC_TRANSFER_FEE } from '~/app/utils/constants'
+import { INJ_GAS_BUFFER } from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -135,7 +138,7 @@ export default Vue.extend({
     hasSufficientBalance(): boolean {
       const { balance } = this
 
-      return balance.gt(new BigNumberInBase(INJ_TO_IBC_TRANSFER_FEE))
+      return balance.gt(new BigNumberInBase(INJ_GAS_BUFFER))
     },
 
     origin(): BridgingNetwork | TransferDirection {

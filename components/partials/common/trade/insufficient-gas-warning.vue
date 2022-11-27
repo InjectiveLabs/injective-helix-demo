@@ -14,12 +14,15 @@ import {
   UiSpotMarketWithToken,
   UiDerivativeMarketWithToken,
   ZERO_IN_BASE,
-  BankBalances,
-  INJ_DENOM
+  BankBalances
 } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  INJ_DENOM
+} from '@injectivelabs/utils'
 import InsufficientGasInner from '~/components/partials/common/elements/insufficient-gas-inner.vue'
-import { INJ_TO_IBC_TRANSFER_FEE } from '~/app/utils/constants'
+import { INJ_GAS_BUFFER } from '~/app/utils/constants'
 import { CurrentMarket } from '~/types'
 import { injToken } from '~/app/data/token'
 
@@ -84,7 +87,7 @@ export default Vue.extend({
     hasSufficientBalance(): boolean {
       const { balance } = this
 
-      return balance.gt(new BigNumberInBase(INJ_TO_IBC_TRANSFER_FEE))
+      return balance.gt(new BigNumberInBase(INJ_GAS_BUFFER))
     }
   }
 })

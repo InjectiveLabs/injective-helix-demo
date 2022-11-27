@@ -3,11 +3,14 @@ import {
   UiBankTransformer,
   BankBalances,
   BankBalanceWithToken,
-  IbcBankBalanceWithToken,
-  INJ_DENOM
+  IbcBankBalanceWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  INJ_DENOM
+} from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
 import { bankApi, msgBroadcastClient, tokenService } from '~/app/Services'
 import { backupPromiseCall } from '~/app/utils/async'
@@ -166,7 +169,7 @@ export const actions = actionTree(
         }
       })
 
-      await msgBroadcastClient.broadcastOld({
+      await msgBroadcastClient.broadcastWithFeeDelegation({
         msgs: message,
         memo,
         address

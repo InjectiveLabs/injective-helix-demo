@@ -360,7 +360,7 @@ export const actions = actionTree(
         }
       })
 
-      await msgBroadcastClient.broadcastOld({
+      await msgBroadcastClient.broadcastWithFeeDelegation({
         address,
         msgs: message
       })

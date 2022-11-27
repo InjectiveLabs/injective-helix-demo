@@ -21,6 +21,12 @@ const wsRpcUrl =
     ? `wss://eth-goerli.ws.alchemyapi.io/v2/${process.env.APP_ALCHEMY_GOERLI_KEY}`
     : `https://eth-mainnet.ws.alchemyapi.io/v2/${process.env.APP_ALCHEMY_KEY}`
 
+export const alchemyKey = (
+  IS_TESTNET || IS_DEVNET
+    ? process.env.APP_ALCHEMY_GOERLI_KEY
+    : process.env.APP_ALCHEMY_KEY
+) as string
+
 export const walletStrategy = new WalletStrategy({
   chainId: CHAIN_ID,
   ethereumOptions: {
