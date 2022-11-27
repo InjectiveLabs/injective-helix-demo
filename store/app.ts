@@ -29,6 +29,7 @@ import {
 } from '~/app/services/announcements'
 import { UiAnnouncementTransformer } from '~/app/client/transformers/UiAnnouncementTransformer'
 import { Announcement, Attachment } from '~/app/client/types/announcements'
+import { alchemyKey } from '~/app/wallet-strategy'
 
 export interface UserBasedState {
   vpnOrProxyUsageValidationTimestamp: number
@@ -196,7 +197,7 @@ export const actions = actionTree(
     },
 
     async fetchGasPrice({ commit }) {
-      commit('setGasPrice', await fetchGasPrice(NETWORK))
+      commit('setGasPrice', await fetchGasPrice(NETWORK, { alchemyKey }))
     },
 
     async fetchGeoLocation({ state, commit }) {

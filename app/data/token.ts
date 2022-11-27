@@ -1,6 +1,7 @@
-import { INJ_COIN_GECKO_ID, INJ_DENOM } from '@injectivelabs/sdk-ui-ts'
+import { INJ_COIN_GECKO_ID } from '@injectivelabs/sdk-ui-ts'
 import { getContractAddressesForNetworkOrThrow } from '@injectivelabs/contracts'
 import { Token, TokenType } from '@injectivelabs/token-metadata'
+import { INJ_DENOM } from '@injectivelabs/utils'
 import { NETWORK } from '../utils/constants'
 
 export const injToken = {

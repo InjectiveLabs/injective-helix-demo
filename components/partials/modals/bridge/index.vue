@@ -144,10 +144,13 @@ import {
   TokenWithBalanceAndPrice,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  INJ_DENOM
+} from '@injectivelabs/utils'
 import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
 import { Token } from '@injectivelabs/token-metadata'
-import { INJ_DENOM } from '@injectivelabs/sdk-ts'
 import { BridgeType, Modal, TransferDirection } from '~/types'
 import TokenSelector from '~/components/partials/portfolio/bridge/token-selector/index.vue'
 import VAllowance from '~/components/elements/allowance.vue'

@@ -14,10 +14,13 @@ import {
   UiSpotMarketWithToken,
   UiDerivativeMarketWithToken,
   ZERO_IN_BASE,
-  BankBalances,
-  INJ_DENOM
+  BankBalances
 } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  INJ_DENOM
+} from '@injectivelabs/utils'
 import InsufficientGasInner from '~/components/partials/common/elements/insufficient-gas-inner.vue'
 import { INJ_GAS_BUFFER } from '~/app/utils/constants'
 import { CurrentMarket } from '~/types'

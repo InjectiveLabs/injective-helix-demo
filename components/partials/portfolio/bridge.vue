@@ -49,14 +49,17 @@ import {
   BankBalances,
   BankBalanceWithToken,
   BridgingNetwork,
-  INJ_DENOM,
   KeplrNetworks,
   SubaccountBalanceWithToken,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
 import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
 import { Token } from '@injectivelabs/token-metadata'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  INJ_DENOM
+} from '@injectivelabs/utils'
 import { injToken } from '~/app/data/token'
 import { BridgeType, Modal, TransferDirection } from '~/types'
 import VModalBridge from '~/components/partials/modals/bridge/index.vue'

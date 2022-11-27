@@ -32,8 +32,11 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Wallet, isCosmosWallet } from '@injectivelabs/wallet-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { INJ_DENOM } from '@injectivelabs/sdk-ts'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  INJ_DENOM
+} from '@injectivelabs/utils'
 import {
   BankBalances,
   UiDerivativeMarketWithToken,

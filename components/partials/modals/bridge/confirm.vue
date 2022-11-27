@@ -196,10 +196,9 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei, INJ_DENOM, Status } from '@injectivelabs/utils'
 import {
   BRIDGE_FEE_IN_USD,
-  INJ_DENOM,
   BridgingNetwork,
   NetworkMeta,
   ZERO_IN_BASE,
