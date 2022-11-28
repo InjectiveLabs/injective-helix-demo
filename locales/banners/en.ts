@@ -14,8 +14,8 @@ export default {
       faq: 'F.A.Q'
     },
     kado: {
-      title: 'Get USDT instantly using fiat on Kado!',
-      tryNow: 'Try now'
+      title: 'Onboard onto Injective instantly with fiat!',
+      tryNow: 'Get started'
     }
   }
 }

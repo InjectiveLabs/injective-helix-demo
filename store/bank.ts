@@ -169,7 +169,7 @@ export const actions = actionTree(
         }
       })
 
-      await msgBroadcastClient.broadcastWithFeeDelegation({
+      await msgBroadcastClient.broadcastOld({
         msgs: message,
         memo,
         address
