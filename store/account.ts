@@ -335,7 +335,7 @@ export const actions = actionTree(
         }
       })
 
-      await msgBroadcastClient.broadcastWithFeeDelegation({
+      await msgBroadcastClient.broadcastOld({
         msgs: message,
         address
       })
@@ -373,7 +373,7 @@ export const actions = actionTree(
         }
       })
 
-      await msgBroadcastClient.broadcastWithFeeDelegation({
+      await msgBroadcastClient.broadcastOld({
         msgs: message,
         address
       })
