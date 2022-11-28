@@ -869,7 +869,7 @@ export const actions = actionTree(
         orderHash: order.orderHash
       })
 
-      await msgBroadcastClient.broadcastWithFeeDelegation({
+      await msgBroadcastClient.broadcastOld({
         address,
         msgs: message
       })
@@ -900,7 +900,7 @@ export const actions = actionTree(
         })
       )
 
-      await msgBroadcastClient.broadcastWithFeeDelegation({
+      await msgBroadcastClient.broadcastOld({
         address,
         msgs: messages
       })
@@ -948,7 +948,7 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId
       })
 
-      await msgBroadcastClient.broadcastWithFeeDelegation({
+      await msgBroadcastClient.broadcastOld({
         address,
         msgs: message
       })
@@ -1003,7 +1003,7 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId
       })
 
-      await msgBroadcastClient.broadcastWithFeeDelegation({
+      await msgBroadcastClient.broadcastOld({
         address,
         msgs: message
       })
@@ -1051,7 +1051,7 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId
       })
 
-      await msgBroadcastClient.broadcastWithFeeDelegation({
+      await msgBroadcastClient.broadcastOld({
         address,
         msgs: message
       })
@@ -1106,7 +1106,7 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId
       })
 
-      await msgBroadcastClient.broadcastWithFeeDelegation({
+      await msgBroadcastClient.broadcastOld({
         address,
         msgs: message
       })
