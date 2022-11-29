@@ -29,6 +29,7 @@ import {
 } from '~/app/services/announcements'
 import { UiAnnouncementTransformer } from '~/app/client/transformers/UiAnnouncementTransformer'
 import { Announcement, Attachment } from '~/app/client/types/announcements'
+import { alchemyKey } from '~/app/wallet-strategy'
 
 export interface UserBasedState {
   vpnOrProxyUsageValidationTimestamp: number
@@ -37,6 +38,7 @@ export interface UserBasedState {
   geoLocation: GeoLocation
   orderbookLayout: OrderbookLayout
   tradingLayout: TradingLayout
+  ninjaPassWinnerModalViewed: boolean
 }
 
 const initialState = {
@@ -60,7 +62,8 @@ const initialState = {
       country: ''
     },
     orderbookLayout: OrderbookLayout.Default,
-    tradingLayout: TradingLayout.Left
+    tradingLayout: TradingLayout.Left,
+    ninjaPassWinnerModalViewed: false
   } as UserBasedState,
   announcements: [] as Array<Announcement>,
   attachments: [] as Array<Attachment>
@@ -194,7 +197,7 @@ export const actions = actionTree(
     },
 
     async fetchGasPrice({ commit }) {
-      commit('setGasPrice', await fetchGasPrice(NETWORK))
+      commit('setGasPrice', await fetchGasPrice(NETWORK, { alchemyKey }))
     },
 
     async fetchGeoLocation({ state, commit }) {

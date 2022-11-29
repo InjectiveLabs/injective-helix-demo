@@ -54,8 +54,7 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import { Change } from '~/types'
-
-const { metaTags } = require('~/meta.config')
+import { metaTags } from '~/config/meta.config'
 
 export default Vue.extend({
   props: {

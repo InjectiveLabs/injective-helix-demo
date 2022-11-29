@@ -19,7 +19,6 @@ import {
 } from '@injectivelabs/sdk-ts'
 import {
   Change,
-  SpotMetrics,
   spotOrderTypeToGrpcOrderType,
   UiSpotLimitOrder,
   UiSpotMarketSummary,
@@ -50,7 +49,7 @@ import {
   tokenPrice,
   tokenService
 } from '~/app/Services'
-import { spot as allowedSpotMarkets } from '~/routes.config'
+import { spot as allowedSpotMarkets } from '~/config/routes.config'
 import { ActivityFetchOptions } from '~/types'
 
 const initialStateFactory = () => ({
@@ -870,10 +869,9 @@ export const actions = actionTree(
         orderHash: order.orderHash
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: SpotMetrics.BatchCancelLimitOrders
+        msgs: message
       })
     },
 
@@ -902,10 +900,9 @@ export const actions = actionTree(
         })
       )
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: messages,
-        bucket: SpotMetrics.BatchCancelLimitOrders
+        msgs: messages
       })
     },
 
@@ -951,10 +948,9 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: SpotMetrics.CreateLimitOrder
+        msgs: message
       })
     },
 
@@ -1007,10 +1003,9 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: SpotMetrics.CreateLimitOrder
+        msgs: message
       })
     },
 
@@ -1056,10 +1051,9 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: SpotMetrics.CreateMarketOrder
+        msgs: message
       })
     },
 
@@ -1112,10 +1106,9 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: SpotMetrics.CreateMarketOrder
+        msgs: message
       })
     },
 

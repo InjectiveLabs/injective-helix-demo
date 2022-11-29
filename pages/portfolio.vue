@@ -1,5 +1,7 @@
 <template>
   <div class="h-full w-full flex flex-wrap">
+    <KadoBanner />
+
     <div class="w-full">
       <HocLoading :status="status">
         <div class="container pt-6 pb-12">
@@ -27,6 +29,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { RefereeInfo } from '@injectivelabs/referral-consumer'
 import Balances from '~/components/partials/portfolio/balances.vue'
 import Bridge from '~/components/partials/portfolio/bridge.vue'
+import KadoBanner from '~/components/partials/banners/kado.vue'
 import { Modal } from '~/types'
 import ModalOnboardReferee from '~/components/partials/modals/referee-onboarding.vue'
 import { REFERRALS_ENABLED } from '~/app/utils/constants'
@@ -35,7 +38,8 @@ export default Vue.extend({
   components: {
     Bridge,
     Balances,
-    ModalOnboardReferee
+    ModalOnboardReferee,
+    KadoBanner
   },
 
   data() {

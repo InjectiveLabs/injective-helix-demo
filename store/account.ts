@@ -4,7 +4,6 @@ import {
 } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
 import {
-  ChainMetrics,
   SubaccountBalanceWithToken,
   SubaccountBalanceWithTokenAndUsdPriceAndUsdBalance,
   UiAccountTransformer,
@@ -336,8 +335,7 @@ export const actions = actionTree(
         }
       })
 
-      await msgBroadcastClient.broadcast({
-        bucket: ChainMetrics.Deposit,
+      await msgBroadcastClient.broadcastOld({
         msgs: message,
         address
       })
@@ -375,8 +373,7 @@ export const actions = actionTree(
         }
       })
 
-      await msgBroadcastClient.broadcast({
-        bucket: ChainMetrics.Deposit /* TODO */,
+      await msgBroadcastClient.broadcastOld({
         msgs: message,
         address
       })

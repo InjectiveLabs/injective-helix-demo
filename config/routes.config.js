@@ -2,7 +2,7 @@ const {
   IS_TESTNET,
   IS_MAINNET_STAGING,
   IS_DEVNET
-} = require('./app/utils/constants')
+} = require('../app/utils/constants')
 
 const spot = [
   'inj-usdt',
@@ -42,7 +42,7 @@ if (IS_TESTNET) {
 }
 
 if (IS_MAINNET_STAGING) {
-  //
+  spot.push('cre-usdt')
 }
 
 if (IS_MAINNET_STAGING || IS_DEVNET) {
