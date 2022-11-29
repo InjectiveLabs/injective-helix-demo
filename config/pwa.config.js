@@ -4,8 +4,8 @@ const { pwaMetaTags, manifestMetaTags } = require('./meta.config')
 module.exports = {
   pwa: {
     icon: {
-      fileName: resolve(__dirname, './client/static/helix-favicon.png'),
-      source: resolve(__dirname, './client/static/helix-favicon.png')
+      fileName: resolve(process.cwd(), './client/static/helix-favicon.png'),
+      source: resolve(process.cwd(), './client/static/helix-favicon.png')
     },
 
     meta: {

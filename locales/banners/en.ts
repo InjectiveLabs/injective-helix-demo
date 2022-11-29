@@ -12,6 +12,10 @@ export default {
       showAddress: 'Show address',
       howItWorks: 'How it works',
       faq: 'F.A.Q'
+    },
+    kado: {
+      title: 'Onboard onto Injective instantly with fiat!',
+      tryNow: 'Get started'
     }
   }
 }

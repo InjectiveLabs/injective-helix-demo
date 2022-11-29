@@ -58,7 +58,7 @@
                     <slot name="title" />
                   </div>
                   <button
-                    v-if="!isAlwaysOpen"
+                    v-if="showCloseButton"
                     type="button"
                     class="bg-transparent rounded-md text-gray-200 hover:text-primary-500"
                     data-cy="reusable-modal-close-button"
@@ -92,6 +92,12 @@ import { debounce } from 'lodash'
 export default Vue.extend({
   props: {
     isAlwaysOpen: {
+      required: false,
+      default: false,
+      type: Boolean
+    },
+
+    hideCloseButton: {
       required: false,
       default: false,
       type: Boolean
@@ -166,6 +172,12 @@ export default Vue.extend({
 
     hasFooter() {
       return !!this.$slots.footer
+    },
+
+    showCloseButton(): boolean {
+      const { isAlwaysOpen, hideCloseButton } = this
+
+      return isAlwaysOpen || !hideCloseButton
     }
   },
 

@@ -37,7 +37,8 @@ export default {
     ok: 'OK',
     open: 'Open',
     close: 'Close',
-    required: 'Required'
+    required: 'Required',
+    waived: 'Waived'
   },
   welcome_to_ip:
     'Access, create and trade unlimited decentralized finance markets',
@@ -289,5 +290,14 @@ export default {
 
   filters: {
     clearAll: 'Clear All'
+  },
+
+  ninjaPass: {
+    congratulations: 'Congratulations! 🎉',
+    title: 'You’ve won an exclusive Ninja Pass 🥷',
+    description:
+      'It will serve as your gateway into exclusive Injective events, products, giveaways and many more surprises.',
+    verifyNow: 'Verify now',
+    later: 'Later'
   }
 }

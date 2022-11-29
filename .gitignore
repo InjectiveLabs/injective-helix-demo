@@ -98,3 +98,5 @@ sw.*
 
 # Vendor files
 /static/vendor
+
+tsconfig.tsbuildinfo

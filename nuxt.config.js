@@ -1,8 +1,9 @@
-const modules = require('./modules.config')
-const routes = require('./routes.config')
-const build = require('./build.config')
-const head = require('./head.config')
-const pwa = require('./pwa.config')
+const modules = require('./config/modules.config')
+const routes = require('./config/routes.config')
+const build = require('./config/build.config')
+const head = require('./config/head.config')
+const pwa = require('./config/pwa.config')
+const hooks = require('./config/hooks.config')
 
 export default {
   ssr: false,
@@ -36,7 +37,8 @@ export default {
     { src: '~/plugins/touch-events', ssr: false },
     { src: '~/plugins/tooltip', ssr: false },
     { src: '~/plugins/clipboard', ssr: false },
-    { src: '~/plugins/veevalidate', ssr: false }
+    { src: '~/plugins/veevalidate', ssr: false },
+    { src: '~/plugins/confetti', ssr: false }
   ],
 
   typescript: {
@@ -77,6 +79,11 @@ export default {
    * PWA
    **/
   pwa,
+
+  /**
+   * Hooks
+   */
+  hooks,
 
   tailwindcss: {
     cssPath: './assets/css/app.scss',

@@ -6,7 +6,7 @@ import {
 import { PublicKey } from '@injectivelabs/sdk-ts'
 import { CosmosChainId } from '@injectivelabs/ts-types'
 import { CosmosWalletStrategy, Wallet } from '@injectivelabs/wallet-ts'
-import { KeplrWallet } from '@injectivelabs/wallet-ts/dist/keplr'
+import { KeplrWallet } from '@injectivelabs/wallet-ts/dist/wallets/keplr'
 import { CHAIN_ID } from '../utils/constants'
 import { walletStrategy } from '../wallet-strategy'
 

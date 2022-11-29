@@ -16,6 +16,14 @@
         <Nav class="hidden lg:block" />
       </div>
       <div class="flex items-center">
+        <NavItemDummy
+          v-if="isUserWalletConnected && hasNinjaPassCodes"
+          class="flex px-0 w-10 items-center justify-center"
+          @click="handleShowNinjaPassModal"
+        >
+          <IconGift class="text-white w-4 h-4" />
+        </NavItemDummy>
+
         <NavItem
           v-if="isUserWalletConnected"
           class="hidden lg:flex"
@@ -24,6 +32,7 @@
         >
           {{ $t('navigation.activity') }}
         </NavItem>
+
         <NavItem
           v-if="isUserWalletConnected"
           class="hidden lg:flex"
@@ -60,17 +69,20 @@ import Vue from 'vue'
 import UserWallet from './wallet/wallet.vue'
 import UserWalletConnect from './wallet/connect.vue'
 import NavItem from './nav/item.vue'
+import NavItemDummy from './nav/item-dummy.vue'
 import Nav from '~/components/layout/nav/index.vue'
 import Logo from '~/components/elements/logo.vue'
 import {
   derivativeMarketRouteNames,
   spotMarketRouteNames
 } from '~/app/data/market'
+import { Modal } from '~/types'
 
 export default Vue.extend({
   components: {
     Nav,
     NavItem,
+    NavItemDummy,
     UserWallet,
     Logo,
     UserWalletConnect
@@ -93,6 +105,10 @@ export default Vue.extend({
   computed: {
     isUserWalletConnected(): boolean {
       return this.$accessor.wallet.isUserWalletConnected
+    },
+
+    hasNinjaPassCodes(): boolean {
+      return this.$accessor.ninjapass.codes.length > 0
     },
 
     isMarketPage(): boolean {
@@ -149,6 +165,11 @@ export default Vue.extend({
       if (this.$popper) {
         this.$popper.hideDropdown()
       }
+    },
+
+    handleShowNinjaPassModal() {
+      this.$accessor.modal.openModal({ type: Modal.NinjaPassWinner })
+      this.$confetti.activate()
     }
   }
 })

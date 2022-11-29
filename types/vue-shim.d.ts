@@ -2,6 +2,7 @@ import { ThrownException } from '@injectivelabs/exceptions'
 import VueI18n, { Path, Values, Locale } from 'vue-i18n/types'
 import VueRouter from 'vue-router'
 import { Toasted } from 'vue-toasted'
+import { ConfettiPlugin } from '~/plugins/confetti'
 import { accessorType } from '~/store'
 
 /**
@@ -24,6 +25,7 @@ declare module 'vue/types/vue' {
     $onConfirm: (e: string, cb: Function) => void
     $router: VueRouter
     $accessor: typeof accessorType
+    $confetti: ConfettiPlugin
     // $attrs: Record<string, string>
   }
 
