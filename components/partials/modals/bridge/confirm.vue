@@ -196,7 +196,12 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { BigNumberInBase, BigNumberInWei, INJ_DENOM, Status } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  INJ_DENOM,
+  Status
+} from '@injectivelabs/utils'
 import {
   BRIDGE_FEE_IN_USD,
   BridgingNetwork,
@@ -307,7 +312,7 @@ export default Vue.extend({
       return {
         ...injToken,
         usdPrice: injUsdPrice
-      }
+      } as TokenWithUsdPrice
     },
 
     tokenWithBalanceAndPrice(): TokenWithBalanceAndPrice | undefined {
