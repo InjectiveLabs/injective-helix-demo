@@ -42,7 +42,7 @@ if (IS_TESTNET) {
 }
 
 if (IS_MAINNET_STAGING) {
-  //
+  spot.push('cre-usdt')
 }
 
 if (IS_MAINNET_STAGING || IS_DEVNET) {
