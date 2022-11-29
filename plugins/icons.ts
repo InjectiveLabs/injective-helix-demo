@@ -3,6 +3,7 @@ import Vue from 'vue'
 import Arrow from '~/components/icons/arrow.vue'
 import ArrowSwap from '~/components/icons/arrow-swap.vue'
 import ArrowDown from '~/components/icons/arrow-down.vue'
+import ArrowDiagonal from '~/components/icons/arrow-diagonal.vue'
 import Bin from '~/components/icons/bin.vue'
 import Box from '~/components/icons/box.vue'
 import CaretDown from '~/components/icons/caret-down.vue'
@@ -80,10 +81,15 @@ import BoundingBoxCircles from '~/components/icons/bounding-box-circles.vue'
 import Gas from '~/components/icons/gas.vue'
 import ShieldLockFill from '~/components/icons/shield-lock-fill.vue'
 import Minus from '~/components/icons/minus.vue'
+import TrophyColor from '~/components/icons/trophy-color.vue'
+import Trophy from '~/components/icons/trophy.vue'
+import Sliders from '~/components/icons/sliders.vue'
+import Gift from '~/components/icons/gift.vue'
 
 Vue.component('IconArrow', Arrow)
 Vue.component('IconArrowSwap', ArrowSwap)
 Vue.component('IconArrowDown', ArrowDown)
+Vue.component('IconArrowDiagonal', ArrowDiagonal)
 Vue.component('IconBin', Bin)
 Vue.component('IconBox', Box)
 Vue.component('IconCaretDown', CaretDown)
@@ -161,3 +167,7 @@ Vue.component('IconBoundingBoxCircles', BoundingBoxCircles)
 Vue.component('IconGas', Gas)
 Vue.component('IconShieldLockFill', ShieldLockFill)
 Vue.component('IconMinus', Minus)
+Vue.component('IconTrophyColor', TrophyColor)
+Vue.component('IconTrophy', Trophy)
+Vue.component('IconSliders', Sliders)
+Vue.component('IconGift', Gift)

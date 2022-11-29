@@ -46,7 +46,7 @@
       </TabSelectorItem>
     </div>
 
-    <VCard md class="h-full mt-4 xs:mt-6">
+    <VCard md class="h-full mt-4 xs:mt-6 relative">
       <Orders v-show="component === components.orders" />
       <OrderHistory v-if="component === components.orderHistory" />
       <!-- <Triggers v-if="component === components.triggers" /> -->

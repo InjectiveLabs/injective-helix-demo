@@ -19,7 +19,6 @@ import {
 } from '@injectivelabs/sdk-ts'
 import {
   Change,
-  SpotMetrics,
   spotOrderTypeToGrpcOrderType,
   UiSpotLimitOrder,
   UiSpotMarketSummary,
@@ -50,7 +49,7 @@ import {
   tokenPrice,
   tokenService
 } from '~/app/Services'
-import { spot as allowedSpotMarkets } from '~/routes.config'
+import { spot as allowedSpotMarkets } from '~/config/routes.config'
 import { ActivityFetchOptions } from '~/types'
 
 const initialStateFactory = () => ({
@@ -154,7 +153,16 @@ export const getters = getterTree(state, {
     return lastPrice.gte(secondLastPrice) ? Change.Increase : Change.Decrease
   },
 
-  activeMarketIds: (state) => state.markets.map((m) => m.marketId)
+  activeMarketIds: (state) => state.markets.map((m) => m.marketId),
+
+  supportedTokens: (state) => [
+    ...new Map(
+      state.markets
+        .map(({ baseToken, quoteToken }) => [baseToken, quoteToken])
+        .flat()
+        .map((item) => [item.denom, item])
+    ).values()
+  ]
 })
 
 export const mutations = {
@@ -633,7 +641,9 @@ export const actions = actionTree(
         pagination: {
           skip: paginationOptions ? paginationOptions.skip : 0,
           limit: paginationOptions ? paginationOptions.limit : 0,
-          endTime: state.subaccountOrdersPagination.endTime
+          endTime: paginationOptions
+            ? paginationOptions.endTime
+            : state.subaccountOrdersPagination.endTime
         }
       })
 
@@ -676,7 +686,9 @@ export const actions = actionTree(
           pagination: {
             skip: paginationOptions ? paginationOptions.skip : 0,
             limit: paginationOptions ? paginationOptions.limit : 0,
-            endTime: state.subaccountOrderHistoryPagination.endTime
+            endTime: paginationOptions
+              ? paginationOptions.endTime
+              : state.subaccountOrderHistoryPagination.endTime
           }
         })
 
@@ -719,7 +731,9 @@ export const actions = actionTree(
           pagination: {
             skip: paginationOptions ? paginationOptions.skip : 0,
             limit: paginationOptions ? paginationOptions.limit : 0,
-            endTime: state.subaccountConditionalOrdersPagination.endTime
+            endTime: paginationOptions
+              ? paginationOptions.endTime
+              : state.subaccountConditionalOrdersPagination.endTime
           }
         })
 
@@ -788,7 +802,9 @@ export const actions = actionTree(
         pagination: {
           skip: paginationOptions ? paginationOptions.skip : 0,
           limit: paginationOptions ? paginationOptions.limit : 0,
-          endTime: state.subaccountTradesPagination.endTime
+          endTime: paginationOptions
+            ? paginationOptions.endTime
+            : state.subaccountTradesPagination.endTime
         }
       })
 
@@ -853,10 +869,9 @@ export const actions = actionTree(
         orderHash: order.orderHash
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: SpotMetrics.BatchCancelLimitOrders
+        msgs: message
       })
     },
 
@@ -885,10 +900,9 @@ export const actions = actionTree(
         })
       )
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: messages,
-        bucket: SpotMetrics.BatchCancelLimitOrders
+        msgs: messages
       })
     },
 
@@ -934,10 +948,9 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: SpotMetrics.CreateLimitOrder
+        msgs: message
       })
     },
 
@@ -990,10 +1003,9 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: SpotMetrics.CreateLimitOrder
+        msgs: message
       })
     },
 
@@ -1039,10 +1051,9 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: SpotMetrics.CreateMarketOrder
+        msgs: message
       })
     },
 
@@ -1095,10 +1106,9 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: SpotMetrics.CreateMarketOrder
+        msgs: message
       })
     },
 

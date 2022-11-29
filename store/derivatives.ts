@@ -14,7 +14,6 @@ import {
 import {
   Change,
   derivativeOrderTypeToGrpcOrderType,
-  DerivativesMetrics,
   MarketType,
   UiBinaryOptionsMarketWithToken,
   UiDerivativeLimitOrder,
@@ -31,6 +30,7 @@ import {
   zeroDerivativeMarketSummary
 } from '@injectivelabs/sdk-ui-ts'
 import {
+  BinaryOptionsMarket,
   DerivativeOrderSide,
   DerivativeOrderState,
   ExpiryFuturesMarket,
@@ -51,7 +51,10 @@ import {
   streamSubaccountOrders,
   streamSubaccountOrderHistory,
   streamSubaccountTrades,
-  streamMarketMarkPrice
+  streamMarketMarkPrice,
+  cancelSubaccountOrderHistoryStream,
+  cancelSubaccountOrdersStream,
+  cancelSubaccountTradesStream
 } from '~/app/client/streams/derivatives'
 import {
   FEE_RECIPIENT,
@@ -69,7 +72,7 @@ import {
   perpetuals as allowedPerpetualMarkets,
   binaryOptions as allowedBinaryOptionsMarkets,
   expiryFutures as allowedExpiryFutures
-} from '~/routes.config'
+} from '~/config/routes.config'
 import { ActivityFetchOptions } from '~/types'
 import { marketIsRecentlyExpired } from '~/app/utils/market'
 
@@ -521,7 +524,7 @@ export const actions = actionTree(
           recentlyExpiredMarketsWithToken
         )
       const binaryOptionsMarkets = IS_DEVNET
-        ? await indexerDerivativesApi.fetchBinaryOptionsMarkets()
+        ? ((await indexerDerivativesApi.fetchBinaryOptionsMarkets()) as BinaryOptionsMarket[])
         : []
       const binaryOptionsMarketsWithToken =
         await tokenService.getBinaryOptionsMarketsWithToken(
@@ -746,7 +749,7 @@ export const actions = actionTree(
       })
     },
 
-    streamSubaccountOrders({ commit }) {
+    streamSubaccountOrders({ commit }, marketId?: string) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -755,6 +758,7 @@ export const actions = actionTree(
       }
 
       streamSubaccountOrders({
+        marketId,
         subaccountId: subaccount.subaccountId,
         callback: ({ order }) => {
           if (!order) {
@@ -795,7 +799,11 @@ export const actions = actionTree(
       })
     },
 
-    streamSubaccountOrderHistory({ commit }) {
+    cancelSubaccountOrdersStream() {
+      cancelSubaccountOrdersStream()
+    },
+
+    streamSubaccountOrderHistory({ commit }, marketId?: string) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -804,6 +812,7 @@ export const actions = actionTree(
       }
 
       streamSubaccountOrderHistory({
+        marketId,
         subaccountId: subaccount.subaccountId,
         callback: ({ order }) => {
           if (!order) {
@@ -827,7 +836,11 @@ export const actions = actionTree(
       })
     },
 
-    streamSubaccountTrades({ commit }) {
+    cancelSubaccountOrderHistoryStream() {
+      cancelSubaccountOrderHistoryStream()
+    },
+
+    streamSubaccountTrades({ commit }, marketId?: string) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -836,6 +849,7 @@ export const actions = actionTree(
       }
 
       streamSubaccountTrades({
+        marketId,
         subaccountId: subaccount.subaccountId,
         callback: ({ trade, operation }) => {
           if (!trade) {
@@ -855,6 +869,10 @@ export const actions = actionTree(
           }
         }
       })
+    },
+
+    cancelSubaccountTradesStream() {
+      cancelSubaccountTradesStream()
     },
 
     async fetchOrderbook({ state, commit }) {
@@ -886,7 +904,7 @@ export const actions = actionTree(
     },
 
     async fetchSubaccountOrders(
-      { commit },
+      { state, commit },
       activityFetchOptions: ActivityFetchOptions | undefined
     ) {
       const { subaccount } = this.app.$accessor.account
@@ -899,6 +917,16 @@ export const actions = actionTree(
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
 
+      if (
+        state.subaccountOrders.length > 0 &&
+        state.subaccountOrdersPagination.endTime === 0
+      ) {
+        commit(
+          'setSubaccountOrdersEndTime',
+          state.subaccountOrders[0].createdAt
+        )
+      }
+
       const { orders, pagination } = await indexerDerivativesApi.fetchOrders({
         marketId: filters?.marketId,
         marketIds: filters?.marketIds,
@@ -907,7 +935,10 @@ export const actions = actionTree(
         isConditional: false,
         pagination: {
           skip: paginationOptions ? paginationOptions.skip : 0,
-          limit: paginationOptions ? paginationOptions.limit : 0
+          limit: paginationOptions ? paginationOptions.limit : 0,
+          endTime: paginationOptions
+            ? paginationOptions.endTime
+            : state.subaccountOrdersPagination.endTime
         }
       })
 
@@ -950,7 +981,9 @@ export const actions = actionTree(
           pagination: {
             skip: paginationOptions ? paginationOptions.skip : 0,
             limit: paginationOptions ? paginationOptions.limit : 0,
-            endTime: state.subaccountOrderHistoryPagination.endTime
+            endTime: paginationOptions
+              ? paginationOptions.endTime
+              : state.subaccountOrderHistoryPagination.endTime
           }
         })
 
@@ -994,7 +1027,9 @@ export const actions = actionTree(
           pagination: {
             skip: paginationOptions ? paginationOptions.skip : 0,
             limit: paginationOptions ? paginationOptions.limit : 0,
-            endTime: state.subaccountConditionalOrdersPagination.endTime
+            endTime: paginationOptions
+              ? paginationOptions.endTime
+              : state.subaccountConditionalOrdersPagination.endTime
           }
         })
 
@@ -1090,7 +1125,9 @@ export const actions = actionTree(
         pagination: {
           skip: paginationOptions ? paginationOptions.skip : 0,
           limit: paginationOptions ? paginationOptions.limit : 0,
-          endTime: state.subaccountTradesPagination.endTime
+          endTime: paginationOptions
+            ? paginationOptions.endTime
+            : state.subaccountTradesPagination.endTime
         }
       })
 
@@ -1127,10 +1164,9 @@ export const actions = actionTree(
         orderHash: order.orderHash
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: DerivativesMetrics.BatchCancelLimitOrders
+        msgs: message
       })
     },
 
@@ -1171,10 +1207,9 @@ export const actions = actionTree(
         }
       )
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: messages,
-        bucket: DerivativesMetrics.BatchCancelLimitOrders
+        msgs: messages
       })
     },
 
@@ -1232,10 +1267,9 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: DerivativesMetrics.CreateLimitOrder
+        msgs: message
       })
     },
 
@@ -1305,10 +1339,9 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: DerivativesMetrics.CreateLimitOrder
+        msgs: message
       })
     },
 
@@ -1366,10 +1399,9 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: DerivativesMetrics.CreateMarketOrder
+        msgs: message
       })
     },
 
@@ -1439,10 +1471,9 @@ export const actions = actionTree(
         subaccountId: subaccount.subaccountId
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: DerivativesMetrics.CreateMarketOrder
+        msgs: message
       })
     }
   }

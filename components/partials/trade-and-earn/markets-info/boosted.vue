@@ -81,7 +81,7 @@ import VItem from '~/components/partials/common/stats/item.vue'
 import {
   perpetuals as sortPerpetualMarkets,
   spot as sortSpotMarkets
-} from '~/routes.config'
+} from '~/config/routes.config'
 import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 interface PointsMultiplierWithMarketTicker extends PointsMultiplier {
   ticker: string

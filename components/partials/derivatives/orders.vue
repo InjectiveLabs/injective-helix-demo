@@ -106,12 +106,8 @@
     </template>
 
     <HocLoading :status="status">
-      <VCard class="h-full p-2" no-padding>
-        <component
-          :is="component"
-          v-if="component"
-          v-bind="{ currentMarketOnly }"
-        />
+      <VCard class="h-full p-2 relative" no-padding>
+        <component :is="component" v-if="component" />
       </VCard>
     </HocLoading>
   </VCardTableWrap>
@@ -184,54 +180,21 @@ export default Vue.extend({
     },
 
     triggers(): UiDerivativeOrderHistory[] {
-      const { currentMarketOnly, market } = this
-
-      const result = this.$accessor.derivatives.subaccountConditionalOrders
-
-      if (!currentMarketOnly || !market) {
-        return result
-      }
-
-      return result.filter(
-        (order: UiDerivativeOrderHistory) => order.marketId === market.marketId
-      )
+      return this.$accessor.derivatives.subaccountConditionalOrders
     },
 
     orderHistory(): UiDerivativeOrderHistory[] {
       return this.$accessor.derivatives.subaccountOrderHistory
     },
 
-    currentMarketOrders(): UiDerivativeLimitOrder[] {
-      const { market, orders } = this
-
-      return orders.filter((order) => order.marketId === market?.marketId)
-    },
-
-    currentMarketPositions(): UiPosition[] {
-      const { market, positions } = this
-
-      return positions.filter(
-        (position) => position.marketId === market?.marketId
-      )
-    },
-
     filteredOrders(): UiDerivativeLimitOrder[] {
-      const {
-        market,
-        markets,
-        binaryOptionsMarkets,
-        currentMarketOnly,
-        orders,
-        currentMarketOrders
-      } = this
+      const { market, markets, binaryOptionsMarkets, orders } = this
 
       if (!market) {
         return []
       }
 
-      const filteredOrders = currentMarketOnly ? currentMarketOrders : orders
-
-      return filteredOrders.filter((order) => {
+      return orders.filter((order) => {
         if (market.subType !== MarketType.BinaryOptions) {
           return markets.some((market) => market.marketId === order.marketId)
         }
@@ -243,23 +206,17 @@ export default Vue.extend({
     },
 
     filteredPositions(): UiPosition[] {
-      const {
-        market,
-        binaryOptionsMarkets,
-        currentMarketOnly,
-        positions,
-        currentMarketPositions
-      } = this
+      const { market, markets, binaryOptionsMarkets, positions } = this
 
       if (!market) {
         return []
       }
 
-      const filteredPositions = currentMarketOnly
-        ? currentMarketPositions
-        : positions
+      const result = positions.filter((position) => {
+        return !!markets.find((m) => m.marketId === position.marketId)
+      })
 
-      return filteredPositions.filter((position) => {
+      return result.filter((position) => {
         if (market.subType !== MarketType.BinaryOptions) {
           return position
         }
@@ -293,38 +250,79 @@ export default Vue.extend({
   },
 
   watch: {
-    positions(newPositions: UiPosition[], oldPositions: UiPosition[]) {
-      if (newPositions.length !== oldPositions.length) {
-        this.component = components.openPositions
-      }
+    currentMarketOnly: {
+      handler() {
+        this.reset()
+        this.init()
+      },
+      immediate: true
     }
   },
 
   mounted() {
-    Promise.all([
-      this.$accessor.derivatives.fetchSubaccountOrders(),
-      this.$accessor.derivatives.fetchSubaccountOrderHistory(),
-      this.$accessor.derivatives.fetchSubaccountConditionalOrders(),
-      this.$accessor.derivatives.fetchSubaccountTrades(),
-      this.$accessor.positions.fetchSubaccountPositions()
-    ])
-      .then(() => {
-        //
-      })
-      .catch(this.$onError)
-      .finally(() => {
-        this.status.setIdle()
-        this.onInit()
-      })
+    const { positions, orders } = this
+
+    if (positions.length > 0) {
+      this.component = components.openPositions
+    } else if (orders.length > 0) {
+      this.component = components.openOrders
+    }
+
+    this.init()
   },
 
   methods: {
-    onInit() {
-      if (this.positions.length > 0) {
-        this.component = components.openPositions
-      } else if (this.orders.length > 0) {
-        this.component = components.openOrders
+    reset() {
+      Promise.all([
+        this.$accessor.positions.cancelSubaccountPositionsStream(),
+        this.$accessor.derivatives.cancelSubaccountOrdersStream(),
+        this.$accessor.derivatives.cancelSubaccountOrderHistoryStream(),
+        this.$accessor.derivatives.cancelSubaccountTradesStream()
+      ])
+    },
+
+    init() {
+      const { currentMarketOnly, market } = this
+
+      this.status.setLoading()
+
+      const fetchOptions = {
+        filters: {
+          marketId: currentMarketOnly && market ? market.marketId : undefined
+        },
+        pagination: {
+          endTime: 0
+        }
       }
+
+      Promise.all([
+        this.$accessor.derivatives.fetchSubaccountOrders(fetchOptions),
+        this.$accessor.derivatives.fetchSubaccountOrderHistory(fetchOptions),
+        this.$accessor.derivatives.fetchSubaccountConditionalOrders(
+          fetchOptions
+        ),
+        this.$accessor.derivatives.fetchSubaccountTrades(fetchOptions),
+        this.$accessor.positions.fetchSubaccountPositions(fetchOptions),
+        this.$accessor.positions.streamSubaccountPositions(
+          fetchOptions.filters.marketId
+        ),
+        this.$accessor.derivatives.streamSubaccountOrders(
+          fetchOptions.filters.marketId
+        ),
+        this.$accessor.derivatives.streamSubaccountOrderHistory(
+          fetchOptions.filters.marketId
+        ),
+        this.$accessor.derivatives.streamSubaccountTrades(
+          fetchOptions.filters.marketId
+        )
+      ])
+        .then(() => {
+          //
+        })
+        .catch(this.$onRejected)
+        .finally(() => {
+          this.status.setIdle()
+        })
     },
 
     onSelect(component: string) {

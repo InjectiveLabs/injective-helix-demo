@@ -3,8 +3,7 @@ import {
   TokenWithBalanceAndPrice,
   UNLIMITED_ALLOWANCE,
   INJ_COIN_GECKO_ID,
-  BankBalanceWithToken,
-  AccountMetrics
+  BankBalanceWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
@@ -360,10 +359,9 @@ export const actions = actionTree(
         }
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: AccountMetrics.SendToEth
+        msgs: message
       })
 
       await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())

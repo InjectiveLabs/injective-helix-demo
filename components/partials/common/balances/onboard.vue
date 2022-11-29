@@ -31,9 +31,48 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Wallet, isCosmosWallet } from '@injectivelabs/wallet-ts'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  INJ_DENOM
+} from '@injectivelabs/utils'
+import {
+  BankBalances,
+  UiDerivativeMarketWithToken,
+  UiSpotMarketWithToken,
+  ZERO_IN_BASE
+} from '@injectivelabs/sdk-ui-ts'
+import { CurrentMarket, Modal } from '~/types'
+import { injToken } from '~/app/data/token'
+import { INJ_GAS_BUFFER } from '~/app/utils/constants'
 
 export default Vue.extend({
   computed: {
+    wallet(): Wallet {
+      return this.$accessor.wallet.wallet
+    },
+
+    bankBalances(): BankBalances {
+      return this.$accessor.bank.balances
+    },
+
+    currentSpotMarket(): UiSpotMarketWithToken | undefined {
+      return this.$accessor.spot.market
+    },
+
+    currentDerivativeMarket(): UiDerivativeMarketWithToken | undefined {
+      return this.$accessor.derivatives.market
+    },
+
+    currentMarket(): CurrentMarket {
+      const { currentSpotMarket, currentDerivativeMarket } = this
+
+      return this.$route.name === 'spot-spot'
+        ? currentSpotMarket
+        : currentDerivativeMarket
+    },
+
     hasAnyBankBalances(): boolean {
       return this.$accessor.bank.hasAnyBankBalance
     },
@@ -44,12 +83,53 @@ export default Vue.extend({
       }
 
       return 2
+    },
+
+    isWalletExemptFromGasFee(): boolean {
+      const { wallet } = this
+
+      return !isCosmosWallet(wallet)
+    },
+
+    balance(): BigNumberInBase {
+      const { bankBalances } = this
+
+      const balance = bankBalances[injToken.denom || INJ_DENOM]
+
+      if (!balance) {
+        return ZERO_IN_BASE
+      }
+
+      return new BigNumberInWei(balance).toBase(injToken.decimals)
+    },
+
+    hasSufficientBalance(): boolean {
+      const { balance } = this
+
+      return balance.gt(new BigNumberInBase(INJ_GAS_BUFFER))
     }
   },
 
   methods: {
     handleClickOnButton() {
-      this.$router.push({ name: 'portfolio' })
+      const { isWalletExemptFromGasFee, hasSufficientBalance, currentMarket } =
+        this
+
+      if (!isWalletExemptFromGasFee && !hasSufficientBalance) {
+        this.$accessor.modal.openModal({ type: Modal.InsufficientInjForGas })
+        return
+      }
+
+      if (!currentMarket) {
+        return
+      }
+
+      this.$accessor.modal.openModal({
+        type: Modal.Bridge,
+        data: {
+          denom: currentMarket.quoteDenom
+        }
+      })
     }
   }
 })

@@ -73,13 +73,17 @@
       <div v-if="!isIbcTransfer">
         <div v-if="hasAllowance">
           <TokenSelector
+            :form-id="formId"
             :amount="form.amount"
             :value="form.token"
             :max-decimals="maxDecimals"
             :origin="origin"
             :destination="destination"
             :is-ibc-transfer="isIbcTransfer"
-            :balance="balance"
+            :balance="transferableBalance"
+            :balance-decimal-places="balanceDecimalPlaces"
+            :balance-label="$t('bridge.available')"
+            :options="supplyWithSortedBalanceInBase"
             small
             show-input
             show-custom-indicator
@@ -88,8 +92,7 @@
             @input:amount="handleAmountChange"
             @input:token="handleTokenChange"
             @input:max="handleMax"
-          >
-          </TokenSelector>
+          />
         </div>
         <div class="mt-6 text-center">
           <VButton
@@ -134,12 +137,18 @@ import Vue, { PropType } from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import {
   BankBalanceWithToken,
+  BankBalanceWithTokenAndBalance,
   BridgingNetwork,
+  getTokenLogoWithVendorPathPrefix,
   SubaccountBalanceWithToken,
   TokenWithBalanceAndPrice,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  INJ_DENOM
+} from '@injectivelabs/utils'
 import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
 import { Token } from '@injectivelabs/token-metadata'
 import { BridgeType, Modal, TransferDirection } from '~/types'
@@ -148,7 +157,10 @@ import VAllowance from '~/components/elements/allowance.vue'
 import NetworkSelect from '~/components/partials/portfolio/bridge/network-select.vue'
 import IbcTransferNote from '~/components/partials/portfolio/bridge/ibc-transfer-note.vue'
 import TransferDirectionSwitch from '~/components/partials/portfolio/bridge/transfer-direction-switch.vue'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import {
+  INJ_GAS_BUFFER,
+  UI_DEFAULT_DISPLAY_DECIMALS
+} from '~/app/utils/constants'
 
 export default Vue.extend({
   components: {
@@ -205,6 +217,7 @@ export default Vue.extend({
 
   data() {
     return {
+      formId: 0,
       memoRequired: false,
       BridgeType,
       TransferDirection,
@@ -248,6 +261,14 @@ export default Vue.extend({
 
     ibcBankBalancesWithToken(): BankBalanceWithToken[] {
       return this.$accessor.bank.bankIbcBalancesWithToken
+    },
+
+    isModalOpen(): boolean {
+      return this.$accessor.modal.modals[Modal.Bridge]
+    },
+
+    modalData(): any {
+      return this.$accessor.modal.data
     },
 
     isWithdrawToInjectiveAddress(): boolean {
@@ -305,6 +326,12 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(token.allowance).gt(0)
+    },
+
+    isWalletExemptFromGasFee(): boolean {
+      const { wallet } = this
+
+      return !isCosmosWallet(wallet)
     },
 
     shouldConnectMetamask(): boolean {
@@ -417,16 +444,152 @@ export default Vue.extend({
         return onDepositBalance
       }
 
-      // Withdraw
       return onWithdrawBalance
     },
 
-    isModalOpen(): boolean {
-      return this.$accessor.modal.modals[Modal.Bridge]
+    transferableBalance(): BigNumberInBase {
+      const { isWalletExemptFromGasFee, transferDirection, form, balance } =
+        this
+
+      if (
+        isWalletExemptFromGasFee ||
+        transferDirection === TransferDirection.tradingAccountToBank ||
+        form.token.denom !== INJ_DENOM
+      ) {
+        return balance
+      }
+
+      const transferableBalance = balance.minus(INJ_GAS_BUFFER)
+
+      if (transferableBalance.lte(ZERO_IN_BASE)) {
+        return ZERO_IN_BASE
+      }
+
+      return transferableBalance
+    },
+
+    balanceDecimalPlaces(): number {
+      return UI_DEFAULT_DISPLAY_DECIMALS
+    },
+
+    erc20TokensWithBalanceAndPriceFromBankAsBankBalanceWithToken(): BankBalanceWithToken[] {
+      const { erc20TokensWithBalanceAndPriceFromBank } = this
+
+      return erc20TokensWithBalanceAndPriceFromBank
+        .map((token) => ({
+          token,
+          denom: token.denom,
+          balance: token.balance
+        }))
+        .filter(({ denom }) => !denom.startsWith('ibc'))
+    },
+
+    subaccountBalancesWithTokenAsBankBalanceWithToken(): BankBalanceWithToken[] {
+      const { subaccountBalancesWithToken } = this
+
+      return subaccountBalancesWithToken.map((balance) => ({
+        ...balance,
+        balance: balance.availableBalance
+      }))
+    },
+
+    supply(): BankBalanceWithToken[] {
+      const {
+        bankBalancesWithToken,
+        subaccountBalancesWithTokenAsBankBalanceWithToken,
+        erc20TokensWithBalanceAndPriceFromBankAsBankBalanceWithToken,
+        origin,
+        destination,
+        isIbcTransfer
+      } = this
+
+      if (isIbcTransfer) {
+        return [] // IBC transfers are not supported on the Bridge Lite
+      }
+
+      if (
+        origin === BridgingNetwork.Ethereum &&
+        destination === BridgingNetwork.Injective
+      ) {
+        return erc20TokensWithBalanceAndPriceFromBankAsBankBalanceWithToken
+      }
+
+      if (
+        origin === BridgingNetwork.Injective &&
+        destination === BridgingNetwork.Ethereum
+      ) {
+        return erc20TokensWithBalanceAndPriceFromBankAsBankBalanceWithToken
+      }
+
+      if (origin === TransferDirection.bankToTradingAccount) {
+        return bankBalancesWithToken
+      }
+
+      if (origin === TransferDirection.tradingAccountToBank) {
+        return subaccountBalancesWithTokenAsBankBalanceWithToken
+      }
+
+      return bankBalancesWithToken
+    },
+
+    supplyWithSortedBalanceInBase(): BankBalanceWithTokenAndBalance[] {
+      const { supply } = this
+
+      const result = supply
+        .map((token) => {
+          const balance = new BigNumberInWei(token.balance || 0).toBase(
+            token.token ? token.token.decimals : 18
+          )
+
+          return {
+            ...token,
+            token: {
+              ...token.token,
+              logo: getTokenLogoWithVendorPathPrefix(token.token.logo)
+            },
+            balance: balance.toFixed()
+          } as BankBalanceWithTokenAndBalance
+        })
+        .sort((supply1, supply2) =>
+          new BigNumberInBase(supply2.balance).minus(supply1.balance).toNumber()
+        )
+
+      return result
     },
 
     $form(): InstanceType<typeof ValidationObserver> {
       return this.$refs.form as InstanceType<typeof ValidationObserver>
+    }
+  },
+
+  watch: {
+    modalData: {
+      handler(value) {
+        if (!value) {
+          return
+        }
+
+        const { supplyWithSortedBalanceInBase } = this
+
+        if (
+          !supplyWithSortedBalanceInBase ||
+          supplyWithSortedBalanceInBase.length === 0
+        ) {
+          return
+        }
+
+        const destinationToken = supplyWithSortedBalanceInBase.find(
+          (token) => token.denom === value.denom
+        )
+
+        if (!destinationToken) {
+          return
+        }
+
+        this.$emit('input-token:update', destinationToken.token)
+      },
+      immediate: true,
+      deep: true
     }
   },
 
@@ -458,6 +621,7 @@ export default Vue.extend({
 
     handleCloseModal() {
       this.$accessor.modal.closeModal(Modal.Bridge)
+      this.formId += 1
     },
 
     handleResetBridge() {

@@ -1,5 +1,5 @@
 <template>
-  <v-dropdown>
+  <Dropdown>
     <template slot="title">
       <div class="w-20 flex items-center">
         <IconGlobe class="w-4" />
@@ -17,7 +17,7 @@
         {{ locale.name }}
       </SelectorItem>
     </div>
-  </v-dropdown>
+  </Dropdown>
 </template>
 
 <script lang="ts">
@@ -29,7 +29,7 @@ import { Locale, locales } from '~/locales'
 export default Vue.extend({
   components: {
     SelectorItem,
-    'v-dropdown': Dropdown
+    Dropdown
   },
 
   data() {

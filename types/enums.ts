@@ -57,7 +57,8 @@ export enum Modal {
   RefereeOnboarding = 'referee-onboarding',
   InsufficientInjForGas = 'insufficient-inj-for-gas',
   MobileTradeFilter = 'mobile-trade-filter',
-  MobileTradeDetails = 'mobile-trade-details'
+  MobileTradeDetails = 'mobile-trade-details',
+  NinjaPassWinner = 'ninja-pass-winner'
 }
 
 export enum Breakpoint {
@@ -165,6 +166,7 @@ export enum AmplitudeEvents {
   ClickPlaceOrder = 'Place Order Attempt',
   AttemptPlaceOrder = 'Place Order Confirm',
   TradeClicked = 'Trade Clicked',
+  Transfer = 'Transfer',
   CosmoverseGiveawayCampaign = 'Cosmoverse Giveaway Campaign'
 }
 
@@ -182,4 +184,15 @@ export enum TradeClickOrigin {
 export enum OrderAttemptStatus {
   Success = 'Success',
   Error = 'Error'
+}
+
+export enum OrderbookLayout {
+  Default = 'default',
+  Buys = 'buys',
+  Sells = 'sells'
+}
+
+export enum TradingLayout {
+  Left = 'left',
+  Right = 'right'
 }

@@ -729,19 +729,11 @@ export default Vue.extend({
 
   methods: {
     handleTradingTypeChange() {
-      // const {
-      //   form: { quoteAmount }
-      // } = this
-
-      // this.$nextTick(() => this.$orderInputs.onQuoteAmountChange(quoteAmount))
       this.resetForm()
     },
 
     handleOrderTypeChange() {
-      // const {
-      //   form: { quoteAmount }
-      // } = this
-      // this.$nextTick(() => this.$orderInputs.onQuoteAmountChange(quoteAmount))
+      //
     },
 
     updatePriceFromLastTradedPrice() {
@@ -796,7 +788,11 @@ export default Vue.extend({
     },
 
     onOrderbookPriceClick(price: string) {
-      this.tradingType = TradeExecutionType.LimitFill
+      const { tradingType } = this
+
+      if (tradingType === TradeExecutionType.Market) {
+        return
+      }
 
       this.$nextTick(() => {
         this.$orderInputs.onPriceChange(price)

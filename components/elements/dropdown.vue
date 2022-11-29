@@ -8,19 +8,16 @@
       <div>
         <button
           type="button"
-          class="inline-flex items-center justify-between w-full py-1 text-xs outline-none focus:outline-none text-gray-500"
+          class="inline-flex items-center justify-between w-full text-xs outline-none focus:outline-none text-gray-500"
           :class="[selectorClass, { 'border-b': !hideBottomBorder }]"
           aria-haspopup="true"
           :aria-expanded="isDropdownOpen"
           @click="onDropdownToggle"
         >
           <slot name="title" />
-          <IconCaretDown
-            class="h-4 w-4"
-            :class="[
-              dark ? 'text-gray-500' : 'text-gray-200',
-              tight ? 'ml-1' : '-mr-1 ml-3 '
-            ]"
+          <IconCaretDownSlim
+            class="ml-2"
+            :class="[dark ? 'text-gray-500' : 'text-gray-200']"
           />
         </button>
       </div>
@@ -74,6 +71,11 @@ export default Vue.extend({
       default: ''
     },
 
+    selectorClass: {
+      type: String,
+      default: 'bg-gray-900 h-10'
+    },
+
     selectedClass: {
       type: String,
       default: ''
@@ -97,6 +99,11 @@ export default Vue.extend({
     tight: {
       type: Boolean,
       default: false
+    },
+
+    noPadding: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -107,15 +114,19 @@ export default Vue.extend({
   },
 
   computed: {
-    selectorClass(): string {
-      const { round } = this
+    selectorClasses(): string {
+      const { selectorClass, round, noPadding } = this
 
-      const classes = ['bg-gray-900', 'h-10', 'px-4', 'py-3']
+      const classes = [selectorClass]
 
       if (round) {
         classes.push('rounded-full')
       } else {
         classes.push('rounded-lg')
+      }
+
+      if (!noPadding) {
+        classes.push('px-4 py-3')
       }
 
       return classes.join(' ')

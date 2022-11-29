@@ -140,7 +140,8 @@
               </template>
             </ConfirmAmountRow>
 
-            <ConfirmAmountRow bold class="mb-6">
+            <!-- Fee Delegation for all wallets not active -->
+            <ConfirmAmountRow v-if="false" bold class="mb-6">
               <template slot="title">
                 {{ $t('bridge.gasFee') }}
               </template>
@@ -157,6 +158,19 @@
                 </span>
               </template>
             </ConfirmAmountRow>
+
+            <!-- Fee Delegation for all wallets active -->
+            <ConfirmAmountRow v-else bold class="mb-6">
+              <template slot="title">
+                {{ $t('bridge.gasFee') }}
+              </template>
+
+              <template slot="amount">
+                <span data-cy="transfer-confirm-modal-gas-fee-text-content">
+                  {{ $t('common.waived') }}
+                </span>
+              </template>
+            </ConfirmAmountRow>
           </div>
 
           <div class="text-center mt-6">
@@ -167,7 +181,7 @@
               :disabled="buttonConfirmationDisabled"
               :status="status"
               data-cy="transfer-confirm-modal-confirm-button"
-              @click="handlerFunction"
+              @click="handleConfirmation"
             >
               {{ buttonConfirmationText }}
             </VButton>
@@ -182,10 +196,14 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { BigNumberInBase, Status } from '@injectivelabs/utils'
+import {
+  BigNumberInBase,
+  BigNumberInWei,
+  INJ_DENOM,
+  Status
+} from '@injectivelabs/utils'
 import {
   BRIDGE_FEE_IN_USD,
-  INJ_DENOM,
   BridgingNetwork,
   NetworkMeta,
   ZERO_IN_BASE,
@@ -203,10 +221,12 @@ import { networksMeta, transferSideMeta } from '~/app/data/bridge'
 import { TransferSide } from '~/types'
 import { injToken } from '~/app/data/token'
 import {
-  INJ_TO_IBC_TRANSFER_FEE,
+  INJ_GAS_BUFFER,
+  INJ_GAS_FEE,
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
+import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
 
 export default Vue.extend({
   components: {
@@ -292,7 +312,7 @@ export default Vue.extend({
       return {
         ...injToken,
         usdPrice: injUsdPrice
-      }
+      } as TokenWithUsdPrice
     },
 
     tokenWithBalanceAndPrice(): TokenWithBalanceAndPrice | undefined {
@@ -312,13 +332,13 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInBase(injBalance)
+      return new BigNumberInWei(injBalance).toBase(injToken.decimals)
     },
 
     hasSufficientBalance(): boolean {
       const { injBalance } = this
 
-      return injBalance.gt(new BigNumberInBase(INJ_TO_IBC_TRANSFER_FEE))
+      return injBalance.gt(new BigNumberInBase(INJ_GAS_BUFFER))
     },
 
     bridgeTitle(): string {
@@ -461,7 +481,7 @@ export default Vue.extend({
     },
 
     gasFee(): BigNumberInBase {
-      return new BigNumberInBase(INJ_TO_IBC_TRANSFER_FEE)
+      return new BigNumberInBase(INJ_GAS_FEE)
     },
 
     gasFeeToString(): string {
@@ -598,8 +618,9 @@ export default Vue.extend({
       this.$accessor.modal.closeModal(Modal.BridgeConfirm)
     },
 
-    handleConfirmClick() {
-      this.$emit('bridge:confirmed')
+    handleConfirmation() {
+      this.handleTransferTradingAccountTrack()
+      this.handlerFunction()
     },
 
     handleWithdrawToInjective() {
@@ -722,6 +743,16 @@ export default Vue.extend({
         .finally(() => {
           this.status.setIdle()
         })
+    },
+
+    handleTransferTradingAccountTrack() {
+      const { form, transferDirection } = this
+
+      amplitudeTracker.transferTradingAccountTrack({
+        transferDirection,
+        token: form.token.name,
+        amount: form.amount
+      })
     }
   }
 })

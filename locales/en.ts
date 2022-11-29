@@ -7,6 +7,7 @@ import home from './home/en'
 import market from './market/en'
 import wallet from './wallet/en'
 import trade from './trade/en'
+import leaderboard from './leaderboard/en'
 
 export default {
   ...activities,
@@ -19,6 +20,7 @@ export default {
   ...bridge,
   ...wallet,
   ...trade,
+  ...leaderboard,
   common: {
     available: 'Available',
     back: 'Back',
@@ -35,7 +37,8 @@ export default {
     ok: 'OK',
     open: 'Open',
     close: 'Close',
-    required: 'Required'
+    required: 'Required',
+    waived: 'Waived'
   },
   welcome_to_ip:
     'Access, create and trade unlimited decentralized finance markets',
@@ -245,7 +248,8 @@ export default {
     spot: 'Spot',
     spotDescription: 'Trade crypto on an on-chain orderbook',
     perpetual: 'Perpetual',
-    perpetualDescription: 'Trade perpetual contracts settled in USDT or WETH'
+    perpetualDescription: 'Trade perpetual contracts settled in USDT or WETH',
+    leaderboard: 'Leaderboard'
   },
 
   fee_discounts: {
@@ -286,5 +290,14 @@ export default {
 
   filters: {
     clearAll: 'Clear All'
+  },
+
+  ninjaPass: {
+    congratulations: 'Congratulations! 🎉',
+    title: 'You’ve won an exclusive Ninja Pass 🥷',
+    description:
+      'It will serve as your gateway into exclusive Injective events, products, giveaways and many more surprises.',
+    verifyNow: 'Verify now',
+    later: 'Later'
   }
 }

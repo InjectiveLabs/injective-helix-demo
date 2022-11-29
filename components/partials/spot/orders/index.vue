@@ -2,11 +2,11 @@
   <div v-if="market" class="h-full">
     <!-- mobile table -->
     <TableBody
-      :show-empty="filteredOrders.length === 0"
+      :show-empty="orders.length === 0"
       class="sm:hidden max-h-lg overflow-y-auto"
     >
       <MobileOrder
-        v-for="(order, index) in filteredOrders"
+        v-for="(order, index) in orders"
         :key="`mobile-order-${index}-${order.orderHash}`"
         class="col-span-1"
         :order="order"
@@ -20,12 +20,12 @@
     </TableBody>
 
     <TableWrapper class="hidden sm:block">
-      <table v-if="filteredOrders.length > 0" class="table">
+      <table v-if="orders.length > 0" class="table">
         <OrdersTableHeader />
         <tbody>
           <tr
             is="v-order"
-            v-for="(order, index) in filteredOrders"
+            v-for="(order, index) in orders"
             :key="`orders-${index}-${order.orderHash}`"
             :order="order"
           ></tr>
@@ -55,13 +55,6 @@ export default Vue.extend({
     TableBody
   },
 
-  props: {
-    currentMarketOnly: {
-      type: Boolean,
-      default: false
-    }
-  },
-
   computed: {
     market(): UiSpotMarketWithToken | undefined {
       return this.$accessor.spot.market
@@ -75,16 +68,6 @@ export default Vue.extend({
       }
 
       return this.$accessor.spot.subaccountOrders
-    },
-
-    filteredOrders(): UiSpotLimitOrder[] {
-      const { currentMarketOnly, market, orders } = this
-
-      if (!currentMarketOnly) {
-        return orders
-      }
-
-      return orders.filter((order) => order.marketId === market?.marketId)
     }
   }
 })

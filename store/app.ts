@@ -15,7 +15,7 @@ import {
   VPN_PROXY_VALIDATION_PERIOD
 } from '~/app/utils/constants'
 import { Locale, english } from '~/locales'
-import { AppState, GeoLocation } from '~/types'
+import { AppState, GeoLocation, OrderbookLayout, TradingLayout } from '~/types'
 import {
   fetchGeoLocation,
   validateGeoLocation,
@@ -29,12 +29,16 @@ import {
 } from '~/app/services/announcements'
 import { UiAnnouncementTransformer } from '~/app/client/transformers/UiAnnouncementTransformer'
 import { Announcement, Attachment } from '~/app/client/types/announcements'
+import { alchemyKey } from '~/app/wallet-strategy'
 
 export interface UserBasedState {
   vpnOrProxyUsageValidationTimestamp: number
   favoriteMarkets: string[]
   auctionsViewed: number[]
   geoLocation: GeoLocation
+  orderbookLayout: OrderbookLayout
+  tradingLayout: TradingLayout
+  ninjaPassWinnerModalViewed: boolean
 }
 
 const initialState = {
@@ -56,7 +60,10 @@ const initialState = {
     geoLocation: {
       continent: '',
       country: ''
-    }
+    },
+    orderbookLayout: OrderbookLayout.Default,
+    tradingLayout: TradingLayout.Left,
+    ninjaPassWinnerModalViewed: false
   } as UserBasedState,
   announcements: [] as Array<Announcement>,
   attachments: [] as Array<Attachment>
@@ -190,7 +197,7 @@ export const actions = actionTree(
     },
 
     async fetchGasPrice({ commit }) {
-      commit('setGasPrice', await fetchGasPrice(NETWORK))
+      commit('setGasPrice', await fetchGasPrice(NETWORK, { alchemyKey }))
     },
 
     async fetchGeoLocation({ state, commit }) {

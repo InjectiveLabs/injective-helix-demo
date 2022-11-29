@@ -39,6 +39,7 @@
         <template #selected-option="{ symbol, logo, name }">
           <ValidationProvider
             v-slot="{ errors, valid }"
+            ref="validationProvider"
             name="amount"
             class="w-full"
             :rules="
@@ -46,9 +47,7 @@
               `required|positiveNumber|enoughBalance:0.0001,${balanceToFixed}`
             "
           >
-            <div
-              :class="{ 'flex justify-between items-center gap-4': showInput }"
-            >
+            <div :class="{ 'flex justify-between items-center': showInput }">
               <div v-if="showInput" class="flex flex-col w-full justify-center">
                 <VInput
                   id="bridge-input"
@@ -85,7 +84,7 @@
                     {{ errors[0] }}
                   </span>
                   <span
-                    v-else-if="usdPrice !== ''"
+                    v-else-if="usdPrice !== undefined"
                     class="text-gray-500 text-[12px]"
                   >
                     {{ usdPrice }} USD
@@ -135,7 +134,7 @@
                       'text-primary-500': errors.length === 0
                     }"
                   >
-                    {{ $t('bridge.balance') }}: {{ balanceToFixed }}
+                    {{ formattedBalance }}
                   </span>
                   <button
                     v-if="showMaxSelector"
@@ -249,14 +248,19 @@ export default Vue.extend({
       default: UI_DEFAULT_DISPLAY_DECIMALS
     },
 
+    balanceLabel: {
+      type: String,
+      default: undefined
+    },
+
     showBalance: {
       type: Boolean,
       default: false
     },
 
     usdPrice: {
-      type: String,
-      default: ''
+      type: Number,
+      default: undefined
     },
 
     value: {
@@ -322,6 +326,11 @@ export default Vue.extend({
     rounded: {
       type: Boolean,
       default: false
+    },
+
+    formId: {
+      type: Number,
+      required: true
     }
   },
 
@@ -353,6 +362,12 @@ export default Vue.extend({
       return balance.toFixed(balanceDecimalPlaces, BIG_NUMBER_ROUND_DOWN_MODE)
     },
 
+    formattedBalance(): string {
+      const { balanceLabel, balanceToFixed } = this
+
+      return `${balanceLabel}: ${balanceToFixed}`
+    },
+
     filteredOptions(): BankBalanceWithTokenAndBalanceInBase[] {
       const { options, search } = this
 
@@ -376,7 +391,16 @@ export default Vue.extend({
     showMaxSelector(): boolean {
       const { disableMaxSelector, balance } = this
 
-      return !disableMaxSelector && balance.gt(0.0001)
+      return !disableMaxSelector && balance.gte(0.0001)
+    }
+  },
+
+  watch: {
+    formId: {
+      handler() {
+        this.resetValidation()
+      },
+      immediate: true
     }
   },
 
@@ -392,6 +416,15 @@ export default Vue.extend({
     resetInputFields() {
       if (this.$inputForm) {
         this.$inputForm.reset()
+      }
+    },
+
+    resetValidation() {
+      if (this.$refs.validationProvider) {
+        const validationProvider = this.$refs
+          .validationProvider as InstanceType<typeof ValidationProvider>
+
+        validationProvider.reset()
       }
     },
 

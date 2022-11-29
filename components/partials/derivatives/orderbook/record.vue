@@ -4,6 +4,7 @@
     class="flex h-6 items-center last:mb-0 first:mt-0 relative cursor-pointer w-full overflow-hidden"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
+    @click.stop="onPriceClick"
   >
     <span class="size-col" :class="newRecordClass"></span>
     <span
@@ -11,10 +12,7 @@
       :style="depthWidth"
       :class="type === DerivativeOrderSide.Buy ? 'buys' : 'sells'"
     ></span>
-    <span
-      class="w-1/3 text-xs px-2 flex items-center justify-end z-10"
-      @click.stop="onPriceClick"
-    >
+    <span class="w-1/3 text-xs px-2 flex items-center justify-end z-10">
       <IconArrow
         v-if="existsInUserOrders"
         data-cy="orderbook-record-own-order-icon"
@@ -45,7 +43,7 @@
         />
       </span>
     </span>
-    <span class="w-1/3 text-xs px-2 z-10" @click.stop="onQuantityClick">
+    <span class="w-1/3 text-xs px-2 z-10">
       <span
         class="block text-right font-mono"
         :class="{
@@ -66,10 +64,7 @@
         />
       </span>
     </span>
-    <span
-      class="w-1/3 text-xs px-2 z-10 font-mono text-right"
-      @click.stop="onTotalNotionalClick"
-    >
+    <span class="w-1/3 text-xs px-2 z-10 font-mono text-right">
       <VNumber
         xs
         :decimals="
@@ -246,30 +241,6 @@ export default Vue.extend({
       }
 
       this.$root.$emit('orderbook-price-click', record.aggregatedPrice)
-    },
-
-    onQuantityClick() {
-      const { quantity, market } = this
-
-      if (!market) {
-        return
-      }
-
-      this.$root.$emit('orderbook-size-click', quantity.toFixed())
-    },
-
-    onTotalNotionalClick() {
-      const { total, record, type, market } = this
-
-      if (!market || !record.aggregatedPrice) {
-        return
-      }
-
-      this.$root.$emit('orderbook-notional-click', {
-        total,
-        type,
-        price: record.aggregatedPrice
-      })
     },
 
     handleMouseEnter() {

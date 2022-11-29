@@ -5,11 +5,11 @@
         {{ $t('trade.convert.rate') }}
       </span>
       <!-- <ConvertRateTooltip> -->
-      <span v-if="pending" class="text-sm cursor-default">
+      <span v-if="isReady && isPending" class="text-sm cursor-default">
         {{ $t('trade.convert.fetching_price') }}...
       </span>
       <span
-        v-else-if="hasAmount && hasLiquidity"
+        v-else-if="isReady && hasAmount && hasLiquidity"
         class="text-sm cursor-default"
         data-cy="convert-widget-details-rate-span"
         :class="rateClass"
@@ -25,7 +25,7 @@
         {{ $t('trade.convert.fee') }} {{ feeRateToFormat }}%
       </span>
       <span
-        v-if="hasAmount && hasLiquidity"
+        v-if="isReady && hasAmount && hasLiquidity"
         class="text-sm"
         data-cy="convert-widget-details-fee-span"
       >
@@ -47,7 +47,7 @@
         {{ $t('trade.convert.minimum_received') }}
       </span>
       <span
-        v-if="hasAmount && hasLiquidity"
+        v-if="isReady && hasAmount && hasLiquidity"
         class="text-sm"
         data-cy="convert-widget-details-minimum-received-span"
       >
@@ -95,12 +95,12 @@ export default Vue.extend({
   props: {
     fromToken: {
       type: Object,
-      required: true
+      default: undefined
     },
 
     toToken: {
       type: Object,
-      required: true
+      default: undefined
     },
 
     fee: {
@@ -110,7 +110,7 @@ export default Vue.extend({
 
     market: {
       type: Object,
-      required: true
+      default: undefined
     },
 
     orderType: {
@@ -133,7 +133,7 @@ export default Vue.extend({
       required: true
     },
 
-    pending: {
+    isPending: {
       type: Boolean,
       default: false
     },
@@ -145,6 +145,12 @@ export default Vue.extend({
   },
 
   computed: {
+    isReady(): boolean {
+      const { market, fromToken, toToken } = this
+
+      return market && fromToken && toToken
+    },
+
     amountStep(): string {
       const { market } = this
 

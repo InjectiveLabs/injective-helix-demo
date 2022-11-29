@@ -1,0 +1,81 @@
+name: Helix Testnet CD
+
+on:
+  push:
+    branches:
+    #  - testnet
+
+jobs:
+  testnet:
+    name: 'Deploy to testnet'
+    runs-on: ubuntu-latest
+    env:
+      SSH_USER: ${{ secrets.TESTNET_SSH_USER }}
+      SSH_KEY: ${{ secrets.TESTNET_SSH_KEY }}
+      SSH_HOST: ${{ secrets.TESTNET_SSH_HOST }}
+      SOURCE_DIR: ${{ secrets.TESTNET_SOURCE_PATH}}
+      GIT_BRANCH: ${{secrets.TESTNET_GIT_BRANCH}}
+
+      ## Public
+      APP_NAME: 'TESTNET - Helix | The Premier Decentralized Spot and Derivatives Exchange'
+      APP_BASE_URL: https://testnet.helixapp.com
+      APP_NETWORK: testnetK8s
+      APP_ENV: testnet
+      APP_CHAIN_ID: injective-888
+
+      ## Flags
+      MAINTENANCE_ENABLED: false
+      GAS_FREE_DEPOSIT_REBATE_ENABLED: false
+      META_TAGS_ENABLED: true
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+      METRICS_ENABLED: false
+      GEO_IP_RESTRICTIONS_ENABLED: false
+      SHOW_AUCTION_COUNTDOWN: false
+      REFERRALS_ENABLED: false
+
+      ## Endpoints
+      APP_EXCHANGE_API_ENDPOINT: ''
+      APP_SENTRY_GRPC_ENDPOINT: ''
+      APP_SENTRY_HTTP_ENDPOINT: ''
+
+      ## Secret
+      APP_NEWSLETTER_API: ${{ secrets.APP_NEWSLETTER_API }}
+      APP_FEE_RECIPIENT: ${{ secrets.APP_FEE_RECIPIENT }}
+      APP_ALCHEMY_GOERLI_KEY: ${{ secrets.APP_ALCHEMY_GOERLI_KEY }}
+      APP_NINJA_PASS_ENDPOINT: ${{ secrets.APP_NINJA_PASS_ENDPOINT }}
+
+    steps:
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/testnet.key
+          chmod 600 ~/.ssh/testnet.key
+          cat >>~/.ssh/config <<END
+          Host testnet
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/testnet.key
+            StrictHostKeyChecking no
+            SendEnv $SOURCE_DIR
+          END
+
+      - name: Check out the source
+        run: ssh testnet 'cd "'$SOURCE_DIR'" && git fetch && git reset --hard "'$GIT_BRANCH'" && git pull'
+
+      - name: Install Dependencies
+        run: ssh testnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn install'
+
+      - name: Remove prev build
+        run: ssh testnet 'cd "'$SOURCE_DIR'"  && rm -rf dist'
+
+      - name: Remove prev build process
+        run: ssh testnet 'cd "'$SOURCE_DIR'"  && rm -rf ./node_modules/.cache'
+
+      - name: Building the project
+        run: ssh testnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn build'
+
+      - name: Generating the static pages
+        run: ssh testnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn generate'
+
+      - name: Proper permissions for dist folder
+        run: ssh testnet 'sudo chown -R root:ubuntu $HOME/inj/injective-helix/dist'

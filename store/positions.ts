@@ -14,7 +14,6 @@ import {
 } from '@injectivelabs/sdk-ts'
 import {
   derivativeOrderTypeToGrpcOrderType,
-  DerivativesMetrics,
   MarketType,
   UiDerivativeLimitOrder,
   UiDerivativeMarketWithToken,
@@ -22,7 +21,10 @@ import {
   UiPosition
 } from '@injectivelabs/sdk-ui-ts'
 import { FEE_RECIPIENT } from '~/app/utils/constants'
-import { streamSubaccountPositions } from '~/app/client/streams/derivatives'
+import {
+  streamSubaccountPositions,
+  cancelSubaccountPositionsStream
+} from '~/app/client/streams/derivatives'
 import { getRoundedLiquidationPrice } from '~/app/client/utils/derivatives'
 import { indexerDerivativesApi, msgBroadcastClient } from '~/app/Services'
 import { ActivityFetchOptions } from '~/types'
@@ -150,7 +152,9 @@ export const actions = actionTree(
           pagination: {
             skip: paginationOptions ? paginationOptions.skip : 0,
             limit: paginationOptions ? paginationOptions.limit : 0,
-            endTime: state.subaccountPositionsPagination.endTime
+            endTime: paginationOptions
+              ? paginationOptions.endTime
+              : state.subaccountPositionsPagination.endTime
           }
         })
 
@@ -218,7 +222,7 @@ export const actions = actionTree(
       commit('setOrderbooks', marketsOrderbookMap)
     },
 
-    streamSubaccountPositions({ commit }) {
+    streamSubaccountPositions({ commit }, marketId?: string) {
       const { subaccount } = this.app.$accessor.account
       const { isUserWalletConnected } = this.app.$accessor.wallet
 
@@ -228,12 +232,17 @@ export const actions = actionTree(
 
       streamSubaccountPositions({
         subaccountId: subaccount.subaccountId,
+        marketId,
         callback: ({ position }) => {
           if (position) {
             commit('updateSubaccountPosition', position)
           }
         }
       })
+    },
+
+    cancelSubaccountPositionsStream() {
+      cancelSubaccountPositionsStream()
     },
 
     async closePosition(
@@ -283,10 +292,9 @@ export const actions = actionTree(
         })
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: DerivativesMetrics.CreateMarketOrder
+        msgs: message
       })
     },
 
@@ -364,10 +372,9 @@ export const actions = actionTree(
         })
       )
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: messages,
-        bucket: DerivativesMetrics.CreateMarketOrder
+        msgs: messages
       })
 
       await this.app.$accessor.positions.fetchSubaccountPositions()
@@ -452,10 +459,9 @@ export const actions = actionTree(
         })
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: DerivativesMetrics.CreateMarketOrder
+        msgs: message
       })
 
       await this.app.$accessor.positions.fetchSubaccountPositions()
@@ -493,10 +499,9 @@ export const actions = actionTree(
         })
       })
 
-      await msgBroadcastClient.broadcast({
+      await msgBroadcastClient.broadcastOld({
         address,
-        msgs: message,
-        bucket: DerivativesMetrics.CreateMarketOrder /* TODO */
+        msgs: message
       })
     }
   }

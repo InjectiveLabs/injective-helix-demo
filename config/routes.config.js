@@ -2,10 +2,11 @@ const {
   IS_TESTNET,
   IS_MAINNET_STAGING,
   IS_DEVNET
-} = require('./app/utils/constants')
+} = require('../app/utils/constants')
 
 const spot = [
   'inj-usdt',
+  'strd-usdt',
   'dot-usdt',
   'atom-usdt',
   'usdc-usdt',
@@ -22,7 +23,6 @@ const perpetuals = [
   'inj-usdt-perp',
   'eth-usdt-perp',
   'osmo-usdt-perp',
-  'bayc-weth-perp',
   'bnb-usdt-perp',
   'stx-usdt-perp',
   'atom-usdt-perp'
@@ -42,11 +42,11 @@ if (IS_TESTNET) {
 }
 
 if (IS_MAINNET_STAGING) {
-  //
+  spot.push('cre-usdt')
 }
 
 if (IS_MAINNET_STAGING || IS_DEVNET) {
-  spot.push('strd-usdt')
+  //
 }
 
 const futures = [...perpetuals, ...expiryFutures]
@@ -71,6 +71,7 @@ module.exports = [
   '/register',
   '/trade-and-earn',
   '/convert',
+  '/leaderboard',
   ...upcomingMarketsRoutes,
   ...deprecatedMarketsRoutes,
   ...spotRoutes,
