@@ -34,12 +34,11 @@ export const marketBaseFromTicker = (
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'cre-usdt',
   'strd-usdt',
   'usdc-usdt',
   'osmo-usdt-perp',
-  'dot-usdt',
-  'stx-usdt-perp',
-  'xprt-usdt'
+  'dot-usdt'
 ]
 
 export const experimentalMarketsSlug = [
