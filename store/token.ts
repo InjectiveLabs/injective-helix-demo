@@ -230,10 +230,12 @@ export const actions = actionTree(
       tokenWithBalance: TokenWithBalance
     ) {
       const { address } = this.app.$accessor.wallet
-      const { gasPrice } = this.app.$accessor.app
       const tokenAddress = tokenWithBalance.address as keyof Erc20Token
 
+      await this.app.$accessor.app.fetchGasPrice()
       await this.app.$accessor.wallet.validate()
+
+      const { gasPrice } = this.app.$accessor.app
 
       const tx = await web3Client.getSetTokenAllowanceTx({
         address,
@@ -285,13 +287,15 @@ export const actions = actionTree(
     ) {
       const { address, injectiveAddress, isUserWalletConnected } =
         this.app.$accessor.wallet
-      const { gasPrice } = this.app.$accessor.app
 
       if (!address || !isUserWalletConnected) {
         return
       }
 
+      await this.app.$accessor.app.fetchGasPrice()
       await this.app.$accessor.wallet.validate()
+
+      const { gasPrice } = this.app.$accessor.app
 
       const ethDestinationAddress =
         getAddressFromInjectiveAddress(injectiveAddress)

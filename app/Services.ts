@@ -1,10 +1,9 @@
 import { CoinGeckoApi } from '@injectivelabs/token-utils'
 import { LocalStorage } from '@injectivelabs/utils'
-import { Web3Client } from '@injectivelabs/wallet-ts/dist/broadcaster/Web3Broadcaster'
+import { Web3Broadcaster } from '@injectivelabs/wallet-ts/dist/broadcaster/Web3Broadcaster'
 import {
   TokenService,
   TokenPrice,
-  MetricsProvider,
   peggyGraphQlEndpointForNetwork,
   UiBridgeTransformer
 } from '@injectivelabs/sdk-ui-ts'
@@ -34,7 +33,6 @@ import {
 import { MsgBroadcaster } from '@injectivelabs/wallet-ts'
 import {
   NETWORK,
-  METRICS_ENABLED,
   ETHEREUM_CHAIN_ID,
   COIN_GECKO_OPTIONS,
   CHAIN_ID,
@@ -43,17 +41,11 @@ import {
 } from './utils/constants'
 import { walletStrategy } from './wallet-strategy'
 
-const metricsProvider = new MetricsProvider({
-  region: 'en' /* TODO */,
-  appEnv: process.env.APP_ENV,
-  nodeEnv: process.env.NODE_ENV
-})
 const apiOptions = {
   chainId: CHAIN_ID,
   ethereumChainId: ETHEREUM_CHAIN_ID,
   network: NETWORK,
-  endpoints: ENDPOINTS,
-  metricsProvider: METRICS_ENABLED ? metricsProvider : undefined
+  endpoints: ENDPOINTS
 }
 
 // Services
@@ -123,7 +115,7 @@ export const msgBroadcastClient = new MsgBroadcaster({
   feePayerPubKey: FEE_PAYER_PUB_KEY
 })
 
-export const web3Client = new Web3Client({
+export const web3Client = new Web3Broadcaster({
   walletStrategy,
   network: NETWORK,
   ethereumChainId: ETHEREUM_CHAIN_ID
