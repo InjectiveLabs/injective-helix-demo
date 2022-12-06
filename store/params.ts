@@ -32,7 +32,7 @@ import {
 
 export const initialState = {
   inflation: '0',
-  currentBlockTime: 2.63, // approximate, in seconds
+  currentBlockTime: 1.1, // approximate, in seconds
   annualProvisions: '0',
   injSupply: {} as Coin,
   pool: {
