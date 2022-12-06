@@ -206,6 +206,33 @@ const hardcodedExcludedTradesByMarket = {
         }
       ]
     },
+  // CRE/USDT
+  'ibc/3A6DD3358D9F7ADD18CDE79BA10B400511A5DE4AE2C037D7C9639B52ADAF35C6/peggy0xdAC17F958D2ee523a2206206994597C13D831ec7':
+    {
+      excludeBefore: null,
+      bars: [
+        {
+          high: 10,
+          barMap: (bar: any) => {
+            return {
+              ...bar,
+              high: 0.1,
+              close: 0.1
+            }
+          }
+        },
+        {
+          high: 8.9998,
+          barMap: (bar: any) => {
+            return {
+              ...bar,
+              open: 0.1,
+              high: 0.1
+            }
+          }
+        }
+      ]
+    },
   // INJ/USDT
   'inj/peggy0xdAC17F958D2ee523a2206206994597C13D831ec7': {
     excludeBefore: null,
@@ -346,7 +373,7 @@ const hardcodedExcludedTradesByMarket = {
 export const mapBarsToProperValues = (bars: any, ticker: string) => {
   // @ts-ignore
   const hardcodedExcludedTrades = hardcodedExcludedTradesByMarket[ticker]
-
+  console.log(ticker)
   if (!hardcodedExcludedTrades) {
     return bars
   }
