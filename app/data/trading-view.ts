@@ -216,18 +216,18 @@ const hardcodedExcludedTradesByMarket = {
           barMap: (bar: any) => {
             return {
               ...bar,
-              high: 0.1,
+              high: 0.11,
               close: 0.1
             }
           }
         },
         {
-          high: 8.9998,
+          high: 3.0841,
           barMap: (bar: any) => {
             return {
               ...bar,
-              open: 0.1,
-              high: 0.1
+              high: 0.11,
+              open: 0.1
             }
           }
         }
@@ -373,7 +373,6 @@ const hardcodedExcludedTradesByMarket = {
 export const mapBarsToProperValues = (bars: any, ticker: string) => {
   // @ts-ignore
   const hardcodedExcludedTrades = hardcodedExcludedTradesByMarket[ticker]
-  console.log(ticker)
   if (!hardcodedExcludedTrades) {
     return bars
   }
