@@ -1,5 +1,5 @@
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
-import { getEndpointsForNetwork, Network } from '@injectivelabs/networks'
+import { getNetworkEndpoints, Network } from '@injectivelabs/networks'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 import { GeneralException } from '@injectivelabs/exceptions'
 
@@ -133,7 +133,7 @@ export const INJ_GAS_BUFFER = 0.002
 export const INJ_GAS_FEE = 0.002
 export const HIDDEN_BALANCE_DISPLAY = '********'
 
-const endpoints = getEndpointsForNetwork(NETWORK)
+const endpoints = getNetworkEndpoints(NETWORK)
 const endpointsNotProvided =
   !endpoints &&
   (!APP_INDEXER_API_ENDPOINT ||
@@ -151,9 +151,7 @@ if (endpointsNotProvided) {
 export const ENDPOINTS = {
   ...endpoints,
   chronosApi: APP_CHRONOS_API_ENDPOINT || undefined,
-  indexerApiEndpoint: APP_INDEXER_API_ENDPOINT || endpoints.indexerApi,
-  sentryGrpcApiEndpoint: APP_SENTRY_GRPC_ENDPOINT || endpoints.sentryGrpcApi,
-  sentryHttpApi: APP_SENTRY_HTTP_ENDPOINT || endpoints.sentryHttpApi
+  indexer: APP_INDEXER_API_ENDPOINT || endpoints.indexer
 }
 
 export const COIN_GECKO_OPTIONS = {
