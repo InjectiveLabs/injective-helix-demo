@@ -132,7 +132,7 @@ import {
 } from '~/app/client/utils/spot'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import { UserBasedState } from '~/store/app'
-import { OrderbookLayout } from '~/types'
+import { OrderbookLayout, TradingLayout } from '~/types'
 
 export default Vue.extend({
   components: {
@@ -157,24 +157,19 @@ export default Vue.extend({
       autoScrollBuysLocked: false,
       buyHoverPosition: null as number | null,
       sellHoverPosition: null as number | null,
-      popper: {} as Instance,
-      popperOption: {
-        placement: 'left',
-        modifiers: [
-          {
-            name: 'preventOverflow',
-            options: {
-              mainAxis: false
-            }
-          }
-        ]
-      } as Object
+      popper: {} as Instance
     }
   },
 
   computed: {
     userState(): UserBasedState {
       return this.$accessor.app.userState
+    },
+
+    tradingLayout(): TradingLayout {
+      const { userState } = this
+
+      return userState.tradingLayout
     },
 
     trades(): UiSpotTrade[] {
@@ -575,6 +570,20 @@ export default Vue.extend({
 
     $orderbookSummaryElement(): InstanceType<typeof HTMLElement> {
       return this.$refs.orderbookSummary as InstanceType<typeof HTMLElement>
+    },
+
+    popperOptions(): Object {
+      return {
+        placement: 'left',
+        modifiers: [
+          {
+            name: 'preventOverflow',
+            options: {
+              mainAxis: false
+            }
+          }
+        ]
+      }
     }
   },
 
@@ -620,7 +629,7 @@ export default Vue.extend({
     },
 
     handleSellOrderHover(position: number | null) {
-      const { $orderbookSummaryElement, popperOption } = this
+      const { $orderbookSummaryElement, popperOptions } = this
       this.sellHoverPosition = position
 
       if (position !== null) {
@@ -631,7 +640,7 @@ export default Vue.extend({
         this.popper = createPopper(
           hoverElement[0].$el,
           $orderbookSummaryElement,
-          popperOption
+          popperOptions
         )
 
         this.$nextTick(() =>
@@ -646,7 +655,7 @@ export default Vue.extend({
     },
 
     handleBuyOrderHover(position: number | null) {
-      const { $orderbookSummaryElement, popperOption } = this
+      const { $orderbookSummaryElement, popperOptions } = this
       this.buyHoverPosition = position
 
       if (position !== null) {
@@ -657,7 +666,7 @@ export default Vue.extend({
         this.popper = createPopper(
           hoverElement[0].$el,
           $orderbookSummaryElement,
-          popperOption
+          popperOptions
         )
 
         this.$nextTick(() =>
