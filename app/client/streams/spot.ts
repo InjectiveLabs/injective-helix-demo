@@ -10,7 +10,7 @@ import { streamProvider } from '../../providers/StreamProvider'
 import { ENDPOINTS } from '~/app/utils/constants'
 import { StreamType } from '~/types'
 
-export const spotMarketStream = new IndexerGrpcSpotStream(ENDPOINTS.indexerApi)
+export const spotMarketStream = new IndexerGrpcSpotStream(ENDPOINTS.indexer)
 
 export const streamOrderbook = ({
   marketId,

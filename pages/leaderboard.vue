@@ -11,7 +11,7 @@
           </span>
         </div>
         <div class="">
-          <img class="w-full" src="svg/leaderboard.svg" alt="leaderboard" />
+          <img class="w-full" src="/svg/leaderboard.svg" alt="leaderboard" />
         </div>
       </div>
 

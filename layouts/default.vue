@@ -107,7 +107,6 @@ export default Vue.extend({
 
     // Actions that should't block the app from loading
     Promise.all([
-      this.$accessor.app.fetchGasPrice(),
       this.$accessor.referral.init(),
       this.$accessor.exchange.initFeeDiscounts()
     ]).then(() => {
