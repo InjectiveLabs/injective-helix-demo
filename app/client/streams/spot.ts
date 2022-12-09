@@ -10,7 +10,7 @@ import { streamProvider } from '../../providers/StreamProvider'
 import { ENDPOINTS } from '~/app/utils/constants'
 import { StreamType } from '~/types'
 
-export const spotMarketStream = new IndexerGrpcSpotStream(ENDPOINTS.indexerApi)
+export const spotMarketStream = new IndexerGrpcSpotStream(ENDPOINTS.indexer)
 
 export const streamOrderbook = ({
   marketId,
@@ -108,7 +108,8 @@ export const streamSubaccountOrderHistory = ({
   subaccountId?: string
   callback: SpotOrderHistoryStreamCallback
 }) => {
-  const streamFn = spotMarketStream.streamSpotOrderHistory.bind(spotMarketStream)
+  const streamFn =
+    spotMarketStream.streamSpotOrderHistory.bind(spotMarketStream)
   const streamFnArgs = {
     ...(subaccountId && { subaccountId }),
     ...(marketId && { marketId }),
