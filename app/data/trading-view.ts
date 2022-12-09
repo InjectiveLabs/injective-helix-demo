@@ -233,6 +233,21 @@ const hardcodedExcludedTradesByMarket = {
         }
       ]
     },
+  // EVMOS/USDT
+  'ibc/16618B7F7AC551F48C057A13F4CA5503693FBFF507719A85BC6876B8BD75F821/peggy0xdAC17F958D2ee523a2206206994597C13D831ec7':
+    {
+      excludeBefore: null,
+      bars: [
+        {
+          high: 199,
+          barMap: (bar: any) => ({ ...bar, high: 0.45, close: 0.44 })
+        },
+        {
+          high: 197.01,
+          barMap: (bar: any) => ({ ...bar, high: 0.45, open: 0.44 })
+        }
+      ]
+    },
   // INJ/USDT
   'inj/peggy0xdAC17F958D2ee523a2206206994597C13D831ec7': {
     excludeBefore: null,
