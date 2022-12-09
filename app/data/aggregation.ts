@@ -211,7 +211,7 @@ export const customAggregations = {
 
   'CRE/USDT': {
     minTick: getDecimalPlaceFromValue('0.0001'),
-    default: getDecimalPlaceFromValue('0.001'),
+    default: getDecimalPlaceFromValue('0.0001'),
     maxTick: getDecimalPlaceFromValue('0.1')
   },
 

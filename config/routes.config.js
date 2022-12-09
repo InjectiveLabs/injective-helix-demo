@@ -7,6 +7,7 @@ const {
 const spot = [
   'inj-usdt',
   'strd-usdt',
+  'cre-usdt',
   'dot-usdt',
   'atom-usdt',
   'usdc-usdt',
@@ -42,7 +43,7 @@ if (IS_TESTNET) {
 }
 
 if (IS_MAINNET_STAGING) {
-  spot.push('cre-usdt')
+  spot.push('ethbtctrend-usdt', 'steadyeth-usdt', 'steadybtc-usdt')
 }
 
 if (IS_MAINNET_STAGING || IS_DEVNET) {
