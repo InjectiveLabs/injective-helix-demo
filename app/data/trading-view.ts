@@ -62,128 +62,197 @@ export const mapBarsToProperValuesByDeviation = (bars: any) => {
 
 const hardcodedExcludedTradesByMarket = {
   // WETH/USDT
-  'peggy0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/peggy0xdAC17F958D2ee523a2206206994597C13D831ec7': {
-    excludeBefore: null,
-    bars: [
-      {
-        high: 4349.99,
-        barMap: (bar: any) => ({ ...bar, close: 2114.333, high: 2114.333 })
-      },
-      {
-        high: 4349.999,
-        barMap: (bar: any) => ({
-          ...bar,
-          high: 2080.106,
-          low: 2080.106,
-          close: 2080.106
-        })
-      },
-      {
-        low: 1320.958,
-        barMap: (bar: any) => ({ ...bar, low: 2710 })
-      }
-    ]
-  },
+  'peggy0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/peggy0xdAC17F958D2ee523a2206206994597C13D831ec7':
+    {
+      excludeBefore: null,
+      bars: [
+        {
+          high: 4349.99,
+          barMap: (bar: any) => ({ ...bar, close: 2114.333, high: 2114.333 })
+        },
+        {
+          high: 4349.999,
+          barMap: (bar: any) => ({
+            ...bar,
+            high: 2080.106,
+            low: 2080.106,
+            close: 2080.106
+          })
+        },
+        {
+          low: 1320.958,
+          barMap: (bar: any) => ({ ...bar, low: 2710 })
+        }
+      ]
+    },
   // GF/USDT
-  'peggy0xAaEf88cEa01475125522e117BFe45cF32044E238/peggy0xdAC17F958D2ee523a2206206994597C13D831ec7': {
-    excludeBefore: null,
-    bars: [
-      {
-        high: 3.98,
-        barMap: (bar: any) => ({ ...bar, high: 1.5 })
-      }
-    ]
-  },
+  'peggy0xAaEf88cEa01475125522e117BFe45cF32044E238/peggy0xdAC17F958D2ee523a2206206994597C13D831ec7':
+    {
+      excludeBefore: null,
+      bars: [
+        {
+          high: 3.98,
+          barMap: (bar: any) => ({ ...bar, high: 1.5 })
+        }
+      ]
+    },
   // LINK/USDT
-  'peggy0x514910771AF9Ca656af840dff83E8264EcF986CA/peggy0xdAC17F958D2ee523a2206206994597C13D831ec7': {
-    excludeBefore: null,
-    bars: [
-      {
-        high: 115.697,
-        barMap: (bar: any) => ({ ...bar, high: 13.2 })
-      },
-      {
-        high: 120.241,
-        barMap: (bar: any) => ({ ...bar, high: 13.2 })
-      },
-      {
-        high: 128.594,
-        barMap: (bar: any) => ({ ...bar, high: 13.2 })
-      },
-      {
-        high: 33.802,
-        barMap: (bar: any) => ({ ...bar, high: 20, close: 20 })
-      },
-      {
-        high: 31.48,
-        barMap: (bar: any) => ({ ...bar, high: 14.1, low: 14 })
-      },
-      {
-        high: 27.893,
-        barMap: (bar: any) => ({ ...bar, high: 14.1, low: 14 })
-      },
-      {
-        high: 28.302,
-        barMap: (bar: any) => ({ ...bar, high: 13.1, low: 13 })
-      },
-      {
-        high: 30.796,
-        barMap: (bar: any) => ({ ...bar, high: 13.1, low: 13, close: 13.05 })
-      },
-      {
-        high: 22.161,
-        barMap: (bar: any) => ({ ...bar, high: 13.1 })
-      },
-      {
-        high: 21.697,
-        barMap: (bar: any) => ({ ...bar, high: 13.1 })
-      },
-      {
-        high: 27.856,
-        barMap: (bar: any) => ({ ...bar, high: 13.1 })
-      }
-    ]
-  },
+  'peggy0x514910771AF9Ca656af840dff83E8264EcF986CA/peggy0xdAC17F958D2ee523a2206206994597C13D831ec7':
+    {
+      excludeBefore: null,
+      bars: [
+        {
+          high: 115.697,
+          barMap: (bar: any) => ({ ...bar, high: 13.2 })
+        },
+        {
+          high: 120.241,
+          barMap: (bar: any) => ({ ...bar, high: 13.2 })
+        },
+        {
+          high: 128.594,
+          barMap: (bar: any) => ({ ...bar, high: 13.2 })
+        },
+        {
+          high: 33.802,
+          barMap: (bar: any) => ({ ...bar, high: 20, close: 20 })
+        },
+        {
+          high: 31.48,
+          barMap: (bar: any) => ({ ...bar, high: 14.1, low: 14 })
+        },
+        {
+          high: 27.893,
+          barMap: (bar: any) => ({ ...bar, high: 14.1, low: 14 })
+        },
+        {
+          high: 28.302,
+          barMap: (bar: any) => ({ ...bar, high: 13.1, low: 13 })
+        },
+        {
+          high: 30.796,
+          barMap: (bar: any) => ({ ...bar, high: 13.1, low: 13, close: 13.05 })
+        },
+        {
+          high: 22.161,
+          barMap: (bar: any) => ({ ...bar, high: 13.1 })
+        },
+        {
+          high: 21.697,
+          barMap: (bar: any) => ({ ...bar, high: 13.1 })
+        },
+        {
+          high: 27.856,
+          barMap: (bar: any) => ({ ...bar, high: 13.1 })
+        }
+      ]
+    },
   // ATOM/USDT
-  'ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9/peggy0xdAC17F958D2ee523a2206206994597C13D831ec7': {
-    excludeBefore: null,
-    bars: [
-      {
-        low: 5.12,
-        barMap: (bar: any) => ({ ...bar, low: 26 })
-      }
-    ]
-  },
+  'ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9/peggy0xdAC17F958D2ee523a2206206994597C13D831ec7':
+    {
+      excludeBefore: null,
+      bars: [
+        {
+          low: 5.12,
+          barMap: (bar: any) => ({ ...bar, low: 26 })
+        }
+      ]
+    },
   // USDT/UST
-  'ibc/B448C0CA358B958301D328CCDC5D5AD642FC30A6D3AE106FF721DB315F3DDE5C/peggy0xdAC17F958D2ee523a2206206994597C13D831ec7': {
-    excludeBefore: null,
-    bars: [
-      {
-        high: 1.5008,
-        barMap: (bar: any) => ({ ...bar, high: 1 })
-      },
-      {
-        high: 1.5003,
-        barMap: (bar: any) => ({ ...bar, high: 1 })
-      },
-      {
-        high: 1.0502,
-        barMap: (bar: any) => ({ ...bar, high: 1 })
-      },
-      {
-        low: 0.7496,
-        barMap: (bar: any) => ({ ...bar, low: 0.99 })
-      },
-      {
-        low: 0.65,
-        barMap: (bar: any) => ({ ...bar, low: 0.99 })
-      },
-      {
-        high: 500.4988,
-        barMap: (bar: any) => ({ ...bar, high: 1, open: 0.99, low: 0.99 })
-      }
-    ]
-  },
+  'ibc/B448C0CA358B958301D328CCDC5D5AD642FC30A6D3AE106FF721DB315F3DDE5C/peggy0xdAC17F958D2ee523a2206206994597C13D831ec7':
+    {
+      excludeBefore: null,
+      bars: [
+        {
+          high: 1.5008,
+          barMap: (bar: any) => ({ ...bar, high: 1 })
+        },
+        {
+          high: 1.5003,
+          barMap: (bar: any) => ({ ...bar, high: 1 })
+        },
+        {
+          high: 1.0502,
+          barMap: (bar: any) => ({ ...bar, high: 1 })
+        },
+        {
+          low: 0.7496,
+          barMap: (bar: any) => ({ ...bar, low: 0.99 })
+        },
+        {
+          low: 0.65,
+          barMap: (bar: any) => ({ ...bar, low: 0.99 })
+        },
+        {
+          high: 500.4988,
+          barMap: (bar: any) => ({ ...bar, high: 1, open: 0.99, low: 0.99 })
+        }
+      ]
+    },
+  // STRD/USDT
+  'ibc/3FDD002A3A4019B05A33D324B2F29748E77AF501BEA5C96D1F28B2D6755F9F25/peggy0xdAC17F958D2ee523a2206206994597C13D831ec7':
+    {
+      excludeBefore: null,
+      bars: [
+        {
+          high: 49,
+          barMap: (bar: any) => {
+            return {
+              ...bar,
+              high: 0.5,
+              close: 0.5
+            }
+          }
+        }
+      ]
+    },
+  // CRE/USDT
+  'ibc/3A6DD3358D9F7ADD18CDE79BA10B400511A5DE4AE2C037D7C9639B52ADAF35C6/peggy0xdAC17F958D2ee523a2206206994597C13D831ec7':
+    {
+      excludeBefore: null,
+      bars: [
+        {
+          high: 10,
+          barMap: (bar: any) => {
+            return {
+              ...bar,
+              high: 0.11,
+              close: 0.1
+            }
+          }
+        },
+        {
+          high: 3.0841,
+          barMap: (bar: any) => {
+            return {
+              ...bar,
+              high: 0.11,
+              open: 0.1
+            }
+          }
+        }
+      ]
+    },
+  // EVMOS/USDT
+  'ibc/16618B7F7AC551F48C057A13F4CA5503693FBFF507719A85BC6876B8BD75F821/peggy0xdAC17F958D2ee523a2206206994597C13D831ec7':
+    {
+      excludeBefore: null,
+      bars: [
+        {
+          high: 199,
+          barMap: (bar: any) => ({
+            ...bar,
+            high: 0.46,
+            open: 0.44,
+            close: 0.45
+          })
+        },
+        {
+          high: 49.999,
+          barMap: (bar: any) => ({ ...bar, high: 0.45, open: 0.46 })
+        }
+      ]
+    },
   // INJ/USDT
   'inj/peggy0xdAC17F958D2ee523a2206206994597C13D831ec7': {
     excludeBefore: null,
@@ -324,7 +393,6 @@ const hardcodedExcludedTradesByMarket = {
 export const mapBarsToProperValues = (bars: any, ticker: string) => {
   // @ts-ignore
   const hardcodedExcludedTrades = hardcodedExcludedTradesByMarket[ticker]
-
   if (!hardcodedExcludedTrades) {
     return bars
   }

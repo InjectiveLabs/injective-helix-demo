@@ -5,6 +5,8 @@ import {
 } from '@injectivelabs/sdk-ts'
 import {
   BridgeTransactionState,
+  BridgingNetwork,
+  getBridgeTransactionType,
   getExplorerUrl,
   UiBridgeTransaction,
   UiSubaccountTransfer
@@ -26,7 +28,11 @@ export class UiBridgeTransformer {
       }/`,
       timestamp: Date.parse(transaction.blockTimestamp),
       state: BridgeTransactionState.Completed,
-      blockHeight: transaction.blockNumber
+      blockHeight: transaction.blockNumber,
+      type: getBridgeTransactionType(
+        BridgingNetwork.Injective,
+        BridgingNetwork.Injective
+      )
     }
   }
 
@@ -54,7 +60,11 @@ export class UiBridgeTransformer {
       txHash: '',
       explorerLink: `${getExplorerUrl(NETWORK)}/account/${explorerAccount}/`,
       timestamp: transaction.executedAt,
-      state: BridgeTransactionState.Completed
+      state: BridgeTransactionState.Completed,
+      type: getBridgeTransactionType(
+        BridgingNetwork.Injective,
+        BridgingNetwork.Injective
+      )
     }
   }
 }

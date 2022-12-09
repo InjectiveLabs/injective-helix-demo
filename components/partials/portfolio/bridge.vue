@@ -180,7 +180,8 @@ export default Vue.extend({
         ...KeplrNetworks,
         BridgingNetwork.Terra,
         BridgingNetwork.Axelar,
-        BridgingNetwork.Moonbeam
+        BridgingNetwork.Moonbeam,
+        BridgingNetwork.Crescent
       ]
 
       return (

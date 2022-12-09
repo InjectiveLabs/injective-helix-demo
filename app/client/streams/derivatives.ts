@@ -20,9 +20,9 @@ import { ENDPOINTS } from '~/app/utils/constants'
 import { StreamType } from '~/types'
 
 export const derivativesMarketStream = new IndexerGrpcDerivativesStream(
-  ENDPOINTS.indexerApi
+  ENDPOINTS.indexer
 )
-export const oracleStream = new IndexerGrpcOracleStream(ENDPOINTS.indexerApi)
+export const oracleStream = new IndexerGrpcOracleStream(ENDPOINTS.indexer)
 export const streamOrderbook = ({
   marketId,
   callback

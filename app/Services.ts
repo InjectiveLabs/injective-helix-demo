@@ -1,10 +1,8 @@
 import { CoinGeckoApi } from '@injectivelabs/token-utils'
 import { LocalStorage } from '@injectivelabs/utils'
-import { Web3Client } from '@injectivelabs/wallet-ts/dist/broadcaster/Web3Broadcaster'
 import {
   TokenService,
   TokenPrice,
-  MetricsProvider,
   peggyGraphQlEndpointForNetwork,
   UiBridgeTransformer
 } from '@injectivelabs/sdk-ui-ts'
@@ -31,10 +29,9 @@ import {
   IndexerRestLeaderboardChronosApi,
   IndexerGrpcOracleApi
 } from '@injectivelabs/sdk-ts'
-import { MsgBroadcaster } from '@injectivelabs/wallet-ts'
+import { MsgBroadcaster, Web3Broadcaster } from '@injectivelabs/wallet-ts'
 import {
   NETWORK,
-  METRICS_ENABLED,
   ETHEREUM_CHAIN_ID,
   COIN_GECKO_OPTIONS,
   CHAIN_ID,
@@ -43,72 +40,42 @@ import {
 } from './utils/constants'
 import { walletStrategy } from './wallet-strategy'
 
-const metricsProvider = new MetricsProvider({
-  region: 'en' /* TODO */,
-  appEnv: process.env.APP_ENV,
-  nodeEnv: process.env.NODE_ENV
-})
-const apiOptions = {
-  chainId: CHAIN_ID,
-  ethereumChainId: ETHEREUM_CHAIN_ID,
-  network: NETWORK,
-  endpoints: ENDPOINTS,
-  metricsProvider: METRICS_ENABLED ? metricsProvider : undefined
-}
-
 // Services
-export const bankApi = new ChainGrpcBankApi(ENDPOINTS.sentryGrpcApi)
-export const mintApi = new ChainGrpcMintApi(ENDPOINTS.sentryGrpcApi)
-export const stakingApi = new ChainGrpcStakingApi(ENDPOINTS.sentryGrpcApi)
-export const distributionApi = new ChainGrpcDistributionApi(
-  ENDPOINTS.sentryGrpcApi
-)
-export const governanceApi = new ChainGrpcGovApi(ENDPOINTS.sentryGrpcApi)
-export const insuranceApi = new ChainGrpcInsuranceFundApi(
-  ENDPOINTS.sentryGrpcApi
-)
-export const peggyApi = new ChainGrpcPeggyApi(ENDPOINTS.sentryGrpcApi)
-export const auctionApi = new ChainGrpcAuctionApi(ENDPOINTS.sentryGrpcApi)
-export const exchangeApi = new ChainGrpcExchangeApi(ENDPOINTS.sentryGrpcApi)
-export const oracleApi = new ChainGrpcOracleApi(ENDPOINTS.sentryGrpcApi)
-export const indexerExplorerApi = new IndexerGrpcExplorerApi(
-  ENDPOINTS.indexerApi
-)
-export const indexerAccountApi = new IndexerGrpcAccountApi(ENDPOINTS.indexerApi)
-export const indexerOracleApi = new IndexerGrpcOracleApi(ENDPOINTS.indexerApi)
+export const bankApi = new ChainGrpcBankApi(ENDPOINTS.grpc)
+export const mintApi = new ChainGrpcMintApi(ENDPOINTS.grpc)
+export const stakingApi = new ChainGrpcStakingApi(ENDPOINTS.grpc)
+export const distributionApi = new ChainGrpcDistributionApi(ENDPOINTS.grpc)
+export const governanceApi = new ChainGrpcGovApi(ENDPOINTS.grpc)
+export const insuranceApi = new ChainGrpcInsuranceFundApi(ENDPOINTS.grpc)
+export const peggyApi = new ChainGrpcPeggyApi(ENDPOINTS.grpc)
+export const auctionApi = new ChainGrpcAuctionApi(ENDPOINTS.grpc)
+export const exchangeApi = new ChainGrpcExchangeApi(ENDPOINTS.grpc)
+export const oracleApi = new ChainGrpcOracleApi(ENDPOINTS.grpc)
+
+export const indexerExplorerApi = new IndexerGrpcExplorerApi(ENDPOINTS.indexer)
+export const indexerAccountApi = new IndexerGrpcAccountApi(ENDPOINTS.indexer)
+export const indexerOracleApi = new IndexerGrpcOracleApi(ENDPOINTS.indexer)
 export const indexerRestExplorerApi = new IndexerRestExplorerApi(
-  `${ENDPOINTS.indexerApi}/api/explorer/v1`
+  `${ENDPOINTS.indexer}/api/explorer/v1`
 )
 export const indexerRestDerivativesChronosApi =
   new IndexerRestDerivativesChronosApi(
-    `${
-      ENDPOINTS.chronosApi
-        ? `${ENDPOINTS.chronosApi}/api/v1/derivative`
-        : `${ENDPOINTS.indexerApi}/api/chronos/v1/derivative`
-    }`
+    `${ENDPOINTS.indexer}/api/chronos/v1/derivative`
   )
 export const indexerRestSpotChronosApi = new IndexerRestSpotChronosApi(
-  `${
-    ENDPOINTS.chronosApi
-      ? `${ENDPOINTS.chronosApi}/api/v1/spot`
-      : `${ENDPOINTS.indexerApi}/api/chronos/v1/spot`
-  }`
+  `${ENDPOINTS.indexer}/api/chronos/v1/spot`
 )
 export const indexerRestLeaderboardChronosApi =
   new IndexerRestLeaderboardChronosApi(
-    `${
-      ENDPOINTS.chronosApi
-        ? `${ENDPOINTS.chronosApi}/api/v1/leaderboard`
-        : `${ENDPOINTS.indexerApi}/api/chronos/v1/leaderboard`
-    }`
+    `${ENDPOINTS.indexer}/api/chronos/v1/leaderboard`
   )
 export const indexerRestMarketChronosApi = new IndexerRestMarketChronosApi(
-  `${ENDPOINTS.indexerApi}/api/chronos/v1/market`
+  `${ENDPOINTS.indexer}/api/chronos/v1/market`
 )
 export const indexerDerivativesApi = new IndexerGrpcDerivativesApi(
-  ENDPOINTS.indexerApi
+  ENDPOINTS.indexer
 )
-export const indexerSpotApi = new IndexerGrpcSpotApi(ENDPOINTS.indexerApi)
+export const indexerSpotApi = new IndexerGrpcSpotApi(ENDPOINTS.indexer)
 
 export const apolloConsumer = new ApolloConsumer(
   peggyGraphQlEndpointForNetwork(NETWORK)
@@ -117,12 +84,12 @@ export const coinGeckoApi = new CoinGeckoApi(COIN_GECKO_OPTIONS)
 
 // Transaction broadcaster
 export const msgBroadcastClient = new MsgBroadcaster({
-  ...apiOptions,
   walletStrategy,
+  network: NETWORK,
   feePayerPubKey: FEE_PAYER_PUB_KEY
 })
 
-export const web3Client = new Web3Client({
+export const web3Client = new Web3Broadcaster({
   walletStrategy,
   network: NETWORK,
   ethereumChainId: ETHEREUM_CHAIN_ID

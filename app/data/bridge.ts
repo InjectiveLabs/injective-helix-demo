@@ -74,6 +74,12 @@ export const networksMeta = [
     value: BridgingNetwork.Stride,
     icon: '/bridgingNetworks/stride.png',
     symbol: 'stride.png'
+  },
+  {
+    text: 'Crescent',
+    value: BridgingNetwork.Crescent,
+    icon: '/bridgingNetworks/crescent.jpeg',
+    symbol: 'crescent.jpeg'
   }
 ] as NetworkMeta[]
 
@@ -128,6 +134,10 @@ export const getBridgingNetworkBySymbol = (symbol: string): BridgingNetwork => {
 
   if (['DOT'].includes(symbolToUpperCase)) {
     return BridgingNetwork.Moonbeam
+  }
+
+  if (['CRE'].includes(symbolToUpperCase)) {
+    return BridgingNetwork.Crescent
   }
 
   return BridgingNetwork.Ethereum
