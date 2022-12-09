@@ -240,11 +240,16 @@ const hardcodedExcludedTradesByMarket = {
       bars: [
         {
           high: 199,
-          barMap: (bar: any) => ({ ...bar, high: 0.45, close: 0.44 })
+          barMap: (bar: any) => ({
+            ...bar,
+            high: 0.45,
+            open: 0.43,
+            close: 0.44
+          })
         },
         {
-          high: 197.01,
-          barMap: (bar: any) => ({ ...bar, high: 0.45, open: 0.44 })
+          high: 49.999,
+          barMap: (bar: any) => ({ ...bar, high: 0.45, open: 0.46 })
         }
       ]
     },
