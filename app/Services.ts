@@ -60,26 +60,14 @@ export const indexerRestExplorerApi = new IndexerRestExplorerApi(
 )
 export const indexerRestDerivativesChronosApi =
   new IndexerRestDerivativesChronosApi(
-    `${
-      ENDPOINTS.chronosApi
-        ? `${ENDPOINTS.chronosApi}/api/v1/derivative`
-        : `${ENDPOINTS.indexer}/api/chronos/v1/derivative`
-    }`
+    `${ENDPOINTS.indexer}/api/chronos/v1/derivative`
   )
 export const indexerRestSpotChronosApi = new IndexerRestSpotChronosApi(
-  `${
-    ENDPOINTS.chronosApi
-      ? `${ENDPOINTS.chronosApi}/api/v1/spot`
-      : `${ENDPOINTS.indexer}/api/chronos/v1/spot`
-  }`
+  `${ENDPOINTS.indexer}/api/chronos/v1/spot`
 )
 export const indexerRestLeaderboardChronosApi =
   new IndexerRestLeaderboardChronosApi(
-    `${
-      ENDPOINTS.chronosApi
-        ? `${ENDPOINTS.chronosApi}/api/v1/leaderboard`
-        : `${ENDPOINTS.indexer}/api/chronos/v1/leaderboard`
-    }`
+    `${ENDPOINTS.indexer}/api/chronos/v1/leaderboard`
   )
 export const indexerRestMarketChronosApi = new IndexerRestMarketChronosApi(
   `${ENDPOINTS.indexer}/api/chronos/v1/market`
