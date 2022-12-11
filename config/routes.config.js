@@ -43,7 +43,7 @@ if (IS_TESTNET) {
 }
 
 if (IS_MAINNET_STAGING) {
-  spot.push('ethbtctrend-usdt', 'steadyeth-usdt', 'steadybtc-usdt')
+  spot.push('somm-usdt', 'ethbtctrend-usdt', 'steadyeth-usdt', 'steadybtc-usdt')
 }
 
 if (IS_MAINNET_STAGING || IS_DEVNET) {
