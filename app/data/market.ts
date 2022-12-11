@@ -34,6 +34,7 @@ export const marketBaseFromTicker = (
 export const betaMarketSlugs = [] as string[]
 
 export const newMarketsSlug = [
+  'somm-usdt',
   'cre-usdt',
   'strd-usdt',
   'usdc-usdt',
@@ -52,9 +53,13 @@ export const experimentalMarketsSlug = [
 
 export const slugsToIncludeInCosmosCategory = [
   'inj-usdt',
+  'cre-usdt',
+  'somm-usdt',
+  'strd-usdt',
   'inj-usdt-perp',
   'osmo-usdt-perp'
 ]
+
 export const slugsToExcludeFromEthereumCategory = [
   ...slugsToIncludeInCosmosCategory,
   'btc-usdt',
