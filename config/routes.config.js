@@ -16,7 +16,11 @@ const spot = [
   'evmos-usdt',
   'ape-usdt',
   'link-usdt',
-  'gf-usdt'
+  'gf-usdt',
+  'somm-usdt',
+  'ethbtctrend-usdt',
+  'steadyeth-usdt',
+  'steadybtc-usdt'
 ]
 
 const perpetuals = [
@@ -43,7 +47,7 @@ if (IS_TESTNET) {
 }
 
 if (IS_MAINNET_STAGING) {
-  spot.push('somm-usdt', 'ethbtctrend-usdt', 'steadyeth-usdt', 'steadybtc-usdt')
+  //
 }
 
 if (IS_MAINNET_STAGING || IS_DEVNET) {
