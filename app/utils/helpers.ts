@@ -1,27 +1,6 @@
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import { Network } from '@injectivelabs/networks'
-import {
-  UI_DEFAULT_MAX_DISPLAY_DECIMALS,
-  UI_DEFAULT_DISPLAY_DECIMALS,
-  NETWORK,
-  ENDPOINTS
-} from './constants'
-
-export const getSignificantDecimalsFromNumber = (
-  number: number | string
-): number => {
-  if (Math.floor(new BigNumber(number).toNumber()) === number) {
-    return 0
-  }
-
-  const decimals = number.toString().split('.')[1]
-
-  if (!decimals.length) {
-    return 0
-  }
-
-  return decimals.replace('0', '').length || 0
-}
+import { UI_DEFAULT_DISPLAY_DECIMALS, NETWORK, ENDPOINTS } from './constants'
 
 export const getDecimalsBasedOnNumber = (
   number: number | string | BigNumber,
@@ -47,28 +26,6 @@ export const getDecimalsBasedOnNumber = (
     number: new BigNumberInBase(actualNumber.toFixed(defaultDecimals)),
     decimals: defaultDecimals
   }
-}
-
-export const getExactDecimalsFromNumber = (number: number | string): number => {
-  if (Number(number) % 1 !== 0 || number.toString().includes('.')) {
-    const [, decimals] = number.toString().split('.')
-
-    if (!decimals) {
-      return 0
-    }
-
-    return decimals.length
-  }
-
-  return 0
-}
-
-export const getDecimalsFromNumber = (number: number | string): number => {
-  const actualDecimals = getExactDecimalsFromNumber(number)
-
-  return actualDecimals > UI_DEFAULT_MAX_DISPLAY_DECIMALS
-    ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
-    : actualDecimals
 }
 
 export const getChronosDatafeedEndpoint = (marketType: string): string => {

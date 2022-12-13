@@ -2,7 +2,10 @@
   <tr>
     <td class="h-8 text-left font-mono">
       <div class="flex items-center gap-4">
-        <div v-if="isUserTierLevel" class="bg-primary-500 w-2 h-2 ml-2 rounded-full" />
+        <div
+          v-if="isUserTierLevel"
+          class="bg-primary-500 w-2 h-2 ml-2 rounded-full"
+        />
         <div v-else class="w-2 h-2 ml-2" />
         <span>#{{ index }}</span>
       </div>
@@ -32,9 +35,9 @@ import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
   cosmosSdkDecToBigNumber,
   FeeDiscountAccountInfo,
-  FeeDiscountTierInfo
+  FeeDiscountTierInfo,
+  getDecimalsFromNumber
 } from '@injectivelabs/sdk-ts'
-import { getDecimalsFromNumber } from '~/app/utils/helpers'
 import { USDT_DECIMALS } from '~/app/utils/constants'
 
 export default Vue.extend({
@@ -92,9 +95,9 @@ export default Vue.extend({
         return ZERO_IN_BASE
       }
 
-      return new BigNumberInWei(
-        cosmosSdkDecToBigNumber(tier.volume)
-      ).toBase(USDT_DECIMALS)
+      return new BigNumberInWei(cosmosSdkDecToBigNumber(tier.volume)).toBase(
+        USDT_DECIMALS
+      )
     },
 
     volumeToFormat(): string {

@@ -167,8 +167,15 @@ export default Vue.extend({
     lastTradedPriceToFormat(): string {
       const { lastTradedPrice, market } = this
 
+      if (!market) {
+        return lastTradedPrice.toFormat(
+          UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+          BigNumberInBase.ROUND_DOWN
+        )
+      }
+
       return lastTradedPrice.toFormat(
-        market?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+        market.priceDecimals,
         BigNumberInBase.ROUND_DOWN
       )
     },

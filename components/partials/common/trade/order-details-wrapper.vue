@@ -17,7 +17,6 @@
       liquidationPrice,
       makerFeeRate,
       makerFeeRateDiscount,
-      makerFeeRateDiscount,
       makerFeeRateToFormat,
       marketHasNegativeMakerFee,
       minimumReceivedAmount,
@@ -30,7 +29,6 @@
       slippage,
       takerFeeRate,
       takerFeeRateDiscount,
-      takerFeeRateDiscount,
       takerFeeRateToFormat
     }"
     @set:drawer-toggle="onDetailsDrawerToggle"
@@ -41,7 +39,8 @@ import Vue, { PropType } from 'vue'
 import {
   cosmosSdkDecToBigNumber,
   PointsMultiplier,
-  TradeExecutionType
+  TradeExecutionType,
+  getDecimalsFromNumber
 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
@@ -60,7 +59,6 @@ import OrderDetailsStopLimitDerivatives from '~/components/partials/derivatives/
 import OrderDetailsStopMarketDerivatives from '~/components/partials/derivatives/trading/order-details-stop-market.vue'
 import { TradingRewardsCampaign } from '~/app/client/types/exchange'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '~/app/utils/constants'
-import { getDecimalsFromNumber } from '~/app/utils/helpers'
 
 export default Vue.extend({
   components: {
