@@ -74,6 +74,7 @@
         data-cy="trading-page-base-amount-input"
         show-addon
         @input="onAmountChange"
+        @blur="onAmountBlur"
       >
         <span slot="addon">{{ market.baseToken.symbol.toUpperCase() }}</span>
         <div
@@ -115,8 +116,6 @@
             orderTypeReduceOnly,
             position,
             quoteAvailableBalance,
-            quoteAvailableBalance,
-            sells,
             sells,
             slippage,
             takerFeeRate,
@@ -212,6 +211,11 @@ import Vue, { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeExecutionType } from '@injectivelabs/ts-types'
 import {
+  formatPriceToAllowablePrice,
+  formatAmountToAllowableAmount,
+  formatNumberToAllowableDecimals
+} from '@injectivelabs/sdk-ts'
+import {
   UiSpotMarketWithToken,
   UiDerivativeMarketWithToken,
   UiDerivativeLimitOrder,
@@ -230,10 +234,6 @@ import { AveragePriceOptions } from '~/types'
 import PercentAmountOptions from '~/components/partials/common/trade/percent-amount-options.vue'
 import InputError from '~/components/partials/common/trade/input-error.vue'
 import AdvancedSettings from '~/components/partials/common/trade/advanced-settings/index.vue'
-import {
-  formatPriceToAllowableDecimals,
-  formatAmountToAllowableDecimals
-} from '~/app/utils/formatters'
 
 export default Vue.extend({
   components: {
@@ -575,7 +575,7 @@ export default Vue.extend({
       }
 
       return new BigNumberInBase(1)
-        .shiftedBy(-market.quantityDecimals)
+        .shiftedBy(market.quantityTensMultiplier)
         .toFixed()
     },
 
@@ -743,7 +743,7 @@ export default Vue.extend({
     },
 
     setSlippageTolerance(slippage: string) {
-      this.inputSlippageTolerance = formatAmountToAllowableDecimals(slippage, 2)
+      this.inputSlippageTolerance = formatNumberToAllowableDecimals(slippage, 2)
 
       this.$emit('update:slippageTolerance', slippage)
     },
@@ -772,9 +772,9 @@ export default Vue.extend({
       }
 
       const triggerPriceToBigNumber = new BigNumberInBase(inputTriggerPrice)
-      const formattedPrice = formatPriceToAllowableDecimals(
+      const formattedPrice = formatPriceToAllowablePrice(
         price,
-        market.priceDecimals
+        market.priceTensMultiplier
       )
 
       this.inputPrice = formattedPrice
@@ -815,7 +815,7 @@ export default Vue.extend({
         return
       }
 
-      const formattedTriggerPrice = formatPriceToAllowableDecimals(
+      const formattedTriggerPrice = formatPriceToAllowablePrice(
         triggerPrice,
         market.priceDecimals
       )
@@ -856,9 +856,9 @@ export default Vue.extend({
       this.$emit('update:averagePriceOption', AveragePriceOptions.BaseAmount)
 
       const triggerPriceToBigNumber = new BigNumberInBase(inputTriggerPrice)
-      const formattedBaseAmount = formatAmountToAllowableDecimals(
+      const formattedBaseAmount = formatAmountToAllowableAmount(
         amount,
-        market.quantityDecimals
+        market.quantityTensMultiplier
       )
 
       this.inputBaseAmount = formattedBaseAmount
@@ -883,6 +883,18 @@ export default Vue.extend({
       }
     },
 
+    onAmountBlur(amount: string = '') {
+      const { market } = this
+
+      if (!market) {
+        return
+      }
+
+      return this.onAmountChange(
+        formatAmountToAllowableAmount(amount, market.quantityTensMultiplier)
+      )
+    },
+
     onQuoteAmountChange(quoteAmount: string = '') {
       const { hasPrice, market, tradingTypeMarket, isSpot } = this
 
@@ -892,9 +904,9 @@ export default Vue.extend({
 
       this.$emit('update:averagePriceOption', AveragePriceOptions.QuoteAmount)
 
-      const formattedQuoteAmount = formatAmountToAllowableDecimals(
+      const formattedQuoteAmount = formatAmountToAllowableAmount(
         quoteAmount,
-        market.priceDecimals
+        market.priceTensMultiplier
       )
 
       this.inputQuoteAmount = formattedQuoteAmount
@@ -909,11 +921,9 @@ export default Vue.extend({
         this.updatePriceFromLastTradedPrice()
       }
 
-      if (isSpot) {
-        this.updateSpotBaseAmountFromQuote()
-      } else {
-        return this.updateDerivativesBaseAmountFromQuote()
-      }
+      return isSpot
+        ? this.updateSpotBaseAmountFromQuote()
+        : this.updateDerivativesBaseAmountFromQuote()
     },
 
     updateSpotBaseAmountFromQuote() {
@@ -944,9 +954,9 @@ export default Vue.extend({
       )
 
       if (baseAmount.gt(0) && baseAmount.isFinite()) {
-        const formattedBaseAmount = baseAmount.toFixed(
-          market.quantityDecimals,
-          BigNumberInBase.ROUND_DOWN
+        const formattedBaseAmount = formatAmountToAllowableAmount(
+          baseAmount.toFixed(),
+          market.quantityTensMultiplier
         )
 
         this.inputBaseAmount = formattedBaseAmount
@@ -1018,7 +1028,7 @@ export default Vue.extend({
         .times(feeMultiplier)
 
       if (quoteAmount.gt(0)) {
-        const formattedQuoteAmount = formatAmountToAllowableDecimals(
+        const formattedQuoteAmount = formatPriceToAllowablePrice(
           quoteAmount.toNumber(),
           market.priceDecimals
         )

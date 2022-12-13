@@ -19,8 +19,8 @@
 <script lang="ts">
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import Vue, { PropType } from 'vue'
+import { getDecimalsFromNumber } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
-import { getDecimalsFromNumber } from '~/app/utils/helpers'
 
 export default Vue.extend({
   props: {

@@ -1,0 +1,83 @@
+name: Helix Mainnet CD
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  staging:
+    if: true
+    env:
+      ## Public
+      APP_NAME: 'BETA - Helix: Decentralized Cryptocurrency Derivatives, Ethereum and Altcoin Exchange'
+      APP_BASE_URL: https://staging.injective.exchange
+      APP_NETWORK: staging
+      APP_ENV: staging
+      APP_CHAIN_ID: injective-1
+      APP_ETHEREUM_CHAIN_ID: 1
+      SOURCE_DIR: dist
+      DEST_DIR: www
+
+      ## Flags
+      MAINTENANCE_ENABLED: false
+      GAS_FREE_DEPOSIT_REBATE_ENABLED: true
+      META_TAGS_ENABLED: true
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+      METRICS_ENABLED: false
+      GEO_IP_RESTRICTIONS_ENABLED: false
+      SHOW_AUCTION_COUNTDOWN: false
+      PRICE_BAND_ENABLED: false
+      REFERRALS_ENABLED: true
+
+      ## Endpoints
+      APP_EXCHANGE_API_ENDPOINT: ''
+      APP_SENTRY_GRPC_ENDPOINT: ''
+      APP_SENTRY_HTTP_ENDPOINT: ''
+
+      ## Secret
+      APP_NEWSLETTER_API: ${{ secrets.APP_NEWSLETTER_API }}
+      APP_PROXY_DETECTION_API_KEY: ${{ secrets.APP_PROXY_DETECTION_API_KEY }}
+      APP_COINGECKO_API_KEY: ${{ secrets.APP_COINGECKO_API_KEY }}
+      APP_GOOGLE_ANALYTICS_KEY: ${{ secrets.APP_GOOGLE_ANALYTICS_KEY }}
+      APP_GOOGLE_SITE_VERIFICATION_KEY: ${{ secrets.APP_GOOGLE_SITE_VERIFICATION_KEY }},
+      APP_FEE_RECIPIENT: ${{ secrets.APP_FEE_RECIPIENT }}
+      APP_BUGSNAG_KEY: ${{ secrets.APP_BUGSNAG_KEY }}
+      APP_AMPLITUDE_KEY: ${{ secrets.APP_AMPLITUDE_KEY }}
+      APP_ALCHEMY_KEY: ${{ secrets.APP_ALCHEMY_KEY }}
+      APP_NINJA_PASS_ENDPOINT: ${{ secrets.APP_NINJA_PASS_ENDPOINT }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_S3_BUCKET: ${{ secrets.AWS_S3_STAGING_BUCKET }}
+      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_STAGING_DISTRIBUTION_ID }}
+      AWS_REGION: ${{ secrets.AWS_MAINNET_REGION }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Using Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Building the project
+        run: yarn build
+
+      - name: Generating the static pages
+        run: yarn generate
+
+      - name: Use AWS CLI
+        uses: chrislennon/action-aws-cli@v1.1
+
+      - name: Sync to S3 bucket
+        run: aws s3 sync dist/ s3://$AWS_S3_BUCKET/www --follow-symlinks --delete --exclude 'static/chart/*'
+
+      - name: Set Cache Headers
+        run: aws s3 cp s3://$AWS_S3_BUCKET/www s3://$AWS_S3_BUCKET/www --exclude "*" --include "*.js" --include "*.css" --include "*.svg" --include "*.woff2" --include "*.woff" --include "*.ttf" --recursive --metadata-directive REPLACE --expires 2034-01-01T00:00:00Z --cache-control max-age=2592000,public
+
+      - name: Invalidate Cloudfront CDN
+        run: aws cloudfront create-invalidation --distribution-id=$CLOUDFRONT_DISTRIBUTION_ID --paths "/*"

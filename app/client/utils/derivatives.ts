@@ -1,4 +1,3 @@
-import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   BigNumber,
   BigNumberInBase,
@@ -16,7 +15,7 @@ import {
   UiPriceLevel,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
-import { formatAmountToAllowableDecimals } from '~/app/utils/formatters'
+import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 
 export const calculateMargin = ({
   quantity,
@@ -69,43 +68,6 @@ export const computeOrderbookSummary = (
     quantity: summary.quantity.plus(new BigNumberInBase(record.quantity)),
     total: summary.total.plus(new BigNumberInBase(record.total || 0))
   }
-}
-
-export const getPositionFeeAdjustedBankruptcyPrice = ({
-  position,
-  market
-}: {
-  position: UiPosition
-  market: UiDerivativeMarketWithToken
-}) => {
-  const price = new BigNumberInWei(position.entryPrice).toBase(
-    market.quoteToken.decimals
-  )
-
-  const unitMargin = new BigNumberInWei(position.margin)
-    .toBase(market.quoteToken.decimals)
-    .dividedBy(position.quantity)
-  const isPositionLong = position.direction === TradeDirection.Long
-
-  const bankruptcyPrice = isPositionLong
-    ? price.minus(unitMargin)
-    : price.plus(unitMargin)
-
-  const minTickPrice = new BigNumberInBase(
-    new BigNumberInBase(1).shiftedBy(-market.priceDecimals)
-  )
-
-  const feeAdjustedBankruptcyPrice = isPositionLong
-    ? bankruptcyPrice.dividedBy(
-        new BigNumberInBase(1).minus(market.takerFeeRate)
-      )
-    : bankruptcyPrice.dividedBy(
-        new BigNumberInBase(1).plus(market.takerFeeRate)
-      )
-
-  return feeAdjustedBankruptcyPrice.gte(0)
-    ? feeAdjustedBankruptcyPrice
-    : minTickPrice
 }
 
 export const calculateLiquidationPrice = ({
@@ -337,9 +299,9 @@ export const getDerivativesMarketBaseAmountForPercentage = ({
     }
   }
 
-  return formatAmountToAllowableDecimals(
+  return formatAmountToAllowableAmount(
     totalQuantity.toNumber(),
-    market.quantityDecimals
+    market.quantityTensMultiplier
   )
 }
 
@@ -382,9 +344,9 @@ export const getDerivativesLimitBaseAmountForPercentage = ({
   )
 
   if (totalNotional.lte(availableMargin)) {
-    return formatAmountToAllowableDecimals(
+    return formatAmountToAllowableAmount(
       totalQuantity.toNumber(),
-      market.quantityDecimals
+      market.quantityTensMultiplier
     )
   }
 
@@ -478,9 +440,9 @@ export const getDerivativesBaseAmountForPercentage = ({
   )
 
   if (totalNotional.lte(availableMargin)) {
-    return formatAmountToAllowableDecimals(
+    return formatAmountToAllowableAmount(
       totalQuantity.toNumber(),
-      market.quantityDecimals
+      market.quantityTensMultiplier
     )
   }
 
@@ -490,9 +452,9 @@ export const getDerivativesBaseAmountForPercentage = ({
     )
     .times(leverage)
 
-  return formatAmountToAllowableDecimals(
+  return formatAmountToAllowableAmount(
     amountFromAvailableMargin.toNumber(),
-    market.quantityDecimals
+    market.quantityTensMultiplier
   )
 }
 
