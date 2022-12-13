@@ -213,7 +213,8 @@ import { TradeExecutionType } from '@injectivelabs/ts-types'
 import {
   formatPriceToAllowablePrice,
   formatAmountToAllowableAmount,
-  formatNumberToAllowableDecimals
+  formatNumberToAllowableDecimals,
+  formatAmountToAllowableDecimals
 } from '@injectivelabs/sdk-ts'
 import {
   UiSpotMarketWithToken,
@@ -856,9 +857,9 @@ export default Vue.extend({
       this.$emit('update:averagePriceOption', AveragePriceOptions.BaseAmount)
 
       const triggerPriceToBigNumber = new BigNumberInBase(inputTriggerPrice)
-      const formattedBaseAmount = formatAmountToAllowableAmount(
+      const formattedBaseAmount = formatAmountToAllowableDecimals(
         amount,
-        market.quantityTensMultiplier
+        market.quantityDecimals
       )
 
       this.inputBaseAmount = formattedBaseAmount
