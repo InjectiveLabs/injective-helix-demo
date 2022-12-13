@@ -10,9 +10,9 @@ import {
   UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import {
-  formatPriceToAllowableDecimals,
-  formatAmountToAllowableDecimals
-} from '~/app/utils/formatters'
+  formatAmountToAllowableAmount,
+  formatPriceToAllowablePrice
+} from '@injectivelabs/sdk-ts'
 
 export const calculateWorstExecutionPriceFromOrderbook = ({
   records,
@@ -171,9 +171,9 @@ export const calculateAverageExecutionPriceFromOrderbook = ({
   const averagePrice = sum.div(amount.minus(remainAmountToFill))
 
   return new BigNumberInBase(
-    formatPriceToAllowableDecimals(
+    formatPriceToAllowablePrice(
       averagePrice.toNumber(),
-      market.priceDecimals
+      market.priceTensMultiplier
     )
   )
 }
@@ -228,7 +228,10 @@ export const calculateAverageExecutionPriceFromFillableNotionalOnOrderBook = ({
   const averagePrice = sum.div(amount)
 
   return new BigNumberInBase(
-    formatPriceToAllowableDecimals(averagePrice.toFixed(), market.priceDecimals)
+    formatPriceToAllowablePrice(
+      averagePrice.toFixed(),
+      market.priceTensMultiplier
+    )
   )
 }
 
@@ -242,6 +245,7 @@ export const getAggregationPrice = ({
   isBuy: boolean
 }): BigNumberInBase => {
   const aggregateBy = new BigNumberInBase(10 ** Math.abs(aggregation))
+
   if (aggregation <= 0) {
     // handles 10, 100 and 1000
     return new BigNumberInBase(
@@ -298,9 +302,9 @@ export const getSpotBaseAmountForPercentageSell = ({
     ? percentageBaseAvailableBalance
     : totalFillableAmount
 
-  return formatAmountToAllowableDecimals(
+  return formatAmountToAllowableAmount(
     amount.toNumber(),
-    market.quantityDecimals
+    market.quantityTensMultiplier
   )
 }
 
@@ -344,16 +348,16 @@ export const getSpotBaseAmountForPercentageBuy = ({
         .dividedBy(executionPrice.times(feeRate.plus(1)))
         .times(percentageToNumber)
 
-      return formatAmountToAllowableDecimals(
+      return formatAmountToAllowableAmount(
         amount.toNumber(),
-        market.quantityDecimals
+        market.quantityTensMultiplier
       )
     }
   }
 
-  return formatAmountToAllowableDecimals(
+  return formatAmountToAllowableAmount(
     totalQuantity.toNumber(),
-    market.quantityDecimals
+    market.quantityTensMultiplier
   )
 }
 
@@ -402,15 +406,15 @@ export const getSpotQuoteForPercentageSell = ({
     .times(new BigNumberInBase(1).minus(feeRate))
 
   if (percentageBaseAvailableBalance.gt(totalFillableAmount)) {
-    return formatAmountToAllowableDecimals(
+    return formatAmountToAllowableAmount(
       totalNotional.toNumber(),
-      market.priceDecimals
+      market.priceTensMultiplier
     )
   }
 
-  return formatAmountToAllowableDecimals(
+  return formatAmountToAllowableAmount(
     notionalBalance.toNumber(),
-    market.priceDecimals
+    market.priceTensMultiplier
   )
 }
 
@@ -447,15 +451,15 @@ export const getSpotQuoteForPercentageBuy = ({
   const quoteBalance = quoteAvailableBalance.times(percentToNumber)
 
   if (total.gt(quoteBalance)) {
-    return formatAmountToAllowableDecimals(
+    return formatAmountToAllowableAmount(
       quoteBalance.toNumber(),
-      market.priceDecimals
+      market.priceTensMultiplier
     )
   }
 
-  return formatAmountToAllowableDecimals(
+  return formatAmountToAllowableAmount(
     totalNotional.toNumber(),
-    market.priceDecimals
+    market.priceTensMultiplier
   )
 }
 
@@ -500,15 +504,15 @@ export const determineIfSpotQuoteAvailableBalanceExceedsOrderbookSellSideNotiona
           .dividedBy(executionPrice.times(feeRate.plus(1)))
           .times(percentageToNumber)
 
-        return formatAmountToAllowableDecimals(
+        return formatAmountToAllowableAmount(
           amount.toNumber(),
-          market.quantityDecimals
+          market.quantityTensMultiplier
         )
       }
     }
 
-    return formatAmountToAllowableDecimals(
+    return formatAmountToAllowableAmount(
       totalQuantity.toNumber(),
-      market.quantityDecimals
+      market.quantityTensMultiplier
     )
   }

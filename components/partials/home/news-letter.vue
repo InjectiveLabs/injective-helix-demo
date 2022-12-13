@@ -45,7 +45,8 @@
               class="underline hover:text-primary-500"
               href="https://injectivelabs.org/terms-and-conditions"
               target="_blank"
-            >{{ $t('newsLetter.termsAndCondition') }}</a>
+              >{{ $t('newsLetter.termsAndCondition') }}
+            </a>
           </template>
 
           <template #privacyPolicy>
@@ -53,7 +54,8 @@
               class="underline hover:text-primary-500"
               href="https://injectivelabs.org/privacy-policy"
               target="_blank"
-            >{{ $t('newsLetter.privacyPolicy') }}</a>
+              >{{ $t('newsLetter.privacyPolicy') }}
+            </a>
           </template>
 
           <template #disclaimer>
@@ -61,7 +63,8 @@
               class="underline hover:text-primary-500"
               href="https://injective.com/disclaimer/"
               target="_blank"
-            >{{ $t('newsLetter.disclaimer') }}</a>
+              >{{ $t('newsLetter.disclaimer') }}
+            </a>
           </template>
         </i18n>
       </div>
@@ -73,7 +76,7 @@
 import Vue from 'vue'
 import { Status } from '@injectivelabs/utils'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
-import { subscribeToNewsLetter } from '~/app/services/newsLetter'
+import { subscribeToNewsLetter } from '~/app/services/newsletter'
 
 export default Vue.extend({
   components: {
