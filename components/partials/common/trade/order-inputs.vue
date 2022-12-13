@@ -856,9 +856,9 @@ export default Vue.extend({
       this.$emit('update:averagePriceOption', AveragePriceOptions.BaseAmount)
 
       const triggerPriceToBigNumber = new BigNumberInBase(inputTriggerPrice)
-      const formattedBaseAmount = formatNumberToAllowableDecimals(
+      const formattedBaseAmount = formatAmountToAllowableAmount(
         amount,
-        market.quantityDecimals
+        market.quantityTensMultiplier
       )
 
       this.inputBaseAmount = formattedBaseAmount
