@@ -14,7 +14,7 @@
             <img
               :src="tokenLogo"
               :alt="balance.token.name"
-              class="min-w-full h-auto rounded-full"
+              class="min-w-4 h-auto rounded-full"
             />
           </div>
           <div class="ml-2">
@@ -206,6 +206,11 @@ export default Vue.extend({
 
     totalBalanceToString(): string {
       const { balance } = this
+
+      // TODO: Investigate proper solution for SOMM related markets.
+      if (balance.totalBalance.isNaN()) {
+        return '—'
+      }
 
       return balance.totalBalance.toFormat(
         UI_DEFAULT_DISPLAY_DECIMALS,
