@@ -207,7 +207,7 @@ export default Vue.extend({
     totalBalanceToString(): string {
       const { balance } = this
 
-      // TODO: Temporary fix for SOMM related markets, prevents NaNs due to incorrect gecko price.
+      // TODO: Investigate proper solution for SOMM related markets.
       if (balance.totalBalance.isNaN()) {
         return '—'
       }
