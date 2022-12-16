@@ -38,7 +38,8 @@ export default {
     { src: '~/plugins/tooltip', ssr: false },
     { src: '~/plugins/clipboard', ssr: false },
     { src: '~/plugins/veevalidate', ssr: false },
-    { src: '~/plugins/confetti', ssr: false }
+    { src: '~/plugins/confetti', ssr: false },
+    { src: '~/plugins/window', ssr: false }
   ],
 
   typescript: {

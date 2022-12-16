@@ -28,7 +28,7 @@ import { createPopper, Instance } from '@popperjs/core'
 export default Vue.extend({
   props: {
     bindingElement: {
-      type: String,
+      type: [String, Function],
       required: true
     },
 
@@ -103,6 +103,18 @@ export default Vue.extend({
   },
 
   mounted() {
+    if (typeof this.bindingElement === 'function') {
+      this.bindingElement((target: any) => {
+        if (!target) {
+          return
+        }
+
+        this.popper = createPopper(target, this.$popperElement, this.options)
+      })
+
+      return
+    }
+
     const bindingElement = document.querySelector(this.bindingElement)
 
     if (bindingElement) {
@@ -128,7 +140,7 @@ export default Vue.extend({
       clearTimeout(this.delayHide)
 
       this.$nextTick(() => {
-        if (this.popper) {
+        if (this.popper && typeof this.popper.update === 'function') {
           this.popper.update()
         }
 

@@ -1,8 +1,13 @@
 <template>
-  <div>
+  <div :class="{ 'flex justify-start items-center gap-1': flex }">
     <span
-      class="font-mono inline-block"
-      :class="{ 'text-xs': xs, 'text-sm': sm }"
+      class="font-mono"
+      :class="{
+        'text-xs': xs,
+        'text-sm': sm,
+        'inline-block': !flex,
+        'flex items-center': flex
+      }"
     >
       <div class="flex">
         <span class="">{{ prefix || '' }}{{ formattedNumber[0] }}</span>
@@ -12,6 +17,7 @@
         {{ suffix || '' }}
       </div>
     </span>
+
     <slot name="addon"></slot>
   </div>
 </template>
@@ -75,6 +81,11 @@ export default Vue.extend({
     },
 
     dense: {
+      type: Boolean,
+      default: false
+    },
+
+    flex: {
       type: Boolean,
       default: false
     }

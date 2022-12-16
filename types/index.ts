@@ -1,5 +1,7 @@
 import {
   SubaccountBalanceWithToken,
+  TokenWithBalanceAndPrice,
+  TokenWithUsdPrice,
   UiDerivativeMarketSummary,
   UiDerivativeMarketWithToken,
   UiSpotMarketSummary,
@@ -39,6 +41,22 @@ export interface SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd
   pnlInUsd: BigNumberInBase
   totalBalance: BigNumberInBase
   totalBalanceInUsd: BigNumberInBase
+}
+
+export interface BankBalanceWithTokenWithBalanceAndPrice {
+  balance: string
+  denom: string
+  token: TokenWithBalanceAndPrice
+}
+
+export interface AccountBalance {
+  bankBalance: BigNumberInBase
+  subaccountAvailableBalance: BigNumberInBase
+  subaccountTotalBalance: BigNumberInBase
+  inOrderBalance: BigNumberInBase
+  margin: BigNumberInBase
+  pnl: BigNumberInBase
+  token: TokenWithUsdPrice
 }
 
 export interface UiMarketAndSummary {
@@ -118,6 +136,17 @@ export type CurrentMarket =
   | UiSpotMarketWithToken
   | UiDerivativeMarketWithToken
   | undefined
+
+export interface SelectOption {
+  label: string
+  value: any
+}
+
+export interface TabOption {
+  value: string
+  label: string
+  url?: string
+}
 
 export * from './enums'
 export * from './env'

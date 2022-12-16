@@ -1,8 +1,10 @@
 // @ts-nocheck
 import Vue from 'vue'
 import Arrow from '~/components/icons/arrow.vue'
+import ArrowUpDown from '~/components/icons/arrow-up-down.vue'
 import ArrowSwap from '~/components/icons/arrow-swap.vue'
 import ArrowDown from '~/components/icons/arrow-down.vue'
+import ArrowLeft from '~/components/icons/arrow-left.vue'
 import ArrowDiagonal from '~/components/icons/arrow-diagonal.vue'
 import Bin from '~/components/icons/bin.vue'
 import Box from '~/components/icons/box.vue'
@@ -49,6 +51,7 @@ import Refresh from '~/components/icons/refresh.vue'
 import Search from '~/components/icons/search.vue'
 import Share from '~/components/icons/share.vue'
 import Show from '~/components/icons/show.vue'
+import Hide from '~/components/icons/hide.vue'
 import Square from '~/components/icons/square.vue'
 import Staking from '~/components/icons/staking.vue'
 import Star from '~/components/icons/star.vue'
@@ -85,10 +88,15 @@ import TrophyColor from '~/components/icons/trophy-color.vue'
 import Trophy from '~/components/icons/trophy.vue'
 import Sliders from '~/components/icons/sliders.vue'
 import Gift from '~/components/icons/gift.vue'
+import TableArrowDown from '~/components/icons/table-arrow-down.vue'
+import TableArrowUp from '~/components/icons/table-arrow-up.vue'
+import Filters from '~/components/icons/filters.vue'
 
 Vue.component('IconArrow', Arrow)
+Vue.component('IconUpDown', ArrowUpDown)
 Vue.component('IconArrowSwap', ArrowSwap)
 Vue.component('IconArrowDown', ArrowDown)
+Vue.component('IconArrowLeft', ArrowLeft)
 Vue.component('IconArrowDiagonal', ArrowDiagonal)
 Vue.component('IconBin', Bin)
 Vue.component('IconBox', Box)
@@ -138,6 +146,7 @@ Vue.component('IconRefresh', Refresh)
 Vue.component('IconSearch', Search)
 Vue.component('IconShare', Share)
 Vue.component('IconShow', Show)
+Vue.component('IconHide', Hide)
 Vue.component('IconSquare', Square)
 Vue.component('IconStaking', Staking)
 Vue.component('IconStar', Star)
@@ -171,3 +180,6 @@ Vue.component('IconTrophyColor', TrophyColor)
 Vue.component('IconTrophy', Trophy)
 Vue.component('IconSliders', Sliders)
 Vue.component('IconGift', Gift)
+Vue.component('IconTableArrowDown', TableArrowDown)
+Vue.component('IconTableArrowUp', TableArrowUp)
+Vue.component('IconFilters', Filters)

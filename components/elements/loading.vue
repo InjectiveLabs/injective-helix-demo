@@ -1,5 +1,5 @@
 <template>
-  <div class="absolute left-0 top-0 h-full w-full">
+  <div class="h-full w-full" :class="{ 'absolute left-0 top-0': !inline }">
     <div
       class="h-full w-full flex items-center"
       :class="{
@@ -29,6 +29,11 @@ export default Vue.extend({
     },
 
     right: {
+      type: Boolean,
+      default: false
+    },
+
+    inline: {
       type: Boolean,
       default: false
     }

@@ -1,6 +1,5 @@
 import { Middleware, Context } from '@nuxt/types'
-
-const walletConnectedRequiredRouteNames = ['portfolio', 'activity']
+import { walletConnectedRequiredRouteNames } from '~/config/routes.config'
 
 const walletConnected: Middleware = ({ redirect, route, app }: Context) => {
   if (
