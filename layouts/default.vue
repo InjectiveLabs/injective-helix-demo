@@ -23,13 +23,13 @@
               <ModalAuctionCountdown v-if="SHOW_AUCTION_COUNTDOWN" />
               <ModalInsufficientInjForGas />
               <ModalNinjaPassWinner />
+              <Confetti />
+              <portal-target name="modals" />
             </div>
           </client-only>
         </div>
       </HocLoading>
     </transition>
-
-    <Confetti />
   </div>
 </template>
 
@@ -77,7 +77,8 @@ export default Vue.extend({
         'portfolio',
         'markets',
         'fee-discounts',
-        'leaderboard'
+        'leaderboard',
+        'account'
       ].includes($route.name as string)
     }
   },

@@ -58,7 +58,8 @@ export enum Modal {
   InsufficientInjForGas = 'insufficient-inj-for-gas',
   MobileTradeFilter = 'mobile-trade-filter',
   MobileTradeDetails = 'mobile-trade-details',
-  NinjaPassWinner = 'ninja-pass-winner'
+  NinjaPassWinner = 'ninja-pass-winner',
+  AssetDetails = 'asset-details'
 }
 
 export enum Breakpoint {
@@ -195,4 +196,12 @@ export enum OrderbookLayout {
 export enum TradingLayout {
   Left = 'left',
   Right = 'right'
+}
+
+export enum BalanceHeaderType {
+  None = 'none',
+  Asset = 'asset',
+  Total = 'total',
+  Available = 'available',
+  Value = 'value'
 }

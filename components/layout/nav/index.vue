@@ -52,6 +52,16 @@
       >
         {{ $t('navigation.portfolio') }}
       </NavItem>
+
+      <!-- <NavItem
+        v-if="isUserWalletConnected"
+        class="block lg:hidden"
+        data-cy="header-account-link"
+        :to="{ name: 'account', query: { view: 'balances' } }"
+      >
+        {{ $t('navigation.account') }}
+      </NavItem> -->
+
       <NavItem
         v-if="isUserWalletConnected"
         class="block lg:hidden"

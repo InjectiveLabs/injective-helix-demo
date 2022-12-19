@@ -33,6 +33,10 @@ const perpetuals = [
   'atom-usdt-perp'
 ]
 
+const account = ['balances', 'positions']
+
+const walletConnectedRequiredRouteNames = ['activity', 'portfolio', 'account']
+
 /** @type string[] */
 const binaryOptions = []
 /** @type string[] */
@@ -60,6 +64,7 @@ const spotRoutes = spot.map((s) => `/spot/${s}`) || []
 const futuresRoutes = futures.map((s) => `/futures/${s}`) || []
 const binaryOptionsRoutes =
   binaryOptions.map((s) => `/binary-options/${s}`) || []
+const accountRoutes = account.map((s) => `/account/${s}`) || []
 
 const upcomingMarketsRoutes = []
 const deprecatedMarketsRoutes = IS_TESTNET || IS_DEVNET ? [] : []
@@ -81,7 +86,8 @@ module.exports = [
   ...deprecatedMarketsRoutes,
   ...spotRoutes,
   ...futuresRoutes,
-  ...binaryOptionsRoutes
+  ...binaryOptionsRoutes,
+  ...accountRoutes
 ]
 
 module.exports.spot = spot
@@ -90,3 +96,5 @@ module.exports.expiryFutures = expiryFutures
 module.exports.perpetuals = perpetuals
 module.exports.futures = futures
 module.exports.upcomingMarketsRoutes = upcomingMarketsRoutes
+module.exports.walletConnectedRequiredRouteNames =
+  walletConnectedRequiredRouteNames

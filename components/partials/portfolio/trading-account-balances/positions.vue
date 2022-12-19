@@ -192,47 +192,51 @@ export default Vue.extend({
   },
 
   methods: {
-    closeAllPositions(): Promise<void> {
+    handleClosePositions() {
       const { filteredPositions } = this
 
-      return this.$accessor.positions.closeAllPosition(filteredPositions)
+      this.status.setLoading()
+
+      return filteredPositions.length === 1
+        ? this.closePosition()
+        : this.closeAllPositions()
     },
 
-    closePosition(): Promise<void> {
+    closeAllPositions() {
+      const { filteredPositions } = this
+
+      return this.$accessor.positions
+        .closeAllPosition(filteredPositions)
+        .then(() => {
+          this.$toast.success(this.$t('trade.positions_closed'))
+        })
+        .catch(this.$onRejected)
+        .finally(() => {
+          this.status.setIdle()
+        })
+    },
+
+    closePosition() {
       const { filteredPositions, markets } = this
 
       const [position] = filteredPositions
       const market = markets.find((m) => m.marketId === position.marketId)
 
       if (!market) {
-        return Promise.reject(
-          new GeneralException(
-            Error(
-              this.$t('trade.position_market_not_found', {
-                marketId: position.marketId
-              })
-            )
+        throw new GeneralException(
+          Error(
+            this.$t('trade.position_market_not_found', {
+              marketId: position.marketId
+            })
           )
         )
       }
 
-      return this.$accessor.positions.closePosition({
-        position,
-        market
-      })
-    },
-
-    handleClosePositions() {
-      const { filteredPositions } = this
-
-      this.status.setLoading()
-
-      const action =
-        filteredPositions.length === 1
-          ? this.closePosition
-          : this.closeAllPositions
-
-      action()
+      return this.$accessor.positions
+        .closePosition({
+          position,
+          market
+        })
         .then(() => {
           this.$toast.success(this.$t('trade.positions_closed'))
         })

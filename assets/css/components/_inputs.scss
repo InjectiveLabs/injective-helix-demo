@@ -417,10 +417,9 @@ input[type='number'] {
   @apply bg-gray-900;
 }
 
-
 .select {
   .vs__dropdown-toggle {
-    @apply border-none p-0;
+    @apply w-full px-4 h-full border-none p-0;
   }
 
   .vs__selected-options {
@@ -451,7 +450,7 @@ input[type='number'] {
   }
 
   .vs__dropdown-menu {
-    @apply bg-gray-900 rounded-lg p-4 flex flex-col gap-4 top-6 right-0;
+    @apply bg-gray-900 rounded-lg p-4 flex flex-col gap-4 top-0 right-0;
     left: unset;
   }
 
@@ -465,6 +464,16 @@ input[type='number'] {
 
   .vs__dropdown-option--highlight {
     @apply text-primary-500 bg-transparent;
+  }
+
+  &.select-trade-form {
+    .vs__dropdown-toggle {
+      @apply px-0;
+    }
+
+    .vs__dropdown-menu {
+      @apply top-6;
+    }
   }
 }
 

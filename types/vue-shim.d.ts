@@ -3,6 +3,7 @@ import VueI18n, { Path, Values, Locale } from 'vue-i18n/types'
 import VueRouter from 'vue-router'
 import { Toasted } from 'vue-toasted'
 import { ConfettiPlugin } from '~/plugins/confetti'
+import { WindowPlugin } from '~/plugins/window'
 import { accessorType } from '~/store'
 
 /**
@@ -26,6 +27,7 @@ declare module 'vue/types/vue' {
     $router: VueRouter
     $accessor: typeof accessorType
     $confetti: ConfettiPlugin
+    $window: WindowPlugin
     // $attrs: Record<string, string>
   }
 

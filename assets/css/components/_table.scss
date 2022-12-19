@@ -12,6 +12,10 @@
 
   td {
     @apply text-gray-200 text-sm font-normal leading-tight bg-transparent border-none select-none align-middle px-3 py-3 whitespace-nowrap;
+
+    &.no-padding {
+      @apply px-0 py-0;
+    }
   }
 
   tbody {

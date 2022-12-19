@@ -47,8 +47,13 @@
         :options="selectOptions"
         :value="tradingType"
         hide-current-value
+        class="select-trade-form"
         @change="({ value }) => onTradingTypeToggle(value)"
-      />
+      >
+        <template #selected>
+          <span />
+        </template>
+      </Select>
     </div>
   </div>
 </template>
