@@ -818,7 +818,7 @@ export default Vue.extend({
 
       const formattedTriggerPrice = formatPriceToAllowablePrice(
         triggerPrice,
-        market.priceDecimals
+        market.priceTensMultiplier
       )
 
       this.inputTriggerPrice = formattedTriggerPrice
