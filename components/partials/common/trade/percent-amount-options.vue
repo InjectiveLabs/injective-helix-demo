@@ -23,7 +23,7 @@ import {
   UiDerivativeMarketWithToken,
   UiDerivativeLimitOrder
 } from '@injectivelabs/sdk-ui-ts'
-import { formatAmountToAllowableDecimals } from '~/app/utils/formatters'
+import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import {
   getSpotBaseAmountForPercentageSell,
   getSpotBaseAmountForPercentageBuy,
@@ -362,26 +362,29 @@ export default Vue.extend({
 
       this.$emit(
         'update:baseAmountFromPercentage',
-        formatAmountToAllowableDecimals(
+        formatAmountToAllowableAmount(
           approxAmountFromPercentage,
-          market.quantityDecimals
+          market.quantityTensMultiplier
         )
       )
     },
 
     updateQuoteAmountBasedOnPercentage() {
-      const { isSpot, quoteAmountFromPercentage, market } = this
+      const { isSpot, market } = this
 
       if (!market) {
         return
       }
 
-      isSpot
+      return isSpot
         ? this.updateSpotQuoteAmount()
-        : this.$emit(
-            'update:quoteAmountFromPercentage',
-            quoteAmountFromPercentage
-          )
+        : this.updateDerivativeQuoteAmount()
+    },
+
+    updateDerivativeQuoteAmount() {
+      const { quoteAmountFromPercentage } = this
+
+      this.$emit('update:quoteAmountFromPercentage', quoteAmountFromPercentage)
     },
 
     updateSpotQuoteAmount() {

@@ -45,7 +45,6 @@
           </div>
           <input
             v-bind="$attrs"
-            :key="resetInputKey"
             class="input"
             autocomplete="off"
             :value="value"
@@ -109,8 +108,8 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { debounce } from 'lodash'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
+import { getTensMultiplier } from '@injectivelabs/sdk-ts'
 import { DOMEvent } from '~/types'
 import {
   convertToNumericValue,
@@ -237,15 +236,10 @@ export default Vue.extend({
     }
   },
 
-  data() {
-    return {
-      resetInputKey: 0
-    }
-  },
-
   computed: {
     addonVisible(): boolean {
       const { showClose, isMaxValue, maxSelector, showAddon } = this
+
       return showClose || (!isMaxValue && maxSelector) || showAddon
     },
 
@@ -338,12 +332,28 @@ export default Vue.extend({
       const { value } = this
 
       return Number(max) === Number(value)
+    },
+
+    tensMultiplier(): number {
+      const { step } = this.$attrs
+
+      if (!step) {
+        return 0
+      }
+
+      if (isNaN(Number(step))) {
+        return 0
+      }
+
+      if (isNaN(Number(step))) {
+        return 0
+      }
+
+      return getTensMultiplier(step)
     }
   },
 
   methods: {
-    debounce,
-
     handlePaste(event: DOMEvent<HTMLInputElement>) {
       if (event.target.type === 'number') {
         event.preventDefault()
@@ -351,53 +361,20 @@ export default Vue.extend({
     },
 
     handleChangeOnInput(event: DOMEvent<HTMLInputElement>) {
-      const { maxDecimals } = this
       const {
         target: { value, type }
       } = event
 
-      if (type !== 'number') {
-        this.$emit('input', value)
-
+      if (!value) {
         return
       }
 
-      const formattedValueWithExtraDecimals = convertToNumericValue(
-        value,
-        Math.min(maxDecimals * 2, 18)
-      ).toString()
-
-      this.$emit('input', formattedValueWithExtraDecimals)
-      this.$forceUpdate()
-
-      const formattedValue = convertToNumericValue(
-        value,
-        maxDecimals
-      ).toString()
-
-      this.delayUpdateInput(formattedValue)
+      return type !== 'number'
+        ? this.handleChangeOnInputString(value)
+        : this.handleChangeOnInputNumber(value)
     },
 
-    delayUpdateInput: debounce(function (value) {
-      // @ts-ignore
-      const self = this
-
-      self.$emit('input', value)
-      self.$forceUpdate()
-    }, 500),
-
-    handleKeydown(event: DOMEvent<HTMLInputElement>) {
-      if (
-        event.target.type === 'number' &&
-        !passNumericInputValidation(event, this.maxDecimals === 0 ? ['.'] : [])
-      ) {
-        event.preventDefault()
-      } else {
-        this.$emit('keydown', event)
-      }
-    },
-
-    handleChangeFromString(value: string) {
+    handleChangeOnInputString(value: string) {
       this.$emit('input', value)
     },
 
@@ -405,27 +382,57 @@ export default Vue.extend({
       this.$emit('close')
     },
 
-    handleBlur(e: Event) {
-      const { max } = this.$attrs
+    handleChangeOnInputNumber(value: string) {
+      const { maxDecimals } = this
 
-      const target: HTMLInputElement = e.target as HTMLInputElement
+      if (!value) {
+        this.$emit('input', this.$attrs.step || '')
+      }
 
-      if (this.$attrs.type !== 'number') {
-        this.$emit('blur', target.value)
+      if (isNaN(Number(value))) {
         return
       }
 
-      let value: String | Number = target.value
+      const formattedValueWithExtraDecimals = convertToNumericValue({
+        value,
+        maxDecimals: Math.min(maxDecimals * 2, 18)
+      }).toString()
 
-      const valueExceedsMax = max !== null && Number(value) > Number(max)
+      this.$emit('input', formattedValueWithExtraDecimals)
+      this.$forceUpdate()
+    },
 
-      if (valueExceedsMax) {
-        value = max.toString()
+    handleKeydown(event: DOMEvent<HTMLInputElement>) {
+      if (event.target.type !== 'number') {
+        return this.$emit('keydown', event)
       }
 
-      // use key to refresh input field to eliminate potential trailing decimal point
-      if (value.trim() !== '' && !value.includes('.')) {
-        this.resetInputKey++
+      const additionalInvalidCharts = this.maxDecimals === 0 ? ['.'] : []
+
+      if (passNumericInputValidation(event, additionalInvalidCharts)) {
+        return this.$emit('keydown', event)
+      }
+
+      event.preventDefault()
+    },
+
+    handleBlur(e: Event) {
+      const { $attrs } = this
+      const { max, type } = $attrs
+      const value = (e.target as HTMLInputElement).value.trim()
+
+      if (type !== 'number') {
+        return this.$emit('blur', value)
+      }
+
+      const numberValue = Number(value)
+
+      if (max && numberValue > Number(max)) {
+        return this.$emit('blur', max.toString())
+      }
+
+      if (isNaN(numberValue)) {
+        return this.$emit('blue', '')
       }
 
       this.$emit('blur', value)
@@ -435,18 +442,16 @@ export default Vue.extend({
       const { maxSelector, maxDecimals } = this
       const { max } = this.$attrs
 
-      const value: string = new BigNumberInBase(max).toFixed(
+      const value = new BigNumberInBase(max).toFixed(
         maxDecimals,
         BigNumber.ROUND_DOWN
       )
 
       if (max || maxSelector) {
-        if (max) {
-          this.handleChangeFromString(value)
-          this.$emit('input:max', value)
-        } else {
-          this.$emit('input:max')
-        }
+        this.handleChangeOnInputString(value)
+        this.$emit('input:max', value)
+      } else if (max) {
+        this.$emit('input:max')
       }
     }
   }

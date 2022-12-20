@@ -4,7 +4,9 @@ import {
   TokenService,
   TokenPrice,
   peggyGraphQlEndpointForNetwork,
-  UiBridgeTransformer
+  UiBridgeTransformer,
+  Web3Client,
+  Web3Composer
 } from '@injectivelabs/sdk-ui-ts'
 import {
   ApolloConsumer,
@@ -38,7 +40,7 @@ import {
   ENDPOINTS,
   FEE_PAYER_PUB_KEY
 } from './utils/constants'
-import { walletStrategy } from './wallet-strategy'
+import { alchemyRpcEndpoint, walletStrategy } from './wallet-strategy'
 
 // Services
 export const bankApi = new ChainGrpcBankApi(ENDPOINTS.grpc)
@@ -89,7 +91,16 @@ export const msgBroadcastClient = new MsgBroadcaster({
   feePayerPubKey: FEE_PAYER_PUB_KEY
 })
 
-export const web3Client = new Web3Broadcaster({
+export const web3Client = new Web3Client({
+  rpc: alchemyRpcEndpoint,
+  network: NETWORK
+})
+export const web3Composer = new Web3Composer({
+  rpc: alchemyRpcEndpoint,
+  network: NETWORK,
+  ethereumChainId: ETHEREUM_CHAIN_ID
+})
+export const web3Broadcaster = new Web3Broadcaster({
   walletStrategy,
   network: NETWORK,
   ethereumChainId: ETHEREUM_CHAIN_ID

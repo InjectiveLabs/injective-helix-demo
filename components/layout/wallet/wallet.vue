@@ -170,6 +170,7 @@ import {
   REFERRALS_ENABLED,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '~/app/utils/constants'
+import { walletConnectedRequiredRouteNames } from '~/config/routes.config'
 
 export default Vue.extend({
   components: {
@@ -316,7 +317,9 @@ export default Vue.extend({
     handleClickOnLogout() {
       this.$accessor.wallet.logout()
 
-      if (['activity', 'portfolio'].includes(this.$route.name as string)) {
+      if (
+        walletConnectedRequiredRouteNames.includes(this.$route.name as string)
+      ) {
         this.$router.push({ name: 'index' })
       }
     },

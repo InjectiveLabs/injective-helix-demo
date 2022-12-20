@@ -1,6 +1,6 @@
 <template>
   <VCard
-    class="col-span-6 lg:col-span-3 4xl:col-span-3 h-full pointer-events-auto"
+    class="col-span-6 lg:col-span-3 4xl:col-span-3 h-screen-excluding-header-and-market-info pointer-events-auto overflow-y-auto"
     md
   >
     <HocLoading :status="status" :show-loading="mappedMarkets.length === 0">

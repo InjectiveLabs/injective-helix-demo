@@ -3,17 +3,17 @@ name: Helix Mainnet CD
 on:
   push:
     branches:
-      - master
+      - staging
 
 jobs:
   deploy:
     if: false
     env:
       ## Public
-      APP_NAME: 'Helix | The Premier Decentralized Spot and Derivatives Exchange'
-      APP_BASE_URL: https://helixapp.com
-      APP_NETWORK: mainnet
-      APP_ENV: mainnet
+      APP_NAME: 'BETA - Helix: Decentralized Cryptocurrency Derivatives, Ethereum and Altcoin Exchange'
+      APP_BASE_URL: https://staging.injective.exchange
+      APP_NETWORK: staging
+      APP_ENV: staging
       APP_CHAIN_ID: injective-1
       APP_ETHEREUM_CHAIN_ID: 1
       SOURCE_DIR: dist
@@ -24,9 +24,10 @@ jobs:
       GAS_FREE_DEPOSIT_REBATE_ENABLED: true
       META_TAGS_ENABLED: true
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-      METRICS_ENABLED: true
-      GEO_IP_RESTRICTIONS_ENABLED: true
+      METRICS_ENABLED: false
+      GEO_IP_RESTRICTIONS_ENABLED: false
       SHOW_AUCTION_COUNTDOWN: false
+      PRICE_BAND_ENABLED: false
       REFERRALS_ENABLED: true
 
       ## Endpoints
@@ -47,8 +48,8 @@ jobs:
       APP_NINJA_PASS_ENDPOINT: ${{ secrets.APP_NINJA_PASS_ENDPOINT }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_S3_BUCKET: ${{ secrets.AWS_S3_MAINNET_BUCKET }}
-      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_MAINNET_DISTRIBUTION_ID }}
+      AWS_S3_BUCKET: ${{ secrets.AWS_S3_STAGING_BUCKET }}
+      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_STAGING_DISTRIBUTION_ID }}
       AWS_REGION: ${{ secrets.AWS_MAINNET_REGION }}
     runs-on: ubuntu-latest
 

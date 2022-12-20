@@ -37,9 +37,9 @@ export const newMarketsSlug = [
   'somm-usdt',
   'cre-usdt',
   'strd-usdt',
-  'usdc-usdt',
-  'osmo-usdt-perp',
-  'dot-usdt'
+  'ethbtctrend-usdt',
+  'steadyeth-usdt',
+  'steadybtc-usdt'
 ]
 
 export const experimentalMarketsSlug = [

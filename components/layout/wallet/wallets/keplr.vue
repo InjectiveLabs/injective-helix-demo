@@ -11,15 +11,6 @@
         <span data-cy="connect-wallet-popup-keplr-button">
           {{ $t('connect.connectUsingKeplr') }}
         </span>
-        <p
-          class="flex items-center text-xs text-red-600 hover:text-red-400 cursor-pointer"
-        >
-          <span class="truncate">{{ $t('connect.keplrWarning') }}</span>
-          <IconInfoTooltip
-            class="ml-2"
-            :tooltip="$t('connect.keplrWarningTooltip')"
-          />
-        </p>
       </div>
     </template>
   </WalletWrapper>

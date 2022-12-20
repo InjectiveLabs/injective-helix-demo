@@ -158,21 +158,9 @@ export default Vue.extend({
         return '1'
       }
 
-      const decimalsAllowed = new BigNumberInBase(market.quantityDecimals)
-
-      if (decimalsAllowed.eq(0)) {
-        return '1'
-      }
-
-      if (decimalsAllowed.eq(1)) {
-        return '0.1'
-      }
-
-      if (decimalsAllowed.gt(1)) {
-        return '0.' + '0'.repeat(decimalsAllowed.toNumber() - 1) + '1'
-      }
-
-      return '1'
+      return new BigNumberInBase(1)
+        .shiftedBy(market.quantityTensMultiplier)
+        .toFixed()
     },
 
     amount(): BigNumberInBase {

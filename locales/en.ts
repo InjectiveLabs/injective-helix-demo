@@ -8,9 +8,11 @@ import market from './market/en'
 import wallet from './wallet/en'
 import trade from './trade/en'
 import leaderboard from './leaderboard/en'
+import account from './account/en'
 
 export default {
   ...activities,
+  ...account,
   ...banners,
   ...faq,
   ...funding,
@@ -234,6 +236,7 @@ export default {
     activities: 'Activities',
     activity: 'Activity',
     portfolio: 'Portfolio',
+    account: 'Account',
     home: 'Home',
     makerTakerFee: '-{maker}% maker / -{taker}% taker',
     noTierLevel: 'No VIP Tier',

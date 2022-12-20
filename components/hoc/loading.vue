@@ -17,13 +17,21 @@ export default Vue.extend({
     showLoading: {
       type: Boolean,
       default: false
+    },
+
+    inline: {
+      type: Boolean,
+      default: false
     }
   },
 
   render(createElement): VNode {
     const parentAttributes = {
       attrs: this.$attrs,
-      on: this.$listeners
+      on: this.$listeners,
+      props: {
+        inline: this.inline
+      }
     }
 
     if (this.$slots.default !== undefined) {
