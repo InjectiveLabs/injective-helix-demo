@@ -7,16 +7,15 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
-import {
-  getAddressFromInjectiveAddress,
-  MsgSendToEth
-} from '@injectivelabs/sdk-ts'
+import { getEthereumAddress, MsgSendToEth } from '@injectivelabs/sdk-ts'
 import { Erc20Token, Token } from '@injectivelabs/token-metadata'
 import {
   msgBroadcastClient,
   tokenPrice,
   tokenService,
-  web3Client
+  web3Broadcaster,
+  web3Client,
+  web3Composer
 } from '~/app/Services'
 import { BTC_COIN_GECKO_ID } from '~/app/utils/constants'
 import { backupPromiseCall } from '~/app/utils/async'
@@ -237,14 +236,14 @@ export const actions = actionTree(
 
       const { gasPrice } = this.app.$accessor.app
 
-      const tx = await web3Client.getSetTokenAllowanceTx({
+      const tx = await web3Composer.getSetTokenAllowanceTx({
         address,
         gasPrice,
         tokenAddress,
         amount: UNLIMITED_ALLOWANCE.toFixed()
       })
 
-      await web3Client.sendTransaction({
+      await web3Broadcaster.sendTransaction({
         tx,
         address
       })
@@ -297,15 +296,14 @@ export const actions = actionTree(
 
       const { gasPrice } = this.app.$accessor.app
 
-      const ethDestinationAddress =
-        getAddressFromInjectiveAddress(injectiveAddress)
+      const ethDestinationAddress = getEthereumAddress(injectiveAddress)
       const actualAmount = new BigNumberInBase(
         amount.toFixed(3, BigNumberInBase.ROUND_DOWN)
       )
         .toWei(token.decimals)
         .toFixed()
 
-      const tx = await web3Client.getPeggyTransferTx({
+      const tx = await web3Composer.getPeggyTransferTx({
         address,
         gasPrice,
         denom: token.denom,
@@ -313,7 +311,7 @@ export const actions = actionTree(
         destinationAddress: ethDestinationAddress
       })
 
-      await web3Client.sendTransaction({
+      await web3Broadcaster.sendTransaction({
         tx,
         address
       })
