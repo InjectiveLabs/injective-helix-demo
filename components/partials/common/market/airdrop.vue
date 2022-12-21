@@ -3,7 +3,9 @@
     <div
       class="rounded bg-orange-300 h-5 px-1 cursor-pointer flex items-center"
     >
-      <span class="text-white text-3xs font-semibold uppercase">
+      <span
+        class="text-white text-3xs font-semibold uppercase whitespace-nowrap"
+      >
         &#128293; {{ $t('markets.airdrop') }}
       </span>
     </div>
