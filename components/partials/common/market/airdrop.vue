@@ -1,10 +1,10 @@
 <template>
   <a v-if="showPromotion" :href="url" target="_blank">
     <div
-      class="rounded bg-orange-300 h-5 pl-3 pr-1 cursor-pointer flex items-center"
+      class="rounded bg-orange-300 h-5 px-1 cursor-pointer flex items-center"
     >
       <span class="text-white text-3xs font-semibold uppercase">
-        {{ $t('markets.airdrop') }}
+        &#128293; {{ $t('markets.airdrop') }}
       </span>
     </div>
   </a>
