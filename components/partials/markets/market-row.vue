@@ -3,7 +3,7 @@
     class="grid grid-cols-3 sm:grid-cols-10 3md:grid-cols-12 text-gray-200 gap-4 text-sm px-4 py-5 mb-1 items-center"
     :data-cy="`markets-table-row-${market.ticker}`"
   >
-    <span class="text-sm col-span-2 sm:col-span-3 flex items-center">
+    <span class="text-sm col-span-2 sm:col-span-3 flex items-center gap-4">
       <div
         class="3md:hidden text-primary-500 mr-3 cursor-pointer"
         data-cy="markets-favourite-button"
@@ -23,11 +23,12 @@
             :alt="market.baseToken.name"
             class="w-6 h-6 mr-3 hidden 3md:block"
           />
-          <div class="flex flex-col">
+          <div class="flex flex-col overflow-hidden">
             <span
-              class="tracking-wider font-bold mb-1"
+              class="tracking-wider font-bold mb-1 overflow-hidden overflow-ellipsis"
               data-cy="markets-ticker-name-table-data"
-              >{{ market.ticker }}
+            >
+              {{ market.ticker }}
             </span>
             <span class="text-gray-500 text-xs hidden md:block">
               {{ market.baseToken.name }}
@@ -38,6 +39,8 @@
           </div>
         </div>
       </nuxt-link>
+
+      <Airdrop :market="market" class="visible sm:invisible lg:visible" />
     </span>
 
     <!-- Mobile column -->
@@ -164,8 +167,13 @@ import { Change, MarketRoute, TradeClickOrigin } from '~/types'
 import { betaMarketSlugs } from '~/app/data/market'
 import { getAbbreviatedVolume, getMarketRoute } from '~/app/utils/market'
 import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
+import Airdrop from '~/components/partials/common/market/airdrop.vue'
 
 export default Vue.extend({
+  components: {
+    Airdrop
+  },
+
   props: {
     market: {
       type: Object as PropType<
