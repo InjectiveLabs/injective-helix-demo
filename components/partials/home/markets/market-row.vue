@@ -1,26 +1,33 @@
 <template>
-  <nuxt-link :to="marketRoute" class="block min-w-3xl lg:min-w-[912px]">
+  <div class="block min-w-3xl lg:min-w-[912px]">
     <div
-      class="grid grid-cols-12 items-center py-4 gap-12 box-content"
+      class="grid grid-cols-12 items-center py-4 box-content"
       @click="handleTradeClickedTrack"
     >
-      <div
-        class="col-span-3 lg:col-span-2 flex items-center justify-start pl-4"
-      >
-        <div class="flex items-center justify-start">
-          <img
-            :src="baseTokenLogo"
-            :alt="market.baseToken.name"
-            class="w-4 h-4 md:w-6 md:h-6 mr-3"
-          />
-          <div class="text-left text-helixGray-500 text-sm whitespace-nowrap">
-            <div class="flex leading-4 font-bold">
-              {{ market.ticker }}
+      <div class="col-span-4 flex items-center justify-start pl-4">
+        <div class="flex items-center justify-start gap-2">
+          <nuxt-link :to="marketRoute">
+            <div class="flex items-center justify-start">
+              <img
+                :src="baseTokenLogo"
+                :alt="market.baseToken.name"
+                class="w-4 h-4 md:w-6 md:h-6 mr-3"
+              />
+
+              <div
+                class="text-left text-helixGray-500 text-sm whitespace-nowrap"
+              >
+                <div class="flex leading-4 font-bold">
+                  {{ market.ticker }}
+                </div>
+                <p class="text-helixGray-300 text-xs leading-3.5">
+                  {{ market.baseToken.name }}
+                </p>
+              </div>
             </div>
-            <p class="text-helixGray-300 text-xs leading-3.5">
-              {{ market.baseToken.name }}
-            </p>
-          </div>
+          </nuxt-link>
+
+          <Airdrop :market="market" />
         </div>
       </div>
       <div class="col-span-2 flex">
@@ -56,7 +63,7 @@
         </span>
         <span v-else class="text-gray-400">&mdash;</span>
       </div>
-      <div class="col-span-3 flex h-7 w-[70%] justify-self-center relative">
+      <div class="col-span-2 flex h-7 w-[70%] justify-self-center relative">
         <HocLoading :status="status">
           <LineGraph
             v-if="chartData.length > 1"
@@ -69,11 +76,13 @@
           />
         </HocLoading>
       </div>
-      <div class="col-span-2 lg:col-span-3 align-center justify-self-center">
-        <VButton primary-outline-light md class="rounded">Trade</VButton>
+      <div class="col-span-1 align-center justify-self-center">
+        <nuxt-link :to="marketRoute">
+          <VButton primary-outline-light md class="rounded">Trade</VButton>
+        </nuxt-link>
       </div>
     </div>
-  </nuxt-link>
+  </div>
 </template>
 
 <script lang="ts">
@@ -101,10 +110,12 @@ import {
   getFormattedMarketsHistoryChartData
 } from '~/app/utils/market'
 import { amplitudeTracker } from '~/app/providers/AmplitudeTracker'
+import Airdrop from '~/components/partials/common/market/airdrop.vue'
 
 export default Vue.extend({
   components: {
-    LineGraph
+    LineGraph,
+    Airdrop
   },
 
   props: {

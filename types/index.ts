@@ -148,6 +148,13 @@ export interface TabOption {
   url?: string
 }
 
+export interface MarketPromotion {
+  market: string
+  url: string
+  start: number
+  end: number
+}
+
 export * from './enums'
 export * from './env'
 export * from './errors'

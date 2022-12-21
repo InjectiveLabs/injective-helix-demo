@@ -143,6 +143,7 @@ module.exports = {
       },
 
       orange: {
+        300: '#F7A326',
         400: '#F7931A',
         500: '#F3610F'
       },
@@ -201,7 +202,7 @@ module.exports = {
         base: ['1rem', { lineHeight: '1.5rem' }],
         xl: ['1.25rem', { lineHeight: '1.75rem' }],
         '3xl': ['2rem', { lineHeight: '2.25rem' }],
-        '3xs': '0.625rem',
+        '3xs': ['0.625rem', { lineHeight: '0.625rem' }],
         '2xs': '0.7rem',
         footer: '0.85rem'
       },

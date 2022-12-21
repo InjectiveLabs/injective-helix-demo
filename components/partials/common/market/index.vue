@@ -7,13 +7,14 @@
       class="flex justify-between items-center flex-wrap lg:flex-nowrap gap-4 h-full"
     >
       <div class="flex justify-between items-center w-full lg:w-auto gap-2">
-        <div class="flex items-center" @click="handleTokenClick">
+        <div class="flex items-center gap-4" @click="handleTokenClick">
           <img
             :src="baseTokenLogo"
             :alt="market.baseToken.name"
-            class="w-6 h-6 mr-4"
+            class="w-6 h-6"
           />
-          <div class="leading-none select-none">
+
+          <div class="leading-none select-none cursor-pointer">
             <p class="text-gray-100 font-semibold text-sm flex items-center">
               <span
                 data-cy="trading-page-ticker-name-text-content"
@@ -27,10 +28,13 @@
                 :class="[expanded ? 'rotate-90' : '-rotate-90']"
               />
             </p>
+
             <p class="text-gray-500 text-xs">
               {{ market.baseToken.name }}
             </p>
           </div>
+
+          <Airdrop :market="market" />
         </div>
 
         <div class="w-px h-8 border-r hidden lg:block" />
@@ -84,13 +88,15 @@ import MarketStats from './stats.vue'
 import LastTradedPriceAndChange from './last-traded-price-and-change.vue'
 import LayoutPreferences from './layout-preferences.vue'
 import PopperBox from '~/components/elements/popper-box.vue'
+import Airdrop from '~/components/partials/common/market/airdrop.vue'
 
 export default Vue.extend({
   components: {
     LastTradedPriceAndChange,
     MarketStats,
     LayoutPreferences,
-    PopperBox
+    PopperBox,
+    Airdrop
   },
 
   props: {
