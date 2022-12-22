@@ -13,7 +13,7 @@
         <IconStarBorder v-else class="min-w-6 w-6 h-6" />
       </div>
 
-      <nuxt-link :to="marketRoute">
+      <nuxt-link :to="marketRoute" class="w-full">
         <div
           class="cursor-pointer flex items-center"
           @click="handleTradeClickedTrack"
@@ -23,9 +23,10 @@
             :alt="market.baseToken.name"
             class="w-6 h-6 mr-3 hidden 3md:block"
           />
-          <div class="flex flex-col overflow-hidden">
+          <div class="flex flex-col w-full overflow-hidden">
             <span
-              class="tracking-wider font-bold mb-1 overflow-hidden overflow-ellipsis"
+              class="tracking-wider font-bold mb-1 overflow-hidden overflow-ellipsis items-start"
+              :title="market.ticker"
               data-cy="markets-ticker-name-table-data"
             >
               {{ market.ticker }}
@@ -37,10 +38,12 @@
               {{ $t('markets.vol') }} {{ abbreviatedVolumeInUsdToFormat }} USD
             </span>
           </div>
+          <Airdrop
+            :market="market"
+            class="visible sm:invisible lg:visible ml-auto"
+          />
         </div>
       </nuxt-link>
-
-      <Airdrop :market="market" class="visible sm:invisible lg:visible" />
     </span>
 
     <!-- Mobile column -->
