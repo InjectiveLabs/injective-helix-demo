@@ -1,5 +1,9 @@
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
-import { getNetworkEndpoints, Network } from '@injectivelabs/networks'
+import {
+  getNetworkEndpoints,
+  Network,
+  NetworkEndpoints
+} from '@injectivelabs/networks'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 import { GeneralException } from '@injectivelabs/exceptions'
 
@@ -148,9 +152,10 @@ if (endpointsNotProvided) {
   )
 }
 
-export const ENDPOINTS = {
+export const ENDPOINTS: NetworkEndpoints = {
   ...endpoints,
-  chronosApi: APP_CHRONOS_API_ENDPOINT || undefined,
+  grpc: APP_SENTRY_GRPC_ENDPOINT || endpoints.grpc,
+  rest: APP_SENTRY_HTTP_ENDPOINT || endpoints.rest,
   indexer: APP_INDEXER_API_ENDPOINT || endpoints.indexer
 }
 
