@@ -12,7 +12,7 @@ jobs:
       ## Public
       APP_NAME: 'Helix | The Premier Decentralized Spot and Derivatives Exchange'
       APP_BASE_URL: https://helixapp.com
-      APP_NETWORK: mainnetK8s
+      APP_NETWORK: mainnet
       APP_ENV: mainnet
       APP_CHAIN_ID: injective-1
       APP_ETHEREUM_CHAIN_ID: 1
