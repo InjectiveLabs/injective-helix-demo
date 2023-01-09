@@ -1,9 +1,5 @@
 import { actionTree, getterTree } from 'typed-vuex'
-import {
-  BigNumberInBase,
-  spotPriceToChainPriceToFixed,
-  spotQuantityToChainQuantityToFixed
-} from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   StreamOperation,
   TradeExecutionSide,
@@ -15,7 +11,9 @@ import {
   MsgCreateSpotLimitOrder,
   MsgCreateSpotMarketOrder,
   SpotOrderSide,
-  SpotOrderState
+  SpotOrderState,
+  spotPriceToChainPriceToFixed,
+  spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
 import {
   Change,

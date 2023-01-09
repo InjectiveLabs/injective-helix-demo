@@ -1,8 +1,7 @@
 import {
   BigNumber,
   BigNumberInBase,
-  BigNumberInWei,
-  derivativePriceToChainPrice
+  BigNumberInWei
 } from '@injectivelabs/utils'
 import {
   DerivativeOrderSide,
@@ -15,7 +14,10 @@ import {
   UiPriceLevel,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
-import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
+import {
+  derivativePriceToChainPrice,
+  formatAmountToAllowableAmount
+} from '@injectivelabs/sdk-ts'
 
 export const calculateMargin = ({
   quantity,

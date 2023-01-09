@@ -55,7 +55,7 @@ if (IS_MAINNET_STAGING) {
 }
 
 if (IS_MAINNET_STAGING || IS_DEVNET) {
-  //
+  perpetuals.push('bonk-usdt-perp')
 }
 
 const futures = [...perpetuals, ...expiryFutures]

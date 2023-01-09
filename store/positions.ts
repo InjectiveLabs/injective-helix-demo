@@ -1,15 +1,13 @@
 import { actionTree } from 'typed-vuex'
-import {
-  BigNumberInBase,
-  derivativeMarginToChainMarginToFixed,
-  derivativeQuantityToChainQuantityToFixed
-} from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   DerivativeOrderSide,
   MsgCreateBinaryOptionsMarketOrder,
   MsgCreateDerivativeMarketOrder,
-  MsgIncreasePositionMargin
+  MsgIncreasePositionMargin,
+  derivativeMarginToChainMarginToFixed,
+  derivativeQuantityToChainQuantityToFixed
   // MsgBatchUpdateOrders
 } from '@injectivelabs/sdk-ts'
 import {

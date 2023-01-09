@@ -1,7 +1,4 @@
-import {
-  BigNumberInBase,
-  denomAmountToChainDenomAmountToFixed
-} from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { actionTree, getterTree } from 'typed-vuex'
 import {
   SubaccountBalanceWithToken,
@@ -14,7 +11,8 @@ import {
 import {
   AccountPortfolio,
   MsgDeposit,
-  MsgWithdraw
+  MsgWithdraw,
+  denomAmountToChainDenomAmountToFixed
 } from '@injectivelabs/sdk-ts'
 import { Token } from '@injectivelabs/token-metadata'
 import {
