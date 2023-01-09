@@ -37,7 +37,14 @@ const reportUnknownErrorToBugsnag = (bugsnag: any, error: Error) => {
 }
 
 const notifyTheUser = (toast: any, error: ThrownException) => {
-  return toast.error(error.message)
+  if (
+    [ErrorType.Unspecified, ErrorType.WalletError].includes(error.type) ||
+    error.message.includes('timeout')
+  ) {
+    return
+  }
+
+  toast.error(error.message)
 }
 
 const handleInsufficientGas = ($accessor: any, error: ThrownException) => {
