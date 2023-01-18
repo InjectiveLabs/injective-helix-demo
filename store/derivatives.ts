@@ -1,11 +1,5 @@
 import { actionTree, getterTree } from 'typed-vuex'
-import {
-  BigNumberInBase,
-  BigNumberInWei,
-  derivativeMarginToChainMarginToFixed,
-  derivativePriceToChainPriceToFixed,
-  derivativeQuantityToChainQuantityToFixed
-} from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   StreamOperation,
   TradeExecutionSide,
@@ -42,7 +36,10 @@ import {
   MsgCreateBinaryOptionsMarketOrder,
   MsgCreateDerivativeLimitOrder,
   MsgCreateDerivativeMarketOrder,
-  PerpetualMarket
+  PerpetualMarket,
+  derivativeMarginToChainMarginToFixed,
+  derivativePriceToChainPriceToFixed,
+  derivativeQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
 import { GeneralException } from '@injectivelabs/exceptions'
 import {
