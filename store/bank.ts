@@ -148,6 +148,8 @@ export const useBankStore = defineStore('bank', {
     reset() {
       const bankStore = useBankStore()
 
+      bankStore.$reset()
+
       bankStore.$patch({
         ...initialStateFactory()
       })

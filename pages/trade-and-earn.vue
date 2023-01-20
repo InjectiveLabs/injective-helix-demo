@@ -7,16 +7,23 @@ const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
 
-onMounted(() => {
-  Promise.all([
-    tokenStore.getInjUsdPrice(),
-    exchangeStore.fetchParams(),
-    exchangeStore.fetchTradingRewardsCampaign()
-  ])
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
+onWalletConnected(() => {
+  status.setLoading()
+
+  exchangeStore
+    .initTradeAndEarn()
+    .then(() => {
+      Promise.all([
+        tokenStore.getInjUsdPrice(),
+        exchangeStore.fetchParams(),
+        exchangeStore.fetchTradingRewardsCampaign()
+      ])
+        .catch($onError)
+        .finally(() => {
+          status.setIdle()
+        })
     })
+    .catch($onError)
 })
 
 onBeforeUnmount(() => {

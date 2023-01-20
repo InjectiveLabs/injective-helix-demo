@@ -48,7 +48,7 @@ export const perpetuals = [
   'atom-usdt-perp'
 ]
 
-export const walletConnectedRequiredRouteNames = ['activity', 'account']
+export const walletConnectedRequiredRouteNames = ['activity']
 
 export const binaryOptions: string[] = []
 export const expiryFutures: string[] = ['eth-usdt-19sep22']

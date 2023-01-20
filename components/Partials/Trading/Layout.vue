@@ -9,6 +9,7 @@ import {
   UiMarketSummary
 } from '@/types'
 
+const accountStore = useAccountStore()
 const appStore = useAppStore()
 const bankStore = useBankStore()
 const derivativeStore = useDerivativeStore()
@@ -72,6 +73,13 @@ onMounted(async () => {
 })
 
 onUnmounted(() => (props.isSpot ? spotStore.reset() : derivativeStore.reset()))
+
+onWalletConnected(() => {
+  Promise.all([
+    bankStore.fetchBankBalancesWithToken(),
+    accountStore.streamSubaccountBalances()
+  ])
+})
 
 const summary = computed(() => {
   const marketSummaries: UiMarketSummary[] = props.isSpot

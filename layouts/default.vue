@@ -44,14 +44,9 @@ onMounted(() => {
       status.setIdle()
     })
 
-  Promise.all([appStore.init(), bankStore.init(), accountStore.init()])
-    .then(() => {
-      //
-    })
-    .catch($onError)
-
   // Actions that should't block the app from loading
   Promise.all([
+    appStore.init(),
     appStore.fetchGasPrice(),
     referralStore.init(),
     exchangeStore.initFeeDiscounts()
@@ -62,6 +57,16 @@ onMounted(() => {
   onLoadMarketsInit()
 
   useEventBus<string>(BusEvents.NavLinkClicked).on(onCloseSideBar)
+})
+
+onWalletConnected(() => {
+  bankStore.reset()
+
+  Promise.all([bankStore.init(), accountStore.init()])
+    .then(() => {
+      //
+    })
+    .catch($onError)
 })
 
 function handleCosmoverseGiveawayCampaignTrack() {

@@ -143,6 +143,7 @@ export default {
   stake_now: 'Stake Now',
   tradeAndEarn: {
     pendingRewards: 'Pending Rewards',
+    emptyPendingRewards: 'No pending rewards available.',
     campaignEndingOn: 'Ending on {date}',
     campaignAsOf: 'As of {date}',
     myRewardPoints: 'My Reward Points / Total Reward Points',

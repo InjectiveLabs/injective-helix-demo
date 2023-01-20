@@ -208,7 +208,8 @@ export enum BusEvents {
   AssetDetailsModalPayload = 'asset-details-modal-payload',
   TradeConfirmationModalPayload = 'trade-confirmation-modal-payload',
   PostOnlyToggled = 'post-only-toggled',
-  FundingRefresh = 'funding-refresh'
+  FundingRefresh = 'funding-refresh',
+  WalletConnected = 'wallet-connected'
 }
 
 export enum BridgeBusEvents {
