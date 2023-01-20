@@ -1,57 +1,40 @@
-<template>
-  <div class="h-full w-full flex flex-wrap py-4">
-    <HocLoading :status="status">
-      <div class="container">
-        <div class="w-full mx-auto xl:w-4/5">
-          <CurrentEpoch class="mt-6" />
-          <PreviousRewards v-if="false" class="mt-12" />
-          <PendingRewards class="mt-12" />
-          <MarketsInfo class="mt-12" />
-        </div>
-      </div>
-    </HocLoading>
-  </div>
-</template>
-
-<script lang="ts">
-import Vue from 'vue'
+<script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import PreviousRewards from '~/components/partials/trade-and-earn/previous-rewards.vue'
-import PendingRewards from '~/components/partials/trade-and-earn/pending-rewards/index.vue'
-import CurrentEpoch from '~/components/partials/trade-and-earn/current-epoch.vue'
-import MarketsInfo from '~/components/partials/trade-and-earn/markets-info.vue'
 
-export default Vue.extend({
-  components: {
-    PreviousRewards,
-    PendingRewards,
-    MarketsInfo,
-    CurrentEpoch
-  },
+const exchangeStore = useExchangeStore()
+const tokenStore = useTokenStore()
+const { $onError } = useNuxtApp()
 
-  data() {
-    return {
-      status: new Status(StatusType.Loading)
-    }
-  },
+const status = reactive(new Status(StatusType.Loading))
 
-  mounted() {
-    Promise.all([
-      this.$accessor.token.getInjUsdPrice(),
-      this.$accessor.exchange.fetchParams(),
-      this.$accessor.exchange.fetchTradingRewardsCampaign()
-    ])
-      .then(() => {
-        //
-      })
-      .catch(this.$onRejected)
-      .finally(() => {
-        this.status.setIdle()
-      })
-  },
+onMounted(() => {
+  Promise.all([
+    tokenStore.getInjUsdPrice(),
+    exchangeStore.fetchParams(),
+    exchangeStore.fetchTradingRewardsCampaign()
+  ])
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+})
 
-  beforeDestroy() {
-    this.$accessor.exchange.reset()
-  }
+onBeforeUnmount(() => {
+  exchangeStore.reset()
 })
 </script>
+
+<template>
+  <div class="h-full-flex w-full flex-wrap py-4">
+    <AppHocLoading :status="status">
+      <div class="container">
+        <div class="w-full mx-auto xl:w-4/5">
+          <PartialsTradeAndEarnCurrentEpoch class="mt-6" />
+          <PartialsTradeAndEarnPreviousRewards v-if="false" class="mt-12" />
+          <PartialsTradeAndEarnPendingRewards class="mt-12" />
+          <PartialsTradeAndEarnMarketsInfo class="mt-12" />
+        </div>
+      </div>
+    </AppHocLoading>
+  </div>
+</template>

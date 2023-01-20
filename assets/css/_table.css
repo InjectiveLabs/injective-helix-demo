@@ -1,0 +1,72 @@
+.table-responsive {
+  @apply block w-full overflow-x-auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table {
+  @apply w-full;
+}
+
+.table thead {
+  @apply bg-gray-900;
+}
+
+.table th {
+  @apply text-gray-300 text-xs font-normal align-middle leading-tight bg-transparent border-none select-none whitespace-nowrap px-3 py-2;
+}
+
+.table td {
+  @apply text-gray-200 text-sm font-normal leading-tight bg-transparent border-none select-none align-middle whitespace-nowrap p-4;
+}
+
+.table td.no-padding {
+  @apply px-0 py-0;
+}
+
+.table tbody tr {
+  @apply bg-gray-1000;
+}
+
+.table tbody tr:first-of-type {
+  @apply rounded-t;
+}
+
+.table tbody tr:last-of-type {
+  @apply rounded-b;
+}
+
+.table tbody tr:nth-child(even) {
+  @apply bg-gray-900;
+}
+
+.table tbody tr:hover {
+  background-color: theme('colors.gray.850') !important;
+}
+
+.table thead[xs] tr th {
+  @apply text-2xs;
+}
+
+.v-table-row {
+  background-color: theme('colors.gray.900');
+}
+
+.v-table-row:first-of-type {
+  @apply rounded-t;
+}
+
+.v-table-row:last-of-type {
+  @apply rounded-b;
+}
+
+.v-table-row:nth-child(even) {
+  background-color: theme('colors.gray.1000');
+}
+
+.v-table-row:hover {
+  background-color: theme('colors.gray.850') !important;
+}
+
+.table.market-data th {
+  @apply space-x-1 bg-gray-1000;
+}

@@ -1,4 +1,4 @@
-import { actionTree, getterTree } from 'typed-vuex'
+import { defineStore } from 'pinia'
 import {
   IBCTransferTx,
   PeggyDepositTx,
@@ -13,216 +13,85 @@ import {
   indexerAccountApi,
   indexerExplorerApi,
   tokenService
-} from '~/app/Services'
-import { UiBridgeTransformer } from '~/app/client/transformers/UiBridgeTransformer'
-import { UiExplorerTransformer } from '~/app/client/transformers/UiExplorerTransformer'
-import { ActivityFetchOptions } from '~/types'
+} from '@/app/Services'
+import { UiBridgeTransformer } from '@/app/client/transformers/UiBridgeTransformer'
+import { UiExplorerTransformer } from '@/app/client/transformers/UiExplorerTransformer'
+import { ActivityFetchOptions } from '@/types'
 
-const initialStateFactory = () => ({
-  ibcTransferTransactions: [] as IBCTransferTx[],
-  ibcTransferBridgeTransactions: [] as UiBridgeTransactionWithToken[],
-  peggyDepositTransactions: [] as PeggyDepositTx[],
-  peggyWithdrawalTransactions: [] as PeggyWithdrawalTx[],
-  peggyDepositBridgeTransactions: [] as UiBridgeTransactionWithToken[],
-  peggyWithdrawalBridgeTransactions: [] as UiBridgeTransactionWithToken[],
-  injectiveTransfers: [] as BankMsgSendTransaction[],
-  injectiveTransferBridgeTransactions: [] as UiBridgeTransactionWithToken[],
-  subaccountTransfers: [] as UiSubaccountTransfer[],
-  subaccountTransferBridgeTransactions: [] as UiBridgeTransactionWithToken[],
-  subaccountTransferBridgeTransactionsPagination: {
-    endTime: 0 as number,
-    total: 0 as number
-  }
-})
-const initialState = initialStateFactory()
-
-export const state = () => ({
-  ibcTransferTransactions:
-    initialState.ibcTransferTransactions as IBCTransferTx[],
-  ibcTransferBridgeTransactions:
-    initialState.ibcTransferBridgeTransactions as UiBridgeTransactionWithToken[],
-
-  peggyDepositTransactions:
-    initialState.peggyDepositTransactions as PeggyDepositTx[],
-  peggyDepositBridgeTransactions:
-    initialState.peggyDepositBridgeTransactions as UiBridgeTransactionWithToken[],
-
-  peggyWithdrawalTransactions:
-    initialState.peggyWithdrawalTransactions as PeggyWithdrawalTx[],
-  peggyWithdrawalBridgeTransactions:
-    initialState.peggyWithdrawalBridgeTransactions as UiBridgeTransactionWithToken[],
-
-  injectiveTransfers:
-    initialState.injectiveTransfers as BankMsgSendTransaction[],
-  injectiveTransferBridgeTransactions:
-    initialState.injectiveTransferBridgeTransactions as UiBridgeTransactionWithToken[],
-
-  subaccountTransfers:
-    initialState.subaccountTransfers as UiSubaccountTransfer[],
-  subaccountTransferBridgeTransactions:
-    initialState.subaccountTransferBridgeTransactions as UiBridgeTransactionWithToken[],
-  subaccountTransferBridgeTransactionsPagination:
-    initialState.subaccountTransferBridgeTransactionsPagination
-})
-
-export type BridgeStoreState = ReturnType<typeof state>
-
-export const getters = getterTree(state, {
-  withdrawalTransactions: (state: BridgeStoreState, _, { wallet }) => {
-    const { injectiveAddress } = wallet
-    const ibcWithdrawalTransactions =
-      state.ibcTransferBridgeTransactions.filter((transaction) =>
-        transaction.sender.startsWith('inj')
-      )
-    const injectiveWithdrawalTransactions =
-      state.injectiveTransferBridgeTransactions.filter(
-        (transaction) => transaction.sender === injectiveAddress
-      )
-
-    return [
-      ...state.peggyWithdrawalBridgeTransactions,
-      ...ibcWithdrawalTransactions,
-      ...injectiveWithdrawalTransactions
-    ]
-  },
-
-  depositTransactions: (state: BridgeStoreState, _, { wallet }) => {
-    const { injectiveAddress } = wallet
-    const ibcDepositsTransactions = state.ibcTransferBridgeTransactions.filter(
-      (transaction) => transaction.receiver.startsWith('inj')
-    )
-
-    const injectiveDepositTransactions =
-      state.injectiveTransferBridgeTransactions.filter(
-        (transaction) => transaction.receiver === injectiveAddress
-      )
-
-    return [
-      ...state.peggyDepositBridgeTransactions,
-      ...ibcDepositsTransactions,
-      ...injectiveDepositTransactions
-    ]
-  }
-})
-
-export const mutations = {
-  setIbcTransferTransactions(
-    state: BridgeStoreState,
-    ibcTransferTransactions: IBCTransferTx[]
-  ) {
-    state.ibcTransferTransactions = ibcTransferTransactions
-  },
-
-  setIbcTransferBridgeTransactions(
-    state: BridgeStoreState,
-    ibcTransferBridgeTransactions: UiBridgeTransactionWithToken[]
-  ) {
-    state.ibcTransferBridgeTransactions = ibcTransferBridgeTransactions
-  },
-
-  setPeggyDepositTransactions(
-    state: BridgeStoreState,
-    peggyDepositTransactions: PeggyDepositTx[]
-  ) {
-    state.peggyDepositTransactions = peggyDepositTransactions
-  },
-
-  setPeggyWithdrawalTransactions(
-    state: BridgeStoreState,
-    peggyWithdrawalTransactions: PeggyWithdrawalTx[]
-  ) {
-    state.peggyWithdrawalTransactions = peggyWithdrawalTransactions
-  },
-
-  setPeggyDepositBridgeTransactions(
-    state: BridgeStoreState,
-    peggyDepositBridgeTransactions: UiBridgeTransactionWithToken[]
-  ) {
-    state.peggyDepositBridgeTransactions = peggyDepositBridgeTransactions
-  },
-
-  setPeggyWithdrawalBridgeTransactions(
-    state: BridgeStoreState,
-    peggyWithdrawalBridgeTransactions: UiBridgeTransactionWithToken[]
-  ) {
-    state.peggyWithdrawalBridgeTransactions = peggyWithdrawalBridgeTransactions
-  },
-
-  setInjectiveTransferTransactions(
-    state: BridgeStoreState,
-    injectiveTransfers: BankMsgSendTransaction[]
-  ) {
-    state.injectiveTransfers = injectiveTransfers
-  },
-
-  setInjectiveTransferBridgeTransactions(
-    state: BridgeStoreState,
-    injectiveTransferBridgeTransactions: UiBridgeTransactionWithToken[]
-  ) {
-    state.injectiveTransferBridgeTransactions =
-      injectiveTransferBridgeTransactions
-  },
-
-  setSubaccountTransferTransactions(
-    state: BridgeStoreState,
-    subaccountTransfers: UiSubaccountTransfer[]
-  ) {
-    state.subaccountTransfers = subaccountTransfers
-  },
-
-  setSubaccountTransferBridgeTransactions(
-    state: BridgeStoreState,
-    subaccountTransferBridgeTransactions: UiBridgeTransactionWithToken[]
-  ) {
-    state.subaccountTransferBridgeTransactions =
-      subaccountTransferBridgeTransactions
-  },
-
-  setSubaccountTransferBridgeTransactionsEndTime(
-    state: BridgeStoreState,
-    endTime: number
-  ) {
-    state.subaccountTransferBridgeTransactionsPagination.endTime = endTime
-  },
-
-  setSubaccountTransferBridgeTransactionsTotal(
-    state: BridgeStoreState,
-    total: number
-  ) {
-    state.subaccountTransferBridgeTransactionsPagination.total = total
-  },
-
-  reset(state: BridgeStoreState) {
-    const initialState = initialStateFactory()
-
-    state.ibcTransferTransactions = initialState.ibcTransferTransactions
-    state.ibcTransferBridgeTransactions =
-      initialState.ibcTransferBridgeTransactions
-
-    state.peggyDepositTransactions = initialState.peggyDepositTransactions
-    state.peggyDepositBridgeTransactions =
-      initialState.peggyDepositBridgeTransactions
-
-    state.peggyWithdrawalTransactions = initialState.peggyWithdrawalTransactions
-    state.peggyWithdrawalBridgeTransactions =
-      initialState.peggyWithdrawalBridgeTransactions
-
-    state.injectiveTransfers = initialState.injectiveTransfers
-    state.injectiveTransferBridgeTransactions =
-      initialState.injectiveTransferBridgeTransactions
-
-    state.subaccountTransfers = initialState.subaccountTransfers
-    state.subaccountTransferBridgeTransactions =
-      initialState.subaccountTransferBridgeTransactions
-  }
+type BridgeStoreState = {
+  ibcTransferTransactions: IBCTransferTx[]
+  ibcTransferBridgeTransactions: UiBridgeTransactionWithToken[]
+  peggyDepositTransactions: PeggyDepositTx[]
+  peggyWithdrawalTransactions: PeggyWithdrawalTx[]
+  peggyDepositBridgeTransactions: UiBridgeTransactionWithToken[]
+  peggyWithdrawalBridgeTransactions: UiBridgeTransactionWithToken[]
+  injectiveTransfers: BankMsgSendTransaction[]
+  injectiveTransferBridgeTransactions: UiBridgeTransactionWithToken[]
+  subaccountTransfers: UiSubaccountTransfer[]
+  subaccountTransferBridgeTransactions: UiBridgeTransactionWithToken[]
+  subaccountTransferBridgeTransactionsCount: number
 }
 
-export const actions = actionTree(
-  { state },
-  {
-    async fetchInjectiveTransactions({ commit }) {
-      const { injectiveAddress, isUserWalletConnected } =
-        this.app.$accessor.wallet
+const initialStateFactory = (): BridgeStoreState => ({
+  ibcTransferTransactions: [],
+  ibcTransferBridgeTransactions: [],
+  peggyDepositTransactions: [],
+  peggyWithdrawalTransactions: [],
+  peggyDepositBridgeTransactions: [],
+  peggyWithdrawalBridgeTransactions: [],
+  injectiveTransfers: [],
+  injectiveTransferBridgeTransactions: [],
+  subaccountTransfers: [],
+  subaccountTransferBridgeTransactions: [],
+  subaccountTransferBridgeTransactionsCount: 0
+})
+
+export const useBridgeStore = defineStore('bridge', {
+  state: (): BridgeStoreState => initialStateFactory(),
+  getters: {
+    withdrawalTransactions: (state: BridgeStoreState) => {
+      const { injectiveAddress } = useWalletStore()
+
+      const ibcWithdrawalTransactions =
+        state.ibcTransferBridgeTransactions.filter((transaction) =>
+          transaction.sender.startsWith('inj')
+        )
+      const injectiveWithdrawalTransactions =
+        state.injectiveTransferBridgeTransactions.filter(
+          (transaction) => transaction.sender === injectiveAddress
+        )
+
+      return [
+        ...state.peggyWithdrawalBridgeTransactions,
+        ...ibcWithdrawalTransactions,
+        ...injectiveWithdrawalTransactions
+      ]
+    },
+
+    depositTransactions: (state: BridgeStoreState) => {
+      const { injectiveAddress } = useWalletStore()
+
+      const ibcDepositsTransactions =
+        state.ibcTransferBridgeTransactions.filter((transaction) =>
+          transaction.receiver.startsWith('inj')
+        )
+
+      const injectiveDepositTransactions =
+        state.injectiveTransferBridgeTransactions.filter(
+          (transaction) => transaction.receiver === injectiveAddress
+        )
+
+      return [
+        ...state.peggyDepositBridgeTransactions,
+        ...ibcDepositsTransactions,
+        ...injectiveDepositTransactions
+      ]
+    }
+  },
+  actions: {
+    async fetchInjectiveTransactions() {
+      const bridgeStore = useBridgeStore()
+      const { injectiveAddress, isUserWalletConnected } = useWalletStore()
 
       if (!injectiveAddress || !isUserWalletConnected) {
         return
@@ -243,32 +112,21 @@ export const actions = actionTree(
       const uiBridgeTransactionsWithToken =
         await tokenService.getBridgeTransactionsWithToken(transactions)
 
-      commit('setSubaccountTransferTransactions', transactions)
-      commit(
-        'setInjectiveTransferBridgeTransactions',
-        uiBridgeTransactionsWithToken
-      )
+      bridgeStore.$patch({
+        subaccountTransferBridgeTransactions: transactions,
+        injectiveTransferBridgeTransactions: uiBridgeTransactionsWithToken
+      })
     },
 
     async fetchSubaccountTransfers(
-      { state, commit },
       activityFetchOptions: ActivityFetchOptions | undefined
     ) {
-      const { subaccount } = this.app.$accessor.account
-      const { isUserWalletConnected } = this.app.$accessor.wallet
+      const bridgeStore = useBridgeStore()
+      const { subaccount } = useAccountStore()
+      const { isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccount) {
         return
-      }
-
-      if (
-        state.subaccountTransferBridgeTransactions.length > 0 &&
-        state.subaccountTransferBridgeTransactionsPagination.endTime === 0
-      ) {
-        commit(
-          'setSubaccountTransferBridgeTransactionsEndTime',
-          state.subaccountTransferBridgeTransactions[0].timestamp
-        )
       }
 
       const paginationOptions = activityFetchOptions?.pagination
@@ -282,7 +140,9 @@ export const actions = actionTree(
             skip: paginationOptions ? paginationOptions.skip : 0,
             limit: paginationOptions ? paginationOptions.limit : 0,
             endTime:
-              state.subaccountTransferBridgeTransactionsPagination.endTime
+              bridgeStore.subaccountTransferBridgeTransactions.length > 0
+                ? bridgeStore.subaccountTransferBridgeTransactions[0].timestamp
+                : 0
           }
         })
 
@@ -294,16 +154,18 @@ export const actions = actionTree(
         UiBridgeTransformer.convertSubaccountTransfersToUiBridgeTransaction
       )
 
-      const uiBridgeTransactionsWithToken = await tokenService.getBridgeTransactionsWithToken(transactions)
+      const uiBridgeTransactionsWithToken =
+        await tokenService.getBridgeTransactionsWithToken(transactions)
 
-      commit('setSubaccountTransferBridgeTransactionsTotal', pagination.total)
-      commit('setSubaccountTransferTransactions', transactions)
-      commit('setSubaccountTransferBridgeTransactions', uiBridgeTransactionsWithToken)
+      bridgeStore.$patch({
+        subaccountTransferBridgeTransactions: uiBridgeTransactionsWithToken,
+        subaccountTransferBridgeTransactionsCount: pagination.total
+      })
     },
 
-    async fetchIBCTransferTransactions({ commit }) {
-      const { injectiveAddress, isUserWalletConnected } =
-        this.app.$accessor.wallet
+    async fetchIBCTransferTransactions() {
+      const bridgeStore = useBridgeStore()
+      const { injectiveAddress, isUserWalletConnected } = useWalletStore()
 
       if (!injectiveAddress || !isUserWalletConnected) {
         return
@@ -325,13 +187,16 @@ export const actions = actionTree(
       const uiBridgeTransactionsWithToken =
         await tokenService.getBridgeTransactionsWithToken(uiBridgeTransactions)
 
-      commit('setIbcTransferTransactions', transactions)
-      commit('setIbcTransferBridgeTransactions', uiBridgeTransactionsWithToken)
+      bridgeStore.$patch({
+        ibcTransferTransactions: transactions,
+        ibcTransferBridgeTransactions: uiBridgeTransactionsWithToken
+      })
     },
 
-    async fetchPeggyDepositTransactions({ commit }) {
+    async fetchPeggyDepositTransactions() {
+      const bridgeStore = useBridgeStore()
       const { address, injectiveAddress, isUserWalletConnected } =
-        this.app.$accessor.wallet
+        useWalletStore()
 
       if (!address || !isUserWalletConnected) {
         return
@@ -353,13 +218,16 @@ export const actions = actionTree(
       const uiBridgeTransactionsWithToken =
         await tokenService.getBridgeTransactionsWithToken(uiBridgeTransactions)
 
-      commit('setPeggyDepositTransactions', transactions)
-      commit('setPeggyDepositBridgeTransactions', uiBridgeTransactionsWithToken)
+      bridgeStore.$patch({
+        peggyDepositTransactions: transactions,
+        peggyDepositBridgeTransactions: uiBridgeTransactionsWithToken
+      })
     },
 
-    async fetchPeggyWithdrawalTransactions({ commit }) {
+    async fetchPeggyWithdrawalTransactions() {
+      const bridgeStore = useBridgeStore()
       const { address, injectiveAddress, isUserWalletConnected } =
-        this.app.$accessor.wallet
+        useWalletStore()
 
       if (!address || !isUserWalletConnected) {
         return
@@ -381,15 +249,18 @@ export const actions = actionTree(
       const uiBridgeTransactionsWithToken =
         await tokenService.getBridgeTransactionsWithToken(uiBridgeTransactions)
 
-      commit('setPeggyWithdrawalTransactions', transactions)
-      commit(
-        'setPeggyWithdrawalBridgeTransactions',
-        uiBridgeTransactionsWithToken
-      )
+      bridgeStore.$patch({
+        peggyWithdrawalTransactions: transactions,
+        peggyWithdrawalBridgeTransactions: uiBridgeTransactionsWithToken
+      })
     },
 
-    async reset({ commit }) {
-      await Promise.resolve(commit('reset'))
+    reset() {
+      const bridgeStore = useBridgeStore()
+
+      bridgeStore.$patch({
+        ...initialStateFactory()
+      })
     }
   }
-)
+})

@@ -7,44 +7,44 @@ export interface CustomAggregation {
 export const aggregationList = [
   {
     value: '-2',
-    text: '100'
+    display: '100'
   },
   {
     value: '-1',
-    text: '10'
+    display: '10'
   },
   {
     value: '0',
-    text: '1'
+    display: '1'
   },
   {
     value: '1',
-    text: '0.1'
+    display: '0.1'
   },
   {
     value: '2',
-    text: '0.01'
+    display: '0.01'
   },
   {
     value: '3',
-    text: '0.001'
+    display: '0.001'
   },
   {
     value: '4',
-    text: '0.0001'
+    display: '0.0001'
   },
   {
     value: '5',
-    text: '0.00001'
+    display: '0.00001'
   },
   {
     value: '6',
-    text: '0.000001'
+    display: '0.000001'
   }
 ]
 
 export const getDecimalPlaceFromValue = (value: string) =>
-  aggregationList.find(({ text }) => text === value)?.value
+  aggregationList.find(({ display }) => display === value)?.value
 
 export const customAggregations = {
   'WETH/USDC': {
@@ -278,6 +278,12 @@ export const customAggregations = {
   'STX/USDT PERP': {
     minTick: getDecimalPlaceFromValue('0.001'),
     default: getDecimalPlaceFromValue('0.001'),
+    maxTick: getDecimalPlaceFromValue('0.1')
+  },
+
+  'BONK/USDT PERP': {
+    minTick: getDecimalPlaceFromValue('0.0000000001'),
+    default: getDecimalPlaceFromValue('0.0000000001'),
     maxTick: getDecimalPlaceFromValue('0.1')
   }
 } as Record<string, CustomAggregation>

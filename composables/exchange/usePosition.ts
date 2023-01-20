@@ -1,0 +1,168 @@
+import type { Ref } from 'vue'
+import { MarketType, UiPosition, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { TradeDirection } from '@injectivelabs/ts-types'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import {
+  UI_DEFAULT_BINARY_OPTIONS_PRICE_DECIMALS,
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+} from '~~/app/utils/constants'
+
+export function useDerivativePosition(position: Ref<UiPosition>) {
+  const derivativeStore = useDerivativeStore()
+
+  const market = computed(() => {
+    return derivativeStore.markets.find(
+      (m) => m.marketId === position.value.marketId
+    )
+  })
+
+  const margin = computed(() => {
+    if (!market.value) {
+      return ZERO_IN_BASE
+    }
+
+    return new BigNumberInWei(position.value.margin).toBase(
+      market.value.quoteToken.decimals
+    )
+  })
+
+  const quantity = computed(() => {
+    if (!market.value) {
+      return ZERO_IN_BASE
+    }
+
+    return new BigNumberInBase(position.value.quantity)
+  })
+
+  const markPrice = computed(() => {
+    if (!market.value) {
+      return ZERO_IN_BASE
+    }
+
+    return new BigNumberInWei(position.value.markPrice).toBase(
+      market.value.quoteToken.decimals
+    )
+  })
+
+  const isBinaryOptions = computed(() => {
+    if (!market.value) {
+      return false
+    }
+
+    return market.value.subType === MarketType.BinaryOptions
+  })
+
+  const priceDecimal = computed(() => {
+    if (isBinaryOptions.value) {
+      return UI_DEFAULT_BINARY_OPTIONS_PRICE_DECIMALS
+    }
+
+    return market.value
+      ? market.value.priceDecimals
+      : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+  })
+
+  const price = computed(() => {
+    if (!market.value) {
+      return ZERO_IN_BASE
+    }
+
+    return new BigNumberInWei(position.value.entryPrice).toBase(
+      market.value.quoteToken.decimals
+    )
+  })
+
+  const liquidationPrice = computed(() => {
+    if (!market.value) {
+      return ZERO_IN_BASE
+    }
+
+    const liquidationPrice = new BigNumberInWei(
+      position.value.liquidationPrice
+    ).toBase(market.value.quoteToken.decimals)
+
+    return liquidationPrice.gt(0) ? liquidationPrice : new BigNumberInBase(0)
+  })
+
+  const pnl = computed(() => {
+    if (!market.value) {
+      return ZERO_IN_BASE
+    }
+
+    return new BigNumberInBase(position.value.quantity)
+      .times(markPrice.value.minus(price.value))
+      .times(position.value.direction === TradeDirection.Long ? 1 : -1)
+  })
+
+  const percentagePnl = computed(() => {
+    if (!market.value) {
+      return ZERO_IN_BASE
+    }
+
+    if (pnl.value.isNaN()) {
+      return ZERO_IN_BASE
+    }
+
+    return new BigNumberInBase(pnl.value.dividedBy(margin.value).times(100))
+  })
+
+  const effectiveLeverage = computed(() => {
+    if (!market.value) {
+      return ZERO_IN_BASE
+    }
+
+    if (
+      margin.value.lte(0) ||
+      notionalValue.value.lte(0) ||
+      pnl.value.isNaN()
+    ) {
+      return ZERO_IN_BASE
+    }
+
+    const effectiveLeverage = new BigNumberInBase(
+      notionalValue.value.dividedBy(margin.value.plus(pnl.value))
+    )
+
+    return effectiveLeverage.gt(0) ? effectiveLeverage : new BigNumberInBase(0)
+  })
+
+  const notionalValue = computed(() => {
+    if (!market.value) {
+      return ZERO_IN_BASE
+    }
+
+    return isBinaryOptions.value
+      ? price.value.times(quantity.value)
+      : markPrice.value.times(quantity.value)
+  })
+
+  const { valueToString: markPriceToFormat } = useBigNumberFormatter(
+    computed(() => markPrice.value),
+    {
+      decimalPlaces:
+        market.value?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+    }
+  )
+
+  const { valueToString: pnlToFormat } = useBigNumberFormatter(pnl, {
+    decimalPlaces:
+      market.value?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+  })
+
+  return {
+    pnl,
+    price,
+    margin,
+    market,
+    quantity,
+    markPrice,
+    pnlToFormat,
+    priceDecimal,
+    percentagePnl,
+    notionalValue,
+    isBinaryOptions,
+    liquidationPrice,
+    markPriceToFormat,
+    effectiveLeverage
+  }
+}

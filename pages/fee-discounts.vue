@@ -1,6 +1,38 @@
+<script lang="ts" setup>
+import { Status, StatusType } from '@injectivelabs/utils'
+
+const exchangeStore = useExchangeStore()
+const paramStore = useParamStore()
+const { $onError } = useNuxtApp()
+
+const status = reactive(new Status(StatusType.Loading))
+
+onMounted(() => {
+  Promise.all([
+    exchangeStore.fetchParams(),
+    exchangeStore.fetchFeeDiscountSchedule(),
+    exchangeStore.fetchFeeDiscountAccountInfo(),
+    paramStore.fetchAprParams()
+  ])
+    .then(() => {
+      //
+    })
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+})
+
+onBeforeUnmount(() => {
+  exchangeStore.reset()
+})
+</script>
+
 <template>
-  <div class="h-full w-full flex flex-wrap fee-discounts min-h-screen-excluding-header-and-footer">
-    <HocLoading :status="status">
+  <div
+    class="h-full w-full flex flex-wrap fee-discounts min-h-screen-excluding-header-and-footer"
+  >
+    <AppHocLoading :status="status">
       <div class="container">
         <div class="w-full mx-auto xl:w-4/5">
           <div class="my-12">
@@ -11,62 +43,22 @@
               <p class="text-sm font-normal mb-2">
                 {{ $t('fee_discounts.page_description') }}
               </p>
-              <p class="text-sm text-primary-500 font-normal">
+              <p class="text-sm text-blue-500 font-normal">
                 {{ $t('fee_discounts.page_description_warning') }}
               </p>
             </div>
-            <Overview class="my-8" />
-            <v-panel>
-              <Fees />
-            </v-panel>
+            <PartialsFeeDiscountsOverview class="my-8" />
+            <AppPanel>
+              <PartialsFeeDiscounts />
+            </AppPanel>
           </div>
         </div>
       </div>
-    </HocLoading>
+    </AppHocLoading>
   </div>
 </template>
 
-<script lang="ts">
-import Vue from 'vue'
-import { Status, StatusType } from '@injectivelabs/utils'
-import Overview from '~/components/partials/fee-discounts/overview.vue'
-import Fees from '~/components/partials/fee-discounts/index.vue'
-
-export default Vue.extend({
-  components: {
-    Overview,
-    Fees
-  },
-
-  data() {
-    return {
-      status: new Status(StatusType.Loading)
-    }
-  },
-
-  mounted() {
-    Promise.all([
-      this.$accessor.exchange.fetchParams(),
-      this.$accessor.exchange.fetchFeeDiscountSchedule(),
-      this.$accessor.exchange.fetchFeeDiscountAccountInfo(),
-      this.$accessor.params.fetchAprParams()
-    ])
-      .then(() => {
-        //
-      })
-      .catch(this.$onRejected)
-      .finally(() => {
-        this.status.setIdle()
-      })
-  },
-
-  beforeDestroy() {
-    this.$accessor.exchange.reset()
-  }
-})
-</script>
-
-<style lang="scss" scoped>
+<style scoped>
 .fee-discounts {
   background: url('@/assets/fee-discounts-background-mobile.svg');
   background-size: cover;

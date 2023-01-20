@@ -9,8 +9,8 @@ import {
   Web3Composer
 } from '@injectivelabs/sdk-ui-ts'
 import {
+  DenomClient,
   ApolloConsumer,
-  ChainGrpcAuctionApi,
   ChainGrpcBankApi,
   ChainGrpcDistributionApi,
   ChainGrpcExchangeApi,
@@ -39,8 +39,8 @@ import {
   CHAIN_ID,
   ENDPOINTS,
   FEE_PAYER_PUB_KEY
-} from './utils/constants'
-import { alchemyRpcEndpoint, walletStrategy } from './wallet-strategy'
+} from '@/app/utils/constants'
+import { alchemyRpcEndpoint, walletStrategy } from '@/app/wallet-strategy'
 
 // Services
 export const bankApi = new ChainGrpcBankApi(ENDPOINTS.grpc)
@@ -50,7 +50,6 @@ export const distributionApi = new ChainGrpcDistributionApi(ENDPOINTS.grpc)
 export const governanceApi = new ChainGrpcGovApi(ENDPOINTS.grpc)
 export const insuranceApi = new ChainGrpcInsuranceFundApi(ENDPOINTS.grpc)
 export const peggyApi = new ChainGrpcPeggyApi(ENDPOINTS.grpc)
-export const auctionApi = new ChainGrpcAuctionApi(ENDPOINTS.grpc)
 export const exchangeApi = new ChainGrpcExchangeApi(ENDPOINTS.grpc)
 export const oracleApi = new ChainGrpcOracleApi(ENDPOINTS.grpc)
 
@@ -112,11 +111,12 @@ export const tokenService = new TokenService({
   network: NETWORK
 })
 export const tokenPrice = new TokenPrice(COIN_GECKO_OPTIONS)
+export const denomClient = new DenomClient(NETWORK)
 
 // UI Services
 export const bridgeTransformer = new UiBridgeTransformer(NETWORK)
 
 // Singletons
 export const localStorage: LocalStorage = new LocalStorage(
-  `inj-dex-v10-${NETWORK}-${process.env.APP_ENV || 'mainnet'}`
+  `inj-dex-v10-${NETWORK}-${process.env.VITE_ENV || 'mainnet'}`
 )

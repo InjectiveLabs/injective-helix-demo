@@ -4,6 +4,7 @@ export default {
     netWorth: 'Net Worth',
     deposit: 'Deposit',
     withdraw: 'Withdraw',
+    transfer: 'Transfer',
     trade: 'Trade',
     filters: 'Filters',
     filterByAsset: 'Filter by asset',
@@ -20,6 +21,7 @@ export default {
       empty: 'No balances found',
       cols: {
         asset: 'Asset',
+        total: 'Total',
         totalBalance: 'Total balance',
         availableBalance: 'Available balance',
         inUseReserved: 'In Use/Reserved',

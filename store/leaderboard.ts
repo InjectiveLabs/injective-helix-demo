@@ -1,45 +1,36 @@
-import { actionTree, mutationTree } from 'typed-vuex'
+import { defineStore } from 'pinia'
 import { UiLeaderboardEntry } from '@injectivelabs/sdk-ui-ts'
-import { indexerRestLeaderboardChronosApi } from '~/app/Services'
+import { indexerRestLeaderboardChronosApi } from '@/app/Services'
 
-const initialStateFactory = () => ({
-  entries: [] as UiLeaderboardEntry[],
-  lastUpdatedAt: 0 as number
+type LeaderboardStoreState = {
+  entries: UiLeaderboardEntry[]
+  lastUpdatedAt: number
+}
+
+const initialStateFactory = (): LeaderboardStoreState => ({
+  entries: [],
+  lastUpdatedAt: 0
 })
 
-const initialState = initialStateFactory()
+export const useLeaderboardStore = defineStore('leaderboard', {
+  state: (): LeaderboardStoreState => initialStateFactory(),
+  actions: {
+    async init() {
+      const leaderboardStore = useLeaderboardStore()
 
-export const state = () => ({
-  entries: initialState.entries as UiLeaderboardEntry[],
-  lastUpdatedAt: initialState.lastUpdatedAt as number
-})
-
-export type LeaderboardStoreState = ReturnType<typeof state>
-
-export const mutations = mutationTree(state, {
-  setEntries(state: LeaderboardStoreState, entries: UiLeaderboardEntry[]) {
-    state.entries = entries
-  },
-
-  setLastUpdatedAt(state: LeaderboardStoreState, lastUpdatedAt: number) {
-    state.lastUpdatedAt = lastUpdatedAt
-  }
-})
-
-export const actions = actionTree(
-  { state, mutations },
-  {
-    async init(_) {
-      await this.app.$accessor.leaderboard.fetchLeaderboard('1d')
+      await leaderboardStore.fetchLeaderboard('1d')
     },
 
-    async fetchLeaderboard({ commit }, resolution: string) {
-      const { updatedAt, entries } = await indexerRestLeaderboardChronosApi.fetchLeaderboard(
-        resolution
-      )
+    async fetchLeaderboard(resolution: string) {
+      const leaderboardStore = useLeaderboardStore()
 
-      commit('setEntries', entries || [])
-      commit('setLastUpdatedAt', updatedAt)
+      const { updatedAt, entries } =
+        await indexerRestLeaderboardChronosApi.fetchLeaderboard(resolution)
+
+      leaderboardStore.$patch({
+        entries: entries || [],
+        lastUpdatedAt: updatedAt
+      })
     }
 
     // async fetchLeaderboardRank({ state, commit }, resolution: string) {
@@ -58,4 +49,4 @@ export const actions = actionTree(
     //   commit('setLastUpdatedAt', updatedAt)
     // }
   }
-)
+})

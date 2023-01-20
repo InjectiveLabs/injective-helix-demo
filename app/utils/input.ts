@@ -1,5 +1,5 @@
 import { formatNumberToAllowableTensMultiplier } from '@injectivelabs/sdk-ts'
-import { DOMEvent } from '~/types'
+import { DOMEvent } from '@/types'
 
 export const isNumericKeycode = (keyCode?: number) =>
   keyCode &&

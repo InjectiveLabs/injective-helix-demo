@@ -5,7 +5,7 @@ import {
   derivativesMarketStream,
   oracleStream
 } from '../client/streams/derivatives'
-import { StreamType } from '~/types'
+import { StreamType } from '@/types'
 
 type StreamFn =
   | typeof derivativesMarketStream.streamDerivativeMarket
@@ -54,7 +54,9 @@ export class StreamProvider {
           this.reconnect(key)
         }, 1000)
       },
-      onStatusCallback: (_status: StreamStatusResponse): any => {}
+      onStatusCallback: (_status: StreamStatusResponse): any => {
+        //
+      }
     }
     const stream = fn(argsWithCallbacks)
 

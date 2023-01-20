@@ -74,9 +74,9 @@ jobs:
           tags: public.ecr.aws/l9h3g6c6/injective-helix:${{ env.GIT_BRANCH_NAME }}
           outputs: type=docker,dest=/tmp/helix-image.tar
           build-args: |
-            HELIX_FEE_RECIPIENT=${{ secrets.APP_FEE_RECIPIENT }}
-            APP_ALCHEMY_KOVAN_KEY=${{ secrets.APP_ALCHEMY_KOVAN_KEY }}
-            APP_ALCHEMY_GOERLI_KEY=${{ secrets.APP_ALCHEMY_GOERLI_KEY }}
+            HELIX_FEE_RECIPIENT=${{ secrets.VITE_FEE_RECIPIENT }}
+            VITE_ALCHEMY_KOVAN_KEY=${{ secrets.VITE_ALCHEMY_KOVAN_KEY }}
+            VITE_ALCHEMY_GOERLI_KEY=${{ secrets.VITE_ALCHEMY_GOERLI_KEY }}
       - name: Upload HELIX artifact
         uses: actions/upload-artifact@v2
         with:
@@ -122,8 +122,8 @@ jobs:
     needs: build
     env:
       HELIX_IMAGE_TAG: $GIT_BRANCH_NAME
-      EXCHANGE_ALCHEMY_API_GOERLI_KEY: ${{ secrets.APP_ALCHEMY_GOERLI_KEY }}
-      EXCHANGE_FEE_PAYER_PK: ${{ secrets.APP_CI_EXCHANGE_FEE_PAYER_PK }}
+      EXCHANGE_ALCHEMY_API_GOERLI_KEY: ${{ secrets.VITE_ALCHEMY_GOERLI_KEY }}
+      EXCHANGE_FEE_PAYER_PK: ${{ secrets.VITE_CI_EXCHANGE_FEE_PAYER_PK }}
       CYPRESS_TEST_TAG: $GIT_BRANCH_NAME
       CYPRESS_BUILD_ID: '$GIT_BRANCH_NAME-${{ github.sha }}-${{ github.run_attempt }}'
       CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}

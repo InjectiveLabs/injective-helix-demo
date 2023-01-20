@@ -1,11 +1,7 @@
-import { actionTree, getterTree } from 'typed-vuex'
+import { defineStore } from 'pinia'
 import {
-  UiDerivativeMarketSummary,
-  UiDerivativeMarketWithToken,
   UiMarketHistory,
   UiMarketsHistoryTransformer,
-  UiSpotMarketSummary,
-  UiSpotMarketWithToken,
   zeroSpotMarketSummary,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
@@ -19,149 +15,73 @@ import {
   exchangeApi,
   indexerRestMarketChronosApi,
   tokenService
-} from '~/app/Services'
-import { upcomingMarkets, deprecatedMarkets } from '~/app/data/market'
-import { TradingRewardsCampaign } from '~/app/client/types/exchange'
+} from '@/app/Services'
+import { upcomingMarkets, deprecatedMarkets } from '@/app/data/market'
+import { TradingRewardsCampaign } from '@/app/client/types/exchange'
+import { UiMarketWithToken, UiMarketSummary } from '@/types'
 
-const initialStateFactory = () => ({
-  params: undefined as ExchangeParams | undefined,
-  feeDiscountSchedule: undefined as FeeDiscountSchedule | undefined,
-  feeDiscountAccountInfo: undefined as FeeDiscountAccountInfo | undefined,
-  tradingRewardsCampaign: undefined as TradingRewardsCampaign | undefined,
-  tradeRewardsPoints: [] as string[],
-  pendingTradeRewardsPoints: [] as string[],
-
-  upcomingMarkets: upcomingMarkets as Array<
-    UiSpotMarketWithToken | UiDerivativeMarketWithToken
-  >,
-  upcomingMarketsSummaries: upcomingMarkets.map((m) =>
-    zeroSpotMarketSummary(m.marketId)
-  ) as Array<UiSpotMarketSummary | UiDerivativeMarketSummary>,
-
-  deprecatedMarkets: deprecatedMarkets as Array<
-    UiSpotMarketWithToken | UiDerivativeMarketWithToken
-  >,
-  deprecatedMarketsSummaries: deprecatedMarkets.map((m) =>
-    zeroSpotMarketSummary(m.marketId)
-  ) as Array<UiSpotMarketSummary | UiDerivativeMarketSummary>,
-  marketsHistory: [] as UiMarketHistory[]
-})
-
-const initialState = initialStateFactory()
-
-export const state = () => ({
-  params: initialState.params as ExchangeParams | undefined,
-  feeDiscountSchedule: initialState.feeDiscountSchedule as
-    | FeeDiscountSchedule
-    | undefined,
-  feeDiscountAccountInfo: initialState.feeDiscountAccountInfo as
-    | FeeDiscountAccountInfo
-    | undefined,
-  tradingRewardsCampaign: initialState.tradingRewardsCampaign as
-    | TradingRewardsCampaign
-    | undefined,
-  tradeRewardsPoints: initialState.tradeRewardsPoints as string[],
-  pendingTradeRewardsPoints: initialState.pendingTradeRewardsPoints as string[],
-
-  upcomingMarkets: initialState.upcomingMarkets as Array<
-    UiSpotMarketWithToken | UiDerivativeMarketWithToken
-  >,
-  upcomingMarketsSummaries: initialState.upcomingMarketsSummaries as Array<
-    UiSpotMarketSummary | UiDerivativeMarketSummary
-  >,
-
-  deprecatedMarkets: initialState.deprecatedMarkets as Array<
-    UiSpotMarketWithToken | UiDerivativeMarketWithToken
-  >,
-  deprecatedMarketsSummaries: initialState.deprecatedMarketsSummaries as Array<
-    UiSpotMarketSummary | UiDerivativeMarketSummary
-  >,
-  marketsHistory: initialState.marketsHistory as UiMarketHistory[]
-})
-
-export type ExchangeStoreState = ReturnType<typeof state>
-
-export const getters = getterTree(state, {
-  //
-})
-
-export const mutations = {
-  setParams(state: ExchangeStoreState, params: ExchangeParams) {
-    state.params = params
-  },
-
-  setFeeDiscountSchedule(
-    state: ExchangeStoreState,
-    feeDiscountSchedule: FeeDiscountSchedule
-  ) {
-    state.feeDiscountSchedule = feeDiscountSchedule
-  },
-
-  setTradingRewardsCampaign(
-    state: ExchangeStoreState,
-    tradingRewardsCampaign: TradingRewardsCampaign
-  ) {
-    state.tradingRewardsCampaign = tradingRewardsCampaign
-  },
-
-  setFeeDiscountAccountInfo(
-    state: ExchangeStoreState,
-    feeDiscountAccountInfo: FeeDiscountAccountInfo
-  ) {
-    state.feeDiscountAccountInfo = feeDiscountAccountInfo
-  },
-
-  setTradeRewardPoints(
-    state: ExchangeStoreState,
-    tradeRewardsPoints: string[]
-  ) {
-    state.tradeRewardsPoints = tradeRewardsPoints
-  },
-
-  setPendingTradeRewardPoints(
-    state: ExchangeStoreState,
-    tradeRewardsPoints: string[]
-  ) {
-    state.pendingTradeRewardsPoints = tradeRewardsPoints
-  },
-
-  setMarketsHistory(
-    state: ExchangeStoreState,
-    marketsHistory: UiMarketHistory[]
-  ) {
-    state.marketsHistory = [...state.marketsHistory, ...marketsHistory]
-  },
-
-  reset(state: ExchangeStoreState) {
-    const initialState = initialStateFactory()
-
-    state.feeDiscountSchedule = initialState.feeDiscountSchedule
-    state.feeDiscountAccountInfo = initialState.feeDiscountAccountInfo
-    state.tradingRewardsCampaign = initialState.tradingRewardsCampaign
-    state.tradeRewardsPoints = initialState.tradeRewardsPoints
-    state.pendingTradeRewardsPoints = initialState.pendingTradeRewardsPoints
-  }
+type ExchangeStoreState = {
+  params?: ExchangeParams
+  feeDiscountSchedule?: FeeDiscountSchedule
+  feeDiscountAccountInfo?: FeeDiscountAccountInfo
+  tradingRewardsCampaign?: TradingRewardsCampaign
+  tradeRewardsPoints: string[]
+  pendingTradeRewardsPoints: string[]
+  upcomingMarkets: UiMarketWithToken[]
+  upcomingMarketsSummaries: UiMarketSummary[]
+  deprecatedMarkets: UiMarketWithToken[]
+  deprecatedMarketsSummaries: UiMarketSummary[]
+  marketsHistory: UiMarketHistory[]
 }
 
-export const actions = actionTree(
-  { state, mutations },
-  {
-    async initFeeDiscounts(_) {
-      await this.app.$accessor.exchange.fetchFeeDiscountAccountInfo()
+const initialStateFactory = (): ExchangeStoreState => ({
+  params: undefined,
+  feeDiscountSchedule: undefined,
+  feeDiscountAccountInfo: undefined,
+  tradingRewardsCampaign: undefined,
+  tradeRewardsPoints: [],
+  pendingTradeRewardsPoints: [],
+
+  upcomingMarkets,
+  upcomingMarketsSummaries: upcomingMarkets.map((m) =>
+    zeroSpotMarketSummary(m.marketId)
+  ),
+
+  deprecatedMarkets,
+  deprecatedMarketsSummaries: deprecatedMarkets.map((m) =>
+    zeroSpotMarketSummary(m.marketId)
+  ),
+  marketsHistory: []
+})
+
+export const useExchangeStore = defineStore('exchange', {
+  state: (): ExchangeStoreState => initialStateFactory(),
+
+  actions: {
+    async initFeeDiscounts() {
+      const exchangeStore = useExchangeStore()
+
+      await exchangeStore.fetchFeeDiscountAccountInfo()
     },
 
-    async initTradeAndEarn(_) {
-      await this.app.$accessor.exchange.fetchTradeRewardPoints()
-      await this.app.$accessor.exchange.fetchPendingTradeRewardPoints()
+    async initTradeAndEarn() {
+      const exchangeStore = useExchangeStore()
+
+      await exchangeStore.fetchTradeRewardPoints()
+      await exchangeStore.fetchPendingTradeRewardPoints()
     },
 
-    async fetchParams({ commit }) {
-      const params = await exchangeApi.fetchModuleParams()
+    async fetchParams() {
+      const exchangeStore = useExchangeStore()
 
-      commit('setParams', params)
+      exchangeStore.$patch({
+        params: await exchangeApi.fetchModuleParams()
+      })
     },
 
-    async fetchFeeDiscountSchedule({ commit }) {
+    async fetchFeeDiscountSchedule() {
+      const exchangeStore = useExchangeStore()
+
       const feeDiscountSchedule = await exchangeApi.fetchFeeDiscountSchedule()
 
       if (feeDiscountSchedule) {
@@ -176,13 +96,15 @@ export const actions = actionTree(
           quoteTokenMeta
         } as FeeDiscountSchedule
 
-        commit('setFeeDiscountSchedule', feeDiscountScheduleWithToken)
+        exchangeStore.$patch({
+          feeDiscountSchedule: feeDiscountScheduleWithToken
+        })
       }
     },
 
-    async fetchFeeDiscountAccountInfo({ commit }) {
-      const { isUserWalletConnected, injectiveAddress } =
-        this.app.$accessor.wallet
+    async fetchFeeDiscountAccountInfo() {
+      const exchangeStore = useExchangeStore()
+      const { isUserWalletConnected, injectiveAddress } = useWalletStore()
 
       if (!isUserWalletConnected || !injectiveAddress) {
         return
@@ -192,11 +114,15 @@ export const actions = actionTree(
         await exchangeApi.fetchFeeDiscountAccountInfo(injectiveAddress)
 
       if (feeDiscountAccountInfo) {
-        commit('setFeeDiscountAccountInfo', feeDiscountAccountInfo)
+        exchangeStore.$patch({
+          feeDiscountAccountInfo
+        })
       }
     },
 
-    async fetchTradingRewardsCampaign({ commit }) {
+    async fetchTradingRewardsCampaign() {
+      const exchangeStore = useExchangeStore()
+
       const tradingRewardsCampaign =
         await exchangeApi.fetchTradingRewardsCampaign()
 
@@ -223,33 +149,37 @@ export const actions = actionTree(
           tradingRewardCampaignInfo
         } as TradingRewardsCampaign
 
-        commit('setTradingRewardsCampaign', tradingRewardsCampaignWithToken)
+        exchangeStore.$patch({
+          tradingRewardsCampaign: tradingRewardsCampaignWithToken
+        })
       }
     },
 
-    async fetchTradeRewardPoints({ commit }) {
-      const { isUserWalletConnected, injectiveAddress } =
-        this.app.$accessor.wallet
+    async fetchTradeRewardPoints() {
+      const exchangeStore = useExchangeStore()
+
+      const { isUserWalletConnected, injectiveAddress } = useWalletStore()
 
       if (!isUserWalletConnected || !injectiveAddress) {
         return
       }
 
-      commit(
-        'setTradeRewardPoints',
-        await exchangeApi.fetchTradeRewardPoints([injectiveAddress])
-      )
+      exchangeStore.$patch({
+        tradeRewardsPoints: await exchangeApi.fetchTradeRewardPoints([
+          injectiveAddress
+        ])
+      })
     },
 
-    async fetchPendingTradeRewardPoints({ commit, state }) {
-      const { isUserWalletConnected, injectiveAddress } =
-        this.app.$accessor.wallet
+    async fetchPendingTradeRewardPoints() {
+      const exchangeStore = useExchangeStore()
+      const { isUserWalletConnected, injectiveAddress } = useWalletStore()
 
       if (!isUserWalletConnected || !injectiveAddress) {
         return
       }
 
-      const { params, tradingRewardsCampaign } = state
+      const { params, tradingRewardsCampaign } = exchangeStore
 
       if (!params || !tradingRewardsCampaign) {
         return
@@ -277,21 +207,28 @@ export const actions = actionTree(
         })
       )
 
-      commit('setPendingTradeRewardPoints', rewards)
+      exchangeStore.$patch({
+        pendingTradeRewardsPoints: rewards
+      })
     },
 
-    async getMarketsHistory(
-      { state, commit },
-      {
-        marketIds,
-        resolution,
-        countback
-      }: { marketIds: string[]; resolution: number; countback: number }
-    ) {
+    async getMarketsHistory({
+      marketIds,
+      resolution,
+      countback
+    }: {
+      marketIds: string[]
+      resolution: number
+      countback: number
+    }) {
+      const exchangeStore = useExchangeStore()
+
       const marketHistoryAlreadyExists = marketIds.every((marketId) => {
-        return state.marketsHistory.find((marketHistory: UiMarketHistory) => {
-          return marketHistory.marketId === marketId
-        })
+        return exchangeStore.marketsHistory.find(
+          (marketHistory: UiMarketHistory) => {
+            return marketHistory.marketId === marketId
+          }
+        )
       })
 
       if (marketHistoryAlreadyExists) {
@@ -310,11 +247,26 @@ export const actions = actionTree(
           marketsHistory
         )
 
-      commit('setMarketsHistory', marketsHistoryToUiMarketsHistory)
+      exchangeStore.$patch({
+        marketsHistory: [
+          ...exchangeStore.marketsHistory,
+          ...marketsHistoryToUiMarketsHistory
+        ]
+      })
     },
 
-    async reset({ commit }) {
-      await Promise.resolve(commit('reset'))
+    reset() {
+      const exchangeStore = useExchangeStore()
+
+      const initialState = initialStateFactory()
+
+      exchangeStore.$patch({
+        feeDiscountSchedule: initialState.feeDiscountSchedule,
+        feeDiscountAccountInfo: initialState.feeDiscountAccountInfo,
+        tradingRewardsCampaign: initialState.tradingRewardsCampaign,
+        tradeRewardsPoints: initialState.tradeRewardsPoints,
+        pendingTradeRewardsPoints: initialState.pendingTradeRewardsPoints
+      })
     }
   }
-)
+})

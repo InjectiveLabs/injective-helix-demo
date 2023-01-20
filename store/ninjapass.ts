@@ -1,34 +1,25 @@
-import { actionTree, mutationTree } from 'typed-vuex'
-import { fetchNinjaPassCodes } from '~/app/services/ninjapass'
+import { defineStore } from 'pinia'
+import { fetchNinjaPassCodes } from '@/app/services/ninjapass'
 
-const initialStateFactory = () => ({
-  codes: [] as { address: string; code: string }[]
+type Code = {
+  address: string
+  code: string
+}
+
+type NinjaPassStoreState = {
+  codes?: Code[]
+}
+
+const initialStateFactory = (): NinjaPassStoreState => ({
+  codes: []
 })
 
-const initialState = initialStateFactory()
-
-export const state = () => ({
-  codes: initialState.codes as { address: string; code: string }[]
-})
-
-export type NinjaPassStoreState = ReturnType<typeof state>
-
-export const mutations = mutationTree(state, {
-  setCodes(
-    state: NinjaPassStoreState,
-    codes: { address: string; code: string }[]
-  ) {
-    state.codes = codes
-  }
-})
-
-export const actions = actionTree(
-  { state, mutations },
-  {
-    async init(_) {},
-
-    async fetchCodes({ commit }) {
-      const { injectiveAddress } = this.app.$accessor.wallet
+export const useNinjaPassStore = defineStore('ninjaPass', {
+  state: (): NinjaPassStoreState => initialStateFactory(),
+  actions: {
+    async fetchCodes() {
+      const ninjaPassStore = useNinjaPassStore()
+      const { injectiveAddress } = useWalletStore()
 
       if (!injectiveAddress) {
         return
@@ -36,7 +27,9 @@ export const actions = actionTree(
 
       const codes = (await fetchNinjaPassCodes(injectiveAddress)) || []
 
-      commit('setCodes', codes)
+      ninjaPassStore.$patch({
+        codes
+      })
     }
   }
-)
+})

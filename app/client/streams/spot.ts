@@ -7,10 +7,18 @@ import {
 } from '@injectivelabs/sdk-ts'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import { streamProvider } from '../../providers/StreamProvider'
-import { ENDPOINTS } from '~/app/utils/constants'
-import { StreamType } from '~/types'
+import { ENDPOINTS } from '@/app/utils/constants'
+import { StreamType } from '@/types'
 
 export const spotMarketStream = new IndexerGrpcSpotStream(ENDPOINTS.indexer)
+
+export const cancelOrderbookStream = () => {
+  streamProvider.cancel(StreamType.SpotOrderbook)
+}
+
+export const cancelTradesStream = () => {
+  streamProvider.cancel(StreamType.SpotTrades)
+}
 
 export const streamOrderbook = ({
   marketId,

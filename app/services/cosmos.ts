@@ -6,9 +6,9 @@ import {
 import { PublicKey } from '@injectivelabs/sdk-ts'
 import { CosmosChainId } from '@injectivelabs/ts-types'
 import { CosmosWalletStrategy, Wallet } from '@injectivelabs/wallet-ts'
-import { KeplrWallet } from '@injectivelabs/wallet-ts/dist/wallets/keplr'
-import { CHAIN_ID } from '../utils/constants'
-import { walletStrategy } from '../wallet-strategy'
+import { KeplrWallet } from '@injectivelabs/wallet-ts/dist/utils/wallets/keplr'
+import { CHAIN_ID } from '@/app/utils/constants'
+import { walletStrategy } from '@/app/wallet-strategy'
 
 export const confirmCorrectKeplrAddress = async (injectiveAddress: string) => {
   // We only perform this check for Keplr addresses

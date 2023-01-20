@@ -1,0 +1,32 @@
+<script lang="ts" setup>
+import { Status, StatusType } from '@injectivelabs/utils'
+
+const walletStore = useWalletStore()
+const exchangeStore = useExchangeStore()
+const { $onError } = useNuxtApp()
+
+const status = reactive(new Status(StatusType.Loading))
+
+onMounted(() => {
+  Promise.all([exchangeStore.fetchFeeDiscountAccountInfo()])
+    .then(() => {
+      //
+    })
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+})
+</script>
+
+<template>
+  <AppHocLoading :status="status">
+    <div v-if="walletStore.isUserWalletConnected">
+      <AppHorizontalScrollView>
+        <PartialsFeeDiscountsTierInfo class="flex-0-full md:col-span-6" />
+        <PartialsFeeDiscountsStakedAmount class="flex-0-full md:col-span-3" />
+        <PartialsFeeDiscountsTradingVolume class="flex-0-full md:col-span-3" />
+      </AppHorizontalScrollView>
+    </div>
+  </AppHocLoading>
+</template>
