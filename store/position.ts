@@ -44,14 +44,6 @@ const initialStateFactory = (): PositionStoreState => ({
 export const usePositionStore = defineStore('position', {
   state: (): PositionStoreState => initialStateFactory(),
   actions: {
-    reset() {
-      const positionStore = usePositionStore()
-
-      positionStore.$patch({
-        ...initialStateFactory()
-      })
-    },
-
     async fetchSubaccountPositions(
       activityFetchOptions?: ActivityFetchOptions
     ) {

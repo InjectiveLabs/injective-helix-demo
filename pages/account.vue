@@ -20,11 +20,11 @@ definePageMeta({
 
 const appStore = useAppStore()
 const bankStore = useBankStore()
+const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
-const walletStore = useWalletStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
@@ -223,17 +223,22 @@ const balances = computed(() => {
   return balances
 })
 
-onMounted(() => {
-  Promise.all([
-    walletStore.init(),
-    tokenStore.getBitcoinUsdPrice(),
-    bankStore.fetchBankBalancesWithToken(),
-    accountStore.refreshSubaccountBalances()
-  ])
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
+onWalletConnected(() => {
+  status.setLoading()
+
+  Promise.all([spotStore.init(), derivativeStore.init()])
+    .then(() => {
+      Promise.all([
+        tokenStore.getBitcoinUsdPrice(),
+        bankStore.fetchBankBalancesWithToken(),
+        accountStore.fetchSubaccounts()
+      ])
+        .catch($onError)
+        .finally(() => {
+          status.setIdle()
+        })
     })
+    .catch($onError)
 })
 
 useIntervalFn(appStore.pollMarkets, 1000 * 10)

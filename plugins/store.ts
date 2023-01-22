@@ -72,6 +72,11 @@ const persistState = (
   }
 
   const keysToPersist = Object.keys(stateToPersist[mutation.storeId])
+
+  if (!mutation.payload) {
+    return
+  }
+
   const shouldPersistState =
     keysToPersist.length > 0 &&
     Object.keys(mutation.payload).some((key) => {

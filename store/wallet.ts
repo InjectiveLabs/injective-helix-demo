@@ -10,12 +10,8 @@ import {
 import { CosmosChainId } from '@injectivelabs/ts-types'
 import { confirm, connect, getAddresses } from '@/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
-import { WalletConnectStatus } from '@/types'
+import { BusEvents, WalletConnectStatus } from '@/types'
 import { walletStrategy } from '@/app/wallet-strategy'
-import {
-  derivativeMarketRouteNames,
-  spotMarketRouteNames
-} from '@/app/data/market'
 import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
 import {
   confirmCorrectKeplrAddress,
@@ -107,7 +103,6 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async onConnect() {
-      const route = useRoute()
       const accountStore = useAccountStore()
       const bankStore = useBankStore()
       const exchangeStore = useExchangeStore()
@@ -117,24 +112,6 @@ export const useWalletStore = defineStore('wallet', {
       await accountStore.fetchSubaccounts()
       await bankStore.fetchBalances()
       await exchangeStore.initFeeDiscounts()
-
-      if (route.name === 'funding') {
-        await walletStore.initPage()
-      }
-
-      if (route.name === 'trade-and-earn') {
-        await exchangeStore.initTradeAndEarn()
-      }
-
-      const isOnTradingPage = [
-        ...derivativeMarketRouteNames,
-        ...spotMarketRouteNames
-      ]
-
-      if (isOnTradingPage.includes(route.name as string)) {
-        await bankStore.fetchBankBalancesWithToken()
-        await accountStore.streamSubaccountBalances()
-      }
 
       amplitudeTracker.submitWalletSelectedTrackEvent(walletStore.wallet)
       amplitudeTracker.setUser({
@@ -147,6 +124,8 @@ export const useWalletStore = defineStore('wallet', {
       walletStore.$patch({
         walletConnectStatus: WalletConnectStatus.connected
       })
+
+      useEventBus(BusEvents.WalletConnected).emit()
 
       await referralStore.init()
     },
@@ -414,14 +393,15 @@ export const useWalletStore = defineStore('wallet', {
       await walletStrategy.disconnectWallet()
 
       accountStore.reset()
-      activityStore.reset()
-      bankStore.reset()
-      derivativeStore.resetSubaccount()
-      positionStore.reset()
-      referralStore.reset()
-      spotStore.resetSubaccount()
-      tokenStore.reset()
       walletStore.reset()
+      derivativeStore.resetSubaccount()
+      spotStore.resetSubaccount()
+
+      activityStore.$reset()
+      bankStore.$reset()
+      positionStore.$reset()
+      referralStore.$reset()
+      tokenStore.$reset()
     },
 
     reset() {
@@ -435,15 +415,6 @@ export const useWalletStore = defineStore('wallet', {
         injectiveAddress: initialState.injectiveAddress,
         addressConfirmation: initialState.addressConfirmation
       })
-    },
-
-    async resetPage() {
-      const onBoardStore = useOnboardStore()
-      const tokenStore = useTokenStore()
-
-      await tokenStore.reset()
-      await onBoardStore.reset()
-      // await this.app.$accessor.gasRebate.reset()
     }
   }
 })

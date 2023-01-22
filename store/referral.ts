@@ -89,14 +89,6 @@ export const useReferralStore = defineStore('referral', {
 
       await referralStore.getFeeRecipient(injectiveAddress)
       await referralStore.getRefereeInfo(injectiveAddress)
-    },
-
-    reset() {
-      const referralStore = useReferralStore()
-
-      referralStore.$patch({
-        ...initialStateFactory()
-      })
     }
   }
 })
