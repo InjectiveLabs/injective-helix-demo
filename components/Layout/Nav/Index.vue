@@ -9,6 +9,9 @@ import {
 
 const walletStore = useWalletStore()
 
+const tradeDropdownShown = ref(false)
+const rewardsDropdownShown = ref(false)
+
 const defaultPerpetualMarketRoute = computed(() => {
   return getDefaultPerpetualMarketRouteParams()
 })
@@ -32,6 +35,22 @@ function handlePerpetualTradeClickedTrack() {
     origin: TradeClickOrigin.TopMenu
   })
 }
+
+function handleTradeDropdownShownChange(value: boolean) {
+  tradeDropdownShown.value = value
+
+  if (value) {
+    rewardsDropdownShown.value = false
+  }
+}
+
+function handleRewardsDropdownShownChange(value: boolean) {
+  rewardsDropdownShown.value = value
+
+  if (value) {
+    tradeDropdownShown.value = false
+  }
+}
 </script>
 
 <template>
@@ -48,8 +67,9 @@ function handlePerpetualTradeClickedTrack() {
         {{ $t('trade.markets') }}
       </LayoutNavItem>
 
-      <BaseHoverMenu
-        popper-class="w-80 xs:w-96 rounded-lg bg-gray-850 shadow-dropdown z-[50] flex flex-col flex-wrap nav-dropdown"
+      <LayoutNavHoverMenu
+        :shown="tradeDropdownShown"
+        @dropdown:toggle="handleTradeDropdownShownChange"
       >
         <template #default>
           <LayoutNavItemDummy id="trade-dropdown" class="hidden lg:block">
@@ -102,12 +122,13 @@ function handlePerpetualTradeClickedTrack() {
             </p>
           </NuxtLink>
         </template>
-      </BaseHoverMenu>
+      </LayoutNavHoverMenu>
 
       <LayoutNavMobile />
 
-      <BaseHoverMenu
-        popper-class="w-80 xs:w-96 rounded-lg bg-gray-850 shadow-dropdown z-[50] flex flex-col flex-wrap nav-dropdown"
+      <LayoutNavHoverMenu
+        :shown="rewardsDropdownShown"
+        @dropdown:toggle="handleRewardsDropdownShownChange"
       >
         <template #default>
           <LayoutNavItemDummy id="rewards-dropdown" class="hidden lg:block">
@@ -142,7 +163,7 @@ function handlePerpetualTradeClickedTrack() {
             </p>
           </a>
         </template>
-      </BaseHoverMenu>
+      </LayoutNavHoverMenu>
 
       <!-- <LayoutNavItem
         class="block"
