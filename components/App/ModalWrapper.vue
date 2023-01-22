@@ -19,9 +19,9 @@ const classes = computed(() => {
   const result = []
 
   if (props.sm) {
-    result.push('min-w-md max-w-md')
+    result.push('sm:min-w-md sm:max-w-md')
   } else if (props.md) {
-    result.push('min-w-lg max-w-lg', 'min-w-2xl lg:max-w-2xl')
+    result.push('md:min-w-lg md:max-w-lg', 'md:min-w-2xl lg:max-w-2xl')
   } else if (props.lg) {
     result.push('max-w-lg', 'lg:max-w-3xl')
   } else {
