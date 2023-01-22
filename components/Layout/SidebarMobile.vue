@@ -10,7 +10,7 @@ function closeSidebar() {
 
 <template>
   <div class="lg:hidden">
-    <div class="fixed inset-0 max-w-xs flex z-1110 top-[48px]">
+    <div class="fixed inset-0 max-w-xs flex z-1100 top-[48px]">
       <transition
         enter-active-class="transition ease-in-out duration-300 transform"
         enter-class="-translate-x-full"

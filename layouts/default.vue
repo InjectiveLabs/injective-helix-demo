@@ -119,6 +119,7 @@ function onCloseSideBar() {
               />
               <main
                 class="w-full h-full min-h-screen-excluding-header flex flex-col"
+                :class="{ 'pt-12': isOpenSidebar }"
               >
                 <div class="relative h-full-flex">
                   <NuxtPage />

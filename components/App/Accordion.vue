@@ -8,7 +8,8 @@ const emit = defineEmits<{
   (e: 'togglePanel'): void
 }>()
 
-function handleToggle() {
+function handleToggle(e: MouseEvent) {
+  e.stopPropagation()
   emit('togglePanel')
 }
 </script>
@@ -26,7 +27,7 @@ function handleToggle() {
           <slot name="title" />
           <slot name="badge" />
         </div>
-        <span class="ml-6 h-7 flex items-center">
+        <span class="ml-6 h-6 flex items-center">
           <svg
             class="transform"
             :class="{
