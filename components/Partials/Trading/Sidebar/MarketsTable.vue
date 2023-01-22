@@ -84,17 +84,19 @@ const sortedMarkets = computed(() => {
     />
 
     <CommonTableHeader classes="grid grid-cols-2 md:grid">
-      <div class="flex items-center">
+      <div class="flex flex-col xl:flex-row items-start xl:items-center gap-1">
         <AppSortableHeaderItem
           v-model:sort-by="sortBy"
           v-model:ascending="ascending"
           :value="SortableKeys.Market"
         >
-          <span class="text-gray-200 text-xs font-normal order-last">
-            {{ $t('trade.market') }}
+          <span
+            class="text-gray-200 text-xs font-normal order-last whitespace-nowrap"
+          >
+            {{ $t('trade.market') }} /
           </span>
         </AppSortableHeaderItem>
-        <span class="mx-1 select-none">/</span>
+
         <AppSortableHeaderItem
           v-model:sort-by="sortBy"
           v-model:ascending="ascending"
@@ -108,9 +110,10 @@ const sortedMarkets = computed(() => {
       </div>
 
       <div
-        class="flex items-center gap-1 text-gray-200 text-xs justify-self-end"
+        class="flex flex-col xl:flex-row items-end xl:items-center gap-1 text-gray-200 text-xs justify-self-end"
       >
         <span class="font-normal"> {{ $t('trade.price') }} / </span>
+
         <AppSortableHeaderItem
           v-model:sort-by="sortBy"
           v-model:ascending="ascending"
