@@ -18,19 +18,11 @@ const positions = computed(() => {
 })
 
 onMounted(() => {
-  init()
-})
-
-function init() {
-  return Promise.all([
+  Promise.all([
     derivativeStore.fetchSubaccountOrders(),
     derivativeStore.fetchSubaccountConditionalOrders()
-  ])
-    .catch($onError)
-    .then(() => {
-      //
-    })
-}
+  ]).catch($onError)
+})
 </script>
 
 <template>

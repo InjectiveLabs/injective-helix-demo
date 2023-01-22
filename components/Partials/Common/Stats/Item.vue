@@ -39,7 +39,9 @@ defineProps({
     >
       <slot name="value" />
     </p>
-    <slot></slot>
+
+    <slot />
+
     <div
       v-if="!$slots['title-horizontal']"
       class="text-2xs xs:text-xs text-center h-2 sm:h-3"
@@ -51,7 +53,7 @@ defineProps({
       }"
       v-bind="$attrs"
     >
-      <slot name="context"></slot>
+      <slot name="context" />
     </div>
     <div
       v-if="$slots['chart']"
@@ -61,7 +63,7 @@ defineProps({
         'mb-4': sm
       }"
     >
-      <slot name="chart"></slot>
+      <slot name="chart" />
     </div>
     <h4
       v-if="$slots['title']"

@@ -87,26 +87,18 @@ watch(
     if (walletConnectStatus === WalletConnectStatus.connecting) {
       status.setLoading()
     }
-
-    if (
-      walletConnectStatus === WalletConnectStatus.connected ||
-      walletConnectStatus === WalletConnectStatus.idle
-    ) {
-      status.setIdle()
-    }
   }
 )
 
-onMounted(() =>
+onWalletConnected(() => {
+  status.setLoading()
+
   Promise.all([onboardStore.init(), bankStore.fetchBankBalancesWithToken()])
-    .then(() => {
-      //
-    })
     .catch($onError)
     .finally(() => {
       status.setIdle()
     })
-)
+})
 </script>
 
 <template>

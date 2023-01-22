@@ -72,14 +72,6 @@ export const useActivityStore = defineStore('activity', {
         subaccountFundingPayments,
         subaccountFundingPaymentsCount: pagination.total
       })
-    },
-
-    reset() {
-      const activityStore = useActivityStore()
-
-      activityStore.$patch({
-        tradingRewardsHistory: []
-      })
     }
   }
 })

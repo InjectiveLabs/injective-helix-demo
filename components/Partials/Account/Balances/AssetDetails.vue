@@ -6,7 +6,6 @@ import {
   StatusType
 } from '@injectivelabs/utils'
 import {
-  getTokenLogoWithVendorPathPrefix,
   UiSpotMarketSummary,
   UiSpotMarketWithToken,
   ZERO_IN_BASE
@@ -31,20 +30,12 @@ const balance = ref<AccountBalance | undefined>(undefined)
 const modalStore = useModalStore()
 const spotStore = useSpotStore()
 
-const isModalOpen = computed(() => {
-  return modalStore.modals[Modal.AssetDetails] && !!balance.value
-})
-
-const markets = computed(() => {
-  return spotStore.markets
-})
-
-const marketsSummary = computed(() => {
-  return spotStore.marketsSummary
-})
+const isModalOpen = computed(
+  () => modalStore.modals[Modal.AssetDetails] && !!balance.value
+)
 
 const filteredMarkets = computed(() => {
-  return markets.value.filter((m) => {
+  return spotStore.markets.filter((m) => {
     if (!balance.value) {
       return false
     }
@@ -58,7 +49,7 @@ const filteredMarkets = computed(() => {
 
 const filteredMarketsWithSummary = computed(() => {
   return filteredMarkets.value.map((market: UiSpotMarketWithToken) => {
-    const summary = marketsSummary.value.find(
+    const summary = spotStore.marketsSummary.find(
       (s: UiSpotMarketSummary) => s.marketId === market.marketId
     )
 
@@ -134,14 +125,6 @@ const combinedBalanceInUsdToString = computed(() => {
   return combinedBalance.value
     .times(balance.value.token.usdPrice)
     .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS, BigNumberInBase.ROUND_DOWN)
-})
-
-const tokenLogo = computed(() => {
-  if (!balance.value) {
-    return ''
-  }
-
-  return getTokenLogoWithVendorPathPrefix(balance.value.token.logo)
 })
 
 onMounted(() => {
@@ -224,7 +207,11 @@ function handleWithdrawClick() {
 
           <div class="mt-6 border-b border-gray-600">
             <div v-if="balance" class="flex items-center justify-start gap-2">
-              <img :src="tokenLogo" :alt="balance.token.name" class="w-4 h-4" />
+              <CommonTokenIcon
+                v-if="balance && balance.token"
+                :token="balance.token"
+                sm
+              />
               <span class="tracking-wide font-bold text-sm">
                 {{ balance.token.symbol }}
               </span>

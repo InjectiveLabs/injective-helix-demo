@@ -169,9 +169,6 @@ onMounted(() => {
       countback: MARKETS_HISTORY_CHART_SEVEN_DAYS
     })
   ])
-    .then(() => {
-      //
-    })
     .catch($onError)
     .finally(() => {
       status.setIdle()

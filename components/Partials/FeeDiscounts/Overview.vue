@@ -7,11 +7,10 @@ const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
 
-onMounted(() => {
+onWalletConnected(() => {
+  status.setLoading()
+
   Promise.all([exchangeStore.fetchFeeDiscountAccountInfo()])
-    .then(() => {
-      //
-    })
     .catch($onError)
     .finally(() => {
       status.setIdle()

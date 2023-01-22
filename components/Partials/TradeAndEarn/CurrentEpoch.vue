@@ -160,9 +160,6 @@ const estimatedRewardsInUsd = computed(() => {
 
 onMounted(() => {
   Promise.all([exchangeStore.fetchTradeRewardPoints()])
-    .then(() => {
-      //
-    })
     .catch($onError)
     .finally(() => {
       status.setIdle()

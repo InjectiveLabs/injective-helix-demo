@@ -345,9 +345,7 @@ export const useAccountStore = defineStore('account', {
 
       await cancelSubaccountStreams()
 
-      accountStore.$patch({
-        ...initialStateFactory()
-      })
+      accountStore.$reset()
     }
   }
 })

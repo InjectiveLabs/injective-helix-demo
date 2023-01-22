@@ -143,16 +143,6 @@ export const useBankStore = defineStore('bank', {
       })
 
       await backupPromiseCall(() => bankStore.fetchBalances())
-    },
-
-    reset() {
-      const bankStore = useBankStore()
-
-      bankStore.$reset()
-
-      bankStore.$patch({
-        ...initialStateFactory()
-      })
     }
   }
 })

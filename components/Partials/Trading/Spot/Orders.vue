@@ -23,59 +23,50 @@ const props = defineProps({
 
 const currentMarketOnly = ref(false)
 const status = reactive(new Status(StatusType.Loading))
+const actionStatus = reactive(new Status(StatusType.Loading))
 
 const activeType = ref(FilterList.OpenOrders)
 
-watch(currentMarketOnly, () => fetchAll(), { immediate: true })
+function fetchAll() {
+  status.setLoading()
 
-onMounted(() => fetchAll().catch($onError))
-
-function fetchAll(): Promise<void> {
-  return new Promise((resolve, reject) => {
-    status.setLoading()
-
-    const fetchOptions = {
-      filters: {
-        marketId: currentMarketOnly ? props.market.marketId : undefined
-      },
-      pagination: {
-        endTime: 0
-      }
+  const fetchOptions = {
+    filters: {
+      marketId: currentMarketOnly ? props.market.marketId : undefined
+    },
+    pagination: {
+      endTime: 0
     }
+  }
 
-    Promise.all([
-      spotStore.fetchSubaccountOrders(fetchOptions),
-      spotStore.fetchSubaccountOrderHistory(fetchOptions),
-      spotStore.fetchSubaccountTrades(fetchOptions)
-    ])
-      .catch(reject)
-      .finally(() => {
-        status.setIdle()
-        resolve()
-      })
-  })
-}
-
-function cancelOrder(): Promise<void> {
-  const [order] = spotStore.subaccountOrders
-
-  return spotStore.cancelOrder(order)
-}
-
-function cancelAllOrders(): Promise<void> {
-  return spotStore.batchCancelOrder(spotStore.subaccountOrders)
+  Promise.all([
+    spotStore.fetchSubaccountOrders(fetchOptions),
+    spotStore.fetchSubaccountOrderHistory(fetchOptions),
+    spotStore.fetchSubaccountTrades(fetchOptions)
+  ])
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
 }
 
 function handleCancelAllClick() {
-  const action =
-    spotStore.subaccountOrders.length === 1 ? cancelOrder : cancelAllOrders
+  actionStatus.setLoading()
 
-  action()
+  const action =
+    spotStore.subaccountOrders.length === 1
+      ? spotStore.cancelOrder(spotStore.subaccountOrders[0])
+      : spotStore.batchCancelOrder(spotStore.subaccountOrders)
+
+  action
     .then(() => {
       success({ title: t('trade.orders_cancelled') })
     })
     .catch($onError)
+    .finally(() => actionStatus.setIdle())
 }
+
+watch(currentMarketOnly, fetchAll, { immediate: true })
 </script>
 
 <template>
@@ -136,6 +127,7 @@ function handleCancelAllClick() {
           "
           class="text-red-500 bg-red-500 bg-opacity-10 font-semibold hover:text-white"
           xs
+          :status="actionStatus"
           data-cy="trade-page-cancel-all-button"
           @click="handleCancelAllClick"
         >

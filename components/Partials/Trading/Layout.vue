@@ -39,6 +39,7 @@ const slug = props.hardcodedSlug || (Object.values(params)[0] as string)
 
 const showMarketList = ref(false)
 const status = reactive(new Status(StatusType.Loading))
+const fetchStatus = reactive(new Status(StatusType.Loading))
 const market = ref<UiMarketWithToken | undefined>(undefined)
 
 const marketIsBeta = computed(() => betaMarketSlugs.includes(slug))
@@ -69,6 +70,7 @@ onMounted(async () => {
   market.value = marketBySlug
 
   status.setIdle()
+  fetchStatus.setIdle()
   emit('loaded', marketBySlug as UiMarketWithToken)
 })
 
@@ -78,7 +80,11 @@ onWalletConnected(() => {
   Promise.all([
     bankStore.fetchBankBalancesWithToken(),
     accountStore.streamSubaccountBalances()
-  ])
+  ]).finally(() => fetchStatus.setIdle())
+
+  if (market.value) {
+    emit('loaded', market.value)
+  }
 })
 
 const summary = computed(() => {
@@ -106,6 +112,15 @@ function close() {
 function toggleMarketList() {
   showMarketList.value = !showMarketList.value
 }
+
+watch(
+  () => walletStore.isUserWalletConnected,
+  (isConnected: boolean) => {
+    if (!isConnected) {
+      fetchStatus.setLoading()
+    }
+  }
+)
 </script>
 
 <template>
@@ -134,6 +149,7 @@ function toggleMarketList() {
               <CommonCard no-padding>
                 <div
                   v-if="
+                    fetchStatus.isIdle() &&
                     walletStore.isUserWalletConnected &&
                     !walletStore.hasEnoughInjForGas
                   "

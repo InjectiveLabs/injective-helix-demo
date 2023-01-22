@@ -227,13 +227,7 @@ onMounted(() => {
     )
   }
 
-  Promise.all([
-    positionStore.streamSubaccountPositions(),
-    spotStore.streamSubaccountOrders(),
-    spotStore.streamSubaccountOrderHistory(),
-    derivativeStore.streamSubaccountOrders(),
-    derivativeStore.streamSubaccountOrderHistory()
-  ])
+  Promise.all(promises)
     .then(() => {
       fetchData()
     })

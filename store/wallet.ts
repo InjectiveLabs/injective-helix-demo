@@ -393,14 +393,15 @@ export const useWalletStore = defineStore('wallet', {
       await walletStrategy.disconnectWallet()
 
       accountStore.reset()
-      activityStore.reset()
-      bankStore.reset()
-      derivativeStore.resetSubaccount()
-      positionStore.reset()
-      referralStore.reset()
-      spotStore.resetSubaccount()
-      tokenStore.reset()
       walletStore.reset()
+      derivativeStore.resetSubaccount()
+      spotStore.resetSubaccount()
+
+      activityStore.$reset()
+      bankStore.$reset()
+      positionStore.$reset()
+      referralStore.$reset()
+      tokenStore.$reset()
     },
 
     reset() {
@@ -414,15 +415,6 @@ export const useWalletStore = defineStore('wallet', {
         injectiveAddress: initialState.injectiveAddress,
         addressConfirmation: initialState.addressConfirmation
       })
-    },
-
-    async resetPage() {
-      const onBoardStore = useOnboardStore()
-      const tokenStore = useTokenStore()
-
-      await tokenStore.reset()
-      await onBoardStore.reset()
-      // await this.app.$accessor.gasRebate.reset()
     }
   }
 })

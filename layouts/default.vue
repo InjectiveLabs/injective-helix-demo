@@ -36,9 +36,6 @@ onMounted(() => {
   handleNinjaPassGiveaway()
 
   Promise.all([walletStore.init()])
-    .then(() => {
-      //
-    })
     .catch($onError)
     .finally(() => {
       status.setIdle()
@@ -50,9 +47,7 @@ onMounted(() => {
     appStore.fetchGasPrice(),
     referralStore.init(),
     exchangeStore.initFeeDiscounts()
-  ]).then(() => {
-    //
-  })
+  ])
 
   onLoadMarketsInit()
 
@@ -60,13 +55,7 @@ onMounted(() => {
 })
 
 onWalletConnected(() => {
-  bankStore.reset()
-
-  Promise.all([bankStore.init(), accountStore.init()])
-    .then(() => {
-      //
-    })
-    .catch($onError)
+  Promise.all([bankStore.init(), accountStore.init()]).catch($onError)
 })
 
 function handleCosmoverseGiveawayCampaignTrack() {
@@ -87,9 +76,6 @@ function onLoadMarketsInit() {
   appStore.setMarketsLoadingState(StatusType.Loading)
 
   Promise.all([spotStore.init(), derivativeStore.init()])
-    .then(() => {
-      //
-    })
     .catch($onError)
     .finally(() => {
       appStore.setMarketsLoadingState(StatusType.Idle)

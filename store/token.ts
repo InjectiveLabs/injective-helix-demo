@@ -324,14 +324,6 @@ export const useTokenStore = defineStore('token', {
       })
 
       await backupPromiseCall(() => bankStore.fetchBalances())
-    },
-
-    reset() {
-      const tokenStore = useTokenStore()
-
-      tokenStore.$patch({
-        ...initialStateFactory()
-      })
     }
   }
 })

@@ -40,7 +40,9 @@ const sortedPositions = computed(() => {
   })
 })
 
-onMounted(() => positionStore.fetchOpenPositionsMarketsOrderbook())
+onMounted(() => {
+  positionStore.fetchOpenPositionsMarketsOrderbook()
+})
 
 useIntervalFn(() => {
   positionStore.fetchOpenPositionsMarketsOrderbook()
