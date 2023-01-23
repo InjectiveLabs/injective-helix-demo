@@ -253,7 +253,7 @@ const notionalWithLeverage = computed(() => {
         price,
         orderSide: formValues.value[TradeField.OrderType],
         quantity: formValues.value[TradeField.BaseAmount],
-        tensMultiplier: props.market.priceTensMultiplier
+        tensMultiplier: props.market.quantityTensMultiplier
       }).toFixed()
     )
   }
@@ -262,7 +262,7 @@ const notionalWithLeverage = computed(() => {
     calculateMargin({
       price,
       quantity: formValues.value[TradeField.BaseAmount],
-      tensMultiplier: props.market.priceTensMultiplier,
+      tensMultiplier: props.market.quantityTensMultiplier,
       leverage: formValues.value[TradeField.Leverage]
     }).toFixed()
   )
@@ -287,7 +287,7 @@ const notionalWithLeverageBasedOnWorstPrice = computed(() => {
         orderSide: formValues.value[TradeField.OrderType],
         quantity: formValues.value[TradeField.BaseAmount],
         price: worstPriceWithSlippage.value.toFixed(),
-        tensMultiplier: props.market.priceTensMultiplier
+        tensMultiplier: props.market.quantityTensMultiplier
       }).toFixed()
     )
   }
@@ -297,7 +297,7 @@ const notionalWithLeverageBasedOnWorstPrice = computed(() => {
       quantity: formValues.value[TradeField.BaseAmount],
       price: worstPriceWithSlippage.value.toFixed(),
       leverage: formValues.value[TradeField.Leverage],
-      tensMultiplier: props.market.priceTensMultiplier
+      tensMultiplier: props.market.quantityTensMultiplier
     }).toFixed()
   )
 })
