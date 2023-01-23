@@ -16,6 +16,8 @@ import { Change, TradeClickOrigin } from '@/types'
 import { getAbbreviatedVolume, getMarketRoute } from '@/app/utils/market'
 import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
 
+const appStore = useAppStore()
+
 const props = defineProps({
   market: {
     type: Object as PropType<
@@ -33,12 +35,6 @@ const props = defineProps({
     type: Object as PropType<BigNumberInBase>,
     required: true
   }
-})
-
-const appStore = useAppStore()
-
-const favoriteMarkets = computed(() => {
-  return appStore.favoriteMarkets
 })
 
 const lastTradedPrice = computed(() => {
@@ -112,7 +108,7 @@ const marketRoute = computed(() => {
 })
 
 const isFavorite = computed(() => {
-  return favoriteMarkets.value.includes(props.market.marketId)
+  return appStore.favoriteMarkets.includes(props.market.marketId)
 })
 
 function updateWatchList() {
