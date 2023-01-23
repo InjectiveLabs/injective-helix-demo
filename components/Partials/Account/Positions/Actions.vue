@@ -2,6 +2,8 @@
 import { PropType } from 'vue'
 import { BaseDropdownOption } from '@injectivelabs/ui-shared'
 
+const positionStore = usePositionStore()
+
 const props = defineProps({
   marketDenom: {
     type: String,
@@ -97,6 +99,7 @@ function handleToggleFilters() {
       </div>
 
       <button
+        v-if="positionStore.subaccountPositions.length"
         class="bg-red-500 bg-opacity-20 rounded-lg px-3 h-8 flex md:hidden items-center justify-center w-auto"
         data-cy="trading-account-positions-table-cancel-all-button"
         @click="handleCloseAllPositions"
@@ -141,6 +144,7 @@ function handleToggleFilters() {
 
     <div class="col-span-1 items-center justify-end gap-6 hidden md:flex">
       <button
+        v-if="positionStore.subaccountPositions.length"
         class="bg-red-500 bg-opacity-20 rounded-lg px-3 h-8 flex items-center justify-center w-full md:w-auto"
         data-cy="trading-account-positions-table-cancel-all-button"
         @click="handleCloseAllPositions"
