@@ -69,20 +69,21 @@ const existsInUserOrders = computed(() =>
   })
 )
 
-const recordTypeBuy = computed(
-  () =>
+const recordTypeBuy = computed(() => {
+  return (
     props.type === DerivativeOrderSide.Buy || props.type === SpotOrderSide.Buy
-)
+  )
+})
 
 const total = computed(() => new BigNumberInBase(props.record.total || 0))
 
-const quantity = computed(() =>
-  isSpot
+const quantity = computed(() => {
+  return isSpot
     ? new BigNumberInWei(props.record.quantity).toBase(
         props.market.baseToken.decimals
       )
     : new BigNumberInBase(props.record.quantity)
-)
+})
 
 const depthWidth = computed(() => ({
   width: `${props.record.depth}%`
@@ -174,7 +175,7 @@ defineExpose({
 <template>
   <li
     ref="element"
-    class="flex h-6 items-center last:mb-0 first:mt-0 relative cursor-pointer w-full overflow-hidden"
+    class="flex h-6 items-center last:mb-0 first:mt-0 relative cursor-pointer w-full overflow-hidden z-[8]"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
   >
@@ -185,7 +186,7 @@ defineExpose({
       :class="recordTypeBuy ? 'buys-green-bg' : 'sells-red-bg'"
     ></span>
     <span
-      class="w-1/3 text-xs px-2 flex items-center justify-end z-[8]"
+      class="w-1/3 text-xs px-2 flex items-center justify-end"
       @click.stop="onPriceClick"
     >
       <BaseIcon
@@ -219,7 +220,7 @@ defineExpose({
         />
       </span>
     </span>
-    <span class="w-1/3 text-xs px-2 z-[8]" @click.stop="onSizeClick">
+    <span class="w-1/3 text-xs px-2" @click.stop="onSizeClick">
       <span
         class="block text-right font-mono"
         :class="{
@@ -231,13 +232,14 @@ defineExpose({
           xs
           :decimals="market.quantityDecimals"
           :number="quantity"
+          :abbreviation-minimum="1_000_000"
           dont-group-values
           data-cy="orderbook-record-quantity-text-content"
         />
       </span>
     </span>
     <span
-      class="w-1/3 text-xs px-2 z-[8] font-mono text-right"
+      class="w-1/3 text-xs px-2 font-mono text-right"
       @click.stop="onNotionalClick"
     >
       <AppNumber

@@ -49,7 +49,8 @@ const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
   lastTradedPrice,
   {
     decimalPlaces:
-      props.market?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+      props.market?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+    displayAbsoluteDecimalPlace: true
   }
 )
 

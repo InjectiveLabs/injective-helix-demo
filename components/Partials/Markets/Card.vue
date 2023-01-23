@@ -43,7 +43,8 @@ const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
   lastTradedPrice,
   {
     decimalPlaces:
-      props.market?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+      props.market?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+    displayAbsoluteDecimalPlace: true
   }
 )
 
@@ -56,8 +57,7 @@ const change = computed(() => {
 })
 
 const { valueToString: changeToFormat } = useBigNumberFormatter(change, {
-  decimalPlaces: 2,
-  displayAbsoluteDecimalPlace: true
+  decimalPlaces: 2
 })
 
 const volumeInUsdToFormat = computed(() => {

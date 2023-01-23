@@ -24,6 +24,12 @@ const props = defineProps({
     type: Boolean
   },
 
+  abbreviationMinimum: {
+    required: false,
+    default: 0,
+    type: Number
+  },
+
   prefix: {
     required: false,
     type: String,
@@ -55,26 +61,31 @@ const props = defineProps({
 
 const formattedNumber = computed(() => {
   if (props.number.eq(0)) {
-    return [props.number.toFixed(0)]
+    return ['0.00']
   }
 
   const actualDecimals = props.useNumberDecimals
     ? getExactDecimalsFromNumber(props.number.toNumber())
     : props.decimals
 
-  const formattedNumber = props.number.toFormat(
-    actualDecimals,
-    props.roundingMode
+  const { valueToString: formattedNumber } = useBigNumberFormatterNew(
+    computed(() => props.number),
+    {
+      abbreviationMinimum: props.abbreviationMinimum,
+      decimalPlaces: actualDecimals,
+      roundingMode: props.roundingMode,
+      displayAbsoluteDecimalPlace: true
+    }
   )
 
   if (props.dontGroupValues) {
-    return [formattedNumber]
+    return [formattedNumber.value]
   }
 
-  const match = formattedNumber.match(/^(-?[\d,]+)((\.)(\d+?\d+?)(0*))?$/)
+  const match = formattedNumber.value.match(/^(-?[\d,]+)((\.)(\d+?\d+?)(0*))?$/)
   const groups = !match
-    ? formattedNumber
-      ? [formattedNumber]
+    ? formattedNumber.value
+      ? [formattedNumber.value]
       : []
     : match[2]
     ? [`${match[1]}${match[3]}${match[4]}`, match[5]]
