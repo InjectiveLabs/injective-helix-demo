@@ -131,7 +131,7 @@ export function useDerivativeError({
         | UiExpiryFuturesMarketWithToken
     ).initialMarginRatio
 
-    const price = tradingTypeStopMarket
+    const price = tradingTypeStopMarket.value
       ? worstPriceWithSlippage.value
       : executionPrice.value
 
