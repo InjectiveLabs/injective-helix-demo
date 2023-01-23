@@ -63,7 +63,7 @@ export const useWalletStore = defineStore('wallet', {
       const isWalletExemptFromGasFee =
         !isCosmosWallet(state.wallet) || !IS_DEVNET
 
-      return isWalletExemptFromGasFee && bankStore.hasEnoughInjForGas
+      return isWalletExemptFromGasFee || bankStore.hasEnoughInjForGas
     }
   },
   actions: {
