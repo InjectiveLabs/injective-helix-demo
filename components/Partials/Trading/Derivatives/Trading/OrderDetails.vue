@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { MarketType, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { MarketType } from '@injectivelabs/sdk-ui-ts'
 import { TradeForm, UiMarketWithToken } from '@/types'
 import { TRADE_FORM_PRICE_ROUNDING_MODE } from '@/app/utils/constants'
 
@@ -28,10 +28,10 @@ const props = defineProps({
     required: true
   },
 
-  minimumReceivedAmount: {
-    type: Object as PropType<BigNumberInBase>,
-    default: ZERO_IN_BASE
-  },
+  // minimumReceivedAmount: {
+  //   type: Object as PropType<BigNumberInBase>,
+  //   default: ZERO_IN_BASE
+  // },
 
   notionalValue: {
     type: Object as PropType<BigNumberInBase>,
@@ -91,7 +91,8 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
       </template>
 
       <div class="mt-4">
-        <AppTextInfo
+        <!-- TODO: remove this if product gives the go ahead since is always - for perp markets-->
+        <!-- <AppTextInfo
           v-if="tradingTypeMarket"
           :title="$t('trade.amount')"
           class="mt-2"
@@ -102,19 +103,19 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
               :tooltip="$t('trade.min_received_amount')"
             />
           </template>
-
           <span
             v-if="minimumReceivedAmount.gt(0)"
             data-cy="trading-page-details-execution-price-text-content"
             class="font-mono flex items-start break-all"
           >
-            <slot name="marketMinimumReceivedAmount" />
+            <slot v-if="false" name="marketMinimumReceivedAmount" />
+            <span v-else class="ml-1"> &mdash; </span>
             <span class="text-gray-500 ml-1 break-normal">
               {{ market.quoteToken.symbol }}
             </span>
           </span>
-          <span v-else class="text-gray-500 ml-1"> &mdash; </span>
-        </AppTextInfo>
+          <span v-else class="ml-1"> &mdash; </span>
+        </AppTextInfo> -->
 
         <AppTextInfo
           v-if="tradingTypeMarket"
@@ -185,7 +186,6 @@ const { valueToString: liquidationPriceToFormat } = useBigNumberFormatter(
         <slot name="makerTakerFeeRate" />
         <slot name="feeRate" />
         <slot name="feeRebate" />
-        <slot name="expectedPts" />
       </div>
     </AppDrawer>
   </div>

@@ -100,7 +100,7 @@ const availableBalanceGreaterThanAllowableWarning = computed(() => {
       </p>
       <span v-if="error">{{ error }}</span>
       <span v-else-if="availableBalanceError">{{
-        $t('trade.not_enough_balance')
+        $t('trade.insufficient_balance')
       }}</span>
       <span v-else-if="initialMinMarginRequirementError">{{
         $t('trade.order_insufficient_margin')
