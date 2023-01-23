@@ -186,7 +186,7 @@ function handleWithdrawClick() {
     <td class="pr-4">
       <div class="flex items-center justify-end gap-4 col-start-2 col-span-2">
         <BaseDropdown
-          v-if="filteredMarkets.length > 0"
+          v-if="filteredMarkets.length > 1"
           popper-class="rounded-lg flex flex-col flex-wrap text-xs absolute w-36 bg-gray-750 shadow-dropdown"
         >
           <template #default>
@@ -215,6 +215,19 @@ function handleWithdrawClick() {
             </div>
           </template>
         </BaseDropdown>
+
+        <div
+          v-if="filteredMarkets.length === 1"
+          class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
+          @click="handleNavigateToMarket(filteredMarkets[0])"
+        >
+          <span
+            :id="`popper-target-${balance.token.symbol}`"
+            class="text-blue-500 text-sm font-medium cursor-pointer"
+          >
+            {{ $t('account.trade') }}
+          </span>
+        </div>
 
         <div
           class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
