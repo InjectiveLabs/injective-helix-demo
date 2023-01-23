@@ -56,15 +56,10 @@ export const useTokenStore = defineStore('token', {
       const tokenToTokenWithBalanceAndAllowance = async ({
         token
       }: BankBalanceWithToken) => {
-        const erc20Token = token as Erc20Token
-        const balance = await web3Client.fetchTokenBalanceAndAllowance({
-          address,
-          contractAddress: erc20Token.address
-        })
-
         return {
           ...token,
-          ...balance,
+          balance: '0',
+          allowance: '0',
           usdPrice: await tokenPrice.fetchUsdTokenPrice(token.coinGeckoId)
         } as TokenWithBalanceAndPrice
       }
@@ -107,16 +102,11 @@ export const useTokenStore = defineStore('token', {
       const tradeableTokensWithBalanceAndPrice = await Promise.all(
         uniqueDenomsNotInBankBalances.map(async (denom) => {
           const token = await tokenService.getDenomToken(denom)
-          const erc20Token = token as Erc20Token
-
-          const tokenBalance = await web3Client.fetchTokenBalanceAndAllowance({
-            address,
-            contractAddress: erc20Token.address
-          })
 
           return {
             ...token,
-            ...tokenBalance,
+            balance: '0',
+            allowance: '0',
             usdPrice: await tokenPrice.fetchUsdTokenPrice(token.coinGeckoId)
           } as TokenWithBalanceAndPrice
         })
@@ -135,6 +125,46 @@ export const useTokenStore = defineStore('token', {
         ibcTokensWithBalanceAndPriceFromBank,
         erc20TokensWithBalanceAndPriceFromBank:
           ercTokensWithBalanceAndAllowanceWithTradeableTokens
+      })
+    },
+
+    async updateErc20TokensBalanceAndAllowanceFromBankAndMarkets() {
+      const tokenStore = useTokenStore()
+      const { address, isUserWalletConnected } = useWalletStore()
+
+      if (!address || !isUserWalletConnected) {
+        return
+      }
+
+      const erc20TokenBalancesAreFetched =
+        tokenStore.erc20TokensWithBalanceAndPriceFromBank.find(
+          (token) =>
+            new BigNumberInBase(token.balance).gt(0) ||
+            new BigNumberInBase(token.allowance).gt(0)
+        )
+
+      if (erc20TokenBalancesAreFetched) {
+        return
+      }
+
+      const updatedErc20TokensWithBalanceAndPriceFromBank = await Promise.all(
+        tokenStore.erc20TokensWithBalanceAndPriceFromBank.map(async (token) => {
+          const erc20Token = token as Erc20Token
+          const tokenBalance = await web3Client.fetchTokenBalanceAndAllowance({
+            address,
+            contractAddress: erc20Token.address
+          })
+
+          return {
+            ...token,
+            ...tokenBalance
+          }
+        })
+      )
+
+      tokenStore.$patch({
+        erc20TokensWithBalanceAndPriceFromBank:
+          updatedErc20TokensWithBalanceAndPriceFromBank
       })
     },
 

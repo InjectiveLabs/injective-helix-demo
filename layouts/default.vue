@@ -44,7 +44,6 @@ onMounted(() => {
   // Actions that should't block the app from loading
   Promise.all([
     appStore.init(),
-    appStore.fetchGasPrice(),
     referralStore.init(),
     exchangeStore.initFeeDiscounts()
   ])

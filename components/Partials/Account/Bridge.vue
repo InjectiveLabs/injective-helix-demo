@@ -15,6 +15,7 @@ import { denomClient } from '@/app/Services'
 import { getBridgingNetworkBySymbol } from '@/app/data/bridge'
 
 const walletStore = useWalletStore()
+const tokenStore = useTokenStore()
 const modalStore = useModalStore()
 const { query } = useRoute()
 
@@ -144,6 +145,9 @@ function handleDeposit(token: Token = injToken) {
   formValues[BridgeField.BridgingNetwork] = bridgingNetworkValue
   formValues[BridgeField.TransferDirection] =
     TransferDirection.tradingAccountToBank
+
+  // Update ERC20 balances when we open the bridge instead of loading them when we open the page
+  tokenStore.updateErc20TokensBalanceAndAllowanceFromBankAndMarkets()
 
   modalStore.openModal({ type: Modal.Bridge })
 }

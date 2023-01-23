@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { getTokenLogoWithVendorPathPrefix } from '@injectivelabs/sdk-ui-ts'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_DISPLAY_DECIMALS
@@ -27,20 +28,24 @@ const tokenLogo = computed(() => {
   return getTokenLogoWithVendorPathPrefix(props.balance.token.logo)
 })
 
-const totalBalance = computed(() => {
-  return props.balance.bankBalance.plus(
-    props.balance.subaccountAvailableBalance
-  )
-})
-
-const { valueToString: totalBalanceInUsdToString } =
-  useBigNumberFormatter(totalBalance)
-
 const combinedBalance = computed(() => {
-  return props.balance.bankBalance.plus(
-    props.balance.subaccountAvailableBalance
+  return new BigNumberInBase(props.balance.bankBalance || 0).plus(
+    props.balance.subaccountTotalBalance || 0
   )
 })
+
+const totalBalance = computed(() => {
+  return new BigNumberInBase(props.balance.bankBalance || 0).plus(
+    props.balance.subaccountAvailableBalance || 0
+  )
+})
+
+const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
+  computed(() => totalBalance.value.times(props.balance.token.usdPrice || 0)),
+  {
+    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+  }
+)
 
 const { valueToString: combinedBalanceToString } = useBigNumberFormatter(
   combinedBalance,
@@ -63,7 +68,7 @@ function handleOpenAssetDetailsModal() {
 
 <template>
   <tr
-    class="border-b border-gray-600 last-of-type:border-b-transparent hover:bg-gray-700 bg-transparent overflow-hidden gap-2 transition-all"
+    class="border-b border-gray-700 last-of-type:border-b-transparent hover:bg-gray-700 bg-transparent overflow-hidden gap-2 transition-all"
     :class="{
       'max-h-20': !isOpen,
       'max-h-screen': isOpen
