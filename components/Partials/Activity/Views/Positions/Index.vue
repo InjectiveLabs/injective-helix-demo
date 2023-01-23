@@ -36,7 +36,7 @@ onMounted(() => {
         :show-empty="positions.length === 0"
         class="sm:hidden mt-3 max-h-lg overflow-y-auto"
       >
-        <PartialsTradingTablePositionMobile
+        <PartialsCommonSubaccountPositionMobile
           v-for="(position, index) in positions"
           :key="`mobile-positions-${index}-${position.marketId}`"
           class="col-span-1"
@@ -53,9 +53,9 @@ onMounted(() => {
 
       <CommonTableWrapper break-md class="hidden sm:block">
         <table v-if="positions.length > 0" class="table">
-          <PartialsTradingTablePositionHeader />
+          <PartialsCommonSubaccountPositionHeader />
           <tbody>
-            <PartialsTradingTablePositionRow
+            <PartialsCommonSubaccountPositionRow
               v-for="(position, index) in positions"
               :key="`positions-${index}-${position.marketId}`"
               :position="position"

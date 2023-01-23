@@ -7,6 +7,10 @@ import {
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import { TradeExecutionType } from '@injectivelabs/ts-types'
+import {
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 
 export function useTrade(
   trade: Ref<UiSpotTrade | UiDerivativeTrade>,
@@ -72,6 +76,18 @@ export function useTrade(
     return quantity.value.times(price.value)
   })
 
+  const priceDecimals = computed(() => {
+    return market.value
+      ? market.value.priceDecimals
+      : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+  })
+
+  const quantityDecimals = computed(() => {
+    return market.value
+      ? market.value.quantityDecimals
+      : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+  })
+
   const time = computed(() => {
     if (!market.value || !trade.value.executedAt) {
       return ''
@@ -118,6 +134,8 @@ export function useTrade(
     total,
     market,
     quantity,
+    priceDecimals,
+    quantityDecimals,
     tradeExecutionType
   }
 }
@@ -137,6 +155,8 @@ export function useTradeWithUndefined(
     total: undefined,
     market: undefined,
     quantity: undefined,
+    priceDecimals: undefined,
+    quantityDecimals: undefined,
     tradeExecutionType: undefined
   }
 }

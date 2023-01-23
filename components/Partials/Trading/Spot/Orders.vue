@@ -138,18 +138,18 @@ watch(currentMarketOnly, fetchAll, { immediate: true })
 
     <AppHocLoading :status="status">
       <CommonCard class="h-full">
-        <PartialsTradingTableTradeHistory
+        <PartialsCommonSubaccountTradeHistory
           v-if="activeType === FilterList.TradeHistory"
           :market="market"
         />
 
-        <PartialsTradingTableOrder
+        <PartialsCommonSubaccountOrder
           v-else-if="activeType === FilterList.OpenOrders"
           :market="market"
           is-spot
         />
 
-        <PartialsTradingTableOrderHistory
+        <PartialsCommonSubaccountOrderHistory
           v-else-if="activeType === FilterList.OrderHistory"
           :market="market"
         />

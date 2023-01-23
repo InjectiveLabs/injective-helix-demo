@@ -56,7 +56,7 @@ useIntervalFn(() => {
       :show-empty="sortedPositions.length === 0"
       class="sm:hidden max-h-lg overflow-y-auto"
     >
-      <PartialsTradingTablePositionMobile
+      <PartialsCommonSubaccountPositionMobile
         v-for="(position, index) in sortedPositions"
         :key="`mobile-positions-${index}-${position.marketId}`"
         class="col-span-1"
@@ -73,9 +73,9 @@ useIntervalFn(() => {
 
     <CommonTableWrapper class="hidden sm:block">
       <table v-if="sortedPositions.length > 0" class="table">
-        <PartialsTradingTablePositionHeader />
+        <PartialsCommonSubaccountPositionHeader />
         <tbody>
-          <PartialsTradingTablePositionRow
+          <PartialsCommonSubaccountPositionRow
             v-for="(position, index) in sortedPositions"
             :key="`positions-${index}-${position.marketId}`"
             :position="position"

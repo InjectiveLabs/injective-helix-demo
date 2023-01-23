@@ -34,7 +34,7 @@ function handleShowTradeDetails(trade: UiTrade) {
       :show-empty="trades.length === 0"
       class="sm:hidden max-h-lg overflow-y-auto"
     >
-      <PartialsTradingTableTradeHistoryMobile
+      <PartialsCommonSubaccountTradeHistoryMobile
         v-for="(trade, index) in trades"
         :key="`mobile-trade-history-${index}`"
         class="col-span-1"
@@ -53,9 +53,9 @@ function handleShowTradeDetails(trade: UiTrade) {
 
     <CommonTableWrapper class="hidden sm:block">
       <table v-if="trades.length > 0" class="table">
-        <PartialsTradingTableTradeHistoryHeader :market="market" />
+        <PartialsCommonSubaccountTradeHistoryHeader :market="market" />
         <tbody>
-          <PartialsTradingTableTradeHistoryRow
+          <PartialsCommonSubaccountTradeHistoryRow
             v-for="(trade, index) in trades"
             :key="`trades-history-${index}`"
             :trade="trade"

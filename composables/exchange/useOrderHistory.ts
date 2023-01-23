@@ -12,6 +12,10 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import { DerivativeOrderState, SpotOrderState } from '@injectivelabs/sdk-ts'
 import { UiMarketWithToken } from '@/types'
+import {
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 
 export function useOrderHistory(
   order: Ref<UiDerivativeOrderHistory | UiSpotOrderHistory>,
@@ -42,6 +46,18 @@ export function useOrderHistory(
       (order.value as UiDerivativeOrderHistory).isReduceOnly ||
       margin.value.isZero()
     )
+  })
+
+  const priceDecimals = computed(() => {
+    return market.value
+      ? market.value.priceDecimals
+      : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+  })
+
+  const quantityDecimals = computed(() => {
+    return market.value
+      ? market.value.quantityDecimals
+      : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
   })
 
   const price = computed(() => {
@@ -205,7 +221,9 @@ export function useOrderHistory(
     isTakeProfit,
     triggerPrice,
     isReduceOnly,
+    priceDecimals,
     isMarketOrder,
-    filledQuantity
+    filledQuantity,
+    quantityDecimals
   }
 }

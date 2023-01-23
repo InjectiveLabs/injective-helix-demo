@@ -3,9 +3,10 @@ import { MarketType, UiPosition, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
   UI_DEFAULT_BINARY_OPTIONS_PRICE_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-} from '~~/app/utils/constants'
+} from '@/app/utils/constants'
 
 export function useDerivativePosition(position: Ref<UiPosition>) {
   const derivativeStore = useDerivativeStore()
@@ -52,7 +53,7 @@ export function useDerivativePosition(position: Ref<UiPosition>) {
     return market.value.subType === MarketType.BinaryOptions
   })
 
-  const priceDecimal = computed(() => {
+  const priceDecimals = computed(() => {
     if (isBinaryOptions.value) {
       return UI_DEFAULT_BINARY_OPTIONS_PRICE_DECIMALS
     }
@@ -60,6 +61,16 @@ export function useDerivativePosition(position: Ref<UiPosition>) {
     return market.value
       ? market.value.priceDecimals
       : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+  })
+
+  const quantityDecimals = computed(() => {
+    if (isBinaryOptions.value) {
+      return UI_DEFAULT_BINARY_OPTIONS_PRICE_DECIMALS
+    }
+
+    return market.value
+      ? market.value.quantityDecimals
+      : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
   })
 
   const price = computed(() => {
@@ -157,10 +168,11 @@ export function useDerivativePosition(position: Ref<UiPosition>) {
     quantity,
     markPrice,
     pnlToFormat,
-    priceDecimal,
+    priceDecimals,
     percentagePnl,
     notionalValue,
     isBinaryOptions,
+    quantityDecimals,
     liquidationPrice,
     markPriceToFormat,
     effectiveLeverage

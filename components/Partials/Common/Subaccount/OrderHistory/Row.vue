@@ -4,10 +4,6 @@ import {
   UiDerivativeOrderHistory,
   UiSpotOrderHistory
 } from '@injectivelabs/sdk-ui-ts'
-import {
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
 import { getMarketRoute } from '@/app/utils/market'
 
 const router = useRouter()
@@ -33,8 +29,10 @@ const {
   orderStatus,
   isTakeProfit,
   triggerPrice,
+  isReduceOnly,
+  priceDecimals,
   isMarketOrder,
-  isReduceOnly
+  quantityDecimals
 } = useOrderHistory(
   computed(() => props.order),
   computed(() => props.isSpot)
@@ -112,9 +110,7 @@ function handleClickOnMarket() {
         v-else
         xs
         data-cy="order-price-table-data"
-        :decimals="
-          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-        "
+        :decimals="priceDecimals"
         :number="price"
       />
     </td>
@@ -123,9 +119,7 @@ function handleClickOnMarket() {
       <AppNumber
         xs
         data-cy="order-quantity-table-data"
-        :decimals="
-          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-        "
+        :decimals="quantityDecimals"
         :number="quantity"
       />
     </td>

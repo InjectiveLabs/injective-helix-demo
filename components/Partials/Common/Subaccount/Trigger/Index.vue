@@ -9,7 +9,7 @@ const derivativeStore = useDerivativeStore()
       :show-empty="derivativeStore.subaccountConditionalOrders.length === 0"
       class="sm:hidden max-h-lg overflow-y-auto"
     >
-      <PartialsTradingTableTriggerMobile
+      <PartialsCommonSubaccountTriggerMobile
         v-for="(trigger, index) in derivativeStore.subaccountConditionalOrders"
         :key="`mobile-derivative-triggers-${index}-${trigger.orderHash}`"
         class="col-span-1"
@@ -29,9 +29,9 @@ const derivativeStore = useDerivativeStore()
         v-if="derivativeStore.subaccountConditionalOrders.length > 0"
         class="table"
       >
-        <PartialsTradingTableTriggerHeader />
+        <PartialsCommonSubaccountTriggerHeader />
         <tbody>
-          <PartialsTradingTableTriggerRow
+          <PartialsCommonSubaccountTriggerRow
             v-for="(
               trigger, index
             ) in derivativeStore.subaccountConditionalOrders"

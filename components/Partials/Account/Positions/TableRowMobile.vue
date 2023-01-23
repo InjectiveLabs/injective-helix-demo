@@ -3,10 +3,7 @@ import { PropType } from 'vue'
 import { UiPosition } from '@injectivelabs/sdk-ui-ts'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import {
-  HIDDEN_BALANCE_DISPLAY,
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
+import { HIDDEN_BALANCE_DISPLAY } from '@/app/utils/constants'
 import { BusEvents, Modal } from '@/types'
 
 const props = defineProps({
@@ -33,10 +30,11 @@ const {
   quantity,
   markPrice,
   pnlToFormat,
-  priceDecimal,
-  percentagePnl,
   notionalValue,
+  priceDecimals,
+  percentagePnl,
   isBinaryOptions,
+  quantityDecimals,
   effectiveLeverage,
   liquidationPrice
 } = useDerivativePosition(computed(() => props.position))
@@ -205,11 +203,7 @@ function closePositionAndReduceOnlyOrders() {
           v-else
           sm
           flex
-          :decimals="
-            market
-              ? market.quantityDecimals
-              : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-          "
+          :decimals="quantityDecimals"
           :number="quantity"
           data-cy="open-position-quantity-table-data"
         />
@@ -272,7 +266,7 @@ function closePositionAndReduceOnlyOrders() {
             sm
             flex
             data-cy="open-position-margin-table-data"
-            :decimals="priceDecimal"
+            :decimals="priceDecimals"
             :number="margin"
           />
 
@@ -299,7 +293,7 @@ function closePositionAndReduceOnlyOrders() {
           v-else
           sm
           flex
-          :decimals="priceDecimal"
+          :decimals="priceDecimals"
           :number="price"
           data-cy="open-position-price-table-data"
         />
@@ -314,7 +308,7 @@ function closePositionAndReduceOnlyOrders() {
           v-if="!markPrice.isNaN() && !hideBalances"
           sm
           flex
-          :decimals="priceDecimal"
+          :decimals="priceDecimals"
           :number="markPrice"
         />
 
@@ -341,7 +335,7 @@ function closePositionAndReduceOnlyOrders() {
           sm
           flex
           class="justify-end"
-          :decimals="priceDecimal"
+          :decimals="priceDecimals"
           :number="liquidationPrice"
           data-cy="open-position-liquidation-price-table-data"
         />
@@ -366,7 +360,7 @@ function closePositionAndReduceOnlyOrders() {
           v-else
           sm
           flex
-          :decimals="priceDecimal"
+          :decimals="priceDecimals"
           :number="notionalValue"
           data-cy="open-position-total-table-data"
         >

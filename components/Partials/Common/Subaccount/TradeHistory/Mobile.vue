@@ -2,10 +2,6 @@
 import { PropType } from 'vue'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { getTokenLogoWithVendorPathPrefix } from '@injectivelabs/sdk-ui-ts'
-import {
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
 import { getMarketRoute } from '@/app/utils/market'
 import { UiTrade } from '@/types'
 
@@ -22,7 +18,15 @@ const emit = defineEmits<{
   (e: 'showTradeDetails', state: UiTrade): void
 }>()
 
-const { time, price, market, quantity, tradeExecutionType } = useTrade(
+const {
+  time,
+  price,
+  market,
+  quantity,
+  priceDecimals,
+  quantityDecimals,
+  tradeExecutionType
+} = useTrade(
   computed(() => props.trade),
   computed(() => props.isSpot)
 )
@@ -93,24 +97,14 @@ function handleShowTradeDetails() {
       {{ $t('trade.price') }}
     </span>
     <div class="text-right">
-      <AppNumber
-        :decimals="
-          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-        "
-        :number="price"
-      />
+      <AppNumber :decimals="priceDecimals" :number="price" />
     </div>
 
     <span class="text-gray-500 uppercase tracking-widest text-3xs">
       {{ $t('trade.amount') }}
     </span>
     <div class="text-right">
-      <AppNumber
-        :decimals="
-          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-        "
-        :number="quantity"
-      />
+      <AppNumber :decimals="quantityDecimals" :number="quantity" />
     </div>
 
     <span class="text-gray-500 uppercase tracking-widest text-3xs">

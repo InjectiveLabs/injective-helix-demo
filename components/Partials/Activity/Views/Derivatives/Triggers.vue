@@ -27,7 +27,7 @@ const triggers = computed(() => {
         :show-empty="triggers.length === 0"
         class="sm:hidden mt-3 max-h-lg overflow-y-auto"
       >
-        <PartialsTradingTableTriggerMobile
+        <PartialsCommonSubaccountTriggerMobile
           v-for="(trigger, index) in triggers"
           :key="`mobile-derivative-triggers-${index}-${trigger.orderHash}`"
           class="col-span-1"
@@ -44,9 +44,9 @@ const triggers = computed(() => {
 
       <CommonTableWrapper break-md class="hidden sm:block">
         <table v-if="triggers.length > 0" class="table">
-          <PartialsTradingTableTriggerHeader />
+          <PartialsCommonSubaccountTriggerHeader />
           <tbody>
-            <PartialsTradingTableTriggerRow
+            <PartialsCommonSubaccountTriggerRow
               v-for="(trigger, index) in triggers"
               :key="`trigger-${index}`"
               :trigger="trigger"

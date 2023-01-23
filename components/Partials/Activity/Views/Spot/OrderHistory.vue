@@ -27,7 +27,7 @@ const orderHistory = computed(() => {
         :show-empty="orderHistory.length === 0"
         class="sm:hidden mt-3 max-h-lg overflow-y-auto"
       >
-        <PartialsTradingTableOrderHistoryMobile
+        <PartialsCommonSubaccountOrderHistoryMobile
           v-for="(order, index) in orderHistory"
           :key="`mobile-spot-orders-${index}-${order.orderHash}`"
           class="col-span-1"
@@ -45,9 +45,9 @@ const orderHistory = computed(() => {
 
       <CommonTableWrapper break-md class="hidden sm:block">
         <table v-if="orderHistory.length > 0" class="table">
-          <PartialsTradingTableOrderHistoryHeader />
+          <PartialsCommonSubaccountOrderHistoryHeader />
           <tbody>
-            <PartialsTradingTableOrderHistoryRow
+            <PartialsCommonSubaccountOrderHistoryRow
               v-for="(order, index) in orderHistory"
               :key="`order-${index}`"
               is-spot

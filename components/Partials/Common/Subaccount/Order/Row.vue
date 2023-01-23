@@ -5,10 +5,6 @@ import {
   UiDerivativeLimitOrder,
   UiSpotLimitOrder
 } from '@injectivelabs/sdk-ui-ts'
-import {
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
 import { getMarketRoute } from '@/app/utils/market'
 
 const derivativeStore = useDerivativeStore()
@@ -38,8 +34,10 @@ const {
   market,
   quantity,
   leverage,
+  priceDecimals,
   orderFillable,
   filledQuantity,
+  quantityDecimals,
   unfilledQuantity,
   filledQuantityPercentageToFormat
 } = useOrder(
@@ -117,9 +115,7 @@ function handleClickOnMarket() {
       <AppNumber
         xs
         data-cy="order-price-table-data"
-        :decimals="
-          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-        "
+        :decimals="priceDecimals"
         :number="price"
       />
     </td>
@@ -127,9 +123,7 @@ function handleClickOnMarket() {
       <AppNumber
         xs
         data-cy="order-quantity-table-data"
-        :decimals="
-          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-        "
+        :decimals="quantityDecimals"
         :number="quantity"
       />
     </td>
@@ -137,9 +131,7 @@ function handleClickOnMarket() {
       <AppNumber
         xs
         data-cy="order-unfilled-quantity-table-data"
-        :decimals="
-          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-        "
+        :decimals="quantityDecimals"
         :number="unfilledQuantity"
       />
     </td>
@@ -148,11 +140,7 @@ function handleClickOnMarket() {
         <AppNumber
           xs
           data-cy="order-filled-quantity-table-data"
-          :decimals="
-            market
-              ? market.quantityDecimals
-              : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-          "
+          :decimals="quantityDecimals"
           :number="filledQuantity"
         />
         <span v-if="filledQuantity.gt('0') && isSpot" class="ml-1 text-xs">
@@ -183,9 +171,7 @@ function handleClickOnMarket() {
       <AppNumber
         xs
         data-cy="order-total-table-data"
-        :decimals="
-          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-        "
+        :decimals="priceDecimals"
         :number="total"
       >
         <template #addon>

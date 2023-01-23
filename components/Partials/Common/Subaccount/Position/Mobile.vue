@@ -3,11 +3,7 @@ import { PropType } from 'vue'
 import { Status } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { UiPosition } from '@injectivelabs/sdk-ui-ts'
-import {
-  HIDDEN_BALANCE_DISPLAY,
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
+import { HIDDEN_BALANCE_DISPLAY } from '@/app/utils/constants'
 import { BusEvents, Modal } from '@/types'
 
 const derivativeStore = useDerivativeStore()
@@ -24,7 +20,9 @@ const {
   margin,
   quantity,
   pnlToFormat,
+  priceDecimals,
   notionalValue,
+  quantityDecimals,
   effectiveLeverage,
   markPriceToFormat,
   liquidationPrice
@@ -173,14 +171,7 @@ function closePositionAndReduceOnlyOrders() {
     </span>
     <div class="text-right">
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-      <AppNumber
-        v-else
-        dense
-        :decimals="
-          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-        "
-        :number="quantity"
-      />
+      <AppNumber v-else dense :decimals="quantityDecimals" :number="quantity" />
     </div>
 
     <span class="text-gray-500 uppercase tracking-widest text-3xs">
@@ -189,13 +180,7 @@ function closePositionAndReduceOnlyOrders() {
     <div class="text-right">
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <div v-else class="flex justify-end items-center whitespace-nowrap">
-        <AppNumber
-          dense
-          :decimals="
-            market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-          "
-          :number="price"
-        />
+        <AppNumber dense :decimals="priceDecimals" :number="price" />
         <span class="text-gray-500 ml-1">/ {{ markPriceToFormat }}</span>
       </div>
     </div>
@@ -209,9 +194,7 @@ function closePositionAndReduceOnlyOrders() {
         <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
         <AppNumber
           v-else
-          :decimals="
-            market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-          "
+          :decimals="priceDecimals"
           :number="liquidationPrice"
         />
       </div>
@@ -245,13 +228,7 @@ function closePositionAndReduceOnlyOrders() {
     </span>
     <div class="text-right">
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
-      <AppNumber
-        v-else
-        :decimals="
-          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-        "
-        :number="notionalValue"
-      >
+      <AppNumber v-else :decimals="priceDecimals" :number="notionalValue">
         <template #addon>
           <span class="text-gray-500 text-3xs">
             {{ market.quoteToken.symbol }}
@@ -266,12 +243,7 @@ function closePositionAndReduceOnlyOrders() {
     <div class="text-right">
       <span v-if="hideBalance">{{ HIDDEN_BALANCE_DISPLAY }}</span>
       <div v-else class="flex items-center justify-end h-4">
-        <AppNumber
-          :decimals="
-            market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-          "
-          :number="margin"
-        />
+        <AppNumber :decimals="priceDecimals" :number="margin" />
         <button
           role="button"
           type="button"
