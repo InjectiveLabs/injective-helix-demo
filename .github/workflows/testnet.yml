@@ -23,13 +23,13 @@ jobs:
       VITE_ENV: testnet
       VITE_CHAIN_ID: injective-888
 
-      ## Flags
-      MAINTENANCE_ENABLED: false
-      META_TAGS_ENABLED: true
+      ## Github Actions
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-      METRICS_ENABLED: false
-      GEO_IP_RESTRICTIONS_ENABLED: false
-      REFERRALS_ENABLED: false
+
+      ## Flags
+      VITE_MAINTENANCE_ENABLED: false
+      VITE_GEO_IP_RESTRICTIONS_ENABLED: false
+      VITE_REFERRALS_ENABLED: false
 
       ## Endpoints
       VITE_INDEXER_API_ENDPOINT: ''

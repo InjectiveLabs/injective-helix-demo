@@ -20,18 +20,17 @@ const env = {
     ? process.env.VITE_FEE_PAYER_PUB_KEY
     : import.meta.env.VITE_FEE_PAYER_PUB_KEY,
 
-  VITE_GEO_IP_RESTRICTIONS_ENABLED: isWebpack
-    ? process.env.VITE_GEO_IP_RESTRICTIONS_ENABLED
-    : import.meta.env.VITE_GEO_IP_RESTRICTIONS_ENABLED,
+  /** Debugging */
   VITE_DEBUG_CALCULATION: isWebpack
     ? process.env.VITE_DEBUG_CALCULATION
     : import.meta.env.VITE_DEBUG_CALCULATION,
+
+  VITE_GEO_IP_RESTRICTIONS_ENABLED: isWebpack
+    ? process.env.VITE_GEO_IP_RESTRICTIONS_ENABLED
+    : import.meta.env.VITE_GEO_IP_RESTRICTIONS_ENABLED,
   VITE_REFERRALS_ENABLED: isWebpack
     ? process.env.VITE_REFERRALS_ENABLED
     : import.meta.env.VITE_REFERRALS_ENABLED,
-  VITE_PRICE_BAND_ENABLED: isWebpack
-    ? process.env.VITE_PRICE_BAND_ENABLED
-    : import.meta.env.VITE_PRICE_BAND_ENABLED,
 
   VITE_ETHEREUM_CHAIN_ID: isWebpack
     ? process.env.VITE_ETHEREUM_CHAIN_ID
@@ -159,8 +158,6 @@ export const COIN_GECKO_OPTIONS = {
 }
 
 export const REFERRALS_ENABLED: boolean = env.VITE_REFERRALS_ENABLED === 'true'
-export const PRICE_BAND_ENABLED: boolean =
-  env.VITE_PRICE_BAND_ENABLED !== 'false' // Enabled by default
 
 export const GEO_IP_RESTRICTIONS_ENABLED: boolean =
   env.VITE_GEO_IP_RESTRICTIONS_ENABLED === 'true'

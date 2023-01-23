@@ -27,14 +27,13 @@ jobs:
       VITE_SENTRY_GRPC_ENDPOINT: ''
       VITE_SENTRY_HTTP_ENDPOINT: ''
 
-      ## Flags
-      MAINTENANCE_ENABLED: false
-      META_TAGS_ENABLED: true
+      ## Github Actions
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-      METRICS_ENABLED: false
-      GEO_IP_RESTRICTIONS_ENABLED: false
-      PRICE_BAND_ENABLED: false
-      REFERRALS_ENABLED: true
+
+      ## Flags
+      VITE_MAINTENANCE_ENABLED: false
+      VITE_GEO_IP_RESTRICTIONS_ENABLED: false
+      VITE_REFERRALS_ENABLED: true
 
       ## Secret
       VITE_NEWSLETTER_API: ${{ secrets.VITE_NEWSLETTER_API }}

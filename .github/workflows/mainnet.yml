@@ -20,13 +20,13 @@ jobs:
       SOURCE_DIR: .output/public
       DEST_DIR: www
 
-      ## Flags
-      MAINTENANCE_ENABLED: false
-      META_TAGS_ENABLED: true
+      ## Github Actions
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-      METRICS_ENABLED: true
-      GEO_IP_RESTRICTIONS_ENABLED: true
-      REFERRALS_ENABLED: true
+
+      ## Flags
+      VITE_MAINTENANCE_ENABLED: false
+      VITE_GEO_IP_RESTRICTIONS_ENABLED: true
+      VITE_REFERRALS_ENABLED: true
 
       ## Endpoints
       VITE_INDEXER_API_ENDPOINT: ''
@@ -96,14 +96,13 @@ jobs:
       SOURCE_DIR: dist
       DEST_DIR: www
 
-      ## Flags
-      MAINTENANCE_ENABLED: false
-      META_TAGS_ENABLED: true
+      ## Github Actions
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-      METRICS_ENABLED: false
-      GEO_IP_RESTRICTIONS_ENABLED: false
-      PRICE_BAND_ENABLED: false
-      REFERRALS_ENABLED: true
+
+      ## Flags
+      VITE_MAINTENANCE_ENABLED: false
+      VITE_GEO_IP_RESTRICTIONS_ENABLED: false
+      VITE_REFERRALS_ENABLED: true
 
       ## Endpoints
       VITE_INDEXER_API_ENDPOINT: ''
