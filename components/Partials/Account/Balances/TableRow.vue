@@ -106,7 +106,7 @@ function handleWithdrawClick() {
 
 <template>
   <tr
-    class="border-b border-gray-600 last-of-type:border-b-transparent hover:bg-gray-700 bg-transparent px-4 py-0 overflow-hidden h-14 gap-2 transition-all"
+    class="border-b border-gray-700 last-of-type:border-b-transparent hover:bg-gray-700 bg-transparent px-4 py-0 overflow-hidden h-14 gap-2 transition-all"
     :class="{ 'max-h-20': !isOpen, 'max-h-screen': isOpen }"
     :data-cy="'wallet-balance-table-row-' + balance.token.symbol"
   >
