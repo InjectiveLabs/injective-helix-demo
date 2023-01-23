@@ -232,7 +232,7 @@ defineExpose({
           xs
           :decimals="market.quantityDecimals"
           :number="quantity"
-          :abbreviation-minimum="1_000_000"
+          :abbreviation-floor="1_000_000"
           dont-group-values
           data-cy="orderbook-record-quantity-text-content"
         />

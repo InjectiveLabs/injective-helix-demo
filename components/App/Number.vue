@@ -24,7 +24,7 @@ const props = defineProps({
     type: Boolean
   },
 
-  abbreviationMinimum: {
+  abbreviationFloor: {
     required: false,
     default: 0,
     type: Number
@@ -71,7 +71,7 @@ const formattedNumber = computed(() => {
   const { valueToString: formattedNumber } = useBigNumberFormatterTmp(
     computed(() => props.number),
     {
-      abbreviationMinimum: props.abbreviationMinimum,
+      abbreviationFloor: props.abbreviationFloor,
       decimalPlaces: actualDecimals,
       roundingMode: props.roundingMode,
       displayAbsoluteDecimalPlace: true

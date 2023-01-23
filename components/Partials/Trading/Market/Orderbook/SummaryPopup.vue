@@ -49,6 +49,7 @@ const { valueToString: averagePriceToString } = useBigNumberFormatter(
         <AppNumber
           :decimals="market.quantityDecimals"
           :number="props.summary.quantity"
+          abbreviation-floor="1_000_000"
           dont-group-values
         />
       </span>

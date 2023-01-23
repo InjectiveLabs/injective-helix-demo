@@ -14,7 +14,6 @@ const DEFAULT_ROUNDING_MODE = BigNumberInBase.ROUND_DOWN
 
 const abbreviateNumber = (number: number) => {
   return new Intl.NumberFormat('en-US', {
-    // @ts-ignore
     notation: 'compact',
     compactDisplay: 'short'
   }).format(number)
@@ -87,7 +86,7 @@ export function useBigNumberFormatterTmp(
   options: {
     decimalPlaces?: number
     minimalDecimalPlaces?: number
-    abbreviationMinimum?: number /** Wether we should abbreviate numbers, for example 1,234,455 => 1M */
+    abbreviationFloor?: number /** Wether we should abbreviate numbers, for example 1,234,455 => 1M */
     injFee?: number
     roundingMode?: BigNumber.RoundingMode
     displayAbsoluteDecimalPlace?: boolean /** Explained above */
@@ -105,16 +104,16 @@ export function useBigNumberFormatterTmp(
   const injFee = options.injFee || DEFAULT_INJ_FEE
   const roundingMode = options.roundingMode || DEFAULT_ROUNDING_MODE
   const displayAbsoluteDecimalPlace = !!options.displayAbsoluteDecimalPlace
+  const displayAbbreviation =
+    !!options.abbreviationFloor &&
+    valueToBigNumber.value.gte(options.abbreviationFloor)
 
   const valueToFixed = computed(() => {
     if (valueToBigNumber.value.isNaN() || valueToBigNumber.value.isZero()) {
       return '0.00'
     }
 
-    if (
-      options.abbreviationMinimum &&
-      valueToBigNumber.value.gte(options.abbreviationMinimum)
-    ) {
+    if (displayAbbreviation) {
       return `≈${abbreviateNumber(valueToBigNumber.value.toNumber())}`
     }
 
@@ -126,10 +125,7 @@ export function useBigNumberFormatterTmp(
       return '0.00'
     }
 
-    if (
-      options.abbreviationMinimum &&
-      valueToBigNumber.value.gte(options.abbreviationMinimum)
-    ) {
+    if (displayAbbreviation) {
       return `≈${abbreviateNumber(valueToBigNumber.value.toNumber())}`
     }
 
@@ -168,10 +164,7 @@ export function useBigNumberFormatterTmp(
       return '0.00'
     }
 
-    if (
-      options.abbreviationMinimum &&
-      valueToBigNumber.value.gte(options.abbreviationMinimum)
-    ) {
+    if (displayAbbreviation) {
       return `≈${abbreviateNumber(valueToBigNumber.value.toNumber())}`
     }
 
