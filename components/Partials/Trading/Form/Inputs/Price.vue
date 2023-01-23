@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { formatPriceToAllowablePrice } from '@injectivelabs/sdk-ts'
+import { UiPriceLevel } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   TradeField,
@@ -18,6 +19,7 @@ const spotStore = useSpotStore()
 
 const props = defineProps({
   isBase: Boolean,
+  isBuy: Boolean,
   isSpot: Boolean,
   tradingTypeLimit: Boolean,
   tradingTypeStopLimit: Boolean,
@@ -30,6 +32,11 @@ const props = defineProps({
   lastTradedPrice: {
     type: Object as PropType<BigNumberInBase>,
     required: true
+  },
+
+  orderbookOrders: {
+    type: Array as PropType<UiPriceLevel[]>,
+    default: () => []
   },
 
   priceFieldName: {
@@ -104,6 +111,20 @@ const cappedAcceptableMin = computed(() => {
   return acceptableMin.gt(0) ? acceptableMin : minTickPrice
 })
 
+const topOfOrderbookPrice = computed(() => {
+  const [order] = props.orderbookOrders
+  if (!order) {
+    return ''
+  }
+  return new BigNumberInWei(order.price)
+    .toBase(
+      props.isSpot
+        ? props.market.quoteToken.decimals - props.market.baseToken.decimals
+        : props.market.quoteToken.decimals
+    )
+    .toFixed()
+})
+
 const { value: price, setValue: setPriceField } = useStringField({
   name: props.priceFieldName,
   rule: '',
@@ -113,6 +134,15 @@ const { value: price, setValue: setPriceField } = useStringField({
     if (props.priceFieldName === TradeField.TriggerPrice) {
       rules.push(
         `triggerPriceEqualsMarkPrice:${derivativeStore.marketMarkPrice}`
+      )
+    }
+
+    if (
+      props.priceFieldName === TradeField.LimitPrice &&
+      props.formValues[TradeField.PostOnly]
+    ) {
+      rules.push(
+        `invalidPostOnlyPrice:${topOfOrderbookPrice.value},${props.isBuy}`
       )
     }
 

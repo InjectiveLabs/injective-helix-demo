@@ -18,7 +18,9 @@ export const tradeErrorMessages = {
   slippageTooHigh: () =>
     'Your transaction might be executed at a less desirable price if slippage % is set too high',
   slippageTooLow: () =>
-    'Your transaction might not be executed if slippage % is set too low'
+    'Your transaction might not be executed if slippage % is set too low',
+  tooHighPostOnlyPrice: () => 'Post-Only limit price is too high',
+  tooLowPostOnlyPrice: () => 'Post-Only limit price is too low'
 } as Record<string, any>
 
 export const defineTradeRules = () => {
@@ -136,6 +138,21 @@ export const defineTradeRules = () => {
         executionPrice.gt(acceptableMax)
       ) {
         return tradeErrorMessages.priceHighDeviationFromMidOrderbookPrice()
+      }
+
+      return true
+    }
+  )
+
+  defineRule(
+    'invalidPostOnlyPrice',
+    (value: string | number, [orderbookPrice, isBuy]: string[]) => {
+      const isBuyOrder = isBuy === 'true'
+
+      if (isBuyOrder && new BigNumberInBase(value).gt(orderbookPrice)) {
+        return tradeErrorMessages.tooHighPostOnlyPrice()
+      } else if (!isBuyOrder && new BigNumberInBase(value).lt(orderbookPrice)) {
+        return tradeErrorMessages.tooLowPostOnlyPrice()
       }
 
       return true
