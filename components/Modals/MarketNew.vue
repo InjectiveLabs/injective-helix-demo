@@ -48,7 +48,7 @@ function close() {
 
       <div class="mt-6 flex items-center justify-center">
         <NuxtLink :to="bridgeUrl" target="_blank">
-          <AppButton lg class="text-white bg-blue-500">
+          <AppButton lg class="text-blue-900 bg-blue-500">
             <div class="flex items-center justify-center">
               <span class="mr-2 font-semibold">
                 {{ $t('marketNew.depositNow') }}

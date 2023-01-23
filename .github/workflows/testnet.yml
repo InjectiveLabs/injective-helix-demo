@@ -1,4 +1,4 @@
-name: Helix Testnet CD
+name: Helix Testnet Deployments
 
 on:
   push:
@@ -32,7 +32,9 @@ jobs:
       REFERRALS_ENABLED: false
 
       ## Endpoints
-      VITE_EXCHANGE_API_ENDPOINT: ''
+      VITE_INDEXER_API_ENDPOINT: ''
+      VITE_CHRONOS_API_ENDPOINT: ''
+      VITE_EXPLORER_API_ENDPOINT: ''
       VITE_SENTRY_GRPC_ENDPOINT: ''
       VITE_SENTRY_HTTP_ENDPOINT: ''
 
@@ -69,8 +71,8 @@ jobs:
       - name: Remove prev build process
         run: ssh testnet 'cd "'$SOURCE_DIR'"  && rm -rf ./node_modules/.cache'
 
-      - name: Building the project
-        run: ssh testnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn build'
+      # - name: Building the project
+      #   run: ssh testnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn build'
 
       - name: Generating the static pages
         run: ssh testnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn generate'

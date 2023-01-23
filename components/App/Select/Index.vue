@@ -64,8 +64,8 @@ function handleSelect(option: BaseDropdownOption) {
           class="flex items-center px-2 py-1 cursor-pointer rounded"
           :class="[
             option.value === modelValue
-              ? 'text-blue-500 hover:text-white hover:bg-blue-500'
-              : 'text-white hover:bg-blue-500'
+              ? 'text-blue-500 hover:text-blue-900 hover:bg-blue-500'
+              : 'text-white hover:bg-blue-500 hover:text-blue-900'
           ]"
           @click="
             () => {

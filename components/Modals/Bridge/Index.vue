@@ -306,7 +306,7 @@ watch(destination, (value: string) => {
           <AppButton
             v-if="shouldConnectMetamask"
             lg
-            class="w-full font-semibold rounded bg-blue-500 text-white"
+            class="w-full font-semibold rounded bg-blue-500 text-blue-900"
             data-cy="transfer-modal-transfer-now-button"
             :disabled="true"
             @click="() => {}"
@@ -324,7 +324,7 @@ watch(destination, (value: string) => {
               v-else
               lg
               :disabled="isConfirmDisabled"
-              class="w-full font-semibold rounded bg-blue-500"
+              class="w-full font-semibold rounded bg-blue-500 text-blue-900"
               data-cy="transfer-modal-transfer-now-button"
               @click="handleConfirm"
             >

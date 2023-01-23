@@ -21,13 +21,6 @@ const reportToUser = (error: ThrownException) => {
     return
   }
 
-  if (
-    [ErrorType.Unspecified, ErrorType.WalletError].includes(error.type) ||
-    error.message.includes('timeout')
-  ) {
-    return
-  }
-
   errorToast({ title: error.message })
 }
 

@@ -80,19 +80,19 @@ function closeModal() {
         <a
           :href="ninjaPassUrl"
           target="_blank"
-          class="bg-blue-300 py-2 h-10 rounded border border-blue-300 flex items-center justify-center gap-2"
+          class="bg-blue-500 py-2 h-10 rounded border flex items-center justify-center gap-2"
         >
-          <span class="font-medium text-white">
+          <span class="font-semibold text-blue-900">
             {{ $t('ninjaPass.verifyNow') }}
           </span>
-          <BaseIcon name="external-link" class="w-4 h-4 text-white" />
+          <BaseIcon name="external-link" class="w-4 h-4 text-blue-900" />
         </a>
 
         <button
-          class="bg-transparent py-2 h-10 rounded border border-white"
+          class="bg-transparent py-2 h-10 rounded border border-blue-100"
           @click="closeModal"
         >
-          <span class="font-medium text-white">
+          <span class="font-semibold text-blue-100">
             {{ $t('ninjaPass.later') }}
           </span>
         </button>

@@ -20,6 +20,7 @@ const walletStore = useWalletStore()
 const { getMarketIdByRouteQuery, tradableTokenMaps } = useConvertFormatter()
 
 const props = defineProps({
+  isBase: Boolean,
   isLoading: Boolean,
 
   formValues: {
@@ -39,6 +40,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
+  (e: 'update:isBase', state: boolean): void
   (e: 'update:market', state: UiSpotMarketWithToken): void
   (e: 'update:formValue', state: TradeFormValue): void
 }>()
@@ -104,6 +106,7 @@ function toggleOrderType() {
 
 function handleSwap() {
   animationCount.value = animationCount.value + 1
+  emit('update:isBase', !props.isBase)
 
   emit('update:formValue', {
     field: TradeField.BaseAmount,
@@ -119,6 +122,16 @@ function handleSwap() {
 }
 
 function handleUpdateBaseAmount(amount: string) {
+  emit('update:isBase', true)
+  updateQuoteAmount(amount)
+}
+
+function handleUpdateQuoteAmount(amount: string) {
+  emit('update:isBase', false)
+  updateBaseAmount(amount)
+}
+
+function updateQuoteAmount(amount: string) {
   const updatedQuoteAmount = new BigNumberInBase(amount)
     .multipliedBy(props.worstPriceWithSlippage)
     .toFixed(props.market.quantityDecimals, TRADE_FORM_PRICE_ROUNDING_MODE)
@@ -129,7 +142,7 @@ function handleUpdateBaseAmount(amount: string) {
   })
 }
 
-function handleUpdateQuoteAmount(amount: string) {
+function updateBaseAmount(amount: string) {
   const updatedBaseAmount = new BigNumberInBase(amount)
     .dividedBy(props.worstPriceWithSlippage)
     .toFixed(props.market.quantityDecimals, TRADE_FORM_QUANTITY_ROUNDING_MODE)
@@ -140,50 +153,45 @@ function handleUpdateQuoteAmount(amount: string) {
   })
 }
 
-function handleBaseMaxAmountChange(amount: string) {
+function handleMaxBaseAmountChange(amount: string) {
+  emit('update:isBase', true)
+
   emit('update:formValue', {
     field: TradeField.BaseAmount,
     value: amount
   })
 
-  handleUpdateBaseAmount(amount)
+  updateQuoteAmount(amount)
 }
 
 function handleMaxQuoteAmountChange(amount: string) {
-  const feeRateToDeduct = new BigNumberInBase(amount).multipliedBy(
-    takerFeeRate.value
-  )
+  emit('update:isBase', false)
 
-  const amountDeductFee = new BigNumberInBase(amount).minus(feeRateToDeduct)
+  const amountInBigNumber = new BigNumberInBase(amount)
 
-  const updatedBaseAmount = amountDeductFee.dividedBy(
-    props.worstPriceWithSlippage
+  const feeRateToDeduct = amountInBigNumber.times(takerFeeRate.value)
+  const amountDeductFee = amountInBigNumber.minus(feeRateToDeduct)
+
+  const amountDeductFeeToFixed = amountDeductFee.toFixed(
+    props.market.priceDecimals,
+    TRADE_FORM_PRICE_ROUNDING_MODE
   )
 
   emit('update:formValue', {
     field: TradeField.QuoteAmount,
-    value: amountDeductFee.toFixed(
-      props.market.priceDecimals,
-      TRADE_FORM_PRICE_ROUNDING_MODE
-    )
+    value: amountDeductFeeToFixed
   })
 
-  emit('update:formValue', {
-    field: TradeField.BaseAmount,
-    value: updatedBaseAmount.toFixed(
-      props.market.quantityDecimals,
-      TRADE_FORM_QUANTITY_ROUNDING_MODE
-    )
-  })
+  updateBaseAmount(amountDeductFeeToFixed)
 }
 
 watch(
   () => props.worstPriceWithSlippage,
   () => {
-    if (isBuy.value) {
-      handleUpdateQuoteAmount(props.formValues[TradeField.QuoteAmount])
+    if (props.isBase) {
+      updateQuoteAmount(props.formValues[TradeField.BaseAmount])
     } else {
-      handleUpdateBaseAmount(props.formValues[TradeField.BaseAmount])
+      updateBaseAmount(props.formValues[TradeField.QuoteAmount])
     }
   }
 )
@@ -233,7 +241,7 @@ watch(
           :max-decimals="market?.quantityDecimals"
           :options="quoteTokens"
           @update:model-value="handleUpdateBaseAmount"
-          @update:max="handleBaseMaxAmountChange"
+          @update:max="handleMaxBaseAmountChange"
           @update:denom="handleUpdateMarket"
         >
           <span>

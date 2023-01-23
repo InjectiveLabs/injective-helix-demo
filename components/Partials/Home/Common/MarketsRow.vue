@@ -21,6 +21,9 @@ import {
 } from '@/app/utils/market'
 import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
 
+const exchangeStore = useExchangeStore()
+const { $onError } = useNuxtApp()
+
 const props = defineProps({
   isHero: Boolean,
 
@@ -37,16 +40,9 @@ const props = defineProps({
   }
 })
 
-const exchangeStore = useExchangeStore()
-const { $onError } = useNuxtApp()
-
 const status = reactive(new Status(StatusType.Loading))
 const chartPadding = ref({ top: 4, right: 10, bottom: 4, left: 10 })
 const useDefaultLastTradedPriceColor = ref(true)
-
-const marketsHistory = computed(() => {
-  return exchangeStore.marketsHistory
-})
 
 const lastTradedPriceTextColorClass = computed(() => {
   if (useDefaultLastTradedPriceColor) {
@@ -59,12 +55,53 @@ const lastTradedPriceTextColorClass = computed(() => {
   }
 })
 
+const lastTradedPrice = computed(() => {
+  if (!props.market || !props.summary) {
+    return ZERO_IN_BASE
+  }
+
+  return new BigNumberInBase(props.summary.price)
+})
+
+const { valueToString: lastTradedPriceToFormat } = useBigNumberFormatter(
+  lastTradedPrice,
+  {
+    decimalPlaces:
+      props.market?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+  }
+)
+
+const change = computed(() => {
+  if (!props.market || !props.summary || !props.summary.change) {
+    return ZERO_IN_BASE
+  }
+
+  return new BigNumberInBase(props.summary.change)
+})
+
+const { valueToString: changeToFormat } = useBigNumberFormatter(change, {
+  decimalPlaces: 2,
+  minimalDecimalPlaces: 4
+})
+
+const lastPriceChange = computed(() => {
+  if (!props.market || !props.summary) {
+    return Change.NoChange
+  }
+
+  if (!props.summary.lastPriceChange) {
+    return Change.NoChange
+  }
+
+  return props.summary.lastPriceChange
+})
+
 const chartData = computed(() => {
-  if (marketsHistory.value.length === 0 || !props.market) {
+  if (exchangeStore.marketsHistory.length === 0 || !props.market) {
     return []
   }
 
-  const matchingMarket = marketsHistory.value.find(
+  const matchingMarket = exchangeStore.marketsHistory.find(
     (marketHistory: UiMarketHistory) => {
       return marketHistory.marketId === props.market.marketId
     }
@@ -75,28 +112,6 @@ const chartData = computed(() => {
   }
 
   return getFormattedMarketsHistoryChartData(matchingMarket)
-})
-
-const lastTradedPrice = computed(() => {
-  if (!props.market || !props.summary) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInBase(props.summary.price)
-})
-
-const lastTradedPriceToFormat = computed(() => {
-  if (!props.market) {
-    return lastTradedPrice.value.toFormat(
-      UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-      BigNumberInBase.ROUND_DOWN
-    )
-  }
-
-  return lastTradedPrice.value.toFormat(
-    props.market.priceDecimals,
-    BigNumberInBase.ROUND_DOWN
-  )
 })
 
 const chartLineColor = computed(() => {
@@ -118,30 +133,6 @@ const chartLineColor = computed(() => {
   return new BigNumberInBase(lastYAxisHolcPrice).gte(firstYaxisHolcPrice)
     ? positiveChangeColor
     : negativeChangeColor
-})
-
-const change = computed(() => {
-  if (!props.market || !props.summary) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInBase(props.summary.change)
-})
-
-const changeToFormat = computed(() => {
-  return change.value.toFormat(2, BigNumberInBase.ROUND_DOWN)
-})
-
-const lastPriceChange = computed(() => {
-  if (!props.market || !props.summary) {
-    return Change.NoChange
-  }
-
-  if (!props.summary.lastPriceChange) {
-    return Change.NoChange
-  }
-
-  return props.summary.lastPriceChange
 })
 
 const marketRoute = computed(() => {

@@ -2,7 +2,7 @@
 import { PropType } from 'vue'
 import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
-import { Modal, TradeForm } from '@/types'
+import { Modal, TradeForm, TradeField } from '@/types'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 
 const modalStore = useModalStore()
@@ -54,7 +54,17 @@ const { insufficientLiquidity, highDeviation } = useSpotError({
   market: computed(() => props.market)
 })
 
-const hasFormErrors = computed(() => Object.keys(props.errors).length > 0)
+const hasFormErrors = computed(() => {
+  if (Object.keys(props.errors).length === 0) {
+    return false
+  }
+
+  return (
+    Object.keys(props.errors).filter(
+      (key) => ![TradeField.SlippageTolerance].includes(key as TradeField)
+    ).length > 0
+  )
+})
 
 const disabled = computed<boolean>(() => {
   return (
@@ -83,7 +93,7 @@ function submit() {
     <AppButton
       v-if="!walletStore.isUserWalletConnected"
       lg
-      class="w-full bg-blue-500 font-semibold"
+      class="w-full bg-blue-500 text-blue-900 font-semibold"
       @click="handleClickOnConnect"
     >
       {{ $t('trade.convert.connect_wallet') }}
@@ -91,7 +101,7 @@ function submit() {
 
     <AppButton
       v-else
-      class="w-full bg-blue-500 font-semibold"
+      class="w-full bg-blue-500 text-blue-900 font-semibold"
       lg
       :disabled="disabled"
       :status="status"
