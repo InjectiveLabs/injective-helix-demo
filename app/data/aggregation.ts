@@ -299,7 +299,7 @@ export const customAggregations = {
 
   'BONK/USDT PERP': {
     minTick: getDecimalPlaceFromValue('0.0000000001'),
-    default: getDecimalPlaceFromValue('0.0000000001'),
+    default: getDecimalPlaceFromValue('0.000000001'),
     maxTick: getDecimalPlaceFromValue('0.000001')
   }
 } as Record<string, CustomAggregation>
