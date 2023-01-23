@@ -61,7 +61,7 @@ export const useWalletStore = defineStore('wallet', {
 
       // fee delegation don't work on devnet
       const isWalletExemptFromGasFee =
-        !isCosmosWallet(state.wallet) || !IS_DEVNET
+        !isCosmosWallet(state.wallet) && !IS_DEVNET
 
       return isWalletExemptFromGasFee || bankStore.hasEnoughInjForGas
     }

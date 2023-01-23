@@ -13,7 +13,7 @@ const slippageList = ['0.1', '0.5', '1.0']
 
 const appIconColorClass = computed<string>(() => {
   if (slippageError.value) {
-    return 'text-red-500'
+    return 'text-orange-500'
   }
 
   return isOpen.value ? 'text-blue-500' : 'text-gray-500'
@@ -26,7 +26,7 @@ const {
 } = useStringField({
   name: TradeField.SlippageTolerance,
   initialValue: '0.5',
-  rule: 'required|slippage'
+  rule: 'slippage'
 })
 
 const slippageError = computed(() => slippageToleranceErrors.value[0])
@@ -48,12 +48,12 @@ function toggleSlippageDropdown() {
 function checkForInvalidSlippageValue() {
   const slippageValue = new BigNumberInBase(slippageTolerance.value || 0)
 
-  if (slippageValue.lte(0)) {
+  if (slippageValue.lt(0)) {
     setSlippageToleranceValue('0.5')
   }
 
   if (slippageValue.gt(MAX_SLIPPAGE)) {
-    setSlippageToleranceValue(MAX_SLIPPAGE.toFormat(1))
+    setSlippageToleranceValue(MAX_SLIPPAGE.toFormat(0))
   }
 }
 </script>
@@ -127,7 +127,7 @@ function checkForInvalidSlippageValue() {
               @blur="checkForInvalidSlippageValue"
             >
               <template v-if="slippageError !== undefined" #prefix>
-                <BaseIcon name="warn" class="min-w-4 text-red-500 h-4 w-4" />
+                <BaseIcon name="warn" class="min-w-4 text-orange-500 h-4 w-4" />
               </template>
 
               <template #addon>
@@ -136,7 +136,7 @@ function checkForInvalidSlippageValue() {
             </AppNumericInput>
           </div>
 
-          <p v-if="slippageError" class="text-red-500 mt-4 text-sm">
+          <p v-if="slippageError" class="text-orange-500 mt-4 text-sm">
             {{ slippageError }}
           </p>
         </div>
@@ -144,7 +144,7 @@ function checkForInvalidSlippageValue() {
     </Dropdown>
 
     <template #popper>
-      {{ $t(`trade.convert.warnings.${slippageError}`) }}
+      {{ slippageError }}
     </template>
   </Tooltip>
 </template>

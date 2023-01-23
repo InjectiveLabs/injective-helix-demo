@@ -23,7 +23,7 @@ const props = defineProps({
 
 const currentMarketOnly = ref(false)
 const status = reactive(new Status(StatusType.Loading))
-const actionStatus = reactive(new Status(StatusType.Loading))
+const actionStatus = reactive(new Status(StatusType.Idle))
 
 const activeType = ref(FilterList.OpenOrders)
 
