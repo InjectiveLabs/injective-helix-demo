@@ -189,20 +189,9 @@ function onOrderbookPriceClick(priceAndOrderType: OrderBookPriceAndType) {
       value: priceAndOrderType.price
     })
 
-    updateAmount({ isBase: false })
+    updateAmount({ isBase: true })
   }
 }
-
-/* TODO: see how this could be useful */
-// watch: {
-// price(newPrice: string) {
-//   const { tradingTypeStopLimit } = this
-
-//   if (tradingTypeStopLimit) {
-//     return
-//   }
-//   this.$emit('update:price', newPrice)
-// },
 </script>
 
 <template>
