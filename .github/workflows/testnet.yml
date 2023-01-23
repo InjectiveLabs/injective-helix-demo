@@ -1,4 +1,4 @@
-name: Helix Testnet CD
+name: Helix Testnet Deployments
 
 on:
   push:
@@ -69,8 +69,8 @@ jobs:
       - name: Remove prev build process
         run: ssh testnet 'cd "'$SOURCE_DIR'"  && rm -rf ./node_modules/.cache'
 
-      - name: Building the project
-        run: ssh testnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn build'
+      # - name: Building the project
+      #   run: ssh testnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn build'
 
       - name: Generating the static pages
         run: ssh testnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn generate'
