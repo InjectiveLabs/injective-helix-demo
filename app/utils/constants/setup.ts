@@ -39,6 +39,12 @@ const env = {
   VITE_INDEXER_API_ENDPOINT: isWebpack
     ? process.env.VITE_INDEXER_API_ENDPOINT
     : import.meta.env.VITE_INDEXER_API_ENDPOINT,
+  VITE_CHRONOS_API_ENDPOINT: isWebpack
+    ? process.env.VITE_CHRONOS_API_ENDPOINT
+    : import.meta.env.VITE_CHRONOS_API_ENDPOINT,
+  VITE_EXPLORER_API_ENDPOINT: isWebpack
+    ? process.env.VITE_EXPLORER_API_ENDPOINT
+    : import.meta.env.VITE_EXPLORER_API_ENDPOINT,
   VITE_SENTRY_GRPC_ENDPOINT: isWebpack
     ? process.env.VITE_SENTRY_GRPC_ENDPOINT
     : import.meta.env.VITE_SENTRY_GRPC_ENDPOINT,
@@ -111,7 +117,9 @@ export const ENDPOINTS = {
   ...endpoints,
   grpc: (env.VITE_SENTRY_GRPC_ENDPOINT as string) || endpoints.grpc,
   http: (env.VITE_SENTRY_HTTP_ENDPOINT as string) || endpoints.rest,
-  indexer: (env.VITE_INDEXER_API_ENDPOINT as string) || endpoints.indexer
+  indexer: (env.VITE_INDEXER_API_ENDPOINT as string) || endpoints.indexer,
+  chronos: (env.VITE_CHRONOS_API_ENDPOINT as string) || endpoints.chronos,
+  explorer: (env.VITE_CHRONOS_API_ENDPOINT as string) || endpoints.explorer
 }
 
 export const BASE_URL = isWebpack

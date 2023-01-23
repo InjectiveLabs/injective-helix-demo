@@ -1,4 +1,4 @@
-name: Helix Mainnet CD
+name: Helix Staging Deployments
 
 on:
   push:
@@ -8,16 +8,24 @@ on:
 jobs:
   staging:
     if: true
+    name: 'Deploy to Staging'
     env:
       ## Public
       VITE_NAME: 'BETA - Helix: Decentralized Cryptocurrency Derivatives, Ethereum and Altcoin Exchange'
       VITE_BASE_URL: https://staging.injective.exchange
-      VITE_NETWORK: staging
+      VITE_NETWORK: mainnetK8s
       VITE_ENV: staging
       VITE_CHAIN_ID: injective-1
       VITE_ETHEREUM_CHAIN_ID: 1
-      SOURCE_DIR: dist
+      SOURCE_DIR: .output/public
       DEST_DIR: www
+
+      ## Endpoints
+      VITE_INDEXER_API_ENDPOINT: ''
+      VITE_CHRONOS_API_ENDPOINT: ''
+      VITE_EXPLORER_API_ENDPOINT: ''
+      VITE_SENTRY_GRPC_ENDPOINT: ''
+      VITE_SENTRY_HTTP_ENDPOINT: ''
 
       ## Flags
       MAINTENANCE_ENABLED: false
@@ -27,11 +35,6 @@ jobs:
       GEO_IP_RESTRICTIONS_ENABLED: false
       PRICE_BAND_ENABLED: false
       REFERRALS_ENABLED: true
-
-      ## Endpoints
-      VITE_EXCHANGE_API_ENDPOINT: ''
-      VITE_SENTRY_GRPC_ENDPOINT: ''
-      VITE_SENTRY_HTTP_ENDPOINT: ''
 
       ## Secret
       VITE_NEWSLETTER_API: ${{ secrets.VITE_NEWSLETTER_API }}
@@ -62,8 +65,8 @@ jobs:
       - name: Install Dependencies
         run: yarn install
 
-      - name: Building the project
-        run: yarn build
+      # - name: Building the project
+      #   run: yarn build
 
       - name: Generating the static pages
         run: yarn generate
@@ -72,7 +75,7 @@ jobs:
         uses: chrislennon/action-aws-cli@v1.1
 
       - name: Sync to S3 bucket
-        run: aws s3 sync dist/ s3://$AWS_S3_BUCKET/www --follow-symlinks --delete --exclude 'public/chart/*'
+        run: aws s3 sync dist/ s3://$AWS_S3_BUCKET/www --follow-symlinks --delete
 
       - name: Set Cache Headers
         run: aws s3 cp s3://$AWS_S3_BUCKET/www s3://$AWS_S3_BUCKET/www --exclude "*" --include "*.js" --include "*.css" --include "*.svg" --include "*.woff2" --include "*.woff" --include "*.ttf" --recursive --metadata-directive REPLACE --expires 2034-01-01T00:00:00Z --cache-control max-age=2592000,public

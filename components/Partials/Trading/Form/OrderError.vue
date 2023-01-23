@@ -6,6 +6,10 @@ defineProps({
 })
 
 const faucetUrl = 'https://inj.supply/'
+
+const notEnoughInjForGas = computed(() => {
+  return walletStore.isUserWalletConnected && !walletStore.hasEnoughInjForGas
+})
 </script>
 
 <template>
@@ -14,10 +18,7 @@ const faucetUrl = 'https://inj.supply/'
       <p v-if="highDeviation" class="text-2xs text-red-200 mb-4">
         {{ $t('trade.execution_price_far_away_from_last_traded_price') }}
       </p>
-      <p
-        v-if="!walletStore.hasEnoughInjForGas"
-        class="text-2xs text-red-400 mb-4"
-      >
+      <p v-if="notEnoughInjForGas" class="text-2xs text-red-400 mb-4">
         {{ $t('insufficientGas.tradingFormNote') }}
         <a
           :href="faucetUrl"
