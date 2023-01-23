@@ -1,9 +1,9 @@
 import { HttpRequestException } from '@injectivelabs/exceptions'
 import { HttpClient } from '@injectivelabs/utils'
-import { APP_NEWSLETTER_API } from '../utils/constants'
+import { VITE_NEWSLETTER_API } from '@/app/utils/constants'
 
-export const subscribeToNewsLetter = async (email: string) => {
-  const httpClient = new HttpClient(APP_NEWSLETTER_API)
+export const subscribeToNewsletter = async (email: string) => {
+  const httpClient = new HttpClient(VITE_NEWSLETTER_API)
 
   try {
     const response = (await httpClient.get('MailchimpHandler', {

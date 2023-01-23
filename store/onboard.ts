@@ -1,4 +1,4 @@
-import { actionTree, getterTree } from 'typed-vuex'
+import { defineStore } from 'pinia'
 import {
   UiDerivativeTrade,
   UiSpotTrade,
@@ -9,71 +9,44 @@ import {
   indexerDerivativesApi,
   indexerSpotApi,
   indexerAccountApi
-} from '~/app/Services'
+} from '@/app/Services'
 
-const initialStateFactory = () => ({
-  trades: [] as Array<UiSpotTrade | UiDerivativeTrade>,
-  subaccountTransfers: [] as UiSubaccountTransfer[]
-})
+type Trade = UiSpotTrade | UiDerivativeTrade
 
-const initialState = initialStateFactory()
-
-export const state = () => ({
-  trades: initialState.trades as Array<UiSpotTrade | UiDerivativeTrade>,
-  subaccountTransfers:
-    initialState.subaccountTransfers as UiSubaccountTransfer[]
-})
-
-export type OnboardStoreState = ReturnType<typeof state>
-
-export const getters = getterTree(state, {
-  hasMadeAnyTransfers: (state: OnboardStoreState) => {
-    return state.subaccountTransfers.length > 0
-  },
-
-  hasMadeAnyTrades: (state: OnboardStoreState) => {
-    return state.trades.length > 0
-  }
-})
-
-export const mutations = {
-  setTrades(
-    state: OnboardStoreState,
-    trades: Array<UiSpotTrade | UiDerivativeTrade>
-  ) {
-    state.trades = trades
-  },
-
-  setSubaccountTransfers(
-    state: OnboardStoreState,
-    subaccountTransfers: UiSubaccountTransfer[]
-  ) {
-    state.subaccountTransfers = subaccountTransfers
-  },
-
-  reset(state: OnboardStoreState) {
-    const initialState = initialStateFactory()
-
-    state.trades = initialState.trades
-    state.subaccountTransfers = initialState.subaccountTransfers
-  }
+type OnBoardStoreState = {
+  trades: Trade[]
+  subaccountTransfers: UiSubaccountTransfer[]
 }
 
-export const actions = actionTree(
-  { state, mutations },
-  {
-    reset({ commit }) {
-      commit('reset')
+const initialStateFactory = (): OnBoardStoreState => ({
+  trades: [],
+  subaccountTransfers: []
+})
+
+export const useOnboardStore = defineStore('onBoard', {
+  state: (): OnBoardStoreState => initialStateFactory(),
+  getters: {
+    hasMadeAnyTransfers: (state: OnBoardStoreState) => {
+      return state.subaccountTransfers.length > 0
     },
 
-    async init(_) {
-      await this.app.$accessor.onboard.fetchTrades()
-      await this.app.$accessor.onboard.fetchTransfers()
+    hasMadeAnyTrades: (state: OnBoardStoreState) => {
+      return state.trades.length > 0
+    }
+  },
+  actions: {
+    async init() {
+      const onBoardStore = useOnboardStore()
+
+      await onBoardStore.fetchTrades()
+      await onBoardStore.fetchTransfers()
     },
 
-    async fetchTrades({ commit }) {
-      const { subaccount } = this.app.$accessor.account
-      const { isUserWalletConnected } = this.app.$accessor.wallet
+    async fetchTrades() {
+      const onBoardStore = useOnboardStore()
+
+      const { subaccount } = useAccountStore()
+      const { isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccount) {
         return
@@ -82,16 +55,21 @@ export const actions = actionTree(
       const { trades: spotTrades } = await indexerSpotApi.fetchTrades({
         subaccountId: subaccount.subaccountId
       })
-      const { trades: derivativeTrades } = await indexerDerivativesApi.fetchTrades({
-        subaccountId: subaccount.subaccountId
-      })
+      const { trades: derivativeTrades } =
+        await indexerDerivativesApi.fetchTrades({
+          subaccountId: subaccount.subaccountId
+        })
 
-      commit('setTrades', [...spotTrades, ...derivativeTrades])
+      onBoardStore.$patch({
+        trades: [...spotTrades, ...derivativeTrades]
+      })
     },
 
-    async fetchTransfers({ commit }) {
-      const { subaccount } = this.app.$accessor.account
-      const { address, isUserWalletConnected } = this.app.$accessor.wallet
+    async fetchTransfers() {
+      const onBoardStore = useOnboardStore()
+
+      const { subaccount } = useAccountStore()
+      const { address, isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !address || !subaccount) {
         return
@@ -104,7 +82,17 @@ export const actions = actionTree(
         UiAccountTransformer.grpcAccountTransferToUiAccountTransfer
       )
 
-      commit('setSubaccountTransfers', uiTransfers)
+      onBoardStore.$patch({
+        subaccountTransfers: uiTransfers
+      })
+    },
+
+    reset() {
+      const onBoardStore = useOnboardStore()
+
+      onBoardStore.$patch({
+        ...initialStateFactory()
+      })
     }
   }
-)
+})

@@ -1,137 +1,77 @@
-import { actionTree, getterTree } from 'typed-vuex'
+import { defineStore } from 'pinia'
 import { FundingPayment, TradingReward } from '@injectivelabs/sdk-ts'
 import { BankBalanceWithTokenAndBalance } from '@injectivelabs/sdk-ui-ts'
-import { indexerAccountApi, indexerDerivativesApi } from '~/app/Services'
-import { ActivityFetchOptions } from '~/types'
+import { indexerAccountApi, indexerDerivativesApi } from '@/app/Services'
+import { ActivityFetchOptions } from '@/types'
 
-const initialStateFactory = () => ({
-  subaccountFundingPayments: [] as Array<FundingPayment>,
-  tradingRewardsHistory: [] as Array<TradingReward>,
-  subaccountFundingPaymentsPagination: {
-    endTime: 0 as number,
-    total: 0 as number
-  },
-  supportedTokens: [] as Array<BankBalanceWithTokenAndBalance>
-})
-
-const initialState = initialStateFactory()
-
-export const state = () => ({
-  subaccountFundingPayments:
-    initialState.subaccountFundingPayments as Array<FundingPayment>,
-  tradingRewardsHistory:
-    initialState.tradingRewardsHistory as Array<TradingReward>,
-  subaccountFundingPaymentsPagination:
-    initialState.subaccountFundingPaymentsPagination,
-  supportedTokens:
-    initialState.supportedTokens as Array<BankBalanceWithTokenAndBalance>
-})
-
-export type ActivityStoreState = ReturnType<typeof state>
-
-export const getters = getterTree(state, {
-  //
-})
-
-export const mutations = {
-  setSubaccountFundingPayments(
-    state: ActivityStoreState,
-    subaccountFundingPayments: Array<FundingPayment>
-  ) {
-    state.subaccountFundingPayments = subaccountFundingPayments
-  },
-
-  setTradingRewardHistory(
-    state: ActivityStoreState,
-    tradingRewardsHistory: Array<TradingReward>
-  ) {
-    state.tradingRewardsHistory = tradingRewardsHistory
-  },
-
-  setSubaccountFundingPaymentsEndTime(
-    state: ActivityStoreState,
-    endTime: number
-  ) {
-    state.subaccountFundingPaymentsPagination.endTime = endTime
-  },
-
-  setSubaccountFundingPaymentsTotal(state: ActivityStoreState, total: number) {
-    state.subaccountFundingPaymentsPagination.total = total
-  },
-
-  setSupportedTokens(
-    state: ActivityStoreState,
-    supportedTokens: Array<BankBalanceWithTokenAndBalance>
-  ) {
-    state.supportedTokens = supportedTokens
-  },
-
-  reset(state: ActivityStoreState) {
-    const initialState = initialStateFactory()
-
-    state.tradingRewardsHistory = initialState.tradingRewardsHistory
-  }
+type ActivityStoreState = {
+  subaccountFundingPayments: FundingPayment[]
+  tradingRewardsHistory: TradingReward[]
+  subaccountFundingPaymentsCount: number
+  supportedTokens: BankBalanceWithTokenAndBalance[]
 }
 
-export const actions = actionTree(
-  { state, mutations },
-  {
-    async fetchTradingRewardsHistory({ commit }) {
-      const { subaccount } = this.app.$accessor.account
-      const { isUserWalletConnected, injectiveAddress } =
-        this.app.$accessor.wallet
+const initialStateFactory = (): ActivityStoreState => ({
+  subaccountFundingPayments: [],
+  tradingRewardsHistory: [],
+  subaccountFundingPaymentsCount: 0,
+  supportedTokens: []
+})
+
+export const useActivityStore = defineStore('activity', {
+  state: (): ActivityStoreState => initialStateFactory(),
+  actions: {
+    async fetchTradingRewardsHistory() {
+      const activityStore = useActivityStore()
+      const { subaccount } = useAccountStore()
+      const { isUserWalletConnected, injectiveAddress } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccount || !injectiveAddress) {
         return
       }
 
-      commit(
-        'setTradingRewardHistory',
-        await indexerAccountApi.fetchRewards({
+      activityStore.$patch({
+        tradingRewardsHistory: await indexerAccountApi.fetchRewards({
           address: injectiveAddress,
           epoch: -1
         })
-      )
+      })
     },
 
     async fetchSubaccountFundingPayments(
-      { state, commit },
       activityFetchOptions: ActivityFetchOptions | undefined
     ) {
-      const { subaccount } = this.app.$accessor.account
-      const { isUserWalletConnected } = this.app.$accessor.wallet
+      const activityStore = useActivityStore()
+      const { subaccount } = useAccountStore()
+      const { isUserWalletConnected } = useWalletStore()
 
       if (!isUserWalletConnected || !subaccount) {
         return
       }
 
-      if (
-        state.subaccountFundingPayments.length > 0 &&
-        state.subaccountFundingPaymentsPagination.endTime === 0
-      ) {
-        commit(
-          'setSubaccountFundingPaymentsEndTime',
-          state.subaccountFundingPayments[0].timestamp
-        )
-      }
-
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
+      const endTime =
+        paginationOptions?.endTime ||
+        activityStore.subaccountFundingPayments[0]?.timestamp ||
+        0
 
-      const { fundingPayments, pagination } =
+      const { fundingPayments: subaccountFundingPayments, pagination } =
         await indexerDerivativesApi.fetchFundingPayments({
           marketId: filters?.marketId,
           marketIds: filters?.marketIds,
           subaccountId: subaccount.subaccountId,
           pagination: {
+            endTime,
             skip: paginationOptions ? paginationOptions.skip : 0,
-            limit: paginationOptions ? paginationOptions.limit : 0,
-            endTime: state.subaccountFundingPaymentsPagination.endTime
+            limit: paginationOptions ? paginationOptions.limit : 0
           }
         })
 
-      commit('setSubaccountFundingPaymentsTotal', pagination.total)
-      commit('setSubaccountFundingPayments', fundingPayments)
+      activityStore.$patch({
+        subaccountFundingPayments,
+        subaccountFundingPaymentsCount: pagination.total
+      })
     }
   }
-)
+})

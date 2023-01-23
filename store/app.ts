@@ -1,5 +1,4 @@
-import { actionTree, getterTree } from 'typed-vuex'
-import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
+import { defineStore } from 'pinia'
 import {
   DEFAULT_GAS_PRICE,
   SECONDS_IN_A_DAY,
@@ -7,41 +6,59 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { StatusType } from '@injectivelabs/utils'
 import { GeneralException } from '@injectivelabs/exceptions'
+import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 import {
   CHAIN_ID,
   ETHEREUM_CHAIN_ID,
   GEO_IP_RESTRICTIONS_ENABLED,
   NETWORK,
   VPN_PROXY_VALIDATION_PERIOD
-} from '~/app/utils/constants'
-import { Locale, english } from '~/locales'
-import { AppState, GeoLocation, OrderbookLayout, TradingLayout } from '~/types'
+} from '@/app/utils/constants'
+import { Locale, english } from '@/locales'
+import { AppState, GeoLocation, OrderbookLayout, TradingLayout } from '@/types'
 import {
   fetchGeoLocation,
   validateGeoLocation,
   detectVPNOrProxyUsageNoThrow
-} from '~/app/services/region'
-import { todayInSeconds } from '~/app/utils/time'
-import { streamProvider } from '~/app/providers/StreamProvider'
+} from '@/app/services/region'
+import { todayInSeconds } from '@/app/utils/time'
+import { streamProvider } from '@/app/providers/StreamProvider'
 import {
   fetchAnnouncementAttachment,
   fetchAnnouncementsList
-} from '~/app/services/announcements'
-import { UiAnnouncementTransformer } from '~/app/client/transformers/UiAnnouncementTransformer'
-import { Announcement, Attachment } from '~/app/client/types/announcements'
-import { alchemyKey } from '~/app/wallet-strategy'
+} from '@/app/services/announcements'
+import { UiAnnouncementTransformer } from '@/app/client/transformers/UiAnnouncementTransformer'
+import { Announcement, Attachment } from '@/app/client/types/announcements'
+import { alchemyKey } from '@/app/wallet-strategy'
 
 export interface UserBasedState {
   vpnOrProxyUsageValidationTimestamp: number
   favoriteMarkets: string[]
-  auctionsViewed: number[]
   geoLocation: GeoLocation
   orderbookLayout: OrderbookLayout
   tradingLayout: TradingLayout
   ninjaPassWinnerModalViewed: boolean
+  skipTradeConfirmationModal: boolean
 }
 
-const initialState = {
+type AppStoreState = {
+  // App Settings
+  locale: Locale
+  chainId: ChainId
+  ethereumChainId: EthereumChainId
+  gasPrice: string
+
+  // Loading States
+  state: AppState
+  marketsLoadingState: StatusType
+
+  // User settings
+  userState: UserBasedState
+  announcements: Announcement[]
+  attachments: Attachment[]
+}
+
+const initialStateFactory = (): AppStoreState => ({
   // App Settings
   locale: english,
   chainId: CHAIN_ID,
@@ -55,7 +72,6 @@ const initialState = {
   // User settings
   userState: {
     vpnOrProxyUsageValidationTimestamp: 0,
-    auctionsViewed: [],
     favoriteMarkets: [],
     geoLocation: {
       continent: '',
@@ -63,108 +79,67 @@ const initialState = {
     },
     orderbookLayout: OrderbookLayout.Default,
     tradingLayout: TradingLayout.Left,
-    ninjaPassWinnerModalViewed: false
-  } as UserBasedState,
-  announcements: [] as Array<Announcement>,
-  attachments: [] as Array<Attachment>
-}
-
-export const state = () => ({
-  locale: initialState.locale as Locale,
-  chainId: initialState.chainId as ChainId,
-  ethereumChainId: initialState.ethereumChainId as EthereumChainId,
-  gasPrice: initialState.gasPrice as string,
-  state: initialState.state as AppState,
-  marketsLoadingState: initialState.marketsLoadingState as StatusType,
-  userState: initialState.userState as UserBasedState,
-  announcements: [] as Array<Announcement>,
-  attachments: [] as Array<Attachment>
+    ninjaPassWinnerModalViewed: false,
+    skipTradeConfirmationModal: false
+  },
+  announcements: [],
+  attachments: []
 })
 
-export type AppStoreState = ReturnType<typeof state>
-
-export const getters = getterTree(state, {
-  favoriteMarkets: (state: AppStoreState) => {
-    return state.userState.favoriteMarkets
-  }
-})
-
-export const mutations = {
-  setAppState(state: AppStoreState, appState: AppState) {
-    state.state = appState
-  },
-
-  setAppLocale(state: AppStoreState, locale: Locale) {
-    state.locale = locale
-  },
-
-  setMarketsLoadingState(
-    state: AppStoreState,
-    marketsLoadingState: StatusType
-  ) {
-    state.marketsLoadingState = marketsLoadingState
-  },
-
-  setGasPrice(state: AppStoreState, gasPrice: string) {
-    state.gasPrice = gasPrice
-  },
-
-  setUserState(state: AppStoreState, userState: UserBasedState) {
-    state.userState = userState
-  },
-
-  setAuctionsViewed(state: AppStoreState, auctionRound: number) {
-    state.userState = {
-      ...state.userState,
-      auctionsViewed: [...state.userState.auctionsViewed, auctionRound]
+export const useAppStore = defineStore('app', {
+  state: (): AppStoreState => initialStateFactory(),
+  getters: {
+    favoriteMarkets: (state: AppStoreState) => {
+      return state.userState.favoriteMarkets
     }
   },
+  actions: {
+    async init() {
+      const appStore = useAppStore()
 
-  setFavoriteMarkets(state: AppStoreState, favoriteMarkets: string[]) {
-    state.userState = {
-      ...state.userState,
-      favoriteMarkets
-    }
-  },
-
-  setAnnouncements(state: AppStoreState, announcements: Array<any>) {
-    state.announcements = announcements
-  },
-
-  setAttachments(state: AppStoreState, attachments: Array<any>) {
-    state.attachments = attachments
-  }
-}
-
-export const actions = actionTree(
-  { state },
-  {
-    async init(_) {
-      await this.app.$accessor.app.fetchGeoLocation()
-      await this.app.$accessor.app.detectVPNOrProxyUsage()
+      await appStore.fetchGeoLocation()
+      await appStore.detectVPNOrProxyUsage()
     },
 
-    updateFavoriteMarkets({ state, commit }, marketId: string) {
-      const { userState } = state
+    updateFavoriteMarkets(marketId: string) {
+      const appStore = useAppStore()
 
-      const favoriteMarkets = userState.favoriteMarkets
+      const cachedFavoriteMarkets = appStore.userState.favoriteMarkets
 
-      if (!favoriteMarkets.includes(marketId)) {
-        commit('setFavoriteMarkets', [marketId, ...favoriteMarkets])
-      } else {
-        commit(
-          'setFavoriteMarkets',
-          favoriteMarkets.filter((m) => m !== marketId)
-        )
-      }
+      const favoriteMarkets = cachedFavoriteMarkets.includes(marketId)
+        ? cachedFavoriteMarkets.filter((m) => m !== marketId)
+        : [marketId, ...cachedFavoriteMarkets]
+
+      appStore.$patch({
+        userState: {
+          ...appStore.userState,
+          favoriteMarkets
+        }
+      })
     },
 
-    async detectVPNOrProxyUsage({ state, commit }) {
-      if (!state.userState.vpnOrProxyUsageValidationTimestamp) {
+    setUserState(userState: Object) {
+      const appStore = useAppStore()
+
+      appStore.$patch({ userState })
+    },
+
+    setMarketsLoadingState(marketsLoadingState: StatusType) {
+      const appStore = useAppStore()
+
+      appStore.$patch({ marketsLoadingState })
+    },
+
+    async detectVPNOrProxyUsage() {
+      const appStore = useAppStore()
+      const walletStore = useWalletStore()
+
+      if (!appStore.userState.vpnOrProxyUsageValidationTimestamp) {
         return
       }
 
-      const unixTimestamp = state.userState.vpnOrProxyUsageValidationTimestamp
+      const unixTimestamp =
+        appStore.userState.vpnOrProxyUsageValidationTimestamp
       const now = todayInSeconds()
       const shouldCheckVpnOrProxyUsage = SECONDS_IN_A_DAY.times(
         VPN_PROXY_VALIDATION_PERIOD
@@ -179,55 +154,78 @@ export const actions = actionTree(
       const vpnOrProxyUsageDetected = await detectVPNOrProxyUsageNoThrow()
 
       if (vpnOrProxyUsageDetected) {
-        await this.app.$accessor.wallet.logout()
+        await walletStore.logout()
       } else {
-        commit('setUserState', {
-          ...state.userState,
-          vpnOrProxyUsageValidationTimestamp: todayInSeconds()
+        appStore.$patch({
+          userState: {
+            ...appStore.userState,
+            vpnOrProxyUsageValidationTimestamp: now
+          }
         })
       }
     },
 
-    queue({ state, commit }) {
-      if (state.state === AppState.Busy) {
+    queue() {
+      const appStore = useAppStore()
+
+      if (appStore.state === AppState.Busy) {
         throw new GeneralException(new Error('You have a pending transaction.'))
       } else {
-        commit('setAppState', AppState.Busy)
+        appStore.$patch({
+          state: AppState.Busy
+        })
       }
     },
 
-    async fetchGasPrice({ commit }) {
-      commit('setGasPrice', await fetchGasPrice(NETWORK, { alchemyKey }))
-    },
+    async fetchGasPrice() {
+      const appStore = useAppStore()
 
-    async fetchGeoLocation({ state, commit }) {
-      commit('setUserState', {
-        ...state.userState,
-        geoLocation: await fetchGeoLocation()
+      appStore.$patch({
+        gasPrice: await fetchGasPrice(NETWORK, { alchemyKey })
       })
     },
 
-    async validate({ state, commit }) {
+    async fetchGeoLocation() {
+      const appStore = useAppStore()
+
+      appStore.$patch({
+        userState: {
+          ...appStore.userState,
+          geoLocation: await fetchGeoLocation()
+        }
+      })
+    },
+
+    async validate() {
+      const appStore = useAppStore()
+
       if (GEO_IP_RESTRICTIONS_ENABLED) {
-        if (state.userState.geoLocation) {
-          await validateGeoLocation(state.userState.geoLocation)
+        if (appStore.userState.geoLocation) {
+          await validateGeoLocation(appStore.userState.geoLocation)
         }
 
         await detectVPNOrProxyUsageNoThrow()
 
-        commit('setUserState', {
-          ...state.userState,
-          vpnOrProxyUsageValidationTimestamp: todayInSeconds()
+        appStore.$patch({
+          userState: {
+            ...appStore.userState,
+            vpnOrProxyUsageValidationTimestamp: todayInSeconds()
+          }
         })
       }
     },
 
-    async pollMarkets(_) {
-      await this.app.$accessor.derivatives.fetchMarketsSummary()
-      await this.app.$accessor.spot.fetchMarketsSummary()
+    async pollMarkets() {
+      const derivativeStore = useDerivativeStore()
+      const spotStore = useSpotStore()
+
+      await derivativeStore.fetchMarketsSummary()
+      await spotStore.fetchMarketsSummary()
     },
 
-    async fetchAnnouncements({ commit }) {
+    async fetchAnnouncements() {
+      const appStore = useAppStore()
+
       const announcements = await fetchAnnouncementsList()
 
       if (
@@ -242,18 +240,22 @@ export const actions = actionTree(
         UiAnnouncementTransformer.convertAnnouncementToUiAnnouncement
       )
 
-      commit('setAnnouncements', uiAnnouncements)
+      appStore.$patch({
+        announcements: uiAnnouncements
+      })
 
-      await this.app.$accessor.app.fetchAttachments()
+      await appStore.fetchAttachments()
     },
 
-    async fetchAttachments({ state, commit }) {
-      if (state.announcements.length === 0) {
+    async fetchAttachments() {
+      const appStore = useAppStore()
+
+      if (appStore.announcements.length === 0) {
         return
       }
 
       const attachments = await Promise.all(
-        state.announcements.map(
+        appStore.announcements.map(
           ({ announcementId }: { announcementId: number }) =>
             fetchAnnouncementAttachment(announcementId)
         )
@@ -265,15 +267,15 @@ export const actions = actionTree(
 
       const uiAttachments = attachments.map(
         UiAnnouncementTransformer.convertAttachmentToUiAttachment
-      )
+      ) as Attachment[]
 
-      if (uiAttachments.length !== 0) {
-        commit('setAttachments', uiAttachments)
-      }
+      appStore.$patch({
+        attachments: uiAttachments
+      })
     },
 
     cancelAllStreams() {
       streamProvider.cancelAll()
     }
   }
-)
+})

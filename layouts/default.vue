@@ -1,178 +1,150 @@
+<script lang="ts" setup>
+import { Status, StatusType } from '@injectivelabs/utils'
+import {
+  amplitudeTracker,
+  CosmoverseGiveawayCampaignArgs
+} from '@/app/providers/AmplitudeTracker'
+import { BusEvents } from '@/types'
+
+const route = useRoute()
+const appStore = useAppStore()
+const spotStore = useSpotStore()
+const derivativeStore = useDerivativeStore()
+const ninjaPassStore = useNinjaPassStore()
+const referralStore = useReferralStore()
+const walletStore = useWalletStore()
+const bankStore = useBankStore()
+const exchangeStore = useExchangeStore()
+const accountStore = useAccountStore()
+const { $onError } = useNuxtApp()
+
+const status = reactive(new Status(StatusType.Loading))
+const isOpenSidebar = ref(false)
+
+const showFooter = computed(() => {
+  return [
+    'index',
+    'markets',
+    'fee-discounts',
+    'leaderboard',
+    'account'
+  ].includes(route.name as string)
+})
+
+onMounted(() => {
+  handleCosmoverseGiveawayCampaignTrack()
+  handleNinjaPassGiveaway()
+
+  Promise.all([walletStore.init()])
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+
+  // Actions that should't block the app from loading
+  Promise.all([
+    appStore.init(),
+    appStore.fetchGasPrice(),
+    referralStore.init(),
+    exchangeStore.initFeeDiscounts()
+  ])
+
+  onLoadMarketsInit()
+
+  useEventBus<string>(BusEvents.NavLinkClicked).on(onCloseSideBar)
+})
+
+onWalletConnected(() => {
+  Promise.all([bankStore.init(), accountStore.init()]).catch($onError)
+})
+
+function handleCosmoverseGiveawayCampaignTrack() {
+  if (!route.query || !route.query.utm_source) {
+    return
+  }
+
+  amplitudeTracker.submitCosmoverseGiveawayCampaignTrackEvent(
+    route.query as unknown as CosmoverseGiveawayCampaignArgs
+  )
+}
+
+function handleNinjaPassGiveaway() {
+  ninjaPassStore.fetchCodes()
+}
+
+function onLoadMarketsInit() {
+  appStore.setMarketsLoadingState(StatusType.Loading)
+
+  Promise.all([spotStore.init(), derivativeStore.init()])
+    .catch($onError)
+    .finally(() => {
+      appStore.setMarketsLoadingState(StatusType.Idle)
+    })
+}
+
+function onCloseSideBar() {
+  if (isOpenSidebar.value) {
+    isOpenSidebar.value = false
+  }
+}
+</script>
+
 <template>
-  <div id="pro" class="w-full h-full min-h-screen bg-gray-900 relative">
+  <div
+    id="pro"
+    class="w-full h-full min-h-screen bg-gray-1000 text-gray-100 relative"
+  >
     <transition name="page" appear>
-      <HocLoading :status="status">
+      <AppHocLoading :status="status">
         <div>
-          <SidebarMobile :is-sidebar-open="isOpenSidebar" />
+          <LayoutSidebarMobile
+            v-if="isOpenSidebar"
+            @sidebar-closed="onCloseSideBar"
+          />
           <client-only>
-            <div class="relative bg-gray-900">
-              <TopBar
+            <div class="relative bg-gray-1000">
+              <LayoutTopbar
                 :is-sidebar-open="isOpenSidebar"
                 @sidebar-opened="isOpenSidebar = true"
                 @sidebar-closed="onCloseSideBar"
               />
               <main
                 class="w-full h-full min-h-screen-excluding-header flex flex-col"
+                :class="{ 'pt-12': isOpenSidebar }"
               >
-                <portal-target name="backLink" />
-                <div class="relative flex-grow">
-                  <nuxt />
+                <div class="relative h-full-flex">
+                  <NuxtPage />
                 </div>
-                <VFooter v-if="showFooter" />
+                <LayoutFooter v-if="showFooter" />
               </main>
-              <ModalAuctionCountdown v-if="SHOW_AUCTION_COUNTDOWN" />
-              <ModalInsufficientInjForGas />
-              <ModalNinjaPassWinner />
-              <Confetti />
-              <portal-target name="modals" />
+
+              <ModalsInsufficientInjForGas />
+              <ModalsNinjaPassWinner />
+              <AppConfetti />
+              <div id="modals" />
             </div>
           </client-only>
         </div>
-      </HocLoading>
+      </AppHocLoading>
     </transition>
+
+    <Notifications
+      class="z-1110 fixed inset-0 flex flex-col gap-2 justify-end items-end p-6 pointer-events-none"
+    >
+      <template #notification="{ notification }">
+        <Notification
+          :notification="notification"
+          class="pointer-events-auto bg-gray-800"
+        >
+          <template #close="{ close }">
+            <BaseIcon
+              name="close-bold"
+              class="min-w-4 hover:text-blue-500 text-white w-4 h-4"
+              @click="close"
+            />
+          </template>
+        </Notification>
+      </template>
+    </Notifications>
   </div>
 </template>
-
-<script lang="ts">
-import Vue from 'vue'
-import { Status, StatusType } from '@injectivelabs/utils'
-import Footer from '~/components/layout/footer/index.vue'
-import TopBar from '~/components/layout/topbar.vue'
-import SidebarMobile from '~/components/layout/sidebar-mobile.vue'
-import ModalAuctionCountdown from '~/components/partials/modals/auction-countdown.vue'
-import ModalInsufficientInjForGas from '~/components/partials/modals/insufficient-inj-for-gas.vue'
-import ModalNinjaPassWinner from '~/components/partials/modals/ninja-pass-winner.vue'
-import Confetti from '~/components/elements/confetti.vue'
-import { SHOW_AUCTION_COUNTDOWN } from '~/app/utils/constants'
-import {
-  amplitudeTracker,
-  CosmoverseGiveawayCampaignArgs
-} from '~/app/providers/AmplitudeTracker'
-
-export default Vue.extend({
-  components: {
-    ModalAuctionCountdown,
-    ModalInsufficientInjForGas,
-    ModalNinjaPassWinner,
-    TopBar,
-    VFooter: Footer,
-    SidebarMobile,
-    Confetti
-  },
-
-  data() {
-    return {
-      SHOW_AUCTION_COUNTDOWN,
-      isOpenSidebar: false,
-      status: new Status(StatusType.Loading)
-    }
-  },
-
-  computed: {
-    showFooter(): boolean {
-      const { $route } = this
-
-      return [
-        'index',
-        'portfolio',
-        'markets',
-        'fee-discounts',
-        'leaderboard',
-        'account'
-      ].includes($route.name as string)
-    }
-  },
-
-  mounted() {
-    this.handleCosmoverseGiveawayCampaignTrack()
-    this.handleNinjaPassGiveaway()
-
-    Promise.all([this.$accessor.wallet.init()])
-      .then(() => {
-        //
-      })
-      .catch(this.$onRejected)
-      .finally(() => {
-        this.status.setIdle()
-      })
-
-    Promise.all([
-      this.$accessor.app.init(),
-      this.$accessor.bank.init(),
-      this.$accessor.account.init()
-    ])
-      .then(() => {
-        //
-      })
-      .catch(this.$onRejected)
-
-    // Actions that should't block the app from loading
-    Promise.all([
-      this.$accessor.referral.init(),
-      this.$accessor.exchange.initFeeDiscounts()
-    ]).then(() => {
-      //
-    })
-
-    this.onLoadMarketsInit()
-
-    if (SHOW_AUCTION_COUNTDOWN) {
-      this.$accessor.auction.fetchAuctionModuleState()
-    }
-
-    this.$root.$on('wallet-connected', this.handleWalletConnected)
-    this.$root.$on('nav-link-clicked', this.onCloseSideBar)
-  },
-
-  beforeDestroy() {
-    this.$root.$off('wallet-connected', this.handleWalletConnected)
-    this.$root.$off('nav-link-clicked', this.onCloseSideBar)
-  },
-
-  methods: {
-    handleCosmoverseGiveawayCampaignTrack() {
-      const {
-        $route: { query }
-      } = this
-
-      if (!query || !query.utm_source) {
-        return
-      }
-
-      amplitudeTracker.submitCosmoverseGiveawayCampaignTrackEvent(
-        query as unknown as CosmoverseGiveawayCampaignArgs
-      )
-    },
-
-    handleNinjaPassGiveaway() {
-      this.$accessor.ninjapass.fetchCodes()
-    },
-
-    onLoadMarketsInit() {
-      this.$accessor.app.setMarketsLoadingState(StatusType.Loading)
-
-      Promise.all([
-        this.$accessor.spot.init(),
-        this.$accessor.derivatives.init()
-      ])
-        .then(() => {
-          //
-        })
-        .catch(this.$onRejected)
-        .finally(() => {
-          this.$accessor.app.setMarketsLoadingState(StatusType.Idle)
-        })
-    },
-
-    onCloseSideBar() {
-      if (this.isOpenSidebar) {
-        this.isOpenSidebar = false
-      }
-    },
-
-    handleWalletConnected() {
-      this.$accessor.referral.init()
-    }
-  }
-})
-</script>

@@ -2,7 +2,6 @@ import activities from './activity/en'
 import banners from './banners/en'
 import bridge from './bridge/en'
 import faq from './faq/en'
-import funding from './portfolio/en'
 import home from './home/en'
 import market from './market/en'
 import wallet from './wallet/en'
@@ -15,7 +14,6 @@ export default {
   ...account,
   ...banners,
   ...faq,
-  ...funding,
   ...activities,
   ...home,
   ...market,
@@ -48,13 +46,11 @@ export default {
     'The Canary Chain has a $5,000 trading limit which will be uplifted upon the canonical release over the coming weeks.',
   maintenance_header: 'System maintenance in progress',
   maintenance_subheader:
-    'While this relayer is down for maintenance,<strong class="text-primary-500">Injective</strong> is never down! You can find other relayers in the Injective Ecosystem on the button below!',
+    'While this relayer is down for maintenance,<strong class="text-blue-500">Injective</strong> is never down! You can find other relayers in the Injective Ecosystem on the button below!',
   maintenance_button: 'View status',
   maintenance_body:
     'We are constantly improving Helix. Please come back later. Follow the latest updates on our public status page.',
   token_allowance_successful: 'Token allowance set successful',
-  disclaimer_note:
-    'By connecting a wallet, you agree to the Injective Labs <a href="https://injectivelabs.org/terms-and-conditions" class="text-primary-500" target="_blank" />Terms and Conditions</a>, have read the <a href="https://injectivelabs.org/privacy-policy" class="text-primary-500" target="_blank" />Privacy Policy</a> and acknowledge that you have read and understand the Injective Protocol <a href="https://injectiveprotocol.com/disclaimer" class="text-primary-500" target="_blank">disclaimer</a>.',
   'There are no results found - Markets':
     'There are no markets found. You can go ahead and propose some!',
   getting_started: 'Getting Started',
@@ -80,18 +76,6 @@ export default {
   'Successfully Transferred': 'Successfully Transferred',
   'Enter amount': 'Enter amount',
   'Acknowledge Terms': 'Acknowledge Terms',
-  acknowledge_title:
-    'In addition, you hereby represent, warrant, and agree that: ',
-  acknowledge_1:
-    'You are not a person or company who is a resident of, is located, incorporated, or has a registered agent in, the United States of America or a Restricted Territory (as defined in the T&C).',
-  acknowledge_2:
-    'You will not in the future access this site or use helixapp.com while located in the United States of America or a Restricted Territory.',
-  acknowledge_3:
-    'You are not using, and will not in the future use, a virtual private network or other means to mask your physical location from a Restricted Territory.',
-  acknowledge_4:
-    'You are lawfully permitted to access this site and trade on helixapp.com under the laws of the jurisdiction in which you reside and are located.',
-  acknowledge_5:
-    'You understand the risks associated with using leverage, entering into perpetual contracts, and trading in digital assets.',
   'Fee Discounts': 'Fee Discounts',
   staked_amount: 'Staked Amount',
   'My Tier': 'My Tier',
@@ -150,13 +134,6 @@ export default {
   switch_to_injective_address: 'Switch to Injective Address',
   switch_to_ethereum_address: 'Switch to Ethereum Address',
 
-  auction: {
-    countdown: {
-      title: 'First Injective Burn Countdown',
-      button: 'Watch the Burn'
-    }
-  },
-
   terra: 'Terra',
   overview: 'Overview',
   trade_and_earn_my_staked_amount: 'My Staked Amount',
@@ -166,6 +143,7 @@ export default {
   stake_now: 'Stake Now',
   tradeAndEarn: {
     pendingRewards: 'Pending Rewards',
+    emptyPendingRewards: 'No pending rewards available.',
     campaignEndingOn: 'Ending on {date}',
     campaignAsOf: 'As of {date}',
     myRewardPoints: 'My Reward Points / Total Reward Points',
@@ -192,6 +170,8 @@ export default {
   marketNew: {
     title: 'Upcoming market launch',
     depositNow: 'Deposit Now',
+    description:
+      'The {baseSymbol}/{quoteSymbol} spot market will launch soon. Meanwhile, deposit at least 1 {upcomingMarketSymbol} to get a chance to win an original Bored Ape Kennel Club NFT.',
     connectAndDepositNow: 'Connect and Deposit now',
     soonToBeReleased: 'Coming soon!'
   },
@@ -302,5 +282,24 @@ export default {
       'It will serve as your gateway into exclusive Injective events, products, giveaways and many more surprises.',
     verifyNow: 'Verify now',
     later: 'Later'
+  },
+
+  terms: {
+    title: 'In addition, you hereby represent, warrant, and agree that: ',
+    acknowledge_1:
+      'You are not a person or company who is a resident of, is located, incorporated, or has a registered agent in, the United States of America or a Restricted Territory (as defined in the T&C).',
+    acknowledge_2:
+      'You will not in the future access this site or use helixapp.com while located in the United States of America or a Restricted Territory.',
+    acknowledge_3:
+      'You are not using, and will not in the future use, a virtual private network or other means to mask your physical location from a Restricted Territory.',
+    acknowledge_4:
+      'You are lawfully permitted to access this site and trade on helixapp.com under the laws of the jurisdiction in which you reside and are located.',
+    acknowledge_5:
+      'You understand the risks associated with using leverage, entering into perpetual contracts, and trading in digital assets.',
+    disclaimer: 'Disclaimer',
+    privacyPolicy: 'Privacy Policy',
+    termsAndCondition: 'Terms and Conditions',
+    disclaimer_note:
+      'By connecting a wallet, you agree to the Injective Labs {terms}, have read the {policy} and acknowledge that you have read and understand the Injective Protocol {disclaimer}.'
   }
 }

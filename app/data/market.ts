@@ -1,10 +1,6 @@
-import {
-  MarketBase,
-  UiDerivativeMarketWithToken,
-  UiSpotMarketWithToken
-} from '@injectivelabs/sdk-ui-ts'
-import { IS_DEVNET, IS_TESTNET } from '~/app/utils/constants'
-import { MarketPromotion } from '~/types'
+import { MarketBase } from '@injectivelabs/sdk-ui-ts'
+import { IS_DEVNET, IS_TESTNET } from '@/app/utils/constants'
+import { MarketPromotion, UiMarketWithToken } from '@/types'
 
 export interface UnTradableMarket {
   slug: string
@@ -74,14 +70,12 @@ export const excludedPriceDeviationSlugs = [] as string[]
 
 export const upcomingMarkets = [
   //
-] as Array<UiSpotMarketWithToken | UiDerivativeMarketWithToken>
+] as Array<UiMarketWithToken>
 
 export const deprecatedMarketSlugs = IS_DEVNET || IS_TESTNET ? [] : []
 
 export const deprecatedMarkets =
-  IS_DEVNET || IS_TESTNET
-    ? []
-    : ([] as Array<UiSpotMarketWithToken | UiDerivativeMarketWithToken>)
+  IS_DEVNET || IS_TESTNET ? [] : ([] as Array<UiMarketWithToken>)
 
 export const derivativeMarketRouteNames = [
   'perpetuals-perpetual',

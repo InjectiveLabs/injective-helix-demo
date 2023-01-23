@@ -9,3 +9,5 @@ export interface Attachment {
   announcementId: number
   contentUrl: string
 }
+
+export interface AttachmentWithAnnouncement extends Attachment, Announcement {}

@@ -1,88 +1,149 @@
-import type { Plugin } from '@nuxt/types'
-import merge from 'deepmerge'
-import { localStorage } from '~/app/Services'
-import { AppState } from '~/types'
+import {
+  PiniaPluginContext,
+  StateTree,
+  SubscriptionCallback,
+  SubscriptionCallbackMutationPatchObject
+} from 'pinia'
+import { Wallet } from '@injectivelabs/wallet-ts'
+import { defineNuxtPlugin } from '#imports'
+import { localStorage } from '@/app/Services'
+import { AppState, OrderbookLayout, TradingLayout } from '@/types'
 
-const mutationsToPersist = [
-  'app/setFavoriteMarkets',
-  'app/setUserState',
-  'wallet/reset',
-  'wallet/setAddress',
-  'wallet/setAddresses',
-  'wallet/setWallet',
-  'wallet/setWalletOptions',
-  'wallet/setInjectiveAddress',
-  'wallet/setAddressConfirmation'
-]
+const stateToPersist = {
+  app: {
+    userState: {
+      vpnOrProxyUsageValidationTimestamp: 0,
+      favoriteMarkets: [],
+      geoLocation: {
+        continent: '',
+        country: ''
+      },
+      orderbookLayout: OrderbookLayout.Default,
+      tradingLayout: TradingLayout.Left,
+      ninjaPassWinnerModalViewed: false
+    }
+  },
+  wallet: {
+    wallet: Wallet.Metamask,
+    addresses: '',
+    address: '',
+    injectiveAddress: '',
+    addressConfirmation: ''
+  },
+
+  account: {
+    subaccountIds: '',
+    subaccount: ''
+  }
+} as Record<string, Record<string, any>>
 
 const actionsThatSetAppStateToBusy = [
   'activity/batchCancelDerivativeOrders',
   'activity/batchCancelSpotOrders',
   'account/deposit',
   'account/withdraw',
-  'derivatives/cancelOrder',
-  'derivatives/batchCancelOrder',
-  'derivatives/submitLimitOrder',
-  'derivatives/submitMarketOrder',
-  'derivatives/submitStopLimitOrder',
-  'derivatives/submitStopMarketOrder',
-  'positions/closePosition',
-  'positions/closePositionAndReduceOnlyOrders',
-  'positions/closeAllPosition',
-  'positions/addMarginToPosition',
+  'derivative/cancelOrder',
+  'derivative/batchCancelOrder',
+  'derivative/submitLimitOrder',
+  'derivative/submitMarketOrder',
+  'derivative/submitStopLimitOrder',
+  'derivative/submitStopMarketOrder',
+  'position/closePosition',
+  'position/closePositionAndReduceOnlyOrders',
+  'position/closeAllPosition',
+  'position/addMarginToPosition',
   'spot/cancelOrder',
   'spot/batchCancelOrder',
   'spot/submitLimitOrder',
   'spot/submitMarketOrder',
   'spot/submitStopLimitOrder',
-  'spot/submitStopMarketOrder'
+  'spot/submitStopMarketOrder',
+  'token/setTokenAllowance',
+  'token/transfer',
+  'token/withdraw'
 ]
 
-const store: Plugin = ({ store, app }) => {
-  const localState = localStorage.get('state') as any
+const persistState = (
+  mutation: SubscriptionCallbackMutationPatchObject<StateTree>,
+  state: StateTree
+) => {
+  if (!stateToPersist[mutation.storeId]) {
+    return
+  }
 
-  // Replace Local State
-  store.replaceState(merge(store.state, localState))
+  const keysToPersist = Object.keys(stateToPersist[mutation.storeId])
 
-  // Subscribe to Changes
-  store.subscribe(({ type }) => {
-    if (mutationsToPersist.includes(type)) {
-      const stateToPersist = {
-        app: {
-          userState: app.$accessor.app.userState
-        },
+  if (!mutation.payload) {
+    return
+  }
 
-        wallet: {
-          wallet: app.$accessor.wallet.wallet,
-          addresses: app.$accessor.wallet.addresses,
-          address: app.$accessor.wallet.address,
-          injectiveAddress: app.$accessor.wallet.injectiveAddress,
-          addressConfirmation: app.$accessor.wallet.addressConfirmation
-        },
+  const shouldPersistState =
+    keysToPersist.length > 0 &&
+    Object.keys(mutation.payload).some((key) => {
+      return keysToPersist.includes(key)
+    })
 
-        account: {
-          subaccountIds: app.$accessor.account.subaccountIds,
-          subaccount: app.$accessor.account.subaccount
-        }
-      }
+  if (!shouldPersistState) {
+    return
+  }
 
-      localStorage.set('state', stateToPersist)
+  const updatedState = keysToPersist.reduce((stateObj, key) => {
+    return {
+      ...stateObj,
+      [key]: mutation.payload[key] || state[key]
     }
-  })
+  }, {})
 
-  store.subscribeAction({
-    after: ({ type }: { type: string }) => {
-      if (actionsThatSetAppStateToBusy.includes(type)) {
-        app.$accessor.app.setAppState(AppState.Idle)
-      }
-    },
+  const existingState = (localStorage.get('state') || {}) as any
 
-    error: ({ type }: { type: string }) => {
-      if (actionsThatSetAppStateToBusy.includes(type)) {
-        app.$accessor.app.setAppState(AppState.Idle)
-      }
+  localStorage.set('state', {
+    ...stateToPersist,
+    ...existingState,
+    [mutation.storeId]: {
+      ...updatedState
     }
   })
 }
 
-export default store
+function piniaStoreSubscriber({ store }: PiniaPluginContext) {
+  const localState = localStorage.get('state') as any
+  const appStore = useAppStore()
+
+  if (localState[store.$id]) {
+    store.$state = { ...store.$state, ...localState[store.$id] }
+  }
+
+  store.$subscribe(persistState as SubscriptionCallback<StateTree>)
+
+  store.$onAction(({ name, store: { $id }, after, onError }) => {
+    after(() => {
+      const type = `${$id}/${name}`
+
+      if (actionsThatSetAppStateToBusy.includes(type)) {
+        appStore.$patch({
+          state: AppState.Idle
+        })
+      }
+    })
+
+    onError(() => {
+      const type = `${$id}/${name}`
+
+      if (actionsThatSetAppStateToBusy.includes(type)) {
+        appStore.$patch({
+          state: AppState.Idle
+        })
+      }
+    })
+  }, true)
+}
+
+export default defineNuxtPlugin(
+  ({
+    vueApp: {
+      config: { globalProperties }
+    }
+  }) => {
+    globalProperties.$pinia.use(piniaStoreSubscriber)
+  }
+)

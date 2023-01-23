@@ -5,9 +5,7 @@ import {
 } from '@injectivelabs/sdk-ts/'
 import { Token } from '@injectivelabs/token-metadata'
 
-export interface FeeDiscountSchedule extends BaseFeeDiscountSchedule {
-  //
-}
+export type FeeDiscountSchedule = BaseFeeDiscountSchedule
 
 export interface FeeDiscountScheduleWithToken extends FeeDiscountSchedule {
   quoteToken: Token[]
@@ -22,6 +20,4 @@ export interface TradeRewardCampaign extends BaseTradeRewardCampaign {
   tradingRewardCampaignInfo: TradingRewardCampaignInfo | undefined
 }
 
-export interface TradingRewardsCampaign extends TradeRewardCampaign {
-  //
-}
+export type TradingRewardsCampaign = TradeRewardCampaign

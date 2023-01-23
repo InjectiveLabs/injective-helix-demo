@@ -1,6 +1,7 @@
 export default {
   connect: {
     wallet: 'Wallet',
+    walletAddress: 'Wallet Address',
     address: 'Address',
     close: 'Close',
     connect: 'Connect',

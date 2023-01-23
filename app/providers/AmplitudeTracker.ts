@@ -11,7 +11,6 @@ import {
   MarketType,
   SpotOrderSide
 } from '@injectivelabs/sdk-ui-ts'
-import { TradeExecutionType } from '@injectivelabs/ts-types'
 import {
   AMPLITUDE_ATTEMPT_PLACE_ORDER_COUNT,
   AMPLITUDE_CLICK_PLACE_ORDER_COUNT,
@@ -19,15 +18,16 @@ import {
   AMPLITUDE_TRANSFERS_MADE_COUNT,
   AMPLITUDE_VIP_TIER_LEVEL,
   AMPLITUDE_WALLET
-} from '~/app/utils/vendor'
-import { HAS_AMPLITUDE_KEY } from '~/app/utils/constants'
+} from '@/app/utils/vendor'
+import { AMPLITUDE_KEY } from '@/app/utils/constants'
 import {
   AmplitudeEvents,
   OrderAttemptStatus,
   TradeClickOrigin,
+  TradeExecutionType,
   TransferDirection
-} from '~/types'
-import { localStorage } from '~/app/Services'
+} from '@/types'
+import { localStorage } from '@/app/Services'
 
 type TrackAmplitudeFn = <T extends string | BaseEvent>(
   args: T,
@@ -38,7 +38,7 @@ export const trackAmplitude: TrackAmplitudeFn = <T extends string | BaseEvent>(
   args: T,
   eventProperties?: Record<string, any> | undefined
 ): void => {
-  if (HAS_AMPLITUDE_KEY) {
+  if (AMPLITUDE_KEY) {
     track(args, eventProperties)
   }
 }
