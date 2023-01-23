@@ -68,7 +68,7 @@ const formattedNumber = computed(() => {
     ? getExactDecimalsFromNumber(props.number.toNumber())
     : props.decimals
 
-  const { valueToString: formattedNumber } = useBigNumberFormatterNew(
+  const { valueToString: formattedNumber } = useBigNumberFormatterTmp(
     computed(() => props.number),
     {
       abbreviationMinimum: props.abbreviationMinimum,
