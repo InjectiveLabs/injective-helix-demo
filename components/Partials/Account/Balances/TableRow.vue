@@ -193,10 +193,7 @@ function handleWithdrawClick() {
             <div
               class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
             >
-              <span
-                :id="`popper-target-${balance.token.symbol}`"
-                class="text-blue-500 text-sm font-medium cursor-pointer"
-              >
+              <span class="text-blue-500 text-sm font-medium cursor-pointer">
                 {{ $t('account.trade') }}
               </span>
             </div>
@@ -221,10 +218,7 @@ function handleWithdrawClick() {
           class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
           @click="handleNavigateToMarket(filteredMarkets[0])"
         >
-          <span
-            :id="`popper-target-${balance.token.symbol}`"
-            class="text-blue-500 text-sm font-medium cursor-pointer"
-          >
+          <span class="text-blue-500 text-sm font-medium cursor-pointer">
             {{ $t('account.trade') }}
           </span>
         </div>
