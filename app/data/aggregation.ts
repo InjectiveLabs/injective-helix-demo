@@ -40,6 +40,22 @@ export const aggregationList = [
   {
     value: '6',
     display: '0.000001'
+  },
+  {
+    value: '7',
+    display: '0.0000001'
+  },
+  {
+    value: '8',
+    display: '0.00000001'
+  },
+  {
+    value: '9',
+    display: '0.000000001'
+  },
+  {
+    value: '10',
+    display: '0.0000000001'
   }
 ]
 
@@ -284,6 +300,6 @@ export const customAggregations = {
   'BONK/USDT PERP': {
     minTick: getDecimalPlaceFromValue('0.0000000001'),
     default: getDecimalPlaceFromValue('0.0000000001'),
-    maxTick: getDecimalPlaceFromValue('0.1')
+    maxTick: getDecimalPlaceFromValue('0.000001')
   }
 } as Record<string, CustomAggregation>
