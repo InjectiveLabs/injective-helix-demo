@@ -172,7 +172,7 @@ const submit = handleSubmit(() => {
           amount,
           averagePrice,
           averagePriceWithSlippage,
-          executePrice: worstPrice,
+          worstPriceWithSlippage,
           market,
           isLoading: fetchStatus.isLoading()
         }"

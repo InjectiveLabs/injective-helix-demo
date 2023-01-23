@@ -80,7 +80,10 @@ const { valueToFixed: changeToFormat, valueToBigNumber: change } =
       }
 
       return props.summary.change
-    })
+    }),
+    {
+      displayAbsoluteDecimalPlace: true
+    }
   )
 
 watch(lastTradedPriceToFormat, (newPrice: string) => {

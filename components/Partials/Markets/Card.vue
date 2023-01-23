@@ -56,7 +56,8 @@ const change = computed(() => {
 })
 
 const { valueToString: changeToFormat } = useBigNumberFormatter(change, {
-  decimalPlaces: 2
+  decimalPlaces: 2,
+  displayAbsoluteDecimalPlace: true
 })
 
 const volumeInUsdToFormat = computed(() => {
