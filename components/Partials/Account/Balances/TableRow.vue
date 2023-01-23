@@ -5,6 +5,7 @@ import {
   UiSpotMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_DISPLAY_DECIMALS
@@ -44,29 +45,29 @@ const tokenLogo = computed(() => {
   return getTokenLogoWithVendorPathPrefix(props.balance.token.logo)
 })
 
-const totalBalance = computed(() => {
-  return props.balance.bankBalance.plus(
-    props.balance.subaccountAvailableBalance
+const combinedBalance = computed(() => {
+  return new BigNumberInBase(props.balance.bankBalance || 0).plus(
+    props.balance.subaccountTotalBalance || 0
   )
 })
 
-const { valueToString: totalBalanceInUsdToString } =
-  useBigNumberFormatter(totalBalance)
-
-const availableBalance = computed(() => {
-  return props.balance.subaccountAvailableBalance
-})
-
-const { valueToString: availableBalanceToString } = useBigNumberFormatter(
-  availableBalance,
+const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
+  computed(() =>
+    props.balance.bankBalance
+      .plus(props.balance.subaccountAvailableBalance)
+      .times(props.balance.token.usdPrice || 0)
+  ),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 
-const combinedBalance = computed(() => {
-  return props.balance.bankBalance.plus(props.balance.subaccountTotalBalance)
-})
+const { valueToString: availableBalanceToString } = useBigNumberFormatter(
+  computed(() => props.balance.subaccountAvailableBalance),
+  {
+    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+  }
+)
 
 const { valueToString: combinedBalanceToString } = useBigNumberFormatter(
   combinedBalance,
@@ -137,7 +138,7 @@ function handleWithdrawClick() {
         </span>
 
         <span
-          v-else-if="!combinedBalance.isNaN()"
+          v-else-if="combinedBalance.gt(0)"
           class="font-mono text-sm text-right"
         >
           {{ combinedBalanceToString }}
