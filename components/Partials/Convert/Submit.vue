@@ -83,7 +83,7 @@ function submit() {
     <AppButton
       v-if="!walletStore.isUserWalletConnected"
       lg
-      class="w-full bg-blue-500 font-semibold"
+      class="w-full bg-blue-500 text-blue-900 font-semibold"
       @click="handleClickOnConnect"
     >
       {{ $t('trade.convert.connect_wallet') }}
@@ -91,7 +91,7 @@ function submit() {
 
     <AppButton
       v-else
-      class="w-full bg-blue-500 font-semibold"
+      class="w-full bg-blue-500 text-blue-900 font-semibold"
       lg
       :disabled="disabled"
       :status="status"

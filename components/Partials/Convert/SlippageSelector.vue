@@ -105,7 +105,7 @@ function checkForInvalidSlippageValue() {
                     class="w-full border-blue-500 border"
                     :class="[
                       active
-                        ? 'bg-blue-500 text-white rounded'
+                        ? 'bg-blue-500 text-blue-900 rounded'
                         : 'text-blue-500 rounded'
                     ]"
                   >

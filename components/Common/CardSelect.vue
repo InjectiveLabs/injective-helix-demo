@@ -67,7 +67,7 @@ function handleClick() {
           :class="[
             lg ? 'min-w-12 w-12 h-12' : 'w-4 h-4 md:w-6 md:h-6',
             {
-              'bg-blue-500 text-blue-800': isSelected,
+              'bg-blue-500 text-blue-900': isSelected,
               'bg-gray-600 group-hover:bg-blue-850': !isSelected
             }
           ]"

@@ -110,7 +110,7 @@ function close() {
             </div>
 
             <AppButton
-              class="w-full font-semibold rounded bg-blue-500"
+              class="w-full font-semibold rounded bg-blue-500 text-blue-900"
               data-cy="transfer-completed-modal-ok-button"
               lg
               @click="close"

@@ -77,7 +77,7 @@ function close() {
 
       <div class="mt-6 flex flex-col gap-4">
         <NuxtLink :to="{ name: 'markets' }" class="">
-          <AppButton lg class="w-full text-white bg-blue-500">
+          <AppButton lg class="w-full text-blue-900 bg-blue-500">
             <span class="font-semibold">
               {{ $t('marketDeprecated.exploreOtherMarkets') }}
             </span>
@@ -85,7 +85,11 @@ function close() {
         </NuxtLink>
 
         <NuxtLink :to="bridgeUrl" target="_blank">
-          <AppButton v-if="!isTerraNetwork" lg class="text-white bg-blue-500">
+          <AppButton
+            v-if="!isTerraNetwork"
+            lg
+            class="text-blue-900 bg-blue-500"
+          >
             <div class="flex items-center justify-center">
               <span class="mr-2 font-semibold">
                 {{ $t('marketDeprecated.injectiveBridge') }}

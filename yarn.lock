@@ -1807,10 +1807,10 @@
   dependencies:
     "@nuxt/kit" "^3.0.0"
 
-"@injectivelabs/ui-shared@1.0.9-alpha.20":
-  version "1.0.9-alpha.20"
-  resolved "https://registry.npmjs.org/@injectivelabs/ui-shared/-/ui-shared-1.0.9-alpha.20.tgz#ac72751f6379fa49d87c3340525be452247f7e81"
-  integrity sha512-zciTrOHnnKc7PgfKgeXd0Wj8XUKkpGJs6WiWg6YTAetkmjGx9geo4QLYThUnc8CUVBNM+8JKMVY1kqoAlMoOaA==
+"@injectivelabs/ui-shared@1.0.9-alpha.21":
+  version "1.0.9-alpha.21"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-shared/-/ui-shared-1.0.9-alpha.21.tgz#0fdcc94761c057de73c81335538eb997dca308b5"
+  integrity sha512-azxtH8vs0LFUdNkh6XNdDKoPDUiX+NMuK0vS8Bjyoasa5NijA7XKCGjkPP8mIgSXgJxV1jfeUiyDl1eaiBKeUA==
   dependencies:
     "@nuxt/kit" "^3.0.0"
     floating-vue "^2.0.0-beta.20"
@@ -1845,10 +1845,10 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/wallet-ts@1.0.364":
-  version "1.0.364"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.0.364.tgz#036f2c531dcb09790a96496b0c5e19ea9ca87428"
-  integrity sha512-7HzgtCIBtqm01O+QQBL04e8ZdXMAN7fniqL3S9q41wAq4qzpF77rdiWEZa0IS5W7gQLzAvgguDag8kb+m4qjLQ==
+"@injectivelabs/wallet-ts@1.0.365":
+  version "1.0.365"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.0.365.tgz#85c1621ba6146b6da31edec04596a12c188e97b8"
+  integrity sha512-V2Mcg6kLd/Rowgb6bp5vOsVesJVCzrFyj0yV16QSjzUIyHhsIuRBULKOXdOt/pSEYJ15g6Y2XdN0PHvHi/GeTw==
   dependencies:
     "@alch/alchemy-web3" "1.4.7"
     "@cosmjs/launchpad" "0.27.1"

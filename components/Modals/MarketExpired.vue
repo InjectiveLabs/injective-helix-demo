@@ -67,7 +67,7 @@ function close() {
 
         <NuxtLink :to="{ name: 'activity' }" target="_blank">
           <AppButton
-            class="border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"
+            class="border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-blue-900"
           >
             <span>{{ $t('marketExpired.goToActivity') }}</span>
           </AppButton>
