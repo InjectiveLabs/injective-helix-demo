@@ -149,9 +149,12 @@ export const defineTradeRules = () => {
     (value: string | number, [orderbookPrice, isBuy]: string[]) => {
       const isBuyOrder = isBuy === 'true'
 
-      if (isBuyOrder && new BigNumberInBase(value).gt(orderbookPrice)) {
+      if (isBuyOrder && new BigNumberInBase(value).gte(orderbookPrice)) {
         return tradeErrorMessages.tooHighPostOnlyPrice()
-      } else if (!isBuyOrder && new BigNumberInBase(value).lt(orderbookPrice)) {
+      } else if (
+        !isBuyOrder &&
+        new BigNumberInBase(value).lte(orderbookPrice)
+      ) {
         return tradeErrorMessages.tooLowPostOnlyPrice()
       }
 
