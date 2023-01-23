@@ -1,13 +1,10 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import {
-  BigNumberInBase,
-  BigNumberInWei,
-  getExactDecimalsFromNumber
-} from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
   FeeDiscountTierInfo,
+  getExactDecimalsFromNumber,
   cosmosSdkDecToBigNumber
 } from '@injectivelabs/sdk-ts'
 import { USDT_DECIMALS } from '@/app/utils/constants'

@@ -1,10 +1,7 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import {
-  BigNumber,
-  BigNumberInBase,
-  getExactDecimalsFromNumber
-} from '@injectivelabs/utils'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
+import { getExactDecimalsFromNumber } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const slots = useSlots()
