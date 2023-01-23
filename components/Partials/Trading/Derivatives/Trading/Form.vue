@@ -227,7 +227,7 @@ const executionPrice = computed(() => {
     : limitPrice.value
 })
 
-const hasExecutionPrice = computed(() => executionPrice.value.gt('0'))
+const hasExecutionPrice = computed(() => executionPrice.value.gt(0))
 
 const notionalWithLeverage = computed(() => {
   if (!hasBaseAmount.value) {
@@ -250,19 +250,21 @@ const notionalWithLeverage = computed(() => {
   if (props.market.subType === MarketType.BinaryOptions) {
     return new BigNumberInBase(
       calculateBinaryOptionsMargin({
+        price,
         orderSide: formValues.value[TradeField.OrderType],
         quantity: formValues.value[TradeField.BaseAmount],
-        price
-      }).toFixed(props.market.priceDecimals)
+        tensMultiplier: props.market.priceTensMultiplier
+      }).toFixed()
     )
   }
 
   return new BigNumberInBase(
     calculateMargin({
-      quantity: formValues.value[TradeField.BaseAmount],
       price,
+      quantity: formValues.value[TradeField.BaseAmount],
+      tensMultiplier: props.market.priceTensMultiplier,
       leverage: formValues.value[TradeField.Leverage]
-    }).toFixed(props.market.priceDecimals)
+    }).toFixed()
   )
 })
 
@@ -284,8 +286,9 @@ const notionalWithLeverageBasedOnWorstPrice = computed(() => {
       calculateBinaryOptionsMargin({
         orderSide: formValues.value[TradeField.OrderType],
         quantity: formValues.value[TradeField.BaseAmount],
-        price: worstPriceWithSlippage.value.toFixed()
-      }).toFixed(props.market.priceDecimals)
+        price: worstPriceWithSlippage.value.toFixed(),
+        tensMultiplier: props.market.priceTensMultiplier
+      }).toFixed()
     )
   }
 
@@ -293,8 +296,9 @@ const notionalWithLeverageBasedOnWorstPrice = computed(() => {
     calculateMargin({
       quantity: formValues.value[TradeField.BaseAmount],
       price: worstPriceWithSlippage.value.toFixed(),
-      leverage: formValues.value[TradeField.Leverage]
-    }).toFixed(props.market.priceDecimals)
+      leverage: formValues.value[TradeField.Leverage],
+      tensMultiplier: props.market.priceTensMultiplier
+    }).toFixed()
   )
 })
 
@@ -417,13 +421,13 @@ watch(executionPrice, () => {
 watch(
   () => lastTradedPrice.value,
   (newPrice: BigNumberInBase) => {
-    const hasNoInputPrice =
-      !hasExecutionPrice.value || executionPrice.value.lte(0)
-    const hasLatestLastTradedPrice = newPrice.gt('0')
-
     if (tradingTypeStopLimit.value) {
       return
     }
+
+    const hasNoInputPrice =
+      !hasExecutionPrice.value || executionPrice.value.lte(0)
+    const hasLatestLastTradedPrice = newPrice.gt('0')
 
     if (hasNoInputPrice && hasLatestLastTradedPrice) {
       const formattedPrice = newPrice.toFixed(
@@ -457,34 +461,52 @@ function updateAmount({
   if (isBaseUpdate) {
     const updatedQuoteAmount = new BigNumberInBase(
       amount ?? formValues.value[TradeField.BaseAmount]
-    )
-      .times(price)
-      .toFixed(props.market.priceDecimals, TRADE_FORM_QUANTITY_ROUNDING_MODE)
+    ).times(price)
 
-    if (
+    if (updatedQuoteAmount.isNaN()) {
+      return
+    }
+
+    const updatedQuoteAmountToString = updatedQuoteAmount.toFixed(
+      props.market.priceDecimals,
+      TRADE_FORM_QUANTITY_ROUNDING_MODE
+    )
+
+    if (!updatedQuoteAmountToString) {
+      return
+    }
+
+    const tradingTypeStopLimitAndTriggerPriceExists =
       !tradingTypeStopLimit.value ||
       new BigNumberInBase(formValues.value[TradeField.TriggerPrice]).gt(0)
-    ) {
+
+    if (tradingTypeStopLimitAndTriggerPriceExists) {
       updateFormValue({
         field: TradeField.QuoteAmount,
-        value: updatedQuoteAmount
+        value: updatedQuoteAmountToString
       })
     }
   } else {
     const baseAmountFromPrice = new BigNumberInBase(
       amount ?? formValues.value[TradeField.QuoteAmount]
     ).dividedBy(price)
-    const updatedBaseAmount =
-      baseAmountFromPrice.gt(0) && baseAmountFromPrice.isFinite()
-        ? baseAmountFromPrice.toFixed(
-            props.market.quantityDecimals,
-            TRADE_FORM_QUANTITY_ROUNDING_MODE
-          )
-        : ''
+
+    if (baseAmountFromPrice.isNaN() || baseAmountFromPrice.lte(0)) {
+      return
+    }
+
+    const updatedBaseAmountToString = baseAmountFromPrice.toFixed(
+      props.market.quantityDecimals,
+      TRADE_FORM_QUANTITY_ROUNDING_MODE
+    )
+
+    if (!updatedBaseAmountToString) {
+      return
+    }
 
     updateFormValue({
       field: TradeField.BaseAmount,
-      value: updatedBaseAmount
+      value: updatedBaseAmountToString
     })
   }
 }
