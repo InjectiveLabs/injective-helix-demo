@@ -15,16 +15,6 @@ const props = defineProps({
     default: undefined
   },
 
-  averagePrice: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  averagePriceWithSlippage: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
   worstPriceWithSlippage: {
     type: Object as PropType<BigNumberInBase>,
     required: true

@@ -34,12 +34,7 @@ const amount = computed(() => {
     : formValues[TradeField.BaseAmount]
 })
 
-const {
-  averagePrice,
-  averagePriceWithSlippage,
-  worstPrice,
-  worstPriceWithSlippage
-} = useSpotPrice({
+const { worstPrice, worstPriceWithSlippage } = useSpotPrice({
   formValues: computed(() => formValues),
   market,
   isBase
@@ -170,8 +165,6 @@ const submit = handleSubmit(() => {
           formValues,
           isBuy,
           amount,
-          averagePrice,
-          averagePriceWithSlippage,
           worstPriceWithSlippage,
           market,
           isLoading: fetchStatus.isLoading()
