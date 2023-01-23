@@ -80,7 +80,7 @@ function handleRewardsDropdownShownChange(value: boolean) {
         <template #content>
           <NuxtLink
             :to="defaultSpotMarketRoute"
-            class="p-4 block rounded-t group hover:bg-gray-700 relative z-[50] bg-gray-850"
+            class="p-4 block rounded-t group hover:bg-gray-700 relative z-50 bg-gray-850"
             data-cy="header-trade-link"
             @click="handleSpotTradeClickedTrack"
           >
@@ -94,7 +94,7 @@ function handleRewardsDropdownShownChange(value: boolean) {
 
           <NuxtLink
             :to="defaultPerpetualMarketRoute"
-            class="p-4 block group hover:bg-gray-700 relative z-[50] bg-gray-850"
+            class="p-4 block group hover:bg-gray-700 relative z-50 bg-gray-850"
             data-cy="header-trade-link"
             @click="handlePerpetualTradeClickedTrack"
           >
@@ -111,7 +111,7 @@ function handleRewardsDropdownShownChange(value: boolean) {
               name: 'convert',
               query: { from: 'usdt', to: 'inj' }
             }"
-            class="p-4 block rounded-b group hover:bg-gray-700 relative z-[50] bg-gray-850"
+            class="p-4 block rounded-b group hover:bg-gray-700 relative z-50 bg-gray-850"
             data-cy="header-convert-link"
           >
             <p class="font-semibold text-base text-white">
@@ -139,7 +139,7 @@ function handleRewardsDropdownShownChange(value: boolean) {
         <template #content>
           <NuxtLink
             :to="{ name: 'trade-and-earn' }"
-            class="p-4 block rounded-t group relative z-[50] bg-gray-850 hover:bg-gray-700"
+            class="p-4 block rounded-t group relative z-50 bg-gray-850 hover:bg-gray-700"
           >
             <p class="font-semibold text-base text-white">
               {{ $t('navigation.tradeAndEarn') }}
