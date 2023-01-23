@@ -10,7 +10,7 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import {
   derivativePriceToChainPrice,
-  formatPriceToAllowablePrice
+  formatAmountToAllowableAmount
 } from '@injectivelabs/sdk-ts'
 
 export const calculateMargin = ({
@@ -25,7 +25,7 @@ export const calculateMargin = ({
   leverage: string
 }): BigNumberInBase => {
   return new BigNumberInBase(
-    formatPriceToAllowablePrice(
+    formatAmountToAllowableAmount(
       new BigNumberInBase(quantity).times(price).dividedBy(leverage).toFixed(),
       tensMultiplier
     )
@@ -45,7 +45,7 @@ export const calculateBinaryOptionsMargin = ({
 }): BigNumberInBase => {
   if (orderSide === DerivativeOrderSide.Buy) {
     return new BigNumberInBase(
-      formatPriceToAllowablePrice(
+      formatAmountToAllowableAmount(
         new BigNumberInBase(quantity).times(price).toFixed(),
         tensMultiplier
       )
@@ -53,7 +53,7 @@ export const calculateBinaryOptionsMargin = ({
   }
 
   return new BigNumberInBase(
-    formatPriceToAllowablePrice(
+    formatAmountToAllowableAmount(
       new BigNumberInBase(quantity)
         .times(new BigNumberInBase(1).minus(price))
         .toFixed(),

@@ -271,7 +271,7 @@ export enum WalletModalType {
 
 export enum ActivityView {
   Positions = 'Positions/Index',
-  FundingPayments = 'Positions/Table/FundingPayment/Index',
+  FundingPayments = 'Positions/FundingPayments',
   SpotOrders = 'Spot/Index',
   SpotTriggers = 'Spot/Triggers',
   SpotOrderHistory = 'Spot/OrderHistory',

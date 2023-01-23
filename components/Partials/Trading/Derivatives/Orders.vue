@@ -287,26 +287,26 @@ watch(
 
     <AppHocLoading :status="status">
       <CommonCard class="h-full p-2 relative" no-padding>
-        <PartialsTradingTableTradeHistory
+        <PartialsCommonSubaccountTradeHistory
           v-if="activeType === FilterList.TradeHistory"
           :market="market"
         />
 
-        <PartialsTradingTableOrder
+        <PartialsCommonSubaccountOrder
           v-else-if="activeType === FilterList.OpenOrders"
           :market="market"
         />
 
-        <PartialsTradingTableTrigger
+        <PartialsCommonSubaccountTrigger
           v-else-if="activeType === FilterList.Triggers"
         />
 
-        <PartialsTradingTableOrderHistory
+        <PartialsCommonSubaccountOrderHistory
           v-else-if="activeType === FilterList.OrderHistory"
           :market="market"
         />
 
-        <PartialsTradingTablePosition
+        <PartialsCommonSubaccountPosition
           v-else-if="activeType === FilterList.OpenPositions"
           :market="market"
         />

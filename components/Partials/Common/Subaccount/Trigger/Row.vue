@@ -1,17 +1,7 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { BigNumberInBase, BigNumberInWei, Status } from '@injectivelabs/utils'
-import {
-  DerivativeOrderSide,
-  ZERO_IN_BASE,
-  UiDerivativeOrderHistory
-} from '@injectivelabs/sdk-ui-ts'
-import { TradeExecutionType } from '@injectivelabs/ts-types'
-import { DerivativeOrderState } from '@injectivelabs/sdk-ts'
-import {
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
+import { UiDerivativeOrderHistory } from '@injectivelabs/sdk-ui-ts'
+import { Status } from '@injectivelabs/utils'
 import { getMarketRoute } from '@/app/utils/market'
 
 const derivativeStore = useDerivativeStore()
@@ -30,127 +20,25 @@ const props = defineProps({
 
 const status = reactive(new Status())
 
-const market = computed(() =>
-  derivativeStore.markets.find((m) => m.marketId === props.trigger.marketId)
-)
-
 const isBinaryOptionsPage = route.name === 'binary-options-binaryOption'
 
-const isMarketOrder = computed(() => props.trigger.executionType === 'market')
-
-const isReduceOnly = computed(() => {
-  if (props.trigger.isReduceOnly) {
-    return true
-  }
-
-  return margin.value.isZero()
-})
-
-const price = computed(() => {
-  if (!market.value) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInWei(props.trigger.price).toBase(
-    market.value.quoteToken.decimals
-  )
-})
-
-const triggerPrice = computed(() => {
-  if (!market.value) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInWei(props.trigger.triggerPrice).toBase(
-    market.value.quoteToken.decimals
-  )
-})
-
-const margin = computed(() => {
-  if (!market.value) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInWei(props.trigger.margin).toBase(
-    market.value.quoteToken.decimals
-  )
-})
-
-const quantity = computed(() => {
-  if (!market.value) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInBase(props.trigger.quantity)
-})
-
-const leverage = computed(() => {
-  if (isReduceOnly.value) {
-    return new BigNumberInBase('')
-  }
-
-  return new BigNumberInBase(
-    price.value.times(quantity.value).dividedBy(margin.value)
-  )
-})
-
-const isCancelable = computed(
-  () => props.trigger.state === DerivativeOrderState.Booked
-)
-
-const total = computed(() => price.value.multipliedBy(quantity.value))
-
-const isBuy = computed(() => {
-  if (props.trigger.direction === DerivativeOrderSide.Buy) {
-    return true
-  }
-
-  switch (props.trigger.orderType) {
-    case DerivativeOrderSide.TakeBuy:
-    case DerivativeOrderSide.StopBuy:
-    case DerivativeOrderSide.Buy:
-    case DerivativeOrderSide.BuyPO:
-      return true
-    default:
-      return false
-  }
-})
-
-const isStopLoss = computed(() => {
-  return (
-    props.trigger.orderType === DerivativeOrderSide.StopBuy ||
-    props.trigger.orderType === DerivativeOrderSide.StopSell
-  )
-})
-
-const isTakeProfit = computed(
-  () =>
-    props.trigger.orderType === DerivativeOrderSide.TakeBuy ||
-    props.trigger.orderType === DerivativeOrderSide.TakeSell
-)
-
-const type = computed(() => {
-  const executionType =
-    props.trigger.executionType === TradeExecutionType.Market
-      ? t('trade.market')
-      : t('trade.limit')
-
-  switch (props.trigger.orderType) {
-    case DerivativeOrderSide.Buy:
-    case DerivativeOrderSide.Sell:
-    case DerivativeOrderSide.BuyPO:
-    case DerivativeOrderSide.SellPO:
-      return executionType
-    case DerivativeOrderSide.TakeSell:
-    case DerivativeOrderSide.TakeBuy:
-      return `${t('trade.takeProfit')} ${executionType}`
-    case DerivativeOrderSide.StopSell:
-    case DerivativeOrderSide.StopBuy:
-      return `${t('trade.stopLoss')} ${executionType}`
-    default:
-      return ''
-  }
-})
+const {
+  type,
+  isBuy,
+  total,
+  price,
+  market,
+  quantity,
+  leverage,
+  isStopLoss,
+  isReduceOnly,
+  isCancelable,
+  triggerPrice,
+  isTakeProfit,
+  isMarketOrder,
+  priceDecimals,
+  quantityDecimals
+} = useTrigger(computed(() => props.trigger))
 
 function onCancelOrder(): void {
   status.setLoading()
@@ -233,9 +121,7 @@ function handleClickOnMarket() {
         v-else
         xs
         data-cy="derivative-order-price-table-data"
-        :decimals="
-          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-        "
+        :decimals="priceDecimals"
         :number="price"
       />
     </td>
@@ -244,9 +130,7 @@ function handleClickOnMarket() {
       <AppNumber
         xs
         data-cy="derivative-order-quantity-table-data"
-        :decimals="
-          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-        "
+        :decimals="quantityDecimals"
         :number="quantity"
       />
     </td>
@@ -273,9 +157,7 @@ function handleClickOnMarket() {
       <AppNumber
         xs
         data-cy="derivative-order-filled-quantity-table-data"
-        :decimals="
-          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-        "
+        :decimals="quantityDecimals"
         :number="total"
       >
         <template #addon>
@@ -302,9 +184,7 @@ function handleClickOnMarket() {
       <AppNumber
         xs
         data-cy="derivative-order-total-table-data"
-        :decimals="
-          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-        "
+        :decimals="priceDecimals"
         :number="triggerPrice"
       />
     </td>

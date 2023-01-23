@@ -8,6 +8,10 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { UiMarketWithToken } from '@/types'
+import {
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 
 export function useOrder(
   order: Ref<UiDerivativeLimitOrder | UiSpotLimitOrder>,
@@ -49,6 +53,18 @@ export function useOrder(
       default:
         return false
     }
+  })
+
+  const priceDecimals = computed(() => {
+    return market.value
+      ? market.value.priceDecimals
+      : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+  })
+
+  const quantityDecimals = computed(() => {
+    return market.value
+      ? market.value.quantityDecimals
+      : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
   })
 
   const margin = computed(() => {
@@ -148,9 +164,11 @@ export function useOrder(
     quantity,
     leverage,
     isReduceOnly,
+    priceDecimals,
     orderFillable,
     filledQuantity,
     unfilledQuantity,
+    quantityDecimals,
     filledQuantityPercentageToFormat
   }
 }

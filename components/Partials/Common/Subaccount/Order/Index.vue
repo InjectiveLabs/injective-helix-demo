@@ -24,7 +24,7 @@ const store = computed(() => (isSpot ? spotStore : derivativeStore))
       :show-empty="store.subaccountOrders.length === 0"
       class="sm:hidden max-h-lg overflow-y-auto"
     >
-      <PartialsTradingTableOrderMobile
+      <PartialsCommonSubaccountOrderMobile
         v-for="(order, index) in store.subaccountOrders"
         :key="`mobile-order-${index}-${order.orderHash}`"
         class="col-span-1"
@@ -42,9 +42,9 @@ const store = computed(() => (isSpot ? spotStore : derivativeStore))
 
     <CommonTableWrapper class="hidden sm:block">
       <table v-if="store.subaccountOrders.length > 0" class="table">
-        <PartialsTradingTableOrderHeader />
+        <PartialsCommonSubaccountOrderHeader />
         <tbody>
-          <PartialsTradingTableOrderRow
+          <PartialsCommonSubaccountOrderRow
             v-for="(order, index) in store.subaccountOrders"
             :key="`orders-${index}-${order.orderHash}`"
             v-bind="{ isSpot, order }"

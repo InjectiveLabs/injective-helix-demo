@@ -2,10 +2,6 @@
 import { PropType } from 'vue'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { UiDerivativeTrade, UiSpotTrade } from '@injectivelabs/sdk-ui-ts'
-import {
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
 import { getMarketRoute } from '@/app/utils/market'
 
 const props = defineProps({
@@ -17,11 +13,20 @@ const props = defineProps({
   }
 })
 
-const { fee, time, price, total, market, quantity, tradeExecutionType } =
-  useTrade(
-    computed(() => props.trade),
-    computed(() => props.isSpot)
-  )
+const {
+  fee,
+  time,
+  price,
+  total,
+  market,
+  quantity,
+  priceDecimals,
+  quantityDecimals,
+  tradeExecutionType
+} = useTrade(
+  computed(() => props.trade),
+  computed(() => props.isSpot)
+)
 
 const marketRoute = computed(() => {
   if (!market.value) {
@@ -89,9 +94,7 @@ const marketRoute = computed(() => {
       <AppNumber
         xs
         data-cy="trade-history-price-table-data"
-        :decimals="
-          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-        "
+        :decimals="priceDecimals"
         :number="price"
       />
     </td>
@@ -100,9 +103,7 @@ const marketRoute = computed(() => {
       <AppNumber
         xs
         data-cy="trade-history-quantity-table-data"
-        :decimals="
-          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-        "
+        :decimals="quantityDecimals"
         :number="quantity"
       />
     </td>
@@ -125,9 +126,7 @@ const marketRoute = computed(() => {
       <AppNumber
         xs
         data-cy="trade-history-total-table-data"
-        :decimals="
-          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-        "
+        :decimals="priceDecimals"
         :number="total"
       >
         <template #addon>

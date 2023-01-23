@@ -26,7 +26,7 @@ const fundingPayments = computed(() => {
       :show-empty="fundingPayments.length === 0"
       class="sm:hidden mt-3 max-h-lg overflow-y-auto"
     >
-      <PartialsCommonDerivativesMobileFundingPayment
+      <PartialsCommonSubaccountFundingPaymentMobile
         v-for="(fundingPayment, index) in fundingPayments"
         :key="`mobile-funding-payment-${index}`"
         :funding-payment="fundingPayment"
@@ -42,9 +42,9 @@ const fundingPayments = computed(() => {
 
     <CommonTableWrapper break-md class="hidden sm:block">
       <table v-if="fundingPayments.length > 0" class="table h-full">
-        <PartialsCommonDerivativesFundingPaymentsTableHeader />
+        <PartialsCommonSubaccountFundingPaymentHeader />
         <tbody>
-          <PartialsCommonDerivativesFundingPaymentRow
+          <PartialsCommonSubaccountFundingPaymentRow
             v-for="(fundingPayment, index) in fundingPayments"
             :key="`funding-payments-${index}-${fundingPayment.marketId}`"
             :funding-payment="fundingPayment"

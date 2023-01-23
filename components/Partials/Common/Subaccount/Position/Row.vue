@@ -3,10 +3,7 @@ import { PropType } from 'vue'
 import { Status } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { UiPosition } from '@injectivelabs/sdk-ui-ts'
-import {
-  HIDDEN_BALANCE_DISPLAY,
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
+import { HIDDEN_BALANCE_DISPLAY } from '@/app/utils/constants'
 import { getMarketRoute } from '@/app/utils/market'
 import { BusEvents, Modal } from '@/types'
 
@@ -36,10 +33,11 @@ const {
   quantity,
   markPrice,
   pnlToFormat,
-  priceDecimal,
+  priceDecimals,
   percentagePnl,
   notionalValue,
   isBinaryOptions,
+  quantityDecimals,
   effectiveLeverage,
   markPriceToFormat,
   liquidationPrice
@@ -176,9 +174,7 @@ function handleClickOnMarket() {
       <AppNumber
         v-else
         xs
-        :decimals="
-          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-        "
+        :decimals="quantityDecimals"
         :number="quantity"
         data-cy="open-position-quantity-table-data"
       />
@@ -189,7 +185,7 @@ function handleClickOnMarket() {
       <div v-else>
         <AppNumber
           xs
-          :decimals="priceDecimal"
+          :decimals="priceDecimals"
           :number="price"
           data-cy="open-position-price-table-data"
         />
@@ -208,7 +204,7 @@ function handleClickOnMarket() {
       <AppNumber
         v-else
         xs
-        :decimals="priceDecimal"
+        :decimals="priceDecimals"
         :number="liquidationPrice"
         data-cy="open-position-liquidation-price-table-data"
       />
@@ -259,7 +255,7 @@ function handleClickOnMarket() {
       <AppNumber
         v-else
         xs
-        :decimals="priceDecimal"
+        :decimals="priceDecimals"
         :number="notionalValue"
         data-cy="open-position-total-table-data"
       >
@@ -279,7 +275,7 @@ function handleClickOnMarket() {
         <AppNumber
           xs
           data-cy="open-position-margin-table-data"
-          :decimals="priceDecimal"
+          :decimals="priceDecimals"
           :number="margin"
         />
 

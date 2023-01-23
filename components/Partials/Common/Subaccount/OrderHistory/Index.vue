@@ -26,9 +26,9 @@ const orderHistories = computed(() =>
   <div class="h-full">
     <CommonTableWrapper class="hidden sm:block">
       <table v-if="orderHistories.length > 0" class="table">
-        <PartialsTradingTableOrderHistoryHeader />
+        <PartialsCommonSubaccountOrderHistoryHeader />
         <tbody>
-          <PartialsTradingTableOrderHistoryRow
+          <PartialsCommonSubaccountOrderHistoryRow
             v-for="(order, index) in orderHistories"
             :key="`order-history-${index}`"
             :is-spot="isSpot"

@@ -3,10 +3,7 @@ import { PropType } from 'vue'
 import { UiPosition } from '@injectivelabs/sdk-ui-ts'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import {
-  HIDDEN_BALANCE_DISPLAY,
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
+import { HIDDEN_BALANCE_DISPLAY } from '@/app/utils/constants'
 import { BusEvents, Modal } from '@/types'
 
 const props = defineProps({
@@ -33,13 +30,14 @@ const {
   quantity,
   markPrice,
   pnlToFormat,
-  priceDecimal,
+  priceDecimals,
   percentagePnl,
   notionalValue,
+  quantityDecimals,
   isBinaryOptions,
+  liquidationPrice,
   effectiveLeverage,
-  markPriceToFormat,
-  liquidationPrice
+  markPriceToFormat
 } = useDerivativePosition(computed(() => props.position))
 
 const status = reactive(new Status(StatusType.Idle))
@@ -201,11 +199,7 @@ function closePositionAndReduceOnlyOrders() {
         <AppNumber
           v-else
           sm
-          :decimals="
-            market
-              ? market.quantityDecimals
-              : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-          "
+          :decimals="quantityDecimals"
           :number="quantity"
           data-cy="open-position-quantity-table-data"
         />
@@ -218,7 +212,7 @@ function closePositionAndReduceOnlyOrders() {
         <AppNumber
           v-else
           sm
-          :decimals="priceDecimal"
+          :decimals="priceDecimals"
           :number="price"
           data-cy="open-position-price-table-data"
         />
@@ -245,7 +239,7 @@ function closePositionAndReduceOnlyOrders() {
         <AppNumber
           v-else
           sm
-          :decimals="priceDecimal"
+          :decimals="priceDecimals"
           :number="liquidationPrice"
           data-cy="open-position-liquidation-price-table-data"
         />
@@ -320,7 +314,7 @@ function closePositionAndReduceOnlyOrders() {
         <AppNumber
           v-else
           sm
-          :decimals="priceDecimal"
+          :decimals="priceDecimals"
           :number="notionalValue"
           data-cy="open-position-total-table-data"
         >
@@ -344,7 +338,7 @@ function closePositionAndReduceOnlyOrders() {
             v-else
             sm
             data-cy="open-position-margin-table-data"
-            :decimals="priceDecimal"
+            :decimals="priceDecimals"
             :number="margin"
           />
 

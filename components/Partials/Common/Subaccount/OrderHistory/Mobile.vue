@@ -4,10 +4,6 @@ import {
   UiSpotOrderHistory,
   UiDerivativeOrderHistory
 } from '@injectivelabs/sdk-ui-ts'
-import {
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
 import { getMarketRoute } from '@/app/utils/market'
 
 const router = useRouter()
@@ -28,9 +24,11 @@ const {
   market,
   quantity,
   leverage,
-  filledQuantity,
+  isReduceOnly,
   isMarketOrder,
-  isReduceOnly
+  priceDecimals,
+  filledQuantity,
+  quantityDecimals
 } = useOrderHistory(
   computed(() => props.order),
   computed(() => props.isSpot)
@@ -86,44 +84,23 @@ function handleClickOnMarket() {
         {{ $t('trade.market') }}
       </span>
 
-      <AppNumber
-        v-else
-        :decimals="
-          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-        "
-        :number="price"
-      />
+      <AppNumber v-else :decimals="priceDecimals" :number="price" />
     </div>
 
     <span class="text-gray-500 uppercase tracking-widest text-3xs">
       {{ $t('trade.filled') }} / {{ $t('trade.amount') }}
     </span>
     <div class="flex items-center gap-1 justify-end">
-      <AppNumber
-        :decimals="
-          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-        "
-        :number="filledQuantity"
-      />
+      <AppNumber :decimals="quantityDecimals" :number="filledQuantity" />
       <span>/</span>
-      <AppNumber
-        :decimals="
-          market ? market.quantityDecimals : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-        "
-        :number="quantity"
-      />
+      <AppNumber :decimals="quantityDecimals" :number="quantity" />
     </div>
 
     <span class="text-gray-500 uppercase tracking-widest text-3xs">
       {{ $t('trade.total') }}
     </span>
     <div class="text-right">
-      <AppNumber
-        :decimals="
-          market ? market.priceDecimals : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-        "
-        :number="total"
-      >
+      <AppNumber :decimals="priceDecimals" :number="total">
         <template #addon>
           <span class="text-2xs text-gray-500">
             {{ market.quoteToken.symbol }}

@@ -27,7 +27,7 @@ const orders = computed(() => {
         :show-empty="orders.length === 0"
         class="sm:hidden mt-3 max-h-lg overflow-y-auto"
       >
-        <PartialsTradingTableOrderHistoryMobile
+        <PartialsCommonSubaccountOrderHistoryMobile
           v-for="(order, index) in orders"
           :key="`mobile-derivative-orders-${index}-${order.orderHash}`"
           class="col-span-1"
@@ -45,9 +45,9 @@ const orders = computed(() => {
 
       <CommonTableWrapper break-md class="hidden sm:block">
         <table v-if="orders.length > 0" class="table">
-          <PartialsTradingTableOrderHistoryHeader />
+          <PartialsCommonSubaccountOrderHistoryHeader />
           <tbody>
-            <PartialsTradingTableOrderHistoryRow
+            <PartialsCommonSubaccountOrderHistoryRow
               v-for="(order, index) in orders"
               :key="`order-${index}`"
               :order="order"
