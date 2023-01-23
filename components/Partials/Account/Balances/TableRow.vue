@@ -51,12 +51,14 @@ const combinedBalance = computed(() => {
   )
 })
 
+const totalBalance = computed(() => {
+  return new BigNumberInBase(props.balance.bankBalance || 0).plus(
+    props.balance.subaccountAvailableBalance || 0
+  )
+})
+
 const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
-  computed(() =>
-    props.balance.bankBalance
-      .plus(props.balance.subaccountAvailableBalance)
-      .times(props.balance.token.usdPrice || 0)
-  ),
+  computed(() => totalBalance.value.times(props.balance.token.usdPrice || 0)),
   {
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
