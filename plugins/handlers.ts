@@ -70,7 +70,7 @@ const handleInsufficientGas = (error: ThrownException) => {
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.config.errorHandler = (error, context) => {
-    console.log(error, context)
+    console.warn(error, context, (error as any).stack)
   }
 
   window.onunhandledrejection = function (event: PromiseRejectionEvent) {

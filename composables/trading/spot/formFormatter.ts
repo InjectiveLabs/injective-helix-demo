@@ -13,7 +13,7 @@ export function useSpotFormFormatter(tradeForm: Ref<TradeForm>) {
   const hasBaseAmount = computed(() => baseAmount.value.gt('0'))
 
   const limitPrice = computed(
-    () => new BigNumberInBase(tradeForm.value[TradeField.LimitPrice])
+    () => new BigNumberInBase(tradeForm.value[TradeField.LimitPrice] || 0)
   )
 
   const quoteAmount = computed(() =>

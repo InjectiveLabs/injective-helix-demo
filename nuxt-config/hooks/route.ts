@@ -34,7 +34,11 @@ export const spot = [
   'evmos-usdt',
   'ape-usdt',
   'link-usdt',
-  'gf-usdt'
+  'gf-usdt',
+  'somm-usdt',
+  'ethbtctrend-usdt',
+  'steadyeth-usdt',
+  'steadybtc-usdt'
 ]
 
 export const perpetuals = [

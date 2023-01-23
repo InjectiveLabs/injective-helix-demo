@@ -255,30 +255,49 @@ function updateAmount({
   if (isBaseUpdate) {
     const updatedQuoteAmount = new BigNumberInBase(
       amount ?? formValues.value[TradeField.BaseAmount]
+    ).times(executionPrice.value)
+
+    if (updatedQuoteAmount.isNaN()) {
+      return
+    }
+
+    const updatedQuoteAmountToString = updatedQuoteAmount.toFixed(
+      props.market.priceDecimals,
+      TRADE_FORM_QUANTITY_ROUNDING_MODE
     )
-      .times(executionPrice.value)
-      .toFixed(props.market.priceDecimals, TRADE_FORM_QUANTITY_ROUNDING_MODE)
+
+    if (!updatedQuoteAmountToString) {
+      return
+    }
 
     updateFormValue({
       field: TradeField.QuoteAmount,
-      value: updatedQuoteAmount
+      value: updatedQuoteAmountToString
     })
   } else {
     const baseAmountFromAveragePrice = new BigNumberInBase(
       amount ?? formValues.value[TradeField.QuoteAmount]
     ).dividedBy(executionPrice.value)
 
-    const updatedBaseAmount =
-      baseAmountFromAveragePrice.gt(0) && baseAmountFromAveragePrice.isFinite()
-        ? baseAmountFromAveragePrice.toFixed(
-            props.market.quantityDecimals,
-            TRADE_FORM_QUANTITY_ROUNDING_MODE
-          )
-        : ''
+    if (
+      baseAmountFromAveragePrice.isNaN() ||
+      baseAmountFromAveragePrice.lte(0)
+    ) {
+      return
+    }
+
+    const updatedBaseAmountToString = baseAmountFromAveragePrice.toFixed(
+      props.market.quantityDecimals,
+      TRADE_FORM_QUANTITY_ROUNDING_MODE
+    )
+
+    if (!updatedBaseAmountToString) {
+      return
+    }
 
     updateFormValue({
       field: TradeField.BaseAmount,
-      value: updatedBaseAmount
+      value: updatedBaseAmountToString
     })
   }
 }

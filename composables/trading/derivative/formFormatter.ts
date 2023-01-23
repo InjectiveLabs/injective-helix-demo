@@ -13,7 +13,7 @@ export function useDerivativeFormFormatter(tradeForm: Ref<TradeForm>) {
   const hasBaseAmount = computed(() => baseAmount.value.gt('0'))
 
   const limitPrice = computed(
-    () => new BigNumberInBase(tradeForm.value[TradeField.LimitPrice])
+    () => new BigNumberInBase(tradeForm.value[TradeField.LimitPrice] || 0)
   )
 
   const quoteAmount = computed(() =>
@@ -27,7 +27,7 @@ export function useDerivativeFormFormatter(tradeForm: Ref<TradeForm>) {
       return undefined
     }
 
-    return new BigNumberInBase(tradeForm.value[TradeField.TriggerPrice])
+    return new BigNumberInBase(tradeForm.value[TradeField.TriggerPrice] || 0)
   })
 
   const hasTriggerPrice = computed(() => triggerPrice.value !== undefined)

@@ -76,6 +76,10 @@ const classes = computed(() => {
 function onBlur(e?: Event) {
   const { value } = e?.target as HTMLInputElement
 
+  if (isNaN(parseInt(value))) {
+    return
+  }
+
   emit('blur', value)
 }
 </script>

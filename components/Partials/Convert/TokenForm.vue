@@ -106,6 +106,7 @@ function toggleOrderType() {
 
 function handleSwap() {
   animationCount.value = animationCount.value + 1
+
   emit('update:isBase', !props.isBase)
 
   emit('update:formValue', {

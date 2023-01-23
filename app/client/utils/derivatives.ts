@@ -8,18 +8,58 @@ import {
   UiPosition,
   ZERO_IN_BASE
 } from '@injectivelabs/sdk-ui-ts'
-import { derivativePriceToChainPrice } from '@injectivelabs/sdk-ts'
+import {
+  derivativePriceToChainPrice,
+  formatPriceToAllowablePrice
+} from '@injectivelabs/sdk-ts'
 
 export const calculateMargin = ({
   quantity,
   price,
+  tensMultiplier,
   leverage
 }: {
   quantity: string
   price: string
+  tensMultiplier: number
   leverage: string
 }): BigNumberInBase => {
-  return new BigNumberInBase(quantity).times(price).dividedBy(leverage)
+  return new BigNumberInBase(
+    formatPriceToAllowablePrice(
+      new BigNumberInBase(quantity).times(price).dividedBy(leverage).toFixed(),
+      tensMultiplier
+    )
+  )
+}
+
+export const calculateBinaryOptionsMargin = ({
+  quantity,
+  price,
+  orderSide,
+  tensMultiplier
+}: {
+  quantity: string
+  price: string
+  tensMultiplier: number
+  orderSide: DerivativeOrderSide
+}): BigNumberInBase => {
+  if (orderSide === DerivativeOrderSide.Buy) {
+    return new BigNumberInBase(
+      formatPriceToAllowablePrice(
+        new BigNumberInBase(quantity).times(price).toFixed(),
+        tensMultiplier
+      )
+    )
+  }
+
+  return new BigNumberInBase(
+    formatPriceToAllowablePrice(
+      new BigNumberInBase(quantity)
+        .times(new BigNumberInBase(1).minus(price))
+        .toFixed(),
+      tensMultiplier
+    )
+  )
 }
 
 export const computeOrderbookSummary = (
@@ -88,22 +128,4 @@ export const getRoundedLiquidationPrice = (
   return liquidationPriceRoundedToMinTickPrice.lte(0)
     ? minTickPrice
     : liquidationPriceRoundedToMinTickPrice
-}
-
-export const calculateBinaryOptionsMargin = ({
-  quantity,
-  price,
-  orderSide
-}: {
-  quantity: string
-  price: string
-  orderSide: DerivativeOrderSide
-}): BigNumberInBase => {
-  if (orderSide === DerivativeOrderSide.Buy) {
-    return new BigNumberInBase(quantity).times(price)
-  }
-
-  return new BigNumberInBase(quantity).times(
-    new BigNumberInBase(1).minus(price)
-  )
 }

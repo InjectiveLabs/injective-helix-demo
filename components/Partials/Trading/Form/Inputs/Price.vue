@@ -113,9 +113,11 @@ const cappedAcceptableMin = computed(() => {
 
 const topOfOrderbookPrice = computed(() => {
   const [order] = props.orderbookOrders
+
   if (!order) {
     return ''
   }
+
   return new BigNumberInWei(order.price)
     .toBase(
       props.isSpot
@@ -156,8 +158,7 @@ const { value: price, setValue: setPriceField } = useStringField({
     if (
       props.tradingTypeLimit &&
       props.lastTradedPrice.gt(0) &&
-      highestBuy.value.gt(0) &&
-      lowestSell.value.gt(0) &&
+      middlePrice.value.gt(0) &&
       new BigNumberInBase(props.formValues[TradeField.LimitPrice]).gt(0)
     ) {
       rules.push(
