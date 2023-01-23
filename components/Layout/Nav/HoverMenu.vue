@@ -24,11 +24,13 @@ function updateShown(value: boolean) {
 
 <template>
   <Menu
+    v-bind="$attrs"
+    placement="top"
     popper-class="v-popper__navigation"
-    :delay="0"
-    :triggers="['click', 'hover', 'focus']"
+    :delay="200"
     :distance="8"
     :shown="shown"
+    :triggers="['click', 'hover', 'focus']"
     @update:shown="updateShown"
   >
     <div @mouseenter="show" @mouseleave="hide">
@@ -43,7 +45,7 @@ function updateShown(value: boolean) {
 
 <style>
 .v-popper__navigation {
-  @apply w-80 xs:w-96 rounded-lg bg-gray-850 shadow-dropdown z-[50] flex flex-col flex-wrap;
+  @apply w-80 xs:w-96 rounded-lg bg-gray-850 shadow-dropdown z-50 flex flex-col flex-wrap;
   transition: opacity 250ms ease-in-out !important;
 }
 .v-popper__navigation.v-popper__popper--show-from,
