@@ -525,7 +525,7 @@ function handleTransferTradingAccountTrack() {
           <div class="text-center mt-6">
             <AppButton
               lg
-              class="w-full font-semibold rounded bg-blue-500"
+              class="w-full font-semibold rounded bg-blue-500 text-blue-900"
               :disabled="
                 !amountLargerThanEthBridgeFee ||
                 (originIsInjectiveNetwork && !walletStore.hasEnoughInjForGas)

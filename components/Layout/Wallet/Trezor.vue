@@ -115,7 +115,7 @@ const connect = handleSubmit(() => {
       </p>
 
       <AppButton
-        class="w-full mt-4 text-white bg-blue-500 font-semibold"
+        class="w-full mt-4 text-blue-900 bg-blue-500 font-semibold"
         :disabled="addressErrors.length > 0"
         :status="status"
         lg

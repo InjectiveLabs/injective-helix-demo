@@ -36,7 +36,7 @@ function handleClose() {
       <template #faucetLink>
         <a
           target="_blank"
-          class="text-blue-500 dark:text-blue-800"
+          class="text-blue-500"
           :href="faucetUrl"
           @click="handleClose"
         >
@@ -47,7 +47,7 @@ function handleClose() {
       <template #hubLink>
         <a
           target="_blank"
-          class="text-blue-500 dark:text-blue-800"
+          class="text-blue-500"
           :href="hubUrl"
           @click="handleClose"
         >
@@ -59,7 +59,7 @@ function handleClose() {
     <a :href="hubUrl">
       <AppButton
         type="button"
-        class="whitespace-nowrap w-full bg-blue-500 text-blue-900"
+        class="whitespace-nowrap w-full bg-blue-500 text-black"
         @click="handleClose"
       >
         <div class="flex items-center justify-center">

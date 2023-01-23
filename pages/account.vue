@@ -29,38 +29,15 @@ const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
 
-const markets = computed(() => {
-  return derivativeStore.markets
-})
-
-const positions = computed(() => {
-  return positionStore.subaccountPositions
-})
-
-const bankBalances = computed(() => {
-  return bankStore.bankBalancesWithToken
-})
-
-const erc20TokensWithBalanceAndPriceFromBank = computed(() => {
-  return tokenStore.erc20TokensWithBalanceAndPriceFromBank
-})
-
-const ibcTokensWithBalanceAndPriceFromBank = computed(() => {
-  return tokenStore.ibcTokensWithBalanceAndPriceFromBank
-})
-
-const subaccountBalancesWithTokenAndPrice = computed(() => {
-  return accountStore.subaccountBalancesWithTokenAndPrice
-})
-
 const bankBalancesWithUsdBalanceAndUsdPrice = computed(() => {
   return [
-    ...erc20TokensWithBalanceAndPriceFromBank.value,
-    ...ibcTokensWithBalanceAndPriceFromBank.value
+    ...tokenStore.erc20TokensWithBalanceAndPriceFromBank,
+    ...tokenStore.ibcTokensWithBalanceAndPriceFromBank
   ].map((tokenWithBalance) => {
     const balance =
-      bankBalances.value.find(({ denom }) => denom === tokenWithBalance.denom)
-        ?.balance || ZERO_TO_STRING
+      bankStore.bankBalancesWithToken.find(
+        ({ denom }) => denom === tokenWithBalance.denom
+      )?.balance || ZERO_TO_STRING
 
     return {
       balance,
@@ -73,8 +50,10 @@ const bankBalancesWithUsdBalanceAndUsdPrice = computed(() => {
 })
 
 const totalPositionsPnlByQuoteDenom = computed(() => {
-  return positions.value.reduce((list, p) => {
-    const market = markets.value.find((m) => m.marketId === p.marketId)
+  return positionStore.subaccountPositions.reduce((list, p) => {
+    const market = derivativeStore.markets.find(
+      (m) => m.marketId === p.marketId
+    )
 
     if (!market) {
       return list
@@ -104,8 +83,10 @@ const totalPositionsPnlByQuoteDenom = computed(() => {
 })
 
 const totalPositionsMarginByQuoteDenom = computed(() => {
-  return positions.value.reduce((list, p) => {
-    const market = markets.value.find((m) => m.marketId === p.marketId)
+  return positionStore.subaccountPositions.reduce((list, p) => {
+    const market = derivativeStore.markets.find(
+      (m) => m.marketId === p.marketId
+    )
 
     if (!market) {
       return list
@@ -126,7 +107,7 @@ const totalPositionsMarginByQuoteDenom = computed(() => {
 })
 
 const subaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd = computed(() => {
-  return subaccountBalancesWithTokenAndPrice.value.map((balance) => {
+  return accountStore.subaccountBalancesWithTokenAndPrice.map((balance) => {
     const denom = balance.token.denom.toLowerCase()
     const usdPrice = balance.token.usdPrice
 

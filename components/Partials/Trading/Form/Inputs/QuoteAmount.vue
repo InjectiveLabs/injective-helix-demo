@@ -63,7 +63,7 @@ const { value: quoteAmount, setValue } = useStringField({
       tradingTypeStopMarket.value && !hasTriggerPrice.value
 
     if (!formIsStopMarketAndHasNoTriggerPrice) {
-      rules.push(`integer:${TradeField.BaseAmount}`)
+      rules.push(`integer:${TradeField.QuoteAmount}`)
     }
 
     return rules.join('|')

@@ -67,13 +67,13 @@ const classes = computed(() => {
   }
 
   if (props.blue) {
-    result.push('bg-blue-500', 'text-blue-800')
+    result.push('bg-blue-500', 'text-blue-900')
   } else if (props.red) {
     result.push('bg-red-500', 'text-red-900')
   } else if (props.gray) {
     result.push('bg-gray-700', 'text-gray-200')
   } else if (props.green) {
-    result.push('bg-green-500', 'text-green-800')
+    result.push('bg-green-500', 'text-green-900')
   }
 
   return result.join(' ')

@@ -283,17 +283,20 @@ function updateAmount({
   }
 }
 
-function setDefaultBaseAndPrice() {
+function setDefaultFormValues() {
   updateFormValue({ field: TradeField.BaseAmount, value: amountStep.value })
   updateFormValue({
     field: TradeField.LimitPrice,
-    value: lastTradedPrice.value.toFixed()
+    value: lastTradedPrice.value.toFixed(
+      props.market.priceDecimals,
+      TRADE_FORM_PRICE_ROUNDING_MODE
+    )
   })
 }
 
 function resetForm() {
   resetFormValues()
-  setDefaultBaseAndPrice()
+  setDefaultFormValues()
 }
 
 function submitLimitOrder() {
@@ -382,7 +385,7 @@ function handleAttemptPlaceOrderTrack(errorMessage?: string) {
   <div v-if="lastTradedPrice" class="w-full flex flex-col gap-6">
     <PartialsTradingFormTradeExecutionTypeButtons
       v-bind="{ formValues }"
-      @form:reset="setDefaultBaseAndPrice"
+      @form:reset="setDefaultFormValues"
     />
 
     <PartialsTradingFormOrderTypeSelect

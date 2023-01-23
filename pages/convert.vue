@@ -18,6 +18,7 @@ const {
   values: formValues
 } = useForm<TradeForm>()
 
+const isBase = ref(false)
 const market = ref<UiSpotMarketWithToken | undefined>()
 const status = reactive(new Status(StatusType.Loading))
 const fetchStatus = reactive(new Status(StatusType.Idle))
@@ -33,15 +34,10 @@ const amount = computed(() => {
     : formValues[TradeField.BaseAmount]
 })
 
-const {
-  averagePrice,
-  averagePriceWithSlippage,
-  worstPrice,
-  worstPriceWithSlippage
-} = useSpotPrice({
+const { worstPrice, worstPriceWithSlippage } = useSpotPrice({
   formValues: computed(() => formValues),
   market,
-  isBase: computed(() => !isBuy.value)
+  isBase
 })
 
 onMounted(() => {
@@ -61,23 +57,26 @@ function updateFormValue({ field, value }: TradeFormValue) {
 }
 
 function resetFormValues() {
-  const isBaseToQuote = unref(isBuy)
+  const isBuyState = unref(isBuy.value)
 
   resetForm()
 
+  isBase.value = !isBuyState
+
   updateFormValue({
     field: TradeField.OrderType,
-    value: isBuy ? SpotOrderSide.Buy : SpotOrderSide.Sell
+    value: isBuyState ? SpotOrderSide.Buy : SpotOrderSide.Sell
   })
 
   if (market.value) {
     updateFormValue({
       field: TradeField.BaseDenom,
-      value: isBaseToQuote ? market.value.baseDenom : market.value.quoteDenom
+      value: market.value.baseDenom
     })
+
     updateFormValue({
       field: TradeField.QuoteDenom,
-      value: isBaseToQuote ? market.value.quoteDenom : market.value.baseDenom
+      value: market.value.quoteDenom
     })
   }
 }
@@ -114,7 +113,7 @@ function handleMarketUpdate(market: UiSpotMarketWithToken) {
   ]).finally(() => fetchStatus.setIdle())
 }
 
-const submit = handleSubmit(() => {
+function submitForm() {
   submitStatus.setLoading()
 
   if (!market) {
@@ -136,6 +135,16 @@ const submit = handleSubmit(() => {
     .finally(() => {
       submitStatus.setIdle()
     })
+}
+
+const submit = handleSubmit(submitForm, ({ errors }) => {
+  const filteredErrors = Object.keys(errors).filter(
+    (key) => ![TradeField.SlippageTolerance].includes(key as TradeField)
+  )
+
+  if (filteredErrors.length === 0) {
+    submitForm()
+  }
 })
 </script>
 
@@ -150,6 +159,7 @@ const submit = handleSubmit(() => {
       </div>
 
       <PartialsConvertTokenForm
+        v-model:isBase="isBase"
         v-model:market="market"
         :worst-price-with-slippage="worstPriceWithSlippage"
         :is-loading="fetchStatus.isLoading() || submitStatus.isLoading()"
@@ -162,11 +172,10 @@ const submit = handleSubmit(() => {
       <PartialsConvertSummary
         class="mt-4"
         v-bind="{
+          formValues,
           isBuy,
           amount,
-          averagePrice,
-          averagePriceWithSlippage,
-          executePrice: worstPrice,
+          worstPriceWithSlippage,
           market,
           isLoading: fetchStatus.isLoading()
         }"

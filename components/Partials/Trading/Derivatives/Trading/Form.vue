@@ -607,7 +607,10 @@ function setDefaultFormValues() {
   updateFormValue({ field: TradeField.BaseAmount, value: amountStep.value })
   updateFormValue({
     field: TradeField.LimitPrice,
-    value: lastTradedPrice.value.toFixed()
+    value: lastTradedPrice.value.toFixed(
+      props.market.priceDecimals,
+      TRADE_FORM_PRICE_ROUNDING_MODE
+    )
   })
   updateFormValue({
     field: TradeField.ReduceOnly,

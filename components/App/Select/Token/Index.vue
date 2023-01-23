@@ -110,10 +110,7 @@ export default {
     >
       <slot />
 
-      <div
-        v-if="selectedToken && !hideMax"
-        class="text-right flex items-center gap-2"
-      >
+      <div v-if="selectedToken" class="text-right flex items-center gap-2">
         <span
           v-if="valueToBigNumber.gt(0) && !hideMax"
           class="cursor-pointer text-blue-500 hover:text-opacity-80"

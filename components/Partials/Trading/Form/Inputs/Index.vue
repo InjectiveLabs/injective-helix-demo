@@ -155,9 +155,11 @@ function updateFormValue({ field, value }: TradeFormValue) {
       v-bind="{
         formValues,
         isBase,
+        isBuy,
         isSpot,
         lastTradedPrice,
         market,
+        orderbookOrders,
         priceStep,
         tradingTypeLimit,
         tradingTypeStopLimit,

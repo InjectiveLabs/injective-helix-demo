@@ -131,7 +131,7 @@ export function useDerivativeError({
         | UiExpiryFuturesMarketWithToken
     ).initialMarginRatio
 
-    const price = tradingTypeStopMarket
+    const price = tradingTypeStopMarket.value
       ? worstPriceWithSlippage.value
       : executionPrice.value
 
@@ -201,21 +201,19 @@ export function useDerivativeError({
       amountWithInitialMarginRatio
     )
 
-    const isConditional = [
-      TradeExecutionType.StopLimit,
-      TradeExecutionType.StopMarket
-    ].includes(formValues.value[TradeField.TradingType])
+    const isConditionalMarketOrder =
+      TradeExecutionType.StopMarket === formValues.value[TradeField.TradingType]
 
     const triggerPrice = new BigNumberInBase(
       formValues.value[TradeField.TriggerPrice]
     )
 
-    const priceLessThanMarginRatioBasedPrice = isConditional
+    const priceLessThanMarginRatioBasedPrice = isConditionalMarketOrder
       ? markPrice.lt(priceBasedOnNotionalAndMarginRatio) ||
         triggerPrice.lt(priceBasedOnNotionalAndMarginRatio)
       : markPrice.lt(priceBasedOnNotionalAndMarginRatio)
 
-    const priceGreaterThanMarginRatioBasedPrice = isConditional
+    const priceGreaterThanMarginRatioBasedPrice = isConditionalMarketOrder
       ? markPrice.gt(priceBasedOnNotionalAndMarginRatio) ||
         triggerPrice.gt(priceBasedOnNotionalAndMarginRatio)
       : markPrice.gt(priceBasedOnNotionalAndMarginRatio)
