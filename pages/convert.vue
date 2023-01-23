@@ -34,12 +34,7 @@ const amount = computed(() => {
     : formValues[TradeField.BaseAmount]
 })
 
-const {
-  averagePrice,
-  averagePriceWithSlippage,
-  worstPrice,
-  worstPriceWithSlippage
-} = useSpotPrice({
+const { worstPrice, worstPriceWithSlippage } = useSpotPrice({
   formValues: computed(() => formValues),
   market,
   isBase
@@ -118,7 +113,7 @@ function handleMarketUpdate(market: UiSpotMarketWithToken) {
   ]).finally(() => fetchStatus.setIdle())
 }
 
-const submit = handleSubmit(() => {
+function submitForm() {
   submitStatus.setLoading()
 
   if (!market) {
@@ -140,6 +135,16 @@ const submit = handleSubmit(() => {
     .finally(() => {
       submitStatus.setIdle()
     })
+}
+
+const submit = handleSubmit(submitForm, ({ errors }) => {
+  const filteredErrors = Object.keys(errors).filter(
+    (key) => ![TradeField.SlippageTolerance].includes(key as TradeField)
+  )
+
+  if (filteredErrors.length === 0) {
+    submitForm()
+  }
 })
 </script>
 
@@ -170,9 +175,7 @@ const submit = handleSubmit(() => {
           formValues,
           isBuy,
           amount,
-          averagePrice,
-          averagePriceWithSlippage,
-          executePrice: worstPrice,
+          worstPriceWithSlippage,
           market,
           isLoading: fetchStatus.isLoading()
         }"

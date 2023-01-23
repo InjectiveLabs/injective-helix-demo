@@ -15,17 +15,7 @@ const props = defineProps({
     default: undefined
   },
 
-  averagePrice: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  averagePriceWithSlippage: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  executePrice: {
+  worstPriceWithSlippage: {
     type: Object as PropType<BigNumberInBase>,
     required: true
   },
@@ -46,7 +36,7 @@ const { takerFeeRate } = useTradeFee(computed(() => props.market))
 const showEmpty = computed(() => {
   return (
     !props.market ||
-    props.executePrice.eq(0) ||
+    props.worstPriceWithSlippage.eq(0) ||
     new BigNumberInBase(props.amount || 0).isNaN()
   )
 })
@@ -72,17 +62,17 @@ const feeRateToFormat = computed(() => {
   return takerFeeRate.value.times(100).toFormat(2)
 })
 
-const averagePriceForDisplay = computed(() => {
+const priceForDisplay = computed(() => {
   if (props.isBuy) {
     // show quote to base averagePrice
     const quoteAmount = props.amount || 0
 
     return new BigNumberInBase(quoteAmount)
       .dividedBy(quoteAmount)
-      .dividedBy(props.averagePriceWithSlippage)
+      .dividedBy(props.worstPriceWithSlippage)
   }
 
-  return props.averagePriceWithSlippage
+  return props.worstPriceWithSlippage
 })
 
 /*
@@ -99,26 +89,28 @@ const minimalReceived = computed<BigNumberInBase>(() => {
 
   if (props.isBuy) {
     return quantity.dividedBy(
-      props.averagePriceWithSlippage.times(ONE_IN_BASE.plus(feeRate))
+      props.worstPriceWithSlippage.times(ONE_IN_BASE.plus(feeRate))
     )
   }
 
   return quantity.times(
-    props.averagePriceWithSlippage.times(ONE_IN_BASE.minus(feeRate))
+    props.worstPriceWithSlippage.times(ONE_IN_BASE.minus(feeRate))
   )
 })
 
-const { valueToFixed: averagePriceToFormat } = useBigNumberFormatter(
-  averagePriceForDisplay,
+const { valueToFixed: priceForDisplayToFormat } = useBigNumberFormatter(
+  priceForDisplay,
   {
-    decimalPlaces: props.market?.priceDecimals || 3
+    decimalPlaces: props.market?.priceDecimals || 3,
+    minimalDecimalPlaces: props.market?.priceDecimals || 3
   }
 )
 
-const { valueToFixed: minimalReceivedToFormat } = useBigNumberFormatter(
+const { valueToString: minimalReceivedToFormat } = useBigNumberFormatter(
   minimalReceived,
   {
-    decimalPlaces: props.market?.quantityDecimals || 2
+    decimalPlaces: props.market?.quantityDecimals || 3,
+    minimalDecimalPlaces: props.market?.quantityDecimals || 3
   }
 )
 
@@ -149,7 +141,7 @@ const outputToken = computed<Token | undefined>(() => {
           <span> 1 {{ inputToken.symbol }} </span>
           =
           <span>
-            {{ averagePriceToFormat }}
+            {{ priceForDisplayToFormat }}
             {{ outputToken.symbol }}
           </span>
         </div>

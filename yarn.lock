@@ -1809,7 +1809,7 @@
 
 "@injectivelabs/ui-shared@1.0.9-alpha.21":
   version "1.0.9-alpha.21"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-shared/-/ui-shared-1.0.9-alpha.21.tgz#0fdcc94761c057de73c81335538eb997dca308b5"
+  resolved "https://registry.npmjs.org/@injectivelabs/ui-shared/-/ui-shared-1.0.9-alpha.21.tgz#0fdcc94761c057de73c81335538eb997dca308b5"
   integrity sha512-azxtH8vs0LFUdNkh6XNdDKoPDUiX+NMuK0vS8Bjyoasa5NijA7XKCGjkPP8mIgSXgJxV1jfeUiyDl1eaiBKeUA==
   dependencies:
     "@nuxt/kit" "^3.0.0"

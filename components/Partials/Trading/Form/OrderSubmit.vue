@@ -69,8 +69,12 @@ const hasError = computed(() => {
     return true
   }
 
+  const filteredErrors = Object.keys(props.formErrors).filter(
+    (key) => ![TradeField.SlippageTolerance].includes(key as TradeField)
+  )
+
   return (
-    Object.keys(props.formErrors).length > 0 ||
+    filteredErrors.length > 0 ||
     props.availableBalanceError ||
     props.maxOrdersError
   )
