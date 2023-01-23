@@ -18,6 +18,7 @@ const {
   values: formValues
 } = useForm<TradeForm>()
 
+const isBase = ref(false)
 const market = ref<UiSpotMarketWithToken | undefined>()
 const status = reactive(new Status(StatusType.Loading))
 const fetchStatus = reactive(new Status(StatusType.Idle))
@@ -41,7 +42,7 @@ const {
 } = useSpotPrice({
   formValues: computed(() => formValues),
   market,
-  isBase: computed(() => !isBuy.value)
+  isBase
 })
 
 onMounted(() => {
@@ -61,23 +62,26 @@ function updateFormValue({ field, value }: TradeFormValue) {
 }
 
 function resetFormValues() {
-  const isBaseToQuote = unref(isBuy)
+  const isBuyState = unref(isBuy.value)
 
   resetForm()
 
+  isBase.value = !isBuyState
+
   updateFormValue({
     field: TradeField.OrderType,
-    value: isBuy ? SpotOrderSide.Buy : SpotOrderSide.Sell
+    value: isBuyState ? SpotOrderSide.Buy : SpotOrderSide.Sell
   })
 
   if (market.value) {
     updateFormValue({
       field: TradeField.BaseDenom,
-      value: isBaseToQuote ? market.value.baseDenom : market.value.quoteDenom
+      value: market.value.baseDenom
     })
+
     updateFormValue({
       field: TradeField.QuoteDenom,
-      value: isBaseToQuote ? market.value.quoteDenom : market.value.baseDenom
+      value: market.value.quoteDenom
     })
   }
 }
@@ -150,6 +154,7 @@ const submit = handleSubmit(() => {
       </div>
 
       <PartialsConvertTokenForm
+        v-model:isBase="isBase"
         v-model:market="market"
         :worst-price-with-slippage="worstPriceWithSlippage"
         :is-loading="fetchStatus.isLoading() || submitStatus.isLoading()"
@@ -162,6 +167,7 @@ const submit = handleSubmit(() => {
       <PartialsConvertSummary
         class="mt-4"
         v-bind="{
+          formValues,
           isBuy,
           amount,
           averagePrice,

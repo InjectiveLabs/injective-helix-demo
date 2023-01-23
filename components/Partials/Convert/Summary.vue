@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
+import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { ONE_IN_BASE } from '@/app/utils/constants'
+import { TradeForm, TradeField } from '@/types'
 
 const props = defineProps({
   isLoading: Boolean,
@@ -29,6 +30,11 @@ const props = defineProps({
     required: true
   },
 
+  formValues: {
+    type: Object as PropType<TradeForm>,
+    required: true
+  },
+
   market: {
     type: Object as PropType<UiSpotMarketWithToken | undefined>,
     default: undefined
@@ -47,9 +53,15 @@ const showEmpty = computed(() => {
 
 // execution_price * quantity * takerFeeRate * (1 - takerFeeRateDiscount)
 const fee = computed<BigNumberInBase>(() => {
-  const quantity = new BigNumberInBase(props.amount || 0)
+  const quantity = new BigNumberInBase(
+    props.formValues[TradeField.QuoteAmount] || 0
+  )
 
-  return props.executePrice.times(quantity).times(takerFeeRate.value)
+  if (quantity.isNaN() || quantity.lte(0)) {
+    return ZERO_IN_BASE
+  }
+
+  return quantity.times(takerFeeRate.value)
 })
 
 const feeToFormat = computed(() => {
@@ -67,10 +79,10 @@ const averagePriceForDisplay = computed(() => {
 
     return new BigNumberInBase(quoteAmount)
       .dividedBy(quoteAmount)
-      .dividedBy(props.averagePrice)
+      .dividedBy(props.averagePriceWithSlippage)
   }
 
-  return props.averagePrice
+  return props.averagePriceWithSlippage
 })
 
 /*
@@ -147,7 +159,7 @@ const outputToken = computed<Token | undefined>(() => {
         :title="`${$t('trade.convert.fee')} (${feeRateToFormat}%)`"
       >
         <span v-if="showEmpty">&mdash;</span>
-        <span v-else> {{ feeToFormat }} {{ outputToken.symbol }} </span>
+        <span v-else> {{ feeToFormat }} {{ market?.quoteToken.symbol }} </span>
       </PartialsConvertSummaryRow>
 
       <PartialsConvertSummaryRow :title="$t('trade.convert.minimum_received')">
