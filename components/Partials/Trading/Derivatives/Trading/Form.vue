@@ -605,6 +605,7 @@ function submitStopMarketOrder() {
 
 function setDefaultFormValues() {
   updateFormValue({ field: TradeField.BaseAmount, value: amountStep.value })
+  updateFormValue({ field: TradeField.QuoteAmount, value: priceStep.value })
   updateFormValue({
     field: TradeField.LimitPrice,
     value: lastTradedPrice.value.toFixed(
