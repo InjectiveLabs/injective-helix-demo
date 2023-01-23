@@ -20,6 +20,13 @@ jobs:
       SOURCE_DIR: .output/public
       DEST_DIR: www
 
+      ## Endpoints
+      VITE_INDEXER_API_ENDPOINT: ''
+      VITE_CHRONOS_API_ENDPOINT: ''
+      VITE_EXPLORER_API_ENDPOINT: ''
+      VITE_SENTRY_GRPC_ENDPOINT: ''
+      VITE_SENTRY_HTTP_ENDPOINT: ''
+
       ## Flags
       MAINTENANCE_ENABLED: false
       META_TAGS_ENABLED: true
