@@ -38,6 +38,11 @@ const {
   }
 })
 
+/*
+  allow rendering token option in bridge dropdown
+  despite user not having that token in his bank/subaccount
+*/
+const cachedTokens = ref<Token[]>([injToken])
 const cachedFormValues = ref<BridgeForm>(formValues)
 const hasFormErrors = computed(() => Object.keys(errors.value).length > 0)
 
@@ -102,6 +107,10 @@ function handleBridgeConfirmed() {
 }
 
 function handleResetForm(token: Token = injToken) {
+  if (!cachedTokens.value.some(({ denom }) => denom === token.denom)) {
+    cachedTokens.value = [...cachedTokens.value, token]
+  }
+
   resetForm()
 
   setFieldValue(BridgeField.Token, token)
@@ -174,6 +183,7 @@ function handleWithdraw(token: Token = injToken) {
     <ModalsBridge
       v-bind="{
         bridgeType,
+        cachedTokens,
         hasFormErrors,
         formValues
       }"

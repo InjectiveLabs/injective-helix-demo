@@ -65,6 +65,7 @@ const denom = computed({
   get(): string {
     return props.denom
   },
+
   set(value: string) {
     emit('update:denom', value)
   }
@@ -79,13 +80,9 @@ const view = computed({
   }
 })
 
-const markets = computed(() => {
-  if (isSpot.value) {
-    return spotStore.markets
-  }
-
-  return derivativeStore.markets
-})
+const markets = computed(() =>
+  isSpot.value ? spotStore.markets : derivativeStore.markets
+)
 
 const showClearFiltersButton = computed(() => {
   return !!denom.value || !!side.value || !!type.value
@@ -178,10 +175,6 @@ const typeOptions = computed(() => {
   return result
 })
 
-function handleSearch(value: string) {
-  denom.value = value
-}
-
 function handleClearFilters() {
   denom.value = ''
   side.value = ''
@@ -196,7 +189,6 @@ function handleClearFilters() {
         v-model="denom"
         class="col-span-2 sm:col-span-1"
         :markets="markets"
-        @update="handleSearch"
       />
 
       <AppSelectField

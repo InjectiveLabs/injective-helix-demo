@@ -15,6 +15,7 @@ const activityStore = useActivityStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
+const { resetForm } = useForm()
 
 const status = reactive(new Status(StatusType.Loading))
 const { value: side } = useStringField({ name: 'side', rule: '' })
@@ -53,13 +54,9 @@ const activeMarket = computed(() => {
   )
 })
 
-const marketIds = computed(() => {
-  if (isSpot.value) {
-    return spotStore.activeMarketIds
-  }
-
-  return derivativeStore.activeMarketIds
-})
+const marketIds = computed(() =>
+  isSpot.value ? spotStore.activeMarketIds : derivativeStore.activeMarketIds
+)
 
 const marketId = computed(() => {
   if (!activeMarket.value) {
@@ -212,6 +209,8 @@ const symbol = computed(() => {
 
 onMounted(() => {
   const promises = [
+    derivativeStore.fetchSubaccountOrders(),
+    spotStore.fetchSubaccountOrders(),
     positionStore.streamSubaccountPositions(),
     spotStore.streamSubaccountOrders(),
     spotStore.streamSubaccountOrderHistory(),
@@ -266,6 +265,7 @@ function fetchData() {
 }
 
 function onViewChange() {
+  resetForm()
   page.value = 1
   limit.value = UI_DEFAULT_PAGINATION_LIMIT_COUNT
 }

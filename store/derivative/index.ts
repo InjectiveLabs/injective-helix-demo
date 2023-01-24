@@ -319,14 +319,14 @@ export const useDerivativeStore = defineStore('derivative', {
       const filters = activityFetchOptions?.filters
       const endTime =
         paginationOptions?.endTime ||
-        derivativeStore.subaccountOrders[0]?.createdAt ||
+        derivativeStore.subaccountOrders[0]?.updatedAt ||
         0
 
       const { orders, pagination } = await indexerDerivativesApi.fetchOrders({
         marketId: filters?.marketId,
         marketIds: filters?.marketIds,
         subaccountId: subaccount.subaccountId,
-        orderSide: filters?.orderSide as DerivativeOrderSide,
+        orderSide: (filters?.orderSide as DerivativeOrderSide) || undefined,
         isConditional: false,
         pagination: {
           endTime,

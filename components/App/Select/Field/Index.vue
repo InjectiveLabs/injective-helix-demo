@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { BaseDropdownOption } from '@injectivelabs/ui-shared'
-
-const slots = useSlots()
+import { DropdownOptionWithToken } from '@/types'
 
 const props = defineProps({
   clearable: Boolean,
+  searchable: Boolean,
 
   modelValue: {
     type: String,
@@ -13,7 +12,7 @@ const props = defineProps({
   },
 
   options: {
-    type: Array as PropType<BaseDropdownOption[]>,
+    type: Array as PropType<DropdownOptionWithToken[]>,
     default: () => []
   },
 
@@ -21,8 +20,6 @@ const props = defineProps({
     type: String,
     default: 'Select'
   },
-
-  searchable: Boolean,
 
   selectedClass: {
     type: String,
@@ -84,15 +81,15 @@ function handleClear(e: any) {
           shown ? 'border-blue-500' : 'border-transparent'
         ]"
       >
-        <template v-if="!slots['selected-option'] || !selectedItem">
-          <span v-if="selectedItem" class="text-white text-sm">
-            {{ selectedItem.display }}
-          </span>
+        <slot name="selected-option" :option="selectedItem">
+          <div>
+            <span v-if="selectedItem" class="text-white text-sm">
+              {{ selectedItem.display }}
+            </span>
 
-          <span v-else class="text-gray-500 text-sm">{{ placeholder }}</span>
-        </template>
-
-        <slot v-else name="selected-option" :option="selectedItem" />
+            <span v-else class="text-gray-500 text-sm">{{ placeholder }}</span>
+          </div>
+        </slot>
 
         <div class="flex items-center gap-2">
           <BaseIcon
@@ -120,6 +117,7 @@ function handleClear(e: any) {
           <AppInput
             v-if="searchable"
             v-model="search"
+            class="text-white"
             sm
             bg-transparent
             :placeholder="$t('common.search')"
@@ -134,18 +132,18 @@ function handleClear(e: any) {
               @update:modelValue="close"
             >
               <template #default="{ active }">
-                <div v-if="!slots['option']">
-                  <span
+                <slot name="option" :option="item" :active="active">
+                  <div
                     :class="{
                       'text-white': !active,
-                      'text-blue-500': active
+                      'text-blue-500 hover:text-white': active
                     }"
                   >
-                    {{ item.display }}
-                  </span>
-                </div>
-
-                <slot v-else name="option" :option="item" :active="active" />
+                    <span>
+                      {{ item.display }}
+                    </span>
+                  </div>
+                </slot>
               </template>
             </AppSelectFieldItem>
           </div>

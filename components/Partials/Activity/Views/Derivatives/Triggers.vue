@@ -31,7 +31,7 @@ const triggers = computed(() => {
           v-for="(trigger, index) in triggers"
           :key="`mobile-derivative-triggers-${index}-${trigger.orderHash}`"
           class="col-span-1"
-          :order="trigger"
+          :trigger="trigger"
         />
 
         <template #empty>

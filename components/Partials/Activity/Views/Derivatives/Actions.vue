@@ -14,7 +14,7 @@ const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 const { t } = useLang()
 
-const status = reactive(new Status(StatusType.Loading))
+const status = reactive(new Status(StatusType.Idle))
 
 const orders = computed(() => {
   return props.view === ActivityView.DerivativeOrders
