@@ -2,8 +2,6 @@
 import { PropType } from 'vue'
 import { DropdownOptionWithToken } from '@/types'
 
-const slots = useSlots()
-
 const props = defineProps({
   clearable: Boolean,
   searchable: Boolean,
@@ -83,15 +81,15 @@ function handleClear(e: any) {
           shown ? 'border-blue-500' : 'border-transparent'
         ]"
       >
-        <template v-if="!slots['selected-option'] || !selectedItem">
-          <span v-if="selectedItem" class="text-white text-sm">
-            {{ selectedItem.display }}
-          </span>
+        <slot name="selected-option" :option="selectedItem">
+          <div>
+            <span v-if="selectedItem" class="text-white text-sm">
+              {{ selectedItem.display }}
+            </span>
 
-          <span v-else class="text-gray-500 text-sm">{{ placeholder }}</span>
-        </template>
-
-        <slot v-else name="selected-option" :option="selectedItem" />
+            <span v-else class="text-gray-500 text-sm">{{ placeholder }}</span>
+          </div>
+        </slot>
 
         <div class="flex items-center gap-2">
           <BaseIcon
@@ -135,13 +133,13 @@ function handleClear(e: any) {
             >
               <template #default="{ active }">
                 <slot name="option" :option="item" :active="active">
-                  <div>
-                    <span
-                      :class="{
-                        'text-white': !active,
-                        'text-blue-500': active
-                      }"
-                    >
+                  <div
+                    :class="{
+                      'text-white': !active,
+                      'text-blue-500 hover:text-white': active
+                    }"
+                  >
+                    <span>
                       {{ item.display }}
                     </span>
                   </div>

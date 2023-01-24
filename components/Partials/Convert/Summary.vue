@@ -94,10 +94,6 @@ const minimalReceived = computed<BigNumberInBase>(() => {
   )
 })
 
-// const feeToFormatA = computed(() => {
-//   return fee.value.toFormat(3)
-// })
-
 const { valueToString: feeToFormat } = useBigNumberFormatter(fee, {
   decimalPlaces: props.market?.priceDecimals || 3,
   minimalDecimalPlaces: props.market?.priceDecimals || 3
