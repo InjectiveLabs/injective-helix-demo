@@ -1,3 +1,4 @@
+import { Token } from '@injectivelabs/token-metadata'
 import {
   SubaccountBalanceWithToken,
   TokenWithBalanceAndPrice,
@@ -140,6 +141,10 @@ export interface PointsMultiplierWithMarketTicker extends PointsMultiplier {
 
 export interface DropdownOption extends BaseDropdownOption {
   icon?: string
+}
+
+export interface DropdownOptionWithToken extends BaseDropdownOption {
+  token?: Token
 }
 
 export * from './balance'
