@@ -50,7 +50,7 @@ export function useBridgeBalance({
   const tokenStore = useTokenStore()
   const walletStore = useWalletStore()
 
-  const erc2Balances = computed(() => {
+  const erc20Balances = computed(() => {
     const balances = tokenStore.erc20TokensWithBalanceAndPriceFromBank.map(
       (b) => {
         const balance = new BigNumberInWei(b.balance)
@@ -70,7 +70,7 @@ export function useBridgeBalance({
   })
 
   const bankBalances = computed(() => {
-    const balances = [...bankStore.bankErc20BalancesWithToken].map((b) => {
+    const balances = bankStore.bankBalancesWithToken.map((b) => {
       const balance = new BigNumberInWei(b.balance || 0)
         .toBase(b.token.decimals)
         .toString()
@@ -104,7 +104,7 @@ export function useBridgeBalance({
   const balancesWithToken = computed<BalanceWithToken[]>(() => {
     switch (bridgeType.value) {
       case BridgeType.Deposit:
-        return erc2Balances.value
+        return erc20Balances.value
       case BridgeType.Withdraw:
         return bankBalances.value
       default: {
