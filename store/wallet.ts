@@ -361,7 +361,7 @@ export const useWalletStore = defineStore('wallet', {
     async validate() {
       const { wallet, injectiveAddress, address } = useWalletStore()
       const { ethereumChainId, chainId } = useAppStore()
-      const { hasEnoughInjForGas } = useBankStore()
+      const { hasEnoughInjForGas } = useWalletStore()
 
       if (wallet === Wallet.Metamask) {
         await validateMetamask(address, ethereumChainId)

@@ -121,7 +121,7 @@ export function useBridgeBalance({
       .map((balanceWithToken) => {
         // fee delegation don't work on devnet
         const isWalletExemptFromGasFee =
-          walletStore.isCosmosWallet || !IS_DEVNET
+          !walletStore.isCosmosWallet && !IS_DEVNET
 
         if (
           isWalletExemptFromGasFee ||
