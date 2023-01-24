@@ -51,9 +51,9 @@ const env = {
     ? process.env.VITE_SENTRY_HTTP_ENDPOINT
     : import.meta.env.VITE_SENTRY_HTTP_ENDPOINT,
 
-  VITE_NINJA_PASS_API_ENDPOINT: isWebpack
-    ? process.env.VITE_NINJA_PASS_API_ENDPOINT
-    : (import.meta.env.VITE_NINJA_PASS_API_ENDPOINT as string),
+  VITE_NINJA_PASS_ENDPOINT: isWebpack
+    ? process.env.VITE_NINJA_PASS_ENDPOINT
+    : (import.meta.env.VITE_NINJA_PASS_ENDPOINT as string),
 
   VITE_COINGECKO_KEY: isWebpack
     ? process.env.VITE_COINGECKO_KEY
@@ -126,8 +126,8 @@ export const BASE_URL = isWebpack
   : import.meta.env.VITE_BASE_URL
 
 // override env with values
-export const VITE_NINJA_PASS_API_ENDPOINT: string =
-  env.VITE_NINJA_PASS_API_ENDPOINT || 'https://api.ninjapass.injective.dev'
+export const VITE_NINJA_PASS_ENDPOINT: string =
+  env.VITE_NINJA_PASS_ENDPOINT || 'https://api.ninjapass.injective.dev'
 export const FEE_PAYER_PUB_KEY = (env.VITE_FEE_PAYER_PUB_KEY || '') as string
 
 export const VITE_NEWSLETTER_API: string = isWebpack

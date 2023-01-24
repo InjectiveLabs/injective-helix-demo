@@ -8,24 +8,17 @@ on:
 jobs:
   staging:
     if: true
-    name: 'Deploy to Staging'
+    name: 'Deploy to staging'
     env:
       ## Public
       VITE_NAME: 'BETA - Helix: Decentralized Cryptocurrency Derivatives, Ethereum and Altcoin Exchange'
       VITE_BASE_URL: https://staging.injective.exchange
-      VITE_NETWORK: mainnetK8s
+      VITE_NETWORK: staging
       VITE_ENV: staging
       VITE_CHAIN_ID: injective-1
       VITE_ETHEREUM_CHAIN_ID: 1
-      SOURCE_DIR: .output/public
+      SOURCE_DIR: dist
       DEST_DIR: www
-
-      ## Endpoints
-      VITE_INDEXER_API_ENDPOINT: ''
-      VITE_CHRONOS_API_ENDPOINT: ''
-      VITE_EXPLORER_API_ENDPOINT: ''
-      VITE_SENTRY_GRPC_ENDPOINT: ''
-      VITE_SENTRY_HTTP_ENDPOINT: ''
 
       ## Github Actions
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
@@ -35,17 +28,25 @@ jobs:
       VITE_GEO_IP_RESTRICTIONS_ENABLED: false
       VITE_REFERRALS_ENABLED: true
 
+      ## Endpoints
+      VITE_INDEXER_API_ENDPOINT: ''
+      VITE_CHRONOS_API_ENDPOINT: ''
+      VITE_EXPLORER_API_ENDPOINT: ''
+      VITE_SENTRY_GRPC_ENDPOINT: ''
+      VITE_SENTRY_HTTP_ENDPOINT: ''
+
       ## Secret
-      VITE_NEWSLETTER_API: ${{ secrets.VITE_NEWSLETTER_API }}
-      VITE_PROXY_DETECTION_API_KEY: ${{ secrets.VITE_PROXY_DETECTION_API_KEY }}
-      VITE_COINGECKO_API_KEY: ${{ secrets.VITE_COINGECKO_API_KEY }}
-      VITE_GOOGLE_ANALYTICS_KEY: ${{ secrets.VITE_GOOGLE_ANALYTICS_KEY }}
-      VITE_GOOGLE_SITE_VERIFICATION_KEY: ${{ secrets.VITE_GOOGLE_SITE_VERIFICATION_KEY }},
-      VITE_FEE_RECIPIENT: ${{ secrets.VITE_FEE_RECIPIENT }}
-      VITE_BUGSNAG_KEY: ${{ secrets.VITE_BUGSNAG_KEY }}
-      VITE_AMPLITUDE_KEY: ${{ secrets.VITE_AMPLITUDE_KEY }}
       VITE_ALCHEMY_KEY: ${{ secrets.VITE_ALCHEMY_KEY }}
+      VITE_AMPLITUDE_KEY: ${{ secrets.VITE_AMPLITUDE_KEY }}
+      VITE_BUGSNAG_KEY: ${{ secrets.VITE_BUGSNAG_KEY }}
+      VITE_COINGECKO_API_KEY: ${{ secrets.VITE_COINGECKO_API_KEY }}
+      VITE_FEE_RECIPIENT: ${{ secrets.VITE_FEE_RECIPIENT }}
+      VITE_GOOGLE_ANALYTICS_KEY: ${{ secrets.VITE_GOOGLE_ANALYTICS_KEY }}
+      VITE_GOOGLE_SITE_VERIFICATION_KEY: ${{ secrets.VITE_GOOGLE_SITE_VERIFICATION_KEY }}
+      VITE_NEWSLETTER_API: ${{ secrets.VITE_NEWSLETTER_API }}
       VITE_NINJA_PASS_ENDPOINT: ${{ secrets.VITE_NINJA_PASS_ENDPOINT }}
+      VITE_PROXY_DETECTION_API_KEY: ${{ secrets.VITE_PROXY_DETECTION_API_KEY }}
+
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_S3_BUCKET: ${{ secrets.AWS_S3_STAGING_BUCKET }}
@@ -64,8 +65,8 @@ jobs:
       - name: Install Dependencies
         run: yarn install
 
-      # - name: Building the project
-      #   run: yarn build
+      - name: Remove prev build
+        run: yarn clean-up
 
       - name: Generating the static pages
         run: yarn generate
