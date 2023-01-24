@@ -38,7 +38,7 @@ export function useOrderHistory(
   )
 
   const isReduceOnly = computed(() => {
-    if (!isSpot.value || !margin.value) {
+    if (isSpot.value || !margin.value) {
       return false
     }
 
@@ -122,6 +122,7 @@ export function useOrderHistory(
     if (isReduceOnly.value) {
       return new BigNumberInBase('')
     }
+
     return new BigNumberInBase(
       price.value.times(quantity.value).dividedBy(margin.value)
     )

@@ -29,7 +29,7 @@ export function useOrder(
   )
 
   const isReduceOnly = computed(() => {
-    if (!isSpot.value || !margin.value) {
+    if (isSpot.value || !margin.value) {
       return false
     }
 
@@ -123,7 +123,7 @@ export function useOrder(
 
   const leverage = computed(() => {
     if (isReduceOnly.value || isSpot.value) {
-      return ZERO_IN_BASE // NA
+      return new BigNumberInBase('')
     }
 
     return new BigNumberInBase(

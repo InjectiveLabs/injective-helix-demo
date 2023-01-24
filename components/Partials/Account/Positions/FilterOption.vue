@@ -14,7 +14,7 @@ defineProps({
 
 <template>
   <div class="flex items-end justify-start gap-2">
-    <CommonTokenIcon v-if="option.token" :token="option.token" />
+    <CommonTokenIcon v-if="option.token" :token="option && option.token" />
     <span
       class="text-sm"
       :class="{ 'text-white': !active, 'text-blue-500': active }"
