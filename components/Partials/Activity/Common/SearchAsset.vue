@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { BankBalanceWithTokenAndBalanceInBase } from '@injectivelabs/sdk-ui-ts'
+import { BankBalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 import { PropType } from 'vue'
 import { UiMarketWithToken } from '@/types'
 
@@ -16,7 +16,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update', state: string): void
+  (e: 'update:modelValue', state: string): void
 }>()
 
 const supportedTokens = computed(() => {
@@ -30,16 +30,16 @@ const supportedTokens = computed(() => {
       balance: '',
       denom: market.baseToken.denom,
       token: market.baseToken
-    } as BankBalanceWithTokenAndBalanceInBase
+    } as BankBalanceWithToken
 
     const quoteToken = {
       balance: '',
       denom: market.quoteToken.denom,
       token: market.quoteToken
-    } as BankBalanceWithTokenAndBalanceInBase
+    } as BankBalanceWithToken
 
     return [...list, baseToken, quoteToken]
-  }, [] as BankBalanceWithTokenAndBalanceInBase[])
+  }, [] as BankBalanceWithToken[])
 
   const uniqueTokens = [
     ...new Map(tokens.map((token) => [token.denom, token])).values()
@@ -48,21 +48,20 @@ const supportedTokens = computed(() => {
   return uniqueTokens
 })
 
-const options = computed(() => {
-  return supportedTokens.value.map(({ token }) => {
-    return {
-      display: token.symbol,
-      value: token.denom
-    }
-  })
-})
+const options = computed(() =>
+  supportedTokens.value.map(({ token }) => ({
+    token,
+    display: token.symbol,
+    value: token.denom
+  }))
+)
 
 const value = computed({
   get(): string {
     return props.modelValue
   },
   set(val: string) {
-    emit('update', val)
+    emit('update:modelValue', val)
   }
 })
 </script>

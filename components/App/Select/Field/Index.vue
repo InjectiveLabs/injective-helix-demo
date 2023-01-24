@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { BaseDropdownOption } from '@injectivelabs/ui-shared'
+import { DropdownOptionWithToken } from '@/types'
 
 const slots = useSlots()
 
 const props = defineProps({
   clearable: Boolean,
+  searchable: Boolean,
 
   modelValue: {
     type: String,
@@ -13,7 +14,7 @@ const props = defineProps({
   },
 
   options: {
-    type: Array as PropType<BaseDropdownOption[]>,
+    type: Array as PropType<DropdownOptionWithToken[]>,
     default: () => []
   },
 
@@ -21,8 +22,6 @@ const props = defineProps({
     type: String,
     default: 'Select'
   },
-
-  searchable: Boolean,
 
   selectedClass: {
     type: String,
@@ -120,6 +119,7 @@ function handleClear(e: any) {
           <AppInput
             v-if="searchable"
             v-model="search"
+            class="text-white"
             sm
             bg-transparent
             :placeholder="$t('common.search')"
@@ -134,18 +134,18 @@ function handleClear(e: any) {
               @update:modelValue="close"
             >
               <template #default="{ active }">
-                <div v-if="!slots['option']">
-                  <span
-                    :class="{
-                      'text-white': !active,
-                      'text-blue-500': active
-                    }"
-                  >
-                    {{ item.display }}
-                  </span>
-                </div>
-
-                <slot v-else name="option" :option="item" :active="active" />
+                <slot name="option" :option="item" :active="active">
+                  <div>
+                    <span
+                      :class="{
+                        'text-white': !active,
+                        'text-blue-500': active
+                      }"
+                    >
+                      {{ item.display }}
+                    </span>
+                  </div>
+                </slot>
               </template>
             </AppSelectFieldItem>
           </div>

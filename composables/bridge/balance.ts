@@ -6,7 +6,6 @@ import {
   INJ_DENOM
 } from '@injectivelabs/utils'
 import { Token } from '@injectivelabs/token-metadata'
-import { injToken } from '@/app/data/token'
 import { INJ_GAS_BUFFER_FOR_BRIDGE, IS_DEVNET } from '@/app/utils/constants'
 import {
   BalanceWithToken,
@@ -16,32 +15,35 @@ import {
   TransferDirection
 } from '@/types'
 
-const appendInjToken = (balances: BalanceWithToken[]) => {
-  const injExistOnBalancesList = balances.some(
-    ({ denom }) => denom === INJ_DENOM
-  )
-
-  if (injExistOnBalancesList) {
-    return balances
-  }
+const appendCachedTokens = (
+  balances: BalanceWithToken[],
+  cachedTokens: Token[]
+) => {
+  const cachedTokensWithBalance = cachedTokens.map((token) => ({
+    balance: '0',
+    balanceInToken: '0',
+    denom: token.denom,
+    token
+  }))
 
   return [
-    ...balances,
-    {
-      balance: '0',
-      balanceInToken: '0',
-      denom: injToken.denom,
-      token: injToken
-    }
+    ...new Map(
+      [...cachedTokensWithBalance, ...balances].map((token) => [
+        token.denom,
+        token
+      ])
+    ).values()
   ]
 }
 
 export function useBridgeBalance({
   bridgeForm,
-  bridgeType
+  bridgeType,
+  cachedTokens
 }: {
   bridgeForm: Ref<BridgeForm>
   bridgeType: Ref<BridgeType>
+  cachedTokens: Ref<Token[]>
 }) {
   const accountStore = useAccountStore()
   const bankStore = useBankStore()
@@ -64,7 +66,7 @@ export function useBridgeBalance({
       }
     )
 
-    return appendInjToken(balances)
+    return appendCachedTokens(balances, cachedTokens.value)
   })
 
   const bankBalances = computed(() => {
@@ -80,7 +82,7 @@ export function useBridgeBalance({
       } as BalanceWithToken
     })
 
-    return appendInjToken(balances)
+    return appendCachedTokens(balances, cachedTokens.value)
   })
 
   const accountBalances = computed(() => {
@@ -96,7 +98,7 @@ export function useBridgeBalance({
       } as BalanceWithToken
     })
 
-    return appendInjToken(balances)
+    return appendCachedTokens(balances, cachedTokens.value)
   })
 
   const balancesWithToken = computed<BalanceWithToken[]>(() => {
@@ -115,33 +117,36 @@ export function useBridgeBalance({
   })
 
   const transferableBalancesWithToken = computed(() => {
-    return balancesWithToken.value.map((balanceWithToken) => {
-      // fee delegation don't work on devnet
-      const isWalletExemptFromGasFee = walletStore.isCosmosWallet || !IS_DEVNET
+    return balancesWithToken.value
+      .map((balanceWithToken) => {
+        // fee delegation don't work on devnet
+        const isWalletExemptFromGasFee =
+          walletStore.isCosmosWallet || !IS_DEVNET
 
-      if (
-        isWalletExemptFromGasFee ||
-        bridgeForm.value[BridgeField.TransferDirection] ===
-          TransferDirection.tradingAccountToBank ||
-        balanceWithToken.denom !== INJ_DENOM
-      ) {
-        return balanceWithToken
-      }
+        if (
+          isWalletExemptFromGasFee ||
+          bridgeForm.value[BridgeField.TransferDirection] ===
+            TransferDirection.tradingAccountToBank ||
+          balanceWithToken.denom !== INJ_DENOM
+        ) {
+          return balanceWithToken
+        }
 
-      const transferableBalance = new BigNumberInBase(
-        balanceWithToken.balance
-      ).minus(INJ_GAS_BUFFER_FOR_BRIDGE)
+        const transferableBalance = new BigNumberInBase(
+          balanceWithToken.balance
+        ).minus(INJ_GAS_BUFFER_FOR_BRIDGE)
 
-      if (transferableBalance.lte(ZERO_IN_BASE)) {
-        return { ...balanceWithToken, balance: '0', balanceInToken: '0' }
-      }
+        if (transferableBalance.lte(ZERO_IN_BASE)) {
+          return { ...balanceWithToken, balance: '0', balanceInToken: '0' }
+        }
 
-      return {
-        ...balanceWithToken,
-        balance: transferableBalance.toString(),
-        balanceInToken: transferableBalance.toString()
-      }
-    })
+        return {
+          ...balanceWithToken,
+          balance: transferableBalance.toString(),
+          balanceInToken: transferableBalance.toString()
+        }
+      })
+      .filter(({ denom }) => denom && !denom.startsWith('share'))
   })
 
   return { transferableBalancesWithToken }

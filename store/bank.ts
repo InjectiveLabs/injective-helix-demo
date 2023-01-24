@@ -7,14 +7,9 @@ import {
   IbcBankBalanceWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
-import {
-  BigNumberInBase,
-  BigNumberInWei,
-  INJ_DENOM
-} from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { bankApi, msgBroadcastClient, tokenService } from '@/app/Services'
 import { backupPromiseCall } from '@/app/utils/async'
-import { INJ_GAS_BUFFER } from '@/app/utils/constants'
 
 type BankStoreState = {
   balances: BankBalances
@@ -38,16 +33,6 @@ export const useBankStore = defineStore('bank', {
         Object.keys(state.balances).length > 0 ||
         Object.keys(state.ibcBalances).length > 0
       )
-    },
-
-    hasEnoughInjForGas: (state: BankStoreState) => {
-      if (!state.balances[INJ_DENOM]) {
-        return false
-      }
-
-      return new BigNumberInWei(state.balances[INJ_DENOM])
-        .toBase()
-        .gte(INJ_GAS_BUFFER)
     },
 
     bankBalancesWithToken: (state: BankStoreState) => {
