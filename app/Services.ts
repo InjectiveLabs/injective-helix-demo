@@ -62,17 +62,17 @@ export const indexerRestExplorerApi = new IndexerRestExplorerApi(
 )
 export const indexerRestDerivativesChronosApi =
   new IndexerRestDerivativesChronosApi(
-    `${ENDPOINTS.indexer}/api/chronos/v1/derivative`
+    `${ENDPOINTS.chronos}/api/chronos/v1/derivative`
   )
 export const indexerRestSpotChronosApi = new IndexerRestSpotChronosApi(
-  `${ENDPOINTS.indexer}/api/chronos/v1/spot`
+  `${ENDPOINTS.chronos}/api/chronos/v1/spot`
 )
 export const indexerRestLeaderboardChronosApi =
   new IndexerRestLeaderboardChronosApi(
     `${ENDPOINTS.chronos}/api/chronos/v1/leaderboard`
   )
 export const indexerRestMarketChronosApi = new IndexerRestMarketChronosApi(
-  `${ENDPOINTS.indexer}/api/chronos/v1/market`
+  `${ENDPOINTS.chronos}/api/chronos/v1/market`
 )
 export const indexerDerivativesApi = new IndexerGrpcDerivativesApi(
   ENDPOINTS.indexer
