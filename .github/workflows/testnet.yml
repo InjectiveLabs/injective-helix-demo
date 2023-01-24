@@ -39,6 +39,7 @@ jobs:
       VITE_SENTRY_HTTP_ENDPOINT: ''
 
       ## Secret
+      VITE_COINGECKO_API_KEY: ${{ secrets.VITE_COINGECKO_API_KEY }}
       VITE_NEWSLETTER_API: ${{ secrets.VITE_NEWSLETTER_API }}
       VITE_FEE_RECIPIENT: ${{ secrets.VITE_FEE_RECIPIENT }}
       VITE_ALCHEMY_GOERLI_KEY: ${{ secrets.VITE_ALCHEMY_GOERLI_KEY }}
@@ -66,13 +67,7 @@ jobs:
         run: ssh testnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn install'
 
       - name: Remove prev build
-        run: ssh testnet 'cd "'$SOURCE_DIR'"  && rm -rf dist'
-
-      - name: Remove prev build process
-        run: ssh testnet 'cd "'$SOURCE_DIR'"  && rm -rf ./node_modules/.cache'
-
-      # - name: Building the project
-      #   run: ssh testnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn build'
+        run: ssh devnet 'cd "'$SOURCE_DIR'"  && yarn clean-up'
 
       - name: Generating the static pages
         run: ssh testnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn generate'
