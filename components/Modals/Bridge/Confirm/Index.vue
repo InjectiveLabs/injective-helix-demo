@@ -342,7 +342,7 @@ function handleTransferTradingAccountTrack() {
         <span v-if="bridgeType === BridgeType.Deposit">
           {{ $t('bridge.depositToInjective') }}
         </span>
-        <span v-if="bridgeType === BridgeType.Withdraw">
+        <span v-else-if="bridgeType === BridgeType.Withdraw">
           {{ $t('bridge.withdrawFromInjective') }}
         </span>
         <span v-else>

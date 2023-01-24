@@ -119,6 +119,7 @@ function handleClear(e: any) {
           <AppInput
             v-if="searchable"
             v-model="search"
+            class="text-white"
             sm
             bg-transparent
             :placeholder="$t('common.search')"
