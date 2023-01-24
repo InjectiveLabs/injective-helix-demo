@@ -24,6 +24,11 @@ const props = defineProps({
     type: String as PropType<BridgeType>
   },
 
+  cachedTokens: {
+    required: true,
+    type: Array as PropType<Token[]>
+  },
+
   formValues: {
     required: true,
     type: Object as PropType<BridgeForm>
@@ -42,7 +47,8 @@ const walletStore = useWalletStore()
 
 const { transferableBalancesWithToken } = useBridgeBalance({
   bridgeForm: computed(() => props.formValues),
-  bridgeType: computed(() => props.bridgeType)
+  bridgeType: computed(() => props.bridgeType),
+  cachedTokens: computed(() => props.cachedTokens)
 })
 
 const { destinationIsInjective, isWithdraw, networkIsNotSupported } =

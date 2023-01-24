@@ -54,10 +54,6 @@ const fee = computed<BigNumberInBase>(() => {
   return quantity.times(takerFeeRate.value)
 })
 
-const feeToFormat = computed(() => {
-  return fee.value.toFormat(3)
-})
-
 const feeRateToFormat = computed(() => {
   return takerFeeRate.value.times(100).toFormat(2)
 })
@@ -96,6 +92,15 @@ const minimalReceived = computed<BigNumberInBase>(() => {
   return quantity.times(
     props.worstPriceWithSlippage.times(ONE_IN_BASE.minus(feeRate))
   )
+})
+
+// const feeToFormatA = computed(() => {
+//   return fee.value.toFormat(3)
+// })
+
+const { valueToString: feeToFormat } = useBigNumberFormatter(fee, {
+  decimalPlaces: props.market?.priceDecimals || 3,
+  minimalDecimalPlaces: props.market?.priceDecimals || 3
 })
 
 const { valueToFixed: priceForDisplayToFormat } = useBigNumberFormatter(
