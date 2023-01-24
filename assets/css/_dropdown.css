@@ -1,0 +1,71 @@
+.popper {
+  @apply opacity-0;
+  transition: all 0.2s linear;
+  transform: scale(0);
+  opacity: 0;
+  visibility: hidden;
+  display: block !important;
+}
+
+.popper .arrow {
+  position: absolute;
+  width: 20px;
+  height: 10px;
+  background: inherit;
+  visibility: hidden;
+  top: 0;
+  bottom: -10px;
+}
+
+.popper .arrow svg {
+  visibility: visible;
+  top: -6px;
+}
+
+.popper[data-show] {
+  @apply opacity-100;
+  transform: scale(1);
+  visibility: visible;
+  display: block !important;
+}
+.orderbook-summary {
+  @apply opacity-0;
+}
+
+.orderbook-summary[data-show] {
+  @apply opacity-100;
+}
+
+@keyframes popper-dropdown {
+  from {
+    transform: scale(0);
+    opacity: 0;
+    transition: all 0.2s linear;
+  }
+
+  to {
+    transition: all 0.2s linear;
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.v-popper--theme-dropdown .v-popper__inner {
+  @apply border-none bg-transparent;
+}
+
+.v-popper__arrow-outer,
+.v-popper__arrow-inner {
+  @apply border-gray-900;
+}
+
+.v-popper--theme-dropdown .v-popper__arrow-inner {
+  @apply border-gray-900;
+}
+
+.v-popper--theme-dropdown .v-popper__arrow-outer {
+  @apply border-gray-900;
+}
+/* .v-popper__inner > div {
+  @apply overflow-y-auto;
+} */

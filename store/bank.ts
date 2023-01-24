@@ -1,3 +1,4 @@
+import { defineStore } from 'pinia'
 import { MsgSend } from '@injectivelabs/sdk-ts'
 import {
   UiBankTransformer,
@@ -6,101 +7,51 @@ import {
   IbcBankBalanceWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
-import {
-  BigNumberInBase,
-  BigNumberInWei,
-  INJ_DENOM
-} from '@injectivelabs/utils'
-import { actionTree, getterTree } from 'typed-vuex'
-import { bankApi, msgBroadcastClient, tokenService } from '~/app/Services'
-import { backupPromiseCall } from '~/app/utils/async'
-import { MIN_INJ_REQUIRED_FOR_GAS } from '~/app/utils/constants'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { bankApi, msgBroadcastClient, tokenService } from '@/app/Services'
+import { backupPromiseCall } from '@/app/utils/async'
 
-const initialStateFactory = () => ({
-  balances: {} as BankBalances,
-  ibcBalances: {} as BankBalances,
-  bankErc20BalancesWithToken: [] as BankBalanceWithToken[],
-  bankIbcBalancesWithToken: [] as IbcBankBalanceWithToken[]
-})
-
-const initialState = initialStateFactory()
-
-export const state = () => ({
-  balances: initialState.balances,
-  ibcBalances: initialState.balances,
-  bankErc20BalancesWithToken: initialState.bankErc20BalancesWithToken,
-  bankIbcBalancesWithToken: initialState.bankIbcBalancesWithToken
-})
-
-export type BankStoreState = ReturnType<typeof state>
-
-export const getters = getterTree(state, {
-  hasAnyBankBalance: (state: BankStoreState) => {
-    return (
-      Object.keys(state.balances).length > 0 ||
-      Object.keys(state.ibcBalances).length > 0
-    )
-  },
-
-  hasEnoughInjForGas: (state: BankStoreState) => {
-    if (!state.balances[INJ_DENOM]) {
-      return false
-    }
-
-    return new BigNumberInWei(state.balances[INJ_DENOM])
-      .toBase()
-      .gte(MIN_INJ_REQUIRED_FOR_GAS)
-  },
-
-  bankBalancesWithToken: (state: BankStoreState) => {
-    return [
-      ...state.bankErc20BalancesWithToken,
-      ...state.bankIbcBalancesWithToken
-    ]
-  }
-})
-
-export const mutations = {
-  setBalances(state: BankStoreState, balances: BankBalances) {
-    state.balances = balances
-  },
-
-  setBankErc20BalancesWithToken(
-    state: BankStoreState,
-    bankErc20BalancesWithToken: BankBalanceWithToken[]
-  ) {
-    state.bankErc20BalancesWithToken = bankErc20BalancesWithToken
-  },
-
-  setIbcBalances(state: BankStoreState, ibcBalances: BankBalances) {
-    state.ibcBalances = ibcBalances
-  },
-
-  setIbcBalancesWithToken(
-    state: BankStoreState,
-    bankIbcBalancesWithToken: IbcBankBalanceWithToken[]
-  ) {
-    state.bankIbcBalancesWithToken = bankIbcBalancesWithToken
-  },
-
-  reset(state: BankStoreState) {
-    const initialState = initialStateFactory()
-
-    state.balances = initialState.balances
-    state.bankErc20BalancesWithToken = initialState.bankErc20BalancesWithToken
-    state.bankIbcBalancesWithToken = initialState.bankIbcBalancesWithToken
-  }
+type BankStoreState = {
+  balances: BankBalances
+  ibcBalances: BankBalances
+  bankErc20BalancesWithToken: BankBalanceWithToken[]
+  bankIbcBalancesWithToken: IbcBankBalanceWithToken[]
 }
 
-export const actions = actionTree(
-  { state },
-  {
-    async init(_) {
-      await this.app.$accessor.bank.fetchBalances()
+const initialStateFactory = (): BankStoreState => ({
+  balances: {},
+  ibcBalances: {},
+  bankErc20BalancesWithToken: [],
+  bankIbcBalancesWithToken: []
+})
+
+export const useBankStore = defineStore('bank', {
+  state: (): BankStoreState => initialStateFactory(),
+  getters: {
+    hasAnyBankBalance: (state: BankStoreState) => {
+      return (
+        Object.keys(state.balances).length > 0 ||
+        Object.keys(state.ibcBalances).length > 0
+      )
     },
 
-    async fetchBalances({ commit }) {
-      const { injectiveAddress } = this.app.$accessor.wallet
+    bankBalancesWithToken: (state: BankStoreState) => {
+      return [
+        ...state.bankErc20BalancesWithToken,
+        ...state.bankIbcBalancesWithToken
+      ]
+    }
+  },
+  actions: {
+    async init() {
+      const bankStore = useBankStore()
+
+      await bankStore.fetchBalances()
+    },
+
+    async fetchBalances() {
+      const bankStore = useBankStore()
+      const { injectiveAddress } = useWalletStore()
 
       if (!injectiveAddress) {
         return
@@ -110,55 +61,56 @@ export const actions = actionTree(
       const { bankBalances, ibcBankBalances } =
         UiBankTransformer.bankBalancesToUiBankBalances(balances)
 
-      commit('setBalances', bankBalances)
-      commit('setIbcBalances', ibcBankBalances)
+      bankStore.$patch({
+        balances: bankBalances,
+        ibcBalances: ibcBankBalances
+      })
     },
 
-    async fetchBankBalancesWithToken({ commit }) {
-      const { injectiveAddress } = this.app.$accessor.wallet
+    async fetchBankBalancesWithToken() {
+      const bankStore = useBankStore()
+      const { injectiveAddress } = useWalletStore()
 
       if (!injectiveAddress) {
         return
       }
 
-      const { balances } = await bankApi.fetchBalances(injectiveAddress)
-      const { bankBalances, ibcBankBalances } =
-        UiBankTransformer.bankBalancesToUiBankBalances(balances)
-
-      commit('setBalances', bankBalances)
-      commit('setIbcBalances', ibcBankBalances)
+      await bankStore.fetchBalances()
 
       const { bankBalancesWithToken, ibcBankBalancesWithToken } =
-        await tokenService.getBalancesWithToken(bankBalances, ibcBankBalances)
+        await tokenService.getBalancesWithToken(
+          bankStore.balances,
+          bankStore.ibcBalances
+        )
 
-      commit('setBankErc20BalancesWithToken', bankBalancesWithToken)
-      commit('setIbcBalancesWithToken', ibcBankBalancesWithToken)
+      bankStore.$patch({
+        bankErc20BalancesWithToken: bankBalancesWithToken,
+        bankIbcBalancesWithToken: ibcBankBalancesWithToken
+      })
     },
 
-    async transfer(
-      _,
-      {
-        amount,
-        denom,
-        memo,
-        destination,
-        token
-      }: {
-        amount: BigNumberInBase
-        denom: string
-        memo?: string
-        destination: string
-        token: Token
-      }
-    ) {
-      const { address, injectiveAddress, isUserWalletConnected } =
-        this.app.$accessor.wallet
+    async transfer({
+      amount,
+      denom,
+      memo,
+      destination,
+      token
+    }: {
+      amount: BigNumberInBase
+      denom: string
+      memo?: string
+      destination: string
+      token: Token
+    }) {
+      const bankStore = useBankStore()
+      const { address, injectiveAddress, isUserWalletConnected, validate } =
+        useWalletStore()
 
       if (!address || !isUserWalletConnected) {
         return
       }
 
-      await this.app.$accessor.wallet.validate()
+      await validate()
 
       const message = MsgSend.fromJSON({
         srcInjectiveAddress: injectiveAddress,
@@ -175,7 +127,7 @@ export const actions = actionTree(
         address
       })
 
-      await backupPromiseCall(() => this.app.$accessor.bank.fetchBalances())
+      await backupPromiseCall(() => bankStore.fetchBalances())
     }
   }
-)
+})

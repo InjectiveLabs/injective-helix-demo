@@ -3,9 +3,9 @@ import {
   GeneralException,
   HttpRequestException
 } from '@injectivelabs/exceptions'
-import { restrictedCountries } from '../data/geoip'
-import { GEO_IP_RESTRICTIONS_ENABLED } from '../utils/constants'
-import { GeoLocation } from '~/types'
+import { restrictedCountries } from '@/app/data/geoip'
+import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
+import { GeoLocation } from '@/types'
 
 export const fetchGeoLocation = async (): Promise<GeoLocation> => {
   const httpClient = new HttpClient('https://geoip.injective.dev/')
@@ -87,7 +87,7 @@ export const validateIpAddressForVPN = async (ipAddress: string) => {
 
   try {
     const response = (await httpClient.get(`api/${ipAddress}`, {
-      key: process.env.APP_PROXY_DETECTION_API_KEY
+      key: process.env.VITE_PROXY_DETECTION_API_KEY
     })) as {
       data: {
         security: {
@@ -97,7 +97,6 @@ export const validateIpAddressForVPN = async (ipAddress: string) => {
           relay: boolean
         }
         location: {
-          // eslint-disable-next-line camelcase
           country_code: string
         }
       }
@@ -129,7 +128,7 @@ export const validateIpAddressForVPN = async (ipAddress: string) => {
 
 export const detectVPNOrProxyUsage = async () => {
   const geoIpRestrictionsEnabled =
-    !process.env.APP_PROXY_DETECTION_API_KEY || !GEO_IP_RESTRICTIONS_ENABLED
+    !process.env.VITE_PROXY_DETECTION_API_KEY || !GEO_IP_RESTRICTIONS_ENABLED
 
   if (geoIpRestrictionsEnabled) {
     return
@@ -152,7 +151,7 @@ export const detectVPNOrProxyUsage = async () => {
 
 export const detectVPNOrProxyUsageNoThrow = async () => {
   const geoIpRestrictionsEnabled =
-    !process.env.APP_PROXY_DETECTION_API_KEY || !GEO_IP_RESTRICTIONS_ENABLED
+    !process.env.VITE_PROXY_DETECTION_API_KEY || !GEO_IP_RESTRICTIONS_ENABLED
 
   if (geoIpRestrictionsEnabled) {
     return false

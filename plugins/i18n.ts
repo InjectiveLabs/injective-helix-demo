@@ -1,19 +1,22 @@
-import Vue from 'vue'
-import VueI18n from 'vue-i18n'
-import { Context } from '@nuxt/types'
-import en from '~/locales/en'
-import zh from '~/locales/zh'
-import { englishLocale } from '~/locales'
+import { createI18n } from 'vue-i18n'
+import { defineNuxtPlugin } from '#imports'
+import en from '@/locales/en'
+import zh from '@/locales/zh'
+import { localStorage } from '@/app/Services'
 
-Vue.use(VueI18n)
+const storageApp = localStorage.get('state') as any
+const locale =
+  storageApp && storageApp.app && storageApp.app.locale
+    ? storageApp.app.locale.locale
+    : 'en'
 
-const fallbackLocale = englishLocale
+const i18n = createI18n({
+  legacy: false,
+  globalInjection: true,
+  locale,
+  messages: { en, zh }
+})
 
-export default ({ app }: Context) => {
-  app.i18n = new VueI18n({
-    locale: englishLocale, // TODO
-    fallbackLocale,
-    silentFallbackWarn: true,
-    messages: { en, zh }
-  })
-}
+export default defineNuxtPlugin((nuxtApp) => {
+  nuxtApp.vueApp.use(i18n)
+})

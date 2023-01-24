@@ -1,20 +1,19 @@
+import { Token } from '@injectivelabs/token-metadata'
 import {
   SubaccountBalanceWithToken,
   TokenWithBalanceAndPrice,
-  TokenWithUsdPrice,
-  UiDerivativeMarketSummary,
-  UiDerivativeMarketWithToken,
-  UiSpotMarketSummary,
-  UiSpotMarketWithToken
+  TokenWithUsdPrice
 } from '@injectivelabs/sdk-ui-ts'
-import { TradeExecutionType, TradeDirection } from '@injectivelabs/ts-types'
+import { TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   PaginationOption,
   SpotOrderSide,
-  DerivativeOrderSide
+  DerivativeOrderSide,
+  PointsMultiplier
 } from '@injectivelabs/sdk-ts'
-import { ConditionalOrderSide } from '~/components/partials/activity/common/types'
+import { BaseDropdownOption } from '@injectivelabs/ui-shared'
+import { ConditionalOrderSide, TradeExecutionType } from '@/types'
 
 export interface DOMEvent<T extends EventTarget> extends Event {
   target: T
@@ -59,19 +58,9 @@ export interface AccountBalance {
   token: TokenWithUsdPrice
 }
 
-export interface UiMarketAndSummary {
-  market: UiDerivativeMarketWithToken | UiSpotMarketWithToken
-  summary: UiDerivativeMarketSummary | UiSpotMarketSummary
-}
-
-export interface UiMarketAndSummaryWithVolumeInUsd extends UiMarketAndSummary {
-  volumeInUsd: BigNumberInBase
-}
-
 export interface MarketRoute {
   name: string
   params?: {
-    marketId: string
     market?: string
     derivative?: string
     futures?: string
@@ -96,15 +85,15 @@ export interface DefaultMarketRoute {
 }
 
 export interface TradeConfirmationModalData {
-  tradingType: TradeExecutionType
-  orderType: SpotOrderSide | DerivativeOrderSide
-  triggerPrice: BigNumberInBase
-  triggerPriceSymbol: string
   amount: BigNumberInBase
   amountSymbol: string
+  isReduceOnly?: boolean
+  orderType: SpotOrderSide | DerivativeOrderSide
   price?: BigNumberInBase
   priceSymbol?: string
-  isReduceOnly?: boolean
+  tradingType: TradeExecutionType
+  triggerPrice?: BigNumberInBase
+  triggerPriceSymbol?: string
 }
 
 export declare type TokenUsdPriceMap = Record<string, number>
@@ -132,23 +121,35 @@ export interface OrderTypeFilter {
   orderType?: string
 }
 
-export type CurrentMarket =
-  | UiSpotMarketWithToken
-  | UiDerivativeMarketWithToken
-  | undefined
-
-export interface SelectOption {
-  label: string
-  value: any
-}
-
 export interface TabOption {
   value: string
   label: string
   url?: string
 }
 
+export interface MarketPromotion {
+  market: string
+  url: string
+  start: number
+  end: number
+}
+
+export interface PointsMultiplierWithMarketTicker extends PointsMultiplier {
+  ticker: string
+  slug: string
+}
+
+export interface DropdownOption extends BaseDropdownOption {
+  icon?: string
+}
+
+export interface DropdownOptionWithToken extends BaseDropdownOption {
+  token?: Token
+}
+
+export * from './balance'
+export * from './bridge'
 export * from './enums'
-export * from './env'
 export * from './errors'
 export * from './states'
+export * from './trade'

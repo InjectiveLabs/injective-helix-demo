@@ -71,6 +71,7 @@ typings/
 
 # Nuxt generate
 dist
+.output
 
 # Contract Debugs
 debug
@@ -97,6 +98,6 @@ sw.*
 .build
 
 # Vendor files
-/static/vendor
+/public/vendor
 
 tsconfig.tsbuildinfo

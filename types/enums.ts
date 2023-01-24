@@ -1,5 +1,3 @@
-import { MarketType } from '@injectivelabs/sdk-ui-ts'
-
 export enum Change {
   New = 'new',
   NoChange = 'no-change',
@@ -40,7 +38,7 @@ export enum Icon {
 }
 
 export enum Modal {
-  AuctionCountdown = 'auction-countdown',
+  AddMarginToPosition = 'add-margin-to-position',
   Connect = 'connect',
   DelegateToValidator = 'delegate-to-validator',
   GasFeeRebate = 'gas-fee-rebate',
@@ -56,10 +54,10 @@ export enum Modal {
   BridgeCompleted = 'bridge-completed',
   RefereeOnboarding = 'referee-onboarding',
   InsufficientInjForGas = 'insufficient-inj-for-gas',
-  MobileTradeFilter = 'mobile-trade-filter',
   MobileTradeDetails = 'mobile-trade-details',
   NinjaPassWinner = 'ninja-pass-winner',
-  AssetDetails = 'asset-details'
+  AssetDetails = 'asset-details',
+  PriceDeviation = 'price-deviation'
 }
 
 export enum Breakpoint {
@@ -128,10 +126,6 @@ export enum MarketQuoteType {
   // UST = 'ust'
 }
 
-export enum MarketTypeFavorite {
-  Favorite = 'Favorite'
-}
-
 export enum StreamType {
   SubaccountBalances = 'subaccount-balances',
   SpotSubaccountOrders = 'spot-subaccount-orders',
@@ -150,8 +144,6 @@ export enum StreamType {
   DerivativesPositions = 'derivatives-positions',
   OraclePrices = 'oracle-prices'
 }
-
-export { MarketType }
 
 export enum AveragePriceOptions {
   None = 0,
@@ -204,4 +196,91 @@ export enum BalanceHeaderType {
   Total = 'total',
   Available = 'available',
   Value = 'value'
+}
+
+export enum BusEvents {
+  AddMarginToPosition = 'add-margin-to-position',
+  NavLinkClicked = 'nav-link-clicked',
+  OrderbookPriceClick = 'orderbook-price-click',
+  OrderbookSizeClick = 'orderbook-size-click',
+  OrderbookNotionalClick = 'orderbook-notional-click',
+  ShowLedgerConnect = 'show-ledger-connect',
+  AssetDetailsModalPayload = 'asset-details-modal-payload',
+  TradeConfirmationModalPayload = 'trade-confirmation-modal-payload',
+  PostOnlyToggled = 'post-only-toggled',
+  FundingRefresh = 'funding-refresh',
+  WalletConnected = 'wallet-connected'
+}
+
+export enum BridgeBusEvents {
+  Transfer = 'transfer',
+  TransferToBank = 'transfer-to-bank',
+  Deposit = 'deposit',
+  Withdraw = 'withdraw'
+}
+
+export enum BridgeField {
+  BridgingNetwork = 'Bridging Network',
+  TransferDirection = 'Transfer Direction',
+  Token = 'Token',
+  Denom = 'Denom',
+  Amount = 'Amount',
+  Memo = 'Memo',
+  Destination = 'Destination'
+}
+
+export enum TradeField {
+  BaseAmount = 'Base amount',
+  BaseDenom = 'Base denom',
+  Leverage = 'Leverage',
+  LimitPrice = 'Limit price',
+  OrderType = 'Order type',
+  PostOnly = 'Post-Only',
+  ProportionalPercentage = 'Proportional percentage',
+  QuoteAmount = 'Quote amount',
+  QuoteDenom = 'Quote denom',
+  ReduceOnly = 'Reduce-Only',
+  SlippageTolerance = 'Slippage tolerance',
+  TradingType = 'Trading type',
+  TriggerPrice = 'Trigger price'
+}
+
+export type BaseQuoteFields = Exclude<
+  TradeField,
+  | TradeField.LimitPrice
+  | TradeField.TriggerPrice
+  | TradeField.BaseDenom
+  | TradeField.QuoteDenom
+  | TradeField.ProportionalPercentage
+>
+
+export enum TradeExecutionType {
+  Market = 'market',
+  LimitFill = 'limitFill',
+  LimitMatchRestingOrder = 'limitMatchRestingOrder',
+  LimitMatchNewOrder = 'limitMatchNewOrder',
+  StopLimit = 'stopLimit',
+  StopMarket = 'stopMarket'
+}
+
+export enum WalletModalType {
+  All = 'all',
+  Ledger = 'ledger',
+  Trezor = 'trezor'
+}
+
+export enum ActivityView {
+  Positions = 'Positions/Index',
+  FundingPayments = 'Positions/FundingPayments',
+  SpotOrders = 'Spot/Index',
+  SpotTriggers = 'Spot/Triggers',
+  SpotOrderHistory = 'Spot/OrderHistory',
+  SpotTradeHistory = 'Spot/TradeHistory',
+  DerivativeOrders = 'Derivatives/Index',
+  DerivativeTriggers = 'Derivatives/Triggers',
+  DerivativeOrderHistory = 'Derivatives/OrderHistory',
+  DerivativeTradeHistory = 'Derivatives/TradeHistory',
+  WalletTransfers = 'WalletHistory/Transfers',
+  WalletDeposits = 'WalletHistory/Deposits',
+  WalletWithdrawals = 'WalletHistory/Withdrawals'
 }

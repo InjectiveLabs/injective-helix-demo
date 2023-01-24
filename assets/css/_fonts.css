@@ -1,0 +1,149 @@
+@font-face {
+  font-family: 'Inter';
+  src: url('./../fonts/Inter-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./../fonts/Inter-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./../fonts/Inter-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./../fonts/Inter-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./../fonts/Inter-Bold.woff2') format('woff2');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: normal;
+  font-weight: 100;
+  font-display: swap;
+  src: url('./../fonts/RobotoMonoThin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: normal;
+  font-weight: 200;
+  font-display: swap;
+  src: url('./../fonts/RobotoMonoExtraLight.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('./../fonts/RobotoMonoLight.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./../fonts/RobotoMonoRegular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('./../fonts/RobotoMonoMedium.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('./../fonts/RobotoMonoSemiBold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./../fonts/RobotoMonoBold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Proxima Nova';
+  font-weight: 900;
+  src: url('./../fonts/proxima-nova-black.woff2') format("woff");
+}
+
+
+@font-face {
+  font-family: 'Proxima Nova';
+  font-weight: 800;
+  src: url('./../fonts/proxima-nova-extrabold.woff2') format("woff");
+}
+
+@font-face {
+  font-family: 'Proxima Nova';
+  font-weight: 700;
+  src: url('./../fonts/proxima-nova-bold.woff2') format("woff");
+}
+
+@font-face {
+  font-family: 'Proxima Nova';
+  font-weight: 600;
+  src: url('./../fonts/proxima-nova-semibold.woff2') format("woff");
+}
+
+@font-face {
+  font-family: 'Proxima Nova';
+  font-weight: 500;
+  src: url('./../fonts/proxima-nova-medium.woff2') format("woff");
+}
+
+@font-face {
+  font-family: 'Proxima Nova';
+  font-weight: 400;
+  src: url('./../fonts/proxima-nova-regular.woff2') format("woff");
+}
+
+@font-face {
+  font-family: 'Proxima Nova';
+  font-weight: 300;
+  src: url('./../fonts/proxima-nova-light.woff2') format("woff");
+}
+
+@font-face {
+  font-family: 'Proxima Nova';
+  font-weight: 100;
+  src: url('./../fonts/proxima-nova-thin.woff2') format("woff");
+}
+
+.text-gradient {
+  @apply text-transparent bg-clip-text bg-gradient-to-tr from-blue-200 to-blue-500;
+}

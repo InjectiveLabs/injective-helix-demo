@@ -70,13 +70,3 @@ export function formatPercent({
 
   return `${prefix}${String(numberInBigNumber.toFixed(precision))}${suffix}`
 }
-
-export const formatMarketIdToComplyToZeroEx = (marketId: string): string => {
-  return `${marketId}00000000`
-}
-
-export const reverseFormatMarketIdToComplyToZeroEx = (
-  marketId: string
-): string => {
-  return marketId.slice(0, marketId.length - 8)
-}
