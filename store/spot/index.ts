@@ -182,7 +182,7 @@ export const useSpotStore = defineStore('spot', {
       const filters = activityFetchOptions?.filters
       const endTime =
         paginationOptions?.endTime ||
-        spotStore.subaccountOrders[0]?.createdAt ||
+        spotStore.subaccountOrders[0]?.updatedAt ||
         0
 
       const { orders, pagination } = await indexerSpotApi.fetchOrders({

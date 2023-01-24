@@ -209,6 +209,8 @@ const symbol = computed(() => {
 
 onMounted(() => {
   const promises = [
+    derivativeStore.fetchSubaccountOrders(),
+    spotStore.fetchSubaccountOrders(),
     positionStore.streamSubaccountPositions(),
     spotStore.streamSubaccountOrders(),
     spotStore.streamSubaccountOrderHistory(),
