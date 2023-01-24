@@ -28,7 +28,7 @@ const appendCachedTokens = (
 
   return [
     ...new Map(
-      [...balances, ...cachedTokensWithBalance].map((token) => [
+      [...cachedTokensWithBalance, ...balances].map((token) => [
         token.denom,
         token
       ])
