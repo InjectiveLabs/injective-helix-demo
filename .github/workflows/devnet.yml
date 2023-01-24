@@ -62,7 +62,7 @@ jobs:
         run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn install'
       
       - name: Remove prev build
-        run: ssh devnet 'cd "'$SOURCE_DIR'"  && yarn clean-up'
+        run: ssh devnet 'cd "'$SOURCE_DIR'" && yarn clean-up'
 
       - name: Generating the static pages
         run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn generate'
