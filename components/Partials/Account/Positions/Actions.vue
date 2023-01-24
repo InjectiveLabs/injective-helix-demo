@@ -120,7 +120,10 @@ function handleToggleFilters() {
         data-cy="universal-table-filter-by-asset-input"
       >
         <template #selected-option="{ option }">
-          <PartialsAccountPositionsFilterOption :option="option" />
+          <PartialsAccountPositionsFilterOption
+            v-if="option"
+            :option="option"
+          />
         </template>
 
         <template #option="{ option, active }">
