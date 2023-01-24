@@ -20,14 +20,59 @@ const props = defineProps({
   }
 })
 
-const searchQuery = ref('')
+const { value: searchQuery } = useStringField({
+  name: 'searchQuery'
+})
+
 const showMarginCurrencyOnly = ref(false)
 const hideSmallBalances = ref(false)
 const sortBy = ref(BalanceHeaderType.None)
 const ascending = ref(false)
 
+const transformedBalance = computed(() => {
+  const nonUsdcBalances = props.balances.filter(
+    (balance) => !balance.token.symbol.toLowerCase().includes('usdc')
+  )
+  const usdcBalances = props.balances.filter((balance) => {
+    return balance.token.symbol.toLowerCase().includes('usdc')
+  })
+
+  if (!usdcBalances.length) {
+    return nonUsdcBalances
+  }
+
+  const aggregatedUsdcBalances = usdcBalances.reduce(
+    (aggregatedUsdc, balance) => {
+      return {
+        bankBalance: aggregatedUsdc.bankBalance.plus(balance.bankBalance),
+        inOrderBalance: aggregatedUsdc.inOrderBalance.plus(
+          balance.inOrderBalance
+        ),
+        margin: aggregatedUsdc.margin.plus(balance.margin),
+        pnl: aggregatedUsdc.pnl.plus(balance.pnl),
+        subaccountAvailableBalance:
+          aggregatedUsdc.subaccountAvailableBalance.plus(
+            balance.subaccountAvailableBalance
+          ),
+        subaccountTotalBalance: aggregatedUsdc.subaccountTotalBalance.plus(
+          balance.subaccountTotalBalance
+        ),
+        token: {
+          ...balance.token,
+          name: 'USDC Coin',
+          symbol: 'USDC',
+          denom: ''
+        }
+      }
+    },
+    usdcBalances[0]
+  )
+
+  return [...nonUsdcBalances, aggregatedUsdcBalances]
+})
+
 const filteredBalances = computed(() => {
-  return props.balances.filter((balance) => {
+  return transformedBalance.value.filter((balance) => {
     if (!balance) {
       return false
     }
@@ -121,13 +166,19 @@ const sortedBalances = computed(() => {
         v-model:sort-by="sortBy"
         v-model:ascending="ascending"
       />
-
-      <PartialsAccountBalancesTableRow
-        v-for="balance in sortedBalances"
-        :key="balance.token.denom"
-        :balance="balance"
-        :hide-balances="hideBalances"
-      />
+      <template v-for="balance in sortedBalances" :key="balance.token.denom">
+        <PartialsAccountBalancesTableRow
+          v-if="!balance.token.symbol.toLowerCase().includes('usdc')"
+          :balance="balance"
+          :hide-balances="hideBalances"
+        />
+        <PartialsAccountBalancesUSDCBalances
+          v-else
+          :balances="balances"
+          :balance="balance"
+          :hide-balances="hideBalances"
+        />
+      </template>
     </table>
 
     <table class="w-full border-collapse sm:table lg:hidden">

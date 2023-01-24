@@ -4,7 +4,10 @@ import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
 import {
   HIDDEN_BALANCE_DISPLAY,
-  UI_DEFAULT_DISPLAY_DECIMALS
+  UI_DEFAULT_DISPLAY_DECIMALS,
+  USDC_PEGGY_DENOM,
+  USDC_WH_ETHEREUM_DENOM,
+  USDC_WH_SOLANA_DENOM
 } from '@/app/utils/constants'
 import { AccountBalance, BridgeBusEvents } from '@/types'
 
@@ -12,6 +15,8 @@ const router = useRouter()
 const spotStore = useSpotStore()
 
 const props = defineProps({
+  expand: Boolean,
+
   balance: {
     type: Object as PropType<AccountBalance>,
     required: true
@@ -22,6 +27,17 @@ const props = defineProps({
     required: true
   }
 })
+
+const router = useRouter()
+const spotStore = useSpotStore()
+
+const isUsdcBalance = props.balance.token.symbol.toLowerCase().includes('usdc')
+const convertUSDC = [USDC_PEGGY_DENOM].includes(props.balance.token.denom)
+const isUSDCDenom = [
+  USDC_PEGGY_DENOM,
+  USDC_WH_ETHEREUM_DENOM,
+  USDC_WH_SOLANA_DENOM
+].includes(props.balance.token.denom)
 
 const isOpen = ref(false)
 
@@ -84,28 +100,60 @@ function handleWithdrawClick() {
     props.balance.token
   )
 }
+
+function handleConvert() {
+  // TODO: implement modal
+}
 </script>
 
 <template>
   <tr
-    class="border-b border-gray-700 last-of-type:border-b-transparent hover:bg-gray-700 bg-transparent px-4 py-0 overflow-hidden h-14 gap-2 transition-all"
-    :class="{ 'max-h-20': !isOpen, 'max-h-screen': isOpen }"
+    class="border-b border-gray-700 hover:bg-gray-700 bg-transparent px-4 py-0 overflow-hidden h-14 gap-2 transition-all"
+    :class="{
+      'last-of-type:border-b-transparent': !isUsdcBalance,
+      'max-h-20': !isOpen,
+      'max-h-screen': isOpen
+    }"
     :data-cy="'wallet-balance-table-row-' + balance.token.symbol"
   >
     <td class="pl-4">
       <div class="flex justify-start items-center gap-2">
+        <<<<<<< HEAD
         <CommonTokenIcon :token="balance.token" />
+        =======
+        <div class="w-6 h-6 rounded-full self-center">
+          <img v-if="!isUSDCDenom" :src="tokenLogo" :alt="balance.token.name" />
+        </div>
+        >>>>>>> e650234e (feat: usdc grouping on account page)
 
         <div class="flex justify-start gap-2 items-center">
           <span
-            class="text-white font-bold tracking-wide text-sm uppercase h-auto flex items-center"
+            class="text-white font-bold tracking-wide text-sm h-auto flex items-center"
             data-cy="wallet-balance-token-symbol-table-data"
           >
             {{ balance.token.symbol }}
           </span>
           <span class="text-gray-500 text-xs">
-            {{ balance.token.name }}
+            <span v-if="!isUSDCDenom">
+              {{ balance.token.name }}
+            </span>
+            <span v-else-if="balance.token.denom === USDC_PEGGY_DENOM">
+              ({{ $t('account.usdcPeggyToken') }})
+            </span>
+            <span v-else-if="balance.token.denom === USDC_WH_ETHEREUM_DENOM">
+              ({{ $t('account.usdcWHEthereumToken') }})
+            </span>
+            <span v-else-if="balance.token.denom === USDC_WH_SOLANA_DENOM">
+              ({{ $t('account.usdcWHSolanaToken') }})
+            </span>
           </span>
+
+          <BaseIcon
+            v-if="!balance.token.denom"
+            name="caret-down"
+            class="h-6 w-6 transition duration-500 hover:text-blue-500 -rotate-180"
+            :class="{ 'rotate-0': !expand }"
+          />
         </div>
       </div>
     </td>
@@ -163,7 +211,21 @@ function handleWithdrawClick() {
       </div>
     </td>
 
-    <td class="pr-4">
+    <td v-if="convertUSDC" class="pr-4">
+      <div class="flex items-center justify-end gap-4 col-start-2 col-span-2">
+        <div
+          class="rounded flex items-center justify-center w-auto h-auto cursor-pointer"
+          data-cy="wallet-balance-convert"
+          @click="handleConvert"
+        >
+          <span class="text-blue-500 text-sm font-medium">
+            {{ $t('account.convertUSDC') }}
+          </span>
+        </div>
+      </div>
+    </td>
+
+    <td v-else-if="balance.token.denom" class="pr-4">
       <div class="flex items-center justify-end gap-4 col-start-2 col-span-2">
         <BaseDropdown
           v-if="filteredMarkets.length > 1"

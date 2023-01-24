@@ -1,6 +1,7 @@
 export default {
   account: {
     accountOverview: 'Account Overview',
+    convertUSDC: 'Convert USDC',
     netWorth: 'Net Worth',
     deposit: 'Deposit',
     withdraw: 'Withdraw',
@@ -60,6 +61,9 @@ export default {
       title: 'Asset details',
       trade: 'Trade',
       emptyMarkets: 'No markets available for trading.'
-    }
+    },
+    usdcPeggyToken: 'Injective Bridge from Ethereum',
+    usdcWHEthereumToken: 'Wormhole from Ethereum',
+    usdcWHSolanaToken: 'Wormhole from Solana'
   }
 }
