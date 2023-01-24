@@ -67,10 +67,10 @@ jobs:
         run: ssh testnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn install'
 
       - name: Remove prev build
-        run: ssh devnet 'cd "'$SOURCE_DIR'"  && yarn clean-up'
+        run: ssh testnet 'cd "'$SOURCE_DIR'" && yarn clean-up'
 
       - name: Generating the static pages
         run: ssh testnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn generate'
 
       - name: Proper permissions for dist folder
-        run: ssh testnet 'sudo chown -R root:ubuntu $HOME/inj/injective-helix/dist'
+        run: ssh testnet 'sudo chown -R root:ubuntu $HOME/inj/injective-helix/.output/public/'
