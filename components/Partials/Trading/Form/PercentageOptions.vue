@@ -150,10 +150,10 @@ function handleReduceOnly() {
 
   emit('update:formValue', {
     field: TradeField.BaseAmount,
-    value: props.maxReduceOnly.toFixed(
-      props.market.quantityDecimals,
-      TRADE_FORM_QUANTITY_ROUNDING_MODE
-    )
+    value: props.maxReduceOnly
+      .times(percentage.value)
+      .dividedBy(100)
+      .toFixed(props.market.quantityDecimals, TRADE_FORM_QUANTITY_ROUNDING_MODE)
   })
 
   emit('update:amount', { isBase: true })
