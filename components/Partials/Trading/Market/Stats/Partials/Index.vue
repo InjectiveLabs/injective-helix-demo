@@ -11,6 +11,7 @@ import {
   UiExpiryFuturesMarketWithToken
 } from '@injectivelabs/sdk-ui-ts'
 import { UiMarketWithToken, UiMarketSummary } from '@/types'
+import { marketStableCoinQuoteSymbols } from '~~/app/data/market'
 
 const derivativeStore = useDerivativeStore()
 
@@ -29,7 +30,7 @@ const props = defineProps({
 const userTimezone = format(new Date(), 'OOOO')
 const now = ref(Date.now() / 1000)
 
-const { valueToFixed: markPriceToFormat, valueToBigNumber: markPrice } =
+const { valueToString: markPriceToFormat, valueToBigNumber: markPrice } =
   useBigNumberFormatter(
     computed(() => {
       if (!derivativeStore.marketMarkPrice) {
@@ -47,7 +48,7 @@ const { valueToFixed: markPriceToFormat, valueToBigNumber: markPrice } =
     }
   )
 
-const { valueToFixed: highToFormat, valueToBigNumber: high } =
+const { valueToString: highToFormat, valueToBigNumber: high } =
   useBigNumberFormatter(
     computed(() => {
       if (!props.summary) {
@@ -142,7 +143,7 @@ const { valueToBigNumber: fundingRate } = useBigNumberFormatter(
   })
 )
 
-const { valueToFixed: lowToFormat, valueToBigNumber: low } =
+const { valueToString: lowToFormat, valueToBigNumber: low } =
   useBigNumberFormatter(
     computed(() => {
       if (!props.summary) {
@@ -156,7 +157,7 @@ const { valueToFixed: lowToFormat, valueToBigNumber: low } =
     }
   )
 
-const { valueToFixed: volumeToFormat, valueToBigNumber: volume } =
+const { valueToString: volumeToFormat, valueToBigNumber: volume } =
   useBigNumberFormatter(
     computed(() => {
       if (!props.summary) {
@@ -166,7 +167,11 @@ const { valueToFixed: volumeToFormat, valueToBigNumber: volume } =
       return new BigNumberInBase(props.summary.volume)
     }),
     {
-      decimalPlaces: props.market.priceDecimals
+      decimalPlaces: marketStableCoinQuoteSymbols.includes(
+        props.market.quoteToken.symbol
+      )
+        ? 0
+        : props.market.priceDecimals
     }
   )
 

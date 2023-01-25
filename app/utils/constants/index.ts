@@ -49,6 +49,7 @@ export const HIDDEN_BALANCE_DISPLAY = '********'
 export const ONE_IN_BASE = new BigNumberInBase(1)
 export const USDT_DECIMALS = 6
 export const UI_DEFAULT_PAGINATION_LIMIT_COUNT = 20
+export const UI_MINIMAL_ABBREVIATION_FLOOR = 1_000_000
 
 export const MARKETS_HISTORY_CHART_SEVEN_DAYS = 154
 export const MARKETS_HISTORY_CHART_ONE_HOUR = 60

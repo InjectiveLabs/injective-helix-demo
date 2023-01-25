@@ -127,32 +127,6 @@ export const getDefaultSpotMarketRouteParams = () => {
   }
 }
 
-export const getAbbreviatedVolume = (value: BigNumberInBase): string => {
-  const thousand = 1000
-  const million = 1000000
-  const billion = 1000000000
-
-  if (value.gt(billion)) {
-    return `${value
-      .dividedBy(billion)
-      .toFormat(2, BigNumberInBase.ROUND_DOWN)}B`
-  }
-
-  if (value.gt(million)) {
-    return `${value
-      .dividedBy(million)
-      .toFormat(2, BigNumberInBase.ROUND_DOWN)}M`
-  }
-
-  if (value.gt(thousand)) {
-    return `${value
-      .dividedBy(thousand)
-      .toFormat(2, BigNumberInBase.ROUND_DOWN)}K`
-  }
-
-  return value.toFormat(2, BigNumberInBase.ROUND_DOWN)
-}
-
 export const marketIsPartOfCategory = (
   activeCategory: MarketCategoryType,
   market: UiDerivativeMarketWithToken | UiSpotMarketWithToken

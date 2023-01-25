@@ -32,7 +32,7 @@ function fetchAll() {
 
   const fetchOptions = {
     filters: {
-      marketId: currentMarketOnly ? props.market.marketId : undefined
+      marketId: currentMarketOnly.value ? props.market.marketId : undefined
     },
     pagination: {
       endTime: 0
