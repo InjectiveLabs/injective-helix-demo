@@ -8,7 +8,6 @@ import {
   MsgIncreasePositionMargin,
   derivativeMarginToChainMarginToFixed,
   derivativeQuantityToChainQuantityToFixed
-  // MsgBatchUpdateOrders
 } from '@injectivelabs/sdk-ts'
 import {
   derivativeOrderTypeToGrpcOrderType,
@@ -57,6 +56,10 @@ export const usePositionStore = defineStore('position', {
 
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
+      const endTime =
+        paginationOptions?.endTime ||
+        positionStore.subaccountPositions[0]?.updatedAt ||
+        0
 
       const { positions, pagination } =
         await indexerDerivativesApi.fetchPositions({
@@ -67,10 +70,7 @@ export const usePositionStore = defineStore('position', {
           pagination: {
             skip: paginationOptions ? paginationOptions.skip : 0,
             limit: paginationOptions ? paginationOptions.limit : 0,
-            endTime:
-              positionStore.subaccountPositions.length > 0
-                ? positionStore.subaccountPositions[0].updatedAt
-                : 0
+            endTime
           }
         })
 
@@ -358,13 +358,11 @@ export const usePositionStore = defineStore('position', {
       const positionStore = usePositionStore()
 
       const { subaccount } = useAccountStore()
-      const { market: currentMarket } = useDerivativeStore()
       const { address, injectiveAddress, isUserWalletConnected, validate } =
         useWalletStore()
       const { feeRecipient: referralFeeRecipient } = useReferralStore()
 
-      const actualMarket = (currentMarket ||
-        market) as UiDerivativeMarketWithToken
+      const actualMarket = market as UiDerivativeMarketWithToken
 
       if (!isUserWalletConnected || !subaccount || !actualMarket) {
         return
