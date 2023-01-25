@@ -175,7 +175,7 @@ function handleAscending(value: boolean) {
       />
     </table>
 
-    <table class="w-full border-collapse table lg:hidden">
+    <table class="w-full border-collapse lg:hidden">
       <PartialsAccountBalancesTableHeaderMobile
         :sort-by="sortBy"
         :ascending="ascending"

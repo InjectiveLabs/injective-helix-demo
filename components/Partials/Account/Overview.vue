@@ -145,7 +145,7 @@ function handleTransferClick() {
       </div>
     </div>
 
-    <div class="flex items-center justify-between md:justify-end gap-4">
+    <div class="flex items-center justify-between md:justify-end sm:gap-4">
       <AppButton class="bg-blue-500" @click="handleDepositClick">
         <span class="text-blue-900 font-semibold">
           {{ $t('account.deposit') }}
