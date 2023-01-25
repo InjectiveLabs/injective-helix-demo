@@ -54,9 +54,15 @@ export const usePositionStore = defineStore('position', {
       if (!isUserWalletConnected || !subaccount) {
         return
       }
-
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
+
+      const endTime =
+        paginationOptions?.endTime !== undefined
+          ? paginationOptions?.endTime
+          : positionStore.subaccountPositions.length > 0
+          ? positionStore.subaccountPositions[0].updatedAt
+          : 0
 
       const { positions, pagination } =
         await indexerDerivativesApi.fetchPositions({
@@ -67,10 +73,7 @@ export const usePositionStore = defineStore('position', {
           pagination: {
             skip: paginationOptions ? paginationOptions.skip : 0,
             limit: paginationOptions ? paginationOptions.limit : 0,
-            endTime:
-              positionStore.subaccountPositions.length > 0
-                ? positionStore.subaccountPositions[0].updatedAt
-                : 0
+            endTime
           }
         })
 

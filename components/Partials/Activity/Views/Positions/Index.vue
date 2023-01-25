@@ -67,7 +67,7 @@ onMounted(() => {
           v-else
           data-cy="universal-table-nothing-found"
           :message="$t('trade.emptyPositions')"
-          class="grow"
+          class="pb-4 grow"
         />
       </CommonTableWrapper>
     </div>

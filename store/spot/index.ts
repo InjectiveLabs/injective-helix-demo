@@ -181,9 +181,9 @@ export const useSpotStore = defineStore('spot', {
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
       const endTime =
-        paginationOptions?.endTime ||
-        spotStore.subaccountOrders[0]?.updatedAt ||
-        0
+        paginationOptions?.endTime !== undefined
+          ? paginationOptions.endTime
+          : spotStore.subaccountOrders[0]?.updatedAt || 0
 
       const { orders, pagination } = await indexerSpotApi.fetchOrders({
         marketId: filters?.marketId,
@@ -219,9 +219,9 @@ export const useSpotStore = defineStore('spot', {
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
       const endTime =
-        paginationOptions?.endTime ||
-        spotStore.subaccountOrderHistory[0]?.createdAt ||
-        0
+        paginationOptions?.endTime !== undefined
+          ? paginationOptions?.endTime
+          : spotStore.subaccountOrderHistory[0]?.createdAt || 0
 
       const { orderHistory, pagination } =
         await indexerSpotApi.fetchOrderHistory({
@@ -324,9 +324,9 @@ export const useSpotStore = defineStore('spot', {
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
       const endTime =
-        paginationOptions?.endTime ||
-        spotStore.subaccountTrades[0]?.timestamp ||
-        0
+        paginationOptions?.endTime !== undefined
+          ? paginationOptions?.endTime
+          : spotStore.subaccountTrades[0]?.timestamp || 0
 
       const { trades, pagination } = await indexerSpotApi.fetchTrades({
         marketId: filters?.marketId,

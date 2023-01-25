@@ -59,7 +59,10 @@ const marketIds = computed(() =>
 )
 
 const marketId = computed(() => {
-  if (!activeMarket.value) {
+  if (
+    !activeMarket.value ||
+    denom.value === 'peggy0xdAC17F958D2ee523a2206206994597C13D831ec7'
+  ) {
     return undefined
   }
 
@@ -233,9 +236,10 @@ onMounted(() => {
     .catch($onError)
 })
 
-watch([view, side, type, denom, page, limit], fetchData)
+watch([view, page, limit], () => fetchData())
+watch([denom, side, type], () => fetchData(true))
 
-function fetchData() {
+function fetchData(forceEndTime?: boolean) {
   if (!action.value) {
     return
   }
@@ -255,7 +259,8 @@ function fetchData() {
       filters: filterParams.value as FilterOptions,
       pagination: {
         skip: skip.value,
-        limit: limit.value
+        limit: limit.value,
+        endTime: forceEndTime ? 0 : undefined
       }
     })
     .catch($onError)

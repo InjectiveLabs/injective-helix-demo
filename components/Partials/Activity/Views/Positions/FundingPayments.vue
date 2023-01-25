@@ -56,7 +56,7 @@ const fundingPayments = computed(() => {
         v-else
         data-cy="universal-table-nothing-found"
         :message="$t('fundingPayments.emptyFundingPayments')"
-        class="pb-4"
+        class="pb-4 grow"
       />
     </CommonTableWrapper>
   </AppHocLoading>
