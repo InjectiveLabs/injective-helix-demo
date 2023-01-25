@@ -7,7 +7,7 @@ import {
   getExactDecimalsFromNumber,
   cosmosSdkDecToBigNumber
 } from '@injectivelabs/sdk-ts'
-import { USDT_DECIMALS } from '@/app/utils/constants'
+import { UI_MINIMAL_AMOUNT, USDT_DECIMALS } from '@/app/utils/constants'
 
 const props = defineProps({
   tier: {
@@ -76,7 +76,15 @@ const makerFeeDiscount = computed(() => {
     return ZERO_IN_BASE
   }
 
-  return new BigNumberInWei(props.tier.makerDiscountRate).times(100).toBase()
+  const makerDiscountRate = new BigNumberInWei(props.tier.makerDiscountRate)
+    .times(100)
+    .toBase()
+
+  if (makerDiscountRate.lte(UI_MINIMAL_AMOUNT)) {
+    return ZERO_IN_BASE
+  }
+
+  return makerDiscountRate
 })
 
 const { valueToString: makerFeeDiscountToFormat } = useBigNumberFormatter(
