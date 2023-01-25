@@ -182,8 +182,6 @@ function prefillFromQueryParams() {
         v-model:search="search"
       />
 
-      <div class="border-b border-gray-600 w-full h-px mt-6 mb-4 md:hidden" />
-
       <!-- mobile header -->
       <CommonTableHeader classes="grid grid-cols-3 md:hidden">
         <AppSortableHeaderItem
