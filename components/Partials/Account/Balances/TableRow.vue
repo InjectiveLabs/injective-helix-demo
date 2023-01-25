@@ -4,12 +4,13 @@ import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
 import {
   HIDDEN_BALANCE_DISPLAY,
-  UI_DEFAULT_DISPLAY_DECIMALS,
-  USDC_PEGGY_DENOM,
-  USDC_WH_ETHEREUM_DENOM,
-  USDC_WH_SOLANA_DENOM
+  UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { AccountBalance, BridgeBusEvents } from '@/types'
+import { AccountBalance, BridgeBusEvents, Modal, USDCSymbol } from '@/types'
+
+const router = useRouter()
+const spotStore = useSpotStore()
+const modalStore = useModalStore()
 
 const router = useRouter()
 const spotStore = useSpotStore()
@@ -28,16 +29,18 @@ const props = defineProps({
   }
 })
 
-const router = useRouter()
-const spotStore = useSpotStore()
+const isUSDCDenom =
+  [
+    USDCSymbol.PeggyEthereum,
+    USDCSymbol.WormholeEthereum,
+    USDCSymbol.WormholeSolana
+  ].includes(props.balance.token.symbol as USDCSymbol) &&
+  !!props.balance.token.denom
 
-const isUsdcBalance = props.balance.token.symbol.toLowerCase().includes('usdc')
-const convertUSDC = [USDC_PEGGY_DENOM].includes(props.balance.token.denom)
-const isUSDCDenom = [
-  USDC_PEGGY_DENOM,
-  USDC_WH_ETHEREUM_DENOM,
-  USDC_WH_SOLANA_DENOM
-].includes(props.balance.token.denom)
+const convertUSDC =
+  [USDCSymbol.PeggyEthereum].includes(
+    props.balance.token.symbol as USDCSymbol
+  ) && !!props.balance.token.denom
 
 const isOpen = ref(false)
 
@@ -48,6 +51,22 @@ const filteredMarkets = computed(() => {
       m.quoteDenom === props.balance.token.denom
   )
 })
+
+const tokenLogo = computed(() =>
+  getTokenLogoWithVendorPathPrefix(props.balance.token.logo)
+)
+
+const combinedBalance = computed(() =>
+  new BigNumberInBase(props.balance.bankBalance || 0).plus(
+    props.balance.subaccountTotalBalance || 0
+  )
+)
+
+const totalBalance = computed(() =>
+  new BigNumberInBase(props.balance.bankBalance || 0).plus(
+    props.balance.subaccountAvailableBalance || 0
+  )
+)
 
 const { valueToString: totalBalanceInUsdToString } = useBigNumberFormatter(
   computed(() => props.balance.totalBalanceInUsd),
@@ -102,7 +121,7 @@ function handleWithdrawClick() {
 }
 
 function handleConvert() {
-  // TODO: implement modal
+  modalStore.openModal({ type: Modal.ConvertUSDC })
 }
 </script>
 
@@ -110,7 +129,7 @@ function handleConvert() {
   <tr
     class="border-b border-gray-700 hover:bg-gray-700 bg-transparent px-4 py-0 overflow-hidden h-14 gap-2 transition-all"
     :class="{
-      'last-of-type:border-b-transparent': !isUsdcBalance,
+      'last-of-type:border-b-transparent': !isUSDCDenom,
       'max-h-20': !isOpen,
       'max-h-screen': isOpen
     }"
@@ -137,14 +156,18 @@ function handleConvert() {
             <span v-if="!isUSDCDenom">
               {{ balance.token.name }}
             </span>
-            <span v-else-if="balance.token.denom === USDC_PEGGY_DENOM">
-              ({{ $t('account.usdcPeggyToken') }})
+            <span v-else-if="balance.token.symbol === USDCSymbol.PeggyEthereum">
+              {{ $t('account.usdcPeggyToken') }}
             </span>
-            <span v-else-if="balance.token.denom === USDC_WH_ETHEREUM_DENOM">
-              ({{ $t('account.usdcWHEthereumToken') }})
+            <span
+              v-else-if="balance.token.symbol === USDCSymbol.WormholeEthereum"
+            >
+              {{ $t('account.usdcWHEthereumToken') }}
             </span>
-            <span v-else-if="balance.token.denom === USDC_WH_SOLANA_DENOM">
-              ({{ $t('account.usdcWHSolanaToken') }})
+            <span
+              v-else-if="balance.token.symbol === USDCSymbol.WormholeSolana"
+            >
+              {{ $t('account.usdcWHSolanaToken') }}
             </span>
           </span>
 

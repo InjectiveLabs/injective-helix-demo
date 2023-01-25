@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { AccountBalance } from '@/types'
+import { AccountBalance, USDCSymbol } from '@/types'
 
 const props = defineProps({
   balance: {
@@ -23,7 +23,11 @@ const showUSDCBalances = ref(true)
 
 const usdcBalances = computed(() =>
   props.balances.filter((balance) => {
-    return balance.token.symbol.toLowerCase().includes('usdc')
+    return [
+      USDCSymbol.PeggyEthereum,
+      USDCSymbol.WormholeEthereum,
+      USDCSymbol.WormholeSolana
+    ].includes(balance.token.symbol as USDCSymbol)
   })
 )
 

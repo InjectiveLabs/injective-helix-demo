@@ -6,7 +6,7 @@ import {
   USDT_COIN_GECKO_ID,
   UST_COIN_GECKO_ID
 } from '@/app/utils/constants'
-import { AccountBalance, BalanceHeaderType } from '@/types'
+import { AccountBalance, BalanceHeaderType, USDCSymbol } from '@/types'
 
 const props = defineProps({
   hideBalances: {
@@ -168,7 +168,13 @@ const sortedBalances = computed(() => {
       />
       <template v-for="balance in sortedBalances" :key="balance.token.denom">
         <PartialsAccountBalancesTableRow
-          v-if="!balance.token.symbol.toLowerCase().includes('usdc')"
+          v-if="
+            ![
+              USDCSymbol.PeggyEthereum,
+              USDCSymbol.WormholeEthereum,
+              USDCSymbol.WormholeSolana
+            ].includes(balance.token.symbol as USDCSymbol)
+          "
           :balance="balance"
           :hide-balances="hideBalances"
         />
