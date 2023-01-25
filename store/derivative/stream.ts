@@ -106,8 +106,11 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
               ...derivativeStore.subaccountOrders
             ].filter((o) => o.orderHash !== order.orderHash)
 
+            const result = [order, ...subaccountOrders]
+
             derivativeStore.$patch({
-              subaccountOrders: [order, ...subaccountOrders]
+              subaccountOrders: result,
+              subaccountOrdersCount: result.length
             })
           }
 
@@ -120,7 +123,8 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
             )
 
             derivativeStore.$patch({
-              subaccountOrders
+              subaccountOrders,
+              subaccountOrdersCount: subaccountOrders.length
             })
           }
           break
