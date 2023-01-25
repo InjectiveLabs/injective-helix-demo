@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { UI_MINIMAL_AMOUNT } from '~~/app/utils/constants'
 
 const exchangeStore = useExchangeStore()
 
@@ -26,9 +27,15 @@ const takerFeeDiscount = computed(() => {
     return ''
   }
 
-  return new BigNumberInWei(accountInfo.value.takerDiscountRate)
-    .toBase()
-    .toFormat()
+  const takerFeeDiscount = new BigNumberInWei(
+    accountInfo.value.takerDiscountRate
+  ).toBase()
+
+  if (takerFeeDiscount.lte(UI_MINIMAL_AMOUNT)) {
+    return '0.0'
+  }
+
+  return takerFeeDiscount.toFormat()
 })
 
 const makerFeeDiscount = computed(() => {
@@ -36,9 +43,15 @@ const makerFeeDiscount = computed(() => {
     return ''
   }
 
-  return new BigNumberInWei(accountInfo.value.makerDiscountRate)
-    .toBase()
-    .toFormat()
+  const makerFeeDiscount = new BigNumberInWei(
+    accountInfo.value.makerDiscountRate
+  ).toBase()
+
+  if (makerFeeDiscount.lte(UI_MINIMAL_AMOUNT)) {
+    return '0.0'
+  }
+
+  return makerFeeDiscount.toFormat()
 })
 </script>
 
