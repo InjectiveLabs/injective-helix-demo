@@ -1807,10 +1807,10 @@
   dependencies:
     "@nuxt/kit" "^3.0.0"
 
-"@injectivelabs/ui-shared@1.0.9-alpha.24":
-  version "1.0.9-alpha.24"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-shared/-/ui-shared-1.0.9-alpha.24.tgz#c01ad485ef74f3de1e262290b6e2f6955a0fcff2"
-  integrity sha512-aGKdTnzJ/AZA8toR7QhM+KdtHjuTCZPM2njjfrhOaEnxGYG7sTYeTiwGgptPGg4UqZbwvJqRanXbLerEgHerwA==
+"@injectivelabs/ui-shared@1.0.10":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/ui-shared/-/ui-shared-1.0.10.tgz#33371f3260c70c96c547f4bbda7c865b835ee858"
+  integrity sha512-LvPwoC7tQ7LAgNaFZtm6xdztVvRVa2Uzb5uXWdtIbp5b1UEh+ebY5Bk9950bushDI68OR3xMlCdItGx8qz0qTA==
   dependencies:
     "@nuxt/kit" "^3.0.0"
     floating-vue "^2.0.0-beta.20"
