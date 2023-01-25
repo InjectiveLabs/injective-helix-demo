@@ -7,6 +7,7 @@ on:
 
 jobs:
   testnet:
+    if: true
     name: 'Deploy to testnet'
     runs-on: ubuntu-latest
     env:
@@ -19,7 +20,7 @@ jobs:
       ## Public
       VITE_NAME: 'TESTNET - Helix | The Premier Decentralized Spot and Derivatives Exchange'
       VITE_BASE_URL: https://testnet.helixapp.com
-      VITE_NETWORK: testnetK8s
+      VITE_NETWORK: testnet
       VITE_ENV: testnet
       VITE_CHAIN_ID: injective-888
 
