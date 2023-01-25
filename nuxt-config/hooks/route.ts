@@ -29,6 +29,7 @@ export const spot = [
   'dot-usdt',
   'atom-usdt',
   'usdc-usdt',
+  'usdc-usdcet',
   'xprt-usdt',
   'weth-usdt',
   'evmos-usdt',

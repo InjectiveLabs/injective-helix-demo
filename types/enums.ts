@@ -44,6 +44,7 @@ export enum Modal {
   BridgeCompleted = 'bridge-completed',
   BridgeConfirm = 'bridge-confirm',
   Connect = 'connect',
+  ConvertUSDC = 'convert-usdc',
   DelegateToValidator = 'delegate-to-validator',
   GasFeeRebate = 'gas-fee-rebate',
   InsufficientInjForGas = 'insufficient-inj-for-gas',
