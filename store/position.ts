@@ -180,7 +180,8 @@ export const usePositionStore = defineStore('position', {
                 ].filter((p) => p.marketId !== position.marketId)
 
                 positionStore.$patch({
-                  subaccountPositions
+                  subaccountPositions,
+                  subaccountPositionsCount: subaccountPositions.length
                 })
               } else {
                 const subaccountPositions =
@@ -189,15 +190,19 @@ export const usePositionStore = defineStore('position', {
                   })
 
                 positionStore.$patch({
-                  subaccountPositions
+                  subaccountPositions,
+                  subaccountPositionsCount: subaccountPositions.length
                 })
               }
             } else if (positionQuantity.gt(0)) {
+              const subaccountPositions = [
+                position,
+                ...positionStore.subaccountPositions
+              ]
+
               positionStore.$patch({
-                subaccountPositions: [
-                  position,
-                  ...positionStore.subaccountPositions
-                ]
+                subaccountPositions,
+                subaccountPositionsCount: subaccountPositions.length
               })
             }
           }

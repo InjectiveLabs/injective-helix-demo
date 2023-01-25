@@ -71,12 +71,16 @@ export const streamSubaccountOrders = () => {
         case SpotOrderState.Booked:
         case SpotOrderState.Unfilled:
         case SpotOrderState.PartialFilled: {
-          const subaccountOrders = spotStore.subaccountOrders.filter(
-            (o) => o.orderHash !== order.orderHash
-          )
+          const subaccountOrders = [
+            order,
+            ...spotStore.subaccountOrders.filter(
+              (o) => o.orderHash !== order.orderHash
+            )
+          ]
 
           spotStore.$patch({
-            subaccountOrders: [order, ...subaccountOrders]
+            subaccountOrders,
+            subaccountOrdersCount: subaccountOrders.length
           })
 
           break
@@ -88,7 +92,8 @@ export const streamSubaccountOrders = () => {
           )
 
           spotStore.$patch({
-            subaccountOrders
+            subaccountOrders,
+            subaccountOrdersCount: subaccountOrders.length
           })
 
           break
