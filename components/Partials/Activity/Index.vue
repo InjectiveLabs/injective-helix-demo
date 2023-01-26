@@ -3,6 +3,10 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeDirection, TradeExecutionType } from '@injectivelabs/ts-types'
 import { DerivativeOrderSide, SpotOrderSide } from '@injectivelabs/sdk-ts'
 import {
+  UiDerivativeMarketWithToken,
+  UiSpotMarketWithToken
+} from '@injectivelabs/sdk-ui-ts'
+import {
   orderTypeToOrderTypes,
   tradeTypesToTradeExecutionTypes
 } from '@/app/client/utils/activity'
@@ -48,8 +52,15 @@ const activeMarket = computed(() => {
     return undefined
   }
 
-  return [...spotMarkets.value, ...derivativeMarkets.value].find(
-    (m) =>
+  if (isSpot.value) {
+    return spotMarkets.value.find(
+      (m: UiSpotMarketWithToken) =>
+        m.baseToken.denom === denom.value || m.quoteToken.denom === denom.value
+    )
+  }
+
+  return derivativeMarkets.value.find(
+    (m: UiDerivativeMarketWithToken) =>
       m.baseToken.denom === denom.value || m.quoteToken.denom === denom.value
   )
 })
