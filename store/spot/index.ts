@@ -20,6 +20,9 @@ import { spot as allowedSpotMarkets } from '@/nuxt-config/hooks/route'
 import { ActivityFetchOptions } from '@/types'
 import {
   cancelOrderbookStream,
+  cancelSubaccountOrdersHistoryStream,
+  cancelSubaccountOrdersStream,
+  cancelSubaccountTradesStream,
   cancelTradesStream,
   streamOrderbook,
   streamTrades,
@@ -141,30 +144,6 @@ export const useSpotStore = defineStore('spot', {
       spotStore.$patch({
         markets: uiMarketsWithToken,
         marketsSummary: actualMarketsSummary
-      })
-    },
-
-    async initMarketStreams(marketId: string) {
-      const accountStore = useAccountStore()
-      const spotStore = useSpotStore()
-
-      await spotStore.streamOrderbook(marketId)
-      await spotStore.streamTrades(marketId)
-      await spotStore.streamSubaccountTrades(marketId)
-      await spotStore.streamSubaccountOrders()
-      await spotStore.streamSubaccountOrderHistory()
-      await accountStore.streamSubaccountBalances()
-    },
-
-    async pollMarkerOrderbook(marketId?: string) {
-      const spotStore = useSpotStore()
-
-      if (!marketId) {
-        return
-      }
-
-      spotStore.$patch({
-        orderbook: await indexerSpotApi.fetchOrderbook(marketId)
       })
     },
 
@@ -380,14 +359,29 @@ export const useSpotStore = defineStore('spot', {
       }
     },
 
+    cancelSubaccountStream() {
+      cancelSubaccountOrdersStream()
+      cancelSubaccountOrdersHistoryStream()
+      cancelSubaccountTradesStream()
+    },
+
     resetSubaccount() {
       const spotStore = useSpotStore()
 
       const initialState = initialStateFactory()
 
+      spotStore.cancelSubaccountStream()
+
       spotStore.$patch({
+        subaccountConditionalOrders: initialState.subaccountConditionalOrders,
+        subaccountConditionalOrdersCount:
+          initialState.subaccountConditionalOrdersCount,
+        subaccountOrderHistory: initialState.subaccountOrderHistory,
+        subaccountOrderHistoryCount: initialState.subaccountOrderHistoryCount,
+        subaccountOrders: initialState.subaccountOrders,
+        subaccountOrdersCount: initialState.subaccountOrdersCount,
         subaccountTrades: initialState.subaccountTrades,
-        subaccountOrders: initialState.subaccountOrders
+        subaccountTradesCount: initialState.subaccountOrdersCount
       })
     }
   }

@@ -2,6 +2,9 @@ import { SpotOrderState } from '@injectivelabs/sdk-ts'
 import { StreamOperation } from '@injectivelabs/ts-types'
 import {
   cancelOrderbookStream as grpcCancelOrderbookStream,
+  cancelSubaccountOrdersHistoryStream as grpcCancelSubaccountOrdersHistoryStream,
+  cancelSubaccountOrdersStream as grpcCancelSubaccountOrdersStream,
+  cancelSubaccountTradesStream as grpcCancelSubaccountTradesStream,
   cancelTradesStream as grpcCancelTradesStream,
   streamOrderbook as grpcStreamOrderbook,
   streamTrades as grpcStreamTrades,
@@ -11,6 +14,10 @@ import {
 } from '@/app/client/streams/spot'
 
 export const cancelOrderbookStream = grpcCancelOrderbookStream
+export const cancelSubaccountOrdersStream = grpcCancelSubaccountOrdersStream
+export const cancelSubaccountOrdersHistoryStream =
+  grpcCancelSubaccountOrdersHistoryStream
+export const cancelSubaccountTradesStream = grpcCancelSubaccountTradesStream
 export const cancelTradesStream = grpcCancelTradesStream
 
 export const streamOrderbook = (marketId: string) => {
@@ -50,7 +57,7 @@ export const streamTrades = (marketId: string) => {
   })
 }
 
-export const streamSubaccountOrders = () => {
+export const streamSubaccountOrders = (marketId?: string) => {
   const spotStore = useSpotStore()
 
   const { subaccount } = useAccountStore()
@@ -62,6 +69,7 @@ export const streamSubaccountOrders = () => {
 
   grpcStreamSubaccountOrders({
     subaccountId: subaccount.subaccountId,
+    marketId,
     callback: ({ order }) => {
       if (!order) {
         return
@@ -71,12 +79,16 @@ export const streamSubaccountOrders = () => {
         case SpotOrderState.Booked:
         case SpotOrderState.Unfilled:
         case SpotOrderState.PartialFilled: {
-          const subaccountOrders = spotStore.subaccountOrders.filter(
-            (o) => o.orderHash !== order.orderHash
-          )
+          const subaccountOrders = [
+            order,
+            ...spotStore.subaccountOrders.filter(
+              (o) => o.orderHash !== order.orderHash
+            )
+          ]
 
           spotStore.$patch({
-            subaccountOrders: [order, ...subaccountOrders]
+            subaccountOrders,
+            subaccountOrdersCount: subaccountOrders.length
           })
 
           break
@@ -88,7 +100,8 @@ export const streamSubaccountOrders = () => {
           )
 
           spotStore.$patch({
-            subaccountOrders
+            subaccountOrders,
+            subaccountOrdersCount: subaccountOrders.length
           })
 
           break
@@ -98,7 +111,7 @@ export const streamSubaccountOrders = () => {
   })
 }
 
-export const streamSubaccountOrderHistory = () => {
+export const streamSubaccountOrderHistory = (marketId?: string) => {
   const spotStore = useSpotStore()
 
   const { subaccount } = useAccountStore()
@@ -110,6 +123,7 @@ export const streamSubaccountOrderHistory = () => {
 
   grpcStreamSubaccountOrderHistory({
     subaccountId: subaccount.subaccountId,
+    marketId,
     callback: ({ order }) => {
       if (!order) {
         return
@@ -121,11 +135,15 @@ export const streamSubaccountOrderHistory = () => {
         case SpotOrderState.Unfilled:
         case SpotOrderState.PartialFilled: {
           const subaccountOrderHistory = [
-            ...spotStore.subaccountOrderHistory
-          ].filter((o) => o.orderHash !== order.orderHash)
+            order,
+            ...spotStore.subaccountOrderHistory.filter(
+              (o) => o.orderHash !== order.orderHash
+            )
+          ]
 
           spotStore.$patch({
-            subaccountOrderHistory: [order, ...subaccountOrderHistory]
+            subaccountOrderHistory,
+            subaccountOrderHistoryCount: subaccountOrderHistory.length
           })
 
           break
@@ -137,7 +155,8 @@ export const streamSubaccountOrderHistory = () => {
             )
 
             spotStore.$patch({
-              subaccountOrderHistory
+              subaccountOrderHistory,
+              subaccountOrderHistoryCount: subaccountOrderHistory.length
             })
 
             break
@@ -148,7 +167,7 @@ export const streamSubaccountOrderHistory = () => {
   })
 }
 
-export const streamSubaccountTrades = (marketId: string) => {
+export const streamSubaccountTrades = (marketId?: string) => {
   const spotStore = useSpotStore()
 
   const { subaccount } = useAccountStore()
@@ -167,30 +186,36 @@ export const streamSubaccountTrades = (marketId: string) => {
       }
 
       switch (operation) {
-        case StreamOperation.Insert:
+        case StreamOperation.Insert: {
+          const subaccountTrades = [trade, ...spotStore.subaccountTrades]
+
           spotStore.$patch({
-            subaccountTrades: [trade, ...spotStore.subaccountTrades]
+            subaccountTrades,
+            subaccountTradesCount: subaccountTrades.length
           })
 
           break
+        }
         case StreamOperation.Delete: {
           const subaccountTrades = spotStore.subaccountTrades.filter(
             (order) => order.orderHash !== trade.orderHash
           )
 
           spotStore.$patch({
-            subaccountTrades
+            subaccountTrades,
+            subaccountTradesCount: subaccountTrades.length
           })
 
           break
         }
         case StreamOperation.Update: {
-          const subaccountTrades = spotStore.subaccountTrades.map((order) =>
-            order.orderHash === trade.orderHash ? trade : order
+          const subaccountTrades = spotStore.subaccountTrades.map((t) =>
+            t.orderHash === trade.orderHash ? trade : t
           )
 
           spotStore.$patch({
-            subaccountTrades
+            subaccountTrades,
+            subaccountTradesCount: subaccountTrades.length
           })
 
           break

@@ -2,7 +2,12 @@
 import { PropType } from 'vue'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UiMarketWithToken, UiMarketSummary } from '@/types'
-import { getAbbreviatedVolume, getMarketRoute } from '@/app/utils/market'
+import { getMarketRoute } from '@/app/utils/market'
+import { marketStableCoinQuoteSymbols } from '~~/app/data/market'
+import {
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+  UI_MINIMAL_ABBREVIATION_FLOOR
+} from '~~/app/utils/constants'
 
 const appStore = useAppStore()
 
@@ -33,8 +38,21 @@ const isFavorite = computed(() => {
   return appStore.favoriteMarkets.includes(props.market.marketId)
 })
 
-const abbreviatedVolumeInUsdToFormat = computed(() =>
-  getAbbreviatedVolume(props.volumeInUsd)
+const formatterOptions = computed(() => {
+  return marketStableCoinQuoteSymbols.includes(props.market.quoteToken.symbol)
+    ? {
+        decimalPlaces: 0,
+        abbreviationFloor: UI_MINIMAL_ABBREVIATION_FLOOR
+      }
+    : {
+        abbreviationFloor: undefined,
+        decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+      }
+})
+
+const { valueToString: abbreviatedVolumeInUsdToFormat } = useBigNumberFormatter(
+  computed(() => props.volumeInUsd),
+  formatterOptions.value
 )
 
 function updateWatchList() {

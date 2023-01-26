@@ -10,11 +10,13 @@ import {
 } from '@injectivelabs/sdk-ui-ts'
 import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  UI_DEFAULT_DISPLAY_DECIMALS
+  UI_DEFAULT_DISPLAY_DECIMALS,
+  UI_MINIMAL_ABBREVIATION_FLOOR
 } from '@/app/utils/constants'
 import { Change, TradeClickOrigin } from '@/types'
-import { getAbbreviatedVolume, getMarketRoute } from '@/app/utils/market'
+import { getMarketRoute } from '@/app/utils/market'
 import { amplitudeTracker } from '@/app/providers/AmplitudeTracker'
+import { marketStableCoinQuoteSymbols } from '@/app/data/market'
 
 const appStore = useAppStore()
 
@@ -73,9 +75,22 @@ const volumeInUsdToFormat = computed(() => {
   return props.volumeInUsd.toFormat(2, BigNumberInBase.ROUND_DOWN)
 })
 
-const abbreviatedVolumeInUsdToFormat = computed(() => {
-  return getAbbreviatedVolume(props.volumeInUsd)
+const formatterOptions = computed(() => {
+  return marketStableCoinQuoteSymbols.includes(props.market.quoteToken.symbol)
+    ? {
+        decimalPlaces: 0,
+        abbreviationFloor: UI_MINIMAL_ABBREVIATION_FLOOR
+      }
+    : {
+        abbreviationFloor: undefined,
+        decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+      }
 })
+
+const { valueToString: abbreviatedVolumeInUsdToFormat } = useBigNumberFormatter(
+  computed(() => props.volumeInUsd),
+  formatterOptions.value
+)
 
 const change = computed(() => {
   if (!props.summary || !props.summary.change) {

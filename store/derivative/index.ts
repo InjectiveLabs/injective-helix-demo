@@ -238,21 +238,6 @@ export const useDerivativeStore = defineStore('derivative', {
       })
     },
 
-    async initMarketStreams(market: UiDerivativeMarketWithToken) {
-      const accountStore = useAccountStore()
-      const positionStore = usePositionStore()
-      const derivativeStore = useDerivativeStore()
-
-      await derivativeStore.streamOrderbook(market.marketId)
-      await derivativeStore.streamTrades(market.marketId)
-      await derivativeStore.streamMarketMarkPrices(market)
-      await derivativeStore.streamSubaccountOrders(market.marketId)
-      await derivativeStore.streamSubaccountOrderHistory()
-      await derivativeStore.streamSubaccountTrades(market.marketId)
-      await positionStore.streamSubaccountPositions()
-      await accountStore.streamSubaccountBalances()
-    },
-
     async getMarketMarkPrice(market: UiDerivativeMarketWithToken) {
       const derivativeStore = useDerivativeStore()
 
@@ -520,14 +505,28 @@ export const useDerivativeStore = defineStore('derivative', {
       })
     },
 
+    cancelSubaccountStream() {
+      const positionStore = usePositionStore()
+
+      positionStore.cancelSubaccountPositionsStream()
+      cancelSubaccountOrderHistoryStream()
+      cancelSubaccountOrdersStream()
+      cancelSubaccountTradesStream()
+    },
+
     resetSubaccount() {
       const derivativeStore = useDerivativeStore()
-
       const initialState = initialStateFactory()
 
+      derivativeStore.cancelSubaccountStream()
+
       derivativeStore.$patch({
+        subaccountOrderHistory: initialState.subaccountOrderHistory,
+        subaccountOrderHistoryCount: initialState.subaccountOrderHistoryCount,
+        subaccountOrders: initialState.subaccountOrders,
+        subaccountOrdersCount: initialState.subaccountOrdersCount,
         subaccountTrades: initialState.subaccountTrades,
-        subaccountOrders: initialState.subaccountOrders
+        subaccountTradesCount: initialState.subaccountOrdersCount
       })
     }
   }

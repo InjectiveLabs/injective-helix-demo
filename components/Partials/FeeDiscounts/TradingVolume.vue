@@ -3,8 +3,10 @@ import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import { intervalToDuration } from 'date-fns'
-import { getAbbreviatedVolume } from '@/app/utils/market'
-import { USDT_DECIMALS } from '@/app/utils/constants'
+import {
+  UI_MINIMAL_ABBREVIATION_FLOOR,
+  USDT_DECIMALS
+} from '@/app/utils/constants'
 
 const exchangeStore = useExchangeStore()
 
@@ -32,12 +34,15 @@ const volume = computed(() => {
   return new BigNumberInWei(volume).toBase(USDT_DECIMALS)
 })
 
-const volumeToFormat = computed(() => {
-  if (volume.value.eq(ZERO_IN_BASE)) {
-    return '0.00'
-  }
+const shouldAbbreviateVolume = computed(() =>
+  volume.value.gte(UI_MINIMAL_ABBREVIATION_FLOOR)
+)
 
-  return getAbbreviatedVolume(volume.value)
+const { valueToString: volumeToFormat } = useBigNumberFormatter(volume, {
+  decimalPlaces: shouldAbbreviateVolume.value ? 0 : 2,
+  abbreviationFloor: shouldAbbreviateVolume.value
+    ? UI_MINIMAL_ABBREVIATION_FLOOR
+    : undefined
 })
 
 const daysPassed = computed(() => {
@@ -45,13 +50,13 @@ const daysPassed = computed(() => {
     return '0'
   }
 
-  const totalinSeconds =
+  const totalInSeconds =
     feeDiscountSchedule.value.bucketDuration *
     feeDiscountSchedule.value.bucketCount
 
   const { days } = intervalToDuration({
     start: 0,
-    end: totalinSeconds * 1000
+    end: totalInSeconds * 1000
   })
 
   if (!days) {

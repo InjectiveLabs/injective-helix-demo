@@ -193,7 +193,9 @@ function fillRouteQueryParams(params: Record<string, string>) {
       </template>
     </AppTabMenu>
 
-    <div class="flex items-center justify-between mt-6 mb-2">
+    <div
+      class="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-0 justify-between mt-6 mb-2 px-3 sm:px-0"
+    >
       <div class="flex items-center gap-2">
         <PartialsMarketsFiltersCategorySelector
           v-for="marketCategoryType in marketCategoryTypes"
@@ -210,6 +212,7 @@ function fillRouteQueryParams(params: Record<string, string>) {
       <AppSelect
         v-model="activeQuoteValue"
         :options="quoteOptions"
+        class="self-end"
         @update:modelValue="handleQuoteChange"
       >
         <template #prefix>

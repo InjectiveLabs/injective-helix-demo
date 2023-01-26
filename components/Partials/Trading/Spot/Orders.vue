@@ -15,40 +15,34 @@ const FilterList = {
 }
 
 const props = defineProps({
+  filterByCurrentMarket: Boolean,
+
   market: {
     type: Object as PropType<UiSpotMarketWithToken>,
+    required: true
+  },
+
+  status: {
+    type: Object as PropType<Status>,
     required: true
   }
 })
 
-const currentMarketOnly = ref(false)
-const status = reactive(new Status(StatusType.Loading))
-const actionStatus = reactive(new Status(StatusType.Idle))
+const emit = defineEmits<{
+  (e: 'update:filterByCurrentMarket', state: boolean): void
+}>()
 
 const activeType = ref(FilterList.OpenOrders)
+const actionStatus = reactive(new Status(StatusType.Idle))
 
-function fetchAll() {
-  status.setLoading()
-
-  const fetchOptions = {
-    filters: {
-      marketId: currentMarketOnly ? props.market.marketId : undefined
-    },
-    pagination: {
-      endTime: 0
-    }
+const checked = computed({
+  get: (): boolean => {
+    return props.filterByCurrentMarket
+  },
+  set: (value: boolean) => {
+    emit('update:filterByCurrentMarket', value)
   }
-
-  Promise.all([
-    spotStore.fetchSubaccountOrders(fetchOptions),
-    spotStore.fetchSubaccountOrderHistory(fetchOptions),
-    spotStore.fetchSubaccountTrades(fetchOptions)
-  ])
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
-}
+})
 
 function handleCancelAllClick() {
   actionStatus.setLoading()
@@ -65,8 +59,6 @@ function handleCancelAllClick() {
     .catch($onError)
     .finally(() => actionStatus.setIdle())
 }
-
-watch(currentMarketOnly, fetchAll, { immediate: true })
 </script>
 
 <template>
@@ -113,7 +105,7 @@ watch(currentMarketOnly, fetchAll, { immediate: true })
         class="col-span-12 sm:col-span-6 mb-4 mx-4 sm:mt-4 flex items-center justify-between sm:justify-end"
       >
         <AppCheckbox
-          v-model="currentMarketOnly"
+          v-model="checked"
           data-cy="trade-page-filter-by-ticker-checkbox"
           class="lg:mr-4"
         >

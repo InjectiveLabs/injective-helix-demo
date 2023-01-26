@@ -10,6 +10,8 @@ export const marketBase = {
   [MarketBase.Terra]: ['UST', 'LUNA']
 }
 
+export const marketStableCoinQuoteSymbols = ['USDT', 'USDC', 'USDCet', 'USDCso']
+
 export const marketBaseFromTicker = (
   ticker: string
 ): MarketBase | undefined => {
