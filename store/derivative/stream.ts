@@ -60,7 +60,125 @@ export const cancelSubaccountOrdersStream = () => {
   grpcCancelSubaccountOrdersStream()
 }
 
+export const cancelSubaccountOrderHistoryStream = () =>
+  grpcCancelSubaccountOrderHistoryStream()
+
 export const streamSubaccountOrderHistory = (marketId?: string) => {
+  const derivativeStore = useDerivativeStore()
+  const { subaccount } = useAccountStore()
+  const { isUserWalletConnected } = useWalletStore()
+
+  if (!isUserWalletConnected || !subaccount) {
+    return
+  }
+
+  grpcStreamsSubaccountOrderHistory({
+    marketId,
+    subaccountId: subaccount.subaccountId,
+    callback: ({ order }) => {
+      if (!order) {
+        return
+      }
+
+      switch (order.state) {
+        case DerivativeOrderState.Booked:
+        case DerivativeOrderState.Filled:
+        case DerivativeOrderState.Unfilled:
+        case DerivativeOrderState.PartialFilled: {
+          const subaccountOrderHistory = [
+            order,
+            ...derivativeStore.subaccountOrderHistory.filter(
+              (o) => order.orderHash !== o.orderHash
+            )
+          ]
+
+          derivativeStore.$patch({
+            subaccountOrderHistory,
+            subaccountOrderHistoryCount: subaccountOrderHistory.length
+          })
+
+          break
+        }
+        case DerivativeOrderState.Canceled: {
+          if (order.orderHash) {
+            const subaccountOrderHistory =
+              derivativeStore.subaccountOrderHistory.map((o) =>
+                order.orderHash === o.orderHash ? order : o
+              )
+
+            derivativeStore.$patch({
+              subaccountOrderHistory,
+              subaccountOrderHistoryCount: subaccountOrderHistory.length
+            })
+          }
+
+          break
+        }
+      }
+    }
+  })
+}
+
+export const streamSubaccountTrades = (marketId?: string) => {
+  const derivativeStore = useDerivativeStore()
+  const { subaccount } = useAccountStore()
+  const { isUserWalletConnected } = useWalletStore()
+
+  if (!isUserWalletConnected || !subaccount) {
+    return
+  }
+
+  grpcStreamsSubaccountTrades({
+    marketId,
+    subaccountId: subaccount.subaccountId,
+    callback: ({ trade, operation }) => {
+      if (!trade) {
+        return
+      }
+
+      switch (operation) {
+        case StreamOperation.Insert: {
+          const subaccountTrades = [trade, ...derivativeStore.subaccountTrades]
+
+          derivativeStore.$patch({
+            subaccountTrades,
+            subaccountTradesCount: subaccountTrades.length
+          })
+
+          break
+        }
+
+        case StreamOperation.Delete:
+          {
+            const subaccountTrades = [
+              ...derivativeStore.subaccountTrades
+            ].filter((order) => order.orderHash !== trade.orderHash)
+
+            derivativeStore.$patch({
+              subaccountTrades,
+              subaccountTradesCount: subaccountTrades.length
+            })
+          }
+          break
+        case StreamOperation.Update:
+          if (trade.orderHash) {
+            const subaccountTrades = [...derivativeStore.subaccountTrades].map(
+              (order) => (order.orderHash === trade.orderHash ? trade : order)
+            )
+
+            derivativeStore.$patch({
+              subaccountTrades,
+              subaccountTradesCount: subaccountTrades.length
+            })
+          }
+
+          break
+      }
+    }
+  })
+}
+
+export const streamSubaccountOrders = (marketId?: string) => {
   const derivativeStore = useDerivativeStore()
   const { subaccount } = useAccountStore()
   const { isUserWalletConnected } = useWalletStore()
@@ -86,152 +204,32 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
 
       switch (order.state) {
         case DerivativeOrderState.Booked:
-        case DerivativeOrderState.Filled:
         case DerivativeOrderState.Unfilled:
         case DerivativeOrderState.PartialFilled: {
           if (isConditional) {
-            const subaccountConditionalOrders =
-              derivativeStore.subaccountConditionalOrders.filter(
+            const subaccountConditionalOrders = [
+              order,
+              ...derivativeStore.subaccountConditionalOrders.filter(
                 (o) => o.orderHash !== order.orderHash
               )
+            ]
 
             derivativeStore.$patch({
-              subaccountConditionalOrders: [
-                order,
-                ...subaccountConditionalOrders
-              ]
+              subaccountConditionalOrders,
+              subaccountConditionalOrdersCount:
+                subaccountConditionalOrders.length
             })
           } else {
             const subaccountOrders = [
-              ...derivativeStore.subaccountOrders
-            ].filter((o) => o.orderHash !== order.orderHash)
-
-            const result = [order, ...subaccountOrders]
-
-            derivativeStore.$patch({
-              subaccountOrders: result,
-              subaccountOrdersCount: result.length
-            })
-          }
-
-          break
-        }
-        case DerivativeOrderState.Canceled: {
-          if (order.orderHash) {
-            const subaccountOrders = derivativeStore.subaccountOrders.map((o) =>
-              o.orderHash === order.orderHash ? order : o
-            )
+              order,
+              ...derivativeStore.subaccountOrders.filter(
+                (o) => o.orderHash !== order.orderHash
+              )
+            ]
 
             derivativeStore.$patch({
               subaccountOrders,
               subaccountOrdersCount: subaccountOrders.length
-            })
-          }
-          break
-        }
-      }
-    }
-  })
-}
-
-export const cancelSubaccountOrderHistoryStream = () =>
-  grpcCancelSubaccountOrderHistoryStream()
-
-export const streamSubaccountTrades = (marketId?: string) => {
-  const derivativeStore = useDerivativeStore()
-  const { subaccount } = useAccountStore()
-  const { isUserWalletConnected } = useWalletStore()
-
-  if (!isUserWalletConnected || !subaccount) {
-    return
-  }
-
-  grpcStreamsSubaccountTrades({
-    marketId,
-    subaccountId: subaccount.subaccountId,
-    callback: ({ trade, operation }) => {
-      if (!trade) {
-        return
-      }
-
-      switch (operation) {
-        case StreamOperation.Insert:
-          derivativeStore.$patch({
-            subaccountTrades: [trade, ...derivativeStore.subaccountTrades]
-          })
-
-          break
-        case StreamOperation.Delete:
-          {
-            const subaccountTrades = [
-              ...derivativeStore.subaccountTrades
-            ].filter((order) => order.orderHash !== trade.orderHash)
-
-            derivativeStore.$patch({
-              subaccountTrades
-            })
-          }
-          break
-        case StreamOperation.Update:
-          if (trade.orderHash) {
-            const subaccountTrades = [...derivativeStore.subaccountTrades].map(
-              (order) => (order.orderHash === trade.orderHash ? trade : order)
-            )
-
-            derivativeStore.$patch({
-              subaccountTrades
-            })
-          }
-
-          break
-      }
-    }
-  })
-}
-
-export const streamSubaccountOrders = (marketId?: string) => {
-  const derivativeStore = useDerivativeStore()
-  const { subaccount } = useAccountStore()
-  const { isUserWalletConnected } = useWalletStore()
-
-  if (!isUserWalletConnected || !subaccount) {
-    return
-  }
-
-  grpcStreamsSubaccountOrderHistory({
-    marketId,
-    subaccountId: subaccount.subaccountId,
-    callback: ({ order }) => {
-      if (!order) {
-        return
-      }
-
-      const isConditional = [
-        DerivativeOrderSide.TakeBuy,
-        DerivativeOrderSide.TakeSell,
-        DerivativeOrderSide.StopBuy,
-        DerivativeOrderSide.StopSell
-      ].includes(order.orderType as DerivativeOrderSide)
-
-      switch (order.state) {
-        case DerivativeOrderState.Booked:
-        case DerivativeOrderState.Unfilled:
-        case DerivativeOrderState.PartialFilled: {
-          if (isConditional) {
-            const subaccountOrderHistory = [
-              ...derivativeStore.subaccountConditionalOrders
-            ].filter((o) => o.orderHash !== order.orderHash)
-
-            derivativeStore.$patch({
-              subaccountOrderHistory: [order, ...subaccountOrderHistory]
-            })
-          } else {
-            const subaccountOrderHistory = [
-              ...derivativeStore.subaccountOrderHistory
-            ].filter((o) => o.orderHash !== order.orderHash)
-
-            derivativeStore.$patch({
-              subaccountOrderHistory: [order, ...subaccountOrderHistory]
             })
           }
 
@@ -245,7 +243,9 @@ export const streamSubaccountOrders = (marketId?: string) => {
             ].filter((o) => o.orderHash !== order.orderHash)
 
             derivativeStore.$patch({
-              subaccountConditionalOrders
+              subaccountConditionalOrders,
+              subaccountConditionalOrdersCount:
+                subaccountConditionalOrders.length
             })
           } else {
             const subaccountOrders = [
@@ -253,7 +253,8 @@ export const streamSubaccountOrders = (marketId?: string) => {
             ].filter((o) => o.orderHash !== order.orderHash)
 
             derivativeStore.$patch({
-              subaccountOrders
+              subaccountOrders,
+              subaccountOrdersCount: subaccountOrders.length
             })
           }
 

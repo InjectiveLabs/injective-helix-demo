@@ -13,7 +13,7 @@ const derivativeStore = useDerivativeStore()
         v-for="(trigger, index) in derivativeStore.subaccountConditionalOrders"
         :key="`mobile-derivative-triggers-${index}-${trigger.orderHash}`"
         class="col-span-1"
-        :order="trigger"
+        :trigger="trigger"
       />
 
       <template #empty>
@@ -35,7 +35,7 @@ const derivativeStore = useDerivativeStore()
             v-for="(
               trigger, index
             ) in derivativeStore.subaccountConditionalOrders"
-            :key="`triggers-${index}`"
+            :key="`triggers-${index}-${trigger.orderHash}`"
             :trigger="trigger"
           />
         </tbody>

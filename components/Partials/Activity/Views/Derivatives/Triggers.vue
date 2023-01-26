@@ -29,7 +29,7 @@ const triggers = computed(() => {
       >
         <PartialsCommonSubaccountTriggerMobile
           v-for="(trigger, index) in triggers"
-          :key="`mobile-derivative-triggers-${index}-${trigger.orderHash}`"
+          :key="`mobile-triggers-${index}-${trigger.orderHash}`"
           class="col-span-1"
           :trigger="trigger"
         />
@@ -48,7 +48,7 @@ const triggers = computed(() => {
           <tbody>
             <PartialsCommonSubaccountTriggerRow
               v-for="(trigger, index) in triggers"
-              :key="`trigger-${index}`"
+              :key="`trigger-${index}-${trigger.orderHash}`"
               :trigger="trigger"
             />
           </tbody>
