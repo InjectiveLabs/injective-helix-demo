@@ -22,7 +22,7 @@ const trades = computed(() =>
 )
 
 const sortedTrades = computed(() =>
-  trades.value.sort((t1, t2) => t1.executedAt - t2.executedAt)
+  trades.value.sort((t1, t2) => t2.executedAt - t1.executedAt)
 )
 
 function handleShowTradeDetails(trade: UiTrade) {

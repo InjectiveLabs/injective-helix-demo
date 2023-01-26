@@ -3,7 +3,7 @@ const derivativeStore = useDerivativeStore()
 
 const sortedTriggers = computed(() =>
   derivativeStore.subaccountConditionalOrders.sort(
-    (t1, t2) => t1.updatedAt - t2.updatedAt
+    (t1, t2) => t2.updatedAt - t1.updatedAt
   )
 )
 </script>

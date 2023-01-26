@@ -17,7 +17,7 @@ const isSpot = props.market.type === MarketType.Spot
 const store = computed(() => (isSpot ? spotStore : derivativeStore))
 
 const sortedOrders = computed(() =>
-  store.value.subaccountOrders.sort((o1, o2) => o1.updatedAt - o2.updatedAt)
+  store.value.subaccountOrders.sort((o1, o2) => o2.updatedAt - o1.updatedAt)
 )
 </script>
 

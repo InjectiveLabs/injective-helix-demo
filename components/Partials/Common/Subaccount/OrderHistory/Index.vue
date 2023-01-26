@@ -22,7 +22,7 @@ const orderHistories = computed(() =>
 )
 
 const sortedOrderHistories = computed(() =>
-  orderHistories.value.sort((o1, o2) => o1.updatedAt - o2.updatedAt)
+  orderHistories.value.sort((o1, o2) => o2.updatedAt - o1.updatedAt)
 )
 </script>
 
