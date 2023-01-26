@@ -25,12 +25,8 @@ const props = defineProps({
 
 const status = reactive(new Status(StatusType.Idle))
 
-const markets = computed(() => {
-  return spotStore.markets
-})
-
 const market = computed(() => {
-  return markets.value.find(
+  return spotStore.markets.find(
     (m) =>
       m.baseToken.denom === props.denom || m.quoteToken.denom === props.denom
   )

@@ -301,13 +301,13 @@ function updateEndTime() {
       endTime.value = activityStore.subaccountFundingPayments[0]?.timestamp || 0
       break
     case ActivityView.SpotOrderHistory:
-      endTime.value = spotStore.subaccountOrderHistory[0]?.createdAt || 0
+      endTime.value = spotStore.subaccountOrderHistory[0]?.updatedAt || 0
       break
     case ActivityView.SpotTradeHistory:
       endTime.value = spotStore.subaccountTrades[0]?.timestamp || 0
       break
     case ActivityView.DerivativeOrderHistory:
-      endTime.value = derivativeStore.subaccountOrderHistory[0]?.createdAt || 0
+      endTime.value = derivativeStore.subaccountOrderHistory[0]?.updatedAt || 0
       break
     case ActivityView.DerivativeTradeHistory:
       endTime.value = derivativeStore.subaccountTrades[0]?.executedAt || 0
