@@ -167,7 +167,7 @@ function handleCloseAllPositionsClick() {
     <template #actions>
       <div class="col-span-12 lg:col-span-7 xl:col-span-8 m-4 lg:mx-0">
         <div
-          class="flex items-center justify-between lg:justify-start gap-2 ml-2"
+          class="flex items-center justify-between lg:justify-start gap-2 ml-2 flex-wrap"
         >
           <template
             v-for="(filterType, index) in Object.values(FilterList)"

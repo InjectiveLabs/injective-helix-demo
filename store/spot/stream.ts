@@ -12,6 +12,7 @@ import {
   streamSubaccountOrderHistory as grpcStreamSubaccountOrderHistory,
   streamSubaccountTrades as grpcStreamSubaccountTrade
 } from '@/app/client/streams/spot'
+import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 
 export const cancelOrderbookStream = grpcCancelOrderbookStream
 export const cancelSubaccountOrdersStream = grpcCancelSubaccountOrdersStream
@@ -84,7 +85,7 @@ export const streamSubaccountOrders = (marketId?: string) => {
             ...spotStore.subaccountOrders.filter(
               (o) => o.orderHash !== order.orderHash
             )
-          ]
+          ].slice(0, TRADE_MAX_SUBACCOUNT_ARRAY_SIZE)
 
           spotStore.$patch({
             subaccountOrders,
@@ -95,9 +96,9 @@ export const streamSubaccountOrders = (marketId?: string) => {
         }
         case SpotOrderState.Canceled:
         case SpotOrderState.Filled: {
-          const subaccountOrders = spotStore.subaccountOrders.filter(
-            (o) => o.orderHash !== order.orderHash
-          )
+          const subaccountOrders = spotStore.subaccountOrders
+            .filter((o) => o.orderHash !== order.orderHash)
+            .slice(0, TRADE_MAX_SUBACCOUNT_ARRAY_SIZE)
 
           spotStore.$patch({
             subaccountOrders,
@@ -139,7 +140,7 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
             ...spotStore.subaccountOrderHistory.filter(
               (o) => o.orderHash !== order.orderHash
             )
-          ]
+          ].slice(0, TRADE_MAX_SUBACCOUNT_ARRAY_SIZE)
 
           spotStore.$patch({
             subaccountOrderHistory,
@@ -150,9 +151,9 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
         }
         case SpotOrderState.Canceled: {
           if (order.orderHash) {
-            const subaccountOrderHistory = spotStore.subaccountOrderHistory.map(
-              (o) => (o.orderHash === order.orderHash ? order : o)
-            )
+            const subaccountOrderHistory = spotStore.subaccountOrderHistory
+              .map((o) => (o.orderHash === order.orderHash ? order : o))
+              .slice(0, TRADE_MAX_SUBACCOUNT_ARRAY_SIZE)
 
             spotStore.$patch({
               subaccountOrderHistory,
@@ -187,7 +188,10 @@ export const streamSubaccountTrades = (marketId?: string) => {
 
       switch (operation) {
         case StreamOperation.Insert: {
-          const subaccountTrades = [trade, ...spotStore.subaccountTrades]
+          const subaccountTrades = [trade, ...spotStore.subaccountTrades].slice(
+            0,
+            TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+          )
 
           spotStore.$patch({
             subaccountTrades,
@@ -197,9 +201,9 @@ export const streamSubaccountTrades = (marketId?: string) => {
           break
         }
         case StreamOperation.Delete: {
-          const subaccountTrades = spotStore.subaccountTrades.filter(
-            (order) => order.orderHash !== trade.orderHash
-          )
+          const subaccountTrades = spotStore.subaccountTrades
+            .filter((order) => order.orderHash !== trade.orderHash)
+            .slice(0, TRADE_MAX_SUBACCOUNT_ARRAY_SIZE)
 
           spotStore.$patch({
             subaccountTrades,
@@ -209,9 +213,9 @@ export const streamSubaccountTrades = (marketId?: string) => {
           break
         }
         case StreamOperation.Update: {
-          const subaccountTrades = spotStore.subaccountTrades.map((t) =>
-            t.orderHash === trade.orderHash ? trade : t
-          )
+          const subaccountTrades = spotStore.subaccountTrades
+            .map((t) => (t.orderHash === trade.orderHash ? trade : t))
+            .slice(0, TRADE_MAX_SUBACCOUNT_ARRAY_SIZE)
 
           spotStore.$patch({
             subaccountTrades,

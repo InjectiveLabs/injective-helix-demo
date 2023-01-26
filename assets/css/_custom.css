@@ -3,22 +3,6 @@
   overflow-x: hidden;
 }
 
-.table-orders {
-  @apply h-full min-h-orders max-h-2xs;
-}
-
-@media (min-width: 1024px) {
-  .table-orders {
-    @apply max-h-xs;
-  }
-}
-
-@media (min-width: 1681px) {
-  .table-orders {
-    @apply max-h-lg;
-  }
-}
-
 .orderbook-h {
   --orderbook-height: 30rem;
   --orderbook-aggregation-height: 48px;

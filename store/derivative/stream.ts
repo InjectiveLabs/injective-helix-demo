@@ -18,6 +18,7 @@ import {
   cancelSubaccountOrdersStream as grpcCancelSubaccountOrdersStream,
   cancelSubaccountTradesStream as grpcCancelSubaccountTradesStream
 } from '@/app/client/streams/derivatives'
+import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 
 export const streamOrderbook = (marketId: string) => {
   const derivativeStore = useDerivativeStore()
@@ -90,7 +91,7 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
             ...derivativeStore.subaccountOrderHistory.filter(
               (o) => order.orderHash !== o.orderHash
             )
-          ]
+          ].slice(0, TRADE_MAX_SUBACCOUNT_ARRAY_SIZE)
 
           derivativeStore.$patch({
             subaccountOrderHistory,
@@ -102,9 +103,9 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
         case DerivativeOrderState.Canceled: {
           if (order.orderHash) {
             const subaccountOrderHistory =
-              derivativeStore.subaccountOrderHistory.map((o) =>
-                order.orderHash === o.orderHash ? order : o
-              )
+              derivativeStore.subaccountOrderHistory
+                .map((o) => (order.orderHash === o.orderHash ? order : o))
+                .slice(0, TRADE_MAX_SUBACCOUNT_ARRAY_SIZE)
 
             derivativeStore.$patch({
               subaccountOrderHistory,
@@ -138,7 +139,10 @@ export const streamSubaccountTrades = (marketId?: string) => {
 
       switch (operation) {
         case StreamOperation.Insert: {
-          const subaccountTrades = [trade, ...derivativeStore.subaccountTrades]
+          const subaccountTrades = [
+            trade,
+            ...derivativeStore.subaccountTrades
+          ].slice(0, TRADE_MAX_SUBACCOUNT_ARRAY_SIZE)
 
           derivativeStore.$patch({
             subaccountTrades,
@@ -150,9 +154,9 @@ export const streamSubaccountTrades = (marketId?: string) => {
 
         case StreamOperation.Delete:
           {
-            const subaccountTrades = [
-              ...derivativeStore.subaccountTrades
-            ].filter((order) => order.orderHash !== trade.orderHash)
+            const subaccountTrades = [...derivativeStore.subaccountTrades]
+              .filter((order) => order.orderHash !== trade.orderHash)
+              .slice(0, TRADE_MAX_SUBACCOUNT_ARRAY_SIZE)
 
             derivativeStore.$patch({
               subaccountTrades,
@@ -162,9 +166,11 @@ export const streamSubaccountTrades = (marketId?: string) => {
           break
         case StreamOperation.Update:
           if (trade.orderHash) {
-            const subaccountTrades = [...derivativeStore.subaccountTrades].map(
-              (order) => (order.orderHash === trade.orderHash ? trade : order)
-            )
+            const subaccountTrades = [...derivativeStore.subaccountTrades]
+              .map((order) =>
+                order.orderHash === trade.orderHash ? trade : order
+              )
+              .slice(0, TRADE_MAX_SUBACCOUNT_ARRAY_SIZE)
 
             derivativeStore.$patch({
               subaccountTrades,
@@ -212,7 +218,7 @@ export const streamSubaccountOrders = (marketId?: string) => {
               ...derivativeStore.subaccountConditionalOrders.filter(
                 (o) => o.orderHash !== order.orderHash
               )
-            ]
+            ].slice(0, TRADE_MAX_SUBACCOUNT_ARRAY_SIZE)
 
             derivativeStore.$patch({
               subaccountConditionalOrders,
@@ -225,7 +231,7 @@ export const streamSubaccountOrders = (marketId?: string) => {
               ...derivativeStore.subaccountOrders.filter(
                 (o) => o.orderHash !== order.orderHash
               )
-            ]
+            ].slice(0, TRADE_MAX_SUBACCOUNT_ARRAY_SIZE)
 
             derivativeStore.$patch({
               subaccountOrders,
@@ -240,7 +246,9 @@ export const streamSubaccountOrders = (marketId?: string) => {
           if (isConditional) {
             const subaccountConditionalOrders = [
               ...derivativeStore.subaccountConditionalOrders
-            ].filter((o) => o.orderHash !== order.orderHash)
+            ]
+              .filter((o) => o.orderHash !== order.orderHash)
+              .slice(0, TRADE_MAX_SUBACCOUNT_ARRAY_SIZE)
 
             derivativeStore.$patch({
               subaccountConditionalOrders,
@@ -248,9 +256,9 @@ export const streamSubaccountOrders = (marketId?: string) => {
                 subaccountConditionalOrders.length
             })
           } else {
-            const subaccountOrders = [
-              ...derivativeStore.subaccountOrders
-            ].filter((o) => o.orderHash !== order.orderHash)
+            const subaccountOrders = [...derivativeStore.subaccountOrders]
+              .filter((o) => o.orderHash !== order.orderHash)
+              .slice(0, TRADE_MAX_SUBACCOUNT_ARRAY_SIZE)
 
             derivativeStore.$patch({
               subaccountOrders,
