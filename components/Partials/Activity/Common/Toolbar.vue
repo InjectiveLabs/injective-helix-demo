@@ -220,14 +220,18 @@ function handleClearFilters() {
 
     <PartialsActivityViewsPositionsActions
       v-if="view === ActivityView.Positions"
+      v-bind="{ view, denom, side }"
     />
-    <PartialsActivityViewsSpotActions v-if="view === ActivityView.SpotOrders" />
+    <PartialsActivityViewsSpotActions
+      v-if="view === ActivityView.SpotOrders"
+      v-bind="{ view, denom, side }"
+    />
     <PartialsActivityViewsDerivativesActions
       v-if="
         view === ActivityView.DerivativeOrders ||
         view === ActivityView.DerivativeTriggers
       "
-      :view="view"
+      v-bind="{ view, denom, side }"
     />
   </div>
 </template>

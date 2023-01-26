@@ -4,12 +4,61 @@ import { GeneralException } from '@injectivelabs/exceptions'
 
 const derivativeStore = useDerivativeStore()
 const positionStore = usePositionStore()
-
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 const { t } = useLang()
 
+const props = defineProps({
+  denom: {
+    type: String,
+    default: ''
+  },
+
+  side: {
+    type: String,
+    default: ''
+  },
+
+  view: {
+    type: String,
+    required: true
+  }
+})
+
 const status = reactive(new Status(StatusType.Idle))
+
+const markets = computed(() => {
+  return derivativeStore.markets
+})
+
+const market = computed(() => {
+  return markets.value.find(
+    (m) =>
+      m.baseToken.denom === props.denom || m.quoteToken.denom === props.denom
+  )
+})
+
+const positions = computed(() => {
+  return positionStore.subaccountPositions
+})
+
+const showCloseButton = computed(() => {
+  if (positions.value.length === 0) {
+    return false
+  }
+
+  const result = positions.value.filter((position) => {
+    const sideMatch =
+      props.side !== '' ? props.side === position.direction : true
+    const marketMatch = market.value
+      ? market.value.marketId === position.marketId
+      : true
+
+    return sideMatch && marketMatch
+  })
+
+  return result.length > 0
+})
 
 function handleClosePositions() {
   status.setLoading()
@@ -63,7 +112,7 @@ function closePosition() {
 
 <template>
   <AppButton
-    v-if="positionStore.subaccountPositions.length > 0"
+    v-if="showCloseButton"
     class="text-red-500 bg-red-500 bg-opacity-10 font-semibold hover:text-white"
     :status="status"
     data-cy="activity-cancel-all-button"
