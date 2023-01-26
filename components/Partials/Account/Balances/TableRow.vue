@@ -7,7 +7,7 @@ import {
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { AccountBalance, BridgeBusEvents, Modal } from '@/types'
-import { usdcTokenAddress } from '@/app/data/token'
+import { usdcTokenDenom } from '@/app/data/token'
 
 const router = useRouter()
 const spotStore = useSpotStore()
@@ -31,14 +31,12 @@ const props = defineProps({
 })
 
 const isUSDCDenom =
-  [
-    usdcTokenAddress.USDC,
-    usdcTokenAddress.USDCet,
-    usdcTokenAddress.USDCso
-  ].includes(props.balance.token.address || '') && !!props.balance.token.denom
+  [usdcTokenDenom.USDC, usdcTokenDenom.USDCet, usdcTokenDenom.USDCso].includes(
+    props.balance.token.denom.toLowerCase() || ''
+  ) && !!props.balance.token.denom
 
-const convertUSDC = [usdcTokenAddress.USDC].includes(
-  props.balance.token.address || ''
+const convertUSDC = [usdcTokenDenom.USDC].includes(
+  props.balance.token.denom.toLowerCase() || ''
 )
 
 const isOpen = ref(false)
@@ -155,13 +153,25 @@ function handleConvert() {
             <span v-if="!isUSDCDenom">
               {{ balance.token.name }}
             </span>
-            <span v-else-if="balance.token.address === usdcTokenAddress.USDC">
+            <span
+              v-else-if="
+                balance.token.denom.toLowerCase() === usdcTokenDenom.USDC
+              "
+            >
               {{ $t('account.usdcPeggyToken') }}
             </span>
-            <span v-else-if="balance.token.address === usdcTokenAddress.USDCet">
+            <span
+              v-else-if="
+                balance.token.denom.toLowerCase() === usdcTokenDenom.USDCet
+              "
+            >
               {{ $t('account.usdcWHEthereumToken') }}
             </span>
-            <span v-else-if="balance.token.address === usdcTokenAddress.USDCso">
+            <span
+              v-else-if="
+                balance.token.denom.toLowerCase() === usdcTokenDenom.USDCso
+              "
+            >
               {{ $t('account.usdcWHSolanaToken') }}
             </span>
           </span>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
 import { AccountBalance } from '@/types'
-import { usdcTokenAddress } from '@/app/data/token'
+import { usdcTokenDenom } from '@/app/data/token'
 
 const props = defineProps({
   balance: {
@@ -25,10 +25,10 @@ const showUSDCBalances = ref(true)
 const usdcBalances = computed(() =>
   props.balances.filter((balance) => {
     return [
-      usdcTokenAddress.USDC,
-      usdcTokenAddress.USDCet,
-      usdcTokenAddress.USDCso
-    ].includes(balance.token.address || '')
+      usdcTokenDenom.USDC,
+      usdcTokenDenom.USDCet,
+      usdcTokenDenom.USDCso
+    ].includes(balance.token.denom.toLowerCase() || '')
   })
 )
 

@@ -7,7 +7,6 @@ import {
   UST_COIN_GECKO_ID
 } from '@/app/utils/constants'
 import { AccountBalance, BalanceHeaderType } from '@/types'
-import { usdcTokenAddress } from '@/app/data/token'
 
 const props = defineProps({
   hideBalances: {
@@ -169,13 +168,7 @@ const sortedBalances = computed(() => {
       />
       <template v-for="balance in sortedBalances" :key="balance.token.denom">
         <PartialsAccountBalancesTableRow
-          v-if="
-            ![
-              usdcTokenAddress.USDC,
-              usdcTokenAddress.USDCet,
-              usdcTokenAddress.USDCso
-            ].includes(balance.token.address || '')
-          "
+          v-if="balance.token.denom"
           :balance="balance"
           :hide-balances="hideBalances"
         />
