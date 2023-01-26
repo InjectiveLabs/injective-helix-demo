@@ -87,7 +87,7 @@ export function useOrderHistory(
   })
 
   const margin = computed(() => {
-    if (!market.value || !isSpot.value) {
+    if (!market.value || isSpot.value) {
       return ZERO_IN_BASE
     }
 
