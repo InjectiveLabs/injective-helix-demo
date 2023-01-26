@@ -58,11 +58,10 @@ function initBalances() {
   Promise.all([
     tokenStore.getErc20TokensWithBalanceAndPriceFromBankAndMarkets(),
     accountStore.fetchSubaccountsBalancesWithPrices(),
-    positionStore.fetchSubaccountPositions()
+    positionStore.fetchSubaccountPositions(),
+    accountStore.streamSubaccountBalances(),
+    positionStore.streamSubaccountPositions()
   ])
-    .then(() => {
-      positionStore.streamSubaccountPositions()
-    })
     .catch($onError)
     .finally(() => {
       status.setIdle()
