@@ -6,7 +6,8 @@ import {
   HIDDEN_BALANCE_DISPLAY,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { AccountBalance, BridgeBusEvents, Modal, USDCSymbol } from '@/types'
+import { AccountBalance, BridgeBusEvents, Modal } from '@/types'
+import { usdcTokenAddress } from '@/app/data/token'
 
 const router = useRouter()
 const spotStore = useSpotStore()
@@ -31,16 +32,14 @@ const props = defineProps({
 
 const isUSDCDenom =
   [
-    USDCSymbol.PeggyEthereum,
-    USDCSymbol.WormholeEthereum,
-    USDCSymbol.WormholeSolana
-  ].includes(props.balance.token.symbol as USDCSymbol) &&
-  !!props.balance.token.denom
+    usdcTokenAddress.USDC,
+    usdcTokenAddress.USDCet,
+    usdcTokenAddress.USDCso
+  ].includes(props.balance.token.address || '') && !!props.balance.token.denom
 
-const convertUSDC =
-  [USDCSymbol.PeggyEthereum].includes(
-    props.balance.token.symbol as USDCSymbol
-  ) && !!props.balance.token.denom
+const convertUSDC = [usdcTokenAddress.USDC].includes(
+  props.balance.token.address || ''
+)
 
 const isOpen = ref(false)
 
@@ -156,17 +155,13 @@ function handleConvert() {
             <span v-if="!isUSDCDenom">
               {{ balance.token.name }}
             </span>
-            <span v-else-if="balance.token.symbol === USDCSymbol.PeggyEthereum">
+            <span v-else-if="balance.token.address === usdcTokenAddress.USDC">
               {{ $t('account.usdcPeggyToken') }}
             </span>
-            <span
-              v-else-if="balance.token.symbol === USDCSymbol.WormholeEthereum"
-            >
+            <span v-else-if="balance.token.address === usdcTokenAddress.USDCet">
               {{ $t('account.usdcWHEthereumToken') }}
             </span>
-            <span
-              v-else-if="balance.token.symbol === USDCSymbol.WormholeSolana"
-            >
+            <span v-else-if="balance.token.address === usdcTokenAddress.USDCso">
               {{ $t('account.usdcWHSolanaToken') }}
             </span>
           </span>

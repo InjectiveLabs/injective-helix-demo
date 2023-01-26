@@ -6,7 +6,8 @@ import {
   USDT_COIN_GECKO_ID,
   UST_COIN_GECKO_ID
 } from '@/app/utils/constants'
-import { AccountBalance, BalanceHeaderType, USDCSymbol } from '@/types'
+import { AccountBalance, BalanceHeaderType } from '@/types'
+import { usdcTokenAddress } from '@/app/data/token'
 
 const props = defineProps({
   hideBalances: {
@@ -170,10 +171,10 @@ const sortedBalances = computed(() => {
         <PartialsAccountBalancesTableRow
           v-if="
             ![
-              USDCSymbol.PeggyEthereum,
-              USDCSymbol.WormholeEthereum,
-              USDCSymbol.WormholeSolana
-            ].includes(balance.token.symbol as USDCSymbol)
+              usdcTokenAddress.USDC,
+              usdcTokenAddress.USDCet,
+              usdcTokenAddress.USDCso
+            ].includes(balance.token.address || '')
           "
           :balance="balance"
           :hide-balances="hideBalances"

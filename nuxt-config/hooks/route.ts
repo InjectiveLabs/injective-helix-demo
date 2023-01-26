@@ -29,7 +29,6 @@ export const spot = [
   'dot-usdt',
   'atom-usdt',
   'usdc-usdt',
-  'usdc-usdcet',
   'xprt-usdt',
   'weth-usdt',
   'evmos-usdt',
@@ -52,6 +51,8 @@ export const perpetuals = [
   'stx-usdt-perp',
   'atom-usdt-perp'
 ]
+
+export const hiddenSpotMarkets = ['usdc-usdcet']
 
 export const walletConnectedRequiredRouteNames = ['activity', 'account']
 

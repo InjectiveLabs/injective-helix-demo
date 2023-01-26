@@ -10,6 +10,7 @@ import {
   TradeFormValue
 } from '@/types'
 
+const accountStore = useAccountStore()
 const modalStore = useModalStore()
 const spotStore = useSpotStore()
 const { t } = useLang()
@@ -107,6 +108,8 @@ function submitForm() {
     .catch($onError)
     .finally(() => {
       submitStatus.setIdle()
+      accountStore.fetchSubaccountsBalancesWithPrices()
+      modalStore.closeModal(Modal.ConvertUSDC)
     })
 }
 

@@ -67,4 +67,3 @@ export const usdcTokenDenom = {
   [USDCSymbol.WormholeSolana]: getFactoryDenomFromSymbol(
     USDCSymbol.WormholeSolana
   )
-}
