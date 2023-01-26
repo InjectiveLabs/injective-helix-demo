@@ -2,6 +2,9 @@ import { SpotOrderState } from '@injectivelabs/sdk-ts'
 import { StreamOperation } from '@injectivelabs/ts-types'
 import {
   cancelOrderbookStream as grpcCancelOrderbookStream,
+  cancelSubaccountOrdersHistoryStream as grpcCancelSubaccountOrdersHistoryStream,
+  cancelSubaccountOrdersStream as grpcCancelSubaccountOrdersStream,
+  cancelSubaccountTradesStream as grpcCancelSubaccountTradesStream,
   cancelTradesStream as grpcCancelTradesStream,
   streamOrderbook as grpcStreamOrderbook,
   streamTrades as grpcStreamTrades,
@@ -11,6 +14,10 @@ import {
 } from '@/app/client/streams/spot'
 
 export const cancelOrderbookStream = grpcCancelOrderbookStream
+export const cancelSubaccountOrdersStream = grpcCancelSubaccountOrdersStream
+export const cancelSubaccountOrdersHistoryStream =
+  grpcCancelSubaccountOrdersHistoryStream
+export const cancelSubaccountTradesStream = grpcCancelSubaccountTradesStream
 export const cancelTradesStream = grpcCancelTradesStream
 
 export const streamOrderbook = (marketId: string) => {
@@ -50,7 +57,7 @@ export const streamTrades = (marketId: string) => {
   })
 }
 
-export const streamSubaccountOrders = () => {
+export const streamSubaccountOrders = (marketId?: string) => {
   const spotStore = useSpotStore()
 
   const { subaccount } = useAccountStore()
@@ -62,6 +69,7 @@ export const streamSubaccountOrders = () => {
 
   grpcStreamSubaccountOrders({
     subaccountId: subaccount.subaccountId,
+    marketId,
     callback: ({ order }) => {
       if (!order) {
         return
@@ -103,7 +111,7 @@ export const streamSubaccountOrders = () => {
   })
 }
 
-export const streamSubaccountOrderHistory = () => {
+export const streamSubaccountOrderHistory = (marketId?: string) => {
   const spotStore = useSpotStore()
 
   const { subaccount } = useAccountStore()
@@ -115,6 +123,7 @@ export const streamSubaccountOrderHistory = () => {
 
   grpcStreamSubaccountOrderHistory({
     subaccountId: subaccount.subaccountId,
+    marketId,
     callback: ({ order }) => {
       if (!order) {
         return
@@ -158,7 +167,7 @@ export const streamSubaccountOrderHistory = () => {
   })
 }
 
-export const streamSubaccountTrades = (marketId: string) => {
+export const streamSubaccountTrades = (marketId?: string) => {
   const spotStore = useSpotStore()
 
   const { subaccount } = useAccountStore()
