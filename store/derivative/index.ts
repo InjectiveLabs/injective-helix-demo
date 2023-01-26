@@ -302,10 +302,7 @@ export const useDerivativeStore = defineStore('derivative', {
 
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
-      const endTime =
-        paginationOptions?.endTime ||
-        derivativeStore.subaccountOrders[0]?.updatedAt ||
-        0
+      const endTime = paginationOptions?.endTime || 0
 
       const { orders, pagination } = await indexerDerivativesApi.fetchOrders({
         marketId: filters?.marketId,
@@ -340,10 +337,7 @@ export const useDerivativeStore = defineStore('derivative', {
 
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
-      const endTime =
-        paginationOptions?.endTime ||
-        derivativeStore.subaccountOrderHistory[0]?.createdAt ||
-        0
+      const endTime = paginationOptions?.endTime || 0
 
       const { orderHistory, pagination } =
         await indexerDerivativesApi.fetchOrderHistory({
@@ -380,10 +374,7 @@ export const useDerivativeStore = defineStore('derivative', {
 
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
-      const endTime =
-        paginationOptions?.endTime ||
-        derivativeStore.subaccountConditionalOrders[0]?.createdAt ||
-        0
+      const endTime = paginationOptions?.endTime || 0
 
       const { orderHistory, pagination } =
         await indexerDerivativesApi.fetchOrderHistory({
@@ -481,10 +472,7 @@ export const useDerivativeStore = defineStore('derivative', {
 
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
-      const endTime =
-        paginationOptions?.endTime ||
-        derivativeStore.subaccountTrades[0]?.executedAt ||
-        0
+      const endTime = paginationOptions?.endTime || 0
 
       const { trades, pagination } = await indexerDerivativesApi.fetchTrades({
         marketId: filters?.marketId,
