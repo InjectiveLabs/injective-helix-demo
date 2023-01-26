@@ -47,13 +47,6 @@ export const getFactoryDenomFromSymbol = (symbol: USDCSymbol) => {
   }
 
   return `factory/${adapterContract}/${tokenMeta.address}`
-  if (!tokenMeta) {
-    return ''
-  }
-
-  const adapterContract = CW20_ADAPTER_CONTRACT_BY_NETWORK[NETWORK]
-
-  return `factory/${adapterContract}/${tokenMeta.address}`
 }
 
 export const getPeggyDenomFromSymbol = (symbol: USDCSymbol) => {
