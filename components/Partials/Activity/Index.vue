@@ -29,6 +29,17 @@ const { value: type } = useStringField({ name: 'type', rule: '' })
 const limit = ref(UI_DEFAULT_PAGINATION_LIMIT_COUNT)
 const page = ref(1)
 const view = ref(ActivityView.Positions)
+const endTime = ref(undefined as number | undefined)
+
+const isStreamingView = computed(() => {
+  return (
+    view.value === ActivityView.Positions ||
+    view.value === ActivityView.SpotOrders ||
+    view.value === ActivityView.SpotTriggers ||
+    view.value === ActivityView.DerivativeOrders ||
+    view.value === ActivityView.DerivativeTriggers
+  )
+})
 
 const isSpot = computed(() => {
   return (
@@ -247,10 +258,10 @@ onMounted(() => {
     .catch($onError)
 })
 
-watch([view, page, limit], () => fetchData())
-watch([denom, side, type], () => fetchData(true))
+watch([page, limit, denom, side, type], () => fetchData())
+watch([view], () => fetchData(true))
 
-function fetchData(forceEndTime?: boolean) {
+function fetchData(isViewChange?: boolean) {
   if (!action.value) {
     return
   }
@@ -271,13 +282,40 @@ function fetchData(forceEndTime?: boolean) {
       pagination: {
         skip: skip.value,
         limit: limit.value,
-        endTime: forceEndTime ? 0 : undefined
+        endTime: !isStreamingView.value ? endTime.value : undefined
       }
     })
     .catch($onError)
     .then(() => {
       status.setIdle()
+
+      if (isViewChange) {
+        updateEndTime()
+      }
     })
+}
+
+function updateEndTime() {
+  switch (view.value) {
+    case ActivityView.FundingPayments:
+      endTime.value = activityStore.subaccountFundingPayments[0]?.timestamp || 0
+      break
+    case ActivityView.SpotOrderHistory:
+      endTime.value = spotStore.subaccountOrderHistory[0]?.createdAt || 0
+      break
+    case ActivityView.SpotTradeHistory:
+      endTime.value = spotStore.subaccountTrades[0]?.timestamp || 0
+      break
+    case ActivityView.DerivativeOrderHistory:
+      endTime.value = derivativeStore.subaccountOrderHistory[0]?.createdAt || 0
+      break
+    case ActivityView.DerivativeTradeHistory:
+      endTime.value = derivativeStore.subaccountTrades[0]?.executedAt || 0
+      break
+    default:
+      endTime.value = undefined
+      break
+  }
 }
 
 function onViewChange() {

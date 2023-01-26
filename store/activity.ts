@@ -51,10 +51,7 @@ export const useActivityStore = defineStore('activity', {
 
       const paginationOptions = activityFetchOptions?.pagination
       const filters = activityFetchOptions?.filters
-      const endTime =
-        paginationOptions?.endTime !== undefined
-          ? paginationOptions?.endTime
-          : activityStore.subaccountFundingPayments[0]?.timestamp || 0
+      const endTime = paginationOptions?.endTime || 0
 
       const { fundingPayments: subaccountFundingPayments, pagination } =
         await indexerDerivativesApi.fetchFundingPayments({

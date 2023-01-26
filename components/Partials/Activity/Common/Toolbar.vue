@@ -19,7 +19,7 @@ const props = defineProps({
 
   view: {
     type: String,
-    default: ''
+    required: true
   }
 })
 
@@ -185,10 +185,11 @@ function handleClearFilters() {
 <template>
   <div class="flex flex-col sm:flex-row justify-between gap-4 w-full">
     <div class="grid grid-cols-4 items-center gap-4 w-full">
-      <PartialsActivityCommonSearchAsset
+      <PartialsActivityCommonSearch
         v-model="denom"
         class="col-span-2 sm:col-span-1"
         :markets="markets"
+        :view="view"
       />
 
       <AppSelectField
