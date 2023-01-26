@@ -163,7 +163,7 @@ export function useOrderHistory(
   })
 
   const timestamp = computed(() =>
-    format(order.value.createdAt, 'dd MMM HH:mm:ss')
+    format(order.value.updatedAt, 'dd MMM HH:mm:ss')
   )
 
   const type = computed(() => {
