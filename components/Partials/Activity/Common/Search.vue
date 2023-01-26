@@ -24,14 +24,6 @@ const emit = defineEmits<{
   (e: 'update:modelValue', state: string): void
 }>()
 
-const isWalletView = computed(() => {
-  return (
-    props.view === ActivityView.WalletDeposits ||
-    props.view === ActivityView.WalletTransfers ||
-    props.view === ActivityView.WalletWithdrawals
-  )
-})
-
 const tokens = computed(() => {
   if (!props.markets) {
     return []
@@ -84,7 +76,9 @@ const value = computed({
     v-model="value"
     :options="options"
     :placeholder="
-      isWalletView
+      props.view === ActivityView.WalletDeposits ||
+      props.view === ActivityView.WalletTransfers ||
+      props.view === ActivityView.WalletWithdrawals
         ? $t('walletHistory.transfers.asset')
         : $t('account.positions.market.label')
     "

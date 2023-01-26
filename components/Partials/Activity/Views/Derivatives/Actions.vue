@@ -39,32 +39,36 @@ const orders = computed(() => {
     : derivativeStore.subaccountConditionalOrders
 })
 
+const filteredOrders = computed(() => {
+  return derivativeStore.subaccountOrders.filter((order) => {
+    const sideMatch = props.side !== '' ? props.side === order.orderSide : true
+    const marketMatch = market.value
+      ? market.value.marketId === order.marketId
+      : true
+
+    return sideMatch && marketMatch
+  })
+})
+
+const filteredConditionalOrders = computed(() => {
+  return derivativeStore.subaccountConditionalOrders.filter((order) => {
+    const sideMatch = props.side !== '' ? props.side === order.direction : true
+    const marketMatch = market.value
+      ? market.value.marketId === order.marketId
+      : true
+
+    return sideMatch && marketMatch
+  })
+})
+
 const showCloseButton = computed(() => {
   if (orders.value.length === 0) {
     return false
   }
-  const result =
-    props.view === ActivityView.DerivativeOrders
-      ? derivativeStore.subaccountOrders.filter((order) => {
-          const sideMatch =
-            props.side !== '' ? props.side === order.orderSide : true
-          const marketMatch = market.value
-            ? market.value.marketId === order.marketId
-            : true
 
-          return sideMatch && marketMatch
-        })
-      : derivativeStore.subaccountConditionalOrders.filter((order) => {
-          const sideMatch =
-            props.side !== '' ? props.side === order.direction : true
-          const marketMatch = market.value
-            ? market.value.marketId === order.marketId
-            : true
-
-          return sideMatch && marketMatch
-        })
-
-  return result.length > 0
+  return props.view === ActivityView.DerivativeOrders
+    ? filteredOrders.value.length > 0
+    : filteredConditionalOrders.value.length > 0
 })
 
 function handleCancelOrders() {

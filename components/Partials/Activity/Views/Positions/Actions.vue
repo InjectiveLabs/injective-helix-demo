@@ -34,16 +34,12 @@ const market = computed(() => {
   )
 })
 
-const positions = computed(() => {
-  return positionStore.subaccountPositions
-})
-
 const showCloseButton = computed(() => {
-  if (positions.value.length === 0) {
+  if (positionStore.subaccountPositions.length === 0) {
     return false
   }
 
-  const result = positions.value.filter((position) => {
+  const result = positionStore.subaccountPositions.filter((position) => {
     const sideMatch =
       props.side !== '' ? props.side === position.direction : true
     const marketMatch = market.value
