@@ -21,6 +21,10 @@ const trades = computed(() =>
   isSpot ? spotStore.subaccountTrades : derivativeStore.subaccountTrades
 )
 
+const sortedTrades = computed(() =>
+  trades.value.sort((t1, t2) => t1.executedAt - t2.executedAt)
+)
+
 function handleShowTradeDetails(trade: UiTrade) {
   tradeDetails.value = trade
   modalStore.openModal({ type: Modal.MobileTradeDetails })
@@ -31,12 +35,12 @@ function handleShowTradeDetails(trade: UiTrade) {
   <div class="h-full">
     <!-- mobile table -->
     <CommonTableBody
-      :show-empty="trades.length === 0"
+      :show-empty="sortedTrades.length === 0"
       class="sm:hidden max-h-lg overflow-y-auto"
     >
       <PartialsCommonSubaccountTradeHistoryMobile
-        v-for="(trade, index) in trades"
-        :key="`mobile-trade-history-${index}`"
+        v-for="(trade, index) in sortedTrades"
+        :key="`mobile-trade-history-${index}-${trade.orderHash}`"
         class="col-span-1"
         :trade="trade"
         :is-spot="isSpot"
@@ -52,12 +56,12 @@ function handleShowTradeDetails(trade: UiTrade) {
     </CommonTableBody>
 
     <CommonTableWrapper class="hidden sm:block">
-      <table v-if="trades.length > 0" class="table">
+      <table v-if="sortedTrades.length > 0" class="table">
         <PartialsCommonSubaccountTradeHistoryHeader :market="market" />
         <tbody>
           <PartialsCommonSubaccountTradeHistoryRow
-            v-for="(trade, index) in trades"
-            :key="`trades-history-${index}`"
+            v-for="(trade, index) in sortedTrades"
+            :key="`trades-history-${index}-${trade.orderHash}`"
             :trade="trade"
             :is-spot="isSpot"
           />

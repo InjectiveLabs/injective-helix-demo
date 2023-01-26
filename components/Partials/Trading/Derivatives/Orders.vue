@@ -198,12 +198,10 @@ function handleCloseAllPositionsClick() {
 
                   <span v-if="filterType === FilterList.TradeHistory">
                     {{ $t('activity.tradeHistory') }}
-                    {{ `(${derivativeStore.subaccountTrades.length})` }}
                   </span>
 
                   <span v-if="filterType === FilterList.OrderHistory">
                     {{ $t('activity.orderHistory') }}
-                    {{ `(${derivativeStore.subaccountOrderHistory.length})` }}
                   </span>
                 </span>
               </template>

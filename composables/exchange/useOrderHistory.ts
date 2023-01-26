@@ -195,6 +195,8 @@ export function useOrderHistory(
     switch (order.value.state) {
       case orderState.Booked:
         return t('trade.open')
+      case orderState.PartialFilled:
+        return t('trade.partialFilled')
       case orderState.PartiallyFilled:
         return t('trade.partiallyFilled')
       case orderState.Filled:
