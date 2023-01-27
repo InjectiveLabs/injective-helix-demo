@@ -34,7 +34,7 @@ const props = defineProps({
 
   market: {
     type: Object as PropType<UiSpotMarketWithToken>,
-    default: () => null
+    required: true
   },
 
   worstPriceWithSlippage: {

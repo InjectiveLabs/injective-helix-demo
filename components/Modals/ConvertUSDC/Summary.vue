@@ -24,8 +24,8 @@ const props = defineProps({
   },
 
   market: {
-    type: Object as PropType<UiSpotMarketWithToken | undefined>,
-    default: undefined
+    type: Object as PropType<UiSpotMarketWithToken>,
+    required: true
   }
 })
 
@@ -53,8 +53,8 @@ const fee = computed<BigNumberInBase>(() => {
 })
 
 const { valueToString: feeToFormat } = useBigNumberFormatter(fee, {
-  decimalPlaces: props.market?.priceDecimals || 3,
-  minimalDecimalPlaces: props.market?.priceDecimals || 3
+  decimalPlaces: props.market.priceDecimals || 3,
+  minimalDecimalPlaces: props.market.priceDecimals || 3
 })
 </script>
 

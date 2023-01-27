@@ -7,6 +7,7 @@ import {
   UST_COIN_GECKO_ID
 } from '@/app/utils/constants'
 import { AccountBalance, BalanceHeaderType } from '@/types'
+import { usdcTokenDenom } from '@/app/data/token'
 
 const props = defineProps({
   hideBalances: {
@@ -31,11 +32,21 @@ const ascending = ref(false)
 
 const transformedBalance = computed(() => {
   const nonUsdcBalances = props.balances.filter(
-    (balance) => !balance.token.symbol.toLowerCase().includes('usdc')
+    (balance) =>
+      ![
+        usdcTokenDenom.USDC,
+        usdcTokenDenom.USDCet,
+        usdcTokenDenom.USDCso
+      ].includes(balance.token.denom.toLowerCase())
   )
-  const usdcBalances = props.balances.filter((balance) => {
-    return balance.token.symbol.toLowerCase().includes('usdc')
-  })
+
+  const usdcBalances = props.balances.filter((balance) =>
+    [
+      usdcTokenDenom.USDC,
+      usdcTokenDenom.USDCet,
+      usdcTokenDenom.USDCso
+    ].includes(balance.token.denom.toLowerCase())
+  )
 
   if (!usdcBalances.length) {
     return nonUsdcBalances
@@ -58,14 +69,13 @@ const transformedBalance = computed(() => {
           balance.subaccountTotalBalance
         ),
         token: {
-          ...balance.token,
-          name: 'USDC Coin',
-          symbol: 'USDC',
+          ...([usdcTokenDenom.USDC].includes(balance.token.denom.toLowerCase())
+            ? balance.token
+            : aggregatedUsdc.token),
           denom: ''
         }
       }
-    },
-    usdcBalances[0]
+    }
   )
 
   return [...nonUsdcBalances, aggregatedUsdcBalances]

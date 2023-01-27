@@ -32,11 +32,11 @@ const props = defineProps({
 
 const isUSDCDenom =
   [usdcTokenDenom.USDC, usdcTokenDenom.USDCet, usdcTokenDenom.USDCso].includes(
-    props.balance.token.denom.toLowerCase() || ''
+    props.balance.token.denom.toLowerCase()
   ) && !!props.balance.token.denom
 
 const convertUSDC = [usdcTokenDenom.USDC].includes(
-  props.balance.token.denom.toLowerCase() || ''
+  props.balance.token.denom.toLowerCase()
 )
 
 const isOpen = ref(false)
@@ -253,8 +253,11 @@ function handleConvert() {
       </div>
     </td>
 
-    <td v-else-if="balance.token.denom" class="pr-4">
-      <div class="flex items-center justify-end gap-4 col-start-2 col-span-2">
+    <td v-else class="pr-4">
+      <div
+        v-show="balance.token.denom"
+        class="flex items-center justify-end gap-4 col-start-2 col-span-2"
+      >
         <BaseDropdown
           v-if="filteredMarkets.length > 1"
           popper-class="rounded-lg flex flex-col flex-wrap text-xs absolute w-36 bg-gray-750 shadow-dropdown"

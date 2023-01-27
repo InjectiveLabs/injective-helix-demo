@@ -28,7 +28,7 @@ const usdcBalances = computed(() =>
       usdcTokenDenom.USDC,
       usdcTokenDenom.USDCet,
       usdcTokenDenom.USDCso
-    ].includes(balance.token.denom.toLowerCase() || '')
+    ].includes(balance.token.denom.toLowerCase())
   })
 )
 
