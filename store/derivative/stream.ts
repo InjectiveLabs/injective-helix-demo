@@ -223,7 +223,9 @@ export const streamSubaccountOrders = (marketId?: string) => {
             derivativeStore.$patch({
               subaccountConditionalOrders,
               subaccountConditionalOrdersCount:
-                subaccountConditionalOrders.length
+                subaccountConditionalOrders.length,
+              subaccountTotalOrdersCount:
+                derivativeStore.subaccountTotalOrdersCount + 1
             })
           } else {
             const subaccountOrders = [
@@ -235,7 +237,10 @@ export const streamSubaccountOrders = (marketId?: string) => {
 
             derivativeStore.$patch({
               subaccountOrders,
-              subaccountOrdersCount: subaccountOrders.length
+              subaccountOrdersCount: subaccountOrders.length,
+
+              subaccountTotalOrdersCount:
+                derivativeStore.subaccountTotalOrdersCount + 1
             })
           }
 
@@ -253,7 +258,9 @@ export const streamSubaccountOrders = (marketId?: string) => {
             derivativeStore.$patch({
               subaccountConditionalOrders,
               subaccountConditionalOrdersCount:
-                subaccountConditionalOrders.length
+                subaccountConditionalOrders.length,
+              subaccountTotalOrdersCount:
+                derivativeStore.subaccountTotalOrdersCount - 1
             })
           } else {
             const subaccountOrders = [...derivativeStore.subaccountOrders]
@@ -262,7 +269,9 @@ export const streamSubaccountOrders = (marketId?: string) => {
 
             derivativeStore.$patch({
               subaccountOrders,
-              subaccountOrdersCount: subaccountOrders.length
+              subaccountOrdersCount: subaccountOrders.length,
+              subaccountTotalOrdersCount:
+                derivativeStore.subaccountTotalOrdersCount - 1
             })
           }
 

@@ -48,6 +48,7 @@ type SpotStoreState = {
   subaccountTradesCount: number
   subaccountOrders: UiSpotLimitOrder[]
   subaccountOrdersCount: number
+  subaccountTotalOrdersCount: number
   subaccountOrderHistory: UiSpotOrderHistory[]
   subaccountOrderHistoryCount: number
   subaccountConditionalOrders: UiSpotOrderHistory[]
@@ -63,6 +64,7 @@ const initialStateFactory = (): SpotStoreState => ({
   subaccountTradesCount: 0,
   subaccountOrders: [] as UiSpotLimitOrder[],
   subaccountOrdersCount: 0,
+  subaccountTotalOrdersCount: 0,
   subaccountOrderHistory: [] as UiSpotOrderHistory[],
   subaccountOrderHistoryCount: 0,
   subaccountConditionalOrders: [] as UiSpotOrderHistory[],
@@ -178,6 +180,12 @@ export const useSpotStore = defineStore('spot', {
         subaccountOrders: orders,
         subaccountOrdersCount: pagination.total
       })
+
+      if (activityFetchOptions?.options?.updateTotalCounts) {
+        spotStore.$patch({
+          subaccountTotalOrdersCount: pagination.total
+        })
+      }
     },
 
     async fetchSubaccountOrderHistory(
@@ -371,6 +379,7 @@ export const useSpotStore = defineStore('spot', {
         subaccountOrderHistoryCount: initialState.subaccountOrderHistoryCount,
         subaccountOrders: initialState.subaccountOrders,
         subaccountOrdersCount: initialState.subaccountOrdersCount,
+        subaccountTotalOrdersCount: initialState.subaccountTotalOrdersCount,
         subaccountTrades: initialState.subaccountTrades,
         subaccountTradesCount: initialState.subaccountOrdersCount
       })

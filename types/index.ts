@@ -114,6 +114,9 @@ export interface FilterOptions {
 export interface ActivityFetchOptions {
   pagination?: PaginationOption
   filters?: FilterOptions
+  options?: {
+    updateTotalCounts?: boolean
+  }
 }
 
 export interface OrderTypeFilter {
