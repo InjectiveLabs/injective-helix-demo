@@ -93,8 +93,6 @@ export const useWalletStore = defineStore('wallet', {
 
       await bankStore.fetchBankBalancesWithToken()
       await accountStore.fetchSubaccounts()
-      await accountStore.fetchSubaccountsBalances()
-      await accountStore.fetchSubaccountsBalancesWithPrices()
       await onBoardStore.init()
       await tokenStore.getErc20TokensWithBalanceAndPriceFromBankAndMarkets()
     },

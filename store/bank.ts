@@ -35,6 +35,13 @@ export const useBankStore = defineStore('bank', {
       )
     },
 
+    bankBalances: (state: BankStoreState) => {
+      return {
+        ...state.balances,
+        ...state.ibcBalances
+      }
+    },
+
     bankBalancesWithToken: (state: BankStoreState) => {
       return [
         ...state.bankErc20BalancesWithToken,

@@ -86,17 +86,30 @@ export function useBridgeBalance({
   })
 
   const accountBalances = computed(() => {
-    const balances = accountStore.subaccountBalancesWithToken.map((b) => {
-      const balance = new BigNumberInWei(b.availableBalance || 0)
-        .toBase(b.token.decimals)
-        .toString()
+    if (!accountStore.subaccount) {
+      return []
+    }
 
-      return {
-        ...b,
-        balance,
-        balanceInToken: balance
-      } as BalanceWithToken
-    })
+    const balances = accountStore.subaccount.balances
+      .map((subaccountBalance) => {
+        const token = tokenStore.tokens.find(
+          (token) => token.denom === subaccountBalance.denom
+        )
+
+        if (!token) {
+          return undefined
+        }
+
+        return {
+          denom: subaccountBalance.denom,
+          balance: subaccountBalance.availableBalance,
+          balanceInToken: new BigNumberInWei(subaccountBalance.availableBalance)
+            .toBase(token.decimals)
+            .toFixed(),
+          token
+        }
+      })
+      .filter((balance) => balance) as BalanceWithToken[]
 
     return appendCachedTokens(balances, cachedTokens.value)
   })

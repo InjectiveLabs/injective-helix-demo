@@ -3,10 +3,7 @@ import { BankBalanceWithTokenAndBalanceInBase } from '@injectivelabs/sdk-ui-ts'
 import { GeneralException } from '@injectivelabs/exceptions'
 
 defineProps({
-  hideBalances: {
-    type: Boolean,
-    required: true
-  }
+  hideBalances: Boolean
 })
 
 const positionStore = usePositionStore()
