@@ -238,7 +238,6 @@ export const streamSubaccountOrders = (marketId?: string) => {
             derivativeStore.$patch({
               subaccountOrders,
               subaccountOrdersCount: subaccountOrders.length,
-
               subaccountTotalOrdersCount:
                 derivativeStore.subaccountTotalOrdersCount + 1
             })

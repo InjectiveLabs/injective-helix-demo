@@ -44,7 +44,6 @@ function initBalances() {
 
   Promise.all([
     tokenStore.getErc20TokensWithBalanceAndPriceFromBankAndMarkets(),
-    accountStore.fetchSubaccountsBalancesWithPrices(),
     positionStore.fetchSubaccountPositions(),
     accountStore.streamSubaccountBalances(),
     positionStore.streamSubaccountPositions()
@@ -53,10 +52,6 @@ function initBalances() {
     .finally(() => {
       status.setIdle()
     })
-}
-
-function handleHideBalances(value: boolean) {
-  hideBalances.value = value
 }
 
 function handleViewFromRoute() {
@@ -70,13 +65,16 @@ function handleViewFromRoute() {
 
 function refreshBalances() {
   Promise.all([
-    accountStore.fetchSubaccountsBalancesWithPrices(),
     bankStore.fetchBankBalancesWithToken(),
     derivativeStore.fetchSubaccountOrders(),
     positionStore.fetchSubaccountPositions() // refresh mark price
   ]).catch(() => {
     // silently fail
   })
+}
+
+function handleHideBalances(value: boolean) {
+  hideBalances.value = value
 }
 </script>
 

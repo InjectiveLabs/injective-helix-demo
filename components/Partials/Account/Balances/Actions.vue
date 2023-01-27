@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-defineProps({
+const props = defineProps({
   hideSmallBalances: Boolean,
   showMarginCurrencyOnly: Boolean,
 
@@ -15,17 +15,35 @@ const emit = defineEmits<{
   (e: 'update:hide-small-balances', state: boolean): void
 }>()
 
-function handleSearch(val: string) {
-  emit('update:search', val)
-}
+const hideSmallBalancesCheck = computed({
+  get: (): boolean => {
+    return props.hideSmallBalances
+  },
 
-function toggleShowMarginCurrencyOnly(val: boolean) {
-  emit('update:show-margin-currency-only', val)
-}
+  set: (type: boolean) => {
+    emit('update:hide-small-balances', type)
+  }
+})
 
-function toggleHideSmallBalances(val: boolean) {
-  emit('update:hide-small-balances', val)
-}
+const showMarginCurrencyOnlyCheck = computed({
+  get: (): boolean => {
+    return props.showMarginCurrencyOnly
+  },
+
+  set: (type: boolean) => {
+    emit('update:show-margin-currency-only', type)
+  }
+})
+
+const search = computed({
+  get: (): string => {
+    return props.searchQuery
+  },
+
+  set: (type: string) => {
+    emit('update:search', type)
+  }
+})
 </script>
 
 <template>
@@ -34,16 +52,15 @@ function toggleHideSmallBalances(val: boolean) {
   >
     <div class="col-span-2 grid grid-cols-2">
       <AppSearch
+        v-model="search"
         name="search"
         class="col-span-1 w-full"
+        data-cy="markets-search-input"
         input-classes="placeholder-white"
         dense
         transparent-bg
-        data-cy="markets-search-input"
-        :placeholder="$t('account.filterByAsset')"
         show-prefix
-        :model-value="searchQuery"
-        @update:modelValue="handleSearch"
+        :placeholder="$t('account.filterByAsset')"
       />
     </div>
 
@@ -51,19 +68,17 @@ function toggleHideSmallBalances(val: boolean) {
       class="px-4 col-span-2 flex flex-col gap-2 md:flex-row md:items-center md:justify-end md:gap-6 md:px-0"
     >
       <AppCheckbox
-        :model-value="showMarginCurrencyOnly"
+        v-model="showMarginCurrencyOnlyCheck"
         data-cy="trade-page-filter-by-ticker-checkbox"
         class="lg:mr-4"
-        @input="toggleShowMarginCurrencyOnly"
       >
         {{ $t('account.showMarginCurrencyOnly') }}
       </AppCheckbox>
 
       <AppCheckbox
-        :model-value="hideSmallBalances"
+        v-model="hideSmallBalancesCheck"
         data-cy="trade-page-filter-by-ticker-checkbox"
         class="lg:mr-4"
-        @input="toggleHideSmallBalances"
       >
         <div class="flex items-center justify-start">
           <span>{{ $t('account.hideSmallBalances') }}</span>

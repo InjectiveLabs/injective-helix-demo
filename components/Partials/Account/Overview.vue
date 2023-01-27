@@ -29,33 +29,19 @@ const btcUsdPrice = computed(() => {
   return tokenStore.btcUsdPrice
 })
 
-const totalBalance = computed(() => {
-  return props.balances
-    .filter((balance) => !balance.subaccountTotalBalance.isNaN())
-    .reduce((total, balance) => {
-      const combinedBalance = balance.bankBalance.plus(
-        balance.subaccountTotalBalance
-      )
+const totalBalance = computed(() =>
+  props.balances.reduce(
+    (total, balance) => total.plus(balance.totalBalance),
+    ZERO_IN_BASE
+  )
+)
 
-      return total.plus(combinedBalance)
-    }, ZERO_IN_BASE)
-})
-
-const totalBalanceInUsd = computed(() => {
-  const result = props.balances
-    .filter((balance) => !balance.subaccountTotalBalance.isNaN())
-    .reduce((total, balance) => {
-      const combinedBalance = balance.bankBalance.plus(
-        balance.subaccountTotalBalance
-      )
-
-      const combinedBalanceInUsd = combinedBalance.times(balance.token.usdPrice)
-
-      return total.plus(combinedBalanceInUsd)
-    }, ZERO_IN_BASE)
-
-  return result
-})
+const totalBalanceInUsd = computed(() =>
+  props.balances.reduce(
+    (total, balance) => total.plus(balance.totalBalanceInUsd),
+    ZERO_IN_BASE
+  )
+)
 
 const shouldAbbreviateTotalBalance = computed(() =>
   totalBalanceInUsd.value.gte(UI_MINIMAL_ABBREVIATION_FLOOR)
