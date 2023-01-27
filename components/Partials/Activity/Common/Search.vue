@@ -53,13 +53,13 @@ const tokens = computed(() => {
   return uniqueTokens
 })
 
-const options = computed(() => {
-  return tokens.value.map(({ token }) => ({
+const options = computed(() =>
+  tokens.value.map(({ token }) => ({
     token,
     display: token.symbol,
     value: token.denom
   }))
-})
+)
 
 const value = computed({
   get(): string {
