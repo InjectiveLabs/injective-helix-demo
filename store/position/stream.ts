@@ -1,10 +1,11 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   streamSubaccountPositions as grpcStreamSubaccountPositions,
-  cancelSubaccountPositionsStream as grpcCancelSubaccountStream
+  cancelSubaccountPositionsStream as grpcCancelSubaccountPositionsStream
 } from '@/app/client/streams/derivatives'
 
-export const cancelSubaccountPositionsStream = grpcCancelSubaccountStream
+export const cancelSubaccountPositionsStream =
+  grpcCancelSubaccountPositionsStream
 
 export const streamSubaccountPositions = (marketId?: string) => {
   const positionStore = usePositionStore()

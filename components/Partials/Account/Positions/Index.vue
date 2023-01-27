@@ -12,23 +12,18 @@ const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 const { t } = useLang()
 
-const { value: side } = useField<string>('side', {})
-const { value: marketDenom } = useField<string>('marketDenom', {})
+const side = ref('')
+const marketDenom = ref('')
 
-const positions = computed(() => {
-  return positionStore.subaccountPositions
-})
-
-const markets = computed(() => {
-  return derivativeStore.markets
-})
+const markets = computed(() => derivativeStore.markets)
+const positions = computed(() => positionStore.subaccountPositions)
 
 const marketId = computed(() => {
   if (!marketDenom.value) {
     return undefined
   }
 
-  return markets.value.find((m) => {
+  return derivativeStore.markets.find((m) => {
     return (
       m.baseToken.denom === marketDenom.value ||
       m.quoteToken.denom === marketDenom.value
@@ -37,7 +32,7 @@ const marketId = computed(() => {
 })
 
 const filteredPositions = computed(() => {
-  return positions.value.filter((position) => {
+  return positionStore.subaccountPositions.filter((position) => {
     if (!side.value && !marketId.value) {
       return true
     }
@@ -115,14 +110,6 @@ const showEmpty = computed(() => {
   return hasUnavailableMarkets
 })
 
-function handleMarketDenomChange(value: string) {
-  marketDenom.value = value
-}
-
-function handleSideChange(value: string) {
-  side.value = value
-}
-
 function handleCloseAllPositions() {
   return positions.value.length === 1 ? closePosition() : closeAllPositions()
 }
@@ -174,8 +161,6 @@ function closePosition() {
       v-model:side="side"
       :market-options="marketOptions"
       :side-options="sideOptions"
-      @update:market-denom="handleMarketDenomChange"
-      @update:side="handleSideChange"
       @close-all-positions="handleCloseAllPositions"
     />
 
