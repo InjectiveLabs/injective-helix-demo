@@ -5,6 +5,7 @@ import {
   UiSpotMarketWithToken,
   UiOrderbookSummary
 } from '@injectivelabs/sdk-ui-ts'
+import { UI_MINIMAL_ABBREVIATION_FLOOR } from '@/app/utils/constants'
 
 const props = defineProps({
   summary: {
@@ -49,7 +50,7 @@ const { valueToString: averagePriceToString } = useBigNumberFormatter(
         <AppNumber
           :decimals="market.quantityDecimals"
           :number="props.summary.quantity"
-          :abbreviation-floor="1_000_000"
+          :abbreviation-floor="UI_MINIMAL_ABBREVIATION_FLOOR"
           dont-group-values
         />
       </span>

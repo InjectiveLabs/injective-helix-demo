@@ -98,7 +98,9 @@ function init() {
   const fetchOptions = {
     filters: {
       marketId:
-        currentMarketOnly && props.market ? props.market.marketId : undefined
+        currentMarketOnly.value && props.market
+          ? props.market.marketId
+          : undefined
     },
     pagination: {
       endTime: 0

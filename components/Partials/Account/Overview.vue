@@ -4,12 +4,10 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import { Token } from '@injectivelabs/token-metadata'
 import {
-  UI_MINIMAL_AMOUNT,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_DISPLAY_DECIMALS,
-  HIDDEN_BALANCE_DISPLAY
+  HIDDEN_BALANCE_DISPLAY,
+  UI_MINIMAL_ABBREVIATION_FLOOR
 } from '@/app/utils/constants'
-import { getAbbreviatedVolume } from '@/app/utils/market'
 import { AccountBalance, BridgeBusEvents } from '@/types'
 
 const props = defineProps({
@@ -59,17 +57,17 @@ const totalBalanceInUsd = computed(() => {
   return result
 })
 
-const abbreviatedTotalBalanceToString = computed(() => {
-  if (totalBalanceInUsd.value.eq(0)) {
-    return '0.00'
-  }
+const shouldAbbreviateTotalBalance = computed(() =>
+  totalBalanceInUsd.value.gte(UI_MINIMAL_ABBREVIATION_FLOOR)
+)
 
-  if (totalBalanceInUsd.value.lte(UI_MINIMAL_AMOUNT)) {
-    return `< ${UI_MINIMAL_AMOUNT.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)}`
-  }
-
-  return getAbbreviatedVolume(totalBalanceInUsd.value)
-})
+const { valueToString: abbreviatedTotalBalanceToString } =
+  useBigNumberFormatter(totalBalanceInUsd, {
+    decimalPlaces: shouldAbbreviateTotalBalance.value ? 0 : 2,
+    abbreviationFloor: shouldAbbreviateTotalBalance.value
+      ? UI_MINIMAL_ABBREVIATION_FLOOR
+      : undefined
+  })
 
 const totalBalanceInBtc = computed(() => {
   if (!btcUsdPrice.value) {
@@ -145,7 +143,7 @@ function handleTransferClick() {
       </div>
     </div>
 
-    <div class="flex items-center justify-between md:justify-end gap-4">
+    <div class="flex items-center justify-between md:justify-end sm:gap-4">
       <AppButton class="bg-blue-500" @click="handleDepositClick">
         <span class="text-blue-900 font-semibold">
           {{ $t('account.deposit') }}

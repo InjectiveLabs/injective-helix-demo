@@ -18,6 +18,7 @@ import {
   OrderBookNotionalAndType,
   UiMarketWithToken
 } from '@/types'
+import { UI_MINIMAL_ABBREVIATION_FLOOR } from '@/app/utils/constants'
 
 const props = defineProps({
   aggregation: {
@@ -232,7 +233,7 @@ defineExpose({
           xs
           :decimals="market.quantityDecimals"
           :number="quantity"
-          :abbreviation-floor="1_000_000"
+          :abbreviation-floor="UI_MINIMAL_ABBREVIATION_FLOOR"
           dont-group-values
           data-cy="orderbook-record-quantity-text-content"
         />

@@ -15,6 +15,7 @@ const props = defineProps({
   }
 })
 
+const router = useRouter()
 const derivativeStore = useDerivativeStore()
 const modalStore = useModalStore()
 const positionStore = usePositionStore()
@@ -92,6 +93,19 @@ function handleAddMargin() {
   modalStore.openModal({ type: Modal.AddMarginToPosition })
 }
 
+function handleClick() {
+  if (!market.value) {
+    return
+  }
+
+  router.push({
+    name: 'futures-futures',
+    params: {
+      futures: market.value.slug
+    }
+  })
+}
+
 function handleClosePosition() {
   if (!market.value) {
     return
@@ -161,8 +175,9 @@ function closePositionAndReduceOnlyOrders() {
 <template>
   <tr
     v-if="market"
-    class="border-b border-gray-600 last-of-type:border-b-transparent hover:bg-gray-700 bg-transparent px-4 py-0 overflow-hidden h-14 gap-2 transition-all"
+    class="border-b border-gray-600 last-of-type:border-b-transparent hover:bg-gray-700 bg-transparent px-4 py-0 overflow-hidden h-14 gap-2 transition-all cursor-pointer"
     :data-cy="'open-position-table-row-' + position.ticker"
+    @click="handleClick"
   >
     <td class="pl-4">
       <div class="col-span-1 flex justify-start items-center gap-2">
@@ -393,7 +408,7 @@ function closePositionAndReduceOnlyOrders() {
           data-cy="open-position-cancel-link"
           :status="status"
           class="rounded w-6 h-6"
-          @click="handleClosePosition"
+          @click.stop="handleClosePosition"
         >
           <div
             class="flex items-center justify-center rounded-full bg-opacity-10 w-6 h-6 hover:bg-opacity-10 bg-red-500 hover:bg-red-600 text-red-500 hover:text-red-600"
