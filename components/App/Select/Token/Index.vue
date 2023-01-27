@@ -126,6 +126,7 @@ export default {
       class="w-full"
       :disabled="disabled"
       :distance="amountErrors.length > 0 ? 44 : 24"
+      :flip="false"
       auto-size="true"
       auto-boundary-max-size
       popper-class="dropdown"
