@@ -41,23 +41,21 @@ const orders = computed(() => {
 
 const filteredOrders = computed(() => {
   return derivativeStore.subaccountOrders.filter((order) => {
-    const sideMatch = props.side !== '' ? props.side === order.orderSide : true
-    const marketMatch = market.value
-      ? market.value.marketId === order.marketId
-      : true
+    const orderMatchedSide = !props.side || props.side === order.orderSide
+    const orderMatchedMarket =
+      !market.value || market.value.marketId === order.marketId
 
-    return sideMatch && marketMatch
+    return orderMatchedMarket && orderMatchedSide
   })
 })
 
 const filteredConditionalOrders = computed(() => {
   return derivativeStore.subaccountConditionalOrders.filter((order) => {
-    const sideMatch = props.side !== '' ? props.side === order.direction : true
-    const marketMatch = market.value
-      ? market.value.marketId === order.marketId
-      : true
+    const orderMatchedSide = !props.side || props.side === order.direction
+    const orderMatchedMarket =
+      !market.value || market.value.marketId === order.marketId
 
-    return sideMatch && marketMatch
+    return orderMatchedMarket && orderMatchedSide
   })
 })
 

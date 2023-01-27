@@ -88,7 +88,8 @@ export const streamSubaccountOrders = (marketId?: string) => {
 
           spotStore.$patch({
             subaccountOrders,
-            subaccountOrdersCount: subaccountOrders.length
+            subaccountOrdersCount: subaccountOrders.length,
+            subaccountTotalOrdersCount: spotStore.subaccountTotalOrdersCount + 1
           })
 
           break
@@ -101,7 +102,8 @@ export const streamSubaccountOrders = (marketId?: string) => {
 
           spotStore.$patch({
             subaccountOrders,
-            subaccountOrdersCount: subaccountOrders.length
+            subaccountOrdersCount: subaccountOrders.length,
+            subaccountTotalOrdersCount: spotStore.subaccountTotalOrdersCount - 1
           })
 
           break

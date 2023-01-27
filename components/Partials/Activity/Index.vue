@@ -18,7 +18,7 @@ const bridgeStore = useBridgeStore()
 const activityStore = useActivityStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
-const { $onError } = useNuxtApp()
+const { $onError, $onRejected } = useNuxtApp()
 const { resetForm } = useForm()
 
 const status = reactive(new Status(StatusType.Loading))
@@ -58,37 +58,46 @@ const derivativeMarkets = computed(() => {
   return derivativeStore.markets
 })
 
-const activeMarket = computed(() => {
+const markets = computed(() => {
   if (!denom.value || denom.value === '') {
-    return undefined
+    return isSpot.value ? spotMarkets.value : derivativeMarkets.value
   }
 
   if (isSpot.value) {
-    return spotMarkets.value.find(
+    return spotMarkets.value.filter(
       (m: UiSpotMarketWithToken) =>
         m.baseToken.denom === denom.value || m.quoteToken.denom === denom.value
     )
   }
 
-  return derivativeMarkets.value.find(
+  return derivativeMarkets.value.filter(
     (m: UiDerivativeMarketWithToken) =>
       m.baseToken.denom === denom.value || m.quoteToken.denom === denom.value
   )
 })
 
-const marketIds = computed(() =>
-  isSpot.value ? spotStore.activeMarketIds : derivativeStore.activeMarketIds
-)
-
 const marketId = computed(() => {
-  if (
-    !activeMarket.value ||
-    denom.value === 'peggy0xdAC17F958D2ee523a2206206994597C13D831ec7'
-  ) {
+  if (markets.value.length === 0) {
     return undefined
   }
 
-  return activeMarket.value.marketId
+  return markets.value[0].marketId
+})
+
+const marketIds = computed(() => {
+  return markets.value.map((m) => m.marketId)
+})
+
+const activeMarket = computed(() => {
+  if (isSpot.value) {
+    return spotMarkets.value.find(
+      (m: UiSpotMarketWithToken) => m.marketId === marketId.value
+    )
+  }
+
+  return derivativeMarkets.value.find(
+    (m: UiDerivativeMarketWithToken) => m.marketId === marketId.value
+  )
 })
 
 const orderType = computed(() => {
@@ -153,7 +162,6 @@ const action = computed(() => {
 
 const filterParams = computed(() => {
   const defaultFilterParams = {
-    marketId: marketId.value,
     marketIds: marketIds.value
   }
 
@@ -172,7 +180,7 @@ const filterParams = computed(() => {
       }
     case ActivityView.SpotOrderHistory:
       return {
-        marketId: marketId.value,
+        marketIds: marketIds.value,
         orderTypes: orderTypes.value,
         executionTypes: executionTypes.value,
         direction: side.value as TradeDirection
@@ -190,7 +198,6 @@ const filterParams = computed(() => {
       }
     case ActivityView.DerivativeTriggers:
       return {
-        marketId: marketId.value,
         marketIds: marketIds.value,
         orderTypes: orderTypes.value,
         executionTypes: executionTypes.value,
@@ -198,7 +205,7 @@ const filterParams = computed(() => {
       }
     case ActivityView.DerivativeOrderHistory:
       return {
-        marketId: marketId.value,
+        marketIds: marketIds.value,
         orderTypes: orderTypes.value,
         executionTypes: executionTypes.value,
         direction: side.value as TradeDirection
@@ -218,6 +225,25 @@ const filterParams = computed(() => {
   }
 })
 
+const shouldUpdateTotalCounts = computed(() => {
+  if (
+    ![
+      ActivityView.Positions,
+      ActivityView.SpotOrders,
+      ActivityView.DerivativeOrders
+    ].includes(view.value)
+  ) {
+    return false
+  }
+
+  const hasNoSide = side.value === ''
+  const hasNoMarketFilter = isSpot.value
+    ? spotStore.markets.every((m) => marketIds.value.includes(m.marketId))
+    : derivativeStore.markets.every((m) => marketIds.value.includes(m.marketId))
+
+  return hasNoSide && hasNoMarketFilter
+})
+
 const skip = computed(() => (page.value - 1) * limit.value)
 
 const symbol = computed(() => {
@@ -233,9 +259,13 @@ const symbol = computed(() => {
 })
 
 onMounted(() => {
+  const fetchOptions = {
+    options: { updateTotalCounts: true }
+  }
+
   const promises = [
-    derivativeStore.fetchSubaccountOrders(),
-    spotStore.fetchSubaccountOrders(),
+    derivativeStore.fetchSubaccountOrders(fetchOptions),
+    spotStore.fetchSubaccountOrders(fetchOptions),
     positionStore.streamSubaccountPositions(),
     spotStore.streamSubaccountOrders(),
     spotStore.streamSubaccountOrderHistory(),
@@ -259,40 +289,54 @@ onMounted(() => {
 })
 
 watch([page, limit, denom, side, type], () => fetchData())
-watch([view], () => fetchData(true))
+watch([view], () => fetchDataAndUpdateEndTime())
 
-function fetchData(isViewChange?: boolean) {
-  if (!action.value) {
-    return
-  }
-
+function fetchData() {
   status.setLoading()
 
-  if (Array.isArray(action.value)) {
-    return Promise.all(action.value)
-      .catch($onError)
-      .then(() => {
-        status.setIdle()
-      })
-  }
-
-  action
-    .value({
-      filters: filterParams.value as FilterOptions,
-      pagination: {
-        skip: skip.value,
-        limit: limit.value,
-        endTime: !isStreamingView.value ? endTime.value : undefined
-      }
-    })
-    .catch($onError)
-    .then(() => {
+  _fetchData()
+    .catch($onRejected)
+    .finally(() => {
       status.setIdle()
-
-      if (isViewChange) {
-        updateEndTime()
-      }
     })
+}
+
+function fetchDataAndUpdateEndTime() {
+  _fetchData()
+    .catch($onRejected)
+    .then(() => {
+      updateEndTime()
+    })
+    .finally(() => {
+      status.setIdle()
+    })
+}
+
+function _fetchData() {
+  return new Promise((resolve, reject) => {
+    if (!action.value) {
+      return reject(new Error('Invalid action. Could not fetch results.'))
+    }
+
+    if (Array.isArray(action.value)) {
+      return Promise.all(action.value).catch(reject).then(resolve)
+    }
+
+    action
+      .value({
+        filters: filterParams.value as FilterOptions,
+        pagination: {
+          skip: skip.value,
+          limit: limit.value,
+          endTime: !isStreamingView.value ? endTime.value : undefined
+        },
+        options: {
+          updateTotalCounts: shouldUpdateTotalCounts.value
+        }
+      })
+      .catch(reject)
+      .then(resolve)
+  })
 }
 
 function updateEndTime() {
