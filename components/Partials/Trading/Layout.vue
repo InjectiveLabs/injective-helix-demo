@@ -197,6 +197,12 @@ watch(
 
                 <div class="w-full lg:hidden mt-2">
                   <slot name="trading-panel" />
+                  <PartialsCommonBalances :market="market" />
+                  <CommonCard class="mt-1">
+                    <div class="px-6 pt-2">
+                      <slot name="trading-form" />
+                    </div>
+                  </CommonCard>
                 </div>
               </div>
               <div class="w-full flex-1">

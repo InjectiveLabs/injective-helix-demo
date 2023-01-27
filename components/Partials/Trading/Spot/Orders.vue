@@ -72,7 +72,11 @@ function handleCancelAllClick() {
             v-for="(filterType, index) in Object.values(FilterList)"
             :key="`spot-orders-type-${filterType}`"
           >
-            <AppSelectButton v-model="activeType" :value="filterType">
+            <AppSelectButton
+              v-model="activeType"
+              :value="filterType"
+              class="text-center"
+            >
               <template #default="{ active }">
                 <span
                   class="uppercase text-xs font-semibold"
