@@ -30,10 +30,13 @@ const props = defineProps({
   }
 })
 
+const isAggregateRow = !props.balance.token.denom
+
 const isUSDCDenom =
+  !isAggregateRow &&
   [usdcTokenDenom.USDC, usdcTokenDenom.USDCet, usdcTokenDenom.USDCso].includes(
     props.balance.token.denom.toLowerCase()
-  ) && !!props.balance.token.denom
+  )
 
 const convertUSDC = [usdcTokenDenom.USDC].includes(
   props.balance.token.denom.toLowerCase()
@@ -177,7 +180,7 @@ function handleConvert() {
           </span>
 
           <BaseIcon
-            v-if="!balance.token.denom"
+            v-if="isAggregateRow"
             name="caret-down"
             class="h-6 w-6 transition duration-500 hover:text-blue-500 -rotate-180"
             :class="{ 'rotate-0': !expand }"
@@ -255,7 +258,7 @@ function handleConvert() {
 
     <td v-else class="pr-4">
       <div
-        v-show="balance.token.denom"
+        v-show="!isAggregateRow"
         class="flex items-center justify-end gap-4 col-start-2 col-span-2"
       >
         <BaseDropdown
