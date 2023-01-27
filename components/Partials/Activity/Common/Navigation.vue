@@ -83,7 +83,7 @@ function handleViewChange(value: string) {
       >
         <template #icon>
           <span class="font-semibold text-sm md:text-lg">
-            {{ positionStore.subaccountPositionsCount }}
+            {{ positionStore.subaccountTotalPositionsCount }}
           </span>
         </template>
 
@@ -102,7 +102,7 @@ function handleViewChange(value: string) {
       >
         <template #icon>
           <span class="font-semibold text-sm md:text-lg">
-            {{ spotStore.subaccountOrdersCount }}
+            {{ spotStore.subaccountTotalOrdersCount }}
           </span>
         </template>
 
@@ -121,7 +121,7 @@ function handleViewChange(value: string) {
       >
         <template #icon>
           <span class="font-semibold text-sm md:text-lg">
-            {{ derivativeStore.subaccountOrdersCount }}
+            {{ derivativeStore.subaccountTotalOrdersCount }}
           </span>
         </template>
 

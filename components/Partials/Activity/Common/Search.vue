@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { BankBalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 import { PropType } from 'vue'
-import { UiMarketWithToken } from '@/types'
+import { ActivityView, UiMarketWithToken } from '@/types'
 
 const props = defineProps({
   markets: {
@@ -12,6 +12,11 @@ const props = defineProps({
   modelValue: {
     type: String,
     default: ''
+  },
+
+  view: {
+    type: String,
+    required: true
   }
 })
 
@@ -19,7 +24,7 @@ const emit = defineEmits<{
   (e: 'update:modelValue', state: string): void
 }>()
 
-const supportedTokens = computed(() => {
+const tokens = computed(() => {
   if (!props.markets) {
     return []
   }
@@ -49,7 +54,7 @@ const supportedTokens = computed(() => {
 })
 
 const options = computed(() =>
-  supportedTokens.value.map(({ token }) => ({
+  tokens.value.map(({ token }) => ({
     token,
     display: token.symbol,
     value: token.denom
@@ -70,7 +75,13 @@ const value = computed({
   <AppSelectField
     v-model="value"
     :options="options"
-    :placeholder="$t('account.positions.market.label')"
+    :placeholder="
+      props.view === ActivityView.WalletDeposits ||
+      props.view === ActivityView.WalletTransfers ||
+      props.view === ActivityView.WalletWithdrawals
+        ? $t('walletHistory.transfers.asset')
+        : $t('account.positions.market.label')
+    "
     searchable
     clearable
     data-cy="universal-table-filter-by-asset-input"

@@ -70,6 +70,7 @@ type DerivativeStoreState = {
   subaccountTradesCount: number
   subaccountOrders: UiDerivativeLimitOrder[]
   subaccountOrdersCount: number
+  subaccountTotalOrdersCount: number
   subaccountOrderHistory: UiDerivativeOrderHistory[]
   subaccountOrderHistoryCount: number
   subaccountConditionalOrders: UiDerivativeOrderHistory[]
@@ -90,6 +91,7 @@ const initialStateFactory = (): DerivativeStoreState => ({
   subaccountTradesCount: 0,
   subaccountOrders: [] as UiDerivativeLimitOrder[],
   subaccountOrdersCount: 0,
+  subaccountTotalOrdersCount: 0,
   subaccountOrderHistory: [] as UiDerivativeOrderHistory[],
   subaccountOrderHistoryCount: 0,
   subaccountConditionalOrders: [] as UiDerivativeOrderHistory[],
@@ -321,6 +323,12 @@ export const useDerivativeStore = defineStore('derivative', {
         subaccountOrders: orders,
         subaccountOrdersCount: pagination.total
       })
+
+      if (activityFetchOptions?.options?.updateTotalCounts) {
+        derivativeStore.$patch({
+          subaccountTotalOrdersCount: pagination.total
+        })
+      }
     },
 
     async fetchSubaccountOrderHistory(
@@ -513,6 +521,7 @@ export const useDerivativeStore = defineStore('derivative', {
         subaccountOrderHistoryCount: initialState.subaccountOrderHistoryCount,
         subaccountOrders: initialState.subaccountOrders,
         subaccountOrdersCount: initialState.subaccountOrdersCount,
+        subaccountTotalOrdersCount: initialState.subaccountTotalOrdersCount,
         subaccountTrades: initialState.subaccountTrades,
         subaccountTradesCount: initialState.subaccountOrdersCount
       })

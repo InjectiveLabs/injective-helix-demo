@@ -19,12 +19,14 @@ type PositionStoreState = {
   orderbooks: OrderBookMap
   subaccountPositions: UiPosition[]
   subaccountPositionsCount: number
+  subaccountTotalPositionsCount: number
 }
 
 const initialStateFactory = (): PositionStoreState => ({
   orderbooks: {} as OrderBookMap,
   subaccountPositions: [],
-  subaccountPositionsCount: 0
+  subaccountPositionsCount: 0,
+  subaccountTotalPositionsCount: 0
 })
 
 export const usePositionStore = defineStore('position', {
@@ -70,6 +72,12 @@ export const usePositionStore = defineStore('position', {
         subaccountPositions: positions,
         subaccountPositionsCount: pagination.total
       })
+
+      if (activityFetchOptions?.options?.updateTotalCounts) {
+        positionStore.$patch({
+          subaccountTotalPositionsCount: pagination.total
+        })
+      }
     },
 
     // Fetching multiple market orderbooks for unrealized PnL calculation within

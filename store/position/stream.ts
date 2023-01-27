@@ -27,20 +27,21 @@ export const streamSubaccountPositions = (marketId?: string) => {
           (p) => p.marketId === position.marketId
         )
 
-        /**
-         * Position has been closed
-         */
         if (positionExist) {
           if (positionQuantity.lte(0)) {
+            // Position closed
             const subaccountPositions = [
               ...positionStore.subaccountPositions
             ].filter((p) => p.marketId !== position.marketId)
 
             positionStore.$patch({
               subaccountPositions,
-              subaccountPositionsCount: subaccountPositions.length
+              subaccountPositionsCount: subaccountPositions.length,
+              subaccountTotalPositionsCount:
+                positionStore.subaccountTotalPositionsCount - 1
             })
           } else {
+            // Position updated
             const subaccountPositions = positionStore.subaccountPositions.map(
               (p) => {
                 return p.marketId === position.marketId ? position : p
@@ -53,6 +54,7 @@ export const streamSubaccountPositions = (marketId?: string) => {
             })
           }
         } else if (positionQuantity.gt(0)) {
+          // Position added
           const subaccountPositions = [
             position,
             ...positionStore.subaccountPositions
@@ -60,7 +62,9 @@ export const streamSubaccountPositions = (marketId?: string) => {
 
           positionStore.$patch({
             subaccountPositions,
-            subaccountPositionsCount: subaccountPositions.length
+            subaccountPositionsCount: subaccountPositions.length,
+            subaccountTotalPositionsCount:
+              positionStore.subaccountTotalPositionsCount + 1
           })
         }
       }

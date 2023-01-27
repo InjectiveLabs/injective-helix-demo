@@ -4,12 +4,51 @@ import { GeneralException } from '@injectivelabs/exceptions'
 
 const derivativeStore = useDerivativeStore()
 const positionStore = usePositionStore()
-
 const { $onError } = useNuxtApp()
 const { success } = useNotifications()
 const { t } = useLang()
 
+const props = defineProps({
+  denom: {
+    type: String,
+    default: ''
+  },
+
+  side: {
+    type: String,
+    default: ''
+  },
+
+  view: {
+    type: String,
+    required: true
+  }
+})
+
 const status = reactive(new Status(StatusType.Idle))
+
+const market = computed(() => {
+  return derivativeStore.markets.find(
+    (m) =>
+      m.baseToken.denom === props.denom || m.quoteToken.denom === props.denom
+  )
+})
+
+const showCloseButton = computed(() => {
+  if (positionStore.subaccountPositions.length === 0) {
+    return false
+  }
+
+  const result = positionStore.subaccountPositions.filter((position) => {
+    const positionMatchedSide = !props.side || props.side === position.direction
+    const positionMatchedMarket =
+      !market.value || market.value.marketId === position.marketId
+
+    return positionMatchedSide && positionMatchedMarket
+  })
+
+  return result.length > 0
+})
 
 function handleClosePositions() {
   status.setLoading()
@@ -63,7 +102,7 @@ function closePosition() {
 
 <template>
   <AppButton
-    v-if="positionStore.subaccountPositions.length > 0"
+    v-if="showCloseButton"
     class="text-red-500 bg-red-500 bg-opacity-10 font-semibold hover:text-white"
     :status="status"
     data-cy="activity-cancel-all-button"
