@@ -1,15 +1,10 @@
 <script lang="ts" setup>
 import { Modal } from '@/types'
 
-const router = useRouter()
 const modalStore = useModalStore()
 
 function handleClose() {
   modalStore.closeModal(Modal.USDCDetected)
-}
-
-function handleNavigation() {
-  router.push({ name: 'account' })
 }
 </script>
 
@@ -29,15 +24,14 @@ function handleNavigation() {
       <span class="text-sm font-semibold">
         {{ $t('trade.haveLegacyUSDC') }}
       </span>
-      <AppButton
-        type="button"
-        class="whitespace-nowrap w-full bg-blue-500 text-black"
-        @click="handleNavigation"
+      <NuxtLink
+        class="whitespace-nowrap w-full bg-blue-500 text-black rounded"
+        :to="{ name: 'account' }"
       >
-        <div class="flex items-center justify-center">
-          <span class="text-white">{{ $t('trade.viewUSDC') }}</span>
+        <div class="flex items-center justify-center py-2 text-white">
+          {{ $t('trade.viewUSDC') }}
         </div>
-      </AppButton>
+      </NuxtLink>
     </div>
   </AppModalWrapper>
 </template>
