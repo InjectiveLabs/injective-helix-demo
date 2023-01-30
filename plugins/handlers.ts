@@ -84,8 +84,6 @@ export default defineNuxtPlugin((nuxtApp) => {
   window.onunhandledrejection = function (event: PromiseRejectionEvent) {
     const error = event.reason
 
-    console.log('wtf?!')
-
     if (!IS_PRODUCTION) {
       return
     }
