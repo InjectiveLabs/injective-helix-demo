@@ -1,22 +1,16 @@
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import {
-  UiSpotMarketWithToken,
-  MarketType,
-  UiSubaccountBalance
-} from '@injectivelabs/sdk-ui-ts'
+import { UiSpotMarketWithToken, MarketType } from '@injectivelabs/sdk-ui-ts'
 import {
   BigNumberInBase,
   BigNumberInWei,
   Status,
   StatusType
 } from '@injectivelabs/utils'
-import { Modal, UiMarketWithToken, WalletConnectStatus } from '@/types'
-import { usdcTokenDenom } from '@/app/data/token'
+import { UiMarketWithToken, WalletConnectStatus } from '@/types'
 
 const accountStore = useAccountStore()
 const bankStore = useBankStore()
-const modalStore = useModalStore()
 const onboardStore = useOnboardStore()
 const walletStore = useWalletStore()
 const { $onError } = useNuxtApp()
@@ -30,36 +24,6 @@ const props = defineProps({
 
 const isSpot = props.market.type === MarketType.Spot
 const status = reactive(new Status(StatusType.Loading))
-
-const hasUSDCPeggyBalance = computed(() => {
-  if (
-    ![usdcTokenDenom.USDCet].includes(
-      props.market.quoteToken.denom.toLowerCase()
-    )
-  ) {
-    return false
-  }
-
-  const peggyUSDCBankBalance =
-    bankStore.bankBalancesWithToken.find((balance) =>
-      [usdcTokenDenom.USDC].includes(balance.token.denom.toLowerCase())
-    )?.balance || '0'
-
-  if (!accountStore.subaccount || !accountStore.subaccount.balances) {
-    return new BigNumberInBase(peggyUSDCBankBalance).gt(0)
-  }
-
-  const peggyUSDCSubaccountBalance =
-    accountStore.subaccount.balances.find(
-      () => (balance: UiSubaccountBalance) =>
-        [usdcTokenDenom.USDC].includes(balance.denom.toLowerCase())
-    )?.totalBalance || '0'
-
-  return (
-    new BigNumberInBase(peggyUSDCBankBalance).gt(0) ||
-    new BigNumberInBase(peggyUSDCSubaccountBalance).gt(0)
-  )
-})
 
 const baseTradingBalance = computed(() => {
   if (!accountStore.subaccount || !isSpot) {
@@ -117,12 +81,6 @@ const hasTradingAccountBalances = computed(() => {
   )
 })
 
-onMounted(() => {
-  if (hasUSDCPeggyBalance.value) {
-    modalStore.openModal({ type: Modal.USDCDetected })
-  }
-})
-
 watch(
   () => walletStore.walletConnectStatus,
   (walletConnectStatus) => {
@@ -176,7 +134,6 @@ onWalletConnected(() => {
               v-else
               v-bind="{
                 baseTradingBalance,
-                hasUSDCPeggyBalance,
                 market,
                 quoteTradingBalance
               }"

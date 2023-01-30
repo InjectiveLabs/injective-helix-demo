@@ -222,7 +222,5 @@ watch(
     </AppHocLoading>
 
     <PartialsAccountBridge />
-
-    <ModalsPeggyUSDCDetected />
   </div>
 </template>

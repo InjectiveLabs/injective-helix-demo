@@ -8,8 +8,6 @@ import {
 import { UiMarketWithToken } from '@/types'
 
 const props = defineProps({
-  hasUSDCPeggyBalance: Boolean,
-
   market: {
     required: true,
     type: Object as PropType<UiMarketWithToken>
@@ -76,11 +74,10 @@ const quoteTradingAvailableBalanceToFormat = computed(() => {
         {{ $t('trade.available_asset', { asset: market.quoteToken.symbol }) }}
       </span>
       <div class="flex gap-2">
-        <NuxtLink :to="{ name: 'account' }">
-          <span class="text-blue-500 font-semibold">{{
-            $t('trade.convert.convert')
-          }}</span>
-        </NuxtLink>
+        <PartialsCommonBalancesPeggyUSDCConvert
+          v-if="market"
+          :market="market"
+        />
         <span class="font-mono text-white">{{
           quoteTradingAvailableBalanceToFormat
         }}</span>
