@@ -39,25 +39,26 @@ export enum Icon {
 
 export enum Modal {
   AddMarginToPosition = 'add-margin-to-position',
+  AssetDetails = 'asset-details',
+  Bridge = 'bridge',
+  BridgeCompleted = 'bridge-completed',
+  BridgeConfirm = 'bridge-confirm',
   Connect = 'connect',
   DelegateToValidator = 'delegate-to-validator',
   GasFeeRebate = 'gas-fee-rebate',
-  MarketRewardFactors = 'market-reward-factors',
-  OrderConfirm = 'order-confirm',
-  Terms = 'terms',
-  MarketBeta = 'market-beta',
-  MarketNew = 'market-new',
-  MarketExpired = 'market-expired',
-  MarketDeprecated = 'market-deprecated',
-  Bridge = 'bridge',
-  BridgeConfirm = 'bridge-confirm',
-  BridgeCompleted = 'bridge-completed',
-  RefereeOnboarding = 'referee-onboarding',
   InsufficientInjForGas = 'insufficient-inj-for-gas',
+  MarketBeta = 'market-beta',
+  MarketDeprecated = 'market-deprecated',
+  MarketExpired = 'market-expired',
+  MarketNew = 'market-new',
+  MarketRewardFactors = 'market-reward-factors',
   MobileTradeDetails = 'mobile-trade-details',
   NinjaPassWinner = 'ninja-pass-winner',
-  AssetDetails = 'asset-details',
-  PriceDeviation = 'price-deviation'
+  OrderConfirm = 'order-confirm',
+  PriceDeviation = 'price-deviation',
+  RefereeOnboarding = 'referee-onboarding',
+  Terms = 'terms',
+  USDCDetected = 'usdc-detected'
 }
 
 export enum Breakpoint {

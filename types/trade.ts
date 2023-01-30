@@ -69,3 +69,9 @@ export type MaxAmountOnOrderbook = {
   totalNotional: BigNumberInBase
   totalQuantity: BigNumberInBase
 }
+
+export enum USDCSymbol {
+  PeggyEthereum = 'USDC',
+  WormholeEthereum = 'USDCet',
+  WormholeSolana = 'USDCso'
+}
