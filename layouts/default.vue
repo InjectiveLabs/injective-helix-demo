@@ -43,12 +43,7 @@ onMounted(() => {
     })
 
   // Actions that should't block the app from loading
-  Promise.all([
-    appStore.init(),
-    referralStore.init(),
-    tokenStore.fetchSupplyTokenMeta(),
-    exchangeStore.initFeeDiscounts()
-  ])
+  Promise.all([appStore.init(), exchangeStore.initFeeDiscounts()])
 
   onLoadMarketsInit()
 
@@ -56,9 +51,12 @@ onMounted(() => {
 })
 
 onWalletConnected(() => {
-  Promise.all([bankStore.init(), accountStore.fetchSubaccounts()]).catch(
-    $onError
-  )
+  Promise.all([
+    accountStore.fetchSubaccounts(),
+    bankStore.init(),
+    referralStore.init(),
+    tokenStore.fetchSupplyTokenMeta()
+  ]).catch($onError)
 })
 
 function handleCosmoverseGiveawayCampaignTrack() {
