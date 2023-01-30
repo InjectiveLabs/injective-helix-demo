@@ -96,8 +96,6 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
 
   const errorHandler = (error: ThrownException) => {
-    console.log({ error })
-
     if (!isThrownException(error)) {
       return reportUnknownErrorToBugsnag(error)
     }
